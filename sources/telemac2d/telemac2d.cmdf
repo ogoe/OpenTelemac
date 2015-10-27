@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac2d
 module: telemac2d
-liborder: special parallel damocles hermes bief sisyphe tomawac telemac2d
+liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d
 name: HOMERE_TELEMAC2D
 
 [bief]
@@ -11,52 +11,23 @@ files: bief_def.f
   bief.f
   elapse.f
   config_code.f
-  read_config.f
-  bief_init.f
-  inclus.f
-  bief_open_files.f
-  allblo.f
-  bief_nbmpts.f
-  ov.f
-  bief_nbpts.f
-  bief_allvec.f
-  bief_nbfel.f
-  bief_nbpel.f
-  bief_dim2_ext.f
-  bief_nbseg.f
-  bief_dim1_ext.f
-  bief_allmat.f
-  addblo.f
-  bief_allvec_in_block.f
-  ielbor.f
-  dimens.f
+  streamline.f
   cpstvc.f
+  bief_nbpts.f
   paraco.f
   parcom2.f
   parcom2_seg.f
   parcom.f
-  checkmesh.f
-  bief_nbsegel.f
-  segbor.f
-  bief_ininds.f
-  cpikle2.f
-  read_mesh_info.f
-  corrxy.f
-  read_mesh_coord.f
-  cpikle3.f
-  read_mesh_conn.f
-  ov_2.f
-  mxptel31.f
-  mxptel.f
-  almesh.f
+  ov.f
+  bief_nbmpts.f
+  bief_allvec.f
   ovd.f
   cmpobj.f
   ovd_2.f
+  ov_2.f
   os.f
-  read_submit.f
-  sortie.f
-  bief_close_files.f
-  read_dataset.f
+  algae_transp.f
+  dimens.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
@@ -66,6 +37,7 @@ files: bief_def.f
   parcom2i8.f
   vc13aa.f
   vc08pp.f
+  bief_nbpel.f
   vc04pp.f
   vc04aa.f
   vc01tt.f
@@ -118,30 +90,19 @@ files: bief_def.f
   vc15aa.f
   vectos.f
   vector.f
-  inclu2.f
-  slop10.f
-  slopes.f
+  somme.f
+  bief_sum.f
+  ielbor.f
   cg1113.f
   cg1112.f
   chgdis.f
-  inpoly.f
-  write_data.f
-  impvec.f
-  bief_desimp.f
-  errmax.f
-  write_header.f
-  find_variable.f
-  strche.f
-  write_mesh.f
-  streamline.f
-  algae_transp.f
-  somme.f
-  bief_sum.f
   flux_ef_vf.f
   clip.f
+  inclus.f
   mv0403.f
   mv0404.f
   mv0304.f
+  bief_nbseg.f
   mv0306.f
   mv0606.f
   opass.f
@@ -171,6 +132,7 @@ files: bief_def.f
   as3_1313_q.f
   assex3.f
   om2121.f
+  bief_dim2_ext.f
   ovdb.f
   om4121.f
   om4141.f
@@ -181,6 +143,7 @@ files: bief_def.f
   omseg.f
   om3181.f
   cpstmt.f
+  bief_dim1_ext.f
   omsegbor.f
   om1211.f
   om5161.f
@@ -275,6 +238,12 @@ files: bief_def.f
   diri04.f
   diri09.f
   dirich.f
+  read_dataset.f
+  inclu2.f
+  slop10.f
+  slopes.f
+  inpoly.f
+  addblo.f
   solaux.f
   asmve1.f
   asmvec.f
@@ -334,6 +303,7 @@ files: bief_def.f
   precd4.f
   precd9.f
   precdt.f
+  allblo.f
   preverebe.f
   gsebe.f
   rescjg.f
@@ -356,11 +326,17 @@ files: bief_def.f
   gmres.f
   allblo_in_block.f
   solve.f
+  find_variable.f
   maskbd.f
+  bief_allvec_in_block.f
   bief_valida.f
   front2.f
   global_to_local_point.f
   diffcl.f
+  write_mesh.f
+  write_data.f
+  impvec.f
+  bief_desimp.f
   maskto.f
   derive.f
   dots.f
@@ -406,7 +382,10 @@ files: bief_def.f
   crosfr.f
   fasp.f
   fond.f
+  strche.f
   fonstr.f
+  read_mesh_info.f
+  write_header.f
   build_ikle_ext.f
   ludcmp.f
   lubksb.f
@@ -463,6 +442,27 @@ files: bief_def.f
   bief_erf.f
   masktf.f
   gregtim.f
+  read_config.f
+  bief_init.f
+  bief_open_files.f
+  bief_nbfel.f
+  bief_allmat.f
+  checkmesh.f
+  bief_nbsegel.f
+  segbor.f
+  bief_ininds.f
+  cpikle2.f
+  corrxy.f
+  read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
+  mxptel31.f
+  mxptel.f
+  almesh.f
+  read_submit.f
+  sortie.f
+  bief_close_files.f
+  errmax.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -489,58 +489,48 @@ path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
   utils_serafin.f
-  open_mesh.f
-  open_bnd.f
+  get_data_time.f
+  get_data_value.f
+  get_data_var_list.f
+  get_mesh_nplan.f
+  get_mesh_title.f
+  get_data_ntimestep.f
+  get_data_nvar.f
+  get_mesh_npoin.f
+  set_mesh.f
+  add_data.f
+  update_data_mesh.f
+  get_bnd_numbering.f
+  get_bnd_nelem.f
+  get_bnd_npoin.f
+  get_bnd_value.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
-  get_mesh_nplan.f
-  get_bnd_nelem.f
   get_mesh_nptir.f
-  get_mesh_title.f
-  get_bnd_npoin.f
-  get_data_nvar.f
   get_mesh_dimension.f
-  get_mesh_npoin.f
+  set_header.f
+  lit.f
+  ecri2.f
+  open_mesh.f
+  open_bnd.f
   get_mesh_l2g_numbering.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   close_bnd.f
   close_mesh.f
-  get_data_time.f
-  get_data_value.f
-  get_data_var_list.f
-  get_data_ntimestep.f
-  add_data.f
-  update_data_mesh.f
-  set_header.f
-  set_mesh.f
-  get_bnd_numbering.f
-  get_bnd_value.f
-  lit.f
-  ecri2.f
 
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
-  p_init.F
   interface_parallel.f
-  p_isum.F
-  p_wait_paraco.F
-  p_iwrit.F
-  p_iread.F
-  p_dmax.F
-  p_imax.F
-  p_dmin.F
-  p_exit.F
-  p_ireadi8.F
-  p_iwriti8.F
-  p_dsum.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
   org_charac_type1.F
   p_sync.F
+  p_isum.F
+  p_imax.F
   p_mpi_alltoall.F
   p_mpi_alltoallv.F
   oil_org_charac_type.F
@@ -548,15 +538,23 @@ files: declarations_parallel.F
   p_mpi_alltoallv_oil.F
   p_mpi_type_free.F
   org_charac_type_alg.F
+  p_dmax.F
+  p_wait_paraco.F
+  p_iwrit.F
+  p_iread.F
+  p_dsum.F
+  p_dmin.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
+  p_init.F
+  p_exit.F
 
 [sisyphe]
 path: <root>|sources|sisyphe
 files: declarations_sisyphe.f
-  read_sections_sisyphe.f
-  point_sisyphe.f
   interface_sisyphe_bedload.f
   interface_sisyphe_suspension.f
   interface_sisyphe.f
@@ -661,6 +659,8 @@ files: declarations_sisyphe.f
   init_zero.f
   entete_sisyphe.f
   sisyphe.f
+  read_sections_sisyphe.f
+  point_sisyphe.f
   lecdon_split_outputpoints.f
   nomvar_sisyphe.f
   lecdon_sisyphe.f
@@ -669,36 +669,18 @@ files: declarations_sisyphe.f
 path: <root>|sources|utils|special
 files: declarations_special.f
   plante.F
+  extens.f
+  gracestop.f
   write_error.f
   check_call.f
-  extens.f
   get_nodes_per_element.f
   check_allocate.f
-  gracestop.f
 
 [telemac2d]
 path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
   interface_telemac2d.f
-  declarations_waqtel.f
-  read_sections_telemac2d.f
-  point_telemac2d.f
-  nomvar_telemac2d.f
-  nametrac_waq.f
-  increase_ntrac.f
-  lecdon_telemac2d.f
-  initstr.f
-  dragfo.f
-  fricti.f
-  cost_function.f
-  metgra.f
-  point_adj_t2d.f
-  assignstr.f
-  newstr.f
-  def_zones.f
-  mesures.f
-  interpol.f
   m_coupling_estel3d.f
   oil_flot.f
   oilspill.f
@@ -739,7 +721,12 @@ files: friction_def.f
   friction_lindner.f
   friction_calc.f
   friction_unif.f
+  dragfo.f
+  fricti.f
+  cost_function.f
+  mesures.f
   propag_adj.f
+  assignstr.f
   corpor.f
   poro11.f
   poros.f
@@ -779,16 +766,11 @@ files: friction_def.f
   rotne0.f
   propag.f
   masbas2d.f
-  calcs_o2.f
-  calcs_thermic.f
-  calcs_micropol.f
-  calcs_eutro.f
-  calcs_biomass.f
-  source_waq.f
   difsou.f
   maskob.f
   kepsin.f
   prebor.f
+  initstr.f
   reinit.f
   flu_zokagoa.f
   cdlzz.f
@@ -845,6 +827,7 @@ files: friction_def.f
   flusec_telemac2d.f
   kepscl.f
   read_fic_curves.f
+  def_zones.f
   loinoy.f
   clhuvt.f
   loiden.f
@@ -865,17 +848,21 @@ files: friction_def.f
   wrihyd.f
   tel4del.f
   telemac2d.f
+  read_sections_telemac2d.f
+  point_telemac2d.f
+  nomvar_telemac2d.f
+  lecdon_telemac2d.f
+  metgra.f
+  point_adj_t2d.f
+  newstr.f
+  interpol.f
   homere_adj_t2d.f
   homere_telemac2d.f
 
 [tomawac]
 path: <root>|sources|tomawac
 files: declarations_tomawac.f
-  point_tomawac.f
   interface_tomawac.f
-  nomvar_tomawac.f
-  tomawac_constants.f
-  lecdon_tomawac.f
   preqt2.f
   tetmoy.f
   lecsui.f
@@ -972,3 +959,22 @@ files: declarations_tomawac.f
   anacos.f
   condiw.f
   wac.f
+  point_tomawac.f
+  nomvar_tomawac.f
+  tomawac_constants.f
+  lecdon_tomawac.f
+
+[waqtel]
+path: <root>|sources|waqtel
+files: declarations_waqtel.f
+  interface_waqtel.f
+  nametrac_waq.f
+  calcs_o2.f
+  calcs_thermic.f
+  calcs_micropol.f
+  calcs_eutro.f
+  calcs_biomass.f
+  source_waq.f
+  point_waqtel.f
+  increase_ntrac.f
+  lecdon_waqtel.f

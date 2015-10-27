@@ -730,6 +730,10 @@ if ($NOMCOD eq "tomawac")   {    $$refCH    = "TOMAWAC$ps"."TOMA_";
                                  $$refRAC   = "TOMAWAC";
                                  $$refLNG   = $$refH{"LNG"};
                                  $$refVER   = $$refH{"VERSION"};           }
+if ($NOMCOD eq "waqtel")    {    $$refCH    = "WAQTEL$ps"."WAQTEL_";
+                                 $$refRAC   = "WAQTEL";
+                                 $$refLNG   = $$refH{"LNGWAQ"};
+                                 $$refVER   = $$refH{"VERSWAQ"};           }
 if ($NOMCOD eq "spartacus2d")   {    $$refCH    = "SPARTACUS2D$ps"."SPARTACUS2D_";
                                  $$refRAC   = "SPARTACUS2D";
                                  $$refLNG   = $$refH{"LNG"};
@@ -1384,6 +1388,29 @@ if ($GENERIQUE eq "telemac2d" || $GENERIQUE eq "telemac3d")
          if ($ier != 0)
            {  ecrire("ERREUR : Probleme dans l'analyse des fichiers TOMAWAC",
                      "ERROR : problem during TOMAWAC files analysis");
+              exit 1;
+           }
+       }
+#print "COUPLAGE T2D /WAQTEL ! \n";
+#PLG
+     @vals = tm_casdico::recup_valeur_mot(\%motsEtude,"FICHIER DES PARAMETRES DE WAQTEL"); 
+     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
+       { 
+       if ($GENERIQUE eq "telemac2d") {$GENERIQUE1 = "TEL2DWAQ"};
+       if ($GENERIQUE eq "telemac3d") {$GENERIQUE1 = "TEL3DWAQ"};
+#       printf "COUPLAGE T2D OU T3D /WAQTEL $GENERIQUE1! \n";
+         $sCAS ="$REPLANCE"."$ps"."@vals[0]";
+         get_code_params (\%hash,"waqtel",\$sCHEMIN,
+                          \$sRACINE,\$sLNG,\$sVERSDEF);
+  
+         %smotsEtude=get_mots ("waqtel",$PROJECT,$sCHEMIN,$sVERSDEF,
+                               $sCAS,\$sDICO,\$sVERS);
+# marquer le changement de code
+         printf F "\@FDESC=(\@FDESC,\"NEWCODE;.;.;.;.;.\");\n"; 
+         $ier=desc_fichiers_acqui_resti (F, \%smotsEtude, \$i0fic, $sDICO, $sCAS);
+         if ($ier != 0)
+           {  ecrire("ERREUR : Probleme dans l'analyse des fichiers WAQTEL",
+                     "ERROR : problem during WAQTEL files analysis");
               exit 1;
            }
        }

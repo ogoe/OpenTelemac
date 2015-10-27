@@ -1,4 +1,3 @@
-/PARALLEL PROCESSORS = 8
 /
 /
 / This case validates ther thermic process
@@ -88,8 +87,8 @@ COEFFICIENT FOR DIFFUSION OF TRACERS = 0.
 /************************************
 /  WATER QUALITY
 /************************************
-WATER QUALITY        = YES
-WAQ STEERING FILE    = 'waq_steer.cas'
-WAQ DICTIONARY       = 'waqtel.dico'
+COUPLING WITH          = 'WAQTEL'
+WAQTEL STEERING FILE   = 'waq_steer.cas'
+WATER QUALITY PROCESS  = 5
 &FIN
 

@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|api
 module: api
-liborder: special parallel damocles hermes bief sisyphe tomawac telemac2d api
+liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d api
 name: API_DUMMY_EXE_T2D
 
 [api]
@@ -691,10 +691,7 @@ files: friction_def.f
   declarations_telemac2d.f
   interface_telemac2d.f
   deall_telemac2d.f
-  declarations_waqtel.f
   nomvar_telemac2d.f
-  nametrac_waq.f
-  increase_ntrac.f
   lecdon_telemac2d.f
   m_coupling_estel3d.f
   oil_flot.f
@@ -781,12 +778,6 @@ files: friction_def.f
   rotne0.f
   propag.f
   masbas2d.f
-  calcs_o2.f
-  calcs_thermic.f
-  calcs_micropol.f
-  calcs_eutro.f
-  calcs_biomass.f
-  source_waq.f
   difsou.f
   maskob.f
   kepsin.f
@@ -972,3 +963,18 @@ files: declarations_tomawac.f
   anacos.f
   condiw.f
   wac.f
+
+[waqtel]
+path: <root>|sources|waqtel
+files: declarations_waqtel.f
+  interface_waqtel.f
+  nametrac_waq.f
+  calcs_o2.f
+  calcs_thermic.f
+  calcs_micropol.f
+  calcs_eutro.f
+  calcs_biomass.f
+  point_waqtel.f
+  lecdon_waqtel.f
+  source_waq.f
+  increase_ntrac.f

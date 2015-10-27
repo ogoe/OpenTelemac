@@ -93,8 +93,6 @@
 !
         CHARACTER(LEN=144) MOTCAR(INST%MAXKEY)
         CHARACTER(LEN=144) FILE_DESC(4,INST%MAXKEY)
-        CHARACTER(LEN=144) WMOTCAR(INST%MAXKEY)
-        CHARACTER(LEN=144) WFILE_DESC(4,INST%MAXKEY)
 !
         IERR = 0
 !
@@ -129,7 +127,7 @@
 !-----------------------------------------------------------------------
 !
 !     READS THE STEERING FILE
-        CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
+        CALL LECDON_TELEMAC2D(MOTCAR,FILE_DESC,
      &                        PATH,NCAR,CAS_FILE,DICO_FILE)
 !
 !-----------------------------------------------------------------------

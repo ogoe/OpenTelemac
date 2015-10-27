@@ -76,13 +76,13 @@ CONTINUITY CORRECTION             = YES
 / here after, initial values of O2,L, NH4
 INITIAL VALUES OF TRACERS            = 5.;3.;0.01
 DIFFUSION OF TRACERS                 = NO
-COEFFICIENT FOR DIFFUSION OF TRACERS = 0. 
+COEFFICIENT FOR DIFFUSION OF TRACERS = 0.;0.;0. 
 /************************************
 /  WATER QUALITY
 /************************************
-WATER QUALITY        = YES
-WAQ STEERING FILE    = 'o2_waq_steer.cas'
-WAQ DICTIONARY       = 'waqtel.dico'
+COUPLING WITH         = 'WAQTEL'
+WAQTEL STEERING FILE  = 'o2_waq_steer.cas'
+WATER QUALITY PROCESS = 1
 
 &FIN
 

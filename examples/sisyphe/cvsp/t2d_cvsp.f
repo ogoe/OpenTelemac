@@ -26,7 +26,10 @@
       USE DECLARATIONS_TELEMAC2D
       USE DECLARATIONS_SISYPHE, ONLY : SIS_FILES,MAXLU_SIS
       USE DECLARATIONS_TOMAWAC, ONLY : WAC_FILES,MAXLU_WAC
+      USE DECLARATIONS_WAQTEL,  ONLY : WAQ_FILES,MAXLU_WAQ,
+     &                                ADDTR
       USE INTERFACE_TELEMAC2D
+      USE INTERFACE_WAQTEL
 !
       IMPLICIT NONE
       INTEGER     LNG,LU
@@ -37,10 +40,10 @@
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
       CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
       CHARACTER(LEN=24), PARAMETER :: CODE3='TOMAWAC                 '
+      CHARACTER(LEN=24), PARAMETER :: CODE4='WAQTEL                  '
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
-      CHARACTER(LEN=144) WMOTCAR(MAXKEY),WFILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144) DUMMY
       CHARACTER(LEN=50) DEBUGFILE
 !
@@ -80,7 +83,7 @@
 !
       DUMMY = ' '
 !
-      CALL LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
+      CALL LECDON_TELEMAC2D(MOTCAR,FILE_DESC,
      &                      PATH,NCAR,DUMMY,DUMMY)
 !
 !
@@ -91,6 +94,7 @@
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T2D_FILES,MAXLU_T2D,PATH,NCAR,
      &                     INCLUS(COUPLING,'SISYPHE').OR.
+     &                     INCLUS(COUPLING,'WAQTEL').OR.
      &                     INCLUS(COUPLING,'TOMAWAC'),
      &                     IFLOT,1,.FALSE.)
 !
@@ -202,6 +206,52 @@
 !     MEMORY ORGANISATION
 !
       CALL POINT_TOMAWAC
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISES WAQTEL
+!
+      IF(INCLUS(COUPLING,'WAQTEL')) THEN
+!
+        WATQUA = .TRUE.
+!
+        WRITE(LU,108)
+        WRITE(LU,109)
+108   FORMAT(100('-'),////////,
+     &16X,
+     &'W   W  AAAAA  QQQQQ  TTTTT  EEEEE  L     ',/,16X,
+     &'W   W  A   A  Q   Q    T    E      L     ',/,16X,
+     &'W W W  AAAAA  Q Q Q    T    EEE    L     ',/,16X,
+     &'WW WW  A   A  Q  QQ    T    E      L     ',/,16X,
+     &'W   W  A   A  QQQQQ    T    EEEEE  LLLLL ',//)
+109   FORMAT(15X,
+     &"                                           ",/,15X,
+     &"                                           ",/,15X,
+     &"         ,      ,      ,      ,            ",/,15X,
+     &"         )\     )\     )\     )\           ",/,15X,
+     &"        /  \   /  \   /  \   /  \          ",/,15X,
+     &"       '    ' '    ' '    ' '    '         ",/,15X,
+     &"       ',  ,' ',  ,' ',  ,' ',  ,'         ",/,15X,
+     &"         `'     `'     `'     `'           ",/,15X,
+     &"                                           ",///)
+!
+      CALL LECDON_WAQTEL(FILE_DESC,PATH,NCAR,CODE4)
+      CALL BIEF_OPEN_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,PATH,NCAR,
+     &                     .TRUE.,IFLOT,4,.FALSE.)
+!
+!     UPDATING TRACER INFORMATION OF WAQTEL
+!
+      CALL NAMETRAC_WAQ(TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS)
+!
+!     RESETS TELEMAC2D CONFIGURATION
+!
+      CALL CONFIG_CODE(1)
+!
+!     MEMORY ORGANISATION
+!
+      CALL POINT_WAQTEL(WAQPROCESS,MESH,IELM1,VENT,WINDX,WINDY)
 !
       ENDIF
 !

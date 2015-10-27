@@ -1156,7 +1156,7 @@ COEFFICIENTS ADIMENSIONNELS DE DISPERSION
 Si on choisit l''option 3; 
 ce meme parametre doit retrouver sa vraie valeur physique car elle est 
 utilisee comme telle dans le modele de turbulence' 
-AIDE1 = 'The current alternatives are as follows: constant viscosity (1) 
+AIDE1 = 'The current alternatives are as follows: constant viscosity (1)
 elder''s model (2) or k-epsilon model (3). 
 NOTE: when option 1 is chosen, it should be kept in mind that the 
 value of the keyword VELOCITY DIFFUSIVITY has to be ajusted. 
@@ -1176,7 +1176,7 @@ DEFAUT1 = 1.E-4
 RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER' 
 NIVEAU = 2 
-AIDE = 'Precision demandee pour la resolution de l''etape de propagation 
+AIDE = 'Precision demandee pour la resolution de l''etape de propagation
  (cf.  Note de principe).' 
 AIDE1 = 'Required accuracy for solving the propagation step 
 (refer to Principle note).' 
@@ -1246,8 +1246,8 @@ DEFAUT1 = 1.
 RUBRIQUE = 'PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, VELOCITY-CELERITY-HIGHT' 
 NIVEAU = 2 
-AIDE = 'Fixe la valeur du coefficient d''implicitation sur les termes de 
-diffusion des vitesses' 
+AIDE = 'Fixe la valeur du coefficient d''implicitation sur les termes
+ de diffusion des vitesses' 
 AIDE1 = 'Sets the value of the implicitation coefficient for 
 the diffusion of velocity' 
  
@@ -1356,8 +1356,8 @@ DEFAUT1 = 1.E-9
 RUBRIQUE = 'PARAMETRES NUMERIQUES, MODELE K-EPSILON' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, K-EPSILON MODEL' 
 NIVEAU = 2 
-AIDE = 'Fixe la precision demandee sur epsilon pour le test d''arret dan 
-s l''etape de diffusion et termes sources de k et epsilon.' 
+AIDE = 'Fixe la precision demandee sur epsilon pour le test d''arret 
+dans l''etape de diffusion et termes sources de k et epsilon.' 
 AIDE1 = 'Sets the required accuracy for computing epsilon in 
 the diffusion and source-terms step of the k-epsilon model.' 
  
@@ -1376,8 +1376,8 @@ COMPORT =
 NIVEAU = 2 
 AIDE = 'Fixe la hauteur d''eau autour de laquelle s''effectue la 
 linearisation lorsque l''option PROPAGATION LINEARISEE est choisie.' 
-AIDE1 = 'Sets the water depth about which the linearization is made when 
-the LINEARIZED PROPAGATION OPTION is selected.' 
+AIDE1 = 'Sets the water depth about which the linearization is made 
+when the LINEARIZED PROPAGATION OPTION is selected.' 
  
 NOM = 'COEFFICIENT DE RUGOSITE DES BORDS' 
 NOM1 = 'ROUGHNESS COEFFICIENT OF BOUNDARIES' 
@@ -1398,8 +1398,9 @@ meme convention que pour le coefficient de frottement:
                     3 : coefficient de Strickler 
                     4 : coefficient de Manning 
                     5 : hauteur de rugosite de Nikuradse' 
-AIDE1 = 'Sets the value of the friction coefficient of the solid boundary 
-with the bed roughness option. Same meaning than friction coefficient' 
+AIDE1 = 'Sets the value of the friction coefficient of the solid 
+boundary with the bed roughness option. Same meaning than friction 
+coefficient' 
  
 NOM = 'DEBITS IMPOSES' 
 NOM1 = 'PRESCRIBED FLOWRATES' 
@@ -1442,10 +1443,10 @@ RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
 COMPORT = 
 'Foreground ("EQUATIONS, CONDITIONS LIMITES") IS VALEUR (brown)' 
 NIVEAU = 1 
-AIDE = 'Valeurs des vitesses imposees aux frontieres liquides entrantes. 
-Lire la partie du mode d''emploi consacree aux conditions aux limites' 
-AIDE1 ='Values of prescribed velocities at the liquid inflow boundaries. 
-Refer to the section dealing with the boundary conditions' 
+AIDE = 'Valeurs des vitesses imposees aux frontieres liquides entrantes.
+ Lire la partie du mode d''emploi consacree aux conditions aux limites' 
+AIDE1 ='Values of prescribed velocities at the liquid inflow boundaries.
+ Refer to the section dealing with the boundary conditions' 
  
 NOM = 'COTE INITIALE' 
 NOM1 = 'INITIAL ELEVATION' 
@@ -1630,8 +1631,8 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'DUREE DU CALCUL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'DURATION' 
 NIVEAU = 1 
 AIDE = 'duree de la simulation. alternative au parametre nombre de pas 
-de temps. On en deduit le nombre de pas de temps en prenant l''entier le 
-plus proche de (duree du calcul/pas de temps). Si le nombre de pas de 
+de temps. On en deduit le nombre de pas de temps en prenant l''entier le
+ plus proche de (duree du calcul/pas de temps). Si le nombre de pas de 
 temps est aussi donne, on prend la plus grande valeur' 
 AIDE1 = 'duration of simulation. May be used instead of the parameter 
 NUMBER OF TIME STEPS. The nearest integer to (duration/time step) is 
@@ -1650,8 +1651,8 @@ RUBRIQUE = 'CONSTANTES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL CONSTANTS' 
 NIVEAU = 2 
 AIDE = 'Direction du nord en degres, par rapport a l''axe des y 
-dans le sens trigonometrique. Notation decimale 10.5 signifie  10 degres 
-et trente minutes.' 
+dans le sens trigonometrique. Notation decimale 10.5 signifie  10 degres
+ et trente minutes.' 
 AIDE1 = 'Angle of the North with the y axis, in degrees. 10.5 means 
 10 degrees and 30 minutes.' 
  
@@ -1832,7 +1833,7 @@ himself. These user-specific variables should be computed in the
 subroutine PRERES and their desired name should be written 
 into the subroutine NOMVAR. 
 These seven variables are as follows: 
-        -N, O, R, Z which correspond to arrays PRIVE(1,1) up to PRIVE(1, 
+       -N, O, R, Z which correspond to arrays PRIVE(1,1) up to PRIVE(1, 
 Unlike the preceding variables, they are preserved throughout the 
 program, so that they can be used again. 
 In the latter case, do not forget to provide the array PRIVE with 
@@ -2012,12 +2013,13 @@ NIVEAU = 1
 APPARENCE = 'LISTE IS FICHIER' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-AIDE = 'Nom d''un fichier contenant les resultats d''un calcul precedent 
-realise sur le meme maillage et dont le dernier pas de temps enregistre 
-va fournir les conditions initiales pour une suite de de calcul.' 
-AIDE1 = 'Name of a file containing the results of an earlier computation 
-which was made on the same mesh. The last recorded time step will provid 
-the initial conditions for the new computation.' 
+AIDE = 'Nom d''un fichier contenant les resultats d''un calcul 
+precedent realise sur le meme maillage et dont le dernier pas de temps 
+enregistre va fournir les conditions initiales pour une suite de de 
+calcul.' 
+AIDE1 = 'Name of a file containing the results of an earlier 
+computation which was made on the same mesh. The last recorded time 
+step will provid the initial conditions for the new computation.' 
  
 NOM = 'FICHIER DES RESULTATS' 
 NOM1 = 'RESULTS FILE' 
@@ -2032,9 +2034,9 @@ NIVEAU = 1
 APPARENCE = 'LISTE IS FICHIER' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-AIDE = 'Nom du fichier dans lequel seront ecrits les resultats du calcul 
-avec la periodicite donnee par le mot cle ''PERIODE POUR LES SORTIES 
-GRAPHIQUES''.' 
+AIDE = 'Nom du fichier dans lequel seront ecrits les resultats du 
+calcul avec la periodicite donnee par le mot cle ''PERIODE POUR LES 
+SORTIES GRAPHIQUES''.' 
 AIDE1 = 'Name of the file into which the computation results shall be 
 written, 
 the periodicity being given by the key-word: 
@@ -2401,7 +2403,8 @@ Les valeurs possibles sont :
            doivent etre precisees dans le sous-programme CONDIN.
    - ALTIMETRIE SATELLITE TPXO. Les conditions initiales sur la hauteur
            d''eau et les vitesses sont etiblies sur la base des donnees
-           satellite TPXO dont les 8 premiers constistuents ont ete extrait
+           satellite TPXO dont les 8 premiers constistuents 
+ont ete extrait
            et sauves dans le fichier BASE DE DONNEES DE MAREE.' 
 AIDE1 = 'Makes it possible to define the initial conditions with 
 the water depth. 
@@ -2417,8 +2420,10 @@ are computed as in the previous case.
 by the key-word -INITIAL DEPTH-.
    - SPECIAL-. The initial conditions with the water depth should be
 stated in the CONDIN subroutine.
-   - TPXO SATELITE ALTIMETRY. The initial conditions on the free surface and
-velocities are established from the TPXO satellite program data, the harmonic
+   - TPXO SATELITE ALTIMETRY. The initial conditions on the 
+free surface and
+velocities are established from the TPXO satellite program data, 
+the harmonic
 constituents of which are stored in the TIDE DATA BASE file.' 
  
 NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
@@ -2625,7 +2630,8 @@ COMPORT =
 NIVEAU = 1 
 AIDE = 'Permet de decider si l''on prend ou non en compte l''influence 
 d''un champ de pression.' 
-AIDE1 = 'Provided to decide whether the influence of an atmosphere field 
+AIDE1 = 'Provided to decide whether the influence of 
+an atmosphere field 
 is taken into account or not.' 
  
 NOM = 'CONVECTION' 
@@ -2755,7 +2761,8 @@ RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
 NIVEAU = 2 
 AIDE = 'Donne a chaque pas de temps le nombre d''iterations necessaires 
 a la convergence du solveur de l''etape de propagation.' 
-AIDE1 = 'if YES, prints the number of iterations that have been necessar 
+AIDE1 = 'if YES, prints the number of iterations 
+that have been necessar 
 to get the solution of the linear system.' 
  
 NOM = 'BILAN DE MASSE' 
@@ -2822,7 +2829,8 @@ COMPORT =
 NIVEAU = 1 
 AIDE = 'Choix des coordonnees spheriques pour la realisation du calcul 
 ( pour les grands domaines de calcul). 
-Attention : cette option est etroitement liee au maillage qui doit avoir 
+Attention : cette option est etroitement liee au 
+maillage qui doit avoir 
 ete saisi sur une carte marine en projection de Mercator. 
 Il faut de plus relever sur la carte la LATITUDE DU POINT ORIGINE 
 (autre mot-cle) qui correspond dans le maillage a l''ordonnee y = 0.' 
@@ -2845,10 +2853,12 @@ RUBRIQUE = 'EQUATIONS';'PROPAGATION'
 RUBRIQUE1 = 'EQUATIONS';'PROPAGATION' 
 NIVEAU = 3 
 AIDE = 'Permet de lineariser l''etape de propagation; 
-par exemple lors de la realisation de cas tests pour lesquels on dispose 
+par exemple lors de la realisation de cas tests 
+pour lesquels on dispose 
 d''une solution analytique dans le cas linearise.' 
 AIDE1 = 'Provided for linearizing the propagation step, e.g. when 
-performing test-cases for which an analytical solution in the linearized 
+performing test-cases for which an analytical 
+solution in the linearized 
 case is available.' 
  
 NOM = 'VALIDATION' 
@@ -2862,10 +2872,12 @@ DEFAUT1 = NO
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION' 
 NIVEAU = 1 
-AIDE = 'Option utilisee principalement pour le dossier de validation. Le 
+AIDE = 'Option utilisee principalement 
+pour le dossier de validation. Le 
 fichier des resultats du calcul precedent est alors considere comme une 
 reference a laquelle on va comparer le calcul. La comparaison 
-est effectuee par le sous-programme VALIDA qui peut etre une comparaison 
+est effectuee par le sous-programme 
+VALIDA qui peut etre une comparaison 
 avec une solution exacte par exemple.' 
 AIDE1 = 'This option is primarily used for the validation documents. 
 The PREVIOUS COMPUTATION FILE is then considered as a 
@@ -2904,7 +2916,8 @@ NIVEAU = 1
 AIDE = 'permet de supprimer les tests sur les bancs decouvrants, dans 
 les cas ou l''on est certain qu''il n''y en aura pas. 
 En cas de doute : oui' 
-AIDE1 = 'When no, the specific treatments for tidal flats are by-passed. 
+AIDE1 = 'When no, the specific 
+treatments for tidal flats are by-passed. 
 This spares time, but of course you must be sure that you have no 
 tidal flats' 
  
@@ -2964,7 +2977,8 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
 AIDE = 'Utilise si BANCS DECOUVRANTS est vrai 
-1 : EQUATIONS RESOLUES PARTOUT AVEC CORRECTION SUR LES BANCS DECOUVRANTS 
+1 : EQUATIONS RESOLUES PARTOUT AVEC 
+CORRECTION SUR LES BANCS DECOUVRANTS 
 2 : GEL DES ELEMENTS DECOUVRANTS 
 3 : COMME 1 MAIS AVEC POROSITE (METHODE DEFINA)' 
 AIDE1 = 'Used if TIDAL FLATS is true 
@@ -3360,7 +3374,8 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1 
 AIDE = 'Couples de points (numeros globaux dans le maillage) entre 
 lesquels les debits instantanes et cumules seront donnes.' 
-AIDE1 ='Couples of points (global numbers in the mesh) defining sections 
+AIDE1 ='Couples of points (global numbers 
+in the mesh) defining sections 
  where the instantaneous and cumulated discharges will be given' 
  
  
@@ -3485,7 +3500,8 @@ DEFAUT1 =  YES
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 2 
-AIDE = 'Changement de variable de H en C dans le systeme lineaire final' 
+AIDE = 'Changement de variable de H en 
+C dans le systeme lineaire final' 
 AIDE1 = 'Change of variable from H to C in the final linear system' 
  
 NOM = 'PAS DE TEMPS VARIABLE' 
@@ -3588,7 +3604,8 @@ CHOIX1='1="constant normal profile"';'2="u and v given in the
 RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
 RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS' 
 NIVEAU = 1 
-AIDE = '1:profil normal constant  2:u et v donnes dans le fichier conlim 
+AIDE = '1:profil normal constant  2:u et v 
+donnes dans le fichier conlim 
         3:vitesse normale donnee dans ubor dans le fichier conlim 
         4:profil en racine de la profondeur
         5:profil en racine de la profondeur, variante' 
@@ -3597,63 +3614,64 @@ AIDE1= '1:constant normal profile 2:u and v given in the conlim file
         4:sqrt(depth) profile
         5:sqrt(depth) profile, variant' 
                                                                     
-NOM = 'OPTION POUR LA DIFFUSION DES TRACEURS'                               
-NOM1 = 'OPTION FOR THE DIFFUSION OF TRACERS'                               
-TYPE = INTEGER                                                            
-INDEX = 51                                                                
-MNEMO = 'OPDTRA'                                                          
-TAILLE = 0                                                                
-DEFAUT = 1                                                                
-DEFAUT1 = 1                                                                
-CHOIX = '1="div( nu grad(T) )"';                                          
-'2="1/h div ( h nu grad(T)"'                                              
-CHOIX1= '1="div( nu grad(T) )"';                                           
-'2="1/h div ( h nu grad(T)"'                                               
-RUBRIQUE = 'EQUATIONS';'TRACEUR';'OPTIONS TRACEUR'                        
-RUBRIQUE1 = 'EQUATIONS';'TRACER';'TRACER OPTIONS'                          
-NIVEAU = 1                                                                 
-AIDE = '1: Diffusion de la forme div( nu grad(T) )                        
-        2: Diffusion de la forme 1/h div ( h nu grad(T) )'                  
-AIDE1= '1: Diffusion in the form div( nu grad(T) )                          
-        2: Diffusion in the form 1/h div ( h nu grad(T) )'                  
-                                                                            
-NOM = 'OPTION POUR LA DIFFUSION DES VITESSES'                               
-NOM1 = 'OPTION FOR THE DIFFUSION OF VELOCITIES'                             
-TYPE = INTEGER                                                              
-INDEX = 52                                                                  
-MNEMO = 'OPDVIT'                                                            
-TAILLE = 0                                                                  
-DEFAUT = 1                                                                  
-DEFAUT1 = 1                                                                 
-CHOIX = '1="div( nu grad(U) )"';                                            
-'2="1/h div ( h nu grad(U)"'                                                
-CHOIX1= '1="div( nu grad(U) )"';                                            
-'2="1/h div ( h nu grad(U)"'                                                
-RUBRIQUE = 'PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR'                
-RUBRIQUE1 = 'NUMERICAL PARAMETERS, VELOCITY-CELERITY-HIGHT'                 
-NIVEAU = 1                                                                  
-AIDE = '1: Diffusion de la forme div( nu grad(U) )                          
-        2: Diffusion de la forme 1/h div ( h nu grad(U) )'                  
-AIDE1= '1: Diffusion in the form div( nu grad(U) )                          
-        2: Diffusion in the form 1/h div ( h nu grad(U) )'                  
-                                                                            
-NOM = 'TYPE DES SOURCES'                                                    
-NOM1 = 'TYPE OF SOURCES'                                                    
-TYPE = ENTIER                                                               
-INDEX = 53                                                                  
-MNEMO = 'OPTSOU'                                                            
-TAILLE = 0                                                                  
-DEFAUT = 1                                                                  
-DEFAUT1 =1                                                                  
-CHOIX = '1="Normal"';'2="Dirac"'                                            
-CHOIX1= '1="Normal"';'2="Dirac"'                                            
-RUBRIQUE = 'EQUATIONS, SOURCES'                                             
-RUBRIQUE1 = 'EQUATIONS, SOURCE TERMS'                                       
-NIVEAU = 2                                                                  
-AIDE = '1: Source portee par une base elements finis                        
-        2: Source portee  par une fonction de Dirac'                        
-AIDE1= '1: Source term multiplied by a finite element basis                 
-        2: Source term multiplied by a Dirac function'                      
+NOM = 'OPTION POUR LA DIFFUSION DES TRACEURS'                   
+NOM1 = 'OPTION FOR THE DIFFUSION OF TRACERS'                    
+TYPE = INTEGER                                                  
+INDEX = 51                                                      
+MNEMO = 'OPDTRA'                                                
+TAILLE = 0                                                      
+DEFAUT = 1                                                      
+DEFAUT1 = 1                                                     
+CHOIX = '1="div( nu grad(T) )"';                                
+'2="1/h div ( h nu grad(T)"'                                    
+CHOIX1= '1="div( nu grad(T) )"';                                
+'2="1/h div ( h nu grad(T)"'                                    
+RUBRIQUE = 'EQUATIONS';'TRACEUR';'OPTIONS TRACEUR'              
+RUBRIQUE1 = 'EQUATIONS';'TRACER';'TRACER OPTIONS'               
+NIVEAU = 1                                                      
+AIDE = '1: Diffusion de la forme div( nu grad(T) )              
+        2: Diffusion de la forme 1/h div ( h nu grad(T) )'      
+AIDE1= '1: Diffusion in the form div( nu grad(T) )              
+        2: Diffusion in the form 1/h div ( h nu grad(T) )'      
+                                                                
+NOM = 'OPTION POUR LA DIFFUSION DES VITESSES'                   
+NOM1 = 'OPTION FOR THE DIFFUSION OF VELOCITIES'                 
+TYPE = INTEGER                                                  
+INDEX = 52                                                      
+MNEMO = 'OPDVIT'                                                
+TAILLE = 0                                                      
+DEFAUT = 1                                                      
+DEFAUT1 = 1                                                     
+CHOIX = '1="div( nu grad(U) )"';                                
+'2="1/h div ( h nu grad(U)"'                                    
+CHOIX1= '1="div( nu grad(U) )"';                                
+'2="1/h div ( h nu grad(U)"'                                    
+RUBRIQUE = 'PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR'    
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, VELOCITY-CELERITY-HIGHT'     
+NIVEAU = 1                                                      
+AIDE = '1: Diffusion de la forme div( nu grad(U) )              
+        2: Diffusion de la forme 1/h div ( h nu grad(U) )'      
+AIDE1= '1: Diffusion in the form div( nu grad(U) )              
+        2: Diffusion in the form 1/h div ( h nu grad(U) )'      
+                                                                
+NOM = 'TYPE DES SOURCES'                                        
+NOM1 = 'TYPE OF SOURCES'                                        
+TYPE = ENTIER                                                   
+INDEX = 53                                                      
+MNEMO = 'OPTSOU'                                                
+CONTROLE = 1;2                                                  
+TAILLE = 0                                                      
+DEFAUT = 1                                                      
+DEFAUT1 =1                                                      
+CHOIX = '1="Normal"';'2="Dirac"'                                
+CHOIX1= '1="Normal"';'2="Dirac"'                                
+RUBRIQUE = 'EQUATIONS, SOURCES'                                 
+RUBRIQUE1 = 'EQUATIONS, SOURCE TERMS'                           
+NIVEAU = 2                                                      
+AIDE = '1: Source portee par une base elements finis            
+        2: Source portee  par une fonction de Dirac'            
+AIDE1= '1: Source term multiplied by a finite element basis     
+        2: Source term multiplied by a Dirac function'          
  
 / NOUVEAUTES 5.0 
  
@@ -3699,9 +3717,11 @@ APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 NIVEAU = 1 
-AIDE = 'Fichier de resultats de reference pour la validation. Les resultats a placer dans ce fichier seront a 
+AIDE = 'Fichier de resultats de reference pour la validation. 
+Les resultats a placer dans ce fichier seront a 
 ecrire sur le canal 22.' 
-AIDE1 = 'Binary-coded result file for validation. The results to be entered into this file shall be written 
+AIDE1 = 'Binary-coded result file for validation. 
+The results to be entered into this file shall be written 
 on channel 22.'  
  
 NOM = 'FICHIER DES FRONTIERES LIQUIDES' 
@@ -3718,7 +3738,8 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1 
 AIDE = 'Fichier de variations en temps des conditions aux limites. 
 Les donnees de ce fichier seront a lire sur le canal 12.' 
-AIDE1 = 'Variations in time of boundary conditions. Data of this file are read 
+AIDE1 = 'Variations in time of boundary conditions. 
+Data of this file are read 
 on channel 12.'  
  
 NOM = 'COURANTS DE HOULE' 
@@ -4060,7 +4081,7 @@ NOM1 = 'FRICTION DATA FILE'
 TYPE = CARACTERE 
 INDEX = 63 
 MNEMO = 'T2D_FILES(T2DCOF)%NAME' 
-SUBMIT = 'T2DCOF-READ-35;T2DCOF;FACUL;ASC;LIT;PARAL' 
+SUBMIT = 'T2DCOF-READ-33;T2DCOF;FACUL;ASC;LIT;PARAL' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 APPARENCE = 'LISTE IS FICHIER' 
@@ -4186,7 +4207,7 @@ AIDE1 = 'Below the threshold the negative depths are smoothed'
 / SEE TREATMENT IN LECDON_TELEMAC2D 
 / 
 NOM  = 'PERIODE POUR LES SORTIES LISTING' 
-NOM1 = 'LISTING PRINTOUT PERIOD' 
+NOM1 = 'LISTING FOR PRINTOUT PERIOD' 
 TYPE = INTEGER 
 INDEX = 64 
 MNEMO = 'LISPRD' 
@@ -4218,7 +4239,8 @@ DEFAUT1 = 0;0
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CONTROLE' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'CONTROL' 
 NIVEAU = 2 
-AIDE = 'Valeur en metres, utilise pour eviter les trops grands nombres, transmis 
+AIDE = 'Valeur en metres, utilise 
+pour eviter les trops grands nombres, transmis 
 dans le format Selafin mais pas d''autre traitement pour l''instant' 
 AIDE1 = 'Value in metres, used to avoid large real numbers,  
 added in Selafin format, but so far no other treatment' 
@@ -4244,7 +4266,7 @@ NOM1 = 'VOLUMES DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 64 
 MNEMO = 'T2D_FILES(T2DSOU)%NAME' 
-SUBMIT = 'T2DDL1-WRITE-36;T2DDL1;FACUL;BIN;ECR;DELWAQPTS' 
+SUBMIT = 'T2DDL1-WRITE-34;T2DDL1;FACUL;BIN;ECR;DELWAQPTS' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4259,7 +4281,7 @@ NOM1 = 'EXCHANGE AREAS DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 65 
 MNEMO = 'T2D_FILES(T2DDL2)%NAME' 
-SUBMIT = 'T2DDL2-WRITE-37;T2DDL2;FACUL;BIN;ECR;DELWAQSEG' 
+SUBMIT = 'T2DDL2-WRITE-35;T2DDL2;FACUL;BIN;ECR;DELWAQSEG' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4274,7 +4296,7 @@ NOM1 = 'VERTICAL FLUXES DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 66 
 MNEMO = 'T2D_FILES(T2DDL3)%NAME' 
-SUBMIT = 'T2DDL3-WRITE-38;T2DDL3;FACUL;BIN;ECR;DELWAQSEG' 
+SUBMIT = 'T2DDL3-WRITE-36;T2DDL3;FACUL;BIN;ECR;DELWAQSEG' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4289,7 +4311,7 @@ NOM1 = 'SALINITY DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 67 
 MNEMO = 'T2D_FILES(T2DDL4)%NAME' 
-SUBMIT = 'T2DDL4-WRITE-39;T2DDL4;FACUL;BIN;ECR;DELWAQPTS' 
+SUBMIT = 'T2DDL4-WRITE-37;T2DDL4;FACUL;BIN;ECR;DELWAQPTS' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4304,7 +4326,7 @@ NOM1 = 'BOTTOM SURFACES DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 68 
 MNEMO = 'T2D_FILES(T2DDL5)%NAME' 
-SUBMIT = 'T2DDL5-WRITE-40;T2DDL5;FACUL;BIN;ECR;DELWAQMET' 
+SUBMIT = 'T2DDL5-WRITE-38;T2DDL5;FACUL;BIN;ECR;DELWAQMET' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4319,7 +4341,7 @@ NOM1 = 'EXCHANGES BETWEEN NODES DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 69 
 MNEMO = 'T2D_FILES(T2DDL6)%NAME' 
-SUBMIT = 'T2DDL6-WRITE-41;T2DDL6;FACUL;BIN;ECR;DELWAQMET' 
+SUBMIT = 'T2DDL6-WRITE-39;T2DDL6;FACUL;BIN;ECR;DELWAQMET' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4334,7 +4356,7 @@ NOM1 = 'NODES DISTANCES DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 70 
 MNEMO = 'T2D_FILES(T2DDL7)%NAME' 
-SUBMIT = 'T2DDL7-WRITE-42;T2DDL7;FACUL;BIN;ECR;DELWAQMET' 
+SUBMIT = 'T2DDL7-WRITE-40;T2DDL7;FACUL;BIN;ECR;DELWAQMET' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4349,7 +4371,7 @@ NOM1 = 'TEMPERATURE DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 72 
 MNEMO = 'T2D_FILES(T2DDL8)%NAME' 
-SUBMIT = 'T2DDL8-WRITE-43;T2DDL8;FACUL;BIN;ECR;DELWAQPTS' 
+SUBMIT = 'T2DDL8-WRITE-41;T2DDL8;FACUL;BIN;ECR;DELWAQPTS' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4364,7 +4386,7 @@ NOM1 = 'VELOCITY DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 76 
 MNEMO = 'T2D_FILES(T2DDL9)%NAME' 
-SUBMIT = 'T2DDL9-WRITE-33;T2DDL9;FACUL;BIN;ECR;DELWAQPTS' 
+SUBMIT = 'T2DDL9-WRITE-31;T2DDL9;FACUL;BIN;ECR;DELWAQPTS' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4379,7 +4401,7 @@ NOM1 = 'DIFFUSIVITY DELWAQ FILE'
 TYPE = CARACTERE 
 INDEX = 77 
 MNEMO = 'T2D_FILES(T2DL10)%NAME' 
-SUBMIT = 'T2DL10-WRITE-34;T2DL10;FACUL;BIN;ECR;DELWAQPTS' 
+SUBMIT = 'T2DL10-WRITE-32;T2DL10;FACUL;BIN;ECR;DELWAQPTS' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4394,7 +4416,7 @@ NOM1 = 'DELWAQ STEERING FILE'
 TYPE = CARACTERE 
 INDEX = 71 
 MNEMO = 'T2D_FILES(T2DL11)%NAME' 
-SUBMIT = 'T2DL11-WRITE-44;T2DL11;FACUL;ASC;ECR;DELWAQHYD' 
+SUBMIT = 'T2DL11-WRITE-42;T2DL11;FACUL;ASC;ECR;DELWAQHYD' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 NIVEAU = 1 
@@ -4657,7 +4679,7 @@ NOM1 = 'SECTIONS INPUT FILE'
 TYPE = CARACTERE 
 INDEX = 79 
 MNEMO = 'T2D_FILES%ADR(T2DSEC)' 
-SUBMIT = 'NSCS-READ-45;T2DSEC;FACUL;ASC;LIT;SECTION' 
+SUBMIT = 'NSCS-READ-43;T2DSEC;FACUL;ASC;LIT;SECTION' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
@@ -4672,7 +4694,7 @@ NOM1 = 'SECTIONS OUTPUT FILE'
 TYPE = CARACTERE 
 INDEX = 80 
 MNEMO = 'T2D_FILES%ADR(T2DSEO)' 
-SUBMIT = 'NSEO-WRITE-46;T2DSEO;FACUL;ASC;ECR;SCAL' 
+SUBMIT = 'NSEO-WRITE-44;T2DSEO;FACUL;ASC;ECR;SCAL' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
@@ -4688,7 +4710,7 @@ NOM1 = 'OIL SPILL STEERING FILE'
 TYPE = CARACTERE 
 INDEX = 81 
 MNEMO = 'T2D_FILES(T2DMIG)' 
-SUBMIT = 'NMIG-READ-47;T2DMIG;FACUL;ASC;LIT;PARAL' 
+SUBMIT = 'NMIG-READ-45;T2DMIG;FACUL;ASC;LIT;PARAL' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 APPARENCE = 'LISTE IS FICHIER' 
@@ -4754,7 +4776,8 @@ Les lois possibles sont les suivantes (cf. Note de principe) :
 5 : formule de NIKURADSE  
 6 : loi en log 
 7 : Colebrook-White' 
-AIDE1 = 'Selects the type of formulation used for the friction on lateral boundaries. 
+AIDE1 = 'Selects the type of formulation used 
+for the friction on lateral boundaries. 
 The possible laws are as follows (refer to the Principle note): 
 0: no friction 
 1: linear  
@@ -4820,7 +4843,8 @@ CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1
-AIDE = 'Utilise pour les schemas SUPG, PSI et N, avec option 2, on ne retrouve
+AIDE = 'Utilise pour les schemas SUPG, PSI et N, 
+avec option 2, on ne retrouve
 pas exactement les valeurs imposees des traceurs,
 mais le flux est correct'
 AIDE1= 'Used so far only with the SUPG, PSI and N schemes.
@@ -5174,7 +5198,8 @@ TAILLE = 0
 DEFAUT = -1 
 DEFAUT1 = -1 
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LA BASE PARMI LES CHOIX POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT. 
+CHOISIR LA BASE PARMI LES CHOIX POSSIBLES"';
 '1="JMJ"';
 '2="TPXO"';
 '3="DIVERS (LEGOS-NEA, FES20XX, PREVIMER...)"'
@@ -5204,7 +5229,8 @@ TAILLE = 0
 DEFAUT = -1 
 DEFAUT1 = -1 
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE SYSTEME PARMI LES CHOIX POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT. 
+CHOISIR LE SYSTEME PARMI LES CHOIX POSSIBLES"';
 '0="DEFINI PAR L''UTILISATEUR"';
 '1="WGS84 LONGITUDE/LATITUDE EN DEGRES REELS"';
 '2="WGS84 NORD UTM"';
@@ -5225,7 +5251,8 @@ NIVEAU = 1
 AIDE = 'Systeme de coordonnees geographiques dans lequel est construit 
 le modele numerique. 
 Indiquer la zone correspondante avec le mot-cle '
-AIDE1 = 'Geographic coordinates system in which the numerical model is built.
+AIDE1 = 'Geographic coordinates system in which 
+the numerical model is built.
 Indicate the corresponding zone with the keyword '
 
 NOM = 'NUMERO DE FUSEAU OU PROJECTION DANS LE SYSTEME GEOGRAPHIQUE'
@@ -5237,7 +5264,8 @@ TAILLE = 0
 DEFAUT = -1 
 DEFAUT1 = -1 
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE NUMERO PARMI LES CHOIX POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT. 
+CHOISIR LE NUMERO PARMI LES CHOIX POSSIBLES"';
 '1="LAMBERT 1 NORD"';
 '2="LAMBERT 2 CENTRE"';
 '3="LAMBERT 3 SUD"';
@@ -5257,7 +5285,8 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Numero de zone (fuseau ou type de projection) 
 lors de l''utilisation d''une projection plane. 
-Indiquer le systeme geographique dans lequel est construit le modele numerique 
+Indiquer le systeme geographique dans lequel est 
+construit le modele numerique 
 avec le mot-cle SYSTEME GEOGRAPHIQUE'
 AIDE1 = 'Number of zone when using a plane projection. 
 Indicate the geographic system in which the numerical model is built 
@@ -5555,10 +5584,12 @@ TAILLE = 1
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX=
-'1="HORIZONTAL AVEC MEME NOMBRE DE NOEUDS AMONT/AVAL (Solution historique avec bord)"';
+'1="HORIZONTAL AVEC MEME NOMBRE DE NOEUDS 
+AMONT/AVAL (Solution historique avec bord)"';
 '2="GENERALE (Nouvelle solution avec pts sources)"'
 CHOIX1=
-'1="HORIZONTAL WITH SAME NUMBER OF NODES UPSTREAM/DOWNSTREAM (Historical solution with bord)"';
+'1="HORIZONTAL WITH SAME NUMBER OF NODES 
+UPSTREAM/DOWNSTREAM (Historical solution with bord)"';
 '2="GENERAL (New solution with sources points)"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
@@ -5585,29 +5616,11 @@ numero de point  numero de zone'
 AIDE1 = 'Zones file, with on every line:
 point number   zone number' 
 
-NOM = 'FICHIER DES PARAMETRES WAQ'
-NOM1 = 'WAQ STEERING FILE'
+NOM = 'FICHIER DES PARAMETRES DE WAQTEL'
+NOM1 = 'WAQTEL STEERING FILE'
 TYPE = CARACTERE 
 INDEX = 93
-MNEMO = 'T2D_FILES(T2DWAQ)%NAME' 
-SUBMIT = 'T2DWAQ-READ-31;T2DWAQ;FACUL;ASC;LIT;SCAL'
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-APPARENCE = 'LISTE IS FICHIER'
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'fichier des parametres physiques pour les 
-processus de qualite d eau (internes non ceux de DELWAQ)' 
-AIDE1 = 'file for physical parameters of waq processes
-(local ones of Telemac-tracer not those of DELWAQ)' 
-
-NOM = 'DICTIONNAIRE WAQ'
-NOM1 = 'WAQ DICTIONARY'
-TYPE = CARACTERE 
-INDEX = 94
-MNEMO = 'T2D_FILES(T2DWQD)%NAME' 
-SUBMIT = 'T2DWQD-READ-32;T2DWQD;FACUL;ASC;LIT;SCAL'
+MNEMO = '' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
@@ -6029,6 +6042,24 @@ to start the calculation with a high water
 (for schematic tides only).
 Only harmonic constants databases like TPXO are concerned.'
 
+NOM = 'PROCESSUS QUALITE D''EAU'
+NOM1 = 'WATER QUALITY PROCESS'
+TYPE = ENTIER
+INDEX = 100
+MNEMO = 'WAQPROCESS'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'EQUATIONS, SOURCE';'TRACEUR'
+RUBRIQUE1 = 'EQUATIONS, SOURCE';'TRACER'
+NIVEAU = 1
+AIDE = 'donne le numero du processus waq (1 ou 2 ou 3
+ou 4 ou 5)
+0- RIEN, 1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)'
+AIDE1 = 'gives the waq process number (from 1 to 5)
+0-NOTHING, 1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)'
+
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -6038,7 +6069,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 46
+TAILLE = 44
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -6082,9 +6113,7 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE DONNEES DES BUSES';
          'FICHIER DE DONNEES DES BRECHES';
          'FICHIER DES FLOTTEURS';
-         'FICHIER DES ZONES';
-         'FICHIER DES PARAMETRES WAQ';
-         'DICTIONNAIRE WAQ'
+         'FICHIER DES ZONES'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -6128,9 +6157,7 @@ DEFAUT1 ='STEERING FILE';
          'TUBES DATA FILE';
          'BREACHES DATA FILE';
          'DROGUES FILE';
-         'ZONES FILE';
-         'WAQ STEERING FILE';
-         'WAQ DICTIONARY'
+         'ZONES FILE'
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
@@ -6153,11 +6180,12 @@ NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE 
 INDEX = 54 
 MNEMO = 'LINKLIBS' 
-TAILLE = 9
+TAILLE = 10
 DEFAUT = 'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
+'builds|PPP|lib|waqtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
 'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 
@@ -6168,6 +6196,7 @@ DEFAUT1 = 'builds|PPP|lib|telemac2dMMMVVV.LLL';
 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
 'builds|PPP|lib|tomawacMMMVVV.LLL'; 
 'builds|PPP|lib|dredgesimMMMVVV.LLL';
+'builds|PPP|lib|waqtelMMMVVV.LLL'; 
 'builds|PPP|lib|biefMMMVVV.LLL'; 
 'builds|PPP|lib|hermesMMMVVV.LLL'; 
 'builds|PPP|lib|damoMMMVVV.LLL'; 

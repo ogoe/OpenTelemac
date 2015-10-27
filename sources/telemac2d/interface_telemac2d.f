@@ -259,37 +259,6 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE CALCS_O2
-     & (NPOIN,WATTEMP,O2SATU,DEMBEN,FORMK2,K1,K44,K22,
-     &  PHOTO,RESP,TN,TEXP,NTRAC)
-      USE BIEF_DEF
-      IMPLICIT NONE
-      INTEGER          , INTENT(IN   ) :: FORMK2,NPOIN,NTRAC
-      DOUBLE PRECISION , INTENT(IN   ) :: DEMBEN,WATTEMP
-      DOUBLE PRECISION , INTENT(IN   ) :: PHOTO,RESP,K1,K44
-      DOUBLE PRECISION , INTENT(INOUT) :: O2SATU,K22
-      TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN
-      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TEXP
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE CALCS_THERMIC
-     & (NPOIN,TN,TEXP)
-      USE BIEF_DEF
-      IMPLICIT NONE
-      INTEGER, INTENT(IN)             :: NPOIN
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TN
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-
         SUBROUTINE CALDT
      &(NS,G,H,U,V,DTHAUT,DT,AT,TMAX,
      & CFL,ICIN,DTVARI,LISTIN)
@@ -1379,20 +1348,6 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE INCREASE_NTRAC(ADDTR,WAQ,WAQPROCESS,SECCURRENT,
-     &   MOTCAR,NTRTOT,NTRAC)
-        USE DECLARATIONS_TELEMAC2D, ONLY: MAXKEY
-      IMPLICIT NONE
-      INTEGER, INTENT(INOUT)::  ADDTR
-      INTEGER, INTENT(IN)   ::  WAQPROCESS,NTRTOT,NTRAC
-      LOGICAL, INTENT(IN)   ::  WAQ, SECCURRENT
-      CHARACTER(LEN=144), INTENT(IN) :: MOTCAR(MAXKEY)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
         SUBROUTINE INITSTR(CHESTR,SETSTR,PZONE,NZONE,NPOIN,T1)
       USE BIEF_DEF
       IMPLICIT NONE
@@ -1568,7 +1523,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE LECDON_TELEMAC2D(MOTCAR,WMOTCAR,FILE_DESC,WFILE_DESC,
+        SUBROUTINE LECDON_TELEMAC2D(MOTCAR,FILE_DESC,
      &                              PATH,NCAR,CAS_FILE,DICO_FILE)
       USE DECLARATIONS_TELEMAC2D
       IMPLICIT NONE
@@ -1576,8 +1531,6 @@
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEY)
-      CHARACTER(LEN=144), INTENT(INOUT) :: WFILE_DESC(4,MAXKEY)
-      CHARACTER(LEN=144), INTENT(INOUT) :: WMOTCAR(MAXKEY)
       CHARACTER(LEN=144), INTENT(IN)    :: CAS_FILE
       CHARACTER(LEN=144), INTENT(IN)    :: DICO_FILE
         END SUBROUTINE
@@ -1835,19 +1788,6 @@
       TYPE(BIEF_OBJ) , INTENT(IN)      :: GRADJ,GRADJN
       TYPE(BIEF_OBJ) , INTENT(INOUT)   :: DESC
       DOUBLE PRECISION , INTENT(INOUT) :: R02,R03,RO
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE NAMETRAC_WAQ
-     &  (NAMETRAC,WAQ,SECCURRENT,WAQPROCESS,NTRAC,IND_SEC)
-      IMPLICIT NONE
-      CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*)
-      INTEGER, INTENT(IN)             ::  WAQPROCESS,NTRAC,IND_SEC
-      LOGICAL, INTENT(IN)             ::  WAQ,SECCURRENT
-!
         END SUBROUTINE
       END INTERFACE
 !
@@ -2514,23 +2454,6 @@
       CHARACTER(LEN=72), INTENT(IN)   :: TITCAS,NOMRBI
       CHARACTER(LEN=3), INTENT(IN)    :: BINRES
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE SOURCE_WAQ
-     & (NPOIN,TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,
-     & AT,DT,NTRAC,WAQPROCESS)
-      USE BIEF
-      IMPLICIT NONE
-      INTEGER          , INTENT(IN)    :: NPOIN,WAQPROCESS
-      INTEGER          , INTENT(IN)    :: NTRAC
-      LOGICAL          , INTENT(INOUT) :: YASMI(*)
-      DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP
-      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
         END SUBROUTINE
       END INTERFACE
 !

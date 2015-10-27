@@ -11,7 +11,8 @@ WAQ CASE TITLE                = 'WAQ THERMIC: VALIDATION CASE'
 /VARIABLES FOR WAQ PRINTOUTS  =
 /WAQ VARIABLES TO BE PRINTED  =
 /WAQ RESULTS FILE             = 
-/GEOMETRY FILE                =
+GEOMETRY FILE                = 'geo_thermic.slf'
+BOUNDARY CONDITIONS FILE      = 'geo_waq_thermic.cli'
 /HYDRODYNAMIC FILE            =
 /REFERENCE FILE               =
 /MASS-BALANCE                 =   
@@ -20,7 +21,7 @@ WATER DENSITY                 = 1000.
 KINEMATIC WATER VISCOSITY     = 1.E-6    
 DISPERSION ALONG THE FLOW     = 1.E-2             
 DISPERSION ACROSS THE FLOW    = 1.E-2 
-WATER QUALITY PROCESS         = 5
+/WATER QUALITY PROCESS         = 5
 /   OPRIONS ARE 
 /       1- O2 PROCESS
 /       2- BIOMASS PROCESS 

@@ -575,7 +575,10 @@ if __name__ == "__main__":
       #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
       #TODO: Tested still not working even if we rename all the duplicated variable/functions names
-      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'hermes', 'bief', 'gretel', 'partel', 'diffsel', 'postel3d', 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
+      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles','hermes', 'bief', \
+                 'gretel', 'partel', 'diffsel', 'postel3d', 'waqtel',\
+                 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', \
+                 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
       # Only if we ask for a scan
       if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~

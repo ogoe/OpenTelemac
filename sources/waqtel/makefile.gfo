@@ -1,13 +1,13 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     CCT - MHL
+#     Système TELEMAC Version 6.0    PLG / INGEROP
 #
-# Makefile de TELEMAC2D pour WindowsNT (avec DVF).
+# Makefile de TOMAWAC pour WindowsNT (GFORTRAN/G95).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
-#                   TELEMAC2D*/.../sources.
+#                   TOMAWAC/.../sources.
 #
 # Modes supportes :
-#        % maktel 
+#        % maktel
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -16,6 +16,9 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V7P0
+
+
 
 DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
 
@@ -29,32 +32,26 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:                                                                                                  
+.f.o:
         @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
         $(F90) $(F90_PROJ) $<
-        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
-        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
-.F.obj:                                                                                                  
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+.F.o:
         @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
         $(F90) $(F90_PROJ) $<
-        @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
-        @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib 
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
 #
 #----- Paramétrage Telemac
 #
-NOM_GENERIQUE = telemac2d
+NOM_GENERIQUE = waqtel
 MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\builds\$(DIRLIB)
 
-EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\dredgesim$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\tomawac$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\waqtel$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
-                $(PROJECT)\builds\$(DIRLIB)\lib\hermes$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
                 $(LK_LIB_SPECIAL) $(LIBS_MPI)
@@ -63,57 +60,45 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\sisyphe$(MODE)$(VERSION).lib \
 #
 #------- Objets
 #
-TEMP = $(SRCS:.f=.obj)
-OBJS = $(TEMP:.F=.obj)
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
 #
 #--- La librairie (non installée)
-ALL: $(MODS) $(LIBRARY) $(EXEDEF)
-
-exedef:         $(EXEDEF)
+ALL: $(LIBRARY)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
-
-"$(EXEDEF)":	$(OBJS)
-	@echo  -
-	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
-	echo "Termine."
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS) 
+menage:  $(SRCS)
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).obj del /q  $(**B).obj
+	!@if EXIST $(**B).o del /q  $(**B).o
 	@echo ---------------------Destruction des librairies
 	!@if EXIST *.lib del /q  *.lib
-	@echo ---------------------Destruction des executables
-	!@if EXIST *.exe del /q  *.exe
 
-#--- Installation de la librairie
-install: $(LIBRARY) $(EXEDEF)
+#--- Scalar version
+install: $(LIBRARY)
 	@echo  -
 	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
 	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
 	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
-	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
-	copy $(EXEDEF)  $(DEST)\bin\$(EXEDEF)
 
 #--- Librairie en DEBUG
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
-	nmake /f makefile.wnt install  "MODE=d" 
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.gfo install  "MODE=d"
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
-	nmake /f makefile.wnt install  "MODE=p" 
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.gfo install  "MODE=p"

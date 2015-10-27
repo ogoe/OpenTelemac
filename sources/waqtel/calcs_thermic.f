@@ -1,10 +1,11 @@
-!                     ************************
+!                    *************************
                       SUBROUTINE CALCS_THERMIC
-!                     ************************
-     &(NPOIN,TN,TEXP)
+!                    *************************
+     & (NPOIN,TN,TEXP,HPROP,PATMOS,IND_T,LISTIN)
+!
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P0                                        21/09/2014
 !***********************************************************************
 !
 !brief    COMPUTES SOURCE TERMS FOR  WAQ THERMIC PROCESS
@@ -12,12 +13,7 @@
 !history  R. ATA
 !+        21/09/2014
 !+        V7P0
-!+      CREATION
-!
-!history  J-M HERVOUET
-!+        07/09/2015
-!+        V7P1
-!+      Checking that the air pressure has been given
+!+       CREATION
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -67,15 +63,14 @@
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
+!***********************************************************************
 !
       USE BIEF_DEF
       USE DECLARATIONS_WAQTEL,ONLY:COEF_K,EMA,CFAER,PVAP,RAY3,
      &                             TAIR,NEBU,NWIND,BOLTZ,CP_EAU,CP_AIR,
      &                             EMI_EAU,EMA,ROO
-!     USE EXCHANGE_WITH_ATMOSPHERE
-      USE DECLARATIONS_TELEMAC2D,ONLY: HPROP,PATMOS,IND_T,LISTIN,ATMOS
-      USE INTERFACE_TELEMAC2D, EX_CALCS_THERMIC => CALCS_THERMIC
-!
+!      USE EXCHANGE_WITH_ATMOSPHERE
+
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -84,22 +79,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TN
+      TYPE(BIEF_OBJ), INTENT(IN)   :: TN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP
+      TYPE(BIEF_OBJ), INTENT(IN)      :: HPROP
+      TYPE(BIEF_OBJ), INTENT(IN)      :: PATMOS
+      INTEGER,        INTENT(IN)      :: IND_T
+      LOGICAL,        INTENT(IN)      :: LISTIN
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !
 !  LOCAL VARIABLES
 !
-      INTEGER                     :: I
+      INTEGER                     :: I 
       DOUBLE PRECISION, PARAMETER :: EPS=1.D-3
       DOUBLE PRECISION            :: CE,CV,RE,L_VAP
       DOUBLE PRECISION            :: PATM,RAJ,RA
       DOUBLE PRECISION            :: TEMPER,HA_SAT
       DOUBLE PRECISION            :: ROA,HA,P_VAP_SAT
-      DOUBLE PRECISION   :: CONSTCE,CONSTCV,CONSTRA,CONSTSS,CONSTRE
-!
-!     THE FOLLOWING CONSTANTS ARE THOSE OF EXCHANGE_WITH_ATM MODULE
+      DOUBLE PRECISION   :: CONSTCE,CONSTCV,CONSTRA,CONSTSS,CONSTRE   
+!     THE FOLLOWING CONSTANTS ARE THOSE OF EXXHANGE_WITH_ATM MODULE
 !     TO REMOVE LATER CP_EAU,CP_AIR,BOLTZ,ROO,EMI_EAU
 !
       INTRINSIC MAX
@@ -107,47 +105,29 @@
 ! ----------------------------------------------------------------
 !
 !     HERE WE NEED ONLY TAIR, PVAP, NWIND, NEBU, RAY3, PATM
-!     HERE PATM IS CONSTANT, WHILE FOR TELEMAC PATMOS VARIES IN SPACE
-!
-      IF(ATMOS) THEN
-!       Note JMH: this will not work in parallel if the pressure is
-!                 variable in space...
-        PATM=PATMOS%R(1)
-      ELSE
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'CALCS_THERMIC : LE MOT-CLE'
-          WRITE(LU,*) '                PRESSION ATMOSPHERIQUE'
-          WRITE(LU,*) '                DOIT ETRE A OUI'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CALCS_THERMIC : KEYWORD'
-          WRITE(LU,*) '                AIR PRESSURE'
-          WRITE(LU,*) '                MUST BE YES'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF
+!     HERE PATM IS CONSTANT, WHILE FOR TELEMAC PATMOS VARIES IN SPACE !
+      PATM =PATMOS%R(1) 
 !
 !     AIR DENSITY
-      ROA = 100.D0*PATM/((TAIR+273.15D0)*287.D0)
+      ROA = 100.D0*PATM/((TAIR+273.15D0)*287.D0) 
 !     AIR SPECIFIC MOISTURE ? CAN BE READ DIRECTLY FROM METEO FILE ?
       HA  = 0.622D0*PVAP/(MAX(PATM-0.378D0*PVAP,EPS))
 !
-!     SOME OPTIMIZATION
+!     SOME OPTIMIZATION 
       CONSTRE = EMI_EAU*BOLTZ
       CONSTCV = ROA*CP_AIR*(CFAER(1)+CFAER(2)*NWIND)
       CONSTCE = ROA*(CFAER(1)+CFAER(2)*NWIND)
-      CONSTRA = EMA*BOLTZ *(TAIR+273.15D0)**4 *
+      CONSTRA = EMA*BOLTZ *(TAIR+273.15D0)**4 * 
      &          (1.D0+COEF_K*(NEBU/8.D0)**2)
 !     MAJORATED RADIATION
-      RAJ     = 1.8D0*CONSTRA
+      RAJ      = 1.8D0*CONSTRA
       CONSTSS = 1.D0/(ROO*CP_EAU)
 !     LOOP OVER ALL MESH POINTS
       DO I=1,NPOIN
         TEMPER = TN%ADR(IND_T)%P%R(I)
-!       RADIATION ON WATER SURFACE
+!       RADIATION ON WATER SURFACE     
         RE = CONSTRE*(TEMPER+273.15D0)**4
-!       ADVECTIVE HEAT FLUX
+!       ADVECTIVE HEAT FLUX 
         CV = CONSTCV*(TEMPER-TAIR)    ! WIND IS CONSIDERED CONST IN SPACE !
 !       VAPOR LATENT HEAT
         L_VAP = 2500900.D0 - 2365.D0*TEMPER
@@ -163,7 +143,7 @@
         CE = L_VAP*CONSTCE*(HA_SAT-HA)
 !       ATMOSPHERIC RADIATION
         IF(HA_SAT.LT.HA)THEN
-          RA = RAJ
+          RA = RAJ 
         ELSE
           RA = CONSTRA
         ENDIF

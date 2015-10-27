@@ -50,6 +50,7 @@ LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/sisyphe$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/tomawac$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/telemac2d$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/waqtel$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/hermes$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \

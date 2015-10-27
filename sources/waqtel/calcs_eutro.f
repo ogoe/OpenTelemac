@@ -1,5 +1,5 @@
 !                    **********************
-                      SUBROUTINE CALCS_BIOMASS
+                      SUBROUTINE CALCS_EUTRO
 !                    **********************
 !
 !
@@ -23,17 +23,17 @@
 !
 !
       IF(LNG.EQ.1)THEN
-        WRITE(LU,*) 'BIOMASS: NOT IMPLEMENTED YET'
+        WRITE(LU,*) 'EUTRO: NOT IMPLEMENTED YET'
       ELSE
-        WRITE(LU,*) 'BIOMASS: NOT IMPLEMENTED YET'
+        WRITE(LU,*) 'EUTRO: NOT IMPLEMENTED YET'
       ENDIF
       CALL PLANTE(1)
       STOP
-
+      
 
 !
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END 

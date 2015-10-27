@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special parallel damocles hermes bief sisyphe tomawac telemac2d telemac3d
+liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d telemac3d
 name: HOMERE_TELEMAC3D
 
 [bief]
@@ -682,7 +682,6 @@ files: friction_def.f
   oil_flot.f
   oilspill.f
   grad_zconv.f
-  declarations_waqtel.f
   interpmeteo.f
   interpmeteo2.f
   meteo.f
@@ -947,3 +946,7 @@ files: declarations_tomawac.f
   anacos.f
   condiw.f
   wac.f
+
+[waqtel]
+path: <root>|sources|waqtel
+files: declarations_waqtel.f

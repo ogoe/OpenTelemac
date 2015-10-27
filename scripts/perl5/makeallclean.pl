@@ -25,6 +25,8 @@
         "sources|utils|diffsel",
 #dredgesim
         "sources|dredgesim",
+#waqtel
+        "sources|waqtel",
 #Sisyphe
 	"sources|sisyphe",
 #Tomawac

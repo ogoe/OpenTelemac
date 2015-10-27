@@ -1,8 +1,9 @@
+#------------------------------makefile------------------------DeltaCAD
 #
-# Makefile de TELEMAC2D pour Unix.
+# Makefile de TOMAWAC pour Unix.
 #
-# ATTENTION : doit être lancé dans le répertoire adéquat :
-#                   sources/telemac2d.
+# ATTENTION : doit Ãªtre lancÃ© dans le rÃ©pertoire adÃ©quat :
+#                   sources/tomawac.
 #
 # Modes supportes :
 #        % maktel 
@@ -13,7 +14,9 @@
 #
 # definition des noms de fichiers
 #
-NOM_GENERIQUE = telemac2d
+NOM_GENERIQUE = waqtel
+
+VERSION	      = v7p0
 
 ###########################
 # Definition des macros
@@ -43,12 +46,7 @@ MODE          =
 
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
 
-EXEDEF        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/sisyphe$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/dredgesim$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/tomawac$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/waqtel$(MODE)$(VERSION).a \
-                $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/hermes$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
@@ -69,8 +67,8 @@ MAKEFILE      = makefile
 #------------------------ Liste des fichiers
 #------- Objets
 #
-TMP = $(SRCS:.f=.o)
-OBJS = $(TMP:.F=.o)
+OBJS = $(SRCS:.f=.o)
+
 
 PRINT	      = pr
 
@@ -81,9 +79,7 @@ SHELL	      = /bin/sh
 # Definition des cibles
 #
 
-all:		$(LIBRARY) $(EXEDEF) 
-
-exedef:         $(EXEDEF)
+all:		$(LIBRARY)
 
 $(LIBRARY):	$(OBJS)
 		$(MESSAGE) "Archive $(LIBRARY) ..."
@@ -91,30 +87,22 @@ $(LIBRARY):	$(OBJS)
 		@if [ $(LIB_RANLIB) ]; then $(LIB_RANLIB) $(LIBRARY) > /dev/null ; fi
 		@echo "Termine."
 
-$(EXEDEF):	$(OBJS)
-		$(MESSAGE) "Link executable par defaut ..." ; \
-		$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB);
-		@echo "Termine."
-
 menage:;	$(MESSAGE) "Efface les objets, librairies, executables et core-file."
-		@rm -f $(OBJS) *.a *.exe *.mod *.MOD *.g90 core
+		@rm -f $(OBJS) *.a *.mod *.MOD *.g90 core
 
 Menage:;	$(MESSAGE) "Efface les objets, bibliotheques et core-file."
-		@rm -f $(OBJS) *$(VERSION).a core tags *.exe
+		@rm -f $(OBJS) *$(VERSION).a core tags
 
 depend:;	$(MESSAGE) "Met a jour le Makefile."
 		@mkmf -f $(MAKEFILE) ROOT=$(ROOT)
 
-install:	$(LIBRARY) $(EXEDEF)
+install:	$(LIBRARY)
 		@if [ ! -d $(DEST) ]; then \
 		echo "creation du repertoire $(DEST)";mkdir $(DEST) $(DEST)/lib  $(DEST)/bin; fi
 		@rm  -f $(DEST)/lib/$(NOM_GENERIQUE)$(MODE)$(VERSION).a
-		@$(MESSAGE) "Installe $(LIBRARY) dans $(DEST)/lib."
+		$(MESSAGE) "Installe $(LIBRARY) dans $(DEST)/lib."
 		@if [ $(DEST) != . ]; then \
 		(rm -f $(DEST)/lib/$(LIBRARY); $(INSTALL) $(LIBRARY) $(DEST)/lib); fi
-		@$(MESSAGE) "Installe $(EXEDEF) dans $(DEST)/bin."
-		@if [ $(DEST)/bin != . ]; then \
-		(rm -f $(DEST)/bin/$(EXEDEF); $(INSTALL) $(EXEDEF) $(DEST)/bin); fi
 
 #--- Librairie en DEBUG
 libdebug:

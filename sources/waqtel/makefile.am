@@ -1,0 +1,8 @@
+#
+#------- Sources Fortran
+
+SRCS= \
+declarations_waqtel.f  interface_waqtel.f \
+calcs_biomass.f  calcs_eutro.f  calcs_micropol.f  calcs_o2.f  calcs_thermic.f \
+increase_ntrac.f  init_watqua.f  \
+lecdon_waqtel.f  lecwaqpar.f  nametrac_waq.f  point_waqtel.f  source_waq.f

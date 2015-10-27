@@ -81,6 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      use declarations_telemac2d,only:mesh,ielm1
       USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
 !
       IMPLICIT NONE
@@ -109,7 +110,7 @@
 !
       LOGICAL WATER_QUALITY
       INTEGER UL,OPTWIND,ATMOSEXCH
-      DOUBLE PRECISION Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
       DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
@@ -146,7 +147,6 @@
 !
 !-----------------------------------------------------------------------
 !
-
 !
 !-----------------------------------------------------------------------
 !
@@ -160,7 +160,7 @@
 !       ATMOSPHERIC PRESSURE
 !
         IF(ATMOS.OR.WATER_QUALITY) THEN
-          CALL OV( 'X=C     ' , PATMOS,Y,Z,PATMOS_VALUE,NPOIN )
+          CALL OV( 'X=C     ' , PATMOS,Y,Y,PATMOS_VALUE,NPOIN )
         ENDIF
 !
 !       WIND :
@@ -168,8 +168,8 @@
         IF(VENT.OR.WATER_QUALITY) THEN
           IF(OPTWIND.EQ.1)THEN
 !           IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
-            CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
-            CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+            CALL OV( 'X=C     ' ,WINDX,WINDX,WINDX, FUAIR , NPOIN )
+            CALL OV( 'X=C     ' ,WINDY,WINDY,WINDY, FVAIR , NPOIN )
           ELSEIF(OPTWIND.EQ.2) THEN
 !           JUMPING TWO LINES OF COMMENTS
             READ(UL,*)
@@ -215,12 +215,12 @@
           ENDIF
 !
           IF(VENT) THEN
-            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
+            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
           ENDIF
 !
           IF(ATMOS) THEN
-            CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
+            CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
           ENDIF
 !
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
@@ -273,8 +273,8 @@
 !
             ENDIF
 !
-            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
+            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !
             FUAIR = UAIR
             FVAIR = VAIR
