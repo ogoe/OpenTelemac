@@ -39,7 +39,7 @@
       DOUBLE PRECISION, POINTER :: X(:),Y(:)
       DOUBLE PRECISION DIST2,DIST2MIN
       INTRINSIC SQRT,NINT
-      LOGICAl STOP_ERROR
+      LOGICAL STOP_ERROR
 !
 !-----------------------------------------------------------------------
 !

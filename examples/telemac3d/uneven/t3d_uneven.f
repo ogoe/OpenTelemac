@@ -179,9 +179,9 @@
 !
 !     CLIPS H
 !
-c$$$      DO I=1,NPOIN2
-c$$$        H%R(I)=MAX(H%R(I),0.D0)
-c$$$      ENDDO
+!         DO I=1,NPOIN2
+!           H%R(I)=MAX(H%R(I),0.D0)
+!         ENDDO
 !
 ! INITIALISATION DE H , LA HAUTEUR D'EAU, POUR UNE COTE NULLE.
 !
@@ -288,7 +288,7 @@ c$$$      ENDDO
 !     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
 !
       IF(DEBU) CALL CALCOT(Z,H%R)
-c$$$      CALL CALCOT(Z,H%R)
+!         CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !

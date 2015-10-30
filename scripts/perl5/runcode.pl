@@ -1102,8 +1102,8 @@ while ($LIGNE=<F>)
     if ($ideb == 0)
       { $MPI_NPROC=$LIGNE; $ideb++;}
     else
-#----- Traitement de l'info (Host, NbProc)   
       {
+#----- Traitement de l'info (Host, NbProc)   
         my ($hostmpi, $nbprochost)=($LIGNE=~/^\s*(\S*)\s*(\S*)\s*$/);
         if($ENV{"OS"} eq "Windows_NT")                
                 { print F2 "$hostmpi $nbprochost\n";} #MPICH.NT specific
@@ -1235,9 +1235,9 @@ if ($FORTRAN ne "DEFAUT")                        # Executable par defaut ?
 
 #---------- Executable a construire : compilation + link
 
-  else   # Pas d'executable utilisable -> Compilation+Link
+  else   
   {
-
+# Pas d'executable utilisable -> Compilation+Link
 #---- Compilation
   ecrire("*** COMPILATION ***", "*** COMPILATION ***");
   printf "\n";

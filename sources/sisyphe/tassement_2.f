@@ -97,7 +97,7 @@
 !        EFFECTIVE STRESS: DIFFUSION TERM
 !       ----------------------------------
         DO J = 1,NOMBLAY
-       DIFFU(J)=11.55D0*(CONC_VASE(J)/(XMVS*0.0296D0))**12.D0*
+          DIFFU(J)=11.55D0*(CONC_VASE(J)/(XMVS*0.0296D0))**12.D0*
      & (LT*DTS)**(-3.4D0)
         ENDDO
 
@@ -119,7 +119,7 @@
      &            (1.D0-(CONC_VASE(J)/CONC_MAX))**COEF_N/
      &            ((XMVS-XMVE)*(CONC_VASE(J)/XMVS)/XMVE)
 !
-       IF (CONC_VASE(J).GT.CONC_GEL) THEN
+        IF (CONC_VASE(J).GT.CONC_GEL) THEN
 !
 !     SEDIMENTATION AND CONSOLIDATION :
 !     --------------------------------

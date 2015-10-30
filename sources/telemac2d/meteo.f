@@ -81,7 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      use declarations_telemac2d,only:mesh,ielm1
+      USE DECLARATIONS_TELEMAC2D,ONLY:MESH,IELM1
       USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
 !
       IMPLICIT NONE
