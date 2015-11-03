@@ -48,6 +48,12 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history T FOUQUET (LNHE)
+!+       28/10/2015
+!+       V7P0
+!+       Modification to initialise spectrum wind is small or null 
+!+       and speini =1,3,5
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHIL         |-->| INITIAL PHILLIPS CONSTANT (ALPHA)
 !| DEPTH          |-->| WATER DEPTH
@@ -176,6 +182,12 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
+          ELSE 
+             DO JF=1,NF
+                DO JP=1,NPLAN
+                   F(IP,JP,JF)=0.D0
+                ENDDO
+             ENDDO
           ENDIF
 !
         ENDDO ! IP
@@ -281,6 +293,12 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
+          ELSE 
+             DO JF=1,NF
+                DO JP=1,NPLAN
+                   F(IP,JP,JF)=0.D0
+                ENDDO
+             ENDDO
           ENDIF
 !
         ENDDO ! IP
@@ -375,6 +393,12 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
+          ELSE 
+             DO JF=1,NF
+                DO JP=1,NPLAN
+                   F(IP,JP,JF)=0.D0
+                ENDDO
+             ENDDO
           ENDIF
 !
         ENDDO ! IP
