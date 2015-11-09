@@ -121,6 +121,7 @@ VELOCITY PROFILES                = 1;1
 /----------------------------------------------------------------
 NUMBER OF TRACERS                               = 2
 NAMES OF TRACERS                                =  'sand g/l'; 'mud g/l'
+MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF SEDIMENT = 200
 /
 SCHEME FOR ADVECTION OF TRACERS                 = 14
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS = 1.E-6
