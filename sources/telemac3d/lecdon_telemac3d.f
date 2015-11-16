@@ -64,6 +64,12 @@
 !+        V7P1
 !+  Allocating arrays with new keywords.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/11/2015
+!+        V7P1
+!+  Checking that wave driven currents will be given if they have to be
+!+  taken into account.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -2589,6 +2595,23 @@
      &                  'MODEL ACTIVATED, BUT NOT THE PRESSURE,',/,1X,
      &                  'WHICH IS NOT TAKEN INTO ACCOUNT',/,1X,
      &                  'OUTSIDE THIS MODULE',///)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     CONSISTENCY OF KEYWORDS ON WAVE DRIVEN CURRENTS
+!
+      IF(COUROU.AND..NOT.INCLUS(COUPLING,'TOMAWAC').AND.
+     &   T3D_FILES(T3DBI1)%NAME.EQ.' ') THEN
+        IF(LNG.EQ.1) WRITE(LU,185)
+        IF(LNG.EQ.2) WRITE(LU,186)
+185     FORMAT(1X,'LECDON : LES COURANTS DE HOULE SONT DEMANDES',/,10X,
+     &  'IL FAUT LES DONNER DANS UN FICHIER',/,10X,
+     &  'OU FAIRE DU COUPLAGE AVEC TOMAWAC' )
+186     FORMAT(1X,'LECDON: WAVE DRIVEN CURRENTS ARE REQUESTED, ',/,8X,
+     &  ' EITHER IN A FILE OR BY COUPLING WITH TOMAWAC',/)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -181,6 +181,7 @@
               IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
               IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
               CALL PLANTE(1)
+              STOP
             ENDIF
           ENDIF
         ENDIF
