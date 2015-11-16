@@ -1,7 +1,7 @@
 !                       *************************
                         SUBROUTINE INCREASE_NTRAC 
 !                       *************************
-     &  (NTRAC,IND_T,WAQPROCESS)
+     &  (NTRAC,IND_T,WAQPROCESS,ADDTR)
 ! 
 ! 
 !*********************************************************************** 
@@ -19,10 +19,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ADDTR          |<--| NUMBER OF TRACERS TO BE INCREASED
 !| NTRAC          |<--| TOTAL NUMBER OF TRACERS
-!| WAQPROCESS     |-->| WAQ PROCESS ()
+!| IND_T          |<--| INDEX OF TEMPERATURE 
+!| WAQPROCESS     |-->| WAQ PROCESS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! 
-      USE DECLARATIONS_WAQTEL, ONLY: ADDTR
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
@@ -30,7 +30,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
 ! 
-      INTEGER, INTENT(INOUT)::  IND_T,NTRAC
+      INTEGER, INTENT(INOUT)::  IND_T,NTRAC,ADDTR
       INTEGER, INTENT(IN)   ::  WAQPROCESS
 !
       INTEGER I      

@@ -70,7 +70,7 @@
      &                             TAIR,NEBU,NWIND,BOLTZ,CP_EAU,CP_AIR,
      &                             EMI_EAU,EMA,ROO
 !      USE EXCHANGE_WITH_ATMOSPHERE
-
+      USE INTERFACE_WAQTEL, EX_CALCS_THERMIC => CALCS_THERMIC
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -79,7 +79,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN
-      TYPE(BIEF_OBJ), INTENT(IN)   :: TN
+      TYPE(BIEF_OBJ), INTENT(IN)      :: TN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP
       TYPE(BIEF_OBJ), INTENT(IN)      :: HPROP
       TYPE(BIEF_OBJ), INTENT(IN)      :: PATMOS

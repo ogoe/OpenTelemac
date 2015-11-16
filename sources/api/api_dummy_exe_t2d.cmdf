@@ -477,6 +477,7 @@ files: bief_def.f
   mxptel31.f
   mxptel.f
   almesh.f
+  anti_dirac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -978,3 +979,12 @@ files: declarations_waqtel.f
   lecdon_waqtel.f
   source_waq.f
   increase_ntrac.f
+  reaer.f
+  satur_o2.f
+  erosion_fx.f
+  taub_waqtel.f
+  depos_fx.f
+  algae_death.f
+  ray_effect.f
+  nuteff.f
+  algae_growth.f

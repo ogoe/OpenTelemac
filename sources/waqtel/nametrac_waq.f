@@ -1,7 +1,8 @@
 !                       ***********************
                         SUBROUTINE NAMETRAC_WAQ 
 !                       ***********************
-     &  (TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS)
+     &  (TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS,
+     &   MAXTRA,ICONVFT,VISCT)
 ! 
 ! 
 !*********************************************************************** 
@@ -17,14 +18,19 @@
 !+        CREATION 
 ! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ICONVFT        |<--| ARRAY OF ADVECTION OPTIONS
+!| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| TEXTE          |-->| NAME OF THE FRENCH OUTPUT VARIABLES
 !| WAQPROCESS     |-->| NAME OF THE ENGLISH OUTPUT VARIABLE
 !| NAMETRAC       |<--| ARRAY OF NAMES OF TRACERS
-!| NTRAC          |-->| ACTUAL NUMBER OF TRACER (OLD TRACER + MAXWAQTRAC)
+!| NTRAC          |-->| ACTUAL NUMBER OF TRACER (OLD TRACER + ADDTR)
 !| IND_T          |-->| INDEX OF THE TEMPERATURE
+!| VISCT          |<--| VISCOSITY OF TRACERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! 
+      USE BIEF
       USE DECLARATIONS_WAQTEL
+      USE INTERFACE_WAQTEL, EX_NAMETRAC_WAQ => NAMETRAC_WAQ
 ! 
       IMPLICIT NONE 
       INTEGER LNG,LU 
@@ -33,10 +39,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
 ! 
+      INTEGER          , INTENT(IN   )::  WAQPROCESS,NTRAC,MAXTRA
       CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*) 
-      INTEGER, INTENT(IN)             ::  WAQPROCESS,NTRAC
-      INTEGER, INTENT(INOUT)          ::  IND_T
       CHARACTER(LEN=32), INTENT(INOUT)::  TEXTE(*),TEXTPR(*)
+      INTEGER          , INTENT(INOUT)::  ICONVFT(MAXTRA),IND_T
+      TYPE(BIEF_OBJ)   , INTENT(INOUT)::  VISCT
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
@@ -64,7 +71,6 @@
             NAMETRAC(NTRAC1+3) = 'NH4 LOAD        '
      &                       // '   mgNH4/l      '
           ENDIF 
-          ADDTR = 3
 !       BIOMASS MODULE
         CASE(2)
           IF(LNG.EQ.1)THEN
@@ -90,45 +96,43 @@
             NAMETRAC(NTRAC1+5) = 'NO3 NON ASSIM   '
      &                      //  '   mg/l         '
           ENDIF 
-          ADDTR = 5
 !       EUTRO MODULE
         CASE(3)
           IF(LNG.EQ.1)THEN
-            NAMETRAC(NTRAC1+1) = 'O2 DISSOUS      '
-     &                      //  '   mgO2/l       '
-            NAMETRAC(NTRAC1+2) = 'BIOMASSE PHYTO  '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+3) = 'PO4 DISSOUS     '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+4) = 'POR NON ASSIMILE'
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+5) = 'NO3 DISSOUS     '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
-     &                       // '   mgNH4/l      '
-            NAMETRAC(NTRAC1+7) = 'NOR NON ASSIMILE'
-     &                       // '   mg/l         '
-            NAMETRAC(NTRAC1+8) = 'CHARGE ORGANIQUE'
-     &                       // '   mgO2/l       '
-          ELSE
-            NAMETRAC(NTRAC1+1) = 'DISSOLVED O2    '
-     &                      //  '   mgO2/l       '
-            NAMETRAC(NTRAC1+2) = 'PHYTO BIOMASS   '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+3) = 'DISSOLVED PO4   '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+4) = 'POR NON ASSIMIL '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+5) = 'DISSOLVED NO3   '
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
-     &                      //  '   mgNH4/l      '
-            NAMETRAC(NTRAC1+7) = 'NOR NON ASSIM   '
-     &                      //    '   mg/l         '
-            NAMETRAC(NTRAC1+8) = 'ORGANIC CHARGE  '
-     &                      //  '   mgO2/l       '
+              NAMETRAC(NTRAC1+1) = 'BIOMASSE PHYTO  '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+2) = 'PO4 DISSOUS     '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+3) = 'POR NON ASSIMILE'
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+4) = 'NO3 DISSOUS     '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+5) = 'NOR NON ASSIMILE'
+     &                         // '   mg/l         '
+              NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
+     &                         // '   mgNH4/l      '
+              NAMETRAC(NTRAC1+7) = 'CHARGE ORGANIQUE'
+     &                         // '   mgO2/l       '
+              NAMETRAC(NTRAC1+8) = 'O2 DISSOUS      '
+     &                        //  '   mgO2/l       '
+            ELSE
+              NAMETRAC(NTRAC1+1) = 'PHYTO BIOMASS   '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+2) = 'DISSOLVED PO4   '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+3) = 'POR NON ASSIMIL '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+4) = 'DISSOLVED NO3   '
+     &                        //  '   mg/l         '
+              NAMETRAC(NTRAC1+5) = 'NOR NON ASSIM   '
+     &                        //    '   mg/l         '
+              NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
+     &                        //  '   mgNH4/l      '
+              NAMETRAC(NTRAC1+7) = 'ORGANIC CHARGE  '
+     &                        //  '   mgO2/l       '
+              NAMETRAC(NTRAC1+8) = 'DISSOLVED O2    '
+     &                        //  '   mgO2/l       '
           ENDIF 
-          ADDTR = 8
 !       MICROPOL MODULE
         CASE(4)
           IF(LNG.EQ.1)THEN
@@ -154,14 +158,18 @@
             NAMETRAC(NTRAC1+5) = 'ABSORB. BED SED.'
      &                      //  '   mg/l         '
           ENDIF 
-          ADDTR = 5
-!       THERMIC MODULE
+!         TRACER 2 IS NOT ADVECTED NEIHTER DIFFUSED
+          ICONVFT(NTRAC1+5)=0
+          CALL OS( 'X=0     ' , X=VISCT%ADR(NTRAC1+5)%P)
+!
+!      THERMIC MODULE
+!
         CASE(5)
           ! Only adding temperature if it is not already in the tracers
           IF(IND_T.EQ.0)THEN  
             IND_T = NTRAC1+1
             NAMETRAC(NTRAC1+1) = '  TEMPERATURE   '
-     &                      //  '      °C        '
+     &                       //  '      °C        '
           ENDIF
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

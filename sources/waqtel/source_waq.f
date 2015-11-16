@@ -2,9 +2,8 @@
                      SUBROUTINE SOURCE_WAQ
 !                    **********************
 !
-     &(NPOIN,TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,
-     & AT,DT,NTRAC,IND_T,GRAV,UN,VN,ZF,PATMOS,LISTIN,
-     & WAQPROCESS)
+     &(NPOIN,TEXP,TIMP,TN,NTRAC,WAQPROCESS,RAYEFF,IND_T,HPROP,
+     & U,V,CF,T1,T2,T3,T4,PATMOS,LISTIN,GRAV,ZF,DEBUG)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   21/09/2014
@@ -36,13 +35,11 @@
 !|                |   | TSCE - ( 1 - TETAT ) TN
 !| WAQPROCESS     |-->| WATER QUALITY PROCESS
 !| YASMI          |<--| IF YES, THERE ARE IMPLICIT SOURCE TERMS
-!| IND_T          |-->| INDEX FOR TEMPERATURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL
-!,ONLY : DEMBEN,PHOTO,RESP,FORMK2,
-!     &                               O2SATU,K1,K22,K44,WATTEMP
+      USE DECLARATIONS_WAQTEL,ONLY : DEMBEN,PHOTO,RESP,FORMK2,
+     &                               O2SATU,K1,K22,K44,WATTEMP
       USE INTERFACE_WAQTEL, EX_SOURCE_WAQ => SOURCE_WAQ
 !
       IMPLICIT NONE
@@ -51,18 +48,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          , INTENT(IN)    :: NPOIN
-      INTEGER          , INTENT(IN)    :: NTRAC,WAQPROCESS
-      LOGICAL          , INTENT(INOUT) :: YASMI(*)
-      DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: HPROP
-      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
-      INTEGER          , INTENT(IN)    :: IND_T
-      DOUBLE PRECISION, INTENT(IN)     :: GRAV
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: UN,VN,ZF
-      TYPE(BIEF_OBJ), INTENT(IN)       :: PATMOS
-      LOGICAL,        INTENT(IN)       :: LISTIN
+      INTEGER       , INTENT(IN)    :: NPOIN,WAQPROCESS,DEBUG
+      INTEGER       , INTENT(IN)    :: NTRAC
+      INTEGER       , INTENT(INOUT) :: IND_T
+      LOGICAL       , INTENT(IN)    :: LISTIN
+      DOUBLE PRECISION,INTENT(IN  ) :: GRAV
+      TYPE(BIEF_OBJ), INTENT(IN)    :: TN,HPROP,CF,U,V,PATMOS,ZF
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: TEXP,TIMP,RAYEFF,T1,T2,T3,T4
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -93,21 +85,23 @@
 !
       SELECT CASE(WAQPROCESS)
 !       O2 MODULE
-        CASE(1) 
+        CASE(1)
           CALL CALCS_O2(NPOIN,WATTEMP,O2SATU,DEMBEN,FORMK2,K1,K44,
-     &                  K22,PHOTO,RESP,TN,TEXP,NTRAC,GRAV,HPROP,
-     &                  UN,VN,ZF,K2,FORMCS)
+     &              K22,PHOTO,RESP,TN,TEXP,NTRAC,GRAV,HPROP,U,V,ZF)
 !       BIOMASS MODULE
-        CASE(2) 
-          CALL CALCS_BIOMASS
+        CASE(2)
+          CALL CALCS_BIOMASS(NPOIN,WATTEMP,TN,TEXP,RAYEFF,NTRAC,
+     &                      HPROP,T1,T2,DEBUG)
 !       EUTRO MODULE
-        CASE(3) 
-          CALL CALCS_EUTRO
+        CASE(3)
+          CALL CALCS_EUTRO(NPOIN,WATTEMP,TN,TEXP,RAYEFF,NTRAC,
+     &                      HPROP,T1,T2,T3,U,V,DEBUG)
 !       MICROPOL MODULE
-        CASE(4) 
-          CALL CALCS_MICROPOL
+        CASE(4)
+          CALL CALCS_MICROPOL(NPOIN,NTRAC,TN,TEXP,
+     &                                HPROP,CF,U,V,T1,T2,T3,T4)
 !       THERMIC MODULE
-        CASE(5) 
+        CASE(5)
            CALL CALCS_THERMIC(NPOIN,TN,TEXP,HPROP,PATMOS,IND_T,LISTIN)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
@@ -120,8 +114,8 @@
 !
       END SELECT
 !
-10    FORMAT(1X,'SOURCE_WAQ: MODULE WAQ INCONNU : ',I4) 
-20    FORMAT(1X,'SOURCE_WAQ: UNKNOWN WAQ MODULE : ',I4)  
+10    FORMAT(1X,'SOURCE_WAQ: MODULE WAQ INCONNU : ',I4)
+20    FORMAT(1X,'SOURCE_WAQ: UNKNOWN WAQ MODULE : ',I4)
 !
 !-----------------------------------------------------------------------
 !

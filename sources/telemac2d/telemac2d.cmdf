@@ -463,6 +463,7 @@ files: bief_def.f
   sortie.f
   bief_close_files.f
   errmax.f
+  anti_dirac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -978,3 +979,12 @@ files: declarations_waqtel.f
   point_waqtel.f
   increase_ntrac.f
   lecdon_waqtel.f
+  reaer.f
+  satur_o2.f
+  erosion_fx.f
+  taub_waqtel.f
+  depos_fx.f
+  algae_death.f
+  ray_effect.f
+  nuteff.f
+  algae_growth.f

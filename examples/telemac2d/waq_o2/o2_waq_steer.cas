@@ -2,7 +2,6 @@
 / First attempt to generate a steering file
 /  for waq module of the Telemac system
 /     here case of O2 process
-/
 /  
 /GENERAL PARAMETERS:  MOST OF THEM ARE USELESS
 /   SO FAR, THEY WILL BE USED FOR STANALONE RUNS
