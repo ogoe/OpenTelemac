@@ -88,8 +88,12 @@
           IPOBO(MESH%NBOR%I(I)) = I
         END DO
       ELSE
-        ALLOCATE(IPOBO(1),STAT=IERR)
+        ! In case if nptir = 0 because then ipobo is written instead of knolg
+        ALLOCATE(IPOBO(MESH%NPOIN),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'IPOBO')
+        DO I=1,MESH%NPOIN
+          IPOBO(I) = MESH%KNOLG%I(I)
+        END DO
       ENDIF
 !
       CALL CHECK_ALLOCATE(IERR,'IPOBO')
