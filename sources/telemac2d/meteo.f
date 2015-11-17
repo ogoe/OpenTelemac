@@ -7,7 +7,7 @@
      & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -54,6 +54,11 @@
 !+        07/01/2015
 !+        V7P0
 !+  Adding optional arguments to remove USE DECLARATIONS_TELEMAC2D.
+!
+!history R.ATA (LNHE)
+!+        16/11/2015
+!+        V7P0
+!+  Adding USE WAQTEL...
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
