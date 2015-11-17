@@ -76,7 +76,7 @@
      &                           LIVBOR,HBOR,UBOR,VBOR,CHBORD,TRAC,
      &                           LITBOR,TBOR,ATBOR,BTBOR, IERR)
         CASE ('MED     ')
-          CALL GET_BND_VALUE_MED(FID, TYP_BND_ELEM,NELEBD,LIHBOR,
+          CALL GET_BND_VALUE_MED(FID,TYP_BND_ELEM,NELEBD,LIHBOR,
      &                           LIUBOR,LIVBOR,TRAC,LITBOR,
      &                           NPTFR,NBOR,IERR)
           DO I=1,NPTFR

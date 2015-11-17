@@ -39,7 +39,7 @@
         LOGICAL, ALLOCATABLE :: IS_BND(:)
         ! Number of boundary groups
         INTEGER :: NBND_GRP
-        ! Contains for boundary group its values
+        ! Contains for each boundary group its values for h u v tracer
         INTEGER, ALLOCATABLE :: BND_GRP_VAL(:,:)
         ! Contains for each family its number and the index of the boundary group associated 
         ! 0 if it is not a boundary family
@@ -363,11 +363,6 @@
         CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_BND_MED:GET_MED_OBJ')
 !
-!       In order to know the file_id for the boundary file we pick one
-!       by adding an offset set to 666 worhsip satan...
-        OFFSET = 666
-        MED_OBJ_TAB(MED_ID)%NCLI = OFFSET + FILE_ID
-!
         ! Open the boundary file with a set id available
         MED_OBJ_TAB(MED_ID)%NCLI = 1000 + FILE_ID
         DO
@@ -385,28 +380,31 @@
         ELSE
           ! Otherwise open the file
           OPEN(UNIT=MED_OBJ_TAB(MED_ID)%NCLI,FILE=FILE_NAME,
-     &         FORM='FORMATTED',ACTION='READ',IOSTAT=IERR)
+     &         FORM='FORMATTED',ACTION=OPEN_MODE,IOSTAT=IERR)
         ENDIF
-        ! Getting the name of the boundary groups
-        NCLI = MED_OBJ_TAB(MED_ID)%NCLI
-        REWIND(NCLI)
-!       LOOP ON THE INFO IN THE FILE
-        READ(UNIT=NCLI,FMT=*,IOSTAT=IERR) NBND_GRP
-        MED_OBJ_TAB(MED_ID)%NBND_GRP = NBND_GRP
-        CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:READ')
-        ALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(NBND_GRP,4),STAT=IERR)
-        CALL CHECK_ALLOCATE(IERR,'BND_GRP_VAL')
-        ALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME(NBND_GRP),STAT=IERR)
-        CALL CHECK_ALLOCATE(IERR,'BND_GRP_NAME')
-        DO I=1,NBND_GRP
-          READ(UNIT=NCLI,FMT=*,IOSTAT=IERR) 
-     &             MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,1),
-     &             MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,2),
-     &             MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,3),
-     &             MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,4),
-     &             MED_OBJ_TAB(MED_ID)%BND_GRP_NAME(I)
-          CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:READ')
-        ENDDO
+        IF(OPEN_MODE(1:4).eq.'READ') THEN
+          ! Getting the name of the boundary groups
+          NCLI = MED_OBJ_TAB(MED_ID)%NCLI
+          REWIND(NCLI)
+!         LOOP ON THE INFO IN THE FILE
+          READ(UNIT=NCLI,FMT=*,IOSTAT=IERR) NBND_GRP
+          CALL CHECK_CALL(IERR,'OPEN_BND_MED:READ')
+          MED_OBJ_TAB(MED_ID)%NBND_GRP = NBND_GRP
+          ALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(NBND_GRP,4),
+     &             STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'BND_GRP_VAL')
+          ALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME(NBND_GRP),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'BND_GRP_NAME')
+          DO I=1,NBND_GRP
+            READ(UNIT=NCLI,FMT=*,IOSTAT=IERR)
+     &               MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,1),
+     &               MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,2),
+     &               MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,3),
+     &               MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(I,4),
+     &               MED_OBJ_TAB(MED_ID)%BND_GRP_NAME(I)
+            CALL CHECK_CALL(IERR,'OPEN_BND_MED:READ')
+          ENDDO
+        ENDIF
 #else
 !
 !     MED LIBRARY NOT LOADED
@@ -449,13 +447,20 @@
         IERR = 0
         IF(ISOPENED) THEN
           CLOSE(MED_OBJ_TAB(MED_ID)%NCLI,IOSTAT=IERR)
+          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%NBOR)) THEN
+            DEALLOCATE(MED_OBJ_TAB(MED_ID)%NBOR)
+          ENDIF
+          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)) THEN
+            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)
+          ENDIF
+          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_FAM)) THEN
+            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_FAM)
+          ENDIF
+          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)) THEN
+            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)
+          ENDIF
         ENDIF
-        CALL CHECK_CALL(IERR,'CLOSE_BND_MED:OPEN')
-!
-        ! SAME AS BEFORE IT COULD HAVE BEEN DEALLOCATED BEFORE
-        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%NBOR)) THEN
-          DEALLOCATE(MED_OBJ_TAB(MED_ID)%NBOR)
-        ENDIF
+        CALL CHECK_CALL(IERR,'CLOSE_BND_MED:CLOSE')
 !
       RETURN
       END SUBROUTINE
@@ -998,7 +1003,7 @@
         ! Skipping non boundary elements
         IF(.NOT.MED_OBJ_TAB(MED_ID)%IS_BND(I)) CYCLE
         DO J=1,NDP_BND_ELE
-          IPOBO(BND_IKLE((J-1)*NELEBD+I)) = 1
+          IPOBO(BND_IKLE((J-1)*NELEM+I)) = 1
         ENDDO
       ENDDO
 !
@@ -1116,7 +1121,7 @@
         ALLOCATE(X(NPOIN),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GET_BND_NUMBERING_MED:X')
         ALLOCATE(Y(NPOIN),STAT=IERR)
-        CALL CHECK_ALLOCATE(IERR,'GET_BND_NUMBERING_MED:X')
+        CALL CHECK_ALLOCATE(IERR,'GET_BND_NUMBERING_MED:Y')
         CALL GET_MESH_COORD_MED(FILE_ID,1,2,NPOIN,X,IERR)
         CALL CHECK_CALL(IERR,
      &                  'GET_BND_NUMBERING_MED:GET_MESH_COORD_MED:X')
@@ -1181,6 +1186,27 @@
             ENDIF
 !
           ENDDO! ISUIV
+          IF(.NOT.SWAP) THEN
+            DO ISUIV=I,NPTFR
+!          
+              IF (TRAV1(ISUIV,2).EQ.TRAV1(I-1,2)) THEN
+!          
+!               PERMUTATION OF EDGE WITHIN ITSELF
+                NOEUD1 = TRAV1(ISUIV,2)
+                NOEUD2 = TRAV1(ISUIV,1)
+                TRAV1(ISUIV,1) = TRAV1(I,1)
+                TRAV1(ISUIV,2) = TRAV1(I,2)
+                TRAV1(I,1) = NOEUD1
+                TRAV1(I,2) = NOEUD2
+                KP1BOR(I+NPTFR) = I-1
+                KP1BOR(I-1) = I
+                SWAP = .TRUE.
+                EXIT
+!          
+              ENDIF
+!          
+            ENDDO! ISUIV
+          ENDIF
           IF(SWAP) CYCLE
 !
 !         IF NO FOLLOWING POINT IS FOUND, WE VERIFY THAT THE LAST AND THE FIRST
@@ -1279,7 +1305,7 @@
 !
 !     Identify bnd element if necessary
       CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_ELEM,IERR)
-      CALL CHECK_CALL(IERR,'GET_BND_IPOBO_MED:IDENTIFY_BND_ELMT')
+      CALL CHECK_CALL(IERR,'GET_BND_NELEM_MED:IDENTIFY_BND_ELMT')
 !
 !     Compute the total number of element
       BND_NELEM = COUNT(MED_OBJ_TAB(MED_ID)%IS_BND)
@@ -1340,7 +1366,7 @@
 !     
 !     Identify bnd element if necessary
       CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_ELEM,IERR)
-      CALL CHECK_CALL(IERR,'GET_BND_IPOBO_MED:IDENTIFY_BND_ELMT')
+      CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_MED:IDENTIFY_BND_ELMT')
 !
       CALL GET_MESH_NELEM_MED(FILE_ID,TYPE_ELEM,NELEM,IERR)
       CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_MED:GET_MESH_NELEM')
@@ -1667,7 +1693,7 @@
 !
 !       GET INFO FROM THE MED FILE OBJECT
         CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
-        CALL CHECK_CALL(IERR,'GET_BND_NPOIN_MED:GET_MED_OBJ')
+        CALL CHECK_CALL(IERR,'GET_BND_VALUE:GET_MED_OBJ')
 !       CONVERTS TYPE OF ELEMENTS
         CALL CONVERT_ELEM_TYPE(TYPE_BND_ELEM, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:CONVERT_ELEM_TYPE')
@@ -1678,7 +1704,7 @@
 !     
 !       Identify bnd element if necessary
         CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_BND_ELEM,IERR)
-        CALL CHECK_CALL(IERR,'GET_BND_FAMILY_MED:IDENTIFY_BND_ELMT')
+        CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:IDENTIFY_BND_ELMT')
 !
         ALLOCATE(FAMILY(NELEBD),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GET_BND_VALUE_MED:FAMILY')
@@ -1692,8 +1718,16 @@
 !       GET THE CONNECTIVITY TABLE
         CALL GET_BND_CONNECTIVITY_MED(FILE_ID, TYPE_BND_ELEM, NELEBD,
      &                                NDP, IKLE, IERR)
-        CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:GET_BND_VALUE_MED')
+        CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:GET_BND_CONN_MED')
 !
+        DO IPTFR=1,NPTFR
+          LIHBOR(IPTFR) = 0
+          LIUBOR(IPTFR) = 0
+          LIVBOR(IPTFR) = 0
+          IF (TRAC) THEN
+            LITBOR(IPTFR) =  0
+          ENDIF
+        ENDDO
 !       LOOP ON ALL ELEMENTS
         DO IELEM=1,NELEBD
 !
@@ -1719,11 +1753,16 @@
 !
 !           STORE VALUE OF THE GIVEN NODE
             IGRP = FAMILY(IELEM)
-            LIHBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,1)
-            LIUBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,2)
-            LIVBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,3)
+            LIHBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,1),
+     &                          LIHBOR(IPTFR))
+            LIUBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,2),
+     &                          LIUBOR(IPTFR))
+            LIVBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,3),
+     &                          LIVBOR(IPTFR))
             IF (TRAC) THEN
-              LITBOR(IPTFR) =  MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,4)
+              LITBOR(IPTFR) =  
+     &                 MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,4),
+     &                 LITBOR(IPTFR))
             ENDIF
 !
           ENDDO
@@ -2295,7 +2334,7 @@
       INTEGER :: MED_ID, TYPE_BND_ELEM_MED
       CHARACTER(LEN=MED_LNAME_SIZE) GRP_NAME
       CHARACTER(LEN=MED_NAME_SIZE) FAM_NAME
-      INTEGER :: NCLI,I,IFAM,VAL
+      INTEGER :: NCLI,I,VAL
       INTEGER,ALLOCATABLE :: FAM_NUM(:)
 !
 !-----------------------------------------------------------------------
@@ -2317,31 +2356,26 @@
       CALL CHECK_CALL(IERR,'SET_MESH_MED:MMHCYW')
 !
 !     CREATING THE FAMILIES FOR EACH BOUNDARY TYPES
-      GRP_NAME = 'CONLIM_222'
-      FAM_NAME = 'FAM_-1_CONLIM_222'
-      IFAM = IFAM + 1
+      GRP_NAME = 'CONLIM_2222'
+      FAM_NAME = 'FAM_-1_CONLIM_2222'
       CALL MFACRE(FILE_ID,MNAME,FAM_NAME,-1,1,GRP_NAME,IERR)
-      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:222')
-      GRP_NAME = 'CONLIM_566'
-      FAM_NAME = 'FAM_-1_CONLIM_566'
-      IFAM = IFAM + 1
+      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:2222')
+      GRP_NAME = 'CONLIM_5666'
+      FAM_NAME = 'FAM_-2_CONLIM_5666'
       CALL MFACRE(FILE_ID,MNAME,FAM_NAME,-2,1,GRP_NAME,IERR)
-      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:566')
-      GRP_NAME = 'CONLIM_466'
-      FAM_NAME = 'FAM_-1_CONLIM_466'
-      IFAM = IFAM + 1
+      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:5666')
+      GRP_NAME = 'CONLIM_4666'
+      FAM_NAME = 'FAM_-3_CONLIM_4666'
       CALL MFACRE(FILE_ID,MNAME,FAM_NAME,-3,1,GRP_NAME,IERR)
-      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:466')
-      GRP_NAME = 'CONLIM_455'
-      FAM_NAME = 'FAM_-1_CONLIM_455'
-      IFAM = IFAM + 1
+      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:4666')
+      GRP_NAME = 'CONLIM_4555'
+      FAM_NAME = 'FAM_-4_CONLIM_4555'
       CALL MFACRE(FILE_ID,MNAME,FAM_NAME,-4,1,GRP_NAME,IERR)
-      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:455')
-      GRP_NAME = 'CONLIM_544'
-      FAM_NAME = 'FAM_-1_CONLIM_544'
-      IFAM = IFAM + 1
+      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:4555')
+      GRP_NAME = 'CONLIM_5444'
+      FAM_NAME = 'FAM_-5_CONLIM_5444'
       CALL MFACRE(FILE_ID,MNAME,FAM_NAME,-5,1,GRP_NAME,IERR)
-      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:544')
+      CALL CHECK_CALL(IERR,'SET_BND_MED:MFACRE:5444')
 !
 !     DEFINE FAMILY NUMBER
       ALLOCATE(FAM_NUM(NELEBD),STAT=IERR)
