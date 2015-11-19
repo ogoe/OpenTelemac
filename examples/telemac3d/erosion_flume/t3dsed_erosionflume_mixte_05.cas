@@ -11,6 +11,7 @@
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
 /
+FORTRAN FILE : erosionflume.f
 GEOMETRY FILE                   = canalmesh_fond.slf
 BOTTOM TOPOGRAPHY FILE          = semis3.xyz
 BOUNDARY CONDITIONS FILE        = canalmesh_fond_BC.cli
@@ -92,7 +93,6 @@ IMPLICITATION FOR DEPTH                             : 1.
 IMPLICITATION FOR VELOCITIES                        : 1.
 IMPLICITATION FOR DIFFUSION                         : 1.
 /
-OPTION FOR THE HYDROSTATIC STEP                     : 2
 MASS-LUMPING FOR DEPTH                              : 1.
 MASS-LUMPING FOR VELOCITIES                         : 1.
 MASS-LUMPING FOR DIFFUSION                          : 1.
@@ -119,9 +119,12 @@ VELOCITY PROFILES                = 1;1
 /----------------------------------------------------------------
 /	SEDIMENTS
 /----------------------------------------------------------------
-NUMBER OF TRACERS                               = 2
-NAMES OF TRACERS                                =  'sand g/l'; 'mud g/l'
+NUMBER OF TRACERS = 2
+NAMES OF TRACERS  =  'sand g/l'; 'mud g/l'
+SCHEME FOR DIFFUSION OF TRACERS = 1
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF SEDIMENT = 200
+SOLVER FOR DIFFUSION OF THE SEDIMENT : 7
+OPTION OF SOLVER FOR DIFFUSION OF THE SEDIMENT : 5
 /
 SCHEME FOR ADVECTION OF TRACERS                 = 14
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS = 1.E-6
@@ -147,8 +150,8 @@ CRITICAL SHEAR STRESS FOR DEPOSITION            = 5.D-1
 CONSTANT SEDIMENT SETTLING VELOCITY             = 1.5D-3
 /
 / non cohésif
-MEAN DIAMETER OF THE SEDIMENT          = 4.D-4
-SETTLING VELOCITY OF SANDS              = 6.3D-3
+MEAN DIAMETER OF THE SEDIMENT = 4.D-4
+SETTLING VELOCITY OF SANDS    = 6.3D-3
 /        
 &FIN
 /
