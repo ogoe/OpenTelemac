@@ -18,21 +18,26 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
-!      USE INTERFACE_ARTEMIS, ONLY: SPE,SPD
+      USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
+      USE BIEF, ONLY : FIND_VARIABLE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      CHARACTER*80 TITRE,FILE_SPE,PATH
-      CHARACTER*32 TEXTEBID
-      INTEGER      NBI1,NSPE,IBID(10),NBCL,IP,ILEN
+      CHARACTER(LEN=16),ALLOCATABLE :: VARNAME(:),VARUNIT(:)
+      INTEGER      NBI1,NBCL
       INTEGER      IPLAN,IFF,ID,KK,J,IDEC,JD
-      REAL         BID, CL1(MAXDIR,MAXFRE,1)
+      DOUBLE PRECISION :: COORD(MAXDIR*MAXFRE)
+      REAL         CL1(MAXDIR,MAXFRE,1)
       REAL         XTWC(MAXDIR,MAXFRE),YTWC(MAXDIR,MAXFRE)
-      REAL         READTWC(MAXDIR*MAXFRE),STOCKD(MAXDIR)
-      REAL         PI,DEGRAD,DF,DTETA,FF,DD,EPS
+      REAL         STOCKD(MAXDIR)
+      REAL         PI,DEGRAD,EPS
+      DOUBLE PRECISION :: READTWC(MAXDIR*MAXFRE)
       PARAMETER(PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0)
+      INTEGER :: IERR
+      CHARACTER(LEN=8) :: FFORMAT
 
 !     A AJOUTER DANS LE DICO
 !      NFTWC  = 50
@@ -42,63 +47,71 @@
       IF (NDTWC.GT.MAXDIR) THEN
         WRITE(LU,*) 'TOO MANY DIRECTIONS IN TOMAWAC SPECTRUM  '
         WRITE(LU,*) 'INCREASE MAXDIR IN declarations_artemis.f'
-        CALL PLANTE(0)
+        CALL PLANTE(1)
+        STOP
       ENDIF
       IF (NFTWC.GT.MAXFRE) THEN
         WRITE(LU,*) 'TOO MANY FREQUENCIES IN TOMAWAC SPECTRUM  '
         WRITE(LU,*) 'INCREASE MAXFRE IN declarations_artemis.f'
-        CALL PLANTE(0)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !-------------------------------------------
       WRITE(LU,*) '==================================================='
       WRITE(LU,*) '========== READING SPECTRUM FROM TOMAWAC =========='
 !=====READING SELAPHIN FILE (.spe)
       NBI1 = ART_FILES(ARTTC1)%LU
-!.....READ FIRST LINES
-      READ(NBI1) TITRE
-!
-      READ(NBI1) IBID(1),IBID(2)
-!
-      NBCL=IBID(1)
-      DO IP=1,NBCL
-        READ(NBI1) TEXTEBID
+      FFORMAT = ART_FILES(ARTTC1)%FMT
+      CALL GET_MESH_COORD(FFORMAT,NBI1,1,2,NFTWC*NDTWC,COORD,IERR)
+      CALL CHECK_CALL(IERR,'GET_MESH_COORD:X:NBI1')
+      DO IPLAN = 1,NDTWC
+        DO IFF = 1,NFTWC
+          XTWC(IPLAN,IFF) = COORD((IFF-1)*NDTWC+IPLAN)
+        ENDDO
       ENDDO
-      READ(NBI1) (IBID(IP),IP=1,10)
-!
-      IF (IBID(10).EQ.1) THEN
-        READ(NBI1) (IBID(IP),IP=1,6)
-!
-      ENDIF
-      READ(NBI1) (IBID(IP),IP=1,4)
-!
-      READ(NBI1) (IBID(IP),IP=1,1)
-!
-      READ(NBI1) (IBID(IP),IP=1,1)
-!
-      READ(NBI1)  ((XTWC(IPLAN,IFF),IPLAN=1,NDTWC),IFF=1,NFTWC)
-      READ(NBI1)  ((YTWC(IPLAN,IFF),IPLAN=1,NDTWC),IFF=1,NFTWC)
+      CALL GET_MESH_COORD(FFORMAT,NBI1,2,2,NFTWC*NDTWC,COORD,IERR)
+      CALL CHECK_CALL(IERR,'GET_MESH_COORD:Y:NBI1')
+      DO IPLAN = 1,NDTWC
+        DO IFF = 1,NFTWC
+          YTWC(IPLAN,IFF) = COORD((IFF-1)*NDTWC+IPLAN)
+        ENDDO
+      ENDDO
 !
 !
 !.....READ DATA
-   50 CONTINUE
-      READ(NBI1) BID
-!     Looking for the right date
-      IF (ABS(BID-TPSTWC).GE.1E-2) THEN
-        READ(NBI1) (READTWC(KK),KK=1,NFTWC*NDTWC)
-        GOTO 50
-      ENDIF
 !
-      DO IP=1,NBCL
-        READ(NBI1) (READTWC(KK),KK=1,NFTWC*NDTWC)
-        KK=1
-!       order DATA into line,column format : CL1
-        DO IFF=1,NFTWC
-          DO IPLAN=1,NDTWC
-            CL1(IPLAN,IFF,IP)=READTWC(KK)
-            KK=KK+1
-          ENDDO
+      CALL GET_DATA_NVAR(FFORMAT,NBI1,NBCL,IERR)
+      CALL CHECK_CALL(IERR,'GET_DATA_NVAR')
+!
+      ALLOCATE(VARNAME(NBCL),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'VARNAME')
+      ALLOCATE(VARUNIT(NBCL),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'VARUNIT')
+      CALL GET_DATA_VAR_LIST(FFORMAT,NBI1,NBCL,VARNAME,VARUNIT,IERR)
+      CALL CHECK_CALL(IERR,'GET_DATA_VAR_LIST')
+!
+      ! There should be only one variable in the tomawac file
+      IF(NBCL.NE.1) THEN
+        IF(LNG.EQ.1) WRITE(LU,*) 'TROP DE VARIABLES DANS ',
+     &               ART_FILES(ARTTC1)%NAME
+        IF(LNG.EQ.2) WRITE(LU,*) 'TOO MANY VARIABLES IN ',
+     &               ART_FILES(ARTTC1)%NAME
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      ! Reading data for THE variable
+      CALL FIND_VARIABLE(FFORMAT,NBI1,VARNAME(1),READTWC,NFTWC*NDTWC,
+     &                   IERR,TIME=TPSTWC)
+      CALL CHECK_CALL(IERR,'FIND_VARIABLE')
+      KK=1
+!     order DATA into line,column format : CL1
+      DO IFF=1,NFTWC
+        DO IPLAN=1,NDTWC
+          CL1(IPLAN,IFF,1)=READTWC(KK)
+          KK=KK+1
         ENDDO
       ENDDO
+!
 !.....END READING
 !==========================================
 
