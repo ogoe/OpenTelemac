@@ -6,7 +6,7 @@
      &  NPTFR,NPLAN,NPOIN2,KENT,KSORT,KADH,KLOG)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS FOR THE DIFFUSION
@@ -15,16 +15,6 @@
 !+            CASE.
 !
 !warning  LIKBOR AND LIEBOR ARE BUILT FROM LIUBOR
-!
-!history  L. VAN HAREN (LNH)
-!+        25/11/97
-!+        V6P0
-!+
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/99
-!+
-!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -141,7 +131,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(LIMES.EQ.2) THEN
+      IF(LIMKS.EQ.2) THEN
         DO IPOIN2 = 1,NPOIN2
           LIKBOS(IPOIN2) = KENT
         ENDDO
@@ -151,7 +141,7 @@
         ENDDO
       ENDIF
 !
-      IF(LIMKS.EQ.2) THEN
+      IF(LIMES.EQ.2) THEN
         DO IPOIN2 = 1,NPOIN2
           LIEBOS(IPOIN2) = KENT
         ENDDO
