@@ -8,7 +8,7 @@
      & DEFCAR , DEFINT , DEFLOG , DEFREA , DEFATT )
 !
 !***********************************************************************
-! DAMOCLES   V6P0                                   21/08/2010
+! DAMOCLES   V7P1
 !***********************************************************************
 !
 !brief    STORES IN ARRAYS MOTINT, MOTREA, MOTLOG, MOTCAR AND
@@ -39,6 +39,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        20/11/2015
+!+        V7P1
+!+   An error message was printing the wrong line number. Now printing
+!+   the correct keyword instead.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ADRESS         |<->| TABLEAU DES ADRESSES DES MOTS CLES
@@ -154,35 +160,33 @@
         UTINDX(NTYP,INDX) = .TRUE.
       ENDIF
 !
-      IF (ITAI .LE. 0) THEN
+      IF(ITAI.LE.0) THEN
         ITAI = 1
       ELSE
-! PREVENTS DYNAMIC ALLOCATION FOR SOMETHING ELSE THAN AN ARRAY
-                   INDIC(NTYP,INDX)=INDIC(NTYP,INDX)+1
+!       PREVENTS DYNAMIC ALLOCATION FOR SOMETHING ELSE THAN AN ARRAY
+        INDIC(NTYP,INDX)=INDIC(NTYP,INDX)+1
       ENDIF
 !
-! ADDITION CF JMH - ISSUES A WARNING FOR ESTET - N3S DICO FILES
-! WHEN THE DEFAULT VALUES ARE DEFINED IN INSUFFICIENT NUMBER
-! COMPARED TO THE DIMENSIONS
+! ISSUES A WARNING WHEN THE DEFAULT VALUES ARE DEFINED
+! IN INSUFFICIENT NUMBER COMPARED TO THE DIMENSIONS
 !
       IF(DEFLU.GT.0.AND.DEFLU.NE.ITAI) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*)'ATTENTION ! A LA LIGNE ',NLIGN,
-     &               ' DU DICTIONNAIRE :'
-          WRITE(LU,*)'LE NOMBRE DE VALEURS PAR DEFAUT ',
-     &                DEFLU,' EST DIFFERENT DE LA TAILLE ',
-     &                'ANNONCEE ',ITAI
+          WRITE(LU,*) 'ATTENTION DANS LE DICTIONNAIRE : '
+          WRITE(LU,*) 'POUR LE MOT-CLE : ',PARAM(1:LONGU)
+          WRITE(LU,*) 'LE NOMBRE DE VALEURS PAR DEFAUT ',DEFLU,
+     &                ' EST DIFFERENT DE LA TAILLE ANNONCEE ',ITAI
         ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WARNING !  AT LINE ',NLIGN,
-     &                ' OF THE DICTIONARY :'
-          WRITE(LU,*) 'NUMBER OF DEFAULT VALUES ',DEFLU,
-     &                 ' IS DIFFERENT FROM THE SIZE ',ITAI
+          WRITE(LU,*) 'WARNING IN DICTIONARY:'
+          WRITE(LU,*) 'FOR KEYWORD: ',PARAM(1:LONGU)
+          WRITE(LU,*) 'THE NUMBER OF DEFAULT VALUES ',DEFLU,
+     &                ' IS DIFFERENT FROM THE DECLARED SIZE ',ITAI
         ENDIF
         WRITE(LU,*) ' '
       ENDIF
 !
-      IF (DEFLU .EQ. 0) THEN
+      IF(DEFLU .EQ. 0) THEN
         IF     (NTYP .EQ. 1) THEN
           DEFINT(1) = 0
         ELSEIF (NTYP .EQ. 2) THEN
@@ -284,3 +288,4 @@
 !
       RETURN
       END
+
