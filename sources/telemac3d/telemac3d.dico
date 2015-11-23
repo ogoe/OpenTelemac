@@ -6032,10 +6032,12 @@ RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Valeur du coefficient de calage pour la fonction de vent
-dans le modele d echanges eau-atmosphere a bilan complet.
+dans les modeles d echanges eau-atmosphere
+(formule linearisee a la surface ou bilan complet).
 Une valeur comprise entre 0.0017 et 0.0035 est conseillee'
 AIDE1 = 'Value of the calibration coefficient for the wind function
-of the atmosphere-water exchange model with a complete balance.
+of the atmosphere-water exchange models
+(linearised formula at the free surface or complete balance).
 A value between 0.0017 and 0.0035 is advised'
 /
 NOM = 'SEDIMENT MIXTE'
