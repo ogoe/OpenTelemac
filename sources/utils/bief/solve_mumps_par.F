@@ -18,10 +18,10 @@
 !+     First version
 !
 !history  J-M HERVOUET (LNHE)
-!+        01/04/2015
+!+        23/11/2015
 !+        V7P1
 !+   Correction in the case of non symmetric matrix.
-!+
+!+   Decommenting the deallocation of allocatable arrays.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NPOIN          |-->| NUMBER OF POINTS IN THE PROCESSOR.
@@ -122,9 +122,9 @@
         STOP
  101    CONTINUE
       END IF
-      TEMP1(:)=0.0
-      TEMP2(:)=0.0
-      TEMP3(:)=0
+      TEMP1(:)=0.D0
+      TEMP2(:)=0.D0
+      TEMP3(:)=0.D0
       MUMPS_PAR%IRN_LOC(:)=0
       MUMPS_PAR%JCN_LOC(:)=0
       MUMPS_PAR%A_LOC(:)=0.0
@@ -167,16 +167,6 @@
           MUMPS_PAR%A_LOC(NBELEM) = XA(K)
         ENDDO
       ELSE
-!       ORIGINAL IMPLEMENTATION BY CD
-!       DO K = 1,2*NSEGB
-!         I = TEMP3(GLOSEG(K,1))
-!         J = TEMP3(GLOSEG(K,2))
-!         NBELEM = NBELEM + 1
-!         MUMPS_PAR%IRN_LOC(NBELEM) = I
-!         MUMPS_PAR%JCN_LOC(NBELEM) = J
-!         MUMPS_PAR%A_LOC(NBELEM) = XA(K)
-!       ENDDO
-!       PROPOSITION JMH
         DO K = 1,NSEGB
           I = TEMP3(GLOSEG(K,1))
           J = TEMP3(GLOSEG(K,2))
@@ -198,11 +188,12 @@
 !     -----------
 !     RESOLUTION
 !     -----------
+!
       MUMPS_PAR%JOB = 6
       CALL DMUMPS(MUMPS_PAR)
       TEMP1(:)=0.0
       IF(MUMPS_PAR%MYID.EQ. 0 ) THEN
-!...  une erreur de resolution est survenue
+!       An error occured...
         IF(MUMPS_PAR%INFO(1).LT.0) THEN
           IF(LNG.EQ.1) WRITE(LU,1001) MUMPS_PAR%INFO(1)
           IF(LNG.EQ.2) WRITE(LU,2001) MUMPS_PAR%INFO(1)
@@ -221,24 +212,19 @@
         I=TEMP3(K)
         XINC(K)=TEMP1(I)
       ENDDO
-!/////////////////////////////////////////////////////////////////////////////////////////////////////
-! les lignes ci-dessous sont a decommenter s'il s'agit du dernier appel a MUMPS.
-! Donc il faut prevoir de passer en argument  un flag (par ex. le nb de pas de temps max a simuler?)
-! pour savoir quand le code appelant le solveur fait son dernier calcul.
-! Actuellement on suppose que l'instance et les tableaux de travail de MUMPS sont
-! automatiquement detruits a la sortie de l'execution de Telemac
-!/////////////////////////////////////////////////////////////////////////////////////////////////////
-! Desallocation des tableaux de travail
-!       DEALLOCATE(TEMP1)
-!       DEALLOCATE(TEMP2)
-!       DEALLOCATE(TEMP3)
-!       DEALLOCATE(TEMP4)
-!       DEALLOCATE(MUMPS_PAR%IRN_LOC)
-!       DEALLOCATE(MUMPS_PAR%JCN_LOC)
-!       DEALLOCATE(MUMPS_PAR%A_LOC)
-!       DEALLOCATE(MUMPS_PAR%RHS)
-!     END IF
-!  Destruction de l'instance en cours
+!
+!     DEALLOCATION
+!
+      DEALLOCATE(TEMP1)
+      DEALLOCATE(TEMP2)
+      DEALLOCATE(TEMP3)
+      DEALLOCATE(MUMPS_PAR%IRN_LOC)
+      DEALLOCATE(MUMPS_PAR%JCN_LOC)
+      DEALLOCATE(MUMPS_PAR%A_LOC)
+      DEALLOCATE(MUMPS_PAR%RHS)
+!    
+!     Killing the current instance
+!
       MUMPS_PAR%JOB = -2
       CALL DMUMPS(MUMPS_PAR)
       RETURN
@@ -263,5 +249,4 @@
 #endif
 !
       END
-
 
