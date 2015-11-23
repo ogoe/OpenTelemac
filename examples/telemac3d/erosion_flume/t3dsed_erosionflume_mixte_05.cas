@@ -19,6 +19,8 @@ BOUNDARY CONDITIONS FILE        = canalmesh_fond_BC.cli
 2D RESULT FILE                  = r2d_erosionflume_mixte-05.slf
 VALIDATION = YES
 REFERENCE FILE                  = f3d_erosionflume_mixte-05.slf
+COMPUTATION CONTINUED = YES
+PREVIOUS COMPUTATION FILE = r3d_canaltest_0.slf
 /DEBUGGER =1
 /
 /----------------------------------------------
@@ -101,9 +103,6 @@ MASS-LUMPING FOR DIFFUSION                          : 1.
 /----------------------------------------------
 /  INITIAL CONDITIONS
 /----------------------------------------------
-/
-COMPUTATION CONTINUED = YES
-PREVIOUS COMPUTATION FILE = r3d_canaltest_0.slf
 /
 /INITIAL CONDITIONS               = 'CONSTANT ELEVATION'
 /INITIAL ELEVATION                = 10.13
