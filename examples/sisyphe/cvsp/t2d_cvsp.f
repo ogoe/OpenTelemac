@@ -27,7 +27,7 @@
       USE DECLARATIONS_SISYPHE, ONLY : SIS_FILES,MAXLU_SIS
       USE DECLARATIONS_TOMAWAC, ONLY : WAC_FILES,MAXLU_WAC
       USE DECLARATIONS_WAQTEL,  ONLY : WAQ_FILES,MAXLU_WAQ,
-     &                                ADDTR
+     &                                 ADDTR
       USE INTERFACE_TELEMAC2D
       USE INTERFACE_WAQTEL
 !
@@ -45,7 +45,6 @@
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
       CHARACTER(LEN=144) DUMMY
-      CHARACTER(LEN=50) DEBUGFILE
 !
 !======================================================================
 !
@@ -105,20 +104,6 @@
       CALL POINT_TELEMAC2D
 !
 !-----------------------------------------------------------------------
-!
-
-
-!-----------------------------------------------------------------------
-! OPEN A DEBUGGING OUTFILE
-!
-      WRITE(UNIT=DEBUGFILE, FMT='(A,I4,A)') 'BILANZ',IPID,'.CSV'
-      OPEN(87, FILE=DEBUGFILE , STATUS='UNKNOWN')
-      WRITE(UNIT=DEBUGFILE, FMT='(A,I4,A)') 'ALT',IPID,'.CSV'
-      OPEN(88, FILE=DEBUGFILE , STATUS='UNKNOWN')
-      WRITE(88,*)
-     &"J_GLOBAL AT ES(J,1) D50 D90 DMAX TAUB TAUC A1 A2 A3 A4 A5"
-!-----------------------------------------------------------------------
-!
 !
 !     INITIALISES SISYPHE
 !
@@ -243,7 +228,8 @@
 !
 !     UPDATING TRACER INFORMATION OF WAQTEL
 !
-      CALL NAMETRAC_WAQ(TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS)
+      CALL NAMETRAC_WAQ(TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS,
+     &                  MAXTRA,ICONVFT,VISCT)
 !
 !     RESETS TELEMAC2D CONFIGURATION
 !
@@ -302,11 +288,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      CLOSE(87)
-      CLOSE(88)
-!
-!-----------------------------------------------------------------------
-!
 !     TIME OF END OF COMPUTATION
 !
       CALL DATE_AND_TIME(VALUES=TFIN)
@@ -316,3 +297,4 @@
 !
       STOP 0
       END
+
