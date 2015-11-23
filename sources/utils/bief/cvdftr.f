@@ -138,6 +138,13 @@
 !+   Adaptation to new subroutine cvtrvf with locally implicit
 !+   predictor-corrector distributive schemes.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        20/11/2015
+!+        V7P1
+!+   Implicitation on diffusion forced to 1. with parameter TETATD. It
+!+   should be a keyword but there is no reason so far to do an explicit
+!+   diffusion.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -296,13 +303,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C,CFLMAX
+      DOUBLE PRECISION C,CFLMAX,TETATD
 !
       INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO
 !
       LOGICAL MSQ,FV_SCHEME
 !
       CHARACTER(LEN=16) FORMUL
+!
+!-----------------------------------------------------------------------
+!
+!     HARDCODED IMPLICITATION COEFFICIENT FOR DIFFUSION
+!     WAITING FOR A KEYWORD... BUT NO REAL INTEREST TO HAVE AN
+!     EXPLICIT FORM, EXCEPT TO AVOID A LINEAR SYSTEM...
+!
+      TETATD=1.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -709,17 +724,22 @@
           CALL OM( 'M=M+N   ' , AM2 , MBOR , S , C , MESH )
         ENDIF
 !
-!       EXPLICIT DIFFUSION TERM
-!
-        CALL MATVEC( 'X=AY    ',T1,AM2,FN,C,MESH)
-        CALL OS( 'X=X+CY  ' , SM , T1 , T1 , TETAT-1.D0 )
-!
-!       IMPLICIT DIFFUSION TERM ( AM1 + TETAT * AM2 )
+!       DIFFUSION TERMS
 !
         IF(AM1%TYPEXT.NE.'Q'.AND.AM2%TYPEXT.EQ.'Q') THEN
           CALL OM( 'M=X(M)  ' , AM1 , AM1 , S , C , MESH )
         ENDIF
-        CALL OM( 'M=M+CN  ' , AM1,AM2 , S , TETAT , MESH )
+!
+        IF(TETATD.NE.1.D0) THEN
+!         EXPLICIT DIFFUSION TERM
+          CALL MATVEC( 'X=AY    ',T1,AM2,FN,C,MESH)
+          CALL OS( 'X=X+CY  ' , SM , T1 , T1 , TETATD-1.D0 )
+!         IMPLICIT DIFFUSION TERM ( AM1 + TETAT * AM2 )
+          CALL OM( 'M=M+CN  ' , AM1,AM2 , S , TETATD , MESH )
+        ELSE
+!         IMPLICIT DIFFUSION TERM ( AM1 + AM2 )
+          CALL OM( 'M=M+N   ' , AM1,AM2 , S ,0.D0, MESH )
+        ENDIF
 !
 !       BOUNDARY STRESS TERMS
 !
