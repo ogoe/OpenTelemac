@@ -2107,6 +2107,11 @@
 !+        V7P1
 !+        Schematic tides, High Water at the beginning
 !
+!history  C. COULET (ARTELIA), C.-T. PHAM (LNHE)
+!+        13/10/2015
+!+        V7P1
+!+        Correction of a bug when MSL .NE. 0.D0
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
 !|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
@@ -2569,7 +2574,7 @@
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
 !               ALSO TAKEN INTO ACCOUNT
-          IF(H(IPOIN).LE.0.D0) THEN
+          IF(H(IPOIN).LE.-MSL) THEN
             H(IPOIN) = 0.D0
           ELSE
             H(IPOIN) = H(IPOIN) + MSL
@@ -2630,7 +2635,7 @@
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
 !               ALSO TAKEN INTO ACCOUNT
-          IF(H(IPOIN).LE.0.D0) THEN
+          IF(H(IPOIN).LE.-MSL) THEN
             H(IPOIN) = 0.D0
           ELSE
             H(IPOIN) = H(IPOIN) + MSL
