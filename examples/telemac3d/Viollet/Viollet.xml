@@ -21,12 +21,12 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="telemac3d" target="t3d_Viollet.cas"
+       code="telemac3d" target="t3d_viollet.cas"
        title="Viollet scalar mode"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="telemac3d" target="t3d_Viollet.cas"
+       code="telemac3d" target="t3d_viollet.cas"
        title="Viollet parallel mode"
    />
 
