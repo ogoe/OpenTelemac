@@ -31,8 +31,6 @@ GEOMETRY FILE                   = geo_dambreak.slf
 FORTRAN FILE                    = t2d_dambreak.f
 BOUNDARY CONDITIONS FILE        = geo_dambreak.cli
 RESULTS FILE                    = r2d_dambreak_v1p0.slf
-REFERENCE FILE                  = f2d_dambreak_v1p0.slf
-PARALLEL PROCESSORS             = 0
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -48,7 +46,6 @@ VARIABLE TIME-STEP : YES
 DURATION : 1.5
 MASS-BALANCE                    = YES
 INFORMATION ABOUT SOLVER        = YES
-VALIDATION                      = YES
 /----------------------------------------------
 /  INITIAL CONDITIONS
 /----------------------------------------------

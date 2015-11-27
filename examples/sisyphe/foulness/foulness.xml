@@ -19,12 +19,21 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="RunCase"
+   <action xref="1"
        do="translate;run;cas;princi"
        code="sisyphe" target="sis_foulness.cas"
        title="Run Foulness with uncoupled sisyphe"
    />
   
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:SISRES" />
+      <v2 vars=":map" target="fis_foulness.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 <!-- 

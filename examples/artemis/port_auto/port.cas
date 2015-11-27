@@ -9,8 +9,6 @@ BOUNDARY CONDITIONS FILE           : geo_delft-harbour.cli
 GEOMETRY FILE                      : geo_delft-harbour.slf
 RESULTS FILE                       : port.res
 /
-REFERENCE FILE                     : ref_port.res
-VALIDATION                         : YES
 MATRIX STORAGE                     : 3
 /
 TITLE = 'AUTOMATIC TETAP FOR SCHEMATIC DELFT HARBOUR'

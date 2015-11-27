@@ -105,6 +105,7 @@ def scanCAS(lines):
       if proc: line = line.lstrip()
       core.append(line.rstrip(' '))
    lines = core
+ 
    # ~~ clean comments
    core = []
    for i in range(len(lines)):
@@ -113,7 +114,8 @@ def scanCAS(lines):
       line = proc.group('before').strip() + ' '
       proc = re.match(emptyline,line)
       if not proc: core.append(line)
-   casStream = (' '.join(core)).replace('  ',' ')
+   # TODO: See what thar replace was for
+   casStream = (' '.join(core))#.replace('  ',' ')
    # ~~ clean values to keep only the keys
    while casStream != '':
       # ~~ non-key

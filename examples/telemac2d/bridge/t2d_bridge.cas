@@ -1,5 +1,3 @@
-PROCESSEURS PARALLELES : 0
-/DEBUGGER : 1
 /
 /--------------------------------------------------------------------- 
 / TELEMAC2D Version v6p2 13 juin 2012 
@@ -17,9 +15,6 @@ FICHIER DES CONDITIONS AUX LIMITES ='geo_bridge.cli'
 FICHIER DES FRONTIERES LIQUIDES    ='t2d_bridge.liq'
 FICHIER DE GEOMETRIE               ='geo_bridge.slf'
 /
-VALIDATION : OUI
-FICHIER DE REFERENCE               ='f2d_bridge.slf'
-/ 
 / BUSES
 /
 FICHIER DE DONNEES DES BUSES       ='fo1_bridge.txt' 

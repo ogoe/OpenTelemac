@@ -35,9 +35,7 @@
 FORTRAN FILE                    = t2d_hydraulic_jump.f
 GEOMETRY FILE                   = geo_hydraulic_jump.slf
 BOUNDARY CONDITIONS FILE        = geo_hydraulic_jump.cli
-REFERENCE FILE                  = f2d_hydraulic_jump_v1p0.slf
 RESULTS FILE                    = r2d_hydraulic_jump_v1p0.slf
-PARALLEL PROCESSORS             = 0
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -49,7 +47,6 @@ VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,S,B,Q,F,H,N,O,R,O2,R2'
 NUMBER OF PRIVATE ARRAYS : 6
 GRAPHIC PRINTOUT PERIOD                      = 500
 LISTING PRINTOUT PERIOD                      = 500
-VALIDATION                                   = YES
 TIME STEP                                    = 0.02
 NUMBER OF TIME STEPS                         = 2500
 INFORMATION ABOUT SOLVER                     = YES

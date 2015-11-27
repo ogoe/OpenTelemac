@@ -1,4 +1,3 @@
-/  PROCESSEURS PARALLELES : 2
 /
 /  HP C3700  compilateur HP   : 606 s   5.5 22/11/2004
 /
@@ -29,9 +28,7 @@
 FICHIER FORTRAN                    : t2d_dragforce.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_dragforce.cli
 FICHIER DE GEOMETRIE 		   : geo_dragforce.slf
-FICHIER DE REFERENCE               : f2d_dragforce.slf
 FICHIER DES RESULTATS              : r2d_dragforce.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /                         OPTIONS GENERALES

@@ -16,10 +16,6 @@ FORTRAN FILE                ='kochin2.f'
 
 GEOMETRY FILE               ='kochin.geo'
 
-
-VALIDATION                  = YES 
-REFERENCE FILE              = ref_kochin.res
-
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GENERALITES
 /---------------------------------------------------------------------

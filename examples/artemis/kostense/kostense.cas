@@ -16,10 +16,6 @@ FORTRAN FILE                       ='kostense.f'
 
 GEOMETRY FILE                      ='kostense.sel'
 
-VALIDATION                         = YES 
-REFERENCE FILE                     = kostense_ref.res
-
-
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GENERALITES
 /---------------------------------------------------------------------
@@ -60,8 +56,6 @@ MATRIX STORAGE : 3
 / PARAMETRES NUMERIQUES,SOLVEUR
 /---------------------------------------------------------------------
 
-/PARALLEL PROCESSORS : 1
-/SOLVER =3
 SOLVER =8
 PRECONDITIONING = 5
 

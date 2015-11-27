@@ -6,7 +6,6 @@ SISYPHE STEERING FILE      = 'sis_kd09.cas'
 RESULTS FILE               = 'r2d_kd09.slf' 
 / 
 /-- Computing ---------------------------------------------------------/ 
-PARALLEL PROCESSORS             = 0 
 /----------------------------------------------------------------------/ 
 TITLE = 'KD09 TELE2D-SISYPHE COUPLED' 
 COMPUTATION CONTINUED           = NO 
@@ -19,7 +18,6 @@ VARIABLE TIME-STEP              = YES
 DURATION                        = 1.0 
 MASS-BALANCE                    = YES 
 INFORMATION ABOUT SOLVER        = YES 
-/VALIDATION                     = YES 
 GRAPHIC PRINTOUT PERIOD         = 1000 
 LISTING PRINTOUT PERIOD         = 100 
 /----------------------------------------------------------------------/ 
@@ -61,7 +59,7 @@ FREE SURFACE GRADIENT COMPATIBILITY : 0.9
 /----------------------------------------------------------------------/ 
 /	COUPLING  
 /----------------------------------------------------------------------/ 
-COUPLING WITH                                 =  'INTER-SISYPHE' 
+COUPLING WITH                                 =  'SISYPHE' 
 COUPLING PERIOD FOR SISYPHE                   =  1      
 /      
 &FIN                                                                     

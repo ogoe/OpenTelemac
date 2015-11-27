@@ -25,8 +25,6 @@
 FICHIER DE GEOMETRIE  = geo_malpasset-large.slf
 FICHIER FORTRAN       = t2d_malpasset-large.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_malpasset-large.cli
-FICHIER DE REFERENCE  = f2d_malpasset-large.slf 
-VALIDATION = OUI
 FICHIER DES RESULTATS = r2d_malpasset-large.slf
 TITRE = 'Le barrage de MALPASSET'
 SUITE DE CALCUL = NON  

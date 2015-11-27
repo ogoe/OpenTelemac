@@ -21,8 +21,6 @@ BOUNDARY CONDITIONS FILE        = geo_wind_txy.cli
 RESULTS FILE                    = r2d_wind_txy.slf
 PREVIOUS COMPUTATION FILE       = ini_wind_txy.slf
 FORMATTED DATA FILE 1           = fo1_wind_txy
-REFERENCE FILE                  = f2d_wind_txy.slf
-PARALLEL PROCESSORS             = 0
 /
 /
 /----------------------------------------------
@@ -33,7 +31,6 @@ TITLE      = 'SET UP OF WIND VARYING IN TIME AND SPACE'
 VARIABLES FOR GRAPHIC PRINTOUTS              = 'U,V,H,S,X,Y'
 GRAPHIC PRINTOUT PERIOD                      = 1
 LISTING PRINTOUT PERIOD                      = 1
-VALIDATION                                   = YES
 TIME STEP                                    = 5.
 NUMBER OF TIME STEPS                         = 20
 MASS-BALANCE                                 = YES

@@ -13,8 +13,6 @@ BOUNDARY CONDITIONS FILE                    =  geo_sandpit.cli
 RESULTS FILE                                =  sis_sandpit.slf
 WAVE FILE                                   =  tom_sandpit.slf
 /
-/
-PARALLEL PROCESSORS                  = 0
 /------------------------------------------------------ /
 / NUMERICAL INFO                                        /
 /------------------------------------------------------ /

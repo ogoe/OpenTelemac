@@ -25,14 +25,11 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_pluie.cli
 FICHIER DE GEOMETRIE               : geo_pluie.slf
 FICHIER DES RESULTATS 3D           : r3d_pluie.slf
 FICHIER DES RESULTATS 2D           : r2d_pluie.slf
-FICHIER DE REFERENCE               : f3d_pluie.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES
 /----------------------------------------------------------------------/
 /
-PROCESSEURS PARALLELES : 0
 /
 PLUIE OU EVAPORATION : OUI
 PLUIE OU EVAPORATION EN MM PAR JOUR : 864000.

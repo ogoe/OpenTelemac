@@ -1,4 +1,3 @@
-PROCESSEURS PARALLELES : 0
 /
 /  Version 6.2
 /
@@ -17,7 +16,6 @@ FICHIER DES FRONTIERES LIQUIDES    : t3d_tetra.qsl
 FICHIER DE GEOMETRIE               : geo_tetra.slf
 FICHIER DES RESULTATS 3D           : r3d_tetra.slf
 FICHIER DES RESULTATS 2D           : r2d_tetra.slf
-FICHIER DE REFERENCE               : f3d_tetra.slf   VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

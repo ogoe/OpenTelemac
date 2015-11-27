@@ -7,9 +7,6 @@ FICHIER FORTRAN                    = t2d_friction.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_friction.cli  
 FICHIER DE GEOMETRIE               = geo_friction.slf
 FICHIER DES RESULTATS              = r2d_friction.slf
-/
-FICHIER DE REFERENCE  : f2d_friction.slf
-VALIDATION            : OUI
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 

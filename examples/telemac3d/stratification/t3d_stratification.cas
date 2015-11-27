@@ -1,4 +1,3 @@
-/PROCESSEURS PARALLELES : 8
 /
 /VERSION NON-HYDROSTATIQUE = OUI
 /ELEMENT : TETRAEDRE
@@ -31,9 +30,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_stratification.cli
 FICHIER DE GEOMETRIE               : geo_stratification.slf
 FICHIER DES RESULTATS 3D           : r3d_stratification.slf
 FICHIER DES RESULTATS 2D           : r2d_stratification.slf
-FICHIER DE REFERENCE               : f3d_stratification.slf
-/
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

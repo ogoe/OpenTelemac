@@ -20,9 +20,6 @@ FICHIER DES FRONTIERES LIQUIDES    : t3d_piledepon.qsl
 FICHIER DES RESULTATS 3D           : r3d_piledepon.slf
 FICHIER DES RESULTATS 2D           : r2d_piledepon.slf
 /
-FICHIER DE REFERENCE               : f3d_piledepon.slf
-VALIDATION : OUI
-/
 BANCS DECOUVRANTS = NON
 NOMBRE DE PLANS HORIZONTAUX = 6
 /  

@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment --> 
    <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
-      <data title="shoal" author="tomawac" contact="www.opentelemac.org" /> 
+      <data title="deferl_bj78" author="tomawac" contact="www.opentelemac.org" /> 
    </deco> 
    <deco xref="vect"> 
       <look colour="jet.xml" /> 
@@ -22,13 +22,36 @@
    <action xref="1"
        do="translate;run;cas;princi" 
        code="tomawac" target="bj15.cas" 
-       title="shoal scalar mode" 
+       title="deferl_bj78 scalar mode" 
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4" 
        code="tomawac" target="bj15.cas" 
-       title="shoal parallel mode" 
+       title="deferl_bj78 parallel mode" 
    />   
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="BJ15_T_ref.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="BJ15_T_ref.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

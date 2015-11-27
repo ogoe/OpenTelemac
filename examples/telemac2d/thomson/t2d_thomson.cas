@@ -1,7 +1,4 @@
 /
-DEBUGGER : 0
-/PARALLEL PROCESSORS             = 8
-/
 /-------------------------------------------------------------------/
 /   TELEMAC-2D       VALIDATION TEST CASE NUMBER                    /
 /                     GAUSSIAN OPEN BOUNDARIES                      /
@@ -36,7 +33,6 @@ GEOMETRY FILE                   = geo_thomson.slf
 FORTRAN FILE                    = t2d_thomson.f
 BOUNDARY CONDITIONS FILE        = geo_thomson.cli
 RESULTS FILE                    = r2d_thomson.slf
-REFERENCE FILE                  = f2d_thomson.slf
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -46,7 +42,6 @@ TITLE                           = 'GAUSSIAN-OPEN'
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,T'
 GRAPHIC PRINTOUT PERIOD         = 10
 LISTING PRINTOUT PERIOD         = 10
-VALIDATION                      = YES
 TIME STEP                       = 0.04
 NUMBER OF TIME STEPS            = 100
 MASS-BALANCE                    = YES

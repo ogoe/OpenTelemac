@@ -1,5 +1,4 @@
 STOCKAGE DES MATRICES : 3
-PROCESSEURS PARALLELES : 0
 /
 /  Sur HP 3700 (CHP70K2) : 107 s  version 5.5  30/11/2004
 /  Sur HP 3700 (CHP70K2) :  88 s  version 5.5  04/03/2005 (nouvelle diffusion)
@@ -22,8 +21,6 @@ FICHIER DE GEOMETRIE               : geo_gouttedo.slf
 /
 FICHIER DES RESULTATS 3D           : r3d_gouttedo.slf
 FICHIER DES RESULTATS 2D           : r2d_gouttedo.slf
-FICHIER DE REFERENCE               : f3d_gouttedo.slf
-VALIDATION                         : OUI
 /
 NOMBRE DE PLANS HORIZONTAUX : 3
 /LONGUEUR DU VECTEUR : 1             

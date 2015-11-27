@@ -16,7 +16,6 @@
 /---------------------------------------------------------------
 FICHIER DE GEOMETRIE = geo_bump2d-t2d.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_bump2d-t2d.cli
-/FICHIER DE REFERENCE = fis_bump2d.slf
 FICHIER DES RESULTATS = sis_bump2d-t2d.slf
 /
 /---------------------------------------------------------------

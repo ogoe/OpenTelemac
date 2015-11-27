@@ -24,8 +24,6 @@ DIFFUSION : NON
 / -----------------------------------------------------
 FICHIER DE GEOMETRIE = geo_conservation.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_conservation.cli
-FICHIER DE REFERENCE = fis_conservation.slf
-VALIDATION : OUI
 /
 FICHIER DES RESULTATS = sis_conservation.slf
 /

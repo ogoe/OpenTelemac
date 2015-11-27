@@ -22,9 +22,7 @@ TITLE = 'Water Quality- Thermic process for Channel'
 GEOMETRY FILE             = 'geo_waq_o2.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq_o2.cli'
 RESULTS FILE              = 'r2d_waq_o2.slf'
-REFERENCE FILE            = 'f2d_waq_o2.slf'
 FORTRAN FILE              = 't2d_waq_o2.f'
-VALIDATION : YES
 /DEBUGGER   : 1
 /
 /----------------------------------------------

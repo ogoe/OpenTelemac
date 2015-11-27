@@ -8,8 +8,6 @@ GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt
 3D RESULT FILE                     : t3d_tide-jmj_type.slf
 2D RESULT FILE                     : t2d_tide-jmj_type.slf
-VALIDATION                         : YES
-REFERENCE FILE                     : r3d_tide-jmj_type.slf
 /
 /COMPUTATION CONTINUED                           : NO
 /PREVIOUS COMPUTATION FILE : ?

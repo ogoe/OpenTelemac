@@ -17,7 +17,6 @@
 /----------------------------------------------------------------
 /	INPUTS-OUTPUTS, FILES (1)
 /----------------------------------------------------------------
-PARALLEL PROCESSORS                  = 0
 /TITE                                          =  'crue '
 / maillage de base DX=10 m 
 /                  7000 points environ
@@ -27,7 +26,7 @@ BOUNDARY CONDITIONS FILE                       =  geo_sandpit.cli
 BINARY DATA FILE 1                             =  tom_sandpit.slf
 BINARY DATA FILE 1 FORMAT                      =  SERAFIN
 SISYPHE STEERING FILE                          =  sis_sandpit.cas
-RESULTS FILE                                   =  t2d_sandpit.slf
+RESULTS FILE                                   =  r2d_sandpit.slf
 RECORD NUMBER IN WAVE FILE = 2
 / uniform grain
 
@@ -114,6 +113,6 @@ TURBULENCE MODEL                               =  1
 /----------------------------------------------------------------
 /	COUPLING AND PARALLELISM (9)
 /----------------------------------------------------------------
-COUPLING WITH                                 =  'INTER-SISYPHE'
+COUPLING WITH                                 =  'SISYPHE'
 COUPLING PERIOD FOR SISYPHE                   =  1      
 &FIN

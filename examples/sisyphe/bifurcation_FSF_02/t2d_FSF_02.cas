@@ -15,8 +15,6 @@ RESULTS FILE                      : r2d_FSF_02.slf
 FORTRAN FILE                      : t2d_canal-t2d.f
 COMPUTATION CONTINUED             : YES
 PREVIOUS COMPUTATION FILE         : r2d_FSF_02_init.slf
-REFERENCE FILE                    : f2d_FSF_02.slf
-VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /

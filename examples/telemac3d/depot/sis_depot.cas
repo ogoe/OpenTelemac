@@ -9,8 +9,6 @@ FICHIER DE GEOMETRIE               = geo_depot.slf
 FICHIER FORTRAN                    = sis_depot.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_sisyphe.cli
 FICHIER DES RESULTATS              = rsi_depot.slf
-FICHIER DE REFERENCE               = fis_depot.slf
-VALIDATION : OUI
 /
 TITRE = 'Cas test de depot et charriage'
 MASS-LUMPING = OUI

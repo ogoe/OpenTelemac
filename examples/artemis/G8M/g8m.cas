@@ -16,8 +16,6 @@ FICHIER FORTRAN                    ='g8m.f'
 
 FICHIER DE GEOMETRIE               ='g8m.geo'
 
-FICHIER DE REFERENCE               ='g8m_V6p3.resu'
-
 FICHIER DES PARAMETRES             ='g8m.cas'
 
 
@@ -88,6 +86,5 @@ PRECONDITIONNEMENT : 2
 
 
 /---------------------------------------------------------------------
-VALIDATION : YES
 /---------------------------------------------------------------------
 

@@ -1,4 +1,3 @@
- PROCESSEURS PARALLELES : 0
 /
 /  TEMPS D'EXECUTION SUR LES DIFFERENTES MACHINES :
 /
@@ -13,11 +12,10 @@
 FICHIER DE GEOMETRIE               = geo_malpasset-small.slf
 FICHIER FORTRAN                    = t2d_malpasset-small.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_malpasset-small.cli
-FICHIER DE REFERENCE               = f2d_malpasset-small_pos.slf
 FICHIER DES RESULTATS              = r2d_malpasset-small_pos.slf
 /
 TITRE = 'Le barrage de MALPASSET'
-SUITE DE CALCUL = NON  VALIDATION = OUI
+SUITE DE CALCUL = NON
 VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B
 BILAN DE MASSE = VRAI
 NOMBRE DE PAS DE TEMPS = 1000   PAS DE TEMPS = 4.

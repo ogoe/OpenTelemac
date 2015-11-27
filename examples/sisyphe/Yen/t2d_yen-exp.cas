@@ -36,7 +36,6 @@ FORTRAN FILE                     :  t2d_yen-exp.f
 BOUNDARY CONDITIONS FILE         :  geo_yen-exp.cli
 GEOMETRY FILE                    :  geo_yen-exp.slf
 RESULTS FILE                     :  r2d_yen-exp.slf
-REFERENCE FILE                   :  f2d_yen-exp.slf
 LIQUID BOUNDARIES FILE		 :  t2d_zulauf.qsl
 PREVIOUS COMPUTATION FILE        :  ini_yen-exp.slf
 /
@@ -59,7 +58,6 @@ GRAPHIC PRINTOUT PERIOD                     : 2000
 LISTING PRINTOUT PERIOD                     : 200
 /
 COMPUTATION CONTINUED                       : YES
-VALIDATION				    : YES
 /
 /----------------------------------------------------------------------
 /                    BOUNDARY CONDITIONS

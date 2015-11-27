@@ -12,7 +12,6 @@
 GEOMETRY FILE                   = geo_tests_channel.slf
 BOUNDARY CONDITIONS FILE        = geo_tests_channel.cli
 RESULTS FILE                    = r2d_tests_channel.slf
-REFERENCE FILE                  = f2d_tests_channel.slf
 LIQUID BOUNDARIES FILE          ='slts_38p32cm.prn'
 /
 /----------------------------------------------
@@ -66,5 +65,4 @@ MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 600
 MASS-BALANCE                    = YES
 MATRIX STORAGE                  = 3
 /
-VALIDATION                      = YES           
 &FIN

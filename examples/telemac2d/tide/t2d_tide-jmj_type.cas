@@ -1,5 +1,3 @@
-PARALLEL PROCESSORS : 8
-/DEBUGGER : 1
 /----------------------------------------------------------------------/
 /
 /
@@ -13,8 +11,6 @@ BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt
 RESULTS FILE                       : t2d_tide-jmj_type.slf
-VALIDATION                         : YES
-REFERENCE FILE                     : r2d_tide-jmj_type.slf
 /
 /----------------------------------------------------------------------/
 /                       GENERAL OPTIONS

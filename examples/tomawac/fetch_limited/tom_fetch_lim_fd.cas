@@ -1,4 +1,3 @@
-/PROCESSEURS PARALLELES = 2
 /--------------------------------------------------------------------/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /--------------------------------------------------------------------/
@@ -8,9 +7,6 @@
 /FICHIER DE GEOMETRIE = 'geo_fetch_lim.slf'
 FICHIER DE GEOMETRIE = 'geom.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_fetch_lim.cli'
-/
-FICHIER DE REFERENCE = 'fom_fetch_lim_fd.slf'
-VALIDATION = OUI
 /
 FICHIER DES RESULTATS 2D = 'tom_fetch_lim_fd.slf'
 FICHIER DES RESULTATS PONCTUELS = 'tom_fetch_lim_fd.spe'

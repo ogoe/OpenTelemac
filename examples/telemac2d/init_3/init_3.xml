@@ -24,13 +24,33 @@
        code="telemac2d" target="t2d_init-3.cas" 
        title="init_3 scalar mode" 
    />
-<!-- Error in Spectre tomawac
    <action xref="2" 
        do="translate;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_init-3.cas" 
        title="init_3 parallel mode" 
-   />   
--->
+   />    
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_init-3.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_init-3.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

@@ -22,10 +22,7 @@ BOUNDARY CONDITIONS FILE : geo_wesel.cli
 2D RESULT FILE           : r2d_wesel.slf
 LIQUID BOUNDARIES FILE   : t3d_wesel.qsl
 FORMATTED DATA FILE 1    : fo1_wesel.txt
-REFERENCE FILE           : f3d_wesel.slf
-VALIDATION               : YES
 /
-PARALLEL PROCESSORS : 0
 MATRIX STORAGE : 3
 NON-HYDROSTATIC VERSION : YES
 TIDAL FLATS : YES

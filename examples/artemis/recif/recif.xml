@@ -10,25 +10,6 @@
       <data title="recif" author="artemis" contact="www.opentelemac.org" />
    </deco>
 
-<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="fcts" >
-      <python>
-def mapdiff(a1,a2):
-   return a1.support,a2.values-a1.values
-def maxdiff(d0):
-   a0 = max(np.ravel(d0.values))
-   if a0 > 0.0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   a0 = min(np.ravel(d0.values))
-   if 0.0 > a0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   return "My work has been validated"
-      </python>
-   </cast>
-
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 -->
@@ -38,16 +19,14 @@ def maxdiff(d0):
        title="recif scalar mode"
    />
 
-<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="frt-art" config="oneofall" time="[-1]" type="2d:">
-      <v1 vars="VE:map" target="1:ARTRES" />
-      <v2 vars="VE:map" target="1:ARTREF" />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:ARTRES" />
+      <v2 vars=":map" target="ref_recif_x.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v3.values.ravel()) > 1.e-6"
-         warn="max(v3.values.ravel()) > 1.e-12"
-         value="maxdiff(v3)" />
+         fail="checkval(v3,[])" />
    </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

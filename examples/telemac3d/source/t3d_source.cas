@@ -1,5 +1,4 @@
 /DEBUGGER : 1
-PROCESSEURS PARALLELES : 0
 /
 STOCKAGE DES MATRICES : 3
 /
@@ -21,8 +20,6 @@ FICHIER DE GEOMETRIE               : geo_source.slf
 FICHIER DES RESULTATS 3D           : r3d_source.slf
 FICHIER DES RESULTATS 2D           : r2d_source.slf
 FICHIER DES SOURCES                : src_source.txt 
-FICHIER DE REFERENCE               : f3d_source.slf
-VALIDATION : OUI
 /
 NOMBRE DE PLANS HORIZONTAUX : 5 
 /        

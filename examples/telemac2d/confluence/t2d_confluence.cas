@@ -33,8 +33,6 @@ GEOMETRY FILE                   = geo_confluence.slf
 FORTRAN FILE                    = t2d_confluence.f
 BOUNDARY CONDITIONS FILE        = geo_confluence.cli
 RESULTS FILE                    = r2d_confluence.slf
-REFERENCE FILE                  = f2d_confluence.slf
-PARALLEL PROCESSORS             = 0
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -44,7 +42,6 @@ TITLE                            = 'RIVER CONFLUENCE'
 VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,H,S,B'
 GRAPHIC PRINTOUT PERIOD          = 1000
 LISTING PRINTOUT PERIOD          = 100
-VALIDATION                       = YES
 MASS-BALANCE                     = YES
 TIME STEP                        = 0.1
 NUMBER OF TIME STEPS             = 1000

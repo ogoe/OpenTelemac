@@ -1,6 +1,4 @@
 /
-PROCESSEURS PARALLELES : 0
-/
 PROFILS DE VITESSE SUR LA VERTICALE : 2;2
 STOCKAGE DES MATRICES : 3
 /
@@ -36,10 +34,7 @@ FICHIER DE GEOMETRIE               : geo_canal.slf
 FICHIER DES FRONTIERES LIQUIDES    : t3d_canal.qsl
 FICHIER DES RESULTATS 3D           : r3d_canal-t3d.slf
 FICHIER DES RESULTATS 2D           : r2d_canal-t3d.slf
-FICHIER DE REFERENCE               : f3d_canal.slf
 FICHIER POUR SUITE 2D              : f2d_canal.slf
-/
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

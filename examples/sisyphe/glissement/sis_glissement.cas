@@ -1,6 +1,4 @@
 /
-PROCESSEURS PARALLELES : 0
-/
 / CAS TEST DE GLISSEMENT (SANS CHARRIAGE ET SANS SUSPENSION)
 /
 / Dell 2.8 GHz Linux, compilateur pgi :   8 s version 5.8 JMH 18/01/2008
@@ -25,7 +23,6 @@ FICHIER DE GEOMETRIE = geo_glissement.slf
 FICHIER FORTRAN = sis_glissement.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_glissement.cli
 FICHIER DES RESULTATS = sis_glissement.slf
-FICHIER DE REFERENCE = fis_glissement.slf  VALIDATION = OUI
 /
 TITRE = 'GLISSEMENT DU SEDIMENT'
 /

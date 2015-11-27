@@ -19,11 +19,8 @@ FICHIER DE GEOMETRIE               : geo_piledepon.slf
 FICHIER DES FRONTIERES LIQUIDES    : t3d_piledepon.qsl
 FICHIER DES RESULTATS 3D           : r3d_piledepon-nonhydro.slf
 FICHIER DES RESULTATS 2D           : r2d_piledepon-nonhydro.slf
-FICHIER DE REFERENCE               : f3d_piledepon-nonhydro.slf
-VALIDATION : OUI
 /----------------------------------------------------------------------/ 
 /
-PROCESSEURS PARALLELES : 0
 COMPATIBILITE DU GRADIENT DE SURFACE LIBRE=0.75
 BILAN DE MASSE : OUI
 IMPLICITATION POUR LA DIFFUSION : 1.

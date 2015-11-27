@@ -32,9 +32,7 @@
 GEOMETRY FILE                   = geo_weirs.slf
 BOUNDARY CONDITIONS FILE        = geo_weirs.cli
 RESULTS FILE                    = r2d_weirs.slf
-REFERENCE FILE                  = f2d_weirs.slf
 WEIRS DATA FILE                 = fo1_weirs.txt
-/PARALLEL PROCESSORS             = 8
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -44,7 +42,6 @@ TITLE                                        = 'WEIRS IN A CHANNEL'
 VARIABLES FOR GRAPHIC PRINTOUTS              = 'U,V,S,T1,H'
 GRAPHIC PRINTOUT PERIOD                      = 10
 LISTING PRINTOUT PERIOD                      = 10
-VALIDATION                                   = YES
 TIME STEP                                    = 150.
 NUMBER OF TIME STEPS                         = 40
 MASS-BALANCE                                 = YES

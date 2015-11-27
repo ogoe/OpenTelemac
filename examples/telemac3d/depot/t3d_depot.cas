@@ -1,5 +1,3 @@
-DEBUGGER : 0
-/PROCESSEURS PARALLELES : 8
 /
 FICHIER DES PARAMETRES DE SISYPHE = sis_depot.cas
 COUPLAGE AVEC : SISYPHE
@@ -51,9 +49,6 @@ FICHIER DE GEOMETRIE               : geo_depot.slf
 /
 FICHIER DES RESULTATS 3D           : r3d_depot.slf
 FICHIER DES RESULTATS 2D           : r2d_depot.slf
-FICHIER DE REFERENCE               : f3d_depot.slf
-/
-VALIDATION : OUI
 /
 SUITE DE CALCUL : OUI
 FICHIER DU CALCUL PRECEDENT : restart

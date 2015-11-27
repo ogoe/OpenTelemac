@@ -1,5 +1,4 @@
 CONTOURNEMENT DES VOLUMES NULS : NON
-DEBUGGER : 0
 /
 /
 STOCKAGE DES MATRICES : 3
@@ -48,8 +47,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_malpasset.cli
 FICHIER DE GEOMETRIE               : geo_malpasset.slf
 FICHIER DES RESULTATS 3D           : r3d_malpasset_pos.slf
 FICHIER DES RESULTATS 2D           : r2d_malpasset_pos.slf
-FICHIER DE REFERENCE               : f3d_malpasset_pos.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

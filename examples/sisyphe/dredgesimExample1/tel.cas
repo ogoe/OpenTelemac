@@ -7,10 +7,9 @@
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
 /
-/PARALLEL PROCESSORS             = 12
 /
 SISYPHE STEERING FILE = sis.cas
-COUPLING WITH = 'INTER-SISYPHE'
+COUPLING WITH = 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE = 1
 GEOMETRY FILE                   = gitter50neu.geo
 BOUNDARY CONDITIONS FILE        = boundary50neu.conlim
@@ -25,7 +24,6 @@ VARIABLES FOR GRAPHIC PRINTOUTS              = 'U,V,H,S,B,M' / ,N,O'
 GRAPHIC PRINTOUT PERIOD                      =  86400 / 17280  86400
 LISTING PRINTOUT PERIOD                      =  360
 NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS   = 0 /2
-VALIDATION                                   = NO
 MASS-BALANCE                                 = YES
 TIME STEP                                    = 10
 NUMBER OF TIME STEPS                         = 259200 / 6307200 864000 3153600  

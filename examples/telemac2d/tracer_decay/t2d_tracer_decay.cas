@@ -15,9 +15,7 @@ TITLE = 'Simple tracer decay for Channel-Coarse mesh'
 GEOMETRY FILE             = geo_tracer_decay.slf
 BOUNDARY CONDITIONS FILE  = geo_tracer_decay.cli
 RESULTS FILE              = r2d_tracer_decay.slf
-REFERENCE FILE            = f2d_tracer_decay.slf
 FORTRAN FILE              = t2d_tracer_decay.f
-VALIDATION : YES
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS

@@ -13,7 +13,6 @@ GEOMETRY FILE                   = geo_triangular_shelf.slf
 FORTRAN FILE                    = t2d_triangular_shelf.f
 BOUNDARY CONDITIONS FILE        = geo_triangular_shelf.cli
 RESULTS FILE                    = r2d_triangular_shelf.slf
-REFERENCE FILE                  = f2d_triangular_shelf.slf
 NUMBER OF PRIVATE ARRAYS        = 1
 /
 /----------------------------------------------
@@ -75,6 +74,4 @@ MATRIX STORAGE                  = 3
 IMPLICITATION FOR DEPTH         = 0.5
 IMPLICITATION FOR VELOCITY      = 0.5
 /
-VALIDATION                      = YES
-/           
 &FIN

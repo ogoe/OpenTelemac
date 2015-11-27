@@ -1,4 +1,3 @@
-/PROCESSEURS PARALLELES = 5
 /********************************************************************/
 /              TOMAWAC  STEERING FILE                                /
 /********************************************************************/
@@ -15,8 +14,6 @@ FICHIER DES RESULTATS 2D = 'res_veg_Tp1.slf'
 /FICHIER DES RESULTATS PONCTUELS = 'res_veg_Tp1_Thierry.spe'
 /FICHIER DES RESULTATS SPECTRES 1D  = 'res_veg_Tp1.txt'
 /
-FICHIER DE REFERENCE = 'ref_veg.slf'
-VALIDATION = OUI
 /--------------------------------------------------------------------/
 / MISCELLANEOUS INPUT-OUTPUT 
 /--------------------------------------------------------------------/

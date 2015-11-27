@@ -37,8 +37,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_clotilde.cli
 FICHIER DE GEOMETRIE               : geo_clotilde.slf
 FICHIER DU CALCUL PRECEDENT        : ini_clotilde.slf
 FICHIER DES RESULTATS              : r2d_clotilde.slf
-FICHIER DE REFERENCE               : f2d_clotilde.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/   
 /     OPTIONS GENERALES
@@ -85,6 +83,5 @@ CLIPPING DE H         : NON
 FICHIER DES SECTIONS DE CONTROLE : t2d_clotilde.sec
 FICHIER DE SORTIE DES SECTIONS DE CONTROLE : t2d_clotilde.sct
 /
-PROCESSEURS PARALLELES = 0
 /
 &FIN

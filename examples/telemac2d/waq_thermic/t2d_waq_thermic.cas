@@ -20,10 +20,8 @@ TITLE = 'Water Quality- Thermic process for Channel'
 GEOMETRY FILE             = 'geo_waq_thermic.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq_thermic.cli'
 RESULTS FILE              = 'r2d_waq_thermic.slf'
-REFERENCE FILE            = 'f2d_waq_thermic.slf'
 FORTRAN FILE              = 't2d_waq_thermic.f'
 FORMATTED DATA FILE 1     = 'meteo_thermic_case1.txt'
-VALIDATION : YES
 /DEBUGGER   : 1
 /
 /----------------------------------------------

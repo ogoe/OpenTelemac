@@ -1,4 +1,3 @@
-/PARALLEL PROCESSORS : 8
 /
 /  ARTIFICIAL RIVER : TESTING OIL SPILL IN A FLUME
 / 
@@ -14,8 +13,6 @@ BOUNDARY CONDITIONS FILE                      : geo_t2d_riv_art.cli
 GEOMETRY FILE                                 : geo_t2d_riv_art.slf
 FORTRAN FILE                                  : t2d_riv_art.f
 RESULTS FILE                                  : t2d_riv_art.res
-VALIDATION                                    : YES
-REFERENCE FILE                                : t2d_riv_art.ref
 / 
 /----------------------------------------------------------------------
 /                        GENERAL OPTIONS

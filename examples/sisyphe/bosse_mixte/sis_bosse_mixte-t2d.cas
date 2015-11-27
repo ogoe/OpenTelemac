@@ -45,7 +45,6 @@ FICHIER DES RESULTATS = sis_bosse_mixte-t2d.slf
 TITRE = 'bosse mixte'
 CAS PERMANENT = VRAI
 MASS-LUMPING = OUI
-/VALIDATION = OUI
 /
 /-------------------------------------------------------
 /ENTREES-SORTIES, GRAPHIQUES ET LISTING 

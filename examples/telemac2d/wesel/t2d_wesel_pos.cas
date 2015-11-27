@@ -1,4 +1,3 @@
-PARALLEL PROCESSORS : 0
 MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES : 30
 /
 /  CASE PROVIDED BY JACEK JANKOWSKI (BAW) FOR COMPARISON WITH UNTRIM
@@ -29,8 +28,6 @@ BOUNDARY CONDITIONS FILE        : geo_wesel.cli
 RESULTS FILE                    : r2d_wesel_pos.slf
 LIQUID BOUNDARIES FILE          : t2d_wesel.qsl
 FORMATTED DATA FILE 1           : fo1_wesel.txt
-REFERENCE FILE                  : f2d_wesel_pos.slf
-VALIDATION : YES
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS

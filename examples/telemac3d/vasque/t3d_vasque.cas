@@ -12,8 +12,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_vasque.cli
 FICHIER DE GEOMETRIE               : geo_vasque.slf
 FICHIER DES RESULTATS 3D           : r3d_vasque.slf
 FICHIER DES RESULTATS 2D           : r2d_vasque.slf
-FICHIER DE REFERENCE               : f3d_vasque.slf
-VALIDATION : OUI
 /
 NOMBRE DE PLANS HORIZONTAUX : 10
 /           

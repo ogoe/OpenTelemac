@@ -24,13 +24,16 @@
        code="telemac2d" target="t2d_delwaq.cas"
        title="delwaq scalar mode"
    />
-<!-- Case removed no direct solver in parallel mode
-   <action xref="2"
-       do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_delwaq.cas"
-       title="delwaq parallel mode"
-   />
--->
+<!-- No direct solver in parallel mode -->
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_delwaq.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -39,10 +42,6 @@
    <plot1d xref="Velocity1d" type="history" time="[0:-1]" size="(12;5)" config="oneofall" >
       <layer vars="vitesse u:line" target="1:T2DRES" extract="(5.2;4.6)" />
       <layer vars="vitesse v:line" target="1:T2DRES" extract="(5.2;4.6)" />
-<!--
-      <layer vars="vitesse u:line" target="2:T2DRES" extract="[5.2;4.6]" />
-      <layer vars="vitesse v:line" target="2:T2DRES" extract="[5.2;4.6]" />
--->
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

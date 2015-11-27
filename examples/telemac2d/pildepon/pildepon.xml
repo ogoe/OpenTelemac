@@ -13,25 +13,6 @@
       <look colour="k" />
    </deco>
 
-<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="fcts" >
-      <python>
-def mapdiff(a1,a2):
-   return a1.support,a2.values-a1.values
-def maxdiff(d0):
-   a0 = max(np.ravel(d0.values))
-   if a0 > 0.0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   a0 = min(np.ravel(d0.values))
-   if 0.0 > a0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   return "My work has been validated"
-      </python>
-   </cast>
-
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 -->
@@ -40,76 +21,76 @@ def maxdiff(d0):
        code="telemac2d" target="t2d_pildepon.cas"
        title="pildepon scalar mode"
    />
-   <action xref="2"
-       do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_pildepon_cin.cas"
-       title="pildepon scalar mode"
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_pildepon.cas"
+       title="pildepon parallel mode"
    />
    <action xref="3"
        do="translate;run;cas;princi"
        code="telemac2d" target="t2d_pildepon_qua.cas"
        title="pildepon scalar mode"
    />
-   <action xref="4"
-       do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_pildepon.cas"
-       title="pildepon parallel mode"
-   />
    <action xref="5"
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_pildepon_qua.cas"
        title="pildepon parallel mode"
    />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon_cin.cas"
+       title="pildepon scalar mode"
+   />
 
-<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="1-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
-      <v11 vars=":map" target="1:T2DRES" />
-      <v12 vars=":map" target="1:T2DREF" />
-      <v13 vars="mapdiff(v11,v12)" />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_pildepon.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v13.values.ravel()) > 1.e-6"
-         warn="max(v13.values.ravel()) > 1.e-12"
-         value="maxdiff(v13)" />
+         fail="checkval(v3,[])" />
    </cast>
-   <cast xref="2-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
-      <v21 vars="SURF:map" target="2:T2DRES" />
-      <v22 vars="SURF:map" target="2:T2DREF" />
-      <v23 vars="mapdiff(v21,v22)" />
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="4:T2DRES" />
+      <v5 vars=":map" target="f2d_pildepon.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v23.values.ravel()) > 1.e-6"
-         warn="max(v23.values.ravel()) > 1.e-12"
-         value="maxdiff(v23)" />
+         fail="checkval(v6,[])" />
    </cast>
-   <cast xref="3-f2d-r2d" config="oneofall" time="[-1]" type="2d:">
-      <v31 vars=":map" target="3:T2DRES" />
-      <v32 vars=":map" target="3:T2DREF" />
-      <v33 vars="mapdiff(v31,v32)" />
+   <cast xref="cas-parall14" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="4:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T2DRES" />
+      <v11 vars=":map" target="f2d_pildepon_qua.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v33.values.ravel()) > 1.e-6"
-         warn="max(v33.values.ravel()) > 1.e-12"
-         value="maxdiff(v33)" />
+         fail="checkval(v12,[])" />
    </cast>
-
-<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="4-t2d-t2d" config="oneofall" time="[-1]" type="2d:">
-      <v41 vars=":map" target="1:T2DRES" />
-      <v42 vars=":map" target="4:T2DRES" />
-      <v44 vars="mapdiff(v41,v42)" />
-      <return title="Comparison with the last time frame of the parallel file."
-         fail="max(v44.values.ravel()) > 1.e-6"
-         warn="max(v44.values.ravel()) > 1.e-12"
-         value="maxdiff(v44)" />
+   <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="5:T2DRES" />
+      <v14 vars=":map" target="f2d_pildepon_qua.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[])" />
    </cast>
-   <cast xref="5-t2d-t2d" config="oneofall" time="[-1]" type="2d:">
-      <v51 vars=":map" target="3:T2DRES" />
-      <v52 vars=":map" target="5:T2DRES" />
-      <v54 vars="mapdiff(v51,v52)" />
-      <return title="Comparison with the last time frame of the parallel file."
-         fail="max(v54.values.ravel()) > 1.e-6"
-         warn="max(v54.values.ravel()) > 1.e-12"
-         value="maxdiff(v54)" />
+   <cast xref="cas-parall35" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:T2DRES" />
+      <v17 vars=":map" target="5:T2DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="2:T2DRES" />
+      <v20 vars=":map" target="f2d_pildepon_cin.slf" />
+      <v21 vars="mapdiff(v19,v20)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v21,[])" />
    </cast>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

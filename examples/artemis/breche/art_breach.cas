@@ -16,9 +16,6 @@ FORTRAN FILE              ='art_breach.f'
 
 GEOMETRY FILE             ='geo_breach.slf'
 
-REFERENCE FILE            ='ref_art_breach.slf'
-
-
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GENERALITES
 /---------------------------------------------------------------------
@@ -68,9 +65,4 @@ BREAKING     = NO
 WAVE PERIOD  = 14.
 
 DIRECTION OF WAVE PROPAGATION = 0.
-
-
-/---------------------------------------------------------------------
-VALIDATION : YES
-/---------------------------------------------------------------------
 

@@ -4,8 +4,6 @@
 / TELEMAC 2D : TEST DECROISSANCE TRACEURS 
 /--------------------------------------------------------------------- 
 / 
-DEBUGGER = 0 
-/ 
 /--------------------------------------------------------------------- 
 / ENTREES-SORTIES, FICHIERS 
 /--------------------------------------------------------------------- 
@@ -14,14 +12,11 @@ NOMS DES TRACEURS                  ='Traceur 1';'Traceur 2'
 FICHIER DES PARAMETRES             ='t2d_trdec.cas' 
 FICHIER DES RESULTATS              ='r2d_trdec.slf'  
 FICHIER DES CONDITIONS AUX LIMITES ='geo_trdec.cli'  
-FICHIER DE REFERENCE               ='f2d_trdec.slf'  
 FICHIER DE GEOMETRIE               ='geo_trdec.slf'  
 / 
 /--------------------------------------------------------------------- 
 / ENTREES-SORTIES, GENERALITES 
 /--------------------------------------------------------------------- 
-/ 
-VALIDATION =OUI 
 / 
 /------------------------------------------------------------------- 
 /                     OPTIONS GENERALES                                

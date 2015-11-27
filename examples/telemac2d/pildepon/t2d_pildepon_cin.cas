@@ -17,7 +17,6 @@
 FICHIER DES CONDITIONS AUX LIMITES : geo_pildepon.cli
 FICHIER DE GEOMETRIE               : geo_pildepon.slf
 FICHIER DES FRONTIERES LIQUIDES    : t2d_pildepon.lqd
-FICHIER DE REFERENCE               : f2d_pildepon_cin.slf
 FICHIER DES RESULTATS              : r2d_pildepon_cin.slf
 /
 /----------------------------------------------------------------------/
@@ -27,7 +26,6 @@ SCHEMA EN VOLUMES FINIS : 2     PAS DE TEMPS VARIABLE : OUI
 DUREE DU CALCUL : 80.        PAS DE TEMPS = 0.4
 /NOMBRE DE TRACEURS : 1
 /----------------------------------------------------------------------/ 
-VALIDATION : OUI
 TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
 SUITE DE CALCUL = NON
 /

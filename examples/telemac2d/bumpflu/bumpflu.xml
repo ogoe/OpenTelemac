@@ -10,25 +10,6 @@
       <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
    </deco>
 
-<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="fcts" >
-      <python>
-def mapdiff(a1,a2):
-   return a1.support,a2.values-a1.values
-def maxdiff(d0):
-   a0 = max(np.ravel(d0.values))
-   if a0 > 0.0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   a0 = min(np.ravel(d0.values))
-   if 0.0 > a0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   return "My work has been validated"
-      </python>
-   </cast>
-
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment <look roi="(7;0.25)(13.5;1.75)" />
 -->
@@ -43,33 +24,27 @@ def maxdiff(d0):
        title="bumpflu parallel mode"
    />
 
-<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   <save xref="f2d-r2d" type="2d:" config="oneofall" time="[-1]"  >
-      <layer vars="v3:map" target="f2d-r2d:v3" />
-   </save>
--->
-   <cast xref="f2d-r2d" config="oneofall" time="[0:-1]" type="2d:">
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:T2DRES" />
-      <v2 vars=":map" target="1:T2DREF" />
+      <v2 vars=":map" target="f2d_bumpflu.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v3.values.ravel()) > 1.e-6"
-         warn="max(v3.values.ravel()) > 1.e-12"
-         value="maxdiff(v3)" />
+         fail="checkval(v3,[])" />
    </cast>
-<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   <save xref="r2d-r2d" type="2d:" config="oneofall" time="[-1]"  >
-      <layer vars="v4:map" target="r2d-r2d" />
-   </save>
--->
-   <cast xref="r2d-r2d" config="oneofall" time="[0:-1]" type="2d:">
-      <v1 vars=":map" target="1:T2DRES" />
-      <v2 vars=":map" target="2:T2DRES" />
-      <v4 vars="mapdiff(v1,v2)" />
-      <return title="Comparison with the last time frame of the parallel file."
-         fail="max(v4.values.ravel()) > 1.e-6"
-         warn="max(v4.values.ravel()) > 1.e-12"
-         value="maxdiff(v4)" />
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_bumpflu.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

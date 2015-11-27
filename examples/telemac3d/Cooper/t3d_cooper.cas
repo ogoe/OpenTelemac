@@ -1,5 +1,3 @@
-/DEBUGGER : 1
-/PARALLEL PROCESSORS : 2
 /NUMBER OF SUB ITERATIONS FOR NON LINEARITIES : 2
 MATRIX STORAGE : 3
 MESH TRANSFORMATION : 3
@@ -24,8 +22,6 @@ BOUNDARY CONDITIONS FILE        : geo_cooper.cli
 GEOMETRY FILE                   : geo_cooper.slf
 3D RESULT FILE                  : r3d_cooper.slf
 2D RESULT FILE                  : r2d_cooper.slf
-REFERENCE FILE                  : f3d_cooper.slf
-VALIDATION : YES
 /
 /----------------------------------------------------------------------/
 TITLE : 'BOX SOURCE. Discharge = 20 m3/s. Buoyant tracer.'

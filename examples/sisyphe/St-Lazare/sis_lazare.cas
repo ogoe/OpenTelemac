@@ -10,8 +10,6 @@ TITLE                                          = 'St. Lazare'
 GEOMETRY FILE                                  =  geo_lazare-t2d.slf
 BOUNDARY CONDITIONS FILE                       =  geo_lazare-t2d.cli
 RESULTS FILE                                   =  sis_lazare.slf
-VALIDATION                                     =  YES
-REFERENCE FILE                                 =  fis_lazare.slf / sis.ref
 /----------------------------------------------------------------
 /	DUREE DU CALCUL (2)
 /----------------------------------------------------------------

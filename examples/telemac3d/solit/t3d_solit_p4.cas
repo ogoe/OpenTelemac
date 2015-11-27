@@ -20,7 +20,6 @@ GEOMETRY FILE            = geo_solit.slf
 BOUNDARY CONDITIONS FILE = geo_solit.cli
 3D RESULT FILE           = r3d_solit_p4.slf
 2D RESULT FILE           = r2d_solit_p4.slf
-REFERENCE FILE           = f3d_solit_p4.slf    VALIDATION : YES
 /
 NUMBER OF TIME STEPS = 300     TIME STEP = 0.1
 NUMBER OF HORIZONTAL LEVELS = 4

@@ -19,14 +19,11 @@ BOUNDARY CONDITIONS FILE          : Bar_Test_Random.cli
 RESULTS FILE                      : Bar_Test_Random_r2d_T2d.slf
 SISYPHE STEERING FILE             : Bar_Test_Random_Sis.cas
 FORTRAN FILE                      : corfon.f
-REFERENCE FILE                    : Bar_Test_Random_f2d_T2d.slf
-VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
-/PARALLEL PROCESSORS                             : 8
 TITLE : 'Bars Test Case: Linear channel,bed configuration: Ripples'
 COUPLING WITH   : 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE                     : 1

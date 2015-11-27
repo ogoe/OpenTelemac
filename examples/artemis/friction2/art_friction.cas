@@ -16,8 +16,6 @@ FORTRAN FILE                ='art_friction.f'
 
 GEOMETRY FILE               ='geo_friction.slf'
 
-/REFERENCE FILE              ='ref_art_friction.slf'
-
 
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
@@ -78,6 +76,5 @@ DIAMETER90 = 0.7E-3
 DIAMETER50 = 0.22E-3
 
 /---------------------------------------------------------------------
-VALIDATION : NON
 /---------------------------------------------------------------------
 

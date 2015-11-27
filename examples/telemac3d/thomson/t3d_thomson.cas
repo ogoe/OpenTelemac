@@ -1,7 +1,5 @@
 OPTION POUR LES FRONTIERES LIQUIDES : 2
-DEBUGGER : 0
 STOCKAGE DES MATRICES : 3
-PROCESSEURS PARALLELES : 0
 /
 /  Sur HP 3700 (CHP70K2) : 107 s  version 5.5  30/11/2004
 /  Sur HP 3700 (CHP70K2) :  88 s  version 5.5  04/03/2005 (nouvelle diffusion)
@@ -21,8 +19,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_thomson.cli
 FICHIER DE GEOMETRIE               : geo_thomson.slf
 FICHIER DES RESULTATS 3D           : t3d_thomson.slf
 FICHIER DES RESULTATS 2D           : t2d_thomson.slf
-FICHIER DE REFERENCE               : f3d_thomson.slf
-VALIDATION                         : OUI
 /
 NOMBRE DE PLANS HORIZONTAUX : 3
 /LONGUEUR DU VECTEUR : 1             

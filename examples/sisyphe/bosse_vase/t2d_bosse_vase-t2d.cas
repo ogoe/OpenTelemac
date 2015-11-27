@@ -2,16 +2,13 @@
 FICHIER FORTRAN : t2d_bosse_vase-t2d.f     
 /
 FICHIER DES PARAMETRES DE SISYPHE  :  sis_bosse_vase-t2d.cas
-COUPLAGE AVEC : 'INTER-SISYPHE' PERIODE DE COUPLAGE POUR SISYPHE = 1
+COUPLAGE AVEC : 'SISYPHE' PERIODE DE COUPLAGE POUR SISYPHE = 1
 /
 FICHIER DES CONDITIONS AUX LIMITES :  geo_bosse_vase-t2d.cli
 FICHIER DE GEOMETRIE               :  geo_bosse_vase-t2d.slf
 FICHIER DES RESULTATS              : r2d_bosse_vase-t2d.slf
 FICHIER DU CALCUL PRECEDENT        : r2d_init_bosse_vase-t2d.slf
 SUITE DE CALCUL  = OUI
-/
-VALIDATION = OUI
-FICHIER DE REFERENCE : f2d_bosse_vase-t2d.slf
 /
 TITRE :' Telemac2d-Sisyphe'                                      
 /                                                                               
@@ -62,7 +59,6 @@ OPTION POUR LES FRONTIERES LIQUIDES : 1;1
 DISCRETISATIONS EN ESPACE : 11;11
 STOCKAGE DES MATRICES : 3   
 PRODUIT MATRICE-VECTEUR : 1
-PROCESSEURS PARALLELES : 0    
 /
 / equation d'onde
 TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1

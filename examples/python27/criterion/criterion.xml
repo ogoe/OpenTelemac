@@ -21,20 +21,12 @@
    Example of checks by Jenkins based on a difference with the reference file
       - NOTE:  the type defines the object as 2d, but as is (no resampling/extraction)
    --> 
-   <cast xref="valida" config="oneofall" time="[0:-1]" type="2d:">
-      <python>
-def valida(a1,a2):
-   return a1.support,max(np.ravel(a2.values-a1.values))
-def mapdiff(a1,a2):
-   return a1.support,a2.values-a1.values
-      </python>
+    <cast xref="valida" config="oneofall" time="[0:-1]" type="2d:">
       <v1 vars="free surface:map" target="r2d_tide-jmj_real_gen.slf" />
       <v2 vars="free surface:map" target="r2d_tide-jmj_type_gen.slf" />
       <v3 vars="mapdiff(v2,v1)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="valida(v2,v1) > 0.3"
-         warn="valida(v2,v1) > 0.2"
-         value="valida(v2,v1)[1]" />
+         fail="checkval(v3,[0.3])" />
    </cast>
    <!-- Plotting a 2D map of the diffeence calculated above at the last frame
       - Variables extracted:
@@ -71,7 +63,7 @@ def diff(a1,a2):
    d = np.zeros((1,nbtime,1,len(a1.support)),dtype=np.float)
    for itime in range(nbtime):
       d[0][itime] = d[0][itime] + a1.values[0][itime]-a2.values[0][0]
-   return a1.support,d/nbtime
+   return [],[],a1.support,d/nbtime
       </python>
       <s0 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" /> 
       <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[20]" target="f2d_dambreak.slf" /> 
@@ -125,7 +117,7 @@ def analytics(a0):
          hn[0][itime][0][isup] = max( 0.0,arg1 )
          hn[0][itime][0][isup] = h0 * ( hn[0][itime][0][isup] )**2 / g / 9.0
          hn[0][itime][0][isup] = min( hn[0][itime][0][isup], h0 )
-   return x0,hn
+   return [],[],x0,hn
       </python>
       <a1 vars="analytics(s0)" />
    </cast>

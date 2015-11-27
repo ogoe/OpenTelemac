@@ -19,8 +19,6 @@ GEOMETRY FILE            : geo_lock-hydro.slf
 BOUNDARY CONDITIONS FILE : geo_lock-hydro.cli
 3D RESULT FILE           : r3d_lock-hydro.slf
 2D RESULT FILE           : r2d_lock-hydro.slf
-REFERENCE FILE           : f3d_lock-hydro.slf
-VALIDATION               : YES
 /
 /
 NUMBER OF TIME STEPS = 100  TIME STEP = 1.

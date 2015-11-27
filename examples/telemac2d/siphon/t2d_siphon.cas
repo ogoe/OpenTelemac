@@ -1,5 +1,3 @@
-/DEBUGGER : 1
-/PROCESSEURS PARALLELES : 2
 /
 /  ATTENTION, AVEC CONVECTEUR VOLUMES FINIS, METTRE
 /  SOLVEUR POUR LA DIFFUSION DES TRACEURS : 1
@@ -28,7 +26,6 @@ FICHIER FORTRAN                     : t2d_siphon.f
 FICHIER DES CONDITIONS AUX LIMITES  : geo_siphon.cli
 FICHIER DE GEOMETRIE                : geo_siphon.slf
 FICHIER DE DONNEES DES SIPHONS      : fo1_siphon.txt
-FICHIER DE REFERENCE                : f2d_siphon.slf  VALIDATION : OUI
 FICHIER DES RESULTATS               : r2d_siphon.slf
 /
 /----------------------------------------------------------------------/ 
@@ -62,7 +59,6 @@ PRECISION POUR LA DIFFUSION DES TRACEURS : 1.E-10
 SOLVEUR POUR LA DIFFUSION DES TRACEURS : 7                                
 OPTION DU SOLVEUR POUR LA DIFFUSION DES TRACEURS : 2               
 PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS : 2                                                                  
-/PROCESSEURS PARALLELES : 0 
 /
 /
 / 0 : ROE 1 : CINETIQUE ORDRE 1  2 : CINETIQUE ORDRE 2

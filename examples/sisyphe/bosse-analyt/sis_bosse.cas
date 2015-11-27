@@ -49,13 +49,11 @@ FICHIER FORTRAN      = sis_bosse.f
 /
 FICHIER DES CONDITIONS AUX LIMITES = geo_bosse.cli
 FICHIER DES RESULTATS = sis_bosse.slf
-FICHIER DE REFERENCE  = fis_bosse.slf
 /
 / CONDITIONS DE CALCUL
 / +++++++++++++++++++++
 TITRE = bosse
 CAS PERMANENT = VRAI
-VALIDATION = OUI
 /
 MASS-LUMPING = OUI
 /

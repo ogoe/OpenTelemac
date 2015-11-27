@@ -6,10 +6,7 @@ SECONDARY CURRENTS = YES
 /SECONDARY CURRENTS = NO
 BOUNDARY CONDITIONS FILE                     = geo_yen-exp.cli
 GEOMETRY FILE                                = geo_yen-exp.slf
-/RESULTS FILE                                 = sis_yen-exp_NO.slf
 RESULTS FILE                                 = sis_yen-exp_YES.slf
-/VALIDATION                                   = YES
-/REFERENCE FILE                               = fis_yen-exp.slf
 /----------------------------------------------
 /  GENERAL AND OUTPUT
 /----------------------------------------------

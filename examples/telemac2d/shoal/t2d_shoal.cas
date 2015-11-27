@@ -3,7 +3,6 @@ FORTRAN FILE                : 't2d_shoal.f'
 BOUNDARY CONDITIONS FILE    : 'geo_shoal.cli'  
 GEOMETRY FILE               : 'geo_shoal.slf'
 RESULTS FILE                : 'r2d_shoal.slf'
-REFERENCE FILE              : 'f2d_shoal.slf'
 /Version 6.1
 /----------------------------------------------------------------------/ 
 TITLE = '5. Shoal. As 4, finer mesh at island.'
@@ -37,6 +36,4 @@ CORIOLIS : NO
 IMPLICITATION FOR DEPTH = 0.501
 IMPLICITATION FOR VELOCITY = 0.501
 /----------------------------------------------------------------------/
-VALIDATION = YES
-/
 &FIN

@@ -45,9 +45,6 @@ FICHIER DE GEOMETRIE                : geo_bosse-t3d.slf
 FICHIER DES RESULTATS 3D            : r3d_bosse-t3d.slf
 FICHIER DES RESULTATS 2D            : r2d_bosse-t3d.slf
 /
-VALIDATION : OUI
-FICHIER DE REFERENCE : f3d_bosse-t3d.slf
-/
 /SUITE DE CALCUL = OUI
 SUITE 2D = OUI
 / on utilise le fichier résultat de Telemac 2d
@@ -124,7 +121,7 @@ SOLVEUR POUR LA PROPAGATION : 1
 / COUPLAGE AVEC SISYPHE POUR LE CHARRIAGE
 /-----------------------------------------/
 /
-COUPLAGE AVEC = INTER-SISYPHE
+COUPLAGE AVEC = SISYPHE
 FICHIER DES PARAMETRES DE SISYPHE = sis_bosse-t3d.cas
 /
 / 

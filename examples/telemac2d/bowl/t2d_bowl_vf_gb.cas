@@ -9,7 +9,6 @@ FORTRAN FILE                   : t2d_bowl.f
 BOUNDARY CONDITIONS FILE       : geo_bowl.cli      
 GEOMETRY FILE                  : geo_bowl.slf                            
 RESULTS FILE                   : r2d_bowl_vf_gb.slf
-REFERENCE FILE                 : f2d_bowl_vf_gb.slf  VALIDATION : YES
 /
 EQUATIONS : 'SAINT-VENANT VF'
 FINITE VOLUME SCHEME : 1

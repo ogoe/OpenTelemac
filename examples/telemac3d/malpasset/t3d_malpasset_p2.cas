@@ -1,4 +1,3 @@
-PROCESSEURS PARALLELES : 8
 STOCKAGE DES MATRICES : 3
 /
 /  AVEC 2 PLANS : PAS DE TEMPS = 1.  5884 S 
@@ -33,8 +32,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_malpasset.cli
 FICHIER DE GEOMETRIE               : geo_malpasset.slf
 FICHIER DES RESULTATS 3D           : r3d_malpasset_p2.slf
 FICHIER DES RESULTATS 2D           : r2d_malpasset_p2.slf
-FICHIER DE REFERENCE               : f3d_malpasset_p2.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

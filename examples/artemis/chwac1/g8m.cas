@@ -8,15 +8,13 @@
 /---------------------------------------------------------------------
 
 
-FICHIER DES RESULTATS              ='chwac.resu'
+FICHIER DES RESULTATS              ='chwac.slf'
 
 FICHIER DES CONDITIONS AUX LIMITES ='g8m.cli'
 
 FICHIER FORTRAN                    ='g8m.f'
 
 FICHIER DE GEOMETRIE               ='g8m.geo'
-
-FICHIER DE REFERENCE               ='ref_chwac.resu'
 
 FICHIER DES PARAMETRES             ='g8m.cas'
 
@@ -89,9 +87,4 @@ DIRECTION DE PROPAGATION DE LA HOULE : -90.0
 EXPOSANT S = 10
 
 PRECONDITIONNEMENT : 2
-
-
-/---------------------------------------------------------------------
-VALIDATION : YES
-/---------------------------------------------------------------------
 

@@ -1,4 +1,3 @@
-PROCESSEURS PARALLELES = 0
 /********************************************************************/
 /              TOMAWAC  STEERING FILE                                /
 /********************************************************************/
@@ -10,8 +9,6 @@ FICHIER FORTRAN = tom_dean.f
 FICHIER DE GEOMETRIE = geo_dean.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_dean.cli
 FICHIER DES RESULTATS 2D = res_dean.slf
-FICHIER DE REFERENCE= fom_dean.slf
-VALIDATION : OUI
 /FICHIER DES RESULTATS PONCTUELS = 'res_veg_Tp1.spe'
 /FICHIER DES RESULTATS SPECTRES 1D  = 'res_veg_Tp1.txt'
 /--------------------------------------------------------------------/

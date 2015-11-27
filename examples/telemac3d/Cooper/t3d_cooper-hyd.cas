@@ -18,8 +18,6 @@ BOUNDARY CONDITIONS FILE        : geo_cooper.cli
 GEOMETRY FILE                   : geo_cooper.slf
 3D RESULT FILE                  : r3d_cooper-hyd.slf
 2D RESULT FILE                  : r2d_cooper-hyd.slf
-REFERENCE FILE                  : f3d_cooper-hyd.slf
-VALIDATION : YES
 /
  TIDAL FLATS : YES
  OPTION FOR THE TREATMENT OF TIDAL FLATS : 1 
@@ -29,7 +27,6 @@ VALIDATION : YES
  PRECONDITIONING FOR PROPAGATION : 2
 /
 MATRIX STORAGE : 3
-/   PARALLEL PROCESSORS : 2
 /
  MESH TRANSFORMATION : 3
  MASS-LUMPING FOR DEPTH : 1.

@@ -18,8 +18,6 @@ FICHIER DES CONDITIONS AUX LIMITES : geo_vent.cli
 FICHIER DE GEOMETRIE               : geo_vent.slf
 FICHIER DES RESULTATS 2D           : r2d_vent.slf
 FICHIER DES RESULTATS 3D           : r3d_vent.slf
-FICHIER DE REFERENCE               : f3d_vent.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------
 /                        OPTIONS GENERALES                              

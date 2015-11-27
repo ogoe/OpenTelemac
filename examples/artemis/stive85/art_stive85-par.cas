@@ -15,8 +15,6 @@ FORTRAN FILE              ='stive85.f'
 
 GEOMETRY FILE             ='stive85.sel'
 
-REFERENCE FILE            ='ref_stive85.res'
-
 STEERING FILE             ='art_stive85.cas'
 
 /---------------------------------------------------------------------
@@ -55,8 +53,6 @@ MATRIX STORAGE    : 3
 
 /SOLVER = 8
 
-/for parallel calculations using 8 processors
-PARALLEL PROCESSORS = 8
 SOLVER = 3
 
 DISSIPATION RELAXATION = 0.25
@@ -79,9 +75,4 @@ DIRECTION OF WAVE PROPAGATION = 0.
 
 INITIAL CONDITIONS   : 'CONSTANT ELEVATION'
 INITIAL WATER LEVEL  : 4.19
-
-
-/---------------------------------------------------------------------
-VALIDATION : YES
-/---------------------------------------------------------------------
 

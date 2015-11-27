@@ -24,6 +24,22 @@
        code="telemac2d" target="t2d_cons_vase-t2d.cas"
        title="concentration vase T2D+SIS scalar mode"
    />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:SISRES" />
+      <v2 vars=":map" target="fis_cons_vase-t2d.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-1-t2d" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="1:T2DRES" />
+      <v5 vars=":map" target="f2d_cons_vase-t2d.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

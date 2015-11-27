@@ -1,4 +1,3 @@
-/PARALLEL PROCESSORS : 8
 /
 /  GIRONDE ESTUARY
 / 
@@ -16,8 +15,6 @@ FORTRAN FILE                                 : t2d_estu_gir.f
 RESULTS FILE                                 : t2d_estu_gir.res
 LIQUID BOUNDARIES FILE                       : qsl_ME.txt
 FORMATTED DATA FILE 1                        : maree.cli
-VALIDATION                                   : YES
-REFERENCE FILE                               : t2d_estu_gir.ref
 /
 /----------------------------------------------------------------------
 /                        GENERAL OPTIONS

@@ -10,8 +10,6 @@ TIDAL MODEL FILE                   : tid_tide-jmj.slf
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt
 3D RESULT FILE                     : t3d_tide-jmj_real_gen.slf
 2D RESULT FILE                     : t2d_tide-jmj_real_gen.slf
-VALIDATION                         : YES
-REFERENCE FILE                     : r3d_tide-jmj_real_gen.slf
 /
 /COMPUTATION CONTINUED                           : NO
 /PREVIOUS COMPUTATION FILE : ?
@@ -101,5 +99,4 @@ MASS-LUMPING FOR VELOCITIES                         : 1.
 MASS-LUMPING FOR DIFFUSION                          : 1.
 VELOCITY PROFILES                                   : 1;1
 /
-PARALLEL PROCESSORS                                 : 0
 &FIN

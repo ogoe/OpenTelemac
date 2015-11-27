@@ -14,9 +14,6 @@ GEOMETRY FILE FORMAT               : MED
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt
 RESULTS FILE                       : t2d_tide-jmj_type.med
 RESULTS FILE FORMAT                : MED
-/VALIDATION                         : YES
-/REFERENCE FILE                     : r2d_tide-jmj_type.med
-/REFERENCE FILE FORMAT              : MED
 /
 /----------------------------------------------------------------------/
 /                       GENERAL OPTIONS

@@ -43,7 +43,6 @@
 / 
 FICHIER DES CONDITIONS AUX LIMITES : geo_epi-en-riviere.cli
 FICHIER DE GEOMETRIE               : geo_epi-en-riviere.slf
-FICHIER DE REFERENCE               : f2d_epi-en-riviere.slf
 FICHIER DES RESULTATS              : r2d_epi-en-riviere.slf
 FICHIER DES FRONTIERES LIQUIDES    : t2d_epi-en-riviere.qsl 
 FICHIER DU CALCUL PRECEDENT        : ini_epi-en-riviere.slf 
@@ -53,9 +52,8 @@ FICHIER DES PARAMETRES DE SISYPHE  : sis_epi-en-riviere.cas
 / +++++++
 /
 /TITRE :' Couplage  Telemac2d-Sisyphe'                                      
-VALIDATION : OUI
 /
-COUPLAGE AVEC : 'INTER-SISYPHE'
+COUPLAGE AVEC : 'SISYPHE'
 PERIODE DE COUPLAGE POUR SISYPHE= 1
 /
 SUITE DE CALCUL : OUI
@@ -105,6 +103,5 @@ OPTION POUR LES FRONTIERES LIQUIDES : 1;1
 DISCRETISATIONS EN ESPACE : 11;11
 STOCKAGE DES MATRICES : 3   
 PRODUIT MATRICE-VECTEUR : 1
-PROCESSEURS PARALLELES : 0    
 /
 /            

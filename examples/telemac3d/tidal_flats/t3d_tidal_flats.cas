@@ -1,9 +1,6 @@
 /
 /
  ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 1
-/ 
-VALIDATION = YES
-REFERENCE FILE = 'r3d_tidal_flats_set1.ref'
 /
 / These options also work with the same time step,
 / but with more mass error
@@ -20,7 +17,6 @@ GEOMETRY FILE               : 'geo_tidal_flats.slf'
 
 /----------------------------------------------------------------------/
 /
- PARALLEL PROCESSORS  = 0
 /
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  

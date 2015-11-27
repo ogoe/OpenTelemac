@@ -13,7 +13,6 @@ GEOMETRY FILE                   = geo_island.slf
 FORTRAN FILE                    = t2d_island.f
 BOUNDARY CONDITIONS FILE        = geo_island.cli
 RESULTS FILE                    = r2d_island.slf
-REFERENCE FILE                  = f2d_island.slf
 NUMBER OF PRIVATE ARRAYS        = 1
 /
 /----------------------------------------------
@@ -74,6 +73,4 @@ MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 200
 INITIAL GUESS FOR H             = 1
 MATRIX STORAGE                  = 3
 /
-VALIDATION                      = YES
-/           
 &FIN

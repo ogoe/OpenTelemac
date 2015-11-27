@@ -1,5 +1,4 @@
 /DEBUGGER : 1
-PROCESSEURS PARALLELES : 0
 COUPLAGE AVEC : 'DELWAQ'
 /
 FICHIER DELWAQ DES VOLUMES                : dwq_delwaq-volume.dwq
@@ -35,11 +34,9 @@ FICHIER FORTRAN                    : t2d_delwaq.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_delwaq.cli
 FICHIER DE GEOMETRIE               : geo_delwaq.slf
 FICHIER DES FRONTIERES LIQUIDES    : t2d_delwaq.lqd
-FICHIER DE REFERENCE               : f2d_delwaq.slf
 FICHIER DES RESULTATS              : r2d_delwaq.slf
 /
 /----------------------------------------------------------------------/ 
-VALIDATION : OUI
 TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
 SUITE DE CALCUL = NON
 PAS DE TEMPS = 0.2 NOMBRE DE PAS DE TEMPS = 400

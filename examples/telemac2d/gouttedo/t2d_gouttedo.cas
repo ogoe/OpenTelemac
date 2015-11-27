@@ -1,4 +1,3 @@
-DEBUGGER : 0
 /
 / HP C3700 : 11 s compilateur HP  5.5 18/04/2007
 /
@@ -30,7 +29,6 @@ EQUATIONS : 'SAINT-VENANT EF'
 FICHIER FORTRAN                    : t2d_gouttedo.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_gouttedo.cli
 FICHIER DE GEOMETRIE               : geo_gouttedo.slf
-FICHIER DE REFERENCE               : f2d_gouttedo.slf
 FICHIER DES RESULTATS              : r2d_gouttedo_v1p0.slf
 /
 /----------------------------------------------------------------------/
@@ -53,7 +51,7 @@ MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4
 IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6
 PRECONDITIONNEMENT : 2    ORDRE DU TIR INITIAL POUR H : 1
 /---------------------------------------------------------------/
-BILAN DE MASSE : OUI    VALIDATION : OUI
+BILAN DE MASSE : OUI
 CONDITIONS INITIALES : PARTICULIERES
 FORME DE LA CONVECTION   : 2;5
 OPTION DE SUPG           : 2;2

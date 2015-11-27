@@ -33,7 +33,6 @@ GEOMETRY FILE                   = geo_wave.slf
 FORTRAN FILE                    = t2d_wave.f
 BOUNDARY CONDITIONS FILE        = geo_wave.cli
 RESULTS FILE                    = r2d_wave.slf
-REFERENCE FILE                  = f2d_wave.slf
 NUMBER OF PRIVATE ARRAYS        = 1
 /
 /----------------------------------------------
@@ -44,7 +43,6 @@ TITLE                           = 'WAVE'
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,S,B,H,L,C,N'
 GRAPHIC PRINTOUT PERIOD         = 500
 LISTING PRINTOUT PERIOD         = 100
-VALIDATION                      = YES
 TIME STEP                       = 0.0025
 NUMBER OF TIME STEPS            = 2000
 /

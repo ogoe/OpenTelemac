@@ -21,8 +21,6 @@ FORTRAN FILE              = 't2d_littoral.f'
 BOUNDARY CONDITIONS FILE  = 'geo_t2d_littoral.cli'
 GEOMETRY FILE             = 'geo_littoral.slf'
 RESULTS FILE              = 't2d_littoral.slf'
-REFERENCE FILE           = 'ref_t2d_littoral.slf'
-VALIDATION = YES
 /----------------------------------------------------------------------
 / INITIAL CONDITIONS 
 /----------------------------------------------------------------------

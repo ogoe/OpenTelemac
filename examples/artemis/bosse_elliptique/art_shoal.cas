@@ -16,9 +16,6 @@ FORTRAN FILE              ='art_shoal.f'
 
 GEOMETRY FILE             ='geo_shoal.slf'
 
-REFERENCE FILE            ='ref_art_shoal.slf'
-
-
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
 /---------------------------------------------------------------------
@@ -70,9 +67,4 @@ RAPIDLY VARYING TOPOGRAPHY = 3
 WAVE PERIOD  = 1.
 
 DIRECTION OF WAVE PROPAGATION : -90.
-
-
-/---------------------------------------------------------------------
-VALIDATION : YES
-/---------------------------------------------------------------------
 

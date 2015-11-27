@@ -7,8 +7,6 @@ TITLE = 'LITTORAL'
 GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_sis_littoral.cli'
 RESULTS FILE ='sis_littoral.slf'
-VALIDATION : YES
-REFERENCE FILE : 'ref_sis_littoral.slf'
 /
 / FRICTION
 /______________________

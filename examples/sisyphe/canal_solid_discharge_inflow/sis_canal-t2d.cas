@@ -30,8 +30,6 @@ FICHIER DES CONDITIONS AUX LIMITES = geo_canal-t2d.cli
 FICHIER FORTRAN = sis_canal-t2d.f
 /
 FICHIER DES RESULTATS = sis_canal-t2d.slf
-FICHIER DE REFERENCE  = fis_canal-t2d.slf
-VALIDATION : OUI
 /
 /CALCUL 
 / -----------------------------------------------------

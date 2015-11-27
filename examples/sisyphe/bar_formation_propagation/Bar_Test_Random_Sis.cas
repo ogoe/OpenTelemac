@@ -12,14 +12,11 @@
 GEOMETRY FILE                     : Bar_Test_Random.slf
 BOUNDARY CONDITIONS FILE          : Bar_Test_Random.cli
 RESULTS FILE                      : Bar_Test_Random_Sis.slf
-REFERENCE FILE                    : Bar_Test_Random_Fis.slf
-VALIDATION : YES
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
-/PARALLEL PROCESSORS                            : 8
 TITLE  :   'Bars Test Case: Linear channel,bed configuration: Ripples'
 CORRECTION ON CONVECTION VELOCITY              : YES
 TYPE OF ADVECTION                              : 1

@@ -1,4 +1,3 @@
-PARALLEL PROCESSORS : 0
 /
 /  DONAU : TESTING NEW POSSIBILITIES ON FRICTION
 /          DEVELOPPED AT BAW
@@ -33,8 +32,6 @@ BOUNDARY CONDITIONS FILE                     : geo_donau.cli
 GEOMETRY FILE                                : geo_donau.slf
 FORTRAN FILE                                 : t2d_donau.f
 RESULTS FILE                                 : r2d_donau.slf
-VALIDATION                                   : YES
-REFERENCE FILE                               : f2d_donau.slf
 /
 /----------------------------------------------------------------------
 /                        GENERAL OPTIONS

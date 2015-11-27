@@ -12,7 +12,6 @@ GEOMETRY FILE                   = geo_ritter.slf
 FORTRAN FILE                    = t2d_ritter.f
 BOUNDARY CONDITIONS FILE        = geo_ritter.cli
 RESULTS FILE                    = r2d_ritter.slf
-REFERENCE FILE                  = f2d_ritter.slf
 /
 /
 /----------------------------------------------
@@ -64,7 +63,6 @@ IMPLICITATION FOR DEPTH         = 1.
 IMPLICITATION FOR VELOCITY      = 0.6
 INITIAL GUESS FOR H             = 1   
 /
-VALIDATION                      = YES
 OPTION FOR LIQUID BOUNDARIES    = 2
 /           
 &FIN

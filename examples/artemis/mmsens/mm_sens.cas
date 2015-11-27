@@ -16,10 +16,6 @@ FORTRAN FILE                       ='mmsens.f'
 
 GEOMETRY FILE                      ='mmsens.sel'
 
-VALIDATION                         = YES 
-REFERENCE FILE                     = mmsens_ref.resu
-
-
 /---------------------------------------------------------------------
 / ENTREES-SORTIES,GENERALITES
 /---------------------------------------------------------------------

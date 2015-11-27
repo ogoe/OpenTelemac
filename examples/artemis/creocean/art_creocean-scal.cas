@@ -9,8 +9,6 @@ FORTRAN FILE                          : 'art_actu-scal.f'
 BOUNDARY CONDITIONS FILE              : 'geo_borme_actu.cli'	    
 GEOMETRY FILE                         : 'geo_borme_actu.slf'	    
 RESULTS FILE                          : 'r2d_borme_actu-scal.res'   
-REFERENCE FILE                        : 'art_creocean_ref.res'			    
-VALIDATION                            : YES		       
 /
 /    GENERAL SETTINGS
 /

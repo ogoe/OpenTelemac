@@ -1,4 +1,3 @@
-PROCESSEURS PARALLELES : 0
 /
 /   Tourne en 7 s sur HP C3700 750 MHz     5.5  25/11/2004
 /   Tourne en 4 s sur HP C3700 750 MHz     5.9  29/08/2008
@@ -6,7 +5,6 @@ PROCESSEURS PARALLELES : 0
 /  
 FICHIER DES CONDITIONS AUX LIMITES : geo_canal.cli
 FICHIER DE GEOMETRIE        : geo_canal.slf
-FICHIER DE REFERENCE        : f2d_canal.slf
 FICHIER DES RESULTATS       : r2d_canal-t2d.slf
 FICHIER DES FRONTIERES LIQUIDES : t3d_canal.qsl
 /
@@ -26,7 +24,7 @@ COTES IMPOSEES : 0.5 ;   0.
 INFORMATIONS SUR LE SOLVEUR : OUI    ORDRE DU TIR INITIAL POUR H : 1      
 CONDITIONS INITIALES : 'COTE CONSTANTE'
 COTE INITIALE : 0.5                                     
-BILAN DE MASSE : OUI         VALIDATION : OUI                             
+BILAN DE MASSE : OUI
 /----------------------------------------------------------------------/  
 STOCKAGE DES MATRICES : 3    DISCRETISATIONS EN ESPACE : 12 ; 11
 STOCKAGE DES MATRICES : 3    DISCRETISATIONS EN ESPACE : 11 ; 11

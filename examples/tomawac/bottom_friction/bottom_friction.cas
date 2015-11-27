@@ -1,5 +1,4 @@
 /DEBUGGER : 1
-/PROCESSEURS PARALLELES : 8
 /--------------------------------------------------------------------/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /--------------------------------------------------------------------/
@@ -11,7 +10,6 @@
 /FICHIER DE GEOMETRIE = 'geo_frot.slf'
 FICHIER DE GEOMETRIE = 'geom.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_frot.cli'
-FICHIER DE REFERENCE = 'fom_frot_T_d5-f0.1-h1.slf'
 /
 FICHIER DES RESULTATS 2D = 'tom_frot_T_d5-f0.1-h1.slf'
 FICHIER DES RESULTATS PONCTUELS = 'tom_frot_T_d5-f0.1-h1.spe'
@@ -20,7 +18,7 @@ FICHIER DES RESULTATS PONCTUELS = 'tom_frot_T_d5-f0.1-h1.spe'
 /--------------------------------------------------------------------/
 TITRE = 'TEST FROTTEMENT AU FOND SUR FOND PLAT'
 PERIODE POUR LES SORTIES GRAPHIQUES = 25
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FMOY,FM01,ZF
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FMOY,FM01
 PERIODE POUR LES SORTIES LISTING = 20
 ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
 ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.
@@ -42,7 +40,6 @@ PRISE EN COMPTE DES TERMES SOURCES = OUI
 DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
 PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
 PRISE EN COMPTE DU VENT = NON
-VALIDATION = OUI
 /--------------------------------------------------------------------/
 / CONDITIONS INITIALES
 /--------------------------------------------------------------------/

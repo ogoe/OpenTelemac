@@ -7,7 +7,6 @@
 / [3] Hudson, J. and Sweby, P. K. (2005), A high-resolution scheme for the equations governing 2D bed-load sediment transport. Int. J. Numer. Meth. Fluids, 47: 1085–1091.
 /
 /DEBUGGER : 0
-/PROCESSEURS PARALLELES : 8
 /
 FICHIER FORTRAN : t2d_bump2d-t2d.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_bump2d-t2d.cli
@@ -18,7 +17,7 @@ FICHIER DES PARAMETRES DE SISYPHE : sis_bump2d-t2d.cas
 /                       OPTIONS GENERALES                                 
 /----------------------------------------------------------------------/  
 TITRE = 'TELEMAC 2D : EVOLUTION OF AN ISOLATED 2D BUMP'  
-COUPLAGE AVEC : 'INTER-SISYPHE'
+COUPLAGE AVEC : 'SISYPHE'
 PERIODE DE COUPLAGE POUR SISYPHE= 1                                                 
 PAS DE TEMPS = 1
 /NOMBRE DE PAS DE TEMPS = 360000 

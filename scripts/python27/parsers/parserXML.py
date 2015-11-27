@@ -90,6 +90,96 @@ from mtlplots.myplot2d import Figure2D,Dumper2D
 from mtlplots.myplot3d import Figure3D,Dumper3D
 from samplers.mycast import Caster
 
+# _____                  ___________________________________________
+# ____/ Test case validation Toolkit /_____________________________/
+#
+# Function used in the xml files to do the comparaison between two files
+#
+def mapdiff(a1,a2):
+   """
+      @brief Create a new values containing the diff of the values 
+      of the two arguments 
+
+      @param a1 A Values object containing the keys {support,names,values,time}
+      @param a2 A Values object containing the keys {support,names,values,time}
+
+      @return A 4-uple (time,nameOfTheVariables,support,values)
+   """
+   # Cheking they have the same shape should be (ntime,nvar,npoin)
+   diff = np.zeros(a2.values.shape,dtype=a2.values.dtype)
+   # With ntime = 1
+   if a1.values.shape != a2.values.shape:
+      print "Error in files the two array do not have the same shape"
+      print "a1 shape: ",a1.values.shape
+      print "a2 shape: ",a2.values.shape
+      return None
+   # Shape of the values should be (ntime,nvar,npoin)
+   ntime,nvar,npoin = a2.values.shape
+
+   # Checking that it is the same variables in each files
+   for ivar in range(nvar):
+      if a1.names[ivar][1:16] != a2.names[ivar][1:16]:
+         raise Exception([{
+              'name':'mapdiff',
+              'msg':'The name of the two variable are different \n'+\
+                    a1.names[ivar]+' for a1\n'+\
+                    a1.names[ivar]+' for a2'}])
+
+   # Checking if we have the same time step
+   if abs(a1.time[0] - a2.time[0]) > 1e-6:
+      raise Exception([{
+           'name':'mapdiff',
+           'msg':'The time of the two times are different \n'+\
+                 a1.time[0]+' for a1\n'+\
+                 a1.time[0]+' for a2'}])
+
+   # Making a1-a2 for each variable and each point
+   for ivar in range(nvar):
+      for i in range(npoin):
+         if a2.values[0][ivar][i] != 0.0:
+            diff[0][ivar][i] = abs(a2.values[0][ivar][i]\
+                                    - a1.values[0][ivar][i])/a2.values[0][ivar][i]
+         else:
+            diff[0][ivar][i] = abs(a2.values[0][ivar][i]\
+                                    - a1.values[0][ivar][i])
+   return a2.time,a2.names,a2.support,diff
+
+def checkval(a0,eps):
+   """
+      @brief Will loop on all variable and display the max error
+
+      @param a0 A Values object containg the difference between two results
+      @param eps The epsilon for each variable or a global one
+
+      @return True if all the variable max are below EPS
+              False otherwise
+   """
+   ntime,nvar,npoin = a0.values.shape
+   # Getting eps for each variable 
+   if not eps:
+      # if eps is empty setting default value i.e. 1
+      print " "*8+"~> TODO: Set Epsilon value"
+      EPS = [1.e-4]*nvar
+   elif len(eps) == 1:
+      # If only one was given using it for all the variables
+      EPS = [eps[0]]*nvar
+   elif len(eps) != nvar:
+      # Otherwise one mus be given for each variable
+      print "Error in length of espilon"
+      return False
+   else:
+      EPS = eps
+
+   print " "*8+"~> Validation for time (in reference file):",a0.time[0]
+   # Loop on variables 
+   value=False
+   for ivar in range(nvar):
+      err = max(a0.values[0][ivar])
+      print " "*10+"- Difference for variable ",a0.names[ivar],": ",err
+      if err >= EPS[ivar]:
+         print " "*12+"Epsilon reached",EPS[ivar]
+         value=True
+   return value   
 # _____                           __________________________________
 # ____/ Specific TELEMAC Toolbox /_________________________________/
 #
@@ -187,6 +277,29 @@ def findTargets(dido,src):
                if k[5] =='SCAL': k[5] = k[1]
                # \!/
                layer = [j,k[3],k[5]]
+   if layer == [] and 'links' in dido:
+      for mod in dido['links']:
+         if layer == [] and 'iFS' in dido['links'][mod]:
+            for i,j,k in dido['links'][mod]['iFS']:
+               k = k.split(';')
+               if src in k[1]:               # filename, fileForm, fileType
+                  # /!\ Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
+                  if k[5] =='SCAL': k[5] = k[1]
+                  # \!/
+                  layer = [j,k[3],k[5]]
+         if layer == []  and 'oFS' in dido['links'][mod]:
+            if dido['links'][mod]['code'] == 'postel3d':
+               for file in dido['links'][mod]['oFS']:
+                  if src == path.basename(file) : layer = [[file],'','SELAFIN']
+            else :
+               for i,j,k in dido['links'][mod]['oFS']:
+                  k = k.split(';')
+                  if src in k[1]:               # filename, fileForm, fileType
+                     # /!\ Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
+                     if k[5] =='SCAL': k[5] = k[1]
+                     # \!/
+                     layer = [j,k[3],k[5]]
+
    if layer == [] and 'type' in dido:
       if dido['type'] == src: layer = [[dido['target']],'',src]
 
@@ -363,7 +476,8 @@ class GROUPS:
 
    def targetSubTask(self,target,index=0,nametask='layers'):
       self.tasks[nametask][index].update({ 'fileName': target })
-      if nametask not in self.dids[self.active['type']][self.active['xref']]: self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
+      if nametask not in self.dids[self.active['type']][self.active['xref']]: 
+         self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
 
    def distributeDeco(self,subtask): return subtask
 
@@ -1332,7 +1446,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                raise Exception([{'name':'runXML','msg':'could not have more than one configuration at a time for casting: '+var['xref']}])
             elif task['config'] == 'oneofall':
                xys = []
-               if var['fileName'] != {}: cfg = var['fileName'].iterkeys().next()
+               if var['fileName'] != {}: 
+                  cfg = var['fileName'].iterkeys().next()
                else: cfg = '-'
                for x in xvars.split('|'): xys.append( (x+';'+cfg).strip(';') )
                xvars = '|'.join(xys)
@@ -1364,12 +1479,27 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                      space[var['xref']] = caster.get( fileName[2], var )
                   else:
                      r = eval( var["vars"] )
-                     if type(r) != type(()): raise Exception([{'name':'runXML','msg':'The result of the function '+var["vars"]+' for '+cast.tasks["xref"]+' should have 2 arguments: support,values'}])
-                     if len(r) != 2: raise Exception([{'name':'runXML','msg':'The result of the function '+var["vars"]+' for '++cast.tasks["xref"]+' should have 2 arguments: support,values'}])
-                     support,values = r
-                     caster.set( var['xref'],Values({ 'support':support, 'values':values }) )
+                     # The returned value should be a tuple
+                     if type(r) != type(()): 
+                        raise Exception([{
+                             'name':'runXML',
+                             'msg':'The result of the function '+\
+                                   var["vars"]+' for '+cast.tasks["xref"]+\
+                                   ' should be a tuple 4 arguments: time,names,support,values'}])
+                     # The return value should be of dimension 4
+                     if len(r) != 4: 
+                        raise Exception([{
+                             'name':'runXML',
+                             'msg':'The result of the function '+var["vars"]+\
+                                   ' for '+cast.tasks["xref"]+\
+                                   ' should have 4 arguments: time,names,support,values'}])
+                     time,names,support,values = r
+                     caster.set( var['xref'],Values({'support':support, 'values':values, 
+                                                     'names':names, 'time':time}) )
                      space[var['xref']].support = support
                      space[var['xref']].values = values
+                     space[var['xref']].names = names
+                     space[var['xref']].time = time
 
          # ~~> Last but not least, validating
          report.update({ 'updt':True })

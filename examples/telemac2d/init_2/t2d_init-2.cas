@@ -28,7 +28,6 @@
 FICHIER FORTRAN                    : t2d_init-2.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_init-2.cli
 FICHIER DE GEOMETRIE               : geo_init-2.slf
-VALIDATION : OUI FICHIER DE REFERENCE : f2d_init-2.slf
 FICHIER DES RESULTATS              : r2d_init-2.slf
 FICHIER DES FRONTIERES LIQUIDES    : t2d_init-2.qsl
 /      

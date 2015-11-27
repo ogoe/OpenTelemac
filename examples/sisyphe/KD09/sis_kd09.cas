@@ -15,7 +15,6 @@ BOUNDARY CONDITIONS FILE   = 'geo_kd09.cli'
 GEOMETRY FILE              = 'geo_kd09.slf'
 RESULTS FILE               = 'sis_kd09.slf'
 /
-/PARALLEL PROCESSORS       = 0
 /------------------------------------------------------ /
 / COMPUTATION INFO                                        /
 /------------------------------------------------------ /

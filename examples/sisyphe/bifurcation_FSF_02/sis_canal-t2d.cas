@@ -13,15 +13,12 @@ GEOMETRY FILE                     : geo_FSF_02.slf
 /BOUNDARY CONDITIONS FILE          : geo_FSF_02.cli
 BOUNDARY CONDITIONS FILE          : sis_FSF_02.cli
 RESULTS FILE                      : sis_FSF_02.slf
-REFERENCE FILE                    : fis_FSF_02.slf
-VALIDATION                        : YES
 FORTRAN FILE                      : sis_canal-t2d.f
 /
 /---------------------------------------------------------------------/
 /       GENERAL INFORMATIONS                                          /
 /---------------------------------------------------------------------/
 /
-/PARALLEL PROCESSORS                            : 8
 TITLE            : 'F.S.F. in a fixed rectangular channel with a bump'
 /CORRECTION ON CONVECTION VELOCITY              : YES
 /TYPE OF ADVECTION                              : 1

@@ -12,8 +12,6 @@ GEOMETRY FILE                   = geo_swash.slf
 FORTRAN FILE                    = t2d_swash.f
 BOUNDARY CONDITIONS FILE        = geo_swash.cli
 RESULTS FILE                    = r2d_swash.slf
-REFERENCE FILE                  = f2d_swash.slf
-PARALLEL PROCESSORS             = 0
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
@@ -70,6 +68,4 @@ IMPLICITATION FOR DEPTH         = 1.
 IMPLICITATION FOR VELOCITY      = 0.6
 INITIAL GUESS FOR H             = 1
 /
-VALIDATION                      = YES   
-/           
 &FIN

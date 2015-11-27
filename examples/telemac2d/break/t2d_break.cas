@@ -3,7 +3,6 @@ FORTRAN FILE                : 't2d_break.f'
 BOUNDARY CONDITIONS FILE    : 'geo_break.cli'  
 GEOMETRY FILE               : 'geo_break.slf'
 RESULTS FILE                : 'r2d_break.slf'
-REFERENCE FILE              : 'f2d_break.slf'
 /Version 6.1
 /----------------------------------------------------------------------/ 
 TITLE = '10. Breakwater. As 9, but output max after 1 hr 45 min.'
@@ -37,6 +36,5 @@ CORIOLIS : NO
 IMPLICITATION FOR DEPTH = 0.501
 IMPLICITATION FOR VELOCITY = 0.501
 /----------------------------------------------------------------------/
-VALIDATION = YES
 /
 &FIN

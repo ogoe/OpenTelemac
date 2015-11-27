@@ -19,10 +19,6 @@ FORTRAN FILE             = 'phase.f'
 
 GEOMETRY FILE            = 'phase.sel'
 
-VALIDATION               =   YES
-REFERENCE FILE           =  'ref_phase_S3.res'
-/                            obtained with solver direct in seq.
-
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
 /---------------------------------------------------------------------

@@ -17,8 +17,6 @@ POROSITE DU LIT NON COHESIF = 0.375
 /-------------------------
 FICHIER DE GEOMETRIE = geo_epi-en-riviere.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_epi-en-riviere.cli
-FICHIER DE REFERENCE = fis_epi-en-riviere.slf
-VALIDATION = OUI
 FICHIER DES RESULTATS = sis_epi-en-riviere.slf
 /
 /

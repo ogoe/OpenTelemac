@@ -26,8 +26,6 @@ FICHIER DE GEOMETRIE  = geo_malpasset-large.med
 FORMAT DU FICHIER DE GEOMETRIE = MED
 FICHIER FORTRAN       = t2d_malpasset-large.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_malpasset-large.clm
-/FICHIER DE REFERENCE  = f2d_malpasset-large.slf 
-/VALIDATION = OUI
 FICHIER DES RESULTATS = r2d_malpasset-large.med
 FORMAT DU FICHIER DES RESULTATS = MED
 /

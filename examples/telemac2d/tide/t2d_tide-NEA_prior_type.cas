@@ -12,8 +12,6 @@ BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-NEA_prior.txt
 RESULTS FILE                       : t2d_tide-NEA_prior_type.slf
-VALIDATION                         : YES
-REFERENCE FILE                     : r2d_tide-NEA_prior_type.slf
 /
 /----------------------------------------------------------------------/
 /                       GENERAL OPTIONS

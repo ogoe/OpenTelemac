@@ -6,9 +6,7 @@
 GEOMETRY FILE             = geo_cvsp.slf 
 BOUNDARY CONDITIONS FILE  = geo_cvsp_t2d.cli
 RESULTS FILE              = t2d_cvsp.res
-REFERENCE FILE            = t2d_cvsp.ref    VALIDATION = YES
 FORTRAN FILE		  = t2d_cvsp.f 
-PARALLEL PROCESSORS       = 0 
 /
 /------------------------------------------------------------------------------ 
 /                   COMPUTATIONAL INFORMATION 
@@ -31,7 +29,7 @@ INITIAL TIME SET TO ZERO          = YES
 VARIABLES FOR GRAPHIC PRINTOUTS   = U,V,H,S,B,K,E,D,M,W,L,F 
 INITIAL TIME SET TO ZERO          = YES 
 / 
-COUPLING WITH                     = 'INTER-SISYPHE' 
+COUPLING WITH                     = 'SISYPHE' 
 COUPLING PERIOD FOR SISYPHE       = 100 
 SISYPHE STEERING FILE             = sis_cvsp.cas 
 / 

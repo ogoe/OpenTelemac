@@ -19,12 +19,28 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
-   <action xref="Built"
+   <action xref="1"
        do="translate;run;cas;princi"
        code="telemac2d" target="t2d_kd09_mak.cas"
        title="kd09 telemac2d-sisyphe coupled scalar mode "
    />
   
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:SISRES" />
+      <v2 vars=":map" target="fis_kd09.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-1-t2d" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="1:T2DRES" />
+      <v5 vars=":map" target="f2d_kd09.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  -->  
 <!--   <extract xref="Validate" code="sisyphe"

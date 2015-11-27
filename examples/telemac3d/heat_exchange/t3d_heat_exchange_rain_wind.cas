@@ -15,8 +15,6 @@ FICHIER DE GEOMETRIE               : geo_heat_exchange.slf
 FICHIER DE DONNEES FORMATE 1       : meteo_data.txt
 FICHIER DES RESULTATS 3D           : r3d_heat_exchange_rain_wind.slf
 FICHIER DES RESULTATS 2D           : r2d_heat_exchange_rain_wind.slf
-FICHIER DE REFERENCE               : f3d_heat_exchange_rain_wind.slf
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

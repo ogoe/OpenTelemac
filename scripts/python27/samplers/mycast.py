@@ -27,6 +27,7 @@ from parsers.parserSortie import Sortie
 from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,getValuePolylineSLF,subsetVariablesSLF,getValuePolyplanSLF
 from samplers.meshes import xysLocateMesh,sliceMesh
 
+
 # _____                  ___________________________________________
 # ____/ General Toolkit /__________________________________________/
 #
@@ -615,12 +616,18 @@ class Caster:
                MESHY = np.asarray(MESHY)
 
             # ~~> Loop on variables
+            varNames = []
             for var in what["vars"].split(';'):
                v,vtype = var.split(':')
-
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                # ~~> Extract variable data for only one plane
                VARSORS = obj.castValues(v,what['time'])
+               # Get value of the timestep
+               time = obj.tags['times'][whatTimeSLF(what['time'],obj.tags['cores'])]
+               if v == '':
+                  varNames = obj.VARNAMES
+               else:
+                  varNames.append(v)
                # ~~> Re-sampling
                if support2d != []:
                   if fsize == 4: data = np.zeros(VARSORS.shape,dtype=np.float32)
@@ -648,7 +655,8 @@ class Caster:
                if "map" in vtype or "label" in vtype:
                   self.obdata[what["xref"]] = Values({'type':what['type'],
                      'unit':'map', 'support':(MESHX,MESHY,IKLE3),
-                     'function':'none', 'values':VARSORS })
+                     'function':'none', 'values':VARSORS,'names':varNames,
+                     'time':time})
                   return self.obdata[what["xref"]]
                   # return (MESHX,MESHY,IKLE3),VARSORS
                elif "arrow" in vtype or "vector" in vtype or "angle" in vtype:
@@ -658,6 +666,7 @@ class Caster:
                   return self.obdata[what["xref"]]
                   # return (MESHX,MESHY,IKLE3),VARSORS
                else: print '... do not know how to draw this SELAFIN type: ' + vtype
+          
 
          # ~~> unkonwn
          else: # TODO: raise exception

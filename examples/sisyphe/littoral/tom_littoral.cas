@@ -11,8 +11,6 @@ GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_tom_littoral.cli'
 2D RESULTS FILE = 'tom_littoral.slf'
 FORTRAN FILE = 'tom_littoral.f'
-VALIDATION : YES
-REFERENCE FILE : 'ref_tom_littoral.slf'
 /--------------------------------------------------------------------
 / INPUTS - OUTPUTS
 /--------------------------------------------------------------------

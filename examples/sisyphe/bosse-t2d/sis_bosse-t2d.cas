@@ -17,8 +17,6 @@ CHARRIAGE  =  OUI
 FICHIER DE GEOMETRIE = geo_bosse-t2d.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_bosse-t2d.cli
 FICHIER DES RESULTATS = sis_bosse-t2d.slf
-FICHIER DE REFERENCE  = fis_bosse-t2d.slf
-VALIDATION : OUI
 /
 /CALCUL 
 / -----------------------------------------------------

@@ -45,8 +45,6 @@ FICHIER DE GEOMETRIE = geo_rigid-bed.slf
 FICHIER FORTRAN = sis_rigid-bed.f
 FICHIER DES CONDITIONS AUX LIMITES = geo_rigid-bed.cli
 FICHIER DES RESULTATS = sis_rigid-bed.slf
-FICHIER DE REFERENCE = fis_rigid-bed.slf
-VALIDATION = OUI
 /
 / CALCUL
 / -------

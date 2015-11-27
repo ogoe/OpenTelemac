@@ -15,8 +15,6 @@ FORTRAN FILE              ='stive85.f'
 
 GEOMETRY FILE             ='stive85.sel'
 
-REFERENCE FILE            ='ref_stive85.res'
-
 STEERING FILE             ='art_stive85.cas'
 
 /---------------------------------------------------------------------
@@ -79,9 +77,4 @@ DIRECTION OF WAVE PROPAGATION = 0.
 
 INITIAL CONDITIONS   : 'CONSTANT ELEVATION'
 INITIAL WATER LEVEL  : 4.19
-
-
-/---------------------------------------------------------------------
-VALIDATION : YES
-/---------------------------------------------------------------------
 

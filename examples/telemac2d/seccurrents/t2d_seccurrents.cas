@@ -1,8 +1,6 @@
 /
 / Testing secondary currents
 /
-PARALLEL PROCESSORS = 0
-/
 TURBULENCE MODEL                        = 3
 SOLVER FOR K-EPSILON MODEL              = 7
 MAXIMUM NUMBER OF ITERATIONS FOR K AND EPSILON = 200
@@ -39,9 +37,6 @@ COMPUTATION CONTINUED     = YES
 PREVIOUS COMPUTATION FILE = restart
 INITIAL TIME SET TO ZERO  = YES
 CONTINUITY CORRECTION     = YES
-
-VALIDATION                = YES
-REFERENCE FILE            = f2d_seccurrents.slf
 
 /////////////////////////////SECCURRENTS///////////////////////////////
 SECONDARY CURRENTS = YES

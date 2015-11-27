@@ -1,8 +1,6 @@
 /
 /  4 elements and 5 points in this case : will not work in parallel !!!!!
 /
-PROCESSEURS PARALLELES : 0
-/DEBUGGER : 1
 /--------------------------------------------------------------------/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /--------------------------------------------------------------------/
@@ -12,7 +10,6 @@ PROCESSEURS PARALLELES : 0
 /--------------------------------------------------------------------/
 FICHIER DE GEOMETRIE = 'geo_TW.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'geo_TW.cli'
-FICHIER DE REFERENCE = 'fom_TW.slf'
 /
 FICHIER DES RESULTATS 2D = 'turningwind.slf'
 /FICHIER DES RESULTATS 2D = 'wind.slf'
@@ -68,4 +65,3 @@ APPORTS DUS AU VENT = 1
 DISSIPATION PAR MOUTONNEMENT = 1
 DISSIPATION PAR FROTTEMENT SUR LE FOND = 0
 TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
-VALIDATION = OUI

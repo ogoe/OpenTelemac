@@ -13,25 +13,6 @@
       <look color="green" />
    </deco>
 
-<!-- Python sub-scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="fcts" >
-      <python>
-def mapdiff(a1,a2):
-   return a1.support,a2.values-a1.values
-def maxdiff(d0):
-   a0 = max(np.ravel(d0.values))
-   if a0 > 0.0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   a0 = min(np.ravel(d0.values))
-   if 0.0 > a0:
-      a1 = np.argwhere(d0.values == a0)[-1]
-      return "for instance value="+repr(a0)+" at time: "+str(a1[0])+" for variable: "+str(a1[1])+" at node: "+str(a1[2])
-   return "My work has been validated"
-      </python>
-   </cast>
-
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 -->
@@ -48,32 +29,31 @@ def maxdiff(d0):
        title="breach scalar mode"
    />
 
-<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="frt-art" config="oneofall" time="[-1]" type="2d:">
-      <v1 vars="VE:map" target="1:ARTRES" />
-      <v2 vars="VE:map" target="1:ARTREF" />
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:ARTRES" />
+      <v2 vars=":map" target="ref_art_breach.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="max(v3.values.ravel()) > 1.e-6"
-         warn="max(v3.values.ravel()) > 1.e-12"
-         value="maxdiff(v3)" />
+         fail="checkval(v3,[])" />
    </cast>
-
-<!-- Check on Parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-   <cast xref="art-art" config="oneofall" time="[-1]" type="2d:">
-      <v1 vars="VE:map" target="1:ARTRES" />
-      <v2 vars="VE:map" target="2:ARTRES" />
-      <v4 vars="mapdiff(v1,v2)" />
-      <return title="Comparison with the last time frame of the parallel file."
-         fail="max(v4.values.ravel()) > 1.e-6"
-         warn="max(v4.values.ravel()) > 1.e-12"
-         value="maxdiff(v4)" />
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:ARTRES" />
+      <v5 vars=":map" target="ref_art_breach.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
    </cast>
-
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment -->
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:ARTRES" />
+      <v8 vars=":map" target="2:ARTRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
    <cast xref="Experiment" type="1d" config="oneofall" size="(10;7)"  >
       <j1 vars="H" target="experiment.csv" />
    </cast>
@@ -84,7 +64,7 @@ def interp(x1,y1,x2):
     from scipy.interpolate import interp1d
     f = interp1d (x1,y1,kind=3)
     ExpInterp = f(x2[10:])
-    return x2[10:], ExpInterp
+    return [],[],x2[10:], ExpInterp
       </python>
 	  <j2 vars="wave height:line" extract="(0;915)(1800;915)" target="1:ARTRES"  time="[0]" />
 	  <j3 vars="interp(j1.support,j1.values,j2.support)"/>

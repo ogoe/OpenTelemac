@@ -1,5 +1,3 @@
-/DEBUGGER : 0
-/PROCESSEURS PARALLELES : 8
 /
 /  HP C3700                     : 27 s   5.5  24/11/2004
 /
@@ -27,14 +25,12 @@ FICHIER FORTRAN			   : t2d_bosse-t2d.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_bosse-t2d.cli
 FICHIER DE GEOMETRIE               : geo_bosse-t2d.slf            
 FICHIER DES RESULTATS              : r2d_bosse-t2d.slf
-FICHIER DE REFERENCE               : f2d_bosse-t2d.slf
 FICHIER DES PARAMETRES DE SISYPHE  : sis_bosse-t2d.cas
-VALIDATION : OUI
 /----------------------------------------------------------------------/  
 /                       OPTIONS GENERALES                                 
 /----------------------------------------------------------------------/  
 TITRE = 'TELEMAC 2D : Cas5'  
-COUPLAGE AVEC : 'INTER-SISYPHE'
+COUPLAGE AVEC : 'SISYPHE'
 PERIODE DE COUPLAGE POUR SISYPHE= 1                                                 
 PAS DE TEMPS = 0.1
 NOMBRE DE PAS DE TEMPS = 100000 

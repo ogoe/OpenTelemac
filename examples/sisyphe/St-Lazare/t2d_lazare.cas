@@ -1,4 +1,3 @@
-/PARALLEL PROCESSORS : 8
 /****************************************************************
 /                      STEERING FILE 
 /                       TELEMAC-2D 
@@ -44,8 +43,6 @@ SISYPHE STEERING FILE                          = sis_lazare.cas
 PREVIOUS COMPUTATION FILE                      = f2d_lazare.slf
 /
 RESULTS FILE                                   = r2d_lazare.res
-VALIDATION                                     = YES
-REFERENCE FILE                                 = f2d_lazare.slf 
 /----------------------------------------------------------------
 /	DUREE DU CALCUL (2)
 /----------------------------------------------------------------
@@ -138,6 +135,6 @@ VELOCITY DIFFUSIVITY                           =  0.1 / 1.E-6
 /----------------------------------------------------------------
 /	COUPLING AND PARALLELISM (9)
 /----------------------------------------------------------------
-COUPLING WITH                                 =  'INTER-SISYPHE'
+COUPLING WITH                                 =  'SISYPHE'
 COUPLING PERIOD FOR SISYPHE                   =  1            
 &FIN
