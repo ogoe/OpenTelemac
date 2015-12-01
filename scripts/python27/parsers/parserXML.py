@@ -118,12 +118,12 @@ def mapdiff(a1,a2):
 
    # Checking that it is the same variables in each files
    for ivar in range(nvar):
-      if a1.names[ivar][1:16] != a2.names[ivar][1:16]:
+      if a1.names[ivar][0:15] != a2.names[ivar][0:15]:
          raise Exception([{
               'name':'mapdiff',
               'msg':'The name of the two variable are different \n'+\
-                    a1.names[ivar]+' for a1\n'+\
-                    a1.names[ivar]+' for a2'}])
+                    a1.names[ivar][0:15]+' for a1\n'+\
+                    a2.names[ivar][0:15]+' for a2'}])
 
    # Checking if we have the same time step
    if abs(a1.time[0] - a2.time[0]) > 1e-6:
@@ -131,7 +131,7 @@ def mapdiff(a1,a2):
            'name':'mapdiff',
            'msg':'The time of the two times are different \n'+\
                  a1.time[0]+' for a1\n'+\
-                 a1.time[0]+' for a2'}])
+                 a2.time[0]+' for a2'}])
 
    # Making a1-a2 for each variable and each point
    for ivar in range(nvar):

@@ -18,10 +18,7 @@ FICHIER DE DONNEES FORMATE 1       : froud.txt
 /
 FICHIER DES RESULTATS 3D           : r3d_viollet.slf
 FICHIER DES RESULTATS 2D           : r2d_viollet.slf
-FICHIER DE REFERENCE               : f3d_viollet.slf
 FICHIER DE RESULTATS FORMATE       : profil_actif_v7p0r1_Fr09_Haal_b.txt
-/
-VALIDATION : OUI
 /
 /----------------------------------------------------------------------/
 /     OPTIONS GENERALES

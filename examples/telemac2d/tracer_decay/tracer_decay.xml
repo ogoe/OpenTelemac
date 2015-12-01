@@ -25,7 +25,7 @@
        title="tracer decay scalar mode"
    />
    <action xref="2"
-       do="translate;run;cas;princi" ncsize="8" 
+       do="translate;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_tracer_decay.cas"
        title="tracer decay parallel mode"
    />   

@@ -33,7 +33,6 @@
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v3,[])" />
    </cast>
-<!-- TODO: Remove comments once merge from trunk done
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:T2DRES" />
       <v5 vars=":map" target="f2d_weirs.slf" />
@@ -48,7 +47,6 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v9,[])" />
    </cast>
--->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
