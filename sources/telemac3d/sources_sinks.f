@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P0
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
@@ -49,12 +49,19 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
+!history  A. LEROY (EDF LAB, LNHE)
+!+        25/11/2015
+!+        V7P1
+!+   Remove the call to INTERPMETEO: all the meteo variables are now
+!+   read in meteo.f and stored in variables of waqtel 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE DECLARATIONS_WAQTEL
       USE EXCHANGE_WITH_ATMOSPHERE
 
       IMPLICIT NONE
@@ -68,8 +75,7 @@
 !
       INTEGER IS,I,IP
 !     HEAT EXCHANGE WITH ATMOSPHERE
-      INTEGER ITRAC,NFO
-      DOUBLE PRECISION WW,WINDX,WINDY,PATM,HREL,NEBU,RAINFALL
+      DOUBLE PRECISION WW
       DOUBLE PRECISION TREEL,SAL,RO,WW2,FLUX_EVAP,FLUX_SENS,DEBEVAP
 !
 !-----------------------------------------------------------------------
@@ -163,25 +169,24 @@
             CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
           ENDIF
         ELSEIF(ATMOSEXCH.EQ.2) THEN
-          ITRAC = 1  ! NUMBER OF TRACER FOR TEMPERATURE
-          NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
-!
-          CALL INTERPMETEO(WW,WINDX,WINDY,
-     &                     TAIR,PATM,HREL,NEBU,RAINFALL,AT,NFO)
-!         LOG LAW FOR WIND AT 2 METERS
-!          WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
-!         DIRECTLY WRITTEN BELOW
-          WW2 = WW * LOG(1.D4)/LOG(5.D4)
-!         ALTERNATIVE LAW FOR WIND AT 2 METERS
-!          WW2 = 0.6D0*WW
-!
           DO I=1,NPOIN2
-!         TEMPERATURE AND SALINITY AT THE SURFACE
-            TREEL = TA%ADR(ITRAC)%P%R(NPOIN3-NPOIN2+I)
-!            SAL   = TA%ADR(2)%P%R(NPOIN3-NPOIN2+I)
-            SAL = 0.D0
+!           TEMPERATURE AND SALINITY AT THE SURFACE
+            TREEL = TA%ADR(IND_T)%P%R(NPOIN3-NPOIN2+I)
+            IF (IND_S.EQ.0) THEN
+              SAL = 0.D0
+            ELSE
+              SAL = TA%ADR(IND_S)%P%R(NPOIN3-NPOIN2+I)
+            ENDIF
+!
+            WW = SQRT(WIND%ADR(1)%P%R(I)**2 + WIND%ADR(2)%P%R(I)**2)
+!           LOG LAW FOR WIND AT 2 METERS
+!            WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
+!           DIRECTLY WRITTEN BELOW
+            WW2 = WW * LOG(1.D4)/LOG(5.D4)
+!           ALTERNATIVE LAW FOR WIND AT 2 METERS
+!           WW2 = 0.6D0*WW
             RO = RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
-            CALL EVAPO(TREEL,TAIR,WW2,PATM,HREL,RO,
+            CALL EVAPO(TREEL,TAIR,WW2,PATMOS%R(I),HREL,RO,
      &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
 !           WATER FLUXES = RAIN - EVAPORATION
 !           CONVERSION FROM MM/S TO M/S --> *1.D-3

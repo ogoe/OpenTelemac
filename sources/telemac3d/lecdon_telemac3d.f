@@ -654,7 +654,6 @@
       FAIR      = MOTREA(ADRESS(2, 4))
       FUAIR     = MOTREA(ADRESS(2, 5))
       FVAIR     = MOTREA(ADRESS(2, 6))
-      TAIR      = MOTREA(ADRESS(2, 7))
 !
       IF(NTRAC.GT.0) THEN
         IF(TROUVE(2,8).EQ.2.AND.DIMEN(2,8).EQ.NTRAC) THEN
@@ -2582,7 +2581,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ATMOSPHERE-WATER EXCHANGE MODEL AND WIND COMPATIBILITY
+!     ATMOSPHERE-WATER EXCHANGE MODEL AND ATMOSPHERIC PRESSURE COMPATIBILITY
       IF((ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2).AND..NOT.ATMOS) THEN
 !
         IF(LNG.EQ.1) WRITE(LU,183)
@@ -2613,6 +2612,23 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     ATMOSPHERE-WATER EXCHANGE MODEL AND TEMPERATURE COMPATIBILITY
+      IF((ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2).AND.IND_T.EQ.0) THEN
+!
+        IF(LNG.EQ.1) WRITE(LU,187)
+        IF(LNG.EQ.2) WRITE(LU,188)
+ 187    FORMAT(///,1X,'ATTENTION ! MODULE D''ECHANGES EAU-',/,1X,
+     &                  'ATMOSPHERE ACTIVE MAIS LE TRACEUR',/,1X,
+     &                  'TEMPERATURE N EXISTE PAS !',///)
+ 188    FORMAT(///,1X,'ERROR! ATMOSPHERE-WATER EXCHANGE',/,1X,
+     &                  'MODEL ACTIVATED, BUT THERE IS NO',/,1X,
+     &                  'TEMPERATURE IN THE FLOW',///)
+        CALL PLANTE(1)
+      ENDIF
+!
 !
 !-----------------------------------------------------------------------
 !

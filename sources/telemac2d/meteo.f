@@ -60,6 +60,13 @@
 !+        V7P0
 !+  Adding USE WAQTEL...
 !
+!history A. LEROY (LNHE)
+!+        25/11/2015
+!+        V7P1
+!+  INTERPMETEO now writes directly in variables of WAQTEL which
+!+  can be used by the other modules. This makes it possible to
+!+  remove subsequent calls to INTERPMETEO in TELEMAC3D
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
@@ -86,7 +93,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
+      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                                HREL,RAINFALL,ZSD 
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -117,7 +125,7 @@
       DOUBLE PRECISION AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
       DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
-      DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
+      DOUBLE PRECISION PATM,WW,PI
 !
       DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
 !
@@ -214,19 +222,12 @@
 !       HEAT EXCHANGE WITH ATMOSPHERE
 !
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-          IF(VENT.OR.ATMOS) THEN
-            CALL INTERPMETEO(WW,UAIR,VAIR,
-     &                       TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
-          ENDIF
+          CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,PATM,
+     &                     HREL,NEBU,RAINFALL,ZSD,AT,UL)
+          CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+          CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !
-          IF(VENT) THEN
-            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
-          ENDIF
-!
-          IF(ATMOS) THEN
-            CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
-          ENDIF
+          CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
 !
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
 !

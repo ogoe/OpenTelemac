@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   09/07/2014
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    PREPARES SOURCE TERMS FOR DIFFUSION OF TRACERS.
@@ -37,6 +37,13 @@
 !+   Adding an example of the penetration of the solar radiation
 !+   for exchange with atmosphere
 !
+!history  A. LEROY (LNHE)
+!+        25/11/2015
+!+        V7P1
+!+   Remove the call to INTERPMETEO: all the meteo variables are now
+!+   read in meteo.f and stored in variables of waqtel
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -44,6 +51,7 @@
       USE DECLARATIONS_TELEMAC3D
 !     HEAT EXCHANGE WITH ATMOSPHERE. UNCOMMENT IF USED
 !      USE EXCHANGE_WITH_ATMOSPHERE
+!      USE DECLARATIONS_WAQTEL, ONLY: NEBU,ZSD
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -54,10 +62,9 @@
       INTEGER ITRAC
 !
 !     HEAT EXCHANGE WITH ATMOSPHERE. UNCOMMENT IF USED
-!      INTEGER IPLAN,I,J,NFO
-!      DOUBLE PRECISION WW,WINDX,WINDY,T_AIR,PATM,HREL,NEBU,RAINFALL
+!      INTEGER IPLAN,I,J
 !      DOUBLE PRECISION TREEL,SAL,RO,LAMB,RAY_SOL,LATITUDE,LONGITUDE
-!      DOUBLE PRECISION ZSD,KD
+!      DOUBLE PRECISION KD
 !
 !----------------------------------------------------------------------
 !
@@ -86,37 +93,33 @@
 !!       IF EXCHANGE WITH ATMPOSPHERE IS USED, DO NOT FORGET TO
 !!       UNCOMMENT THE DECLARATIONS OF THE MODULE + THE VARIABLES ABOVE
 !!
-!        ITRAC = 1 ! FIRST TRACER IS THE WATER TEMPERATURE, MAY BE CHANGED
 !!       SOURCE IN TEMPERATURE NOT EQUAL TO ZERO
-!        S0TA%ADR(ITRAC)%P%TYPR='Q'
-!!       DONNEES METEO DATA
-!        NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
-!        CALL INTERPMETEO(WW,WINDX,WINDY,T_AIR,PATM,HREL,NEBU,RAINFALL,
-!     &                   AT,NFO)
+!        S0TA%ADR(IND_T)%P%TYPR='Q'
 !!       INCIDENT SOLAR RADIATION
 !!       LATITUDE AND LONGITUDE TO BE CHANGED DEPENDING ON THE MEAN LOCATION
 !        LATITUDE  = 43.4458D0
 !        LONGITUDE = 5.1139D0
 !        CALL SOLRAD(RAY_SOL,NEBU,MARDAT,MARTIM,AT,LATITUDE,LONGITUDE)
 !!       FORMULA FOR TURBID WATER WITH SECCHI LENGTH
-!!       ZSD: SECCHI LENGTH
-!        ZSD = 0.9D0
 !        KD  = 1.7D0/ZSD ! 83% OF THE INCIDENT ENERGY IS ABSORBED
 !        SAL = 0.D0
 !        DO I=1,NPOIN2
 !          DO IPLAN=1,NPLAN
 !            J = I + (IPLAN-1)*NPOIN2
-!            TREEL=TA%ADR(ITRAC)%P%R(NPOIN3-NPOIN2+I)
+!            TREEL=TA%ADR(IND_T)%P%R(NPOIN3-NPOIN2+I)
+!            IF (IND_S.NE.0) THEN
+!              SAL = TA%ADR(IND_S)%P%R(NPOIN3-NPOIN2+I)
+!            ENDIF
 !            RO=RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
 !            LAMB=RO*CP
-!            S0TA%ADR(ITRAC)%P%R(J) =
+!            S0TA%ADR(IND_T)%P%R(J) =
 !     &       KD*EXP(KD*(Z(J)-Z(I+(NPLAN-1)*NPOIN2)))
 !     &      *RAY_SOL/LAMB
 !!
 !!           EXAMPLE OF FORMULA FOR TURBID WATER
 !!           ALL CONSTANTS MAY BE TUNED
 !!           0.22D0 = 1.D0-0.78D0
-!!           S0TA%ADR(ITRAC)%P%R(J) =
+!!           S0TA%ADR(IND_T)%P%R(J) =
 !!           ( 0.78D0*0.66D0 *EXP(0.66D0* (Z(J)-Z(I+(NPLAN-1)*NPOIN2)))
 !!     &      +0.22D0*0.125D0*EXP(0.125D0*(Z(J)-Z(I+(NPLAN-1)*NPOIN2))))
 !!     &     *RAY_SOL/LAMB
@@ -124,7 +127,7 @@
 !!           EXAMPLE OF FORMULA FOR CLEAR WATER
 !!           ALL CONSTANTS MAY BE TUNED
 !!           0.42D0 = 1.D0-0.58D0
-!!           S0TA%ADR(ITRAC)%P%R(J) =
+!!           S0TA%ADR(IND_T)%P%R(J) =
 !!           ( 0.58D0/0.35D0*EXP((Z(J)-Z(I+(NPLAN-1)*NPOIN2))/0.35D0)
 !!     &      +0.42D0/23.D0 *EXP((Z(J)-Z(I+(NPLAN-1)*NPOIN2))/23.D0 ))
 !!     &     *RAY_SOL/LAMB

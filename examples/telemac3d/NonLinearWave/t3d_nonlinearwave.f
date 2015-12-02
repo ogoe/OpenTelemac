@@ -11,7 +11,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   09/07/2014
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -24,16 +24,6 @@
 !+     3) SEDIMENT IS THE LAST TRACER.
 !
 !warning  MAY BE MODIFIED BY THE USER
-!
-!history
-!+        11/02/2008
-!+
-!+   LOOP ON THE BOUNDARY POINTS SPLIT IN 3 LOOPS TO REVERSE
-!
-!history  J.-M. HERVOUET (LNHE)
-!+        21/08/2009
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -67,6 +57,11 @@
 !+        V7P0
 !+   Adding the heat balance of exchange with atmosphere
 !
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
 !|                |   | CONSERVATION.
@@ -79,6 +74,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
+      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
       USE EXCHANGE_WITH_ATMOSPHERE
 !
@@ -102,9 +98,9 @@
       LOGICAL YAZMIN
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY
 !
-      DOUBLE PRECISION P_DMIN
+      DOUBLE PRECISION P_DMIN,P_DSUM
       INTEGER  P_IMAX
-      EXTERNAL P_IMAX,P_DMIN
+      EXTERNAL P_IMAX,P_DMIN,P_DSUM
       DOUBLE PRECISION STA_DIS_CUR
       EXTERNAL STA_DIS_CUR
 !
@@ -115,13 +111,13 @@
       INTEGER YADEB(MAXFRO),MSK1,IJK
 !
 !     DECLARATION RELATED TO HEAT EXCHANGE
-      DOUBLE PRECISION PATM,HREL,NEBU,RAINFALL,WW2,WINDX,WINDY
+      DOUBLE PRECISION WW2
       DOUBLE PRECISION RAY_ATM,RAY_EAU,FLUX_EVAP,FLUX_SENS,DEBEVAP
 !
       DOUBLE PRECISION WW,TREEL,A,B,LAMB,RO,SAL
 !     DOUBLE PRECISION XB,YB,ZB
-      INTEGER NFO
-      INTEGER ITEMP
+!     NORMALS TO THE BED
+      DOUBLE PRECISION XNB,YNB,ZNB
 !
       INTEGER I
       DOUBLE PRECISION PI,PER,L,HEIGHT,DEPTH,KK,OMEGA,ZZ,ZSURF,TPS
@@ -479,6 +475,54 @@
         ENDDO
       ENDIF
 !
+      IF(NBEDFLO.GT.0) THEN
+!
+!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!       -------------------------------------------------
+!
+        CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,
+     &              WBORF,WBORF,WBORF,WBORF,WBORF,WBORF,MESH2D,
+     &              .FALSE.,MASKEL)
+!
+!       FIND THE AREA OF EACH BOUNDARY
+        DO IFRLIQ=1,NBEDFLO
+          BEDQAREA(IFRLIQ) = 0.D0
+        ENDDO
+!
+        DO K=1,NPOIN2
+          IF(LIWBOF%I(K).EQ.KENT) THEN
+            IFRLIQ=NLIQBED%I(K)
+            IF(IFRLIQ.GT.0) THEN
+              BEDQAREA(IFRLIQ) = BEDQAREA(IFRLIQ) + T2_01%R(K)
+            ENDIF
+          ENDIF
+        ENDDO
+!
+        IF(NCSIZE.GT.1) THEN
+          DO IFRLIQ = 1 , NBEDFLO
+            BEDQAREA(IFRLIQ)=P_DSUM(BEDQAREA(IFRLIQ))
+          ENDDO
+        ENDIF
+!
+        DO IFRLIQ = 1 , NBEDFLO
+          IF(BEDQAREA(IFRLIQ).LE.0.D0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'BORD3D : FRONTIERE DU FOND ',IFRLIQ
+              WRITE(LU,*) '         AVEC SURFACE EGALE A : ',
+     &                              BEDQAREA(IFRLIQ)
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'BORD3D: BOUNDARY ON THE BOTTOM: ',IFRLIQ
+              WRITE(LU,*) '        WITH AREA EQUAL TO : ',
+     &                             BEDQAREA(IFRLIQ)
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
+!
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     AUTOMATIC TIDAL BOUNDARY CONDITIONS
@@ -560,6 +604,41 @@
 !       ENDIF
 !     ENDDO
 !
+!     PRESCRIBED FLOWRATES ON THE BED: FINAL TREATMENT
+!     --------------------------------------------------------
+!
+      IF(NBEDFLO.GT.0) THEN
+!
+        DO K=1,NPOIN2
+!
+!         CORRECT THE VELOCITY PROFILES BY DIVIDING THE FLOW RATE WITH
+!         THE CROSS-SECTIONAL AREA OVER WHICH IT WILL BE IMPOSED
+!
+          IF(LIWBOF%I(K).EQ.KENT) THEN
+            IFRLIQ=NLIQBED%I(K)
+            IF(IFRLIQ.GT.0) THEN
+!             GRADZF IS THE GRADIENT OF THE BED, I.E. OUTWARD NORMAL
+!             THE Z COMPONENT IS ASSUMED TO BE ALWAYS NEGATIVE
+              XNB=GRADZF%ADR(1)%P%R(K)
+              YNB=GRADZF%ADR(2)%P%R(K)
+              ZNB=-SQRT(1.D0-XNB**2-YNB**2)
+!             NO OUTFLOW IF NO WATER
+              IF(H%R(K).LT.1.D-4.AND.BEDFLO(IFRLIQ).LE.0.D0) THEN
+                UBORF%R(K)=0.D0
+                VBORF%R(K)=0.D0
+                WBORF%R(K)=0.D0
+              ELSE
+                UBORF%R(K)=-XNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+                VBORF%R(K)=-YNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+                WBORF%R(K)=-ZNB*BEDFLO(IFRLIQ)/BEDQAREA(IFRLIQ)
+              ENDIF
+            ENDIF
+          ENDIF
+!
+        ENDDO ! NPOIN2
+!
+      ENDIF ! IF(NBEDFLO.GT.0)
+!
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !           END OF AUTOMATIC TREATMENT OF LIQUID BOUNDARIES
 !           +++++++++++++++++++++++++++++++++++++++++++++++
@@ -620,44 +699,43 @@
 !                                    =======
 !    TO BE GIVEN :
 !
-!    ITEMP = NUMBER OF TRACER WHICH IS THE HEAT
 !    TAIR  = AIR TEMPERATURE WHICH MAY VARY WITH TIME
 !    SAL   = SALINITY WHICH MAY VARY WITH TIME
 !
       IF (ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-!       READING OF INPUT DATA FILE
-        NFO = T3D_FILES(T3DFO1)%LU   ! FORMATTED DATA FILE 1
-        CALL INTERPMETEO(WW,WINDX,WINDY,
-     &                   TAIR,PATM,HREL,NEBU,RAINFALL,AT,NFO)
-        ITEMP = 1
-!       LOG LAW FOR WIND AT 2 METERS
-!        WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
-!       WRITTEN BELOW AS:
-        WW2 = WW * LOG(1.D4)/LOG(5.D4)
-!       ALTERNATIVE LAW FOR WIND AT 2 METERS
-!        WW2 = 0.6D0*WW
         DO IPOIN2=1,NPOIN2
-          TREEL=TA%ADR(ITEMP)%P%R(NPOIN3-NPOIN2+IPOIN2)
-!          SAL = 35.D-3 ! EXAMPLE OF SEA SALINITY
-          SAL = 0.D0
+          TREEL=TA%ADR(IND_T)%P%R(NPOIN3-NPOIN2+IPOIN2)
+          IF (IND_S.EQ.0) THEN
+            SAL = 0.D0
+          ELSE
+            SAL = TA%ADR(IND_S)%P%R(NPOIN3-NPOIN2+IPOIN2)
+          ENDIF
           RO = RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
           LAMB=RO*CP
 
+          WW = SQRT(WIND%ADR(1)%P%R(IPOIN2)*WIND%ADR(1)%P%R(IPOIN2)
+     &       + WIND%ADR(2)%P%R(IPOIN2)*WIND%ADR(2)%P%R(IPOIN2))
+!         LOG LAW FOR WIND AT 2 METERS
+!          WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
+!         WRITTEN BELOW AS:
+          WW2 = WW * LOG(1.D4)/LOG(5.D4)
+!         ALTERNATIVE LAW FOR WIND AT 2 METERS
+!          WW2 = 0.6D0*WW
           IF(ATMOSEXCH.EQ.1) THEN
             A=(4.48D0+0.049D0*TREEL)+2021.5D0*C_ATMOS*(1.D0+WW)*
      &        (1.12D0+0.018D0*TREEL+0.00158D0*TREEL**2)
-            ATABOS%ADR(ITEMP)%P%R(IPOIN2)=-A/LAMB
-            BTABOS%ADR(ITEMP)%P%R(IPOIN2)= A*TAIR/LAMB
+            ATABOS%ADR(IND_T)%P%R(IPOIN2)=-A/LAMB
+            BTABOS%ADR(IND_T)%P%R(IPOIN2)= A*TAIR/LAMB
           ELSEIF(ATMOSEXCH.EQ.2) THEN
 !     SENSIBLE HEAT FLUXES
-            CALL EVAPO(TREEL,TAIR,WW2,PATM,HREL,RO,
+            CALL EVAPO(TREEL,TAIR,WW2,PATMOS%R(IPOIN2),HREL,RO,
      &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
 !     LONGWAVE HEAT FLUXES
             CALL SHORTRAD(TREEL,TAIR,NEBU,RAY_ATM,RAY_EAU)
 !
 !     BOUNDARY CONDITION FOR TEMPERATURE AT SURFACE
-            ATABOS%ADR(ITEMP)%P%R(IPOIN2) = 0.D0
-            BTABOS%ADR(ITEMP)%P%R(IPOIN2) = (RAY_ATM-RAY_EAU-FLUX_EVAP
+            ATABOS%ADR(IND_T)%P%R(IPOIN2) = 0.D0
+            BTABOS%ADR(IND_T)%P%R(IPOIN2) = (RAY_ATM-RAY_EAU-FLUX_EVAP
      &                                      -FLUX_SENS)/LAMB
           ENDIF
         ENDDO
@@ -666,8 +744,8 @@
 !     STATES THAT ATABOS AND BTABOS ARE NOT ZERO (SEE LIMI3D AND DIFF3D)
 !     OTHERWISE THEY WILL NOT BE CONSIDERED
       IF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-        ATABOS%ADR(ITEMP)%P%TYPR='Q'
-        BTABOS%ADR(ITEMP)%P%TYPR='Q'
+        ATABOS%ADR(IND_T)%P%TYPR='Q'
+        BTABOS%ADR(IND_T)%P%TYPR='Q'
       ENDIF
 !
 !

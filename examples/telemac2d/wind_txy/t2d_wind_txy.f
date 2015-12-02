@@ -7,7 +7,7 @@
      & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -55,6 +55,11 @@
 !+        V7P0
 !+  Adding optional arguments to remove USE DECLARATIONS_TELEMAC2D.
 !
+!history R.ATA (LNHE)
+!+        16/11/2015
+!+        V7P0
+!+  Adding USE WAQTEL...
+!
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        16/02/2015
 !+        V7P0
@@ -88,7 +93,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,TAIR,NEBU,NWIND
+      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                                HREL,RAINFALL,ZSD 
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -119,7 +125,7 @@
       DOUBLE PRECISION Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
       DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
-      DOUBLE PRECISION HREL,RAINFALL,PATM,WW,PI
+      DOUBLE PRECISION PATM,WW,PI
 !
       DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
 !
@@ -184,7 +190,7 @@
 !       ATMOSPHERIC PRESSURE
 !
         IF(ATMOS.OR.WATER_QUALITY) THEN
-          CALL OV( 'X=C     ' , PATMOS,Y,Z,PATMOS_VALUE,NPOIN )
+          CALL OV( 'X=C     ' , PATMOS,Y,Y,PATMOS_VALUE,NPOIN )
         ENDIF
 !
 !       WIND :
@@ -209,8 +215,8 @@
               ENDIF
             ENDIF
 !        IN NEXT RELEASE, MAYBE THINK TO REMOVE KEYWORD FOR FUAIR AND FVAIR
-            CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
-            CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+            CALL OV( 'X=C     ' , WINDX , Y , Y , FUAIR , NPOIN )
+            CALL OV( 'X=C     ' , WINDY , Y , Y , FVAIR , NPOIN )
 
           ELSEIF(OPTWIND.EQ.2) THEN
 !           JUMPING TWO LINES OF COMMENTS
@@ -294,19 +300,12 @@
 !       HEAT EXCHANGE WITH ATMOSPHERE
 !
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-          IF(VENT.OR.ATMOS) THEN
-            CALL INTERPMETEO(WW,UAIR,VAIR,
-     &                       TAIR,PATM,HREL,NEBU,RAINFALL,AT,UL)
-          ENDIF
+          CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,
+     &                       PATM,HREL,NEBU,RAINFALL,ZSD,AT,UL)
+          CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+          CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !
-          IF(VENT) THEN
-            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
-          ENDIF
-!
-          IF(ATMOS) THEN
-            CALL OV('X=C     ',PATMOS,Y,Z,PATM,NPOIN)
-          ENDIF
+          CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
 !
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
 !
@@ -358,8 +357,8 @@
 !
             ENDIF
 !
-            CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)
+            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !
             FUAIR = UAIR
             FVAIR = VAIR

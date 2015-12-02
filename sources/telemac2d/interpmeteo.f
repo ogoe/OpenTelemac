@@ -2,10 +2,10 @@
                      SUBROUTINE INTERPMETEO
 !                    **********************
 !
-     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,AT,NFO)
+     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,ZSD,AT,NFO)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   09/07/2014
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VARIABLES IN AN ASCII FILE
@@ -17,6 +17,14 @@
 !+        FROM LAPLUIE AND LECENT
 !+
 !
+!history  A. LEROY (EDF-LNHE)
+!+        25/11/2015
+!+        V7P1
+!+        The interpolation of the norm of the wind velocity
+!+        is now correct and the Secchi length is added in the
+!+        variables to be read
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
 !| HREL           |<--| RELATIVE HUMIDITY
@@ -24,6 +32,7 @@
 !| NFO            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| PATM           |<--| ATMOSPHERIC PRESSURE
 !| RAINFALL       |<--| RAINFALL
+!| ZSD            |<--| SECCHI LENGTH FOR SOLAR RAY ABSORPTION DEPTH
 !| TAIR           |<--| AIR TEMPERATURE
 !| WINDX          |<--| WIND ALONG X
 !| WINDY          |<--| WIND ALONG Y
@@ -40,13 +49,13 @@
       INTEGER, INTENT(IN)           :: NFO
       DOUBLE PRECISION, INTENT(IN)  :: AT
       DOUBLE PRECISION, INTENT(OUT) :: WW,WINDX,WINDY,TAIR,PATM,HREL
-      DOUBLE PRECISION, INTENT(OUT) :: NEBU,RAINFALL
+      DOUBLE PRECISION, INTENT(OUT) :: NEBU,RAINFALL,ZSD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER POSTAB,I,NBENR
 !     NUMBER OF VARIABLES IN THE ASCII FILE NFO
-      INTEGER, PARAMETER :: NINPUTVAR = 8
+      INTEGER, PARAMETER :: NINPUTVAR = 9
       INTEGER, PARAMETER :: NLINESTOSKIP = 2
 !
       DOUBLE PRECISION DELTAT,ALPHA
@@ -143,8 +152,8 @@
 !  FILLS IN WITH X AND Y COMPONENTS OF WIND VELOCITY
 !
         DO I=1,NBENR
-          TABENT(I,9)  = -TABENT(I,2)*SIN(TABENT(I,3)*DTR)
-          TABENT(I,10) = -TABENT(I,2)*COS(TABENT(I,3)*DTR)
+          TABENT(I,NINPUTVAR+1) = -TABENT(I,2)*SIN(TABENT(I,3)*DTR)
+          TABENT(I,NINPUTVAR+2) = -TABENT(I,2)*COS(TABENT(I,3)*DTR)
         ENDDO
 !
 !  END TO FILL IN TABENT ARRAY
@@ -203,13 +212,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      WW    =  TABENT(POSTAB,2)
-     &      + (TABENT(POSTAB+1,2)-TABENT(POSTAB,2))*ALPHA
-!
-      WINDX =  TABENT(POSTAB,9)
-     &      + (TABENT(POSTAB+1,9)-TABENT(POSTAB,9))*ALPHA
-      WINDY =  TABENT(POSTAB,10)
-     &      + (TABENT(POSTAB+1,10)-TABENT(POSTAB,10))*ALPHA
+      WINDX =  TABENT(POSTAB,NINPUTVAR+1)
+     &      + (TABENT(POSTAB+1,NINPUTVAR+1)
+     &      -  TABENT(POSTAB,NINPUTVAR+1))*ALPHA
+      WINDY =  TABENT(POSTAB,NINPUTVAR+2)
+     &      + (TABENT(POSTAB+1,NINPUTVAR+2)
+     &      -  TABENT(POSTAB,NINPUTVAR+2))*ALPHA
+      WW    =  SQRT(WINDX**2+WINDY**2)
 !
       TAIR  =  TABENT(POSTAB,4)
      &      + (TABENT(POSTAB+1,4)-TABENT(POSTAB,4))*ALPHA
@@ -222,6 +231,9 @@
      &      + (TABENT(POSTAB+1,7)-TABENT(POSTAB,7))*ALPHA
 !
       RAINFALL = TABENT(POSTAB+1,8)/DELTAT
+!
+      ZSD   = TABENT(POSTAB,9)
+     &      + (TABENT(POSTAB+1,9)-TABENT(POSTAB,9))*ALPHA
 !
 !-----------------------------------------------------------------------
 !

@@ -1394,24 +1394,6 @@ AIDE = 'Composante de la vitesse du vent suivant
 l''axe des y (m/s), si constante.'
 AIDE1 = 'Wind velocity, component along y axis (m/s), if constant.'
 
-NOM = 'TEMPERATURE DE L''AIR'
-NOM1 = 'AIR TEMPERATURE'
-TYPE = REEL
-INDEX = 7
-MNEMO = 'TAIR'
-TAILLE = 0
-DEFAUT = 10.
-DEFAUT1 = 10.
-RUBRIQUE = 'EQUATIONS';'AIR';'VALEURS NUMERIQUES'
-RUBRIQUE1 = 'EQUATIONS';'AIR';'NUMERICS VALUES'
-NIVEAU = 1
-COMPORT =
-'Foreground ("EQUATIONS*AIR*VALEURS NUMERIQUES")
-IS BRUT (brown)'
-AIDE = 'Fixe la temperature de l''air dans le cas d''echanges avec
-l''atmosphere.'
-AIDE1 = 'Air temperature in the case of exchanges with atmosphere'
-
 NOM = 'COEFFICIENT DE DILATATION BETA POUR LES TRACEURS'
 NOM1 = 'BETA EXPANSION COEFFICIENT FOR TRACERS'
 TYPE = REEL
