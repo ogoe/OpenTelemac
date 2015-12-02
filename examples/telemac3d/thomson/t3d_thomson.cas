@@ -17,8 +17,8 @@ CONDITIONS INITIALES : PARTICULIERES
 FICHIER FORTRAN                    : t3d_thomson.f 
 FICHIER DES CONDITIONS AUX LIMITES : geo_thomson.cli 
 FICHIER DE GEOMETRIE               : geo_thomson.slf
-FICHIER DES RESULTATS 3D           : t3d_thomson.slf
-FICHIER DES RESULTATS 2D           : t2d_thomson.slf
+FICHIER DES RESULTATS 3D           : r3d_thomson.slf
+FICHIER DES RESULTATS 2D           : r2d_thomson.slf
 /
 NOMBRE DE PLANS HORIZONTAUX : 3
 /LONGUEUR DU VECTEUR : 1             

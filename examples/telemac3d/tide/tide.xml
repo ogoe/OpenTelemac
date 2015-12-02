@@ -37,21 +37,21 @@
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:T3DRES" />
-      <v2 vars=":map" target="r3d_tide-jmj_real_gen.slf" />
+      <v2 vars=":map" target="f3d_tide-jmj_real_gen.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v3,[])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T3DRES" />
-      <v11 vars=":map" target="r3d_tide-jmj_type.slf" />
+      <v11 vars=":map" target="f3d_tide-jmj_type.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v12,[])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="4:T3DRES" />
-      <v14 vars=":map" target="r3d_tide-jmj_type.slf" />
+      <v14 vars=":map" target="f3d_tide-jmj_type.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v15,[])" />

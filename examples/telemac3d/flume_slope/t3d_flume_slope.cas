@@ -13,7 +13,7 @@ VERTICAL VELOCITY DERIVATIVES =2
  2D RESULT FILE              : 'r2d_flume_slope_set1.slf'
 /
 /
- BOUNDARY CONDITIONS FILE    :  'flume_slope.cli'   
+ BOUNDARY CONDITIONS FILE    :  'geo_flume_slope.cli'   
  GEOMETRY FILE               :  'geo_flume_slope.slf'  
 /----------------------------------------------------------------------/
 /
