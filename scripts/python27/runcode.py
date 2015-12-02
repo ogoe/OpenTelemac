@@ -1266,6 +1266,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             stdin = cfg['HPC']['STDIN'][1]
             if cfg['MPI'] != {}: stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
             stdin = stdin.replace('<root>',cfg['root'])
+            stdin = stdin.replace('<configName>',cfgName)
             stdin = stdin.replace('<ncsize>',str(ncsize))
             stdin = stdin.replace('<nctile>',str(nctile))
             stdin = stdin.replace('<ncnode>',str(ncnode))
