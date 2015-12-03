@@ -90,19 +90,8 @@
       INTEGER ERR,IERR,RECORD,I
 !
       DOUBLE PRECISION BID
-      REAL, ALLOCATABLE :: W(:)
 !
       LOGICAL CALFON,CALFRO,LUZF,LUH,LUZ
-!
-!-----------------------------------------------------------------------
-!
-      ALLOCATE(W(MESH%NPOIN),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR,'FONSTR:W')
-!
-!-----------------------------------------------------------------------
-!
-!    ASSUMES THAT THE FILE HEADER LINES HAVE ALREADY BEEN READ
-!    WILL START READING THE RESULT RECORDS
 !
 !-----------------------------------------------------------------------
 !
@@ -322,10 +311,6 @@
         CALL OS( 'X=C     ' , CHESTR , CHESTR , CHESTR , FFON )
       ENDIF
       CALL STRCHE
-!
-!-----------------------------------------------------------------------
-!
-      DEALLOCATE(W)
 !
 !-----------------------------------------------------------------------
 !

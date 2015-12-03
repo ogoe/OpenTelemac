@@ -23,6 +23,7 @@
         "sources|utils|partel",
         "sources|utils|gretel",
         "sources|utils|diffsel",
+        "sources|utils|splitsel",
 #dredgesim
         "sources|dredgesim",
 #waqtel

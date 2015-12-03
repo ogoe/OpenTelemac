@@ -302,11 +302,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER :: I,J,K,IERR
+      INTEGER :: I,J,K,IERR,IELEM
       CHARACTER(LEN=SNAME_SIZE*2),ALLOCATABLE ::VARI(:)
       CHARACTER*80 :: TITLE
       CHARACTER*8 :: FFORMAT
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
+      INTEGER, ALLOCATABLE :: TMP2(:)
       INTEGER :: DATE(3), TIME(3)
 !
       WRITE(LU,*) '----------------------------------------------------'
@@ -346,11 +347,21 @@
 
       DATE = (/0,0,0/)
       TIME = (/0,0,0/)
+      
+      ALLOCATE(TMP2(MESH2%NELEM*MESH2%NDP),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'WRITE_SERAFIN:TMP0')
+      DO I = 1,MESH2%NDP
+        DO IELEM = 1,MESH2%NELEM
+          TMP2((I-1)*MESH2%NELEM + IELEM) = 
+     &            MESH2%IKLES((IELEM-1)*MESH2%NDP+I)
+        ENDDO
+      ENDDO
       CALL SET_MESH(FFORMAT,NOUT,MESH2%NDIM,MESH2%TYPE_ELEM,MESH2%NDP,
      &              MESH2%IB(8),MESH2%IB(9),MESH2%NELEM,MESH2%NPOIN,
-     &              MESH2%IKLES,MESH2%IPOBO,MESH2%KNOLG,MESH2%X,
+     &              TMP2,MESH2%IPOBO,MESH2%KNOLG,MESH2%X,
      &              MESH2%Y,MESH2%IB(7),DATE,TIME,IERR)
       CALL CHECK_CALL(IERR,'WRITE_SERAFIN:SET_MESH')
+      DEALLOCATE(TMP2)
 
       ! RESULTS INFORMATIONS
       IF(LNG.EQ.1) WRITE(LU,*) '---INFORMATIONS SUR LES RESUTATS'

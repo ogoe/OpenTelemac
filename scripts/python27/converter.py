@@ -47,6 +47,10 @@ INPUT FILE FORMAT : '{inputFormat}'
 INPUT FILE : '{inputFile}'
 BOUNDARY CONDITION IN SERAFIN FORMAT : {srfBnd}
 {inAdditionalFile}
+/ Translation information
+TRANSLATION : {translate}
+X TRANSLATION : {dx}
+Y TRANSLATION : {dy}
 /
 / OUTPUT FILE INFORMATION
 /
@@ -62,6 +66,7 @@ def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
    # Building canvas for steering file
    debug = 'YES' if options.debug else 'NO'
    srfBnd = 'YES' if options.srfBnd else 'NO'
+   translate = 'YES' if (options.dx <> '0.D0' or options.dy <> '0.D0') else 'NO'
    # Additional files
    ## input files
    inAdditionalFile = ''
@@ -85,7 +90,10 @@ def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
              inAdditionalFile=inAdditionalFile, 
              outputFormat=outputFormat,
              outputFile=outputFile+extens, 
-             outAdditionalFile=outAdditionalFile 
+             outAdditionalFile=outAdditionalFile,
+             translate=translate,
+             dx=options.dx,
+             dy=options.dy
              )
 
 if __name__ == "__main__":
@@ -166,6 +174,18 @@ if __name__ == "__main__":
              dest="debug",
              default=False,
              help="Enable debug mode which displays more informations during run time")
+   # option for Translation on x
+   parser.add_option("","--dx",
+             type="string",
+             dest="dx",
+             default='0.D0',
+             help="Value to add to the X coordinates")
+   # option for Translation on y
+   parser.add_option("","--dy",
+             type="string",
+             dest="dy",
+             default='0.D0',
+             help="Value to add to the y coordinates")
    # root directory
    parser.add_option("-r", "--rootdir",
                      type = "string",

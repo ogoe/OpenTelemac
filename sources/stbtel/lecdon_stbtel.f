@@ -124,6 +124,8 @@
       ENDIF
 !<<<<
       SEUSEC =  MOTREA  (ADRES(2,8))
+      DX =  MOTREA  (ADRES(2,9))
+      DY =  MOTREA  (ADRES(2,10))
 !
 !-----------------------------------------------------------------------
 ! MOTS CLE DE TYPE LOGIQUE
@@ -147,6 +149,7 @@
       DEBUG  = MOTLOG  (ADRES(3,12))
       CONVER = MOTLOG  (ADRES(3,13))
       SRF_BND = MOTLOG  (ADRES(3,14))
+      TRANSLATE = MOTLOG  (ADRES(3,15))
 !
 !-----------------------------------------------------------------------
 ! MOTS CLE DE TYPE CARACTERE

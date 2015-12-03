@@ -1062,6 +1062,53 @@ AIDE =
 AIDE1 =
 'Name of the complementary file for the converted file'
 
+NOM = 'TRANSLATION'
+NOM1 = 'TRANSLATION'
+TYPE = LOGIQUE
+INDEX = 15
+DEFAUT = NON
+DEFAUT1 = NO
+MNEMO = 'TRANSLATE'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Permet d activer la translation de maillage.'
+AIDE1 =
+'Activate the translation of the mesh.'
+
+NOM = 'TRANSLATION SELON X'
+NOM1 = 'X TRANSLATION'
+TYPE = REEL
+INDEX = 9
+DEFAUT = 0.
+DEFAUT1 = 0.
+MNEMO = 'DX'
+CONTROLE = 0
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Translation selon x'
+AIDE1 =
+'Translation on the x axes'
+
+NOM = 'TRANSLATION SELON Y'
+NOM1 = 'Y TRANSLATION'
+TYPE = REEL
+INDEX = 10
+DEFAUT = 0.
+DEFAUT1 = 0.
+MNEMO = 'DY'
+CONTROLE = 0
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Translation selon y'
+AIDE1 =
+'Translation on the y axes'
+
 //----Librairies du code-------------------------------------------
 //
 //Conventions de notation :
