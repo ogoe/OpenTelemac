@@ -82,7 +82,7 @@
 !     COMPUTE Ih: 
 ! 
       DO KK=1,NPOIN
-         IH(KK)=I0*EXP(-KE(KK)*MAX(H%R(KK),0.D0))
+        IH(KK)=I0*EXP(-KE(KK)*MAX(H%R(KK),0.D0))
       ENDDO
 !
 !     RAY EFFECT IS READY TO BE COMPUTED

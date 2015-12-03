@@ -1,84 +1,81 @@
       MODULE PAIR
         TYPE TYPE_PAIR
-          double precision :: r1
-          double precision :: r2
+          DOUBLE PRECISION :: R1
+          DOUBLE PRECISION :: R2
         END TYPE TYPE_PAIR
-      contains
+      CONTAINS
 !       
-        logical function pair_gt(p1,p2)
-           ! brief REsult of p1 > p2
+        LOGICAL FUNCTION PAIR_GT(P1,P2)
+           ! BRIEF RESULT OF P1 > P2
            !       
-           ! param p1 [in] First Pair
-           ! param p2 [in] Second Pair
-           type(type_pair), intent(in) :: p1
-           type(type_pair), intent(in) :: p2
+           ! PARAM P1 [IN] FIRST PAIR
+           ! PARAM P2 [IN] SECOND PAIR
+           TYPE(TYPE_PAIR), INTENT(IN) :: P1
+           TYPE(TYPE_PAIR), INTENT(IN) :: P2
            
-           if(p1%r1.eq.p2%r1) then
-             pair_gt = p1%r2.gt.p2%r2
-           else
-             pair_gt = p1%r1.gt.p2%r1
-           endif 
-        end function
+           IF(P1%R1.EQ.P2%R1) THEN
+             PAIR_GT = P1%R2.GT.P2%R2
+           ELSE
+             PAIR_GT = P1%R1.GT.P2%R1
+           ENDIF 
+        END FUNCTION
 !
-        subroutine pair_copy(p1,p2)
-           ! brief REsult of p1 = p2
+        SUBROUTINE PAIR_COPY(P1,P2)
+           ! BRIEF RESULT OF P1 = P2
            !       
-           ! param p1 [inout] First Pair
-           ! param p2 [in] Second Pair
-           type(type_pair), intent(inout) :: p1
-           type(type_pair), intent(in) :: p2
-           p1%r1 = p2%r1
-           p1%r2 = p2%r2
-        end subroutine
+           ! PARAM P1 [INOUT] FIRST PAIR
+           ! PARAM P2 [IN] SECOND PAIR
+           TYPE(TYPE_PAIR), INTENT(INOUT) :: P1
+           TYPE(TYPE_PAIR), INTENT(IN) :: P2
+           P1%R1 = P2%R1
+           P1%R2 = P2%R2
+        END SUBROUTINE
 !
         SUBROUTINE SHELL (N, A, B)
 !
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN)              :: N
-      TYPE(type_pair), INTENT(INOUT)          :: A(N)
+      TYPE(TYPE_PAIR), INTENT(INOUT)          :: A(N)
       INTEGER, INTENT(OUT)             :: B(N)
 !
       INTEGER                          :: I, J, INC
-      TYPE(type_pair)                       :: V
+      TYPE(TYPE_PAIR)                       :: V
       INTEGER                          :: W
 !
       INTEGER                          :: ALPHA
 !
-      write(*,*) 'Sorting by SHELLQ'
+      WRITE(*,*) 'SORTING BY SHELLQ'
 !
       ALPHA=2
 !
       DO I=1,N
-         B(I)=I
+        B(I)=I
       ENDDO
 !
       INC=1
  1    INC=ALPHA*INC+1
       IF (INC.LE.N) GOTO 1
  2    CONTINUE
-         INC=INC/ALPHA
-         DO I=INC+1,N
-            call pair_copy(v,A(I))
-            !V=A(I)
-            W=B(I)
-            J=I
- 3          IF (pair_gt(A(J-INC),V)) THEN
-!3          IF (A(J-INC).GT.V) THEN
-               call pair_copy(A(J),A(J-INC))
-!              A(J)=A(J-INC)
-               B(J)=B(J-INC)
-               J=J-INC
-               IF (J.LE.INC) GOTO 4
-            GOTO 3
-            ENDIF
- 4          call pair_copy(A(J),v)
-!4          A(J)=V
-            B(J)=W
-         ENDDO
+        INC=INC/ALPHA
+        DO I=INC+1,N
+          CALL PAIR_COPY(V,A(I))
+          !V=A(I)
+          W=B(I)
+          J=I
+ 3        IF (PAIR_GT(A(J-INC),V)) THEN
+            CALL PAIR_COPY(A(J),A(J-INC))
+            B(J)=B(J-INC)
+            J=J-INC
+            IF (J.LE.INC) GOTO 4
+          GOTO 3
+          ENDIF
+ 4        CALL PAIR_COPY(A(J),V)
+          B(J)=W
+        ENDDO
 !
       IF (INC.GT.1) GOTO 2
 !
       RETURN
-      END subroutine
+      END SUBROUTINE
       END MODULE

@@ -382,7 +382,7 @@
           OPEN(UNIT=MED_OBJ_TAB(MED_ID)%NCLI,FILE=FILE_NAME,
      &         FORM='FORMATTED',ACTION=OPEN_MODE,IOSTAT=IERR)
         ENDIF
-        IF(OPEN_MODE(1:4).eq.'READ') THEN
+        IF(OPEN_MODE(1:4).EQ.'READ') THEN
           ! Getting the name of the boundary groups
           NCLI = MED_OBJ_TAB(MED_ID)%NCLI
           REWIND(NCLI)
