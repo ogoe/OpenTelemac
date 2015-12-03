@@ -248,7 +248,8 @@
       IF (CHAINTWC.AND.(.NOT.ALEMUL)) THEN
         WRITE(LU,*) 'CHAINING WITH TOMAWAC NEEDS MULTIDIRECTIONAL
      &                    RAMDOM SEA OPTION                          '
-        CALL PLANTE(0)
+        CALL PLANTE(1)
+        STOP
       ENDIF
       IF (CHAINTWC) THEN
         CALL LECWAC1
@@ -572,8 +573,10 @@
 !
 !         GOES TO NEXT PERIOD
           LPER = LPER + 1
-          PER = PALE%R(LPER)
-          IF (LPER.LE.NPALE) GOTO 100
+          IF (LPER.LE.NPALE) THEN
+            PER = PALE%R(LPER)
+            GOTO 100
+          ENDIF
 
 !         GOES TO NEXT DIRECTION
 !         UPDATE OF PALE IF SPECTRUM FROM TOMAWAC

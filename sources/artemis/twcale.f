@@ -211,8 +211,8 @@
 !
 !    GO TO NEXT DIRECTION
 !
+      DALE%R(IDALE)=TETMIN+FLOAT(DTWC(I+1)-1)*DTETA
       IF(I.LT.(2*NDALE-1)) THEN
-        DALE%R(IDALE)=TETMIN+FLOAT(DTWC(I+1)-1)*DTETA
         I    = I    +2
         IDALE= IDALE+1
         GOTO 98
