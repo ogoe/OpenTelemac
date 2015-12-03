@@ -6676,6 +6676,26 @@ Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of liquid boundaries on the bed.
 Used for dimensioning arrays. Can be increased if needed' 
 
+NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES SUR K'
+NOM1 = 'OPTION FOR THE BOUNDARY CONDITIONS OF K'
+TYPE = ENTIER
+INDEX = 56
+MNEMO = 'OPTBCK'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX='1="pas de turbulence"';'2="Hans et Burchard"'
+CHOIX1='1="no turbulence"';'2="Hans and Burchard"'
+RUBRIQUE = 'MODELE DE TURBULENCE';'CONDITIONS LIMITES'
+RUBRIQUE1 = 'TURBULENCE MODEL';'BOUNDARY CONDITIONS'
+NIVEAU = 2
+AIDE = 'Calcul des conditions aux limites laterales sur K.
+1: pas de turbulence : K = la valeur minimale KMIN definie dans CSTKEP
+2: formule de Hans et Burchard'
+AIDE1 = 'Computation of the lateral boundary conditions of K.
+1: no turbulence: K = the minimum value KMIN defined in CSTKEP
+2: Hans and Burchard formula'
+
 /
 / FOR SCRIPTS
 /

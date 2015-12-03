@@ -1,3 +1,7 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN NOEROD
+!
 !                    *****************
                      SUBROUTINE NOEROD
 !                    *****************
@@ -72,8 +76,10 @@
 !
 !     DEFAULT VALUE: ZR=ZF-100.D0
 !
+! BEGIN OF PART SPECIFIC TO THIS CASE
 !     CALL OV('X=Y+C   ',ZR,ZF,ZF,-100.D0,NPOIN)
       CALL OV('X=Y     ',ZR,ZF,ZF,-100.D0,NPOIN)
+! END OF PART SPECIFIC TO THIS CASE
 !
 !------------------
 ! SMOOTHING OPTION

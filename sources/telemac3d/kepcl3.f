@@ -93,7 +93,8 @@
 !| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,AEBORF,BEBORF,SIGMAE,RUGOF
+      USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,AEBORF,BEBORF,SIGMAE,
+     &                                  RUGOF,OPTBCK
 !
       IMPLICIT NONE
 !
@@ -263,12 +264,22 @@
 !
 !          KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN)**2,KMIN)
 !
-!          NO TURBULENCE
+              IF(OPTBCK.EQ.1) THEN
 !
-!           KBORL(IPTFR,IPLAN) = KMIN
-!           CV  HANS AND BURCHARD CL FOR K
-            KBORL(IPTFR,IPLAN)=UETCAR(IPOIN2)
-     &                        *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
+!               NO TURBULENCE
+!
+                KBORL(IPTFR,IPLAN) = KMIN
+              ELSEIF(OPTBCK.EQ.2) THEN
+!
+!               CV  HANS AND BURCHARD CL FOR K
+!
+                KBORL(IPTFR,IPLAN) = UETCAR(IPOIN2)
+     &                             * (1.D0-DISTFOND/HAUT)/SQRT(CMU)
+              ELSE
+                IF(LNG.EQ.1) WRITE(LU,131) OPTBCK
+                IF(LNG.EQ.2) WRITE(LU,132) OPTBCK
+                CALL PLANTE(1)
+              ENDIF
 !
 !            ****************************************
             ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
@@ -365,6 +376,10 @@
      &       ' - CAS NON PREVU POUR EBOR : LIUBOR =',I6)
 122   FORMAT(' KEPCL3 : BOUNDARY NODE',I6,
      &       ' - UNEXPECTED CONDITION FOR EBOR : LIUBOR =',I6)
+131   FORMAT(' OPTION ',I1, 'NON PREVUE POUR LE CALCUL DES CONDITIONS'
+     &       ' AUX LIMITES DE K')
+132   FORMAT(' OPTION ',I1, 'UNEXPECTED FOR THE COMPUTATION OF THE'
+     &       ' BOUNDARY CONDITIONS OF K')
 !
 !-----------------------------------------------------------------------
 !
