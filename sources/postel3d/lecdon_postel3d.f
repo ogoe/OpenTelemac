@@ -37,7 +37,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=250) NOM_CAS,NOM_DIC
-      CHARACTER*4 VTEL3D
       CHARACTER(LEN=24), PARAMETER :: CODE='POSTEL3D                '
 !
 !
@@ -146,7 +145,6 @@
 !
 !     MOTS CLES LIES DE TYPE CARACTERE
 !
-      VTEL3D = MOTCAR(ADRESS(4,13))(1:4)
       BINPRE = MOTCAR(ADRESS(4,14))(1:3)
       BINCOU = MOTCAR(ADRESS(4,15))(1:3)
       BINGEO = MOTCAR(ADRESS(4,17))(1:3)

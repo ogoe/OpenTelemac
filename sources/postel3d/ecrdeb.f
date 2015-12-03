@@ -72,7 +72,7 @@
       IF(C2DH) THEN
         NOMCOU = 'POSHOR_' // EXTEN1(IC) // '     '
       ELSE
-        NOMCOU = 'POSVER_' // EXTEN2(IC,N)
+        NOMCOU = 'POSVER_' // EXTEN2(IC,N+1)
       ENDIF
 !
       CALL OPEN_MESH(FFORMAT,NOMCOU,CANAL,'READWRITE',IERR)

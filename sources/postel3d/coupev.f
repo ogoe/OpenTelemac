@@ -5,7 +5,7 @@
      &(AT,Z,U,V,W,
      & SHP,IMSEG,X2DV,Y2DV,DISTOR,IKLES,
      & ELEM,NC2DV,NPOIN2,NELEM2,NCOU,FFORMAT,IM,JM,
-     & TITCAS,NVA3,TAB,TEXTLU,N)
+     & TITCAS,NVA3,TAB,TEXTLU,IENRE)
 !
 !***********************************************************************
 ! POSTEL3D VERSION 6.2   01/09/99   T. DENOT (LNH) 01 30 87 74 89
@@ -81,7 +81,7 @@
       DOUBLE PRECISION ,INTENT(IN) ::AT
       DOUBLE PRECISION , INTENT(INOUT) :: SHP(IM,3,NC2DV)
       TYPE (BIEF_OBJ), INTENT(INOUT) :: TAB
-      INTEGER , INTENT(IN) :: N
+      INTEGER , INTENT(IN) :: IENRE
       DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,JM),V(NPOIN2,JM)
       DOUBLE PRECISION, INTENT(IN) :: Z(NPOIN2,JM),W(NPOIN2,JM)
       INTEGER, INTENT(IN) :: IKLES(3,NELEM2)
@@ -140,7 +140,7 @@
 !    -------------------------------------------------------------
 !
         CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,.FALSE.,
-     &              TEXTLU,IC,N)
+     &              TEXTLU,IC,IENRE)
 !
 !       CALCUL DES AUTRES PARAMETRES DE L'ENTETE
 !       ----------------------------------------

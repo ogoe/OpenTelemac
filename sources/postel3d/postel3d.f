@@ -53,6 +53,7 @@
       INTEGER I, K ,  IMSEG(49,9)
       DOUBLE PRECISION AT
       INTEGER :: IENRE
+      INTEGER :: NFILE
 !
 ! VARIABLES BIDON POUR LIT
 !
@@ -82,6 +83,7 @@
       HOR_FMT = POS_FILES(POSHOR)%FMT
       NVER = POS_FILES(POSVER)%LU
       VER_FMT = POS_FILES(POSVER)%FMT
+      NFILE = NVER
 !
 !
       CALL GET_DATA_NVAR(PRE_FMT,NPRE,NVA3,IERR)
@@ -173,9 +175,10 @@
               CALL COUPEV(AT,Z,U%R,V%R,W%R,SHP,
      &           IMSEG,X2DV,Y2DV,DISTOR,IKLES,ELEM,NC2DV,NPOIN2,
      &           NELEM2,NVER,VER_FMT,IM,JM,TITCAS,NVA3,TAB,TEXTLU,
-     &           N)
+     &           IENRE)
             ENDDO
           ENDIF
+          NVER = NVER + NC2DV
         ENDIF
       ENDDO
 !
@@ -186,7 +189,7 @@
         ENDDO
       ENDIF
       ! Reopening the file for bief_close_mesh
-      CALL OPEN_MESH(VER_FMT,'POSVER',NVER,'WRITE    ',IERR)
+      CALL OPEN_MESH(VER_FMT,'POSVER',NFILE,'WRITE    ',IERR)
 !
       DEALLOCATE (VAR)
       DEALLOCATE (SHZ)
