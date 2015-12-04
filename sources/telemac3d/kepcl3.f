@@ -11,7 +11,7 @@
      & UETCAR,UETCAL,FICTIF)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES KBOR, EBOR AND AUBOR WHEN THE TURBULENCE
@@ -21,11 +21,6 @@
 !+        **/03/1999
 !+
 !+   FORTRAN95 VERSION
-!
-!history  J-M HERVOUET (LNHE)     ; V. BOYER UMIST
-!+        04/01/2010
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -43,6 +38,11 @@
 !+        27/02/2014
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
+!
+!history  C.T. PHAM (EDF LAB, LNHE)
+!+        04/12/2015
+!+        V7P1
+!+   Adding an option for the boundary conditions of k and epsilon
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
@@ -269,16 +269,19 @@
 !               NO TURBULENCE
 !
                 KBORL(IPTFR,IPLAN) = KMIN
+!
               ELSEIF(OPTBCK.EQ.2) THEN
 !
-!               CV  HANS AND BURCHARD CL FOR K
+!               CV  HANS BURCHARD CL FOR K
 !
                 KBORL(IPTFR,IPLAN) = UETCAR(IPOIN2)
      &                             * (1.D0-DISTFOND/HAUT)/SQRT(CMU)
+!
               ELSE
                 IF(LNG.EQ.1) WRITE(LU,131) OPTBCK
                 IF(LNG.EQ.2) WRITE(LU,132) OPTBCK
                 CALL PLANTE(1)
+                STOP
               ENDIF
 !
 !            ****************************************
@@ -319,19 +322,29 @@
      &         LIUBOL(IPTFR,IPLAN).EQ.KSORT     ) THEN
 !           ************************************
 !
-!              COMING IN THE DOMAIN: TURBULENCE DUE TO THE
-!              BOTTOM AS IN KEPINI; COMPUTES EBORL ACCORDING
-!              TO KBORL AT THE BOTTOM
+!             COMING IN THE DOMAIN: TURBULENCE DUE TO THE
+!             BOTTOM AS IN KEPINI; COMPUTES EBORL ACCORDING
+!             TO KBORL AT THE BOTTOM
 !
-!              EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
-!    &                           /KARMAN/MAX(DISTFOND,1.D-6)
-!              EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
-!               EBORL(IPTFR,IPLAN)=EMIN
-!             Hans et Burchard
-!             CV ...
-              EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
-     &                          *(1.D0-DISTFOND/HAUT)
-     &                          /KARMAN/MAX(DISTFOND,Z0)
+!             Other possible formula ?
+!             EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
+!    &                          /KARMAN/MAX(DISTFOND,1.D-6)
+!
+              IF(OPTBCK.EQ.1) THEN
+!               Hans Burchard
+                EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
+     &                            *(1.D0-DISTFOND/HAUT)
+     &                            /KARMAN/MAX(DISTFOND,Z0)
+                EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
+              ELSEIF(OPTBCK.EQ.2) THEN
+!               No turbulence
+                EBORL(IPTFR,IPLAN)=EMIN
+              ELSE
+                IF(LNG.EQ.1) WRITE(LU,131) OPTBCK
+                IF(LNG.EQ.2) WRITE(LU,132) OPTBCK
+                CALL PLANTE(1)
+                STOP
+              ENDIF
 !
 !           ****************************************
             ELSEIF(LIUBOL(IPTFR,IPLAN).EQ.KLOG .OR.
@@ -374,12 +387,12 @@
      &       ' - UNEXPECTED CONDITION FOR KBOR : LIUBOR =',I6)
 121   FORMAT(' KEPCL3 : POINT DE BORD',I6,
      &       ' - CAS NON PREVU POUR EBOR : LIUBOR =',I6)
-122   FORMAT(' KEPCL3 : BOUNDARY NODE',I6,
+122   FORMAT(' KEPCL3: BOUNDARY NODE',I6,
      &       ' - UNEXPECTED CONDITION FOR EBOR : LIUBOR =',I6)
-131   FORMAT(' OPTION ',I1, 'NON PREVUE POUR LE CALCUL DES CONDITIONS'
-     &       ' AUX LIMITES DE K')
-132   FORMAT(' OPTION ',I1, 'UNEXPECTED FOR THE COMPUTATION OF THE'
-     &       ' BOUNDARY CONDITIONS OF K')
+131   FORMAT(' OPTION ',I1, 'NON PREVUE POUR LE CALCUL DES CONDITIONS',
+     &       /,1X,'AUX LIMITES DE K ET EPSILON')
+132   FORMAT(' OPTION ',I1, 'UNEXPECTED FOR THE COMPUTATION OF THE',/,
+     &       1X,'BOUNDARY CONDITIONS OF K AND EPSILON')
 !
 !-----------------------------------------------------------------------
 !
