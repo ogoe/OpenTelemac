@@ -3197,7 +3197,7 @@ AIDE1 = 'value of the erosion coefficient used in Partheniades
 formula in Kg/m/s'
 
 
-NOM = 'VITESSE DE CHUTE CONSTANT'
+NOM = 'VITESSE DE CHUTE CONSTANTE'
 NOM1 = 'CONSTANT SEDIMENT SETTLING VELOCITY'
 TYPE = REEL
 INDEX = 61
@@ -6700,11 +6700,11 @@ Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of liquid boundaries on the bed.
 Used for dimensioning arrays. Can be increased if needed' 
 
-NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES SUR K'
-NOM1 = 'OPTION FOR THE BOUNDARY CONDITIONS OF K'
+NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES DU K-EPSILON'
+NOM1 = 'OPTION FOR THE BOUNDARY CONDITIONS OF K-EPSILON'
 TYPE = ENTIER
 INDEX = 56
-MNEMO = 'OPTBCK'
+MNEMO = 'OPTBCKE'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -6713,11 +6713,13 @@ CHOIX1='1="no turbulence"';'2="Hans and Burchard"'
 RUBRIQUE = 'MODELE DE TURBULENCE';'CONDITIONS LIMITES'
 RUBRIQUE1 = 'TURBULENCE MODEL';'BOUNDARY CONDITIONS'
 NIVEAU = 2
-AIDE = 'Calcul des conditions aux limites laterales sur K.
-1: pas de turbulence : K = la valeur minimale KMIN definie dans CSTKEP
+AIDE = 'Calcul des conditions aux limites laterales sur K et EPSILON.
+1: pas de turbulence = les valeurs minimales KMIN et EMIN definies
+   dans CSTKEP
 2: formule de Hans et Burchard'
-AIDE1 = 'Computation of the lateral boundary conditions of K.
-1: no turbulence: K = the minimum value KMIN defined in CSTKEP
+AIDE1 = 'Computation of the lateral boundary conditions of K and
+EPSILON.
+1: no turbulence = the minimum values KMIN and EMIN defined in CSTKEP
 2: Hans and Burchard formula'
 
 /

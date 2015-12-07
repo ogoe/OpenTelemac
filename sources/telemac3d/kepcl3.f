@@ -39,8 +39,8 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
-!history  C.T. PHAM (EDF LAB, LNHE)
-!+        04/12/2015
+!history  C.T. PHAM (LNHE)
+!+        02/12/2015
 !+        V7P1
 !+   Adding an option for the boundary conditions of k and epsilon
 !
@@ -94,7 +94,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,AEBORF,BEBORF,SIGMAE,
-     &                                  RUGOF,OPTBCK
+     &                                  RUGOF,OPTBCKE
 !
       IMPLICIT NONE
 !
@@ -264,22 +264,17 @@
 !
 !          KBORL(IPTFR,IPLAN) = MAX(NIVTURB*U(IPOIN2,IPLAN)**2,KMIN)
 !
-              IF(OPTBCK.EQ.1) THEN
-!
+              IF(OPTBCKE.EQ.1) THEN
 !               NO TURBULENCE
-!
                 KBORL(IPTFR,IPLAN) = KMIN
-!
-              ELSEIF(OPTBCK.EQ.2) THEN
-!
-!               CV  HANS BURCHARD CL FOR K
-!
+              ELSEIF(OPTBCKE.EQ.2) THEN
+!               CV HANS AND BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
+!               OF K
                 KBORL(IPTFR,IPLAN) = UETCAR(IPOIN2)
-     &                             * (1.D0-DISTFOND/HAUT)/SQRT(CMU)
-!
+     &                              *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
               ELSE
-                IF(LNG.EQ.1) WRITE(LU,131) OPTBCK
-                IF(LNG.EQ.2) WRITE(LU,132) OPTBCK
+                IF(LNG.EQ.1) WRITE(LU,131) OPTBCKE
+                IF(LNG.EQ.2) WRITE(LU,132) OPTBCKE
                 CALL PLANTE(1)
                 STOP
               ENDIF
@@ -326,22 +321,23 @@
 !             BOTTOM AS IN KEPINI; COMPUTES EBORL ACCORDING
 !             TO KBORL AT THE BOTTOM
 !
-!             Other possible formula ?
+!             OTHER POSSIBLE FORMULA?
 !             EBORL(IPTFR,IPLAN)=CMU**0.75*SQRT(KBORL(IPTFR,1)**3)
 !    &                          /KARMAN/MAX(DISTFOND,1.D-6)
+!             EBORL(IPTFR,IPLAN) = MAX(EBORL(IPTFR,IPLAN),EMIN)
 !
-              IF(OPTBCK.EQ.1) THEN
-!               Hans Burchard
-                EBORL(IPTFR,IPLAN)=SQRT(UETCAR(IPOIN2))**3
-     &                            *(1.D0-DISTFOND/HAUT)
-     &                            /KARMAN/MAX(DISTFOND,Z0)
-                EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
-              ELSEIF(OPTBCK.EQ.2) THEN
-!               No turbulence
-                EBORL(IPTFR,IPLAN)=EMIN
+              IF(OPTBCKE.EQ.1) THEN
+!               NO TURBULENCE
+                EBORL(IPTFR,IPLAN) = EMIN
+              ELSEIF(OPTBCKE.EQ.2) THEN
+!               CV HANS AND BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
+!               OF EPSILON
+                EBORL(IPTFR,IPLAN) = SQRT(UETCAR(IPOIN2))**3
+     &                              *(1.D0-DISTFOND/HAUT)
+     &                              /KARMAN/MAX(DISTFOND,Z0)
               ELSE
-                IF(LNG.EQ.1) WRITE(LU,131) OPTBCK
-                IF(LNG.EQ.2) WRITE(LU,132) OPTBCK
+                IF(LNG.EQ.1) WRITE(LU,131) OPTBCKE
+                IF(LNG.EQ.2) WRITE(LU,132) OPTBCKE
                 CALL PLANTE(1)
                 STOP
               ENDIF
