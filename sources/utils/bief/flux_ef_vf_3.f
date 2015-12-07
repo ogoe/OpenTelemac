@@ -3,7 +3,7 @@
 !                    ***********************
 !
      &(PHIEL,NELEM,ELTSEG,ORISEG,FXMATPAR,NSEG,IKLE,IOPT,NPOIN,
-     & FN,FI_I,SU,HDFDT,TETA,YAFLULIM,FLULIM)
+     & FN,FI_I,SU,HDFDT,TETA,YAFLULIM,FLULIM,FSTAR)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -23,6 +23,7 @@
 !| FI_I           |<--| CONTRIBUTIONS TO POINTS
 !| FLULIM         |-->| LIMITATION OF FLUXES
 !| FN             |-->| TRACER AT TIME T(N)
+!| FSTAR          |-->| PREDICTOR VALUE OF TRACER AT TIME T(N)
 !| FXMARPAR       |-->| FLUXES ASSEMBLED IN //
 !| HDFDT          |-->| DEPTH*DH/DT
 !| IKLE           |-->| CONNECTIVITY TABLE
@@ -54,7 +55,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: FXMATPAR(NSEG),FLULIM(NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: FI_I(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),HDFDT(NPOIN) 
-      TYPE(BIEF_OBJ), INTENT(IN)      :: FN
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FN,FSTAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

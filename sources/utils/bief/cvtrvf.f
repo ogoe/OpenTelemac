@@ -653,7 +653,8 @@
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                    FI_I               HDFDT
      &                    T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
-     &                    YAFLULIM,FLULIM)
+!                                         FN
+     &                    YAFLULIM,FLULIM,T4)
 !       NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
 !       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
 !
@@ -732,7 +733,8 @@
      &                        MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                        FI_I               HDFDT
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
-     &                        YAFLULIM,FLULIM)
+!                                             FSTAR
+     &                        YAFLULIM,FLULIM,F)
 !
             CALL TVF_IMP(F%R,T4%R,FXMAT,
      &               FXMATPAR,UNSV2D%R,DDT,
