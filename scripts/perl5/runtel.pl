@@ -850,7 +850,7 @@ sub jajbanner
   #return; # ...ehm, we love banners indicating which versions WE use, don't WE?
   printf "\n";
   printf "=========================================================\n";
-  printf " Telemac System 5.6 to 6.2 - Perl scripts version 6.2    \n";
+  printf " Telemac System 5.6 to 7.0 - Perl scripts version 7.0    \n";
   printf "=========================================================\n";
   printf "$_[0]\n";
   printf "\n";
@@ -1187,6 +1187,9 @@ if ($NCSIZE eq "")  {$NCSIZE=0;}          #Le mot clef n'existe pas
 $NPLAN=@vals[0]; 
 if ($NPLAN eq "")  {$NPLAN=0;}          #Le mot clef n'existe pas
 
+#########moulinec Adding the check on the partitioning tool
+@vals = tm_casdico::recup_valeur_mot(\%motsEtude, "PARTITIONNEUR");
+$partitioner=@vals[0];
 #jaj orig:
 #$Directory_tmp=join "",$REPLANCE,$ps,$REP,$ps;
 $Directory_tmp =join "",$REP,$ps;
@@ -1277,6 +1280,7 @@ ecrire_variable_fichier(F,"ps");
 #SA ecrire_variable_fichier(F,"DICO");      
 ecrire_variable_fichier(F,"NCSIZE");    
 ecrire_variable_fichier(F,"NPLAN");    
+ecrire_variable_fichier(F,"partitioner");    
 ecrire_variable_fichier(F,"PARA");      
 ecrire_variable_fichier(F,"PROJECT");   
 ecrire_variable_fichier(F,"REP");       

@@ -384,8 +384,8 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
 #jaj (this is not true if partel fails)
 
   if ( ($modepar =~ /CONLIM/) && ($autopar eq "1") )
-       { ecrire("    (partitionne pour $NCSIZE processeurs)",
-                "    (split for $NCSIZE processors)",        " ");
+       { ecrire("    (partitionne pour $NCSIZE processeurs avec $partitioner)",
+                "    (split for $NCSIZE processors using $partitioner)",        " ");
          return;
        }
 #
@@ -423,7 +423,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
                 {
                   $zfiFIC = '';
                 }
-   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $zfiFIC, $geomFICname); #jaj
+   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $partitioner, $secFIC, $zfiFIC, $geomFICname); #jaj
               if ( $rcp != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -449,8 +449,8 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
                 }
               chdir($REPLANCE);
               #copy ("partel.log", "$REPLANCE".$ps."partel.log" );
-              ecrire("    (partitionne pour $NCSIZE processeurs)",
-                 "    (split for $NCSIZE processors)",    " ");
+              ecrire("    (partitionne pour $NCSIZE processeurs avec $partitioner)",
+                 "    (split for $NCSIZE processors using $partitioner)",    " ");
               return;
             }
    } #modepar=/SELAFIN/
@@ -941,7 +941,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
 
 
 
-sub RunPartel       # (geo, cli, NCSIZE, secname, zonname,geomname); #jaj added sec, secname)
+sub RunPartel       # (geo, cli, NCSIZE, partitioner, secname, zonname,geomname); #jaj added sec, secname)
 #_______________________________________________________________________
 #
 #  Partitionnement automatique avec PARTEL
@@ -950,15 +950,39 @@ sub RunPartel       # (geo, cli, NCSIZE, secname, zonname,geomname); #jaj added 
 {#RunPartel
 
  #Arguments de PARTEL dans "partel.par"
-  open(FPAR,">partel_@_[0].par") or die "File \'partel.par\' cannot be opened!";
- #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
-  print FPAR "@_[0]\nSERAFIN\n@_[1]\n@_[2]\n1\n@_[3]\n@_[4]\n@_[5]\nSERAFIN";  #jaj
+  open(FPAR,">partel_@_[0].par") or die "File \'partel_@_[0].par\' cannot be opened!";
+ #Change from METIS always chosen to options with SCOTCH, PARMETIS and PTSCOTCH  #moulinec
+ #Shift the argument list entries from the fourth one  #moulinec
+
+  if (@_[3] eq "SCOTCH") {
+    $ifpartition=2
+  }
+  elsif (@_[3] eq "PARMETIS") {
+    $ifpartition=3
+  }
+  elsif (@_[3] eq "PTSCOTCH") {
+    $ifpartition=4
+  }
+  else {
+    $ifpartition=1
+  }                  #moulinec
+  print FPAR "@_[0]\nSERAFIN\n@_[1]\n@_[2]\n$ifpartition\n@_[4]\n@_[5]\n@_[6]\nSERAFIN";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
 # partel outputs redirected to a file
-  $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel_@_[0].par >> partel_@_[0].log";
-  print $command;
+  $command = "test";
+  if (($ifpartition eq 1) || ($ifpartition eq 2)){
+    $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel$VERS[$0].exe < partel_@_[0].par >> partel_@_[0].log";
+  }
+  elsif (($ifpartition eq 3) || ($ifpartition eq 4)){
+    $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","partel_para$VERS[$0].exe < partel_@_[0].par >> partel_@_[0].log";
+    $cmd_runmpi=$runmpi;
+    $cmd_runmpi=~s/<EXE>/$command/;
+    $cmd_runmpi=~s/<N>/$NCSIZE/;
+    $command = $cmd_runmpi;
+  }
 # this line will redirect partel outputs to screen or listing instead of partel.log
 # $command=join "",$PathParall,"partel < partel.par ";
+  print "\n$command\n";
   $ret = system ("$command");
   return $ret;
 }#RunPartel (end)
@@ -972,11 +996,11 @@ sub RunGretel       # (geo, res, NCSIZE, NPLAN);
 {#RunGretel
 
  #Arguments de GRETEL dans "partel.par"
-  open(FPAR,">gretel.par") or die "File \'gretel.par\' cannot be opened!";
+  open(FPAR,">gretel_@_[0].par") or die "File \'gretel_@_[0].par\' cannot be opened!";
   print FPAR "@_[0]\nSERAFIN\n@_[1]\nSERAFIN\n@_[2]\n@_[3]\n";
-  close(FPAR) or die "File \'gretel.par\' cannot be closed!";
+  close(FPAR) or die "File \'gretel_@_[0].par\' cannot be closed!";
  #Lancement GRETEL, append outputs
-  $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","gretel$VERS[$0].exe < gretel.par >> gretel.log";
+  $command=join "",$PROJECT,$ps,"builds$ps$dirlib$ps","bin$ps","gretel$VERS[$0].exe < gretel_@_[0].par >> gretel_@_[0].log";
   $ret = system ("$command");
   return $ret;
 }#RunGretel (end)
@@ -1234,7 +1258,6 @@ if ($FORTRAN ne "DEFAUT")                        # Executable par defaut ?
   }
 
 #---------- Executable a construire : compilation + link
-
   else   
   {
 # Pas d'executable utilisable -> Compilation+Link
@@ -1340,8 +1363,8 @@ copy ("$EXEFILE", "$REPLANCE".$ps."$localexe");  # le garder pour le reutiliser
 #############################################################################
 #    EXECUTABLE PAR DEFAUT
 #############################################################################
-else                  #if ($FORTRAN ne "DEFAUT")
-{
+else                  
+{#if ($FORTRAN ne "DEFAUT")
 #jaj:
   if ($NCSIZE < 1 ) {
     ecrire("*** EXECUTABLE PAR DEFAUT ***\n", "*** DEFAULT EXECUTABLE ***\n");
@@ -1638,8 +1661,8 @@ if($ENV{"OS"} eq "Windows_NT")
       close (JBO);
 }#($ENV{"OS"} eq "Windows_NT")
 else
-#Unix interactif ecran pour eviter la bufferisation
 {
+#Unix interactif ecran pour eviter la bufferisation
 #########moulinec
 #######      $command=join "",$cmd_tim," $EXEFILE";               #mode Normal
       $command=join "",$cmd_tim," ./","$EXEFILE";               #mode Normal

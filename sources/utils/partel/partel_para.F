@@ -78,7 +78,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
-      USE BIEF, ONLY : BIEF_NCSIZE => NCSIZE, NBMAXNSHARE
+      USE BIEF, ONLY : BIEF_NCSIZE => NCSIZE, NBMAXNSHARE, IPID
       IMPLICIT NONE
 !
       ! MAX PARTITION NUMBER [00000..99999]
@@ -194,18 +194,17 @@
       INTEGER, ALLOCATABLE :: PART_P_TMP1(:),PART_P_TMP2(:)
       LOGICAL HALO
       INTEGER NOEUD,NBRE_NOEUD_INTERNE
-      INTEGER NBRE_EF_I,IER,ID,NBRE_NPTIR
+      INTEGER NBRE_EF_I,IER,NBRE_NPTIR
       LOGICAL INTERFACE
 !
 !   FOR SCOTCH
 !
-      INTEGER DECOUP
       EXTERNAL P_TIME
       DOUBLE PRECISION P_TIME
       CHARACTER(LEN=250) :: PATH
       INTEGER :: NCAR, NCSIZE
       NDP_2D=3
-      CALL P_INIT(PATH, NCAR, ID, NCSIZE)
+      CALL P_INIT(PATH, NCAR, IPID, NCSIZE)
 !
 !----------------------------------------------------------------------
 !
@@ -218,7 +217,7 @@
 !----------------------------------------------------------------------
 !   INTRODUCE YOURSELF
 !
-      IF (ID .EQ. 0) THEN
+      IF (IPID .EQ. 0) THEN
 !
         WRITE(LU,*) ' '
         WRITE(LU,*) '+----------------------------------------------+'
@@ -240,22 +239,32 @@
 !----------------------------------------------------------------------
 !   NAMES OF THE INPUT FILES:
 !
-      INQUIRE (FILE='PARTEL.PAR',EXIST=IS)
+      INQUIRE (FILE='partel.par',EXIST=IS)
       IF( .NOT.IS ) THEN
-        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 'PARTEL.PAR'
+        WRITE (LU,'('' FILE DOES NOT EXIST: '',A30)') 'partel.par'
         CALL PLANTE(1)
         STOP
       END IF
 !
-      OPEN(UNIT=74,FILE='PARTEL.PAR')
+      OPEN(UNIT=74,FILE='partel.par')
       READ(74,*) NAMEINP
       READ(74,*) NAMECLI
       READ(74,*) NPARTS
-      READ(74,*) DECOUP
-      ! SI DECOUP= 0 ON NE DECOUPE PAS AVEC METIS ON LIT UN FICHIER
+      READ(74,*) PMETHOD
+      ! SI PMETHOD = 3 or 4 ON NE  DECOUPE PAS AVEC METIS ON LIT UN FICHIER
       ! RESULT_SEQ_METIS CREE PAR PARTEL_PRELIM (OU AUTRE !!)
       ! SINON ON DECOUPE AVEC METIS
       CLOSE(74)
+!
+      IF (PMETHOD .EQ. 3) THEN
+        WRITE(LU,*) ' '
+        WRITE(LU,*) 'PARTITIONING USING PARMETIS'
+        WRITE(LU,*) ' '
+      ELSEIF (PMETHOD .EQ. 4) THEN
+        WRITE(LU,*) ' '
+        WRITE(LU,*) 'PARTITIONING USING PTSCOTCH'
+        WRITE(LU,*) ' '
+      ENDIF
 !
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF( .NOT.IS ) THEN
@@ -271,8 +280,6 @@
         STOP
       END IF
 !
-      PMETHOD=DECOUP
-
       I_S  = LEN(NAMEINP)
       I_SP = I_S + 1
       DO I=1,I_S
@@ -293,7 +300,7 @@
         STOP
       ENDIF
 !
-      IF (ID .EQ. 0)  THEN
+      IF (IPID .EQ. 0)  THEN
         STARTTIME=P_TIME()
       END IF
       OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
@@ -423,7 +430,7 @@
 !      END DO
       CLOSE (NINP)
       CALL P_SYNC()
-      IF (ID .EQ. 0) THEN
+      IF (IPID .EQ. 0) THEN
         STARTCTIME=P_TIME()
         WRITE(LU,*) 'TEMPS LECTURE :',STARTCTIME-STARTTIME
       END IF
@@ -458,7 +465,7 @@
       CALL CHECK_ALLOCATE(ERR, 'BTBOR')
       ALLOCATE (LITBOR(NPTFRMAX),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'LITBOR')
-      ALLOCATE (NBOR(NPTFRMAX),STAT=ERR)
+      ALLOCATE (NBOR(NPTFRMAX),STAT=ERR)  
       CALL CHECK_ALLOCATE(ERR, 'NBOR')
       ALLOCATE (NUMLIQ(NPTFRMAX),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'NUMLIQ')
@@ -627,17 +634,17 @@
 !======================================================================
 !
 !     NEW METIS INTERFACE (>= VERSION 5) :
-!
+!     
 !     EPTR, EIND: THESE ARRAYS SPECIFIES CONTAINS
-!     IKLES IN CSR FORMAT
-!
+!     IKLES IN CSR FORMAT               
+!     
       ALLOCATE (EPART(NELEM2),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'EPART')
       ALLOCATE (NPART(NPOIN2),STAT=ERR)
       CALL CHECK_ALLOCATE(ERR, 'NPART')
 !
       ! If metis was run previously just read the results
-      IF (DECOUP .EQ. 0) THEN
+      IF (PMETHOD.NE.3 .AND. PMETHOD.NE.4) THEN
         OPEN(UNIT=32,FILE='RESULT_SEQ_METIS')
         DO I=1,NELEM2
           READ(32,*) EPART(I)
@@ -648,19 +655,19 @@
 !       Choosing partitionning method
 !       1 : METIS IF PARMETIS NOT INSTALLED PARMETIS OTHERWISE
 !       2 : PT SCOTCH
-!
-        WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
-        IF (TIMECOUNT) THEN
+!        
+        WRITE(LU,*) ' THE MESH PARTITIONING STEP  STARTS'
+        IF (TIMECOUNT) THEN 
           CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
           TDEBP = TEMPS
         ENDIF
-        CALL PARTITIONER_PARA(PMETHOD, NELEM2, NPOIN, NDP, NPARTS,
+        CALL PARTITIONER_PARA(PMETHOD, NELEM2, NPOIN2, NDP, NPARTS,
      &                           IKLES, EPART, NPART)
         WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
         IF (TIMECOUNT) THEN
           CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
           TFINP = TEMPS
-          WRITE(LU,*) ' RUNTIME OF METIS ',
+          WRITE(LU,*) ' RUNTIME OF PARTITIONER ',
      &              (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
         ENDIF
       ENDIF
@@ -722,8 +729,8 @@
         END DO
       END DO
 !
-!     THE PROCESS MPI ID  WORK ON THE SUBMESH ID+1
-      I=ID+1
+!     THE PROCESS MPI IPID  WORK ON THE SUBMESH IPID+1
+      I=IPID+1
 !
 !   LOOP OVER THE FINITE ELEMENTD OF THE MESH TO COMPUTE
 !   THE NUMBER OF THE FINITE ELEMENT AND POINTS BELONGING
@@ -745,8 +752,8 @@
       END DO
 !
 !======================================================================
-!     STEP 4 : ALLOCATION OF LOCAL ARRAYS NEEDED BY MPI PROCESSUS ID
-!              WORKING ON SUBMESH ID+1
+!     STEP 4 : ALLOCATION OF LOCAL ARRAYS NEEDED BY MPI PROCESSUS IPID
+!              WORKING ON SUBMESH IPID+1
 !======================================================================
 !
 !   ELEGL(E) => GLOBAL LABEL OF THE FINITE ELEMENT E
@@ -880,7 +887,7 @@
       END DO
       WRITE(22,*) 'NPTIR_P',NPTIR_P
       NB_INTER_GLOB=0
-      ! IF (ID. EQ. 0) WRITE(89,*) SORT
+      ! IF (IPID. EQ. 0) WRITE(89,*) SORT
       ! CUT=0
       CALL P_IMAX_ARRAY(SORT,CUT,NPOIN2,IER)
 !
@@ -1004,7 +1011,7 @@
 
 !     DO I=1,NPARTS
       CALL P_SYNC()
-      IF (ID .EQ. 0) THEN
+      IF (IPID .EQ. 0) THEN
         STARTIOTIME=P_TIME()
         WRITE(LU,*) 'TEMPS CALCUL :',STARTIOTIME-STARTCTIME
       END IF
@@ -1017,7 +1024,7 @@
 !
 !----------------------------------------------------------------------
 !
-      NAMECLM(I_LENCLI+1:I_LENCLI+11) = EXTENS(NPARTS-1,ID)
+      NAMECLM(I_LENCLI+1:I_LENCLI+11) = EXTENS(NPARTS-1,IPID)
 !
       OPEN(NCLM,FILE=NAMECLM,
      &        STATUS='UNKNOWN',FORM='FORMATTED')
@@ -1168,7 +1175,7 @@
 !***************************************************************
 !     WRITING GEOMETRY FILES FOR ALL PARTS/PROCESSORS
 !
-      NAMEOUT(I_LENINP+1:I_LENINP+11) = EXTENS(NPARTS-1,ID)
+      NAMEOUT(I_LENINP+1:I_LENINP+11) = EXTENS(NPARTS-1,IPID)
 !
       OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED'
      &     ,STATUS='UNKNOWN')
@@ -1333,7 +1340,7 @@
 !----------------------------------------------------------------------
 !
       CALL P_SYNC()
-      IF (ID .EQ. 0) THEN
+      IF (IPID .EQ. 0) THEN
         ENDTIME=P_TIME()
         WRITE(LU,*) 'TEMPS ECRITURE :',ENDTIME-STARTIOTIME
         WRITE(LU,*) 'TEMPS TOTAL :',ENDTIME-STARTTIME

@@ -632,19 +632,20 @@ def getFileFormat(cas,keyword):
    # By default if there is no format keyword the file is SERAFIN
    return 'SERAFIN'
 
-def runPartition(partel,geom,fmtgeom,conlim,ncsize,bypass,section_name,zone_name):
+def runPartition(partel,geom,fmtgeom,conlim,ncsize,bypass,section_name,zone_name,iPart):
 
    if ncsize < 2: return True
    # ~~ split GEO, CONLIM, SECTIONS and ZONES file ~~~~~~~~~~~~~~~~~
    print '\n... partitioning base files (geo, conlim, sections and zones)'
    try:
-      runPARTEL(partel,geom,fmtgeom,conlim,ncsize,bypass,section_name,zone_name,geom,fmtgeom)
+      runPARTEL(partel,geom,fmtgeom,conlim,ncsize,bypass,
+                section_name,zone_name,geom,fmtgeom,iPart)
    except Exception as e:
       raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
 
    return True
 
-def copyPartition(partel,cas,geom,fmtgeom,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link):
+def copyPartition(partel,cas,geom,fmtgeom,conlim,iFiles,ncsize,bypass,section_name,zone_name,use_link,iPart):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,9 +660,10 @@ def copyPartition(partel,cas,geom,fmtgeom,conlim,iFiles,ncsize,bypass,section_na
                # Get the real name of the file to identify the format
                # A better solution would be to find the definition of the format in the cas file
                fileFormat = getFileFormat(cas,k)
-               runPARTEL(partel,crun,fileFormat,conlim,ncsize,bypass,section_name,zone_name,geom,fmtgeom)
+               runPARTEL(partel,crun,fileFormat,conlim,ncsize,bypass,
+                         section_name,zone_name,geom,fmtgeom,iPart)
             except Exception as e:
-               raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
+               raise Exception([filterMessage({'name':'copyPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             if use_link:
                print '  duplilinking: ', path.basename(crun)
@@ -676,10 +678,10 @@ def copyPartition(partel,cas,geom,fmtgeom,conlim,iFiles,ncsize,bypass,section_na
 
    return True
 
-def runPARTEL(partel,file,fileFormat,conlim,ncsize,bypass,section_name,zone_name,geom,fmtgeom):
+def runPARTEL(partel,file,fileFormat,conlim,ncsize,bypass,section_name,zone_name,geom,fmtgeom,iPart):
    # TODO: You should check if the file exist and should be updated (or not)
    putFileContent('PARTEL.PAR',
-                  [file,fileFormat,conlim,str(ncsize),str(1),
+                  [file,fileFormat,conlim,str(ncsize),str(iPart),
                    section_name,zone_name,geom,fmtgeom,''])
    parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
    mes = MESSAGES(size=10)
@@ -1168,14 +1170,25 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                                    MODFiles[CASFiles[name]['code']]['iFS'])    # Global GEO file
          section_name = CASFiles[name]['section']
          zone_name = CASFiles[name]['zone']
+         # Identify the partitioner to use for Partel
+         part2int = {"'METIS'":1,"'SCOTCH'":2,"'PARMETIS'":3,"'PTSCOTCH'":4}
+         idx = -1
+         print CASFiles[name]['cas']
+         if "PARTITIONING TOOL" in CASFiles[name]['cas'][1][0]:
+            idx = CASFiles[name]['cas'][1][0].index("PARTITIONING TOOL")
+         if "PARTITIONNEUR" in CASFiles[name]['cas'][1][0]:
+            idx = CASFiles[name]['cas'][1][0].index("PARTITIONNEUR")
+         # If the key in not in the steering file we use metis
+         iPart = 1 if idx == -1 else part2int[CASFiles[name]['cas'][1][1][idx][0]]
          try:
-            runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
+            runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,
+                         options.bypass,section_name,zone_name,iPart)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the following CAS file: '+name},e,options.bypass)])
          # ~~> Copy partition for the other input files
          copyPartition(parcmd,CASFiles[name]['cas'],GLOGEO,FMTGEO,CONLIM,\
                        MODFiles[CASFiles[name]['code']]['iFS'],\
-                       ncsize,False,section_name,zone_name,options.use_link)
+                       ncsize,False,section_name,zone_name,options.use_link,iPart)
 
          for cplage in CASFiles[name]['with']:
             CONLIM = getCONLIM(CASFiles[name]['with'][cplage]['cas'],MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'])
@@ -1183,13 +1196,13 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             section_name = CASFiles[name]['with'][cplage]['section']
             zone_name = CASFiles[name]['with'][cplage]['zone']
             try:
-               runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name)
+               runPartition(parcmd,GLOGEO,FMTGEO,CONLIM,ncsize,options.bypass,section_name,zone_name,iPart)
             except Exception as e:
                raise Exception([filterMessage({'name':'runCAS','msg':'Could not partition the base files for the CAS file couled with: '+name},e,options.bypass)])
             # ~~> Copy partition for the other input files
             copyPartition(parcmd,CASFiles[name]['with'][cplage]['cas'],GLOGEO,FMTGEO,CONLIM,\
                           MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],\
-                          ncsize,False,section_name,zone_name,options.use_link)
+                          ncsize,False,section_name,zone_name,options.use_link,iPart)
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Getting out if split only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
