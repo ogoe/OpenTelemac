@@ -274,16 +274,18 @@ NOM = 'PRECONDITIONNEMENT'
 NOM1 = 'PRECONDITIONING' 
 TYPE = ENTIER 
 INDEX = 14 
-MNEMO = 'IPRECO' 
+MNEMO = 'SLVPRO%PRECON' 
 TAILLE = 0 
 DEFAUT = 2 
 DEFAUT1 = 2 
 CHOIX = '2="diagonal"'; '0="aucun"'; 
-'3="diagonal condensee"'; '7="crout"';'11="gauss-seidel"'; 
-'14="diagonal et crout"'; '21="diagonal condense et crout"' 
+'3="bloc-diagonal (4 ou 9 matrices)"'; '5="valeur absolue diagonale"';
+'7="crout"';'11="gauss-seidel"'; 
+'14="diagonal et crout"' 
 CHOIX1 = '2="diagonal"'; '0="no preconditioning"'; 
-'3="diagonal condensee"'; '7="crout"';'11="gauss-seidel"'; 
-'14="diagonal and crout"'; '21="diagonal condensed and crout"' 
+'3="block-diagonal (4-9 matrices)"'; '5="absolute value of diagonal"';
+'7="crout"';'11="gauss-seidel"'; 
+'14="diagonal and crout"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 COMPORT = 
@@ -306,7 +308,7 @@ AIDE1 = 'Choice of the preconditioning in the propagation step linear
 system that the convergence is speeded up when it is being solved. 
  0: no preconditioning 
  2: diagonal preconditioning 
- 3: diagonal preconditioning with the condensed matrix 
+ 3: block-diagonal preconditioning (systemes a 4 ou 9 matrices)
  7: Crout''s preconditioning per element or segment 
 11: Gauss-Seidel''s preconditioning per element or segment 
 Some operations (either 2 or 3 diagonal preconditioning) can be 
@@ -667,12 +669,10 @@ MNEMO = 'SLVTRA(ITRAC)%PRECON'
 TAILLE = 0
 DEFAUT = 2 
 DEFAUT1 = 2 
-CHOIX = '2="diagonal"'; '0="aucun"'; 
-'3="diagonal condensee"'; '7="crout"'; 
-'14="diagonal et crout"'; '21="diagonal condense et crout"' 
+CHOIX = '2="diagonal"'; '0="aucun"';'7="crout"'; 
+'14="diagonal et crout"'
 CHOIX1 = '2="diagonal"'; '0="no preconditioning "'; 
-'3="diagonal condensed"'; '7="crout"'; 
-'14="diagonal and crout"'; '21="diagonal condensed and crout"' 
+'7="crout"';'14="diagonal and crout"'
 RUBRIQUE = 'EQUATIONS';'TRACEUR';'OPTIONS TRACEUR' 
 RUBRIQUE1 = 'EQUATIONS';'TRACER';'TRACER OPTIONS' 
 NIVEAU = 2 
@@ -680,13 +680,12 @@ AIDE = 'Permet de preconditionner le systeme relatif au traceur.
 Memes definition et possibilites que pour le mot-cle PRECONDITIONNEMENT. 
   0 : pas de preconditionnement; 
   2 : preconditionnement diagonal. 
-  3 : preconditionnement diagonal avec la matrice conde' 
+  7 : Crout par element' 
 AIDE1 = 'Preconditioning of the linear system in the tracer diffusion 
 step. 
 Same definition and possibilities as for the keyword  PRECONDITIONING 
  0: no preconditioning 
  2: diagonal preconditioning 
- 3: diagonal preconditioning with the condensed matrix 
  7: Crout''s preconditioning per element.' 
  
 NOM = 'SOLVEUR POUR LE MODELE K-EPSILON' 
@@ -749,24 +748,20 @@ TAILLE = 0
 DEFAUT = 2 
 DEFAUT1 = 2 
 CHOIX = '2="diagonal"'; '0="aucun"'; 
-'3="diagonal condensee"'; '7="crout"'; 
-'14="diagonal et crout"'; '21="diagonal condense et crout"' 
+'7="crout"';'14="diagonal et crout"'
 CHOIX1 = '2="diagonal"'; '0="no preconditioning"'; 
-'3="diagonal condensed"'; '7="crout"'; 
-'14="diagonal and crout"'; '21="diagonal condensed and crout"' 
+'7="crout"';'14="diagonal and crout"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES, MODELE K-EPSILON' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, K-EPSILON MODEL' 
 NIVEAU = 2 
 AIDE = 'Permet de preconditionner le systeme relatif au modele k-epsilon 
 0 : pas de preconditionnement; 
 2 : preconditionnement diagonal. 
-3 : preconditionnement diagonal avec la matrice condensee. 
 7 : preconditionnement de Crout par element.' 
 AIDE1 = 'Preconditioning of the linear system in the diffusion step of 
 the k-epsilon model. 
 0: no preconditioning 
 2: diagonal preconditioning 
-3: diagonal preconditioning with the condensed matrix 
 7: Crout''s preconditioning per element' 
  
 NOM = 'REGIME DE TURBULENCE POUR LES PAROIS' 
