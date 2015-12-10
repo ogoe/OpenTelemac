@@ -6,7 +6,7 @@
      & B1,B2,D1,D2,MESH,PRECON,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    DIAGONAL PRECONDITIONING OF A SYSTEM A X = B
@@ -16,8 +16,8 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        06/07/2009
-!+        V6P0
-!+
+!+        V5P0
+!+   First version (of the header...)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -30,6 +30,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        08/12/2015
+!+        V7P1
+!+   Rebuilding the diagonals with MESH%IFAC in parallel in case of
+!+   diagonal preconditioning and DIADON=FALSE.
+!+   Correction of a bug in parallel with preconditioning 5.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11            |<->| TERM (1,1) OF MATRIX
@@ -57,10 +64,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: PRECON
-!
       LOGICAL, INTENT(IN) :: PREXSM,DIADON
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  VECTOR STRUCTURES
 !
@@ -80,6 +86,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER I
       DOUBLE PRECISION C
 !
 !-----------------------------------------------------------------------
@@ -88,33 +95,37 @@
 !
       IF(.NOT.DIADON) THEN
 !
-!  COMPUTES THE SQUARE ROOTS OF THE ABSOLUTE VALUES
+!       COPY
 !
-        IF(PRECON.EQ.5) THEN
-          CALL OS( 'X=ABS(Y)' , D1 , A11%D , D1 , C )
-          CALL OS( 'X=ABS(Y)' , D2 , A22%D , D2 , C )
-        ELSE
-          CALL OS( 'X=Y     ' , D1 , A11%D , D1 , C )
-          CALL OS( 'X=Y     ' , D2 , A22%D , D2 , C )
-        ENDIF
+        CALL OS( 'X=Y     ' , X=D1 , Y=A11%D )
+        CALL OS( 'X=Y     ' , X=D2 , Y=A22%D )
 !
-!  PARALLEL MODE: COMPLETE DIAGONAL BEFORE TAKING THE SQUARE ROOT
+!       PARALLEL MODE: COMPLETE DIAGONAL BEFORE GOING FURTHER
 !
         IF(NCSIZE.GT.1) THEN
           CALL PARCOM(D1,2,MESH)
           CALL PARCOM(D2,2,MESH)
         ENDIF
 !
-        CALL OS( 'X=SQR(Y)' , D1 , D1 , D1 , C )
-        CALL OS( 'X=SQR(Y)' , D2 , D2 , D2 , C )
+!       POSSIBLY ABSOLUTE VALUES
+!
+        IF(PRECON.EQ.5) THEN
+          CALL OS( 'X=ABS(Y)' , X=D1 , Y=D1 )
+          CALL OS( 'X=ABS(Y)' , X=D2 , Y=D2 )
+        ENDIF
+!
+!       SQUARE ROOT
+!
+        CALL OS( 'X=SQR(Y)' , X=D1 , Y=D1 )
+        CALL OS( 'X=SQR(Y)' , X=D2 , Y=D2 )
 !
 !-----------------------------------------------------------------------
 !                                                    -1
 !  CHANGE OF VARIABLES (D1,D2 AND D3 ACTUALLY HOLD D1 ,...)
 !
         IF(PREXSM) THEN
-          CALL OS( 'X=XY    ' , X1 , D1 , D1 , C )
-          CALL OS( 'X=XY    ' , X2 , D2 , D2 , C )
+          CALL OS( 'X=XY    ' , X=X1 , Y=D1 )
+          CALL OS( 'X=XY    ' , X=X2 , Y=D2 )
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -131,8 +142,8 @@
 !  CHANGE OF VARIABLE (D1,D2 REALLY HOLD D1,D2)
 !
         IF(PREXSM) THEN
-          CALL OS( 'X=Y/Z   ' , X1 , X1 , D1 , C )
-          CALL OS( 'X=Y/Z   ' , X2 , X2 , D2 , C )
+          CALL OS( 'X=Y/Z   ' , X=X1 , Y=X1 , Z=D1 )
+          CALL OS( 'X=Y/Z   ' , X=X2 , Y=X2 , Z=D2 )
         ENDIF
 !
       ENDIF
@@ -181,6 +192,24 @@
           A21%TYPDIA='0'
         ENDIF
 !
+      ELSE
+!
+!       CASE OF DIAGONAL=IDENTITY, BUT ONLY AFTER ASSEMBLING
+!
+        IF((2*(PRECON/2).EQ.PRECON.OR.3*(PRECON/3).EQ.PRECON).AND.
+     &                                                .NOT.DIADON) THEN
+!         HERE THE DIAGONAL IS REDONE WITH IFAC, SO THAT A MATRIX-VECTOR
+!         PRODUCT WILL LEAD TO A SUM OF THE SAME NUMBERS (BUT POSSIBLY
+!         NOT IN THE SAME ORDER). OTHERWISE IT IS NOT SURE THAT THE
+!         ASSEMBLED DIAGONAL WOULD GIVE EXACT 1.D0.
+          DO I=1,A11%D%DIM1
+            A11%D%R(I)=MESH%IFAC%I(I)
+          ENDDO
+          DO I=1,A22%D%DIM1
+            A22%D%R(I)=MESH%IFAC%I(I)
+          ENDDO
+        ENDIF
+!
       ENDIF
 !
 !=======================================================================
@@ -188,11 +217,12 @@
 ! PRECONDITIONING OF THE SECOND MEMBER
 !
       IF(PREXSM) THEN
-        CALL OS( 'X=XY    ' , B1 , D1 , D1 , C )
-        CALL OS( 'X=XY    ' , B2 , D2 , D2 , C )
+        CALL OS( 'X=XY    ' , X=B1 , Y=D1 )
+        CALL OS( 'X=XY    ' , X=B2 , Y=D2 )
       ENDIF
 !
 !=======================================================================
 !
       RETURN
       END
+

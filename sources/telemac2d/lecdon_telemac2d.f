@@ -81,6 +81,12 @@
 !+  TIDALTYPE is now deduced from BND_TIDE.
 !+  Tests on preconditioning for tracers not done if no tracer
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/12/2015
+!+        V7P1
+!+  In case of wave equation, replacement of preconditioning 2 by 5
+!+  removed (no longer necessary after clipping of HPROP).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -2004,13 +2010,17 @@
       IF(SOLSYS.EQ.2) THEN
 !
 !       DIAGONAL PRECONDITIONING WITH ABSOLUTE VALUES
-        IF(2*(SLVPRO%PRECON/2).EQ.SLVPRO%PRECON) THEN
-          SLVPRO%PRECON=SLVPRO%PRECON/2
-          SLVPRO%PRECON=SLVPRO%PRECON*5
-        ENDIF
+!
+!       JMH: THIS WAS PRIOR TO 7.1, BUT NOT NECESSARY SINCE HPROP IS NOW
+!            CLIPPED TO 0, SO THAT THE FINAL MATRIX OF THE WAVE EQUATION
+!            HAS ALWAYS A POSITIVE DIAGONAL...
+!!      IF(2*(SLVPRO%PRECON/2).EQ.SLVPRO%PRECON) THEN
+!!        SLVPRO%PRECON=SLVPRO%PRECON/2
+!!        SLVPRO%PRECON=SLVPRO%PRECON*5
+!!      ENDIF
 !       NO C-U PRECONDITIONING
         PRECCU = .FALSE.
-!       EXPLICIT DIFFUSION
+!       EXPLICIT DIFFUSION (NOT MANDATORY, DIAGONAL MAY REMAIN IMPLICIT)
 !       TETAD  = 0.D0
 !       IMPLICIT VELOCITY AND DEPTH (NOT COMPULSORY BUT MORE STABLE)
 !       FOLLOWING LINE COMMENTED OUT AFTER USER CLUB 2010 (REMARK BY ALAN COOPER)
@@ -2458,3 +2468,4 @@
 !
       RETURN
       END
+

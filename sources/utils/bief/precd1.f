@@ -5,7 +5,7 @@
      &(X,A,B,D,MESH,PRECON,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    DIAGONAL PRECONDITIONING OF A SYSTEM A X = B
@@ -15,8 +15,8 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        06/07/2009
-!+        V6P0
-!+
+!+        V5P0
+!+   First version (of the header...)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -29,6 +29,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        08/12/2015
+!+        V7P1
+!+   Rebuilding the diagonal with MESH%IFAC in parallel in case of
+!+   diagonal preconditioning and DIADON=FALSE.
+!+   Correction of a bug in parallel with preconditioning 5.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| BLOCK OF MATRICES
@@ -50,10 +57,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: PRECON
-!
       LOGICAL, INTENT(IN) :: PREXSM,DIADON
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  VECTOR STRUCTURES
 !
@@ -73,6 +79,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER I
       DOUBLE PRECISION C
 !
 !-----------------------------------------------------------------------
@@ -81,19 +88,21 @@
 !
       IF(.NOT.DIADON) THEN
 !
-!  COMPUTES THE SQUARE ROOTS OF THE ABSOLUTE VALUES OR OF THE VALUES
+        CALL OS( 'X=Y     ' , X=D , Y=A%D )
 !
-        IF(PRECON.EQ.5) THEN
-          CALL OS( 'X=ABS(Y)' , X=D , Y=A%D )
-        ELSE
-          CALL OS( 'X=Y     ' , X=D , Y=A%D )
-        ENDIF
-!
-!  PARALLEL MODE: COMPLETE DIAGONAL BEFORE TAKING THE SQUARE ROOT
+!       PARALLEL MODE: COMPLETE DIAGONAL BEFORE GOING FURTHER
 !
         IF(NCSIZE.GT.1) THEN
           CALL PARCOM(D,2,MESH)
         ENDIF
+!
+!       POSSIBLY TAKING THE ABSOLUTE VALUES
+!
+        IF(PRECON.EQ.5) THEN
+          CALL OS( 'X=ABS(Y)' , X=D , Y=D )
+        ENDIF
+!
+!       TAKING THE SQUARE ROOT
 !
         CALL OS( 'X=SQR(Y)' , X=D , Y=D )
 !
@@ -101,14 +110,14 @@
 !                                         -1
 !  CHANGE OF VARIABLES (D ACTUALLY HOLDS D  )
 !
-        IF(PREXSM) CALL OS( 'X=XY    ' , X , D , D , C )
+        IF(PREXSM) CALL OS( 'X=XY    ' , X=X , Y=D )
 !
 !-----------------------------------------------------------------------
 !
 !  COMPUTES THE INVERSE OF THE SQUARE ROOTS OF THE DIAGONALS
 !  THIS GIVES BACK TRUE D AND NOT D INVERTED
 !
-        CALL OS( 'X=1/Y   ' , D , D , D , C , 2 , 1.D0 , 1.D-10 )
+        CALL OS( 'X=1/Y   ' , D , D , D , 0.D0 , 2 , 1.D0 , 1.D-10 )
 !
       ELSE
 !
@@ -125,12 +134,22 @@
 ! PRECONDITIONING OF A:
 !=======================================================================
 !
-      CALL OM( 'M=DMD   ' , A , A , D , C , MESH )
+      CALL OM( 'M=DMD   ' , A , A , D , 0.D0 , MESH )
 !     IF PRECON = 2 OR 3
       IF((2*(PRECON/2).EQ.PRECON.OR.3*(PRECON/3).EQ.PRECON).AND.
      &                                                 .NOT.DIADON) THEN
 !       VALID ONLY WITH ONE SINGLE DOMAIN
-        IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) A%TYPDIA='I'
+        IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
+          A%TYPDIA='I'
+        ELSE
+!         HERE THE DIAGONAL IS REDONE WITH IFAC, SO THAT A MATRIX-VECTOR
+!         PRODUCT WILL LEAD TO A SUM OF THE SAME NUMBERS (BUT POSSIBLY
+!         NOT IN THE SAME ORDER). OTHERWISE IT IS NOT SURE THAT THE
+!         ASSEMBLED DIAGONAL WOULD GIVE EXACT 1.D0.
+          DO I=1,A%D%DIM1
+            A%D%R(I)=MESH%IFAC%I(I)
+          ENDDO
+        ENDIF
       ENDIF
 !
 !=======================================================================
@@ -143,3 +162,4 @@
 !
       RETURN
       END
+
