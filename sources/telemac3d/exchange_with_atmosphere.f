@@ -467,6 +467,13 @@
 !+   Every salinity correction has been removed
 !+
 !
+!history  M. GANT, L. ABBAS, C.-T. PHAM (EDF-LNHE)
+!+        07/12/2015
+!+        V7P1
+!+   DEBEVAP and FLUX_EVAP have to be greater than or equal to zero.
+!+   Otherwise, rain is read through files
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| PARAMETER TO CALIBRATE
 !| DEB_EVAP       |<--| EVAPORATION FLOWRATE AT THE SURFACE
@@ -511,10 +518,12 @@
 !
       FLUX_EVAP = ROAIR*(2500.9D3-TREEL*2.365D3)*FWW
      &                 *(HUMI_EAU-HUMI_AIR)
+      FLUX_EVAP = MAX(FLUX_EVAP,0.D0)
 !  HEAT FLUX BY CONVECTION
       FLUX_SENS = CP_AIR*ROAIR*FWW*(TREEL-TAIR)
 !  EVAPORATION FLOWRATE AT THE SURFACE
       DEBEVAP   = ROAIR*FWW/RO*(HUMI_EAU-HUMI_AIR)
+      DEBEVAP   = MAX(DEBEVAP,0.D0)
 !
 !-----------------------------------------------------------------------
 !
