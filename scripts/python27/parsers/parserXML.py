@@ -136,12 +136,8 @@ def mapdiff(a1,a2):
    # Making a1-a2 for each variable and each point
    for ivar in range(nvar):
       for i in range(npoin):
-         if a2.values[0][ivar][i] != 0.0:
-            diff[0][ivar][i] = abs(a2.values[0][ivar][i]\
-                                    - a1.values[0][ivar][i])/a2.values[0][ivar][i]
-         else:
-            diff[0][ivar][i] = abs(a2.values[0][ivar][i]\
-                                    - a1.values[0][ivar][i])
+         diff[0][ivar][i] = abs(a2.values[0][ivar][i]\
+                                 - a1.values[0][ivar][i])
    return a2.time,a2.names,a2.support,diff
 
 def checkval(a0,eps):

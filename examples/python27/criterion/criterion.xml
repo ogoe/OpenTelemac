@@ -26,7 +26,7 @@
       <v2 vars="free surface:map" target="r2d_tide-jmj_type_gen.slf" />
       <v3 vars="mapdiff(v2,v1)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[0.3])" />
+         fail="checkval(v3,[2.7])" />
    </cast>
    <!-- Plotting a 2D map of the diffeence calculated above at the last frame
       - Variables extracted:

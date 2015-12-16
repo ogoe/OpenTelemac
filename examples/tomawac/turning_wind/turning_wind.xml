@@ -25,7 +25,7 @@
       <v2 vars=":map" target="fom_TW.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[0.04, 0.7, 0.00001, 0.00001, 0.004, 0.00001])" />
    </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -45,42 +45,42 @@
       <v2 vars=":map" target="fom_opposing_cur.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1e-4])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:WACRES" />
       <v5 vars=":map" target="fom_opposing_cur.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1e-4])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:WACRES" />
       <v8 vars=":map" target="2:WACRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[1e-4])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:WACRES" />
       <v11 vars=":map" target="fom_opposing_cur_opt1.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
+         fail="checkval(v12,[1e-4])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="4:WACRES" />
       <v14 vars=":map" target="fom_opposing_cur_opt1.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
+         fail="checkval(v15,[1e-4])" />
    </cast>
    <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
       <v16 vars=":map" target="3:WACRES" />
       <v17 vars=":map" target="4:WACRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1e-4])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
