@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: special hermes bief gretel partel
+liborder: special hermes bief partel gretel
 name: HOMERE_GRETEL
 
 [bief]
