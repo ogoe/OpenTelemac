@@ -5,7 +5,7 @@
      &(VISC,CF,U,V,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    COMPUTES VISCOSITY USING SMAGORINSKY'S MODEL.
@@ -21,7 +21,7 @@
 !history  ADRIAN KLINGS (ENPC)
 !+        06/10/1997
 !+        V5P6
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -34,6 +34,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. Dorfman (user konsonaut)
+!+        17/12/2015
+!+        V7P1
+!+   Missing CALL PARCOM have been added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -93,6 +98,13 @@
      &            1.D0,V,V,V,V,V,V,MESH,MSK,MASKEL)
       CALL VECTOR(T4,'=','GRADF          Y',IELMU,
      &            1.D0,V,V,V,V,V,V,MESH,MSK,MASKEL)
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM(T1,2,MESH)
+        CALL PARCOM(T2,2,MESH)
+        CALL PARCOM(T3,2,MESH)
+        CALL PARCOM(T4,2,MESH)
+      ENDIF
 !
       NPOIN = VISC%DIM1
 !
