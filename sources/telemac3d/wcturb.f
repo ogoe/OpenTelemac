@@ -7,7 +7,7 @@
      & UETCAR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P1
 !***********************************************************************
 !
 !brief    MODELS THE INFLUENCE OF TURBULENCE ON THE
@@ -38,6 +38,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  R. KOMANN (BAW), C. SEEGERS, upload by P. TASSI
+!+        15/12/2015
+!+        V7P1
+!+   Correction of parallel issue: call to PARCOM missed
+!+   (needed also for GRADF)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HN             |-->| WATER DEPTH
@@ -93,7 +99,12 @@
      &            S,S,S,S,S,MESH3,MSK,MASKEL)
       CALL VECTOR(TRAV3,'=','MASBAS          ',IELM3,1.D0,S,
      &            S,S,S,S,S,MESH3,MSK,MASKEL)
-      IF(NCSIZE.GT.1) CALL PARCOM(TRAV3, 2, MESH3)
+!
+      IF(NCSIZE.GT.1) THEN
+       CALL PARCOM(TRAV1, 2, MESH3)
+       CALL PARCOM(TRAV2, 2, MESH3)
+       CALL PARCOM(TRAV3, 2, MESH3)     
+      ENDIF
 !
 !  DU/DZ IS TRAV1; DV/DZ IS TRAV2
 !
