@@ -13,7 +13,7 @@
 !history  Y AUDOUIN (LNHE)
 !+        25/05/2015
 !+        V7P0
-!+
+!+   First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NAMEPAR        |-->| NAME OF THE PARTEL INFO FILE
@@ -51,7 +51,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      ! Look for an available unit
+!     Look for an available unit
       NPAR = 1000
       DO
         INQUIRE(UNIT=NPAR,OPENED=IS_USED)
@@ -63,7 +63,6 @@
 !
       READ(NPAR,*) NPTFR_BND
 !
-      WRITE(LU,*) NPTFR_BND,NPTFR
       IF(NPTFR.NE.NPTFR_BND) THEN
         IF(LNG.EQ.1) WRITE(LU,23) NPTFR_BND,NPTFR
         IF(LNG.EQ.2) WRITE(LU,24) NPTFR_BND,NPTFR
