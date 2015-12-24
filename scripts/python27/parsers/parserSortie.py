@@ -57,7 +57,7 @@ def getLatestSortieFiles(fi):
 #
 
 class Sortie:
-   
+
    def __init__(self,fileName=''):
       self.sortie = []
       if fileName != '': self.sortie = self.getFileContent(fileName)
@@ -67,7 +67,7 @@ class Sortie:
          print '... could not find your CSV file: ',fileName
          sys.exit(1)
       self.sortie = getFileContent(fileName)
-      
+
    # ~~ Time support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # Returns the time profile in iteration and in seconds,
    #    read from the TELEMAC sortie file
@@ -204,10 +204,10 @@ class Sortie:
       Creates the x,y arrays for plotting
       Values read from the TELEMAC sortie file ... every time this is called
    """
-   def getValueHistorySortie(vrs):
+   def getValueHistorySortie(self,vrs):
       # ~~ Extract data
-      i,x0 = parseTimeProfile()
-      y1,y2,y3 = parseValueProfile()
+      i,x0 = self.getTimeProfile()
+      y1,y2,y3 = self.getVolumeProfile()
       y0 = []
       for var in vrs.split(';'):
          v,s = var.split(':')

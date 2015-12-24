@@ -21,47 +21,45 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="telemac3d" target="t3d_tide-jmj_real_gen.cas"
-       title="tide scalar mode real gen"
-   />
-   <action xref="3"
-       do="translate;run;cas;princi"
        code="telemac3d" target="t3d_tide-jmj_type.cas"
        title="tide scalar mode type"
    />
-   <action xref="4"
+   <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
        code="telemac3d" target="t3d_tide-jmj_type.cas"
        title="tide parallel mode type"
    />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_tide-jmj_real_gen.cas"
+       title="tide scalar mode real gen"
+   />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:T3DRES" />
-      <v2 vars=":map" target="f3d_tide-jmj_real_gen.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.E-1])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T3DRES" />
+      <v5 vars=":map" target="r3d_tide-jmj_type.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.E-1])" />
+   </cast>
+   <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T3DRES" />
+      <v8 vars=":map" target="2:T3DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.E-1])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T3DRES" />
-      <v11 vars=":map" target="f3d_tide-jmj_type.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
-   </cast>
-   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
-      <v13 vars=":map" target="4:T3DRES" />
-      <v14 vars=":map" target="f3d_tide-jmj_type.slf" />
-      <v15 vars="mapdiff(v13,v14)" />
-      <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
-   </cast>
-   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
-      <v16 vars=":map" target="3:T3DRES" />
-      <v17 vars=":map" target="4:T3DRES" />
-      <v18 vars="mapdiff(v16,v17)" />
-      <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v12,[1.E-1])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -31,7 +31,7 @@ sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
 from config import OptionParser
 # ~~> dependencies towards other modules
-from parsers.parserKenue import InS,getInS
+from parsers.parserKenue import InS
 import shapefile
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -45,16 +45,6 @@ class InS2Shp(InS):
 
    def __init__(self,fileName):
       InS.__init__(self,fileName)
-      if self.fileName != '':
-         self.head,self.fileType,self.npoin,self.poly,self.type,self.atrbut = getInS(self.fileName)
-
-   def sph2ll(self,(long0,lat0)):
-      radius  = 6371000.
-      long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
-      const = np.tan( lat0/2. + np.pi/4. )
-      for poly in self.poly:
-         for ip in range(len(poly)):
-            poly[ip] = [np.rad2deg( poly[ip][0]/radius + long0 ),np.rad2deg( 2.*np.arctan( const*np.exp(poly[ip][1]/radius) ) - np.pi/2. )]
 
    def putContent(self,fileName):
       f = shapefile.Writer()

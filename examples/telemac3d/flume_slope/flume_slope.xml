@@ -22,7 +22,11 @@
    <action xref="1"
        do="translate;run;cas;princi" 
        code="telemac3d" target="t3d_flume_slope.cas" 
-       title="flume slope cohesive sediment" />
+       title="flume slope cohesive sediment scalar mode" />
+   <action xref="2"
+       do="translate;run;cas;princi"  ncsize="4"
+       code="telemac3d" target="t3d_flume_slope.cas" 
+       title="flume slope cohesive sediment parallel mode" />
        
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
@@ -30,7 +34,21 @@
       <v2 vars=":map" target="f3d_flume_slope_set1.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.E-6,1.E-6,1.E-8,1.E-7,1.E-6])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T3DRES" />
+      <v5 vars=":map" target="f3d_flume_slope_set1.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.E-6,1.E-6,1.E-8,1.E-7,1.E-6])" />
+   </cast>
+   <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T3DRES" />
+      <v8 vars=":map" target="2:T3DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.E-6,1.E-6,1.E-8,1.E-7,1.E-6])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

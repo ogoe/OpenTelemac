@@ -8,9 +8,9 @@
 /---------------------------------------------------------------------
 
 
-RESULTS FILE                ='art_friction.slf'
+RESULTS FILE                ='r2d_friction.slf'
 
-BOUNDARY CONDITIONS FILE    ='cli_friction.slf'
+BOUNDARY CONDITIONS FILE    ='geo_friction.cli'
 
 FORTRAN FILE                ='art_friction.f'
 
@@ -62,7 +62,7 @@ SOLVER =8
 
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS = n
-/replace SOLVER = 8 by SOLVER = 3
+/replace SOLVER = 8 by SOLVER = 9 for the direct solver
 
 /---------------------------------------------------------------------
 / PHYSICAL PARAMETERS

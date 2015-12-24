@@ -3,14 +3,11 @@
 / REFLEXION SUR UN FOND SINUSOIDAL (10 RIDES) 
 /---------------------------------------------------------------------
 
-
-
-
 /---------------------------------------------------------------------
 / FILES NAME
 /---------------------------------------------------------------------
 
-RESULTS FILE             = 'rides.res'
+RESULTS FILE             = 'r2d_rides.slf'
 
 
 BOUNDARY CONDITIONS FILE = 'geo_rides.cli'

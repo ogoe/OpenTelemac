@@ -7,15 +7,13 @@
 / FILE INPUTS - OUTPUTS
 /---------------------------------------------------------------------
 
-RESULTS FILE              ='stive85.res'
+RESULTS FILE              ='r2d_stive85.slf'
 
-BOUNDARY CONDITIONS FILE  ='stive85.cli'
+BOUNDARY CONDITIONS FILE  ='geo_stive85.cli'
 
-FORTRAN FILE              ='stive85.f'
+FORTRAN FILE              ='art_stive85.f'
 
-GEOMETRY FILE             ='stive85.sel'
-
-STEERING FILE             ='art_stive85.cas'
+GEOMETRY FILE             ='geo_stive85.slf'
 
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
@@ -55,7 +53,7 @@ SOLVER = 8
 
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS = n
-/replace SOLVER = 8 by SOLVER = 3
+/replace SOLVER = 8 by SOLVER = 9
 
 DISSIPATION RELAXATION = 0.25
 

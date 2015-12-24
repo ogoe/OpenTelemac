@@ -161,7 +161,7 @@ def toLatLong( easting,northing, zone ):
    return longitude,latitude
 
 
-def fromLatLong(longitude,latitude):
+def fromLatLong(longitude,latitude,zone):
 
    # ~~> latitude
    minlat = np.min(latitude)
@@ -185,15 +185,17 @@ def fromLatLong(longitude,latitude):
    lon_rad = np.radians(longitude)
 
    # ~~> zone number for the mid point
+
    midlat = ( maxlat+minlat) / 2.0
-   midlon = ( maxlon+minlon) / 2.0
-   if 56 <= midlat <= 64 and 3 <= midlon <= 12: zone = 32
-   elif 72 <= midlat <= 84 and midlon >= 0:
-      if midlon <= 9: zone = 31
-      elif midlon <= 21: zone = 33
-      elif midlon <= 33: zone = 35
-      elif midlon <= 42: zone = 37
-   else: zone = int( ( midlon+180 ) / 6 ) + 1
+   if zone == 0:
+      midlon = ( maxlon+minlon) / 2.0
+      if 56 <= midlat <= 64 and 3 <= midlon <= 12: zone = 32
+      elif 72 <= midlat <= 84 and midlon >= 0:
+         if midlon <= 9: zone = 31
+         elif midlon <= 21: zone = 33
+         elif midlon <= 33: zone = 35
+         elif midlon <= 42: zone = 37
+      else: zone = int( ( midlon+180 ) / 6 ) + 1
    
    # ~~> central longitude
    centre = ( zone - 1 ) * 6 - 180 + 3

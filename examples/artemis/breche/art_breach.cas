@@ -8,9 +8,9 @@
 /---------------------------------------------------------------------
 
 
-RESULTS FILE              ='art_breach.slf'
+RESULTS FILE              ='r2d_breach.slf'
 
-BOUNDARY CONDITIONS FILE  ='cli_breach.slf'
+BOUNDARY CONDITIONS FILE  ='geo_breach.cli'
 
 FORTRAN FILE              ='art_breach.f'
 
@@ -54,7 +54,7 @@ SOLVER = 8
 
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS = n
-/replace SOLVER = 8 by SOLVER = 3
+/replace SOLVER = 8 by SOLVER = 9 for direct solver
 
 /---------------------------------------------------------------------
 / PHYSICAL PARAMETERS

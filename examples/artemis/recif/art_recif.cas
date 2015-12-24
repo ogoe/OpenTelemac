@@ -8,8 +8,7 @@
 /---------------------------------------------------------------------
 
 
-RESULTS FILE             = 'art_recif.res'
-
+RESULTS FILE             = 'r2d_recif.slf'
 
 BOUNDARY CONDITIONS FILE = 'geo_recif.cli'
 

@@ -66,21 +66,21 @@
       <v11 vars=":map" target="f3d_bottom_source.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
+         fail="checkval(v12,[1.E-9])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="4:T3DRES" />
       <v14 vars=":map" target="f3d_bottom_source.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
+         fail="checkval(v15,[1.E-9])" />
    </cast>
    <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
       <v16 vars=":map" target="3:T3DRES" />
       <v17 vars=":map" target="4:T3DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1.E-9])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

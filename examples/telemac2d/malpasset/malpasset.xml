@@ -70,91 +70,91 @@
       <v2 vars=":map" target="f2d_malpasset-small.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:T2DRES" />
       <v5 vars=":map" target="f2d_malpasset-small.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:T2DRES" />
       <v8 vars=":map" target="2:T2DRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T2DRES" />
       <v11 vars=":map" target="f2d_malpasset-large.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
+         fail="checkval(v12,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="4:T2DRES" />
       <v14 vars=":map" target="f2d_malpasset-large.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
+         fail="checkval(v15,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
       <v16 vars=":map" target="3:T2DRES" />
       <v17 vars=":map" target="4:T2DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
       <v19 vars=":map" target="5:T2DRES" />
       <v20 vars=":map" target="f2d_malpasset-small_pos.slf" />
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v21,[])" />
+         fail="checkval(v21,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-6" config="oneofall" time="[-1]" type="2d:">
       <v22 vars=":map" target="6:T2DRES" />
       <v23 vars=":map" target="f2d_malpasset-small_pos.slf" />
       <v24 vars="mapdiff(v22,v23)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v24,[])" />
+         fail="checkval(v24,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="cas-parall56" config="oneofall" time="[-1]" type="2d:">
       <v25 vars=":map" target="5:T2DRES" />
       <v26 vars=":map" target="6:T2DRES" />
       <v27 vars="mapdiff(v25,v26)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v27,[])" />
+         fail="checkval(v27,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-7" config="oneofall" time="[-1]" type="2d:">
       <v28 vars=":map" target="7:T2DRES" />
       <v29 vars=":map" target="f2d_malpasset-small_prim.slf" />
       <v30 vars="mapdiff(v28,v29)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v30,[])" />
+         fail="checkval(v30,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-8" config="oneofall" time="[-1]" type="2d:">
       <v31 vars=":map" target="8:T2DRES" />
       <v32 vars=":map" target="f2d_malpasset-small_prim.slf" />
       <v33 vars="mapdiff(v31,v32)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v33,[])" />
+         fail="checkval(v33,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="cas-parall78" config="oneofall" time="[-1]" type="2d:">
       <v34 vars=":map" target="7:T2DRES" />
       <v35 vars=":map" target="8:T2DRES" />
       <v36 vars="mapdiff(v34,v35)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v36,[])" />
+         fail="checkval(v36,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-9" config="oneofall" time="[-1]" type="2d:">
       <v37 vars=":map" target="9:T2DRES" />
       <v38 vars=":map" target="f2d_malpasset-small_cin.slf" />
       <v39 vars="mapdiff(v37,v38)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v39,[])" />
+         fail="checkval(v39,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 

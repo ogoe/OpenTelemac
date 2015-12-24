@@ -15,12 +15,12 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="artemis" target="mm_sens.cas"
+       code="artemis" target="art_mm_sens.cas"
        title="CURRENT IN THE SAME DIRECTION AS WAVES"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="artemis" target="mm_sens.cas"
+       code="artemis" target="art_mm_sens.cas"
        title="CURRENT IN THE SAME DIRECTION AS WAVES"
    />
 
@@ -28,24 +28,24 @@
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:ARTRES" />
-      <v2 vars=":map" target="mmsens_ref.slf" />
+      <v2 vars=":map" target="f2d_mmsens.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:ARTRES" />
-      <v5 vars=":map" target="mmsens_ref.slf" />
+      <v5 vars=":map" target="f2d_mmsens.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:ARTRES" />
       <v8 vars=":map" target="2:ARTRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
    </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

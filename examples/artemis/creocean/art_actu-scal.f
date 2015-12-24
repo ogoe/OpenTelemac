@@ -11,10 +11,10 @@
 !        borme_3_cl (et geo)
 !        distance de 3 m entre points de calcul
 !
-!    Les fronti≈res houle incidente et sortie libre correspondent
-!    au cas de houles venant de l'Est (90∞)
+!    Les frontieres houle incidente et sortie libre correspondent
+!    au cas de houles venant de l'Est (90degree)
 !
-!    Les coef de reflexion sont pris ≈gaux »:
+!    Les coef de reflexion sont pris egaux a:
 !         0.15   (talus d'enrochements)
 !         1     (bassins du port - mur verticaux)
 !         0.05    (plage et cote basse)

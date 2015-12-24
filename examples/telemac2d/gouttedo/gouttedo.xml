@@ -50,49 +50,49 @@
       <v2 vars=":map" target="f2d_gouttedo.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="4:T2DRES" />
       <v5 vars=":map" target="f2d_gouttedo.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="cas-parall14" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:T2DRES" />
       <v8 vars=":map" target="4:T2DRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T2DRES" />
       <v11 vars=":map" target="f2d_gouttedo_qua.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
+         fail="checkval(v12,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="5:T2DRES" />
       <v14 vars=":map" target="f2d_gouttedo_qua.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
+         fail="checkval(v15,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="cas-parall35" config="oneofall" time="[-1]" type="2d:">
       <v16 vars=":map" target="3:T2DRES" />
       <v17 vars=":map" target="5:T2DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1e-3,1e-3,1e-4])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v19 vars=":map" target="2:T2DRES" />
       <v20 vars=":map" target="f2d_gouttedo_cin.slf" />
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v21,[])" />
+         fail="checkval(v21,[1e-3,1e-3,1e-4,1e-5])" />
    </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

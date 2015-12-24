@@ -119,7 +119,7 @@ def getValueHistorySLF( hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
    f = hook['hook']
    endian = hook['endian']
    ftype,fsize = hook['float']
-   
+
    # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    lens = 0
    for xy,zp in support: lens += len(zp)
@@ -230,7 +230,7 @@ def getValuePolylineSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
    f = hook['hook']
    endian = hook['endian']
    ftype,fsize = hook['float']
-  
+
    # ~~ Total size of support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    lens = len(support[0][1])
 
@@ -289,7 +289,7 @@ def getValuePolyplanSLF(hook,tags,time,support,NVAR,NPOIN3,NPLAN,(varsIndexes,va
          f.read(4)
 
    return z
-   
+
 def getEndianFromChar(f,nchar):
    pointer = f.tell()
    endian = ">"       # "<" means little-endian, ">" means big-endian
@@ -344,7 +344,7 @@ class CONLIM:
          self.BOR = np.array( core, DTYPE )
          # ~~> Dictionary of KFRGL
          self.KFRGL = dict(zip( self.BOR['n']-1,range(self.NPTFR) ))
-         
+
          # ~~> Filtering indices
          self.INDEX = np.array( range(self.NPTFR),dtype=np.int )
 
@@ -432,11 +432,11 @@ class CONLIM:
 
 class SELAFIN:
    """                                 (DOXYGEN parsing)
-   Class Selafin 
+   Class Selafin
 
    @brief
       Read and create Selafin files with python
-   
+
    @details
       The idea is to be able to set floatType and floatTypeSize from
       outside when we start to write a selafinfiles.
@@ -445,16 +445,16 @@ class SELAFIN:
    @history
       - switch between big/little endian
       - switch to double precission only for float
-   
+
    @TODO
       - changes where only tested for simple reading, writing must still be done
-      - getSERIES was not tested 
+      - getSERIES was not tested
       - all appen and put functions must be tested
       - needs some intensive testing
    """
 
    DATETIME = [1972,07,13,17,24,27]  # ... needed here because optional in SLF (static)
-   
+
    def __init__(self,fileName):
       self.file = {}
       self.file.update({ 'name': fileName })
@@ -567,7 +567,7 @@ class SELAFIN:
       f.seek(4,1)
       self.MESHY = np.asarray( unpack(endian+str(self.NPOIN3)+ftype,f.read(fsize*self.NPOIN3))[0:self.NPOIN2] )
       f.seek(4,1)
-      
+
    def getTimeHistorySLF(self):
       f = self.file['hook']
       endian = self.file['endian']
@@ -606,7 +606,7 @@ class SELAFIN:
                f.seek(fsize*self.NPOIN3,1)
             f.seek(4,1)
       return z
-   
+
    def alterEndian(self):
       if self.fole['endian'] == ">": self.fole['endian'] = "<"
       else: self.fole['endian'] = ">"
@@ -614,7 +614,7 @@ class SELAFIN:
    def alterFloat(self):
       if self.fole['float'] == ('f',4): self.fole['float'] = ('d',8)
       else: self.fole['float'] = ('f',4)
-      
+
    def alterVALUES(self,vars=None,mZ=1,pZ=0):
       if vars != None:
          self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(':')
@@ -651,7 +651,7 @@ class SELAFIN:
       f.write(pack(endian+'6i',4*4,self.NELEM3,self.NPOIN3,self.NDP3,1,4*4))  #/!\ where is NPLAN ?
       # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.write(pack(endian+'i',4*self.NELEM3*self.NDP3))
-      f.write(pack(endian+str(self.NELEM3*self.NDP3)+'i',*(n+1 for e in self.IKLE3 for n in e)))
+      f.write(pack(endian+str(self.NELEM3*self.NDP3)+'i',*(self.IKLE3.ravel()+1)))
       f.write(pack(endian+'i',4*self.NELEM3*self.NDP3))
       # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       f.write(pack(endian+'i',4*self.NPOIN3))
@@ -659,11 +659,13 @@ class SELAFIN:
       f.write(pack(endian+'i',4*self.NPOIN3))
       # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
       f.write(pack(endian+'i',fsize*self.NPOIN3))
-      f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHX,self.NPLAN))))
+      #f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHX,self.NPLAN))))
+      for i in range(self.NPLAN): f.write(pack(endian+str(self.NPOIN2)+ftype,*(self.MESHX)))
       f.write(pack(endian+'i',fsize*self.NPOIN3))
       # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
       f.write(pack(endian+'i',fsize*self.NPOIN3))
-      f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHY,self.NPLAN))))
+      #f.write(pack(endian+str(self.NPOIN3)+ftype,*(np.tile(self.MESHY,self.NPLAN))))
+      for i in range(self.NPLAN): f.write(pack(endian+str(self.NPOIN2)+ftype,*(self.MESHY)))
       f.write(pack(endian+'i',fsize*self.NPOIN3))
 
    def appendCoreTimeSLF( self,t ):
@@ -1017,7 +1019,7 @@ class PARAFINS(SELAFINS):
          # you know the geom is 2D
          # keep the IPOBO2, X2D, Y2D and IKLE2 and replace the rest
          sub.NPLAN = islf.NPLAN
-         sub.IPARAM = islf.IPARAM   
+         sub.IPARAM = islf.IPARAM
 
          # ~~> matching partitions
          if self.slf.NPOIN2 == islf.NPOIN2:
@@ -1071,7 +1073,7 @@ class PARAFINS(SELAFINS):
             # Set the remaining floats
             sub.MESHX = islf.MESHX[indices]
             sub.MESHY = islf.MESHY[indices]
-               
+
          # ~~ Addition of variables from islf ~~~~~~~~~~~~~~~~~~~~~~
          sub.TITLE = islf.TITLE
          sub.DATETIME = islf.DATETIME

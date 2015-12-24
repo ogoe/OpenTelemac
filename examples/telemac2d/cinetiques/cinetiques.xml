@@ -30,7 +30,7 @@
       <v2 vars=":map" target="f2d_cinetiques.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1e-5,1e-5,1e-5,1e-5,1e-5,1e-5,1e-5])" />
    </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

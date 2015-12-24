@@ -33,10 +33,11 @@ import sys
 import re
 import numpy as np
 from os import path
+sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 # ~~> dependencies towards other pytel/modules
+from config import OptionParser
 from utils.files import getFileContent,putFileContent
-from utils.progressbar import ProgressBar
-from utils.geometry import isClose
+from parsers.parserKenue import InS
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -71,8 +72,8 @@ def getINSEL(file):
    # ~~ First scan at INSEL and DAMM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
    core.pop(len(core)-1)
-   poly = []; typ = []; npoin = 0
-   iline = 0; xyi = []; fileType = True
+   poly = []; vals = []; typ = []; npoin = 0
+   iline = 0; xyi = []; val = []; fileType = True
    while iline < len(core):
       proco = re.match(dat_openh,core[iline])
       if proco: t = 0
@@ -81,41 +82,43 @@ def getINSEL(file):
       if proco or procc:
          iline += 1
          if xyi != []:
-            poly.append(xyi); npoin += len(xyi); typ.append(t)
-            xyi = []
+            poly.append(xyi); npoin += len(xyi); typ.append(t); vals.append(val)
+            xyi = []; val = []
       else:
          proc = re.match(var_3dbl,core[iline].strip())
          if proc:
-            xyi.append((proc.group('number1'),proc.group('number2'),proc.group('number3')))
+            xyi.append((proc.group('number1'),proc.group('number2')))
+            val.append(proc.group('number3'))
          else:
             fileType = False
             proc = re.match(var_2dbl,core[iline].strip())
             if proc:
                xyi.append((proc.group('number1'),proc.group('number2')))
+               val.append('')
             else:
                print '\nCould not parse the following polyline record: '+core[iline]
                sys.exit(1)
       iline += 1
-   poly.append(xyi); npoin += len(xyi); typ.append(t)
+   poly.append(xyi); npoin += len(xyi); typ.append(t); vals.append(val)
 
    # ~~ Second scan at INSEL and DAMM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
    if fileType:
       for pline in range(len(poly)):
-         xyi = []
          for iline in range(len(poly[pline])):
-            a,b,c = poly[pline][iline]
-            poly[pline][iline] = [ float(a),float(b),float(c) ]
+            a,b = poly[pline][iline]
+            poly[pline][iline] = [ float(a),float(b) ]
+            vals[pline][iline] = [ float(c) ]
          poly[pline] = np.asarray(poly[pline])
    else:
       for pline in range(len(poly)):
-         xyi = []
          for iline in range(len(poly[pline])):
             a,b = poly[pline][iline]
             poly[pline][iline] = [ float(a),float(b) ]
          poly[pline] = np.asarray(poly[pline])
+         vals = []
 
-   return fileType,npoin,poly,typ
+   return fileType,npoin,poly,vals,typ
 
 """
    self.poly is a numpy object, while self.type is not.
@@ -124,7 +127,7 @@ class INSEL:
 
    def __init__(self,fileName):
       self.fileName = fileName
-      self.fileType,self.npoin,self.poly,self.typ = getINSEL(self.fileName)
+      self.fileType,self.npoin,self.poly,self.vals,self.typ = getINSEL(self.fileName)
 
    def toi2s(self,ins):
       ins.head = []
@@ -132,5 +135,42 @@ class INSEL:
       else: ins.fileType = 'i2s'
       ins.npoin = self.npoin
       ins.poly = self.poly
-      ins.typ = self.typ
+      ins.vals = self.vals
+      ins.type = self.typ
+      ins.atrbut = None
       return ins
+
+# _____             ________________________________________________
+# ____/ MAIN CALL  /_______________________________________________/
+#
+
+__author__="Sebastien E. Bourban"
+__date__ ="$09-Sep-2011 08:51:29$"
+
+if __name__ == "__main__":
+   debug = False
+
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   options, args = parser.parse_args()
+
+   if len(args) != 1:
+      print '\nThis program takes only one INSEL type file as a time as input.\n ... an i2s or i3s file of the same name will be created depending on the INSEL content.'
+      sys.exit(1)
+
+   janFile = args[0]
+   head,tail = path.splitext(janFile)
+   insel = INSEL(janFile)
+
+   ins = InS('')
+   if insel.fileType: ins.fileType = 'i3s'
+   else: ins.fileType = 'i2s'
+   kenFile = head+'.'+ins.fileType
+   insel.toi2s(ins)
+   ins.putContent(kenFile)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
+
+   sys.exit(0)

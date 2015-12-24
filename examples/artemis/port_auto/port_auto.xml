@@ -15,12 +15,12 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="artemis" target="port.cas"
+       code="artemis" target="art_port.cas"
        title="AUTOMATIC TETAP FOR SCHEMATIC DELFT HARBOUR"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="artemis" target="port.cas"
+       code="artemis" target="art_port.cas"
        title="AUTOMATIC TETAP FOR SCHEMATIC DELFT HARBOUR"
    />
 
@@ -28,24 +28,24 @@
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:ARTRES" />
-      <v2 vars=":map" target="ref_port.slf" />
+      <v2 vars=":map" target="f2d_port.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.e-6,2.e-4,2.e-2,4.e-2,1.e-7,1.e-12,1.e-6,1.e-6,360.0])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:ARTRES" />
-      <v5 vars=":map" target="ref_port.slf" />
+      <v5 vars=":map" target="f2d_port.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1.e-6,2.e-4,2.e-2,4.e-2,1.e-7,1.e-12,1.e-6,1.e-6,360.0])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:ARTRES" />
       <v8 vars=":map" target="2:ARTRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[1.e-6,2.e-4,2.e-2,4.e-2,1.e-6,1.e-12,1.e-6,1.e-6,360.0])" />
    </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

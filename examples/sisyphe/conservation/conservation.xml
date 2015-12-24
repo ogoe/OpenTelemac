@@ -30,14 +30,14 @@
       <v2 vars=":map" target="fis_conservation.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.e-4])" />
    </cast>
    <cast xref="ref-1-t2d" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="1:T2DRES" />
       <v5 vars=":map" target="f2d_conservation.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1.e-4])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

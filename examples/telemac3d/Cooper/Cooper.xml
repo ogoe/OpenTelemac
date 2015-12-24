@@ -69,7 +69,7 @@
       <v8 vars=":map" target="2:T3DRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v9,[1.E-12])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T3DRES" />
@@ -90,7 +90,7 @@
       <v17 vars=":map" target="4:T3DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1.E-11])" />
    </cast>
    <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
       <v19 vars=":map" target="5:T3DRES" />
@@ -111,7 +111,7 @@
       <v26 vars=":map" target="6:T3DRES" />
       <v27 vars="mapdiff(v25,v26)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v27,[])" />
+         fail="checkval(v27,[1.E-10])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 

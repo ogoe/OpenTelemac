@@ -2,7 +2,7 @@ FORTRAN FILE                       : art_delft-harbour.f
 STEERING FILE                      : art_delft-harbour.cas
 BOUNDARY CONDITIONS FILE           : geo_delft-harbour.cli
 GEOMETRY FILE                      : geo_delft-harbour.slf
-RESULTS FILE                       : art_delft-harbour.res
+RESULTS FILE                       : r2d_delft-harbour.slf
 /
 MATRIX STORAGE                     : 3
 /

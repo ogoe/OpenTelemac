@@ -68,6 +68,8 @@ def main(action=None):
    parser.add_option("--subsample",type="string",dest="fsubsample",default=None,help="if present, use the subsample method (distance=..;angle=.." )
    parser.add_option("--clockwise",action="store_true",dest="fclock",default=False,help="if present, anticlockwise polylines will be converted clockwise" )
    parser.add_option("--aclockwise",action="store_true",dest="faclock",default=False,help="if present, clockwise polylines will be converted anticlockwise" )
+   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
+   parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
 
    options, args = parser.parse_args()
    if not action is None:
@@ -99,20 +101,22 @@ def main(action=None):
       for insFile in insFiles:
 
          insFile = path.realpath(insFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
-         print '\n\nSmoothing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n'+'~'*72+'\n'
+         print '\n\nProcessing ' + path.basename(insFile) + ' within ' + path.dirname(insFile) + '\n'+'~'*72+'\n'
          ins = InS( insFile )
+         if options.sph2ll != None: ins.sph2ll(options.sph2ll.split(":"))
+         if options.ll2sph != None: ins.ll2sph(options.ll2sph.split(":"))
          if options.fclock:
             print '\nMake closed loops clockwise'
             ins.makeClockwise()
          if options.faclock:
             print '\nMake closed loops anti-clockwise'
             ins.makeAntiClockwise()
-         if options.fduplicates:
-            print '\nRemove duplicates'
-            ins.removeDuplicates()
-         if options.fduplangles:
-            print '\nRemove return angles'
-            ins.removeDuplangles()
+         #if options.fduplicates:
+         #   print '\nRemove duplicates'
+         #   ins.removeDuplicates()
+         #if options.fduplangles:
+         #   print '\nRemove return angles'
+         #   ins.removeDuplangles()
          if options.fsubdivise != None:
             print '\nSubdivise and average'
             ins.smoothSubdivise(float(options.fsubdivise))
@@ -140,9 +144,9 @@ def main(action=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else:
-      print '\n\nMy work is done\n\n'
-      sys.exit(0)
+   print '\n\nMy work is done\n\n'
+   sys.exit(0)
 
 if __name__ == "__main__":
     main(None)
+

@@ -544,8 +544,11 @@
       IF (BALAYE) THEN
         LT   = LT  + 1
         LPER = LPER + 1
-        PER  = PER + PERPAS
-        IF (PER.LE.PERFIN) GOTO 100
+        IF (LPER.LE.NPALE) THEN
+          PER  = PER + PERPAS
+          GOTO 100
+        ENDIF
+!        IF (PER.LE.PERFIN) GOTO 100
       ENDIF
 !
 !
@@ -709,16 +712,3 @@
 !
       RETURN
       END
-
-
-
-
-
-
-
-
-
-
-
-
-

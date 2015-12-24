@@ -397,10 +397,35 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
    #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
    # get vector magnitude, i.e norm-2
 
+   for key in decoUser:
+     if ((key == 'units') or (key == 'angles') or (key == 'scale_units')):
+       pass
+     else:
+       try:
+         decoUser[key] = eval(decoUser[key])
+       except:
+         pass
+
+   vector_keys = {'units', 'angles', 'scale', 'scale_units', 'width', \
+                  'headwidth', 'headlength', 'headaxislength', 'minshaft', \
+                  'minlength', 'pivot', 'color'}
+   decoVector = {}
+
+   for key in decoUser:
+     if (key in vector_keys):
+       decoVector[key] = decoUser[key]
+
    z = np.sqrt(np.sum(np.power(np.dstack(uv[0:2])[0],2),axis=1))
    zmin = np.min(z); zmax = np.max(z)
-   if not normalised : cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
-   else: cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=myplt.Normalize(zmin,zmax))
+   if not normalised :
+#     cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
+     cs = myplt.quiver(x,y,uv[0],uv[1], **decoVector )
+   else:
+     cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=myplt.Normalize(zmin,zmax))
+
+#   print 'units', cs.units
+#   print 'pivot', cs.pivot
+#   print 'color', cs.color
 
    cs.set_array(z)
 
@@ -425,7 +450,7 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
    if (decoUser.has_key('key')):
      if (decoUser['key'] == "yes"):
-     # make a colour bar
+     # make a key
        cb = myplt.quiverkey(cs,key_x,key_y,key_length,key_label)
 
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')

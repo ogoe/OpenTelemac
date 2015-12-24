@@ -77,9 +77,10 @@ from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN,SELAFINS,PARAFINS,subsetVariablesSLF
 from parsers.parserFortran import cleanQuotes
 from parsers.parserLQD import LQD
+from parsers.parserKenue import InS
 from utils.files import moveFile
 from utils.progressbar import ProgressBar
-from samplers.meshes import subdivideMesh
+from samplers.meshes import subdivideMesh,tessellatePoly
 from converters import convertUTM as utm
 
 # _____                   __________________________________________
@@ -405,7 +406,7 @@ class subSELAFIN(SELAFIN): # TODO with 3D
    def __init__(self,f):
       SELAFIN.__init__(self,f)
       self.IKLE2,self.MESHX,self.MESHY,self.IPOB2,self.INTERP = subdivideMesh(self.IKLE2,self.MESHX,self.MESHY)
-      
+
    def putContent(self,fileName):
       # ~~> Doubling the number of NPLAN
       nplo = self.NPLAN
@@ -716,13 +717,13 @@ def main(action=None):
                                      - np.log( np.tan( lat0/2. + np.pi/4. ) ) )
          if options.ll2utm != None:
             zone = int(options.ll2utm)
-            slf.slf.MESHX,slf.slf.MESHY,zone = utm.fromLatLong(slf.slf.MESHX,slf.slf.MESHY)
+            slf.slf.MESHX,slf.slf.MESHY,zone = utm.fromLatLong(slf.slf.MESHX,slf.slf.MESHY,zone)
          if options.utm2ll != None:
             zone = int(options.utm2ll)
             slf.slf.MESHX,slf.slf.MESHY = utm.toLatLong(slf.slf.MESHX,slf.slf.MESHY,zone)
 
          slf.putContent( outFile )
-         
+
          if options.freplace: moveFile(outFile,slfFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -737,7 +738,7 @@ def main(action=None):
             sys.exit(1)
          slfFiles = args[1:len(args)-1]
          outFile = args[len(args)-1]
-      
+
          slfs = SELAFINS()
          print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n'+'~'*72+'\n'
          for slfFile in slfFiles:
@@ -928,6 +929,73 @@ def main(action=None):
       slf.putContent( outFile )
 
       if options.freplace: moveFile(outFile,slfFile)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of SCAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elif codeName == 'tessellate':
+      if not options.freplace:
+         if len(args) != 3:
+            print '\nThe code "tessellate" here requires one i2s/i3s file and one output slf file\n'
+            sys.exit(1)
+         i3sFile = args[1]
+         outFile = args[2]
+      else:
+         if len(args) != 2:
+            print '\nThe code "tessellate" here requires one i2s/i3s file\n'
+            sys.exit(1)
+         i3sFile = args[1]
+         head,tail = path.splitext(i3sFile)
+         outFile = head+'.slf'
+
+      i3sFile = path.realpath(i3sFile)
+      if not path.exists(i3sFile):
+         print '\nCould not find the file named: ',i3sFile
+         sys.exit(1)
+
+      print '\n\nTessellating ' + path.basename(i3sFile) + ' within ' + path.dirname(i3sFile) + '\n'+'~'*72+'\n'
+      i2s = InS( i3sFile )
+      IKLE2,IPOB2,MESHX,MESHY = tessellatePoly(i2s,debug=True)
+
+      print '\n\nWriting down the SELAFIN file ' + path.basename(outFile) + '\n'+'~'*72+'\n'
+      slf = SELAFIN('')
+      slf.TITLE = ''
+      slf.NPLAN = 1
+      slf.NDP2 = 3; slf.NDP3 = 3
+      slf.NBV1 = 1; slf.NVAR = 1
+      slf.VARINDEX = 1
+      slf.VARNAMES = ['BOTTOM          ']
+      slf.VARUNITS = ['M               ']
+      slf.IKLE2 = IKLE2; slf.IKLE3 = slf.IKLE2
+      slf.MESHX = MESHX; slf.MESHY = MESHY
+      slf.NPOIN2 = i2s.npoin; slf.NPOIN3 = slf.NPOIN2
+      slf.NELEM2 = slf.IKLE2.shape[0]; slf.NELEM3 = slf.NELEM2
+      slf.IPARAM = [ 0,0,0,0,0,0,            1,     0,0,0 ]
+      slf.IPOB2 = IPOB2; slf.IPOB3 = slf.IPOB2
+      slf.fole = {'hook': open(outFile,'wb'), 'endian': ">" , 'float': ('f',4),'name':outFile }
+      slf.tags['times'] = [1]
+      if options.sph2ll != None:
+         radius  = 6371000.
+         long0,lat0 = options.sph2ll.split(":")
+         long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+         const = np.tan( lat0/2. + np.pi/4. )
+         slf.MESHX = np.rad2deg( slf.MESHX/radius + long0 )
+         slf.MESHY = np.rad2deg( 2.*np.arctan( const*np.exp(slf.MESHY/radius) ) - np.pi/2. )
+      if options.ll2sph != None:
+         radius  = 6371000.
+         long0,lat0 = options.ll2sph.split(":")
+         long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+         slf.MESHX = radius * ( np.deg2rad(slf.MESHX) - long0 )
+         slf.MESHY = radius * ( np.log( np.tan( np.deg2rad(slf.MESHY)/2. + np.pi/4. ) ) \
+                                     - np.log( np.tan( lat0/2. + np.pi/4. ) ) )
+      if options.ll2utm != None:
+         zone = int(options.ll2utm)
+         slf.MESHX,slf.MESHY,zone = utm.fromLatLong(slf.MESHX,slf.MESHY)
+      if options.utm2ll != None:
+         zone = int(options.utm2ll)
+         slf.MESHX,slf.MESHY = utm.toLatLong(slf.MESHX,slf.MESHY,zone)
+      slf.appendHeaderSLF(); slf.appendCoreTimeSLF(0)
+      slf.appendCoreVarsSLF([np.zeros(slf.NPOIN2)])
+      slf.fole['hook'].close()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

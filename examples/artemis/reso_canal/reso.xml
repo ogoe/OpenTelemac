@@ -9,40 +9,57 @@
       <look format="png" colourbar="jet.xml" />
       <data title="reso_canal" author="artemis" contact="www.opentelemac.org" />
    </deco>
-   <deco xref="vect">
-      <look colour="jet.xml" />
-   </deco>
-   <deco xref="line">
-      <look colour="k" />
-   </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 --> 
    <action xref="1"
        do="translate;run;cas;princi"
-       code="artemis" target="reso.cas"
+       code="artemis" target="art_reso.cas"
        title="Resonance in a flume"
    />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       set='SOLVEUR=9|PARALLEL PROCESSORS=4'
+       code="artemis" target="art_reso.cas"
+       title="Resonance in a flume, parallel mode"
+   />
+   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:ARTRES" />
-      <v2 vars=":map" target="ref_reso.slf" />
+      <v2 vars=":map" target="f2d_reso.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.e-12])" />
    </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:ARTRES" />
+      <v5 vars=":map" target="f2d_reso.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.e-12])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:ARTRES" />
+      <v8 vars=":map" target="2:ARTRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.e-12])" />
+   </cast>
+
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
    <plot1d xref="Period" type="history" config="together" time="[0;-1]" size="(12;5)" > 
       <layer vars="wave height:line" extract="(2700;2000)" target="1:ARTRES" />
    </plot1d> 
+-->
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->

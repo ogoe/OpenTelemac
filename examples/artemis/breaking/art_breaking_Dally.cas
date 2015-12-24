@@ -8,7 +8,7 @@
 /---------------------------------------------------------------------
 
 
-RESULTS FILE              ='art_breaking_Dally.slf'
+RESULTS FILE              ='r2d_breaking_Dally.slf'
 
 BOUNDARY CONDITIONS FILE  ='cli_breaking.slf'
 
@@ -74,5 +74,5 @@ WAVE PERIOD     = 1.79
 DIRECTION OF WAVE PROPAGATION = 0.
 
 KDALLY = 0.25
-GDALLY = 0.4 
+GDALLY = 0.4
 

@@ -35,14 +35,14 @@
       <v2 vars=":map" target="fis_FSF_02.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v3,[1.e-2])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:SISRES" />
       <v5 vars=":map" target="fis_FSF_02.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[])" />
+         fail="checkval(v6,[1.e-2])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:SISRES" />
@@ -56,7 +56,7 @@
       <v11 vars=":map" target="f2d_FSF_02.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v12,[])" />
+         fail="checkval(v12,[1.e-2])" />
    </cast>
    <cast xref="ref-2-t2d" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="2:T2DRES" />
@@ -70,7 +70,7 @@
       <v17 vars=":map" target="2:T2DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1.e-2])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

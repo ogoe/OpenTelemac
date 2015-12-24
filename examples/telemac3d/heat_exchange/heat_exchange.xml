@@ -25,9 +25,19 @@
        title="heat exchange scalar mode"
    />
    <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_heat_exchange.cas"
+       title="heat exchange parallel mode"
+   />
+   <action xref="3"
        do="translate;run;cas;princi"
        code="telemac3d" target="t3d_heat_exchange_rain_wind.cas"
        title="heat exchange rain wind scalar mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_heat_exchange_rain_wind.cas"
+       title="heat exchange rain wind parallel mode"
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
@@ -39,10 +49,38 @@
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:T3DRES" />
-      <v5 vars=":map" target="f3d_heat_exchange_rain_wind.slf" />
+      <v5 vars=":map" target="f3d_heat_exchange.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T3DRES" />
+      <v8 vars=":map" target="2:T3DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T3DRES" />
+      <v11 vars=":map" target="f3d_heat_exchange_rain_wind.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[1.E-3,1.E-4,1.E-5,1.E-6,1.E-4])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="4:T3DRES" />
+      <v14 vars=":map" target="f3d_heat_exchange_rain_wind.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[1.E-3,1.E-4,1.E-4,1.E-5,1.E-3])" />
+   </cast>
+   <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:T3DRES" />
+      <v17 vars=":map" target="4:T3DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[1.E-3,1.E-4,1.E-4,1.E-5,1.E-3])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -21,10 +21,15 @@
 #
 # ~~> dependencies towards standard python
 import sys
+from os import path
 import numpy as np
+sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
+# ~~> dependencies towards other modules
+from config import OptionParser
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import getConeAngle,isClose,getNorm2
 from utils.progressbar import SubProgressBar
+from parsers.parserKenue import InS
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -58,9 +63,10 @@ def joinSegments(polyLines):
 
    return polyGones
 
-def smoothSubdivise(poly,type,weight):
+def smoothSubdivise(poly,vals,type,weight):
 
-   ptwice = np.zeros([2*len(poly)-1+type,2])
+   ptwice = np.zeros((2*len(poly)-1+type,2))
+   #vtwice = np.zeros((2*len(poly)-1+type,2,len(lavs)))
    # ~~> save original set
    for i in range(len(poly)): ptwice[2*i] = poly[i]
    # ~~> include intermediates
@@ -72,9 +78,9 @@ def smoothSubdivise(poly,type,weight):
       ptwice[0] = weight*ptwice[0] + (1-weight)*( ptwice[len(ptwice)-1]+ptwice[1] )/2.
       ptwice[len(ptwice)-2] = weight*ptwice[len(ptwice)-2] + (1-weight)*( ptwice[len(ptwice)-1]+ptwice[len(ptwice)-3] )/2.
 
-   return ptwice,type
+   return ptwice,vals,type
 
-def removeDuplicates(poly,type):
+def removeDuplicates(poly,type): # /!\ does not work anymore
    found = True
    while found:
       i = 0; found = False
@@ -91,8 +97,8 @@ def removeDuplicates(poly,type):
       if len(poly) < 3: return [],0 #poly,0
       return poly,type
 
-def removeDuplilines(poly,type):
-   p = []; t = []; stencil = 1000
+def removeDuplilines(poly,vals,type): # /!\ does not work anymore
+   p = []; t = []; v = []; stencil = 1000
    sbar = SubProgressBar(maxval=len(poly)).start()
    found = False
    for i in range(len(poly)):
@@ -113,9 +119,9 @@ def removeDuplilines(poly,type):
    sbar.finish()
    if p == []:
       p.append(poly); t.append(type)
-   return p,t
+   return p,v,t
 
-def removeDuplangles(poly,type):
+def removeDuplangles(poly,vals,type): # /!\ does not work anymore
 
    found = True
    while found:
@@ -131,7 +137,7 @@ def removeDuplangles(poly,type):
    if len(poly) < 3: return [],0 #poly,0
    return poly,type
 
-def subsampleDistance(poly,type,dist):
+def subsampleDistance(poly,vals,type,dist):
 
    found = True
    while found:
@@ -140,19 +146,23 @@ def subsampleDistance(poly,type,dist):
          if dist > getNorm2( poly[i],poly[i+1] ):
             poly[i] = ( poly[i]+poly[i+1] )/2.
             poly = np.delete(poly,i+1,0)
+            vals[i] = ( vals[i]+vals[i+1] )/2.
+            vals = np.delete(vals,i+1,0)
             found = True
          i += 1
-   if len(poly) == 1: return [],0
-   elif len(poly) == 2: return [],0 #poly,0
+   if len(poly) == 1: return [],[],0
+   elif len(poly) == 2: return [],[],0 #poly,0
    else:
       if type!=0:
          if dist > getNorm2( poly[len(poly)-1],poly[0] ):
             poly[len(poly)-1] = ( poly[len(poly)-1]+poly[0] )/2.
             poly = np.delete(poly,0,0)
-      if len(poly) < 3: return [],0 #poly,0
-      return poly,type
+            vals[len(vals)-1] = ( vals[len(vals)-1]+vals[0] )/2.
+            vals = np.delete(vals,0,0)
+      if len(poly) < 3: return [],[],0 #poly,0
+      return poly,vals,type
 
-def subsampleAngle(poly,type,angle):
+def subsampleAngle(poly,vals,type,angle):
 
    found = True
    while found:
@@ -160,22 +170,174 @@ def subsampleAngle(poly,type,angle):
       while i < len(poly)-4:
          if angle > 180*abs( abs(getConeAngle( poly[i],poly[i+1],poly[i+2] )) - np.pi )/np.pi:
             poly = np.delete(poly,i+1,0)
+            vals = vals.pop(i+1)
             found = True
          if angle > 180*abs( abs(getConeAngle( poly[i+1],poly[i+2],poly[i+3] )) - np.pi )/np.pi:
             poly = np.delete(poly,i+2,0)
+            vals = vals.pop(i+2)
             found = True
          i += 2
-   if len(poly) < 3: return [],0 #poly,0
-   return poly,type
+   if len(poly) < 3: return [],[],0 #poly,vals,0
+   return poly,vals,type
 
 def isClockwise(poly):
+   # assumes that poly does not duplicate points
    wise = 0
    for i in range(len(poly)):
-      wise += ( poly[(i+1)%len(poly)][0]-poly[i][0] ) \
+      z = ( poly[(i+1)%len(poly)][0]-poly[i][0] ) \
          *( poly[(i+2)%len(poly)][1]-poly[(i+1)%len(poly)][1] ) \
          - ( poly[(i+1)%len(poly)][1]-poly[i][1] ) \
          * ( poly[(i+2)%len(poly)][0]-poly[(i+1)%len(poly)][0] )
+      if z > 0: wise += 1
+      elif z < 0: wise -= 1
    return wise < 0
+
+def makeClockwise(poly,vals):
+   # TODO -- you need to also flip the values
+   if not isClockwise(poly): return np.flipud(poly),vals[::-1]
+   return poly,vals
+
+def makeAntiClockwise(poly,vals):
+   # TODO -- you need to also flip the values
+   if isClockwise(poly): return np.flipud(poly),vals[::-1]
+   return poly,vals
+
+def getArea(poly):
+   # assumes that poly does not duplicate points
+   x,y = poly.T
+   area = np.sum( x[:-1]*y[1:] - x[1:]*y[:-1] )
+   return abs( area + ( x[-1]*y[0] - x[0]*y[-1] ) )/2.0
+
+# _____                  ___________________________________________
+# ____/ Primary Classes /__________________________________________/
+#
+
+"""
+   Polygons is a lightweight structure to hold polygon information,
+      whether to support i2s/i3s or shape or other file types.
+   Polygons repalces the previous object InS
+   Note that the derived class of Polygons have to implement the methods
+      parseContent and putContent
+"""
+class Polygons:
+
+   def __init__(self):
+      self.object = None
+      self.coordinates = { 'type':None }   # important for coordinate conversions and distance calculations
+
+      # self.poly = []      # list of several polygons, each being defined as a pairs of x,y
+      # self.vals = []      # list of several polygons, each being defined as the values for the corresponding nodes
+      # self.type = []      # an tuples of integers for each polygon, where for the
+                          #    first value: 0 = open; 1 = closed clockwise; 2 = closed anti-clockwise; 3 = ...
+                          #    second value: 0 = soft line; 1 = hard line; 2 = ...
+      # self.atrbut = []    # a list of attributs for each polygon, common to all nodes on the polygon
+      self.npoly = 0
+      self.npoin = 0      # /!\ the poly does not duplicate the first and last node for closed contours
+
+   def parseContent(self,fileName):
+      # file parsing is based on the name of the extension
+      _,tail = path.splitext(fileName)
+      # ~~> Case of a Kenue type i2s/i3s file
+      if tail in ['.i2s','.i3s']: self.object = InS(fileName)
+      self.npoly = self.object.npoly
+      # ~~> Case of a Arc-GIS type shap file (which comes with additional related files)
+      #elif tail == '.shp':
+      #   head,fileType,self.npoin,self.poly,self.vals,self.type,self.atrbut = getShp(self.fileName)
+      # ~~> Sort out the poly types
+      for ip in range(self.object.npoly):
+         if self.object.type[ip] > 0:
+            if isClockwise(self.object.poly[ip]): self.object.type[ip] = 1
+            else: self.object.type[ip] = 2
+      return self.object.head
+
+   def putContent(self,fileName,head=[]):
+      # ~~> all object should have a putContent method
+      self.object.putContent(fileName,head)
+
+   def getAreas(self,select=[]):
+      if select == []: select = range(self.npoly)
+      # TODO: take sperical coordinate into account
+      areas = np.zeros(len(select), dtype=np.float)
+      for ip,i in zip(select,range(len(select))):
+         # ~~> compute the area only for closed polygons
+         if self.object.type[ip] in [1,2]: areas[i] = getArea(self.object.poly[ip])
+      return areas
+
+   def getLengths(self,select=[]):
+      # TODO
+      return np.zeros(len(select),dtype=float)
+
+   def sortByAreas(self):
+      s = np.sort( np.array( zip(np.argsort(self.getAreas())[::-1],np.arange(self.npoly)), dtype=[('s',int),('i',int)] ), order='s')
+      for i in range(len(s)):
+         if s['s'][i] > s['i'][i]:
+            self.object.poly.insert(s['i'][i], self.object.poly.pop(s['s'][i]))
+            self.object.type.insert(s['i'][i], self.object.type.pop(s['s'][i]))
+            self.object.vals.insert(s['i'][i], self.object.vals.pop(s['s'][i]))
+
+   def makeAntiClockwise(self,select=[]):
+      if select == []: select = range(self.npoly)
+      for ip in select:
+         # ~~> make anti-clockwise only closed clockwise polygons
+         if self.object.type[ip] in [1,2]:
+            self.object.poly[ip],self.object.vals[ip] = makeAntiClockwise(self.object.poly[ip],self.object.vals[ip])
+            self.object.type[ip] = 2
+
+   def makeClockwise(self,select=[]):
+      if select == []: select = range(self.npoly)
+      for ip in select:
+         # ~~> make clockwise only closed anti-clockwise polygons
+         if self.object.type[ip] in [1,2]:
+            self.object.poly[ip],self.object.vals[ip] = makeClockwise(self.object.poly[ip],self.object.vals[ip])
+            self.object.type[ip] = 1
+
+   def smoothSubdivise(self,select=[],weigth=0.5):
+      if select == []: select = range(self.npoly)
+      for ip in select:
+         # ~~> make clockwise only closed anti-clockwise polygons
+         self.object.poly[ip],self.object.vals[ip],_ = smoothSubdivise(self.object.poly[ip],self.object.vals[ip],self.object.type[ip],weigth)
+
+   def subsampleDistance(self,select=[],distance=1000.0):
+      if select == []: select = range(self.npoly)
+      for ip in select:
+         # ~~> make clockwise only closed anti-clockwise polygons
+         self.object.poly[ip],self.object.vals[ip],_ = subsampleDistance(self.object.poly[ip],self.object.vals[ip],self.object.type[ip],distance)
+
+   def subsampleAngle(self,select=[],angle=15.0):
+      if select == []: select = range(self.npoly)
+      for ip in select:
+         # ~~> make clockwise only closed anti-clockwise polygons
+         self.object.poly[ip],self.object.vals[ip],_ = subsampleAngle(self.object.poly[ip],self.object.vals[ip],self.object.type[ip],angle)
+
+   def sph2ll(self,(long0,lat0)):
+      radius  = 6371000.
+      long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+      const = np.tan( lat0/2. + np.pi/4. )
+      for poly in self.object.poly:
+         for ip in range(len(poly)):
+            poly[ip][0] = np.rad2deg( poly[ip][0]/radius + long0 )
+            poly[ip][1] = np.rad2deg( 2.*np.arctan( const*np.exp(poly[ip][1]/radius) ) - np.pi/2. )
+
+   def ll2sph(self,(long0,lat0)):
+      radius  = 6371000.
+      long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+      const = np.tan( lat0/2. + np.pi/4. )
+      for poly in self.object.poly:
+         for ip in range(len(poly)):
+            poly[ip][0] = radius * ( np.deg2rad(poly[ip][0]) - long0 )
+            poly[ip][1] = radius * ( np.log( np.tan( np.deg2rad(poly[ip][1])/2. + np.pi/4. ) ) - np.log( const ) )
+
+   def getBBox(self):
+      if len(self.poly) == 0: return 0.,0.,0.,0.
+      xmin = xmax = self.object.poly[0][0][0]
+      ymin = ymax = self.object.poly[0][0][1]
+      for poly in self.object.poly:
+         xp,yp = poly.T
+         xmin = min( xmin,min(xp) )
+         xmax = max( xmax,max(xp) )
+         ymin = min( ymin,min(yp) )
+         ymax = max( ymax,max(yp) )
+      return xmin,ymin,xmax,ymax
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -185,6 +347,30 @@ __author__="Sebastien E. Bourban"
 __date__ ="$15-Nov-2011 08:51:29$"
 
 if __name__ == "__main__":
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Command line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
+   options, args = parser.parse_args()
+   if len(args) < 1:
+      print '\nAt least a code name (and its associated inputs) are required\n'
+      parser.print_help()
+      sys.exit(1)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   insFile = args[0]
+
+   p = Polygons()
+   head = p.parseContent(insFile)
+
+   p.subsampleDistance(distance=250.)
+   p.smoothSubdivise(weigth=0.7)
+   p.subsampleAngle(angle=12.0)
+
+   p.putContent(args[1],head)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -229,4 +415,68 @@ def cutAngleJoinSplit(poly,angle,dist,stencil):
       #pbar.finish()
 
    return poly,remo
+
+
+
+
+   def removeDuplicates(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = pl_removeDuplicates(self.poly[ip],self.type[ip])
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         else: ip += 1
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def removeDuplilines(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         p,t = pl_removeDuplilines(self.poly[ip],self.type[ip])
+         pbar.trace() # /!\ the call requires sub-progress bar
+         if len(p) > 1:
+            pbar.maxval -= len(self.poly[ip])
+            ibar -= len(self.poly[ip])
+            self.poly.pop(ip)
+            self.type.pop(ip)
+            for po,to in zip(p,t):
+               pbar.maxval += len(po)
+               self.poly.append(po)
+               self.type.append(to)
+         else:
+            ip += 1
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def removeDuplangles(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = pl_removeDuplangles(self.poly[ip],self.type[ip])
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         else: ip += 1
+         pbar.update(ibar)
+
+      pbar.finish()
+      return self.poly,self.type
+
+
 """
