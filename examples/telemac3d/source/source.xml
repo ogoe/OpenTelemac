@@ -49,7 +49,7 @@
       <v8 vars=":map" target="2:T3DRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[1.E-7,1.E-7,1.E-7,1.E-8,1.E-5,1.E-8,1.E-5])" />
+         fail="checkval(v9,[1.E-7,1.E-6,1.E-7,1.E-7,1.E-5,1.E-7,1.E-5])" />
    </cast>
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
