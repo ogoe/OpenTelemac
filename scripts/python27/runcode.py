@@ -1173,7 +1173,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # Identify the partitioner to use for Partel
          part2int = {"'METIS'":1,"'SCOTCH'":2,"'PARMETIS'":3,"'PTSCOTCH'":4}
          idx = -1
-         print CASFiles[name]['cas']
          if "PARTITIONING TOOL" in CASFiles[name]['cas'][1][0]:
             idx = CASFiles[name]['cas'][1][0].index("PARTITIONING TOOL")
          if "PARTITIONNEUR" in CASFiles[name]['cas'][1][0]:
