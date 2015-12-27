@@ -21,13 +21,13 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="artemis" target="btwi.cas"
+       code="artemis" target="art_btwi.cas"
        title="bwti scalar mode"
    />
    <action xref="2"
        do="translate;run;cas;princi"
        set='SOLVEUR=9|PARALLEL PROCESSORS=4'
-       code="artemis" target="btwi.cas"
+       code="artemis" target="art_btwi.cas"
        title="bwti parallel mode"
    />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
