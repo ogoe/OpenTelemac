@@ -1,0 +1,90 @@
+/
+/  TEMPS D'EXECUTION SUR LES DIFFERENTES MACHINES :
+/  EQUATIONS PRIMITIVES, QUASI-BULLE ET PAS DE TEMPS DE 0.5 S
+/
+/  HP diskless (80MHz)        : 24 h 00 mn (1 processeur)
+/  HP diskless (80HMz)        : 15 h 23 mn (real, 2 processeurs = facteur 1.56 )
+/                             : 14 h 38 mn (user, 2 processeurs = facteur 1.64 )
+/  HP B132 L   (130MHz)       : 13 h 55 mn (1 processeur)
+/  HP C180     (180MHz)       : 10 h 10 mn (real, 1 processeur)
+/                                7 h 53 mn (user, 1 processeur)
+/  SUN SPARC ultra 1 (200MHz) : 10 h 08 mn (1 processeur )
+/  CRAY                       : 00 h 37 mn (1 processeur )
+/  SGI Indigo 2 R4400(200MHz) : 24 h 00 mn (1 processeur ) ???????
+/  Pentium II (233 MHz)       : 12 h 15 mn (1 processeur ) 
+/
+/  PSEUDO-EQUATION D'ONDE, LINEAIRE ET PAS DE TEMPS DE 1 S
+/
+/  HP B132 L   (130MHz)       : 02 h 10 mn (1 processeur)
+/
+/  PSEUDO-EQUATION D'ONDE, LINEAIRE ET PAS DE TEMPS DE 2 S
+/
+/  HP B132 L   (130MHz)       : 01 h 17 mn 11 s (1 processeur)  (produit matrice-vecteur : 1)
+/  HP B132 L   (130MHz)       : 01 h 28 mn 14 s (1 processeur)  (produit matrice-vecteur : 2)
+/
+/  HP C3700 (750 Mhz)
+/  AVEC DT=4 s : VERSION 5.4 : 172 s
+/                VERSION 5.5 : 167 s (produit matrice x vecteur 1)
+/                VERSION 5.7 : 169 s 18/04/2007
+/                VERSION 5.8 : 144 s 20/11/2007
+/                VERSION 5.9 : 133 s 20/10/2008 (Nag : 334 s)
+/                VERSION 6.0 : 138 s 24/11/2009 (Nag : 330 s) 
+/ 
+/  Attention : produit matrice x vecteur 2 : 211 s et differences notables
+/              ne semble pas un bug, mais une sensibilite aux troncatures.
+/
+/  DELL 2.8 GHz Linux VERSION 5.6 compilateur PGI   : 99 s
+/  DELL 2.8 GHz Linux VERSION 5.7 compilateur PGI   : 94 s
+/  DELL 2.8 GHz Linux VERSION 5.8 compilateur PGI   : 96 s (NAG 363 s)
+/  DELL 2.8 GHz Linux VERSION 5.8 compilateur Intel :136 s 
+/
+/  DELL 2.8 GHz Linux VERSION 5.8 compilateur PGI   : 92 s (2 procs 64 s)
+/  DELL 2.8 GHz Linux VERSION 5.9 compilateur PGI   : 86 s  16/10/2008
+/  DELL 2.8 GHz Linux VERSION 5.9 compilateur Intel : 62 s  23/12/2008
+/  DELL 2.8 GHz Linux VERSION 5.9 compilateur Intel : 62 s  26/11/2009
+/
+/  HP Z600 Linux VERSION 6.0 compilateur Intel : 31 s  04/02/2010
+/
+/  Version 6.2
+/
+/  HP C3700 (750 Mhz) : 136 s 08/08/2012  
+/  HP Z600 Linux compilateur Intel 1 proc : 22 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 2 proc : 11 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 3 proc :  8 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 4 proc :  7 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 5 proc :  5 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 6 proc :  5 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 7 proc :  5 s  08/08/2012
+/  HP Z600 Linux compilateur Intel 8 proc :  4 s  08/08/2012
+/
+FICHIER DE GEOMETRIE               = geo_malpasset-small.slf
+FICHIER FORTRAN                    = t2d_malpasset-small.f
+FICHIER DES CONDITIONS AUX LIMITES = geo_malpasset-small.cli
+FICHIER DES RESULTATS              = r2d_malpasset-small.slf
+TITRE = 'Le barrage de MALPASSET'
+SUITE DE CALCUL = NON
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B
+BILAN DE MASSE = VRAI
+ NOMBRE DE PAS DE TEMPS = 1000   PAS DE TEMPS = 4.
+ PERIODE POUR LES SORTIES GRAPHIQUES =  50
+/
+PERIODE DE SORTIE LISTING = 100
+PRECONDITIONNEMENT = 2
+BANCS DECOUVRANTS = VRAI
+FORME DE LA CONVECTION = 1;5
+        OPTION DE SUPG = 0;0
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR = 200
+STOCKAGE DES MATRICES : 3     PRODUIT MATRICE-VECTEUR : 1
+IMPLICITATION POUR LA HAUTEUR = 1.  
+IMPLICITATION POUR LA VITESSE = 0.55
+MASS-LUMPING SUR H = 1.
+CLIPPING DE H = NON     LOI DE FROTTEMENT SUR LE FOND = 3
+                           COEFFICIENT DE FROTTEMENT : 30.     
+MODELE DE TURBULENCE = 1 COEFFICIENT DE DIFFUSION DES VITESSES = 1.
+COTE INITIALE = 0.              
+EQUATIONS : 'SAINT-VENANT EF'
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 1
+TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1 PRECONDITIONNEMENT : 2
+PRECISION DU SOLVEUR = 0.0001
+DISCRETISATIONS EN ESPACE : 11;11
+&FIN

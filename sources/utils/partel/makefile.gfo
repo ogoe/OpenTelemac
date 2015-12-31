@@ -1,0 +1,132 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     PLG / INGEROP
+#
+# Makefile de PARALLEL pour WindowsNT (GFORTRAN/G95).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   sources/utils/partel/.
+#
+# Modes supportés :
+#        % maktel
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-2001-DeltaCAD
+#--- Definitions pour PVM
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <makefile.am>
+!include <$(SYSTELCFG)\cfgmak.mak>
+
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+		
+.F.o:
+        @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+        $(F90) $(F90_PROJ) $<
+        @if EXIST $(@F:.o=.mod) move $(@F:.o=.mod) $(DEST)\lib
+        @if EXIST $(@F:.o=.MOD) move $(@F:.o=.MOD) $(DEST)\lib
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = partel
+MODE          =
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+PARTEL        = partel$(VERSION).exe
+PARTEL_PARA   = partel_para$(VERSION).exe
+PARTEL_PRELIM = partel_prelim$(VERSION).exe
+LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\hermes$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\parallel$(MODE)$(VERSION).lib \
+                $(PROJECT)\builds\$(DIRLIB)\lib\special$(MODE)$(VERSION).lib  \
+                $(PROJECT)\optionals\metis-5.1.0\libmetis\libmetis.lib \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+
+#------------------------ Liste des fichiers
+#
+#------- Objets
+#
+TEMP = $(SRCS_PARTEL:.F=.o)
+OBJS_PARTEL = $(TEMP:.f=.o)
+OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.o) 
+OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.F=.o)
+#
+#------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM)
+
+exedef:         $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+
+"$(PARTEL)":	$(OBJS_PARTEL)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL) $(OBJS_PARTEL) $(LKLIB)
+	echo "Termine."
+
+"$(PARTEL_PRELIM)":	$(OBJS_PARTEL_PRELIM)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB)
+	echo "Termine."
+
+"$(PARTEL_PARA)":	$(OBJS_PARTEL_PARA)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB)
+	echo "Termine."
+
+#--- Suppression des ".o" (existants) + ".lib"
+menage:  $(SRCS)
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).o del /q  $(**B).o
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Scalar version
+install: $(LIBRARY) $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
+	@echo  -
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	@echo ---------------------Installe $(PARTEL) dans $(DEST).
+	copy $(PARTEL)  $(DEST)\bin\$(PARTEL)
+	@echo ---------------------Installe $(PARTEL_PARA) dans $(DEST).
+	copy $(PARTEL_PARA)  $(DEST)\bin\$(PARTEL_PARA)
+	@echo ---------------------Installe $(PARTEL_PRELIM) dans $(DEST).
+	copy $(PARTEL_PRELIM)  $(DEST)\bin\$(PARTEL_PRELIM)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.gfo install  "MODE=d"
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.gfo install  "MODE=p"

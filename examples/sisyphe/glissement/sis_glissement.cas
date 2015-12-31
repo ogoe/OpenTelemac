@@ -1,0 +1,48 @@
+/
+/ CAS TEST DE GLISSEMENT (SANS CHARRIAGE ET SANS SUSPENSION)
+/
+/ Dell 2.8 GHz Linux, compilateur pgi :   8 s version 5.8 JMH 18/01/2008
+/ HP C3700, compilateur HP            :  24 s version 5.8 JMH 11/01/2008
+/ HP C3700, compilateur Nag           :  56 s version 5.8 JMH 24/01/2008
+/
+/ Version 5.9
+/
+/ Dell 2.8 GHz Linux, compilateur intel :   6 s version JMH 29/12/2008
+/ HP C3700, compilateur HP              :  23 s version JMH 29/12/2008
+/ HP C3700, compilateur Nag             :  52 s version JMH 30/12/2008
+/
+/ Version 6.0
+/
+/ Dell 2.8 GHz Linux, compilateur intel :   7 s version JMH 10/12/2009
+/ HP C3700, compilateur HP              :  31 s version JMH 10/12/2009
+/ HP C3700, compilateur Nag             :  72 s version JMH 08/12/2009
+/
+/Dell 2.8 GHz Linux, compilateur intel :   5 s version JMH 07/06/2010
+/
+FICHIER DE GEOMETRIE = geo_glissement.slf
+FICHIER FORTRAN = sis_glissement.f
+FICHIER DES CONDITIONS AUX LIMITES = geo_glissement.cli
+FICHIER DES RESULTATS = sis_glissement.slf
+/
+TITRE = 'GLISSEMENT DU SEDIMENT'
+/
+VARIABLES POUR LES SORTIES GRAPHIQUES = 'S,H,B,R'
+/
+NOMBRE DE PAS DE TEMPS = 14400  PAS DE TEMPS = 100.
+PERIODE DE SORTIE GRAPHIQUE = 144
+PERIODE DE SORTIE LISTING   = 144
+/
+CAS PERMANENT = VRAI
+/
+CHARRIAGE  : NON
+SUSPENSION : NON
+GLISSEMENT DU SEDIMENT : OUI
+ANGLE DE FROTTEMENT DU SEDIMENT : 30.
+/
+/ MULTICLASSE
+/
+BILAN DE MASSE : OUI
+NOMBRE DE CLASSES GRANULOMETRIQUES : 3
+DIAMETRE MOYEN DES GRAINS : 0.002;0.003;0.004
+FRACTION INITIALE PAR CLASSE SEDIMENTOLOGIQUE : 0.1;0.2;0.7
+EPAISSEUR DE COUCHE ACTIVE : 0.1

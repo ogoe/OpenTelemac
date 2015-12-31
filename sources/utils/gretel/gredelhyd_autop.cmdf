@@ -1,0 +1,20 @@
+[general]
+path: <root>|sources|utils|gretel
+module: gretel
+liborder: special bief gretel
+name: GREDELHYD_AUTOP
+
+[bief]
+path: <root>|sources|utils|bief
+files: jultim.f
+  gregtim.f
+
+[gretel]
+path: <root>|sources|utils|gretel
+files: gredelhyd_autop.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.F
+  check_allocate.f
+  extens.f

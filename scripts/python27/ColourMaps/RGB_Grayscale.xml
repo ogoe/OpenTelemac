@@ -1,0 +1,4 @@
+<ColorMap name="Grayscale" space="RGB">
+  <Point x="0" o="0" r="0" g="0" b="0"/>
+  <Point x="1" o="1" r="1" g="1" b="1"/>
+</ColorMap>

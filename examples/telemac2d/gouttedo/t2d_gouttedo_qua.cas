@@ -1,0 +1,65 @@
+STOCKAGE DES MATRICES : 3      PRODUIT MATRICE-VECTEUR : 1
+ DISCRETISATIONS EN ESPACE: 13;11
+/DISCRETISATIONS EN ESPACE: 11;11
+/
+/ HP C3700 : 39 s compilateur HP   5.9 18/11/2008 
+/ HP C3700 : 97 s compilateur Nag  5.9 16/10/2008 
+/ DEll     : 25 s compilateur PGI  5.9 15/10/2008 
+/
+/ HP C3700 : 39 s compilateur HP     6.0 24/11/2009 
+/ HP C3700 : 98 s compilateur Nag    6.0 26/11/2009
+/ DEll     : 20 s compilateur INTEL  6.0 26/11/2009
+/
+/ NOW CHANGED INTO STORAGE 3
+/
+/ HP C3700 : 36 s compilateur HP     6.0 12/02/2010
+/ HP C3700 : 85 s compilateur Nag    6.0 12/02/2010
+/ DEll     : ?? s compilateur INTEL  6.0 
+/
+/ Version 6.2
+/
+/ HP C3700 : 34 s compilateur HP     04/05/2012
+/
+EQUATIONS : 'SAINT-VENANT EF'
+/DUREE DU CALCUL : 4.  PAS DE TEMPS VARIABLE : OUI
+/NOMBRE DE COURANT SOUHAITE : 0.5
+/PAS DE TEMPS = 1.
+/
+/
+FICHIER FORTRAN                    : t2d_gouttedo.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_gouttedo.cli
+FICHIER DE GEOMETRIE               : geo_gouttedo.slf
+FICHIER DES RESULTATS              : r2d_gouttedo_qua.slf
+/
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/ 
+TITRE = 'TELEMAC 2D : GOUTTE D EAU DANS UN BASSIN$'              
+SUITE DE CALCUL : NON                                                    
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T'                        
+VARIABLES A IMPRIMER : ''                                                
+PAS DE TEMPS = 0.04    NOMBRE DE PAS DE TEMPS = 100                        
+PERIODE POUR LES SORTIES GRAPHIQUES : 20   
+PERIODE POUR LES SORTIES LISTING =10  
+/
+LOI DE FROTTEMENT SUR LE FOND : 3    COEFFICIENT DE FROTTEMENT = 40.     
+/----------------------------------------------------------------------/ 
+/     PROPAGATION                                                        
+/----------------------------------------------------------------------/ 
+MODELE DE TURBULENCE : 1 COEFFICIENT DE DIFFUSION DES VITESSES = 0.D0                                                           
+SOLVEUR : 7     OPTION DU SOLVEUR : 3                                    
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4 
+IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6  
+PRECONDITIONNEMENT : 2    ORDRE DU TIR INITIAL POUR H : 1                
+/---------------------------------------------------------------/
+BILAN DE MASSE : OUI
+CONDITIONS INITIALES : PARTICULIERES                                            
+FORME DE LA CONVECTION   : 1;5                                        
+OPTION DE SUPG           : 0;2                                    
+/ POUR EQUATION D'ONDE : 
+/ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1
+/ FORME DE LA CONVECTION:1;5  
+/----------------------------------------------------------------------/ 
+DATE DE L'ORIGINE DES TEMPS  : 1997; 2;21
+HEURE DE L'ORIGINE DES TEMPS :   10;21;30
+ 

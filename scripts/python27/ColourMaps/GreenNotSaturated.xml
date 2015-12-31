@@ -1,0 +1,8 @@
+<ColorMap name="GreenNotSaturated" space="RGB">
+ <Point x="0" r="0.439" g="0.659" b="0"/>
+ <Point x="0.2" r="0.549" g="0.729" b="0.188"/>
+ <Point x="0.4" r="0.659" g="0.788" b="0.325"/>
+ <Point x="0.6" r="0.765" g="0.859" b="0.455"/>
+ <Point x="0.8" r="0.878" g="0.929" b="0.596"/>
+ <Point x="1" r="1" g="1" b="0.749"/>
+</ColorMap>

@@ -1,0 +1,141 @@
+# -------------------------------------------------------------------------
+# dredgesim.dat
+# -------------------------------------------------------------------------
+# Block Input_Files: Required
+# Key Input_Dredge_Polygons: Required - defines dredging and disposal areas
+# Key Input_Ref_Surface: Optional - defines referenced surface level by points
+#                        only to be set if Criterion_Type is Referenced_Surface_Criterion
+BEGINDATA Input_Files
+Input_Dredge_Polygons           = DSIPDS         IPDS    
+Input_Ref_Surface               = DSRWSP  UNKNOWN
+ENDDATA Input_Files
+# -------------------------------------------------------------------------
+# Block Output_Files: Optional
+# Key Output_Protocol: Definition of name for output file
+BEGINDATA Output_Files
+Output_Protocol                 = OUTPUT_Ref_01.dat   UNKNOWN
+ENDDATA Output_Files
+# -------------------------------------------------------------------------
+# Block Dredge_Criterion: Optional - steers automatic initiation of dredging and dumping of
+#                         formerly dredged material
+# Key Polygon_Name: Required if block Dredge_Criterion exists - defines observed polygon
+# Key Criterion_Type: Required if block Dredge_Criterion exists - definition of dredge criterion
+#                     1: "Bottom_Criterion" initiation of dredging after checking bottom depths
+#                     2: "Water_Depth_Criterion" initiation of dredging after checking water depths
+#                     3: "Referenced_Surface_Criterion" initiation of dredging after checking
+#                        water depths in relation to theroretical standardized low water level
+#                     IMPORTANT: 1 and 2 will initiate dredging on the whole defined polygon if
+#                                a critical value on one element is reached, 3 will initiate dredging
+#                                only on elements fulfilling the dredge criterion 
+# Key Observing_Period: Required if block Dredge_Criterion exists - in seconds, has to be
+#                       set to Zero if check at every timestep is wanted
+# Key Critical_Depth: Required if block Dredge_Criterion exists - sets critical depth
+#                     at which dredging is initiated,
+#                     can be either bottom or water depth depending on dredge criterion type
+# Key Dredging_Depth: Required if block Dredge_Criterion exists - sets depth
+#                     which should be achieved by dredging,
+#                     can be either bottom or water depth depending on dredge criterion type
+# Key Dredging_Rate: Required if block Dredge_Criterion exists - in m**3/s
+# Key Disposal_Polygon: Optional - first parameter gives name of polygon for dumping
+#                       of dredged material, second parameter gives percentage of dredged
+#                       material which should be dumped here (should be less or equal 1.0)
+# Key Disposal_Rate: Optional but must be there if key Disposal_Polygon is active - in m**3/s
+BEGINDATA Dredge_Criterion
+Polygon_Name                    = Fahrrinne
+Criterion_Type                  = Referenced_Surface_Criterion
+Observing_Period                = 86400
+Initial_Time_To_Observe         = 02.01.2008-00:00:00
+Limiting_Discharge              = 500
+Critical_Depth                  = 3.99
+Dredging_Depth                  = 4.5
+Dredging_Rate                   = 0.01
+Minimum_Volume                  = 1 400.0
+#Disposal_Polygon                = 2500.0 1.0
+#Disposal_Polygon                = 3500.0 1.0
+#Disposal_Rate                   = 10000
+ENDDATA Dredge_Criterion
+#
+# -------------------------------------------------------------------------
+# Block Time_Controlled Maintenance: Optional - steers dredging and dumping of formerly dredged
+#                                    material by definition of dredging and disposal time and volumes
+# Key Dredge_Polygon: Required if block T_C_M exists - name of defined polygon where dredging should
+#                     be initiated
+# Key Dredging_Time: Required if block T_C_M exists - definition of begin and end of dredging operation
+#                    Parameter 1: datetime object for starting the operation
+#                    Parameter 2: datetime object for finishing the operation
+# Key Volume_To_Dredge: Required if block T_C_M exists - definition of volume to dredge in m**3
+# Key Dredge_Polygon: Optional - name of defined polygon where dumping of dredged should
+#                     be initiated
+# Key Disposal_Time: Optional - definition of begin and end of disposal operation
+#                    Parameter 1: datetime object for starting the operation
+#                    Parameter 2: datetime object for finishing the operation
+# Key Volume_To_Dispose: Optional - definition of volume to dump in m**3
+#BEGINDATA Time_Controlled_Maintenance
+#Dredge_Polygon                  = Fahrrinne
+#Dredging_Time                   = 01.01.2000-01:00:00 01.01.2000-01:10:00
+#Volume_To_Dredge                = 500000.
+#Disposal_Polygon                = Baggerpolygon_A
+#Disposal_Time                   = 01.01.2000-00:00:11 01.01.2000-00:00:20
+#Volume_To_Dispose               = 0.
+#ENDDATA Time_Controlled_Maintenance
+#
+#BEGINDATA Time_Controlled_Maintenance
+#Dredge_Polygon                  = 3500.0
+#Dredging_Time                   = 01.01.2000-00:00:21 01.01.2000-00:00:30
+#Volume_To_Dredge                = 100000.
+#Disposal_Polygon                = Baggerpolygon_B
+#Disposal_Time                   = 01.01.2000-00:00:31 01.01.2000-00:00:40
+#Volume_To_Dispose               = 100000. 
+#ENDDATA Time_Controlled_Maintenance
+#
+#BEGINDATA Time_Controlled_Maintenance
+#Dredge_Polygon                  = Fahrrinne
+#Dredging_Time                   = 01.01.2000-00:00:01 01.01.2000-00:00:10
+#Volume_To_Dredge                = 0.001
+#Disposal_Polygon                = Verklapppolygon_oben
+#Disposal_Time                   = 01.01.2000-00:00:01 01.01.2000-00:00:10
+#Volume_To_Dispose               = 10000. 
+#ENDDATA Time_Controlled_Maintenance
+#BEGINDATA Time_Controlled_Maintenance
+#Dredge_Polygon                  = Fahrrinne
+#Dredging_Time                   = 01.01.2000-00:00:01 01.01.2000-00:00:10
+#Volume_To_Dredge                = 0.001
+#Disposal_Polygon                = Verklapppolygon_unten
+#Disposal_Time                   = 01.01.2000-00:00:01 01.01.2000-00:00:10
+#Volume_To_Dispose               = 2000. 
+#ENDDATA Time_Controlled_Maintenance
+# -------------------------------------------------------------------------
+# Block Artificial_Bed_Load_Supply: Optional - steers artificial bed load supply operation
+#                                   by definition of disposal time, volumes and sediment classes
+# Key Polygon_Name: Required if block A_B_L_S exists - name of disposal polygon where defined
+#                   volume and sediments should be dumped
+# Key Sediment_Class: Required if block A_B_L_S exists - definition of sediment distribution to dispose
+#                     Parameter 1: name of sediment class in a fractioned transport model
+#                     Parameter 2: percentage of its occurence (sum shouldn't exceed 1.0)
+# Key Sediment_Volume: Required if block A_B_L_S exists - volume to be disposed by artificial bed
+#                      load supply
+# Key Deposition_Time: Required if block A_B_L_S exists - definition of begin and end of disposal operation
+#                      Parameter 1: datetime object for starting the operation
+#                      Parameter 2: datetime object for finishing the operation
+#BEGINDATA Artificial_Bed_Load_Supply
+#Polygon_Name                    = Hotspot_Oben
+#Sediment_Class                  = Grobkies 1.0
+#Sediment_Volume                 = 10000.
+#Deposition_Time                 = 01.01.2000-00:00:21 01.01.2000-00:00:30
+#ENDDATA Artificial_Bed_Load_Supply
+#BEGINDATA Artificial_Bed_Load_Supply
+#Polygon_Name                    = Hotspot_Unten
+#Sediment_Class                  = Feinkies 1.0
+#Sediment_Volume                 = 2500.
+#Deposition_Time                 = 01.01.2000-00:00:41 01.01.2000-00:00:50
+#ENDDATA Artificial_Bed_Load_Supply
+# -------------------------------------------------------------------------
+BEGINDATA Disposing_Scours
+Number_Of_Iterations     = 10
+Maximum_Error            = 0.1
+Minimum_Deposition_Depth = 0.25
+ENDDATA Disposing_Scours
+# -------------------------------------------------------------------------
+ENDFILE
+# -------------------------------------------------------------------------
+# end of file

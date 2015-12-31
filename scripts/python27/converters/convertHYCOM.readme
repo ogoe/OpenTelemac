@@ -1,0 +1,8 @@
+Extraction of 2 months of 2D and 3D HYCOM data for ADCP comparison.
+> convertHYCOM.py --from 2013-08-01 --stop 2013-11-21 --bl 20,-119 --tr 29,-108 -r hycom-2m.slf
+
+Extraction of 3 years of 2D HYCOM data for big picture review.
+> convertHYCOM.py --from 2010-11-21 --stop 2013-11-21 --bl 20,-119 --tr 29,-108 -r hycom-3y.slf --2d
+
+Extraction of 3 years of 2D HYCOM data for big picture review.
+> convertHYCOM.py --from 2010-11-21 --stop 2013-11-21 --bl -55,-70 --tr -45,-50 -r hycom-3y.slf --2d

@@ -1,0 +1,68 @@
+/-------------------------------------------------------------------/
+/ TELEMAC-2D       -  VALIDATION TEST CASE NUMBER  -                /
+/                       RITTER DAM-BREAK SOLUTION                   /
+/-------------------------------------------------------------------/
+/
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+GEOMETRY FILE                   = geo_ritter.slf
+FORTRAN FILE                    = t2d_ritter.f
+BOUNDARY CONDITIONS FILE        = geo_ritter.cli
+RESULTS FILE                    = r2d_ritter.slf
+/
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                           = 'RITTER DAM-BREAK SOLUTION'
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B'
+GRAPHIC PRINTOUT PERIOD         = 20
+LISTING PRINTOUT PERIOD         = 100
+TIME STEP                       = 0.005
+NUMBER OF TIME STEPS            = 150
+VARIABLE TIME-STEP              = YES
+DESIRED COURANT NUMBER          = 0.8
+DURATION                        = 2.5
+MASS-BALANCE                    = YES
+INFORMATION ABOUT SOLVER        = YES
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO 
+INITIAL CONDITIONS : 'PARTICULAR'
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION          = 0
+TURBULENCE MODEL                = 1
+VELOCITY DIFFUSIVITY            = 0
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+EQUATIONS                       = 'SAINT-VENANT VF'
+FINITE VOLUME SCHEME            = 2
+NUMBER OF PRIVATE ARRAYS        = 1
+TIDAL FLATS                     = YES
+TYPE OF ADVECTION               = 1;5
+SUPG OPTION                     = 2;2
+DISCRETIZATIONS IN SPACE        = 11;11
+SOLVER ACCURACY                 = 1.E-4
+SOLVER                          = 7
+SOLVER OPTION                   = 3
+PRECONDITIONING                 = 2
+IMPLICITATION FOR DEPTH         = 1.
+IMPLICITATION FOR VELOCITY      = 0.6
+INITIAL GUESS FOR H             = 1   
+/
+OPTION FOR LIQUID BOUNDARIES    = 2
+/           
+&FIN

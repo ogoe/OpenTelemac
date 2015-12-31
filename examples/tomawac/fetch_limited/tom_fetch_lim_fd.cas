@@ -1,0 +1,68 @@
+/--------------------------------------------------------------------/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'tom_fetch_lim_fd.f'
+/FICHIER DE GEOMETRIE = 'geo_fetch_lim.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_fetch_lim.cli'
+/
+FICHIER DES RESULTATS 2D = 'tom_fetch_lim_fd.slf'
+FICHIER DES RESULTATS PONCTUELS = 'tom_fetch_lim_fd.spe'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'FETCH LIMITED TEST-CASE CONSTANT WIND 20 M/S FINITE DEPTH'
+PERIODE POUR LES SORTIES GRAPHIQUES = 10
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
+'HM0,DMOY,SPD,FM01,FPD,FPR5,TMOY,TPR5,VX,VY,US,WD'
+PERIODE POUR LES SORTIES LISTING = 10
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 252135.5; 489173.875 ; 
+1000000.0		
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 254698.640625; 258180.75 ; 
+274977.5
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 900
+NOMBRE DE PAS DE TEMPS = 192 
+NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
+NOMBRE DE DIRECTIONS = 36
+FREQUENCE MINIMALE = 0.04
+RAISON FREQUENTIELLE = 1.05
+NOMBRE DE FREQUENCES = 50
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+FACTEUR DE QUEUE DU SPECTRE = 5.
+COORDONNEES SPHERIQUES = NON
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+PRISE EN COMPTE DU VENT = OUI
+VENT STATIONNAIRE = TRUE
+PRISE EN COMPTE DE LA PROPAGATION = OUI
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+LIMITEUR DE CROISSANCE = 2
+/DEBUGGER = 1
+/--------------------------------------------------------------------/
+/ SPECTRE INITIAL 
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 1
+ETALEMENT DIRECTIONNEL 1 INITIAL = 1.
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.
+/--------------------------------------------------------------------/
+/ TERMES SOURCES
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+APPORTS DUS AU VENT = 2
+VITESSE DU VENT SUIVANT X = 20.
+VITESSE DU VENT SUIVANT Y = 0.
+DISSIPATION PAR MOUTONNEMENT = 2
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
+CROISSANCE LINEAIRE DES VAGUES = 1
+/DISSIPATION PAR DEFERLEMENT = 1

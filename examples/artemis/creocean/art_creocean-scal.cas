@@ -1,0 +1,42 @@
+/
+/---------------------------------------------------------------------
+/                       Borme Harbour
+/---------------------------------------------------------------------
+/
+/    FILE NAMES
+/
+FORTRAN FILE                          : 'art_actu-scal.f'	    
+BOUNDARY CONDITIONS FILE              : 'geo_borme_actu.cli'	    
+GEOMETRY FILE                         : 'geo_borme_actu.slf'	    
+RESULTS FILE                          : 'r2d_borme_actu-scal.res'   
+/
+/    GENERAL SETTINGS
+/
+TITLE = 'Agitation in the Borme harbour-Cas:T=8 sec, H=2 m, Dir=Est90³'
+VARIABLES FOR GRAPHIC PRINTOUTS          : 'HS,INC,PHAS,QB,ZS,ZF'
+/
+/    BOUNDARY CONDITIONS
+/
+MONODIRECTIONAL RANDOM WAVE              : YES
+GAMMA                                    : 2. 
+PEAK PERIOD                              : 8.
+MAXIMUM SPECTRAL PERIOD                  : 12
+MINIMUM SPECTRAL PERIOD                  : 6
+BREAKING                                 : YES
+DIRECTION OF WAVE PROPAGATION            : 180.
+NUMBER OF PERIODS                        : 4
+/
+/    INITIAL CONDITIONS  
+/
+INITIAL CONDITIONS                       : 'CONSTANT ELEVATION'
+INITIAL WATER LEVEL                      : 0.5
+/
+/for parallel calculations using n processors
+/add PARALLEL PROCESSORS : n
+/replace SOLVER : 8 by SOLVER : 9
+SOLVER : 8
+MATRIX STORAGE : 3
+
+
+
+

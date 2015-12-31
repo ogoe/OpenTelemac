@@ -1,0 +1,81 @@
+/-------------------------------------------------------------------/
+/    TELEMAC-2D  -  VALIDATION TEST CASE NUMBER 2  -  05/2000       /
+/                             BUMP CASE 3                           /
+/-------------------------------------------------------------------/
+/
+/ HP C3700  compilateur HP        : 138 s  version 5.9 16/10/2008 
+/ HP C3700  compilateur Nag       : 354 s  version 5.9 17/10/2008
+/ Dell 2.8 MHz  compilateur pgi   :  96 s  version 5.9 16/10/2008
+/
+/ HP C3700  compilateur HP        : 147 s  version 6.0 24/11/2009
+/ HP C3700  compilateur Nag       : 363 s  version 6.0 27/11/2009
+/ Dell 2.8 MHz  compilateur Intel :  68 s  version 6.0 26/11/2009
+/
+/ Version 6.2
+/
+/ HP C3700  compilateur HP        : 146 s  04/05/2012
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+FORTRAN FILE             = t2d_hydraulic_jump.f
+GEOMETRY FILE            = geo_hydraulic_jump.slf
+BOUNDARY CONDITIONS FILE = geo_hydraulic_jump.cli
+RESULTS FILE             = r2d_hydraulic_jump_v2p0.slf
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED : NO
+TITLE                                        = 'BUMP CASE 3'
+VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,S,B,Q,F,H,N,O,R,O2,R2'
+NUMBER OF PRIVATE ARRAYS : 6
+GRAPHIC PRINTOUT PERIOD                      = 500
+LISTING PRINTOUT PERIOD                      = 500
+TIME STEP                                    = 0.02
+NUMBER OF TIME STEPS                         = 2500
+INFORMATION ABOUT SOLVER                     = YES
+MASS-BALANCE = YES
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+INITIAL CONDITIONS       = 'CONSTANT ELEVATION'
+INITIAL ELEVATION : 0.4
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/
+PRESCRIBED FLOWRATES                         = 0.;2.
+PRESCRIBED ELEVATIONS                        = 0.4;0.
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION                       = 3
+FRICTION COEFFICIENT                         = 40.
+TURBULENCE MODEL                             = 1
+VELOCITY DIFFUSIVITY                         = 0.
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+TYPE OF ADVECTION                            = 1;5
+SUPG OPTION                                  = 0;2
+DISCRETIZATIONS IN SPACE                     = 13;11
+SOLVER ACCURACY                              = 1.E-5 
+IMPLICITATION FOR DEPTH                      = 0.6
+IMPLICITATION FOR VELOCITY                   = 0.6 
+SOLVER                                       = 7
+SOLVER OPTION                                = 3   
+/
+MATRIX STORAGE : 1
+TREATMENT OF THE LINEAR SYSTEM : 1   SOLVER : 7            
+/                                           
+&FIN

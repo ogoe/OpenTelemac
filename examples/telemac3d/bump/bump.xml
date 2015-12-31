@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="7">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="bump" author="telemac3d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="k" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_bump.cas"
+       title="bump scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_bump.cas"
+       title="bump parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="f3d_bump.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.E-6,1.E-5,1.E-5,1.E-5,1.E-6])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T3DRES" />
+      <v5 vars=":map" target="f3d_bump.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.E-4,1.E-3,1.E-3,1.E-3,1.E-4])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T3DRES" />
+      <v8 vars=":map" target="2:T3DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.E-4,1.E-3,1.E-3,1.E-3,1.E-4])" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    type="plan" is assumed by default if nothing else is there, particularly for 2D files
+	roi="[-1.0;-0.3][23.0;0.7]"
+ -->
+   <plot2d xref="figure3" type="v-section" config="oneofall" time="[-1]" size="(12;5)" >
+      <layer vars="Z:mesh" extract="(0;1)(21;1)" target="1:T3DRES" sample="(10;0)(15;0.5){10;4}" />
+   </plot2d>
+   <plot2d xref="figure6" type="v-section" config="oneofall" time="[-1]" size="(12;5)" >
+      <layer vars="Z:wire" extract="(0;1)(21;1)" target="1:T3DRES"  />
+   </plot2d>
+   <plot2d xref="figure7" size="(12;5)" type="v-section" time="[-1]" deco="" >
+      <layer vars="pression:map" target="1:T3DRES" config="oneofall" extract="(0;1);(21;1)" />
+   </plot2d>
+   <plot2d xref="figure9" size="(12;3)" type="v-section" extract="(0;1)(21;1)" >
+      <layer vars="vitesse:map" target="1:T3DRES" config="oneofall" time="[-1]" />
+      <layer vars="vitesse:arrow" target="1:T3DRES" config="oneofall" time="[-1]" sample="(10;0)(15;0.5){10;4}" />
+   </plot2d>
+   <plot2d xref="figure1" config="oneofall" time="[-1]" size="(12;3)" >
+      <layer vars="Z:map" extract="[]#[-1]" target="1:T3DRES" />
+   </plot2d>
+   <plot2d xref="figure2" config="oneofall" time="[-1]" size="(12;3)" >
+      <layer vars="Z:map" extract="[]#[3]" target="1:T3DRES" />
+   </plot2d>
+   <plot2d xref="figure0" size="(12;3)" >
+      <layer vars="vitesse:map" target="1:T3DHYD" config="oneofall" time="[-1]" />
+      <layer vars="vitesse:angle" target="1:T3DHYD" config="oneofall" time="[-1]" sample="(5;0)(15;2){10;4}" />
+   </plot2d> <!---->
+
+</validation>

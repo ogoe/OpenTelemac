@@ -1,0 +1,1454 @@
+C <<< Konfigurationsdatei ENGLISH fuer physikalische Groessen und ihre Einheiten >>>
+C                                                                               
+C     ----------------------------------------------------------------          
+C     Configuration file for physical quantities and units                  
+C     English version 
+C     SCCS-IDs : @(#) 10/10/06 2.19 phydef.cfg.en.dat
+C     last modification: 12/14/2001, GS                                          
+C     ----------------------------------------------------------------          
+C                                                                               
+C 345     1234567890123456789012345678901234567890     1234567890
+C
+    1     spec. flowrate                               m**3/s    
+    2     current velocity                             m/s       
+    3     water level                                  mMSL      
+    4     direction of current velocity                degree    
+    5     salinity                                     10**-3    
+    6     temperature                                  degr.cent.
+    7     suspended load                               kg/m**3   
+    8     conductivity                                 mS/m      
+    9     attenuation                                  1/m       
+   10     pressure                                     10**4 Pa  
+   11     atmospheric pressure                         10**2 Pa   
+   12     spec. flowrate (x-dir.)                      m**3/s    
+   13     spec. flowrate (y-dir.)                      m**3/s    
+   14     current velocity (x-dir.)                    m/s       
+   15     current velocity (y-dir.)                    m/s       
+   16     total water depth                            m         
+   17     topography                                   mMSL      
+   18     topography (dry area)                        mMSL      
+   19     frequency distribution of curr. velocity     percent         
+   20     frequency distribution of water level        percent         
+   21     eulerian residual current path               km        
+   22     time                                         minutes   
+   23     number                                       -          
+   24     high water                                   mMSL      
+   25     mean high water                              mMSL      
+   26     maximum high water                           mMSL      
+   27     minimum high water                           mMSL      
+   28     low water                                    mMSL      
+   29     mean low water                               mMSL      
+   30     maximum low water                            mMSL      
+   31     minimum low water                            mMSL      
+   32     tidal range                                  m         
+   33     mean tidal range                             m         
+   34     maximum tidal range                          m         
+   35     minimum tidal range                          m         
+   36     mean tide level                              mMSL      
+   37     mean tide level (mean)                       mMSL      
+   38     mean tide level (maximum)                    mMSL      
+   39     mean tide level (minimum)                    mMSL      
+   40     inundation period                            hours     
+   41     inundation period (mean)                     hours     
+   42     max. inundation period                       hours     
+   43     min. inundation period                       hours     
+   44     high water time                              minutes   
+   45     mean high water time                         minutes   
+   46     maximum high water time                      minutes   
+   47     minimum high water time                      minutes   
+   48     low water time                               minutes   
+   49     mean low water time                          minutes   
+   50     maximum low water time                       minutes   
+   51     minimum low water time                       minutes   
+   52     spec. momentum flux                          m**4/s**2 
+   53     spec. kinet. energy flux                     m**5/s**3 
+   54     reference water surface d(high water)        m         
+   55     d(high water)                                m         
+   56     reference water surface max. high water      mMSL      
+   57     reference water surface min. high water      mMSL      
+   58     d(mean high water)                           m         
+   59     d(maximum high water)                        m         
+   60     d(minimum high water)                        m         
+   61     max[d(high water)]                           m         
+   62     min[d(high water)]                           m         
+   63     Sign[d(high water)]                          -           
+   64     reference water level d(low water)           m         
+   65     d(low water)                                 m         
+   66     reference water level maximum low water      m         
+   67     reference water level minimum low water      m         
+   68     d(mean low water)                            m         
+   69     d(maximum low water)                         m         
+   70     d(minimum low water)                         m         
+   71     max[d(low water)]                            m        
+   72     min[d(low water)]                            m         
+   73     Sign[d(low water)]                           -          
+   74     d(tidal range)                               m         
+   75     d(mean tidal range)                          m         
+   76     d(maximum tidal range)                       m         
+   77     d(minimum tidal range)                       m         
+   78     max[d(tidal range)]                          m         
+   79     min[d(tidal range)]                          m         
+   80     Sign[d(tidal range)]                         -          
+   81     d(mean tide level)                           m         
+   82     d(mean tide level (mean))                    m        
+   83     d(maximum mean tide level)                   m         
+   84     d(minimum mean tide level)                   m         
+   85     max[d(mean tide level)]                      m         
+   86     min[d(mean tide level)]                      m         
+   87     Sign[d(mean tide level)]                     -          
+   88     d(inundation period)                         minutes   
+   89     d(mean inundation period)                    minutes   
+   90     d(maximum inundation period)                 minutes   
+   91     d(minimum inundation period)                 minutes   
+   92     max[d(inundation period)]                    minutes   
+   93     min[d(inundation period)]                    minutes   
+   94     Sign[d(inundation period)]                   -          
+   95     d(high water time)                           minutes   
+   96     d(mean high water time)                      minutes   
+   97     d(maximum high water time)                   minutes   
+   98     d(minimum high water time)                   minutes   
+   99     max[d(high water time)]                      minutes   
+  100     min[d(high water time)]                      minutes   
+  101     Sign[d(high water time)]                     -          
+  102     d(low water time)                            minutes   
+  103     d(mean low water time)                       minutes   
+  104     d(maximum low water time)                    minutes   
+  105     d(minimum low water time)                    minutes   
+  106     max[d(low water time)]                       minutes   
+  107     min[d(low water time)]                       minutes   
+  108     Sign[d(low water time)]                      -          
+  109     scalar wind velocity                         m/s       
+  110     d(water level)                               m         
+  111     wind direction                               degree    
+  112     d(bathymetry)                                m         
+  113     density                                      kg/m**3   
+  114     slack water time of flood current            minutes   
+  115     slack water time of flood current (mean)     minutes   
+  116     slack water time of flood current (max.)     minutes   
+  117     slack water time of flood current (min.)     minutes   
+  118     slack water time of ebb current              minutes   
+  119     slack water time of ebb current (mean)       minutes   
+  120     slack water time of ebb current (max.)       minutes   
+  121     slack water time of ebb current (min.)       minutes   
+  122     maximum flood current velocity               m/s       
+  123     max. flood current velocity (mean)           m/s       
+  124     max. flood current velocity (maximum)        m/s       
+  125     max. flood current velocity (minimum)        m/s       
+  126     maximum ebb current velocity                 m/s       
+  127     max. ebb current velocity (mean)             m/s       
+  128     max. ebb current velocity (maximum)          m/s       
+  129     max. ebb current velocity (minimum)          m/s       
+  130     time of max. flood current                   minutes   
+  131     time of max. flood current (mean)            minutes   
+  132     time of max. flood current (maximum)         minutes   
+  133     time of max. flood current (minimum)         minutes   
+  134     time of max. ebb current                     minutes   
+  135     time of max. ebb current (mean)              minutes   
+  136     time of max. ebb current (maximum)           minutes   
+  137     time of max. ebb current (minimum)           minutes   
+  138     max. flood current : max. ebb current        -          
+  139     max. flood curr. : max. ebb curr. (mean)     -      
+  140     max. flood curr. : max. ebb curr. (max.)     -      
+  141     max. flood curr. : max. ebb curr. (min.)     -      
+  142     flood current duration                       hours     
+  143     flood current duration (mean)                hours
+  144     maximum flood current duration               hours     
+  145     minimum flood current duration               hours
+  146     ebb current duration                         hours     
+  147     mean ebb current duration                    hours     
+  148     maximum ebb current duration                 hours     
+  149     minimum ebb current duration                 hours     
+  150     mean flood current velocity                  m/s       
+  151     mean flood current velocity (mean)           m/s       
+  152     mean flood current velocity (maximum)        m/s       
+  153     mean flood current velocity (minimum)        m/s       
+  154     mean ebb current velocity                    m/s       
+  155     mean ebb current velocity (mean)             m/s       
+  156     mean ebb current velocity (maximum)          m/s       
+  157     mean ebb current velocity (minimum)          m/s       
+  158     (eulerian) flood path                        km        
+  159     mean (eulerian) flood path                   km        
+  160     maximum (eulerian) flood path                km        
+  161     minimum (eulerian) flood path                km        
+  162     (eulerian) ebb path                          km        
+  163     mean (eulerian) ebb path                     km        
+  164     maximum (eulerian) ebb path                  km        
+  165     minimum (eulerian) ebb path                  km        
+  166     flood current dur. : ebb current dur.        -  
+  167     flood curr. dur. : ebb curr. dur. (mean)     -      
+  168     flood curr. dur. : ebb curr. dur. (max.)     -      
+  169     flood curr. dur. : ebb curr. dur. (min.)     -      
+  170     mean flood current : mean ebb current        -      
+  171     mean flood curr. : mean ebb curr. (mean)     -     
+  172     mean flood curr. : mean ebb curr. (max.)     -     
+  173     mean flood curr. : mean ebb curr. (min.)     -     
+  174     flood path : ebb path                        -          
+  175     flood path : ebb path (mean)                 -          
+  176     flood path : ebb path (maximum)              -          
+  177     flood path : ebb path (minimum)              -          
+  178     residual current                             m/s       
+  179     mean residual current                        m/s       
+  180     maximum residual current                     m/s       
+  181     minimum residual current                     m/s       
+  182     d(slack water time of flood current)         minutes   
+  183     d(slack water time of flood curr.(mean))     minutes   
+  184     d(slack water time of flood curr.(max.))     minutes   
+  185     d(slack water time of flood curr.(min.))     minutes   
+  186     max[d(slack water time of flood curr.)]      minutes   
+  187     min[d(slack water time of flood curr.)]      minutes   
+  188     Sign[d(slack water time of flood curr.)]     minutes   
+  189     d(slack water time of ebb current)           minutes   
+  190     d(slack water time of ebb current(mean))     minutes   
+  191     d(slack water time of ebb current(max.))     minutes   
+  192     d(slack water time of ebb current(min.))     minutes   
+  193     max[d(slack water time of ebb current)]      minutes   
+  194     min[d(slack water time of ebb current)]      minutes   
+  195     Sign[d(slack water time of ebb current)]     minutes   
+  196     d(max. flood current velocity)               m/s       
+  197     d(max. flood current veloc. (mean))          m/s       
+  198     d(max. flood current veloc. (max.))          m/s       
+  199     d(max. flood current veloc. (min.))          m/s       
+  200     max[d(max. flood current velocity)]          m/s       
+  201     min[d(max. flood current velocity)]          m/s       
+  202     Sign[d(max. flood current velocity)]         -          
+  203     d(max. ebb current velocity)                 m/s       
+  204     d(max. ebb current velocity (mean))          m/s       
+  205     d(max. ebb current velocity (maximum))       m/s       
+  206     d(max. ebb current velocity (minimum))       m/s       
+  207     max[d(max. ebb current velocity)]            m/s       
+  208     min[d(max. ebb current velocity)]            m/s       
+  209     Sign[d(max. ebb current velocity)]           -          
+  210     d(time of max. flood current)                minutes   
+  211     d(time of max. flood current (mean))         minutes   
+  212     d(time of max. flood current (max.))         minutes   
+  213     d(time of max. flood current (min.))         minutes   
+  214     max[d(time of max. flood current)]           minutes   
+  215     min[d(time of max. flood current)]           minutes   
+  216     Sign[d(time of max. flood current)]          minutes   
+  217     d(time of max. ebb current)                  minutes   
+  218     d(time of max. ebb current (mean))           minutes   
+  219     d(time of max. ebb current (max.))           minutes   
+  220     d(time of max. ebb current (min.))           minutes   
+  221     max[d(time of max. ebb current)]             minutes   
+  222     min[d(time of max. ebb current)]             minutes   
+  223     Sign[d(time of max. ebb current)]            minutes   
+  224     d(max. flood current : max. ebb current)     -          
+  225     d(max.flood curr. : max.ebb curr.(mean))     -       
+  226     d(max.flood curr. : max.ebb curr. (max))     -       
+  227     d(max.flood curr. : max.ebb curr. (min))     -      
+  228     max[d(max.flood curr. : max.ebb curr.)]      -    
+  229     min[d(max.flood curr. : max.ebb curr.)]      -    
+  230     Sign[d(max.flood curr. : max.ebb curr.)]     -     
+  231     d(flood current duration)                    minutes   
+  232     d(mean flood current duration)               minutes   
+  233     d(maximum flood current duration)            minutes   
+  234     d(minimum flood current duration)            minutes   
+  235     max[d(flood current duration)]               minutes   
+  236     min[d(flood current duration)]               minutes   
+  237     Sign[d(flood current duration)]              -          
+  238     d(ebb current duration)                      minutes   
+  239     d(mean ebb current duration)                 minutes   
+  240     d(maximum ebb current duration)              minutes   
+  241     d(minimum ebb current duration)              minutes   
+  242     max[d(ebb current duration)]                 minutes   
+  243     min[d(ebb current duration)]                 minutes   
+  244     Sign[d(ebb current duration)]                -          
+  245     d(mean flood current velocity)               m/s       
+  246     d(mean flood current velocity (mean))        m/s       
+  247     d(mean flood current velocity (maximum))     m/s       
+  248     d(mean flood current velocity (minimum))     m/s       
+  249     max[d(mean flood current velocity)]          m/s       
+  250     min[d(mean flood current velocity)]          m/s       
+  251     Sign[d(mean flood current velocity)]         -          
+  252     d(mean ebb current velocity)                 m/s       
+  253     d(mean ebb current velocity (mean))          m/s       
+  254     d(mean ebb current velocity (maximum))       m/s       
+  255     d(mean ebb current velocity (minimum))       m/s       
+  256     max[d(mean ebb current velocity)]            m/s       
+  257     min[d(mean ebb current velocity)]            m/s       
+  258     Sign[d(mean ebb current velocity)]           -          
+  259     d((eulerian) flood path)                     km        
+  260     d(mean (eulerian) flood path)                km        
+  261     d(maximum (eulerian) flood path)             km        
+  262     d(minimum (eulerian) flood path)             km        
+  263     max[d((eulerian) flood path)]                km        
+  264     min[d((eulerian) flood path)]                km        
+  265     Sign[d((eulerian) flood path)]               -          
+  266     d((eulerian) ebb path)                       km        
+  267     d(mean (eulerian) ebb path)                  km        
+  268     d(maximum (eulerian) ebb path)               km        
+  269     d(minimum (eulerian) ebb path)               km        
+  270     max[d((eulerian) ebb path)]                  km        
+  271     min[d((eulerian) ebb path)]                  km        
+  272     Sign[d((eulerian) ebb path)]                 -          
+  273     d(flood curr. dur. : ebb curr. dur.)         - 
+  274     d(flood curr.dur. : ebb curr.dur.)(mean)     -     
+  275     d(flood curr.dur. : ebb curr.dur.)(max)      -    
+  276     d(flood curr.dur. : ebb curr.dur.)(min)      -    
+  277     max[d(flood curr.dur. : ebb curr.dur.)]      -     
+  278     min[d(flood curr.dur. : ebb curr.dur.)]      -    
+  279     Sig[d(flood curr.dur. : ebb curr.dur.)]      -    
+  280     d(mean flood current : mean ebb current)     -          
+  281     d(mean fl. curr. : mean ebb curr.)(mean)     -     
+  282     d(mean fl. curr. : mean ebb curr.)(max)      -    
+  283     d(mean fl. curr. : mean ebb curr.)(min)      -    
+  284     max[d(mean fl. curr. : mean ebb curr.)]      -        
+  285     min[d(mean fl. curr. : mean ebb curr.)]      -        
+  286     Sign[d(mean fl. curr. : mean ebb curr.)]     -         
+  287     d(flood path : ebb path)                     -          
+  288     d(flood path : ebb path (mean))              -          
+  289     d(flood path : ebb path (maximum))           -          
+  290     d(flood path : ebb path (minimum))           -          
+  291     max[d(flood path : ebb path)]                -          
+  292     min[d(flood path : ebb path)]                -          
+  293     Sign[d(flood path : ebb path)]               -          
+  294     d(residual current)                          m/s       
+  295     d(mean residual current)                     m/s       
+  296     d(maximum residual current)                  m/s       
+  297     d(minimum residual current)                  m/s       
+  298     max[d(residual current)]                     m/s       
+  299     min[d(residual current)]                     m/s       
+  300     Sign[d(residual current)]                    -          
+  301     residual path                                km        
+  302     mean residual path                           km        
+  303     maximum residual path                        km        
+  304     minimum residual path                        km        
+  305     flood volume                                 E+6 m**3  
+  306     mean flood volume                            E+6 m**3  
+  307     maximum flood volume                         E+6 m**3  
+  308     minimum flood volume                         E+6 m**3  
+  309     ebb volume                                   E+6 m**3  
+  310     mean ebb volume                              E+6 m**3  
+  311     maximum ebb volume                           E+6 m**3  
+  312     minimum ebb volume                           E+6 m**3  
+  313     residual flowrate                            m**3/s    
+  314     residual flowrate (mean)                     m**3/s    
+  315     maximum residual flowrate                    m**3/s    
+  316     minimum residual flowrate                    m**3/s    
+  317     tidal volume                                 E+6 m**3  
+  318     tidal volume (mean)                          E+6 m**3  
+  319     maximum tidal volume                         E+6 m**3  
+  320     minimum tidal volume                         E+6 m**3  
+  321     d(residual path)                             km        
+  322     d(mean residual path)                        km        
+  323     d(maximum residual path)                     km        
+  324     d(minimum residual path)                     km        
+  325     max[d(residual path)]                        km        
+  326     min[d(residual path)]                        km        
+  327     Sign[d(residual path)]                       -          
+  328     d(flood volume)                              E+6 m**3  
+  329     d(mean flood volume)                         E+6 m**3  
+  330     d(maximum flood volume)                      E+6 m**3  
+  331     d(minimum flood volume)                      E+6 m**3  
+  332     max[d(flood volume)]                         E+6 m**3  
+  333     min[d(flood volume)]                         E+6 m**3  
+  334     Sign[d(flood volume)]                        -          
+  335     d(ebb volume)                                E+6 m**3  
+  336     d(mean ebb volume)                           E+6 m**3  
+  337     d(maximum ebb volume)                        E+6 m**3  
+  338     d(minimum ebb volume)                        E+6 m**3  
+  339     max[d(ebb volume)]                           E+6 m**3  
+  340     min[d(ebb volume)]                           E+6 m**3  
+  341     Sign[d(ebb volume)]                          -          
+  342     d(residual flowrate)                         m**3/s    
+  343     d(mean residual flowrate)                    m**3/s    
+  344     d(maximum residual flowrate)                 m**3/s    
+  345     d(minimum residual flowrate)                 m**3/s    
+  346     max[d(residual flowrate)]                    m**3/s    
+  347     min[d(residual flowrate)]                    m**3/s    
+  348     Sign[d(residual flowrate)]                   -          
+  349     d(tidal volume)                              E+6 m**3  
+  350     d(mean tidal volume)                         E+6 m**3  
+  351     d(maximum tidal volume)                      E+6 m**3  
+  352     d(minimum tidal volume)                      E+6 m**3  
+  353     max[d(tidal volume)]                         E+6 m**3  
+  354     min[d(tidal volume)]                         E+6 m**3  
+  355     Sign[d(tidal volume)]                        -          
+  356     flood volume : ebb volume                    -          
+  357     flood volume : ebb volume (mean)             -          
+  358     flood volume : ebb volume (maximum)          -          
+  359     flood volume : ebb volume (minimum)          -          
+  360     d(flood volume : ebb volume)                 -          
+  361     d(flood volume : ebb volume (mean))          -          
+  362     d(flood volume : ebb volume (maximum))       -          
+  363     d(flood volume : ebb volume (minimum))       -          
+  364     max[d(flood volume : ebb volume)]            -          
+  365     min[d(flood volume : ebb volume)]            -          
+  366     Sign[d(flood volume : ebb volume)]           -          
+  367     kilometer                                    km        
+  368     borderline of arrows                         -          
+  369     maximum salinity                             10**-3    
+  370     maximum salinity (mean)                      10**-3    
+  371     maximum salinity (maximum)                   10**-3    
+  372     maximum salinity (minimum)                   10**-3    
+  373     minimum salinity                             10**-3    
+  374     minimum salinity (mean)                      10**-3    
+  375     minimum salinity (maximum)                   10**-3    
+  376     minimum salinity (minimum)                   10**-3    
+  377     mean salinity                                10**-3    
+  378     mean salinity (mean)                         10**-3    
+  379     mean salinity (maximum)                      10**-3    
+  380     mean salinity (minimum)                      10**-3    
+  381     tidal variation of salinity                  10**-3    
+  382     tidal variation of salinity (mean)           10**-3    
+  383     tidal variation of salinity (maximum)        10**-3    
+  384     tidal variation of salinity (minimum)        10**-3    
+  385     adv. flood transport of salt                 E+3 m**3  
+  386     adv. flood transport of salt (mean)          E+3 m**3  
+  387     adv. flood transport of salt (max.)          E+3 m**3  
+  388     adv. flood transport of salt (min.)          E+3 m**3  
+  389     adv. ebb transport of salt                   E+3 m**3  
+  390     adv. ebb transport of salt (mean)            E+3 m**3  
+  391     adv. ebb transport of salt (max.)            E+3 m**3  
+  392     adv. ebb transport of salt (min.)            E+3 m**3  
+  393     adv. residual transport of salt              E+3 m**3  
+  394     adv. residual transport of salt (mean)       E+3 m**3  
+  395     adv. residual transport of salt (max.)       E+3 m**3  
+  396     adv. residual transport of salt (min.)       E+3 m**3  
+  397     adv. salt transport, flood:ebb               - 
+  398     adv. salt transport, flood:ebb (mean)        - 
+  399     adv. salt transport, flood:ebb (max.)        -  
+  400     adv. salt transport, flood:ebb (min.)        -  
+  401     d(maximum salinity)                          10**-3    
+  402     d(maximum salinity (mean))                   10**-3    
+  403     d(maximum salinity (maximum))                10**-3    
+  404     d(maximum salinity (minimum))                10**-3    
+  405     max[d(maximum salinity)]                     10**-3    
+  406     min[d(maximum salinity)]                     10**-3    
+  407     Sign[d(maximum salinity)]                    -          
+  408     d(minimum salinity)                          10**-3    
+  409     d(minimum salinity (mean))                   10**-3    
+  410     d(minimum salinity (maximum))                10**-3    
+  411     d(minimum salinity (minimum))                10**-3    
+  412     max[d(minimum salinity)]                     10**-3    
+  413     min[d(minimum salinity)]                     10**-3    
+  414     Sign[d(minimum salinity)]                    -          
+  415     d(mean salinity)                             10**-3    
+  416     d(mean salinity (mean))                      10**-3    
+  417     d(mean salinity (maximum))                   10**-3    
+  418     d(mean salinity (minimum))                   10**-3    
+  419     max[d(mean salinity)]                        10**-3    
+  420     min[d(mean salinity)]                        10**-3    
+  421     Sign[d(mean salinity)]                       -          
+  422     d(tidal variation of salinity)               10**-3    
+  423     d(tidal variation of salinity (mean))        10**-3    
+  424     d(tidal variation of salinity (maximum))     10**-3    
+  425     d(tidal variation of salinity (minimum))     10**-3    
+  426     max[d(tidal variation of salinity)]          10**-3    
+  427     min[d(tidal variation of salinity)]          10**-3    
+  428     Sign[d(tidal variation of salinity)]         -          
+  429     d(adv. flood transport of salt)              E+3 m**3  
+  430     d(adv. flood transport of salt (mean))       E+3 m**3  
+  431     d(adv. flood transport of salt (max.))       E+3 m**3  
+  432     d(adv. flood transport of salt (min.))       E+3 m**3  
+  433     max[d(adv. flood transport of salt)]         E+3 m**3  
+  434     min[d(adv. flood transport of salt)]         E+3 m**3  
+  435     Sign[d(adv. flood transport of salt)]        -      
+  436     d(adv. ebb transport of salt)                E+3 m**3  
+  437     d(adv. ebb transport of salt (mean))         E+3 m**3  
+  438     d(adv. ebb transport of salt (max.))         E+3 m**3  
+  439     d(adv. ebb transport of salt (min.))         E+3 m**3  
+  440     max[d(adv. ebb transport of salt)]           E+3 m**3  
+  441     min[d(adv. ebb transport of salt)]           E+3 m**3  
+  442     Sign[d(adv. ebb transport of salt)]          -        
+  443     d(adv. residual transport of salt)           E+3 m**3  
+  444     d(adv. residual transport of salt(mean))     E+3 m**3  
+  445     d(adv. residual transport of salt(max.))     E+3 m**3  
+  446     d(adv. residual transport of salt(min.))     E+3 m**3  
+  447     max[d(adv. residual transport of salt)]      E+3 m**3
+  448     min[d(adv. residual transport of salt)]      E+3 m**3  
+  449     Sign[d(adv. residual transport of salt)]     -           
+  450     d(adv. transport of salt, flood:ebb)         - 
+  451     d(adv. transport of salt, F:E (mean))        -                 
+  452     d(adv. transport of salt, F:E (max.))        -          
+  453     d(adv. transport of salt, F:E (min.))        -           
+  454     max[d(adv. transport of salt, F:E)]          -           
+  455     min[d(adv. transport of salt, F:E)]          -           
+  456     Sign[d(adv. transport of salt, F:E)]         -       
+  457     S_sa-tide (amplitude)                        m         
+  458     S_sa-tide (phase)                            degree    
+  459     M_m-tide (amplitude)                         m         
+  460     M_m-tide (phase)                             degree    
+  461     M_f-tide (amplitude)                         m         
+  462     M_f-tide (phase)                             degree    
+  463     Q_1-tide (amplitude)                         m         
+  464     Q_1-tide (phase)                             degree    
+  465     O_1-tide (amplitude)                         m         
+  466     O_1-tide (phase)                             degree    
+  467     P_1-tide (amplitude)                         m         
+  468     P_1-tide (phase)                             degree    
+  469     K_1-tide (amplitude)                         m         
+  470     K_1-tide (phase)                             degree    
+  471     MP_1-tide (amplitude)                        m         
+  472     MP_1-tide (phase)                            degree    
+  473     SO_1-tide (amplitude)                        m         
+  474     SO_1-tide (phase)                            degree    
+  475     N_2-tide (amplitude)                         m         
+  476     N_2-tide (phase)                             degree    
+  477     M_2-tide (amplitude)                         m         
+  478     M_2-tide (phase)                             degree    
+  479     S_2-tide (amplitude)                         m         
+  480     S_2-tide (phase)                             degree    
+  481     K_2-tide (amplitude)                         m         
+  482     K_2-tide (phase)                             degree    
+  483     MNS_2-tide (amplitude)                       m         
+  484     MNS_2-tide (phase)                           degree    
+  485     2MS_2-tide (amplitude)                       m         
+  486     2MS_2-tide (phase)                           degree    
+  487     MSN_2-tide (amplitude)                       m         
+  488     MSN_2-tide (phase)                           degree    
+  489     2SM_2-tide (amplitude)                       m         
+  490     2SM_2-tide (phase)                           degree    
+  491     MO_3-tide (amplitude)                        m         
+  492     MO_3-tide (phase)                            degree    
+  493     MK_3-tide (amplitude)                        m         
+  494     MK_3-tide (phase)                            degree    
+  495     MN_4-tide (amplitude)                        m         
+  496     MN_4-tide (phase)                            degree    
+  497     M_4-tide (amplitude)                         m         
+  498     M_4-tide (phase)                             degree    
+  499     MS_4-tide (amplitude)                        m         
+  500     MS_4-tide (phase)                            degree    
+  501     MK_4-tide (amplitude)                        m         
+  502     MK_4-tide (phase)                            degree    
+  503     S_4-tide (amplitude)                         m         
+  504     S_4-tide (phase)                             degree    
+  505     M_6-tide (amplitude)                         m         
+  506     M_6-tide (phase)                             degree    
+  507     2MS_6-tide (amplitude)                       m         
+  508     2MS_6-tide (phase)                           degree    
+  509     M_8-tide (amplitude)                         m         
+  510     M_8-tide (phase)                             degree    
+  511     M_4:M_2 (ratio of amplitudes)                -          
+  512     2*P(M_2)-P(M_4) (phase shift)                degree    
+  513     M_6:M_2 (ratio of amplitudes)                -          
+  514     3*P(M_2)-P(M_6) (phase shift)                degree    
+  515     M_8:M_2 (ratio of amplitudes)                -          
+  516     4*P(M_2)-P(M_8) (phase shift)                degree    
+  517     L_2-tide (amplitude)                         m         
+  518     L_2-tide (phase)                             degree    
+  519     high water level HW                          m         
+  520     low water level LW                           m         
+  521     mean water level MW                          m         
+  522     water level difference HW-NW                 m         
+  523     time of high water                           minutes   
+  524     time of low water                            minutes   
+  525     duration of inundation                       hours     
+  526     duration of dry period                       hours     
+  527     max. rise velocity                           m/h       
+  528     max. fall velocity                           m/h  
+  529     standard deviation of water level            m         
+  530     variance of water level                      m**2     
+  531     duration of high water                       hours     
+  532     duration of low water                        hours     
+  533     flood period                                 hours     
+  534     mean flood period                            hours     
+  535     maximum flood period                         hours     
+  536     minimum flood period                         hours     
+  537     ebb period                                   hours     
+  538     mean ebb period                              hours     
+  539     maximum ebb period                           hours     
+  540     minimum ebb period                           hours     
+  541     d(flood period)                              minutes   
+  542     d(mean flood period)                         minutes   
+  543     d(maximum flood period)                      minutes   
+  544     d(minimum flood period)                      minutes   
+  545     d(ebb period)                                minutes   
+  546     d(mean ebb period)                           minutes   
+  547     d(maximum ebb period)                        minutes   
+  548     d(minimum ebb period)                        minutes   
+  549     flood period : ebb period                    -          
+  550     flood period : ebb period (mean)             -     
+  551     flood period : ebb period (maximum)          -          
+  552     flood period : ebb period (minimum)          -          
+  553     d(flood period : ebb period)                 -          
+  554     d(flood period : ebb period (mean))          -     
+  555     d(flood period : ebb period (maximum))       -          
+  556     d(flood period : ebb period (minimum))       -          
+  557     wind velocity (U10)                          m/s       
+  558     wind velocity (V10)                          m/s       
+  559     temperature of air                           degr. cent.
+  560     temperature of water                         degr. cent.
+  561     S_sa amplification                           -          
+  562     S_sa phase difference                        degree    
+  563     M_m amplification                            -          
+  564     M_m phase difference                         degree
+  565     M_f amplification                            -          
+  566     M_f phase difference                         degree
+  567     Q_1 amplification                            -
+  568     Q_1 phase difference                         degree
+  569     O_1 amplification                            - 
+  570     O_1 phase difference                         degree
+  571     P_1 amplification                            - 
+  572     P_1 phase difference                         degree
+  573     K_1 amplification                            - 
+  574     K_1 phase difference                         degree  
+  575     MP_1 amplification                           -  
+  576     MP_1 phase difference                        degree
+  577     SO_1 amplification                           - 
+  578     SO_1 phase difference                        degree   
+  579     N_2 amplification                            - 
+  580     N_2 phase difference                         degree   
+  581     M_2 amplification                            - 
+  582     M_2 phase difference                         degree  
+  583     S_2 amplification                            - 
+  584     S_2 phase difference                         degree 
+  585     K_2 amplification                            - 
+  586     K_2 phase difference                         degree   
+  587     MNS_2 amplification                          - 
+  588     MNS_2 phase difference                       degree   
+  589     2MS_2 amplification                          - 
+  590     2MS_2 phase difference                       degree   
+  591     MSN_2 amplification                          - 
+  592     MSN_2 phase difference                       degree   
+  593     2SM_2 amplification                          - 
+  594     2SM_2 phase difference                       degree    
+  595     MO_3 amplification                           - 
+  596     MO_3 phase difference                        degree    
+  597     MK_3 amplification                           - 
+  598     MK_3 phase difference                        degree    
+  599     MN_4 amplification                           - 
+  600     MN_4 phase difference                        degree    
+  601     M_4 amplification                            -  
+  602     M_4 phase difference                         degree    
+  603     MS_4 amplification                           -
+  604     MS_4 phase difference                        degree    
+  605     MK_4 amplification                           -  
+  606     MK_4 phase difference                        degree    
+  607     S_4 amplification                            -
+  608     S_4 phase difference                         degree    
+  609     M_6 amplification                            -
+  610     M_6 phase difference                         degree    
+  611     2MS_6 amplification                          -
+  612     2MS_6 phase difference                       degree    
+  613     M_8 amplification                            - 
+  614     M_8 phase difference                         degree    
+  615     L_2 amplification                            - 
+  616     L_2 phase difference                         degree    
+  617     time dependent bathymetry                    mMSL      
+  618     suspended load concentration                 -   
+  619     provision of suspended sediment              kg/m**2   
+  620     provision of bed load material               kg/m**2   
+  621     bed load transport rate                      kg/s   
+  622     suspended load transport rate                kg/s    
+  623     vertical erosion                             m         
+  624     sediment density                             g/cm**3   
+  625     critical velocity                            m/s       
+  626     particle diameter d_m                        mm        
+  627     particle diameter d50                        mm        
+  628     particle diameter d90                        mm        
+  629     settling velocity (cohesive)                 m/s       
+  630     slack water dislocation k_f                  minutes   
+  631     mean slack water dislocation k_f             minutes   
+  632     maximum slack water dislocation k_f          minutes   
+  633     minimum slack water dislocation k_f          minutes   
+  634     slack water dislocation k_e                  minutes   
+  635     mean slack water dislocation k_e             minutes   
+  636     maximum slack water dislocation k_e          minutes   
+  637     minimum slack water dislocation k_e          minutes   
+  638     duration of slack water at K_f               minutes   
+  639     mean duration of slack water at K_f          minutes   
+  640     maximum duration of slack water at K_f       minutes   
+  641     minimum duration of slack water at K_f       minutes   
+  642     duration of slack water at K_e               minutes   
+  643     mean duration of slack water at K_e          minutes   
+  644     maximum duration of slack water at K_e       minutes   
+  645     minimum duration of slack water at K_e       minutes   
+  646     duration of slack water K_f:K_e              -          
+  647     duration of slack water K_f:K_e (mean)       -       
+  648     duration of slack water K_f:K_e (max)        -          
+  649     duration of slack water K_f:K_e (min)        -
+  650     flood current bed load transport             E+3 kg  
+  651     mean flood current bed load transport        E+3 kg    
+  652     max. flood current bed load transport        E+3 kg    
+  653     min. flood current bed load transport        E+3 kg    
+  654     ebb current bed load transport               E+3 kg    
+  655     mean ebb current bed load transport          E+3 kg    
+  656     max. ebb current bed load transport          E+3 kg    
+  657     min. ebb current bed load transport          E+3 kg    
+  658     bed load transport, f:e                      -         
+  659     bed load transport, f:e (mean)               -          
+  660     bed load transport, f:e (maximum)            -          
+  661     bed load transport, f:e (minimum)            -          
+  662     residual bed load transport                  E+3 kg    
+  663     mean residual bed load transport             E+3 kg    
+  664     maximum residual bed load transport          E+3 kg    
+  665     minimum residual bed load transport          E+3 kg    
+  666     maximum suspended load                       kg/m**3   
+  667     max. suspended load (mean)                   kg/m**3  
+  668     max. suspended load (max)                    kg/m**3   
+  669     max. suspended load (min)                    kg/m**3   
+  670     min. suspended load                          kg/m**3   
+  671     min. suspended load (mean)                   kg/m**3   
+  672     min. suspended load (max)                    kg/m**3   
+  673     min. suspended load (min)                    kg/m**3   
+  674     mean suspended load                          kg/m**3   
+  675     mean suspended load (mean)                   kg/m**3   
+  676     mean suspended load (max)                    kg/m**3   
+  677     mean suspended load (min)                    kg/m**3   
+  678     variation of suspended load                  kg/m**3   
+  679     variation of suspended load (mean)           kg/m**3   
+  680     variation of suspended load (max)            kg/m**3   
+  681     variation of suspended load (min)            kg/m**3   
+  682     adv. flood transport of suspended load       E+3 kg    
+  683     adv. flood transport of susp.load (mean)     E+3 kg    
+  684     adv. flood transport of susp.load (max.)     E+3 kg    
+  685     adv. flood transport of susp.load (min.)     E+3 kg    
+  686     adv. ebb transport of suspended load         E+3 kg    
+  687     adv. ebb transport of susp. load (mean)      E+3 kg    
+  688     adv. ebb transport of susp. load (max.)      E+3 kg    
+  689     adv. ebb transport of susp. load (min.)      E+3 kg    
+  690     adv. residual transport of susp. load        E+3 kg    
+  691     adv. residual transp. of susp.load(mean)     E+3 kg    
+  692     adv. residual transp. of susp.load(max.)     E+3 kg    
+  693     adv. residual transp. of susp.load(min.)     E+3 kg    
+  694     adv. transport of suspended load, f:e        -          
+  695     adv. transport of susp. load, f:e (mean)     -          
+  696     adv. transport of susp. load, f:e (max.)     -          
+  697     adv. transport of susp. load, f:e (min.)     -          
+  698     height of weir (u-point)                     mMSL      
+  699     height of weir (v-point)                     mMSL      
+  700     number of subtractions                       -          
+  701     max[d(flood period)]                         minutes   
+  702     min[d(flood period)]                         minutes   
+  703     Sign[d(flood period)]                        -          
+  704     max[d(ebb period)]                           minutes   
+  705     min[d(ebb period)]                           minutes   
+  706     Sign[d(ebb period)]                          -          
+  707     max[d(flood period:ebb period)]              -          
+  708     min[d(flood period:ebb period)]              -          
+  709     Sign[d(flood period:ebb period)]             -          
+  710     d(slack water dislocation k_f)               -          
+  711     d(mean slack water dislocation k_f)          minutes   
+  712     d(max. slack water dislocation k_f)          minutes   
+  713     d(min. slack water dislocation k_f)          minutes   
+  714     max[d(slack water dislocation k_f)]          minutes   
+  715     min[d(slack water dislocation k_f)]          minutes   
+  716     Sign[d(slack water dislocation k_f)]         -         
+  717     d(slack water dislocation k_e)               minutes   
+  718     d(mean slack water dislocation k_e)          minutes   
+  719     d(max. slack water dislocation k_e)          minutes   
+  720     d(min. slack water dislocation k_e)          minutes   
+  721     max[d(slack water dislocation k_e)]          minutes   
+  722     min[d(slack water dislocation k_e)]          minutes   
+  723     Sign[d(slack water dislocation k_e)]         -          
+  724     d(duration of slack water at K_f             minutes   
+  725     d(mean duration of slack water K_f)          minutes   
+  726     d(max. duration of slack water K_f)          minutes   
+  727     d(min. duration of slack water K_f)          minutes   
+  728     max[d(duration of slack water K_f)]          minutes   
+  729     min[d(duration of slack water K_f)]          minutes   
+  730     Sign[d(duration of slack water K_f)]         -          
+  731     d(duration of slack water at K_e)            minutes   
+  732     d(mean duration of slack water K_e)          minutes   
+  733     d(max. duration of slack water K_e)          minutes   
+  734     d(min. duration of slack water K_e)          minutes   
+  735     max[d(duration of slack water K_e)]          minutes   
+  736     min[d(duration of slack water K_e)]          minutes   
+  737     Sign[d(duration of slack water K_e)]         -          
+  738     d(duration of slack water, K_f:K_e)          -                  
+  739     d(dur. of slack water, K_f:K_e (mean))       -               
+  740     d(duration of slack water,K_f:K_e (max))     -                 
+  741     d(duration of slack water,K_f:K_e (min))     -                 
+  742     max[d(duration of slack water, K_f:K_e)]     -                  
+  743     min[d(duration of slack water, K_f:K_e)]     -                  
+  744     Sign[d(duration of slack water,K_f:K_e)]     -                  
+  745     d(flood current bed load transport)          E+3 kg    
+  746     d(flood current bed load transp. (mean))     E+3 kg    
+  747     d(flood current bed load transp. (max))      E+3 kg    
+  748     d(flood current bed load transp. (min))      E+3 kg    
+  749     max[d(flood current bed load transport)]     E+3 kg    
+  750     min[d(flood current bed load transport)]     E+3 kg    
+  751     Sig[d(flood current bed load transport)]     -          
+  752     d(ebb current bed load transport             E+3 kg    
+  753     d(ebb current bed load transp. (mean))       E+3 kg    
+  754     d(ebb current bed load transport (max))      E+3 kg    
+  755     d(ebb current bed load transport (min))      E+3 kg    
+  756     max[d(ebb current bed load transport)]       E+3 kg    
+  757     min[d(ebb current bed load transport)]       E+3 kg    
+  758     Sign[d(ebb current bed load transport)]      -          
+  759     d(bed load transport, f:e)                   -          
+  760     d(bed load transport, f:e (mean))            -         
+  761     d(bed load transport, f:e (max))             -          
+  762     d(bed load transport, f:e (min))             -          
+  763     max[d(bed load transport, f:e)]              -          
+  764     min[d(bed load transport, f:e)]              -          
+  765     Sign[d(bed load transport, f:e)]             -          
+  766     d(residual bed load transport)               E+3 kg    
+  767     d(residual bed load transport (mean))        E+3 kg    
+  768     d(residual bed load transport (max))         E+3 kg    
+  769     d(residual bed load transport (min))         E+3 kg    
+  770     max[d(residual bed load transport)]          E+3 kg    
+  771     min[d(residual bed load transport)]          E+3 kg    
+  772     Sign[d(residual bed load transport)]         -          
+  773     d(max. susp. load)                           kg/m**3   
+  774     d(max. suspended load (mean))                kg/m**3   
+  775     d(max. suspended load (max))                 kg/m**3
+  776     d(max. suspended load (min))                 kg/m**3   
+  777     max[d(max. suspended load)]                  kg/m**3   
+  778     min[d(max. suspended load)]                  kg/m**3   
+  779     Sign[d(max. suspended load)]                 -        
+  780     d(min. suspended load)                       kg/m**3   
+  781     d(min. suspended load (mean))                kg/m**3   
+  782     d(min. suspended load (max))                 kg/m**3   
+  783     d(min. suspended load (min))                 kg/m**3   
+  784     max[d(min. suspended load)]                  kg/m**3 
+  785     min[d(min. suspended load)]                  kg/m**3   
+  786     Sign[d(min. suspended load)]                 -    
+  787     d(mean suspended load)                       kg/m**3   
+  788     d(mean suspended load (mean))                kg/m**3   
+  789     d(mean suspended load (max))                 kg/m**3   
+  790     d(mean suspended load (min))                 kg/m**3   
+  791     max[d(mean suspended load)]                  kg/m**3   
+  792     min[d(mean suspended load)]                  kg/m**3   
+  793     Sign[d(mean suspended load)]                 -    
+  794     d(variation of suspended load)               kg/m**3   
+  795     d(variation of susp. load (mean))            kg/m**3   
+  796     d(variation of susp. load (max))             kg/m**3   
+  797     d(variation of susp. load (min))             kg/m**3   
+  798     max[d(variation of susp. load)]              kg/m**3   
+  799     min[d(variation of susp. load)]              kg/m**3   
+  800     Sign[d(variation of susp. load)]             -    
+  801     d(adv. flood transport of susp. load)        E+3 kg  
+  802     d(adv. flood transp. of susp.load(mean))     E+3 kg    
+  803     d(adv. flood transp. of susp.load (max))     E+3 kg    
+  804     d(adv. flood transp. of susp.load (min))     E+3 kg    
+  805     max[d(adv. flood transp. of susp. load)]     E+3 kg    
+  806     min[d(adv. flood transp. of susp. load)]     E+3 kg    
+  807     Sign[d(adv. flood transp. of susp.load)]     -          
+  808     d(adv. ebb transport of suspended load)      E+3 kg    
+  809     d(adv. ebb transp. of susp. load (mean))     E+3 kg    
+  810     d(adv. ebb transp. of susp. load (max.))     E+3 kg    
+  811     d(adv. ebb transp. of susp. load (min.))     E+3 kg    
+  812     max[d(adv. ebb transport of susp. load)]     E+3 kg    
+  813     min[d(adv. ebb transport of susp. load)]     E+3 kg    
+  814     Sign[d(adv. ebb transp. of susp. load)]      -          
+  815     d(adv. res. transport of susp. load)         E+3 kg    
+  816     d(adv. res. transp. of susp. load(mean))     E+3 kg    
+  817     d(adv. res. transp. of susp. load(max))      E+3 kg    
+  818     d(adv. res. transp. of susp. load(min))      E+3 kg    
+  819     max[d(adv. res. transp. of susp. load)]      E+3 kg    
+  820     min[d(adv. res. transp. of susp. load)]      E+3 kg    
+  821     Sign[d(adv. res. transp. of susp. load)]     -           
+  822     d(adv. transport of susp. load, f:e)         -          
+  823     d(adv. transp. of susp. load, f:e(mean))     -          
+  824     d(adv. transp. of susp. load, f:e (max))     -           
+  825     d(adv. transp. of susp. load, f:e (min))     -           
+  826     max[d(adv. transp. of susp. load, f:e)]      -           
+  827     min[d(adv. transp. of susp. load, f:e)]      -           
+  828     Sign[d(adv. transp. of susp. load, f:e)]     -            
+  829     wave speed                                   m/s       
+  830     Froude number                                -          
+  831     scalar flowrate                              m**3/s    
+  832     tracer                                       -          
+  833     turbulent kinetic energy                     J/kg      
+  834     turbulent energy dissipation                 W/kg      
+  835     eddy viscosity                               m**2/s    
+  836     scalar current velocity                      m/s       
+  837     bottom friction (Taylor)                     -        
+  838     Courant number                               -
+  839     layer thickness                              m         
+  840     wave height                                  m
+  841     phase of the wave                            rad   
+  842     wave-induced velocity                        m/s       
+  843     celerity                                     m/s       
+  844     group velocity                               m/s       
+  845     wave number                                  rad/m       
+  846     velocity potential (real)                    m**2/s 
+  847     velocity potential (imag)                    m**2/s
+  848     significant wave height (synth)              m         
+  849     reference water surface (wave)               m          
+  850     vector of wave propagation                   -
+  851     water level elevation (t=0)                  m
+  852     wave-induced velocity (t=0)                  m/s       
+  853     wave-induced velocity (t=T/4)                m/s
+  854     d(high water level HW)                       m         
+  855     d(low water level LW)                        m         
+  856     d(mean water level MW)                       m         
+  857     d(water level difference HW-NW)              m         
+  858     d(time of high water)                        minutes   
+  859     d(time of low water)                         minutes   
+  860     d(duration of inundation)                    minutes   
+  861     d(duration of dry period)                    minutes   
+  862     d(max. rise velocity)                        cm/h      
+  863     d(max. fall velocity)                        cm/h 
+  864     d(standard deviation of water level)         m        
+  865     d(variance of water level)                   m**2    
+  866     d(duration of high water)                    minutes   
+  867     d(duration of low water)                     minutes   
+  868     reference water surface HW                   m
+  869     reference water surface LW                   m
+  870     hydrodynamic pressure                        Pa
+  871     heaven                                       -
+  872     hell                                         -         
+  873     eddy diffusivity                             m**2/s    
+  874     mechanical energy density                    kJ/m**2
+  875     MU_2-tide (Amplitude)                        m       
+  876     MU_2-tide (Phase)                            degree
+  877     NU_2-tide (Amplitude)                        m         
+  878     NU_2-tide (Phase)                            degree      
+  879     2MN_6-tide (Amplitude)                       m         
+  880     2MN_6-tide (Phase)                           degree      
+  881     3MS_8-tide (Amplitude)                       m         
+  882     3MS_8-tide (Phase)                           degree      
+  883     maximum value of salinity                    10**-3
+  884     minimum value of salinity                    10**-3
+  885     mean value of salinity                       10**-3
+  886     maximum variation of salinity                10**-3
+  887     max. increase of salinity                    10**-3/h    
+  888     max. decrease of salinity                    10**-3/h  
+  889     standard deviation of salinity               10**-3  
+  890     variance of salinity                         10**-6    
+  891     duration of high salinity                    hours
+  892     duration of low salinity                     hours     
+  893     advective salt transport                     E+3 m**3         
+  894     d(maximum value of salinity)                 10**-3
+  895     d(minimum value of salinity)                 10**-3
+  896     d(mean value of salinity)                    10**-3
+  897     d(maximum variation of salinity)             10**-3
+  898     d(max. increase of salinity)                 10**-5/h
+  899     d(max. decrease of salinity)                 10**-5/h
+  900     d(standard deviation of salinity)            10**-3
+  901     d(variance of salinity)                      10**-6
+  902     d(duration of high salinity)                 minutes
+  903     d(duration of low salinity)                  minutes
+  904     d(advective salt transport)                  E+3 m**3
+  905     scalar bed load transport rate               kg/s    
+  906     wind velocity                                m/s       
+  907     reference surface meteo                      m
+  908     bottom shear stress                          N/m**2
+  909     wind shear stress                            N/m**2
+  910     x-component of bottom shear stress           N/m**2
+  911     y-component of bottom shear stress           N/m**2    
+  912     x-component of wind shear stress             N/m**2    
+  913     y-component of wind shear stress             N/m**s    
+  914     wind-induced energy alteration               W/m**2
+  915     athmosperic-pressure-induced energy flux     W/m**2    
+  916     energy dissipation at the bottom             W/m**2    
+  917     geodetic height                              m
+  918     reference surface synoptic data              m
+  919     d(pressure)                                  10**4 Pa
+  920     spec. potential energy                       kJ/m**3
+  921     spec. kinetic energy                         kJ/m**3    
+  922     potential energy density                     kJ/m**2
+  923     kinetic energy density                       kJ/m**2
+  924     maximum depth                                m
+  925     minimum depth                                m         
+  926     mean depth                                   m         
+  927     maximum variation of depth                   m         
+  928     change of depth                              m         
+  929     maximum increase of depth                    m
+  930     maximum decrease of depth                    m
+  931     sum of vertical deposition                   m
+  932     sum of vertical erosion                      m
+  933     ratio for deposition/erosion                 -
+  934     maximum wind velocity                        m/s
+  935     time of maximum wind velocity                hour
+  936     duration of high wind velocity               hours
+  937     duration of low wind velocity                hours
+  938     frequency of wind velocity                   percent
+  939     available pot. energy density                kJ/m**2
+  940     available kin. energy density                kJ/m**2   
+  941     available mech. energy density               kJ/m**2   
+  942     d(wind-induced energy alteration)            W/m**2
+  943     spec. mechanical energy                      kJ/m**3    
+  944     d(energy dissipation at the bottom)          W/m**2
+  945     cross-section                                m**2
+  946     wetted perimeter                             m
+  947     hydraulic radius                             m                      
+  948     discharge (integral)                         m**3/s
+  949     adv. transport of salt (integral)            E+3 m**3/s
+  950     undefined                                    -
+  951     dynamically relevant pressure                10**4 Pa    
+  952     flux of potential energy                     MW  
+  953     flux of kinetic energy                       MW        
+  954     flux of mechanical energy                    MW        
+  955     pressure induced flux of energy              MW        
+  956     flux of energy                               MW        
+  957     available flux of pot. energy                kW        
+  958     available flux of kin. energy                kW        
+  959     available flux of mech. energy               kW        
+  960     available flux of p.induced energy           kW        
+  961     available flux of energy                     kW
+  962     residual APE-transport                       kWh
+  963     residual APE-transport (mean)                kWh
+  964     residual APE-transport (max.)                kWh
+  965     residual APE-transport (min.)                kWh
+  966     residual AKE-transport                       kWh       
+  967     residual AKE-transport (mean)                kWh       
+  968     residual AKE-transport (max.)                kWh       
+  969     residual AKE-transport (min.)                kWh       
+  970     residual AME-transport                       kWh
+  971     residual AME-transport (mean)                kWh
+  972     residual AME-transport (max.)                kWh
+  973     residual AME-transport (min.)                kWh
+  974     dynamic pressure work                        kWh       
+  975     dynamic pressure work (mean)                 kWh       
+  976     dynamic pressure work (max.)                 kWh       
+  977     dynamic pressure work (min.)                 kWh       
+  978     residual energy-transport                    kWh       
+  979     residual energy-transport (mean)             kWh       
+  980     residual energy-transport (max.)             kWh       
+  981     residual energy-transport (min.)             kWh       
+  982     res. en.-transport/tidal vol.                Wh/m**3
+  983     res. en.-transport/tidal vol. (mean)         Wh/m**3
+  984     res. en.-transport/tidal vol. (max.)         Wh/m**3
+  985     res. en.-transport/tidal vol. (min.)         Wh/m**3
+  986     max. increase of wind speed                  m/s/h
+  987     max. decrease of wind speed                  m/s/h
+  988     res. en.-transport/cross-section             kWh/m**2
+  989     res. en.-transport/cross-section (mean)      kWh/m**2
+  990     res. en.-transport/cross-section (max.)      kWh/m**2
+  991     res. en.-transport/cross-section (min.)      kWh/m**2
+  992     bottom friction (Chezy)                      -        
+  993     effective bed roughness                      m    
+  994     bottom friction (Strickler)                  -
+  995     x-coordinate                                 m          
+  996     y-coordinate                                 m         
+  997     z-coordinate                                 m          
+  998     peak-direction of spectrum                   -     
+  999     direction of energy transport                -
+ 1000     mean wave period                             s           
+ 1001     mean relative wave period                    s           
+ 1002     peak period of energy density spectrum       s     
+ 1003     mean absolute zero crossing period           s            
+ 1004     normalized width of frequency spectrum       -           
+ 1005     directional spreading of waves               degree      
+ 1006     friction coefficient (for waves)             -            
+ 1007     frac. of breaking waves (depth-induced)      -
+ 1008     transport of wave energy (x-comp.)           m**3/s
+ 1009     transport of wave energy (y-comp.)           m**3/s       
+ 1010     transport of wave energy                     m**3/s       
+ 1011     wave induced force/unit area (x-comp.)       N/m**2
+ 1012     wave induced force/unit area (y-comp.)       N/m**2      
+ 1013     wave induced force/unit area                 N/m**2     
+ 1014     rms-value max. bottom orbital velocity       m/s    
+ 1015     rms-value bottom orbital velocity            m/s   
+ 1016     average wave length                          m
+ 1017     average wave steepness                       -            
+ 1018     d(sign. wave height last two iters)          m            
+ 1019     d(ave. wave period last two iters)           s            
+ 1020     num. loss of energy across sector            m**2/s            
+ 1021     significant wave height                      m
+ 1022     mean wave direction                          degree
+ 1023     horizontal current velocity component        m/s
+ 1024     vertical current velocity component          m/s
+ 1025     scaling factor                               -             
+ 1026     time shift                                   -            
+ 1027     direction of wind shear stress               degree
+ 1028     direction of bottom shear stress             degree
+ 1029     current velocity (z-dir.)                    m/s       
+ 1030     eddy viscosity (x-dir.)                      m**2/s    
+ 1031     eddy viscosity (y-dir.)                      m**2/s    
+ 1032     eddy viscosity (z-dir.)                      m**2/s    
+ 1033     eddy diffusivity (x-dir.)                    m**2/s    
+ 1034     eddy diffusivity (y-dir.)                    m**2/s    
+ 1035     eddy diffusivity (z-dir.)                    m**2/s    
+ 1036     Richardson number                            -
+ 1037     relative density                             -
+ 1038     error velocity                               m/s
+ 1039     intensity beam 1                             counts
+ 1040     intensity beam 2                             counts
+ 1041     intensity beam 3                             counts
+ 1042     intensity beam 4                             counts
+ 1043     percent good (3BEAMS)                        percent
+ 1044     percent good (REJECT)                        percent
+ 1045     percent good (>1BBAD)                        percent
+ 1046     percent good (4BEAMS)                        percent
+ 1047     M_10-tide (amplitude)                        m
+ 1048     M_10-tide (phase)                            degree      
+ 1049     M_12-tide (amplitude)                        m
+ 1050     M_12-tide (phase)                            degree      
+ 1051     M_14-tide (amplitude)                        m
+ 1052     M_14-tide (phase)                            degree      
+ 1053     2MK_6-tide (amplitude)                       m
+ 1054     2MK_6-tide (phase)                           degree
+ 1055     3MS_4-tide (amplitude)                       m
+ 1056     3MS_4-tide (phase)                           degree
+ 1057     time                                         days
+ 1058     source-volume                                m**3/s
+ 1059     sink-volume                                  m**3/s
+ 1060     discharge (ADCP-cell)                        m**3/s
+ 1061     discharge (ADCP-ensemble)                    m**3/s       
+ 1062     backscatter                                  -
+ 1063     time differenz relativ desired time          minutes
+ 1064     rise/fall velocity                           m/h              
+ 1065     M_1-tide (amplitude)                         m         
+ 1066     M_1-tide (phase)                             degree      
+ 1067     MSf-tide (amplitude)                         m         
+ 1068     MSf-tide (phase)                             degree      
+ 1069     2MN_2-tide (Amplitude)                       m         
+ 1070     2MN_2-tide (Phase)                           degree      
+ 1071     K_2[sw]-tide (Amplitude)                     m         
+ 1072     K_2[sw]-tide (Phase)                         degree      
+ 1073     Sa-tide (amplitude)                          m         
+ 1074     Sa-tide (phase)                              degree      
+ 1075     S_6-tide (amplitude)                         m         
+ 1076     S_6-tide (phase)                             degree      
+ 1077     M_2-tide (amplitude, salinity)               psu       
+ 1078     M_2-tide (phase, salinity)                   degree      
+ 1079     M_4-tide (amplitude, salinity)               psu       
+ 1080     M_4-tide (phase, salinity)                   degree      
+ 1081     M_6-tide (amplitude, salinity)               psu       
+ 1082     M_6-tide (phase, salinity)                   degree      
+ 1083     M_8-tide (amplitude, salinity)               psu       
+ 1084     M_8-tide (phase, salinity)                   degree      
+ 1085     M_2-tide (max. current)                      m/s       
+ 1086     M_2-tide (phase, current)                    degree      
+ 1087     M_4-tide (max. current)                      m/s       
+ 1088     M_4-tide (phase, current)                    degree      
+ 1089     M_6-tide (max. current)                      m/s       
+ 1090     M_6-tide (phase, current)                    degree      
+ 1091     M_8-tide (max. current)                      m/s       
+ 1092     M_8-tide (phase, current)                    degree      
+ 1093     M_2-tide (min./max. current)                 -          
+ 1094     M_2-tide (phase shift current)               degree      
+ 1095     M_4-tide (min./max. current)                 -      
+ 1096     M_4-tide (phase shift current)               degree      
+ 1097     M_6-tide (min./max. current)                 -      
+ 1098     M_6-tide (phase shift current)               degree      
+ 1099     M_8-tide (min./max. current)                 -        
+ 1100     M_8-tide (phase shift current)               degree      
+ 1101     suspended load concentration 01              kg/m**3
+ 1102     suspended load concentration 02              kg/m**3
+ 1103     suspended load concentration 03              kg/m**3
+ 1104     suspended load concentration 04              kg/m**3
+ 1105     suspended load concentration 05              kg/m**3
+ 1106     suspended load concentration 06              kg/m**3
+ 1107     suspended load concentration 07              kg/m**3
+ 1108     suspended load concentration 08              kg/m**3
+ 1109     suspended load concentration 09              kg/m**3
+ 1110     suspended load concentration 10              kg/m**3
+ 1111     S_2-tide (max. current)                      m/s       
+ 1112     S_2-tide (phase, current)                    degree      
+ 1113     S_2-tide (min./max. current)                 -        
+ 1114     S_2-tide (phase shift current)               degree      
+ 1115     K_1-tide (max. current)                      m/s       
+ 1116     K_1-tide (phase, current)                    degree      
+ 1117     K_1-tide (min./max. current)                 -         
+ 1118     K_1-tide (phase shift current)               degree      
+ 1119     O_1-tide (max. current)                      m/s       
+ 1120     O_1-tide (phase, current)                    degree      
+ 1121     O_1-tide (min./max. current)                 -          
+ 1122     O_1-tide (phase shift current)               degree      
+ 1123     N_2-tide (max. current)                      m/s       
+ 1124     N_2-tide (phase, current)                    degree      
+ 1125     N_2-tide (min./max. current)                 -          
+ 1126     N_2-tide (phase shift current)               degree      
+ 1127     mean waterlevel                              mNN       
+ 1128     mean current                                 m/s       
+ 1129     scalar tidal constituent (ampl.)             -                
+ 1130     scalar tidal constituent (phase)             degree      
+ 1131     vector tidal constituent (maximum)           - 
+ 1132     vector tidal constituent (phase)             degree      
+ 1133     vector tidal constituent (min./max.)         -                  
+ 1134     vector tidal constituent (phase shift)       degree    
+ 1135     no data                                      -
+ 1136     grain density                                kg/m**3
+ 1137     ripple height                                m             
+ 1138     ripple wave number                           rad/m                
+ 1139     dune height                                  m                      
+ 1140     dune wave number                             rad/m           
+ 1141     porosity                                     percent
+ 1142     sediment fraction                            percent          
+ 1143     erosion rate                                 kg/(m**2s)            
+ 1144     deposition rate                              kg/(m**2s)              
+ 1145     ripple wave number (x-dir.)                  rad/m     
+ 1146     ripple wave number (y-dir.)                  rad/m     
+ 1147     dune wave number (x-dir.)                    rad/m     
+ 1148     dune wave number (y-dir.)                    rad/m     
+ 1149     rigid layer depth                            mNN       
+ 1150     rigid layer roughness                        m         
+ 1151     bed load transport capacity                  kg/m                   
+ 1152     net radiation balance                        W/m**2
+ 1153     incoming radiation                           W/m**2       
+ 1154     relative humidity                            -
+ 1155     cloudyness                                   -
+ 1156     temperature change                           degr.cent.
+ 1157     salinity change                              10**-3         
+ 1158     bottom evolution rate                        mm/s
+ 1159     oxygen concentration                         mg/l         
+ 1160     oxygen saturation                            percent            
+ 1161     turbidity                                    percent            
+ 1162     pH-value                                     -            
+ 1163     d(time dependent bathymetry)                 m
+ 1164     d(vertical erosion)                          m         
+ 1165     effective bed shear stress                   N/m**2                          
+ 1166     suspended load change                        kg/m**3    
+ 1167     time dependent dune wave number (abs.)       rad/m      
+ 1168     bottom friction (Nikuradse)                  m                      
+ 1169     eff. bed shear stress (abs.)                 N/m**2 
+ 1170     time dependent ripple height                 m             
+ 1171     time dependent ripple wave number            rad/m                
+ 1172     time dependent dune height                   m                      
+ 1173     time dependent dune wave number              rad/m           
+ 1174     maximum temperature                          degr.cent.
+ 1175     maximum temperature (mean)                   degr.cent.   
+ 1176     maximum temperature (max)                    degr.cent.   
+ 1177     maximum temperature (min)                    degr.cent.   
+ 1178     minimum temperature                          degr.cent.   
+ 1179     minimum temperature (mean)                   degr.cent.   
+ 1180     minimum temperature (max)                    degr.cent.   
+ 1181     minimum temperature (min)                    degr.cent.   
+ 1182     mean temperature                             degr.cent.   
+ 1183     mean temperature (mean)                      degr.cent.   
+ 1184     mean temperature (max)                       degr.cent.   
+ 1185     mean temperature (min)                       degr.cent.   
+ 1186     temperature variation                        degr.cent.   
+ 1187     temperature variation (mean)                 degr.cent.   
+ 1188     temperature variation (max)                  degr.cent.   
+ 1189     temperature variation (min)                  degr.cent.   
+ 1190     adv. flood transport of heat                 GWh   
+ 1191     adv. flood transport of heat (mean)          GWh       
+ 1192     adv. flood transport of heat (max)           GWh       
+ 1193     adv. flood transport of heat (min)           GWh       
+ 1194     adv. ebb transport of heat                   GWh       
+ 1195     adv. ebb transport of heat (mean)            GWh       
+ 1196     adv. ebb transport of heat (max)             GWh       
+ 1197     adv. ebb transport of heat (min)             GWh       
+ 1198     adv. residual transport of heat              GWh       
+ 1199     adv. residual transport of heat (mean)       GWh       
+ 1200     adv. residual transport of heat (max)        GWh       
+ 1201     adv. residual transport of heat (min)        GWh       
+ 1202     adv. heat transport, flood:ebb               -
+ 1203     adv. heat transport, flood:ebb (mean)        -
+ 1204     adv. heat transport, flood:ebb (max)         -
+ 1205     adv. heat transport, flood:ebb (min)         -
+ 1206     d(maximum temperature)                       degr.cent.    
+ 1207     d(maximum temperature (mean))                degr.cent.    
+ 1208     d(maximum temperature (max))                 degr.cent.    
+ 1209     d(maximum temperature (min))                 degr.cent.    
+ 1210     max[d(maximum temperature)]                  degr.cent.    
+ 1211     min[d(maximum temperature)]                  degr.cent.    
+ 1212     Sig[d(maximum temperature)]                  -          
+ 1213     d(minimum temperature)                       degr.cent.    
+ 1214     d(minimum temperature (mean))                degr.cent.    
+ 1215     d(minimum temperature (max))                 degr.cent.    
+ 1216     d(minimum temperature (min))                 degr.cent.    
+ 1217     max[d(minimum temperature)]                  degr.cent.    
+ 1218     min[d(minimum temperature)]                  degr.cent.    
+ 1219     Sig[d(minimum temperature)]                  -          
+ 1220     d(mean temperature)                          degr.cent.    
+ 1221     d(mean temperature (mean))                   degr.cent.    
+ 1222     d(mean temperature (max))                    degr.cent.    
+ 1223     d(mean temperature (min))                    degr.cent.    
+ 1224     max[d(mean temperature)]                     degr.cent.    
+ 1225     min[d(mean temperature)]                     degr.cent.    
+ 1226     Sig[d(mean temperature)]                     -       
+ 1227     d(temperature variation)                     degr.cent.    
+ 1228     d(temperature variation (mean))              degr.cent.
+ 1229     d(temperature variation (max))               degr.cent.
+ 1230     d(temperature variation (min))               degr.cent.
+ 1231     max[d(temperature variation)]                degr.cent.
+ 1232     min[d(temperature variation)]                degr.cent.
+ 1233     Sig[d(temperature variation)]                -        
+ 1234     d(adv. heat transport flood)                 GWh 
+ 1235     d(adv. heat transport flood (mean))          GWh 
+ 1236     d(adv. heat transport flood (max))           GWh 
+ 1237     d(adv. heat transport flood (min))           GWh
+ 1238     max[d(adv. heat transport flood)]            GWh
+ 1239     min[d(adv. heat transport flood)]            GWh
+ 1240     Sig[d(adv. heat transport flood)]            -      
+ 1241     d(adv. heat transport ebb)                   GWh 
+ 1242     d(adv. heat transport ebb (mean))            GWh 
+ 1243     d(adv. heat transport ebb (max))             GWh 
+ 1244     d(adv. heat transport ebb (min))             GWh
+ 1245     max[d(adv. heat transport ebb)]              GWh
+ 1246     min[d(adv. heat transport ebb)]              GWh
+ 1247     Sig[d(adv. heat transport ebb)]              -    
+ 1248     d(adv. residual heat transport)              GWh       
+ 1249     d(adv. residual heat transport (mean))       GWh       
+ 1250     d(adv. residual heat transport (max))        GWh       
+ 1251     d(adv. residual heat transport (min))        GWh       
+ 1252     max[d(adv. residual heat transport)]         GWh       
+ 1253     min[d(adv. residual heat transport)]         GWh       
+ 1254     Sig[d(adv. residual heat transport)]         -        
+ 1255     d(adv. heat transport, f:e)                  -    
+ 1256     d(adv. heat transport, f:e (mean))           -     
+ 1257     d(adv. heat transport, f:e (max))            -    
+ 1258     d(adv. heat transport, f:e (min))            -    
+ 1259     max[d(adv. heat transport, f:e)]             -    
+ 1260     min[d(adv. heat transport, f:e)]             -    
+ 1261     Sig[d(adv. heat transport, f:e)]             -    
+ 1262     adv. heat transport (integral)               TW
+ 1263     adv. suspended load transport (integral)     10**3 kg/s
+ 1264     maximum value of temperature                 deg.c.   
+ 1265     minimum value of temperature                 deg.c. 
+ 1266     mean value of temperature                    deg.c.    
+ 1267     maximum variation of temperature             deg.c.    
+ 1268     max. increase of temperature                 deg.c./h  
+ 1269     max. decrease of temperature                 deg.c./h  
+ 1270     standard deviation of temperature            deg.c.    
+ 1271     variance of temperature                      deg.c.**2 
+ 1272     duration of high temperature                 hours
+ 1273     duration of low temperature                  hours   
+ 1274     advective heat transport                     GWh      
+ 1275     d(maximum value of temperature)              deg.c. 
+ 1276     d(minimum value of temperature)              deg.c.
+ 1277     d(mean value of temperature)                 deg.c. 
+ 1278     d(maximum variation of temperature)          deg.c.
+ 1279     d(max. increase of temperature)              deg.c./h
+ 1280     d(max. decrease of temperature)              deg.c./h
+ 1281     d(standard deviation of temperature)         deg.c.
+ 1282     d(variance of temperature)                   deg.c.**2
+ 1283     d(duration of high temperature)              minutes
+ 1284     d(duration of low temperature)               minutes
+ 1285     d(advective heat transport)                  GWh      
+ 1286     maximum value of suspended load              kg/m**3  
+ 1287     minimum value of suspended load              kg/m**3
+ 1288     mean value of suspended load                 kg/m**3   
+ 1289     maximum variation of suspended load          kg/m**3   
+ 1290     max. increase of suspended load              kg/m**3/h 
+ 1291     max. decrease of suspended load              kg/m**3/h 
+ 1292     standard deviation of suspended load         kg/m**3   
+ 1293     variance of suspended load                   kg**2/m**6
+ 1294     duration of high suspended load              hours
+ 1295     duration of low suspended load               hours   
+ 1296     advective transport of suspended load        E+6 kg   
+ 1297     d(maximum value of suspended load)           kg/m**3  
+ 1298     d(minimum value of suspended load)           kg/m**3 
+ 1299     d(mean value of suspended load)              kg/m**3
+ 1300     d(variance of suspended load)                kg/m**3
+ 1301     d(max. increase of suspended load)           kg/m**3/h
+ 1302     d(max. decrease of suspended load)           kg/m**3/h
+ 1303     d(standard deviation of suspended load)      kg/m**3
+ 1304     d(variance of suspended load)                kg**2/m**6
+ 1305     d(duration of high suspended load)           minutes
+ 1306     d(duration of low suspended load             minutes
+ 1307     d(advective suspended load transport)        E+3 m**3
+ 1308     d(maximum depth)                             m
+ 1309     d(minimum depth)                             m         
+ 1310     d(mean depth)                                m         
+ 1311     d(maximum variation of depth)                m         
+ 1312     d(change of depth)                           m         
+ 1313     d(maximum increase of depth)                 m
+ 1314     d(maximum decrease of depth)                 m
+ 1315     d(sum of vertical deposition)                m
+ 1316     d(sum of vertical erosion)                   m
+ 1317     d(ratio for deposition/erosion)              -
+ 1318     maximum eff. bed shear stress                N/m**2   
+ 1319     minimum eff. bed shear stress                N/m**2 
+ 1320     mean eff. bed shear stress                   N/m**2    
+ 1321     max. diff. of eff. bed shear stress          N/m**2  
+ 1322     max. increase of eff. bed shear stress       N/m**2/h  
+ 1323     max. decrease of eff. bed shear stress       N/m**2/h  
+ 1324     standard dev. eff. bed shear stress          N/m**2    
+ 1325     variance eff. bed shear stress               N**2/m**4 
+ 1326     duration high eff. bed shear stress          hours  
+ 1327     duration low eff. bed shear stress           hours 
+ 1328     action of eff. bed shear stress              N*h/m**2
+ 1329     d(maximum eff. bed shear stress)             N/m**2   
+ 1330     d(minimum eff. bed shear stress)             N/m**2  
+ 1331     d(mean eff. bed shear stress)                N/m**2 
+ 1332     d(max. diff. of eff. bed shear stress)       N/m**2  
+ 1333     d(max. incr. of eff. bed shear stress)       N/m**2/h  
+ 1334     d(max. decr. of eff. bed shear stress)       N/m**2/h 
+ 1335     d(standard dev. eff. bed shear stress)       N/m**2  
+ 1336     d(variance eff. bed shear stress)            N**2/m**4  
+ 1337     d(duration high eff. bed shear stress)       minutes  
+ 1338     d(duration low eff. bed shear stress)        minutes 
+ 1339     d(action of eff. bed shear stress)           N*min/m**2
+ 1340     bed load transport rate (integral)           kg/s
+ 1341     bed load transport capacity (integral)       kg/s
+ 1342     flood current bed shear stress action        Pa*h
+ 1343     mean fl.-cur. bed shear stress action        Pa*h
+ 1344     max. fl.-cur. bed shear stress action        Pa*h
+ 1345     min. fl.-cur. bed shear stress action        Pa*h
+ 1346     ebb current bed shear stress action          Pa*h
+ 1347     mean ebb-curr. bed shear stress action       Pa*h
+ 1348     max. ebb-curr. bed shear stress action       Pa*h
+ 1349     min. ebb-curr. bed shear stress action       Pa*h
+ 1350     bed shear stress action, f:e                 -
+ 1351     mean bed shear stress action, f:e            -
+ 1352     max. bed shear stress action, f:e            -
+ 1353     min. bed shear stress action, f:e            -
+ 1354     residual bed shear stress action             Pa*h
+ 1355     mean residual bed shear stress action        Pa*h
+ 1356     max. residual bed shear stress action        Pa*h
+ 1357     min. residual bed shear stress action        Pa*h
+ 1358     d(flood current bed shear stress action)     Pa*h     
+ 1359     d(fl.-c. bed shear stress action (mean))     Pa*h
+ 1360     d(fl.-c. bed shear stress action (max))      Pa*h           
+ 1361     d(fl.-c. bed shear stress action (min))      Pa*h          
+ 1362     max[d(fl.-c. bed shear stress action)]       Pa*h           
+ 1363     min[d(fl.-c. bed shear stress action)]       Pa*h           
+ 1364     Sig[d(fl.-c. bed shear stress action)]       -               
+ 1365     d(ebb current bed shear stress action)       Pa*h     
+ 1366     d(ebb-c. bed shear stress action (mean))     Pa*h
+ 1367     d(ebb-c. bed shear stress action (max))      Pa*h           
+ 1368     d(ebb-c. bed shear stress action (min))      Pa*h          
+ 1369     max[d(ebb-c. bed shear stress action)]       Pa*h           
+ 1370     min[d(ebb-c. bed shear stress action)]       Pa*h           
+ 1371     Sig[d(ebb-c. bed shear stress action)]       -               
+ 1372     d(bed shear stress action, f:e)              - 
+ 1373     d(bed shear stress action, f:e (mean))       -
+ 1374     d(bed shear stress action, f:e (max))        -
+ 1375     d(bed shear stress action, f:e (min))        -
+ 1376     max[d(bed shear stress action, f:e)]         -
+ 1377     min[d(bed shear stress action, f:e)]         -
+ 1378     Sig[d(bed shear stress action, f:e)]         -              
+ 1379     d(residual bed shear stress action)          Pa*h        
+ 1380     d(resid. bed shear stress action (mean))     Pa*h
+ 1381     d(resid. bed shear stress action (max))      Pa*h
+ 1382     d(resid. bed shear stress action (min))      Pa*h
+ 1383     max[d(residual bed shear stress action)]     Pa*h
+ 1384     min[d(residual bed shear stress action)]     Pa*h
+ 1385     Sig[d(residual bed shear stress action)]     -                 
+ 1386     peak wave period                             s
+ 1387     TM1 wave period                              s
+ 1388     TM2 wave period                              s
+ 1389     energy density (frequency-direction)         m**2*s/rad
+ 1390     frequency                                    Hz
+ 1391     direction from north to                      degree
+ 1392     energy density (1D)                          m**2*s
+ 1393     mean wave direction (1D)                     degree
+ 1394     location code name                           -
+ 1395     location name                                -
+ 1396     location abbreviated name                    -
+ 1397     quality parameter water level                - 
+ 1398     max. sig. wave height                        m  
+ 1399     max. sig. wave height (vector)               m
+ 1400     time of max. sig. wave height                hour  
+ 1401     duration of high sig. wave height            hours   
+ 1402     duration of low sig. wave height             hours  
+ 1403     frequency of sig. wave height                percent
+ 1404     d(max. sig. wave height)                     m  
+ 1405     d(max. sig. wave height (vector))            m  
+ 1406     d(time of max. sig. wave height)             minutes  
+ 1407     d(duration of high sig. wave height)         minutes  
+ 1408     d(duration of low sig. wave height)          minutes
+ 1409     d(frequency of sig. wave height)             percent
+ 1410     d(maximum wind velocity)                     m/s
+ 1411     d(time of maximum wind velocity)             minutes
+ 1412     d(duration of high wind velocity)            minutes
+ 1413     d(duration of low wind velocity)             minutes
+ 1414     d(frequency of wind velocity)                percent
+ 1415     d(M_2-tide (amplitude))                      cm         
+ 1416     d(M_2-tide (phase))                          degree    
+ 1417     d(M_4-tide (amplitude))                      cm         
+ 1418     d(M_4-tide (phase))                          degree    
+ 1419     d(M_6-tide (amplitude))                      cm         
+ 1420     d(M_6-tide (phase))                          degree    
+ 1421     d(M_8-tide (amplitude))                      cm         
+ 1422     d(M_8-tide (phase))                          degree    
+ 1423     d(M_4:M_2 (ratio of amplitudes))             -             
+ 1424     d(2*P(M_2)-P(M_4) (phase shift))             degree    
+ 1425     d(M_6:M_2 (ratio of amplitudes))             -             
+ 1426     d(3*P(M_2)-P(M_6) (phase shift))             degree    
+ 1427     d(M_8:M_2 (ratio of amplitudes))             -             
+ 1428     d(4*P(M_2)-P(M_8) (phase shift))             degree    
+ 1429     wave induced bottom shear stress             N/m**2
+ 1430     nodelist of polygons                         -
+ 1431     indicator for boundary nodes (Telemac)       -
+ 1432     indicator for global nodes (Telemac)         -
+ 1433     x-coordinate of a node                       -
+ 1434     y-coordinate of a node                       -
+ 1435     critical bed shear stress                    N/m**2
+ 1436     d(current velocity)                          m/s       
+ 1437     acceleration (radiation stress)              mm/s**2
+ 1438     roughness length z0                          m
+ 1439     d(sediment fraction)                         percent          
+ 1440     d(particle diameter d_m)                     mm        
+ 1441     vertical angle                               degree
+ 1442     d(salinity)                                  10**-3    
+ENDDATA                                                            

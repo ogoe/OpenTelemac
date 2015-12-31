@@ -1,0 +1,87 @@
+/---------------------------------------------------------------------
+/ ARTEMIS Version v7p0 juin 2014
+/ AGITATION DERRIERE UN BRISE LAME
+/---------------------------------------------------------------------
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES,FICHIERS
+/---------------------------------------------------------------------
+
+
+FICHIER DES RESULTATS              ='r2d_g8m.slf'
+
+FICHIER DES CONDITIONS AUX LIMITES ='geo_g8m.cli'
+
+FICHIER FORTRAN                    ='art_g8m.f'
+
+FICHIER DE GEOMETRIE               ='geo_g8m.slf'
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES,GENERALITES
+/---------------------------------------------------------------------
+
+TITRE ='EXEMPLE UTILISATION : AGITATION DERRIERE BRISE LAME'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES,GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+
+LISSAGE DES HAUTEURS DE HOULE          = NON
+
+VARIABLES POUR LES SORTIES GRAPHIQUES  ='HS,PHAS,ZF,ZS,C,CG,QB,INC'
+
+/---------------------------------------------------------------------
+/ EQUATIONS CONDITIONS INITIALES
+/---------------------------------------------------------------------
+
+CONDITIONS INITIALES ='COTE CONSTANTE'
+
+COTE INITIALE        =0.
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+
+/--------------------------------------------------------------------/
+/ OPTIONS
+/--------------------------------------------------------------------/
+STOCKAGE DES MATRICES =3
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES,SOLVEUR
+/---------------------------------------------------------------------
+
+SOLVEUR =8
+
+
+/---------------------------------------------------------------------
+/ PHYSICAL PARAMETERS
+/---------------------------------------------------------------------
+
+DEFERLEMENT =OUI
+
+HOULE ALEATOIRE MULTIDIRECTIONNELLE = OUI
+
+GAMMA = 3.3 
+
+PERIODE DE PIC : 1.68 
+
+PERIODE MINIMUM DU SPECTRE : 0.6
+PERIODE MAXIMUM DU SPECTRE : 8.
+
+ANGLE MINIMUM DE PROPAGATION : -140.0
+ANGLE MAXIMUM DE PROPAGATION : -40.0
+
+DIRECTION DE PROPAGATION DE LA HOULE : -90.0
+
+EXPOSANT S = 10
+
+PRECONDITIONNEMENT : 2
+
+
+/---------------------------------------------------------------------
+/---------------------------------------------------------------------
+

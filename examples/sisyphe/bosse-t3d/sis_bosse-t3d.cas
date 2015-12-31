@@ -1,0 +1,56 @@
+NOMBRE DE COUCHES POUR GRANULO ETENDUE : 2
+POROSITE DU LIT NON COHESIF = 0.375
+/
+/ DUREE DU CALCUL SUR HP C 3700 750 MHz : 91 s
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE                
+/
+/
+/                            SISYPHE                                       
+/
+/
+/NOMS FICHIERS
+/ -----------------------------------------------------
+FICHIER DE GEOMETRIE = geo_bosse-t3d.slf
+FICHIER DES CONDITIONS AUX LIMITES = geo_bosse-t3d.cli
+FICHIER DES RESULTATS = sis_bosse-t3d.slf
+/
+/CALCUL 
+/ -----------------------------------------------------
+TITRE = 'bosse suspension'
+CAS PERMANENT = VRAI
+MASS-LUMPING = OUI
+/
+/ENTREES-SORTIES, GRAPHIQUES ET LISTING 
+/-------------------------------------------------------
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,S,Z,H,B,E,CS1,TOB,M,QSBL
+BILAN DE MASSE = VRAI
+/
+/PARAMETRES NUMERIQUES 
+/-----------------------------
+ZERO = 1e-12
+TETA = 0.5
+/
+VALEUR MINIMUM DE H = 0.01
+/
+/
+/FROTTEMENT + TSOLIDE
+/------------------------------
+/
+SUSPENSION =  NON
+CHARRIAGE =   OUI
+/
+/
+EFFET DE PENTE = OUI
+BETA = 0.
+/
+/ CHARRIAGE
+/
+/FORMULE DE TRANSPORT SOLIDE = 1
+/RAPPORT D'EVOLUTION CRITIQUE = 10
+DIAMETRE MOYEN DES GRAINS = 0.000150
+/
+FORMULE DE TRANSPORT SOLIDE = 30
+RAPPORT D'EVOLUTION CRITIQUE = 0.5
+/
+ 

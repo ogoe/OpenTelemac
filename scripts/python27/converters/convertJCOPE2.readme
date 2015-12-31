@@ -1,0 +1,13 @@
+# Command to extract data off the JCOPE2 data result, within the box defined by the two opposite corners
+# The script automatically connects to the JCOPE2 website.
+# The script can now be found under ~/scripts/python27/converters/ of the latest trunk of the TELEMAC system.
+
+# Command to extract about 80 days of 2D results only from January 2, 1993.
+
+convertJCOPE2.py --from 1993-01-02 --stop 1993-03-25 --bl 34,140 --tr 41,147 -r jcope2-80d.slf --2d
+
+# Command to extract 4 months from both 2D and 3D dataset
+
+# NOT AVAILABLE --> convertJCOPE2.py --from 2011-02-15 --stop 2011-06-15 --bl 34,140 --tr 41,147 -r jcope2-4m2011.slf
+convertJCOPE2.py --from 1993-01-02 --stop 1993-05-02 --bl 34,140 --tr 41,147 -r jcope2-4m1993.slf
+convertJCOPE2.py --from 1993-01-02 --stop 1993-05-02 --bl 10,108 --tr 62,180 -r visu-jcope2-4m1993.slf
