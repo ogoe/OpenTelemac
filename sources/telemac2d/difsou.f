@@ -8,7 +8,7 @@
      & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1      
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -25,7 +25,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/10/2009
-!+
+!+       V6P0
 !+   MODIFIED TEST ON ICONVF(3)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -83,8 +83,10 @@
 !+        V7P1
 !+   FAC is now an integer. NREJET is now the number of sources, before
 !+   NREJTR was sent by telemac2d.f.
+!
 !history  R. ATA (LNHE)
 !+        02/11/2015
+!+        V7P1
 !+   Updates for water quality: new subroutine for weir reaeration
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -232,9 +234,9 @@
       DO ITRAC=1,NTRA
 !
         IF(NREJET.GT.0) THEN
-!       
+!
           DO I = 1 , NREJET
-!         
+!
             IR = ISCE(I)
 !           TEST IR.GT.0 FOR THE PARALLELISM
             IF(IR.GT.0) THEN
@@ -252,8 +254,8 @@
 !             BECAUSE THEY WILL DO THE JOB THEMSELVES
 !
               DISTRI=.FALSE.
-              IF(ICONVFT(ITRAC).EQ.ADV_NSC) DISTRI=.TRUE. 
-              IF(ICONVFT(ITRAC).EQ.ADV_PSI) DISTRI=.TRUE. 
+              IF(ICONVFT(ITRAC).EQ.ADV_NSC) DISTRI=.TRUE.
+              IF(ICONVFT(ITRAC).EQ.ADV_PSI) DISTRI=.TRUE.
 !
               IF(.NOT.DISTRI) THEN
 !               SOURCE TERM ADDED TO THE MASS OF TRACER
@@ -267,14 +269,14 @@
                 TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
               ENDIF
               TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
-! 
+!
 !             THE IMPLICIT PART OF THE TERM - T * SCE
 !             IS DEALT WITH IN CVDFTR.
-!         
+!
             ENDIF
-!         
+!
           ENDDO
-!       
+!
         ENDIF
 !
         IF(NSIPH.GT.0) THEN
@@ -371,7 +373,7 @@
                 IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN
                   H1   = HPROP%R(IR)
                   TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
-                  IF(NCSIZE.GT.1)THEN 
+                  IF(NCSIZE.GT.1)THEN
                     H1   = P_DMIN(H1  )+P_DMAX(H1  )
                     TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
                   ENDIF
@@ -394,9 +396,9 @@
      &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
 !               RECUPERATE H FOR WAQ
-                IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN 
+                IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN
                   H2  = HPROP%R(IR)
-                  IF(NCSIZE.GT.1)THEN 
+                  IF(NCSIZE.GT.1)THEN
                     H2   = P_DMIN(H2  )+P_DMAX(H2  )
                   ENDIF
                 ENDIF
@@ -405,12 +407,12 @@
 !       warning: this process is a bit strange and then difficult to
 !                implement: impose that tracer TN increases spontaneously
 !                under the effect of "nothing" (sources,boundary conditions... )
-!                needs to think more about it. 
+!                needs to think more about it.
 !                   CALL REAER_WEIR (FORMRS,H1,H2,ABRS,WATTEMP,EPS,
 !     &                              O2SATU,TRUP,TN,ADDTR,WAQPROCESS,
 !     &                              IR,NTRAC)
                 ENDIF
-              ENDIF               
+              ENDIF
             ENDDO
           ENDDO
         ENDIF
@@ -454,7 +456,7 @@
 !       INITIALISATIONS
 !
         CALL OS('X=0     ',X=TSCEXP%ADR(NTRAC)%P)
-        YASMI(NTRAC)=.TRUE.   
+        YASMI(NTRAC)=.TRUE.
 !
 !       SOURCE TERMS
 !
@@ -491,7 +493,7 @@
         MASSOU(NTRAC)=MASSOU(NTRAC)*DT
         IF(NCSIZE.GT.1) MASSOU(NTRAC)=P_DSUM(MASSOU(NTRAC))
 !
-      ENDIF     
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

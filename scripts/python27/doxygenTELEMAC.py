@@ -220,6 +220,8 @@ def createDOXYGEN(ifile,ilines,lname,list):
                else:
                   olines.append('!>    </td><td> ')
                   print '\nHistory comment missing in: ' + subname + '\n'
+                  print d
+                  sys.exit()
                olines.append('!>   </td></tr>')
          olines.append('!>   </table>\n!')
 

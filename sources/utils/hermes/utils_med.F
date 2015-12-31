@@ -18,6 +18,7 @@
 !
 !history VINCENT STOBIAC
 !+       23/05/2014
+!+       V6P3
 !+       ADDING GENERAL MED SUBROUTINES
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +42,7 @@
         INTEGER :: NBND_GRP
         ! Contains for each boundary group its values for h u v tracer
         INTEGER, ALLOCATABLE :: BND_GRP_VAL(:,:)
-        ! Contains for each family its number and the index of the boundary group associated 
+        ! Contains for each family its number and the index of the boundary group associated
         ! 0 if it is not a boundary family
         INTEGER, ALLOCATABLE :: BND_FAM(:,:)
 #if defined(HAVE_MED)
@@ -151,7 +152,7 @@
           IERR = HERMES_MAX_FILE_ERR
           RETURN
         ENDIF
-!       
+!
 !       Look far a place in the hash table
         MED_ID = 1
         DO
@@ -257,14 +258,14 @@
       IF(MED_MODE.EQ.MED_ACC_RDONLY) THEN
 !       ONLY ONE MESH PER FILE FOR NOW
         IMESH = 1
-!       
+!
         CALL MMHNAX(FILE_ID,IMESH,NAXIS,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_TITLE_MED:MMHMII')
         ALLOCATE(COOR_NAME(NAXIS),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GET_MESH_TITLE_MED:COOR_NAME')
         ALLOCATE(COOR_UNIT(NAXIS),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GET_MESH_TITLE_MED:COOR_UNIT')
-!       
+!
 !       READ MESH TITLE
         CALL MMHMII(FILE_ID,IMESH,TITLE_MED,NB_DIM_PB,NB_DIM_MESH,
      &    MESH_TYPE,COMMENT,DT_UNIT,ORDER,NCOMP,COOR_TYPE,COOR_NAME,
@@ -272,7 +273,7 @@
         CALL CHECK_CALL(IERR,'GET_MESH_TITLE_MED:MMHMII')
         DEALLOCATE(COOR_NAME)
         DEALLOCATE(COOR_UNIT)
-!       
+!
         MED_OBJ_TAB(MED_ID)%MESH_NAME = TITLE_MED
       ENDIF
 !
@@ -979,7 +980,7 @@
 !     CONVERTS TYPE OF ELEMENTS
       CALL CONVERT_ELEM_TYPE(TYPE_ELEM_BND, TYPE_ELEM_MED, IERR)
       CALL CHECK_CALL(IERR,'GET_BND_IPOBO_MED:CONVERT_ELEM_TYPE')
-!     
+!
 !     Identify bnd element if necessary
       CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_ELEM_BND,IERR)
       CALL CHECK_CALL(IERR,'GET_BND_IPOBO_MED:IDENTIFY_BND_ELMT')
@@ -1077,7 +1078,7 @@
 !       CONVERTS TYPE OF ELEMENTS
         CALL CONVERT_ELEM_TYPE(TYPE_ELEM_BND, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'GET_BND_NUMBERING_MED:CONVERT_ELEM_TYPE')
-!     
+!
 !       Identify bnd element if necessary
         CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_ELEM_BND,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_IPOBO_MED:IDENTIFY_BND_ELMT')
@@ -1190,9 +1191,9 @@
           ENDDO! ISUIV
           IF(.NOT.SWAP) THEN
             DO ISUIV=I,NPTFR
-!          
+!
               IF (TRAV1(ISUIV,2).EQ.TRAV1(I-1,2)) THEN
-!          
+!
 !               PERMUTATION OF EDGE WITHIN ITSELF
                 NOEUD1 = TRAV1(ISUIV,2)
                 NOEUD2 = TRAV1(ISUIV,1)
@@ -1204,9 +1205,9 @@
                 KP1BOR(I-1) = I
                 SWAP = .TRUE.
                 EXIT
-!          
+!
               ENDIF
-!          
+!
             ENDDO! ISUIV
           ENDIF
           IF(SWAP) CYCLE
@@ -1365,7 +1366,7 @@
 !     CONVERT
       CALL CONVERT_ELEM_TYPE(TYPE_ELEM, TYPE_ELEM_MED, IERR)
       CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_MED:MMHCYR')
-!     
+!
 !     Identify bnd element if necessary
       CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_ELEM,IERR)
       CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_MED:IDENTIFY_BND_ELMT')
@@ -1501,7 +1502,7 @@
 !     CONVERTS TYPE OF ELEMENTS
       CALL CONVERT_ELEM_TYPE(TYPE_BND_ELEM, TYPE_ELEM_MED, IERR)
       CALL CHECK_CALL(IERR,'GET_BND_FAMILY_MED:CONVERT_ELEM_TYPE')
-!     
+!
 !     Identify bnd element if necessary
       CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_BND_ELEM,IERR)
       CALL CHECK_CALL(IERR,'GET_BND_FAMILY_MED:IDENTIFY_BND_ELMT')
@@ -1703,7 +1704,7 @@
 !       DETERMINE THE NUMBER OF NODES PER ELEMENT FROM THE TYPE
         CALL NDP_FROM_ELEMENT_TYPE_MED(TYPE_ELEM_MED,NDP,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:NDP_FROM_ELT_TYPE_MED')
-!     
+!
 !       Identify bnd element if necessary
         CALL IDENTIFY_BND_ELMT(FILE_ID,TYPE_BND_ELEM,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_VALUE_MED:IDENTIFY_BND_ELMT')
@@ -1762,7 +1763,7 @@
             LIVBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,3),
      &                          LIVBOR(IPTFR))
             IF (TRAC) THEN
-              LITBOR(IPTFR) =  
+              LITBOR(IPTFR) =
      &                 MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,4),
      &                 LITBOR(IPTFR))
             ENDIF
@@ -2587,7 +2588,7 @@
           TYPE_ELEM_MED = MED_SEG2
 !
 !       TRIANGLE WITH 3 NODES
-        CASE(TRIANGLE_ELT_TYPE, TRIANGLE_BND_ELT_TYPE, 
+        CASE(TRIANGLE_ELT_TYPE, TRIANGLE_BND_ELT_TYPE,
      &       TRIANGLE_3D_BND_ELT_TYPE)
           TYPE_ELEM_MED = MED_TRIA3
 !
@@ -2693,7 +2694,7 @@
 !       CONVERTS TYPE OF ELEMENTS
         CALL CONVERT_ELEM_TYPE(TYPE_BND_ELEM, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:CONVERT_ELEM_TYPE')
-!       
+!
         CALL GET_MESH_NELEM_MED(FILE_ID,TYPE_BND_ELEM,NELEM,IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:GET_BND_NELEM_MED')
         ALLOCATE(MED_OBJ_TAB(MED_ID)%IS_BND(NELEM),STAT=IERR)
@@ -2705,22 +2706,22 @@
         CALL MMHFNR(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
      &              TYPE_ELEM_MED,NUM_FAMILY,IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MMHFNR')
-!       
+!
 !       READ THE TOTAL NUMBER OF FAMILY
         CALL MFANFA(FILE_ID,MNAME,NB_FAMILY,IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MFANFA')
         ALLOCATE(MED_OBJ_TAB(MED_ID)%BND_FAM(NB_FAMILY,2),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'BND_FAM')
-!       
+!
         DO IFAM = 1, NB_FAMILY
-!       
+!
 !         READ THE NUMBER OF GROUP PER FAMILY
           CALL MFANFG(FILE_ID,MNAME,IFAM,NB_GRP,IERR)
           CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MFANFG')
-!       
+!
           ALLOCATE(GRP_NAME(MAX(NB_GRP,1)),STAT=IERR)
           CALL CHECK_ALLOCATE(IERR,'IDENTIFY_BND_ELMT:GRP_NAME')
-        
+
 !         READ THE TYPE OF FAMILY
           CALL MFAFAI(FILE_ID,MNAME,IFAM,TEMP_FAM,INUM,GRP_NAME,IERR)
           CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MFAFAI')
@@ -2730,7 +2731,7 @@
           IF(INUM.LT.0) THEN
             DO J=1,MED_OBJ_TAB(MED_ID)%NBND_GRP
               IF(FOUND) EXIT
-              ! looping on the family groups and if one is in bnd_grp 
+              ! looping on the family groups and if one is in bnd_grp
               ! adding it to bnd_fam
               DO I=1,NB_GRP
                 IF(GRP_NAME(I).EQ.
@@ -2738,7 +2739,7 @@
                   FOUND = .TRUE.
                   MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,2) = J
                   EXIT
-                ENDIF 
+                ENDIF
               ENDDO
             ENDDO
           ELSE
@@ -2752,7 +2753,7 @@
           DO IFAM=1,NB_FAMILY
             IF(NUM_FAMILY(I).EQ.
      &         MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,1)) THEN
-              MED_OBJ_TAB(MED_ID)%IS_BND(I) = 
+              MED_OBJ_TAB(MED_ID)%IS_BND(I) =
      &              MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,2).NE.0
               EXIT
             ENDIF
