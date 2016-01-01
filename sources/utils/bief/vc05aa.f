@@ -22,10 +22,10 @@
 !warning  THE JACOBIAN MUST BE POSITIVE
 !warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
 !
-!
 !history  A JOLY (LNHE)
 !+        27/04/2015
 !+        V7P1
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -64,11 +64,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-! 
+!
 ! ! Method 1
 !       INTEGER IELEM,IELMF
 !       DOUBLE PRECISION XSUR03,F1,F2,F3,COEF
-! 
+!
 ! Method 2
       INTEGER IELEM,IELMF
       DOUBLE PRECISION XSUR12,F1,F2,F3,F123,COEF
@@ -83,7 +83,7 @@
 !     F IS A LINEAR TRIANGLE
 !
       IF(IELMF.EQ.11) THEN
-! 
+!
 ! !---------------
 ! ! Method 1
 ! !---------------
