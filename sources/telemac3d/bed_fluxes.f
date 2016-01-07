@@ -15,6 +15,11 @@
 !+        V7P1
 !+  First version
 !
+!history  A JOLY (LNHE)
+!+        07/01/2016
+!+        V7P1
+!+  Correction of a bug: SMH IS ASSEMBLED IN PARALLEL
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -43,6 +48,7 @@
 !
       CALL OS('X=0     ',X=BEDFLU)
       CALL CPSTVC(BEDFLU,T2_01)
+      CALL CPSTVC(BEDFLU,T2_02)
       DO I = 1,NPOIN2
         IF(LIWBOF%I(I).EQ.KENT.OR.
      &     LIWBOF%I(I).EQ.KENTU) THEN
@@ -59,7 +65,10 @@
      &            IELM2H,1.D0,T2_01,SVIDE,SVIDE,SVIDE,
      &            SVIDE,SVIDE,MESH2D,.FALSE.,MASKEL)
 !
-      CALL OS('X=X+Y   ',X=SMH,Y=BEDFLU)
+!     SMH IS ASSEMBLED IN PARALLEL
+      CALL OS('X=Y     ',X=T2_02,Y=BEDFLU)
+      IF(NCSIZE.GT.1) CALL PARCOM(T2_02,2,MESH2D)
+      CALL OS('X=X+Y   ',X=SMH,Y=T2_02)
 !
 !-----------------------------------------------------------------------
 !
