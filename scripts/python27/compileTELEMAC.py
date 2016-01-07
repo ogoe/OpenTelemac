@@ -576,7 +576,7 @@ if __name__ == "__main__":
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
       #TODO: Tested still not working even if we rename all the duplicated variable/functions names
       LIBDEPS = ['special', 'parallel', 'mumps', 'damocles','hermes', 'bief', \
-                 'partel', 'gretel', 'diffsel', 'postel3d', 'waqtel',\
+                 'partel', 'gretel', 'diffsel', 'splitsel', 'postel3d', 'waqtel',\
                  'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', \
                  'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
       # Only if we ask for a scan
