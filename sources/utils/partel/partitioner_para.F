@@ -144,7 +144,7 @@
           CALL CHECK_ALLOCATE(ERR, 'TPWGTS')
           ALLOCATE (UBVEC(NCON),STAT=ERR)
           CALL CHECK_ALLOCATE(ERR, 'UBVEC')
-          ALLOCATE(VWGT(NELEM_LOC),stat=err)
+          ALLOCATE(VWGT(NELEM_LOC),STAT=ERR)
           CALL CHECK_ALLOCATE(ERR, 'VWGT')
 !         
           TPWGTS(:) = 1.D0/FLOAT(NPARTS)
@@ -259,7 +259,6 @@
 !          
           NEDGE = XADJ2(NELEM_LOC+1)-1
           RECVBUF(1) = NEDGE
-          write(lu,*) nedge
           CALL C_F_POINTER(PTADJNCY(1),ADJNCY2,RECVBUF)
           DEALLOCATE(RECVBUF)
 !         
