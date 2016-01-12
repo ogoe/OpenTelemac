@@ -2697,15 +2697,18 @@
 !
         CALL GET_MESH_NELEM_MED(FILE_ID,TYPE_BND_ELEM,NELEM,IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:GET_BND_NELEM_MED')
-        ALLOCATE(MED_OBJ_TAB(MED_ID)%IS_BND(NELEM),STAT=IERR)
+        ! In case we do not have boundary element in the mesh
+        ALLOCATE(MED_OBJ_TAB(MED_ID)%IS_BND(MAX(NELEM,1)),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'IDENTIFY_BND_ELMT:is_bnd')
+        IF(NELEM.NE.0) THEN
 !
-!       READ THE FAMILY NUMBER FOR EACH ELEMENT
-        ALLOCATE(NUM_FAMILY(NELEM),STAT=IERR)
-        CALL CHECK_ALLOCATE(IERR,'IDENTIFY_BND_ELMT:num_family')
-        CALL MMHFNR(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
-     &              TYPE_ELEM_MED,NUM_FAMILY,IERR)
-        CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MMHFNR')
+!         READ THE FAMILY NUMBER FOR EACH ELEMENT
+          ALLOCATE(NUM_FAMILY(NELEM),STAT=IERR)
+          CALL CHECK_ALLOCATE(IERR,'IDENTIFY_BND_ELMT:num_family')
+          CALL MMHFNR(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
+     &                TYPE_ELEM_MED,NUM_FAMILY,IERR)
+          CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:MMHFNR')
+        ENDIF
 !
 !       READ THE TOTAL NUMBER OF FAMILY
         CALL MFANFA(FILE_ID,MNAME,NB_FAMILY,IERR)
@@ -2747,19 +2750,21 @@
           ENDIF
           DEALLOCATE(GRP_NAME)
         ENDDO
-        ! Looping on all element and checking if their family is in bnd_fam
-        DO I=1,NELEM
-          MED_OBJ_TAB(MED_ID)%IS_BND(I) = .FALSE.
-          DO IFAM=1,NB_FAMILY
-            IF(NUM_FAMILY(I).EQ.
-     &         MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,1)) THEN
-              MED_OBJ_TAB(MED_ID)%IS_BND(I) =
-     &              MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,2).NE.0
-              EXIT
-            ENDIF
+        IF(NELEM.NE.0) THEN
+          ! Looping on all element and checking if their family is in bnd_fam
+          DO I=1,NELEM
+            MED_OBJ_TAB(MED_ID)%IS_BND(I) = .FALSE.
+            DO IFAM=1,NB_FAMILY
+              IF(NUM_FAMILY(I).EQ.
+     &           MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,1)) THEN
+                MED_OBJ_TAB(MED_ID)%IS_BND(I) =
+     &                MED_OBJ_TAB(MED_ID)%BND_FAM(IFAM,2).NE.0
+                EXIT
+              ENDIF
+            ENDDO
           ENDDO
-        ENDDO
-        DEALLOCATE(NUM_FAMILY)
+          DEALLOCATE(NUM_FAMILY)
+        ENDIF
       ENDIF
 !
 #endif
