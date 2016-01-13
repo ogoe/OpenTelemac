@@ -3,7 +3,8 @@
 !                    **********************
 !
      &(FORMAT_RES,VARSOR,N,NRES,STD,AT,LT,LISPRD,LEOPRD,
-     & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL,MESH)
+     & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL,MESH,
+     & IIMP,ILEO,COMPGRAPH)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -38,6 +39,12 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history  R. ATA (LNHE)
+!+       11/01/2015
+!+       V7P2
+!+       adaptation for fv (leo, imp and compgraph added as 
+!+        optional arguments)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMAT_RES     |-->| FORMAT OF RESULT FILE
 !| LEOPRD         |-->| GRAPHIC PRINTOUT PERIOD
@@ -54,7 +61,9 @@
 !| STD            |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
 !| TEXTE          |-->| NAMES AND UNITS OF VARIABLES
 !| VARSOR         |-->| BLOCK WITH VARIABLES TO BE PRINTED OR COPIED
-!| MESH (OPTIONAL) |-->| MESH STRUCTURE
+!| MESH (OPTIONAL)|-->| MESH STRUCTURE
+!| ILEO & IIMP)   |-->| LOGICAL FOR LISTING AND GRAPHICAL OUTPUTS
+!| COMPGRAPH      |-->| COUNTER FOR FV GRAPHICAL OUTPUTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_DESIMP => BIEF_DESIMP
@@ -76,6 +85,8 @@
       CHARACTER(LEN=3) , INTENT(IN) :: STD
       LOGICAL          , INTENT(IN) :: SORLEO(MAXVAR),SORIMP(MAXVAR)
       TYPE(BIEF_MESH)  , INTENT(IN), OPTIONAL :: MESH
+      LOGICAL          , INTENT(IN), OPTIONAL :: IIMP,ILEO 
+      INTEGER          , INTENT(IN), OPTIONAL :: COMPGRAPH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -87,18 +98,30 @@
 !
 ! LOGICAL THAT DEFINE THE OUTPUTS
 !
-      IMP=.FALSE.
-      LEO=.FALSE.
-      LTT=(LT/LISPRD)*LISPRD
-      IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
-      LTT=(LT/LEOPRD)*LEOPRD
-      IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-      IF(LT.EQ.0) LEO=.TRUE.
+      IF(PRESENT(IIMP).AND.PRESENT(ILEO))THEN
+        IMP=IIMP
+        LEO=ILEO
+      ELSE
+        IMP=.FALSE.
+        LEO=.FALSE.
+        LTT=(LT/LISPRD)*LISPRD
+        IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
+        LTT=(LT/LEOPRD)*LEOPRD
+        IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
+        IF(LT.EQ.0) LEO=.TRUE.
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       IF(LEO) THEN
-        LTT = (LT-PTINIG)/LEOPRD
+!
+!       COUNTERS FOR FINITE VOLUMES OUTPUTS
+        IF(PRESENT(COMPGRAPH))THEN
+          LTT=COMPGRAPH
+        ELSE
+!       COUNTERS FOR FINITE ELEMENTS OUTPUTS
+          LTT = (LT-PTINIG)/LEOPRD
+        ENDIF
         ! In case the starting point is not at lt.eq.0 but later
         !  we still write the timestep 0 so we need to increment LTT
         IF(PTINIG.NE.0) LTT = LTT + 1

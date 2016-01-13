@@ -392,6 +392,7 @@ files: bief_def.f
   osbd.f
   cvtrvf_pos_2.f
   derlag.f
+  anti_dirac.f
   proxim.f
   read_partel_info.f
   leclim.f
@@ -477,7 +478,6 @@ files: bief_def.f
   mxptel31.f
   mxptel.f
   almesh.f
-  anti_dirac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -697,12 +697,13 @@ files: friction_def.f
   m_coupling_estel3d.f
   oil_flot.f
   oilspill.f
-  sta_dis_cur.f
-  debimp.f
   read_fic_frliq.f
-  tr.f
   vit.f
+  sta_dis_cur.f
+  tr.f
   q.f
+  debimp.f
+  sl.f
   conv_lambert_to_degdec.f
   conv_mercator_to_degdec.f
   tpxo.f
@@ -714,7 +715,6 @@ files: friction_def.f
   nodalf_schureman.f
   bord_tide_misc.f
   tidal_model_t2d.f
-  sl.f
   dis_sta_cur.f
   bord.f
   valro.f
@@ -969,22 +969,19 @@ files: declarations_tomawac.f
 path: <root>|sources|waqtel
 files: declarations_waqtel.f
   interface_waqtel.f
-  nametrac_waq.f
-  calcs_o2.f
-  calcs_thermic.f
-  calcs_micropol.f
-  calcs_eutro.f
-  calcs_biomass.f
-  point_waqtel.f
-  lecdon_waqtel.f
-  source_waq.f
   increase_ntrac.f
   reaer.f
   satur_o2.f
+  calcs_o2.f
+  calcs_thermic.f
   erosion_fx.f
   taub_waqtel.f
   depos_fx.f
+  calcs_micropol.f
   algae_death.f
   ray_effect.f
   nuteff.f
   algae_growth.f
+  calcs_eutro.f
+  calcs_biomass.f
+  source_waq.f

@@ -1155,7 +1155,10 @@
 !     WAQ PROCESS (1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)
 !
       INTEGER WAQPROCESS
-
+!
+!     COUNTER FOR GRAPHICAL OUTPUTS
+!
+      INTEGER COMPLEO
 !
 !-----------------------------------------------------------------------
 !
@@ -1389,6 +1392,10 @@
 !     TIME STEP
 !
       DOUBLE PRECISION DT
+!
+!     INITIAL TIME STEP
+!
+      DOUBLE PRECISION DTINI
 !
 !     GRAVITY ACCELERATION
 !

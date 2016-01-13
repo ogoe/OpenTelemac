@@ -330,6 +330,7 @@
 !
       LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT
       LOGICAL CHARR,SUSP,CHARR_TEL,SUSP1,YAFLODEL,YAFLULIM
+      LOGICAL IMP,LEO
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
 !
@@ -873,6 +874,7 @@
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
 !
+        DTINI=DT
         CALL OS( 'X=YZ    ' , QU , U , H , C )
         CALL OS( 'X=YZ    ' , QV , V , H , C )
 !       PREPARES SIMULATION TIME WHEN DURATION =0
@@ -897,7 +899,8 @@
           ENDIF
         ENDIF
 !
-        TMAX=DUREE+AT0
+        TMAX =DUREE+AT0
+        DTINI=DT
 !
       ENDIF
 !
@@ -1171,13 +1174,14 @@
      &                          MESH%IFABOR%I,COMFLU,CUMFLO)
         ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING PRERES_TELEMAC2D'
-        CALL PRERES_TELEMAC2D
+        CALL PRERES_TELEMAC2D(IMP,LEO)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM PRERES_TELEMAC2D'
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DESIMP'
         CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
      &                  NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &                  LISPRD,LEOPRD,
-     &                  SORLEO,SORIMP,MAXVAR,TEXTE,0,     0)
+     &                  SORLEO,SORIMP,MAXVAR,TEXTE,0,     0,
+     &                  IIMP=IMP,ILEO=LEO,COMPGRAPH=COMPLEO)
 !                                                  PTINIG,PTINIL
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DESIMP'
 !
@@ -2079,7 +2083,8 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM VOLFIN'
 !
         AT = AT + DT
-        IF (LT.GE.NIT.OR.AT.GE.TMAX) THEN !LAST TIME STEP
+        IF (LT.GE.NIT.OR.AT.GT.TMAX.OR.
+     &      ((TMAX-AT)/TMAX).LT.1E-15) THEN !LAST TIME STEP
            ! Set lt in order for the last timestep to be written
            IF(MOD(LT,LEOPRD).EQ.0) THEN
              LT = (LT/LEOPRD)*LEOPRD
@@ -2524,11 +2529,12 @@
           ! set to 1 by preres_telemac2d on the last time step
           OLD_LEOPRD = LEOPRD
 !
-          CALL PRERES_TELEMAC2D
+          CALL PRERES_TELEMAC2D(IMP,LEO)
           CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
      &            NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &            LISPRD,OLD_LEOPRD,
-     &            SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
+     &            SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL,
+     &            IIMP=IMP,ILEO=LEO,COMPGRAPH=COMPLEO)
         ENDIF
 !
 !

@@ -17,6 +17,7 @@ path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_time.F
   p_exit.F
+  interface_parallel.f
   p_allgatherv_i.F
   p_sync.F
   p_isum_array.F

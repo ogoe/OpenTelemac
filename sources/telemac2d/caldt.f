@@ -34,6 +34,11 @@
 !+        V6P3
 !+  clean and remove unused variables
 !
+!history  R. ATA (EDF-LNHE) INTRODUCE FIXED TIME STEP
+!+        11/01/2016
+!+        V7P2
+!+  adjust time step to graphical outputs
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NS             |-->| TOTAL NUMBER OF NODES
 !| G              |-->| GRAVITY
@@ -51,6 +56,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY:NCSIZE
+      USE DECLARATIONS_TELEMAC2D,ONLY:DTINI,LEOPRD
       USE INTERFACE_TELEMAC2D, EX_CALDT => CALDT
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -69,8 +75,10 @@
       INTEGER IS
       LOGICAL DEJA
       DOUBLE PRECISION RA3,EPSL,SIGMAX,UA2,UA3,UNORM,DTT
+      DOUBLE PRECISION RESTE, GPRDTIME
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_DMIN
+      INTRINSIC MIN,FLOOR,CEILING
 !
 !-----------------------------------------------------------------------
 !
@@ -130,27 +138,6 @@
       ENDIF
       ENDIF
 !
-!*************************************************************************
-!     ERROR TREATMENT AND LISTING OUTPUTS
-!*************************************************************************
-!
-!     CASE DT <=0
-!
-      IF(DT.LE.0.D0) THEN
-        IF(LISTIN.AND.LNG.EQ.1) THEN
-          WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
-          WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
-          WRITE(LU,*) 'D EAU NULLE PARTOUT ...'
-        ENDIF
-        IF(LISTIN.AND.LNG.EQ.2) THEN
-          WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
-          WRITE(LU,*) 'PROBABLY DUE TO NIL WATER'
-          WRITE(LU,*) 'DEPTH EVERYWHERE IN THE DOMAIN ...'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF
-!
       IF(DTVARI) THEN
 !
         IF(TMAX.LT.DT)DT=TMAX !REALLY CRAZY CASES
@@ -170,22 +157,6 @@
           STOP
         ENDIF
 !
-!       FOR PARALLELISM
-!
-        IF(NCSIZE.GT.1) DT=P_DMIN(DT)
-!
-        IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,*) 'PAS DE TEMPS : ',DT
-        IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,*) 'TIME-STEP: ',DT
-        IF(CFL.GE.1.D0) THEN
-          IF(LISTIN.AND.LNG.EQ.1) THEN
-            WRITE(LU,*) 'ATTENTION CFL NON FOURNI OU > 1 !...!'
-            WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.9) : ',DT
-          ELSEIF(LISTIN.AND.LNG.EQ.2) THEN
-            WRITE(LU,*) 'WARNING: CFL NOT GIVEN OR >1 !...! '
-            WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.9): ',DT
-          ENDIF
-        ENDIF
-!
       ELSE
 !
 !       DT NOT VARIABLE
@@ -198,6 +169,69 @@
           WRITE(LU,*) 'TIME-STEP MAY NOT SATISFY CFL CONDITION: ',DT
         ENDIF
 !
+      ENDIF
+!
+!*************************************************************************
+!      GRAPHIC OUTPUTS LIKE ASKED BY USER: DT ADATPATION
+!*************************************************************************
+        GPRDTIME=LEOPRD*DTINI
+        IF(GPRDTIME.LT.1.E-12)THEN
+          WRITE(LU,*) 'CALDT: PROBLEM WITH THESE PARAMETERS: ',
+     &                 DTINI,LEOPRD
+          CALL PLANTE(1)
+          STOP
+!       CASE WHERE TIME STEP IS BIGGER THEN GRAPHIC OUTPUT (GPRDTIME)
+        ELSEIF(GPRDTIME.LT.DT)THEN
+          DT=DTINI
+          IF(LISTIN)THEN
+            WRITE(LU,*) 'WARNING: GRAPHICAL OUTPUT NOT OPTIMIZED: '
+            WRITE(LU,*) '   - INITIAL TIME STEP TOO SMALL '
+            WRITE(LU,*) '   - AND/OR PERIOD OF GRAPHIC OUTPUT TOO SMALL'
+            WRITE(LU,*) 'THIS COULD REDUCE COMPUTATION TIME-STEP'
+            WRITE(LU,*) 'AND INCREASE CPU TIME'
+          ENDIF
+        ENDIF
+!       GRAPHIC OUTPUT
+        IS=CEILING(AT/GPRDTIME)
+        RESTE=IS*GPRDTIME-AT
+        IF(RESTE.GT.1.E-13)DT=MIN(RESTE,DT)
+!
+!       FOR PARALLELISM
+!
+        IF(NCSIZE.GT.1) DT=P_DMIN(DT)
+!
+!
+!*************************************************************************
+!     ERROR TREATMENT AND LISTING OUTPUTS
+!*************************************************************************
+!
+!     CASE DT <=0
+!
+      IF(DT.LE.1.E-12) THEN
+        IF(LISTIN.AND.LNG.EQ.1) THEN
+          WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
+          WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
+          WRITE(LU,*) 'D EAU NULLE PARTOUT ...'
+        ENDIF
+        IF(LISTIN.AND.LNG.EQ.2) THEN
+          WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
+          WRITE(LU,*) 'PROBABLY DUE TO NIL WATER'
+          WRITE(LU,*) 'DEPTH EVERYWHERE IN THE DOMAIN ...'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,*) 'PAS DE TEMPS : ',DT
+      IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,*) 'TIME-STEP: ',DT
+      IF(CFL.GE.1.D0) THEN
+        IF(LISTIN.AND.LNG.EQ.1) THEN
+          WRITE(LU,*) 'ATTENTION CFL NON FOURNI OU > 1 !...!'
+          WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.9) : ',DT
+        ELSEIF(LISTIN.AND.LNG.EQ.2) THEN
+          WRITE(LU,*) 'WARNING: CFL NOT GIVEN OR >1 !...! '
+          WRITE(LU,*) 'TIME-STEP (WITH CFL = 0.9): ',DT
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
