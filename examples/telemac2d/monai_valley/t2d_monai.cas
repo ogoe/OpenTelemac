@@ -28,6 +28,7 @@ TIME STEP                       = 0.05
 EQUATIONS                       = 'SAINT-VENANT VF'
 FINITE VOLUME SCHEME            = 2
 VARIABLE TIME-STEP              = YES
+DESIRED COURANT NUMBER          = 0.9
 DURATION                        = 22.5
 /
 /----------------------------------------------

@@ -1,34 +1,67 @@
-!                       ***************************
-                        SUBROUTINE PRERES_TELEMAC2D
-!                       ***************************
+!                    ***************************
+                     SUBROUTINE PRERES_TELEMAC2D
+!                    ***************************
+     &    (IMP,LEO)
+!
 !
 !***********************************************************************
-!  TELEMAC 2D VERSION 5.0    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
-!
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!     FONCTION  : PREPARATION DE VARIABLES QUI SERONT ECRITES SUR
-!                 LE FICHIER DE RESULTATS OU SUR LE LISTING.
+!brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
+!+                THE RESULTS FILE OR TO THE LISTING.
 !
-!-----------------------------------------------------------------------
-!                             ARGUMENTS
-! .________________.____.______________________________________________.
-! |      NOM       |MODE|                   ROLE                       |
-! |________________|____|______________________________________________|
-! |      LT        | -->| NUMERO D'ITERATION
-! |________________|____|______________________________________________|
-! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!history  J-M HERVOUET (LNHE)
+!+        24/11/2009
+!+        V6P0
+!+
 !
-!-----------------------------------------------------------------------
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!  APPELE PAR : TELMAC
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-!  SOUS-PROGRAMME APPELE : OV
+!history  C. GOEURY (EDF R&D LNHE)
+!+        25/07/2013
+!+        V6P3
+!+   Sum of HAP in oilspills has been added.
 !
-!***********************************************************************
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Securing bound checking in parallelism.
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        28/10/2014
+!+        V7P0
+!+   Initialising Lagrangian drifts for iteration 0 in case they are
+!+   in outputs.
+!
+!history  R. ATA & J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Now all the variables asked for graphic printouts are written for
+!+   remarkable points.
+!
+!history  R. ATA (EDF LAB, LNHE)
+!+        11/01/2016
+!+        V7P2
+!+   Now preres gives instruction to bief_desimp to write graphical
+!+   results (through leo and imp)
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
+      USE INTERFACE_TELEMAC2D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -36,29 +69,84 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      LOGICAL ,INTENT(INOUT)::IMP,LEO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL IMP,LEO
+      LOGICAL DEJA1,DEJA2
 !
-      INTEGER LTT,N,IMAX
+      INTEGER LTT,N,IMAX,I,II,JJ
 !
-      DOUBLE PRECISION HHPLG,XMAX
-      DOUBLE PRECISION PI, PER, WPLG, A, B, PHI
+      DOUBLE PRECISION HHH,XMAX,PI,PER,WPLG,A,PHI,B,HHPLG
+      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
-      INTRINSIC MAX,SQRT
+      INTRINSIC MAX,SQRT,CEILING
+!
+      DOUBLE PRECISION P_DMAX,P_DMIN
+      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
-! LOGIQUES POUR DECIDER DES SORTIES
+      DATA DEJA1/.FALSE./
+      DATA DEJA2/.FALSE./
+      SAVE DEJA1,DEJA2
+!
+!-----------------------------------------------------------------------
+!
+!     THE OUTPUT VARIABLES ARE BUILT ONLY IF NECESSARY, HENCE THE
+!     FOLLOWING TESTS, WHICH MUST BE THE SAME AS IN BIEF_DESIMP (BIEF LIBRARY)
+!
+!     THIS WILL TRIGGER THE OUTPUT OF LAST TIMESTEP
+!     BUT NOT WITH PARAMETER ESTIMATION (LISPRD WOULD STAY AT 1
+!     FOR FURTHER COMPUTATIONS)
+      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
+        LISPRD=1
+        LEOPRD=1
+      ENDIF
 !
       IMP=.FALSE.
       LEO=.FALSE.
-      LTT=(LT/LISPRD)*LISPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIL) IMP=.TRUE.
-      LTT=(LT/LEOPRD)*LEOPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.PTINIG) LEO=.TRUE.
-!
+!     Always write the intial conditions
+      IF(LT.EQ.0) THEN
+        IMP=.TRUE.
+        LEO=.TRUE.
+        COMPLEO=0
+      ELSE
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+!         FEM
+          LTT=(LT/LISPRD)*LISPRD
+          IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
+          LTT=(LT/LEOPRD)*LEOPRD
+          IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
+!         FOR GRAPHICAL OUTPUTS          
+          COMPLEO=LT
+        ELSE
+!         FVM
+          GPRDTIME=LEOPRD*DTINI
+          LPRDTIME=LISPRD*DTINI
+          IF(GPRDTIME.LT.EPSS.OR.LPRDTIME.LT.EPSS)THEN
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(LT.GE.PTINIG)THEN
+!           GRAPHIC OUTPUT
+            LTT=CEILING(AT/GPRDTIME)
+            RESTE=(LTT*GPRDTIME-AT)/GPRDTIME
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS)THEN
+!                                   CASE WHERE RESTE=1
+              LEO=.TRUE.
+              COMPLEO=COMPLEO+1
+            ENDIF
+          ENDIF
+          IF(LT.GT.PTINIL)THEN
+!           LISTING OUTPUT
+            LTT=CEILING(AT/LPRDTIME)
+            RESTE=(LTT*LPRDTIME-AT)/LPRDTIME
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS)IMP=.TRUE.
+          ENDIF
+        ENDIF
+      ENDIF!
 !     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
       IF(.NOT.(LEO.OR.IMP)) GO TO 1000
 !
