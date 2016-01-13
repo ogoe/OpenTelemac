@@ -36,7 +36,10 @@ SCHEMA EN VOLUMES FINIS : 2
 TITRE = 'TELEMAC 2D : RUPTURE DE BARRAGE UNIDIMENSIONNELLE'                                   
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,F,L,N,O'                         
 VARIABLES A IMPRIMER : ''                                                   
-PAS DE TEMPS = 0.01   DUREE DU CALCUL : 0.8
+PAS DE TEMPS = 0.01   
+DUREE DU CALCUL : 0.8
+PAS DE TEMPS VARIABLE : OUI
+NOMBRE DE COURANT SOUHAITE : 0.9
 PERIODE POUR LES SORTIES GRAPHIQUES : 10 
 PERIODE POUR LES SORTIES LISTING : 20
 PAS DE TEMPS VARIABLE : OUI                                             
@@ -50,13 +53,18 @@ LOI DE FROTTEMENT SUR LE FOND : 0
 /----------------------------------------------------------------------/    
 COEFFICIENT DE DIFFUSION DES VITESSES = 0.                                  
 MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4     
-SOLVEUR : 7   PRECONDITIONNEMENT : 2    ORDRE DU TIR INITIAL POUR H :1     
+SOLVEUR : 7   
+PRECONDITIONNEMENT : 2    
+ORDRE DU TIR INITIAL POUR H :1     
 OPTION DU SOLVEUR : 3                                                       
-IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6     
-BILAN DE MASSE : NON   CONDITIONS INITIALES : PARTICULIERES                 
- FORME DE LA CONVECTION : 1;1                             
-    OPTION DE SUPG      : 2;2                                                                                                         
-CLIPPING DE H : NON    BANCS DECOUVRANTS : OUI                              
+IMPLICITATION POUR LA HAUTEUR = 0.6 
+IMPLICITATION POUR LA VITESSE = 0.6     
+BILAN DE MASSE : NON   
+CONDITIONS INITIALES : PARTICULIERES                 
+FORME DE LA CONVECTION : 1;1                             
+OPTION DE SUPG      : 2;2     
+CLIPPING DE H : NON    
+BANCS DECOUVRANTS : OUI                              
 /----------------------------------------------------------------------/ 
 /TRACEUR : OUI 
 BILAN DE MASSE : OUI  
