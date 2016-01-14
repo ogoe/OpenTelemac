@@ -18,7 +18,7 @@ RESULTS FILE               = r2d_thacker.slf
 /
 TITLE                           = 'THACKER SOLUTION'
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B'
-GRAPHIC PRINTOUT PERIOD         = 200
+GRAPHIC PRINTOUT PERIOD         = 100
 LISTING PRINTOUT PERIOD         = 1000
 TIME STEP                       = 0.1
 VARIABLE TIME-STEP              = YES
