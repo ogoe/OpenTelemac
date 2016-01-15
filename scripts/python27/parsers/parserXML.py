@@ -130,8 +130,8 @@ def mapdiff(a1,a2):
       raise Exception([{
            'name':'mapdiff',
            'msg':'The time of the two times are different \n'+\
-                 a1.time[0]+' for a1\n'+\
-                 a2.time[0]+' for a2'}])
+                 str(a1.time[0])+' for a1\n'+\
+                 str(a2.time[0])+' for a2'}])
 
    # Making a1-a2 for each variable and each point
    for ivar in range(nvar):
