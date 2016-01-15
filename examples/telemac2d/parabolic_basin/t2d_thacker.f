@@ -206,22 +206,20 @@
       DATA DEJA1/.FALSE./
       DATA DEJA2/.FALSE./
       SAVE DEJA1,DEJA2
-!
 !-----------------------------------------------------------------------
 !
 !     THE OUTPUT VARIABLES ARE BUILT ONLY IF NECESSARY, HENCE THE
 !     FOLLOWING TESTS, WHICH MUST BE THE SAME AS IN BIEF_DESIMP (BIEF LIBRARY)
 !
+      IMP=.FALSE.
+      LEO=.FALSE.
 !     THIS WILL TRIGGER THE OUTPUT OF LAST TIMESTEP
 !     BUT NOT WITH PARAMETER ESTIMATION (LISPRD WOULD STAY AT 1
 !     FOR FURTHER COMPUTATIONS)
-      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
-        LISPRD=1
-        LEOPRD=1
-      ENDIF
-!
-      IMP=.FALSE.
-      LEO=.FALSE.
+!      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
+!        IMP=.FALSE.
+!        LEO=.FALSE.
+!      ENDIF
 !     Always write the intial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
@@ -235,7 +233,7 @@
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
 !         FOR GRAPHICAL OUTPUTS          
-          COMPLEO=LT
+          IF(LEO)COMPLEO=(LT-PTINIG)/LEOPRD
         ELSE
 !         FVM
           GPRDTIME=LEOPRD*DTINI
@@ -261,7 +259,9 @@
             IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS)IMP=.TRUE.
           ENDIF
         ENDIF
-      ENDIF!!
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
       IF(.NOT.(LEO.OR.IMP)) GO TO 1000
 !

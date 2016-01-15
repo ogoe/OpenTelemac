@@ -18,8 +18,8 @@ RESULTS FILE                    = r2d_seiche.slf
 /
 TITLE                           = 'SEICHE SOLUTION'
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B'
-GRAPHIC PRINTOUT PERIOD         = 2000
-LISTING PRINTOUT PERIOD         = 2000
+GRAPHIC PRINTOUT PERIOD         = 1000
+LISTING PRINTOUT PERIOD         = 20000
 TIME STEP                       = 0.1
 NUMBER OF TIME STEPS            = 150
 VARIABLE TIME-STEP              = YES
