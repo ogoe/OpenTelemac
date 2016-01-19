@@ -5,7 +5,7 @@
      &(NCOUCHES)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    INITIAL FRACTION DISTRIBUTION, STRATIFICATION,
@@ -47,6 +47,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        2016
+!+        V7P2
+!+   Checking coherence of data: ZR+sediment height=ZF
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NCOUCHES       |-->| NUMBER OF LAYER FOR EACH POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +71,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I , J
+      INTEGER I,J
+      DOUBLE PRECISION EPAI
 !
 !-----------------------------------------------------------------------
 !
@@ -100,5 +106,35 @@
 !
 !-----------------------------------------------------------------------
 !
+!     CHECKING THE CONSISTENCY OF DATA
+!     THE FORMULA USED HERE ZR+SED. HEIGHT = ZF CAN BE USED TO GIVE THE
+!     HEIGHT OF THE LAST LAYER.
+!
+      DO J=1,MESH%NPOIN
+        EPAI=0.D0
+        DO I=1,NCOUCHES(J)
+          EPAI=EPAI+ES(J,I)
+        ENDDO
+        IF(ABS(ZR%R(J)+EPAI-ZF%R(J)).GT.1.D-6) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'INIT_COMPO, ERREUR :'
+            WRITE(LU,*) 'ZR+EPAISSEUR=',ZR%R(J)+EPAI
+            WRITE(LU,*) 'ZF=',ZF%R(J),' ZR=',ZR%R(J),' EPAISSEUR=',EPAI
+            WRITE(LU,*) 'AU POINT ',J
+          ELSE
+            WRITE(LU,*) 'INIT_COMPO, ERROR:'
+            WRITE(LU,*) 'ZR+SEDIMENT HEIGHT=',ZR%R(J)+EPAI
+            WRITE(LU,*) 'ZF=',ZF%R(J),' ZR=',ZR%R(J),
+     &                  ' SEDIMENT HEIGHT=',EPAI
+            WRITE(LU,*) 'AT POINT ',J
+          ENDIF
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
+

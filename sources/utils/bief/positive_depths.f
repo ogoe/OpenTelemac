@@ -87,9 +87,7 @@
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
-!|                |   | 1: FAST BUT SENSITIVE TO SEGMENT NUMBERING
-!|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
+!| OPTION         |-->| 2: INDEPENDENT OF SEGMENT NUMBERING
 !| OPTSOU         |-->| OPTION FOR SOURCES 1: NORMAL 2: DIRAC
 !| SMH            |-->| SOURCE TERMS
 !| T1             |-->| WORK ARRAY
@@ -113,10 +111,11 @@
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(IN)             :: LIMPRO(NPTFR)
-!                                                    3*NELEM
-      DOUBLE PRECISION, INTENT(IN)    :: DT,FLOPOINT(*),HBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(*)
+      DOUBLE PRECISION, INTENT(IN)    :: DT,HBOR(NPTFR)
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
+!                                                 3*NELEM
+      DOUBLE PRECISION, INTENT(INOUT) :: FLOPOINT(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(*)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,FLODEL,H,FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH
       LOGICAL, INTENT(IN)             :: YASMH,INFO
