@@ -186,7 +186,7 @@
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
 !         FOR GRAPHICAL OUTPUTS          
-          IF(LEO)COMPLEO=(LT-PTINIG)/LEOPRD
+          IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
           GPRDTIME=LEOPRD*DTINI

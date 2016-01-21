@@ -115,17 +115,18 @@
 !
       IF(LEO) THEN
 !
-!       COUNTERS FOR FINITE VOLUMES OUTPUTS
+!       COUNTERS FOR TELEMAC2D
         IF(PRESENT(COMPGRAPH))THEN
           LTT=COMPGRAPH
         ELSE
-!       COUNTERS FOR FINITE ELEMENTS OUTPUTS
+!       COUNTERS FOR OTHER CODES
           LTT = (LT-PTINIG)/LEOPRD
-        ENDIF
         ! In case the starting point is not at lt.eq.0 but later
         !  we still write the timestep 0 so we need to increment LTT
-        IF(PTINIG.NE.0) LTT = LTT + 1
-        IF(LT.EQ.0) LTT = 0
+          IF(PTINIG.NE.0) LTT = LTT + 1
+          IF(LT.EQ.0) LTT = 0
+        ENDIF
+!
         IF(PRESENT(MESH)) THEN
           CALL WRITE_DATA(FORMAT_RES,NRES,MAXVAR,AT,LTT,SORLEO,
      &                    TEXTE,VARSOR,N,MESH)

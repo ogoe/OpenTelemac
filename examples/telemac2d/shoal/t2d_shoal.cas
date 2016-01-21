@@ -9,7 +9,7 @@ TITLE = '5. Shoal. As 4, finer mesh at island.'
 COMPUTATION CONTINUED : NO                                               
 VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,MAXZ'                        
 TIME STEP = 20.0
-NUMBER OF TIME STEPS = 1080
+NUMBER OF TIME STEPS = 1000
 GRAPHIC PRINTOUT PERIOD = 500
 LISTING PRINTOUT PERIOD = 500
 /----------------------------------------------------------------------/

@@ -410,13 +410,15 @@
 !
 !----------------------------------------------------------------------
 !
+!
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
+     &    (IMP,LEO)
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                  21/08/2010
+! TELEMAC2D   V7P1
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -439,6 +441,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. GOEURY (EDF R&D LNHE)
+!+        25/07/2013
+!+        V6P3
+!+   Sum of HAP in oilspills has been added.
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Securing bound checking in parallelism.
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        28/10/2014
+!+        V7P0
+!+   Initialising Lagrangian drifts for iteration 0 in case they are
+!+   in outputs.
+!
+!history  R. ATA & J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Now all the variables asked for graphic printouts are written for
+!+   remarkable points.
+!
+!history  R. ATA (EDF LAB, LNHE)
+!+        11/01/2016
+!+        V7P2
+!+   Now preres gives instruction to bief_desimp to write graphical
+!+   results (through leo and imp)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -452,15 +482,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      LOGICAL ,INTENT(INOUT)::IMP,LEO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL IMP,LEO,DEJA1,DEJA2,DEJA3
+      LOGICAL DEJA1,DEJA2,DEJA3
 !
-      INTEGER LTT,N,IMAX,I
+      INTEGER LTT,N,IMAX,I,II,JJ
 !
-      DOUBLE PRECISION HHH,XMAX,NF,PI,AMP,PHA
-!
+      DOUBLE PRECISION HHH,XMAX
+      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
       INTRINSIC MAX,SQRT
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
@@ -471,32 +503,68 @@
       DATA DEJA1/.FALSE./
       DATA DEJA2/.FALSE./
       DATA DEJA3/.FALSE./
-      SAVE DEJA1,DEJA2,DEJA3,NF
+      SAVE DEJA1,DEJA2,DEJA3
 !
 !-----------------------------------------------------------------------
 !
 !     THE OUTPUT VARIABLES ARE BUILT ONLY IF NECESSARY, HENCE THE
 !     FOLLOWING TESTS, WHICH MUST BE THE SAME AS IN BIEF_DESIMP (BIEF LIBRARY)
-!
+      IMP=.FALSE.
+      LEO=.FALSE.
 !     THIS WILL TRIGGER THE OUTPUT OF LAST TIMESTEP
 !     BUT NOT WITH PARAMETER ESTIMATION (LISPRD WOULD STAY AT 1
 !     FOR FURTHER COMPUTATIONS)
-      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
-        LISPRD=1
-        LEOPRD=1
-      ENDIF
-!
-      IMP=.FALSE.
-      LEO=.FALSE.
-      LTT=(LT/LISPRD)*LISPRD
-      IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
-      LTT=(LT/LEOPRD)*LEOPRD
-      IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!
+!      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
+!        IMP=.FALSE.
+!        LEO=.FALSE.
+!      ENDIF
+!     Always write the intial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
         LEO=.TRUE.
+        COMPLEO=0
+      ELSE
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+!         FEM
+          LTT=(LT/LISPRD)*LISPRD
+          IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
+          LTT=(LT/LEOPRD)*LEOPRD
+          IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
+!         FOR GRAPHICAL OUTPUTS          
+          IF(LEO)COMPLEO=COMPLEO+1
+        ELSE
+!         FVM
+          GPRDTIME=LEOPRD*DTINI
+          LPRDTIME=LISPRD*DTINI
+          IF(GPRDTIME.LT.EPSS.OR.LPRDTIME.LT.EPSS)THEN
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(LT.GE.PTINIG)THEN
+!           GRAPHIC OUTPUT
+            LTT=CEILING(AT/GPRDTIME)
+            RESTE=(LTT*GPRDTIME-AT)/GPRDTIME
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
+!                                   CASE WHERE RESTE=1
+     &        LT.EQ.NIT)THEN
+              LEO=.TRUE.
+              COMPLEO=COMPLEO+1
+            ENDIF
+            
+          ENDIF
+          IF(LT.GT.PTINIL)THEN
+!           LISTING OUTPUT
+            LTT=CEILING(AT/LPRDTIME)
+            RESTE=(LTT*LPRDTIME-AT)/LPRDTIME
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
+!                                   CASE WHERE RESTE=1
+     &        LT.EQ.NIT)THEN
+              IMP=.TRUE.
+            ENDIF
+          ENDIF
+        ENDIF
       ENDIF
+
 !
 !-----------------------------------------------------------------------
 !

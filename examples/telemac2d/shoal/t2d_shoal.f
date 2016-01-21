@@ -636,8 +636,9 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
+          IF(NIT.EQ.LT) LEO=.TRUE.  ! LAST TIME STEP
 !         FOR GRAPHICAL OUTPUTS          
-          IF(LEO)COMPLEO=(LT-PTINIG)/LEOPRD
+          IF(LEO)COMPLEO=COMPLEO+1     
         ELSE
 !         FVM
           GPRDTIME=LEOPRD*DTINI
@@ -650,17 +651,23 @@
 !           GRAPHIC OUTPUT
             LTT=CEILING(AT/GPRDTIME)
             RESTE=(LTT*GPRDTIME-AT)/GPRDTIME
-            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS)THEN
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
 !                                   CASE WHERE RESTE=1
+     &        LT.EQ.NIT)THEN
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
+            
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
             LTT=CEILING(AT/LPRDTIME)
             RESTE=(LTT*LPRDTIME-AT)/LPRDTIME
-            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS)IMP=.TRUE.
+            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
+!                                   CASE WHERE RESTE=1
+     &        LT.EQ.NIT)THEN
+              IMP=.TRUE.
+            ENDIF
           ENDIF
         ENDIF
       ENDIF
