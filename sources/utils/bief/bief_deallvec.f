@@ -5,7 +5,7 @@
      &(VEC)
 !
 !***********************************************************************
-! BIEF   V7P1
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    DEALLOCATES MEMORY FOR A VECTOR STRUCTURE.
@@ -13,7 +13,12 @@
 !history  Y AUDOUIN (LNHE)
 !+        23/05/2013
 !+        V7P1
-!+
+!+    First version
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P2
+!+    Adding VEC%NAT=3, combining double precision and integers.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| VEC            |<--| VECTOR TO BE DEALLOCATED
@@ -35,8 +40,11 @@
         IF(ASSOCIATED(VEC%R)) DEALLOCATE(VEC%R)
       ELSEIF(VEC%NAT.EQ.2) THEN
         IF(ASSOCIATED(VEC%I)) DEALLOCATE(VEC%I)
+      ELSEIF(VEC%NAT.EQ.3) THEN
+        IF(ASSOCIATED(VEC%R)) DEALLOCATE(VEC%R)
+        IF(ASSOCIATED(VEC%I)) DEALLOCATE(VEC%I)
       ELSE
-        WRITE(LU,*) 'UNKNOWN NAT IN DEALLVEC FOR :', VEC%NAME
+        WRITE(LU,*) 'UNKNOWN NAT IN BIEF_DEALLVEC FOR :', VEC%NAME
         CALL PLANTE(1)
         STOP
       ENDIF

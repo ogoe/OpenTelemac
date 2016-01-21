@@ -179,6 +179,12 @@
 !+        V7P1
 !+   Imposed flowrates on the bed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P1
+!+   Initial conditions of results file in restart mode were forgotten
+!+   they are useless but now requested by the Hermes module...
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -999,6 +1005,8 @@
       IF(SORG3D(23)) CALL OS('X=0     ',X=VD)
       IF(SORG3D(24)) CALL OS('X=0     ',X=WD)
 !
+!     INITIAL CONDITIONS OF 3D RESULTS FILE
+!
       IF(T3D_FILES(T3DRES)%NAME(1:1).NE.' ') THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
@@ -1006,6 +1014,16 @@
      &                   LISPRD,GRAPRD,
      &                   SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF DESIMP'
+      ENDIF
+!
+!     INITIAL CONDITIONS OF 3D OUTPUT FOR RESTART (NOT USED BY NOW MANDATORY)
+!
+      IF(RESTART_MODE.AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP RESTART MODE'
+        CALL BIEF_DESIMP(T3D_FILES(T3DRST)%FMT,VARSO3,NPOIN3,
+     &                   T3D_FILES(T3DRST)%LU,BINRES,AT,LT,
+     &                   1,NIT,SOREST,SORIS3,MAXVA3,TEXT3,1,NIT)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF DESIMP RESTART MODE'
       ENDIF
 !
 !     SEDIMENTOLOGY OUTPUT

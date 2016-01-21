@@ -49,6 +49,12 @@
 !+   With the decision to always issue the initial condition, this
 !+   subroutine must be changed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P1
+!+   Variables for clean restart mode must be built for initial
+!+   conditions.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -295,7 +301,9 @@
 ! FOR RESTARTS, STORAGE OF DH AND HN IN A 3D ARRAY
 !=======================================================================
 !
-      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.LT.EQ.NIT))) THEN
+      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.
+!        INITIAL CONDITIONS NOW ALWAYS WANTED, THOUGH NOT USED
+     &   (LT.EQ.0.OR.LT.EQ.NIT)))) THEN
         DO I=1,NPOIN2
           DHHN%R(I       )=DH%R(I)
           DHHN%R(I+NPOIN2)=HN%R(I)
@@ -310,6 +318,9 @@
 !=======================================================================
 !
 1000  CONTINUE
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 

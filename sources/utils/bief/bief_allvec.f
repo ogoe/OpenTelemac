@@ -5,15 +5,10 @@
      &( NAT , VEC , NOM , IELM , DIM2 , STATUT , MESH )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A VECTOR STRUCTURE.
-!
-!history  J-M HERVOUET (LNHE)
-!+        09/01/06
-!+        V5P6
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -27,11 +22,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P2
+!+   Adding NAT = 3. With both integers and doube precision arrays
+!+   allocated 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM2           |-->| SECOND DIMENSION OF VECTOR
 !| IELM           |-->| TYPE OF ELEMENT, OR DIMENSION
 !|                |   | (DEPENDING ON 'STATUT')
-!| NAT            |<--| 1: REAL VECTOR   2:VECTOR OF INTEGERS
+!| NAT            |<--| 1: DOUBLE PRECISION   2:VECTOR OF INTEGERS
+!|                |   | 3: DOUBLE PRECISION AND VECTOR OF INTEGERS
 !| NOM            |-->| FORTRAN NAME
 !| STATUT         |-->| VECTOR STATUS:
 !|                |   | 0 : FREE VECTOR, IELM IS ITS DIMENSION
@@ -160,9 +162,25 @@
 !       TO RAISE QUESTIONS IF NOT INITIALISED
 !
         IMAX = HUGE(100)
-          DO I=1,VEC%MAXDIM1*VEC%DIM2
-            VEC%I(I) = IMAX
-          ENDDO
+        DO I=1,VEC%MAXDIM1*VEC%DIM2
+          VEC%I(I) = IMAX
+        ENDDO
+!
+      ELSEIF(NAT.EQ.3) THEN
+!
+        ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+!
+!       FILLS ARRAY WITH BIG NUMBERS
+!       TO RAISE QUESTIONS IF NOT INITIALISED
+!
+        XMAX = HUGE(100.D0)
+        CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
+     &          VEC%MAXDIM1*VEC%DIM2)
+        IMAX = HUGE(100)
+        DO I=1,VEC%MAXDIM1*VEC%DIM2
+          VEC%I(I) = IMAX
+        ENDDO
 !
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'NAT INCONNU DANS ALLVEC'
