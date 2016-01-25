@@ -213,9 +213,9 @@
               FLUDPT(I)  = FLUDPTC(I)+FLUDPTNC(I)
             ELSE
 !             TIDAL FLAT
-              FLUDPT   = 0.D0
-              FLUDPTC  = 0.D0
-              FLUDPTNC = 0.D0
+              FLUDPT(I)   = 0.D0
+              FLUDPTC(I)  = 0.D0
+              FLUDPTNC(I) = 0.D0
             ENDIF
           ENDDO
         ELSE
