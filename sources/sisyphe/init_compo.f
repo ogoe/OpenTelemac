@@ -128,9 +128,9 @@
      &                  ' SEDIMENT HEIGHT=',EPAI
             WRITE(LU,*) 'AT POINT ',J
           ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
-        CALL PLANTE(1)
-        STOP
       ENDDO
 !
 !-----------------------------------------------------------------------

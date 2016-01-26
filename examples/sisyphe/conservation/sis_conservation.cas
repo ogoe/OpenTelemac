@@ -1,3 +1,4 @@
+DEBUGGER : 0
 NOMBRE DE COUCHES POUR GRANULO ETENDUE = 2
 POROSITE DU LIT NON COHESIF = 0.375
 / 
@@ -26,6 +27,8 @@ FICHIER DE GEOMETRIE = geo_conservation.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_conservation.cli
 /
 FICHIER DES RESULTATS = sis_conservation.slf
+FICHIER DE REFERENCE  = fis_conservation.slf
+VALIDATION : OUI
 /
 /CALCUL 
 / -----------------------------------------------------
