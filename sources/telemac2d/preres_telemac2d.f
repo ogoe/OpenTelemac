@@ -1,7 +1,8 @@
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
-     &    (IMP,LEO)
+!
+     &(IMP,LEO)
 !
 !
 !***********************************************************************
@@ -75,10 +76,10 @@
 !
       LOGICAL DEJA1,DEJA2
 !
-      INTEGER LTT,N,IMAX,I,II,JJ
+      INTEGER LTT,N,IMAX,I
 !
       DOUBLE PRECISION HHH,XMAX
-      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION, PARAMETER :: EPSS=1.E-10
       DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
       INTRINSIC MAX,SQRT,CEILING
@@ -106,7 +107,7 @@
 !        IMP=.FALSE.
 !        LEO=.FALSE.
 !      ENDIF
-!     Always write the intial conditions
+!     Always write the initial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
         LEO=.TRUE.

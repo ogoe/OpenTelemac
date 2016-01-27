@@ -40,6 +40,12 @@
 !+   For boundaries, depth renumbered before being sent to
 !+   friction_calc.
 !
+!history  R. KOPMANN (BAW)
+!+        27/01/2016
+!+        V7P1
+!+   See "RESULTANT VELOCITY IN T2", more cases of computation are added
+!+   with KFROTL.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
 !| CFBORD         |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
@@ -85,9 +91,8 @@
       DOUBLE PRECISION, INTENT(IN)      :: VK,KARMAN,GRAV
 !
       DOUBLE PRECISION, INTENT(INOUT)   :: SB
-      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: T1, T2
-!
-      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: CF, CFBOR
+      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: T1,T2
+      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: CF,CFBOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -95,27 +100,27 @@
       DOUBLE PRECISION :: C,CP
       DOUBLE PRECISION, PARAMETER :: MINH=1.D-4
 !
-!=======================================================================!
-!=======================================================================!
-!                               PROGRAMME                               !
-!=======================================================================!
-!=======================================================================!
+!=======================================================================
+!=======================================================================
+!                               PROGRAMME                               
+!=======================================================================
+!=======================================================================
 !
-! ======================================= !
-! INITIALIZATION AND DISCRETIZATION CHECK !
-! ======================================= !
+! =======================================
+! INITIALIZATION AND DISCRETIZATION CHECK
+! =======================================
 !
 ! ELEMENT TYPE
-! ------------
+! 
       IELMC = CF%ELM
       IELMH = H%ELM
 !
 ! SAME DISCRETIZATION FOR WATER DEPTH AND FRICTION COEFFICIENT IF NEEDED
-! ----------------------------------------------------------------------
+! 
       IF (KFROT.NE.0.AND.KFROT.NE.2) THEN
 !
 ! MAXIMUM BETWEEN WATER DEPTH AND MINH
-! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+! 
         CALL CPSTVC(H,T1)
         CALL OS('X=Y     ', T1, H, S, C)
         IF(IELMC.NE.IELMH) CALL CHGDIS( T1 , IELMH , IELMC , MESH )
@@ -124,25 +129,24 @@
       ENDIF
 !
 ! RESULTANT VELOCITY IN T2
-! ------------------------
-      IF (KFROT.EQ.1.OR.KFROT.EQ.6.OR.KFROT.EQ.7) THEN
+!
+      IF(KFROT .EQ.1.OR.KFROT .EQ.6.OR.KFROT .EQ.7.OR.
+     &   KFROTL.EQ.1.OR.KFROTL.EQ.6.OR.KFROTL.EQ.7 ) THEN
         CALL CPSTVC(CF,T2)
         CALL OS('X=N(Y,Z)', T2,  U, V, C)
         CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)
       ENDIF
 !
-! =============== !
-! BOTTOM FRICTION !
-! =============== !
+! ===============
+! BOTTOM FRICTION
+! ===============
 !
 !     FRICTION COEFFICIENT FOR THE BOTTOM
-!     -----------------------------------
 !
       CALL FRICTION_CALC(1, CF%DIM1, KFROT, NDEF, VK, GRAV,
      &                   KARMAN, CHESTR, T1, T1, T2, CF)
 !
 !     FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
-!     -------------------------------------------------
 !
       IF(LINDNER) THEN
 !
@@ -156,7 +160,6 @@
         ENDDO
       ENDIF
 !
-!     CV
 !     WAVE INDUCED FRICTION ENHANCMENT (OCONNOR AND YOO, 1988)
 !
       IF(FRICOU)THEN
@@ -168,12 +171,11 @@
         ENDDO
       ENDIF
 !
-! ============= !
-! WALL FRICTION !
-! ============= !
+! =============
+! WALL FRICTION
+! =============
 !
 ! WALL FRICTION COMPUTATION
-! -------------------------
 !
       IF(LISRUG.EQ.2) THEN
         DO J = 1, MESH%NPTFR
@@ -186,8 +188,8 @@
      &                     T2,CFBOR)
       ENDIF
 !
-!=======================================================================!
-!=======================================================================!
+!=======================================================================
+!=======================================================================
 !
       RETURN
       END
