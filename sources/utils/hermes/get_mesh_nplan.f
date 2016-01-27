@@ -41,9 +41,7 @@
         CASE ('SERAFIN ','SERAFIND')
           CALL GET_MESH_NPLAN_SRF(FID, NPLAN, IERR)
         CASE ('MED     ')
-!         THIS INFORMATION IS NOT AVAILABLE FOR NOW
-!         CALL get_mesh_nplan_MED(fid, nplan, ierr)
-          NPLAN = 0
+          CALL GET_MESH_NPLAN_MED(FID, NPLAN, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'GET_MESH_NPLAN : MAUVAIS FORMAT : ',FFORMAT
