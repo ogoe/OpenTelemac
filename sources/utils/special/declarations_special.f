@@ -37,8 +37,8 @@
 !
 !     Returns the kind type for integers N such that : -10**R<N<10**R
 !
-      INTEGER, PARAMETER :: K4  =  SELECTED_INT_KIND(9)
-      INTEGER, PARAMETER :: K8  =  SELECTED_INT_KIND(15)
+      INTEGER, PARAMETER :: K4  = 4
+      INTEGER, PARAMETER :: K8  = 8
 !
 !     ERROR HANDLING
       INTEGER, PARAMETER :: NO_ERROR = 0
