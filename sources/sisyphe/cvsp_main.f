@@ -6,7 +6,7 @@
      & ELAY0,VOLTOT,ES,AVAIL,CONST_ALAYER,DTS,ESTRATNEW,NLAYNEW)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   14/03/2013
+! SISYPHE   V7P1
 !***********************************************************************
 !
 !BRIEF    CONTINOUS VERTICAL SORTING MODEL
@@ -22,6 +22,11 @@
 !+        12/03/2013
 !+        V6P3
 !+   Cleaning, cosmetic
+!
+!history  R. Kopmann (BAW)
+!+        27/01/2016
+!+        V7P1
+!+   Dimension of VOLTOT changed from 10 to NSICLA
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |---| CALCULATED GEOMETRICAL MEAN DIAMETER OF ACT LAY
@@ -68,7 +73,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
-      DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(10),ESTRATNEW(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(NSICLA),ESTRATNEW(NPOIN)
       INTEGER         , INTENT(INOUT) :: NLAYNEW(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
