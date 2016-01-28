@@ -168,7 +168,7 @@
         WRITE(LU,*) ' OR'
         WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(20)=',
      &        CH_DELTA(20)
-!       CALL PLANTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

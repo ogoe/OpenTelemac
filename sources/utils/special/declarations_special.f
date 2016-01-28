@@ -33,10 +33,6 @@
 !     INTEGER(KIND=K4) :: I (I WILL BE A 4-BYTE INTEGER)
 !     INTEGER(KIND=K8) :: I (I WILL BE A 8-BYTE INTEGER)
 !
-!     SELECTED_INT_KIND(R):
-!
-!     Returns the kind type for integers N such that : -10**R<N<10**R
-!
       INTEGER, PARAMETER :: K4  = 4
       INTEGER, PARAMETER :: K8  = 8
 !

@@ -45,6 +45,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -102,7 +103,7 @@
         WRITE(LU,*) ' PARALLEL::ORG_CHARAC_TYPE1::',
      &        ' NOMB NOT IN RANGE [0..MAX_BASKET_SIZE]'
         WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',MAX_BASKET_SIZE,NOMB
-!       CALL PLANTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
       CH_TYPES(1)=MPI_INTEGER
@@ -137,7 +138,7 @@
         WRITE(LU,*) ' OR'
         WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(18)=',
      &        CH_DELTA(18)
-!       CALL PLANTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 #else
