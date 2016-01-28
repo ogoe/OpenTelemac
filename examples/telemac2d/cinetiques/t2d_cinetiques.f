@@ -510,7 +510,8 @@
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
+     & NAMES_PRIVE,SECCURRENTS)
 !
 !***********************************************************************
 !  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
@@ -542,20 +543,26 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY : IND_SEC
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      CHARACTER*32 TEXTE(*),TEXTPR(*)
-      CHARACTER*8  MNEMO(*)
-      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
-      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(32)
+      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
+      CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      LOGICAL, INTENT(IN)              :: SECCURRENTS
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
       DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
      &                     '10','11','12','13','14','15','16','17','18',
      &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32'/
+     &                     '28','29','30','31','32','33','34'/
       INTEGER I
 !
 !-----------------------------------------------------------------------
@@ -770,21 +777,65 @@
       MNEMO(29)   = 'MAXV    '
 !     VARIABLE 30
       MNEMO(30)   = 'TMXV    '
-!
 !-----------------------------------------------------------------------
 !
-!     ANALYSES DE FOURIERS
+!     FOURIER ANALYSES
 !
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
-          TEXTE(31+2*(I-1)) =  'AMPLI PERIODE '
-     &                       //I_IN_2_LETTERS(I)
-     &                       //'M               '
-          MNEMO(31+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
-          TEXTE(32+2*(I-1)) =  'PHASE PERIODE '
-     &                       //I_IN_2_LETTERS(I)
-     &                       //'DEGRES          '
-          MNEMO(32+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
+          IF(LNG.EQ.1) THEN
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+          ELSE
+            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'M               '
+            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+     &                         //I_IN_2_LETTERS(I)
+     &                         //'DEGRES          '
+          ENDIF
+          MNEMO(34+NTRAC+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(35+NTRAC+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     TRACERS
+!
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          TEXTE(33+I)  = NAMETRAC(I)
+          TEXTPR(33+I) = NAMETRAC(I)
+          MNEMO(33+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+        ENDDO
+!       OMEGA FOR SECONDARY CURRENTS
+        IF(SECCURRENTS) THEN
+          TEXTE(33+IND_SEC) = NAMETRAC(IND_SEC)
+          TEXTPR(33+IND_SEC)= NAMETRAC(IND_SEC)
+          MNEMO(33+IND_SEC) = 'OMEGA   '
+        ENDIF
+      ENDIF
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          TEXTE(22+I)  = NAMES_PRIVE(I)
+          TEXTPR(22+I) = NAMES_PRIVE(I)
         ENDDO
       ENDIF
 !

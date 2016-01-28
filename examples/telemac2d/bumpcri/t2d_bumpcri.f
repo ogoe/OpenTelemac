@@ -362,7 +362,8 @@
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
 !
-     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
+     &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
+     & NAMES_PRIVE,SECCURRENTS)
 !
 !***********************************************************************
 !  TELEMAC 2D 7.0
@@ -394,17 +395,18 @@
 !
 !**********************************************************************
 !
-      USE DECLARATIONS_TELEMAC2D, ONLY : SECCURRENTS
+      USE DECLARATIONS_TELEMAC2D, ONLY : IND_SEC
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
-      INTEGER, INTENT(IN)              :: NPERIAF,NTRAC
-      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -696,10 +698,16 @@
         ENDDO
 !       OMEGA FOR SECONDARY CURRENTS
         IF(SECCURRENTS) THEN
-          TEXTE(33+NTRAC) = NAMETRAC(NTRAC)
-          TEXTPR(33+NTRAC)= NAMETRAC(NTRAC)
-          MNEMO(33+NTRAC) = 'OMEGA   '
+          TEXTE(33+IND_SEC) = NAMETRAC(IND_SEC)
+          TEXTPR(33+IND_SEC)= NAMETRAC(IND_SEC)
+          MNEMO(33+IND_SEC) = 'OMEGA   '
         ENDIF
+      ENDIF
+      IF(N_NAMES_PRIV.GT.0) THEN
+        DO I=1,N_NAMES_PRIV
+          TEXTE(22+I)  = NAMES_PRIVE(I)
+          TEXTPR(22+I) = NAMES_PRIVE(I)
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------
