@@ -99,7 +99,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2,JF
-!    
+!
       DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: CY(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: CT(NPOIN2,NPLAN,NF)
@@ -234,7 +234,7 @@
      &             (COSTET(IP)*DVY(IPOIN)+SINTET(IP)*DUY(IPOIN))
      &            + SINTET(IP)*
      &             (COSTET(IP)*DVX(IPOIN)+SINTET(IP)*DUX(IPOIN))
-              USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)          
+              USGD=V(IPOIN)*DZY(IPOIN)+U(IPOIN)*DZX(IPOIN)
               CX(IPOIN,IP,JF)=CX(IPOIN,IP,JF) + U(IPOIN)
               CY(IPOIN,IP,JF)=CY(IPOIN,IP,JF) + V(IPOIN)
               CT(IPOIN,IP,JF)=CT(IPOIN,IP,JF) - LSDUDN

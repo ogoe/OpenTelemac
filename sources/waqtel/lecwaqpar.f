@@ -10,10 +10,10 @@
 !***********************************************************************
 !
 !brief    READ THE PARAMETERS OF WAQ PROCESSES
-!+        
+!+
 !
 !
-!history R. ATA 
+!history R. ATA
 !+        12/09/2014
 !+        V7P0
 !+        CREATION
@@ -101,15 +101,15 @@
         IF(OPTNBR%I(N).EQ.3) THEN
           READ(IFIC,*,ERR=993) NUMPSD%I(N)
           READ(IFIC,*,END=900) ! COMMENT LINE
-          IF(NCSIZE.GT.1) THEN 
+          IF(NCSIZE.GT.1) THEN
             NUM = NUMPSD%I(N)
             NUMPSD%I(N) = 0
-            DO M=1,MESH%NPOIN 
-              IF(NUM.EQ.MESH%KNOLG%I(M)) THEN 
-                NUMPSD%I(N) = M 
-              ENDIF  
-            ENDDO  
-          ENDIF 
+            DO M=1,MESH%NPOIN
+              IF(NUM.EQ.MESH%KNOLG%I(M)) THEN
+                NUMPSD%I(N) = M
+              ENDIF
+            ENDDO
+          ENDIF
         ENDIF
         IF(OPTNBR%I(N).NE.1) THEN
           READ(IFIC,*,ERR=992) ZDECBR%R(N)
@@ -231,9 +231,9 @@
             NOM(5:5) = CHIFFRE((N-100*(N/100))/10)
             NOM(6:6) = CHIFFRE((N-100*(N/100))-10*((N-100*(N/100))/10))
           ELSE
-            IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BRECHES DEMANDEES 
+            IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BRECHES DEMANDEES
      &                                DANS LECBREACH'
-            IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED 
+            IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED
      &                                IN LECBREACH'
             CALL PLANTE(1)
             STOP
@@ -431,5 +431,5 @@
 !
 1000  CONTINUE
       RETURN
-      END                  
- 
+      END
+

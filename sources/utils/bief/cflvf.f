@@ -166,7 +166,7 @@
         ENDDO
 !
       ELSEIF(OPT.EQ.2) THEN
-!       
+!
         DO I=1,NPOIN
           MINFC%R(I)=FC(I)
           MAXFC%R(I)=FC(I)
@@ -174,7 +174,7 @@
 !
         DO I=1,NPTFR
           IF(LIMTRA(I).EQ.KDIR) THEN
-            N=NBOR(I)          
+            N=NBOR(I)
             MINFC%R(N)=MIN(MINFC%R(N),FBOR(I))
             MAXFC%R(N)=MAX(MAXFC%R(N),FBOR(I))
           ENDIF
@@ -241,13 +241,13 @@
 !           MAX(...,0.D0) FOR 1
             TAB1%R(GLOSEG(I,1)) = TAB1%R(GLOSEG(I,1)) + FXMAT(I)
 !           MIN(...,0.D0) FOR 2
-            TAB1%R(GLOSEG(I,2)) = 
+            TAB1%R(GLOSEG(I,2)) =
      &      TAB1%R(GLOSEG(I,2)) - COEMIN * FXMAT(I)
           ELSE
 !           - FXMAT(I) POSITIVE
             TAB1%R(GLOSEG(I,2)) = TAB1%R(GLOSEG(I,2)) - FXMAT(I)
 !           MIN(...,0.D0) FOR 1
-            TAB1%R(GLOSEG(I,1)) = 
+            TAB1%R(GLOSEG(I,1)) =
      &      TAB1%R(GLOSEG(I,1)) + COEMIN * FXMAT(I)
           ENDIF
         ENDDO
@@ -288,7 +288,7 @@
           DO I = 1,NPOIN
             TAB1%R(I)=TAB1%R(I)+       MAX(FXBOR(I),0.D0)
      &                         +COESOU*MIN(FXBOR(I),0.D0)
-          ENDDO  
+          ENDDO
         ENDIF
 !
         DO I = 1,NPOIN
@@ -298,7 +298,7 @@
           ELSE
             MINFC%R(I)=DT
           ENDIF
-        ENDDO  
+        ENDDO
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
 !
@@ -333,11 +333,11 @@
             N=NBOR(I)
 !           FXBOR IS HERE IN GLOBAL NUMBERING
             TAB1%R(N)=TAB1%R(N)
-     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MAXFC%R(N))    
-          ELSEIF(LIMTRA(I).EQ.KDDL) THEN 
-            N=NBOR(I) 
+     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MAXFC%R(N))
+          ELSEIF(LIMTRA(I).EQ.KDDL) THEN
+            N=NBOR(I)
             TAB1%R(N)=TAB1%R(N)
-     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MAXFC%R(N))        
+     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MAXFC%R(N))
           ENDIF
         ENDDO
 !
@@ -397,11 +397,11 @@
             N=NBOR(I)
 !           FXBOR IS HERE IN GLOBAL NUMBERING
             TAB1%R(N)=TAB1%R(N)
-     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MINFC%R(N))    
-          ELSEIF(LIMTRA(I).EQ.KDDL) THEN  
+     &               -MIN(FXBOR(N),0.D0)*(FBOR(I)-MINFC%R(N))
+          ELSEIF(LIMTRA(I).EQ.KDDL) THEN
             N=NBOR(I)
             TAB1%R(N)=TAB1%R(N)
-     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MINFC%R(N))        
+     &               -MAX(FXBOR(N),0.D0)*(FC(N)  -MINFC%R(N))
           ENDIF
         ENDDO
 !

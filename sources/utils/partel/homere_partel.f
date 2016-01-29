@@ -94,15 +94,15 @@
 !
 !
       WRITE(LU,*) '--INPUT FILE NAME <INPUT_NAME>: '
-      READ(LI,*) NAMEINP             
+      READ(LI,*) NAMEINP
 !
       IF (NAMEINP.EQ.' ') THEN
-        WRITE (LU,*) ' NO FILENAME ' 
+        WRITE (LU,*) ' NO FILENAME '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) 'INPUT: ',TRIM(NAMEINP)
-      ENDIF  
+      ENDIF
 
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) THEN
@@ -112,23 +112,23 @@
       ENDIF
 !
       WRITE(LU,*)
-     & '--INPUT FILE FORMAT <INPFORMAT> [MED,SERAFIN,SERAFIND]: ' 
-      READ(LI,*) INPFORMAT                
-      IF ( (INPFORMAT .NE. 'MED     ') .AND. 
+     & '--INPUT FILE FORMAT <INPFORMAT> [MED,SERAFIN,SERAFIND]: '
+      READ(LI,*) INPFORMAT
+      IF ( (INPFORMAT .NE. 'MED     ') .AND.
      &     (INPFORMAT .NE. 'SERAFIN ') .AND.
      &     (INPFORMAT .NE. 'SERAFIND') ) THEN
         WRITE(LU,*)
-     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) ' INPUT: ', INPFORMAT
-      ENDIF 
+      ENDIF
 !
       WRITE(LU, *) '--BOUNDARY CONDITIONS FILE NAME: '
-      READ(LI,*) NAMECLI                 
+      READ(LI,*) NAMECLI
       IF (NAMECLI.EQ.' ') THEN
-        WRITE (LU,*) ' NO FILENAME ' 
+        WRITE (LU,*) ' NO FILENAME '
         CALL PLANTE(1)
         STOP
       ELSE
@@ -143,21 +143,21 @@
       ENDIF
 !
       WRITE(LU,FMT='(A,I6,A)')
-     &  '--NUMBER OF PARTITIONS <NPARTS> [2 -',MAXNPROC,']: ' 
-      READ(LI,*) NPARTS                 
+     &  '--NUMBER OF PARTITIONS <NPARTS> [2 -',MAXNPROC,']: '
+      READ(LI,*) NPARTS
 !
       IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
         WRITE(LU,FMT='(A,I6,A)')
-     &  ' NUMBER OF PARTITIONS MUST BE IN [2 -',MAXNPROC,']' 
+     &  ' NUMBER OF PARTITIONS MUST BE IN [2 -',MAXNPROC,']'
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*)' INPUT: ', NPARTS
-      ENDIF 
+      ENDIF
 !
-      WRITE(LU,*) ' PARTITIONING METHOD <PMETHOD> 
-     &  [1 (METIS) OR 2 (SCOTCH)]: ' 
-      READ(LI,*) PMETHOD                
+      WRITE(LU,*) ' PARTITIONING METHOD <PMETHOD>
+     &  [1 (METIS) OR 2 (SCOTCH)]: '
+      READ(LI,*) PMETHOD
       IF ( (PMETHOD > 2) .OR. (PMETHOD < 1) ) THEN
         WRITE(LU,
      &  '('' PARTITIONING METHOD MUST BE 1 OR 2'')')
@@ -207,42 +207,42 @@
 !     Geometry file
 !
       WRITE(LU,*) '--GEOMETRY FILE NAME <INPUT_NAME>: '
-      READ(LI,*) NAMEGEO             
+      READ(LI,*) NAMEGEO
 !
       IF (NAMEGEO.EQ.' ') THEN
-        WRITE (LU,*) ' NO FILENAME ' 
+        WRITE (LU,*) ' NO FILENAME '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) 'INPUT: ',TRIM(NAMEGEO)
-      ENDIF  
+      ENDIF
 
       INQUIRE (FILE=NAMEGEO,EXIST=IS)
-      IF (.NOT.IS) THEN 
+      IF (.NOT.IS) THEN
         WRITE (LU,*)' FILE DOES NOT EXIST: ',TRIM(NAMEGEO)
         CALL PLANTE(1)
         STOP
-      ENDIF  
+      ENDIF
 !
       WRITE(LU,*)
-     & '--GEOMETRY FILE FORMAT <GEOFORMAT> [MED,SERAFIN,SERAFIND]: ' 
-      READ(LI,*) GEOFORMAT                
-      IF ( (GEOFORMAT .NE. 'MED     ') .AND. 
+     & '--GEOMETRY FILE FORMAT <GEOFORMAT> [MED,SERAFIN,SERAFIND]: '
+      READ(LI,*) GEOFORMAT
+      IF ( (GEOFORMAT .NE. 'MED     ') .AND.
      &     (GEOFORMAT .NE. 'SERAFIN ') .AND.
      &     (GEOFORMAT .NE. 'SERAFIND') ) THEN
         WRITE(LU,*)
-     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) ' INPUT: ', GEOFORMAT
-      ENDIF 
+      ENDIF
 !
       ! Check if the geometry has already been partitionned
       INQUIRE(FILE=TRIM(NAMEGEO)//EXTENS(NPARTS-1,0),
      &        EXIST=RES_ONLY)
       IF(NAMEGEO.EQ.NAMEINP) RES_ONLY = .FALSE.
- 
+
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
 !
@@ -285,7 +285,7 @@
         WRITE(LU,*) 'ATTENTION:'
         WRITE(LU,*) 'THE NAME OF THE GEOMETRY FILE:'
         WRITE(LU,*) NAMEGEO
-        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS' 
+        WRITE(LU,*) 'IS LONGER THAN ',MAXLENSOFT,' CHARACTERS'
         WRITE(LU,*) 'WHICH IS THE LONGEST APPLICABLE NAME FOR TELEMAC '
         WRITE(LU,*) 'INPUT AND OUTPUT FILES. STOPPED. '
         CALL PLANTE(1)
@@ -296,7 +296,7 @@
         ! Reading geometry from xxxGEO
         CALL PARRES(NAMEGEO, NAMEINP, NPARTS, GEOFORMAT, INPFORMAT)
       ELSE
-        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, INPFORMAT, 
+        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, INPFORMAT,
      &              NAMESEC, NAMEZFI)
       ENDIF
 !

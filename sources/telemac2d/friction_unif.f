@@ -102,7 +102,7 @@
 !
 !=======================================================================
 !=======================================================================
-!                               PROGRAMME                               
+!                               PROGRAMME
 !=======================================================================
 !=======================================================================
 !
@@ -111,16 +111,16 @@
 ! =======================================
 !
 ! ELEMENT TYPE
-! 
+!
       IELMC = CF%ELM
       IELMH = H%ELM
 !
 ! SAME DISCRETIZATION FOR WATER DEPTH AND FRICTION COEFFICIENT IF NEEDED
-! 
+!
       IF (KFROT.NE.0.AND.KFROT.NE.2) THEN
 !
 ! MAXIMUM BETWEEN WATER DEPTH AND MINH
-! 
+!
         CALL CPSTVC(H,T1)
         CALL OS('X=Y     ', T1, H, S, C)
         IF(IELMC.NE.IELMH) CALL CHGDIS( T1 , IELMH , IELMC , MESH )

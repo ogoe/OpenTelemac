@@ -1,6 +1,6 @@
-!        **********************************************           
+!        **********************************************
                    MODULE DECLARATIONS_WAQTEL
-!        **********************************************               
+!        **********************************************
 !
 !
 !***********************************************************************
@@ -12,7 +12,7 @@
 !history  R. ATA (EDF-LNHE)
 !+
 !+
-!+  
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -46,14 +46,14 @@
 !-----------------------------------------------------------------------
 !
 !     MAXIMUM NUMBER OF VALUES OF KEY-WORDS OF ONE KIND (INTEGER, LOGICAL, ETC.)
-! 
+!
       INTEGER, PARAMETER :: MAXKEY = 300
 !     GRAPHIC PRINTOUT PERIOD WAQ
-! 
+!
       INTEGER LEOPRD
 !
 !     LISTING PRINTOUT PERIOD WAQ
-! 
+!
       INTEGER LISPRD
 !
 !     MAXIMUM NUMBER OF OUTPUT VARIABLES
@@ -73,37 +73,37 @@
       LOGICAL SORLEO(MAXWQVAR),SORIMP(MAXWQVAR)
 !
 !     WAQ result FILE NUMBER
-! 
+!
       INTEGER WAQRES
 !
 !     WAQ boundary condition FILE NUMBER
-! 
+!
       INTEGER WAQCLI
 !
 !     WAQ GEOMETRY FILE NUMBER
-! 
+!
       INTEGER WAQGEO
 !
 !     WAQ HYDRODYNAMICS FILE NUMBER
-! 
+!
       INTEGER WAQHYD
 !
 !     WAQ STEERING FILE NUMBER
-! 
+!
       INTEGER WAQCAS
 !
 !     WAQ REFERENCE FILE NUMBER
-! 
+!
       INTEGER WAQREF
 !
 !     DEBUGGER
-!  
+!
       INTEGER DEBUG
-!      
+!
 !     FORMULA FOR COMPUTING K2
 !
       INTEGER FORMK2
-!      
+!
 !     FORMULA FOR COMPUTING RS
 !
       INTEGER FORMRS
@@ -123,11 +123,11 @@
 !-----------------------------------------------------------------------
 !
 !     IF YES, MASS-BALANCE
-! 
+!
       LOGICAL WQBILMAS
 !
 !     IF YES, VALIDATION
-! 
+!
       LOGICAL WQVALID
 !
 !     STEADY HYDRODYNAMICS
@@ -140,12 +140,12 @@
 !-----------------------------------------------------------------------
 !
 !     WATER DENSITY
-! 
+!
       DOUBLE PRECISION ROO
 !
 !     KINEMATIC VISCOSITY
-! 
-      DOUBLE PRECISION VCE   
+!
+      DOUBLE PRECISION VCE
 
 !     LONGITUDINAL DISPERSION
 !
@@ -156,19 +156,19 @@
       DOUBLE PRECISION TDISP
 !
 !     WATER QUALITY VARIABLES PCO2
-!     
+!
       DOUBLE PRECISION PCO2
 !
 !     WATER QUALITY VARIABLES PVAP
-!     
+!
       DOUBLE PRECISION PVAP
 !
 !     WATER QUALITY VARIABLES RAY3
-!     
+!
       DOUBLE PRECISION RAY3
 !
 !     WATER QUALITY VARIABLES NEBU
-!     
+!
       DOUBLE PRECISION NEBU
 !
 !     WATER QUALITY VARIABLES - RELATIVE HUMIDITY
@@ -180,23 +180,23 @@
       DOUBLE PRECISION RAINFALL
 !
 !     WATER QUALITY VARIABLES TAIR
-!     
+!
       DOUBLE PRECISION TAIR
 !
 !     WATER QUALITY VARIABLES ZSD (SECCHI LENGTH)
-!     
+!
       DOUBLE PRECISION ZSD
 !
 !     WATER QUALITY VARIABLES NWIND (IF CONSTANT WIND IN SPACE)
-!     
+!
       DOUBLE PRECISION NWIND
 !
 !     WATER QUALITY VARIABLES C14_ATM
-!     
+!
       DOUBLE PRECISION C14_ATM
 !
 !     WATER QUALITY VARIABLES HTO_ATM
-!     
+!
       DOUBLE PRECISION HTO_ATM
 !
 !     WEIR COEFFICIENT OF REAERATION
@@ -218,16 +218,16 @@
 !
       DOUBLE PRECISION K520
 !
-!     O2 PRODUCED BY PHOTOSYNTHESIS (F FOR TRACER)           
-!  
+!     O2 PRODUCED BY PHOTOSYNTHESIS (F FOR TRACER)
+!
       DOUBLE PRECISION O2PHOTO
 !
 !     O2 CONSUMED BY NITRIFICATION (N FOR TRACER)
-! 
+!
       DOUBLE PRECISION O2NITRI
 !
 !     BENTHIC DEMAND
-! 
+!
       DOUBLE PRECISION DEMBEN
 !
 !      COEFFICIENT A AND B USED IN RS FORMULA
@@ -235,7 +235,7 @@
       DOUBLE PRECISION ABRS(2)
 !
 !     O2 SATURATION DENSITY OF WATER (CS)
-!  
+!
       DOUBLE PRECISION O2SATU
 !
 !     SEDIMENTATION VELOCITY OF ORGANIC PHOSPHORUS
@@ -251,44 +251,44 @@
       DOUBLE PRECISION CMAX
 !
 !     SECCHI DEPTH
-!    
+!
       DOUBLE PRECISION  PS
 !
-!     COEF EXTINCTION OF RAY    
+!     COEF EXTINCTION OF RAY
 !
       DOUBLE PRECISION KPE
 !
 !     COEF VEGETAL TURBIDITY
 !
-      DOUBLE PRECISION BETA 
+      DOUBLE PRECISION BETA
 !
 !     PARAMETER OF CALIBRATION OF SMITH FORMULA
-! 
+!
       DOUBLE PRECISION IK
-!     
+!
 !     CONSTANT OF HALF-SATURATION WITH PHOSPHATE
 !
       DOUBLE PRECISION KP
-!     
+!
 !     CONSTANT OF HALF-SATURATION WITH PHOSPHA
 !
       DOUBLE PRECISION KN
 !
 !     ALGAL COEFF OF TOXICITY (ALPHA; ALPHA2)
-! 
+!
       DOUBLE PRECISION CTOXIC(2)
 !
 !     RESPIRATION RATE OF ALGAL BIOMASS (RP)
 !
-      DOUBLE PRECISION TRESPIR 
-!     
+      DOUBLE PRECISION TRESPIR
+!
 !     PROPORTION OF PHOSPHORUS WITHIN PHYTO CELLS (FP)
 !
-      DOUBLE PRECISION PROPHOC     
+      DOUBLE PRECISION PROPHOC
 !
 !     PERCENTAGE OF PHYSPHORUS ASSIMILABLE IN DEAD PHYTO
-! 
-      DOUBLE PRECISION DTP    
+!
+      DOUBLE PRECISION DTP
 !
 !     RATE OF TRANSFORMATION OF POR INTO PO
 !
@@ -299,7 +299,7 @@
       DOUBLE PRECISION PRONITC
 !
 !     PERCENTAGE OF NITROGEN ASSIMILABLE IN DEAD PHYTO (DTN)
-!  
+!
       DOUBLE PRECISION PERNITS
 !
 !     RATE OF TRANSFORMATION OF NOR INTO NO3
@@ -376,7 +376,7 @@
       DOUBLE PRECISION VITCHU
 !
 !     COEFF OF DISTRIBUTION (KD)
-! 
+!
       DOUBLE PRECISION CDISTRIB
 !
 !     CONSTANT OF DESORPTION KINETIC (KDESORP)
@@ -407,17 +407,17 @@
 !     COEFFICIENTS FOR CALIBRATING FREE SURFACE RADIATION
 !
       DOUBLE PRECISION EMI_EAU
-! 
+!
 !     BOLTZMANN CONSTANT (wM-2K-4)
 !
-      DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8     
+      DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8
 !
 !     COEFFICIENTS OF RAERATION FORMULA
 !
       DOUBLE PRECISION CFAER(2)
 !
 !
-!     MES PROCESS 
+!     MES PROCESS
 !
 !
 !    EXPONENETIAL DESINTEGRATION CONSTANT (LAMBD)
@@ -430,7 +430,7 @@
 !-----------------------------------------------------------------------
 !
 !     TITLE OF STUDY
-! 
+!
       CHARACTER(LEN=72) TITWAQCAS
 !
 !     COPY OF SUBMIT STRINGS IN THE DICTIONARY

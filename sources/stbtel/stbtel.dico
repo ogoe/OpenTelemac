@@ -85,26 +85,26 @@ finally refined.
 ATTENTION: this polygon should have a convex shape and the coordinates
 of the vertices be given with an anti clock wise order.'
 
-NOM = 'PROCESSEURS PARALLELES' 
-NOM1 = 'PARALLEL PROCESSORS' 
-TYPE = ENTIER 
-INDEX = 5 
-DEFAUT = 0 
-DEFAUT1 = 0 
-MNEMO = 'NCSIZE' 
+NOM = 'PROCESSEURS PARALLELES'
+NOM1 = 'PARALLEL PROCESSORS'
+TYPE = ENTIER
+INDEX = 5
+DEFAUT = 0
+DEFAUT1 = 0
+MNEMO = 'NCSIZE'
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
-NIVEAU = 1 
-AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE 
-0 : 1 machine, compilation sans bibliotheque de parallelisme 
-1 : 1 machine, compilation avec bibliotheque de parallelisme 
-2 : 2 processeurs ou machines en parallele 
-etc... ' 
-AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING 
-0 : 1 machine, compiling without parallel library 
-1 : 1 machine, compiling with a parallel library 
-2 : 2 processors or machines in parallel 
-etc....' 
+NIVEAU = 1
+AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
+0 : 1 machine, compilation sans bibliotheque de parallelisme
+1 : 1 machine, compilation avec bibliotheque de parallelisme
+2 : 2 processeurs ou machines en parallele
+etc... '
+AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING
+0 : 1 machine, compiling without parallel library
+1 : 1 machine, compiling with a parallel library
+2 : 2 processors or machines in parallel
+etc....'
 
 NOM = 'DISTANCE MINIMALE ENTRE DEUX POINTS'
 NOM1 = 'MINIMUM DISTANCE BETWEEN TWO POINTS'
@@ -382,7 +382,7 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Permet de relire la bathymetrie directement dans le fichier de 
+'Permet de relire la bathymetrie directement dans le fichier de
 maillage (Trigrid ou Fasttabs).'
 AIDE1 =
 'The bathymetry will be read in the mesh file (Trigrid or Fasttabs).'
@@ -415,7 +415,7 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Permet de relire les conditions limites dans le fichier  
+'Permet de relire les conditions limites dans le fichier
 additionnel (Fasttabs).'
 AIDE1 =
 'The boundary condition will be read in the additional file
@@ -747,7 +747,7 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE =
-'Nom du fichier additionnel. Ce fichier a une signification 
+'Nom du fichier additionnel. Ce fichier a une signification
 differente en fonction du mailleur choisi.
 Trigrid : Fichier contenant la table de connectivites (obligatoire).
 Fasttabs : Fichier contenant les conditions limites (optionnel).'
@@ -798,8 +798,8 @@ AIDE1=
 'accounting'
 /======================================================================/
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
-/                   AJOUT POUR LA VERSION  4.1 
-/                   
+/                   AJOUT POUR LA VERSION  4.1
+/
 /======================================================================/
 
 NOM = 'SEUIL DE SECHERESSE'
@@ -814,10 +814,10 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Fixe la valeur du seuil (en metre) de hauteur d''eau en dessous 
+'Fixe la valeur du seuil (en metre) de hauteur d''eau en dessous
 duquel un noeud est considere comme sec.'
 AIDE1 =
-'Limit of water depth value (in meter) under which the node is 
+'Limit of water depth value (in meter) under which the node is
 considered as dry node.'
 
 NOM = 'ELIMINATION DES ELEMENTS SECS'
@@ -866,7 +866,7 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Lors du traitement d''elimination des elements secs, permet de 
+'Lors du traitement d''elimination des elements secs, permet de
 specifier si on restocke tous les pas de temps dans le fichier
 resultat'
 AIDE1 =
@@ -875,8 +875,8 @@ all time steps are to be stored in the results file.'
 
 /======================================================================/
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
-/                   AJOUT POUR LA VERSION  6.3 
-/                   
+/                   AJOUT POUR LA VERSION  6.3
+/
 /======================================================================/
 NOM = 'DEBUG'
 NOM1 = 'DEBUG'
@@ -1126,18 +1126,18 @@ TYPE = CARACTERE
 INDEX = 55
 MNEMO = 'LINKLIBS'
 TAILLE = 6
-DEFAUT = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-DEFAUT1 = 'builds|PPP|lib|stbtelMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
+DEFAUT = 'builds|PPP|lib|stbtelMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|stbtelMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1

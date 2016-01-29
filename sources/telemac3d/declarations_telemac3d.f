@@ -1993,7 +1993,7 @@
 !
 !     NAMES OF PRIVATE ARRAYS (GIVEN BY USER)
 !
-      CHARACTER(LEN=32) NAMES_PRIVE2D(4)    
+      CHARACTER(LEN=32) NAMES_PRIVE2D(4)
 !
 !-----------------------------------------------------------------------
 ! (8) SLVCFG STRUCTURES

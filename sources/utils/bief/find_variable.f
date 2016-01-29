@@ -93,7 +93,7 @@
         CALL GET_DATA_TIME(FFORMAT,FID,RECORD2,TIME2,IERR)
         CALL CHECK_CALL(IERR,'FIND_VARIABLE:GET_DATA_TIME:REC2')
 !
-!       Quick check to see if the time is indeed within the first 
+!       Quick check to see if the time is indeed within the first
 !       and last time step of the file
 !
         IF((TIME1.GT.TIME.AND.ABS(TIME1-TIME).GT.EPS)
@@ -114,7 +114,7 @@
           RECORD1 = RECORD1 + 1
           CALL GET_DATA_TIME(FFORMAT,FID,RECORD1,TIME1,IERR)
           CALL CHECK_CALL(IERR,'FIND_VARIABLE:GET_DATA_TIME:REC1')
-        ENDDO 
+        ENDDO
 !       If the time is on the file return the value for that record
 !       otherwise we interpolate between the two time step
         IF(ABS(TIME1-TIME).LE.EPS) THEN
@@ -128,7 +128,7 @@
           CALL CHECK_CALL(IERR,'FIND_VARIABLE:GET_DATA_TIME:REC1')
           CALL GET_DATA_TIME(FFORMAT,FID,RECORD2,TIME2,IERR)
           CALL CHECK_CALL(IERR,'FIND_VARIABLE:GET_DATA_TIME:REC2')
-!         Get the value for each time step        
+!         Get the value for each time step
           CALL GET_DATA_VALUE(FFORMAT,FID,RECORD1,VAR_NAME,RES,N,IERR)
           CALL CHECK_CALL(IERR,'FIND_VARIABLE:GET_DATA_VALUE:REC1')
           ALLOCATE(RES2(N),STAT=IERR)
@@ -138,14 +138,14 @@
 !
 !         Interpolates in time
           COEF=(TIME-TIME1)/(TIME2-TIME1)
-!      
+!
           DO I=1,N
             RES(I)=(RES2(I)-RES(I))*COEF+RES(I)
           ENDDO
           DEALLOCATE(RES2)
         ENDIF
 !
-      ELSE 
+      ELSE
         CALL GET_DATA_NTIMESTEP(FFORMAT,FID,NTIMESTEP,IERR)
         CALL CHECK_CALL(IERR, 'READ_DATA:GET_DATA_NTIMESTEP')
         ! Check if record was given if not 0 is taken
@@ -156,7 +156,7 @@
           ELSE
             RRECORD = RECORD
           ENDIF
-        ELSE 
+        ELSE
           RRECORD = 0
         ENDIF
         ! WE CHECK IF THE RECORD IS IN THE FILE BY GETTING THE NUMBER OF

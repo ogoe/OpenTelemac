@@ -123,7 +123,7 @@
         IKLES(3,K) = IKLE2%I(K+2*NELEM2)
       ENDDO
       ! Cancelling the opening done in bief_open_file as multiple files will be reopen
-      
+
       IF(NC2DH.GE.1) THEN
         CALL CLOSE_MESH(HOR_FMT,NHOR,IERR)
         CALL CHECK_CALL(IERR,'POSTEL3D:CLOSE_MESH')

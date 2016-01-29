@@ -19,8 +19,8 @@
 !| ALD            |<--| ALGAE DEATH
 !| CMOR           |-->| COEFFICIENTS OF ALGAE DEATH RATE AT 20C
 !| RAY            |-->| EFFECT OF SUNSHINE in [0,1]
-!| GT             |-->| EFFECT OF OF TEMPERATURE ON ALGAE GROWTH 
-!|                |   | GT=T/20,  T: WATER TEMPERATURE 
+!| GT             |-->| EFFECT OF OF TEMPERATURE ON ALGAE GROWTH
+!|                |   | GT=T/20,  T: WATER TEMPERATURE
 !| TOX            |-->| COEFFICIENT OF WATER TOXICITY
 !| TR             |-->| TRACER (PHYTOPLANCTOPN BIOMASS)
 !| TRESP          |-->| RESPIRATION RATE OF ALGAL BIOMASS

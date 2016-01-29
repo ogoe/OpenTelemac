@@ -4,9 +4,9 @@
 !
      &(IVIDE   , EPAI  , TREST , CONC  , TEMP      , HDEP      ,
      & ZR      , ZF    , X     , Y     , NPOIN2    , NPOIN3    ,
-     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       , 
+     & NPF     , NCOUCH, TASSE , ITASS , RHOS      , XKV       ,
      & CFDEP   , ESOMT , TOCE  , SEDCO , CONC_LAYER, TOCE_LAYER,
-     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     , 
+     & ES_LAYER, SEDNCO, MIXTE , EPAICO, EPAINCO   , PVSCO     ,
      & PVSNCO  , PVSNCO0)
 !
 !***********************************************************************
@@ -115,8 +115,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPOIN2,NCOUCH)
       DOUBLE PRECISION, INTENT(INOUT) :: EPAICO(NPOIN2), EPAINCO(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: PVSCO(NPOIN2), PVSNCO(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH)    
-      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)    
+      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN2,NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZR(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
@@ -127,7 +127,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: ES_LAYER(NCOUCH)
       DOUBLE PRECISION, INTENT(IN)    :: TOCE_LAYER(NCOUCH)
       INTEGER, INTENT(INOUT)          :: NPF(NPOIN2)
-      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT      
+      TYPE(BIEF_OBJ), INTENT (INOUT)  :: ESOMT
       LOGICAL, INTENT(IN)             :: TASSE
       LOGICAL, INTENT(IN)             :: SEDCO, SEDNCO, MIXTE
       INTEGER, INTENT(IN)             :: ITASS
@@ -135,13 +135,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION ECOUCH,PVSCO0,HAUTSED,ERROR 
+      DOUBLE PRECISION ECOUCH,PVSCO0,HAUTSED,ERROR
       INTEGER IPOIN,IC,IPF,CHOIX,NLISS,NLAYER,K,J
       DOUBLE PRECISION, POINTER :: ZS(:)
 !
 !     A POINTER TO THE FREE SURFACE IN Z
 !
-      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2) 
+      ZS => Z(1+(NPLAN-1)*NPOIN2:NPLAN*NPOIN2)
 
 !     INITIALISES BED EVOLUTION ESOMT -----
 !
@@ -153,7 +153,7 @@
 !
 !     CALLING NOEROD OF LIBRARY SISYPHE, TO GET ZR
 !     NOTE: CHOIX AND NLISS NOT DEFINED, NOT USED
-!    
+!
       CALL NOEROD(H%R,ZF,ZR,ZS,X,Y,NPOIN2,CHOIX,NLISS)
 !
       IF(SEDCO) THEN
@@ -166,10 +166,10 @@
             CONC(IPOIN,IC) = CONC_LAYER(IC)
             TOCE(IPOIN,IC) = TOCE_LAYER(IC)
             EPAI(IPOIN,IC) = ES_LAYER(IC)
-            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)  
-          ENDDO        
+            HDEP(IPOIN)    = HDEP(IPOIN) + EPAI(IPOIN,IC)
+          ENDDO
         ENDDO
-!   
+!
       ENDIF
 !
       IF(SEDNCO) THEN
@@ -178,7 +178,7 @@
 !       ZS, CHOIX AND NLISS ARE NOT USED IN DEFAULT NOEROD
 !       NOEROD IS IN LIBRARY SISYPHE
 !
-!       ONLY ONE LAYER 
+!       ONLY ONE LAYER
         CFDEP = (1.D0-XKV)*RHOS
         DO IPOIN = 1,NPOIN2
           HDEP(IPOIN) = 0.D0
@@ -236,7 +236,7 @@
           EPAI(J,NCOUCH)=EPAI(J,NCOUCH)+ZF(J)-ZR(J)-HAUTSED
         ENDIF
       ENDDO
-!  
+!
       DO J=1, NPOIN2
         HDEP(J) =0.D0
         DO K = 1, NCOUCH
@@ -264,24 +264,24 @@
       IF(TASSE) THEN
 !
         IF(ITASS.EQ.1) THEN
-!      
+!
 !         SIMPLE MULTI-LAYER MODEL
-!   
+!
 !         CHANGES HOURS INTO SECONDS  -----
           CALL OV( 'X=CX    ',TREST,TREST,TREST,3600.D0,NCOUCH)
 !         INITIALISES TEMP
           CALL OV( 'X=C     ',TEMP,TEMP,TEMP,0.D0,NPOIN2*NCOUCH)
 !
         ELSEIF(ITASS.EQ.2) THEN
-!   
+!
 !         GIBSON MODEL
-! 
+!
           DO IPOIN=1,NPOIN2
             NPF(IPOIN) =NCOUCH
             DO IPF= 1, NCOUCH
               ECOUCH=(RHOS-CONC(IPOIN,IPF))/CONC(IPOIN,IPF)
-              IF(IPF.EQ.1) THEN 
-                IVIDE(IPOIN,IPF)=ECOUCH 
+              IF(IPF.EQ.1) THEN
+                IVIDE(IPOIN,IPF)=ECOUCH
               ELSE
                 IVIDE(IPOIN,IPF)= 2.D0*ECOUCH-IVIDE(IPOIN,IPF-1)
               ENDIF
@@ -302,9 +302,9 @@
 !
         ENDIF
 !
-      ENDIF 
+      ENDIF
 !
-!-----------------------------------------------------------------------      
+!-----------------------------------------------------------------------
 !
       RETURN
       END

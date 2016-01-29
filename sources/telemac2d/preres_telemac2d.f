@@ -119,7 +119,7 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!         FOR GRAPHICAL OUTPUTS          
+!         FOR GRAPHICAL OUTPUTS
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
@@ -139,7 +139,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT

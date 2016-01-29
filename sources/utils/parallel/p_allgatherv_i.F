@@ -2,7 +2,7 @@
                      SUBROUTINE P_ALLGATHERV_I
 !                    *************************
 !
-     &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER, 
+     &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER,
      & RECV_COUNT, DISPLS, RECV_TYPE, COMM, IERR)
 !
 !***********************************************************************
@@ -27,23 +27,23 @@
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
+!
       INTEGER, INTENT(IN)    :: SEND_BUFFER(*)
-      INTEGER, INTENT(IN)    :: SEND_COUNT 
+      INTEGER, INTENT(IN)    :: SEND_COUNT
       INTEGER, INTENT(IN)    :: SEND_TYPE
       INTEGER, INTENT(INOUT)   :: RECV_BUFFER(*)
       INTEGER, INTENT(IN)    :: RECV_COUNT(*)
       INTEGER, INTENT(IN)    :: DISPLS(*)
       INTEGER, INTENT(IN)    :: RECV_TYPE
       INTEGER, INTENT(IN)    :: COMM
-      INTEGER, INTENT(OUT)   :: IERR      
+      INTEGER, INTENT(OUT)   :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
       RECV_BUFFER(1) = 0
 #if defined (HAVE_MPI)
-      CALL MPI_ALLGATHERV(SEND_BUFFER, SEND_COUNT, RECV_TYPE, 
+      CALL MPI_ALLGATHERV(SEND_BUFFER, SEND_COUNT, RECV_TYPE,
      &                   RECV_BUFFER, RECV_COUNT,
      &                   DISPLS, MPI_INTEGER, COMM, IERR)
 !

@@ -8,8 +8,8 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES EROSION FLUX 
-!                              
+!brief    COMPUTES EROSION FLUX
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -17,7 +17,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ERO            |-->| EROSION RATE 
+!| ERO            |-->| EROSION RATE
 !| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| SEDERO         |<--| EROSION FLUX
 !| SF             |-->| BED SEDIMENTS
@@ -47,7 +47,7 @@
 !     LOCAL VARIABLES
       INTEGER I
       DOUBLE PRECISION  CC
-!     
+!
 !
       IF (ABS(TAUR).LT.1.E-10)THEN
         IF(LNG.EQ.1) THEN
@@ -71,8 +71,8 @@
         ELSE
           SEDERO%R(I)=0.D0
         ENDIF
-      ENDDO 
-!      
+      ENDDO
+!
       RETURN
       END
 !

@@ -101,7 +101,7 @@
       RANKTR3 = RANKTR2+1      ! POR
       RANKTR4 = RANKTR3+1      ! NO3
       RANKTR5 = NTRAC          ! NOR
-! 
+!
       G1 = WATTEMP/20.D0
 !     HERE TEMPERATURE IS FIXED WHICH IS NOT PHYSICAL
 !     TO INVESTIGATE IF NECESSARY TO USE T VARIABLE !
@@ -152,7 +152,7 @@
      &          NPOIN)
       CALL OV( 'X=CY    ' ,T2%R,TN%ADR(RANKTR3)%P%R,T2%R,K320*G1,
      &          NPOIN)
-!    
+!
       CALL OV( 'X=Y+Z   ' ,TEXP%ADR(RANKTR2)%P%R,T1%R,T2%R,0.D0,NPOIN)
 !
 !
@@ -173,12 +173,12 @@
       CALL OV( 'X=XY    ' ,T1%R,TN%ADR(RANKTR1)%P%R,CP,0.D0,NPOIN)
       CALL OV( 'X=CY    ' ,T2%R,TN%ADR(RANKTR5)%P%R,T2%R,K360*G1,
      &          NPOIN)
-!    
+!
       CALL OV( 'X=Y+Z   ' ,TEXP%ADR(RANKTR4)%P%R,T1%R,T2%R,0.D0,NPOIN)
 !!
       IF(DEBUG.GT.1)WRITE(LU,*)'IN BIOMASS, STEP 9'
 
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
       CALL OV( 'X=CYZ   ' ,T1%R,DP,TN%ADR(RANKTR1)%P%R,
      &          PRONITC*(1.D0-PERNITS),NPOIN)
       CALL OV( 'X=X-Y   ' ,T1%R,T2%R,T2%R,0.D0,NPOIN)

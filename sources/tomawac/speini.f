@@ -51,7 +51,7 @@
 !history T FOUQUET (LNHE)
 !+       28/10/2015
 !+       V7P0
-!+       Modification to initialise spectrum wind is small or null 
+!+       Modification to initialise spectrum wind is small or null
 !+       and speini =1,3,5
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +182,7 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
-          ELSE 
+          ELSE
              DO JF=1,NF
                 DO JP=1,NPLAN
                    F(IP,JP,JF)=0.D0
@@ -293,7 +293,7 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
-          ELSE 
+          ELSE
              DO JF=1,NF
                 DO JP=1,NPLAN
                    F(IP,JP,JF)=0.D0
@@ -393,7 +393,7 @@
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
               ENDDO
             ENDDO
-          ELSE 
+          ELSE
              DO JF=1,NF
                 DO JP=1,NPLAN
                    F(IP,JP,JF)=0.D0

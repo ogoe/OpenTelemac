@@ -57,7 +57,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE CALCS_BIOMASS      
+        SUBROUTINE CALCS_BIOMASS
      &     (NPOIN,WATTEMP,TN,TEXP,RAYEFF,NTRAC,HPROP,T1,T2,DEBUG)
         USE BIEF_DEF
         IMPLICIT NONE
@@ -71,7 +71,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE CALCS_EUTRO    
+        SUBROUTINE CALCS_EUTRO
      &   (NPOIN,WATTEMP,TN,TEXP,RAYEFF,NTRAC,
      &    HPROP,T1,T2,T3,U,V,DEBUG)
         USE BIEF_DEF
@@ -150,7 +150,7 @@
       INTERFACE
         SUBROUTINE EROSION_FX
      & (SEDERO,TAUB,SF,TAUR,ERO,ZZERO,NPOIN)
-        USE BIEF_DEF 
+        USE BIEF_DEF
         IMPLICIT NONE
       INTEGER         , INTENT(IN)     :: NPOIN
       DOUBLE PRECISION, INTENT(IN)     :: TAUR,ERO,ZZERO
@@ -195,7 +195,7 @@
      &   MAXTRA,ICONVFT,VISCT)
         USE BIEF_DEF
         IMPLICIT NONE
-      CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*) 
+      CHARACTER(LEN=32), INTENT(INOUT)::  NAMETRAC(*)
       INTEGER, INTENT(IN)             ::  WAQPROCESS,NTRAC,MAXTRA
       INTEGER, INTENT(INOUT)          ::  IND_T
       CHARACTER(LEN=32), INTENT(INOUT)::  TEXTE(*),TEXTPR(*)

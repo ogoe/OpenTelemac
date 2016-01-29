@@ -2,7 +2,7 @@
 # Source Code Control : @(#) 04/16/07 1.1 dredgesim_dico.dat
 # -------------------------------------------------------------------------
 # dictionary file - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 
+#
 # History:
 # Version  Date        Comment
 # -------  ----------  ----------------------------------------------------
@@ -11,7 +11,7 @@
 #
 # program(s) using this file:
 # - uns
-# 
+#
 # purpose:
 # - read steering data for the "dredgesim" simulation package
 #
@@ -74,7 +74,7 @@ BEGINDATA BLOCK Input_Files
       L_Opt     = .false.
       FixValue  = UNKNOWN
     ENDDATA PAR
-  ENDDATA KEY  
+  ENDDATA KEY
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ENDDATA BLOCK
 # -------------------------------------------------------------------------
@@ -124,7 +124,7 @@ BEGINDATA BLOCK Dredge_Criterion
       FixValue  = Water_Depth_Criterion
       FixValue  = Referenced_Surface_Criterion
     ENDDATA PAR
-  ENDDATA KEY  
+  ENDDATA KEY
 # 3 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   BEGINDATA KEY Observing_Period
     L_Single = .true.

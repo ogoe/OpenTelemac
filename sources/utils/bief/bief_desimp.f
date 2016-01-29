@@ -42,7 +42,7 @@
 !history  R. ATA (LNHE)
 !+       11/01/2015
 !+       V7P2
-!+       adaptation for fv (leo, imp and compgraph added as 
+!+       adaptation for fv (leo, imp and compgraph added as
 !+        optional arguments)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,7 +85,7 @@
       CHARACTER(LEN=3) , INTENT(IN) :: STD
       LOGICAL          , INTENT(IN) :: SORLEO(MAXVAR),SORIMP(MAXVAR)
       TYPE(BIEF_MESH)  , INTENT(IN), OPTIONAL :: MESH
-      LOGICAL          , INTENT(IN), OPTIONAL :: IIMP,ILEO 
+      LOGICAL          , INTENT(IN), OPTIONAL :: IIMP,ILEO
       INTEGER          , INTENT(IN), OPTIONAL :: COMPGRAPH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

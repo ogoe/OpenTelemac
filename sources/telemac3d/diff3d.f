@@ -461,7 +461,7 @@
      &                   MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
           ENDDO
         ENDIF
-        
+
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
 !           IMPLICIT BEDFLUX TERM

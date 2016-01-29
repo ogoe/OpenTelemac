@@ -468,7 +468,7 @@
 !
       IF(NBEDFLO.GT.0) THEN
 !
-!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER
 !       -------------------------------------------------
 !
         CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,

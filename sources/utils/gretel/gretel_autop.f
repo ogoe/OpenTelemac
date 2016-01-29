@@ -181,8 +181,8 @@
       CALL CHECK_CALL(IERR,'GRETEL:CLOSE_MESH:GEO')
 
       !
-      ! Update coordiantes with coordinates from the partitionned files 
-      ! as they could have been modified by corrxy 
+      ! Update coordiantes with coordinates from the partitionned files
+      ! as they could have been modified by corrxy
       IF(NPLAN_RES.EQ.0) THEN
         NDIM = 2
       ELSE

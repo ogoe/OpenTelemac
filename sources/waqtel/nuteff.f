@@ -8,9 +8,9 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS 
-!           NUTRIMENTS ON ALGAE GROWTH 
-!                              
+!brief    COMPUTES LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS
+!           NUTRIMENTS ON ALGAE GROWTH
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -20,10 +20,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| INO3           |-->| INDEX OF NO3 IN TRR
 !| IPO4           |-->| INDEX OF PO4 IN TRR
-!| KN             |-->| CONSTANT OF SEMI-SATURATION WITH PHOSPHATE 
+!| KN             |-->| CONSTANT OF SEMI-SATURATION WITH PHOSPHATE
 !| KP             |-->| CONSTANT OF HALF-SATURATION WITH NITROGEN
 !| LNUT           |<--| NUTRIMENTS EFFECT ON ALGAE GROWTH
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| TRR            |-->| TRACER (CAN BE PHY: PHYTOPLAKTONIC BIOMASS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -40,13 +40,13 @@
       DOUBLE PRECISION, INTENT(IN)    :: KN,KP
       DOUBLE PRECISION, INTENT(INOUT) :: LNUT(NPOIN)
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: TRR
-!     LOCAL VARIABLES 
+!     LOCAL VARIABLES
       INTEGER                    :: KK
       INTRINSIC MIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     
+!
 !
       DO KK=1,NPOIN
         LNUT(KK)= MIN(TRR%ADR(IPO4)%P%R(KK)/(KP+TRR%ADR(IPO4)%P%R(KK)),

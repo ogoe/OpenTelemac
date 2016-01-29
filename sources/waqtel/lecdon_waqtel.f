@@ -155,18 +155,18 @@
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER' 
+            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER'
             WRITE(LU,*) 'I=',I,' NOM=',WAQ_FILES(I)%TELNAME
             WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
             WRITE(LU,*) 'DICTIONNAIRE'
             WRITE(LU,*) 'OU INSTALLATION DEFECTUEUSE.'
           ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER' 
+            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER'
             WRITE(LU,*) 'I=',I,' NAME=',WAQ_FILES(I)%TELNAME
             WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
             WRITE(LU,*) 'IN DICTIONARY'
             WRITE(LU,*) 'OR INSTALLATION PROBLEM.'
-          ENDIF 
+          ENDIF
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -195,7 +195,7 @@
       DEBUG  = MOTINT( ADRESS(1, 11) )
 !
 !*******************************
-!     REAL KEYWORDS            *                   
+!     REAL KEYWORDS            *
 !*******************************
 !
       ROO    = MOTREA( ADRESS(2,  2) )
@@ -286,7 +286,7 @@
 !      CALL NOMVAR_WAQTEL(TEXTE,TEXTPR,MNEMO,MAXWQVAR)
 !
 !    ARRAY OF LOGICALS FOR OUTPUTS
-!            
+!
 !      CALL SORTIE(SORT2D , MNEMO , MAXWQVAR , SORLEO )
 
 !

@@ -25,21 +25,21 @@
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-! !  TAUB     ! BED SHEAR                                    
-! !  ERO      ! EROSION RATE                                 
-! !  TAUS     ! CRITICAL STRESS OF RESUSPENSION              
-! !  TAUR     ! SEDIMENTATION CRITICAL STRESS                
-! !  VITCHU   ! SEDIMENT SETTLING VELOCITY                   
-! !  CCSEDIM  ! CONSTANT OF EXPONENTIAL DESINTEGRATION       
-! !  CDISTRIB ! COEFFICIENT OF DISTRIBUTION (KD)             
-! !  KDESORP  ! KINETIC CONSTANT OF  DESORPTION                         
+! !  TAUB     ! BED SHEAR
+! !  ERO      ! EROSION RATE
+! !  TAUS     ! CRITICAL STRESS OF RESUSPENSION
+! !  TAUR     ! SEDIMENTATION CRITICAL STRESS
+! !  VITCHU   ! SEDIMENT SETTLING VELOCITY
+! !  CCSEDIM  ! CONSTANT OF EXPONENTIAL DESINTEGRATION
+! !  CDISTRIB ! COEFFICIENT OF DISTRIBUTION (KD)
+! !  KDESORP  ! KINETIC CONSTANT OF  DESORPTION
 ! !___________!____!____!______________________________________________
 !-----------------------------------------------------------------------
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NTRAC          |-->| NUMBER OF TRACERS
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| TN             |-->| TRACERS
 !| TEXP           |<--| SOURCE TERMS OF TRACERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +77,7 @@
       RANKTR5 = NTRAC          ! CFF (ABSORBED POLLUTANT BY BED SEDIMENT)
 !
 !     BED SHEAR STRESS (TAUB-STOCKED IN T1)
-!    
+!
       CALL TAUB_WAQTEL(CF,ROO,T1,NPOIN,UN,VN)
 !
 !     DEPOTION PROBABILITY (SED): STOCKED IN T2
@@ -97,7 +97,7 @@
 !
       CALL OS ('X=Y-Z   ',TEXP%ADR(RANKTR1)%P,T3,T2)
       CALL OVD('X=Y/Z   ',TEXP%ADR(RANKTR1)%P%R,TEXP%ADR(RANKTR1)%P%R,
-     &         HPROP%R,0.D0,NPOIN,2,0.D0,EPS)    
+     &         HPROP%R,0.D0,NPOIN,2,0.D0,EPS)
 !
 !     SECOND TRACER: BED SEDIMENT [SF] (RANKTR2)
 !      warning: no advection neither diffusion for this tracer
@@ -145,7 +145,7 @@
      &                     T1%R,CC,NPOIN)
       CALL OV( 'X=X+Y   ' ,TEXP%ADR(RANKTR5)%P%R,T4%R,
      &                     T4%R,0.D0,NPOIN)
-!      
+!
 !-----------------------------------------------------------------------
 !
       RETURN

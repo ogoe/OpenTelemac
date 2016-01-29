@@ -806,7 +806,7 @@
 !
 !     NAMES OF PRIVATE ARRAYS (GIVEN BY USER)
 !
-      CHARACTER(LEN=32) NAMES_PRIVE(4)    
+      CHARACTER(LEN=32) NAMES_PRIVE(4)
 !
 !-----------------------------------------------------------------------
 !

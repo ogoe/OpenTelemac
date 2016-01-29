@@ -4,25 +4,25 @@
           DOUBLE PRECISION :: R2
         END TYPE TYPE_PAIR
       CONTAINS
-!       
+!
         LOGICAL FUNCTION PAIR_GT(P1,P2)
            ! BRIEF RESULT OF P1 > P2
-           !       
+           !
            ! PARAM P1 [IN] FIRST PAIR
            ! PARAM P2 [IN] SECOND PAIR
            TYPE(TYPE_PAIR), INTENT(IN) :: P1
            TYPE(TYPE_PAIR), INTENT(IN) :: P2
-           
+
            IF(P1%R1.EQ.P2%R1) THEN
              PAIR_GT = P1%R2.GT.P2%R2
            ELSE
              PAIR_GT = P1%R1.GT.P2%R1
-           ENDIF 
+           ENDIF
         END FUNCTION
 !
         SUBROUTINE PAIR_COPY(P1,P2)
            ! BRIEF RESULT OF P1 = P2
-           !       
+           !
            ! PARAM P1 [INOUT] FIRST PAIR
            ! PARAM P2 [IN] SECOND PAIR
            TYPE(TYPE_PAIR), INTENT(INOUT) :: P1

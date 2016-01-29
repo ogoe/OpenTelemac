@@ -35,7 +35,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
+
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEGEO
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEINP
       INTEGER, INTENT(IN) :: NPARTS
@@ -76,7 +76,7 @@
       DOUBLE PRECISION, ALLOCATABLE :: Y(:),Y3D(:)
       INTEGER :: FULLDATE(6),DATE(3),TIME(3)
       INTEGER :: MESH_DIM
-!     TIME MEASURING 
+!     TIME MEASURING
       INTEGER  TDEB, TFIN, TEMPS, PARSEC
       LOGICAL TIMECOUNT
 !
@@ -95,7 +95,7 @@
 !
 !----------------------------------------------------------------------
 !
-!----------------------------------------------------------------------      
+!----------------------------------------------------------------------
 !
 !
 !     INITIALISING MPI
@@ -121,16 +121,16 @@
 !     OPEN THE FULL INPUT FILE
       CALL OPEN_MESH(INPFORMAT,NAMEINP,NINP,'READ     ',IERR)
       CALL CHECK_CALL(IERR,'PARRES:OPEN_MESH:NINP')
-      ! LOOPING 
+      ! LOOPING
 !     DO IPART = IPARTB,IPARTE
       DO IPART = 1,NPARTS
-        WRITE(LU,*) 'TREATING SUB-DOMAIN ', IPART 
+        WRITE(LU,*) 'TREATING SUB-DOMAIN ', IPART
         NAMEGEO_PAR = TRIM(NAMEGEO)//EXTENS(NPARTS-1,IPART-1)
         NAMEINP_PAR = TRIM(NAMEINP)//EXTENS(NPARTS-1,IPART-1)
 !       OPEN THE PARTITIONNED GEO FILE
         CALL OPEN_MESH(GEOFORMAT,NAMEGEO_PAR,NGEO,'READ     ',IERR)
         CALL CHECK_CALL(IERR,'PARRES:OPEN_MESH:NGEO')
-!       OPEN THE PARTIONNED INPUT FILE       
+!       OPEN THE PARTIONNED INPUT FILE
         CALL OPEN_MESH(INPFORMAT,NAMEINP_PAR,NINP_PAR,'WRITE    ',IERR)
         CALL CHECK_CALL(IERR,'PARRES:OPEN_MESH:NINP_PAR')
 !
@@ -181,9 +181,9 @@
         CALL READ_MESH_INFO(INPFORMAT,NINP,TITLE,NVAR_INP,NPOIN_INP,
      &                      TYP_ELM_INP,NELEM_INP,NPTFR_INP,NPTIR_INP,
      &                      NDP_INP,NPLAN_INP)
-        IF(NPLAN_INP.GT.1) THEN 
+        IF(NPLAN_INP.GT.1) THEN
           WRITE(LU,*) ' '
-          WRITE(LU,*) '3D MESH DETECTED' 
+          WRITE(LU,*) '3D MESH DETECTED'
           NPOIN2 = NPOIN_INP/NPLAN_INP
           NELEM2 = NELEM_INP/(NPLAN_INP-1)
           WRITE(LU,*) 'NDP NODES PER ELEMENT:             ',NDP_INP
@@ -193,12 +193,12 @@
           WRITE(LU,*) 'NPOIN NUMBER OF 3D MESH NODES:     ',NPOIN_INP
           WRITE(LU,*) 'NELEM2 NUMBER OF 2D MESH ELEMENTS: ',NELEM2
           WRITE(LU,*) 'NELEM NUMBER OF 3D MESH ELEMENTS:  ',NELEM_INP
-          IF (MOD(NPOIN_INP,NPLAN_INP).NE.0) THEN 
+          IF (MOD(NPOIN_INP,NPLAN_INP).NE.0) THEN
             WRITE (LU,*) 'BUT NPOIN2 /= NPOIN3/NPLAN!'
             CALL PLANTE(1)
-            STOP   
+            STOP
           ENDIF
-          IF (MOD(NELEM_INP,(NPLAN_INP-1)).NE.0) THEN 
+          IF (MOD(NELEM_INP,(NPLAN_INP-1)).NE.0) THEN
             WRITE (LU,*) 'BUT NELEM2 /= NELEM3/NPLAN!'
             CALL PLANTE(1)
             STOP
@@ -225,7 +225,7 @@
           NPOIN_P = NPOIN_GEO
           NELEM_P = NELEM_GEO
         ENDIF
-!       ALLOCATION OF MESH ARRAYS        
+!       ALLOCATION OF MESH ARRAYS
         ALLOCATE (IKLE(NELEM_GEO*NDP_GEO),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR, 'PARRES:IKLES')
         ALLOCATE (IKLES(NELEM_GEO*NDP_GEO),STAT=IERR)
@@ -277,21 +277,21 @@
           CALL CHECK_ALLOCATE(IERR, 'PARRES:IKLE3D')
           DO I=1,NPLAN_INP-1
             DO J=1,NELEM_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (1-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (1-1)*NELEM_P) =
      &               IKLES(1+(J-1)*NDP_GEO) + (I-1)*NPOIN_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (2-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (2-1)*NELEM_P) =
      &               IKLES(2+(J-1)*NDP_GEO) + (I-1)*NPOIN_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (3-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (3-1)*NELEM_P) =
      &               IKLES(3+(J-1)*NDP_GEO) + (I-1)*NPOIN_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (4-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (4-1)*NELEM_P) =
      &               IKLES(1+(J-1)*NDP_GEO) + (I  )*NPOIN_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (5-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (5-1)*NELEM_P) =
      &               IKLES(2+(J-1)*NDP_GEO) + (I  )*NPOIN_GEO
-              IKLE3D(J + (I-1)*NELEM_GEO + (6-1)*NELEM_P) = 
+              IKLE3D(J + (I-1)*NELEM_GEO + (6-1)*NELEM_P) =
      &               IKLES(3+(J-1)*NDP_GEO) + (I  )*NPOIN_GEO
             ENDDO
           ENDDO
-!         BUILDING 3D X AND Y          
+!         BUILDING 3D X AND Y
           ALLOCATE (X3D(NPOIN_GEO*NPLAN_INP),STAT=IERR)
           CALL CHECK_ALLOCATE(IERR, 'PARRES:IKLE3D')
           ALLOCATE (Y3D(NPOIN_GEO*NPLAN_INP),STAT=IERR)
@@ -308,7 +308,7 @@
           CALL CHECK_ALLOCATE(IERR, 'PARRES:IKLE3D')
           DO I=1,NPLAN_INP
             DO J=1,NPOIN_GEO
-              KNOLG3D(J + (I-1)*NPOIN_GEO) = 
+              KNOLG3D(J + (I-1)*NPOIN_GEO) =
      &                 KNOLG(J) + (I-1)*NPOIN2
             ENDDO
           ENDDO
@@ -319,7 +319,7 @@
      &                  DATE,TIME,IERR)
           DEALLOCATE(IKLE3D)
           DEALLOCATE(X3D,Y3D)
-        
+
         ELSE
           ! 2D writing of the mesh
           ! Switching from ikle(ndp,nelem) to ikle(nelem,ndp)
@@ -328,7 +328,7 @@
               IKLE(I + (J-1)*NELEM_GEO) = IKLES(J + (I-1)*(NDP_GEO))
             ENDDO
           ENDDO
-          
+
           CALL SET_MESH(INPFORMAT,NINP_PAR,MESH_DIM,TYP_ELM_GEO,NDP_GEO,
      &                  NPTFR_GEO,NPTIR_GEO,NELEM_GEO,NPOIN_GEO,
      &                  IKLE,KNOLG,KNOLG,X,Y,NPLAN_GEO,DATE,TIME,
@@ -379,7 +379,7 @@
             CALL CHECK_CALL(IERR,'PARRES:ADD_DATA:NINP_PAR')
           ENDDO
         ENDDO
-!        
+!
         DEALLOCATE(VAL)
         DEALLOCATE(VAL_INP)
         DEALLOCATE(VARLIST)
@@ -397,7 +397,7 @@
 !     END OF RUN
 !
 !     CALL P_EXIT()
-      IF (TIMECOUNT) THEN 
+      IF (TIMECOUNT) THEN
         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
         TFIN = TEMPS
         WRITE(LU,*) 'OVERALL TIMING: ',
@@ -408,7 +408,7 @@
       WRITE(LU,*) '+---- PARRES: NORMAL TERMINATION ----+'
       WRITE(LU,*) ' '
 !
-!----------------------------------------------------------------------      
+!----------------------------------------------------------------------
 !
-      RETURN 
+      RETURN
       END SUBROUTINE PARRES

@@ -62,71 +62,71 @@
       READ(LI,*) GEO
 !
       IF (GEO.EQ.' ') THEN
-        WRITE (LU,*) ' NO FILENAME ' 
+        WRITE (LU,*) ' NO FILENAME '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) 'INPUT: ',TRIM(GEO)
-      ENDIF  
+      ENDIF
 
       INQUIRE (FILE=GEO,EXIST=IS)
-      IF (.NOT.IS) THEN 
+      IF (.NOT.IS) THEN
         WRITE (LU,*)' FILE DOES NOT EXIST: ',TRIM(GEO)
         CALL PLANTE(1)
         STOP
-      ENDIF  
+      ENDIF
 !
       WRITE(LU,*)
-     & '--GEOMETRY FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: ' 
-      READ(LI,*) GEOFORMAT                
-      IF ( (GEOFORMAT .NE. 'MED     ') .AND. 
+     & '--GEOMETRY FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: '
+      READ(LI,*) GEOFORMAT
+      IF ( (GEOFORMAT .NE. 'MED     ') .AND.
      &     (GEOFORMAT .NE. 'SERAFIN ') .AND.
      &     (GEOFORMAT .NE. 'SERAFIND') ) THEN
         WRITE(LU,*)
-     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) ' INPUT: ', GEOFORMAT
-      ENDIF 
+      ENDIF
 !
       WRITE(LU,*) '--RESULT FILE: '
       READ(LI,*) RES
 !
       IF (RES.EQ.' ') THEN
-        WRITE (LU,*) ' NO FILENAME ' 
+        WRITE (LU,*) ' NO FILENAME '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) 'INPUT: ',TRIM(RES)
-      ENDIF  
+      ENDIF
 !
       WRITE(LU,*)
-     & '--RESULT FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: ' 
-      READ(LI,*) RESFORMAT                
-      IF ( (RESFORMAT .NE. 'MED     ') .AND. 
+     & '--RESULT FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: '
+      READ(LI,*) RESFORMAT
+      IF ( (RESFORMAT .NE. 'MED     ') .AND.
      &     (RESFORMAT .NE. 'SERAFIN ') .AND.
      &     (RESFORMAT .NE. 'SERAFIND') ) THEN
         WRITE(LU,*)
-     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" ' 
+     &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*) ' INPUT: ', RESFORMAT
-      ENDIF 
+      ENDIF
 !
       WRITE(LU,FMT='(A,I6,A)')
-     &  '--NUMBER OF PARTITIONS <NPARTS> [2 -',MAXNPROC,']: ' 
-      READ(LI,*) NPARTS                 
+     &  '--NUMBER OF PARTITIONS <NPARTS> [2 -',MAXNPROC,']: '
+      READ(LI,*) NPARTS
 !
       IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
         WRITE(LU,FMT='(A,I6,A)')
-     &  ' NUMBER OF PARTITIONS MUST BE IN [2 -',MAXNPROC,']' 
+     &  ' NUMBER OF PARTITIONS MUST BE IN [2 -',MAXNPROC,']'
         CALL PLANTE(1)
         STOP
       ELSE
         WRITE(LU,*)' INPUT: ', NPARTS
-      ENDIF 
+      ENDIF
 !
       WRITE (LU,*) '--NUMBER OF PLANES: '
       READ (LI,*) NPLAN

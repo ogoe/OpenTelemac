@@ -419,26 +419,26 @@ AIDE = 'Nom du fichier des resultats 3D obtenu par un calcul avec
 TELEMAC 3D.'
 AIDE1 = ''
 
-NOM = 'FORMAT DU FICHIER DES RESULTATS 3D' 
-NOM1 = '3D RESULT FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 19 
-MNEMO = '?????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Results file format. Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
+NOM = 'FORMAT DU FICHIER DES RESULTATS 3D'
+NOM1 = '3D RESULT FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 19
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 
 NOM = 'FICHIER DES COUPES HORIZONTALES'
 NOM1 = 'HORIZONTAL CROSS SECTION FILE'
@@ -457,26 +457,26 @@ Le fichier contenant la coupe i aura pour nom ce nom generique suivi
 de l''extension ''.i''.'
 AIDE1 = ''
 
-NOM = 'FORMAT DU FICHIER DES COUPES HORIZONTALES' 
-NOM1 = 'HORIZONTAL CROSS SECTION FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 20 
-MNEMO = '?????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Results file format. Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
+NOM = 'FORMAT DU FICHIER DES COUPES HORIZONTALES'
+NOM1 = 'HORIZONTAL CROSS SECTION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 20
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 
 NOM = 'FICHIER DES COUPES VERTICALES'
 NOM1 = 'VERTICAL CROSS SECTION FILE'
@@ -495,26 +495,26 @@ Le fichier contenant la coupe i au j ieme pas de temps enregistre aura
 pour nom ce nom generique suivi de l''extension ''.i.j''.'
 AIDE1 = ''
 
-NOM = 'FORMAT DU FICHIER DES COUPES VERTICALES' 
-NOM1 = 'VERTICAL CROSS SECTION FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 21 
-MNEMO = '?????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Results file format. Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
+NOM = 'FORMAT DU FICHIER DES COUPES VERTICALES'
+NOM1 = 'VERTICAL CROSS SECTION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 21
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 
 NOM = 'USER CRAY'
 NOM1 = 'USER ON CRAY'
@@ -704,27 +704,27 @@ NIVEAU = 1
 AIDE = 'Nom du fichier de geometrie'
 AIDE1 = 'geometry file'
 
-NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
-NOM1 = 'GEOMETRY FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 18 
-MNEMO = '????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-NIVEAU = 2 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de geometrie. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Geometry file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 18
+MNEMO = '????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de geometrie.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Geometry file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 
 NOM = 'BINAIRE DU FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE BINARY'
@@ -817,19 +817,19 @@ TYPE = CARACTERE
 INDEX = 55
 MNEMO = 'LINKLIBS'
 TAILLE = 6
-DEFAUT = 'builds|PPP|lib|postel3dMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-DEFAUT1 = 'builds|PPP|lib|postel3dMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
- 
+DEFAUT = 'builds|PPP|lib|postel3dMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|postel3dMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1

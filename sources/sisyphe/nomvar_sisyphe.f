@@ -326,7 +326,7 @@
       TEXTE(30+ADD)='PRIVE 2                         '
       TEXTE(31+ADD)='PRIVE 3                         '
       TEXTE(32+ADD)='PRIVE 4                         '
-! 
+!
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !

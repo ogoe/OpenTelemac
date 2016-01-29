@@ -9,7 +9,7 @@
 ! BIEF   V7P1
 !***********************************************************************
 !
-!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the 
+!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the
 !+        result is given in terms of contribution per point, not fluxes
 !+        between points, and takes a derivative in time into account.
 !
@@ -54,7 +54,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: PHIEL(NELEM,3),TETA(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXMATPAR(NSEG),FLULIM(NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: FI_I(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),HDFDT(NPOIN) 
+      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),HDFDT(NPOIN)
       TYPE(BIEF_OBJ), INTENT(IN)      :: FN,FSTAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -108,7 +108,7 @@
           FP13=MAX(MIN(K1,-K3),0.D0)
 !
 !         CORRECTING THE FLUXES WHEN THEIR SIGN IS NOT THE SAME
-!         AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE 
+!         AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE
 !         POSITIVE BY CONSTRUCTION
 !
 !         SEGMENT 1
@@ -164,7 +164,7 @@
           ELSE
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)          
+              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)
             ELSE
               FP31=0.D0
               IF(FP13.GT.-FXMATPAR(ISEG3)) FP13=-FXMATPAR(ISEG3)
@@ -194,7 +194,7 @@
      &                     +FP23*(FN2*(MT2-MIN23)-FN3*(MT3-MIN23))
           FI_I(I3)=FI_I(I3)+FP31*(FN3*(MT3-MIN13)-FN1*(MT1-MIN13))
      &                     +FP32*(FN3*(MT3-MIN23)-FN2*(MT2-MIN23))
-!       
+!
 !         NOW PART OF CONTRIBUTIONS THAT WILL BE LIMITED
 !
           COEF=SU(IELEM)*TIERS
@@ -233,7 +233,7 @@
             FI_I(I3)=FI_I(I3)+BETA3*COEF
           ELSE
 !           NO REDUCTION
-            FI_I(I1)=FI_I(I1)+FINCORR1 
+            FI_I(I1)=FI_I(I1)+FINCORR1
             FI_I(I2)=FI_I(I2)+FINCORR2
             FI_I(I3)=FI_I(I3)+FINCORR3
           ENDIF
@@ -324,7 +324,7 @@
           ELSE
             IF(FXMATPAR(ISEG3).GT.0.D0) THEN
               FP13=0.D0
-              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)          
+              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)
             ELSE
               FP31=0.D0
               IF(FP13.GT.-FXMATPAR(ISEG3)) FP13=-FXMATPAR(ISEG3)
@@ -354,7 +354,7 @@
      &                     +FP23*(FN2*(MT2-MIN23)-FN3*(MT3-MIN23))
           FI_I(I3)=FI_I(I3)+FP31*(FN3*(MT3-MIN13)-FN1*(MT1-MIN13))
      &                     +FP32*(FN3*(MT3-MIN23)-FN2*(MT2-MIN23))
-!       
+!
 !         NOW PART OF CONTRIBUTIONS THAT WILL BE LIMITED
 !
           COEF=SU(IELEM)*TIERS
@@ -393,7 +393,7 @@
             FI_I(I3)=FI_I(I3)+BETA3*COEF
           ELSE
 !           NO REDUCTION
-            FI_I(I1)=FI_I(I1)+FINCORR1 
+            FI_I(I1)=FI_I(I1)+FINCORR1
             FI_I(I2)=FI_I(I2)+FINCORR2
             FI_I(I3)=FI_I(I3)+FINCORR3
           ENDIF

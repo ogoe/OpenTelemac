@@ -120,7 +120,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, ONLY: BEDBOU,BEDFLU,T2_18,MESH2D,
-     &                                  KSCE,ISCE 
+     &                                  KSCE,ISCE
 !
       IMPLICIT NONE
       INTEGER LNG,LU

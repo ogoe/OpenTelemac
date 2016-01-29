@@ -11,7 +11,7 @@
      & YAFLULIM,FLULIM,SLVTRA)
 !
 !***********************************************************************
-! BIEF   V7P1 
+! BIEF   V7P1
 !***********************************************************************
 !
 !brief    DISTRIBUTIVE EXPLICIT OR IMPLICIT ADVECTOR.
@@ -344,7 +344,7 @@
       ENDIF
 !
 !     SELECTING THE IMPLICITATION COEFFICIENT
-!     
+!
       IF(LIPS) THEN
 !       ADAPTIVE IMPLICIT, N OR PSI
       ELSEIF((IOPT1.EQ.2.OR.IOPT1.EQ.3).AND.OPTADV.EQ.3) THEN
@@ -489,7 +489,7 @@
         IF(LIPS.AND.YAFLULIM) THEN
           DO I=1,MESH%NSEG
             FXMAT(I)=FXMAT(I)*FLULIM(I)
-          ENDDO        
+          ENDDO
         ENDIF
 !
 !       CANCELS FLUXES TO AND FROM MASKED POINTS
@@ -574,7 +574,7 @@
 !
 !     CASE OF ADAPTIVE IMPLICIT N OR PSI SCHEME
 !
-      IF(LIPS) THEN   
+      IF(LIPS) THEN
         SECU=0.9999999D0
         DO I=1,HN%DIM1
 !         FOR CLASSICAL N-SCHEME
@@ -587,7 +587,7 @@
         DDT=DT/NSP_DIST/SECU
       ENDIF
 !
-      DDT=MIN(DDT,DT_REMAIN)  
+      DDT=MIN(DDT,DT_REMAIN)
 !
 !     T2 WILL TAKE THE SUCCESSIVE VALUES OF H
 !     AT THE BEGINNING OF THE SUB-TIMESTEP
@@ -645,7 +645,7 @@
 !       WITHOUT THE DERIVATIVE IN TIME
         DO I=1,HN%DIM1
           DFDT(I)=0.D0
-        ENDDO 
+        ENDDO
         CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
      &                    MESH%ELTSEG%I,MESH%ORISEG%I,
      &                    FXMATPAR,MESH%NSEG,
@@ -656,7 +656,7 @@
 !                                         FN
      &                    YAFLULIM,FLULIM,T4)
 !       NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
-!       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH) 
+!       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
 !
 !       BUILDING AND SOLVING THE LINEAR SYSTEM (NORMAL OR PREDICTOR)
 !
@@ -717,15 +717,15 @@
               DO I=1,HN%DIM1
                 F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
                 F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
-              ENDDO 
+              ENDDO
             ENDIF
 !
 !           FOR GETTING THE EXPLICIT PSI CONTRIBUTION
 !           WITH THE DERIVATIVE IN TIME
             DO I=1,HN%DIM1
 !             HERE DFDT=H*DFDT WITH SEMI IMPLICIT H
-              DFDT(I)=HNP1MT%R(I)*(F%R(I)-T4%R(I))/DDT          
-            ENDDO 
+              DFDT(I)=HNP1MT%R(I)*(F%R(I)-T4%R(I))/DDT
+            ENDDO
             CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
      &                        MESH%ELTSEG%I,MESH%ORISEG%I,
      &                        FXMATPAR,MESH%NSEG,
@@ -762,10 +762,10 @@
 !
       IF(PREDICOR.AND.NCO_DIST.GT.0) THEN
 !
-        DO ICOR=1,NCO_DIST 
+        DO ICOR=1,NCO_DIST
 !
 !       CASES WITH A LIMITATION OF THE FIRST CORRECTOR
-!     
+!
         IF(OPTADV.EQ.3.OR.ICOR.GT.1) THEN
 !         COMPUTING THE MINIMUM AND MAXIMUM
           DO I=1,HN%DIM1
@@ -812,12 +812,12 @@
               F%R(I)=MIN(F%R(I),T4%R(I)+TWOTHIRDS*(FMAX%R(I)-T4%R(I)))
               F%R(I)=MAX(F%R(I),T4%R(I)+TWOTHIRDS*(FMIN%R(I)-T4%R(I)))
             ENDDO
-          ENDIF 
+          ENDIF
         ELSEIF(OPTADV.EQ.2.AND.ICOR.GT.1) THEN
           DO I=1,HN%DIM1
             F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
             F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
-          ENDDO 
+          ENDDO
         ENDIF
 !
         DO I=1,HN%DIM1
@@ -836,11 +836,11 @@
           MASS_BAL=.TRUE.
         ELSE
           MASS_BAL=.FALSE.
-        ENDIF 
+        ENDIF
         DO I=1,HN%DIM1
 !         WILL BE FSTAR IN TVF_2
           T6%R(I)=F%R(I)
-        ENDDO    
+        ENDDO
         CALL TVF_2(F%R,T6%R,T4%R,VOLU2D%R,UNSV2D%R,DDT,
      &             FLBOUND%R,FXBORPAR%R,FBOR%R,SMH%R,YASMH,FSCEXP%R,
      &             MESH%NPOIN,MESH%NPTFR,MESH%NBOR%I,LIMTRA,KDIR,KDDL,

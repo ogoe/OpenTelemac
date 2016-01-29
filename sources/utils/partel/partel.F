@@ -1241,7 +1241,7 @@
               LIVBOR_P(J) = MIN(LIVBOR_P(J),LIVBOR(N))
               LITBOR_P(J) = MIN(LITBOR_P(J),LITBOR(N))
             ENDDO
-            
+
             HBOR_P(J) = HBOR(K)
             UBOR_P(J) = UBOR(K)
             VBOR_P(J) = VBOR(K)
@@ -1349,7 +1349,7 @@
 !----------------------------------------------------------------------
 ! !JAJ #### DEAL WITH SECTIONS
 !
-      WITH_SECTIONS = NAMESEC(1:1) .NE. ' ' 
+      WITH_SECTIONS = NAMESEC(1:1) .NE. ' '
       IF (NPLAN.NE.0) WITH_SECTIONS=.FALSE.
       IF (WITH_SECTIONS) THEN ! PRESENTLY, FOR TELEMAC2D, EV. SISYPHE
 !
@@ -1649,7 +1649,7 @@
 !
 !----------------------------------------------------------------------
 !
-      WITH_ZONES = NAMEZFI(1:1) .NE. ' ' 
+      WITH_ZONES = NAMEZFI(1:1) .NE. ' '
       IF (NPLAN.NE.0) WITH_ZONES = .FALSE.
       IF(WITH_ZONES) THEN
 !

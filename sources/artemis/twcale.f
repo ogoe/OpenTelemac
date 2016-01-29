@@ -137,14 +137,14 @@
           SUMD = SUMD + POIDS*VAR*DF
         ENDDO
         SUMICI=SUMICI+SUMD*DTETA*DEGRAD
-!      
+!
 !       CHECK IF SUMB/(2 NDALE) IS REACHED AND SAVE TETA
-!     
+!
         IF (SUMICI.GE.SUMB*FLOAT(I).OR.ID.EQ.NPASD+1) THEN
           I=I+1
           DTWC(I) = ID
         ENDIF
-!    
+!
       ENDDO
 !
 ! NOW WE HAVE IN DTWC :
@@ -171,7 +171,7 @@
       DO IFF = 1,NPASF+1
 !
 !       COMPUTE INTERGAL AS ABOVE
-!     
+!
         SUMD=0.D0
         DO ID = DTWC(I),DTWC(I+2)
           POIDS=1.D0
@@ -185,14 +185,14 @@
           SUMD = SUMD + POIDS*VAR*DTETA*DEGRAD
         ENDDO
         SUMICI=SUMICI+SUMD*DF
-!    
+!
 !       CHECK IF SUMB/(2 NPALE) IS REACHED AND SAVE TETA
-!      
+!
         IF (SUMICI.GE.SUMB*FLOAT(J).OR.IFF.EQ.NPASF+1) THEN
           J=J+1
           FTWC(J) = FMIN+FLOAT(IFF-1)*DF
         ENDIF
-!    
+!
       ENDDO
 !
 !     STOCK PERIODS IN A LINE OF PDALE

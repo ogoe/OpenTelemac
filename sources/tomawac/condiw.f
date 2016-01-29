@@ -51,7 +51,7 @@
 !history T FOUQUET (LNHE)
 !+       25/05/2015
 !+       V7P0
-!+       Modification to initialise spectrum when no wind 
+!+       Modification to initialise spectrum when no wind
 !+       and speini =1,3,5
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -125,17 +125,17 @@
       IF(NHALO.GT.0) THEN
         DO K=1,NHALO
           READ(NPAR,*) IF1,IF2,IF3,IF4,IF5,IF6,IF7
-!      
+!
 !         CORRECTS A BUG (IN IFAPAR THERE IS A CONFUSION BETWEEN PROCESSOR 0
 !                         AND LIQUID BOUNDARY BUT
 !                         IN CASE OF LIQUID BOUNDARY, THE ELEMENT BEHIND
 !                         IS GIVEN AS 0, SO BOTH CASES MAY BE DISTINGUISHED
 !                         HERE ALL BOUNDARIES (LIQUID OR SOLID) ARE SET AT -1
-!      
+!
           IF(IF5.EQ.0) IF2=-1
           IF(IF6.EQ.0) IF3=-1
           IF(IF7.EQ.0) IF4=-1
-!      
+!
           MESH%IFAPAR%I(6*(IF1-1)+1)=IF2
           MESH%IFAPAR%I(6*(IF1-1)+2)=IF3
           MESH%IFAPAR%I(6*(IF1-1)+3)=IF4

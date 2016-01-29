@@ -10,7 +10,7 @@
 !
 !brief    COMPUTES BED SHEAR STRESS FOR WAQTEL - SEE THE USE OF TOB_SISYPHE
 !
-!                              
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -46,7 +46,7 @@
 !     LOCAL VARIABLES
       DOUBLE PRECISION  CC
       TYPE(BIEF_OBJ)    UNORM
-!     
+!
 !
 !     MEAN VELOCITY
 !
@@ -54,8 +54,8 @@
 !
 !     TOB=.5*RHO*CF*U^2
       CC=0.5D0*DENSITY
-      CALL OV('X=CYZ   ',TAUB%R,CF%R,UNORM%R,CC,NPOIN) 
-!      
+      CALL OV('X=CYZ   ',TAUB%R,CF%R,UNORM%R,CC,NPOIN)
+!
       RETURN
       END
 !

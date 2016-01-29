@@ -1,25 +1,25 @@
 \subsection{Whirl current}
 %
 
-% - Purpose & Problem description: 
-%     These first two parts give reader short details about the test case, 
+% - Purpose & Problem description:
+%     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
-%    
+%
 \subsubsection{Purpose}
 %
 This test case should make it possible to check that the effects of refraction by the current are properly taken into account by Tomawac 7.0. The distorsion of a wave spectrum as it reaches a whirl current zone like those observed along the Norwegian coasts \cite{mathiesen}
 %
 \subsubsection{Description of the problem}
 %
-This test case is derived from the Mathiesen's results \cite{mathiesen}. Equivalent results can be found in \cite{tolman} and \cite{hubbert}. The spatial domain is a 80 km-sided square (see Figure \ref{current}). A circular, origin-centered whirl current is considered ; it is modelled as follows. Is tanegntial velocity is zero at the origin and linearly increases up to $r=r_1$ as per : 
+This test case is derived from the Mathiesen's results \cite{mathiesen}. Equivalent results can be found in \cite{tolman} and \cite{hubbert}. The spatial domain is a 80 km-sided square (see Figure \ref{current}). A circular, origin-centered whirl current is considered ; it is modelled as follows. Is tanegntial velocity is zero at the origin and linearly increases up to $r=r_1$ as per :
 $$
 u(r) = u_l\frac{r}{r_l} \mbox{ for } r\le r_l\le r_0
 $$
-Then, that velocity follows a Gaussian profile : 
+Then, that velocity follows a Gaussian profile :
 $$
 u(r)=u_{max} \exp \( -\(\frac{r-r_0}{br_0}\)^2 \) \mbox{ for } r > r_l
-$$ 
-Both continuity and derivability for u lead to : 
+$$
+Both continuity and derivability for u lead to :
 $$
 %\left.
 %\begin{array}{ll}
@@ -31,11 +31,11 @@ $$
 $$
 \frac{u_l}{u_{max}}= \exp \( -\(\frac{r_l-r_0}{br_0}\)^2 \)
 $$
-The following values were adopted in the computations : $u_{max}=1m/s$, $r_0=10km$ and $b=0.3$. 
-% - Reference: 
-%     This part gives the reference solution we are comparing to and 
+The following values were adopted in the computations : $u_{max}=1m/s$, $r_0=10km$ and $b=0.3$.
+% - Reference:
+%     This part gives the reference solution we are comparing to and
 %     explicits the analytical solution when available;
-%    
+%
 %
 \begin{figure} [!h]
 \centering
@@ -43,7 +43,7 @@ The following values were adopted in the computations : $u_{max}=1m/s$, $r_0=10k
  \caption{whirl current}
 \label{current}
 \end{figure}
-The model as developped by Mathiesen is a refraction model that computes the orthogonal waves through a conventional ray method. The results it provides for the 0.1Hz frequency are displayed on Figure \ref{ray}. Many orthogonal crossings can be observed.  
+The model as developped by Mathiesen is a refraction model that computes the orthogonal waves through a conventional ray method. The results it provides for the 0.1Hz frequency are displayed on Figure \ref{ray}. Many orthogonal crossings can be observed.
 \begin{figure} [!h]
 \centering
 \includegraphics[scale = 0.5]{diagram.png}
@@ -74,17 +74,17 @@ $$
 where $\sigma_{0p}$, the directionnal spread at the peak, is 25 in our case.
 This spectrum is imposed on the East South and west boundaries while the north boundary is free
 
-The initial spectrum is null. 
+The initial spectrum is null.
 %\subsubsection{Reference}
 %
 
-% - Physical parameters: 
-%     This part specifies the geometry, details all the physical parameters 
+% - Physical parameters:
+%     This part specifies the geometry, details all the physical parameters
 %     used to describe both porous media (soil model in particularly) and
 %     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
 %
 %
-% - Geometry and Mesh: 
+% - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
 %
@@ -98,24 +98,24 @@ The mesh is made of 1876 nodes and 3590 triangles and is shown Figure \ref{mail}
 \label{mail}
 \end{figure}
 
-% - Initial and boundary conditions: 
-%     This part details both initial and boundary conditions used to simulate the case 
+% - Initial and boundary conditions:
+%     This part details both initial and boundary conditions used to simulate the case
 %
 %
 
 \subsubsection{Numerical parameters}
 %
 Time duration is 60000s, time step is equal to 1200s, the spectro-angular mesh has 48 angles and 25 frequences spread on a geometric progression common ratio 1.1 with a minimum of  0.04177248.
-% - Results: 
+% - Results:
 %     We comment in this part the numerical results against the reference ones,
 %     giving understanding keys and making assumptions when necessary.
 %
 %
 \subsubsection{Results}
 %
-On figure \ref{measurepts}, we present the amplification factor of the heigth due to the current. We can notice two different zones at the center of the domain wheer there is a strong modification of the heigth. One zone where the heigth is raisong (till 35\%) when the swell is opposed to the current, and one zone where the heigth is decreasing (till 20\%) where swell and current are in the same direction.On the other parts of the domain modifications are less than 5\%. Those results are coherent with the ray calculus presented on Figure \ref{ray} since on the two zones we denote orthogonal crossing. 
+On figure \ref{measurepts}, we present the amplification factor of the heigth due to the current. We can notice two different zones at the center of the domain wheer there is a strong modification of the heigth. One zone where the heigth is raisong (till 35\%) when the swell is opposed to the current, and one zone where the heigth is decreasing (till 20\%) where swell and current are in the same direction.On the other parts of the domain modifications are less than 5\%. Those results are coherent with the ray calculus presented on Figure \ref{ray} since on the two zones we denote orthogonal crossing.
 
-In his paper, Mathiesen \cite{mathiesen} defines 8 points that we show on Figure \ref{measurepts}. On those points he gives the energy angular spread at 0.1 Hz (frequency paek of the incident spectrum). We compare this spread to the one obtained by Tomawac on Figure \ref{repartang}. We can denote that the results are very closed to Mathiesen results especially on points 4 and 7. Notice that Mathiesen took an angular discretisation of 2.5 when our is of 7.5.  
+In his paper, Mathiesen \cite{mathiesen} defines 8 points that we show on Figure \ref{measurepts}. On those points he gives the energy angular spread at 0.1 Hz (frequency paek of the incident spectrum). We compare this spread to the one obtained by Tomawac on Figure \ref{repartang}. We can denote that the results are very closed to Mathiesen results especially on points 4 and 7. Notice that Mathiesen took an angular discretisation of 2.5 when our is of 7.5.
 
 \begin{figure} [!h]
 \centering
@@ -134,4 +134,4 @@ In his paper, Mathiesen \cite{mathiesen} defines 8 points that we show on Figure
 
 
 \subsubsection{Conclusion}
- This test case showed on a realistic case of refraction of current Tomawac gives suitable results compared to fine results. 
+ This test case showed on a realistic case of refraction of current Tomawac gives suitable results compared to fine results.

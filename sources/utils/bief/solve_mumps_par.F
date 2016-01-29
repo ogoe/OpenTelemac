@@ -222,7 +222,7 @@
       DEALLOCATE(MUMPS_PAR%JCN_LOC)
       DEALLOCATE(MUMPS_PAR%A_LOC)
       DEALLOCATE(MUMPS_PAR%RHS)
-!    
+!
 !     Killing the current instance
 !
       MUMPS_PAR%JOB = -2

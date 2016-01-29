@@ -94,7 +94,7 @@
 !
       USE BIEF
       USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
-     &                                HREL,RAINFALL,ZSD 
+     &                                HREL,RAINFALL,ZSD
 !
       IMPLICIT NONE
       INTEGER LNG,LU

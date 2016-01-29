@@ -347,12 +347,12 @@
 
       DATE = (/0,0,0/)
       TIME = (/0,0,0/)
-      
+
       ALLOCATE(TMP2(MESH2%NELEM*MESH2%NDP),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'WRITE_SERAFIN:TMP0')
       DO I = 1,MESH2%NDP
         DO IELEM = 1,MESH2%NELEM
-          TMP2((I-1)*MESH2%NELEM + IELEM) = 
+          TMP2((I-1)*MESH2%NELEM + IELEM) =
      &            MESH2%IKLES((IELEM-1)*MESH2%NDP+I)
         ENDDO
       ENDDO

@@ -256,7 +256,7 @@
           ENDIF
         ENDDO
 !       Read the variables
-!        
+!
 !       Check if all the variables are found for record2
         DO J=1,3
           IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN

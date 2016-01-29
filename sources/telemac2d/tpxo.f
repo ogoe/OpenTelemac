@@ -2114,8 +2114,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
-!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
-!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN
 !|                |   | BE CHANGED BY USER.
 !|  GEOSYST       |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
 !|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
@@ -2425,7 +2425,7 @@
      &       'TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES'
           CALL PLANTE(1)
           STOP
-        ENDIF    
+        ENDIF
         WRITE(LU,*) 'ICALHW =',ICALHW
       ENDIF
 !
@@ -3211,7 +3211,7 @@
      &       'TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES'
           CALL PLANTE(1)
           STOP
-        ENDIF    
+        ENDIF
         WRITE(LU,*) 'ICALHW =',ICALHW
       ENDIF
 !

@@ -18,9 +18,9 @@
 /
 /  - "PARAL" :
 /     Le fichier est duplique avant calcul ("LIT") pour chaque processeur
-/      (avec une extension numerique), sauf s'il pre-existe avec cette  
+/      (avec une extension numerique), sauf s'il pre-existe avec cette
 /      extension numerique : il est alors utilise (copie).
-/     En mode "non automatique" : les fichiers lus doivent pre-exister avec 
+/     En mode "non automatique" : les fichiers lus doivent pre-exister avec
 /      leur extension numerique.
 /     S'il s'agit d'un fichier resultat ("ECR"), le fichier est restitue
 /      avec son extension numerique (fichier specifique a chaque processeur).
@@ -50,14 +50,14 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Nom du fichier contenant les parametres du calcul 
-QE a realiser.' 
+AIDE = 'Nom du fichier contenant les parametres du calcul
+QE a realiser.'
 AIDE1 = 'Name of the file containing parameters of the WAQ
 computation Written by the user.'
 
 NOM = 'TITRE DU CAS QE'
 NOM1 = 'WAQ CASE TITLE'
-TYPE = CARACTERE    
+TYPE = CARACTERE
 INDEX = 2
 MNEMO = 'TITWAQCAS'
 DEFAUT = ' '
@@ -68,12 +68,12 @@ COMPORT = 'Foreground ("ENTREES-SORTIES, GENERALITES*CALCUL")
 IS BRUT (red)'
 NIVEAU = 1
 AIDE = 'Titre du cas etudie. Ce titre sera inscrit dans les sorties. '
-AIDE1 = 'Title of the case being considered. 
+AIDE1 = 'Title of the case being considered.
 This title shall be marked on the printouts.'
 /
 NOM = 'PERIODE POUR LES SORTIES QUALITE D''EAU'
-NOM1 = 'WATER QUALITY PRINTOUT PERIOD'     
-TYPE = ENTIER    
+NOM1 = 'WATER QUALITY PRINTOUT PERIOD'
+TYPE = ENTIER
 INDEX = 1
 MNEMO = 'LEOPRD'
 DEFAUT = 1
@@ -140,7 +140,7 @@ written, the periodicity being given by the keyword
 WAQ PRINTOUT PERIOD.'
 
 NOM = 'NUMERO DE VERSION'
-NOM1 = 'RELEASE'  
+NOM1 = 'RELEASE'
 TYPE = CARACTERE
 INDEX = 9
 DEFAUT = 'V7P0'
@@ -164,8 +164,8 @@ NIVEAU = 2
 APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'FICHIERS DONNEES'
 RUBRIQUE1 = 'DATA FILES'
-AIDE = 'fichier de geometrie, pareil que celui de telemac2d ' 
-AIDE1 = 'geometry file same as the telemac2d one' 
+AIDE = 'fichier de geometrie, pareil que celui de telemac2d '
+AIDE1 = 'geometry file same as the telemac2d one'
 
 NOM = 'FICHIER HYDRODYNAMIQUE'
 NOM1 = 'HYDRODYNAMIC FILE'
@@ -180,8 +180,8 @@ NIVEAU = 2
 APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'FICHIERS DONNEES'
 RUBRIQUE1 = 'DATA FILES'
-AIDE = 'fichier des donnees hydrodynamiqes provenant de telemac2d ' 
-AIDE1 = 'hydrodynamic data file coming from telemac2d'    
+AIDE = 'fichier des donnees hydrodynamiqes provenant de telemac2d '
+AIDE1 = 'hydrodynamic data file coming from telemac2d'
 
 NOM = 'FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE'
@@ -197,17 +197,17 @@ APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'FICHIERS DONNEES'
 RUBRIQUE1 = 'DATA FILES'
 AIDE = 'Nom du fichier servant a valider le calcul.
-Si VALIDATION = OUI, les resultats du calcul vont etre 
+Si VALIDATION = OUI, les resultats du calcul vont etre
 comparees aux valeurs contenues dans ce fichier.
 La comparaison est effectuee par le sous-programme VALIDA.
-à implementer' 
+à implementer'
 AIDE1 = 'Name of the file used to validate the computation.
-If VALIDATION = YES, the results of the computation will be 
-compared with the values of this file. The comparison is        
-made by the subroutine BIEF_VALIDA. (not implemented yet)'     
+If VALIDATION = YES, the results of the computation will be
+compared with the values of this file. The comparison is
+made by the subroutine BIEF_VALIDA. (not implemented yet)'
 
 NOM = 'BILAN DE MASSE'
-NOM1 = 'MASS-BALANCE'   
+NOM1 = 'MASS-BALANCE'
 TYPE = LOGIQUE
 MNEMO = 'WQBILMAS'
 INDEX = 1
@@ -226,20 +226,20 @@ TYPE = LOGIQUE
 INDEX = 3
 MNEMO ='WQVALID'
 DEFAUT = NON
-DEFAUT1 = NO                                                             
+DEFAUT1 = NO
 RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'    
-NIVEAU = 2                                                              
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 2
 AIDE = 'Option utilisee principalement pour le dossier de validation.
-Si ce mot-cle vaut OUI, les resultats du calcul vont alors etre 
+Si ce mot-cle vaut OUI, les resultats du calcul vont alors etre
 compares aux valeurs du fichier de reference.'
-AIDE1 = 'This option is primarily used for the validation  
-documents. If this keyword is equal to YES, the REFERENCE FILE 
+AIDE1 = 'This option is primarily used for the validation
+documents. If this keyword is equal to YES, the REFERENCE FILE
 is then considered as a reference which the computation is
 going to be compared with.'
 
 NOM = 'MASSE VOLUMIQUE DE L''EAU'
-NOM1 = 'WATER DENSITY'              
+NOM1 = 'WATER DENSITY'
 TYPE = REEL
 MNEMO ='ROO'
 INDEX = 2
@@ -255,7 +255,7 @@ AIDE = 'Fixe la valeur de la masse volumique de l''eau.'
 AIDE1 = 'sets the value of water density.'
 
 NOM = 'GRAVITE'
-NOM1 = 'GRAVITY ACCELERATION'             
+NOM1 = 'GRAVITY ACCELERATION'
 TYPE = REEL
 MNEMO = 'GRAV'
 INDEX = 5
@@ -271,7 +271,7 @@ AIDE1 = 'Sets the value of the acceleration due to gravity.
 
 
 NOM = 'VISCOSITE CINEMATIQUE EAU'
-NOM1 = 'KINEMATIC WATER VISCOSITY'        
+NOM1 = 'KINEMATIC WATER VISCOSITY'
 TYPE = REEL
 INDEX = 8
 MNEMO = 'VCE'
@@ -286,9 +286,9 @@ AIDE1 = 'Specifies the water kinematic viscosity.
          M/S2'
 
 NOM = 'DISPERSION LONGITUDINALE'
-NOM1 = 'DISPERSION ALONG THE FLOW'             
-TYPE = REEL 
-MNEMO = 'LDISP'    
+NOM1 = 'DISPERSION ALONG THE FLOW'
+TYPE = REEL
+MNEMO = 'LDISP'
 INDEX = 11
 TAILLE = 0
 DEFAUT = 1.E-2
@@ -299,8 +299,8 @@ NIVEAU = 1
 
 NOM = 'DISPERSION TRANSVERSALE'
 NOM1 = 'DISPERSION ACROSS THE FLOW'
-TYPE = REEL   
-MNEMO = 'TDISP'  
+TYPE = REEL
+MNEMO = 'TDISP'
 INDEX = 12
 TAILLE = 0
 DEFAUT = 1.E-2
@@ -358,7 +358,7 @@ DEFAUT1 ='RESULTS FILE';
          'REFERENCE FILE';
          'HYDRODYNAMIC FILE';
          'STEERING FILE';
-         'DICTIONARY'        
+         'DICTIONARY'
 
 NOM = 'DESCRIPTION DES LIBRAIRIES'
 NOM1 = 'DESCRIPTION OF LIBRARIES'
@@ -366,16 +366,16 @@ TYPE = CARACTERE
 INDEX = 54
 MNEMO = 'LINKLIBS'
 TAILLE = 5
-DEFAUT = 'builds|PPP|lib|waqtelMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-DEFAUT1 = 'builds|PPP|lib|waqtelMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
+DEFAUT = 'builds|PPP|lib|waqtelMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|waqtelMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -529,7 +529,7 @@ DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES QE';'EUTROPHISATION'
 RUBRIQUE1 = 'WAQ PARAMETERS'
 NIVEAU = 1
-AIDE = 'DONNE LE CHOIX DE CALCUL DE LA FORMULE DE K2 DE LA 
+AIDE = 'DONNE LE CHOIX DE CALCUL DE LA FORMULE DE K2 DE LA
 REAERATION NATURELLE, LES OPTIONS SONT LES SUIVANTS:
   0- K2 CONSTANT, VALEUR DE K2=0.9
   1- FORMULE DE TENESSEE VALLEY AUTHORITY
@@ -918,7 +918,7 @@ DEFAUT1 = 7.
 RUBRIQUE = 'PARAMETRES QE';'EUTROPHISATION'
 RUBRIQUE1 = 'WAQ PARAMETERS'
 NIVEAU = 1
-AIDE = 'en °C, TEMPERATURE MOYENNE DE L EAU 
+AIDE = 'en °C, TEMPERATURE MOYENNE DE L EAU
      NECESSAIRE POUR CALCULER LES VALEURS DE CS '
 AIDE1 = 'in °C, MEAN TEMPERATURE NECESARY FOR
       COMPUTING DIFFERENT VALUES OF CS'
@@ -948,8 +948,8 @@ DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES QE';'SOURCES'
 RUBRIQUE1 = 'WAQ PARAMETERS'
 NIVEAU = 1
-AIDE = 'DONNE LE CHOIX DE CALCUL DE LA FORMULE DE RS DE LA 
-REAERATION NATURELLE AU NIVEAU DES SEUILS, 
+AIDE = 'DONNE LE CHOIX DE CALCUL DE LA FORMULE DE RS DE LA
+REAERATION NATURELLE AU NIVEAU DES SEUILS,
 LES OPTIONS SONT LES SUIVANTS:
   0- RS CONSTANT, VALEUR DE RS=1.0
   1- FORMULE DE GAMESON 1
@@ -1088,7 +1088,7 @@ AIDE = 'en S-1'
 AIDE1 = 'in S-1'
 
 /
-/THERMIC PROCESS 
+/THERMIC PROCESS
 /
 
 NOM = 'CHALEUR SPECIFIQUE DE L''EAU'

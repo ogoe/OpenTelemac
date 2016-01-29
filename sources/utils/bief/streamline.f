@@ -94,9 +94,9 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        31/08/2015
 !+        V7P1
-!+   Subroutine introduce_recvchar optimised (after results of a 
+!+   Subroutine introduce_recvchar optimised (after results of a
 !+   profiler saying we spent 12% of the time in it, but this seems
-!+   wrong).   
+!+   wrong).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

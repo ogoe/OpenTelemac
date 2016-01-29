@@ -44,8 +44,8 @@
 !history  J-M HERVOUET (LNHE)
 !+        18/09/2015
 !+        V7P1
-!+   Bug corrected: test IF(PTS_CURVES(ICURVE).GT.0) 
-!+   replaced by IF(STA_DIS_CURVES(ICURVE).GT.0) for printing points of 
+!+   Bug corrected: test IF(PTS_CURVES(ICURVE).GT.0)
+!+   replaced by IF(STA_DIS_CURVES(ICURVE).GT.0) for printing points of
 !+   a curve (for some liquid boundaries PTS_CURVES is not initialised).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,7 +15,7 @@
 !         questions:
 !            1- it changes TN at time tn while it has to be done in tn+1
 !            2- it affects the mass conservation !! to adapt bilant
-! 
+!
 !history  R. ATA (LNHE)
 !+        02/09/2015
 !+        V7P1
@@ -57,7 +57,7 @@
 !     LOCAL VARIABLES
       INTEGER           I
       DOUBLE PRECISION  DZ,RSW,TRDO,AB
-!     
+!
 !
       DZ= ABS(H2-H1)
       RSW = 0.D0
@@ -72,7 +72,7 @@
           RSW = 0.11D0*AB*(1.D0+0.046D0*WATTEMP)*DZ
 !       WRL FORMULA 1 (NO NEED TO AB ? )
         ELSEIF(FORMRS.EQ.3 )THEN
-          RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ ) 
+          RSW = 1.D0+0.69D0*DZ*(1.D0-0.11D0*DZ )
      &       *( 1.D0+0.046D0*WATTEMP)
 !       WRL FORMULA 2
         ELSEIF (FORMRS.EQ.4)THEN
@@ -89,11 +89,11 @@
             WRITE(LU,*)'POSSIBLE CHOICES ARE FROM 1 TO 4'
           ENDIF
           CALL PLANTE(1)
-          STOP                             
+          STOP
         ENDIF
 !
 !       FORCING O2 DENSITY DOWNSTREAM THE WEIR
-!       
+!
         IF(ABS(RSW).GT.EPS)THEN
           TRDO = O2SATU + (TRUP-O2SATU)/RSW
         ELSE
@@ -102,7 +102,7 @@
           STOP
         ENDIF
         IF(NCSIZE.GT.1)TRDO = P_DMIN(TRDO)+P_DMAX(TRDO)
-        IF(WAQPROCESS.EQ.1)THEN 
+        IF(WAQPROCESS.EQ.1)THEN
 !         O2 PROCESS
           I=NTRAC-ADDTR+1
         ELSEIF(WAQPROCESS.EQ.3)THEN
@@ -115,7 +115,7 @@
             WRITE(LU,*)'REAER_WEIR: PROCESS NOT CONCERNED '
           ENDIF
           CALL PLANTE(1)
-          STOP            
+          STOP
         ENDIF
         TN%ADR(I)%P%R(IR)=TRDO
       ENDIF

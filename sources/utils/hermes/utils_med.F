@@ -1442,7 +1442,7 @@
         CALL MMHCYR(FILE_ID,MNAME,MED_NO_DT,MED_NO_IT,MED_CELL,
      &    TYPE_ELEM_MED,MED_NODAL,MED_NO_INTERLACE,IKLE,IERR)
         CALL CHECK_CALL(IERR,'GET_BND_CONNECTIVITY_MED:MMHCYR')
-!       
+!
         ! Compute the boundary elements connectivity table
         IBND = 0
         DO I=1,NELEM

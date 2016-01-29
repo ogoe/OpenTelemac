@@ -8,9 +8,9 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES THE CONCENTRATION OF O2 SATURATION OF WATER 
+!brief    COMPUTES THE CONCENTRATION OF O2 SATURATION OF WATER
 !
-!                              
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -40,7 +40,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     
+!
 !
       IF(FORMCS.NE.0)THEN
         IF(FORMCS.EQ.1)THEN

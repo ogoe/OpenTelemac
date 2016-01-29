@@ -148,7 +148,7 @@
         CALL CHECK_CALL(IERR,'COUPEH:ADD_DATA:DOM')
 !
 !       Adding z
-! 
+!
         DO I = 1,NPOIN2
           VAR(I) = 0.D0
           IF (SHZ(I).GT.-1.D-6.AND.SHZ(I).LT.1.000001D0)

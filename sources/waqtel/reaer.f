@@ -10,7 +10,7 @@
 !
 !brief    COMPUTES THE COEFFICIENT OF REAERATION K2
 !
-!                              
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -48,7 +48,7 @@
 !     LOCAL VARIABLES
       INTEGER           I
       DOUBLE PRECISION  UNORM,PJ
-!     
+!
 !
       IF(FORMK2.EQ.0)THEN ! ==> CONSTANT K2
         CALL OS('X=C     ',K2,K2,K2,K22)

@@ -27,7 +27,7 @@
       INTERFACE
 !
 !-----------------------------------------------------------------------
-!      
+!
 !     DEFINITION OF INTERFACES
 !
       SUBROUTINE ERRPVM(ERROR_NUMBER)
@@ -43,10 +43,10 @@
       END SUBROUTINE
 !
       SUBROUTINE ORG_CHARAC_TYPE1(NOMB,TRACE,CHARACTERISTIC)
-        IMPLICIT NONE  
-        INTEGER, INTENT(IN)    :: NOMB 
-        INTEGER, INTENT(INOUT) :: CHARACTERISTIC 
-        LOGICAL, INTENT(IN)    :: TRACE 
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)    :: NOMB
+        INTEGER, INTENT(INOUT) :: CHARACTERISTIC
+        LOGICAL, INTENT(IN)    :: TRACE
       END SUBROUTINE
 !
       DOUBLE PRECISION FUNCTION P_DMAX(MYPART)
@@ -208,7 +208,7 @@
         INTEGER, INTENT(IN)  :: I1(*),I2,I3,I5,I6,I7
         INTEGER, INTENT(OUT) :: I4(*),I8
       END SUBROUTINE
-!   
+!
       SUBROUTINE P_MPI_TYPE_COMMIT(I1,I2)
         IMPLICIT NONE
         INTEGER, INTENT(IN)  :: I1
@@ -258,18 +258,18 @@
       END SUBROUTINE
 !
       SUBROUTINE P_ALLGATHERV_I
-     &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER, 
+     &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER,
      & RECV_COUNT, DISPLS, RECV_TYPE, COMM, IERR)
         IMPLICIT NONE
         INTEGER, INTENT(IN)    :: SEND_BUFFER(*)
-        INTEGER, INTENT(IN)    :: SEND_COUNT 
+        INTEGER, INTENT(IN)    :: SEND_COUNT
         INTEGER, INTENT(IN)    :: SEND_TYPE
         INTEGER, INTENT(INOUT)   :: RECV_BUFFER(*)
         INTEGER, INTENT(IN)    :: RECV_COUNT(*)
         INTEGER, INTENT(IN)    :: DISPLS(*)
         INTEGER, INTENT(IN)    :: RECV_TYPE
         INTEGER, INTENT(IN)    :: COMM
-        INTEGER, INTENT(OUT)   :: IERR      
+        INTEGER, INTENT(OUT)   :: IERR
       END SUBROUTINE
 !
 !------------------------------------------------------------------------

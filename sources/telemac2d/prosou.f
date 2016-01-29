@@ -670,7 +670,7 @@
 !           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
             IF(NVARCL.GT.0) THEN
               DO I=1,NVARCL
-                CALL FIND_VARIABLE(FFORMAT, FILE_ID, 
+                CALL FIND_VARIABLE(FFORMAT, FILE_ID,
      &                         VARCLA(I)(1:16),VARCL%ADR(I)%P%R, NPOIN,
      &                          ERR,RECORD=IREC,TIME_RECORD=ATH)
                 IF(ERR.NE.0) THEN

@@ -19,7 +19,7 @@
 !+        21/09/2015
 !+        V7P1
 !+       REAL IMPLEMENTATION
-! 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| NTRAC          |-->| OLD NUMBER OF TRACER (BEFORE WAQ RTACERS)
@@ -130,7 +130,7 @@
       RANKTR6 = RANKTR5+1      ! NH4
       RANKTR7 = RANKTR6+1      ! L
       RANKTR8 = NTRAC          ! O2
-! 
+!
 !     HERE TEMPERATURE IS FIXED WHICH IS NOT PHYSICAL
 !     TO INVESTIGATE IF NECESSARY TO USE T VARIABLE !
       POWER=WATTEMP-20.D0
@@ -152,8 +152,8 @@
 !
       IF(DEBUG.GT.1)WRITE(LU,*)'IN EUTRO, STEP 2'
 !
-!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS 
-!           NUTRIMENTS ON ALGAE GROWTH 
+!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS
+!           NUTRIMENTS ON ALGAE GROWTH
 !
       CALL NUTEFF(LNUT,TN,NPOIN,RANKTR2,RANKTR4,KP,KN)
 !
@@ -202,7 +202,7 @@
      &          NPOIN)
       CALL OV( 'X=CY    ' ,T2%R,TN%ADR(RANKTR3)%P%R,T2%R,K320*G2,
      &          NPOIN)
-!    
+!
       CALL OV( 'X=Y+Z   ' ,TEXP%ADR(RANKTR2)%P%R,T1%R,T2%R,0.D0,NPOIN)
 !
 !
@@ -226,7 +226,7 @@
       CALL OV( 'X=Y+Z   ' ,TEXP%ADR(RANKTR4)%P%R,T1%R,T2%R,0.D0,NPOIN)
       IF(DEBUG.GT.1)WRITE(LU,*)'IN EUTRO, STEP 9'
 
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
       CALL OV( 'X=CYZ   ' ,T1%R,DP,TN%ADR(RANKTR1)%P%R,
      &          PRONITC*(1.D0-PERNITS),NPOIN)
       CALL OV( 'X=CY    ' ,T2%R,TN%ADR(RANKTR5)%P%R,RN, K360*G2,NPOIN)
@@ -247,11 +247,11 @@
       CALL OV( 'X=Y-Z   ' ,TEXP%ADR(RANKTR6)%P%R,T1%R,T3%R,0.D0,NPOIN)
 !
 !     SEVENTH TRACER [L]: ORGANIC LOAD
-!     COMPUTE MP 
+!     COMPUTE MP
       CALL OV( 'X=CY    ' ,T1%R,TN%ADR(RANKTR1)%P%R,DP,CMORALG(2),NPOIN)
       CC=CMORALG(1)+CTOXIC(2)
       CALL OV( 'X=X+C   ' ,T1%R,DP                 ,DP,CC        ,NPOIN)
-!     
+!
       CALL OV( 'X=CYZ   ' ,T1%R,TN%ADR(RANKTR1)%P%R,DP,O2PHOTO   ,NPOIN)
       CC=K120*(1.047D0**POWER)
       CALL OV( 'X=CY    ' ,T2%R,TN%ADR(RANKTR7)%P%R,DP,CC        ,NPOIN)
@@ -267,15 +267,15 @@
       CC=O2NITRI*K520*G2
       CALL OV( 'X=CY    ' ,T3%R,TN%ADR(RANKTR6)%P%R,DP,CC       ,NPOIN)
 !     T2 CONTAINS K120G3[L] SO FAR
-      CALL OV( 'X=Y-Z   ' ,TEXP%ADR(RANKTR8)%P%R,T1%R,T2%R,0.D0,NPOIN) 
+      CALL OV( 'X=Y-Z   ' ,TEXP%ADR(RANKTR8)%P%R,T1%R,T2%R,0.D0,NPOIN)
       CALL OV( 'X=X-Y   ' ,TEXP%ADR(RANKTR8)%P%R,T3%R,T3%R,0.D0,NPOIN)
       CC=1.025**POWER
-      CALL OV( 'X=CY    ' ,T1%R               ,K2%R,K2%R,CC  ,NPOIN) 
+      CALL OV( 'X=CY    ' ,T1%R               ,K2%R,K2%R,CC  ,NPOIN)
       CALL OV( 'X=Y+C   ' ,T2%R,TN%ADR(RANKTR8)%P%R,CP,-O2SATU,NPOIN)
       CALL OV( 'X=-Y    ' ,T2%R,T2%R               ,T2%R,0.D0 ,NPOIN)
       CALL OV( 'X=YZ    ' ,T3%R,T1%R               ,T2%R,0.D0 ,NPOIN)
       CALL OV( 'X=X-Y   ' ,TEXP%ADR(RANKTR8)%P%R,T3%R,T3%R,0.D0 ,NPOIN)
-!   
+!
       CALL OVD('X=1/Y   ' ,T3%R,HPROP%R,HPROP%R,0.D0,
      &          NPOIN ,2,0.D0,EPS )
       CALL OV( 'X=X+CY  ' ,TEXP%ADR(RANKTR8)%P%R,T3%R,T3%R,

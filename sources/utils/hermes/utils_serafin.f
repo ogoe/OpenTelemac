@@ -400,7 +400,7 @@
               RETURN
             ENDIF
           ENDIF
-!          
+!
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
      &        + (4 +

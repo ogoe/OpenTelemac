@@ -144,7 +144,7 @@
 !
 !     BUILDING THE MATRIX AND THE RIGHT-HAND SIDE
 !     THE MATRIX IS NOT DONE WITH A CALL MATRIX
-!     SO ITS FEATURES HAVE TO BE HARDCODED HERE 
+!     SO ITS FEATURES HAVE TO BE HARDCODED HERE
 !
       AM2%X%DIM1=2*NSEG
       AM2%X%DIM2=1
@@ -154,13 +154,13 @@
       AM2%ELMCOL=11
       CALL CPSTVC(SF,AM2%D)
 !
-!     DIAGONAL OF MATRIX 
+!     DIAGONAL OF MATRIX
 !
       DO I=1,NPOIN
         AM2%D%R(I)=HNP1MT(I)*VOLU2D(I)
       ENDDO
 !
-!     RIGHT HAND SIDE 
+!     RIGHT HAND SIDE
 !
 !     TERM FROM THE DERIVATIVE IN TIME
       IF(PREDICTOR) THEN
@@ -194,18 +194,18 @@
 !       BY THE LAST CORRECTION
 !       HERE EXTRA-DIAGONAL TERMS NOT BUILT
         DO I=1,NSEG
-          I1=GLOSEG(I,1)  
+          I1=GLOSEG(I,1)
           I2=GLOSEG(I,2)
           IF(FXMATPAR(I).LT.0.D0) THEN
             AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
           ELSE
             AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
-          ENDIF        
+          ENDIF
         ENDDO
       ELSE
 !       NO SIMPLIFICATION, REAL MATRIX
         DO I=1,NSEG
-          I1=GLOSEG(I,1)  
+          I1=GLOSEG(I,1)
           I2=GLOSEG(I,2)
           IF(FXMATPAR(I).LT.0.D0) THEN
             AM2%D%R(I1) = AM2%D%R(I1) - DT*TETAF(I1)*FXMAT(I)
@@ -215,7 +215,7 @@
             AM2%D%R(I2) = AM2%D%R(I2) + DT*TETAF(I2)*FXMAT(I)
             AM2%X%R(I)=0.D0
             AM2%X%R(I+NSEG)=-DT*TETAF(I1)*FXMAT(I)
-          ENDIF        
+          ENDIF
         ENDDO
 !
       ENDIF
@@ -238,7 +238,7 @@
      &                     *DT*MAX(SMH(I),0.D0)
           ENDDO
         ENDIF
-      ENDIF 
+      ENDIF
 !
 !     TERMES BII * CIN ET BIJ * CJN
 !
@@ -246,7 +246,7 @@
 !     WITH DERIVATIVE IN TIME.
       DO I=1,NPOIN
         SM%R(I)=SM%R(I)-DT*PSIEXP(I)
-      ENDDO 
+      ENDDO
 !
 !     ADD FLUX ON BOUNDARY AND OTHER TERMS
 !
@@ -275,7 +275,7 @@
       ENDIF
 !
 !     TIDAL FLATS
-! 
+!
       CALL OS('X=Y     ',X=BB1,Y=AM2%D)
       IF(NCSIZE.GT.1) CALL PARCOM(BB1,2,MESH)
       DO I=1,NPOIN
@@ -295,7 +295,7 @@
       IF(ICOR.LT.NCOR) THEN
 !       HERE ONE ITERATION OF JACOBI, OFF-DIAGONAL TERMS BUILT ON THE SPOT
         DO I=1,NSEG
-          I1=GLOSEG(I,1)  
+          I1=GLOSEG(I,1)
           I2=GLOSEG(I,2)
           IF(FXMATPAR(I).LT.0.D0) THEN
             SM%R(I1)=SM%R(I1)-DT*TETAF(I2)*FXMAT(I)*F(I2)
@@ -309,7 +309,7 @@
         ENDIF
         DO I=1,NPOIN
           F(I)=SM%R(I)/AM2%D%R(I)
-        ENDDO       
+        ENDDO
       ELSE
         IF(SLVPSI%SLV.EQ.7.OR.SLVPSI%SLV.EQ.8) THEN
           CALL SOLVE(SF,AM2,SM,BB,SLVPSI,INFOGT,MESH,AM2)
@@ -329,13 +329,13 @@
 !         ONE ITERATION OF JACOBI
           CALL OS('X=Y     ',X=BB1,Y=SM)
           DO I=1,NSEG
-            I1=GLOSEG(I,1)  
+            I1=GLOSEG(I,1)
             I2=GLOSEG(I,2)
             IF(FXMATPAR(I).LT.0.D0) THEN
               BB1%R(I1)=BB1%R(I1)-AM2%X%R(I     )*F(I2)
             ELSE
               BB1%R(I2)=BB1%R(I2)-AM2%X%R(I+NSEG)*F(I1)
-            ENDIF        
+            ENDIF
           ENDDO
           IF(NCSIZE.GT.1) CALL PARCOM(BB1,2,MESH)
 !         NEW SOLUTION IN BB1
@@ -346,13 +346,13 @@
 !         AX-B = (A%D+A%X)X-B = A%X*(NEW F - OLD F)
           CALL OS('X=0     ',X=R)
           DO I=1,NSEG
-            I1=GLOSEG(I,1)  
+            I1=GLOSEG(I,1)
             I2=GLOSEG(I,2)
             IF(FXMATPAR(I).LT.0.D0) THEN
               R%R(I1)=R%R(I1)-AM2%X%R(I     )*(F(I2)-BB1%R(I2))
             ELSE
               R%R(I2)=R%R(I2)-AM2%X%R(I+NSEG)*(F(I1)-BB1%R(I1))
-            ENDIF        
+            ENDIF
           ENDDO
           IF(NCSIZE.GT.1) CALL PARCOM(R,2,MESH)
           NORMR=SQRT(P_DOTS(R,R,MESH))
@@ -367,35 +367,35 @@
           IF(INFOGT) THEN
             IF(NORMR.GT.SLVPSI%EPS*NORMB) THEN
               IF(NORMB.GT.1.D0) THEN
-                IF(LNG.EQ.1) WRITE(LU,*) 
+                IF(LNG.EQ.1) WRITE(LU,*)
      &            'JACOBI : MAXIMUM D''ITERATIONS ATTEINT :',N,
-     &            ' PRECISION RELATIVE = ',NORMR/NORMB 
-                IF(LNG.EQ.2) WRITE(LU,*) 
+     &            ' PRECISION RELATIVE = ',NORMR/NORMB
+                IF(LNG.EQ.2) WRITE(LU,*)
      &            'JACOBI: MAXIMUM ITERATIONS REACHED ',N,
-     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB   
+     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB
               ELSE
                 IF(LNG.EQ.1) WRITE(LU,*)
      &            'JACOBI : MAXIMUM D''ITERATIONS ATTEINT :',N,
-     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR 
+     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR
                 IF(LNG.EQ.2) WRITE(LU,*)
      &            'JACOBI: MAXIMUM ITERATIONS REACHED ',N,
-     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR 
-              ENDIF 
+     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR
+              ENDIF
             ELSE
               IF(NORMB.GT.1.D0) THEN
                 IF(LNG.EQ.1) WRITE(LU,*) 'JACOBI :',N,
-     &            ' ITERATIONS, PRECISION RELATIVE = ',NORMR/NORMB 
+     &            ' ITERATIONS, PRECISION RELATIVE = ',NORMR/NORMB
                 IF(LNG.EQ.2) WRITE(LU,*) 'JACOBI:',N,
-     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB   
+     &            ' ITERATIONS, RELATIVE PRECISION = ',NORMR/NORMB
               ELSE
                 IF(LNG.EQ.1) WRITE(LU,*) 'JACOBI :',N,
-     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR 
+     &            ' ITERATIONS, PRECISION ABSOLUE = ',NORMR
                 IF(LNG.EQ.2) WRITE(LU,*) 'JACOBI:',N,
-     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR 
-              ENDIF 
+     &            ' ITERATIONS, ABSOLUTE PRECISION = ',NORMR
+              ENDIF
             ENDIF
-          ENDIF 
-        ENDIF  
+          ENDIF
+        ENDIF
       ENDIF
 !
 !
@@ -419,13 +419,13 @@
 !     THE CASE KDIR IS TREATED IN CVTRVF
 !
 !     FLUX AND ADDED MASS FOR MASS BALANCE
-! 
+!
       IF(ICOR.EQ.NCOR) THEN
         DO I=1,NPTFR
           IF(LIMTRA(I).EQ.KDIR) THEN
-            FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FBOR(I)*SURNIT  
+            FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FBOR(I)*SURNIT
           ELSEIF(LIMTRA(I).EQ.KDDL) THEN
-            N=NBOR(I) 
+            N=NBOR(I)
             FLBORTRA(I)=FLBORTRA(I)
      &            +FXBOR(I)*(TETAF(N)*F(N)+(1.D0-TETAF(N))*FC(N))*SURNIT
           ENDIF
@@ -452,7 +452,7 @@
             ENDDO
           ENDIF
         ENDIF
-      ENDIF 
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

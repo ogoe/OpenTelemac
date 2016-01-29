@@ -144,18 +144,18 @@
 !
 !       CALCUL DES AUTRES PARAMETRES DE L'ENTETE
 !       ----------------------------------------
-!       
+!
 !       MAILLAGE LEONARD ASSOCIE A LA COUPE IC ET AU PAS DE TEMPS IT
-!       
+!
         ISEG = 0
         IFSEG = 1
         LGDEB = 0.D0
         LGSEG = 0.D0
-!       
+!
         DO I = 1,IM
-!       
+!
 !         COORDONNEE HORIZONTALE SUIVANT LE PLAN DE COUPE (X)
-!       
+!
           IF (I.GT.IFSEG.OR.I.EQ.1) THEN
             ISEG = ISEG + 1
             IDSEG = IFSEG
@@ -164,19 +164,19 @@
             LGSEG = SQRT((X2DV(ISEG+1,IC)-X2DV(ISEG,IC))**2
      &                  +(Y2DV(ISEG+1,IC)-Y2DV(ISEG,IC))**2)
           ENDIF
-!       
+!
           TAB1(I,1) = LGDEB + FLOAT(I-IDSEG)*LGSEG/FLOAT(IFSEG-IDSEG)
-!       
+!
 !         COORDONNEE VERTICALE (Y)
-!       
+!
           DO J = 1,JM
-!       
+!
             TAB1(I,J) = TAB1(I,1)
             TAB2(I,J) = ( SHP(I,1,IC)*Z(IKLES(1,ELEM(I,IC)),J)
      &                  + SHP(I,2,IC)*Z(IKLES(2,ELEM(I,IC)),J)
      &                  + SHP(I,3,IC)*Z(IKLES(3,ELEM(I,IC)),J) )
      &                  * DISTOR(IC)
-!       
+!
           ENDDO
         ENDDO !I
 !

@@ -133,7 +133,7 @@
 !            V_S(J) =
 !     &          KCONSO(J) * CONC_VASE(J) * (1.D0/XMVS - 1.D0/XMVE)
 !     &          + ( KCONSO(J) / (XMVE * GRAV)) *
-!     &          (SIG_EFF(J+1) - SIG_EFF(J)) / 
+!     &          (SIG_EFF(J+1) - SIG_EFF(J)) /
 !     &          (0.5D0 * (ES(I,J+1) + ES(I,J)))
           ELSE
             V_S(J) = 1.D8

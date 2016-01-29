@@ -20,12 +20,12 @@
 %\end{Large}}
 %\author{Marine Le Gal - Elodie Gagnaire Renou - Michel Benoit}
 %\begin{document}
-%\maketitle 
+%\maketitle
 
 \subsection{Fetch Limited }
 
 \subsubsection{Purpose}
-The goal of this test-case is to validate the generation (Source/sink terms)  and the growth of the wave spectrum depending of the length of wind action (fetch) with a constant wind defined at 10 meters from the sea surface. The domain used is simple and we want to observe the evolution of few parameters along its length, as the significant wave height, peak period and variance spectrum. 
+The goal of this test-case is to validate the generation (Source/sink terms)  and the growth of the wave spectrum depending of the length of wind action (fetch) with a constant wind defined at 10 meters from the sea surface. The domain used is simple and we want to observe the evolution of few parameters along its length, as the significant wave height, peak period and variance spectrum.
 It is supposed that the wind blew long enought to have reached a steady state.\\
 Thus, this benchmark will allow us to compare and validate the different models of wind generation (three models), whitecapping dissipation (two models), non-linear quadruplet interactions (three models but only two are used here). Friction bottom dissipation and eventually depth-induced breaking dissipation (four models) is also included when a finite depth is imposed. The models used are presented in the table \ref{tabmodel}.
 \begin{table}
@@ -49,20 +49,20 @@ test 3 & Snyder & Westhuysen  & DIA & $\inf$ & --& -- \\
 test 4 & Yan (1987) & Westhuysen & DIA & $\inf$ & --& -- \\
 \hline
 test 5 & Snyder & Westhuysen & Exact GQM** & & &  \\
- &  &  &  coarse  & $\inf$ & --& --\\ 
+ &  &  &  coarse  & $\inf$ & --& --\\
  &  &  &  discretization & & & \\ \hline
  test 6 & Janssen &Komen ;  & Exact GQM  & & &\\
- &  & Janssen  &  coarse & $\inf$ & -- & -- \\ 
+ &  & Janssen  &  coarse & $\inf$ & -- & -- \\
  &  & Janssen  &  discretization & & & \\ \hline
  test 6b & Janssen & Komen ;& Exact GQM &  & & \\
-  &  & Janssen   &  medium  &$\inf$ & -- & --\\ 
+  &  & Janssen   &  medium  &$\inf$ & -- & --\\
   &  &    &  discretization & & & \\ \hline
 test 7a & Snyder & Westhuysen & DIA & 180 & 0.038 & -- \\
  test 7b & Snyder & Westhuysen & DIA & 60 & 0.038& -- \\
  test 7c & Snyder & Westhuysen & DIA & 30 & 0.038& -- \\
   test 7d & Snyder & Westhuysen& DIA & 15 & 0.038& -- \\
-   test 7e & Snyder & Westhuysen& DIA & 5 & 0.038& Battjes  \\ 
-    &  & &  & & &\& Janssen \\ 
+   test 7e & Snyder & Westhuysen& DIA & 5 & 0.038& Battjes  \\
+    &  & &  & & &\& Janssen \\
     &  & &  & & &(V = 20m/s) \\ \hline
  \end{tabular}
  \caption{Different models used for this test-case. In all cases, linear wave growth term from the formula of Cavaleri and
@@ -88,8 +88,8 @@ Depth constant along the domain :
 
 \begin{tabular}{ccc}
  & test 7a & 180 m\\
- & test 7b & 60 m\\ 
-& test 7c & 30 m\\ 
+ & test 7b & 60 m\\
+& test 7c & 30 m\\
 & test 7d & 15 m\\
 & test 7e & 5 m\\
  & or infinite\\
@@ -122,7 +122,7 @@ The domain is a part of a sea. A constant and homogeneous wind blows perpendicul
 \begin{itemize}
 \item time step : 900s
 \item physical time reached : 48 h
-\item caracterization of the computer : \subitem Core : Linux 2.6.32-5-amdb64 \subitem Processors : Intel(R) 
+\item caracterization of the computer : \subitem Core : Linux 2.6.32-5-amdb64 \subitem Processors : Intel(R)
 xeon(R) CPU E5620 @ 2.4Ghz
 \item CPU times : \\
 \begin{tabular}{c|c|c|c|c}
@@ -159,10 +159,10 @@ Where $U_{10}$ is the wind velocity at 10 meters from the sea.\\
 
 Figure \ref{variancefet} shows the different results obtained. Generally, all tests give correct results, and stay close to the CERC, Wilson \& Goda and Kahma \& Calkoen curves.\\
 The wind impact can be seen by two different behaviours. Indeed, for a 10m/s wind, the results are really close to the empirical formula at small fetches. As the fetch grows, the differences between the models increrase, and the curves began to stray from the empirical formulas. In this case, the models of tests 1, 6 and 6b give the best results. At 20m/s, a different behaviour is noticed : at small fetch the results are quite different from the empirical curves and it is only when the fetch grows that they match well with the empirical formula. In this case it is the model of test 5 which gives the best results. It can be concluded that there is a range where TOMAWAC results are really correct whatever the models used. For strong winds, an exact resolution of the quadruplet transfers, Snyder's wind generation model and Westhuysen white capping model (test 5) give better results at small fetch. \\
-Thus, the analysis of Figure \ref{variancefet} shows a good matching between the  TOMAWAC wave simulations and the empirical formulas. A comparison was also done with the revisited Pierson-Moskowitz asymptotic limits from Alves and Banner \cite{alves} for fully developed wind waves, the $U_{10}$-scaled asymptotes is added on Figure \ref{variancefet}. The formula gives : 
+Thus, the analysis of Figure \ref{variancefet} shows a good matching between the  TOMAWAC wave simulations and the empirical formulas. A comparison was also done with the revisited Pierson-Moskowitz asymptotic limits from Alves and Banner \cite{alves} for fully developed wind waves, the $U_{10}$-scaled asymptotes is added on Figure \ref{variancefet}. The formula gives :
 \[\epsilon = (4.02 \pm 0.62)*10^{-3}\]
 \[\nu = (1.23 \pm 0.08)* 10^{-1}\]
- It seems that the non-dimensional peak frequency $f_p*$ is a little bit over-estimated and the non-dimensional variance is a bit underestimated. Indeed, the empirical formula given by CERC (1984), which is used as a criterion for fully developed seas, to calculate the minimum fetch during the minimum duration (48h), is : $\frac{t_{min} g}{U_{10}} = 68.8 (\frac{X_{min} g}{U_{10}^2})^{0.67}$. Applying this formula we found that the fully developed seas is reached around $1 117 km$ for a 10 m/s wind and around $1 672 km$ for a 20 m/s wind. Thus, the fully developed sea may not be entirely reached at our last point ($X_{10} = 1000km$) and which may explain the growth of the variance spectrum for some of the tests (see next subsubsection). 
+ It seems that the non-dimensional peak frequency $f_p*$ is a little bit over-estimated and the non-dimensional variance is a bit underestimated. Indeed, the empirical formula given by CERC (1984), which is used as a criterion for fully developed seas, to calculate the minimum fetch during the minimum duration (48h), is : $\frac{t_{min} g}{U_{10}} = 68.8 (\frac{X_{min} g}{U_{10}^2})^{0.67}$. Applying this formula we found that the fully developed seas is reached around $1 117 km$ for a 10 m/s wind and around $1 672 km$ for a 20 m/s wind. Thus, the fully developed sea may not be entirely reached at our last point ($X_{10} = 1000km$) and which may explain the growth of the variance spectrum for some of the tests (see next subsubsection).
 
 \paragraph{Variance spectrum for a constant wind}
 In this subsubsection, we look at the development of the variance spectrum $E(f)$ along the fetch.
@@ -218,7 +218,7 @@ In this subsubsection, finite depths are considered : 180m, 60m, 30m, 15m and 5m
 \end{itemize}
 It can be noticed that the non-dimensional variance decreases with depth. Indeed, bottom friction effects are more important at small depths. On the contrary, the peak frequency grows when the depth increases because the friction has more impact on small frequency waves, which leads to a growth of the peak frequency.\\
 On Figure 6, we can see that for a 20 m/s wind, TOMAWAC's curve are really matching with the CERC (1984) forecasting, particularly for $d = 15 - 30 - 60 m$. Indeed, it is adviced in CERC publication to use their model for a depth between 15 and 90 meters. But the results are still good for $d = 180 m$ and $d = 5 m$.\\
-For a 10m/s wind, except for $d = 5 m $ and $d = 15 m$, the results are less close to the CERC curves. At small fetches, TOMAWAC results are overvalued, and at large fetches, they are undervalued. In CERC publication (1984), it is adviced to use an infinite model for depth over 90m. So the CERC infinite depth model (1977) is added to the graphs and we can see that the results are closer to it for a 10 m/s wind and $d \geq 30m$.For a 20 m/s wind,at $d = 180m$ and at large fetches, TOMAWAC results tends to the infinite depth limit. 
+For a 10m/s wind, except for $d = 5 m $ and $d = 15 m$, the results are less close to the CERC curves. At small fetches, TOMAWAC results are overvalued, and at large fetches, they are undervalued. In CERC publication (1984), it is adviced to use an infinite model for depth over 90m. So the CERC infinite depth model (1977) is added to the graphs and we can see that the results are closer to it for a 10 m/s wind and $d \geq 30m$.For a 20 m/s wind,at $d = 180m$ and at large fetches, TOMAWAC results tends to the infinite depth limit.
 \begin{figure}
 \centering
 \includegraphics[scale=0.4]{m0_test7v10.pdf}\\
@@ -226,7 +226,7 @@ For a 10m/s wind, except for $d = 5 m $ and $d = 15 m$, the results are less clo
 \caption{Comparaison of normalized Variance M0* for U10 = 10m/s (high) and 20m/s (bottom) for different depths : 5, 15, 30, 60, 180 m}
 \label{variancem0}
 \end{figure}
-Generally, TOMAWAC gives correct results if you adapt the model at the good application model. 
+Generally, TOMAWAC gives correct results if you adapt the model at the good application model.
 \subsubsection{Conclusion}
 \paragraph{Infinite Depth}
 This benchmark allows to verify that TOMAWAC results for simultaneous processing of different source terms are correct. A comparison with empirical formulas validates this simulation with generally matching results. The use of the exact GQM quadruplet transfers model allows the visualization of overshoots, but,CPU time are increased, so it is not advisable to use this model for big industrial cases.

@@ -8,7 +8,7 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES RAY EFFECT: COEFFICIENT OF SUNSHINE ON 
+!brief    COMPUTES RAY EFFECT: COEFFICIENT OF SUNSHINE ON
 !                              THE GROWTH OF ALGAE
 !
 !history  R. ATA (LNHE)
@@ -19,10 +19,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETA           |-->| COEFFICIENT OF VEGETAL TURBIDITY WITHOUT
 !|                |   | PHYTOPLANKTON
-!| EFF            |<--| SUNSHINE EFFECT ON ALGAE GROWTH 
+!| EFF            |<--| SUNSHINE EFFECT ON ALGAE GROWTH
 !| H              |-->| WATER DEPTH ON ALL MESH NODES
 !| IK             |-->| PARAMETER FOR THE CALIBRATION OF SMITH FORMULA
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| SECCHI         |-->| SECCHI DEPTH
 !| TRR            |-->| TRACER (CAN BE PHY: PHYTOPLAKTONIC BIOMASS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +40,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: TRR(NPOIN),BETA,I0,IK,SECCHI
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: H
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: EFF
-!   LOCAL VARIABLES 
+!   LOCAL VARIABLES
       INTEGER                    :: KK,ERR
       DOUBLE PRECISION, PARAMETER:: EPS=1.E-6
       DOUBLE PRECISION, PARAMETER:: MOSS=0.015D0
@@ -59,7 +59,7 @@
 !     ALLOCATION
 !
       ALLOCATE( KE(NPOIN),STAT=ERR)
-      ALLOCATE( IH(NPOIN),STAT=ERR) 
+      ALLOCATE( IH(NPOIN),STAT=ERR)
       IF(ERR.NE.0)GOTO 100
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -69,7 +69,7 @@
       CALL OV( 'X=C     ' ,IH,IH,IH,0.D0,NPOIN )
       CALL OS( 'X=0     ' ,X=EFF)
 !
-!     COMPUTE KE 
+!     COMPUTE KE
 !
       IF(SECCHI.GT.EPS)THEN
         CC=1.7D0/SECCHI
@@ -79,8 +79,8 @@
         CALL OV( 'X=X+C   ' ,KE,KE,KE,BETA,NPOIN )
       ENDIF
 !
-!     COMPUTE Ih: 
-! 
+!     COMPUTE Ih:
+!
       DO KK=1,NPOIN
         IH(KK)=I0*EXP(-KE(KK)*MAX(H%R(KK),0.D0))
       ENDDO
@@ -97,11 +97,11 @@
 !     DEALLOCATION
 !
       DEALLOCATE(KE,STAT=ERR)
-      DEALLOCATE(IH,STAT=ERR) 
+      DEALLOCATE(IH,STAT=ERR)
 !
 !-----------------------------------------------------------------------
 !
-100   CONTINUE    
+100   CONTINUE
       IF(ERR.NE.0)THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'RAY_EFFECT: PROBLEME D''ALLOCATION DE VECTEURS'

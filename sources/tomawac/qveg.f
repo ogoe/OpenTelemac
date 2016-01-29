@@ -66,7 +66,7 @@
       CD = 0.2D0
 !     VEGETATION HEIGHT
       DV = 2.D0
-!TF   NEXT LINE USELESS 
+!TF   NEXT LINE USELESS
 !      ALFA = 0.9D0
       C1 = - SQRT(2.D0/PI)*GRAVIT**2
       CVEG = C1*CD*BV*NV/(DEUPI**3)

@@ -29,9 +29,9 @@
 /
 /  - "PARAL" :
 /     Le fichier est duplique avant calcul ("LIT") pour chaque processeur
-/      (avec une extension numerique), sauf s'il pre-existe avec cette  
+/      (avec une extension numerique), sauf s'il pre-existe avec cette
 /      extension numerique : il est alors utilise (copie).
-/     En mode "non automatique" : les fichiers lus doivent pre-exister avec 
+/     En mode "non automatique" : les fichiers lus doivent pre-exister avec
 /      leur extension numerique.
 /     S'il s'agit d'un fichier resultat ("ECR"), le fichier est restitue
 /      avec son extension numerique (fichier specifique a chaque processeur).
@@ -53,7 +53,7 @@ DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'DUREE DU CALCUL'
 RUBRIQUE1 = 'NUMERIC PARAMETERS';'DURATION'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES*DUREE DU CALCUL")
 IS BRUT (blue)'
 AIDE = 'Definit le nombre de pas de temps effectues lors de
@@ -91,7 +91,7 @@ DEFAUT1 = 0
 RUBRIQUE = 'EQUATIONS, TRACEUR'
 RUBRIQUE1 = 'EQUATIONS';'TRACER'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, TRACEUR")
 IS BRUT (brown)'
 AIDE = 'Definit le nombre de traceurs.'
@@ -327,7 +327,7 @@ ce meme parametre doit retrouver sa vraie valeur physique, en general
 environ 1.E-6 car elle est utilisee comme telle dans le modele de
 turbulence'
 AIDE1 = 'Five choices available.
-Beware : if option 1 chosen, give the right 
+Beware : if option 1 chosen, give the right
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
 DIFFUSION DES ....
 If option 3 ou 7 is chosen, this parameter must get its real physical
@@ -350,18 +350,18 @@ CHOIX1 = '1= smooth';
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'MODELE K-EPSILON'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'K-EPSILON MODEL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS*MODELE DE TURBULENCE*MODELE K-EPSILON")
 IS BRUT (brown)'
 AIDE = 'Permet de definir le regime de turbulence pour le fond dans le
 cas du modele de longueur de melange ou du modele k-epsilon :
 1 : lisse;
-2 : rugueux 
+2 : rugueux
 3 : rugueux (compatibilite avec anciennes versions)'
 AIDE1 = 'Defines the turbulence regime for the bottom in the case of a
 k-epsilon or mixing-length model.
 1 : smooth;
-2 : rough 
+2 : rough
 3 : rough also (for compatibility with old versions)'
 
 NOM = 'REGIME DE TURBULENCE POUR LES PAROIS LATERALES'
@@ -399,7 +399,7 @@ CHOIX1 = '0=zero';
 RUBRIQUE = 'PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, VELOCITY-CELERITY-DEPTH'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR")
 IS BRUT (blue)'
 AIDE = 'Tir initial du solveur de l''etape de propagation.
@@ -447,7 +447,7 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, CONVECTION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
@@ -480,7 +480,7 @@ DEFAUT = 5
 DEFAUT1 = 5
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, CONVECTION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
@@ -498,9 +498,9 @@ DEFAUT1 = 0
 RUBRIQUE = ''
 RUBRIQUE1 = ''
 NIVEAU = 1
-AIDE = '0: RIEN   1: FAIT PAR L''UTILISATEUR  
+AIDE = '0: RIEN   1: FAIT PAR L''UTILISATEUR
  2: VIOLLET  3: MUNK ET ANDERSON'
-AIDE1 = '0: NOTHING   1: USER PROGRAMMED  
+AIDE1 = '0: NOTHING   1: USER PROGRAMMED
  2: VIOLLET     3:  MUNK AND ANDERSON'
 
 NOM = 'SCHEMA POUR LA CONVECTION DU K-EPSILON'
@@ -529,7 +529,7 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, CONVECTION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
@@ -548,7 +548,7 @@ DEFAUT = 5
 DEFAUT1 = 5
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, CONVECTION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
@@ -569,13 +569,13 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
 AIDE = 'Prise en compte ou non de la diffusion des vitesses
 avec option sur le schema.'
-AIDE1 = 'Monitors the choice of the diffusion scheme 
+AIDE1 = 'Monitors the choice of the diffusion scheme
 for velocities'
 
 NOM = 'SCHEMA POUR LA DIFFUSION DES TRACEURS'
@@ -594,13 +594,13 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
 AIDE = 'Prise en compte ou non de la diffusion des traceurs
 avec option sur le schema.'
-AIDE1 = 'Monitors the choice of the diffusion scheme 
+AIDE1 = 'Monitors the choice of the diffusion scheme
 for tracers'
 
 NOM = 'LOI DE FROTTEMENT SUR LES PAROIS LATERALES'
@@ -628,20 +628,20 @@ RUBRIQUE1 = 'EQUATIONS';'FRICTION'
 NIVEAU = 1
 AIDE = 'selectionne le type de formulation utilisee pour le calcul
 du frottement sur les parois laterales.
-Les lois possibles sont les suivantes (cf. Note de principe) :  
+Les lois possibles sont les suivantes (cf. Note de principe) :
 0 : pas de frottement , ou AUBOR donne par le fichier des conditions aux limites
-1 :  
-2 :  
-3 :  
-4 :  
+1 :
+2 :
+3 :
+4 :
 5 : formule de NIKURADSE '
 AIDE1 = 'Selects the type of formulation used for the friction on lateral boundaries.
 The possible laws are as follows (refer to the Principle note):
 0: no friction, or AUBOR given by the boundary conditions file ,
-1:  
-2:  
-3:  
-4:  
+1:
+2:
+3:
+4:
 5: NIKURADSE''s formula '
 
 NOM = 'SCHEMA POUR LA DIFFUSION DU K-EPSILON'
@@ -658,13 +658,13 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
 AIDE = 'Prise en compte ou non de la diffusion de k et epsilon
 avec option sur le schema.'
-AIDE1 = 'Monitors the choice of the diffusion scheme 
+AIDE1 = 'Monitors the choice of the diffusion scheme
 for k and epsilon'
 
 NOM = 'PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES'
@@ -700,12 +700,12 @@ CHOIX1 = '0="no preconditioning"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de preconditionner le systeme relatif
 a la diffusion des vitesses.'
-AIDE1 = 'Choice of preconditioning for the diffusion of 
+AIDE1 = 'Choice of preconditioning for the diffusion of
 velocities'
 
 NOM = 'PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS'
@@ -741,7 +741,7 @@ CHOIX1 = '0="no preconditioning"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de preconditionner le systeme relatif
@@ -759,7 +759,7 @@ DEFAUT1 = 60
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'TRACEUR'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'TRACER'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*TRACEUR")
 IS BRUT (brown)'
 AIDE = 'Limite le nombre d''iterations du solveur a chaque pas
@@ -800,7 +800,7 @@ CHOIX1 = '0="no preconditioning"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de preconditionner le systeme relatif
@@ -898,7 +898,7 @@ RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Permet de preconditionner le systeme relatif
 au calcul de la vitesse verticale.'
-AIDE1 = 'Choice of preconditioning for the diffusion of 
+AIDE1 = 'Choice of preconditioning for the diffusion of
 vertical velocity'
 
 NOM = 'SOLVEUR POUR LA DIFFUSION DES VITESSES'
@@ -928,7 +928,7 @@ CHOIX1 = '1="conjugate gradient"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de choisir le solveur utilise pour la resolution de
@@ -962,7 +962,7 @@ CHOIX1 = '1="conjugate gradient"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de choisir le solveur utilise pour la resolution de
@@ -1010,7 +1010,7 @@ CHOIX1 = '1="conjugate gradient"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Permet de choisir le solveur utilise pour la resolution de
@@ -1106,7 +1106,7 @@ DEFAUT1 = 60
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'TRACEUR'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'TRACER'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*TRACEUR")
 IS BRUT (brown)'
 AIDE = 'Limite le nombre d''iterations du solveur a chaque pas
@@ -1139,7 +1139,7 @@ DEFAUT1 = 200
 RUBRIQUE = 'PARAMETRES NUMERIQUES, MODELE K-EPSILON'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, K-EPSILON MODEL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES, MODELE K-EPSILON")
 IS BRUT (blue)'
 AIDE = 'Fixe le nombre maximum d''iterations accepte lors de la
@@ -1158,7 +1158,7 @@ DEFAUT1 = 200
 RUBRIQUE = 'EQUATIONS';'PROPAGATION'
 RUBRIQUE1 = 'EQUATIONS';'PROPAGATION'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS*PROPAGATION")
 IS BRUT (blue)'
 AIDE = 'Les algorithmes utilises pour la resolution de l''etape de
@@ -1201,7 +1201,7 @@ NIVEAU = 1
 AIDE = 'nombre de processeurs pour la decomposition en parallele'
 AIDE1 = 'number of processors for domain decomposition'
 
-NOM = 'PARTITIONNEUR' 
+NOM = 'PARTITIONNEUR'
 NOM1 = 'PARTITIONING TOOL'
 TYPE = CARACTERE
 INDEX = 101
@@ -1399,7 +1399,7 @@ DEFAUT1 = 0.
 RUBRIQUE = 'EQUATIONS';'VENT';'VALEURS NUMERIQUES'
 RUBRIQUE1 = 'EQUATIONS';'WIND';'NUMERICS VALUES'
 NIVEAU = 1
-AIDE = 'Composante de la vitesse du vent suivant 
+AIDE = 'Composante de la vitesse du vent suivant
 l''axe des x (m/s), si constante.'
 AIDE1 = 'Wind velocity, component along x axis (m/s), if constant.'
 
@@ -1414,7 +1414,7 @@ DEFAUT1 = 0.
 RUBRIQUE = 'EQUATIONS';'VENT';'VALEURS NUMERIQUES'
 RUBRIQUE1 = 'EQUATIONS';'WIND';'NUMERICS VALUES'
 NIVEAU = 1
-AIDE = 'Composante de la vitesse du vent suivant 
+AIDE = 'Composante de la vitesse du vent suivant
 l''axe des y (m/s), si constante.'
 AIDE1 = 'Wind velocity, component along y axis (m/s), if constant.'
 
@@ -1560,7 +1560,7 @@ la valeur du coefficient de diffusion de viscosite globale (dynamique +
 turbulente). Cette valeur peut avoir une influence non negligeable sur
 la forme et la taille des recirculations.'
 AIDE1 = 'Sets, in an even way for the whole domain, the value of the
-coefficient of global (dynamic+turbulent) viscosity 
+coefficient of global (dynamic+turbulent) viscosity
 for the horizontal direction. This value may
 have a significant effect both on the shapes and sizes of
 recirculation zones.'
@@ -1607,7 +1607,7 @@ AIDE = 'Fixe la valeur du coefficient de diffusion horizontal du traceur.
 L''influence de ce parametre sur l''evolution du traceur dans
 le temps est importante.'
 AIDE1 = 'Sets the value of the horizontal diffusion of tracers.
-This value may have a significant effect on the evolution of 
+This value may have a significant effect on the evolution of
 tracers in time.'
 
 NOM = 'COEFFICIENT DE DIFFUSION VERTICAL DES TRACEURS'
@@ -1628,7 +1628,7 @@ AIDE = 'Fixe la valeur du coefficient de diffusion vertical du traceur.
 L''influence de ce parametre sur l''evolution du traceur dans
 le temps est importante.'
 AIDE1 = 'Sets the value of the vertical diffusion of tracers.
-This value may have a significant effect on the evolution of 
+This value may have a significant effect on the evolution of
 tracers in time.'
 
 NOM = 'VALEURS INITIALES DES TRACEURS'
@@ -1656,7 +1656,7 @@ RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la diffusion
 des traceurs.'
-AIDE1 = 'Sets the accuracy needed for the computation of the 
+AIDE1 = 'Sets the accuracy needed for the computation of the
 diffusion of the sediment.'
 
 NOM = 'PRECISION POUR LA DIFFUSION DES VITESSES'
@@ -1672,7 +1672,7 @@ RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la diffusion
 de la vitesse.'
-AIDE1 = 'Sets the accuracy needed for the computation of the 
+AIDE1 = 'Sets the accuracy needed for the computation of the
 diffusion of the velocities.'
 
 NOM = 'PRECISION POUR LA DIFFUSION DES TRACEURS'
@@ -1688,7 +1688,7 @@ RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la diffusion
 des traceurs.'
-AIDE1 = 'Sets the accuracy needed for the computation of 
+AIDE1 = 'Sets the accuracy needed for the computation of
 the diffusion of the tracers.'
 
 NOM = 'SEUIL POUR CORRECTION DE VISCOSITE SUR BANCS DECOUVRANTS'
@@ -1737,7 +1737,7 @@ RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la diffusion
 du k-epsilon.'
-AIDE1 = 'Sets the accuracy needed for the computation of the 
+AIDE1 = 'Sets the accuracy needed for the computation of the
 diffusion of the k-epsilon model.'
 
 NOM = 'PRECISION POUR LA PROPAGATION'
@@ -1752,7 +1752,7 @@ RUBRIQUE = 'EQUATIONS';'PROPAGATION'
 RUBRIQUE1 = 'EQUATIONS';'PROPAGATION'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour l''etape de propagation.'
-AIDE1 = 'Sets the accuracy needed for the computation 
+AIDE1 = 'Sets the accuracy needed for the computation
 of the propagation step.'
 
 NOM = 'PRECISION POUR LA VITESSE VERTICALE'
@@ -1768,7 +1768,7 @@ RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la vitesse
 verticale.'
-AIDE1 = 'Sets the accuracy needed for the computation 
+AIDE1 = 'Sets the accuracy needed for the computation
 of the vertical velocity.'
 
 NOM = 'IMPLICITATION POUR LA HAUTEUR'
@@ -1803,8 +1803,8 @@ NIVEAU = 1
 AIDE = 'Fixe la valeur du coefficient d''implicitation sur la vitesse
 dans l''etape de propagation (cf.  Note de principe).
 Les valeurs inferieures a 0.5 donnent un schema instable.'
-AIDE1 = 'Sets the value of the implicitation coefficient 
-for the velocity 
+AIDE1 = 'Sets the value of the implicitation coefficient
+for the velocity
 in the propagation step (cf. Principe note).
 The values lower than 0.5 give an instable scheme.'
 
@@ -1829,12 +1829,12 @@ importantes et de le rendre egalement beaucoup plus stable. Cependant
 les solutions obtenues se trouvent lissees.
 Ce parametre fixe le taux de mass-lumping effectue sur H.
 Utilisation deconseillee.'
-AIDE1 = 'TELEMAC offers the posibility to perform mass-lumping 
+AIDE1 = 'TELEMAC offers the posibility to perform mass-lumping
 on H or U.
 This gathers all or part (given the value of the coefficient)
-of the AM1(H) or AM2(Ut) and AM3(V) matrices on their 
+of the AM1(H) or AM2(Ut) and AM3(V) matrices on their
 diagonal.
-This technique can speed-up the code a lot and also render it 
+This technique can speed-up the code a lot and also render it
 more stable.
 Yet, the solutions are smoothened.
 This parameter sets the mass-lumping amount done for H.
@@ -1866,7 +1866,7 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Fixe le debit sur les frontieres a debit impose'
-AIDE1 = 'Sets the value for flow rate on flow 
+AIDE1 = 'Sets the value for flow rate on flow
 rate-imposed boundaries'
 
 NOM = 'COTES IMPOSEES'
@@ -2071,7 +2071,7 @@ CHOIX = 'U="vitesse moyenne suivant l''axe des x (m/s)"';
         'QSX="debit solide suivant x (m2/s)"';
         'QSY="debit solide suivant y (m2/s)"';
         'US="vitesse de frottement (m/s)"';
-        'MAXZ="valeur maximum de la cote de 
+        'MAXZ="valeur maximum de la cote de
                l eau au cours du calcul (m)"';
         'TMXZ="temps correspondant a ce niveau maximum (s)"'
 CHOIX1 = 'U="depth averaged velocity along x axis (m/s)"';
@@ -2094,7 +2094,7 @@ CHOIX1 = 'U="depth averaged velocity along x axis (m/s)"';
         'HD="thickness of the sediment bed layer (m)"';
         'EF="erosion rate (kg/m3/s)"';
         'DF="deposition flux (kg/m3/s)"';
-        'DZF=" evolution du lit"';  
+        'DZF=" evolution du lit"';
         'PRIVE1="work array PRIVE 1"';
         'PRIVE2="work array PRIVE 2"';
         'PRIVE3="work array PRIVE 3"';
@@ -2103,7 +2103,7 @@ CHOIX1 = 'U="depth averaged velocity along x axis (m/s)"';
         'QSX="solid discharge along x (m2/s)"';
         'QSY="solid discharge along y (m2/s)"';
         'US="friction velocity (m/s)"';
-        'MAXZ="maximum value of the free surface 
+        'MAXZ="maximum value of the free surface
                elevation during the computation (m)"';
         'TMXZ="time corresponding to this maximum elevation (s)"'
 RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
@@ -2170,7 +2170,7 @@ possibilities are the following:
         PRIVE3="work array PRIVE 3"
         PRIVE4="work array PRIVE 4"
         US="friction velocity (m/s)"
-        MAXZ="maximum value of the free surface 
+        MAXZ="maximum value of the free surface
               elevation during the computation (m)"
         TMXZ="time corresponding to this maximum elevation (s)"'
 
@@ -2185,7 +2185,7 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
 NIVEAU = 2
-COMPORT = 
+COMPORT =
 'Foreground ("ENTREES-SORTIES, GENERALITES*ENVIRONNEMENT")
 IS BRUT (red)'
 AIDE = 'Userid CRAY de l''utilisateur.'
@@ -2424,10 +2424,10 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Nom du fichier dans lequel seront ecrits les resultats 2D du 
-calcul avec la periodicite donnee par le mot cle ''PERIODE 
+AIDE = 'Nom du fichier dans lequel seront ecrits les resultats 2D du
+calcul avec la periodicite donnee par le mot cle ''PERIODE
 POUR LES SORTIES GRAPHIQUES''.'
-AIDE1 = 'Name of the file into which the 2D results of the computation 
+AIDE1 = 'Name of the file into which the 2D results of the computation
 are written with a period given by the keyword GRAPHIC PRINTOUT PERIOD.'
 
 NOM = 'FICHIER DE DONNEES FORMATE 1'
@@ -2477,7 +2477,7 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur. Format Selafin, utilise en cas de suite 2D'
-AIDE1 = 'Data file in binary mode, Selafin format, 
+AIDE1 = 'Data file in binary mode, Selafin format,
 used in case of 2D continuation'
 
 NOM = 'FICHIER DE DONNEES BINAIRE 2'
@@ -2533,7 +2533,7 @@ CHOIX1 = 'STD';
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
 NIVEAU = 3
-COMPORT = 
+COMPORT =
 'Foreground ("ENTREES-SORTIES, FICHIERS*TYPE DU BINAIRE")
 IS BRUT (red)'
 AIDE = 'Type du binaire utilise pour l''ecriture du fichier
@@ -2679,7 +2679,7 @@ DEFAUT1 = YES
 RUBRIQUE = 'EQUATIONS, CONVECTION'
 RUBRIQUE1 = 'EQUATIONS, ADVECTION'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, CONVECTION")
 IS BRUT (brown)'
 AIDE = 'Prise en compte ou non des termes de convection.
@@ -2701,7 +2701,7 @@ DEFAUT1 = YES
 RUBRIQUE = 'EQUATIONS, DIFFUSION'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION")
 IS BRUT (brown)'
 AIDE = 'Prise en compte ou non des termes de diffusion.
@@ -2723,7 +2723,7 @@ DEFAUT1 = YES
 RUBRIQUE = 'EQUATIONS, PROPAGATION'
 RUBRIQUE1 = 'EQUATIONS, PROPAGATION'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, PROPAGATION")
 IS BRUT (brown)'
 AIDE = 'Prise en compte ou non des termes de propagation.
@@ -2741,7 +2741,7 @@ DEFAUT = NON
 DEFAUT1 = NO
 RUBRIQUE = 'EQUATIONS';'CORIOLIS'
 RUBRIQUE1 = 'EQUATIONS';'CORIOLIS'
-COMPORT = 
+COMPORT =
 'Affichage ("EQUATIONS*CORIOLIS")
 IS VALEUR ()';
 'Foreground ("EQUATIONS*CORIOLIS")
@@ -2799,7 +2799,7 @@ DEFAUT1 = NO
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = -13
-COMPORT = 
+COMPORT =
 'Foreground ("SEDIMENT")
 IS BRUT (darksalmon)'
 AIDE = 'Permet de prendre en compte un sediment.'
@@ -2885,7 +2885,7 @@ RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
 NIVEAU = 1
 AIDE = 'Donne a chaque sortie listing une information sur le bilan de
 masse.'
-AIDE1 = 'Gives the information about mass-balance 
+AIDE1 = 'Gives the information about mass-balance
 at every LISTING PRINTOUT.'
 
 NOM = 'PLUIE OU EVAPORATION'
@@ -2901,7 +2901,7 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE  = 'Pour ajouter un apport ou une perte d''eau en surface.
 Voir le mot-cle PLUIE OU EVAPORATION EN MM PAR JOUR'
-AIDE1 = 'Enables to add or remove water at the free surface. 
+AIDE1 = 'Enables to add or remove water at the free surface.
 See the keyword RAIN OR EVAPORATION IN MM PER DAY'
 
 NOM = 'FILTRE LES INCONSISTANCES HYDROSTATIQUES'
@@ -2918,29 +2918,29 @@ NIVEAU = 1
 AIDE = 'permet de filtrer les inconsistances hydrostatiques'
 AIDE1 = 'allows to filter hydrostatic inconsistencies'
 
-NOM = 'COORDONNEES SPHERIQUES' 
-NOM1 = 'SPHERICAL COORDINATES' 
-TYPE = LOGIQUE 
-INDEX = 17 
-MNEMO = 'SPHERI' 
-TAILLE = 0 
-DEFAUT = NON 
-DEFAUT1 = NO 
+NOM = 'COORDONNEES SPHERIQUES'
+NOM1 = 'SPHERICAL COORDINATES'
+TYPE = LOGIQUE
+INDEX = 17
+MNEMO = 'SPHERI'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1 
-AIDE = 'Choix des coordonnees spheriques pour la realisation du calcul 
-( pour les grands domaines de calcul). 
-Attention : cette option est etroitement liee au maillage qui doit avoir 
-ete saisi sur une carte marine en projection de Mercator. 
-Il faut de plus relever sur la carte la LATITUDE DU POINT ORIGINE 
-(autre mot-cle) qui correspond dans le maillage a l''ordonnee y = 0.' 
-AIDE1 = 'Selection of spherical coordinates to perform the computation 
-(for large computation domains). 
-Warning: this option is closely related to the mesh that should have 
-been entered onto a nautical chart drawn as per Mercator projection 
-The LATITUDE OF ORIGIN POINT (another keyword), which corresponds to 
-ordinate y=0 in the mesh, must moreover be given.' 
+NIVEAU = 1
+AIDE = 'Choix des coordonnees spheriques pour la realisation du calcul
+( pour les grands domaines de calcul).
+Attention : cette option est etroitement liee au maillage qui doit avoir
+ete saisi sur une carte marine en projection de Mercator.
+Il faut de plus relever sur la carte la LATITUDE DU POINT ORIGINE
+(autre mot-cle) qui correspond dans le maillage a l''ordonnee y = 0.'
+AIDE1 = 'Selection of spherical coordinates to perform the computation
+(for large computation domains).
+Warning: this option is closely related to the mesh that should have
+been entered onto a nautical chart drawn as per Mercator projection
+The LATITUDE OF ORIGIN POINT (another keyword), which corresponds to
+ordinate y=0 in the mesh, must moreover be given.'
 
 NOM = 'VALIDATION'
 NOM1 = 'VALIDATION'
@@ -2962,7 +2962,7 @@ AIDE1 = 'This option is primarily used for the validation documents.
 The REFERENCE FILE is then considered as a
 reference which the computation is going to be compared with.
 The comparison is made by the subroutine VALIDA, which can be
-modified 
+modified
 so as to include, for example,a comparison with an exact solution.'
 
 / DEFINITIONS DES MOTS CLES POUR LA SEDIMENTOLOGIE (DEBUTE A L INDEX 51)
@@ -2997,7 +2997,7 @@ RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'Permet de choisir le solveur utilise pour la resolution de
 la diffusion du sediment.'
-AIDE1 = 'Enable to choose the solver to be used when solving the 
+AIDE1 = 'Enable to choose the solver to be used when solving the
 sediment diffusion'
 
 NOM = 'PRECONDITIONNEMENT POUR LA DIFFUSION DU SEDIMENT'
@@ -3035,7 +3035,7 @@ RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'Permet de preconditionner le systeme relatif
 a la diffusion du sediment.'
-AIDE1 = 'Choice of the preconditioning in the sediment diffusion 
+AIDE1 = 'Choice of the preconditioning in the sediment diffusion
 system that the convergence is speeded up when it is being solved.
  0: no preconditioning
  2: diagonal preconditioning
@@ -3072,9 +3072,9 @@ DEFAUT1 = 0.2
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'Fixe la valeur de la contrainte de cisaillement au fond 
+AIDE = 'Fixe la valeur de la contrainte de cisaillement au fond
 au dessous de laquelle se produit le depot.'
-AIDE1 = 'Value of the critical bottom shear stress under which 
+AIDE1 = 'Value of the critical bottom shear stress under which
 deposition occurs.'
 
 / CV
@@ -3091,14 +3091,14 @@ deposition occurs.'
 /RUBRIQUE = 'SEDIMENT'
 /RUBRIQUE1 = 'SEDIMENT'
 /NIVEAU = 1
-/AIDE = 'concentration de la couche tampon ou sont stockes 
+/AIDE = 'concentration de la couche tampon ou sont stockes
 /les depots frais EN KG/M3. Ce parametre n''est pas utilise lorsque'
-/AIDE1 = 'concentration of the mud layer where the fresh deposits 
-/are stocked.The value of this key word is not used 
-/ CFDEP = CONC_VASE(NCOUCH) 
+/AIDE1 = 'concentration of the mud layer where the fresh deposits
+/are stocked.The value of this key word is not used
+/ CFDEP = CONC_VASE(NCOUCH)
 
-/ FOR NON COHESIVE SEDIMENTS USE NOW 
-/ 
+/ FOR NON COHESIVE SEDIMENTS USE NOW
+/
 NOM = 'POROSITE DU LIT NON COHESIF'
 NOM1 = 'NON COHESIVE BED POROSITY'
 TYPE = REEL
@@ -3110,12 +3110,12 @@ DEFAUT1 = 0.4
 RUBRIQUE = 'PHYSIQUE'
 RUBRIQUE1 = 'PHYSICS'
 NIVEAU = 1
-AIDE = 'la concentration massique  du lit (CFDEP) est definie par 
-	CFDEP= (1-porosite)* RHOS
+AIDE = 'la concentration massique  du lit (CFDEP) est definie par
+        CFDEP= (1-porosite)* RHOS
 Ce paramètre est utilisé  pour les sediments non-cohesifs.'
-AIDE1 = 'The bed volume concentration CFDEP=(1-porosity)*RHOS is used to calculate 
+AIDE1 = 'The bed volume concentration CFDEP=(1-porosity)*RHOS is used to calculate
 the bed evolution of non-cohesive sand transport.'
-/ 
+/
 NOM = 'EPAISSEUR DES COUCHES DU FOND VASEUX'
 NOM1 = 'BED LAYERS THICKNESS'
 TYPE = REEL
@@ -3128,18 +3128,18 @@ RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'epaisseur de reference pour creer de nouvelles couches
-de vase.Ce parametre est utilise seulement dans le cas 
-MODELE DE TASSEMENT DE GIBSON = OUI.Avec ce modele, le sediment 
+de vase.Ce parametre est utilise seulement dans le cas
+MODELE DE TASSEMENT DE GIBSON = OUI.Avec ce modele, le sediment
 qui se depose sur le fond est tout d''abord stocke dans une couche
-tampon appelee couche des depots frais. C''est seulement quand 
+tampon appelee couche des depots frais. C''est seulement quand
 l''epaisseur de cette couche atteint la valeur donnee par le mot
-cle EPAISSEUR DES COUCHES DU FOND VASEUX qu''une nouvelle couche 
+cle EPAISSEUR DES COUCHES DU FOND VASEUX qu''une nouvelle couche
 est cree au niveau du lit de vase.'
-AIDE1 = 'reference thickness considered for the creation of new 
-bed layers.This parameter is used if GIBSON CONSOLIDATION 
-MODEL = YES.With this model, the sediment which settles on 
-the bottom arrives at first in the fresh deposit layer. When 
-the thickness of this layer is equal to the BED LAYERS THICKNESS, 
+AIDE1 = 'reference thickness considered for the creation of new
+bed layers.This parameter is used if GIBSON CONSOLIDATION
+MODEL = YES.With this model, the sediment which settles on
+the bottom arrives at first in the fresh deposit layer. When
+the thickness of this layer is equal to the BED LAYERS THICKNESS,
 a new mud layer is added to the mud bed. '
 
 NOM = 'PAS DE TEMPS DE LA CONSOLIDATION'
@@ -3156,10 +3156,10 @@ NIVEAU = 1
 AIDE = 'valeur du pas de temps pour le modele de consolidation qui
 peut etre plus grand que le pas de temps hydrodynamique car le
 phenommene est tres lent.Ce parametre est utilise si
-MODELE DE TASSEMENT DE GIBSON = OUI ou 
+MODELE DE TASSEMENT DE GIBSON = OUI ou
 MODELE DE TASSEMENT MULTICOUCHES = OUI.'
-AIDE1 = 'time step for the modelling consolidation, which can 
-be greater than the hydrodynamic time step. This parameter is 
+AIDE1 = 'time step for the modelling consolidation, which can
+be greater than the hydrodynamic time step. This parameter is
 used if GIBSON CONSOLIDATION MODEL = YES or MULTILAYER MODEL = YES.'
 
 NOM = 'CONCENTRATION MAXIMUM DE LA VASE TASSEE'
@@ -3177,7 +3177,7 @@ AIDE = 'concentration maximale pouvant etre atteinte par une couche
 de vase lors du tassement.
 Ce parametre est utilise si MODELE DE TASSEMENT DE GIBSON = OUI .'
 AIDE1 = 'maximum concentration which may be reached by a mud layer
-during consolidation. 
+during consolidation.
 This value is used if GIBSON CONSOLIDATION MODEL = YES.'
 
 NOM = 'COEFFICIENT D''EROSION'
@@ -3193,7 +3193,7 @@ RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'valeur du coefficient d''erosion utilise dans la formule
 de Partheniades en Kg/m2/s'
-AIDE1 = 'value of the erosion coefficient used in Partheniades 
+AIDE1 = 'value of the erosion coefficient used in Partheniades
 formula in Kg/m/s'
 
 
@@ -3212,7 +3212,7 @@ AIDE = 'Vitesse de chute constant en m/s(>0 since 6.3).
 Valeur imposee si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
 DE CHUTE = NON.'
 AIDE1 = 'Constant sediment settling velocity in m/s(>0 since 6.3)
-Value to imposed if 
+Value to imposed if
 INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = NO.'
 
 NOM = 'TEMPS DE SEJOUR DE LA VASE'
@@ -3229,8 +3229,8 @@ relatifs a chacune des couches discretisant le fond vaseux
 (la premiere valeur correspond a la couche du fond et la derniere
 correspond a la couche superficielle)
 Valeurs necessaires si MODELE DE TASSEMENT MULTICOUCHES = OUI.'
-AIDE1 = 'ARRAY which contains the residence times of the mud bed 
-layers (the first values is related to the bottom layer and the 
+AIDE1 = 'ARRAY which contains the residence times of the mud bed
+layers (the first values is related to the bottom layer and the
 last one to the top layer).
 These values are needed when MULTILAYER CONSOLIDATION MODEL = YES'
 
@@ -3251,7 +3251,7 @@ decrivant le fond vaseux (epaisseurs et concentrations..)
 avec la periodicite donnee par le mot cle ''PERIODE POUR LES SORTIES
 GRAPHIQUES''.'
 AIDE1 = 'Name of the file into which the sedimentological computation
-results (thickness and concentration of the mud bed...) shall be 
+results (thickness and concentration of the mud bed...) shall be
 written,the periodicity being given by the key-word:
 GRAPHIC PRINTOUT PERIOD.'
 
@@ -3272,8 +3272,8 @@ decrivant le fond vaseux ,resultats d''un calcul precedent realise
 sur le meme maillage et dont le dernier pas de temps enregistre
 va fournir les conditions initiales pour une suite de de calcul.'
 AIDE1 = 'Name of a file containing the sedimentological parameters
-(thickness and concentration of the bed...),results of an earlier 
-computation which was made on the same mesh. The last recorded time 
+(thickness and concentration of the bed...),results of an earlier
+computation which was made on the same mesh. The last recorded time
 step will providthe initial conditions for the new computation.'
 
 NOM = 'BINAIRE DU FICHIER DES RESULTATS SEDIMENTOLOGIQUES'
@@ -3433,7 +3433,7 @@ CHOIX1 = '0="no preconditioning"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Preconditionnement pour l equation de Poisson'
@@ -3466,7 +3466,7 @@ CHOIX1 = '1="conjugate gradient"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'solveur pour l equation de Poisson'
@@ -3576,7 +3576,7 @@ CHOIX1 = '0="no preconditioning"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Preconditionnement pour la projection'
@@ -3609,7 +3609,7 @@ CHOIX1 = '1="conjugate gradient"';
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
 IS BRUT (brown)'
 AIDE = 'Solveur pour la projection'
@@ -3643,22 +3643,22 @@ NIVEAU = 1
 AIDE  = 'Dimension de l''espace de Krylov pour la methode GMRES (7)'
 AIDE1 = 'Dimension of Krylov space for the GMRES method (7)'
 
-NOM = 'ENREGISTREMENT POUR SUITE DE CALCUL' 
-NOM1 = 'RECORD NUMBER FOR RESTART' 
-TYPE = ENTIER 
-INDEX = 82 
-MNEMO = 'START_RECORD' 
+NOM = 'ENREGISTREMENT POUR SUITE DE CALCUL'
+NOM1 = 'RECORD NUMBER FOR RESTART'
+TYPE = ENTIER
+INDEX = 82
+MNEMO = 'START_RECORD'
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = 1 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 1
 AIDE = 'En cas de suite de calcul, numero de l''enregistrement
 de depart dans le fichier du calcul precedent. 0 signifie
-que l''on prend le dernier enregistrement' 
+que l''on prend le dernier enregistrement'
 AIDE1 ='In case of COMPUTATION CONTINUED, record number to
-start from in the PREVIOUS COMPUTATION FILE' 
+start from in the PREVIOUS COMPUTATION FILE'
 
 NOM = 'OPTION DU SOLVEUR POUR LA PROJECTION'
 NOM1 = 'OPTION OF SOLVER FOR PROJECTION'
@@ -3715,7 +3715,7 @@ RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
 AIDE = 'Permet de specifier la composante selon z de la vitesse aux sources.
-Si rien n est specifie, les sources diffusent sans vitesse 
+Si rien n est specifie, les sources diffusent sans vitesse
 dans toutes les directions (cf. cas de validation 004_source).'
 AIDE1 = 'Specifies the compoment along z of the velocities of the sources.
 If nothing is specified, the sources diffuse without any velocity
@@ -3763,9 +3763,9 @@ NIVEAU = 1
 COMPORT =
 'Foreground ("CONSTANTES PHYSIQUES")
 IS BRUT (brown)'
-AIDE = 'latitude en degres ou les coefficients de Coriolis 
+AIDE = 'latitude en degres ou les coefficients de Coriolis
 sont calcules'
-AIDE1 = 'The latitude in degrees for which the both Coriolis 
+AIDE1 = 'The latitude in degrees for which the both Coriolis
 coefficients are computed.'
 
 NOM = 'ECHELLE DE LONGUEUR DE MELANGE'
@@ -3796,7 +3796,7 @@ DEFAUT1 = NO
 RUBRIQUE = 'EQUATIONS'
 RUBRIQUE1 = 'EQUATIONS'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS")
 IS BRUT (brown)'
 AIDE = 'Utilisation de la version non-hydrostatique'
@@ -3828,7 +3828,7 @@ DEFAUT1 = NO
 RUBRIQUE = 'EQUATIONS'
 RUBRIQUE1 = 'EQUATIONS'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS")
 IS BRUT (brown)'
 AIDE = 'etape de projection realisee en resolvant 3 eq. lin.'
@@ -3845,10 +3845,10 @@ DEFAUT1 = NO
 RUBRIQUE = 'EQUATIONS'
 RUBRIQUE1 = 'EQUATIONS'
 NIVEAU = 1
-COMPORT = 
+COMPORT =
 'Foreground ("EQUATIONS")
 IS BRUT (brown)'
-AIDE = 'Utilise un resultat 2D stocke dans le 
+AIDE = 'Utilise un resultat 2D stocke dans le
  FICHIER POUR SUITE 2D
  comme fichier de conditions initiales'
 AIDE1 = 'Uses a 2D results file in FILE FOR 2D CONTINUATION
@@ -3901,7 +3901,7 @@ RUBRIQUE1 = 'EQUATIONS';'FRICTION'
 NIVEAU = 1
 AIDE = 'selectionne le type de formulation utilisee pour le calcul
 du frottement sur le fond.
-Les lois possibles sont les suivantes (cf. Note de principe) :  
+Les lois possibles sont les suivantes (cf. Note de principe) :
 0 : pas de frottement sur le fond
 1 : formule de Haaland
 2 : formule de Chezy
@@ -3917,7 +3917,7 @@ The possible laws are as follows (refer to the Principle note):
 4: MANNING''s formula
 5: NIKURADSE''s formula '
 
-/ AJOUT SOGREAH 
+/ AJOUT SOGREAH
 
 NOM = 'MODELE DE TURBULENCE HORIZONTAL'
 NOM1 = 'HORIZONTAL TURBULENCE MODEL'
@@ -3950,7 +3950,7 @@ Si on choisit l''option 3,
 ce meme parametre doit retrouver sa vraie valeur physique car elle est
 utilisee comme telle dans le modele de turbulence'
 AIDE1 = 'Four choices available.
-Beware: if option 1 chosen, give the right 
+Beware: if option 1 chosen, give the right
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
 If option 3 ou 7 is chosen, this parameter must get its real physical
 value of molecular diffusivity, generally about 1.E-6.'
@@ -4018,7 +4018,7 @@ DEFAUT1 = 0.E0
 RUBRIQUE = 'EQUATIONS';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
-AIDE = 'ANGLE QUE FAIT LE NORD, 
+AIDE = 'ANGLE QUE FAIT LE NORD,
 DANS LE SENS TRIGONOMETRIQUE, AVEC L AXE OY'
 AIDE1 = 'ANGLE OF NORTH, COUNTED COUNTER-CLOCKWISE, WITH OY'
 
@@ -4085,11 +4085,11 @@ TAILLE = 2
 RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
-AIDE = 'Fixe la valeur des traceurs aux sources 
+AIDE = 'Fixe la valeur des traceurs aux sources
 toutes les sources pour le premier traceur
 puis toutes les sources du deuxieme traceur, etc.
 (cf. manuel de reference).'
-AIDE1 = 'Sets the value of the tracers at the sources 
+AIDE1 = 'Sets the value of the tracers at the sources
 all sources for first tracer, then
 all sources for second tracer, etc.
 (see reference manual).'
@@ -4116,7 +4116,7 @@ RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
 AIDE = 'Permet de specifier la composante selon x de la vitesse aux sources.
-Si rien n est specifie, les sources diffusent sans vitesse 
+Si rien n est specifie, les sources diffusent sans vitesse
 dans toutes les directions (cf. cas de validation 004_source).'
 AIDE1 = 'Specifies the compoment along x of the velocities of the sources.
 If nothing is specified, the sources diffuse without any velocity
@@ -4132,7 +4132,7 @@ RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
 AIDE = 'Permet de specifier la composante selon y de la vitesse aux sources.
-Si rien n est specifie, les sources diffusent sans vitesse 
+Si rien n est specifie, les sources diffusent sans vitesse
 dans toutes les directions (cf. cas de validation 004_source).'
 AIDE1 = 'Specifies the compoment along y of the velocities of the sources.
 If nothing is specified, the sources diffuse without any velocity
@@ -4188,8 +4188,8 @@ AIDE = 'premier entier 1: systeme st-venant tronque
                        2: systeme st-venant complet
         deuxieme entier 1: Equations primitives
                         2: Equation d onde'
-AIDE1 = 'first integer 1: partial st-venant system 
-                       2: complete st-venant system 
+AIDE1 = 'first integer 1: partial st-venant system
+                       2: complete st-venant system
        second integer  1: primitive equations
                        2: wave equation'
 
@@ -4205,7 +4205,7 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = '0 : rien   1 : fonction de T   2 : fonction de la salinite
-        3 : fonction de temperature et salinite 
+        3 : fonction de temperature et salinite
         4 : beta donne'
 AIDE1 = '0 : nothing   1 : function of T   2 : function of salinity
          3 : function of temperature and salinity   4 : beta given'
@@ -4226,7 +4226,7 @@ NIVEAU = 1
 AIDE = 'Fichier de variations en temps des conditions aux limites.
 Les donnees de ce fichier seront a lire sur le canal 12.'
 AIDE1 = 'Variations in time of boundary conditions. Data of this file are read
-on channel 12.' 
+on channel 12.'
 
 NOM = 'CONDITIONS INITIALES'
 NOM1 = 'INITIAL CONDITIONS'
@@ -4351,7 +4351,7 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Permet de fixer la date d''origine des temps du modele lors
-de la prise en compte de la force generatrice de la maree 
+de la prise en compte de la force generatrice de la maree
 et/ou les conditions aux limites de maree.'
 AIDE1 ='Gives the date of the time origin of the model when taking into
 account the tide generating force and/or the tidal boundary conditions.'
@@ -4371,7 +4371,7 @@ AIDE = 'Permet de fixer l''heure d''origine des temps du modele lors
 de la prise en compte de la force generatrice de la maree
 et/ou les conditions aux limites de maree.'
 AIDE1 ='Give the time of the time origin of the model when taking into
-account of the tide generator force and/or the 
+account of the tide generator force and/or the
 tidal boundary conditions.'
 /
 /
@@ -4458,19 +4458,19 @@ AIDE = 'Liste des codes avec lesquels on couple TELEMAC-3D
 AIDE1 = 'List of codes to be coupled with TELEMAC-3D
         SISYPHE : internal coupling with Sisyphe
         TOMAWAC : internal coupling with Tomawac
-        DELWAQ: will yield results file for Delwaq' 
+        DELWAQ: will yield results file for Delwaq'
 /
 NOM = 'DIAMETRE MOYEN DES GRAINS'
 NOM1 = 'MEAN DIAMETER OF THE SEDIMENT'
 TYPE = REEL
 INDEX = 91
 MNEMO = 'D50'
-TAILLE = 1 
+TAILLE = 1
 DEFAUT = .01
 DEFAUT1 = .01
 RUBRIQUE = 'PARAMETER FOR BED MATERIAL'
 RUBRIQUE1 = 'PARAMETER FOR BED MATERIAL'
-NIVEAU = 1  
+NIVEAU = 1
 AIDE = 'Sets value of diameter d50 for particular size class.'
 AIDE1 = 'Sets value of diameter d50 for particular size class.'
 /
@@ -4513,12 +4513,12 @@ NOM1 = 'MASS-LUMPING FOR DIFFUSION'
 TYPE = REEL
 INDEX = 92
 MNEMO = 'AGGLOD'
-TAILLE = 1 
+TAILLE = 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1  
+NIVEAU = 1
 AIDE = 'Mass-lumping de la matrice de masse dans la diffusion'
 AIDE1 = 'Mass-lumping of the mass-matrix in the diffusion step'
 /
@@ -4564,7 +4564,7 @@ DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = '0:utilisateur (routine CALCOT a programmer) 
+AIDE = '0:utilisateur (routine CALCOT a programmer)
         1:sigma  2:zstar 3:plans fixes 5: adaptatif
         ce mot-clef doit etre coherent avec condim.f'
 AIDE1= '0:user defined (then routine CALCOT to be implemented)
@@ -4588,7 +4588,7 @@ CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES'
 RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
 NIVEAU = 1
-AIDE = 'Utilise pour les schemas SUPG, PSI et N, avec option 2, 
+AIDE = 'Utilise pour les schemas SUPG, PSI et N, avec option 2,
 on ne retrouve
 pas exactement les valeurs imposees des traceurs,
 mais le flux est correct'
@@ -4627,7 +4627,7 @@ RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
 NIVEAU = 1
 AIDE = '0=Programmation utilisateur 1=Constant 2=Rouse equilibrium conc
 3 = Rouse (normalized) and imposed conc'
-AIDE1= '0=User defined 1=Constant 2=Rouse equilibrium 
+AIDE1= '0=User defined 1=Constant 2=Rouse equilibrium
 3 = Rouse (normalized)'
 /
 NOM = 'OPTION DE SUPG'
@@ -4714,7 +4714,7 @@ DEFAUT1 = NO
 RUBRIQUE = 'EQUATIONS'
 RUBRIQUE1 = 'EQUATIONS'
 NIVEAU = 1
-AIDE = 'Gradient de pression dynamique estimee prise 
+AIDE = 'Gradient de pression dynamique estimee prise
 en compte dans l''equation d''onde'
 AIDE1 = 'Gradient of an estimated pressure gradient taken into account
 in the wave equation'
@@ -4747,7 +4747,7 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE  = 'Pour ajouter un apport ou une perte d''eau en surface.'
-AIDE1 = 'Specifies the amount of water to add or remove at the 
+AIDE1 = 'Specifies the amount of water to add or remove at the
 free surface.'
 /
 NOM = 'RATIO ENTRE LA RUGOSITE DE PEAU ET LE DIAMETRE MOYEN'
@@ -4766,7 +4766,7 @@ AIDE1 = ' Ratio for the computation of skin friction.
 skin roughness = ratio * mean diameter'
 /
 NOM = 'PARAMETRE DE SHIELDS'
-NOM1 = 'SHIELDS PARAMETER'            
+NOM1 = 'SHIELDS PARAMETER'
 TYPE = REEL
 INDEX = 97
 MNEMO = 'AC'
@@ -4985,7 +4985,7 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'CONTROL'
 NIVEAU = 2
 AIDE = 'Valeurs en metres, utilise pour eviter les trops grands nombres, transmis
 dans le format Selafin mais pas d''autre traitement pour l''instant'
-AIDE1 = 'Values in metres, used to avoid large real numbers, 
+AIDE1 = 'Values in metres, used to avoid large real numbers,
 added in Selafin format, but so far no other treatment'
 /
 /---------------------------------------------------------------------
@@ -5166,7 +5166,7 @@ RUBRIQUE = 'EQUATIONS';'VENT';'VALEURS NUMERIQUES'
 RUBRIQUE1 = 'EQUATIONS';'WIND';'NUMERICS VALUES'
 NIVEAU = 1
 AIDE = 'Retire la force due au vent dans les petites profondeurs'
-AIDE1 = 'Wind is not taken into account for depths smaller 
+AIDE1 = 'Wind is not taken into account for depths smaller
 than this value.'
 
 NOM = 'COURANTS DE HOULE'
@@ -5213,12 +5213,12 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de geometrie.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Geometry file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5235,11 +5235,11 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de resultats 2D.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = '2D results file format. Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5256,11 +5256,11 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de resultats 3D.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = '3D results file format. Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5277,12 +5277,12 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de resultats du calcul precedent.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5299,12 +5299,12 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de resultats du calcul precedent.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5321,12 +5321,12 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de resultats du calcul precedent.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
@@ -5361,7 +5361,7 @@ AIDE= 'Accelere les schemas de convection distributifs et volumes finis
 en cas de bancs decouvrants ou de transformation sigma generalisee'
 AIDE1 = 'Will speed-up distributive and finite volumes advection
 schemes in case if tidal flats or generalised sigma transformation'
- 
+
 NOM  = 'VITESSE PROJETEE SUR LES PAROIS LATERALES SOLIDES'
 NOM1 = 'VELOCITY PROJECTED ON SOLID LATERAL BOUNDARIES'
 TYPE = LOGIQUE
@@ -5373,9 +5373,9 @@ DEFAUT1 = YES
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE= 'U.N = 0 sur les parois laterales solides est force 
+AIDE= 'U.N = 0 sur les parois laterales solides est force
 en fin de boucle en temps'
-AIDE1 = 'Will ensure U.N = 0 on solid lateral boundaries by a projection 
+AIDE1 = 'Will ensure U.N = 0 on solid lateral boundaries by a projection
 at the end of time loop'
 
 NOM  = 'VITESSE PROJETEE SUR LE FOND'
@@ -5390,13 +5390,13 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE= 'U.N = 0 sur le fond est force en fin de boucle en temps'
-AIDE1 = 'Will ensure U.N = 0 on bottom by a projection 
+AIDE1 = 'Will ensure U.N = 0 on bottom by a projection
 at the end of time loop'
 /
 /  V6P1
 /
 NOM = 'CORRECTION FROTTEMENT DE PEAU'
-NOM1 = 'SKIN FRICTION CORRECTION'     
+NOM1 = 'SKIN FRICTION CORRECTION'
 TYPE = ENTIER
 INDEX = 107
 MNEMO = 'ICR'
@@ -5405,32 +5405,32 @@ DEFAUT1 = 0
 RUBRIQUE = 'FROTTEMENT'
 RUBRIQUE1 = 'FRICTION'
 NIVEAU = 2
-AIDE = 'prise en compte du frottement de peau 
+AIDE = 'prise en compte du frottement de peau
        0 : pas de correction (TAUP= TOB)   voir aussi KSPRATIO
        1 : fond plat (KSP= KSPRATIO * D50)
        2 : prise en compte des rides (non programme)'
-AIDE1= 'formula to predict the skin bed roughness 
+AIDE1= 'formula to predict the skin bed roughness
        0: NO correction (TAUP= TOB)  see also KSPRATIO
        1: Flat bed (KSP= KSPRATIO * D50)
-       2: Ripple correction factor (not yet implemented)' 
-       
-NOM = 'FORMULE POUR LA CONCENTRATION DE REFERENCE' 
-NOM1 = 'REFERENCE CONCENTRATION FORMULA' 
-TYPE = ENTIER 
+       2: Ripple correction factor (not yet implemented)'
+
+NOM = 'FORMULE POUR LA CONCENTRATION DE REFERENCE'
+NOM1 = 'REFERENCE CONCENTRATION FORMULA'
+TYPE = ENTIER
 INDEX = 108
-MNEMO = 'ICQ' 
+MNEMO = 'ICQ'
 DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
-NIVEAU = 2 
-AIDE = '1 : formule de Zyserman et Fredsoe 
-        2 :    
-        3 : formule de Van Rijn (1987)'        
+NIVEAU = 2
+AIDE = '1 : formule de Zyserman et Fredsoe
+        2 :
+        3 : formule de Van Rijn (1987)'
 AIDE1 = '1: Zysderman and Fredsoe, equilibrium formula
-         2: 
+         2:
          3: Van Rijn formula'
-       
+
 NOM = 'FICHIER DES PARAMETRES DE TOMAWAC'
 NOM1 = 'TOMAWAC STEERING FILE'
 TYPE = CARACTERE
@@ -5443,73 +5443,73 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Fichier des parametres de TOMAWAC en cas de couplage interne.'
 AIDE1 = 'TOMAWAC parameter file in case of internal coupling.'
- 
-NOM = 'FICHIER DE COMMANDES HYDROCARBURES' 
-NOM1 = 'OIL SPILL STEERING FILE' 
-TYPE = CARACTERE 
+
+NOM = 'FICHIER DE COMMANDES HYDROCARBURES'
+NOM1 = 'OIL SPILL STEERING FILE'
+TYPE = CARACTERE
 INDEX = 57
-MNEMO = 'T3D_FILES(T3DMIG)' 
-SUBMIT = 'NMIG-READ-09;T3DMIG;FACUL;ASC;LIT;PARAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Contient les donnees pour le modele de derive de nappes' 
-AIDE1 = 'Contains data for the oil spill model' 
- 
-NOM = 'MODELE DE NAPPES D''HYDROCARBURES' 
-NOM1 = 'OIL SPILL MODEL' 
-TYPE = LOGIQUE 
-INDEX = 85 
-MNEMO = 'SPILL_MODEL' 
-TAILLE = 0 
-DEFAUT = NON 
-DEFAUT1 =  NO 
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CONTROLE' 
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'CONTROL' 
-NIVEAU = 1 
-AIDE = 'POUR DECLENCHER LE MODELE DE DERIVE DE NAPPES, DANS 
-CE CAS LE FICHIER DE COMMANDES MIGRHYCAR EST NECESSAIRE' 
-AIDE1 = 'WILL TRIGGER THE OIL SPILL MODEL, IN THIS CASE 
-THE MIGRHYCAR STEERING FILE IS NEEDED' 
+MNEMO = 'T3D_FILES(T3DMIG)'
+SUBMIT = 'NMIG-READ-09;T3DMIG;FACUL;ASC;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Contient les donnees pour le modele de derive de nappes'
+AIDE1 = 'Contains data for the oil spill model'
+
+NOM = 'MODELE DE NAPPES D''HYDROCARBURES'
+NOM1 = 'OIL SPILL MODEL'
+TYPE = LOGIQUE
+INDEX = 85
+MNEMO = 'SPILL_MODEL'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 =  NO
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CONTROLE'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'CONTROL'
+NIVEAU = 1
+AIDE = 'POUR DECLENCHER LE MODELE DE DERIVE DE NAPPES, DANS
+CE CAS LE FICHIER DE COMMANDES MIGRHYCAR EST NECESSAIRE'
+AIDE1 = 'WILL TRIGGER THE OIL SPILL MODEL, IN THIS CASE
+THE MIGRHYCAR STEERING FILE IS NEEDED'
 /
 / VERSION 6.2
 /
-NOM = 'OPTION POUR LES FRONTIERES LIQUIDES' 
-NOM1 = 'OPTION FOR LIQUID BOUNDARIES' 
-TYPE = ENTIER 
-INDEX = 109 
-MNEMO = 'FRTYPE' 
-TAILLE = 2 
-RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
-RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS' 
-NIVEAU = 1 
-AIDE = 'On donne 1 entier par frontiere liquide 
-     1 : conditions aux limites classiques 
-     2 : methode de Thompson avec calcul de caracteristiques' 
-AIDE1 = 'One integer per liquid boundary is given 
-     1 : classical boundary conditions 
-     2 : Thompson method based on characteristics' 
-     
-NOM = 'DERIVEES VERTICALES DES VITESSES' 
-NOM1 = 'VERTICAL VELOCITY DERIVATIVES' 
-TYPE = ENTIER 
-INDEX = 110 
-MNEMO = 'LINLOG' 
+NOM = 'OPTION POUR LES FRONTIERES LIQUIDES'
+NOM1 = 'OPTION FOR LIQUID BOUNDARIES'
+TYPE = ENTIER
+INDEX = 109
+MNEMO = 'FRTYPE'
+TAILLE = 2
+RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES'
+RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
+NIVEAU = 1
+AIDE = 'On donne 1 entier par frontiere liquide
+     1 : conditions aux limites classiques
+     2 : methode de Thompson avec calcul de caracteristiques'
+AIDE1 = 'One integer per liquid boundary is given
+     1 : classical boundary conditions
+     2 : Thompson method based on characteristics'
+
+NOM = 'DERIVEES VERTICALES DES VITESSES'
+NOM1 = 'VERTICAL VELOCITY DERIVATIVES'
+TYPE = ENTIER
+INDEX = 110
+MNEMO = 'LINLOG'
 TAILLE = 0
-DEFAUT = 1 
-DEFAUT1 = 1  
+DEFAUT = 1
+DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
-NIVEAU = 2 
-AIDE = 'Mode de calcul des derivees des vitesses suivant z 
+NIVEAU = 2
+AIDE = 'Mode de calcul des derivees des vitesses suivant z
      1 : derivee lineaire (classique)
-     2 : derivee logarithmique (mieux pour profils logarithmiques)' 
-AIDE1 = 'Way of computing the velocity derivatives along z 
+     2 : derivee logarithmique (mieux pour profils logarithmiques)'
+AIDE1 = 'Way of computing the velocity derivatives along z
      1 : linear derivative (classic)
-     2 : logarithmic derivative (better for logarithmic profiles)' 
-     
+     2 : logarithmic derivative (better for logarithmic profiles)'
+
 NOM  = 'MODE SUITE'
 NOM1 = 'RESTART MODE'
 TYPE = LOGIQUE
@@ -5540,7 +5540,7 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Nom du fichier dans lequel seront ecrits les resultats du 
+AIDE = 'Nom du fichier dans lequel seront ecrits les resultats du
 dernier calcul pour obtenir une suite de calcul parfaite'
 AIDE1 = 'Name of the file into which the last computation results shall be
 written,
@@ -5560,12 +5560,12 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du FICHIER POUR SUITE.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5
 Seul SERAFIND assure une suite parfaite'
 AIDE1 = 'Results file format. Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5
 Only SERAFIND ensures a perfect restart'
@@ -5608,8 +5608,8 @@ CHOIX1=
 '5="Mean neap tide"';
 '6="Astronomical neap tide"';
 '7="Real tide (methodology before 2010)"'
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Option pour les conditions aux limites de maree.
 Pour des marees reelles, l option 1 est recommandee.
@@ -5617,57 +5617,57 @@ Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
 et COEFFICIENT POUR CALAGE EN NIVEAU.'
 AIDE1= 'Option for tidal boundary conditions.
 For real tides, option 1 is recommended.
-Possible calibration with the keywords COEFFICIENT TO CALIBRATE TIDAL RANGE, 
-COEFFICENT TO CALIBRATE TIDAL VELOCITIES, 
+Possible calibration with the keywords COEFFICIENT TO CALIBRATE TIDAL RANGE,
+COEFFICENT TO CALIBRATE TIDAL VELOCITIES,
 and COEFFICIENT TO CALIBRATE SEA LEVEL.'
 
-NOM = 'FICHIER DES CONSTANTES HARMONIQUES' 
-NOM1 = 'HARMONIC CONSTANTS FILE' 
-TYPE = CARACTERE 
-INDEX = 86 
-MNEMO = 'T3D_FILES(T3DHAR)' 
-SUBMIT = 'NHAR-READWRITE-45;T3DHAR;FACUL;ASC;ECRLIT;PARAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Constantes harmoniques extraites du fichier du modele de maree' 
-AIDE1 = 'Harmonic constants extracted from the tidalmodel file' 
+NOM = 'FICHIER DES CONSTANTES HARMONIQUES'
+NOM1 = 'HARMONIC CONSTANTS FILE'
+TYPE = CARACTERE
+INDEX = 86
+MNEMO = 'T3D_FILES(T3DHAR)'
+SUBMIT = 'NHAR-READWRITE-45;T3DHAR;FACUL;ASC;ECRLIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Constantes harmoniques extraites du fichier du modele de maree'
+AIDE1 = 'Harmonic constants extracted from the tidalmodel file'
 
-NOM = 'FICHIER DU MODELE DE MAREE' 
-NOM1 = 'TIDAL MODEL FILE' 
-TYPE = CARACTERE 
-INDEX = 87 
-MNEMO = 'T3D_FILES(T3DTID)' 
-SUBMIT = 'NTID-READ-46;T3DTID;FACUL;BIN;LIT;SCAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Fichier de geometrie du modele dont sont extraites 
-les constantes harmoniques' 
-AIDE1 = 'Geometry file of the model from which harmonic constituents 
-are extracted' 
+NOM = 'FICHIER DU MODELE DE MAREE'
+NOM1 = 'TIDAL MODEL FILE'
+TYPE = CARACTERE
+INDEX = 87
+MNEMO = 'T3D_FILES(T3DTID)'
+SUBMIT = 'NTID-READ-46;T3DTID;FACUL;BIN;LIT;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier de geometrie du modele dont sont extraites
+les constantes harmoniques'
+AIDE1 = 'Geometry file of the model from which harmonic constituents
+are extracted'
 
-NOM = 'BASE ASCII DE DONNEES DE MAREE' 
-NOM1 = 'ASCII DATABASE FOR TIDE' 
-TYPE = CARACTERE 
-INDEX = 88 
-MNEMO = 'T3D_FILES(T3DBDD)' 
-SUBMIT = 'NBDD-READ-47;T3DBDD;FACUL;ASC;LIT;PARAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Base de donnees de constantes harmoniques 
-tirees du fichier du modele de maree. 
-Ancien nom en version 6.1 pour Telemac-2D : BASE DE DONNEES DE MAREE' 
-AIDE1 = 'Tide data base of harmonic constituents 
+NOM = 'BASE ASCII DE DONNEES DE MAREE'
+NOM1 = 'ASCII DATABASE FOR TIDE'
+TYPE = CARACTERE
+INDEX = 88
+MNEMO = 'T3D_FILES(T3DBDD)'
+SUBMIT = 'NBDD-READ-47;T3DBDD;FACUL;ASC;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Base de donnees de constantes harmoniques
+tirees du fichier du modele de maree.
+Ancien nom en version 6.1 pour Telemac-2D : BASE DE DONNEES DE MAREE'
+AIDE1 = 'Tide data base of harmonic constituents
 extracted from the TIDAL MODEL FILE.
-Old name in 6.1 version for Telemac-2D: TIDE DATA BASE' 
+Old name in 6.1 version for Telemac-2D: TIDE DATA BASE'
 /
 NOM = 'BASE BINAIRE 1 DE DONNEES DE MAREE'
 NOM1 = 'BINARY DATABASE 1 FOR TIDE'
@@ -5711,14 +5711,14 @@ TYPE = REEL
 INDEX = 99
 MNEMO = 'CTIDE'
 TAILLE = 0
-DEFAUT = 1. 
-DEFAUT1 = 1. 
+DEFAUT = 1.
+DEFAUT1 = 1.
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'Coefficient pour ajuster le marnage de l''onde de maree 
+AIDE = 'Coefficient pour ajuster le marnage de l''onde de maree
 aux frontieres maritimes'
-AIDE1 = 'Coefficient to calibrate the tidal range of tidal wave 
+AIDE1 = 'Coefficient to calibrate the tidal range of tidal wave
 at tidal open boundary conditions'
 
 NOM = 'COEFFICIENT DE CALAGE DES VITESSES DE COURANT'
@@ -5727,18 +5727,18 @@ TYPE = REEL
 INDEX = 100
 MNEMO = 'CTIDEV'
 TAILLE = 0
-DEFAUT = 999999. 
-DEFAUT1 = 999999. 
+DEFAUT = 999999.
+DEFAUT1 = 999999.
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'Coefficient pour ajuster les composantes de vitesse 
+AIDE = 'Coefficient pour ajuster les composantes de vitesse
 de l''onde de maree aux frontieres maritimes.
-La valeur par defaut 999999. signifie que c''est la racine carree 
+La valeur par defaut 999999. signifie que c''est la racine carree
 du COEFFICIENT DE CALAGE DU MARNAGE qui est prise'
-AIDE1 = 'Coefficient to calibrate the tidal velocities of tidal wave 
+AIDE1 = 'Coefficient to calibrate the tidal velocities of tidal wave
 at tidal open boundary conditions.
-Default value 999999. means that the square root of 
+Default value 999999. means that the square root of
 COEFFICIENT TO CALIBRATE TIDAL RANGE is taken'
 
 NOM = 'COEFFICIENT DE CALAGE DU NIVEAU DE MER'
@@ -5747,8 +5747,8 @@ TYPE = REEL
 INDEX = 101
 MNEMO = 'MSL'
 TAILLE = 0
-DEFAUT = 0. 
-DEFAUT1 = 0. 
+DEFAUT = 0.
+DEFAUT1 = 0.
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
@@ -5761,8 +5761,8 @@ TYPE = ENTIER
 INDEX = 112
 MNEMO = 'TIDALDB'
 TAILLE = 0
-DEFAUT = -1 
-DEFAUT1 = -1 
+DEFAUT = -1
+DEFAUT1 = -1
 CHOIX=
 '-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LA BASE PARMI LES CHOIX POSSIBLES"';
 '1="JMJ"';
@@ -5780,7 +5780,7 @@ AIDE = 'Pour JMJ, renseigner la localisation du fichier bdd_jmj et geofin
 dans les mots-cles BASE DE DONNEES DE MAREE et FICHIER DU MODELE DE MAREE.
 Pour TPXO, LEGOS-NEA, FES20XX et PREVIMER, l''utilisateur doit telecharger
 les fichiers de constantes harmoniques sur internet'
-AIDE1 = 'For JMJ, indicate the location of the files bdd_jmj and geofin with keywords 
+AIDE1 = 'For JMJ, indicate the location of the files bdd_jmj and geofin with keywords
 TIDE DATA BASE and TIDAL MODEL FILE.
 For TPXO, LEGOS-NEA, FES20XX and PREVIMER, the user has to download
 files of harmonic constituents on the internet'
@@ -5791,8 +5791,8 @@ TYPE = ENTIER
 INDEX = 113
 MNEMO = 'GEOSYST'
 TAILLE = 0
-DEFAUT = -1 
-DEFAUT1 = -1 
+DEFAUT = -1
+DEFAUT1 = -1
 CHOIX=
 '-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE SYSTEME PARMI LES CHOIX POSSIBLES"';
 '0="DEFINI PAR L''UTILISATEUR"';
@@ -5812,8 +5812,8 @@ CHOIX1=
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'Systeme de coordonnees geographiques dans lequel est construit 
-le modele numerique. 
+AIDE = 'Systeme de coordonnees geographiques dans lequel est construit
+le modele numerique.
 Indiquer la zone correspondante avec le mot-cle '
 AIDE1 = 'Geographic coordinates system in which the numerical model is built.
 Indicate the corresponding zone with the keyword '
@@ -5824,8 +5824,8 @@ TYPE = ENTIER
 INDEX = 114
 MNEMO = 'NUMZONE'
 TAILLE = 0
-DEFAUT = -1 
-DEFAUT1 = -1 
+DEFAUT = -1
+DEFAUT1 = -1
 CHOIX=
 '-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE NUMERO PARMI LES CHOIX POSSIBLES"';
 '1="LAMBERT 1 NORD"';
@@ -5845,12 +5845,12 @@ CHOIX1=
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'Numero de zone (fuseau ou type de projection) 
-lors de l''utilisation d''une projection plane. 
-Indiquer le systeme geographique dans lequel est construit le modele numerique 
+AIDE = 'Numero de zone (fuseau ou type de projection)
+lors de l''utilisation d''une projection plane.
+Indiquer le systeme geographique dans lequel est construit le modele numerique
 avec le mot-cle SYSTEME GEOGRAPHIQUE'
-AIDE1 = 'Number of zone when using a plane projection. 
-Indicate the geographic system in which the numerical model is built 
+AIDE1 = 'Number of zone when using a plane projection.
+Indicate the geographic system in which the numerical model is built
 with the keyword GEOGRAPHIC SYSTEM'
 
 NOM = 'INTERPOLATION DE COMPOSANTES MINEURES'
@@ -5864,45 +5864,45 @@ DEFAUT1 = NO
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE  = 'Pour la base de donnees TPXO uniquement. 
-Interpolation de composantes harmoniques mineures 
-a partir de celles lues dans les fichiers d''entree 
+AIDE  = 'Pour la base de donnees TPXO uniquement.
+Interpolation de composantes harmoniques mineures
+a partir de celles lues dans les fichiers d''entree
 lies aux mots-cles BASE BINAIRE 1 DE DONNEES DE MAREE
 et BASE BINAIRE 2 DE DONNEES DE MAREE'
-AIDE1 = 'For TPXO tidal data base only. 
-Inference of minor constituents from the ones read in input files 
-linked to keywords BINARY DATABASE 1 FOR TIDE 
+AIDE1 = 'For TPXO tidal data base only.
+Inference of minor constituents from the ones read in input files
+linked to keywords BINARY DATABASE 1 FOR TIDE
 and BINARY DATABASE 2 FOR TIDE'
 /
 / VERSION 6.2
 /
 NOM = 'FICHIER DES FLOTTEURS'
 NOM1 = 'DROGUES FILE'
-TYPE = CARACTERE 
+TYPE = CARACTERE
 INDEX = 91
-MNEMO = 'T3D_FILES(T3DFLO)%NAME' 
-SUBMIT = 'T3DFLO-WRITE-14;T3DFLO;FACUL;ASC;ECR;SCAL' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Fichier de resultat avec les positions des flotteurs' 
-AIDE1 = 'Results file with positions of drogues' 
+MNEMO = 'T3D_FILES(T3DFLO)%NAME'
+SUBMIT = 'T3DFLO-WRITE-14;T3DFLO;FACUL;ASC;ECR;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier de resultat avec les positions des flotteurs'
+AIDE1 = 'Results file with positions of drogues'
 
 NOM = 'FICHIER POUR SUITE 2D'
 NOM1 = 'FILE FOR 2D CONTINUATION'
-TYPE = CARACTERE 
+TYPE = CARACTERE
 INDEX = 92
-MNEMO = 'T3D_FILES(T3DS2D)%NAME' 
-SUBMIT = 'T3DS2D-READ-15;T3DS2D;FACUL;BIN;LIT;SELAFIN' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
-NIVEAU = 1 
-AIDE = 'Fichier utilise en cas de suite 2D' 
-AIDE1 = 'File to be used in case of 2D continuation' 
+MNEMO = 'T3D_FILES(T3DS2D)%NAME'
+SUBMIT = 'T3DS2D-READ-15;T3DS2D;FACUL;BIN;LIT;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier utilise en cas de suite 2D'
+AIDE1 = 'File to be used in case of 2D continuation'
 
 NOM = 'FORMAT DU FICHIER POUR SUITE 2D'
 NOM1 = 'FILE FOR 2D CONTINUATION FORMAT'
@@ -5917,19 +5917,19 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier pour suite 2D.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'File for 2D continuation format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac; 
+- SERAFIN : classical single precision format in Telemac;
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 /
 / VERSION 6.2
 /
-NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION' 
-NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES' 
+NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION'
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES'
 TYPE = ENTIER
 INDEX = 115
 MNEMO = 'MAXADV'
@@ -5953,13 +5953,13 @@ DEFAUT1 = 1
 CHOIX='1="fortes"';'2="faibles"'
 CHOIX1='1="strong"';'2="weak"'
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
 AIDE = '1: forme forte 2: forme faible'
 AIDE1 = '1: strong form 2: weak form'
 
-NOM = 'NOMBRE DE POINTS DE GAUSS POUR LES CARACTERISTIQUES FAIBLES' 
-NOM1 = 'NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS' 
+NOM = 'NOMBRE DE POINTS DE GAUSS POUR LES CARACTERISTIQUES FAIBLES'
+NOM1 = 'NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS'
 TYPE = ENTIER
 INDEX = 117
 MNEMO = 'NGAUSS'
@@ -5990,19 +5990,19 @@ AIDE1 = 'To be applied to the mass matrix'
 /
 / VERSION 7.0
 /
-NOM = 'FORCE GENERATRICE DE LA MAREE' 
-NOM1 = 'TIDE GENERATING FORCE' 
-TYPE = LOGIQUE 
-INDEX = 18 
-MNEMO = 'MAREE' 
-TAILLE = 0 
-DEFAUT = NON 
-DEFAUT1 = NO 
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = 1 
-AIDE = 'Active la prise en compte de la force generatrice de la maree' 
-AIDE1 = 'The tide generating force is taken into account. '  
+NOM = 'FORCE GENERATRICE DE LA MAREE'
+NOM1 = 'TIDE GENERATING FORCE'
+TYPE = LOGIQUE
+INDEX = 18
+MNEMO = 'MAREE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 1
+AIDE = 'Active la prise en compte de la force generatrice de la maree'
+AIDE1 = 'The tide generating force is taken into account. '
 
 NOM = 'MODELE D''ECHANGES EAU-ATMOSPHERE'
 NOM1 = 'ATMOSPHERE-WATER EXCHANGE MODEL'
@@ -6128,13 +6128,13 @@ AIDE = 'Choix de schema vertical pour la diffusion et le depot du sediment
 : 1 schema implicite de convection-diffusion (tridiagonal matrix solver)
 : 2 convection faible sed_fall.f'
 AIDE1 = 'Choice of vertical scheme for diffusion and settling of sediment
-: 0 Implicit-diffusion scheme 
+: 0 Implicit-diffusion scheme
 : 1 Implicit- convection scheme (Tridiagonal matrix solver)
 : 2  set_fall.f'
 /
 NOM = 'NOMBRE DE COUCHES DU LIT COHESIF'
-NOM1 = 'NUMBER OF SEDIMENT BED LAYERS' 
-TYPE = ENTIER   
+NOM1 = 'NUMBER OF SEDIMENT BED LAYERS'
+TYPE = ENTIER
 INDEX = 65
 MNEMO = 'NCOUCH'
 TAILLE = 0
@@ -6144,7 +6144,7 @@ RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
-AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit 
+AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit
        etre inferieur à 20'
 AIDE1 = 'Number of cohesive sediment bed layers,  should be less
        than 20'
@@ -6160,9 +6160,9 @@ DEFAUT1  = 100.;500.
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
-AIDE = 'Concentration du lit de vase en g/ l (défini par couches) en commencant  
+AIDE = 'Concentration du lit de vase en g/ l (défini par couches) en commencant
 par la couche du fond '
-AIDE1 = 'Dry density of the mud-bed layers in g per l starting 
+AIDE1 = 'Dry density of the mud-bed layers in g per l starting
 form the bottom upwards'
 /
 /
@@ -6178,11 +6178,11 @@ RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
 COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
-AIDE = 'Taux critique d erosion de la vase (N/m2) - 
+AIDE = 'Taux critique d erosion de la vase (N/m2) -
 Doit etre defini pour chaque couche
 en commencant par la couche de fond '
-AIDE1 = 'Critical erosion shear stress of the mud per layer (N per m2). 
-Needs to be defined  for each layer (N par m2), 
+AIDE1 = 'Critical erosion shear stress of the mud per layer (N per m2).
+Needs to be defined  for each layer (N par m2),
 starting from the condolidated bottom layer upwards'
 /
 /
@@ -6199,8 +6199,8 @@ RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
 AIDE = 'Epaisseurs initiales des sediments (m)'
 AIDE1 = 'Sediment layers thickness (m) for initialisation'
-/ 
-/ 
+/
+/
 / New Initialization of TOCE
 NOM = 'LECTURE CONTRAINTE CRITIQUE POUR CHAQUE COUCHE'
 NOM1 = 'READ CRITICAL BED SHEAR STRESS PER LAYER'
@@ -6213,13 +6213,13 @@ DEFAUT1 = NO
 RUBRIQUE = 'PHYSICS'
 RUBRIQUE1 = 'PHYSICS'
 NIVEAU = 1
-AIDE = 'lecture contrainte critique d erosion a partir 
+AIDE = 'lecture contrainte critique d erosion a partir
         du  fichier de geometrie'
 AIDE1 = 'Decides if erosion shear stress at each layer is
         read from selafin GEOMETRY FILE'
 /
 / ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/ 
+/
 NOM = 'VITESSE DE CHUTE ENTRAVEE'
 NOM1 = 'HINDERED SETTLING'
 TYPE = LOGIQUE
@@ -6242,15 +6242,15 @@ TYPE = REEL
 INDEX = 103
 MNEMO = 'CGEL'
 TAILLE = 0
-DEFAUT = 0.0 
+DEFAUT = 0.0
 DEFAUT1 = 0.0
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'The sediment concentration at which sediment 
+AIDE = 'The sediment concentration at which sediment
         forms a weak soil in kg/m3. These values are
-	needed when HINDERED SETTLING = YES'
-AIDE1 = 'Concentration limite en kg/m3 au dela de la quelle la couche de vase fluide devient solide. 
+        needed when HINDERED SETTLING = YES'
+AIDE1 = 'Concentration limite en kg/m3 au dela de la quelle la couche de vase fluide devient solide.
 Cette valeur est demandee losque la HINDERED SETTLING = YES'
 /
 NOM = 'CONCENTRATION LIMITE POUR VITESSE DE CHUTE ENTRAVEE'
@@ -6259,18 +6259,18 @@ TYPE = REEL
 INDEX = 104
 MNEMO = 'CINI'
 TAILLE = 0
-DEFAUT = 0.0 
+DEFAUT = 0.0
 DEFAUT1 = 0.0
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'The sediment concentration at which hindered 
+AIDE = 'The sediment concentration at which hindered
         settling is initiated. These values are
-	needed when HINDERED SETTLING = YES'
-AIDE1= 'The sediment concentration at which hindered 
+        needed when HINDERED SETTLING = YES'
+AIDE1= 'The sediment concentration at which hindered
         settling is initiated. These values are
-	needed when HINDERED SETTLING = YES'
-/		
+        needed when HINDERED SETTLING = YES'
+/
 NOM = 'FORMULE POUR VITESSE DE CHUTE ENTRAVEE'
 NOM1 = 'HINDERED SETTLING FORMULA'
 TYPE = ENTIER
@@ -6290,7 +6290,7 @@ AIDE1 = 'TYPE OF HINDERED SETTLING
          2. WINTERWERP (1999) - not currently working'
 /
 / FLOCULATION (N.B. FLOCCULATION IN ENGLISH)
-/ 
+/
 NOM = 'FLOCULATION'
 NOM1 = 'FLOCCULATION'
 TYPE = LOGIQUE
@@ -6306,7 +6306,7 @@ AIDE = 'Decides if hindered formulation is to be used to
         compute settling velocity for mud'
 AIDE1 = 'Decides if hindered formulation is to be used to
         compute settling velocity for mud'
-        
+
 NOM = 'FORMULE POUR FLOCULATION'
 NOM1 = 'FLOCCULATION FORMULA'
 TYPE = ENTIER
@@ -6336,9 +6336,9 @@ AIDE1 = 'TYPE OF FLOCCULATION FORMULA
 /RUBRIQUE = 'SEDIMENT'
 /RUBRIQUE1 = 'SEDIMENT'
 /NIVEAU = 1
-/AIDE = 'logique pour la prise en compte de l''influence de la 
+/AIDE = 'logique pour la prise en compte de l''influence de la
 /turbulence sur la vitesse de chute '
-/AIDE1 = 'if this key word is equal to yes, the influence of 
+/AIDE1 = 'if this key word is equal to yes, the influence of
 /turbulence on the settling velocity is taken into account'
 /
 / This is now replaced by Flocculation Type = 1
@@ -6354,16 +6354,16 @@ DEFAUT1 = 0.3
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
-la turbulence sur la floculation, il intervient plus precisement dans 
+AIDE = 'coefficient intervenant dans la modelisation de l''influence de
+la turbulence sur la floculation, il intervient plus precisement dans
 le terme de formation des flocs par les contraintes turbulentes
 (coefficient a de la formulede Van Leussen).
 Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
 DE CHUTE = OUI.'
-AIDE1 = 'When the influence of turbulence on the settling velocity 
-is modelled,this coefficient traduces the formation of flocs by 
+AIDE1 = 'When the influence of turbulence on the settling velocity
+is modelled,this coefficient traduces the formation of flocs by
 turbulence ( coefficient a of Van Leussen formula).
-Value to be imposed if 
+Value to be imposed if
 INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
 
 NOM = 'COEFFICIENT TRADUISANT LA DESTRUCTION DES FLOCS'
@@ -6377,16 +6377,16 @@ DEFAUT1 = 0.09
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'coefficient intervenant dans la modelisation de l''influence de 
-la turbulence sur la floculation, il intervient plus precisement dans 
+AIDE = 'coefficient intervenant dans la modelisation de l''influence de
+la turbulence sur la floculation, il intervient plus precisement dans
 le terme de destruction des flocs par les contraintes turbulentes
 (coefficient b de la formulede Van Leussen).
 Valeur a imposer si INFLUENCE DE LA TURBULENCE SUR LA VITESSE
 DE CHUTE = OUI.'
-AIDE1 = 'When the influence of turbulence on the settling velocity 
-is modelled,this coefficient traduces the breaking of flocs by 
+AIDE1 = 'When the influence of turbulence on the settling velocity
+is modelled,this coefficient traduces the breaking of flocs by
 turbulence ( coefficient b of Van Leussen formula.
-Value to be imposed if 
+Value to be imposed if
 INFLUENCE OF TURBULENCE ON SETTLING VELOCITY = YES.'
 /
 / CV
@@ -6419,7 +6419,7 @@ RUBRIQUE1 = 'TURBULENCE'
 NIVEAU = 1
 AIDE = 'Rapport entre viscosite et diffusivite turbulente'
 AIDE1 = 'Ratio between eddy viscosity and eddy diffusivity'
-/ 
+/
 NOM = 'HAUTEUR DU LIT FICTIF'
 NOM1 = 'FICTITIOUS BED LEVEL'
 TYPE = REEL
@@ -6431,10 +6431,10 @@ DEFAUT1 = 2.0
 RUBRIQUE = 'TURBULENCE'
 RUBRIQUE1 = 'TURBULENCE'
 NIVEAU = 1
-AIDE = 'rapport entre le fond ficitif et la hauteur de 
-la premiere  maille utilisee par le modele de turbulence 
+AIDE = 'rapport entre le fond ficitif et la hauteur de
+la premiere  maille utilisee par le modele de turbulence
 k-eps et pour le transport du sable'
-AIDE1 = 'Ratio between  the ficitious bed and 
+AIDE1 = 'Ratio between  the ficitious bed and
 the grid size above the bed'
 
 NOM = 'CONDITIONS OUVERTES SUR LE FOND'
@@ -6464,13 +6464,13 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Fixe le debit sur les frontieres a debit impose du fond'
-AIDE1 = 'Sets the value for flow rate on flow 
+AIDE1 = 'Sets the value for flow rate on flow
 rate-imposed bed boundaries'
 
 
 /
 / CONSOLIDATION
-/ 
+/
 / replaced by NCOUCHE
 /NOM = 'NOMBRE MAXIMUM DE PLANS DISCRETISANT LE FOND'
 /NOM1 = 'MAXIMUM NUMBER OF LEVELS DISCRETIZING THE BOTTOM'
@@ -6488,7 +6488,7 @@ rate-imposed bed boundaries'
 /En effet lors de la prise en compte du depot de nouvelles couches sont
 /crees et ce parametre permet si besoin est d''en limiter le nombre.'
 /AIDE1 = 'This key word is used when GIBSON CONSOLIDATION MODEL= YES.
-/Indeed, with this model,new mud layers are formed when sediment settles 
+/Indeed, with this model,new mud layers are formed when sediment settles
 /onto the bottom and this parameter limit the number of new layers.'
 /
 /
@@ -6510,9 +6510,9 @@ a l''aide d''un modele multicouches : les couches discretisant le fond
 sont caracterisees par leur temps de sejour, temps au bout duquel la
 vase presente dans cette couche bascule dans la couche suivante plus
 consolidee'
-AIDE1 = 'if this key word is equal to yes, consolidation is simulated 
-thanks to a multi-layers model : the bed layers are characterized by 
-their residence time which is the time after which the quantity of 
+AIDE1 = 'if this key word is equal to yes, consolidation is simulated
+thanks to a multi-layers model : the bed layers are characterized by
+their residence time which is the time after which the quantity of
 mud which remains in a layer goes into a more consolidated layer'
 
 /NOM = 'MODELE DE TASSEMENT DE GIBSON'
@@ -6525,7 +6525,7 @@ mud which remains in a layer goes into a more consolidated layer'
 NOM = 'OPTION DU MODELE DE TASSEMENT'
 NOM1 = 'CONSOLIDATION MODEL'
 TYPE = INTEGER
-INDEX = 51 
+INDEX = 51
 MNEMO = 'ITASS'
 TAILLE = 1
 DEFAUT = 1
@@ -6569,7 +6569,7 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Nombre de tableaux 2D mis a disposition de l utilisateur
          dans le bloc PRIVE2D'
-AIDE1 = 'Number of 2D arrays for own user programming 
+AIDE1 = 'Number of 2D arrays for own user programming
  in block PRIVE2D'
 
 NOM = 'NOMS DES VARIABLES PRIVEES 2D'
@@ -6584,10 +6584,10 @@ NIVEAU = 1
 COMPORT =
 'Foreground ("ENTREES-SORTIES, FICHIERS*NOMS")
 IS BRUT (red)'
-AIDE = 'Noms des variables dans les tableaux prives en 32 caracteres, 
+AIDE = 'Noms des variables dans les tableaux prives en 32 caracteres,
         16 pour le nom 16 pour l''unite. Elles seront lues dans le
         fichier de geometrie si elles y sont.'
-AIDE1 = 'Name of variables in 2D private arrays in 32 characters, 
+AIDE1 = 'Name of variables in 2D private arrays in 32 characters,
         16 for the name, 16 for the unit. If present, will be read
         in the geometry file.'
 /
@@ -6599,8 +6599,8 @@ MNEMO = 'ICALHWB'
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1= 0
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Numero local du point entre 1 et le nombre de points
 de frontiere maritime (du FICHIER DES CONSTANTES HARMONIQUES)
@@ -6626,8 +6626,8 @@ MNEMO = 'ICALHWG'
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1= 0
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Numero global du point par rapport auquel
 les ondes de maree sont dephasees
@@ -6640,65 +6640,65 @@ to start the calculation with a high water
 (for schematic tides only).
 Only harmonic constants databases like TPXO are concerned.'
 
-NOM = 'NOMBRE MAXIMUM DE FRONTIERES' 
-NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES' 
-TYPE = INTEGER 
-INDEX = 121 
-MNEMO = 'MAXFRO' 
-DEFAUT = 30 
-DEFAUT1 = 30 
+NOM = 'NOMBRE MAXIMUM DE FRONTIERES'
+NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES'
+TYPE = INTEGER
+INDEX = 121
+MNEMO = 'MAXFRO'
+DEFAUT = 30
+DEFAUT1 = 30
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1 
+NIVEAU = 1
 AIDE = 'nombre maximal de frontieres differentes dans le maillage.
-Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of boundaries in the mesh.
-Used for dimensioning arrays. Can be increased if needed' 
+Used for dimensioning arrays. Can be increased if needed'
 
-NOM = 'NOMBRE MAXIMUM DE SOURCES' 
-NOM1 = 'MAXIMUM NUMBER OF SOURCES' 
-TYPE = INTEGER 
-INDEX = 122 
-MNEMO = 'MAXSCE' 
-DEFAUT = 20 
-DEFAUT1 = 20 
+NOM = 'NOMBRE MAXIMUM DE SOURCES'
+NOM1 = 'MAXIMUM NUMBER OF SOURCES'
+TYPE = INTEGER
+INDEX = 122
+MNEMO = 'MAXSCE'
+DEFAUT = 20
+DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1 
+NIVEAU = 1
 AIDE = 'nombre maximal de points sources dans le maillage.
-Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of punctual sources in the mesh.
-Used for dimensioning arrays. Can be increased if needed' 
+Used for dimensioning arrays. Can be increased if needed'
 
-NOM = 'NOMBRE MAXIMUM DE TRACEURS' 
-NOM1 = 'MAXIMUM NUMBER OF TRACERS' 
-TYPE = INTEGER 
-INDEX = 123 
-MNEMO = 'MAXTRA' 
-DEFAUT = 20 
-DEFAUT1 = 20 
+NOM = 'NOMBRE MAXIMUM DE TRACEURS'
+NOM1 = 'MAXIMUM NUMBER OF TRACERS'
+TYPE = INTEGER
+INDEX = 123
+MNEMO = 'MAXTRA'
+DEFAUT = 20
+DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1 
+NIVEAU = 1
 AIDE = 'nombre maximal de traceurs.
-Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of tracers.
-Used for dimensioning arrays. Can be increased if needed' 
+Used for dimensioning arrays. Can be increased if needed'
 
-NOM = 'NOMBRE MAXIMUM DE FRONTIERES SUR LE FOND' 
-NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES ON THE BED' 
-TYPE = INTEGER 
-INDEX = 124 
-MNEMO = 'MAXBLB' 
-DEFAUT = 30 
-DEFAUT1 = 30 
+NOM = 'NOMBRE MAXIMUM DE FRONTIERES SUR LE FOND'
+NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES ON THE BED'
+TYPE = INTEGER
+INDEX = 124
+MNEMO = 'MAXBLB'
+DEFAUT = 30
+DEFAUT1 = 30
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1 
+NIVEAU = 1
 AIDE = 'nombre maximal de frontieres liquides sur le fond.
-Sert au dimensionnement de la memoire, a augmenter si necessaire' 
+Sert au dimensionnement de la memoire, a augmenter si necessaire'
 AIDE1 = 'maximal number of liquid boundaries on the bed.
-Used for dimensioning arrays. Can be increased if needed' 
+Used for dimensioning arrays. Can be increased if needed'
 
 NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES DU K-EPSILON'
 NOM1 = 'OPTION FOR THE BOUNDARY CONDITIONS OF K-EPSILON'
@@ -6868,28 +6868,28 @@ TYPE = CARACTERE
 INDEX = 80
 MNEMO = 'LINKLIBS'
 TAILLE = 11
-DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
-'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
-'builds|PPP|lib|tomawacMMMVVV.LLL'; 
-'builds|PPP|lib|sisypheMMMVVV.LLL'; 
-'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|waqtelMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
-DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL'; 
-'builds|PPP|lib|telemac2dMMMVVV.LLL'; 
-'builds|PPP|lib|tomawacMMMVVV.LLL'; 
-'builds|PPP|lib|sisypheMMMVVV.LLL'; 
-'builds|PPP|lib|dredgesimMMMVVV.LLL'; 
-'builds|PPP|lib|waqtelMMMVVV.LLL'; 
-'builds|PPP|lib|biefMMMVVV.LLL'; 
-'builds|PPP|lib|hermesMMMVVV.LLL'; 
-'builds|PPP|lib|damoMMMVVV.LLL'; 
-'builds|PPP|lib|parallelMMMVVV.LLL'; 
-'builds|PPP|lib|specialMMMVVV.LLL' 
+DEFAUT = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
+'builds|PPP|lib|telemac2dMMMVVV.LLL';
+'builds|PPP|lib|tomawacMMMVVV.LLL';
+'builds|PPP|lib|sisypheMMMVVV.LLL';
+'builds|PPP|lib|dredgesimMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|waqtelMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
+'builds|PPP|lib|telemac2dMMMVVV.LLL';
+'builds|PPP|lib|tomawacMMMVVV.LLL';
+'builds|PPP|lib|sisypheMMMVVV.LLL';
+'builds|PPP|lib|dredgesimMMMVVV.LLL';
+'builds|PPP|lib|waqtelMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'

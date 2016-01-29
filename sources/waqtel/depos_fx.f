@@ -8,9 +8,9 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES DEPOSITION FLUX 
+!brief    COMPUTES DEPOSITION FLUX
 !
-!                              
+!
 !
 !history  R. ATA (LNHE)
 !+        02/09/2015
@@ -45,7 +45,7 @@
 !
 !     LOCAL VARIABLES
       INTEGER I
-!     
+!
 !
       IF (ABS(TAUS).LT.1.E-10)THEN
         IF(LNG.EQ.1) THEN
@@ -61,11 +61,11 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-!      
+!
       DO I=1,NPOIN
         SEDP%R(I)=VITCHU*MAX(1.D0-TAUB%R(I)/TAUS,0.D0)
-      ENDDO 
-!      
+      ENDDO
+!
       RETURN
       END
 !

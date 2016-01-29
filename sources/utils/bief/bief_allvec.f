@@ -26,7 +26,7 @@
 !+        21/01/2016
 !+        V7P2
 !+   Adding NAT = 3. With both integers and doube precision arrays
-!+   allocated 
+!+   allocated
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM2           |-->| SECOND DIMENSION OF VECTOR

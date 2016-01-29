@@ -8,7 +8,7 @@
 ! BIEF   V7P1
 !***********************************************************************
 !
-!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the 
+!brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the
 !+        result is given in terms of contribution per point, not fluxes
 !+        between points, and takes a derivative in time into account.
 !
@@ -42,7 +42,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: FN
       DOUBLE PRECISION, INTENT(INOUT) :: FI_I(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FSTAR(NPOIN),H(NPOIN),HN(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),DFDT(NPOIN),DDT,TETA 
+      DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),DFDT(NPOIN),DDT,TETA
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -107,7 +107,7 @@
           FS1=FSTAR(I1)
           FS2=FSTAR(I2)
           FS3=FSTAR(I3)
-!        
+!
 !         COMPUTE THE NEW RESIDUAL AND NEW DISTRIBUTION
 !
           COEF=SU(IELEM)/3.D0
@@ -142,9 +142,9 @@
               BETA1PSI=MAX(0.D0,BETA1)/SUMAX
               BETA2PSI=MAX(0.D0,BETA2)/SUMAX
               BETA3PSI=MAX(0.D0,BETA3)/SUMAX
-              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
+              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR
               FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR 
+              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
             ENDIF
           ENDIF
 !
@@ -315,7 +315,7 @@
           ENDIF
 !
 !         END OF "NOT IN MARIO RICCHIUTO'S THEORY" !!!!!!
-!        
+!
 !         COMPUTE THE NEW RESIDUAL AND NEW DISTRIBUTION
 !
           COEF=SU(IELEM)/3.D0
@@ -349,9 +349,9 @@
               BETA1PSI=MAX(0.D0,BETA1)/SUMAX
               BETA2PSI=MAX(0.D0,BETA2)/SUMAX
               BETA3PSI=MAX(0.D0,BETA3)/SUMAX
-              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
+              FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR
               FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR 
+              FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
             ENDIF
           ENDIF
 !

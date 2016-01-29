@@ -230,11 +230,11 @@
 !
       IF(OPTION.EQ.1) THEN
 !
-!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS    
+!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS
         DO IELEM = 1,NELEM
           A1 = ABS(FLOPOINT(IELEM,1))
           A2 = ABS(FLOPOINT(IELEM,2))
-          A3 = ABS(FLOPOINT(IELEM,3))          
+          A3 = ABS(FLOPOINT(IELEM,3))
           IF(A1.GE.A2.AND.A1.GE.A3) THEN
 !           ALL FLOW TO AND FROM NODE 1
             FLOPOINT(IELEM,1)=-FLOPOINT(IELEM,2)
@@ -375,8 +375,8 @@
 !
 !         VOLUMES DISPONIBLES POUR CET ELEMENT
 !
-          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS   
-          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS   
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
           VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
 !
           DTLIM=DT
@@ -398,18 +398,18 @@
 !         IF REMAINING FLUXES, THE ELEMENT IS KEPT IN THE LIST
 !
           IF(DTLIM.EQ.DT) THEN
-            FLOPOINT(I,1)=0.D0  
-            FLOPOINT(I,2)=0.D0   
-            FLOPOINT(I,3)=0.D0    
+            FLOPOINT(I,1)=0.D0
+            FLOPOINT(I,2)=0.D0
+            FLOPOINT(I,3)=0.D0
           ELSE
             NEWREMAIN=NEWREMAIN+1
 !           BEFORE NEWREMAIN: FOR NEXT ITERATION
 !           AFTER  NEWREMAIN: STILL VALID FOR NEXT ITERATION
             INDIC(NEWREMAIN)=I
             COEF=1.D0-DTLIM*SURDT
-            FLOPOINT(I,1)=FLOPOINT(I,1)*COEF   
-            FLOPOINT(I,2)=FLOPOINT(I,2)*COEF   
-            FLOPOINT(I,3)=FLOPOINT(I,3)*COEF    
+            FLOPOINT(I,1)=FLOPOINT(I,1)*COEF
+            FLOPOINT(I,2)=FLOPOINT(I,2)*COEF
+            FLOPOINT(I,3)=FLOPOINT(I,3)*COEF
             C=MAX(C,ABS(FLOPOINT(I,1)),ABS(FLOPOINT(I,2)),
      &              ABS(FLOPOINT(I,3)))
           ENDIF
@@ -777,7 +777,7 @@
           T1%R(I)=T1%R(I)-DT*UNSV2D%R(I)*FLBOR%R(IPTFR)
         ENDDO
         IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
-        DO I=1,NPOIN           
+        DO I=1,NPOIN
           T1%R(I)=T1%R(I)+HN%R(I)-H%R(I)
         ENDDO
         WRITE(LU,*) 'ERREUR POSITIVE_DEPTHS=',P_DOTS(T1,T1,MESH)

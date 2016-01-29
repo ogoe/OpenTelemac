@@ -704,7 +704,7 @@
 !       4.5 BOTTOM FRICTION DISSIPATION
 !       -------------------------------
 !
-        IF(SFROT.EQ.1.AND..NOT.PROINF) THEN 
+        IF(SFROT.EQ.1.AND..NOT.PROINF) THEN
            CALL QFROT1
      &( TSTOT , TSDER , F     , XK    , DEPTH , CFROT1, GRAVIT, NF    ,
      &  NPLAN , NPOIN2, TAUX1 )
@@ -730,7 +730,7 @@
 !                       IN THE LOOP TO HAVE DF_LIM(NPOIN2) INSTEAD
 !                       OF DF_LIM(NPOIN2,NF)
 !
-! if nf is growing, inverse if limit and loop on nf 
+! if nf is growing, inverse if limit and loop on nf
         DO IFF=1,NF
 !         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
           IF(LIMIT.EQ.1) THEN
