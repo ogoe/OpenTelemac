@@ -70,6 +70,11 @@
 !+  Checking that wave driven currents will be given if they have to be
 !+  taken into account.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        01/02/2016
+!+        V7P1
+!+  Adding the line CALL MAJUS(COUPLING) like in Telemac-2D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -1214,6 +1219,7 @@
 !
 !     COUPLING IN BIEF DECLARATIONS
       COUPLING = MOTCAR(ADRESS(4,62))(1:74)
+      CALL MAJUS(COUPLING)
 !     63-71 : DELWAQ FILES
       T3D_FILES(T3DDL1)%NAME=MOTCAR( ADRESS(4,63) )
       T3D_FILES(T3DDL2)%NAME=MOTCAR( ADRESS(4,64) )
