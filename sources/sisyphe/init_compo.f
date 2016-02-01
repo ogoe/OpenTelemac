@@ -84,6 +84,9 @@
         DO I = 1, NSICLA
           AVAIL(J,1,I) = AVA0(I)
         ENDDO
+        DO I=1,NCOUCHES(J)
+          ES(J,I)=(ZF%R(J)-ZR%R(J))/NCOUCHES(J)
+        ENDDO
 !
 !  TO BE FILLED BY THE USER
 !      NCOUCHES(J) = 10
