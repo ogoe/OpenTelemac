@@ -252,17 +252,17 @@
 !| FILE_NAME      |-->| NAME OF THE FILE
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| OPENMODE       |-->| ONE OF THE FOLLOWING VALUE 'READ','READWRITE'
-!| FFORMAT        |-->| FORMAT OF THE FILE
+!| FFORMAT        |<->| FORMAT OF THE FILE Can be modified if the user
+!|                |   |  made a mistake
 !| IERR           |<--| 0 IF NO ERROR DURING THE EXECUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-        !TODO: Remove fformat identify serafind by (title?,datasize,...)
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
         CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE
         CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
-        CHARACTER(LEN=8), INTENT(IN) :: FFORMAT
+        CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, MY_POS
@@ -386,6 +386,7 @@
               WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
      &                    'IT IS A SERAFIND FILE'
               SRF_OBJ_TAB(SRF_ID)%RS = 8
+              FFORMAT = 'SERAFIND'
             ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
               IERR = HERMES_INVALID_SERAFIN_FILE
               RETURN
@@ -395,6 +396,7 @@
               WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
      &                    'IT IS A SERAFIN FILE'
               SRF_OBJ_TAB(SRF_ID)%RS = 4
+              FFORMAT = 'SERAFIN '
             ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
               IERR = HERMES_INVALID_SERAFIN_FILE
               RETURN

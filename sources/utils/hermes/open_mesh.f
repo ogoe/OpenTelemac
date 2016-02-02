@@ -16,7 +16,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FFORMAT        |-->| FORMAT OF THE FILE
+!| FFORMAT        |<->| FORMAT OF THE FILE
 !| FILE_NAME      |-->| NAME OF THE FILE
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| OPENMODE       |-->| ONE OF THE FOLLOWING VALUE 'READ','WRITE','READWRITE'
@@ -31,7 +31,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=8),  INTENT(IN)    :: FFORMAT
+      CHARACTER(LEN=8),  INTENT(INOUT)    :: FFORMAT
       CHARACTER(LEN=*), INTENT(IN)   :: FILE_NAME
       INTEGER,            INTENT(IN)   :: FILE_ID
       CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE

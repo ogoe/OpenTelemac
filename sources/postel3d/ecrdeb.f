@@ -51,7 +51,7 @@
       LOGICAL, INTENT(IN) :: C2DH
       CHARACTER(LEN=72), INTENT(IN) :: TITCAS
       CHARACTER(LEN=32), INTENT(IN) :: TEXTLU(100)
-      CHARACTER(LEN=8), INTENT(IN) ::  FFORMAT
+      CHARACTER(LEN=8), INTENT(INOUT) ::  FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
