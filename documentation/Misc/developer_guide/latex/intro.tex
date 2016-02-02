@@ -1,0 +1,73 @@
+\chapter{Introduction}
+Greetings fellow \telemacsystem developer and welcome into the world of a \telemacsystem
+developer. It might be hard at the beginning but with time you will unravel all
+of \telemacsystem dirty little secrets.
+%
+This Guide aims to describe all the steps you might encounter when developing
+in \telemacsystem, those steps can be found in the "\telemacsystem Software Qualtiy Plan"
+(Eureka H-P74-2014-02365-EN). They are resumed in the Fig \ref{cycle}. 
+%
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance = 1cm, auto]
+  % Defining style for the task
+  \tikzstyle{task} = [draw, very thick, fill=white, rectangle]
+  \tikzstyle{bigbox} = [draw, thin, rounded corners, rectangle]
+  \tikzstyle{box} = [draw, thick, fill=white, rounded corners, rectangle]
+  % Creation of the nodes
+  \node (CUE) [task] {1. Ticket on CUE};
+  \node (CHs) [task, below of=CUE] {2. CHs}; 
+  \node (ADEPHE) [task, below of=CHs] {3. ADEPHE}; 
+  \node (IMPL) [task, below of=ADEPHE] {4. Implementation}; 
+  \node (null2) [right of=IMPL, node distance=9em] {};
+  \node (VV) [task, below of=IMPL] {5. Verification \& Validation}; 
+  \node (DOC) [task, below of=VV] {6. Documentation}; 
+  \node (INT) [task, below of=DOC] {7. Integration "ADEPHE"}; 
+  \node (null1) [right of=INT, node distance=9em] {};
+  \node (null3) [left of=INT, node distance=9em] {};
+  \node (TRUNK) [box, below of=INT, node distance=4em] {Main branch of \telemacsystem};
+  \node (VALID) [task, below of=TRUNK] {Full validation};
+  \node (TAG) [box, below of=VALID] {Release of \telemacsystem (tag)};
+  % big box
+  \node (DEV) [bigbox, fit = (CUE) (CHs) (ADEPHE) (IMPL) (null1) (null2) (null3) (VV) (DOC) (INT)] {};
+  \node at (DEV.north) [above, inner sep=3mm] {\textbf{Development}};
+  % Creation of the path between the nodes
+  \draw[->] (CUE) to node {} (CHs);
+  \draw[->] (CHs) to node {} (ADEPHE);
+  \draw[->] (ADEPHE) to node {} (IMPL);
+  \draw[->] (IMPL) to node {} (VV);
+  \draw[->] (VV) to node {} (DOC);
+  \draw[->] (DOC) to node {} (INT);
+  \draw[-] (INT) -- node [near start] {no} (null1.center);
+  \draw[-] (null1.center) -- (null2.center);
+  \draw[->] (null2.center) -- node [near start] {} (IMPL);
+  \draw[->] (INT) to node {yes} (TRUNK);
+  \draw[->] (TRUNK) to node {} (VALID);
+  \draw[->] (VALID) to node {} (TAG);
+\end{tikzpicture}
+\caption{\label{cycle}Life cycle of a \telemacsystem development}
+\end{figure}
+%
+The following sections will describes how to use the three tools you will be
+using during your development:
+\begin{itemize}
+\item SVN, The source controller that you will be using to handle the sources of
+your development.
+\item CUE, The ticket manager which will contain information on your
+development.
+\item CIS, The Continuous Integration Service which will compile, run, and
+validation your developments.
+\end{itemize}
+%
+\label{mail}
+To begin you work you will need to send an email to \url{awe@hrwallingford.com}
+with the following informations in order to give you the proper access into the
+\telemacsystem developing world:
+\begin{itemize}
+\item Your Name.
+\item The name of a fish (for the SVN branch, any existing fish is okay).
+\item The \telemacsystem modules on which you will be working (See Section \ref{proj}).
+\item The demand to add your branch on CIS.
+\end{itemize}
+%
+Enjoy !!!

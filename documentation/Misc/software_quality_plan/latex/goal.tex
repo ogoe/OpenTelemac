@@ -1,0 +1,152 @@
+\chapter{Goal, domain of application and responsibilities}
+
+\section{Introduction}
+
+\telemacsystem is an integrated suite of solvers for use in the field of free-surface
+flow. Having been used in the context of many studies throughout the world, it
+has become one of the major standards in its field.  \telemacsystem is managed by a
+Consortium of core organisations: Artelia (formerly Sogreah, France),
+BundesAnstalt für Wasserbau (BAW, Germany), Centre d’Etudes et d'expertise sur
+les risques, l'environement, la mobilité et l'aménagement (CEREMA, France),
+Daresbury Laboratory (United Kingdom), Electricité de France R\&D (EDF,
+France), and HR Wallingford (United Kingdom).
+
+\telemacsystem is used by most partners for dimensioning and impact studies,
+where safety is prevailing and, for this reason, reliability, validation and a
+worldwide recognition of our tools are of utmost importance. As a consequence
+and to improve the access to \telemacsystem for the whole community of
+consultants and researchers, the choice of open source has been made. Anyone
+can thus take advantage of \telemacsystem and assess its performances, and
+will find necessary resources on this website. However the quality of
+assistance, maintenance and hotline support are also very important to
+professional users, and a special effort has been made to offer alternatively a
+broad range of fee-paying services.
+
+This Quality Plan describes the general disposition in place to assure the
+Quality of \telemacsystem and its services. The procedure associated with this Quality
+Plan are described in complementary documents.
+
+\section{Description of the software}
+
+\telemacsystem is composed of several modules including numerical models and resolution
+algorithms useful for its utilisation.
+
+\telemacsystem and its tools are open source, under GPL license, with the \bief finite
+element library under LGPL. It is available from the \telemacsystem website
+(\url{www.opentelemac.org}). This website is the main access to \telemacsystem
+information and documentation.
+
+\telemacsystem can use external software and libraries. This Quality Plan does not
+cover those external elements (MPI, Metis, MED...), it only covers the
+function using them in the code.
+
+This quality plan should guarantee the inter-operability between \telemacsystem modules
+and software used for pre- and post-processing (such as Fudaa, Salomé...).
+The minimum requirements about inter-operability are to follow the same standard
+as any development in \telemacsystem (Appendix \ref{devplan}).
+
+\begin{figure}[H]
+\begin{tikzpicture}[node distance = 1cm, auto]
+  % Defininf style for the different kind of boxes
+  \tikzstyle{equation} = [draw, thick, ellipse,minimum width=3cm,minimum height=1cm]
+  \tikzstyle{code} = [draw, thick, rectangle,minimum width=3cm,minimum height=.6cm]
+  \tikzstyle{codeos} = [draw, thick, rectangle,fill=green!30,minimum width=3cm,minimum height=.6cm]
+  % Defining nodes
+  % Dimension
+  \node (0D) [equation, fill=green!30] {OpenSource};
+  \node (1D) [equation,right of=0D, node distance = 4cm] {\minibox[c]{1 dimension\\Shallow water\\equations}};
+  \node (2D) [equation, right of=1D, node distance = 4cm] {\minibox[c]{2 dimensions\\Shallow water\\equations}};
+  \node (2D3D) [right of=2D] {};
+  \node (3D) [equation, right of=2D3D, node distance = 3cm] {\minibox[c]{3 dimensions\\Navier-Stokes\\equations}};
+  % Physics
+  \node (FS) [equation,below of=0D, node distance=1.5cm] {\minibox[c]{Free surface\\hydraulics}};
+  \node (MD) [equation,below of=FS, node distance=1.4cm] {Morphodynamics};
+  \node (WQ) [equation,below of=MD,node distance=1.1cm] {Water Quality};
+  \node (GF) [equation,below of=WQ, node distance=1.4cm] {\minibox[c]{Groundwater\\Flows}};
+  \node (Wa) [equation,below of=GF, node distance=1.4cm] {Waves};
+  \node (Hy) [equation,below of=Wa, node distance=1.1cm] {Hydrology};
+  \node (lib) [below of=Hy, node distance=1.6cm] {};
+  % Codes
+  % 1D
+  \node (Mah) [codeos,below of=1D, node distance=1.4cm] {Mascaret/Hydro};
+  \node (Mac) [code,below of=Mah, node distance=1.5cm] {Mascaret/Courlis};
+  \node (Mat) [codeos,below of=Mac] {Mascaret/Tracer};
+  \node (ceq) [equation, fill=gray!31,below of=Mat, node distance=4cm] {Cequeau};
+  % 2D
+  \node (t2d) [codeos,below of=2D, node distance=1.4cm] {Telemac2D};
+  \node (sis) [codeos,below of=t2d, node distance=1.5cm] {Sisyphe};
+  \node (tom) [codeos,below of=sis, node distance=3.6cm] {Tomawac};
+  \node (art) [codeos,below of=tom, node distance=.7cm] {Artemis};
+  % 2D-3D
+  \node (del) [code, right of=Mat, node distance=6cm] {DelWAQ (Deltares)};
+  \node (est) [codeos,below of=del, node distance=1.4cm] {Estel};
+  % 3D 
+  \node (t3d) [codeos,below of=3D, node distance=1.4cm] {Telemac3D};
+  \node (sed) [codeos,below of=t3d, node distance=1.5cm] {Telemac3D};
+  % Outside libraries
+  \node (bief) [codeos, right of=lib] {\minibox[c]{Bief FE\\Library}};
+  \node (post) [code, right of=bief, node distance=3.1cm] {\minibox[c]{Paraview\\Tecplot\\Fudaa-Prepro\\BlueKenue}};
+  \node (mesh) [code, right of=post, node distance=3.1cm] {\minibox[c]{Mesh\\Generator}};
+  \node (misc) [code, right of=mesh, node distance=3.8cm] {\minibox[c]{Sink/source term library\\
+                                               Water Quality/Sediments\\
+                                               Lagrangian module}};
+  
+\end{tikzpicture}
+\caption{\label{telma_codes} Codes in \telemacsystem}
+\end{figure}
+
+\section{Versions concerned}
+
+This Software Quality Plan (SQP) is applied since version 7.0 of \tel and version
+8.0 of \mascaret.
+
+\section{Quality Plan Maintainers}
+
+This paragraph aims to identify the people in charge of the creation,
+verification, validation and follow up of the Software Quality Plan. The document
+"Organisation of \telemacsystem activity" in Appendix \ref{fullorga} gives more details on the
+organisation and on the action in their charge. The document "Nominative list
+of people in \telemacsystem" gives a nominative list for those roles.
+
+\subsection{Level 1 handler}
+
+The level 1 is for the people in charge of the project. The Level 1 Quality
+Handler (QH1) is the \telemacsystem Project Manager (PM). He is in charge of the
+creation and the follow up of the Software Quality Plan. He can be helped by
+the Code Handlers (CH) to whom he can delegate the implementation of the
+changes necessary. He has to verify that the action applied complies with the
+SQP.
+
+\subsection{Level 2 handler}
+
+The level 2 is for the preservation of the quality of the products and
+activities of \telemacsystem. The Level 2 Quality Handler (QH2) is the Head of the
+Department (HD) hosting the \telemacsystem project. In particular, he verifies and
+validates the new versions of the SQP. He can delegate this role to the Delegate
+Head of Department (DHD) or to the Head of the Group (HG) hosting the \telemacsystem
+project.
+
+\subsection{Level 3 handler}
+
+The level 3 is for people with an external role to the project. The Level 3
+Quality Handler is the Strategy Handler (SH) of the \telemacsystem project.
+
+\section{Evolution of the Software Quality Plan}
+
+The evolution of the Software Quality Plan and its complementary documents can
+result from the following actions:
+\begin{itemize} 
+\item Evolution of the Quality procedure in EDF R\&D.
+\item Evolution of the organisation inside the Consortium.
+\item Evolution of the handling procedure for the software.
+\item An extension of the applicable domain.
+\end{itemize}
+
+Any modification must be validated by the Consortium.
+
+\section{Case of non application of the Software Quality Plan}
+
+In case the SQP or part of it cannot be applied, a derogation is possible, if
+validated by both the QH1 and the QH2. This derogation is traced in a document
+with the Software Quality Plan. Otherwise a modification of the SQP can be
+asked by the QH2 or initiated by the QH1 so the SQP could be applicable again.

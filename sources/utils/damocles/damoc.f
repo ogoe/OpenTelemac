@@ -664,7 +664,6 @@
               DEFLU = 1
               IF (NTYP.NE.4) TROUVE(NTYP,INDX) = 1
 !
-!200           ICOL = NEXT(ICOL+1,LIGNE) -1
 200           CONTINUE
 !
               IF (NTYP .EQ. 1) THEN
@@ -682,7 +681,6 @@
                   IF (TROUVE(NTYP,INDX).LE.3) THEN
                     IF (L1.GT.0) TROUVE(NTYP,INDX)=1
                   ELSEIF(TROUVE(NTYP,INDX).EQ.6) THEN
-!                   IF (L1.GT.0) TROUVE(NTYP,INDX)=7
                     TROUVE(NTYP,INDX)=7
                   ENDIF
                 ELSE
@@ -710,7 +708,6 @@
 !
 ! READS THE DEFAULT OF A NON-REQUESTED LANGUAGE (NOT USED)
 !
-!210       ICOL = NEXT(ICOL+1,LIGNE) -1
  210          CONTINUE
 !
               IF (NTYP .EQ. 1) THEN
@@ -729,7 +726,6 @@
               IF (LIGNE(ICOL:ICOL) .EQ. PTVIRG) THEN
                 GO TO 210
               ELSE
-!               DEFLU=DEFLU
                 ICOL=ICOL-1
               ENDIF
             ENDIF

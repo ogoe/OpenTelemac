@@ -1,4 +1,4 @@
-
+/
 NOM = 'NOMBRE MAXIMUM DE POINTS DE BATHYMETRIE'
 NOM1 = 'MAXIMUM NUMBER OF BATHYMETRIC POINTS'
 TYPE = ENTIER
@@ -14,12 +14,13 @@ COMPORT =
 NIVEAU = 1
 AIDE =
 'Permet de dimensionner le tableau utilise pour la lecture, dans les
-FICHIERS DES FONDS, des points releves a la table a digitaliser.'
+\telkey{FICHIERS DES FONDS}, des points releves a la table a digitaliser.'
 AIDE1 =
 'Designed for dimensioning the array that is used for reading, in the
-BOTTOM TOPOGRAPHY FILES, the points recorded at the digitizing tablet.'
-
-
+\telkey{BOTTOM TOPOGRAPHY FILES}, the points recorded at the digitizing
+tablet.'
+/
+/
 NOM = 'LONGUEUR DU VECTEUR'
 NOM1 = 'VECTOR LENGTH'
 TYPE = ENTIER
@@ -35,8 +36,8 @@ AIDE =
 'Permet de fixer, sur machine vectorielle, la longueur du vecteur.'
 AIDE1 =
 'Designed for dimensioning the vector length on vector machine.'
-
-
+/
+/
 NOM = 'NOMBRE DE SOMMETS DU POLYGONE D''EXTRACTION'
 NOM1 = 'NUMBER OF VERTICES OF THE POLYGON TO EXTRACT THE MESH'
 TYPE = ENTIER
@@ -49,18 +50,22 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Lorsque l''on souhaite extraire une partie du maillage,
-permet de definir le nombre de sommets du polygone a l''interieur
-duquel le maillage sera effectivement extrait.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+'Lorsque l''on souhaite extraire une partie du maillage, permet de definir le
+nombre de sommets du polygone a l''interieur duquel le maillage sera
+effectivement extrait.\\
+\begin{WarningBlock}{Attention :}
+Ce polygone doit etre convexe et les coordonnees des sommets donnes dans
+l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to extract a piece of the mesh, this key-word fixes
 the number of vertices of a polygon inside of which the mesh will be
-finally extracted.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
+finally extracted.\\
+\begin{WarningBlock}{Warning:}
+This polygon should have a convex shape and the coordinates of the vertices be
+given with an anti clock wise order.
+\end{WarningBlock}'
+/
 NOM = 'NOMBRE DE SOMMETS DU POLYGONE DE RAFFINEMENT'
 NOM1 = 'NUMBER OF VERTICES OF THE POLYGON TO REFINE THE MESH'
 TYPE = ENTIER
@@ -75,16 +80,20 @@ NIVEAU = 1
 AIDE =
 'Lorsque l''on souhaite raffiner une partie du maillage,
 permet de definir le nombre de sommets du polygone a l''interieur
-duquel le maillage sera effectivement raffine.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+duquel le maillage sera effectivement raffine.\\
+\begin{WarningBlock}{Attention:}
+Ce polygone doit etre convexe et les coordonnees des
+sommets donnes dans l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to refine a piece of the mesh, this key-word fixes
 the number of vertices of a polygon inside of which the mesh will be
-finally refined.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
+finally refined.\\
+\begin{WarningBlock}{ATTENTION:}
+This polygon should have a convex shape and the coordinates
+of the vertices be given with an anti clock wise order.
+\end{WarningBlock}'
+/
 NOM = 'PROCESSEURS PARALLELES'
 NOM1 = 'PARALLEL PROCESSORS'
 TYPE = ENTIER
@@ -95,17 +104,21 @@ MNEMO = 'NCSIZE'
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
-AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
-0 : 1 machine, compilation sans bibliotheque de parallelisme
-1 : 1 machine, compilation avec bibliotheque de parallelisme
-2 : 2 processeurs ou machines en parallele
-etc... '
-AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING
-0 : 1 machine, compiling without parallel library
-1 : 1 machine, compiling with a parallel library
-2 : 2 processors or machines in parallel
-etc....'
-
+AIDE = 'Nombre de processeurs en calcul parallele
+\begin{itemize}
+\item 0 : 1 machine, compilation sans bibliotheque de parallelisme
+\item 1 : 1 machine, compilation avec bibliotheque de parallelisme
+\item 2 : 2 processeurs ou machines en parallele
+\item etc\ldots
+\end{itemize}'
+AIDE1 = 'Number of processors for parallel processing
+\begin{itemize}
+\item 0 : 1 machine, compiling without parallel library
+\item 1 : 1 machine, compiling with a parallel library
+\item 2 : 2 processors or machines in parallel
+\item etc\ldots
+\end{itemize}'
+/
 NOM = 'DISTANCE MINIMALE ENTRE DEUX POINTS'
 NOM1 = 'MINIMUM DISTANCE BETWEEN TWO POINTS'
 TYPE = REEL
@@ -119,17 +132,17 @@ RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
 'Distance (en metres)en dessous de laquelle deux noeuds sont consideres
-comme confondus par STBTEL, lors de la verification des resultats
+comme confondus par \stbtel, lors de la verification des resultats
 fournis par le mailleur. Lorsque deux noeuds sont confondus, l''un
 d''entre eux est elimine, et tous les noeuds du maillage sont
 renumerotes.'
 AIDE1 =
 'Distance (in meters) below which two nodes are considered as identical
-by STBTEL when the results supplied by the mesh generator are being
+by \stbtel when the results supplied by the mesh generator are being
 checked. When two nodes occur at the same place, one of them is
 eliminated and all the mesh nodes are renumbered.'
-
-
+/
+/
 NOM = 'DISTANCE MINIMALE A LA FRONTIERE'
 NOM1 = 'MINIMUM DISTANCE AT BOUNDARY'
 TYPE = REEL
@@ -148,10 +161,10 @@ decoupe le plan en 4 quadrans. Dans chacun de ces quadrans, on cherche
 le point releve a la table a digitaliser le plus proche. On affecte
 alors au noeud considere une profondeur correspondant a la moyenne,
 ponderee par la distance a ce noeud, des profondeurs en chacun des 4
-points precedemment trouves.
+points precedemment trouves.\\
 On verifie toutefois que, lors de la recherche des points, les
 frontieres du domaine ne sont pas franchies, de maniere a ne pas
-introduire d''aberration dans la bathymetrie.
+introduire d''aberration dans la bathymetrie.\\
 Ce mot-cle permet alors de definir la distance minimale aux frontieres
 du domaine en dessous de laquelle on refuse de prendre en compte les
 points releves.'
@@ -159,17 +172,17 @@ AIDE1 =
 'The bathymetric data at the mesh nodes are interpolated. At each mesh
 node, the plane is cut into 4 quadrants in each of which, among the
 points recorded at the digitizing tablet, the closest one to the node
-being considered is searched for.
+being considered is searched for.\\
 This node is thenn given a depth corresponding to the mean depth at
 each of the 4 points previously found, these depths being weighted
-by the distance to the node.
+by the distance to the node.\\
 When searching for the points in the quadrants, however, one shall
 make sure the boundaries aare not overstepped in order to prevent
-aberrations from being introduced into the bathymetric data.
+aberrations from being introduced into the bathymetric data.\\
 The keyword can then be used for specifying the minimum distance to
 the boundaries below which the recorded points should be ignored.'
-
-
+/
+/
 NOM = 'CORRECTION DES FONDS DE TRIGRID'
 NOM1 = 'BOTTOM CORRECTION OF TRIGRID'
 TYPE = REEL
@@ -186,8 +199,8 @@ AIDE =
 gemere par Trigrid.'
 AIDE1 =
 'Value to be added at the bottom value read in the Trigrid file'
-
-
+/
+/
 NOM  = 'ABSCISSES DES SOMMETS DU POLYGONE D''EXTRACTION'
 NOM1 = 'ABSCISSAE OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH'
 TYPE = REEL
@@ -204,16 +217,20 @@ AIDE =
 'Lorsque l''on souhaite extraire une partie du maillage,
 permet de definir les abscisses des sommets du polygone a l''interieur
 duquel le maillage sera effectivement extrait.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+\begin{WarningBlock}{Attention :}
+ce polygone doit etre convexe et les coordonnees des
+sommets donnes dans l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to extract a piece of the mesh, this key-word fixes
 the abscissae of the vertices of a polygon inside of which the mesh
-will be finally extracted.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
-
+will be finally extracted.\\
+\begin{WarningBlock}{Warning:}
+This polygon should have a convex shape and the coordinates
+of the vertices be given with an anti clock wise order.
+\end{WarningBlock}'
+/
+/
 NOM  = 'ORDONNEES DES SOMMETS DU POLYGONE D''EXTRACTION'
 NOM1 = 'ORDINATES OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH'
 TYPE = REEL
@@ -229,16 +246,20 @@ NIVEAU = 1
 AIDE =
 'Lorsque l''on souhaite extraire une partie du maillage,
 permet de definir les ordonnees des sommets du polygone a l''interieur
-duquel le maillage sera effectivement extrait.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+duquel le maillage sera effectivement extrait.\\
+\begin{WarningBlock}{Attention :}
+Ce polygone doit etre convexe et les coordonnees des
+sommets donnes dans l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to extract a piece of the mesh, this key-word fixes
 the ordinates of the vertices of a polygon inside of which the mesh
-will be finally extracted.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
+will be finally extracted.\\
+\begin{WarningBlock}{Warning:}
+This polygon should have a convex shape and the coordinates
+of the vertices be given with an anti clock wise order.
+\end{WarningBlock}'
+/
 NOM  = 'ABSCISSES DES SOMMETS DU POLYGONE DE RAFFINEMENT'
 NOM1 = 'ABSCISSAE OF THE VERTICES OF THE POLYGON TO REFINE THE MESH'
 TYPE = REEL
@@ -254,17 +275,21 @@ NIVEAU = 1
 AIDE =
 'Lorsque l''on souhaite raffiner une partie du maillage,
 permet de definir les abscisses des sommets du polygone a l''interieur
-duquel le maillage sera effectivement raffine.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+duquel le maillage sera effectivement raffine.\\
+\begin{WarningBlock}{Attention :}
+ce polygone doit etre convexe et les coordonnees des
+sommets donnes dans l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to refine a piece of the mesh, this key-word fixes
 the abscissae of the vertices of a polygon inside of which the mesh
-will be finally refined.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
-
+will be finally refined.\\
+\begin{WarningBlock}{Warning:}
+This polygon should have a convex shape and the coordinates
+of the vertices be given with an anti clock wise order.
+\end{WarningBlock}'
+/
+/
 NOM  = 'ORDONNEES DES SOMMETS DU POLYGONE DE RAFFINEMENT'
 NOM1 = 'ORDINATES OF THE VERTICES OF THE POLYGON TO REFINE THE MESH'
 TYPE = REEL
@@ -280,16 +305,20 @@ NIVEAU = 1
 AIDE =
 'Lorsque l''on souhaite raffiner une partie du maillage,
 permet de definir les ordonnees des sommets du polygone a l''interieur
-duquel le maillage sera effectivement raffine.
-ATTENTION: ce polygone doit etre convexe et les coordonnees des
-sommets donnes dans l''ordre trigonometrique.'
+duquel le maillage sera effectivement raffine.\\
+\begin{WarningBlock}{Attention :}
+ce polygone doit etre convexe et les coordonnees des
+sommets donnes dans l''ordre trigonometrique.
+\end{WarningBlock}'
 AIDE1 =
 'When you want to refine a piece of the mesh, this key-word fixes
 the ordinates of the vertices of a polygon inside of which the mesh
-will be finally refined.
-ATTENTION: this polygon should have a convex shape and the coordinates
-of the vertices be given with an anti clock wise order.'
-
+will be finally refined.\\
+\begin{WarningBlock}{Warning:}
+This polygon should have a convex shape and the coordinates
+of the vertices be given with an anti clock wise order.
+\end{WarningBlock}'
+/
 NOM = 'DECOUPAGE DES TRIANGLES SURCONTRAINTS'
 NOM1 = 'OVERSTRESSED TRIANGLES CUTTING'
 TYPE = LOGIQUE
@@ -304,7 +333,7 @@ AIDE =
 'Un triangle surcontraint est tel que ses trois noeuds soient situes
 sur une frontiere du domaine de calcul. La presence de tels triangles
 peut entrainer des instabilites lors des calculs realises par
-TELEMAC 2D.
+TELEMAC 2D.\\
 Cette option permet, en creant un noeud place au barycentre de des
 triangles surcontraints, d''eviter de tels problemes.'
 AIDE1 =
@@ -313,8 +342,8 @@ boundary of the computational domain. The occurrence of such triangles
 may bring about instabilities in the computations made by TELEMAC 2D.
 Such problems can be prevented by this option, through the creation of
 a node at the geometric centres of the overstressed triangles.'
-
-
+/
+/
 NOM = 'ECRITURE DE LA COULEUR DES NOEUDS'
 NOM1 = 'WRITING NODE COLOURS'
 TYPE = LOGIQUE
@@ -327,8 +356,8 @@ RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE  = 'Option non activee.'
 AIDE1 = 'Option not activated'
-
-
+/
+/
 NOM = 'ELIMINATION DES DEPENDANCES ARRIERES'
 NOM1 = 'ELIMINATION OF BACKWARD DEPENDENCIES'
 TYPE = LOGIQUE
@@ -342,17 +371,21 @@ NIVEAU = 1
 AIDE =
 'Permet de renumeroter les noeuds du maillage de maniere a eliminer les
 dependances arrieres et autoriser ainsi le forcage de la vectorisation
-lorsque les calculs TELEMAC 2D son effectues sur CRAY.
-Attention : un nombre minimum d''environ 500 noeuds est requis pour
-l''activation de cette option.'
+lorsque les calculs TELEMAC 2D son effectues sur CRAY.\\
+\begin{WarningBlock}{Attention :}
+Un nombre minimum d''environ 500 noeuds est requis pour
+l''activation de cette option.
+\end{WarningBlock}'
 AIDE1 =
 'Provides for renumbering of the mesh nodes in order to eliminate the
 backward dependencies, thereby enabling a forced vectorisation when
-the TELEMAC 2D computations are made on a CRAY.
-Warning: about 500 nodes is the least number required for activating
-this option.'
-
-
+the TELEMAC 2D computations are made on a CRAY.\\
+\begin{WarningBlock}{Warning:}
+About 500 nodes is the least number required for activating
+this option.
+\end{WarningBlock}'
+/
+/
 NOM = 'DECOUPAGE DES TRIANGLES EN QUATRE'
 NOM1 = 'CUTTING ELEMENTS IN FOUR'
 TYPE = LOGIQUE
@@ -369,8 +402,8 @@ en joignant les milieux des aretes.'
 AIDE1 =
 'Cuts every element of the mesh in four homothetic elements
 by joigning the middle points of each side.'
-
-
+/
+/
 NOM = 'BATHYMETRIE DANS LE FICHIER UNIVERSEL'
 NOM1 = 'BATHYMETRY IN THE UNIVERSAL FILE'
 TYPE = LOGIQUE
@@ -386,8 +419,8 @@ AIDE =
 maillage (Trigrid ou Fasttabs).'
 AIDE1 =
 'The bathymetry will be read in the mesh file (Trigrid or Fasttabs).'
-
-
+/
+/
 NOM = 'RENUMEROTATION DES POINTS'
 NOM1 = 'NODES RENUMBERING'
 TYPE = LOGIQUE
@@ -402,8 +435,8 @@ AIDE =
 'Permet d''utiliser le nouveau type de stockage des matrices.'
 AIDE1 =
 'Necessary to use the new storage scheme for the matrix.'
-
-
+/
+/
 NOM = 'CONDITIONS LIMITES DANS LE FICHIER ADDITIONNEL'
 NOM1 = 'BOUNDARY CONDITIONS IN THE ADDITIONAL FILE'
 TYPE = LOGIQUE
@@ -420,8 +453,8 @@ additionnel (Fasttabs).'
 AIDE1 =
 'The boundary condition will be read in the additional file
  (Fasttabs).'
-
-
+/
+/
 NOM  = 'PROJECTION APRES EXTRACTION'
 NOM1 = 'PROJECTION AFTER EXTRACTION'
 TYPE = LOGIQUE
@@ -438,8 +471,8 @@ non le maillage extrait sur les aretes du polygone.'
 AIDE1 =
 'When a mesh is extracted inside a polygon, indicates whether the mesh
 should be projected through the faces of the polygon or not.'
-
-
+/
+/
 NOM = 'FICHIER FORTRAN'
 NOM1 = 'FORTRAN FILE'
 TYPE = CARACTERE
@@ -455,16 +488,16 @@ COMPORT =
 'Foreground ("ENTREES-SORTIES, FICHIERS*NOMS")
 IS VALEUR (red)'
 NIVEAU = 1
-AIDE = 'Nom du fichier FORTRAN a soumettre.
+AIDE = 'Nom du fichier Fortran a soumettre.
 Il ne sert a priori qu''a dimensionner les tableaux utilises par
-STBTEL, mais peut contenir des sous-programmes modifies ou propres a
+\stbtel, mais peut contenir des sous-programmes modifies ou propres a
 l''utilisateur.'
-AIDE1 = 'Name of FORTRAN file to be entered.
+AIDE1 = 'Name of Fortran file to be entered.
 It is a priori only designed for dimensioning the arrays that are
-used by STBTEL, but it may contain either modified or user-written
+used by \stbtel, but it may contain either modified or user-written
 subroutines.'
-
-
+/
+/
 NOM = 'FICHIER DES PARAMETRES'
 NOM1 = 'STEERING FILE'
 TYPE = CARACTERE
@@ -483,8 +516,8 @@ du calcul a realiser.'
 AIDE1 =
 'Name of the file that contains the file references and of options for
 the computation to be made.'
-
-
+/
+/
 NOM = 'FICHIER UNIVERSEL'
 NOM1 = 'UNIVERSAL FILE'
 TYPE = CARACTERE
@@ -498,13 +531,13 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE =
-'Nom du fichier construit par le mailleur, a partir duquel STBTEL va
+'Nom du fichier construit par le mailleur, a partir duquel \stbtel va
 travailler.'
 AIDE1 =
-'Name of the file created by the mesh generator, and from which STBTEL
+'Name of the file created by the mesh generator, and from which \stbtel
 will work.'
-
-
+/
+/
 NOM = 'MAILLEUR'
 NOM1 = 'MESH GENERATOR'
 TYPE = CARACTERE
@@ -526,35 +559,41 @@ COMPORT =
 IS VALEUR (yellow)'
 NIVEAU = 1
 AIDE =
-'Nom du mailleur utilise pour la creation du FICHIER UNIVERSEL. Ce peut
-etre :
-
-   - SUPERTAB6 (version 6 du mailleur SUPERTAB),
-   - SUPERTAB4 (version 4 du mailleur SUPERTAB),
-   - MASTER2 (version 2 du mailleur MASTER-SERIES),
-   - SIMAIL,
-   - SELAFIN (afin de modifier un maillage deja utilise, comme pour :
-              - interpoler de nouveau fonds
-              - eliminer des dependances arrieres
-              - coupe triangles surcontraints),
-   - TRIGRID,
-   - FASTTABS.'
+'Nom du mailleur utilise pour la creation du \telkey{FICHIER UNIVERSEL}.
+Ce peut etre :
+\begin{itemize}
+\item SUPERTAB6 (version 6 du mailleur SUPERTAB),
+\item SUPERTAB4 (version 4 du mailleur SUPERTAB),
+\item MASTER2 (version 2 du mailleur MASTER-SERIES),
+\item SIMAIL,
+\item SELAFIN (afin de modifier un maillage deja utilise, comme pour :
+\begin{itemize}
+\item interpoler de nouveau fonds
+\item eliminer des dependances arrieres
+\item coupe triangles surcontraints),
+\end{itemize}
+\item TRIGRID,
+\item FASTTABS.
+\end{itemize}'
 AIDE1 =
-'Name of the mesh generator used for preparing the UNIVERSAL FILE. It
-will be selected among the following:
-
-   - SUPERTAB6 (version 6 of SUPERTAB mesh generator),
-   - SUPERTAB4 (version 4 of SUPERTAB mesh generator),
-   - MASTER2 (version 2 of MASTER-SERIES mesh generator),
-   - SIMAIL,
-   - SELAFIN (in order to modify a mesh already used, as for example :
-              - to interpolate a new bathymetry
-              - to eliminate backward dependencies
-              - to cut overstressed triangles ),
-   - TRIGRID,
-   - FASTTABS.'
-
-
+'Name of the mesh generator used for preparing the \telkey{UNIVERSAL
+FILE}. It will be selected among the following:
+\begin{itemize}
+\item SUPERTAB6 (version 6 of SUPERTAB mesh generator),
+\item SUPERTAB4 (version 4 of SUPERTAB mesh generator),
+\item MASTER2 (version 2 of MASTER-SERIES mesh generator),
+\item SIMAIL,
+\item SELAFIN (in order to modify a mesh already used, as for example :
+\begin{itemize}
+\item to interpolate a new bathymetry
+\item to eliminate backward dependencies
+\item to cut overstressed triangles ),
+\end{itemize}
+\item TRIGRID,
+\item FASTTABS.
+\end{itemize}'
+/
+/
 NOM = 'FICHIER DE GEOMETRIE POUR TELEMAC'
 NOM1 = 'GEOMETRY FILE FOR TELEMAC'
 TYPE = CARACTERE
@@ -569,12 +608,12 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE =
 'Nom du fichier qui contiendra le maillage mis au format SELAFIN, et
-qui servira pour les calculs TELEMAC 2D.'
+qui servira pour les calculs \telemac{2D}.'
 AIDE1 =
 'Name of the file that will contain the mesh data to SELAFIN format,
-and to be used in TELEMAC 2D computations.'
-
-
+and to be used in \telemac{2D} computations.'
+/
+/
 NOM = 'STANDARD DE BINAIRE'
 NOM1 = 'BINARY STANDARD'
 TYPE = CARACTERE
@@ -591,26 +630,27 @@ COMPORT =
 IS VALEUR (red)'
 NIVEAU = 2
 AIDE =
-'Adapte l''ecriture du FICHIER DE GEOMETRIE POUR TELEMAC au standard
-binaire choisi pour celui-ci. Ce peut etre :
-
-   - IBM : binaire IBM,
-   - I3E : binaire HP,
-   - STD : prend par defaut le binaire de la machine sur laquelle
-           l''utilisateur travaille. Ce sont alors des ordres READ et
-           WRITE normaux qui sont utilises.'
+'Adapte l''ecriture du \teleky{FICHIER DE GEOMETRIE POUR TELEMAC} au
+standard binaire choisi pour celui-ci. Ce peut etre :
+\begin{itemize}
+\item IBM : binaire IBM,
+\item I3E : binaire HP,
+\item STD : prend par defaut le binaire de la machine sur laquelle
+            l''utilisateur travaille. Ce sont alors des ordres READ et
+            WRITE normaux qui sont utilises.
+\end{itemize}'
 AIDE1=
-'Matches the writing of the .i.GEOMETRY FILE FOR TELEMAC; to the binary
-standard chosen for the latter. It will be selected among the
-following :
-
-   - IBM   : IBM binary,
-   - I3E   : HP binary,
-   - STD   : takes by default the binary on the computer with which
-             the user is working. The normal READ and WRITE commands
-             are then used.'
-
-
+'Matches the writing of the \telkey{GEOMETRY FILE FOR TELEMAC} to the
+binary standard chosen for the latter. It will be selected among the
+following:
+\begin{itemize}
+\item IBM: IBM binary,
+\item I3E: HP binary,
+\item STD: takes by default the binary on the computer with which
+          the user is working. The normal READ and WRITE commands
+          are then used.
+\end{itemize}'
+/
 NOM = 'FICHIER DES CONDITIONS AUX LIMITES'
 NOM1 = 'BOUNDARY CONDITIONS FILE'
 TYPE = CARACTERE
@@ -625,18 +665,18 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE =
 'Nom du fichier qui contiendra les conditions aux limites lues dans le
-FICHIER UNIVERSEL, et qui servira pour les calculs TELEMAC 2D.
-(les conditions aux limites sont definies lors de la realisation du
-maillage, au moyen de couleurs affectees aux noeuds des frontieres du
-domaine de calcul).'
+\telkey{FICHIER UNIVERSEL}, et qui servira pour les calculs
+\telemac{2D}. (les conditions aux limites sont definies lors de la
+realisation du maillage, au moyen de couleurs affectees aux noeuds des
+frontieres du domaine de calcul).'
 AIDE1 =
 'Name of the file that will contain the boundary conditions being read
-from the UNIVERSAL FILE, and to be used in TELEMAC 2D computations.
-(The boundary conditions are defined when preparing the meshes,
-through colours that are allotted to the nodes of the computation
-domain boundaries).'
-
-
+from the \telkey{UNIVERSAL FILE}, and to be used in \telemac{2D}
+computations. (The boundary conditions are defined when preparing the
+meshes, through colours that are allotted to the nodes of the
+computation domain boundaries).'
+/
+/
 NOM = 'FICHIERS DES FONDS'
 NOM1 = 'BOTTOM TOPOGRAPHY FILES'
 TYPE = CARACTERE
@@ -662,48 +702,7 @@ AIDE1 =
 'Name of the file containing the bathymetric points (to SINUSX
 standard), to be used, through interpolation, for defining the depth
 at each point of the mesh.'
-
-NOM = 'TEMPS MACHINE'
-NOM1 = 'CPU TIME'
-TYPE = CARACTERE
-INDEX = 9
-SUBMIT = 'qsub;opt;void;#QSUB -lT'
-DEFAUT = '10'
-DEFAUT1 = '10'
-MNEMO = ''
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION  ENVIRONMENT'
-NIVEAU = 3
-AIDE =
-'Temps CPU (en secondes) alloue pour la realisation du calcul.
-Attention, il s''agit bien d''une chaine de caracteres.
-Option non activee sur une station de travail.'
-AIDE1 =
-'CPU time (in seconds) allotted for making the computation. It should
-be noted it is a string of characters. Option not implemented on a
-workstation'
-
-
-NOM = 'PLACE MEMOIRE'
-NOM1 = 'MEMORY SPACE'
-TYPE = CARACTERE
-INDEX = 10
-SUBMIT = 'qsub;opt;void;#QSUB -lM'
-DEFAUT = '1500000W'
-DEFAUT1 = '1500000W'
-MNEMO = 'MEM_SPACE'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION  ENVIRONMENT'
-NIVEAU = 3
-AIDE =
-'Place memoire sur CRAY, en mots de 8 octets, reservee en machine pour
-la realisation du calcul. Une estimation de cette valeur est donnee en
-tete du listing.'
-AIDE1 =
-'Memory space on CRAY, in 8-byte words, reserved in computer for making
-the computation. An assessment of this value is provided at the head
-of the listing. Option not implemented on a workstation.'
-
+/
 NOM = 'BIBLIOTHEQUES'
 NOM1 = 'BIBLIOTHEQUES'
 TYPE = CARACTERE
@@ -716,7 +715,7 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION  ENVIRONMENT'
 NIVEAU = -3
 AIDE =' '
 AIDE1 =' '
-
+/
 NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'
 TYPE = CARACTERE
@@ -732,8 +731,8 @@ AIDE =
         stbtel,damo,util,hp'
 AIDE1 =
 'Version numbers of STBTEL, DAMO, UTIL, HP libraries, respectively.'
-
-
+/
+/
 NOM = 'FICHIER ADDITIONNEL DU MAILLEUR'
 NOM1 = 'MESH ADDITIONAL DATA FILE'
 TYPE = CARACTERE
@@ -749,21 +748,25 @@ NIVEAU = 1
 AIDE =
 'Nom du fichier additionnel. Ce fichier a une signification
 differente en fonction du mailleur choisi.
-Trigrid : Fichier contenant la table de connectivites (obligatoire).
-Fasttabs : Fichier contenant les conditions limites (optionnel).'
+\begin{itemize}
+\item Trigrid : Fichier contenant la table de connectivites (obligatoire).
+\item Fasttabs : Fichier contenant les conditions limites (optionnel).
+\end{itemize}'
 AIDE1 =
 'Name of the additionql file. The meaning of this file depend on the
 type of mesh generator.
-Trigrid : containing the connectivity table built (mandatory).
-Fasttabs  : boundary condition file built by Fasttabs (optional).'
-
+\begin{itemize}
+\item Trigrid : containing the connectivity table built (mandatory).
+\item Fasttabs  : boundary condition file built by Fasttabs (optional).
+\end{itemize}'
+/
 /======================================================================/
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
 /                   KEY-WORD DICTIONARY OF STBTEL
 /                VERSION 3.1 - MULTILINGUE - EDAMOX
 /======================================================================/
-
-
+/
+/
 NOM = 'DICTIONNAIRE'
 NOM1 = 'DICTIONARY'
 TYPE = CARACTERE
@@ -779,29 +782,13 @@ AIDE =
 'Dictionnaire des mots cles.'
 AIDE1 =
 'Key word dictionary.'
-
-
-NOM = 'NUMERO DE COMPTE'
-NOM1 = 'ACCOUNT'
-TYPE = CARACTERE
-INDEX = 17
-SUBMIT = 'acct;opt;void;newacct'
-DEFAUT = ' '
-DEFAUT1 = ' '
-MNEMO = ''
-NIVEAU = 1
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-AIDE =
-'Numero de compte d''imputation des calculs sur CRAY'
-AIDE1=
-'accounting'
+/
 /======================================================================/
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
 /                   AJOUT POUR LA VERSION  4.1
 /
 /======================================================================/
-
+/
 NOM = 'SEUIL DE SECHERESSE'
 NOM1 = 'DRY LIMIT'
 TYPE = REEL
@@ -819,7 +806,7 @@ duquel un noeud est considere comme sec.'
 AIDE1 =
 'Limit of water depth value (in meter) under which the node is
 considered as dry node.'
-
+/
 NOM = 'ELIMINATION DES ELEMENTS SECS'
 NOM1 = 'DRY ELEMENTS ELIMINATION'
 TYPE = LOGIQUE
@@ -831,12 +818,12 @@ RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Lors du traitement d''un fichier de resultats issu de TELEMAC-2D,
+'Lors du traitement d''un fichier de resultats issu de \telemac{2D},
 permet d''activer l''elimination des elements secs.'
 AIDE1 =
-'When using a TELEMAC-2D results file, this keyword activates the
+'When using a \telemac{2D} results file, this keyword activates the
 dry elements elimination.'
-
+/
 NOM = 'ELIMINATION DES ELEMENTS PARTIELLEMENT SECS'
 NOM1 = 'PARTIALLY DRY ELEMENTS ELIMINATION'
 TYPE = LOGIQUE
@@ -853,7 +840,7 @@ on traite les elements parteillement secs (au moins un noeud sec).'
 AIDE1 =
 'When removing dry elements, specify if the partially dry elements are
 treated (at least one dry node).'
-
+/
 NOM = 'STOCKAGE DE TOUS LES PAS DE TEMPS'
 NOM1 = 'STORAGE OF ALL TIME STEPS'
 TYPE = LOGIQUE
@@ -872,7 +859,7 @@ resultat'
 AIDE1 =
 'When treating dry elements elimination, specify that
 all time steps are to be stored in the results file.'
-
+/
 /======================================================================/
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
 /                   AJOUT POUR LA VERSION  6.3
@@ -892,7 +879,7 @@ AIDE =
 'Permet d activer le mode debuggage.'
 AIDE1 =
 'Activate the debug mode.'
-
+/
 NOM = 'CONVERTISSEUR'
 NOM1 = 'CONVERTER'
 TYPE = LOGIQUE
@@ -907,22 +894,23 @@ AIDE =
 'Permet d activer le module de conversion.'
 AIDE1 =
 'Activate the conversion module.'
-
+/
 NOM = 'CONDITION LIMITE EN FORMAT SERAFIN'
 NOM1 = 'BOUNDARY CONDITION IN SERAFIN FORMAT'
 TYPE = LOGIQUE
 INDEX = 14
 DEFAUT = NON
 DEFAUT1 = NO
-MNEMO = 'SRF_BND'
+MNEMO = 'SRF\_BND'
 RUBRIQUE = 'CONVERTISSEUR'
 RUBRIQUE1 = 'CONVERTER'
 NIVEAU = 1
 AIDE =
-'Permet d activer le module de conversion.'
+'Fichier de conditions limites dans le cas d''une conversion depuis
+SERAFIN.'
 AIDE1 =
-'Activate the conversion module.'
-
+'Boundary condition file when converting from SERAFIN.'
+/
 NOM = 'FORMAT DU FICHIER D ENTREE'
 NOM1 = 'INPUT FILE FORMAT'
 TYPE = CARACTERE
@@ -940,7 +928,7 @@ RUBRIQUE1 = 'CONVERTER'
 NIVEAU = 1
 AIDE = 'Specifie le format du fichier d entree'
 AIDE1 = 'Specify input file format'
-
+/
 NOM = 'FORMAT DU FICHIER DE SORTIE'
 NOM1 = 'OUTPUT FILE FORMAT'
 TYPE = CARACTERE
@@ -960,7 +948,7 @@ RUBRIQUE1 = 'CONVERTER'
 NIVEAU = 1
 AIDE = 'Specifie le format du fichier de sortie'
 AIDE1 = 'Specify output file format'
-
+/
 NOM = 'FICHIER D ENTREE'
 NOM1 = 'INPUT FILE'
 TYPE = CARACTERE
@@ -976,7 +964,7 @@ AIDE =
 'Nom du fichier a convertir.'
 AIDE1 =
 'Name of the file to convert.'
-
+/
 NOM = 'FICHIER DE SORTIE'
 NOM1 = 'OUTPUT FILE'
 TYPE = CARACTERE
@@ -993,7 +981,7 @@ AIDE =
 'Nom du fichier converti'
 AIDE1 =
 'Name of the converted file'
-
+/
 NOM = 'FICHIER DES CONDITIONS LIMITES'
 NOM1 = 'BOUNDARY FILE'
 TYPE = CARACTERE
@@ -1010,7 +998,7 @@ AIDE =
 'Nom du fichier des conditions limites'
 AIDE1 =
 'Name of the boundary condition file'
-
+/
 NOM = 'FICHIER LOG'
 NOM1 = 'LOG FILE'
 TYPE = CARACTERE
@@ -1027,7 +1015,7 @@ AIDE =
 'Nom du fichier complementaire pour le format UNV'
 AIDE1 =
 'Name of the complementary file for the UNV format'
-
+/
 NOM = 'FICHIER DES CONDITIONS LIMITES EN SORTIE'
 NOM1 = 'OUTPUT BOUNDARY FILE'
 TYPE = CARACTERE
@@ -1044,7 +1032,7 @@ AIDE =
 'Nom du fichier des conditions limites pour le fichier converti'
 AIDE1 =
 'Name of the boundary file for the converted file'
-
+/
 NOM = 'FICHIER LOG EN SORTIE'
 NOM1 = 'OUTPUT LOG FILE'
 TYPE = CARACTERE
@@ -1061,7 +1049,7 @@ AIDE =
 'Nom du fichier complementaire pour le fichier converti'
 AIDE1 =
 'Name of the complementary file for the converted file'
-
+/
 NOM = 'TRANSLATION'
 NOM1 = 'TRANSLATION'
 TYPE = LOGIQUE
@@ -1069,14 +1057,14 @@ INDEX = 15
 DEFAUT = NON
 DEFAUT1 = NO
 MNEMO = 'TRANSLATE'
-RUBRIQUE = 'CONVERTISSEUR'
-RUBRIQUE1 = 'CONVERTER'
+RUBRIQUE = 'CONVERTISSEUR';'TRANSLATION'
+RUBRIQUE1 = 'CONVERTER';'TRANSLATION'
 NIVEAU = 1
 AIDE =
 'Permet d activer la translation de maillage.'
 AIDE1 =
 'Activate the translation of the mesh.'
-
+/
 NOM = 'TRANSLATION SELON X'
 NOM1 = 'X TRANSLATION'
 TYPE = REEL
@@ -1085,14 +1073,14 @@ DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = 'DX'
 CONTROLE = 0
-RUBRIQUE = 'CONVERTISSEUR'
-RUBRIQUE1 = 'CONVERTER'
+RUBRIQUE = 'CONVERTISSEUR';'TRANSLATION'
+RUBRIQUE1 = 'CONVERTER';'TRANSLATION'
 NIVEAU = 1
 AIDE =
 'Translation selon x'
 AIDE1 =
 'Translation on the x axes'
-
+/
 NOM = 'TRANSLATION SELON Y'
 NOM1 = 'Y TRANSLATION'
 TYPE = REEL
@@ -1101,14 +1089,14 @@ DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = 'DY'
 CONTROLE = 0
-RUBRIQUE = 'CONVERTISSEUR'
-RUBRIQUE1 = 'CONVERTER'
+RUBRIQUE = 'CONVERTISSEUR';'TRANSLATION'
+RUBRIQUE1 = 'CONVERTER';'TRANSLATION'
 NIVEAU = 1
 AIDE =
 'Translation selon y'
 AIDE1 =
 'Translation on the y axes'
-
+/
 //----Librairies du code-------------------------------------------
 //
 //Conventions de notation :
@@ -1119,7 +1107,7 @@ AIDE1 =
 //    |  = seperateur dans un path (/ sous Unix, \ sous NT)
 //
 //    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
-
+/
 NOM = 'DESCRIPTION DES LIBRAIRIES'
 NOM1 = 'DESCRIPTION OF LIBRARIES'
 TYPE = CARACTERE
@@ -1141,10 +1129,10 @@ DEFAUT1 = 'builds|PPP|lib|stbtelMMMVVV.LLL';
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Description des librairies de STBTEL'
-AIDE1 = 'Description of STBTEL LIBRARIES'
-
-
+AIDE  = 'Description des librairies de \stbtel'
+AIDE1 = 'Description of \stbtel libraries'
+/
+/
 //----Executable par defaut du code---------------------------------
 //
 //Conventions de notation :
@@ -1154,7 +1142,7 @@ AIDE1 = 'Description of STBTEL LIBRARIES'
 //    |  = seperateur dans un path (/ sous Unix, \ sous NT)
 //
 //    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
-
+/
 NOM = 'EXECUTABLE PAR DEFAUT'
 NOM1 = 'DEFAULT EXECUTABLE'
 TYPE = CARACTERE
@@ -1166,9 +1154,9 @@ DEFAUT1 = 'builds|PPP|bin|stbtelMMMVVV.exe'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Executable par defaut de STBTEL'
-AIDE1 = 'Default executable for STBTEL'
-
+AIDE  = 'Executable par defaut de \stbtel'
+AIDE1 = 'Default executable for \stbtel'
+/
 NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
 NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
 TYPE = CARACTERE
@@ -1180,9 +1168,9 @@ DEFAUT1 = 'builds|PPP|bin|stbtelMMMVVV.exe'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Executable parallele par defaut de Stbtel'
-AIDE1 = 'Default parallel executable for Stbtel'
-
+AIDE  = 'Executable parallele par defaut de \stbtel'
+AIDE1 = 'Default parallel executable for \stbtel'
+/
 NOM = 'LISTE DES FICHIERS'
 NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE

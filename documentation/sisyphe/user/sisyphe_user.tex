@@ -1,77 +1,57 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                    %
-%                                                                    %
-%                                                                    %
-% Title : openTELEMAC & Mascaret Latex Releas enote / Template file  %
-% Version 6.3                                                        %
-%                                                                    %
-%                                                                    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Telemac Documentation
+%  Example of the TelemacDoc class
 %
-\documentclass[12pt,a4paper]{article}
-% ....................................................................
-% MANDATORY PACKAGE
-\input{../../data/defs/openTELEMAC_def}
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% AUTHORS...                                                         %
-% OPTIONS : PACKAGE MAY DIFFER FOR EDF OR EXTERNAL PUBLICATIONS      %
-% ...................................................................%
-% Optional but mandatory for EDF publications                        %
-\def\EDF_Eureka{0}
-\if\EDF_Eureka1
-  \def \eurekaTYPE{User Manual}
-  \def \eurekaMODULE{\sisyphe}
-  \usepackage[rddoc]{\edf/noteEDF}
-\fi
-%                                                                    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[Sisyphe]{../../data/TelemacDoc} % Default font size and left-justified equations
+%\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+
 \begin{document}
 
-\setcounter{page}{1}
+\let\cleardoublepage\clearpage
 
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% AUTHORS...                                                         %
-% OPTIONS : PACKAGE MAY DIFFER FOR EDF OR EXTERNAL PUBLICATIONS      %
-%                                                                    %
-% Optional but mandatory for EDF publications                        %
-% HeaderEDF contains information on the document (title,author,H-P78)%
-% and a FOOTER/BOTTOM                                                %
-% % .................................................................%
-%
-\if\EDF_Eureka1
-  \input{\edf/headerEDF}
-  \pagebreak
-  \input{\edf/CLAIM}
-  \pagebreak
-  \input{\texfile/SYNTHESE}
-  \pagebreak
-  \else
-  \input{\texfile/TITLE}
-  \pagebreak
-\fi
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-\setcounter{tocdepth}{2}
-\begin{center}\begin{singlespace}
-\tableofcontents
-\end{singlespace}\end{center}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\title{Sisyphe}
+\subtitle{User Manual}
+\version{7.2}
+\author{Otto Mattic}
+\date{\today}
+\maketitle
 \clearpage
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% AUTHORS...                                                         %
-% CORPUS : TO BE MODIFIED BY AUTHORS                                 %
-\input{\texfile/CORPUS}
-%                                                                    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+\thispagestyle{empty}
+
+\TelemacCopyright{}
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+
+\pagestyle{empty} % No headers
+
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+
+%----------------------------------------------------------------------------------------
+%	The whole thing
+%----------------------------------------------------------------------------------------
+
 \end{document}
-
-
-

@@ -10,7 +10,7 @@ SUBMIT = 'NGEO-READ-01;ARTGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
 /DEFAUT = ' '
 /DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
+RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES'
 COMPORT =
  'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
 CHOIX = 'geo'
@@ -87,9 +87,7 @@ DEFAUT = 0
 DEFAUT1 = 0
 RUBRIQUE = 'DISSIPATION';'FROTTEMENT'
 RUBRIQUE1 = 'DISSIPATION';'BOTTOM FRICTION'
-COMPORT = 'Foreground
-("DISSIPATION*FROTTEMENT")
-IS VALEUR (BLUE)'
+COMPORT = 'Foreground ("DISSIPATION*FROTTEMENT") IS VALEUR (BLUE)'
 NIVEAU= 2
 AIDE = '
 Non utilise dans ARTEMIS. On le laisse par coherence avec TELEMAC2D'
@@ -106,8 +104,7 @@ DEFAUT = 3
 DEFAUT1 = 3
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
-COMPORT = 'Foreground ("PARAMETRES NUMERIQUES")
- IS VALEUR (Blue)'
+COMPORT = 'Foreground ("PARAMETRES NUMERIQUES") IS VALEUR (Blue)'
 NIVEAU= 2
 AIDE = '1 : EBE classique  2 : EBE assemble  3 : par segment
        attention, avec 2, il faut une numerotation speciale des points'
@@ -124,8 +121,7 @@ DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
-COMPORT = 'Foreground ("PARAMETRES NUMERIQUES")
- IS VALEUR (Blue)'
+COMPORT = 'Foreground ("PARAMETRES NUMERIQUES") IS VALEUR (Blue)'
 NIVEAU= 2
 AIDE = '1 : Ancien Produit  2 : Nouveau Produit Frontal'
 AIDE1 = '1 : Classical Product  2 : New Frontal Product'
@@ -800,7 +796,7 @@ MNEMO = 'DISESP'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'INFORMATION'
+RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'GENERALITES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS,SOLVER ';'INFORMATION'
 COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES,SOLVEUR*INFORMATION")
@@ -877,7 +873,7 @@ MNEMO = 'ZERO'
 TAILLE = 0
 DEFAUT = 1.E-12
 DEFAUT1 = 1.E-12
-RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'INFORMATION'
+RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'GENERALITES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS,SOLVER';'INFORMATION'
 COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES,SOLVEUR*INFORMATION")
@@ -1211,7 +1207,6 @@ Les possibilites offertes sont les suivantes :
     - SXX contrainte SXX
     - SXY contrainte SXY
     - SYY contrainte SYY
-
 L''utilisateur dispose de 4 champs libres, qu''il peut
 utiliser pour ecrire dans le fichier des resultats des variables
 qu''il cree lui-meme. Ces variables propres a l''utlisateur doivent
@@ -1255,7 +1250,6 @@ file. Separators between variable names can be choosen free.
    - SXX=SXX stress
    - SXY=SXY stress
    - SYY=SYY stress
-
 The user has 4 free variables at his/her disposal to create other
 variables by him/herself. These variables have to be computed
 in the CALRES sub-routine, and the name that we want to attribute
@@ -1744,7 +1738,7 @@ INDEX = 23
 TAILLE = 0
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'INFORMATION'
+RUBRIQUE = 'PARAMETRES NUMERIQUES,SOLVEUR';'GENERALITES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS,SOLVER ';'INFORMATION'
 COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES,SOLVEUR*INFORMATION")
@@ -1959,7 +1953,7 @@ MNEMO = 'DEPREF'
 TAILLE = 0
 DEFAUT = -1.0
 DEFAUT1 = -1.0
-RUBRIQUE  = 'DEFINITION DE LA PHASE';' PROFONDEUR DE REFERENCE'
+RUBRIQUE  = 'DEFINITION DE LA PHASE';'PROFONDEUR DE REFERENCE'
 RUBRIQUE1 = 'PHASE DEFINITION';'REFERENCE WATER DEPTH'
 NIVEAU = 1
 AIDE =
@@ -1978,7 +1972,7 @@ NOM = 'COORDONNEES DE REFERENCE POUR LA PHASE'
 NOM1 = 'PHASE REFERENCE COORDINATES'
 TYPE = REEL
 INDEX = 35
-MNEMO = 'X_PHREF,Y_PHREF'
+MNEMO = 'X\_PHREF,Y\_PHREF'
 TAILLE = 2
 DEFAUT  = 0;0
 DEFAUT1 = 0;0
@@ -2027,25 +2021,25 @@ COMPORT = 'Foreground
 IS VALEUR (Blue)'
 NIVEAU= 1
 CHOIX=
-'1 = "BATTJES & JANSSEN"';
+'1 = "BATTJES \& JANSSEN"';
 '2 = "DALLY"'
 CHOIX1=
-'1 = "BATTJES & JANSSEN"';
+'1 = "BATTJES \& JANSSEN"';
 '2 = "DALLY"'
 AIDE = '
 Specifie la formulation choisie pour le coefficient de dissipation
 par deferlement. N''est effectif qu''en Houle reguliere.
-   1 : Formulation de Battjes & Jansen, 1978
+   1 : Formulation de Battjes \& Jansen, 1978
    2 : Formulation de Dally et al., 1984
 En Houle aleatoire, la seule formulation utilisee est celle de
-Battjes & Janssen, 1978'
+Battjes \& Janssen, 1978'
 AIDE1 = '
 Specifies the formulation choosen for calculating the dissipation
 coefficient through breaking. Only effective for Monochromatic wave
 mode.
-   1 : Formulation of Battjes & Janssen, 1978
+   1 : Formulation of Battjes \& Janssen, 1978
    2 : Formulation of Dally et al., 1984
-In random wave mode, the formulation of B & J, 1978 is the only one
+In random wave mode, the formulation of B \& J, 1978 is the only one
 to be used.'
 
 NOM = 'MAXIMUM DE SOUS-ITERATIONS'
@@ -2142,7 +2136,7 @@ TAILLE = 0
 DEFAUT =  NON
 DEFAUT1 =  NON
 RUBRIQUE = 'CHAINAGE';'TOMAWAC'
-RUBRIQUE1 = 'CHAINAGE';'TOMAWAC'
+RUBRIQUE1 = 'CHAINING';'TOMAWAC'
 COMPORT = 'Foreground
 ("CHAINAGE*TOMAWAC")
 IS VALEUR (BLUE)'
@@ -2235,10 +2229,10 @@ IS VALEUR (Blue)'
 NIVEAU= 1
 AIDE = '
 Donne le coefficient Alpha dans la Formulation de la dissipation
-par deferlement en houle aleatoire d''apres Battjes & Janssen'
+par deferlement en houle aleatoire d''apres Battjes \& Janssen'
 AIDE1 = '
 Fixes the coefficient Alpha used in the formulation of the dissipation
-coefficient through breaking proposed by Battjes & Janssen, 1978
+coefficient through breaking proposed by Battjes \& Janssen, 1978
 for random waves.'
 
 NOM = 'GAMMAS'
@@ -2279,9 +2273,9 @@ COMPORT = 'Foreground
 IS VALEUR (Blue)'
 NIVEAU= 1
 AIDE = '
-Donne le coefficient Gammad dans la Formulation de la dissipation
-par Dally et al., 1984. Ne pas confondre avec Gamma (Formule de Jonswap)
-et Gammas (Critere de deferlement)'
+Donne le coefficient Gammad dans la Formulation de la dissipation par
+Dally et al., 1984. Ne pas confondre avec Gamma (Formule de Jonswap) et
+Gammas (Critere de deferlement)'
 AIDE1 = '
 Fixes the Gamma coefficient used in the formulation of Dally et al.,
 1984, for the dissipation coefficient in surf-breaking. Do not confuse
@@ -2529,8 +2523,8 @@ RUBRIQUE1 = 'INPUT-OUTPUT,GRAPHICS AND LISTING';'INFORMATION,SOLVER'
 NIVEAU = 1
 AIDE = 'Option utilisee principalement pour le dossier de validation. Le
 fichier des resultats du calcul precedent est alors considere comme une
-reference a laquelle on va comparer le calcul. La comparaison
-est effectuee par le sous-programme VALIDA qui peut etre une comparaison
+reference a laquelle on va comparer le calcul. La comparaison est
+effectuee par le sous-programme VALIDA qui peut etre une comparaison
 avec une solution exacte par exemple.'
 AIDE1 = 'This option is primarily used for the validation documents.
 The PREVIOUS COMPUTATION FILE is then considered as a
@@ -2583,18 +2577,18 @@ IS VALEUR (BLUE)'
 NIVEAU= 1
 CHOIX=
 ' 1 = " 1: Formulation de Kostense integrant le calcul de Ue (1986)"';
-' 2 = " 2: Formulation de Putnam & Johnson (1949)"'
+' 2 = " 2: Formulation de Putnam \& Johnson (1949)"'
 APPARENCE= 'LISTE IS SELECT'
 AIDE = '
 Utilise avec l''option FROTTEMENT = OUI.
 Fixe le choix de la formulation du frottement :
   1 : Kostense et al., 1986
-  2 : Putnam & Johnson, 1949.'
+  2 : Putnam \& Johnson, 1949.'
 AIDE1 = '
 Used with the option FRICTION = YES.
 Fixes the formulation used for bottom friction law :
   1 : Kostense et al., 1986
-  2 : Putnam & Johnson, 1949.'
+  2 : Putnam \& Johnson, 1949.'
 
 NOM = 'FACTEUR DE FROTTEMENT IMPOSE'
 NOM1 = 'FRICTION FACTOR IMPOSED'
@@ -2606,8 +2600,7 @@ DEFAUT = NON
 DEFAUT1 =  NON
 RUBRIQUE = 'DISSIPATION';'FROTTEMENT';'CHOIX DE FW'
 RUBRIQUE1 = 'DISSIPATION';'BOTTOM FRICTION';'FORMULATION OF FW'
-COMPORT = 'Foreground
-("DISSIPATION*FROTTEMENT*CHOIX DE FW")
+COMPORT = 'Foreground ("DISSIPATION*FROTTEMENT*CHOIX DE FW")
 IS VALEUR (BLUE)'
 NIVEAU= 1
 AIDE = '
@@ -2854,7 +2847,7 @@ NOM = 'COORDONNEES DE L''ORIGINE'
 NOM1 = 'ORIGIN COORDINATES'
 TYPE = ENTIER
 INDEX = 25
-MNEMO = 'I_ORIG,J_ORIG'
+MNEMO = 'I\_ORIG,J\_ORIG'
 TAILLE = 2
 DEFAUT  = 0;0
 DEFAUT1 = 0;0
@@ -2879,8 +2872,8 @@ APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 NIVEAU = 1
-AIDE = 'Fichier de resultats de reference pour la validation.
-Les resultats a placer dans ce fichier seront a ecrire sur le canal 22.'
+AIDE = 'Fichier de resultats de reference pour la validation.  Les
+resultats a placer dans ce fichier seront a ecrire sur le canal 22.'
 AIDE1 = 'Binary-coded result file for validation.
 The results to be entered into this file shall be written on channel'
 
@@ -2891,7 +2884,7 @@ NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE FORMAT'
 TYPE = CARACTERE
 INDEX = 29
-MNEMO = 'ART_FILES(ARTGEO)%FMT'
+MNEMO = 'ART\_FILES(ARTGEO)%FMT'
 DEFAUT = 'SERAFIN '
 DEFAUT1 = 'SERAFIN '
 NIVEAU = 2
@@ -2959,7 +2952,7 @@ NOM = 'FORMAT DU FICHIER DE DONNEES TOMAWAC 1'
 NOM1 = 'TOMAWAC DATA FILE 1 FORMAT'
 TYPE = CARACTERE
 INDEX = 34
-MNEMO = 'ART_FILES(ARTTC1)%FMT'
+MNEMO = 'ART\_FILES(ARTTC1)%FMT'
 DEFAUT = 'SERAFIN '
 DEFAUT1 = 'SERAFIN '
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
@@ -2983,7 +2976,7 @@ NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1'
 NOM1 = 'BINARY DATA FILE 1 FORMAT'
 TYPE = CARACTERE
 INDEX = 32
-MNEMO = 'ART_FILES(ARTBI1)%FMT'
+MNEMO = 'ART\_FILES(ARTBI1)%FMT'
 DEFAUT = 'SERAFIN '
 DEFAUT1 = 'SERAFIN '
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
@@ -3005,7 +2998,7 @@ NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 2'
 NOM1 = 'BINARY DATA FILE 2 FORMAT'
 TYPE = CARACTERE
 INDEX = 33
-MNEMO = 'ART_FILES(ARTBI2)%FMT'
+MNEMO = 'ART\_FILES(ARTBI2)%FMT'
 DEFAUT = 'SERAFIN '
 DEFAUT1 = 'SERAFIN '
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
@@ -3073,7 +3066,7 @@ NOM1 = 'CHECKING THE MESH'
 TYPE = LOGIQUE
 INDEX = 17
 / in declarations_telemac
-MNEMO = 'CHECK_MESH'
+MNEMO = 'CHECK\_MESH'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -3137,8 +3130,8 @@ DEFAUT1 ='STEERING FILE';
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES'
 NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' '
+AIDE = 'Liste des fichiers'
+AIDE1 = 'List of files'
 //----Librairies du code-------------------------------------------
 //
 //Conventions de notation :
@@ -3211,4 +3204,3 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
 AIDE = 'Executable parallele par defaut de Artemis'
 AIDE1 = 'Default parallel executable for Artemis'
-

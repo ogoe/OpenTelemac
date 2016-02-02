@@ -1036,7 +1036,7 @@ class groupCAST(GROUPS):
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig,reports,bypass):
+def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
 
    xcpt = []            # try all keys for full report
 
@@ -1131,7 +1131,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    #                                                        \\        //
    #for action in xmlRoot.findall("action"):
       if xmlChild.tag == "action":
-         report = {}; updated = False
+         report = { 'type':'action' }; updated = False
          action = xmlChild
 
          # ~~ Step 1. Common check for keys and driving file ~~~~~~~
@@ -1311,8 +1311,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    # _________________________________________________________//      \\
    # _________________________________________________________>> CAST <<
    #                                                          \\      //
-      if xmlChild.tag[0:4] == "cast":
-         report = {}
+      if xmlChild.tag[0:4] == "cast" and not runOnly:
+         report = { 'type':'cast' }
          typeCast = xmlChild.tag
          cast.active['type'] = typeCast
          casting = xmlChild
@@ -1500,7 +1500,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          # ~~> Last but not least, validating
          report.update({ 'updt':True })
          if 'return' not in cast.tasks:
-            report.update({ 'fail':False, 'warn':False, 'value':0, 'title':'My work is done' })
+            report.update({ 'fail':False, 
+			    'warn':False, 
+			    'value':0, 
+			    'title':'My Work is done' })
          else:
             for var in cast.tasks['return']:
                if var in ['fail','warn','value']:
@@ -1508,6 +1511,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
                   report.update({ var:r })
                   print '        - cast:',var,' = ',repr(r),' ( expression: ',cast.tasks['return'][var],' )'
                else: report.update({ var:cast.tasks['return'][var] })
+            report.update({'title':cast.tasks['return']['fail']})
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at casting in xmlFile: '+xmlFile,'tree':xcpt})
          oneFound = False
@@ -1522,8 +1526,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    #                                                          \\      //
    # did has all the IO references and the latest sortie files
    #for extracting in xmlRoot.findall(typeSave):
-      if xmlChild.tag[0:4] == "save":
-         report = {}; updated = False
+      if xmlChild.tag[0:4] == "save" and not runOnly:
+         report = { 'type':'save' }; updated = False
          # /!\ typeSave should be in ['save1d','save2d','save3d']
          typeSave = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
@@ -1548,7 +1552,13 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             save.addGroup(extracting,rank)
-            report.update({ 'xref':save.active['xref'], 'updt':False, 'fail':False, 'warn':False, 'rank':save.active['rank'], 'value':0, 'title':'This was ignored' })
+            report.update({ 'xref':save.active['xref'], 
+			    'updt':False, 
+			    'fail':False, 
+			    'warn':False, 
+			    'rank':save.active['rank'], 
+			    'value':0, 
+			    'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
             continue   # bypass the rest of the for loop
@@ -1736,8 +1746,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
    # _________________________________________________________>> PLOT <<
    #                                                          \\      //
    #for ploting in xmlRoot.findall(typePlot):
-      if xmlChild.tag[0:4] == "plot":
-         report = {}; updated = False
+      if xmlChild.tag[0:4] == "plot" and not runOnly:
+         report = { 'type':'plot' }; updated = False
          # /!\ typePlot should be in ['plot1d','plot2d','plot3d','plotpv']
          typePlot = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
@@ -1762,7 +1772,14 @@ def runXML(xmlFile,xmlConfig,reports,bypass):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting,rank)
-            report.update({ 'xref':plot.active['xref'], 'updt':False, 'fail':False, 'warn':False, 'rank':plot.active['rank'], 'value':0, 'title':'This was ignored' })
+            report.update({ 'type':'plot', 
+                            'xref':plot.active['xref'], 
+                            'updt':False, 
+                            'fail':False, 
+                            'warn':False, 
+                            'rank':plot.active['rank'], 
+                            'value':0, 
+                            'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
             continue   # bypass the rest of the for loop

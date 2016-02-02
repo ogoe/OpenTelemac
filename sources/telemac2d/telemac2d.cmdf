@@ -884,10 +884,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
+  gammln.f
   foncro.f
   bornes.f
   qgauss.f
-  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f

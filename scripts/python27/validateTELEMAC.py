@@ -129,6 +129,7 @@ class REPORT:
       'Total Duration (s)',
       'Action Name',
       'XML Path',
+      'Action Type',
       'Action Failed',
       'Action Warned',
       'Action Rank',
@@ -140,6 +141,7 @@ class REPORT:
       'duration',
       'xref',
       'path',
+      'type',
       'fail',
       'warn',
       'rank',
@@ -216,6 +218,7 @@ class REPORT:
             r[caseName]['file'] = path.join(corerow[self.hkeys.index('path')],caseName)
             r[caseName]['duration'] = float(corerow[self.hkeys.index('duration')])
             cast = {}
+            cast.update({ 'type': corerow[self.hkeys.index('type')] })
             if corerow[self.hkeys.index('fail')] != '': cast.update({ 'fail': ( 'true' in corerow[self.hkeys.index('fail')].lower() ) })
             if corerow[self.hkeys.index('warn')] != '': cast.update({ 'warn': ( 'true' in corerow[self.hkeys.index('warn')].lower() ) })
             if corerow[self.hkeys.index('updt')] != '': cast.update({ 'updt': ( 'true' in corerow[self.hkeys.index('updt')].lower() ) })
@@ -242,9 +245,9 @@ class REPORT:
       emptyline = []
       for head in self.heads: emptyline.append('')
       # ~~> Copy the core passed/failed vallues
-      for repName in self.reports:                                  # repname  (could be "Validation-Summary")
-         for fileName in self.reports[repName]['file']:             # filename (root dependant)
-            for caseName in self.reports[repName]['core']:          # case name (could bumpflu.xml)
+      for repName in sorted(self.reports):                                  # repname  (could be "Validation-Summary")
+         for fileName in sorted(self.reports[repName]['file']):             # filename (root dependant)
+            for caseName in sorted(self.reports[repName]['core']):          # case name (could bumpflu.xml)
                for cast in self.reports[repName]['core'][caseName]['casts']:
                   line = deepcopy(emptyline)
                   for key in cast: line[self.hkeys.index(key)] = '"'+str(cast[key])+'"'
@@ -313,6 +316,8 @@ if __name__ == "__main__":
 # Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
    parser.add_option("-k","--rank",type="string",dest="rank",default='0',
       help="1 integer only (--rank 0 is the default)" )
+   parser.add_option("","--runOnly",action="store_true",dest="runOnly",default=False,
+      help="Only do the action type" )
    parser.add_option("--todos",type="string",dest="todos",default='',
       help="filter specific actions from the XML file, and will only do these by default" )
    parser.add_option("--report",type="string",dest="report",default='',
@@ -445,7 +450,7 @@ if __name__ == "__main__":
          if xmlFile.replace(PWD,'') in report: r = report[xmlFile.replace(PWD,'')]['casts']
          try:
             tic = time.time()
-            r = runXML(path.realpath(xmlFile),xmls[xmlFile],r,options.bypass)
+            r = runXML(path.realpath(xmlFile),xmls[xmlFile],r,options.bypass,options.runOnly)
             toc = time.time()
             #if r == []: r = [{ 'fail':False, 'warn':False, 'value':1, 'title':'My work is done' }]
             report.update({ xmlFile.replace(PWD,''):
@@ -509,7 +514,7 @@ if __name__ == "__main__":
                if path.realpath(xmlFile).replace(root,'') in report: r = report[path.realpath(xmlFile).replace(root,'')]['casts']
                try:
                   tic = time.time()
-                  r = runXML(xmlFile,xmls[codeName][key][xmlFile],r,options.bypass)
+                  r = runXML(xmlFile,xmls[codeName][key][xmlFile],r,options.bypass,options.runOnly)
                   toc = time.time()
                   #if r == []: r = [{ 'fail':False, 'warn':False, 'value':1, 'title':'My work is done' }]
                   report.update({ path.realpath(xmlFile).replace(root,''):

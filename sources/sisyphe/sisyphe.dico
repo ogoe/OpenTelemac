@@ -44,7 +44,7 @@ NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
 TYPE = CARACTERE
 INDEX = 6
-MNEMO = 'SIS_FILES(SISGEO)%NAME'
+MNEMO = 'SIS\_FILES(SISGEO)%NAME'
 TAILLE = 0
 SUBMIT = 'SISGEO-READ-01;SISGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
 /DEFAUT = ''
@@ -308,7 +308,7 @@ NOM = 'FICHIER DES CONDITIONS AUX LIMITES'
 NOM1 = 'BOUNDARY CONDITIONS FILE'
 TYPE = CARACTERE
 INDEX = 9
-MNEMO='SIS_FILES(SISLIM)%NAME'
+MNEMO='SIS\_FILES(SISLIM)%NAME'
 SUBMIT = 'SISLIM-READ-07;SISCLI;OBLIG;ASC;LIT;CONLIM'
 /DEFAUT = ''
 /DEFAUT1 = ''
@@ -327,7 +327,7 @@ NOM = 'FICHIER HYDRODYNAMIQUE'
 NOM1 = 'HYDRODYNAMIC FILE'
 TYPE = CARACTERE
 INDEX = 29
-MNEMO = 'SIS_FILES(SISHYD)%NAME'
+MNEMO = 'SIS\_FILES(SISHYD)%NAME'
 TAILLE = 0
 SUBMIT = 'SISHYD-READ-05;SISHYD;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ''
@@ -367,7 +367,7 @@ NOM = 'FICHIER DE HOULE'
 NOM1 = 'WAVE FILE'
 TYPE = CARACTERE
 INDEX = 30
-MNEMO = 'SIS_FILES(SISCOU)%NAME'
+MNEMO = 'SIS\_FILES(SISCOU)%NAME'
 TAILLE = 0
 SUBMIT = 'SISCOU-READ-10;SISCOU;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ''
@@ -386,7 +386,7 @@ houle, angle de la houle).
 Les donnees hydrodynamiques(hauteur d''eau,vitesses) seront lues
 dans le fichier hydrodynamique (Verifier la compatibilite !!!)
 Les donnees de houle peuvent aussi etre imposees
-par l''utilisateur dans le sous programme CONDIM_SISYPHE.
+par l''utilisateur dans le sous programme CONDIM\_SISYPHE.
 ou encore lues dans le fichier hydrodynamique.'
 AIDE1 = 'Name of a file containing the results a previous
 TOMAWAC computation  made on the same mesh. The wave data (wave height,
@@ -404,7 +404,7 @@ NOM = 'FICHIER PRECEDENT SEDIMENTOLOGIQUE'
 NOM1 = 'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE'
 TYPE = CARACTERE
 INDEX = 11
-MNEMO = 'SIS_FILES(SISPRE)%NAME'
+MNEMO = 'SIS\_FILES(SISPRE)%NAME'
 TAILLE = 0
 SUBMIT = 'SISPRE-READ-04;SISPRE;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ''
@@ -427,7 +427,7 @@ NOM = 'FICHIER DES RESULTATS'
 NOM1 = 'RESULTS FILE'
 TYPE = CARACTERE
 INDEX = 12
-MNEMO = 'SIS_FILES(SISRES)%NAME'
+MNEMO = 'SIS\_FILES(SISRES)%NAME'
 TAILLE = 0
 / READWRITE CAR RELU EN CAS DE VALIDATION
 SUBMIT = 'SISRES-READWRITE-08;SISRES;OBLIG;BIN;ECR;SELAFIN'
@@ -487,7 +487,7 @@ NOM = 'FICHIER DES FONDS'
 NOM1 = 'BOTTOM TOPOGRAPHY FILE'
 TYPE = CARACTERE
 INDEX = 16
-MNEMO = 'SIS_FILES(SISFON)%NAME'
+MNEMO = 'SIS\_FILES(SISFON)%NAME'
 SUBMIT = 'SISFON-READ-09;SISFON;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -589,7 +589,7 @@ NOM = 'FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE'
 TYPE = CARACTERE
 INDEX = 22
-MNEMO = 'SIS_FILES(SISREF)%NAME'
+MNEMO = 'SIS\_FILES(SISREF)%NAME'
 TAILLE = 0
 SUBMIT = 'SISREF-READ-22;SISREF;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ''
@@ -773,9 +773,10 @@ RUBRIQUE1 = 'BED-LOAD'
 NIVEAU = 1
 COMPORT = 'DISPLAY %CHARRIAGE% = TRUE'
 AIDE = '10 formules de transport solide sont implementees dans SISYPHE.
-Les formules Ne3, Ne30 et Ne9 ne doivent pas etre utilisees en cas de couplage avec la suspension.
-Les formules Ne4, Ne5, Ne8 and Ne9 calculent le taux de transport sous l''action combinee
-de la houle et du courant :
+Les formules Ne3, Ne30 et Ne9 ne doivent pas etre utilisees en cas de
+couplage avec la suspension.
+Les formules Ne4, Ne5, Ne8 and Ne9 calculent le taux de transport sous
+l''action combinee de la houle et du courant :
                  1 : MEYER-PETER (charriage)
                  2 : EINSTEIN-BROWN (charriage)
                  3 : ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)
@@ -795,10 +796,12 @@ du mot cle a 0 :
 Attention : dans ce cas, il n''est pas possible de choisir l''option
 PAS DE TEMPS VARIABLE.'
 
-AIDE1 = '10 bed-load or total load transport formulas are implemented in SISYPHE.
-The formula Ne3, Ne30 and Ne9 should not be used in the case of coupling with the suspension.
-The formula Ne4, Ne5, Ne8 and Ne9  model the transport under the combined action of
-currents and waves :
+AIDE1 = '10 bed-load or total load transport formulas are implemented in
+SISYPHE.
+The formula Ne3, Ne30 and Ne9 should not be used in the case of coupling
+with the suspension.
+The formula Ne4, Ne5, Ne8 and Ne9  model the transport under the
+combined action of currents and waves :
                  1 : MEYER-PETER (bed load)
                  2 : EINSTEIN-BROWN (bed load)
                  3 : ENGELUND-HANSEN + CHOLLET AND CUNGE (VERSION 5.3)
@@ -891,11 +894,11 @@ NIVEAU = 1
 AIDE = 'Determine la periode en nombre de pas de temps d''impression
 des ''VARIABLES A IMPRIMER'' (voir ce mot-cle).
 La sortie des resultats est effectuee sur le fichier listing
-(fichier cas_numerodeprocessus.sortie sur station de travail).'
+(fichier cas\_numerodeprocessus.sortie sur station de travail).'
 AIDE1 = 'Determines, in number of time steps, the printout period of
 the ''VARIABLES TO BE PRINTED''.
 The results are printed out on the listing file
-(file cas_numerodeprocessus.sortie on a workstation).'
+(file cas\_numerodeprocessus.sortie on a workstation).'
 
 NOM = 'MAILLEUR'
 NOM1 = 'MESHING'
@@ -1278,8 +1281,8 @@ NIVEAU = 1
 AIDE = 'la concentration volumique  du lit est definie par
 CSF= (1-porosite)
 Ce paramètre est utilisé  pour les sediments non-cohesifs.'
-AIDE1 = 'The bed volume concentration CSF=(1-porosity) is used to calculate
-the bed evolution of non-cohesive sand transport.'
+AIDE1 = 'The bed volume concentration CSF=(1-porosity) is used to
+calculate the bed evolution of non-cohesive sand transport.'
 
 
 NOM = 'PARAMETRES DE SHIELDS'
@@ -1292,11 +1295,12 @@ RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
 AIDE = 'Utilise pour determiner la valeur de la contrainte critique
-d''entrainement (sédiments non-cohésifs). En multiclasse, specifier la valeur
-pour chaque classe,sinon on prend la même valeur.
-Par défaut (si aucune valeur donnee) le code calcule lui
-même le parametre de Shields en fonction du diametre.'
-AIDE1 = 'Used to determine the critical bed shear stress value (non-cohesive sediments).
+d''entrainement (sédiments non-cohésifs). En multiclasse, specifier la
+valeur pour chaque classe,sinon on prend la même valeur.  Par défaut (si
+aucune valeur donnee) le code calcule lui même le parametre de Shields
+en fonction du diametre.'
+AIDE1 = 'Used to determine the critical bed shear stress value
+(non-cohesive sediments).
 For multi grain size,
 the shields parameter needs to be specified for each class. If only one
 value is specified, the shields parameter will be considered constant.
@@ -1402,7 +1406,7 @@ RUBRIQUE1 = 'TIME'
 NIVEAU = 1
 AIDE = 'Ce mot cle fixe le temps auquel le calcul SISYPHE debute
 sauf en cas de suite de calcul car le temps initial est
-alors lu sur le "fichier precedent sedimentologique". En non
+alors lu sur le FICHIER PRECEDENT SEDIMENTOLOGIQUE. En non
 permanent, ce mot cle designe de plus le temps correspondant
 au premier enregistrement a lire dans le "fichier du calcul
 precedent" contenant les donnees hydrodynamiques.'
@@ -1712,15 +1716,15 @@ NIVEAU = 2
 AIDE = '4 formules pour le hiding factor sont programmees dans SISYPHE
      0: const => il faut donner le HIDING FACTOR PAR CLASSE GRANULO
      1: Egiazaroff
-     2: Ashida & Michiue
+     2: Ashida \& Michiue
       :
-     4: Karim, Holly & Yang'
+     4: Karim, Holly \& Yang'
 AIDE1 = '4 hiding factor formulas are implemented in SISYPHE
      0: const => need to give HIDING FACTOR FOR PARTICULAR SIZE CLASS
      1: Egiazaroff
-     2: Ashida & Michiue
+     2: Ashida \& Michiue
       :
-     4: Karim, Holly & Yang'
+     4: Karim, Holly \& Yang'
 
 / VERSION 5.4
 /
@@ -2012,18 +2016,19 @@ NIVEAU = 1
 AIDE = 'Selectionne le type de formulation utilisee pour le calcul
 du frottement sur le fond, voir COEFFICIENT DE FROTTEMENT.
 Pour les lois possibles, voir CHOIX ci-dessus (cf. Note de principe).
-En cas de couplage avec Telemac, le choix du frottement est impose par Telemac, sauf
-si le mot-cle :PREDICTION DE LA RUGOSITE est mis a OUI'
+En cas de couplage avec Telemac, le choix du frottement est impose par
+Telemac, sauf si le mot-cle :PREDICTION DE LA RUGOSITE est mis a OUI'
 AIDE1 = 'Selects the type of formulation used for the bottom friction.
-To know the possible laws see CHOIX1 above. See FRICTION COEFFICIENT. Beware: in the case
-of internal coupling with Telemac, the friction coefficient is selected in the Telemac steering
-file, except when BED ROUGHNESS PREDICTION is set to YES'
+To know the possible laws see CHOIX1 above. See FRICTION COEFFICIENT.
+Beware: in the case of internal coupling with Telemac, the friction
+coefficient is selected in the Telemac steering file, except when BED
+ROUGHNESS PREDICTION is set to YES'
 
 NOM = 'TETA SUSPENSION'
 NOM1 = 'TETA SUSPENSION'
 TYPE = REEL
 INDEX = 18
-MNEMO = 'TETA_SUSP'
+MNEMO = 'TETA\_SUSP'
 TAILLE = 0
 DEFAUT = 1.
 DEFAUT1 = 1.
@@ -2091,7 +2096,8 @@ RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 1
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE = 'Pas de valeur par defaut
-Si non donne par l utilisateur, on utilise la subroutine vitchu-sisyphe :
+Si non donne par l utilisateur, on utilise la subroutine vitchu-sisyphe
+:
 formules de Stokes, Zanke ou Van Rijn, selon la taille des grains'
 AIDE1 = 'The default value is not given. If the user does not
 give a value, the subroutine vitchu-sisyphe is used:
@@ -2114,7 +2120,7 @@ NOM = 'EPAISSEUR DE COUCHE ACTIVE CONSTANTE'
 NOM1 = 'CONSTANT ACTIVE LAYER THICKNESS'
 TYPE = LOGIQUE
 INDEX = 11
-MNEMO = 'CONST_ALAYER'
+MNEMO = 'CONST\_ALAYER'
 DEFAUT = OUI
 DEFAUT1 = YES
 RUBRIQUE = 'GRANULOMETRIE'
@@ -2171,17 +2177,17 @@ NOM = 'CRITERE POUR METTRE A JOUR L''HYDRODYNAMIQUE'
 NOM1 = 'CRITERION TO UPDATE THE FLOW'
 TYPE = REEL
 INDEX = 23
-MNEMO = 'CRIT_CFD'
+MNEMO = 'CRIT\_CFD'
 DEFAUT = 0.1
 DEFAUT1 = 0.1
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 2
 COMPORT = 'DISPLAY %CONSTANT FLOW% = OUI'
-AIDE = 'Critere (Hauteur du fond>CRIT_CFD*Hauteur d''eau) pour mettre
+AIDE = 'Critere (Hauteur du fond>CRIT\_CFD*Hauteur d''eau) pour mettre
 a jour l''ecoulement.
 A utiliser avec l''option constant flow discharge'
-AIDE1 = 'Criterion (Bottom height>CRIT_CFD*Water depth) in order to
+AIDE1 = 'Criterion (Bottom height>CRIT\_CFD*Water depth) in order to
 update the flow.
 To use with the option constant flow discharge'
 
@@ -2222,9 +2228,9 @@ precedent.
 NON : Il s''agit du premier passage pour ce calcul et il est necessaire
 de definir un jeu complet de conditions initiales
 OUI : Il s''agit d''une reprise de calcul :
-les conditions initiales sont constituees par le dernier pas de
-temps du ''FICHIER PRECEDENT SEDIMENTOLOGIQUE'' du fichier des parametres
-utilise pour soumettre le calcul.
+les conditions initiales sont constituees par le dernier pas de temps du
+FICHIER PRECEDENT SEDIMENTOLOGIQUE du fichier des parametres utilise
+pour soumettre le calcul.
 Par contre, l''ensemble des donnees du fichier des parametres
 peuvent etre redefinies
 De meme, il est necessaire de definir des conditions aux limites'
@@ -2258,9 +2264,9 @@ est une valeur moyenne par noeud calculee a partir de la fraction
 et du diametre moyen de chaque sediment en chaque noeud du maillage)'
 AIDE1 = ' Ratio for the computation of skin friction.
 skin roughness = ratio * mean diameter
-(for the mixture of sand, the mean diameter used is a value per node which
-is computed thanks to the fraction and the mean diameter of each sediment
-for each node of the mesh)
+(for the mixture of sand, the mean diameter used is a value per node
+which is computed thanks to the fraction and the mean diameter of each
+sediment for each node of the mesh)
 if KSPRATIO =0 : use skin friction prediction from Van Rijn (2007)
 for currents and the Wiberg and Harris method for waves'
 
@@ -2269,7 +2275,7 @@ NOM = 'CONCENTRATION D''EQUILIBRE EN ENTREE'
 NOM1 = 'EQUILIBRIUM INFLOW CONCENTRATION'
 TYPE = LOGIQUE
 INDEX = 15
-MNEMO = 'IMP_INFLOW_C'
+MNEMO = 'IMP\_INFLOW\_C'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -2277,10 +2283,12 @@ RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
-AIDE = 'impose la concentration en entree du domaine et les concentrations initiales
-en utilisant la formule de Fredsoe pour les sediments non-cohesifs'
-AIDE1 = 'impose the equilibrium concentration for the inflow and at t=0 in the whole domain
-thanks to the formula of Fredsoe for non cohesive sediments'
+AIDE = 'impose la concentration en entree du domaine et les
+concentrations initiales en utilisant la formule de Fredsoe pour les
+sediments non-cohesifs'
+AIDE1 = 'impose the equilibrium concentration for the inflow and at t=0
+in the whole domain thanks to the formula of Fredsoe for non cohesive
+sediments'
 
 
 NOM = 'COURANTS SECONDAIRES'
@@ -2312,7 +2320,7 @@ NIVEAU = 1
 AIDE= 'par defaut, le code calcule les concentrations volumiques.
 Ce mot cle permet dimprimer et de relire des concentrations en g/l.
 Les concentrations imposees aux limites
-(fichier condim, concentration de condim_susp)
+(fichier condim, concentration de condim\_susp)
 sont alors aussi donnees par l utilisateur en g/l et
 reconverties en  concentration volumique par le code.'
 AIDE1 = 'Determines if concentrations (input and output)
@@ -2356,8 +2364,8 @@ NIVEAU = 2
 AIDE = 'Angle de repos du sediment, intervient pour la prise de compte
  de la pente sur la contrainte critique par la formule de Soulsby.
 Utiliser si ...=2'
-AIDE1 = 'Angle of repose of the sediment. Used in the Soulsby formula
-to take into account the influence of bed slope on critical shear stress.
+AIDE1 = 'Angle of repose of the sediment. Used in the Soulsby formula to
+take into account the influence of bed slope on critical shear stress.
 Use if ...=2'
 
 
@@ -2372,11 +2380,11 @@ RUBRIQUE = 'EFFET PENTE'
 RUBRIQUE1 = 'SLOPE EFFECT'
 NIVEAU = 2
 AIDE = '1 : Koch et Flokstra
-        2 : formule de Talmon et al. 1995, JHR 33(4) formules (1) et (17)
-            mot cle associe : BETA2'
+	2 : formule de Talmon et al. 1995, JHR 33(4) formules (1) et
+(17) mot cle associe : BETA2'
 AIDE1 = '1: Koch and Flokstra
-         2: formula of Talmon et al. 1995, JHR 33(4) formulas (1) and (17)
-            linked keyword : BETA2'
+	 2: formula of Talmon et al. 1995, JHR 33(4) formulas (1) and
+(17) linked keyword : BETA2'
 
 
 NOM = 'PARAMETRE POUR LA DEVIATION'
@@ -2426,19 +2434,19 @@ AIDE = '1 : formule de Zyserman et Fredsoe
         2 : methode de Bijker. La concentration au fond
         est reliee au taux de transport par charriage
         3 : formule de Van Rijn (1987)
-        4 : formule de Soulsy_van Rijn'
+        4 : formule de Soulsy\_van Rijn'
 AIDE1 = '1 : Zysderman and Fredsoe, equilibrium formula
          2: Bijker method. The near bed concentration
          is related to the bedload . This option cannot be used
          without bedload transport
          3: Van Rijn formula
-         4: Soulsby_van Rijn formula'
+         4: Soulsby\_van Rijn formula'
 /
 NOM = 'CORRECTION DU CHAMP CONVECTEUR'
 NOM1 = 'CORRECTION ON CONVECTION VELOCITY'
 TYPE = LOGIQUE
 INDEX = 18
-MNEMO = 'CORR_CONV'
+MNEMO = 'CORR\_CONV'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -2446,10 +2454,10 @@ RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 1
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
-AIDE= 'Modification du champ convecteur 2D pour prise en compte du gradient vertical
-de vitesse et concentration'
-AIDE1 = 'Modification of 2D convection velocities  to account for velocity
-and concentration profiles'
+AIDE= 'Modification du champ convecteur 2D pour prise en compte du
+gradient vertical de vitesse et concentration'
+AIDE1 = 'Modification of 2D convection velocities  to account for
+velocity and concentration profiles'
 /
 NOM = 'SEDIMENTS COHESIFS'
 NOM1 = 'COHESIVE SEDIMENTS'
@@ -2484,15 +2492,16 @@ NOM = 'COORDONNEES DE L''ORIGINE'
 NOM1 = 'ORIGIN COORDINATES'
 TYPE = ENTIER
 INDEX = 43
-MNEMO = 'I_ORIG,J_ORIG'
+MNEMO = 'I\_ORIG,J\_ORIG'
 TAILLE = 2
 DEFAUT = 0;0
 DEFAUT1 = 0;0
 RUBRIQUE = 'DIVERS'
 RUBRIQUE1 = 'MISCELLANEOUS'
 NIVEAU = 2
-AIDE = 'Valeur en metres, utilise pour eviter les trop grands nombres, transmis
-dans le format Selafin mais pas d''autre traitement pour l''instant'
+AIDE = 'Valeur en metres, utilise pour eviter les trop grands nombres,
+transmis dans le format Selafin mais pas d''autre traitement pour
+l''instant'
 AIDE1 = 'Value in metres, used to avoid large real numbers,
 added in Selafin format, but so far no other treatment'
 /
@@ -2501,7 +2510,7 @@ added in Selafin format, but so far no other treatment'
 /TYPE = REEL
 /INDEX = 29
 /TAILLE = 1
-/MNEMO = 'CSF_VASE'
+/MNEMO = 'CSF\_VASE'
 /DEFAUT = 0.08
 /DEFAUT1 = 0.08
 /RUBRIQUE = 'SUSPENSION'
@@ -2523,10 +2532,10 @@ DEFAUT1 = NO
 RUBRIQUE = 'EFFET PENTE'
 RUBRIQUE1 = 'SLOPE EFFECT'
 NIVEAU = 2
-AIDE = 'Prise en compte de la pente d''equilibre du sable donnee par le mot-cle
-ANGLE DE FROTTEMENT DU SEDIMENT'
-AIDE1 = 'If yes, the key-word FRICTION ANGLE OF THE SEDIMENT is taken into account
-for slope stability'
+AIDE = 'Prise en compte de la pente d''equilibre du sable donnee par le
+mot-cle ANGLE DE FROTTEMENT DU SEDIMENT'
+AIDE1 = 'If yes, the key-word FRICTION ANGLE OF THE SEDIMENT is taken
+into account for slope stability'
 /
 NOM = 'DIFFUSION'
 NOM1 = 'DIFFUSION'
@@ -2603,7 +2612,7 @@ NOM1 = 'CONCENTRATION PER CLASS AT BOUNDARIES'
 TYPE = REEL
 INDEX = 31
 TAILLE = 2
-MNEMO = 'CBOR_CLASSE'
+MNEMO = 'CBOR\_CLASSE'
 RUBRIQUE = 'SUSPENSION'
 RUBRIQUE1 = 'SUSPENSION'
 NIVEAU = 1
@@ -2653,7 +2662,7 @@ NOM = 'NOMBRE DE COUCHES POUR LE TASSEMENT'
 NOM1 = 'NUMBER OF LAYERS OF THE CONSOLIDATION MODEL'
 TYPE = ENTIER
 INDEX = 45
-MNEMO = 'NCOUCH_TASS'
+MNEMO = 'NCOUCH\_TASS'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -2671,7 +2680,7 @@ NOM1 = 'MUD CONCENTRATION PER LAYER'
 TYPE = REEL
 INDEX = 32
 TAILLE = 2
-MNEMO = 'CONC_VASE'
+MNEMO = 'CONC\_VASE'
 DEFAUT = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
 DEFAUT1 = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
 RUBRIQUE = 'COHESIVE SEDIMENT'
@@ -2686,7 +2695,7 @@ NOM1 = 'CRITICAL EROSION SHEAR STRESS OF THE MUD'
 TYPE = REEL
 INDEX = 34
 TAILLE = 10
-MNEMO = 'TOCE_VASE'
+MNEMO = 'TOCE\_VASE'
 DEFAUT = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
 DEFAUT1 = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
 RUBRIQUE = 'COHESIVE SEDIMENT'
@@ -2704,7 +2713,7 @@ NOM1 = 'MASS TRANSFER PER LAYER'
 TYPE = REEL
 INDEX = 33
 TAILLE = 2
-MNEMO = 'TRANS_MASS'
+MNEMO = 'TRANS\_MASS'
 DEFAUT = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
 2.5D-05;2.0D-05;1.5D-05;1.0D-05;0.D0
 DEFAUT1 = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
@@ -2737,7 +2746,7 @@ NOM = 'FICHIER DE DREDGESIM'
 NOM1 = 'DREDGESIM FILE'
 TYPE = CARACTERE
 INDEX = 27
-MNEMO = 'SIS_FILES(SISMAF)%NAME'
+MNEMO = 'SIS\_FILES(SISMAF)%NAME'
 SUBMIT = 'SISMAF-READ-21;SISMAF;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -2975,7 +2984,7 @@ NOM = 'FICHIER DES SECTIONS DE CONTROLE'
 NOM1 = 'SECTIONS INPUT FILE'
 TYPE = CARACTERE
 INDEX = 36
-MNEMO = 'SIS_FILES(SISSEC)%NAME'
+MNEMO = 'SIS\_FILES(SISSEC)%NAME'
 SUBMIT = 'SISSEC-READ-45;SISSEC;FACUL;ASC;LIT;SECTION'
 DEFAUT = ' '
 DEFAUT1 = ' '
@@ -2989,7 +2998,7 @@ NOM = 'SECTIONS OUTPUT FILE'
 NOM1 = 'SECTIONS OUTPUT FILE'
 TYPE = CARACTERE
 INDEX = 37
-MNEMO = 'SIS_FILES(SISSEO)%NAME'
+MNEMO = 'SIS\_FILES(SISSEO)%NAME'
 SUBMIT = 'SISSEO-WRITE-46;SISSEO;FACUL;ASC;ECR;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
@@ -3083,7 +3092,7 @@ NOM = 'CONCENTRATION GEL'
 NOM1 = 'GEL CONCENTRATION'
 TYPE = REEL
 INDEX = 38
-MNEMO = 'CONC_GEL'
+MNEMO = 'CONC\_GEL'
 DEFAUT = 310.D0
 DEFAUT1 = 310.D0
 RUBRIQUE = 'TASSEMENT'
@@ -3099,7 +3108,7 @@ NOM = 'CONCENTRATION MAXIMALE'
 NOM1 = 'MAXIMUM CONCENTRATION'
 TYPE = REEL
 INDEX = 50
-MNEMO = 'CONC_MAX'
+MNEMO = 'CONC\_MAX'
 DEFAUT = 364.D0
 DEFAUT1 = 364.D0
 RUBRIQUE = 'TASSEMENT'
@@ -3114,7 +3123,7 @@ NOM = 'COEFFICIENT DE PERMEABILITE'
 NOM1 = 'PERMEABILITY COEFFICIENT'
 TYPE = REEL
 INDEX = 39
-MNEMO = 'COEF_N'
+MNEMO = 'COEF\_N'
 DEFAUT = 8.D0
 DEFAUT1 = 8.D0
 RUBRIQUE = 'TASSEMENT'
@@ -3163,7 +3172,7 @@ INDEX = 262
 MNEMO = 'MOFAC'
 DEFAUT = 1.0E-00
 DEFAUT1 = 1.0E-00
-RUBRIQUE = 'OPTIONS DE CALCUL';'GENERAL'
+RUBRIQUE = 'CALCUL';'GENERAL'
 RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
 NIVEAU = 1
 AIDE = '(-)'
@@ -3175,7 +3184,7 @@ NOM = 'FICHIER DES FRONTIERES LIQUIDES'
 NOM1 = 'LIQUID BOUNDARIES FILE'
 TYPE = CARACTERE
 INDEX = 38
-MNEMO = 'SIS_FILES(SISLIQ)%NAME'
+MNEMO = 'SIS\_FILES(SISLIQ)%NAME'
 SUBMIT = 'SISLIQ-READ-12;SISLIQ;FACUL;ASC;LIT;PARAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
@@ -3184,9 +3193,9 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Fichier de variations en temps des conditions aux limites.
-Les donnees de ce fichier sont sur le canal SIS_FILES(SISLIQ)%LU.'
-AIDE1 = 'Variations in time of boundary conditions. Data of this file are read
-on channel SIS_FILES(SISLIQ)%LU.'
+Les donnees de ce fichier sont sur le canal SIS\_FILES(SISLIQ)%LU.'
+AIDE1 = 'Variations in time of boundary conditions. Data of this file
+are read on channel SIS\_FILES(SISLIQ)%LU.'
 /
 NOM = 'DEBITS SOLIDES IMPOSES'
 NOM1 = 'PRESCRIBED SOLID DISCHARGES'
@@ -3228,7 +3237,7 @@ NOM = 'C-VSM MAXIMUM SECTIONS'
 NOM1 = 'C-VSM MAXIMUM SECTIONS'
 TYPE = ENTIER
 INDEX = 49
-MNEMO = 'PRO_MAX_MAX'
+MNEMO = 'PRO\_MAX\_MAX'
 TAILLE = 0
 DEFAUT = 200
 DEFAUT1 = 200
@@ -3272,7 +3281,7 @@ NOM1 = 'C-VSM PRINTOUT SELECTION'
 TYPE = CARACTERE
 INDEX = 51
 MNEMO = 'CVSMOUTPUT'
-TAILLE = 0
+TAILLE = 13
 DEFAUT = 0;0;0;0;0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0;0;0;0;0
 RUBRIQUE = 'GRANULOMETRIE';'C-VSM'
@@ -3291,7 +3300,7 @@ NOM = 'C-VSM DYNAMIC ALT MODEL'
 NOM1 = 'C-VSM DYNAMIC ALT MODEL'
 TYPE = ENTIER
 INDEX = 52
-MNEMO = 'ALT_MODEL'
+MNEMO = 'ALT\_MODEL'
 TAILLE = 0
 DEFAUT = 5
 DEFAUT1 = 5
@@ -3301,8 +3310,8 @@ NIVEAU = 2
 AIDE = '(-)'
 AIDE1 = 'MODEL FOR ACTIVE LAYER THICKNESS
          0 = ELAY0 (Keyword: ACTIVE LAYER THICKNESS)
-         1 = Hunziker & Günther
-         2 = Fredsoe & Deigaard (1992)
+         1 = Hunziker \& G$\ddot{u}$nther
+         2 = Fredsoe \& Deigaard (1992)
          3 = van RIJN (1993)
          4 = Wong (2006)
          5 = Malcherek (2003)
@@ -3314,7 +3323,7 @@ NOM = 'SETTLING LAG'
 NOM1 = 'SETTLING LAG'
 TYPE = LOGIQUE
 INDEX = 27
-MNEMO = 'SET_LAG'
+MNEMO = 'SET\_LAG'
 DEFAUT = NON
 DEFAUT1 = NO
 NIVEAU = 2
@@ -3329,7 +3338,7 @@ NOM = 'STATIONARY MODE'
 NOM1 = 'STATIONARY MODE'
 TYPE = LOGIQUE
 INDEX = 28
-MNEMO = 'STAT_MODE'
+MNEMO = 'STAT\_MODE'
 DEFAUT = NON
 DEFAUT1 = NO
 NIVEAU = 2
@@ -3360,7 +3369,7 @@ NOM = 'FICHIER DE DREDGESIM POLYGON'
 NOM1 = 'DREDGESIM POLYGON FILE'
 TYPE = CARACTERE
 INDEX = 40
-MNEMO = 'SIS_FILES(DSIPDS)%NAME'
+MNEMO = 'SIS\_FILES(DSIPDS)%NAME'
 SUBMIT = 'DSIPDS-READ-23;DSIPDS;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3376,7 +3385,7 @@ NOM = 'FICHIER DE DREDGESIM IPDS DICO'
 NOM1 = 'DREDGESIM IPDS DICO FILE'
 TYPE = CARACTERE
 INDEX = 63
-MNEMO = 'SIS_FILES(DSIDIC)%NAME'
+MNEMO = 'SIS\_FILES(DSIDIC)%NAME'
 SUBMIT = 'DSIDIC-READ-27;DSIDIC;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3392,7 +3401,7 @@ NOM = 'FICHIER DE DREDGESIM DICO'
 NOM1 = 'DREDGESIM DICO FILE'
 TYPE = CARACTERE
 INDEX = 62
-MNEMO = 'SIS_FILES(DSDICO)%NAME'
+MNEMO = 'SIS\_FILES(DSDICO)%NAME'
 SUBMIT = 'DSDICO-READ-26;DSDICO;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3408,7 +3417,7 @@ NOM = 'FICHIER DE DREDGESIM PHYDEF CFG1'
 NOM1 = 'DREDGESIM PHYDEF FILE CFG1'
 TYPE = CARACTERE
 INDEX = 64
-MNEMO = 'SIS_FILES(DSCFG1)%NAME'
+MNEMO = 'SIS\_FILES(DSCFG1)%NAME'
 SUBMIT = 'DSCFG1-READ-28;DSCFG1;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3424,7 +3433,7 @@ NOM = 'FICHIER DE DREDGESIM PHYDEF CFG2'
 NOM1 = 'DREDGESIM PHYDEF FILE CFG2'
 TYPE = CARACTERE
 INDEX = 65
-MNEMO = 'SIS_FILES(DSCFG2)%NAME'
+MNEMO = 'SIS\_FILES(DSCFG2)%NAME'
 SUBMIT = 'DSCFG2-READ-29;DSCFG2;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3440,7 +3449,7 @@ NOM = 'FICHIER DE DREDGESIM PHYDEF CFG3'
 NOM1 = 'DREDGESIM PHYDEF FILE CFG3'
 TYPE = CARACTERE
 INDEX = 66
-MNEMO = 'SIS_FILES(DSCFG3)%NAME'
+MNEMO = 'SIS\_FILES(DSCFG3)%NAME'
 SUBMIT = 'DSCFG3-READ-30;DSCFG3;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3456,7 +3465,7 @@ NOM = 'FICHIER DE DREDGESIM CFG4'
 NOM1 = 'DREDGESIM PHYDEF FILE CFG4'
 TYPE = CARACTERE
 INDEX = 67
-MNEMO = 'SIS_FILES(DSCFG4)%NAME'
+MNEMO = 'SIS\_FILES(DSCFG4)%NAME'
 SUBMIT = 'DSCFG4-READ-31;DSCFG4;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3472,7 +3481,7 @@ NOM = 'FICHIER DE DREDGESIM PHYDEF CFG5'
 NOM1 = 'DREDGESIM PHYDEF FILE CFG5'
 TYPE = CARACTERE
 INDEX = 68
-MNEMO = 'SIS_FILES(DSCFG5)%NAME'
+MNEMO = 'SIS\_FILES(DSCFG5)%NAME'
 SUBMIT = 'DSCFG5-READ-32;DSCFG5;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3488,7 +3497,7 @@ NOM = 'FICHIER DE DREDGESIM DE SURFACE REFERENCE'
 NOM1 = 'DREDGESIM SURFACE REFERENCE FILE'
 TYPE = CARACTERE
 INDEX = 41
-MNEMO = 'SIS_FILES(DSRWSP)%NAME'
+MNEMO = 'SIS\_FILES(DSRWSP)%NAME'
 SUBMIT = 'DSRWSP-READ-24;DSRWSP;FACUL;ASC;LIT;PARAL'
 DEFAUT = ''
 DEFAUT1 = ''
@@ -3535,7 +3544,7 @@ NOM1 = 'CHECKING THE MESH'
 TYPE = LOGIQUE
 INDEX = 29
 / in declarations_telemac
-MNEMO = 'CHECK_MESH'
+MNEMO = 'CHECK\_MESH'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -3551,7 +3560,7 @@ NOM = 'NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS'
 NOM1 = 'NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES'
 TYPE = ENTIER
 INDEX = 56
-MNEMO = 'NCO_DIST'
+MNEMO = 'NCO\_DIST'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -3565,7 +3574,7 @@ NOM = 'NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS'
 NOM1 = 'NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES'
 TYPE = ENTIER
 INDEX = 57
-MNEMO = 'NSP_DIST'
+MNEMO = 'NSP\_DIST'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -3580,7 +3589,7 @@ NOM = 'NOMS DES VARIABLES PRIVEES'
 NOM1 = 'NAMES OF PRIVATE VARIABLES'
 TYPE = CARACTERE
 INDEX = 42
-MNEMO = 'NAMES_PRIVE'
+MNEMO = 'NAMES\_PRIVE'
 TAILLE = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
