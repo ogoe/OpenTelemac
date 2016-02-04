@@ -96,6 +96,11 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        02/02/2016
+!+        V7P1
+!+   A case OPTSOU.EQ.1 and OPTSOU.EQ.2 was swapped, after line 1048.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
@@ -786,7 +791,7 @@
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
       IF(NSCE.GT.0) THEN
         IF(OPTSOU.EQ.1) THEN
-        ! SOURCE NOT CONSIDERED AS A DIRAC
+!         SOURCE NOT CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             DO IPOIN=1,NPOIN3
               IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
@@ -796,8 +801,8 @@
               ENDIF
             ENDDO
           ENDDO
-        ELSE IF(OPTSOU.EQ.2) THEN
-        ! SOURCE CONSIDERED AS A DIRAC
+        ELSEIF(OPTSOU.EQ.2) THEN
+!         SOURCE CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             IF(ISCE(IS).GT.0) THEN
               IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
@@ -849,7 +854,7 @@
 !
       IF(NSCE.GT.0) THEN
         IF(OPTSOU.EQ.1) THEN
-        ! SOURCE NOT CONSIDERED AS A DIRAC
+!         SOURCE NOT CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             IIS=IS
 !           HERE IN PARALLEL SOURCES WITHOUT PARCOM
@@ -864,7 +869,7 @@
             ENDDO
           ENDDO
         ELSE IF(OPTSOU.EQ.2) THEN
-        ! SOURCE CONSIDERED AS A DIRAC
+!         SOURCE CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             IIS=1
 !           HERE IN PARALLEL SOURCES WITHOUT PARCOM
@@ -971,7 +976,7 @@
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
             IF(OPTSOU.EQ.1) THEN
-            ! SOURCE NOT CONSIDERED AS A DIRAC
+!             SOURCE NOT CONSIDERED AS A DIRAC
               IIS=IS
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
@@ -985,8 +990,8 @@
      &                -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
                 ENDIF
               ENDDO
-            ELSE IF(OPTSOU.EQ.2) THEN
-            ! SOURCE CONSIDERED AS A DIRAC
+            ELSEIF(OPTSOU.EQ.2) THEN
+!             SOURCE CONSIDERED AS A DIRAC
               IIS=1
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !             ARE STORED AT ADRESSES 2 (SEE SOURCES_SINKS.F)
@@ -1027,7 +1032,7 @@
         DO IS=1,NSCE
           IF(OPTBAN.EQ.2) THEN
             IF(OPTSOU.EQ.1) THEN
-            ! THE SOURCE IS NOT CONSIDERED AS A DIRAC
+!             THE SOURCE IS NOT CONSIDERED AS A DIRAC
               DO IPOIN=1,NPOIN3
                 IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
                     FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
@@ -1035,7 +1040,7 @@
                 ENDIF
               ENDDO
             ELSE IF(OPTSOU.EQ.2) THEN
-            ! THE SOURCE IS CONSIDERED AS A DIRAC
+!             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
@@ -1046,7 +1051,15 @@
             ENDIF
           ELSE
             IF(OPTSOU.EQ.1) THEN
-            ! THE SOURCE IS NOT CONSIDERED AS A DIRAC
+!             THE SOURCE IS NOT CONSIDERED AS A DIRAC
+              DO IPOIN=1,NPOIN3
+                IF(TRA01(IPOIN).GT.EPS) THEN
+                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
+              ENDDO
+            ELSE IF(OPTSOU.EQ.2) THEN
+!             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(TRA01(IPOIN).GT.EPS) THEN
@@ -1054,14 +1067,6 @@
      &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDIF
-            ELSE IF(OPTSOU.EQ.2) THEN
-            ! THE SOURCE IS CONSIDERED AS A DIRAC
-              DO IPOIN=1,NPOIN3
-                IF(TRA01(IPOIN).GT.EPS) THEN
-                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
-                ENDIF
-              ENDDO
             ENDIF
           ENDIF
         ENDDO
