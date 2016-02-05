@@ -1012,13 +1012,8 @@
 !       FOR BED FLUXES
         IF(BEDBOU) THEN
           DO IPOIN=1,NPOIN2
-!             IF(BEDFLU%R(IPOIN).LE.0.D0) THEN
-!               FLUX=FLUX
-!      &             -DTJALFA*FC(IPOIN)*BEDFLU%R(IPOIN)
-!             ENDIF
             IF(T2_18%R(IPOIN).LE.0.D0) THEN
-              FLUX=FLUX
-     &             -DTJALFA*FC(IPOIN)*T2_18%R(IPOIN)
+              FLUX=FLUX-DTJALFA*FC(IPOIN)*T2_18%R(IPOIN)
             ENDIF
           ENDDO
         ENDIF
@@ -1039,7 +1034,7 @@
      &              *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDDO
-            ELSE IF(OPTSOU.EQ.2) THEN
+            ELSEIF(OPTSOU.EQ.2) THEN
 !             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
@@ -1055,16 +1050,16 @@
               DO IPOIN=1,NPOIN3
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDDO
-            ELSE IF(OPTSOU.EQ.2) THEN
+            ELSEIF(OPTSOU.EQ.2) THEN
 !             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDIF
             ENDIF
@@ -1073,21 +1068,6 @@
       ENDIF
 !     BEDFLUXES
       IF(BEDBOU) THEN
-!         IF(OPTBAN.EQ.2) THEN
-!           DO IPOIN=1,NPOIN2
-!             IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
-!               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
-!      &          *MAX(BEDFLU%R(IPOIN),0.D0)/TRA01(IPOIN)
-!             ENDIF
-!           ENDDO
-!         ELSE
-!           DO IPOIN=1,NPOIN2
-!             IF(TRA01(IPOIN).GT.EPS) THEN
-!               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
-!      &        *MAX(BEDFLU%R(IPOIN),0.D0)/TRA01(IPOIN)
-!             ENDIF
-!           ENDDO
-!         ENDIF
         IF(OPTBAN.EQ.2) THEN
           DO IPOIN=1,NPOIN2
             IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
