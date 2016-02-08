@@ -39,16 +39,16 @@
         ! SIZE OF ELEMENTS
         INTEGER :: RS ! REAL SIZE (4 OR 8)
         ! POSITION IN FILE
-        INTEGER :: POS_TITLE
-        INTEGER :: POS_NVAR != POS_TITLE + 4 + TITLE_SIZE + 4
-        INTEGER :: POS_VARINFO != POS_NVAR + 4 + 2*IS + 4
-        INTEGER :: POS_IB != POS_VARINFO + 4 + NVAR*VAR_SIZE + 4
-        INTEGER :: POS_DATE != POS_IB + 4 + 10*IS + 4
-        INTEGER :: POS_NUM != POS_DATE + (IB(10).NE.0)*(4 + 6*IS + 4)
-        INTEGER :: POS_IKLE != POS_NUM + 4 + 4*IS + 4
-        INTEGER :: POS_IPOBO != POS_IKLE + 4 + NELEM*NDP*IS + 4
-        INTEGER :: POS_COORD != POS_IPOBO + 4 + NPOIN*IS + 4
-        INTEGER :: POS_DATA != POS_COORD + (4 + NPOIN*RS + 4)*NDIM
+        INTEGER(KIND=I8) :: POS_TITLE
+        INTEGER(KIND=I8) :: POS_NVAR != POS_TITLE + 4 + TITLE_SIZE + 4
+        INTEGER(KIND=I8) :: POS_VARINFO != POS_NVAR + 4 + 2*IS + 4
+        INTEGER(KIND=I8) :: POS_IB != POS_VARINFO + 4 + NVAR*VAR_SIZE + 4
+        INTEGER(KIND=I8) :: POS_DATE != POS_IB + 4 + 10*IS + 4
+        INTEGER(KIND=I8) :: POS_NUM != POS_DATE + (IB(10).NE.0)*(4 + 6*IS + 4)
+        INTEGER(KIND=I8) :: POS_IKLE != POS_NUM + 4 + 4*IS + 4
+        INTEGER(KIND=I8) :: POS_IPOBO != POS_IKLE + 4 + NELEM*NDP*IS + 4
+        INTEGER(KIND=I8) :: POS_COORD != POS_IPOBO + 4 + NPOIN*IS + 4
+        INTEGER(KIND=I8) :: POS_DATA != POS_COORD + (4 + NPOIN*RS + 4)*NDIM
         ! COMPUTED INFORMATIONS
         INTEGER :: SIZE_DATA != 4 + NPOIN*RS + 4
         INTEGER :: SIZE_DATA_SET != 4 + RS + 4 + NVAR*(4 + NPOIN*RS + 4)
@@ -265,13 +265,14 @@
         CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER :: SRF_ID
         CHARACTER(LEN=9) :: SRF_OPENMODE
         INTEGER(KIND=I4) :: B1, B2, IB(10), IDUM
         INTEGER :: NTIMESTEP
         INTEGER(KIND=K4) :: TAG
         REAL :: TIME
-        INTEGER :: I, POS, FSIZE
+        INTEGER(KIND=I8) :: I, POS, FSIZE
         !
         ! ADD A NEW FILE TO THE HASH TABLE
         CALL ADD_SRF_FILE(FILE_ID,SRF_ID,IERR)
@@ -708,7 +709,8 @@
         CHARACTER(LEN=TITLE_SIZE), INTENT(INOUT) :: TITLE
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'CLOSE_MESH:GET_SRF_OBJ')
@@ -749,7 +751,8 @@
         INTEGER, INTENT(INOUT) :: DATE(6)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         INTEGER :: I
         INTEGER(KIND=I4) :: TMP
         !
@@ -896,7 +899,8 @@
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID, ARRAY_SIZE
-        INTEGER :: MY_POS, I
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: I
         INTEGER(KIND=I4) :: TMP
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
@@ -1065,7 +1069,8 @@
         DOUBLE PRECISION, INTENT(INOUT) :: COORD(NPOIN)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         INTEGER :: I, ARRAY_SIZE
         INTEGER :: DBL_TYP
         REAL(KIND=R4) :: W
@@ -1134,7 +1139,8 @@
         INTEGER, INTENT(INOUT) :: KNOLG(NPOIN)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         INTEGER :: ARRAY_SIZE,I
         INTEGER(KIND=I4) :: TMP
         !
@@ -1231,7 +1237,8 @@
         INTEGER, INTENT(INOUT) :: IPOBO(NPOIN)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         INTEGER :: ARRAY_SIZE, I
         INTEGER(KIND=I4) TMP
         !
@@ -1697,7 +1704,8 @@
         DOUBLE PRECISION, INTENT(INOUT) :: TIME
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID
         REAL :: W
         INTEGER :: IREC,NTIMESTEP
         !
@@ -1762,7 +1770,8 @@
         DOUBLE PRECISION, INTENT(INOUT) :: RES_VALUE(N)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, IVAR, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER          :: SRF_ID, IVAR
         INTEGER :: I, ARRAY_SIZE, NTIMESTEP, IREC
         REAL :: W
         !
@@ -1849,7 +1858,8 @@
         CHARACTER(LEN=VAR_SIZE),          INTENT(IN)  :: VAR_NAME(NVAR)
         INTEGER,                          INTENT(OUT) :: IERR
         !
-        INTEGER TAG,I,SRF_ID,MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER ::  TAG,I,SRF_ID
         INTEGER(KIND=I4) :: TMP, TMP2
         !
         !
@@ -1951,7 +1961,9 @@
         DOUBLE PRECISION,      INTENT(IN) :: X(NPOIN),Y(NPOIN)
         INTEGER,               INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID,IKLES_SIZE,IELEM,I,MY_POS,IPLAN,NELEM2
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER :: I,SRF_ID,IKLES_SIZE,IELEM,IPLAN
+        INTEGER :: NELEM2
         INTEGER :: IELEMP,IELEMT,NPOIN2,IELEM2
         !
         INTEGER(KIND=I4) :: TMP(10), TAG
@@ -2198,7 +2210,8 @@
         DOUBLE PRECISION, INTENT(IN)  :: VAR_VALUE(N)
         INTEGER,          INTENT(OUT) :: IERR
         !
-        INTEGER :: SRF_ID, I,IVAR, IREC, MY_POS
+        INTEGER(KIND=I8) :: MY_POS
+        INTEGER :: SRF_ID,I,IVAR, IREC
         INTEGER(KIND=I4) :: TAG
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
@@ -2225,7 +2238,7 @@
         ! Write time of the dataset if it is the first variable
         IF(FIRST_VAR) THEN
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
-     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
+     &            + INT(IREC,I8)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
           READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
           TAG = SRF_OBJ_TAB(SRF_ID)%RS
           IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
@@ -2242,7 +2255,7 @@
           ENDIF
         ELSE
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
-     &            + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
+     &            + INT(IREC,I8)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
      &            + 4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 ! THE TIME VALUE
      &            + (IVAR-1) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
           ! Using a read to go to position in file
