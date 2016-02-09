@@ -4791,15 +4791,33 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Option pour les conditions aux limites de maree.
-Pour des marees reelles, 1 est recommande.
+Pour des marees reelles, l option 1 est recommandee.
+Depuis la version 7.1, ce mot-cle est un tableau avec une valeur
+donnee par frontiere liquide, separee par point-virgules.
+Ceci permet d'avoir des conditions de maree (ou pas) calculees
+sur des frontieres liquides avec vitesses ou hauteur d eau imposees.
+Ca evite un conflit lors de l utilisation de seuils dans le domaine.
+0 est le code pour des conditions autres que des conditions de maree.
+ATTENTION depuis la version 7.1 !
+Les anciens modeles doivent etre changes si la frontiere de maree
+n a pas le numero 1. Dans ce cas, le mot-cle doit etre change et
+plus de valeurs doivent etre donnees.
 Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
-et COEFFICIENT POUR CALAGE EN NIVEAU.
-Une valeur par frontiere liquide doit etre donnee,
-avec point-virgule comme separateur'
+et COEFFICIENT POUR CALAGE EN NIVEAU.'
 AIDE1= 'Option for tidal boundary conditions.
-For real tides, 1 is recommended.
-Give one value per liquid boundary, separated by semicolons.
-Possible calibration with keywords COEFFICIENT TO ADJUST TIDAL RANGE
+For real tides, option 1 is recommended.
+This keyword has been an array with a value given per liquid boundary,
+separated by semicolons, since version 7.1.
+This enables to have tidal conditions (or not) computed
+on liquid boundaries with prescribed velocities or depths,
+avoiding a clash when using weirs in the domain.
+0 codes for conditions other than tidal.
+BEWARE since version 7.1!
+Old models must be changed if their tidal boundary is not number 1.
+In that case this keyword must be changed and more values given.
+Possible calibration with the keywords
+COEFFICIENT TO ADJUST TIDAL RANGE,
+COEFFICENT TO CALIBRATE TIDAL VELOCITIES,
 and COEFFICIENT TO ADJUST SEA LEVEL.'
 
 NOM = 'FICHIER DES CONSTANTES HARMONIQUES'
@@ -5866,6 +5884,7 @@ NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES'
 TYPE = INTEGER
 INDEX = 95
 MNEMO = 'MAXFRO'
+TAILLE = 0
 DEFAUT = 30
 DEFAUT1 = 30
 RUBRIQUE = 'GENERAL'
@@ -5881,6 +5900,7 @@ NOM1 = 'MAXIMUM NUMBER OF SOURCES'
 TYPE = INTEGER
 INDEX = 96
 MNEMO = 'MAXSCE'
+TAILLE = 0
 DEFAUT = 20
 DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
@@ -5896,6 +5916,7 @@ NOM1 = 'MAXIMUM NUMBER OF TRACERS'
 TYPE = INTEGER
 INDEX = 97
 MNEMO = 'MAXTRA'
+TAILLE = 0
 DEFAUT = 20
 DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
