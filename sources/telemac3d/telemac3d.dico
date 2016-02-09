@@ -459,7 +459,7 @@ NOM1 = 'SCHEME FOR ADVECTION OF TRACERS'
 TYPE = ENTIER
 INDEX = 19
 MNEMO = 'SCHCTA'
-TAILLE = 1
+TAILLE = 2
 CHOIX = '0="PAS DE CONVECTION"';
         '1="CARACTERISTIQUES"';
         '2="EXPLICITE + SUPG"';
@@ -484,8 +484,8 @@ COMPORT =
 'Foreground ("EQUATIONS, CONVECTION*GENERAL")
 IS BRUT (blue)'
 NIVEAU = 1
-AIDE = 'Choix du schema de convection pour les traceurs'
-AIDE1 = 'Choice of the advection scheme for the tracers'
+AIDE = 'Choix du schema de convection pour les traceurs.'
+AIDE1 = 'Choice of the advection scheme for the tracers.'
 
 NOM = 'FONCTION D''AMORTISSEMENT'
 NOM1 = 'DAMPING FUNCTION'
@@ -748,7 +748,7 @@ COMPORT =
 IS BRUT (brown)'
 AIDE = 'Permet de preconditionner le systeme relatif
 a la diffusion des traceurs.'
-AIDE1 = 'Choice of preconditioning for the diffusion of tracers'
+AIDE1 = 'Choice of preconditioning for the diffusion of tracers.'
 
 NOM = 'MAXIMUM D''ITERATIONS POUR LA DIFFUSION DU SEDIMENT'
 NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF SEDIMENT'
@@ -969,7 +969,7 @@ COMPORT =
 IS BRUT (brown)'
 AIDE = 'Permet de choisir le solveur utilise pour la resolution de
 la diffusion des traceurs.'
-AIDE1 = 'Choice of the solver for the diffusion of tracers'
+AIDE1 = 'Choice of the solver for the diffusion of tracers.'
 
 NOM = 'PERIODE DE COUPLAGE POUR TOMAWAC'
 NOM1 = 'COUPLING PERIOD FOR TOMAWAC'
@@ -1102,7 +1102,7 @@ NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 40
 MNEMO = 'SLVDTA(ITRAC)%NITMAX'
-TAILLE = 2
+TAILLE = 0
 DEFAUT = 60
 DEFAUT1 = 60
 RUBRIQUE = 'EQUATIONS, DIFFUSION';'TRACEUR'
@@ -1425,7 +1425,7 @@ NOM1 = 'BETA EXPANSION COEFFICIENT FOR TRACERS'
 TYPE = REEL
 INDEX = 8
 MNEMO = 'BETAC'
-TAILLE = 1
+TAILLE = 2
 DEFAUT=0.
 DEFAUT1=0.
 RUBRIQUE = 'CONSTANTES PHYSIQUES'
@@ -1439,14 +1439,14 @@ NOM1 = 'STANDARD VALUES FOR TRACERS'
 TYPE = REEL
 INDEX = 9
 MNEMO = 'T0AC'
-TAILLE = 1
+TAILLE = 2
 DEFAUT=0.
 DEFAUT1=0.
 RUBRIQUE = 'EQUATIONS, TRACEUR'
 RUBRIQUE1 = 'EQUATIONS, TRACER'
 NIVEAU = 1
 AIDE = 'Valeur du traceur pour laquelle la densite est donnee.'
-AIDE1 = 'Reference value of tracers corresponding to given density'
+AIDE1 = 'Reference value of tracers corresponding to given density.'
 
 NOM = 'MASSE VOLUMIQUE MOYENNE DE L''EAU'
 NOM1 = 'AVERAGE WATER DENSITY'
@@ -1596,7 +1596,7 @@ NOM1 = 'COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 18
 MNEMO = 'DNUTAH'
-TAILLE = 1
+TAILLE = 2
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -1605,19 +1605,23 @@ NIVEAU = 1
 COMPORT =
 'Foreground ("EQUATIONS*MODELE DE TURBULENCE*VISCOSITE CONSTANTE")
 IS BRUT (brown)'
-AIDE = 'Fixe la valeur du coefficient de diffusion horizontal du
-traceur.  L''influence de ce parametre sur l''evolution du traceur dans
-le temps est importante.'
-AIDE1 = 'Sets the value of the horizontal diffusion of tracers.
-This value may have a significant effect on the evolution of
-tracers in time.'
+AIDE = 'Fixe les valeurs de coefficients de diffusion horizontal des
+traceurs.  L''influence de ce parametre sur l''evolution des traceurs
+dans le temps est importante.
+C est un tableau depuis la version 7.1, avec une valeur par traceur,
+separation par un point virgule.'
+AIDE1 = 'Sets the values of the horizontal diffusion of tracers.
+These values may have a significant effect on the evolution of
+tracers in time.
+Since version 7.1, it has been an array, with one value per tracer,
+separated by semicolons.'
 
 NOM = 'COEFFICIENT DE DIFFUSION VERTICAL DES TRACEURS'
 NOM1 = 'COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 19
 MNEMO = 'DNUTAV'
-TAILLE = 1
+TAILLE = 2
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -1626,12 +1630,16 @@ NIVEAU = 1
 COMPORT =
 'Foreground ("EQUATIONS*MODELE DE TURBULENCE*VISCOSITE CONSTANTE")
 IS BRUT (brown)'
-AIDE = 'Fixe la valeur du coefficient de diffusion vertical du traceur.
-L''influence de ce parametre sur l''evolution du traceur dans
-le temps est importante.'
-AIDE1 = 'Sets the value of the vertical diffusion of tracers.
-This value may have a significant effect on the evolution of
-tracers in time.'
+AIDE = 'Fixe les valeurs de coefficients de diffusion vertical des
+traceurs.  L''influence de ce parametre sur l''evolution des traceurs
+dans le temps est importante.
+C est un tableau depuis la version 7.1, avec une valeur par traceur,
+separation par un point virgule.'
+AIDE1 = 'Sets the values of the vertical diffusion of tracers.
+These values may have a significant effect on the evolution of
+tracers in time.
+Since version 7.1, it has been an array, with one value per tracer,
+separated by semicolons.'
 
 NOM = 'VALEURS INITIALES DES TRACEURS'
 NOM1 = 'INITIAL VALUES OF TRACERS'
@@ -1682,7 +1690,7 @@ NOM1 = 'ACCURACY FOR DIFFUSION OF TRACERS'
 TYPE = REEL
 INDEX = 23
 MNEMO = 'SLVDTA(ITRAC)%EPS'
-TAILLE = 2
+TAILLE = 0
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
@@ -3489,7 +3497,7 @@ NOM1 = 'OPTION OF SOLVER FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 75
 MNEMO = 'SLVDTA(ITRAC)%KRYLOV'
-TAILLE = 2
+TAILLE = 0
 DEFAUT = 3
 DEFAUT1 = 3
 RUBRIQUE = ' '
@@ -3699,10 +3707,10 @@ RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
 AIDE = 'Permet de specifier la composante selon z de la vitesse aux
 sources.  Si rien n est specifie, les sources diffusent sans vitesse
-dans toutes les directions (cf. cas de validation 004\_source).'
+dans toutes les directions (cf. cas de validation source).'
 AIDE1 = 'Specifies the compoment along z of the velocities of the
 sources.  If nothing is specified, the sources diffuse without any
-velocity in every direction (cf. validation case 004\_source).'
+velocity in every direction (cf. validation case source).'
 
 NOM = 'PRECISION POUR LA PROJECTION'
 NOM1 = 'ACCURACY FOR PROJECTION'
@@ -4132,7 +4140,7 @@ NOM1 = 'NAMES OF TRACERS'
 TYPE = CARACTERE
 INDEX = 56
 MNEMO = 'NAMETRAC'
-TAILLE = 10
+TAILLE = 2
 /DEFAUT = ' '
 /DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
@@ -4225,11 +4233,11 @@ DEFAUT1 = 'ZERO ELEVATION'
 NIVEAU = 1
 CHOIX = '"COTE NULLE"'; '"COTE CONSTANTE"';
 '"HAUTEUR NULLE"'; '"HAUTEUR CONSTANTE"'; '"PARTICULIERES"';
-'"SPECIAL"'; '"PARTICULAR"';
+'"SPECIAL"';
 '"ALTIMETRIE SATELLITE TPXO"'
 CHOIX1 = '"ZERO ELEVATION"'; '"CONSTANT ELEVATION"';
 '"ZERO DEPTH"'; '"CONSTANT DEPTH"'; '"SPECIAL"';
-'"PARTICULAR"';'"PARTICULIERES"';
+'"PARTICULAR"';
 '"TPXO SATELLITE ALTIMETRY"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS INITIALES'
 RUBRIQUE1 = 'EQUATIONS, INITIAL CONDITIONS'
@@ -5573,8 +5581,8 @@ NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES DE MAREE'
 NOM1 = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
 TYPE = INTEGER
 INDEX = 111
-MNEMO = 'TIDALTYPE'
-TAILLE = 0
+MNEMO = 'BND_TIDE'
+TAILLE = 2
 DEFAUT = 0
 DEFAUT1= 0
 CHOIX=
@@ -5600,12 +5608,31 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Option pour les conditions aux limites de maree.
 Pour des marees reelles, l option 1 est recommandee.
+Depuis la version 7.1, ce mot-cle est un tableau avec une valeur
+donnee par frontiere liquide, separee par point-virgules.
+Ceci permet d'avoir des conditions de maree (ou pas) calculees
+sur des frontieres liquides avec vitesses ou hauteur d eau imposees.
+Ca evite un conflit lors de l utilisation de seuils dans le domaine.
+0 est le code pour des conditions autres que des conditions de maree.
+ATTENTION depuis la version 7.1 !
+Les anciens modeles doivent etre changes si la frontiere de maree
+n a pas le numero 1. Dans ce cas, le mot-cle doit etre change et
+plus de valeurs doivent etre donnees.
 Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
 et COEFFICIENT POUR CALAGE EN NIVEAU.'
 AIDE1= 'Option for tidal boundary conditions.
 For real tides, option 1 is recommended.
-Possible calibration with the keywords COEFFICIENT TO CALIBRATE TIDAL
-RANGE,
+This keyword has been an array with a value given per liquid boundary,
+separated by semicolons, since version 7.1.
+This enables to have tidal conditions (or not) computed
+on liquid boundaries with prescribed velocities or depths,
+avoiding a clash when using weirs in the domain.
+0 codes for conditions other than tidal.
+BEWARE since version 7.1!
+Old models must be changed if their tidal boundary is not number 1.
+In that case this keyword must be changed and more values given.
+Possible calibration with the keywords
+COEFFICIENT TO CALIBRATE TIDAL RANGE,
 COEFFICENT TO CALIBRATE TIDAL VELOCITIES,
 and COEFFICIENT TO CALIBRATE SEA LEVEL.'
 
@@ -6532,16 +6559,16 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Nombre de tableaux 2D mis a disposition de l utilisateur
-         dans le bloc PRIVE2D'
+dans le bloc PRIVE2D. Il doit etre inferieur ou egal a 4'
 AIDE1 = 'Number of 2D arrays for own user programming
- in block PRIVE2D'
+in block PRIVE2D. It has to be lower or equal to 4'
 
 NOM = 'NOMS DES VARIABLES PRIVEES 2D'
 NOM1 = 'NAMES OF 2D PRIVATE VARIABLES'
 TYPE = CARACTERE
 INDEX = 94
 MNEMO = 'NAMES\_PRIVE2D'
-TAILLE = 10
+TAILLE = 4
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
@@ -6549,11 +6576,11 @@ COMPORT =
 'Foreground ("ENTREES-SORTIES, FICHIERS*NOMS")
 IS BRUT (red)'
 AIDE = 'Noms des variables dans les tableaux prives en 32 caracteres,
-        16 pour le nom 16 pour l''unite. Elles seront lues dans le
-        fichier de geometrie si elles y sont.'
+16 pour le nom 16 pour l''unite. Elles seront lues dans le
+fichier de geometrie si elles y sont. Nombre maximum de 4 noms.'
 AIDE1 = 'Name of variables in 2D private arrays in 32 characters,
-        16 for the name, 16 for the unit. If present, will be read
-        in the geometry file.'
+16 for the name, 16 for the unit. If present, will be read
+in the geometry file. Maximum number of 4 names'
 /
 NOM = 'NUMERO LOCAL DU POINT POUR CALER LA PLEINE MER'
 NOM1 = 'LOCAL NUMBER OF THE POINT TO CALIBRATE HIGH WATER'
@@ -6609,6 +6636,7 @@ NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES'
 TYPE = INTEGER
 INDEX = 121
 MNEMO = 'MAXFRO'
+TAILLE = 0
 DEFAUT = 30
 DEFAUT1 = 30
 RUBRIQUE = 'GENERAL'
@@ -6624,6 +6652,7 @@ NOM1 = 'MAXIMUM NUMBER OF SOURCES'
 TYPE = INTEGER
 INDEX = 122
 MNEMO = 'MAXSCE'
+TAILLE = 0
 DEFAUT = 20
 DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
@@ -6639,6 +6668,7 @@ NOM1 = 'MAXIMUM NUMBER OF TRACERS'
 TYPE = INTEGER
 INDEX = 123
 MNEMO = 'MAXTRA'
+TAILLE = 0
 DEFAUT = 20
 DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
@@ -6654,6 +6684,7 @@ NOM1 = 'MAXIMUM NUMBER OF BOUNDARIES ON THE BED'
 TYPE = INTEGER
 INDEX = 124
 MNEMO = 'MAXBLB'
+TAILLE = 0
 DEFAUT = 30
 DEFAUT1 = 30
 RUBRIQUE = 'GENERAL'
