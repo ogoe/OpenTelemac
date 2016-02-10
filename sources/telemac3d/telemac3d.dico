@@ -5610,7 +5610,7 @@ AIDE = 'Option pour les conditions aux limites de maree.
 Pour des marees reelles, l option 1 est recommandee.
 Depuis la version 7.1, ce mot-cle est un tableau avec une valeur
 donnee par frontiere liquide, separee par point-virgules.
-Ceci permet d'avoir des conditions de maree (ou pas) calculees
+Ceci permet d''avoir des conditions de maree (ou pas) calculees
 sur des frontieres liquides avec vitesses ou hauteur d eau imposees.
 Ca evite un conflit lors de l utilisation de seuils dans le domaine.
 0 est le code pour des conditions autres que des conditions de maree.
