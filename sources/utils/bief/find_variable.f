@@ -14,6 +14,8 @@
 !+        if the time does not exist in the file with an accuracy of EPS.
 !+
 !+        If no optional parameter is given, the last record is chosen.
+!+
+!+        Accepted formats so far: 'SERAFIN ', 'SERAFIND', 'MED     '
 !
 !history  Y. AUDOUIN (EDF LAB, LNHE)
 !+        28/07/2015
@@ -200,6 +202,7 @@
             IF (LNG.EQ.2) WRITE(LU,*) 'ERROR WHILE READING TIME VALUE ',
      &                                'FOR RECORD:',RRECORD
             CALL PLANTE(1)
+            STOP
           ENDIF
         ENDIF
         CALL GET_DATA_VALUE(FFORMAT,FID,RRECORD,VAR_NAME,RES,
@@ -213,6 +216,7 @@
      &                              'FOR FOR VARIABLE:',VAR_NAME,
      &                              'FOR RECORD:',RRECORD
           CALL PLANTE(1)
+          STOP
         ENDIF
 !
       ENDIF

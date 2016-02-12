@@ -8,7 +8,7 @@
      &  ZERO,HMIN,HN, ACLADM, UNORM,UW, TW, NPOIN,KSPRED,IKS)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES THE TOTAL STRESS AT THE BOTTOM DEPENDING
@@ -39,8 +39,14 @@
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
-!+  Name of variables
+!+  Name of variables.
 !+
+!
+!history  J-M HERVOUET (EDF-LAB, LNHE), ON BEHALF OF CLEMENS DORFMAN
+!+        12/02/2016
+!+        V7P2
+!+  Changing the constant 12.D0 into 11.036D0 because in the rest of the
+!+  code the Karman constant has been changed from 0.41 to 0.40.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -106,6 +112,12 @@
       INTEGER                     :: I
       DOUBLE PRECISION            :: A,B,C, HCLIP,KSMAX
 !
+!     12.D0 WAS EXP(8.5*0.41)/EXP(1.D0)
+!     11.036D0 IS EXP(8.5*0.40)/EXP(1.D0)
+!     CONSIDERING THAT EXP(8.5*0.40) IS 30 INSTEAD OF 29.9641...
+!     0.40 IS THE KARMAN CONSTANT THAT SHOULD BE PARAMETERISED SOMEWHERE
+      DOUBLE PRECISION, PARAMETER :: CSTE=11.036D0
+!
 ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 ! ----------------------------------------------------------------------------------------------
@@ -146,7 +158,7 @@
         ENDIF
         DO I =1,NPOIN
           A = -KARMAN*SQRT(2.D0/MAX(CF%R(I),ZERO))
-          KS%R(I)=12.D0*HN%R(I)*EXP(A)
+          KS%R(I)=CSTE*HN%R(I)*EXP(A)
           KS%R(I)=MAX(KS%R(I),KSP%R(I))
         ENDDO
 !
@@ -191,7 +203,7 @@
         DO I= 1, NPOIN
           IF(CF%R(I).GT.ZERO.AND.HN%R(I).GT.KSP%R(I)) THEN
             HCLIP=MAX(HN%R(I),KSP%R(I))
-            A = 2.5D0*LOG(12.D0*HCLIP/KSP%R(I))
+            A = 2.5D0*LOG(CSTE*HCLIP/KSP%R(I))
             C =2.D0/A**2
             MU%R(I) = C/CF%R(I)
           ELSE
@@ -203,8 +215,8 @@
           KSMAX=MAX(KSR%R(I),KSP%R(I))
           IF(HN%R(I).GT.KSMAX.AND.CF%R(I).GT.ZERO)THEN
             HCLIP=MAX(HN%R(I),KSMAX)
-            A = LOG(12.D0*HCLIP/KSP%R(I))
-            B = LOG(12.D0*HCLIP/KSR%R(I))
+            A = LOG(CSTE*HCLIP/KSP%R(I))
+            B = LOG(CSTE*HCLIP/KSR%R(I))
             C = 0.32D0/CF%R(I)
             MU%R(I) = C/SQRT(B*A**3)
           ELSE
