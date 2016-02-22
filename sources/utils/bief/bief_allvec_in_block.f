@@ -108,7 +108,7 @@
               NOM(IDEB+1:IDEB+1) = CHIFFRE(II/10)
               NOM(IDEB+2:IDEB+2) = CHIFFRE(II-10*(II/10))
             ELSE
-              IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 VECTEURS DEMANDER
+              IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 VECTEURS DEMANDES
      &                                  DANS ALLVEC_IN_BLOCK'
               IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 VECTORS ASKED
      &                                  IN ALLVEC_IN_BLOCK'
