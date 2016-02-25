@@ -62,7 +62,7 @@
 !+   in parallel. FLODEL differently shared at the exit.
 !
 !history  J-M HERVOUET (LNHE)
-!+        21/01/2016
+!+        22/02/2016
 !+        V7P2
 !+   OPTION has a new meaning (2 was the only previous possibility)
 !+   Now : 1 : positive depths ensured with an EBE approach (new !)
@@ -136,7 +136,8 @@
 !
       INTEGER I,I1,I2,I3,IPTFR,IOPT1,REMAIN,NEWREMAIN,IR,NITER
       INTEGER NELEM,NSEG,ISEG,IELEM
-      DOUBLE PRECISION C,CPREV,CINIT,VOL1,VOL2,VOL3,DTLIM,HFL1,F1,F2,F3
+      DOUBLE PRECISION C,CPREV,CINIT,VOL1,VOL2,VOL3,HFL1,F1,F2,F3
+      DOUBLE PRECISION DTLIM1,DTLIM2,DTLIM3,FP1,FP2,FP3,DT1,DT2,DT3
       DOUBLE PRECISION COEF,SURDT,HSEG1,HSEG2,TET,HFL2,A1,A2,A3
       DOUBLE PRECISION, PARAMETER :: TIERS=1.D0/3.D0
 !
@@ -230,11 +231,11 @@
 !
       IF(OPTION.EQ.1) THEN
 !
-!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS
+!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS    
         DO IELEM = 1,NELEM
           A1 = ABS(FLOPOINT(IELEM,1))
           A2 = ABS(FLOPOINT(IELEM,2))
-          A3 = ABS(FLOPOINT(IELEM,3))
+          A3 = ABS(FLOPOINT(IELEM,3))          
           IF(A1.GE.A2.AND.A1.GE.A3) THEN
 !           ALL FLOW TO AND FROM NODE 1
             FLOPOINT(IELEM,1)=-FLOPOINT(IELEM,2)
@@ -331,12 +332,10 @@
       IF(OPTION.EQ.1) THEN
 !       MAXIMUM INITIAL FLUX
         DO IR=1,NELEM
-          CPREV=MAX(CPREV,ABS(FLOPOINT(IR,1)),
-     &                    ABS(FLOPOINT(IR,2)),
-     &                    ABS(FLOPOINT(IR,3)))
+          CPREV=CPREV+ABS(FLOPOINT(IR,1))
+     &               +ABS(FLOPOINT(IR,2))
+     &               +ABS(FLOPOINT(IR,3))
         ENDDO
-        IF(NCSIZE.GT.1) CPREV=P_DMAX(CPREV)
-        IF(TESTING) WRITE(LU,*) 'FLUX MAXIMUM INITIAL=',CPREV
       ELSE
 !       INITIAL SUM OF FLUXES
         DO I=1,NSEG
@@ -344,9 +343,9 @@
 !         SAVING INITIAL FLODEL INTO FLULIM
           FLULIM(I)=FLODEL%R(I)
         ENDDO
-        IF(NCSIZE.GT.1) CPREV=P_DSUM(CPREV)
-        IF(TESTING) WRITE(LU,*) 'INITIAL SUM OF FLUXES=',CPREV
       ENDIF
+      IF(NCSIZE.GT.1) CPREV=P_DSUM(CPREV)
+      IF(TESTING) WRITE(LU,*) 'INITIAL SUM OF FLUXES=',CPREV
       CINIT=CPREV
 !
 !     LOOP OVER THE LOOP OVER THE ELEMENTS
@@ -365,6 +364,45 @@
         NEWREMAIN=0
         C=0.D0
 !
+!       COMPUTING DEMAND (T1) AND OFFER (T3)
+!
+        CALL OS('X=0     ',X=T1)
+        CALL OS('X=0     ',X=T3)
+        DO IR=1,REMAIN
+          I=INDIC(IR)
+          I1=MESH%IKLE%I(I        )
+          I2=MESH%IKLE%I(I  +NELEM)
+          I3=MESH%IKLE%I(I+2*NELEM)
+!         A PRIORI AVAILABLE VOLUMES
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS   
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS   
+          VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
+!         FLUXES FROM POINTS
+          F1= FLOPOINT(I,1)-FLOPOINT(I,3)
+          F2=-FLOPOINT(I,1)+FLOPOINT(I,2)
+          F3=-FLOPOINT(I,2)+FLOPOINT(I,3)
+!         DEMAND OR OFFER, COMPARED TO A PRIORI AVAILABLE VOLUMES
+          IF(F1*DT.GT.VOL1) THEN
+            T1%R(I1)=T1%R(I1)+F1*DT-VOL1
+          ELSE
+            T3%R(I1)=T3%R(I1)+MIN(VOL1,VOL1-F1*DT)
+          ENDIF
+          IF(F2*DT.GT.VOL2) THEN
+            T1%R(I2)=T1%R(I2)+F2*DT-VOL2
+          ELSE
+            T3%R(I2)=T3%R(I2)+MIN(VOL2,VOL2-F2*DT)
+          ENDIF
+          IF(F3*DT.GT.VOL3) THEN
+            T1%R(I3)=T1%R(I3)+F3*DT-VOL3
+          ELSE
+            T3%R(I3)=T3%R(I3)+MIN(VOL3,VOL3-F3*DT)
+          ENDIF
+        ENDDO
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(T1,2,MESH)
+          CALL PARCOM(T3,2,MESH)
+        ENDIF
+!
         DO IR=1,REMAIN
 !
           I=INDIC(IR)
@@ -373,45 +411,108 @@
           I2=MESH%IKLE%I(I  +NELEM)
           I3=MESH%IKLE%I(I+2*NELEM)
 !
-!         VOLUMES DISPONIBLES POUR CET ELEMENT
+!         A PRIORI AVAILABLE VOLUMES
 !
-          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
-          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS   
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS   
           VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
 !
-          DTLIM=DT
+!         FLUXES FROM POINTS
 !
           F1= FLOPOINT(I,1)-FLOPOINT(I,3)
           F2=-FLOPOINT(I,1)+FLOPOINT(I,2)
           F3=-FLOPOINT(I,2)+FLOPOINT(I,3)
 !
-          IF(F1*DTLIM.GT.VOL1) DTLIM=VOL1/MAX(F1,1.D-12)
-          IF(F2*DTLIM.GT.VOL2) DTLIM=VOL2/MAX(F2,1.D-12)
-          IF(F3*DTLIM.GT.VOL3) DTLIM=VOL3/MAX(F3,1.D-12)
+!         PRELIMINARY REDISTRIBUTION OF VOLUMES ACCORDING TO DEMAND AND OFFER
 !
-!         VARIATIONS OF FLUXES DURING DTLIM
+          IF(F1*DT.GT.VOL1) THEN
+            IF(T1%R(I1).GT.T3%R(I1)) THEN
+              VOL1=VOL1+(F1*DT-VOL1)*T3%R(I1)/T1%R(I1)
+            ELSE
+              VOL1=F1*DT
+            ENDIF
+          ELSE
+            IF(T3%R(I1).GT.T1%R(I1)) THEN
+              VOL1=VOL1-MIN(VOL1,VOL1-F1*DT)*T1%R(I1)/T3%R(I1)
+            ELSE
+              VOL1=MAX(F1,0.D0)*DT
+            ENDIF
+          ENDIF
+          IF(F2*DT.GT.VOL2) THEN
+            IF(T1%R(I2).GT.T3%R(I2)) THEN
+              VOL2=VOL2+(F2*DT-VOL2)*T3%R(I2)/T1%R(I2)
+            ELSE
+              VOL2=F2*DT
+            ENDIF
+          ELSE
+            IF(T3%R(I2).GT.T1%R(I2)) THEN
+              VOL2=VOL2-MIN(VOL2,VOL2-F2*DT)*T1%R(I2)/T3%R(I2)
+            ELSE
+              VOL2=MAX(F2,0.D0)*DT
+            ENDIF
+          ENDIF
+          IF(F3*DT.GT.VOL3) THEN
+            IF(T1%R(I3).GT.T3%R(I3)) THEN
+              VOL3=VOL3+(F3*DT-VOL3)*T3%R(I3)/T1%R(I3)
+            ELSE
+              VOL3=F3*DT
+            ENDIF
+          ELSE
+            IF(T3%R(I3).GT.T1%R(I3)) THEN
+              VOL3=VOL3-MIN(VOL3,VOL3-F3*DT)*T1%R(I3)/T3%R(I3)
+            ELSE
+              VOL3=MAX(F3,0.D0)*DT
+            ENDIF
+          ENDIF
 !
-          T4%R(I1)=T4%R(I1)-F1*DTLIM
-          T4%R(I2)=T4%R(I2)-F2*DTLIM
-          T4%R(I3)=T4%R(I3)-F3*DTLIM
+          IF(F1*DT.GT.VOL1) THEN
+            DT1=DT*(VOL1/(F1*DT))
+          ELSE
+            DT1=DT
+          ENDIF
+          IF(F2*DT.GT.VOL2) THEN
+            DT2=DT*(VOL2/(F2*DT))
+          ELSE
+            DT2=DT
+          ENDIF
+          IF(F3*DT.GT.VOL3) THEN
+            DT3=DT*(VOL3/(F3*DT))
+          ELSE
+            DT3=DT
+          ENDIF
+!
+!         LIMITED VOLUMES TRANSITING BETWEEN POINTS (1/DT MISSING)
+!
+          DTLIM1=MIN(DT1,DT2)
+          DTLIM2=MIN(DT2,DT3)
+          DTLIM3=MIN(DT3,DT1)
+!
+          FP1=FLOPOINT(I,1)*DTLIM1
+          FP2=FLOPOINT(I,2)*DTLIM2
+          FP3=FLOPOINT(I,3)*DTLIM3
+!
+!         CORRESPONDING VARIATIONS OF VOLUMES OF POINTS (DT MISSING SO OK)
+!
+          T4%R(I1)=T4%R(I1)-( FP1-FP3)
+          T4%R(I2)=T4%R(I2)-(-FP1+FP2)
+          T4%R(I3)=T4%R(I3)-(-FP2+FP3)
 !
 !         IF REMAINING FLUXES, THE ELEMENT IS KEPT IN THE LIST
 !
-          IF(DTLIM.EQ.DT) THEN
-            FLOPOINT(I,1)=0.D0
+          IF(DTLIM1.EQ.DT.AND.DTLIM2.EQ.DT.AND.DTLIM3.EQ.DT) THEN
+            FLOPOINT(I,1)=0.D0  
             FLOPOINT(I,2)=0.D0
-            FLOPOINT(I,3)=0.D0
+            FLOPOINT(I,3)=0.D0    
           ELSE
             NEWREMAIN=NEWREMAIN+1
 !           BEFORE NEWREMAIN: FOR NEXT ITERATION
 !           AFTER  NEWREMAIN: STILL VALID FOR NEXT ITERATION
             INDIC(NEWREMAIN)=I
-            COEF=1.D0-DTLIM*SURDT
-            FLOPOINT(I,1)=FLOPOINT(I,1)*COEF
-            FLOPOINT(I,2)=FLOPOINT(I,2)*COEF
-            FLOPOINT(I,3)=FLOPOINT(I,3)*COEF
-            C=MAX(C,ABS(FLOPOINT(I,1)),ABS(FLOPOINT(I,2)),
-     &              ABS(FLOPOINT(I,3)))
+            FLOPOINT(I,1)=FLOPOINT(I,1)*(1.D0-DTLIM1*SURDT)
+            FLOPOINT(I,2)=FLOPOINT(I,2)*(1.D0-DTLIM2*SURDT)    
+            FLOPOINT(I,3)=FLOPOINT(I,3)*(1.D0-DTLIM3*SURDT)   
+            C=C+ABS(FLOPOINT(I,1))+ABS(FLOPOINT(I,2))
+     &         +ABS(FLOPOINT(I,3))
           ENDIF
 !
         ENDDO
@@ -554,14 +655,12 @@
         DO I=1,H%DIM1
           H%R(I)=MAX(H%R(I),0.D0)
         ENDDO
-        IF(NCSIZE.GT.1) C=P_DMAX(C)
-        IF(TESTING) WRITE(LU,*) 'FLUX MAXIMUM NON PRIS EN COMPTE=',C
       ELSEIF(OPTION.EQ.2) THEN
 !       SUMMING THE NEW POSITIVE PARTIAL DEPTHS OF INTERFACE POINTS
         IF(NCSIZE.GT.1) CALL PARCOM(H,2,MESH)
-        IF(NCSIZE.GT.1) C=P_DSUM(C)
-        IF(TESTING) WRITE(LU,*) 'FLUX NON PRIS EN COMPTE=',C
       ENDIF
+      IF(NCSIZE.GT.1) C=P_DSUM(C)
+      IF(TESTING) WRITE(LU,*) 'FLUX NON PRIS EN COMPTE=',C
 !
 !     STOP CRITERION
 !
@@ -777,7 +876,7 @@
           T1%R(I)=T1%R(I)-DT*UNSV2D%R(I)*FLBOR%R(IPTFR)
         ENDDO
         IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
-        DO I=1,NPOIN
+        DO I=1,NPOIN           
           T1%R(I)=T1%R(I)+HN%R(I)-H%R(I)
         ENDDO
         WRITE(LU,*) 'ERREUR POSITIVE_DEPTHS=',P_DOTS(T1,T1,MESH)

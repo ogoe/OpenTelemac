@@ -1283,10 +1283,6 @@
 !
       CALL BIEF_ALLVEC(1, SVIDE, 'SVIDE ', 0, 1, 1,MESH3D)
 !
-! A VOID BLOCK
-!
-      CALL ALLBLO(BVIDE,'BVIDE ')
-!
 !=======================================================================
 ! SEDIMENT
 !  IF CONSOLIDATION IS MODELLED USING THE MULTI-LAYER MODEL,
@@ -1588,3 +1584,4 @@
 !
       RETURN
       END
+

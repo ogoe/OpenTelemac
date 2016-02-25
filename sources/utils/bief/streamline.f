@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! BIEF 7.1
+! BIEF 7.2
 !***********************************************************************
 !
 !brief    MODULE FOR PARALLEL CHARACTERISTICS FOR TELEMAC2D (OR TELEMAC3D)
@@ -7125,7 +7125,7 @@
           STOP
         ENDIF
 !
-        WRITE(LU,*) 'USING STREAMLINE VERSION 7.1 FOR CHARACTERISTICS'
+        WRITE(LU,*) 'USING STREAMLINE VERSION 7.2 FOR CHARACTERISTICS'
 !
 !       NOW THE VERY NECESSARY INITIALISATION PROCEDURES
 !

@@ -5,7 +5,7 @@
      &(W2D,W3D,GLOSEG,DIMGLO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -13,7 +13,7 @@
 !history  J.M. HERVOUET (LNHE)
 !+        28/07/2009
 !+        V6P0
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -31,6 +31,12 @@
 !+        26/08/2011
 !+        V6P2
 !+   Call to FLUX_EF_VF_3D changed
+!
+!history  J.M. HERVOUET (LNHE)
+!+        23/02/2016
+!+        V7P2
+!+   Adapting to new treatment of negative depths = 3, necessary for
+!+   scheme ERIA=15.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -59,14 +65,31 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER I
+      INTEGER I,OPTPOS
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
+!
+!-----------------------------------------------------------------------
+!
+      IF(OPT_HNEG.LT.0.OR.OPT_HNEG.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CORRECTION_DEPTH_3D :'
+          WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+          WRITE(LU,*) 'DOIT ETRE ENTRE 0 ET 3'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CORRECTION_DEPTH_3D:'
+          WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+          WRITE(LU,*) 'MUST BE BETWEEN 0 AND 3'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       IF(OPTBAN.EQ.1) THEN
 !
-        IF(OPT_HNEG.EQ.2) THEN
+        IF(OPT_HNEG.GE.2) THEN
 !
 !         FOR THE TIME BEING, FLODEL IS A WORKING ARRAY, HENCE
 !         YAFLODEL=.FALSE.; TO USE FLODEL IN TEL4DEL WOULD REQUIRE
@@ -117,6 +140,8 @@
            STOP
           ENDIF
 !
+          OPTPOS=2
+          IF(OPT_HNEG.EQ.3) OPTPOS=1
           CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
      &                         MESH2D,FLODEL,.FALSE.,
      &                         FLBOR,DT,UNSV2D,NPOIN2,
@@ -127,11 +152,9 @@
 !                                   YASMH OPTSOU
 !                              SMH IN PROJECTED FORM IN T3D
      &                         FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
-     &                         MESH2D%W%R,NAMECODE,2,MAXADV)
-!                                                  2 HARDCODED OPTION
+     &                         MESH2D%W%R,NAMECODE,OPTPOS,MAXADV)
+!                                                  OPTION
 !                                                  FOR POSITIVE DEPTH ALGORITHM
-!                                                  INDEPENDENT OF SEGMENT
-!                                                  NUMBERING
 !
         ELSEIF(OPT_HNEG.EQ.1) THEN
 !
@@ -170,3 +193,4 @@
 !
       RETURN
       END
+

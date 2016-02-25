@@ -847,10 +847,6 @@
 !
       TYPE(BIEF_OBJ), TARGET :: U_SCE,V_SCE,W_SCE,AK_SCE,EP_SCE,TA_SCE
 !
-!     VOID BLOCK FOR CALL COMPATIBILITY
-!
-      TYPE(BIEF_OBJ), TARGET :: BVIDE
-!
 !-----------------------------------------------------------------------
 ! (4) INTEGERS
 !-----------------------------------------------------------------------

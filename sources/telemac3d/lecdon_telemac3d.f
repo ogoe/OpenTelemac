@@ -75,6 +75,12 @@
 !+        V7P1
 !+  Adding the line CALL MAJUS(COUPLING) like in Telemac-2D.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/02/2016
+!+        V7P2
+!+  Adaptation to the possibility of OPT_HNEG=3 for new advection 15.
+!+  (the latter not yet implemented in Telemac-3D).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -389,6 +395,13 @@
         DO K=1,MAXSCE
           OKTRSCE(K,ITRAC)=.TRUE.
         ENDDO
+      ENDDO
+      DO ITRAC=1,MAXTRA
+        DNUTAH(ITRAC)=1.D-6
+        DNUTAV(ITRAC)=1.D-6
+        SCHCTA(ITRAC)=5
+        SLVDTA(ITRAC)%PRECON=2
+        SLVDTA(ITRAC)%SLV=1
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -1312,14 +1325,68 @@
 !
 ! sediment bed layers initialization
 !
-
-      DO K = 1, DIMEN(2,53)
-        CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )
-        TOCE_LAYER(K)=MOTREA( ADRESS(2,58) + K-1 )
-        ES_LAYER(K)=MOTREA( ADRESS(2,64) + K-1 )
-! multilayer consolidation
-        IF(TASSE) TREST(K) = MOTREA(ADRESS(2,62)+K-1)
-      ENDDO
+      IF(SEDI.AND.SEDCO.AND.NCOUCH.GT.0) THEN
+        IF(DIMEN(2,53).NE.NCOUCH) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CONCENTRATIONS DES COUCHES DE VASE'
+            WRITE(LU,*) 'DONNER UNE VALEUR PAR COUCHE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*)'MUD CONCENTRATIONS PER LAYER'
+            WRITE(LU,*)'GIVE A VALUE PER LAYER'
+          ENDIF
+          CALL PLANTE(1)
+          STOP        
+        ENDIF
+        IF(DIMEN(2,58).NE.NCOUCH) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 
+     &              'CONTRAINTE CRITIQUE D''EROSION DES COUCHES DE VASE'
+            WRITE(LU,*) 'DONNER UNE VALEUR PAR COUCHE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*)'CRITICAL EROSION SHEAR STRESS OF THE MUD LAYERS'
+            WRITE(LU,*)'GIVE A VALUE PER LAYER'
+          ENDIF
+          CALL PLANTE(1)
+          STOP        
+        ENDIF
+        IF(DIMEN(2,64).NE.NCOUCH) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'EPAISSEURS INITIALES DES COUCHES'
+            WRITE(LU,*) 'DONNER UNE VALEUR PAR COUCHE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*)'INITIAL THICKNESS OF SEDIMENT LAYERS'
+            WRITE(LU,*)'GIVE A VALUE PER LAYER'
+          ENDIF
+          CALL PLANTE(1)
+          STOP        
+        ENDIF
+        DO K = 1,NCOUCH
+          CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )
+          TOCE_LAYER(K)=MOTREA( ADRESS(2,58) + K-1 )
+          ES_LAYER(K)  =MOTREA( ADRESS(2,64) + K-1 )
+        ENDDO
+!       multilayer consolidation
+        IF(TASSE) THEN
+          IF(DIMEN(2,62).NE.NCOUCH) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'TEMPS DE SEJOUR DE LA VASE'
+              WRITE(LU,*) 'DONNER UNE VALEUR PAR COUCHE'
+            ENDIF
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*)'RESIDENCE TIME FOR MUD'
+              WRITE(LU,*)'GIVE A VALUE PER LAYER'
+            ENDIF
+            CALL PLANTE(1)
+            STOP        
+          ENDIF
+          DO K = 1,NCOUCH
+            TREST(K) = MOTREA(ADRESS(2,62)+K-1)
+          ENDDO
+        ENDIF
+      ENDIF
 !
 ! CFDEP no longer used, replaced by CONC(1)
 !
@@ -1399,7 +1466,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2) THEN
+      IF(OPT_HNEG.LT.0.OR.OPT_HNEG.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+          WRITE(LU,*) 'DOIT ETRE ENTRE 0 ET 3'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+          WRITE(LU,*) 'MUST BE BETWEEN 0 AND 3'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(OPTBAN.EQ.1.AND.OPT_HNEG.GE.2) THEN
         IF(ABS(AGGLOH-1.D0).GT.0.01D0) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2'
@@ -1414,22 +1496,21 @@
         ENDIF
       ENDIF
 !
-!     TIDAL FLATS VERSIONS OF FINITE VOLUME ADVECTION SCHEMES
-!     REQUEST POSITIVE DEPTHS
+!     WITH SOME TIDAL FLATS VERSIONS OF DISTRIBUTIVE ADVECTION SCHEMES
+!     POSITIVE DEPTHS MUST BE TREATED WITH OPTION 2
 !
       IF(BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.2) THEN
         IF(SCHCVI.EQ.ADV_NSC_TF.OR.SCHCKE.EQ.ADV_NSC_TF
-     & .OR.SCHCVI.EQ.ADV_LPO_TF.OR.SCHCKE.EQ.ADV_LPO_TF
-     & .OR.SCHCVI.EQ.ADV_PSI_TF.OR.SCHCKE.EQ.ADV_PSI_TF) THEN
+     & .OR.SCHCVI.EQ.ADV_LPO_TF.OR.SCHCKE.EQ.ADV_LPO_TF) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'AVEC LES SCHEMAS POUR LA CONVECTION'
-            WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OU ',ADV_PSI_TF
+            WRITE(LU,*) ADV_LPO_TF,' OU ',ADV_NSC_TF
             WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
             WRITE(LU,*) 'DOIT ETRE EGAL A 2'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'WITH ADVECTION SCHEMES'
-            WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
+            WRITE(LU,*) ADV_LPO_TF,' OR ',ADV_NSC_TF
             WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
             WRITE(LU,*) 'MUST BE EQUAL TO 2'
           ENDIF
@@ -1438,19 +1519,60 @@
         ENDIF
         IF(NTRAC.GT.0) THEN
           DO K=1,NTRAC
-            IF(SCHCTA(K).EQ.ADV_NSC_TF.OR.SCHCTA(K).EQ.ADV_LPO_TF
-     &                                .OR.SCHCTA(K).EQ.ADV_PSI_TF) THEN
+            IF(SCHCTA(K).EQ.ADV_NSC_TF.OR.SCHCTA(K).EQ.ADV_LPO_TF) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'AVEC LES SCHEMAS POUR LA CONVECTION'
-                WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OU ',ADV_PSI_TF
+                WRITE(LU,*) ADV_LPO_TF,' OU ',ADV_NSC_TF
                 WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
                 WRITE(LU,*) 'DOIT ETRE EGAL A 2'
               ENDIF
               IF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'WITH ADVECTION SCHEMES'
-                WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
+                WRITE(LU,*) ADV_LPO_TF,' OR ',ADV_NSC_TF
                 WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
                 WRITE(LU,*) 'MUST BE EQUAL TO 2'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!     WITH SOME OTHER TIDAL FLATS VERSIONS OF DISTRIBUTIVE ADVECTION SCHEMES
+!     POSITIVE DEPTHS MUST BE TREATED WITH OPTION 3
+!
+      IF(BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.3) THEN
+        IF(SCHCVI.EQ.ADV_PSI_TF.OR.SCHCKE.EQ.ADV_PSI_TF) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'AVEC LE SCHEMA POUR LA CONVECTION'
+            WRITE(LU,*) ADV_PSI_TF
+            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+            WRITE(LU,*) 'DOIT ETRE EGAL A 3'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'WITH ADVECTION SCHEME'
+            WRITE(LU,*) ADV_PSI_TF
+            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+            WRITE(LU,*) 'MUST BE EQUAL TO 3'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(NTRAC.GT.0) THEN
+          DO K=1,NTRAC
+            IF(SCHCTA(K).EQ.ADV_PSI_TF) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'AVEC LE SCHEMA POUR LA CONVECTION'
+                WRITE(LU,*) ADV_PSI_TF
+                WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+                WRITE(LU,*) 'DOIT ETRE EGAL A 3'
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'WITH ADVECTION SCHEME'
+                WRITE(LU,*) ADV_PSI_TF
+                WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+                WRITE(LU,*) 'MUST BE EQUAL TO 3'
               ENDIF
               CALL PLANTE(1)
               STOP

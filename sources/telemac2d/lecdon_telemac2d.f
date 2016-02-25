@@ -6,7 +6,7 @@
      & CAS_FILE,DICO_FILE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -86,6 +86,12 @@
 !+        V7P1
 !+  In case of wave equation, replacement of preconditioning 2 by 5
 !+  removed (no longer necessary after clipping of HPROP).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/02/2016
+!+        V7P2
+!+  Dealing with the new treatment of negative depths and its mandatory
+!+  use with new scheme 15.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -458,8 +464,8 @@
       ENDIF
 !
       NIT              = MOTINT( ADRESS(1, 3) )
-!     PSI SCHEME OPTION
-      OPTPSI           = MOTINT( ADRESS(1, 4) )
+!     FREE INTEGER
+!     ??????           = MOTINT( ADRESS(1, 4) )
 !     TYPE OF ADVECTION (TO BE REMOVED IN FUTURE VERSIONS)
       IF(DIMEN(1,5).NE.0) THEN
         DO K=1,DIMEN(1,5)
@@ -1650,7 +1656,8 @@
      &       ICONVFT(ITRAC).NE.ADV_NSC_NC.AND.
      &       ICONVFT(ITRAC).NE.ADV_PSI_NC.AND.
      &       ICONVFT(ITRAC).NE.ADV_LPO_TF.AND.
-     &       ICONVFT(ITRAC).NE.ADV_NSC_TF) THEN
+     &       ICONVFT(ITRAC).NE.ADV_NSC_TF.AND.
+     &       ICONVFT(ITRAC).NE.ADV_PSI_TF) THEN
             IF(LNG.EQ.1) WRITE(LU,74) ICONVFT(ITRAC)
             IF(LNG.EQ.2) WRITE(LU,75) ICONVFT(ITRAC)
 74          FORMAT(1X,'FORME DE LA CONVECTION DES TRACEURS : ',I3,/,1X,
@@ -2109,14 +2116,31 @@
         STOP
       ENDIF
 !
-      IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2) THEN
+!-----------------------------------------------------------------------
+!
+      IF(OPT_HNEG.LT.0.OR.OPT_HNEG.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+          WRITE(LU,*) 'DOIT ETRE ENTRE 0 ET 3'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+          WRITE(LU,*) 'MUST BE BETWEEN 0 AND 3'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(OPTBAN.EQ.1.AND.OPT_HNEG.GE.2) THEN
         IF(ABS(AGGLOC-1.D0).GT.0.01D0) THEN
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2'
+            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2 OU 3'
             WRITE(LU,*) 'MASS-LUMPING SUR H DOIT ETRE EGAL A 1.'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2'
+            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2 OR 3'
             WRITE(LU,*) 'MASS-LUMPING ON H MUST BE EQUAL TO 1.'
           ENDIF
           CALL PLANTE(1)
@@ -2124,11 +2148,11 @@
         ENDIF
         IF(.NOT.CORCON) THEN
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2'
+            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2 OU 3'
             WRITE(LU,*) 'CORRECTION DE CONTINUITE=OUI OBLIGATOIRE'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2'
+            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2 OR 3'
             WRITE(LU,*) 'CONTINUITY CORRECTION=YES MANDATORY'
           ENDIF
           CALL PLANTE(1)
@@ -2136,12 +2160,12 @@
         ENDIF
         IF(OPTSUP(2).NE.0) THEN
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2'
+            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES=2 OU 3'
             WRITE(LU,*) 'PAS DE DECENTREMENT SUPG SUR LA HAUTEUR'
             WRITE(LU,*) 'METTRE OPTION DE SUPG=..;0;...'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2'
+            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS=2 OR 3'
             WRITE(LU,*) 'NO SUPG UPWINDING ON DEPTH'
             WRITE(LU,*) 'CHOOSE SUPG OPTION=...;0;...'
           ENDIF
@@ -2150,24 +2174,43 @@
         ENDIF
       ENDIF
 !
-!     TIDAL FLATS VERSIONS OF FINITE VOLUME ADVECTION SCHEMES
-!     REQUEST POSITIVE DEPTHS
+!     TIDAL FLATS VERSIONS OF DISTRIBUTIVE ADVECTION SCHEMES
+!     THAT REQUEST POSITIVE DEPTHS WITH OPTION 2
 !
       IF(BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.2) THEN
         IF(ICONVF(1).EQ.ADV_NSC_TF.OR.ICONVF(4).EQ.ADV_NSC_TF
-     & .OR.ICONVF(1).EQ.ADV_LPO_TF.OR.ICONVF(4).EQ.ADV_LPO_TF
-     & .OR.ICONVF(1).EQ.ADV_PSI_TF.OR.ICONVF(4).EQ.ADV_PSI_TF) THEN
+     & .OR.ICONVF(1).EQ.ADV_LPO_TF.OR.ICONVF(4).EQ.ADV_LPO_TF) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'AVEC LES SCHEMAS DE CONVECTION'
-            WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OU ',ADV_PSI_TF
+            WRITE(LU,*) ADV_LPO_TF,' OU ',ADV_NSC_TF
             WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
             WRITE(LU,*) 'DOIT ETRE EGAL A 2'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'WITH ADVECTION SCHEMES'
-            WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
+            WRITE(LU,*) ADV_LPO_TF,' OR ',ADV_NSC_TF
             WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
             WRITE(LU,*) 'MUST BE EQUAL TO 2'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
+!
+!     TIDAL FLATS VERSIONS OF DISTRIBUTIVE ADVECTION SCHEMES
+!     THAT REQUEST POSITIVE DEPTHS WITH OPTION 3
+!
+      IF(BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.3) THEN
+        IF(ICONVF(1).EQ.ADV_PSI_TF.OR.ICONVF(4).EQ.ADV_PSI_TF) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'AVEC LE SCHEMA DE CONVECTION ',ADV_PSI_TF
+            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+            WRITE(LU,*) 'DOIT ETRE EGAL A 3'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'WITH ADVECTION SCHEME ',ADV_PSI_TF
+            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+            WRITE(LU,*) 'MUST BE EQUAL TO 3'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -2177,17 +2220,34 @@
       IF(NTRAC.GT.0.AND.BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.2) THEN
         DO ITRAC=1,NTRAC
           IF(    ICONVFT(ITRAC).EQ.ADV_NSC_TF
-     &       .OR.ICONVFT(ITRAC).EQ.ADV_LPO_TF
-     &       .OR.ICONVFT(ITRAC).EQ.ADV_PSI_TF ) THEN
+     &       .OR.ICONVFT(ITRAC).EQ.ADV_LPO_TF ) THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'AVEC LES SCHEMAS DE CONVECTION'
-              WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OU ',ADV_PSI_TF
+              WRITE(LU,*) ADV_LPO_TF,' OU ',ADV_NSC_TF
               WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
               WRITE(LU,*) 'DOIT ETRE EGAL A 2'
             ENDIF
             IF(LNG.EQ.2) THEN
               WRITE(LU,*) 'WITH ADVECTION SCHEMES'
-              WRITE(LU,*) ADV_LPO_TF,ADV_NSC_TF,' OR ',ADV_PSI_TF
+              WRITE(LU,*) ADV_LPO_TF,' OR ',ADV_NSC_TF
+              WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+              WRITE(LU,*) 'MUST BE EQUAL TO 2'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
+      ENDIF
+      IF(NTRAC.GT.0.AND.BANDEC.AND.OPTBAN.EQ.1.AND.OPT_HNEG.NE.3) THEN
+        DO ITRAC=1,NTRAC
+          IF(ICONVFT(ITRAC).EQ.ADV_PSI_TF) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'AVEC LE SCHEMA DE CONVECTION ',ADV_PSI_TF
+              WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+              WRITE(LU,*) 'DOIT ETRE EGAL A 2'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'WITH ADVECTION SCHEME ',ADV_PSI_TF
               WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
               WRITE(LU,*) 'MUST BE EQUAL TO 2'
             ENDIF
@@ -2346,9 +2406,6 @@
       ELSEIF(ICONVF(1).EQ.2) THEN
 !       SUPG
         OPTADV_VI=OPTSUP(1)
-      ELSEIF(ICONVF(1).EQ.5) THEN
-!       PSI SCHEME
-        OPTADV_VI=OPTPSI
       ENDIF
 !     SCHEME OPTION FOR ADVECTION OF VELOCITIES
 !     HAS PRIORITY WHEN PRESENT
@@ -2367,9 +2424,6 @@
       ELSEIF(ICONVF(4).EQ.2) THEN
 !       SUPG
         OPTADV_KE=OPTSUP(4)
-      ELSEIF(ICONVF(4).EQ.5) THEN
-!       PSI SCHEME
-        OPTADV_KE=OPTPSI
       ENDIF
 !     SCHEME OPTION FOR ADVECTION OF K-EPSILON
 !     HAS PRIORITY WHEN PRESENT
@@ -2392,9 +2446,6 @@
           ELSEIF(ICONVFT(ITRAC).EQ.2) THEN
 !           SUPG
             OPTADV_TR(ITRAC)=OPTSUP(3)
-          ELSEIF(ICONVFT(ITRAC).EQ.5) THEN
-!           PSI SCHEME
-            OPTADV_TR(ITRAC)=OPTPSI
           ENDIF
         ENDDO
 !       SCHEME OPTION FOR ADVECTION OF TRACERS

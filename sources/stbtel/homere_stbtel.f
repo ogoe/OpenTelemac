@@ -121,7 +121,7 @@
      &14X,'   SSSSS    T    BBBB     T    EEEE   L    ',/,
      &14X,'       S    T    B   B    T    E      L    ',/,
      &14X,'   SSSSS    T    BBBB     T    EEEEE  LLLLL',//,
-     &14X,'            VERSION 7.0  FORTRAN 90                 ',/////)
+     &14X,'            VERSION 7.2  FORTRAN 90                 ',/////)
 !
 !=======================================================================
 ! LECTURE DU FICHIER CAS

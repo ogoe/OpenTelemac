@@ -5,7 +5,7 @@
      &(GLOSEG,DIMGLO,YAFLODEL,YASMH,YAFLULIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -37,6 +37,12 @@
 !+        V6P2
 !+   Call to receding added.
 !
+!history  J-M HERVOUET (LNHE)
+!+        22/02/2016
+!+        V7P2
+!+   Adapted to treatment number 3 of negative depths, with a newly
+!+   active option for positive_depths. Checking OPT_HNEG.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
@@ -66,15 +72,44 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IOPT1
+      INTEGER IOPT1,OPTPOS
       CHARACTER(LEN=16) :: FORMUL
+!
+!-----------------------------------------------------------------------
+!
+      IF(OPT_HNEG.LT.0.OR.OPT_HNEG.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+          WRITE(LU,*) 'DOIT ETRE ENTRE 0 ET 3'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+          WRITE(LU,*) 'MUST BE BETWEEN 0 AND 3'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     OPTION FOR POSITIVE DEPTHS
+!     DEPENDING ON TREATMENT OF NEGATIVE DEPTHS
+!
+      IF(OPT_HNEG.EQ.2) THEN
+        OPTPOS=2
+      ELSEIF(OPT_HNEG.EQ.3) THEN
+        OPTPOS=1
+      ELSE
+!       NOT USED
+        OPTPOS=0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !     CASES OF COMPUTATION OF FLODEL
 !
       IF(  INCLUS(COUPLING,'DELWAQ')  .OR.
-     &   ((OPTBAN.EQ.1.OR.OPTBAN.EQ.3).AND.OPT_HNEG.EQ.2) ) THEN
+     &   ((OPTBAN.EQ.1.OR.OPTBAN.EQ.3).AND.OPT_HNEG.GE.2) ) THEN
         FORMUL='HUGRADP         '
         IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
 !
@@ -97,7 +132,7 @@
       IF(OPTBAN.EQ.1.OR.OPTBAN.EQ.3) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'TRAITEMENT BANCS DECOUVRANTS'
 !
-      IF(OPT_HNEG.EQ.2) THEN
+      IF(OPT_HNEG.GE.2) THEN
 !
 !     LIMITS FLUXES TO HAVE POSITIVE DEPTHS
 !     BEWARE, WILL BE ONLY VALID FOR ADVECTION WITH UDEL,VDEL
@@ -115,11 +150,9 @@
      &                     MESH%NBOR%I,MESH%NPTFR,
      &                     SMH,YASMH,
      &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,2,MAXADV)
-!                                            2 HARDCODED OPTION
+     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
+!                                            OPTION
 !                                            FOR POSITIVE DEPTH ALGORITHM
-!                                            INDEPENDENT OF SEGMENT
-!                                            NUMBERING
 !
       ELSEIF(YASMH) THEN
 !
@@ -137,7 +170,7 @@
      &                     MESH%NBOR%I,MESH%NPTFR,
      &                     T5,.TRUE.,
      &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,2,MAXADV)
+     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
 !
       ELSE
 !
@@ -149,7 +182,7 @@
      &                     MESH%NBOR%I,MESH%NPTFR,
      &                     PLUIE,RAIN,
      &                     1,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,2,MAXADV)
+     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
 !
       ENDIF
 !
@@ -197,7 +230,7 @@
 !     RECEDING PROCEDURE, TO PREVENT SPURIOUS OVERWHELMING OF DYKES
 !     WHEN MESH TOO COARSE...
 !
-      IF(HREC.GT.0.D0.AND.OPT_HNEG.EQ.2.AND.
+      IF(HREC.GT.0.D0.AND.OPT_HNEG.GE.2.AND.
      &    (OPTBAN.EQ.1.OR.OPTBAN.EQ.3)) THEN
 !       HERE FLODEL HAS ALREADY BEEN BUILT, IT WILL BE MODIFIED
         CALL CPSTVC(H,T1)
@@ -217,3 +250,4 @@
 !
       RETURN
       END
+

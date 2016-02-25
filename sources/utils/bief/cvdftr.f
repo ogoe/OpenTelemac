@@ -14,7 +14,7 @@
      & GIVEN_FLUX,FLUX_GIVEN,MAXADV,TB2,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! BIEF   V7P1
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    DIFFUSION, ADVECTION AND SOURCE TERMS FOR A TRACER.
@@ -144,6 +144,11 @@
 !+   Implicitation on diffusion forced to 1. with parameter TETATD. It
 !+   should be a keyword but there is no reason so far to do an explicit
 !+   diffusion.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/02/2016
+!+        V7P2
+!+   Adapting to new scheme ADV_PSI_TF = 15.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
@@ -305,7 +310,7 @@
 !
       DOUBLE PRECISION C,CFLMAX,TETATD
 !
-      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO
+      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO,OPT_PSI_TF
 !
       LOGICAL MSQ,FV_SCHEME
 !
@@ -634,6 +639,8 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+        OPT_PSI_TF=2
+        IF(ICONVF.EQ.ADV_PSI_TF) OPT_PSI_TF=1
         CALL CVTRVF_POS(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UCONV,VCONV,
      &              DM1,ZCONV,SOLSYS,VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,
      &              FBOR,MASKTR,MESH,
@@ -648,10 +655,8 @@
      &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
      &              MESH%GLOSEG%I(       1:  DIMGLO),
      &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &              MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,TRAIN,
-     &              GIVEN_FLUX,FLUX_GIVEN,MAXADV)
-!                               2:HARDCODED OPTION FOR ALGORITHM
-!                               INDEPENDENT OF SEGMENT NUMBERING.
+     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,RAIN,PLUIE,
+     &              TRAIN,GIVEN_FLUX,FLUX_GIVEN,MAXADV)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN
