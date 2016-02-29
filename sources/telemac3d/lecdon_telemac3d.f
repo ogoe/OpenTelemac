@@ -81,6 +81,11 @@
 !+  Adaptation to the possibility of OPT_HNEG=3 for new advection 15.
 !+  (the latter not yet implemented in Telemac-3D).
 !
+!history  C-T PHAM (EDF LAB, LNHE)
+!+        29/02/2016
+!+        V7P2
+!+  Changes for the filling of tracer arrays
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -402,6 +407,8 @@
         SCHCTA(ITRAC)=5
         SLVDTA(ITRAC)%PRECON=2
         SLVDTA(ITRAC)%SLV=1
+        BETAC(ITRAC)=0.D0
+        T0AC(ITRAC)=0.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -428,13 +435,13 @@
       IORDRH    = MOTINT(ADRESS(1,17))
 !
       SCHCVI    = MOTINT(ADRESS(1,18))
-!     DEFAULT VALUE MAKES THAT DIMEN(1,19) IS AT LEAST 1
+!     NO MORE DEFAULT VALUE FOR SCHCTA SINCE V7P2
       IF(NTRAC.GT.0) THEN
-        IF(DIMEN(1,19).LT.NTRAC) THEN
-          DO K=1,NTRAC
-            SCHCTA(K) = MOTINT(ADRESS(1,19))
+        IF(DIMEN(1,19).LT.NTRAC.AND.DIMEN(1,19).GT.0) THEN
+          DO K=1,DIMEN(1,19)
+            SCHCTA(K) = MOTINT(ADRESS(1,19)+K-1)
           ENDDO
-        ELSE
+        ELSEIF(DIMEN(1,19).EQ.NTRAC) THEN
           DO K=1,NTRAC
             SCHCTA(K) = MOTINT(ADRESS(1,19)+K-1)
           ENDDO
@@ -450,14 +457,15 @@
 !
       SLVDVI%PRECON  =  MOTINT(ADRESS(1,27))
       IF(NTRAC.GT.0) THEN
-        IF(DIMEN(1,28).LT.NTRAC) THEN
-          DO K=1,NTRAC
-            SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28))
+        IF(DIMEN(1,28).LT.NTRAC.AND.DIMEN(1,28).GT.0) THEN
+          DO K=1,DIMEN(1,28)
+            SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28)+K-1)
           ENDDO
-        ELSE
+        ELSEIF(DIMEN(1,28).EQ.NTRAC) THEN
           DO K=1,NTRAC
             SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28)+K-1)
           ENDDO
+!       ELSE = 2 (DEFAULT VALUE), SEE ABOVE
         ENDIF
       ENDIF
       SLVDSE%NITMAX  =  MOTINT(ADRESS(1,29))
@@ -467,14 +475,15 @@
 !
       SLVDVI%SLV = MOTINT(ADRESS(1,33))
       IF(NTRAC.GT.0) THEN
-        IF(DIMEN(1,34).LT.NTRAC) THEN
-          DO K=1,NTRAC
-            SLVDTA(K)%SLV = MOTINT(ADRESS(1,34))
+        IF(DIMEN(1,34).LT.NTRAC.AND.DIMEN(1,34).GT.0) THEN
+          DO K=1,DIMEN(1,34)
+            SLVDTA(K)%SLV = MOTINT(ADRESS(1,34)+K-1)
           ENDDO
-        ELSE
+        ELSEIF(DIMEN(1,34).EQ.NTRAC) THEN
           DO K=1,NTRAC
             SLVDTA(K)%SLV = MOTINT(ADRESS(1,34)+K-1)
           ENDDO
+!       ELSE = 1 (DEFAULT VALUE), SEE ABOVE
         ENDIF
       ENDIF
       PERCOU_WAC = MOTINT(ADRESS(1,35))
@@ -746,10 +755,11 @@
           DO I=1,NTRAC
             DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
           ENDDO
-        ELSE
-          DO I=1,NTRAC
-            DNUTAH(I) = MOTREA(ADRESS(2,18))
+        ELSEIF(DIMEN(2,18).LE.NTRAC.AND.DIMEN(2,18).GT.0) THEN
+          DO I=1,DIMEN(2,18)
+            DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
           ENDDO
+!       ELSE = 1.D-6 (DEFAULT VALUE), SEE ABOVE
         ENDIF
       ENDIF
 !
@@ -758,10 +768,11 @@
           DO I=1,NTRAC
             DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
           ENDDO
-        ELSE
-          DO I=1,NTRAC
-            DNUTAV(I) = MOTREA(ADRESS(2,19))
+        ELSEIF(DIMEN(2,19).LE.NTRAC.AND.DIMEN(2,19).GT.0) THEN
+          DO I=1,DIMEN(2,19)
+            DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
           ENDDO
+!       ELSE = 1.D-6 (DEFAULT VALUE), SEE ABOVE
         ENDIF
       ENDIF
 !
