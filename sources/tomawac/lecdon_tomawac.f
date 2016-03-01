@@ -415,7 +415,7 @@
 !
       TSOU   = MOTLOG( ADRESS(3,  1) )
       SPHE   = MOTLOG( ADRESS(3,  2) )
-      GLOB   = MOTLOG( ADRESS(3,  3) )
+!      GLOB   = MOTLOG( ADRESS(3,  3) )
       SUIT   = MOTLOG( ADRESS(3,  4) )
       PROINF = MOTLOG( ADRESS(3,  5) )
       COUSTA = MOTLOG( ADRESS(3,  6) )
@@ -457,6 +457,12 @@
       BINLEO = MOTCAR( ADRESS(4,18) )(1:3)
       BINCOU = MOTCAR( ADRESS(4,19) )(1:3)
       VERS   = MOTCAR( ADRESS(4,22) )(1:4)
+      IF( WAC_FILES(WACRBI)%NAME.NE.' ') THEN
+! ONE WANTS TO HAVE A GLOBAL RESULT         
+         GLOB=.TRUE.
+      ELSE
+         GLOB=.FALSE.
+      ENDIF
 !
 !     FROM 23 TO 28 : FOR CRAY, NOT USEFUL HERE
 !

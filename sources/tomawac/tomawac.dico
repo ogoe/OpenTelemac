@@ -4511,25 +4511,25 @@ spheriques.'
 AIDE1 = 'Indicates whether the coordinates are spherical (unit=
 degree) or cartesian (unit = meter).'
 
-NOM = 'SORTIE GLOBALE A LA FIN'
-NOM1 = 'GLOBAL OUTPUT AT THE END'
-TYPE = LOGIQUE
-INDEX = 3
-MNEMO = 'Variable GLOB'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Indique si on fait une sortie globale a la fin du calcul
-(pour une suite de calcul ulterieure).
-**Mots-cles associes :**
-FICHIER DES RESULTATS GLOBAUX'
-AIDE1 = 'Indicates whether a global output is made at the end
-of this computation (for a next computation).
-**Related keywords :**
-GLOBAL RESULTS FILE'
+/NOM = 'SORTIE GLOBALE A LA FIN'
+/NOM1 = 'GLOBAL OUTPUT AT THE END'
+/TYPE = LOGIQUE
+/INDEX = 3
+/MNEMO = 'Variable GLOB'
+/TAILLE= 0
+/DEFAUT = .FALSE.
+/DEFAUT1 = .FALSE.
+/RUBRIQUE = 'RESULTATS'
+/RUBRIQUE1 = 'RESULTS'
+/NIVEAU = 1
+/AIDE = 'Indique si on fait une sortie globale a la fin du calcul
+/(pour une suite de calcul ulterieure).
+/**Mots-cles associes :**
+/FICHIER DES RESULTATS GLOBAUX'
+/AIDE1 = 'Indicates whether a global output is made at the end
+/of this computation (for a next computation).
+/**Related keywords :**
+/GLOBAL RESULTS FILE'
 
 NOM = 'SUITE DE CALCUL'
 NOM1 = 'NEXT COMPUTATION'
@@ -5164,7 +5164,7 @@ DISSIPATION COEFFICIENT FOR STRONG CURRENT'
 / ADDED BY TF ON 19/11/2014
 /
 NOM = 'MODELISATION BAJ'
-NOM1 = 'BAJ MODELISATION'
+NOM1 = 'BAJ MODELING'
 TYPE = ENTIER
 INDEX = 51
 MNEMO = 'CBAJ'
@@ -5175,7 +5175,7 @@ DEFAUT1 = 0
 /CHOIX = '0="Modelisation classique"';
 /'1="Modelisation BAJ"';
 /CHOIX1 = '0="classical modelisation"';
-/'1="BAJ Modelisation"';
+/'1="BAJ Modeling"';
 RUBRIQUE = 'SPECTRES'
 RUBRIQUE1 = 'SPECTRUM'
 NIVEAU = 1
