@@ -102,7 +102,6 @@
       INTEGER DATE(3),TIME(3)
       DATA DATE/0,0,0/
       DATA TIME/0,0,0/
-      DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
 !
 !***********************************************************************
 !
@@ -159,15 +158,8 @@
 !
 ! WRITES F
 !
-      ALLOCATE(TMP(NPOIN2*NPLAN),STAT=ISTAT)
-      CALL CHECK_ALLOCATE(ISTAT,'SOR3D:TMP')
       DO IIF=1,NF
-        DO I=1,NPOIN2
-          DO J=1,NPLAN
-            TMP(I)=F(I,J,IIF)
-          ENDDO
-        ENDDO
-        CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF),AT,0,IIF.EQ.1,TMP,
+        CALL ADD_DATA(BINR3D,NR3D,TEXTE(IIF),AT,0,IIF.EQ.1,F(1,1,IIF),
      &                NPOIN2*NPLAN,ISTAT)
       ENDDO
 !
