@@ -421,9 +421,11 @@
      &       .AND. (SRF_OBJ_TAB(SRF_ID)%NPTIR.EQ.0)) THEN
             ! POSITION OF THE IPOBO ARRAY IN THE FILE
             MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
+            ! Positionning the file pointer
+            READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) IDUM
             ! LOOP ON ALL THE POINTS
             DO I=1,SRF_OBJ_TAB(SRF_ID)%NPOIN
-              READ(FILE_ID,POS=MY_POS+(I-1)*IS,IOSTAT=IERR) IDUM
+              READ(FILE_ID,IOSTAT=IERR) IDUM
               CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:READ')
               IF(IDUM.NE.0) SRF_OBJ_TAB(SRF_ID)%NPTFR =
      &                          SRF_OBJ_TAB(SRF_ID)%NPTFR + 1
@@ -433,6 +435,9 @@
           ! COUTING THE NUMBER OF TIME STEPS
           NTIMESTEP = 0
           IERR = 0
+#ifdef NO_INQUIRE_SIZE
+          ! Need this solution for intel 10 in which inquire size is not
+          ! implemented
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
           DO
             READ(FILE_ID,POS=MY_POS+4,IOSTAT=IERR) TIME
@@ -440,17 +445,17 @@
             NTIMESTEP = NTIMESTEP + 1
             MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
           ENDDO
-
-          SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = NTIMESTEP
-!         INQUIRE(UNIT=FILE_ID,SIZE=FSIZE)
-!         ! TODO: Reaplace computation of number of time step by the use of size of file
-          !       Not working with intel 10
-!         write(*,*) 'ntimestep',NTIMESTEP,
-!    &             (FSIZE - SRF_OBJ_TAB(SRF_ID)%POS_DATA + 1)
-!    &             /SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
           ! THE LAST READ IS GOING TO CRASH ON PURPOSE BECAUSE
           ! WE'VE REACHED THE END OF THE FILE
           IERR = 0
+#else
+          ! Get the size of the file
+          INQUIRE(UNIT=FILE_ID,SIZE=FSIZE)
+          ! Ntimestep = (size_of_fil - size_of_geom)/size_of_a_timestep
+          NTIMESTEP = (FSIZE - (SRF_OBJ_TAB(SRF_ID)%POS_DATA - 1) )
+     &             /SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
+          SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = NTIMESTEP
+#endif
         ELSE
           ! NOT READ ONLY
           ! INTIALIZE SRF_OBJ_TAB(SRF_ID) TO ZEROS
@@ -910,9 +915,11 @@
         !
         IF(TYP_ELT.EQ.SRF_OBJ_TAB(SRF_ID)%TYP_ELT) THEN
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IKLE + 4
+          ! Positioning the file pointer
+          READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TMP
           ! WE NEED TO CERTIFY THAT THE INTEGER READ IS ON 4 BYTES
           DO I=1,ARRAY_SIZE
-            READ(FILE_ID,POS=MY_POS+IS*(I-1),IOSTAT=IERR) TMP
+            READ(FILE_ID,IOSTAT=IERR) TMP
             CALL CHECK_CALL(IERR,'GET_MESH_CONNECTIVITY_SRF:READ')
             IKLE(I) = TMP
           ENDDO
@@ -1075,6 +1082,7 @@
         INTEGER :: DBL_TYP
         REAL(KIND=R4) :: W
         REAL(KIND=R8) :: D
+        INTEGER(KIND=I4) :: TAG
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_MESH_COORD_SRF:GET_SRF_OBJ')
@@ -1085,21 +1093,22 @@
         ! Move to the position of the coordinates in the mesh file
         IF ((JDIM.GE.0).AND.(JDIM.LE.2)) THEN
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_COORD
-     &             + (JDIM-1)*(4 + ARRAY_SIZE*DBL_TYP + 4)
+     &             + INT((JDIM-1)*(4 + ARRAY_SIZE*DBL_TYP + 4),I8)
      &             + 4
         ELSE
 !         ERROR ON JDIM
           IERR = HERMES_WRONG_AXE_ERR
           RETURN
         ENDIF
+        ! Positioning the file pointer
+        READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
         ! Loop on all value depending on real precision (single or double)
-        ! TODO: Move pos= before loop
         DO I=1,ARRAY_SIZE
           IF(DBL_TYP.EQ.4) THEN
-            READ(FILE_ID,POS=MY_POS+(I-1)*DBL_TYP,IOSTAT=IERR) W
+            READ(FILE_ID,IOSTAT=IERR) W
             COORD(I) = DBLE(W)
           ELSE
-            READ(FILE_ID,POS=MY_POS+(I-1)*DBL_TYP,IOSTAT=IERR) D
+            READ(FILE_ID,IOSTAT=IERR) D
             COORD(I) = D
           ENDIF
           CALL CHECK_CALL(IERR,'GET_MESH_COORD_SRF:READ')
@@ -1150,10 +1159,11 @@
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
         !
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
-        !TODO: Move pos= before loop
+        ! Positionning the file pointer
+        READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TMP
         DO I=1,ARRAY_SIZE
           ! Reading 4 byte integer
-          READ(FILE_ID,POS=MY_POS+(I-1)*IS,IOSTAT=IERR) TMP
+          READ(FILE_ID,IOSTAT=IERR) TMP
           CALL CHECK_CALL(IERR,'GET_MESH_L2G_NUMBERING_SRF:READ')
           KNOLG(I) = TMP
         ENDDO
@@ -1248,8 +1258,10 @@
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
         !
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO + 4
+        ! Positionning the file pointer
+        READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TMP
         DO I=1,ARRAY_SIZE
-          READ(FILE_ID,POS=MY_POS+(I-1)*IS,IOSTAT=IERR) TMP
+          READ(FILE_ID,IOSTAT=IERR) TMP
           CALL CHECK_CALL(IERR,'GET_MESH_IPOBO_SRF:READ')
           IPOBO(I) = TMP
         ENDDO
@@ -1722,7 +1734,7 @@
         ENDIF
         ! POSITION OF THE TIME TO READ
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA + 4
-     &           + (IREC)*SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
+     &           + INT(IREC,I8)*SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
         ! DIFFERENCE BETWEEN REAL AND DOUBLE PRECISION
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
           READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W
@@ -1774,6 +1786,7 @@
         INTEGER          :: SRF_ID, IVAR
         INTEGER :: I, ARRAY_SIZE, NTIMESTEP, IREC
         REAL :: W
+        INTEGER(KIND=I4) :: TAG
         !
         CALL GET_SRF_OBJ(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'GET_DATA_VALUE_SRF:GET_SRF_OBJ')
@@ -1801,19 +1814,26 @@
           RETURN
         ENDIF
         !
+        ! Check the size of the array compare to the number of points
+        IF (SRF_OBJ_TAB(SRF_ID)%NPOIN.LT.N) THEN
+          IERR = HERMES_WRONG_SIZE
+          RETURN
+        ENDIF
         ARRAY_SIZE = SRF_OBJ_TAB(SRF_ID)%NPOIN
         !
         ! READ THE VARIABLES RESULT FOR THE GIVEN RECORD
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA + 4
-     &          + (IREC)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
+     &          + INT(IREC,I8)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
      &          + 4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 ! THE TIME VALUE
-     &          + (IVAR-1) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
-        DO I=1,ARRAY_SIZE
+     &          + INT(IVAR-1,I8) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
+        ! Quick read to position the file pointer
+        READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
+        DO I=1,N
           IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
-            READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) W
+            READ(FILE_ID,IOSTAT=IERR) W
             RES_VALUE(I) = DBLE(W)
           ELSE
-            READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) RES_VALUE(I)
+            READ(FILE_ID,IOSTAT=IERR) RES_VALUE(I)
           ENDIF
           CALL CHECK_CALL(IERR,'GET_DATA_VALUE_SRF:READ')
           MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%RS
@@ -2257,7 +2277,7 @@
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
      &            + INT(IREC,I8)*(SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET)
      &            + 4 + SRF_OBJ_TAB(SRF_ID)%RS + 4 ! THE TIME VALUE
-     &            + (IVAR-1) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
+     &            + INT(IVAR-1,I8) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
           ! Using a read to go to position in file
           READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
         ENDIF

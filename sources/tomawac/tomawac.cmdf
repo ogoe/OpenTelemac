@@ -420,7 +420,7 @@ files: majus.f
 path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
-  utils_serafin.f
+  utils_serafin.F
   get_data_value.f
   get_data_var_list.f
   get_data_time.f

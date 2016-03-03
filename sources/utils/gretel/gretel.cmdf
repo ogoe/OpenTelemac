@@ -20,7 +20,7 @@ files: gretel_autop.f
 path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
-  utils_serafin.f
+  utils_serafin.F
   set_header.f
   set_mesh.f
   get_data_value.f

@@ -46,7 +46,7 @@ files: preval.f
 path: <root>|sources|utils|hermes
 files: utils_med.F
   interface_hermes.f
-  utils_serafin.f
+  utils_serafin.F
   set_mesh.f
   get_data_var_list.f
   get_data_time.f
