@@ -38,9 +38,9 @@ file by adding the following lines under the line \verb"[global]":
 \begin{lstlisting}[language=bash]
 [global]
 ...
-http-proxy-host = proxypac.edf.fr 
+http-proxy-host = proxypac.edf.fr
 http-proxy-port = 3128
-http-proxy-username = NNI	
+http-proxy-username = NNI
 http-proxy-password = SesamePassword
 ...
 \end{lstlisting}
@@ -59,7 +59,7 @@ Where:
 %----------------------------------------------------------------------------------------------------
 %
 %
-Here is a list of a few useful SVN commands: 
+Here is a list of a few useful SVN commands:
 %
 \begin{lstlisting}[language=bash]
 svn help [command]
@@ -82,7 +82,26 @@ should alway do an update before doing a commit in case someone else did some
 modifications before you. Anyway if you are not up to date SVN will not allow
 the commit. The $-m$ option allows you to write directly the message associated
 with the commit instead of having a text editor opening. Those messages should
-summarize what the commit is adding.
+summarize what the commit is adding.\\
+The message should respect the following template "[\textit{Type}]
+\textit{Text}" where:
+\begin{itemize}
+\item If you have a cue ticket associated to the commit:
+\begin{itemize}
+\item Type = "fix \#\textit{id}" ,"feature \#id" or "vnv \#id" where id is the id of
+the cue ticket
+\item Text = Title of the cue ticket
+\end{itemize}
+\item Otherwise:
+\begin{itemize}
+\item Type = doc : If ti concerns the documentation
+\item Type = scripts : If it concerns the scripts of the system
+\item Type = src : General action on the source code (code convention, trimming removing white spaces...)
+\item Type = vnv : Verification \& Validation
+\item Text = Description of the commit
+\end{itemize}
+\end{itemize}
+If the commit contains more than one action repeat the process on a new line.
 %
 \begin{lstlisting}[language=bash]
 svn log
@@ -176,7 +195,7 @@ are working on the same file. You will get the following message:
 conflict discovered in 'foo.c'.
 Select: (p) postpone, (df) diff-full, (e) edit,
         (mc) mine-conflict, (tc) theirs-conflict,
-        (s) show all options: 
+        (s) show all options:
 \end{lstlisting}
 Here is a listing of all the options available:
 \begin{lstlisting}[language=bash]
@@ -230,7 +249,7 @@ You can add the option "--accept ARG" to the merge command to give an automatic
 response in case of a conflict.
 \begin{lstlisting}[language=bash]
  --accept ARG             : Specify the action to apply in case of conflicts
-   ('postpone', 'base', 'mine-conflict', 'theirs-conflict', 
+   ('postpone', 'base', 'mine-conflict', 'theirs-conflict',
     'mine-full', 'theirs-full', 'edit', 'launch')
 \end{lstlisting}
 \end{CommentBlock}
@@ -250,7 +269,7 @@ repository should be clean of every modification to be even more prepared, the
 command "svn status" should return nothing.
 \item Launch the merge command with $rev1$ being the revision at which the
 development associated with the merge started. The $rev2$ value will be
-automatically replaced by the latest revision of the branch. 
+automatically replaced by the latest revision of the branch.
 \begin{lstlisting}[language=bash]
 svn merge -r rev1:rev2 --reintegrate http://svn.opentelemac.org/svn/opentelemac/branches/mybranch .
 \end{lstlisting}

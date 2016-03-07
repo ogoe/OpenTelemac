@@ -106,13 +106,14 @@
 \newcommand{\tomawac}{{\scshape Tomawac}\xspace}
 \newcommand{\artemis}{{\scshape Artemis}\xspace}
 \newcommand{\bief}{{\scshape Bief}\xspace}
-\newcommand{\damo}{{\scshape Damocles}\xspace}                                                                        
+\newcommand{\damo}{{\scshape Damocles}\xspace}
 \newcommand{\paral}{{\scshape Parallel}\xspace}
 \newcommand{\postel}{{\scshape Postel-3D}\xspace}
 \newcommand{\Special}{{\scshape Special}\xspace}
-\newcommand{\mascaret}{{\scshape Mascaret}\xspace}    
-\newcommand{\tel}{{\scshape Telemac}\xspace}    
-\newcommand{\estel}{{\scshape Estel-3D}\xspace}    
+\newcommand{\mascaret}{{\scshape Mascaret}\xspace}
+\newcommand{\waqtel}{{\scshape Waqtel}\xspace}
+\newcommand{\tel}{{\scshape Telemac}\xspace}
+\newcommand{\estel}{{\scshape Estel-3D}\xspace}
 
 %----------------------------------------------------------------------------------------
 %	VARIOUS REQUIRED PACKAGES
@@ -193,7 +194,7 @@
 
 %version
 \def\@version{\relax}
-\def\version#1{\gdef\@version{#1}} 
+\def\version#1{\gdef\@version{#1}}
 
 %lengths
 \newlength{\TitleMargin}
@@ -367,7 +368,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 \titlecontents{chapter}[1.25cm] % Indentation
 {\addvspace{15pt}\large\sffamily\bfseries} % Spacing and font options for chapters
 {\color{ColorBase1}\contentslabel[\Large\thecontentslabel]{1.25cm}\color{ColorBase1}} % Chapter number
-{}  
+{}
 {\color{ColorBase1}\normalsize\sffamily\bfseries\;\titlerule*[.5pc]{.}\;\thecontentspage} % Page number
 % Section text styling
 \titlecontents{section}[1.25cm] % Indentation
@@ -382,7 +383,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 {\contentslabel[\thecontentslabel]{1.25cm}} % Subsection number
 {}
 {\sffamily\;\titlerule*[.5pc]{.}\;\thecontentspage} % Page number
-[] 
+[]
 
 \captionsetup{lofdepth=1}
 
@@ -419,7 +420,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 %----------------------------------------------------------------------------------------
 
 \makeatletter
-\renewcommand{\@seccntformat}[1]{\llap{\textcolor{ColorBase1}{\csname the#1\endcsname}\hspace{1em}}}                    
+\renewcommand{\@seccntformat}[1]{\llap{\textcolor{ColorBase1}{\csname the#1\endcsname}\hspace{1em}}}
 \renewcommand{\section}{\@startsection{section}{1}{\z@}
 {-4ex \@plus -1ex \@minus -.4ex}
 {1ex \@plus.2ex }
@@ -431,7 +432,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 \renewcommand{\subsubsection}{\@startsection {subsubsection}{3}{\z@}
 {-2ex \@plus -0.1ex \@minus -.2ex}
 {.2ex \@plus.2ex }
-{\normalfont\small\sffamily\bfseries}}                        
+{\normalfont\small\sffamily\bfseries}}
 \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}
 {-2ex \@plus-.2ex \@minus .2ex}
 {.1ex}
@@ -519,7 +520,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 \fi
 \fi}
 
-% Unnumbered chapters without mini tableofcontents (could be added though) 
+% Unnumbered chapters without mini tableofcontents (could be added though)
 \def\@makeschapterhead#1{
 \thispagestyle{empty}
 {\centering \normalfont\sffamily
@@ -759,7 +760,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
                   \@restonecoltrue
                 \fi
                 \twocolumn[
-					\phantomsection                
+					\phantomsection
                 	\@makeschapterhead{
                	 %\chapter*{
                 		\indexname
