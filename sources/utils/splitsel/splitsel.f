@@ -1,5 +1,25 @@
 !
+!     ************************
       PROGRAM SPLITSEL
+!     ************************
+!
+!***********************************************************************
+! SPLITSEL   V7P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    Refine a mesh by splitting the triangle in 4
+!
+!history  C. MOULINEC (STFC)
+!+        10/11/2011
+!+        V7P0
+!+        First version of the file
+!
+!history  Y. AUDOUIN (EDF)
+!+        01/01/2016
+!+        V7P1
+!+        Integration in the source code
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_HERMES

@@ -6,7 +6,7 @@
 #                   sources/tomawac.
 #
 # Modes supportes :
-#        % maktel 
+#        % maktel
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -15,8 +15,6 @@
 # definition des noms de fichiers
 #
 NOM_GENERIQUE = waqtel
-
-VERSION	      = v7p0
 
 ###########################
 # Definition des macros
@@ -40,7 +38,7 @@ DIRINC           = $(PROJECT)/builds/$(DIRLIB)/lib
 FCO           = $(FC_OPT_COMPIL)
 LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 FC            = $(FC_NAM)
-FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) 
+FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC)
 
 MODE          =
 
