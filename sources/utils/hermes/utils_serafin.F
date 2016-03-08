@@ -454,8 +454,8 @@
           ! Ntimestep = (size_of_fil - size_of_geom)/size_of_a_timestep
           NTIMESTEP = (FSIZE - (SRF_OBJ_TAB(SRF_ID)%POS_DATA - 1) )
      &             /SRF_OBJ_TAB(SRF_ID)%SIZE_DATA_SET
-          SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = NTIMESTEP
 #endif
+          SRF_OBJ_TAB(SRF_ID)%NTIMESTEP = NTIMESTEP
         ELSE
           ! NOT READ ONLY
           ! INTIALIZE SRF_OBJ_TAB(SRF_ID) TO ZEROS
