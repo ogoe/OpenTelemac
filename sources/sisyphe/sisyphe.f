@@ -3,14 +3,14 @@
 !                    ******************
 !
      &(PART,LOOPCOUNT,GRAFCOUNT,LISTCOUNT,TELNIT,
-     & U_TEL,V_TEL,H_TEL,HN_TEL,ZF_TEL,UETCAR,CF_TEL,KS_TEL,
+     & U_TEL,V_TEL,H_TEL,HN_TEL,HPROP_TEL,ZF_TEL,UETCAR,CF_TEL,KS_TEL,
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
      & THETAW_TEL,HW_TEL,TW_TEL,UW_TEL)
 !
 !***********************************************************************
-! SISYPHE   V7P0                                   02/01/2014
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief  The real main program of Sisyphe, with the time loop.
@@ -117,6 +117,11 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/02/2016
+!+        V7P2
+!+   Adding the variable HPROP.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -130,6 +135,7 @@
 !| GRAFCOUNT      |-->| PERIOD OF GRAPHICAL OUTPUTS
 !| HN_TEL         |-->| WATER DEPTH FROM TEL HN
 !| H_TEL          |-->| WATER DEPTH FROM TEL H (N+1)
+!| H_PROP         |-->| WATER DEPTH FROM DIVERGENCE TERM IN CONTINUITY.
 !| KS_TEL         |-->| BED ROUGHNESS SENT TO TELEMAC
 !| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
 !| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
@@ -172,6 +178,7 @@
       INTEGER,           INTENT(IN)    :: LISTCOUNT,TELNIT,PERICOU
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U_TEL,V_TEL,H_TEL,HN_TEL
+      TYPE(BIEF_OBJ),    INTENT(IN)    :: HPROP_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZF_TEL,UETCAR,KS_TEL
       INTEGER,           INTENT(INOUT) :: NSIS_CFD
       LOGICAL,           INTENT(INOUT) :: CONSTFLOW,SISYPHE_CFD

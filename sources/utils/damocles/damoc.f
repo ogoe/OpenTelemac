@@ -6,11 +6,11 @@
      &  MOTINT , MOTREA , MOTLOG , MOTCAR , MOTATT ,
      &  DEFINT , DEFREA , DEFLOG , DEFCAR , DEFATT ,
      &  USRINT , USRREA , USRLOG , USRCAR , USRATT ,
-     &  MOTCLE , SIZE   , TROUVE , UTINDX , NFICMO , NFICDA ,
+     &  MOTCLE , TAILLE , TROUVE , UTINDX , NFICMO , NFICDA ,
      &  INDIC  , GESTD  , NBLANG , RETRY )
 !
 !***********************************************************************
-! DAMOCLES   V6P0                                   21/08/2010
+! DAMOCLES   V7P2
 !***********************************************************************
 !
 !brief    MAIN ROUTINE OF THE DAMOCLES LIBRARY
@@ -19,15 +19,10 @@
 !
 !note     PORTABILITY : IBM,CRAY,HP,SUN
 !
-!history  O. QUIQUEMPOIX (LNH)
-!+        14/12/1993
-!+
-!+
-!
 !history  J-M HERVOUET (LNH); A. YESSAYAN; L. LEGUE
 !+        10/11/2008
 !+        V5P9
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -40,6 +35,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        07/03/2016
+!+        V7P2
+!+   Changing array SIZE into TAILLE (SIZE is a Fortran function).
+!+   Declarations CHARACTER*... replaced by CHARACTER(LEN=...).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ADRESS         |<--| TABLEAU DES ADRESSES DES MOTS CLES
@@ -71,7 +72,7 @@
 !| NFICMO         |-->| NUMERO DE CANAL DU FICHIER DES MOTS-CLES
 !| NMAX           |-->| TAILLE MAXIMALE AUTORISEE POUR LES TABLEAUX
 !| RETRY          |---|
-!| SIZE           |<--| TABLEAU DES LONGUEURS DES MOTS CLES
+!| TAILLE         |<--| TABLEAU DES LONGUEURS DES MOTS CLES
 !| TROUVE         |<--| INDICATEUR D'ETAT DES MOTS CLES
 !|                |   | = 0 : AUCUNE VALEUR TROUVEE
 !|                |   | = 1 : VALEUR PAR DEFAUT TROUVEE
@@ -93,41 +94,40 @@
 !
       IMPLICIT NONE
 !
-      INTEGER          NMAX,LLNG,LLU,NFICMO,NFICDA,NBLANG,RETRY
-      INTEGER          MOTINT(*),DEFINT(*),USRINT(*)
-      INTEGER          SIZE(4,*),ADRESS(4,*),DIMENS(4,*)
-      INTEGER          INDIC(4,*),TROUVE(4,*)
-      LOGICAL          MOTLOG(*),DEFLOG(*),USRLOG(*),UTINDX(4,*),DOC
-      CHARACTER*72     MOTCLE(4,*)
-      CHARACTER*144    MOTATT(4,*),DEFATT(*),USRATT(*)
-      CHARACTER*144    MOTCAR(*),DEFCAR(*),USRCAR(*)
-      DOUBLE PRECISION MOTREA(*),DEFREA(*),USRREA(*)
+      INTEGER            NMAX,LLNG,LLU,NFICMO,NFICDA,NBLANG,RETRY
+      INTEGER            MOTINT(*),DEFINT(*),USRINT(*)
+      INTEGER            TAILLE(4,*),ADRESS(4,*),DIMENS(4,*)
+      INTEGER            INDIC(4,*),TROUVE(4,*)
+      LOGICAL            MOTLOG(*),DEFLOG(*),USRLOG(*),UTINDX(4,*),DOC
+      CHARACTER(LEN=72)  MOTCLE(4,*)
+      CHARACTER(LEN=144) MOTATT(4,*),DEFATT(*),USRATT(*)
+      CHARACTER(LEN=144) MOTCAR(*),DEFCAR(*),USRCAR(*)
+      DOUBLE PRECISION   MOTREA(*),DEFREA(*),USRREA(*)
 !
       INTEGER            INTLU,NEXT,PREV,PREVAL,LONGLU
       LOGICAL            LOGLU
       CHARACTER(LEN=144) CARLU,PARAM2
       DOUBLE PRECISION   REALU
 !
-      INTEGER          LNG,LU
-      INTEGER          INDX,NTYP,ITAI,LONGU,NMOT(4),DEFLU
-      INTEGER          NLIGN,LONGLI
-      INTEGER          NFIC
-      LOGICAL          ERREUR , RETOUR
-      CHARACTER(LEN=72)     PARAM
+      INTEGER            LNG,LU
+      INTEGER            INDX,NTYP,ITAI,LONGU,NMOT(4),DEFLU
+      INTEGER            NLIGN,LONGLI,NFIC
+      LOGICAL            ERREUR,RETOUR
+      CHARACTER(LEN=72)  PARAM
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER          I,K,IVAL,LCAR,ICOL,JCOL,ILONG,ITYP,NUMERO,I2
-      INTEGER          DEPLAC,ADD,J,OFFSET(4),NBMOT
-      INTEGER          TYPIGN(100),LONIGN(100),NMAXR(4),ORDRE
-      INTEGER          ADSRC,ADDES,NULINT,NVAL,NIGN,L1,LONPRO(15)
-      LOGICAL          DYNAM,LANGUE,NULLOG,LUIGN,AIDLNG,VUMOT
-      LOGICAL          ARRET,VUCMD(5),VUCMD0(5),EXECMD,GESTD
-      CHARACTER*1      PTVIRG,QUOTE
-      CHARACTER*9      MOTPRO(15),TYPE
-      CHARACTER*72     MOTIGN(100),LIGNE
-      CHARACTER*144    NULCAR,TYPE2
-      DOUBLE PRECISION NULREA
+      INTEGER            I,K,IVAL,LCAR,ICOL,JCOL,ILONG,ITYP,NUMERO,I2
+      INTEGER            DEPLAC,ADD,J,OFFSET(4),NBMOT
+      INTEGER            TYPIGN(100),LONIGN(100),NMAXR(4),ORDRE
+      INTEGER            ADSRC,ADDES,NULINT,NVAL,NIGN,L1,LONPRO(15)
+      LOGICAL            DYNAM,LANGUE,NULLOG,LUIGN,AIDLNG,VUMOT
+      LOGICAL            ARRET,VUCMD(5),VUCMD0(5),EXECMD,GESTD
+      CHARACTER(LEN=1)   PTVIRG,QUOTE
+      CHARACTER(LEN=9)   MOTPRO(15),TYPE
+      CHARACTER(LEN=72)  MOTIGN(100),LIGNE
+      CHARACTER(LEN=144) NULCAR,TYPE2
+      DOUBLE PRECISION   NULREA
 !
 !-----------------------------------------------------------------------
 !
@@ -167,7 +167,7 @@
 !     MOTLOG(I)   : IEME RESULTAT LOGIQUE
 !     MOTCAR(I)   : IEME RESULTAT CARACTERE
 !     MOTATT(I,J) : JEME SUBMIT DU TYPE I
-!     SIZE(I,J)   : LONGUEUR DU JIEME MOT-CLE DE TYPE I
+!     TAILLE(I,J) : LONGUEUR DU JIEME MOT-CLE DE TYPE I
 !     TROUVE(I,J) : CONCERNE LE JIEME MOT-CLE DE TYPE I
 !     INDIC(I,J)  : CONCERNE LE JIEME MOT-CLE DE TYPE I
 !     LUIGN       : INDIQUE SI C'EST UN MOT POUR EDAMOX SEULEMENT
@@ -226,7 +226,7 @@
           ADRESS(K,I)  = 0
           DIMENS(K,I)  = 1
           TROUVE(K,I)  = 0
-          SIZE(K,I)    = 0
+          TAILLE(K,I)  = 0
           UTINDX(K,I)  = .FALSE.
           MOTINT(I)    = 0
           MOTREA(I)    = 0.
@@ -280,7 +280,7 @@
 !
       IF ( LIGNE(ICOL:ICOL).EQ.'&' ) THEN
         CALL CMD (ICOL,LIGNE,ADRESS,DIMENS,TROUVE,MOTCLE,NMOT,
-     &       MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT,INDIC,SIZE,
+     &       MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT,INDIC,TAILLE,
      &       UTINDX,DYNAM,VUCMD,EXECMD,NFICDA,NMAXR)
 !
 !     IF FOUND &FIN, ENDS AFTER COMPACTING :
@@ -302,7 +302,7 @@
         IF (NFIC.EQ.NFICMO.AND.INDX.LE.0) LUIGN = .TRUE.
 !
         CALL DICO(ITYP,NUMERO,ILONG,LIGNE(ICOL:JCOL),
-     &       MOTCLE,NMOT,MOTPRO,LONPRO,SIZE,UTINDX,LANGUE,
+     &       MOTCLE,NMOT,MOTPRO,LONPRO,TAILLE,UTINDX,LANGUE,
      &       AIDLNG,MOTIGN,NIGN,LUIGN,TYPIGN,LONIGN,NFICDA,
      &       NBLANG,NMAXR)
 !
@@ -370,7 +370,7 @@
               DEFLOG(IVAL) = LOGLU(ICOL,LIGNE)
             ELSEIF (NTYP.EQ.4) THEN
               DEFCAR(IVAL) = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,
-     &                             SIZE,MOTIGN,LONIGN,NMAXR,
+     &                             TAILLE,MOTIGN,LONIGN,NMAXR,
      &                             NFICDA,LEN(DEFCAR(IVAL)))
             ENDIF
 !
@@ -405,7 +405,7 @@
                     NULLOG = LOGLU(ICOL,LIGNE)
             ELSEIF (NTYP .EQ. 4) THEN
                     NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,
-     &                             SIZE,MOTIGN,LONIGN,NMAXR,NFICDA,
+     &                             TAILLE,MOTIGN,LONIGN,NMAXR,NFICDA,
      &                             LEN(NULCAR))
             ENDIF
           ENDIF
@@ -423,7 +423,7 @@
 ! ALL THE VALUES FOR A KEYWORD HAVE BEEN READ
 !
 ! PARTICULAR CASE: KEYWORDS WITH A SUBMIT
-! PREVENTS DYNAMIC ALLOCATION WHEN VALUES ARE GREATER THAN SIZE (SEE SUBMIT)
+! PREVENTS DYNAMIC ALLOCATION WHEN VALUES ARE GREATER THAN TAILLE (SEE SUBMIT)
 ! OR FOR KEYWORDS NOT ASSOCIATED WITH ARRAYS
 !
           IF (INDIC(NTYP,INDX).NE.1.AND.IVAL.GT.ITAI) IVAL = ITAI
@@ -559,7 +559,7 @@
 !
            IF (NBMOT.GT.1 .AND. (.NOT.(VUMOT)) ) THEN
              IF (INDX.GT.NMAXR(NTYP)) NMAXR(NTYP)=INDX
-             CALL CLASSE(DIMENS,SIZE,MOTCLE,UTINDX,NMAX,
+             CALL CLASSE(DIMENS,TAILLE,MOTCLE,UTINDX,NMAX,
      &                   OFFSET,ADRESS,INDIC,LUIGN,
      &                   MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT ,
      &                   DEFCAR,DEFINT,DEFLOG,DEFREA,DEFATT )
@@ -570,13 +570,13 @@
 !
 !           NAME OF THE KEYWORD
             IF (LANGUE) THEN
-              PARAM2= CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,MOTIGN,
+              PARAM2= CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,TAILLE,MOTIGN,
      &                      LONIGN,NMAXR,NFICDA,LEN(PARAM))
               LONGU = LCAR
               PARAM=PARAM2(1:MIN(72,LONGU))
             ELSE
 ! READS THE NAME OF A NON-REQUESTED LANGUAGE (NOT USED)
-                 NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,
+                 NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,TAILLE,
      &                          MOTIGN,LONIGN,NMAXR,NFICDA,LEN(NULCAR))
             ENDIF
 !
@@ -588,7 +588,7 @@
             VUMOT = .FALSE.
             IF (ORDRE.NE.1) GOTO 1500
             ORDRE=2
-            TYPE2= CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,MOTIGN,
+            TYPE2= CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,TAILLE,MOTIGN,
      &                   LONIGN,NMAXR,NFICDA,LEN(TYPE))
             TYPE=TYPE2(1:MIN(LCAR,9))
             IF(TYPE(1:6).EQ.'ENTIER'
@@ -674,7 +674,7 @@
                 DEFLOG(DEFLU) = LOGLU(ICOL,LIGNE)
               ELSE IF (NTYP .EQ. 4) THEN
                 DEFCAR(DEFLU) = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,
-     &                               SIZE,MOTIGN,LONIGN,NMAXR,NFICDA,
+     &                               TAILLE,MOTIGN,LONIGN,NMAXR,NFICDA,
      &                               LEN(DEFCAR(DEFLU)))
                 L1 = LONGLU(DEFCAR(DEFLU))
                 IF (ITAI.LE.1.AND.INDIC(NTYP,INDX).GE.2) THEN
@@ -717,7 +717,7 @@
               ELSE IF (NTYP .EQ. 3) THEN
                 NULLOG = LOGLU(ICOL,LIGNE)
               ELSE IF (NTYP .EQ. 4) THEN
-                NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,SIZE,
+                NULCAR = CARLU(LCAR,ICOL,LIGNE,QUOTE,MOTCLE,TAILLE,
      &                        MOTIGN,LONIGN,NMAXR,NFICDA,LEN(NULCAR))
               ENDIF
 !
@@ -758,7 +758,7 @@
             ORDRE=5
             IF (.NOT.(LUIGN)) INDIC(NTYP,INDX)=INDIC(NTYP,INDX)+2
             ICOL = NEXT(ICOL+1,LIGNE) -1
-            CALL INFLU(ICOL,LIGNE,DEFATT,TROUVE,LUIGN,MOTCLE,SIZE,
+            CALL INFLU(ICOL,LIGNE,DEFATT,TROUVE,LUIGN,MOTCLE,TAILLE,
      &                 MOTIGN,LONIGN,NMAXR,NFICDA,GESTD)
             DO I=1,DEFLU
               DEFINT(I)    = 0
@@ -810,7 +810,7 @@
 !
       IF(NFIC.EQ.NFICMO) THEN
         IF (INDX.GT.NMAXR(NTYP)) NMAXR(NTYP)=INDX
-        CALL CLASSE(DIMENS,SIZE,MOTCLE,UTINDX,NMAX,
+        CALL CLASSE(DIMENS,TAILLE,MOTCLE,UTINDX,NMAX,
      &              OFFSET,ADRESS,INDIC,LUIGN,
      &              MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT ,
      &              DEFCAR,DEFINT,DEFLOG,DEFREA,DEFATT )
@@ -849,7 +849,7 @@
      &      TROUVE(4,K).LT.3.AND.TROUVE(4,K).GT.0) THEN
           ADD = ADRESS(4,K)
           PARAM = MOTCLE(4,K)
-          LONGU = SIZE(4,K)
+          LONGU = TAILLE(4,K)
           NVAL = DIMENS(4,K)
           I=0
  1180     CONTINUE
@@ -914,7 +914,7 @@
         VUCMD(K)=VUCMD0(K)
         IF (VUCMD(K).AND.(.NOT.(ERREUR))) THEN
           CALL CMD (ICOL,LIGNE,ADRESS,DIMENS,TROUVE,MOTCLE,NMOT,
-     &          MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT,INDIC,SIZE,
+     &          MOTINT,MOTREA,MOTLOG,MOTCAR,MOTATT,INDIC,TAILLE,
      &          UTINDX,DYNAM,VUCMD,EXECMD,NFICDA,NMAXR)
           VUCMD(K) = .FALSE.
         ENDIF
@@ -924,7 +924,7 @@
 !
       WRITE(LU,*) ' '
 !
-      DO K = 1 , 4
+      DO K = 1,4
       DO INDX = 1 , NMAXR(K)
         IF (UTINDX(K,INDX)) THEN
           IF (TROUVE(K,INDX).EQ.0) THEN
@@ -935,14 +935,19 @@
             ELSE
               WRITE(LU,*)'----------------------------------------'
               ARRET= .TRUE.
-      IF(LNG.EQ.1) WRITE(LU,1101) MOTCLE(K,INDX)(1:SIZE(K,INDX))
-      IF(LNG.EQ.2) WRITE(LU,1102) MOTCLE(K,INDX)(1:SIZE(K,INDX))
+      IF(LNG.EQ.1) WRITE(LU,1101) MOTCLE(K,INDX)(1:TAILLE(K,INDX))
+      IF(LNG.EQ.2) WRITE(LU,1102) MOTCLE(K,INDX)(1:TAILLE(K,INDX))
  1101         FORMAT(1X,'ATTENTION, LE MOT-CLE :',1X,A,/,1X,
      &        'N''A PAS RECU DE VALEUR')
  1102         FORMAT(1X,'BEWARE, THE KEY-WORD:',1X,A,/,1X,
      &        'HAS BEEN GIVEN NO VALUE')
             ENDIF
           ENDIF
+!
+!       WILL WRITE THE UNUSED INDICES IN EVERY CATEGORY
+!
+!       ELSE
+!         WRITE(LU,*) 'KEYWORD ',INDX,' OF TYPE ',K,' NOT USED'
         ENDIF
       ENDDO ! INDX
       ENDDO ! K
@@ -978,3 +983,5 @@
 !-----------------------------------------------------------------------
 !
       END
+
+

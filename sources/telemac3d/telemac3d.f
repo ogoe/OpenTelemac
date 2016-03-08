@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief
@@ -184,6 +184,11 @@
 !+        V7P1
 !+   Initial conditions of results file in restart mode were forgotten
 !+   they are useless but now requested by the Hermes module...
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/02/2016
+!+        V7P2
+!+   Adding the argument HPROP in the call to Sisyphe.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1281,7 +1286,7 @@
         IBID=1
         LBID=.FALSE.
         IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SISYPHE'
-        CALL SISYPHE(0,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,H,ZF,UETCAR,CF,
+        CALL SISYPHE(0,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,H,H,ZF,UETCAR,CF,
      &               RUGOF,
      &               LBID,IBID,LBID,CODE1,PERCOU_SIS,
      &               U,V,AT,VISCVI,DT,CHARR,SUSP,
@@ -1407,8 +1412,8 @@
         IBID=1
         LBID=.FALSE.
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE'
-        CALL SISYPHE(1,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,HN,ZF,UETCAR,
-     &               CF,RUGOF,LBID,IBID,LBID,CODE1,PERCOU_SIS,
+        CALL SISYPHE(1,LT,GRAPRD,LISPRD,NIT,U2D,V2D,H,HN,HPROP,ZF,
+     &               UETCAR,CF,RUGOF,LBID,IBID,LBID,CODE1,PERCOU_SIS,
      &               U,V,AT,VISCVI,DT*PERCOU_SIS,CHARR,SUSP,
 !                          1 PRECLUDES THE USE OF THE 4 FOLLOWING ARGUMENTS
      &               FLBOR,1,DM1,UCONV,VCONV,ZCONV,

@@ -5,7 +5,7 @@
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT,NITERORI)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
@@ -266,6 +266,11 @@
 !+        V7P1
 !+   Call to TEL4DEL modified. Printouts in Debug mode added. Argument
 !+   NREJTR changed into NREJET in the call to difsou.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/02/2016
+!+        V7P2
+!+   Adding the argument HPROP in the call to Sisyphe.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -1382,7 +1387,7 @@
           ENDIF
           CALL CONFIG_CODE(2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SISYPHE'
-          CALL SISYPHE(0,LT,LEOPRD,LISPRD,NIT,U,V,H,H,ZF,CF,CF,CHESTR,
+          CALL SISYPHE(0,LT,LEOPRD,LISPRD,NIT,U,V,H,H,H,ZF,CF,CF,CHESTR,
      &                 CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,CODE1,PERCOU,
      &                 U,V,AT,VISC,DT,CHARR,SUSP,
 !                                     CHARR,SUSP : RETURNED BY SISYPHE
@@ -2476,7 +2481,7 @@
         IF(SUSP1.OR.(CHARR.AND.(PERCOU*(LT/PERCOU).EQ.LT))) THEN
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SISYPHE, CHARRIAGE'
-          CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,ZF,
+          CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,HPROP,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
@@ -2488,7 +2493,7 @@
         IF(SUSP.AND.PERCOU.NE.1) THEN
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SISYPHE, SUSPENSION'
-          CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,ZF,
+          CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,HPROP,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SUSP,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,

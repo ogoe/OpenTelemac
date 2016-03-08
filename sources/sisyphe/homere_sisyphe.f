@@ -108,7 +108,7 @@
       DUMINT=1
       DUMLOG=.FALSE.
 !
-      CALL SISYPHE(-1,0,0,0,0,T1,T1,T1,T1,T1,T1,T1,T1,
+      CALL SISYPHE(-1,0,0,0,0,T1,T1,T1,T1,T1,T1,T1,T1,T1,
      &             DUMLOG,DUMINT,DUMLOG,CODE,1,
      &             T1,T1,0.D0,T1,0.D0,DUMLOG,DUMLOG,
      &             T1,1,T1,T1,T1,T1,T1,T1,T1,T1)

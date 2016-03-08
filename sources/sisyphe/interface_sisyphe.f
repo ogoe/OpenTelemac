@@ -629,7 +629,7 @@
 !
       INTERFACE
         SUBROUTINE SISYPHE(PART,LOOPCOUNT,GRAFCOUNT,LISTCOUNT,TELNIT,
-     &                     U_TEL,V_TEL,H_TEL,HN_TEL,
+     &                     U_TEL,V_TEL,H_TEL,HN_TEL,HPROP_TEL,
      &                     ZF_SIS,UETCAR,CF_TEL,KS_TEL,
      &                     CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      &                     U3D,V3D,T_TEL,VISC_TEL,
@@ -642,6 +642,7 @@
           INTEGER,          INTENT(IN)   :: LISTCOUNT,TELNIT,PERICOU
           CHARACTER(LEN=24),INTENT(IN)   :: CODE
           TYPE(BIEF_OBJ),   INTENT(IN)   :: U_TEL,V_TEL,H_TEL,HN_TEL
+          TYPE(BIEF_OBJ),   INTENT(IN)   :: HPROP_TEL
           TYPE(BIEF_OBJ),   INTENT(INOUT):: ZF_SIS, UETCAR
           INTEGER,          INTENT(INOUT):: NSIS_CFD
           LOGICAL,          INTENT(INOUT):: CONSTFLOW,SISYPHE_CFD
