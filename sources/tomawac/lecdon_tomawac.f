@@ -51,6 +51,11 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/03/2016
+!+        V7P2
+!+  Retrieving NPLEO in a different way.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES
@@ -318,7 +323,12 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-      NPLEO  = DIMEN(2,4)
+      IF(TROUVE(2,4).EQ.2) THEN
+        NPLEO = DIMEN(2,4)
+      ELSE
+!       IF KEYWORD NOT FOUND
+        NPLEO = 0
+      ENDIF
       DO K=1,DIMEN(2,4)
         XLEO(K)= MOTREA( ADRESS(2,  4) + K-1)
       ENDDO
