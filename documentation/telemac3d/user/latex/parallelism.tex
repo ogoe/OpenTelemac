@@ -1,0 +1,27 @@
+\chapter{Parallelism}
+
+For simulations requiring a high computational power, it can be advisable to
+run the computations in multi-processor machines, or in clusters of
+workstations. \telemac{3D} is available in a parallel version in order to take
+advantage of that kind of computational architecture.
+
+The \telemac{3D} parallel version uses the MPI library which has to be installed
+beforehand to be implementable. The interface between \telemac{3D} and that MPI
+library is achieved through the parallelparallel library which is common to all
+the TELEMAC system modules.
+
+Lots of pieces of information concerning the implementation of the parallel
+version can be found in the system's installation literature.
+
+The user shall initially specify the number of processors used by means of the
+keyword \telkey{PARALLEL PROCESSORS}. That integer type keyword can assume the
+following values:
+
+\begin{itemize}
+\item  0: Implementation of the conventional \telemac{3D} version (default),
+
+\item  1: Implementation of the parallel \telemac{3D} version on a processor,
+
+\item  2 ...: Implementation of the parallel \telemac{3D} version using the
+specified number of processors.
+\end{itemize}

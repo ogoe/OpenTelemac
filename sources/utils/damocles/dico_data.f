@@ -23,13 +23,13 @@
         CHARACTER(LEN=200) :: CHOIX(2)
         ! param Classification of the keyword
         CHARACTER(LEN=144) :: RUBRIQUE(2,3)
-        ! param 
+        ! param
         CHARACTER(LEN=144) :: COMPOSE
-        ! param 
+        ! param
         CHARACTER(LEN=144) :: COMPORT
-        ! param 
+        ! param
         CHARACTER(LEN=144) :: CONTROLE
-        ! param 
+        ! param
         CHARACTER(LEN=144) :: APPARENCE
         ! param Level of the keyword (TODO: Find if it is used)
         INTEGER :: NIVEAU
@@ -117,7 +117,7 @@
       !
       WRITE(STRING,'(I3)') I
       POS=1
-      DO 
+      DO
         IF(STRING(POS:POS).NE.' ') EXIT
         POS=POS+1
       ENDDO
@@ -143,7 +143,7 @@
       NTYP = 0
       MAX_IDX = 0
       DO IKEY=1,NKEY
-        ITYP = MYDICO(IKEY)%KTYPE 
+        ITYP = MYDICO(IKEY)%KTYPE
         NTYP(ITYP) = NTYP(ITYP) + 1
         MAX_IDX(ITYP) = MAX(MAX_IDX(ITYP),MYDICO(IKEY)%KINDEX)
       ENDDO
@@ -164,7 +164,7 @@
         DO IDX=1,MAX_IDX(I)
           ! Identifying the key associated to the idx
           DO IKEY=1,NKEY
-            ITYP = MYDICO(IKEY)%KTYPE 
+            ITYP = MYDICO(IKEY)%KTYPE
             IF(I.NE.ITYP) CYCLE
             IF(MYDICO(IKEY)%KINDEX.NE.IDX) CYCLE
             NTYP(ITYP) = NTYP(ITYP) + 1
@@ -225,12 +225,12 @@
       WRITE(*,*) ''
       !
       END SUBROUTINE
-      ! 
+      !
       ! brief Fill the array rubrique that contains the list of the rtubriques
       !
       SUBROUTINE IDENTIFY_RUBRIQUE()
       IMPLICIT NONE
-      ! 
+      !
       INTEGER :: I,J,IKEY,LNG
       LOGICAL :: ALREADY_IN
       !
@@ -267,7 +267,7 @@
         ENDDO
       ENDDO
       END SUBROUTINE
-      ! brief write in canal the default value in Latex 
+      ! brief write in canal the default value in Latex
       !+      form as neatly as possible
       !
       ! param nfic file canal
@@ -275,7 +275,7 @@
       ! param lng language of the key (1:french,2:english)
       SUBROUTINE WRITE_DEFAULT(NFIC,IKEY,LNG)
       IMPLICIT NONE
-      ! 
+      !
       INTEGER,INTENT(IN) :: IKEY
       INTEGER,INTENT(IN) :: NFIC
       INTEGER, INTENT(IN) :: LNG
@@ -323,7 +323,7 @@
       ! param lng language of the key (1:french,2:english)
       SUBROUTINE HAS_RUBRIQUE(HAS,IKEY,IRUB,LNG)
       IMPLICIT NONE
-      ! 
+      !
       INTEGER,INTENT(IN) :: IKEY
       INTEGER,INTENT(IN) :: IRUB
       INTEGER, INTENT(IN) :: LNG
@@ -348,7 +348,7 @@
       ! param lng language of the key (1:french,2:english)
       SUBROUTINE IDENTIFY_KEY(CHAINE,ILONG,NUMERO,LNG)
       IMPLICIT NONE
-      ! 
+      !
       CHARACTER(LEN=*),INTENT(IN) :: CHAINE
       INTEGER,INTENT(INOUT) :: ILONG
       INTEGER, INTENT(INOUT) :: NUMERO
@@ -378,13 +378,13 @@
           ENDIF
         ENDIF
       ENDDO ! I
-      !               
+      !
       END SUBROUTINE
 
       ! brief Fill the myDico structure by reading the dictionary
       !
       ! param filename name of the dictionary file
-      ! param 
+      ! param
       SUBROUTINE READ_DICTIONARY(FILENAME)
       !
       IMPLICIT NONE
@@ -510,9 +510,9 @@
         MYDICO(IKEY)%CHOIX(1) = REPEAT(' ',LEN(MYDICO(IKEY)%CHOIX(1)))
         MYDICO(IKEY)%CHOIX(2) = REPEAT(' ',LEN(MYDICO(IKEY)%CHOIX(2)))
         DO I=1,3
-        MYDICO(IKEY)%RUBRIQUE(1,I) = 
+        MYDICO(IKEY)%RUBRIQUE(1,I) =
      &            REPEAT(' ',LEN(MYDICO(IKEY)%RUBRIQUE(1,I)))
-        MYDICO(IKEY)%RUBRIQUE(2,I) = 
+        MYDICO(IKEY)%RUBRIQUE(2,I) =
      &            REPEAT(' ',LEN(MYDICO(IKEY)%RUBRIQUE(2,I)))
         ENDDO
         MYDICO(IKEY)%SUBMIT = REPEAT(' ',LEN(MYDICO(IKEY)%SUBMIT))
@@ -650,11 +650,11 @@
             ORDRE=6
             MYDICO(IKEY)%DEFAUT(LNG) = MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%DEFAUT(LNG)))
-            
-!           
+
+!
             ICOL = NEXT(ICOL+1,LIGNE)
-            
-            DO 
+
+            DO
               IF(MYDICO(IKEY)%TAILLE.LE.1) EXIT
               ! Check if there are multiple values (array)
               IF(ICOL.GT.LONGLI) THEN
@@ -664,11 +664,11 @@
                   EXIT
                 ENDIF
               ENDIF
-              MYDICO(IKEY)%DEFAUT(LNG) = TRIM(MYDICO(IKEY)%DEFAUT(LNG)) 
+              MYDICO(IKEY)%DEFAUT(LNG) = TRIM(MYDICO(IKEY)%DEFAUT(LNG))
      &            //PTVIRG//   MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                       LEN(MYDICO(IKEY)%DEFAUT(LNG)))
-             
-!            
+
+!
               ICOL = NEXT(ICOL+1,LIGNE)
             ENDDO
 !
@@ -676,7 +676,7 @@
 !
           ELSE IF(NUMERO.EQ.6) THEN
 !
-            MYDICO(IKEY)%AIDE(LNG) = 
+            MYDICO(IKEY)%AIDE(LNG) =
      &               MYAIDELU(ICOL,LIGNE)
 !
 !
@@ -687,10 +687,10 @@
 !
             MYDICO(IKEY)%CHOIX(LNG) = MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%CHOIX(LNG)))
-            
-!           
+
+!
             ICOL = NEXT(ICOL+1,LIGNE)
-            DO 
+            DO
               ! Check if there are multiple values (array)
               IF(ICOL.GT.LONGLI) THEN
                 ICOL = LONGLI
@@ -699,12 +699,12 @@
                   EXIT
                 ENDIF
               ENDIF
-              MYDICO(IKEY)%CHOIX(LNG) = 
+              MYDICO(IKEY)%CHOIX(LNG) =
      &            TRIM(MYDICO(IKEY)%CHOIX(LNG))
      &            //PTVIRG//MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                       LEN(MYDICO(IKEY)%CHOIX(LNG)))
-             
-!            
+
+!
               ICOL = NEXT(ICOL+1,LIGNE)
             ENDDO
 !
@@ -713,10 +713,10 @@
             I = 1
             MYDICO(IKEY)%RUBRIQUE(LNG,I)= MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%RUBRIQUE(LNG,I)))
-            
-!           
+
+!
             ICOL = NEXT(ICOL+1,LIGNE)
-            DO 
+            DO
               ! Check if there are multiple values (array)
               IF(ICOL.GT.LONGLI) THEN
                 ICOL = LONGLI
@@ -726,11 +726,11 @@
                 ENDIF
               ENDIF
               I = I + 1
-              MYDICO(IKEY)%RUBRIQUE(LNG,I) = 
+              MYDICO(IKEY)%RUBRIQUE(LNG,I) =
      &            MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                       LEN(MYDICO(IKEY)%RUBRIQUE(LNG,I)))
-             
-!            
+
+!
               ICOL = NEXT(ICOL+1,LIGNE)
             ENDDO
 !
@@ -741,35 +741,35 @@
 !
           ELSE IF(NUMERO.EQ.10) THEN
 !
-            MYDICO(IKEY)%MNEMO = 
+            MYDICO(IKEY)%MNEMO =
      &               MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%MNEMO))
             ICOL = NEXT(ICOL+1,LIGNE)
 !
           ELSE IF(NUMERO.EQ.11) THEN
 !
-            MYDICO(IKEY)%COMPOSE = 
+            MYDICO(IKEY)%COMPOSE =
      &               MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%COMPOSE))
             ICOL = NEXT(ICOL+1,LIGNE)
 !
           ELSE IF(NUMERO.EQ.12) THEN
 !
-            MYDICO(IKEY)%COMPORT = 
+            MYDICO(IKEY)%COMPORT =
      &               MYAIDELU(ICOL,LIGNE)
 !
           ELSE IF(NUMERO.EQ.13) THEN
 !
-            MYDICO(IKEY)%CONTROLE = 
+            MYDICO(IKEY)%CONTROLE =
      &               MYAIDELU(ICOL,LIGNE)
 !
           ELSE IF(NUMERO.EQ.14) THEN
 !
-            MYDICO(IKEY)%APPARENCE = 
+            MYDICO(IKEY)%APPARENCE =
      &               MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%APPARENCE))
             ICOL = NEXT(ICOL+1,LIGNE)
-            DO 
+            DO
               ! Check if there are multiple values (array)
               IF(ICOL.GT.LONGLI) THEN
                 ICOL = LONGLI
@@ -778,12 +778,12 @@
                   EXIT
                 ENDIF
               ENDIF
-              MYDICO(IKEY)%APPARENCE = 
+              MYDICO(IKEY)%APPARENCE =
      &            TRIM(MYDICO(IKEY)%SUBMIT)
      &            //PTVIRG//MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                       LEN(MYDICO(IKEY)%APPARENCE))
-             
-!            
+
+!
               ICOL = NEXT(ICOL+1,LIGNE)
             ENDDO
 !
@@ -795,10 +795,10 @@
 !
             MYDICO(IKEY)%SUBMIT = MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                     LEN(MYDICO(IKEY)%SUBMIT))
-            
-!           
+
+!
             ICOL = NEXT(ICOL+1,LIGNE)
-            DO 
+            DO
               ! Check if there are multiple values (array)
               IF(ICOL.GT.LONGLI) THEN
                 ICOL = LONGLI
@@ -807,12 +807,12 @@
                   EXIT
                 ENDIF
               ENDIF
-              MYDICO(IKEY)%SUBMIT = 
+              MYDICO(IKEY)%SUBMIT =
      &            TRIM(MYDICO(IKEY)%SUBMIT)
      &            //PTVIRG//MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
      &                       LEN(MYDICO(IKEY)%SUBMIT))
-             
-!            
+
+!
               ICOL = NEXT(ICOL+1,LIGNE)
             ENDDO
 !
@@ -841,7 +841,7 @@
       WRITE(*,*) 'TOTAL NUMBER OF KEY IN THE DICTIONARY: ',IKEY
       WRITE(*,*) ''
       NKEY = IKEY
- 
+
       ! List all rubriques
       CALL IDENTIFY_RUBRIQUE()
       ! Verification for user
@@ -884,7 +884,7 @@
       ! brief Dump the myDico structure
       !
       ! param filename name of the output file
-      ! param 
+      ! param
       SUBROUTINE DUMP_DICTIONARY(FILENAME)
       !
       IMPLICIT NONE
@@ -964,7 +964,7 @@
       ! brief Dump the myDico structure
       !
       ! param filename name of the output file
-      ! param 
+      ! param
       SUBROUTINE WRITE2LATEX(FILENAME,LNG)
       !
       IMPLICIT NONE
@@ -1063,7 +1063,7 @@
         IF(LNG.EQ.1) THEN
           WRITE(NFIC,'(A,I2,A)') "Taille : & ",MYDICO(IKEY)%TAILLE,"\\"
         ELSE
-          WRITE(NFIC,'(A,I2,A)') 
+          WRITE(NFIC,'(A,I2,A)')
      &           "Dimension : & ",MYDICO(IKEY)%TAILLE,"\\"
         ENDIF
         ! Mnemo
@@ -1084,6 +1084,7 @@
         IF(MYDICO(IKEY)%AIDE(LNG)(1:3).EQ.'  ') THEN
           WRITE(NFIC,'(A)') 'TODO: WRITE HELP FOR THAT KEYWORD'
         ELSE
+          WRITE(*,*) TRIM(MYDICO(IKEY)%AIDE(LNG))
           WRITE(NFIC,'(A)') TRIM(MYDICO(IKEY)%AIDE(LNG))
         ENDIF
         WRITE(NFIC,'(A)') "%"
@@ -1106,12 +1107,12 @@
       IF(LNG.EQ.1) THEN
         write(nfic,'(a)') '\chapter{Liste des mots clefs par rubrique}'
       ELSE
-        WRITE(NFIC,'(A)') 
+        WRITE(NFIC,'(A)')
      &    '\chapter{List of keywords classified according to type}'
       ENDIF
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       WRITE(NFIC,'(A)') ' '
-      
+
       ! Ordering rubriques
       ! Loop on rubriques
       DO I=1,NRUB(LNG)
@@ -1186,7 +1187,7 @@
         WRITE(NFIC,'(A)') '\hline'
       ENDDO
       WRITE(NFIC,'(A)') '\end{longtable}'
-      
+
       CLOSE(NFIC)
 !
       END SUBROUTINE

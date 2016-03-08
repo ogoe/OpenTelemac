@@ -622,7 +622,8 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 
 %\lstset{language=[08]Fortran,
 % ** PT **
-\lstset{language=[90]Fortran,
+\lstdefinelanguage{TelFortran}{
+  language=[90]Fortran,
   basicstyle=\ttfamily\small,
   frameround=ffff,
   stringstyle={\color{magenta}},

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """@author Yoann Audouin
-   
+
    @note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
@@ -10,10 +10,10 @@
   /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
-   
+
    @history 15/02/2013 -- Sebastien E. Bourban
          Adding the file in pytel
-   
+
    @brief Scripts to compile the telemac-mascaret documentation
 """
 # _____          ___________________________________________________
@@ -27,6 +27,7 @@ from config import OptionParser, parseConfigFile, \
                    parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.messages import MESSAGES
+from utils.files import getFileContent
 
 
 # _____             ________________________________________________
@@ -36,24 +37,24 @@ __author__ = "Yoann Audouin"
 __date__ = "$21-Sep-2012 16:51:09$"
 
 def clean_doc(doc_dir, fullclean):
-   """ 
-       brief Remove latex temporary files 
+   """
+       brief Remove latex temporary files
 
        param doc_dir Directory containing the main tex file
        param fullclean If Yes will remove the pdf file as well
    """
    _, _, files = walk(doc_dir).next()
    for fle in files:
-      if fle.endswith((".aux", ".out", ".toc", ".log", ".nlo", "~", "idx", "ptc")): 
+      if fle.endswith((".aux", ".out", ".toc", ".log", ".nlo", "~", "idx", "ptc")):
          remove(fle)
-      if fullclean and fle.endswith(".pdf"): 
+      if fullclean and fle.endswith(".pdf"):
          remove(fle)
 
 def compiletex(texfile, version):
-   """ 
-      brief Full procedure for compiling a LaTeX file 
+   """
+      brief Full procedure for compiling a LaTeX file
             .i.e pdflatex,bibtex,pdflatex,pdflatex
-      param texfile Name of the main LaTex file  
+      param texfile Name of the main LaTex file
       param version Version of the code/documentation
    """
 
@@ -108,15 +109,15 @@ def compiletex(texfile, version):
       print tail
 
 
-# 
+#
 def create_case_list_file(doc_dir, cfg_val, cleanup):
-   """ 
+   """
       brief Creates the CASELIST.tex which includes
-      all the test cases tex file 
+      all the test cases tex file
 
       param doc_dir Path to directry containing the main LaTeX file
       param cfg_val list of path for the examples
-      param cleanup If yes clean up the temporay files instead 
+      param cleanup If yes clean up the temporay files instead
                     of creating the CASELIST.Tex file
    """
    case_list_file = doc_dir + sep + 'latex' + sep + 'CASELIST.tex'
@@ -141,28 +142,28 @@ def create_case_list_file(doc_dir, cfg_val, cleanup):
 
 def generate_ref_from_dict(exePath,dictionary,latexFile,lng,cleanup):
    """
-      brief Generate the Latex file for the 
+      brief Generate the Latex file for the
             reference manual from the dictionary
-      
+
       param exePath Path to homere_damocles executable
       param dictionary Path to the dictionary to read
-      param latexFile Name of the outpu latex file that will 
+      param latexFile Name of the outpu latex file that will
                       contain the reference manual
-      param lng Language for the reference manual 
+      param lng Language for the reference manual
                 1: French
                 2: English
-   """ 
+   """
    #Building input parameter file
    paramFile = path.dirname(latexFile)+sep+'gen_ref.par'
    logFile = path.dirname(latexFile)+sep+'gen_ref.log'
    # Cleanup
    if(cleanup):
      if path.exists(paramFile):
-        remove(paramFile) 
+        remove(paramFile)
      if path.exists(logFile):
-        remove(logFile) 
+        remove(logFile)
      if path.exists(latexFile):
-        remove(latexFile) 
+        remove(latexFile)
    else:
       # Creating parameter file for damocles
       with open(paramFile,'w') as f:
@@ -185,13 +186,14 @@ def generate_ref_from_dict(exePath,dictionary,latexFile,lng,cleanup):
          raise Exception([
                {'name':'runPARTEL',
                 'msg':'Could not generated data from dictionary '\
-                      +'\n\nHere is the log:\n'+'\n'.join(getFileContent(logFile))
+                      +'\n\nHere is the log:\n'
+                      +'\n'.join(getFileContent(logFile))
                }])
-   
+
 def compile_doc(doc_dir, doc_name, version, cleanup, fullcleanup):
-   """ 
-      brief Compile the telemac-mascaret documentation 
-      
+   """
+      brief Compile the telemac-mascaret documentation
+
       param doc_dir Directory containing the main LaTeX file
       param doc_name Name of the main LaTeX file
       param version Version of the code/documentation
@@ -209,8 +211,8 @@ def compile_doc(doc_dir, doc_name, version, cleanup, fullcleanup):
       compiletex(doc_name, version)
 
 def main():
-   """ 
-      Main program for the compilation of the documentation of 
+   """
+      Main program for the compilation of the documentation of
       the telemac-mascaret system
    """
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -310,7 +312,7 @@ def main():
          _, _, filenames = walk(dircfg).next()
          for fle in filenames:
             _, tail = path.splitext(fle)
-            if tail == '.cfg' : 
+            if tail == '.cfg' :
                print '    +> ', fle
       sys.exit(1)
 
@@ -324,14 +326,14 @@ def main():
    for cfgname in cfgs:
       # still in lower case
       if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
-      if options.root_dir != '': 
+      if options.root_dir != '':
          cfgs[cfgname]['root'] = path.abspath(options.root_dir)
          root = path.abspath(options.root_dir)
-      else : 
-         root = cfgs[cfgname]['root']  
+      else :
+         root = cfgs[cfgname]['root']
       # Get what i to be compiled
       # By default everything if something is defined compiling only that
-      if options.modules != '': 
+      if options.modules != '':
          moduleList = options.modules.split(',')
       else:
          # all modules
@@ -344,14 +346,14 @@ def main():
          # all docs
          miscList = ['hermes','developer_guide','software_quality_plan',
 	             'TelemacDocTemplate']
-	 # If a module was specified  or a specific documentation for modules 
+	 # If a module was specified  or a specific documentation for modules
 	 # not compiling Misc documentation
-         if options.modules != '' or not doall: 
+         if options.modules != '' or not doall:
             miscList = []
-         
+
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
       # Loop on all the modules
-      
+
       # Initialise output message
       output_mess = '\n\n'
       # Look on all the modules for the documentation
@@ -371,7 +373,7 @@ def main():
          if (options.reference or doall):
             # Path to the dictionary
             dictionary = root + sep + 'sources' + sep + code_name +\
-                         sep + code_name + '.dico' 
+                         sep + code_name + '.dico'
             # Path to latex File
             latexFile = root + sep + 'documentation' + sep +\
                       code_name + sep + 'reference' + sep +\
@@ -403,7 +405,7 @@ def main():
                print "   - Error for %s %s, %s.tex not found " % \
                     (path.basename(doc_dir), code_name+"_"+doc_type)
                sys.exit(1)
-            if not (options.cleanup or options.fullcleanup): 
+            if not (options.cleanup or options.fullcleanup):
                output_mess += '   - Created %s_%s_%s.pdf\n' % \
                           (code_name, doc_type, cfgs[cfgname]['version'])
       # List of the other documentation
@@ -421,17 +423,17 @@ def main():
             print "   - Error in %s, %s.tex not found " % \
                  (path.basename(doc_dir), doc)
             sys.exit(1)
-         if not (options.cleanup or options.fullcleanup): 
+         if not (options.cleanup or options.fullcleanup):
             output_mess += '   - Created %s_%s.pdf\n' % \
                        (doc, cfgs[cfgname]['version'])
-      
+
    print output_mess
    print '\n\n'+'~'*72
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'
-   
+
    sys.exit(0)
 
 if __name__ == "__main__":

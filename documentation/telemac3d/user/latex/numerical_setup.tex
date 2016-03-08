@@ -1,0 +1,657 @@
+\chapter{Numerical setup of the computation}
+
+The numerical setup is comparatively common to a hydrodynamic computation alone
+or with a tracer. Thus, in the following sections of this chapter, the
+numerical parameters as applied to the solution of a tracer equation are
+integrated into the hydrodynamic parameters.
+
+\section{General setup}
+
+\telemac{3D} solves the Navier-Stokes equations in several stages, possibly
+through the three stages of the fractional step method (see the theoretical
+note). The first stage consists in finding out the advected velocity components
+by only solving the convection terms of the momentum equations. The second
+stage computes, from the advected velocities, the new velocity components by
+taking into account both diffusion and source terms of the momentum equations.
+These two solutions enable to get an intermediate velocity field. The third
+stage computes the water depth from the vertical integration of the continuity
+equation and momentum equations only including the pressure-continuity terms.
+This step is called the propagation step.
+
+The user can activate or deactivate, either globally or individually, some of
+these stages.
+
+
+\subsection{Advection step}
+Whether the convection terms will be considered or not will be determined by
+means of the logical keyword \telkey{ADVECTION STEP} (default
+value YES). However, even though that keyword is set to YES, then some
+advection terms can be deactivated by means of the following complete keywords
+(value 0 = "NO ADVECTION "):
+
+\begin{itemize}
+\item \telkey{SCHEME FOR ADVECTION OF VELOCITIES}: for the advection of
+velocities,
+
+\item \telkey{SCHEME FOR ADVECTION OF DEPTH}: for taking the advection of
+depth into account,
+
+\item \telkey{SCHEME FOR ADVECTION OF K-EPSILON}: for the advection of power
+and turbulent dissipation,
+
+\item \telkey{SCHEME FOR ADVECTION OF TRACERS}: for the advection of tracers
+(one value per tracer).
+\end{itemize}
+
+See section \ref{sec:advection} for more information on the possible choices.
+
+\subsection{Diffusion step}
+
+Whether the diffusion terms are taken into account or not is established by
+means of the logical keyword \telkey{DIFFUSION STEP} (default value YES).
+However, even though that keyword is set to YES, then some diffusion terms can
+be deactivated by means of the following complete keywords by the following
+keywords:
+
+\begin{itemize}
+\item \telkey{SCHEME FOR DIFFUSION OF VELOCITIES},
+
+\item \telkey{SCHEME FOR DIFFUSION OF TRACERS} (one value per tracer),
+
+\item \telkey{SCHEME FOR DIFFUSION OF K-EPSILON}.
+\end{itemize}
+
+The 0 value at each keyword cancels the diffusion, whereas the 1 value
+(default value) leads to the implicit calculation of diffusion.
+
+For the treatment of the diffusion, two choices are possible for the keyword
+\telkey{OPTION FOR THE DIFFUSION}. The default value 1 means an implicit
+treatment whereas the value 2 means an uncoupled treatment between the
+horizontal diffusion and the vertical diffusion.
+
+
+\subsection{Propagation step}
+
+the velocity and water depth propagation processes are taken into account by
+the logical keyword \telkey{PROPAGATION STEP} (default value YES).
+
+Since the version 6.0 of TELEMAC, the propagation step is necessarily treated
+with \telemac{2D} "wave equation" option.
+
+The propagation step can be linearized by activating the keyword
+\telkey{LINEARIZED PROPAGATION} (default value = NO) particularly when one
+conducts a case study for which an analytical solution in the linearized case
+is available. It is then necessary to set the water depth around which the
+linearization is performed by means of the keyword \telkey{MEAN DEPTH FOR
+LINEARIZATION} (default value 0).
+
+With the "wave equation" option, the keyword \telkey{FREE SURFACE COMPATIBILITY
+GRADIENT} can be used. A value lower than 1. (which is the default value) makes
+it possible to delete the spurious oscillations of the free surface, but
+slightly alters the consistency between the water depth and the velocities in
+the continuity equation.
+
+When using the non-hydrostatic version, it is possible to enable the dynamic
+pressure term in treatment of the wave equation. This option is enabled by the
+logical keyword \telkey{DYNAMIC PRESSURE IN WAVE EQUATION} but it leads a
+dilemma:
+
+\begin{itemize}
+\item if the keyword is set to YES, the dynamic pressure gradient is taken
+into account when calculating the evolution of the water depth (advantage), but
+the evolution of the water depth is not known when calculating the dynamic
+pressure (disadvantage),
+
+\item if the keyword is set to NO (which is the default value), the dynamic
+pressure is calculated taking into account the evolution of the water depth
+(advantage) but it is not taken into account in the calculation of the water
+depth (disadvantage).
+\end{itemize}
+
+Therefore, when the effect of the dynamic pressure is important (nonlinear
+waves), it is recommended to set this keyword to YES in combination with
+setting sub-iterations for nonlinearities (see test case NonLinearWave).
+
+
+\section{The advection scheme}
+\label{sec:advection}
+The procedure for taking the advection terms into account is individualized
+for each of the variables liable to be processed. It has previously been
+explained that the zero option corresponds to a deactivation of the term.
+
+
+\subsection{Advection of the three-dimensional variables}
+
+The advection schemesadvection schemes of the three-dimensional variables (i.e.
+all the variables but the water depth) are (for further details about these
+options, the reader shall refer to the Theoretical Note):
+
+\begin{itemize}
+\item 0: Deactivation,
+
+\item 1: Method of characteristics. That method involves mutually independent
+advection and diffusion steps. The method consists in writing that the value of
+the advected variable is equal to the value of the same variable in the
+previous instant traced back on the path travelled during the time step,
+
+\item 2: Explicit scheme + SUPG (Streamline Upwind Petrov Galerkin). That
+method uses test functions which are deformed in the direction of the current
+for the variational method,
+
+\item 3: Explicit Leo Postma scheme,
+
+\item 4: Explicit scheme + MURD (Multidimensional Upwind Residual
+Distribution) N scheme,
+
+\item 5: Explicit scheme + MURD PSI scheme,
+
+\item 13: Explicit Leo Postma scheme for tidal flats,
+
+\item 14: Explicit scheme + MURD (Multidimensional Upwind Residual
+Distribution) N scheme for tidal flats.
+\end{itemize}
+
+The latter five schemes are primarily recommended for the tracers, since they
+are advantageous in being conservative and monotonic, i.e. they do not generate
+any numerical oscillation. On the other hand, they are more diffusive than
+SUPG. In that respect, scheme 5 is an improvement to scheme 4, being less
+diffusive perpendicularly to the flow but quite obviously somewhat more
+computation time-consuming. Nevertheless, it is still globally less
+time-consuming than SUPG.
+
+Distributive schemes (options 3, 4, 5, 13 or 14) are schemes whose stability is
+conditioned by a Courant number less than 1. When using one of these schemes,
+at each time step, \telemac{3D} performs a test for checking the Courant number
+point by point. In case it exceeds the value 1, \telemac{3D} will automatically
+execute sub-iterations to satisfy the stability criterion. However, if the
+number of sub-iterations exceeds 100, \telemac{3D} considers that the treatment
+of the advection term is problematic and the calculation is interrupted,
+printing an error message in the list control.
+
+The default value for both velocity and \textit{k}-$\epsilon$ is 1. That value
+is advisable, since it is satisfactory in many instances and is by far the
+fastest. On the contrary, the default value for the tracers is 5. It is the
+most reliable scheme, since the "mass" conservation of the active tracers is a
+frequently essential point in \telemac{3D}.
+
+Since version 6.0, the value concerning the water depth advection scheme is
+ignored by \telemac{3D}. The optimum advection scheme is automatically selected
+by the software (conservative scheme).
+
+According to the schemes used, the mass conservation can be improved by
+performing sub-iterations. That consists in a updating, for one given time
+step, both advective field and propagative field during several sub-iterations.
+Upon the first sub-iteration, the field of velocities is yielded by the results
+achieved during the previous time steps. Through that procedure, the
+non-linearities can be taken into account in a better way and the mass
+conservation can be significantly improved in the cases of schemes 2 and 3. The
+number of sub-iterations is set by the keyword \telkey{NUMBER OF SUB ITERATIONS
+FOR NON LINEARITIES}, the default value of which is 1 (also refer to the
+Theoretical Note).
+
+The SUPG scheme can be configured using specific keywords (see \ref{sec:supg}).
+
+\subsection{Configuration of the supg scheme}
+\label{sec:supg}
+When using the SUPG method, the user must determine the type of upwinding
+desired using the keyword \telkey{SUPG OPTION} which is an array of
+4 integers related, to the velocity, the water depth, tracers and
+\textit{k}-$\varepsilon $ model respectively.
+
+The possible values are:
+
+\begin{itemize}
+\item 0: no upwinding,
+
+\item 1: upwinding with the conventional SUPG method, that is to say, the
+upwinding is 1,
+
+\item 2: upwinding with the modified SUPG method, that is to say, the
+upwinding is equal to the Courant number.
+\end{itemize}
+
+In theory, option 2 is more accurate when the Courant number is less than 1,
+but should not be used when the latter is important. Thus, option 2 should be
+used in models for which the Courant number remains low. If the Courant number
+cannot be estimated, it is strongly recommended to use option 1 (which can be
+considered as the most universal).
+
+\subsection{Configuration of the weak characteristics}
+
+when choosing the method of characteristics, two forms can be used with the
+keyword\telkey{OPTION FOR CHARACTERISTICS}:
+
+\begin{itemize}
+\item 1: the strong form (by default),
+
+\item 2: the weak form.
+\end{itemize}
+
+None of them are recommended for the advection of tracers because they are not
+mass conservative. The weak form will decrease the diffusion. If the keyword
+\telkey{MASS-LUMPING FOR WEAK CHARACTERISTICS} = 1. (default value = 0. i.e. no
+mass-lumping), monotonicity of the scheme appears. This weak form should be
+more conservative than the strong form. The \telkey{NUMBER OF GAUSS POINTS FOR
+WEAK CHARACTERISTICS} defines the number of Gauss points used to compute the
+weak characteristics. Possible choices are 1, 3 (default value) and 6. The
+bigger the number is, the more conservative the scheme is, but the higher the
+computational costs are.
+
+
+\section{Specific parameters in the non-hydrostatic version}
+
+the application of the software \telkey{NON-HYDROSTATIC VERSION} (default = NO)
+requires that complementary keywords be defined.
+
+An equation for vertical velocity is initially solved in a same way as the
+\textit{U} and \textit{V} components. That equation is only written with the
+hydrostatic pressure which, under that hypothesis, is cancelled out with the
+gravity term. The convection scheme in that equation is identical to that
+chosen for \textit{U} and \textit{V} (keyword \telkey{SCHEME FOR ADVECTION OF
+VELOCITIES}). The solution of the linear system (for the diffusion step
+integrating the advection terms or not) is managed by the various following
+keywords:
+
+\begin{itemize}
+\item \telkey{SOLVER FOR VERTICAL VELOCITY} refer to subsection \ref{sec:solver} below,
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR VERTICAL VELOCITY} refer to
+subsection \ref{sec:accuracy} below,
+
+\item \telkey{ACCURACY FOR VERTICAL VELOCITY} refer to subsection \ref{sec:accuracy} below,
+
+\item \telkey{PRECONDITIONING FOR VERTICAL VELOCITY} refer to subsection \ref{sec:precond}
+below.
+\end{itemize}
+
+Afterwards, \telemac{3D} solves a Poisson equation for the dynamic pressure. The
+dynamic pressure gradient plays the part of a correction providing the required
+zero divergence on velocity. The solution of the linear system in that equation
+is managed by the following keywords:
+
+\begin{itemize}
+\item \telkey{SOLVER FOR PPE} refer to subsection 6.5.1 below,
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR PPE} refer to subsection 6.5.2
+below,
+
+\item \telkey{ACCURACY FOR PPE} refer to subsection 6.5.2 below,
+
+\item \telkey{OPTION OF SOLVER FOR PPE} refer to subsection 6.5.1 below,
+
+\item \telkey{PRECONDITIONING FOR PPE} refer to subsection 6.5.3 below.
+\end{itemize}
+
+Once that pressure is computed, all the velocity components are updated with
+the dynamic pressure gradient which will ensure the zero divergence condition.
+Updating that "solenoidal" velocity does not require that a linear system be
+solved.
+
+\section{Implicitation}
+
+Apart from the terms of the time derivative, the unknowns $f$ (the velocity and
+water depth components) can be considered in both extreme instants $t^{n}$ (the
+equation is then referred to as explicit) or $t^{n+1}$ (the equation is then
+referred to as implicit). Strictly speaking, and for a 2-order solution in
+time, an approach consists in considering the terms in the intermediate
+instant$(f^{n} +f^{n+1} )/2$. Practically, the latter approach is unstable and
+it becomes necessary to define an implicitation coefficient for which the
+unknowns are actually discretized in time in the following form:
+\[\theta f^{n+1} +(1-\theta )f^{n} .\]
+The implicitation coefficients are theoretically always higher than 0.5 (0.55
+or 0.6 will generally yield good results).
+
+The user can use the keyword \telkey{IMPLICITATION FOR VELOCITIES} (default
+value: 1.) which defines the value of the $\theta_{u}$ coefficient for the
+velocity components. The keyword \telkey{IMPLICITATION FOR DEPTH} (default
+value: 0.55) is provided to set the value of "propagation height" multiplying
+coefficient $\theta_{h}$ Lastly, in order to make the construction of the
+various numerical schemes more versatile, a diffusion-specific coefficient
+$\theta_{u}^{d}$ is provided (keyword \telkey{IMPLICITATION FOR DIFFUSION}
+(default value: 1.) and can be different from $\theta_{u}$).
+
+
+\section{Solution of the linear systems}
+
+Both discretization and variational formulation of the equations lead to a
+linear system which now has to be solved. The direct solution methods are not
+suitable and are overly expensive as soon as there are many unknowns. Thus, the
+only ways developed in \telemac{3D} consist in solving the linear systems by
+means of iterative solvers or a direct solver.
+
+
+\subsection{Solvers}
+\label{sec:solver}
+According to the relevant numerical parameters, various linear systems are
+liable to be solved. The solver used for solving one of these systems can be
+selected by the user through the following keywords:
+
+\begin{itemize}
+\item \telkey{SOLVER FOR DIFFUSION OF VELOCITIES} (default value: 1),
+
+\item \telkey{SOLVER FOR PROPAGATION} (default value: 1),
+
+\item \telkey{SOLVER FOR PPE} (default value: 1),
+
+\item \telkey{SOLVER FOR VERTICAL VELOCITY} (default value: 1),
+
+\item \telkey{SOLVER FOR DIFFUSION OF TRACERS} (default value: 1, one value for
+each tracer),
+
+\item \telkey{SOLVER FOR DIFFUSION OF K-EPSILON }(default value: 1).
+\end{itemize}
+
+Each of these keywords can assume a value ranging from 1 to 8, which values
+correspond to the following possibilities:
+
+\begin{itemize}
+\item 1: conjugate gradient method,
+
+\item 2: conjugate residual method,
+
+\item 3: conjugate gradient method on a normal equation,
+
+\item 4: minimum error method,
+
+\item 5: square conjugate gradient method,
+
+\item 6: CGSTAB (stabilized conjugate gradient) method,
+
+\item 7: GMRES (Generalised Minimum RESidual) method,
+
+\item 8: direct solver.
+\end{itemize}
+
+The GMRES method is well suited for improperly conditioned systems. This method
+requires that the dimension of the Krylov space be defined. That parameter is
+set by means of the following keywords:
+
+\begin{itemize}
+\item \telkey{OPTION OF SOLVER FOR DIFFUSION OF VELOCITIES},
+
+\item \telkey{OPTION OF SOLVER FOR PROPAGATION},
+
+\item \telkey{OPTION OF SOLVER FOR PPE},
+
+\item \telkey{OPTION OF SOLVER FOR DIFFUSION OF TRACERS},
+
+\item \telkey{OPTION OF SOLVER FOR DIFFUSION OF K-EPSILON}.
+\end{itemize}
+
+The default values are set to 3. The larger that parameter is, the higher the
+memory requirements and the number of matrix-vector products per iteration (and
+consequently the computational time as well) are, but the better the
+convergence is.
+
+\subsection{Accuracies}
+\label{sec:accuracy}
+The principle of iterative methods consists in getting gradually closer to the
+exact solution during the iterations. The systems to be solved imply a relative
+accuracy within a range from 10${}^{-4}$ to 10${}^{-10}$ with a restricted
+number of iterations. Both accuracy and maximum number of iterations should be
+set for each system.
+
+Accuracy is specified by the following keywords:
+
+\begin{itemize}
+\item \telkey{ACCURACY FOR DIFFUSION OF VELOCITIES} (default value: 1.E-5),
+
+\item \telkey{ACCURACY FOR PROPAGATION} (default value: 1.E-6),
+
+\item \telkey{ACCURACY FOR PPE} (default value: 1.E-4),
+
+\item \telkey{ACCURACY FOR VERTICAL VELOCITY} (default value: 1.E-6),
+
+\item \telkey{ACCURACY FOR DIFFUSION OF TRACERS} (default value: 1.E-6),
+
+\item \telkey{ACCURACY FOR DIFFUSION OF K-EPSILON} (default value: 1.E-6).
+\end{itemize}
+
+The maximum number of iterations is specified by the following keywords:
+
+\begin{itemize}
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES
+}(default value: 60),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION} (default value:
+200),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR PPE} (default value: 100),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR VERTICAL VELOCITY} (default
+value: 100),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS }(default
+value: 60),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF K-EPSILON }(default
+value: 200),
+
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES }(default
+value: 10) only for schemes 13 and 14.
+\end{itemize}
+
+The user automatically gets information about the solvers upon each listing
+printout. The information provided in the listing can be of two types:
+
+\begin{itemize}
+\item Either the treatment converged before reaching the maximum allowable
+number of iterations, and then \telemac{3D} will provide the number of actually
+performed iterations, as well as the achieved accuracy,
+
+\item Or the treatment did not converge early enough. \telemac{3D} will then
+provide the message "MAXIMUM NUMBER OF ITERATIONS IS REACHED" and give the
+actually achieved accuracy. In some cases, and if the maximum number of
+iterations is already set to a high value (for instance over 100), convergence
+can then be improved by reducing the time step or, quite often, by improving
+the quality of the mesh.
+\end{itemize}
+
+
+\subsection{Preconditionings}
+\label{sec:precond}
+The iterative methods are sensitive to the "conditioning" of matrices, so that
+a complementary preconditioning is necessary in order to reduce the number of
+iterations for getting a prescribed accuracy.
+
+\telemac{3D} offers several opportunities for preconditioning. The selection is
+made by means of the following keywords:
+
+\begin{itemize}
+\item \telkey{PRECONDITIONING FOR DIFFUSION OF VELOCITIES},
+
+\item \telkey{PRECONDITIONING FOR PROPAGATION},
+
+\item \telkey{PRECONDITIONING FOR PPE},
+
+\item \telkey{PRECONDITIONING FOR VERTICAL VELOCITY},
+
+\item \telkey{PRECONDITIONING FOR DIFFUSION OF TRACERS} (one value for each
+tracer),
+
+\item \telkey{PRECONDITIONING FOR DIFFUSION OF K-EPSILON}.
+\end{itemize}
+
+The available options are:
+
+\begin{itemize}
+\item 0:  no preconditioning,
+
+\item 2:  diagonal preconditioning,
+
+\item 3:  diagonal preconditioning with the condensed matrix,
+
+\item 5:  diagonal preconditioning with absolute values,
+
+\item 7:  Crout preconditioning per elementCrout ,
+
+\item 11: Gauss-Seidel preconditioning per element,
+
+\item 13: preconditioning matrix is provided by the user,
+
+\item 14: cumulated diagonal preconditioning and Crout preconditioning per
+element,
+
+\item 17:  preconditioning through direct solution along each vertical
+direction,
+
+\item 21:  cumulated diagonal preconditioning with the condensed matrix and
+Crout preconditioning per element,
+
+\item 34:  cumulated diagonal preconditioning with direct solution along each
+vertical direction.
+\end{itemize}
+
+The default value is 2 for all the preconditionings. Some preconditionings can
+be cumulated, namely the diagonal preconditionings with other ones. Since the
+basic values are prime numbers, a couple of preconditionings are cumulated by
+giving to the keyword the value of the product of the two preconditionings
+which one wants to cumulate (e.g. numbers 14 and 21).
+
+\section{Tidal flats}
+
+\telemac{3D} offers several treatment options as regards the tidal areas.
+
+First, if the user has ascertained that his/her model has no tidal area
+throughout the simulation, the processing of such areas can be deactivated by
+setting the keywords \telkey{TIDAL FLATS} to NO (the default value is YES).
+That option makes it possible to save computational time (by deleting the tidal
+flat testing).
+
+The tidal flats can be treated in two different ways:
+
+\begin{itemize}
+\item In the first case, the equations are treated all over the domain and in
+a thorough way. The tidal areas are detected and such terms as the free surface
+gradient (in the absence of water, the free surface gradient becomes the bottom
+gradient and generates spurious motive terms) are corrected in them,
+
+\item In the second case, the tidal areas are withdrawn from the computation.
+The exposed elements are always part of the mesh, but all their contributions
+to the computations are cancelled by a so-called "masking" array. Thus, the
+data structure and the computations remain formally unchanged, to within the
+masking coefficient. That method, however, raises issues as regards the mass
+conservation and the exposure and coverage dynamics.
+\end{itemize}
+
+The treatment will be selected by means of the keyword \telkey{OPTION FOR THE
+TREATMENT OF TIDAL FLATS} which can be set either to 1 or 2, the default value
+being 1.
+
+The treatment of negative depths can be specified using the keyword
+\telkey{TREATMENT OF NEGATIVE DEPTHS}. A value of 1 (default), consists in a
+conservative smoothing of negative depths. The second option is to limit the
+flux between the elements to ensure strictly positive water depths. This second
+option should be used with advection schemes consistent with tidal flats (+
+mass lumping option for height at value 1.). The value 0 means that no special
+treatment is performed.
+
+The keyword \telkey{MINIMAL VALUE FOR DEPTH} the default value of which is
+-1,000 enables to set the threshold below which the smoothing is. For example,
+\telkey{MINIMAL VALUE FOR DEPTH} set to 0.01 means the minimum depth is 1~cm.
+
+The following three keywords are for setting, after coverage, the value of the
+variable which has been masked:
+
+\begin{itemize}
+\item \telkey{TREATMENT ON TIDAL FLATS FOR VELOCITIES},
+
+\item \telkey{TREATMENT ON TIDAL FLATS FOR TRACERS},
+
+\item \telkey{TREATMENT ON TIDAL FLATS FOR K-EPSILON}.
+\end{itemize}
+
+The available options for these keywords are:
+
+\begin{itemize}
+\item 0: that option corresponds to a setting to zero of the variable on the
+element (default value),
+
+\item 1: that option sets to its prior-to-masking value.
+\end{itemize}
+
+The keyword \telkey{THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS} (default
+value is 0.2) allows to specify the minimum water depth from which the
+viscosity is gradually reduced (see programming within the VISCLIP subroutine).
+
+When the three-dimensional mesh has crushed levels (null water depth or fixed
+level "hitting" the bottom), it is recommended to activate a specific treatment
+that prevents the transfer of very small amounts of water at the calculation
+points which have no volume (this situation also tends to degrade the mass
+conservation when using distributives PSI and N schemes). This algorithm is
+activated with the keyword logical \telkey{BYPASS VOID VOLUMES}. When using PSI
+and N schemes compatible with tidal flats, the option is automatically enabled,
+even if the keyword is set to NO.
+
+\section{Hydrostatic inconsistencies}
+
+Hydrostatic inconsistencies (linked to the truncature errors in the computation
+of the buoyancy terms) are liable to occur on the nearly-zero volume prisms.
+The keyword \telkey{HYDROSTATIC INCONSISTENCY FILTER} (default = NO) is
+provided for the forces caused by the spurious horizontal pressure gradients
+and the various diffusion coefficients on those prisms where at least one of
+the lower base nodes has a higher elevation than one of the upper base nodes.
+
+\section{Other parameters}
+
+\subsection{Mass-lumping}
+
+Upon the solution of the linearized system, \telemac{3D} makes it possible to
+perform a mass-lumping on the mass matrices. That procedure consists in partly
+or wholly returning the mass matrix to its diagonal and enables to
+substantially shorten the computational times. The resulting solutions,
+however, become smoothed, except for in steady flow conditions in which they
+are unchanged. The mass-lumping rate is set by means of the keywords
+\telkey{MASS-LUMPING FOR DEPTH}, \telkey{MASS-LUMPING FOR VELOCITIES},
+\telkey{MASS-LUMPING FOR DIFFUSION} and \telkey{MASS-LUMPING FOR WEAK
+CHARACTERISTICS}. Value 1. means maximum mass-lumping (the mass matrices are
+diagonal), value 0. (default value) corresponds to the normal treatment without
+any mass-lumping. For further details, the reader shall refer to the \telemac{3D}
+Theoretical Note.
+
+\subsection{Convergence aid}
+
+Another way to speed up the system convergence when solving the propagation
+step consists in acting upon the initial solution rather than the matrix
+proper. To that purpose, the initial value being set for \textit{h} (actually,
+the unknown $h^{n+1}$ is replaced by the incrementation$\delta h=h^{n+1} -h^{n}
+$) is modified at the beginning of computation, the user can take action at the
+keyword \telkey{INITIAL GUESS FOR DEPTH} which can assume the following values:
+
+\begin{itemize}
+\item 0: the initial value of $\delta h=h^{n+1} -h^{n} $ is zero,
+
+\item 1: the initial value of $\delta h$ is equal to the value of $\delta h$
+at the previous time step (default value),
+
+\item 2: $\delta h=2h^{n} -\delta h^{n-1} $ where $\delta h^{n} $ is the value
+of $\delta h$ at the previous time step, and $\delta h^{n-1} $ is the value of
+$\delta h$ two time steps earlier. It is actually an extrapolation.
+\end{itemize}
+
+
+\subsection{Matrix storage}
+
+\telemac{3D} provides a couple of procedures for storing the various matrices it
+has to handle, namely the conventional EBE (Element By Element) method and the
+segment-wise storage. The latter procedure is faster (by approx 20\%) in most
+cases.
+
+The choice among these two types of storage is made by means of the keyword
+\telkey{MATRIX STORAGE} which can assume the following values:
+
+\begin{itemize}
+\item 1: classical EBE method,
+
+\item 3: edge-based storage (default value).
+\end{itemize}
+
+\subsection{Velocities projection}
+
+At the end of the time loop, it is possible to do a treatment which aim is to
+cancel the component of the normal velocity at the bottom or the normal
+velocity on the solid lateral walls. This check is activated with the logical
+keywords \telkey{VELOCITY PROJECTED ON SOLID LATERAL BOUNDARIES} and
+\telkey{VELOCITY PROJECTED ON BOTTOM}.
+
+These two options are activated by default.
