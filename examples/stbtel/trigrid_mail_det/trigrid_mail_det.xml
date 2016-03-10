@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="2">
+<validation xref="trigrid_mail_det" rank="2">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,12 +18,17 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
+-->
    <action xref="1"
+       do="translate;run;cas;princi"
+       code="stbtel" target="stb_det1.cas"
+       title="trigrid_mail_det scalar mode"
+   />
+   <action xref="2"
        do="translate;run;cas;princi"
        code="stbtel" target="stb_det2.cas"
        title="trigrid_mail_det scalar mode"
-   /> 
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

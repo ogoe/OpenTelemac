@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="2">
+<validation xref="refinement" rank="2">
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -18,12 +18,12 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
+-->
    <action xref="1"
        do="translate;run;cas;princi"
        code="stbtel" target="stb.cas"
        title="malpa scalar mode"
-   /> 
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -34,6 +34,14 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
+   <!--
+   <plot2d xref="inimesh" size="(7;7)" >
+      <layer vars="maillage:mesh" target="hydro" config="oneofall" />
+   </plot2d>
+   <plot2d xref="newmesh" size="(7;7)" >
+      <layer vars="maillage:mesh" target="geo.slf" config="oneofall" />
+   </plot2d>
+   -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 

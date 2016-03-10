@@ -47,9 +47,9 @@
 \definecolor{OceanWaveBlue}{RGB}{78, 119, 229}
 \definecolor{LightOceanGreen}{RGB}{90, 225, 146}
 \definecolor{BostonUniversityRed}{RGB}{204, 0, 0}
-\definecolor{LightGreen}{RGB}{144, 238, 144}
+\definecolor{LightGreen}{RGB}{87, 151, 47}
 \definecolor{ZinnwalditeBrown}{RGB}{44, 22, 8}
-\definecolor{Peridot}{RGB}{230, 226, 0}
+\definecolor{Peridot}{RGB}{233, 214, 0}
 
 %----------------------------------------------------------------------------------------
 %	DEFINE CLASS OPTIONS

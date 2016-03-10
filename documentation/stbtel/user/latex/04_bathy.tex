@@ -1,0 +1,54 @@
+%--------------------------------------------------------------------------------
+\chapter{Bathymetry treatment}
+%--------------------------------------------------------------------------------
+The mesh file on \telemacsystem standard can hold a bahymetric information (or
+bottom topography) on each point of the mesh. This information can be generated
+by \stbtel thanks to two sources:
+\begin{itemize}
+\item Bottom topography files
+\item The mesh generator file itself
+\end{itemize}
+Furthermore, when the assessment of the memory space necessary for making the
+computation is done, \stbtel considers that the number of bathymetric points
+does not go beyond 20 000. In the opposite, the user must give the right value
+with the keyword \telkey{MAXIMUM NUMBER OF BATHYMETRIC POINTS}.
+%--------------------------------------------------------------------------------
+\section{Use of the bottom topography files}
+%--------------------------------------------------------------------------------
+Using any kind of mesh generator  (also while a Selafin file is read), \stbtel
+can interpolate on the treated mesh a bathymetry, product of one or more data
+files. Their names must be given by the user with the keyword \telkey{BOTTOM
+TOPOGRAPHY FILES}. \stbtel can manage five bottom topography files. When using
+several files, the user  must  check  the absence of common areas between the
+datas or their coherence.\\
+Algorithm used by \stbtel to interpolate the bottom topography is the
+following: for each mesh point, the space is divided into four quadrants
+(depends on the horizontal and vertical). For each quadrant, the software
+identifies the nearest bathymetry point, then a balance is done using the found
+points. Near the boundary, or, once again, on the island case, it could be
+important to ignore the points too close from the boundary. Indeed, the
+information found on these points could not be considered. The user is helped
+with the keyword \telkey{MINIMUM DISTANCE AT BOUNDARY}. When the mesh point are
+interpolated, this keyword dimensions the minimal distance below which a
+bathymetry points should be ignored.\\
+If the \stbtel informations are too short to interpolate the bathymetry on a
+point, the value given to the point is automatically 10-6 m and an error
+message is printed on the listing printout.
+
+%--------------------------------------------------------------------------------
+\section{Use of the universal file}
+%--------------------------------------------------------------------------------
+When using a TRIGRID or FASTTABS file, the user can decide to recover in the
+mesh file the topography informations . He uses the logical keyword
+\telkey{BATHYMETRY ON THE UNIVERSAL FILE} (default value NO).\\
+A special information is used with TRIGRID. Indeed, the software works on an
+information like "level of water", but not on an information like “bottom
+level”. When treating the mesh by \stbtel, it is necessary to restore the
+correct bottom elevation value. This computation is done with the help of the
+formula: Zf = -Ht + CORR where Zf is the bottom elevation value written by
+\stbtel in the geometry file, Ht  the value of the level of water read on the
+TRIGRID file, and where CORR  is the user specified value with the keyword
+\telkey{BOTTOM CORRECTION OF TRIGRID}. The value of this keyword depends on the
+convention chosen by the user when he entered the bathymetric informations in
+TRIGRID. Usually, it is the same value used with the utility program \verb!sin2tri!
+for the translation of a SINUSX file SINUSX to a TRIGRID file.

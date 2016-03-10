@@ -1,0 +1,20 @@
+\chapter{Dry elements elimination}
+when constructing models and during a simulation, (on the fluvial domain for
+example, or as for a dam break simulation) it could be well-advised to
+eliminate from the mesh the dry elements.\\
+It can be realised by \stbtel from the result file of \telemac{2} (or from
+others simulation codes producing a result file with the information “level of
+water”). It can be activated with the logical keyword \telkey{DRY ELEMENTS
+ELIMINATION} (default value NO). \stbtel re-read the entire result file and
+determines the nodes mesh that keep dry during the simulation. The user
+dimensioned the level of water (in meter) under which we consider that a node
+is dry. The user is helped with the keyword \telkey{DRY LIMIT} (default value
+0.1). The dry elements are removed of the mesh and the boundaries are re-count
+(with island creation if necessary).  By default, only the completely dry
+elements are removed (the three triangle points keep dry). In order to remove
+completely the dry zones on the domain, the user can specify the partially dry
+elements elimination (at least of one dry point) with the keyword
+\telkey{PARTIALLY DRY ELEMENTS ELIMINATION} (default value NO)\\
+On normal mode, \stbtel stores in the output file only the last time step read
+on the \telemac{2} file. The user can ask for the storage of all the time step
+with the keyword \telkey{STORAGE OF EVERY TIME STEP} ( default value NO).

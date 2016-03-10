@@ -131,7 +131,7 @@ def create_case_list_file(doc_dir, cfg_val, cleanup):
       with open(case_list_file, 'w') as fobj:
          val_dir = cfg_val['path']
          # Loop on all test cases
-         for case in cfg_val:
+         for case in sorted(cfg_val):
             # Skip the 'path' key
             if case != 'path':
                txt = linesep + '\subincludefrom{' + val_dir + sep +\
