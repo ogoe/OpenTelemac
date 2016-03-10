@@ -159,6 +159,7 @@
 \RequirePackage{booktabs,multirow}
 \RequirePackage{lscape}
 \RequirePackage{longtable}
+\RequirePackage{slashbox}
 
 % To include code
 \RequirePackage{listings}

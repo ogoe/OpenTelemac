@@ -14,7 +14,7 @@
 """@history 15/02/2013 -- Sebastien E. Bourban
          Adding the file in pytel
 """
-"""@brief Run a converions of mesh files using stbtel 
+"""@brief Run a converions of mesh files using stbtel
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -81,15 +81,15 @@ def build_cas(options,extens,inputFormat,inputFile,outputFormat,outputFile):
    # If th output is in UNV format add the name of the log file
    if outputFormat == "UNV":
       outAdditionalFile += "OUTPUT LOG FILE : '%s'\n" % (outputFile[:-3]+'log'+extens)
-   
+
    return casCanvas.format(
-             debug=debug,  
+             debug=debug,
              inputFormat=inputFormat,
-             inputFile=inputFile+extens, 
-             srfBnd=srfBnd, 
-             inAdditionalFile=inAdditionalFile, 
+             inputFile=inputFile+extens,
+             srfBnd=srfBnd,
+             inAdditionalFile=inAdditionalFile,
              outputFormat=outputFormat,
-             outputFile=outputFile+extens, 
+             outputFile=outputFile+extens,
              outAdditionalFile=outAdditionalFile,
              translate=translate,
              dx=options.dx,
@@ -110,7 +110,7 @@ if __name__ == "__main__":
               "cgns":"CGNS"}
    # Define a parser for the program options
    parser = OptionParser("Usage: %prog input-file-name -o output-file-name [options]\n"+
-         "Example: runStbtel.py coarse.slf -b coarse.cli -o coarse.med --debug\n"+
+         "Example: converter.py coarse.slf -b coarse.cli -o coarse.med --debug\n"+
          "Where coarse.slf is the mesh in SERAFIN fornat,\n"+
          "      coarse.cli is the boundary conditions file and\n"+
          "      coarse.med the converted mesh in MED format.")
@@ -227,7 +227,7 @@ if __name__ == "__main__":
          outputFormat = formats[outputExtension]
    else:
       outputFormat = options.outputFormat
-   
+
    # Loop on the number of domains
    ndomains = options.ndomains
    for idom in range(0,ndomains):
@@ -238,8 +238,8 @@ if __name__ == "__main__":
       else:
          # the string of format 00000-00000
          extens=str(ndomains-1).zfill(5)+'-'+str(idom).zfill(5)
-     
-      cas = build_cas(options, extens, inputFormat, inputFile, 
+
+      cas = build_cas(options, extens, inputFormat, inputFile,
                       outputFormat, outputFile)
       # Writting the steering file
       casName = 'stb'+extens+".cas"
@@ -255,7 +255,7 @@ if __name__ == "__main__":
       print "Calling:", " ".join(stbtel_args)
       rc = sp.call(stbtel_args)
 
-      
+
       if rc != 0:
          sys.exit(rc)
       else:
