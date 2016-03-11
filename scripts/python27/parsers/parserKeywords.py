@@ -105,7 +105,7 @@ def scanCAS(lines):
       if proc: line = line.lstrip()
       core.append(line.rstrip(' '))
    lines = core
- 
+
    # ~~ clean comments
    core = []
    for i in range(len(lines)):
@@ -150,7 +150,7 @@ def scanCAS(lines):
 
 def readCAS(cas,dico,frgb):
 
-   vint = re.compile(r'\d+\Z')
+   vint = re.compile(r'(-)?\d+\Z')
    vflt = re.compile(r'(-)?\d*(|\.)\d*([dDeE](\+|\-)?\d+|)\Z')
    lines,keywords = cas
    keylist,vallist = keywords
