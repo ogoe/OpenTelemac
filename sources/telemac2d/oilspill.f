@@ -4,7 +4,7 @@
 !==========================================================================
 !
 !***********************************************************************
-! TELEMAC2D & TELEMAC3D   V7P0                                22/05/2014
+! TELEMAC2D & TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    OIL SPILL MODEL.
@@ -127,7 +127,6 @@
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_COMPO,FM_COMPO
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_HAP,FM_HAP,SOLU
       DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: KDISS,KVOL
-      DOUBLE PRECISION,PARAMETER::KARMAN=0.41D0
 !
       SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB,ETAL
       SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL,AREA

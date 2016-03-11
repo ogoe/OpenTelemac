@@ -3,10 +3,10 @@
 !                    *****************
 !
      & (LIKBOF,LIEBOF,LIUBOF,LIKBOL,LIEBOL,LIUBOL,LIKBOS,LIEBOS,LIUBOS,
-     &  NPTFR,NPLAN,NPOIN2,KENT,KSORT,KADH,KLOG)
+     &  NPTFR,NPLAN,NPOIN2,KENT,KSORT,KADH,KLOG,KENTU)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS FOR THE DIFFUSION
@@ -30,7 +30,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
-!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED DISCHARGE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
 !| KLOG           |-->| CONVENTION FOR LOGARITHMIC SOLID BOUNDARY
 !| KSORT          |-->| CONVENTION FOR FREE OUTPUT
 !| LIEBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON AT THE BOTTOM
@@ -58,7 +59,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NPTFR, NPLAN, NPOIN2
-      INTEGER, INTENT(IN)    :: KENT, KSORT, KADH, KLOG
+      INTEGER, INTENT(IN)    :: KENT, KSORT, KADH, KLOG, KENTU
       INTEGER, INTENT(IN)    :: LIUBOF(NPOIN2), LIUBOS(NPOIN2)
       INTEGER, INTENT(IN)    :: LIUBOL(NPTFR*NPLAN*2)
       INTEGER, INTENT(INOUT) :: LIKBOF(NPOIN2), LIKBOS(NPOIN2)
@@ -79,7 +80,7 @@
       NPTFR3=NPLAN*NPTFR
 !
       DO IPTFR=1,NPTFR3
-        IF(LIUBOL(IPTFR).EQ.KENT) THEN
+        IF(LIUBOL(IPTFR).EQ.KENT.OR.LIUBOL(IPTFR).EQ.KENTU) THEN
           LIKBOL(IPTFR) = KENT
           LIEBOL(IPTFR) = KENT
         ELSE

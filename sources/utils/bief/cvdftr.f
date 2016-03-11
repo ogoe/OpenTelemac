@@ -146,9 +146,11 @@
 !+   diffusion.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        23/02/2016
+!+        08/03/2016
 !+        V7P2
-!+   Adapting to new scheme ADV_PSI_TF = 15.
+!+   Adapting to new scheme ADV_PSI_TF = 15. Computation of HPROP
+!+   removed, HPROP must now be given and is not rebuilt with TETA,
+!+   which was a mistake.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
@@ -290,13 +292,14 @@
       LOGICAL, INTENT(IN)           :: FLUX_GIVEN
       TYPE(SLVCFG), INTENT(INOUT)   :: SLVTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,H,HN,AFBOR,BFBOR
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: HPROP
+      TYPE(BIEF_OBJ), INTENT(IN), TARGET :: HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT) :: F,SM,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,ZF
       TYPE(BIEF_OBJ), INTENT(IN)    :: FTILD,FN,SMI,FLULIM,PLUIE
       TYPE(BIEF_OBJ), INTENT(INOUT) :: SMH,FBOR
       TYPE(BIEF_OBJ), INTENT(INOUT) :: TE1,TE2,TE3,W
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T10
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7
+      TYPE(BIEF_OBJ), INTENT(INOUT), TARGET :: T10
       TYPE(BIEF_OBJ), INTENT(IN)    :: FSCEXP,DM1,ZCONV
       TYPE(BIEF_OBJ), INTENT(IN)    :: S,V2DPAR,UNSV2D,VOLU2D
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLBOR,LIMTRA
@@ -315,6 +318,8 @@
       LOGICAL MSQ,FV_SCHEME
 !
       CHARACTER(LEN=16) FORMUL
+!
+      TYPE(BIEF_OBJ), POINTER :: HPR
 !
 !-----------------------------------------------------------------------
 !
@@ -356,14 +361,16 @@
 !
 !-----------------------------------------------------------------------
 !
-!     SEMI-IMPLICITATION OF THE DEPTH
-!     WITH SCHEME 5 FOR H, TETAH=0
-!
-      CALL OS( 'X=CY    ' , X=HPROP , Y=H     , C=      TETAH )
-      CALL OS( 'X=X+CY  ' , X=HPROP , Y=HN    , C= 1.D0-TETAH )
-      CALL OS( 'X=Y     ' , X=T10   , Y=HPROP )
+!     HPROP IS THE DEPTH IN THE DIVERGENCE TERM IN THE CONTINUITY
+!     EQUATION. IT IS REPLACED HERE BY POINTER HPR, IN CASE IT HAS
+!     TO BE EXTENDED.
+!  
       IF(IELMF.NE.IELMH) THEN
+        CALL OS( 'X=Y     ' , X=T10   , Y=HPROP )
         CALL CHGDIS(T10,IELMH,IELMF,MESH)
+        HPR=>T10
+      ELSE
+        HPR=>HPROP
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -470,9 +477,9 @@
 !       CALL MATVEC( 'X=AY    ',T2,AM1,SM,C,MESH)
 !       IF(NCSIZE.GT.1) THEN
 !         CALL PARCOM(T2,2,MESH)
-!         MASSOU = MASSOU + P_DOTS(T2,T10,MESH)
+!         MASSOU = MASSOU + P_DOTS(T2,HPR,MESH)
 !       ELSE
-!         MASSOU = MASSOU + DOTS(T2,T10)
+!         MASSOU = MASSOU + DOTS(T2,HPR)
 !       ENDIF
 !
 !     ENDIF
@@ -692,12 +699,12 @@
 !             SAVES THE DIFFUSION
               CALL OS('X=Y     ',VISC_S,VISC,VISC,C)
 !             MULTIPLIES THE DIFFUSION BY HPROP
-           CALL OV_2('X=XY    ',VISC%R,1,T10%R,1,T10%R,1,C,
+           CALL OV_2('X=XY    ',VISC%R,1,HPR%R,1,HPR%R,1,C,
      &                          VISC%MAXDIM1,VISC%DIM1)
            IF(VISC%DIM2.EQ.3) THEN
-           CALL OV_2('X=XY    ',VISC%R,2,T10%R,1,T10%R,1,C,
+           CALL OV_2('X=XY    ',VISC%R,2,HPR%R,1,HPR%R,1,C,
      &                          VISC%MAXDIM1,VISC%DIM1)
-           CALL OV_2('X=XY    ',VISC%R,3,T10%R,1,T10%R,1,C,
+           CALL OV_2('X=XY    ',VISC%R,3,HPR%R,1,HPR%R,1,C,
      &                          VISC%MAXDIM1,VISC%DIM1)
            ENDIF
         ENDIF
@@ -709,7 +716,7 @@
 !
         IF(OPDTRA.EQ.2) THEN
 !         MULTIPLIES THE MATRIX BY 1/HPROP
-          CALL OS( 'X=1/Y   ',T4,T10,T10,C,
+          CALL OS( 'X=1/Y   ',T4,HPR,HPR,C,
      &             IOPT=2,INFINI=0.D0,ZERO=1.D-2)
           CALL OM( 'M=X(M)  ' , AM2 , AM2 , S  , C , MESH )
           CALL OM( 'M=DM    ' , AM2 , AM2 , T4 , C , MESH )
@@ -765,7 +772,7 @@
 !         JMH MODIFICATION 23/09/98
           CALL VECTOR(T2,'=','MASVEC          ',IELMF,
      &                1.D0,SMH,S,S,S,S,S,MESH,MSK,MASKEL)
-          CALL OS( 'X=Y/Z   ' ,T1,T2,T10,C,
+          CALL OS( 'X=Y/Z   ' ,T1,T2,HPR,C,
      &              IOPT=2,INFINI=0.D0,ZERO=1.D-3)
 !         IMPLICIT PART OF THE POINT SOURCE TERM
 !         - TETAT T 1/HPROP SUM ( SCE PSI D(OMEGA)
@@ -775,11 +782,11 @@
           CALL OS( 'X=YZ    ' , T1 , SMH , FSCEXP , C )
           CALL VECTOR(T2,'=','MASVEC          ',IELMF,
      &                1.D0,T1,S,S,S,S,S,MESH,MSK,MASKEL)
-          CALL OS( 'X=Y/Z   ' ,T1,T2,T10,C,
+          CALL OS( 'X=Y/Z   ' ,T1,T2,HPR,C,
      &             IOPT=2,INFINI=0.D0,ZERO=1.D-3)
           CALL OS( 'X=X+Y   ' , SM , T1 , T1 , C )
         ELSEIF(OPTSOU.EQ.2) THEN
-          CALL OS( 'X=Y/Z   ' ,T1,SMH,T10,C,
+          CALL OS( 'X=Y/Z   ' ,T1,SMH,HPR,C,
      &              IOPT=2,INFINI=0.D0,ZERO=1.D-3)
 !         EXPLICIT PART OF THE POINT SOURCE TERM
 !         1/HPROP (FSCE-(1-TETAT)FN) SMH
@@ -798,7 +805,7 @@
 !
         CALL VECTOR(T2,'=','MASVEC          ',IELMF,
      &              1.D0,PLUIE,S,S,S,S,S,MESH,MSK,MASKEL)
-        CALL OS('X=Y/Z   ' ,T1,T2,T10,C,
+        CALL OS('X=Y/Z   ' ,T1,T2,HPR,C,
      &          IOPT=2,INFINI=0.D0,ZERO=1.D-3)
 !       IMPLICIT PART OF THE POINT SOURCE TERM
 !       - TETAT T 1/HPROP SUM ( SCE PSI D(OMEGA)
@@ -815,7 +822,7 @@
         ENDIF
         CALL VECTOR(T2,'=','MASVEC          ',IELMF,
      &              1.D0,T1,S,S,S,S,S,MESH,MSK,MASKEL)
-        CALL OS('X=Y/Z   ',T1,T2,T10,C,
+        CALL OS('X=Y/Z   ',T1,T2,HPR,C,
      &          IOPT=2,INFINI=0.D0,ZERO=1.D-3)
         CALL OS('X=X+Y   ',X=SM,Y=T1)
 !

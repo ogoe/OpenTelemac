@@ -2,23 +2,17 @@
                      SUBROUTINE FRICTION_CHOICE
 !                    **************************
 !
-     &(FRICTION_PASS,KARMAN)
+     &(FRICTION_PASS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR FRICTION COMPUTATION.
 !
 !history  F. HUVELIN
 !+        20/04/2004
-!+
-!+
-!
-!history  J-M HERVOUET (LNHE)
-!+
-!+        V6P0
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -32,9 +26,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/03/2016
+!+        V7P2
+!+   Removing dummy variable KARMAN
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FRICTION_PASS  |-->| IF 0, INITIALISATION
-!| KARMAN         |-->| VON KARMAN CONSTANT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -49,8 +47,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(IN) :: FRICTION_PASS
-      DOUBLE PRECISION, INTENT(IN) :: KARMAN
+      INTEGER, INTENT(IN) :: FRICTION_PASS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

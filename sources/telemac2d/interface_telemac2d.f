@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D 6.2
+! TELEMAC2D 7.2
 !***********************************************************************
 !
 !
@@ -1107,10 +1107,9 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE FRICTION_CHOICE(FRICTION_PASS, KARMAN)
+        SUBROUTINE FRICTION_CHOICE(FRICTION_PASS)
       IMPLICIT NONE
       INTEGER,          INTENT(IN) :: FRICTION_PASS
-      DOUBLE PRECISION, INTENT(IN) :: KARMAN
         END SUBROUTINE
       END INTERFACE
 !
@@ -1788,6 +1787,23 @@
       TYPE(BIEF_OBJ) , INTENT(IN)      :: GRADJ,GRADJN
       TYPE(BIEF_OBJ) , INTENT(INOUT)   :: DESC
       DOUBLE PRECISION , INTENT(INOUT) :: R02,R03,RO
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE MIXLENGTH
+     &(VISC,CF,U,V,H,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU,
+     & UNSV2D,IELMU,NPTFR)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      LOGICAL,          INTENT(IN)    :: MSK
+      INTEGER,          INTENT(IN)    :: IELMU,NPTFR
+      DOUBLE PRECISION, INTENT(IN)    :: PROPNU
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: VISC,T1,T2,T3,T4
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,CF,U,V,H,UNSV2D
         END SUBROUTINE
       END INTERFACE
 !
@@ -2840,3 +2856,4 @@
 !-----------------------------------------------------------------------
 !
       END MODULE INTERFACE_TELEMAC2D
+

@@ -1507,10 +1507,10 @@
 ! BOUNDARY CONDITIONS FOR THE K-EPSILON MODEL
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
-        CALL KEPICL(LIKBOF%I, LIEBOF%I, LIUBOF%I,
-     &              LIKBOL%I, LIEBOL%I, LIUBOL%I,
-     &              LIKBOS%I, LIEBOS%I, LIUBOS%I,
-     &              NPTFR2, NPLAN, NPOIN2, KENT, KSORT, KADH, KLOG)
+        CALL KEPICL(LIKBOF%I,LIEBOF%I,LIUBOF%I,
+     &              LIKBOL%I,LIEBOL%I,LIUBOL%I,
+     &              LIKBOS%I,LIEBOS%I,LIUBOS%I,
+     &              NPTFR2,NPLAN,NPOIN2,KENT,KSORT,KADH,KLOG,KENTU)
       ENDIF
 !
 !-----------------------------------------------------------------------
