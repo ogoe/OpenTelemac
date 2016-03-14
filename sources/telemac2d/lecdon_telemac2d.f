@@ -88,7 +88,7 @@
 !+  removed (no longer necessary after clipping of HPROP).
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        22/02/2016
+!+        14/03/2016
 !+        V7P2
 !+  Dealing with the new treatment of negative depths and its mandatory
 !+  use with new scheme 15.
@@ -1727,11 +1727,14 @@
       ENDIF
 !
       IF(ITURB.EQ.3) THEN
-      IF(ICONVF(4).NE.ADV_CAR.AND.ICONVF(4).NE.ADV_SUP.AND.
-     &   ICONVF(4).NE.ADV_LPO.AND.ICONVF(4).NE.ADV_NSC.AND.
-     &   ICONVF(4).NE.ADV_PSI.AND.ICONVF(4).NE.ADV_NSC_NC.AND.
-     &   ICONVF(4).NE.ADV_PSI_NC.AND.
-     &   ICONVF(4).NE.ADV_LPO_TF.AND.ICONVF(4).NE.ADV_NSC_TF) THEN
+      IF(ICONVF(4).NE.ADV_CAR.AND.
+     &   ICONVF(4).NE.ADV_SUP.AND.
+     &   ICONVF(4).NE.ADV_LPO.AND.
+     &   ICONVF(4).NE.ADV_NSC.AND.
+     &   ICONVF(4).NE.ADV_PSI.AND.
+     &   ICONVF(4).NE.ADV_LPO_TF.AND.
+     &   ICONVF(4).NE.ADV_NSC_TF.AND.
+     &   ICONVF(4).NE.ADV_PSI_TF) THEN
         IF(LNG.EQ.1) WRITE(LU,76) ICONVF(4)
         IF(LNG.EQ.2) WRITE(LU,77) ICONVF(4)
 76      FORMAT(1X,'FORME DE LA CONVECTION DE K ET EPSILON : ',I3,/,1X,

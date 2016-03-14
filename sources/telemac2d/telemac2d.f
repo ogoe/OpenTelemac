@@ -268,13 +268,14 @@
 !+   NREJTR changed into NREJET in the call to difsou.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        08/02/2016
+!+        14/03/2016
 !+        V7P2
 !+   Adding the argument HPROP in the call to Sisyphe. TETAHC removed
 !+   and replaced everywhere by TETAC. HTILD replaced with HPROP in the
 !+   call to cvdftr.
-!+   Call to COSAKE moved at the beginning.
+!+   Call to cosake moved at the beginning.
 !+   Call to friction_choice now without KARMAN.
+!+   Call to kepsil modified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -2316,12 +2317,10 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING KEPSIL'
         CALL KEPSIL(AK,EP,AKTILD,EPTILD,AKN,EPN,VISC,CF,U,V,H,
      &              UCONV,VCONV,KBOR,EBOR,LIMKEP%I,IELMK,IELME,
-     &              CV1,CV2,TM1,BM1,BM2,CM2,TE1,TE2,NPTFR,DT,
-     &              MESH,T1,T2,T3,TB,
-     &              CMU,C1,C2,SIGMAK,SIGMAE,ESTAR,SCHMIT,
-     &              KMIN,KMAX,EMIN,EMAX,INFOKE.AND.ENTET,
-     &              KDIR,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,
-     &              ICONVF(4),OPTADV_KE)
+     &              CV1,CV2,TM1,BM1,BM2,CM2,TE1,TE2,NPTFR,DT,MESH,
+     &              T1,T2,T3,TB,CMU,C1,C2,SIGMAK,SIGMAE,ESTAR,SCHMIT,
+     &              KMIN,KMAX,EMIN,EMAX,INFOKE.AND.ENTET,MSK,MASKEL,
+     &              MASKPT,S,SLVK,SLVEP,ICONVF(4),YASMH,YAFLULIM)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM KEPSIL'
 !
       ENDIF
@@ -2703,10 +2702,10 @@
 !=======================================================================
 !
       IF(PASS.NE.1) THEN
-      IF(LNG.EQ.1.AND.LISTIN) WRITE(LU,18)
-      IF(LNG.EQ.2.AND.LISTIN) WRITE(LU,19)
-18    FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
-19    FORMAT(/,1X,'END OF TIME LOOP',////)
+        IF(LNG.EQ.1.AND.LISTIN) WRITE(LU,18)
+        IF(LNG.EQ.2.AND.LISTIN) WRITE(LU,19)
+18      FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
+19      FORMAT(/,1X,'END OF TIME LOOP',////)
       ENDIF
 !
 !-----------------------------------------------------------------------

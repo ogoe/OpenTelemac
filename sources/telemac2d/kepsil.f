@@ -7,10 +7,10 @@
      & SMK,SME,TM1,MAK,MAE,CM2,TE1,TE2,NPTFR,DT,
      & MESH,T1,T2,T3,TB,CMU,C1,C2,SIGMAK,SIGMAE,ESTAR,SCHMIT,
      & KMIN,KMAX,EMIN,EMAX,
-     & INFOKE,KDIR,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,ICONV,OPTSUP)
+     & INFOKE,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,ICONV,YASMH,YAFLULIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    DIFFUSION STEP FOR SOURCE TERMS (K-EPSILON MODEL).
@@ -37,6 +37,11 @@
 !+        V6P3
 !+   Now conditional call to DIRICH (for bound checking in parallelism)
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        14/03/2016
+!+        V7P2
+!+   All advection solvers now supported for k and epsilon.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<--| TURBULENT KINETIC ENERGY K AT TIME T(N+1)
 !| AKN            |-->| TURBULENT KINETIC ENERGY K AT TIME T(N)
@@ -61,7 +66,7 @@
 !| IELME          |-->| TYPE OF ELEMENT FOR K
 !| IELMK          |-->| TYPE OF ELEMENT FOR EPSILON
 !| INFOKE         |-->| IF YES, INFORMATION ON LINEAR SYSTEMS
-!| KBOR           |<--| TURBULENTE KINETIC ENERGY ON BOUNDARIES
+!| KBOR           |<--| TURBULENT KINETIC ENERGY ON BOUNDARIES
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KMIN           |-->| MINIMUM K IF CLIPPING
 !| KMAX           |-->| K MINIMUM ET MAXIMUM EN CAS DE CLIPPING
@@ -75,7 +80,6 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| OPTSUP         |-->| SUPG OPTION
 !| S              |-->| VOID STRUCTURE
 !| SCHMIT         |-->| CONSTANT OF K-EPSILON MODEL
 !| SIGMAE         |-->| CONSTANT OF K-EPSILON MODEL
@@ -97,6 +101,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D, ONLY : FLULIM,AM2,H,MAXADV,
+     & HPROP,ZCONV,SOLSYS,MASKTR,NCO_DIST,NSP_DIST,OPTADV_KE,FLODEL,
+     & SMH,UNSV2D,V2DPAR,VOLU2D,TB2,VISC_S,DM1,OPTSOU,FLBOR,FLBORTRA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -105,18 +113,20 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE(SLVCFG), INTENT(INOUT)  :: SLVK,SLVEP
-      INTEGER, INTENT(IN)          :: ICONV,NPTFR,KDIR,LIMKEP(NPTFR,2)
-      INTEGER, INTENT(IN)          :: OPTSUP,IELMK,IELME
-      LOGICAL, INTENT(IN)          :: INFOKE,MSK
+      INTEGER, INTENT(IN)          :: ICONV,NPTFR
+      INTEGER, INTENT(INOUT)       :: LIMKEP(NPTFR,2)
+      INTEGER, INTENT(IN)          :: IELMK,IELME
+      LOGICAL, INTENT(IN)          :: INFOKE,MSK,YASMH,YAFLULIM
       DOUBLE PRECISION, INTENT(IN) :: KMIN,KMAX,EMIN,EMAX,SCHMIT
       DOUBLE PRECISION, INTENT(IN) :: CMU,C1,C2,SIGMAK,SIGMAE,ESTAR
       DOUBLE PRECISION, INTENT(IN) :: DT
 !     MATRIX STRUCTURES
       TYPE(BIEF_OBJ), INTENT(INOUT) :: TM1,MAK,MAE,CM2
 !     VECTOR STRUCTURES
-      TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,AKN,EPN,AKTILD,EPTILD
+      TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,AKN,EPN
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: AKTILD,EPTILD
       TYPE(BIEF_OBJ), INTENT(IN)    :: HN,VISC,U,V,MASKEL,S,MASKPT,CF
-      TYPE(BIEF_OBJ), INTENT(IN)    :: KBOR,EBOR
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: KBOR,EBOR
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,AK,EP,SMK,SME,TE1,TE2
 !     MESH STRUCTURE
       TYPE(BIEF_MESH) :: MESH
@@ -125,13 +135,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C,SL1,CEPS,USTAR,AGGLOK,AGGLOE,TETAK
+      DOUBLE PRECISION C,SL1,CEPS,USTAR,AGGLOK,AGGLOE,TETAK,MASSK,MASSE
 !
-      INTEGER N
+      INTEGER N,IOPT,OPT_PSI_TF,DIMGLO
 !
 !-----------------------------------------------------------------------
 !
       INTRINSIC SQRT,MAX
+!
+!-----------------------------------------------------------------------
+!
+      DIMGLO=MESH%GLOSEG%DIM1
 !
 !-----------------------------------------------------------------------
 !
@@ -219,33 +233,33 @@
 !     TAKES ADVECTION INTO ACCOUNT
 !     --------------------------------
 !
-      IF(ICONV.EQ.1) THEN
+      IF(ICONV.EQ.ADV_CAR) THEN
 !
         CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
         CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
 !
-      ELSEIF(ICONV.EQ.2) THEN
+      ELSEIF(ICONV.EQ.ADV_SUP) THEN
 !
         CALL MATVEC('X=AY    ',SMK,MAK,AKN,C,MESH)
         CALL MATVEC('X=AY    ',SME,MAE,EPN,C,MESH)
-!       CENTERED SEMI-IMPLICIT ADVECTION TERM : MATRIX
+!       CENTRED SEMI-IMPLICIT ADVECTION TERM : MATRIX
         CALL MATRIX(CM2,'M=N     ','MATVGR          ',IELMK,IELMK,
      &              1.D0,S,S,S,UCONV,VCONV,VCONV,MESH,MSK,MASKEL)
 !       SUPG CONTRIBUTION
-        IF(OPTSUP.EQ.1) THEN
+        IF(OPTADV_KE.EQ.1) THEN
 !         CLASSICAL SUPG
           CALL KSUPG(TE1,TE2,1.D0,UCONV,VCONV,MESH)
           CALL MATRIX(CM2,'M=M+N   ','MASUPG          ',IELMK,IELMK,
      &                1.D0,TE1,TE2,S,UCONV,VCONV,VCONV,
      &                MESH,MSK,MASKEL)
-        ELSEIF(OPTSUP.EQ.2) THEN
+        ELSEIF(OPTADV_KE.EQ.2) THEN
 !         MODIFIED SUPG
           CALL MATRIX(CM2,'M=M+N   ','MAUGUG          ',IELMK,IELMK,
      &                0.5D0*DT,S,S,S,UCONV,VCONV,VCONV,
      &                MESH,MSK,MASKEL)
         ENDIF
 !       END OF SUPG CONTRIBUTION
-!       EXPLICIT RIGHT HAND SIDES
+!       EXPLICIT RIGHT-HAND SIDES
         TETAK=0.6
         CALL MATVEC( 'X=X+CAY ',SMK,CM2,AKN,TETAK-1.D0,MESH)
         CALL MATVEC( 'X=X+CAY ',SME,CM2,EPN,TETAK-1.D0,MESH)
@@ -254,6 +268,133 @@
         CALL OM( 'M=M+CN  ' , MAK , CM2 , S , TETAK , MESH )
         CALL OM( 'M=X(M)  ' , MAE , MAE , S , C , MESH )
         CALL OM( 'M=M+CN  ' , MAE , CM2 , S , TETAK , MESH )
+!
+      ELSEIF(ICONV.EQ.ADV_LPO.OR.
+     &       ICONV.EQ.ADV_NSC.OR.
+     &       ICONV.EQ.ADV_PSI     ) THEN
+!
+        IF(ICONV.EQ.ADV_LPO) IOPT=2
+        IF(ICONV.EQ.ADV_NSC) IOPT=2
+        IF(ICONV.EQ.ADV_PSI) IOPT=3
+        CALL OS('X=0     ',X=SMK)
+        CALL OS('X=0     ',X=SME)
+!       NO MASS BALANCE WILL BE DONE, SO DUMMY VALUE
+        MASSK=0.D0
+        MASSE=0.D0
+!       PROVISIONAL: SMK AND SME =0 GIVEN FOR FSCEXP (NO TURBULENCE AT SOURCES...)
+!       SPECIFIC ARRAYS FOR K AND EPSILON SHOULD BE DONE IN DIFSOU AND TREATED
+!       HERE, DEPENDING ON THE ADVECTION SCHEME... AND VALUES OF K AND EPSILON
+!       IN SOURCES (CAN WE ASK THIS TO THE USER ? DEDUCE IT FROM A THEORY IN PIPES ?)
+!
+!       FLBORTRA IS MEANT FOR THE TRACERS BUT ALWAYS EXISTS (THERE IS ONE FOR
+!       ALL TRACERS, SO IT CAN BE USED HERE).
+!
+!                              FSCEXP  DIFT    CONV
+        CALL CVTRVF(AKTILD,AKN,SMK  ,.FALSE.,.TRUE.,H,HN,HPROP,
+     &              UCONV,VCONV,DM1,ZCONV,SOLSYS,
+!                                            SMI YASMI
+     &              VISC,VISC_S,SMK,SMH,YASMH,S,.FALSE.,
+!                                                          BILAN
+     &              KBOR,MASKTR,MESH,AGGLOK,TE1,DT,INFOKE,.FALSE.,
+!                   OPDTRA
+     &              1     ,MSK,MASKEL,S,MASSK,OPTSOU,
+!                                                          YAFLBOR
+     &              LIMKEP(1,1),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &              VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+!                     RAIN  PLUIE  TRAIN
+     &              .FALSE.,  S ,  0.D0 ,OPTADV_KE,TB,12,AM2,TB2,
+     &              NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R,SLVK)
+        CALL CVTRVF(EPTILD,EPN,SME  ,.FALSE.,.TRUE.,H,HN,HPROP,
+     &              UCONV,VCONV,DM1,ZCONV,SOLSYS,
+!                                            SMI YASMI
+     &              VISC,VISC_S,SME,SMH,YASMH,S,.FALSE.,
+!                                                          BILAN
+     &              EBOR,MASKTR,MESH,AGGLOE,TE1,DT,INFOKE,.FALSE.,
+!                   OPDTRA
+     &              1     ,MSK,MASKEL,S,MASSE,OPTSOU,
+!                                                          YAFLBOR
+     &              LIMKEP(1,2),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &              VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+!                     RAIN  PLUIE  TRAIN
+     &              .FALSE.,  S ,  0.D0 ,OPTADV_KE,TB,12,AM2,TB2,
+     &              NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R,SLVEP)
+        CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
+        CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
+!
+      ELSEIF(ICONV.EQ.ADV_LPO_TF.OR.
+     &       ICONV.EQ.ADV_NSC_TF.OR.
+     &       ICONV.EQ.ADV_PSI_TF     ) THEN
+!
+        IF(ICONV.EQ.ADV_LPO_TF) IOPT=2
+        IF(ICONV.EQ.ADV_NSC_TF) IOPT=2
+        IF(ICONV.EQ.ADV_PSI_TF) IOPT=3
+        CALL OS('X=0     ',X=SMK)
+        CALL OS('X=0     ',X=SME)
+!       NO MASS BALANCE WILL BE DONE, SO DUMMY VALUE
+        MASSK=0.D0
+        MASSE=0.D0
+!       PROVISIONAL: SMK AND SME =0 GIVEN FOR FSCEXP (NO TURBULENCE AT SOURCES...)
+!       SPECIFIC ARRAYS FOR K AND EPSILON SHOULD BE DONE IN DIFSOU AND TREATED
+!       HERE, DEPENDING ON THE ADVECTION SCHEME... AND VALUES OF K AND EPSILON
+!       IN SOURCES (CAN WE ASK THIS TO THE USER ? DEDUCE IT FROM A THEORY IN PIPES ?)
+!
+!       FLBORTRA IS MEANT FOR THE TRACERS BUT ALWAYS EXISTS (THERE IS ONE FOR
+!       ALL TRACERS, SO IT CAN BE USED HERE).
+!
+        IF(TB%N.LT.22) THEN
+          WRITE(LU,*) 'SIZE OF TB TOO SMALL IN CVDFTR'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        OPT_PSI_TF=2
+        IF(ICONV.EQ.ADV_PSI_TF) OPT_PSI_TF=1
+!                                 FSCEXP DIFT    CONV
+        CALL CVTRVF_POS(AKTILD,AKN,SMK,.FALSE.,.TRUE.,
+     &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
+!                                                   SMI YASMI
+     &              SOLSYS,VISC,VISC_S,SMK,SMH,YASMH,S,.FALSE.,
+     &              KBOR,MASKTR,MESH,
+     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &              TB%ADR(22)%P,
+!                                         BILAN
+     &              AGGLOK,TE1,DT,INFOKE,.FALSE.,
+!                   OPDTRA
+     &              1     ,MSK,MASKEL,S,MASSK,OPTSOU,
+!                                                          YAFLBOR
+     &              LIMKEP(1,1),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+     &              MESH%GLOSEG%I(       1:  DIMGLO),
+     &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+!                                                              RAIN PLUIE
+     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
+!                   TRAIN
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV)
+        CALL CVTRVF_POS(EPTILD,EPN,SME,.FALSE.,.TRUE.,
+     &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
+!                                                   SMI YASMI
+     &              SOLSYS,VISC,VISC_S,SME,SMH,YASMH,S,.FALSE.,
+     &              EBOR,MASKTR,MESH,
+     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &              TB%ADR(22)%P,
+!                                         BILAN
+     &              AGGLOE,TE1,DT,INFOKE,.FALSE.,
+!                   OPDTRA
+     &              1     ,MSK,MASKEL,S,MASSK,OPTSOU,
+!                                                          YAFLBOR
+     &              LIMKEP(1,2),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+     &              MESH%GLOSEG%I(       1:  DIMGLO),
+     &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+!                                                              RAIN PLUIE
+     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
+!                   TRAIN
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV)
+        CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
+        CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
 !
       ELSE
 !
@@ -391,3 +532,4 @@
 !
       RETURN
       END
+
