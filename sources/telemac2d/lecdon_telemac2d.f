@@ -1617,26 +1617,22 @@
 !
 !     CHECKS ADVECTION SOLVERS ON VELOCITY
 !
-      IF(ICONVF(1).NE.ADV_CAR.AND.ICONVF(1).NE.ADV_SUP.AND.
-     &   ICONVF(1).NE.ADV_LPO.AND.ICONVF(1).NE.ADV_NSC.AND.
-     &   ICONVF(1).NE.ADV_PSI.AND.ICONVF(1).NE.ADV_NSC_NC.AND.
+      IF(ICONVF(1).NE.ADV_CAR.AND.
+     &   ICONVF(1).NE.ADV_SUP.AND.
+     &   ICONVF(1).NE.ADV_LPO.AND.
+     &   ICONVF(1).NE.ADV_NSC.AND.
+     &   ICONVF(1).NE.ADV_PSI.AND.
+     &   ICONVF(1).NE.ADV_NSC_NC.AND.
      &   ICONVF(1).NE.ADV_PSI_NC.AND.
-     &   ICONVF(1).NE.ADV_LPO_TF.AND.ICONVF(1).NE.ADV_NSC_TF) THEN
+     &   ICONVF(1).NE.ADV_LPO_TF.AND.
+     &   ICONVF(1).NE.ADV_NSC_TF.AND.
+     &   ICONVF(1).NE.ADV_PSI_TF) THEN
         IF(LNG.EQ.1) WRITE(LU,72) ICONVF(1)
         IF(LNG.EQ.2) WRITE(LU,73) ICONVF(1)
 72      FORMAT(1X,'FORME DE LA CONVECTION POUR LA VITESSE : ',I3,/,1X,
      &            'INCONNUE OU NON PROGRAMMEE')
 73      FORMAT(1X,'TYPE OF AVECTION FOR VELOCITY: ',I3,/,1X,
      &            'UNKNOWN OR NOT IMPLEMENTED')
-        IF(ICONVF(1).EQ.8.AND.LNG.EQ.1) THEN
-          WRITE(LU,*) 'LE SCHEMA VOLUMES FINIS 8 EST MAINTENANT'
-          WRITE(LU,*) 'LE SCHEMA N CONSERVATIF, AVEC LE NUMERO ',
-     &                                                          ADV_NSC
-        ENDIF
-        IF(ICONVF(1).EQ.8.AND.LNG.EQ.2) THEN
-          WRITE(LU,*) 'THE FINITE VOLUMES SCHEME 8 IS NOW'
-          WRITE(LU,*) 'THE CONSERVATIVE N-SCHEME, WITH NUMBER ',ADV_NSC
-        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF
@@ -1664,16 +1660,6 @@
      &                'INCONNUE OU NON PROGRAMMEE')
 75          FORMAT(1X,'TYPE OF AVECTION FOR TRACERS: ',I3,/,1X,
      &                'UNKNOWN OR NOT IMPLEMENTED')
-            IF(ICONVFT(ITRAC).EQ.8.AND.LNG.EQ.1) THEN
-              WRITE(LU,*) 'LE SCHEMA VOLUMES FINIS 8 EST MAINTENANT'
-              WRITE(LU,*) 'LE SCHEMA N CONSERVATIF, AVEC LE NUMERO ',
-     &                                                    ADV_NSC
-            ENDIF
-            IF(ICONVFT(ITRAC).EQ.8.AND.LNG.EQ.2) THEN
-              WRITE(LU,*) 'THE FINITE VOLUMES SCHEME 8 IS NOW'
-              WRITE(LU,*) 'THE CONSERVATIVE N-SCHEME, WITH NUMBER ',
-     &                                                    ADV_NSC
-            ENDIF
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -1741,15 +1727,6 @@
      &            'INCONNUE OU NON PROGRAMMEE')
 77      FORMAT(1X,'TYPE OF AVECTION FOR K AND EPSILON: ',I3,/,1X,
      &            'UNKNOWN OR NOT IMPLEMENTED')
-        IF(ICONVF(4).EQ.8.AND.LNG.EQ.1) THEN
-          WRITE(LU,*) 'LE SCHEMA VOLUMES FINIS 8 EST MAINTENANT'
-          WRITE(LU,*) 'LE SCHEMA N CONSERVATIF, AVEC LE NUMERO ',
-     &                                                          ADV_NSC
-        ENDIF
-        IF(ICONVF(4).EQ.8.AND.LNG.EQ.2) THEN
-          WRITE(LU,*) 'THE FINITE VOLUMES SCHEME 8 IS NOW'
-          WRITE(LU,*) 'THE CONSERVATIVE N-SCHEME, WITH NUMBER ',ADV_NSC
-        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF

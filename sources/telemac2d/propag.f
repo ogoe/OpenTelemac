@@ -19,7 +19,7 @@
      & MAXADV,OPTADV_VI)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    PROPAGATION - DIFFUSION - SOURCE TERMS STEP TO SOLVE
@@ -155,6 +155,12 @@
 !+        16/05/2014
 !+        V7P0
 !+   A copy of LIMPRO is done to be sent to cvtrvf (that may change it).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/03/2016
+!+        V7P2
+!+   Enabling advection solver 15 (ERIA) for velocities with a double
+!+   to cvtrvf_pos.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
@@ -935,25 +941,64 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!       THIS IS EQUIVALENT TO TWO SUCCESSIVE CALLS TO CVTRVF_POS
-!       FOR U AND V
-        CALL CVTRVF_POS_2(T1,UN,S,T2,VN,S,.FALSE.,.TRUE.,H,HN,
-     &      HPROP,UCONV,VCONV,S,S,
-     &      1,S,S,FU,FV,S,.FALSE.,S,S,.FALSE.,UBOR,VBOR,MASK,MESH,
-     &      TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &      TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &      TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &      TB%ADR(22)%P,
-     &      AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
-     &      LIMPRO%I(1+DIMLIM:2*DIMLIM),
-     &      LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
-     &      KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
-     &      V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
-     &      MESH%GLOSEG%I(       1:  DIMGLO),
-     &      MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &      MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,0.D0,
-     &      MAXADV)
+        IF(ICONVF(1).EQ.ADV_LPO_TF.OR.ICONVF(1).EQ.ADV_NSC_TF) THEN
+!         THIS IS EQUIVALENT TO TWO SUCCESSIVE CALLS TO CVTRVF_POS
+!         FOR U AND V
+          CALL CVTRVF_POS_2(T1,UN,S,T2,VN,S,.FALSE.,.TRUE.,H,HN,
+     &        HPROP,UCONV,VCONV,S,S,
+     &        1,S,S,FU,FV,S,.FALSE.,S,S,.FALSE.,UBOR,VBOR,MASK,MESH,
+     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &        TB%ADR(22)%P,
+     &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
+     &        LIMPRO%I(1+DIMLIM:2*DIMLIM),
+     &        LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
+     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
+     &        MESH%GLOSEG%I(       1:  DIMGLO),
+     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+     &        MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,0.D0,
+     &        MAXADV)
 !                       2: HARDCODED OPTION
+        ELSE
+!         SCHEME 15 HAS NOT BEEN DONE IN CVTRVF_POS_2, SO 2 CALLS...
+          CALL CVTRVF_POS(T1,UN,S,.FALSE.,.TRUE.,H,HN,
+     &        HPROP,UCONV,VCONV,S,S,1,S,S,
+     &        FU,S,.FALSE.,S,.FALSE.,UBOR,MASK,MESH,
+     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,TB%ADR(22)%P,
+     &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
+     &        LIMPRO%I(1+DIMLIM:2*DIMLIM),
+     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,MASKPT,
+     &        MESH%GLOSEG%I(       1:  DIMGLO),
+     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+     &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
+     &        S,.FALSE.,MAXADV)
+          CALL CVTRVF_POS(T2,VN,S,.FALSE.,.TRUE.,H,HN,
+     &        HPROP,UCONV,VCONV,S,S,1,S,S,
+     &        FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
+     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,TB%ADR(22)%P,
+     &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
+     &        LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
+     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,MASKPT,
+     &        MESH%GLOSEG%I(       1:  DIMGLO),
+     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+     &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
+     &        S,.FALSE.,MAXADV)
+!    &(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UDEL,VDEL,DM1,ZCONV,SOLSYS,
+!    & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
+!    & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
+!    & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
+!    & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,GLOSEG1,GLOSEG2,NBOR,
+!    & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN,
+!    & NITMAX)
+        ENDIF
 !
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
@@ -1702,3 +1747,4 @@
 !
       RETURN
       END
+

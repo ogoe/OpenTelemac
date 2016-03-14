@@ -4537,9 +4537,15 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE= 'Seulement avec OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
-       0 : pas de traitement 1 : lissage 2 : limitation des flux'
+       0 : pas de traitement
+       1 : lissage
+       2 : limitation des flux, approche par segment
+       3 : limitation des flux, approche par triangle'
 AIDE1 = 'Only with OPTION FOR THE TREATMENT OF TIDAL FLATS=1
-       0: no treatment 1:smoothing 2:flux control'
+       0:no treatment
+       1:smoothing
+       2:flux control, by segment
+       3:flux control, by element'
 /
 NOM = 'FORMAT DU FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE FORMAT'

@@ -55,6 +55,11 @@
 !+   Remove the call to INTERPMETEO: all the meteo variables are now
 !+   read in meteo.f and stored in variables of waqtel
 !
+!history  A. LEROY & J-M HERVOUET (EDF LAB, LNHE)
+!+        14/03/2016
+!+        V7P2
+!+   Sources of type Dirac were not properly treated in scalar mode.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -73,7 +78,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,I,IP
+      INTEGER IS,I,IP,IAD
 !     HEAT EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION WW
       DOUBLE PRECISION TREEL,SAL,RO,WW2,FLUX_EVAP,FLUX_SENS,DEBEVAP
@@ -122,27 +127,35 @@
           IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
           CALL OS('X=X+Y   ',X=SMH,Y=T2_01)
 !
-        ELSE IF(OPTSOU.EQ.2) THEN
-          CALL OS ('X=0     ',X=SOURCES%ADR(1)%P)
-          CALL OS ('X=0     ',X=SOURCES%ADR(2)%P)
+        ELSEIF(OPTSOU.EQ.2) THEN
+!
+          CALL OS('X=0     ',X=SOURCES%ADR(1)%P)
+          IF(NCSIZE.GT.1) CALL OS('X=0     ',X=SOURCES%ADR(2)%P)
           DO IS=1,NSCE
-!           IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
-            IF(ISCE(IS).GT.0) THEN
+            IF(NCSIZE.GT.1) THEN
+!             IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
+              IF(ISCE(IS).GT.0) THEN
+                I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+                SOURCES%ADR(1)%P%R(I)=QSCE2(IS)*MESH3D%IFAC%I(I)
+                SOURCES%ADR(2)%P%R(I)=QSCE2(IS)
+              ENDIF
+            ELSE
               I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
-              SOURCES%ADR(1)%P%R(I)=QSCE2(IS)*MESH3D%IFAC%I(I)
-              SOURCES%ADR(2)%P%R(I)=QSCE2(IS)
+              SOURCES%ADR(1)%P%R(I)=QSCE2(IS)
             ENDIF
           ENDDO
 !         SUMS ON THE VERTICAL TO GET THE 2D SOURCES
           CALL CPSTVC(SMH,T2_01)
           CALL OS('X=0     ',X=T2_01)
+!         SMH IS ASSEMBLED IN PARALLEL, WE TAKE THE ASSEMBLED ARRAY
+          IAD=1
+          IF(NCSIZE.GT.1) IAD=2
           DO IP=1,NPLAN
             DO I=1,NPOIN2
-              T2_01%R(I)=T2_01%R(I)+SOURCES%ADR(2)%P%R(I+NPOIN2*(IP-1))
+              T2_01%R(I)=
+     &        T2_01%R(I)+SOURCES%ADR(IAD)%P%R(I+NPOIN2*(IP-1))
             ENDDO
           ENDDO
-!         SMH IS ASSEMBLED IN //
-          IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
           CALL OS('X=X+Y   ',X=SMH,Y=T2_01)
 !
         ENDIF
