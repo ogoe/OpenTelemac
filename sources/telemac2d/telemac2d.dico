@@ -224,20 +224,18 @@ CHOIX =
 '3="SCHEMA N CONSERVATIF"' ;
 '4="SCHEMA N CONSERVATIF"' ;
 '5="SCHEMA PSI CONSERVATIF"';
-'6="SCHEMA PSI NON CONSERVATIF"';
-'7="SCHEMA N IMPLICITE NON CONSERVATIF"';
 '13="SCHEMA N PAR SEGMENTS"';
-'14="SCHEMA N PAR SEGMENTS"'
+'14="SCHEMA N PAR SEGMENTS"';
+'15="SCHEMA ERIA"'
 CHOIX1 =
 '1="CHARACTERISTICS"';
 '2="SUPG"';
 '3="CONSERVATIVE N-SCHEME"';
 '4="CONSERVATIVE N-SCHEME"';
 '5="CONSERVATIVE PSI-SCHEME"';
-'6="NON CONSERVATIVE PSI SCHEME"';
-'7="IMPLICIT NON CONSERVATIVE N SCHEME"';
 '13="EDGE-BASED N-SCHEME"';
-'14="EDGE-BASED N-SCHEME"'
+'14="EDGE-BASED N-SCHEME"';
+'15="ERIA SCHEME"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'FORME DE LA CONVECTION'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'TYPE OF ADVECTION'
 COMPORT =
@@ -252,10 +250,9 @@ ces coefficients sont respectivement appliques a
 3 : Schema N conservatif
 4 : Schema N conservatif
 5 : Schema PSI conservatif
-6 : Schema PSI non conservatif
-7 : schema N implicite non conservatif
 13 : Schema N par segment
 14 : Schema N par segment
+15 : Schema ERIA
 Second integer must be 5'
 AIDE1 = 'Choice of advection schemes for every variable
 These coefficients are applied respectively to
@@ -265,10 +262,9 @@ These coefficients are applied respectively to
 3: Conservative N-scheme
 4: Conservative N-scheme
 5: Conservative PSI-scheme
-6 : Non conservative PSI scheme
-7 : Implicit non conservative N scheme
 13 : Edge-based N-scheme
 14 : Edge-based N-scheme
+15 : ERIA scheme
 Second integer must be 5'
 
 NOM = 'PRECONDITIONNEMENT'
@@ -5581,7 +5577,8 @@ CHOIX = '0="PAS DE CONVECTION"';
         '4="EXPLICITE + MURD SCHEMA N"';
         '5="EXPLICITE + MURD SCHEMA PSI"';
         '13="SCHEMA N POUR BANCS DECOUVRANTS"';
-        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"';
+        '15="SCHEMA ERIA"'
 CHOIX1 = '0="NO ADVECTION"';
          '1="CHARACTERISTICS"';
          '2="EXPLICIT + SUPG"';
@@ -5589,7 +5586,8 @@ CHOIX1 = '0="NO ADVECTION"';
          '4="EXPLICIT + MURD SCHEME N"';
          '5="EXPLICIT + MURD SCHEME PSI"';
          '13="N-SCHEME FOR TIDAL FLATS"';
-         '14="N-SCHEME FOR TIDAL FLATS"'
+         '14="N-SCHEME FOR TIDAL FLATS"';
+         '15="ERIA SCHEME"'
 DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
@@ -5613,7 +5611,8 @@ CHOIX = '0="PAS DE CONVECTION"';
         '4="EXPLICITE + MURD SCHEMA N"';
         '5="EXPLICITE + MURD SCHEMA PSI"';
         '13="LEO POSTMA POUR BANCS DECOUVRANTS"';
-        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"';
+        '15="SCHEMA ERIA POUR BANCS DECOUVRANTS"'
 CHOIX1 = '0="NO ADVECTION"';
          '1="CHARACTERISTICS"';
          '2="EXPLICIT + SUPG"';
@@ -5621,7 +5620,8 @@ CHOIX1 = '0="NO ADVECTION"';
          '4="EXPLICIT + MURD SCHEME N"';
          '5="EXPLICIT + MURD SCHEME PSI"';
          '13="LEO POSTMA FOR TIDAL FLATS"';
-         '14="N-SCHEME FOR TIDAL FLATS"'
+         '14="N-SCHEME FOR TIDAL FLATS"';
+         '15="ERIA SCHEME FOR TIDAL FLATS"'
 DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
@@ -5645,7 +5645,8 @@ CHOIX = '0="PAS DE CONVECTION"';
         '4="EXPLICITE + MURD SCHEMA N"';
         '5="EXPLICITE + MURD SCHEMA PSI"';
         '13="LEO POSTMA POUR BANCS DECOUVRANTS"';
-        '14="SCHEMA N POUR BANCS DECOUVRANTS"'
+        '14="SCHEMA N POUR BANCS DECOUVRANTS"';
+        '15="SCHEMA ERIA POUR BANCS DECOUVRANTS"'
 CHOIX1 = '0="NO ADVECTION"';
          '1="CHARACTERISTICS"';
          '2="EXPLICIT + SUPG"';
@@ -5653,7 +5654,8 @@ CHOIX1 = '0="NO ADVECTION"';
          '4="EXPLICIT + MURD SCHEME N"';
          '5="EXPLICIT + MURD SCHEME PSI"';
          '13="LEO POSTMA FOR TIDAL FLATS"';
-         '14="N-SCHEME FOR TIDAL FLATS"'
+         '14="N-SCHEME FOR TIDAL FLATS"';
+         '15="ERIA SCHEME FOR TIDAL FLATS"'
 DEFAUT = 1
 DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'

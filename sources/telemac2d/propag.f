@@ -157,10 +157,10 @@
 !+   A copy of LIMPRO is done to be sent to cvtrvf (that may change it).
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        14/03/2016
+!+        15/03/2016
 !+        V7P2
 !+   Enabling advection solver 15 (ERIA) for velocities with a double
-!+   to cvtrvf_pos.
+!+   to cvtrvf_pos. Advection sschemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
@@ -323,7 +323,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
-     &                                 ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,
+     &                                 ADV_LPO,
      &                                 ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF,
      &                                 KDDL
       USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2,TB2,NCO_DIST,
@@ -826,49 +826,6 @@
         ENDIF
         CALL OM( 'M=M+CN  ' , AM2 , CM2 , S , TETAU , MESH )
 !
-        CALL OS( 'X=X+Y   ' , X=T1 , Y=UN )
-        CALL OS( 'X=X+Y   ' , X=T2 , Y=VN )
-!
-!-----------------------------------------------------------------
-!
-!  PSI SCHEME
-!
-      ELSEIF(ICONVF(1).EQ.ADV_PSI_NC) THEN
-!
-!       STARTS COMPUTATION OF SECOND MEMBERS CV2 AND CV3
-!
-        CALL VGFPSI(T6,IELMU,UCONV,VCONV,UN,DT,-1.D0,CFLMAX,
-     &              T4,T5,MESH,MSK,MASKEL)
-        CALL OS( 'X=X+Y   ' , X=CV2 , Y=T6 )
-        CALL OS( 'X=X+Y   ' , X=T1  , Y=UN )
-!
-        CALL VGFPSI(T6,IELMU,UCONV,VCONV,VN,DT,-1.D0,CFLMAX,
-     &              T4,T5,MESH,MSK,MASKEL)
-        CALL OS( 'X=X+Y   ' , X=CV3 , Y=T6 )
-        CALL OS( 'X=X+Y   ' , X=T2  , Y=VN )
-!
-!------ SCHEMA SEMI-IMPLICITE N --------------------------------------
-!
-      ELSEIF(ICONVF(1).EQ.ADV_NSC_NC) THEN
-!
-!       CENTRED SEMI-IMPLICIT ADVECTION TERM : MATRIX
-!
-        CALL MATRIX(CM2,'M=N     ','MATVGR         N',IELMU,IELMU,
-     &              1.D0,S,S,S,UCONV,VCONV,VCONV,MESH,MSK,MASKEL)
-!
-!       EXPLICIT SECOND MEMBER
-!
-        IF(ABS(SL1U).GT.0.0001D0) THEN
-          CALL MATVEC( 'X=X+CAY ',CV2,CM2,UN,TETAU-1.D0,MESH)
-          CALL MATVEC( 'X=X+CAY ',CV3,CM2,VN,TETAU-1.D0,MESH)
-        ENDIF
-!
-!       MATRIX : AM2 HAS A NON-SYMMETRICAL STRUCTURE
-!
-        IF(AM2%TYPEXT.NE.'Q') THEN
-          CALL OM( 'M=X(M)  ' , AM2 , AM2 , S , C , MESH )
-        ENDIF
-        CALL OM( 'M=M+CN  ' , AM2 , CM2 , S , TETAU , MESH )
         CALL OS( 'X=X+Y   ' , X=T1 , Y=UN )
         CALL OS( 'X=X+Y   ' , X=T2 , Y=VN )
 !

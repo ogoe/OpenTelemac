@@ -273,7 +273,7 @@
       USE BIEF, EX_CVDFTR => CVDFTR
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
-     &   ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
+     &                         ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -416,14 +416,6 @@
           STOP
         ENDIF
 !
-!     NON CONSERVATIVE, IMPLICIT N-SCHEME EQUATION
-      ELSEIF(ICONVF.EQ.ADV_NSC_NC) THEN
-!
-!       TERM IN U.GRAD(T) (IMPLICIT N-SCHEME)
-!
-        CALL MATRIX(AM2,'M=N     ','MATVGR         N',IELMF,IELMF,
-     &              1.D0,S,S,S,UCONV,VCONV,S,MESH,MSK,MASKEL)
-!
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -550,44 +542,6 @@
 ! ADDS THE IMPLICIT ADVECTION PART IN AM2 TO AM1
 !
         CALL OM( 'M=M+CN  ' , AM1,AM2 , S , TETAT , MESH )
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(ICONVF.EQ.ADV_NSC_NC.AND.CONV) THEN
-!
-!       AM1 MADE NONSYMMETRICAL IF IT WAS NOT ALREADY
-!
-        IF(AM1%TYPEXT.NE.'Q') THEN
-          CALL OM( 'M=X(M)  ' , AM1 , AM1 , S , C , MESH )
-        ENDIF
-!
-        CALL OS( 'X=X+Y   ' , T2 , FN , FN , C )
-        CALL MATVEC( 'X=AY    ',SM,AM1,T2,C,MESH)
-!
-! EXPLICIT ADVECTION TERM:
-!
-        CALL MATVEC( 'X=X+CAY ',SM,AM2,FN,TETAT-1.D0,MESH)
-!
-! ADDS THE IMPLICIT ADVECTION PART IN AM2 TO AM1
-!
-        CALL OM( 'M=M+CN  ' , AM1,AM2 , S , TETAT , MESH )
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(ICONVF.EQ.ADV_PSI_NC.AND.CONV) THEN
-!
-! PSI SCHEME
-!
-!       TRADITIONAL AM1 * FN TERM
-!
-        CALL OS( 'X=X+Y   ' , T2 , FN , FN , C )
-        CALL MATVEC( 'X=AY    ',SM,AM1,T2,C,MESH)
-!
-!       EXPLICIT ADVECTION TERM (PSI SCHEME)
-!
-        CALL VGFPSI(T5,IELMF,UCONV,VCONV,FN,DT,-1.D0,CFLMAX,
-     &              T6,T7,MESH,MSK,MASKEL)
-        CALL OS( 'X=X+Y   ' , SM , T5 , T5 , C )
 !
 !-----------------------------------------------------------------------
 !
@@ -869,17 +823,6 @@
 !
       IF(ICONVF.EQ.ADV_CAR.AND..NOT.DIFT) THEN
         CALL OS( 'X=Y     ' , F , FTILD , FTILD , C )
-      ENDIF
-      IF(ICONVF.EQ.ADV_PSI_NC.AND.CONV) THEN
-        CALL LUMP(T1,AM1,MESH,1.D0)
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(T1,2,MESH)
-          CALL OS( 'X=Y     ' , T2 , SM , SM , C )
-          CALL PARCOM(T2,2,MESH)
-          CALL OS( 'X=Y/Z   ' , F , T2 , T1 , C ,2,0.D0,1.D-6)
-        ELSE
-          CALL OS( 'X=Y/Z   ' , F , SM , T1 , C ,2,0.D0,1.D-6)
-        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

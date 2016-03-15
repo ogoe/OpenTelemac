@@ -858,30 +858,19 @@
 ! METHODS NOT CODED UP FOR SUSPENSION
 ! -------------------------------------------
 !
-!     JMH ON 09/10/2009 : NEW PARAMETERISATION AND NEW SCHEMES
-!
       IF(SUSP) THEN
         IF(RESOL.NE.ADV_CAR   .AND.RESOL.NE.ADV_SUP   .AND.
-     &     RESOL.NE.ADV_PSI_NC.AND.RESOL.NE.ADV_NSC_NC.AND.
      &     RESOL.NE.ADV_LPO   .AND.RESOL.NE.ADV_NSC   .AND.
      &     RESOL.NE.ADV_PSI   .AND.RESOL.NE.ADV_LPO_TF.AND.
-     &     RESOL.NE.ADV_NSC_TF                              ) THEN
+     &     RESOL.NE.ADV_NSC_TF.AND.RESOL.NE.ADV_PSI_TF      ) THEN
           IF (LNG.EQ.1) WRITE(LU,302) RESOL
           IF (LNG.EQ.2) WRITE(LU,303) RESOL
 302       FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
 303       FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
-          IF(RESOL.EQ.8) THEN
-            IF(LNG.EQ.1) WRITE(LU,*)
-     &                'LE SCHEMA 8 AVANT VERSION 6.0 EST DEVENU LE 4'
-            IF(LNG.EQ.2) WRITE(LU,*)
-     &                'NUMBER 8 PRIOR TO VERSION 6.0 IS NOW NUMBER 4'
-          ENDIF
           CALL PLANTE(1)
           STOP
         ENDIF
       ENDIF
-!C
-! CV 27/01/2005
 !
       IF(.NOT.HOULE) SIS_FILES(SISCOU)%NAME(1:1)=' '
       IF(HOULE) THEN

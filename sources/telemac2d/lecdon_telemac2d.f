@@ -88,10 +88,10 @@
 !+  removed (no longer necessary after clipping of HPROP).
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        14/03/2016
+!+        15/03/2016
 !+        V7P2
 !+  Dealing with the new treatment of negative depths and its mandatory
-!+  use with new scheme 15.
+!+  use with new scheme 15. Schemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -1622,8 +1622,6 @@
      &   ICONVF(1).NE.ADV_LPO.AND.
      &   ICONVF(1).NE.ADV_NSC.AND.
      &   ICONVF(1).NE.ADV_PSI.AND.
-     &   ICONVF(1).NE.ADV_NSC_NC.AND.
-     &   ICONVF(1).NE.ADV_PSI_NC.AND.
      &   ICONVF(1).NE.ADV_LPO_TF.AND.
      &   ICONVF(1).NE.ADV_NSC_TF.AND.
      &   ICONVF(1).NE.ADV_PSI_TF) THEN
@@ -1649,8 +1647,6 @@
      &       ICONVFT(ITRAC).NE.ADV_LPO.AND.
      &       ICONVFT(ITRAC).NE.ADV_NSC.AND.
      &       ICONVFT(ITRAC).NE.ADV_PSI.AND.
-     &       ICONVFT(ITRAC).NE.ADV_NSC_NC.AND.
-     &       ICONVFT(ITRAC).NE.ADV_PSI_NC.AND.
      &       ICONVFT(ITRAC).NE.ADV_LPO_TF.AND.
      &       ICONVFT(ITRAC).NE.ADV_NSC_TF.AND.
      &       ICONVFT(ITRAC).NE.ADV_PSI_TF) THEN
@@ -2016,7 +2012,7 @@
 !       TETAC = 1.D0
 !       MASS-LUMPING COMPLETE ON U
         AGGLOU = 1.D0
-        IF(ICONVF(1).NE.ADV_CAR.AND.ICONVF(1).NE.ADV_PSI_NC.AND.
+        IF(ICONVF(1).NE.ADV_CAR.AND.
      &     ICONVF(1).NE.ADV_LPO.AND.ICONVF(1).NE.ADV_LPO_TF.AND.
      &     ICONVF(1).NE.ADV_NSC.AND.ICONVF(1).NE.ADV_NSC_TF.AND.
      &     ICONVF(1).NE.ADV_PSI.AND.ICONVF(1).NE.ADV_PSI_TF     ) THEN

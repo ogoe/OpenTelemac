@@ -100,6 +100,11 @@
 !+        V7P0
 !+   adding varibles for waq, wind and rain
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        15/03/2016
+!+        V7P2
+!+   Advection scheme ADV_NSC_NC removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -424,7 +429,6 @@
 !
       TYP='Q'
       IF(ICONVF(1).NE.ADV_SUP    .AND.
-     &   ICONVF(1).NE.ADV_NSC_NC .AND.
      &   3*(SLVPRO%PRECON/3).NE.SLVPRO%PRECON) TYP = 'S'
 !
       IF(OPDVIT.EQ.2) TYP='Q'
@@ -465,7 +469,7 @@
       IELMC1 = IELMH
       IELMC2 = IELMU
 !     CM2 USED FOR U IN SOME CASES
-      IF(ICONVF(1).EQ.ADV_SUP.OR.ICONVF(1).EQ.ADV_NSC_NC) THEN
+      IF(ICONVF(1).EQ.ADV_SUP) THEN
         IELMC1 = MAX(IELMC1,IELMU)
       ENDIF
       IF(EQUA(1:10).EQ.'BOUSSINESQ') IELMC1 = MAX(IELMC1,IELMU)
