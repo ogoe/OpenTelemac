@@ -43,6 +43,12 @@
 !+   Adapted to treatment number 3 of negative depths, with a newly
 !+   active option for positive_depths. Checking OPT_HNEG.
 !
+!history  L. STADLER (BAW)
+!+        15/03/2016
+!+        V7P2
+!+   Call to flusec_t2d added at the end, for computing the discharge
+!+   control sections.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
@@ -244,6 +250,15 @@
       IF(CLIPH) CALL CLIP(H,HMIN,.TRUE.,1.D6,.FALSE.,0)
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'FIN DU TRAITEMENT BANCS DECOUVRANTS'
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     OPTIONAL FLUXLINE
+!
+      IF(DOFLUX) THEN
+        CALL FLUSEC_T2D(GLOSEG,DIMGLO,MESH%NSEG,NPOIN,DT,
+     &                  MESH,UNSV2D,FLODEL,FLULIM%R,H,ENTET)
       ENDIF
 !
 !-----------------------------------------------------------------------

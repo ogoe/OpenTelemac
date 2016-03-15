@@ -12,10 +12,10 @@
 !brief    COMPUTES THE EDDY VISCOSITY USING THE MIXING LENGTH
 !         FOR THE HORIZONTAL + PARABOLIC MODEL FOR THE VERTICAL
 !
-!history  C. DORFMANN
-!+        09/03/2016
+!history  C. DORFMANN (TU GRAZ)
+!+        15/03/2016
 !+        V7P2
-!+   First version
+!+   First version, with negative depths secured and some optimisation.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -49,7 +49,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,N,NPOIN
-      DOUBLE PRECISION CL, LM, LMB, USTAR, VISCVERT, VISCHOR, ALPHA
+      DOUBLE PRECISION CL,LM,LMB,USTAR,VISCVERT,VISCHOR2,ALPHA,HC
       DOUBLE PRECISION,PARAMETER :: KARMAN = 0.4D0
 !
 !-----------------------------------------------------------------------
@@ -97,12 +97,13 @@
       ENDIF
 !
       DO I = 1,NPOIN
-        USTAR = SQRT(0.5D0 * CF%R(I) * (U%R(I)**2+V%R(I)**2))
-        VISCVERT = ALPHA*H%R(I)*USTAR
-        LM = CL * KARMAN * H%R(I)
-        VISCHOR = LM**2 * SQRT(2*T1%R(I)**2+2*T4%R(I)**2
-     &            +(T2%R(I)+T3%R(I))**2) * UNSV2D%R(I)
-        VISC%R(I)=PROPNU + SQRT(VISCVERT**2 + VISCHOR**2)
+        USTAR = SQRT(0.5D0*CF%R(I)*(U%R(I)**2+V%R(I)**2))
+        HC=MAX(0.D0,H%R(I))
+        VISCVERT = ALPHA*HC*USTAR
+        LM = CL*KARMAN*HC
+        VISCHOR2 = LM**4 * (2*T1%R(I)**2+2*T4%R(I)**2
+     &            +(T2%R(I)+T3%R(I))**2) * UNSV2D%R(I)**2
+        VISC%R(I)=PROPNU + SQRT(VISCVERT**2+VISCHOR2)
       ENDDO
 !
 !     LOOP ON THE BOUNDARY NODES
@@ -110,12 +111,13 @@
 !
       DO K = 1,NPTFR
         N = MESH%NBOR%I(K)
-        USTAR = SQRT(0.5D0 * CF%R(N) * (U%R(N)**2 + V%R(N)**2))
-        VISCVERT = ALPHA*H%R(N)*USTAR
-        LMB = KARMAN*MIN(CL*H%R(N),MESH%DISBOR%R(K))
-        VISCHOR = LMB**2 * SQRT(2*T1%R(N)**2+2*T4%R(N)**2
-     &            +(T2%R(N)+T3%R(N))**2) * UNSV2D%R(N)
-        VISC%R(N)=PROPNU + SQRT(VISCVERT**2+VISCHOR**2)
+        USTAR = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
+        HC=MAX(0.D0,H%R(N))
+        VISCVERT = ALPHA*HC*USTAR
+        LMB = KARMAN*MIN(CL*HC,MESH%DISBOR%R(K))
+        VISCHOR2 = LMB**4 * (2*T1%R(N)**2+2*T4%R(N)**2
+     &            +(T2%R(N)+T3%R(N))**2) * UNSV2D%R(N)**2
+        VISC%R(N)=PROPNU + SQRT(VISCVERT**2+VISCHOR2)
       ENDDO
 !
 !-----------------------------------------------------------------------

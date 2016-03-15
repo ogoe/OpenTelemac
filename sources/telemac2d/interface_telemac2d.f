@@ -914,6 +914,24 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE FLUSEC_T2D
+     &(GLOSEG,DIMGLO,NSEG,NPOIN,DT,MESH,UNSV2D,FLODEL,FLULIM,H,DOPLOT)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)          :: NSEG,NPOIN
+      INTEGER, INTENT(IN)          :: DIMGLO
+      INTEGER, INTENT(IN)          :: GLOSEG(DIMGLO,2)
+      LOGICAL, INTENT(IN)          :: DOPLOT
+      DOUBLE PRECISION, INTENT(IN) :: DT
+      TYPE(BIEF_MESH)              :: MESH
+      TYPE(BIEF_OBJ),   INTENT(IN) :: FLODEL,UNSV2D,H 
+      DOUBLE PRECISION, INTENT(IN) :: FLULIM(NSEG)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE FLUSEW
      &(AMINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
      & NPTFR,LIMPRO,NBOR,KDIR,KDDL)

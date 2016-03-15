@@ -20,7 +20,7 @@ debimp.f debsce.f   def_zones.f  dis_sta_cur.f \
 difsou.f disper.f   dragcoeff.f dragfo.f entete.f exlim.f fdnrst.f filter_h.f flot.f \
 flucin.f flucint.f fluhyd.f \
 fluroe.f flusec_telemac2d.f flusew.f flusrc.f flutrac.f fluxe.f fluxzz.f flux_hllc.f flux_waf.f flux_tch.f \
-flu_tchamen.f flu_zokagoa.f \
+flu_tchamen.f flu_zokagoa.f flusec_t2d.f \
 fluxpr_telemac2d.f fricti.f friction.f friction_bubble.f \
 friction_lindner.f  friction_calc.f friction_quad.f \
 friction_unif.f friction_zones.f friction_user.f \
