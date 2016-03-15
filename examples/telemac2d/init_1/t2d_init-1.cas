@@ -31,13 +31,13 @@ VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,K,E,D
 VARIABLES A IMPRIMER = ' '      BILAN DE MASSE = VRAI
 SUITE DE CALCUL : NON                                     
 PAS DE TEMPS = 2.5    NOMBRE DE PAS DE TEMPS = 200                            
-BANCS DECOUVRANTS = NON           MASS-LUMPING SUR H : 1.                                                        
+BANCS DECOUVRANTS = NON           MASS-LUMPING SUR H : 1.
 FORME DE LA CONVECTION = 1;5;1;2                                                   
-OPTION DE SUPG         = 1;2;1;2                                                                                        
-SOLVEUR : 7 OPTION DU SOLVEUR : 3      PRECISION DU SOLVEUR = 1.E-6                                                    
+OPTION DE SUPG         = 1;2;1;2
+SOLVEUR : 7 OPTION DU SOLVEUR : 3      PRECISION DU SOLVEUR = 1.E-6
 LOI DE FROTTEMENT SUR LE FOND = 3    COEFFICIENT DE FROTTEMENT = 50.           
-MODELE DE TURBULENCE = 3  COEFFICIENT DE DIFFUSION DES VITESSES = 1.E-6                                                                   
-DEBITS IMPOSES = 0.;750.        COTES IMPOSEES =  265.;0.                                                       
+MODELE DE TURBULENCE = 3 COEFFICIENT DE DIFFUSION DES VITESSES = 1.E-6
+DEBITS IMPOSES = 0.;750.        COTES IMPOSEES =  265.;0.
 COTE INITIALE = 265.  CONDITIONS INITIALES = 'COTE CONSTANTE'                     
 OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
 DISCRETISATIONS EN ESPACE : 11;11

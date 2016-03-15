@@ -49,7 +49,7 @@ COEFFICIENT DE DIFFUSION DES VITESSES = 0.D0
 /     PROPAGATION                                                        
 /----------------------------------------------------------------------/ 
 FORME DE LA CONVECTION               = 1;5                                      
-OPTION DE SUPG                       = 1;2                                                                                               
+OPTION DE SUPG                       = 1;2
 IMPLICITATION POUR LA HAUTEUR        = 0.6 
 IMPLICITATION POUR LA VITESSE        = 0.6  
 DISCRETISATIONS EN ESPACE            = 11;11  

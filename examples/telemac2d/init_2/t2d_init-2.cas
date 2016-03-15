@@ -40,12 +40,12 @@ SUITE DE CALCUL : NON
 PAS DE TEMPS = 2.5    NOMBRE DE PAS DE TEMPS = 200                            
 BANCS DECOUVRANTS = OUI           MASS-LUMPING SUR H : 1. 
 OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 3                                                       
-FORME DE LA CONVECTION = 1;5                                                    
-OPTION DE SUPG         = 1;2                                                                                        
-SOLVEUR : 7 OPTION DU SOLVEUR : 3      PRECISION DU SOLVEUR = 1.E-6                                                    
+FORME DE LA CONVECTION = 1;5
+OPTION DE SUPG         = 1;2
+SOLVEUR : 7 OPTION DU SOLVEUR : 3      PRECISION DU SOLVEUR = 1.E-6
 LOI DE FROTTEMENT SUR LE FOND = 3    COEFFICIENT DE FROTTEMENT = 50.           
-MODELE DE TURBULENCE = 1  COEFFICIENT DE DIFFUSION DES VITESSES = 1.                                                                 
-DEBITS IMPOSES = 0.;750.        COTES IMPOSEES =  265.;0.                                                       
+MODELE DE TURBULENCE = 1  COEFFICIENT DE DIFFUSION DES VITESSES = 1.
+DEBITS IMPOSES = 0.;750.        COTES IMPOSEES =  265.;0.
 COTE INITIALE = 265.  CONDITIONS INITIALES = 'HAUTEUR NULLE'                     
 OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
 DISCRETISATIONS EN ESPACE : 11;11
