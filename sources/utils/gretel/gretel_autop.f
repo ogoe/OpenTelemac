@@ -346,7 +346,7 @@
           DO IVAR=1,NVAR_RES
             CALL GET_DATA_VALUE(RESFORMAT,NRESPAR,ITIME,
      &                          TEXTELU(IVAR)(1:16),TMP,
-     &                          NPOIN_PAR,IERR,REPO=.TRUE.)
+     &                          NPOIN_PAR,IERR)
             CALL CHECK_CALL(IERR,'GRETEL:GET_DATA_VALUE')
             IF(NPLAN_RES.EQ.0) THEN
               ! 2D
@@ -373,7 +373,7 @@
         !
         DO I=1,NVAR_RES
           CALL ADD_DATA(RESFORMAT,NRES,TEXTELU(I),AT,ITIME,I.EQ.1,
-     &                  RESDATA(:,I),NPOIN_RES,IERR,REPO=.TRUE.)
+     &                  RESDATA(:,I),NPOIN_RES,IERR)
           CALL CHECK_CALL(IERR,'GRETEL:ADD_DATA:RES')
         ENDDO
 
