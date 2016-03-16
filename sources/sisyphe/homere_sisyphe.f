@@ -65,20 +65,7 @@
 !
 !  HEADING TO THE LISTING
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,102)
-100   FORMAT(/////,1X,'LISTING DE SISYPHE ',78('-'))
-101   FORMAT(/////,1X,'LISTING OF SISYPHE ',78('-'))
-102   FORMAT(/////,
-     &14X,'    SSSS I   SSSS Y   Y PPPP  H   H EEEEE',/,
-     &14X,'   S     I  S      Y Y  P   P H   H E    ',/,
-     &14X,'    SSS  I   SSS    Y   PPPP  HHHHH EEEE  ',/,
-     &14X,'       S I      S   Y   P     H   H E     ',/,
-     &14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE',/,
-     &14X,'                                          ',/,
-     &14X,'                 VERSION 7.2              ',/,
-     &14X,/////)
+      CALL PRINT_HEADER(CODE,'                        ')
 !
 !-----------------------------------------------------------------------
 !

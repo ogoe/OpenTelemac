@@ -17,6 +17,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_PARTEL
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -44,6 +45,7 @@
       WRITE(LU,*) '+-------------------------------------------------+'
       WRITE(LU,*) '  GRETEL: TELEMAC MERGER'
       WRITE(LU,*) '                                                   '
+      WRITE(LU,*) '  VERSION ',VERSION
       WRITE(LU,*) '  HOLGER WEIL BEER (BAW)'
       WRITE(LU,*) '  JEAN-MICHEL HERVOUET (LNHE)'
       WRITE(LU,*) '  YOANN AUDOUIN        (LNHE) '

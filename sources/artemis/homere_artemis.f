@@ -66,20 +66,7 @@
 !
 !     HEADING
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,102)
-100   FORMAT(/////,1X,'LISTING DE ARTEMIS ',78('-'))
-101   FORMAT(/////,1X,'LISTING OF ARTEMIS ',78('-'))
-102   FORMAT(/////,
-     &14X,'    AAA  RRRR  TTTTT EEEEE M   M IIIII  SSSS',/,
-     &14X,'   A   A R   R   T   E     MM MM   I   S    ',/,
-     &14X,'   AAAAA RRRR    T   EEEEE M M M   I    SSS ',/,
-     &14X,'   A   A R   R   T   E     M   M   I       S',/,
-     &14X,'   A   A R   R   T   EEEEE M   M IIIII SSSS ',/,
-     &14X,'                                            ',/,
-     &14X,'          VERSION 7.2      FORTRAN 90 ',/,
-     &14X,/////)
+      CALL PRINT_HEADER(CODE,'                        ')
 !
 !-----------------------------------------------------------------------
 !

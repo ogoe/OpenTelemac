@@ -110,18 +110,7 @@
 !
 !     ENTETE SUR LISTING
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,102)
-100   FORMAT(/////,1X,'LISTING DE STBTEL ',78('-'))
-101   FORMAT(/////,1X,'LISTING OF STBTEL ',78('-'))
-102   FORMAT(/////,
-     &14X,'   SSSSS  TTTTT  BBBB   TTTTT  EEEEE  L    ',/,
-     &14X,'   S        T    B   B    T    E      L    ',/,
-     &14X,'   SSSSS    T    BBBB     T    EEEE   L    ',/,
-     &14X,'       S    T    B   B    T    E      L    ',/,
-     &14X,'   SSSSS    T    BBBB     T    EEEEE  LLLLL',//,
-     &14X,'            VERSION 7.2  FORTRAN 90                 ',/////)
+      CALL PRINT_HEADER(CODE,'                        ')
 !
 !=======================================================================
 ! LECTURE DU FICHIER CAS

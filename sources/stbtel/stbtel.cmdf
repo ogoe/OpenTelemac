@@ -89,6 +89,7 @@ files: declarations_special.f
   check_allocate.f
   write_error.f
   check_call.f
+  print_header.f
 
 [stbtel]
 path: <root>|sources|stbtel

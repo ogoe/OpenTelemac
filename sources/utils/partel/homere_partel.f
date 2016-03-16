@@ -33,6 +33,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARTEL
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER :: LNG,LU,LI
@@ -80,7 +81,7 @@
       WRITE(LU,*) '  METIS 5.0.2 (C) COPYRIGHT 2012 '
       WRITE(LU,*) '  REGENTS OF THE UNIVERSITY OF MINNESOTA '
       WRITE(LU,*) ' '
-      WRITE(LU,*) '  BIEF 7.1 (C) COPYRIGHT 2012 EDF'
+      WRITE(LU,*) '  BIEF ',VERSION,' (C) COPYRIGHT 2012 EDF'
       WRITE(LU,*) '+-------------------------------------------------+'
       WRITE(LU,*) ' '
       WRITE(LU,*) ' '

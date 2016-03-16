@@ -676,6 +676,7 @@ files: declarations_special.f
   check_call.f
   get_nodes_per_element.f
   check_allocate.f
+  print_header.f
 
 [telemac2d]
 path: <root>|sources|telemac2d

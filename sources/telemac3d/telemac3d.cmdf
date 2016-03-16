@@ -673,6 +673,7 @@ files: declarations_special.f
   write_error.f
   check_call.f
   extens.f
+  print_header.f
 
 [telemac2d]
 path: <root>|sources|telemac2d

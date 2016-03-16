@@ -43,18 +43,7 @@
 !
       CALL DATE_AND_TIME(VALUES=TDEB)
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,10)
-100   FORMAT(/////,1X,'LISTING DE POSTEL-3D ',78('-'))
-101   FORMAT(/////,1X,'LISTING OF POSTEL-3D ',78('-'))
-10    FORMAT('1',1X,100('-'),////////,
-     &12X,'PPPP    OOO    SSSS  TTTTT  EEEEE  L         3333   DDDD ',/,
-     &12X,'P   P  O   O  S        T    E      L             3  D   D',/,
-     &12X,'PPPP   O   O   SSS     T    EEEE   L     ---  333   D   D',/,
-     &12X,'P      O   O      S    T    E      L             3  D   D',/,
-     &12X,'P       OOO   SSSS     T    EEEEE  LLLLL     3333   DDDD ',
-     &////////)
+      CALL PRINT_HEADER(CODE,'                        ')
 !
       CALL LECDON_POSTEL3D(MOTCAR,FILE_DESC,PATH,NCAR)
 !

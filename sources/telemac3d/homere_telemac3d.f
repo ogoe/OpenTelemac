@@ -72,20 +72,7 @@
 !
 ! WRITES A BANNER TO THE LISTING
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,102)
-100   FORMAT(///,78('-'),/,1X,'LISTING DE TELEMAC-3D ',/)
-101   FORMAT(///,78('-'),/,1X,'LISTING OF TELEMAC-3D ',/)
-102   FORMAT(/////,
-     &14X,'   TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
-     &14X,'     T    E      L      E      MM MM  A   A  C    ',/,
-     &14X,'     T    EEE    L      EEE    M M M  AAAAA  C    ',/,
-     &14X,'     T    E      L      E      M   M  A   A  C    ',/,
-     &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
-     &14X,'                                                  ',/,
-     &14X,'            3D   VERSION 7.2   FORTRAN 90    ',/,
-     &14X,/////)
+      CALL PRINT_HEADER(CODE1,'                        ')
 !
 !-----------------------------------------------------------------------
 ! READS THE STEERING FILE
@@ -112,27 +99,13 @@
 !
       IF(INCLUS(COUPLING,'SISYPHE')) THEN
 !
-        IF(LNG.EQ.1) WRITE(LU,103)
-        IF(LNG.EQ.2) WRITE(LU,104)
-        WRITE(LU,105)
-103     FORMAT(/////,1X,'LISTING DE SISYPHE AVEC COUPLAGE',78('-'))
-104     FORMAT(/////,1X,'LISTING OF SISYPHE WITH COUPLING',78('-'))
-105     FORMAT(/////,
-     &  14X,'    SSSS I   SSSS Y   Y PPPP  H   H EEEEE' ,/,
-     &  14X,'   S     I  S      Y Y  P   P H   H E    ' ,/,
-     &  14X,'    SSS  I   SSS    Y   PPPP  HHHHH EEEE  ',/,
-     &  14X,'       S I      S   Y   P     H   H E     ',/,
-     &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
-     &  14X,'                                          ',/,
-     &  14X,'                VERSION 7.2               ',/,
-     &  14X,'      COUPLED WITH TELEMAC-3D INTERNALLY  ',/,
-     &  14X,/////)
+        CALL PRINT_HEADER(CODE2,CODE1)
 !
-      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
-      CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
-     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
-      CALL CONFIG_CODE(1)
-      CALL POINT_SISYPHE
+        CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
+        CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
+     &                       INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
+        CALL CONFIG_CODE(1)
+        CALL POINT_SISYPHE
 !
       ENDIF
 !
@@ -142,45 +115,13 @@
 !
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-        WRITE(LU,106)
-        WRITE(LU,107)
-106     FORMAT(100('-'),////////,
-     &  16X,
-     &  'TTTTT  OOOOO  M   M  AAAAA  W   W  AAAAA  CCCCC '
-     &  ,/,16X,
-     &  '  T    O   O  MM MM  A   A  W   W  A   A  C     '
-     &  ,/,16X,
-     &  '  T    O   O  M W M  AAAAA  W W W  AAAAA  C     '
-     &  ,/,16X,
-     &  '  T    O   O  M   M  A   A  WW WW  A   A  C     '
-     &  ,/,16X,
-     &  '  T    OOOOO  M   M  A   A  W   W  A   A  CCCCC '
-     &  ,//)
-107     FORMAT(15X,
-     &  '               |    |    |                 '
-     &  ,/,15X,
-     &  '              )_)  )_)  )_) _              '
-     &  ,/,15X,
-     &  '             )___))___))___)\              '
-     &  ,/,15X,
-     &  '             )____)____)_____)\\           '
-     &  ,/,15X,
-     &  '           _____|____|____|____\\\__       '
-     &  ,/,15X,
-     &  '  ---------\               7.2  /---------  '
-     &  ,/,15X,
-     & '    ^^^^^^^^^^^^^^^^^^^^^^^^^^^             '
-     &  ,/,15X,
-     &  '         ^^^^      ^^^^     ^^^    ^^      '
-     &  ,/,15X,
-     &  '             ^^^^      ^^^                 '
-     &,///)
+        CALL PRINT_HEADER(CODE3,CODE1)
 !
-      CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
-      CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .TRUE.,IFLOT,3,.FALSE.)
-      CALL CONFIG_CODE(1)
-      CALL POINT_TOMAWAC
+        CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
+        CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
+     &                       .TRUE.,IFLOT,3,.FALSE.)
+        CALL CONFIG_CODE(1)
+        CALL POINT_TOMAWAC
 !
       ENDIF
 !

@@ -41,6 +41,12 @@
       CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
       CHARACTER(LEN=24), PARAMETER :: CODE3='TOMAWAC                 '
       CHARACTER(LEN=24), PARAMETER :: CODE4='WAQTEL                  '
+      CHARACTER(LEN=24), PARAMETER :: CODE5='TELEMAC3D               '
+      CHARACTER(LEN=24), PARAMETER :: CODE6='ARTEMIS                 '
+      CHARACTER(LEN=24), PARAMETER :: CODE7='POSTEL3D                '
+      CHARACTER(LEN=24), PARAMETER :: CODE8='PARTEL                  '
+      CHARACTER(LEN=24), PARAMETER :: CODE9='GRETEL                  '
+      CHARACTER(LEN=24), PARAMETER :: CODE10='STBTEL                  '
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
@@ -59,22 +65,7 @@
 !
 !     PRINTS BANNER TO LISTING
 !
-      IF(LNG.EQ.1) WRITE(LU,100)
-      IF(LNG.EQ.2) WRITE(LU,101)
-      WRITE(LU,102)
-100   FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
-101   FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
-102   FORMAT(/////,
-     &14X,'   TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
-     &14X,'     T    E      L      E      MM MM  A   A  C    ',/,
-     &14X,'     T    EEE    L      EEE    M M M  AAAAA  C    ',/,
-     &14X,'     T    E      L      E      M   M  A   A  C    ',/,
-     &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
-     &14X,'                                                  ',/,
-     &14X,'           2D    VERSION 7.2    FORTRAN 90        ',/,
-     &14X,'                 WITH SEVERAL TRACERS             ',/,
-     &14X,'           COUPLED WITH SISYPHE AND TOMAWAC       ',/,
-     &14X,/////)
+      CALL PRINT_HEADER(CODE1,'                        ')
 !
 !-----------------------------------------------------------------------
 !
@@ -109,21 +100,7 @@
 !
       IF(INCLUS(COUPLING,'SISYPHE')) THEN
 !
-        IF(LNG.EQ.1) WRITE(LU,103)
-        IF(LNG.EQ.2) WRITE(LU,104)
-        WRITE(LU,105)
-103     FORMAT(/////,1X,'LISTING DE SISYPHE AVEC COUPLAGE',78('-'))
-104     FORMAT(/////,1X,'LISTING OF SISYPHE WITH COUPLING',78('-'))
-105     FORMAT(/////,
-     &  14X,'    SSSS I   SSSS Y   Y PPPP  H   H EEEEE' ,/,
-     &  14X,'   S     I  S      Y Y  P   P H   H E    ' ,/,
-     &  14X,'    SSS  I   SSS    Y   PPPP  HHHHH EEEE  ',/,
-     &  14X,'       S I      S   Y   P     H   H E     ',/,
-     &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
-     &  14X,'                                          ',/,
-     &  14X,'                VERSION 7.2               ',/,
-     &  14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
-     &  14X,/////)
+        CALL PRINT_HEADER(CODE2,CODE1)
 !
       CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
 !
@@ -146,39 +123,7 @@
 !
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
 !
-        WRITE(LU,106)
-        WRITE(LU,107)
-106     FORMAT(100('-'),////////,
-     &  16X,
-     &  'TTTTT  OOOOO  M   M  AAAAA  W   W  AAAAA  CCCCC '
-     &  ,/,16X,
-     &  '  T    O   O  MM MM  A   A  W   W  A   A  C     '
-     &  ,/,16X,
-     &  '  T    O   O  M W M  AAAAA  W W W  AAAAA  C     '
-     &  ,/,16X,
-     &  '  T    O   O  M   M  A   A  WW WW  A   A  C     '
-     &  ,/,16X,
-     &  '  T    OOOOO  M   M  A   A  W   W  A   A  CCCCC '
-     &  ,//)
-107     FORMAT(15X,
-     &  '               |    |    |                 '
-     &  ,/,15X,
-     &  '              )_)  )_)  )_) _              '
-     &  ,/,15X,
-     &  '             )___))___))___)\              '
-     &  ,/,15X,
-     &  '             )____)____)_____)\\           '
-     &  ,/,15X,
-     &  '           _____|____|____|____\\\__       '
-     &  ,/,15X,
-     &  '  ---------\               7.2  /---------  '
-     &  ,/,15X,
-     & '    ^^^^^^^^^^^^^^^^^^^^^^^^^^^             '
-     &  ,/,15X,
-     &  '         ^^^^      ^^^^     ^^^    ^^      '
-     &  ,/,15X,
-     &  '             ^^^^      ^^^                 '
-     &,///)
+        CALL PRINT_HEADER(CODE3,CODE1)
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
@@ -202,42 +147,24 @@
 !
         WATQUA = .TRUE.
 !
-        WRITE(LU,108)
-        WRITE(LU,109)
-108   FORMAT(100('-'),////////,
-     &16X,
-     &'W   W  AAAAA  QQQQQ  TTTTT  EEEEE  L     ',/,16X,
-     &'W   W  A   A  Q   Q    T    E      L     ',/,16X,
-     &'W W W  AAAAA  Q Q Q    T    EEE    L     ',/,16X,
-     &'WW WW  A   A  Q  QQ    T    E      L     ',/,16X,
-     &'W   W  A   A  QQQQQ    T    EEEEE  LLLLL ',//)
-109   FORMAT(15X,
-     &"                                           ",/,15X,
-     &"                                           ",/,15X,
-     &"         ,      ,      ,      ,            ",/,15X,
-     &"         )\     )\     )\     )\           ",/,15X,
-     &"        /  \   /  \   /  \   /  \          ",/,15X,
-     &"       '    ' '    ' '    ' '    '         ",/,15X,
-     &"       ',  ,' ',  ,' ',  ,' ',  ,'         ",/,15X,
-     &"         `'     `'     `'     `'           ",/,15X,
-     &"                                           ",///)
+        CALL PRINT_HEADER(CODE4,CODE1)
 !
-      CALL LECDON_WAQTEL(FILE_DESC,PATH,NCAR,CODE4)
-      CALL BIEF_OPEN_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,PATH,NCAR,
-     &                     .TRUE.,IFLOT,4,.FALSE.)
+        CALL LECDON_WAQTEL(FILE_DESC,PATH,NCAR,CODE4)
+        CALL BIEF_OPEN_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,PATH,NCAR,
+     &                       .TRUE.,IFLOT,4,.FALSE.)
 !
-!     UPDATING TRACER INFORMATION OF WAQTEL
+!       UPDATING TRACER INFORMATION OF WAQTEL
 !
-      CALL NAMETRAC_WAQ(TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS,
-     &                  MAXTRA,ICONVFT,VISCT)
+        CALL NAMETRAC_WAQ(TEXTE,TEXTPR,NAMETRAC,NTRAC,IND_T,WAQPROCESS,
+     &                    MAXTRA,ICONVFT,VISCT)
 !
-!     RESETS TELEMAC2D CONFIGURATION
+!       RESETS TELEMAC2D CONFIGURATION
 !
-      CALL CONFIG_CODE(1)
+        CALL CONFIG_CODE(1)
 !
-!     MEMORY ORGANISATION
+!       MEMORY ORGANISATION
 !
-      CALL POINT_WAQTEL(WAQPROCESS,MESH,IELM1,VENT,WINDX,WINDY)
+        CALL POINT_WAQTEL(WAQPROCESS,MESH,IELM1,VENT,WINDX,WINDY)
 !
       ENDIF
 !
