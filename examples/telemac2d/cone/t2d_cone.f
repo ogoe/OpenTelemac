@@ -29,7 +29,7 @@
      & MAXADV,OPTADV_VI)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    PROPAGATION - DIFFUSION - SOURCE TERMS STEP TO SOLVE
@@ -154,6 +154,24 @@
 !+   boundary segments. Arguments C0 and COTOND removed. Incident wave
 !+   removed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        17/04/2014
+!+        V7P0
+!+   Correction for weirs. The function P_DSUM for weirs must be called
+!+   in all processors, so it must be called outside the test:
+!+   IF(MESH%NPTFR.GT0) where it was in previous versions.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        16/05/2014
+!+        V7P0
+!+   A copy of LIMPRO is done to be sent to cvtrvf (that may change it).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        15/03/2016
+!+        V7P2
+!+   Enabling advection solver 15 (ERIA) for velocities with a double
+!+   to cvtrvf_pos. Advection sschemes ADV_PSI_NC and ADV_NSC_NC removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -218,7 +236,7 @@
 !| ISOUSI         |-->| NUMBER OF SUB-ITERATION IN THE TIME-STEP
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KFROT          |-->| KEYWORD: 'LAW OF BOTTOM FRICTION'
-!| LIMPRO         |-->| BOUNDARY CONDITIONS FOR H, U V PER POINTS
+!| LIMPRO         |<->| BOUNDARY CONDITIONS FOR H, U V PER POINTS
 !|                |   | AND SEGMENTS
 !| LT             |-->| ITERATION NUMBER
 !| MASK           |-->| BLOCK OF MASKS FOR SEGMENTS :
@@ -314,8 +332,11 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC, ONLY : ADV_CAR,ADV_SUP,ADV_NSC,ADV_PSI,
-     &   ADV_PSI_NC,ADV_NSC_NC,ADV_LPO,ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF
-      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,OPT_HNEG
+     &                                 ADV_LPO,
+     &                                 ADV_NSC_TF,ADV_PSI_TF,ADV_LPO_TF,
+     &                                 KDDL
+      USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2,TB2,NCO_DIST,
+     &                                   NSP_DIST,OPT_HNEG
 !
       USE INTERFACE_TELEMAC2D, EX_PROPAG => PROPAG
 !
@@ -774,4 +795,3 @@
 !
       RETURN
       END
-
