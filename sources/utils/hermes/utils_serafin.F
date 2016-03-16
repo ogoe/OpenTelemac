@@ -24,7 +24,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER, PARAMETER :: MAX_FILE = 30
+      INTEGER, PARAMETER :: MAX_FILE = 3000
       INTEGER :: NFILES = 0
 !
       INTEGER, PARAMETER :: IS = 4 ! INTEGER SIZE
@@ -70,10 +70,7 @@
       END TYPE SRF_INFO
 
       ! HASH TABLE FOR SERAFIN FILES
-      INTEGER :: HASH(MAX_FILE) =
-     &         (/ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     &            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-     &            0, 0, 0, 0 /)
+      INTEGER :: HASH(MAX_FILE) = 0
       TYPE(SRF_INFO),SAVE :: SRF_OBJ_TAB(MAX_FILE)
 !
 !-----------------------------------------------------------------------
@@ -1836,8 +1833,8 @@
             READ(FILE_ID,IOSTAT=IERR) RES_VALUE(I)
           ENDIF
           CALL CHECK_CALL(IERR,'GET_DATA_VALUE_SRF:READ')
-          MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%RS
         ENDDO
+        READ(FILE_ID,IOSTAT=IERR) TAG
         !
         RETURN
       END SUBROUTINE
@@ -2156,22 +2153,10 @@
         ! convert in real if file in single precision
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
           ! X COORDINATES
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
-          CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          DO I=1,NPOIN
-            WRITE(FILE_ID,IOSTAT=IERR) REAL(X(I))
-            CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          ENDDO
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(REAL(X(I)),I=1,NPOIN),TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
           ! Y COORDINATES
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
-          CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          DO I=1,NPOIN
-            WRITE(FILE_ID,IOSTAT=IERR) REAL(Y(I))
-            CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          ENDDO
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(REAL(Y(I)),I=1,NPOIN),TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         ELSE
           ! X Y COORDINATES
@@ -2280,19 +2265,22 @@
      &            + INT(IVAR-1,I8) * SRF_OBJ_TAB(SRF_ID)%SIZE_DATA
           ! Using a read to go to position in file
           READ(FILE_ID,POS=MY_POS-4,IOSTAT=IERR) TAG
+           
         ENDIF
         ! If the file is in single precision we convert the data
 
         IF(SRF_OBJ_TAB(SRF_ID)%RS.EQ.4) THEN
           TAG = SRF_OBJ_TAB(SRF_ID)%RS*N
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(REAL(VAR_VALUE(I)),I=1,N),TAG
           CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
-          DO I=1,N
-            WRITE(FILE_ID,IOSTAT=IERR) REAL(VAR_VALUE(I))
-            CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
-          ENDDO
-          WRITE(FILE_ID,IOSTAT=IERR) TAG
-          CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
+         !WRITE(FILE_ID,IOSTAT=IERR) TAG
+         !CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
+         !DO I=1,N
+         !  WRITE(FILE_ID,IOSTAT=IERR) REAL(VAR_VALUE(I))
+         !  CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
+         !ENDDO
+         !WRITE(FILE_ID,IOSTAT=IERR) TAG
+         !CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
         ELSE
           ! write time of the dataset if it is the first variable
           ! write the data for that variable
