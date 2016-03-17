@@ -5,5 +5,6 @@ SRCS= \
 declarations_special.f \
 gracestop.f get_nodes_per_element.f \
 special_plante.f extens.f \
+print_header.f \
 check_allocate.f plante.F \
 check_call.f write_error.f

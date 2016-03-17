@@ -81,6 +81,12 @@
 !+        V6P3
 !+  3 arguments added to VECTOS.
 !
+!history  L. STADLER (BAW)
+!+        17/03/2016
+!+        V7P2
+!+  Call to flusec_sis added for new computation of discharges through
+!+  cross-sections.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| DT             |-->| TIME STEP
@@ -123,6 +129,7 @@
 !
       USE BIEF
       USE INTERFACE_SISYPHE, EX_BEDLOAD_SOLVS_FE => BEDLOAD_SOLVS_FE
+      USE DECLARATIONS_SISYPHE, ONLY : DOFLUX
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -198,6 +205,15 @@
 !                             SEGMENT NUMBERING
 !
       CALL OS('X=Y-Z   ' ,X=ZFCL,Y=HZ,Z=HZN)
+!
+!-----------------------------------------------------------------------
+!
+!     NEW FLUXES ACROSS CROSS-SECTIONS
+!
+      IF(DOFLUX) THEN
+        CALL FLUSEC_SIS(GLOSEG,DIMGLO,NSEG,NPOIN,DT,MESH,UNSV2D,
+     &                  FLODEL,FLULIM,HZ,ICLA,ENTET)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

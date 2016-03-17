@@ -157,9 +157,6 @@
 !
         DZF_TASS%R(I)=ELAY%R(I)-T2%R(I)
 !
-! NOTE JMH : I HAS UNDERSTOOD THAT CLASS 1 = MUD
-!            AND FROM 2 ON: SAND; WHAT ARE WE DOING HERE ??
-!
         IF(NSICLA.GT.1) THEN
           DO J=1,NOMBLAY
            IF(ES(I,J).GE.1.D-6) THEN

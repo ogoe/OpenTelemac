@@ -630,6 +630,7 @@ files: declarations_sisyphe.f
   rescue_sisyphe_notperma.f
   fluxpr_sisyphe.f
   flusec_sisyphe.f
+  flusec_sis.f
   calcuw.f
   mean_grain_size.f
   init_zero.f

@@ -169,6 +169,8 @@
           SISSEO=I
         ELSEIF(SIS_FILES(I)%TELNAME.EQ.'SISLIQ') THEN
           SISLIQ=I
+        ELSEIF(SIS_FILES(I)%TELNAME.EQ.'SISFLX') THEN
+          SISFLX=I
         ENDIF
       ENDDO
 !
@@ -576,7 +578,6 @@
 !     V6P1
       KSPRED   =MOTLOG(ADRESS(3,26))
 !
-! MAK
 !     Settling lag: determines choice between Rouse and Miles concentration profile
 !     SET_LAG = TRUE : Miles
 !             = FALSE: Rouse
@@ -586,7 +587,8 @@
       STAT_MODE  = MOTLOG(ADRESS(3,28) )
 !     Checking the mesh
       CHECK_MESH = MOTLOG(ADRESS(3,29) )
-!
+!     NEW IMPLEMENTATION FOR CROSS-SECTION
+      DOFLUX = MOTLOG(ADRESS(3,61) )
 !
 ! ################################### !
 ! CHARACTER STRING KEYWORDS           !
@@ -632,7 +634,6 @@
       SIS_FILES(SISSEO)%NAME=MOTCAR( ADRESS(4,37) )
 !     FILE FOR LIQUID BOUNDARIES
       SIS_FILES(SISLIQ)%NAME=MOTCAR( ADRESS(4,38) )
-! PAT 090812
 !     GEOMETRY FILE FORMAT
       SIS_FILES(SISGEO)%FMT = MOTCAR( ADRESS(4,39) )(1:8)
       CALL MAJUS(SIS_FILES(SISGEO)%FMT)
@@ -646,8 +647,9 @@
 !     UHM FOR CVSP, But it's not Beautiful
       TEMPVAR  =   MOTCAR(ADRESS(4,51)   )
       CALL LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
-      !UHM
-
+!     FLUXLINEFILE  
+      SIS_FILES(SISFLX)%NAME=MOTCAR( ADRESS(4,69) ) 
+! 
       IF(LNG.EQ.1) WRITE(LU,101)
       IF(LNG.EQ.2) WRITE(LU,102)
 101   FORMAT(1X,/,19X, '********************************************',/,

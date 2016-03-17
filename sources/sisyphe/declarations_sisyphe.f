@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V7P1
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL SISYPHE VARIABLES
@@ -628,7 +628,7 @@
 !-----------------------------------------------------------------------
 !
 !      KEYWORDS AND PARAMETERS
-
+!
 !     Maximum Layer Number in a VERTICAL SORTING PROFILE FOR EACH POINT (UHM)
       INTEGER, ALLOCATABLE :: PRO_MAX(:)
 !
@@ -672,7 +672,7 @@
 !
       INTEGER ICF
 !
-!> @brief
+!
 !
       INTEGER NPAS
 !
@@ -854,11 +854,11 @@
 !
       LOGICAL, ALLOCATABLE :: OKCGL(:)
 !
-!  C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
+!     C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
 !
       LOGICAL :: CVSM_OUT !UHM
 
-!  C-VSM_FULL WRITES OUT (OR NOT) EVER
+!     C-VSM_FULL WRITES OUT (OR NOT) EVER
 !
       LOGICAL :: CVSM_OUT_FULL !UHM
 !
@@ -994,22 +994,25 @@
 !
       LOGICAL :: KSPRED
 !
-! MAK
 !     Settling lag: determines choice between Rouse and Miles concentration profile
 !     SET_LAG = TRUE : Miles
 !             = FALSE: Rouse
 !
       LOGICAL :: SET_LAG
+!
 !     STATIONARY MODE: calculate sediment transport without updating the bed.
+!
       LOGICAL :: STAT_MODE
+!
+!     FLUXLINE
+!
+      LOGICAL :: DOFLUX
 !
 !-----------------------------------------------------------------------
 !
 !       6) REALS
 !
 !-----------------------------------------------------------------------
-!
-!
 !
       DOUBLE PRECISION RC
 !
@@ -1341,7 +1344,7 @@
 !     VARIOUS FILES RANKS, WHICH ARE ALSO LOGICAL UNITS IF NO COUPLING
 !
       INTEGER SISRES,SISREF,SISPRE,SISHYD,SISCOU,SISGEO,SISCLI,SISCAS
-      INTEGER SISFON,SISMAF,SISSEC,SISSEO,SISLIQ
+      INTEGER SISFON,SISMAF,SISSEC,SISSEO,SISLIQ,SISFLX
 !
 !-----------------------------------------------------------------------
 !

@@ -5,7 +5,7 @@
      &( VISC , U , V , H , CF , ELDER , PROPNU )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES THE TENSORIAL DISPERSION COEFFICIENTS
@@ -28,6 +28,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. DORFMANN (TU GRAZ)
+!+        17/03/2016
+!+        V7P2
+!+   Securing the negative depths to avoid a negative diffusion.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
@@ -55,7 +60,7 @@
 !
       INTEGER I,NPOIN,NPX
 !
-      DOUBLE PRECISION KL,KT,COST,SINT,NORMV,USTAR
+      DOUBLE PRECISION KL,KT,COST,SINT,NORMV,USTAR,HC
 !
       INTRINSIC SQRT,MAX
 !
@@ -72,15 +77,17 @@
         COST = U(I)/NORMV
         SINT = V(I)/NORMV
         USTAR = SQRT( 0.5D0 * CF(I) * ( U(I)**2 + V(I)**2 ) )
-        KL = ELDER(1) * USTAR * H(I)
-        KT = ELDER(2) * USTAR * H(I)
+        HC=MAX(0.D0,H(I))
+        KL = ELDER(1) * USTAR * HC
+        KT = ELDER(2) * USTAR * HC
         VISC%R(I      ) = PROPNU + ( KL - KT ) * COST**2    + KT
         VISC%R(I+NPX  ) = PROPNU + ( KT - KL ) * COST**2    + KL
         VISC%R(I+2*NPX) = PROPNU + ( KL - KT ) * COST*SINT
 !
-      ENDDO ! I
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+
