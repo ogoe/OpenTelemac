@@ -1,9 +1,8 @@
 !                    ***********************
                      SUBROUTINE POINT_WAQTEL
 !                    ***********************
-     & (WAQPROCESS,MESH,IELM1,VENT,WINDX,WINDY)
 !
-!
+     &(WAQPROCESS,MESH,IELM1,VENT,WINDX,WINDY)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   21/08/2010

@@ -1,6 +1,6 @@
-!                   **********************
+!                    *******************
                      SUBROUTINE SATUR_O2
-!                    **********************
+!                    *******************
 !
      &(SATO2,FORMCS,WATTEMP,EPS)
 !
@@ -11,11 +11,10 @@
 !brief    COMPUTES THE CONCENTRATION OF O2 SATURATION OF WATER
 !
 !
-!
 !history  R. ATA (LNHE)
 !+        02/09/2015
 !+        V7P1
-!+
+!+    First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EPS            |-->| TO AVOID DIVISION BY 0
@@ -36,17 +35,18 @@
       INTEGER         , INTENT(IN)    :: FORMCS
       DOUBLE PRECISION, INTENT(IN)    :: WATTEMP,EPS
       DOUBLE PRECISION, INTENT(INOUT) :: SATO2
-      INTRINSIC ABS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTRINSIC ABS
 !
+!-----------------------------------------------------------------------
 !
-      IF(FORMCS.NE.0)THEN
-        IF(FORMCS.EQ.1)THEN
-          SATO2 = 14.652D0 - 0.41022D0 * WATTEMP
-     &         + 0.007991D0 * WATTEMP**2
-     &         - 7.7774D-5 * WATTEMP**3
+      IF(FORMCS.NE.0) THEN
+        IF(FORMCS.EQ.1) THEN
+          SATO2 = 14.652D0 - 0.41022D0  * WATTEMP
+     &                     + 0.007991D0 * WATTEMP**2
+     &                     - 7.7774D-5  * WATTEMP**3
         ELSEIF(FORMCS.EQ.2)THEN
           IF(ABS(31.6D0+WATTEMP).GT.EPS)THEN
             SATO2 = 468.D0/(31.6D0+WATTEMP)
@@ -54,10 +54,10 @@
             SATO2 = 468.D0/EPS
           ENDIF
         ELSE
-          IF(LNG.EQ.1)THEN
-            WRITE(LU,100)FORMCS
-          ELSE
-            WRITE(LU,101)FORMCS
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,100) FORMCS
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,101) FORMCS
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -69,8 +69,8 @@
 100   FORMAT(1X,'FORMULE DE CS:',I3,/,1X, 'NON PROGRAMMEE')
 101   FORMAT(1X,'CS FORMULA :',I3,/,1X, 'NOT AVAILABLE')
 !
-      RETURN
-      END
-!
 !-----------------------------------------------------------------------
 !
+      RETURN
+      END
+

@@ -5,7 +5,7 @@
      &(CODE,CODE1)
 !
 !***********************************************************************
-! SPECIAL   V6P1                                   21/08/2010
+! SPECIAL   V7P2
 !***********************************************************************
 !
 !brief    Print the head for a given code name
@@ -52,7 +52,7 @@
      &  16X,'A   A R   R   T   E     M   M   I       S',/,
      &  16X,'A   A R   R   T   EEEEE M   M IIIII SSSS ',/,
      &  16X,'                                         ',/,
-     &  16X,'       VERSION ',A,' FORTRAN 03 ',/,
+     &  16X,'      VERSION ',A,' FORTRAN 2003 ',/,
      &  16X,/////)
 2       FORMAT(/////,
      &  16X,'                         .               ',/,
@@ -73,9 +73,9 @@
      &  16X,'  T    O   O  M   M  A   A  WW WW  A   A  C     ',/,
      &  16X,'  T    OOOOO  M   M  A   A  W   W  A   A  CCCCC ',/,
      &  16X,'                                                ',/,
-     &  16X,'          VERSION ',A,' FORTRAN 03              ',/,
+     &  16X,'         VERSION ',A,' FORTRAN 2003              ',/,
      &  16X,/////)
-4       FORMAT(/////,
+4       FORMAT(/,
      &  15X,'               |    |    |                  ',/,
      &  15X,'              )_)  )_)  )_) _               ',/,
      &  15X,'             )___))___))___)\               ',/,
@@ -89,16 +89,16 @@
       ELSE IF(CODE(1:9).EQ."TELEMAC2D") THEN
       WRITE(LU,5) VERSION
       WRITE(LU,6)
-5     FORMAT(/////,
+5     FORMAT(/,
      &16X,'TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
      &16X,'  T    E      L      E      MM MM  A   A  C    ',/,
      &16X,'  T    EEE    L      EEE    M M M  AAAAA  C    ',/,
      &16X,'  T    E      L      E      M   M  A   A  C    ',/,
      &16X,'  T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &16X,'                                               ',/,
-     &16X,'        2D    VERSION ',A,' FORTRAN 03        ',/,
+     &16X,'        2D    VERSION ',A,' FORTRAN 2003       ',/,
      &16X,/////)
-6     FORMAT(/////,
+6     FORMAT(/,
      &16X,'        ~^~^~^~^~^~^~^~^~^~^~^^~^~^~^~^~^~     ',/,
      &16X,'          ~                            ~       ',/,
      &16X,"               \   '    o      '               ",/,
@@ -120,14 +120,14 @@
       ELSE IF(CODE(1:9).EQ."TELEMAC3D") THEN
       WRITE(LU,7) VERSION
       WRITE(LU,8)
-7     FORMAT(/////,
+7     FORMAT(/,
      &16X,'TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
      &16X,'  T    E      L      E      MM MM  A   A  C    ',/,
      &16X,'  T    EEE    L      EEE    M M M  AAAAA  C    ',/,
      &16X,'  T    E      L      E      M   M  A   A  C    ',/,
      &16X,'  T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &16X,'                                               ',/,
-     &16X,'         3D   VERSION ',A,' FORTRAN 03    ',/,
+     &16X,'        3D   VERSION ',A,' FORTRAN 2003    ',/,
      &16X,/////)
 8     FORMAT(/////,
      &16X,'        ~^~^~^~^~^~^~^~^~^~^~^^~^~^~^~^~^~     ',/,
@@ -158,9 +158,9 @@
      &16X,'      S I      S   Y   P     H   H E      ',/,
      &16X,'  SSSS  I  SSSS    Y   P     H   H EEEEE  ',/,
      &16X,'                                          ',/,
-     &16X,'                VERSION ',A,' FORTRAN 03  ',/,
+     &16X,'       VERSION ',A,' FORTRAN 2003  ',/,
      &16X,/////)
-10    FORMAT(/////,
+10    FORMAT(/,
      &16X,'                            ____             ',/,
      &16X,'                     /^\   / -- )            ',/,
      &16X,'                    / | \ (____/             ',/,
@@ -185,9 +185,9 @@
      &16X,'WW WW  A   A  Q  QQ    T    E      L     ',/,
      &16X,'W   W  A   A  QQQQQ    T    EEEEE  LLLLL ',/,
      &16X,'                                       ',/,
-     &16X,'              VERSION ',A,' FORTRAN 03 ',/,
+     &16X,'     VERSION ',A,' FORTRAN 2003 ',/,
      &16X,/////)
-12    FORMAT(/////,
+12    FORMAT(/,
      &15X,"                                           ",/,
      &15X,"                                           ",/,
      &15X,"         ,      ,      ,      ,            ",/,
@@ -207,9 +207,9 @@
      &14X,'       S    T    B   B    T    E      L    ',/,
      &14X,'   SSSSS    T    BBBB     T    EEEEE  LLLLL',/,
      &14X,'                                           ',/,
-     &14X,'            VERSION ',A,' FORTRAN 03        ',/,
+     &14X,'         VERSION ',A,' FORTRAN 2003        ',/,
      &14X,/////)
-14    FORMAT(/////,
+14    FORMAT(/,
      &14X,'    *     *    *     /\__/\  *    ---    * ',/,
      &14X,'       *            /      \    /     \    ',/,
      &14X,'            *   *  |  -  -  |  |       |*  ',/,
@@ -234,9 +234,9 @@
      &12X,'P      O   O      S    T    E      L             3  D   D',/,
      &12X,'P       OOO   SSSS     T    EEEEE  LLLLL     3333   DDDD ',/,
      &16X,'                                       ',/,
-     &16X,'              VERSION ',A,' FORTRAN 03 ',/,
+     &16X,'          VERSION ',A,' FORTRAN 2003 ',/,
      &12X,/////)
-16    FORMAT(/////,
+16    FORMAT(/,
      &15X,'                  __                 ',/,
      &15X,'                 /  \     ,    ,     ',/,
      &15X,'       _._     _ |oo| _  / \__/ \    ',/,

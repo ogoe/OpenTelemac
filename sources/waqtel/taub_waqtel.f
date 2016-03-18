@@ -1,4 +1,4 @@
-!                   ***********************
+!                    **********************
                      SUBROUTINE TAUB_WAQTEL
 !                    **********************
 !
@@ -8,20 +8,21 @@
 ! TELEMAC2D   V7P1
 !***********************************************************************
 !
-!brief    COMPUTES BED SHEAR STRESS FOR WAQTEL - SEE THE USE OF TOB_SISYPHE
+!brief    COMPUTES BED SHEAR STRESS FOR WAQTEL.
+!+        SEE THE USE OF TOB_SISYPHE
 !
 !
 !
-!history  R. ATA (LNHE)
-!+        02/09/2015
-!+        V7P1
-!+
+!history  R. ATA (EDF LAB, LNHE)
+!+        17/03/2016
+!+        V7P2
+!+    First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| FRICTION COEFFICIENT
 !| DENSITY        |-->| DENSITY
 !| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
-!| TAUB            |<--| BED SHEAR STRESS
+!| TAUB           |<--| BED SHEAR STRESS
 !| UN,VN          |-->| VELOCITY COMPONENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -34,30 +35,32 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)     :: NPOIN
-      DOUBLE PRECISION, INTENT(IN)     :: DENSITY
-      TYPE(BIEF_OBJ)   , INTENT(IN   ) :: CF,UN,VN
+      INTEGER          , INTENT(IN)    :: NPOIN
+      DOUBLE PRECISION , INTENT(IN)    :: DENSITY
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: CF,UN,VN
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TAUB
-      INTRINSIC ABS,SQRT,MAX
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER I
+      DOUBLE PRECISION CC
 !
-!     LOCAL VARIABLES
-      DOUBLE PRECISION  CC
-      TYPE(BIEF_OBJ)    UNORM
-!
-!
-!     MEAN VELOCITY
-!
-      CALL OS('X=N(Y,Z)',X=UNORM,Y=UN,Z=VN)
-!
-!     TOB=.5*RHO*CF*U^2
-      CC=0.5D0*DENSITY
-      CALL OV('X=CYZ   ',TAUB%R,CF%R,UNORM%R,CC,NPOIN)
-!
-      RETURN
-      END
+      INTRINSIC SQRT
 !
 !-----------------------------------------------------------------------
 !
+!     TOB=0.5*RHO*CF*U^2
+!
+      CC=0.5D0*DENSITY
+!
+      CALL CPSTVC(CF,TAUB)
+!
+      DO I=1,NPOIN
+        TAUB%R(I)=CC*CF%R(I)*SQRT(UN%R(I)**2+VN%R(I)**2)
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+
