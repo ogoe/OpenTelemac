@@ -126,6 +126,7 @@ class REPORT:
    # Arbitrary associations between report headers and the return of the XML keys
    heads = [
       'XML Name',
+      'Author',
       'Total Duration (s)',
       'Action Name',
       'XML Path',
@@ -138,6 +139,7 @@ class REPORT:
       'Action Meta-Data' ]
    hkeys = [
       'file',
+      'author',
       'duration',
       'xref',
       'path',
@@ -270,8 +272,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",type="string",dest="configName",default='',
       help="specify configuration name, default is the first found in the configuration file" )

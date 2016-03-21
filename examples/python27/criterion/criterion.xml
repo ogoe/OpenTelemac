@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of python scripts
 --> 
-<validation xref="analytics" rank="2"> 
+<validation xref="analytics" rank="2" author="HRW"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment --> 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of python scripts
 --> 
-<validation xref="translate" rank="2"> 
+<validation xref="translate" rank="2" author="HRW"> 
  
 <!-- Processing CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    --> 

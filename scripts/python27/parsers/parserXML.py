@@ -1052,6 +1052,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # /!\ There is a lot more to dodo
    rank = '1'
    if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
+   # Get the author of the test case for the report
+   AUTHOR = xmlRoot.attrib["author"]
    rankdo = int(rank)
    rankdont = 0
    if xmlConfig[xmlConfig.keys()[0]]['options'].rank != '': rankdont = int(xmlConfig[xmlConfig.keys()[0]]['options'].rank)
@@ -1131,7 +1133,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    #                                                        \\        //
    #for action in xmlRoot.findall("action"):
       if xmlChild.tag == "action":
-         report = { 'type':'action' }; updated = False
+         report = { 'type':'action','author':AUTHOR }; updated = False
          action = xmlChild
 
          # ~~ Step 1. Common check for keys and driving file ~~~~~~~
@@ -1195,7 +1197,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
                ncsize = getNCSIZE(cas,dico,frgb)
                do.updateCFG({'cas':cas})
-               if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
+               #if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
                if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
 
                idico = DICOS[dicoFile]['input']
@@ -1312,7 +1314,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # _________________________________________________________>> CAST <<
    #                                                          \\      //
       if xmlChild.tag[0:4] == "cast" and not runOnly:
-         report = { 'type':'cast' }
+         report = { 'type':'cast','author':AUTHOR }
          typeCast = xmlChild.tag
          cast.active['type'] = typeCast
          casting = xmlChild
@@ -1527,7 +1529,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # did has all the IO references and the latest sortie files
    #for extracting in xmlRoot.findall(typeSave):
       if xmlChild.tag[0:4] == "save" and not runOnly:
-         report = { 'type':'save' }; updated = False
+         report = { 'type':'save','author':AUTHOR }; updated = False
          # /!\ typeSave should be in ['save1d','save2d','save3d']
          typeSave = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
@@ -1747,7 +1749,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    #                                                          \\      //
    #for ploting in xmlRoot.findall(typePlot):
       if xmlChild.tag[0:4] == "plot" and not runOnly:
-         report = { 'type':'plot' }; updated = False
+         report = { 'type':'plot','author':AUTHOR }; updated = False
          # /!\ typePlot should be in ['plot1d','plot2d','plot3d','plotpv']
          typePlot = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
