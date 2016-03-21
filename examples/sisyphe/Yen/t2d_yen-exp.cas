@@ -89,7 +89,7 @@ FREE SURFACE GRADIENT COMPATIBILITY         : 0.5
 MASS-LUMPING ON H                           : 1.
 SOLVER ACCURACY                             : 1.E-6
 PRECONDITIONING			            : 2
-TYPE OF ADVECTION                           : 6;5
+TYPE OF ADVECTION                           : 1;5
 SUPG OPTION                                 : 1;1
 MATRIX STORAGE				    : 3 
 IMPLICITATION FOR DEPTH : 0.6
