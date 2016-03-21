@@ -420,9 +420,14 @@
 !     MES PROCESS
 !
 !
-!    EXPONENETIAL DESINTEGRATION CONSTANT (LAMBD)
+!     EXPONENETIAL DESINTEGRATION CONSTANT (LAMBD)
 !
       DOUBLE PRECISION CCSEDIM
+!
+!     EVAPORATION
+!
+      DOUBLE PRECISION EVAPOR
+!
 !-----------------------------------------------------------------------
 !
 !       5) STRINGS

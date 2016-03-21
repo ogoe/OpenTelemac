@@ -94,7 +94,7 @@
 !
       USE BIEF
       USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
-     &                                HREL,RAINFALL,ZSD
+     &                                HREL,RAINFALL,EVAPOR
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -223,7 +223,7 @@
 !
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
           CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,PATM,
-     &                     HREL,NEBU,RAINFALL,ZSD,AT,UL)
+     &                     HREL,NEBU,RAINFALL,EVAPOR,AT,UL)
           CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
           CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !

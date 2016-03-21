@@ -2,10 +2,10 @@
                      SUBROUTINE INTERPMETEO
 !                    **********************
 !
-     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,ZSD,AT,NFO)
+     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,EVAPOR,AT,NFO)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VARIABLES IN AN ASCII FILE
@@ -32,7 +32,7 @@
 !| NFO            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| PATM           |<--| ATMOSPHERIC PRESSURE
 !| RAINFALL       |<--| RAINFALL
-!| ZSD            |<--| SECCHI LENGTH FOR SOLAR RAY ABSORPTION DEPTH
+!| EVAPOR         |<--| EVAPORATION RATE
 !| TAIR           |<--| AIR TEMPERATURE
 !| WINDX          |<--| WIND ALONG X
 !| WINDY          |<--| WIND ALONG Y
@@ -49,7 +49,7 @@
       INTEGER, INTENT(IN)           :: NFO
       DOUBLE PRECISION, INTENT(IN)  :: AT
       DOUBLE PRECISION, INTENT(OUT) :: WW,WINDX,WINDY,TAIR,PATM,HREL
-      DOUBLE PRECISION, INTENT(OUT) :: NEBU,RAINFALL,ZSD
+      DOUBLE PRECISION, INTENT(OUT) :: NEBU,RAINFALL,EVAPOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -232,7 +232,7 @@
 !
       RAINFALL = TABENT(POSTAB+1,8)/DELTAT
 !
-      ZSD   = TABENT(POSTAB,9)
+      EVAPOR   = TABENT(POSTAB,9)
      &      + (TABENT(POSTAB+1,9)-TABENT(POSTAB,9))*ALPHA
 !
 !-----------------------------------------------------------------------

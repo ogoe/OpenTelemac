@@ -1,13 +1,11 @@
-!                    *************************
+!                    ************************
                      SUBROUTINE LECDON_WAQTEL
-!                    *************************
+!                    ************************
 !
      & (FILE_DESC,PATH,NCAR,CODE)
 !
-!
-!
 !***********************************************************************
-! WAQTEL   V7P0                                   21/07/2014
+! WAQTEL   V7P2
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -250,6 +248,7 @@
       COEF_K = MOTREA( ADRESS(2,127) )
       EMA    = MOTREA( ADRESS(2,129) )
       EMI_EAU= MOTREA( ADRESS(2,131) )
+      EVAPOR = MOTREA( ADRESS(2,137) )
 !
 !*******************************
 !     LOGICAL KEYWORDS         *
