@@ -1,19 +1,19 @@
 /
 /  ARTIFICIAL RIVER : TESTING OIL SPILL IN A FLUME
-/ 
+/
 /  Version 6.2
-/ 
+/
 /  HP Linux Calibre 7 compilateur Nag 8 processeurs : 28 min 7 s  22/05/2012
-/  
+/
 /----------------------------------------------------------------------
 /                      FILE DEFINITION
 /----------------------------------------------------------------------
-/ 
+/
 BOUNDARY CONDITIONS FILE                      : geo_t2d_riv_art.cli
 GEOMETRY FILE                                 : geo_t2d_riv_art.slf
 FORTRAN FILE                                  : t2d_riv_art.f
 RESULTS FILE                                  : t2d_riv_art.res
-/ 
+/
 /----------------------------------------------------------------------
 /                        GENERAL OPTIONS
 /----------------------------------------------------------------------
@@ -36,7 +36,7 @@ INITIAL TIME SET TO ZERO                    : YES
 /                    BOUNDARY CONDITIONS
 /----------------------------------------------------------------------
 /
-PRESCRIBED ELEVATIONS                       : 0.45 ; 0. 
+PRESCRIBED ELEVATIONS                       : 0.45 ; 0.
 PRESCRIBED FLOWRATES                        : 0. ; 0.0306
 /
 /----------------------------------------------------------------------
@@ -76,7 +76,7 @@ TREATMENT OF NEGATIVE DEPTHS                : 2
 TURBULENCE MODEL                            : 3
 VELOCITY DIFFUSIVITY                        : 0.000001
 /
-TURBULENCE MODEL FOR SOLID BOUNDARIES       : 2
+TURBULENCE REGIME FOR SOLID BOUNDARIES       : 2
 LAW OF FRICTION ON LATERAL BOUNDARIES       : 3
 ROUGHNESS COEFFICIENT OF BOUNDARIES         : 10
 /

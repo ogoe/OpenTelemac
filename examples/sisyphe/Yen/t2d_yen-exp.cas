@@ -47,7 +47,7 @@ TITLE : '1st try Yen-Versuch '
 /
 VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,Q,M,W'
 /VARIABLES TO BE PRINTED                     : 'U,V,S,B,H,Q,M,W'
-TIME STEP : 0.1       
+TIME STEP : 0.1
 /
 /NUMBER OF TIME STEPS : 72000
 /GRAPHIC PRINTOUT PERIOD                     :  4000
@@ -81,7 +81,7 @@ INITIAL TIME SET TO ZERO                    : TRUE
 /----------------------------------------------------------------------
 /
 MASS-BALANCE                                : YES
-SOLVER					    : 1 
+SOLVER					    : 1
 INFORMATION ABOUT SOLVER : YES
 /
 TREATMENT OF THE LINEAR SYSTEM              : 2
@@ -91,20 +91,20 @@ SOLVER ACCURACY                             : 1.E-6
 PRECONDITIONING			            : 2
 TYPE OF ADVECTION                           : 1;5
 SUPG OPTION                                 : 1;1
-MATRIX STORAGE				    : 3 
+MATRIX STORAGE				    : 3
 IMPLICITATION FOR DEPTH : 0.6
 IMPLICITATION FOR VELOCITY : 0.6
 /
 /----------------------------------------------------------------------
-/                       TURBULENCE MODEL 
+/                       TURBULENCE MODEL
 /----------------------------------------------------------------------
 /
 TURBULENCE MODEL                            : 2
-VELOCITY DIFFUSIVITY                        : 1.E-2 
+VELOCITY DIFFUSIVITY                        : 1.E-2
 OPTION FOR THE DIFFUSION OF VELOCITIES      : 1
 /......................................................................
 /
-&FIN                                                              
+&FIN
 
 
 
