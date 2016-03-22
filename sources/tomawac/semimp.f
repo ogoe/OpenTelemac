@@ -98,7 +98,7 @@
 !history THIERRY FOUQUET (EDF-LNHE)
 !+       19/11/2014
 !+       V7P0
-!+   BAJ MODELISATION
+!+   BAJ MODELING
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
