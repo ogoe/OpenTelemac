@@ -122,7 +122,7 @@
           CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TC2-TC1),NPOIN2)
         ENDIF
 !
-      ELSE
+      ELSEIF (PART.EQ.-1) THEN
 !
         CALL ANAMAR(SUC%R,SVC%R,SDEPTH%R,ZM1,ZM2,
      &               SDZHDT%R,MESH%X%R,MESH%Y%R,
@@ -162,7 +162,7 @@
         CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
         CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
 !
-      ELSE
+      ELSEIF (PART.EQ.-1) THEN
 !
         IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' '.OR.
      &     WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
