@@ -5,10 +5,10 @@
      &(OP, X , DA,TYPDIA,XA,TYPEXT, Y ,
      & C,IKLE,NPT,NELEM,NELMAX,W,LEGO,IELM1,IELM2,IELMX,LV,
      & S,P,IKLEM1,DIMIKM,LIMVOI,MXPTVS,NPMAX,NPOIN,NPTFR,
-     & GLOSEG,SIZGLO,SIZXA,NDP,MESH)
+     & GLOSEG,SIZGLO,SIZXA,NDP,MESH,STOX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS.
@@ -82,6 +82,8 @@
 !| S              |-->| TYPE OF STORAGE.
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| SIZXA          |-->| FIRST DIMENSION OF ARRAY XA
+!| STOX           |-->| STORAGE OPTION OF OFF-DIAGONAL TERMS
+!|                |   | 1=(NELMAX,NDP)  2=(NDP,NELMAX)
 !| TYPDIA         |-->| TYPE OF DIAGONAL:
 !|                |   | TYPDIA = 'Q' : ANY VALUE
 !|                |   | TYPDIA = 'I' : IDENTITY
@@ -105,7 +107,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: IELM1,IELM2,IELMX,NPOIN,NPMAX,S,P,SIZXA
-      INTEGER, INTENT(IN)    :: NDP
+      INTEGER, INTENT(IN)    :: NDP,STOX
       INTEGER, INTENT(INOUT) :: NPT
       INTEGER, INTENT(IN) :: NELEM,NELMAX,LV,DIMIKM,MXPTVS,NPTFR,SIZGLO
       INTEGER, INTENT(IN) :: IKLE(NELMAX,*),IKLEM1(*),LIMVOI(*)
@@ -120,11 +122,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSEG1,NSEG2,SYM,NPT2
+      INTEGER NSEG1,NSEG2,SYM,NPT2,DIM1XA
 !
       INTEGER AAQ(3,3,2),ABQ(3,4,2),BAQ(4,3,2)
-      INTEGER ACQ(3,6,2),BBQ(4,4,2),CAQ(6,3,2),PPQ(6,6,2)
-      INTEGER AAS(3,3,2),BBS(4,4,2),PPS(6,6,2)
+      INTEGER ACQ(3,6,2),BBQ(4,4,2),CAQ(6,3,2)
+      INTEGER AAS(3,3,2),BBS(4,4,2)
 !      INTEGER OOS(2,2,2)
 !
       DOUBLE PRECISION Z(1)
@@ -217,38 +219,6 @@
      &           2 ,  4 ,  0 ,  9 , 12 , 15 ,
 !     NONSYMMETRICAL P2 P1 PRE-ASSEMBLED EBE (S=2)
 !     - NOT IMPLEMENTED
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 /
-!
-!     SYMMETRICAL P1-P1 PRISMS AND P2 TRIANGLES EBE (S=1)
-      DATA PPS/  0 ,  1 ,  2 ,  3 ,  4 ,  5 ,
-     &           1 ,  0 ,  6 ,  7 ,  8 ,  9 ,
-     &           2 ,  6 ,  0 , 10 , 11 , 12 ,
-     &           3 ,  7 , 10 ,  0 , 13 , 14 ,
-     &           4 ,  8 , 11 , 13 ,  0 , 15 ,
-     &           5 ,  9 , 12 , 14 , 15 ,  0 ,
-!     SYMMETRICAL P1-P1 PRISMS AND P2 TRIANGLES PRE-ASSEMBLED EBE (S=2)
-!     - NOT IMPLEMENTED
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 /
-!
-!     NONSYMMETRICAL P1-P1 PRISMS AND P2 TRIANGLES EBE (S=1)
-      DATA PPQ/  0 , 16 , 17 , 18 , 19 , 20 ,
-     &           1 ,  0 , 21 , 22 , 23 , 24 ,
-     &           2 ,  6 ,  0 , 25 , 26 , 27 ,
-     &           3 ,  7 , 10 ,  0 , 28 , 29 ,
-     &           4 ,  8 , 11 , 13 ,  0 , 30 ,
-     &           5 ,  9 , 12 , 14 , 15 ,  0 ,
-!    NONSYMMETRICAL P1-P1 PRISMS AND P2 TRIANGLES PRE-ASSEMBLED EBE (S=2)
-!     - NOT IMPLEMENTED
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
      &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
      &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
      &           0 ,  0 ,  0 ,  0 ,  0 ,  0 /
@@ -352,42 +322,69 @@
       ELSEIF(IELM1.EQ.12.OR.IELM2.EQ.31.OR.IELM2.EQ.51) THEN
 !
         IF(IELM2.EQ.12.OR.IELM2.EQ.31.OR.IELM2.EQ.51) THEN
-          IF(TYPEXT(1:1).EQ.'S') THEN
-            CALL MV0404(OP, X , DA,TYPDIA,
-     &                  XA(1,BBS(1,2,S)),
-     &                  XA(1,BBS(1,3,S)),
-     &                  XA(1,BBS(1,4,S)),
-     &                  XA(1,BBS(2,1,S)),
-     &                  XA(1,BBS(2,3,S)),
-     &                  XA(1,BBS(2,4,S)),
-     &                  XA(1,BBS(3,1,S)),
-     &                  XA(1,BBS(3,2,S)),
-     &                  XA(1,BBS(3,4,S)),
-     &                  XA(1,BBS(4,1,S)),
-     &                  XA(1,BBS(4,2,S)),
-     &                  XA(1,BBS(4,3,S)),
-     &                  TYPEXT, Y,C,
-     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                  NPT,NELEM,
-     &                  W(1,1),W(1,2),W(1,3),W(1,4))
+          IF(STOX.EQ.1) THEN
+            IF(TYPEXT(1:1).EQ.'S') THEN
+              CALL MV0404(OP, X , DA,TYPDIA,
+     &                    XA(1,BBS(1,2,S)),
+     &                    XA(1,BBS(1,3,S)),
+     &                    XA(1,BBS(1,4,S)),
+     &                    XA(1,BBS(2,1,S)),
+     &                    XA(1,BBS(2,3,S)),
+     &                    XA(1,BBS(2,4,S)),
+     &                    XA(1,BBS(3,1,S)),
+     &                    XA(1,BBS(3,2,S)),
+     &                    XA(1,BBS(3,4,S)),
+     &                    XA(1,BBS(4,1,S)),
+     &                    XA(1,BBS(4,2,S)),
+     &                    XA(1,BBS(4,3,S)),
+     &                    TYPEXT, Y,C,
+     &                    IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                    NPT,NELEM,
+     &                    W(1,1),W(1,2),W(1,3),W(1,4))
+            ELSE
+              CALL MV0404(OP, X , DA,TYPDIA,
+     &                    XA(1,BBQ(1,2,S)),
+     &                    XA(1,BBQ(1,3,S)),
+     &                    XA(1,BBQ(1,4,S)),
+     &                    XA(1,BBQ(2,1,S)),
+     &                    XA(1,BBQ(2,3,S)),
+     &                    XA(1,BBQ(2,4,S)),
+     &                    XA(1,BBQ(3,1,S)),
+     &                    XA(1,BBQ(3,2,S)),
+     &                    XA(1,BBQ(3,4,S)),
+     &                    XA(1,BBQ(4,1,S)),
+     &                    XA(1,BBQ(4,2,S)),
+     &                    XA(1,BBQ(4,3,S)),
+     &                    TYPEXT, Y,C,
+     &                    IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                    NPT,NELEM,
+     &                    W(1,1),W(1,2),W(1,3),W(1,4))
+            ENDIF
+          ELSEIF(STOX.EQ.2) THEN
+            IF(TYPEXT.EQ.'Q') THEN
+              DIM1XA=12
+            ELSEIF(TYPEXT.EQ.'S') THEN
+              DIM1XA=6
+            ELSE
+!             NOT USED EXCEPT FOR GIVING A DIMENSION
+              DIM1XA=1
+            ENDIF
+            CALL MV0404_2(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
+     &                    IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                    NPT,NELEM,W(1,1),W(1,2),W(1,3),W(1,4),DIM1XA)
           ELSE
-            CALL MV0404(OP, X , DA,TYPDIA,
-     &                  XA(1,BBQ(1,2,S)),
-     &                  XA(1,BBQ(1,3,S)),
-     &                  XA(1,BBQ(1,4,S)),
-     &                  XA(1,BBQ(2,1,S)),
-     &                  XA(1,BBQ(2,3,S)),
-     &                  XA(1,BBQ(2,4,S)),
-     &                  XA(1,BBQ(3,1,S)),
-     &                  XA(1,BBQ(3,2,S)),
-     &                  XA(1,BBQ(3,4,S)),
-     &                  XA(1,BBQ(4,1,S)),
-     &                  XA(1,BBQ(4,2,S)),
-     &                  XA(1,BBQ(4,3,S)),
-     &                  TYPEXT, Y,C,
-     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                  NPT,NELEM,
-     &                  W(1,1),W(1,2),W(1,3),W(1,4))
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'MATVCT, STOCKAGE INCONNU POUR LES'
+              WRITE(LU,*) 'TERMES EXTRA-DIAGONAUX :',STOX
+              WRITE(LU,*) 'APPEL DE MV0404_2'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'MATVCT, UNKNOWN STORAGE FOR'
+              WRITE(LU,*) 'OFF-DIAGONAL TERMS:',STOX
+              WRITE(LU,*) 'WHEN CALLING MV0404_2'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
           ENDIF
         ELSEIF(IELM2.EQ.11) THEN
           CALL MV0403(OP, X , DA,TYPDIA,
@@ -415,11 +412,41 @@
 !
         IF(IELM2.EQ.41.OR.IELM2.EQ.13) THEN
 !
-          CALL MV0606(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
-     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),
-     &                IKLE(1,4),IKLE(1,5),IKLE(1,6),
-     &                NPT,NELEM,NELMAX,
-     &                W(1,1),W(1,2),W(1,3),W(1,4),W(1,5),W(1,6))
+          IF(STOX.EQ.1) THEN
+            CALL MV0606(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
+     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),
+     &                  IKLE(1,4),IKLE(1,5),IKLE(1,6),
+     &                  NPT,NELEM,NELMAX,
+     &                  W(1,1),W(1,2),W(1,3),W(1,4),W(1,5),W(1,6))
+          ELSEIF(STOX.EQ.2) THEN
+            IF(TYPEXT.EQ.'Q') THEN
+              DIM1XA=30
+            ELSEIF(TYPEXT.EQ.'S') THEN
+              DIM1XA=15
+            ELSE
+!             NOT USED EXCEPT FOR GIVING A DIMENSION
+              DIM1XA=1
+            ENDIF
+            CALL MV0606_2(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
+     &                    IKLE(1,1),IKLE(1,2),IKLE(1,3),
+     &                    IKLE(1,4),IKLE(1,5),IKLE(1,6),
+     &                    NPT,NELEM,NELMAX,
+     &                    W(1,1),W(1,2),W(1,3),W(1,4),W(1,5),W(1,6),
+     &                    DIM1XA)
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'MATVCT, STOCKAGE INCONNU POUR LES'
+              WRITE(LU,*) 'TERMES EXTRA-DIAGONAUX :',STOX
+              WRITE(LU,*) 'APPEL DE MV0606_2'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'MATVCT, UNKNOWN STORAGE FOR'
+              WRITE(LU,*) 'OFF-DIAGONAL TERMS:',STOX
+              WRITE(LU,*) 'WHEN CALLING MV0606_2'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
         ELSEIF(IELM2.EQ.11) THEN
 !
@@ -623,3 +650,4 @@
 !
       RETURN
       END
+

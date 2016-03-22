@@ -179,7 +179,8 @@
      &              MESH%NELBOR%I,MESH%NULONE%I,
      &              MESH%NELEM,MESH%NELMAX,
      &              MESH%NELEB,MESH%NELEBX,IELM1,IELM2,SS,
-     &              MESH%NPOIN/BIEF_NBPTS(11,MESH),MESH,NELMAX)
+     &              MESH%NPOIN/BIEF_NBPTS(11,MESH),MESH,NELMAX,
+     &              MESH%M%STOX)
       ENDIF
 !
 !  UPDATES THE INFORMATION OF THE MATRIX
@@ -206,10 +207,10 @@
 !
       IF(LEGO.AND.MESH%M%TYPDIA.EQ.'Q'.AND.NELEM.GT.0) THEN
 !
-            CALL ASSVEC(MESH%M%D%R,
-     &                  IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
-     &                  MESH%W%R,LEGO,MESH%LV,MSK,MASKEL%R,
-     &                  BIEF_NBPEL(MESH%M%D%ELM,MESH))
+        CALL ASSVEC(MESH%M%D%R,
+     &              IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
+     &              MESH%W%R,LEGO,MESH%LV,MSK,MASKEL%R,
+     &              BIEF_NBPEL(MESH%M%D%ELM,MESH))
 !
       ENDIF
 !
@@ -228,15 +229,14 @@
 !       ASSEMBLES EXTRA-DIAGONAL TERMS
         IF(MESH%M%TYPEXT.EQ.'Q'.OR.MESH%M%TYPEXT.EQ.'S') THEN
 !
-!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-!       CASE OF MATRICES WITH INVERTED STORAGE OF OFF-DIAGONAL TERMS
-!       SO FAR ONLY MAMURD. SEE INVERSION OF DIM1_EXT AND DIM2_EXT
-!       AND 2 INSTEAD OF 1 FOR STOXMT
+!         CASE OF MATRICES WITH INVERTED STORAGE OF OFF-DIAGONAL TERMS
+!         SEE INVERSION OF DIM1_EXT AND DIM2_EXT IN CALL TO ASSEX3
 !
-!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-          IF(FORMUL(1:6).EQ.'MAMURD') THEN
+          IF(MESH%M%STOX.EQ.2) THEN
             CALL ASSEX3(MESH%MSEG%X%R,MESH%M%STO,MESH%M%NAME,
      &                  MESH%M%ELMLIN,MESH%M%ELMCOL,
      &                  MESH%M%TYPEXT,MESH%M%X%R,
@@ -244,18 +244,29 @@
      &                                MESH%M%TYPEXT,MESH),
      &                  BIEF_DIM1_EXT(IELM1,IELM2,MESH%M%STO,
      &                                MESH%M%TYPEXT,MESH),
-     &                  2,
+     &                  MESH%M%STOX,
+     &                  MESH,NELMAX,ELTSEG,ORISEG)
+          ELSEIF(MESH%M%STOX.EQ.1) THEN
+            CALL ASSEX3(MESH%MSEG%X%R,MESH%M%STO,MESH%M%NAME,
+     &                  MESH%M%ELMLIN,MESH%M%ELMCOL,
+     &                  MESH%M%TYPEXT,MESH%M%X%R,
+     &                  BIEF_DIM1_EXT(IELM1,IELM2,MESH%M%STO,
+     &                                MESH%M%TYPEXT,MESH),
+     &                  BIEF_DIM2_EXT(IELM1,IELM2,MESH%M%STO,
+     &                                MESH%M%TYPEXT,MESH),
+     &                  MESH%M%STOX,
      &                  MESH,NELMAX,ELTSEG,ORISEG)
           ELSE
-            CALL ASSEX3(MESH%MSEG%X%R,MESH%M%STO,MESH%M%NAME,
-     &                  MESH%M%ELMLIN,MESH%M%ELMCOL,
-     &                  MESH%M%TYPEXT,MESH%M%X%R,
-     &                  BIEF_DIM1_EXT(IELM1,IELM2,MESH%M%STO,
-     &                                MESH%M%TYPEXT,MESH),
-     &                  BIEF_DIM2_EXT(IELM1,IELM2,MESH%M%STO,
-     &                                MESH%M%TYPEXT,MESH),
-     &                  1,
-     &                  MESH,NELMAX,ELTSEG,ORISEG)
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'MATRIX : STOCKAGE INCONNU :'
+              WRITE(LU,*) 'MESH%M%STOX= : ',MESH%M%STOX
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'MATRIX: UNKNOWN STORAGE:'
+              WRITE(LU,*) 'MESH%M%STOX= : ',MESH%M%STOX
+            ENDIF
+            CALL PLANTE(1)
+            STOP
           ENDIF
         ENDIF
         MESH%MSEG%TYPEXT=MESH%M%TYPEXT

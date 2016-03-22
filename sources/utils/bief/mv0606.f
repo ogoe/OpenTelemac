@@ -7,7 +7,7 @@
      & NPOIN,NELEM,NELMAX,W1,W2,W3,W4,W5,W6)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS FOR P1 TRIANGLES.
@@ -36,7 +36,7 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        05/02/91
 !+        V5P1
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -49,6 +49,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/03/2016
+!+        V7P2
+!+   Cleaning, missing STOP.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -126,18 +131,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) =
-     &                  + XA(IELEM,1) * Y(I2)
-     &                  + XA(IELEM,2) * Y(I3)
-     &                  + XA(IELEM,3) * Y(I4)
-     &                  + XA(IELEM,4) * Y(I5)
-     &                  + XA(IELEM,5) * Y(I6)
+     &                  + XA(IELEM,1)  * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I3)
+     &                  + XA(IELEM,3)  * Y(I4)
+     &                  + XA(IELEM,4)  * Y(I5)
+     &                  + XA(IELEM,5)  * Y(I6)
 !
           W2(IELEM) =
-     &                  + XA(IELEM,1) * Y(I1)
-     &                  + XA(IELEM,6) * Y(I3)
-     &                  + XA(IELEM,7) * Y(I4)
-     &                  + XA(IELEM,8) * Y(I5)
-     &                  + XA(IELEM,9) * Y(I6)
+     &                  + XA(IELEM,1)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I3)
+     &                  + XA(IELEM,7)  * Y(I4)
+     &                  + XA(IELEM,8)  * Y(I5)
+     &                  + XA(IELEM,9)  * Y(I6)
 !
           W3(IELEM) =
      &                  + XA(IELEM,2)  * Y(I1)
@@ -181,18 +186,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) =
-     &                  + XA(IELEM, 1) * Y(I2)
-     &                  + XA(IELEM, 2) * Y(I3)
-     &                  + XA(IELEM, 3) * Y(I4)
-     &                  + XA(IELEM, 4) * Y(I5)
-     &                  + XA(IELEM, 5) * Y(I6)
+     &                  + XA(IELEM,1)  * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I3)
+     &                  + XA(IELEM,3)  * Y(I4)
+     &                  + XA(IELEM,4)  * Y(I5)
+     &                  + XA(IELEM,5)  * Y(I6)
 !
           W2(IELEM) =
      &                  + XA(IELEM,16) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I3)
-     &                  + XA(IELEM, 7) * Y(I4)
-     &                  + XA(IELEM, 8) * Y(I5)
-     &                  + XA(IELEM, 9) * Y(I6)
+     &                  + XA(IELEM,6)  * Y(I3)
+     &                  + XA(IELEM,7)  * Y(I4)
+     &                  + XA(IELEM,8)  * Y(I5)
+     &                  + XA(IELEM,9)  * Y(I6)
 !
           W3(IELEM) =
      &                  + XA(IELEM,17) * Y(I1)
@@ -237,7 +242,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -253,7 +258,7 @@
         ELSE
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -330,18 +335,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) =
-     &                  - XA(IELEM, 1) * Y(I2)
-     &                  - XA(IELEM, 2) * Y(I3)
-     &                  - XA(IELEM, 3) * Y(I4)
-     &                  - XA(IELEM, 4) * Y(I5)
-     &                  - XA(IELEM, 5) * Y(I6)
+     &                  - XA(IELEM,1)  * Y(I2)
+     &                  - XA(IELEM,2)  * Y(I3)
+     &                  - XA(IELEM,3)  * Y(I4)
+     &                  - XA(IELEM,4)  * Y(I5)
+     &                  - XA(IELEM,5)  * Y(I6)
 !
           W2(IELEM) =
      &                  - XA(IELEM,16) * Y(I1)
-     &                  - XA(IELEM, 6) * Y(I3)
-     &                  - XA(IELEM, 7) * Y(I4)
-     &                  - XA(IELEM, 8) * Y(I5)
-     &                  - XA(IELEM, 9) * Y(I6)
+     &                  - XA(IELEM,6)  * Y(I3)
+     &                  - XA(IELEM,7)  * Y(I4)
+     &                  - XA(IELEM,8)  * Y(I5)
+     &                  - XA(IELEM,9)  * Y(I6)
 !
           W3(IELEM) =
      &                  - XA(IELEM,17) * Y(I1)
@@ -386,7 +391,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -402,7 +407,7 @@
         ELSE
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -479,18 +484,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) = W1(IELEM)
-     &                  + XA(IELEM, 1) * Y(I2)
-     &                  + XA(IELEM, 2) * Y(I3)
-     &                  + XA(IELEM, 3) * Y(I4)
-     &                  + XA(IELEM, 4) * Y(I5)
-     &                  + XA(IELEM, 5) * Y(I6)
+     &                  + XA(IELEM,1)  * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I3)
+     &                  + XA(IELEM,3)  * Y(I4)
+     &                  + XA(IELEM,4)  * Y(I5)
+     &                  + XA(IELEM,5)  * Y(I6)
 !
           W2(IELEM) = W2(IELEM)
      &                  + XA(IELEM,16) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I3)
-     &                  + XA(IELEM, 7) * Y(I4)
-     &                  + XA(IELEM, 8) * Y(I5)
-     &                  + XA(IELEM, 9) * Y(I6)
+     &                  + XA(IELEM,6)  * Y(I3)
+     &                  + XA(IELEM,7)  * Y(I4)
+     &                  + XA(IELEM,8)  * Y(I5)
+     &                  + XA(IELEM,9)  * Y(I6)
 !
           W3(IELEM) = W3(IELEM)
      &                  + XA(IELEM,17) * Y(I1)
@@ -526,7 +531,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -540,7 +545,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -617,18 +622,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) = W1(IELEM)
-     &                  - XA(IELEM, 1) * Y(I2)
-     &                  - XA(IELEM, 2) * Y(I3)
-     &                  - XA(IELEM, 3) * Y(I4)
-     &                  - XA(IELEM, 4) * Y(I5)
-     &                  - XA(IELEM, 5) * Y(I6)
+     &                  - XA(IELEM,1) * Y(I2)
+     &                  - XA(IELEM,2) * Y(I3)
+     &                  - XA(IELEM,3) * Y(I4)
+     &                  - XA(IELEM,4) * Y(I5)
+     &                  - XA(IELEM,5) * Y(I6)
 !
           W2(IELEM) = W2(IELEM)
      &                  - XA(IELEM,16) * Y(I1)
-     &                  - XA(IELEM, 6) * Y(I3)
-     &                  - XA(IELEM, 7) * Y(I4)
-     &                  - XA(IELEM, 8) * Y(I5)
-     &                  - XA(IELEM, 9) * Y(I6)
+     &                  - XA(IELEM,6) * Y(I3)
+     &                  - XA(IELEM,7) * Y(I4)
+     &                  - XA(IELEM,8) * Y(I5)
+     &                  - XA(IELEM,9) * Y(I6)
 !
           W3(IELEM) = W3(IELEM)
      &                  - XA(IELEM,17) * Y(I1)
@@ -664,7 +669,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -678,7 +683,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -755,18 +760,18 @@
           I6 = IKLE6(IELEM)
 !
           W1(IELEM) = W1(IELEM) + C * (
-     &                  + XA(IELEM, 1) * Y(I2)
-     &                  + XA(IELEM, 2) * Y(I3)
-     &                  + XA(IELEM, 3) * Y(I4)
-     &                  + XA(IELEM, 4) * Y(I5)
-     &                  + XA(IELEM, 5) * Y(I6) )
+     &                  + XA(IELEM,1) * Y(I2)
+     &                  + XA(IELEM,2) * Y(I3)
+     &                  + XA(IELEM,3) * Y(I4)
+     &                  + XA(IELEM,4) * Y(I5)
+     &                  + XA(IELEM,5) * Y(I6) )
 !
           W2(IELEM) = W2(IELEM) + C * (
      &                  + XA(IELEM,16) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I3)
-     &                  + XA(IELEM, 7) * Y(I4)
-     &                  + XA(IELEM, 8) * Y(I5)
-     &                  + XA(IELEM, 9) * Y(I6) )
+     &                  + XA(IELEM,6) * Y(I3)
+     &                  + XA(IELEM,7) * Y(I4)
+     &                  + XA(IELEM,8) * Y(I5)
+     &                  + XA(IELEM,9) * Y(I6) )
 !
           W3(IELEM) = W3(IELEM) + C * (
      &                  + XA(IELEM,17) * Y(I1)
@@ -816,7 +821,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -900,36 +905,36 @@
      &                  + XA(IELEM,20) * Y(I6)
 !
           W2(IELEM) =
-     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,1)  * Y(I1)
      &                  + XA(IELEM,21) * Y(I3)
      &                  + XA(IELEM,22) * Y(I4)
      &                  + XA(IELEM,23) * Y(I5)
      &                  + XA(IELEM,24) * Y(I6)
 !
           W3(IELEM) =
-     &                  + XA(IELEM, 2) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
      &                  + XA(IELEM,25) * Y(I4)
      &                  + XA(IELEM,26) * Y(I5)
      &                  + XA(IELEM,27) * Y(I6)
 !
           W4(IELEM) =
-     &                  + XA(IELEM, 3) * Y(I1)
-     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
      &                  + XA(IELEM,10) * Y(I3)
      &                  + XA(IELEM,28) * Y(I5)
      &                  + XA(IELEM,29) * Y(I6)
 !
           W5(IELEM) =
-     &                  + XA(IELEM, 4) * Y(I1)
-     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
      &                  + XA(IELEM,11) * Y(I3)
      &                  + XA(IELEM,13) * Y(I4)
      &                  + XA(IELEM,30) * Y(I6)
 !
           W6(IELEM) =
-     &                  + XA(IELEM, 5) * Y(I1)
-     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
      &                  + XA(IELEM,12) * Y(I3)
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
@@ -965,7 +970,7 @@
         ELSE
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -1049,36 +1054,36 @@
      &                  - XA(IELEM,20) * Y(I6)
 !
           W2(IELEM) =
-     &                  - XA(IELEM, 1) * Y(I1)
+     &                  - XA(IELEM,1)  * Y(I1)
      &                  - XA(IELEM,21) * Y(I3)
      &                  - XA(IELEM,22) * Y(I4)
      &                  - XA(IELEM,23) * Y(I5)
      &                  - XA(IELEM,24) * Y(I6)
 !
           W3(IELEM) =
-     &                  - XA(IELEM, 2) * Y(I1)
-     &                  - XA(IELEM, 6) * Y(I2)
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
      &                  - XA(IELEM,25) * Y(I4)
      &                  - XA(IELEM,26) * Y(I5)
      &                  - XA(IELEM,27) * Y(I6)
 !
           W4(IELEM) =
-     &                  - XA(IELEM, 3) * Y(I1)
-     &                  - XA(IELEM, 7) * Y(I2)
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
      &                  - XA(IELEM,10) * Y(I3)
      &                  - XA(IELEM,28) * Y(I5)
      &                  - XA(IELEM,29) * Y(I6)
 !
           W5(IELEM) =
-     &                  - XA(IELEM, 4) * Y(I1)
-     &                  - XA(IELEM, 8) * Y(I2)
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
      &                  - XA(IELEM,11) * Y(I3)
      &                  - XA(IELEM,13) * Y(I4)
      &                  - XA(IELEM,30) * Y(I6)
 !
           W6(IELEM) =
-     &                  - XA(IELEM, 5) * Y(I1)
-     &                  - XA(IELEM, 9) * Y(I2)
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
      &                  - XA(IELEM,12) * Y(I3)
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
@@ -1098,7 +1103,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -1114,7 +1119,7 @@
         ELSE
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -1198,36 +1203,36 @@
      &                  + XA(IELEM,20) * Y(I6)
 !
           W2(IELEM) = W2(IELEM)
-     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,1)  * Y(I1)
      &                  + XA(IELEM,21) * Y(I3)
      &                  + XA(IELEM,22) * Y(I4)
      &                  + XA(IELEM,23) * Y(I5)
      &                  + XA(IELEM,24) * Y(I6)
 !
           W3(IELEM) = W3(IELEM)
-     &                  + XA(IELEM, 2) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
      &                  + XA(IELEM,25) * Y(I4)
      &                  + XA(IELEM,26) * Y(I5)
      &                  + XA(IELEM,27) * Y(I6)
 !
           W4(IELEM) = W4(IELEM)
-     &                  + XA(IELEM, 3) * Y(I1)
-     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
      &                  + XA(IELEM,10) * Y(I3)
      &                  + XA(IELEM,28) * Y(I5)
      &                  + XA(IELEM,29) * Y(I6)
 !
           W5(IELEM) = W5(IELEM)
-     &                  + XA(IELEM, 4) * Y(I1)
-     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
      &                  + XA(IELEM,11) * Y(I3)
      &                  + XA(IELEM,13) * Y(I4)
      &                  + XA(IELEM,30) * Y(I6)
 !
           W6(IELEM) = W6(IELEM)
-     &                  + XA(IELEM, 5) * Y(I1)
-     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
      &                  + XA(IELEM,12) * Y(I3)
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5)
@@ -1238,7 +1243,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -1252,7 +1257,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -1336,36 +1341,36 @@
      &                  - XA(IELEM,20) * Y(I6)
 !
           W2(IELEM) = W2(IELEM)
-     &                  - XA(IELEM, 1) * Y(I1)
+     &                  - XA(IELEM,1)  * Y(I1)
      &                  - XA(IELEM,21) * Y(I3)
      &                  - XA(IELEM,22) * Y(I4)
      &                  - XA(IELEM,23) * Y(I5)
      &                  - XA(IELEM,24) * Y(I6)
 !
           W3(IELEM) = W3(IELEM)
-     &                  - XA(IELEM, 2) * Y(I1)
-     &                  - XA(IELEM, 6) * Y(I2)
+     &                  - XA(IELEM,2)  * Y(I1)
+     &                  - XA(IELEM,6)  * Y(I2)
      &                  - XA(IELEM,25) * Y(I4)
      &                  - XA(IELEM,26) * Y(I5)
      &                  - XA(IELEM,27) * Y(I6)
 !
           W4(IELEM) = W4(IELEM)
-     &                  - XA(IELEM, 3) * Y(I1)
-     &                  - XA(IELEM, 7) * Y(I2)
+     &                  - XA(IELEM,3)  * Y(I1)
+     &                  - XA(IELEM,7)  * Y(I2)
      &                  - XA(IELEM,10) * Y(I3)
      &                  - XA(IELEM,28) * Y(I5)
      &                  - XA(IELEM,29) * Y(I6)
 !
           W5(IELEM) = W5(IELEM)
-     &                  - XA(IELEM, 4) * Y(I1)
-     &                  - XA(IELEM, 8) * Y(I2)
+     &                  - XA(IELEM,4)  * Y(I1)
+     &                  - XA(IELEM,8)  * Y(I2)
      &                  - XA(IELEM,11) * Y(I3)
      &                  - XA(IELEM,13) * Y(I4)
      &                  - XA(IELEM,30) * Y(I6)
 !
           W6(IELEM) = W6(IELEM)
-     &                  - XA(IELEM, 5) * Y(I1)
-     &                  - XA(IELEM, 9) * Y(I2)
+     &                  - XA(IELEM,5)  * Y(I1)
+     &                  - XA(IELEM,9)  * Y(I2)
      &                  - XA(IELEM,12) * Y(I3)
      &                  - XA(IELEM,14) * Y(I4)
      &                  - XA(IELEM,15) * Y(I5)
@@ -1376,7 +1381,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -1390,7 +1395,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -1474,36 +1479,36 @@
      &                  + XA(IELEM,20) * Y(I6) )
 !
           W2(IELEM) = W2(IELEM) + C * (
-     &                  + XA(IELEM, 1) * Y(I1)
+     &                  + XA(IELEM,1)  * Y(I1)
      &                  + XA(IELEM,21) * Y(I3)
      &                  + XA(IELEM,22) * Y(I4)
      &                  + XA(IELEM,23) * Y(I5)
      &                  + XA(IELEM,24) * Y(I6) )
 !
           W3(IELEM) = W3(IELEM) + C * (
-     &                  + XA(IELEM, 2) * Y(I1)
-     &                  + XA(IELEM, 6) * Y(I2)
+     &                  + XA(IELEM,2)  * Y(I1)
+     &                  + XA(IELEM,6)  * Y(I2)
      &                  + XA(IELEM,25) * Y(I4)
      &                  + XA(IELEM,26) * Y(I5)
      &                  + XA(IELEM,27) * Y(I6) )
 !
           W4(IELEM) = W4(IELEM) + C * (
-     &                  + XA(IELEM, 3) * Y(I1)
-     &                  + XA(IELEM, 7) * Y(I2)
+     &                  + XA(IELEM,3)  * Y(I1)
+     &                  + XA(IELEM,7)  * Y(I2)
      &                  + XA(IELEM,10) * Y(I3)
      &                  + XA(IELEM,28) * Y(I5)
      &                  + XA(IELEM,29) * Y(I6) )
 !
           W5(IELEM) = W5(IELEM) + C * (
-     &                  + XA(IELEM, 4) * Y(I1)
-     &                  + XA(IELEM, 8) * Y(I2)
+     &                  + XA(IELEM,4)  * Y(I1)
+     &                  + XA(IELEM,8)  * Y(I2)
      &                  + XA(IELEM,11) * Y(I3)
      &                  + XA(IELEM,13) * Y(I4)
      &                  + XA(IELEM,30) * Y(I6) )
 !
           W6(IELEM) = W6(IELEM) + C * (
-     &                  + XA(IELEM, 5) * Y(I1)
-     &                  + XA(IELEM, 9) * Y(I2)
+     &                  + XA(IELEM,5)  * Y(I1)
+     &                  + XA(IELEM,9)  * Y(I2)
      &                  + XA(IELEM,12) * Y(I3)
      &                  + XA(IELEM,14) * Y(I4)
      &                  + XA(IELEM,15) * Y(I5) )
@@ -1514,7 +1519,7 @@
 !
           IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
           IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
 !
         ENDIF
@@ -1528,7 +1533,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -1538,7 +1543,8 @@
 !
         IF (LNG.EQ.1) WRITE(LU,3000) OP
         IF (LNG.EQ.2) WRITE(LU,3001) OP
-        CALL PLANTE(0)
+        CALL PLANTE(1)
+        STOP
 !
 !-----------------------------------------------------------------------
 !
@@ -1556,3 +1562,4 @@
 3001  FORMAT(1X,'MV0606 (BIEF) : UNKNOWN OPERATION : ',A8)
 !
       END
+

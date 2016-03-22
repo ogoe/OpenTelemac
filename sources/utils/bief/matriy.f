@@ -6,10 +6,10 @@
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
      & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,NELBOR,
      & NULONE,NELEM,NELMAX,NELEB,NELEBX,IELM1,IELM2,S,NPLAN,MESH,
-     & SIZEXMT)
+     & SIZEXMT,STOX)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -88,6 +88,11 @@
 !+        V7P0
 !+   Call to mt15pp (settling velocity matrix) added.
 !
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        22/03/2016
+!+        V7P2
+!+   Adding STOX, storage option of off-diagonal terms.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -114,6 +119,8 @@
 !| SU             |-->| STRUCTURE OF FUNCTIONS U
 !| SV             |-->| STRUCTURE OF FUNCTIONS V
 !| SW             |-->| STRUCTURE OF FUNCTIONS W
+!| STOX           |<--| STORAGE OPTION OF OFF-DIAGONAL TERMS
+!|                |   | 1=(NELMAX,NDP)   2=(NDP,NELMAX)
 !| SURFAC         |-->| AREA OF 2D ELEMENTS
 !| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
 !| TYPDIA         |<--| TYPE OF DIAGONAL
@@ -142,6 +149,7 @@
       INTEGER, INTENT(IN)             :: IKLBOR(NELEBX,*)
       INTEGER, INTENT(IN)             :: NELBOR(NELEBX)
       INTEGER, INTENT(IN)             :: NULONE(NELEBX,*)
+      INTEGER, INTENT(INOUT)          :: STOX
       LOGICAL, INTENT(INOUT)          :: LEGO
       TYPE(BIEF_OBJ), INTENT(IN)      :: SF,SG,SH,SU,SV,SW
       DOUBLE PRECISION, INTENT(IN)    :: F(*),G(*),H(*),U(*),V(*),W(*)
@@ -310,6 +318,12 @@
      &           0 ,  0 ,  0 ,  0 ,
      &           0 ,  0 ,  0 ,  0 ,
      &           0 ,  0 ,  0 ,  0 /
+!
+!-----------------------------------------------------------------------
+!
+!     STORAGE (NELMAX,NDP) UNLESS OTHERWISE STATED AFTER
+!
+      STOX=1
 !
 !-----------------------------------------------------------------------
 !
@@ -2939,6 +2953,10 @@
 !
       ELSEIF(FORMUL(1:6).EQ.'MAMURD') THEN
 !
+!     INVERTED STORAGE !!!!!!!!!!!!!! SEE MT14PP AND MT14TT !!!!!!!!!!!!
+!
+      STOX=2
+!
 !     CHARACTER 7 INFORMS WHETHER SIGMAG OR NOT
 !
       SIGMAG = .FALSE.
@@ -2961,9 +2979,9 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
-             CALL MT14PP(T,XM,PPQ(1,1,S),LEGO,
-     &                   XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                   SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
+            CALL MT14PP(T,XM,PPQ(1,1,S),LEGO,
+     &                  XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
+     &                  SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
 !
             TYPDIA='Q'
             TYPEXT='Q'

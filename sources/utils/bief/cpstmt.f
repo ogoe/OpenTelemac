@@ -5,7 +5,7 @@
      &( X , Y , TRANS )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    COPIES A MATRIX STRUCTURE ONTO ANOTHER.
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        03/02/2010
 !+        V6P0
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        22/03/2016
+!+        V7P2
+!+   Adding the copy of STOX.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| TRANS          |-->| IF YES, Y WILL BE CONSIDERED TRANSPOSED OF X
@@ -142,6 +147,7 @@
 !
       Y%TYPDIA = X%TYPDIA
       Y%TYPEXT = X%TYPEXT
+      Y%STOX   = X%STOX
 !
 !-----------------------------------------------------------------------
 !

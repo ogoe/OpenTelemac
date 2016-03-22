@@ -5,7 +5,7 @@
      &( OP , X , A , Y , C , MESH , LEGO )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS.
@@ -52,7 +52,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        28/12/05
 !+        V5P6
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -65,6 +65,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/03/2016
+!+        V7P2
+!+   Adding argument STOX to MATVCT.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX
@@ -289,7 +294,7 @@
      &               MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
      &               NPMAX,NPOIN,NPTFR,
      &               MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
-     &               BIEF_NBPEL(IELMX,MESH),MESH)
+     &               BIEF_NBPEL(IELMX,MESH),MESH,A%STOX)
 !
       ELSE
 !
@@ -301,7 +306,7 @@
      &                 MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
      &                 NPMAX,NPOIN,NPTFR,
      &                 MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
-     &                 BIEF_NBPEL(IELMX,MESH),MESH)
+     &                 BIEF_NBPEL(IELMX,MESH),MESH,A%STOX)
 !
           IF(OP(3:8).EQ.'TAY   ') THEN
             CALL OS( 'X=Y     ' , X , MESH%T , X , C )
@@ -332,7 +337,7 @@
      &                 MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
      &                 NPMAX,NPOIN,NPTFR,
      &                 MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
-     &                 BIEF_NBPEL(IELMX,MESH),MESH)
+     &                 BIEF_NBPEL(IELMX,MESH),MESH,A%STOX)
 !
           IF(OP(3:8).EQ.'AY    ') THEN
             CALL OS( 'X=Y     ' , X , MESH%T , X , C )

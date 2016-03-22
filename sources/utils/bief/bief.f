@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! BIEF VERSION 7.1
+! BIEF VERSION 7.2
 !***********************************************************************
 !
 !brief    INTERFACES OF BIEF PUBLIC SUBROUTINES
@@ -19,7 +19,13 @@
 !history  A. JOLY (EDF LAB, LNHE)
 !+        27/08/2015
 !+        V7P1
-!+   Adding vc05aa.
+!+     Adding vc05aa.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/03/2016
+!+        V7P2
+!+     All interfaces reactivated. Some were commented to overcome a bug
+!+     of HP compiler on Linux.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -409,7 +415,6 @@
      & SECU,COEMIN,COESOU,OPT)
       USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER LNG,LU
       INTEGER, INTENT(IN)             :: NSEG,NPOIN,NPTFR,SIZGLO,OPT
       INTEGER, INTENT(IN)             :: GLOSEG(SIZGLO,2),NELEM
       INTEGER, INTENT(IN)             :: IKLE(NELEM,3),NBOR(NPTFR)
@@ -2033,7 +2038,7 @@
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
      & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,NELBOR,
      & NULONE,NELEM,NELMAX,NELEB,NELEBX,IELM1,IELM2,S,NPLAN,MESH,
-     & SIZEXMT)
+     & SIZEXMT,STOX)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT(IN)             :: NELMAX,NELEM,IELM1,IELM2,S
@@ -2042,6 +2047,7 @@
       INTEGER, INTENT(IN)             :: IKLBOR(NELEBX,*)
       INTEGER, INTENT(IN)             :: NELBOR(NELEBX)
       INTEGER, INTENT(IN)             :: NULONE(NELEBX,*)
+      INTEGER, INTENT(INOUT)          :: STOX
       LOGICAL, INTENT(INOUT)          :: LEGO
       TYPE(BIEF_OBJ), INTENT(IN)      :: SF,SG,SH,SU,SV,SW
       DOUBLE PRECISION, INTENT(IN)    :: F(*),G(*),H(*),U(*),V(*),W(*)
@@ -2059,11 +2065,11 @@
      &(OP, X , DA,TYPDIA,XA,TYPEXT, Y ,
      & C,IKLE,NPT,NELEM,NELMAX,W,LEGO,IELM1,IELM2,IELMX,LV,
      & S,P,IKLEM1,DIMIKM,LIMVOI,MXPTVS,NPMAX,NPOIN,NPTFR,
-     & GLOSEG,SIZGLO,SIZXA,NDP,MESH)
+     & GLOSEG,SIZGLO,SIZXA,NDP,MESH,STOX)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: IELM1,IELM2,IELMX,NPOIN,NPMAX,S,P,SIZXA
-      INTEGER, INTENT(IN) :: NDP
+      INTEGER, INTENT(IN) :: NDP,STOX
       INTEGER, INTENT(INOUT) :: NPT
       INTEGER, INTENT(IN) :: NELEM,NELMAX,LV,DIMIKM,MXPTVS,NPTFR,SIZGLO
       INTEGER, INTENT(IN) :: IKLE(NELMAX,*),IKLEM1(*),LIMVOI(*)
@@ -3204,6 +3210,21 @@
       CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
         END SUBROUTINE
 !
+        SUBROUTINE MV0404_2
+     &(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,IKLE1,IKLE2,IKLE3,IKLE4,
+     & NPOIN,NELEM,W1,W2,W3,W4,DIM1XA)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN) :: NELEM,NPOIN,DIM1XA
+      INTEGER, INTENT(IN) :: IKLE1(*),IKLE2(*),IKLE3(*),IKLE4(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: W1(*),W2(*),W3(*),W4(*)
+      DOUBLE PRECISION, INTENT(IN)    :: Y(*),DA(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*)
+      DOUBLE PRECISION, INTENT(IN)    :: XA(DIM1XA,*)
+      DOUBLE PRECISION, INTENT(IN)    :: C
+      CHARACTER(LEN=8), INTENT(IN) :: OP
+      CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
+        END SUBROUTINE
+!
         SUBROUTINE MV0606
      &(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
      & IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,
@@ -3217,6 +3238,24 @@
       DOUBLE PRECISION, INTENT(IN) :: Y(*),DA(*)
       DOUBLE PRECISION, INTENT(INOUT) :: X(*)
       DOUBLE PRECISION, INTENT(IN) :: XA(NELMAX,*)
+      DOUBLE PRECISION, INTENT(IN) :: C
+      CHARACTER(LEN=8), INTENT(IN) :: OP
+      CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
+        END SUBROUTINE
+!
+        SUBROUTINE MV0606_2
+     &(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
+     & IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,
+     & NPOIN,NELEM,NELMAX,W1,W2,W3,W4,W5,W6,DIM1XA)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,DIM1XA
+      INTEGER, INTENT(IN) :: IKLE1(*),IKLE2(*),IKLE3(*)
+      INTEGER, INTENT(IN) :: IKLE4(*),IKLE5(*),IKLE6(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: W1(*),W2(*),W3(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: W4(*),W5(*),W6(*)
+      DOUBLE PRECISION, INTENT(IN) :: Y(*),DA(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*)
+      DOUBLE PRECISION, INTENT(IN) :: XA(DIM1XA,*)
       DOUBLE PRECISION, INTENT(IN) :: C
       CHARACTER(LEN=8), INTENT(IN) :: OP
       CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT

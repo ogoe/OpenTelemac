@@ -15,6 +15,12 @@
 !+        V7P0
 !+   Integer I8 buffers added in the mesh structure.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/03/2016
+!+        V7P2
+!+   Adding component STOXEBE for the storage option of off-diagonal
+!+   terms of EBE matrices.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -131,6 +137,10 @@
 !         STO: TYPE OF STORAGE  1: CLASSICAL EBE   3: EDGE-BASED STORAGE
           INTEGER STO
 !
+!         STOX: ORDER OF STORAGE OF OFF-DIAGONAL TERMS
+!         FOR EBE: 1=(NELMAX,NDP)  2=(NDP,NELMAX)
+          INTEGER STOX
+!
 !         ELMLIN: TYPE OF ELEMENT OF ROW
           INTEGER ELMLIN
 !
@@ -139,11 +149,11 @@
 !
 !         TYPDIA: TYPE OF DIAGONAL
 !         '0' : NIL   'I' : IDENTITY  'Q' : NO SPECIFIC PROPERTY
-          CHARACTER*1 TYPDIA
+          CHARACTER(LEN=1) TYPDIA
 !
 !         TYPEXT: TYPE OF EXTRA-DIAGONAL TERMS
 !         '0' : NIL   'S' : SYMMETRY  'Q' : NO SPECIFIC PROPERTY
-          CHARACTER*1 TYPEXT
+          CHARACTER(LEN=1) TYPEXT
 !
 !         POINTER TO A BIEF_OBJ FOR DIAGONAL
           TYPE(BIEF_OBJ), POINTER :: D

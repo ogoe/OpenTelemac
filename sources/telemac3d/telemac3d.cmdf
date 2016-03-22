@@ -60,9 +60,11 @@ files: declarations_telemac.f
   mult_interface_seg.f
   mv0403.f
   mv0404.f
+  mv0404_2.f
   mv0304.f
   mv0306.f
   mv0606.f
+  mv0606_2.f
   assve1.f
   assvec.f
   opass.f
