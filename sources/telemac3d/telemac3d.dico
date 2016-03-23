@@ -3338,21 +3338,6 @@ NIVEAU = 1
 AIDE = 'Nombre de tableaux mis a disposition de l utilisateur'
 AIDE1 = 'Number of arrays for own user programming'
 
-NOM = 'RAPPORT DES PAS DE TEMPS 3D ET 2D'
-NOM1 = 'RATIO OF 3D AND 2D TIME STEPS'
-TYPE = ENTIER
-INDEX = 63
-MNEMO = 'R3D2D'
-TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = 'Telemac-2D peut etre appele avec des sous-iterations'
-AIDE1 = 'Telemac-2D can be called with sub-iterations'
-/ FIN JMH
-
 NOM = 'SORTIE LISTING'
 NOM1 = 'LISTING PRINTOUT'
 TYPE = LOGIQUE
@@ -6698,6 +6683,108 @@ AIDE1 = 'Computation of the lateral boundary conditions of K and
 EPSILON.
 1: no turbulence = the minimum values KMIN and EMIN defined in CSTKEP
 2: Hans and Burchard formula'
+
+/
+/  VERSION 7.2
+/
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES VITESSES'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF VELOCITIES'
+TYPE = ENTIER
+INDEX = 59
+MNEMO = 'OPTADV\_VI'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps
+4=implicite'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DU K-EPSILON'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF K-EPSILON'
+TYPE = ENTIER
+INDEX = 63
+MNEMO = 'OPTADV\_KE'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps
+4=implicite'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
+
+NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES TRACEURS'
+NOM1 = 'SCHEME OPTION FOR ADVECTION OF TRACERS'
+TYPE = ENTIER
+INDEX = 66
+MNEMO = 'OPTADV\_TR'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, CONVECTION';'GENERAL'
+RUBRIQUE1 = 'EQUATIONS, ADVECTION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Si present remplace et a priorite sur :
+OPTION POUR LES CARACTERISTIQUES
+OPTION DE SUPG
+Si schema PSI ou N : 1=explicite 2=predicteur-correcteur
+3=predicteur-correcteur deuxieme ordre en temps
+4=implicite'
+AIDE1 = 'If present replaces and has priority over:
+OPTION FOR CHARACTERISTICS
+SUPG OPTION
+if N or PSI SCHEME: 1=explicit 2=predictor-corrector
+3= predictor-corrector second-order in time 4= implicit'
+
+NOM = 'NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS'
+NOM1 = 'NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES'
+TYPE = ENTIER
+INDEX = 67
+MNEMO = 'NCO\_DIST'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+NIVEAU = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+AIDE = 'Pour les options avec predicteur-correcteur'
+AIDE1 = 'For predictor-corrector options'
+
+NOM = 'NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS'
+NOM1 = 'NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES'
+TYPE = ENTIER
+INDEX = 68
+MNEMO = 'NSP\_DIST'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+NIVEAU = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+AIDE = 'Pour les options predicteur-correcteur
+avec schema localement implicite'
+AIDE1 = 'Only for implicit scheme with predictor-corrector'
 
 /
 / FOR SCRIPTS
