@@ -317,6 +317,8 @@ if __name__ == "__main__":
 # Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
    parser.add_option("-k","--rank",type="string",dest="rank",default='0',
       help="1 integer only (--rank 0 is the default)" )
+   parser.add_option("", "--valrootdir",type="string",dest="val_root",default='',
+      help="specify the directory in which to search the validation cases, default is taken from config file" )
    parser.add_option("","--runOnly",action="store_true",dest="runOnly",default=False,
       help="Only do the action type" )
    parser.add_option("--todos",type="string",dest="todos",default='',
@@ -476,6 +478,8 @@ if __name__ == "__main__":
          root = cfgs[cfgname]['root']
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
+         if options.val_root != '':
+            cfgs[cfgname]['val_root'] = options.val_root
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          print '    +> '+cfgname+': ' + ', '.join(cfg['VALIDATION'].keys())
