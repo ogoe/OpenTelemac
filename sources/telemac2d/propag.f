@@ -933,7 +933,7 @@
      &        MESH%GLOSEG%I(       1:  DIMGLO),
      &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV)
+     &        S,.FALSE.,MAXADV,NCO_DIST)
           CALL CVTRVF_POS(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &        HPROP,UCONV,VCONV,S,S,1,S,S,
      &        FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
@@ -947,7 +947,7 @@
      &        MESH%GLOSEG%I(       1:  DIMGLO),
      &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV)
+     &        S,.FALSE.,MAXADV,NCO_DIST)
 !  
         ENDIF
 !

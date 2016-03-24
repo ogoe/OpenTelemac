@@ -370,7 +370,7 @@
 !                                                              RAIN PLUIE
      &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
 !                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV)
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST)
         CALL CVTRVF_POS(EPTILD,EPN,SME,.FALSE.,.TRUE.,
      &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
 !                                                   SMI YASMI
@@ -392,7 +392,7 @@
 !                                                              RAIN PLUIE
      &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
 !                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV)
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST)
         CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
         CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
 !

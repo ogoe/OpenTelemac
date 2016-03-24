@@ -8,7 +8,7 @@
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,GLOSEG1,GLOSEG2,NBOR,
      & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN,
-     & NITMAX)
+     & NITMAX,NCO_DIST)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -89,10 +89,11 @@
 !+   Adaptation to the fact that MESH%FAC is now replaced by MESH%IFAC.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        23/02/2016
+!+        24/03/2016
 !+        V7P2
 !+   OPTION now active 1: ERIA algorithm
 !+                     2: edge-based, classic NERD
+!+   Argument NCO_DIST added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -142,6 +143,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NCO_DIST       |-->| NUMBER OF CORRECTIONS IN DISTRIBUTIVE SCHEMES
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
@@ -193,6 +195,7 @@
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
       INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX
+      INTEGER, INTENT(IN)             :: NCO_DIST
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
@@ -219,7 +222,7 @@
       EXTERNAL         P_DSUM,P_DMIN,P_DMAX
 !
       INTEGER I,IOPT1,IOPT2,NPOIN,IPTFR,I1,I2,I3,NITER,NEWREMAIN
-      INTEGER IR,N,NELEM,IELEM,REMAIN,MAXCOR,NSEG
+      INTEGER IR,N,NELEM,IELEM,REMAIN,NSEG
 !
 !-----------------------------------------------------------------------
 !
@@ -247,7 +250,6 @@
       DOUBLE PRECISION, POINTER :: DTLIM1(:),DTLIM2(:),DTLIM3(:)
       DOUBLE PRECISION, POINTER :: SVOL1(:),SVOL2(:),SVOL3(:)
       SAVE
-      MAXCOR=5
       NELEM=MESH%NELEM
       NSEG=MESH%NSEG
       NPOIN=H%DIM1
@@ -866,8 +868,8 @@
 !
 !     CORRECTOR
 !
-      IF(MAXCOR.GT.0) THEN
-      DO N=1,MAXCOR
+      IF(NCO_DIST.GT.0) THEN
+      DO N=1,NCO_DIST
 !
       CALL OS('X=0     ',X=T5)
 !     
