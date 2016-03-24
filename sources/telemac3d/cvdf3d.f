@@ -17,23 +17,18 @@
      & YAWCC,WCC,AGGLOD,NSCE,SOURCES,FSCE,NUMLIQ,DIRFLU,NFRLIQ,
      & VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,TRAIN,
      & FLODEL,FLOPAR,SIGMAG,IPBOT,MAXADV,FLUDPT,FLUDP,FLUER,
-     & VOLU2D,V2DPAR,SETDEP,OPTSOU)
+     & VOLU2D,V2DPAR,SETDEP,OPTSOU,ZN,OPTADV,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
 !
 !history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/1999
-!+
-!+   FORTRAN95 VERSION
-!
-!history  J.M. HERVOUET (LNHE)
-!+        18/12/2009
+!+        01/03/1999
 !+        V6P0
-!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -156,6 +151,7 @@
 !| MTRA2          |<->| 3D WORK MATRIX
 !| MURD_TF        |<->| MURD MATRIX FOR TIDAL FLAT
 !| NBOR3          |-->| GLOBAL NUMBER OF 3D BOUNDARY POINTS
+!| NCO_DIST       |-->| NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
 !| NEWDIF         |-->| RECALCULATE OR NOT DIFFUSION MATRIX
@@ -165,7 +161,18 @@
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| NPTFR3         |-->| NUMBER OF LATERAL BOUNDARY POINTS IN 3D
 !| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
+!| NSP_DIST       |-->| NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| OPTADV         |-->| ADVECTION SCHEME OPTION, THE MEANING DEPENDS ON
+!|                |   | THE SCHEME. IF SCHEME IS SUPG:
+!|                |   | 0: NO SUPG UPWIND
+!|                |   | 1: CLASSIC SUPG
+!|                |   | 2: MODIFIED SUPG
+!|                |   | IF SCHEME IS PSI:
+!|                |   | 1: EXPLICIT
+!|                |   | 2: PREDICTOR-CORRECTOR
+!|                |   | 3: SECOND ORDER PREDICTOR-CORRECTOR
+!|                |   | 4: LOCALLY IMPLICIT
 !| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
 !|                |   | MODIFIED AND PIECE-WISE LINEAR
 !| OPTDIF         |-->| OPTION FOR THE DIFFUSION
@@ -211,7 +218,8 @@
 !| YAS1F          |-->| LOGICAL TO TAKE INTO ACCOUNT S1F TERM IN DIFF3D
 !| YAWCC          |-->| LOGICAL TO TAKE INTO ACCOUNT WCC FOR SEDIMENT
 !| ZPROP          |-->| VERTICAL COORDINATES FOR PROPAGATION STEP
-!| ZT             |<->| Z: DISTRIBUTION
+!| ZN             |<->| Z SAVED AT TIME T(N)
+!| ZT             |<->| Z FOR SUPG
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -239,7 +247,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FLUXF,TETADI
       INTEGER, INTENT(IN)             :: SCHCF,SCHDF,TRBAF,NPTFR3,NFRLIQ
       INTEGER, INTENT(IN)             :: NUMLIQ(*),DIRFLU(0:NFRLIQ)
-      INTEGER, INTENT(IN)             :: OPTSOU
+      INTEGER, INTENT(IN)             :: OPTSOU,OPTADV,NCO_DIST,NSP_DIST
       LOGICAL, INTENT(IN)             :: CLIMIN,CLIMAX,RAIN,YAS0F,YAS1F
       LOGICAL, INTENT(IN)             :: INFOR,NEWDIF,CALFLU,MSK,SIGMAG
       TYPE(SLVCFG)                    :: SLVDIF
@@ -267,6 +275,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: FLUDPT, VOLU2D, V2DPAR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUDP, FLUER
       INTEGER, INTENT(IN)             :: SETDEP
+      DOUBLE PRECISION, INTENT(IN)    :: ZN(NPOIN3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -329,7 +338,13 @@
           IF(LIFBOL%I(IPTFR).EQ.KENT) THEN
 !           EXITS ARE TREATED AS FREE BOUNDARIES
             IP=NBOR3%I(IPTFR)
-            IF(FLUEXTPAR%R(IP).GE.0.D0) LIFBOL%I(IPTFR)=KSORT
+            IF(FLUEXTPAR%R(IP).GT.0.D0) LIFBOL%I(IPTFR)=KSORT
+          ELSEIF(LIFBOL%I(IPTFR).EQ.KSORT) THEN
+            IP=NBOR3%I(IPTFR)
+            IF(FLUEXTPAR%R(IP).LT.0.D0) THEN
+              LIFBOL%I(IPTFR)=KENT
+              FBORL%R(IPTFR)=FN%R(IP)
+            ENDIF
           ENDIF
         ENDDO
       ENDIF
@@ -339,8 +354,26 @@
 !     A PRIORI CORRECTION OF FN FOR REAL ENTRANCES
 !     I.E. LIFBOL STILL KENT DESPITE ABOVE CHANGE
 !
-      IF((SCHCF.EQ.ADV_SUP   .OR.SCHCF.EQ.ADV_NSC    .OR.
-     &    SCHCF.EQ.ADV_PSI   .OR.SCHCF.EQ.ADV_LPO    .OR.
+      IF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI.OR.
+     &    SCHCF.EQ.ADV_LPO).AND.YADIRFLU) THEN
+!
+        IF(NPTFR3.GT.0) THEN
+!
+        DO IP=1,NPTFR3
+          IF(DIRFLU(NUMLIQ(IP)).EQ.2.AND.LIFBOL%I(IP).EQ.KENT) THEN
+            I=NBOR3%I(IP)
+            LIFBOL%I(IP)=KSORT
+          ENDIF
+        ENDDO
+!
+        ENDIF
+!
+      ENDIF
+!
+!     A PRIORI CORRECTION OF FN FOR REAL ENTRANCES
+!     I.E. LIFBOL STILL KENT DESPITE ABOVE CHANGE
+!
+      IF((SCHCF.EQ.ADV_SUP .OR.
      &    SCHCF.EQ.ADV_LPO_TF.OR.SCHCF.EQ.ADV_NSC_TF)
      &                                              .AND.YADIRFLU) THEN
 !
@@ -351,7 +384,7 @@
             I=NBOR3%I(IP)
             LAMBDA=-FLUEXTPAR%R(I)*DT/
      &      (MAX(VOLUNPAR%R(I),1.D-10)-FLUEXTPAR%R(I)*DT)
-            FN%R(I)=FN%R(I)+LAMBDA*(FBORL%R(IP)-FN%R(I))
+             FN%R(I)=FN%R(I)+LAMBDA*(FBORL%R(IP)-FN%R(I))
 !           CORRECTION OF FLUX
 !           IN THE PROOF OF MASS-CONSERVATION, FLUEXT IS MULTIPLIED
 !           BY FN INSTEAD OF FBOR, TO INTERPRET THE ADDED MASS AS
@@ -432,17 +465,22 @@
 !
       ELSEIF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI) THEN
 !
-        CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &              MMURD%D%R,MMURD%X%R,DIM1X,
+        CALL MURD3D(FC,FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
+     &              MMURD,MMURD%D%R,MMURD%X%R,DIM1X,
      &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &              IKLE3%I,MESH3D,
+     &              IKLE3%I,MESH2D,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
+     &              SOURCES,FSCE,
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,
-     &              OPTSOU)
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
+     &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
+     &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
+     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
+     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
+     &              OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -454,17 +492,22 @@
 !
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
-        CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &              MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
+        CALL MURD3D(FC,FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
+     &              MESH3D%M,MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
      &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &              IKLE3%I,MESH3D,
+     &              IKLE3%I,MESH2D,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
+     &              SOURCES,FSCE,
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,
-     &              OPTSOU)
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
+     &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
+     &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
+     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
+     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
+     &              OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -665,7 +708,7 @@
 !
         IF(NSCE.GT.0.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
           IF(OPTSOU.EQ.1) THEN
-          ! SOURCE NOT CONSIDERED AS A DIRAC
+!           SOURCE NOT CONSIDERED AS A DIRAC
             DO IS=1,NSCE
               IIS=IS
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
@@ -681,7 +724,7 @@
               ENDDO
             ENDDO
           ELSE IF(OPTSOU.EQ.2) THEN
-          ! SOURCE CONSIDERED AS A DIRAC
+!           SOURCE CONSIDERED AS A DIRAC
             IIS = 1
 !           HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !           ARE STORED AT ADRESSES 2 (SEE SOURCES_SINKS.F)
@@ -701,6 +744,18 @@
               ENDIF
             ENDDO
           ENDIF
+        ENDIF
+!
+!       CHARACTERISTICS OR SUPG : BED FLUXES
+!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
+!
+        IF(BEDBOU.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
+          DO IP=1,NPOIN2
+            IF(BEDFLU%R(IP).LE.0.D0) THEN
+!                         FN FOR CHARACTERISTICS ?
+              FLUXF=FLUXF-FD%R(IP)*BEDFLU%R(IP)*DT
+            ENDIF
+          ENDDO
         ENDIF
 !
 !       CHARACTERISTICS OR SUPG : BED FLUXES
@@ -779,3 +834,4 @@
 !
       RETURN
       END
+

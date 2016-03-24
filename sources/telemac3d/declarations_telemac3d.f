@@ -4,15 +4,10 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL TELEMAC3D VARIABLES
-!
-!history  J-M HERVOUET (LNH)
-!+
-!+
-!+   LINKED TO BIEF 5.0
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -35,6 +30,11 @@
 !+        27/08/2015
 !+        V7P1
 !+   Imposed flowrates on the bed.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        24/03/2016
+!+        V7P2
+!+   New keywords for distributive schemes. Adding Z at time t(n), as ZN
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -442,7 +442,7 @@
 !
       TYPE(BIEF_OBJ), TARGET :: ZSTAR
 !
-!     Z: DISTRIBUTION
+!     Z ELEVATIONS USED ONLY WITH SUPG ADVECTION
 !
       TYPE(BIEF_OBJ), TARGET :: ZT
 !
@@ -558,6 +558,10 @@
 !     TIME COUNTER FOR CONSOLIDATION MODEL (MULTILAYER MODEL)
 !
       TYPE(BIEF_OBJ), TARGET :: TEMP
+!
+!     ELEVATIONS OF TIME T(N) SAVED
+!
+      TYPE(BIEF_OBJ), TARGET :: ZN
 !
 !     CONCENTRATION OF MUD BED LAYER (MULTILAYER MODEL)
 !

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    ALLOCATES TELEMAC3D STRUCTURES.
@@ -65,6 +65,11 @@
 !+        27/08/2015
 !+        V7P1
 !+   Imposed flowrates on the bed.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        24/03/2016
+!+        V7P2
+!+   Adding ZN.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -279,7 +284,11 @@
 ! REAL
 !
       CALL BIEF_ALLVEC(1, ZPROP,  'ZPROP ', IELM3 , 1, 1,MESH3D)
+!     USED ONLY WITH SUPG ADVECTION
       CALL BIEF_ALLVEC(1, ZT   ,  'ZT    ', IELM3 , 1, 1,MESH3D)
+!     USED ONLY WITH DISTRIBUTIVE SCHEMES WITH UPWIND OF DERIVATIVE
+!     IN TIME
+      CALL BIEF_ALLVEC(1, ZN   ,  'ZN    ', IELM3 , 1, 1,MESH3D)
 !
       CALL ALLBLO(GRADZF, 'GRADZF')
 !     23/11/2010 NOW GRADZF CONTAINS GRADIENTS OF ALL PLANES

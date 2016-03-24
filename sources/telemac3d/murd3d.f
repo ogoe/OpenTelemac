@@ -2,14 +2,17 @@
                      SUBROUTINE MURD3D
 !                    *****************
 !
-     &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DB,XB,DIM1XB,
-     & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,IKLE3,MESH3,
+     &(SFC,FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,B,DB,XB,DIM1XB,
+     & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,IKLE3,MESH2D,MESH3D,
      & NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
-     & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,TRAIN,NPOIN2,MINFC,MAXFC,MASKPT,
-     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3,OPTSOU)
+     & S0F,NSCE,ISCE,KSCE,
+     & SOURCES,FSCE,RAIN,PLUIE,TRAIN,NPOIN2,MINFC,MAXFC,MASKPT,
+     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3,OPTSOU,
+     & NPTFR3,NBOR3,FLUEXTPAR,FBORL,ZN,FI_I,ZSTART,ZEND,FINSUB,
+     & TETAF_VAR,ZNP1MT,T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH THE DISTRIBUTIVE SCHEME
@@ -96,12 +99,13 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
-!history  J-M HERVOUET (EDF LAB, LNHE)
-!+        02/02/2016
-!+        V7P1
-!+   A case OPTSOU.EQ.1 and OPTSOU.EQ.2 was swapped, after line 1048.
+!history  J-M HERVOUET (LNHE)
+!+        24/03/2016
+!+        V7P2
+!+   New predictor-corrector schemes from Sara Pavan PhD.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| B              |-->| MATRIX
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -124,21 +128,30 @@
 !| MASKPT         |-->| MASKING PER POINT.
 !|                |   | =1. : NORMAL   =0. : MASKED
 !| MAXFC          |<->| MAXIMUM VALUE FOR FC
-!| MESH3          |<->| 3D MESH
+!| MESH2D         |<->| 2D MESH
+!| MESH3D         |<->| 3D MESH
 !| MINFC          |<->| MINIMUM VALUE FOR FC
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NCO_DIST       |-->| NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES
+!| NSP_DIST       |-->| NUMBER OF SUB-ITERATIONS OF DISTRIBUTIVE SCHEMES
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
 !| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPTADV         |-->| NUMBER OF SEGMENTS
+!|                |   | 1 CLASSICAL EXPLICIT SCHEME
+!|                |   | 2 PREDICTOR CORRECTOR
+!|                |   | 3 PREDICTOR CORRECTOR SECOND ORDER
+!|                |   | 4 LOCALLY IMPLICIT
 !| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
 !|                |   | MODIFIED AND PIECE-WISE LINEAR
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
 !| S0F            |-->| EXPLICIT SOURCE TERM
 !| SCHCF          |-->| ADVECTION SCHEME FOR F
+!| SFC            |<->| BIEF STRUCTURE OF FC
 !| SOURCES        |-->| SOURCES
 !| STRA01         |<->| STRUCTURE OF TRA01
 !| STRA02         |<->| STRUCTURE OF TRA02
@@ -158,8 +171,6 @@
       USE BIEF
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D, ONLY: BEDBOU,BEDFLU,T2_18,MESH2D,
-     &                                  KSCE, ISCE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -168,34 +179,43 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,LV,NPOIN2
-      INTEGER, INTENT(IN)             :: IELM3,DIM1XB,OPTSOU
+      INTEGER, INTENT(IN)             :: IELM3,DIM1XB,OPTSOU,NPTFR3
 !                                                     6 OR 4
       INTEGER, INTENT(IN)             :: IKLE3(NELEM3,*),NSCE,OPTBAN
-      INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO
+      INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO,NBOR3(NPTFR3)
       INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2)
+      INTEGER, INTENT(IN)             :: ISCE(NSCE),KSCE(NSCE)
+      INTEGER, INTENT(IN)             :: OPTADV,NCO_DIST,NSP_DIST
 !
-      DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3),FBORL(NPTFR3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELEM3), FLUEXT(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELEM3),FLUEXT(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUEXTPAR(NPOIN3)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3), VOLU(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: VOLU2(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN3), TRA03(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: FLUX
+      DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3),VOLU(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FSCE(NSCE),MASKPT(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: DT,TRAIN
-!
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: SVOLU2,MINFC,MAXFC
-      TYPE(BIEF_OBJ), INTENT(IN)      :: SOURCES,S0F
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: STRA01,STRA02,STRA03
-      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3
+      DOUBLE PRECISION, INTENT(INOUT) :: VOLU2(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN3),TRA03(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: FLUX
+      DOUBLE PRECISION, INTENT(INOUT) :: FINSUB(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: TETAF_VAR(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZSTART(NPOIN3),ZEND(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZNP1MT(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(DIM1XB,NELEM3)
+!
+      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: SVOLU2,MINFC,MAXFC,T2_01,B,SFC
+      TYPE(BIEF_OBJ),  INTENT(IN)     :: SOURCES,S0F
+      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: STRA01,STRA02,STRA03,FI_I
+      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: BEDFLU
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH2D,MESH3D
 !
 !     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
       DOUBLE PRECISION, INTENT(IN)    :: FLODEL(*),FLOPAR(*)
+      DOUBLE PRECISION, INTENT(IN)    :: ZN(NPOIN3)
 !
-      LOGICAL, INTENT(IN)             :: MSK,INFOR,CALFLU,RAIN
+      LOGICAL, INTENT(IN)             :: MSK,INFOR,CALFLU,RAIN,BEDBOU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -203,17 +223,50 @@
       DOUBLE PRECISION M12,M13,M14,M15,M16,M23,M24,M25,M26,M34
       DOUBLE PRECISION M35,M36,M45,M46,M56,T1,T2,T3,T4,T5,T6
       DOUBLE PRECISION F1MF2,F1MF3,F1MF4,F2MF3,F2MF4,F3MF4,ALFALOC
+      DOUBLE PRECISION TDT,TETA
 !
-      INTEGER IELEM,IPOIN,NITER,IS,IGUILT,IIS
+      INTEGER IELEM,IPOIN,NITER,IS,IGUILT,IIS,IPTFR3,ICOR
       INTEGER I1,I2,I3,I4,I5,I6,OPT,ISEG3D,NSEGH,NSEGV
+!
+      LOGICAL PRECOR,LIPS
 !
 !-----------------------------------------------------------------------
 !
       DOUBLE PRECISION EPS
       DATA EPS /1.D-6/
-!     DATA EPS /10.D0/
 !
 !-----------------------------------------------------------------------
+!
+!     OPTIONS WITH AN EXPLICIT PREDICTOR-CORRECTOR
+!
+      IF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI).AND.
+     &   (OPTADV.EQ.2.OR.OPTADV.EQ.3)) THEN
+        PRECOR=.TRUE.
+      ELSE
+        PRECOR=.FALSE.
+      ENDIF
+!
+      IF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI).AND.
+     &   (OPTADV.EQ.4)) THEN
+        LIPS=.TRUE.
+      ELSE
+        LIPS=.FALSE.
+      ENDIF
+!
+!     SELECTING THE IMPLICITATION COEFFICIENT
+!
+      IF(LIPS) THEN 
+!       DO NOTHING, LOCALLY SEMI-IMPLICIT SCHEME
+      ELSEIF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI).AND.
+     &    OPTADV.EQ.3) THEN
+!       2ND ORDER PREDICTOR CORRECTOR SCHEME
+        TETA=0.5D0
+      ELSE
+!       EXPLICIT N OR PSI, EXPLICIT PREDICTOR-CORRECTOR PSI
+        TETA=0.D0
+      ENDIF
+!
+!***********************************************************************
 !
       CALL CPSTVC(SVOLU2,STRA01)
       CALL CPSTVC(SVOLU2,STRA02)
@@ -226,11 +279,27 @@
 !
       CALL OV ('X=Y     ',FC,FN,FN,C,NPOIN3)
 !
+!     TRA01 WILL BE THE CURRENT VOLUME AT THE END OF THE SUB-ITERATION
+!
       CALL OV ('X=Y     ',TRA01, VOLUN, VOLUN, C, NPOIN3)
-      IF (NCSIZE.GT.1) CALL PARCOM(STRA01,2,MESH3)
+      IF(NCSIZE.GT.1) CALL PARCOM(STRA01,2,MESH3D)
+!
+!     ZEND WILL BE THE FINAL MESH AT THE END OF THE SUB-ITERATION
+!     FINSUB WILL BE F PROGRESSIVELY UPDATED
+!     THAT IS F AT THE BEGINNING OF THE SUBITERATION
+!     INITIALIZE ZEND TO ZN AND FINSUB TO FN
+!
+      IF(PRECOR.AND.NCO_DIST.GT.0) THEN
+        DO IPOIN=1,NPOIN3
+          FINSUB(IPOIN)=FN(IPOIN)
+          ZEND(IPOIN)=ZN(IPOIN)
+        ENDDO
+      ENDIF
+!
+!     VOLU2: VOLUME AT THE END OF THE FULL TIME STEP
 !
       CALL OV ('X=Y     ',VOLU2, VOLU, VOLU, C, NPOIN3)
-      IF (NCSIZE.GT.1) CALL PARCOM(SVOLU2,2,MESH3)
+      IF(NCSIZE.GT.1) CALL PARCOM(SVOLU2,2,MESH3D)
 !
 10    CONTINUE
 !
@@ -243,6 +312,7 @@
 !
         DO IPOIN=1,NPOIN3
           TRA02(IPOIN)=0.D0
+          DB(IPOIN)=0.D0
         ENDDO
 !
         IF(IELM3.EQ.41) THEN
@@ -446,6 +516,20 @@
             ENDIF
           ENDIF
 !
+! ! ! DB COMPUTED WITH LAMBDA N AND NOT PSI 
+            DB(I1)=DB(I1)-XB(01,IELEM)-XB(02,IELEM)-XB(03,IELEM)
+     &                   -XB(04,IELEM)-XB(05,IELEM)
+            DB(I2)=DB(I2)-XB(16,IELEM)-XB(06,IELEM)-XB(07,IELEM)
+     &                   -XB(08,IELEM)-XB(09,IELEM)
+            DB(I3)=DB(I3)-XB(17,IELEM)-XB(21,IELEM)-XB(10,IELEM)
+     &                   -XB(11,IELEM)-XB(12,IELEM)
+            DB(I4)=DB(I4)-XB(18,IELEM)-XB(22,IELEM)-XB(25,IELEM)
+     &                   -XB(13,IELEM)-XB(14,IELEM)
+            DB(I5)=DB(I5)-XB(19,IELEM)-XB(23,IELEM)-XB(26,IELEM)
+     &                   -XB(28,IELEM)-XB(15,IELEM)   
+            DB(I6)=DB(I6)-XB(20,IELEM)-XB(24,IELEM)-XB(27,IELEM)
+     &                   -XB(29,IELEM)-XB(30,IELEM)
+!
         ENDDO ! IELEM
 !
         ELSEIF(IELM3.EQ.51) THEN
@@ -554,108 +638,13 @@
 !
       ELSEIF(SCHCF.EQ.ADV_NSC) THEN
 !
-!  COMPUTES THE FLUX TERMS PER UNIT OF TIME:
+!       COMPUTES THE FLUX TERMS PER UNIT OF TIME:
+!       I.E. : SUM ON J (LAMBDA(I,J)*(FC(J)-FC(I))
+!       DECOMPOSED INTO : -(SUM ON J (LAMBDA(I,J)*(FC(I)) WHICH IS DB * FC(I)
+!                         +(SUM ON J (LAMBDA(I,J)*(FC(J)) WHICH IS XB * FC
+!       IT IS EQUIVALENT TO A MATRIX-VECTOR PRODUCT...
 !
-!  I.E. : SUM ON J (LAMBDA(I,J)*(FC(J)-FC(I))
-!
-!  DECOMPOSED INTO : -(SUM ON J (LAMBDA(I,J)*(FC(I)) WHICH IS DB * FC(I)
-!                    +(SUM ON J (LAMBDA(I,J)*(FC(J)) WHICH IS XB * FC
-!
-!     CALL MV0606
-!    &('X=AY    ', TRA02, DB, 'Q', XB, 'Q', FC, C, IKLE3(1,1),
-!    & IKLE3(1,2),IKLE3(1,3),IKLE3(1,4),IKLE3(1,5),IKLE3(1,6),
-!    & NPOIN3, NELEM3, NELEM3,
-!    & W1(1,1),W1(1,2),W1(1,3),W1(1,4),W1(1,5),W1(1,6))
-!     CALL ASSVEC
-!    &(TRA02,IKLE3,NPOIN3,NELEM3,NELEM3,41,W1,.FALSE.,LV,MSK,MASKEL)
-!
-!     REPLACES CALL MV0606 AND CALL ASSVEC
-!
-      CALL OV ('X=YZ    ',TRA02,DB,FC,C,NPOIN3)
-!
-      IF(IELM3.EQ.41) THEN
-!
-      DO IELEM = 1 , NELEM3
-!
-        I1 = IKLE3(IELEM,1)
-        I2 = IKLE3(IELEM,2)
-        I3 = IKLE3(IELEM,3)
-        I4 = IKLE3(IELEM,4)
-        I5 = IKLE3(IELEM,5)
-        I6 = IKLE3(IELEM,6)
-!
-        TRA02(I1) = TRA02(I1) + XB(01,IELEM) * FC(I2)
-     &                        + XB(02,IELEM) * FC(I3)
-     &                        + XB(03,IELEM) * FC(I4)
-     &                        + XB(04,IELEM) * FC(I5)
-     &                        + XB(05,IELEM) * FC(I6)
-!
-        TRA02(I2) = TRA02(I2) + XB(16,IELEM) * FC(I1)
-     &                        + XB(06,IELEM) * FC(I3)
-     &                        + XB(07,IELEM) * FC(I4)
-     &                        + XB(08,IELEM) * FC(I5)
-     &                        + XB(09,IELEM) * FC(I6)
-!
-        TRA02(I3) = TRA02(I3) + XB(17,IELEM) * FC(I1)
-     &                        + XB(21,IELEM) * FC(I2)
-     &                        + XB(10,IELEM) * FC(I4)
-     &                        + XB(11,IELEM) * FC(I5)
-     &                        + XB(12,IELEM) * FC(I6)
-!
-        TRA02(I4) = TRA02(I4) + XB(18,IELEM) * FC(I1)
-     &                        + XB(22,IELEM) * FC(I2)
-     &                        + XB(25,IELEM) * FC(I3)
-     &                        + XB(13,IELEM) * FC(I5)
-     &                        + XB(14,IELEM) * FC(I6)
-!
-        TRA02(I5) = TRA02(I5) + XB(19,IELEM) * FC(I1)
-     &                        + XB(23,IELEM) * FC(I2)
-     &                        + XB(26,IELEM) * FC(I3)
-     &                        + XB(28,IELEM) * FC(I4)
-     &                        + XB(15,IELEM) * FC(I6)
-!
-        TRA02(I6) = TRA02(I6) + XB(20,IELEM) * FC(I1)
-     &                        + XB(24,IELEM) * FC(I2)
-     &                        + XB(27,IELEM) * FC(I3)
-     &                        + XB(29,IELEM) * FC(I4)
-     &                        + XB(30,IELEM) * FC(I5)
-!
-      ENDDO
-!
-      ELSEIF(IELM3.EQ.51) THEN
-!
-      DO IELEM = 1 , NELEM3
-!
-        I1 = IKLE3(IELEM,1)
-        I2 = IKLE3(IELEM,2)
-        I3 = IKLE3(IELEM,3)
-        I4 = IKLE3(IELEM,4)
-!
-        TRA02(I1) = TRA02(I1) + XB(01,IELEM) * FC(I2)
-     &                        + XB(02,IELEM) * FC(I3)
-     &                        + XB(03,IELEM) * FC(I4)
-!
-        TRA02(I2) = TRA02(I2) + XB(04,IELEM) * FC(I3)
-     &                        + XB(05,IELEM) * FC(I4)
-     &                        + XB(07,IELEM) * FC(I1)
-!
-        TRA02(I3) = TRA02(I3) + XB(06,IELEM) * FC(I4)
-     &                        + XB(08,IELEM) * FC(I1)
-     &                        + XB(10,IELEM) * FC(I2)
-!
-        TRA02(I4) = TRA02(I4) + XB(09,IELEM) * FC(I1)
-     &                        + XB(11,IELEM) * FC(I2)
-     &                        + XB(12,IELEM) * FC(I3)
-!
-      ENDDO
-!
-      ELSE
-        WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
-!
-!     END OF THE REPLACEMENT OF CALL MV0606
+        CALL MATVEC('X=AY     ',STRA02,B,SFC,0.D0,MESH3D)
 !
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
@@ -668,19 +657,15 @@
 !
         NSEGH=NSEG*NPLAN
         NSEGV=(NPLAN-1)*NPOIN2
-!
 !       COMPUTES DB AND TRA02 IN UPWIND EXPLICIT FINITE VOLUMES
 !       POSSIBLE OPTIMISATION: DB IS NOT COMPUTED IF OPT=2
-!
         DO IPOIN=1,NPOIN3
           DB(IPOIN)=0.D0
           TRA02(IPOIN)=0.D0
         ENDDO
-!
 !       HORIZONTAL AND VERTICAL FLUXES ONLY
 !       BEWARE : FLUXES FROM POINT 2 TO 1 IN SEGMENT
 !                WITH POINTS 1 AND 2 (SEE PRECON AND FLUX3D)
-!
         DO ISEG3D = 1,NSEGH+NSEGV
           I1=GLOSEG(ISEG3D,1)
           I2=GLOSEG(ISEG3D,2)
@@ -699,8 +684,10 @@
         STOP
       ENDIF
 !
-      IF(NCSIZE.GT.1) CALL PARCOM(STRA02,2,MESH3)
+      IF(NCSIZE.GT.1) CALL PARCOM(STRA02,2,MESH3D)
 !
+! *** ADD LIMITATION OF FLUXES LIKE IN 2D, IF DRY ZONES
+!**** MULTIPLYING THE FLUXES FOR THE PERCENTAGE OF LIMITATION
 !-----------------------------------------------------------------------
 !
 !  COMPUTES THE LIMITING SUB-TIMESTEP :
@@ -709,7 +696,12 @@
 !
 !     OPT=1 : OLD CRITERION
 !     OPT=2 : NEW CRITERION LESS RESTRICTIVE
-      OPT=2
+!
+      IF(OPTADV.EQ.1) THEN
+        OPT=2
+      ELSE 
+        OPT=1
+      ENDIF
 !
       IF(OPT.EQ.2) THEN
 !
@@ -718,6 +710,16 @@
       DO IPOIN=1,NPOIN3
         MINFC%R(IPOIN)=FC(IPOIN)
         MAXFC%R(IPOIN)=FC(IPOIN)
+      ENDDO
+!
+!     BOUNDARY VALUES
+!
+      DO IPTFR3=1,NPTFR3
+        IPOIN=NBOR3(IPTFR3)
+        IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+          MINFC%R(IPOIN)=MIN(MINFC%R(IPOIN),FBORL(IPTFR3))
+          MAXFC%R(IPOIN)=MAX(MAXFC%R(IPOIN),FBORL(IPTFR3))
+        ENDIF
       ENDDO
 !
       IF(IELM3.EQ.41) THEN
@@ -773,8 +775,8 @@
 !     IN PARALLEL MODE: GLOBAL EXTREMA
 !
       IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(MAXFC,3,MESH3)
-        CALL PARCOM(MINFC,4,MESH3)
+        CALL PARCOM(MAXFC,3,MESH3D)
+        CALL PARCOM(MINFC,4,MESH3D)
       ENDIF
 !
 !     NEW COMPUTATION OF TRA03
@@ -788,7 +790,18 @@
      &                 MAX(FC(IPOIN)-MINFC%R(IPOIN),1.D-12)
         ENDIF
       ENDDO
+!
+!     BOUNDARY TERMS
+!
+      DO IPTFR3=1,NPTFR3
+        IPOIN=NBOR3(IPTFR3)
+        IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+          TRA03(IPOIN)=TRA03(IPOIN)+DTJ*FLUEXTPAR(IPOIN)
+        ENDIF
+      ENDDO
+!
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
+!
       IF(NSCE.GT.0) THEN
         IF(OPTSOU.EQ.1) THEN
 !         SOURCE NOT CONSIDERED AS A DIRAC
@@ -797,11 +810,11 @@
               IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
                 TRA03(IPOIN)=TRA03(IPOIN)
      &                      -DTJ*SOURCES%ADR(IS)%P%R(IPOIN)
-!                                            WITH PARCOM
+!                                WITH PARCOM
               ENDIF
             ENDDO
           ENDDO
-        ELSEIF(OPTSOU.EQ.2) THEN
+        ELSE IF(OPTSOU.EQ.2) THEN
 !         SOURCE CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             IF(ISCE(IS).GT.0) THEN
@@ -818,37 +831,37 @@
 !     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
 !
       IF(BEDBOU) THEN
-        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
-        CALL CPSTVC(BEDFLU,T2_18)
-        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+!       STORE BEDFLU IN T2_01 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_01)
+        CALL OS('X=Y     ',X=T2_01,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
         DO IPOIN=1,NPOIN2
-          IF(T2_18%R(IPOIN).GT.0.D0) THEN
-            TRA03(IPOIN)=TRA03(IPOIN)
-     &                  -DTJ*T2_18%R(IPOIN)
-!                                        WITH PARCOM
+          IF(T2_01%R(IPOIN).GT.0.D0) THEN
+            TRA03(IPOIN)=TRA03(IPOIN)-DTJ*T2_01%R(IPOIN)
+!                                         WITH PARCOM
           ENDIF
         ENDDO
-!         DO IPOIN=1,NPOIN2
-!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
-!             TRA03(IPOIN)=TRA03(IPOIN)
-!      &                  -DTJ*BEDFLU%R(IPOIN)
-! !                                        WITH PARCOM
-!           ENDIF
-!         ENDDO
       ENDIF
 !
       ELSEIF(OPT.EQ.1) THEN
 !
-      IF(SCHCF.EQ.ADV_PSI) THEN
-        WRITE(LU,*) 'MURD3D: OPT=1 IS NOT ALLOWED WITH PSI-SCHEME'
-        WRITE(LU,*) '        BECAUSE DIAGONAL DB IS NOT COMPUTED'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
+! !       IF(SCHCF.EQ.ADV_PSI) THEN
+! !         WRITE(LU,*) 'MURD3D: OPT=1 IS NOT ALLOWED WITH PSI-SCHEME'
+! !         WRITE(LU,*) '        BECAUSE DIAGONAL DB IS NOT COMPUTED'
+! !         CALL PLANTE(1)
+! !         STOP
+! !       ENDIF
 !
 !     TRA03 : COEFFICIENT OF FC(I), THAT MUST REMAIN POSITIVE FOR MONOTONICITY
       CALL OV('X=Y+CZ  ',TRA03, VOLU, DB, DTJ, NPOIN3)
+!
+!     NEGATIVE BOUNDARY TERMS (ENTERING FLUXES)
+!
+      DO IPOIN = 1,NPOIN3
+        IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+          TRA03(IPOIN)=TRA03(IPOIN)+DTJ*FLUEXT(IPOIN)
+        ENDIF        
+      ENDDO    
 !
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
 !
@@ -890,33 +903,31 @@
 !     POSITIVE BED FLUXES CHANGE THE MONOTONICITY CRITERION
 !
       IF(BEDBOU) THEN
-!         DO IPOIN=1,NPOIN2
-!           IF(BEDFLU%R(IPOIN).GT.0.D0) THEN
-!             TRA03(IPOIN)=TRA03(IPOIN)
-!      &                  -DTJ*BEDFLU%R(IPOIN)
-! !                                        WITHOUT PARCOM
-!           ENDIF
-!         ENDDO
-        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
-        CALL CPSTVC(BEDFLU,T2_18)
-        CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+!       STORE BEDFLU IN T2_01 AS IT NEEDS TO BE ASSEMBLED
+        CALL CPSTVC(BEDFLU,T2_01)
+        CALL OS('X=Y     ',X=T2_01,Y=BEDFLU)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
         DO IPOIN=1,NPOIN2
-          IF(T2_18%R(IPOIN).GT.0.D0) THEN
+          IF(T2_01%R(IPOIN).GT.0.D0) THEN
             TRA03(IPOIN)=TRA03(IPOIN)
-     &                  -DTJ*T2_18%R(IPOIN)
+     &                  -DTJ*T2_01%R(IPOIN)
 !                                        WITHOUT PARCOM
           ENDIF
         ENDDO
       ENDIF
 !
-      IF(NCSIZE.GT.1) CALL PARCOM(STRA03,2,MESH3)
+! VERIFICARE SE CRITERIO PRIMA O DOPO BORDI/SOURCES
+      IF((PRECOR.AND.NCO_DIST.GT.0).OR.LIPS) THEN
+        CALL OV('X=Y+CZ  ',TRA03, VOLU, DB, 2.D0*DTJ, NPOIN3)
+      ENDIF
+!
+      IF(NCSIZE.GT.1) CALL PARCOM(STRA03,2,MESH3D)
 !
       ELSE
         WRITE(LU,*) 'MURD3D: OPT=',OPT,' NOT IMPLEMENTED'
         CALL PLANTE(1)
         STOP
-      ENDIF
+      ENDIF !OPT =1 OR 2
 !
 !     IF MONOTONICITY IS NOT ENSURED, REDUCTION OF TIME-STEP BY FACTOR ALFA
 !     THE MINIMUM ON ALL POINTS WILL BE TAKEN
@@ -969,10 +980,46 @@
       CALL OV('X=CX    ',TRA01,TRA01,TRA01,1.D0-ALFA,NPOIN3)
       CALL OV('X=X+CY  ',TRA01,VOLU2,VOLU2,     ALFA,NPOIN3)
 !
-      IF(CALFLU) THEN
-        DO IPOIN = 1,NPOIN3
-          FLUX = FLUX + DTJALFA*FC(IPOIN)*FLUEXT(IPOIN)
+!     SAME THING FOR ZEND
+!
+      IF(PRECOR.AND.NCO_DIST.GT.0) THEN
+!       COMPUTES DELTA Z AFTER ALFA*DTJ = VALUE OF Z AT THE END OF THE SUBTIME STEP
+!       DELTA ZEND = (1-ALFA) DELTA(ZN) + ALFA DELTA(ZN+1) (FISSO-MESH3D%Z) 
+        DO IPOIN=1,NPOIN3
+          ZSTART(IPOIN)=ZEND(IPOIN)
+          ZEND(IPOIN)=(1.D0-ALFA)*ZEND(IPOIN)+ALFA*MESH3D%Z%R(IPOIN)
+        ENDDO 
+      ELSEIF(LIPS) THEN
+!       CUMULATED TIMESTEP
+        TDT=DT-DTJ+DTJALFA
+        DO IPOIN=1,NPOIN3 
+!         Z AT THE END OF THE SUBTIME STEP FOR DISTR SCHEME
+          ZEND(IPOIN)=ZN(IPOIN)+TDT*(MESH3D%Z%R(IPOIN)-ZN(IPOIN))/DT
+!         COMPUTE Z(N+1-TETA_I) :ZNP1MT(IPOIN)
+          ZNP1MT(IPOIN) = (1.D0-TETAF_VAR(IPOIN))*ZEND(IPOIN)
+     &                    +TETAF_VAR(IPOIN)*ZSTART(IPOIN)
         ENDDO
+      ELSE
+!
+!     BOUNDARY FLUX AND SOURCE COMPUTATION FOR ALL EXPLICIT SCHEMES 
+!     EXCEPT PC SCHEME AND SEMI-IMPLICIT (FOR PC SCHEME DONE AT THE LAST CORRECTOR STEP)
+!     COMPUTING THE FLUXES FOR THE MASS BALANCE
+!
+      IF(CALFLU) THEN
+!
+!       BOUNDARY TERMS
+!
+        DO IPTFR3=1,NPTFR3
+          IPOIN=NBOR3(IPTFR3)
+          IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+            FLUX=FLUX+DTJALFA*FLUEXT(IPOIN)*FBORL(IPTFR3)
+          ELSE
+            FLUX=FLUX+DTJALFA*FLUEXT(IPOIN)*FC(IPOIN)
+          ENDIF
+        ENDDO
+!
+!       SOURCES
+!
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
             IF(OPTSOU.EQ.1) THEN
@@ -1009,17 +1056,32 @@
             ENDIF
           ENDDO
         ENDIF
+!
 !       FOR BED FLUXES
+!
         IF(BEDBOU) THEN
           DO IPOIN=1,NPOIN2
-            IF(T2_18%R(IPOIN).LE.0.D0) THEN
-              FLUX=FLUX-DTJALFA*FC(IPOIN)*T2_18%R(IPOIN)
+            IF(T2_01%R(IPOIN).LE.0.D0) THEN
+              FLUX=FLUX-DTJALFA*FC(IPOIN)*T2_01%R(IPOIN)
             ENDIF
           ENDDO
         ENDIF
-      ENDIF
+!
+      ENDIF   ! IF(CALFLU)
+      ENDIF ! .NOT.PRECOR
 !
 !     ADVECTION DURING ALFA*DTJ
+!
+!     BOUNDARY TERMS
+!
+      DO IPTFR3=1,NPTFR3
+        IPOIN=NBOR3(IPTFR3)
+        IF(MASKPT(IPOIN).GT.0.5D0.AND.FLUEXTPAR(IPOIN).LT.0.D0.AND.
+     &     TRA01(IPOIN).GT.EPS) THEN
+          FC(IPOIN)=FC(IPOIN)-DTJALFA*(FBORL(IPTFR3)-FC(IPOIN))
+     &              *FLUEXTPAR(IPOIN)/TRA01(IPOIN)
+        ENDIF
+      ENDDO
 !
 !     SOURCES (BUT WHEN INTAKE, FSCE=FC)
 !
@@ -1034,7 +1096,7 @@
      &              *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDDO
-            ELSEIF(OPTSOU.EQ.2) THEN
+            ELSE IF(OPTSOU.EQ.2) THEN
 !             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
@@ -1047,39 +1109,41 @@
           ELSE
             IF(OPTSOU.EQ.1) THEN
 !             THE SOURCE IS NOT CONSIDERED AS A DIRAC
-              DO IPOIN=1,NPOIN3
-                IF(TRA01(IPOIN).GT.EPS) THEN
-                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
-                ENDIF
-              ENDDO
-            ELSEIF(OPTSOU.EQ.2) THEN
-!             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
-     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
                 ENDIF
               ENDIF
+            ELSE IF(OPTSOU.EQ.2) THEN
+!             THE SOURCE IS CONSIDERED AS A DIRAC
+              DO IPOIN=1,NPOIN3
+                IF(TRA01(IPOIN).GT.EPS) THEN
+                  FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+                ENDIF
+              ENDDO
             ENDIF
           ENDIF
         ENDDO
       ENDIF
+!
 !     BEDFLUXES
+!
       IF(BEDBOU) THEN
         IF(OPTBAN.EQ.2) THEN
           DO IPOIN=1,NPOIN2
             IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
-     &          *MAX(T2_18%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &          *MAX(T2_01%R(IPOIN),0.D0)/TRA01(IPOIN)
             ENDIF
           ENDDO
         ELSE
           DO IPOIN=1,NPOIN2
             IF(TRA01(IPOIN).GT.EPS) THEN
               FC(IPOIN)=FC(IPOIN)-DTJALFA*FC(IPOIN)
-     &        *MAX(T2_18%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &        *MAX(T2_01%R(IPOIN),0.D0)/TRA01(IPOIN)
             ENDIF
           ENDDO
         ENDIF
@@ -1109,36 +1173,246 @@
         ENDIF
       ENDIF
 !
-!     FLUXES
+!     FLUXES AND SOURCE TERMS
 !
-      IF(S0F%TYPR.NE.'0') THEN
-        DO IPOIN=1,NPOIN3
-          IF(OPTBAN.EQ.2) THEN
-          IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
-            FC(IPOIN)=FC(IPOIN)+DTJALFA*
+      IF(.NOT.LIPS) THEN
+!
+        IF(S0F%TYPR.NE.'0') THEN
+          DO IPOIN=1,NPOIN3
+            IF(OPTBAN.EQ.2) THEN
+              IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+                FC(IPOIN)=FC(IPOIN)+DTJALFA*
      &                     (S0F%R(IPOIN)+TRA02(IPOIN))/TRA01(IPOIN)
-          ENDIF
-          ELSE
-          IF(TRA01(IPOIN).GT.EPS) THEN
-            FC(IPOIN)=FC(IPOIN)+DTJALFA*
+              ENDIF
+            ELSE
+              IF(TRA01(IPOIN).GT.EPS) THEN
+                FC(IPOIN)=FC(IPOIN)+DTJALFA*
      &                     (S0F%R(IPOIN)+TRA02(IPOIN))/TRA01(IPOIN)
-          ENDIF
-          ENDIF
-        ENDDO
-      ELSE
-        IF(OPTBAN.EQ.2) THEN
-        DO IPOIN=1,NPOIN3
-          IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
-            FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
-          ENDIF
-        ENDDO
+              ENDIF
+            ENDIF
+          ENDDO
         ELSE
-        DO IPOIN=1,NPOIN3
-          IF(TRA01(IPOIN).GT.EPS) THEN
-            FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
+          IF(OPTBAN.EQ.2) THEN
+            DO IPOIN=1,NPOIN3
+              IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+                FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
+              ENDIF
+            ENDDO
+          ELSE
+            DO IPOIN=1,NPOIN3
+              IF(TRA01(IPOIN).GT.EPS) THEN
+                FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
+              ENDIF
+            ENDDO
           ENDIF
-        ENDDO
         ENDIF
+!
+      ELSE
+!
+!       HERE WE DO NOT NEED THE DERIVATIVE IN TIME 
+        DO IPOIN=1,NPOIN3
+!         DFDT(IPOIN)=0.D0
+          TRA02(IPOIN)=0.D0
+        ENDDO
+!
+!       CALL FLUX_3(SOLO X N)
+
+!
+!       BUILDING AND SOLVING THE LINEAR SYSTEM (NORMAL OR PREDICTOR)
+!
+!         CALL TVF_IMP(F%R,T4%R,FXMAT,
+!      &               FXMATPAR,UNSV2D%R,DDT,
+!      &               FLBOUND%R,FXBORPAR%R,HNP1MT%R,
+!      &               FBOR%R,SMH%R,YASMH,FSCEXP%R,
+!      &               MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
+!      &               MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
+!      &               MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+!      &               OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
+!      &               RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
+!      &               ENTET,VOLU2D%R,V2DPAR%R,
+!      &               T6,T8%R,AM2,TB2,SLVPSI,
+! !                    PREDICTOR CORRECTOR
+!      &               .TRUE.,   .FALSE.,0,NCO_DIST,ADMASS)
+!
+      ENDIF !.NOT.LIPS
+!
+!-----------------------------------------------
+!   CORRECTOR STEP FOR N AND PSI
+!-----------------------------------------------
+!
+      IF(PRECOR.AND.NCO_DIST.GT.0)THEN
+        DO ICOR=1,NCO_DIST
+!
+!         COMPUTING THE MINIMUM AND MAXIMUM AND POSSIBLE LIMITATION
+!         LIMITATION ONLY IF:
+!         - WE HAVE EXPLICIT 2ND ORDER PREDICTOR-CORRECTOR
+!         - FOR FIRST ORDER OPTION (TETAF=0) AND ICOR.GT.1
+!     
+          IF(OPTADV.EQ.3.OR.ICOR.GT.1) THEN   
+            DO IPOIN=1,NPOIN3
+              MINFC%R(IPOIN)=FINSUB(IPOIN)
+              MAXFC%R(IPOIN)=FINSUB(IPOIN)
+            ENDDO 
+            DO IELEM=1,NELEM3
+              I1 = IKLE3(IELEM,1)
+              I2 = IKLE3(IELEM,2)
+              I3 = IKLE3(IELEM,3)
+              I4 = IKLE3(IELEM,4)
+              I5 = IKLE3(IELEM,5)
+              I6 = IKLE3(IELEM,6)
+              MINFC%R(I1)=MIN(MINFC%R(I1),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I1)=MAX(MAXFC%R(I1),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MINFC%R(I2)=MIN(MINFC%R(I2),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I2)=MAX(MAXFC%R(I2),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MINFC%R(I3)=MIN(MINFC%R(I3),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I3)=MAX(MAXFC%R(I3),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MINFC%R(I4)=MIN(MINFC%R(I4),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I4)=MAX(MAXFC%R(I4),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MINFC%R(I5)=MIN(MINFC%R(I5),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I5)=MAX(MAXFC%R(I5),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MINFC%R(I6)=MIN(MINFC%R(I6),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              MAXFC%R(I6)=MAX(MAXFC%R(I6),FC(I1),FC(I2),FC(I3),FC(I4),
+     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
+            ENDDO
+            IF(NCSIZE.GT.1) THEN
+              CALL PARCOM(MINFC,4,MESH3D)
+              CALL PARCOM(MAXFC,3,MESH3D)
+            ENDIF
+          ENDIF
+!
+          IF(OPTADV.EQ.3) THEN
+!           FOR SECOND ORDER, LIMITATION OF F ALREADY AT THIS LEVEL
+!
+            DO IPOIN=1,NPOIN3
+              FC(IPOIN)=MIN(FC(IPOIN),2.D0*FINSUB(IPOIN)-MINFC%R(IPOIN))
+              FC(IPOIN)=MAX(FC(IPOIN),2.D0*FINSUB(IPOIN)-MAXFC%R(IPOIN))
+!             THESE CONDITIONS ARE ENSURED BY THE PREDICTOR
+!             FC%R(I)=MIN(FC%R(I),FMAX(I)+(FINSUB(I)-FMAX(I))/(2*2-1.D0))
+!             FC%R(I)=MAX(FC%R(I),FMIN(I)+(FINSUB(I)-FMIN(I))/(2*2-1.D0))
+            ENDDO 
+            IF(ICOR.GT.1) THEN
+              DO IPOIN=1,NPOIN3
+                FC(IPOIN)=MIN(FC(IPOIN),
+     &              FINSUB(IPOIN)+1.D0/(2.D0-TETA)*
+     &              (MAXFC%R(IPOIN)-FINSUB(IPOIN)))
+                FC(IPOIN)=MAX(FC(IPOIN),
+     &              FINSUB(IPOIN)+1.D0/(2.D0-TETA)*
+     &              (MINFC%R(IPOIN)-FINSUB(IPOIN)))
+              ENDDO 
+            ENDIF
+          ELSEIF(OPTADV.EQ.2.AND.ICOR.GT.1) THEN
+            DO IPOIN=1,NPOIN3
+!             LIMITING THE PREDICTOR
+              FC(IPOIN)=MIN(FC(IPOIN),FINSUB(IPOIN)+
+     &              0.5D0*(MAXFC%R(IPOIN)-FINSUB(IPOIN)))
+              FC(IPOIN)=MAX(FC(IPOIN),FINSUB(IPOIN)+
+     &              0.5D0*(MINFC%R(IPOIN)-FINSUB(IPOIN)))
+            ENDDO 
+          ENDIF !OPTADV.EQ.3
+!
+!         END OF LIMITATION OF THE VALUE COMPUTED BY THE PREDICTOR
+!
+          DO IPOIN=1,NPOIN3
+!           DFDT(IPOIN)=(FC(IPOIN)-FINSUB(IPOIN))/DTJALFA
+            TRA02(IPOIN)=(FC(IPOIN)-FINSUB(IPOIN))/DTJALFA
+          ENDDO
+!
+!         COMPUTE THE FLUXES FOR THE CORRECTOR
+!
+!                                                    DFDT
+          CALL FLUX_COR(FC,FINSUB,FI_I%R,ZSTART,ZEND,TRA02,XB,DIM1XB,
+     &                  TETA,IKLE3,MESH3D,NELEM3,NPOIN3,IELM3,SCHCF)
+          CALL PARCOM(FI_I,2,MESH3D)
+!
+!         MODIFICATIONS OF BOUNDARY FLUXES FOR PRED COR
+!         MASS BALANCE ONLY AT THE LAST CORRECTION
+          IF(CALFLU.AND.ICOR.EQ.NCO_DIST) THEN
+!
+!           BOUNDARY TERMS
+!
+            DO IPTFR3=1,NPTFR3
+              IPOIN=NBOR3(IPTFR3)
+              IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+                FLUX=FLUX+DTJALFA*FLUEXT(IPOIN)*FBORL(IPTFR3)
+              ELSE
+                FLUX=FLUX+DTJALFA*FLUEXT(IPOIN)*
+     &          ((1.D0-TETA)*FINSUB(IPOIN)+TETA*FC(IPOIN))
+              ENDIF
+            ENDDO
+!
+            IF(NSCE.GT.0) THEN
+              DO IS=1,NSCE
+                IIS=IS
+!               HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!               ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+                IF(NCSIZE.GT.1) IIS=IIS+NSCE
+                DO IPOIN=1,NPOIN3
+                  IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                    FLUX=FLUX
+     &             -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                  ELSE
+                    FLUX=FLUX
+     &             -DTJALFA*SOURCES%ADR(IIS)%P%R(IPOIN)*
+     &             ((1.D0-TETA)*FINSUB(IPOIN)+TETA*FC(IPOIN))
+                 ENDIF
+               ENDDO
+             ENDDO
+            ENDIF ! NSCE.GT.0
+          ENDIF !CALFLU.AND.ICOR.EQ.NCO_DIST
+!
+!         BOUNDARY TERMS
+!
+          DO IPTFR3=1,NPTFR3
+            IPOIN=NBOR3(IPTFR3)
+            IF(MASKPT(IPOIN).GT.0.5D0.AND.FLUEXTPAR(IPOIN).LT.0.D0.AND.
+     &         TRA01(IPOIN).GT.EPS) THEN
+              FC(IPOIN)=FC(IPOIN)
+     &-DTJALFA*(FBORL(IPTFR3)-(1.D0-TETA)*FINSUB(IPOIN)-TETA*FC(IPOIN))
+     &        *FLUEXTPAR(IPOIN)/TRA01(IPOIN)
+            ENDIF
+          ENDDO
+!
+!         SOURCES TO ADD
+!
+          DO IPOIN=1,NPOIN3
+            IF(TRA01(IPOIN).GT.EPS) THEN
+              FC(IPOIN)=FC(IPOIN)-DTJALFA*FI_I%R(IPOIN)/TRA01(IPOIN)
+            ENDIF
+          ENDDO
+!
+        ENDDO
+      ENDIF  ! IF(PREDICOR.AND.NCO_DIST.GT.1)
+! 
+!     PREPARING NEXT ITERATION:   
+!     FC IN FINSUB (F AT THE BEGINNING OF EVERY SUBITERATION)
+!
+      IF(PRECOR) THEN
+        DO IPOIN=1,NPOIN3
+          FINSUB(IPOIN)=FC(IPOIN)
+        ENDDO
       ENDIF
 !
 !     DTJ WAS THE REMAINING TIME, ALFA*DTJ HAS BEEN DONE, THE REST IS:
@@ -1148,7 +1422,7 @@
         WRITE(LU,*) 'MURD3D: ITERATION NO. REACHED ',NITER,', STOP.'
         IF(NCSIZE.GT.1) THEN
 !         GLOBAL NUMBERING IF THERE IS A GUILTY POINT
-          IF(IGUILT.GT.0) IGUILT=MESH3%KNOLG%I(IGUILT)
+          IF(IGUILT.GT.0) IGUILT=MESH3D%KNOLG%I(IGUILT)
 !         ONLY THE MORE GUILTY PROCESSOR IS KEPT
           IF(ALFALOC.NE.P_DMIN(ALFALOC)) IGUILT=0
 !         RETRIEVING THE CORRESPONDING POINT
@@ -1175,3 +1449,4 @@
 !
       RETURN
       END
+

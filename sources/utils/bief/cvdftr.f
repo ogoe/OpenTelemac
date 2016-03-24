@@ -215,14 +215,15 @@
 !| NSP_DIST       |-->| NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTADV         |-->| ADVECTION SCHEME OPTION, THE MEANING DEPENDS ON
-!|                |   | ICONVF
-!|                |   | IF SCHEME IS SUPG:
+!|                |   | THE SCHEME. IF SCHEME IS SUPG:
 !|                |   | 0: NO SUPG UPWIND
 !|                |   | 1: CLASSIC SUPG
 !|                |   | 2: MODIFIED SUPG
 !|                |   | IF SCHEME IS PSI:
 !|                |   | 1: EXPLICIT
 !|                |   | 2: PREDICTOR-CORRECTOR
+!|                |   | 3: SECOND ORDER PREDICTOR-CORRECTOR
+!|                |   | 4: LOCALLY IMPLICIT
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !|                |   | 1:NORMAL   2:WITH MASKING
 !| OPTSOU         |-->| TYPE OF SOURCES
