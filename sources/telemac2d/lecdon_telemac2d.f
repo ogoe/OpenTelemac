@@ -88,10 +88,12 @@
 !+  removed (no longer necessary after clipping of HPROP).
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        21/03/2016
+!+        25/03/2016
 !+        V7P2
 !+  Dealing with the new treatment of negative depths and its mandatory
-!+  use with new scheme 15. Schemes ADV_PSI_NC and ADV_NSC_NC removed.
+!+  use with new scheme 15 when dealing with tracers.
+!+  This condition is somewhat relaxed for velocities and k-epsilon
+!+  Schemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -2172,24 +2174,31 @@
 !     ONLY IN FINITE ELEMENTS, OTHERWISE THE ADVECTION OF VELOCITIES
 !     ARE NOT DONE WITH THE SCHEMES CHECKED HERE.
 !
+!     FOR VELOCITIES AND K-EPSILON, WE ADMIT THAT IT IS NOT FULLY COMPATIBLE
+!     UNLIKE WHAT WE DO FOR TRACERS (FOR WHICH MASS CONSERVATION
+!                                    MUST BE EXACT)
+!
       IF(EQUA(14:15).EQ.'EF') THEN
         IF(  ICONVF(1).EQ.ADV_NSC_TF.OR.ICONVF(4).EQ.ADV_NSC_TF
      &   .OR.ICONVF(1).EQ.ADV_LPO_TF.OR.ICONVF(4).EQ.ADV_LPO_TF) THEN
-          IF(.NOT.BANDEC.OR.OPTBAN.NE.1.OR.OPT_HNEG.NE.2) THEN
+          IF(.NOT.BANDEC.OR.OPTBAN.NE.1.OR.
+     &      (OPT_HNEG.NE.2.AND.OPT_HNEG.NE.3)) THEN
             IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'AVEC LES SCHEMAS DE CONVECTION'
+              WRITE(LU,*) 'AVEC LES SCHEMAS POUR LA CONVECTION'
+              WRITE(LU,*) 'DES VITESSES OU DU K-EPSILON'
               WRITE(LU,*) ADV_LPO_TF,' OU ',ADV_NSC_TF
               WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
-              WRITE(LU,*) 'DOIT ETRE EGAL A 2'
+              WRITE(LU,*) 'DOIT ETRE EGAL A 2 OU 3'
               WRITE(LU,*) 'BANCS DECOUVRANTS DOIT ETRE EGAL A OUI'
               WRITE(LU,*) 'OPTION DE TRAITEMENT DES BANCS DECOUVRANTS'
               WRITE(LU,*) 'DOIT ETRE EGAL A 1'
             ENDIF
             IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'WITH ADVECTION SCHEMES'
+              WRITE(LU,*) 'WITH SCHEME FOR ADVECTION'
+              WRITE(LU,*) 'OF VELOCITIES OR K-EPSILON'
               WRITE(LU,*) ADV_LPO_TF,' OR ',ADV_NSC_TF
               WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
-              WRITE(LU,*) 'MUST BE EQUAL TO 2'
+              WRITE(LU,*) 'MUST BE EQUAL TO 2 OR 3'
               WRITE(LU,*) 'TIDAL FLATS MUST BE EQUAL TO YES'
               WRITE(LU,*) 'OPTION FOR THE TREATMENT OF TIDAL'
               WRITE(LU,*) 'FLATS MUST BE EQUAL TO 1'
@@ -2201,32 +2210,37 @@
       ENDIF
 !
 !     TIDAL FLATS VERSIONS OF DISTRIBUTIVE ADVECTION SCHEMES
-!     THAT REQUEST POSITIVE DEPTHS WITH OPTION 3
+!     THAT REQUEST POSITIVE DEPTHS WITH OPTION 2 OR 3
+!     SEE REMARKS ABOVE
 !
-      IF(ICONVF(1).EQ.ADV_PSI_TF.OR.ICONVF(4).EQ.ADV_PSI_TF) THEN
-        IF(.NOT.BANDEC.OR.OPTBAN.NE.1.OR.OPT_HNEG.NE.3) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'AVEC LE SCHEMA DE CONVECTION ',ADV_PSI_TF
-            WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
-            WRITE(LU,*) 'DOIT ETRE EGAL A 3'
-            WRITE(LU,*) 'BANCS DECOUVRANTS DOIT ETRE EGAL A OUI'
-            WRITE(LU,*) 'OPTION DE TRAITEMENT DES BANCS DECOUVRANTS'
-            WRITE(LU,*) 'DOIT ETRE EGAL A 1'
+      IF(EQUA(14:15).EQ.'EF') THEN
+        IF(ICONVF(1).EQ.ADV_PSI_TF.OR.ICONVF(4).EQ.ADV_PSI_TF) THEN
+          IF(.NOT.BANDEC.OR.OPTBAN.NE.1.OR.
+     &       (OPT_HNEG.NE.2.AND.OPT_HNEG.NE.3)) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'AVEC LE SCHEMA DE CONVECTION ',ADV_PSI_TF
+              WRITE(LU,*) 'TRAITEMENT DES HAUTEURS NEGATIVES'
+              WRITE(LU,*) 'DOIT ETRE EGAL A 2 OU 3'
+              WRITE(LU,*) 'BANCS DECOUVRANTS DOIT ETRE EGAL A OUI'
+              WRITE(LU,*) 'OPTION DE TRAITEMENT DES BANCS DECOUVRANTS'
+              WRITE(LU,*) 'DOIT ETRE EGAL A 1'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'WITH SCHEME FOR ADVECTION'
+              WRITE(LU,*) 'OF VELOCITIES OR K-EPSILON ',ADV_PSI_TF
+              WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
+              WRITE(LU,*) 'MUST BE EQUAL TO 2 OR 3'
+              WRITE(LU,*) 'TIDAL FLATS MUST BE EQUAL TO YES'
+              WRITE(LU,*) 'OPTION FOR THE TREATMENT OF TIDAL'
+              WRITE(LU,*) 'FLATS MUST BE EQUAL TO 1'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
           ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'WITH ADVECTION SCHEME ',ADV_PSI_TF
-            WRITE(LU,*) 'TREATMENT OF NEGATIVE DEPTHS'
-            WRITE(LU,*) 'MUST BE EQUAL TO 3'
-            WRITE(LU,*) 'TIDAL FLATS MUST BE EQUAL TO YES'
-            WRITE(LU,*) 'OPTION FOR THE TREATMENT OF TIDAL'
-            WRITE(LU,*) 'FLATS MUST BE EQUAL TO 1'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
         ENDIF
       ENDIF
 !
-      IF(NTRAC.GT.0) THEN
+      IF(NTRAC.GT.0.AND.EQUA(14:15).EQ.'EF') THEN
         DO ITRAC=1,NTRAC
           IF(    ICONVFT(ITRAC).EQ.ADV_NSC_TF
      &       .OR.ICONVFT(ITRAC).EQ.ADV_LPO_TF ) THEN
