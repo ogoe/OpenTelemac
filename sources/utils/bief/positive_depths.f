@@ -62,7 +62,7 @@
 !+   in parallel. FLODEL differently shared at the exit.
 !
 !history  J-M HERVOUET (LNHE)
-!+        22/02/2016
+!+        25/03/2016
 !+        V7P2
 !+   OPTION has a new meaning (2 was the only previous possibility)
 !+   Now : 1 : positive depths ensured with an EBE approach (new !)
@@ -427,39 +427,39 @@
 !
           IF(F1*DT.GT.VOL1) THEN
             IF(T1%R(I1).GT.T3%R(I1)) THEN
-              VOL1=VOL1+(F1*DT-VOL1)*T3%R(I1)/T1%R(I1)
+              VOL1=VOL1+(F1*DT-VOL1)*(T3%R(I1)/T1%R(I1))
             ELSE
               VOL1=F1*DT
             ENDIF
           ELSE
             IF(T3%R(I1).GT.T1%R(I1)) THEN
-              VOL1=VOL1-MIN(VOL1,VOL1-F1*DT)*T1%R(I1)/T3%R(I1)
+              VOL1=VOL1-MIN(VOL1,VOL1-F1*DT)*(T1%R(I1)/T3%R(I1))
             ELSE
               VOL1=MAX(F1,0.D0)*DT
             ENDIF
           ENDIF
           IF(F2*DT.GT.VOL2) THEN
             IF(T1%R(I2).GT.T3%R(I2)) THEN
-              VOL2=VOL2+(F2*DT-VOL2)*T3%R(I2)/T1%R(I2)
+              VOL2=VOL2+(F2*DT-VOL2)*(T3%R(I2)/T1%R(I2))
             ELSE
               VOL2=F2*DT
             ENDIF
           ELSE
             IF(T3%R(I2).GT.T1%R(I2)) THEN
-              VOL2=VOL2-MIN(VOL2,VOL2-F2*DT)*T1%R(I2)/T3%R(I2)
+              VOL2=VOL2-MIN(VOL2,VOL2-F2*DT)*(T1%R(I2)/T3%R(I2))
             ELSE
               VOL2=MAX(F2,0.D0)*DT
             ENDIF
           ENDIF
           IF(F3*DT.GT.VOL3) THEN
             IF(T1%R(I3).GT.T3%R(I3)) THEN
-              VOL3=VOL3+(F3*DT-VOL3)*T3%R(I3)/T1%R(I3)
+              VOL3=VOL3+(F3*DT-VOL3)*(T3%R(I3)/T1%R(I3))
             ELSE
               VOL3=F3*DT
             ENDIF
           ELSE
             IF(T3%R(I3).GT.T1%R(I3)) THEN
-              VOL3=VOL3-MIN(VOL3,VOL3-F3*DT)*T1%R(I3)/T3%R(I3)
+              VOL3=VOL3-MIN(VOL3,VOL3-F3*DT)*(T1%R(I3)/T3%R(I3))
             ELSE
               VOL3=MAX(F3,0.D0)*DT
             ENDIF

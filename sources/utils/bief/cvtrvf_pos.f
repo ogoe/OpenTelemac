@@ -89,7 +89,7 @@
 !+   Adaptation to the fact that MESH%FAC is now replaced by MESH%IFAC.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        24/03/2016
+!+        25/03/2016
 !+        V7P2
 !+   OPTION now active 1: ERIA algorithm
 !+                     2: edge-based, classic NERD
@@ -706,39 +706,42 @@
 !
         IF(F1*DT.GT.VOL1) THEN
           IF(T7%R(I1).GT.T1%R(I1)) THEN
-            VOL1=VOL1+(F1*DT-VOL1)*T1%R(I1)/T7%R(I1)
+!                                  Commas very important to have T1/T7 <1
+!                                  before multiplication
+!                                  (                 )
+            VOL1=VOL1+(F1*DT-VOL1)*(T1%R(I1)/T7%R(I1))
           ELSE
             VOL1=F1*DT
           ENDIF
         ELSE
           IF(T1%R(I1).GT.T7%R(I1)) THEN
-            VOL1=VOL1-MIN(VOL1,VOL1-F1*DT)*T7%R(I1)/T1%R(I1)
+            VOL1=VOL1-MIN(VOL1,VOL1-F1*DT)*(T7%R(I1)/T1%R(I1))
           ELSE
             VOL1=MAX(F1,0.D0)*DT
           ENDIF
         ENDIF
         IF(F2*DT.GT.VOL2) THEN
           IF(T7%R(I2).GT.T1%R(I2)) THEN
-            VOL2=VOL2+(F2*DT-VOL2)*T1%R(I2)/T7%R(I2)
+            VOL2=VOL2+(F2*DT-VOL2)*(T1%R(I2)/T7%R(I2))
           ELSE
             VOL2=F2*DT
           ENDIF
         ELSE
           IF(T1%R(I2).GT.T7%R(I2)) THEN
-            VOL2=VOL2-MIN(VOL2,VOL2-F2*DT)*T7%R(I2)/T1%R(I2)
+            VOL2=VOL2-MIN(VOL2,VOL2-F2*DT)*(T7%R(I2)/T1%R(I2))
           ELSE
             VOL2=MAX(F2,0.D0)*DT
           ENDIF
         ENDIF
         IF(F3*DT.GT.VOL3) THEN
           IF(T7%R(I3).GT.T1%R(I3)) THEN
-            VOL3=VOL3+(F3*DT-VOL3)*T1%R(I3)/T7%R(I3)
+            VOL3=VOL3+(F3*DT-VOL3)*(T1%R(I3)/T7%R(I3))
           ELSE
             VOL3=F3*DT
           ENDIF
         ELSE
           IF(T1%R(I3).GT.T7%R(I3)) THEN
-            VOL3=VOL3-MIN(VOL3,VOL3-F3*DT)*T7%R(I3)/T1%R(I3)
+            VOL3=VOL3-MIN(VOL3,VOL3-F3*DT)*(T7%R(I3)/T1%R(I3))
           ELSE
             VOL3=MAX(F3,0.D0)*DT
           ENDIF
@@ -957,7 +960,7 @@
         ELSEIF(T7%R(I1).GT.1.D-15) THEN
           IF(VOL1.LT.MESH%SURFAC%R(I)*HT%R(I1)*TIERS) THEN
             VOL1=VOL1+(MESH%SURFAC%R(I)*HT%R(I1)*TIERS-VOL1)
-     &               *T1%R(I1)/T7%R(I1)
+     &               *(T1%R(I1)/T7%R(I1))
           ELSE
             VOL1=-(MIN( FP1,0.D0)+MIN(-FP3,0.D0))
           ENDIF
@@ -967,7 +970,7 @@
         ELSEIF(T7%R(I2).GT.1.D-15) THEN
           IF(VOL2.LT.MESH%SURFAC%R(I)*HT%R(I2)*TIERS) THEN
             VOL2=VOL2+(MESH%SURFAC%R(I)*HT%R(I2)*TIERS-VOL2)
-     &               *T1%R(I2)/T7%R(I2)
+     &               *(T1%R(I2)/T7%R(I2))
           ELSE
             VOL2=-(MIN(-FP1,0.D0)+MIN( FP2,0.D0))
           ENDIF
@@ -977,7 +980,7 @@
         ELSEIF(T7%R(I3).GT.1.D-15) THEN
           IF(VOL3.LT.MESH%SURFAC%R(I)*HT%R(I3)*TIERS) THEN
             VOL3=VOL3+(MESH%SURFAC%R(I)*HT%R(I3)*TIERS-VOL3)
-     &               *T1%R(I3)/T7%R(I3)
+     &               *(T1%R(I3)/T7%R(I3))
           ELSE
             VOL3=-(MIN(-FP2,0.D0)+MIN( FP3,0.D0))
           ENDIF
