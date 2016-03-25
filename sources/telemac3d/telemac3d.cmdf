@@ -350,7 +350,6 @@ files: declarations_telemac.f
   clip.f
   share_3d_fluxes.f
   flux3dlim.f
-  flux_cor.f
   read_dataset.f
   bief_valida.f
   find_variable.f
@@ -726,6 +725,7 @@ files: declarations_telemac3d.f
   lecdon_telemac3d.f
   amr_plan.f
   calcot.f
+  flux_cor.f
   tfond.f
   cstkep.f
   make_zconv.f
