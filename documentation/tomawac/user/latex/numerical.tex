@@ -1,0 +1,244 @@
+
+
+\chapter{  Numerical methods used in TOMAWAC}
+
+
+\section{ General solution algorithm}
+
+ As stated in Section 4, the equation to be solved by the TOMAWAC software is a transport (convection) equation with source terms that can be written in the following general form:
+\begin{equation} \label{GrindEQ__6_1_}
+\frac{\partial \left(B\; F\right)}{\partial t} +\vec{V}.\vec{\nabla }\left(B\; F\right)=B\; Q
+\end{equation}
+Both functions F and Q are functions of five variables and depend, e.g. in Cartesian coordinates, on x, y, q, fr and t. The above equation is then to be solved on a four-dimensional grid in (x, y, q, fr) and $\vec{V}$ is a transport vector, which is a dimension-4 vector in the general case. It is reduced, however, to a three-dimensional vector ($\dot{f}_{r} $ is zero) when there is neither a current nor a variation of water depth in time.
+\begin{equation} \label{GrindEQ__6_2_}
+\vec{V}=\left(\begin{array}{c} {\dot{x}} \\ {\dot{y}} \\ {\dot{\theta }} \\ {\dot{f}_{r} } \end{array}\right)
+\end{equation}
+Equation \eqref{GrindEQ__6_1_} is solved in TOMAWAC through a fractional step method, i.e. the convection and the source term integration steps are solved successively and separately. Thus, the following steps are successively solved from a current state at the date t = n.Dt, in which the variance spectrum Fn is known in all points:
+
+  an \textbf{\underbar{advection step}} without source terms (refer to paragraph 6.1.2):
+\begin{equation} \label{GrindEQ__6_3_}
+\frac{\partial \left(B\; F\right)}{\partial t} +\vec{V}.\vec{\nabla }\left(B\; F\right)=0
+\end{equation}
+discretized as follows:
+\begin{equation} \label{GrindEQ__6_4_}
+\frac{(B.F)*-(B.F)^{n} }{\Delta t} =\left[\vec{V}.grad(B.F)\right]^{n}
+\end{equation}
+from which a value of (B.F)*, then of F*, intermediate after the convection step, is derived
+
+  a \textbf{\underbar{source term integration step}} (refer to paragraph 6.1.3):
+\begin{equation} \label{GrindEQ__6_5_}
+\frac{\partial F}{\partial t} =Q
+\end{equation}
+discretized as follows:
+\begin{equation} \label{GrindEQ__6_6_}
+\frac{F^{n+1} -F*}{\Delta t} =\frac{Q^{n+1} +Q*}{2}
+\end{equation}
+since coefficient B is time independent.
+
+ The variance density spectrum Fn+1 for a time step (time t~=~(n+1).Dt) is then obtained. That operation is then repeated for the next time step and as many times as necessary for covering the simulation period being considered.
+
+
+\section{ Processing the advection step}
+
+ The propagation step is solved in TOMAWAC by means of the method of characteristics which is largely used at the LNHE for processing various convection equations (refer for example to [Esposito,~1981]). The application of that method to TOMAWAC has a specific feature: the method should be applied to a dimension-4 space in the general case and to a dimension-3 space when there is no current and the depth is constant over time; furthermore the domain in propagation directions is periodic.
+
+ It should be reminded that equation \eqref{GrindEQ__6_3_} without source terms is processed in that step, being discretized as follows for a time step Dtp:
+\begin{equation} \label{GrindEQ__6_7_}
+\frac{(B.F)*-(B.F)^{n} }{\Delta t_{p} } =\left[\vec{V}.grad(B.F)\right]^{n}
+\end{equation}
+The convector field$\vec{V}$, whose expression was given in Section 4, is not time dependent when there is no tide, just like factor B (refer to paragraph 4). The equation to be processed can be simplified as follows in that case:
+\begin{equation} \label{GrindEQ__6_8_}
+\frac{B.F*-B.F^{n} }{\Delta t_{p} } =\vec{V}.\left[grad(B.F)\right]^{n}
+\end{equation}
+This is a major advantage, since the characteristics can be traced back only once, at the beginning of the simulation. It is sufficient to store the origin of the characteristic pathlines and to retrieve them whenever the convection step is called. For each quadruplet (x${}_{Q}$, y${}_{Q}$, q${}_{Q}$, fr${}_{Q}$) of the discretized spatial and spectro-angular variables, the characteristic curve is traced back to the time step Dtp and the ``arrival'' point (x${}_{P}$, y${}_{P}$, q${}_{P}$, fr${}_{P}$), which is called foot of the characteristic pathline, is stored. Actually, the numbers of the discretization elements (triangular elements for the spatial grid and quadrangular elements for the spectro-angular grid) including that foot of the characteristic pathline, as well as the linear interpolation coefficients allowing to obtain the values in that point from the values at the apices of the elements (barycentric coordinates), are kept. Thus, the convection step can be reduced in the form:
+
+(B.F)* (x${}_{Q}$, y${}_{Q}$, q${}_{Q}$, fr${}_{Q}$) = (B.F)${}^{n}$(x${}_{P}$, y${}_{P}$, q${}_{P}$, fr${}_{P}$) \eqref{GrindEQ__6_9_}
+
+That step requires a short computation time since it only consists of an interpolation operation over each time step, once the characteristics have been traced back at the beginning of a computation.
+
+ When there is a tide, the principle remains unchanged, but the characteristics should be traced back after every depth and current update.
+
+ Such a method has the advantage of being unconditionally stable, enabling to revoke the condition that requires a Courant number below 1 and which is implemented, for example, in the upstream off-centred first-order propagation scheme being used in the WAM-cycle 4 model [WAMDI,~1988] [Komen et al.,~1994]. The finite element grid generation technique is provided for achieving a locally finer computational grid in order to represent irregular bathymetric features or an irregular coastline. Thanks to the applied propagation scheme, the time step does not necessarily have to be much reduced, so that reasonable computation times can be kept. It should actually be clear that, rather than the propagation step, the source term integration step (particularly the computation of non-linear interactions) does consume most of the computation time. As regards the numerical schemes in which the propagation step implies a shorter time step when making the grid finer (e.g. as in the case of the WAM model), the overall computation time happens to become much longer because of the source terms and the model becomes less attractive for the practical applications. Owing to the method of characteristic, on the contrary, the TOMAWAC model allows to overcome that restriction and is therefore attractive even for grids with a rather fine spatial resolution.
+
+ The method of characteristic, however, has some drawbacks due to the fact that, in the general case, it has a significant level of numerical diffusion and is not conservative.
+
+
+\subsection{ Representation of diffraction in the propagation step}
+
+ If diffraction is taken into account, the transfer rates are time dependent and therefore the characteristics must be traced back at each time step, which is computationally expensive. Furthermore, when diffraction is taken into account, the directional propagation rates change significantly quicker in space and a very large number of iterations is required in order to solve the ODEs system when tracing back the characteristics. The system of ODEs becomes even stiffer than in the stationary case and increases the computational time drastically. TOMAWAC uses the Runge-Kutta method to solve iteratively the ODEs system.
+
+ The implementation of the diffraction terms requires the computation of second derivatives (respectively of the variables \textit{a} and \textit{A} for the MSE the RMSE cases). For the calculation of derivatives TOMAWAC uses a standard library (BIEF) of linear finite element routines, provided as part of the TELEMAC suite. The second derivative method provided within BIEF is not very accurate when it is used with a linear finite element grid and produces significant noise around the boundaries,
+
+ An alternative method for determining the second order derivative, proposed and implemented in TOMAWAC by Kriezi, is a meshfree technique. This method, based on a Radial Point Interpolation technique [Liu and al., 2005], allows to improve the computation of the second derivative while avoiding higher order finite elements. This method is described in [Kriezi,~2006].
+
+
+
+
+\section{ Processing the source term integration step}
+
+
+\subsection{ Source term integration numerical scheme }
+
+ The source and sink terms in the equation of variance density spectrum evolution are integrated using the following scheme, which can be changed by the user from fully explicit to fully implicit:
+\begin{equation} \label{GrindEQ__6_10_}
+\frac{F^{n+1} -F*}{\Delta t} =\left(1-\chi \right)Q*+\chi Q^{n+1}
+\end{equation}
+where the exponent * denotes the values of the variables after the propagation step (but before the source term integration step) and the exponent n+1 denotes the values of the variables after the source term integration step. The parameter c, set by the user through the keyword \textit{IMPLICITATION COEFFICIENT FOR SOURCE TERMS} in the steering file, should lie in the range [0 ; 1]:
+
+ c = 0 corresponds to the fully explicit scheme (only the value of source terms Q* are used). This option is not advised for practical applications.
+
+ c = 0.5 corresponds to the semi-explicit scheme, used in the WAM-Cycle 4 model [WAMDI,~1988] [Komen et al.,~1994]. It enables to use fairly long time steps (about 20-30 min in an oceanic environment). This value was the only one considered in earlier versions of TOMAWAC. It is the default value of the keyword.
+
+ c = 1 corresponds to the fully implicit scheme, as used for instance in a modified version of WAM [Hersbach and Janssen, 1999].
+
+ Emphasis should be laid on the fact that the source term integration step is local, i.e. it is carried out independently for each point in the 2D spatial grid.
+
+ The numerical implementation of the scheme is briefly presented below.
+
+ We first define \textit{DF = F${}^{n+1}$ -- F*}, the change in the spectrum value. Then the source/sink terms are classified as linear (Q${}_{l}$) or non-linear terms (Q${}_{nl}$) in the wave spectrum F:
+
+\textit{Q = Q${}_{l}$ + Q${}_{nl}$} \eqref{GrindEQ__6_11_}
+
+ \underbar{As regards the source terms that are linear in F}, note that: Q = b F , hence we get:
+\begin{equation} \label{GrindEQ__6_12_}
+Q_{l}^{n+1} =\beta ^{n+1} F^{n+1} =\beta ^{n+1} F*+\beta ^{n+1} \Delta F
+\end{equation}
+
+ \underbar{As regards the source terms that are non-linear in F}, a Taylor's expansion is done keeping only the first-order term:
+\begin{equation} \label{GrindEQ__6_13_}
+Q_{nl}^{n+1} \approx Q_{nl}^{*} +\frac{\partial Q_{nl}^{*} }{\partial F} \Delta F
+\end{equation}
+$\frac{\partial Q_{nl}^{*} }{\partial F} $ is a matrix of differential increments that is broken down into a diagonal component [\textit{L}*] and an extra-diagonal component [\textit{N}*]:
+\begin{equation} \label{GrindEQ__6_14_}
+\frac{\partial Q_{nl}^{*} }{\partial F} =\left[M^{*} \right]=\left[\Lambda ^{*} \right]+\left[N^{*} \right]
+\end{equation}
+Substituting into the expression of $Q_{nl}^{n+1} $, this yields:
+\begin{equation} \label{GrindEQ__6_15_}
+Q_{nl}^{n+1} \approx Q_{nl}^{*} +\left(\left[\Lambda *\right]+\left[N*\right]\right)\Delta F
+\end{equation}
+Adding the contributions from the linear and nonlinear terms, we obtain:
+\begin{equation} \label{GrindEQ__6_16_}
+Q_{}^{*} =\beta *F*+\; Q_{nl}^{*}
+\end{equation}
+\begin{equation} \label{GrindEQ__6_17_}
+Q_{}^{n+1} =Q_{l}^{n+1} +Q_{nl}^{n+1} =\beta ^{n+1} F*+\; \beta ^{n+1} \Delta F+Q_{nl}^{*} +\left(\left[\Lambda *\right]+\left[N*\right]\right)\Delta F
+\end{equation}
+The variation of the variance density spectrum due to the source terms is written as:
+\begin{equation} \label{GrindEQ__6_18_}
+\Delta F=F^{n+1} -F*=\Delta t\left((1-\chi )Q^{n+1} +\chi Q*\right)
+\end{equation}
+i.e., after substitution of the source term expressions:
+\begin{equation} \label{GrindEQ__6_19_}
+\Delta F=\Delta t\left\{\left(1-\chi \right)\left[\beta *F*+\; Q_{nl}^{*} \right]+\chi \left[\beta ^{n+1} F*+\beta ^{n+1} \Delta F+Q_{nl}^{*} +\left(\left[\Lambda *\right]+\left[N*\right]\right)\Delta F\right]\right\}
+\end{equation}
+\begin{equation} \label{GrindEQ__6_20_}
+\Delta F\left[1-\chi \Delta t\left(\beta ^{n+1} +\left(\left[\Lambda *\right]+\left[N*\right]\right)\right)\right]=\Delta t\left(\left[(1-\chi )\beta *+\chi \beta ^{n+1} \right]F*+\; Q_{nl}^{*} \right)
+\end{equation}
+The matrix between brackets in the left-hand member of the latter equation cannot be easily inverted in the general case. The designers of the WAM model [WAMDI,~1988], however, demonstrated that the diagonal portion [\textit{L}*] usually prevails over the extra-diagonal portion [\textit{N}*]. Relying on comparative tests, they conclude that the extra-diagonal portion can be ignored in favour of the diagonal portion, even with time steps of 20 min or so. Due to that simplification, the inversion is much easier and we finally obtain:
+\begin{equation} \label{GrindEQ__6_21_}
+\Delta F\approx \Delta t\frac{\left((1-\chi )\beta *+\chi \beta ^{n+1} \right)F*+\; Q_{nl}^{*} }{1-\chi \Delta t\left(\beta ^{n+1} +\Lambda *\right)}
+\end{equation}
+For the sake of convenience, that expression is rewritten as:
+\begin{equation} \label{GrindEQ__6_22_}
+\Delta F=\frac{\Delta t.Q_{TOT} }{1-\chi \Delta tQ_{DER} }
+\end{equation}
+where: $Q_{TOT} =\left((1-\chi )\beta *+\chi \beta ^{n+1} \right)F*+\; Q_{nl}^{*} $ denotes a total source term
+
+ and $Q_{DER} =\beta ^{n+1} +\Lambda *$   denotes a source term derived with respect to F.
+
+
+
+ The contributions of the various source terms implemented in TOMAWAC and described in paragraph~4.2.3 are schematically illustrated in the Table~6.1.
+
+ The source term integration time step may be different from the propagation time step in TOMAWAC, but it should be a sub-multiple of it. Thus, several source term integration time sub-steps per propagation time step can be defined. That option is governed by the keyword \textit{NUMBER OF ITERATIONS FOR THE SOURCE TERMS}NUMBER OF ITERATIONS FOR THE SOURCE TERMS\textit{ }in the steering file. The default value of that parameter is set to 1.
+
+ 
+
+\begin{tabular}{|p{0.9in}|p{0.5in}|p{1.0in}|p{1.0in}|p{1.1in}|} \hline
+Source/sink terms & Linear or non-linear & Remarks & Type of contributionto QDER & Type of contributionto QTOT \\ \hline
+Wind input\newline  & Linear or quasi-linear & b depends on time & bn+1 & $\left((1-\chi )\beta *+\chi \beta ^{n+1} \right)F*$ \\ \hline
+Whitecapping & Quasi-linear & Slightly non-linear & L* & L*F* \\ \hline
+Bottom friction & linear & b does not depend on time & b & b F* \\ \hline
+Non-linear transfers between frequency quadruplets & non-lin. &  & L* & $Q_{nl4}^{*} $ \\ \hline
+Bathymetric breaking & linear & b does not depend on time\newline bn+1 = bn = b & b & b F* \\ \hline
+Non-linear transfers between triads & non-lin &  & L* & $Q_{tr}^{*} $ \\ \hline
+\end{tabular}
+
+\textbf{Table~6.1: Contributions of the different source/sink terms implemented in TOMAWAC.}
+
+ It was found experimentally that the depth-induced breaking source term, which is sometimes very strong, can still be overestimated if the time step that was selected for the source term integration is too long. In order to avoid that, TOMAWAC gives an opportunity to make a number of time sub-steps that are specific to that source term. These time sub-steps are in a geometric progression. In order to limit that number of time sub-step, TOMAWAC first clips the wave height by setting a maximum \textit{H${}_{m0}$/d} ratio (\textit{d} being the depth) to 1.
+
+ Subsequently, a Euler's explicit scheme is used at each time step:
+
+$\frac{F^{n+1} -F*}{\Delta t_{2} } =Q*$  i.e.  $\Delta F=\Delta t_{2}^{\copyright } Q*$ \eqref{GrindEQ__6_23_}
+
+ The \textit{H${}_{m0}$/d} ratio can be modified through the keyword \textit{MAXIMUM VALUE OF THE RATIO HM0 ON D}MAXIMUM VALUE OF THE RATIO HM0 ON D\textit{ }(however, this it not advisable). The number of time sub-steps is specified through the keyword \textit{NUMBER OF BREAKING TIME STEPS}NUMBER OF BREAKING TIME STEPS\textit{.} The geometric ratio is given by the keyword \textit{COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING}COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING\textit{.}
+
+
+\subsection{ Monitoring the growth of the wave spectrum }
+
+ In order to limit the possible risks of numerical instabilities related to the source term integration, TOMAWAC is provided with various options for limiting the growth of the directional spectrum per source term integration time step. The choice of option is done by the user in the steering file through the keyword\textit{ WAVE GROWTH LIMITER}, which can bet set to 0, 1 (default value) or 2:
+
+ 0 : no limiter is applied to the computed DF from the various source/sink terms.
+
+ 1 : the limiter is directly inspired by the criterion proposed by the WAM group [WAMDI,~1988]. The absolute variation of the variance density spectrum as it was computed by the scheme in paragraph 6.3.1. should remain lower than a fraction of an equilibrium spectrum \textit{DFlim}:
+\begin{equation} \label{GrindEQ__6_24_}
+\Delta F_{\lim } =6.4\; \; 10^{-7} \; g^{2} \frac{\Delta t}{1200} f^{-5}
+\end{equation}
+
+ This is presently the default value in TOMAWAC, as it was the only possibility in earlier versions of the code.
+
+ 2 : the limiter is computed with an updated expression, proposed by Hersbach and Janssen [Hersbach and Janssen, 1999]:
+
+          \textit{DFlim} = 3.0 10${}^{-7}$ \textit{g} max(\textit{u*}, \textit{g} $\tilde{f}_{PM} $/\textit{f}) \textit{f} ${}^{-4}$ \textit{f${}_{NF}$ Dt} \eqref{GrindEQ__6_25_}
+
+ where \textit{u*} is the friction velocity at the water surface and $\tilde{f}_{PM} =5.6{\kern 1pt} \; 10^{-3} $ is the dimensionless Pierson--Moskowitz peak frequency.
+
+ This option should now be preferably used for practical applications.
+
+ 3 : In this option we use the same formula as for 2, but we take the mean of windsea frequencies  \includegraphics*[width=0.54in, height=0.20in, keepaspectratio=false]{image102} (see 6.1) instead of \textit{f${}_{NF}$}
+
+ \eqref{GrindEQ__6_25_}
+
+
+
+
+\section{ Processing the boundaries -- Boundary conditions}
+
+
+\subsection{ Spatial grid:}
+
+ Two types of boundary conditions are considered in TOMAWAC for the finite element spatial grid:
+
+\begin{enumerate}
+\item  The former corresponds to \underbar{a free boundary condition}, i.e. that absorbs the whole wave energy. It may be a sea boundary, hence it is assumed that the waves propagate beyond the domain and nothing enters it. It may be a solid boundary, hence it is assumed that the coast absorbs completely the wave energy (no reflection).
+
+\item  The latter corresponds to a \underbar{prescribed value boundary condition}. The whole wave spectrum is then prescribed at each point along that boundary and for each step. Energy enters into the computational domain.
+\end{enumerate}
+
+
+\subsection{ Spectro-angular grid:}
+
+ As regards the propagation directions, the grid generation is periodical over the range [0~;~360${}^\circ$]: hence there are no directional boundary conditions.
+
+ As regards the wave frequencies that are discretized, the minimum and maximum frequency markers are considered as ``open boundary limits'', where the energy can be transferred to lower or higher frequencies, exiting the discretized frequency range.
+
+
+\section{ A set of different models: BAJ modelisation. }
+
+ In [BIDLOT JANSSEN ABDALLA 2007], the authors proposed a new formulation in terms of mean wave parameters to emphasis the high frequency part in interaction between windsea and swell. That formula has been implemented in Tomawac. It consist firstly in choosing a set of formulation in term of simulation. This modelisation includes WAM 4 for Janssen wind modelisation, (i.e. option 1 in tomawac see 4.2.3.2.1), Discrete Integration Approximation for non linear resonant quadruplet interactions, (i.e. option 1 in tomawac see 4.2.3.6.1), Komen whitecapping dissipation (i.e. option 1 in tomawac see 4.2.3.3.1, with Cdis=2.1 and d=0.4).
+
+ In those formulations the mean wave number \includegraphics*[width=0.18in, height=0.19in, keepaspectratio=false]{image104} and the mean angular frequency \includegraphics*[width=0.08in, height=0.17in, keepaspectratio=false]{image106} are defined using weighted spectral integrals that put more emphasis on the high frequencies:
+
+ \includegraphics*[width=1.34in, height=0.46in, keepaspectratio=false]{image107}
+
+ \includegraphics*[width=1.18in, height=0.43in, keepaspectratio=false]{image108}
+
+ Another point is the frequency cut off to calculate the discrete integration. This frequency is no longer a function of the mean frequency but the mean frequency of the windsea only, denoted by \includegraphics*[width=0.48in, height=0.17in, keepaspectratio=false]{image110}, where only frequency with \includegraphics*[width=2.22in, height=0.23in, keepaspectratio=false]{image112}  are considered. Where \includegraphics*[width=0.43in, height=0.18in, keepaspectratio=false]{image114} is the wind input source term, \includegraphics*[width=0.07in, height=0.17in, keepaspectratio=false]{image116} is the wave phase speed, \includegraphics*[width=0.14in, height=0.17in, keepaspectratio=false]{image118} is the friction velocity and \includegraphics*[width=0.17in, height=0.17in, keepaspectratio=false]{image120} is the difference between the wind direction and the wave propagation direction. Then only frequencies such that:
+
+ \includegraphics*[width=2.05in, height=0.17in, keepaspectratio=false]{image121}
+
+ will be considered for the integration. Frequencies above will follow a \includegraphics*[width=0.22in, height=0.17in, keepaspectratio=false]{image123} shape. The consequence of that choice is the modification of the charnock constant in the wind generation (0.0095).
+
+ The last point concern the wave growth limiter that will use the mean frequency of the windsea (option 3 in 6.3.2).  \includegraphics*[width=0.21in, height=0.17in, keepaspectratio=false]{image124}
+

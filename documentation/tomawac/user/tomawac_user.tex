@@ -9,6 +9,7 @@
 %----------------------------------------------------------------------------------------
 \documentclass[Tomawac]{../../data/TelemacDoc} % Default font size and left-justified equations
 %\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+\include{header}
 
 \begin{document}
 
@@ -20,7 +21,7 @@
 \title{Tomawac}
 \subtitle{User Manual}
 \version{7.2}
-\author{Otto Mattic}
+\author{Thomas Awk}
 \date{\today}
 \maketitle
 \clearpage
@@ -51,7 +52,16 @@
 \pagestyle{fancy} % Print headers again
 
 %----------------------------------------------------------------------------------------
-%	The whole thing
+%	CHAPTER 1: Introduction
 %----------------------------------------------------------------------------------------
+
+\input{latex/introduction}
+\input{latex/representingwaves}
+\input{latex/hypotheses}
+\input{latex/mathmodelling}
+\input{latex/discretisation}
+\input{latex/numerical}
+\input{latex/io}
+\input{latex/controlling}
 
 \end{document}
