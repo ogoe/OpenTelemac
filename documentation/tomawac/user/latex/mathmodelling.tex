@@ -258,7 +258,7 @@ with the following transfer rates:
 \earr
 \eequ
 
- As previously, the spatial transfer rates $\dot{\lambda }$ and $\dot{\phi }$ (equations \ref{eq:equ4_25}) model the wave propagation in space and the shoaling. In that coordinate system, the directional transfer rate $\dot{\theta }$ has an additional term (the first term) compared to the case in Cartesian coordinates. That term results from the propagation in spherical coordinates, in such a way that waves are located with respect to the North change during the propagation over a large circle arc at the Earth's surface [WAMDI,~1988]~[Komen et al.,~1994]. Both second and third terms $\dot{\theta }$ model the refraction caused respectively by bathymetry and currents. The relative frequency transfer rate $\dot{f}_{r} $  models the changes of relative frequency resulting from variations of the sea level or of the current in both space and time. It is noteworthy that this last term is zero in the case of zero current and of no variation of the sea level in time: the advection equation is then reduced to a three-dimensional equation.
+ As previously, the spatial transfer rates $\dot{\lambda }$ and $\dot{\phi }$ (equations \ref{eq:equ4_25}) model the wave propagation in space and the shoaling. In that coordinate system, the directional transfer rate $\dot{\theta }$ has an additional term (the first term) compared to the case in Cartesian coordinates. That term results from the propagation in spherical coordinates, in such a way that waves are located with respect to the North change during the propagation over a large circle arc at the Earth's surface \cite{Wamdi1988} \cite{Komen1994}. Both second and third terms $\dot{\theta }$ model the refraction caused respectively by bathymetry and currents. The relative frequency transfer rate $\dot{f}_{r} $  models the changes of relative frequency resulting from variations of the sea level or of the current in both space and time. It is noteworthy that this last term is zero in the case of zero current and of no variation of the sea level in time: the advection equation is then reduced to a three-dimensional equation.
 
 
 \subsection{ \tomawac source and sink terms}
@@ -291,10 +291,10 @@ These source and sink terms are numerically modelled and parameterized as detail
  Three wind generation models are available in \tomawac. The model to be activated is selected through the keyword \textit{WIND GENERATION} in the steering file, which can take four values, namely:
 
 \begin{itemize}
-\item  no wind input \textit{(default value)}
-\item  Janssen's model \cite{Janssen1989} \cite{Janssen1991} (WAM cycle 4) (see in paragraph 4.2.3.2.1).
-\item  Snyder \textit{et al. }model \cite{Snyder1981} (see in paragraph 4.2.3.2.2).
-\item  Yan's model \cite{Yan1987} (see in paragraph 4.2.3.2.3)
+\item  0 no wind input \textit{(default value)}
+\item  1 Janssen's model \cite{Janssen1989} \cite{Janssen1991} (WAM cycle 4) (see in paragraph 4.2.3.2.1).
+\item  2 Snyder \textit{et al. }model \cite{Snyder1981} (see in paragraph 4.2.3.2.2).
+\item  3 Yan's model \cite{Yan1987} (see in paragraph 4.2.3.2.3)
 \end{itemize}
 
  Beside those exponential growth-type wind generation models, a linear growth model is also available in \tomawac, which has been proposed by Cavaleri \& Malanotte-Rizzoli [Cavaleri and Malanotte-Rizzoli,~1981] (see paragraph 4.2.3.2.4). The model can be activated through the keyword \textit{LINEAR WAVE GROWTH}, and can be used together with one of the three above mentioned models. Its main feature is that it permits to start a wave simulation from a nil wave spectrum (whereas the three above mentioned models need some initial energy level for the wave spectrum to grow under wind action).
@@ -325,7 +325,7 @@ u_{*} =\sqrt{\frac{\tau _{s} }{\rho _{air} } }
 
  The operator 'max' in the source term expression limits the wave generation for the propagation directions included within a $\pm 90^\circ$ angular sector with respect to the local wind direction qw. For the wave directions making an angle in excess of 90${}^\circ$ with respect to the wind direction $\theta_w$, the wind input term is void.
 
- In the Janssen's model \cite{Janssen1991}, the Miles' parameter b is a function of two non-dimensional variables:
+ In the Janssen's model \cite{Janssen1991}, the Miles' parameter $\beta$ is a function of two non-dimensional variables:
 
 \begin{itemize}
 \item  the wave age:  $\dsp A=\frac{u_{*} }{C} $
@@ -335,31 +335,33 @@ u_{*} =\sqrt{\frac{\tau _{s} }{\rho _{air} } }
 \label{GrindEQ__4_29_}
 \mbox{ It is written as }\beta =\frac{\beta _{m} }{\kappa _{}^{2} } \mu \ln ^{4} \mu 
 \eequ
- where k is the Von Karman's constant
+ where $\kappa$ is the Von Karman's constant
 
- bm denotes a coefficient set to 1.2 by Janssen [Janssen,~1991].
+ $\beta_m$ denotes a coefficient set to 1.2 by Janssen \cite{Janssen1991}
 
- z0 denotes the roughness length
+ $z_0$ denotes the roughness length
 
- m denotes the non-dimensional critical height:
+ $\mu$ denotes the non-dimensional critical height:
 \begin{equation} \label{GrindEQ__4_30_}
 \mu =\min \left[\frac{g.z_{0} }{C^{2} } \exp \left(\frac{\kappa }{\left[\frac{u_{*} }{C} +z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right]=\min \left[\Omega .A^{2} \exp \left(\frac{\kappa }{\left[A+z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right]
 \end{equation}
-The Janssen's model [Janssen,~1989] [Janssen,~1991] is characterized by the method it uses for computing u* and z0. The surface stress ts is a function depending, on the one hand, on the wind velocity U10 at 10 m and, on the other hand, on the sea state roughness through the wave stress tw. It is obtained by solving the following system of equations:
+The Janssen's model [\cite {Janssen1989} \cite{Janssen1991} is characterized by the method it uses for computing u* and z0. The surface stress ts is a function depending, on the one hand, on the wind velocity $U_{10}$ at 10 m and, on the other hand, on the sea state roughness through the wave stress tw. It is obtained by solving the following system of equations:
 
-$U_{10} =\frac{u_{*} }{\kappa } \ln \left(\frac{10+z_{0} +\tilde{z}_{0} }{z_{0} } \right)\approx \frac{u_{*} }{\kappa } \ln \left(\frac{10}{z_{0} } \right)$ (4.31.a)
+\bequ
+\label{eq:defu10}
+U_{10} =\frac{u_{*} }{\kappa } \ln \left(\frac{10+z_{0} +\tilde{z}_{0} }{z_{0} } \right)\approx \frac{u_{*} }{\kappa } \ln \left(\frac{10}{z_{0} } \right)
+\eequ
 
-$z_{0} =\frac{\tilde{z}_{0} }{\sqrt{1-\tau _{w} /\tau _{s} } } $ (4.31.b)
-
-$\tilde{z}_{0} =\alpha \frac{u_{*}^{2} }{g} $ (4.31.c)
-
-$u_{*}^{} =\sqrt{\frac{\tau _{s} }{\rho _{air} } } $ (4.31.c)
+\bequ
+\label{eq:defz0}
+z_{0} =\frac{\tilde{z}_{0} }{\sqrt{1-\tau _{w} /\tau _{s} } } \mbox{  avec  }\tilde{z}_{0} =\alpha \frac{u_{*}^{2} }{g}\mbox{  et  }u_{*}^{} =\sqrt{\frac{\tau _{s} }{\rho _{air} } }
+\eequ
 
  The solution of the system of equations through a Newton-Raphson's iterative method yields the surface stress ts, the friction velocity u* and the roughness length z0.
 
 The initial value of friction velocity u* being used in the iterative algorithm is obtained considering a constant drag coefficient:
 
-$u_{*}^{} =\sqrt{C_{D} } U_{10} $ where: CD = 1.2875 10-3 by default.
+$u_{*}^{} =\sqrt{C_{D} } U_{10} $ where: $C_D = 1.2875 10-3$ by default.
 
  The wave stress tw itself is computed from the variance spectrum F (via the source term Qin) using the following relation:
 \begin{equation} \label{GrindEQ__4_32_}
@@ -370,105 +372,89 @@ That integral is numerically computed over the discretized portion of the spectr
 In fact, that source term has eight parameters, namely:
 
 \begin{itemize}
-\item  coefficient bm (corresponding to the keyword \textit{WIND GENERATION}WIND GENERATION\textit{ COEFFICIENT }in the steering file). Its default value is taken as 1.2, in accordance with the Janssen's proposal [Janssen,~1991] and the value adopted in the model WAM-Cycle 4.
-
-\item  air specific gravity rair (corresponding to the keyword \textit{AIR DENSITY}AIR DENSITY\textit{ }in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
-
-\item  water specific gravity r${}_{water}$ (corresponding to the keyword \textit{WATER DENSITY}WATER DENSITY\textit{ }in the steering file). Its default value is taken as 1,000 kg/m${}^{3}$.
-
-\item  constant a (corresponding to the keyword \textit{CHARNOCK CONSTANT}CHARNOCK CONSTANT\textit{ }in the steering file). Its default value is taken as 0.01, in accordance with the Janssen's proposal [Janssen,~1991] and the standard value adopted in the model WAM-Cycle 4.
-
-\item  constant k (corresponding to the keyword \textit{VON KARMAN CONSTANT}VON KARMAN CONSTANT\textit{ }in the steering file). Its default value is taken as 0.41, i.e. the typical value.
-
-\item  initial drag coefficient CD (corresponding to the keyword \textit{WIND DRAG COEFFICIENT}WIND DRAG COEFFICIENT\textit{ }in the steering file). This drag coefficient is provided for initializing the iterative computation of friction velocity u*. Its default value is taken as 1.2875 10-3.
-
-\item  offset constant za (corresponding to the keyword \textit{SHIFT GROWING CURVE DUE TO WIND}SHIFT GROWING CURVE DUE TO WIND\textit{ }in the steering file). Its default value is taken as 0.011, in accordance with the value adopted in the model WAM-Cycle 4.
-
-\item  elevation at which the wind is recorded (corresponding to the keyword \textit{WIND MEASUREMENTS LEVEL}WIND MEASUREMENTS LEVEL\textit{ }in the steering file). Its default value is taken as 10 m: its corresponds to the typical value and to the value being adopted in the above explanations.
+\item  coefficient $\beta_m$ (corresponding to the keyword \textit{WIND GENERATION COEFFICIENT }in the steering file). Its default value is taken as 1.2, in accordance with the Janssen's proposal [Janssen,~1991] and the value adopted in the model WAM-Cycle 4.
+\item  air specific gravity $\rho_{air}$ (corresponding to the keyword \textit{AIR DENSITY} in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
+\item  water specific gravity ${\rho}_{water}$ (corresponding to the keyword \textit{WATER DENSITY} in the steering file). Its default value is taken as $1,000 kg/m^{3}$.
+\item  constant $\alpha$ (corresponding to the keyword \textit{CHARNOCK CONSTANT} in the steering file). Its default value is taken as 0.01, in accordance with the Janssen's proposal [Janssen,~1991] and the standard value adopted in the model WAM-Cycle 4.
+\item  constant $\kappa$ (corresponding to the keyword \textit{VON KARMAN CONSTANT} in the steering file). Its default value is taken as 0.41, i.e. the typical value.
+\item  initial drag coefficient $C_D$ (corresponding to the keyword \textit{WIND DRAG COEFFICIENT} in the steering file). This drag coefficient is provided for initializing the iterative computation of friction velocity u*. Its default value is taken as 1.2875 10-3.
+\item  offset constant $z_\alpha$ (corresponding to the keyword \textit{SHIFT GROWING CURVE DUE TO WIND} in the steering file). Its default value is taken as 0.011, in accordance with the value adopted in the model WAM-Cycle 4.
+\item  elevation at which the wind is recorded (corresponding to the keyword \textit{WIND MEASUREMENTS LEVEL} in the steering file). Its default value is taken as 10 m: its corresponds to the typical value and to the value being adopted in the above explanations.
 \end{itemize}
 
 
 {\bf  Option 2 for wind input: Snyder et al. model}
 
- In that option, the model implemented for the wind input term is based upon the works conducted by Snyder \textit{et al.} [Snyder et al.,~1981], as amended by Komen \textit{et al.} [Komen et al.,~1984] to take into account the friction velocity u* instead of the wind velocity at 5 m. It corresponds to the formulation being used in the cycle 3 release of WAM model. The formulation is simpler than the Janssen's theory which Option 1 is based upon (see in preceding paragraph):
+ In that option, the model implemented for the wind input term is based upon the works conducted by Snyder \textit{et al.} \cite{Snyder1981}, as amended by Komen \textit{et al.} \cite{Komen1984} to take into account the friction velocity u* instead of the wind velocity at 5 m. It corresponds to the formulation being used in the cycle 3 release of WAM model. The formulation is simpler than the Janssen's theory which Option 1 is based upon (see in preceding paragraph):
 
- As in Option 1, the linear growth term is ignored and only an exponential energy growth is taken into account, following the Miles' results [Miles,~1957]:
-
-$Q_{in} =\beta F$    where:  $\beta =\max \left[0\; ;\; 0.25\frac{\rho _{air} }{\rho _{water} } \left(28\frac{u_{*} }{C} \cos (\theta -\theta _{w} )-1\right)\right]\sigma $ \eqref{GrindEQ__4_33_}
+ As in Option 1, the linear growth term is ignored and only an exponential energy growth is taken into account, following the Miles' results \cite{Miles1957}:
+\bequ
+\label{eq:GrindEQ__4_33_}
+Q_{in} =\beta F \mbox{    where:  }\beta =\max \left[0\; ;\; 0.25\frac{\rho _{air} }{\rho _{water} } \left(28\frac{u_{*} }{C} \cos (\theta -\theta _{w} )-1\right)\right]\sigma 
+\eequ
 
  The shear velocity value u* used is obtained considering a drag coefficient linearly depending on the wind velocity:
-
-$u_{*}^{} =\sqrt{C_{D} } U_{10} $ where:  CD = 6.5 10-5 U10 + 8 10-4 if U10 $>$ 7.5 m/s.
-
- CD = 1.2875 10-3 if U10 $<$ 7.5 m/s.
-
+\bequ
+\barr{lll}
+u_{*}^{} =\sqrt{C_{D} } U_{10} \mbox{ where }: & C_D = 6.5 10-5  + 8 10-4 U_{10}& \mbox{ if }U_{10} > 7.5 m/s.\\[6pt]
+                                               & C_D = 1.2875 10-3              & \mbox{ if }U_{10} < 7.5 m/s.
+\earr
+\eequ
 That source term only uses two parameters, namely:
 
 \begin{itemize}
-\item  air density rair (corresponding to the keyword \textit{AIR DENSITY} in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
-
-\item  water density r${}_{water}$ (corresponding to the keyword \textit{WATER DENSITY} in the steering file). Its default value is taken as 1,000 kg/m${}^{3}$.
+\item  air density $\rho_{air}$ (corresponding to the keyword \textit{AIR DENSITY} in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
+\item  water density ${\rho}_{water}$ (corresponding to the keyword \textit{WATER DENSITY} in the steering file). Its default value is taken as 1,000 kg/m${}^{3}$.
 \end{itemize}
 
 
 {\bf  Option 3 for wind input: Yan's model}
 
  The Yan's model \cite{Yan1987} consists of a combination of u${}_{*}$/C and (u${}_{*}$/C)${}^{2}$ terms. It is valid over a wide range of frequencies and wind speeds:
+\bequ
+\label{eq:GrindEQ__4_34_}
+Q_{in} =\beta F \mbox{    where:  }\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos (\theta -\theta _{w} )+E\frac{u_{*} }{C} \cos (\theta -\theta _{w} )+F\cos (\theta -\theta _{w} )+H\right]\sigma 
+\eequ
 
-$Q_{in} =\beta F$  where: $\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos (\theta -\theta _{w} )+E\frac{u_{*} }{C} \cos (\theta -\theta _{w} )+F\cos (\theta -\theta _{w} )+H\right]\sigma $\textbf{ }\eqref{GrindEQ__4_34_}\textbf{}
-
- To select this model, the keyword \textit{WIND GENERATION}WIND GENERATION must be set to 3 in the steering file.
+ To select this model, the keyword \textit{WIND GENERATION} must be set to 3 in the steering file.
 
  This source term makes use of four parameters. The default values of those parameters correspond to the coefficients proposed by Westhuysen \cite{Westhuys2007}.
 
 \begin{itemize}
-\item \begin{itemize}
-\item  The coefficient D, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ D}, has a default value of 4.0 10${}^{-2}$;
-
-\item  The coefficient E, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ E}, has a default value of 5.52 10${}^{-3}$;
-
-\item  The coefficient F, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ F}, has a default value of 5.2 10${}^{-5}$;
-
-\item  The coefficient H, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ H}, has a default value of --3.02 10${}^{-4}$.
+\item  The coefficient D, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT D}, has a default value of $4.0 10^{-2}$;
+\item  The coefficient E, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT E}, has a default value of $5.52 10^{-3}$;
+\item  The coefficient F, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT F}, has a default value of $5.2 10^{-5}$;
+\item  The coefficient H, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT H}, has a default value of $-3.02 10^{-4}$.
 \end{itemize}
-\end{itemize}
-
-
 
 
 {\bf  Linear wave growth: Cavaleri and Malanotte-Rizzoli model}
 
- The linear growth mechanism described by Phillips [Phillips,~1957], [Phillips,~1958] is useful to initialise the wave growth. If this term is neglected, it is necessary to set a non-zero sea-state as initial condition in order to enable the wave energy spectrum to grow.
+ The linear growth mechanism described by Phillips \cite{Phillips1957}, \cite{Phillips1958} is useful to initialise the wave growth. If this term is neglected, it is necessary to set a non-zero sea-state as initial condition in order to enable the wave energy spectrum to grow.
 
- The term that has been implemented in \tomawac is the linear wave growth term of Cavaleri \& Malanotte-Rizzoli [Cavaleri \& Malanotte-Rizzoli,~1981], as formulated by Tolman \cite{Tolman1992}:
+ The term that has been implemented in \tomawac is the linear wave growth term of Cavaleri \& Malanotte-Rizzoli \cite{Cavaleri1981}, as formulated by Tolman \cite{Tolman1992}:
 \begin{equation} \label{GrindEQ__4_35_}
 Q_{in} (f,\theta )=\alpha (f,\theta )=1,5.10^{-3} g^{-2} \left[u_{*} \max (0,\cos \left(\theta -\theta _{w} \right)\right]^{4} \exp \left[-\left(\frac{f}{f_{PM} } \right)^{-4} \right]
 \end{equation}
-where u${}_{*}$ is the friction wind velocity, q${}_{w}$ the wind direction and f${}_{PM}$ is a peak frequency called Pierson-Moskowitz frequency [Pierson \& Moskowitz,~1964], defined as:
+where $u_{*}$ is the friction wind velocity, ${\theta}_{w}$ the wind direction and ${f}_{PM}$ is a peak frequency called Pierson-Moskowitz frequency \cite{Pierson1964}, defined as:
 \begin{equation} \label{GrindEQ__4_36_}
 f_{PM} =\frac{1}{2\pi } \frac{g}{28.u_{*} }
 \end{equation}
-To select this model, the keyword \textit{LINEAR WAVE GROWTH}LINEAR WAVE GROWTH must be set to 1 in the steering file. This model does not require any input parameter.
-
-
-
+To select this model, the keyword \textit{LINEAR WAVE GROWTH} must be set to 1 in the steering file. This model does not require any input parameter.
 
 \subsubsection{ Whitecapping-induced dissipations (term Qds)}
 
- Two models are available in \tomawac. The whitecapping or the free surface slope-induced breaking is activated through the keyword \textit{WHITE CAPPING DISSIPATION}WHITE CAPPING DISSIPATION\textit{ }in the steering file; the keyword can take three values, namely:
+ Two models are available in \tomawac. The whitecapping or the free surface slope-induced breaking is activated through the keyword \textit{WHITE CAPPING DISSIPATION} in the steering file; the keyword can take three values, namely:
 
 \begin{itemize}
-\item  no whitecapping-induced dissipation \textit{(default value)}
-
-\item  Komen \textit{et al.} [Komen et al.,~1984] and Janssen's [Janssen,~1991] dissipation model.
-
-\item  Westhuysen \textit{et al.} dissipation model \cite{Westhuys2007}
+\item  0 no whitecapping-induced dissipation \textit{(default value)}
+\item  1 Komen \textit{et al.} \cite{Komen1984} and Janssen's \cite{Janssen1991} dissipation model.
+\item  2 Westhuysen \textit{et al.} dissipation model \cite{Westhuys2007}
 \end{itemize}
 
  For a more detailed description of the issues related to the whitecapping dissipation modelling and of the recent advances in this field, reference can be made to \cite{Wise2007}.
 
-
-{\bf  option 1 for whitecapping: Komen and Janssen dissipation model}
+{\bf  Option 1 for whitecapping: Komen and Janssen dissipation model}
 
 In deep water, that term is written as follows in \tomawac:
 \begin{equation} \label{GrindEQ__4_37_}
@@ -478,40 +464,46 @@ With a finite water height, \tomawac uses the following formulation:
 \begin{equation} \label{GrindEQ__4_38_}
 Q_{ds} =-C_{dis} \; \bar{\sigma }\; \bar{k}^{4} \; m_{0}^{2} \; \left(\delta \frac{k}{\bar{k}} +(1-\delta )\left(\frac{k}{\bar{k}} \right)^{2} \right)\; F
 \end{equation}
-m0~denotes the total variance, $\bar{\sigma }$denotes the average intrinsic frequency and$\bar{k}$ denotes the average wave number; they are respectively computed as followings:
+$m_0$ denotes the total variance, $\bar{\sigma }$denotes the average intrinsic frequency and $\bar{k}$ denotes the average wave number; they are respectively computed as followings:
+\bequ
+\label{eq:defm0}
+m_{0} =\int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }  F(f_{r} ,\theta )df_{r} d\theta 
+\eequ
+\bequ
+\label{eq:defsigma}
+\bar{\sigma }=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi } \frac{1}{\sigma }  F(f_{r} ,\theta )df_{r} d\theta \right)^{-1}
+\eequ
+\bequ
+\label{eq:defk}
+\bar{k}=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi } \frac{1}{\sqrt{k} }  F(f_{r} ,\theta )df_{r} d\theta \right)^{-2}
+\eequ
 
-$m_{0} =\int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }  F(f_{r} ,\theta )df_{r} d\theta $ (4.39.a)
 
-$\bar{\sigma }=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi } \frac{1}{\sigma }  F(f_{r} ,\theta )df_{r} d\theta \right)^{-1} $ (4.39.b)
-
-$\bar{k}=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi } \frac{1}{\sqrt{k} }  F(f_{r} ,\theta )df_{r} d\theta \right)^{-2} $ (4.39.c)
-
- The formulas for computing the average frequency and the average wave number are derived from those in use in WAM-cycle 4 [Komen et al.,~1994]. These averages are not directly weighted by the variance spectrum, since it was found, when WAM-cycle 3 [WAMDI,~1988] was being developed, that the above expressions yielded more stable results than the conventional weighted averages. Lastly, it should be pointed out that in \tomawac, the above average quantities are computed not only on the discretized portion of the variance spectrum, but also analytically on the high frequency portion (up to + 8) considering a decreasing variance in f-n.
+ The formulas for computing the average frequency and the average wave number are derived from those in use in WAM-cycle 4 \cite{Komen1994}. These averages are not directly weighted by the variance spectrum, since it was found, when WAM-cycle 3 \cite {Wamdi1988} was being developed, that the above expressions yielded more stable results than the conventional weighted averages. Lastly, it should be pointed out that in \tomawac, the above average quantities are computed not only on the discretized portion of the variance spectrum, but also analytically on the high frequency portion (up to + 8) considering a decreasing variance in f-n.
 
 That source term has two parameters:
 
 \begin{itemize}
-\item  constant Cdis (corresponding to the keyword \textit{WHITE CAPPING DISSIPATION}WHITE CAPPING DISSIPATION\textit{ COEFFICIENT }in the steering file). Its default value is taken as 4.5, in accordance with the proposal made by Komen \textit{et al.} [Komen et al.,~1984] and the standard value adopted in the model WAM-Cycle 4.
-
-\item  weighting parameter d (corresponding to the keyword \textit{WHITE CAPPING WEIGHTING COEFFICIENT}WHITE CAPPING WEIGHTING COEFFICIENT\textit{ }in the steering file). Its default value is taken as the 0.5 average value.
+\item  constant $C_{dis}$ (corresponding to the keyword \textit{WHITE CAPPING DISSIPATION COEFFICIENT }in the steering file). Its default value is taken as 4.5, in accordance with the proposal made by Komen \textit{et al.} \cite{Komen1984} and the standard value adopted in the model WAM-Cycle 4.
+\item  weighting parameter d (corresponding to the keyword \textit{WHITE CAPPING WEIGHTING COEFFICIENT} in the steering file). Its default value is taken as the 0.5 average value.
 \end{itemize}
-
 
 {\bf  Option 2 for whitecapping: Westhuysen dissipation model}
 
- The Westhuysen dissipation model \cite{Westhuys2007} is based on a saturation-based model formulation, which defines the Q${}_{ds}$ term as depending on the saturation threshold B${}_{r}$.
+ The Westhuysen dissipation model \cite{Westhuys2007} is based on a saturation-based model formulation, which defines the ${Q}_{ds}$ term as depending on the saturation threshold ${B}_{r}$.
 
  The expression proposed by Westhuysen is:
 \begin{equation} \label{GrindEQ__4_40_}
 Q_{ds} =-C_{dis,break} \; \; \left(\frac{B(k)}{B_{r} } \right)^{p_{0} /2} \; g^{1/2} k^{1/2} F(f,\theta )
 \end{equation}
-where $B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C_{g} k^{3} \frac{E(f)}{2\pi } $
 
- and $p_{0} \left(\frac{u_{*} }{C} \right)=3+\tanh \left[w\left(\frac{u_{*} }{C} -0,1\right)\right]$.
+$$\mbox{where }\dsp B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C_{g} k^{3} \frac{E(f)}{2\pi } $$
+
+$$\mbox{ and }p_{0} \left(\frac{u_{*} }{C} \right)=3+\tanh \left[w\left(\frac{u_{*} }{C} -0,1\right)\right]$$
 
  The variable \textit{w} is set equal to 25.
 
- This model is implemented in \tomawac in its most recent version, as formulated by Westhuysen \cite{Westhuys2008}, which combines the terms of Komen [Komen et al.,~1984] (Q${}_{ds}$${}^{K}$) with that of Westhuysen \cite{Westhuys2007} as follows:
+ This model is implemented in \tomawac in its most recent version, as formulated by Westhuysen \cite{Westhuys2008}, which combines the terms of Komen \cite{Komen1984} ($Q_{ds}^{K}$) with that of Westhuysen \cite{Westhuys2007} as follows:
 \begin{equation} \label{GrindEQ__4_41_}
 Q_{ds} =f_{br} (f).Q_{ds} ^{W} +\left(1-f_{br} (f)\right).Q_{ds} ^{K}
 \end{equation}
@@ -522,28 +514,21 @@ with $f_{br} =\frac{1}{2} +\frac{1}{2} \tanh \left\{10\left[\left(\frac{B(k)}{B_
  This source term makes use of 4 parameters. Their default values correspond to the coefficients proposed by Westhuysen  \cite{Westhuys2008}.
 
 \begin{itemize}
-\item \begin{itemize}
-\item  The coefficient C${}_{dis,break}$, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ DISSIPATION COEFFICIENT}, has a default value of 5.0 10${}^{-5}$,
-
-\item  The coefficient B${}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$,
-
-\item  The coefficient C${}_{dis,non-break}$, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ WHITE CAPPING DISSIPATION}, has a default value of 3.29,
-
-\item  The coefficient d, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ WEIGHTING COEFFICIENT}, has a default value of 0.0.
+\item  The coefficient ${C}_{dis,break}$, corresponding to the keyword \textit{WESTHUYSEN  DISSIPATION COEFFICIENT}, has a default value of 5.0 10${}^{-5}$,
+\item  The coefficient ${B}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$,
+\item  The coefficient ${C}_{dis,non-break}$, corresponding to the keyword \textit{WESTHUYSEN WHITE CAPPING DISSIPATION}, has a default value of 3.29,
+\item  The coefficient d, corresponding to the keyword \textit{WESTHUYSEN WEIGHTING COEFFICIENT}, has a default value of 0.0.
 \end{itemize}
-\end{itemize}
-
-
 
 
 \subsubsection{ Bottom friction-induced dissipations (term Qbf)}
 
- A single model is available in \tomawac. The bottom friction-induced dissipation is activated through the keyword \textit{BOTTOM FRICTION DISSIPATION}BOTTOM FRICTION DISSIPATION\textit{ }in the steering file; the keyword can take two values, namely:
+ A single model is available in \tomawac. The bottom friction-induced dissipation is activated through the keyword \textit{BOTTOM FRICTION DISSIPATION} in the steering file; the keyword can take two values, namely:
 
  \begin{itemize}
-\item 1. .no bottom friction-induced dissipation \textit{(default value)}
+\item 0 no bottom friction-induced dissipation \textit{(default value)}
 
- \item 2. .expression obtained during the JONSWAP campaign (Hasselmann \textit{et al.} [Hasselmann et al.,~1973]) and taken up by Bouws and Komen~[Bouws,~1983].
+\item 1 expression obtained during the JONSWAP campaign (Hasselmann \textit{et al.} \cite{Hasselmann1973}) and taken up by Bouws and Komen~\cite{Bouws1983}.
 \end{itemize}
 
  The model used for the bottom friction-induced energy losses is an empirical expression globally representing the various contributions from the wave-bottom interaction (percolation, friction...):
@@ -557,24 +542,19 @@ Q_{bf} =-\Gamma \frac{2k}{g.\sinh \left(2.k.d\right)} F
 That source term has a single parameter:
 
 \begin{itemize}
-\item  constant G (corresponding to the keyword \textit{BOTTOM FRICTION COEFFICIENT}BOTTOM FRICTION COEFFICIENT\textit{ }in the steering file). Its default value is taken as 0.038 m2.s-3, in accordance with what had been obtained during the JONSWAP campaign [Hasselmann et al.,~1973] and with the standard value being used in the model WAM-Cycle 4.
+\item  constant G (corresponding to the keyword \textit{BOTTOM FRICTION COEFFICIENT} in the steering file). Its default value is taken as 0.038 m2.s-3, in accordance with what had been obtained during the JONSWAP campaign \cite{Hasselmann1973} and with the standard value being used in the model WAM-Cycle 4.
 \end{itemize}
-
 
 \subsubsection{ Bathymetric breaking-induced dissipations (term Qbr)}
 
- In \tomawac, four parametric formulas are proposed for reproducing the effects of the bathymetric breaking-induced energy dissipation on the spectrum. The bathymetric breaking-induced dissipation is activated through the keyword \textit{DEPTH-INDUCED BREAKING DISSIPATION}DEPTH-INDUCED BREAKING DISSIPATION\textit{ }in the steering file; the keyword can take five values:
+ In \tomawac, four parametric formulas are proposed for reproducing the effects of the bathymetric breaking-induced energy dissipation on the spectrum. The bathymetric breaking-induced dissipation is activated through the keyword \textit{DEPTH-INDUCED BREAKING DISSIPATION} in the steering file; the keyword can take five values:
 
 \begin{itemize}
 \item  No breaking-induced dissipation \textit{(default value)}
-
-\item \textit{ }Battjes and Janssen's model [Battjes,~1978]
-
+\item  Battjes and Janssen's model \cite{Battjes1978}
 \item  Thornton and Guza's model \cite{Thornton1983}
-
-\item  Roelvink's model [Roelvink,~1993]
-
-\item  Izumiya and Horikawa's model [Izumiya,~1984]
+\item  Roelvink's model \cite{Roelvink1993}
+\item  Izumiya and Horikawa's model \cite{Izumiya1984}
 \end{itemize}
 
 The first three models are parametric spectral models developed for studying the random waves, whereas the fourth one is a turbulence model initially developed for studying the regular waves.
@@ -586,7 +566,7 @@ The first three models are parametric spectral models developed for studying the
 
 {\bf  Battjes and Janssen's model (1978)}
 
- The Battjes and Janssen's breaking model [Battjes,~1978] is based on the analogy with a hydraulic jump. Besides, it assumes that all the breaking waves have a height $H_{m} $, which is of the same order of magnitude as the water depth. The total energy dissipation term $D_{br} $is expressed as follows
+ The Battjes and Janssen's breaking model \cite{Battjes1978} is based on the analogy with a hydraulic jump. Besides, it assumes that all the breaking waves have a height $H_{m} $, which is of the same order of magnitude as the water depth. The total energy dissipation term $D_{br} $is expressed as follows
 \begin{equation} \label{GrindEQ__4_44_}
 D_{br} =-\frac{\alpha Q_{b} f_{c} H_{m}^{2} }{4}
 \end{equation}
@@ -609,22 +589,30 @@ where $k_{c} $ is linked to $f_{c} $ by the linear wave dispersion relation.
 In \tomawac, that equation can be solved either in a dichotomous way or through explicit approximations as proposed by Dingemans [Dingemans,~1983]. The latter are expressed as follows when putting:
 \[b=\frac{H_{m0} }{\sqrt{2} H_{m} } \]
 
- - \underbar{version 1}:  $Q_{b} =0$   if b $<$ C${}_{b}$, (C${}_{b}$ = 0.5)
+ - \underbar{version 1}: 
+\bequ
+\barr{ll}
+\dsp Q_{b} =0                                            &\mbox{ if }b < C_{b}, (C_{b} = 0.5) \\[6pt]
+\dsp Q_{b} =\left(\frac{b-C_{b} }{1-C_{b} } \right)^{2}  &\mbox{ if } b \geq C_{b}
+\earr
+\eequ
 
- $Q_{b} =\left(\frac{b-C_{b} }{1-C_{b} } \right)^{2} $ if b $\geq$ C${}_{b}$
+ - \underbar{version 2}: 
+\bequ
+\barr{ll}
+ \dsp q_{0} =\left(2b-1\right)^{2}   &\mbox{ if } 0.5 < b < 1\\[6pt]
+ \dsp q_{0} =0  &\mbox{ if } b \leq 0.5\\[6pt]
+\dsp q_{1} =q_{0} -b^{2} \frac{q_{0} -e^{\left[\left(q_{0} -1\right)/b^{2} \right]} }{b^{2} -e^{\left[\left(q_{0} -1\right)/b^{2} \right]} } \\[6pt]
+ \dsp    Q_{b} =0    &\mbox{ if } b \leq C{}_{b}, (C{}_{b} = 0.3)\\[6pt]
+\dsp  Q_{b} =q_{1}    &\mbox{ if } C{}_{b} < b < 0.9\\[6pt]
+ \dsp Q_{b} =q_{0}    &\mbox{ if } 0.9 \leq b \leq 1.0\\[6pt]
+\earr
+\eequ
 
- - \underbar{version 2}:  $q_{0} =\left(2b-1\right)^{2} $ if 0.5 $<$ b $<$ 1
-
- $q_{0} =0$ if b $\leq$ 0.5
-\[q_{1} =q_{0} -b^{2} \frac{q_{0} -e^{\left[\left(q_{0} -1\right)/b^{2} \right]} }{b^{2} -e^{\left[\left(q_{0} -1\right)/b^{2} \right]} } \]
-
-    $Q_{b} =0$   if b $\leq$ C${}_{b}$, (C${}_{b}$ = 0.3)
-
- $Q_{b} =q_{1} $  if C${}_{b}$ $<$ b $<$ 0.9
-
- $Q_{b} =q_{0} $  if 0.9 $\leq$ b $\leq$ 1.0
-
- - \underbar{version 3}:  $Q_{b} =2.4*b^{7} $
+ - \underbar{version 3}:  
+\bequ
+Q_{b} =2.4*b^{7} 
+\eequ
 
  The directional spectrum version of the sink term is based on the assumption that breaking does not modify the frequency and directional distribution of energy. The source term $Q_{br} $ is then written as:
 \begin{equation} \label{GrindEQ__4_48_}
@@ -633,47 +621,49 @@ Q_{br} \left(f,\theta \right)=-\frac{\alpha Q_{b} f_{c} H_{m}^{2} }{4} \frac{F\l
 Three constants can be modified using keywords:
 
 \begin{itemize}
-\item  constant a corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA\textit{ }in the steering file. Its default value is taken as 1, in accordance with the value as recommended by Battjes and Janssen [Battjes,~1978].
-
-\item  constant g${}_{1}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\textit{ }in the steering file. Its default value is taken as 0.88, in accordance with the value as recommended by Battjes and Janssen [Battjes,~1978].
-
-\item  constant g${}_{2}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2\textit{ }in the steering file. Its default value is taken as 0.8, in accordance to the value as recommended by Battjes and Janssen [Battjes,~1978].
+\item  constant $\alpha$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA} in the steering file. Its default value is taken as 1, in accordance with the value as recommended by Battjes and Janssen \cite{Battjes1978}
+\item  constant g${}_{1}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1} in the steering file. Its default value is taken as 0.88, in accordance with the value as recommended by Battjes and Janssen \cite{Battjes1978}
+\item  constant g${}_{2}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2} in the steering file. Its default value is taken as 0.8, in accordance to the value as recommended by Battjes and Janssen \cite{Battjes1978}
 \end{itemize}
 
  The following keywords are for selecting the model options:
 
  \begin{itemize}
-\item The characteristic wave frequency is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY}DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY\textit{. }Six values are possible:\textit{}
+\item The characteristic wave frequency is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY}. Six values are possible:
+\begin{enumerate}
+ \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
+ \item average frequency: $f_{01} $, computed from the spectrum moments $m_0$ and $m_1$ \textit{(default value)}
+ \item average frequency: $f_{02} $, computed from the spectrum moments $m_0$ and $m_2$
+ \item discrete peak frequency: $f_p$
+ \item peak frequency computed through the Read's method to order 5: $f_{R5}$
+ \item peak frequency computed through the Read's method to order 8: $f_{R8}$
+\end{enumerate}
 
- \item 1. .average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
+ \item The computation mode for breaking probability $Q_{b} $ (exact computation or utilization of an explicit approximation as proposed by Dingemans [Dingemans,~1983]) is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD}. By default, version 2 of the explicit formulations as proposed by Dingemans [Dingemans,~1983] is used (see above). For applications, it is recommended \textbf{not} to modify the value of that keyword.
 
- \item 2. .average frequency: $f_{01} $, computed from the spectrum moments m0 and m1 \textit{(default value)}
-
- \item 3. .average frequency: $f_{02} $, computed from the spectrum moments m0 and m2
-
- \item 4. .discrete peak frequency: fp
-
- \item 5. .peak frequency computed through the Read's method to order 5: fR5
-
- \item 6. .peak frequency computed through the Read's method to order 8: fR8
-
- \item The computation mode for breaking probability $Q_{b} $ (exact computation or utilization of an explicit approximation as proposed by Dingemans [Dingemans,~1983]) is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD}DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD\textit{.} By default,\textit{ }version 2 of the explicit formulations as proposed by Dingemans [Dingemans,~1983] is used (see above). For applications, it is recommended \textbf{not} to modify the value of that keyword.
-
- \item The computation mode for the maximum height compatible with the local water depth, $H_{m} $, is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD}DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD\textit{. }Two values are possible:\textit{}
-
- \item 1. .Relation: $H_{m} =\gamma _{2} d$  \textit{(default value)}
-
- \item 2. .Miches' relation (see in (4.39) above)
+ \item The computation mode for the maximum height compatible with the local water depth, $H_{m} $, is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD}. Two values are possible:
+\begin{enumerate}
+ \item Relation: $H_{m} =\gamma _{2} d$  \textit{(default value)}
+ \item Miches' relation (see in (\ref{GrindEQ__4_46_}) above)
+\end{enumerate}
 \end{itemize}
 
 {\bf  ~Thornton and Guza's model (1983)}
 
  The Thornton and Guza's breaking model [Thornton,~1983] is based on the analogy with a hydraulic jump and on two types of breaking wave height distribution. The energy sink term is written according to the breaking wave height distribution being retained:
 
-function 1: $Q_{br1} \left(f,\theta \right)=-48\sqrt{\pi } B^{3} f_{c} \frac{\left(2m_{0} \right)^{5/2} }{H_{m}^{4} d} \; F\left(f,\theta \right)$ (4.49.a)
-
-function 2: $Q_{br2} \left(f,\theta \right)=-12\sqrt{\pi } B^{3} f_{c} \frac{\left(2m_{0} \right)^{3/2} }{H_{m}^{2} d} \left[1-\left(1+\left(\frac{8m_{0} }{H_{m}^{2} } \right)\right)^{-5/2} \right]\; F\left(f,\theta \right)$ (4.49.b)
-
+\bequ
+\label{eq:function1} 
+\barr{l}
+\mbox{function 1: }Q_{br1} \left(f,\theta \right)=-48\sqrt{\pi } B^{3} f_{c} \frac{\left(2m_{0} \right)^{5/2} }{H_{m}^{4} d} \; F\left(f,\theta \right)
+\earr
+\eequ
+\bequ
+\barr{l}
+\label{eq:function2} 
+\mbox{function 2: }Q_{br2} \left(f,\theta \right)=-12\sqrt{\pi } B^{3} f_{c} \frac{\left(2m_{0} \right)^{3/2} }{H_{m}^{2} d} \left[1-\left(1+\left(\frac{8m_{0} }{H_{m}^{2} } \right)\right)^{-5/2} \right]\; F\left(f,\theta \right)
+\earr
+\eequ 
  $f_{c} $ is the characteristic wave frequency (average frequency, $f_{01} $, $f_{02} $ or peak frequency) and B is a parameter ranging from 0.8 to 1.5 (its default value in \tomawac is $B=1.0$). The maximum wave height compatible with the water depth, $H_{m} $, is governed by the parameter $\gamma $ ($H_{m} =\gamma d$).
 
  The breaking model as proposed by Thornton and Guza can then be parameterized by the user via the following 4 keywords:
@@ -681,34 +671,34 @@ function 2: $Q_{br2} \left(f,\theta \right)=-12\sqrt{\pi } B^{3} f_{c} \frac{\le
  \begin{itemize}
 \item \textit{DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION} Two values are possible:
  \begin{enumerate}
- \item weighting function 1 (see in (4.42.a))
- \item weighting function 2 (see in (4.42.b))\textit{ (default value)}
+ \item weighting function 1 (see in \ref{eq:function1})
+ \item weighting function 2 (see in \ref{eq:function2})\textit{ (default value)}
 \end{enumerate}
-
  \item \textit{DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY} Six values are possible:
  \begin{enumerate}
  \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
- \item average frequency: $f_{01} $, computed from the spectrum moments m0 et m1
- \item average frequency: $f_{02} $, computed from the spectrum moments m0 et m2
- \item discrete peak frequency: fp
- \item peak frequency computed through the Read's method to order 5: fR5 \textit{(default value)}
- \item peak frequency computed through the Read's method to order 8: fR8
+ \item average frequency: $f_{01} $, computed from the spectrum moments $m_0$ et$ m_1$
+ \item average frequency: $f_{02} $, computed from the spectrum moments $m_0$ et $m_2$
+ \item discrete peak frequency: $f_p$
+ \item peak frequency computed through the Read's method to order 5: $f_{R5}$ \textit{(default value)}
+ \item peak frequency computed through the Read's method to order 8: $f_{R8}$
 \end{enumerate}
-
  \item \textit{ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B} corresponding to the B variable. Its default value in the model is taken as 1.
-
  \item \textit{DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA} corresponding to the $\gamma $ variable. Its default value in the model is taken as 0.42.
 \end{itemize}
 
 
 {\bf  Roelvink's model (1993)}
 
- The Roelvink's breaking model~[Roelvink,~1993] is based on the analogy with a hydraulic jump and on two types of wave height distribution in the breaking zone (Weibull or Rayleigh). The energy sink term is written according to the wave height distribution in the breaking zone:
+ The Roelvink's breaking model \cite{Roelvink1993} is based on the analogy with a hydraulic jump and on two types of wave height distribution in the breaking zone (Weibull or Rayleigh). The energy sink term is written according to the wave height distribution in the breaking zone:
 
 \begin{itemize}
 \item  \underbar{Weibull's distribution:}
 \begin{equation} \label{GrindEQ__4_50_}
-Q_{br1} \left(f,\theta \right)=-\alpha f_{c} mA\, \sqrt{\frac{2}{m_{0} } } F\left(f,\theta \right)\int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m+1} \exp \left[-A\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m} \right].\left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right] \, dH
+\barr{ll}
+\dsp Q_{br1} \left(f,\theta \right)=&\dsp -\alpha f_{c} mA\,  \sqrt{\frac{2}{m_{0} } }F\left(f,\theta \right)\int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m+1} \\[12pt]
+\dsp &\dsp \exp \left[-A\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m} \right].\left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right] \, dH
+\earr
 \end{equation}
 \end{itemize}
 
@@ -719,7 +709,10 @@ The coefficient $\gamma _{2} $ is usually set to 0.65.
 \begin{itemize}
 \item  \underbar{Rayleigh's distribution:}
 \begin{equation} \label{GrindEQ__4_52_}
-Q_{br2} \left(f,\theta \right)=-\alpha f_{c} \sqrt{\frac{2}{m_{0} } } F\left(f,\theta \right)\; \int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{3} \exp \left[-\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2} \right]\, \left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right]\,  dH
+\barr{ll}
+\dsp Q_{br2} \left(f,\theta \right)=&\dsp -\alpha f_{c} \sqrt{\frac{2}{m_{0} } } F\left(f,\theta \right)\; \int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{3} \\[12pt]
+\dsp &\dsp \exp \left[-\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2} \right]\, \left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right]\,  dH
+\earr
 \end{equation}
 \end{itemize}
 $f_{c} $ denotes the characteristic wave frequency (average frequency, $f_{01} $, $f_{02} $ or peak frequency), a is a numerical constant of order 1, $\gamma $ is the proportional control factor between the allowable wave height and the water depth (by default, $\gamma =0.54$) and N is an exponent in the wake breaking weighting function (typically N=10).
@@ -740,25 +733,19 @@ $f_{c} $ denotes the characteristic wave frequency (average frequency, $f_{01} $
 
 \item  \textit{DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY} Six values are possible:\textit{}
 \begin{enumerate}
-
  \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
-
- \item average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
-
- \item average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
-
- \item discrete peak frequency: fp
-
- \item peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
-
- \item peak frequency as computed through the Read's method to order 8: fR8
+ \item average frequency: $f_{01} $, as computed from the spectrum moments $m_0$ and $m_1$
+ \item average frequency: $f_{02} $, as computed from the spectrum moments $m_0$ and $m_2$
+ \item discrete peak frequency: $f_p$
+ \item peak frequency as computed through the Read's method to order 5: $f_{R5}$ \textit{(default value)}
+ \item peak frequency as computed through the Read's method to order 8: $f_{R8}$
 \end{enumerate}
 \end{itemize}
 
 
 {\bf  Izumiya and Horikawa's turbulence model (1984)}
 
- Izumiya and Horikawa [Izumiya,~1984] sought an estimate of the dissipation by breaking-induced turbulence in the case of regular waves. From the Reynolds' equations and only considering a one-dimensional condition, they obtained an expression of the breaking-induced dissipation of wave energy in the following form:
+ Izumiya and Horikawa \cite{Izumiya1984} sought an estimate of the dissipation by breaking-induced turbulence in the case of regular waves. From the Reynolds' equations and only considering a one-dimensional condition, they obtained an expression of the breaking-induced dissipation of wave energy in the following form:
 \begin{equation} \label{GrindEQ__4_53_}
 \frac{d}{dx} \left(EC_{g} \right)=-\alpha \frac{E^{3/2} }{\rho ^{1/2} d^{3/2} } \left(\frac{2C_{g} }{c} -1\right)^{1/2}
 \end{equation}
@@ -776,23 +763,15 @@ Thus, the breaking model as proposed by Izumiya and Horikawa can be parameterize
 
 \begin{itemize}
 \item  \textit{DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0}, corresponding to the $\beta _{0} $ variable. The default value in the model is 1.8.
-
 \item  \textit{DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR}, corresponding to the $M_{*S}^{2} $ variable. The default value in the model is 0.009.
-
  \item \textit{DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY} Six values are possible:
 \begin{enumerate}
-
  \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.29.b))
-
- \item average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
-
- \item average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
-
- \item discrete peak frequency: fp
-
- \item peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
-
- \item peak frequency as computed through the Read's method to order 8: fR8
+ \item average frequency: $f_{01} $, as computed from the spectrum moments $m_0$ and $m_1$
+ \item average frequency: $f_{02} $, as computed from the spectrum moments $m_0$ and $m_2$
+ \item discrete peak frequency: $f_p$
+ \item peak frequency as computed through the Read's method to order 5: $f_{R5}$ \textit{(default value)}
+ \item peak frequency as computed through the Read's method to order 8: $f_{R8}$
 \end{enumerate}
 \end{itemize}
 
@@ -829,7 +808,7 @@ $\sigma _{1} +\sigma _{2} =\sigma _{3} +\sigma _{4} $  and  $\vec{k}_{1} +\vec{k
 
  G denotes the value of the coupling term for the resonant quadruplet interactions$\left(\vec{k}_{1} ,\vec{k}_{2} ,\vec{k}_{3} ,\vec{k}_{4} \right)$. Establishing and computing its expression is also an awkward task. Hasselmann [Hasselmann,~1962] proposed a computation mode that was also taken up and given a more concise form by such other authors as Webb \cite{webb1978}.
 
- The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as \tomawac (see e.g. [Hasselmann,~1985]). That is why, starting from the experiment as developed in WAM [WAMDI,~1988] [Komen et al.,~1994], \tomawac uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} [Hasselmann et al.,~1985]. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
+ The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as \tomawac (see e.g. \cite{Hasselmann1985}). That is why, starting from the experiment as developed in WAM [WAMDI,~1988] [Komen et al.,~1994], \tomawac uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} [Hasselmann et al.,~1985]. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
 
  That standard interaction configuration is defined as follows:
 
