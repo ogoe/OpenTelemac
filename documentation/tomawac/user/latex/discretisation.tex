@@ -1,17 +1,17 @@
 
 
-\chapter{ Discretizations used in TOMAWAC}
+\chapter{ Discretizations used in \tomawac}
 
- The main aspects concerning the numerical discretization in TOMAWAC are presented and discussed herein for the two spatial variables (paragraph 5.1), for the two spectro-angular variables (paragraph 5.2) and for the time domain (paragraph 5.3).
+ The main aspects concerning the numerical discretization in \tomawac are presented and discussed herein for the two spatial variables (paragraph 5.1), for the two spectro-angular variables (paragraph 5.2) and for the time domain (paragraph 5.3).
 
 
 \section{ Spatial discretization}
 
  The spatial coordinate system, whether it is Cartesian or spherical, is a planar two-dimensional domain that is meshed by means of triangular finite elements. Only the maritime portion of the computational domain is meshed, so that all the computational points of the spatial grid are provided with a water depth that is strictly above zero. Through this discretization technique, the mesh size may naturally be variable over the spatial domain, particularly enabling to get a fine grid in the areas of specific interest, featured either by complex geometries (straits, intracontinental seas, bays\dots ) or by high bathymetric gradients. Furthermore, that spatial grid may include one or more islands.
 
- The number of discretization points is only limited by the RAM capacities of the computing machine. The equation solved by TOMAWAC does not prescribe \textit{a priori }any conditions about the number of grid points per wave length. The density of spatial discretization points is left at the user's will. It should match, however, both spatial and temporal scales of variation of the physical characteristics of the domain being studied, in particular bathymetry and wind field.
+ The number of discretization points is only limited by the RAM capacities of the computing machine. The equation solved by \tomawac does not prescribe \textit{a priori }any conditions about the number of grid points per wave length. The density of spatial discretization points is left at the user's will. It should match, however, both spatial and temporal scales of variation of the physical characteristics of the domain being studied, in particular bathymetry and wind field.
 
- In the general case, this spatial grid is realised on a workstation using one of the mesh generators associated to the TELEMAC system (refer to the 7.2.2 for further details about the preparation of the grid). Two examples of spatial grids developed for TOMAWAC for simulated storms in the North Atlantic Ocean, the Channel and the North Sea are illustrated in Figure~5.1.
+ In the general case, this spatial grid is realised on a workstation using one of the mesh generators associated to the TELEMAC system (refer to the 7.2.2 for further details about the preparation of the grid). Two examples of spatial grids developed for \tomawac for simulated storms in the North Atlantic Ocean, the Channel and the North Sea are illustrated in Figure~5.1.
 
 
 \section{ Spectro-angular discretization}
@@ -19,7 +19,7 @@
 
 \subsection{ Frequency discretization}
 
- In TOMAWAC, the frequency domain is discretized considering a series of NF frequencies in a geometric progression:
+ In \tomawac, the frequency domain is discretized considering a series of NF frequencies in a geometric progression:
 
    fn = f1.qn-1  with n ranging from 1 to NF
 
@@ -28,32 +28,32 @@
 In order to define the frequency discretization, the user should specify as an input into the steering file:
 
 \begin{enumerate}
-\item  the frequency number: NF (corresponding to the keyword \textit{NUMBER OF FREQUENCIES}NUMBER OF FREQUENCIES\textit{ }in the steering file)
+\item  the frequency number: NF (corresponding to the keyword \textit{NUMBER OF FREQUENCIES} in the steering file)
 
-\item  the minimum frequency: f1 (in Hertz) (corresponding to the keyword \textit{MINIMAL FREQUENCY}MINIMAL FREQUENCY\textit{ }in the steering file)
+\item  the minimum frequency: f1 (in Hertz) (corresponding to the keyword \textit{MINIMAL FREQUENCY} in the steering file)
 
-\item  the frequential ratio: q (corresponding to the keyword \textit{FREQUENTIAL RATIO}FREQUENTIAL RATIO\textit{ }in the steering file)
+\item  the frequential ratio: q (corresponding to the keyword \textit{FREQUENTIAL RATIO} in the steering file)
 \end{enumerate}
 
-  \includegraphics*[width=6.72in, height=8.44in, keepaspectratio=false]{image99}
+  \includegraphics*[width=5.72in ]{graphics/mailocean.jpg}
 
  \textbf{\textit{Figure 5.1: Examples of spatial grids in the Atlantic Ocean, the Channel and the North Sea}}
 
 
 \subsection{  Directional discretization:}
 
- The interval of propagation direction [0, 360${}^\circ$] is discretized into ND evenly distributed directions, so that these directions are:
+ The interval of propagation direction $[0, 360^\circ$] is discretized into ND evenly distributed directions, so that these directions are:
 
  qm = (m-1).360/ND   with m ranging from 1 to ND
 
  In order to define the directional discretization, the user should specify as an input into the steering file:
 
 \begin{enumerate}
-\item  the direction number: ND (corresponding to the keyword \textit{NUMBER OF DIRECTIONS}NUMBER OF DIRECTIONS\textit{ }in the steering file).
+\item  the direction number: ND (corresponding to the keyword \textit{NUMBER OF DIRECTIONS} in the steering file).
 
-\item  The direction convention selected for the input/output directional variables: either nautical or counterclockwise (corresponding to the keyword \textit{TRIGONOMETRICAL CONVENTION}TRIGONOMETRICAL CONVENTION\textit{ }in the steering file, the default value of which is NO). The nautical convention sets the wave propagation directions (towards which the waves are propagating) in relation to the true North or the vertical axis and opposite to the counterclockwise direction. The counterclockwise convention sets the wave propagation directions in relation to the horizontal axis.
+\item  The direction convention selected for the input/output directional variables: either nautical or counterclockwise (corresponding to the keyword \textit{TRIGONOMETRICAL CONVENTION} in the steering file, the default value of which is NO). The nautical convention sets the wave propagation directions (towards which the waves are propagating) in relation to the true North or the vertical axis and opposite to the counterclockwise direction. The counterclockwise convention sets the wave propagation directions in relation to the horizontal axis.
 
-\item  Note that \underbar{the convention selected for computing the directions within the FORTRAN model always defines the propagation directions in the clockwise direction from the true North}, even though the keyword \textit{TRIGONOMETRICAL CONVENTION}TRIGONOMETRICAL CONVENTION\textit{ }=~YES~!
+\item  Note that the convention selected for computing the directions within the FORTRAN model always defines \underline{the propagation directions in the clockwise direction from the true North}, even though the keyword \textit{TRIGONOMETRICAL CONVENTION}=YES!
 \end{enumerate}
 
 
@@ -61,19 +61,19 @@ In order to define the frequency discretization, the user should specify as an i
 
  A two-dimensional grid for spectro-angular discretization is achieved by combining the above defined frequency and directional discretizations. That grid has NF.ND points.
 
- A polar representation is used in TOMAWAC, where the wave frequencies are measured radially and where the propagation direction corresponds to the value of the angle in relation to the axis selected by the user as (vertical or horizontal) origin. An example of a spectro-angular grid having 25 frequencies and 12 directions is illustrated in Figure~5.2.
+ A polar representation is used in \tomawac, where the wave frequencies are measured radially and where the propagation direction corresponds to the value of the angle in relation to the axis selected by the user as (vertical or horizontal) origin. An example of a spectro-angular grid having 25 frequencies and 12 directions is illustrated in Figure~5.2.
 
 
 \section{ Temporal discretization}
 
- In TOMAWAC, each computation begins at the internal date 0, to which an actual date being defined by the keyword \textit{DATE OF COMPUTATION BEGINNING}DATE OF COMPUTATION BEGINNING\textit{ }in the steering file can be associated. That date is specified as per the yymmddhhmm format which corresponds to the moment dd/mm/yy at hh:mm (for example, 9505120345 corresponds to May 12, 1995 at 3.45).
+ In \tomawac, each computation begins at the internal date 0, to which an actual date being defined by the keyword \textit{DATE OF COMPUTATION BEGINNING} in the steering file can be associated. That date is specified as per the yymmddhhmm format which corresponds to the moment dd/mm/yy at hh:mm (for example, 9505120345 corresponds to May 12, 1995 at 3.45).
 
- The evolution equation of the directional spectrum of wave action density is integrated with a constant time step which is expressed in seconds through the keyword \textit{TIME STEP}TIME STEP\textit{ }in the steering file. Sub-iterations of that time step can also be made for computing the source terms (refer to paragraph 6.3). That number of sub-time steps per time step is defined in the steering file through the keyword \textit{NUMBER OF ITERATIONS FOR THE SOURCE TERMS}NUMBER OF ITERATIONS FOR THE SOURCE TERMS\textit{.}
+ The evolution equation of the directional spectrum of wave action density is integrated with a constant time step which is expressed in seconds through the keyword \textit{TIME STEP} in the steering file. Sub-iterations of that time step can also be made for computing the source terms (refer to paragraph 6.3). That number of sub-time steps per time step is defined in the steering file through the keyword \textit{NUMBER OF ITERATIONS FOR THE SOURCE TERMS}.
 
  
 
- \includegraphics*[width=5.73in, height=5.68in, keepaspectratio=false]{image100}
+ \includegraphics*[width=4.73in]{graphics/spectroangular}
 
- \textbf{\textit{Figure 5.2: Example of a spectro-angular grid as used by TOMAWAC (25 frequencies and 12 directions in this case)}}
+ \textbf{\textit{Figure 5.2: Example of a spectro-angular grid as used by \tomawac (25 frequencies and 12 directions in this case)}}
 
 

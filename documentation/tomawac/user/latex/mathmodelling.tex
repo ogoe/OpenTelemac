@@ -1,21 +1,20 @@
 
-\chapter{  Mathematical modelling procedures used by TOMAWAC}
-
+\chapter{Mathematical modelling procedures used by \tomawac}
+\label{chapter4}
 \section{ Scope of sea state modelling}
-
  The directional spectrum of wave action density, as defined in paragraph 2.6, is considered as a function of five variables:
 \[N(\vec{x},\vec{k},t)=N(x,y,k_{x} ,k_{y} ,t)\]
 using, as discretization variables:
 
  \begin{enumerate}
-\item the position vector $\vec{x}$ = (x, y) for spatial location in a Cartesian coordinate system
+\item the position vector $\vec{x} = (x, y)$ for spatial location in a Cartesian coordinate system
 
- \item the wave number vector $\vec{k}$ = (kx, ky) = (k.sin q, k.cos q) for directional spectrum discretization, q denoting the wave propagation direction (direction in which the waves travel).
+ \item the wave number vector $\vec{k} = (k_x, k_y) = (k.sin \theta, k.cos \theta)$ for directional spectrum discretization, $\theta$ denoting the wave propagation direction (direction in which the waves travel).
 
  \item the time t.
 \end{enumerate}
 
-Under the hypotheses made on the wave representation (see in paragraph 2.6) as well as on the model application domain and the modelled physical processes (see in paragraph 3.3), an equation of evolution of the directional spectrum of wave action can be written in the following form (see in [Willebrand,~1975] [Phillips,~1977] [Bretherton,~1969] for a detailed demonstration of the way that equation is arranged):
+Under the hypotheses made on the wave representation (see in paragraph 2.6) as well as on the model application domain and the modelled physical processes (see in paragraph 3.3), an equation of evolution of the directional spectrum of wave action can be written in the following form (see in \cite{Willebrand1975} [Phillips,~1977] [Bretherton,~1969] for a detailed demonstration of the way that equation is arranged):
 \begin{equation} \label{GrindEQ__4_1_}
 \frac{\partial N}{\partial t} +\frac{\partial (\dot{x}N)}{\partial x} +\frac{\partial (\dot{y}N)}{\partial y} +\frac{\partial (\dot{k}_{x} N)}{\partial k_{x} } +\frac{\partial (\dot{k}_{y} N)}{\partial k_{y} } =Q(k_{x} ,k_{y} ,x,y,t)
 \end{equation}
@@ -23,13 +22,19 @@ The equation expresses that, in the general case of waves propagating in a non-h
 
  The following notation is also used in \eqref{GrindEQ__4_1_}:
 \[\dot{g}=\frac{dg}{dt} =\frac{\partial g}{\partial t} +\frac{\partial x}{\partial t} \frac{\partial g}{\partial x} +\frac{\partial y}{\partial t} \frac{\partial g}{\partial y} \]
-In that form (conservative writing in the form of a flux), equation \eqref{GrindEQ__4_1_} can be transposed to other coordinate systems and, for instance, (k,~q), (fa,~q) or else (fr,~q) can be used for the discretization of directional spectrum [Komen et al.,~1994] [Tolman,~1991].
+In that form (conservative writing in the form of a flux), equation \eqref{GrindEQ__4_1_} can be transposed to other coordinate systems and, for instance, $(k,\theta), (f_a,\theta)$ or else $(f_r,\theta)$ can be used for the discretization of directional spectrum [Komen et al.,~1994] \cite{Tolman1991}
 
- Working in (x, y, kx, ky), however, makes it possible to remain in the canonical coordinate system and to write, for the propagation equations (also named Hamilton's equations):
+ Working in $(x, y, k_x, k_y)$, however, makes it possible to remain in the canonical coordinate system and to write, for the propagation equations (also named Hamilton's equations):
 
-$\dot{x}=\frac{\partial \Omega }{\partial k_{x} } $ and $\dot{y}=\frac{\partial \Omega }{\partial k_{y} } $ (4.2.a)
-
- $\dot{k}_{x} =-\frac{\partial \Omega }{\partial x} $ and $\dot{k}_{y} =-\frac{\partial \Omega }{\partial y} $ (4.2.b)
+\bequ
+\label{eq:hamilton}
+\left\{
+\barr{lll}
+\dsp \dot{x}=\frac{\partial \Omega }{\partial k_{x} } &\mbox{ and }&\dsp \dot{y}=\frac{\partial \Omega }{\partial k_{y} } \\[12pt]
+ \dsp \dot{k}_{x} =-\frac{\partial \Omega }{\partial x}& \mbox{ and }&\dsp \dot{k}_{y} =-\frac{\partial \Omega }{\partial y}
+\earr
+\right.
+\eequ  
 
  wherein W results from the Doppler relation applied to the wave dispersion relation for the general case with current:
 \begin{equation} \label{GrindEQ__4_3_}
@@ -39,67 +44,84 @@ wherein:  w is the absolute angular frequency observed in a fixed coordinate sys
 
  $\vec{U}$ denotes the current velocity (depth-integrated).
 
- s denotes the intrinsic or relative angular frequency, which is observed in a coordinate system moving at the velocity $\vec{U}$. It is given by the dispersion relation in the zero-current case:
+ $\sigma$ denotes the intrinsic or relative angular frequency, which is observed in a coordinate system moving at the velocity $\vec{U}$. It is given by the dispersion relation in the zero-current case:
+\bequ
+\label{eq:reldispersion}    
+\sigma^2 = g.k.tanh(k.d) 
+\eequ
+$ f_r = \sigma/(2\pi)$ is named intrinsic or relative wave frequency. d denotes the water height.
 
-    s2 = g.k.tanh(k.d) \eqref{GrindEQ__4_4_}
+ Through the Hamilton's equations (\ref{eq:hamilton}), it can be demonstrated that we have:
 
- fr = s/(2p) is named intrinsic or relative wave frequency.
+\bequ 
+\label{eq:equ4.5.a}
+\frac{\partial \dot{x}}{\partial x} +\frac{\partial \dot{y}}{\partial y} +\frac{\partial \dot{k}_{x} }{\partial k_{x} } +\frac{\partial \dot{k}_{y} }{\partial k_{y} } =0
+\eequ
 
- d denotes the water height.
-
- Through the Hamilton's equations (4.2.a and 4.2.b), it can be demonstrated that we have:
-
-$\frac{\partial \dot{x}}{\partial x} +\frac{\partial \dot{y}}{\partial y} +\frac{\partial \dot{k}_{x} }{\partial k_{x} } +\frac{\partial \dot{k}_{y} }{\partial k_{y} } =0$  (4.5.a)
-
-or  div($\vec{V}$) = 0   when defining: $\vec{V}=(\dot{x},\dot{y},\dot{k}_{x} ,\dot{k}_{y} )$ (4.5.b)
+or  $div(\vec{V}) = 0$   when defining: $\vec{V}=(\dot{x},\dot{y},\dot{k}_{x} ,\dot{k}_{y} )$
 
  The evolution equation \eqref{GrindEQ__4_1_} can then alternatively be written in the following form (the so-called transport form):
+\bequ
+\label{eq:transform}
+\barr{l}
+\dsp
+\frac{\partial N}{\partial t} +\dot{x}\frac{\partial N}{\partial x} +\dot{y}\frac{\partial N}{\partial y} +\dot{k}_{x} \frac{\partial N}{\partial k_{x} } +\dot{k}_{y} \frac{\partial N}{\partial k_{y} } =Q(k_{x} ,k_{y} ,x,y,t)\\[6pt]
+\dsp
+\frac{\partial N}{\partial t} +\vec{V}.grad_{\vec{x},\vec{k}} (N)=Q
+\earr 
+\eequ
 
-$\frac{\partial N}{\partial t} +\dot{x}\frac{\partial N}{\partial x} +\dot{y}\frac{\partial N}{\partial y} +\dot{k}_{x} \frac{\partial N}{\partial k_{x} } +\dot{k}_{y} \frac{\partial N}{\partial k_{y} } =Q(k_{x} ,k_{y} ,x,y,t)$ (4.6.a)
-
-$\frac{\partial N}{\partial t} +\vec{V}.grad_{\vec{x},\vec{k}} (N)=Q$ (4.6.b)
-
- The transfer rates are given by the linear wave theory [Chaloin,~1989] [Komen et al.,~1994] [Mei,~1983] [Tolman,~1991]:
-
-$\dot{x}=C_{g} \frac{k_{x} }{k} +U_{x} $ (4.7.a)
-
-$\dot{y}=C_{g} \frac{k_{y} }{k} +U_{y} $ (4.7.b)
-
-$\dot{k}_{x} =-\frac{\partial \sigma }{\partial d} \frac{\partial d}{\partial x} -\vec{k}.\frac{\partial \vec{U}}{\partial x} $ (4.7.c)
-
-$\dot{k}_{y} =-\frac{\partial \sigma }{\partial d} \frac{\partial d}{\partial y} -\vec{k}.\frac{\partial \vec{U}}{\partial y} $ (4.7.d)
-
+ The transfer rates are given by the linear wave theory [Chaloin,~1989] [Komen et al.,~1994] [Mei,~1983] \cite{Tolman1991}
+\bequ
+\label{eq:transfer}
+\barr{l}
+\dsp
+\dot{x}=C_{g} \frac{k_{x} }{k} +U_{x} \\[6pt]
+\dsp
+\dot{y}=C_{g} \frac{k_{y} }{k} +U_{y} \\[6pt]
+\dsp
+\dot{k}_{x} =-\frac{\partial \sigma }{\partial d} \frac{\partial d}{\partial x} -\vec{k}.\frac{\partial \vec{U}}{\partial x} \\[6pt]
+\dsp
+\dot{k}_{y} =-\frac{\partial \sigma }{\partial d} \frac{\partial d}{\partial y} -\vec{k}.\frac{\partial \vec{U}}{\partial y}
+\earr 
+\eequ
  Cg is the relative (or intrinsic) group velocity of waves, i.e. as is observed in a coordinate system moving at the velocity of the current:
 
-$C_{g} =\frac{\partial \sigma }{\partial k} =n\frac{\sigma }{k} $  with  $n=\frac{1}{2} \left(1+\frac{2kd}{\sinh (2kd)} \right)$ \eqref{GrindEQ__4_8_}
+\bequ
+\label{eq:cg4_8}
+C_{g} =\frac{\partial \sigma }{\partial k} =n\frac{\sigma }{k} \mbox{ with } n=\frac{1}{2} \left(1+\frac{2kd}{\sinh (2kd)} \right)
+\eequ
 
  The relative (or intrinsic) phase velocity C of waves is also introduced:  $C=\frac{\sigma }{k} $
 
- The sea state spectral modelling will then consist of solving the evolution equations \eqref{GrindEQ__4_1_} or (4.6.a), using the kinematic equations (4.7.a -- 4.7.d).
+ The sea state spectral modelling will then consist of solving the evolution equations \eqref{GrindEQ__4_1_} or (\ref{eq:transform}), using the kinematic equations (\ref{eq:transfer}).
 
- The transport equation formulation (4.6.a) or (4.6.b) has been adopted in TOMAWAC, since it is closely related to other equations applied in hydraulics, which have already been treated at the LNHE and for which methods and a know-how have been developed long ago.
+ The transport equation formulation (\ref{eq:transform}) has been adopted in \tomawac, since it is closely related to other equations applied in hydraulics, which have already been treated at the LNHE and for which methods and a know-how have been developed long ago.
 
- As regards the discretization variables being used in TOMAWAC, we have already mentioned in paragraph 2.7 that:
+ As regards the discretization variables being used in \tomawac, we have already mentioned in paragraph \ref{se:selecting} that:
 
- \begin{enumerate}
-\item spatial discretization can be based either on a Cartesian coordinate system in (x, y) or on a spherical coordinate system at the Earth's surface in (l, j) = (longitude, latitude).
-
- \item Discretization of angular spectrum uses the pair (fr, q) = (relative frequency ; propagation direction).
-\end{enumerate}
+ \begin{itemize}
+\item spatial discretization can be based either on a Cartesian coordinate system in (x, y) or on a spherical coordinate system at the Earth's surface in $(\lambda, \phi) =$ (longitude, latitude).
+ \item Discretization of angular spectrum uses the pair $(f_r, \theta) =$ (relative frequency ; propagation direction).
+\end{itemize}
 
  The following conventions are adopted for writing the equations:
 
- \begin{enumerate}
+ \begin{itemize}
 \item the x-axis (in the Cartesian coordinate system) or the l-axis of longitudes (in the spherical coordinate system) is assumed to be horizontal, directed to the right, whereas the y-axis (in the Cartesian coordinate system) or the j-axis of latitudes (in the spherical coordinate system) is assumed to be vertical, upwardly directed. Then, in spherical coordinates, the vertical axis points at the north, whereas the horizontal axis points to the East.
 
  \item In either case, the wave propagation directions q are defined with respect to the vertical axis in the clockwise direction.
-\end{enumerate}
+\end{itemize}
 
- These conventions are illustrated below in Figure~4.1. Those equations that correspond to the two spatial discretizations options are developed in the next paragraphs.
+ These conventions are illustrated below in Figure \ref{fig:defloc} Those equations that correspond to the two spatial discretizations options are developed in the next paragraphs.
 
-\includegraphics*[width=4.25in, height=3.55in, keepaspectratio=false]{image95}
-
- Figure 4.1: definition of location conventions as used in TOMAWAC
+\begin{figure}[H]%
+\begin{center}
+\includegraphics*[width=3.25in,  keepaspectratio=true]{graphics/defloc}
+\caption{definition of location conventions as used in \tomawac}
+\label{fig:defloc}
+\end{center}
+\end{figure}
 
 
 \section{  Equations solved}
@@ -112,68 +134,80 @@ $C_{g} =\frac{\partial \sigma }{\partial k} =n\frac{\sigma }{k} $  with  $n=\fra
 N(x,y,k_{x} ,k_{y} ,t)=\frac{CC_{g} }{2\pi \sigma } \tilde{N}(x,y,f_{r} ,\theta ,t)=\tilde{B}.\tilde{F}(x,y,f_{r} ,\theta ,t)
 \end{equation}
 
-putting: $\tilde{B}=\frac{C\; C_{g} }{2\pi \sigma ^{2} } =\frac{C_{g} }{\left(2\pi \right)^{2} k\; f_{r} } $ \eqref{GrindEQ__4_10_}
-
-The evolution equation (4.6.b) is then written as:
+\bequ
+\label{eq:GrindEQ__4_10}
+\mbox{putting: } \tilde{B}=\frac{C\; C_{g} }{2\pi \sigma ^{2} } =\frac{C_{g} }{\left(2\pi \right)^{2} k\; f_{r} }
+\eequ
+The evolution equation (\ref{eq:transform}) is then written as:
 \begin{equation} \label{GrindEQ__4_11_}
 \frac{\partial (\tilde{B}\tilde{F})}{\partial t} +\dot{x}\frac{\partial (\tilde{B}\tilde{F})}{\partial x} +\dot{y}\frac{\partial (\tilde{B}\tilde{F})}{\partial y} +\dot{\theta }\frac{\partial (\tilde{B}\tilde{F})}{\partial \theta } +\dot{f}_{r} \frac{\partial (\tilde{B}\tilde{F})}{\partial f_{r} } =\tilde{B}.\tilde{Q}(x,y,\theta ,f_{r} ,t)
 \end{equation}
 with the following transfer rates, as computed from the linear wave theory:
-
-$\dot{x}=C_{g} .\sin \theta +U_{x} $ (4.12.a)
-
-$\dot{y}=C_{g} .\cos \theta +U_{y} $ (4.12.b)
-
-$\dot{\theta }=-\frac{1}{k} \frac{\partial \sigma }{\partial d} \tilde{G}_{n} (d)-\frac{\vec{k}}{k} .\tilde{G}_{n} (\vec{U})$ (4.12.c)
-
-$\dot{f}_{r} =\frac{1}{2\pi } \left[\frac{\partial \sigma }{\partial d} {\kern 1pt} \left(\frac{\partial d}{\partial t} +\vec{U}.\vec{\nabla }d\right)-Cg\; \, \vec{k}.\tilde{G}_{t} (\vec{U})\right]$ (4.12.d)
-
+\bequ
+\label{eq:equ4_12}
+\barr{l}
+\dsp \dot{x}=C_{g} .\sin \theta +U_{x} \\[6pt]
+\dsp \dot{y}=C_{g} .\cos \theta +U_{y}\\[6pt] 
+\dsp \dot{\theta }=-\frac{1}{k} \frac{\partial \sigma }{\partial d} \tilde{G}_{n} (d)-\frac{\vec{k}}{k} .\tilde{G}_{n} (\vec{U})\\[6pt]
+\dsp \dot{f}_{r} =\frac{1}{2\pi } \left[\frac{\partial \sigma }{\partial d} {\kern 1pt} \left(\frac{\partial d}{\partial t} +\vec{U}.\vec{\nabla }d\right)-Cg\; \, \vec{k}.\tilde{G}_{t} (\vec{U})\right]
+\earr
+\eequ
  The operators $\tilde{G}_{n} $ and $\tilde{G}_{t} $ refer to the computation of a function gradient in directions that are respectively normal and tangential to the characteristic curve with the direction q:
+\bequ
+\label{eq:equ4_13}
+\barr{l}
+\dsp \tilde{G}_{n} (g)=\vec{n}.\vec{\nabla }g=\cos \theta \, \frac{\partial g}{\partial x} \; -\sin \theta \, \frac{\partial g}{\partial y} \\[6pt]
+\dsp \tilde{G}_{t} (g)=\vec{t}.\vec{\nabla }g=\sin \theta \, \frac{\partial g}{\partial x} \; +\cos \theta \, \frac{\partial g}{\partial y}
+\earr
+\eequ
 
-$\tilde{G}_{n} (g)=\vec{n}.\vec{\nabla }g=\cos \theta \, \frac{\partial g}{\partial x} \; -\sin \theta \, \frac{\partial g}{\partial y} $ (4.13.a)
 
-$\tilde{G}_{t} (g)=\vec{t}.\vec{\nabla }g=\sin \theta \, \frac{\partial g}{\partial x} \; +\cos \theta \, \frac{\partial g}{\partial y} $ (4.13.b)
-
- Besides, using the dispersion relation \eqref{GrindEQ__4_4_}, is can be demonstrated that:
+ Besides, using the dispersion relation \ref{eq:reldispersion}, is can be demonstrated that:
 \begin{equation} \label{GrindEQ__4_14_}
 \frac{\partial \sigma }{\partial d} =\frac{\sigma k}{\sinh (2kd)}
 \end{equation}
-The spatial transfer rates $\dot{x}$ and $\dot{y}$ (equations 4.12.a and 4.12.b) model the spatial wave propagation and the shoaling. The directional transfer rate $\dot{\theta }$ (equation 4.12.c) models the refraction-induced change of wave propagation direction. Refraction is generated by the spatial variations of those properties of the environment in which the waves propagate and can result either from a bathymetric variation (first term in 4.12.c) or from current gradients (second term in 4.12.c). The relative frequency transfer rate $\dot{f}_{r} $ (equation 4.12.d) models the relative frequency changes resulting from sea level variations both in space and time and/or from current variations in space.
+The spatial transfer rates $\dot{x}$ and $\dot{y}$ (equations \ref{eq:equ4_12}) model the spatial wave propagation and the shoaling. The directional transfer rate $\dot{\theta }$ models the refraction-induced change of wave propagation direction. Refraction is generated by the spatial variations of those properties of the environment in which the waves propagate and can result either from a bathymetric variation (first term) or from current gradients(second term). The relative frequency transfer rate $\dot{f}_{r} $ models the relative frequency changes resulting from sea level variations both in space and time and/or from current variations in space.
 
  It is noteworthy that this last term is zero in the case of zero-current and of no variation of sea level in time: the advection equation is then reduced to a three-dimensional equation.
 
- Lastly, as regards the source terms, it should be mentioned that changing the coordinate system and using the factor $\tilde{B}$ allows to switch from the term Q to a term $\tilde{Q}$ that is directly expressed in terms of the directional variance spectrum with a variance $\tilde{F}$(fr, q). The content of that term is explained in paragraph 4.2.3.
+ Lastly, as regards the source terms, it should be mentioned that changing the coordinate system and using the factor $\tilde{B}$ allows to switch from the term Q to a term $\tilde{Q}$ that is directly expressed in terms of the directional variance spectrum with a variance $\tilde{F}(f_r, \theta)$. The content of that term is explained in paragraph \ref{se:sourceterm}
 
 
-\paragraph{ Consideration of diffraction}
+\subsubsection{ Consideration of diffraction}
 
  If diffraction is taken into account, a new wave number \textit{K} is computed, whose modulus is the sum of the wave number \textit{k} calculated by the linear wave theory plus a term that takes into account the effects of the wave diffraction. This modified wave number can be used to represent the effect of diffraction in a phase-averaged spectral model, as proposed by Holthujisen (2003).
 
  Two different mathematical formulations of diffraction are considered:
 
-\begin{enumerate}
+\begin{itemize}
 \item  the equation of Berkhoff~(1972), also called Mild-Slope Equation (MSE), which gives the velocity potential of a monochromatic and unidirectional wave propagating over a slowly-varying bathymetry and describes the combined effects of diffraction and refraction;
 
 \item  a modified form of the MSE, the Revised Mild Slope Equation (RMSE) proposed by Porter~(2003).
-\end{enumerate}
+\end{itemize}
 
  In the presence of diffraction the effective wave number \textit{K} is defined as:
-\begin{equation} \label{GrindEQ__4_15_}
+\begin{equation} \label{eq:GrindEQ__4_15_}
 \left|{\rm K} \right|^{2} =k^{2} (1+\delta )
 \end{equation}
-where \textit{d} is a diffraction parameter defined as:
+where \textit{d} is a diffraction parameter defined as
 
-\begin{enumerate}
-\item  $\delta _{MSE} =\frac{\nabla .\left(CC_{g} \nabla a\right)}{k^{2} CC_{g} a} $ when referring to the \textbf{Mild-Slope Equation} [Berkhoff,~1972]           \eqref{GrindEQ__4_16_}
-
-\item  $\delta _{RMSE} =\frac{\nabla .\left(k^{-2} \nabla A\right)}{A} $ when referring to the \textbf{Revised Mild-Slope Equation} [Porter,~2003]          \eqref{GrindEQ__4_17_}(with $A=ak\sqrt{CC_{g} } $)
-\end{enumerate}
+when referring to the \textbf{Mild-Slope Equation} \cite{Berkhoff1972}
+\bequ
+\label{eq:GrindEQ__4_16_}
+ \delta _{MSE} =\frac{\nabla .\left(CC_{g} \nabla a\right)}{k^{2} CC_{g} a} 
+\eequ       
+     
+when referring to the \textbf{Revised Mild-Slope Equation} \cite{Porter2003} (with $A=ak\sqrt{CC_{g}}$)
+\bequ
+\label{eq:GrindEQ__4_17_}
+\delta _{RMSE} =\frac{\nabla .\left(k^{-2} \nabla A\right)}{A} 
+\eequ
 
  In the presence of diffraction, the energy propagation speed in geographic space \textit{C${}_{gd}$} is [Holthuijsen et al.,~2003]:
 \begin{equation} \label{GrindEQ__4_18_}
 C_{gd} =\frac{K}{k} C_{g}
 \end{equation}
-Under the hypothesis of zero current and of no varying water levels (i.e. $\dot{f}_{r} $=0) and inserting Eq.~4.15 in Eq.~4.12.a-4.12.c, the transfer rates in presence of diffraction are:
+Under the hypothesis of zero current and of no varying water levels (i.e. $\dot{f}_{r} $=0) and inserting (\ref{eq:GrindEQ__4_15_}) in (\ref{eq:equ4_12}), the transfer rates in presence of diffraction are:
 \begin{equation} \label{GrindEQ__4_19_}
 \dot{x}=\sqrt{(1+\delta )} C_{g} .\sin \theta
 \end{equation}
@@ -183,93 +217,92 @@ Under the hypothesis of zero current and of no varying water levels (i.e. $\dot{
 \begin{equation} \label{GrindEQ__4_21_}
 \dot{\theta }=-\frac{(1+\delta )^{1/2} }{k} \frac{\partial \sigma }{\partial d} \tilde{G}_{n} (d)-\frac{C_{g} }{2(1+\delta )^{1/2} } \tilde{G}_{n} (\delta )
 \end{equation}
-The above terms 4.19 to 4.21 have been implemented in TOMAWAC, in both the MSE and RMSE formulations, to represent the effect due to diffraction.
-
-
+The above terms (\ref{GrindEQ__4_19_}) to (\ref{GrindEQ__4_21_}) have been implemented in \tomawac, in both the MSE and RMSE formulations, to represent the effect due to diffraction.
 
 
 \subsection{ Equations solved in a spherical spatial coordinate system}
 
- By switching the variables from (x, y, kx, ky) to (l, j, fr, q), it can be shown that the following relation exists for the directional spectrum of wave action as expressed in both coordinate systems:
+ By switching the variables from $(x, y, kx, ky)$ to $(\lambda, \phi, f_r, \theta)$, it can be shown that the following relation exists for the directional spectrum of wave action as expressed in both coordinate systems:
 \begin{equation} \label{GrindEQ__4_22_}
-N(x,y,k_{x} ,k_{y} ,t)=\frac{CC_{g} }{2\pi \sigma R^{2} \cos \varphi } \hat{N}(\lambda ,\varphi ,f_{r} ,\theta ,t)=\hat{B}.\hat{F}(\lambda ,\varphi ,f_{r} ,\theta ,t)
+N(x,y,k_{x} ,k_{y} ,t)=\frac{CC_{g} }{2\pi \sigma R^{2} \cos \phi } \hat{N}(\lambda ,\phi ,f_{r} ,\theta ,t)=\hat{B}.\hat{F}(\lambda ,\phi ,f_{r} ,\theta ,t)
 \end{equation}
 
-putting: $\hat{B}=\frac{C\; C_{g} }{2\pi \sigma ^{2} R^{2} \cos \varphi } =\frac{C_{g} }{\left(2\pi \right)^{2} k\; f_{r} R^{2} \cos \varphi } $ \eqref{GrindEQ__4_23_}
+\bequ
+\label{eq:GrindEQ__4_23}
+\mbox{putting: }\hat{B}=\frac{C\; C_{g} }{2\pi \sigma ^{2} R^{2} \cos \phi } =\frac{C_{g} }{\left(2\pi \right)^{2} k\; f_{r} R^{2} \cos \phi }  
+\eequ
 
- R denotes the Earth's radius (R = 6400 km) and, once more, l and j are respectively the longitude and the latitude of the point being considered.
+ R denotes the Earth's radius (R = 6400 km) and, once more, $\lambda$ and $\phi$ are respectively the longitude and the latitude of the point being considered.
 
- The evolution equation (4.6.b) is then written as:
+ The evolution equation (\ref{eq:transform}) is then written as:
 \begin{equation} \label{GrindEQ__4_24_}
-\frac{\partial (\hat{B}\hat{F})}{\partial t} +\dot{\lambda }\frac{\partial (\hat{B}\hat{F})}{\partial \lambda } +\dot{\varphi }\frac{\partial (\hat{B}\hat{F})}{\partial \varphi } +\dot{\theta }\frac{\partial (\hat{B}\hat{F})}{\partial \theta } +\dot{f}_{r} \frac{\partial (\hat{B}\hat{F})}{\partial f_{r} } =\hat{B}.\hat{Q}(\lambda ,\varphi ,\theta ,f_{r} ,t)
+\frac{\partial (\hat{B}\hat{F})}{\partial t} +\dot{\lambda }\frac{\partial (\hat{B}\hat{F})}{\partial \lambda } +\dot{\phi }\frac{\partial (\hat{B}\hat{F})}{\partial \phi } +\dot{\theta }\frac{\partial (\hat{B}\hat{F})}{\partial \theta } +\dot{f}_{r} \frac{\partial (\hat{B}\hat{F})}{\partial f_{r} } =\hat{B}.\hat{Q}(\lambda ,\phi ,\theta ,f_{r} ,t)
 \end{equation}
 with the following transfer rates:
-
-$\dot{\lambda }=\frac{1}{R\cos \varphi } \left(C_{g} .\sin \theta +U_{\lambda } \right)$ (4.25.a)
-
-$\dot{\varphi }=\frac{1}{R} \left(C_{g} .\cos \theta +U_{\varphi } \right)$ (4.25.b)
-
-$\dot{\theta }=\frac{1}{R} \left[C_{g} \; \sin \theta \; \tan \varphi \; -\frac{1}{k} \; \frac{\partial \sigma }{\partial d} \hat{G}_{n} (d)-\frac{\vec{k}}{k} .\hat{G}_{n} (\vec{U})\right]$ (4.25.c)
-
-$\dot{f}_{r} =\frac{1}{2\pi R} \left[\frac{\partial \sigma }{\partial d} \left(\frac{\partial d}{\partial t} +\frac{U_{\lambda } }{\cos \varphi } \frac{\partial d}{\partial \lambda } +U_{\varphi } \frac{\partial d}{\partial \varphi } \right)-Cg\quad \vec{k}.\hat{G}_{t} (\vec{U})\right]$$ $ (4.25.d)
+\bequ
+\label{eq:equ4_25}
+\barr{l}
+\dsp \dot{\lambda }=\frac{1}{R\cos \phi } \left(C_{g} .\sin \theta +U_{\lambda } \right) \\[6pt]
+\dsp \dot{\phi}=\frac{1}{R} \left(C_{g} .\cos \theta +U_{\phi } \right)\\[6pt]
+\dsp \dot{\theta }=\frac{1}{R} \left[C_{g} \; \sin \theta \; \tan \phi \; -\frac{1}{k} \; \frac{\partial \sigma }{\partial d} \hat{G}_{n} (d)-\frac{\vec{k}}{k} .\hat{G}_{n} (\vec{U})\right]\\[6pt]
+\dsp \dot{f}_{r} =\frac{1}{2\pi R} \left[\frac{\partial \sigma }{\partial d} \left(\frac{\partial d}{\partial t} +\frac{U_{\lambda } }{\cos \phi } \frac{\partial d}{\partial \lambda } +U_{\phi } \frac{\partial d}{\partial \phi } \right)-Cg\quad \vec{k}.\hat{G}_{t} (\vec{U})\right]
+\earr
+\eequ
 
  As in the previous case, the operators $\hat{G}_{n} $ and $\hat{G}_{t} $ refer to the computation of a function gradient in directions that are respectively normal and tangential to the characteristic curve with the direction q:
+\bequ
+\label{eq:equ4_26}
+\barr{l}
+\dsp \hat{G}_{n} (g)=\frac{\cos \theta }{\cos \phi } \; \frac{\partial g}{\partial \lambda } \; -\sin \theta \; \frac{\partial g}{\partial \phi }\\[6pt]
+\dsp \hat{G}_{t} (g)=\frac{\sin \theta }{\cos \phi } \; \frac{\partial g}{\partial \lambda } \; +\cos \theta \; \frac{\partial g}{\partial \phi } 
+\earr
+\eequ
 
-$\hat{G}_{n} (g)=\frac{\cos \theta }{\cos \varphi } \; \frac{\partial g}{\partial \lambda } \; -\sin \theta \; \frac{\partial g}{\partial \varphi } $ (4.26.a)
-
-$\hat{G}_{t} (g)=\frac{\sin \theta }{\cos \varphi } \; \frac{\partial g}{\partial \lambda } \; +\cos \theta \; \frac{\partial g}{\partial \varphi } $ (4.26.b)
-
- As previously, the spatial transfer rates $\dot{\lambda }$ and $\dot{\varphi }$ (equations 4.25.a and 4.25.b) model the wave propagation in space and the shoaling. In that coordinate system, the directional transfer rate $\dot{\theta }$ has an additional term (the first term in equation (4.25.c)) compared to the case in Cartesian coordinates. That term results from the propagation in spherical coordinates, in such a way that waves are located with respect to the North change during the propagation over a large circle arc at the Earth's surface [WAMDI,~1988]~[Komen et al.,~1994]. Both second and third terms $\dot{\theta }$ (equation 4.25.c) model the refraction caused respectively by bathymetry and currents. The relative frequency transfer rate $\dot{f}_{r} $ (equation 4.25.d) models the changes of relative frequency resulting from variations of the sea level or of the current in both space and time. It is noteworthy that this last term is zero in the case of zero current and of no variation of the sea level in time: the advection equation is then reduced to a three-dimensional equation.
-
-
-\subsection{ TOMAWAC source and sink terms}
-
-
-\paragraph{ Generals}
-
- The source and sink terms that compose $\tilde{Q}$ and $\hat{Q}$ in the right-hand members of evolution equations \eqref{GrindEQ__4_11_} and \eqref{GrindEQ__4_24_} of directional spectrum of wave action gather the contributions from the physical processes listed in paragraph 3.3. for the application domain of TOMAWAC:
-
- Q = Qin + Qds + Qnl + Qbf + Qbr + Qtr + Qds,cur + Qveg
-
- wherein Qin: wind-driven wave generation
-
- Qds: whitecapping-induced energy dissipation
-
- Qnl: non-linear quadruplet interactions
-
- Qbf: bottom friction-induced energy dissipation
-
- Qbr: bathymetric breaking-induced energy dissipation
-
- Qtr: non-linear triad interactions
-
- Qds,cur: enhanced breaking dissipation of waves on a current
-
- Qveg : dissipation due to vegetation.
-
-These source and sink terms are numerically modelled and parameterized as detailed in the next paragraphs. For most of these processes, several models or formulations are proposed and available in TOMAWAC.
+ As previously, the spatial transfer rates $\dot{\lambda }$ and $\dot{\phi }$ (equations \ref{eq:equ4_25}) model the wave propagation in space and the shoaling. In that coordinate system, the directional transfer rate $\dot{\theta }$ has an additional term (the first term) compared to the case in Cartesian coordinates. That term results from the propagation in spherical coordinates, in such a way that waves are located with respect to the North change during the propagation over a large circle arc at the Earth's surface [WAMDI,~1988]~[Komen et al.,~1994]. Both second and third terms $\dot{\theta }$ model the refraction caused respectively by bathymetry and currents. The relative frequency transfer rate $\dot{f}_{r} $  models the changes of relative frequency resulting from variations of the sea level or of the current in both space and time. It is noteworthy that this last term is zero in the case of zero current and of no variation of the sea level in time: the advection equation is then reduced to a three-dimensional equation.
 
 
-\paragraph{ Wind input (term Qin)}
+\subsection{ \tomawac source and sink terms}
+\label{se:sourceterm}
 
- Three wind generation models are available in TOMAWAC. The model to be activated is selected through the keyword \textit{WIND GENERATION}WIND GENERATION\textit{ }in the steering file, which can take four values, namely:
+\subsubsection{ Generals}
 
-\begin{enumerate}
+ The source and sink terms that compose $\tilde{Q}$ and $\hat{Q}$ in the right-hand members of evolution equations \eqref{GrindEQ__4_11_} and \eqref{GrindEQ__4_24_} of directional spectrum of wave action gather the contributions from the physical processes listed in paragraph 3.3. for the application domain of \tomawac:
+\bequ
+\label{eq:semimp}
+ Q = Q_{in} + Q_{ds} + Q_{nl} + Q_{bf} + Q_{br} + Q_{tr} + Q_{ds,cur} + Q_{veg}
+\eequ
+ wherein 
+\begin{itemize}
+\item $Q_{in}$: wind-driven wave generation
+\item $Q_{ds}$: whitecapping-induced energy dissipation
+\item $Q_{nl}$: non-linear quadruplet interactions
+\item $Q_{bf}$: bottom friction-induced energy dissipation
+\item $Q_{br}$: bathymetric breaking-induced energy dissipation
+\item $Q_{tr}$: non-linear triad interactions
+\item $Q_{ds,cur}$: enhanced breaking dissipation of waves on a current
+\item $Q_{veg}$: dissipation due to vegetation.
+\end{itemize}
+
+These source and sink terms are numerically modelled and parameterized as detailed in the next paragraphs. For most of these processes, several models or formulations are proposed and available in \tomawac.
+
+
+\subsubsection{ Wind input (term Qin)}
+
+ Three wind generation models are available in \tomawac. The model to be activated is selected through the keyword \textit{WIND GENERATION} in the steering file, which can take four values, namely:
+
+\begin{itemize}
 \item  no wind input \textit{(default value)}
+\item  Janssen's model \cite{Janssen1989} \cite{Janssen1991} (WAM cycle 4) (see in paragraph 4.2.3.2.1).
+\item  Snyder \textit{et al. }model \cite{Snyder1981} (see in paragraph 4.2.3.2.2).
+\item  Yan's model \cite{Yan1987} (see in paragraph 4.2.3.2.3)
+\end{itemize}
 
-\item  Janssen's model [Janssen,~1989] [Janssen,~1991] (WAM cycle 4) (see in paragraph 4.2.3.2.1).
-
-\item  Snyder \textit{et al. }model [Snyder et al.,~1981] (see in paragraph 4.2.3.2.2).
-
-\item  Yan's model [Yan,~1987] (see in paragraph 4.2.3.2.3)
-\end{enumerate}
-
- Beside those exponential growth-type wind generation models, a linear growth model is also available in TOMAWAC, which has been proposed by Cavaleri \& Malanotte-Rizzoli [Cavaleri and Malanotte-Rizzoli,~1981] (see paragraph 4.2.3.2.4). The model can be activated through the keyword \textit{LINEAR WAVE GROWTH}LINEAR WAVE GROWTH, and can be used together with one of the three above mentioned models. Its main feature is that it permits to start a wave simulation from a nil wave spectrum (whereas the three above mentioned models need some initial energy level for the wave spectrum to grow under wind action).
+ Beside those exponential growth-type wind generation models, a linear growth model is also available in \tomawac, which has been proposed by Cavaleri \& Malanotte-Rizzoli [Cavaleri and Malanotte-Rizzoli,~1981] (see paragraph 4.2.3.2.4). The model can be activated through the keyword \textit{LINEAR WAVE GROWTH}, and can be used together with one of the three above mentioned models. Its main feature is that it permits to start a wave simulation from a nil wave spectrum (whereas the three above mentioned models need some initial energy level for the wave spectrum to grow under wind action).
 
 
-{\bf  Option 1 for wind input: Janssen's model}
+  \paragraph{Option 1 for wind input: Janssen's model}
 
- With that option, the model implemented for the wind input term is based upon the Janssen's works [Janssen,~1989] [Janssen,~1991]; Janssen proposed a quasi-linear theory for modelling the ocean/atmosphere interactions. The linear growth term is ignored and only an exponential energy growth is taken into account, following Miles' results [Miles,~1957].
+ With that option, the model implemented for the wind input term is based upon the Janssen's works \cite{Janssen1989} \cite{Janssen1991}; Janssen proposed a quasi-linear theory for modelling the ocean/atmosphere interactions. The linear growth term is ignored and only an exponential energy growth is taken into account, following Miles' results \cite{Miles1957}.
 
  A quasi-linear source term is obtained as a function of the directional variance spectrum:
 \begin{equation} \label{GrindEQ__4_27_}
@@ -277,31 +310,31 @@ Q_{in} =\sigma .\varepsilon .\beta .\left(\left[\frac{u_{*} }{C} +z_{\alpha } \r
 \end{equation}
 with the following notations:
 
- e = rair/r${}_{water }$is the ratio of air and water specific gravities (e = 1.25 10-3).
+$ \epsilon = \rho_{air}/\rho_{water }$is the ratio of air and water specific gravities ($ \epsilon = 1.25 10-3$).
 
- C = s/k is the wave phase velocity
+ $C = \sigma/k$ is the wave phase velocity
 
- qw is the local wind direction (direction in which it blows)
+ $\theta_w$ is the local wind direction (direction in which it blows)
 
- u* is the friction velocity, being linked to the surface stress ts by the following relation:
+ $u_*$ is the friction velocity, being linked to the surface stress ts by the following relation:
 \begin{equation} \label{GrindEQ__4_28_}
 u_{*} =\sqrt{\frac{\tau _{s} }{\rho _{air} } }
 \end{equation}
 
- za is a constant allowing to offset the growth curve.
+ $z_a$ is a constant allowing to offset the growth curve.
 
- The operator 'max' in the source term expression limits the wave generation for the propagation directions included within a $\pm$ 90${}^\circ$ angular sector with respect to the local wind direction qw. For the wave directions making an angle in excess of 90${}^\circ$ with respect to the wind direction qw, the wind input term is void.
+ The operator 'max' in the source term expression limits the wave generation for the propagation directions included within a $\pm 90^\circ$ angular sector with respect to the local wind direction qw. For the wave directions making an angle in excess of 90${}^\circ$ with respect to the wind direction $\theta_w$, the wind input term is void.
 
- In the Janssen's model [Janssen,~1991], the Miles' parameter b is a function of two non-dimensional variables:
+ In the Janssen's model \cite{Janssen1991}, the Miles' parameter b is a function of two non-dimensional variables:
 
-\begin{enumerate}
-\item  the wave age:  $A=\frac{u_{*} }{C} $
-
-\item  the wind profile parameter: $\Omega =\frac{g.z_{0} }{u_{*}^{2} } $
-\end{enumerate}
-
-It is written as $\beta =\frac{\beta _{m} }{\kappa _{}^{2} } \mu \ln ^{4} \mu $ \eqref{GrindEQ__4_29_}
-
+\begin{itemize}
+\item  the wave age:  $\dsp A=\frac{u_{*} }{C} $
+\item  the wind profile parameter: $\dsp \Omega =\frac{g.z_{0} }{u_{*}^{2} } $
+\end{itemize}
+\bequ
+\labelGrindEQ__4_29_{}
+\mbox{ It is written as }\beta =\frac{\beta _{m} }{\kappa _{}^{2} } \mu \ln ^{4} \mu 
+\eequ
  where k is the Von Karman's constant
 
  bm denotes a coefficient set to 1.2 by Janssen [Janssen,~1991].
@@ -336,7 +369,7 @@ That integral is numerically computed over the discretized portion of the spectr
 
 In fact, that source term has eight parameters, namely:
 
-\begin{enumerate}
+\begin{itemize}
 \item  coefficient bm (corresponding to the keyword \textit{WIND GENERATION}WIND GENERATION\textit{ COEFFICIENT }in the steering file). Its default value is taken as 1.2, in accordance with the Janssen's proposal [Janssen,~1991] and the value adopted in the model WAM-Cycle 4.
 
 \item  air specific gravity rair (corresponding to the keyword \textit{AIR DENSITY}AIR DENSITY\textit{ }in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
@@ -352,7 +385,7 @@ In fact, that source term has eight parameters, namely:
 \item  offset constant za (corresponding to the keyword \textit{SHIFT GROWING CURVE DUE TO WIND}SHIFT GROWING CURVE DUE TO WIND\textit{ }in the steering file). Its default value is taken as 0.011, in accordance with the value adopted in the model WAM-Cycle 4.
 
 \item  elevation at which the wind is recorded (corresponding to the keyword \textit{WIND MEASUREMENTS LEVEL}WIND MEASUREMENTS LEVEL\textit{ }in the steering file). Its default value is taken as 10 m: its corresponds to the typical value and to the value being adopted in the above explanations.
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Option 2 for wind input: Snyder et al. model}
@@ -371,25 +404,25 @@ $u_{*}^{} =\sqrt{C_{D} } U_{10} $ where:  CD = 6.5 10-5 U10 + 8 10-4 if U10 $>$ 
 
 That source term only uses two parameters, namely:
 
-\begin{enumerate}
+\begin{itemize}
 \item  air density rair (corresponding to the keyword \textit{AIR DENSITY} in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
 
 \item  water density r${}_{water}$ (corresponding to the keyword \textit{WATER DENSITY} in the steering file). Its default value is taken as 1,000 kg/m${}^{3}$.
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Option 3 for wind input: Yan's model}
 
- The Yan's model [Yan,~1987] consists of a combination of u${}_{*}$/C and (u${}_{*}$/C)${}^{2}$ terms. It is valid over a wide range of frequencies and wind speeds:
+ The Yan's model \cite{Yan1987} consists of a combination of u${}_{*}$/C and (u${}_{*}$/C)${}^{2}$ terms. It is valid over a wide range of frequencies and wind speeds:
 
 $Q_{in} =\beta F$  where: $\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos (\theta -\theta _{w} )+E\frac{u_{*} }{C} \cos (\theta -\theta _{w} )+F\cos (\theta -\theta _{w} )+H\right]\sigma $\textbf{ }\eqref{GrindEQ__4_34_}\textbf{}
 
  To select this model, the keyword \textit{WIND GENERATION}WIND GENERATION must be set to 3 in the steering file.
 
- This source term makes use of four parameters. The default values of those parameters correspond to the coefficients proposed by Westhuysen [Westhuysen et al.,~2007].
+ This source term makes use of four parameters. The default values of those parameters correspond to the coefficients proposed by Westhuysen \cite{Westhuys2007}.
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  The coefficient D, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ D}, has a default value of 4.0 10${}^{-2}$;
 
 \item  The coefficient E, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ E}, has a default value of 5.52 10${}^{-3}$;
@@ -397,8 +430,8 @@ $Q_{in} =\beta F$  where: $\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos
 \item  The coefficient F, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ F}, has a default value of 5.2 10${}^{-5}$;
 
 \item  The coefficient H, corresponding to the keyword \textit{YAN GENERATION COEFFICIENT}YAN GENERATION COEFFICIENT\textit{ H}, has a default value of --3.02 10${}^{-4}$.
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
 
 
@@ -407,7 +440,7 @@ $Q_{in} =\beta F$  where: $\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos
 
  The linear growth mechanism described by Phillips [Phillips,~1957], [Phillips,~1958] is useful to initialise the wave growth. If this term is neglected, it is necessary to set a non-zero sea-state as initial condition in order to enable the wave energy spectrum to grow.
 
- The term that has been implemented in TOMAWAC is the linear wave growth term of Cavaleri \& Malanotte-Rizzoli [Cavaleri \& Malanotte-Rizzoli,~1981], as formulated by Tolman [Tolman,~1992]:
+ The term that has been implemented in \tomawac is the linear wave growth term of Cavaleri \& Malanotte-Rizzoli [Cavaleri \& Malanotte-Rizzoli,~1981], as formulated by Tolman \cite{Tolman1992}:
 \begin{equation} \label{GrindEQ__4_35_}
 Q_{in} (f,\theta )=\alpha (f,\theta )=1,5.10^{-3} g^{-2} \left[u_{*} \max (0,\cos \left(\theta -\theta _{w} \right)\right]^{4} \exp \left[-\left(\frac{f}{f_{PM} } \right)^{-4} \right]
 \end{equation}
@@ -420,28 +453,28 @@ To select this model, the keyword \textit{LINEAR WAVE GROWTH}LINEAR WAVE GROWTH 
 
 
 
-\paragraph{ Whitecapping-induced dissipations (term Qds)}
+\subsubsection{ Whitecapping-induced dissipations (term Qds)}
 
- Two models are available in TOMAWAC. The whitecapping or the free surface slope-induced breaking is activated through the keyword \textit{WHITE CAPPING DISSIPATION}WHITE CAPPING DISSIPATION\textit{ }in the steering file; the keyword can take three values, namely:
+ Two models are available in \tomawac. The whitecapping or the free surface slope-induced breaking is activated through the keyword \textit{WHITE CAPPING DISSIPATION}WHITE CAPPING DISSIPATION\textit{ }in the steering file; the keyword can take three values, namely:
 
-\begin{enumerate}
+\begin{itemize}
 \item  no whitecapping-induced dissipation \textit{(default value)}
 
 \item  Komen \textit{et al.} [Komen et al.,~1984] and Janssen's [Janssen,~1991] dissipation model.
 
-\item  Westhuysen \textit{et al.} [Westhuysen et al.,~2007] dissipation model
-\end{enumerate}
+\item  Westhuysen \textit{et al.} dissipation model \cite{Westhuys2007}
+\end{itemize}
 
- For a more detailed description of the issues related to the whitecapping dissipation modelling and of the recent advances in this field, reference can be made to [WISE group,~2007].
+ For a more detailed description of the issues related to the whitecapping dissipation modelling and of the recent advances in this field, reference can be made to \cite{Wise2007}.
 
 
 {\bf  option 1 for whitecapping: Komen and Janssen dissipation model}
 
-In deep water, that term is written as follows in TOMAWAC:
+In deep water, that term is written as follows in \tomawac:
 \begin{equation} \label{GrindEQ__4_37_}
 Q_{ds} =-\frac{1}{g^{4} } C_{dis} \; \bar{\sigma }^{9} \; m_{0}^{2} \; \left(\delta \left(\frac{\sigma }{\bar{\sigma }} \right)^{2} +(1-\delta )\left(\frac{\sigma }{\bar{\sigma }} \right)^{4} \right)\; F
 \end{equation}
-With a finite water height, TOMAWAC uses the following formulation:
+With a finite water height, \tomawac uses the following formulation:
 \begin{equation} \label{GrindEQ__4_38_}
 Q_{ds} =-C_{dis} \; \bar{\sigma }\; \bar{k}^{4} \; m_{0}^{2} \; \left(\delta \frac{k}{\bar{k}} +(1-\delta )\left(\frac{k}{\bar{k}} \right)^{2} \right)\; F
 \end{equation}
@@ -453,20 +486,20 @@ $\bar{\sigma }=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0
 
 $\bar{k}=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi } \frac{1}{\sqrt{k} }  F(f_{r} ,\theta )df_{r} d\theta \right)^{-2} $ (4.39.c)
 
- The formulas for computing the average frequency and the average wave number are derived from those in use in WAM-cycle 4 [Komen et al.,~1994]. These averages are not directly weighted by the variance spectrum, since it was found, when WAM-cycle 3 [WAMDI,~1988] was being developed, that the above expressions yielded more stable results than the conventional weighted averages. Lastly, it should be pointed out that in TOMAWAC, the above average quantities are computed not only on the discretized portion of the variance spectrum, but also analytically on the high frequency portion (up to + 8) considering a decreasing variance in f-n.
+ The formulas for computing the average frequency and the average wave number are derived from those in use in WAM-cycle 4 [Komen et al.,~1994]. These averages are not directly weighted by the variance spectrum, since it was found, when WAM-cycle 3 [WAMDI,~1988] was being developed, that the above expressions yielded more stable results than the conventional weighted averages. Lastly, it should be pointed out that in \tomawac, the above average quantities are computed not only on the discretized portion of the variance spectrum, but also analytically on the high frequency portion (up to + 8) considering a decreasing variance in f-n.
 
 That source term has two parameters:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant Cdis (corresponding to the keyword \textit{WHITE CAPPING DISSIPATION}WHITE CAPPING DISSIPATION\textit{ COEFFICIENT }in the steering file). Its default value is taken as 4.5, in accordance with the proposal made by Komen \textit{et al.} [Komen et al.,~1984] and the standard value adopted in the model WAM-Cycle 4.
 
 \item  weighting parameter d (corresponding to the keyword \textit{WHITE CAPPING WEIGHTING COEFFICIENT}WHITE CAPPING WEIGHTING COEFFICIENT\textit{ }in the steering file). Its default value is taken as the 0.5 average value.
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Option 2 for whitecapping: Westhuysen dissipation model}
 
- The Westhuysen dissipation model [Westhuysen et al.,~2007] is based on a saturation-based model formulation, which defines the Q${}_{ds}$ term as depending on the saturation threshold B${}_{r}$.
+ The Westhuysen dissipation model \cite{Westhuys2007} is based on a saturation-based model formulation, which defines the Q${}_{ds}$ term as depending on the saturation threshold B${}_{r}$.
 
  The expression proposed by Westhuysen is:
 \begin{equation} \label{GrindEQ__4_40_}
@@ -478,7 +511,7 @@ where $B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C
 
  The variable \textit{w} is set equal to 25.
 
- This model is implemented in TOMAWAC in its most recent version, as formulated by Westhuysen [Westhuysen,~2008], which combines the terms of Komen [Komen et al.,~1984] (Q${}_{ds}$${}^{K}$) with that of Westhuysen [Westhuysen et al.,~2007] as follows:
+ This model is implemented in \tomawac in its most recent version, as formulated by Westhuysen \cite{Westhuys2008}, which combines the terms of Komen [Komen et al.,~1984] (Q${}_{ds}$${}^{K}$) with that of Westhuysen \cite{Westhuys2007} as follows:
 \begin{equation} \label{GrindEQ__4_41_}
 Q_{ds} =f_{br} (f).Q_{ds} ^{W} +\left(1-f_{br} (f)\right).Q_{ds} ^{K}
 \end{equation}
@@ -486,10 +519,10 @@ with $f_{br} =\frac{1}{2} +\frac{1}{2} \tanh \left\{10\left[\left(\frac{B(k)}{B_
 
  This model is selected by setting the keyword \textit{WHITE CAPPING DISSIPATION} to 2 in the steering file.\textbf{}
 
- This source term makes use of 4 parameters. Their default values correspond to the coefficients proposed by Westhuysen [Westhuysen,~2008]:
+ This source term makes use of 4 parameters. Their default values correspond to the coefficients proposed by Westhuysen  \cite{Westhuys2008}.
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  The coefficient C${}_{dis,break}$, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ DISSIPATION COEFFICIENT}, has a default value of 5.0 10${}^{-5}$,
 
 \item  The coefficient B${}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$,
@@ -497,52 +530,52 @@ with $f_{br} =\frac{1}{2} +\frac{1}{2} \tanh \left\{10\left[\left(\frac{B(k)}{B_
 \item  The coefficient C${}_{dis,non-break}$, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ WHITE CAPPING DISSIPATION}, has a default value of 3.29,
 
 \item  The coefficient d, corresponding to the keyword \textit{WESTHUYSEN}WESTHUYSEN DISSIPATION MODEL\textit{ WEIGHTING COEFFICIENT}, has a default value of 0.0.
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
 
 
 
-\paragraph{ Bottom friction-induced dissipations (term Qbf)}
+\subsubsection{ Bottom friction-induced dissipations (term Qbf)}
 
- A single model is available in TOMAWAC. The bottom friction-induced dissipation is activated through the keyword \textit{BOTTOM FRICTION DISSIPATION}BOTTOM FRICTION DISSIPATION\textit{ }in the steering file; the keyword can take two values, namely:
+ A single model is available in \tomawac. The bottom friction-induced dissipation is activated through the keyword \textit{BOTTOM FRICTION DISSIPATION}BOTTOM FRICTION DISSIPATION\textit{ }in the steering file; the keyword can take two values, namely:
 
- \begin{enumerate}
+ \begin{itemize}
 \item 1. .no bottom friction-induced dissipation \textit{(default value)}
 
  \item 2. .expression obtained during the JONSWAP campaign (Hasselmann \textit{et al.} [Hasselmann et al.,~1973]) and taken up by Bouws and Komen~[Bouws,~1983].
-\end{enumerate}
+\end{itemize}
 
  The model used for the bottom friction-induced energy losses is an empirical expression globally representing the various contributions from the wave-bottom interaction (percolation, friction...):
 \begin{equation} \label{GrindEQ__4_42_}
 Q_{bf} =-\Gamma \left(\frac{\sigma }{g.\sinh \left(k.d\right)} \right)^{2} F
 \end{equation}
-That (linear) expression is programmed in TOMAWAC using the following alternative form, which involves the dispersion relation:
+That (linear) expression is programmed in \tomawac using the following alternative form, which involves the dispersion relation:
 \begin{equation} \label{GrindEQ__4_43_}
 Q_{bf} =-\Gamma \frac{2k}{g.\sinh \left(2.k.d\right)} F
 \end{equation}
 That source term has a single parameter:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant G (corresponding to the keyword \textit{BOTTOM FRICTION COEFFICIENT}BOTTOM FRICTION COEFFICIENT\textit{ }in the steering file). Its default value is taken as 0.038 m2.s-3, in accordance with what had been obtained during the JONSWAP campaign [Hasselmann et al.,~1973] and with the standard value being used in the model WAM-Cycle 4.
-\end{enumerate}
+\end{itemize}
 
 
-\paragraph{ Bathymetric breaking-induced dissipations (term Qbr)}
+\subsubsection{ Bathymetric breaking-induced dissipations (term Qbr)}
 
- In TOMAWAC, four parametric formulas are proposed for reproducing the effects of the bathymetric breaking-induced energy dissipation on the spectrum. The bathymetric breaking-induced dissipation is activated through the keyword \textit{DEPTH-INDUCED BREAKING DISSIPATION}DEPTH-INDUCED BREAKING DISSIPATION\textit{ }in the steering file; the keyword can take five values:
+ In \tomawac, four parametric formulas are proposed for reproducing the effects of the bathymetric breaking-induced energy dissipation on the spectrum. The bathymetric breaking-induced dissipation is activated through the keyword \textit{DEPTH-INDUCED BREAKING DISSIPATION}DEPTH-INDUCED BREAKING DISSIPATION\textit{ }in the steering file; the keyword can take five values:
 
-\begin{enumerate}
+\begin{itemize}
 \item  No breaking-induced dissipation \textit{(default value)}
 
 \item \textit{ }Battjes and Janssen's model [Battjes,~1978]
 
-\item  Thornton and Guza's model [Thornton,~1983]
+\item  Thornton and Guza's model \cite{Thornton1983}
 
 \item  Roelvink's model [Roelvink,~1993]
 
 \item  Izumiya and Horikawa's model [Izumiya,~1984]
-\end{enumerate}
+\end{itemize}
 
 The first three models are parametric spectral models developed for studying the random waves, whereas the fourth one is a turbulence model initially developed for studying the regular waves.
 
@@ -573,7 +606,7 @@ where $k_{c} $ is linked to $f_{c} $ by the linear wave dispersion relation.
 \begin{equation} \label{GrindEQ__4_47_}
 \frac{1-Q_{b} }{\ln Q_{b} } =-\frac{H_{m0}^{2} }{2H_{m}^{2} }
 \end{equation}
-In TOMAWAC, that equation can be solved either in a dichotomous way or through explicit approximations as proposed by Dingemans [Dingemans,~1983]. The latter are expressed as follows when putting:
+In \tomawac, that equation can be solved either in a dichotomous way or through explicit approximations as proposed by Dingemans [Dingemans,~1983]. The latter are expressed as follows when putting:
 \[b=\frac{H_{m0} }{\sqrt{2} H_{m} } \]
 
  - \underbar{version 1}:  $Q_{b} =0$   if b $<$ C${}_{b}$, (C${}_{b}$ = 0.5)
@@ -599,17 +632,17 @@ Q_{br} \left(f,\theta \right)=-\frac{\alpha Q_{b} f_{c} H_{m}^{2} }{4} \frac{F\l
 \end{equation}
 Three constants can be modified using keywords:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant a corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA\textit{ }in the steering file. Its default value is taken as 1, in accordance with the value as recommended by Battjes and Janssen [Battjes,~1978].
 
 \item  constant g${}_{1}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\textit{ }in the steering file. Its default value is taken as 0.88, in accordance with the value as recommended by Battjes and Janssen [Battjes,~1978].
 
 \item  constant g${}_{2}$ corresponds to the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2}DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2\textit{ }in the steering file. Its default value is taken as 0.8, in accordance to the value as recommended by Battjes and Janssen [Battjes,~1978].
-\end{enumerate}
+\end{itemize}
 
  The following keywords are for selecting the model options:
 
- \begin{enumerate}
+ \begin{itemize}
 \item The characteristic wave frequency is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY}DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY\textit{. }Six values are possible:\textit{}
 
  \item 1. .average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
@@ -631,8 +664,7 @@ Three constants can be modified using keywords:
  \item 1. .Relation: $H_{m} =\gamma _{2} d$  \textit{(default value)}
 
  \item 2. .Miches' relation (see in (4.39) above)
-\end{enumerate}
-
+\end{itemize}
 
 {\bf  ~Thornton and Guza's model (1983)}
 
@@ -642,67 +674,59 @@ function 1: $Q_{br1} \left(f,\theta \right)=-48\sqrt{\pi } B^{3} f_{c} \frac{\le
 
 function 2: $Q_{br2} \left(f,\theta \right)=-12\sqrt{\pi } B^{3} f_{c} \frac{\left(2m_{0} \right)^{3/2} }{H_{m}^{2} d} \left[1-\left(1+\left(\frac{8m_{0} }{H_{m}^{2} } \right)\right)^{-5/2} \right]\; F\left(f,\theta \right)$ (4.49.b)
 
- $f_{c} $ is the characteristic wave frequency (average frequency, $f_{01} $, $f_{02} $ or peak frequency) and B is a parameter ranging from 0.8 to 1.5 (its default value in TOMAWAC is $B=1.0$). The maximum wave height compatible with the water depth, $H_{m} $, is governed by the parameter $\gamma $ ($H_{m} =\gamma d$).
+ $f_{c} $ is the characteristic wave frequency (average frequency, $f_{01} $, $f_{02} $ or peak frequency) and B is a parameter ranging from 0.8 to 1.5 (its default value in \tomawac is $B=1.0$). The maximum wave height compatible with the water depth, $H_{m} $, is governed by the parameter $\gamma $ ($H_{m} =\gamma d$).
 
  The breaking model as proposed by Thornton and Guza can then be parameterized by the user via the following 4 keywords:
 
- \begin{enumerate}
+ \begin{itemize}
 \item \textit{DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION} Two values are possible:
  \begin{enumerate}
-\
- \item 1. .weighting function 1 (see in (4.42.a))
-
- \item 2. .weighting function 2 (see in (4.42.b))\textit{ (default value)}
+ \item weighting function 1 (see in (4.42.a))
+ \item weighting function 2 (see in (4.42.b))\textit{ (default value)}
 \end{enumerate}
 
  \item \textit{DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY} Six values are possible:
  \begin{enumerate}
-
- \item 1. .average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
-
- \item 2. .average frequency: $f_{01} $, computed from the spectrum moments m0 et m1
-
- \item 3. .average frequency: $f_{02} $, computed from the spectrum moments m0 et m2
-
- \item 4. .discrete peak frequency: fp
-
- \item 5. .peak frequency computed through the Read's method to order 5: fR5 \textit{(default value)}
-
- \item 6. .peak frequency computed through the Read's method to order 8: fR8
+ \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
+ \item average frequency: $f_{01} $, computed from the spectrum moments m0 et m1
+ \item average frequency: $f_{02} $, computed from the spectrum moments m0 et m2
+ \item discrete peak frequency: fp
+ \item peak frequency computed through the Read's method to order 5: fR5 \textit{(default value)}
+ \item peak frequency computed through the Read's method to order 8: fR8
 \end{enumerate}
 
  \item \textit{ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B} corresponding to the B variable. Its default value in the model is taken as 1.
 
  \item \textit{DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA} corresponding to the $\gamma $ variable. Its default value in the model is taken as 0.42.
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Roelvink's model (1993)}
 
  The Roelvink's breaking model~[Roelvink,~1993] is based on the analogy with a hydraulic jump and on two types of wave height distribution in the breaking zone (Weibull or Rayleigh). The energy sink term is written according to the wave height distribution in the breaking zone:
 
-\begin{enumerate}
+\begin{itemize}
 \item  \underbar{Weibull's distribution:}
 \begin{equation} \label{GrindEQ__4_50_}
 Q_{br1} \left(f,\theta \right)=-\alpha f_{c} mA\, \sqrt{\frac{2}{m_{0} } } F\left(f,\theta \right)\int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m+1} \exp \left[-A\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2m} \right].\left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right] \, dH
 \end{equation}
-\end{enumerate}
+\end{itemize}
 
 $A=\left[\Gamma \left(1+\frac{1}{m} \right)\right]^{m} $ with  \eqref{GrindEQ__4_51_}
 
 The coefficient $\gamma _{2} $ is usually set to 0.65.
 
-\begin{enumerate}
+\begin{itemize}
 \item  \underbar{Rayleigh's distribution:}
 \begin{equation} \label{GrindEQ__4_52_}
 Q_{br2} \left(f,\theta \right)=-\alpha f_{c} \sqrt{\frac{2}{m_{0} } } F\left(f,\theta \right)\; \int _{0}^{\infty }\left(\frac{H}{\sqrt{8m_{0} } } \right)^{3} \exp \left[-\left(\frac{H}{\sqrt{8m_{0} } } \right)^{2} \right]\, \left[1-\exp \left(-\left(\frac{H}{\gamma d} \right)\right)^{N} \right]\,  dH
 \end{equation}
-\end{enumerate}
+\end{itemize}
 $f_{c} $ denotes the characteristic wave frequency (average frequency, $f_{01} $, $f_{02} $ or peak frequency), a is a numerical constant of order 1, $\gamma $ is the proportional control factor between the allowable wave height and the water depth (by default, $\gamma =0.54$) and N is an exponent in the wake breaking weighting function (typically N=10).
 
  Thus, the Roelvink's breaking model can be parameterized by the user via the following 5 keywords:
 
-\begin{enumerate}
+\begin{itemize}
 \item  \textit{DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA}, corresponding to the a  variable. Its default value in the model is taken as 1.0.
 
 \item  \textit{DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA},
@@ -717,19 +741,19 @@ $f_{c} $ denotes the characteristic wave frequency (average frequency, $f_{01} $
 \item  \textit{DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY} Six values are possible:\textit{}
 \begin{enumerate}
 
- \item 1. .average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
+ \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.36.b))
 
- \item 2. .average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
+ \item average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
 
- \item 3. .average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
+ \item average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
 
- \item 4. .discrete peak frequency: fp
+ \item discrete peak frequency: fp
 
- \item 5. .peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
+ \item peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
 
- \item 6. .peak frequency as computed through the Read's method to order 8: fR8
+ \item peak frequency as computed through the Read's method to order 8: fR8
 \end{enumerate}
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Izumiya and Horikawa's turbulence model (1984)}
@@ -750,7 +774,7 @@ Q_{br} \left(f,\theta \right)=-\beta _{0} \left(\frac{C_{g} }{c} .\frac{m_{0} }{
 \end{equation}
 Thus, the breaking model as proposed by Izumiya and Horikawa can be parameterized by the user through the three following keywords:
 
-\begin{enumerate}
+\begin{itemize}
 \item  \textit{DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0}, corresponding to the $\beta _{0} $ variable. The default value in the model is 1.8.
 
 \item  \textit{DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR}, corresponding to the $M_{*S}^{2} $ variable. The default value in the model is 0.009.
@@ -758,39 +782,39 @@ Thus, the breaking model as proposed by Izumiya and Horikawa can be parameterize
  \item \textit{DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY} Six values are possible:
 \begin{enumerate}
 
- \item 1. .average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.29.b))
+ \item average frequency: $\bar{f}=\frac{\bar{\sigma }}{2\pi } $  (refer to equation (4.29.b))
 
- \item 2. .average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
+ \item average frequency: $f_{01} $, as computed from the spectrum moments m0 and m1
 
- \item 3. .average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
+ \item average frequency: $f_{02} $, as computed from the spectrum moments m0 and m2
 
- \item 4. .discrete peak frequency: fp
+ \item discrete peak frequency: fp
 
- \item 5. .peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
+ \item peak frequency as computed through the Read's method to order 5: fR5 \textit{(default value)}
 
- \item 6. .peak frequency as computed through the Read's method to order 8: fR8
+ \item peak frequency as computed through the Read's method to order 8: fR8
 \end{enumerate}
-\end{enumerate}
+\end{itemize}
 
 
-\paragraph{ Non-linear quadruplet interactions (term Qnl)}
+\subsubsection{ Non-linear quadruplet interactions (term Qnl)}
 
- Three non-linear quadruplet interactions models are available in TOMAWAC. The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\textit{ }in the steering file; the keyword can take four values, namely:
+ Three non-linear quadruplet interactions models are available in \tomawac. The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\textit{ }in the steering file; the keyword can take four values, namely:
 
-\begin{enumerate}
+\begin{itemize}
 \item  no non-linear quadruplet interaction \textit{(default value)}
 
 \item  DIA method (Discrete Interaction Approximation) of Hasselmann \textit{et al.} [Hasselmann et al.,~1985] which is a discrete parameterization of the exact computation operator as proposed by Hasselmann [Hasselmann,~1962] [Hasselmann,~1962].
 
-\item  MDIA method (Multiple DIA) as proposed by Tolman [Tolman,~2004]
+\item  MDIA method (Multiple DIA) as proposed by Tolman \cite{Tolman2004}
 
 \item  Quasi exact GQM method (Gaussian Quadrature Method) as introduced by Lavrenov [Lavrenov,~2001] and implemented by Gagnaire-Renou et al. [Gagnaire-Renou et al., 2010].
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Option 1 for non-linear quadruplet interactions: DIA method}
 
- The method and its implementation in TOMAWAC have been the subject of a specific report [Benoit,~1997] which the reader is invited to refer to for further information. The major teachings of the DIA method are summarized below.
+ The method and its implementation in \tomawac have been the subject of a specific report [Benoit,~1997] which the reader is invited to refer to for further information. The major teachings of the DIA method are summarized below.
 
  The exact expression of the deep water interactions term as set by Hasselmann [Hasselmann,~1962] [Hasselmann,~1962], expressed herein for convenience as a function of the wave number vector, is analogous to a Boltzmann integral:
 \[Q_{nl}^{exact} =\iiint  \sigma _{4} .G.\delta \left(\vec{k}_{1} +\vec{k}_{2} -\vec{k}_{3} -\vec{k}_{4} \right)\delta \left(\sigma _{1} +\sigma _{2} -\sigma _{3} -\sigma _{4} \right)\]
@@ -803,37 +827,37 @@ $\sigma _{1} +\sigma _{2} =\sigma _{3} +\sigma _{4} $  and  $\vec{k}_{1} +\vec{k
 
  as evidenced by the two Dirac functions d in the integral.
 
- G denotes the value of the coupling term for the resonant quadruplet interactions$\left(\vec{k}_{1} ,\vec{k}_{2} ,\vec{k}_{3} ,\vec{k}_{4} \right)$. Establishing and computing its expression is also an awkward task. Hasselmann [Hasselmann,~1962] proposed a computation mode that was also taken up and given a more concise form by such other authors as Webb [Webb,~1978].
+ G denotes the value of the coupling term for the resonant quadruplet interactions$\left(\vec{k}_{1} ,\vec{k}_{2} ,\vec{k}_{3} ,\vec{k}_{4} \right)$. Establishing and computing its expression is also an awkward task. Hasselmann [Hasselmann,~1962] proposed a computation mode that was also taken up and given a more concise form by such other authors as Webb \cite{webb1978}.
 
- The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as TOMAWAC (see e.g. [Hasselmann,~1985]). That is why, starting from the experiment as developed in WAM [WAMDI,~1988] [Komen et al.,~1994], TOMAWAC uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} [Hasselmann et al.,~1985]. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
+ The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as \tomawac (see e.g. [Hasselmann,~1985]). That is why, starting from the experiment as developed in WAM [WAMDI,~1988] [Komen et al.,~1994], \tomawac uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} [Hasselmann et al.,~1985]. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
 
  That standard interaction configuration is defined as follows:
 
-\begin{enumerate}
+\begin{itemize}
 \item  two of the wave numbers are alike: $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$, which also involves that the two related frequencies are identical: s1 = s2 = s
 
 \item  the other two frequencies s3 and s4 are defined by:
-\end{enumerate}
+\end{itemize}
 
   s3 = (1+l) s = s+
 
   s4 = (1-l) s = s-
 
- Through the value l = 0.25, a good correlation with the exact computation of the integral [Hasselmann et al.,~1985] could be achieved. That value is used in the model WAM [WAMDI,~1988] [Komen et al.,~1994] and is taken up in TOMAWAC.
+ Through the value l = 0.25, a good correlation with the exact computation of the integral [Hasselmann et al.,~1985] could be achieved. That value is used in the model WAM [WAMDI,~1988] [Komen et al.,~1994] and is taken up in \tomawac.
 
-\begin{enumerate}
+\begin{itemize}
 \item  since the wave vectors $\vec{k}_{3} =\vec{k}^{+} $ and $\vec{k}_{4} =\vec{k}^{-} $ should observe the resonance condition, it can be shown they are featured by angles q3~=~11.5${}^\circ$ and q4~=~-33.6${}^\circ$ with respect to the common direction of $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$ (refer to [Hasselmann et al.,~1985]).
 
 \item  Furthermore, the mirror image is taken into account by considering the vectors as symmetrical with respect to the direction of $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$.
-\end{enumerate}
+\end{itemize}
 
  The standard interaction configuration (in full line) and its mirror image (in dotted line) are shown schematically in Figure~4.2.
 
 
 
-\begin{enumerate}
+\begin{itemize}
 \item  \textbf{Figure 4.2: Schematic standard interaction configuration for the DIA method}
-\end{enumerate}
+\end{itemize}
 
 With this standard configuration, the non-linear interaction term for all four resonant wave numbers is written as [Hasselmann et al.,~1985]:
 \begin{equation} \label{GrindEQ__4_57_}
@@ -851,18 +875,18 @@ $R(\chi )=1+\frac{5.5}{\chi } (1-\frac{5}{6} \chi )\exp \left(-\frac{5}{4} \chi 
 
  The average wave number$\bar{k}$ was defined in the previous paragraph (see in (4.29.c)).
 
- In its authors' opinion, that relation remains valid as long as $\bar{k}.d$ $>$ 1. It is used as such in TOMAWAC for the finite water depth computations.
+ In its authors' opinion, that relation remains valid as long as $\bar{k}.d$ $>$ 1. It is used as such in \tomawac for the finite water depth computations.
 
  That source-term has a single parameter:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant l (corresponding to the keyword \textit{STANDARD CONFIGURATION PARAMETER}STANDARD CONFIGURATION PARAMETER\textit{ }of the steering file). Its default value is taken as 0.25, in accordance with the proposal made by Hasselmann \textit{et al.} [Hasselmann et al.,~1985] and with the standard value in the model WAM-Cycle 4.
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  Option 2 for non-linear quadruplet interactions: MDIA method}
 
- The MDIA method (multiple DIA) is an extension of the DIA algorithm. We use here the version proposed by Tolman [Tolman,~2004],
+ The MDIA method (multiple DIA) is an extension of the DIA algorithm. We use here the version proposed by Tolman \cite{Tolman2004}
 
  This method can give very reasonable results in simple situations, but in case of unsteady or rapidly changing sea-state conditions (e.g. in the situation of abrupt changes of wind direction) it results in significant qualitative and quantitative differences when compared with exact methods [Benoit,~2005].
 
@@ -881,13 +905,13 @@ $\sigma _{3} =(1-\lambda )\sigma $ (4.61.d)
 
  The l and m values proposed by Tolman that allow to best estimate the Q${}_{nl4}$ source term in the case of 4 interacting quadruplets are shown in Table~4.1.
 
- \includegraphics*[width=4.46in, height=1.06in, keepaspectratio=false, trim=0.00in 0.00in 0.14in 0.00in]{image96}
+ \includegraphics*[width=4.46in, height=1.06in, keepaspectratio=false, trim=0.00in 0.00in 0.14in 0.00in]{graphics/tabtolman}
 
-\begin{enumerate}
-\item  \textbf{Table 4.1: Values of the parameters l et m proposed byTolman to best estimate quadruplet interactions with the MDIA method, in the case of 4 interacting quadruplets [Tolman,~2004].}
-\end{enumerate}
+\begin{itemize}
+\item  \textbf{Table 4.1: Values of the parameters l et m proposed by Tolman to best estimate quadruplet interactions with the MDIA method, in the case of 4 interacting quadruplets \cite{Tolman2004}.}
+\end{itemize}
 
- To select this model in TOMAWAC the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES must be set to 2 in the steering file.
+ To select this model in \tomawac the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES must be set to 2 in the steering file.
 
  This model does not require any other parameter: the values of the l and m parameters are set as constants in the code. However they can be modified when considering a larger number of interacting quadruplets.
 
@@ -898,7 +922,7 @@ $\sigma _{3} =(1-\lambda )\sigma $ (4.61.d)
 
  Several steps are needed to transform Equation~4.48 into an expression that can be integrated via Gaussian quadrature method. They can be summarized as follows (for a detailed description reference can be made to [Gagnaire-Renou,~2009]):
 
-\begin{enumerate}
+\begin{itemize}
 \item  Elimination of the Dirac function on the wave numbers $\delta \left(\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} -\vec{k}_{3} \right)$, by imposing $\vec{k}_{3} =\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} $ (see the resonance condition, Equation~4.49). Equation~4.50 is therefore reduced to an integral with 4 dimensions, including a single Dirac function on the frequency s.
 
 \item  Variable change, to work with (s,q) instead of $\vec{k}$, and reformulation of the equation in terms of variance density (F) instead of wave action density (N).
@@ -909,59 +933,59 @@ $\sigma _{3} =(1-\lambda )\sigma $ (4.61.d)
 \begin{equation} \label{GrindEQ__4_62_}
 Q_{nl4} =\int _{\sigma _{1} =0}^{+\infty }\; \int _{\theta _{1} =0}^{2\pi }\; \int _{\sigma _{2} =0}^{\sigma _{a} /2}   2\frac{\sigma _{a}^{4} \; T}{\sigma _{1} \sigma _{2} \sigma _{3} } \; \frac{F_{2} F_{3} (F_{0} \sigma _{1}^{4} +F_{1} \sigma _{0}^{4} )-F_{0} F_{1} (F_{2} \sigma _{3}^{4} +F_{3} \sigma _{2}^{4} )}{\sqrt{\tilde{B}_{0} \left(\varepsilon _{a} ,s_{2} \right)\; \tilde{B}_{1} \left(\varepsilon _{a} ,s_{2} \right)\; \tilde{B}_{2} \left(\varepsilon _{a} ,s_{2} \right)} } \; d\sigma _{1} d\theta _{1} d\sigma _{2}
 \end{equation}
-\end{enumerate}
+\end{itemize}
 where s${}_{2}$ is defined as s${}_{2}$= s${}_{2}$/ s${}_{a}$.
 
  Equation 4.55 is then integrated using different quadrature methods:
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  Gauss-Legendre or Gauss-Chebyshev quadratures are used for the integration over s${}_{2}$, depending on the e${}_{a}$ values determining number and type of singularities.
 
 \item  Gauss-Chebyshev quadratures are used for the integration over q${}_{1}$.
 
 \item  The integration over s${}_{1}$ is realized using the trapezoidal rule.
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
  Three different GQM method resolutions have been tested:
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  A "fine" resolution, considered as the exact calculation of the non-linear transfer term, as no improvement in the results is noticed when further increasing the method resolution.
 
 \item  An "intermediate" resolution.
 
-\item  A "coarse" resolution, whose parameters are given as default values in TOMAWAC, which represents the best compromise between accuracy of the solution and CPU time.
-\end{enumerate}
-\end{enumerate}
+\item  A "coarse" resolution, whose parameters are given as default values in \tomawac, which represents the best compromise between accuracy of the solution and CPU time.
+\end{itemize}
+\end{itemize}
 
- The configurations that do not effect significantly the global computation of Qnl4 are neglected. This configuration selection allows to reduce the CPU time. The threshold values set as default in TOMAWAC reduce the number of configuration:
+ The configurations that do not effect significantly the global computation of Qnl4 are neglected. This configuration selection allows to reduce the CPU time. The threshold values set as default in \tomawac reduce the number of configuration:
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  by 21\% in the "fine" resolution case
 
 \item  by 34\% in the "intermediate" resolution case
 
 \item  by 64\% in the "coarse" resolution case
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
  The GQM method is selected by setting to 3 the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES} in the steering file.\textbf{}
 
  This method makes use of 6 parameters. The default values of those parameters correspond to the "coarse" resolution case:
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  The three keywords \textit{SETTING FOR INTEGRATION ON OMEGA1}, \textit{SETTING FOR INTEGRATION ON OMEGA2} and \textit{SETTING FOR INTEGRATION ON THETA1} determine the number of integration points over the three variables s${}_{1}$, q${}_{1}$ and s${}_{2}$ and their default values are respectively 3, 3 and 6 ("coarse" resolution). The values 1, 4, 8 and 2, 8, 12 correspond respectively to the "intermediate" and "fine" resolution cases.
 
 \item  The three keywords \textit{THRESHOLD0 FOR CONFIGURATIONS ELIMINATION}, \textit{THRESHOLD1 FOR CONFIGURATIONS ELIMINATION} and \textit{THRESHOLD2 FOR CONFIGURATIONS ELIMINATION} affect the percentage of discarded configurations. Their default values are respectively 0, 10${}^{10}$ and 0.15. For the "intermediate" and "fine" resolution cases, the first two values are the same, and the threshold2 values is equal respectively to 0.01 and 0.001.
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
 
-\paragraph{ ~Non-linear transfers between triads (Qtr term)}
+\subsubsection{ ~Non-linear transfers between triads (Qtr term)}
 
 
 {\bf  LTA (Lumped Triad Approximation) model}
@@ -988,11 +1012,11 @@ where $Ur$ denotes the Ursell's number: $Ur=\frac{g}{8\pi ^{2} \sqrt{2} } \frac{
 
  Two constants can me modified through keywords:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant $\alpha _{LTA} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT ALPHA}TRIADS 1 (LTA) COEFFICIENT ALPHA\textit{.} Its default value is $\alpha _{LTA} =0.5$
 
 \item  constant $R_{fm} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT RFMLTA}TRIADS 1 (LTA) COEFFICIENT RFMLTA\textit{.} Its default value is $R_{fm} =2.5$
-\end{enumerate}
+\end{itemize}
 
 
 {\bf  ~SPB model}
@@ -1015,50 +1039,43 @@ with: $T_{f_{1} ,f_{2} } =\frac{gK}{K^{2} +\Delta k^{2} } \; R_{f_{1} ,f_{2} } \
 
  Three constants can be modified through keywords:
 
-\begin{enumerate}
+\begin{itemize}
 \item  constant $K$ corresponding to the keyword \textit{'TRIADS 2 (SPB) COEFFICIENT K}TRIADS 2 (SPB) COEFFICIENT K\textit{.} Its default value is $K=0.34$
 
 \item  the lower and upper directional markers corresponding to the keywords \textit{TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY}TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY\textit{ }and \textit{TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY}TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY\textit{.} Their respective default values are 0 and 360.
-\end{enumerate}
+\end{itemize}
 
 
-\paragraph{ Wave blocking effects (upper limit for spectrum or dissipation Qds,cur)}
+\subsubsection{ Wave blocking effects (upper limit for spectrum or dissipation Qds,cur)}
 
- When water waves meet a strong adverse current, with a velocity that approaches the wave group velocity, waves are blocked. Two options can be considered in TOMAWAC to take into account wave blocking effects.
+ When water waves meet a strong adverse current, with a velocity that approaches the wave group velocity, waves are blocked. Two options can be considered in \tomawac to take into account wave blocking effects.
 
  \underbar{Option 1} : consider an equilibrium range spectrum (in the presence of ambient flow) applied as an upper limit for the spectrum (Hedges et al. 1985)
 
- \underbar{Option 2} : add a dissipative term on the right-hand side of the action balance equation (Westhuysen 2012)
+ \underbar{Option 2} : add a dissipative term on the right-hand side of the action balance equation \cite{Westhuys2012}
 
  The inclusion of wave-blocking effects is activated through the keyword \textit{DISSIPATION BY STRONG CURRENT} in the steering file; the keyword can take three values, namely:
 
-\begin{enumerate}
+\begin{itemize}
 \item  No wave-blocking effects (default value)
 
 \item  Upper limit for spectrum [Hedges et al 1985].
 
-\item  Westhuysen \textit{et al.} [Westhuysen et al.,~2012] enhanced dissipation of waves on a strong current.
-\end{enumerate}
+\item  Westhuysen \textit{et al.} \cite{Westhuys2012} enhanced dissipation of waves on a strong current.
+\end{itemize}
 
 
 {\bf  option 1 for wave blocking: upper limit for the spectrum}
 
- An upper limit \includegraphics*[width=1.75in, height=0.50in, keepaspectratio=false]{image97}$E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $$E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $ is imposed to the spectrum, using a Phillips (1977) shape, i.e.
+ An upper limit is imposed to the spectrum, using a Phillips (1977) shape, i.e.
 
- If
-
- with a the Phillips's constant in the Pierson-Moskowitz spectrum, equal to = 0.0081
-
- \includegraphics*[width=1.72in, height=0.46in, keepaspectratio=false]{image98}$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$then
-
-
+If $E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $$E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $ 
+ with $\alpha$ the Phillips's constant in the Pierson-Moskowitz spectrum, equal to = 0.0081 then
+$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$
 
  This model is selected by setting the keyword \textit{DISSIPATION BY STRONG CURRENT }to 1 in the steering file.\textbf{}
 
-
 {\bf  option 2 for wave blocking: Westhuysen formulation }
-
-
 
  The expression proposed by Westhuysen is:
 \[Q_{ds,cur} =-C_{ds,cur} \max \left(\frac{\mathop{f_{r} }\limits^{\bullet } }{f} ,0\right)\; \; \left(\frac{B(k)}{B_{r} } \right)^{p_{0} /2} \; F(f,\theta )\]
@@ -1068,22 +1085,20 @@ where $B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C
 
  The variable \textit{w} is set equal to 25.
 
-
-
  This model is selected by setting the keyword \textit{DISSIPATION BY STRONG CURRENT} to 2 in the steering file.\textbf{}
 
- This source term makes use of 2 parameters. Their default values correspond to the coefficients proposed by Westhuysen [Westhuysen,~2012]:
+ This source term makes use of 2 parameters. Their default values correspond to the coefficients proposed by Westhuysen \cite{Westhuys2012}:
 
-\begin{enumerate}
-\item \begin{enumerate}
+\begin{itemize}
+\item \begin{itemize}
 \item  The coefficient C${}_{ds,cur}$, corresponding to the keyword DISSIPATION COEFFICIENT FOR STRONG CURRENT has a default value of 0.65,
 
 \item  The coefficient B${}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$.
-\end{enumerate}
-\end{enumerate}
+\end{itemize}
+\end{itemize}
 
 
-\paragraph{ Dissipation due to vegetation.  }
+\subsubsection{ Dissipation due to vegetation.  }
 
  When the ratio between vegetation height and water depth is important, vegetation can imply some dissipation. Some methods exist  to modelize this dissipation. The method we chose is based on the formulation proposed by Suzuki et al. (2011)
 \[Q_{veg} =-\sqrt{\frac{2}{\pi } } \tilde{C}_{D} b_{v} N_{v} \left(\frac{\bar{k}}{\bar{\sigma }} \right)^{3} \frac{\sinh ^{3} (\bar{k}\alpha h)+3\sinh (\bar{k}\alpha h)}{3\bar{k}\cosh ^{3} (\bar{k}h)} \sqrt{m_{0} } F(\sigma ,\theta )\]

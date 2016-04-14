@@ -35,12 +35,12 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \subsection{ Release}
 
- When generating the executable, the release number of libraries being used for editing the links is indirectly provided by the keyword \textit{TOMAWAC RELEASERELEASE NUMBER}. By default, TOMAWAC release 7.1 utilises the 7.1 releases of the TELEMACTELEMAC system libraries.
+ When generating the executable, the release number of libraries being used for editing the links is indirectly provided by the keyword \textit{\tomawac RELEASERELEASE NUMBER}. By default, \tomawac release 7.1 utilises the 7.1 releases of the TELEMACTELEMAC system libraries.
 
 
 \subsection{ Environment}
 
- When a vector computer is used, the CPU vector length used in the forced vectorisation technique can be specified by means of the keyword \textit{VECTOR LENGTHVECTOR LENGTH}. The default value is 1 and is appropriate for scalar machines such as the present workstations. If a value of 1 is used on a vector machine, then the advantage of the vectorisation loops (although they are few in TOMAWAC) is lost.
+ When a vector computer is used, the CPU vector length used in the forced vectorisation technique can be specified by means of the keyword \textit{VECTOR LENGTHVECTOR LENGTH}. The default value is 1 and is appropriate for scalar machines such as the present workstations. If a value of 1 is used on a vector machine, then the advantage of the vectorisation loops (although they are few in \tomawac) is lost.
 
 
 \section{ Computation options}
@@ -53,18 +53,18 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \subsection{ Finite depth }
 
- In nearshore areas, wave conditions will be influenced by the water depth and therefore the bottom effect can no longer be ignored. This is the default case in TOMAWAC: the keyword \textit{INFINITE DEPTHINFINITE DEPTH }is set to ``FALSE''. In situations where depths effects are to be explicitly ignored the keyword \textit{INFINITE DEPTH} should be set to "TRUE".
+ In nearshore areas, wave conditions will be influenced by the water depth and therefore the bottom effect can no longer be ignored. This is the default case in \tomawac: the keyword \textit{INFINITE DEPTHINFINITE DEPTH }is set to ``FALSE''. In situations where depths effects are to be explicitly ignored the keyword \textit{INFINITE DEPTH} should be set to "TRUE".
 
 
 \subsection{ Taking a stationary current into account}
 
- A stationary current can be taken into account in the TOMAWAC. The relevant logical keyword is \textit{CONSIDERATION OF A STATIONARY CURRENTCONSIDERATION OF A STATIONARY CURRENT. }The current affects mainly the convection step.
+ A stationary current can be taken into account in the \tomawac. The relevant logical keyword is \textit{CONSIDERATION OF A STATIONARY CURRENTCONSIDERATION OF A STATIONARY CURRENT. }The current affects mainly the convection step.
 
  The current can be specified in various ways:
 
  When the current is either constant over the domain or can be described analytically, the ANACOSANACOS.f subroutine can be included in the FORTRAN file and modified accordingly. In this subroutine the UC and VC are NPOIN2-sized (number of points in the horizontal mesh) vectors and correspond to the components along the X and Y axes of the current, respectively. This is how the current is specified when the keyword \textit{FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE} or \textit{BINARY CURRENTS FILEBINARY CURRENTS FILE }is not specified, whereas the keyword \textit{CONSIDERATION OF A STATIONARY CURRENTCONSIDERATION OF A STATIONARY CURRENT} is "TRUE".
 
- TOMAWAC can also take into account a current provided in a binary or formatted file. The keyword \textit{BINARY CURRENTS FILEBINARY CURRENTS FILE }or\textit{ FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE} should then be given a value (the name of the file). Three different formats are available to read this data. The value corresponds to the keyword \textit{CURRENTS FILE FORMATCURRENTS FILE FORMAT} (see 7.2.4). When the currents file is taken from TELEMACTELEMAC-2D, then an additional keyword should be specified, namely the \textit{TIME INCREMENT NUMBER IN TELEMAC FILETIME INCREMENT NUMBER IN TELEMAC FILE.} This locates the desired record.
+ \tomawac can also take into account a current provided in a binary or formatted file. The keyword \textit{BINARY CURRENTS FILEBINARY CURRENTS FILE }or\textit{ FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE} should then be given a value (the name of the file). Three different formats are available to read this data. The value corresponds to the keyword \textit{CURRENTS FILE FORMATCURRENTS FILE FORMAT} (see 7.2.4). When the currents file is taken from TELEMACTELEMAC-2D, then an additional keyword should be specified, namely the \textit{TIME INCREMENT NUMBER IN TELEMAC FILETIME INCREMENT NUMBER IN TELEMAC FILE.} This locates the desired record.
 
  If the predefined formats cannot be used, the COUUTICOUUTI.f subroutine can be included in the FORTRAN and modified accordingly, specifying the format 4 for the INDIC FORTRAN variable in the CAS file. The current data are read from the file and are interpolated onto the nodes of the computation mesh.
 
@@ -75,7 +75,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  When the wind can be described analytically, the user subroutine ANAVENANAVEN.f can be used. The wind is fully specified when the keywords \textit{FORMATTED WINDS FILEFORMATTED WINDS FILE} and \textit{BINARY WINDS FILEBINARY WINDS FILE }do not have any value, whereas the keyword \textit{CONSIDERATION OF A WINDCONSIDERATION OF A WIND }is "TRUE".
 
- TOMAWAC can also take into account a wind given in a binary or formatted file. In this case a value (the name of the file) should be assigned to the keyword \textit{FORMATTED WINDS FILEFORMATTED WINDS FILE }or \textit{BINARY WINDS FILEBINARY WINDS FILE}. The available formats for reading out these data correspond to the keyword \textit{WINDS FILE FORMATWINDS FILE FORMAT} (see in section 7.2.6. and APPENDIX 8).
+ \tomawac can also take into account a wind given in a binary or formatted file. In this case a value (the name of the file) should be assigned to the keyword \textit{FORMATTED WINDS FILEFORMATTED WINDS FILE }or \textit{BINARY WINDS FILEBINARY WINDS FILE}. The available formats for reading out these data correspond to the keyword \textit{WINDS FILE FORMATWINDS FILE FORMAT} (see in section 7.2.6. and APPENDIX 8).
 
  When these predefined formats cannot be used, the subroutine VENUTIVENUTI.f can be included in the FORTRAN file and modified accordingly, specifying the format 4 for the INDIV FORTRAN variable. On completion of reading the winds file, the wind components are used as such if provided on the computational mesh, or interpolated over that mesh in provided on a different grid.
 
@@ -99,7 +99,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  Should the tide be easy to describe analytically, the ANAMARANAMAR.f subroutine, can be included in the FORTRAN file and modified accordingly. In the subroutine the terms UC and VC, ZM and DZHDT are NPOIN2-sized (number of points in the horizontal mesh) vectors and correspond to the current components along the X and Y axes, the tidal water level in relation to the "INITIAL STILL WATER LEVELINITIAL STILL WATER LEVEL" and the water depth variation in time, respectively. An analytical expression must be assigned to all of these vectors.
 
- TOMAWAC can also take into account a current that is given in a binary or formatted file. A value (the name of the currents file) should be assigned to the keyword \textit{BINARY CURRENTS FILEBINARY CURRENTS FILE }or\textit{ FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE}. Two different formats are available for reading these data. This format is specified using the keyword \textit{CURRENTS FILE FORMATCURRENTS FILE FORMAT} (see 7.2.4). When these predefined formats cannot be used, the user subroutine COUUTICOUUTI.f can be included in the FORTRAN file and modified accordingly. In such cases the \textit{CURRENTS FILE FORMAT} (FORTRAN variable INDIC) must be set to 4 in the CAS file. Once the data of the currents file are read, the current components are interpolated over the computation mesh.
+ \tomawac can also take into account a current that is given in a binary or formatted file. A value (the name of the currents file) should be assigned to the keyword \textit{BINARY CURRENTS FILEBINARY CURRENTS FILE }or\textit{ FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE}. Two different formats are available for reading these data. This format is specified using the keyword \textit{CURRENTS FILE FORMATCURRENTS FILE FORMAT} (see 7.2.4). When these predefined formats cannot be used, the user subroutine COUUTICOUUTI.f can be included in the FORTRAN file and modified accordingly. In such cases the \textit{CURRENTS FILE FORMAT} (FORTRAN variable INDIC) must be set to 4 in the CAS file. Once the data of the currents file are read, the current components are interpolated over the computation mesh.
 
  The tidal water level can be also provided in a binary or formatted file. A value (the name of the water level file) should be assigned to the keyword \textit{BINARY TIDAL WATER LEVEL FILEBINARY TIDAL WATER LEVEL FILE }or\textit{ FORMATTED TIDAL WATER LEVEL FILEFORMATTED TIDAL WATER LEVEL FILE}. Two different predefined formats are available for reading this data. The format type is specified using the keyword \textit{TIDAL WATER LEVEL FILE FORMATTIDAL WATER LEVEL FILE FORMAT} (refer to 7.2.5). If the user chooses the Serafin format (i.e. TELEMACTELEMAC-2D format), then the \textit{RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILERANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE} must also be specified. When the predefined formats cannot be used, the user subroutine MARUTIMARUTI.f file can be included in the FORTRAN file and modified accordingly. In such cases the \textit{TIDAL WATER LEVEL FILE FORMAT} (the INDIM FORTRAN variable) must be set to 4 in the CAS file.
 
@@ -108,49 +108,49 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \subsection{ Waves-current interactions: direct coupling with Telemac (2D or 3D) flow simulation}
 
- It is possible to directly couple a TOMAWAC and a TELEMAC simulation (either TELEMAC-2D or TELEMAC-3D) to represent the wave-current interactions more precisely.
+ It is possible to directly couple a \tomawac and a TELEMAC simulation (either TELEMAC-2D or TELEMAC-3D) to represent the wave-current interactions more precisely.
 
- In TOMAWAC, when the keywords \textit{CONSIDERATION OF A TIDE} or \textit{CONSIDERATION OF A STATIONARY CURRENT} are used, the current is imposed as an input data: in this case only the effect of the current on the waves is taken into account, but not the effect of the waves on the current. The current imposed, therefore, is not affected by the waves and can differ from the real current interacting with the waves.
+ In \tomawac, when the keywords \textit{CONSIDERATION OF A TIDE} or \textit{CONSIDERATION OF A STATIONARY CURRENT} are used, the current is imposed as an input data: in this case only the effect of the current on the waves is taken into account, but not the effect of the waves on the current. The current imposed, therefore, is not affected by the waves and can differ from the real current interacting with the waves.
 
- By using a direct coupling TELEMAC-TOMAWAC it is possible to represent wave current interactions in both directions: TELEMAC transfers to TOMAWAC the updated values of current velocities and water depths, while TOMAWAC solves the wave action density conservation equation with reference to those current and water depth values and returns to TELEMAC the updated values of the wave driving forces FX and FY acting on the current.
+ By using a direct coupling TELEMAC-\tomawac it is possible to represent wave current interactions in both directions: TELEMAC transfers to \tomawac the updated values of current velocities and water depths, while \tomawac solves the wave action density conservation equation with reference to those current and water depth values and returns to TELEMAC the updated values of the wave driving forces FX and FY acting on the current.
 
- To directly couple a TELEMAC model with a TOMAWAC model, the following conditions must be satisfied:
+ To directly couple a TELEMAC model with a \tomawac model, the following conditions must be satisfied:
 
 \begin{enumerate}
-\item  the TELEMAC and TOMAWAC models must have the same horizontal mesh
+\item  the TELEMAC and \tomawac models must have the same horizontal mesh
 
-\item  the TELEMAC and TOMAWAC simulations must have the same simulation time length (given by the time step multiplied by the number of time steps)
+\item  the TELEMAC and \tomawac simulations must have the same simulation time length (given by the time step multiplied by the number of time steps)
 
 \item  the time steps set for the two simulations must be equal or multiple of each other
 
-\item  current and/or water level file cannot be used as input data for the TOMAWAC simulation
+\item  current and/or water level file cannot be used as input data for the \tomawac simulation
 
 \item  the driving force along X and Y (\textit{FX}, \textit{FY}) must be set among the 2D output variables in the steering file
 \end{enumerate}
 
 
 
- In case of direct coupling TELEMAC-TOMAWAC, TELEMAC is the main programme and calls the TOMAWAC subroutine WAC.f, which is the main subroutine of TOMAWAC and solves the equation of generation and propagation of the directional wave spectrum.
+ In case of direct coupling TELEMAC-\tomawac, TELEMAC is the main programme and calls the \tomawac subroutine WAC.f, which is the main subroutine of \tomawac and solves the equation of generation and propagation of the directional wave spectrum.
 
- The TELEMAC-TOMAWAC coupling is set via four keywords in the TELEMAC steering file:
+ The TELEMAC-\tomawac coupling is set via four keywords in the TELEMAC steering file:
 
 \begin{enumerate}
-\item  \textit{COUPLING WITH}, to which the value 'TOMAWAC' must be assigned
+\item  \textit{COUPLING WITH}, to which the value '\tomawac' must be assigned
 
 \item  \textit{WAVE DRIVEN CURRENT} must be set to 1
 
-\item  \textit{TOMAWAC STEERING FILE}, which specifies the name of the TOMAWAC steering file: its path must be specified with reference to the working directory of the TELEMAC steering file.
+\item  \textit{\tomawac STEERING FILE}, which specifies the name of the \tomawac steering file: its path must be specified with reference to the working directory of the TELEMAC steering file.
 
-\item  \textit{COUPLING PERIOD FOR TOMAWAC} (variable \textit{PERCOU\_WAC),} which specifies every how many TELEMAC time steps TOMAWAC is called:
+\item  \textit{COUPLING PERIOD FOR \tomawac} (variable \textit{PERCOU\_WAC),} which specifies every how many TELEMAC time steps \tomawac is called:
 
 \begin{enumerate}
-\item  The TOMAWAC time step must be less or equal TELEMAC simulation time step multiplied by PERCOU\_WAC.
+\item  The \tomawac time step must be less or equal TELEMAC simulation time step multiplied by PERCOU\_WAC.
 
 \item  The ratio of the two time steps must be an integer.
 \end{enumerate}
 \end{enumerate}
 
- All the file names specified in the TOMAWAC steering file (geometry file, boundary conditions file, Fortran file, wind file, \dots ) must be given as paths relative to the working directory of the TELEMAC steering file.
+ All the file names specified in the \tomawac steering file (geometry file, boundary conditions file, Fortran file, wind file, \dots ) must be given as paths relative to the working directory of the TELEMAC steering file.
 
  For more information concerning the modelling options in TELEMAC, please refer to the TELEMAC documentation.
 
@@ -162,7 +162,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \subsection{ Taking diffraction into account}
 
- Diffraction can be included in TOMAWAC simulations only if the following conditions are fulfilled:
+ Diffraction can be included in \tomawac simulations only if the following conditions are fulfilled:
 
  The spatial mesh is defined in terms of Cartesian coordinates.
 
@@ -170,21 +170,21 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  The simulation is run sequentially and not in parallel mode.
 
- Four keywords can be used to parameterize the representation of diffraction in TOMAWAC:
+ Four keywords can be used to parameterize the representation of diffraction in \tomawac:
 
 \begin{enumerate}
 \item  \textit{DIFFRACTIONDIFFRACTION}: its default value is zero, and corresponds to the case in which diffraction is not taken into account. If \textit{DIFFRACTION} is set to one, diffraction is considered and the Mild Slope Equation (MSE) approach is applied. If \textit{DIFFRACTION} is set to two, diffraction is considered and the Revised Mild Slope Equation (RMSE) approach is applied.
 
-\item  \textit{STARTING TIME STEP FOR DIFFRACTIONDIFFRACTION}: it indicates at which time step of the simulation diffraction is taken into account. Its default value is 1 (i.e. diffraction is solved from the first time step). When diffraction is considered in TOMAWAC simulations, the computing time is longer. To reduce it, it is recommended to set \textit{STARTING TIME STEP FOR DIFFRACTION} at a value corresponding approximately to the time step at which the same TOMAWAC model, without the consideration of diffraction, reaches a steady-state.
+\item  \textit{STARTING TIME STEP FOR DIFFRACTIONDIFFRACTION}: it indicates at which time step of the simulation diffraction is taken into account. Its default value is 1 (i.e. diffraction is solved from the first time step). When diffraction is considered in \tomawac simulations, the computing time is longer. To reduce it, it is recommended to set \textit{STARTING TIME STEP FOR DIFFRACTION} at a value corresponding approximately to the time step at which the same \tomawac model, without the consideration of diffraction, reaches a steady-state.
 
 \item  \textit{VARIANCE THRESHOLD FOR DIFFRACTIONDIFFRACTION}: it indicates the minimum spectral variance threshold considered when diffraction is taken into account. The default value is 1E-12.
 
 \item  \textit{DIFFRACTIONDIFFRACTION FILTER}: if TRUE, it indicates that the filtering of the local amplitudes of directional spectra is carried out when diffraction is considered.
 \end{enumerate}
 
- The diffraction module implemented in TOMAWAC is able to capture the diffusion of the wave height behind diffracting structures, but \textbf{it is not adapted to represent in detail the diffracted wave field}.
+ The diffraction module implemented in \tomawac is able to capture the diffusion of the wave height behind diffracting structures, but \textbf{it is not adapted to represent in detail the diffracted wave field}.
 
- The first version of the diffraction module implemented in TOMAWAC presents still several limits that must be overcome:
+ The first version of the diffraction module implemented in \tomawac presents still several limits that must be overcome:
 
 \begin{enumerate}
 \item  Unrealistic energy build-up and numerical noise are generated when diffraction is taken into account: at a constant Courant number, the smaller the mesh element size-to-wavelength ratio, the larger the numerical instability.
@@ -196,10 +196,10 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  For problems in which diffraction must be simulated precisely (e.g. harbor agitation), the use of phase-resolving model is recommended.
 
- The following recommendations can be made, in order to build and run a TOMAWAC model in which diffraction is taken into account:
+ The following recommendations can be made, in order to build and run a \tomawac model in which diffraction is taken into account:
 
 \begin{enumerate}
-\item  A too fine mesh can lead to numerical noise and unsteadiness in the results, while with a mesh too coarse the diffraction effect is underestimated. The best compromise found so far for the parameterization of TOMAWAC is to set the ratio between the smallest mesh element size and the wavelength associated to the peak period \textit{D}X/\textit{l} within the interval 0.2-0.25 (i.e. approximately 4 to 5 mesh elements per wavelength)
+\item  A too fine mesh can lead to numerical noise and unsteadiness in the results, while with a mesh too coarse the diffraction effect is underestimated. The best compromise found so far for the parameterization of \tomawac is to set the ratio between the smallest mesh element size and the wavelength associated to the peak period \textit{D}X/\textit{l} within the interval 0.2-0.25 (i.e. approximately 4 to 5 mesh elements per wavelength)
 
 \item  When setting the Courant number \textit{Cr}, a compromise must be found between the computing time required (large values of \textit{Cr} imply shorter computing times) and a low numerical noise in the solution (the lower \textit{Cr}, the lower the numerical noise). For values of \textit{D}X/\textit{l} within the interval 0.2-0.25 a Courant number Cr not larger than 0.1 is recommended.
 
@@ -232,7 +232,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \paragraph{ Wind input}
 
- In TOMAWAC three wind generation models and a linear wave growth model are available (see section 4.2.3.2 for details).
+ In \tomawac three wind generation models and a linear wave growth model are available (see section 4.2.3.2 for details).
 
  If the keyword \textit{WIND GENERATIONWIND GENERATION} is set to 0, no wind input will be taken into account. If, on the other hand, a strictly positive value (1, 2, \dots ) is chosen, the corresponding wind input formulation will be taken into account.
 
@@ -251,7 +251,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \paragraph{ White capping dissipation}
 
- In TOMAWAC two whitecapping dissipation models are available (see section 4.2.3.2 for details).
+ In \tomawac two whitecapping dissipation models are available (see section 4.2.3.2 for details).
 
  If the integer keyword \textit{WHITE CAPPING DISSIPATIONWHITE CAPPING DISSIPATION }is set to 0, this source term will be ignored. If a strictly positive value (1, 2, \dots ) is selected, the corresponding formulation will be taken into account.
 
@@ -287,7 +287,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
 \paragraph{ Non-linear transfers between quadruplets}
 
- Three non-linear quadruplet interactions models are available in TOMAWAC (see in section 4.2.3.6). The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\textit{ }in the steering file; the keyword can take four values.
+ Three non-linear quadruplet interactions models are available in \tomawac (see in section 4.2.3.6). The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\textit{ }in the steering file; the keyword can take four values.
 
  If the integer keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES is set to 0, this source term will not be taken into account. If a strictly positive value (1, 2, ...) is chosen, the corresponding formulation will be taken into account.
 
@@ -319,7 +319,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  As mentioned above, the depth-induced breaking and nonlinear triad interaction terms are time-integrated with an explicit scheme.
 
- As found practically, contributions from these source terms can be overestimated if the selected time step for source term integration is too long. In order to avoid this, TOMAWAC can perform a number of time sub-steps which are specific to these source terms through the keyword \textit{NUMBER OF BREAKING TIME STEPS}NUMBER OF BREAKING TIME STEPS.
+ As found practically, contributions from these source terms can be overestimated if the selected time step for source term integration is too long. In order to avoid this, \tomawac can perform a number of time sub-steps which are specific to these source terms through the keyword \textit{NUMBER OF BREAKING TIME STEPS}NUMBER OF BREAKING TIME STEPS.
 
  These time sub-steps are arranged in a geometrical progression, i.e. they are defined in the following way:
 
@@ -327,7 +327,7 @@ dt${}_{i+1 }$= q dt${}_{i}$
 
  where the geometrical ratio q is specified through the keyword: \textit{COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING}COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING
 
- In order to limit this number of time-steps, TOMAWAC first clips the wave height by setting a maximum H${}_{m0}$/D ratio (D is the water depth) to 1. This ratio can be modified by means of the keyword \textit{MAXIMUM VALUE OF THE RATIO HM0 TO D}. However, this is generally not advisable.
+ In order to limit this number of time-steps, \tomawac first clips the wave height by setting a maximum H${}_{m0}$/D ratio (D is the water depth) to 1. This ratio can be modified by means of the keyword \textit{MAXIMUM VALUE OF THE RATIO HM0 TO D}. However, this is generally not advisable.
 
 
 \paragraph{ Wave breaking dissipation}
@@ -454,7 +454,7 @@ dt${}_{i+1 }$= q dt${}_{i}$
 
  Initial conditions can be prescribed using the integer keyword \textit{TYPE OF INITIAL DIRECTIONAL SPECTRUMTYPE OF INITIAL DIRECTIONAL SPECTRUM;}.
 
-Table~8.1 shows all the available options in TOMAWAC for computing the frequential and directional distribution of wave action. It should be remembered that the variance density directional spectrum is computed as the product:
+Table~8.1 shows all the available options in \tomawac for computing the frequential and directional distribution of wave action. It should be remembered that the variance density directional spectrum is computed as the product:
 \[F(f,\theta )=E(f).D(\theta )\]
 where E(f) here denotes the variance density spectrum and $D\left(\theta \right)$ denotes the angular distribution function.
 
@@ -474,7 +474,7 @@ With $\alpha _{phil} =\frac{0.0624}{0.23+0.0336\gamma -\frac{0.185}{1.9+\gamma }
 \[D(\theta )=\frac{\lambda }{\Delta _{1} } \tilde{D}(\theta -\theta _{1} )+\frac{1-\lambda }{\Delta _{2} } \tilde{D}(\theta -\theta _{2} )\]
 must be specified.
 
- D${}_{1}$ and D${}_{2,}$ in the equation above, are automatically computed by TOMAWAC in order to normalize the angular distribution function.
+ D${}_{1}$ and D${}_{2,}$ in the equation above, are automatically computed by \tomawac in order to normalize the angular distribution function.
 
  Three angular distribution functions may be chosen using the keyword \textit{INITIAL ANGULAR DISTRIBUTION FUNCTION}, which correspond to the following options:
 
@@ -543,14 +543,14 @@ Key-word value &  & Spectrum & Constants being used \\ \hline
  & Wind = 0 & - Directions: parameterised angular distribution function. Same spectrum at every point &  \\ \hline
 \end{tabular}
 
-\textbf{Table~8.1: Summary table of the spectrum types as proposed in TOMAWAC}
+\textbf{Table~8.1: Summary table of the spectrum types as proposed in \tomawac}
 
 
 \section{  Prescribing the boundary conditions}
 
  The boundary conditions are prescribed over the \underbar{relative} spectrum of wave action, i.e. expressed in co-ordinate system that moves with the current.
 
- Only two kinds of boundary conditions are available in TOMAWAC.
+ Only two kinds of boundary conditions are available in \tomawac.
 
  The first one corresponds to a free boundary i.e. a boundary that fully absorbs the wave energy. It may be a liquid boundary: it is then assumed that the waves propagate beyond the domain and nothing else enters it. It may be a solid boundary: it is then assumed that the shore fully absorbs the wave energy.
 
@@ -563,7 +563,7 @@ Key-word value &  & Spectrum & Constants being used \\ \hline
 
  The boundary condition (CONLIM) file is normally supplied by STBTELSTBTEL (or other TELEMACTELEMAC mesh generators), but it can also be generated by means of a text editor. Each line in this file is assigned to one point of the boundary and listed in sequential order in terms of the boundary node numbers. The numbering of the boundary points first delineates the domain contour in a counterclockwise direction, then the islands in the clockwise direction. The total number of edge points is noted as NPTFR.
 
- 13 values are given for each point. Only data in colums 1, 12 and 13 are used by TOMAWAC:
+ 13 values are given for each point. Only data in colums 1, 12 and 13 are used by \tomawac:
 
 \begin{enumerate}
 \item  The 13th data column (integer variable IPTFR) corresponds to the boundary point number ranked in terms of the boundary point numbering.
@@ -580,7 +580,7 @@ Key-word value &  & Spectrum & Constants being used \\ \hline
 
  The boundary conditions can be prescribed by means of the integer keyword \textit{TYPE OF BOUNDARY DIRECTIONAL SPECTRUM}.TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 
- Table~8.1 (see section 8.4) presents all the spectrum types available in TOMAWAC. The constants given in Table~8.1 can be prescribed using the following keywords:
+ Table~8.1 (see section 8.4) presents all the spectrum types available in \tomawac. The constants given in Table~8.1 can be prescribed using the following keywords:
 
  Hm0:  \textit{BOUNDARY SIGNIFICANT WAVE HEIGHTBOUNDARY SIGNIFICANT WAVE HEIGHT,}
 
@@ -637,14 +637,14 @@ Key-word value &  & Spectrum & Constants being used \\ \hline
 
  By default, the CORFONCORFON subroutine performs the same number of bottom smoothing iterations as LISFON, i.e. the same value as specified by the integer keyword \textit{BOTTOM SMOOTHINGSBOTTOM SMOOTHINGS.}
 
- Note that the CORFONCORFON subroutine is not called in case the computation is initialized with the result of a former TOMAWAC run (``hot start'').
+ Note that the CORFONCORFON subroutine is not called in case the computation is initialized with the result of a former \tomawac run (``hot start'').
 
  This subroutine is part of the TELEMACTELEMAC-2D library and is listed in APPENDIX 2.
 
 
 \subsection{ Modifying the co-ordinates: CORRXYCORRXY subroutine }
 
- TOMAWAC allows the mesh point co-ordinates to be modified at the beginning of the computation, so that an up-scaling (switching from a small scale model to a full-size model), a rotation or a translation can be performed.
+ \tomawac allows the mesh point co-ordinates to be modified at the beginning of the computation, so that an up-scaling (switching from a small scale model to a full-size model), a rotation or a translation can be performed.
 
  Such changes are made using the CORRXYCORRXY subroutine from the BIEF library, which is called in at the beginning of the computation. This subroutine is void by default and provides, in the form of a comment, an example of programming relevant to a change of scale and origin. It is part of the TELEMACTELEMAC-2D library and is listed in APPENDIX 2.
 

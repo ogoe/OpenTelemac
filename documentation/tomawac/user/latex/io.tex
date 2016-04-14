@@ -2,7 +2,7 @@
 
 \section{ Preliminary remark}
 
- During a computation, the TOMAWAC software uses a number of files, some of which are optional, as inputs and outputs.
+ During a computation, the \tomawac software uses a number of files, some of which are optional, as inputs and outputs.
 
  The input files are:
 
@@ -52,11 +52,11 @@ The output files are:
 
  The steering file name is specified in the steering file through the keyword: \textit{STEERING FILESTEERING FILE.}
 
- It is a text file created by means of a text editor. In a way, it serves as the computation control panel. It includes a set of keywords to which values are assigned. If a keyword does not appear in this file, then TOMAWAC will assign to it the default value as defined in the dictionary file (refer to the description in APPENDIX 3). If such a default value is not defined in the dictionary, then the computation will come to a halt and display an error message. For instance, the command \textit{NUMBER OF DIRECTIONSNUMBER OF DIRECTIONS} = 12 is for specifying that the direction spectrum of wave action or its moments will be discretised over 12 propagation directions.
+ It is a text file created by means of a text editor. In a way, it serves as the computation control panel. It includes a set of keywords to which values are assigned. If a keyword does not appear in this file, then \tomawac will assign to it the default value as defined in the dictionary file (refer to the description in APPENDIX 3). If such a default value is not defined in the dictionary, then the computation will come to a halt and display an error message. For instance, the command \textit{NUMBER OF DIRECTIONSNUMBER OF DIRECTIONS} = 12 is for specifying that the direction spectrum of wave action or its moments will be discretised over 12 propagation directions.
 
- TOMAWAC reads the steering file at the beginning of the computation.
+ \tomawac reads the steering file at the beginning of the computation.
 
- Both dictionary file and steering file are read by the so-called DAMOCLESDAMOCLES utility which is included in TOMAWAC. The syntactic rules of DAMOCLES should then be observed upon the creation of the steering file These rules are described here below.
+ Both dictionary file and steering file are read by the so-called DAMOCLESDAMOCLES utility which is included in \tomawac. The syntactic rules of DAMOCLES should then be observed upon the creation of the steering file These rules are described here below.
 
  The write rules are as follows:
 
@@ -113,7 +113,7 @@ The output files are:
 
  Furthermore, this file may also include bathymetry information in each point of the mesh, provided that the interpolation of the bathymetry was carried out during the execution of the STBTELSTBTEL module or during the generation of the mesh.
 
- TOMAWAC reproduces the information regarding the geometry at the beginning of the 2D results. Any computation results file can then be used as a geometry file when one wants to perform a further simulation on the same mesh.
+ \tomawac reproduces the information regarding the geometry at the beginning of the 2D results. Any computation results file can then be used as a geometry file when one wants to perform a further simulation on the same mesh.
 
 
 \subsection{ The boundary conditions file. }
@@ -129,7 +129,7 @@ The output files are:
 
  According to its type -- binary or formatted- the currents file name is specified in the steering file through the keywords: \textit{BINARY CURRENTS }FILEBINARY CURRENTS FILE and\textit{ FORMATTED CURRENTS FILEFORMATTED CURRENTS FILE.}
 
- It is the file from which TOMAWAC reads the current field components. The current field may be either stationary or non-stationary. The current field will be non-stationary when the keyword \textit{CONSIDERATION OF TIDECONSIDERATION OF TIDE }is set to TRUE. When the current field is stationary, the keyword \textit{CONSIDERATION OF A STATIONARY CURRENTCONSIDERATION OF A STATIONARY CURRENT} should be set to TRUE. By default, both keywords will be set to FALSE. When both are set to TRUE, the keywords will be inconsistent, and the program will halt.
+ It is the file from which \tomawac reads the current field components. The current field may be either stationary or non-stationary. The current field will be non-stationary when the keyword \textit{CONSIDERATION OF TIDECONSIDERATION OF TIDE }is set to TRUE. When the current field is stationary, the keyword \textit{CONSIDERATION OF A STATIONARY CURRENTCONSIDERATION OF A STATIONARY CURRENT} should be set to TRUE. By default, both keywords will be set to FALSE. When both are set to TRUE, the keywords will be inconsistent, and the program will halt.
 
  Several commonly used formats can be read. This selection is made through the integer keyword \textit{CURRENTS FILE FORMATCURRENTS FILE FORMAT}. It can\textit{ }be set to a value from 3 to 4
 
@@ -144,7 +144,7 @@ The output files are:
 
  According to its type -- binary or formatted- the tidal water level file name is specified in the steering file through the keywords: \textit{BINARY TIDAL WATER LEVEL FILEBINARY TIDAL WATER LEVEL FILE }or\textit{ FORMATTED TIDAL WATER LEVEL FILEFORMATTED TIDAL WATER LEVEL FILE.}
 
- This is the file from which TOMAWAC reads the tidal water level being referred to the \textit{INITIAL STILL WATER LEVELINITIAL STILL WATER LEVEL}. Several commonly used formats can be read. This selection is made by means of the integer keyword \textit{TIDAL WATER LEVEL FILE FORMATTIDAL WATER LEVEL FILE FORMAT}. It can\textit{ }be set to a value from 3 to 4.
+ This is the file from which \tomawac reads the tidal water level being referred to the \textit{INITIAL STILL WATER LEVELINITIAL STILL WATER LEVEL}. Several commonly used formats can be read. This selection is made by means of the integer keyword \textit{TIDAL WATER LEVEL FILE FORMATTIDAL WATER LEVEL FILE FORMAT}. It can\textit{ }be set to a value from 3 to 4.
 
 \begin{enumerate}
 \item  The format is 3: it is a TELEMACTELEMAC result file of the SERAFINSERAFIN standard. It is a binary file and its name should be assigned to the keyword: \textit{BINARY TIDAL WATER LEVEL FILEBINARY TIDAL WATER LEVEL FILE.}
@@ -157,7 +157,7 @@ The output files are:
 
  According to its type -- binary or formatted- the wind file name is specified in the steering file through the keywords: \textit{BINARY WINDS FILEBINARY WINDS FILE }or\textit{ FORMATTED WINDS FILEFORMATTED WINDS FILE.}
 
- This is the file from which TOMAWAC reads the information about the wind fields. As in the case of the current, several read formats are allowed. The integer keyword \textit{WINDS FILE FORMATWINDS FILE FORMAT} can\textit{ }be set to values from 1 to 4.
+ This is the file from which \tomawac reads the information about the wind fields. As in the case of the current, several read formats are allowed. The integer keyword \textit{WINDS FILE FORMATWINDS FILE FORMAT} can\textit{ }be set to values from 1 to 4.
 
 \begin{enumerate}
 \item  The format is 1: it is a WAM-cycle 4 format type(as described in APPENDIX 8). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.FORMATTED WINDS FILE
@@ -174,7 +174,7 @@ The output files are:
 
  This previous computation file name is specified in the steering file through the character keyword: \textit{PREVIOUS COMPUTATION FILEPREVIOUS COMPUTATION FILE.}
 
- If a \textit{NEXT COMPUTATIONNEXT COMPUTATION} is done\textit{, }TOMAWAC fetches this file in order to initialize the directional spectrum of wave action at every point. This file's format, which is specific to TOMAWAC, is described in Appendix 8. It is a binary file.
+ If a \textit{NEXT COMPUTATIONNEXT COMPUTATION} is done\textit{, }\tomawac fetches this file in order to initialize the directional spectrum of wave action at every point. This file's format, which is specific to \tomawac, is described in Appendix 8. It is a binary file.
 
 
 \subsection{ The global results file}
@@ -188,7 +188,7 @@ The output files are:
 
  The 2D results file name is specified in the steering file through the character keyword: \textit{2D RESULTS FILE2D RESULTS FILE.}
 
- This is the file into which TOMAWAC writes the results of the 2-dimensional variables during the computation. It is a binary file of the SERAFINSERAFIN standard. The data contained in it are in the following order:
+ This is the file into which \tomawac writes the results of the 2-dimensional variables during the computation. It is a binary file of the SERAFINSERAFIN standard. The data contained in it are in the following order:
 
 \begin{enumerate}
 \item  all the data about the mesh geometry;
@@ -261,7 +261,7 @@ BETA &  Breaking waves coefficient \\ \hline
 
  This file's name is specified in the steering file through the character keyword: \textit{PUNCTUAL RESULTS FILEPUNCTUAL RESULTS FILE.}
 
- This is the file into which the directional spectra of wave action at some previously specified points are stored by TOMAWAC during the computation. These points are selected by means of the following keywords:
+ This is the file into which the directional spectra of wave action at some previously specified points are stored by \tomawac during the computation. These points are selected by means of the following keywords:
 
 \begin{enumerate}
 \item  \textit{ABSCISSAE OF SPECTRUM PRINTOUT POINTSABSCISSAE OF SPECTRUM PRINTOUT POINTS} and \textit{ORDINATES OF SPECTRUM PRINTOUT POINTSORDINATES OF SPECTRUM PRINTOUT POINTS}: they are chart keywords. The maximum number of points is 19, i.e. a maximum of 19 printout points. The spectrum will be recorded at the closest point to the specified position, no spatial interpolation is made.
@@ -274,7 +274,7 @@ BETA &  Breaking waves coefficient \\ \hline
 
 \subsection{ The printout listing}
 
- This file contains all the messages as generated by TOMAWAC during the computation. It is the main report of a TOMAWAC run. Its content depends on the value of the following keyword:
+ This file contains all the messages as generated by \tomawac during the computation. It is the main report of a \tomawac run. Its content depends on the value of the following keyword:
 
 \begin{enumerate}
 \item  \textit{PERIOD FOR LISTING PRINTOUTSPERIOD FOR LISTING PRINTOUTS}: this sets the time between two time steps of message transmission. This value is given in terms of the number of iterations. For example, the following sequence:
@@ -282,21 +282,21 @@ BETA &  Breaking waves coefficient \\ \hline
 
    \textit{TIME INCREMENT} = 30.    \textit{PERIOD FOR LISTING PRINTOUTSPERIOD FOR LISTING PRINTOUTS }= 2 will result in a print in the output listing every 60 seconds of simulation.
 
- The listing is either displayed on the monitor or saved in a file. The file name is defined by the user at the execution of the TOMAWAC simulation (refer to APPENDIX 1).
+ The listing is either displayed on the monitor or saved in a file. The file name is defined by the user at the execution of the \tomawac simulation (refer to APPENDIX 1).
 
 
 \subsection{ The User FORTRAN file}
 
  This User FORTRAN file name is specified in the steering file through the character keyword: \textit{FORTRAN FILEFORTRAN FILE}.\textit{}
 
- The FORTRAN contains all the user-modified TOMAWAC subroutines as well as the specifically developed routines for that computation.
+ The FORTRAN contains all the user-modified \tomawac subroutines as well as the specifically developed routines for that computation.
 
  This file is compiled and linked during run time in order to generate the executable being used for the simulation.
 
 
 \subsection{ The auxiliary files}
 
- Other input/output files may be used by TOMAWAC.
+ Other input/output files may be used by \tomawac.
 
 \begin{enumerate}
 \item  A binary data or results file: its name is specified through the character keyword \textit{BINARY FILE 1BINARY FILE 1} (Channel unit No. 24).
@@ -319,7 +319,7 @@ BETA &  Breaking waves coefficient \\ \hline
  The following libraries are used during the link editing operation:
 
 \begin{enumerate}
-\item  TOMAWAC~library: contains the specific subroutines of the TOMAWAC computation model.
+\item  \tomawac~library: contains the specific subroutines of the \tomawac computation model.
 
 \item  telemac libraries: contains the specific subroutines of the TELEMACTELEMAC-2D or TELEMAC-3D computation model.
 
@@ -339,14 +339,14 @@ BETA &  Breaking waves coefficient \\ \hline
 
 \section{ Binary files }
 
- Binary files are an efficient way to store data on disk. However, binary files written on different computers may differ. TOMAWAC recognizes three types of binary files, namely:
+ Binary files are an efficient way to store data on disk. However, binary files written on different computers may differ. \tomawac recognizes three types of binary files, namely:
 
 \begin{enumerate}
 \item  the native binary of the computer,
 
 \item  IBM binary (so that a file that has been generated on an IBM computer can be read), and
 
-\item  IEEE binary, so that these files can be read on a workstation (provided that the suitable subroutines are set up when installing TOMAWAC on the computer).
+\item  IEEE binary, so that these files can be read on a workstation (provided that the suitable subroutines are set up when installing \tomawac on the computer).
 \end{enumerate}
 
  The following keywords can be used:
@@ -376,7 +376,7 @@ BETA &  Breaking waves coefficient \\ \hline
 
 \section{ Files standard}
 
- Almost all files that were in Serafin format in previous versions of TOMAWAC, have been given a key-word for the file format.
+ Almost all files that were in Serafin format in previous versions of \tomawac, have been given a key-word for the file format.
 
  If the name of the file is: ``GEOMETRY FILEGEOMETRY FILE'' (``FICHIER DE GEOMETRIE''), the new keyword will be: ``GEOMETRY FILE FORMATGEOMETRY FILE FORMAT'' (``FORMAT DU FICHIER DE GEOMETRIE'').
 
@@ -392,21 +392,21 @@ BETA &  Breaking waves coefficient \\ \hline
 
  A new file structure has been added to library BIEF for simplifying the opening/closing and reading/writing operations with these file formats, as well as for simplifying the coupling between programmes,. The description of this file structure and of the operations on those files are given in APPENDIX 9.
 
- As specified in section7.2.7, a fourth binary format exists, which is specific to TOMAWAC and is used only for saving the results when they are used to initialize a next computation. This binary file format cannot be read by the RUBENSRUBENS post-processor, or by FUDAA PRE-PRO graphics post-processor.
+ As specified in section7.2.7, a fourth binary format exists, which is specific to \tomawac and is used only for saving the results when they are used to initialize a next computation. This binary file format cannot be read by the RUBENSRUBENS post-processor, or by FUDAA PRE-PRO graphics post-processor.
 
 
 \section{ Bathymetry data }
 
- The bathymetry information can be supplied to TOMAWAC at two levels:
+ The bathymetry information can be supplied to \tomawac at two levels:
 
 \begin{enumerate}
 \item  Directly in the geometry/mesh file by a bathymetry value being assigned to each node in the mesh. In this case the bathymetry data have been processed previously, running the STBTELSTBTEL module or mesh generator. For example, STBTEL reads the information from one or more bottom topography files (up to 5 files) and performs an interpolation at every point within the domain;
 
-\item  In the form of an irregular pattern of spot heights without any necessary relation to the mesh nodes, during the TOMAWAC computation. The interpolation is then performed directly by TOMAWAC with the same algorithm as used by STBTELSTBTEL. The bathymetry file name is given by the character keyword \textit{BOTTOM TOPOGRAPHY FILEBOTTOM TOPOGRAPHY FILE. }Unlike STBTEL, TOMAWAC only handles one bottom topography file. The file can be in SINUSXSINUSX format or can consist of three columns X,Y,Z.
+\item  In the form of an irregular pattern of spot heights without any necessary relation to the mesh nodes, during the \tomawac computation. The interpolation is then performed directly by \tomawac with the same algorithm as used by STBTELSTBTEL. The bathymetry file name is given by the character keyword \textit{BOTTOM TOPOGRAPHY FILEBOTTOM TOPOGRAPHY FILE. }Unlike STBTEL, \tomawac only handles one bottom topography file. The file can be in SINUSXSINUSX format or can consist of three columns X,Y,Z.
 \end{enumerate}
 
- TOMAWAC also provides an opportunity to carry out a smoothing of the bathymetry in order to get a more consistent geometry. The smoothing algorithm can be iterated several times in order to achieve more or less extensive smoothing. The number of iterations is set using the keyword \textit{BOTTOM SMOOTHINGSBOTTOM SMOOTHINGS} and is carried out within the CORFONCORFON subroutine. This keyword's default value is 0. (also refer to the programming of the CORFON user subroutine in 8.6.1).
+ \tomawac also provides an opportunity to carry out a smoothing of the bathymetry in order to get a more consistent geometry. The smoothing algorithm can be iterated several times in order to achieve more or less extensive smoothing. The number of iterations is set using the keyword \textit{BOTTOM SMOOTHINGSBOTTOM SMOOTHINGS} and is carried out within the CORFONCORFON subroutine. This keyword's default value is 0. (also refer to the programming of the CORFON user subroutine in 8.6.1).
 
- NOTE: the bathymetry data should preferably be supplied to TOMAWAC in the form of water depth and not of water height. If necessary, a conversion can be performed in the CORFONCORFON subroutine.
+ NOTE: the bathymetry data should preferably be supplied to \tomawac in the form of water depth and not of water height. If necessary, a conversion can be performed in the CORFONCORFON subroutine.
 
 
