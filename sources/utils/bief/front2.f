@@ -34,6 +34,12 @@
 !+   Now checking the maximum number of boundaries before using the
 !+   would-be undersized arrays.
 !
+!history  R. ATA
+!+        19/04/2016
+!+        v7p2
+!+   Bug correction:LIQF and SOLF were not changed for cases where     
+!+   the 3 nodes (prevK, K,kp1bor(k)) are all liquid
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLIQ         |<--| BEGINNING OF LIQUID BOUNDARIES
 !| DEBSOL         |<--| BEGINNING OF SOLID BOUNDARIES
@@ -207,6 +213,8 @@
         LIQF = .FALSE.
         SOLF = .TRUE.
       ELSEIF(L1.NE.KLOG.AND.L2.NE.KLOG.AND.L3.NE.KLOG) THEN
+        LIQF = .TRUE.
+        SOLF = .FALSE. 
 !     LIQUID-LIQUID TRANSITIONS AT POINT K
         IF(L2.NE.L3.OR.LIUBOR(K).NE.LIUBOR(KP1BOR(K))) THEN
           FINLIQ(NFRLIQ) = K
