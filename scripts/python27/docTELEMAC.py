@@ -58,7 +58,6 @@ def compiletex(texfile, version):
       param version Version of the code/documentation
    """
 
-   #TODO: Add bibtex compilation
    # First compilation
    mes = MESSAGES(size=10)
    try:
@@ -71,11 +70,12 @@ def compiletex(texfile, version):
    if code != 0:
       print 'Latex compilation failed'
       print tail
+      sys.exit(1)
 
    # Bibtex compilation
    try:
       tail, code = mes.runCmd("bibtex %s.aux" % \
-                       (texfile), False)
+                       (texfile+'_'+version), False)
    except OSError as exc:
       print exc.message
       sys.exit(1)
@@ -83,6 +83,7 @@ def compiletex(texfile, version):
    if code != 0:
       print 'Bibtex compilation failed'
       print tail
+      sys.exit(1)
 
    # Second compilation
    try:
@@ -95,6 +96,7 @@ def compiletex(texfile, version):
    if code != 0:
       print 'Latex compilation failed'
       print tail
+      sys.exit(1)
 
    # Third compilation
    try:
@@ -107,6 +109,7 @@ def compiletex(texfile, version):
    if code != 0:
       print 'Latex compilation failed'
       print tail
+      sys.exit(1)
 
 
 #
