@@ -1,0 +1,180 @@
+\section{File structure and processing}
+\label{se:filestruct}
+All files in the Serafin format may now be built in 3 different formats (given in 8 characters):
+
+ `SERAFIN `: old format, understood by Rubens
+
+ `SERAFIND': the same in double precision, not understood by Rubens
+
+ `MED  `: understood by the Salome Platform.
+
+ Consequently, for every previous Serafin file called ``NAME-OF-FILE'', a key-word ``NAME-OF-FILE FORMAT'' has been added. In French ``FORMAT DU FICHIER DE \dots ''.
+
+ For simplifying the implementation of this new possibility, as well as simplifying the coupling between programmes, a new file structure has been added to library BIEF. The goal is to store all the information related to a file in a single structure. The previous names of logical units and file names, such as NGEO, NRES,\dots  and NOMGEO, NOMRES,\dots  have been replaced by this new structure. It concerns ALL the files, not only the Serafin format. As a consequence, all the subroutines reading or writing to files have been modified.
+
+ More details are given here below.
+
+ \textbf{\underbar{Structure of files}}
+
+ The new Fortran 90 structure for files is as follows:
+
+ C
+
+ C=======================================================================
+
+ C
+
+ C STRUCTURE OF FILE
+
+ C
+
+ C=======================================================================
+
+ C
+
+   TYPE BIEF\_FILE
+
+ C
+
+ C   LU: LOGICAL UNIT TO OPEN THE FILE
+
+    INTEGER LU
+
+ C
+
+ C   NAME: NAME OF FILE
+
+    CHARACTER(LEN=144) NAME
+
+ C
+
+ C   TELNAME: NAME OF FILE IN TEMPORARY DIRECTORY
+
+    CHARACTER(LEN=6) TELNAME
+
+ C
+
+ C   FMT: FORMAT (SERAFIN, MED, ETC.)
+
+    CHARACTER(LEN=8) FMT
+
+ C
+
+ C   ACTION: READ, WRITE OR READWRITE
+
+    CHARACTER(LEN=9) ACTION
+
+ C
+
+ C   BINASC: ASC FOR ASCII OR BIN FOR BINARY
+
+    CHARACTER(LEN=3) BINASC
+
+ C
+
+ C   TYPE: KIND OF FILE
+
+    CHARACTER(LEN=12) TYPE
+
+ C
+
+   END TYPE BIEF\_FILE
+
+ \textbf{\underbar{Inputs and outputs: opening and closing files}}
+
+ The various data and results files of TOMAWAC are described in its dictionary. The information relevant to files will be read with the subroutine READ\_SUBMIT, which is called in subroutine LECDON\_TOMAWAC, and stored in an array of file structures (called, WAC\_FILES). Hereafter is given an excerpt of TOMAWAC dictionary regarding the results file:
+
+ NOM = 'FICHIER DES RESULTATS 2D'
+
+ NOM1 = '2D RESULTS FILE2D RESULTS FILE'
+
+ TYPE = CARACTERE
+
+ INDEX = 08
+
+ MNEMO = `WAC\_FILES(WACRES)\%NAME'
+
+ SUBMIT = 'WACRES-READWRITE-08;WACRES;OBLIG;BIN;ECR;SELAFIN'
+
+ DEFAUT = ' '
+
+ DEFAUT1 = ' '
+
+ The character string called SUBMIT is used both by the perl scripts and, through Damocles, by the Fortran programme. It is composed of 6 character strings.
+
+ The first string, here WACRES-READWRITE-08, is made of:
+
+ 1) the fortran integer for storing the file number: WACRES (which is declared in declarations\_telemac2d.f)
+
+ 2) the argument ACTION in the Fortran Open statement that will be used to open the file. ACTION may be READ, WRITE, or READWRITE. Here it is READWRITE because the results file is written, and in case of validation it is read at the end of the computation. It will be stored into WAC\_FILES(WACRES) \%ACTION
+
+ 3) the logical unit to open the file. This a priori value may be changed in case of code coupling. It is stored into WAC\_FILES(WACRES) \%LU
+
+ The \textbf{second} string, here WACRES, is the name of the file as it will appear in the temporary file where the computation is done.
+
+ The \textbf{third} string may be OBLIG (the name of the file must always be given), or FACUL (this file is not mandatory).
+
+ The \textbf{fourth} string (here BIN) says if it is a binary (BIN) or ASCII (ASC) file.
+
+ The \textbf{fifth} string is just like the READWRITE statement and is used by the perl scripts.
+
+ The \textbf{sixth} string is also used by the perl scripts and gives information on how the file must be treated. `SELAFIN' means that the file is a Selafin format, it will have to be decomposed if parallelism is used. Other possibilities are:
+
+ SELAFIN-GEOM: this is the geometry file
+
+ FORTRAN: this is the Fortran file for user subroutines
+
+ CAS: this is the parameter file
+
+ CONLIM: this is the boundary conditions file
+
+ PARAL: this file will have an extension added to its name, for distinguishing between processors
+
+ DICO: this is the dictionary
+
+ SCAL: this file will be the same for all processors
+
+ The following sequence of subroutines is used for opening, using and closing files:
+
+ \underbar{Note:} subroutine INIT\_FILES2 in BIEF version 5.9 has been renamed BIEF\_INIT in version 6.0 and has from now on nothing to see with files.
+
+ \textbf{1) opening files}
+
+ IFLOT=0
+
+ CALL BIEF\_OPEN\_FILES(CODE,WAC\_FILES,44,PATH,NCAR,COUPLAGE,IFLOT,ICODE)
+
+ CODE: name of calling program in 24 characters
+
+ WAC\_FILES: the array of BIEF\_FILE structures
+
+ 44: the size of the previous array
+
+ PATH: full name of the path leading to the directory the case is
+
+ NCAR: number of characters of the string PATH
+
+ COUPLAGE: logical stating if there is a coupling between several programs.
+
+ IFLOT: in case of coupling, will be the last logical unit taken by a file
+
+ ICODE: code number in a coupling. For example in a coupling between Telemac-2D and Sisyphe, Telemac-2D will be code 1 and Sisyphe will be code 2.
+
+ \textbf{2) using files:}
+
+ Most operations on files consist on reading and writing, which always uses the logical unit. Every file has a name in the temporary folder where the program is executed, e.g. WACRES. The associated file number is an integer with the same name. The logical unit of this file will be equal to WACRES if there is no coupling, but more generally it is stored into WAC\_FILES(WACRES)\%LU. The logical unit of the geometry file in Sisyphe will be SIS\_FILES(SISGEO)\%LU.
+
+ Sometimes the real name of files in the original is also used, for example to know if it exists (= has been given in the parameter file). This name is retrieved in the component NAME. For example the name of the geometry file in Sisyphe will be SIS\_FILES(SISGEO)\%NAME.
+
+ \textbf{3) closing files:}
+
+ CALL BIEF\_CLOSE\_FILES(CODE,WAC\_FILES,44,PEXIT)
+
+ CODE: name of calling program in 24 characters
+
+ WAC\_FILES: the array of BIEF\_FILE structures
+
+ 44: the size of the previous array
+
+ PEXIT: logical, if yes will stop parallelism (in a coupling the last program calling BIEF\_CLOSE\_FILES will also stop parallelism).
+

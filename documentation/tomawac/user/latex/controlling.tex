@@ -15,7 +15,7 @@ The computation case title is specified by the keyword \textit{TITLE}
 
  The time data are prescribed using the two keywords \textit{TIME step} (real) and \textit{NUMBER OF TIME INCREMENTS }(integer). The former sets the elapsed time, in seconds, between two consecutive computation instants (but not necessarily two outputs in the results file). The number of time steps is for setting the overall computation time (which is obviously equal to the time increment value multiplied by the number of time steps).
 
- An additional keyword also refers to time. This is the \textit{DATE OF COMPUTATION BEGINNING}, which is used to identify the time in relation to the date/times written in the \textit{WINDS FILE} (refer to APPENDIX 8, WAM-typed format). The convention adopted for writing the \textit{DATE OF COMPUTATION BEGINNING} is yyyymmddhhmm. For instance, 190311051110 corresponds to November 5th, 1903, at 11.10 AM.
+ An additional keyword also refers to time. This is the \textit{DATE OF COMPUTATION BEGINNING}, which is used to identify the time in relation to the date/times written in the \textit{WINDS FILE} (refer to \ref{se:desformat}, WAM-typed format). The convention adopted for writing the \textit{DATE OF COMPUTATION BEGINNING} is yyyymmddhhmm. For instance, 190311051110 corresponds to November 5th, 1903, at 11.10 AM.
 
  Note that when a computation is resumed, the initial time of the new computation corresponds to the last time increment in the previous computation (i.e. the computation is not resumed at time zero).
 
@@ -77,7 +77,7 @@ where $f_{0} $ is the \textit{MINIMUM FREQUENCY }  r is the \textit{FREQUENTIAL 
 
  When the wind can be described analytically, the user subroutine ANAVEN.f can be used. The wind is fully specified when the keywords \textit{FORMATTED WINDS FILE} and \textit{BINARY WINDS FILE} do not have any value, whereas the keyword \textit{CONSIDERATION OF A WIND }is "TRUE".
 
- \tomawac can also take into account a wind given in a binary or formatted file. In this case a value (the name of the file) should be assigned to the keyword \textit{FORMATTED WINDS FILE }or \textit{BINARY WINDS FILE}. The available formats for reading out these data correspond to the keyword \textit{WINDS FILE FORMAT} (see in section \ref{se:windfile} and APPENDIX 8).
+ \tomawac can also take into account a wind given in a binary or formatted file. In this case a value (the name of the file) should be assigned to the keyword \textit{FORMATTED WINDS FILE }or \textit{BINARY WINDS FILE}. The available formats for reading out these data correspond to the keyword \textit{WINDS FILE FORMAT} (see in section \ref{se:windfile} and \ref{se:desformat}).
 
  When these predefined formats cannot be used, the subroutine VENUTI.f can be included in the FORTRAN file and modified accordingly, specifying the format 4 for the INDIV FORTRAN variable. On completion of reading the winds file, the wind components are used as such if provided on the computational mesh, or interpolated over that mesh in provided on a different grid.
 
@@ -670,14 +670,14 @@ word  &  & Spectrum & Constants  being used \\
 
  Note that the CORFON subroutine is not called in case the computation is initialized with the result of a former \tomawac run (``hot start'').
 
- This subroutine is part of theTELEMAC-2D library and is listed in APPENDIX 2.
+ This subroutine is part of theTELEMAC-2D library and is listed in \ref{se:usefulsub}
 
 
 \subsection{ Modifying the co-ordinates: CORRXY subroutine }
 
  \tomawac allows the mesh point co-ordinates to be modified at the beginning of the computation, so that an up-scaling (switching from a small scale model to a full-size model), a rotation or a translation can be performed.
 
- Such changes are made using the CORRXY subroutine from the BIEF library, which is called in at the beginning of the computation. This subroutine is void by default and provides, in the form of a comment, an example of programming relevant to a change of scale and origin. It is part of the TELEMAC-2D library and is listed in APPENDIX 2.
+ Such changes are made using the CORRXY subroutine from the BIEF library, which is called in at the beginning of the computation. This subroutine is void by default and provides, in the form of a comment, an example of programming relevant to a change of scale and origin. It is part of the TELEMAC-2D library and is listed in \ref{se:usefulsub}
 
 
 \subsection{ Operations on vectors: OVOV subroutine }

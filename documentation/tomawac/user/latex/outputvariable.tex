@@ -1,0 +1,66 @@
+\section{ Output variables of \tomawac}
+
+%\begin{longtable}{|p{0.2in}|p{0.5in}|p{2.6in}|p{0.5in}|p{1.1in}|}\hline
+\begin{longtable}{@{\extracolsep{\fill}}|c|c|p{2.6in}|c|p{1.1in}|}\hline
+%\begin{longtable}{@{\extracolsep{\fill}}ccccc}\hline
+\caption{ Output variables of \tomawac}
+\label{tab:output}
+\\
+\toprule
+\toprule
+\textbf{$N^\circ$} & \textbf{Symbol} & \textbf{Description of the variable} & \textbf{Unit} & \textbf{Output name} \\ \hline
+\midrule
+%
+\endfirsthead
+\caption{(continued)}\\
+%
+\toprule
+\toprule
+$N^\circ$ & \textbf{Symbol} & \textbf{Description of the variable} & \textbf{Unit} & \textbf{Output name} \\ \hline
+\midrule
+%
+\endhead
+%%%%%%%%%%%%%%
+% Foot
+%%%%%%%%%%%%%%
+\bottomrule
+\bottomrule
+%
+\endfoot
+\multirow{3}{*}{1} & \multirow{3}{*}{\textbf{M0}} & Variance of the sea state $m_{o}$ .\newline moment of order 0 of the wave spectrum.\newline $m_{0} =\int _{0}^{\infty } \int _{\; 0}^{\; 2\pi }F(f,\theta )\; df\; d\theta  =\int _{\; 0}^{\; \infty }S(f)\; df $ & \multirow{3}{*}{$m^{2}$} & VARIANCE M0 \\ \hline
+\multirow{2}{*}{ 2} & \multirow{2}{*}{\textbf{HM0}}& Spectral significant wave height H${}_{mo}$\newline $H_{mo} =4\sqrt{m_{0} } $ &  \multirow{2}{*}{m} & WAVE HEIGHT HM0 \\ \hline
+\multirow{7}{*}{3} & \multirow{7}{*}{\textbf{DMOY}} & Mean wave direction $\theta_{m}$ with respect to the North or to the X axis depending on the adopted choice.\newline $\theta _{m} =Arc\tan (\frac{b}{a} )\; *\; (180/\pi )$\newline $a=\dsp \frac{\int _{0}^{\infty } \int _{\; 0}^{\; 2\pi }\cos (\theta )\; F(f,\theta )\; df\; d\theta  }{m_{o} } $  \newline  $b=\dsp \frac{\int _{0}^{\infty } \int _{\; 0}^{\; 2\pi }\sin (\theta )\; F(f,\theta )\; df\; d\theta  }{m_{o} } $ & \multirow{7}{*}{deg.} & \multirow{5}{*}{MEAN} \multirow{8}{*}{DIRECTION} \\ \hline
+\multirow{4}{*}{4} & \multirow{4}{*}{\textbf{SPD}} & Mean angular spreading $\sigma$ of the directional wave spectrum.\newline $\sigma =\sqrt{2\left(1-\sqrt{a^{2} +b^{2} } \right)} \; *\; (180/\pi )$ & \multirow{4}{*}{deg.} & \multirow{4}{*}{WAVE SPREAD} \\ \hline
+ 5 & \textbf{ZF} & Sea bottom elevation. & m & BOTTOM \\ \hline
+ 6 & \textbf{WD} & Water depth. & m & WATER DEPTH \\ \hline
+\multirow{2}{*}{7} & \multirow{2}{*}{\textbf{UX}} & Component along X axis of the marine flow velocity vector (input data) &  \multirow{2}{*}{m/s} & \multirow{2}{*}{VELOCITY U }\\ \hline
+\multirow{2}{*}{8} & \multirow{2}{*}{\textbf{UY}} & Component along Y axis of the marine flow velocity vector (input data) &  \multirow{2}{*}{m/s} & \multirow{2}{*}{VELOCITY V} \\ \hline
+\multirow{2}{*}{9} & \multirow{2}{*}{\textbf{VX}} & Component along X axis of the wind velocity vector (input data) &  \multirow{2}{*}{m/s} & WIND ALONG X \\ \hline
+\multirow{2}{*}{10} &\multirow{2}{*}{ \textbf{VY}} & Component along Y axis of the wind velocity vector (input data) &  \multirow{2}{*}{m/s} & WIND ALONG Y \\ \hline
+\multirow{2}{*}{11} & \multirow{2}{*}{\textbf{FX}} & Component along X axis of the radiation force due to waves. &  \multirow{2}{*}{m/s${}^{2}$} & \multirow{2}{*}{FORCE FX} \\ \hline
+\multirow{2}{*}{12} & \multirow{2}{*}{\textbf{FY}} & Component along Y axis of the radiation force due to waves. &  \multirow{2}{*}{m/s${}^{2}$} &\multirow{2}{*}{ FORCE FY} \\ \hline
+\multirow{2}{*}{13} & \multirow{2}{*}{\textbf{SXX}} & Component Sxx of the radiation stress tensor. &  \multirow{2}{*}{m${}^{3}$/s${}^{2}$} & \multirow{2}{*}{STRESS SXX} \\ \hline
+\multirow{2}{*}{14} & \multirow{2}{*}{\textbf{SXY}} & Component Sxy of the radiation stress tensor. &  \multirow{2}{*}{m${}^{3}$/s${}^{2}$} & \multirow{2}{*}{STRESS SXY} \\ \hline
+\multirow{2}{*}{15} & \multirow{2}{*}{\textbf{SYY}} & Component Syy of the radiation stress tensor. &  \multirow{2}{*}{m${}^{3}$/s${}^{2}$} & \multirow{2}{*}{STRESS SYY} \\ \hline
+\multirow{2}{*}{16} & \multirow{2}{*}{\textbf{UWB}} & \multirow{2}{*}{Mean orbital wave velocity at the bottom.} &  \multirow{2}{*}{m/s} & BOTTOM \newline VELOCITY \\ \hline
+ %\textbf{N${}^\circ$} & Symbol & \textbf{Description of the variable} & \textbf{Unit} & \textbf{Output name} \\ \hline
+ 17 & \textbf{PRI} & ~Private~ variable as chosen by the user. & (user) & PRIVATE 1 \\ \hline
+\multirow{5}{*}{ 18} & \multirow{5}{*}{\textbf{FMOY}} & Mean wave frequency, computed from the moments of order -1 and 0 of the wave spectrum.\newline $f_{moy} =f_{-10} =\left(\frac{m_{-1} }{m_{0} } \right)^{-1} =\left(\frac{\int _{\; 0}^{\; \infty }\frac{S(f)}{f} \; df }{\int _{\; 0}^{\; \infty }S(f)\; df } \right)^{-1} $ &  \multirow{5}{*}{Hz} & \multirow{4}{*}{MEAN FREQ}  \multirow{6}{*}{FMOY} \\ \hline
+\multirow{5}{*}{ 19} & \multirow{5}{*}{\textbf{FM01}} & Mean wave frequency, computed from the moments of order 0 and 1 of the wave spectrum.\newline $\dsp f_{01} =\frac{m_{1} }{m_{0} } =\frac{\int _{\; 0}^{\; \infty }f.S(f)\; df }{\int _{\; 0}^{\; \infty }S(f)\; df } $ & \multirow{5}{*}{Hz} & \multirow{4}{*}{MEAN FREQ}  \multirow{6}{*}{ FM01} \\ \hline
+\multirow{5}{*}{ 20} & \multirow{5}{*}{\textbf{FM02}} & Mean wave frequency, computed from the moments of order 0 and 2 of the wave spectrum.\newline $\dsp f_{02} =\sqrt{\frac{m_{2} }{m_{0} } } =\sqrt{\frac{\int _{\; 0}^{\; \infty }f^{2} .S(f)\; df }{\int _{\; 0}^{\; \infty }S(f)\; df } } $ &  \multirow{5}{*}{Hz} &  \multirow{4}{*}{MEAN FREQ}  \multirow{6}{*}{FM02} \\ \hline
+\multirow{2}{*}{ 21} & \multirow{2}{*}{\textbf{FPD}} & Discrete peak frequency (among the frequencies used to discretise the spectrum). &  \multirow{2}{*}{Hz} & PEAK FREQ FPD \\ \hline
+\multirow{4}{*}{ 22} & \multirow{4}{*}{\textbf{FPR5}} & Peak frequency computed by the Read method of order 5.\newline $\dsp f_{pR5} =\frac{\int _{\; 0}^{\; \infty }f.S^{5} (f)\; df }{\int _{\; 0}^{\; \infty }S^{5} (f)\; df } $ &  \multirow{4}{*}{Hz} & \multirow{3}{*}{PEAK FREQ} \multirow{4}{*}{FPR5} \\ \hline
+ \multirow{4}{*}{23} & \multirow{4}{*}{\textbf{FPR8}} & Peak frequency computed by the Read method of order 8.\newline $\dsp f_{pR8} =\frac{\int _{\; 0}^{\; \infty }f.S^{8} (f)\; df }{\int _{\; 0}^{\; \infty }S^{5} (f)\; df } $ &  \multirow{4}{*}{Hz} &\multirow{3}{*}{PEAK FREQ} \multirow{4}{*}{FPR8} \\ \hline
+ 24 & \textbf{US} & Surface friction velocity u*. & m/s & USTAR \\ \hline
+ 25 & \textbf{CD} & Surface drag coefficient $C_{D}$. & - & CD \\ \hline
+ 26 & \textbf{Z0} & Surface roughness length $z_{o}$. & m & Z0 \\ \hline
+27 & \textbf{WS} & Surface stress due to waves. & kg/(m.s${}^{2}$) & WAVE STRESS \\ \hline
+\multirow{5}{*}{28} & \multirow{5}{*}{\textbf{TMOY}} & Mean wave period, computed from the moments of order -1 and 0 of the wave spectrum.\newline $\dsp T_{moy} =T_{-10} =\frac{m_{-1} }{m_{0} } =\frac{\int _{\; 0}^{\; \infty }T.S(f)\; df }{\int _{\; 0}^{\; \infty }S(f)\; df } $ & \multirow{5}{*}{s} &  \multirow{4}{*}{MEAN PERIOD}  \multirow{6}{*}{TMOY} \\ \hline
+\multirow{5}{*}{29} &\multirow{5}{*}{ \textbf{TM01}} & Mean wave period, computed from the moments of order 0 and 1 of the wave spectrum.\newline $\dsp T_{01} =\frac{1}{f_{01} } $ & \multirow{5}{*}{s} & \multirow{4}{*}{MEAN PERIOD}  \multirow{6}{*}{TM01} \\ \hline
+\multirow{5}{*}{30} &\multirow{5}{*}{ \textbf{TM02}} & Mean wave period, computed from the moments of order 0 and 2 of the wave spectrum.\newline $\dsp T_{02} =\frac{1}{f_{02} } $ & \multirow{5}{*}{s} & \multirow{4}{*}{MEAN PERIOD}  \multirow{6}{*}{TM02} \\ \hline
+\multirow{3}{*}{31}  & \multirow{3}{*}{\textbf{TPD}}  & Discrete peak period.\newline $\dsp T_{pD} =\frac{1}{f_{pD} } $ & s & \multirow{3}{*}{PEAK PERIOD} \multirow{4}{*}{TPD} \\ \hline
+\multirow{4}{*}{32}  & \multirow{4}{*}{\textbf{TPR5}}  & Peak period computed by the Read method of order 5.\newline $\dsp T_{pR5} =\frac{1}{f_{pR5} } $ & s & \multirow{3}{*}{PEAK PERIOD} \multirow{4}{*}{TPR5} \\ \hline
+\multirow{4}{*}{33}  & \multirow{4}{*}{\textbf{TPR8}}  & Peak period computed by the Read method of order 8.\newline $\dsp T_{pR8} =\frac{1}{f_{pR8} } $ & s & \multirow{3}{*}{PEAK PERIOD} \multirow{4}{*}{TPR8} \\ \hline
+\multirow{2}{*}{34}  & \multirow{2}{*}{\textbf{POW}}  & Unit wave power rate (per meter of crest length). & kW/m & WAVE POWER \\ \hline
+ & \textbf{BETA} & Breaking wave coefficient & - & BETA \\ \hline
+\end{longtable}

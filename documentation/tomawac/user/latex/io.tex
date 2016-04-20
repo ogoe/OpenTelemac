@@ -32,27 +32,20 @@ The output files are:
 
 \begin{itemize}
 \item  The 2D results or grid file (mandatory),
-
 \item  The punctual results or spectra file (mandatory),
-
 \item  The next computation file (optional),
-
-\item  The listing printout (either on the display screen or in the file, see in Appendix 2),
-
+\item  The listing printout (either on the display screen or in the file, see in \ref{se:usefulsub}),
 \item  The binary user file (optional),
-
 \item  The formatted user file (optional).
 \end{itemize}
 
-
 \section{ The files}
-
 
 \subsection{ The steering (or CAS) file}
 \label{se:steeringfile}
  The steering file name is specified in the steering file through the keyword: \textit{STEERING FILE.}
 
- It is a text file created by means of a text editor. In a way, it serves as the computation control panel. It includes a set of keywords to which values are assigned. If a keyword does not appear in this file, then \tomawac will assign to it the default value as defined in the dictionary file (refer to the description in APPENDIX 3). If such a default value is not defined in the dictionary, then the computation will come to a halt and display an error message. For instance, the command \textit{NUMBER OF DIRECTIONS} = 12 is for specifying that the direction spectrum of wave action or its moments will be discretised over 12 propagation directions.
+ It is a text file created by means of a text editor. In a way, it serves as the computation control panel. It includes a set of keywords to which values are assigned. If a keyword does not appear in this file, then \tomawac will assign to it the default value as defined in the dictionary file (refer to the reference manual). If such a default value is not defined in the dictionary, then the computation will come to a halt and display an error message. For instance, the command \textit{NUMBER OF DIRECTIONS} = 12 is for specifying that the direction spectrum of wave action or its moments will be discretised over 12 propagation directions.
 
  \tomawac reads the steering file at the beginning of the computation.
 
@@ -111,7 +104,7 @@ The output files are:
 
  The geometry file name is specified in the steering file through the keyword: \textit{GEOMETRY FILE}.
 
- It is a SERAFIN-formatted binary file: it can be read by FUDAA PRE-PRO or RUBENS and it can be created by the STBTEL module from the file(s) as produced by the mesh generator. The SERAFIN format structure is described in APPENDIX 9.
+ It is a SERAFIN-formatted binary file: it can be read by FUDAA PRE-PRO or RUBENS and it can be created by the STBTEL module from the file(s) as produced by the mesh generator. The SERAFIN format structure is described in \ref{se:filestruct}
 
  This file includes the complete information about the horizontal mesh, i.e. the number of mesh points (variable NPOIN2), the number of elements (variable NELEM2), the X and Y vectors containing the co-ordinates of all the points and, lastly, the IKLE2 vector containing the connectivity table.
 
@@ -164,28 +157,23 @@ The output files are:
  This is the file from which \tomawac reads the information about the wind fields. As in the case of the current, several read formats are allowed. The integer keyword \textit{WINDS FILE FORMAT} can be set to values from 1 to 4.
 
 \begin{itemize}
-\item  The format is 1: it is a WAM-cycle 4 format type(as described in APPENDIX 8). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
-
-\item  The format is 2: it is a point pattern-type SINUSX format (as described in APPENDIX 8). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
-
+\item  The format is 1: it is a WAM-cycle 4 format type(as described in \ref{se:desformat}). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
+\item  The format is 2: it is a point pattern-type SINUSX format (as described in  \ref{se:desformat}). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
 \item  The format is 3: it is a TELEMAC result file of the SERAFIN standard. It is a binary file and its name should be assigned to the keyword: \textit{BINARY WINDS FILE}. If the wind is assumed to be stationary, then the additional keyword \textit{TIME STEPTIME STEP NUMBER IN TELEMAC FILE }should be used in order to find the time step number related to the desired record.
-
 \item  The format is 4: data written in a different format can be read provided that the user supplies the relevant subroutine in the relevant FORTRAN file (see in \ref{se:wind}).
 \end{itemize}
-
 
 \subsection{ The previous computation file}
 
  This previous computation file name is specified in the steering file through the character keyword: \textit{PREVIOUS COMPUTATION FILE.}
 
- If a \textit{NEXT COMPUTATION} is done\textit{, }\tomawac fetches this file in order to initialize the directional spectrum of wave action at every point. This file's format, which is specific to \tomawac, is described in Appendix 8. It is a binary file.
-
+ If a \textit{NEXT COMPUTATION} is done\textit{, }\tomawac fetches this file in order to initialize the directional spectrum of wave action at every point. This file's format, which is specific to \tomawac, is described in \ref{se:desformat}. It is a binary file.
 
 \subsection{ The global results file}
 
  The global results file name is specified in the steering file through the keyword: \textit{GLOBAL RESULTS FILE.}
 
- This file is created when a \textit{GLOBAL OUTPUT AT THE END} is requested. It saves the wave action density directional spectrum at every point in the last time step. This file format is described in APPENDIX 8.
+ This file is created when a \textit{GLOBAL OUTPUT AT THE END} is requested. It saves the wave action density directional spectrum at every point in the last time step. This file format is described in \ref{se:desformat}.
 
 
 \subsection{ The 2D results file }
@@ -196,9 +184,7 @@ The output files are:
 
 \begin{itemize}
 \item  all the data about the mesh geometry;
-
 \item  the names of the variables being stored;
-
 \item  for each time step, the time and the values of the variables are given for each point of the 2D mesh.
 \end{itemize}
 
@@ -206,13 +192,9 @@ The output files are:
 
 \begin{itemize}
 \item  \textit{NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS:} provided for determining from which time step will the data storage desirably begin, so that the file size will not be too large.
-
 \item  \textit{PERIOD FOR GRAPHICS PRINTOUTS}: sets the period, as a number of propagation time increments, of printouts so that the file size will not be too large.
-
 \item  \textit{VARIABLES FOR 2D GRAPHICS PRINTOUTS}: provided for specifying the list of variables to be stored into the 2D results file. Each variable is identified by 2, 3 or 4 letters (refer to \ref{tab:resultvar} that lists the available variables).
 \end{itemize}
-
-
 
 \begin{table}
 \begin{tabular}{|p{1.4in}|p{2.1in}|} \hline
@@ -255,7 +237,6 @@ BETA &  Breaking waves coefficient \\ \hline
 \caption{\label{tab:resultvar}List of 2D results variables}
 \end{table}
 
-
  For instance, if the significant wave heights, the water depths and the average wave propagation directions are desired,
 
  \textit{VARIABLES FOR 2D GRAPHICS PRINTOUTS }= HM0,WD,DMOY
@@ -286,14 +267,11 @@ BETA &  Breaking waves coefficient \\ \hline
 \item  \textit{PERIOD FOR LISTING PRINTOUTS}: this sets the time between two time steps of message transmission. This value is given in terms of the number of iterations. For example, the following sequence:
 \end{itemize}
 
-   \textit{TIME INCREMENT} = 30.    
+\textit{TIME INCREMENT} = 30.    
 
 \textit{PERIOD FOR LISTING PRINTOUTS}= 2 
 
 will result in a print in the output listing every 60 seconds of simulation.
-
- The listing is either displayed on the monitor or saved in a file. The file name is defined by the user at the execution of the \tomawac simulation (refer to APPENDIX 1).
-
 
 \subsection{ The User FORTRAN file}
 
@@ -310,7 +288,6 @@ will result in a print in the output listing every 60 seconds of simulation.
 
 \begin{itemize}
 \item  A binary data or results file: its name is specified through the character keyword \textit{BINARY FILE 1} (Channel unit No. 24).
-
 \item  A formatted data or results file: its name is specified through the character keyword \textit{FORMATTED FILE 1} (Channel unit No. 26).
 \end{itemize}
 
@@ -393,14 +370,14 @@ will result in a print in the output listing every 60 seconds of simulation.
  This format is given in 8 characters. Three choices are possible so far:
 
 \begin{itemize}
-\item  `SERAFIN `(do not forget the space at the end): it is the default standard within the TELEMAC processing chain. The format is recognized by the FUDAA PRE-PRO graphics post-processor. The RUBENS graphics post-processor reads the SERAFIN format as well, but it won't be developed anymore and it is bound to disappear. The SERAFIN file format is described in detail in APPENDIX 8.
+\item  `SERAFIN `(do not forget the space at the end): it is the default standard within the TELEMAC processing chain. The format is recognized by the FUDAA PRE-PRO graphics post-processor. The RUBENS graphics post-processor reads the SERAFIN format as well, but it won't be developed anymore and it is bound to disappear. The SERAFIN file format is described in detail in \ref{se:desformat}.
 
 \item  `SERAFIND': Serafin format, but with double precision. Can be used for a more accurate ``computation continued'' or for more accurate validations. Neither FUDAA PRE-PRO nor Rubens can read this format.
 
 \item  `MED  `: this is an EDF-CEA format used in the Salomé platform, that enables to use the post-processors of this platform. It is based on hdf5. This new format is not activated if you use the default subroutine med.f provided, which is mostly void. If you take instead the file med.edf and rename it med.f, med formats will be available, but two additional libraries are necessary to use this format and have to be specified in the systel.ini file. Full instructions will be given in further releases, this is so far for internal use at EDF.
 \end{itemize}
 
- A new file structure has been added to library BIEF for simplifying the opening/closing and reading/writing operations with these file formats, as well as for simplifying the coupling between programmes,. The description of this file structure and of the operations on those files are given in APPENDIX 9.
+ A new file structure has been added to library BIEF for simplifying the opening/closing and reading/writing operations with these file formats, as well as for simplifying the coupling between programmes,. The description of this file structure and of the operations on those files are given in \ref{se:filestruct}
 
  As specified in section7.2.7, a fourth binary format exists, which is specific to \tomawac and is used only for saving the results when they are used to initialize a next computation. This binary file format cannot be read by the RUBENS post-processor, or by FUDAA PRE-PRO graphics post-processor.
 
