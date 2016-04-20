@@ -65,7 +65,6 @@ It is noteworthy, however, that the distortions of shallow water wave profiles c
 
 
 \section{ Sea state directional power spectrum}
-
  Real waves were introduced in the previous chapter as a discrete sum of elementary components. Actually, the power spectrum over both frequencies and propagation directions is a continuous function. The relevant variable for describing that sea state power spectrum is the \textbf{directional spectrum of wave energy} which is also known as wave \textbf{directional spectrum of energy} and will henceforth be denoted as $E(f,q)$.
 
  It is a function (in $Joule.Hz^{-1}.rad{-1}$) that depends on:
@@ -125,7 +124,7 @@ Further derived parameters can be computed from the variance density directional
 
 
 \section{ Sea state directional spectrum of wave action}
-
+\label{se:seastate}
  In the general case of wave propagation in an unsteady medium (sea currents and/or levels varying in time and space), the directional spectrum of the variance density is no longer kept and a new quantity should be introduced, namely the \textbf{directional spectrum of wave action}.
 
  That quantity, noted as N(f,q), will remain constant (without considering the source and sink terms) even though the propagation medium is neither homogeneous nor steady \cite{Komen1994} \cite{Willebrand1975} \cite{Phillips1977} \cite{Bretherton1969}.
@@ -159,12 +158,11 @@ N = F/s
     \item$(k,\theta)$ = (wave number; propagation direction)
 
     \item$(k_x,k_y) = (k.\sin \theta ; k.\cos \theta) =$ (wave number vector)
+\end{itemize}
+\end{itemize}
 
  \begin{itemize}
 \item For the numerical resolution of equations, the model \tomawac uses the pair $(f_r,\theta)$ = (relative frequency; propagation direction)
 \end{itemize}
-\end{itemize}
-\end{itemize}
-
  The directional spectra output by \tomawac, however, are always expressed in $(f_a,\theta)$. The equations solved by \tomawac are thoroughly reviewed in section 4.
 

@@ -2,7 +2,7 @@
 \chapter{Mathematical modelling procedures used by \tomawac}
 \label{chapter4}
 \section{ Scope of sea state modelling}
- The directional spectrum of wave action density, as defined in paragraph 2.6, is considered as a function of five variables:
+ The directional spectrum of wave action density, as defined in paragraph \ref{se:seastate}, is considered as a function of five variables:
 \[N(\vec{x},\vec{k},t)=N(x,y,k_{x} ,k_{y} ,t)\]
 using, as discretization variables:
 
@@ -14,7 +14,7 @@ using, as discretization variables:
  \item the time t.
 \end{enumerate}
 
-Under the hypotheses made on the wave representation (see in paragraph 2.6) as well as on the model application domain and the modelled physical processes (see in paragraph 3.3), an equation of evolution of the directional spectrum of wave action can be written in the following form (see in \cite{Willebrand1975} [Phillips,~1977] [Bretherton,~1969] for a detailed demonstration of the way that equation is arranged):
+Under the hypotheses made on the wave representation (see in paragraph \ref{se:seastate}) as well as on the model application domain and the modelled physical processes (see in paragraph \ref{se:physicalprocesse}), an equation of evolution of the directional spectrum of wave action can be written in the following form (see in \cite{Willebrand1975} \cite{Phillips1977} \cite{Bretherton1969} for a detailed demonstration of the way that equation is arranged):
 \begin{equation} \label{GrindEQ__4_1_}
 \frac{\partial N}{\partial t} +\frac{\partial (\dot{x}N)}{\partial x} +\frac{\partial (\dot{y}N)}{\partial y} +\frac{\partial (\dot{k}_{x} N)}{\partial k_{x} } +\frac{\partial (\dot{k}_{y} N)}{\partial k_{y} } =Q(k_{x} ,k_{y} ,x,y,t)
 \end{equation}
@@ -22,7 +22,7 @@ The equation expresses that, in the general case of waves propagating in a non-h
 
  The following notation is also used in \eqref{GrindEQ__4_1_}:
 \[\dot{g}=\frac{dg}{dt} =\frac{\partial g}{\partial t} +\frac{\partial x}{\partial t} \frac{\partial g}{\partial x} +\frac{\partial y}{\partial t} \frac{\partial g}{\partial y} \]
-In that form (conservative writing in the form of a flux), equation \eqref{GrindEQ__4_1_} can be transposed to other coordinate systems and, for instance, $(k,\theta), (f_a,\theta)$ or else $(f_r,\theta)$ can be used for the discretization of directional spectrum [Komen et al.,~1994] \cite{Tolman1991}
+In that form (conservative writing in the form of a flux), equation \eqref{GrindEQ__4_1_} can be transposed to other coordinate systems and, for instance, $(k,\theta), (f_a,\theta)$ or else $(f_r,\theta)$ can be used for the discretization of directional spectrum \cite{Komen1994} \cite{Tolman1991}
 
  Working in $(x, y, k_x, k_y)$, however, makes it possible to remain in the canonical coordinate system and to write, for the propagation equations (also named Hamilton's equations):
 
@@ -71,7 +71,7 @@ or  $div(\vec{V}) = 0$   when defining: $\vec{V}=(\dot{x},\dot{y},\dot{k}_{x} ,\
 \earr 
 \eequ
 
- The transfer rates are given by the linear wave theory [Chaloin,~1989] [Komen et al.,~1994] [Mei,~1983] \cite{Tolman1991}
+ The transfer rates are given by the linear wave theory \cite{Chaloin1989} \cite{Komen1994} \cite{Mei1983} \cite{Tolman1991}
 \bequ
 \label{eq:transfer}
 \barr{l}
@@ -342,10 +342,14 @@ u_{*} =\sqrt{\frac{\tau _{s} }{\rho _{air} } }
  $z_0$ denotes the roughness length
 
  $\mu$ denotes the non-dimensional critical height:
-\begin{equation} \label{GrindEQ__4_30_}
-\mu =\min \left[\frac{g.z_{0} }{C^{2} } \exp \left(\frac{\kappa }{\left[\frac{u_{*} }{C} +z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right]=\min \left[\Omega .A^{2} \exp \left(\frac{\kappa }{\left[A+z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right]
+\begin{equation} 
+\label{GrindEQ__4_30_}
+\barr{ll}
+\mu &\dsp =\min \left[\frac{g.z_{0} }{C^{2} } \exp \left(\frac{\kappa }{\left[\frac{u_{*} }{C} +z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right] \\[12pt]
+&\dsp =\min \left[\Omega .A^{2} \exp \left(\frac{\kappa }{\left[A+z_{\alpha } \right]\cos (\theta -\theta _{w} )} \right);1\right]
+\earr
 \end{equation}
-The Janssen's model [\cite {Janssen1989} \cite{Janssen1991} is characterized by the method it uses for computing u* and z0. The surface stress ts is a function depending, on the one hand, on the wind velocity $U_{10}$ at 10 m and, on the other hand, on the sea state roughness through the wave stress tw. It is obtained by solving the following system of equations:
+The Janssen's model \cite {Janssen1989} \cite{Janssen1991} is characterized by the method it uses for computing u* and z0. The surface stress ts is a function depending, on the one hand, on the wind velocity $U_{10}$ at 10 m and, on the other hand, on the sea state roughness through the wave stress tw. It is obtained by solving the following system of equations:
 
 \bequ
 \label{eq:defu10}
@@ -367,15 +371,15 @@ $u_{*}^{} =\sqrt{C_{D} } U_{10} $ where: $C_D = 1.2875 10-3$ by default.
 \begin{equation} \label{GrindEQ__4_32_}
 \tau _{w} =\left|\iint \;  \rho _{water} \; \sigma \; Q_{in} (f_{r} ,\theta )\; \left(\cos \theta ,\sin \theta \right)df_{r} \; d\theta \right|
 \end{equation}
-That integral is numerically computed over the discretized portion of the spectrum and a parametrization, based upon a decrement of variance in f-n, is used for the high frequencies portion of the spectrum.
+That integral is numerically computed over the discretized portion of the spectrum and a para\-metrization, based upon a decrement of variance in $f^{-n}$, is used for the high frequencies portion of the spectrum.
 
 In fact, that source term has eight parameters, namely:
 
 \begin{itemize}
-\item  coefficient $\beta_m$ (corresponding to the keyword \textit{WIND GENERATION COEFFICIENT }in the steering file). Its default value is taken as 1.2, in accordance with the Janssen's proposal [Janssen,~1991] and the value adopted in the model WAM-Cycle 4.
+\item  coefficient $\beta_m$ (corresponding to the keyword \textit{WIND GENERATION COEFFICIENT }in the steering file). Its default value is taken as 1.2, in accordance with the Janssen's proposal \cite{Janssen1991} and the value adopted in the model WAM-Cycle 4.
 \item  air specific gravity $\rho_{air}$ (corresponding to the keyword \textit{AIR DENSITY} in the steering file. Its default value is taken as 1.225 kg/m${}^{3}$.
 \item  water specific gravity ${\rho}_{water}$ (corresponding to the keyword \textit{WATER DENSITY} in the steering file). Its default value is taken as $1,000 kg/m^{3}$.
-\item  constant $\alpha$ (corresponding to the keyword \textit{CHARNOCK CONSTANT} in the steering file). Its default value is taken as 0.01, in accordance with the Janssen's proposal [Janssen,~1991] and the standard value adopted in the model WAM-Cycle 4.
+\item  constant $\alpha$ (corresponding to the keyword \textit{CHARNOCK CONSTANT} in the steering file). Its default value is taken as 0.01, in accordance with the Janssen's proposal and the standard value adopted in the model WAM-Cycle 4.
 \item  constant $\kappa$ (corresponding to the keyword \textit{VON KARMAN CONSTANT} in the steering file). Its default value is taken as 0.41, i.e. the typical value.
 \item  initial drag coefficient $C_D$ (corresponding to the keyword \textit{WIND DRAG COEFFICIENT} in the steering file). This drag coefficient is provided for initializing the iterative computation of friction velocity u*. Its default value is taken as 1.2875 10-3.
 \item  offset constant $z_\alpha$ (corresponding to the keyword \textit{SHIFT GROWING CURVE DUE TO WIND} in the steering file). Its default value is taken as 0.011, in accordance with the value adopted in the model WAM-Cycle 4.
@@ -413,7 +417,10 @@ That source term only uses two parameters, namely:
  The Yan's model \cite{Yan1987} consists of a combination of u${}_{*}$/C and (u${}_{*}$/C)${}^{2}$ terms. It is valid over a wide range of frequencies and wind speeds:
 \bequ
 \label{eq:GrindEQ__4_34_}
-Q_{in} =\beta F \mbox{    where:  }\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos (\theta -\theta _{w} )+E\frac{u_{*} }{C} \cos (\theta -\theta _{w} )+F\cos (\theta -\theta _{w} )+H\right]\sigma 
+\barr{l}
+\dsp Q_{in} =\beta F \\[12 pt]
+\dsp  \mbox{ with }\beta =\left[D\left(\frac{u_{*} }{C} \right)^{2} \cos (\theta -\theta _{w} )+E\frac{u_{*} }{C} \cos (\theta -\theta _{w} )+F\cos (\theta -\theta _{w} )+H\right]\sigma 
+\earr
 \eequ
 
  To select this model, the keyword \textit{WIND GENERATION} must be set to 3 in the steering file.
@@ -516,7 +523,7 @@ with $f_{br} =\frac{1}{2} +\frac{1}{2} \tanh \left\{10\left[\left(\frac{B(k)}{B_
 \begin{itemize}
 \item  The coefficient ${C}_{dis,break}$, corresponding to the keyword \textit{WESTHUYSEN  DISSIPATION COEFFICIENT}, has a default value of 5.0 10${}^{-5}$,
 \item  The coefficient ${B}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$,
-\item  The coefficient ${C}_{dis,non-break}$, corresponding to the keyword \textit{WESTHUYSEN WHITE CAPPING DISSIPATION}, has a default value of 3.29,
+\item  The coefficient ${C}_{dis,non-break}$, corresponding to the keyword \textit{WESTHUYSEN WHITE CAP\-PING DISSIPATION}, has a default value of 3.29,
 \item  The coefficient d, corresponding to the keyword \textit{WESTHUYSEN WEIGHTING COEFFICIENT}, has a default value of 0.0.
 \end{itemize}
 
@@ -639,7 +646,7 @@ Three constants can be modified using keywords:
  \item peak frequency computed through the Read's method to order 8: $f_{R8}$
 \end{enumerate}
 
- \item The computation mode for breaking probability $Q_{b} $ (exact computation or utilization of an explicit approximation as proposed by Dingemans [Dingemans,~1983]) is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD}. By default, version 2 of the explicit formulations as proposed by Dingemans [Dingemans,~1983] is used (see above). For applications, it is recommended \textbf{not} to modify the value of that keyword.
+ \item The computation mode for breaking probability $Q_{b} $ (exact computation or utilization of an explicit approximation as proposed by Dingemans \cite{Dingemans1983}) is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD}. By default, version 2 of the explicit formulations as proposed by Dingemans [Dingemans,~1983] is used (see above). For applications, it is recommended \textbf{not} to modify the value of that keyword.
 
  \item The computation mode for the maximum height compatible with the local water depth, $H_{m} $, is selected through the keyword \textit{DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD}. Two values are possible:
 \begin{enumerate}
@@ -650,7 +657,7 @@ Three constants can be modified using keywords:
 
 {\bf  ~Thornton and Guza's model (1983)}
 
- The Thornton and Guza's breaking model [Thornton,~1983] is based on the analogy with a hydraulic jump and on two types of breaking wave height distribution. The energy sink term is written according to the breaking wave height distribution being retained:
+ The Thornton and Guza's breaking model \cite{Thornton1983} is based on the analogy with a hydraulic jump and on two types of breaking wave height distribution. The energy sink term is written according to the breaking wave height distribution being retained:
 
 \bequ
 \label{eq:function1} 
@@ -702,9 +709,11 @@ Three constants can be modified using keywords:
 \end{equation}
 \end{itemize}
 
-$A=\left[\Gamma \left(1+\frac{1}{m} \right)\right]^{m} $ with  \eqref{GrindEQ__4_51_}
-
-The coefficient $\gamma _{2} $ is usually set to 0.65.
+\begin{equation}
+\label{eq:defweibull}
+A=\left[\Gamma \left(1+\frac{1}{m} \right)\right]^{m}\mbox{ with } m=1+0.7\tan^2 \left( \frac{\pi}{2}\frac{1}{\gamma_2}\frac{\sqrt{8m_0}}{d} \right)
+\eequ
+The coefficient $\gamma_{2} $ is usually set to 0.65.
 
 \begin{itemize}
 \item  \underbar{Rayleigh's distribution:}
@@ -778,88 +787,93 @@ Thus, the breaking model as proposed by Izumiya and Horikawa can be parameterize
 
 \subsubsection{ Non-linear quadruplet interactions (term Qnl)}
 
- Three non-linear quadruplet interactions models are available in \tomawac. The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\textit{ }in the steering file; the keyword can take four values, namely:
+ Three non-linear quadruplet interactions models are available in \tomawac. The non-linear quadruplet interactions are activated through the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES} in the steering file; the keyword can take four values, namely:
 
 \begin{itemize}
-\item  no non-linear quadruplet interaction \textit{(default value)}
+\item  0 no non-linear quadruplet interaction \textit{(default value)}
 
-\item  DIA method (Discrete Interaction Approximation) of Hasselmann \textit{et al.} [Hasselmann et al.,~1985] which is a discrete parameterization of the exact computation operator as proposed by Hasselmann [Hasselmann,~1962] [Hasselmann,~1962].
+\item  1 DIA method (Discrete Interaction Approximation) of Hasselmann \textit{et al.} \cite{Hasselmann1985_1} \cite{Hasselmann1985_2} which is a discrete parameterization of the exact computation operator as proposed by Hasselmann \cite{Hasselmann1962_1} \cite{Hasselmann1962_2}
 
-\item  MDIA method (Multiple DIA) as proposed by Tolman \cite{Tolman2004}
+\item  2 MDIA method (Multiple DIA) as proposed by Tolman \cite{Tolman2004}
 
-\item  Quasi exact GQM method (Gaussian Quadrature Method) as introduced by Lavrenov [Lavrenov,~2001] and implemented by Gagnaire-Renou et al. [Gagnaire-Renou et al., 2010].
+\item  3 Quasi exact GQM method (Gaussian Quadrature Method) as introduced by Lavrenov \cite{Lavrenov2001} and implemented by Gagnaire-Renou et al. \cite{Gagnaire2010}.
 \end{itemize}
 
 
 {\bf  Option 1 for non-linear quadruplet interactions: DIA method}
 
- The method and its implementation in \tomawac have been the subject of a specific report [Benoit,~1997] which the reader is invited to refer to for further information. The major teachings of the DIA method are summarized below.
+ The method and its implementation in \tomawac have been the subject of a specific report \cite{Benoit1997} which the reader is invited to refer to for further information. The major teachings of the DIA method are summarized below.
 
- The exact expression of the deep water interactions term as set by Hasselmann [Hasselmann,~1962] [Hasselmann,~1962], expressed herein for convenience as a function of the wave number vector, is analogous to a Boltzmann integral:
+ The exact expression of the deep water interactions term as set by Hasselmann \cite{Hasselmann1962_1} \cite{Hasselmann1962_2}, expressed herein for convenience as a function of the wave number vector, is analogous to a Boltzmann integral:
 \[Q_{nl}^{exact} =\iiint  \sigma _{4} .G.\delta \left(\vec{k}_{1} +\vec{k}_{2} -\vec{k}_{3} -\vec{k}_{4} \right)\delta \left(\sigma _{1} +\sigma _{2} -\sigma _{3} -\sigma _{4} \right)\]
 \begin{equation} \label{GrindEQ__4_55_}
 \left[\frac{F(\vec{k}_{1} )}{\sigma _{1} } \frac{F(\vec{k}_{2} )}{\sigma _{2} } \left(\frac{F(\vec{k}_{3} )}{\sigma _{3} } +\frac{F(\vec{k}_{4} )}{\sigma _{4} } \right)-\frac{F(\vec{k}_{3} )}{\sigma _{3} } \frac{F(\vec{k}_{4} )}{\sigma _{4} } \left(\frac{F(\vec{k}_{1} )}{\sigma _{1} } +\frac{F(\vec{k}_{2} )}{\sigma _{2} } \right)\right]d\vec{k}_{1} d\vec{k}_{2} d\vec{k}_{3}
 \end{equation}
 The energy exchanges, in that integral (\textit{a }priori rather uneasily computable), take place between quadruplets meeting the resonance conditions:
-
-$\sigma _{1} +\sigma _{2} =\sigma _{3} +\sigma _{4} $  and  $\vec{k}_{1} +\vec{k}_{2} =\vec{k}_{3} +\vec{k}_{4} $ \eqref{GrindEQ__4_56_}
+\bequ
+\label{eq:resonancenl}
+\sigma _{1} +\sigma _{2} =\sigma _{3} +\sigma _{4} \mbox{  and  }\vec{k}_{1} +\vec{k}_{2} =\vec{k}_{3} +\vec{k}_{4} 
+\eequ
 
  as evidenced by the two Dirac functions d in the integral.
 
- G denotes the value of the coupling term for the resonant quadruplet interactions$\left(\vec{k}_{1} ,\vec{k}_{2} ,\vec{k}_{3} ,\vec{k}_{4} \right)$. Establishing and computing its expression is also an awkward task. Hasselmann [Hasselmann,~1962] proposed a computation mode that was also taken up and given a more concise form by such other authors as Webb \cite{webb1978}.
+ G denotes the value of the coupling term for the resonant quadruplet interactions$\left(\vec{k}_{1} ,\vec{k}_{2} ,\vec{k}_{3} ,\vec{k}_{4} \right)$. Establishing and computing its expression is also an awkward task. Hasselmann \cite{Hasselmann1962_1} proposed a computation mode that was also taken up and given a more concise form by such other authors as Webb \cite{webb1978}.
 
- The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as \tomawac (see e.g. \cite{Hasselmann1985}). That is why, starting from the experiment as developed in WAM [WAMDI,~1988] [Komen et al.,~1994], \tomawac uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} [Hasselmann et al.,~1985]. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
+ The exact computation of the above Boltzmann integral is too complex and time-consuming for such a sea state operational model as \tomawac (see e.g. \cite{Hasselmann1985_1}). That is why, starting from the experiment as developed in WAM \cite{Wamdi1988} \cite{Komen1994}, \tomawac uses the DIA (Discrete Interaction Approximation) approximate computation method as proposed by Hasselmann \textit{et al.} \cite{Hasselmann1985_1}. Whereas the exact computation requires the summation of the contributions from a great number of quadruplets, the approximate computation implements only a small number of quadruplet configurations which are all similar.
 
  That standard interaction configuration is defined as follows:
 
 \begin{itemize}
-\item  two of the wave numbers are alike: $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$, which also involves that the two related frequencies are identical: s1 = s2 = s
+\item  two of the wave numbers are alike: $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$, which also involves that the two related frequencies are identical: $\sigma_1 = \sigma_2 = \sigma$
 
 \item  the other two frequencies s3 and s4 are defined by:
 \end{itemize}
 
-  s3 = (1+l) s = s+
+  $\sigma_3 = (1+\lambda) \sigma = \sigma^+$
 
-  s4 = (1-l) s = s-
+  $\sigma_4 = (1-\lambda) \sigma = \sigma^-$
 
- Through the value l = 0.25, a good correlation with the exact computation of the integral [Hasselmann et al.,~1985] could be achieved. That value is used in the model WAM [WAMDI,~1988] [Komen et al.,~1994] and is taken up in \tomawac.
+ Through the value $\lambda = 0.25$, a good correlation with the exact computation of the integral ( see\cite{Hasselmann1985_1}) could be achieved. That value is used in the model WAM \cite{Wamdi1988} \cite{Komen1994} and is taken up in \tomawac.
 
 \begin{itemize}
-\item  since the wave vectors $\vec{k}_{3} =\vec{k}^{+} $ and $\vec{k}_{4} =\vec{k}^{-} $ should observe the resonance condition, it can be shown they are featured by angles q3~=~11.5${}^\circ$ and q4~=~-33.6${}^\circ$ with respect to the common direction of $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$ (refer to [Hasselmann et al.,~1985]).
+\item  since the wave vectors $\vec{k}_{3} =\vec{k}^{+} $ and $\vec{k}_{4} =\vec{k}^{-} $ should observe the resonance condition, it can be shown they are featured by angles $\theta_3=11.5^\circ$ and $\theta_4=-33.6^\circ$ with respect to the common direction of $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$ (refer to \cite{Hasselmann1985_1}).
 
 \item  Furthermore, the mirror image is taken into account by considering the vectors as symmetrical with respect to the direction of $\vec{k}_{1} =\vec{k}_{2} =\vec{k}$.
 \end{itemize}
 
- The standard interaction configuration (in full line) and its mirror image (in dotted line) are shown schematically in Figure~4.2.
+ The standard interaction configuration (in full line) and its mirror image (in dotted line) are shown schematically in Figure \ref{fig:dia}.
 
+\begin{figure}[H]%
+\begin{center}
+\includegraphics*[width=4.46in]{graphics/fig42}
+\caption{Schematic standard interaction configuration for the DIA method}
+\label{fig:dia}
+\end{center}
+\end{figure}
 
-
-\begin{itemize}
-\item  \textbf{Figure 4.2: Schematic standard interaction configuration for the DIA method}
-\end{itemize}
-
-With this standard configuration, the non-linear interaction term for all four resonant wave numbers is written as [Hasselmann et al.,~1985]:
+With this standard configuration, the non-linear interaction term for all four resonant wave numbers is written as \cite{Hasselmann1985_1}:
 \begin{equation} \label{GrindEQ__4_57_}
 \left[\begin{array}{c} {Q_{nl}^{} } \\ {Q_{nl}^{-} } \\ {Q_{nl}^{+} } \end{array}\right]=\left[\begin{array}{c} {-2} \\ {1} \\ {1} \end{array}\right]\; \Pi \; g^{-4} \; f_{r}^{11} \; \left(F^{2} \left(\frac{F^{+} }{\left(1+\lambda \right)^{4} } +\frac{F^{-} }{\left(1-\lambda \right)^{4} } \right)-\frac{2FF^{+} F^{-} }{\left(1-\lambda ^{2} \right)^{4} } \right)
 \end{equation}
 With such a computation method, the vector $\vec{k}$ scans all the discretization nodes of the directional spectrum mesh. The number of configurations being considered is then twice as large as the number of points in that mesh. In relation to the full computation, the 5-dimensional space (three integration dimensions and two dimensions for $\vec{k}_{4} $) of all the possible resonant quadruples is reduced to a 2-dimensional space.
 
- In a finite water depth, from exact computations of the Boltzmann integral, Herterich and Hasselmann [Herterich,~1980] suggested to make a deep water computation based on the previous method, then to multiply it by a coefficient R representing the effect of the finite water height:
+ In a finite water depth, from exact computations of the Boltzmann integral, Herterich and Hasselmann \cite{Herterich1980} suggested to make a deep water computation based on the previous method, then to multiply it by a coefficient R representing the effect of the finite water height:
 \begin{equation} \label{GrindEQ__4_58_}
 Q_{nl} (d)=R.Q_{nl} (d=\infty )
 \end{equation}
 Coefficient R is a function of the normalized water height $\bar{k}.d$ and is expressed as follows:
-
-$R(\chi )=1+\frac{5.5}{\chi } (1-\frac{5}{6} \chi )\exp \left(-\frac{5}{4} \chi \right)$  where: $\chi =\frac{3}{4} \bar{k}.d$ \eqref{GrindEQ__4_59_}
-
- The average wave number$\bar{k}$ was defined in the previous paragraph (see in (4.29.c)).
+\bequ
+\label{eq:defcoefR}
+R(\chi )=1+\frac{5.5}{\chi } (1-\frac{5}{6} \chi )\exp \left(-\frac{5}{4} \chi \right) \mbox{ where } \chi =\frac{3}{4} \bar{k}.d
+\eequ
+ The average wave number $\bar{k}$ was defined in the previous paragraph (see \ref{eq:defk}).
 
  In its authors' opinion, that relation remains valid as long as $\bar{k}.d$ $>$ 1. It is used as such in \tomawac for the finite water depth computations.
 
  That source-term has a single parameter:
 
 \begin{itemize}
-\item  constant l (corresponding to the keyword \textit{STANDARD CONFIGURATION PARAMETER}STANDARD CONFIGURATION PARAMETER\textit{ }of the steering file). Its default value is taken as 0.25, in accordance with the proposal made by Hasselmann \textit{et al.} [Hasselmann et al.,~1985] and with the standard value in the model WAM-Cycle 4.
+\item  constant l (corresponding to the keyword \textit{STANDARD CONFIGURATION PARAMETER} of the steering file). Its default value is taken as 0.25, in accordance with the proposal made by Hasselmann \textit{et al.} \cite{Hasselmann1985_1} and with the standard value in the model WAM-Cycle 4.
 \end{itemize}
 
 
@@ -867,88 +881,85 @@ $R(\chi )=1+\frac{5.5}{\chi } (1-\frac{5}{6} \chi )\exp \left(-\frac{5}{4} \chi 
 
  The MDIA method (multiple DIA) is an extension of the DIA algorithm. We use here the version proposed by Tolman \cite{Tolman2004}
 
- This method can give very reasonable results in simple situations, but in case of unsteady or rapidly changing sea-state conditions (e.g. in the situation of abrupt changes of wind direction) it results in significant qualitative and quantitative differences when compared with exact methods [Benoit,~2005].
+ This method can give very reasonable results in simple situations, but in case of unsteady or rapidly changing sea-state conditions (e.g. in the situation of abrupt changes of wind direction) it results in significant qualitative and quantitative differences when compared with exact methods \cite{Benoit2005}.
 
- The MDIA method consists of using a quadruplet depending on 2 parameters, l and m, defined as follows:
+ The MDIA method consists of using a quadruplet depending on 2 parameters, $\lambda$ and $\mu$, defined as follows:
 \begin{equation} \label{GrindEQ__4_60_}
 \vec{k}_{0} +\vec{k}_{1} =\vec{k}_{2} +\vec{k}_{3} =2\vec{k}
 \end{equation}
 
-$\sigma _{0} =(1+\mu )\sigma $ (4.61.a)
+\begin{equation} \label{eq:defMDIA}
+\barr{lr}
+\sigma _{0} =(1+\mu )\sigma, & \sigma _{1} =(1-\mu )\sigma  \\[12pt]
+\sigma _{2} =(1+\lambda )\sigma, &\sigma _{3} =(1-\lambda )\sigma 
+\earr
+\end{equation}
 
-$\sigma _{1} =(1-\mu )\sigma $ (4.61.b)
 
-$\sigma _{2} =(1+\lambda )\sigma $ (4.61.c)
+ The $\lambda$ and $\mu$ values proposed by Tolman that allow to best estimate the $Q_{nl4}$ source term in the case of 4 interacting quadruplets are shown in Figure \ref{fig:tolman}
 
-$\sigma _{3} =(1-\lambda )\sigma $ (4.61.d)
 
- The l and m values proposed by Tolman that allow to best estimate the Q${}_{nl4}$ source term in the case of 4 interacting quadruplets are shown in Table~4.1.
+\begin{figure}[H]%
+\begin{center}
+ \includegraphics*[width=4.46in]{graphics/tabtolman}
+\caption{Values of the parameters $\lambda$ and $\mu$ proposed by Tolman to best estimate quadruplet interactions with the MDIA method, in the case of 4 interacting quadruplets \cite{Tolman2004}.}
+\label{fig:tolman}
+\end{center}
+\end{figure}
 
- \includegraphics*[width=4.46in, height=1.06in, keepaspectratio=false, trim=0.00in 0.00in 0.14in 0.00in]{graphics/tabtolman}
+ To select this model in \tomawac the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES} must be set to 2 in the steering file.
 
-\begin{itemize}
-\item  \textbf{Table 4.1: Values of the parameters l et m proposed by Tolman to best estimate quadruplet interactions with the MDIA method, in the case of 4 interacting quadruplets \cite{Tolman2004}.}
-\end{itemize}
-
- To select this model in \tomawac the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES}NON-LINEAR TRANSFERS BETWEEN FREQUENCIES must be set to 2 in the steering file.
-
- This model does not require any other parameter: the values of the l and m parameters are set as constants in the code. However they can be modified when considering a larger number of interacting quadruplets.
+ This model does not require any other parameter: the values of the $\lambda$ and $\mu$ parameters are set as constants in the code. However they can be modified when considering a larger number of interacting quadruplets.
 
 
 {\bf  Option 3 for non-linear quadruplets interactions: GQM method}
 
- The Gaussian Quadrature Method (GQM) is based on the use of Gaussian quadratures for the different numerical integrations arising in evaluating Equation~4.48. This technique, proposed by Lavrenov [Lavrenov,~2001], has been developed and optimised to adequate results regarding both precision and CPU time [Benoit,~2005], [Gagnaire-Renou,~2009], [Gagnaire-Renou et al.,~2010]
+ The Gaussian Quadrature Method (GQM) is based on the use of Gaussian quadratures for the different numerical integrations arising in evaluating Equation \ref{GrindEQ__4_55_}. This technique, proposed by Lavrenov \cite{Lavrenov2001}, has been developed and optimised to adequate results regarding both precision and CPU time \cite{Benoit2005}, \cite{Gagnaire2009}, \cite{Gagnaire2010}
 
- Several steps are needed to transform Equation~4.48 into an expression that can be integrated via Gaussian quadrature method. They can be summarized as follows (for a detailed description reference can be made to [Gagnaire-Renou,~2009]):
+ Several steps are needed to transform Equation \ref{GrindEQ__4_55_} into an expression that can be integrated via Gaussian quadrature method. They can be summarized as follows (for a detailed description reference can be made to \cite{Gagnaire2009}):
 
-\begin{itemize}
-\item  Elimination of the Dirac function on the wave numbers $\delta \left(\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} -\vec{k}_{3} \right)$, by imposing $\vec{k}_{3} =\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} $ (see the resonance condition, Equation~4.49). Equation~4.50 is therefore reduced to an integral with 4 dimensions, including a single Dirac function on the frequency s.
+\begin{enumerate}
+\item  Elimination of the Dirac function on the wave numbers $\delta \left(\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} -\vec{k}_{3} \right)$, by imposing $\vec{k}_{3} =\vec{k}_{0} +\vec{k}_{1} -\vec{k}_{2} $ (see the resonance condition, Equation \ref{eq:resonancenl}). Equation \ref{GrindEQ__4_55_} is therefore reduced to an integral with 4 dimensions, including a single Dirac function on the frequency $\sigma$.
 
-\item  Variable change, to work with (s,q) instead of $\vec{k}$, and reformulation of the equation in terms of variance density (F) instead of wave action density (N).
+\item  Variable change, to work with $(\sigma,\theta)$ instead of $\vec{k}$, and reformulation of the equation in terms of variance density (F) instead of wave action density (N).
 
-\item  Integration over q${}_{2}$ and elimination of the Dirac function on the frequency. A 3-dimension integral is obtained, without any Dirac function.
+\item  Integration over ${\theta}_{2}$ and elimination of the Dirac function on the frequency. A 3-dimension integral is obtained, without any Dirac function.
 
-\item  Final expression of the non-linear transfer term: the variables s${}_{3}$, q${}_{2}$ and q${}_{3}$, are expressed as functions of s${}_{1}$, q${}_{1}$ and s${}_{2}$, and of s${}_{0}$ et q${}_{0}$, which Q${}_{nl4}$ term depends on. The variables s${}_{a, }$k${}_{a}$ et e${}_{a}$, defined by s${}_{a}$=s${}_{0}$+s${}_{1}$, $\vec{k}_{a} =\vec{k}_{0} +\vec{k}_{1} $ and e${}_{a}$=2gk${}_{a}$/s${}_{a}$${}^{2}$, and depending only on (s${}_{0}$ et q${}_{0}$) and (s${}_{1}$ et q${}_{1}$), are used as well.
+\item  Final expression of the non-linear transfer term: the variables ${\sigma}_{3}$, ${\theta}_{2}$ and ${\theta}_{3}$, are expressed as functions of ${\sigma}_{1}$, ${\theta}_{1}$ and ${\sigma}_{2}$, and of ${\sigma}_{0}$ and ${\theta}_{0}$, which ${Q}_{nl4}$ term depends on. The variables ${\sigma}_{a, }$${k}_{a}$ et ${\epsilon}_{a}$, defined by ${\sigma}_{a}$=${\sigma}_{0}$+${\sigma}_{1}$, $\vec{k}_{a} =\vec{k}_{0} +\vec{k}_{1} $ and ${\epsilon}_{a}=2gk{}_{a}/{\sigma}_{a}{}^{2}$, and depending only on (${\sigma}_{0}$ et ${\theta}_{0}$) and (${\sigma}_{1}$ et ${\theta}_{1}$), are used as well.
 \begin{equation} \label{GrindEQ__4_62_}
 Q_{nl4} =\int _{\sigma _{1} =0}^{+\infty }\; \int _{\theta _{1} =0}^{2\pi }\; \int _{\sigma _{2} =0}^{\sigma _{a} /2}   2\frac{\sigma _{a}^{4} \; T}{\sigma _{1} \sigma _{2} \sigma _{3} } \; \frac{F_{2} F_{3} (F_{0} \sigma _{1}^{4} +F_{1} \sigma _{0}^{4} )-F_{0} F_{1} (F_{2} \sigma _{3}^{4} +F_{3} \sigma _{2}^{4} )}{\sqrt{\tilde{B}_{0} \left(\varepsilon _{a} ,s_{2} \right)\; \tilde{B}_{1} \left(\varepsilon _{a} ,s_{2} \right)\; \tilde{B}_{2} \left(\varepsilon _{a} ,s_{2} \right)} } \; d\sigma _{1} d\theta _{1} d\sigma _{2}
 \end{equation}
-\end{itemize}
-where s${}_{2}$ is defined as s${}_{2}$= s${}_{2}$/ s${}_{a}$.
+\end{enumerate}
+where $s_{2}$ is defined as $s_{2}= {\sigma}_{2}/ {\sigma}_{a}$.
 
- Equation 4.55 is then integrated using different quadrature methods:
+ Equation \ref{GrindEQ__4_62_} is then integrated using different quadrature methods:
 
 \begin{itemize}
-\item \begin{itemize}
-\item  Gauss-Legendre or Gauss-Chebyshev quadratures are used for the integration over s${}_{2}$, depending on the e${}_{a}$ values determining number and type of singularities.
+\item  Gauss-Legendre or Gauss-Chebyshev quadratures are used for the integration over $\sigma{}_{2}$, depending on the ${\epsilon}_{a}$ values determining number and type of singularities.
 
-\item  Gauss-Chebyshev quadratures are used for the integration over q${}_{1}$.
+\item  Gauss-Chebyshev quadratures are used for the integration over ${\theta}_{1}$.
 
-\item  The integration over s${}_{1}$ is realized using the trapezoidal rule.
-\end{itemize}
+\item  The integration over ${\sigma}_{1}$ is realized using the trapezoidal rule.
 \end{itemize}
 
  Three different GQM method resolutions have been tested:
 
 \begin{itemize}
-\item \begin{itemize}
 \item  A "fine" resolution, considered as the exact calculation of the non-linear transfer term, as no improvement in the results is noticed when further increasing the method resolution.
 
 \item  An "intermediate" resolution.
 
 \item  A "coarse" resolution, whose parameters are given as default values in \tomawac, which represents the best compromise between accuracy of the solution and CPU time.
 \end{itemize}
-\end{itemize}
 
- The configurations that do not effect significantly the global computation of Qnl4 are neglected. This configuration selection allows to reduce the CPU time. The threshold values set as default in \tomawac reduce the number of configuration:
+ The configurations that do not effect significantly the global computation of $Q_{nl4}$ are neglected. This configuration selection allows to reduce the CPU time. The threshold values set as default in \tomawac reduce the number of configuration:
 
 \begin{itemize}
-\item \begin{itemize}
 \item  by 21\% in the "fine" resolution case
 
 \item  by 34\% in the "intermediate" resolution case
 
 \item  by 64\% in the "coarse" resolution case
-\end{itemize}
 \end{itemize}
 
  The GQM method is selected by setting to 3 the keyword \textit{NON-LINEAR TRANSFERS BETWEEN FREQUENCIES} in the steering file.\textbf{}
@@ -956,45 +967,64 @@ where s${}_{2}$ is defined as s${}_{2}$= s${}_{2}$/ s${}_{a}$.
  This method makes use of 6 parameters. The default values of those parameters correspond to the "coarse" resolution case:
 
 \begin{itemize}
-\item \begin{itemize}
-\item  The three keywords \textit{SETTING FOR INTEGRATION ON OMEGA1}, \textit{SETTING FOR INTEGRATION ON OMEGA2} and \textit{SETTING FOR INTEGRATION ON THETA1} determine the number of integration points over the three variables s${}_{1}$, q${}_{1}$ and s${}_{2}$ and their default values are respectively 3, 3 and 6 ("coarse" resolution). The values 1, 4, 8 and 2, 8, 12 correspond respectively to the "intermediate" and "fine" resolution cases.
+\item  The three keywords \textit{SETTING FOR INTEGRATION ON OMEGA1}, \textit{SETTING FOR INTEGRATION ON OMEGA2} and \textit{SETTING FOR INTEGRATION ON THETA1} determine the number of integration points over the three variables $\sigma_1$, $\theta_1$ and $\sigma_2$ and their default values are respectively 3, 3 and 6 ("coarse" resolution). The values 1, 4, 8 and 2, 8, 12 correspond respectively to the "intermediate" and "fine" resolution cases.
 
 \item  The three keywords \textit{THRESHOLD0 FOR CONFIGURATIONS ELIMINATION}, \textit{THRESHOLD1 FOR CONFIGURATIONS ELIMINATION} and \textit{THRESHOLD2 FOR CONFIGURATIONS ELIMINATION} affect the percentage of discarded configurations. Their default values are respectively 0, 10${}^{10}$ and 0.15. For the "intermediate" and "fine" resolution cases, the first two values are the same, and the threshold2 values is equal respectively to 0.01 and 0.001.
 \end{itemize}
-\end{itemize}
 
-
-\subsubsection{ ~Non-linear transfers between triads (Qtr term)}
+\subsubsection{Non-linear transfers between triads (Qtr term)}
 
 
 {\bf  LTA (Lumped Triad Approximation) model}
 
- A parametric model allowing to take into account the non-linear triad interactions in the averaged-phase models has been proposed by Eldeberky and Battjes [Eldeberky,~1995]. The LTA model is a parametric approach that is based on the Madsen and Sorensen's deterministic spectral model [Madsen,~1993]. Simplifying hypotheses are introduced for reducing the computation cost. Thus, a parametric formulation is given for the biphase as a function of the Ursell's number and the model is restricted to the self-interactions.
+ A parametric model allowing to take into account the non-linear triad interactions in the averaged-phase models has been proposed by Eldeberky and Battjes \cite{Eldeberky1995}. The LTA model is a parametric approach that is based on the Madsen and Sorensen's deterministic spectral model \cite{Madsen1993}. Simplifying hypotheses are introduced for reducing the computation cost. Thus, a parametric formulation is given for the biphase as a function of the Ursell's number and the model is restricted to the self-interactions.
 
  The source term is written as:
 \begin{equation} \label{GrindEQ__4_63_}
-\begin{array}{l} {Q_{LTA} (f,\theta )=Q_{LTA}^{+} (f,\theta )+Q_{LTA}^{-} (f,\theta )} \\ {Q_{LTA}^{+} (f,\theta )=\alpha _{LTA} \, c\; C_{g} \; g^{2} \frac{R_{(f/2,f/2)}^{2} }{S_{f}^{2} } \sin \left|\, \beta _{f/2,f/2} \right|\; \; \left[F^{2} (f/2,\theta )-2F(f,\theta )F(f/2,\theta )\right]} \\ {Q_{LTA}^{-} (f,\theta )=-2\; Q_{LTA}^{+} (2f,\theta )} \end{array}
+%\left.
+\begin{array}{l} 
+Q_{LTA} (f,\theta )=Q_{LTA}^{+} (f,\theta )+Q_{LTA}^{-} (f,\theta ) \\[12pt] 
+Q_{LTA}^{+} (f,\theta )=\alpha _{LTA} \, c\; C_{g} \; g^{2} \frac{R_{f/2,f/2}^{2}(f/2,f/2) }{S_{f}^{2} } \sin \left|\, \beta _{f/2,f/2} \right|\; \; \left[F^{2} (f/2,\theta )-2F(f,\theta )F(f/2,\theta )\right] \\[12pt] 
+Q_{LTA}^{-} (f,\theta )=-2\; Q_{LTA}^{+} (2f,\theta )
+ \end{array}
+%\right\}
 \end{equation}
 $\alpha _{LTA} $ is the model adjustment coefficient; c and Cg denote the phase and group velocities, respectively.
 
-R is the self-interaction coefficient: $R_{f,f} =\left(2k\right)^{2} \, \left[\frac{1}{2} +\frac{\left(2\pi f\right)^{2} }{gd\, k^{2} } \right]$ \eqref{GrindEQ__4_64_}
+R is the self-interaction coefficient: 
+\bequ
+\label{eq:selfinter}
+\dsp R_{f,f} =\left(2k\right)^{2} \, \left[\frac{1}{2} +\frac{\left(2\pi f\right)^{2} }{gd\, k^{2} } \right]
+\eequ
 
-S is given by the relation: $S\; _{f} =\, -2\; k\, \left(gd+2\, B\, gd^{3} k_{}^{2} -(B+1/3)\, d^{2} \left(2\pi f\right)_{}^{2} \right)\, $ \eqref{GrindEQ__4_65_}
 
-The biphase $\beta $ is given by the relation: $\beta {\kern 1pt} \left(f,f\right)\, =\, -\frac{\pi }{2} +\frac{\pi }{2} \, \tanh \left(\frac{0.2}{Ur} \right)$ \eqref{GrindEQ__4_66_}
+S is given by the relation: 
+\bequ
+\label{eq:sf}
+\dsp S_{f} =\, -2\; k\, \left(gd+2 B\, gd^{3} k_{}^{2} -(B+1/3)\, d^{2} \left(2\pi f\right)_{}^{2} \right)
+\eequ
 
-where $Ur$ denotes the Ursell's number: $Ur=\frac{g}{8\pi ^{2} \sqrt{2} } \frac{H_{m0} \, T_{m}^{2} }{d^{2} } $ \eqref{GrindEQ__4_67_}
+The biphase $\beta $ is given by the relation: 
+\bequ
+\label{eq:biphase}
+\dsp \beta \left(f,f\right) = -\frac{\pi }{2} +\frac{\pi }{2} \tanh \left(\frac{0.2}{Ur} \right)
+\eequ
+
+where $Ur$ denotes the Ursell's number: 
+\bequ
+\label{eq:Ursell}
+\dsp Ur=\frac{g}{8\pi ^{2} \sqrt{2} } \frac{H_{m0} \, T_{m}^{2} }{d^{2} } 
+\eequ
 
  with $H_{m0} $ being the significant spectral height and $T_{m} $ being the average wave time.
 
- $Q_{LTA}^{\pm } $ denotes the negative and positive contributions of the self-interactions. Since $Q_{LTA}^{+} $ denotes the positive contributions to the first upper harmonic, it should be positive. The negative values of $Q_{LTA}^{+} $ are replaced by the zero value. In the numerical integration of the energy equation, the source term for the triad interactions is generally only computed for frequencies that are lower than R${}_{fm}$f${}_{m}$ (Ris [Ris,~1997]) where $R_{fm} =2.5$.
+ $Q_{LTA}^{\pm } $ denotes the negative and positive contributions of the self-interactions. Since $Q_{LTA}^{+} $ denotes the positive contributions to the first upper harmonic, it should be positive. The negative values of $Q_{LTA}^{+} $ are replaced by the zero value. In the numerical integration of the energy equation, the source term for the triad interactions is generally only computed for frequencies that are lower than $R_{fm}f_{m}$ (Ris \cite{Ris1997}) where $R_{fm} =2.5$.
 
  Two constants can me modified through keywords:
 
 \begin{itemize}
-\item  constant $\alpha _{LTA} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT ALPHA}TRIADS 1 (LTA) COEFFICIENT ALPHA\textit{.} Its default value is $\alpha _{LTA} =0.5$
-
-\item  constant $R_{fm} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT RFMLTA}TRIADS 1 (LTA) COEFFICIENT RFMLTA\textit{.} Its default value is $R_{fm} =2.5$
+\item  constant $\alpha _{LTA} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT ALPHA}. Its default value is $\alpha _{LTA} =0.5$
+\item  constant $R_{fm} $ corresponding to the keyword \textit{TRIADS 1 (LTA) COEFFICIENT RFMLTA}. Its default value is $R_{fm} =2.5$
 \end{itemize}
 
 
@@ -1002,15 +1032,27 @@ where $Ur$ denotes the Ursell's number: $Ur=\frac{g}{8\pi ^{2} \sqrt{2} } \frac{
 
 The SPB model was developed by Becq [Becq,~1998] from the extended Boussinesq equations as proposed by Madsen and Sorensen [Madsen,~1992]. The model is for simulating the effects induced by the collinear and non-collinear interactions of spectral components. The source term is written as:
 \begin{equation} \label{GrindEQ__4_68_}
-\begin{array}{l} {Q\left(f,\theta \right)=\frac{B'\, g}{2S_{1,f} } \int _{0}^{f}\int _{0}^{2\pi }\int _{0}^{f}\int _{0}^{2\pi }df_{1} df_{2}     d\theta _{1} d\theta _{2} T_{f_{1} ,f_{2} } \delta \left(\theta _{\vec{k}} -\theta _{\vec{k}_{1} +\vec{k}_{2} } \right)\delta \left(f-f_{1} -f_{2} \right)} \\ {+\frac{B'\, g}{S_{1,f} } \int _{0}^{\infty }\int _{0}^{2\pi }\int _{0}^{\infty }\int _{0}^{2\pi }df_{1} df_{2}     d\theta _{1} d\theta _{2} T_{-f_{2} ,f_{1} } \delta \left(\theta _{\vec{k}_{1} } -\theta _{\vec{k}+\vec{k}_{2} } \right)\delta \left(f_{1} -f-f_{2} \right)} \end{array}
+\begin{array}{l} 
+\dsp Q\left(f,\theta \right)=\frac{B'\, g}{2S_{1,f} } \int _{0}^{f}\int _{0}^{2\pi }\int _{0}^{f}\int _{0}^{2\pi }df_{1} df_{2}     d\theta _{1} d\theta _{2} T_{f_{1} ,f_{2} } \delta \left(\theta _{\vec{k}} -\theta _{\vec{k}_{1} +\vec{k}_{2} } \right)\delta \left(f-f_{1} -f_{2} \right) \\[12pt]
+\dsp+\frac{B'\, g}{S_{1,f} } \int _{0}^{\infty }\int _{0}^{2\pi }\int _{0}^{\infty }\int _{0}^{2\pi }df_{1} df_{2}     d\theta _{1} d\theta _{2} T_{-f_{2} ,f_{1} } \delta \left(\theta _{\vec{k}_{1} } -\theta _{\vec{k}+\vec{k}_{2} } \right)\delta \left(f_{1} -f-f_{2} \right) \end{array}
 \end{equation}
-with: $T_{f_{1} ,f_{2} } =\frac{gK}{K^{2} +\Delta k^{2} } \; R_{f_{1} ,f_{2} } \; \left[-\frac{R_{-f_{2} ,f} }{\, S_{2,f_{1} } k_{1} } F_{} F_{2} -\frac{R_{-f_{1} ,f} }{\, S_{2,f_{2} } k_{2} } F_{} F_{1} +\frac{R_{f_{1} ,f_{2} } }{\, S_{2,f} k} F_{1} F_{2} \right]$ (4.69.a)
+with: 
+\bequ \label{eq:tf1f2}
+T_{f_{1} ,f_{2} } =\frac{gK}{K^{2} +\Delta k^{2} } \; R_{f_{1} ,f_{2} } \; \left[-\frac{R_{-f_{2} ,f} }{\, S_{2,f_{1} } k_{1} } F_{} F_{2} -\frac{R_{-f_{1} ,f} }{\, S_{2,f_{2} } k_{2} } F_{} F_{1} +\frac{R_{f_{1} ,f_{2} } }{\, S_{2,f} k} F_{1} F_{2} \right]
+\eequ
 
- $B'=\frac{Cg}{2\pi k} $ (4.69.b)
+\bequ \label{eq:Bprime}
+B'=\frac{Cg}{2\pi k} 
+\eequ
 
- $R_{f1,f2} =\left(k_{1} +k_{2} \right)^{2} \, \left[\frac{1}{2} +\frac{\left(2\pi \right)^{2} f_{1} f_{2} }{gd\, k_{1} k_{2} } \right]$ (4.69.c)
+\bequ \label{eq:rf1f2}
+ R_{f1,f2} =\left(k_{1} +k_{2} \right)^{2} \, \left[\frac{1}{2} +\frac{\left(2\pi \right)^{2} f_{1} f_{2} }{gd\, k_{1} k_{2} } \right]
+\eequ
 
- $S_{f} \; =\, -2\; k\left(gd+2\, B\, gd^{3} k_{}^{2} -(B+1/3)\, d^{2} \left(2\pi f\right)_{}^{2} \right)\, $ (4.69.d)
+
+ \bequ \label{eq:Sf2}% (idem {eq:sf}
+S_{f} \; =\, -2\; k\left(gd+2\, B\, gd^{3} k_{}^{2} -(B+1/3)\, d^{2} \left(2\pi f\right)_{}^{2} \right)\, 
+\eequ
 
  $F$ denotes the variance spectrum in terms of frequencies and directions, $F\left(f,\theta \right)$. $T_{f_{1} ,f_{2} } $ and $T_{-f_{2} ,f_{1} } $ respectively correspond to the sum and difference interactions. $K$ is the model adjustment parameter.
 
@@ -1019,9 +1061,9 @@ with: $T_{f_{1} ,f_{2} } =\frac{gK}{K^{2} +\Delta k^{2} } \; R_{f_{1} ,f_{2} } \
  Three constants can be modified through keywords:
 
 \begin{itemize}
-\item  constant $K$ corresponding to the keyword \textit{'TRIADS 2 (SPB) COEFFICIENT K}TRIADS 2 (SPB) COEFFICIENT K\textit{.} Its default value is $K=0.34$
+\item  constant $K$ corresponding to the keyword \textit{'TRIADS 2 (SPB) COEFFICIENT K}. Its default value is $K=0.34$
 
-\item  the lower and upper directional markers corresponding to the keywords \textit{TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY}TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY\textit{ }and \textit{TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY}TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY\textit{.} Their respective default values are 0 and 360.
+\item  the lower and upper directional markers corresponding to the keywords \textit{TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY} and \textit{TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY}. Their respective default values are 0 and 360.
 \end{itemize}
 
 
@@ -1029,38 +1071,41 @@ with: $T_{f_{1} ,f_{2} } =\frac{gK}{K^{2} +\Delta k^{2} } \; R_{f_{1} ,f_{2} } \
 
  When water waves meet a strong adverse current, with a velocity that approaches the wave group velocity, waves are blocked. Two options can be considered in \tomawac to take into account wave blocking effects.
 
- \underbar{Option 1} : consider an equilibrium range spectrum (in the presence of ambient flow) applied as an upper limit for the spectrum (Hedges et al. 1985)
+ \underbar{Option 1} : consider an equilibrium range spectrum (in the presence of ambient flow) applied as an upper limit for the spectrum (Hedges et al. \cite{Hedges1985})
 
  \underbar{Option 2} : add a dissipative term on the right-hand side of the action balance equation \cite{Westhuys2012}
 
  The inclusion of wave-blocking effects is activated through the keyword \textit{DISSIPATION BY STRONG CURRENT} in the steering file; the keyword can take three values, namely:
 
 \begin{itemize}
-\item  No wave-blocking effects (default value)
+\item 0 No wave-blocking effects (default value)
 
-\item  Upper limit for spectrum [Hedges et al 1985].
+\item 1 Upper limit for spectrum Hedges et al \cite{Hedges1985}.
 
-\item  Westhuysen \textit{et al.} \cite{Westhuys2012} enhanced dissipation of waves on a strong current.
+\item 2 Westhuysen \textit{et al.} \cite{Westhuys2012} enhanced dissipation of waves on a strong current.
 \end{itemize}
 
 
 {\bf  option 1 for wave blocking: upper limit for the spectrum}
 
- An upper limit is imposed to the spectrum, using a Phillips (1977) shape, i.e.
+ An upper limit is imposed to the spectrum, using a Phillips \cite{Phillips1977} shape, i.e.
 
-If $E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $$E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } $ 
- with $\alpha$ the Phillips's constant in the Pierson-Moskowitz spectrum, equal to = 0.0081 then
-$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$$F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )$
+$$ 
+\mbox{ If } 
+E(f)>E\max =\frac{\alpha g^{2} }{\left(2\pi \right)^{4} f^{5} } \mbox{ then } 
+F(f,\theta )=\frac{E\max }{E(f)} F(f,\theta )
+$$
+ with $\alpha$ the Phillips's constant in the Pierson-Moskowitz spectrum, equal to = 0.0081. 
 
  This model is selected by setting the keyword \textit{DISSIPATION BY STRONG CURRENT }to 1 in the steering file.\textbf{}
 
 {\bf  option 2 for wave blocking: Westhuysen formulation }
 
  The expression proposed by Westhuysen is:
-\[Q_{ds,cur} =-C_{ds,cur} \max \left(\frac{\mathop{f_{r} }\limits^{\bullet } }{f} ,0\right)\; \; \left(\frac{B(k)}{B_{r} } \right)^{p_{0} /2} \; F(f,\theta )\]
-where $B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C_{g} k^{3} \frac{E(f)}{2\pi } $
+\[\dsp Q_{ds,cur} =-C_{ds,cur} \max \left(\frac{\mathop{f_{r} }\limits^{\bullet } }{f} ,0\right)\; \; \left(\frac{B(k)}{B_{r} } \right)^{p_{0} /2} \; F(f,\theta )\]
+where $$B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C_{g} k^{3} \frac{E(f)}{2\pi } $$
 
- and $p_{0} \left(\frac{u_{*} }{C} \right)=3+\tanh \left[w\left(\frac{u_{*} }{C} -0,1\right)\right]$.
+ and $$p_{0} \left(\frac{u_{*} }{C} \right)=3+\tanh \left[w\left(\frac{u_{*} }{C} -0,1\right)\right]$$.
 
  The variable \textit{w} is set equal to 25.
 
@@ -1069,28 +1114,28 @@ where $B(k)=\frac{1}{2\pi } \int _{0}^{2\pi }C_{g} k^{3} F(f,\theta )d\theta  =C
  This source term makes use of 2 parameters. Their default values correspond to the coefficients proposed by Westhuysen \cite{Westhuys2012}:
 
 \begin{itemize}
-\item \begin{itemize}
-\item  The coefficient C${}_{ds,cur}$, corresponding to the keyword DISSIPATION COEFFICIENT FOR STRONG CURRENT has a default value of 0.65,
+\item  The coefficient $C_{ds,cur}$, corresponding to the keyword DISSIPATION COEFFICIENT FOR STRONG CURRENT has a default value of 0.65,
 
-\item  The coefficient B${}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of 1.75 10${}^{-3}$.
-\end{itemize}
+\item  The coefficient ${B}_{r}$, corresponding to the keyword \textit{SATURATION THRESHOLD FOR THE DISSIPATION}, has a default value of $1.75 10^{-3}$.
 \end{itemize}
 
 
 \subsubsection{ Dissipation due to vegetation.  }
 
- When the ratio between vegetation height and water depth is important, vegetation can imply some dissipation. Some methods exist  to modelize this dissipation. The method we chose is based on the formulation proposed by Suzuki et al. (2011)
+ When the ratio between vegetation height and water depth is important, vegetation can imply some dissipation. Some methods exist  to modelize this dissipation. The method we chose is based on the formulation proposed by Suzuki et al. \cite{Suzuki2011}
 \[Q_{veg} =-\sqrt{\frac{2}{\pi } } \tilde{C}_{D} b_{v} N_{v} \left(\frac{\bar{k}}{\bar{\sigma }} \right)^{3} \frac{\sinh ^{3} (\bar{k}\alpha h)+3\sinh (\bar{k}\alpha h)}{3\bar{k}\cosh ^{3} (\bar{k}h)} \sqrt{m_{0} } F(\sigma ,\theta )\]
-m0~denotes the total variance, $\bar{\sigma }$denotes the average intrinsic frequency and$\bar{k}$ denotes the average wave number; they are respectively computed as followings:
+$m_0$ denotes the total variance, $\bar{\sigma }$ denotes the average intrinsic frequency and 
+$\bar{k}$ denotes the average wave number; they are respectively computed as followings:
+\bequ \label{eq:defmObis }
+m_{0} =\int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \;  F(f_{r} ,\theta )\; df_{r} \; d\theta 
+\eequ
 
-
-
-$m_{0} =\int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \;  F(f_{r} ,\theta )\; df_{r} \; d\theta $ (4.39.a)
-
-$\bar{\sigma }=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \; \frac{1}{\sigma } \;  F(f_{r} ,\theta )\; df_{r} \; d\theta \right)^{-1} $ (4.39.b)
-
-$\bar{k}=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \; \frac{1}{\sqrt{k} } \;  F(f_{r} ,\theta )\; df_{r} \; d\theta \right)^{-2} $ (4.39.c)
-
- Where $\tilde{C}_{D} $is the vegetation drag coefficient, \textit{b${}_{v}$} [m] is the stem diameter of cylinder (plant), \textit{N${}_{v}$} [-] is the number of plants per square meter and $\alpha $is the ratio between vegetation height and water depth.
+\bequ \label{eq:defsigmabis }
+\bar{\sigma }=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \; \frac{1}{\sigma } \;  F(f_{r} ,\theta )\; df_{r} \; d\theta \right)^{-1}
+\eequ
+\bequ \label{eq:defkbis }
+\bar{k}=\left(\frac{1}{m_{0} } \int _{f_{r} =0}^{\infty }\int _{\theta =0}^{2\pi }\;  \; \frac{1}{\sqrt{k} } \;  F(f_{r} ,\theta )\; df_{r} \; d\theta \right)^{-2} 
+\eequ
+ Where $\tilde{C}_{D} $is the vegetation drag coefficient, $b_{v}[m]$  is the stem diameter of cylinder (plant), $N_{v} [-]$ is the number of plants per square meter and $\alpha $is the ratio between vegetation height and water depth.
 
 
