@@ -1,11 +1,11 @@
-\subsection{Bottom friction}
+\section{Bottom friction}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\subsection{Purpose}
 %
 This test case aims at testing the effect of friciotn coefficients used in
 Tomawac, one acting upon energy whereas the other one acts upon the mean
@@ -16,7 +16,7 @@ validate non regression results.
 
 
 %
-\subsubsection{Description of the problem}
+\subsection{Description of the problem}
 The waves are let freely propagate in alarge body of water. The swell should
 loose some energy and its frequency should change only under the effect of
 friction bottom (the boundary conditions may be ignoerd because the domain is
@@ -29,7 +29,7 @@ Q_{bf}(\theta,\omega)=-\Gamma (\frac{\sigma}{g.\sinh(kd)})F(\theta,\omega)
 Where $\Gamma$ the \telkey{BOTTOM FRICTION COEFFICIENT} is taken equal to 0.038 its
 default value.
 
-\subsubsection{Geometry and mesh}
+\subsection{Geometry and mesh}
 The computational domain is a 100km by 25km rectangle and the flat bottom is
 taken equal to 5m.
 
@@ -46,20 +46,20 @@ The mesh is made with 492 nodes (80 on the boundary) and 902 triangles.
 %     used to describe both porous media (soil model in particularly) and
 %     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
 Time duration is 30000s, time step is equal to 100s, the spectro-angular mesh
 has 24 angles and 25 frequences spread on a geometric progression common ratio
 1.1 with a minimum of 0.056447393
 
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 %
 For both conditions, we take a Jonswap spectrum with a 1m significant wave
 heigth, a pic frequency of 0.1 The angular distribution function follows a
 $\cos^{2s} \theta$ distribution with an angular spreading of 6 and a mean
 direction of 0.
 
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 
 
 % - Results:
@@ -67,6 +67,6 @@ direction of 0.
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\subsection{Results}
 In this case we just verify that we still have the same result as the ones
 obtained during the comparison with Cowadis \cite{cowadis}.

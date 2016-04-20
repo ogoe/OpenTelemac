@@ -1,21 +1,21 @@
-\subsection{Whirl current}
+\section{Whirl current}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\subsection{Purpose}
 %
 This test case should make it possible to check that the effects of refraction
 by the current are properly taken into account by Tomawac 7.0. The distorsion
 of a wave spectrum as it reaches a whirl current zone like those observed along
-the Norwegian coasts \cite{mathiesen}
+the Norwegian coasts \cite{Mathiesen1987}
 %
-\subsubsection{Description of the problem}
+\subsection{Description of the problem}
 %
-This test case is derived from the Mathiesen's results \cite{mathiesen}.
-Equivalent results can be found in \cite{tolman} and \cite{hubbert}. The
+This test case is derived from the Mathiesen's results \cite{Mathiesen1987}.
+Equivalent results can be found in \cite{Tolman1991} and \cite{Hubbert1991}. The
 spatial domain is a 80 km-sided square (see Figure \ref{current}). A circular,
 origin-centered whirl current is considered ; it is modelled as follows. Is
 tanegntial velocity is zero at the origin and linearly increases up to $r=r_1$
@@ -63,13 +63,13 @@ crossings can be observed.
 \label{ray}
 \end{figure}
 
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 
 That method of rays can be implemented  either forwards (as on Figure
 \ref{ray}), or backwards, then knowing the arrival point of an orthogonal,  it
 provides the starting point. A whole wave spectrum can be reconstructed by
 multiplying the computations of this kind. The incident spectrum as prescribed
-by \cite{mathiesen} is as follows :
+by \cite{Mathiesen1987} is as follows :
 $$
 S(f,\theta)=S(f)D(f,\theta)
 $$
@@ -93,7 +93,7 @@ where $\sigma_{0p}$, the directionnal spread at the peak, is 25 in our case.
 This spectrum is imposed on the East South and west boundaries while the north boundary is free
 
 The initial spectrum is null.
-%\subsubsection{Reference}
+%\subsection{Reference}
 %
 
 % - Physical parameters:
@@ -106,7 +106,7 @@ The initial spectrum is null.
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
 The mesh is made of 1876 nodes and 3590 triangles and is shown Figure \ref{mail}
 \begin{figure} [!h]
@@ -121,7 +121,7 @@ The mesh is made of 1876 nodes and 3590 triangles and is shown Figure \ref{mail}
 %
 %
 
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
 Time duration is 60000s, time step is equal to 1200s, the spectro-angular mesh
 has 48 angles and 25 frequences spread on a geometric progression common ratio
@@ -131,7 +131,7 @@ has 48 angles and 25 frequences spread on a geometric progression common ratio
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\subsection{Results}
 %
 On figure \ref{measurepts}, we present the amplification factor of the heigth
 due to the current. We can notice two different zones at the center of the
@@ -142,7 +142,7 @@ the same direction.On the other parts of the domain modifications are less than
 5\%. Those results are coherent with the ray calculus presented on Figure
 \ref{ray} since on the two zones we denote orthogonal crossing.
 
-In his paper, Mathiesen \cite{mathiesen} defines 8 points that we show on
+In his paper, Mathiesen \cite{Mathiesen1987} defines 8 points that we show on
 Figure \ref{measurepts}. On those points he gives the energy angular spread at
 0.1 Hz (frequency paek of the incident spectrum). We compare this spread to the
 one obtained by Tomawac on Figure \ref{repartang}. We can denote that the
@@ -165,6 +165,6 @@ Notice that Mathiesen took an angular discretisation of 2.5 when our is of 7.5.
 \end{figure}
 
 
-\subsubsection{Conclusion}
+\subsection{Conclusion}
 This test case showed on a realistic case of refraction of current Tomawac
 gives suitable results compared to fine results.

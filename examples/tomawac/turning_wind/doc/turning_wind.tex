@@ -1,16 +1,16 @@
-\subsection{Turning wind}
+\section{Turning wind}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\subsection{Purpose}
 %
 This test case shows how Tomawac calculate the spectrum when there is a wind that is turning. It illustrates the phenomena of white capping and quadruplet interactions.  This document is a short translation of the french 'doc' version. One can find more details in {\it turning\_wind/doc/turningwind.doc}
 
 %
-\subsubsection{Description of the problem}
+\subsection{Description of the problem}
 %
 The domain is homogeneous, The depth is infinite, the wind given at 10m is homogeneous  propagation step is inhibited and no boundary condition are given.
 So the domain of computation can be reduced to a few points as the solution is homogeneous and finally we focus on only one of them. The domain is finally very simple (see Figure \ref{mailTW})
@@ -25,14 +25,14 @@ So the domain of computation can be reduced to a few points as the solution is h
 %     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
 %
 %
-\subsubsection{Physical parameters}
+\subsection{Physical parameters}
 %
 The modulus of the wind is constant equalled to 20 m/s. Initially the direction is set to 90 degree, (which mean that $U_Y$ is null). This is maintained till the peak frequency reach the double of its equilibrium value (peak frequency of Pierson-Moskowitz). This occurs after 28800s (8h), at this time we change the direction of wind for 30 degrees (a rotation of 60 degrees). All the value of the wind are read in a file called {\it wind.slf   }.
 % - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
 The domain is a square of 2km
 The mesh is very simple as there are 5 nodes and 4 triangles
@@ -46,10 +46,10 @@ The mesh is very simple as there are 5 nodes and 4 triangles
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 %
 Initial conditions are imposed homogeneous on the domain with the option 4, with a phillips constant of 0.024 an initial peak frequency of 0.3  and an initial peak factor of 1.  The initial directionnal spread is set to one and the initial main direction to 90 degree (like the wind).
-Those value has been set to be identical to the Vledder study \cite{vledder}
+Those value has been set to be identical to the Vledder study \cite{Vanvledder1990}
 
 Nothing is imposed at the boundaries.
 % - Numerical parameters:
@@ -57,7 +57,7 @@ Nothing is imposed at the boundaries.
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 Time duration is set to 115200s (32h), time step is equal to 900s, the spectro-angular mesh has 12 angles and 26 frequences spread on a geometric progression common ratio 1.1 with a minimum of 0.04177248.
 
 % - Results:
@@ -65,9 +65,9 @@ Time duration is set to 115200s (32h), time step is equal to 900s, the spectro-a
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\subsection{Results}
 %
-We present here the results only for the rotation of 60 degrees as it is the effective rotation that is done in the case. Initially there were 3 rotations one of 90 and one of 30. The results for those rotations are described in \cite{valid10TW}.
+We present here the results only for the rotation of 60 degrees as it is the effective rotation that is done in the case. Initially there were 3 rotations one of 90 and one of 30. The results for those rotations are described in \cite{Benoit1996_2}.
 
 At the moment when the direction change the established swell is going to interact with the wave induced by the new direction of wind. Three phenomenas occur in that process.
 \begin {itemize}
@@ -76,7 +76,7 @@ At the moment when the direction change the established swell is going to intera
 \item Non linear interactions between swell and wind's sea.
 \end{itemize}
 
-The results of Tomawac are compared to simulations made by two differents code. EXACT-NL and WAM-cycle 3 (voir \cite{vledder}). The figure  \ref{resturnwind} shows that there are good agreements of Tomawac results compared to other simulations. One can denote that spectrum tail factor can be sensitive. During the first 4 hours a factor of 4 is better but after that time a factor of 5 is better.
+The results of Tomawac are compared to simulations made by two differents code. EXACT-NL and WAM-cycle 3 (voir \cite{Vanvledder1990}). The figure  \ref{resturnwind} shows that there are good agreements of Tomawac results compared to other simulations. One can denote that spectrum tail factor can be sensitive. During the first 4 hours a factor of 4 is better but after that time a factor of 5 is better.
 
 Let us remark that those are old results and a new simulation with new linear terms might give better results.
 

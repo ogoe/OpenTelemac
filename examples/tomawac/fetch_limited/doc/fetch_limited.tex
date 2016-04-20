@@ -22,9 +22,9 @@
 %\begin{document}
 %\maketitle
 
-\subsection{Fetch Limited }
+\section{Fetch Limited }
 
-\subsubsection{Purpose}
+\subsection{Purpose}
 The goal of this test-case is to validate the generation (Source/sink terms)  and the growth of the wave spectrum depending of the length of wind action (fetch) with a constant wind defined at 10 meters from the sea surface. The domain used is simple and we want to observe the evolution of few parameters along its length, as the significant wave height, peak period and variance spectrum.
 It is supposed that the wind blew long enought to have reached a steady state.\\
 Thus, this benchmark will allow us to compare and validate the different models of wind generation (three models), whitecapping dissipation (two models), non-linear quadruplet interactions (three models but only two are used here). Friction bottom dissipation and eventually depth-induced breaking dissipation (four models) is also included when a finite depth is imposed. The models used are presented in the table \ref{tabmodel}.
@@ -36,17 +36,17 @@ Models & generation  &  capping  & transfers  &  Depth &  friction & breaking \\
        &  model      &  model    &   formula &         &  coeff. &  dissipation \\
        &        &      &    &         &   &   model\\\hline
   & Janssen & Komen& DIA* & $\inf$ & -- & --\\
-test 1 & (1989); &(1984);& &  &  &\\
- &  (1991) & Janssen;  & &  &  & \\
-&   &  (1991)  & &  &  & \\
+test 1 & \cite{Janssen1989} &\cite{Komen1984}& &  &  &\\
+ &  \cite{Janssen1991} & Janssen;  & &  &  & \\
+&   &  \cite{Janssen1991}  & &  &  & \\
 \hline
 test 2  & Snyder  & Komen ;  & DIA & $\inf$ & --& --\\
- &  (1981)& Janssen & &  & &\\
+ &  \cite{Snyder1981}& Janssen & &  & &\\
 \hline
 test 3 & Snyder & Westhuysen  & DIA & $\inf$ & --& -- \\
- &  &  (2007) &  & & &  \\
+ &  &  \cite{Westhuys2007} &  & & &  \\
 \hline
-test 4 & Yan (1987) & Westhuysen & DIA & $\inf$ & --& -- \\
+test 4 & Yan (\cite{Yan1987}) & Westhuysen & DIA & $\inf$ & --& -- \\
 \hline
 test 5 & Snyder & Westhuysen & Exact GQM** & & &  \\
  &  &  &  coarse  & $\inf$ & --& --\\
@@ -67,21 +67,21 @@ test 7a & Snyder & Westhuysen & DIA & 180 & 0.038 & -- \\
  \end{tabular}
  \caption{Different models used for this test-case. In all cases, linear wave growth term from the formula of Cavaleri and
 Malanotte-Rizzoli (1981) is used.\textit{* : Discrete Interaction Approximation,Hasselmann et al., 1985. ** : Gaussian Quadrature Method,introduced by Lavrenov
-[Lavrenov, 2001] and implemented by Benoit and Gagnaire-Renou [Gagnaire-Renou et al., 2010]}}
+\cite{Lavrenov2001} and implemented by Benoit and Gagnaire-Renou \cite{Gagnaire2010}}}
 \label{tabmodel}
 \end{table}
-\subsubsection{Referent experiments}
+\subsection{Referent experiments}
 In order to validate TOMAWAC's results, they will be compared to different empirical formulas:
 \begin{itemize}
 \item Infinite depth :
-\subitem JONSWAP \cite{haselmann1}
+\subitem JONSWAP \cite{Hasselmann1973}
 \subitem CERC (1977) \cite{CERC77}
-\subitem Wilson and Goda \cite{wilson65}
-\subitem Kahma and Calkoen \cite{kahma}
+\subitem Wilson and Goda \cite{Wilson1965}
+\subitem Kahma and Calkoen \cite{Kahma1992}
 \item Finite depth :
 \subitem CERC (1984)\cite{CERC84}
 \end{itemize}
-\subsubsection{Geometry of the domain and bathymetry}
+\subsection{Geometry of the domain and bathymetry}
 Domain  dimension : 1000 km * 500 km
 
 Depth constant along the domain :
@@ -109,7 +109,7 @@ Several meshes have been tested. The important point highlighted by the analysis
 \item 36 directions uniformly distributed
 \end{itemize}
 
-\subsubsection{Initial and Boundary conditions}
+\subsection{Initial and Boundary conditions}
 Jonswap spectrum has been set as initial condition.\\
 The domain is a part of a sea. A constant and homogeneous wind blows perpendicular to a long and straight coastline. The boundary conditions are shown in Figure \ref{boundaryfet}:
 \begin{figure}
@@ -118,7 +118,7 @@ The domain is a part of a sea. A constant and homogeneous wind blows perpendicul
 \caption{Boundary conditions}
 \label{boundaryfet}
 \end{figure}
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 \begin{itemize}
 \item time step : 900s
 \item physical time reached : 48 h
@@ -132,7 +132,7 @@ CPU times & 3min & 3h25 & 5h40 & 25 s \\
 \end{tabular}
 \end{itemize}
 
-\subsubsection{Results - infinite depth }
+\subsection{Results - infinite depth }
 \paragraph{Wave's growth depending of the fetch for different wind velocities}
 The figure \ref{hsfet} shows the significant wave heights and the peak periods of waves along the fetch (along the axis $ y = 250 km$ ) for the test 1 (the others are not shown because they give the same conclusions). These curves are obtained after 48 hour of wind action for a wind of 5 to 25 m/s. It is clearly seen that the wind has a considerable impact on these values and bigger waves are obtained with stronger wind. Also, stronger is the wind, longer is the fetch needed to reach the steady state. It can be noticed that the significant wave height does not grow linearly but following the squared wind velocity.
 \begin{figure}[H]
@@ -142,12 +142,12 @@ The figure \ref{hsfet} shows the significant wave heights and the peak periods o
 \label{hsfet}
 \end{figure}
 \paragraph{Non-dimensionnal variances and peak frequencies}
-Here all the tests are compared, but only with a 20m/s and 10m/s winds. The value obtained with TOMAWAC V6P2 are compared with the empirical formulas : JONSWAP \cite{haselmann1}, CERC (1977), Wilson \cite{wilson65}, Kahma \cite{kahma}. The non-dimensionnal variables are :\\
+Here all the tests are compared, but only with a 20m/s and 10m/s winds. The value obtained with TOMAWAC V6P2 are compared with the empirical formulas : JONSWAP \cite{Hasselmann1973}, CERC (1977)\cite {CERC77}, Wilson \cite{Wilson1965}, Kahma \cite{Kahma1992}. The non-dimensionnal variables are :\\
 \begin{figure}[H]
   \centering
   	\includegraphics[width=0.5\textwidth]{M0v10id.pdf}\includegraphics[width=0.5\textwidth]{M0v20id.pdf}\\
   	\includegraphics[width=0.5\textwidth]{fpv10id.pdf}\includegraphics[width=0.5\textwidth]{fpv20id.pdf}\\
-      \caption{Comparaison of normalized Variance M0* and normalized peak frequencies fp* for U10 = 10m/s (left) and 20m/s (right), m0* MP-A and fp* PM-A are , respectively, the variance and the peak frequency limits given by the revisited Pierson-Moskowitz formula from Alves \cite{alves}}
+      \caption{Comparaison of normalized Variance M0* and normalized peak frequencies fp* for U10 = 10m/s (left) and 20m/s (right), m0* MP-A and fp* PM-A are , respectively, the variance and the peak frequency limits given by the revisited Pierson-Moskowitz formula from Alves \cite{Alves2003}}
 \label{variancefet}
 \end{figure}
 \begin{itemize}
@@ -159,13 +159,13 @@ Where $U_{10}$ is the wind velocity at 10 meters from the sea.\\
 
 Figure \ref{variancefet} shows the different results obtained. Generally, all tests give correct results, and stay close to the CERC, Wilson \& Goda and Kahma \& Calkoen curves.\\
 The wind impact can be seen by two different behaviours. Indeed, for a 10m/s wind, the results are really close to the empirical formula at small fetches. As the fetch grows, the differences between the models increrase, and the curves began to stray from the empirical formulas. In this case, the models of tests 1, 6 and 6b give the best results. At 20m/s, a different behaviour is noticed : at small fetch the results are quite different from the empirical curves and it is only when the fetch grows that they match well with the empirical formula. In this case it is the model of test 5 which gives the best results. It can be concluded that there is a range where TOMAWAC results are really correct whatever the models used. For strong winds, an exact resolution of the quadruplet transfers, Snyder's wind generation model and Westhuysen white capping model (test 5) give better results at small fetch. \\
-Thus, the analysis of Figure \ref{variancefet} shows a good matching between the  TOMAWAC wave simulations and the empirical formulas. A comparison was also done with the revisited Pierson-Moskowitz asymptotic limits from Alves and Banner \cite{alves} for fully developed wind waves, the $U_{10}$-scaled asymptotes is added on Figure \ref{variancefet}. The formula gives :
+Thus, the analysis of Figure \ref{variancefet} shows a good matching between the  TOMAWAC wave simulations and the empirical formulas. A comparison was also done with the revisited Pierson-Moskowitz asymptotic limits from Alves and Banner \cite{Alves2003} for fully developed wind waves, the $U_{10}$-scaled asymptotes is added on Figure \ref{variancefet}. The formula gives :
 \[\epsilon = (4.02 \pm 0.62)*10^{-3}\]
 \[\nu = (1.23 \pm 0.08)* 10^{-1}\]
- It seems that the non-dimensional peak frequency $f_p*$ is a little bit over-estimated and the non-dimensional variance is a bit underestimated. Indeed, the empirical formula given by CERC (1984), which is used as a criterion for fully developed seas, to calculate the minimum fetch during the minimum duration (48h), is : $\frac{t_{min} g}{U_{10}} = 68.8 (\frac{X_{min} g}{U_{10}^2})^{0.67}$. Applying this formula we found that the fully developed seas is reached around $1 117 km$ for a 10 m/s wind and around $1 672 km$ for a 20 m/s wind. Thus, the fully developed sea may not be entirely reached at our last point ($X_{10} = 1000km$) and which may explain the growth of the variance spectrum for some of the tests (see next subsubsection).
+ It seems that the non-dimensional peak frequency $f_p*$ is a little bit over-estimated and the non-dimensional variance is a bit underestimated. Indeed, the empirical formula given by CERC (1984), which is used as a criterion for fully developed seas, to calculate the minimum fetch during the minimum duration (48h), is : $\frac{t_{min} g}{U_{10}} = 68.8 (\frac{X_{min} g}{U_{10}^2})^{0.67}$. Applying this formula we found that the fully developed seas is reached around $1 117 km$ for a 10 m/s wind and around $1 672 km$ for a 20 m/s wind. Thus, the fully developed sea may not be entirely reached at our last point ($X_{10} = 1000km$) and which may explain the growth of the variance spectrum for some of the tests (see next subsection).
 
 \paragraph{Variance spectrum for a constant wind}
-In this subsubsection, we look at the development of the variance spectrum $E(f)$ along the fetch.
+In this subsection, we look at the development of the variance spectrum $E(f)$ along the fetch.
 \[ E(f) = \int_{0}^{2\pi} F(f,\theta )d\theta
 \]
 The spectra are worked out for different points of fetch and for two wind speeds (10m/s and 20m/s):\\
@@ -209,7 +209,7 @@ On Figure \ref{variancesfet}, non-dimensionnal variance spectra can be observed.
 For $U10 = 10m/s$, the last fetch points (points 7, 8, 9 and 10) get really close spectra. We can conclude that from a certain fetch, the fully developed sea state is reached. Althought, for the case $U10 = 20m/s$, the spectrum continues to grow and the overshoot's presence shows that this balance state is not yet reached. Thus, TOMAWAC gives good results which can be improved with the exact GQM quadruplet transfers model.
 
 \paragraph{Finite depth TOMAWAC results}
-In this subsubsection, finite depths are considered : 180m, 60m, 30m, 15m and 5m. In regards of Miche's criterion (1994), excepted for a 5 meters depth and $V = 20m/s$, there is no bathymetric breaking dissipation. All the tests are done for the same generation (Snyder), white capping (Westhuysen) and quadruplet transfer (DIA) models. Figure \ref{variancem0} shows the evolution of the non-dimensional variance along the fetch for the different tests. In order to compare with the CERC (1984) parametrization, non-dimensional variables are defined as:\\
+In this subsection, finite depths are considered : 180m, 60m, 30m, 15m and 5m. In regards of Miche's criterion (1994), excepted for a 5 meters depth and $V = 20m/s$, there is no bathymetric breaking dissipation. All the tests are done for the same generation (Snyder), white capping (Westhuysen) and quadruplet transfer (DIA) models. Figure \ref{variancem0} shows the evolution of the non-dimensional variance along the fetch for the different tests. In order to compare with the CERC (1984) parametrization, non-dimensional variables are defined as:\\
 \begin{itemize}
 \item CERC parametrization (1984) :
 \subitem $X* = \frac{g*X}{U_a}$
@@ -227,7 +227,7 @@ For a 10m/s wind, except for $d = 5 m $ and $d = 15 m$, the results are less clo
 \label{variancem0}
 \end{figure}
 Generally, TOMAWAC gives correct results if you adapt the model at the good application model.
-\subsubsection{Conclusion}
+\subsection{Conclusion}
 \paragraph{Infinite Depth}
 This benchmark allows to verify that TOMAWAC results for simultaneous processing of different source terms are correct. A comparison with empirical formulas validates this simulation with generally matching results. The use of the exact GQM quadruplet transfers model allows the visualization of overshoots, but,CPU time are increased, so it is not advisable to use this model for big industrial cases.
 \paragraph*{Finite depth}

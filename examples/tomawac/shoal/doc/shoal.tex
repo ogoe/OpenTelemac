@@ -1,16 +1,16 @@
-\subsection{Shoal : Submerged elliptical mound}
+\section{Shoal : Submerged elliptical mound}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\subsection{Purpose}
 The goal of this test-case is to check the behaviour of TOMAWAC in presence of refraction, shoaling and diffraction effects over a shoal.\\
 A shoal causes a concentration area of wave just behind it what makes fail numerical models of refraction based on the radius theory. This case-test allows to verify simulations from TOMAWAC for refraction shoaling and diffraction processes.
 
-\subsubsection{Referent experiments}
-The references of this test-case are the experiments of \cite{vincent}. They worked on the refraction and the diffraction of irregular waves over a mound using a directionnal spectral wave generator and they measured the wave's height.\\
+\subsection{Referent experiments}
+The references of this test-case are the experiments of \cite{Vincent1989}. They worked on the refraction and the diffraction of irregular waves over a mound using a directionnal spectral wave generator and they measured the wave's height.\\
 
 \begin{figure}[h!]
   \centering
@@ -42,8 +42,8 @@ Test number (1) & Case ID (2) & Type (3) & Period (sec) (4) & Height (cm) (5) & 
 
 In this benchmark, only one type of wave condition is tested for the diffraction effects, the N1 one. But B1,B2,N1 and N2 are tested to evaluate the refraction and the shoaling.
 
-\subsubsection{Test-case description}
-The case is about spectral wave propagation on a submerged elliptical mound. The study will compare the spectral significant wave heights given by TOMAWAC simulations with measurements from \cite{vincent}'s experiments.
+\subsection{Test-case description}
+The case is about spectral wave propagation on a submerged elliptical mound. The study will compare the spectral significant wave heights given by TOMAWAC simulations with measurements from \cite{Vincent1989}'s experiments.
 \paragraph{Geometry of the domain and bathymetry}
 
 \begin{tabular}{ccc}
@@ -128,7 +128,7 @@ $\phi (f,d) = \left\{ \begin{array}{rl}
       \caption{The boundary conditions}
 \end{figure}
 
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 \begin{itemize}
 \item time steps :
 	\begin{enumerate}
@@ -147,11 +147,11 @@ $\phi (f,d) = \left\{ \begin{array}{rl}
 \end{tabular}
 \end{itemize}
 
-\subsubsection{TOMAWAC Results }
-At first, simulations without diffraction effects are done in order to validate the propagation and refraction of the wave over this complex bathymetry. To compare the simulation results and the measurements of \cite{vincent}, the significant wave heights have been normalized by the incident significant wave height.\\
+\subsection{TOMAWAC Results }
+At first, simulations without diffraction effects are done in order to validate the propagation and refraction of the wave over this complex bathymetry. To compare the simulation results and the measurements of \cite{Vincent1989}, the significant wave heights have been normalized by the incident significant wave height.\\
 \begin{itemize}
 \item B1 and B2 tests (wide directional spreading):\\
-A good matching can be see in these tests (see Figure \ref{comparisonVB}). After drawing the iso-wave-height compared to the \cite{vincent}'s measurements, the wave concentration zone is well represented. The amplification factor goes over 1.3 for B1 and 1.4 for B2. As in measurements, this amplification factor is a bit higher for B2 case (higher peak factor) than for B1 case. But simulation factors are little bit higher than those measured.\\
+A good matching can be see in these tests (see Figure \ref{comparisonVB}). After drawing the iso-wave-height compared to the \cite{Vincent1989}'s measurements, the wave concentration zone is well represented. The amplification factor goes over 1.3 for B1 and 1.4 for B2. As in measurements, this amplification factor is a bit higher for B2 case (higher peak factor) than for B1 case. But simulation factors are little bit higher than those measured.\\
 Moreover, the computations of normalized wave height along the transect 4 match quite well with the measurements (not shown here).\\
 \begin{figure}[H]
   \centering
@@ -180,7 +180,7 @@ The diffraction coefficient $K_d$ is defined by the ratio of the spectral signif
 Parametrical tests have shown the influence of two non-dimensional parameters : the ratio of the mesh size over the wavelength ($\Delta x / \lambda$) and the current number.
 The courant number Cr is : $Cr = \frac{C_g(f_p)\Delta t}{\Delta x}$.\\
 where $C_g(f_p)$ is the group velocity associated to the sea-state peak frequency, $\Delta t$ the simulation time step and $\Delta x$ the size of the smallest element of the mesh.\\
-The diffraction coefficients obtained during the simulations (changing Cr and $\Delta x / \lambda $) are compared with measurements \cite{vincent} and the iso-Kd curves resulting from TOMAWAC simulations are superposed with the ones measured by Vincent and Briggs. (see Figure \ref{kdfilter}).
+The diffraction coefficients obtained during the simulations (changing Cr and $\Delta x / \lambda $) are compared with measurements \cite{Vincent1989} and the iso-Kd curves resulting from TOMAWAC simulations are superposed with the ones measured by Vincent and Briggs. (see Figure \ref{kdfilter}).
 
 
 \begin{figure}[!h]
@@ -214,5 +214,5 @@ In order to improve the simulation of the diffraction effects, a spatial filter 
 \label{kdfilter}
 \end{figure}
 
-\subsubsection{Conclusion}
+\subsection{Conclusion}
 This benchmark test allows to compare simulations from TOMAWAC and experimental results. It follows that TOMAWAC provides a correct simulation of the propagation, shoaling and the refraction but the diffraction effects are limited and not really well represented. In order to improve the results, a smoothing filter can be applied on the spatial domain.\\

@@ -1,19 +1,19 @@
-\subsection{Deferl\_bj78}
+\section{Deferl\_bj78}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\subsection{Purpose}
 %
 The aim of this case is to test the modelisation of depth-induced breaking. The
-results are compared to laboratory data \cite{battjes}
+results are compared to laboratory data \cite{Battjes1978}
 %
-\subsubsection{Description of the problem}
+\subsection{Description of the problem}
 %
 Our test case corresponds to the ``run 15'' in Battles and Janssen
-\cite{battjes}. It is a rectilinear beach with a bar. The bathymetry of that
+\cite{Battjes1978}. It is a rectilinear beach with a bar. The bathymetry of that
 beach varies as shown on Figure \ref{bathybj}. The Battle and Janssen's
 breaking model is used :
 
@@ -53,7 +53,7 @@ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2} for $\gamma_2$.
 %     explicits the analytical solution when available;
 %
 %
-%\subsubsection{Reference}
+%\subsection{Reference}
 %
 
 % - Physical parameters:
@@ -62,7 +62,7 @@ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2} for $\gamma_2$.
 %     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
 %
 %
-\subsubsection{Physical parameters}
+\subsection{Physical parameters}
 %
 The Battjes and Janssen's experimets were conducted in a channel and in
 signle-direction wave conditions. We have then taken a little directionnal
@@ -72,7 +72,7 @@ spread(s=32) in order to set up similar condition.
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
 The domain is a 25m by 12m rectangle. The depth is constant over $y$ and
 varrying with $x$ as shown on Figure \ref{bathybj}
@@ -91,7 +91,7 @@ The mesh is free, it is made of 648 triangles and 373 points. The boundary has
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 The initial conditions are null.
 
 As for the boundary conditions, a Pierson-Moskowitz-typed spectrum is
@@ -103,7 +103,7 @@ principal direction is 270.
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
 The time duration is 35s with a time step of 0.35s, the spectro-angular mesh
 has 24 angles and 25 frequences spread on a geometric progression common ratio
@@ -113,7 +113,7 @@ has 24 angles and 25 frequences spread on a geometric progression common ratio
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\subsection{Results}
 %
 The Figure \ref{resultbj} displays the significant wave heights as computed by
 Tomawac. One can see that Tomawac results are quite similar to the laboratory
@@ -130,7 +130,7 @@ not taken into account.
  \caption{comparison of the significative heigths}
 \label{resultbj}
 \end{figure}
-\subsubsection{Conclusion}
+\subsection{Conclusion}
 The breaking induced dissipation of energy is properly represented in Tomawac.
 The effect on the mean frequency can be neglicted.
 
