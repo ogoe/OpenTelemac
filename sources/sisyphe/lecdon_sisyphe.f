@@ -51,6 +51,7 @@
 !| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
 !
@@ -63,27 +64,23 @@
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-!                                                 NMAX
-      CHARACTER*144, INTENT(INOUT)      :: MOTCAR(300)
-!                                                      NMAX
-      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,300)
+      CHARACTER*144, INTENT(INOUT)      :: MOTCAR(MAXKEYWORD)
+      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEYWORD)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, PARAMETER :: NMAX = 300
-!
       INTEGER            :: I,K,ERR
-      INTEGER            :: MOTINT(NMAX)
-      INTEGER            :: TROUVE(4,NMAX)
-      INTEGER            :: ADRESS(4,NMAX)
-      INTEGER            :: DIMENS(4,NMAX)
+      INTEGER            :: MOTINT(MAXKEYWORD)
+      INTEGER            :: TROUVE(4,MAXKEYWORD)
+      INTEGER            :: ADRESS(4,MAXKEYWORD)
+      INTEGER            :: DIMENS(4,MAXKEYWORD)
       DOUBLE PRECISION   :: SUMAVAI
-      DOUBLE PRECISION   :: MOTREA(NMAX)
+      DOUBLE PRECISION   :: MOTREA(MAXKEYWORD)
       LOGICAL            :: DOC,EFFPEN
-      LOGICAL            :: MOTLOG(NMAX)
+      LOGICAL            :: MOTLOG(MAXKEYWORD)
       CHARACTER(LEN=250) :: NOM_CAS
       CHARACTER(LEN=250) :: NOM_DIC
-      CHARACTER*72       :: MOTCLE(4,NMAX,2)
+      CHARACTER*72       :: MOTCLE(4,MAXKEYWORD,2)
 
       CHARACTER(LEN=250) TEMPVAR
 !
@@ -94,7 +91,7 @@
 !
 ! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
 !
-      DO K = 1, NMAX
+      DO K = 1, MAXKEYWORD
 !       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
 !       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
@@ -131,13 +128,13 @@
 !     CALLS DAMOCLES
 !-----------------------------------------------------------------------
 !
-      CALL DAMOCLE( ADRESS , DIMENS  , NMAX   , DOC    , LNG , LU  ,
-     &               MOTINT , MOTREA  , MOTLOG , MOTCAR ,
-     &               MOTCLE , TROUVE , 2 , 3 ,.FALSE., FILE_DESC )
+      CALL DAMOCLE( ADRESS, DIMENS  ,MAXKEYWORD, DOC    , LNG , LU  ,
+     &               MOTINT, MOTREA ,MOTLOG , MOTCAR ,
+     &               MOTCLE, TROUVE ,2 , 3 ,.FALSE., FILE_DESC )
 !
 !     DECODES 'SUBMIT' CHAINS
 !
-      CALL READ_SUBMIT(SIS_FILES,MAXLU_SIS,CODE,FILE_DESC,300)
+      CALL READ_SUBMIT(SIS_FILES,MAXLU_SIS,CODE,FILE_DESC,MAXKEYWORD)
 !
 !-----------------------------------------------------------------------
 !
@@ -647,9 +644,9 @@
 !     UHM FOR CVSP, But it's not Beautiful
       TEMPVAR  =   MOTCAR(ADRESS(4,51)   )
       CALL LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
-!     FLUXLINEFILE  
-      SIS_FILES(SISFLX)%NAME=MOTCAR( ADRESS(4,69) ) 
-! 
+!     FLUXLINEFILE
+      SIS_FILES(SISFLX)%NAME=MOTCAR( ADRESS(4,69) )
+!
       IF(LNG.EQ.1) WRITE(LU,101)
       IF(LNG.EQ.2) WRITE(LU,102)
 101   FORMAT(1X,/,19X, '********************************************',/,

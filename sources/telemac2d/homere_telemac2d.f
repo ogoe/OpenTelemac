@@ -43,7 +43,7 @@
       CHARACTER(LEN=24), PARAMETER :: CODE4='WAQTEL                  '
 !
       CHARACTER(LEN=250) PATH
-      CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144) MOTCAR(MAXKEYWORD),FILE_DESC(4,MAXKEYWORD)
       CHARACTER(LEN=144) DUMMY
 !
 !======================================================================

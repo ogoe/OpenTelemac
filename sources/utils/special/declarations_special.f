@@ -28,6 +28,8 @@
 !
       ! VERSION THAT IS DISPLAYED everywher in the system
       CHARACTER(LEN=6), PARAMETER :: VERSION = 'DEV   '
+      ! Max number of keywords
+      INTEGER, PARAMETER :: MAXKEYWORD = 300
 !     Integer values to allow the allocation of I4 and I8 integers.
 !
 !     The syntax will be :

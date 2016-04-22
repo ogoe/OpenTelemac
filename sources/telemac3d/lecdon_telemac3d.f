@@ -98,6 +98,7 @@
 !| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE BIEF
       USE INTERFACE_TELEMAC3D, ONLY : NOMVAR_2D_IN_3D,NOMVAR_TELEMAC3D
       USE DECLARATIONS_TELEMAC
@@ -714,7 +715,7 @@
         OPTADV_KE = MOTINT(ADRESS(1,63))
 !       WEAK CHARACTERISTICS MEMORY ALLOCATIONS ARE TRIGGERED BY OPTCHA
         IF(SCHCKE.EQ.1.AND.OPTADV_KE.EQ.2) OPTCHA=2
-      ENDIF   
+      ENDIF
 !     SCHEME OPTION FOR ADVECTION OF TRACERS
       IF(NTRAC.GT.0) THEN
 !       IF SCHEME OPTION FOR ADVECTION OF TRACERS NOT PRESENT
@@ -752,7 +753,7 @@
 !     NUMBER OF CORRECTIONS OF DISTRIBUTIVE SCHEMES
       NCO_DIST = MOTINT(ADRESS(1,67))
 !     NUMBER OF SUB-STEPS OF DISTRIBUTIVE SCHEMES
-      NSP_DIST = MOTINT(ADRESS(1,68)) 
+      NSP_DIST = MOTINT(ADRESS(1,68))
 !
 ! REAL KEYWORDS
 !
@@ -1426,11 +1427,11 @@
             WRITE(LU,*)'GIVE A VALUE PER LAYER'
           ENDIF
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
         IF(DIMEN(2,58).NE.NCOUCH) THEN
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 
+            WRITE(LU,*)
      &              'CONTRAINTE CRITIQUE D''EROSION DES COUCHES DE VASE'
             WRITE(LU,*) 'DONNER UNE VALEUR PAR COUCHE'
           ENDIF
@@ -1439,7 +1440,7 @@
             WRITE(LU,*)'GIVE A VALUE PER LAYER'
           ENDIF
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
         IF(DIMEN(2,64).NE.NCOUCH) THEN
           IF(LNG.EQ.1) THEN
@@ -1451,7 +1452,7 @@
             WRITE(LU,*)'GIVE A VALUE PER LAYER'
           ENDIF
           CALL PLANTE(1)
-          STOP        
+          STOP
         ENDIF
         DO K = 1,NCOUCH
           CONC_LAYER(K)=MOTREA( ADRESS(2,53) + K-1 )
@@ -1470,7 +1471,7 @@
               WRITE(LU,*)'GIVE A VALUE PER LAYER'
             ENDIF
             CALL PLANTE(1)
-            STOP        
+            STOP
           ENDIF
           DO K = 1,NCOUCH
             TREST(K) = MOTREA(ADRESS(2,62)+K-1)

@@ -605,12 +605,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!       KEY-WORDS AND PARAMETERS
-!
-!     MAXIMUM NUMBER OF VALUES OF KEY-WORDS OF ONE KIND (INTEGER, LOGICAL, ETC.)
-!
-      INTEGER, PARAMETER :: MAXKEY = 400
-!
 !     MAXIMUM NUMBER OF SOURCES
 !
       INTEGER MAXSCE

@@ -855,13 +855,6 @@
 ! (4) INTEGERS
 !-----------------------------------------------------------------------
 !
-!     KEYWORDS AND PARAMETERS
-!
-!
-!     MAXIMUM NUMBER OF KEYWORDS OF ONE KIND
-!
-      INTEGER, PARAMETER :: MAXKEYWORD = 400
-!
 !     MAXIMUM OF SOURCE POINTS
 !
       INTEGER MAXSCE
