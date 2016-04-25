@@ -7,7 +7,7 @@
      & NELEB)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    BUILDING DATA STRUCTURES TO NAVIGATE IN A 2D MESH.
@@ -53,6 +53,12 @@
 !+        16/06/2014
 !+        V7P0
 !+   New possible errors in the mesh now stopped.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/04/2016
+!+        V7P2
+!+   Checking wrong meshes where a point appears on several different
+!+   boundaries.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
@@ -138,9 +144,35 @@
 !
 !  STORES K IN TRAV(*,3), ADDRESS NBOR(K)
 !  GIVES CORRESPONDENCE GLOBAL --> BOUNDARY NUMBER
+!  FINDS POINTS WITH MORE THAN ONE BOUNDARY
 !
       DO K = 1, NPTFR
         T3(NBOR(K)) = K
+        T1(NBOR(K)) = T1(NBOR(K)) +1
+      ENDDO
+      DO I = 1, NPOIN
+        IF(T1(I).GT.1) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ELEBD : LE POINT ',I
+            WRITE(LU,*) 'APPARAIT SUR ',T1(I)
+            WRITE(LU,*) 'FRONTIERES DIFFERENTES'
+            WRITE(LU,*) 'MAILLAGE NON CONFORME'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'ELEBD: POINT ',I
+            WRITE(LU,*) 'APPEARS ON ',T1(I)
+            WRITE(LU,*) 'DIFFERENT BOUNDARIES'
+            WRITE(LU,*) 'WRONG MESH'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDDO
+!
+!  REINITIALISES T1 TO 0 (IS THIS USEFUL ??)
+!
+      DO IPOIN=1,NPOIN
+        T1(IPOIN) = 0
       ENDDO
 !
 !  LOOP ON ALL THE FACES OF ALL THE ELEMENTS:
@@ -198,7 +230,7 @@
         ENDDO ! IELEM
       ENDDO ! IFACE
 !
-!     LOOP ON ALL THE POINTS:
+!     LOOP ON ALL THE BOUNDARY POINTS TO BUILD KP1BOR:
 !
       IF(NPTFR.GT.0) THEN
         DO I = 1 , NPOIN
@@ -245,6 +277,7 @@
       K2=KP1BOR(K1,1)
       IEL = NELBOR(K1)
       N1  = NBOR(K1)
+      IF(K2.LT.0.OR.K2.GT.NPTFR) PRINT*,'K2=',K2,' K1=',K1
       N2  = NBOR(K2)
 !
       I1 = 0
