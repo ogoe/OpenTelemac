@@ -162,6 +162,12 @@
 !+   Enabling advection solver 15 (ERIA) for velocities with a double
 !+   to cvtrvf_pos. Advection sschemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/04/2016
+!+        V7P2
+!+   A23%STOX and A32%STOX set to 1 to enable a call by MATVEC because
+!+   these matrices are not built by MATRIX.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -1442,6 +1448,8 @@
         A32%TYPDIA='0'
         A23%TYPEXT='0'
         A32%TYPEXT='0'
+        A23%STOX=1
+        A32%STOX=1
       ENDIF
 !
 !=======================================================================

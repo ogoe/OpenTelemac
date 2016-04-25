@@ -410,7 +410,7 @@
 !
       ELSEIF(IELM1.EQ.41.OR.IELM1.EQ.13) THEN
 !
-        IF(IELM2.EQ.41) THEN
+        IF(IELM2.EQ.41.OR.IELM2.EQ.13) THEN
 !
           IF(STOX.EQ.1) THEN
             CALL MV0606(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
@@ -437,24 +437,14 @@
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'MATVCT, STOCKAGE INCONNU POUR LES'
               WRITE(LU,*) 'TERMES EXTRA-DIAGONAUX :',STOX
-              WRITE(LU,*) 'APPEL DE MV0606_2'
             ENDIF
             IF(LNG.EQ.2) THEN
               WRITE(LU,*) 'MATVCT, UNKNOWN STORAGE FOR'
               WRITE(LU,*) 'OFF-DIAGONAL TERMS:',STOX
-              WRITE(LU,*) 'WHEN CALLING MV0606_2'
             ENDIF
             CALL PLANTE(1)
             STOP
           ENDIF
-!
-        ELSEIF(IELM2.EQ.13) THEN
-!
-          CALL MV0606(OP, X , DA,TYPDIA,XA,TYPEXT, Y,C,
-     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),
-     &                IKLE(1,4),IKLE(1,5),IKLE(1,6),
-     &                NPT,NELEM,NELMAX,
-     &                W(1,1),W(1,2),W(1,3),W(1,4),W(1,5),W(1,6))
 !
         ELSEIF(IELM2.EQ.11) THEN
 !
