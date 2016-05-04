@@ -45,7 +45,8 @@ def clean_doc(doc_dir, fullclean):
    """
    _, _, files = walk(doc_dir).next()
    for fle in files:
-      if fle.endswith((".aux", ".out", ".toc", ".log", ".nlo", "~", "idx", "ptc")):
+      if fle.endswith((".bbl",".blg",".aux", ".out", ".toc", ".log",
+                       ".nlo", "~", "idx", "ptc")):
          remove(fle)
       if fullclean and fle.endswith(".pdf"):
          remove(fle)
