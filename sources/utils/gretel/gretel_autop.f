@@ -70,6 +70,7 @@
       INTEGER NVAR_RES,NVAR_GEO
       INTEGER IVAR, ITIME
       INTEGER NPOIN3D, NELEM3D
+      INTEGER DATE_TMP(6)
 !
 !-------------------------------------------------------------------------
 !
@@ -216,13 +217,19 @@
         DO I=1,NPOIN_PAR/(MAX(NPLAN_RES,1))
           Y(KNOLG(I)) = TMP(I)
         ENDDO
+        ! Getting the date from result file
+        CALL GET_MESH_DATE(RESFORMAT,NRESPAR,DATE_TMP,IERR)
+        CALL CHECK_CALL(IERR,'GRETEL:GET_MESH_DATE;RESPAR')
+        DO I=1,3
+          DATE(I) = DATE_TMP(I)
+          TIME(I) = DATE_TMP(I+3)
+        ENDDO
+        !
         CALL CLOSE_MESH(RESFORMAT,NRESPAR,IERR)
         CALL CHECK_CALL(IERR,'GRETEL:CLOSEMESH:RESPAR')
         DEALLOCATE(TMP)
         DEALLOCATE(KNOLG)
       ENDDO ! IPID
-
-
       !
       ! IF WE HAVE A 3D RESULT WE NEED TO TRANSFORM THE MESH IN 3D
       ! WRITES THE MESH INFORMATION TO THE MERGED FILE
