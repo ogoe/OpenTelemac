@@ -1,0 +1,293 @@
+\section{Flow-sediment interactions}\label{sec:interactions}
+\subsection{Sediment and fluid properties}
+Fine sediment particles of grain size $d_{50} < 60\mu$m\footnote{$d_{50}$ is the grain size with 50\% of the material finer by weight} present complex
+cohesive properties which affect the sediment transport processes. For non-cohesive sediments (median diameter $d_{50} >60 \mu$m), the grain diameter and grain density $\rho_s$ are the key parameters which determine its resistance to erosion and sediment transport rate.
+
+For cohesive sediments ($d_{50} < 60 \mu$m), the grain diameter is
+no longer the key sediment parameter: the settling velocity now depends on
+the concentration of the sediment, whereas the critical bed shear strength depends on the
+consolidation state of the sediment bed, see~\cite{}.
+
+In this section, we consider uniform, non-cohesive sediments characterized by one single value for the grain size $d_{50}$ and grain density $\rho_s$, with $\rho_s=$2650 kg\,m$^{-3}$ which can be transported both as bed-load and suspended load.
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+The physical properties of the sediment are always defined in the \sisyphe steering file using the following keywords:
+\begin{itemize}
+\item {\ttfamily COHESIVE SEDIMENTS} ({\ttfamily = NO} , default option)
+\item {\ttfamily NUMBER OF SIZE-CLASSES OF BED MATERIAL} ({\ttfamily NSICLA=
+1}, default option) 
+\item {\ttfamily SEDIMENT DIAMETERS} ($d_{50} > 60\mu$m for non-cohesive sediments)
+\item {\ttfamily SEDIMENT DENSITY} ($\rho_s = 2650$ kgm$^{-3}$, default value)
+\item {\ttfamily SETTLING VELOCITIES} (The default value is not given. If the user does not
+give a value, the subroutine {\ttfamily vitchu.f} is used:
+Stokes, Zanke or Van Rijn formulae depending on the grain size)
+\end{itemize}
+The physical properties of the fluid are defined by:
+\begin{itemize}
+\item {\ttfamily WATER VISCOSITY} ($\nu= 1.0\times 10^{-6}$ m$^2$s$^{-1}$, by default)
+\item {\ttfamily WATER DENSITY} ($\rho=1000$ kgm$^{-3}$, by default)
+\item {\ttfamily GRAVITY ACCELERATION} ($g=9.81$ ms$^{-2}$)
+\end{itemize}
+\end{bclogo}
+
+\subsection{Bed shear stress}
+\subsubsection{Hydrodynamic model}
+The current-generated bed shear stress is used in both the shallow water momentum
+equation as well as the bottom boundary condition for the velocity profile. 
+When \sisyphe is coupled with \teldd, the bed shear stress term $\tau_{0}=(\tau_{x},\tau_{y})^T$
+is calculated at each time step from the classical quadratic dependency on the depth--averaged velocity:
+\begin{equation}\label{eq:Cd}
+\tau_{x,y} =\frac{1}{2} \rho C_d (u,v)^T|\mathbf u|, 
+\end{equation}
+where $(u,v)^T$ are the depth-averaged
+velocity components along the $x-$ and $y-$ Cartesian directions, respectively with transpose $(\cdot)^T$; $|\mathbf u| = \sqrt{{u}^2+{v}^2}$ the velocity module; and friction coefficient $C_d$.
+
+When \sisyphe is coupled with \telddd, the bed shear stress is aligned
+with the near bed velocity in order to account for possible vertical flow deviations. The magnitude of the bed shear stress is still related
+to the depth-averaged velocity, except if the Nikuradse friction law is
+applied. In that case, the friction velocity u$_{*}$, defined by
+\begin{equation}\label{eq:us}
+\tau _0 = \rho u_*^2 
+\end{equation}
+is related to the near bed flow velocity $u(z_1)$ by a logarithmic
+velocity profile:
+\begin{equation}\label{eq:velprof}
+u(z_1) = \frac{u_*}{\kappa} \ln\left(\frac{z_1}{z_0}\right)  
+\end{equation}
+\nomenclature{$z_0$}{vertical distance from a rough boundary}  
+where $z_0$ is the vertical distance from a rough boundary, expressed as a function of the Nikuradse bed roughness ($z_0 = k_s/30$), with $k_s$ the grain roughness height, $z_1$ is the near bed distance measured along the vertical coordinate $z$, and aligned against the direction of the acceleration of gravity of magnitude $g$. In \telddd, $z_1$ is taken equal to the velocity in the bottom computational layer; and $\kappa = 0.4$ is the von K\'arm\'an constant. For flat beds, the roughness height has been shown to be approximately $k_s\approx 3 d_{50}$~\cite{JULIEN}.
+
+The direction of the bed shear stress and resulting bedload transport rate is
+assumed to be in the direction of the depth-averaged velocity in \sisyphe
+(alone or internally coupled with \teldd). When \sisyphe is internally
+coupled to \telddd, the bed shear stress and resulting transport rate are
+assumed to be in the direction of the near bed velocity. The 3D model gives
+a more accurate estimate of the bottom friction, since it accounts for a
+possible vertical deviation of the current.
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{\sisyphe coupled with \teldd}}
+When the model is coupled with \teldd, the values of the friction coeffients (and therefore, 
+the bed shear stress) are provided by \teldd. The depth-averaged bed shear stress and resulting bedload transport rates are assumed to be in the direction of the mean flow velocity, except when the sediment transport
+formulation accounts for:
+\begin{itemize}
+\item deviation correction (bed slope effect)
+\item secondary currents 
+\end{itemize} 
+\end{bclogo}
+
+Both bed shear stress and bed load transport rate are aligned with the near
+bed velocity. This 3D approach is more physical, and takes into account
+possible recirculation and veering of the flow, such that corrections for
+secondary currents for example are no longer necessary.
+
+\subsubsection{Uncoupled model}
+The quadratic friction coefficient $C_d$ which is used to calculate the
+total bed shear stress can be calculated based on the selected
+friction law. Different options, which are consistent with the \teldd
+options, are available in \sisyphe and depend on the choice of the keywords \texttt{LAW FOR
+BOTTOM FRICTION} and on the value of the \texttt{FRICTION COEFFICIENT}:
+
+\begin{itemize}
+\item  Ch\'{e}zy coefficient $C_h$ (\texttt{KFROT = 2})
+\begin{equation}\label{eq:chezy}
+C_d = \frac{2g}{C_h^2} 
+\end{equation}
+\item  Strickler coefficient $S_t$ (\texttt{KFROT = 3})
+\begin{equation}\label{eq:strickler}
+C_d = \frac{2g}{S_t^2}\frac{1}{h^{1/3}} 
+\end{equation}
+\item  Manning friction $M_a$ (\texttt{KFROT = 4})
+\begin{equation}\label{eq:manning}
+C_d =\frac{2g}{h^{1/3} } M_a^2 
+\end{equation}
+\item  Nikuradse bed roughness $k_s$ (\texttt{KFROT = 5})
+\begin{equation}\label{eq:nikuradse}
+C_d  = 2\left[\frac{\kappa}{\log(\frac{12h}{k_s})}\right]^2,  
+\end{equation}
+
+\end{itemize}
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+In the \sisyphe steering file, the total bed shear stress is calculated based
+on:
+\begin{itemize}
+\item {\ttfamily LAW OF BOTTOM FRICTION} ({\ttfamily KFROT =3}, default option)
+\item {\ttfamily BOTTOM FRICTION COEFFICIENT} ({\ttfamily St=50}, default value)
+\end{itemize}
+\end{bclogo}
+
+Similar keywords are available in both \teldd and \telddd in the case of
+internal coupling.
+
+
+\subsubsection{Role of bed forms}
+A natural sediment bed is generally covered with bed forms (length $\lambda_d$
+and height $\eta_d$). The presence of bed forms greatly modifies the boundary
+layer flow structure, with the formation of recirculation cells and
+depressions in the lee of bed forms.
+Depending on the flow and sediment transport rates, the size of bed
+forms ranges from a few centimeters for ripples to a few tens of meter for
+mega-ripples. The dimension of dunes scales with the water depth $h$, such that $\eta_d
+\approx 0.4 h$ and  $\lambda_d\approx 6-10 h$. 
+In most of cases, large scale models do not resolve the small to medium scale
+bed forms (ripples, mega-ripples) which need therefore to be parameterized
+by an increased friction coefficient. The total bed shear stress is expressed 
+as the sum of two components: 
+\begin{equation}\label{eq:taupp}
+\tau_0 = \tau_0' + \tau_0''
+\end{equation}
+where $\tau_0$ is the total bed shear stress, $\tau_0'$ is the grain (or skin) shear stress, 
+and $\tau_0''$ is the form shear stress.
+The local skin friction component determines the bedload transport rate and
+the equilibrium concentration for the suspension. The total friction
+velocity determines the (spatially averaged along bedforms) turbulence eddy
+viscosity/diffusivity vertical distribution in 3D models, and therefore
+determines both the velocity vertical profile and the mean concentration profile.
+
+\subsection{Skin friction correction}
+\subsubsection{Total bed shear stress decomposition}
+Bedload transport rates are calculated as a function of the local skin friction
+component $\tau'$. The total bed shear stress issued from the hydrodynamics
+model needs to be corrected in the morphodynamics model as follows:
+
+\begin{equation}\label{eq:skinfriction}
+\tau'= \mu \tau_0, 
+\end{equation}
+where $\mu$ is a correction factor for skin friction. Physically, the skin bed roughness should be smaller than the total bed
+roughness (i.e. $\mu \leq 1$). However, in most cases the hydrodynamic
+friction does not represent the physical bottom friction: the coefficient is
+generally used as a calibration coefficient in hydrodynamics models. It is
+adjusted by comparing simulation results with observations of the time-varying free
+surface and velocity field. Therefore, its model value integrates various
+neglected processes (side wall friction, possible errors in the bathymetry
+and input data). Under those conditions, a correction factor $\mu > 1$ can be admitted.
+
+Different methods are programmed in \sisyphe in order to calculate the bedform
+correction factor $\mu$, according to the keyword \texttt{SKIN FRICTION CORRECTION}:
+
+\begin{itemize}
+\item \texttt{ICR = 0}: no correction, the total friction issued from
+\tel is directly used for sand transport calculations ($\mu=1$).
+\item \texttt{ICR = 1}: the skin roughness is assumed to be proportional
+to the sand grain diameter like in the case of flat beds ($k_s' \sim d_{50}$). The proportionality coefficient is specified by the keyword \texttt{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER}, defined as:
+\begin{equation}\label{eq:icr1}
+\mu =\frac{C_d'}{C_d}, 
+\end{equation}
+where $C_d$ et $C_d'$ are both quadratic friction coefficients related to total friction and skin friction,respectively. $C_d$ is obtained from \teldd or \telddd
+and $C_d'$ is calculated from $k_s'$, as follows:
+\begin{equation}\label{eq:ksp}
+C_d' = 2\left[\frac{\kappa}{\log(\frac{12h}{k_s'})}\right]^2 
+\end{equation}
+\item \texttt{ICR = 2} the bedform predictor is used to calculate the
+bedform roughness $k_r$ in order to account for the effect of ripples. Both $k_r$
+and $k_s'$ should influence the transport rates. It is assumed that:
+\begin{equation}\label{eq:mu}
+\mu =\frac{C_d'^{0.75} C_r^{0.25}}{C_d}, 
+\end{equation}
+where the quadratic friction $C_r$ due to bedforms is calculated as a
+function of $k_r$. For currents only, the ripple bed roughness is function of the mobility number, see~\cite{vanRijn07}:
+
+\begin{equation*}
+k_r =\left\{\begin{array}{ll}
+d_{50}(85-65\tanh(0.015(\Psi-150))) & \text{for\,} \Psi<250\\
+20 d_{50} & \text{otherwise} 
+\end{array}
+\right.
+\end{equation*}
+with $\Psi =U^2/(s-1)gd_{50}$.
+\end{itemize}
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+The option selected for the skin friction correction is based on keywords:
+\begin{itemize}
+\item {\ttfamily SKIN FRICTION CORRECTION} ({\ttfamily ICR=0}, default option)
+\item {\ttfamily RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER} ({\ttfamily KSPRATIO=3}, default value)
+\end{itemize}
+\end{bclogo}
+
+\subsection{Bed roughness predictor}
+\subsubsection{Total bed roughness (uncoupled)}
+Different options are programmed in \sisyphe to predict the total bed
+roughness through the associated keywords {\ttfamily BED ROUGHNESS PREDICTION} and {\ttfamily BED ROUGHNESS PREDICTOR OPTION}. It is recalled that the bed friction option of \sisyphe is not
+used in the case of internal coupling with \teldd or \telddd.
+\begin{itemize}
+\item For {\ttfamily IKS = 1}: the bed is assumed to be flat $k_s = k_s'= \alpha d_{50}$, with $\alpha$ a constant (assumed to be equal to $3$.
+\item {\ttfamily IKS = 2}: for waves and combined waves and currents, bedform dimensions are calculated
+as a function of wave parameters following the method of Wiberg and Harris~\cite{WibergHarris}. 
+The wave-induced bedform bed roughness $k_r$ is calculated as a function of the wave-induced bedform 
+height $\eta_r$: 
+\begin{equation}
+k_r = \max(k_s', \eta_r).
+\end{equation}
+\item {\ttfamily IKS = 3}: for currents only, the van Rijn's total bed roughness predictor~\cite{vanRijn07, Huybrechts10} has been implemented. 
+The total bed roughness can be decomposed into a grain
+roughness $k_s'$, a small-scale ripple roughness $k_r$, a mega-ripple 
+component $k_{mr}$, and a dune roughness $k_d$:
+\begin{equation}\label{eq:totalbedroughness}
+k_s = k_s' + \sqrt{k_r^2 + k_{mr}^2 + k_d^2}. 
+\end{equation}
+Both small scale ripples and grain roughness have an influence on the
+sediment transport laws, while the mega-ripples and dune roughness only
+contribute to the hydrodynamic model (total friction). 
+
+\end{itemize}
+
+
+
+
+
+\subsection{Sediment transport}
+\subsubsection{Bedload and suspended load}
+When the current-induced bed shear stress increases above a critical
+threshold value, sediment particles start to move as bedload, while the
+finer particles are transported in suspension. Bedload occurs in a very thin high concentrated near-bed layer, where
+inter-particle interactions develop. The suspended load is defined as the depth-integrated flux of sediment
+concentration, from the top of the bedload layer up to the free surface.
+For dilute suspension concentration values, clear flow concepts (turbulence diffusion, eddy
+viscosity, logarithmic velocity profile) are considered to be valid.
+The total sediment load $Q_t$ includes both a bedload $Q_b$ and suspended load $Q_s$:
+\begin{equation}\label{eq:Qt}
+Q_t  = Q_b + Q_s. 
+\end{equation}
+
+\subsubsection{Shields parameter}
+The critical Shields number or dimensionless critical shear stress $\Theta_c$
+is defined by:
+\begin{equation}\label{eq:shields}
+\Theta_c = \frac{\tau_c}{g(\rho_s -\rho)d_{50}} 
+\end{equation}
+where $\tau_c$ is the critical shear stress for sediment incipient motion. Values of $\Theta_c$
+can be either specified in the \sisyphe steering file by use of keyword \texttt{SHIELDS PARAMETERS}
+ or calculated by the model as a function of
+non-dimensional grain diameter $D_* =d[(\rho_s/\rho-1)g/\nu^2]^{1/3}$. It is implemented in subroutine 
+\texttt{init\_sediment.f}, see also~\cite{XXX}
+
+\begin{equation*}
+\frac{\tau_c}{g(\rho_s -\rho)d_{50}}=\left\{\begin{array}{ll}
+0.24 D_*^{-1}, & D_* \leq 4 \\
+0.14 D_*^{-0.64}, & 4 < D_* \leq 10 \\
+ 0.04 D_*^{-0.10}, & 10 < D_* \leq 20\\
+0.013 D_*^{0.29}, & 20 < D_* \leq 150 \\
+0.045, & 150 \leq D_* 
+\end{array}
+\right.
+\end{equation*}
+
+%\begin{align*}
+%D_* \leq 4,\quad & \theta_c = 0.24 D_*^{-1} \\
+%4 < D_* \leq 10,\quad & \theta_c = 0.14 D_*^{-0.64} \\
+%10 < D_* \leq 20,\quad & \theta_c = 0.04 D_*^{-0.10} \\
+%20 < D_* \leq 150,\quad & \theta_c = 0.013 D_*^{0.29} \\
+%150 \leq D_*,\quad & \theta_c = 0.045,
+%\end{align*}
+
+where $\tau_c$ and $d$ are in N\,m$^{-2}$ and m, respectively. The default option (no Shields number given in steering file) is to calculate the shields parameter as a function of 
+sand grain diameter (see logical \texttt{CALAC}).
+
+
+
+
+

@@ -1,0 +1,393 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES ET COMMANDES POUR LE DOCUMENTS PDF ET LES HYPERLIENS
+\usepackage[pdftex,
+            bookmarksopen=true,
+            colorlinks=true,
+            linkcolor=blue,
+            filecolor=blue,
+            urlcolor=blue,
+            citecolor=blue]{hyperref}
+% LATEX PACKAGES
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage[square,sort,comma,numbers]{natbib}
+%\usepackage[pdftex]{graphicx}
+%\usepackage{lineno}
+
+%\usepackage{bbding}
+\usepackage{amsmath, amsfonts, epsfig, xspace}
+\usepackage{pifont}
+\usepackage{psfrag}
+\usepackage{color}
+
+% texte en français
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% change fonts
+\usepackage{slantsc}
+\usepackage[sc]{mathpazo}
+
+% input source code
+\usepackage{listings}
+
+% algorithm
+%\usepackage{algorithm,algorithmic}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{boxedminipage}
+
+% deals with subdirectory and include graphics
+\usepackage{import}
+
+% for extra stuff
+\usepackage{framed}
+%\usepackage[blur]{bclogo}
+\usepackage[tikz]{bclogo}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{shapes}
+\definecolor{fbase}{gray}{0.95}
+\definecolor{cPG}{RGB}{235, 227, 150}
+\definecolor{link}{RGB}{150, 81, 0}
+
+%  from nodeEDF.sty
+%\RequirePackage{../../../../pytel/latex/defs/setspace2} % clone de setspace.sty a remplacer par setspace.sty pour toutes nouvelles redactions
+\RequirePackage{setspace} % a remettre pour toutes nouvelles redactions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LATEX INPUTS
+\newcommand{\texfile}{./latex}
+% GRAPHICS
+\newcommand{\repgraphics}{./}
+% DEFS
+\newcommand{\defs}{../../data/defs}
+% EDF STYLE (EUREKA)
+\newcommand{\edf}{../../data/eureka_edf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TELEMAC STANDARD SHORTCUTS
+\def \artemis {{\scshape Artemis }}
+\def \bief    {{\scshape Bief }}
+\def \damo    {{\scshape Damocles }}
+\def \estel   {{\scshape Estel }}
+\def \opentelemac {{\scshape openTELEMAC }}
+\def \paral   {{\scshape Parallel }}
+\def \parav   {{\scshape Paravoid }}
+\def \postel  {{\scshape Postel3d }}
+\def \sisyphe {{\scshape Sisyphe }}
+\def \Special {{\scshape Special }}
+\def \stbtel  {{\scshape Stbtel }}
+\def \tel     {{\scshape Telemac }}
+\def \teldd   {{\scshape Telemac-2d }}
+\def \telddd  {{\scshape Telemac-3d }}
+\def \tomawac {{\scshape Tomawac }}
+
+% openTELEMAC Version
+\def \rel {{\scshape 7.1 }}
+
+% Authors shortcuts...
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}\\} % macro for todo entries
+
+% ....................................................................
+% openTELEMAC external libraries
+\def \relHDF5{{\scshape 1.8.7 }}
+\def \relMED  {{\scshape 3.0.5 }}
+\def \relMPI  {{\scshape 2.x.x }}
+\def \relTECPLOT  {{\scshape 10 }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SOURCE CODE PARAMETERS
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Fortran,
+%  basicstyle=\footnotesize,
+  basicstyle={\footnotesize\ttfamily},
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LATEX SHORTCUTS
+\def\Eq#1{{Eq.~(\ref{#1})}}
+\def\Eqs#1{{Eqs.~(\ref{#1})}}
+\def\red{\color{red}}
+\def\black{\color{black}}
+\def\blue{\color blue}
+\def\ind#1{{^{(#1)}}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\p}{\partial}
+\newcommand{\ttt}{\tilde}
+\newcommand{\lam}{\lambda}
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MATHEMATICAL SHORTCUTS
+\def\Norm#1{{\|#1\|_{\Omega_x\times\Vspace_\vxi^\P}}}
+\def\Norms#1{{\|#1\|^2 _{\Omega_x\times\Vspace_\vxi^\P}}}
+\def\vI{{\Vector I}}
+\def\Imp{{\mathcal I}}
+\def\Lin{{\mathcal L}}
+\def\NL{{\mathcal N}}
+\def\oNL{{\overline{\NL}}}
+\def\Sou{{\mathcal S}}
+\def\Borel{{\mathcal B}}
+\def\Fs{{\mathcal F}}
+\def\Gs{{\mathcal G}}
+\def\Es{{\mathcal E}}
+\def\Ne{{N_e}}
+\def\JFs{{\mathcal J}}
+\def\ud{{\mathcal U}}
+\def\vd{{\mathcal V}}
+\def\nl{{NL}}
+\def\Omegac{{\overline{\Omega}}}
+\def\Np{{\rm Np}}
+\def\No{{\rm No}}
+\def\M{{\rm M}}
+\def\Dom{{\mathcal D}}
+\def\Vol{{\mathcal V}}
+\def\Kere{{\mathcal K}_{\epsilon}}
+\def\Ker{{\mathcal K}}
+\def\Mer{{\mathcal M}}
+\def\Ger{{\mathcal G}}
+\def\Ler{{\mathcal L}}
+\def\Her{{\mathcal H}}
+\def\prob{{\rm p}}
+\def\R{{\mathbb R}}
+\def\Z{{\mathbb Z}}
+\def\I{{\bf I}}
+\def\N{{\rm  N}}
+\def\supp{{\rm supp}}
+\def\wv{{\rm w}}
+\def\W{{\rm W}}
+\def\Wm{{\mathcal W}}
+\def\OP{{\mathcal O}}
+\def\Nint{{\mathcal{N}}}
+\def\pol{{\mathcal P}}
+\def\ndim{{\rm Ndim}}
+\def\nws{{\rm Nw}}
+\def\nr{{\rm Nr}}
+\def\P{{\rm P}}
+\def\terf{{\tilde{\erf}}}
+\def\erf{{\rm erf}}
+\def\pdf{{\rm pdf}}
+\def\Unit{{\mathcal U}}
+\def\Part{{\mathcal P}}
+\def\vxi{{\Vector \xi}}
+\def\Vspace{{\mathscr S}}
+\def\Xspace{{\mathscr V}}
+\def\pdf{{\rm pdf}}
+\def\pc{polynomial chaos}
+\def\Pc{Polynomial chaos}
+\def\pcs{polynomials chaoses}
+\def\Pcs{Polynomials chaoses}
+\def\KL{Karhunen-Loeve}
+\def\Pa{Problem (a)}
+\def\Pb{Problem (b)}
+\def\psii{\Psi_i}
+\def\psik{\Psi_k}
+\def\psij{\Psi_j}
+\def\phip{\phi^\prime}
+\def\Sp{S^\prime}
+\def\Pt{\tilde{P}}
+\def\ptot{\tilde{p}}
+\def\tS{\tilde{S}}
+\def\vnabla{{\Vector \nabla}}
+\def\vnablat{\widetilde {\Vector \vnabla}}
+\def\nablat{{{\widetilde \nabla}}}
+\def\vy{\Vector y}
+\def\ds{\displaystyle}
+\def\td{\tilde \delta}
+\def\tL{\widetilde L}
+\def\cL{L^c}
+\def\tU{\tilde U}
+\def\tt{\tilde t}
+\def\vF{\Vector F}
+\def\vG{\Vector G}
+\def\psio{\overline{\psi}}
+\def\tsigma{\overline{\Vector \sigma}}
+\def\gammao{\overline{\gamma}}
+\def\vut{\tilde \vu}
+\def\vomega{{\Vector \omega}}
+\def\tvomega{\tilde \vom}
+\def\vOmega{{\Vector \Omega}}
+\def\Vector#1{\mbox{\boldmath $#1$}}
+\def\vlambda{{\Vector \lambda}}
+\def\psit{\tilde \psi}
+\def\omegat{\tilde \omega}
+\def\gt{\tilde g}
+\def\at{\tilde a}
+\def\rhod{\rho_d}
+\def\rhob{\rho_b}
+\def\rhos{\rho^*}
+\def\ps{p^*}
+\def\psf{\widehat{p^*}}
+\def\vS{\Vector S}
+\def\vD{\Vector D}
+\def\vL{\Vector L}
+\def\omegas{\omega^\star}
+\def\psis{\psi^\star}
+\def\psip{\psi^\phi}
+\def\omegap{\omega^\phi}
+\def\vup{\vu^*}
+\def\vuf{\hat{\vu}}
+\def\vur{\vu_r}
+\def\vH{{\Vector H}}
+\def\hd{\dot{h}}
+\def\hdd{\ddot{h}}
+\def\tdd{\ddot{\Theta}}
+\def\td{\dot{\Theta}}
+\def\ad{\dot{\alpha}}
+\def\add{\ddot{\alpha}}
+\def\mom{{\mathcal T}}
+\def\vGamma{{\Vector \Gamma}}
+\def\vx{{\Vector x}}
+\def\vc{{\Vector c}}
+\def\v1{{\Vector 1}}
+\def\vz{{\Vector z}}
+\def\vZ{{\Vector Z}}
+\def\vj{{\Vector j}}
+\def\vk{{\Vector k}}
+\def\vi{{\Vector i}}
+\def\vt{{\Vector t}}
+\def\ve{{\Vector e}}
+\def\ver{{\Vector e}_r}
+\def\dt{{\Delta t}}
+\def\Nr{{\rm N}_r}
+\def\Nz{{\rm N}_z}
+\def\vet{{\Vector e}_\theta}
+\def\vez{{\Vector e}_z}
+\def\vf{{\Vector f}}
+\def\vg{{\Vector g}}
+\def\vb{{\Vector b}}
+\def\vn{{\Vector n}}
+\def\vN{{\Vector N}}
+\def\vp{{\Vector p}}
+\def\vr{{\Vector r}}
+\def\vV{{\Vector V}}
+\def\vU{{\Vector U}}
+\def\vP{{\Vector P}}
+\def\vW{{\Vector W}}
+\def\div{{\vnabla\cdot}}
+\def\grad{\vnabla}
+\def\vWz{{\Vector W}^{(0)}}
+\def\vWo{{\Vector W}^{(1)}}
+\def\Ghat{{\widehat G}}
+\def\Khat{{\widehat K}}
+\def\vDhat{{\widehat \vD}}
+\def\Dhat{{\widehat D}}
+\def\Real{{\mathbb R}}
+\def\vFz{{\Vector F}^{(0)}}
+\def\vFo{{\Vector F}^{(1)}}
+\def\<{\left<}
+\def\>{\right>}
+\def\({\left(}
+\def\){\right)}
+\def\drift{\overline{\vv}}
+\def\disp{{\cal D}}
+\def\Wz{{W}^{(0)}}
+\def\Wo{{W}^{(1)}}
+\def\Pz{{P}^{(0)}}
+\def\Po{{P}^{(1)}}
+\def\Fz{{F}^{(0)}}
+\def\Fo{{F}^{(1)}}
+\def\va{{\Vector a}}
+\def\vs{{\Vector s}}
+\def\vUr{{\Vector U}_r}
+\def\vUt{\widetilde{\vU}}
+\def\Ut{\widetilde{U}}
+\def\vUl{{\Vector U}^{(l)}}
+\def\vUs{{\Vector U}^{(s)}}
+\def\vUp{{\Vector U}^{(p)}}
+\def\vX{{\Vector X}}
+\def\vK{{\Vector K}}
+\def\vDeltaX{{\Delta \vX}}
+\def\vDeltax{{\Delta \vx}}
+\def\vDeltay{{\Delta \vy}}
+\def\vXd{{\Vector X}_d}
+\def\vXb{{\Vector X}_b}
+\def\vxd{{\Vector x}_d}
+\def\vxb{{\Vector x}_b}
+\def\vVd{{\Vector V}_d}
+\def\vVb{{\Vector V}_b}
+\def\vvd{{\Vector v}_d}
+\def\vvb{{\Vector v}_b}
+\def\vvm{\overline{\Vector v}}
+\def\Xl{X^{\rm L}}
+\def\Xh{X^{\rm H}}
+\def\Xw{X^{\wv}}
+\def\vv{{\Vector v}}
+\def\vu{{\Vector u}}
+\def\vQ{{\Vector Q}}
+\def\vq{{\Vector q}}
+\def\zetaa{\zeta^{(a)}}
+\def\zetal{\zeta^{(l)}}
+\def\zetas{\zeta^{(s)}}
+\def\zetap{\zeta^{(p)}}
+\def\vom{{\Vector \omega}}
+\def\vtau{{\Vector \tau}}
+\def\F{{\rm\bf F}}
+\def\sech{{\rm sech}}
+\def\funnyzeta{\varsigma}
+\def\tQ{\stackrel{\ldots}{Q}}
+\def\L{{\rm L}}
+\def\H{{\rm H}}
+%
+\def\dl0#1{{\frac{D #1}{D t}}}
+\def\pc#1{{\left[#1\right]}}
+\def\wav#1#2{{\rm W}_{#1,#2}}
+\def\Vs{{\mathcal V}}
+\def\Herm{{\mathcal He}}
+\def\Haar{{\mathcal Ha}}
+\def\Leg{{\mathcal Le}}
+\def\Alop{{\mathcal A_l}}
+\def\Anop{{\mathcal A_n}}
+\def\Re{{\rm Re}}
+\def\Nu{{\rm Nu}}
+\def\dNu{\delta{\rm Nu}}
+\def\Pe{{\rm Pe}}
+\def\Ec{{\rm Ec}}
+\def\Pr{{\rm Pr}}
+\def\Ra{{\rm Ra}}
+\def\rf{{\rm ref}}
+\def\Thot{T_{\rm hot}}
+\def\Tcold{T_{\rm cold}}
+\def\Tref{T_{\rm ref}}
+\def\Thetac{\Theta_{\rm c}}
+\def\Thetah{\Theta_{\rm h}}
+\def\tThetah{\tilde{\Theta}_{\rm h}}
+\def\Thetar{\Theta_{\rm r}}
+\def\dT{\Delta T}
+\def\eps{{\varepsilon}}
+\def\ep{\epsilon'}
+\def\O{{\rm O}}
+\def\1{{\rm 1}}
+\def\so{^{\rm (0)}}
+\def\s1{^{\rm (1)}}
+\def\d{{\rm d}}
+\def\ttm{^{{\rm ttm}}}
+\def\img{^{\rm im}}
+\def\si{^{\rm si}}
+%
+\def\ol{\overline}
+%
+\def\mt{{\mathcal M}}
+%

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="cavity" rank="5">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="cavity" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_cavity.cas"
+       title="cavity scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_cavity.cas"
+       title="cavity parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_cavity.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-2,1e-2,1e-3,1e-3,1e-9,1e-3])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_cavity.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-2,1e-2,1e-3,1e-3,1e-9,1e-3])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-2,1e-2,1e-3,1e-3,1e-9,1e-3])" />
+   </cast>
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="BottomProfile" type="v-section" config="oneofall" size="(12;5)" >
+      <layer vars="bottom:line" extract="(15;0)(15;6)" target="1:T2DRES" time="[0:-1]"/>
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Water depth" size="(20;7)" >
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="Velocity" size="(20;7)" >
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="VelocityROItf" roi="(11;3)(17;6)" size="(20;7)" >
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[10;5]" />
+   </plot2d>
+   <plot2d xref="VelocityROIt0" roi="(11;3)(17;6)" size="(20;7)" >
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[0]" />
+      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[0]" extract="[10;5]" />
+   </plot2d>
+
+</validation>

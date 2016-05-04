@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="tide" rank="11">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="tide" author="telemac3d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_tide-jmj_type.cas"
+       title="tide scalar mode type"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_tide-jmj_type.cas"
+       title="tide parallel mode type"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_tide-jmj_real_gen.cas"
+       title="tide scalar mode real gen"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="f3d_tide-jmj_type.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.E-1])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T3DRES" />
+      <v5 vars=":map" target="f3d_tide-jmj_type.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.E-1])" />
+   </cast>
+   <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T3DRES" />
+      <v8 vars=":map" target="2:T3DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.E-1])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T3DRES" />
+      <v11 vars=":map" target="f3d_tide-jmj_real_gen.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[1.E-1])" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(195000;150000)#[-1]" target="1:T3DRES" />
+   </plot1d>
+   <plot1d xref="timeseries_all_layers" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(195000;150000)" target="1:T3DRES" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="elevation z:mesh" target="1:T3DRES" />
+   </plot2d>
+   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="Z:mesh" extract="(185500;150000)(200500;150000)" target="1:T3DRES"  />
+   </plot2d>
+   <plot2d xref="z_map" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="Z:map" extract="[]#[-1]" target="1:T3DRES"  />
+   </plot2d>
+   <plot2d xref="velocity" config="oneofall" time="[-5]" size="(12;7)" >
+      <layer vars="velocity U:map" extract="[]#[-1]" target="1:T3DRES"  />
+   </plot2d>
+
+</validation>

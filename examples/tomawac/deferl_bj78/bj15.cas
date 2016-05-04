@@ -1,0 +1,63 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/********************************************************************/
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'BJ15_V5P6.f'
+FICHIER DE GEOMETRIE = 'BJ15_geom_T.r2d'
+FICHIER DES CONDITIONS AUX LIMITES = 'canal.dynam'
+FICHIER DES RESULTATS 2D = 'deferl.r2d'
+FICHIER DES RESULTATS PONCTUELS = 'deferl.spe'
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+FACTEUR DE PIC AUX LIMITES = 3.3
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.202
+FREQUENCE DE PIC AUX LIMITES = 0.530
+DIRECTION PRINCIPALE 1 AUX LIMITES = 270.
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 32
+DIRECTION PRINCIPALE 2 AUX LIMITES = 270.
+ETALEMENT DIRECTIONNEL 2 AUX LIMITES = 32
+FACTEUR DE PONDERATION POUR FRA AUX LIMITES = 1
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'CAS-TEST DE BATTJES ET JANSSEN NUMERO 15'
+PERIODE POUR LES SORTIES GRAPHIQUES = 10
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FM01,ZF,FX,FY
+PERIODE POUR LES SORTIES LISTING = 10
+/ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.;5.;10.;15.;20.;25.
+/ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 9.;9.;9.;9.;9.;9.
+/ Pour Parallélisme 
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.;4.99956512451172;10.;
+15.;20.0004501342773;25.
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 9.;8.99944782257080;9.;
+9.;9.00055217742920;9.
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+NOMBRE DE PAS DE TEMPS = 100
+PAS DE TEMPS = 0.35
+NOMBRE DE DIRECTIONS = 24
+NOMBRE DE FREQUENCES = 25
+FREQUENCE MINIMALE = 0.168874
+RAISON FREQUENTIELLE = 1.1
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+PROFONDEUR D'EAU MINIMALE = 0.01
+PRISE EN COMPTE DE LA PROPAGATION = OUI
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+PRISE EN COMPTE DU VENT = NON
+APPORTS DUS AU VENT = 0
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 0
+DISSIPATION PAR DEFERLEMENT = 1
+DEFERLEMENT 1 (BJ) CONSTANTE ALPHA = 1.
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1 = 1.2
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2 = 0.8
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM = 2
+DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE = 2

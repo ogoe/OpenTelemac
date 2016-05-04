@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="pildepon" rank="5">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="pildepon" author="telemac2d" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon.cas"
+       title="pildepon scalar mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_pildepon.cas"
+       title="pildepon parallel mode"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon_qua.cas"
+       title="pildepon scalar mode"
+   />
+   <action xref="5"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_pildepon_qua.cas"
+       title="pildepon parallel mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon_cin.cas"
+       title="pildepon scalar mode"
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_pildepon.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="4:T2DRES" />
+      <v5 vars=":map" target="f2d_pildepon.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall14" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="4:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T2DRES" />
+      <v11 vars=":map" target="f2d_pildepon_qua.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[])" />
+   </cast>
+   <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="5:T2DRES" />
+      <v14 vars=":map" target="f2d_pildepon_qua.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[])" />
+   </cast>
+   <cast xref="cas-parall35" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:T2DRES" />
+      <v17 vars=":map" target="5:T2DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="2:T2DRES" />
+      <v20 vars=":map" target="f2d_pildepon_cin.slf" />
+      <v21 vars="mapdiff(v19,v20)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v21,[])" />
+   </cast>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="(10;8)" >
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Bathy" size="(10;8)" >
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Velocity_t1" size="(10;8)" >
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-2]" />
+   </plot2d>
+   <plot2d xref="Velocity_tf" size="(10;8)" >
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="Velocity arrows" size="(10;8)" >
+      <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[20;20]" />
+   </plot2d>
+
+</validation>

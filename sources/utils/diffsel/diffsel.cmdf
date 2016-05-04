@@ -1,0 +1,13 @@
+[general]
+path: <root>|sources|utils|diffsel
+module: diffsel
+liborder: special diffsel
+name: DIFFSEL
+
+[diffsel]
+path: <root>|sources|utils|diffsel
+files: diffsel.f
+
+[special]
+path: <root>|sources|utils|special
+files: plante.F

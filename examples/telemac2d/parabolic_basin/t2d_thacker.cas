@@ -1,0 +1,64 @@
+/-------------------------------------------------------------------/
+/ TELEMAC-2D       -  VALIDATION TEST CASE NUMBER  -                /
+/                       PARABOLIC BASIN                   /
+/-------------------------------------------------------------------/
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+FORTRAN FILE               = t2d_thacker.f
+BOUNDARY CONDITIONS FILE   = geo_thacker.cli
+GEOMETRY FILE              = geo_thacker.slf
+RESULTS FILE               = r2d_thacker.slf
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                           = 'THACKER SOLUTION'
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B'
+GRAPHIC PRINTOUT PERIOD         = 100
+LISTING PRINTOUT PERIOD         = 1000
+TIME STEP                       = 0.1
+VARIABLE TIME-STEP              = YES
+DURATION                        = 100
+DESIRED COURANT NUMBER          = 0.8
+MASS-BALANCE                    = YES
+INFORMATION ABOUT SOLVER        = YES
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO
+INITIAL CONDITIONS              = 'PARTICULAR'
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION          = 0
+TURBULENCE MODEL                = 1
+VELOCITY DIFFUSIVITY            = 0
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+EQUATIONS                       = 'SAINT-VENANT FV'
+FINITE VOLUME SCHEME            = 2
+NUMBER OF PRIVATE ARRAYS        = 1
+TIDAL FLATS                     = YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS   = 2
+TYPE OF ADVECTION               = 1;5
+SUPG OPTION                     = 2;2
+DISCRETIZATIONS IN SPACE        = 11;11
+SOLVER ACCURACY                 = 1.E-4
+SOLVER                          = 7
+SOLVER OPTION                   = 3
+PRECONDITIONING                 = 2
+IMPLICITATION FOR DEPTH         = 1.
+IMPLICITATION FOR VELOCITY      = 0.6
+INITIAL GUESS FOR H             = 1   
+/  
+&FIN

@@ -1,0 +1,11 @@
+#
+#------- Sources Fortran
+
+SRCS= \
+declarations_waqtel.f  interface_waqtel.f \
+algae_death.f algae_growth.f \
+calcs_biomass.f  calcs_eutro.f  calcs_micropol.f  calcs_o2.f  calcs_thermic.f \
+depos_fx.f erosion_fx.f increase_ntrac.f  init_watqua.f  \
+lecdon_waqtel.f  lecwaqpar.f  nametrac_waq.f nuteff.f point_waqtel.f  \
+ray_effect.f reaer.f reaer_weir.f satur_o2.f source_waq.f \
+taub_waqtel.f

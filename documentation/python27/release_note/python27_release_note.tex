@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+%                                                                    %
+%                                                                    %
+% Title : openTELEMAC & Mascaret Latex Releas enote / Template file  %
+% Version 6.3                                                        %
+%                                                                    %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\documentclass[12pt,a4paper]{article}
+% ....................................................................
+% MANDATORY PACKAGE
+\input{../../data/defs/openTELEMAC_def}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AUTHORS...                                                         %
+% OPTIONS : PACKAGE MAY DIFFER FOR EDF OR EXTERNAL PUBLICATIONS      %
+% ...................................................................%
+% Optional but mandatory for EDF publications                        %
+\def\EDF_Eureka{0}
+\if\EDF_Eureka1
+  \def \eurekaTYPE{Release Notes}
+  \def \eurekaMODULE{\artemis}
+  \usepackage[rddoc]{\edf/noteEDF}
+\fi
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\begin{document}
+
+\setcounter{page}{1}
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AUTHORS...                                                         %
+% OPTIONS : PACKAGE MAY DIFFER FOR EDF OR EXTERNAL PUBLICATIONS      %
+%                                                                    %
+% Optional but mandatory for EDF publications                        %
+% HeaderEDF contains information on the document (title,author,H-P78)%
+% and a FOOTER/BOTTOM                                                %
+% % .................................................................%
+%
+\if\EDF_Eureka1
+  \input{\edf/headerEDF}
+  \pagebreak
+  \input{\edf/CLAIM}
+  \pagebreak
+  \input{\texfile/SYNTHESE}
+  \pagebreak
+  \else
+  \input{\texfile/TITLE}
+  \pagebreak
+\fi
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\setcounter{tocdepth}{2}
+\begin{center}\begin{singlespace}
+\tableofcontents
+\end{singlespace}\end{center}
+\clearpage
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AUTHORS...                                                         %
+% CORPUS : TO BE MODIFIED BY AUTHORS                                 %
+\input{\texfile/CORPUS}
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+\end{document}
+
+
+

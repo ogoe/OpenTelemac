@@ -1,0 +1,90 @@
+/ no influence
+POROSITE DU LIT NON COHESIF= 0.4
+/CORRECTION FROTTEMENT DE PEAU = 1
+/DEBUGGER : 1
+/
+/ Version 5.7
+/ Dell 2.8 GHz Linux, compilateur pgi : 0.43 s JMH 24/04/2007
+/ HP C3700, compilateur HP            : 0.8  s CV  07/05/2007
+/ HP C3700, compilateur Nag           : 3    s JMH 30/04/2007
+/
+/
+/ A PARTIR DE VERSION 5.8 : EFFET DE PENTE, REFERENCE REFAITE.
+/
+EFFET DE PENTE : OUI
+FORMULE POUR LA DEVIATION   : 1
+FORMULE POUR EFFET DE PENTE : 1
+BETA =0
+/
+/ Version 5.8
+/
+/ Dell 2.8 GHz Linux, compilateur pgi   :  1  s 15/01/2008
+/ Dell 2.8 GHz Linux, compilateur Intel :  2  s 15/01/2008
+/ HP C3700, compilateur HP              :  2  s 09/01/2008
+/ HP C3700, compilateur Nag             :  3  s 15/01/2008
+/
+/ Version 5.9
+/
+/ Dell 2.8 GHz Linux, compilateur pgi   :  0  s   JMH 26/12/2008
+/ Dell 2.8 GHz Linux, compilateur Intel :  0  s   JMH 26/12/2008
+/ HP C3700, compilateur HP              :  1  s   JMH 03/02/2009
+/ HP C3700, compilateur Nag             :  3  s   JMH 24/12/2008 (Xmas)
+/
+/ Version 6.0
+/
+/ Dell 2.8 GHz Linux, compilateur Intel :  0  s JMH 10/12/2009
+/ HP C3700, compilateur HP              :  1  s JMH 10/12/2009
+/ HP C3700, compilateur Nag             :  3  s JMH 08/12/2009
+/
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++
+/ evolution d'une bosse - transport par charriage (formule N°30)
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++
+/
+/ NOMS FICHIERS
+/ +++++++++++++
+/
+FORMAT DU FICHIER DE GEOMETRIE = 'SERAFIN '   
+FICHIER DE GEOMETRIE = geo_bosse.slf
+FICHIER FORTRAN      = sis_bosse.f
+/
+FICHIER DES CONDITIONS AUX LIMITES = geo_bosse.cli
+FICHIER DES RESULTATS = sis_bosse.slf
+/
+/ CONDITIONS DE CALCUL
+/ +++++++++++++++++++++
+TITRE = bosse
+CAS PERMANENT = VRAI
+/
+MASS-LUMPING = OUI
+/
+/ ENTREES-SORTIES
+/ +++++++++++++++
+NOMBRE DE TABLEAUX PRIVES = 1
+VARIABLES POUR LES SORTIES GRAPHIQUES =
+U,V,S,H,B,E,M,TOB,QSBL,A
+BILAN DE MASSE = VRAI
+/
+/PARAMETRES NUMERIQUES
+/ ++++++++++++++++++++
+/
+ZERO = 1e-12
+TETA = 0.5
+VALEUR MINIMUM DE H = 0.1
+/
+/DUREE DU CALCUL
+/ ++++++++++++++
+NOMBRE DE PAS DE TEMPS = 1000
+PERIODE DE SORTIE GRAPHIQUE = 100
+PERIODE DE SORTIE LISTING = 10
+PAS DE TEMPS = 10.
+/
+/FROTTEMENT ET TRANSPORT SOLIDE
+/ +++++++++++++++++++++++++++++
+LOI DE FROTTEMENT SUR LE FOND= 2
+COEFFICIENT DE FROTTEMENT = 45.57
+/
+FORMULE DE TRANSPORT SOLIDE = 30
+RAPPORT D'EVOLUTION CRITIQUE = 0.5
+DIAMETRE MOYEN DES GRAINS = 0.000150
+/
+

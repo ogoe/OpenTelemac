@@ -1,0 +1,69 @@
+/
+/  HP C3700 compilateur HP          :  60 s   5.7  18/04/2007
+/  HP C3700 compilateur Nag         : 157 s   5.7  18/04/2007
+/  Dell 2.8 MHz compilateur pgi 6.2 :  37 s   5.7  19/04/2007
+/
+/  HP C3700 compilateur HP          :  66 s   5.8  20/11/2007
+/  HP C3700 compilateur Nag         : 163 s   5.8  20/12/2007
+/  Dell 2.8 MHz compilateur pgi 6.2 :  39 s   5.8  19/12/2007
+/
+/  HP C3700 compilateur HP          :  69 s   5.9  16/10/2008
+/  HP C3700 compilateur Nag         : 164 s   5.9  16/10/2008
+/  Dell 2.8 MHz compilateur pgi 6.2 :  38 s   5.9  16/10/2008
+/
+/  HP C3700 compilateur HP          :  67 s   6.0 24/11/2009
+/  HP C3700 compilateur Nag         : 160 s   6.0 26/11/2009
+/  Dell 2.8 MHz compilateur Intel   :  28 s   6.0 26/11/2009
+/
+/  Version 6.2
+/
+/  HP C3700 compilateur HP          : 130 s   21/05/2012
+/
+FICHIER FORTRAN                    : t2d_init_cin.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_init_cin.cli
+FICHIER DE GEOMETRIE               : geo_init_cin.slf
+FICHIER DES RESULTATS              : r2d_init_cin.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_init_cin.lqd
+/      
+TITRE = 'Cas Test - 1ere mise en regime'                                        
+/                                                                               
+PERIODE POUR LES SORTIES GRAPHIQUES =100
+PERIODE DE SORTIE LISTING=1000           
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,K,E,D,T1                    
+VARIABLES A IMPRIMER = ' '      
+BILAN DE MASSE = VRAI
+SUITE DE CALCUL : NON                                     
+/PAS DE TEMPS = 2.5    NOMBRE DE PAS DE TEMPS = 200 
+DUREE DU CALCUL : 500.                         
+BANCS DECOUVRANTS = NON          
+MASS-LUMPING SUR H : 1.                                                        
+FORME DE LA CONVECTION = 1;5                                                    
+OPTION DE SUPG         = 1;2                                                                                        
+SOLVEUR : 7 
+OPTION DU SOLVEUR : 3     
+PRECISION DU SOLVEUR = 1.E-6                                                    
+LOI DE FROTTEMENT SUR LE FOND = 3    
+COEFFICIENT DE FROTTEMENT = 50.           
+MODELE DE TURBULENCE = 3  
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.E-6                                                                   
+DEBITS IMPOSES = 0.;750.     
+COTES IMPOSEES =  265.;0.                                                       
+COTE INITIALE = 265.  
+CONDITIONS INITIALES = 'COTE CONSTANTE'                     
+OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
+/SECTIONS DE CONTROLE : 5;172;46;159;959;167
+DISCRETISATIONS EN ESPACE : 11;11
+STOCKAGE DES MATRICES : 3   
+PRODUIT MATRICE-VECTEUR : 1
+/
+EQUATIONS : 'SAINT-VENANT VF'
+SCHEMA EN VOLUMES FINIS : 2
+PAS DE TEMPS VARIABLE : OUI 
+PAS DE TEMPS          = 1.
+NOMBRE DE COURANT SOUHAITE =0.9
+NOMBRE DE TRACEURS : 1
+ABSCISSES DES SOURCES : 509.18899536132812   
+ORDONNEES DES SOURCES : 499.78900146484375
+VALEURS DES TRACEURS DES SOURCES : 100.
+DEBITS DES SOURCES : 10.
+/    

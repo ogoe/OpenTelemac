@@ -1,0 +1,181 @@
+#!/usr/bin/env python
+import sys, os, shutil
+import subprocess
+from time import strftime
+from optparse import OptionParser
+# ------------------------------------------------------------#
+# Objectif : lanceur TELEMAC sur cluster
+#
+# ------------------------------------------------------------#
+#
+# Global variable and default values of input parameters
+# ------------------------------------------------------------#
+# Debug
+filename   = 'run.slurm'
+#
+# ------------------------------------------------------------#
+#
+# Print with color in Xterm
+# ------------------------------------------------------------#
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    def disable(self):
+        self.HEADER = ''
+        self.OKBLUE = ''
+        self.OKGREEN = ''
+        self.WARNING = ''
+        self.FAIL = ''
+        self.ENDC = ''
+# ------------------------------------------------------------#        
+# Error raised by LoadLeveler
+# ------------------------------------------------------------#
+errorbgp = ['WARN','ERROR','killed by']
+# ------------------------------------------------------------#
+#
+
+##def submit():
+##    if verbose:
+##        print bcolors.OKBLUE + "OS:%s ; Platform:%s"%(self.name,self.arch) + bcolors.ENDC
+        
+##    for item in self.hosttype:
+##        print bcolors.OKBLUE + "hosttype : %s"%item + bcolors.ENDC
+        
+##    if verbose:
+##        print bcolors.OKGREEN + "function    : launch_phe" + bcolors.ENDC
+##        os.system('%s %s' %(code,cas))
+        
+##    return
+
+# ------------------------------------------------------------#
+#
+# Create 'run.slurm' : file containing instruction for Slurm
+# ------------------------------------------------------------#
+def create_run_slurm(options):
+
+    if options.verbose:
+        print bcolors.OKGREEN + "function    : create_run_slurm" + bcolors.ENDC
+        
+    loadfile = \
+"""#!/bin/bash
+#SBATCH --job-name=%(jobname)s
+#SBATCH --output=%(jobname)s.%(time)s.out
+#SBATCH --error=%(jobname)s.%(time)s.err
+#SBATCH --time=%(walltime)s
+#SBATCH --ntasks=%(ncsize)s
+#SBATCH --partition=%(queue)s
+##SBATCH --exclude=cn[0000-0000,0000]
+##SBATCH --exclusive
+srun hostname | sort > mpid.conf
+hosts=''
+for line in $(echo | cat mpid.conf)
+do
+  hosts="${hosts}:${line}"
+done
+hosts=${hosts:1:${#hosts}}
+#
+rm -f mpitasks mpitasks.conf mpid.conf
+%(srcfile)s
+%(code)s --hosts ${hosts} %(case)s --ncsize %(ncsize)s
+"""
+    
+    run_file = open(filename, mode='w')
+
+    srcfile = ''
+    if options.sourcefile <> '':
+        srcfile = 'source %s'%options.sourcefile
+
+    run_file.write(loadfile %{'jobname':options.jobname,'ncsize':options.ncsize,'queue':options.queue,'walltime':options.walltime,'code':code+'.py','case':case,'srcfile':srcfile,'time':strftime("%Y-%m-%d_%H:%M:%S")})
+    run_file.close()
+    os.system('chmod 744 %s'%filename)
+    
+    return
+# ------------------------------------------------------------#
+#
+# Soumission du 'file'
+# ------------------------------------------------------------#
+def submit(cmd,options):
+    if options.verbose:
+        print bcolors.OKGREEN + "function    : submit" + bcolors.ENDC
+        #    os.system('llsubmit %s' %file)
+    try:
+        print bcolors.HEADER + "Soumission de la commande : %s..."%(cmd) + bcolors.ENDC
+        returnsubmit = subprocess.call(cmd,shell=True)
+        if returnsubmit:
+            print bcolors.FAIL + "Cmd %s failure with return code:%s" %(cmd,returnsubmit) + bcolors.ENDC
+            sys.exit(1)
+    except OSError, message:
+        print bcolors.FAIL + "Execution failed!\n %s" %message + bcolors.ENDC
+        sys.exit(1)
+    return
+
+# ------------------------------------------------------------#
+#
+# Fonction : MAIN
+# read variables from command line, one by one:
+# ------------------------------------------------------------#
+__author__="Fabien Decung"
+__date__ ="$01-Jan-2011 00:00:00$"
+
+if __name__ == "__main__":
+    
+   parser = OptionParser("usage: %prog code cas.txt [options] \nuse -h for more help.")
+   parser.add_option("-j", "--jobname",
+                      type="string",
+                      dest="jobname",
+                      default='job_unamed',
+                      help="specify a jobname for HPC queue tracking" )
+   parser.add_option("-n", "--ncsize",
+                      type="string",
+                      dest="ncsize",
+                      default=1,
+                      help="the number of processors forced in parallel mode" )
+   parser.add_option("-q", "--queue",
+                      type="string",
+                      dest="queue",
+                      default='compute',
+                      help="specify queue used, default is queue compute" )
+   parser.add_option("-w", "--walltime",
+                      type="string",
+                      dest="walltime",
+                      default='01:00:00',
+                      help="specify the wall time for the job, default is an hour" )
+   parser.add_option("--source-file",
+                      type="string",
+                      dest="sourcefile",
+                      default='',
+                      help="specify a file to be sourced before the run of the job" )
+   parser.add_option("-s", "--slurm-only",
+                      action="store_false",
+                      dest="ok_submit",
+                      default=True,
+                      help="Only generate the slurm batch does not launch it, default is no" )
+   parser.add_option("-v", "--verbose",
+                      action="store_true",
+                      dest="verbose",
+                      default=False,
+                      help="Only generate the slurm batch does not launch it, default is no" )
+   options, args = parser.parse_args()
+   if (len(args) < 2):
+      print '\nThe name of the module to run and one CAS file at least are required\n'
+      parser.print_help()
+      sys.exit(1)
+
+   # Parse arguments...
+   code = args[0]
+   case = args[1]
+   
+   create_run_slurm(options)
+   if options.ok_submit:
+       submit('sbatch %s'%filename,options)
+       # -----------------------------------------# -----------------------------------------#
+       # Lancement du calcul
+       # -----------------------------------------# -----------------------------------------#
+       print bcolors.HEADER + "------------      Calcul sur Ivanoe a ete lance    ----------" + bcolors.ENDC
+   else:
+       print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC

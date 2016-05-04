@@ -1,0 +1,72 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/********************************************************************/
+/DEBUGGER=1
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'tom_opposing_cur.f'
+/FICHIER DE GEOMETRIE = 'geo_opposing_cur.slf'
+FICHIER DE GEOMETRIE = 'geom.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_opposing_cur.cli'
+FICHIER DES COURANTS BINAIRE = 'current.slf'
+FORMAT DU FICHIER DES COURANTS = 3
+
+FICHIER DES RESULTATS 2D = 'tom_opposing_cur.slf'
+FICHIER DES RESULTATS PONCTUELS = 'tom_opposing_cur.spe'
+FICHIER DES RESULTATS SPECTRES 1D = 'tom_opposing_cur.txt'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'CAS TEST LAI ET AL. 1989'
+PERIODE POUR LES SORTIES GRAPHIQUES = 100
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+M0,HM0,DMOY,TMOY,VX,VY,ZF,FMOY,TM01,TM02,TPD,TPR5,UX,UY
+PERIODE POUR LES SORTIES LISTING = 30
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.300000011920929 ; 
+2.70000004768372 ; 2.79999995231628 ; 3.60000014305115 ;
+4.90000009536743 ; 5.80000019073486 ; 8.
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 2.0;2.0;2.0;2.0;2.0;2.0;
+2.0
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 0.1
+NOMBRE DE PAS DE TEMPS = 400
+NOMBRE DE DIRECTIONS = 72
+FREQUENCE MINIMALE = 0.25
+RAISON FREQUENTIELLE = 1.1
+NOMBRE DE FREQUENCES = 36
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+FACTEUR DE QUEUE DU SPECTRE = 4.
+PROFONDEUR INFINIE = NON
+NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
+PRISE EN COMPTE DE LA PROPAGATION = OUI
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+LIMITEUR DE CROISSANCE = 2
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = OUI
+/--------------------------------------------------------------------/
+/ SPECTRE INITIAL 
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 6
+HAUTEUR SIGNIFICATIVE INITIALE = 0.019
+FREQUENCE DE PIC INITIALE = 2.2
+DIRECTION PRINCIPALE 1 INITIALE = 90.
+ETALEMENT DIRECTIONNEL 1 INITIAL = 65.
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.019
+FREQUENCE DE PIC AUX LIMITES = 2.2
+DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 65.
+/--------------------------------------------------------------------/
+/   TERMES SOURCES
+/--------------------------------------------------------------------/
+DISSIPATION PAR MOUTONNEMENT = 2
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
+DISSIPATION PAR FORT COURANT = 2
+COEFFICIENT DE DISSIPATION PAR FORT COURANT = 0.85

@@ -1,0 +1,69 @@
+/********************************************************************/
+/              TOMAWAC  STEERING FILE                                /
+/********************************************************************/
+/DEBUGGER=1
+/--------------------------------------------------------------------/
+/     FILES
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'tom_shoal.f'
+FICHIER DE GEOMETRIE = 'geo_shoal.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'geo_shoal.cli'
+FICHIER DES RESULTATS 2D = 'tom_shoal.slf'
+FICHIER DES RESULTATS PONCTUELS = 'tom_shoal.spe'
+/--------------------------------------------------------------------/
+/ MISCELLANEOUS INPUT-OUTPUT 
+/--------------------------------------------------------------------/
+TITRE = 'SHOAL TEST VINCENT AND BRIGGS N1 MESH 80CM'
+PERIODE POUR LES SORTIES GRAPHIQUES = 300
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+HM0,DMOY,TMOY,TPR5,TM02,ZF,SPD
+PERIODE POUR LES SORTIES LISTING = 300
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE =9.776772499084473	
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE =17.074281692504883
+/--------------------------------------------------------------------/
+/ DISCRETIZATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 0.1
+NOMBRE DE PAS DE TEMPS = 12000
+/NOMBRE DE PAS DE TEMPS = 6000
+NOMBRE DE DIRECTIONS = 36
+NOMBRE DE FREQUENCES = 22
+FREQUENCE MINIMALE = 0.35
+RAISON FREQUENTIELLE = 1.1
+/--------------------------------------------------------------------/
+/ COMPUTATION OPTIONS
+/--------------------------------------------------------------------/
+PROFONDEUR D'EAU MINIMALE = 0.01
+/SPHERICAL COORDINATES = NO
+PRISE EN COMPTE DES TERMES SOURCES = NON
+PRISE EN COMPTE DU VENT = NON
+APPORTS DUS AU VENT = 0
+/--------------------------------------------------------------------/
+/  INITIAL CONDITIONS 
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 7
+HAUTEUR SIGNIFICATIVE INITIALE = 0.
+FREQUENCE DE PIC INITIALE = 0.1
+FACTEUR DE PIC INITIAL = 1.
+FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
+ETALEMENT DIRECTIONNEL 1 INITIAL = 20
+DIRECTION PRINCIPALE 1 INITIALE = 0.
+/--------------------------------------------------------------------/
+/   BOUNDARY CONDITIONS
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 7
+FACTEUR DE PIC AUX LIMITES = 2.
+/HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.075
+/ pour avoir le alpha de briggs en TMA 
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.1008288189902181
+FREQUENCE DE PIC AUX LIMITES = 0.7692
+DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
+FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 64.66
+/--------------------------------------------------------------------/
+/   DIFFRACTION
+/--------------------------------------------------------------------/
+/DIFFRACTION = 2
+/PAS DE TEMPS DEBUT DIFFRACTION = 6000
+/SORTIE GLOBALE A LA FIN : OUI
+/FICHIER DES RESULTATS GLOBAUX = 'next_comput.pre'

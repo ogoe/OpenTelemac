@@ -1,0 +1,7 @@
+#!/bin/ksh
+rm -f signal_*
+rm -f delete_*
+rm -Rf *cas*_tmp
+rm -f *.exe
+rm -f *.log
+rm -f *.bat

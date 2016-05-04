@@ -1,0 +1,309 @@
+#!/bin/ksh
+set -x
+#----------------------------------------------------------------------
+# NAME
+#       version  =
+#
+# SYNOPSIS
+#       version  -h|H
+#       version  
+#
+#----------------------------------------------------------------------
+#
+# OPTION(S)
+#       -h|H            Help (short|long)
+#       -x              Place the 'set -x' option , for debugging
+#
+# DESCRIPTION : 
+#
+#
+# COMPATIBILITY : 
+#
+# EXEMPLE(S)
+#
+# FILE(S) :      
+#
+# DEPENDENCE(S) : 
+#
+# REMARK(S) :
+#
+# AUTHORS : Olivier Quiquempoix  :   EDF/DER/AEE/LNH/GEI (16.1) 30 87 78 70
+#           Isabelle Leblanc     :   EDF/DER/AEE/LNH/GEI (16.1) 30 87 78 52
+#
+# Date  : 09/06/94                Mail : Olivier.Quiquempoix@der.edf.fr
+#                                        Isabelle.Leblanc@der.edf.fr
+#
+# $Header: version,v 1.1 97/03/27 14:36:20 isa Exp $
+
+#----------------------------------------------------------------------
+
+#========================================================================
+# On line arguments
+#========================================================================
+
+
+#----------------------------------------------------------------------------------------
+find_installed(){
+[ "$DEBUG" = "1" ] && set -x
+before=$1
+after=$2
+
+for sys in $compatibilite ; do
+	if [ -f "$before/$sys/$after" ] ; then
+		export systeme=$sys
+		found="1"
+	fi
+	[ "$found" = "1" ] && { break ; }
+
+done
+
+path=$before/$systeme
+
+}
+
+#----------------------------------------------------------------------------------------
+find_system()
+{
+[ "$DEBUG" = "1" ] && set -x
+
+: ${UNAME:=`uname -a`}
+set -- $UNAME
+
+case "$1-$3" in
+IRIX-5.3)	systeme=sgi53 ;;
+SunOS-5.5)	systeme=solaris2.5 ; compatibilite="solaris2.5 solaris2.4 solaris2.3 solaris" ;;
+SunOS-5.4)	systeme=solaris2.4 ; compatibilite="solaris2.4 solaris2.3 solaris";;
+SunOS-5.3)	systeme=solaris ; compatibilite="solaris2.3 solaris"  ;;
+SunOS-5.*)	systeme=solaris ; compatibilite="solaris";;
+SunOS-4.*)	systeme=sun-os ;;
+HP-UX-*)	
+	        courant_hp="9"
+                case $5 in
+                  9000/3*) systeme=hp300_$vers ;  compatibilite="$systeme" ;;
+                  9000/8*) systeme=hp800_$vers ;  compatibilite="$systeme" ;;
+                  9000/7*) 
+			   case $3 in
+				*10*) systeme=hp700_10 ;  compatibilite="hp700_10 hp700 hp-ux hp" ;;	
+				*9*)  systeme=hp-ux ;  compatibilite="hp700 hp-ux hp" ;;	
+			   esac ;;
+		esac;;
+*)	case "$5" in
+	CRAY)	systeme=unicos ;  compatibilite="unicos" ;;
+	*)	systeme=unknown ;;
+	esac
+
+esac  
+[ "$SYSTEME" != "" ] && systeme=$SYSTEME 	# si SYSTEME existe, passe par le lanceur, alors
+						# on le privilegie (cas des executions en remote).
+
+}
+
+#----------------------------------------------------------------------------------------
+find_manager()
+{
+[ "$DEBUG" = "1" ] && set -x
+
+set -- `uname -a`
+case "$1" in
+HP-UX)  file_manager=cose
+        echo "Vous etes sous syteme HP-UX."
+        echo "Voulez vous configurer vue ou cose [vue]"; read fm
+        if [ "$fm" != "cose" ]; then file_manager=vue; fi ;;
+*)      file_manager=xdtm ;;
+esac
+export file_manager
+}
+
+#----------------------------------------------------------------------------------------
+majuscule(){ echo $* |tr "[a-z]" "[A-Z]" ; }
+
+#----------------------------------------------------------------------------------------
+find_release()
+{
+[ "$DEBUG" = "1" ] && { set -x ; }
+
+release=`echo $nom | $AWK -F"V" '{print "V"$2}' | $AWK -F"." '{print $1}'`
+[ "$release" = "V" ] && release="$RELEASE"
+
+if [ ! "$code" = "" ]  ; then
+	release=`ls $PROJECT/$code | grep -i "$release$"`
+fi
+
+}
+
+#----------------------------------------------------------------------------------------
+find_code()
+{
+[ "$DEBUG" = "1" ] && { set -x ; }
+
+root_code=`echo $nom  | sed -e 's/_env//g' | $AWK -F"V" '{print $1}'`
+code=`ls $PROJECT | grep -i "^$root_code$"`
+: ${code:=`ls $PROJECT | grep -i "^$root_code*" | head -1`}
+: ${code:="$CDC_MAJ"}
+code_lanceur=`ls "$LANCEUR" | grep -i "^$code$"`
+: ${code_lanceur:=`ls "$LANCEUR" | grep -i "^$root_code*" | head -1`}
+: ${code_lanceur:="$CDC"}
+}
+
+#----------------------------------------------------------------------------------------
+find_sources()
+{
+[ "$DEBUG" = "1" ] && { set -x ; }
+
+path=$PROJECT/$code/$release
+
+[ -d $path/sources ] && echo `find $path/sources -type d -print` || echo "."
+
+}
+
+#----------------------------------------------------------------------------------------
+find_path()
+{
+[ "$DEBUG" = "1" ] && { set -x ; }
+
+if [ -r "$nom_base" ] ; then
+	echo "$nom_base"
+else
+
+case $nom in
+	*dico)	path=$PROJECT/$code/$release/lib;;		# Dictionnaire
+	*.a)	
+		path=$PROJECT/$code/$release/$systeme 		# Bibliotheque
+
+		#### Cas du mode debug
+		if [ "$Debug" = "1" ] ; then
+		
+		  nom_debug=`echo $nom | $AWK -F"V" '{print $1"DV"$2}'`
+
+		  # Recherche dans le repertoire du nom de la bibliotheque
+		  find_installed $PROJECT/$code/$release $nom_debug
+
+		  if [ ! -r $path/$nom_debug ] ; then
+		  	# Recherche dans le repertoire du nom du code de calcul
+			find_installed  $PROJECT/$CDC_MAJ/$RELEASE $nom_debug
+
+			# Pas trouve : Bon, et sans debug ?
+			# Recherche dans le repertoire du nom de la bibliotheque
+			if [ ! -r $path/$nom_debug ] ; then
+				nom_debug="$nom"
+				find_installed $PROJECT/$code/$release $nom
+
+		  		# Recherche dans le repertoire du nom du code de calcul
+				if [ ! -r $path/$nom ] ; then
+					find_installed $PROJECT/$CDC_MAJ/$RELEASE $nom
+				fi
+			fi
+		  fi
+		  nom="$nom_debug"
+
+		### Pas de mode Debug
+		else
+			# Recherche dans le repertoire du nom de la bibliotheque
+			find_installed $PROJECT/$code/$release $nom
+
+			 # Recherche dans le repertoire du nom du code de calcul
+                         if [ ! -r $path/$nom ] ; then
+                               find_installed $PROJECT/$CDC_MAJ/$RELEASE $nom
+                         fi
+
+		fi
+		
+		;;
+	lanceur.def) 
+			for sys in $compatibilite ; do
+				 if [ -f "$LANCEUR/lib/$sys/lanceur.def" ] ; then
+                			systeme=$sys
+                			found="1"
+        			 fi
+        			[ "$found" = "1" ] && { break ; }
+			done
+			path=$LANCEUR/lib/$systeme 		# Fichier lanceur.def
+			;;
+
+	version.defaut)  path=$LANCEUR/$code_lanceur;; 		# Fichier de version par defaut
+	*.def)	
+		# dans ce cas, c'est pas le repertoire, mais le nom qui peut changer
+			path=$LANCEUR/$code_lanceur	 	# Fichier de definition
+			for sys in $compatibilite ; do
+				new_nom="${sys}_$RELEASE.def"
+				 if [ -f "$path/$new_nom" ] ; then
+                			systeme="$sys"
+					nom="$new_nom"
+                			found="1"
+        			 fi
+        			[ "$found" = "1" ] && { break ; }
+			done
+		
+			;;
+	*) 
+
+	# Recherche d'un executable range dans un repertoire systeme
+		# Range dans le repertoire trouve a partir de son nom
+		find_installed  $PROJECT/$code/$release $nom
+
+		# Sinon, dans le repertoire du code de calcul
+		if [ ! -r $PROJECT/$code/$release/$systeme/$nom ] ; then
+			find_installed  $PROJECT/$CDC_MAJ/$RELEASE $nom
+		fi	
+	
+	# Recherche a partir des infos donnees dans les arguments : path_before, name_after
+	# on cherche $path_before/ system / $path_after / $nom
+	[ ! -r $path/$nom ] && find_installed "$path_before" "$path_after/$nom"
+
+
+         if [ ! -r $path/$nom -a -r $PROJECT/$code/share/bin/$nom ]
+         then
+                path=$PROJECT/$code/share/bin                   # Moulinette dans share 
+         fi
+
+         if [ ! -r $path/$nom -a -r $PROJECT/$code/$release/bin/$nom ] 
+    	 then 
+		path=$PROJECT/$code/$release/bin		# Moulinette associee a la version
+   	 fi 
+
+	;;
+esac
+
+# si le fichier n'existe pas, on renvoie la chaine initiale complete
+[ -r $path/$nom ] && echo $path/$nom || echo $nom_base
+
+fi 
+
+}
+
+# --------------------- Optional arguments --------------------------
+AWK=`whence -v nawk` ; [ -f "$AWK" ] && AWK=nawk || AWK=awk
+set -- `getopt a:b:hHxsS:r:fc:p:d $*` ||
+     { echo " "
+       echo " version -h|H :  pour l'aide courte|longue - for short|long help "
+       echo " "
+       exit ; }
+
+for i in $*
+do
+  case $i in
+  -h)   usage $0                ; echo ""        ; exit     ; shift 1 ;;
+  -H)   usage $0 3              ; echo ""        ; exit     ; shift 1 ;;
+  -d)   			  Debug="1"      ; shift 1 ;;
+  -s)   			  mode=System    ; shift 1 ;;
+  -S)   nom_base=$2 		; mode=Sources   ; shift 2 ;;
+  -f)                             mode=Manager   ; shift 1 ;;
+  -r)   nom_base=$2  		; mode=Release   ; shift 2 ;;
+  -c)   nom_base=$2  		; mode=Code      ; shift 2 ;;
+  -p)   nom_base=$2  		; mode=Path      ; shift 2 ;;
+  -a)   path_after=$2				 ; shift 2 ;;
+  -b)   path_before=$2				 ; shift 2 ;;
+  -x)   set -x 			; DEBUG="1"      ; shift 1 ;;
+  esac
+done
+
+[ "$nom_base" = "" ] || nom=`basename $nom_base`
+
+case "$mode" in
+	System)		find_system; echo $systeme ;;
+	Manager)        find_manager; echo $file_manager ;;
+	Release)	find_release ; echo $release ;;
+	Code)		find_code ; echo $code ;;
+	Path)		find_code;find_release;find_system;find_path ;;
+	Sources)	find_code;find_release;find_system;find_sources ;;
+esac

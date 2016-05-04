@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement de l'utilitaire SUBSTDVF90 sous Unix
+#
+#------------------------------DeltaCAD-Septembre99---
+#
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S substdvf90.pl

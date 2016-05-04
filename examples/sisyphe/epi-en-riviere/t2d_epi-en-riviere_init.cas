@@ -1,0 +1,54 @@
+/
+/  FICHIERS
+/ ----------
+/          
+FICHIER DES CONDITIONS AUX LIMITES : geo_epi-en-riviere.cli
+FICHIER DE GEOMETRIE               : geo_epi-en-riviere.slf
+FICHIER DES RESULTATS              : ini_epi-en-riviere.slf 
+FICHIER DES FRONTIERES LIQUIDES    : t2d_epi-en-riviere.qsl 
+/
+/
+TITRE :' Initialisation:  Telemac2d-seul'                                      
+/                                                                               
+NOMBRE DE PAS DE TEMPS = 200
+PERIODE POUR LES SORTIES GRAPHIQUES = 100
+PERIODE DE SORTIE LISTING = 100          
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B
+BILAN DE MASSE = VRAI                                   
+PAS DE TEMPS = 2.5   
+/
+/ PARAMETRES NUMERIQUES
+/ ---------------------
+BANCS DECOUVRANTS = OUI
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
+CORRECTION DE CONTINUITE : OUI
+TRAITEMENT DES HAUTEURS NEGATIVES : 2
+MASS-LUMPING SUR H : 1.                                                        
+FORME DE LA CONVECTION = 1;5                                                    
+OPTION DE SUPG         = 0;0 
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9                                                                                      
+SOLVEUR : 7 
+OPTION DU SOLVEUR : 3      
+PRECISION DU SOLVEUR = 1.E-6    
+/                                                
+/ TURBULENCE - LOI DE FROTTEMENT
+/---------------------------------
+LOI DE FROTTEMENT SUR LE FOND = 3    
+COEFFICIENT DE FROTTEMENT = 50.           
+MODELE DE TURBULENCE = 1 
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.1                                                                   
+/
+/ CONDITIONS INITIALES - AUX LIMITES
+/ ----------------------------------
+DEBITS IMPOSES = 0.;1200.        
+COTES IMPOSEES = 258.;0.                                                       
+COTE INITIALE = 258.  
+CONDITIONS INITIALES = 'COTE CONSTANTE'                     
+OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
+/
+/
+DISCRETISATIONS EN ESPACE : 11;11
+STOCKAGE DES MATRICES : 3   
+/
+/
+/            

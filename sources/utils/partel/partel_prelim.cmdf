@@ -1,0 +1,15 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: special partel
+name: PARTEL_PRELIM
+
+[partel]
+path: <root>|sources|utils|partel
+files: partitioner.F
+  partel_prelim.F
+
+[special]
+path: <root>|sources|utils|special
+files: plante.F
+  check_allocate.f
