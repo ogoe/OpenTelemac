@@ -6,7 +6,7 @@
      & OPTBAN,NPTFR,FLBOR,FLUX_BOUNDARIES,NUMLIQ,NFRLIQ,GAMMA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    CALCULATES THE BALANCE OF THE MASS OF WATER.
@@ -36,7 +36,13 @@
 !history R. ATA (LNHE)
 !+        06/01/2012
 !+        V6P0
-!+    ADAPTATION FOR FV
+!+   ADAPTATION FOR FV
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        06/05/2016
+!+        V7P2
+!+    Now assuming that FLBOR is initialised if LT=0, and fluxes at 
+!+    boundaries always computed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -122,30 +128,16 @@
       IF(NCSIZE.GT.1) MASSE2 = P_DSUM(MASSE2)
 !
       IF(LT.EQ.0) THEN
+!       INITIALISATION
         MASSE0 = MASSE2
         MASSE1 = MASSE2
         MASENT = 0.D0
         MASSET = 0.D0
-        FLUX1_OLD = 0.D0
-!
-!       FOR THE FIRST CALL, RETURN HERE
-!
-        CALL OS('X=0     ',X=FLBOR)
-        IF(NFRLIQ.GT.0) THEN
-          DO I=1,NFRLIQ
-            FLUX_BOUNDARIES(I)=0.D0
-          ENDDO
-        ENDIF
-        RETURN
-!
+      ELSE
+!       SOURCE TERMS ADDED TO MASS
+        IF(NCSIZE.GT.1) MASSES = P_DSUM(MASSES)
+        MASSET = MASSET + MASSES
       ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!   SOURCE TERMS ADDED TO MASS
-!
-      IF(NCSIZE.GT.1) MASSES = P_DSUM(MASSES)
-      MASSET = MASSET + MASSES
 !
 !=======================================================================
 !
@@ -181,6 +173,14 @@
           FLUX1=FLUX1+FLUX_BOUNDARIES(I)
         ENDDO
       ENDIF
+!     FOR FINITE VOLUMES
+      FLUX1_OLD=FLUX1
+!
+!=======================================================================
+!
+!     IF INITIALISATION, RETURN NOW (NO COMPUTATION YET, NO MASS-BALANCE)
+!
+      IF(LT.EQ.0) RETURN
 !
 !=======================================================================
 !
@@ -197,7 +197,6 @@
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
         ERREUR = MASSE1 + MASSES - MASSE2 - CONTRIB
-        FLUX1_OLD = FLUX1
       ELSE
         ERREUR = MASSE1 + MASSES - MASSE2 - DT*FLUX1
       ENDIF
@@ -341,3 +340,4 @@
 !
       RETURN
       END
+

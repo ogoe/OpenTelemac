@@ -277,6 +277,12 @@
 !+   Call to friction_choice now without KARMAN.
 !+   Call to kepsil modified.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/05/2016
+!+        V7P2
+!+   FLBOR initialised before the first call to bilan.f, for the sake of
+!+   computations continued wit hstage-discharge curves.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -1283,6 +1289,11 @@
         FLUSOR = 0.D0
         FLUENT = 0.D0
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILAN'
+!       INITIALISATION OF FLBOR, PRIOR TO CALLING BILAN, FLBOR
+!       IS NORMALLY DONE ON PROPAG.F
+        CALL VECTOR(FLBOR,'=','FLUBDF          ',IELBOR(IELMH,1),
+     &              1.D0-TETAU,HPROP,S,S,U,V,S,
+     &              MESH,.TRUE.,MASK%ADR(8)%P)
         CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,TOTAL_ITER,ENTET,
      &             MASSES,MSK,MASKEL,EQUA,TE5,OPTBAN,
      &             MESH%NPTFR,FLBOR,
