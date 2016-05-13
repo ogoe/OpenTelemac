@@ -48,7 +48,7 @@
 !history  U.H. Merkel
 !+        18/07/2012
 !+        V6P2
-!+    Replaced EPSILON with EPSI due to nag compiler problems
+!+    Replaced EPSILON with CHOUIA due to nag compiler problems
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
@@ -113,8 +113,8 @@
       DOUBLE PRECISION AUX,AUXX,AUXXX
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,AUX5,AUX6,AUX7,AUX8,AUX9
 !
-      DOUBLE PRECISION EPSI
-      DATA EPSI/1.D-4/
+      DOUBLE PRECISION CHOUIA
+      DATA CHOUIA/1.D-4/
 !
 !***********************************************************************
 !
@@ -283,8 +283,8 @@
 !     DIFFUSION CONNECTIONS CUT IF ONE POINT IS CRUSHED IN THE ELEMENT
 !     THIS IS NECESSARY TO AVOID A MASS ERROR
 !
-      IF(DZ1.LT.EPSI.OR.DZ2.LT.EPSI.OR.
-     &   DZ3.LT.EPSI.OR.DZ4.LT.EPSI ) THEN
+      IF(DZ1.LT.CHOUIA.OR.DZ2.LT.CHOUIA.OR.
+     &   DZ3.LT.CHOUIA.OR.DZ4.LT.CHOUIA ) THEN
         HTOT=0.D0
         VTOT=0.D0
         WTOT=0.D0

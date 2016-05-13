@@ -1,8 +1,32 @@
 [general]
 path: <root>|sources|telemac2d
 module: telemac2d
-liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d
+liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d ad
 name: HOMERE_TELEMAC2D
+
+[ad]
+path: <root>|sources|utils|ad
+files: ad_sisyphe_looprecords_end.f
+  ad_sisyphe_initialisation_begin.f
+  ad_sisyphe_subiteration_begin.f
+  ad_sisyphe_looprecords_begin.f
+  ad_sisyphe_initialisation_end.f
+  ad_sisyphe_timestep_end.f
+  ad_sisyphe_end.f
+  ad_sisyphe_timestep_begin.f
+  ad_sisyphe_subiteration_end.f
+  ad_telemac2d_main_after_lecdon_telemac2d.f
+  ad_telemac2d_end.f
+  ad_telemac2d_timestep_begin.f
+  ad_telemac2d_initialisation_end.f
+  ad_telemac2d_initialisation_begin.f
+  ad_telemac2d_begin.f
+  ad_telemac2d_subiteration_end.f
+  ad_telemac2d_timestep_end.f
+  ad_telemac2d_subiteration_begin.f
+  ad_telemac2d_main_init.f
+  ad_telemac2d_main_finalize.f
+  ad_telemac2d_main_after_lecdon_sisyphe.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -296,7 +320,7 @@ files: bief_def.f
   dwnup1.f
   downup.f
   trid3d.f
-  gracjg.f
+  gracjg.F
   equnor.f
   um1x09.f
   um1x04.f
@@ -512,7 +536,7 @@ files: interface_hermes.f
   get_mesh_nptir.f
   get_mesh_dimension.f
   set_header.f
-  lit.f
+  lit.F
   ecri2.f
   open_mesh.f
   open_bnd.f
@@ -564,7 +588,7 @@ files: declarations_sisyphe.f
   dredgesim_interface.F
   maxslope.f
   condis_sisyphe.f
-  init_constant.f
+  init_constant.F
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -662,7 +686,7 @@ files: declarations_sisyphe.f
   mean_grain_size.f
   init_zero.f
   entete_sisyphe.f
-  sisyphe.f
+  sisyphe.F
   read_sections_sisyphe.f
   point_sisyphe.f
   lecdon_split_outputpoints.f
@@ -853,7 +877,7 @@ files: friction_def.f
   fdnrst.f
   wrihyd.f
   tel4del.f
-  telemac2d.f
+  telemac2d.F
   mixlength.f
   read_sections_telemac2d.f
   point_telemac2d.f
@@ -864,7 +888,7 @@ files: friction_def.f
   newstr.f
   interpol.f
   homere_adj_t2d.f
-  homere_telemac2d.f
+  homere_telemac2d.F
 
 [tomawac]
 path: <root>|sources|tomawac

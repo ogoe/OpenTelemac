@@ -56,7 +56,7 @@
       LOGICAL DEJA
       DATA DEJA/.FALSE./
 !
-      INTRINSIC COS,SIN,ACOS,DMOD,DATAN2
+      INTRINSIC COS,SIN,ACOS,MOD,ATAN2
 !
       DOUBLE PRECISION P_DMIN,P_DMAX
       EXTERNAL         P_DMIN,P_DMAX
@@ -101,7 +101,7 @@
 !
       IF(LT.GE.AFBGN.AND.LT.LE.AFEND) THEN
         DO I=1,NPERIAF
-          A=2.D0*PI*DMOD(AT/PERIAF(I),1.D0)
+          A=2.D0*PI*MOD(AT/PERIAF(I),1.D0)
           CFX=COS(A)/M
           CFY=SIN(A)/M
           DO J=1,NPOIN
@@ -142,7 +142,7 @@
             CFX = AMPL%ADR(I)%P%R(J)
             CFY = PHAS%ADR(I)%P%R(J)
             AMPL%ADR(I)%P%R(J) = SQRT(CFX**2+CFY**2)
-            PHAS%ADR(I)%P%R(J) = 180.D0*DATAN2(CFY,CFX)/PI
+            PHAS%ADR(I)%P%R(J) = 180.D0*ATAN2(CFY,CFX)/PI
             IF (PHAS%ADR(I)%P%R(J).LT.0.D0)
      &          PHAS%ADR(I)%P%R(J)=PHAS%ADR(I)%P%R(J)+360.D0
           ENDDO

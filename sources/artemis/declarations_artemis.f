@@ -925,7 +925,7 @@
       INTEGER, POINTER        :: NPTFRX
 !brief
 !
-      INTEGER, POINTER        :: DIM
+      INTEGER, POINTER        :: DIM1
 !brief
 !
       INTEGER, POINTER        :: TYPELM

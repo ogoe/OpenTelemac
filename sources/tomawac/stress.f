@@ -165,7 +165,7 @@
           ZX    = UST/CM +DECAL
           ZARG  = MIN(XKAPPA/ZX,20.D0)
           ZMU   = MIN(GRAVIT*Z0/CM**2*EXP(ZARG),1.D0)
-          ZLOG  = MIN(DLOG(ZMU),0.D0)
+          ZLOG  = MIN(LOG(ZMU),0.D0)
           ZBETA = CONST1*ZMU*ZLOG**4
           TTAUHF= TTAUHF+ZBETA/Y*DELY
         ENDDO ! J

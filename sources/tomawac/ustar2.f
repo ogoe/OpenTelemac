@@ -69,7 +69,7 @@
 !
 !.......COMPUTES THE WIND SPEED 10 METERS ABOVE WATER
 !       """""""""""""""""""""""""""""""""""""""""
-        UVENT=DSQRT(UV(IP)**2+VV(IP)**2)
+        UVENT=SQRT(UV(IP)**2+VV(IP)**2)
 !
 !.......COMPUTES THE DRAG COEFFICIENT
 !       """""""""""""""""""""""""""""""""
@@ -78,7 +78,7 @@
 !
 !.......COMPUTES THE FRICTION VELOCITY
 !       """""""""""""""""""""""""""""""""""
-        USTAR(IP)=DSQRT(CDRAG)*UVENT
+        USTAR(IP)=SQRT(CDRAG)*UVENT
 !
       ENDDO ! IP
 !

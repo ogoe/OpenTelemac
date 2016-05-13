@@ -1,10 +1,10 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!-- Validation and verification of python scripts
---> 
-<validation xref="translate" rank="2" author="HRW"> 
- 
+-->
+<validation xref="translate" rank="2" >
+
 <!-- Processing CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   --> 
+   -->
    <!-- CAS file for TELEMAC-2D in French
       - Translation in English (and French)
    -->

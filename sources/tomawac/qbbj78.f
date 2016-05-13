@@ -76,7 +76,7 @@
         QMAX  = B
    10   CONTINUE
         QBBJ78 = (QMIN+QMAX)/2.D0
-        F      = 1.D0 - QBBJ78 + B*B*DLOG(QBBJ78)
+        F      = 1.D0 - QBBJ78 + B*B*LOG(QBBJ78)
         IF (ABS(F).LT.EPS) RETURN
         IF (F.GT.0.D0) THEN
            QMAX = QBBJ78
@@ -105,12 +105,12 @@
           QBBJ78 = 0.D0
         ELSEIF (B.LT.0.5D0) THEN
           B2     = B**2
-          EXPO   = DEXP(-1.D0/B2)
+          EXPO   = EXP(-1.D0/B2)
           QBBJ78 = B2*EXPO/(B2-EXPO)
         ELSEIF (B.LT.0.9D0) THEN
           Q0     = (2.D0*B-1.D0)**2
           B2     = B**2
-          EXPO   = DEXP((Q0-1.D0)/B2)
+          EXPO   = EXP((Q0-1.D0)/B2)
           QBBJ78 = Q0 - B2*(Q0-EXPO)/(B2-EXPO)
         ELSE
           QBBJ78 = (2.D0*B-1.D0)**2

@@ -77,7 +77,7 @@
       DOUBLE PRECISION COEF  , XKCAR , DEUKD , GG1   , GG2
 !
 !
-      COEF   = -DSQRT(GRAVIT)*BETAIH
+      COEF   = -SQRT(GRAVIT)*BETAIH
 !
 !.....COMPUTES THE LINEAR COEFFICIENT BETA : QBREK4 = BETA * F
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -91,8 +91,8 @@
           GG1 = DEUKD/SINH(DEUKD)
           GG2 = 0.5D0*(1.D0+GG1)
         ENDIF
-        BETA(IP) = COEF/DEPTH(IP)**1.5*DSQRT(VARIAN(IP)*GG1)
-     &               *DSQRT(DMAX1(0.D0,GG2*VARIAN(IP)
+        BETA(IP) = COEF/DEPTH(IP)**1.5*SQRT(VARIAN(IP)*GG1)
+     &               *SQRT(MAX(0.D0,GG2*VARIAN(IP)
      &               /(DEPTH(IP)*DEPTH(IP))-EM2SIH))
       ENDDO ! IP
 !

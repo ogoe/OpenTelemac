@@ -97,8 +97,8 @@ from samplers.mycast import Caster
 #
 def mapdiff(a1,a2):
    """
-      @brief Create a new values containing the diff of the values 
-      of the two arguments 
+      @brief Create a new values containing the diff of the values
+      of the two arguments
 
       @param a1 A Values object containing the keys {support,names,values,time}
       @param a2 A Values object containing the keys {support,names,values,time}
@@ -151,7 +151,7 @@ def checkval(a0,eps):
               False otherwise
    """
    ntime,nvar,npoin = a0.values.shape
-   # Getting eps for each variable 
+   # Getting eps for each variable
    if not eps:
       # if eps is empty setting default value i.e. 1
       print " "*8+"~> TODO: Set Epsilon value"
@@ -167,7 +167,7 @@ def checkval(a0,eps):
       EPS = eps
 
    print " "*8+"~> Validation for time (in reference file):",a0.time[0]
-   # Loop on variables 
+   # Loop on variables
    value=False
    for ivar in range(nvar):
       err = max(a0.values[0][ivar])
@@ -175,7 +175,7 @@ def checkval(a0,eps):
       if err >= EPS[ivar]:
          print " "*12+"Epsilon reached",EPS[ivar]
          value=True
-   return value   
+   return value
 # _____                           __________________________________
 # ____/ Specific TELEMAC Toolbox /_________________________________/
 #
@@ -422,6 +422,7 @@ class GROUPS:
    availkeys = { "xref": None, "deco": '' }
    groupkeys = { }
    avaylkeys = { }
+   filtrkeys = { }
 
    def __init__(self,title='',bypass=True):
       self.active = deepcopy(self.availkeys)
@@ -465,6 +466,9 @@ class GROUPS:
          raise Exception([filterMessage({'name':'GROUP::addSubTask'},e,self.bypass)])
       # ~~> filling-in remaining gaps
       subtasks = self.distributeDeco(subtasks)
+      for k in subtasks:
+         if k in self.filtrkeys:
+            if subtasks[k]!= '': self.filtrkeys[k] = subtasks[k]
       # ~~> adding subtask to the list of tasks
       if nametask in self.tasks: self.tasks[nametask].append(subtasks)
       else: self.tasks.update({nametask:[subtasks]})
@@ -472,7 +476,7 @@ class GROUPS:
 
    def targetSubTask(self,target,index=0,nametask='layers'):
       self.tasks[nametask][index].update({ 'fileName': target })
-      if nametask not in self.dids[self.active['type']][self.active['xref']]: 
+      if nametask not in self.dids[self.active['type']][self.active['xref']]:
          self.dids[self.active['type']][self.active['xref']].update({nametask:[self.tasks[nametask][index]]})
 
    def distributeDeco(self,subtask): return subtask
@@ -490,6 +494,7 @@ class groupDECO(GROUPS):
    availkeys = deepcopy(GROUPS.availkeys)
    #availkeys.update(decoDefault) # depends on 1D, 2D or 3D plotting packages
    groupkeys = deepcopy(GROUPS.groupkeys)
+   filtrkeys = { "title":'', "contact":'', "author":'' }
 
    def __init__(self,xmlFile,title='',bypass=True):
       GROUPS.__init__(self,title,bypass)
@@ -510,7 +515,7 @@ class groupDECO(GROUPS):
 
    def addDataTask(self,layer,nametask='data'):
       self.avaylkeys = deepcopy(GROUPS.avaylkeys)
-      self.avaylkeys.update({ "title":'', "contact":'', "author":'' })
+      self.avaylkeys.update(self.filtrkeys)
       return GROUPS.addSubTask(self,layer,nametask)
 
 # _____                            __________________________________
@@ -1052,8 +1057,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # /!\ There is a lot more to dodo
    rank = '1'
    if "rank" in xmlRoot.keys(): rank = xmlRoot.attrib["rank"]
-   # Get the author of the test case for the report
-   AUTHOR = xmlRoot.attrib["author"]
    rankdo = int(rank)
    rankdont = 0
    if xmlConfig[xmlConfig.keys()[0]]['options'].rank != '': rankdont = int(xmlConfig[xmlConfig.keys()[0]]['options'].rank)
@@ -1133,7 +1136,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    #                                                        \\        //
    #for action in xmlRoot.findall("action"):
       if xmlChild.tag == "action":
-         report = { 'type':'action','author':AUTHOR }; updated = False
+         report = { 'type':'action' }
+         report.update(dc.filtrkeys); updated = False
          action = xmlChild
 
          # ~~ Step 1. Common check for keys and driving file ~~~~~~~
@@ -1197,7 +1201,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
                ncsize = getNCSIZE(cas,dico,frgb)
                do.updateCFG({'cas':cas})
-               #if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
+               if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
                if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
 
                idico = DICOS[dicoFile]['input']
@@ -1314,7 +1318,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # _________________________________________________________>> CAST <<
    #                                                          \\      //
       if xmlChild.tag[0:4] == "cast" and not runOnly:
-         report = { 'type':'cast','author':AUTHOR }
+         report = { 'type':'cast' }
+         report.update(dc.filtrkeys)
          typeCast = xmlChild.tag
          cast.active['type'] = typeCast
          casting = xmlChild
@@ -1444,7 +1449,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                raise Exception([{'name':'runXML','msg':'could not have more than one configuration at a time for casting: '+var['xref']}])
             elif task['config'] == 'oneofall':
                xys = []
-               if var['fileName'] != {}: 
+               if var['fileName'] != {}:
                   cfg = var['fileName'].iterkeys().next()
                else: cfg = '-'
                for x in xvars.split('|'): xys.append( (x+';'+cfg).strip(';') )
@@ -1478,21 +1483,21 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   else:
                      r = eval( var["vars"] )
                      # The returned value should be a tuple
-                     if type(r) != type(()): 
+                     if type(r) != type(()):
                         raise Exception([{
                              'name':'runXML',
                              'msg':'The result of the function '+\
                                    var["vars"]+' for '+cast.tasks["xref"]+\
                                    ' should be a tuple 4 arguments: time,names,support,values'}])
                      # The return value should be of dimension 4
-                     if len(r) != 4: 
+                     if len(r) != 4:
                         raise Exception([{
                              'name':'runXML',
                              'msg':'The result of the function '+var["vars"]+\
                                    ' for '+cast.tasks["xref"]+\
                                    ' should have 4 arguments: time,names,support,values'}])
                      time,names,support,values = r
-                     caster.set( var['xref'],Values({'support':support, 'values':values, 
+                     caster.set( var['xref'],Values({'support':support, 'values':values,
                                                      'names':names, 'time':time}) )
                      space[var['xref']].support = support
                      space[var['xref']].values = values
@@ -1502,9 +1507,9 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          # ~~> Last but not least, validating
          report.update({ 'updt':True })
          if 'return' not in cast.tasks:
-            report.update({ 'fail':False, 
-			    'warn':False, 
-			    'value':0, 
+            report.update({ 'fail':False,
+			    'warn':False,
+			    'value':0,
 			    'title':'My Work is done' })
          else:
             for var in cast.tasks['return']:
@@ -1529,7 +1534,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    # did has all the IO references and the latest sortie files
    #for extracting in xmlRoot.findall(typeSave):
       if xmlChild.tag[0:4] == "save" and not runOnly:
-         report = { 'type':'save','author':AUTHOR }; updated = False
+         report = { 'type':'save' }
+         report.update(dc.filtrkeys); updated = False
          # /!\ typeSave should be in ['save1d','save2d','save3d']
          typeSave = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
@@ -1554,12 +1560,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             save.addGroup(extracting,rank)
-            report.update({ 'xref':save.active['xref'], 
-			    'updt':False, 
-			    'fail':False, 
-			    'warn':False, 
-			    'rank':save.active['rank'], 
-			    'value':0, 
+            report.update({ 'xref':save.active['xref'],
+			    'updt':False,
+			    'fail':False,
+			    'warn':False,
+			    'rank':save.active['rank'],
+			    'value':0,
 			    'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add extract object to the list'},e,bypass))
@@ -1749,7 +1755,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    #                                                          \\      //
    #for ploting in xmlRoot.findall(typePlot):
       if xmlChild.tag[0:4] == "plot" and not runOnly:
-         report = { 'type':'plot','author':AUTHOR }; updated = False
+         report = { 'type':'plot' }
+         report.update(dc.filtrkeys); updated = False
          # /!\ typePlot should be in ['plot1d','plot2d','plot3d','plotpv']
          typePlot = xmlChild.tag
          if "type" not in xmlChild.attrib:  #TODO: This will eventually be removed
@@ -1774,13 +1781,13 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          try:
             plot.addDraw(ploting,rank)
-            report.update({ 'type':'plot', 
-                            'xref':plot.active['xref'], 
-                            'updt':False, 
-                            'fail':False, 
-                            'warn':False, 
-                            'rank':plot.active['rank'], 
-                            'value':0, 
+            report.update({ 'type':'plot',
+                            'xref':plot.active['xref'],
+                            'updt':False,
+                            'fail':False,
+                            'warn':False,
+                            'rank':plot.active['rank'],
+                            'value':0,
                             'title':'This was ignored' })
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))

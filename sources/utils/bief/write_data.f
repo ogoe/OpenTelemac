@@ -87,7 +87,7 @@
       IF(PRESENT(MESH)) THEN
         ! SET VARIABLES
         NPT    = MESH%NPOIN
-        NB_DIM = MESH%DIM
+        NB_DIM = MESH%DIM1
         ! SET COORDINATES
         ALLOCATE(COORD(NB_DIM*NPT))
         DO I=1,NPT

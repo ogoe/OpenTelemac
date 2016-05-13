@@ -121,7 +121,7 @@
             CYCLE
           ENDIF
           FR1 = 1.D0 + LOG(FREQ2/FREQ0)/LRAISF
-          IFR = IDINT(FR1)
+          IFR = INT(FR1)
           FR1 = FR1 - DBLE(IFR)
           FR1 = (RAISF**FR1-1.D0)/RAISM1
           DO IP3 = 1,NBD
@@ -134,11 +134,11 @@
                 DEP = DEPTH(IPO)
                 XK1 = XK(IPO,JFF)
                 XK3 = XK(IPO,IFF)
-                K2NL   = DSQRT((XK3*COSTET(IPL)-XK1*COSTET(JPL))**2
+                K2NL   = SQRT((XK3*COSTET(IPL)-XK1*COSTET(JPL))**2
      &                   +(XK3*SINTET(IPL)-XK1*SINTET(JPL))**2)
                 XK2    = (1.D0-FR1)*XK(IPO,IFR) + FR1*XK(IPO,IFR+1)
 !
-                TETA2=DATAN2(XK3*SINTET(IPL)-XK1*SINTET(JPL)
+                TETA2=ATAN2(XK3*SINTET(IPL)-XK1*SINTET(JPL)
      &                      ,XK3*COSTET(IPL)-XK1*COSTET(JPL))
                 IF(TETA2.LT.0.D0) TETA2 = DEUPI + TETA2
 !
@@ -150,7 +150,7 @@
                 ENDIF
 !
                 AP2    = (TETA2-TETA(1))/DTETA
-                IPM    = IDINT(AP2)
+                IPM    = INT(AP2)
                 AP2    = AP2 - DBLE(IPM)
                 IPM    = IPM + 1
                 IPP    = IPM + 1

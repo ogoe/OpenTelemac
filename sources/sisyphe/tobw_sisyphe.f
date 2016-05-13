@@ -64,8 +64,14 @@
       INTEGER I
       DOUBLE PRECISION KS,AUX
       DOUBLE PRECISION PI,AW,KARMAN
-      PARAMETER (PI=3.141592653589793D0)
       PARAMETER (KARMAN=0.4D0)
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER (PI=3.141592653589793D0)
+!< SEB @ HRW!
 !
 !-----------------------------------------------------------------------
 !

@@ -252,7 +252,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER  D, U, Q, ROW, TMP, AR,  UMAX
-      INTEGER IL,IJL,IU,IJU,IRL,JRL,JL,MAX,JLMAX,IRA,JRA,IRAC,IRU,JRU
+      INTEGER IL,IJL,IU,IJU,IRL,JRL,JL,KMAX,JLMAX,IRA,JRA,IRAC,IRU,JRU
       INTEGER JUTMP , JUMAX,JU
       INTEGER I,J ,L,LMAX , LRATIO
 
@@ -274,8 +274,8 @@
 !
 !  ******  REORDER A IF NECESSARY, CALL NSFC IF FLAG IS SET  ***********
       IF ((PATH-1) * (PATH-5) .NE. 0)  GO TO 5
-        MAX = (LRATIO*NSP + 1 - JL) - (N+1) - 5*N
-        JLMAX = MAX/2
+        KMAX = (LRATIO*NSP + 1 - JL) - (N+1) - 5*N
+        JLMAX = KMAX/2
         Q     = JL   + JLMAX
         IRA   = Q    + (N+1)
         JRA   = IRA  +   N
@@ -284,7 +284,7 @@
         JRU   = IRU  +   N
         JUTMP = JRU  +   N
         JUMAX = LRATIO*NSP  + 1 - JUTMP
-        ESP = MAX/LRATIO
+        ESP = KMAX/LRATIO
         IF (JLMAX.LE.0 .OR. JUMAX.LE.0)  GO TO 110
         DO 1 I=1,N
           IF (C(I).NE.I)  GO TO 2

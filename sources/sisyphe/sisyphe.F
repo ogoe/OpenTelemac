@@ -258,6 +258,13 @@
 !======================================================================!
 !======================================================================!
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_BEGIN
+      CALL AD_SISYPHE_INITIALISATION_BEGIN
+#endif
+!< JR @ RWTH
+!
 !------------------------------------------------------------------
 !     PART 1 : INITIALISATION
 !------------------------------------------------------------------
@@ -919,6 +926,14 @@
           CONSTFLOW   = .FALSE.
         ENDIF
 !
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_INITIALISATION_END
+#endif
+!< JR @ RWTH
+!
 !=======================================================================
 !
 !     END OF INITIALISATIONS
@@ -972,6 +987,16 @@
 !
         DO MN = 1, NCALCU
 !
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_TIMESTEP_BEGIN
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
+!
           IF(.NOT.PERMA.AND.CODE(1:7).NE.'TELEMAC') THEN
 !           DETERMINES THE FIRST RECORD TO BE READ :
 !           NUMDEB IS THE FIRST RECORD TO BE READ FROM THE HYDRO
@@ -990,6 +1015,16 @@
 !         ------------------------------
 
           DO MT = 1, NIDT
+!
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_LOOPRECORDS_BEGIN
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
 !
 !  ----   DETERMINES THE TIMESTEP NUMBER :
 !
@@ -1217,6 +1252,17 @@
 702     CONTINUE
 !
         ISOUS = ISOUS + 1
+!
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+         CALL AD_SISYPHE_SUBITERATION_BEGIN
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
+!
         IF(CODE(1:7).NE.'TELEMAC') AT0=AT0+DTS
         IF(ENTET.AND.ISOUS.EQ.1) CALL ENTETE_SISYPHE(2,AT0,LT)
         IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
@@ -1614,6 +1660,16 @@
 !
         ENDIF
 !
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+        CALL AD_SISYPHE_SUBITERATION_END
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
+!
 !       END OF THE LOOP ON SUB-TIMESTEPS NSOUS
 !
         IF(ISOUS.LT.NSOUS) GO TO 702
@@ -1752,6 +1808,16 @@
 !       IT CAN BE MODIFIED FOR EACH PARTICULAR CASE
 !       BUT ITS CALL MUST BE LEFT IN THE LOOP ON TIME
 !
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+          CALL AD_SISYPHE_LOOPRECORDS_END
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
+!
         IF(VALID) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_VALIDA'
           CALL BIEF_VALIDA(TB,TEXTPR,SIS_FILES(SISREF)%LU,
@@ -1764,6 +1830,14 @@
 !
 !       END OF THE LOOP ON THE RECORDS
         ENDDO !MT
+!
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+          CALL AD_SISYPHE_TIMESTEP_END
+#endif
+!< JR @ RWTH
 !
 !=======================================================================
 !
@@ -1782,6 +1856,14 @@
      &                                      .OR.PART.EQ.-1)) THEN
         CALL DREDGESIM_INTERFACE(3)
       ENDIF
+!
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_END
+#endif
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

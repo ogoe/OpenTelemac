@@ -50,11 +50,11 @@
 !
       IF(OP.EQ.'=') THEN
         DO I=1,N
-          X(I)=IX(I)*QT
+          X(I)=DBLE(IX(I))*QT
         ENDDO
       ELSEIF(OP.EQ.'+') THEN
         DO I=1,N
-          X(I)=X(I)+IX(I)*QT
+          X(I)=X(I)+DBLE(IX(I))*QT
         ENDDO
       ELSE
         IF(LNG.EQ.1) THEN

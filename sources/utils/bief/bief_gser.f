@@ -41,7 +41,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITMAX,N
-      DOUBLE PRECISION AP,SUM,DEL,EPS
+      DOUBLE PRECISION AP,SOMME,DEL,EPS
 !
       PARAMETER (ITMAX=100,EPS=3.D-7)
 !
@@ -64,13 +64,13 @@
         GAMSER = 0.D0
       ELSE
         AP  = A
-        SUM = 1.D0/A
-        DEL = SUM
+        SOMME = 1.D0/A
+        DEL = SOMME
         DO N = 1,ITMAX
           AP  = AP + 1.D0
           DEL = DEL*X/AP
-          SUM = SUM + DEL
-          IF(ABS(DEL).LT.ABS(SUM)*EPS) GO TO 110
+          SOMME = SOMME + DEL
+          IF(ABS(DEL).LT.ABS(SOMME)*EPS) GO TO 110
         ENDDO
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'BIEF_GSER : ITERATION MAXIMUM DEPASSEE : ',ITMAX
@@ -81,7 +81,7 @@
         CALL PLANTE(1)
         STOP
 110     CONTINUE
-        GAMSER = SUM*EXP(-X+A*LOG(X)-GLN)
+        GAMSER = SOMME*EXP(-X+A*LOG(X)-GLN)
       ENDIF
 !
 !-----------------------------------------------------------------------

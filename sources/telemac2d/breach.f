@@ -243,7 +243,7 @@
           Y2 = YL(2)
           DX = X2 - X1
           DY = Y2 - Y1
-          DELS=DSQRT(DX*DX+DY*DY)
+          DELS=SQRT(DX*DX+DY*DY)
           IF(DELS.GE.0.D0) THEN
             U1 = DX/DELS
             U2 = DY/DELS
@@ -266,7 +266,7 @@
             Y2 = YL(M)
             DX = X2 - X1
             DY = Y2 - Y1
-            DELS=DSQRT(DX*DX+DY*DY)
+            DELS=SQRT(DX*DX+DY*DY)
             IF(DELS.GE.0.D0) THEN
               U1 = DX/DELS
               U2 = DY/DELS

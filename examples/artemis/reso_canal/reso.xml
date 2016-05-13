@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="3" author="HRW">
+<validation xref="case" rank="3" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="reso_canal" author="artemis" contact="www.opentelemac.org" />
+      <data title="reso_canal" author="HR Wallingford" contact="www.opentelemac.org" />
    </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
+-->
    <action xref="1"
        do="translate;run;cas;princi"
        code="artemis" target="art_reso.cas"
@@ -24,7 +24,7 @@
        code="artemis" target="art_reso.cas"
        title="Resonance in a flume, parallel mode"
    />
-   
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
@@ -56,18 +56,18 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
-   <plot1d xref="Period" type="history" config="together" time="[0;-1]" size="(12;5)" > 
+   <plot1d xref="Period" type="history" config="together" time="[0;-1]" size="(12;5)" >
       <layer vars="wave height:line" extract="(2700;2000)" target="1:ARTRES" />
-   </plot1d> 
+   </plot1d>
 -->
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="(7;10)" > 
-      <layer vars="maillage:mesh" target="1:ARTGEO" config="oneofall" /> 
+   <plot2d xref="Mesh" size="(7;10)" >
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="Wave height" size="(7;10)" > 
-      <layer vars="wave height:map" target="1:ARTRES" config="together" time="[-5]" /> 
-   </plot2d> 
+   <plot2d xref="Wave height" size="(7;10)" >
+      <layer vars="wave height:map" target="1:ARTRES" config="together" time="[-5]" />
+   </plot2d>
 
 </validation>

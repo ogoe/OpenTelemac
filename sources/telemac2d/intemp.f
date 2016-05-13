@@ -105,7 +105,7 @@
 !
           IF((W(1,I).GT.EPS/10.D0).AND.(CF(I).GT.1.D-12)) THEN
             ST2D = CF(I)
-            KF = 9.81D0*DT*DSQRT(W(2,I)**2+W(3,I)**2)/
+            KF = 9.81D0*DT*SQRT(W(2,I)**2+W(3,I)**2)/
      &           (ST2D*ST2D*W(1,I)**(7.D0/3.D0))
             IF(KF.GT.1.D-6) THEN
               DELTA = (1.D0+4.D0*KF)

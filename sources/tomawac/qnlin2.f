@@ -118,10 +118,10 @@
       C15   = COEFNL(23)
       C16   = COEFNL(24)
 !
-      JFP1   = IDINT(COEFNL( 9)+1.D-7)
-      JFM2   = IDINT(COEFNL(10)-1.D-7)
-      JFP3   = IDINT(COEFNL(25)+1.D-7)
-      JFM4   = IDINT(COEFNL(26)-1.D-7)
+      JFP1   = INT(COEFNL( 9)+1.D-7)
+      JFM2   = INT(COEFNL(10)-1.D-7)
+      JFP3   = INT(COEFNL(25)+1.D-7)
+      JFM4   = INT(COEFNL(26)-1.D-7)
 !
       US1PM4= COEFNL(11)
       US1MM4= COEFNL(12)
@@ -155,7 +155,7 @@
         DO IP=1,NPOIN2
           TERM1 = MAX(0.75D0*DEPTH(IP)*XKMOY(IP),0.5D0)
           DFINI(IP) = 1.D0+(5.5D0/TERM1)*(1.D0-0.833D0*TERM1)
-     &               *DEXP(-1.25D0*TERM1)
+     &               *EXP(-1.25D0*TERM1)
         ENDDO
       ENDIF
 !

@@ -1,8 +1,20 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d telemac3d
+liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d telemac3d ad
 name: HOMERE_TELEMAC3D
+
+[ad]
+path: <root>|sources|utils|ad
+files: ad_sisyphe_looprecords_end.f
+  ad_sisyphe_initialisation_begin.f
+  ad_sisyphe_subiteration_begin.f
+  ad_sisyphe_looprecords_begin.f
+  ad_sisyphe_initialisation_end.f
+  ad_sisyphe_timestep_end.f
+  ad_sisyphe_end.f
+  ad_sisyphe_timestep_begin.f
+  ad_sisyphe_subiteration_end.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -312,7 +324,7 @@ files: declarations_telemac.f
   p_dot.f
   p_dots.f
   trid3d.f
-  gracjg.f
+  gracjg.F
   equnor.f
   um1x09.f
   um1x04.f
@@ -518,7 +530,7 @@ files: interface_hermes.f
   update_data_mesh.f
   get_bnd_numbering.f
   get_bnd_value.f
-  lit.f
+  lit.F
   ecri2.f
 
 [parallel]
@@ -569,7 +581,7 @@ files: declarations_sisyphe.f
   dredgesim_interface.F
   maxslope.f
   condis_sisyphe.f
-  init_constant.f
+  init_constant.F
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -665,7 +677,7 @@ files: declarations_sisyphe.f
   mean_grain_size.f
   init_zero.f
   entete_sisyphe.f
-  sisyphe.f
+  sisyphe.F
 
 [special]
 path: <root>|sources|utils|special

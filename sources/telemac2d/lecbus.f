@@ -69,9 +69,15 @@
       DOUBLE PRECISION DX,DY,ANG
 !
       DOUBLE PRECISION PI
-      PARAMETER(PI=3.14159265358979323846D0)
 !
       DOUBLE PRECISION, EXTERNAL :: P_DMAX,P_DMIN
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER(PI=3.14159265358979323846D0)
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -116,7 +122,7 @@
         ENDIF
         DX  = XSOR-XENT
         DY  = YSOR-YENT
-        ANG = DATAN(DY/DX)
+        ANG = ATAN(DY/DX)
         ANGBUS(N,1) = ANG
         ANGBUS(N,2) = ANG
 ! UNCOMMENT THE FOLLOWING LINE TO IMPOSE THE DIRECTION OF FLOW FROM THE DATA FILE

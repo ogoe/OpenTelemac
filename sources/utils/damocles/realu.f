@@ -64,7 +64,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTRINSIC DLOG10,DBLE,INT,CHAR
+      INTRINSIC LOG10,DBLE,INT,CHAR
 !
       INTEGER          I,I1,I2,ILONG,IPOINT,IFDECI,ILDECI,JD1,JD2,I3
       LOGICAL          FORMAE,LUFIC,LISUIV,VUPOIN
@@ -190,10 +190,10 @@
 !
       CODE = 'F'
       IF ( FORMAE ) CODE = 'E'
-      JD1 = 3 - INT(DLOG10(DBLE(ILONG)))
+      JD1 = 3 - INT(LOG10(DBLE(ILONG)))
       WRITE (LLONG,'(I3)') ILONG
       JD2 = 3
-      IF ( ILDECI.GT.0 ) JD2 = 3-INT(DLOG10(DBLE(ILDECI)))
+      IF ( ILDECI.GT.0 ) JD2 = 3-INT(LOG10(DBLE(ILDECI)))
       WRITE (LLDECI,'(I3)') ILDECI
       IF ( I1.GT.1 ) THEN
         WRITE ( FORMA , 1010 )  I1-1,CODE,LLONG(JD1:3),LLDECI(JD2:3)

@@ -22,7 +22,7 @@
 !history  U.H. MERKEL
 !+        18/07/2012
 !+        V6P2
-!+   Replaced EPSILON with EPSI due to nag compiler problems
+!+   Replaced EPSILON with CHOUIA due to nag compiler problems
 !
 !history  J-M HERVOUET (EDF R&D LNHE)
 !+        07/01/2013
@@ -95,8 +95,8 @@
       INTEGER I1,I2,I3,I4,I5,I6,IELEM
       LOGICAL INCHYD
 !
-      DOUBLE PRECISION EPSI
-      DATA             EPSI/1.D-4/
+      DOUBLE PRECISION CHOUIA
+      DATA             CHOUIA/1.D-4/
 !
 !***********************************************************************
 !
@@ -174,7 +174,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           AUX = 0.D0
           NUXMOY=0.D0
           NUYMOY=0.D0
@@ -379,7 +379,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           NF1=0.D0
           NF2=0.D0
           NF3=0.D0

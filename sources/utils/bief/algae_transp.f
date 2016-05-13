@@ -148,7 +148,7 @@
       CALL BIEF_ALLVEC(1,DZ_A,'DZ_ALG',NP_TOT,1,0,MESH)
       CALL BIEF_ALLVEC(2,I_A_GL,'I_A_GL',NP_TOT,1,0,MESH)
 ! VARIABLES USED TO CALCULATE THE BASSET HISTORY FORCE
-      CALL INIT_BASSET(NP_TOT,MESH%DIM,DT)
+      CALL INIT_BASSET(NP_TOT,MESH%DIM1,DT)
 !
 !=======================================================================
 ! INITIALISE THE VARIABLES
@@ -173,7 +173,7 @@
 !=======================================================================
 ! ALLOCATE VARIABLES USED IN PARALLEL TRANSPORT
 !=======================================================================
-      IF(NCSIZE.GT.1) CALL ORGANISE_ALGS(NP_TOT,NWIN*MESH%DIM)
+      IF(NCSIZE.GT.1) CALL ORGANISE_ALGS(NP_TOT,NWIN*MESH%DIM1)
 !
       RETURN
       END SUBROUTINE ALLOC_ALGAE
@@ -492,8 +492,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 ! PARAMETRES
-      DOUBLE PRECISION,PARAMETER     :: PI=3.141592654
-      DOUBLE PRECISION,PARAMETER     :: E=EXP(1.D0)
+      DOUBLE PRECISION :: PI
+      DOUBLE PRECISION :: E
       DOUBLE PRECISION,PARAMETER     :: C0=2.1D0
       DOUBLE PRECISION,PARAMETER     :: RHO_F=1000.D0
       DOUBLE PRECISION,PARAMETER     :: NU=0.000001D0
@@ -604,6 +604,17 @@
 ! DAJ
 !     CHARACTER(LEN=100)              :: LOG_NAME
 ! FAJ
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      E = EXP( 1.D0 )
+!      DOUBLE PRECISION,PARAMETER     :: PI=3.141592654
+!      DOUBLE PRECISION,PARAMETER     :: E=EXP(1.D0)
+!< SEB @ HRW
+!
+!-----------------------------------------------------------------------
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

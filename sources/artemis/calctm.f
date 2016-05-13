@@ -57,7 +57,7 @@
 !
       DOUBLE PRECISION BID
 !
-      INTRINSIC SQRT, ATAN2, DMOD, ABS, COS, SIN
+      INTRINSIC SQRT, ATAN2, MOD, ABS, COS, SIN
 !
 !-----------------------------------------------------------------------
 !

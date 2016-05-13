@@ -83,7 +83,7 @@
 !history  U.H.MERKEL
 !+        27/06/2012
 !+        V6P2
-!+   Renamed SUM to SUME, due to NAG compiler
+!+   Renamed SUM to SOMME, due to NAG compiler
 !
 !history  E. GAGNAIRE-RENOU (EDF - LNHE)
 !+        12/03/2013
@@ -370,7 +370,7 @@
       INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF
       DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
-      DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SUME,AUXI,USMIN
+      DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SOMME,AUXI,USMIN
 !                              MDIA, HERE HARDCODED
       DOUBLE PRECISION  XCCMDI(4)
 !
@@ -942,8 +942,8 @@
 !
 !.........LOOP ON SUB-TIME STEPS FOR BREAKING
 !         = = = = = = = = = = = = = = = = = = = = = = = = = = =
-          SUME=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
-          DTN=DTSI/SUME
+          SOMME=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
+          DTN=DTSI/SOMME
 !
           DO 782 IDT=1,NDTBRK
 !         7.2 INITIALISES THE ARRAYS FOR THE SOURCE-TERMS

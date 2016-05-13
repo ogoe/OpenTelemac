@@ -79,9 +79,12 @@
 !
 !.....FUNCTION / FORMULATION
 !     """"""""""""""""
-      DOUBLE PRECISION  RPP   , DD    , O2P   , CP    , KP    , K2P
-      RPP(KP,CP,K2P,O2P,DD) = KP**2*(GRAVIT*DD+2.D0*CP**2)/(K2P*DD)/
-     &   (GRAVIT*DD+(2.D0/15.D0)*GRAVIT*DD**3*K2P**2-0.4D0*(O2P*DD)**2)
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION  RPP
+!      DOUBLE PRECISION  RPP   , DD    , O2P   , CP    , KP    , K2P
+!      RPP(KP,CP,K2P,O2P,DD) = KP**2*(GRAVIT*DD+2.D0*CP**2)/(K2P*DD)/
+!     &   (GRAVIT*DD+(2.D0/15.D0)*GRAVIT*DD**3*K2P**2-0.4D0*(O2P*DD)**2)
+!< JR @ RWTH
 !
 !
       COEF = GRAVIT*SQRT(2.D0)
@@ -92,7 +95,7 @@
 !
 !.......COMPUTES THE URSELL NUMBER AT THE CONSIDERED POINT IN SPACE
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
-        URS = COEF*DSQRT(FTOT(IPO))/(DEUPI*D*FMOY(IPO))**2
+        URS = COEF*SQRT(FTOT(IPO))/(DEUPI*D*FMOY(IPO))**2
 !
 !.......COMPUTES THE CONTRIBUTION OF TRIADS ONLY IF URSELL > 0.1
 !       """""""""""""""""""""""""""""""""""""""""
@@ -103,14 +106,14 @@
           IF (URS.GT.10.D0) THEN
             BIF=1.D0
           ELSE
-            BIF=DSIN(DABS(DEUPI/4.D0*(-1.D0+DTANH(0.2D0/URS))))
+            BIF=SIN(ABS(DEUPI/4.D0*(-1.D0+TANH(0.2D0/URS))))
           ENDIF
 !
 !.........COMPUTES THE MAXIMUM FREQUENTIAL INDEX
 !         """"""""""""""""""""""""""""""""""""""
           FMAX = RFMLTA*MAX(FMOY(IPO),FREQ(1))
-          RIND = 1.D0 + DLOG(FMAX/FREQ(1))/DLOG(RAISF)
-          IFMA = MIN(IDINT(RIND),NF)
+          RIND = 1.D0 + LOG(FMAX/FREQ(1))/LOG(RAISF)
+          IFMA = MIN(INT(RIND),NF)
 !
           DO IFF=1,IFMA
             FP  = FREQ(IFF)
@@ -122,20 +125,26 @@
 !...........COMPUTES THE CONTIBUTION S+
 !           """""""""""""""""""""""""""
             FPS2 = FP/2.D0
-            RIND = 1.D0 + DLOG(FPS2/FREQ(1))/DLOG(RAISF)
-            IIND = IDINT(RIND)
+            RIND = 1.D0 + LOG(FPS2/FREQ(1))/LOG(RAISF)
+            IIND = INT(RIND)
             RIND = RIND-DBLE(IIND)
 !
             IF (IIND.GT.0) THEN
               DEUKD=2.D0*XKP*D
               IF(DEUKD.LE.7.D2) THEN
-                CGR = CPH*(0.5D0+XKP*D/DSINH(2.D0*XKP*D))
+                CGR = CPH*(0.5D0+XKP*D/SINH(2.D0*XKP*D))
               ELSE
                 CGR = 0.5D0*CPH
               ENDIF
               CALL WNSCOU(XKPS2,FPS2,D)
               CPHS2 = DEUPI*FPS2/XKPS2
-              RPS2 = CPH*CGR*RPP(XKPS2,CPHS2,XKP,OMP,D)**2
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              RPS2 = CPH*CGR*(
+     &               XKPS2**2*(GRAVIT*D+2.D0*CPHS2**2)/(XKP*D)/
+     &   (GRAVIT*D+(2.D0/15.D0)*GRAVIT*D**3*XKP**2-0.4D0*(OMP*D)**2)
+     &               )**2
+!              RPS2 = CPH*CGR*RPP(XKPS2,CPHS2,XKP,OMP,D)**2
+!< JR @ RWTH
 !
               DO IPL=1,NPLAN
                 EPS2=(1.D0-RIND)*F(IPO,IPL,IIND)+RIND*F(IPO,IPL,IIND+1)
@@ -149,8 +158,8 @@
 !...........COMPUTES THE CONTIBUTION S-
 !           """""""""""""""""""""""""""
             F2P = 2.D0*FP
-            RIND = 1.D0 + DLOG(F2P/FREQ(1))/DLOG(RAISF)
-            IIND = IDINT(RIND)
+            RIND = 1.D0 + LOG(F2P/FREQ(1))/LOG(RAISF)
+            IIND = INT(RIND)
             RIND = RIND-DBLE(IIND)
             IF (IIND.LT.IFMA) THEN
               OM2P  = DEUPI*F2P
@@ -158,11 +167,17 @@
               CPH2P = OM2P/XK2P
               DEUKD=2.D0*XK2P*D
               IF(DEUKD.LE.700D2) THEN
-                CGR2P = CPH2P*(0.5D0+XK2P*D/DSINH(2.D0*XK2P*D))
+                CGR2P = CPH2P*(0.5D0+XK2P*D/SINH(2.D0*XK2P*D))
               ELSE
                 CGR2P = CPH2P*0.5D0
               ENDIF
-              RP    = CPH2P*CGR2P*RPP(XKP,CPH,XK2P,OM2P,D)**2
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              RP    = CPH2P*CGR2P*(
+     &                XKP**2*(GRAVIT*D+2.D0*CPH**2)/(XK2P*D)/
+     &   (GRAVIT*D+(2.D0/15.D0)*GRAVIT*D**3*XK2P**2-0.4D0*(OM2P*D)**2)
+     &                )**2
+!              RP    = CPH2P*CGR2P*RPP(XKP,CPH,XK2P,OM2P,D)**2
+!< JR @ RWTH
 !
               DO IPL=1,NPLAN
                 E2P = (1.D0-RIND)*F(IPO,IPL,IIND)+RIND*F(IPO,IPL,IIND+1)

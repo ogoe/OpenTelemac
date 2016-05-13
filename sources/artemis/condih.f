@@ -51,12 +51,18 @@
 !
       DOUBLE PRECISION COTE
       DOUBLE PRECISION PI,BID,DHTEST,T1REF,T2REF
-      PARAMETER( PI = 3.1415926535897932384626433D0 )
 !
-      INTRINSIC SINH, SQRT
+      INTRINSIC SINH, SQRT, ATAN
 !
       DOUBLE PRECISION AMPLC
-
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER( PI = 3.1415926535897932384626433D0 )
+!< SEB @ HRW
+!
 !-----------------------------------------------------------------------
 !
       CALL MAJUS(CDTINI)

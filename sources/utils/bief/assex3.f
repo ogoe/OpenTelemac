@@ -98,7 +98,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF( (DIMENS(IELM1).NE.MESH%DIM) .AND.
+      IF( (DIMENS(IELM1).NE.MESH%DIM1) .AND.
      &   (IELM1.NE.81.AND.IELM2.NE.81) ) THEN
 !       BOUNDARY MATRIX : NOT TREATED HERE
         IF (LNG.EQ.1) WRITE(LU,100) NAME
@@ -111,7 +111,7 @@
         STOP
       ENDIF
 !
-      IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
+      IF(DIMENS(IELM1).EQ.MESH%DIM1) THEN
 !       NORMAL MATRIX
         NELEM  = MESH%NELEM
       ELSE

@@ -42,7 +42,7 @@
 !history  U.H.MErkel
 !+        18/07/2012
 !+        V6P2
-!+   Replaced EPSILON with EPSI due to nag compiler problems
+!+   Replaced EPSILON with CHOUIA due to nag compiler problems
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
@@ -75,8 +75,8 @@
       INTEGER IELEM
       DOUBLE PRECISION SUR360,COEF,H1,H2,H3,HT
 !
-      DOUBLE PRECISION EPSI
-      DATA EPSI/1.D-3/
+      DOUBLE PRECISION CHOUIA
+      DATA CHOUIA/1.D-3/
 !
 !-----------------------------------------------------------------------
 !
@@ -90,9 +90,9 @@
 !
 !       TREATS HERE THE DRY ZONES
 !
-        H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),EPSI) * COEF
-        H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),EPSI) * COEF
-        H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),EPSI) * COEF
+        H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),CHOUIA) * COEF
+        H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),CHOUIA) * COEF
+        H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),CHOUIA) * COEF
         HT = H1 + H2 + H3
 !
 !-----------------------------------------------------------------------

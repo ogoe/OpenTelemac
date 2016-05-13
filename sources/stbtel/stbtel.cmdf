@@ -70,7 +70,7 @@ files: utils_med.F
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  lit.f
+  lit.F
   ecri2.f
 
 [parallel]

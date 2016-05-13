@@ -66,9 +66,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, PARAMETER :: PI = 3.14159265358979323846D0
-      DOUBLE PRECISION            :: BA, CA, P, Q, Q2P3, U, V
-      DOUBLE PRECISION            :: EXPO, SIGNUM, TMP, PHI
+      DOUBLE PRECISION :: PI
+      DOUBLE PRECISION :: BA, CA, P, Q, Q2P3, U, V
+      DOUBLE PRECISION :: EXPO, SIGNUM, TMP, PHI
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      DOUBLE PRECISION, PARAMETER :: PI = 3.14159265358979323846D0
+!< SEB @ HRW
 !
 !=======================================================================
 !=======================================================================

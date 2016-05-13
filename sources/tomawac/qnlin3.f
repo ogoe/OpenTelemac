@@ -155,8 +155,8 @@
 !     TESTS HAVE SHOWN THAT IT CAN BE ASSUMED Gamma_min=1. (JFMIN=1) AND
 !     Gamma_max=1.3 (JFMAX>NF) TO OBTAIN IMPROVED RESULTS
 !=======================================================================
-      JFMIN= 1-INT(DLOG(1.0D0)/DLOG(RAISF))
-      JFMAX=NF+INT(DLOG(1.3D0)/DLOG(RAISF))
+      JFMIN= 1-INT(LOG(1.0D0)/LOG(RAISF))
+      JFMAX=NF+INT(LOG(1.3D0)/LOG(RAISF))
 !
 !=======================================================================
 !     COMPUTES THE SPECTRUM THRESHOLD VALUES (BELOW WHICH QNL4 IS NOT

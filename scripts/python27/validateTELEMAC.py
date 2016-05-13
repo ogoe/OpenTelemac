@@ -127,6 +127,7 @@ class REPORT:
    heads = [
       'XML Name',
       'Author',
+      'Contact',
       'Total Duration (s)',
       'Action Name',
       'XML Path',
@@ -140,6 +141,7 @@ class REPORT:
    hkeys = [
       'file',
       'author',
+      'contact',
       'duration',
       'xref',
       'path',

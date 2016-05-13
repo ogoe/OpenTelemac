@@ -79,7 +79,7 @@
 !
       NPOIN = MESH%NPOIN
       NPLAN = 1
-      IF(MESH%DIM.EQ.3) THEN
+      IF(MESH%DIM1.EQ.3) THEN
         NPOIN = BIEF_NBPTS(11,MESH)
         NPLAN = MESH%NPOIN/NPOIN
       ENDIF

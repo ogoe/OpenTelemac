@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="13" author="C-T.Pham">
+<validation xref="case" rank="13" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="NonLinearWave" author="telemac3d" contact="www.opentelemac.org" />
+      <data title="NonLinearWave" author="C-T.Pham" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
       <look colour="jet.xml" />

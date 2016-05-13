@@ -82,7 +82,13 @@
       DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2
 !
       DOUBLE PRECISION PI
-      PARAMETER(PI=3.141592653589D0)
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER(PI=3.141592653589D0)
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

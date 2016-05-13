@@ -77,7 +77,7 @@
       DOUBLE PRECISION DSIGMA,DSIG1,PE,DPE
       INTEGER  IPOIN,IPF,NDEB
 !
-      INTRINSIC DLOG
+      INTRINSIC LOG
 !
 !=======================================================================
 !
@@ -101,7 +101,7 @@
 !
 !     DERIVATIVE OF PE RELATIVE TO IVIDE :
 !
-            DPE=PE*(0.24D0*DLOG(10.D0)-1.D0/(1.D0+IVIDE(IPF,IPOIN)))
+            DPE=PE*(0.24D0*LOG(10.D0)-1.D0/(1.D0+IVIDE(IPF,IPOIN)))
 !
 !     EFFECTIVE STRESS: SIGMA=900/(E-2.5)
 !

@@ -35,10 +35,19 @@
       REAL         STOCKD(MAXDIR)
       REAL         PI,DEGRAD,EPS
       DOUBLE PRECISION :: READTWC(MAXDIR*MAXFRE)
-      PARAMETER(PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0)
       INTEGER :: IERR
       CHARACTER(LEN=8) :: FFORMAT
-
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      DEGRAD = PI / 180.D0
+!      PARAMETER(PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0)
+!< SEB @ HRW
+!
+!-----------------------------------------------------------------------
+!
 !     A AJOUTER DANS LE DICO
 !      NFTWC  = 50
 !      NDTWC  = 48

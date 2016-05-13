@@ -63,7 +63,7 @@
       DOUBLE PRECISION D
       INTEGER I,IMAX,J,K
       DOUBLE PRECISION AAMAX,DUM,XSOM,VV(500)
-      DOUBLE PRECISION, PARAMETER:: TINY=1.D-20
+      DOUBLE PRECISION, PARAMETER:: CHOUIA=1.D-20
 !
 !------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@
         DO J=1,N
           IF(ABS(A(I,J)).GT.AAMAX) AAMAX=ABS(A(I,J))
         ENDDO
-        IF(AAMAX.LT.TINY) THEN
+        IF(AAMAX.LT.CHOUIA) THEN
           WRITE(LU,*) 'SINGULAR MATRIX IN LUDCMP'
           CALL PLANTE(1)
           STOP
@@ -118,7 +118,7 @@
           VV(IMAX)=VV(J) ! ALSO INTERCHANGES THE SCALE FACTOR
         ENDIF
         INDX(J)=IMAX
-        IF(ABS(A(J,J)).LT.TINY) A(J,J)=TINY
+        IF(ABS(A(J,J)).LT.CHOUIA) A(J,J)=CHOUIA
 !
 !  IF THE PIVOT ELEMENT IS 0 THE MATRIX IS SINGULAR (AT LEAST TO THE
 !  PRECISION OF THE ALGORITHM)

@@ -231,7 +231,7 @@
           STOP
         ENDIF
 !
-        IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
+        IF(DIMENS(IELM1).EQ.MESH%DIM1) THEN
 !
 !         NORMAL MATRIX
 !

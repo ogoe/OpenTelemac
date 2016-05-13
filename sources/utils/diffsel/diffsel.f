@@ -37,7 +37,7 @@
       INTEGER NELEM2,NPOIN2,NDP2
 !
       REAL  XTAB(100000),YTAB(100000)
-      REAL R1, R2, EPSILON, EPSREF, EPSMAX
+      REAL R1, R2, CHOUIA, EPSREF, EPSMAX
 !
       CHARACTER*72 TIT1,TIT2
       INTEGER I1,I2,J1,J2
@@ -160,15 +160,15 @@
 !
       READ (1) (ITAB(I), I=1, NELEM1*NDP1)
       READ (2) (JTAB(I), I=1, NELEM1*NDP1)
-        EPSILON=0.
+        CHOUIA=0.
         DO K=1, NELEM1*NDP1
         IF (FLOAT(ABS(ITAB(K)-JTAB(K))) .GT. EPSMAX)
      &      EPSMAX=ABS(ITAB(K)-JTAB(K))
-        IF (FLOAT(ABS(ITAB(K)-JTAB(K))) .GT. EPSILON)
-     &          EPSILON = FLOAT(ABS(ITAB(K)-JTAB(K)) )
+        IF (FLOAT(ABS(ITAB(K)-JTAB(K))) .GT. CHOUIA)
+     &          CHOUIA = FLOAT(ABS(ITAB(K)-JTAB(K)) )
         ENDDO ! K
-        IF (EPSILON .GT. EPSREF) THEN
-          PRINT*, ' #6 ... ERREUR : EPSILON = ', EPSILON
+        IF (CHOUIA .GT. EPSREF) THEN
+          PRINT*, ' #6 ... ERREUR : CHOUIA = ', CHOUIA
         ENDIF
         PRINT *, ' #6 ... OK'
 !
@@ -176,15 +176,15 @@
 !
       READ (1) (ITAB(I), I=1, NPOIN1)
       READ (2) (JTAB(I), I=1, NPOIN1)
-        EPSILON=0.
+        CHOUIA=0.
         DO K=1, NPOIN1
         IF (ABS(ITAB(K)-JTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(ITAB(K)-JTAB(K))
-        IF (ABS(ITAB(K)-JTAB(K)) .GT. EPSILON)
-     &          EPSILON = ABS(ITAB(K)-JTAB(K) )
+        IF (ABS(ITAB(K)-JTAB(K)) .GT. CHOUIA)
+     &          CHOUIA = ABS(ITAB(K)-JTAB(K) )
         ENDDO ! K
-        IF (EPSILON .GT. EPSREF) THEN
-          PRINT*, ' #7 ... ERREUR IPOBO : EPSILON = ', EPSILON
+        IF (CHOUIA .GT. EPSREF) THEN
+          PRINT*, ' #7 ... ERREUR IPOBO : CHOUIA = ', CHOUIA
         ENDIF
         PRINT *, ' #7 ... OK'
 !
@@ -194,15 +194,15 @@
 !
       READ (1) (XTAB(I), I=1, NPOIN1)
       READ (2) (YTAB(I), I=1, NPOIN1)
-        EPSILON=0.
+        CHOUIA=0.
         DO K=1, NPOIN1
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
-        IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
-     &          EPSILON = ABS(XTAB(K)-YTAB(K) )
+        IF (ABS(XTAB(K)-YTAB(K)) .GT. CHOUIA)
+     &          CHOUIA = ABS(XTAB(K)-YTAB(K) )
         ENDDO ! K
-        IF (EPSILON .GT. EPSREF) THEN
-          PRINT*, ' #8 ... ERREUR : EPSILON = ', EPSILON
+        IF (CHOUIA .GT. EPSREF) THEN
+          PRINT*, ' #8 ... ERREUR : CHOUIA = ', CHOUIA
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -213,15 +213,15 @@
 !
       READ (1) (XTAB(I), I=1, NPOIN1)
       READ (2) (YTAB(I), I=1, NPOIN1)
-        EPSILON=0.
+        CHOUIA=0.
         DO K=1, NPOIN1
         IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
-        IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
-     &          EPSILON = ABS(XTAB(K)-YTAB(K) )
+        IF (ABS(XTAB(K)-YTAB(K)) .GT. CHOUIA)
+     &          CHOUIA = ABS(XTAB(K)-YTAB(K) )
         ENDDO ! K
-        IF (EPSILON .GT. EPSREF) THEN
-          PRINT*, ' #9 ... ERREUR : EPSILON = ', EPSILON
+        IF (CHOUIA .GT. EPSREF) THEN
+          PRINT*, ' #9 ... ERREUR : CHOUIA = ', CHOUIA
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -234,7 +234,7 @@
       READ(1, END=9999) R1
       READ(2) R2
       IF (ABS(R1-R2) .GT. EPSREF) THEN
-        PRINT*, '# 10 ... ERREUR : EPSILON = ', ABS(R1-R2), ',
+        PRINT*, '# 10 ... ERREUR : CHOUIA = ', ABS(R1-R2), ',
      &        T1=', R1, ', T2=',R2
         CALL PLANTE(1)
         STOP
@@ -247,15 +247,15 @@
       DO J=1,NVAR
         READ (1) (XTAB(I), I=1, NPOIN1)
         READ (2) (YTAB(I), I=1, NPOIN1)
-        EPSILON=0.
+        CHOUIA=0.
         DO K=1, NPOIN1
           IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSMAX)
      &      EPSMAX=ABS(XTAB(K)-YTAB(K))
-          IF (ABS(XTAB(K)-YTAB(K)) .GT. EPSILON)
-     &    EPSILON = ABS(XTAB(K)-YTAB(K) )
+          IF (ABS(XTAB(K)-YTAB(K)) .GT. CHOUIA)
+     &    CHOUIA = ABS(XTAB(K)-YTAB(K) )
         ENDDO ! K
-        IF (EPSILON .GT. EPSREF) THEN
-          PRINT*, ' #11 ... ERREUR : EPSILON = ', EPSILON, ', T = ', R1
+        IF (CHOUIA .GT. EPSREF) THEN
+          PRINT*, ' #11 ... ERREUR : CHOUIA = ', CHOUIA, ', T = ', R1
         ENDIF
       ENDDO ! J
 !
@@ -274,7 +274,7 @@
 !
 9999  CONTINUE
       PRINT*,' '
-      PRINT*, '   -> EPSILON MAX GLOBAL : ', EPSMAX
+      PRINT*, '   -> CHOUIA MAX GLOBAL : ', EPSMAX
       CLOSE (1)
       CLOSE (2)
       END PROGRAM DIFFSEL

@@ -24,18 +24,24 @@
 !history  U.H.Merkel
 !+        18/07/2012
 !+        V6P2
-!+  NAG doesn't like EPSILON -> renamed to EPSI
+!+        NAG doesn't like EPSILON -> renamed to CHOUIA
+!
+!history  S.E.BOURBAN (HRW) and M.S.TURNBULL (HRW)
+!+        28/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM
+!|                |   | 2: UTM NORTH     3: UTM SOUTH
+!|                |   | 5: MERCATOR FOR TELEMAC
 !| LAMBDATAB      |<--| LONGITUDE (DECIMAL DEGREES)
 !| LAT0           |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !|                |   | BEWARE!!! IN TELEMAC PHI0 IS LONGITUDE!!!
 !| LONG0          |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !|                |   | BEWARE!!! IN TELEMAC LAMBD0 IS LATITUDE!!!
 !| NTAB           |-->| NUMBER OF COORDINATES
-!| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM
-!|                |   | 2: UTM NORTH     3: UTM SOUTH
-!|                |   | 5: MERCATOR FOR TELEMAC
 !| NUMZONE        |-->| NUMBER OF UTM ZONE
 !| PHITAB         |<--| LATITUDE (DECIMAL DEGREES)
 !| XTAB           |-->| METRIC COORDINATES (WGS84 UTM)
@@ -59,11 +65,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION PI,DTR,RTD,CONST,AAA,FFF,EEE,EEE2,EEE4,EEE6,EEE8
-      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,PHIM,LATISO,LATISOS,ES2,EPSI
+      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,PHIM,LATISO,LATISOS,ES2,CHOUIA
       DOUBLE PRECISION X,Y,LAMBDA,PHI
       DOUBLE PRECISION CITM(5)
       DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
-      COMPLEX(KIND(1.D0)) ZPRIME,ZZZ
+!      COMPLEX(KIND(1.D0)) ZPRIME,ZZZ
+      DOUBLE PRECISION ZPRIME_R,ZPRIME_I,ZZZ_R,ZZZ_I
+      DOUBLE PRECISION TWOK
 !
       INTEGER I,J,K
 !
@@ -74,7 +82,7 @@
       RTD = 180.D0/PI
       CONST = TAN(0.5D0*LAT0*DTR+0.25D0*PI)
 !
-      EPSI = 1.D-11
+      CHOUIA = 1.D-11
 !
       AAA = 6378137.D0
       FFF = 1.D0/298.257223563D0
@@ -150,16 +158,26 @@
         X = XTAB(J)
         Y = YTAB(J)
 !       ZPRIME = DCMPLX((Y-YS), (X-XS))/NNN/CITM(1)
-        ZPRIME = CMPLX(Y-YS,X-XS,KIND(1.D0))/NNN/CITM(1)
+!        ZPRIME = CMPLX(Y-YS,X-XS,KIND(1.D0))/NNN/CITM(1)
+        ZPRIME_R = (Y-YS)/NNN/CITM(1)
+        ZPRIME_I = (X-XS)/NNN/CITM(1)
 
-        ZZZ = ZPRIME
+        ZZZ_R = ZPRIME_R
+        ZZZ_I = ZPRIME_I
 
         DO K=1,4
-          ZZZ = ZZZ - CITM(K+1)*SIN(2.D0*REAL(K)*ZPRIME)
+          TWOK = 2.D0*REAL(K)
+!          ZZZ = ZZZ - CITM(K+1)*SIN(2.D0*REAL(K)*ZPRIME)
+          ZZZ_R = ZZZ_R
+     &          - CITM(K+1)*SIN(TWOK*ZPRIME_R)*COSH(TWOK*ZPRIME_I)
+          ZZZ_I = ZZZ_I
+     &          - CITM(K+1)*COS(TWOK*ZPRIME_R)*SINH(TWOK*ZPRIME_I)
         ENDDO
 
-        LATISO  =  REAL(ZZZ)
-        LATISOS = AIMAG(ZZZ)
+!        LATISO  =  REAL(ZZZ)
+        LATISO  = ZZZ_R
+!        LATISOS = AIMAG(ZZZ)
+        LATISOS = ZZZ_I
 !
         LAMBDA = LAMBDAC + ATAN(SINH(LATISOS)/COS(LATISO))
         PHI    =           ASIN(SIN(LATISO)/COSH(LATISOS))
@@ -182,7 +200,7 @@
 !
         I = 1
 !
-        DO WHILE (ABS(PHI-PHIM).GE.EPSI)
+        DO WHILE (ABS(PHI-PHIM).GE.CHOUIA)
           PHIM = PHI
           PHI  = 2.D0*ATAN(EXP(LATISO)*( (1.D0+EEE*SIN(PHIM))
      &                                  /(1.D0-EEE*SIN(PHIM)))**ES2)

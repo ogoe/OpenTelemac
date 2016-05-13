@@ -343,7 +343,7 @@
      &          NPOIN+NELMAX,U,V,W,AK,EP,H)
         END IF
 !
-        CALL DISP_ALGAE(NFLOT_MAX,NFLOT,MESH%DIM,DT,ALGAE_START,
+        CALL DISP_ALGAE(NFLOT_MAX,NFLOT,MESH%DIM1,DT,ALGAE_START,
      &                 U_X_AV_0%R,U_Y_AV_0%R,U_Z_AV_0%R,K_AV_0%R,
      &                 EPS_AV_0%R,H_FLU%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
      &                 U_X_0%R,U_Y_0%R,U_Z_0%R,V_X_0%R,V_Y_0%R,V_Z_0%R,
@@ -451,7 +451,7 @@
      &                 ETAFLO,ISUB,I_A_GL%I,ELTBUF,NDP,NFLOT,NFLOT_MAX,
      &                 MESH,NPLAN,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,K_AV%R,
      &                 EPS_AV%R,H_FLU%R,U_X%R,U_Y%R,U_Z%R,V_X%R,V_Y%R,
-     &                 V_Z%R,NWIN,MESH%DIM,PSI)
+     &                 V_Z%R,NWIN,MESH%DIM1,PSI)
       ENDIF
 !
 !     SENDING THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN
@@ -489,7 +489,7 @@
               CALL DEL_INFO_ALG(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
      &                   MESH%TYPELM,I_A_GL%I,ELTBUF,V_X%R,V_Y%R,V_Z%R,
      &                   U_X%R,U_Y%R,U_Z%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
-     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM,PSI)
+     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM1,PSI)
             ENDIF
 !
             IF(ALGAE) THEN
@@ -534,7 +534,7 @@
               CALL DEL_INFO_ALG(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
      &                   MESH%TYPELM,I_A_GL%I,ELTBUF,V_X%R,V_Y%R,V_Z%R,
      &                   U_X%R,U_Y%R,U_Z%R,U_X_AV%R,U_Y_AV%R,U_Z_AV%R,
-     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM,PSI)
+     &                   K_AV%R,EPS_AV%R,H_FLU%R,NWIN,MESH%DIM1,PSI)
               CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,XFLOT,
      &                    YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,ELTFLO,
      &                    ETAFLO,MESH%TYPELM,DX=DX,DY=DY,DZ=DZ)

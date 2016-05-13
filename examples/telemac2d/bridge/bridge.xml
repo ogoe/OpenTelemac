@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="bridge" rank="2" author="R.ata">
+<validation xref="bridge" rank="2" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="bridge" author="telemac2d" contact="www.opentelemac.org" />
+      <data title="bridge" author="R.Ata" contact="www.opentelemac.org" />
    </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,7 +54,7 @@
       <layer vars="surface libre:line" extract="[0;125][1000;125]" target="1:T2DRES" time="[1]"/>
    </plot1d>
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  --> 
+  -->
    <plot2d xref="Mesh" size="(10;5)" >
       <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>

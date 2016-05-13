@@ -54,10 +54,17 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION   PI,DPI2
-      PARAMETER ( PI = 3.141592653589793D0 , DPI2 = (4.D0*PI*PI) )
       DOUBLE PRECISION   POL, Y ,X
       INTEGER I
-      INTRINSIC SQRT, SINH
+      INTRINSIC SQRT, SINH, ATAN
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      DPI2 = 4.D0 * PI * PI
+!      PARAMETER ( PI = 3.141592653589793D0 , DPI2 = (4.D0*PI*PI) )
+!< SEB @ HRW!
 !
 !  SOLVES Y=X*TH(X) WITH Y=(2*PI/TW)**2*H/G AND X=(2*PI/L)*H
 !  USING A POLYNOMIAL FUNCTION (HUNT METHOD - 9TH ORDER)

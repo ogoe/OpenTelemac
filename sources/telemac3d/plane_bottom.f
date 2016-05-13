@@ -63,8 +63,8 @@
 !
       INTEGER IPOIN2,IPLAN
 !
-      DOUBLE PRECISION EPSILON
-      DATA EPSILON/1.D-4/
+      DOUBLE PRECISION CHOUIA
+      DATA CHOUIA/1.D-4/
 !
 !-----------------------------------------------------------------------
 !
@@ -73,7 +73,7 @@
         DO IPOIN2=1,NPOIN2
           IPBOT(IPOIN2)=0
           DO IPLAN=1,NPLAN-1
-            IF(Z(IPOIN2,IPLAN+1)-Z(IPOIN2,IPLAN).LT.EPSILON) THEN
+            IF(Z(IPOIN2,IPLAN+1)-Z(IPOIN2,IPLAN).LT.CHOUIA) THEN
               IPBOT(IPOIN2)=IPLAN
             ENDIF
           ENDDO

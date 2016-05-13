@@ -28,19 +28,19 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION PI,RADDEG,DEUKD,KD,UI
+      DOUBLE PRECISION PI,DEUKD,KD,UI
       DOUBLE PRECISION ZERO, BID
 !
-      INTRINSIC SQRT, ATAN2, DMOD, ABS, COS, SIN
+      INTRINSIC SQRT, ATAN2, MOD, ABS, COS, SIN
 !
 !-----------------------------------------------------------------------
 !
-!
       PARAMETER (ZERO = 1.D-10)
-      PARAMETER (PI = 3.1415926535897932384626433D0)
-      PARAMETER (RADDEG = 57.29577951D0)
-
-!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER (PI = 3.1415926535897932384626433D0)
+!      PARAMETER (RADDEG = 57.29577951D0)
+!< SEB @ HRW
 !
 !=======================================================================
 ! CASE 1 : USE OF BOTTOM FRICTION COMPUTED FROM THE POTENTIAL

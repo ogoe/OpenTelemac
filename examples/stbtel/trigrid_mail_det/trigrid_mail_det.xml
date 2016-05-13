@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="trigrid_mail_det" rank="2" author="Y.Audouin">
+<validation xref="trigrid_mail_det" rank="2" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="trigrid_mail_det" author="stbtel" contact="www.opentelemac.org" />
+      <data title="trigrid_mail_det" author="Y.Audouin" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
       <look colour="jet.xml" />

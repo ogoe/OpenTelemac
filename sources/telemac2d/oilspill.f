@@ -2585,6 +2585,9 @@
       INTEGER I,TOTAL
       DOUBLE PRECISION MASSE_PART,MASSE_INACT,MASSE_INI,MASSE_EVAP
       DOUBLE PRECISION MASSE_DISS,BILAN_OIL
+!> CG @ EDF: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3
+!< CG @ EDF
 !
       INTEGER P_IMAX
       DOUBLE PRECISION P_DSUM,P_DMAX
@@ -2641,7 +2644,6 @@
 !
       IF(MODULO(LT,FLOPRD).EQ.0.AND.TOTAL.GT.0) THEN
         IF(NCSIZE.GT.1) THEN
-!
 !--------------------------------------------------------------------------
 !----------------------------PARALLEL VERSION------------------------------
 !--------------------------------------------------------------------------
@@ -2652,22 +2654,28 @@
      &                '----------------------------------------'
           WRITE(LU,*) '      BALANCE OF OIL SPILL             ',
      &               '                                        '
-          WRITE(LU,*) '    MASS OF SPILL    ',P_DSUM(MASSE_PART)    ,
-     &                (P_DSUM(MASSE_PART)/P_DSUM(MASSE_INI))*100.D0,'%'
-          WRITE(LU,*) '    INITIAL MASS     ',P_DSUM(MASSE_INI)     ,
-     &                100.D0,'%'
-          WRITE(LU,*) '    STRANDED MASS    ',P_DSUM(MASSE_INACT)   ,
-     &                (P_DSUM(MASSE_INACT)/P_DSUM(MASSE_INI))*100.D0,'%'
-          WRITE(LU,*) '    DISSOLVED MASS   ',P_DSUM(MASSE_DISS)    ,
-     &                (P_DSUM(MASSE_DISS)/P_DSUM(MASSE_INI))*100.D0,'%'
-          WRITE(LU,*) '   EVAPORATED MASS   ',P_DSUM(MASSE_EVAP)    ,
-     &                (P_DSUM(MASSE_EVAP)/P_DSUM(MASSE_INI))*100.D0,'%'
+!> CG @ EDF: ALGORITHMIC DIFFERENTIATION
+          DTMP1 = P_DSUM(MASSE_PART)
+          DTMP2 = P_DSUM(MASSE_INI)
+          WRITE(LU,*) '    MASS OF SPILL    ',DTMP1,
+     &                (DTMP1/DTMP2)*100.D0,'%'
+          WRITE(LU,*) '    INITIAL MASS     ',DTMP2,100.D0,'%'
+          DTMP1 = P_DSUM(MASSE_INACT)
+          WRITE(LU,*) '    STRANDED MASS    ',DTMP1,
+     &                (DTMP1/DTMP2)*100.D0,'%'
+          DTMP1 = P_DSUM(MASSE_DISS)
+          WRITE(LU,*) '    DISSOLVED MASS   ',DTMP1,
+     &                (DTMP1/DTMP2)*100.D0,'%'
+          DTMP1 = P_DSUM(MASSE_EVAP)
+          WRITE(LU,*) '   EVAPORATED MASS   ',DTMP1,
+     &                (DTMP1/DTMP2)*100.D0,'%'
           WRITE(LU,*) '---------------------------------------',
-     &                '----------------------------------------'
-          WRITE(LU,*) '      BALANCE SURFACE SPILL         ',
-     &                 P_DMAX(BILAN_OIL)
+     &                '---------------------------------------'
+          DTMP1 = P_DSUM(MASSE_EVAP)
+          WRITE(LU,*) '      BALANCE SURFACE SPILL         ',DTMP1
           WRITE(LU,*) '---------------------------------------',
-     &                '----------------------------------------'
+     &                '---------------------------------------'
+!< CG @ EDF
         ELSE
 !
 !--------------------------------------------------------------------------

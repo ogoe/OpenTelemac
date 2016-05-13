@@ -56,7 +56,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER K,JMIN,JMAX,ML,J,MU,I
-      DOUBLE PRECISION TMPK,SUM
+      DOUBLE PRECISION TMPK,SOMME
 !
 !-----------------------------------------------------------------------
 !
@@ -84,16 +84,16 @@
 !
       K = N
       DO I=1,N
-        SUM = -TMP(K)
+        SOMME = -TMP(K)
         JMIN = IU(K)
         JMAX = IU(K+1) - 1
         IF (JMIN .GT. JMAX) GO TO 5
         MU = IJU(K) - JMIN
         DO J=JMIN,JMAX
-          SUM = SUM + U(J) * TMP(JU(MU+J))
+          SOMME = SOMME + U(J) * TMP(JU(MU+J))
         ENDDO
-   5    TMP(K) = -SUM
-        Z(C(K)) = -SUM
+   5    TMP(K) = -SOMME
+        Z(C(K)) = -SOMME
         K = K - 1
       ENDDO
 !

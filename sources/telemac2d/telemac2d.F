@@ -270,12 +270,12 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        14/03/2016
 !+        V7P2
-!+   Adding the argument HPROP in the call to Sisyphe. TETAHC removed
+!+   Adding the argument HPROP in the call to SISYPHE. TETAHC removed
 !+   and replaced everywhere by TETAC. HTILD replaced with HPROP in the
-!+   call to cvdftr.
-!+   Call to cosake moved at the beginning.
-!+   Call to friction_choice now without KARMAN.
-!+   Call to kepsil modified.
+!+   call to CVDFTR.
+!+   Call to COSAKE moved at the beginning.
+!+   Call to FRICTION_CHOICE now without KARMAN.
+!+   Call to KEPSIL modified.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        06/05/2016
@@ -405,6 +405,14 @@
 !
 !-----------------------------------------------------------------------
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_BEGIN
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
+!
       IF(PRESENT(NITERORI)) THEN
         TOTAL_ITER = NITERORI
       ELSE
@@ -484,6 +492,14 @@
 !=======================================================================
 !
 ! : 1          READS, PREPARES AND CONTROLS THE DATA
+!
+!=======================================================================
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_INITIALISATION_BEGIN
+#endif
+!< JR @ RWTH
 !
 !=======================================================================
 !
@@ -1166,6 +1182,14 @@
         CALL OS('X=Y     ',X=V_Z_0   ,Y=V_Z)
       ENDIF
 !
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_INITIALISATION_END
+#endif
+!< JR @ RWTH
+!
 !=======================================================================
 ! END OF INITIAL CONDITIONS
 !=======================================================================
@@ -1451,6 +1475,16 @@
       ENDIF
 !
 700   CONTINUE
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_TIMESTEP_BEGIN
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
 !
       IF(PASS.EQ.1) THEN
         IF(CODE(1:7).EQ.'ESTEL3D') THEN
@@ -1899,6 +1933,14 @@
       DO ISOUSI = 1 , NSOUSI
       IF(DEBUG.GT.0) WRITE(LU,*) 'BOUCLE 701 ISOUSI=',ISOUSI
 !
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_SUBITERATION_BEGIN
+#endif
+!< JR @ RWTH
+!
 !=======================================================================
 !
 ! : 4                     ADVECTION
@@ -2184,6 +2226,14 @@
         CALL CHPCON(UCONV,VCONV,U,V,UN,VN,TETAU)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHPCON'
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_SUBITERATION_END
+#endif
+!< JR @ RWTH
 !
 !=======================================================================
 ! END OF THE LOOP OF THE SUB-ITERATIONS
@@ -2700,6 +2750,15 @@
 !
       YAFLULIM=.FALSE.
 !
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_TIMESTEP_END
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
 !
 ! 700: TIME LOOP
 !
@@ -2717,6 +2776,14 @@
 18      FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
 19      FORMAT(/,1X,'END OF TIME LOOP',////)
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_TELEMAC2D_END
+#endif
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

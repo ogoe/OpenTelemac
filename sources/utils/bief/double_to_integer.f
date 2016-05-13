@@ -61,7 +61,7 @@
       XMAX=MAX(ABS(XMIN),ABS(XMAX))
       IMAX=HUGE(IMAX)/NSUM
 !
-      QT=XMAX/IMAX
+      QT=XMAX/DBLE(IMAX)
 !
       IF(QT.EQ.0.D0) THEN
         SURQT=0.D0
@@ -74,7 +74,7 @@
 !-----------------------------------------------------------------------
 !
       DO I=1,N
-        IX(I)=NINT(X(I)*SURQT,KIND=K8)
+        IX(I)=NINT(X(I)*SURQT)
       ENDDO
 !
 !-----------------------------------------------------------------------

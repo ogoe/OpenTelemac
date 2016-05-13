@@ -285,7 +285,7 @@ files: bief_def.f
   p_dot.f
   p_dots.f
   trid3d.f
-  gracjg.f
+  gracjg.F
   equnor.f
   um1x09.f
   um1x04.f
@@ -443,7 +443,7 @@ files: interface_hermes.f
   set_mesh.f
   add_data.f
   update_data_mesh.f
-  lit.f
+  lit.F
   ecri2.f
   open_mesh.f
   open_bnd.f

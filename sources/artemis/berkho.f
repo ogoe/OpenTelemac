@@ -155,23 +155,25 @@
       DOUBLE PRECISION ERREUR1,ERREURT
       DOUBLE PRECISION XMUL,XK,ZERO
       DOUBLE PRECISION TETA(NPTFR)   , ANGDIR(NPTFR)
-
+!
       INTEGER ITERKN
-
-!
 !
 !-----------------------------------------------------------------------
 !
-      PARAMETER( PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0 )
-      PARAMETER( RADDEG = 180.D0 / PI )
-!
-!-----------------------------------------------------------------------
-!
-      INTRINSIC ABS,MIN,MAX,LOG,COS,SIN
+      INTRINSIC ABS,MIN,MAX,LOG,COS,SIN,ATAN
       DOUBLE PRECISION P_DMAX
       EXTERNAL P_DMAX
-
-
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      DEGRAD = PI / 180.D0
+!      PARAMETER( PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0 )
+      RADDEG = 180.D0 / PI
+!      PARAMETER( RADDEG = 180.D0 / PI )
+!< SEB @ HRW
+!
 !--------------------------
 !      LANGAUTO=.FALSE.
 !----------------------------------------------------------------------

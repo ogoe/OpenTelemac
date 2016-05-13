@@ -60,9 +60,15 @@
       COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION PI
-      PARAMETER( PI = 3.1415926535897932384626433D0)
 !
-      INTRINSIC COS,SIN
+      INTRINSIC COS,SIN,ATAN
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER( PI = 3.1415926535897932384626433D0)
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

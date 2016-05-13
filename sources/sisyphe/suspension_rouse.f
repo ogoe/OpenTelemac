@@ -70,7 +70,7 @@
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: I
-      DOUBLE PRECISION :: B,EXP,ROUSE
+      DOUBLE PRECISION :: B,EXP1,ROUSE
 !
       INTRINSIC MAX,MIN,LOG
 !
@@ -97,11 +97,11 @@
 !       RATIO BETWEEN REFERENCE CONC. ON BOTTOM AND MEAN CONC.
 !       ASSUMING EXPONENTIAL PROFILE WITH EXPONENT ROUSE NUMBER --> T2
 !
-        EXP=ROUSE-1.D0
-        IF(ABS(EXP).GT.1.D-4) THEN
+        EXP1=ROUSE-1.D0
+        IF(ABS(EXP1).GT.1.D-4) THEN
 !         ADDED BY JMH 12/07/2007
-          EXP=MIN(EXP,3.D0)
-          T2%R(I)=B*(1.D0-B**EXP)/EXP
+          EXP1=MIN(EXP1,3.D0)
+          T2%R(I)=B*(1.D0-B**EXP1)/EXP1
         ELSE
           T2%R(I)=-B*LOG(B)
         ENDIF

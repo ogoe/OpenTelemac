@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="river-arc" rank="7" author="P.Tassi">
+<validation xref="river-arc" rank="7" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
-      <data title="river-arc" author="Sisyphe" contact="www.opentelemac.org" />
+      <data title="river-arc" author="P.Tassi" contact="www.opentelemac.org" />
    </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -75,7 +75,7 @@
       DOUBLE PRECISION UC,KSP
 !---------------------------------------------------------------------
 !
-      PI=4.D0*DATAN(1.D0)
+      PI=4.D0*ATAN(1.D0)
       ZERO=1.D-6
 !
 !     COEFFICIENTS

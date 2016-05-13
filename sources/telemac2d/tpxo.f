@@ -3,7 +3,7 @@
 !                     ***********
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    Module containing TPXO variables and subroutines
@@ -15,9 +15,9 @@
 !history  G.Egbert of the Oregon State University (OSU)
 !+        13/02/1996
 !+        OTPS v 1.4
-!+  Developments of the Tidal Prediction Software:
-!+     OTPS (Fortran90 code) outside the TELEMAC system.
-!+  ARGUMENTS and ASTROL subroutines supplied by
+!+        Developments of the Tidal Prediction Software:
+!+        OTPS (Fortran90 code) outside the TELEMAC system.
+!+        ARGUMENTS and ASTROL subroutines supplied by
 !+        R.Ray, March 1999, attached to OTIS
 !
 !history  Lana Erofeeva of the Oregon State University (OSU)
@@ -32,9 +32,15 @@
 !+        OTPS based on R.Ray code perth2
 !
 !history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+   06/12/2011
-!+   V6P2
-!+   Integration of OTPS in the TELEMAC system (for both 2D and 3D)
+!+        06/12/2011
+!+        V6P2
+!+        Integration of OTPS in the TELEMAC system (for both 2D and 3D)
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !reference RODNEY'S CONSTITUENT.H, 2/23/96
 !
@@ -292,13 +298,18 @@
 !     INTERPOLATED CONSTITUENTS FOR LIQUID BOUNDARY NODES
 !
       INTEGER, ALLOCATABLE :: TPXO_NFR(:)
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR(:,:,:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR(:,:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: TPXO_BOR_R(:,:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: TPXO_BOR_I(:,:,:)
 !     SAME AS TPXO_BOR FOR SCHEMATIC TIDES
 !     BUT ONLY FOR DIURNAL, SEMIDIUARNAL AND FOURTH-DIURNAL WAVES
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR2(:,:,:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: TPXO_BOR2(:,:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: TPXO_BOR2_R(:,:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: TPXO_BOR2_I(:,:,:)
 !     TO CALIBRATE HIGH WATER FOR SCHEMATIC TIDES
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: BOR2HW(:)
-      DOUBLE PRECISION, ALLOCATABLE    :: ARGHW(:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: BOR2HW(:)
+      DOUBLE PRECISION, ALLOCATABLE :: BOR2HW_R(:), BOR2HW_I(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ARGHW(:)
 !
 !     WHETHER DATA ARE ALREADY READ OR NOT
 !
@@ -375,8 +386,10 @@
 !brief
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  C_ID          |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-!|  IND           |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!|  C_ID          |-->| NAME OF AVAILABLE CONTITUENTS
+!|                |   | AMONGST THE ALL POSSIBLE
+!|  IND           |<--| INDICES OF AVAILABLE CONTITUENTS
+!|                |   | AMONGST THE ALL POSSIBLE
 !|  NC0           |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -458,18 +471,26 @@
                  DOUBLE PRECISION FUNCTION HEIGHT
 !                ********************************
 !
-     &( A,P,NC )
+     &( A_R,A_I,P_R,P_I,NC )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    RETURNS HEIGHT FROM MODEL ARRAY OF COMPLEX CONSTITUENTS
 !
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  A             |-->| ARRAY OF COMPLEX CONSTITUENTS
-!|  C             |-->| ARRAY OF COMPLEX CONSTITUENTS
+!|  A_I           |-->| ARRAY OF IMAGINARY PARTS COMPLEX CONSTITUENTS
+!|  A_R           |-->| ARRAY OF REAL PARTS OF COMPLEX CONSTITUENTS
 !|  NC            |-->| SIZE OF THE ARRAYS
+!|  P_I           |-->| ARRAY OF IMAGINARY PARTS COMPLEX CONSTITUENTS
+!|  P_R           |-->| ARRAY OF REAL PARTS OF COMPLEX CONSTITUENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -477,7 +498,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NC
-      COMPLEX(KIND(1.D0)), INTENT(IN) :: A(NC),P(NC)
+!      COMPLEX(KIND(1.D0)), INTENT(IN) :: A(NC),P(NC)
+      DOUBLE PRECISION, INTENT(IN) :: A_R(NC),A_I(NC),P_R(NC),P_I(NC)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -490,8 +512,8 @@
       IF( NC.NE.0 ) THEN
 !     HEIGHT(I)=SUM_OF_REAL(A(I)*P(I))
         DO I = 1,NC
-          HEIGHT = HEIGHT
-     &           + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
+          HEIGHT = HEIGHT + P_R(I)*A_R(I) - P_I(I)*A_I(I)
+!     &           + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
         ENDDO
       ENDIF
 !
@@ -504,14 +526,22 @@
                      SUBROUTINE INTERPT
 !                    ******************
 !
-     &( UV,NT,N,M,MZ,TH_LIM,PH_LIM,XLAT,XLON,UV1,IERR,ZUV )
+     &( UV_R,UV_I,NT,N,M,MZ,TH_LIM,PH_LIM,XLAT,XLON,
+     &  UV1_R,UV1_I,IERR,ZUV )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
-!brief    INTERPOLATES COMPLEX ARRAY UV(NT,N,M) AT POINT XLAT,XLON
+!brief    INTERPOLATES OLD COMPLEX ARRAY UV(NT,N,M) AT POINT XLAT,XLON
 !+        TH_LIM AND PH_LIM GIVE LATITUDE AND LONGITUDE LIMITS OF GRID
+!+        OLD COMPLEX ARRAY HAS BECOME 2 REAL ARRAYS SINCE V7P2
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  IERR          |<--| ERROR INDEX
@@ -521,8 +551,12 @@
 !|  NT            |-->| NUMBER OF CONSTITUENTS TURNED ON (NCON)
 !|  PH_LIM        |-->| LONGITUDE LIMITS OF GRID
 !|  TH_LIM        |-->| LATITUDE LIMITS OF GRID
-!|  UV            |-->| COMPLEX ARRAY TO BE INTERPOLATED AT POINT XLAT,XLON
-!|  UV1           |<--| INTERPOLATION OF UV AT POINT XLAT,XLON
+!|  UV_I          |-->| ARRAY OF IMAGINARY PART OF COMPLEX ARRAY
+!|                |   | TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV_R          |-->| ARRAY OF REAL PART OF COMPLEX ARRAY
+!|                |   | TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV1_I         |<--| INTERPOLATION OF UV_I AT POINT XLAT,XLON
+!|  UV1_R         |<--| INTERPOLATION OF UV_R AT POINT XLAT,XLON
 !|  XLAT          |-->| LATITUDE OF THE POINT WHERE INTERPOLATED
 !|  XLON          |-->| LONGITUDE OF THE POINT WHERE INTERPOLATED
 !|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
@@ -538,8 +572,10 @@
       CHARACTER(LEN=1), INTENT(IN) :: ZUV
       DOUBLE PRECISION, INTENT(IN) :: TH_LIM(2),PH_LIM(2)
       DOUBLE PRECISION, INTENT(IN) :: XLON,XLAT
-      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
-      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT)
+!      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
+      REAL, INTENT(IN) :: UV_R(NT,N,M),UV_I(NT,N,M)
+!      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT)
+      DOUBLE PRECISION, INTENT(OUT) :: UV1_R(NT),UV1_I(NT)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -577,15 +613,25 @@
       IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
         IERR = -2
         DO K = 1,NT
-          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+          UV1_R(K) = 0.D0
+          UV1_I(K) = 0.D0
         ENDDO
       ELSE
         IERR = 0
         DO K = 1,NT
-          UV1(K) = UV(K,IW(0),JW(0))*WW(0,0) +
-     &             UV(K,IW(1),JW(0))*WW(1,0) +
-     &             UV(K,IW(0),JW(1))*WW(0,1) +
-     &             UV(K,IW(1),JW(1))*WW(1,1)
+!          UV1(K) = UV(K,IW(0),JW(0))*WW(0,0) +
+!     &             UV(K,IW(1),JW(0))*WW(1,0) +
+!     &             UV(K,IW(0),JW(1))*WW(0,1) +
+!     &             UV(K,IW(1),JW(1))*WW(1,1)
+          UV1_R(K) = UV_R(K,IW(0),JW(0))*WW(0,0)
+     &             + UV_R(K,IW(1),JW(0))*WW(1,0)
+     &             + UV_R(K,IW(0),JW(1))*WW(0,1)
+     &             + UV_R(K,IW(1),JW(1))*WW(1,1)
+          UV1_I(K) = UV_I(K,IW(0),JW(0))*WW(0,0)
+     &             + UV_I(K,IW(1),JW(0))*WW(1,0)
+     &             + UV_I(K,IW(0),JW(1))*WW(0,1)
+     &             + UV_I(K,IW(1),JW(1))*WW(1,1)
         ENDDO
       ENDIF
 !
@@ -598,16 +644,24 @@
                      SUBROUTINE INTERPT_SCHEM
 !                    ************************
 !
-     &( UV,NT,NT2,INDW,N,M,MZ,TH_LIM,PH_LIM,XLAT,XLON,UV1,IERR,ZUV )
+     &( UV_R,UV_I,NT,NT2,INDW,N,M,MZ,TH_LIM,PH_LIM,XLAT,XLON,
+     &  UV1_R,UV1_I,IERR,ZUV )
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                   19/03/2015
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
-!brief    INTERPOLATES COMPLEX ARRAY UV(NT,N,M) AT POINT XLAT,XLON
+!brief    INTERPOLATES OLD COMPLEX ARRAY UV(NT,N,M) AT POINT XLAT,XLON
 !+        TH_LIM AND PH_LIM GIVE LATITUDE AND LONGITUDE LIMITS OF GRID
 !+        FOR SCHEMATIC TIDES
 !+        INDW + NT2: ONLY A PART OF THE AVAILABLE CONSTITUENTS IS USED
+!+        OLD COMPLEX ARRAY HAS BECOME 2 REAL ARRAYS SINCE V7P2
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  IERR          |<--| ERROR INDEX
@@ -620,8 +674,12 @@
 !|                |   | FOR SCHEMATIC TIDES
 !|  PH_LIM        |-->| LONGITUDE LIMITS OF GRID
 !|  TH_LIM        |-->| LATITUDE LIMITS OF GRID
-!|  UV            |-->| COMPLEX ARRAY TO BE INTERPOLATED AT POINT XLAT,XLON
-!|  UV1           |<--| INTERPOLATION OF UV AT POINT XLAT,XLON
+!|  UV_I          |-->| ARRAY OF IMAGINARY PART OF COMPLEX ARRAY
+!|                |   | TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV_R          |-->| ARRAY OF REAL PART OF COMPLEX ARRAY
+!|                |   | TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV1_I         |<--| INTERPOLATION OF UV_I AT POINT XLAT,XLON
+!|  UV1_R         |<--| INTERPOLATION OF UV_R AT POINT XLAT,XLON
 !|  XLAT          |-->| LATITUDE OF THE POINT WHERE INTERPOLATED
 !|  XLON          |-->| LONGITUDE OF THE POINT WHERE INTERPOLATED
 !|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
@@ -638,8 +696,10 @@
       CHARACTER(LEN=1), INTENT(IN) :: ZUV
       DOUBLE PRECISION, INTENT(IN) :: TH_LIM(2),PH_LIM(2)
       DOUBLE PRECISION, INTENT(IN) :: XLON,XLAT
-      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
-      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT2)
+!      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
+      REAL, INTENT(IN) :: UV_R(NT,N,M),UV_I(NT,N,M)
+!      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT2)
+      DOUBLE PRECISION, INTENT(OUT) :: UV1_R(NT2),UV1_I(NT2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -677,15 +737,25 @@
       IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
         IERR = -2
         DO K = 1,NT2
-          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!          UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+          UV1_R(K) = 0.D0
+          UV1_I(K) = 0.D0
         ENDDO
       ELSE
         IERR = 0
         DO K = 1,NT2
-          UV1(K) = UV(INDW(K),IW(0),JW(0))*WW(0,0) +
-     &             UV(INDW(K),IW(1),JW(0))*WW(1,0) +
-     &             UV(INDW(K),IW(0),JW(1))*WW(0,1) +
-     &             UV(INDW(K),IW(1),JW(1))*WW(1,1)
+!          UV1(K) = UV(INDW(K),IW(0),JW(0))*WW(0,0) +
+!     &             UV(INDW(K),IW(1),JW(0))*WW(1,0) +
+!     &             UV(INDW(K),IW(0),JW(1))*WW(0,1) +
+!     &             UV(INDW(K),IW(1),JW(1))*WW(1,1)
+          UV1_R(K) = UV_R(INDW(K),IW(0),JW(0))*WW(0,0)
+     &             + UV_R(INDW(K),IW(1),JW(0))*WW(1,0)
+     &             + UV_R(INDW(K),IW(0),JW(1))*WW(0,1)
+     &             + UV_R(INDW(K),IW(1),JW(1))*WW(1,1)
+          UV1_I(K) = UV_I(INDW(K),IW(0),JW(0))*WW(0,0)
+     &             + UV_I(INDW(K),IW(1),JW(0))*WW(1,0)
+     &             + UV_I(INDW(K),IW(0),JW(1))*WW(0,1)
+     &             + UV_I(INDW(K),IW(1),JW(1))*WW(1,1)
         ENDDO
       ENDIF
 !
@@ -861,13 +931,19 @@
               DOUBLE PRECISION FUNCTION PTIDE
 !             *******************************
 !
-     &( Z1,CID,NCON,IND,LAT,TIME_MJD,INTERP ) !,NTIME=1
+     &( Z1_R,Z1_I,CID,NCON,IND,LAT,TIME_MJD,INTERP ) !,NTIME=1
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  CID           |-->| GIVEN CONSTITUENTS
@@ -876,7 +952,8 @@
 !|  LAT           |-->| LATITUDE (DUMMY ARGUMENT)
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME_MJD      |-->| MODIFIED JULIAN DAY
-!|  Z1            |-->| FIELD TO INTERPOLATE
+!|  Z1_I          |-->| FIELD TO INTERPOLATE
+!|  Z1_R          |-->| FIELD TO INTERPOLATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -891,7 +968,8 @@
       CHARACTER(LEN=4), INTENT(IN) :: CID(NCON)
       DOUBLE PRECISION, INTENT(IN) :: LAT !,ZPRED(NTIME)
       DOUBLE PRECISION, INTENT(IN) :: TIME_MJD !(NTIME)
-      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
+!      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: Z1_R(NCON),Z1_I(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -902,12 +980,14 @@
       DOUBLE PRECISION PU(TPXO_NCMX),PF(TPXO_NCMX),DLAT
 ! NODAL ARGUMENTS SHOUD BE REAL*8
 !
-      COMPLEX(KIND(1.D0)), ALLOCATABLE:: A(:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: A(:)
+      DOUBLE PRECISION, ALLOCATABLE :: A_R(:),A_I(:)
 !
 !-----------------------------------------------------------------------
 !
       IF( INTERP ) CALL MKW( INTERP,IND,NCON,WW )
-      ALLOCATE( A(NCON) )
+!      ALLOCATE( A(NCON) )
+      ALLOCATE( A_R(NCON), A_I(NCON) )
 ! DLAT AND LAT AR NOT USED IN NODAL
       DLAT = LAT
       IERR = 0
@@ -920,10 +1000,10 @@
 !     IN SECONDS, RELATIVE TO JAN 1 1992 (48622MJD)
       TIME = (TIME_MJD-48622.D0)*SECONDSPERDAY
 !     .TRUE. MEANS NO SOLID EARTH CORRECTION APPLIED IN MAKE_A
-      CALL MAKE_A(.FALSE.,IND,NCON,TIME,PU,PF,WW,A,.TRUE.)
-      PTIDE = HEIGHT(A,Z1,NCON)
+      CALL MAKE_A(.FALSE.,IND,NCON,TIME,PU,PF,WW,A_R,A_I,.TRUE.)
+      PTIDE = HEIGHT(A_R,A_I,Z1_R,Z1_I,NCON)
       IF( INTERP )
-     &  CALL INFER_MINOR( Z1,CID,NCON,TIME_MJD,DH,IERR )
+     &  CALL INFER_MINOR( Z1_R,Z1_I,CID,NCON,TIME_MJD,DH,IERR )
       IF( IERR.EQ.-1 ) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'PAS ASSEZ DE COMPOSANTES' //
      &    ' POUR EN DEDUIRE LES COMPOSANTES MINEURES : IGNORE'
@@ -936,7 +1016,8 @@
 !
       !ENDDO
 !
-      DEALLOCATE(A)
+!      DEALLOCATE(A)
+      DEALLOCATE(A_R,A_I)
 !
 !-----------------------------------------------------------------------
 !
@@ -947,13 +1028,19 @@
               DOUBLE PRECISION FUNCTION PTIDE_SCHEM
 !             *************************************
 !
-     &( Z1,CID,NCON,IND,TIME )
+     &( Z1_R,Z1_I,CID,NCON,IND,TIME )
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                   19/03/2015
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  CID           |-->| GIVEN CONSTITUENTS
@@ -961,7 +1048,8 @@
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME          |-->| TIME IN SECONDS!
 !|                |   | WARNING DIFFERENT FROM REAL TIDES
-!|  Z1            |-->| FIELD TO INTERPOLATE
+!|  Z1_I          |-->| FIELD TO INTERPOLATE
+!|  Z1_R          |-->| FIELD TO INTERPOLATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -972,20 +1060,24 @@
       INTEGER, INTENT(IN) :: IND(NCON)
       CHARACTER(LEN=4), INTENT(IN) :: CID(NCON)
       DOUBLE PRECISION, INTENT(IN) :: TIME
-      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
+!      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: Z1_R(NCON),Z1_I(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      COMPLEX(KIND(1.D0)), ALLOCATABLE:: A(:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: A(:)
+      DOUBLE PRECISION, ALLOCATABLE :: A_R(:),A_I(:)
 !
 !-----------------------------------------------------------------------
 !
-      ALLOCATE( A(NCON) )
+!      ALLOCATE( A(NCON) )
+      ALLOCATE( A_R(NCON), A_I(NCON) )
 !
-      CALL MAKE_A_SCHEM(IND,NCON,CID,TIME,A)
-      PTIDE_SCHEM = HEIGHT(A,Z1,NCON)
+      CALL MAKE_A_SCHEM(IND,NCON,CID,TIME,A_R,A_I)
+      PTIDE_SCHEM = HEIGHT(A_R,A_I,Z1_R,Z1_I,NCON)
 !
-      DEALLOCATE(A)
+!      DEALLOCATE(A)
+      DEALLOCATE(A_R,A_I)
 !
 !-----------------------------------------------------------------------
 !
@@ -996,10 +1088,11 @@
               DOUBLE PRECISION FUNCTION TPXO_PTIDE
 !             ************************************
 !
-     &( IV,KFR,TPXO_NFR,TPXO_BOR,C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
+     &( IV,KFR,TPXO_NFR,TPXO_BOR_R,TPXO_BOR_I,C_ID,NCON,
+     &  CCIND,LAT,TIME_MJD,INTERP )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    Prescribes the free surface elevation, u or v-component
@@ -1012,6 +1105,12 @@
 !+        Implementation for interfacing with TELEMAC-2D AND 3D
 !+        from old HRW functions SL_TPXO, VITU_TPXO, VITV_TPXO
 !
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  C_ID          |-->| NAME OF GIVEN CONSTITUENTS
 !|  CCIND         |-->| INDICES OF GIVEN CONTITUENTS
@@ -1022,7 +1121,8 @@
 !|  LAT           |-->| LATITUDE (DUMMY ARGUMENT)
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME_MJD      |-->| MODIFIED JULIAN DAY
-!|  TPXO_BOR      |-->| ARRAY OF HARMONIC CONSTITUENTS
+!|  TPXO_BOR_I    |-->| ARRAY OF HARMONIC CONSTITUENTS (IMAGINARY PART)
+!|  TPXO_BOR_R    |-->| ARRAY OF HARMONIC CONSTITUENTS (REAL PART)
 !|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1036,13 +1136,16 @@
       LOGICAL, INTENT(INOUT) :: INTERP
       CHARACTER(LEN=4), INTENT(IN) :: C_ID(NCON)
       DOUBLE PRECISION, INTENT(IN) :: LAT,TIME_MJD
-      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+!      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+      DOUBLE PRECISION, INTENT(IN) :: TPXO_BOR_R(:,:,:)
+      DOUBLE PRECISION, INTENT(IN) :: TPXO_BOR_I(:,:,:)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TPXO_PTIDE = 0.D0
       IF( TPXO_NFR(KFR).NE.0 ) THEN
-        TPXO_PTIDE = PTIDE( TPXO_BOR(IV,TPXO_NFR(KFR),:),
+        TPXO_PTIDE = PTIDE( TPXO_BOR_R(IV,TPXO_NFR(KFR),:),
+     &                      TPXO_BOR_I(IV,TPXO_NFR(KFR),:),
      &                      C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
       ENDIF
 !
@@ -1055,10 +1158,10 @@
               DOUBLE PRECISION FUNCTION TPXO_PTIDE_SCHEM
 !             ******************************************
 !
-     &( IV,KFR,TPXO_NFR,TPXO_BOR,C_ID,NCON,CCIND,TIME )
+     &( IV,KFR,TPXO_NFR,TPXO_BOR_R,TPXO_BOR_I,C_ID,NCON,CCIND,TIME )
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                   19/03/2015
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    Prescribes the free surface elevation, u or v-component
@@ -1071,6 +1174,12 @@
 !+        V7P1
 !+        For schematic tides
 !
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  C_ID          |-->| NAME OF GIVEN CONSTITUENTS
 !|  CCIND         |-->| INDICES OF GIVEN CONTITUENTS
@@ -1080,7 +1189,8 @@
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME          |-->| TIME IN SECONDS!
 !|                |   | WARNING DIFFERENT FROM REAL TIDES
-!|  TPXO_BOR      |-->| ARRAY OF HARMONIC CONSTITUENTS
+!|  TPXO_BOR_I    |-->| ARRAY OF HARMONIC CONSTITUENTS (IMAGINARY PART)
+!|  TPXO_BOR_R    |-->| ARRAY OF HARMONIC CONSTITUENTS (REAL PART)
 !|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1093,13 +1203,16 @@
       INTEGER, INTENT(IN) :: TPXO_NFR(:)
       CHARACTER(LEN=4), INTENT(IN) :: C_ID(NCON)
       DOUBLE PRECISION, INTENT(IN) :: TIME
-      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+!      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+      DOUBLE PRECISION, INTENT(IN) :: TPXO_BOR_R(:,:,:)
+      DOUBLE PRECISION, INTENT(IN) :: TPXO_BOR_I(:,:,:)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TPXO_PTIDE_SCHEM = 0.D0
       IF( TPXO_NFR(KFR).NE.0 ) THEN
-        TPXO_PTIDE_SCHEM = PTIDE_SCHEM( TPXO_BOR(IV,TPXO_NFR(KFR),:),
+        TPXO_PTIDE_SCHEM = PTIDE_SCHEM( TPXO_BOR_R(IV,TPXO_NFR(KFR),:),
+     &                                  TPXO_BOR_I(IV,TPXO_NFR(KFR),:),
      &                                  C_ID,NCON,CCIND,TIME )
       ENDIF
 !
@@ -1531,16 +1644,23 @@
                      SUBROUTINE MAKE_A
 !                    *****************
 !
-     &( INTERP,IND,NC,TIME,PU,PF,W,A,L_SAL )
+     &( INTERP,IND,NC,TIME,PU,PF,W,A_R,A_I,L_SAL )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    COMPUTES A MATRIX ELEMENTS FOR ONE DATA POINT
 !
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  A             |<--| MATRIX
+!|  A_I           |<--| MATRIX
+!|  A_R           |<--| MATRIX
 !|  IND           |-->| INDICES OF GIVEN CONTITUENTS
 !|  INTERP        |-->| LOGICAL (FORCED TO .FALSE.)
 !|  L_SAL         |-->| LOGICAL (.TRUE. = NO SOLID EARTH CORRECTION)
@@ -1562,13 +1682,15 @@
       DOUBLE PRECISION, INTENT(IN) :: W(TPXO_NCON,8)
       DOUBLE PRECISION, INTENT(IN) :: PU(*),PF(*)
       DOUBLE PRECISION, INTENT(IN) :: TIME
-      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
+!      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
+      DOUBLE PRECISION, INTENT(OUT) :: A_R(NC),A_I(NC)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,J
       DOUBLE PRECISION OMEGA(TPXO_NCMX),PHASE(TPXO_NCMX)
-      COMPLEX(KIND(1.D0)) C(TPXO_NCMX)
+!      COMPLEX(KIND(1.D0)) C(TPXO_NCMX)
+      DOUBLE PRECISION C_R(TPXO_NCMX),C_I(TPXO_NCMX)
 !
 !-----------------------------------------------------------------------
 !
@@ -1585,20 +1707,29 @@
         DO J = 1,NC
           I = IND(J)
           IF( I.NE.0 ) THEN
-            C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                    PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                    KIND(1.D0))
+!            C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+!     &                    PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+!     &                    KIND(1.D0))
+            C_R(J) = PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I))
+            C_I(J) = PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I))
           ENDIF
         ENDDO
 !       REMOVE SOLID EARTH TIDE
         IF( .NOT.L_SAL ) THEN
           DO J = 1,NC
-            A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
-            IF( IND(J).NE.0 ) A(J) = C(J)*TPXO_BETA_SE(IND(J))
+!            A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            A_R(J) = 0.D0
+            A_I(J) = 0.D0
+            IF( IND(J).NE.0 ) THEN
+              A_R(J) = C_R(J)*TPXO_BETA_SE(IND(J))
+              A_I(J) = C_I(J)*TPXO_BETA_SE(IND(J))
+            ENDIF
           ENDDO
         ELSE
           DO J = 1,NC
-            A(J) = C(J)
+!            A(J) = C(J)
+            A_R(J) = C_R(J)
+            A_I(J) = C_I(J)
           ENDDO
         ENDIF
 !
@@ -1611,20 +1742,27 @@
         ENDDO
 !
         DO I=1,TPXO_NCON
-          C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                  KIND(1.D0))
+!          C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+!     &                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+!     &                  KIND(1.D0))
+          C_R(I) = PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I))
+          C_I(I) = PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I))
         ENDDO
 !
         DO J = 1,NC
-          A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!          A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
+          A_R(J) = 0.D0
+          A_I(J) = 0.D0
         ENDDO
 !
 !       IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
         DO I = 1,TPXO_NCON
           DO J = 1,NC
-            IF( IND(J).NE.0 ) A(J) =
-     &         A(J)+C(I)*TPXO_BETA_SE(I)*W(I,IND(J))
+            IF( IND(J).NE.0 ) THEN
+!              A(J) = A(J)+C(I)*TPXO_BETA_SE(I)*W(I,IND(J))
+              A_R(J) = A_R(J)+C_R(I)*TPXO_BETA_SE(I)*W(I,IND(J))
+              A_I(J) = A_I(J)+C_I(I)*TPXO_BETA_SE(I)*W(I,IND(J))
+            ENDIF
           ENDDO
         ENDDO
 !
@@ -1641,17 +1779,24 @@
                      SUBROUTINE MAKE_A_SCHEM
 !                    ***********************
 !
-     &( IND,NC,CID,TIME,A )
+     &( IND,NC,CID,TIME,A_R,A_I )
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                   19/03/2015
+! TELEMAC2D   V7P2                                    26/01/2016
 !***********************************************************************
 !
 !brief    COMPUTES A MATRIX ELEMENTS FOR ONE DATA POINT
 !+        FOR SCHEMATIC TIDES
 !
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  A             |<--| MATRIX
+!|  A_I           |<--| MATRIX
+!|  A_R           |<--| MATRIX
 !|  CID           |-->| GIVEN CONSTITUENTS
 !|  IND           |-->| INDICES OF GIVEN CONTITUENTS
 !|  NC            |-->| NUMBER OF CONSTITUENTS TURNED ON
@@ -1666,7 +1811,8 @@
       INTEGER, INTENT(IN)  :: IND(NC)
       CHARACTER(LEN=4), INTENT(IN) :: CID(NC)
       DOUBLE PRECISION, INTENT(IN) :: TIME
-      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
+!      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
+      DOUBLE PRECISION, INTENT(OUT) :: A_R(NC),A_I(NC)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1679,20 +1825,26 @@
         I = IND(J)
         IF( I.NE.0 .AND. CID(J)(2:2).EQ.'2' ) THEN
 !         I =  1 => M2
-          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*TIME),
-     &                  SIN(TPXO_OMEGA_D(1)*TIME),
-     &                  KIND(1.D0))
+!          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*TIME),
+!     &                  SIN(TPXO_OMEGA_D(1)*TIME),
+!     &                  KIND(1.D0))
+          A_R(J) = COS(TPXO_OMEGA_D(1)*TIME)
+          A_I(J) = SIN(TPXO_OMEGA_D(1)*TIME)
         ELSEIF( I.NE.0 .AND.
      &          ( CID(J)(2:2).EQ.'4' .OR. CID(J)(3:3).EQ.'4' ) ) THEN
 !         I = 21 => M4
-          A(J) = CMPLX( COS(TPXO_OMEGA_D(21)*TIME),
-     &                  SIN(TPXO_OMEGA_D(21)*TIME),
-     &                  KIND(1.D0))
+!          A(J) = CMPLX( COS(TPXO_OMEGA_D(21)*TIME),
+!     &                  SIN(TPXO_OMEGA_D(21)*TIME),
+!     &                  KIND(1.D0))
+          A_R(J) = COS(TPXO_OMEGA_D(21)*TIME)
+          A_I(J) = SIN(TPXO_OMEGA_D(21)*TIME)
         ELSEIF( I.NE.0 .AND. CID(J)(2:2).EQ.'1' ) THEN
 !         I = 1 => M2 OVER 2 FOR DIURNAL WAVES (TIMES 2 FOR THE PERIODS)
-          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*0.5D0*TIME),
-     &                  SIN(TPXO_OMEGA_D(1)*0.5D0*TIME),
-     &                  KIND(1.D0))
+!          A(J) = CMPLX( COS(TPXO_OMEGA_D(1)*0.5D0*TIME),
+!     &                  SIN(TPXO_OMEGA_D(1)*0.5D0*TIME),
+!     &                  KIND(1.D0))
+          A_R(J) = COS(TPXO_OMEGA_D(1)*0.5D0*TIME)
+          A_I(J) = SIN(TPXO_OMEGA_D(1)*0.5D0*TIME)
         ENDIF
       ENDDO
 !
@@ -1705,15 +1857,21 @@
                      SUBROUTINE INFER_MINOR
 !                    **********************
 !
-     &( ZMAJ,CID,NCON,TIME,DH,IERR )
+     &( ZMAJ_R,ZMAJ_I,CID,NCON,TIME,DH,IERR )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    RETURNS CORRECTION FOR THE 16 MINOR CONSTITUENTS
 !+        LISTED IN SUBROUTINE
 !+        BASED ON PERTH2 (RICHARD RAY'S PROGRAM)
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  CID           |-->| GIVEN CONSTITUENTS
@@ -1721,7 +1879,8 @@
 !|  IERR          |<--| =-1 IF NOT ENOUGH CONSTITUENTS FOR INFERENCE
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME          |-->| TIME, MODIFIED JULIAN DAY
-!|  ZMAJ          |-->| HC FOR GIVEN CONSTITUENTS
+!|  ZMAJ_I        |-->| HC FOR GIVEN CONSTITUENTS
+!|  ZMAJ_R        |-->| HC FOR GIVEN CONSTITUENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -1733,7 +1892,8 @@
       CHARACTER(LEN=4), INTENT(IN)  :: CID(NCON)
       DOUBLE PRECISION, INTENT(IN)  :: TIME
       DOUBLE PRECISION, INTENT(INOUT) :: DH
-      COMPLEX(KIND(1.D0)), INTENT(IN)  :: ZMAJ(NCON)
+!      COMPLEX(KIND(1.D0)), INTENT(IN)  :: ZMAJ(NCON)
+      DOUBLE PRECISION, INTENT(IN)  :: ZMAJ_R(NCON),ZMAJ_I(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1743,9 +1903,11 @@
       DOUBLE PRECISION U(18),F(18),ARG(18)
       DOUBLE PRECISION DTR,RTD
 !     PP VALUE SLIGHTLY DIFFERENT FROM IN ARGUMENTS (=282.94.D0)
-      DOUBLE PRECISION, PARAMETER:: PP=282.8D0
-      COMPLEX(KIND(1.D0)) ZMIN(18)
-      COMPLEX(KIND(1.D0)) Z8(8)
+      DOUBLE PRECISION, PARAMETER :: PP = 282.8D0
+!      COMPLEX(KIND(1.D0)) ZMIN(18)
+      DOUBLE PRECISION ZMIN_R(18),ZMIN_I(18)
+!      COMPLEX(KIND(1.D0)) Z8(8)
+      DOUBLE PRECISION Z8_R(8),Z8_I(8)
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
 !
@@ -1764,12 +1926,15 @@
 !
 !     RE-ORDER TO CORRESPOND TO CID8
       IERR = 0
-      Z8 = CMPLX(0.D0,0.D0,KIND(1.D0))
+!      Z8 = CMPLX(0.D0,0.D0,KIND(1.D0))
       NI = 0
       DO I = 1,8
+        Z8_R(I) = 0.D0
+        Z8_I(I) = 0.D0
         DO J = 1,NCON
           IF( CID(J).EQ.CID8(I) ) THEN
-            Z8(I)=ZMAJ(J)
+            Z8_R(I)=ZMAJ_R(J)
+            Z8_I(I)=ZMAJ_I(J)
             IF( I.NE.3.AND.I.NE.8 ) NI = NI+1
           ENDIF
         ENDDO
@@ -1780,24 +1945,43 @@
         RETURN
       ENDIF
 !
-      ZMIN(1)  = 0.263D0 *Z8(1) - 0.0252D0*Z8(2)  ! 2Q1
-      ZMIN(2)  = 0.297D0 *Z8(1) - 0.0264D0*Z8(2)  ! sigma1
-      ZMIN(3)  = 0.164D0 *Z8(1) + 0.0048D0*Z8(2)  ! rho1 +
-      ZMIN(4)  = 0.0140D0*Z8(2) + 0.0101D0*Z8(4)  ! M1
-      ZMIN(5)  = 0.0389D0*Z8(2) + 0.0282D0*Z8(4)  ! M1
-      ZMIN(6)  = 0.0064D0*Z8(2) + 0.0060D0*Z8(4)  ! chi1
-      ZMIN(7)  = 0.0030D0*Z8(2) + 0.0171D0*Z8(4)  ! pi1
-      ZMIN(8)  =-0.0015D0*Z8(2) + 0.0152D0*Z8(4)  ! phi1
-      ZMIN(9)  =-0.0065D0*Z8(2) + 0.0155D0*Z8(4)  ! theta1
-      ZMIN(10) =-0.0389D0*Z8(2) + 0.0836D0*Z8(4)  ! J1 +
-      ZMIN(11) =-0.0431D0*Z8(2) + 0.0613D0*Z8(4)  ! OO1 +
-      ZMIN(12) = 0.264D0 *Z8(5) - 0.0253D0*Z8(6)  ! 2N2 +
-      ZMIN(13) = 0.298D0 *Z8(5) - 0.0264D0*Z8(6)  ! mu2 +
-      ZMIN(14) = 0.165D0 *Z8(5) + 0.00487D0*Z8(6) ! nu2 +
-      ZMIN(15) = 0.0040D0*Z8(6) + 0.0074D0*Z8(7)  ! lambda2
-      ZMIN(16) = 0.0131D0*Z8(6) + 0.0326D0*Z8(7)  ! L2 +
-      ZMIN(17) = 0.0033D0*Z8(6) + 0.0082D0*Z8(7)  ! L2 +
-      ZMIN(18) = 0.0585D0*Z8(7)                   ! t2 +
+      ZMIN_R(1)  = 0.263D0 *Z8_R(1) - 0.0252D0*Z8_R(2)  ! 2Q1
+      ZMIN_R(2)  = 0.297D0 *Z8_R(1) - 0.0264D0*Z8_R(2)  ! sigma1
+      ZMIN_R(3)  = 0.164D0 *Z8_R(1) + 0.0048D0*Z8_R(2)  ! rho1 +
+      ZMIN_R(4)  = 0.0140D0*Z8_R(2) + 0.0101D0*Z8_R(4)  ! M1
+      ZMIN_R(5)  = 0.0389D0*Z8_R(2) + 0.0282D0*Z8_R(4)  ! M1
+      ZMIN_R(6)  = 0.0064D0*Z8_R(2) + 0.0060D0*Z8_R(4)  ! chi1
+      ZMIN_R(7)  = 0.0030D0*Z8_R(2) + 0.0171D0*Z8_R(4)  ! pi1
+      ZMIN_R(8)  =-0.0015D0*Z8_R(2) + 0.0152D0*Z8_R(4)  ! phi1
+      ZMIN_R(9)  =-0.0065D0*Z8_R(2) + 0.0155D0*Z8_R(4)  ! theta1
+      ZMIN_R(10) =-0.0389D0*Z8_R(2) + 0.0836D0*Z8_R(4)  ! J1 +
+      ZMIN_R(11) =-0.0431D0*Z8_R(2) + 0.0613D0*Z8_R(4)  ! OO1 +
+      ZMIN_R(12) = 0.264D0 *Z8_R(5) - 0.0253D0*Z8_R(6)  ! 2N2 +
+      ZMIN_R(13) = 0.298D0 *Z8_R(5) - 0.0264D0*Z8_R(6)  ! mu2 +
+      ZMIN_R(14) = 0.165D0 *Z8_R(5) + 0.00487D0*Z8_R(6) ! nu2 +
+      ZMIN_R(15) = 0.0040D0*Z8_R(6) + 0.0074D0*Z8_R(7)  ! lambda2
+      ZMIN_R(16) = 0.0131D0*Z8_R(6) + 0.0326D0*Z8_R(7)  ! L2 +
+      ZMIN_R(17) = 0.0033D0*Z8_R(6) + 0.0082D0*Z8_R(7)  ! L2 +
+      ZMIN_R(18) = 0.0585D0*Z8_R(7)                   ! t2 +
+!
+      ZMIN_I(1)  = 0.263D0 *Z8_I(1) - 0.0252D0*Z8_I(2)  ! 2Q1
+      ZMIN_I(2)  = 0.297D0 *Z8_I(1) - 0.0264D0*Z8_I(2)  ! sigma1
+      ZMIN_I(3)  = 0.164D0 *Z8_I(1) + 0.0048D0*Z8_I(2)  ! rho1 +
+      ZMIN_I(4)  = 0.0140D0*Z8_I(2) + 0.0101D0*Z8_I(4)  ! M1
+      ZMIN_I(5)  = 0.0389D0*Z8_I(2) + 0.0282D0*Z8_I(4)  ! M1
+      ZMIN_I(6)  = 0.0064D0*Z8_I(2) + 0.0060D0*Z8_I(4)  ! chi1
+      ZMIN_I(7)  = 0.0030D0*Z8_I(2) + 0.0171D0*Z8_I(4)  ! pi1
+      ZMIN_I(8)  =-0.0015D0*Z8_I(2) + 0.0152D0*Z8_I(4)  ! phi1
+      ZMIN_I(9)  =-0.0065D0*Z8_I(2) + 0.0155D0*Z8_I(4)  ! theta1
+      ZMIN_I(10) =-0.0389D0*Z8_I(2) + 0.0836D0*Z8_I(4)  ! J1 +
+      ZMIN_I(11) =-0.0431D0*Z8_I(2) + 0.0613D0*Z8_I(4)  ! OO1 +
+      ZMIN_I(12) = 0.264D0 *Z8_I(5) - 0.0253D0*Z8_I(6)  ! 2N2 +
+      ZMIN_I(13) = 0.298D0 *Z8_I(5) - 0.0264D0*Z8_I(6)  ! mu2 +
+      ZMIN_I(14) = 0.165D0 *Z8_I(5) + 0.00487D0*Z8_I(6) ! nu2 +
+      ZMIN_I(15) = 0.0040D0*Z8_I(6) + 0.0074D0*Z8_I(7)  ! lambda2
+      ZMIN_I(16) = 0.0131D0*Z8_I(6) + 0.0326D0*Z8_I(7)  ! L2 +
+      ZMIN_I(17) = 0.0033D0*Z8_I(6) + 0.0082D0*Z8_I(7)  ! L2 +
+      ZMIN_I(18) = 0.0585D0*Z8_I(7)                   ! t2 +
 !
       HOUR = (TIME - INT(TIME))*24.D0
       T1 = 15.D0*HOUR
@@ -1896,8 +2080,10 @@
       DO I = 1,18
 !       NOTE JMH: DREAL AND DIMAG ARE NOT ACCEPTED BY NAG
 !                 DON'T KNOW WHAT TO DO
-        DH = DH + REAL(ZMIN(I))*F(I)*COS((ARG(I)+U(I))*DTR)-
-     &           AIMAG(ZMIN(I))*F(I)*SIN((ARG(I)+U(I))*DTR)
+!        DH = DH + REAL(ZMIN(I))*F(I)*COS((ARG(I)+U(I))*DTR)-
+!     &           AIMAG(ZMIN(I))*F(I)*SIN((ARG(I)+U(I))*DTR)
+        DH = DH + ZMIN_R(I)*F(I)*COS((ARG(I)+U(I))*DTR)
+     &          - ZMIN_I(I)*F(I)*SIN((ARG(I)+U(I))*DTR)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -1994,9 +2180,9 @@
 !***********************************************************************
 !
 !brief    CONVERTS DATE TO MJD (MODIFIED JULIAN DAYS)
-!+  INPUT:  ID - DAY, MM - MONTH, IYYY - YEAR
-!+  OUTPUT: MJD > 0 - MODIFIED JULIAN DAYS
-!+  DATE >= 11.17.1858 CORRESPONDS TO MJD = 0
+!+        INPUT:  ID - DAY, MM - MONTH, IYYY - YEAR
+!+        OUTPUT: MJD > 0 - MODIFIED JULIAN DAYS
+!+        DATE >= 11.17.1858 CORRESPONDS TO MJD = 0
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  ID            |<->| DAY
@@ -2067,6 +2253,7 @@
 !
       RETURN
       END FUNCTION DATE_MJD
+
 !                    *********************
                      SUBROUTINE CONDI_TPXO
 !                    *********************
@@ -2076,7 +2263,7 @@
      & MARDAT,MARTIM,INTMICON,MSL,TIDALTYPE,BOUNDARY_COLOUR,ICALHW)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                   22/07/2015
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    Prepare a level boundary filter to store the TPXO constituents
@@ -2100,8 +2287,6 @@
 !+        Correction of a bug when sea levels are referenced
 !+        with respect to Chart Datum (CD)
 !
-!warning  (-ZF) should be stored in H as you enter this subroutine
-!
 !history  C.-T. PHAM (LNHE)
 !+        22/07/2015
 !+        V7P1
@@ -2111,6 +2296,14 @@
 !+        13/10/2015
 !+        V7P1
 !+        Correction of a bug when MSL .NE. 0.D0
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
+!
+!warning  (-ZF) should be stored in H as you enter this subroutine
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
@@ -2183,12 +2376,20 @@
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
       DOUBLE PRECISION PH_LIM(2),TH_LIM(2)
       REAL PH_LIM_R(2),TH_LIM_R(2)
-      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UV(:,:,:)
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:),ZCON2(:),ZCON3(:)
+!      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
+      REAL, ALLOCATABLE :: ZT_R(:,:,:),ZT_I(:,:,:)
+!      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
+      REAL, ALLOCATABLE :: UT_R(:,:,:),UT_I(:,:,:)
+      REAL, ALLOCATABLE :: VT_R(:,:,:),VT_I(:,:,:)
+!      COMPLEX, ALLOCATABLE :: UV(:,:,:)
+      REAL, ALLOCATABLE :: UV_R(:,:,:),UV_I(:,:,:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:),ZCON2(:),ZCON3(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ZCON_R(:),ZCON_I(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ZCON2_R(:),ZCON2_I(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ZCON3_R(:),ZCON3_I(:)
       CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
       DOUBLE PRECISION SPEED,MAXSP
+      DOUBLE PRECISION TMP_R,TMP_I
 !
 !     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
 !     NC: NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
@@ -2305,11 +2506,14 @@
 !
 !     PREPARE STORAGE ON LEVEL BOUNDARIES
 !
-      ALLOCATE( TPXO_BOR(3,NPTFRL,NCON) )
+!      ALLOCATE( TPXO_BOR(3,NPTFRL,NCON) )
+      ALLOCATE( TPXO_BOR_R(3,NPTFRL,NCON), TPXO_BOR_I(3,NPTFRL,NCON) )
       DO K=1,NCON
         DO J=1,NPTFRL
           DO I=1,3
-            TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!            TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            TPXO_BOR_R(I,J,K) = 0.D0
+            TPXO_BOR_I(I,J,K) = 0.D0
           ENDDO
         ENDDO
       ENDDO
@@ -2370,7 +2574,7 @@
         ALLOCATE(INDW(NCON2),STAT=IERR)
         ALLOCATE(C_ID2(NCON2))
         ALLOCATE(ARGHW(NCON2))
-        ALLOCATE(BOR2HW(NCON2))
+        ALLOCATE(BOR2HW_R(NCON2), BOR2HW_I(NCON2))
       ENDIF
 !
       I = 1
@@ -2407,11 +2611,14 @@
       ENDIF
 !
       IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( TPXO_BOR2(3,NPTFRL,NCON2) )
+        ALLOCATE( TPXO_BOR2_R(3,NPTFRL,NCON2) )
+        ALLOCATE( TPXO_BOR2_I(3,NPTFRL,NCON2) )
         DO K=1,NCON2
           DO J=1,NPTFRL
             DO I=1,3
-              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+              TPXO_BOR2_R(I,J,K) = 0.D0
+              TPXO_BOR2_I(I,J,K) = 0.D0
             ENDDO
           ENDDO
         ENDDO
@@ -2534,7 +2741,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING LEVELS'
 !
-      ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
+      ALLOCATE( ZT_R(NCON,N,M), ZT_I(NCON,N,M), MASKT(N,M) )
       DO J=1,M
         DO I=1,N
           MASKT(I,J) = 0
@@ -2547,8 +2754,17 @@
         DO K = 1,IC-1
           READ(T2D_FILES(T2DBB1)%LU)
         ENDDO
-        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+!       /!\ reading complex numbers as pairs of double /!\
+!        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        READ(T2D_FILES(T2DBB1)%LU)
+     &    ( ( ZT_R(IC,I,J), ZT_I(IC,I,J), I=1,N ), J=1,M )
+!        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( ZT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( ZT_I(IC,I,J).NE.(0.0) ) ) MASKT(I,J) = 1
+          ENDDO
+        ENDDO
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -2557,18 +2773,20 @@
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
 !
       IF(TIDALTYPE.EQ.1) THEN
-        ALLOCATE( ZCON(NCON) )
+        ALLOCATE( ZCON_R(NCON), ZCON_I(NCON) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                  LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+          CALL INTERPT( ZT_R,ZT_I,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                  LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'z' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
-              TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(1,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(1,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
           IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
+     &        PTIDE(ZCON_R,ZCON_I,C_ID,NCON,CCIND,LAT(IPOIN),
+     &              STIME_MJD,INTMICON)
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
@@ -2583,15 +2801,18 @@
 !
         ENDDO
       ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( ZCON(NCON2) )
+!        ALLOCATE( ZCON(NCON2) )
+        ALLOCATE( ZCON_R(NCON2), ZCON_I(NCON2) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+          CALL INTERPT_SCHEM( ZT_R,ZT_I,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON_R,ZCON_I,
      &                        IERR,'z' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON2
-              TPXO_BOR2(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR2_R(1,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR2_I(1,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
 !
@@ -2602,8 +2823,10 @@
 !
           DO J=1,NPTFR
             IF(BOUNDARY_COLOUR%I(J).EQ.ICALHW) THEN
-              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
-     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+!              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
+!     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+              ARGHW(K)  = ATAN2(TPXO_BOR2_I(1,TPXO_NFR(NBOR(J)),K),
+     &                          TPXO_BOR2_R(1,TPXO_NFR(NBOR(J)),K))
             ENDIF
           ENDDO
 !
@@ -2611,25 +2834,40 @@
             ARGHW(K)  = P_DMAX(ARGHW(K))  + P_DMIN(ARGHW(K))
           ENDIF
 !
-          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+!          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+          BOR2HW_R(K) =  COS(ARGHW(K))
+          BOR2HW_I(K) = -SIN(ARGHW(K))
         ENDDO
 !
         DO IPTFRL = 1,NPTFRL
           DO K=1,NCON2
-            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+!            /!\ complex multiplications /!\
+!            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+            TMP_R = TPXO_BOR2_R(1,IPTFRL,K)*BOR2HW_R(K)
+     &            - TPXO_BOR2_I(1,IPTFRL,K)*BOR2HW_I(K)
+            TMP_I = TPXO_BOR2_R(1,IPTFRL,K)*BOR2HW_I(K)
+     &            + TPXO_BOR2_I(1,IPTFRL,K)*BOR2HW_R(K)
+            TPXO_BOR2_R(1,IPTFRL,K) = TMP_R
+            TPXO_BOR2_I(1,IPTFRL,K) = TMP_I
           ENDDO
         ENDDO
 !
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
+          CALL INTERPT_SCHEM( ZT_R,ZT_I,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON_R,ZCON_I,
      &                        IERR,'z' )
           DO K=1,NCON2
-            ZCON(K) = ZCON(K)*BOR2HW(K)
+!         /!\ complex multiplications /!\
+!            ZCON(K) = ZCON(K)*BOR2HW(K)
+            TMP_R = ZCON_R(K)*BOR2HW_R(K) - ZCON_I(K)*BOR2HW_I(K)
+            TMP_I = ZCON_R(K)*BOR2HW_I(K) + ZCON_I(K)*BOR2HW_R(K)
+            ZCON_R(K) = TMP_R
+            ZCON_I(K) = TMP_I
           ENDDO
           IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &        PTIDE_SCHEM(ZCON,C_ID2,NCON2,CCIND2,0.D0)
+     &        PTIDE_SCHEM(ZCON_R,ZCON_I,C_ID2,NCON2,CCIND2,0.D0)
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
@@ -2645,7 +2883,7 @@
         ENDDO
 !
       ENDIF
-      DEALLOCATE( ZCON,ZT,MASKT )
+      DEALLOCATE( ZCON_R,ZCON_I,ZT_R,ZT_I,MASKT )
 !
 !-----------------------------------------------------------------------
 !
@@ -2654,7 +2892,9 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES VITESSES'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING VELOCITIES'
 !
-      ALLOCATE( UT(NCON,N,M),VT(NCON,N,M),MASKU(N,M),MASKV(N,M) )
+      ALLOCATE( UT_R(NCON,N,M),UT_I(NCON,N,M) )
+      ALLOCATE( VT_R(NCON,N,M),VT_I(NCON,N,M) )
+      ALLOCATE( MASKU(N,M),MASKV(N,M) )
       DO J=1,M
         DO I=1,N
           MASKU(I,J) = 0
@@ -2662,24 +2902,46 @@
         ENDDO
       ENDDO
 !
-      ALLOCATE( UV(2,N,M) )
+!      ALLOCATE( UV(2,N,M) )
+      ALLOCATE( UV_R(2,N,M),UV_I(2,N,M) )
       DO IC = 1,NCON
         REWIND(T2D_FILES(T2DBB2)%LU)
         READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
         DO K = 1,IC-1
           READ(T2D_FILES(T2DBB2)%LU)
         ENDDO
-        READ(T2D_FILES(T2DBB2)%LU) UV
+!       /!\ reading complex numbers as pairs of double /!\
+!        READ(T2D_FILES(T2DBB2)%LU) UV
+        READ(T2D_FILES(T2DBB2)%LU) ( (
+     &                                 UV_R(1,I,J),UV_I(1,I,J),
+     &                                 UV_R(2,I,J),UV_I(2,I,J),
+     &                             I=1,N ), J=1,M )
         DO J=1,M
           DO I=1,N
-            UT(IC,I,J) = UV(1,I,J)
-            VT(IC,I,J) = UV(2,I,J)
+            UT_R(IC,I,J) = UV_R(1,I,J)
+            UT_I(IC,I,J) = UV_I(1,I,J)
+            VT_R(IC,I,J) = UV_R(2,I,J)
+            VT_I(IC,I,J) = UV_I(2,I,J)
           ENDDO
         ENDDO
-        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
-        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+!        /!\ handle with care /!\
+!        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( UT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( UT_I(IC,I,J).NE.(0.0) ) ) MASKU(I,J) = 1
+          ENDDO
+        ENDDO
+!        /!\ handle with care /!\
+!        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( VT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( VT_I(IC,I,J).NE.(0.0) ) ) MASKV(I,J) = 1
+          ENDDO
+        ENDDO
       ENDDO
-      DEALLOCATE( UV )
+      DEALLOCATE( UV_R, UV_I )
 !
 !     INTERPOLATE TPXO IN SPACE
 !
@@ -2687,7 +2949,7 @@
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING VELOCITIES'
 !
       IF(TIDALTYPE.EQ.1) THEN
-        ALLOCATE( ZCON(NCON) )
+        ALLOCATE( ZCON_R(NCON), ZCON_I(NCON) )
         DO IPOIN = 1,NPOIN
 !
 !     INITIALISATION AT 0.D0
@@ -2695,27 +2957,31 @@
           U(IPOIN) = 0.D0
           V(IPOIN) = 0.D0
 !
-          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+          CALL INTERPT(UT_R,UT_I,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'u')
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
-              TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(2,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(2,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
           IF( IERR.EQ.0 ) U(IPOIN) =
-     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
+     &        PTIDE(ZCON_R,ZCON_I,C_ID,NCON,CCIND,LAT(IPOIN),
+     &              STIME_MJD,INTMICON)
 !
-          CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
+          CALL INTERPT(VT_R,VT_I,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'v')
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
-              TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(3,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(3,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
           IF( IERR.EQ.0 ) V(IPOIN) =
-     &        PTIDE(ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON)
+     &        PTIDE(ZCON_R,ZCON_I,C_ID,NCON,CCIND,LAT(IPOIN),
+     &              STIME_MJD,INTMICON)
 !
 !     VELOCITY READ IN M/S
           IF( H(IPOIN).GT.0.1D0 ) THEN
@@ -2734,8 +3000,9 @@
 !
         ENDDO
       ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( ZCON(NCON2) )
-        ALLOCATE( ZCON2(NCON2),ZCON3(NCON2) )
+        ALLOCATE( ZCON_R(NCON2),  ZCON_I(NCON2) )
+        ALLOCATE( ZCON2_R(NCON2), ZCON2_I(NCON2) )
+        ALLOCATE( ZCON3_R(NCON2), ZCON3_I(NCON2) )
         DO IPOIN = 1,NPOIN
 !
 !     INITIALISATION AT 0.D0
@@ -2743,15 +3010,25 @@
           U(IPOIN) = 0.D0
           V(IPOIN) = 0.D0
 !
-          CALL INTERPT_SCHEM( UT,NCON,NCON2,INDW,N,M,MASKU,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON2,
-     &                        IERR,'u' )
-          CALL INTERPT_SCHEM( VT,NCON,NCON2,INDW,N,M,MASKV,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON3,
-     &                        IERR,'v' )
+          CALL INTERPT_SCHEM( UT_R,UT_I,NCON,NCON2,INDW,N,M,MASKU,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON2_R,ZCON2_I,IERR,'u' )
+          CALL INTERPT_SCHEM( VT_R,VT_I,NCON,NCON2,INDW,N,M,MASKV,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON3_R,ZCON3_I,IERR,'v' )
           DO K=1,NCON2
-            ZCON2(K) = ZCON2(K)*BOR2HW(K)
-            ZCON3(K) = ZCON3(K)*BOR2HW(K)
+!           /!\ complex multiplications /!\
+!            ZCON2(K) = ZCON2(K)*BOR2HW(K)
+            TMP_R = ZCON2_R(K)*BOR2HW_R(K) - ZCON2_I(K)*BOR2HW_I(K)
+            TMP_I = ZCON2_R(K)*BOR2HW_I(K) + ZCON2_I(K)*BOR2HW_R(K)
+            ZCON2_R(K) = TMP_R
+            ZCON2_I(K) = TMP_I
+!           /!\ complex multiplications /!\
+!            ZCON3(K) = ZCON3(K)*BOR2HW(K)
+            TMP_R = ZCON3_R(K)*BOR2HW_R(K) - ZCON3_I(K)*BOR2HW_I(K)
+            TMP_I = ZCON3_R(K)*BOR2HW_I(K) + ZCON3_I(K)*BOR2HW_R(K)
+            ZCON3_R(K) = TMP_R
+            ZCON3_I(K) = TMP_I
           ENDDO
 !
 !     SPECIFIC TREATMENTS FOR NEAP TIDES, IN PARTICULAR FOR S2 WAVE
@@ -2759,8 +3036,10 @@
           IF(TIDALTYPE.EQ.5) THEN
             DO K=1,NCON2
               IF(C_ID2(K).EQ.'s2  ') THEN
-                ZCON2(K) = -ZCON2(K)
-                ZCON3(K) = -ZCON3(K)
+                ZCON2_R(K) = -ZCON2_R(K)
+                ZCON2_I(K) = -ZCON2_I(K)
+                ZCON3_R(K) = -ZCON3_R(K)
+                ZCON3_I(K) = -ZCON3_I(K)
               ENDIF
             ENDDO
           ELSEIF(TIDALTYPE.EQ.6) THEN
@@ -2770,8 +3049,10 @@
      &           .OR.C_ID2(K).EQ.'p1  '.OR.C_ID2(K).EQ.'q1  '
      &           .OR.C_ID2(K).EQ.'o1  '
      &           .OR.C_ID2(K).EQ.'ms4 '.OR.C_ID2(K).EQ.'mn4 ') THEN
-                ZCON2(K) = -ZCON2(K)
-                ZCON3(K) = -ZCON3(K)
+                ZCON2_R(K) = -ZCON2_R(K)
+                ZCON2_I(K) = -ZCON2_I(K)
+                ZCON3_R(K) = -ZCON3_R(K)
+                ZCON3_I(K) = -ZCON3_I(K)
               ENDIF
             ENDDO
           ENDIF
@@ -2779,16 +3060,18 @@
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON2
 !     VELOCITY READ IN M2/S
-              TPXO_BOR2(2,TPXO_NFR(IPOIN),K) = ZCON2(K)
-              TPXO_BOR2(3,TPXO_NFR(IPOIN),K) = ZCON3(K)
+              TPXO_BOR2_R(2,TPXO_NFR(IPOIN),K) = ZCON2_R(K)
+              TPXO_BOR2_I(2,TPXO_NFR(IPOIN),K) = ZCON2_I(K)
+              TPXO_BOR2_R(3,TPXO_NFR(IPOIN),K) = ZCON3_R(K)
+              TPXO_BOR2_I(3,TPXO_NFR(IPOIN),K) = ZCON3_I(K)
             ENDDO
           ENDIF
 !
           IF( IERR.EQ.0 ) U(IPOIN) =
-     &        PTIDE_SCHEM(ZCON2,C_ID2,NCON2,CCIND2,0.D0)
+     &        PTIDE_SCHEM(ZCON2_R,ZCON2_I,C_ID2,NCON2,CCIND2,0.D0)
 !
           IF( IERR.EQ.0 ) V(IPOIN) =
-     &        PTIDE_SCHEM(ZCON3,C_ID2,NCON2,CCIND2,0.D0)
+     &        PTIDE_SCHEM(ZCON3_R,ZCON3_I,C_ID2,NCON2,CCIND2,0.D0)
 !
 !     VELOCITY READ IN M/S
           IF( H(IPOIN).GT.0.1D0 ) THEN
@@ -2807,10 +3090,10 @@
 !
         ENDDO
 !
-        DEALLOCATE( ZCON2,ZCON3 )
+        DEALLOCATE( ZCON2_R,ZCON2_I,ZCON3_R,ZCON3_I )
 !
       ENDIF
-      DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
+      DEALLOCATE( UT_R,UT_I,VT_R,VT_I,ZCON_R,ZCON_I,MASKU,MASKV )
       DEALLOCATE( LON,LAT )
 !
       IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
@@ -2823,6 +3106,7 @@
 !-----------------------------------------------------------------------
 !
       END SUBROUTINE CONDI_TPXO
+
 !                    *************************
                      SUBROUTINE BORD_TIDE_TPXO
 !                    *************************
@@ -2834,7 +3118,7 @@
      & T2D_FILES,T2DBB1,T2DBB2,X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   07/05/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS FOR TIDES
@@ -2845,8 +3129,8 @@
 !history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        06/12/2011
 !+        V6P2
-!+   Addition of the TPXO tidal model by calling CONDI_TPXO
-!+      (the TPXO model being coded in DECLARATIONS_TPXO)
+!+        Addition of the TPXO tidal model by calling CONDI_TPXO
+!+        (the TPXO model being coded in DECLARATIONS_TPXO)
 !
 !history  C-T PHAM (LNHE)
 !+        07/05/2012
@@ -2857,6 +3141,12 @@
 !+        19/03/2015
 !+        V7P1
 !+        Schematic tides
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
@@ -2946,11 +3236,17 @@
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
       DOUBLE PRECISION PH_LIM(2),TH_LIM(2)
       REAL PH_LIM_R(2),TH_LIM_R(2)
-      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UV(:,:,:)
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+!      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
+      REAL, ALLOCATABLE :: ZT_R(:,:,:), ZT_I(:,:,:)
+!      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
+      REAL, ALLOCATABLE :: UT_R(:,:,:), UT_I(:,:,:)
+      REAL, ALLOCATABLE :: VT_R(:,:,:), VT_I(:,:,:)
+!      COMPLEX, ALLOCATABLE :: UV(:,:,:)
+      REAL, ALLOCATABLE :: UV_R(:,:,:), UV_I(:,:,:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ZCON_R(:), ZCON_I(:)
       CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
+      DOUBLE PRECISION TMP_R,TMP_I
 !
 !     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
 !     NC: NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
@@ -3096,11 +3392,12 @@
 !
 !     PREPARE STORAGE ON LEVEL BOUNDARIES
 !
-      ALLOCATE( TPXO_BOR(3,NPTFRL,NCON) )
+      ALLOCATE( TPXO_BOR_R(3,NPTFRL,NCON), TPXO_BOR_I(3,NPTFRL,NCON) )
       DO K=1,NCON
         DO J=1,NPTFRL
           DO I=1,3
-            TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+            TPXO_BOR_R(I,J,K) = 0.D0
+            TPXO_BOR_I(I,J,K) = 0.D0
           ENDDO
         ENDDO
       ENDDO
@@ -3156,7 +3453,7 @@
         ALLOCATE(INDW(NCON2),STAT=IERR)
         ALLOCATE(C_ID2(NCON2))
         ALLOCATE(ARGHW(NCON2))
-        ALLOCATE(BOR2HW(NCON2))
+        ALLOCATE(BOR2HW_R(NCON2), BOR2HW_I(NCON2))
       ENDIF
 !
       I = 1
@@ -3193,11 +3490,14 @@
       ENDIF
 !
       IF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( TPXO_BOR2(3,NPTFRL,NCON2) )
+        ALLOCATE( TPXO_BOR2_R(3,NPTFRL,NCON2) )
+        ALLOCATE( TPXO_BOR2_I(3,NPTFRL,NCON2) )
         DO K=1,NCON2
           DO J=1,NPTFRL
             DO I=1,3
-              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+!              TPXO_BOR2(I,J,K) = CMPLX(0.D0,0.D0,KIND(1.D0))
+              TPXO_BOR2_R(I,J,K) = 0.D0
+              TPXO_BOR2_I(I,J,K) = 0.D0
             ENDDO
           ENDDO
         ENDDO
@@ -3320,7 +3620,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING LEVELS'
 !
-      ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
+      ALLOCATE( ZT_R(NCON,N,M), ZT_I(NCON,N,M), MASKT(N,M) )
       DO J=1,M
         DO I=1,N
           MASKT(I,J) = 0
@@ -3333,8 +3633,18 @@
         DO K = 1,IC-1
           READ(T2D_FILES(T2DBB1)%LU)
         ENDDO
-        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+!       /!\ reading complex numbers as pairs of double /!\
+!        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        READ(T2D_FILES(T2DBB1)%LU)
+     &    ( ( ZT_R(IC,I,J), ZT_I(IC,I,J), I=1,N ), J=1,M )
+!        /!\ handle with care /!\
+!        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( ZT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( ZT_I(IC,I,J).NE.(0.0) ) ) MASKT(I,J) = 1
+          ENDDO
+        ENDDO
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -3343,28 +3653,30 @@
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
 !
       IF(TIDALTYPE.EQ.1) THEN
-        ALLOCATE( ZCON(NCON) )
+        ALLOCATE( ZCON_R(NCON), ZCON_I(NCON) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                  LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+          CALL INTERPT( ZT_R,ZT_I,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                  LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'z' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
-              TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(1,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(1,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
 !
         ENDDO
       ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( ZCON(NCON2) )
+        ALLOCATE( ZCON_R(NCON2), ZCON_I(NCON2) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT_SCHEM( ZT,NCON,NCON2,INDW,N,M,MASKT,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
-     &                        IERR,'z' )
+          CALL INTERPT_SCHEM( ZT_R,ZT_I,NCON,NCON2,INDW,N,M,MASKT,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON_R,ZCON_I,IERR,'z' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON2
-              TPXO_BOR2(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR2_R(1,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR2_I(1,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
 !
@@ -3375,8 +3687,10 @@
 !
           DO J=1,NPTFR
             IF(BOUNDARY_COLOUR%I(J).EQ.ICALHW) THEN
-              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
-     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+!              ARGHW(K)  = ATAN2(AIMAG(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)),
+!     &                           REAL(TPXO_BOR2(1,TPXO_NFR(NBOR(J)),K)))
+              ARGHW(K)  = ATAN2(TPXO_BOR2_I(1,TPXO_NFR(NBOR(J)),K),
+     &                          TPXO_BOR2_R(1,TPXO_NFR(NBOR(J)),K))
             ENDIF
           ENDDO
 !
@@ -3384,16 +3698,25 @@
             ARGHW(K)  = P_DMAX(ARGHW(K))  + P_DMIN(ARGHW(K))
           ENDIF
 !
-          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+!          BOR2HW(K) = CMPLX( COS(ARGHW(K)), -SIN(ARGHW(K)), KIND(1.D0))
+          BOR2HW_R(K) = COS(ARGHW(K))
+          BOR2HW_I(K) = -SIN(ARGHW(K))
         ENDDO
 !
         DO IPTFRL = 1,NPTFRL
           DO K=1,NCON2
-            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+!         /!\ complex multiplications /!\
+!            TPXO_BOR2(1,IPTFRL,K) = TPXO_BOR2(1,IPTFRL,K)*BOR2HW(K)
+            TMP_R = TPXO_BOR2_R(1,IPTFRL,K)*BOR2HW_R(K)
+     &            - TPXO_BOR2_I(1,IPTFRL,K)*BOR2HW_I(K)
+            TMP_I = TPXO_BOR2_R(1,IPTFRL,K)*BOR2HW_I(K)
+     &            + TPXO_BOR2_I(1,IPTFRL,K)*BOR2HW_R(K)
+            TPXO_BOR2_R(1,IPTFRL,K) = TMP_R
+            TPXO_BOR2_I(1,IPTFRL,K) = TMP_I
           ENDDO
         ENDDO
       ENDIF
-      DEALLOCATE( ZCON,ZT,MASKT )
+      DEALLOCATE( ZCON_R,ZCON_I,ZT_R,ZT_I,MASKT )
 !
 !-----------------------------------------------------------------------
 !
@@ -3402,7 +3725,9 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES VITESSES'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING VELOCITIES'
 !
-      ALLOCATE( UT(NCON,N,M),VT(NCON,N,M),MASKU(N,M),MASKV(N,M) )
+      ALLOCATE( UT_R(NCON,N,M),UT_I(NCON,N,M) )
+      ALLOCATE( VT_R(NCON,N,M),VT_I(NCON,N,M) )
+      ALLOCATE( MASKU(N,M),MASKV(N,M) )
       DO J=1,M
         DO I=1,N
           MASKU(I,J) = 0
@@ -3410,24 +3735,45 @@
         ENDDO
       ENDDO
 !
-      ALLOCATE( UV(2,N,M) )
+      ALLOCATE( UV_R(2,N,M),UV_I(2,N,M) )
       DO IC = 1,NCON
         REWIND(T2D_FILES(T2DBB2)%LU)
         READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
         DO K = 1,IC-1
           READ(T2D_FILES(T2DBB2)%LU)
         ENDDO
-        READ(T2D_FILES(T2DBB2)%LU) UV
+!       /!\ reading complex numbers as pairs of double /!\
+!        READ(T2D_FILES(T2DBB2)%LU) UV
+        READ(T2D_FILES(T2DBB2)%LU) ( (
+     &                                 UV_R(1,I,J),UV_I(1,I,J),
+     &                                 UV_R(2,I,J),UV_I(2,I,J),
+     &                             I=1,N ), J=1,M )
         DO J=1,M
           DO I=1,N
-            UT(IC,I,J) = UV(1,I,J)
-            VT(IC,I,J) = UV(2,I,J)
+            UT_R(IC,I,J) = UV_R(1,I,J)
+            UT_I(IC,I,J) = UV_I(1,I,J)
+            VT_R(IC,I,J) = UV_R(2,I,J)
+            VT_I(IC,I,J) = UV_I(2,I,J)
           ENDDO
         ENDDO
-        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
-        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+!        /!\ handle with care /!\
+!        WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( UT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( UT_I(IC,I,J).NE.(0.0) ) ) MASKU(I,J) = 1
+          ENDDO
+        ENDDO
+!        /!\ handle with care /!\
+!        WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( VT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( VT_I(IC,I,J).NE.(0.0) ) ) MASKV(I,J) = 1
+          ENDDO
+        ENDDO
       ENDDO
-      DEALLOCATE( UV )
+      DEALLOCATE( UV_R, UV_I )
 !
 !     INTERPOLATE TPXO IN SPACE
 !
@@ -3435,49 +3781,61 @@
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING VELOCITIES'
 !
       IF(TIDALTYPE.EQ.1) THEN
-        ALLOCATE( ZCON(NCON) )
+        ALLOCATE( ZCON_R(NCON), ZCON_I(NCON) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
+          CALL INTERPT(UT_R,UT_I,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'u')
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
-              TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(2,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(2,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
 !
-          CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
-     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
+          CALL INTERPT(VT_R,VT_I,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'v')
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
 !     VELOCITY READ IN M2/S
-              TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+              TPXO_BOR_R(3,TPXO_NFR(IPOIN),K) = ZCON_R(K)
+              TPXO_BOR_I(3,TPXO_NFR(IPOIN),K) = ZCON_I(K)
             ENDDO
           ENDIF
 !
         ENDDO
       ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-        ALLOCATE( ZCON(NCON2) )
+        ALLOCATE( ZCON_R(NCON2), ZCON_I(NCON2) )
         DO IPOIN = 1,NPOIN
 !
-          CALL INTERPT_SCHEM( UT,NCON,NCON2,INDW,N,M,MASKU,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
-     &                        IERR,'u' )
+          CALL INTERPT_SCHEM( UT_R,UT_I,NCON,NCON2,INDW,N,M,MASKU,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON_R,ZCON_I,IERR,'u' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON2
 !     VELOCITY READ IN M2/S
-              TPXO_BOR2(2,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+!         /!\ complex multiplications /!\
+!              TPXO_BOR2(2,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+              TPXO_BOR2_R(2,TPXO_NFR(IPOIN),K) = ZCON_R(K)*BOR2HW_R(K)
+     &                                         - ZCON_I(K)*BOR2HW_I(K)
+              TPXO_BOR2_I(2,TPXO_NFR(IPOIN),K) = ZCON_R(K)*BOR2HW_I(K)
+     &                                         + ZCON_I(K)*BOR2HW_R(K)
             ENDDO
           ENDIF
 !
-          CALL INTERPT_SCHEM( VT,NCON,NCON2,INDW,N,M,MASKV,
-     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),ZCON,
-     &                        IERR,'v' )
+          CALL INTERPT_SCHEM( VT_R,VT_I,NCON,NCON2,INDW,N,M,MASKV,
+     &                        TH_LIM,PH_LIM,LAT(IPOIN),LON(IPOIN),
+     &                        ZCON_R,ZCON_I,IERR,'v' )
           IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON2
 !     VELOCITY READ IN M2/S
-              TPXO_BOR2(3,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+!         /!\ complex multiplications /!\
+!              TPXO_BOR2(3,TPXO_NFR(IPOIN),K) = ZCON(K)*BOR2HW(K)
+              TPXO_BOR2_R(3,TPXO_NFR(IPOIN),K) = ZCON_R(K)*BOR2HW_R(K)
+     &                                         - ZCON_I(K)*BOR2HW_I(K)
+              TPXO_BOR2_I(3,TPXO_NFR(IPOIN),K) = ZCON_R(K)*BOR2HW_I(K)
+     &                                         + ZCON_I(K)*BOR2HW_R(K)
             ENDDO
           ENDIF
 !
@@ -3492,9 +3850,12 @@
           IF( J.NE.0 ) THEN
             DO K=1,NCON2
               IF(C_ID2(K).EQ.'s2  ') THEN
-                TPXO_BOR2(1,J,K) = -TPXO_BOR2(1,J,K)
-                TPXO_BOR2(2,J,K) = -TPXO_BOR2(2,J,K)
-                TPXO_BOR2(3,J,K) = -TPXO_BOR2(3,J,K)
+                TPXO_BOR2_R(1,J,K) = -TPXO_BOR2_R(1,J,K)
+                TPXO_BOR2_I(1,J,K) = -TPXO_BOR2_I(1,J,K)
+                TPXO_BOR2_R(2,J,K) = -TPXO_BOR2_R(2,J,K)
+                TPXO_BOR2_I(2,J,K) = -TPXO_BOR2_I(2,J,K)
+                TPXO_BOR2_R(3,J,K) = -TPXO_BOR2_R(3,J,K)
+                TPXO_BOR2_I(3,J,K) = -TPXO_BOR2_I(3,J,K)
               ENDIF
             ENDDO
           ENDIF
@@ -3509,16 +3870,19 @@
      &           .OR.C_ID2(K).EQ.'p1  '.OR.C_ID2(K).EQ.'q1  '
      &           .OR.C_ID2(K).EQ.'o1  '
      &           .OR.C_ID2(K).EQ.'ms4 '.OR.C_ID2(K).EQ.'mn4 ') THEN
-                TPXO_BOR2(1,J,K) = -TPXO_BOR2(1,J,K)
-                TPXO_BOR2(2,J,K) = -TPXO_BOR2(2,J,K)
-                TPXO_BOR2(3,J,K) = -TPXO_BOR2(3,J,K)
+                TPXO_BOR2_R(1,J,K) = -TPXO_BOR2_R(1,J,K)
+                TPXO_BOR2_I(1,J,K) = -TPXO_BOR2_I(1,J,K)
+                TPXO_BOR2_R(2,J,K) = -TPXO_BOR2_R(2,J,K)
+                TPXO_BOR2_I(2,J,K) = -TPXO_BOR2_I(2,J,K)
+                TPXO_BOR2_R(3,J,K) = -TPXO_BOR2_R(3,J,K)
+                TPXO_BOR2_I(3,J,K) = -TPXO_BOR2_I(3,J,K)
               ENDIF
             ENDDO
           ENDIF
         ENDDO
       ENDIF
 !
-      DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
+      DEALLOCATE( UT_R,UT_I,VT_R,VT_I,ZCON_R,ZCON_I,MASKU,MASKV )
       DEALLOCATE( LON,LAT )
 !
       IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
@@ -3554,13 +3918,15 @@
 !  6: ASTRONOMICAL NEAP TIDE (COEF. NEARLY 20)
 !
           IF(TIDALTYPE.EQ.1) THEN
-            Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
+            Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,
+     &                           TPXO_BOR_R,TPXO_BOR_I,C_ID,
      &                           NCON,CCIND,TPXO_LAT_DUMMY,
      &                           STIME_MJD+TEMPS/86400.D0,INTMICON)
      &        + MSL
             HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
-            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,TPXO_BOR2,
+            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,
+     &                                 TPXO_BOR2_R,TPXO_BOR2_I,
      &                                 C_ID2,NCON2,CCIND2,TEMPS)
      &        + MSL
             HBTIDE%R(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
@@ -3591,34 +3957,40 @@
 !
           IF(TIDALTYPE.EQ.1) THEN
 !  IF LIHBOR(K).EQ.4, Z IS NOT CALCULATED BEFORE
-            Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
+            Z = CTIDE*TPXO_PTIDE(1,NBOR(K),TPXO_NFR,
+     &                           TPXO_BOR_R,TPXO_BOR_I,C_ID,
      &                           NCON,CCIND,TPXO_LAT_DUMMY,
      &                           STIME_MJD+TEMPS/86400.D0,INTMICON)
      &        + MSL
 !$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
             UBTIDE%R(K) =
-     &              CTIDEV*TPXO_PTIDE(2,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
+     &              CTIDEV*TPXO_PTIDE(2,NBOR(K),TPXO_NFR,
+     &                                TPXO_BOR_R,TPXO_BOR_I,C_ID,
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
      &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
             VBTIDE%R(K) =
-     &              CTIDEV*TPXO_PTIDE(3,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
+     &              CTIDEV*TPXO_PTIDE(3,NBOR(K),TPXO_NFR,
+     &                                TPXO_BOR_R,TPXO_BOR_I,C_ID,
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
      &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
 !$$$           ENDIF
           ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !  IF LIHBOR(K).EQ.4, Z IS NOT CALCULATED BEFORE
-            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,TPXO_BOR2,
+            Z = CTIDE*TPXO_PTIDE_SCHEM(1,NBOR(K),TPXO_NFR,
+     &                                 TPXO_BOR2_R,TPXO_BOR2_I,
      &                                 C_ID2,NCON2,CCIND2,TEMPS)
      &        + MSL
 !$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
             UBTIDE%R(K) =
-     &         CTIDEV*TPXO_PTIDE_SCHEM(2,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &         CTIDEV*TPXO_PTIDE_SCHEM(2,NBOR(K),TPXO_NFR,
+     &                                 TPXO_BOR2_R,TPXO_BOR2_I,
      &                                 C_ID2,NCON2,CCIND2,TEMPS)
      &               / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
             VBTIDE%R(K) =
-     &         CTIDEV*TPXO_PTIDE_SCHEM(3,NBOR(K),TPXO_NFR,TPXO_BOR2,
+     &         CTIDEV*TPXO_PTIDE_SCHEM(3,NBOR(K),TPXO_NFR,
+     &                                 TPXO_BOR2_R,TPXO_BOR2_I,
      &                                 C_ID2,NCON2,CCIND2,TEMPS)
      &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
 !$$$           ENDIF
@@ -3633,6 +4005,7 @@
 !
       RETURN
       END SUBROUTINE BORD_TIDE_TPXO
+
 !                    **********************
                      SUBROUTINE CD2MSL_TPXO
 !                    **********************
@@ -3641,7 +4014,7 @@
      & MSL)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   25/10/2012
+! TELEMAC2D   V7P2                                   26/01/2016
 !***********************************************************************
 !
 !brief    Prepare a level boundary filter to store the TPXO constituents
@@ -3655,6 +4028,12 @@
 !+        V6P2
 !+        Implementation and generalised for interfacing with
 !+        TELEMAC-2D AND 3D
+!
+!history  S.E.BOURBAN (HRW)
+!+        26/01/2016
+!+        V7P2
+!+        Replacement of COMPLEX numbers by their imaginary and real parts
+!+        (to be compatible with algorithmic differentiation tools)
 !
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
@@ -3700,8 +4079,10 @@
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
       DOUBLE PRECISION PH_LIM(2),TH_LIM(2)
       REAL PH_LIM_R(2),TH_LIM_R(2)
-      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
-      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+!      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
+      REAL, ALLOCATABLE :: ZT_R(:,:,:),ZT_I(:,:,:)
+!      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
+      DOUBLE PRECISION, ALLOCATABLE :: ZCON_R(:),ZCON_I(:)
       CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
 !
 !     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
@@ -3882,7 +4263,7 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING LEVELS'
 !
-      ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
+      ALLOCATE( ZT_R(NCON,N,M), ZT_I(NCON,N,M), MASKT(N,M) )
       DO J=1,M
         DO I=1,N
           MASKT(I,J) = 0
@@ -3895,8 +4276,18 @@
         DO K = 1,IC-1
           READ(T2D_FILES(T2DBB1)%LU)
         ENDDO
-        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+!       /!\ reading complex numbers as pairs of double /!\
+!        READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
+        READ(T2D_FILES(T2DBB1)%LU)
+     &    ( ( ZT_R(IC,I,J), ZT_I(IC,I,J), I=1,N ), J=1,M )
+!        /!\ handle with care /!\
+!        WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
+        DO J=1,M
+          DO I=1,N
+            IF( ( ZT_R(IC,I,J).NE.(0.0) ).OR.
+     &          ( ZT_I(IC,I,J).NE.(0.0) ) ) MASKT(I,J) = 1
+          ENDDO
+        ENDDO
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -3904,21 +4295,22 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - INTERPOLATION DES NIVEAUX'
       IF(LNG.EQ.2) WRITE(LU,*) ' - INTERPOLATING LEVELS'
 !
-      ALLOCATE( ZCON(NCON) )
+      ALLOCATE( ZCON_R(NCON), ZCON_I(NCON) )
       DO IPOIN = 1,NPOIN
-        CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
-     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
+        CALL INTERPT( ZT_R,ZT_I,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON_R,ZCON_I,IERR,'z' )
         IF( IERR.EQ.0 ) THEN
           H(IPOIN) = 0.D0
           DO I=1,NCON
-            H(IPOIN) = H(IPOIN) + ABS(ZCON(I))
+!            H(IPOIN) = H(IPOIN) + ABS(ZCON(I))
+            H(IPOIN) = H(IPOIN) + SQRT(ZCON_R(I)**2+ZCON_I(I)**2)
           ENDDO
           H(IPOIN) = CAMPLIF*H(IPOIN)
         ELSE
           H(IPOIN) = MSL
         ENDIF
       ENDDO
-      DEALLOCATE( ZCON,ZT,MASKT )
+      DEALLOCATE( ZCON_R,ZCON_I,ZT_R,ZT_I,MASKT )
       DEALLOCATE( LON,LAT )
 !
       IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE CONSTRUCTION DE NIVEAU MOYEN'

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="7" author="P.Tassi">
+<validation xref="case" rank="7" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="bars" author="sisyphe" contact="www.opentelemac.org" />
+      <data title="bars" author="P.Tassi" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
       <look colour="jet.xml" />
@@ -18,7 +18,7 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
---> 
+-->
    <action xref="1"
        do="translate;run;cas;princi"
        code="telemac2d" target="Bar_Test_Random_T2d.cas"
@@ -28,7 +28,7 @@
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="Bar_Test_Random_T2d.cas"
        title="bars T2D+SIS parallel mode"
-   />   
+   />
 
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">

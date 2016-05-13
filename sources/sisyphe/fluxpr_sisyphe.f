@@ -95,6 +95,9 @@
       CHARACTER(LEN=16) :: FMTZON='(4(1X,1PG21.14))'
       LOGICAL :: OLD_METHOD=.FALSE.
       LOGICAL, SAVE :: INIT=.TRUE.
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3,DTMP4
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -221,39 +224,41 @@
 !           SECTIONS ACROSS 2 SUB-DOMAINS WILL HAVE NSEG=0 OR -1
 !           AND -1 WANTED HERE FOR RELEVANT MESSAGE
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+            DTMP1 = P_DMIN(FLX(ISEC))
+            DTMP2 = P_DMAX(FLX(ISEC))
+            DTMP3 = P_DMIN(VOLNEG(ISEC))
+            DTMP4 = P_DMAX(VOLPOS(ISEC))
+!< JR @ RWTH
             II=P_IMIN(NSEG(ISEC))
             IF(II.GE.0) THEN
 !
               IF(LNG.EQ.1) WRITE(LU,130) ISEC,CTRLSC(1+2*(ISEC-1)),
      &                                   CTRLSC(2+2*(ISEC-1)),
-     &                 P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                   P_DMIN(VOLNEG(ISEC)),
-     &                                   P_DMAX(VOLPOS(ISEC))
+     &                                   DTMP1+DTMP2,DTMP3,DTMP4
               IF(LNG.EQ.2) WRITE(LU,131) ISEC,CTRLSC(1+2*(ISEC-1)),
      &                                   CTRLSC(2+2*(ISEC-1)),
-     &                 P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                   P_DMIN(VOLNEG(ISEC)),
-     &                                   P_DMAX(VOLPOS(ISEC))
+     &                                   DTMP1+DTMP2,DTMP3,DTMP4
 !
               IF(SUSP) THEN
-                IF(LNG.EQ.1) WRITE(LU,1301)
-     &              P_DMIN(FLXS(ISEC))+P_DMAX(FLXS(ISEC)),
-     &                                 P_DMIN(VOLNEGS(ISEC)),
-     &                                 P_DMAX(VOLPOSS(ISEC))
-                IF(LNG.EQ.2) WRITE(LU,1302)
-     &              P_DMIN(FLXS(ISEC))+P_DMAX(FLXS(ISEC)),
-     &                                 P_DMIN(VOLNEGS(ISEC)),
-     &                                 P_DMAX(VOLPOSS(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+                DTMP1 = P_DMIN(FLXS(ISEC))
+                DTMP2 = P_DMAX(FLXS(ISEC))
+                DTMP3 = P_DMIN(VOLNEGS(ISEC))
+                DTMP4 = P_DMAX(VOLPOSS(ISEC))
+!< JR @ RWTH
+                IF(LNG.EQ.1) WRITE(LU,1301) DTMP1+DTMP2,DTMP3,DTMP4
+                IF(LNG.EQ.2) WRITE(LU,1302) DTMP1+DTMP2,DTMP3,DTMP4
               ENDIF
               IF(CHARR) THEN
-                IF(LNG.EQ.1) WRITE(LU,1303)
-     &               P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
-     &                                  P_DMIN(VOLNEGC(ISEC)),
-     &                                  P_DMAX(VOLPOSC(ISEC))
-                IF(LNG.EQ.2) WRITE(LU,1304)
-     &               P_DMIN(FLXC(ISEC))+P_DMAX(FLXC(ISEC)),
-     &                                  P_DMIN(VOLNEGC(ISEC)),
-     &                                  P_DMAX(VOLPOSC(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+                DTMP1 = P_DMIN(FLXC(ISEC))
+                DTMP2 = P_DMAX(FLXC(ISEC))
+                DTMP3 = P_DMIN(VOLNEGC(ISEC))
+                DTMP4 = P_DMAX(VOLPOSC(ISEC))
+!< JR @ RWTH
+                IF(LNG.EQ.1) WRITE(LU,1303) DTMP1+DTMP2,DTMP3,DTMP4
+                IF(LNG.EQ.2) WRITE(LU,1304) DTMP1+DTMP2,DTMP3,DTMP4
               ENDIF
 !
 !           OLD METHOD AND SECTION ON SEVERAL SUB-DOMAIN
@@ -289,12 +294,15 @@
         DO ISEC = 1,NSEC
 !
           IF(NCSIZE.GT.1) THEN
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+            DTMP1 = P_DSUM(FLX(ISEC))
+            DTMP2 = P_DSUM(VOLNEG(ISEC))
+            DTMP3 = P_DSUM(VOLPOS(ISEC))
+!< JR @ RWTH
             IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                   P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
-     &                                     P_DSUM(VOLPOS(ISEC))
+     &                                 DTMP1,DTMP2,DTMP3
             IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                   P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
-     &                                     P_DSUM(VOLPOS(ISEC))
+     &                                 DTMP1,DTMP2,DTMP3
           ELSE
             IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
      &                   FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
@@ -313,12 +321,13 @@
      &               'CUMULATED POSITIVE VOLUME: ',G16.7)
           IF(SUSP) THEN
             IF(NCSIZE.GT.1) THEN
-              IF(LNG.EQ.1) WRITE(LU,2301)
-     &                P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
-     &                                   P_DSUM(VOLPOSS(ISEC))
-              IF(LNG.EQ.2) WRITE(LU,2302)
-     &                P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
-     &                                   P_DSUM(VOLPOSS(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              DTMP1 = P_DSUM(FLXS(ISEC))
+              DTMP2 = P_DSUM(VOLNEGS(ISEC))
+              DTMP3 = P_DSUM(VOLPOSS(ISEC))
+!< JR @ RWTH
+              IF(LNG.EQ.1) WRITE(LU,2301) DTMP1,DTMP2,DTMP3
+              IF(LNG.EQ.2) WRITE(LU,2302) DTMP1,DTMP2,DTMP3
             ELSE
               IF(LNG.EQ.1) WRITE(LU,2301)
      &                FLXS(ISEC),VOLNEGS(ISEC),VOLPOSS(ISEC)
@@ -336,12 +345,13 @@
 !
           IF(CHARR) THEN
             IF(NCSIZE.GT.1) THEN
-              IF(LNG.EQ.1) WRITE(LU,2303)
-     &                P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
-     &                                   P_DSUM(VOLPOSC(ISEC))
-              IF(LNG.EQ.2) WRITE(LU,2304)
-     &                P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
-     &                                   P_DSUM(VOLPOSC(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              DTMP1 = P_DSUM(FLXC(ISEC))
+              DTMP2 = P_DSUM(VOLNEGC(ISEC))
+              DTMP3 = P_DSUM(VOLPOSC(ISEC))
+!< JR @ RWTH
+              IF(LNG.EQ.1) WRITE(LU,2303) DTMP1,DTMP2,DTMP3
+              IF(LNG.EQ.2) WRITE(LU,2304) DTMP1,DTMP2,DTMP3
             ELSE
               IF(LNG.EQ.1) WRITE(LU,2303)
      &                FLXC(ISEC),VOLNEGC(ISEC),VOLPOSC(ISEC)
@@ -370,7 +380,10 @@
         IF(CHARR.AND..NOT.SUSP) THEN
           IF(NCSIZE.GT.1) THEN
             DO ISEC=1,NSEC
-              WORK(ISEC)=P_DSUM(FLXC(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              DTMP1 = P_DSUM(FLXC(ISEC))
+              WORK(ISEC) = DTMP1
+!< JR @ RWTH
             ENDDO
 !           IN // ONLY PROCESSOR 0 WRITES THE FILE
             IF(IPID.EQ.0) THEN
@@ -386,7 +399,10 @@
         IF(SUSP.AND..NOT.CHARR) THEN
           IF(NCSIZE.GT.1) THEN
             DO ISEC=1,NSEC
-              WORK(ISEC)=P_DSUM(FLXS(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              DTMP1 = P_DSUM(FLXS(ISEC))
+              WORK(ISEC) = DTMP1
+!< JR @ RWTH
             ENDDO
 !           IN // ONLY PROCESSOR 0 WRITES THE FILE
             IF(IPID.EQ.0) THEN
@@ -402,8 +418,12 @@
         IF(SUSP.AND.CHARR) THEN
           IF(NCSIZE.GT.1) THEN
             DO ISEC=1,NSEC
-              WORK(ISEC) = P_DSUM(FLXC(ISEC))
-              WORKB(ISEC)= P_DSUM(FLXS(ISEC))
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+              DTMP1 = P_DSUM(FLXC(ISEC))
+              WORK(ISEC) = DTMP1
+              DTMP2 = P_DSUM(FLXS(ISEC))
+              WORKB(ISEC)= DTMP2
+!< JR @ RWTH
             ENDDO
             IF(IPID.EQ.0) THEN
               WRITE (NSEO,FMT=FMTZON) TPS,(WORK(ISEC),ISEC=1,NSEC),

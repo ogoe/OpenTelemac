@@ -56,7 +56,7 @@
 !history  JMH
 !+        15/03/2010
 !+
-!+   PARAMETER EPSI ADDED
+!+   PARAMETER EPSILON ADDED
 !
 !history  J-M HERVOUET (LNHE)     ; F  LEPEINTRE (LNH)
 !+        20/05/2010
@@ -78,7 +78,7 @@
 !history  U.H.MErkel
 !+        18/07/2012
 !+        V6P2
-!+   Replaced EPSILON with EPSI due to nag compiler problems
+!+   Replaced EPSILON with CHOUIA due to nag compiler problems
 !
 !history  J-M HERVOUET (LNHE)
 !+        11/01/2013
@@ -148,8 +148,8 @@
 !
       INTEGER I1,I2,I3,I4,I5,I6,IELEM,II4,II5,II6,NPOU0
 !
-      DOUBLE PRECISION EPSI
-      DATA EPSI/1.D-4/
+      DOUBLE PRECISION CHOUIA
+      DATA CHOUIA/1.D-4/
 !
 !***********************************************************************
 !
@@ -236,7 +236,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           NH1=0.D0
           NH2=0.D0
           NH3=0.D0
@@ -346,7 +346,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           NF1=0.D0
           NF2=0.D0
           NF3=0.D0
@@ -562,7 +562,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           NF1=0.D0
           NF2=0.D0
           NF3=0.D0
@@ -773,7 +773,7 @@
 !
         IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                 MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &      H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
+     &      H1.LT.CHOUIA.OR.H2.LT.CHOUIA.OR.H3.LT.CHOUIA ) THEN
           NF1=0.D0
           NF2=0.D0
           NF3=0.D0

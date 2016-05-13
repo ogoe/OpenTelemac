@@ -60,6 +60,14 @@
 !
 !======================================================================
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_MAIN_INIT
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
+!
       CALL BIEF_INIT(CODE,PATH,NCAR,.TRUE.)
 !
       TDEB = TIME_IN_SECONDS()
@@ -73,6 +81,14 @@
 ! READS THE STEERING FILE
 !
       CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_MAIN_AFTER_LECDON_SISYPHE
+#endif
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -104,6 +120,14 @@
 !-----------------------------------------------------------------------
 !
       CALL BIEF_CLOSE_FILES(CODE,SIS_FILES,MAXLU_SIS,.TRUE.)
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+      CALL AD_SISYPHE_MAIN_FINALIZE
+#endif
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

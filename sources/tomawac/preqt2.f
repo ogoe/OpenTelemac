@@ -68,7 +68,7 @@
       EPS  = 1.D-5
       IF(BDSSPB.GE.BDISPB) THEN
         AP2  = (BDISPB-TETA(1))/DTETA
-        NBPL = IDINT(AP2)
+        NBPL = INT(AP2)
         AP2  = AP2 - DBLE(NBPL)
         IF(AP2.GT.EPS) THEN
           NBPL = NBPL + 2
@@ -76,7 +76,7 @@
           NBPL = NBPL + 1
         ENDIF
         AP2  = (BDSSPB-TETA(1))/DTETA
-        NBPU = IDINT(AP2) + 1
+        NBPU = INT(AP2) + 1
         NBD=NBPU-NBPL+1
 !        ALLOCATE(INDI(1:NBD))
         DO IPL=1,NBD
@@ -84,9 +84,9 @@
         END DO
       ELSE
         AP2  = (BDSSPB-TETA(1))/DTETA
-        NBPU = IDINT(AP2) + 1
+        NBPU = INT(AP2) + 1
         AP2  = (BDISPB-TETA(1))/DTETA
-        NBPL = IDINT(AP2)
+        NBPL = INT(AP2)
         AP2  = AP2 - DBLE(NBPL)
         IF(AP2.GT.EPS) THEN
           NBPL = NBPL + 2

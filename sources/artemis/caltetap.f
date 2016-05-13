@@ -42,9 +42,16 @@
       DOUBLE PRECISION, INTENT(IN)  :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
       DOUBLE PRECISION              :: TETA(NPTFR),ADIR(NPTFR)
 !
-      INTRINSIC SQRT, ATAN2, DMOD, ABS, COS, SIN
-
-      PARAMETER (PI = 3.1415926535897932384626433D0)
+      INTRINSIC SQRT, ATAN2, MOD, ABS, COS, SIN, ATAN
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER (PI = 3.1415926535897932384626433D0)
+!< SEB @ HRW
+!
+!-----------------------------------------------------------------------
 !
       DO I=1,NPTFR
 !

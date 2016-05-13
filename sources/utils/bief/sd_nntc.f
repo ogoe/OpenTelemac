@@ -56,7 +56,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER K,JMIN,JMAX,MU,J,I,ML
-      DOUBLE PRECISION TMPK,SUM
+      DOUBLE PRECISION TMPK,SOMME
 !
 !  ******  SET TMP TO REORDERED B  ************************************
       DO  K=1,N
@@ -76,16 +76,16 @@
 !  ******  SOLVE  LT X = Y  BY BACK SUBSTITUTION  **********************
       K = N
       DO I=1,N
-        SUM = -TMP(K)
+        SOMME = -TMP(K)
         JMIN = IL(K)
         JMAX = IL(K+1) - 1
         IF (JMIN .LE. JMAX) THEN
           ML = IJL(K) - JMIN
           DO J=JMIN,JMAX
-            SUM = SUM + L(J) * TMP(JL(ML+J))
+            SOMME = SOMME + L(J) * TMP(JL(ML+J))
           ENDDO ! J
         ENDIF
-        TMP(K) = -SUM * D(K)
+        TMP(K) = -SOMME * D(K)
         Z(R(K)) = TMP(K)
         K = K - 1
       ENDDO ! I

@@ -345,7 +345,7 @@ files: bief_def.f
   p_dot.f
   p_dots.f
   trid3d.f
-  gracjg.f
+  gracjg.F
   equnor.f
   um1x09.f
   um1x04.f

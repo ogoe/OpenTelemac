@@ -1,8 +1,23 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special parallel damocles hermes bief sisyphe
+liborder: special parallel damocles hermes bief sisyphe ad
 name: HOMERE_SISYPHE
+
+[ad]
+path: <root>|sources|utils|ad
+files: ad_sisyphe_main_finalize.f
+  ad_sisyphe_main_init.f
+  ad_sisyphe_looprecords_end.f
+  ad_sisyphe_initialisation_begin.f
+  ad_sisyphe_subiteration_begin.f
+  ad_sisyphe_looprecords_begin.f
+  ad_sisyphe_initialisation_end.f
+  ad_sisyphe_timestep_end.f
+  ad_sisyphe_end.f
+  ad_sisyphe_timestep_begin.f
+  ad_sisyphe_subiteration_end.f
+  ad_sisyphe_main_after_lecdon_sisyphe.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -233,7 +248,7 @@ files: bief_def.f
   p_dot.f
   p_dots.f
   trid3d.f
-  gracjg.f
+  gracjg.F
   equnor.f
   um1x09.f
   um1x04.f
@@ -539,7 +554,7 @@ files: declarations_sisyphe.f
   dredgesim_interface.F
   maxslope.f
   condis_sisyphe.f
-  init_constant.f
+  init_constant.F
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -637,8 +652,8 @@ files: declarations_sisyphe.f
   mean_grain_size.f
   init_zero.f
   entete_sisyphe.f
-  sisyphe.f
-  homere_sisyphe.f
+  sisyphe.F
+  homere_sisyphe.F
 
 [special]
 path: <root>|sources|utils|special

@@ -30,16 +30,19 @@
       INTEGER I , ITERMU
       DOUBLE PRECISION CBID,HEFF,Q1,Q2,Q3,HM,FFW,HMUE
       DOUBLE PRECISION PI
-      PARAMETER(PI = 3.1415926535897932384626433D0)
 !-----------------------------------------------------------------------
 !
-      INTRINSIC ABS,MIN,MAX,LOG
+      INTRINSIC ABS,MIN,MAX,LOG,ATAN
       DOUBLE PRECISION P_DMAX
       EXTERNAL P_DMAX
 !
-!----------------------------------------------------------------------
-
-
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PARAMETER(PI = 3.1415926535897932384626433D0)
+!< SEB @ HRW
+!
 !------------------------------------------------------------------------------
 ! K   = MEAN WAVE NUMBER
 ! C   = MEAN PHASE CELERITY

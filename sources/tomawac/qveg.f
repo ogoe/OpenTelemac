@@ -82,7 +82,7 @@
         NUM = SHAKH*(SHAKH**2 + 3.D0)
         DENUM = 3.D0*XKMOY(IP)*COSH(KH)**3
         AUX = (XKMOY(IP)/FMOY(IP))**3
-        BETA(IP) = RO*CVEG*AUX*(NUM/DENUM)*DSQRT(VARIAN(IP))
+        BETA(IP) = RO*CVEG*AUX*(NUM/DENUM)*SQRT(VARIAN(IP))
       ENDDO
 !
 !

@@ -266,7 +266,7 @@
      &                         NDGA1%ADR(N)%P%I(I),NDGA2%ADR(N)%P%I(I),
      &                         NDGB1%ADR(N)%P%I(I),NDGB2%ADR(N)%P%I(I)
           IF(I.GT.1) THEN
-            WDIG%ADR(N)%P%R(I-1)=DSQRT((XDIG2-XDIG1)**2+
+            WDIG%ADR(N)%P%R(I-1)=SQRT((XDIG2-XDIG1)**2+
      &                                 (YDIG2-YDIG1)**2)
           ENDIF
           XDIG1=XDIG2

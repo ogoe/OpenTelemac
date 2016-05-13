@@ -1,26 +1,26 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!-- Validation and verification of python scripts
---> 
-<validation xref="analytics" rank="2" author="HRW"> 
- 
+-->
+<validation xref="analytics" rank="2" >
+
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment --> 
-   <deco xref="default"> 
-      <look format="png" colourbar="jet.xml" size="(10,6)" /> 
-      <data title="Checks results against an analytical solution" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
-   </deco> 
-   <deco xref="red"> 
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" size="(10,6)" />
+      <data title="Checks results against an analytical solution" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+   <deco xref="red">
       <look color="red" />
-   </deco> 
-   <deco xref="green"> 
-      <look color="green" /> 
-   </deco> 
-   
+   </deco>
+   <deco xref="green">
+      <look color="green" />
+   </deco>
+
 
 <!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    Example of checks by Jenkins based on a difference with the reference file
       - NOTE:  the type defines the object as 2d, but as is (no resampling/extraction)
-   --> 
+   -->
     <cast xref="valida" config="oneofall" time="[0:-1]" type="2d:">
       <v1 vars="free surface:map" target="r2d_tide-jmj_real_gen.slf" />
       <v2 vars="free surface:map" target="r2d_tide-jmj_type_gen.slf" />
@@ -35,14 +35,14 @@
       <layer vars="v2:map" target="valida:v2" />
       <layer vars="v3:map" target="valida:v3" />
    -->
-   <plot xref="figure1" type="2d:p-section" time="[-1]" config="oneofall"> 
+   <plot xref="figure1" type="2d:p-section" time="[-1]" config="oneofall">
       <layer vars="v3:map" target="valida:v3" />
    </plot>
-   
+
 <!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    Example of new variables being created:
       Cast variable DEPTH as FREE-SURFACE - BOTTOM on various supports
-   --> 
+   -->
    <!-- Casting along a 1D vertical section
       - Locations: extraction along the line defined by the 2 points (0;10) and (21;10)
       - Variables extracted:
@@ -65,8 +65,8 @@ def diff(a1,a2):
       d[0][itime] = d[0][itime] + a1.values[0][itime]-a2.values[0][0]
    return [],[],a1.support,d/nbtime
       </python>
-      <s0 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" /> 
-      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[20]" target="f2d_dambreak.slf" /> 
+      <s0 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" />
+      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[20]" target="f2d_dambreak.slf" />
       <b0 vars="bottom:line" type="1d:v-section" extract="(0;10):(21;10)" time="[-1]" target="geo_dambreak.slf" />
       <d0 vars="diff(s0,b0)" />
    </cast>
@@ -78,28 +78,28 @@ def diff(a1,a2):
       - File:      extraction from file "geo_dambreak.slf"
       - Return: No return key, hence no test will be reported to Jenkins / on screen.
       - NOTE:  the key extract, can also be moved up a level to the tag cast
-      <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" /> 
+      <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" />
    -->
-   <plot xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" > 
+   <plot xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" >
       <layer vars="d0:line" target="depth:d0" />
-      <layer vars="bottom:line" time="[-1]" target="geo_dambreak.slf" /> 
+      <layer vars="bottom:line" time="[-1]" target="geo_dambreak.slf" />
    </plot>
    <!-- Saving the content of plot "depth-sect.png" above
       - Variables extracted:
          + "d0" as the diff( FREE SURFACE, BOTTOM ) from "depth"
       - Other possibilities:
          + <layer vars="s0:line" target="depth:s0" />
-         + <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" /> 
+         + <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" />
    -->
-   <save xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" > 
+   <save xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" >
       <layer vars="d0:line" target="depth:d0" />
    </save>
 
 <!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    Example of checks by Jenkins based on the computation of an analtical solution
       Cast of analytical solution of a dam break on dry bed.
-      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" /> 
-   --> 
+      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" />
+   -->
    <cast xref="analytical" config="oneofall" type="1d:v-section" time="[-1]" >
       <python>
 def analytics(a0):
@@ -126,14 +126,14 @@ def analytics(a0):
       - Variables extracted:
          + "a0" as the analytical solution
    -->
-   <plot xref="comparison" type="1d:v-section" config="oneofall" size="(10,6)" > 
+   <plot xref="comparison" type="1d:v-section" config="oneofall" size="(10,6)" >
       <layer vars="a1:line" target="analytical:a1" deco="red" />
       <layer vars="s1:line" target="depth:s1" deco="green" />
    </plot>
 
 <!-- Casting the end of the XML file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    <cast xref="exit"><python>sys.exit('\n\nsave the rest for later\n\n')</python></cast>
-   --> 
+   -->
 
 <!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->

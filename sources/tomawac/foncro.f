@@ -56,7 +56,7 @@
 !
 !
       AUX   = A*X**XM
-      FONCRO= XM*AUX*DEXP(-AUX)*(1.D0-DEXP(-(B*X)**N))
+      FONCRO= XM*AUX*EXP(-AUX)*(1.D0-EXP(-(B*X)**N))
 !
       RETURN
       END

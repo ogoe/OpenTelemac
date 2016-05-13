@@ -73,6 +73,9 @@
       LOGICAL :: OLD_METHOD=.FALSE.
       LOGICAL, SAVE :: INIT=.TRUE.
       INTEGER, SAVE :: NSEO
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3,DTMP4
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -133,16 +136,19 @@
 !
       IF(II.GE.0) THEN
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+            DTMP1 = P_DMIN(FLX(ISEC))
+            DTMP2 = P_DMAX(FLX(ISEC))
+            DTMP3 = P_DMIN(VOLNEG(ISEC))
+            DTMP4 = P_DMAX(VOLPOS(ISEC))
+!< JR @ RWTH
+!
       IF(LNG.EQ.1) WRITE(LU,132) ISEC,CTRLSC(1+2*(ISEC-1)),
      &                                CTRLSC(2+2*(ISEC-1)),
-     &              P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                P_DMIN(VOLNEG(ISEC)),
-     &                                P_DMAX(VOLPOS(ISEC))
+     &                                DTMP1+DTMP2,DTMP3,DTMP4
       IF(LNG.EQ.2) WRITE(LU,133) ISEC,CTRLSC(1+2*(ISEC-1)),
      &                                CTRLSC(2+2*(ISEC-1)),
-     &              P_DMIN(FLX(ISEC))+P_DMAX(FLX(ISEC)),
-     &                                P_DMIN(VOLNEG(ISEC)),
-     &                                P_DMAX(VOLPOS(ISEC))
+     &                                DTMP1+DTMP2,DTMP3,DTMP4
 132   FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (ENTRE LES POINTS ',1I5,' ET ',1I5,')',//,5X,
      &               'DEBIT : '                    ,G16.7,/,5X,
@@ -212,14 +218,16 @@
 !
           DO ISEC = 1,NSEC
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+            DTMP1 = P_DSUM(FLX(ISEC))
+            DTMP2 = P_DSUM(VOLNEG(ISEC))
+            DTMP3 = P_DSUM(VOLPOS(ISEC))
+!< JR @ RWTH
+!
             IF(LNG.EQ.1) WRITE(LU,232) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                                P_DSUM(FLX(ISEC)),
-     &                                P_DSUM(VOLNEG(ISEC)),
-     &                                P_DSUM(VOLPOS(ISEC))
+     &                                 DTMP1,DTMP2,DTMP3
             IF(LNG.EQ.2) WRITE(LU,233) ISEC,TRIM(CHAIN(ISEC)%DESCR),
-     &                                P_DSUM(FLX(ISEC)),
-     &                                P_DSUM(VOLNEG(ISEC)),
-     &                                P_DSUM(VOLPOS(ISEC))
+     &                                 DTMP1,DTMP2,DTMP3
 232         FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (NOM ',A,')',//,5X,
      &               'DEBIT : '                    ,G16.7,/,5X,

@@ -78,16 +78,16 @@
       ENDIF
       X=XC-1.D0
       TMP=X+5.5D0
-      TMP=(X+0.5D0)*DLOG(TMP)-TMP
+      TMP=(X+0.5D0)*LOG(TMP)-TMP
       SER=1.D0
       DO J=1,6
         X=X+1.D0
         SER=SER+COF(J)/X
       ENDDO ! J
-      GAMMLN=TMP+DLOG(STP*SER)
+      GAMMLN=TMP+LOG(STP*SER)
       IF (XX.LT.1D0) THEN
         AUX=0.5D0*DEUPI*(1.D0-XX)
-        GAMMLN=DLOG(AUX/SIN(AUX))-GAMMLN
+        GAMMLN=LOG(AUX/SIN(AUX))-GAMMLN
       ENDIF
 !
       RETURN

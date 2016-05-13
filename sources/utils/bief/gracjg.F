@@ -100,11 +100,50 @@
 !
 !-----------------------------------------------------------------------
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      INTEGER, SAVE     :: CNT = 0
+      LOGICAL           :: FINISH
+!
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+      INTEGER           :: DRV_ELMS
+      DOUBLE PRECISION  :: DRV_ERR
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE  :: DRV0, DRV1
+#  endif ! COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
+!
       INTRINSIC SQRT
 !
 !-----------------------------------------------------------------------
 !
 !   INITIALISES
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      CNT = CNT + 1
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+!
+! 1.  RESET INCOMING TANGENTS TO ZERO TO AVOID DEPENDENCY OF OVERALL
+!     TANGENTS FROM INITIAL SOLUTIONS FOR FIRST CONJUGADE GRADIENT
+      CALL DCO_T1S_SET( X%ADR(1)%P%R, 0.D0, 1 )
+!     BY SETTING X TO A FIXED STARTING VALUE WE DISABLE THE RESTART
+!     FROM THE PREVISOU CG SOLUTION, AND SETTING TANGENTS TO ZERO TOO
+!>    X%ADR(1)%P%R = -1.1D0
+!
+! 2.  PREPARE STORAGE OF GRADIENTS FOR TERMINATION TEST
+      DRV_ELMS = X%ADR(1)%P%DIM1
+      ALLOCATE( DRV0(DRV_ELMS), DRV1(DRV_ELMS))
+!
+! 3.  STORE TANGENT OF X0
+      CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV0, 1 )
+!
+#  endif
+#endif COMPAD
+!
+!< JR @ RWTH
 !
       STO1 = 0.D0
       CROUT =.FALSE.
@@ -207,6 +246,15 @@
 !
       CALL OS('X=X+CY  ',X=X,Y=D,C=-RO)
 !
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+!     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE AND STORE IT
+      CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV1, 1 )
+#   endif
+#endif
+!< JR @ RWTH
+!
 !-----------------------------------------------------------------------
 !  ITERATIONS LOOP:
 !-----------------------------------------------------------------------
@@ -228,7 +276,27 @@
 !
 ! CHECKS END:
 !
-      IF(RMRM.LE.XL*CFG%EPS**2) GO TO 900
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+!      IF(RMRM.LE.XL*CFG%EPS**2) GO TO 900
+      FINISH = RMRM.LE.XL*CFG%EPS**2
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+!     CHECK DIFFERENCE BETWEEN TANGENTS OF LAST TWO STEPS
+! 1.  SET TO ZERO TO AVOID ADDTIONAL TEST
+      DRV_ERR = 0.D0
+! 2a. ABSOLUTE CHANGE TO LAST STEP
+!     DRV_ERR  = SUM( DRV1 - DRV0 )**2
+! 2b. RELATIVE CHANGE TO LAST STEP
+      DRV_ERR = SUM( DRV0**2 )
+! 3.  TEST CONVERGENCE
+      IF ( DRV_ERR .GT. 0.0 ) THEN
+        DRV_ERR  = SUM( DRV1 - DRV0 )**2 / DRV_ERR
+      ENDIF
+      FINISH = FINISH .AND. (DRV_ERR .LE. CFG%EPS**2 )
+#   endif
+#endif
+      IF ( FINISH ) GO TO 900
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 ! PRECONDITIONING : SOLVES C G = R
@@ -292,6 +360,20 @@
 !
       CALL OS('X=X+CY  ',X=X,Y=D,C=-RO)
 !
+!-----------------------------------------------------------------------
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+!     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE
+!     AND STORE TANGENT OF FORMER X
+      DRV0 = DRV1
+!     STORE TANGENT OF NEW X
+      CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV1, 1 )
+#  endif
+#endif
+!< JR @ RWTH
+!-----------------------------------------------------------------------
+!
       IF(M.LT.CFG%NITMAX) GO TO 2
 !
 !-----------------------------------------------------------------------
@@ -324,6 +406,20 @@
       ENDIF
 !
 1000  CONTINUE
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#ifdef COMPAD
+#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+!!      WRITE(LU,*) '  CG_END CONVTEST',CNT,M,FINISH,RMRM,' :: ',
+!!     $     SQRT(DRV_ERR),(DRV_ERR.LE.CFG%EPS**2), SQRT(SUM(DRV1**2))
+#  endif
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
+!
       RETURN
 !
 !-----------------------------------------------------------------------

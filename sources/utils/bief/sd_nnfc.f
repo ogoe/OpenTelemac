@@ -76,7 +76,7 @@
       INTEGER  IU(*), JU(*), IJU(*), IRL(*), JRL(*), FLAG
       INTEGER  N,K,I1,I,I2,JMIN,JMAX,J,MU,IJLB,LMAX
       DOUBLE PRECISION  A(*), L(*), D(*), U(*), Z(*), B(*), ROW(*)
-      DOUBLE PRECISION  TMP(*), LKI, SUM, DK
+      DOUBLE PRECISION  TMP(*), LKI, SOMME, DK
 !
 !  ******  INITIALIZE POINTERS AND TEST STORAGE  ***********************
 !
@@ -113,15 +113,15 @@
         DO 6 J=JMIN,JMAX
           ROW(IC(JA(J))) = A(J)
    6      CONTINUE
-!  ******  INITIALIZE SUM, AND LINK THROUGH JRL  ***********************
-        SUM = B(RK)
+!  ******  INITIALIZE SOMME, AND LINK THROUGH JRL  *********************
+        SOMME = B(RK)
         I = I1
         IF (I .EQ. 0) GO TO 10
-!  ******  ASSIGN THE KTH ROW OF L AND ADJUST ROW, SUM  ****************
+!  ******  ASSIGN THE KTH ROW OF L AND ADJUST ROW, SOMME  **************
    7      LKI = -ROW(I)
 !  ******  IF L IS NOT REQUIRED, THEN COMMENT OUT THE FOLLOWING LINE  **
           L(IRL(I)) = -LKI
-          SUM = SUM + LKI * TMP(I)
+          SOMME = SOMME + LKI * TMP(I)
           JMIN = IU(I)
           JMAX = IU(I+1) - 1
           IF (JMIN .GT. JMAX) GO TO 9
@@ -135,7 +135,7 @@
   10    IF (ROW(K) .EQ. 0.0D0) GO TO 108
         DK = 1.0D0 / ROW(K)
         D(K) = DK
-        TMP(K) = SUM * DK
+        TMP(K) = SOMME * DK
         IF (K .EQ. N) GO TO 19
         JMIN = IU(K)
         JMAX = IU(K+1) - 1
@@ -169,15 +169,15 @@
 !  ******  SOLVE  UX = TMP  BY BACK SUBSTITUTION  **********************
       K = N
       DO 22 I=1,N
-        SUM =  TMP(K)
+        SOMME =  TMP(K)
         JMIN = IU(K)
         JMAX = IU(K+1) - 1
         IF (JMIN .GT. JMAX)  GO TO 21
         MU = IJU(K) - JMIN
         DO 20 J=JMIN,JMAX
-  20      SUM = SUM - U(J) * TMP(JU(MU+J))
-  21    TMP(K) =  SUM
-        Z(C(K)) =  SUM
+  20      SOMME = SOMME - U(J) * TMP(JU(MU+J))
+  21    TMP(K) =  SOMME
+        Z(C(K)) =  SOMME
   22    K = K-1
       FLAG = 0
       RETURN
