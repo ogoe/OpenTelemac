@@ -1201,8 +1201,9 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
                ncsize = getNCSIZE(cas,dico,frgb)
                do.updateCFG({'cas':cas})
-               if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
-               if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
+               # ~~> removinng the 2 lines below means that the same parallel config will test both scalar and parallel mode.
+               #if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
+               #if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
 
                idico = DICOS[dicoFile]['input']
                odico = DICOS[dicoFile]['output']
