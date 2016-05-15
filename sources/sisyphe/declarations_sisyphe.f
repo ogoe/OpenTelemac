@@ -71,6 +71,11 @@
 !+        11/09/2015
 !+        V7P1
 !+ Arrays of size MAXFRO now allocatable.
+!+
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -245,11 +250,15 @@
 !
 !     ANGLE BETWEEN QS AND Q
 !
-      TYPE(BIEF_OBJ), TARGET :: CALFA
+      TYPE(BIEF_OBJ), TARGET :: CALFA_CL
 !
 !     ANGLE BETWEEN QS AND Q
 !
-      TYPE(BIEF_OBJ), TARGET :: SALFA
+      TYPE(BIEF_OBJ), TARGET :: SALFA_CL
+!
+!     CURVE RADIUS FOR SECONDARY CURRENTS
+!
+      TYPE(BIEF_OBJ), TARGET :: RADSEC
 !
 !     VOID STRUCTURE
 !

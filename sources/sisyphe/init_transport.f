@@ -4,7 +4,7 @@
 !
      &(TROUVE,DEBU,HIDING,NSICLA,NPOIN,
      & T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T14,
-     & CHARR,QS_C,QSXC,QSYC,CALFA,SALFA,COEFPN,SLOPEFF,
+     & CHARR,QS_C,QSXC,QSYC,CALFA_CL,SALFA_CL,COEFPN,SLOPEFF,
      & SUSP,QS_S,QS,QSCL,QSCL_C,QSCL_S,QSCLXS,QSCLYS,
      & UNORM,U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW,FW,HOULE,
      & AVAIL,ACLADM,UNLADM,KSP,KSR,KS,
@@ -15,7 +15,7 @@
      & U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -72,6 +72,10 @@
 !+        V6P2
 !+   updated version with HRW's development for Soulsby-van Rijn's concentration
 !
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -180,7 +184,8 @@
       TYPE(BIEF_OBJ),    INTENT(IN)    :: MU,TOB,TOBW,UW,TW,THETAW,FW
       TYPE(BIEF_OBJ),    INTENT(IN)    :: ACLADM,UNLADM,KSP,KSR,KS
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: HIDING
-      TYPE(BIEF_OBJ),    INTENT(INOUT) :: QS_C, QSXC, QSYC, CALFA,SALFA
+      TYPE(BIEF_OBJ),    INTENT(INOUT) :: QS_C, QSXC, QSYC
+      TYPE(BIEF_OBJ),    INTENT(INOUT) ::  CALFA_CL,SALFA_CL
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: T9,T10,T11,T12,T14
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZREF,CSTAEQ,CSRATIO
@@ -223,16 +228,26 @@
         DO I=1,NPOIN
           U3DNORM=SQRT(U3D%R(I)*U3D%R(I)+V3D%R(I)*V3D%R(I))
           IF(U3DNORM.GE.1.D-12) THEN
-            CALFA%R(I)=U3D%R(I)/U3DNORM
-            SALFA%R(I)=V3D%R(I)/U3DNORM
+            CALFA_CL%ADR(1)%P%R(I)=U3D%R(I)/U3DNORM
+            SALFA_CL%ADR(1)%P%R(I)=V3D%R(I)/U3DNORM
           ELSE
-            CALFA%R(I)=1.D0
-            SALFA%R(I)=0.D0
+            CALFA_CL%ADR(1)%P%R(I)=1.D0
+            SALFA_CL%ADR(1)%P%R(I)=0.D0
           ENDIF
         ENDDO
       ELSE
-        CALL OS('X=Y/Z   ',CALFA, U2D, UNORM, 0.D0, 2, 1.D0, 1.D-12)
-        CALL OS('X=Y/Z   ',SALFA, V2D, UNORM, 0.D0, 2, 0.D0, 1.D-12)
+        CALL OS('X=Y/Z   ',CALFA_CL%ADR(1)%P, U2D, UNORM, 
+     &           0.D0, 2, 1.D0, 1.D-12)
+        CALL OS('X=Y/Z   ',SALFA_CL%ADR(1)%P, V2D, UNORM, 
+     &           0.D0, 2, 0.D0, 1.D-12)
+      ENDIF
+      IF(NSICLA.GT.1) THEN
+       DO I=2,NSICLA
+        CALL OS('X=Y     ', X=CALFA_CL%ADR(I)%P, 
+     &          Y=CALFA_CL%ADR(1)%P)
+        CALL OS('X=Y     ', X=SALFA_CL%ADR(I)%P, 
+     &          Y=SALFA_CL%ADR(1)%P)
+       ENDDO
       ENDIF
 !
 !     appel a effpnt ?
@@ -261,20 +276,24 @@
      &        FDM(I),GRAV,VCE,HMIN,XWC(I),FD90(I),KARMAN,ZERO,
      &        PI,SUSP,AC(I),HIDING,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,
      &        T11,T12,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
-     &        IELMT,SECCURRENT,SLOPEFF,COEFPN,BIJK,HOULE)
-!
+     &        IELMT,SECCURRENT,SLOPEFF,
+     &        COEFPN,CALFA_CL%ADR(I)%P,SALFA_CL%ADR(I)%P,
+     &        BIJK,HOULE)
+!     
           ENDIF
 !         SUM ON ALL CLASSES
           DO J=1,NPOIN
             QS_C%R(J) = QS_C%R(J) + QSCL_C%ADR(I)%P%R(J)
+!
+!       COMPUTES THE X AND Y COMPONENTS OF TRANSPORT
+            QSXC%R(J) = QSXC%R(J) + QSCL_C%ADR(I)%P%R(J)
+     &                  *CALFA_CL%ADR(I)%P%R(J)
+            QSYC%R(J) = QSYC%R(J) + QSCL_C%ADR(I)%P%R(J)
+     &                  *SALFA_CL%ADR(I)%P%R(J)
           ENDDO
 !
         ENDDO
 !
-!       COMPUTES THE X AND Y COMPONENTS OF TRANSPORT
-!
-        CALL OS('X=YZ    ', X=QSXC, Y=QS_C, Z=CALFA)
-        CALL OS('X=YZ    ', X=QSYC, Y=QS_C, Z=SALFA)
 !
       ENDIF
 !

@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V7P1
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.

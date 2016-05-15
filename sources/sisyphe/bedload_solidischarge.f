@@ -10,10 +10,11 @@
      & SUSP,MSK,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,
      & T11,T12,AC,HIDING,QSC,QSS,
      & SLOPEFF,COEFPN,PHISED,CALFA,SALFA,BETA,ZF_C,S,
-     & DEVIA,BETA2,SECCURRENT,BIJK,HOULE,UNSV2D,U3D,V3D,CODE)
+     & DEVIA,BETA2,SECCURRENT,
+     & BIJK,HOULE,UNSV2D,U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -70,6 +71,11 @@
 !+        V6P2
 !+  Dirichlet treatment of QBOR removed
 !+  It is now done in bedload_solvs_ef and vf
+!+
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -255,7 +261,7 @@
      &   DM, GRAV, VCE, HMIN, XWC, D90, KARMAN, ZERO,
      &   PI, SUSP, AC, HIDING, T1, T2, T3, T4, T5, T6, T7, T8, T9,
      &   T10, T11, T12, QSC, QSS, IELMT,SECCURRENT,
-     &   SLOPEFF, COEFPN, BIJK, HOULE)
+     &   SLOPEFF, COEFPN, CALFA, SALFA, BIJK, HOULE)
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_FORMULA'
 !
 !     TIDAL FLATS

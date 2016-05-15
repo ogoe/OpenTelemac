@@ -2,10 +2,10 @@
                      SUBROUTINE BEDLOAD_SECCURRENT
 !                    *****************************
 !
-     &(IELMU)
+     &(IELMU,CALFA,SALFA)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE NEW TAU FROM SECONDARY CURRENTS.
@@ -26,6 +26,10 @@
 !+         20/03/2011
 !+         V6P1
 !+
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELMU          |-->| TYPE OF ELEMENT FOR VELOCITY
@@ -46,7 +50,16 @@
 !
       INTEGER I
       DOUBLE PRECISION C, ALPHAL
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: CALFA, SALFA
 !
+
+!
+!FORMULATION FROM ENGELUND WITH GEOMETRIC RADIUS: TAN(TETA) = 7*(H/R)
+!	  
+
+! RADIUS OF CURVATURE MUST BE CALCULATED FROM FREE SURFACE SLOPE
+! USE OF ALPHA (0.75 FOR VERY ROUGH BOTTOMS, 1 FOR SMOOTH ONES)
+
 !     RK MODIFICATION FOR SECONDARY CURRENTS
 !
 !     COMPUTES THE GRADIENT OF THE FREE SURFACE IN X AND Y DIRECTION
@@ -69,9 +82,8 @@
 !     COMPUTES THE X- AND Y-COMPONENTS OF THE SECONDARY CURRENT
 !     ACCORDING TO ENGELUNG. TAU_X_SEC = C*QV, TAU_Y_SEC = C*QU
 !
-! AT THE MOMENT ALPHA MUST BE SET HERE  (0.75 FOR VERY ROUGH BOTTOMS, 1 FOR SMOOTH ONES)
+
 ! BEWARE: THE VARIABLE ALPHA IS MORE THAN THE ALPHA FROM THE THEORY
-! Now included as Keyword in CAS - FILE
       ALPHAL = ALPHA
 !RK
       IF(ALPHA.GT.0.D0) THEN

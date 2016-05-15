@@ -8,10 +8,10 @@
      & DM,GRAV,VCE,HMIN,XWC,D90,KARMAN,ZERO,
      & PI,SUSP, AC, HIDING, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
      & T11,TETAP, QSC, QSS,IELMT,SECCURRENT,SLOPEFF,
-     & COEFPN,BIJK,HOULE)
+     & COEFPN,CALFA,SALFA,BIJK,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE BED-LOAD TRANSPORT.
@@ -52,6 +52,10 @@
 !+        27/02/2012
 !+        V6P2
 !+  ALPHA suppressed, was no longer used
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| SHIELDS PARAMETER
@@ -132,7 +136,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10,T11
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TETAP ! WORK ARRAY T12
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC, QSS
-      TYPE(BIEF_OBJ),   INTENT(INOUT) ::  COEFPN
+      TYPE(BIEF_OBJ),   INTENT(INOUT) ::  COEFPN, CALFA, SALFA
       INTEGER,          INTENT(IN)    :: SLOPEFF
 !
       DOUBLE PRECISION, INTENT (IN) :: BIJK,AVA(NPOIN)
@@ -163,7 +167,7 @@
       CALL OS('X=CYZ   ', X=TETAP, Y=TOB,Z=MU,  C=C1)
       CALL OS('X=+(Y,C)', X= TETAP,Y=TETAP, C=ZERO_LOCAL)
 !
-      IF(SECCURRENT) CALL BEDLOAD_SECCURRENT(IELMT)
+      IF(SECCURRENT) CALL BEDLOAD_SECCURRENT(IELMT,CALFA,SALFA)
       ! ****************************************** !
       ! IV - COMPUTES 2 TRANSPORT TERMS            !
       !      QSS : SUSPENSION                      !

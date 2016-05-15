@@ -3161,7 +3161,8 @@ RUBRIQUE = 'SEDIMENTOLOGIE';'GENERAL'
 RUBRIQUE1 = 'SEDIMENTOLOGY';'GENERAL'
 NIVEAU = 1
 AIDE = '(-)'
-AIDE1 = 'Alpha coefficient of secondary current(-)'
+AIDE1 = 'Alpha coefficient of secondary current(-), 
+Should be chosen between 0.75 (rough bottom) and 1 (smooth bottom)'
 /
 / UM MORPHOLOGICAL FACTOR
 /
@@ -3771,4 +3772,5 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
 AIDE = 'Executable par defaut de SISYPHE'
 AIDE1 = 'Default executable for SISYPHE'
+                                                            
 /

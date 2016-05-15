@@ -122,6 +122,11 @@
 !+        V7P2
 !+   Adding the variable HPROP.
 !
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -426,6 +431,22 @@
      &              N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_FONSTR'
 !
+!
+!-----------------------------------------------------------------------
+!       LOOKS FOR RADSEC FOR SECONDARY CURRENTS IN THE GEOMETRY FILE :
+!-----------------------------------------------------------------------
+!
+!
+!       RADSEC IS LANGUAGE INDEPENDENT
+!        CALL FIND_VARIABLE(RADSEC,'RADSEC          ',SIS_FILES(SISGEO)%LU,
+!     &                   SIS_FILES(SISGEO)%FMT,W,OKRADSEC,TIME=BID)
+! Initialising
+        RADSEC%R=0.D0
+        CALL FIND_VARIABLE(SIS_FILES(SISGEO)%FMT,SIS_FILES(SISGEO)%LU,
+     &   'RADSEC          ', RADSEC%R,NPOIN,IERR)
+!
+!-----------------------------------------------------------------------
+
 !-----------------------------------------------------------------------
 !
 !       PREPARES THE RESULTS FILE (OPTIONAL)
@@ -861,7 +882,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_TRANSPORT'
         CALL INIT_TRANSPORT(TROUVE,DEBU,HIDING,NSICLA,NPOIN,
      &     T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T14,
-     &     CHARR,QS_C,QSXC,QSYC,CALFA,SALFA,COEFPN,SLOPEFF,
+     &     CHARR,QS_C,QSXC,QSYC,CALFA_CL,SALFA_CL,COEFPN,SLOPEFF,
      &     SUSP,QS_S,QS,QSCL,QSCL_C,QSCL_S,QSCLXS,QSCLYS,
      &     UNORM,U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW,FW,HOULE,
      &     AVAIL,ACLADM,UNLADM,KSP,KSR,KS,
@@ -1173,7 +1194,10 @@
 !         ADDED BY JMH 01/07/2004 (ZF MAY BE MODIFIED BY CALLING PROGRAM)
           CALL OS('X=Y     ', X=ZF, Y=ZF_TEL)
 !         ELAY MUST BE UPDATED CONSEQUENTLY (ADDED BY JMH 02/05/2014)
-          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+!         IF COUPLED WITH TELEMAC3D, NO BOTTOM CHANGE FROM TELEMAC2D
+          IF(CODE(1:9).EQ.'TELEMAC3D') THEN
+            CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+          ENDIF
 !         CLIPS NEGATIVE DEPTHS
           IF(OPTBAN.GT.0) THEN
             DO I = 1,HN%DIM1
@@ -1329,9 +1353,9 @@
      &         ELAY,LIEBOR,LIMTEC,MASKTR,
      &         IT1,T1,T2,T3,T4,T5,T6,T7,T8,T9,
      &         T10,T11,T12,T13,UNORM,AC,AT0,DTS,ELAY0,FRACSED_GF,
-     &         AVAIL,BREACH,CALFA,COEFPN,DZF_GF,HIDING,
+     &         AVAIL,BREACH,CALFA_CL,COEFPN,DZF_GF,HIDING,
      &         QSCL_C,QSCL_S,QS_C,QSCLXC,QSXC,QSCLYC,
-     &         QSYC,SALFA,ZF_C,ZFCL_C,NSOUS,ENTETS,
+     &         QSYC,SALFA_CL,ZF_C,ZFCL_C,NSOUS,ENTETS,
      &         SECCURRENT,SLOPEFF,PHISED,DEVIA,BETA2,BIJK,
      &         SEDCO,HOULE,U3D,V3D,CODE,FLBCLA,MAXADV)
 !

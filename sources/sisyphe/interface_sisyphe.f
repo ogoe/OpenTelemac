@@ -3,7 +3,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   12/02/2013
+! SISYPHE   V7P2                                   12/02/2013
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -386,7 +386,7 @@
         SUBROUTINE INIT_TRANSPORT
      &  (TROUVE,DEBU,HIDING,NSICLA,NPOIN,
      &   T1,T2,T3,T4,T5,T6,T7,T8,T9, T10,T11,T12,T14,
-     &   CHARR,QS_C,QSXC, QSYC,CALFA,SALFA,COEFPN,SLOPEFF,
+     &   CHARR,QS_C,QSXC, QSYC,CALFA_CL,SALFA_CL,COEFPN,SLOPEFF,
      &   SUSP, QS_S,QS,QSCL, QSCL_C,QSCL_S,QSCLXS,QSCLYS,
      &   UNORM, U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW, FW,HOULE,
      &   AVAIL, ACLADM,UNLADM,KSP, KSR,KS,
@@ -407,7 +407,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)    :: MU,TOB,TOBW,UW,TW,THETAW,FW
       TYPE(BIEF_OBJ), INTENT(IN)    :: ACLADM,UNLADM,KSP, KSR,KS
       TYPE(BIEF_OBJ), INTENT(INOUT) :: HIDING
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: QS_C, QSXC, QSYC, CALFA,SALFA
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: QS_C, QSXC, QSYC
+       TYPE(BIEF_OBJ), INTENT(INOUT) ::  CALFA_CL,SALFA_CL
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T9,T10,T11,T12,T14
       TYPE(BIEF_OBJ), INTENT(INOUT) :: ZREF,CSTAEQ,CSRATIO

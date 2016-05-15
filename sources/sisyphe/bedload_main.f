@@ -14,15 +14,15 @@
      & ELAY, LIEBOR, LIMTEC, MASKTR,
      & IT1, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,
      & T12,T13,UNORM,AC, AT0, DTS, ELAY0, FRACSED_GF,
-     & AVAIL, BREACH, CALFA, COEFPN,
+     &   AVAIL, BREACH, CALFA_CL, COEFPN,
      & DZF_GF, HIDING, QSCL_C, QSCL_S, QS_C,
-     & QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
+     & QSCLXC, QSXC, QSCLYC, QSYC, SALFA_CL, ZF_C, ZFCL_C, NSOUS,
      & ENTETS, SECCURRENT, SLOPEFF,
      & PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
      & U3D,V3D,CODE,FLBCLA,MAXADV)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE BEDLOAD TRANSPORT.
@@ -59,6 +59,10 @@
 !+        28/03/2014
 !+        V7P0
 !+  Call to bedload_diffin changed.
+!history  R KOPMANN (BAW)
+!+        10/05/2016
+!+        V7P2
+!+ CALFA,SALFA dependent of grain classes
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -225,12 +229,12 @@
       DOUBLE PRECISION, INTENT(INOUT) :: AC(NSICLA), AT0, DTS, ELAY0
       DOUBLE PRECISION, INTENT(INOUT) :: FRACSED_GF(NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, CALFA, COEFPN
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, CALFA_CL, COEFPN
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: DZF_GF
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: HIDING
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSCL_C,QSCL_S
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS_C, QSCLXC, QSXC, QSCLYC
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSYC, SALFA, ZF_C, ZFCL_C
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSYC, SALFA_CL, ZF_C, ZFCL_C
       INTEGER,          INTENT(INOUT) :: NSOUS
       LOGICAL,          INTENT(INOUT) :: ENTETS
       DOUBLE PRECISION,   INTENT(IN)  :: BETA2, PHISED
@@ -278,7 +282,9 @@
      &         KARIM_HOLLY_YANG,SUSP,MSK,T1,T2,
      &         T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, AC(I),
      &         HIDING,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
-     &         SLOPEFF,COEFPN,PHISED,CALFA,SALFA,BETA,ZF,S,
+     &         SLOPEFF,COEFPN,PHISED,
+     &         CALFA_CL%ADR(I)%P,SALFA_CL%ADR(I)%P,
+     &         BETA,ZF,S,
      &         DEVIA, BETA2 , SECCURRENT, BIJK,HOULE,UNSV2D,
      &         U3D,V3D,CODE)
           IF(DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_SOLIDISCHARGE'
@@ -300,7 +306,8 @@
 !
           IF (DEBUG > 0) WRITE(LU,*) 'BEDLOAD_EVOL : ',I,'/',NSICLA
           CALL BEDLOAD_EVOL(HN,Q,S,ELAY,ACLADM,AVAIL(1:NPOIN,1,I),
-     &                      COEFPN,CALFA,SALFA,LIMTEC,
+     &                      COEFPN,CALFA_CL%ADR(I)%P,SALFA_CL%ADR(I)%P,
+     &                      LIMTEC,
      &                      EBOR%ADR(I)%P,MASKEL,MASK,
      &                      V2DPAR,UNSV2D,DEBUG,NPOIN,NPTFR,IELMT,
      &                      KENT,KDIR,KDDL,LOADMETH,
@@ -341,6 +348,8 @@
       ! ---------------------
       CALL OS('X=0     ', X=QS_C)
       CALL OS('X=0     ', X=ZF_C)
+      CALL OS('X=0     ',X=QSXC)
+      CALL OS('X=0     ',X=QSYC)
       ! II.2 - ADDS THE CLASSES
       ! ----------------------
       !
@@ -348,6 +357,11 @@
         IF(.NOT.SEDCO(I)) THEN
           CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
           CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
+           CALL OS('X=X+YZ  ', X=QSXC, Y=QSCL_C%ADR(I)%P, 
+     &                               Z=CALFA_CL%ADR(I)%P)
+           CALL OS('X=X+YZ  ', X=QSYC, Y=QSCL_C%ADR(I)%P, 
+     &                               Z=SALFA_CL%ADR(I)%P)
+
         ENDIF
       ENDDO
 !
@@ -357,9 +371,9 @@
 !
       ! II.3 - SLOPE EFFECT FOR THE SUM OF THE QS
       ! -----------------------------------------
-      ! QS : COEFPN ALREADY ADDED IN QSCL_C
-      CALL OS('X=YZ    ', X=QSXC, Y=QS_C, Z=CALFA)
-      CALL OS('X=YZ    ', X=QSYC, Y=QS_C, Z=SALFA)
+      ! QS : COEFPN AND CALFA, SALFA ALREADY ADDED IN QSCL_C
+!      CALL OS('X=YZ    ', X=QSXC, Y=QS_C, Z=CALFA)
+!      CALL OS('X=YZ    ', X=QSYC, Y=QS_C, Z=SALFA)
 !
 !======================================================================!
 !======================================================================!
