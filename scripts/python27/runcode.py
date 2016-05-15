@@ -129,7 +129,7 @@ from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,removeDirectories,isNewer
+from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,addFileContent,removeDirectories,isNewer
 from utils.messages import MESSAGES,filterMessage,banner
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
@@ -1025,19 +1025,19 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       for name in CASFiles:
          chdir(CASFiles[name]['wir'])
          # >>> Names for the executable set
-            #> names within wdir
+         #> names within wdir
          f90File = MODFiles[CASFiles[name]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
-            #> aggregation of PRINCI files
+         #> aggregation of PRINCI files
          for cplage in CASFiles[name]['with']:
             f90FilePlage = MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
             if path.isfile(f90FilePlage):
-               putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
+               addFileContent(f90File,['']+getFileContent(f90FilePlage))
                remove(f90FilePlage)
          plib = cfg['MODULES'][CASFiles[name]['code']]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
          objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
-            #> default executable name
+         #> default executable name
          exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
-            #> user defined executable name
+         #> user defined executable name
          useFile = exeFile
          value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],
                                    MODFiles[CASFiles[name]['code']]['dico'],

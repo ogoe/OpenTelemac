@@ -691,7 +691,8 @@ class actionRUN(ACTION):
                         if pFile.lower() == n:
                            oFiles.update( filterPrincipalWrapNames( [pFile],[path.join(dirpath,fle)] ) )
                if oFiles == {}:
-                  raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not relate your PRINCI with the system: '+princiFile}])
+                  print '/!\\ warning: could not relate the following in your PRINCI with the system: '+princiFile
+                  for oFile in oFiles: print '           x ',oFile
                else:
                   print '        +> found:'
                   for oFile in oFiles: print '           - ',oFile
