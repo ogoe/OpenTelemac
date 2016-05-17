@@ -6031,6 +6031,24 @@ NIVEAU = 2
 AIDE = 'FLUXLINE'
 AIDE1 ='Use Fluxline to compute flux over lines'
 
+NOM = 'OPTION DE LA RECONSTRUCION HYDROSTATIQUE'
+NOM1 = 'OPTION OF THE HYDROSTATIC RECONSTRUCTION'
+TYPE = ENTIER
+INDEX = 101
+MNEMO = 'HROPT'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'donne l option de la reconstruction hydrostatique 
+(option utile uniquement pour les volumes finis):
+1: option d Audusse, 2: option de Noelle'
+AIDE1 = 'gives the option for hydrostatic reconstruction
+(used only for finite volumes): 
+1: option of Audusse, 2: option of Noelle'
+
 /
 / POUR LES LANCEURS PERL :
 /

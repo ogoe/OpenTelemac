@@ -14,7 +14,7 @@
      &  HSTOK,HCSTOK,LOGFR,DSZ,FLUXT,FLUHBOR,FLBOR,DTN,FLUSORTN,
      &  FLUENTN,LTT,
      &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD,
-     &  MXPTVS,NEISEG,V2DPAR,UDEL,VDEL)
+     &  MXPTVS,NEISEG,V2DPAR,UDEL,VDEL,HROPT)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   15/06/2013
@@ -118,6 +118,8 @@
 !| HN             |-->| WATER DEPTH AT TIME N
 !| HSTOK,HCSTOK   |<->| H, H CORRECTED TO STOCK FOR TRACER
 !| HTN,TN         |-->| HT, T  AT TIME N
+!| HROPT          |-->| OPTION FOR HYDROSTATIC RECONSTRUCTION:
+!|                |   | 1:AUDUSSE, 2: NOELLE
 !| IKLE           |-->| INDICES OF NODES FOR TRIANGLE
 !| ISCE           |-->| SOURCE POINTS
 !| ITURB          |-->| MODEL OF TURBULENCE  1 : LAMINAIRE
@@ -185,7 +187,7 @@
 !
       INTEGER, INTENT(IN)    :: NPTFR,KDIR,KNEU,KDDL,DIMT,KFROT,OPTVF
       INTEGER, INTENT(IN)    :: NELEM,NPOIN,LT,NREJET,ITURB
-      INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA,MXPTVS
+      INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA,MXPTVS,HROPT
       INTEGER, INTENT(INOUT) :: LTT
       INTEGER, INTENT(IN)    :: LIMPRO(NPTFR,6),NBOR(NPTFR)
       INTEGER, INTENT(IN)    :: ISCE(NREJET),NSEG
@@ -246,7 +248,7 @@
      &            TB%ADR(6)%P%R,TB%ADR(7)%P%R,TB%ADR(8)%P%R,
      &            TB%ADR(9)%P%R,TB%ADR(10)%P%R,
      &            GAMMA,FLUX_OLD%R,MXPTVS,NEISEG,
-     &            MESH%ELTSEG%I,MESH%IFABOR%I,MESH)
+     &            MESH%ELTSEG%I,MESH%IFABOR%I,HROPT,MESH)
 !
 !-----------------------------------------------------------------------
 !

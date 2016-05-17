@@ -1159,6 +1159,9 @@
 !
       INTEGER COMPLEO
 !
+!     OPTION FOR HYDROSTATIC RECONSTRUCTION
+!
+      INTEGER HROPT
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES

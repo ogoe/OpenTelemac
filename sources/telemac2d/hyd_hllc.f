@@ -2,37 +2,44 @@
                         SUBROUTINE HYD_HLLC
 !                       *******************
 
-     &(NS,NELEM,NSEG,NUBO,G,W,ZF,VNOCL,X,Y,ELTSEG,CE,IFABOR)
+     &(NS,NELEM,NSEG,NUBO,G,W,ZF,VNOCL,X,Y,ELTSEG,CE,IFABOR,HROPT)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 7.1
+! TELEMAC 2D                                                 VERSION 7.2
 !***********************************************************************
 !
 !brief
 !+     FUNCTION  : COMPUTE ALL THE FLUXES FOR INTERNAL INTERFACES USING
 !+                 HLLC FLUX.
-!
+!+
 !history  RIADH ATA (EDF R&D-LNHE)
 !+        07/15/2012
 !+        V6P2
 !+
-!
+!+
 !history  R. ATA (EDF-LNHE)
 !+        01/07/2013
 !+        V6P3
 !+      adaptation with the new data structure (common with FEM)
 !+      PARALLELIZATION
-!
+!+
 !history  R. ATA (EDF-LNHE)
 !+        18/01/2015
 !+        V7P0
 !+      optimization (change place of Hydro Reconst)
 !+
-!
+!history  R. ATA (EDF-LNHE)
+!+        18/05/2016
+!+        V7P2
+!+      New option for hydrostatic reconstruction
+!+      introduced by Noelle et al.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
 ! |  G             | -->|  GRAVITY                                     |
+! |  HROPT         | -->|  OPTION FOR HYDROSTATIC RECONSTRUCTION:      |
+! !                |    |   1: AUDUSSE, 2: NOELLE                      |
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
@@ -60,7 +67,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NS,NSEG,NELEM
+      INTEGER, INTENT(IN)             :: NS,NSEG,NELEM,HROPT
       INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG)
@@ -74,9 +81,9 @@
       INTEGER NSG,NUBO1,NUBO2,IVAR,IS,IDRY,I,IEL
 !
       DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
-      DOUBLE PRECISION V21,V22,V31,V32
-      DOUBLE PRECISION HIJ,PROD_SCAL
-      DOUBLE PRECISION HJI,DZIJ,DZJI
+      DOUBLE PRECISION V21,V22,V31,V32,SL1,SL2
+      DOUBLE PRECISION HIJ,PROD_SCAL,DSJI,DSINT
+      DOUBLE PRECISION HJI,DZIJ,DZJI,DSIJ,ZINT,DZINT
       DOUBLE PRECISION HGZI,HGZJ,HDXZ1,HDYZ1,HDXZ2,HDYZ2
 !
       DOUBLE PRECISION H1,H2,EPS,FLX(4),DEMI
@@ -172,12 +179,32 @@
 !
             IF(IDRY.LT.2)THEN
 !
-!             HYDROSTATIC RECONSTRUCTION
-              DZIJ = MAX(0.D0,ZF2-ZF1)
-              HIJ  = MAX(0.D0,H1- DZIJ)
-!             HYDROSTATIC RECONSTRUCTION
-              DZJI = MAX(0.D0,ZF1-ZF2)
-              HJI  = MAX(0.D0,H2- DZJI)
+!             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
+              IF(HROPT.EQ.1)THEN 
+                DZIJ = MAX(0.D0,ZF2-ZF1)
+                HIJ  = MAX(0.D0,H1- DZIJ)
+!             
+                DZJI = MAX(0.D0,ZF1-ZF2)
+                HJI  = MAX(0.D0,H2- DZJI)
+              ELSEIF(HROPT.EQ.2)THEN
+!             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+                DZINT = MAX(ZF2,ZF1)
+                DSINT = MIN(SL2,SL1)
+                ZINT = MIN(DZINT,DSINT)
+!
+                HIJ = MIN(SL1-ZINT,H1)
+                HJI = MIN(SL2-ZINT,H2)
+              ELSE
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'HYD_HLLC: OPTION DE RECONSTRUCTION'
+                  WRITE(LU,*) '          HYDROSTATIQUE NON IMPLEMENTEE'
+                ELSE
+                  WRITE(LU,*) 'HYD_HLLC: OPTION OF HYDROSTATIC RECONS-'
+                  WRITE(LU,*) '          TRUCTION NOT IMPLEMENTED YET'
+                ENDIF
+                CALL PLANTE(1)
+                STOP
+              ENDIF
 !*****************************************************
               CALL FLUX_HLLC(XI,HIJ,HJI,V21,V22,V31,V32,
      &                       PSI1,PSI2,XNN,YNN,ROT,FLX)
@@ -186,8 +213,15 @@
 !       GEOMETRIC SOURCE TERMS:HYDROSTATIC RECONSTRUCTION
 !*********************************************************
 !
-              HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
-              HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
+!             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
+              IF(HROPT.EQ.1)THEN 
+                HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
+                HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
+!             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+              ELSEIF(HROPT.EQ.2)THEN
+                HGZI = -0.5D0*RNN*(HIJ+H1)*(ZINT-ZF1)
+                HGZJ =  0.5D0*RNN*(HJI+H2)*(ZF2-ZINT)
+              ENDIF
 !
               HDXZ1 = G*XNN*HGZI
               HDYZ1 = G*YNN*HGZI
@@ -199,7 +233,7 @@
 !
               IF(NCSIZE.GT.1)THEN
                 IF(IFABOR(IEL,I).EQ.-2)THEN !THIS IS INTERFACE EDGE
-                  ! DEMI=DEMI*SIGN(1.0D0,PROD_SCAL)
+!               DEMI=DEMI*SIGN(1.0D0,PROD_SCAL)
                   FLX(1)= DEMI*FLX(1)
                   FLX(2)= DEMI*FLX(2)
                   FLX(3)= DEMI*FLX(3)
@@ -210,7 +244,7 @@
                   HDYZ2 = DEMI*HDYZ2
                 ENDIF
               ENDIF
-!
+! 
 !***********************************************************
 !
 !       FLUX INCREMENT
