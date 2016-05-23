@@ -278,10 +278,10 @@
 !+   Call to KEPSIL modified.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        06/05/2016
+!+        23/05/2016
 !+        V7P2
 !+   FLBOR initialised before the first call to bilan.f, for the sake of
-!+   computations continued wit hstage-discharge curves.
+!+   computations continued with stage-discharge curves.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
@@ -1316,7 +1316,7 @@
 !       INITIALISATION OF FLBOR, PRIOR TO CALLING BILAN, FLBOR
 !       IS NORMALLY DONE ON PROPAG.F
         CALL VECTOR(FLBOR,'=','FLUBDF          ',IELBOR(IELMH,1),
-     &              1.D0-TETAU,HPROP,S,S,U,V,S,
+     &              1.D0,HPROP,S,S,U,V,S,
      &              MESH,.TRUE.,MASK%ADR(8)%P)
         CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,TOTAL_ITER,ENTET,
      &             MASSES,MSK,MASKEL,EQUA,TE5,OPTBAN,
