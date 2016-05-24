@@ -312,7 +312,7 @@
 !
 #if defined (HAVE_CGNS)
       INTEGER :: IERR
-      INTEGER :: I, J
+      INTEGER :: I, J, K
       INTEGER :: ITIME, IVAR
       CHARACTER*32 :: BASENAME, ZONENAME
       CHARACTER*32 :: VARNAME
