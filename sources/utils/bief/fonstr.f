@@ -50,6 +50,11 @@
 !+        V7P1
 !+   Now able to read user variables and put them in PRIVE arrays.
 !
+!history  R ATA (EDF LAB, LNHE)
+!+        24/05/2016
+!+        V7P2
+!+   BID initialised for cases of selafin files without records.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |<--| FRICTION COEFFICIENT (DEPENDING ON FRICTION LAW)
 !| FFON           |-->| FRICTION COEFFICIENT IF CONSTANT
@@ -97,11 +102,12 @@
 !
 !    INITIALISES
 !
-      LUH  =  .FALSE.
-      LUZ  =  .FALSE.
-      LUZF =  .FALSE.
-      CALFRO = .TRUE.
-      RECORD = 0
+      LUH    =.FALSE.
+      LUZ    =.FALSE.
+      LUZF   =.FALSE.
+      CALFRO =.TRUE.
+      BID    =0.D0
+      RECORD =0
 !
 !-----------------------------------------------------------------------
 !

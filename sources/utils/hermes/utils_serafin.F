@@ -1706,6 +1706,11 @@
 !+        V7P0
 !+
 !
+!history  R ATA (EDF R&D, LNHE)
+!+        24/05/2016
+!+        V7P2
+!+   The case with no record in the file was not treated.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID        |-->| FILE DESCRIPTOR
 !| RECORD         |-->| NUMBER OF THE TIME STEP
@@ -1730,7 +1735,8 @@
         !
         NTIMESTEP = SRF_OBJ_TAB(SRF_ID)%NTIMESTEP
         ! CHECK IF THE RECORD IS IN THE FILE
-        IF ((RECORD.GE.NTIMESTEP).OR.(RECORD.LT.0)) THEN
+        IF((RECORD.GE.NTIMESTEP.OR.RECORD.LT.0).AND.
+     &     NTIMESTEP.GT.0) THEN
           IERR = HERMES_RECORD_UNKNOWN_ERR
           RETURN
         ELSE
@@ -1757,7 +1763,7 @@
      &(FILE_ID,RECORD,VAR_NAME,RES_VALUE,N,IERR)
 !
 !***********************************************************************
-! HERMES   V7P0                                               01/05/2014
+! HERMES   V7P2                                               01/05/2014
 !***********************************************************************
 !
 !brief    Returns The value for each point of a given variable
@@ -1766,7 +1772,12 @@
 !history  Y AUDOUIN (LNHE)
 !+        24/03/2014
 !+        V7P0
-!+
+!+   First version.
+!
+!history  R ATA (EDF R&D, LNHE)
+!+        24/05/2016
+!+        V7P2
+!+   The case with no record in the file was not treated.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_ID        |-->| FILE DESCRIPTOR
@@ -1797,7 +1808,8 @@
         !
         NTIMESTEP = SRF_OBJ_TAB(SRF_ID)%NTIMESTEP
         ! CHECK IF THE RECORD IS IN THE FILE
-        IF ((RECORD.GE.NTIMESTEP).OR.(RECORD.LT.0)) THEN
+        IF((RECORD.GE.NTIMESTEP.OR.RECORD.LT.0).AND.
+     &     NTIMESTEP.GT.0) THEN
           IERR = HERMES_RECORD_UNKNOWN_ERR
           RETURN
         ELSE
