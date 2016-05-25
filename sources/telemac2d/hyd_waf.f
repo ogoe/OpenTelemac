@@ -3,7 +3,7 @@
 !                       *******************
 
      &(NS,NSEG,NELEM,NUBO,G,W,ZF,VNOCL,DT,DTHAUT,
-     & X,Y,CE,ELTSEG,NEISEG)
+     & X,Y,CE,ELTSEG,NEISEG,HROPT)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION V6P3                                     15/01/2013
@@ -25,11 +25,19 @@
 !+ Adaptation to the new data structure (common with FE)
 !+ FIRST STEPS FOR PARALLELIZATION
 !
+!history  R. ATA (EDF-LNHE)
+!+        26/05/2016
+!+        V7P2
+!+      New option for hydrostatic reconstruction
+!+      introduced by Noelle et al.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  DT            | -->|  TIME STEP                                   |
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
 ! |  G             | -->|  GRAVITY                                     |
+! |  HROPT         | -->|  OPTION FOR HYDROSTATIC RECONSTRUCTION:      |
+! !                |    |   1: AUDUSSE, 2: NOELLE        
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
@@ -57,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NS,NSEG,NELEM
+      INTEGER, INTENT(IN) :: NS,NSEG,NELEM,HROPT
       INTEGER, INTENT(IN) :: NUBO(2,NSEG),NEISEG(2,NSEG)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG)
@@ -73,12 +81,12 @@
 !
       DOUBLE PRECISION :: H1,H2,EPS,FLX(4)
       DOUBLE PRECISION :: ZF1,ZF2,XNN,YNN,RNN
-      DOUBLE PRECISION :: V21,V22,V31,V32,DX
-      DOUBLE PRECISION :: HIJ,HJI,DZIJ,DZJI
+      DOUBLE PRECISION :: V21,V22,V31,V32,DX,SL1,SL2
+      DOUBLE PRECISION :: HIJ,HJI,DSINT
       DOUBLE PRECISION :: HGZI,HGZJ,HDXZ1,HDYZ1,HDXZ2,HDYZ2
       DOUBLE PRECISION :: HL_UP,HR_UP
       DOUBLE PRECISION :: VL_UP,VR_UP
-      DOUBLE PRECISION :: PROD_SCAL
+      DOUBLE PRECISION :: PROD_SCAL,DZIJ,DZJI,ZINT,DZINT
       DOUBLE PRECISION :: PSIL_UP,PSIR_UP
       LOGICAL, ALLOCATABLE  :: YESNO(:)
 !  XI = X/T, AT THE (X,T) DIAGRAMM, WE COMPUETE THE FLUX AT XI = 0
@@ -152,17 +160,33 @@
             H1=W(1,NUBO1)
             H2=W(1,NUBO2)
 !******************************************************
-!           HYDROSTATIC RECONSTRUCTION !!!
+!           HYDROSTATIC RECONSTRUCTION 
+!           HYDROSTATIC RECONSTRUCTION OF AUDUSSE
+            IF(HROPT.EQ.1)THEN 
+              DZIJ = MAX(0.D0,ZF2-ZF1)
+              HIJ  = MAX(0.D0,H1- DZIJ)
 !
-!           BATHY AT THE INTERFACE
+              DZJI = MAX(0.D0,ZF1-ZF2)
+              HJI  = MAX(0.D0,H2- DZJI)
+            ELSEIF(HROPT.EQ.2)THEN
+!           HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+              DZINT = MAX(ZF2,ZF1)
+              DSINT = MIN(SL2,SL1)
+              ZINT = MIN(DZINT,DSINT)
 !
-            DZIJ = MAX(0.D0,ZF2-ZF1)
-            HIJ  = MAX(0.D0,H1- DZIJ)
-!******************************************************
-!           HYDROSTATIC RECONSTRUCTION !!!
-!
-            DZJI = MAX(0.D0,ZF1-ZF2)
-            HJI  = MAX(0.D0,H2- DZJI)
+              HIJ = MIN(SL1-ZINT,H1)
+              HJI = MIN(SL2-ZINT,H2)
+            ELSE
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'HYD_HLLC: OPTION DE RECONSTRUCTION'
+                WRITE(LU,*) '          HYDROSTATIQUE NON IMPLEMENTEE'
+              ELSE
+                WRITE(LU,*) 'HYD_HLLC: OPTION OF HYDROSTATIC RECONS-'
+                WRITE(LU,*) '          TRUCTION NOT IMPLEMENTED YET'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
 !******************************************************
 !
 !           VELOCITY COMPONENTS
@@ -248,16 +272,26 @@
      &                      HL_UP,HR_UP,VL_UP,VR_UP,PSIL_UP,PSIR_UP,
      &                      XNN,YNN,DT,DX,FLX)
 !
-!             GEOMETRIC SOURCE TERMS
 !
-              HGZI =0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
-              HGZJ =0.5D0*RNN*(HJI+H2)*(HJI-H2)
+!*********************************************************
+!       GEOMETRIC SOURCE TERMS:HYDROSTATIC RECONSTRUCTION
+!*********************************************************
 !
-              HDXZ1  = G*XNN*HGZI
-              HDYZ1  = G*YNN*HGZI
+!             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
+              IF(HROPT.EQ.1)THEN 
+                HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
+                HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
+!             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+              ELSEIF(HROPT.EQ.2)THEN
+                HGZI = -0.5D0*RNN*(HIJ+H1)*(ZINT-ZF1)
+                HGZJ =  0.5D0*RNN*(HJI+H2)*(ZF2-ZINT)
+              ENDIF
 !
-              HDXZ2  = G*XNN*HGZJ
-              HDYZ2  = G*YNN*HGZJ
+              HDXZ1 = G*XNN*HGZI
+              HDYZ1 = G*YNN*HGZI
+!
+              HDXZ2 = G*XNN*HGZJ
+              HDYZ2 = G*YNN*HGZJ
 !
 !             FLUX INCREMENT
 !
