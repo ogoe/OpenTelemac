@@ -135,20 +135,22 @@
      &       .OR.(FILES(I)%FMT.EQ.'MED     ')) THEN
             ! Get the boundary confitions file
             ICLI = 0
-            DO II=1,NFILES
-              IF(FILES(II)%NAME(1:1).NE.' ') THEN
-                IF(FILES(II)%TYPE(1:6).EQ.'CONLIM') THEN
-                  ICLI = II
-                  EXIT
+            IF(FILES(I)%ACTION.EQ.'READ     ') THEN
+              DO II=1,NFILES
+                IF(FILES(II)%NAME(1:1).NE.' ') THEN
+                  IF(FILES(II)%TYPE(1:6).EQ.'CONLIM') THEN
+                    ICLI = II
+                    EXIT
+                  ENDIF
                 ENDIF
-              ENDIF
-            ENDDO
-            IF(ICLI.EQ.0) THEN
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'PAS DE FICHIER DE CONDITIONS LIMITES'
-              ENDIF
-              IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'NO BOUNDARY CONDITIONS FILE'
+              ENDDO
+              IF(ICLI.EQ.0) THEN
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'PAS DE FICHIER DE CONDITIONS LIMITES'
+                ENDIF
+                IF(LNG.EQ.1) THEN
+                  WRITE(LU,*) 'NO BOUNDARY CONDITIONS FILE'
+                ENDIF
               ENDIF
             ENDIF
             ! Rename file_name and cli_name
