@@ -6,7 +6,7 @@
      & DNUVIH,DNUVIV,DNUTAH,DNUTAV,KMIN,EMIN,ITURBH,ITURBV,PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -34,6 +34,11 @@
 !+        25/06/2015
 !+        V7P1
 !+   DNUTAH and DNUTAV are now arrays.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/05/2016
+!+        V7P2
+!+   ITURBH and ITURBV may now be independent.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
@@ -76,49 +81,63 @@
 !
       NPOIN3 = AK%DIM1
 !
-      DO I=1,NPOIN3
+!     VERTICAL DIFFUSION OF VELOCITIES (WITHOUT MOLECULAR DIFFUSION)
 !
-        IF(EP%R(I).GT.1.1D0*EMIN) THEN
-          VISCVI%ADR(3)%P%R(I)=CMU*AK%R(I)**2/EP%R(I)
-        ELSE
-!         IF EPSILON IS NEAR TO CLIP VALUE, NO TURBULENCE, WHATEVER K
-          VISCVI%ADR(3)%P%R(I)=0.D0
-        ENDIF
+      IF(ITURBV.EQ.3) THEN
+        DO I=1,NPOIN3
+          IF(EP%R(I).GT.1.1D0*EMIN) THEN
+            VISCVI%ADR(3)%P%R(I)=CMU*AK%R(I)**2/EP%R(I)
+          ELSE
+!           IF EPSILON IS NEAR TO CLIP VALUE, NO TURBULENCE
+            VISCVI%ADR(3)%P%R(I)=0.D0
+          ENDIF
+        ENDDO
+      ENDIF
 !
-      ENDDO
-!
-!     HORIZONTAL DIFFUSION OF VELOCITIES
+!     HORIZONTAL DIFFUSION OF VELOCITIES (WITHOUT MOLECULAR DIFFUSION)
 !
       IF(ITURBH.EQ.3) THEN
-        CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=VISCVI%ADR(3)%P,C=DNUVIH)
-        CALL OS('X=Y     ',X=VISCVI%ADR(2)%P,Y=VISCVI%ADR(1)%P)
+        IF(ITURBV.EQ.3) THEN
+          CALL OS('X=Y     ',X=VISCVI%ADR(1)%P,Y=VISCVI%ADR(3)%P)
+        ELSE
+          DO I=1,NPOIN3
+            IF(EP%R(I).GT.1.1D0*EMIN) THEN
+              VISCVI%ADR(1)%P%R(I)=CMU*AK%R(I)**2/EP%R(I)
+            ELSE
+!             IF EPSILON IS NEAR TO CLIP VALUE, NO TURBULENCE
+              VISCVI%ADR(3)%P%R(I)=0.D0
+            ENDIF
+          ENDDO
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     TRACERS
+!     TRACERS, USING THE ALREADY COMPUTED VALUES FOR VELOCITIES
 !
       IF(NTRAC.GT.0) THEN
-        IF(ABS(PRANDTL-1.D0).LT.1.D-4) THEN
-!         HERE PRANDTL TURBULENT = 1.0
-          DO ITRAC = 1,NTRAC
-            CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                         Y=VISCVI%ADR(3)%P,C=DNUTAV(ITRAC))
-          ENDDO
-        ELSE
-          DO ITRAC = 1,NTRAC
-            DO I=1,NPOIN3
-              VISCTA%ADR(ITRAC)%P%ADR(3)%P%R(I)=
-     &        VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAV(ITRAC)
+        IF(ITURBV.EQ.3) THEN
+          IF(ABS(PRANDTL-1.D0).LT.1.D-4) THEN
+!           HERE PRANDTL TURBULENT = 1.0
+            DO ITRAC = 1,NTRAC
+              CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                           Y=VISCVI%ADR(3)%P,C=DNUTAV(ITRAC))
             ENDDO
-          ENDDO
+          ELSE
+            DO ITRAC = 1,NTRAC
+              DO I=1,NPOIN3
+                VISCTA%ADR(ITRAC)%P%ADR(3)%P%R(I)=
+     &          VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAV(ITRAC)
+              ENDDO
+            ENDDO
+          ENDIF
         ENDIF
         IF(ITURBH.EQ.3) THEN
           IF(ABS(PRANDTL-1.D0).LT.1.D-4) THEN
 !           HERE PRANDTL TURBULENT = 1.0
             DO ITRAC = 1,NTRAC
               CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                           Y=VISCVI%ADR(3)%P,C=DNUTAH(ITRAC))
+     &                           Y=VISCVI%ADR(1)%P,C=DNUTAH(ITRAC))
               CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
      &                           Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
             ENDDO
@@ -126,7 +145,7 @@
             DO ITRAC = 1,NTRAC
               DO I=1,NPOIN3
                 VISCTA%ADR(ITRAC)%P%ADR(1)%P%R(I)=
-     &          VISCVI%ADR(3)%P%R(I)/PRANDTL + DNUTAH(ITRAC)
+     &          VISCVI%ADR(1)%P%R(I)/PRANDTL + DNUTAH(ITRAC)
               ENDDO
               CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
      &                           Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
@@ -137,11 +156,16 @@
 !
 !-----------------------------------------------------------------------
 !
-!     FINAL VALUE OF VERTICAL DIFFUSION FOR VELOCITIES
+!     FINAL VALUE OF HORIZONTAL AND VERTICAL DIFFUSION FOR VELOCITIES
 !
-      CALL OS('X=X+C   ',X=VISCVI%ADR(3)%P,C=DNUVIV)
+      IF(ITURBH.EQ.3) THEN
+        CALL OS('X=X+C   ',X=VISCVI%ADR(1)%P,C=DNUVIH)
+        CALL OS('X=Y     ',X=VISCVI%ADR(2)%P,Y=VISCVI%ADR(1)%P)
+      ENDIF
+      IF(ITURBV.EQ.3) CALL OS('X=X+C   ',X=VISCVI%ADR(3)%P,C=DNUVIV)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

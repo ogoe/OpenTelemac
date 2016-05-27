@@ -2,10 +2,11 @@
                      SUBROUTINE VISCKO
 !                    *****************
 !
-     &(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,DNUVIH,DNUVIV,DNUTAH,DNUTAV)
+     &(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,DNUVIH,DNUVIV,DNUTAH,DNUTAV,
+     & ITURBH,ITURBV,T1,T2)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -44,6 +45,11 @@
 !+        V7P1
 !+   DNUTAH and DNUTAV are now arrays.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/05/2016
+!+        V7P2
+!+   ITURBH and ITURBV may now be independent.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| TURBULENT ENERGY
 !| CMU            |-->| CONSTANT FOR K-EPSILON MODEL
@@ -52,8 +58,12 @@
 !| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
 !| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
 !| EP             |-->| TURBULENT DISSIPATION
+!| ITURBH         |-->| HORIZONTAL TURBULENT MODEL
+!| ITURBV         |-->| VERTICAL TURBULENT MODEL
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| ROTAT          |-->| KIND OF L1 NORM OF VORTICITY
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
 !| VISCTA         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR TRACERS
 !| VISCVI         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR VELOCITIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,11 +75,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: NTRAC
+      INTEGER, INTENT(IN)          :: NTRAC,ITURBV,ITURBH
       DOUBLE PRECISION, INTENT(IN) :: CMU
       DOUBLE PRECISION, INTENT(IN) :: DNUVIH, DNUVIV
       DOUBLE PRECISION, INTENT(IN) :: DNUTAH(NTRAC),DNUTAV(NTRAC)
-      TYPE(BIEF_OBJ), INTENT(INOUT)  :: VISCVI, VISCTA
+      TYPE(BIEF_OBJ), INTENT(INOUT):: VISCVI, VISCTA,T1,T2
       TYPE(BIEF_OBJ), INTENT(IN)   :: ROTAT, AK, EP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -78,39 +88,49 @@
 !
 !***********************************************************************
 !
-! VISCVI%ADR(1) AND VISCVI%ADR(2) ARE USED AS TEMPORARY WORK FIELDS
+      CALL OS('X=CY    ',X=T1,Y=AK,C=0.3D0)
+      CALL OS('X=CY    ',X=T2,Y=EP,C=0.3D0)
+      CALL OS('X=+(Y,Z)',X=T2,Y=T2,Z=ROTAT)
 !
-      CALL OS('X=CY    ',X=VISCVI%ADR(1)%P,Y=AK,C=0.3D0)
-      CALL OS('X=CY    ',X=VISCVI%ADR(2)%P,Y=EP,C=0.3D0)
-      CALL OS('X=+(Y,Z)',X=VISCVI%ADR(2)%P,Y=VISCVI%ADR(2)%P,Z=ROTAT)
-!
-      CALL OS('X=CY/Z  ',X=VISCVI%ADR(3)%P,
-     &                   Y=VISCVI%ADR(1)%P,Z=VISCVI%ADR(2)%P,C=1.D0)
+      IF(ITURBV.EQ.7) CALL OS('X=Y/Z   ',X=VISCVI%ADR(3)%P,Y=T1,Z=T2)
 !
 !-----------------------------------------------------------------------
 !
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=VISCVI%ADR(3)%P,C=DNUVIH)
-      CALL OS('X=Y     ',X=VISCVI%ADR(2)%P,Y=VISCVI%ADR(1)%P)
-      CALL OS('X=X+C   ',X=VISCVI%ADR(3)%P,C=DNUVIV)
+      IF(ITURBH.EQ.7) THEN
+        IF(ITURBV.EQ.7) THEN
+          CALL OS('X=Y     ',X=VISCVI%ADR(1)%P,Y=VISCVI%ADR(3)%P)
+        ELSE
+          CALL OS('X=Y/Z   ',X=VISCVI%ADR(1)%P,Y=T1,Z=T2)
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC = 1,NTRAC
-!
-! OLIVIER: TURBULENT PRANDTL CLOSURE = 1.0
-!
-          CALL OS('X=CY    ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                       Y=VISCVI%ADR(3)%P,C=1.D0)
-          CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                       Y=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                       C=DNUTAH(ITRAC))
-          CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
-     &                       Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
-          CALL OS('X=X+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                       C=DNUTAV(ITRAC))
+!         TURBULENT PRANDTL CLOSURE = 1.0
+          IF(ITURBV.EQ.7) THEN
+            CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                         Y=VISCVI%ADR(3)%P,C=DNUTAV(ITRAC))
+          ENDIF
+          IF(ITURBH.EQ.7) THEN
+            CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
+     &                         Y=VISCVI%ADR(1)%P,C=DNUTAH(ITRAC))
+            CALL OS('X=Y     ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
+     &                         Y=VISCTA%ADR(ITRAC)%P%ADR(1)%P)
+          ENDIF
         ENDDO
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     FINAL VALUE OF HORIZONTAL AND VERTICAL DIFFUSION FOR VELOCITIES
+!
+      IF(ITURBH.EQ.7) THEN
+        CALL OS('X=X+C   ',X=VISCVI%ADR(1)%P,C=DNUVIH)
+        CALL OS('X=Y     ',X=VISCVI%ADR(2)%P,Y=VISCVI%ADR(1)%P)
+      ENDIF
+      IF(ITURBV.EQ.7) CALL OS('X=X+C   ',X=VISCVI%ADR(3)%P,C=DNUVIV)
 !
 !-----------------------------------------------------------------------
 !

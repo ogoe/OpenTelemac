@@ -185,6 +185,11 @@
 !+        V7P2
 !+   Adapting to new CVDF3D, saving Z at time T(n) in ZN.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/05/2016
+!+        V7P2
+!+   Allowing k-epsilon model on a direction and not on the other.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -811,7 +816,7 @@
 ! INITIALISES K AND EPSILON
 ! IF AKEP = .FALSE. K AND EPSILON HAVE BEEN GIVEN IN LECSUI OR CONDIM
 !
-      IF(ITURBV.EQ.3.AND.AKEP) THEN
+      IF((ITURBV.EQ.3.OR.ITURBH.EQ.3).AND.AKEP) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE KEPINI'
         CALL KEPINI(AK%R,EP%R,U%R,V%R,Z,
      &             ZF%R,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
@@ -821,7 +826,7 @@
         CALL OS('X=Y     ',X=EPN,Y=EP)
       ENDIF
 !
-      IF(ITURBV.EQ.7.AND.AKOM) THEN
+      IF((ITURBV.EQ.7.OR.ITURBH.EQ.7).AND.AKOM) THEN
         CALL OS('X=C     ',X=AK,C=KMIN)
         CALL OS('X=C     ',X=EP,C=EMIN)
         CALL OS('X=0     ',X=ROTAT)
@@ -899,11 +904,12 @@
 !
       ENDIF
 !
-      IF(ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VISCKO'
         CALL VISCKO(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,
-     &              DNUVIH,DNUVIV,DNUTAH,DNUTAV)
+     &              DNUVIH,DNUVIV,DNUTAH,DNUTAV,ITURBH,ITURBV,
+     &              T3_01,T3_02)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VISCKO'
 !
       ENDIF
@@ -1465,7 +1471,7 @@
 !     TRACERS (IF LT=1 DONE AFTER CALL CONDIM AND READ_DATASET)
       IF(NTRAC.GT.0.AND.LT.GT.1) CALL OS ('X=Y     ', X=TRN, Y=TA)
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
         CALL OS ( 'X=Y     ', X=AKN, Y=AK )
         CALL OS ( 'X=Y     ', X=EPN, Y=EP )
       ENDIF
@@ -1505,7 +1511,7 @@
 !
 ! BOUNDARY CONDITIONS FOR THE K-EPSILON MODEL
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
         CALL KEPICL(LIKBOF%I,LIEBOF%I,LIUBOF%I,
      &              LIKBOL%I,LIEBOL%I,LIUBOL%I,
      &              LIKBOS%I,LIEBOS%I,LIUBOS%I,
@@ -1675,7 +1681,7 @@
 ! BOUNDARY CONDITIONS FOR K-EPSILON MODEL + COMPUTES CONSTRAINTS
 ! AT THE BOTTOM AND LATERAL BOUNDARIES IF K-EPSILON IS REQUIRED
 !
-      IF(ITURBV.EQ.3) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE KEPCL3'
         CALL KEPCL3(KBORF%R,EBORF%R,LIKBOF%I,LIEBOF%I,LIUBOF%I,
      &              KBORL%R,EBORL%R,LIKBOL%I,LIEBOL%I,LIUBOL%I,
@@ -1689,7 +1695,7 @@
      &              UETCAR%R,UETCAL%R, FICT)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE KEPCL3'
 !
-      ELSEIF(ITURBV.EQ.7) THEN
+      ELSEIF(ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE KOMCL3'
         CALL KOMCL3(KBORF%R,EBORF%R,LIKBOF%I,LIEBOF%I,LIUBOF%I,
@@ -1785,7 +1791,8 @@
             WBORSAVE%R(IP)=WN%R(NBOR3%I(IP))
           ENDDO
         ENDIF
-        IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+        IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.
+     &     ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
           DO IP=1,NPTFR3
             KBORSAVE%R(IP)=AKN%R(NBOR3%I(IP))
             EBORSAVE%R(IP)=EPN%R(NBOR3%I(IP))
@@ -1819,7 +1826,8 @@
             WN%R(NBOR3%I(IP))=WBORSAVE%R(IP)
           ENDDO
         ENDIF
-        IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+        IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.
+     &     ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
           DO IP=1,NPTFR3
             AKN%R(NBOR3%I(IP))=KBORSAVE%R(IP)
             EPN%R(NBOR3%I(IP))=EBORSAVE%R(IP)
@@ -2237,7 +2245,7 @@
 !
 !     PREPARING SOURCE TERMS FOR K-EPSILON AND K-OMEGA MODELS
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         IF (INFOGR) CALL MITTIT(7,AT,LT)
 !
@@ -2246,7 +2254,7 @@
         S1AK%TYPR='Q'
         S1EP%TYPR='Q'
 !
-        IF(ITURBV.EQ.3) THEN
+        IF(ITURBV.EQ.3.OR.ITURBH.EQ.3) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOUKEP'
         CALL SOUKEP(S0AK%R,S0EP%R,S1AK%R,S1EP%R,
@@ -2259,7 +2267,7 @@
 !
         ENDIF
 !
-        IF(ITURBV.EQ.7) THEN
+        IF(ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOUKOM'
         CALL SOUKOM(S0AK,S0EP,S1AK,S1EP,U,V,W,
@@ -2279,9 +2287,9 @@
 !
       IF(NTRAC.GT.0) CALL SOURCE_TRAC
 !
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
 ! ADVECTION-DIFFUSION STEP FOR ALL ADVECTED VARIABLES
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
 !
 !     ALL ADVECTION SCHEMES EXCEPT SUPG
 !
@@ -2290,11 +2298,11 @@
       CALL PREADV(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREADV'
 !
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
 !     NOW CVDF3D WILL DO SUPG AND DIFFUSION
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         CLKMIN = .TRUE.
         CLKMAX = .TRUE.
@@ -2409,11 +2417,12 @@
 !
       ENDIF
 !
-      IF(ITURBH.EQ.7) THEN
+      IF(ITURBH.EQ.7.OR.ITURBH.EQ.7) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VISCKO'
         CALL VISCKO(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,
-     &              DNUVIH,DNUVIV,DNUTAH,DNUTAV)
+     &              DNUVIH,DNUVIV,DNUTAH,DNUTAV,ITURBH,ITURBV,
+     &              T3_01,T3_02)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VISCKO'
 !
       ENDIF
