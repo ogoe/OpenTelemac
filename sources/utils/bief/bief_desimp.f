@@ -94,8 +94,6 @@
 !
       LOGICAL LEO,IMP
 !
-      return
-
 !-----------------------------------------------------------------------
 !
 ! LOGICAL THAT DEFINE THE OUTPUTS
@@ -122,7 +120,6 @@
           LTT=COMPGRAPH
         ELSE
 !       COUNTERS FOR OTHER CODES
-           write(*,*) LT,PTINIG,LEOPRD
           LTT = (LT-PTINIG)/LEOPRD
         ! In case the starting point is not at lt.eq.0 but later
         !  we still write the timestep 0 so we need to increment LTT
