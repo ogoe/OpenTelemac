@@ -7,31 +7,22 @@
 %
 \subsection{Purpose}
 %
-This test case aims at testing the effect of friciotn coefficients used in
-Tomawac, one acting upon energy whereas the other one acts upon the mean
-directional frequency. This test case is an inheritage of a comparison between
-Cowadis and Tomawac. There is no measure to validate the test but it is used to
-validate non regression results.
+This test case aims at testing the effect of friction coefficients used in Tomawac, one acting upon energy whereas the other one acts upon the mean directional frequency. This test case is an inheritage of a comparison between Cowadis and Tomawac. There is no measure to validate the test, it is only a non regression testing.
 
 
 
 %
 \subsection{Description of the problem}
-The waves are let freely propagate in alarge body of water. The swell should
-loose some energy and its frequency should change only under the effect of
-friction bottom (the boundary conditions may be ignoerd because the domain is
-very wide).
+The waves are let freely propagate in a large body of water. The swell should loose some energy and its frequency should change only under the effect of friction bottom (the boundary conditions may be ignored because the domain is very wide).
 
 The expression that is used for computing the friction in Tomawac is as follows :
 \begin{equation}
-Q_{bf}(\theta,\omega)=-\Gamma (\frac{\sigma}{g.\sinh(kd)})F(\theta,\omega)
+Q_{bf}(\theta,\omega)=-\Gamma \(\frac{\sigma}{g.\sinh(kd)}\)F(\theta,\omega)
 \end{equation}
-Where $\Gamma$ the \telkey{BOTTOM FRICTION COEFFICIENT} is taken equal to 0.038 its
-default value.
+Where $\Gamma$, the \telkey{BOTTOM FRICTION COEFFICIENT}, is taken equal to 0.038, its default value.
 
 \subsection{Geometry and mesh}
-The computational domain is a 100km by 25km rectangle and the flat bottom is
-taken equal to 5m.
+The computational domain is a 100~km by 25~km rectangle and the flat bottom elevation is taken equal to 5m.
 
 The mesh is made with 492 nodes (80 on the boundary) and 902 triangles.
 
@@ -48,16 +39,11 @@ The mesh is made with 492 nodes (80 on the boundary) and 902 triangles.
 %
 \subsection{Numerical parameters}
 %
-Time duration is 30000s, time step is equal to 100s, the spectro-angular mesh
-has 24 angles and 25 frequences spread on a geometric progression common ratio
-1.1 with a minimum of 0.056447393
+Time duration is 30000~s, time step is equal to 100~s, the spectro-angular mesh has 24 angles and 25 frequences spread on a geometric progression common ratio 1.1 with a minimum of 0.056447393.
 
 \subsection{Initial and Boundary Conditions}
 %
-For both conditions, we take a Jonswap spectrum with a 1m significant wave
-heigth, a pic frequency of 0.1 The angular distribution function follows a
-$\cos^{2s} \theta$ distribution with an angular spreading of 6 and a mean
-direction of 0.
+For both conditions, we take a Jonswap spectrum with a 1~m significant wave heigth, a pic frequency of 0.1 The angular distribution function follows a $\cos^{2s} \theta$ distribution with an angular spreading of 6 and a mean direction of 0.
 
 \subsection{Numerical parameters}
 
@@ -68,5 +54,4 @@ direction of 0.
 %
 %
 \subsection{Results}
-In this case we just verify that we still have the same result as the ones
-obtained during the comparison with Cowadis \cite{cowadis}.
+In this case we just verify that we still have the same results as the ones obtained during the comparison with Cowadis \cite{cowadis}.

@@ -28,6 +28,16 @@
        do="translate;run;cas;princi" ncsize="4"
        code="tomawac" target="bj15.cas"
        title="deferl_bj78 parallel mode"
+   />   
+   <action xref="3"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="deferl3.cas" 
+       title="deferl3 scalar mode" 
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="deferl4.cas" 
+       title="deferl4 scalar mode" 
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">

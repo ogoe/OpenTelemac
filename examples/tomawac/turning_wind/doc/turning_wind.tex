@@ -27,15 +27,15 @@ So the domain of computation can be reduced to a few points as the solution is h
 %
 \subsection{Physical parameters}
 %
-The modulus of the wind is constant equalled to 20 m/s. Initially the direction is set to 90 degree, (which mean that $U_Y$ is null). This is maintained till the peak frequency reach the double of its equilibrium value (peak frequency of Pierson-Moskowitz). This occurs after 28800s (8h), at this time we change the direction of wind for 30 degrees (a rotation of 60 degrees). All the value of the wind are read in a file called {\it wind.slf   }.
+The modulus of the wind is constant, equal to 20~m/s. Initially the direction is set to 90 degrees, (which means that $U_Y$ is null). This is maintained till the peak frequency reaches the double of its equilibrium value (peak frequency of Pierson-Moskowitz). This occurs after 28800~s (8h), at this time we change the direction of wind for 30 degrees (a rotation of 60 degrees). All the values of the wind are read in a file called {\it wind.slf  }.
 % - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
 %
 \subsection{Geometry and Mesh}
 %
-The domain is a square of 2km
-The mesh is very simple as there are 5 nodes and 4 triangles
+The domain is a square of 2~km.
+The mesh is very simple as there are 5 nodes and 4 triangles. That also means that this case can not be run in parallel.
 \begin{figure} [!h]
 \centering
 \includegraphics[scale = 0.65]{maillage.png}
@@ -48,7 +48,7 @@ The mesh is very simple as there are 5 nodes and 4 triangles
 %
 \subsection{Initial and Boundary Conditions}
 %
-Initial conditions are imposed homogeneous on the domain with the option 4, with a phillips constant of 0.024 an initial peak frequency of 0.3  and an initial peak factor of 1.  The initial directionnal spread is set to one and the initial main direction to 90 degree (like the wind).
+Initial conditions are imposed homogeneous on the domain with the option 4, with a Phillips constant of 0.024 an initial peak frequency of 0.3~Hz  and an initial peak factor of 1.  The initial directionnal spread is set to one and the initial main direction to 90 degrees (like the wind).
 Those value has been set to be identical to the Vledder study \cite{Vanvledder1990}
 
 Nothing is imposed at the boundaries.
@@ -67,16 +67,16 @@ Time duration is set to 115200s (32h), time step is equal to 900s, the spectro-a
 %
 \subsection{Results}
 %
-We present here the results only for the rotation of 60 degrees as it is the effective rotation that is done in the case. Initially there were 3 rotations one of 90 and one of 30. The results for those rotations are described in \cite{Benoit1996_2}.
+We present here the results only for the rotation of 60 degrees as it is the effective rotation that is done in the case. Initially there were 2 more rotations one of 90 degrees and one of 30 degrees. The results for those rotations are described in \cite{Benoit1996_2}.
 
-At the moment when the direction change the established swell is going to interact with the wave induced by the new direction of wind. Three phenomenas occur in that process.
+At the moment when the direction changes the established swell is going to interact with the wave induced by the new direction of wind. Three phenomenas occur in that process.
 \begin {itemize}
-\item Wind contribution to the energy that will raise the new wave.
-\item Attenuation of the swell part of the spectrum
-\item Non linear interactions between swell and wind's sea.
+\item Wind contribution to the energy that will raise the new wave,
+\item Attenuation of the swell part of the spectrum,
+\item Non linear interactions between swell and wind sea.
 \end{itemize}
 
-The results of Tomawac are compared to simulations made by two differents code. EXACT-NL and WAM-cycle 3 (voir \cite{Vanvledder1990}). The figure  \ref{resturnwind} shows that there are good agreements of Tomawac results compared to other simulations. One can denote that spectrum tail factor can be sensitive. During the first 4 hours a factor of 4 is better but after that time a factor of 5 is better.
+The results of Tomawac are compared to simulations made by two differents code. EXACT-NL and WAM-cycle 3 (see \cite{Vanvledder1990}). Figure  \ref{resturnwind} shows that there are good agreements of Tomawac results compared to other simulations. One can denote that the spectrum tail factor can be sensitive. During the first 4 hours a factor 4 is better but after that time a factor 5 is better.
 
 Let us remark that those are old results and a new simulation with new linear terms might give better results.
 

@@ -35,9 +35,24 @@
        title="fetch_lim scalar mode"
    />
    <action xref="finitedepthparallel"
-       do="translate;run;cas;princi" ncsize="4"
-       code="tomawac" target="tom_fetch_lim_fd.cas"
-       title="fetch_lim parallel mode"
+       do="translate;run;cas;princi" ncsize="4" 
+       code="tomawac" target="tom_fetch_lim_fd.cas" 
+       title="fetch_lim parallel mode" 
+   />   
+   <action xref="test4"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="test4.cas" 
+       title="fetch_lim scalar mode" 
+   />
+   <action xref="test6"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="test6.cas" 
+       title="fetch_lim scalar mode" 
+   />
+   <action xref="test6bis"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="test6bis.cas" 
+       title="fetch_lim scalar mode" 
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">

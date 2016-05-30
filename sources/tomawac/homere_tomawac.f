@@ -75,6 +75,7 @@
 !
 !     READS THE STEERING FILE
 !
+      write(*,*) 'call lecdon'
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE)
 !
 !-----------------------------------------------------------------------
@@ -89,12 +90,15 @@
 !
 !     ALLOCATES MEMORY
 !
+      write(*,*) 'POINT_TOMAWAC'
       CALL POINT_TOMAWAC
-!
+      write(*,*) 'APRES POINT_TOMAWAC'
+      !
 !-----------------------------------------------------------------------
 !
 !     CALLS THE REAL MAIN PROGRAM
 !
+      write(*,*) 'call wac'
       CALL WAC(-1,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,
      &         CODE,0.D0,0.D0,0,1,STRA01,STRA01,STRA01,STRA01)
 !

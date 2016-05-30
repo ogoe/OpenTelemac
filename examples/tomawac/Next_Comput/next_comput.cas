@@ -11,6 +11,7 @@ FICHIER DES CONDITIONS AUX LIMITES = 'geo_next.cli'
 /
 FICHIER DES RESULTATS 2D = 'next_comput.slf'
 FICHIER DES RESULTATS PONCTUELS = 'next_comput.spe'
+FICHIER DES RESULTATS GLOBAUX = 'next_computD.pre'
 /--------------------------------------------------------------------/
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------/
