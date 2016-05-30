@@ -405,7 +405,7 @@
         ENDIF
         MNEMO(NEXT+1) = 'PVSNCO  '
       ENDIF
-
+!
       DO I=38,100
         TEXTPR(I)=TEXTE(I)
       ENDDO

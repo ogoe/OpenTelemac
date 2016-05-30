@@ -12,7 +12,7 @@
      & PVSCO   , PVSNCO , CFDEP  , EPAICO, EPAINCO)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS THE MUD BED EVOLUTION.
@@ -64,6 +64,12 @@
 !+        13/10/2014
 !+        V7P0
 !+   New developments in sediment for mixed sediment transport
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/05/2016
+!+        V7P2
+!+   Removing FLUXC and FLUXNC, variables not initialised, computed, and
+!+   not used. DELTAFC and DELTAFNC, TOTMASSC and TOTMASSNC removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
@@ -123,13 +129,15 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
       USE INTERFACE_TELEMAC3D, EX_FONVAS => FONVAS
-      USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,OPTBAN,NPLAN,CGEL
+      USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,OPTBAN,NPLAN
 !
       IMPLICIT NONE
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) ::  LT,NPOIN2,NPOIN3
@@ -171,13 +179,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C, TOTMASS, QERODE, QS, DELTAF, FLUX, SEDBED
-      DOUBLE PRECISION MASTMP
-      DOUBLE PRECISION TOTMASSC, QERODEC, QSC, DELTAFC, FLUXC
-      DOUBLE PRECISION TOTMASSNC, QERODENC, QSNC, DELTAFNC, FLUXNC
-      INTEGER IPOIN, IC
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+      DOUBLE PRECISION C,TOTMASS,QERODE,QS,DELTAF,FLUX,SEDBED,MASTMP
+      DOUBLE PRECISION QERODEC,QSC,QERODENC,QSNC
+      INTEGER IPOIN,IC
 !
 !=======================================================================
 ! FIRST STEP
@@ -192,9 +196,9 @@
 ! calculate the layers thicknesses and deposited thicknes:  HDEP = sum ( EPAI)
 !
       FLUX=0.D0
-
+!
       IF(MIXTE) THEN
-
+!
         IF(SETDEP.NE.1) THEN
           IF(OPTBAN.EQ.1) THEN
             DO IPOIN=1,NPOIN2
@@ -218,100 +222,88 @@
             ENDDO
           ELSE
             DO IPOIN=1,NPOIN2
-!         COMPUTES FIRST THE DEPOSIT FLUX OF COHESIVE SEDIMENTS
+!             COMPUTES FIRST THE DEPOSIT FLUX OF COHESIVE SEDIMENTS
               FLUDPC(IPOIN)=FLUDPTC(IPOIN)*TA(IPOIN)
               FLUDPC(IPOIN)=MAX(FLUDPC(IPOIN),0.D0)
-!         THEN COMPUTES THE DEPOSIT FLUX OF NON COHESIVE SEDIMENTS
+!             THEN COMPUTES THE DEPOSIT FLUX OF NON COHESIVE SEDIMENTS
               FLUDPNC(IPOIN)=FLUDPTNC(IPOIN)*TS(IPOIN)
               FLUDPNC(IPOIN)=MAX(FLUDPNC(IPOIN),0.D0)
-!         THE GLOBAL DEPOSITION FLUX IS THE SUMM OF BOTH C & NC
+!             THE GLOBAL DEPOSITION FLUX IS THE SUM OF BOTH C & NC
               FLUDP(IPOIN)=FLUDPC(IPOIN)+FLUDPNC(IPOIN)
               FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
             ENDDO
           ENDIF
         ENDIF
 !
-!         BED EVOLUTION
+!       BED EVOLUTION
 !
         DO IPOIN=1,NPOIN2
-
+!
 !         COMPUTES QERODE FOR COHESIVE SEDIMENTS
-
-          DELTAFC  = FLUDPC(IPOIN)-FLUERC(IPOIN)
-          FLUXC    = FLUXC+DELTAFC*VOLU2D%R(IPOIN)
-          TOTMASSC = 0.D0
+!
           QERODEC  = FLUERC(IPOIN)*DT
-
+!
 !         COMPUTES QERODE FOR NON-COHESIVE SEDIMENT
-
-          DELTAFNC  = FLUDPNC(IPOIN)-FLUERNC(IPOIN)
-          FLUXNC    = FLUXNC+DELTAFNC*VOLU2D%R(IPOIN)
-          TOTMASSNC = 0.D0
+!
           QERODENC  = FLUERNC(IPOIN)*DT
-
+!
 !         COMPUTES QERODE FOR ALL THE SEDIMENTS
-
+!
           DELTAF  = FLUDP(IPOIN)-FLUER(IPOIN)
           FLUX    = FLUX+DELTAF*VOLU2D%R(IPOIN)
-          TOTMASS = 0.D0
           QERODE  = FLUER(IPOIN)*DT
 !
-
           QSC  = CONC(IPOIN,1)*EPAICO(IPOIN)
           QSNC = CFDEP*EPAINCO(IPOIN)
           QS   = QSC + QSNC
 !
-          TOTMASSC  = TOTMASSC + QSC
-          TOTMASSNC = TOTMASSNC + QSNC
-          TOTMASS   = TOTMASS + QS
-
 !         check if we have eroded enough entire layers
-
-          IF(TOTMASSC.LT.QERODEC) THEN
+!
+          IF(QSC.LT.QERODEC) THEN
             EPAICO(IPOIN) = 0.D0
           ELSE
-            QSC           = TOTMASSC - QERODEC
+            QSC           = QSC - QERODEC
             EPAICO(IPOIN) = QSC/MAX(CONC(IPOIN,1),1.D-10)
           ENDIF
 !
-          IF(TOTMASSNC.LT.QERODENC) THEN
+          IF(QSNC.LT.QERODENC) THEN
             EPAINCO(IPOIN) = 0.D0
           ELSE
-            QSNC           = TOTMASSNC - QERODENC
+            QSNC           = QSNC - QERODENC
             EPAINCO(IPOIN) = QSNC/CFDEP
           ENDIF
 !
 !         DEPOSITION IN THE TOP LAYER
 !
-        EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*
-     &                DT/MAX(CONC(IPOIN,1),1.D-10)
-        EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*
-     &                DT/MAX(CFDEP,1.D-10)
-        EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN)
+          EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*
+     &                  DT/MAX(CONC(IPOIN,1),1.D-10)
+          EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*
+     &                  DT/MAX(CFDEP,1.D-10)
+          EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN)
 !
 !         UPDATES PERCENTAGES OF EACH CLASSE
 !
-        IF(EPAI(IPOIN, 1).GT.0.D0) THEN
-          PVSCO(IPOIN)  = EPAICO(IPOIN)/EPAI(IPOIN,1)
-          PVSNCO(IPOIN) = 1.D0-PVSCO(IPOIN)
-        ELSE
-          PVSCO(IPOIN)  = 0.D0
-          PVSNCO(IPOIN) = 0.D0
-        ENDIF
+          IF(EPAI(IPOIN, 1).GT.0.D0) THEN
+            PVSCO(IPOIN)  = EPAICO(IPOIN)/EPAI(IPOIN,1)
+            PVSNCO(IPOIN) = 1.D0-PVSCO(IPOIN)
+          ELSE
+            PVSCO(IPOIN)  = 0.D0
+            PVSNCO(IPOIN) = 0.D0
+          ENDIF
 !
 !         COMPUTING THE NEW SEDIMENT BED THICKNESS
 !
-        SEDBED = EPAI(IPOIN,1)
+          SEDBED = EPAI(IPOIN,1)
 !
 !         EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
 !
-        ZF_S(IPOIN) = SEDBED-HDEP(IPOIN)
+          ZF_S(IPOIN) = SEDBED-HDEP(IPOIN)
 !
 !         SEDIMENT HEIGHT UPDATED
 !
-        HDEP(IPOIN) = SEDBED
+          HDEP(IPOIN) = SEDBED
 !
-      ENDDO
+        ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -321,91 +313,91 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
         CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
-        CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
-
-
+        CALL OV( 'X=Y+Z   ', ZF  ,   ZR,HDEP,C,NPOIN2)
+!
 !***********************************************************
 ! PREVIOUS CASE NON MIXED
 !************************************************************
+!
       ELSE
 
-!     EXPLICIT SCHEME (SETDEP=1) FLUDP COMPUTED IN SET_DIF
+!       EXPLICIT SCHEME (SETDEP=1) FLUDP COMPUTED IN SET_DIF
 !
-!     OTHER SCHEMES : FLUDP BUILT HERE
+!       OTHER SCHEMES : FLUDP BUILT HERE
 !
-      IF(SETDEP.NE.1) THEN
-        IF(OPTBAN.EQ.1) THEN
-          DO IPOIN=1,NPOIN2
-!           correction for tidal flats: take the first point above crushed planes
-!           IPBOT =0  :  no tidal flats  IPBOT = NPLAN-1 : dry element
-            IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
-              FLUDP(IPOIN)=FLUDPT(IPOIN)*
-     &        TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
-              FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
-            ELSE
-              FLUDP(IPOIN)=0.D0
-            ENDIF
-          ENDDO
-        ELSE
-          DO IPOIN=1,NPOIN2
-            FLUDP(IPOIN)=FLUDPT(IPOIN)*TA(IPOIN)
-!           FLUDP MUST BE POSITIVE, EVEN IF TA<0 DUE TO TRUNCATION ERRORS
-!           PROBLEM SEEN WITH TA=-1.D-87 !!!!!
-            FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
-          ENDDO
-        ENDIF
-      ENDIF
-!
-!     BED EVOLUTION
-!
-      DO IPOIN=1,NPOIN2
-!
-        DELTAF=FLUDP(IPOIN)-FLUER(IPOIN)
-        FLUX=FLUX+DELTAF*VOLU2D%R(IPOIN)
-        TOTMASS=0.D0
-        QERODE = FLUER(IPOIN)*DT
-!
-        DO IC=1,NCOUCH
-!
-          QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
-!
-          TOTMASS = TOTMASS + QS
-!         check if we have eroded enough entire layers
-          IF(TOTMASS.LT.QERODE) THEN
-            EPAI(IPOIN,IC) = 0.D0
+        IF(SETDEP.NE.1) THEN
+          IF(OPTBAN.EQ.1) THEN
+            DO IPOIN=1,NPOIN2
+!             correction for tidal flats: take the first point above crushed planes
+!             IPBOT =0  :  no tidal flats  IPBOT = NPLAN-1 : dry element
+              IF(IPBOT%I(IPOIN).NE.NPLAN-1) THEN
+                FLUDP(IPOIN)=FLUDPT(IPOIN)*
+     &          TA(IPBOT%I(IPOIN)*NPOIN2+IPOIN)
+                FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
+              ELSE
+                FLUDP(IPOIN)=0.D0
+              ENDIF
+            ENDDO
           ELSE
-!           we have got to the correct layer.
-!           How much of it do we need to erode?
-            QS = TOTMASS - QERODE
-!           calculate new thickness
-            EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)
-!           jump out of layer loop
-            EXIT
+            DO IPOIN=1,NPOIN2
+              FLUDP(IPOIN)=FLUDPT(IPOIN)*TA(IPOIN)
+!             FLUDP MUST BE POSITIVE, EVEN IF TA<0 DUE TO TRUNCATION ERRORS
+!             PROBLEM SEEN WITH TA=-1.D-87 !!!!!
+              FLUDP(IPOIN)=MAX(FLUDP(IPOIN),0.D0)
+            ENDDO
           ENDIF
+        ENDIF
+!
+!       BED EVOLUTION
+!
+        DO IPOIN=1,NPOIN2
+!
+          DELTAF=FLUDP(IPOIN)-FLUER(IPOIN)
+          FLUX=FLUX+DELTAF*VOLU2D%R(IPOIN)
+          TOTMASS=0.D0
+          QERODE = FLUER(IPOIN)*DT
+!
+          DO IC=1,NCOUCH
+!
+            QS = CONC(IPOIN,IC)*EPAI(IPOIN,IC)
+!
+            TOTMASS = TOTMASS + QS
+!           check if we have eroded enough entire layers
+            IF(TOTMASS.LT.QERODE) THEN
+              EPAI(IPOIN,IC) = 0.D0
+            ELSE
+!             we have got to the correct layer.
+!             How much of it do we need to erode?
+              QS = TOTMASS - QERODE
+!             calculate new thickness
+              EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)
+!             jump out of layer loop
+              EXIT
+            ENDIF
+!
+          ENDDO
+!
+!         Then Deposition in Top layer
+!
+          EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*
+     &               DT/MAX(CONC(IPOIN,1),1.D-10)
+!
+!         COMPUTING THE NEW SEDIMENT BED THICKNESS
+!
+          SEDBED= 0.D0
+          DO IC=1,NCOUCH
+            SEDBED=SEDBED+EPAI(IPOIN,IC)
+          ENDDO
+!
+!         EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
+!
+          ZF_S(IPOIN)=SEDBED-HDEP(IPOIN)
+!
+!         SEDIMENT HEIGHT UPDATED
+!
+          HDEP(IPOIN) = SEDBED
 !
         ENDDO
-!
-!       Then Deposition in Top layer
-!
-        EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*
-     &             DT/MAX(CONC(IPOIN,1),1.D-10)
-!
-!       COMPUTING THE NEW SEDIMENT BED THICKNESS
-!
-        SEDBED= 0.D0
-        DO IC=1,NCOUCH
-          SEDBED=SEDBED+EPAI(IPOIN,IC)
-        ENDDO
-!
-!       EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
-!
-        ZF_S(IPOIN)=SEDBED-HDEP(IPOIN)
-!
-!       SEDIMENT HEIGHT UPDATED
-!
-        HDEP(IPOIN) = SEDBED
-!
-      ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -414,16 +406,17 @@
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-      CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
+        CALL OV( 'X=Y+Z   ',ESOMT,ESOMT,ZF_S,C,NPOIN2)
 !
-!     NOTE JMH: THIS WAY OF WRITING THE NEW ZF ENSURES
-!               THAT ZF ABOVE ZR EVEN WITH TRUNCATION
-!               ERRORS, IF HDEP >0, THIS IS IMPORTANT
+!       NOTE JMH: THIS WAY OF WRITING THE NEW ZF ENSURES
+!                 THAT ZF ABOVE ZR EVEN WITH TRUNCATION
+!                 ERRORS, IF HDEP >0, THIS IS IMPORTANT
 !
-!     CALL OV( 'X=Y+Z   ' , ZF   ,   ZF, ZF_S, C, NPOIN2)
-      CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
+!       CALL OV( 'X=Y+Z   ' , ZF   ,   ZF, ZF_S, C, NPOIN2)
+        CALL OV( 'X=Y+Z   ' , ZF   ,   ZR, HDEP, C, NPOIN2)
 !
       ENDIF
+!
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! TASSEMENT HERE
 ! ---> add the other models here
@@ -503,3 +496,4 @@
 !
       RETURN
       END
+

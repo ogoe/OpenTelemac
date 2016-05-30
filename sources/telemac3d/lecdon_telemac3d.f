@@ -91,6 +91,14 @@
 !+        V7P2
 !+  New keywords and options for distributive schemes. All like in 2D.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/05/2016
+!+        V7P2
+!+  Scheme for advection of tracers (SCHCTA) completed when there are
+!+  several tracers and not the corresponding number of values given.
+!+  Previously the default value 5 was given. Exit of PVSCO and PVSNCO
+!+  precluded when no sediment.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -442,11 +450,15 @@
       IORDRH    = MOTINT(ADRESS(1,17))
 !
       SCHCVI    = MOTINT(ADRESS(1,18))
-!     NO MORE DEFAULT VALUE FOR SCHCTA SINCE V7P2
+!     SCHEME FOR THE ADVECTION OF TRACERS, DEFAULT INITIALLY SET TO 5
       IF(NTRAC.GT.0) THEN
         IF(DIMEN(1,19).LT.NTRAC.AND.DIMEN(1,19).GT.0) THEN
           DO K=1,DIMEN(1,19)
             SCHCTA(K) = MOTINT(ADRESS(1,19)+K-1)
+          ENDDO
+!         COMPLETING WITH THE LAST VALUE GIVEN
+          DO K=DIMEN(1,19)+1,NTRAC
+            SCHCTA(K) = MOTINT(ADRESS(1,19)+DIMEN(1,19)-1)
           ENDDO
         ELSEIF(DIMEN(1,19).EQ.NTRAC) THEN
           DO K=1,NTRAC
@@ -2106,6 +2118,8 @@
         SORG2D(33) = .FALSE.
         SORG2D(34) = .FALSE.
         SORG2D(37) = .FALSE.
+        SORG2D(38+NTRAC+NCOUCH)=.FALSE.
+        SORG2D(39+NTRAC+NCOUCH)=.FALSE.
       ENDIF
       IF(.NOT.VENT) THEN
         SORG2D(16) = .FALSE.
@@ -2140,7 +2154,7 @@
 !     W
       SOREST(4)=.TRUE.
 !     K AND EPSILON
-      IF(ITURBH.EQ.3.OR.ITURBH.EQ.7) THEN
+      IF(ITURBH.EQ.3.OR.ITURBV.EQ.3.OR.ITURBH.EQ.7.OR.ITURBV.EQ.7) THEN
         SOREST(8)=.TRUE.
         SOREST(9)=.TRUE.
       ENDIF
@@ -2187,9 +2201,10 @@
 !
 !-----------------------------------------------------------------------
 !
-!     NO K AND NO E IF NOT K-EPSILON OR K-OMEGA MODELS
+!     NO K AND NO EPSILON IF NOT K-EPSILON OR K-OMEGA MODELS
 !
-      IF(ITURBV.NE.3.AND.ITURBV.NE.7) THEN
+      IF(ITURBV.NE.3.AND.ITURBH.NE.3.AND.
+     &   ITURBV.NE.7.AND.ITURBH.NE.7) THEN
         SORG3D(8)=.FALSE.
         SORG3D(9)=.FALSE.
       ENDIF

@@ -190,6 +190,13 @@
 !+        V7P2
 !+   Allowing k-epsilon model on a direction and not on the other.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/05/2016
+!+        V7P2
+!+   In a continued computation, K, Epsilon and the dynamic pressure
+!+   must not be read if they are not necessary because their arrays
+!+   are not allocated.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -281,6 +288,18 @@
 !       IF(SEDI) ALIRE2D(37)=1
 !
       ENDIF
+!
+!     DO NOT READ K AND EPSILON IF NOT NECESSARY
+!
+      IF(ITURBH.NE.3.AND.ITURBV.NE.3.AND.
+     &   ITURBH.NE.7.AND.ITURBV.NE.7) THEN
+        ALIRE3D(8)=0
+        ALIRE3D(9)=0
+      ENDIF
+!
+!     DO NOT READ DYNAMIC PRESSURE IF NOT NECESSARY
+!
+      IF(.NOT.NONHYD) ALIRE3D(12)=0
 !
 !=======================================================================
 ! FOR DROGUES (CALLS TO FLOT3D WILL INCREASE OR DECREASE NFLOT)
