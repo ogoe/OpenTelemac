@@ -7,7 +7,7 @@
      &  MIXTE, EPAICO)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    MODELS EROSION
@@ -56,6 +56,12 @@
 !+        V7P1
 !+   Optimisation and divisions by 0 more secured.
 !
+!history  J.M. HERVOUET (EDF-LNHE)
+!+        30/05/2016
+!+        V7P2
+!+   Formulas TOB/MAX(TOCE,1.D-10)-1.D0 secured, they could be negative
+!+   They are replaced by (TOB_TOCE)/MAX(TOCE,1.D_20)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |-->| CONCENTRATION OF BED LAYER
 !| DENSI          |-->| FLUID DENSITY
@@ -102,14 +108,15 @@
 !-----------------------------------------------------------------------
 !
       IF(MIXTE) THEN
-
+!
         DO IPOIN=1,NPOIN2
           IF(HN(IPOIN).LT.HMIN) THEN
             QERODE=0.D0
           ELSEIF(TOB(IPOIN).GT.TOCE(IPOIN,1)) THEN
 !           EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS
-            FLUER_LOC=MPART*((TOB(IPOIN)/
-     &                MAX(TOCE(IPOIN,1),1.D-10))-1.D0)
+            FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,1))/
+     &                                MAX(TOCE(IPOIN,1),1.D-20)
+!           LIMITING LARGE VALUES IN VIEW OF AVAILABLE SEDIMENT
             QERODE=MIN(FLUER_LOC*DT,CONC(IPOIN,1)*EPAICO(IPOIN))
           ELSE
             QERODE=0.D0
@@ -132,8 +139,8 @@
             IF(TEMPS.LE.1.D-12) EXIT
 !           EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS
             IF(TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
-              FLUER_LOC=MPART*((TOB(IPOIN)
-     &                     /MAX(TOCE(IPOIN,IC),1.D-10))-1.D0)
+              FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,1))/
+     &                                MAX(TOCE(IPOIN,1),1.D-20)
               QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !CV ..        LAYER THICKNESS AFTER EROSION ----
 !             EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
