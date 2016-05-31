@@ -92,12 +92,13 @@
 !+  New keywords and options for distributive schemes. All like in 2D.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        30/05/2016
+!+        31/05/2016
 !+        V7P2
 !+  Scheme for advection of tracers (SCHCTA) completed when there are
 !+  several tracers and not the corresponding number of values given.
 !+  Previously the default value 5 was given. Exit of PVSCO and PVSNCO
-!+  precluded when no sediment.
+!+  precluded when no sediment. A section reading sediment parameters
+!+  is now executed also IF(MIXTE)...
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -1428,7 +1429,7 @@
 !
 ! sediment bed layers initialization
 !
-      IF(SEDI.AND.SEDCO.AND.NCOUCH.GT.0) THEN
+      IF(SEDI.AND.(SEDCO.OR.MIXTE).AND.NCOUCH.GT.0) THEN
         IF(DIMEN(2,53).NE.NCOUCH) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'CONCENTRATIONS DES COUCHES DE VASE'
@@ -1471,6 +1472,8 @@
           TOCE_LAYER(K)=MOTREA( ADRESS(2,58) + K-1 )
           ES_LAYER(K)  =MOTREA( ADRESS(2,64) + K-1 )
         ENDDO
+        PRINT*,'NCOUCH=',NCOUCH
+        PRINT*,'CONC_LAYER(1)=',CONC_LAYER(1)
 !       multilayer consolidation
         IF(TASSE) THEN
           IF(DIMEN(2,62).NE.NCOUCH) THEN

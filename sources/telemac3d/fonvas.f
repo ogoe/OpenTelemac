@@ -70,6 +70,7 @@
 !+        V7P2
 !+   Removing FLUXC and FLUXNC, variables not initialised, computed, and
 !+   not used. DELTAFC and DELTAFNC, TOTMASSC and TOTMASSNC removed.
+!+   Clipping on concentrations removed (they are data and are not 0).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
@@ -263,7 +264,7 @@
             EPAICO(IPOIN) = 0.D0
           ELSE
             QSC           = QSC - QERODEC
-            EPAICO(IPOIN) = QSC/MAX(CONC(IPOIN,1),1.D-10)
+            EPAICO(IPOIN) = QSC/CONC(IPOIN,1)
           ENDIF
 !
           IF(QSNC.LT.QERODENC) THEN
@@ -275,10 +276,8 @@
 !
 !         DEPOSITION IN THE TOP LAYER
 !
-          EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*
-     &                  DT/MAX(CONC(IPOIN,1),1.D-10)
-          EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*
-     &                  DT/MAX(CFDEP,1.D-10)
+          EPAICO(IPOIN)  = EPAICO(IPOIN)+FLUDPC(IPOIN)*DT/CONC(IPOIN,1)
+          EPAINCO(IPOIN) = EPAINCO(IPOIN)+FLUDPNC(IPOIN)*DT/CFDEP
           EPAI(IPOIN,1)  = EPAICO(IPOIN) + EPAINCO(IPOIN)
 !
 !         UPDATES PERCENTAGES OF EACH CLASSE
@@ -291,17 +290,13 @@
             PVSNCO(IPOIN) = 0.D0
           ENDIF
 !
-!         COMPUTING THE NEW SEDIMENT BED THICKNESS
-!
-          SEDBED = EPAI(IPOIN,1)
-!
 !         EVOLUTION OBTAINED FROM OLD AND NEW SEDIMENT HEIGHT
 !
-          ZF_S(IPOIN) = SEDBED-HDEP(IPOIN)
+          ZF_S(IPOIN) = EPAI(IPOIN,1)-HDEP(IPOIN)
 !
 !         SEDIMENT HEIGHT UPDATED
 !
-          HDEP(IPOIN) = SEDBED
+          HDEP(IPOIN) = EPAI(IPOIN,1)
 !
         ENDDO
 !
@@ -370,7 +365,7 @@
 !             How much of it do we need to erode?
               QS = TOTMASS - QERODE
 !             calculate new thickness
-              EPAI(IPOIN,IC) = QS/MAX(CONC(IPOIN,IC),1.D-10)
+              EPAI(IPOIN,IC) = QS/CONC(IPOIN,IC)
 !             jump out of layer loop
               EXIT
             ENDIF
@@ -379,8 +374,7 @@
 !
 !         Then Deposition in Top layer
 !
-          EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*
-     &               DT/MAX(CONC(IPOIN,1),1.D-10)
+          EPAI(IPOIN,1)=EPAI(IPOIN,1)+FLUDP(IPOIN)*DT/CONC(IPOIN,1)
 !
 !         COMPUTING THE NEW SEDIMENT BED THICKNESS
 !
