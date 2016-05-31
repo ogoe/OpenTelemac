@@ -2557,7 +2557,7 @@
 !
       SUBROUTINE IFVECTOR_(STRING,COMP_NUM,ISVECTOR)
 !
-!BRIEF    FIND '_U_' '_V_' '_W_' '_X_' '_Y_' '_Z_' IN NAME FIELD OF SCALAR
+!BRIEF    FIND ' U ' ' V ' ' W ' ' X ' ' Y ' ' Z ' IN NAME FIELD OF SCALAR
 !         OR VECTOR
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2576,53 +2576,54 @@
       ISVECTOR = .FALSE.
       COMP_NUM = 0
 
+      write(*,*) 'Testing: ',string
       IF (STRING(1:6)/='COTE_Z') THEN
       DO J = 2,31
-        IF (STRING(J-1:J+1) .EQ. '_U_') THEN
+        IF (STRING(J-1:J+1) .EQ. ' U ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 1
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. '_V_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. ' V ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 2
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. '_W_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. ' W ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 3
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. '_X_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. ' X ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 1
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. '_Y_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. ' Y ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 2
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. '_Z_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. ' Z ') THEN
           STRING(J:J) = '*'
           COMP_NUM = 3
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'QX_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QX ') THEN
           STRING(J-1:J) = 'Q*'
           COMP_NUM = 1
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'QY_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QY ') THEN
           STRING(J-1:J) = 'Q*'
           COMP_NUM = 2
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'QZ_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'QZ ') THEN
           STRING(J-1:J) = 'Q*'
           COMP_NUM = 3
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'U0_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'U0 ') THEN
           STRING(J-1:J) = '*0'
           COMP_NUM = 1
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'V0_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'V0 ') THEN
           STRING(J-1:J) = '*0'
           COMP_NUM = 2
           ISVECTOR = .TRUE.
-        ELSEIF (STRING(J-1:J+1) .EQ. 'W0_') THEN
+        ELSEIF (STRING(J-1:J+1) .EQ. 'W0 ') THEN
           STRING(J-1:J) = '*0'
           COMP_NUM = 3
           ISVECTOR = .TRUE.
