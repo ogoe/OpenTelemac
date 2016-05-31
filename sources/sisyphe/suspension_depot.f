@@ -1,11 +1,12 @@
-!                    ******************************
-                     SUBROUTINE SUSPENSION_DEPOT  !
-!                    ******************************
+!                    ***************************
+                     SUBROUTINE SUSPENSION_DEPOT
+!                    ***************************
+!
      &(TOB,HN, NPOIN, HMIN,XWC,VITCD,ZERO,KARMAN,
      & FDM,FD90,XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
@@ -34,7 +35,11 @@
 !+        19/07/2011
 !+        V6P1
 !+   Name of variables
-!+
+!
+!history  J-M HERVOUET & P.TASSI (EDF LAB, LNHE)
+!+        31/05/2016
+!+        V7P2
+!+   Cleaner and safer formulas in the IF(SEDCO) case.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBUG          |-->| FLAG FOR DEBUGGING
@@ -54,16 +59,15 @@
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-
-      USE DECLARATIONS_SISYPHE, ONLY : SET_LAG ! DMK mod
+      USE DECLARATIONS_SISYPHE, ONLY : SET_LAG
       USE INTERFACE_SISYPHE,EX_SUSPENSION_DEPOT => SUSPENSION_DEPOT
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN,TOB,CSTAEQ
       INTEGER,          INTENT(IN)    ::  NPOIN,DEBUG
       LOGICAL,          INTENT(IN)    :: SEDCO
@@ -75,83 +79,75 @@
       TYPE (BIEF_OBJ),  INTENT(IN)    :: ZREF
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUDPT
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER :: I
-      DOUBLE PRECISION:: AUX
+      DOUBLE PRECISION :: AUX
+!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
-!======================================================================!
-!     ! ****************************************            !
-      ! THE TOTAL FRICTION VELOCITY    --> USTAR (T1)       !
-      ! HAS BEEN REPLACED BY USTARP (SKIN FRICTION VELOCITY)!
-      ! FOR EROSION FLUX IN V6P0                            !
-      ! ****************************************            !
+!
+!     ****************************************************
+!     THE TOTAL FRICTION VELOCITY    --> USTAR (T1)
+!     HAS BEEN REPLACED BY USTARP (SKIN FRICTION VELOCITY)
+!     FOR EROSION FLUX FROM V6P0 ON
+!     ****************************************************
 !
       CALL OS('X=CY    ', X=T1, Y=TOB, C=1.D0/XMVE)
-      CALL OS('X=+(Y,C)', X=T1, Y=T1, C=ZERO)
+!     TOB assumed >=0, otherwise mistake elsewhere...
       CALL OS('X=SQR(Y)', X=T1, Y=T1)
 !
       IF(SEDCO) THEN
 !
-      ! ************************************************ !
-      ! IA - FORMULATION FOR COHESIVE SEDIMENTS          !
-      !      (WITHOUT BEDLOAD)                           !
-      ! ************************************************ !
+!       *********************************************************
+!       IA - FORMULATION FOR COHESIVE SEDIMENTS (WITHOUT BEDLOAD)
+!       *********************************************************
 !
-!  COMPUTES THE PROBABILITY FOR DEPOSITION
+!       COMPUTES THE PROBABILITY FOR DEPOSITION
 !
         DO I = 1, NPOIN
-          IF(VITCD.GT.1.D-08) THEN
-            AUX = MAX(1.D0-(T1%R(I)/VITCD)**2,ZERO)
+!         HERE T1 >=0, so case VITCD=0.D0 excluded by the test
+          IF(T1%R(I).LT.VITCD) THEN
+            AUX = 1.D0-(T1%R(I)/VITCD)**2
           ELSE
-            AUX=0.D0
+            AUX = 0.D0
           ENDIF
-!          COMPUTES THE IMPLICIT PART OF THE DEPOSITION FLUX
+!         COMPUTES THE IMPLICIT PART OF THE DEPOSITION FLUX
           FLUDPT%R(I)= XWC*AUX
         ENDDO
-! UNIFORM SEDIMENT ALONG THE VERTICAL
+!       UNIFORM SEDIMENT ALONG THE VERTICAL
+        CALL CPSTVC(TOB,T2)
         CALL OS('X=C     ', X=T2, C=1.D0)
 !
-      ! ******************************************* !
-      ! IB - FORMULATION FOR NON-COHESIVE SEDIMENTS !
-      !      (WITH BEDLOAD)                         !
-      ! ******************************************* !
+!       **********************************************************
+!       IB - FORMULATION FOR NON-COHESIVE SEDIMENTS (WITH BEDLOAD)
+!       **********************************************************
 !
       ELSE
 !
-            ! ***************************************************** !
-            !  COMPUTES THE RATIO BETWEEN NEAR BED CONC. AND MEAN CONC.  !
-            !                                  -->  T2    (TO KEEP )     !
-            ! ***************************************************** !
+!       *******************************************************
+!       COMPUTES THE RATIO BETWEEN NEAR BED CONC. AND MEAN CONC
+!                                  -->  T2    (TO KEEP )
+!       *******************************************************
+!
 !       DMK Modification 06/05/2011
-
-        IF (.NOT.(SET_LAG)) THEN
-
-          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_ROUSE'
+        IF(.NOT.(SET_LAG)) THEN
+          IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_ROUSE'
           CALL SUSPENSION_ROUSE(T1,HN,NPOIN,
      &                        KARMAN,HMIN,ZERO,XWC,ZREF,T2)
-          IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_ROUSE'
-!
-        ELSEIF (SET_LAG) THEN
-
-          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR'
+          IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_ROUSE'
+        ELSE
+          IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR'
           CALL SUSPENSION_MILES(HN,NPOIN,KARMAN,HMIN,ZERO,
      &                  FDM,FD90,XWC,ZREF,T2)
-          IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'
-
-        ELSE
-          WRITE(LU,*) 'LAG FACTOR MUST BE EITHER "TRUE" OR "FALSE"'
-          CALL PLANTE(1)
-          STOP
+          IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'
         ENDIF
-
 !       End of DMK mod
-
-            ! *****************************************************  !
-            !  COMPUTES THE DEPOSITION FLUX --> FLUDPT = XWC * T2    !
-            ! *****************************************************  !
+!
+!       **************************************************
+!       COMPUTES THE DEPOSITION FLUX --> FLUDPT = XWC * T2
+!       **************************************************
 !
         CALL OS('X=CY    ', X=FLUDPT, Y=T2, C=XWC)
 !
