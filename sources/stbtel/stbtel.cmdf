@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|stbtel
 module: stbtel
-liborder: special parallel damocles hermes bief stbtel
+liborder: special parallel hermes damocles bief stbtel
 name: HOMERE_STBTEL
 
 [bief]

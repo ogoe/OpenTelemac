@@ -27,7 +27,7 @@
       within config.py
 """
 """@history 10/01/2013 -- Yoann Audouin
-   ScanSources goes through subdirectories as well now ignore 
+   ScanSources goes through subdirectories as well now ignore
    hidden directories
    Adding scan of .F and .F90 files as well
 """
@@ -56,7 +56,7 @@
 # ~~> dependencies towards standard python
 import re
 import sys
-from copy import deepcopy
+from copy import copy,deepcopy
 from os import path,walk,remove, environ, sep
 # ~~> dependencies towards the root of pytel
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
@@ -75,7 +75,7 @@ listINSTRUCTION = ['ALLOCATE','ASSIGN',  \
    'BACKSPACE','BLOCK DATA',  \
    'CALL','CASE','CLOSE','COMMON','CYCLE','CONTINUE',  \
    'DATA','DEALLOCATE','DEFAULT','DO',  \
-   'ELSE','ELSEIF','ENDIF','ENDDO','END','ENDFILE','EQUIVALENCE','EXIT',  \
+   'ELSE','ELSEIF','ENDIF','ENDDO','ENDSELECT','END','ENDFILE','EQUIVALENCE','EXIT',  \
    'FORMAT',  \
    'GO','TO','GOTO',  \
    'IF','IMPLICIT NONE','INCLUDE','INQUIRE','INTERFACE',  \
@@ -117,7 +117,7 @@ listINTRINSIC = [ \
 # ____/ Global Regular Expressions /_______________________________/
 #
 """
-   
+
 """
 #?beforethisafter=r'\s*(?P<before>%s(?=\s*(\b(%s)\b)))'+ \
 #?                          r'\s*(?P<this>(\b(%s)\b))'+ \
@@ -130,7 +130,7 @@ beforethisafter=r'(?P<before>%s(?=\s?(\b(%s)\b)))'+ \
 emptyline = re.compile(r'\Z') #,re.I)
 
 f77comment = re.compile(r'[C!#*]') #,re.I)
-f77continu2 = re.compile(r'(\s{5}\S\s*)(?P<line>.*)') #,re.I)
+f77continu2 = re.compile(r'(\s{5}\S)(?P<line>.*)') #,re.I)
 #?f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>.*)') #,re.I)
 f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>[^\Z]*)') #,re.I)
 #?f90continu1 = re.compile(r'(?P<line>.*)&\s*\Z') #,re.I)
@@ -142,14 +142,14 @@ f90continu3 = re.compile(r'(&\s?)(?P<line>.*)') #,re.I)
 
 var_dquots = re.compile(r'(?P<dquot>".*?")') #,re.I)
 var_squots = re.compile(r"(?P<squot>'.*?')") #,re.I)
-var_bracks = re.compile(r'(?P<brack>\([\w,*\s+-/:]*?\))') #,re.I)
+var_bracks = re.compile(r'(?P<brack>\([\w,*\s+-/:%]*?\))') #,re.I)
 
 # no (\+|\-)? to capture the sign if there ... different from the utils version
 #?var_doublep = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z') #,re.I)
 var_doublep = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\Z') #,re.I)
 #?var_integer = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z') #,re.I)
-var_integer = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\Z') #,re.I)
-f90logic = '(FALSE|TRUE|EQ|NE|GT|LT|GE|LE|OR|AND|XOR)'
+var_integer = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(_\w+|\b|[^a-zA-Z,)])))(?P<after>.*?)\Z') #,re.I)
+f90logic = '(FALSE|TRUE|EQV|EQ|NE|GT|LT|GE|LE|OR|AND|XOR)'
 #?var_logical = re.compile(r'.*?(?P<logic>\.\s*?%s\s*?\.).*?'%(f90logic)) #,re.I)
 var_logical = re.compile(r'.*?(?P<logic>\.\s?%s\s?\.)'%(f90logic)) #,re.I)
 #?var_pointer = re.compile(r'\s*(?P<before>.*?)(?P<this>%\w+)(?P<after>.*?)\s*\Z') #,re.I)
@@ -165,7 +165,7 @@ var_equals = re.compile(r'(?P<before>.*?)(?P<name>\s?\b\w+?\b)(?P<value>\s?=[^,]
 #?var_operand = re.compile(r'\s*(?P<before>.*?)(?=[^\s])\W+(?P<after>.*?)\s*\Z') #,re.I)
 var_operand = re.compile(r'(?P<before>.*?)(?=[^\s])\W+(?P<after>.*?)\Z') #,re.I)
 #?argnames = re.compile(r'\s*(?P<name>\b\w+\b)\s*?(|\((?P<args>.*)\))\s*\Z') #,re.I)
-argnames = re.compile(r'(?P<name>\b\w+\b)\s?(|\((?P<args>.*)\))\Z') #,re.I)
+argnames = re.compile(r'(?P<name>\b\w+\b)\s*(|\((?P<args>.*)\))\Z') #,re.I)
 
 #?itf_title = re.compile(r'\s*?\bINTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z') #,re.I)
 itf_title = re.compile(r'\bINTERFACE\b(|\s(?P<name>\w+).*?)\Z') #,re.I)
@@ -179,6 +179,7 @@ use_title = re.compile(r'\bUSE\b\s(?P<name>\b\w+\b)\s?(|,\s?(?P<after>.*?))\Z') 
 xtn_title = re.compile(r'.*?\bEXTERNAL\b(.*?::)?\s?(?P<vars>.*?)\Z') #,re.I)
 #?itz_title = re.compile(r'\s*?\bINTRINSIC\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z') #,re.I)
 itz_title = re.compile(r'\bINTRINSIC\b([^:]?::)?\s?(?P<vars>.*?)\Z') #,re.I)
+eqv_title = re.compile(r'\bEQUIVALENCE\b([^:]?::)?\s?(?P<vars>.*?)\Z') #,re.I)
 #?implictNone = re.compile(r'\s*?\bIMPLICIT\s+NONE\b\s*\Z') #,re.I)
 implictNone = re.compile(r'\bIMPLICIT\sNONE\b\Z') #,re.I)
 #?inc_title = re.compile(r'\s*?\bINCLUDE\b\s*(?P<file>.*?)\s*\Z') #,re.I)
@@ -188,9 +189,9 @@ cmn_title = re.compile(r'\bCOMMON\b\s?/\s?(?P<name>\w*)\s?/\s?(?P<after>.*?)\Z')
 #?ctn_title = re.compile(r'\s*?\bCONTAINS\b\s*\Z') #,re.I)
 ctn_title = re.compile(r'\bCONTAINS\b\Z') #,re.I)
 #?def_title = re.compile(r'\s*?\bTYPE\b\s+?(?P<name>\b\w+\b)\s*\Z') #,re.I)
-def_title = re.compile(r'\bTYPE\b\s(?P<name>\b\w+\b)\Z') #,re.I)
+def_title = re.compile(r'\bTYPE\b([^:]?::)?\s(?P<name>\b\w+\b)\Z') #,re.I)
 #?def_close = re.compile(r'\s*?\bEND TYPE\b\s+?(?P<name>\b\w+\b)\s*\Z') #,re.I)
-def_close = re.compile(r'\bEND TYPE\b\s(?P<name>\b\w+\b)\Z') #,re.I)
+def_close = re.compile(r'\bEND TYPE\b(|\s(?P<name>\b\w+\b))\Z') #,re.I)
 
 #?als_core = re.compile(r'(?P<before>.*?)(?P<alias>\b\w([\w%]|\([\w(,:)%]*\))*)\s*=>\s*(?P<link>\b\w+?\b)(?P<after>.*?)\s*\Z') #,re.I)
 als_core = re.compile(r'(?P<before>.*?)(?P<alias>\b\w([\w%]|\([\w(,:)%]*\))*)\s?=>\s?(?P<link>\b\w+?\b)(?P<after>.*?)\Z') #,re.I)
@@ -219,7 +220,7 @@ typ_title = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90types)) #,re.I)
 typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90xport)) #,re.I)
 
 #?pcl_title = re.compile(r'\s*?((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s*(?P<after>.*?)\s*?(\bRESULT\b\s*?(?P<result>\w+[\w\s]*)|)\s*\Z') #,re.I)
-pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s?(?P<after>.*?)\s?(\bRESULT\b\s?(?P<result>\w+[\w\s]*)|)\Z') #,re.I)
+pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s+(?P<after>.*?)\s*(\bRESULT\b[\s\(]*(?P<result>\w+[\w\s]*)\)?|)\Z') #,re.I)
 #?pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z') #,re.I)
 pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
 
@@ -332,6 +333,12 @@ def cleanQuotes(istr):
    ostr = ostr.replace("''''","''").replace("''''","''")
    return ostr
 
+def cleanEmptyQuotes(istr):
+   return istr.replace("''","").replace('"',"")
+
+def cleanEmptySpaces(istr):
+   return istr.replace(',,',',')
+
 def parseAlias(lines):
    listAlias = []; count = 0
    core = []; core.extend(lines)
@@ -360,55 +367,77 @@ def parseImplicitNone(lines):
    return core,False
 
 def parseDeclarations(lines):
-   listCommon = []; listDeclar = []; listIntrinsic = []; listExternal = []
+   listCommon = []; listDeclar = []; listIntrinsic = []; listExternal = []; listType = {}
    core = []; core.extend(lines)
    ignoreblock = False
    for line in lines :
       headline = False
 
-      # ~~ TYPE Definition ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ TYPE Definition ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not ignoreblock:
          proc = re.match(def_title,line)
          if proc :
             ignoreblock = True
+            name = proc.group('name')
+            listType.update({name:[]})
             core.pop(0); headline = True; continue
       else:
+         # /!\ assuming here you have no COMMON, INTRINSIC, INCLUDE, EXTERNAL,
+         #     etc in the TYPE block
+         proc = re.match(typ_title,core[0])
+         if proc :
+            if not re.match(xtn_title,proc.group('after')):
+               proc = re.match(typ_args,proc.group('after'))
+               if proc :
+                  if proc.group('vars') != None:
+                     for k in parseArgs(cleanEmptyQuotes(proc.group('vars'))):
+                        if k != '': listType[name].append(k)
          proc = re.match(def_close,line)
-         if proc : ignoreblock = False
+         if proc :
+            ignoreblock = False
+            if proc.group('name') and debug: print 'No mane at TYPE END of TYPE ' + name
          core.pop(0); headline = True; continue
 
-      # ~~ Common Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ Common Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(cmn_title,line)
       if proc :
          listCommon.append([proc.group('name'),parseArgs(proc.group('after'))])
          core.pop(0); headline = True; continue
 
-      # ~~ Private/Public Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ Private/Public Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(typ_xport,line)
       if proc :
          #listCommon.append([proc.group('name'),parseArgs(proc.group('after'))])
          core.pop(0); headline = True; continue
 
-      # ~~ INCLUDE Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ INCLUDE Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(inc_title,line) # you should parse the content from MainWrap
       if proc : core.pop(0); headline = True; continue
 
-      # ~~ Type Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ Type Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(typ_title,line)
       if proc :
          if not re.match(xtn_title,proc.group('after')):
             proc = re.match(typ_args,proc.group('after'))
             if proc :
-               if proc.group('vars') != None: listDeclar.extend(parseArgs(proc.group('vars')))
+               if proc.group('vars') != None:
+                  for k in parseArgs(cleanEmptyQuotes(proc.group('vars'))):
+                     if k != '': listDeclar.append(k)
                core.pop(0); headline = True; continue
 
-      # ~~ Intrinsic Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ Intrinsic Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(itz_title,line)
       if proc :
          if proc.group('vars') != None: listIntrinsic.extend(parseArgs(proc.group('vars')))
          core.pop(0); headline = True; continue
 
-      # ~~ External Declaration ~~~~~~~~~~~~~~~~~~~~~~~~
+      # ~~ Equivalence Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      proc = re.match(eqv_title,line)
+      if proc :
+         #if proc.group('vars') != None: ... parseArgs(proc.group('vars'))
+         core.pop(0); headline = True; continue
+
+      # ~~ External Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       proc = re.match(xtn_title,line)
       if proc :
          if proc.group('vars') != None: listExternal.extend(parseArgs(proc.group('vars')))
@@ -417,7 +446,7 @@ def parseDeclarations(lines):
       # ~~ Reached main core ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not headline: break
 
-   return core,{ 'cmn':listCommon, 'dec':listDeclar, 'itz':listIntrinsic, 'xtn':listExternal, 'als':[] }
+   return core,{ 'cmn':listCommon, 'dec':listDeclar, 'itz':listIntrinsic, 'xtn':listExternal, 'als':[], 'typ':listType }
 
 def parseUses(lines):
    listUses = {}; core = []; core.extend(lines)
@@ -440,7 +469,7 @@ def parseUses(lines):
    return core,listUses
 
 def parseVars(ilist):
-   return cleanPointers(cleanNumbers(cleanLogicals(cleanAssoc(cleanBracks(cleanQuotes(ilist)))))).replace(' ','').split(',')
+   return cleanPointers(cleanNumbers(cleanLogicals(cleanAssoc(cleanBracks(cleanQuotes(ilist)))))).replace(' ',',').split(',')
 
 def parseCalls(lines):
    listCalls = {} #; count = 0
@@ -556,10 +585,10 @@ def parsePrincipalWrap(lines):
    sys.exit(1)
    return # /!\ this return is just for python parsing
 
-def parsePrincipalMain(lines,who,type,name,args,resu):
+def parsePrincipalMain(lines,who,typ,name,args,resu):
    core = []; core.extend(lines)
    whi = deepcopy(who); whi['uses'] = {}; whi['vars'] = {}; whi['calls'] = {}; whi['called'] = [] #; whi['alias'] = {}
-   whi['type'] = type; whi['name'] = name; whi['args'] = args; whi['resu'] = resu
+   whi['type'] = typ; whi['name'] = name; whi['args'] = args; whi['resu'] = resu
 
    # ~~ Lists aliases in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,alias = parseAlias(core)
@@ -579,9 +608,11 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    core,decs = parseDeclarations(core)
    for dec in decs['xtn']:
       if dec in decs['dec']: decs['dec'].remove(dec)
+   # ~~> remove common variables from decs (keps them in common)
    for dec in decs['cmn']:
       for k in dec[1]:
          if k in decs['dec']: decs['dec'].remove(k)
+   # ~~> remove arguments from decs (keps them as arguments)
    for dec in args:
       if dec in decs['dec']: decs['dec'].remove(dec)
    #for k in uses:
@@ -589,14 +620,20 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    #      if v in uses[k][0]: decs['dec'].remove(dec)
    for k in decs:
       whi['vars'][k] = []
-      for v in decs[k]: addToList(whi['vars'],k,v)
+      if type(decs[k]) == type({}):
+         addToList(whi['vars'],k,'')
+         whi['vars'][k] = decs[k]
+      else:
+         for v in decs[k]: addToList(whi['vars'],k,v)
    whi['vars']['als'] = alias
 
    # ~~ Lists calls in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,calls = parseCalls(core)
    for k in calls:
+      if k in listINTRINSIC: continue
       whi['calls'][k] = []
-      for v in calls[k]: addToList(whi['calls'],k,v) # still includes xtn calls
+      for v in calls[k]:
+         addToList(whi['calls'],k,v) # still includes xtn calls
 
    # ~~ Lists functions in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fcts = []
@@ -701,6 +738,141 @@ def delComments(lines):
             cmds.append(cmd.replace('\n','').replace('\r',''))
    return cmds
 
+"""
+   Print to file the the scanning processes as an XML tree.
+
+"""
+def putScanContent(cfg,fileName,wcw):
+
+   # ~~ High level root ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xmlIndents = 0
+   xmlSources = ['<'+path.basename(cfg['root'])+'>']
+
+   for mod in wcw:
+      # ~~ For each module ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      xmlIndents += 3
+      xmlSources.append(' '*xmlIndents+'<'+mod+' path="'+wcw[mod]['path']+'" >')
+
+      for name in wcw[mod]:
+         if name == 'path': continue
+         whoi = wcw[mod][name]
+         # ~~ For each file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         xmlIndents += 3
+         xmlSources.append(' '*xmlIndents+'<'+name+' type="'+whoi['type']+'" file="'+whoi['file']+'">')
+
+         # ~~> uses
+         if whoi['uses'] != {}:
+            xmlIndents += 3
+            xml = ' '*xmlIndents+'<uses'
+            for u in whoi['uses']: xml += ' '+u+'="'+','.join(whoi['uses'][u])+'"'
+            xml += '/>'
+            xmlSources.append(xml)
+            xmlIndents -= 3
+         # ~~> declarations
+         if whoi['vars']['dec'] != [] or whoi['vars']['xtn'] != [] or whoi['args'] != []:
+            xmlIndents += 3
+            xml = ' '*xmlIndents+'<vars'
+            if whoi['args'] != []: xml += ' args="'+','.join(whoi['args'])+'"'
+            if whoi['vars']['dec'] != []: xml += ' dec="'+','.join(whoi['vars']['dec'])+'"'
+            if whoi['vars']['xtn'] != []: xml += ' xtn="'+','.join(whoi['vars']['xtn'])+'"'
+            xml += '/>'
+            xmlSources.append(xml)
+            xmlIndents -= 3
+         # ~~> calls
+         if whoi['calls'] != {}:
+            xmlIndents += 3
+            xml = ' '*xmlIndents+'<calls'
+            for u in whoi['calls']: xml += ' '+u+'="'+str(len(whoi['calls'][u]))+'x"'
+            xml += '/>'
+            xmlSources.append(xml)
+            xmlIndents -= 3
+         # ~~> calls
+         if whoi['called'] != {}:
+            xmlIndents += 3
+            xml = ' '*xmlIndents+'<called'+','.join(whoi['called'])+' />'
+            xmlSources.append(xml)
+            xmlIndents -= 3
+
+         # ~~> function / unknown
+         if whoi['functions'] != []:
+            xmlIndents += 3
+            xml = ' '*xmlIndents+'<unknowns'
+            if whoi['functions'] != []: xml += ' functions="'+','.join(whoi['functions'])+'"'
+            xml += '/>'
+            xmlSources.append(xml)
+            xmlIndents -= 3
+
+         # ~~> contains
+         if whoi['contains'] != []:
+            xmlIndents += 3
+            xmlSources.append(' '*xmlIndents+'<contains>')
+
+            for u in whoi['contains']:
+               xmlIndents += 3
+               xmlSources.append(' '*xmlIndents+'<'+u+' />')
+               xmlIndents -= 3
+#                  xmlIndents += 3
+#                  xmlSources.append(' '*xmlIndents+'<'+cname+' type="'+cw[0]+'">')
+#                  if cw[0] == 'S': sbt = addToList(sbt,cname,whoi['libname'])# subroutine
+#                  if cw[0] == 'F': fct = addToList(fct,cname,whoi['libname'])# function
+#                  if whoc['uses'] != {}:
+#                     xml = ' '*xmlIndents+'<uses'
+#                     for k in whoc['uses']:
+#                        for v in whoc['uses'][k]: addToList(whoi['uses'],k,v)
+#                     #print whoc['uses']
+#                  if whoc['vars'] != {} or whoc['args'] != []:
+#                     xmlIndents += 3
+#                     xml = ' '*xmlIndents+'<vars'
+#                     if whoc['args'] != []: xml += ' args="'+','.join(whoc['args'])+'"'
+#                     for k in whoc['vars']:
+#                        if k != 'cmn':
+#                           for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
+#                           if whoc['vars'][k] != []: xml += ' '+k+'="'+','.join(whoc['vars'][k])+'"'
+#                     xml += '/>'
+#                     if '<vars/>' not in xml: xmlSources.append(xml)
+#                     xmlIndents -= 3
+#                  for k in deepcopy(whoc['calls']):
+#                     if k in whoi['vars']['xtn']: whoc['calls'].pop(k)
+#                     elif k in whoi['contains'] or k in whoi['calls']: whoc['calls'].pop(k)
+#                     else: whoi['calls'].update({k:whoc['calls'][k]})
+#                  if whoc['calls'] != {}:
+#                     xmlIndents += 3
+#                     xml = ' '*xmlIndents+'<calls'
+#                     for k in whoc['calls']:
+#                        for v in whoc['calls'][k]: addToList(whoi['calls'],k,v)
+#                        xml += ' '+k+'="'+str(len(whoc['calls'][k]))+'x"'
+#                     xml += '/>'
+#                     xmlSources.append(xml)
+#                     xmlIndents -= 3
+#                  for k in deepcopy(whoc['functions']):
+#                     if k in whoi['args'] or k in whoi['vars']['dec'] or k in whoi['vars']['xtn']: whoc['functions'].remove(k)
+#                     elif k in whoi['contains'] or k in whoi['functions']: whoc['functions'].remove(k)
+#                     else: whoi['functions'].append(k)
+#                  if whoc['functions'] != []:
+#                     xmlIndents += 3
+#                     xml = ' '*xmlIndents+'<unknowns'
+#                     xml += ' functions="'+','.join(whoc['functions'])+'"'
+#                     xml += '/>'
+#                     xmlSources.append(xml)
+#                     xmlIndents -= 3
+#
+#                  xmlSources.append(' '*xmlIndents+'</'+cname+'>')
+#                  xmlIndents -= 3
+
+            xmlSources.append(' '*xmlIndents+'</contains>')
+            xmlIndents -= 3
+
+         xmlSources.append(' '*xmlIndents+'</'+name+'>')
+         xmlIndents -= 3
+
+      xmlSources.append(' '*xmlIndents+'</'+mod+'>')
+      xmlIndents -= 3
+
+   xmlSources.append('</'+path.basename(cfg['root'])+'>')
+   putFileContent(fileName,xmlSources)
+
+   return
+
 def scanSources(cfgdir,cfg,BYPASS):
    fic = {}; mdl = {}; sbt = {}; fct = {}; prg = {}; dep = {}; wcw = {}
 
@@ -758,7 +930,7 @@ def scanSources(cfgdir,cfg,BYPASS):
          else:
             flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
          SrcF.close()                                           # and deletes the continuation characters
-         
+
          core = flines
          found = False
          while core != [] and not found:                             # ignores what might be in the file after the main program
@@ -772,30 +944,43 @@ def scanSources(cfgdir,cfg,BYPASS):
             if w[0] == 'M': mdl = addToList(mdl,name,whoi['libname'])# module
             if w[0] == 'F': fct = addToList(fct,name,whoi['libname'])# function
             fic[mod][File].append(name)
+            # ~~> you may not need this afterall or do you ?
             while face != []:
                fcode,fw,ff,ft,face = parsePrincipalWrap(face)
-               if fcode != []:
-                  fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
-                  for k in whof['uses']:
-                     for v in whof['uses'][k]: addToList(whoi['uses'],k,v)
+               fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
+               for k in whof['uses']:
+                  for v in whof['uses'][k]: addToList(whoi['uses'],k,v)
             while ctns != []:                                      # contains fcts & subs
                ccode,cw,cf,ct,ctns = parsePrincipalWrap(ctns)
-               if ccode != []:
-                  cname,whoc,rest = parsePrincipalMain(ccode,who,cw[0],cw[1],cw[2],cw[3])
-                  whoi['contains'].append(cname)
-                  if cw[0] == 'S': sbt = addToList(sbt,cname,whoi['libname'])# subroutine
-                  if cw[0] == 'F': fct = addToList(fct,cname,whoi['libname'])# function
-                  for k in whoc['uses']:
-                     for v in whoc['uses'][k]: addToList(whoi['uses'],k,v)
-                  for k in whoc['vars']:
+               cname,whoc,rest = parsePrincipalMain(ccode,who,cw[0],cw[1],cw[2],cw[3])
+               whoi['contains'].append(cname)
+               # ~~> not unkown anymore
+               if cname in whoi['functions']: whoi['functions'].remove(cname)
+               if cname in whoi['calls']: whoi['calls'].pop(cname)
+               if cw[0] == 'S': sbt = addToList(sbt,cname,whoi['libname'])# subroutine
+               if cw[0] == 'F': fct = addToList(fct,cname,whoi['libname'])# function
+               # ~~> transfer global context to identify unknowns
+               for k in whoc['uses']:
+                  for v in whoc['uses'][k]: addToList(whoi['uses'],k,v)
+               for k in whoc['vars']:
+                  if k != 'cmn':
                      for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
-                  for k in whoc['calls']:
-                     for v in whoc['calls'][k]: addToList(whoi['calls'],k,v)
-                  for k in whoc['functions']:
-                     if k not in whoi['functions']: whoi['functions'].append(k)
+               for k in deepcopy(whoc['calls']):
+                  if k in whoi['vars']['xtn']: whoc['calls'].pop(k)
+                  elif k in whoi['contains'] or k in whoi['calls']: whoc['calls'].pop(k)
+                  else: whoi['calls'].update({k:whoc['calls'][k]})
+               for k in whoc['calls']:
+                  for v in whoc['calls'][k]: addToList(whoi['calls'],k,v)
+               for k in deepcopy(whoc['functions']):
+                  for v in whoi['vars']['cmn']:
+                     if k in v[1]: whoc['functions'].remove(k)
+                  if k in whoc['functions']:
+                     if k in whoi['args'] or k in whoi['vars']['dec'] or k in whoi['vars']['xtn']: whoc['functions'].remove(k)
+                     elif k in whoi['contains'] or k in whoi['functions']: whoc['functions'].remove(k)
+                     else: whoi['functions'].append(k)
+
             whoi['vars'].update({'use':{}})
             wcw[mod].update({name:whoi})         # ~~ All ~~~~~~~~~~
-            #if core == []: break
 
       pbar.finish()
 
@@ -806,7 +991,7 @@ def scanSources(cfgdir,cfg,BYPASS):
       for name in wcw[mod].keys():
          if name != 'path':
             who = wcw[mod][name]
-            for s in who['calls'].keys():
+            for s in copy(who['calls'].keys()):
                if s not in sbt:
                   del wcw[mod][name]['calls'][s]
                   wcw[mod][name]['functions'].append(s)
@@ -819,6 +1004,7 @@ def scanSources(cfgdir,cfg,BYPASS):
             f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
             who['functions'] = f
             who['vars']['use'].update(u) # because this is a dico-list, updating who updates wcw
+
    for mod in wcw:
       for name in wcw[mod]:
          if name != 'path':
@@ -846,6 +1032,8 @@ def scanSources(cfgdir,cfg,BYPASS):
                   for u in fct[call]:
                      if call in wcw[u]:
                         wcw[u][call]['called'].append(name)
+
+   putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
 
    return fic,mdl,sbt,fct,prg,dep,wcw
 
@@ -1230,7 +1418,7 @@ if __name__ == "__main__":
       elif len(args[1:]) == 2: # case of two PRINCI files ...
          oriFile = args[2]
 
-      # ~~> Execute diff 
+      # ~~> Execute diff
       print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n'+'~'*72+'\n'
       # ~~> use of writelines because diff is a generator
       diff = diffTextFiles(oriFile,difFile,options)

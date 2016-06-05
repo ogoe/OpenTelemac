@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|partel
 module: partel
-liborder: special parallel hermes bief partel
+liborder: special hermes parallel bief partel
 name: HOMERE_PARTEL
 
 [bief]
@@ -64,8 +64,8 @@ files: declarations_partel.f
 
 [special]
 path: <root>|sources|utils|special
-files: extens.f
-  declarations_special.f
+files: declarations_special.f
+  extens.f
   plante.F
   get_nodes_per_element.f
   check_allocate.f

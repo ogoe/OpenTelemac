@@ -1671,7 +1671,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE SPREAD
+        SUBROUTINE DIR_SPREAD
      &( DIRSPR, F     , COSTET, SINTET, NPLAN , FREQ  , DFREQ , NF    ,
      &  NPOIN2, TAILF , COSMOY, SINMOY, VARIAN, TAUXC , TAUXS , TAUXE )
       IMPLICIT NONE

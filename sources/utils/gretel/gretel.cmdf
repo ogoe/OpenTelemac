@@ -31,14 +31,14 @@ files: interface_hermes.f
   open_mesh.f
   get_mesh_nplan.f
   get_mesh_coord.f
-  get_mesh_title.f
   close_mesh.f
+  get_mesh_title.f
+  get_mesh_date.f
   get_data_ntimestep.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_bnd_nelem.f
   get_mesh_nptir.f
-  get_mesh_date.f
   get_bnd_npoin.f
   get_mesh_dimension.f
   get_mesh_npoin.f

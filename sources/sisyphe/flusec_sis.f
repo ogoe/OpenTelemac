@@ -9,15 +9,15 @@
 ! TELEMAC2D   V7P2
 !***********************************************************************
 !
-!brief  COMPUTES FLUXES OVER LINES (FLUXLINES/CONTROL SECTIONS) VIA 
+!brief  COMPUTES FLUXES OVER LINES (FLUXLINES/CONTROL SECTIONS) VIA
 !+      FLODEL/FLULIM
-!+        
+!+
 !+      THE FLUXES OF THE SEGMENTS ARE ALLREADY COMPUTED IN THE POSITIVE
-!+      DEPTHS ROUTINE (BIEF)      
-!+            
-!+      IN A FIRST STEP WE SEARCH AND SAVE ALL NECESSARY SEGMENTS 
+!+      DEPTHS ROUTINE (BIEF)
+!+
+!+      IN A FIRST STEP WE SEARCH AND SAVE ALL NECESSARY SEGMENTS
 !+      (ONE NODE IS ON THE LEFT SIDE , THE OTHER ON THE RIGHT SIDE OF THE
-!+      FLUXLINE. 
+!+      FLUXLINE.
 !+
 !+      DURING LATER CALLS WE SUMM UP THE FLUXES FOR EACH SEGMENT AND USE
 !+      FLUXPR_TELEMAC2D TO WRITE OUT THE FLUXES
@@ -90,11 +90,11 @@
       DOUBLE PRECISION, ALLOCATABLE :: POTFLUX(:,:)
       DOUBLE PRECISION, ALLOCATABLE :: POTVOLFLUX(:,:)
 
-      TYPE(FLUXLINE), ALLOCATABLE :: FLUXLINEDATA(:)       
+      TYPE(FLUXLINE), ALLOCATABLE :: FLUXLINEDATA(:)
 !
       DOUBLE PRECISION :: SEGXMIN,SEGXMAX
       DOUBLE PRECISION :: SEGYMIN,SEGYMAX
-      DOUBLE PRECISION,ALLOCATABLE :: FLUXLINES (:,:)  
+      DOUBLE PRECISION,ALLOCATABLE :: FLUXLINES (:,:)
       LOGICAL DEJA
       DATA DEJA/.FALSE./
 !
@@ -109,20 +109,20 @@
 !----------------------------------------------------------------------
 !
 !     PART I
-!     
+!
 !     SEARCH AND SAVE SEGMENTS (FIRST RUN ONLY)
 !
 !----------------------------------------------------------------------
 !
       IF(.NOT.DEJA) THEN
-!   
+!
         INP=SIS_FILES(SISFLX)%LU
         MAXNUMBEROFCLASSES = 20
-        TIME = 0.0D0   
+        TIME = 0.0D0
 !
 !------- OPEN FLUXLINE FILE
 !
-        READ(INP,*) NUMBEROFLINES    
+        READ(INP,*) NUMBEROFLINES
 !       ALLOCATE THE FLUXLINES
         IF (.NOT.ALLOCATED(FLUXLINES)) THEN
           ALLOCATE (FLUXLINES(NUMBEROFLINES,9), STAT=IERR)
@@ -135,8 +135,8 @@
 !       READ NODES INTO FLUXLINE
         DO I = 1,NUMBEROFLINES
           READ(INP,*) FLUXLINES(I,1:9)
-        ENDDO 
-!    
+        ENDDO
+!
         WRITE(LU,*) "FLUXLINES FOUND ",NUMBEROFLINES,"CLASSES",ICLA
 !
 !------- DYNAMIC ALLOCATION OF FLUX, VOLFLUX,...
@@ -154,12 +154,12 @@
         IF(IERR.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,100) IERR
           IF(LNG.EQ.2) WRITE(LU,200) IERR
-100       FORMAT(1X,'FLUSEC_SIS : ERREUR A L''ALLOCATION 
+100       FORMAT(1X,'FLUSEC_SIS : ERREUR A L''ALLOCATION
      &               DE MEMOIRE : ',/,1X,'CODE D''ERREUR : ',1I6)
-200       FORMAT(1X,'FLUSEC_SIS: ERROR DURING ALLOCATION 
+200       FORMAT(1X,'FLUSEC_SIS: ERROR DURING ALLOCATION
      &              OF MEMORY: ',/,1X,'ERROR CODE: ',1I6)
         ENDIF
-!     
+!
 !------ CLEANUP
 !
         DO ISEC =1,NUMBEROFLINES
@@ -177,10 +177,10 @@
           SEG1(1) = MESH%X%R(GLOSEG(I,1))
           SEG1(2) = MESH%Y%R(GLOSEG(I,1))
           SEG2(1) = MESH%X%R(GLOSEG(I,2))
-          SEG2(2) = MESH%Y%R(GLOSEG(I,2))      
+          SEG2(2) = MESH%Y%R(GLOSEG(I,2))
 !         LOOP OVER ALL FLUXLINES
           DO ISEC =1,NUMBEROFLINES
-!            
+!
 !----------------------------------------------------------
 !
 ! SIGN IS USED TO LOOK ON WHICH SIDE OF THE LINE A NODE IS
@@ -191,19 +191,19 @@
 !
 !---------------------------------------------------------
 !
-            SIGN1 = (SEG1(1) - FLUXLINES(ISEC,3))* 
+            SIGN1 = (SEG1(1) - FLUXLINES(ISEC,3))*
      &              (FLUXLINES(ISEC,2) - FLUXLINES(ISEC,4)) -
-     &              (SEG1(2) - FLUXLINES(ISEC,4)) * 
+     &              (SEG1(2) - FLUXLINES(ISEC,4)) *
      &              (FLUXLINES(ISEC,1) - FLUXLINES(ISEC,3))
 
-            SIGN2 = (SEG2(1) - FLUXLINES(ISEC,3))* 
+            SIGN2 = (SEG2(1) - FLUXLINES(ISEC,3))*
      &              (FLUXLINES(ISEC,2) - FLUXLINES(ISEC,4)) -
-     &              (SEG2(2) - FLUXLINES(ISEC,4)) * 
+     &              (SEG2(2) - FLUXLINES(ISEC,4)) *
      &              (FLUXLINES(ISEC,1) - FLUXLINES(ISEC,3))
-!            
+!
 !---------------------------------------------------------
 !
-! THE FLUXLINE SHOULD NEVER CROSS A NODE (BE ZERO) 
+! THE FLUXLINE SHOULD NEVER CROSS A NODE (BE ZERO)
 ! IF THIS HAPPENS WE SHIFT THE NODE (RIGHT AND UPWARDS)
 !
 !---------------------------------------------------------
@@ -211,30 +211,30 @@
             IF(SIGN1.EQ.0.D0) THEN
               SIGN1 = (SEG1(1)+0.001D0 - FLUXLINES(ISEC,3)) *
      &                (FLUXLINES(ISEC,2) - FLUXLINES(ISEC,4))-
-     &                (SEG1(2)+0.001D0 - FLUXLINES(ISEC,4)) * 
+     &                (SEG1(2)+0.001D0 - FLUXLINES(ISEC,4)) *
      &                (FLUXLINES(ISEC,1) - FLUXLINES(ISEC,3))
             ENDIF
 !
             IF(SIGN2.EQ.0.D0) THEN
-              SIGN2 = (SEG2(1)+0.001D0 - FLUXLINES(ISEC,3)) * 
+              SIGN2 = (SEG2(1)+0.001D0 - FLUXLINES(ISEC,3)) *
      &                (FLUXLINES(ISEC,2) - FLUXLINES(ISEC,4))-
-     &                (SEG2(2)+0.001D0 - FLUXLINES(ISEC,4)) * 
+     &                (SEG2(2)+0.001D0 - FLUXLINES(ISEC,4)) *
      &                (FLUXLINES(ISEC,1) - FLUXLINES(ISEC,3))
             ENDIF
 !           ADD THE SEGMENT ID TO THE NODES
             IF(SIGN1*SIGN2.LT.0.D0) THEN
-                
+
               SEGXMIN = MIN(SEG1(1),SEG2(1))
               SEGXMAX = MAX(SEG1(1),SEG2(1))
               SEGYMIN = MIN(SEG1(2),SEG2(2))
               SEGYMAX = MAX(SEG1(2),SEG2(2))
 !
-              IF((SEGXMIN > FLUXLINES(ISEC,5).AND.(SEGXMAX < 
+              IF((SEGXMIN > FLUXLINES(ISEC,5).AND.(SEGXMAX <
      &            FLUXLINES(ISEC,7))).AND.
-     &           (SEGYMIN > FLUXLINES(ISEC,6)).AND.(SEGYMAX < 
+     &           (SEGYMIN > FLUXLINES(ISEC,6)).AND.(SEGYMAX <
      &              FLUXLINES(ISEC,8))) THEN
-!       
-                    MYPOS = FLUXLINEDATA(ISEC)%NOFSECTIONS + 1                    
+!
+                    MYPOS = FLUXLINEDATA(ISEC)%NOFSECTIONS + 1
                     IF(MYPOS.EQ.MAXEDGES) THEN
                       IF(LNG.EQ.1) WRITE(LU,52)
                       IF(LNG.EQ.2) WRITE(LU,53)
@@ -243,13 +243,13 @@
 53                    FORMAT(/,1X,'SISYPHE IS STOPPED : ',/
      &                ,1X,' REACHED MAXIMUM LIMIT OF EDGES')
                       CALL PLANTE(1)
-                      STOP      
+                      STOP
                     ENDIF
-!                    
+!
                     FLUXLINEDATA(ISEC)%SECTIONIDS(MYPOS) = I
                     IF(SIGN1.GT.0.D0) THEN
                       FLUXLINEDATA(ISEC)%DIRECTION(MYPOS) = 1
-                    ELSE 
+                    ELSE
                       FLUXLINEDATA(ISEC)%DIRECTION(MYPOS) = -1
                     ENDIF
                     FLUXLINEDATA(ISEC)%NOFSECTIONS = MYPOS
@@ -284,29 +284,29 @@
 !     ONLY INCREASE THE TIME SORRY, THIS INCLUDES THE MORPHOLOGIC FACTOR!
       IF(ICLA.EQ.1)THEN
         TIME = TIME + DT
-      ENDIF 
+      ENDIF
 !     LOOP OVER ALL FLUXLINES
       DO ISEC =1,NUMBEROFLINES
 !       ICLA ARE THE CLASSES
         FLUX(ISEC,ICLA) = 0.0D0
 !       LOOP OVER SEGMENT
         DO I = 1,FLUXLINEDATA(ISEC)%NOFSECTIONS
-          SEGMENTFLUX = FLUXLINEDATA(ISEC)%DIRECTION(I) *  
-     &                  FLODEL%R(FLUXLINEDATA(ISEC)%SECTIONIDS(I))  
-          FLUX(ISEC,ICLA) = FLUX(ISEC,ICLA) + SEGMENTFLUX   
-          VOLFLUX(ISEC,ICLA) = VOLFLUX(ISEC,ICLA) + (SEGMENTFLUX*DT)            
+          SEGMENTFLUX = FLUXLINEDATA(ISEC)%DIRECTION(I) *
+     &                  FLODEL%R(FLUXLINEDATA(ISEC)%SECTIONIDS(I))
+          FLUX(ISEC,ICLA) = FLUX(ISEC,ICLA) + SEGMENTFLUX
+          VOLFLUX(ISEC,ICLA) = VOLFLUX(ISEC,ICLA) + (SEGMENTFLUX*DT)
         ENDDO
       ENDDO
-!       
+!
 !----------------------------------------------------------------------
 !
 !     PART IIb
 !
 !     SCRIPTING AREA ;-)
 !     ADD A MASSBOX IF YOU LIKE (ADVANCED USERS ONLY) !
-!     WARNING THIS PART IS NOT PARALLEL  
+!     WARNING THIS PART IS NOT PARALLEL
 !----------------------------------------------------------------------
-!      IF (DOPLOT) THEN 
+!      IF (DOPLOT) THEN
 !        MASS = 0.0D0
 !        MASSTOTAL = 0.0D0
 !        DO I=1,NPOIN
@@ -317,7 +317,7 @@
 !            ENDIF
 !            MASSTOTAL = MASSTOTAL + HZ%R(I) * (1.0D0/ UNSV2D%R(I))
 !        ENDDO
-!        
+!
 !        IF(NCSIZE.GT.1) THEN
 !            SUMBOX = P_DSUM(MASS)
 !            SUMGLOBAL = P_DSUM(MASSTOTAL)
@@ -340,21 +340,21 @@
 !
       IF(DOPLOT) THEN
         IF(NCSIZE.GT.1) THEN
-!         PARALLEL CASE       
+!         PARALLEL CASE
 !         PREPARE SINGLE DATA FOR SENDING
           DO I=1,NUMBEROFLINES
             SUMFLUX = P_DSUM(FLUX(I,ICLA))
             SUMVOLFLUX = P_DSUM(VOLFLUX(I,ICLA))
             WRITE(LU,FMT=1000) 'FLUXLINE',I,'MYCLASS',ICLA,
      &      SUMFLUX,SUMVOLFLUX,TIME,DT
-          ENDDO           
+          ENDDO
         ELSE
 !         SERIAL CASE
           DO I=1,NUMBEROFLINES
             WRITE(LU,FMT=1000) 'FLUXLINE',I,'MYCLASS',ICLA,
      &      FLUX(I,ICLA),VOLFLUX(I,ICLA),TIME,DT
           ENDDO
-        ENDIF      
+        ENDIF
       ENDIF
 !
 1000  FORMAT (A8,' ',I2,' ',A7,' ',I2,' ',ES22.14,ES22.14,ES22.14,

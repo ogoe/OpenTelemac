@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special parallel damocles hermes bief waqtel sisyphe tomawac telemac2d telemac3d ad
+liborder: special hermes parallel damocles bief ad waqtel telemac2d sisyphe tomawac telemac3d
 name: HOMERE_TELEMAC3D
 
 [ad]
@@ -72,19 +72,19 @@ files: declarations_telemac.f
   mult_interface_seg.f
   mv0403.f
   mv0404.f
-  mv0404_2.f
   mv0304.f
   mv0306.f
   mv0606.f
-  mv0606_2.f
   assve1.f
   assvec.f
-  opass.f
-  mw0303.f
+  mv0404_2.f
   mv0303.f
   mv0603.f
+  opass.f
+  mw0303.f
   mv0202.f
   mvseg.f
+  mv0606_2.f
   matvct.f
   matvec.f
   lump.f
@@ -139,6 +139,7 @@ files: declarations_telemac.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
+  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -153,7 +154,7 @@ files: declarations_telemac.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt02pp.f
+  mt04bb.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -167,7 +168,7 @@ files: declarations_telemac.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt11ac.f
+  mt02pp.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -175,7 +176,7 @@ files: declarations_telemac.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt12aa.f
+  mt11ac.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -188,7 +189,6 @@ files: declarations_telemac.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
-  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -451,10 +451,6 @@ files: declarations_telemac.f
   dots.f
   kspg11.f
   ksupg.f
-  cflp12.f
-  cflp11.f
-  cflpsi.f
-  vgfpsi.f
   flux_mask.f
   flux_ef_vf_3.f
   flux_ef_vf_2.f
@@ -468,6 +464,9 @@ files: declarations_telemac.f
   cvtrvf_pos.f
   cvdftr.f
   diffin.f
+  cflp12.f
+  cflp11.f
+  cflpsi.f
   bief_gammln.f
   bief_gser.f
   bief_gcf.f
@@ -546,18 +545,18 @@ files: declarations_parallel.F
   p_imax.F
   p_dmin.F
   p_exit.F
+  p_mpi_alltoallv.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
   org_charac_type1.F
-  p_sync.F
-  p_mpi_alltoall.F
-  p_mpi_alltoallv.F
   oil_org_charac_type.F
   p_mpi_alltoallv_alg.F
+  p_sync.F
   p_mpi_alltoallv_oil.F
   p_mpi_type_free.F
   org_charac_type_alg.F
+  p_mpi_alltoall.F
   p_dsum.F
   p_ireadi8.F
   p_iwriti8.F
@@ -581,7 +580,6 @@ files: declarations_sisyphe.f
   dredgesim_interface.F
   maxslope.f
   condis_sisyphe.f
-  init_constant.F
   disimp.f
   read_fic_conc.f
   cgl.f
@@ -608,7 +606,7 @@ files: declarations_sisyphe.f
   suspension_sandflow.f
   suspension_bijker.f
   init_transport.f
-  predes.f
+  corstr_sisyphe.f
   suspension_dispersion.f
   suspension_erosion_coh.f
   suspension_evol.f
@@ -625,13 +623,15 @@ files: declarations_sisyphe.f
   rescue_sisyphe.f
   noerod.f
   bilan_sisyphe.f
-  corstr_sisyphe.f
+  init_constant.F
+  predes.f
   sis_arret.f
   condim_sisyphe.f
   tassement_2.f
   tassement.f
   bedload_diffin.f
   bedload_nerbed_vf.f
+  flusec_sis.f
   bedload_solvs_fe.f
   bedload_solvs_vf.f
   bedload_evol.f
@@ -639,6 +639,7 @@ files: declarations_sisyphe.f
   bedload_effpnt.f
   bedload_solidischarge.f
   bedload_main.f
+  rescue_sisyphe_notperma.f
   coefro_sisyphe.f
   ride.f
   ride_vr.f
@@ -669,10 +670,8 @@ files: declarations_sisyphe.f
   vitchu_sisyphe.f
   init_sediment.f
   layer.f
-  rescue_sisyphe_notperma.f
   fluxpr_sisyphe.f
   flusec_sisyphe.f
-  flusec_sis.f
   calcuw.f
   mean_grain_size.f
   init_zero.f
@@ -682,13 +681,13 @@ files: declarations_sisyphe.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
+  print_header.f
   plante.F
   get_nodes_per_element.f
   check_allocate.f
   write_error.f
   check_call.f
   extens.f
-  print_header.f
 
 [telemac2d]
 path: <root>|sources|telemac2d
@@ -703,8 +702,8 @@ files: friction_def.f
   meteo.f
   read_fic_frliq.f
   sta_dis_cur.f
-  conv_lambert_to_degdec.f
   conv_mercator_to_degdec.f
+  conv_lambert_to_degdec.f
   tpxo.f
   nodalf_pugh.f
   nodalupv_pugh.f
@@ -737,7 +736,6 @@ files: declarations_telemac3d.f
   lecdon_telemac3d.f
   amr_plan.f
   calcot.f
-  flux_cor.f
   tfond.f
   cstkep.f
   make_zconv.f
@@ -779,6 +777,7 @@ files: declarations_telemac3d.f
   tbord.f
   dessed.f
   plane_bottom.f
+  flux_cor.f
   murd3d.f
   trid1d.f
   set_dif.f
@@ -887,10 +886,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
-  gammln.f
   foncro.f
   bornes.f
   qgauss.f
+  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f
@@ -948,7 +947,7 @@ files: declarations_tomawac.f
   intang.f
   angles.f
   prenl1.f
-  spread.f
+  dir_spread.f
   wpower.f
   dump2d.f
   prenl2.f

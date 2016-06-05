@@ -575,10 +575,10 @@ if __name__ == "__main__":
       #TODO: Solve order error when we compile telemac3d telemac2d is put before bief
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
       #TODO: Tested still not working even if we rename all the duplicated variable/functions names
-      LIBDEPS = ['special', 'parallel', 'mumps', 'damocles','hermes', 'bief', \
-                 'partel', 'gretel', 'diffsel', 'splitsel', 'postel3d', 'waqtel',\
-                 'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', \
-                 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
+      #LIBDEPS = ['special', 'parallel', 'mumps', 'damocles','hermes', 'bief', \
+      #           'partel', 'gretel', 'diffsel', 'splitsel', 'postel3d', 'waqtel',\
+      #           'dredgesim', 'sisyphe', 'artemis', 'tomawac', 'stbtel', \
+      #           'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api', 'ad']
       # Only if we ask for a scan
       if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
@@ -604,11 +604,12 @@ if __name__ == "__main__":
                else:
                   ForCmd = path.join(ForDir,item.lower() + '.cmdf')
                #TODO: Remove that loop when scan order is rectified
-               fixedLibOrder=[]
-               for lib in LIBDEPS:
-                 if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
+               #fixedLibOrder=[]
+               #for lib in LIBDEPS:
+               #  if lib in MAKSYSTEL['deps']: fixedLibOrder.append(lib)
                #TODO: Replace fixedLibOrder by MAKSYSTEL['deps']
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}}
+               #FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':fixedLibOrder}}
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all_file[lib][path.splitext(path.basename(obj.replace('|',sep)))[0].upper()]
@@ -623,7 +624,7 @@ if __name__ == "__main__":
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList: FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
-               if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,cfg['root'],FileList)
+               if not path.exists(ForCmd) or rebuild == 2 or options.cleanup: putScanContent(ForCmd,cfg['root'],FileList)
                else:
                   FixeList = getScanContent(ForCmd,cfg['root'],options.bypass)
                   # ~~> check the update for new libraries

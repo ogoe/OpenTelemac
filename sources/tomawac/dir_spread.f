@@ -1,12 +1,12 @@
-!                    *****************
-                     SUBROUTINE SPREAD
-!                    *****************
+!                    *********************
+                     SUBROUTINE DIR_SPREAD
+!                    *********************
 !
      &( DIRSPR, F     , COSTET, SINTET, NPLAN , FREQ  , DFREQ , NF    ,
      &  NPOIN2, TAILF , COSMOY, SINMOY, VARIAN, TAUXC , TAUXS , TAUXE )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   28/06/2011
+! TOMAWAC   V7P2                                   05/06/2016
 !***********************************************************************
 !
 !brief    COMPUTES THE MEAN DIRECTIONAL SPREAD (=DIRECTIONAL
@@ -39,6 +39,12 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  S.E.BOURBAN (HRW)
+!+        05/06/2016
+!+        V7P2
+!+   Name of the subroutine changed from SPREAD (an intrinsic Fortran
+!+   routine) into DIR_SPREAD
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COSMOY         |<--| WORK TABLE
 !| COSTET         |<--| WORK TABLE
@@ -60,7 +66,7 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRADEG
 !
-      USE INTERFACE_TOMAWAC, EX_SPREAD => SPREAD
+      USE INTERFACE_TOMAWAC, EX_DIR_SPREAD => DIR_SPREAD
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT

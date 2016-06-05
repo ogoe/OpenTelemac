@@ -56,7 +56,7 @@
 !
 !    MINMOD
 !
-        EXLIM=0.5D0*(DSIGN(1.D0,GRI1)+DSIGN(1.D0,GRIJ))
+        EXLIM=0.5D0*(SIGN(1.D0,GRI1)+SIGN(1.D0,GRIJ))
      &   *MIN(ABS(GRI1),ABS(GRIJ))
 !
 !
@@ -66,7 +66,7 @@
 !
         E2 = 1.D-12
 !
-        AUX1 = 0.5D0*(1.D0+DSIGN(1.D0,GRI1*GRIJ))
+        AUX1 = 0.5D0*(1.D0+SIGN(1.D0,GRI1*GRIJ))
         GRI2  = GRI1*GRI1  + E2
         GRIJ2 = GRIJ*GRIJ  + E2
 !

@@ -179,8 +179,8 @@
             GRI = BETA1*GRADI(IVAR) - BETA*GRIJ
             GRJ = BETA1*GRADJ(IVAR) - BETA*GRJI
 !
-            AUX1 = 0.5*(1.0+  DSIGN(1.0D0, GRI*GRIJ))
-            AUX2 = 0.5*(1.0 + DSIGN(1.0D0, GRJ*GRJI))
+            AUX1 = 0.5*(1.0+  SIGN(1.0D0, GRI*GRIJ))
+            AUX2 = 0.5*(1.0 + SIGN(1.0D0, GRJ*GRJI))
 !
 !    VAN ALBADA
 !

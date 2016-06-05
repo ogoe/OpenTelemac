@@ -286,7 +286,7 @@
 !
 !   TVD COEFFICIENTS
 !
-      WL     = 0.5D0*(1.D0 + SIGN(1.D0,CL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
+      WL     = 0.5D0*(1.D0 + SIGN(1.D0,CL)*LIM_RL) !SIGN(A,B)=|A|*SIGN(B)
       WR     = 0.5D0*(1.D0 - SIGN(1.D0,CR)*LIM_RR)
       WLR    = 0.5D0*(SIGN(1.D0,CR)*LIM_RR - SIGN(1.D0,CL)*LIM_RL)
       WLSTAR = 0.5D0*(1.D0 + SIGN(1.D0,CSTAR)*LIM_RSTAR)

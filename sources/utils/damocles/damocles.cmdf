@@ -6,17 +6,17 @@ name: HOMERE_DAMOCLES
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: majus.f
+files: longlu.f
   precar.f
   next.f
-  loglu.f
-  longlu.f
-  myaidelu.f
-  prev.f
-  preval.f
-  realu.f
   mycarlu.f
+  myaidelu.f
+  preval.f
   intlu.f
+  prev.f
+  realu.f
+  majus.f
+  loglu.f
   dico_data.f
   homere_damocles.f
 

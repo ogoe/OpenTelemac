@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|postel3d
 module: postel3d
-liborder: special parallel damocles hermes bief postel3d
+liborder: special parallel hermes damocles bief postel3d
 name: HOMERE_POSTEL3D
 
 [bief]
@@ -133,10 +133,10 @@ files: interface_postel3d.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
+  print_header.f
   plante.F
   check_allocate.f
   get_nodes_per_element.f
   write_error.f
   check_call.f
   extens.f
-  print_header.f

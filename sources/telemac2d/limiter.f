@@ -72,7 +72,7 @@
 !       MINMOD
 !
           LIMITER = 1.0D0 - (1.0D0-ABS(C))
-     &             *0.5D0*(1.0D0 + DSIGN(1.D0,R)) ! DSIGN(A,B) = |A|*SIGN(B)
+     &             *0.5D0*(1.0D0 + SIGN(1.D0,R)) ! SIGN(A,B) = |A|*SIGN(B)
      &             *ABS(R)
 !
 !

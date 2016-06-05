@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|splitsel
 module: splitsel
-liborder: special parallel hermes bief splitsel
+liborder: special hermes bief splitsel
 name: SPLITSEL
 
 [bief]
@@ -25,10 +25,10 @@ files: interface_hermes.f
   get_data_time.f
   get_data_ntimestep.f
   get_data_nvar.f
+  set_header.f
   set_mesh.f
   add_data.f
   open_mesh.f
-  set_header.f
   close_mesh.f
   get_mesh_coord.f
   get_mesh_nelem.f
@@ -45,11 +45,6 @@ files: interface_hermes.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   open_bnd.f
-
-[parallel]
-path: <root>|sources|utils|parallel
-files: declarations_parallel.F
-  interface_parallel.f
 
 [special]
 path: <root>|sources|utils|special
