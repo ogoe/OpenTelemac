@@ -77,17 +77,15 @@
         END DO
       ELSE
         AP2  = (BDSSPB-TETA(1))/DTETA
-        NBPU = NINT(AP2) 
+        NBPU = NINT(AP2)  + 1
         AP2  = (BDISPB-TETA(1))/DTETA
         NBPL = NINT(AP2)
-        NBPL = NBPL + 1
         IF(NBPL.GT.NPLAN) THEN
           NBPL = 1
           INDI(1) = 1
           NBD  = NBPU - NBPL + 1
 !          ALLOCATE(INDI(1:NBD))
           DO IPL = 2,NBD
-             write(*,*) 'IPL ici',IPL
             INDI(IPL)=IPL
           END DO
         ELSE
@@ -95,11 +93,9 @@
           NBD = NB1 + NBPU
 !         ALLOCATE(INDI(1:NBD))
           DO IPL = 1,NB1
- !            write(*,*) 'ipl',ipl
             INDI(IPL)=NBPL+IPL-1
           END DO
           DO IPL = 1,NBPU
-!             write(*,*) 'IPL 1 NBPU',IPL
             INDI(IPL+NB1)=IPL
           END DO
         ENDIF
