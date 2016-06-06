@@ -150,10 +150,9 @@
                 ENDIF
 !
                 AP2    = (TETA2-TETA(1))/DTETA
-                IPM    = INT(AP2)
-                AP2    = AP2 - DBLE(IPM)
-                IPM    = IPM + 1
+                IPM    = NINT(AP2)
                 IPP    = IPM + 1
+                IF(IPM.EQ.0) IPM=NPLAN
                 IF(IPP.EQ.NPLAN+1) IPP = 1
 !
 !.........COMPUTES COUPLING COEFFICIENTS
