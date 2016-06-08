@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="deleteMASCARET" xml:lang="en">
+    <refnamediv>
+        <refname>deleteMASCARET</refname>
+        <refpurpose>Free all the variables of MASCARET for a specific instance</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>error = deleteMASCARET(id)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identification number of the MASCARET instance returned by <link linkend="createMASCARET">createMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+           <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para>(Output argument) Error code value : zero indicates that no errors occurred</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Free all the variables of MASCARET for a specific instance</para>
+    </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">
+// creation of 10 MASCARET models
+id = zeros(10,1);
+for i = 1:10
+   [err, id(i)] = createMASCARET();
+   assert_checkequal(err,0);  
+   printf("\tA new model is created with the identification number :%d\n", id(i));
+end
+
+// deletions
+for i = 1:10
+   err = deleteMASCARET(id(i));
+   assert_checkequal(err,0);  
+   printf("\tThe model is destroyed :%d\n", id(i));
+end
+    	</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See also</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="createMASCARET">createMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

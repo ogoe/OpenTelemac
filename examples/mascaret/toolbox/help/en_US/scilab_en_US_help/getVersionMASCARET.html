@@ -1,0 +1,80 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>getVersionMASCARET</title>
+    <style type="text/css" media="all">
+      @import url("scilab_code.css");
+      @import url("xml_code.css");
+      @import url("c_code.css");
+      @import url("style.css");
+    </style>
+  </head>
+  <body>
+    <div class="manualnavbar">
+    <table width="100%"><tr>
+      <td width="30%">
+    	<span class="previous"><a href="getTypeVarMASCARET.html">&lt;&lt; getTypeVarMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="importModelMASCARET.html">importModelMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+
+
+
+    <span class="path"><a href="index.html">Toolbox Mascaret</a> &gt;&gt; <a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a> &gt; getVersionMASCARET</span>
+
+    <br /><br />
+    <div class="refnamediv"><h1 class="refname">getVersionMASCARET</h1>
+        <p class="refpurpose">Gives the version number of the computation kernel MASCARET</p></div>
+    <div class="refsynopsisdiv"><h3 class="title">Calling sequence</h3>
+        <div class="synopsis"><pre><span class="default">[</span><span class="default">a</span><span class="default">,</span><span class="default">b</span><span class="default">,</span><span class="default">c</span><span class="default">]=</span><span class="functionid">getVersionMASCARET</span><span class="default">()</span></pre></div></div>
+    <div class="refsection"><h3 class="title">Arguments</h3>
+        <dl><dt><span class="term">a</span>
+                <dd><p class="para">Major number of the version</p></dd></dt>
+            <dt><span class="term">b</span>
+                <dd><p class="para">Minor number of the version</p></dd></dt>
+            <dt><span class="term">c</span>
+                <dd><p class="para">Micro number of the version</p></dd></dt></dl></div>
+    <div class="refsection"><h3 class="title">Description</h3>
+        <p class="para">Gives the version number of the computation kernel MASCARET to the format a.b.c</p></div>
+    <div class="refsection"><h3 class="title">Example</h3>
+    <div class="programlisting"><table border="0" width="100%"><tr><td width="98%"><pre class="scilabcode"><span class="scilabid">toolbox_dir</span><span class="scilaboperator">=</span><a class="scilabcommand" href="scilab://getenv">getenv</a><span class="scilabopenclose">(</span><span class="scilabstring">&#0034;</span><span class="scilabstring">toolbox_dir</span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<span class="scilabid">c</span> <span class="scilaboperator">=</span> <a class="scilabcommand" href="scilab://filesep">filesep</a><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// version of the MASCARET computation kernel</span>
+<span class="scilabopenclose">[</span><span class="scilabid">a</span><span class="scilabdefault">,</span><span class="scilabid">b</span><span class="scilabdefault">,</span><span class="scilabid">c</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">getVersionMASCARET</span><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><a class="scilabcommand" href="scilab://strcat">strcat</a><span class="scilabopenclose">(</span><span class="scilabopenclose">[</span><a class="scilabcommand" href="scilab://ascii">ascii</a><span class="scilabopenclose">(</span><span class="scilabid">a</span><span class="scilaboperator">+</span><span class="scilabnumber">48</span><span class="scilabopenclose">)</span> <span class="scilabstring">&#0039;</span><span class="scilabstring">.</span><span class="scilabstring">&#0039;</span> <a class="scilabcommand" href="scilab://ascii">ascii</a><span class="scilabopenclose">(</span><span class="scilabid">b</span><span class="scilaboperator">+</span><span class="scilabnumber">48</span><span class="scilabopenclose">)</span> <span class="scilabstring">&#0039;</span><span class="scilabstring">.</span><span class="scilabstring">&#0039;</span> <a class="scilabcommand" href="scilab://ascii">ascii</a><span class="scilabopenclose">(</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabnumber">48</span><span class="scilabopenclose">)</span><span class="scilabopenclose">]</span><span class="scilabopenclose">)</span><span class="scilabdefault">,</span><span class="scilabstring">&#0039;</span><span class="scilabstring">MASCARET version : </span><span class="scilabstring">&#0039;</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span></pre></td><td valign="top"><a href="scilab://scilab.execexample/"><img src="ScilabExecute.png" border="0"/></a></td><td valign="top"><a href="scilab://scilab.editexample/"><img src="ScilabEdit.png" border="0"/></a></td><td></td></tr></table></div></div>
+    <div class="refsection"><h3 class="title">See also</h3>
+        <ul class="itemizedlist"><li class="member"><a href="createMASCARET.html" class="link">createMASCARET</a> &#8212; Initialise all the MASCARET variables of an instance</li></ul></div>
+    <br />
+
+    <div class="manualnavbar">
+    <table width="100%">
+    <tr><td colspan="3" class="next"><a href="http://bugzilla.scilab.org/enter_bug.cgi?product=Scilab%20software&component=Documentation%20pages" class="ulink">Report an issue</a></td></tr>
+<tr>
+      <td width="30%">
+    	<span class="previous"><a href="getTypeVarMASCARET.html">&lt;&lt; getTypeVarMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="importModelMASCARET.html">importModelMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+  </body>
+</html>

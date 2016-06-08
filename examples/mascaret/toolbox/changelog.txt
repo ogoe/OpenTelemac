@@ -1,0 +1,20 @@
+ --------
+  (v0.3) - 2015 March - Fabrice Zaoui
+ --------
+    * Add more helps
+    * Update Mascaret kernel to v8.1
+
+ --------
+  (v0.2) - 2014 November - Fabrice Zaoui
+ --------
+    * New names in english for the wrappers
+    * New help documentation in english
+    * New examples and demos
+    
+ --------
+  (v0.1) - 2014 March - Jean-Marc Lacombe / Fabrice Zaoui
+ --------
+    * Initial release
+    * Documentation and Wrappers only in french
+
+

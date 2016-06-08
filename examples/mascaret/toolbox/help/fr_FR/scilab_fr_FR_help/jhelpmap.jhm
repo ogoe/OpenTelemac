@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
+<map version="1.0">
+<mapID target="index" url="index.html"/>
+<mapID target="section_b97b4e1a03e36210ca742f13a6174e4d" url="section_b97b4e1a03e36210ca742f13a6174e4d.html"/>
+<mapID target="computeMASCARET" url="computeMASCARET.html"/>
+<mapID target="computeMASCARET_BC" url="computeMASCARET_BC.html"/>
+<mapID target="createMASCARET" url="createMASCARET.html"/>
+<mapID target="deleteMASCARET" url="deleteMASCARET.html"/>
+<mapID target="exportXmlMASCARET" url="exportXmlMASCARET.html"/>
+<mapID target="getBoolMASCARET" url="getBoolMASCARET.html"/>
+<mapID target="getDescVarMASCARET" url="getDescVarMASCARET.html"/>
+<mapID target="getDoubleMASCARET" url="getDoubleMASCARET.html"/>
+<mapID target="getErrorMASCARET" url="getErrorMASCARET.html"/>
+<mapID target="getIntMASCARET" url="getIntMASCARET.html"/>
+<mapID target="getSizeVarMASCARET" url="getSizeVarMASCARET.html"/>
+<mapID target="getStringMASCARET" url="getStringMASCARET.html"/>
+<mapID target="getTypeVarMASCARET" url="getTypeVarMASCARET.html"/>
+<mapID target="getVersionMASCARET" url="getVersionMASCARET.html"/>
+<mapID target="importModelMASCARET" url="importModelMASCARET.html"/>
+<mapID target="importXmlMASCARET" url="importXmlMASCARET.html"/>
+<mapID target="initStateMASCARET" url="initStateMASCARET.html"/>
+<mapID target="initStateNameMASCARET" url="initStateNameMASCARET.html"/>
+<mapID target="setBoolMASCARET" url="setBoolMASCARET.html"/>
+<mapID target="setDoubleMASCARET" url="setDoubleMASCARET.html"/>
+<mapID target="setIntMASCARET" url="setIntMASCARET.html"/>
+<mapID target="setStringMASCARET" url="setStringMASCARET.html"/>
+</map>

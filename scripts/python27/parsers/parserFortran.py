@@ -220,7 +220,7 @@ typ_title = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90types)) #,re.I)
 typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90xport)) #,re.I)
 
 #?pcl_title = re.compile(r'\s*?((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s*(?P<after>.*?)\s*?(\bRESULT\b\s*?(?P<result>\w+[\w\s]*)|)\s*\Z') #,re.I)
-pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s+(?P<after>.*?)\s*(\bRESULT\b[\s\(]*(?P<result>\w+[\w\s]*)\)?|)\Z') #,re.I)
+pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|PURE FUNCTION|RECURSIVE FUNCTION|SUBROUTINE|RECURSIVE SUBROUTINE|MODULE|BLOCK DATA))\b\s+(?P<after>.*?)\s*(\bRESULT\b[\s\(]*(?P<result>\w+[\w\s]*)\)?|)\Z') #,re.I)
 #?pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z') #,re.I)
 pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
 
@@ -551,9 +551,11 @@ def parsePrincipalWrap(lines):
                   core.pop(count)
                   count = count - 1
             #~~> contains
-            if ltain: ctain = ctain - 1
+            #if ltain: ctain = ctain - 1
             if not ltain:
-               if re.match(ctn_title,line) : ltain = True
+               if re.match(ctn_title,line):
+                  ltain = True
+                  ctain = ctain - 1
             proc = re.match(pcl_close,line)
             if proc :
                block = block - 1
@@ -578,10 +580,10 @@ def parsePrincipalWrap(lines):
                if debug: print 'Different type at END ' + objt
             return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+2:]
       else:
-         print 'Invalid header type for first line' + lines[0]
+         print 'Invalid header type for first line ' + lines[0]
          sys.exit(1)
 
-   print 'Invalid header type for first line' + lines[0]
+   print 'Invalid header type for first line ' + lines[0]
    sys.exit(1)
    return # /!\ this return is just for python parsing
 
@@ -878,6 +880,8 @@ def scanSources(cfgdir,cfg,BYPASS):
 
    # ~~ Looking at each file individually ~~~~~~~~~~~~~~~~~~~~~~~~~~
    for mod in cfg['MODULES']:
+      # Skipping masacaret module
+      if mod == 'mascaret': continue
 
       wcw.update({mod:{'path':cfg['MODULES'][mod]['path']}})
       fic.update({mod:{}})
@@ -898,11 +902,11 @@ def scanSources(cfgdir,cfg,BYPASS):
       #/!\ if you need to print within this loop, you now need to use
       #    pbar.write(text,ibar) so the progress bar moves along
       for File in FileList :
+         #if path.basename(File) not in ['m_common_element.F90','pair.f'] : continue
          ibar = ibar + 1; pbar.update(ibar)
 
          if not mod in fic: fic.update({mod:{}})
          fic[mod].update({File:[]})
-         #pbar.write(File,ibar)
          who = { 'path':SrcDir, \
             'file':File.replace(SrcDir+sep,'').replace(sep,'|'), \
             'libname':mod,   \
@@ -1033,8 +1037,14 @@ def scanSources(cfgdir,cfg,BYPASS):
                      if call in wcw[u]:
                         wcw[u][call]['called'].append(name)
 
+<<<<<<< .working
    putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
 
+=======
+   if debug:
+      putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
+
+>>>>>>> .merge-right.r7645
    return fic,mdl,sbt,fct,prg,dep,wcw
 
 def sortFunctions(ifcts,iuses,list,mods,xuses):

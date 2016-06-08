@@ -234,6 +234,47 @@ def getScanContent(fle,root,bypass):
       if lib not in content: raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+fle}])
    return content
 
+def compileMascaretDependencies(cfg,cfgName):
+   """
+      Compile the c file needed by mascaret
+
+      param cfg Configuration obj
+      param cfgName Name of the configuration
+   """
+   if cfg['cmd_obj_c'] == '':
+      print "Missing cmd_obj_c in your configuration file to "+\
+            "compile mascaret C dependencies"
+      sys.exit(1)
+
+   cmd = cfg['cmd_obj_c'].replace('<srcName>',
+                              path.join(cfg['root'],
+                                       'sources',
+                                       'mascaret',
+                                       'Deriv',
+                                       'adstack.c'))
+   cmd = cmd.replace('<objName>',path.join(cfg['root'],
+                                          'builds',
+                                          cfgName,
+                                          'lib',
+                                          'mascaret',
+                                          'adstack.o'))
+   mes = MESSAGES(size=10)
+   try:
+      tail,code = mes.runCmd(cmd,False)
+   except Exception as e:
+      raise Exception([filterMessage(
+            {'name':'compileMascaretDepencies',
+             'msg':'something went wrong, I am not sure why.\n'
+            },e,bypass)])
+   if code != 0:
+      raise Exception([
+            {'name':'compileMascaretDepencies',
+             'msg':'Could not compile your file adstack'
+            }])
+
+   print '   - completed: .../sources/mascaret/Deriv/adstack.c'
+   HOMERES['HOMERE_MASCARET']['add'].append(('adstack.o','mascaret'))
+
 def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(path.basename(oname))
@@ -725,6 +766,8 @@ if __name__ == "__main__":
                if xcpts.notEmpty():
                   print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
                   sys.exit(1)
+            if item == 'HOMERE_MASCARET':
+               compileMascaretDependencies(cfg,cfgname)
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             foundLib = True
             for lib in HOMERES[item]['deps']:

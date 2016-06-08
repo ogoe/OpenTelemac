@@ -90,6 +90,7 @@ files: declarations_special.f
   write_error.f
   check_call.f
   print_header.f
+  extens.f
 
 [stbtel]
 path: <root>|sources|stbtel

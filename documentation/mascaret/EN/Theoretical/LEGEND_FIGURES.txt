@@ -1,0 +1,165 @@
+fig 1
+systeme_MASCARET.eps
+Graphical interface
+*Mascaret system
+**1D hydraulics
+**Flooding
+**Sediment transport
+**Water quality
+
+fig 2
+Schema_profil.eps
+in-channel storage areas
+
+fig 5
+Schema_Seuil_Denoye.eps
+Z_upstream or Z_us
+Z_downstream or Z_ds
+
+fig 6
+Schema_Seuil_Noye.eps
+Z_upstream or Z_us
+Z_downstream or Z_ds
+
+fig 7
+Principe_Res_Perm.eps
+Z1 (unknown)
+Z2 (known)
+Q1 (known)
+
+fig 9
+Pass_Loc_Tor.eps
+critical depth
+subcritical >< supercritical >< subcritical
+
+fig 10
+Sol_Loc_Tor.eps
+same as fig 9
+
+fig 12
+AlgoRezo.eps
+chaining of the matrix
+temporal loop
+*building the matrix
+**solution with the solver Y12M
+***update of the solution (Z,Q)
+
+fig 14
+Algorithme_SARAP.eps
+Initialisation of the algorithm (indexing of the reaches sweeping order)
+Downstream sweep of all reaches for which the upstream flow is known
+<> Have all the reaches been treated ?
+N: Split the discharge at all the bifurcations for which all the upstream discharges are known
+Y: Upstream sweep of all reaches in reverse order of the downstream sweep
+<> Hit a bifurcation: is there equality of the computed downstream levels ?
+Y: End of the algorithm when all the reaches have been swept upstream
+N: Start the next iteration for the flow repartition at this node
+Start again the downstream computation from this node
+
+
+fig 15
+Ex_Res_SARAP.eps
+replace "bief" by "reach"
+
+fig 16
+VueLong.eps
+Vertical section
+Free surface
+Bottom of the river
+
+fig 17
+VueLat.eps
+Wetted section S(x,t)
+
+fig 25
+AmontFluvial.eps
+Computational domain
+
+fig 26
+AmontTorrentiel.eps
+Computational domain
+
+fig 27
+AvalFluvial.eps
+Computational domain
+
+fig 28
+AvalTorrentiel.eps
+Computational domain
+
+fig 29
+NDomaine.eps
+domain nodes
+
+fig 30
+Lits.eps
+*low-flow channel
+**high-flow channel
+***in-channel storage areas
+
+fig 31
+ConfPar.eps
+solid walls
+
+fig 32
+ConfPar2.eps
+replace "bief" by "reach"
+
+posSing.eps
+position of the singularity
+domain nodes
+
+fig 33
+BarPds.eps
+L_top
+Z_top
+H_upstream or H_us
+H_downstream or H_ds
+L_bottom
+Z_bottom
+
+Sden.eps
+Z_upstream
+Z_weir
+
+fig 34
+CoefEn.eps
+Sharp-crested weir
+Broad-crested weir
+ratio H1/H
+
+fig 36
+CasierRiv.eps
+rainfall input
+river
+cross-section k
+storage area i
+storage area j
+
+Lchenal1.eps
+Lchenal2.eps
+h_1 = h_downstream or h_d/s
+h_2 = h_upstream or h_u/s
+
+Lorifice.eps
+Z_u/s
+Z_d/s
+
+fig 38
+DiagCas.eps
+Cotes dans la riviere => River water level
+Debits dans la riviere => River discharge 
+Cotes dans les casiers => Storage area water level
+*Systeme des casiers, interation n => Storage areas network, iteration n
+Calcul des debits d'echange entre Q_ij,n=0 et de debits d'echange riviere-casier Q_ik,n=0
+  => Computation of the exchange flows between storage areas Q_ij,n=0 and the exchange flows between the river and the storage areas Q_ik,n=0
+Calcul des variations de cotes dans les casiers => Computation of water level variations in the storage areas
+Calcul des nouveaux debits d'apport dans la riviere => Computation of the new inflow discharges into the river
+*Noyau fluvial, iteration n => Subcritical engine, iteration n
+Calcul des nouvelles cotes dans la riviere => Computation of the new water levels in the river
+<> si convergence ou n=Nmax => if convergence or n=Nmax
+*Cotes dans la riviere => River water level
+Debits dans la riviere => River discharge 
+Cotes dans les casiers => Storage area water level
+*Calcul des variations de cotes dans la riviere => Computation of water level variations in the river
+Estimation de la variation suivante => Estimation of the following variation term

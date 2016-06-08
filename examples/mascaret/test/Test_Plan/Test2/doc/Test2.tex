@@ -1,0 +1,143 @@
+\documentclass[a4paper,10pt]{article}
+
+%\usepackage[utf8]{inputenc} % pour les accents
+\usepackage[T1]{fontenc} % caracteres francais
+\usepackage{geometry} %les marges
+\usepackage[french]{babel} %langue principale
+\usepackage[dvips]{graphicx}
+\geometry{ hmargin=2cm, vmargin=2cm }
+
+\pagestyle{empty} %pas de numerotation de page
+
+%
+% Debut du document
+%
+\begin{document}
+
+\section*{FICHE DE VALIDATION DU LOGICIEL MASCARET V7P0}
+
+\subsection*{Validation des noyaux de calcul permanent et transitoire transcritique}
+
+\subsection*{\emph{Canal rectangulaire avec une perte de charge singulière}}
+
+\subsection*{Numéro du cas test : 2}
+
+\subsection*{Auteur : N. Goutal}
+
+
+\vspace{1cm}
+
+\subsection*{Description}
+
+	Ce cas test a pour but de valider le noyau de calcul en régime permanent  et le noyau de calcul transitoire en régime transcritique , dans le cas d'un canal rectangulaire avec une perte de charge singulière et de vérifier la non-régression par rapport à la version 5.0.  
+
+\subsection*{Données géométriques}
+
+	Le calcul est réalisé dans un canal de pente nulle, de longueur $4990\mbox{ }m$, dont chaque section en travers est de forme rectangulaire de $1\mbox{ }m$ de large. La géométrie du canal est décrite par 2 profils en travers situés aux abscisses $X = 0\mbox{ }m$ et $X = 4990\mbox{ }m$. La perte de charge singulière est située au niveau de l'abscisse $X = 2500 \mbox{ }m$.
+
+\subsection*{Données physiques}
+
+	Prise en compte du frottement : oui 
+\begin{itemize} 
+ \item Coefficient de Strickler  = $90\mbox{ }m^{1/3}.s^{-1}$
+ \item Conditions aux limites : 
+ \begin{itemize}
+  \item Cote imposée à l'aval égale à $1\mbox{ }m$
+  \item Débit imposé à l'amont constant égal à $1\mbox{ } m^3.s^{-1}$
+  \end{itemize}
+ \item Conditions initiales : aucune pour le noyau permanent
+ \begin{itemize}
+  \item Débit constant = $1\mbox{ }m^3.s^{-1}$ et cote variant linéairement de $1$ à $1.5\mbox{ }m$ pour le noyau transcritique 
+  \end{itemize}
+ \item Coefficient de la perte de charge singulière : $0.5$ en $X=2500\mbox{ }m$
+\end{itemize} 
+
+\subsection*{Données numériques}
+
+	Le domaine a été divisé en 499 mailles de longueur constante égale à 10 m.
+Le pas de planimétrage est homogène dans le domaine égal à $10\mbox{ }m$ (2 pas de planimétrage).
+ 
+
+\subsection*{Solution analytique}
+
+	En présence d'une perte de charge singulière, l'équation de conservation de la quantité de mouvement s'écrit :
+
+\begin{equation}
+ \frac{\partial}{\partial x}\left(\displaystyle \frac{Q^2}{Lh}+\frac{1}{2}gLh^2\right)=-\frac{\partial{}}{\partial x}\displaystyle(\alpha V^{2}_{amont})\times gLh
+\end{equation}
+\\
+avec\\
+\\
+$Q$ : 	débit total ($m^3.s^{-1}$)
+\\
+$L$ : 	largeur du domaine ($m$)
+\\
+$h$ : 	hauteur d'eau ($m$)
+\\
+$V_{amont}$: vitesse au niveau de la section située à l'amont de la perte de charge ($m.s^{-1}$)
+\\
+$\alpha$: coefficient de perte de charge
+
+\vspace{0.3cm}
+
+En discrétisant cette équation par la méthode des différences finies, on obtient ($L = 1\mbox{ } m$) :
+
+
+
+\begin{equation}
+ \left[\frac{2}{h_{1}+h_{2}}\times \frac{Q^{2}_{1}-Q^{2}_{2}}{\Delta x}\right] +\left[\frac {(Q_{1}+Q_{2})^{2}}{(h_{1}+h_{2})^2}+g \times \frac{h_{1}+h_{2}}{2}\right]\frac{\Delta h }{\Delta x}=-\frac{\alpha}{2\Delta x}\left(\frac{Q_{1}}{h_{1}}\right)^2\times \frac{h_{1}+h_{2}}{2}
+\end{equation}
+
+L'indice 1 correspond à la section de calcul en amont de l'apport, l'indice $2$ correspond à la section de calcul en aval de l'apport.
+\\
+
+Application numérique :\\
+\\
+$Q_{1} = 1\mbox{ } m^3.s^{-1}$ 
+\\
+$Q_{2} = 1\mbox{ } m^3.s^{-1}$
+\\
+$h_{1} = 1.2453 \mbox{ } m$
+\\
+$h_{2} = 1.2272 \mbox{ } m$
+\\
+$\Delta x = 10 \mbox{ } m$
+\\
+$\alpha = 0.5$\\
+\\
+Ces valeurs donnent $\Delta h_{analytique} = 0.0172\mbox{ }m$\\
+$\Delta h_{calculee}$ avec le noyau permanent 5.0 :   $0.018\mbox{ }m$
+
+
+	\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=270,width=15cm]{Figure1.eps}
+  \caption{Comparaison des hauteurs d'eau calculées}
+  \label{fig1}
+ \end{center}
+\end{figure} 
+
+$\mbox{  }$\\
+$\Delta h_{calculee}$ avec le noyau permanent 7.0 : $0.018 \mbox{ }m $ \\
+$\Delta h_{calculee}$ avec le noyau transitoire transcritique : $0.018 \mbox{ }m $
+
+\subsection*{Résultats}
+
+	La figure~\ref{fig1} compare les lignes d'eau obtenues avec la version Mascaret 7.0 noyau permanent avec la version Mascaret 7.0 noyau transitoire transcritique explicite . Les deux versions donnent des résultats quasi - identiques hormis un décalage d'une maille sur le positionnement de la solution transcritique.
+La perte de charge calculée au niveau de la perte de charge vaut $\Delta h_{calculee} = 0.0181\mbox{ }m$. L'erreur relative est de $5 \% $. 
+
+
+
+
+\subsection*{Conclusion}
+
+	Le traitement des pertes de charges singulières est satisfaisant. D'autre part, les écarts entre les deux versions sont quasiment nuls.
+
+
+
+
+
+%
+% fin du document
+%
+\end{document}          

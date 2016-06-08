@@ -1,0 +1,110 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>setStringMASCARET</title>
+    <style type="text/css" media="all">
+      @import url("scilab_code.css");
+      @import url("xml_code.css");
+      @import url("c_code.css");
+      @import url("style.css");
+    </style>
+  </head>
+  <body>
+    <div class="manualnavbar">
+    <table width="100%"><tr>
+      <td width="30%">
+    	<span class="previous"><a href="setIntMASCARET.html">&lt;&lt; setIntMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+
+
+
+    <span class="path"><a href="index.html">Toolbox Mascaret</a> &gt;&gt; <a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a> &gt; setStringMASCARET</span>
+
+    <br /><br />
+    <div class="refnamediv"><h1 class="refname">setStringMASCARET</h1>
+        <p class="refpurpose">Mutator to control changes to a string variable</p></div>
+    <div class="refsynopsisdiv"><h3 class="title">Calling sequence</h3>
+        <div class="synopsis"><pre><span class="default">[</span><span class="default">error</span><span class="default">]=</span><span class="functionid">setStringMASCARET</span><span class="default">(</span><span class="default">id</span><span class="default">,</span><span class="default">nameVar</span><span class="default">,</span><span class="default">index1</span><span class="default">,</span><span class="default">index2</span><span class="default">,</span><span class="default">index3</span><span class="default">,</span><span class="default">value</span><span class="default">)</span></pre></div></div>
+    <div class="refsection"><h3 class="title">Arguments</h3>
+        <dl><dt><span class="term">error</span>
+                <dd><p class="para">(Output argument) Error code value : zero indicates that no errors occurred</p></dd></dt>
+            <dt><span class="term">id</span>
+                <dd><p class="para">MASCARET instance number returned by the function <a href="createMASCARET.html" class="link">createMASCARET</a></p></dd></dt>
+            <dt><span class="term">nameVar</span>
+                <dd><p class="para">Name of the variable (dot notation), the list of all the possible variables is returned by <a href="getDescVarMASCARET.html" class="link">getDescVarMASCARET</a></p></dd></dt>
+            <dt><span class="term">index1</span>
+                <dd><p class="para">value of the 1st index</p></dd></dt>
+            <dt><span class="term">index2</span>
+                <dd><p class="para">value of the 2nd index</p></dd></dt>
+            <dt><span class="term">index3</span>
+                <dd><p class="para">value of the 3rd index</p></dd></dt>
+            <dt><span class="term">value</span>
+                <dd><p class="para">New string value of a variable with the specific indices</p></dd></dt></dl></div>
+    <div class="refsection"><h3 class="title">Description</h3>
+        <p class="para">Mutator to control changes to a string variable of the model or of the state</p></div>
+    <div class="refsection"><h3 class="title">Example</h3>
+        <div class="programlisting"><table border="0" width="100%"><tr><td width="98%"><pre class="scilabcode"><span class="scilabid">toolbox_dir</span><span class="scilaboperator">=</span><a class="scilabcommand" href="scilab://getenv">getenv</a><span class="scilabopenclose">(</span><span class="scilabstring">&#0034;</span><span class="scilabstring">toolbox_dir</span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<span class="scilabid">c</span> <span class="scilaboperator">=</span> <a class="scilabcommand" href="scilab://filesep">filesep</a><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// creation of the MASCARET model</span>
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span> <span class="scilabid">id</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">createMASCARET</span><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checktrue">assert_checktrue</a><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilaboperator">&#0062;</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// read data from files</span>
+<span class="scilabid">path_xml</span> <span class="scilaboperator">=</span> <span class="scilabstring">&#0034;</span><span class="scilabstring">file://</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1.xcas</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">;</span>
+<span class="scilabid">TabNomFichier</span> <span class="scilaboperator">=</span> <span class="scilabopenclose">[</span><a class="scilabcommand" href="scilab://strsubst">strsubst</a><span class="scilabopenclose">(</span><span class="scilabid">path_xml</span><span class="scilabdefault">,</span><span class="scilabstring">&#0039;</span><span class="scilabstring">\</span><span class="scilabstring">&#0039;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0039;</span><span class="scilabstring">/</span><span class="scilabstring">&#0039;</span><span class="scilabopenclose">)</span><span class="scilabdefault">,</span> <span class="scilabspecial">..</span>
+                 <span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1.geo</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span> <span class="scilabspecial">..</span>
+                 <span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1_0.loi</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span> <span class="scilabspecial">..</span>
+                 <span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1_1.loi</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span> <span class="scilabspecial">..</span>
+                 <span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1.lis</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span> <span class="scilabspecial">..</span>
+                 <span class="scilabid">toolbox_dir</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demos</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Help</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1</span><span class="scilabstring">&#0034;</span><span class="scilaboperator">+</span><span class="scilabid">c</span><span class="scilaboperator">+</span><span class="scilabstring">&#0034;</span><span class="scilabstring">demo1.opt</span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">]</span><span class="scilabdefault">;</span>
+ 
+<span class="scilabid">TypeNomFichier</span> <span class="scilaboperator">=</span> <span class="scilabopenclose">[</span><span class="scilabstring">&#0034;</span><span class="scilabstring">xcas</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">geo</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">loi</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">loi</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">listing</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">res</span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">]</span><span class="scilabdefault">;</span>
+<span class="scilabid">impression</span> <span class="scilaboperator">=</span> <span class="scilabnumber">0</span><span class="scilabdefault">;</span>
+<span class="scilabid">err</span> <span class="scilaboperator">=</span> <span class="scilabid">importModelMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabdefault">,</span><span class="scilabid">TabNomFichier</span><span class="scilabdefault">,</span><span class="scilabid">TypeNomFichier</span><span class="scilabdefault">,</span><span class="scilabid">impression</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// set the title of the calculation</span>
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">setStringMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Model.Title</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">My study</span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span> 
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabid">TitreCas</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">getStringMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Model.Title</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span> 
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><span class="scilabid">TitreCas</span><span class="scilabdefault">,</span><span class="scilabstring">&#0034;</span><span class="scilabstring">Title : </span><span class="scilabstring">&#0034;</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// model deletion</span>
+<span class="scilabid">err</span> <span class="scilaboperator">=</span> <span class="scilabid">deleteMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span></pre></td><td valign="top"><a href="scilab://scilab.execexample/"><img src="ScilabExecute.png" border="0"/></a></td><td valign="top"><a href="scilab://scilab.editexample/"><img src="ScilabEdit.png" border="0"/></a></td><td></td></tr></table></div></div>
+    <div class="refsection"><h3 class="title">See also</h3>
+        <ul class="itemizedlist"><li class="member"><a href="getStringMASCARET.html" class="link">getStringMASCARET</a> &#8212; Accessor for retrieving a string value</li></ul></div>
+    <br />
+
+    <div class="manualnavbar">
+    <table width="100%">
+    <tr><td colspan="3" class="next"><a href="http://bugzilla.scilab.org/enter_bug.cgi?product=Scilab%20software&component=Documentation%20pages" class="ulink">Report an issue</a></td></tr>
+<tr>
+      <td width="30%">
+    	<span class="previous"><a href="setIntMASCARET.html">&lt;&lt; setIntMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+  </body>
+</html>

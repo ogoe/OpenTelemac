@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MASCARET_State  version="8.1.0">
+ <State.DPDZ2 type="TABDOUBLE" description="Derivative of the floodplain wetted perimeter with respect to the level" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.DPDZ2>
+ <State.DPDZ1 type="TABDOUBLE" description="Derivative of main channel wetted perimeter with respect to the level" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.DPDZ1>
+ <State.Qspilled type="TABDOUBLE" description="Spilled discharge (lateral weir)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Qspilled>
+ <State.Qinflow type="TABDOUBLE" description="Inflow discharge" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Qinflow>
+ <State.Airs type="TABDOUBLE" description="State of the 2D junction" dimension="2">
+  <TABDOUBLE dim="2" taille="12">
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="1">
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+  </TABDOUBLE>
+ </State.Airs>
+ <State.W type="TABDOUBLE" description="State of the 2D junction" dimension="3">
+  <TABDOUBLE dim="3" taille="3">
+   <TABDOUBLE dim="2" taille="12">
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+   </TABDOUBLE>
+   <TABDOUBLE dim="2" taille="12">
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+   </TABDOUBLE>
+   <TABDOUBLE dim="2" taille="12">
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+    <TABDOUBLE dim="1" taille="1">
+     <v>0.0000000000000000</v>
+    </TABDOUBLE>
+   </TABDOUBLE>
+  </TABDOUBLE>
+ </State.W>
+ <State.YNode type="TABDOUBLE" description="Water depth (super-critical kernel)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.YNode>
+ <State.CNode type="TABDOUBLE" description="Celerity (super-critical kernel)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.CNode>
+ <State.UNode type="TABDOUBLE" description="Speed (super-critical kernel)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.UNode>
+ <State.XFron type="TABDOUBLE" description="Front wave position" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.XFron>
+ <State.RH2 type="TABDOUBLE" description="Hydraulic radius of the floodplain" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.RH2>
+ <State.RH1 type="TABDOUBLE" description="Hydraulic radius of the main channel" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.RH1>
+ <State.BS type="TABDOUBLE" description="Width of the ineffective flow area" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.BS>
+ <State.B2 type="TABDOUBLE" description="Width of the floodplain" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.B2>
+ <State.B1 type="TABDOUBLE" description="Width of the main channelr" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.B1>
+ <State.P2 type="TABDOUBLE" description="Floodplain wetted perimeter" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.P2>
+ <State.P1 type="TABDOUBLE" description="Main channel wetted perimeter" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.P1>
+ <State.Froude type="TABDOUBLE" description="Froude number" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Froude>
+ <State.Beta type="TABDOUBLE" description="beta coefficient of the Debord's formula" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Beta>
+ <State.S2 type="TABDOUBLE" description="Floodplain wetted area" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.S2>
+ <State.S1 type="TABDOUBLE" description="Main channel wetted area" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.S1>
+ <State.SS type="TABDOUBLE" description="Wetted ineffective flow area" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.SS>
+ <State.Q2 type="TABDOUBLE" description="Floodplain discharge" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Q2>
+ <State.Q1 type="TABDOUBLE" description="Main channel discharge" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Q1>
+ <State.V1 type="TABDOUBLE" description="Velocity in main channel" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.V1>
+ <State.V2 type="TABDOUBLE" description="Velocity in floodplain" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.V2>
+ <State.Y type="TABDOUBLE" description="Water depth" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Y>
+ <State.VOL type="TABDOUBLE" description="Volume of the active channel" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.VOL>
+ <State.VOLS type="TABDOUBLE" description="Volume of the ineffective flow areas" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.VOLS>
+ <State.PreviousTime type="DOUBLE" description="Previous Time" dimension="0">600.00000000000000</State.PreviousTime>
+ <State.TimeStepNum type="INT" description="Time step number" dimension="0">36602</State.TimeStepNum>
+ <State.SimulPhase type="INT" description="Indicator of the simulation phase" dimension="0">1</State.SimulPhase>
+ <State.DT type="DOUBLE" description="Time step (s)" dimension="0">1.0000000000000000</State.DT>
+ <State.Q type="TABDOUBLE" description="Total discharge (m3/s)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Q>
+ <State.Z type="TABDOUBLE" description="Water level (m)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+   <v>2.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Z>
+ <State.Link.Discharge type="DOUBLE" description="Discharge (m3/s)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.Discharge>
+ <State.Link.PrevDischarge type="DOUBLE" description="Previous discharge (m3/s)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.PrevDischarge>
+ <State.Link.MaxDischarge type="DOUBLE" description="Maximal discharge value (m3/s)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.MaxDischarge>
+ <State.Link.MaxDischTime type="DOUBLE" description="Time (s) corresponding to the maximal discharge value" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.MaxDischTime>
+ <State.Link.ExchangeV type="DOUBLE" description="Exchange velocity" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.ExchangeV>
+ <State.Link.MaxV type="DOUBLE" description="Maximal velocity value" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.MaxV>
+ <State.Link.MaxVTime type="DOUBLE" description="Time (s) corresponding to the maximal velocity value" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.MaxVTime>
+ <State.Link.DQDZus type="DOUBLE" description="Derivative of the discharge with respect to the level in the upstream storage area" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.DQDZus>
+ <State.Link.DQDZds type="DOUBLE" description="Derivative of the discharge with respect to the level in the downstream storage area" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.DQDZds>
+ <State.Link.DQDZsto type="DOUBLE" description="Derivative of the discharge with respect to the storage area level" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.DQDZsto>
+ <State.Link.DQDZriv type="DOUBLE" description="Derivative of the discharge with respect to the river level" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.Link.DQDZriv>
+ <State.StoArea.Level type="DOUBLE" description="Water level (m)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.Level>
+ <State.StoArea.Surface type="DOUBLE" description="Surface (m2)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.Surface>
+ <State.StoArea.Volume type="DOUBLE" description="Volume (m3)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.Volume>
+ <State.StoArea.InitVolume type="DOUBLE" description="Initial volume (m3)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.InitVolume>
+ <State.StoArea.VolStatement type="DOUBLE" description="Volume statement" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.VolStatement>
+ <State.StoArea.ErrVolStatement type="DOUBLE" description="Error volume statement" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.ErrVolStatement>
+ <State.StoArea.DzSto type="DOUBLE" description="Level variation" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.DzSto>
+ <State.StoArea.MaxLevel type="DOUBLE" description="Maximal water level (m)" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.MaxLevel>
+ <State.StoArea.MaxTime type="DOUBLE" description="Time corresponding to the maximal level" dimension="1">
+  <DOUBLE dim="1" taille="0">
+  </DOUBLE>
+ </State.StoArea.MaxTime>
+ <State.JGNODE type="TABINT" description="index of the vertical discretisation GNode" dimension="1">
+  <TABINT dim="1" taille="11">
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+  </TABINT>
+ </State.JGNODE>
+ <State.JDNODE type="TABINT" description="index of the vertical discretisation DNODE" dimension="1">
+  <TABINT dim="1" taille="11">
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+  </TABINT>
+ </State.JDNODE>
+ <State.IFIGE type="TABINT" description="index of the vertical discretisation  Fige" dimension="1">
+  <TABINT dim="1" taille="11">
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+   <v>0</v>
+  </TABINT>
+ </State.IFIGE>
+ <State.FLUX type="TABDOUBLE" description="Flux of the Roe's solver (FV)" dimension="2">
+  <TABDOUBLE dim="2" taille="11">
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+   <TABDOUBLE dim="1" taille="2">
+    <v>0.0000000000000000</v>
+    <v>0.0000000000000000</v>
+   </TABDOUBLE>
+  </TABDOUBLE>
+ </State.FLUX>
+ <State.Flow type="TABDOUBLE" description="Mass flow" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.Flow>
+ <State.DTRezo type="DOUBLE" description="Time step (REZO - subcritical kernel)" dimension="0">0.0000000000000000</State.DTRezo>
+ <State.Rezomat.SOLV type="INT" description="Linear solver (REZO - subcritical kernel)" dimension="0">0</State.Rezomat.SOLV>
+ <State.Rezomat.N type="INT" description="Matrix rank (REZO - subcritical kernel)" dimension="0">0</State.Rezomat.N>
+ <State.Rezomat.NNZ type="INT" description="Number of non-zero elements (REZO - subcritical kernel)" dimension="0">0</State.Rezomat.NNZ>
+ <State.Rezomat.NN type="INT" description="Work aray dimension SNR (Y12M solver)" dimension="0">0</State.Rezomat.NN>
+ <State.Rezomat.NN1 type="INT" description="Work aray dimension RNR (Y12M solver)" dimension="0">0</State.Rezomat.NN1>
+ <State.Rezomat.IHA type="INT" description="DWork aray dimension HA (Y12M solver)" dimension="0">0</State.Rezomat.IHA>
+ <State.Rezomat.KL type="INT" description="Lower bandwidth (LAPACK-DGBSV solver)" dimension="0">0</State.Rezomat.KL>
+ <State.Rezomat.KU type="INT" description="Upper bandwidth (LAPACK-DGBSV solver)" dimension="0">0</State.Rezomat.KU>
+ <State.Rezomat.LDAB type="INT" description="Workspace (LAPACK-DGBSV solver)" dimension="0">0</State.Rezomat.LDAB>
+ <State.Rezomat.IFAIL type="INT" description="Error indicator" dimension="0">0</State.Rezomat.IFAIL>
+ <State.Rezomat.ipiv type="TABINT" description="Permutation matrix (LAPACK-DGBSV solver)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.ipiv>
+ <State.Rezomat.IFLAG type="TABINT" description="Numerical options and statistics (Y12M solver)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.IFLAG>
+ <State.Rezomat.RowA type="TABINT" description="Row number of a non-zero element" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.RowA>
+ <State.Rezomat.ColA type="TABINT" description="Column number of a  non-zero element" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.ColA>
+ <State.Rezomat.snr type="TABINT" description="Work array SNR" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.snr>
+ <State.Rezomat.rnr type="TABINT" description="Work array RNR" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.rnr>
+ <State.Rezomat.ha type="TABINT" description="Work array HA" dimension="2">
+  <TABINT dim="2" taille="0">
+  </TABINT>
+ </State.Rezomat.ha>
+ <State.Rezomat.noVarDQ type="TABINT" description="Pointers to DQ solutions (discharge)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.noVarDQ>
+ <State.Rezomat.noVarDZ type="TABINT" description="Pointers to DZ solutions (level)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.noVarDZ>
+ <State.Rezomat.noVarDQl type="TABINT" description="Pointers to DQl solutions (link)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.noVarDQl>
+ <State.Rezomat.noVarDZc type="TABINT" description="Pointers to DZc solutions (Storage area)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.noVarDZc>
+ <State.Rezomat.KdNode type="TABINT" description="Kind of nodes : 0->undefined, -1 ->discharge, -2 ->level, >0 ->junction" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.KdNode>
+ <State.Rezomat.headJunction type="TABINT" description="For each junction, first element (node number)" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.headJunction>
+ <State.Rezomat.nxtNdJunction type="TABINT" description="Next element in the list of nodes of a junction" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.nxtNdJunction>
+ <State.Rezomat.WeirNd type="TABINT" description="Positions of weirs --- nodes" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.WeirNd>
+ <State.Rezomat.LinkNd type="TABINT" description="Positions of links --- nodes" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.LinkNd>
+ <State.Rezomat.NdLink type="TABINT" description="For each link, gives the upstream node or 0 if the link is not connected to the river" dimension="1">
+  <TABINT dim="1" taille="0">
+  </TABINT>
+ </State.Rezomat.NdLink>
+ <State.Rezomat.AFLAG type="TABDOUBLE" description="Numerical parameters (Y12M solver)" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Rezomat.AFLAG>
+ <State.Rezomat.valA type="TABDOUBLE" description="Values of the non-zero elements" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Rezomat.valA>
+ <State.Rezomat.b type="TABDOUBLE" description="RHS vector of the linear system : A.x = b" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Rezomat.b>
+ <State.Rezomat.pivot type="TABDOUBLE" description="Pivot value of the Gauss elimination" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Rezomat.pivot>
+ <State.Rezomat.AB type="TABDOUBLE" description="Band matrix (LAPACK-DGBSV solver)" dimension="2">
+  <TABDOUBLE dim="2" taille="0">
+  </TABDOUBLE>
+ </State.Rezomat.AB>
+ <State.NBARAD type="INT" description="Number of downstream dams (super-critical kernel)" dimension="0">0</State.NBARAD>
+ <State.IDEB type="TABINT" description="Beginning of the computation area per reach (super-critical kernel)" dimension="1">
+  <TABINT dim="1" taille="1">
+   <v>691273782</v>
+  </TABINT>
+ </State.IDEB>
+ <State.IFIN type="TABINT" description="End of the computation area per reach (super-critical kernel)" dimension="1">
+  <TABINT dim="1" taille="1">
+   <v>1764294686</v>
+  </TABINT>
+ </State.IFIN>
+ <State.ITEM0 type="TABINT" description="ITEM0 (super-critical kernel)" dimension="1">
+  <TABINT dim="1" taille="1">
+   <v>2019885116</v>
+  </TABINT>
+ </State.ITEM0>
+ <State.Save.H2OIB type="TABDOUBLE" description="Initial water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OIB>
+ <State.Save.H2OTB type="TABDOUBLE" description="Total water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OTB>
+ <State.Save.H2OEB type="TABDOUBLE" description="Incoming water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OEB>
+ <State.Save.H2OSB type="TABDOUBLE" description="Outgoing water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OSB>
+ <State.Save.H2OIC type="TABDOUBLE" description="Initial water mass - JUNCTION" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OIC>
+ <State.Save.H2OTC type="TABDOUBLE" description="Total water mass - JUNCTION" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OTC>
+ <State.Save.H2OEC type="TABDOUBLE" description="Incoming water mass - JUNCTION" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OEC>
+ <State.Save.H2OSC type="TABDOUBLE" description="Outgoing water mass - JUNCTION" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OSC>
+ <State.Save.H2OTBS type="TABDOUBLE" description="Total outgoing water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OTBS>
+ <State.Save.H2OIBS type="TABDOUBLE" description="Initial outgoing water mass - REACH" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.H2OIBS>
+ <State.Save.SPREC type="TABDOUBLE" description="Previous wetted area" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.SPREC>
+ <State.Save.QPREC type="TABDOUBLE" description="Previous discharge" dimension="1">
+  <TABDOUBLE dim="1" taille="0">
+  </TABDOUBLE>
+ </State.Save.QPREC>
+ <State.Save.H2OIG type="DOUBLE" description="Global initial water mass" dimension="0">178125.02086333331</State.Save.H2OIG>
+ <State.Save.H2OIGS type="DOUBLE" description="Outgoing global initial water mass" dimension="0">0.0000000000000000</State.Save.H2OIGS>
+ <State.Save.H2OTG type="DOUBLE" description="Global total water mass" dimension="0">180026.37627063176</State.Save.H2OTG>
+ <State.Save.H2OTGS type="DOUBLE" description="Outgoing global total water mass" dimension="0">0.0000000000000000</State.Save.H2OTGS>
+ <State.Save.H2OEG type="DOUBLE" description="Global incoming water mass" dimension="0">7512.4583333333330</State.Save.H2OEG>
+ <State.Save.H2OSG type="DOUBLE" description="Global outgoing water mass" dimension="0">5574.0014126935503</State.Save.H2OSG>
+ <State.ZINIT type="TABDOUBLE" description="Initial water level (super-critical kernel)" dimension="1">
+  <TABDOUBLE dim="1" taille="11">
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+   <v>0.0000000000000000</v>
+  </TABDOUBLE>
+ </State.ZINIT>
+</MASCARET_State>

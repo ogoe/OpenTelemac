@@ -1,0 +1,2762 @@
+\section{Le noyau transcritique VF (\texttt{MASCARET})} \label{MSCT}
+
+\subsection{Introduction}
+
+L'origine du développement du noyau transcritique était de disposer d'un code permettant de réaliser des études d'onde de submersion, répondant aux critères de qualité et de performance associés.
+
+\vspace{0.5cm}
+
+Le noyau transcritique avait donc pour objectifs initiaux de permettre le calcul :
+\begin{itemize}
+ \item d'écoulement dans des vallées avec des pentes du fond pouvant atteindre 10\% sur des zones d'emprise limitée et de fortes variations de largeur (gorges encaissées, verrou rocheux, etc...);
+ \item des écoulements très rapides avec présence de discontinuités;
+ \item de la propagation sur zones sèches;
+ \item de lignes d'eau dans des vallées pouvant atteindre plusieurs centaines de km avec présence d'affluents;
+ \item de ligne d'eau avec des passages torrentiels et le traitement des écoulements permanents pour des applications telles que des vidanges de retenue.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Les diverses contraintes énumérées ci-dessus se sont traduites au niveau numérique par l'adoption d'un schéma conservatif (schéma de Roe avec traitement décentré des termes sources) admettant des solutions discontinues.
+
+\vspace{0.5cm}
+
+Dans la première partie de cette section \ref{MSCT}, on rappelle les équations de Saint-Venant monodimensionnelles, écrites sous forme conservative.
+
+\vspace{0.5cm}
+
+La seconde partie est consacrée à  la résolution numérique du problème homogène et des termes sources pour un bief simple. On présente à  la section \ref{resNumSVT} la méthode de résolution utilisé dans le noyau transcritique de \texttt{MASCARET} avec un schéma \textit{volumes finis} explicite ou implicite en temps.
+
+\vspace{0.5cm}
+
+Le schéma explicite permet d'aborder des problèmes fortement instationnaires tels que les ondes de submersion. Les résultats numériques sont satisfaisants mais la contrainte sur le pas de temps due au schéma explicite est très contraignante pour des écoulements peu instationnaires et fluviaux, ce qui a conduit à  impliciter linéairement le schéma initial.
+
+\vspace{0.5cm}
+
+Dans la troisième partie \ref{ModelCplx}, sont présentés des développements physiques plus complexes tels que la modélisation des lits composés, des singularités (barrages aval, seuil, etc) et des confluents.
+
+\subsection{Equations de Saint-Venant sous forme conservative}
+
+\label{ESVTcons}
+
+\subsubsection{Ecriture générale des équations (rappel)}
+
+L'écoulement dans une rivière peut généralement être considéré comme monodimensionnel, c'est-à-dire fonction d'une seule variable d'espace, l'abscisse curviligne $x$ du lit de la rivière.
+
+\vspace{0.5cm}
+
+Les variables de l'écoulement sont alors le débit $Q$ et la section mouillée $S$ fonctions de $x$ et du temps $t$ et définis dans chacune des sections verticales de la rivière.
+
+Pour obtenir les équations de Saint-Venant à  partir des équations de Navier-Stokes, on suppose que l'angle entre le fond et l'horizontale est toujours petit. Néanmoins, dans les applications pratiques, on est amené à  traiter des zones à  très forte pentes, mais d'emprise limitée.
+
+\vspace{0.5cm}
+
+Dans l'hypothèse où la pression au sein du fluide est hydrostatique et où les effets visqueux internes sont négligeables devant les frottements sur les parois du lit de la rivière, $Q$ et $S$ sont solutions des équations de Saint-Venant qui s'écrivent \cite{GOUTAL91} \cite{AFIF86} :
+
+\begin{equation}
+ \label{SVT2}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial S}{\partial t} + \frac{\partial Q}{\partial x} = q_a \\
+    \\
+    \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x} \left ( \frac{\beta(x,S) Q^2}{S}\right ) + g S \frac{\partial Z}{\partial x} = g S J
+  \end{array}
+ \right.
+\end{equation}
+o\`{u}:
+\begin{itemize}
+ \item $Z$ est la cote de la surface libre ($m$);
+ \item $S$ est la surface mouillée ($m^2$);
+ \item $g$ est l'accélération de la gravité ($m.s^{-2}$);
+ \item $J$ est la perte de charge linéaire par frottement. $J$ est évaluée par la formule de Strickler :
+  \begin{equation}
+    J = \frac{Q^2}{K^2 S^2 R_{h}^{4/3}}
+  \end{equation}
+  avec $R_h$ le rayon hydraulique et $K$ le coefficient de Strickler.
+\end{itemize}
+
+\newpage
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{VueLong.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Vue longitudinale}
+ \end{center}
+\end{figure}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{VueLat.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Vue latérale}
+ \end{center}
+\end{figure}
+
+Le coefficient $\beta$, adimensionnel, résulte des variations de la vitesse réelle de l'écoulement en une section :
+
+\begin{equation}
+ \beta(x,S) = \frac{S}{Q^2} \int V^2 \,dS
+\end{equation}
+
+\vspace{0.5cm}
+
+Dans le cas d'un lit unique, compte-tenu des hypothèses prises pour établir les équations de Saint-Venant, nous prenons $\beta$ égal à  1, c'est-à-dire que nous négligeons les variations de vitesse au sein d'une section. Ceci ne sera plus vrai en lit composé.
+
+\vspace{0.5cm}
+
+Ce système d'équations (\ref{SVT2}) s'obtient en exprimant la conservation de la masse pour la première équation et la conservation de la quantité de mouvement pour la seconde.
+
+
+
+\subsubsection{Ecriture sous forme conservative}
+
+Un système d'équations conservatif peut se mettre sous la forme :
+
+\begin{equation}
+  \frac{\partial W}{\partial t} + divF(W) = B(W)
+\end{equation}
+o\`{u}:
+\begin{itemize}
+ \item $W$ est le vecteur d'état;
+ \item $F(W)$ est le flux;
+ \item $B(W)$ le terme source.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Ou encore s'il n'y a qu'une dimension d'espace :
+
+\begin{equation}
+ \frac{\partial W}{\partial t} + \frac{\partial F}{\partial x} = B
+\end{equation}
+
+\vspace{0.5cm}
+
+Cette écriture est intéressante car elle contient, au sens des distributions, les relations de saut en cas de choc.
+
+\vspace{0.5cm}
+
+Pour écrire la forme conservative des équations à  partir de (\ref{SVT2}), il nous faut donc transformer dans l'équation dynamique le terme : $g S \frac{\partial Z}{\partial x}$. Les deux premiers termes de l'équation dynamique : $\frac{\partial Q}{\partial t}$ et $\frac{\partial}{\partial x}\left ( \frac{Q^2}{S}\right )$ correspondent à  la variation de la quantité de mouvement. Celle-ci est égale à  l'action des forces extérieures, c'est-à-dire la force de frottement sur le radier modélisée par : $-g S J$ et les forces de pesanteur et de pression, qui sont prises en compte par : $g S \frac{\partial Z}{\partial x}$.
+
+\vspace{0.5cm}
+
+Le terme $g S \frac{\partial Z}{\partial x}$ peut se transformer en faisant apparaître le terme de pression : $P = g \int_{0}^{y} S \, dy$ où : $y = Z - Z_f$, $Z$ étant la cote de la surface libre et $Z_f$ la cote du fond.
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{VueLong2.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Vue longitudinale : les cotes}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+En effet :
+
+\begin{equation}
+ \frac{\partial P}{\partial x} = g S \frac{\partial y}{\partial x} + g \int_{0}^y \left ( \frac{\partial S}{\partial x}\right ) \, dy
+\end{equation}
+
+soit :
+
+\begin{equation}
+ \frac{\partial P}{\partial x} = g S \frac{\partial Z}{\partial x} + g \int_{0}^y \left ( \frac{\partial S}{\partial x}\right ) \, dy - g S \frac{\partial Z_f}{\partial x}
+\end{equation}
+
+\vspace{0.5cm}
+
+L'équation dynamique peut se réécrire en :
+
+\begin{equation}
+ \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x} \left ( \frac{Q^2}{S} + P \right ) = g \int_{0}^y \left ( \frac{\partial S}{\partial x} \right )_y \, dy - g S \frac{dZ_f}{dx} - g S J
+\end{equation}
+
+\vspace{0.5cm}
+
+On note que le terme source lié à  la géométrie de l'équation dynamique peut également s'écrire : $\left( \frac{\partial P}{\partial x} \right )_{z = cte}$.
+
+\vspace{0.5cm}
+
+Le terme source de cette nouvelle équation ne dépend que des variables $Q$ et $S$ de la géométrie de la rivière mais pas des dérivées par rapport à  $x$ ou $t$ de $Q$ et $S$. En effet, la dérivée : $\left ( \frac{\partial S}{\partial x} \right )_y$ est purement géométrique ($S$ désigne ici la section géométrique et non la section mouillée). Cette équation est bien sous forme conservative.
+
+\vspace{0.5cm}
+
+L'écriture conservative des équations du système (\ref{SVT2}) est donc (avec : $q_a = 0$) :
+
+\begin{equation}
+ \label{SVT3}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial S}{\partial t} + \frac{\partial Q}{\partial x} = 0 \\
+    \\
+    \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x} \left ( \frac{Q^2}{S} + P \right ) = g \int_{0}^y \left ( \frac{\partial S}{\partial x} \right )_y \, dy - g S \frac{dZ_f}{dx} - g S J
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $P = g \int_{0}^{y} S \, dy$
+
+\vspace{0.5cm}
+
+Ce qui est effectivement de la forme :
+
+\begin{equation}
+ \frac{\partial W}{\partial t} + \frac{\partial F}{\partial x} = B
+\end{equation}
+
+avec :
+
+\begin{equation}
+ W = \left ( \frac{S}{Q} \right )
+\end{equation}
+
+\begin{equation}
+ F = \left ( 
+    \begin{array}{c}
+    Q \\
+    \\
+    \frac{Q^2}{S} + P
+\end{array}
+\right )
+\end{equation}
+et :
+\begin{equation}
+ B = \left ( 
+    \begin{array}{c}
+    0 \\
+    \\
+    g \int_{0}^y \left ( \frac{S}{x} \right )_y \, dy - g S \frac{dZ_f}{dx} - g S J
+\end{array}
+\right )
+\end{equation}
+
+\vspace{0.5cm}
+
+\underline{Remarques} :
+\begin{itemize}
+ \item Le flux dépend non seulement de $W$ mais aussi de $x$. La connaissance seule de $W$ ne suffit pas pour calculer $F$. En effet, le terme de pression $P$ apparaissant dans $F$ ne peut être évalué que si la section mouillée et la loi de variation de la section en fonction du tirant d'eau sont connues. Or cette dernière loi de variation dépend de la géométrie de la rivière. Elle ne peut donc être connue que si l'abscisse $x$ est donnée. On verra l'importance de cette remarque dans la recherche des invariants de Riemann du système d'équations (\ref{SVT3});
+ \item Les variables $Q$ et $S$ peuvent être discontinues (dans le cas d'un ressaut). Les dérivées apparaissant dans (\ref{SVT3}) doivent alors être comprises au sens des distributions. Le système (\ref{SVT3}) est d'ailleurs dans ce cas le seul système d'équations correct puisque dans (\ref{SVT2}) le terme : $g S \frac{\partial Z}{\partial x}$ n'a plus de signification tant au sens classique qu'au sens des distributions.
+\end{itemize}
+
+\subsubsection{Invariants de Riemann}
+
+Le système (\ref{SVT3}) est hyperbolique. La matrice jacobienne de $F$ : $\left ( \frac{\partial F}{\partial W} \right )_x$  admet deux valeurs propres réelles et distinctes : $\lambda^+$ et $\lambda^-$ :
+
+\begin{equation}
+ \left ( \frac{\partial F}{\partial W} \right )_x = \left ( 
+    \begin{array}{c c}
+    0 & 1\\
+    \\
+    -\frac{Q^2}{S^2} + \left ( \frac{\partial P}{\partial S} \right )_x & \frac{2 Q}{S}
+\end{array}
+\right )
+\end{equation}
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \lambda^+ = \frac{Q}{S} + C \\
+    \\
+    \lambda^- = \frac{Q}{S} - C \\
+  \end{array}
+ \right.
+\end{equation}
+
+avec :
+
+\begin{equation}
+ C = \sqrt{\left ( \frac{\partial P}{\partial S} \right )_x}
+\end{equation}
+
+\vspace{0.5cm}
+
+La célérité $C$ n'est fonction que de $S$ et $x$.
+
+\vspace{0.5cm}
+
+En utilisant les propriétés des systèmes hyperboliques \cite{GODLEWSKI91}\cite{AFIF86}, (\ref{SVT3}) peut se réécrire sous la forme de deux équations de convection des invariants de Riemann.
+
+\vspace{0.5cm}
+
+Nous ne donnons pas ici les détails des calculs (voir \cite{GODLEWSKI91} et \cite{AFIF86}).
+
+\vspace{0.5cm}
+
+On obtient finalement le système (\ref{SVT4}) :
+
+\begin{equation}
+ \label{SVT4}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{df^-}{dt} = - \lambda^- \int_{0}^S \frac{1}{S} \left ( \frac{\partial C}{\partial x}\right )_S dS - g \left ( \left ( \frac{\partial y}{\partial x} \right )_S + \frac{dZ_f}{dx} + J \right ) \\
+    \\
+    \frac{df^+}{dt} = + \lambda^+ \int_{0}^S \frac{1}{S} \left ( \frac{\partial C}{\partial x}\right )_S dS - g \left ( \left ( \frac{\partial y}{\partial x} \right )_S + \frac{dZ_f}{dx} + J \right )
+  \end{array}
+ \right.
+\end{equation}
+
+o\`{u} :
+\begin{itemize}
+ \item $\frac{df^-}{dt} = \frac{\partial f^-}{\partial t} + \lambda^- \frac{\partial f^-}{\partial x}$ est la dérivée de l'invariant de Riemann : $f^- = \frac{Q}{S} - K$ (avec $K = \int_{0}^S \frac{C}{S} \, dS$ le long de la courbe caractéristique $C^-$ de pente : $\frac{dx}{dt} = \lambda^-$;
+ \item $\frac{df^+}{dt} = \frac{\partial f^+}{\partial t} + \lambda^+ \frac{\partial f^+}{\partial x}$ est la dérivée de l'invariant de Riemann : $f^+ = \frac{Q}{S} + K$ le long de la courbe caractéristique $C^+$ de pente : $\frac{dx}{dt} = \lambda^+$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Nous appellerons : caractéristique fluviale la courbe $C^+$ et caractéristique torrentielle la courbe $C^-$.
+
+\vspace{0.5cm}
+
+Exprimer (\ref{SVT3}) sous forme d'équations le long des courbes caractéristiques revient à  considérer l'écoulement dans deux repères mobiles se déplaçant le long des caractéristiques. Le débit et la section mouillée en un point du canal à  un instant donné sont déterminées par l'information amenée par les caractéristiques $C^+$ et $C^-$ qui se coupent en ce point.
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{2Carac.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Deux caractéristiques}
+ \end{center}
+\end{figure}
+
+Connaissant $f^+$ et $f^-$ calculées à  l'aide de l'information véhiculée par les caractéristiques en $M$, on en déduit $Q$ et $S$.
+
+\vspace{0.5cm}
+
+Formuler sous forme de caractéristiques le système (\ref{SVT3}) permet aussi lors du traitement numérique de \textit{coller} au problème physique. Nous en verrons une application intéressante lors du traitement des conditions aux limites (voir la section \ref{PriseCL}).
+
+\vspace{0.5cm}
+
+Le système (\ref{SVT4}) n'est cependant équivalent au système (\ref{SVT3}) que lorsque l'écoulement ne présente pas de discontinuité, le développement de la dérivée $\frac{\partial F}{\partial x}$ utilisée pour obtenir le système (\ref{SVT4}) n'est plus possible.
+
+\subsubsection{Le ressaut}
+
+\underline{Nota} : nous utilisons indifféremment la dénomination \textit{ressaut} ou \textit{choc} pour désigner une discontinuité.
+
+\vspace{0.5cm}
+
+Un choc apparaît dans un écoulement quand deux caractéristiques d'une même famille se coupent. Il existe deux types de choc :
+\begin{itemize}
+ \item l'un dû à  l'intersection de caractéristiques $C^-$ : choc $C^-$;
+ \item l'autre dû à  la rencontre de caractéristiques $C^+$ : choc $C^+$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Au point où les caractéristiques se coupent, deux valeurs de $f^-$ (pour un choc $C^-$) ou deux valeurs de $f^+$ (pour un choc $C^+$) sont apportées en plus de l'information provenant de l'autre famille de caractéristiques. Cette surabondance d'information inacceptable mathématiquement se traduit par une discontinuité au point d'intersection; d'un point de vue physique elle se traduit par la mise en place d'un processus dissipatif : le ressaut.
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{3Carac.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Exemple d'un choc $C^+$}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+La trajectoire du choc est constituée par l'ensemble des points où les caractéristiques d'une même famille se coupent.
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Trajec_Choc.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Trajectoire d'un choc $C^+$}
+ \end{center}
+\end{figure}
+
+A gauche et à  droite du choc, la matrice $\left ( \frac{\partial F}{\partial W} \right )_x$ est bien définie, il en va de même pour ses valeurs propres qu'on note $(\lambda_{g}^+,\lambda_{g}^-)$ à  gauche et $(\lambda_{d}^+,\lambda_{d}^-)$ à  droite.
+
+\vspace{0.5cm}
+
+La vitesse $s^-$ d'un choc $C^-$ vérifie :
+\begin{equation}
+  \left \lbrace
+  \begin{array}{l}
+    \lambda_{d}^- < s^- < \lambda_{g}^- (< \lambda_{g}^+) \\
+    s^- < \lambda_{d}^+
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+et la vitesse $s^+$ d'un choc $C^+$ vérifie :
+\begin{equation}
+  \left \lbrace
+  \begin{array}{l}
+    (\lambda_{d}^- < ) \lambda_{d}^+ < s^+ < \lambda_{g}^+  \\
+    \lambda_{g}^- < s^+
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+En effet, les caractéristiques qui créent le choc le rattrapent par l'amont (ici à  gauche) et sont rattrapées par lui à  l'aval (ici à  droite), c'est la signification des premières inégalités pour les chocs $C^-$ et les chocs $C^+$ : la vitesse du choc est intermédiaire entre celles des caractéristiques qui le créent. La signification des deuxièmes inégalités est qu'il ne peut y avoir en un même point un choc $C^-$ et un choc $C^+$ : la vitesse du choc ne peut être comprise entre les vitesses des caractéristiques qui ne participent pas à  sa création.
+
+\vspace{0.5cm}
+
+Le schéma suivant ne se rencontre donc jamais celui de la figure \ref{Timp}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Trajec_imposs.eps} \hspace{2cm}
+  \vspace{1.cm}
+  \caption{Schéma de caractéristiques impossible}
+  \label{Timp}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Ces inégalités sont tout ce que les caractéristiques fournissent comme renseignements sur le choc. Issues d'une formulation non conservative des équations, elles ne conduisent pas à  une description quantitative des chocs. Les états à  gauche et à  droite du choc ne peuvent pas être déterminés à  partir des invariants de Riemann apportés par les caractéristiques se coupant sur le choc (sauf pour les chocs faibles, auquel cas la vitesse du choc est la moyenne des vitesses $\lambda_g$ et $\lambda_d$ des caractéristiques qui le créent \cite{SMOLLER83}\cite{LAX72}).
+
+\vspace{0.5cm}
+
+Le seul moyen, de décrire correctement les chocs est de revenir aux équations écrites sous forme conservative. En effet, quand l'écoulement présente un ressaut, le système hyperbolique homogène interprété au sens des distributions permet de relier les états à  gauche et à  droite du ressaut \cite{GODLEWSKI91}.
+
+\vspace{0.5cm}
+
+Les relations ainsi obtenues sont les conditions de saut (elles sont aussi parfois appelées conditions de Rankine-Hugoniot). Elles s'écrivent si $s$ est la vitesse du ressaut :
+
+\begin{equation}
+   \left \lbrace
+  \begin{array}{l}
+   s ( S_d -S_g ) = Q_d - Q_g \\
+   s ( Q_d - Q_g ) = \left ( \frac{Q_{d}^2}{S_d} + P_d \right ) - \left ( \frac{Q_{g}^2}{S_g} + P_g \right )
+  \end{array}
+ \right.
+\end{equation}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.7,angle=270]{Vitesse.eps} \hspace{1cm}
+  \vspace{1.cm}
+  \caption{Vitesse du ressaut}
+ \end{center}
+\end{figure}
+
+\underline{Remarques} :
+\begin{itemize}
+ \item Les conditions de Rankine-Hugoniot ne sont que la forme particulière des équations du système (\ref{SVT3}). Pour s'en convaincre il suffit de faire un bilan de masse et de quantité de mouvement sur une tranche de fluide incluant le ressaut. Dans l'équation de quantité de mouvement, le terme source disparaît en faisant tendre l'épaisseur de la tranche vers zéro;
+ \item Dans le repère du ressaut (en translation à  la vitesse $s$), la discontinuité sépare toujours un écoulement torrentiel d'un écoulement fluvial. \\ En effet dans le repère du ressaut : $s = 0$, donc : $Qd = Qg = Qrel$ débit relatif.\\
+La fonction :$f(S,x) = \frac{Q_{rel}^2}{S} + P$ a même valeur de part et d'autre du ressaut.\\
+En outre $f$ admet un minimum pour $S$ tel que : $\left ( \frac{\partial f}{\partial S}\right )_x = 0$, c'est-à-dire : $Q_{rel} = C S$. La valeur de : $S = \frac{Q_{rel}}{C}$ correspond à  un écoulement critique (Froude égal à  1). Deux valeurs de $S$ donnant la même valeur de f (condition de Rankine-Hugoniot) sont donc situées de part et d'autre de la section critique.
+
+\end{itemize}
+
+\subsection{Résolution numérique des équations de St-Venant}
+
+\label{resNumSVT}
+
+\subsubsection{Utilisation d'un schéma explicite}
+
+\label{SchemExp}
+
+Dans cette partie, nous allons décrire les méthodes numériques utilisées dans \texttt{MASCARET} pour résoudre le système d'équations (\ref{SVT3}). Un premier schéma explicite a été développé puis le noyau transcritique a été implicité, en laissant le choix de l'utilisation de l'un ou l'autre des deux schémas à  l'utilisateur.
+
+\paragraph{Position du problème\\}
+
+\hspace*{1cm}
+
+Le système à  résoudre est le suivant :
+
+\begin{equation}
+   \label{sys}
+   \left \lbrace
+  \begin{array}{l}
+   W = (S,Q) \\
+   \\
+   \frac{\partial W}{\partial t} + \frac{\partial F(W,x)}{\partial x} = B(x,W) \qquad (x,t) \in [a,b] \times [0,T] 
+  \end{array}
+ \right.
+\end{equation}
+
+avec : 
+
+\begin{equation}
+ F(x,W) = \left ( \begin{array}{c}
+    Q\\
+    \\
+    \frac{Q^2}{S} + P(x,S)
+\end{array}
+\right )
+\end{equation}
+
+et :
+
+\begin{equation}
+ B(x,W) = \left ( \begin{array}{c}
+    0\\
+    \\
+    g \int_{0}^y \left ( \frac{\partial S}{\partial x} \right )_y \, dy - g S \frac{dZ_f}{dx} - g S J
+\end{array}
+\right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Pour que ce problème soit bien posé, il est nécessaire de rajouter une condition initiale et des conditions aux limites.
+
+\vspace{0.5cm}
+
+Le problème (\ref{sys}) à  résoudre est un système strictement hyperbolique avec un terme source prépondérant dans le calcul de l'écoulement (voir la section précédente).
+Le domaine d'applications du code \texttt{MASCARET} étant prioritairement le calcul des ondes de submersion, ceci implique :
+\begin{itemize}
+ \item géométrie avec très fortes pentes (pouvant atteindre localement $10\%$) et fortes variations de largeurs;
+ \item écoulement très rapides (vitesses supérieures à  $10 m/s$);
+ \item propagation d'onde sur zones sèches;
+ \item très long domaines de calcul.
+\end{itemize}
+
+\vspace{0.5cm}
+
+En plus des calculs d'onde de submersion, on a souhaité pouvoir aborder tout écoulement présentant un régime torrentiel tel que les vidanges de retenues et les écoulements permanents dans des torrents. Ceci ajoute une contrainte supplémentaire qui est que le terme source doit être bien calculé pour obtenir une convergence correcte vers des écoulements permanents.
+L'objectif a été de rechercher un schéma respectant le mieux possible ces différentes contraintes (qui peuvent être contradictoires).
+
+\vspace{0.5cm}
+
+Dans un premier temps, on s'intéresse uniquement à  la résolution numérique du problème homogène. Une autre section \ref{TrtSource} est consacré au traitement des termes sources.
+
+\paragraph{Résolution du problème homogène\\}
+
+\hspace*{1cm}
+
+\label{PbHom}
+
+Le problème homogène à  résoudre s'écrit :
+
+\begin{equation}
+ \frac{\partial W(x,t)}{\partial t} + \frac{\partial F(W)}{\partial t} = 0
+\end{equation}
+
+\vspace{0.5cm}
+
+Ce problème homogène est très proche des équations d'Euler isentropiques. La principale différence réside dans le fait que le flux ne dépend pas uniquement des variables d'état que sont la section mouillée et le débit mais également de la variable d'espace $x$ et de plus le terme de pression n'est pas connu analytiquement mais est une variable tabulée.
+
+\vspace{0.5cm}
+
+L'espace $[0,T]$ sera discretisé par une série d'intervalles $[t_n , t_{n+1}]$ avec : $t_{n+1} = t_n + \Delta t$ où $\Delta t$ est le pas de temps.
+
+\vspace{0.5cm}
+
+Le domaine de calcul sera discrétisé par $N$ intervalles $[x_i , x_{i+1}]$ avec : $\Delta x_i = x_{i+1} - x_i$.
+
+\vspace{0.5cm}
+
+On notera $x_{i+1/2}$ le point milieu de l'intervalle $[x_i , x_{i+1}]$.
+
+\vspace{0.5cm}
+
+Le schéma utilisé est un schéma volumes finis basés sur l'écriture intégrale du bilan de masse et de quantité de mouvement sur une cellule $[x_{i-1/2},x_{i+1/2}]$ (voir figure \ref{Schm1}).
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Schema1.eps}
+  \caption{Cellule Volume Fini}
+  \label{Schm1}
+ \end{center}
+\end{figure}
+\vspace{0.5cm}
+Notons : $\underline{W}_h = \left \lbrace \Psi_h \in L^2 (\Omega), \Psi_{h/]x_{i-1/2},x_{i+1/2}[} = constante, i = 1..N \right \rbrace$
+
+\vspace{0.5cm}
+
+Une formulation variationnelle du problème (\ref{sys}) s'écrit :
+
+trouver $W_h(S_h,Q_h) \in \underline{W}_h$ tel que :
+
+\begin{equation}
+ \label{fvar}
+ \int_{t_n}^{t_{n+1}} \int_{a}^{b} \left ( \frac{\partial W_h}{\partial t} + \frac{\partial F(x,W_h)}{\partial x} \right ) \Psi_h \, dx \, dt = 0 \qquad \forall \Psi_h \in \underline{W}_h
+\end{equation}
+
+\vspace{0.5cm}
+
+Chaque fonction $\Psi_h$ de $\underline{W}_h$ est déterminée de manière unique par : 
+
+\begin{equation}
+ \Psi_h = \sum_{i=1}^n \Psi (a_i)\phi_i
+\end{equation}
+avec $\left \lbrace \varphi_i\right \rbrace_{i=1,N}$ qui forme une base de $\underline{W}_h$. En fait, les fonctions de base $\varphi_i$ sont les fonctions caractéristiques de l'intervalle $[x_{i-1/2},x_{i+1/2}]$.
+
+\vspace{0.5cm}
+
+En écrivant la formulation variationnelle (\ref{fvar}) pour chaque fonction de base et en utilisant la formule de Green, on obtient :
+
+\begin{eqnarray}
+ & \int_{x_{i-1/2}}^{x_{i+1/2}} W_{h}^{n+1}\, dx = \int_{x_{i-1/2}}^{x_{i+1/2}} W_{h}^{n}\, dx + \int_{t^n}^{t^{n+1}} F(x_{i+1/2},W_{i+1/2}) \, dt  &         \nonumber \\
+ & - \int_{t^n}^{t^{n+1}} F(x_{i-1/2},W_{i-1/2}) \, dt &
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+$W_{h}^{n+1}$ étant recherché dans l'espace des fonctions constantes par cellule, l'équation précédente devient :
+
+\begin{eqnarray}
+ & W_{i}^{n+1} = W_{i}^n + \frac{1}{x_{i+1/2}-x_{i-1/2}} & \nonumber \\
+ & \times \left ( \int_{t^n}^{t^{n+1}} F(x_{i+1/2},W_{i+1/2}) \, dt - \int_{t^n}^{t^{n+1}} F(x_{i-1/2},W_{i-1/2}) \, dt \right ) &
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Le problème se ramène alors à  l'évaluation du flux numérique à  chaque interface. De plus, $W_{n+1}$ étant une fonction constante par cellule, le calcul du flux numérique fera appel à  chaque interface à  la résolution d'un problème de Riemann.
+
+\vspace{0.5cm}
+
+Ainsi à  chaque pas de temps et à  chaque interface de cellule, on résoudra le problème suivant :
+
+\begin{equation}
+ \label{sysW}
+ \left \lbrace
+  \begin{array}{l}
+   \frac{\partial W_h}{\partial t} + \frac{\partial F(x_{i+1/2},W_h)}{\partial x} = 0 \\
+   \\
+   W_{h}^n = \left \lbrace
+             \begin{array}{l}
+               W_{i}^n \qquad \mbox{si} \quad x < x_{i+1/2} \\
+               W_{i+1}^n \qquad \mbox{si} \quad x > x_{i+1/2}
+             \end{array}
+             \right.
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Pour résoudre ce problème, il est naturel d'envisager un schéma de Godunov qui est basé sur la résolution exacte du problème de Riemann à  chaque interface. Néanmoins, l'intérêt de cette résolution exacte est contrebalancée d'une part par le fait que la projection sur chaque cellule peut faire perdre la qualité due à  la résolution exacte et d'autre part qu'un solver exact est coûteux. C'est pourquoi, il a été choisi des schémas du même type mais résolvant des problèmes de Riemann approchés. Plus particulièrement, nous avons retenu le schéma de Roe que nous allons présenter dans le paragraphe suivant. De plus, une des raisons qui a dicté notre choix vers un schéma de Roe est que ce dernier est très largement utilisé pour résoudre les équations d'Euler et de Saint-Venant \cite{PAQUIER95}\cite{VAZQUEZ94}\cite{AMBROSI95}\cite{MONTHE97}.
+
+\paragraph{Linéarisée de Roe\\}
+
+\hspace*{1cm}
+
+\label{LinRoe}
+
+Le but est de définir un problème de Riemann \textit{proche} de (\ref{sysW}) mais dont la solution est plus simple à  calculer. Pour ce faire, nous appliquerons la technique de linéarisation de Roe. Cette méthode est bien connue et largement utilisée. Nous rappelons les principales références où on peut trouver les détails du calcul de la linéarisée de Roe \cite{ROE81}\cite{BUFFARD93}.
+
+\vspace{0.5cm}
+
+Le principe de la linéarisation de Roe repose sur le fait qu'il existe une matrice A (appelée linéarisée de Roe) vérifiant :
+\begin{itemize}
+ \item[*] $F(W_g) - F(W_d) = A(W_g,W_d)(W_g-W_d)$;
+ \item[*] $A(W,W) = DF_{w}(W)$;
+ \item[*] la matrice $A(W,W)$ a ses valeurs propres réelles et les vecteurs propres engendrent l'espace complet.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\underline{Remarque} : la linéarisée de Roe définie précédemment n'est valable que pour les cas où le flux F ne dépend que des variables d'état. Cette méthode a été néanmoins appliquées à  notre cas.
+
+\vspace{0.5cm}
+
+Le schéma de Roe ne sera pas applicable si on ne peut pas trouver de matrices vérifiant ces 3 propriétés. Dans notre cas, la difficulté est liée au fait que le flux dépend de $x$ et des variables d'état.
+
+\vspace{0.5cm}
+
+Pour calculer la matrice de Roe, on s'est directement inspiré de ce qui a été fait pour les équations d'Euler isentropiques. C'est-à-dire qu'on cherche un état moyen de sorte que la matrice de Roe soit la jacobienne du flux prise en cet état.
+
+\vspace{0.5cm}
+
+Dans notre cas, la moyenne de Roe $\tilde W$ est donnée par :
+\begin{equation}
+ \tilde W = \frac{W_g \sqrt{S_g} + W_d \sqrt{S_d}}{\sqrt{S_g} + \sqrt{S_d}}
+\end{equation}
+o\`{u} :
+\begin{itemize}
+ \item $W_g \left ( \begin{array}{c}
+    S_g\\
+    V_g
+    \end{array} \right )$ désigne l'état à  gauche;
+ \item et $W_d \left ( \begin{array}{c}
+    S_d\\
+    V_d
+    \end{array} \right )$ l'état à  droite;
+\end{itemize}
+
+\vspace{0.5cm}
+
+La matrice de Roe $\tilde A (x,W_g,W_d)$ est la jacobienne $A(x,W)$ calculée en cet état.
+
+\begin{equation}
+ A(x,\tilde W) = \left ( \begin{array}{cc}
+       0 & 1 \\
+       \frac{-\tilde{Q}^2}{\tilde{S}^2} + \frac{\partial P(x,\tilde S )}{\partial S} & 2 \frac{\tilde Q}{\tilde S}
+    \end{array} \right ) \quad \mbox{avec } \tilde W (\tilde S , \tilde Q)
+\end{equation}
+
+\vspace{0.5cm}
+
+Le problème de Riemann se ramène à  la résolution à  chaque interface du problème linéarisé suivant :
+
+\begin{equation}
+ \label{sysW2}
+ \left \lbrace
+  \begin{array}{l}
+   \frac{\partial W(x,t)}{\partial t} + \tilde A(x_{i+1/2},W_g,W_d) \frac{\partial W(x,t)}{\partial x} = 0 \\
+   \\
+   W(x,t^n) = \left \lbrace
+             \begin{array}{l}
+               W_{g} \quad \mbox{si : } x < x_{i+1/2} \\
+               W_{d} \quad \mbox{si : } x > x_{i+1/2}
+             \end{array}
+             \right.
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $\tilde A(x_{i+1/2},W_g,W_d) = A(x_{i+1/2},\tilde W)$
+
+La résolution du problème linéaire (\ref{sysW2}) va permettre l'écriture complète du schéma de Roe.
+\underline{Remarque} : la matrice de Roe est évaluée à  l'interface $x_{i+1/2}$.
+
+\paragraph{Solveur de Roe\\}
+
+\hspace*{1cm}
+
+La résolution du problème (\ref{sysW2}) est simple. Elle consiste en 3 états constants séparés par des sauts à  travers les caractéristiques définies par :
+
+\begin{equation}
+  \frac{x}{t}=\lambda_{1,2}
+\end{equation}
+
+avec :
+
+\begin{equation}
+ \lambda_1(x,S,Q) = \frac{Q}{S} - C(x,S)
+\end{equation}
+
+\begin{equation}
+ \lambda_2(x,S,Q) = \frac{Q}{S} + C(x,S)
+\end{equation}
+
+et :
+
+\begin{equation}
+ C(x,S) = \frac{\partial P(x,S)}{\partial S}
+\end{equation}
+
+\vspace{0.5cm}
+
+En effet, si on note :
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+   W_g = \sum_{i=1,2} \alpha_{ig}(W_g,W_d) r_i(W_g,W_d) \\
+   W_d = \sum_{i=1,2} \alpha_{id}(W_g,W_d) r_i(W_g,W_d)
+\end{array}
+ \right.
+\end{equation}
+o\`{u} $r_i$ sont les vecteurs propres à  droites associés à  la valeur propre $\lambda_i$.
+
+\vspace{0.5cm}
+
+En supposant $\lambda_1 < \lambda_2$, la solution s'écrit:
+\begin{equation}
+ W(\frac{x}{t},W_g , W_d ) = \left \lbrace
+  \begin{array}{l}
+   W_g \quad \mbox{si : } \frac{x}{t} < \lambda_1 (x,W_g,W_d) \\
+   W_m \quad \mbox{si : } \lambda_1 < \frac{x}{t} < \lambda_2 \\
+   W_d \quad \mbox{si : } \frac{x}{t} > \lambda_2 (x,W_g,W_d)
+  \end{array}
+ \right.
+\end{equation}
+avec : $W_m = \alpha_{1d} r_1 (W_d,W_g) + \alpha_{2g} r_2 (W_d,W_g)$
+
+\vspace{0.5cm}
+
+Soit $A$ la matrice jacobienne de $F$ qui est diagonalisable dans la base de vecteurs propres $X$. $A$ est donc égale à  : $X \Lambda X^{-1}$
+
+\vspace{0.5cm}
+
+Soit $|\Lambda|$ la matrice diagonale de terme générique $|\Lambda_i|$, $\Lambda^{+}$ et $\Lambda^{-}$ définies respectivement par :
+\begin{equation}
+  \left \lbrace
+  \begin{array}{l}
+   \Lambda_{i,j}^{+}  = \lambda_{i}^{+} \delta_{i,j}\\
+   \Lambda_{i,j}^{-}  = \lambda_{i}^{-} \delta_{i,j}
+\end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+De même $A^+$, $A^-$ et $|A|$ sont définies par :
+\begin{equation}
+  \left \lbrace
+  \begin{array}{l}
+   A^{+}  = X \Lambda^{+} X^{-1} \\
+   A^{-}  = X \lambda^{-} X^{-1} \\
+   |A| = X |\lambda| X^{-1} 
+\end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Le flux numérique de Roe prend alors la forme suivante :
+
+\begin{eqnarray}
+ F(x_{i+1/2},W_g,W_d) & = & \frac{1}{2} \left ( F(x_{i+1/2},W_g) + F(x_{i+1/2},W_d) \right ) \nonumber \\
+                      &   & + \frac{1}{2} \left | \tilde{A}(x_{i+1/2},W_g,W_d) \right | (W_d -W_g) \nonumber \\
+ & = & F(x_{i+1/2},W_d) - \tilde{A}^+ (x_{i+1/2},W_d,W_g) (W_d - W_g) \nonumber \\
+ & = & F(x_{i+1/2},W_g) + \tilde{A}^- (x_{i+1/2},W_d,W_g) (W_d - W_g) \nonumber \\
+ & & 
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+A partir de la définition du flux, le schéma est alors parfaitement défini. Ce schéma est d'ordre 1 en espace et en temps. De plus, ce schéma est stable si le nombre de Courant est inférieur à  1.
+
+\paragraph{Correction entropique\\}
+
+\hspace*{1cm}
+
+L'inconvénient majeur du schéma de Roe est qu'il n'est pas entropique et peut donc admettre des discontinuités stationnaires non entropiques au voisinage des points soniques, c'est-à-dire là  où une valeur propre associée à  un champ vraiment non linéaire de matrice jacobienne change de signe de part et d'autre d'une interface. Pour éviter ce problème, il est donc nécessaire de modifier le calcul des flux au voisinage des points où une valeur propre $\lambda_{m=1,2} (\tilde W )$ est proche de zéro.
+
+\vspace{0.5cm}
+
+Plusieurs modifications de la valeur propre $\lambda_{m} (\tilde W )$ sont envisageables. Nous avons retenu la correction entropique définie par Lévèque \cite{LEVEQUE90}. $\lambda_{m} (\tilde W )$ est remplacé par : $\lambda_m (W_d) \left ( \frac{\lambda_m (\tilde W) - \lambda_m (W_g)}{\lambda_m (W_d) - \lambda_m (W_g)}\right )$
+
+\vspace{0.5cm}
+
+\underline{Remarque} : un schéma d'ordre 2 en temps permet de s'affranchir de la correction entropique.
+
+\subsubsection{Utilisation d'un schéma implicite}
+
+\paragraph{Introduction\\}
+
+\hspace*{1cm}
+
+Ce paragraphe est consacré à  la description du schéma implicite développé dans le code \texttt{MASCARET}. Le but de ce développement était de lever la contrainte sur le pas de temps liée à  la condition de CFL pour un schéma explicite (voir la section \ref{SchemExp}). Les études visées par ce développement sont essentiellement les applications fluviales (propagation de crues moyennes) pour lesquelles la contrainte numérique sur le pas de temps est très pénalisante en terme de temps calcul.
+
+\vspace{0.5cm}
+
+Ce schéma est basé sur une implicitation linéaire du schéma volumes finis de type Roe. Le système linéaire est résolu par une méthode directe qui permet d'éviter les problèmes de convergence d'une méthode itérative lorsque la matrice est mal conditionnée. La méthode directe est une méthode de décomposition $LU$ adaptée aux matrices tridiagonales par blocs.
+
+\vspace{0.5cm}
+
+Les résultats obtenus avec le schéma implicite sur des cas de validation sont présentés en détail dans la note \cite{GOUTAL02}. Les cas étudiés comprennent à  la fois des tests analytiques et des tests plus complexes représentatifs d'études réelles : propagation de crues, vidange de retenues et onde de submersion.
+
+\paragraph{Rappel et intérêt de l'implicitation\\}
+
+\hspace*{1cm}
+
+On rappelle que le problème à  résoudre, dont l'obtention est détaillée à  la section \ref{ESVTcons} (équations de St-Venant écrites sous forme conservative), est un système strictement hyperbolique avec un terme source prépondérant dans le calcul de l'écoulement :
+
+\begin{equation}
+  \label{PbP}
+   \left \lbrace
+  \begin{array}{l}
+   W = (S,Q) \\
+  \\
+   \frac{\partial W}{\partial t} + \frac{\partial F(W,x)}{\partial x} = B(x,W) \quad (x,t) \in [a,b] \times [0,T] 
+\end{array}
+ \right.
+\end{equation}
+
+avec :
+\begin{equation}
+ F(W,x) = \left ( \begin{array}{c}
+       Q \\
+       \frac{Q^2}{S} + P(x,S)
+    \end{array} \right )
+\end{equation}
+
+et :
+\begin{equation}
+ B(x,W) = \left ( \begin{array}{c}
+       0 \\
+       g \int_{0}^y \left ( \frac{\partial S}{\partial x} \right )_y \, dy - g S \frac{\partial Z_f}{\partial x} - g S J
+    \end{array} \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Le schéma numérique utilisé pour résoudre ce problème est détaillé à  la section précédente : le schéma utilisé est un schéma volumes finis basé sur l'écriture intégrale du bilan de masse et de quantité de mouvement sur une cellule $[x_{i-1/2}, x_{i+1/2}]$ (voir la section \ref{PbHom}).
+
+\vspace{0.5cm}
+
+ Après une discrétisation en temps et en espace du schéma, et si la solution discrète est recherchée dans l'espace des fonctions constantes par cellule,  le problème (\ref{PbP}) s'écrit alors :
+
+\begin{eqnarray}
+  W_{i}^{n+1} & = & W_{i}^{n} - \frac{1}{x_{i+1/2}-x_{i-1/2}} \nonumber \\
+              &   & \times \left ( \int_{t^n}^{t^{n+1}} F(x_{i+1/2},W_{i+1/2})\, dt - \int_{t^n}^{t^{n+1}} F(x_{i-1/2},W_{i-1/2})\, dt  \right ) \nonumber \\
+              &   & + B_{i+1/2}^n - B_{i-1/2}^n
+\end{eqnarray}
+
+avec :
+\begin{itemize}
+  \item $\Delta t$ le pas de temps et : $t_{n+1} = t_n + \Delta t$;
+  \item $\Delta x = x_{i+1} - x_{i}$;
+  \item $x_{i+1/2}$ le point milieu de l'intervalle $[x_i , x_{i+1}]$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le problème se ramène alors à  l'évaluation du flux numérique F à  chaque interface ; ce qui a été fait par un schéma de Roe (voir \ref{LinRoe}), rappelé ci-dessous.  Les termes sources sont évalués par un traitement mixte centré et décentré qui est détaillé à  la section suivante.
+
+\vspace{0.5cm}
+
+Soit la matrice jacobienne $A$ de la fonction $F$ qui est diagonalisable dans la base de vecteurs propres $X$. $A$ est donc égale à  $X \Lambda X^{-1}$.
+
+\vspace{0.5cm}
+
+Notons $\tilde A$ la matrice de Roe : $\tilde A = \tilde X \tilde \Lambda \tilde{X}^{-1}$
+
+\vspace{0.5cm}
+
+Soit $|\Lambda|$ la matrice diagonalisable de terme générique $|\Lambda_i|$, $\Lambda^+$ et $\Lambda^-$ sont définis respectivement par : $\Lambda_{i,j}^+ = \lambda_{i}^+ \delta_{i,j}$ et $\Lambda_{i,j}^- = \lambda_{i}^- \delta_{i,j}$.
+
+\vspace{0.5cm}
+
+De même $\tilde{A}^+$, $\tilde{A}^-$ et $|\tilde A|$ sont définis par : $\tilde{A}^+ = \tilde X \tilde{\Lambda}^+ \tilde{X}^{-1}$, $\tilde{A}^- = \tilde X \tilde{\Lambda}^- \tilde{X}^{-1}$ et $|\tilde A| = \tilde X |\tilde \Lambda| \tilde{X}^{-1}$.
+
+\vspace{0.5cm}
+
+Le flux numérique de Roe prend alors la forme suivante :
+
+\begin{eqnarray}
+ F(x_{i+1/2},W_g,W_d) & = & \frac{1}{2} \left ( F(x_{i+1/2},W_g) + F(x_{i+1/2},W_d) \right ) \nonumber \\
+                      &   & + \frac{1}{2} \left | \tilde{A}(x_{i+1/2},W_g,W_d) \right | (W_d -W_g) \nonumber \\
+ & = & F(x_{i+1/2},W_d) - \tilde{A}^+ (x_{i+1/2},W_d,W_g) (W_d - W_g) \nonumber \\
+ & = & F(x_{i+1/2},W_g) + \tilde{A}^- (x_{i+1/2},W_d,W_g) (W_d - W_g) \nonumber \\
+ & & 
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Ce schéma est d'ordre 1 en espace et en temps. Il est stable sous la condition de CFL suivante :
+
+\begin{equation}
+ max(|\lambda_1|,|\lambda_2|) \frac{\Delta t}{min_{i=2,N-1} (x_{i+1}-x_i)} < 0.5
+\end{equation}
+
+\vspace{0.5cm}
+
+En théorie, le nombre de Courant est limité à  0.5 mais en pratique on le limite à  0.9.
+
+\vspace{0.5cm}
+
+Cette condition implique que le pas de calcul sur tout le domaine est contraint d'une part par la plus grande des 2 valeurs propres et la zone de maillage la plus fine. Cela signifie que, si on diminue localement le pas d'espace, le pas de temps global est réduit d'autant.
+
+\vspace{0.5cm}
+
+L'intérêt de l'implicitation est d'une part de faire des calculs avec des nombres de Courant nettement supérieurs à  1 et d'autre part d'éviter l'effet local dû à  un raffinement de maillage, même si globalement le nombre de Courant n'est pas très élevé.
+
+\paragraph{Description du schéma implicite\\}
+
+\hspace*{1cm}
+
+Dans la partie précédente, le schéma explicite avec un solveur de Roe a donné satisfaction en terme de qualité de résultats pour des écoulements à  la fois fortement instationnaires et fluviaux. Mais dans le cas d'écoulements fluviaux, la contrainte sur le pas de temps est très pénalisante car le nombre de Courant est déterminé par la plus grande des valeurs propres qui est directement liée à  la célérité, c'est-à-dire que pour le cas extrême d'une retenue au repos, le pas de temps est contraint par la hauteur d'eau.
+
+\vspace{0.5cm}
+
+Pour lever cette condition de CFL, le schéma \textit{Volumes Finis} a été implicité linéairement.
+
+\vspace{0.5cm}
+
+Dans notre cas d'application, cette implicitation ne concerne que les termes de flux de masse et de quantité de mouvement. Par contre, le flux des termes sources n'est pas modifié (voir la section \ref{TrtSource}). L'implicitation est donc présentée sur un système homogène pour en simplifier l'écriture. De façon générale, le schéma \textit{Volumes Finis} implicite s'écrit :
+
+\begin{equation}
+ h_i (W_{i}^{n+1}-W_{i}^n) + \Delta t \left ( F_{i+1/2}(W_{i}^{n+1},W_{i+1}^{n+1})-F_{i-1/2}(W_{i-1}^{n+1},W_{i}^{n+1}) \right ) = 0
+\end{equation}
+
+\vspace{0.5cm}
+
+La fonction $F_{i+1/2}$ n'étant pas linéaire, nous allons la linéariser à  l'aide d'un développement limité :
+\begin{eqnarray}
+ F_{i+1/2}(W_{i}^{n+1},W_{i+1}^{n+1}) & = & F_{i+1/2}(W_{i}^{n},W_{i+1}^{n}) \nonumber \\
+                                      &   & + \Delta t \frac{\partial F_{i+1/2}^n}{\partial W_i} \delta W_i \nonumber \\
+                                      &   & + \Delta t \frac{\partial F_{i+1/2}^n}{\partial W_{i+1}}\delta W_{i+1} + O(\Delta t)
+\end{eqnarray}
+
+o\`{u} : $\delta W_{i+1} = W_{i+1}^{n+1} - W_{i+1}^n$
+
+\vspace{0.5cm}
+
+Dans le cadre d'un schéma de Roe, la fonction de flux $F$ s'écrit :
+
+\begin{eqnarray}
+ F_{i+1/2}^{n+1}(W_{i}^{n+1},W_{i+1}^{n+1}) & = & \frac{1}{2} ( F(W_{i}^{n+1}) + F(W_{i+1}^{n+1})) \nonumber \\
+                                            &   & -\frac{1}{2} |\tilde A (x_{i+1/2},W_i,W_{i+1})| (W_{i+1}-W_{i})
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Avec cette définition de la fonction flux numérique, le développement limité de $F_{i+1/2}$ s'écrit donc :
+
+\begin{eqnarray}
+ F_{i+1/2}(W_{i}^{n+1},W_{i+1}^{n+1}) & \approx & F_{i+1/2}(W_{i}^{n},W_{i+1}^{n}) \nonumber \\
+                                      &         & \frac{1}{2} \left ( \frac{\partial F(W_i)}{\partial W_i} + |\tilde A (x_{i+1/2},W_i,W_{i+1})| \delta W_i \right ) \nonumber \\
+                                      &         & \frac{1}{2} \left ( \frac{\partial F(W_{i+1})}{\partial W_{i+1}} - |\tilde A (x_{i+1/2},W_i,W_{i+1})| \delta W_{i+1} \right ) \nonumber \\
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Le schéma complet prend alors la forme suivante :
+
+\begin{eqnarray}
+ & h_{i} (W_{i}^{n+1}-W_{i}^{n}) + \Delta t \left ( F_{i+1/2}(W_{i}^n,W_{i+1}^n) - F_{i-1/2}(W_{i}^n,W_{i-1}^n) \right ) & \nonumber \\
+ & + \frac{\Delta t}{2} \left ( \frac{\partial F(W_{i+1})}{\partial W_{i+1}} - |\tilde{A}(x_{i+1/2},W_i,W_{i+1})|\delta W_{i+1} \right ) & \nonumber \\
+ & - \frac{\Delta t}{2} \left ( \frac{\partial F(W_{i-1})}{\partial W_{i-1}} + |\tilde{A}(x_{i-1/2},W_i,W_{i-1})|\delta W_{i-1} \right ) & \nonumber \\
+ & + \frac{\Delta t}{2} \left ( |\tilde{A}(x_{i+1/2},W_i,W_{i+1})| + |\tilde{A}(x_{i-1/2},W_i,W_{i-1})| \right ) \delta W_i & = 0 \nonumber \\
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+On obtient :
+
+\begin{eqnarray}
+ & \frac{1}{2} \left [ \frac{\partial F(W_{i-1})}{\partial W_{i-1}} + |\tilde{A}(x_{i-1/2},W_i,W_{i-1})| \right ]\delta W_{i-1} & \nonumber \\
+& + \left [ \frac{h_i}{\Delta t} + \frac{1}{2}|\tilde{A}(x_{i+1/2},W_i,W_{i+1})| +  \frac{1}{2} |\tilde{A}(x_{i-1/2},W_i,W_{i-1})| \right ] \delta W_i & \nonumber \\
+& + \frac{1}{2} \left [ \frac{\partial F(W_{i+1})}{\partial W_{i+1}} - |\tilde{A}(x_{i+1/2},W_i,W_{i+1})| \right ] & \nonumber \\
+& = - \frac{F_{i+1/2}(W_{i}^n,W_{i+1}^n) - F_{i-1/2}(W_{i}^n,W_{i-1}^n)}{\Delta t}
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Ce qui se traduit par la résolution d'un système linéaire qui s'écrit :
+
+\begin{equation}
+ P_{i,i-1}\delta W_{i-1} + Q_{i,i} \delta W_i + R_{i,i+1} \delta W_{i+1} = S_i \qquad \forall i=2..N-1
+\end{equation}
+
+avec :
+\begin{equation}
+\left \lbrace
+  \begin{array}{l}
+   P_{i,i-1} = - \frac{1}{2} (A(W_{i-1}) +|\tilde{A}(x_{i-1/2},W_i,W_{i-1})| ) \\
+   \\
+   Q_{i,i} = \frac{h_i}{\Delta t} \frac{1}{2}(|\tilde{A}(x_{i+1/2},W_i,W_{i+1})| + |\tilde{A}(x_{i-1/2},W_i,W_{i-1})|)\\
+   \\
+   R_{i,i+1} = \frac{1}{2} (A(W_{i+1}) -|\tilde{A}(x_{i+1/2},W_i,W_{i+1})|)
+\end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Le système numérique à  résoudre est alors un système tridiagonal par blocs de dimension 2 (taille du système physique). Plus précisément, le système s'écrit :
+
+\begin{eqnarray}
+& \left(
+         \begin{array}{ccccccccc}
+          I_d & 0 & & & & & & & \\
+          0 & & P_{2,1} & Q_{2,2} & R_{2,3} & & & & \\
+             &   & & & & & & & \\
+             & & & & .... & & & & \\
+             & & & & & P_{i,i-1} & Q_{i,i} & R_{i,i+1} & \\
+             & & & & & & & .... & \\
+             & & & & & &  & &  \\
+             & & & & & &  & 0 & I_d \\
+         \end{array}
+         \right)
+\left(
+            \begin{array}{c}
+               W_1\\
+               W_2\\
+               \\
+               W_{i-1} \\
+               W_i \\
+               W_{i+1} \\
+               \\
+               W_n
+            \end{array}
+          \right) & \nonumber \\
+     & =
+\left(
+            \begin{array}{c}
+               W_1\\
+               S_2\\
+               \\
+                \\
+               S_i \\
+               \\
+               S_{n-1}\\
+               W_n
+            \end{array}
+          \right) &
+\end{eqnarray}
+
+o\`{u} : $W_i = (\delta S_i , \delta Q_i )^T$
+
+\vspace{0.5cm}
+
+Le second membre $S$ prend en compte la partie explicite des flux de quantité de mouvement et de masse et les flux liés aux termes sources.
+
+\vspace{0.5cm}
+
+Les états \textit{conditions aux limites}  $W_1$ et $W_n$ sont calculés à  l'aide des invariants de Riemann ou de la résolution explicite de l'équation de continuité. Il est important de noter que le calcul à  l'aide de l'équation de continuité est explicite et n'est applicable que pour des nombres de Courant au plus égaux à  1.
+
+\vspace{0.5cm}
+
+Pour obtenir une matrice mieux conditionnée, les premières et dernières équations du système précédent sont supprimées et les seconds membres $S_2$ et $S_{n-1}$ sont modifiés en conséquence.
+
+\vspace{0.5cm}
+
+La résolution du système linéaire a tout d'abord été réalisée avec une méthode itérative de type équation normale, méthode robuste et appropriée à  tout système linéaire ne présentant pas de propriétés particulières; ce qui est le cas pour cette matrice.
+
+\vspace{0.5cm}
+
+Les premiers tests avec une méthode itérative ont montré d'une part que les résultats obtenus avec un schéma implicite étaient corrects mais que le gain en temps calcul était négligeable car plus le nombre de Courant était important, plus la matrice était mal conditionnée. Par conséquent, le gain en temps calcul espéré avec des nombres de Courant supérieurs à  1 était perdu par la mauvaise convergence de la méthode itérative.
+
+\vspace{0.5cm}
+
+Pour pallier à  ce problème, on a substitué une méthode directe à  la méthode itérative. La méthode directe est une décomposition $LU$ appliquée à  une matrice tridiagonale par blocs.
+
+\vspace{0.5cm}
+
+Ainsi, le temps calcul d'un pas de temps est complètement indépendant du conditionnement de la matrice et donc du nombre de Courant.
+
+\paragraph{Conclusion\\}
+
+\hspace*{1cm}
+
+Les simulations avec le schéma implicite peuvent être réalisées soit avec un pas de temps constant soit avec un pas de temps variable correspondant à  un nombre de Courant supérieur à  1. Il faut noter que le schéma explicite ne permet pas de réaliser une simulation réelle avec un pas de temps constant car il faudrait connaître à  priori le pas de temps vérifiant la condition de CFL à  chaque itération temporelle.
+
+\vspace{0.5cm}
+
+L'implicitation linéaire du schéma Volumes Finis de \texttt{MASCARET} permet donc de lever la contrainte sur les pas de temps tout en gardant des résultats de qualité analogue à  ceux du schéma explicite (sauf pour les cas raides de rupture sur fond sec sans frottement).
+
+\vspace{0.5cm}
+
+La validation du schéma implicite a montré que :
+\begin{itemize}
+ \item pour des applications fluviales telles que le passage d'une crue moyenne sur un bief du Rhà´ne, on pouvait obtenir un gain de 20 en temps calcul entre le schéma explicite et le schéma implicite;
+ \item pour des études telles que les ondes de submersion qui initialement n'était pas visé par ce développement, on pouvait obtenir un gain de 3 à  4 sur le temps calcul.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Néanmoins, le schéma implicite n'est pas inconditionnellement stable car :
+\begin{itemize}
+ \item les flux des termes sources sont explicites;
+ \item le traitement des conditions aux limites est également explicite.
+\end{itemize}
+
+\subsubsection{Traitement des termes sources}
+
+\label{TrtSource}
+
+\paragraph{Présentation générale\\}
+
+\hspace*{1cm}
+
+Les termes sources ont un rôle prépondérant dans les équations de Saint-Venant. Ce sont eux qui gouvernent en grande partie l'évolution de l'écoulement. C'est pourquoi il est apparu nécessaire lors du développement du code \texttt{MASCARET} d'étudier finement la discrétisation de ces termes. En effet, un mauvais traitement peut nuire de manière importante à  la qualité des résultats. Par exemple, un plan d'eau horizontal initialement au repos dans un canal présentant des gradients de fond et/ou des variations de largeur peut se mettre artificiellement en mouvement.
+
+\vspace{0.5cm}
+
+Les équations de Saint-Venant présentent trois termes sources distincts (voir la section \ref{ESVTcons}) :
+\begin{itemize}
+ \item \textbf{les apports de débit} : $q_a$;
+ \item \textbf{le terme source lié à  la géométrie} : il contient en fait les gradients de fond et les variations de largeur (spécifique au 1D). Il peut s'écrire sous la forme synthétique et globale :
+   \begin{equation}
+     \label{Decomp}
+     \left ( \frac{\partial P(x,S)}{\partial x} \right )_{z=cte} = \left ( \frac{\partial P(x,S)}{\partial x} \right )_{S=cte} +  \frac{\partial P(x,S)}{\partial S}\left ( \frac{\partial S}{\partial x}\right )_{z=cte}
+   \end{equation}
+   Il est important de noter que ce terme est composé d'une première partie (variation de la pression en fonction de la géométrie et non des variables d'état et d'une seconde partie qui est le produit du carré de la célérité (donc dépendant des variables d'état) et des variations de la section mouillée géométrique;
+ \item \textbf{le frottement} : $-g S J$ o\`{u} $J$ est modélisé par la formule de Strickler.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La discrétisation des termes sources est une étape importante du schéma global. Elle doit vérifier les contraintes suivantes :
+\begin{itemize}
+ \item nécessité de conserver un plan d'eau horizontal au repos stable;
+ \item bonne convergence en temps vers un état permanent en rivière à  débit constant ne présentant pas d'oscillations à  l'interface lorsqu'il y a du frottement;
+ \item prise en compte correcte du frottement pour les écoulements à  faible hauteur d'eau (zone du front pour les calculs d'onde de submersion).
+\end{itemize}
+
+\vspace{0.5cm}
+
+\underline{Remarque} : Le traitement des termes sources est identique dans le cas du choix du schéma explicite ou du schéma implicite.
+
+\vspace{0.5cm}
+
+Le problème non homogène à  résoudre s'écrit :
+
+\begin{equation}
+ \frac{\partial W(x,t)}{\partial t} + \frac{\partial F(W)}{\partial t} = B(x,W)
+\end{equation}
+
+\vspace{0.5cm}
+
+Après une discrétisation classique Volumes Finis, le problème s'écrit alors :
+
+\begin{equation}
+ W_{j}^{n+1} = W_{j}^n - \frac{\Delta t}{\Delta x}(F_{j+1/2}^n - F_{j-1/2}^n) + \int_{\Delta t} \int_{\Delta x} B(x,W^n) \,dxdt
+\end{equation}
+
+\vspace{0.5cm}
+
+Le problème qui se pose est comment discrétiser le terme :
+\begin{equation}
+ \int_{\Delta t} \int_{\Delta x} B(x,W^n) \,dxdt \nonumber
+\end{equation}
+?
+\vspace{0.5cm}
+
+On peut utiliser une discrétisation centrée, c'est-à-dire que le terme source $B(x,W)$ est approché en milieu de cellule et ensuite intégré en temps et en espace mais ceci ne permet pas de vérifier les deux premières contraintes. En fait, une des façons efficaces de résoudre ce problème est de décentrer les termes sources. C'est-à-dire : $\int_{\Delta t} \int_{\Delta x} B(x,W^n) \,dxdt$ est approchée par : $\frac{\Delta t}{2}(B_{j+1/2}^n + B_{j-1/2}^n)$
+
+\vspace{0.5cm}
+
+avec :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    B_{j+1/2}^n = \int_{x_{j+1/2}}^{x_{j+1}} \Psi_d (x_j , x_{j+1} , W_{j}^n , W_{j+1}^n ) \\
+    \\
+    B_{j-1/2}^n = \int_{x_{j}}^{x_{j+1/2}} \Psi_g (x_j , x_{j-1} , W_{j}^n , W_{j-1}^n )
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Il s'est avéré au cours du développement que seuls les termes sources contenant les variables d'état au premier ordre devaient être décentrés. Les autres termes purement géométriques sont traités de façon centrée.
+
+\paragraph{Décentrement des termes sources\\} \label{DecenSRC}
+
+\hspace*{1cm}
+
+Dans la littérature, on a trouvé peu d'articles traitant du problème spécifique des termes sources dans les systèmes hyperboliques. Une des seules méthodes adaptées lorsque le problème homogène est résolu par un schéma de Roe, est celle proposée par M. E. V\'azquez Cend\'on \cite{VAZQUEZ94}. Dans un premier temps, nous avons appliqué cette méthode au terme source de gradient de fond pour la résolution des équations de Saint-Venant bidimensionnelles \cite{GOUTAL96} avec un schéma de Roe. Les résultats obtenus ayant été satisfaisants, nous avons appliqué cette méthode à  certains des termes sources des équations de Saint-Venant monodimensionnelles. Nous allons maintenant présenter cette méthode en détail.
+
+\vspace{0.5cm}
+
+La base numérique donnée par V\'azquez Cend\'on est décrite ci-dessous. On cherche à  résoudre l'équation avec terme source défini dans la section précédente.
+
+\vspace{0.5cm}
+
+En reprenant les notations du chapitre précédent, on a : $A$ la matrice jacobienne de $F$ qui est diagonalisable dans la base de vecteurs propres à  droite $X$. $A$ est donc égal à  : $X \Lambda X^{-1}$.
+
+\vspace{0.5cm}
+
+Soit $|\Lambda|$ la matrice diagonale de terme générique $|\Lambda_i|$.
+
+\vspace{0.5cm}
+
+$\Lambda^+$ et $\Lambda^-$ définies respectivement par : $\Lambda_{i,j}^+ = \lambda_{i}^+ \delta_{i,j}$ et $\Lambda_{i,j}^- = \lambda_{i}^- \delta_{i,j}$.
+
+\vspace{0.5cm}
+
+Dans un premier temps et dans le cas continu, on fait l'hypothèse que toutes les valeurs propres de $A$ sont non nulles. Dans ce cas $A^{-1}$ et $\Lambda^{-1}$ existent.
+
+\vspace{0.5cm}
+
+Le terme source $B(x,W)$ est projeté sur les vecteurs propres de $A$ :
+
+\vspace{0.5cm}
+
+On note $\sigma(W)$ les composantes du terme source dans cette base.
+
+\begin{eqnarray}
+ B(x,W) & = & X(W).\sigma(W) \nonumber \\
+        & = & X(W).\left ( \Lambda . \Lambda^{-1} \right ).\sigma(W) \nonumber \\
+        & = & X(W).\left ( \Lambda^+  + \Lambda^- \right ). \Lambda^{-1} .\sigma(W) \nonumber \\
+        & = & X(W).\Lambda^+.\Lambda^{-1}.\sigma(W) + X(W).\Lambda^-.\Lambda^{-1}.\sigma(W)
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+En tenant compte des relations qui existent entre $\Lambda^+$, $\Lambda^-$ et $|\Lambda|$, l'expression suivante peut se transformer en :
+
+\begin{eqnarray}
+ X(W).\Lambda^+.\Lambda^{-1}.\sigma(W) & = & \frac{1}{2} X(W).\left ( \Lambda.\Lambda^{-1}+|\Lambda|.\Lambda^{-1}\right ) . \sigma(W) \nonumber \\
+                                       & = & \frac{1}{2} \left ( B(x,W) + |A|.A^{-1}.X(W).\sigma(W) \right ) \nonumber \\
+                                       & = & \frac{1}{2} \left ( I + |A|.A^{-1} \right ).B(x,W) \nonumber \\
+                                       & = & X(W) . \left [ \frac{1}{2} \left ( I + \Lambda . \Lambda^{-1} \right ) \right ] . X^{-1}(W).B(x,W) \nonumber \\
+ X(W).\Lambda^-.\Lambda^{-1}.\sigma(W) & = & X(W) . \left [ \frac{1}{2} \left ( I - \Lambda . \Lambda^{-1} \right ) \right ] . X^{-1}(W).B(x,W) \nonumber \\
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Dans le cas discret à  présent, on est ramené à  définir par analogie deux fonctions  $\Psi_g$ et $\Psi_d$ de chaque côté  du n\oe ud considéré.
+
+\begin{equation}
+\left \lbrace
+  \begin{array}{l}
+    \Psi_g (x,y,U,V) = \gamma . X(W(U,V)) \times \\
+    \qquad \left ( \frac{1}{2} ( I + |\Lambda(U,V)|\Lambda^{-1}(U,V) ) X^{-1}(W(U,V)) \tilde{B} (x,y,u,V) \right ) \\
+    \\
+    \Psi_d (x,y,U,V) = \gamma . X(W(U,V)) \times \\
+    \qquad \left ( \frac{1}{2} ( I - |\Lambda(U,V)|\Lambda^{-1}(U,V) ) X^{-1}(W(U,V)) \tilde{B} (x,y,u,V) \right )
+  \end{array}
+ \right.
+\end{equation}
+
+avec:
+\begin{equation}
+ \tilde{B} (x,y,u,V) = B(\frac{x+y}{2},\tilde{W}(U,V))
+\end{equation}
+o\`{u} $\tilde{W}(U,V)$ est la moyenne de Roe.
+
+\vspace{0.5cm}
+
+Dans le cas où une valeur propre est nulle, la projection sur le vecteur propre associé est considérée sous forme centrée ce qui donne :
+
+\begin{equation}
+\left \lbrace
+  \begin{array}{l}
+    \left ( \frac{\gamma}{2} \left ( I + |\Lambda(U,V)|\Lambda^{-1}(U,V)) \right ) \right )_i = \frac{\gamma}{2} \\
+    \\
+    \left ( \frac{\gamma}{2} \left ( I - |\Lambda(U,V)|\Lambda^{-1}(U,V)) \right ) \right )_i = \frac{\gamma}{2}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+La valeur du paramètre $\gamma$ se trouve en exprimant une relation de consistance \cite{VAZQUEZ94}.
+
+\begin{equation}
+ \frac{\Psi_g (x,x,W,W) + \Psi_d (x,x,W,W)}{2} = B(x,W)
+\end{equation}
+
+ce qui donne : $\gamma = 2$.
+
+\vspace{0.5cm}
+
+La contribution des termes sources sera donc évaluée dans chaque moitié de cellule par les relations :
+\begin{itemize}
+ \item à  gauche de l'interface, dans la moitié aval de la cellule $i$ :  \\ $\int_{x_i}^{x_{i+1/2}} \Psi_d (i,i+1)\, dx$;
+ \item à  droite de l'interface, dans la moitié amont de la cellule $i+1$ : \\ $\int_{x_i+1/2}^{x_{i+1}} \Psi_g (i,i+1)\, dx$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Il est intéressant de calculer explicitement la contribution d'un terme source noté $TS$ de l'équation de quantité de mouvement.
+
+\vspace{0.5cm}
+
+Soit $\tilde{U}$ la moyenne de Roe de la vitesse et $\tilde{c}$ la célérité de Roe. On définit le nombre de Froude de Roe à  l'interface par la relation :
+
+\begin{equation}
+ \tilde{F}_r = \frac{|\tilde{u}|}{\tilde{c}}
+\end{equation}
+
+\vspace{0.5cm}
+
+De manière analogue, on trouve que suivant les valeurs de $\tilde{F}_r$ et le signe de $\tilde{u}$ (supposé $>0$ par souci de simplicité), les fonctions $\Psi_g$ et $\Psi_d$ prennent les valeurs :
+
+\begin{itemize}
+ \item[*] $\tilde{F}_r<1$ \quad (Cas fluvial)
+  \begin{equation}
+    \Psi_g = \left(
+            \begin{array}{c}
+               \frac{\tilde{TS}}{\tilde{c}}\\
+               \\
+               (1-\tilde{F}_r).TS
+            \end{array}
+          \right)
+     \quad \mbox{et}\quad \Psi_d = \left(
+            \begin{array}{c}
+               -\frac{\tilde{TS}}{\tilde{c}}\\
+               \\
+               (1+\tilde{F}_r).TS
+            \end{array}
+          \right)
+  \end{equation}
+ \item[*] $\tilde{F}_r>1$ \quad (Cas torrentiel)
+   \begin{equation}
+      \Psi_g = \left(
+            \begin{array}{c}
+               0\\
+               \\
+               0
+            \end{array}
+          \right)
+     \quad \mbox{et}\quad \Psi_d = \left(
+            \begin{array}{c}
+              0\\
+               \\
+               2.\tilde{TS}
+            \end{array}
+          \right)
+   \end{equation}
+   avec : $\tilde{TS} = TS(\frac{x+y}{2},\tilde{W}(U,V))$
+\end{itemize}
+
+\vspace{0.5cm}
+
+Ce traitement des termes sources entraîne donc une contribution non nulle sur l'équation de masse uniquement en régime fluvial. Dans ce cas, le décentrement pour la quantité de mouvement est proportionnel au nombre de Froude.
+
+\vspace{0.5cm}
+
+Lorsque $\tilde{F}_r$ augmente la contribution du terme source augmente dans la moitié amont d'une cellule (à  droite de l'interface, terme $\Psi_d$) et diminue dans la moitié aval (à  gauche de l'interface, terme $\Psi_g$). Ceci est logique, puisque l'information dans la cellule a tendance à  provenir préférentiellement de l'amont. Le cas extrême est le régime torrentiel où le décentrement est total : dans une cellule, le seul terme source qui compte est celui qui provient de l'interface amont ; d'ailleurs c'est de là  que vient toute l'information.
+
+\vspace{0.5cm}
+\underline{Remarque} : le décentrement d'un terme source requiert l'évaluation de ce dernier à  chaque interface et pour la moyenne de Roe.
+
+\paragraph{Traitement des différents termes sources\\}
+
+\hspace*{1cm}
+
+Il s'est avéré au cours du développement que seuls les termes sources contenant les variables d'état au premier ordre devaient être décentrés. Les autres termes purement géométriques sont traités de façon centrée.
+
+\vspace{0.5cm}
+
+\textbf{A) \underline{Termes sources liés à  la géométrie}}
+
+\vspace{0.5cm}
+
+Ce terme s'écrit $\left ( \frac{\partial P}{\partial x}\right )_z$ et prend en compte les gradients de fond et de variation de largeur. Il se décompose comme indiqué par (\ref{Decomp}).
+
+\vspace{0.5cm}
+
+On va examiner de façon séparée le traitement de chacun de ces deux termes.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Traitement de $\frac{\partial P(x,S)}{\partial S}\left ( \frac{\partial S}{\partial x}\right )_{z=cte}$ :
+
+\vspace{0.5cm}
+
+Ce terme peut également s'écrire : $C^2 (x,S)\left ( \frac{\partial S}{\partial x}\right )_{x=cte}$ où $C$ est la célérité. Ce terme dépend des variables d'état. Pour être cohérent avec l'écriture du flux, ce terme est approché à  l'interface puis décentré selon la méthode présentée à  la section précédente.
+
+\vspace{0.5cm}
+
+\underline{Approximation à  l'interface entre la cellule $i$ et $i+1$ :}
+
+\vspace{0.5cm}
+
+Pour approcher la partie purement géométrique $\left ( \frac{\partial S}{\partial x}\right )_{z=cte}$, on se place d'abord à  la cote $z_i$, la section mouillée vaut à  gauche $S_i$, à  droite $S^{*}_{i+1}$. De même à  la cà´te $z_{i+1}$ la section mouillée vaut à  gauche $S^{*}_i$, à  droite $S_{i+1}$.
+
+\vspace{0.5cm}
+
+La discrétisation de $\left ( \frac{\partial S}{\partial x}\right )_{z=cte}$ a donc pour expression :
+\begin{eqnarray}
+ & \frac{1}{2 \Delta x} \left ( S_{i+1}^* -S_i +S_{i+1} - S_{i}^* \right ) & \nonumber
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Le terme $\frac{\partial P(x,S)}{\partial S}\left ( \frac{\partial S}{\partial x}\right )_{z=cte}$ s'écrira donc :
+\begin{eqnarray}
+ & \frac{C_{i+1/2}^2 (\tilde{S})}{2 \Delta x} \left ( S_{i+1}^* -S_i +S_{i+1} - S_{i}^* \right ) & \nonumber
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Traitement du terme $\left ( \frac{\partial P(x,S)}{\partial x} \right )_{S=cte}$
+
+\vspace{0.5cm}
+
+Ce terme source ne dépend pas des variables d'état mais uniquement de la géométrie. Il représente les variations de la pression due à  la géométrie. De plus, la pression n'est définie en $x$ qu'aux interfaces (voir discrétisation de la quantité de mouvement). La dérivée du terme $P(x,S)$ à  section mouillée constante n'a donc de sens qu'à  l'intérieur de la cellule. Ce terme sera donc traité de façon centrée.
+
+\vspace{0.5cm}
+
+En milieu de cellule, la section mouillée ainsi que la cote de la surface sont constantes, la fonction $\left ( \frac{\partial P}{\partial x} \right )_z$ est approximée par la relation :
+
+\begin{eqnarray}
+ & \left ( \frac{\partial P}{\partial x} \right )_z = \frac{P_{i+1/2}(S_i) - P_{i-1/2}(S_i)}{\Delta x} & \nonumber
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+La discrétisation présentée ci-dessus nous a permis de conserver un plan d'eau horizontal au repos.
+
+\vspace{0.5cm}
+
+\underline{Remarque} : le terme discrétisé en milieu de cellule est non nul quand la géométrie présente des variations de largeur uniquement. Dans le cas d'un canal rectangulaire n'ayant que des gradients de fond, ce terme sera donc nul.
+
+\vspace{0.5cm}
+
+\textbf{B) \underline{Terme de frottement}}
+
+\vspace{0.5cm}
+
+Ce terme s'exprime comme on l'a vu précédemment sous la forme $-g S J$ où $J$ est donné par la formule de Strickler :
+
+\begin{equation}
+ J = \frac{Q|Q|}{K^2 S^2 R_{h}^{4/3}}
+\end{equation}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Calcul explicite du frottement
+
+\vspace{0.5cm}
+
+Dans un premier temps la modélisation qui en est faite est décentrée selon la méthode décrite précédemment. Ce terme est alors discrétisé de manière naturelle à  l'interface ; chacune des variables est alors prise égale à  la moyenne entre les deux cellules qui ont cette interface pour frontière.
+
+\vspace{0.5cm}
+
+Ce terme est ensuite décentré par la méthode décrite à  la section \ref{DecenSRC}. Sa contribution se fera sur la moitié aval de la cellule $i$ et la moitié amont de la cellule $i+1$.
+Cette méthode permet d'avoir un traitement du terme de frottement cohérent avec des gradients de fond. Notamment, la convergence vers un débit constant en espace lorsqu'un état permanent est recherché est obtenue. Le deuxième objectif est donc atteint.
+
+\vspace{0.5cm}
+
+Cependant, ce traitement pose problème lors d'un calcul pour des faibles hauteurs d'eau avec  des coefficients de Strickler faibles. Le traitement explicite du frottement peut provoquer des  changements de direction non physiques pendant un pas de temps.
+
+\vspace{0.5cm}
+
+Un traitement implicite du frottement s'impose donc pour le type particulier d'applications qu'est la propagation d'une onde de submersion sur fond sec. De plus l'implication du terme de frottement présente l'avantage de stabiliser le schéma pour les écoulements raides comme les ondes de submersion. Mais cette méthode implicite ne permettait pas de converger vers un état stationnaire, il a donc été décidé de proposer aux utilisateurs le choix entre les deux types de discrétisation. Dans le paragraphe suivant, nous allons décrire le traitement implicite du frottement.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Calcul implicite du frottement
+
+\vspace{0.5cm}
+
+Calculer la contribution du frottement de manière implicite peut se faire en appliquant une méthode de pas fractionnaires \cite{PAQUIER95}. Dans une première étape, l'état $U^{n+1/2}$ est calculée en tenant en compte de tous les termes des équations sauf le terme de frottement. Dans un second temps, le frottement est pris en compte.
+
+\vspace{0.5cm}
+
+Il est important de noter que seul le débit sera modifié par cette étape, le frottement n'apparaissant pas dans l'équation de continuité. L'équation à  résoudre sur le débit s'écrit (puisque $S^{n+1} = S^{n+1/2}$) :
+
+\begin{equation}
+ \frac{Q_{i}^{n+1}-Q_{i}^{n+1/2}}{\Delta t} = -g \frac{Q_{i}^{n+1}|Q_{i}^{n+1}|}{K_{i}^2 S_{i}^{n+1} R_{i}^{n+1^{4/3}}}
+\end{equation}
+
+\vspace{0.5cm}
+
+C'est une équation du deuxième degré en $Q_{i}^{n+1}$ de forme différente suivant son signe. La résolution de celle-ci donne une solution unique du même signe que $Q_i^{n+1/2}$ :
+
+\begin{equation}
+Q_{i}^{n+1} = \left \lbrace
+  \begin{array}{l}
+    \frac{-1+\sqrt{1+4aQ_{i}^{n+1/2}}}{2a} \quad \mbox{si } Q_{i}^{n+1/2} > 0\\
+    \\
+    \frac{-1-\sqrt{1-4aQ_{i}^{n+1/2}}}{2a} \quad \mbox{si } Q_{i}^{n+1/2} < 0
+  \end{array}
+ \right.
+\end{equation}
+
+avec :
+\begin{equation}
+ a = \frac{g \Delta t}{K_{i}^2 S_{i}^{n+1} R_{i}^{n+1^{4/3}}}
+\end{equation}
+
+\vspace{0.5cm}
+
+\underline{Remarque} : le traitement implicite du frottement pourrait être effectué de manière décentrée. Cette solution n'a pas été retenue car elle impliquait la résolution d'un système linéaire qui diminuait les performances en temps calcul du code.
+
+\vspace{0.5cm}
+
+\textbf{C) \underline{Débits d'apport}}
+
+\vspace{0.5cm}
+
+Les débits d'apports dans l'équation de conservation de la masse sont des apports linéiques. En réalité, ces apports représentent généralement des affluents, donc une injection de débit considérée comme ponctuelle. La modélisation suivante est réalisée : l'injection de débit est supposée située à  une interface $i+1/2$ entre deux cellules. Un débit d'apport linéique supposé constant sur la moitié aval de la cellule $i$ et la moitié amont de $i+1$ est évaluée par la relation :
+
+\begin{equation}
+ q_{a_{i+1/2}} = \frac{q_a}{x_{i+1/2}-x_{i-1/2}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Ce terme est ensuite décentré suivant la méthode exposée à  la section \ref{DecenSRC}.
+
+\subsubsection{Prise en compte des conditions aux limites}
+
+\label{PriseCL}
+
+\paragraph{Analyse à  l'aide des caractéristiques\\}
+
+\hspace*{1cm}
+
+La théorie des caractéristiques appliquées aux équations de Saint-Venant permet de connaître le nombre exact de conditions limites à  imposer pour que le problème initial soit bien posé. Examinons les quatre cas possibles suivant la nature de l'écoulement en entrée et en sortie.
+
+\vspace{0.5cm}
+
+\textbf{A) \underline{Ecoulement fluvial à  l'amont}}
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{AmontFluvial.eps}
+  \vspace{0.5cm}
+  \caption{Amont fluvial}
+ \end{center}
+\end{figure}
+
+Une seule caractéristiques provient de l'extérieur du domaine. L'autre caractéristique (la caractéristique $C^-$ dans le cas présent) provient de l'intérieur du domaine et transporte une information à  la limite du domaine. Donc, il est nécessaire d'imposer la cote ou le débit mais pas les deux variables.
+
+\newpage
+
+\textbf{B) \underline{Ecoulement torrentiel à  l'amont}}
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{AmontTorrentiel.eps}
+  \vspace{0.5cm}
+  \caption{Amont torrentiel}
+ \end{center}
+\end{figure}
+
+Les deux caractéristiques proviennent de l'extérieur du  domaine. Dans ce cas il est nécessaire d'imposer la cote et le débit.
+
+\vspace{0.5cm}
+
+\textbf{C) \underline{Ecoulement fluvial à  l'aval}}
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{AvalFluvial.eps}
+  \vspace{0.5cm}
+  \caption{Aval fuvial}
+ \end{center}
+\end{figure}
+
+On est dans la même conditions qu'un écoulement fluvial en entrée de domaine. On doit donc imposer une seule information (cote ou débit). En pratique, on choisit le plus souvent d'imposer la cote.
+
+\newpage
+
+\textbf{D) \underline{Ecoulement torrentiel à  l'aval}}
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{AvalTorrentiel.eps}
+  \vspace{0.5cm}
+  \caption{Aval torrentiel}
+ \end{center}
+\end{figure}
+
+Les deux caractéristiques proviennent de l'intérieur du domaine. Aucune information supplémentaire n'est nécessaire.
+
+\vspace{0.5cm}
+
+Le tableau suivant résume les situations décrites précédemment.
+
+\begin{table}[h]
+\centering  
+\caption{Type d'écoulement et CL amont/aval}
+\begin{tabular}{c|c|c}
+  &\textbf{Fluvial} & \textbf{Torrentiel} \\
+  \hline
+  Amont & Cote ou Débit & Cote \textbf{et} Débit \\
+  Aval & Cote ou Débit & rien \\
+  \hline
+ \end{tabular}
+ \label{TabCL}
+\end{table}
+
+\paragraph{Traitement numérique des conditions aux limites\\}
+
+\hspace*{1cm}
+
+Le schéma numérique tel qu'il a été défini à  la section \ref{PbHom} suppose que l'on connaisse en chaque pas de temps les valeurs des deux variables aux bornes du domaine. Or, d'après ce qui précède, ceci peut être contradictoire avec la théorie des caractéristiques.
+
+\vspace{0.5cm}
+
+Dans un premier temps, on suppose que les conditions aux limites sont parfaitement connues et on va s'intéresser à  leur prise en compte dans le schéma global.
+
+\vspace{0.5cm}
+
+Considérons l'amont du domaine avec un débit donné en entrée.
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{NDomaine.eps}
+  \vspace{1.cm}
+  \caption{Aval torrentiel}
+ \end{center}
+\end{figure}
+
+Supposons que toutes les variables sont connues au pas de temps $n$.
+
+\vspace{0.5cm}
+
+Le Schéma de Roe nous permet d'évaluer toutes les variables en tous les n\oe uds sauf les conditions aux limites au pas de temps $n+1$. Pour calculer $(S_{1}^{n+1},Q_{1}^{n+1})$, on peut envisager deux possibilités :
+\begin{itemize}
+ \item $(S_{1}^{n+1},Q_{1}^{n+1})$ est calculé à  l'aide du schéma de Roe, l'état gauche étant donné par les conditions aux limites $(Q_d,S_d)$. Il est important de noter que la section mouillée $S_d$ n'est pas fournie par l'utilisateur mais calculée. La façon de calculer l'information manquante sera exposée dans le paragraphe suivant;
+ \item on ne considère pas la première moitié de cellule comme une cellule au sens volumes finis. On impose alors à  $(S_{1}^{n+1},Q_{1}^{n+1})$ d'être égal à  la condition limite $(Q_d,S_d)$. De même que pour le cas précédent, la section mouillée sera calculée par ailleurs.
+\end{itemize}
+
+\vspace{0.5cm}
+
+On a choisi la méthode no. 2 pour traiter les conditions aux limites car elle permet à  l'utilisateur de retrouver au premier noeud de son maillage les valeurs qu'il a imposées. Ce qui n'est absolument pas assuré par la première méthode.
+
+\vspace{0.5cm}
+
+Nous allons maintenant présenter les différentes méthodes disponibles dans \texttt{MASCARET} pour compléter l'information aux conditions limites indépendamment du schéma volumes finis.
+
+\vspace{0.5cm}
+
+\textbf{A) \underline{Calcul des CL à  l'aide des invariants de Riemann}}
+
+\vspace{0.5cm}
+
+Le principe de ce calcul est très simple et basé sur l'écriture non conservative des équations de Saint-Venant. Il suppose que la solution est continue à  proximité immédiate des conditions aux limites. On va différencier les 4 cas possibles (voir le tableau \ref{TabCL}) selon la nature de l'écoulement et suivant que l'on est en entrée ou en sortie de domaine.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textsc{Entrée de domaine}
+
+\vspace{0.5cm}
+
+$\rightarrow$ Régime torrentiel
+
+\vspace{0.5cm}
+
+Les deux caractéristiques entrent dans le domaine : il faut donc fournir la valeur de la section mouillée et du débit.
+
+\vspace{0.5cm}
+
+$\rightarrow$ Régime fluvial
+
+\vspace{0.5cm}
+
+La caractéristique $C^-$ sort du domaine et transporte une information de l'intérieur du domaine vers la condition à  la limite amont. Cette information, c'est-à-dire l'invariant de Riemann $f^-$ sera utilisée pour compléter la donnée (section mouillée ou débit) que devra fournir l'utilisateur.
+
+\vspace{0.5cm}
+
+Nous allons détailler ce calcul.
+
+\vspace{0.5cm}
+
+$Q_1^{n+1}$ ou $S_1^{n+1}$ connu (fourni en entrée de donnée) nous donne une première relation.
+
+\vspace{0.5cm}
+
+L'invariant de Riemann $f_{1}^+$ est constant le long de la courbe caractéristique $C^-$ issue de l'amont du modèle. Ceci nous fournit une seconde relation.
+
+\vspace{0.5cm}
+
+On est amené à  résoudre le système suivant :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    Q_{1}^{n+1} \quad \mbox{ou} \quad S_{1}^{n+1} \quad \mbox{connu} \\
+    \\
+    \frac{Q_{1}^{n+1}}{S_{1}^{n+1}} + K(S_{1}^{n+1}) = f_{1}^+
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+ \item Débit imposé : pour déterminer $S_{1}^{n+1}$, on multiplie par $S_{1}^{n+1}$ la seconde équation. On obtient alors :
+   \begin{equation}
+     S_{1}^{n+1} K(S_{1}^{n+1}) - f_{1}^+ S_{1}^{n+1} + Q_{1}^{n+1} = 0
+   \end{equation}
+   Cette dernière équation est résolue à  l'aide d'une méthode de Newton.
+ \item Cote imposée : la calcul est beaucoup plus simple.
+   \begin{equation}
+      Q_{1}^{n+1} = -S_{1}^{n+1} K(S_{1}^{n+1}) + f_{1}^+ S_{1}^{n+1}
+   \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textsc{Sortie de domaine}
+
+\vspace{0.5cm}
+
+$\rightarrow$ Régime torrentiel
+
+\vspace{0.5cm}
+
+Les deux caractéristiques sortent du domaine donc aucune information n'est nécessaire. On résout le système suivant :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{Q_{N}^{n+1}}{S_{N}^{n+1}} + K(S_{N}^{n+1}) = f_{N}^+ \quad \mbox{avec } f_{N}^+ \mbox{ connu} \\
+    \\
+    \frac{Q_{N}^{n+1}}{S_{N}^{n+1}} - K(S_{N}^{n+1}) = f_{N}^- \quad \mbox{avec } f_{N}^- \mbox{ connu}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+$\rightarrow$ Régime fluvial
+
+\vspace{0.5cm}
+
+On se ramène au cas fluvial en entrée de domaine.
+
+\vspace{0.5cm}
+
+\underline{Remarque} :  Le calcul des conditions aux limites à  l'aide des invariants de Riemann est satisfaisant et respecte bien la théorie des caractéristiques. Mais il s'est avéré au cours d'études que cette méthode donnait des erreurs importantes pour des écoulements à  faible nombre de Froude. Ceci est dû au fait que le terme prédominant dans l'équation est alors $SK(S)$ où $K(S)$ est une fonction non linéaire qui a dû être planimétrée. pour pallier cet inconvénient majeur pour le calcul d'écoulement fluviaux, on a utilisé d'autres méthodes basées sur une discrétisation différences finies de l'équation de continuité ou de quantité de mouvement.
+
+\vspace{0.5cm}
+
+\textbf{B) \underline{Calcul des CL à  l'aide de Saint-Venant}}
+
+\vspace{0.5cm}
+
+On ne traite dans ce cas que les écoulements fluviaux.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textsc{Entrée de domaine}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+ \item Débit imposé : prenons l'équation de continuité et discrétisons-là  le plus simplement possible en différences finies, on obtient :
+   \begin{equation}
+     Q_{1}^{n+1} = Q_d
+   \end{equation}
+   et :
+   \begin{equation}
+     \frac{S_{1}^{n+1}-S_{1}^{n}}{\Delta t} + \frac{Q_{2}^n - Q_{1}^n}{\Delta x} = 0
+   \end{equation}
+   A l'aide de l'équation précédente, on calcule $S_{1}^{n+1}$.
+ \item Cote imposée : on discrétise l'équation de quantité de mouvement d'une manière analogue à  celle utilisée pour discrétiser l'équation de continuité.
+\end{itemize}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textsc{Sortie de domaine}
+
+\vspace{0.5cm}
+
+Pour la sortie du domaine, il n'y a pas de difficulté supplémentaire. Le raisonnement est analogue.
+
+\vspace{0.5cm}
+
+Le choix entre les différents modes de calcul des conditions aux limites se fait à  l'aide d'un paramètre appelé \textit{Froude limite} imposé par l'utilisateur (cf. manuel d'utilisation). Si le nombre de Froude en entrée ou en sortie de domaine est supérieur à  ce paramètre, on calcule alors les informations manquantes pour les conditions limites à  l'aide des invariants de Riemann.
+
+\vspace{0.5cm}
+
+\textbf{C) \underline{Modélisation d'une loi hauteur-débit}}
+
+\vspace{0.5cm}
+
+Jusqu'à  présent, on a envisagé les cas les plus simples de cote ou débit imposés. Mais pour les application réelle, une condition limite très utile est la condition de type \textit{courbe de tarage} : la cote ou le débit ne sont pas connus explicitement mais déterminés l'un par rapport à  l'autre avec une loi  $Z = f(Q)$. Pour obtenir la valeur du débit et de la cote aux bornes du domaine, on résout un système de deux équations à  deux inconnues. La seule différence avec les cas précédents est que la première n'est plus triviale.
+
+\vspace{0.5cm}
+
+\textbf{D) \underline{Modélisation d'une sortie libre}}
+
+\vspace{0.5cm}
+
+Les méthodes exposées précédemment permettent de calculer l'information manquante dans le cas d'écoulements fluviaux mais il est néanmoins nécessaire de fournir au moins une information soit la cote ou le débit. Ceci pose des difficultés pour les calculs d'onde de submersion. Il est impossible à  l'utilisateur de connaître la cote ou le débit à  la condition limite aval du domaine. Pour pallier cette difficulté, on a essayé de modéliser une \textit{sortie libre}. C'est-à-dire que l'utilisateur ne fournit aucune condition à  la limite, cette dernière étant calculée uniquement à  l'aide du pas de temps précédent. Il est clair au regard de la théorie des caractéristiques appliquées aux équations de Saint-Venant que cette modélisation n'est pas correcte. Cette modélisation n'a pas pour but de fournir un écoulement correct au niveau de la condition limite mais de laisser l'onde de submersion sortir du domaine sans trop influencer l'écoulement dans le domaine.
+
+\vspace{0.5cm}
+
+Pour réaliser une \textit{sortie libre}, on transporte les deux variables sections mouillées et débit à  la vitesse de l'écoulement.
+
+\vspace{0.5cm}
+
+Pour les calculs d'onde de submersion, il est recommandé de positionner la condition aval de son domaine de calcul au moins $30\ km$ en aval du point d'arrêt du calcul afin de ne pas perturber les caractéristiques au niveau de ce point. Ce type de condition à  la limite est fortement déconseillé pour tout autre type de calcul.
+
+\subsubsection{Traitement des zones sèches}
+
+Pour des applications telles que les ondes de submersion, il est nécessaire de pouvoir traiter des zones sèches et la propagation d'un front sur zones sèches. Au  niveau numérique, ceci soulève les problèmes suivants :
+\begin{itemize}
+ \item définition d'un état dans la zone sèche car la vitesse n'est pas définie;
+ \item propagation d'un front sur zone sèche.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Notre but principal pour traiter ce problème a été d'obtenir une bonne vitesse de propagation du front car cette information est essentielle pour les calculs d'onde de submersion.
+
+\vspace{0.5cm}
+
+Pour aborder ce problème avec le schéma de Roe, on a dû introduire un seuil sur la hauteur d'eau. Ceci a permis sur des cas-tests simples pour lesquels on dispose d'une solution analytique de retrouver la bonne vitesse de propagation \cite{GOUTAL97}. La contrepartie à  cette technique de seuil est qu'on perd la parfaite conservativité des volumes finis. Pour les études d'onde de submersion, on a conservé le schéma de Roe mais ceci implique un contrà´le strict de la conservativité.
+
+\vspace{0.5cm}
+
+Au niveau du groupe de travail AIRH sur les modèles numériques utilisés pour calculer les ondes de submersion, toutes les équipes utilisant des schémas de type Roe ont les mêmes difficultés. Un des seuls schémas a ne pas avoir ce problème est le schéma dit schéma équilibre, développé à  l'université de Bordeaux par l'équipe du professeur Leroux \cite{LECOZ96}\cite{BON97}.
+
+\vspace{0.5cm}
+
+Il faudra envisager dans l'avenir d'autres solutions que celle du seuil mais elle permet néanmoins pour l'instant de traiter les études de façon satisfaisante.
+
+\subsection{Modélisation de phénomènes physiques plus complexes}
+
+\label{ModelCplx}
+
+\subsubsection{Introduction d'une modélisation de lit composé}
+
+Le noyau transcritique de \texttt{MASCARET} traite les écoulements dans les lits composés formés d'un lit mineur et d'un lit majeur, mais les zones de stockage ne sont pas prises en compte.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Lits.eps}\hspace{1cm}
+  \vspace{1.cm}
+  \caption{Lits et zones de stockage}
+ \end{center}
+\end{figure}
+
+La formulation \emph{Debord} a été choisie pour modéliser la composition des lits mineurs et majeur pour que les noyaux fluviaux et transcritique soient le plus compatibles possible.
+
+\paragraph{Rappel sur les équations\\}
+
+\hspace*{1cm}
+
+Le système d'équations à  résoudre s'écrit à  présent :
+
+\begin{equation}
+ \label{SyEQ}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial S}{\partial t} + \frac{\partial Q}{\partial x} = q_l - \frac{\partial S_s}{\partial t} \\
+    \\
+    \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x} \left ( \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M} + P \right ) \\
+    \\
+    \quad = g \int_{0}^y \left ( \frac{\partial S}{\partial x}\right )_y \, dy - g S \frac{d Z_f}{d x} - g (S_m J_m + S_M J_M)
+  \end{array}
+ \right.
+\end{equation}
+
+avec :
+
+\begin{itemize}
+ \item $q_l$ le débit d'apport et $S_s$ la section de stockage;
+ \item $S = S_m + S_M$ et $Q = Q_m + Q_M$;
+ \item $\sqrt{J_m} = \frac{Q_m}{D_m}$ et $\sqrt{J_M} = \frac{Q_M}{D_M}$;
+ \item $D_m = K_m S_m R_{m}^{2/3}$ et $D_M = K_M S_M R_{M}^{2/3}$ sont les débitances mineures et majeures fonction de la cote de la surface libre.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Ce système est semblable aux équations de Saint-Venant en lit unique en définissant la pente globale $J$ au moyen de la relation :
+
+\begin{equation}
+ S J = S_m J_m + S_M J_M
+\end{equation}
+
+\vspace{0.5cm}
+
+et en choisissant le coefficient $\beta$ non plus égal à  1 (comme en lit mineur), mais satisfaisant la relation :
+
+\begin{equation}
+ \beta \frac{Q^2}{S} = \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+\underline{Remarque} :  le coefficient $\beta$ est supérieur ou égal à  1.
+
+\paragraph{Modélisation \emph{Debord}\\}
+
+\hspace*{1cm}
+
+Le système d'équations (\ref{SyEQ}) n'est pas complet et une relation de fermeture est nécessaire. Différentes solutions ont été proposées pour modéliser la composition des deux lits. La modélisation \emph{Debord} a finalement été retenue pour être compatible avec le noyau fluvial (voir \ref{ModDeb}) et à  la suite du retour d'expérience effectué sur les différentes utilisations de celui-ci.
+
+\vspace{0.5cm}
+
+Soit :
+
+\begin{equation}
+ \eta = \frac{Q_m}{Q_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+La modélisation \emph{Debord} permet d'écrire :
+
+\begin{equation}
+ \eta = \frac{A}{\displaystyle \sqrt{1+\frac{S_m}{S_M}}(1-A^2)} \frac{D_m}{D_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`{u} $A$ est la constante du modèle \emph{Debord}, évaluée par la relation :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    A = \frac{1-A_0}{2}\cos \left ( \frac{\pi r}{0.3} \right ) + \frac{1+A_0}{2} \quad \mbox{pour } r=\frac{R_M}{R_m} \in [0,0.3] \\
+    \\
+    A = A_0 = 0.9 \left ( \frac{K_m}{K_M} \right )^{-1/6} \quad \mbox{pour } r > 0.3
+  \end{array}
+ \right.
+\end{equation}
+
+\paragraph{Mise en \oe uvre dans le noyau transcritique\\}
+
+\hspace*{1cm}
+
+Les équations en lits composés ne diffèrent de celles en lit simple que par le terme $\beta$ et la forme du terme source lié au frottement. La résolution de ce système est donc formellement identique à  celui traité précédemment.
+
+\vspace{0.5cm}
+
+La formulation \emph{Debord} permet d'écrire $\beta$ sous la forme $\beta(S,x)$. Ceci donne une fonction inconnue supplémentaire.
+
+\vspace{0.5cm}
+
+Pour des raisons de simplicité , la fonction $\beta$ sera prise en compte de façon explicite. L'équation de quantité de mouvement à  résoudre à  l'instant $n+1$ est donc :
+
+\begin{equation}
+ \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x} \left ( \beta^n \frac{Q^2}{S} + P \right ) = g \int_{0}^y \left ( \frac{\partial S}{\partial x} \right )_y \, dy - g S \frac{d Z_f}{dx} -g S J
+\end{equation}
+
+\vspace{0.5cm}
+
+C'est donc une équation aux dérivées partielles dont le coefficient $\beta$ est variable dans le temps.
+
+\vspace{0.5cm}
+
+Le système convectif est inconditionnellement hyperbolique car $\beta$ est supérieur ou égal à  1. Le problème de Riemann est résolu de manière analogue à  celui lié aux équations de Saint-Venant en lit simple ; seules les valeurs propores du système sont modifiées. Elles deviennent : $\beta u + c'$ et $\beta u - c'$ avec : $c' = \sqrt{\frac{\partial P}{\partial S} + u^2(\beta^2 - \beta)}$. Les variables de Roe sont inchangées.
+
+\vspace{0.5cm}
+
+La prise en compte du frottement est formellement identique a cas du lit simple ; la débitance généralisée qui tient compte à  la fois du lit mineur et majeur pouvant être planimétrée de manière analogue à  la débitance mineure.
+
+\vspace{0.5cm}
+
+\underline{Nota 1} : le fait de considérer le terme $\beta$ comme une fonction de forçage variant à  chaque pas de temps simplifie nettement ma lise en \oe uvre de la méthode. Ceci est en partie justifié par le fait que les écoulements en lit composés sont généralement lentement variables.
+
+\vspace{0.5cm}
+
+\underline{Nota 2} : le traitement des lits composés a fait perdre une propriété de consistance qui  permettait de converger vers un état permanent à  débit constant. Dans les cas étudiés jusqu'à  présent, des variations de débit de l'ordre de $2$ à  $3\%$ du débit total ont été observées lorsqu'un état stationnaire est atteint.
+
+\subsubsection{Traitement des confluents}
+
+Une méthode nouvelle a été développée pour traiter le cas des confluents. Sa description détaillée ainsi que des éléments de validation ont fait l'objet du rapport \cite{MAUREL96}. Une synthèse de la méthode est présentée ici.
+
+\vspace{0.5cm}
+
+On peut estimer que localement, dans la zone de confluence, les équations de Saint-Venant 2D se substituent à  celles 1D pour représenter l'écoulement. L'idée est alors de considérer que le domaine total (vallée principale + affluent) est le recouvrement de deux sous domaines. Le premier sous domaine est constitué par les trois biefs 1D ; les équations de Saint-Venant monodimensionnelles y sont supposées valables. Le second sous domaine est la zone de confluence et ce sont les équations bidimensionnelles qui sont supposées valables. Traiter le problème du confluent revient en fait à  réaliser un couplage 1D-2D entre les deux sous domaines. La résolution de Saint-Venant 2D se fait à  l'aide d'un module volumes finis équivalent à  celui utilisé en 1D (schéma de Roe). Ce module possède des schémas numériques semblables à  ceux de \texttt{MASCARET}. Ce dernier point ainsi que le caractère explicite de ces schémas a l'avantage de faciliter l'opération de couplage.
+
+\vspace{0.5cm}
+
+Un modèle bidimensionnel demande généralement une discrétisation fine de la géométrie. Il n'est pas concevable lors d'une étude d'onde de submersion que chaque confluent d'une vallée nécessite la fabrication d'un modèle 2D local, avec saisie de la géométrie et maillage (fin) du domaine. En fait, un modèle simple et automatique à  mettre en oeuvre est souhaité. C'est donc le logiciel monodimensionnel qui crée le domaine 2D représentatif du confluent et le maillage qui va avec. Un maillage à  12 cellule a été retenu.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.6,angle=270]{ConfPar.eps}
+  \vspace{1.25cm}
+  \caption{Confluent 2D}
+ \end{center}
+\end{figure}
+
+\paragraph{Couplage 1D-2D\\}
+
+\hspace*{1cm}
+
+En se plaçant du côté du modèle monodimensionnel, le point qui nous intéresse est de calculer la valeur de $(S_1,Q_1)$ aux limites de chaque bief 1D arrivant dans le confluent. Cela revient à  définir le couplage 1D-2D.
+
+\vspace{0.5cm}
+
+Le couplage se fait par recouvrement de domaines. Par exemple, les points limites du modèle 2D sont à  l'intérieur du modèle 1D. pour être précis, la figure suivante donne le recouvrement entre le modèle 2D et les trois biefs 1D.
+
+\vspace{0.5cm}
+
+On suppose que les extrémités du modèle 1D aux biefs $B_1$, $B_2$, $B_3$, sont représentées dans le modèle 2D par les cellules $A$, $B$, $C$ respectivement. Les cellules $a$, $b$, $c$ extrémités du modèle 2D représentent quant à  elles les cellules voisines aux extrémités de chaque bief 1D. le couplage 1D-2D se fait alors par échange d'états limites.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.6,angle=270]{ConfPar2.eps}
+  \vspace{1.25cm}
+  \caption{Recouvrement 1D-2D}
+ \end{center}
+\end{figure}
+
+Un calcul peut être décrit de la façon suivante :
+
+\vspace{0.5cm}
+
+On suppose connu l'état dans chaque 1D, $B_1$, $B_2$, $B_3$ et dans le confluent 2D à  l'instant $n$. La détermination de l'état $n+1$ se fait en quatre étapes :
+\begin{itemize}
+ \item \textbf{Etape 1 :} calcul de l'état à  l'intérieur du confluent (hors des trois cellules limites $a$, $b$ et $c$). Cette étape est réalisée avec un schéma de Roe 2D. Le schéma étant explicite, nul besoin de l'état limite à  l'instant $n+1$, mais uniquement de l'état $n$ dans son entier;
+ \item \textbf{Etape 2 :} calcul de l'état à  l'intérieur de chaque bief (hors cellules limites $A$, $B$, $C$). Ceci est fait avec un schéma de Roe 1D pour les mêmes raisons et de la même façon que précédemment;
+ \item \textbf{Etape 3 :} calcul de $S_1$, $Q_1$ dans chaque bief. Ce sont les valeurs de $S$ et $Q$ en $A$, $B$, $C$. Ces valeurs ont été calculées lors de l'étape 1. La surface libre est conservée d'un modèle à  l'autre. Cependant, les valeurs calculées de débit sont bidimensionnelles ; on projette donc le vecteur débit le long de la normale à  la frontière libre pour obtenir la valeur monodimensionnelle.
+ \item \textbf{Etape 4 :} calcul de l'état limite du modèle 2D. C'est l'état déterminé dans la deuxième étape dans les cellules adjacentes aux extrémités de chaque bief. De façon analogue au point précédent, le niveau de la surface libre est conservé du modèle 1D vers le modèle 2D. De plus, afin d'avoir un débit bidimensionnel, on suppose que celui-ci a la direction de la normale à  la frontière libre.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Au final, l'état complet du modèle monodimensionnel (les biefs $B_1$, $B_2$, $B_3$) et du modèle bidimensionnel (le confluent) à  l'instant $n+1$ est calculé.
+
+\vspace{0.5cm}
+
+L'utilisation d'un schéma volumes finis dans le modèle 2D permet a priori d'avoir un traitement conservatif de la zone de confluence. En fait ceci n'est pas totalement vérifié, car pour passer de l'état 2D vers l'état 1D une projection du débit est réalisée. Ceci est une source de non conservation de la quantité de mouvement.
+
+\paragraph{Adaptation de la géométrie 1D au modèle 2D\\}
+
+\hspace*{1cm}
+
+A présent que la méthode de couplage est définie, il ne reste plus qu'à  décrire le modèle 2D chois pour représenter la confluence. Dans un premier temps, le cas simple de canaux rectangulaires est traité. Puis la méthode est étendue à  des géométries réelles.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Canaux rectangulaires
+
+\vspace{0.5cm}
+
+La géométrie du confluent est discrétisée par douze cellules de manière à  être la plus proche possible de la géométrie réelle.
+
+\vspace{0.5cm}
+
+\begin{itemize}
+ \item[*] Pour chaque affluent, sont fournis les coordonnées du point limite sur l'axe hydraulique ainsi que l'angle que fait ce bief 1D par rapport à  une direction fixe. Ce sont les seules données externes spécifiques au confluent. Leur détermination se fait uniquement à  partir de critères géométriques seuls;
+ \newpage
+  \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{cr1.eps}
+    \end{center}
+  \end{figure}
+  \vspace{0.5cm}
+ \item[*] à  chaque affluent $i$, un segment peut être tracé de longueur $L_i$, (la largeur du canal, donnée indépendante de la définition du confluent et qui provient de la géométrie du modèle 1D). Sa direction est la normale à  l'angle fixé précédemment;
+  \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{cr2.eps}
+    \end{center}
+  \end{figure}
+  \vspace{0.5cm}
+ \item[*] ces segments sont ensuite rejoints par des parois. Les trois segments précédents ainsi que les parois forment l'hexagone de confluence;
+   \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{cr3.eps}
+    \end{center}
+  \end{figure}
+  \newpage
+ \item[*] soit $G$ le centre de gravité de l'hexagone. A l'intérieur de ce dernier, six triangles sont formés ayant $G$ pour sommet commun;
+  \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{cr4.eps}
+    \end{center}
+  \end{figure}
+  \vspace{0.5cm}
+ \item[*] les cellules de recouvrement 1D-2D sont des rectangles dont un cà´té a pour longueur $L_i$ et l'autre $DX_i$, la taille de la cellule 1D dans chaque bief;
+  \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{cr5.eps}
+    \end{center}
+  \end{figure}
+  \vspace{0.5cm}
+ \item[*] Enfin, la cote du fond dans chaque cellule est fixée de la manière suivante :
+   \begin{itemize}
+     \item pour les six cellules de recouvrement, c'est la cote de la cellule 1D, $Z_{f1D}$;
+     \item à  l'intérieur de l'hexagone, la cote de $G$ ($Z_{fG}$), est supposée être la moyenne arithmétique des trois cellules de recouvrement 1D-2D voisines. Les trois cellules ayant une frontière commune avec celles de recouvrement (donc pas de parois) ont une cote $Z_{f2D}$ définie par : $Z_{f2D} = \frac{2Z_{f1D}+Z_{fG}}{3}$ où $Z_{f1D}$ est la cote de la cellule 1D adjacente;
+     \item pour chacune des trois autres cellules, la cote du fond est supposée être la moyenne entre celles des deux cellules adjacentes.
+   \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Cette description a l'avantage de ne nécessiter que peu de paramètres spécifiques : les coordonnées des points $M_i$ et la direction relative de chaque bief. Ce sont des paramètres purement géométriques qui sont simples à  déterminer. Le reste des informations provient directement de la description 1D (géométrie des profils en travers) et de l'état de chaque bief.
+
+\vspace{0.5cm}
+
+La géométrie ainsi définie tient compte :
+
+\begin{itemize}
+ \item de l'importance de l'emprise de la zone de confluence, celle-ci étant liée à  la position relative des trois points $M_i$;
+ \item de la direction de chaque bief, via les angles fournis en $M_i$;
+ \item de la largeur de chaque canal, puisque celle-ci est reportée dans le modèle 2D à  partir de l'état 1D;
+ \item des gradients de fond, puisque la cote des cellules de recouvrement est celle des cellules 1D. A l'intérieur de l'hexagone, ces cotes du fond varient de la façon la plus régulière possible.
+\end{itemize}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Géométrie réelle
+
+Une difficulté nouvelle apparaît dans le cas d'une géométrie réelle. En effet, pour le modèle 2D choisi, un profil en travers n'est discrétisé que par une unique cellule, qui présente donc un profil rectangulaire (avec la discrétisation $P_0$ retenue, le fond d'une cellule est forcément plat). Ce point était évidemment sans conséquences dans le cas précédent, mais doit être traité spécifiquement à  présent.
+
+\vspace{0.5cm}
+
+Il s'agit donc de trouver la géométrie rectangulaire équivalente à  la géométrie réelle, dans le sens où les écoulements représentés dans chacun des modèles doivent être les plus proches possibles. Une transformation 1D-2D doit être définie et le choix suivant a été retenu :
+\begin{itemize}
+ \item cote du fond $Z_f$ conservée;
+ \item cote de la surface libre $Z$ conservée (donc, $Y$, le tirant d'eau aussi);
+ \item débit $Q$ conservé;
+ \item vitesse $V$ conservée.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Il faut donc conserver la section mouillée $S$. Le tirant d'eau étant fixé par les deux premiers points, la largeur s'en déduit par :
+
+\begin{equation}
+ L_{2D} = \frac{S_{1D}}{Y}
+\end{equation}
+
+\vspace{0.5cm}
+
+Cette largeur de cellule est susceptible d'évoluer lorsque le tirant d'eau varie. Cela nécessite donc de réactualiser le maillage de manière régulière à  chaque pas de temps.
+
+\subsubsection{Prise en compte des singularités}
+
+Lorsqu'on propage une onde de submersion dans une vallée réelle, on doit pouvoir prendre en compte d'autres barrages situés en aval du barrage principal. Ces ouvrages peuvent avoir plusieurs comportements possibles : rupture instantanée lorsque l'onde arrive ou déversement pendant un certain temps au dessus de la crête de l'ouvrage. Dans le second cas, deux modélisations du barrage sont possibles :
+
+\begin{itemize}
+ \item représenter le barrage dans la géométrie. Mais, étant donné les pentes des parements amont et aval, il est nécessaire d'avoir un maillage très fin au droit de cet ouvrage. ce qui contraint fortement le pas de temps pour tout le domaine de calcul;
+ \item modéliser l'ouvrage par un singularité. c'est-à-dire que le barrage ne sera pas traité comme un point courant du schéma numérique mais on utilisera une relation spécifique pour relier l'amont et l'aval du barrage.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Dans la suite de ce paragraphe, on va définir comment on a choisi de modéliser une singularité dans le cadre d'un schéma volumes finis.
+
+\vspace{0.5cm}
+
+On admet qu'une singularité est définie par une relation liant le débit transitant $Q_s$ par cette singularité aux cotes amont et aval. Cette relation dépend des caractéristiques physiques et hydrauliques de l'ouvrage.
+
+\vspace{0.5cm}
+
+Ci-dessous est représentée une partie du domaine.
+
+\vspace{0.5cm}
+
+Une singularité sera nécessairement positionnée à  l'interface entre 2 cellules. Le débit transitant à  travers cette interface est défini par : $Q_s = f(Z_{i-1},Z_i)$.
+
+\begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{posSing.eps}\hspace{2cm}
+    \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Dans le cadre d'un schéma Volumes Finis, l'état hydraulique dans la cellule i et i-1 au temps n+1 dépend des flux à  l'interface de chacune des deux cellules.
+
+\vspace{0.5cm}
+
+Pour la cellule $i$ (resp. $i-1$), le flux à  droite (resp. à  gauche) sera le flux calculé par le schéma défini au paragraphe n ; par contre le flux de masse et de quantité de mouvement à  l'interface entre la cellule $i$ et la cellule $i-1$ ne sera pas le flux de Roe mais le flux analytique calculé explicitement à  l'aide de la relation définissant la singularité.
+
+\vspace{0.5cm}
+
+\textbf{\underline{Pour la cellule $i$}}
+
+\vspace{0.5cm}
+
+Flux de masse à  gauche : $Q_s =f(Z_{i-1}^n,Z_{i}^n)$
+
+Flux de quantité de mouvement à  gauche : $\frac{Q_{s}^2}{S_{i}^n} + P(S_{i}^n)$
+
+\vspace{0.5cm}
+
+\textbf{\underline{Pour la cellule $i-1$}}
+
+\vspace{0.5cm}
+
+Flux de masse à  droite : $Q_s =f(Z_{i-1}^n,Z_{i}^n)$
+
+Flux de quantité de mouvement à  droite : $\frac{Q_{s}^2}{S_{i-1}^n} + P(S_{i-1}^n)$
+
+\vspace{0.5cm}
+
+\underline{Remarque} : 
+\begin{itemize}
+ \item on a gardé ainsi la conservation de la masse. Par contre, on a perdu la conservation sur la quantité de mouvement;
+ \item en tout début de déversement, la section mouillée est très faible à  l'aval de la singularité. Ce qui implique de très fortes vitesses et par conséquent des problèmes numériques (instabilités). Dans cette configuration, on conserve uniquement le terme de pression dans le flux de quantité de mouvement;
+ \item cette modélisation permet de prendre en compte tous les types de singularités. Il suffit de se donner la fonction reliant le débit aux cotes amont et aval.
+\end{itemize}
+
+\subsubsection{Prise en compte des barrages qui s'érodent}
+
+Le noyau transcritique de \texttt{MASCARET} offre la possibilité de traiter l'érosion par surverse des barrages poids situés à  l'aval du barrage principal.
+
+\vspace{0.5cm}
+
+La modélisation retenue s'inspire directement de celle mise en oeuvre dans le code \texttt{EROSIF} \cite{BENSLAMA95}. Ce dernier calcule l'évolution d'une brèche dans une retenue ainsi que l'hydrogramme à  l'aval qui résulte de cette rupture progressive.
+
+\vspace{0.5cm}
+
+Dans le cadre de \texttt{MASCARET}, un barrage qui s'érode par surverse est traité comme un barrage qui déverse mais avec une cote de déversement variable dans le temps.
+
+\begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.6,angle=270]{BarPds.eps}\hspace{2cm}
+     \vspace{1cm}
+     \caption{Principe de la modélisation}
+    \end{center}
+\end{figure}
+
+A l'amont , les conditions hydrauliques sont supposées égales à  celles calculées par le noyau transcritique dans la cellule immédiatement en amont du barrage à  l'instant précédent.
+
+\vspace{0.5cm}
+
+A l'aval, une condition de criticité est imposée. Le débit sur l'ensemble de l'ouvrage est supposé égal au débit amont.
+
+\vspace{0.5cm}
+
+L'évolution de la cote de la crête du barrage est donnée par l'équation :
+
+\begin{equation}
+ (1-p) \frac{dZ_{haut}}{dt} = - \frac{dQ_s}{dx} = - \frac{Q_{s_{aval}}-Q_{s_{amont}}}{L_{haut}}
+\end{equation}
+
+\vspace{0.5cm}
+
+où $p$ est la porosité du matériau (généralement prise égale à  0,4), $Q_{s_{amont}}$ et $Q_{s_{aval}}$ sont respectivement les débits solides à  l'amont et à  l'aval du chenal d'érosion calculés par la formule de Meyer Peter Muller, soit :
+
+\begin{equation}
+ Q_s = \frac{8}{g \sqrt{\rho}(\rho_s - \rho)}(\tau - \tau_c)^{1.5}
+\end{equation}
+
+avec :
+\begin{itemize}
+ \item $\tau$ la contrainte hydrodynamique totale (formule de Manning Strickler);
+ \item $\tau_c$ la contrainte critique de début de cisaillement : $0.05 . (\rho_s - \rho).g.d_{50}$;
+ \item $\rho_s$ la masse volumique du sédiment;
+ \item $\rho$ la masse volumique de l'eau;
+ \item $d_{50}$ le diamètre médian du matériau.
+\end{itemize}
+
+\vspace{0.5cm}
+
+L'ensemble des ces équations permet donc de calculer $Z_{haut}$, cote du déversement. L'érosion est limitée vers le bas par la cote $Z_{bas}$.
+
+\subsubsection{Lois de seuil mince et épais}
+
+\label{LoiSeuilMinceEpais}
+
+Nous présentons ici le principe de modélisation des singularités de type seuil épais ou mince, implémentés dans les noyaux transcritique et fluviaux. Pour les autres singularités, le couple (débit, cote) est directement déterminé par interpolation d'une abaque discrétisée, fournie par l'utilisateur.
+
+\vspace{0.5cm}
+
+Les lois de seuil modélisées dans les noyaux fluviaux et transcritique permettent de choisir parmi deux types de seuil : une loi de seuil épais ou mince. Ces deux lois diffèrent uniquement en cas d'ennoiement, en particulier sur les conditions et le coefficient d'ennoiement.
+
+\vspace{0.5cm}
+
+On se reportera à  \cite{GOUTAL03} pour le détail des tests de validation dans le cas du seuil mince.
+
+\paragraph{Seuil dénoyé (mince ou épais)\\}
+
+\hspace*{1cm}
+
+\begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.6,angle=270]{Sden.eps}
+    \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Le débit au dessus d'un seuil mince ou épais dénoyé s'exprime de la façon suivante :
+
+\begin{equation}
+ \label{debSeuil}
+ Q = C L H \sqrt{2 g H}
+\end{equation}
+
+o\`{u}:
+
+\begin{itemize}
+ \item $H$ est la hauteur d'eau à  l'amont du seuil (on néglige la vitesse d'approche) : $H = Z_{amont} - Z_{seuil}$;
+ \item $g$ la gravité;
+ \item $L$ la largeur du seuil;
+ \item $C$ un coefficient de débit qui dépend des effets de contraction et des approximations faites dans l'établissement de la formule (\ref{debSeuil}) : par exemple la non-prise en compte de la vitesse d'approche. Ce coefficient $C$ est à  déterminer par l'utilisateur et peut résulter d'un calage.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Pour plus de détails sur l'établissement de la formule précédente, nous renvoyons le lecteur à  \cite{CARLIER87}.
+
+\vspace{0.5cm}
+
+Tant que les seuils ne sont pas noyés, les lois sont identiques. Par contre, en cas d'ennoiement, les lois diffèrent selon le type de seuil (conditions et coefficient d'ennoiement).
+
+\paragraph{Seuil noyé\\}
+
+\hspace*{1cm}
+
+\begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.6,angle=270]{Snoy.eps}
+    \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Un seuil est dit noyé quand le niveau amont est influencé par le niveau aval. Pour un seuil mince ou épais noyé, le débit s'exprime de façon analogue au cas du seuil dénoyé. Seul le coefficient de débit $C$ est modifié pour prendre en compte l'influence de l'aval sur la débitance du seuil. On définit alors le coefficient d'ennoiement $K$ par :
+
+\begin{equation}
+ K = \frac{Q_{\mbox{noyé}}}{Q_{\mbox{dénoyé}}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Le débit sur le seuil noyé est donc donné par :
+
+\begin{equation}
+ \label{sny}
+ Q = K C L H \sqrt{2 g H}
+\end{equation}
+
+avec :
+\begin{itemize}
+ \item $K$ un coefficient dépendant du rapport $\frac{H_1}{H}$ et du type de seuil;
+ \item $H=Z_{amont}-Z_{seuil}$ et $H_1 = Z_{aval}-Z_{seuil}$;
+ \item $C$ le coefficient de débit défini en régime dénoyé.
+\end{itemize}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Seuil épais noyé
+
+\vspace{0.5cm}
+
+Pour un seuil épais, tant que $H_1$ est inférieur à  $0.8H$, le niveau aval n'influence pas le débit déversé (bien que la cote aval puisse être plus haute que la crête du déversoir). Ceci est dû à  l'existence d'une section critique au niveau du seuil.
+
+\vspace{0.5cm}
+
+Le coefficient d'ennoiement $K$ à  prendre en compte dans la formule (\ref{sny}) est celui classiquement utilisé pour les seuils épais. Il s'exprime de la façon suivante :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    K = -25 \left ( \frac{H_1}{H} \right )^2 + 40 \left ( \frac{H_1}{H} \right ) - 15 \quad \mbox{si } \frac{H_1}{H} > 0.8\\
+    \\
+    K = 1 \quad \mbox{si } \frac{H_1}{H} < 0.8
+  \end{array}
+ \right.
+\end{equation}
+
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ Seuil mince noyé
+
+\vspace{0.5cm}
+
+Pour un seuil mince :
+\begin{itemize}
+ \item si $H_1 < 0$, $K=1$ : le niveau aval n'influence pas le débit déversé;
+ \item si $H_1 > 0$, soit dès que la cote à  l'aval est supérieure à  la cote de crête du déversoir, on a :
+   \begin{equation}
+     K = \left ( 1 - \left ( \frac{H_1}{H} \right )^{1.5} \right )^{0.385}
+   \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+La figure \ref{CFEN} donne la forme des coefficients d'ennoiement en fonction de $\frac{H_1}{H}$ pour un seuil épais et mince.
+
+\begin{figure}
+    \begin{center}
+     \includegraphics[scale=0.5,angle=270]{CoefEn.eps}
+     \caption{Coefficient d'ennoiement}
+     \label{CFEN}
+    \end{center}
+\end{figure}
+
+\subsubsection{Bilan sur les singularités}
+
+\label{BilanSing}
+
+Dans une rivière,  on peut rencontrer des zones où les équations de Saint-Venant ne s'appliquent pas car les hypothèses de validité (répartition uniforme des vitesses le long de la verticale par exemple) ne sont plus valables. On peut citer, à  titre d'exemple, des écoulements au-dessus des seuils, de vannes etc...
+
+\vspace{0.5cm}
+
+Les relations entre la cote et le débit au droit des singularités sont alors décrites par des lois explicites. Les noyaux fluviaux du code \texttt{MASCARET} peuvent traiter les singularités telles que les seuils et des vannes dans la rivière lorsque ceux-ci sont explicitement modélisés par des lois hydrauliques reliant le débit transitant, les cotes amont et aval et les caractéristiques de la singularité. Un certain nombre de singularités sont implantées mais ne sont pas toutes disponibles pour le noyau transcritique. Dans le tableau suivant, sont résumées les différentes singularités et leur disponibilité vis à  vis des noyaux fluviaux et transcritiques.
+
+\vspace{0.5cm}
+
+Les singularités suivantes sont disponibles dans \texttt{MASCARET} :
+
+\begin{table}
+\centering
+\caption{Les possibilités de modélisation des singularités dans \texttt{MASCARET}}
+\vspace{0.2cm}
+\begin{tabular}{c|c|c}
+  \textbf{Type de singularités} & \textbf{Noyau fluvial} & \textbf{Noyau torrentiel} \\
+  \hline
+  $Q=f(Z_{av})$ & \textbf{oui} & non \\
+  $Q=f(Z_{am})$ & \textbf{oui} & \textbf{oui} \\
+  Loi de seuil épais & \textbf{oui} & \textbf{oui} \\
+  Loi de seuil mince & \textbf{oui} & \textbf{oui} \\
+  $Z_{am}=f(Q)$ & \textbf{oui} & non \\
+  $Z_{am}=f(Z_{av},Q)$ & \textbf{oui} & non \\
+  Seuil avec crête définie par points & \textbf{oui} & non \\
+  $Z_{am}=f(t)$ & \textbf{oui} & non \\
+  Loi de vannes & \textbf{oui} & non \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\subsubsection{Prise en compte de termes non hydrostatiques}
+
+Dans cette partie, nous nous intéressons à  une extension des équations de Saint-Venant qui considère certains des termes apparaissant lorqu'on prend en compte des effets non hydrostatiques. Le but est de modéliser des phénomènes physiques tels que les ondes de Favre. Les limites de validité de ce développement sont les écoulements fluviaux, transitoires avec faible pente de fond. Ces développements sont tirés des travaux de BRISTEAU et al. \cite{BRISTEAU11}.
+
+\vspace{0.5cm}
+
+Nous décrirons les termes supplémentaires et leur modélisation dans le cadre unique du schéma numérique du noyau transcritique \texttt{MASCARET} (Schéma volumes finis de type Roe). Ce développement peut également s'appliquer sans difficulté majeure au noyau \texttt{REZO} dédié aux écoulements fluviaux. Ce développement a fait l'objet d'une publication dans laquelle le lecteur trouvera toutes les justifications nécessaires \cite{BRISTEAU11}.
+
+\vspace{0.5cm}
+
+Les équations de Saint-Venant sont obtenues à  partir des équations de Navier-Stokes en faisant les hypohèses suivantes :
+\begin{itemize}
+  \item ondes longues (shallow-water);
+  \item pression hydrostatique;
+  \item répartition uniforme des vitesses selon la verticale.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Pour lever la contrainte de pression hydrostatique, nous allons partir des equations d'Euler à  2 dimensions $(x,z)$ o\`u $z$ représente l'axe vertical et $x$ l'axe horizontal. Pour des raisons de simplicité, nous négligeons le frottement. 
+
+\begin{eqnarray}
+\frac{\partial u}{\partial x} + \frac{\partial w}{\partial z} & = & 0 \label{eq:NS_2d1}\\
+\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} + w \frac{\partial u}{\partial z} + \frac{\partial p}{\partial x} & = & 0 \label{eq:NS_2d2}\\
+\frac{\partial w}{\partial t} + u\frac{\partial w}{\partial x} + w\frac{\partial w}{\partial z} + \frac{\partial p}{\partial z} & = & -g \label{eq:NS_2d3}
+\end{eqnarray}
+
+avec : $t> t_0, \quad x \in \mathbb{R}$ et $\quad Z_f(x) \leq z \leq Z(x,t)$
+
+\vspace{0.5cm}
+
+$Z(x,t)$ représente la cote de la surface libre, $\mathbf{u}=(u,w)^T$ le vecteur vitesse et $p$ la pression.
+
+\vspace{0.5cm}
+
+La hauteur d'eau est : $h = Z - Z_f$. 
+
+\vspace{0.5cm}
+
+Nous considérons la cote du fond $Z_f$ qui varie en fonction de l'abscisse curviligne de la rivière $x$.
+
+% \begin{figure}
+%  \begin{center}
+%   \includegraphics[scale=0.5,angle=0]{notations.eps}
+%   \caption{Notations: Hauteur d'eau $H(x,t)$, Surface libre $Z(x,t)$ et cote du fond $Z_f(x,t)$.}
+%   \label{fig:notations}
+%  \end{center}
+% \end{figure}
+
+\vspace{0.5cm}
+
+Le système d'équations (\ref{eq:NS_2d1}) à  (\ref{eq:NS_2d3}) est complété par les conditions limites suivantes. Définissons les normales à  la surface libre $n_s$ et au fond $n_f$ : 
+
+\begin{equation}
+ n_s = \frac{1}{\displaystyle  \sqrt{1 + \left( \frac{\partial z}{\partial x}\right)^2} }  \left( \begin{array}{c} -\frac{\partial z}{\partial x}\\ \\ 1 \end{array} \right)
+\end{equation}
+
+et
+
+\begin{equation}
+ n_f = \frac{1}{\displaystyle \sqrt{1 + \left( \frac{\partial z_f}{\partial x}\right)^2}}  \left(\begin{array}{c} -\frac{\partial z_f}{\partial x}\\ \\ 1 \end{array} \right)
+\end{equation}
+
+\paragraph{A la surface libre\\}
+
+\hspace*{1cm}
+
+
+La condition limite à  la surface libre est une condition cinématique classique :
+\begin{equation}
+\frac{\partial Z}{\partial t} + u_s \frac{\partial Z}{\partial x}
+-w_s = 0
+\label{eq:free_surf}
+\end{equation}
+o\`u l'indice $s$ indique la valeur de la quantité à  la surface libre.  
+
+\paragraph{Au fond\\}
+
+\hspace*{1cm}
+
+\begin{equation}
+ u_f \frac{\partial z_f}{\partial x}-w_f = 0
+ \label{eq:bottom}
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`u l'indice $f$ indique la variable considérée prise au fond.
+
+\vspace{0.5cm}
+
+Nous rappelons les notations pour les variables moyennées déjà  introduites à  la section précédente présentant le noyau transcritique de \texttt{MASCARET}.
+
+\begin{eqnarray}
+ S(x,t) & = & \int_{l_{1}}^{l_{2}}h(x,y,t)dy \\
+ \bar{u}(x,t) & = & \frac{1}{S(x,t)}\int_{l_{1}}^{l_{2}}\int_{z_{f}}^{Z(x,t)}u(x,y,z,t)dzdy \\
+ Q(x,t) & = & S(x,t)\bar{u}(x,t)
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+L'intégration de l'équation de continuité (\ref{eq:NS_2d1}) le long de la verticale en tenant compte des conditions aux limites définies par (\ref{eq:free_surf}) et (\ref{eq:bottom}) nous permet d'écrire : 
+
+\begin{equation}
+  \frac{\partial{S}}{\partial{t}}+\frac{\partial{Q}}{\partial{x}}=0 \label{eq:STV_1d1}\\
+\end{equation}
+
+\vspace{0.5cm}
+
+L'intégration de l'équation(\ref{eq:NS_2d3}) fournit l'expression de la pression.
+
+\begin{equation}
+  p(x,z,t)=p^{a}+g(Z(x,t)-z(x,t))+\int_{z}^{Z}{\frac{\partial{w}}{\partial{t}}}dz
+\end{equation}
+
+\vspace{0.5cm}
+
+Si on considère que la pression est hydrostatique, le terme dépendant de la vitesse verticale n'est pas pris en compte. On remarque également que seul le terme correspondant à  la dérivée temporelle de la vitesse verticale est pris en compte. Les termes convectifs sont ici négligés. L'intégration le long de la verticale de l'équation de quantité de mouvement (\ref{eq:NS_2d2}) fournit l'équation suivante :
+
+\begin{equation}
+\frac{\partial{Q}}{\partial{t}}+\frac{\partial{Q^{2}}}{\partial{x}}+g\int_{l_{1}}^{l_{2}}h\frac{\partial{Z}}{\partial{x}}dy+D =0
+\label{eq:mod_cont}
+\end{equation}
+
+\vspace{0.5cm}
+
+Les termes de frottement sont négligés. $D$ représente une partie des termes non hydrostatiques que nous allons développer dans le paragraphe suivant.
+
+\paragraph{Développement des termes non hydrostatiques\\}
+
+\hspace*{1cm}
+
+\begin{equation}
+D=\int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}{\frac{\partial}{\partial{x}}}\left(\int_{z}^{Z(t)}{\frac{\partial{w}}{\partial{t}}dz_{1}}\right)dz
+\label{eq:tnh}
+\end{equation}
+
+\vspace{0.5cm}
+
+La vitesse vérifie une divergence nulle (\ref{eq:NS_2d1}) et en utilisant les conditions d'imperméabilité au fond , on obtient :
+
+\begin{eqnarray}
+w(z) & = & - \frac{\partial}{\partial{x}}\int_{Z_{f}}^{z}udz_1\\
+     & = & - \frac{\partial}{\partial{x}}((z-Z_{f})\bar{u})\\
+     & = & -(z-Z_{f})\frac{\partial{\bar{u}}}{\partial{x}}+\frac{\partial{Z_f}}{\partial{x}}\bar{u}
+\label{expw}
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Si on reporte l'expression de la vitesse verticale dans le terme $D$ représentant une partie des termes non hydrosatiques, nous obtenons la relation suivante en appliquant la règle de Leibnitz à  (\ref{eq:tnh}) :
+
+\begin{equation}
+  D =\int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}\left(\int_{z}^{Z(t)}\frac{\partial^2{w}}{\partial{x}\partial{t}}dz+\left.\frac{\partial{Z(t)}}{\partial{x}}\frac{\partial{w}}{\partial{t}}\right|_s\right)dzdy
+\end{equation}
+ 
+\vspace{0.5cm}
+
+Le développement est continué en remplaà§ant la vitesse verticale par son expression (\ref{expw}).
+
+\begin{eqnarray} 
+  D & = & -\frac{1}{2}\int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}\left[{h}^2-{(z-Z_f)}^2\right]dzdy\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}} \\
+    & + & 2\int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}(Z-z)\frac{\partial{Z_f}}{\partial{x}}dzdy\frac{\partial^2{\bar{u}}}{\partial{x}\partial{t}} \nonumber \\
+    & + & \int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}(Z-z)\frac{\partial^2{Z_f}}{\partial^2{x}}dzdy\frac{\partial{\bar{u}}}{\partial{t}}\nonumber \\ & + & \int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}h\frac{\partial{Z}}{\partial{x}}dzdy\frac{\partial^2{\bar{u}}}{\partial{x}\partial{t}}\nonumber \\
+& + & \int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}\frac{\partial{Z}}{\partial{x}}\frac{\partial{Z_f}}{\partial{x}}dzdy\frac{\partial{\bar{u}}}{\partial{t}} \nonumber
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Tous les termes précédents ne seront pas pris en compte dans le noyau transcritique de \texttt{MASCARET}. Seul sera conservé le terme dominant o\`u n'apparaissent pas les gradients de fond :
+
+\begin{equation}
+-\frac{1}{2}\int_{l_{1}}^{l_{2}}\int_{Z_{f}}^{Z(t)}\left[{h}^2-{(z-z_f)}^2\right]dzdy\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}}
+\end{equation}
+
+\vspace{0.5cm}
+
+L'intégrale double s'exprime de la façon suivante : 
+\begin{eqnarray}
+&&=\int_{Z_{f}}^{Z(t)}\left(\int_{l_{1}(z)}^{l_{2}(z)}\left[h^2-(z-Z_f)^2dy\right]dy\right)dz\\
+&&=h^2\int_{Z_{f}}^{Z(t)}L(z)dz-\int_{Z_{f}}^{Z(t)}\left((z-Z_f)^2\right)L(z)dz\\
+&&=h^2S(x,t)-\int_{Z_{f}}^{Z(t)}\left((z-Z_f)^2\right)L(z)dz
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Dans le cas d'un canal à  section rectangulaire, le terme précédent est égal à  $\frac{2}{3}Lh^3$.
+
+\vspace{0.5cm}
+
+Pour modéliser une partie des termes hydrostatiques, on doit ajouter à  l'équation de quantité de mouvement du système de Saint-Venant :
+
+\begin{equation}
+  \left(h^2S(x,t)-\int_{Z_{f}}^{Z(t)}\left((z-Z_f)^2\right)L(z)dz\right)\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}}
+\end{equation} 
+
+\vspace{0.5cm}
+
+Le système des équations de Saint-Venant en 1D et géométrie réelle avec prise des termes hydrostatiques dominants lorsque les termes convectifs dans l'expression de la dérivée de la pression par rapport à  $z$ sont négligés (ce qui se justifie en faisant un développement asymptotique voir article \cite{BRISTEAU11}).
+
+\begin{eqnarray}
+\frac{\partial{S}}{\partial{t}}+\frac{\partial{Q}}{\partial{x}} & = & 0 \\
+\frac{\partial{Q}}{\partial{t}}+\frac{\partial{Q^{2}}}{\partial{x}}+g\int_{l_{1}}^{l_{2}}h\frac{\partial{Z}}{\partial{x}}dy+D(x,t,\frac{\partial}{\partial{t}},\frac{\partial}{\partial{x}}) & = & 0 \\
+D(x,t,\frac{\partial}{\partial{t}},\frac{\partial}{\partial{x}}) & = & \nonumber \\
+\left(h^2S(x,t)-\int_{Z_{f}}^{Z(t)}\left((z-Z_f)^2\right)L(z)dz\right)\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}} & & \nonumber \\
+& = & \alpha(x,t)\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}}
+\label{eq:1}
+\end{eqnarray}
+
+%
+%  Partie discrétisation numérique 
+%
+
+\paragraph{Discrétisation des termes non hydrostatiques\\}
+
+\hspace*{1cm}
+
+Cette partie est consacrée à  la discrétisation du système des équations de Saint-Venant avec ajout du terme défini $D$ par l'équation (\ref{eq:1}).
+
+\vspace{0.5cm}
+
+Nous y présentons comment à  partir d'un schéma numérique de type Volumes Finis, nous pouvons intégrer relativement simplement les termes non hydrostatiques qui font apparaître des dérivées temporelles et spatiales d'ordre 3 de la vitesse avec un schéma de type prédicteur-correcteur.
+
+\vspace{0.5cm}
+
+La partie prédiction correspond aux équations de Saint-Venant classiques et fournira la section mouillée au temps $t^n+1$ qui sera ensuite utilisée dans l'étape de correction sur le débit qui tient compte du terme non hydrostatique. Le schéma Volumes Finis développés dans le chapitre est utilisé pour la partie Saint-Venant des équations.
+
+\vspace{0.5cm}
+
+Nous supposons que le domaine de calcul est discrétisé par $I$ noeuds $x_i$.
+
+\vspace{0.5cm}
+
+Nous notons  $C_i$ la cellule de longueur $\Delta
+x_i=x_{i+1/2}-x_{i-1/2}$ avec $x_{i+1/2}=(x_i+x_{i+1})/2$ et $X_i$
+represente la valeur moyennée de $X$ sur la cellule $i$.
+
+\vspace{0.5cm}
+
+Pour la discrétisation temporelle, nous notons  $t^n = \sum_{k < n} \Delta t^k$ o\`u le pas de temps   $\Delta t^k$ sera précisé ultérieurement selon une condition de CFL.
+La partie conservative des équations est calculée en utilisant le schéma numérique volumes finis utilisé pour les écoulements transcritiques. Cette partie inclut également les termes sources (gradient de fond et frottement). 
+
+\vspace{0.5cm}
+
+Pour la clareté de l'exposé, nous rappelons la structure générale d'un schéma Volumes Finis explicite :
+
+\begin{equation}
+ \tilde{X}^{n+1}_i + D_i^{n+1} - \left(X^n_i + D_i^n\right) + \frac{\Delta t^n}{\Delta x_i}\left(F^n_{i+1/2} - F^n_{i-1/2}\right) = \Delta t^n S_b(X^n_i) \label{eq:model_dis}
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`u $\tilde{X}=(S,Q)$, le flux numérique  $F^n_{i+1/2}$ représente  $F^n_{i+1/2}$ le flux tel qu'il est calculé par le schéma de Roe pour les équations de Saint-Venant et $S_b$ les termes sources intégrant le frottement et les gradients de fond.
+L'étape précédente est l'étape de prédiction. La prise en compte du terme $\left(\alpha(x,t)\frac{\partial^3{\bar{u}}}{\partial{{x}^2}\partial{t}}\right)$ fera partie de l'étape de prédiction suivante.
+
+\vspace{0.5cm}
+
+Nous allons exprimer les dérivées spatiales de la vitesse à  l'aide de différences finies classiques au temps $t^{n+1}(resp.t^n)$.
+
+\begin{equation}
+\left(\alpha(x,t)\frac{\partial^2{\bar{u}}}{\partial{{x}^2}}\right)^{n+1}_{i}
+=\alpha(x_i,t^{n+1})\left(\frac{\displaystyle \left(\frac{\partial{u}}{\partial{x}}\right)_{i+\frac{1}{2}}-\left(\frac{\partial{u}}{\partial{x}}\right)_{i-\frac{1}{2}}}{\Delta{x_i}}\right)^{n+1}
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`u $u_i=\frac{Q_i}{S_i}$. Il nous reste à  évaluer $\left(\frac{\partial{u}}{\partial{x}}\right)_{i\mp\frac{1}{2}}$. Ce qui en différences finies nous donne en $i+\frac{1}{2}$ :
+
+\begin{equation}
+\frac{\displaystyle \frac{Q_{i+1}}{S_{i+1}}-\frac{Q_i}{S_i}}{\displaystyle \frac{\Delta{x_i}+\Delta{x_{i+1}}}{2}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Si nous regroupons les termes en $n+1$ et ceux en $n$, nous obtenons une matrice tridiagonale à  résoudre, l'inconnu du système est le vecteur $(Q,S)^T$ est donné par l'étape de prédiction. 
+
+
+\paragraph{Conditions aux limites\\}
+
+\hspace*{1cm}
+
+Pour les termes non hydrostatiques, nous avons à  imposer des conditions aux limites pour des termes tels que : 
+$$\frac{\partial^2 \overline{u}}{\partial x^2}\quad\mbox{et}\quad\frac{\partial \overline{u}}{\partial x}$$
+
+\vspace{0.5cm}
+
+Comme il n'y a pas de conditions naturelles, nous supposons :
+
+$$\frac{\partial \overline{u}}{\partial \underline{n}} = 0$$
+
+\vspace{0.5cm}
+
+$\underline{n}$ est la normale sortante à  l'entrée et à  la sortie du domaine.
+

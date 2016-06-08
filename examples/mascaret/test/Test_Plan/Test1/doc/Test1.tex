@@ -1,0 +1,159 @@
+\documentclass[a4paper,10pt]{article}
+
+%\usepackage[utf8]{inputenc} % pour les accents
+\usepackage[T1]{fontenc} % caracteres francais
+\usepackage{geometry} %les marges
+\usepackage[french]{babel} %langue principale
+\usepackage[dvips]{graphicx}
+\geometry{ hmargin=2cm, vmargin=2cm }
+
+\pagestyle{empty} %pas de numerotation de page
+
+%
+% Debut du document
+%
+\begin{document}
+
+\section*{FICHE DE VALIDATION DU LOGICIEL MASCARET V7P0}
+
+\subsection*{Validation du noyau de calcul permanent}
+
+\subsection*{\emph{Canal rectangulaire}}
+
+\subsection*{Numéro du cas test : 1}
+
+\subsection*{Auteur : N. Goutal}
+
+
+\vspace{1cm}
+
+\subsection*{Description}
+
+	Ce cas test a pour but de valider le noyau de calcul en régime permanent, dans le cas très simple d'un canal rectangulaire et de s'assurer qu'il n'y a pas de régression par rapport la version 5.0 de Mascaret. De plus, on a ajouté les comparaisons par rapport aux états convergés des noyaux transitoires. 
+
+\subsection*{Données géométriques}
+
+	Le calcul est réalisé dans un canal de pente $5.10^{-4}$, de longueur $10000\mbox{ }m$, dont chaque section en travers est de forme rectangulaire de $100\mbox{ } m$ de large. La géométrie du canal est décrite par deux profils en travers situés aux abscisses $X = 0\mbox{ }m$ et $X = 10000\mbox{ }m$.
+
+\subsection*{Données physiques}
+
+	Le coefficient de rugosité est choisi de manière à ce que la hauteur normale soit $h_{n} =5 \mbox{ } m$, d'où une valeur $K = 30.6\mbox{ }m^{1/3}.s^{-1}$(application de la formule de Strickler).
+	\vspace{0.3cm}
+\begin{itemize} 
+ \item Conditions aux limites : 
+ \begin{itemize}
+  \item cote imposée à l'aval égale à $3\mbox{ }m$
+  \item débit imposé à l'amont constant égal à $1000\mbox{ }m^3.s^{-1}$
+  \end{itemize}
+ \item Conditions initiales : aucune
+ 
+\end{itemize} 
+
+\subsection*{Données numériques}
+
+	Le domaine a été divisé en 100 mailles de longueur constante égale à $100\mbox{ }m$.
+Le pas de planimétrage est homogène dans le domaine égal à $1\mbox{ }m$ ($10$ pas de planimétrage). 
+
+\subsection*{Solution analytique}
+
+	En régime permanent, le système des équations de Saint-Venant se réduit à la seule équation dynamique, elle - même simplifiée. De plus, dans un canal uniforme, de géométrie rectangulaire, l'expression du terme de frottement se simplifie encore lorsque ce frottement est supposé nul sur les berges : le rayon hydraulique est alors égal à la hauteur d'eau $h$, c'est-à-dire la variable à déterminer. La solution s'écrit alors :
+
+\begin{equation}
+ \frac{\partial h}{\partial x}=\frac{I-\displaystyle \frac{q^2}{K^2h^{10/3}}}{1-\displaystyle \frac{q^2}{gh^3}}
+\end{equation}
+\\
+avec\\
+\\
+$I$ : 	pente du fond
+\\
+$K$ : 	coefficient de rugosité de Strickler
+\\
+$q$ : 	débit par unité de largeur
+\\
+
+Cette équation différentielle sur $h$ est résolue en employant une méthode de Runge-Kutta (pas de $10\mbox{ }m$, ordre 4).
+
+
+\subsection*{Résultats}
+
+	Le tableau suivant donne les hauteurs d'eau obtenues tous les $1000\mbox{ }m$  pour les noyaux permanent et transitoire transcritique implicite et explicite par convergence vers  un état permanent :
+	
+\begin{center}
+
+ \begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  &  &
+  \multicolumn{2}{|c|}{version Mascaret} &
+  \multicolumn{2}{|c|}{version Mascaret 7.0} \\
+   Abscisse $X$ en & Solution analytique &
+  \multicolumn{2}{|c|}{Noyau permanent} &
+  \multicolumn{2}{|c|}{Noyau transcritique} \\
+  
+   $m$ & $m$ &
+  
+  \multicolumn{1}{|c}{Version 7.0} &
+  \multicolumn{1}{c|}{Version 5.0} &
+  \multicolumn{1}{|c}{Implicite} &
+  \multicolumn{1}{c|}{Explicite} \\
+  
+  \hline
+  $0$ & $4.978$ & $4.977$ &$4.977$ & $4.972$ & $4.973$ \\
+  \hline
+  $1000$ & $4.968$ & $4.967$ & $4.967$ & $4.972$ & $4.973$ \\
+  \hline
+  $2000$ & $4.95$4 & $4.953$ & $4.953$ & $4.945$ & $4.947$ \\
+  \hline
+  $3000$ & $4.933$ & $4.932$ & $4.932$ & $4.932$ & $4.926$ \\
+  \hline
+  $4000$ & $4.903$ & $4.901$ & $4.901$ & $4.890$ & $4.895$ \\
+  \hline
+  $5000$ & $4.857$ & $4.855$ & $4.855$ & $4.843$ & $4.850$ \\
+  \hline
+  $6000$ & $4.787$ & $4.786$ & $4.786$ & $4.772$ & $4.782$ \\
+  \hline
+  $7000$ & $4.678$ & $4.677$ & $4.677$ & $4.663$ & $4.769$ \\
+  \hline
+  $8000$ & $4.495$ & $4.494$ & $4.494$ & $4.820$ & $4.509$ \\
+  \hline
+  $9000$ & $4.148$  & $4.147$ & $4.147$ & $4.140$ & $4.196$ \\
+  \hline
+  \end{tabular}
+ 
+\end{center}
+\vspace{0.3cm}
+
+	
+	Les figures~\ref{fig1} et \ref{fig2} suivantes comparent les lignes d'eau obtenues avec la version Mascaret 7.0 : noyau permanent et noyau transitoire transcritique explicite avec la solution analytique.  Ces résultats sont très bons. Les solutions analytiques et calculées avec les deux versions sont quasi-identiques. De plus, sur les figures, on peut voir qu'à l'amont, la solution calculée tend à se rapprocher asymptotiquement de la hauteur normale $h_{n}$ ce qui est théoriquement exact. 
+	
+	\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=270,width=15cm]{Figure1.eps}
+  \caption{Comparaison des hauteurs d'eau calculées}
+  \label{fig1}
+ \end{center}
+\end{figure}
+
+	\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=270,width=15cm]{figure2.eps}
+  \caption{Zoom de la figure précédente entre $9000$ et $10000\mbox{ } m$}
+  \label{fig2}
+ \end{center}
+\end{figure}
+
+
+\vspace{ 5cm}
+
+\subsection*{Conclusion}
+
+	Le traitement des termes de pesanteur - frottement dans l'équation dynamique est tout - à - fait satisfaisant. De plus, la comparaison  avec la solution analytique des solutions calculées montre  le bon comportement des 2 noyaux de calcul. Il peut donc être validé dans ce cas. 
+
+
+
+
+
+
+%
+% fin du document
+%
+\end{document}          

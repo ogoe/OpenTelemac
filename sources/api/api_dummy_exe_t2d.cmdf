@@ -708,6 +708,10 @@ files: declarations_special.f
   extens.f
   gracestop.f
 
+[stbtel]
+path: <root>|sources|stbtel
+files: interp.f
+
 [telemac2d]
 path: <root>|sources|telemac2d
 files: friction_def.f

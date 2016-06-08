@@ -1,0 +1,4120 @@
+
+                  *************************************
+                  *        SYSTEME MASCARET           *
+                  *         VERSION   8.1.0           *
+                  * DATE :  9 FEVRIER 2016, 13 H 53   *
+                  *************************************
+
+
+
+
+PARAMETRES GENERAUX
+-------------------
+
+Noyau de calcul utilise                         : MASCARET
+Nom du fichier des mots-cles                    : mascaret0.xcas
+Nom du fichier du programme principal           : princi.f
+Nom du fichier des bibliotheques                : mascaretV5P1.a damoV3P0.a
+Sauvegarde du modele                            : NON
+Presence de casier                              : NON
+Calcul auto des pertes de charge aux confluents : NON
+Perte automatique aux elargissements transcritique : OUI
+
+MODELISATION PHYSIQUE
+---------------------
+
+Modelisation du lit                               : Debord
+Frottement sur les parois verticales              : OUI
+Debordement progressif dans le lit majeur         : NON
+Debordement progressif dans les zones de stockage : NON
+Elevation de cote signalant l'arrivee du front    :        0.050
+Froude limite pour les conditions aux limites     :     1000.000
+Type de frottement                                : EXPLICITATION DU FROTTEMENT
+Implicitation du noyau transcritique              : EXPLICITATION DU SOLVEUR
+Interpolation lineaire des Coeff de frottement    : NON
+
+PARAMETRES TEMPORELS
+--------------------
+
+Pas de temps                           :        0.010
+Temps initial                          :        0.000
+Critere d'arret du calcul              : TEMPS MAXIMUM
+Duree maximale du calcul               :          6.0
+Pas de temps variable                  : OUI
+Nombre de Courant objectif             :        0.800
+
+IMPRESSION-RESULTATS
+--------------------
+
+Titre du calcul                        : Etude hydraulique1d                                                                                                                                                                                                                                            
+Impression de la geometrie             : NON
+Impression du planimetrage             : NON
+Impression du reseau                   : NON
+Impression des lois hydrauliques       : NON
+Impression de la ligne d'eau initiale  : NON
+Impression en phase calcul             : NON
+
+Premier pas de temps a stocker         :     1
+Pas de stockage                        :     1
+Pas d'impression                       :     1
+
+Fichier resultats                      : mascaret0.rub                                                                                                                                                                                                                                                  
+Post-processeur utilise                : RUBENS
+Format du fichier Resultats            : LIDONP
+Fichier listing                        : mascaret0.lis                                                                                                                                                                                                                                                  
+Fichier de reprise en ecriture         : mascaret0_ecr.rep                                                                                                                                                                                                                                              
+
+Ecart entre branches                   :        1.000
+
+GEOMETRIE
+---------
+
+Nom du fichier geometrie    : mascaret0.geo                                                                                                                                                                                                                                                  
+Format du fichier geometrie : FORMAT LIDO 3.0
+
+<<ATTENTION>> : DETECTION DE PAROIS VERTICALES SUR LESQUELLES
+ LE FROTTEMENT SERA PRIS EN COMPTE
+********************************************************************************
+
+   SUR LE PROFIL NUMERO       1   (Amont       )
+     ENTRE LES POINTS       1    2
+     ENTRE LES POINTS       2    3
+     ENTRE LES POINTS       4    5
+     ENTRE LES POINTS       5    6
+   SUR LE PROFIL NUMERO       2   (Aval        )
+     ENTRE LES POINTS       1    2
+     ENTRE LES POINTS       2    3
+     ENTRE LES POINTS       4    5
+     ENTRE LES POINTS       5    6
+
+LOIS HYDRAULIQUES
+-----------------
+
+Nombre de points   =   2
+Nombre de points   =   2
+Nombre de points   = ***
+Nombre de points   =   2
+
+MAILLAGE
+---------
+
+Mode de saisie du maillage : PAR CLAVIER
+Type de calcul du maillage : PAR SERIE AUX PROFILS
+
+Sauvegarde du maillage : NON
+
+PLANIMETRAGE
+------------
+
+Nombre de pas de planimetrage   : 250
+Nombre de zones de planimetrage :   1
+
+Zone :   1 Profil debut :     1 Profil fin :     2 Pas :        0.010
+
+CONDITIONS INITIALES
+--------------------
+
+Reprise de calcul                        : NON
+
+Presence d'une ligne d'eau initiale     : OUI
+Mode d'entree de la ligne d'eau         : PAR FICHIER
+Nom du fichier de la ligne d'eau        : mascaret0.lig                                                                                                                                                                                                                                                  
+Format du fichier de la ligne d'eau     : LIDO PERMANENT
+
+Option de stockage                   : A toutes les sections
+
+FROTTEMENT
+----------
+
+Nombre de zones de Frottement :   1
+
+Zones   1 Branche n0   1 Abscisse debut :        0.000 Abscisse fin :       30.000
+Coefficient mineur :      102.000 Coefficient majeur :     1000.000
+
+ZONES DE STOCKAGE
+-----------------
+
+Nombre de profil avec zones de stockage :   0
+
+
+ZONES SECHES
+------------
+
+Nombre de zones seches :   0
+
+
+SINGULARITES
+------------
+
+Nombre de singularites :   0
+
+PERTES DE CHARGE SINGULIERE
+---------------------------
+
+Nombre de pertes de charge singulieres :   0
+
+
+APPORTS
+-------
+
+Nombre d'apports :   0
+
+DEVERSOIRS
+----------
+
+Nombre de deversoirs :   0
+
+CONFLUENTS
+----------
+
+Nombre de confluents :   0
+
+=======================================================================================
+
+
+  MASSE D'EAU INITIALE DANS LE DOMAINE (HORS STOCKAGE) :     2.399301     M3
+
+=======================================================================================
+
+ NOMBRE DE COURANT MAXIMAL :  0.37 en X =      28.650    1
+ NOMBRE DE COURANT LOCAL : 
+
+=======================================================================================
+
+
+  MASSE D'EAU INITIALE DANS LE DOMAINE (HORS STOCKAGE) :     2.399301     M3
+
+=======================================================================================
+
+
+=======================================================================================
+
+
+  BILAN DE MASSE GLOBAL
+  ---------------------
+  MASSE D'EAU INITIALE (HORS STOCKAGE) :     2.399301     M3
+  MASSE D'EAU ENTREE AUX FRONTIERES    :     0.000000     M3
+  MASSE D'EAU SORTIE AUX FRONTIERES    :     0.000000     M3
+  MASSE D'EAU FINALE (HORS STOCKAGE)   :     2.399301     M3
+  ERREUR SUR LA MASSE D'EAU            :     0.000000     M3
+  ERREUR RELATIVE                      :     0.000000    
+
+=======================================================================================
+
+1
+ RESULTATS DU MODELE MASCAR EN NP =      1 T =          0.0
+ -------------------------------------------------------
+
+ DT =   0.01
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      2 T =          0.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      3 T =          0.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      4 T =          0.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      28.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      5 T =          0.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      6 T =          0.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      7 T =          0.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.81 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      8 T =          0.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =      9 T =          0.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.82 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     10 T =          0.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.82 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     11 T =          0.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     12 T =          0.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     13 T =          0.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      29.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     14 T =          0.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.78 en X =      29.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     15 T =          0.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =       1.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     16 T =          0.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     17 T =          0.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     18 T =          0.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     19 T =          0.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     20 T =          0.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     21 T =          0.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     22 T =          0.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.81 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     23 T =          0.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     24 T =          0.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =       1.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     25 T =          0.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     26 T =          0.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.82 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     27 T =          0.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     28 T =          0.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      30.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     29 T =          0.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.82 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     30 T =          0.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.81 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     31 T =          0.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     32 T =          0.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      29.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     33 T =          0.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      29.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     34 T =          0.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.78 en X =      29.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     35 T =          0.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       1.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     36 T =          0.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     37 T =          0.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     38 T =          0.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     39 T =          0.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     40 T =          0.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     41 T =          0.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     42 T =          0.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     43 T =          0.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     44 T =          0.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     45 T =          1.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     46 T =          1.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       0.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     47 T =          1.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   0
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     48 T =          1.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     49 T =          1.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.81 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     50 T =          1.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     51 T =          1.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.79 en X =      29.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     52 T =          1.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     53 T =          1.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     54 T =          1.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     55 T =          1.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     56 T =          1.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     57 T =          1.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     58 T =          1.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     59 T =          1.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     60 T =          1.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     61 T =          1.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     62 T =          1.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     63 T =          1.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     64 T =          1.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     65 T =          1.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     66 T =          1.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     67 T =          1.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     68 T =          1.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     69 T =          1.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     70 T =          1.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     71 T =          1.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     72 T =          1.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     73 T =          1.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     74 T =          1.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     75 T =          1.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     76 T =          1.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     77 T =          1.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     78 T =          1.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     79 T =          1.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     80 T =          1.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     81 T =          1.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     82 T =          1.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     83 T =          1.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     84 T =          1.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     85 T =          1.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     86 T =          1.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     87 T =          1.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     88 T =          1.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     89 T =          1.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     90 T =          1.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     91 T =          2.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       2.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     92 T =          2.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     93 T =          2.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   1
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =       3.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     94 T =          2.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      28.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     95 T =          2.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      28.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     96 T =          2.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     97 T =          2.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     98 T =          2.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =     99 T =          2.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    100 T =          2.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    101 T =          2.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    102 T =          2.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    103 T =          2.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    104 T =          2.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    105 T =          2.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    106 T =          2.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    107 T =          2.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    108 T =          2.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    109 T =          2.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    110 T =          2.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    111 T =          2.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    112 T =          2.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    113 T =          2.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    114 T =          2.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    115 T =          2.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    116 T =          2.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    117 T =          2.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    118 T =          2.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    119 T =          2.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    120 T =          2.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    121 T =          2.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    122 T =          2.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    123 T =          2.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    124 T =          2.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    125 T =          2.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    126 T =          2.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    127 T =          2.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    128 T =          2.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    129 T =          2.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    130 T =          2.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    131 T =          2.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      27.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    132 T =          2.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    133 T =          2.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    134 T =          2.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    135 T =          2.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    136 T =          2.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    137 T =          2.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    138 T =          3.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    139 T =          3.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   2
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    140 T =          3.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    141 T =          3.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    142 T =          3.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    143 T =          3.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    144 T =          3.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    145 T =          3.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    146 T =          3.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    147 T =          3.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    148 T =          3.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    149 T =          3.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    150 T =          3.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    151 T =          3.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    152 T =          3.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    153 T =          3.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    154 T =          3.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    155 T =          3.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    156 T =          3.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    157 T =          3.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    158 T =          3.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    159 T =          3.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    160 T =          3.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    161 T =          3.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    162 T =          3.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    163 T =          3.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    164 T =          3.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    165 T =          3.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    166 T =          3.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    167 T =          3.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    168 T =          3.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      26.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    169 T =          3.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    170 T =          3.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    171 T =          3.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    172 T =          3.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    173 T =          3.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    174 T =          3.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    175 T =          3.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    176 T =          3.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    177 T =          3.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    178 T =          3.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    179 T =          3.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    180 T =          3.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    181 T =          3.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    182 T =          3.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    183 T =          3.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    184 T =          3.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    185 T =          3.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    186 T =          4.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    187 T =          4.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   3
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    188 T =          4.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    189 T =          4.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    190 T =          4.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    191 T =          4.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    192 T =          4.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    193 T =          4.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    194 T =          4.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    195 T =          4.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    196 T =          4.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    197 T =          4.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    198 T =          4.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    199 T =          4.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    200 T =          4.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    201 T =          4.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    202 T =          4.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    203 T =          4.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    204 T =          4.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    205 T =          4.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      25.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    206 T =          4.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    207 T =          4.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    208 T =          4.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    209 T =          4.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    210 T =          4.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    211 T =          4.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    212 T =          4.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    213 T =          4.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    214 T =          4.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    215 T =          4.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    216 T =          4.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    217 T =          4.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    218 T =          4.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    219 T =          4.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    220 T =          4.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    221 T =          4.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    222 T =          4.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    223 T =          4.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    224 T =          4.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    225 T =          4.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    226 T =          4.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    227 T =          4.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    228 T =          4.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    229 T =          4.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    230 T =          4.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    231 T =          4.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    232 T =          4.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    233 T =          4.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    234 T =          5.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    235 T =          5.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   4
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    236 T =          5.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    237 T =          5.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    238 T =          5.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    239 T =          5.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    240 T =          5.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    241 T =          5.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    242 T =          5.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      24.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    243 T =          5.1
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    244 T =          5.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    245 T =          5.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    246 T =          5.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    247 T =          5.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.850    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    248 T =          5.2
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    249 T =          5.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.800    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    250 T =          5.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    251 T =          5.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.750    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    252 T =          5.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    253 T =          5.3
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.700    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    254 T =          5.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    255 T =          5.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.650    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    256 T =          5.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    257 T =          5.4
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.600    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    258 T =          5.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    259 T =          5.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.550    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    260 T =          5.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.500    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    261 T =          5.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    262 T =          5.5
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.450    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    263 T =          5.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    264 T =          5.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.400    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    265 T =          5.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    266 T =          5.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.350    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    267 T =          5.6
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    268 T =          5.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.300    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    269 T =          5.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    270 T =          5.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.250    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    271 T =          5.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    272 T =          5.7
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.200    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    273 T =          5.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.150    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    274 T =          5.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    275 T =          5.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.100    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    276 T =          5.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    277 T =          5.8
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.050    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    278 T =          5.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    279 T =          5.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      23.000    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    280 T =          5.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      22.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    281 T =          5.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      22.950    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    282 T =          5.9
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      22.900    1
+ NOMBRE DE COURANT LOCAL : 
+1
+ RESULTATS DU MODELE MASCAR EN NP =    283 T =          6.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+ NOMBRE DE COURANT MAXIMAL :  0.80 en X =      22.900    1
+ NOMBRE DE COURANT LOCAL : 
+
+=======================================================================================
+
+
+  BILAN DE MASSE GLOBAL
+  ---------------------
+  MASSE D'EAU INITIALE (HORS STOCKAGE) :     2.399301     M3
+  MASSE D'EAU ENTREE AUX FRONTIERES    :    0.2090820     M3
+  MASSE D'EAU SORTIE AUX FRONTIERES    :    0.5966127E-03 M3
+  MASSE D'EAU FINALE (HORS STOCKAGE)   :     2.608351     M3
+  ERREUR SUR LA MASSE D'EAU            :    0.5646381E-03 M3
+  ERREUR RELATIVE                      :    0.2164732E-03
+
+=======================================================================================
+
+1
+ RESULTATS DU MODELE MASCAR EN NP =    284 T =          6.0
+ -------------------------------------------------------
+
+ DT =   0.02
+ JOUR =    0 HEURE =   0 MINUTE =   0 SECONDE =   5
+
+RESULTATS CALCUL,DATE :  9 FEVRIER 2016, 13 H 53
+FICHIER RESULTAT MASCARET                                               
+----------------------------------------------------------------------- 
+ IMAX  =  601 NBBIEF=    1
+ I1,I2 =    1  601
+ X
+      0.00      0.05      0.10      0.15      0.20
+      0.25      0.30      0.35      0.40      0.45
+      0.50      0.55      0.60      0.65      0.70
+      0.75      0.80      0.85      0.90      0.95
+      1.00      1.05      1.10      1.15      1.20
+      1.25      1.30      1.35      1.40      1.45
+      1.50      1.55      1.60      1.65      1.70
+      1.75      1.80      1.85      1.90      1.95
+      2.00      2.05      2.10      2.15      2.20
+      2.25      2.30      2.35      2.40      2.45
+      2.50      2.55      2.60      2.65      2.70
+      2.75      2.80      2.85      2.90      2.95
+      3.00      3.05      3.10      3.15      3.20
+      3.25      3.30      3.35      3.40      3.45
+      3.50      3.55      3.60      3.65      3.70
+      3.75      3.80      3.85      3.90      3.95
+      4.00      4.05      4.10      4.15      4.20
+      4.25      4.30      4.35      4.40      4.45
+      4.50      4.55      4.60      4.65      4.70
+      4.75      4.80      4.85      4.90      4.95
+      5.00      5.05      5.10      5.15      5.20
+      5.25      5.30      5.35      5.40      5.45
+      5.50      5.55      5.60      5.65      5.70
+      5.75      5.80      5.85      5.90      5.95
+      6.00      6.05      6.10      6.15      6.20
+      6.25      6.30      6.35      6.40      6.45
+      6.50      6.55      6.60      6.65      6.70
+      6.75      6.80      6.85      6.90      6.95
+      7.00      7.05      7.10      7.15      7.20
+      7.25      7.30      7.35      7.40      7.45
+      7.50      7.55      7.60      7.65      7.70
+      7.75      7.80      7.85      7.90      7.95
+      8.00      8.05      8.10      8.15      8.20
+      8.25      8.30      8.35      8.40      8.45
+      8.50      8.55      8.60      8.65      8.70
+      8.75      8.80      8.85      8.90      8.95
+      9.00      9.05      9.10      9.15      9.20
+      9.25      9.30      9.35      9.40      9.45
+      9.50      9.55      9.60      9.65      9.70
+      9.75      9.80      9.85      9.90      9.95
+     10.00     10.05     10.10     10.15     10.20
+     10.25     10.30     10.35     10.40     10.45
+     10.50     10.55     10.60     10.65     10.70
+     10.75     10.80     10.85     10.90     10.95
+     11.00     11.05     11.10     11.15     11.20
+     11.25     11.30     11.35     11.40     11.45
+     11.50     11.55     11.60     11.65     11.70
+     11.75     11.80     11.85     11.90     11.95
+     12.00     12.05     12.10     12.15     12.20
+     12.25     12.30     12.35     12.40     12.45
+     12.50     12.55     12.60     12.65     12.70
+     12.75     12.80     12.85     12.90     12.95
+     13.00     13.05     13.10     13.15     13.20
+     13.25     13.30     13.35     13.40     13.45
+     13.50     13.55     13.60     13.65     13.70
+     13.75     13.80     13.85     13.90     13.95
+     14.00     14.05     14.10     14.15     14.20
+     14.25     14.30     14.35     14.40     14.45
+     14.50     14.55     14.60     14.65     14.70
+     14.75     14.80     14.85     14.90     14.95
+     15.00     15.05     15.10     15.15     15.20
+     15.25     15.30     15.35     15.40     15.45
+     15.50     15.55     15.60     15.65     15.70
+     15.75     15.80     15.85     15.90     15.95
+     16.00     16.05     16.10     16.15     16.20
+     16.25     16.30     16.35     16.40     16.45
+     16.50     16.55     16.60     16.65     16.70
+     16.75     16.80     16.85     16.90     16.95
+     17.00     17.05     17.10     17.15     17.20
+     17.25     17.30     17.35     17.40     17.45
+     17.50     17.55     17.60     17.65     17.70
+     17.75     17.80     17.85     17.90     17.95
+     18.00     18.05     18.10     18.15     18.20
+     18.25     18.30     18.35     18.40     18.45
+     18.50     18.55     18.60     18.65     18.70
+     18.75     18.80     18.85     18.90     18.95
+     19.00     19.05     19.10     19.15     19.20
+     19.25     19.30     19.35     19.40     19.45
+     19.50     19.55     19.60     19.65     19.70
+     19.75     19.80     19.85     19.90     19.95
+     20.00     20.05     20.10     20.15     20.20
+     20.25     20.30     20.35     20.40     20.45
+     20.50     20.55     20.60     20.65     20.70
+     20.75     20.80     20.85     20.90     20.95
+     21.00     21.05     21.10     21.15     21.20
+     21.25     21.30     21.35     21.40     21.45
+     21.50     21.55     21.60     21.65     21.70
+     21.75     21.80     21.85     21.90     21.95
+     22.00     22.05     22.10     22.15     22.20
+     22.25     22.30     22.35     22.40     22.45
+     22.50     22.55     22.60     22.65     22.70
+     22.75     22.80     22.85     22.90     22.95
+     23.00     23.05     23.10     23.15     23.20
+     23.25     23.30     23.35     23.40     23.45
+     23.50     23.55     23.60     23.65     23.70
+     23.75     23.80     23.85     23.90     23.95
+     24.00     24.05     24.10     24.15     24.20
+     24.25     24.30     24.35     24.40     24.45
+     24.50     24.55     24.60     24.65     24.70
+     24.75     24.80     24.85     24.90     24.95
+     25.00     25.05     25.10     25.15     25.20
+     25.25     25.30     25.35     25.40     25.45
+     25.50     25.55     25.60     25.65     25.70
+     25.75     25.80     25.85     25.90     25.95
+     26.00     26.05     26.10     26.15     26.20
+     26.25     26.30     26.35     26.40     26.45
+     26.50     26.55     26.60     26.65     26.70
+     26.75     26.80     26.85     26.90     26.95
+     27.00     27.05     27.10     27.15     27.20
+     27.25     27.30     27.35     27.40     27.45
+     27.50     27.55     27.60     27.65     27.70
+     27.75     27.80     27.85     27.90     27.95
+     28.00     28.05     28.10     28.15     28.20
+     28.25     28.30     28.35     28.40     28.45
+     28.50     28.55     28.60     28.65     28.70
+     28.75     28.80     28.85     28.90     28.95
+     29.00     29.05     29.10     29.15     29.20
+     29.25     29.30     29.35     29.40     29.45
+     29.50     29.55     29.60     29.65     29.70
+     29.75     29.80     29.85     29.90     29.95
+     30.00
+ ZREF
+   -0.4000   -0.4000   -0.4000   -0.4001   -0.4001
+   -0.4001   -0.4001   -0.4001   -0.4002   -0.4002
+   -0.4002   -0.4002   -0.4002   -0.4003   -0.4003
+   -0.4003   -0.4003   -0.4003   -0.4004   -0.4004
+   -0.4004   -0.4004   -0.4004   -0.4005   -0.4005
+   -0.4005   -0.4005   -0.4005   -0.4006   -0.4006
+   -0.4006   -0.4006   -0.4006   -0.4007   -0.4007
+   -0.4007   -0.4007   -0.4007   -0.4008   -0.4008
+   -0.4008   -0.4008   -0.4008   -0.4009   -0.4009
+   -0.4009   -0.4009   -0.4009   -0.4010   -0.4010
+   -0.4010   -0.4010   -0.4010   -0.4011   -0.4011
+   -0.4011   -0.4011   -0.4011   -0.4012   -0.4012
+   -0.4012   -0.4012   -0.4012   -0.4013   -0.4013
+   -0.4013   -0.4013   -0.4013   -0.4014   -0.4014
+   -0.4014   -0.4014   -0.4014   -0.4015   -0.4015
+   -0.4015   -0.4015   -0.4015   -0.4016   -0.4016
+   -0.4016   -0.4016   -0.4016   -0.4017   -0.4017
+   -0.4017   -0.4017   -0.4017   -0.4018   -0.4018
+   -0.4018   -0.4018   -0.4018   -0.4019   -0.4019
+   -0.4019   -0.4019   -0.4019   -0.4020   -0.4020
+   -0.4020   -0.4020   -0.4020   -0.4021   -0.4021
+   -0.4021   -0.4021   -0.4021   -0.4022   -0.4022
+   -0.4022   -0.4022   -0.4022   -0.4023   -0.4023
+   -0.4023   -0.4023   -0.4023   -0.4024   -0.4024
+   -0.4024   -0.4024   -0.4024   -0.4025   -0.4025
+   -0.4025   -0.4025   -0.4025   -0.4026   -0.4026
+   -0.4026   -0.4026   -0.4026   -0.4027   -0.4027
+   -0.4027   -0.4027   -0.4027   -0.4028   -0.4028
+   -0.4028   -0.4028   -0.4028   -0.4029   -0.4029
+   -0.4029   -0.4029   -0.4029   -0.4030   -0.4030
+   -0.4030   -0.4030   -0.4030   -0.4031   -0.4031
+   -0.4031   -0.4031   -0.4031   -0.4032   -0.4032
+   -0.4032   -0.4032   -0.4032   -0.4033   -0.4033
+   -0.4033   -0.4033   -0.4033   -0.4034   -0.4034
+   -0.4034   -0.4034   -0.4034   -0.4035   -0.4035
+   -0.4035   -0.4035   -0.4035   -0.4036   -0.4036
+   -0.4036   -0.4036   -0.4036   -0.4037   -0.4037
+   -0.4037   -0.4037   -0.4037   -0.4038   -0.4038
+   -0.4038   -0.4038   -0.4038   -0.4039   -0.4039
+   -0.4039   -0.4039   -0.4039   -0.4040   -0.4040
+   -0.4040   -0.4040   -0.4040   -0.4041   -0.4041
+   -0.4041   -0.4041   -0.4041   -0.4042   -0.4042
+   -0.4042   -0.4042   -0.4042   -0.4043   -0.4043
+   -0.4043   -0.4043   -0.4043   -0.4044   -0.4044
+   -0.4044   -0.4044   -0.4044   -0.4045   -0.4045
+   -0.4045   -0.4045   -0.4045   -0.4046   -0.4046
+   -0.4046   -0.4046   -0.4046   -0.4047   -0.4047
+   -0.4047   -0.4047   -0.4047   -0.4048   -0.4048
+   -0.4048   -0.4048   -0.4048   -0.4049   -0.4049
+   -0.4049   -0.4049   -0.4049   -0.4050   -0.4050
+   -0.4050   -0.4050   -0.4050   -0.4051   -0.4051
+   -0.4051   -0.4051   -0.4051   -0.4052   -0.4052
+   -0.4052   -0.4052   -0.4052   -0.4053   -0.4053
+   -0.4053   -0.4053   -0.4053   -0.4054   -0.4054
+   -0.4054   -0.4054   -0.4054   -0.4055   -0.4055
+   -0.4055   -0.4055   -0.4055   -0.4056   -0.4056
+   -0.4056   -0.4056   -0.4056   -0.4057   -0.4057
+   -0.4057   -0.4057   -0.4057   -0.4058   -0.4058
+   -0.4058   -0.4058   -0.4058   -0.4059   -0.4059
+   -0.4059   -0.4059   -0.4059   -0.4060   -0.4060
+   -0.4060   -0.4060   -0.4060   -0.4061   -0.4061
+   -0.4061   -0.4061   -0.4061   -0.4062   -0.4062
+   -0.4062   -0.4062   -0.4062   -0.4063   -0.4063
+   -0.4063   -0.4063   -0.4063   -0.4064   -0.4064
+   -0.4064   -0.4064   -0.4064   -0.4065   -0.4065
+   -0.4065   -0.4065   -0.4065   -0.4066   -0.4066
+   -0.4066   -0.4066   -0.4066   -0.4067   -0.4067
+   -0.4067   -0.4067   -0.4067   -0.4068   -0.4068
+   -0.4068   -0.4068   -0.4068   -0.4069   -0.4069
+   -0.4069   -0.4069   -0.4069   -0.4070   -0.4070
+   -0.4070   -0.4070   -0.4070   -0.4071   -0.4071
+   -0.4071   -0.4071   -0.4071   -0.4072   -0.4072
+   -0.4072   -0.4072   -0.4072   -0.4073   -0.4073
+   -0.4073   -0.4073   -0.4073   -0.4074   -0.4074
+   -0.4074   -0.4074   -0.4074   -0.4075   -0.4075
+   -0.4075   -0.4075   -0.4075   -0.4076   -0.4076
+   -0.4076   -0.4076   -0.4076   -0.4077   -0.4077
+   -0.4077   -0.4077   -0.4077   -0.4078   -0.4078
+   -0.4078   -0.4078   -0.4078   -0.4079   -0.4079
+   -0.4079   -0.4079   -0.4079   -0.4080   -0.4080
+   -0.4080   -0.4080   -0.4080   -0.4081   -0.4081
+   -0.4081   -0.4081   -0.4081   -0.4082   -0.4082
+   -0.4082   -0.4082   -0.4082   -0.4083   -0.4083
+   -0.4083   -0.4083   -0.4083   -0.4084   -0.4084
+   -0.4084   -0.4084   -0.4084   -0.4085   -0.4085
+   -0.4085   -0.4085   -0.4085   -0.4086   -0.4086
+   -0.4086   -0.4086   -0.4086   -0.4087   -0.4087
+   -0.4087   -0.4087   -0.4087   -0.4088   -0.4088
+   -0.4088   -0.4088   -0.4088   -0.4089   -0.4089
+   -0.4089   -0.4089   -0.4089   -0.4090   -0.4090
+   -0.4090   -0.4090   -0.4090   -0.4091   -0.4091
+   -0.4091   -0.4091   -0.4091   -0.4092   -0.4092
+   -0.4092   -0.4092   -0.4092   -0.4093   -0.4093
+   -0.4093   -0.4093   -0.4093   -0.4094   -0.4094
+   -0.4094   -0.4094   -0.4094   -0.4095   -0.4095
+   -0.4095   -0.4095   -0.4095   -0.4096   -0.4096
+   -0.4096   -0.4096   -0.4096   -0.4097   -0.4097
+   -0.4097   -0.4097   -0.4097   -0.4098   -0.4098
+   -0.4098   -0.4098   -0.4098   -0.4099   -0.4099
+   -0.4099   -0.4099   -0.4099   -0.4100   -0.4100
+   -0.4100   -0.4100   -0.4100   -0.4101   -0.4101
+   -0.4101   -0.4101   -0.4101   -0.4102   -0.4102
+   -0.4102   -0.4102   -0.4102   -0.4103   -0.4103
+   -0.4103   -0.4103   -0.4103   -0.4104   -0.4104
+   -0.4104   -0.4104   -0.4104   -0.4105   -0.4105
+   -0.4105   -0.4105   -0.4105   -0.4106   -0.4106
+   -0.4106   -0.4106   -0.4106   -0.4107   -0.4107
+   -0.4107   -0.4107   -0.4107   -0.4108   -0.4108
+   -0.4108   -0.4108   -0.4108   -0.4109   -0.4109
+   -0.4109   -0.4109   -0.4109   -0.4110   -0.4110
+   -0.4110   -0.4110   -0.4110   -0.4111   -0.4111
+   -0.4111   -0.4111   -0.4111   -0.4112   -0.4112
+   -0.4112   -0.4112   -0.4112   -0.4113   -0.4113
+   -0.4113   -0.4113   -0.4113   -0.4114   -0.4114
+   -0.4114   -0.4114   -0.4114   -0.4115   -0.4115
+   -0.4115   -0.4115   -0.4115   -0.4116   -0.4116
+   -0.4116   -0.4116   -0.4116   -0.4117   -0.4117
+   -0.4117   -0.4117   -0.4117   -0.4118   -0.4118
+   -0.4118   -0.4118   -0.4118   -0.4119   -0.4119
+   -0.4119   -0.4119   -0.4119   -0.4120   -0.4120
+   -0.4120
+ Z
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.201    -0.201    -0.201
+    -0.201    -0.201    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.202    -0.202    -0.202    -0.202
+    -0.202    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.203    -0.203
+    -0.203    -0.203    -0.203    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.204    -0.204    -0.204    -0.204
+    -0.204    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.205    -0.205    -0.205    -0.205
+    -0.205    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.206    -0.206    -0.206    -0.206
+    -0.206    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.207    -0.207    -0.207    -0.207
+    -0.207    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.208    -0.208    -0.208    -0.208
+    -0.208    -0.207    -0.207    -0.206    -0.206
+    -0.205    -0.204    -0.202    -0.200    -0.197
+    -0.194    -0.190    -0.185    -0.178    -0.170
+    -0.160    -0.149    -0.137    -0.125    -0.114
+    -0.104    -0.098    -0.095    -0.096    -0.100
+    -0.106    -0.113    -0.121    -0.129    -0.136
+    -0.143    -0.149    -0.154    -0.158    -0.160
+    -0.162    -0.163    -0.163    -0.162    -0.161
+    -0.159    -0.156    -0.153    -0.149    -0.146
+    -0.143    -0.140    -0.137    -0.135    -0.134
+    -0.133    -0.133    -0.134    -0.135    -0.137
+    -0.139    -0.140    -0.142    -0.144    -0.145
+    -0.147    -0.147    -0.148    -0.148    -0.148
+    -0.148    -0.147    -0.146    -0.146    -0.145
+    -0.144    -0.143    -0.143    -0.142    -0.142
+    -0.142    -0.142    -0.142    -0.142    -0.142
+    -0.143    -0.143    -0.144    -0.144    -0.144
+    -0.144    -0.145    -0.145    -0.145    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.144    -0.144    -0.144    -0.144    -0.144
+    -0.143
+ QMIN
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.036     0.036
+     0.036     0.036     0.036     0.036     0.036
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.034     0.034     0.034
+     0.033     0.033     0.032     0.031     0.029
+     0.028     0.026     0.023     0.020     0.016
+     0.011     0.006    -0.000    -0.007    -0.013
+    -0.018    -0.022    -0.025    -0.025    -0.024
+    -0.021    -0.017    -0.013    -0.009    -0.005
+    -0.001     0.003     0.005     0.007     0.009
+     0.010     0.011     0.011     0.011     0.010
+     0.009     0.008     0.006     0.004     0.003
+     0.001    -0.001    -0.002    -0.003    -0.004
+    -0.005    -0.005    -0.005    -0.004    -0.003
+    -0.003    -0.002    -0.001     0.000     0.001
+     0.002     0.002     0.003     0.003     0.003
+     0.003     0.002     0.002     0.002     0.001
+     0.001     0.000     0.000    -0.000    -0.000
+    -0.000    -0.000    -0.000    -0.000    -0.000
+     0.000     0.000     0.000     0.001     0.001
+     0.001     0.001     0.001     0.001     0.001
+     0.001     0.001     0.001     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000    -0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000
+ QMAJ
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000
+ KMIN
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.      102.      102.      102.      102.
+      102.
+ KMAJ
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.     1000.     1000.     1000.     1000.
+     1000.
+ FR
+   0.31391   0.31394   0.31397   0.31403   0.31410
+   0.31417   0.31423   0.31430   0.31437   0.31443
+   0.31450   0.31457   0.31464   0.31471   0.31478
+   0.31485   0.31492   0.31499   0.31505   0.31510
+   0.31515   0.31519   0.31522   0.31524   0.31525
+   0.31524   0.31522   0.31518   0.31513   0.31507
+   0.31500   0.31491   0.31482   0.31472   0.31462
+   0.31451   0.31440   0.31430   0.31420   0.31410
+   0.31402   0.31394   0.31387   0.31382   0.31378
+   0.31375   0.31373   0.31373   0.31374   0.31376
+   0.31379   0.31383   0.31388   0.31393   0.31399
+   0.31406   0.31413   0.31420   0.31427   0.31435
+   0.31443   0.31451   0.31459   0.31467   0.31476
+   0.31484   0.31493   0.31501   0.31510   0.31517
+   0.31525   0.31532   0.31537   0.31542   0.31546
+   0.31548   0.31550   0.31549   0.31548   0.31545
+   0.31541   0.31536   0.31530   0.31523   0.31516
+   0.31508   0.31501   0.31493   0.31485   0.31478
+   0.31472   0.31466   0.31462   0.31458   0.31455
+   0.31454   0.31453   0.31454   0.31455   0.31458
+   0.31461   0.31465   0.31470   0.31475   0.31481
+   0.31486   0.31492   0.31499   0.31505   0.31511
+   0.31518   0.31525   0.31532   0.31539   0.31546
+   0.31553   0.31560   0.31567   0.31574   0.31581
+   0.31587   0.31592   0.31597   0.31600   0.31603
+   0.31604   0.31604   0.31602   0.31599   0.31594
+   0.31588   0.31580   0.31571   0.31562   0.31551
+   0.31540   0.31529   0.31517   0.31506   0.31495
+   0.31484   0.31474   0.31465   0.31458   0.31451
+   0.31446   0.31442   0.31439   0.31438   0.31438
+   0.31439   0.31441   0.31444   0.31448   0.31453
+   0.31458   0.31464   0.31470   0.31477   0.31485
+   0.31492   0.31501   0.31509   0.31518   0.31528
+   0.31537   0.31548   0.31558   0.31568   0.31579
+   0.31589   0.31598   0.31607   0.31615   0.31622
+   0.31627   0.31631   0.31633   0.31634   0.31633
+   0.31630   0.31626   0.31620   0.31614   0.31606
+   0.31597   0.31588   0.31579   0.31570   0.31562
+   0.31554   0.31547   0.31541   0.31536   0.31533
+   0.31531   0.31530   0.31531   0.31533   0.31536
+   0.31541   0.31546   0.31553   0.31559   0.31567
+   0.31574   0.31582   0.31590   0.31597   0.31605
+   0.31612   0.31620   0.31627   0.31633   0.31640
+   0.31647   0.31653   0.31659   0.31664   0.31669
+   0.31673   0.31676   0.31679   0.31680   0.31680
+   0.31678   0.31675   0.31670   0.31664   0.31656
+   0.31646   0.31635   0.31623   0.31610   0.31596
+   0.31582   0.31568   0.31553   0.31539   0.31526
+   0.31514   0.31503   0.31493   0.31485   0.31479
+   0.31474   0.31471   0.31470   0.31471   0.31472
+   0.31476   0.31480   0.31486   0.31492   0.31499
+   0.31506   0.31513   0.31521   0.31529   0.31536
+   0.31544   0.31551   0.31559   0.31566   0.31573
+   0.31580   0.31587   0.31593   0.31600   0.31606
+   0.31611   0.31616   0.31620   0.31622   0.31624
+   0.31624   0.31623   0.31620   0.31616   0.31609
+   0.31602   0.31592   0.31582   0.31570   0.31557
+   0.31544   0.31530   0.31516   0.31502   0.31489
+   0.31477   0.31465   0.31455   0.31446   0.31438
+   0.31433   0.31429   0.31427   0.31426   0.31427
+   0.31430   0.31433   0.31439   0.31445   0.31451
+   0.31459   0.31467   0.31475   0.31483   0.31491
+   0.31499   0.31507   0.31515   0.31523   0.31531
+   0.31538   0.31545   0.31552   0.31559   0.31565
+   0.31571   0.31576   0.31580   0.31583   0.31585
+   0.31585   0.31584   0.31582   0.31578   0.31572
+   0.31565   0.31556   0.31545   0.31534   0.31521
+   0.31508   0.31494   0.31480   0.31466   0.31452
+   0.31440   0.31428   0.31417   0.31408   0.31400
+   0.31394   0.31390   0.31388   0.31387   0.31388
+   0.31390   0.31394   0.31399   0.31405   0.31412
+   0.31419   0.31427   0.31435   0.31443   0.31451
+   0.31459   0.31467   0.31475   0.31483   0.31490
+   0.31497   0.31504   0.31511   0.31517   0.31523
+   0.31528   0.31533   0.31537   0.31540   0.31542
+   0.31543   0.31542   0.31539   0.31536   0.31530
+   0.31523   0.31514   0.31504   0.31492   0.31479
+   0.31466   0.31452   0.31438   0.31423   0.31409
+   0.31396   0.31384   0.31373   0.31363   0.31354
+   0.31348   0.31343   0.31339   0.31338   0.31338
+   0.31339   0.31342   0.31347   0.31352   0.31358
+   0.31365   0.31372   0.31380   0.31387   0.31395
+   0.31403   0.31410   0.31418   0.31425   0.31432
+   0.31438   0.31445   0.31451   0.31456   0.31460
+   0.31463   0.31465   0.31465   0.31462   0.31456
+   0.31446   0.31431   0.31410   0.31381   0.31342
+   0.31292   0.31226   0.31141   0.31031   0.30891
+   0.30711   0.30480   0.30185   0.29807   0.29324
+   0.28708   0.27926   0.26937   0.25697   0.24157
+   0.22270   0.19995   0.17312   0.14231   0.10807
+   0.07146   0.03406   0.00226   0.03556   0.06419
+   0.08691   0.10299   0.11213   0.11443   0.11029
+   0.10040   0.08574   0.06750   0.04698   0.02555
+   0.00444   0.01526   0.03268   0.04721   0.05848
+   0.06629   0.07064   0.07165   0.06956   0.06470
+   0.05750   0.04845   0.03810   0.02704   0.01587
+   0.00518   0.00453   0.01282   0.01937   0.02398
+   0.02659   0.02724   0.02608   0.02337   0.01943
+   0.01461   0.00929   0.00384   0.00140   0.00614
+   0.01015   0.01326   0.01539   0.01651   0.01667
+   0.01597   0.01453   0.01254   0.01018   0.00765
+   0.00513   0.00279   0.00076   0.00085   0.00199
+   0.00263   0.00279   0.00252   0.00189   0.00099
+   0.00007   0.00120   0.00230   0.00329   0.00411
+   0.00470   0.00506   0.00519   0.00509   0.00482
+   0.00440   0.00389   0.00333   0.00279   0.00229
+   0.00186   0.00153   0.00130   0.00117   0.00113
+   0.00117   0.00126   0.00138   0.00151   0.00163
+   0.00173   0.00179   0.00182   0.00182   0.00178
+   0.00173   0.00166   0.00159   0.00152   0.00147
+   0.00143   0.00141   0.00142   0.00143   0.00146
+   0.00150   0.00154   0.00158   0.00162   0.00164
+   0.00166   0.00166   0.00165   0.00163   0.00160
+   0.00156   0.00152   0.00147   0.00141   0.00134
+   0.00128   0.00121   0.00113   0.00106   0.00098
+   0.00090   0.00082   0.00074   0.00066   0.00058
+   0.00050   0.00043   0.00036   0.00029   0.00023
+   0.00018   0.00013   0.00010   0.00007   0.00004
+   0.00001   0.00000   0.00002   0.00011   0.00031
+   0.00066   0.00116   0.00174   0.00224   0.00248
+   0.00000
+ VMIN
+    0.4390    0.4390    0.4391    0.4391    0.4392
+    0.4393    0.4394    0.4395    0.4396    0.4397
+    0.4398    0.4398    0.4399    0.4400    0.4401
+    0.4402    0.4403    0.4404    0.4404    0.4405
+    0.4406    0.4406    0.4407    0.4407    0.4407
+    0.4407    0.4406    0.4406    0.4405    0.4405
+    0.4404    0.4403    0.4402    0.4400    0.4399
+    0.4398    0.4396    0.4395    0.4394    0.4393
+    0.4392    0.4391    0.4390    0.4389    0.4389
+    0.4388    0.4388    0.4388    0.4388    0.4389
+    0.4389    0.4390    0.4390    0.4391    0.4392
+    0.4392    0.4393    0.4394    0.4395    0.4396
+    0.4397    0.4398    0.4399    0.4401    0.4402
+    0.4403    0.4404    0.4405    0.4406    0.4407
+    0.4408    0.4409    0.4410    0.4411    0.4411
+    0.4412    0.4412    0.4412    0.4412    0.4412
+    0.4412    0.4411    0.4411    0.4410    0.4409
+    0.4408    0.4408    0.4407    0.4406    0.4405
+    0.4405    0.4404    0.4404    0.4403    0.4403
+    0.4403    0.4403    0.4403    0.4403    0.4404
+    0.4404    0.4405    0.4405    0.4406    0.4407
+    0.4408    0.4408    0.4409    0.4410    0.4411
+    0.4412    0.4413    0.4413    0.4414    0.4415
+    0.4416    0.4417    0.4418    0.4419    0.4420
+    0.4420    0.4421    0.4422    0.4422    0.4422
+    0.4423    0.4423    0.4422    0.4422    0.4421
+    0.4421    0.4420    0.4419    0.4417    0.4416
+    0.4415    0.4413    0.4412    0.4410    0.4409
+    0.4408    0.4406    0.4405    0.4404    0.4403
+    0.4403    0.4402    0.4402    0.4402    0.4402
+    0.4402    0.4402    0.4402    0.4403    0.4403
+    0.4404    0.4405    0.4406    0.4406    0.4407
+    0.4408    0.4410    0.4411    0.4412    0.4413
+    0.4415    0.4416    0.4417    0.4419    0.4420
+    0.4422    0.4423    0.4424    0.4426    0.4427
+    0.4428    0.4428    0.4429    0.4429    0.4429
+    0.4429    0.4428    0.4428    0.4427    0.4426
+    0.4425    0.4424    0.4423    0.4422    0.4421
+    0.4420    0.4419    0.4419    0.4418    0.4418
+    0.4418    0.4418    0.4418    0.4419    0.4419
+    0.4420    0.4421    0.4422    0.4423    0.4424
+    0.4425    0.4426    0.4427    0.4428    0.4429
+    0.4430    0.4431    0.4432    0.4432    0.4433
+    0.4434    0.4435    0.4435    0.4436    0.4437
+    0.4437    0.4437    0.4438    0.4438    0.4438
+    0.4437    0.4437    0.4436    0.4435    0.4434
+    0.4433    0.4431    0.4429    0.4428    0.4426
+    0.4424    0.4422    0.4420    0.4418    0.4416
+    0.4415    0.4413    0.4412    0.4411    0.4410
+    0.4410    0.4410    0.4409    0.4410    0.4410
+    0.4410    0.4411    0.4412    0.4413    0.4414
+    0.4415    0.4416    0.4417    0.4418    0.4419
+    0.4420    0.4421    0.4422    0.4423    0.4424
+    0.4425    0.4426    0.4426    0.4427    0.4428
+    0.4428    0.4429    0.4429    0.4430    0.4430
+    0.4430    0.4430    0.4429    0.4428    0.4427
+    0.4426    0.4425    0.4424    0.4422    0.4420
+    0.4418    0.4417    0.4415    0.4413    0.4411
+    0.4410    0.4408    0.4407    0.4406    0.4405
+    0.4404    0.4404    0.4403    0.4403    0.4404
+    0.4404    0.4405    0.4405    0.4406    0.4407
+    0.4408    0.4409    0.4410    0.4412    0.4413
+    0.4414    0.4415    0.4416    0.4417    0.4418
+    0.4419    0.4420    0.4421    0.4422    0.4422
+    0.4423    0.4424    0.4424    0.4424    0.4424
+    0.4424    0.4424    0.4424    0.4423    0.4422
+    0.4421    0.4420    0.4419    0.4417    0.4415
+    0.4414    0.4412    0.4410    0.4408    0.4406
+    0.4404    0.4403    0.4402    0.4400    0.4399
+    0.4399    0.4398    0.4398    0.4398    0.4398
+    0.4399    0.4399    0.4400    0.4401    0.4402
+    0.4403    0.4404    0.4405    0.4406    0.4407
+    0.4408    0.4409    0.4410    0.4411    0.4412
+    0.4413    0.4414    0.4415    0.4416    0.4416
+    0.4417    0.4418    0.4418    0.4418    0.4419
+    0.4419    0.4418    0.4418    0.4417    0.4417
+    0.4415    0.4414    0.4413    0.4411    0.4410
+    0.4408    0.4406    0.4404    0.4402    0.4400
+    0.4398    0.4397    0.4395    0.4394    0.4393
+    0.4392    0.4392    0.4391    0.4391    0.4391
+    0.4392    0.4392    0.4393    0.4393    0.4394
+    0.4395    0.4396    0.4397    0.4398    0.4399
+    0.4401    0.4402    0.4403    0.4404    0.4404
+    0.4405    0.4406    0.4407    0.4408    0.4408
+    0.4408    0.4409    0.4409    0.4408    0.4407
+    0.4406    0.4404    0.4401    0.4398    0.4393
+    0.4386    0.4378    0.4367    0.4354    0.4336
+    0.4313    0.4284    0.4247    0.4200    0.4139
+    0.4062    0.3963    0.3837    0.3678    0.3479
+    0.3233    0.2931    0.2569    0.2143    0.1656
+    0.1117    0.0544   -0.0037   -0.0594   -0.1093
+   -0.1503   -0.1799   -0.1968   -0.2006   -0.1922
+   -0.1733   -0.1462   -0.1135   -0.0779   -0.0418
+   -0.0072    0.0244    0.0517    0.0742    0.0914
+    0.1033    0.1098    0.1114    0.1083    0.1011
+    0.0902    0.0764    0.0605    0.0432    0.0255
+    0.0084   -0.0074   -0.0210   -0.0318   -0.0395
+   -0.0438   -0.0449   -0.0429   -0.0384   -0.0318
+   -0.0238   -0.0151   -0.0062    0.0023    0.0099
+    0.0163    0.0213    0.0247    0.0265    0.0267
+    0.0256    0.0233    0.0202    0.0164    0.0123
+    0.0083    0.0045    0.0012   -0.0014   -0.0032
+   -0.0043   -0.0045   -0.0041   -0.0031   -0.0016
+    0.0001    0.0019    0.0037    0.0053    0.0066
+    0.0076    0.0082    0.0084    0.0082    0.0078
+    0.0071    0.0063    0.0054    0.0045    0.0037
+    0.0030    0.0025    0.0021    0.0019    0.0018
+    0.0019    0.0020    0.0022    0.0024    0.0026
+    0.0028    0.0029    0.0029    0.0029    0.0029
+    0.0028    0.0027    0.0026    0.0025    0.0024
+    0.0023    0.0023    0.0023    0.0023    0.0024
+    0.0024    0.0025    0.0026    0.0026    0.0027
+    0.0027    0.0027    0.0027    0.0026    0.0026
+    0.0025    0.0025    0.0024    0.0023    0.0022
+    0.0021    0.0020    0.0018    0.0017    0.0016
+    0.0015    0.0013    0.0012    0.0011    0.0009
+    0.0008    0.0007    0.0006    0.0005    0.0004
+    0.0003    0.0002    0.0002    0.0001    0.0001
+    0.0000   -0.0000    0.0000    0.0002    0.0005
+    0.0011    0.0019    0.0028    0.0036    0.0040
+    0.0000
+ Y
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.199     0.199
+     0.199     0.199     0.199     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.200     0.200     0.200
+     0.200     0.200     0.201     0.201     0.201
+     0.201     0.201     0.202     0.202     0.203
+     0.204     0.205     0.207     0.209     0.211
+     0.215     0.219     0.224     0.231     0.239
+     0.249     0.260     0.272     0.284     0.295
+     0.305     0.311     0.314     0.313     0.310
+     0.304     0.296     0.288     0.280     0.273
+     0.266     0.260     0.256     0.252     0.249
+     0.247     0.246     0.246     0.247     0.249
+     0.251     0.254     0.257     0.260     0.264
+     0.267     0.270     0.273     0.275     0.276
+     0.277     0.277     0.276     0.275     0.273
+     0.271     0.269     0.268     0.266     0.264
+     0.263     0.262     0.262     0.262     0.262
+     0.262     0.263     0.264     0.264     0.265
+     0.266     0.267     0.268     0.268     0.268
+     0.269     0.269     0.268     0.268     0.268
+     0.267     0.267     0.267     0.266     0.266
+     0.266     0.266     0.266     0.266     0.266
+     0.266     0.266     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.267     0.267
+     0.267     0.267     0.267     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.268     0.268     0.268     0.268     0.268
+     0.269
+ Q
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.036     0.036
+     0.036     0.036     0.036     0.036     0.036
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.035     0.035     0.035
+     0.035     0.035     0.034     0.034     0.034
+     0.033     0.033     0.032     0.031     0.029
+     0.028     0.026     0.023     0.020     0.016
+     0.011     0.006    -0.000    -0.007    -0.013
+    -0.018    -0.022    -0.025    -0.025    -0.024
+    -0.021    -0.017    -0.013    -0.009    -0.005
+    -0.001     0.003     0.005     0.007     0.009
+     0.010     0.011     0.011     0.011     0.010
+     0.009     0.008     0.006     0.004     0.003
+     0.001    -0.001    -0.002    -0.003    -0.004
+    -0.005    -0.005    -0.005    -0.004    -0.003
+    -0.003    -0.002    -0.001     0.000     0.001
+     0.002     0.002     0.003     0.003     0.003
+     0.003     0.002     0.002     0.002     0.001
+     0.001     0.000     0.000    -0.000    -0.000
+    -0.000    -0.000    -0.000    -0.000    -0.000
+     0.000     0.000     0.000     0.001     0.001
+     0.001     0.001     0.001     0.001     0.001
+     0.001     0.001     0.001     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000    -0.000     0.000     0.000     0.000
+     0.000     0.000     0.000     0.000     0.000
+     0.000
+ FIN

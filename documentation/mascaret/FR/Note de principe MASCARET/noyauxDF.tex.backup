@@ -1,0 +1,257 @@
+\section{les noyaux DF permanent (SARAP) et transitoire(REZO)}
+
+\subsection{Principe de la modélisation}
+
+\subsubsection{Définitions et notations}
+
+Les hypothèses et notations sont données respectivement aux sections \ref{secDef} et \ref{secNot}.
+
+\subsubsection{Modélisation de base en lit mineur d'un bief}
+
+Nous utilisons le modèle classique, bien établi, des équations de Saint-Venant :
+
+\begin{itemize}
+ \item une équation de continuité :
+   \begin{equation}
+     \label{masse}
+     \frac{\partial Q}{\partial x} + \frac{\partial S}{\partial t}= q_l
+   \end{equation}
+   avec :
+   \begin{itemize}
+     \item $Q(x,t)$ le d\'{e}bit ($m^3.s^{-1}$);
+     \item $Z(x,t)$ la cote de la surface libre ($m$).
+   \end{itemize}
+
+  \vspace{0.5cm}
+
+ \item et une équation dynamique :
+   \begin{equation}
+     \label{qmv}
+     \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x}\left( {\beta \frac{Q^2}{S}} \right) + g S \left( \frac{\partial Z}{\partial x} + J \right) = \gamma_l
+   \end{equation}
+   avec $g$ l'accélération de la pesanteur ($m.s^{-2}$).
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+L'équation de continuité traduit la conservation du débit, la deuxième équation correspond à l'équation fondamentale de la dynamique : le premier membre représente l'accélération d'une \textit{tranche d'eau}, le second la somme des forces appliquées.
+
+\vspace{0.5cm}
+
+Lorsqu'il n'y a pas d'apport latéral : $q_l = \gamma_l = 0$. En cas d'apport, comme nous l'avons signalé, la version actuelle impose : $\gamma_l = 0$, c'est-à-dire l'hypothèse d'un apport perpendiculaire à l'écoulement.
+
+\vspace{0.5cm}
+
+Le terme $gSJ$ traduit l'effet des forces de frottement : $J$ est un nombre sans dimension, représentant le taux moyen de dissipation de l'énergie. Il dépend du débit, des caractéristiques hydrauliques de la rivière, et bien sûr du coefficient de rugosité. Sa valeur est donnée par la loi de Strickler :
+
+   \begin{equation}
+     J = \frac{Q^2}{K_{m}^{2}S^{2}R^{4/3}}
+   \end{equation}
+ou
+   \begin{equation}
+     J = \frac{Q^2}{D^2}
+   \end{equation}
+
+avec :
+\begin{itemize}
+ \item $K_m$ le coefficient de rugosité de Strickler;
+ \item $R$ le rayon hydraulique;
+ \item $D$ la débitance.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le coefficient $\beta$, adimensionnel, résulte des variations de la vitesse réelle de l'écoulement en une section, variations disparaissant sinon en raison de la seule considération de la vitesse moyenne. Sa définition est :
+
+   \begin{equation}
+     \beta = \frac{S}{Q^2} \int V^2 \,dS
+   \end{equation}
+
+\vspace{0.5cm}
+
+En lit unique, compte tenu des hypothèses acceptées (voir section \ref{secDef}), nous prenons : $\beta = 1$, c'est-à-dire que nous négligeons les variations de vitesse au sein d'une section.
+Cela n'est plus vrai en lit composé.
+Les conditions aux limites habituelles en régime fluvial sont :
+\begin{itemize}
+ \item un débit imposé à l'amont;
+ \item une cote imposée ou (en non permanent) une relation cote/débit à l'aval.
+\end{itemize}
+
+\vspace{0.5cm}
+
+En non permanent, il est numériquement possible d'imposer des conditions limites de tous les types (cote imposée, débit imposé ou une relation entre la cote et le débit) aussi bien à l'amont qu'à l'aval, mais elles doivent être cohérentes pour que la résolution se déroule ensuite normalement.
+
+\subsubsection{Modélisation en lit composé d'un bief}
+
+\paragraph{Problème à résoudre\\}
+
+\hspace*{1cm}
+
+Le problème posé résulte du fait que nous ne pouvons écrire directement un système d'équations analogue à (\ref{masse})(\ref{qmv}).
+Les pertes d’énergies dues au frottement ne sont pas identiques dans les deux lits, et de ce fait :
+\begin{itemize}
+ \item l'hypothèse d'une vitesse uniforme dans une section, et donc, en particulier, identique dans les deux lits mineur et majeur, n'est plus acceptable;
+ \item nous ne savons pas définir a priori un coefficient de perte de charge $J$ \emph{global}.
+\end{itemize}
+
+\vspace{0.5cm}
+
+
+Il est donc nécessaire d'écrire le système (\ref{masse})(\ref{qmv}) pour chacun des deux lits mineur (indice $m$) et majeur (indice $M$), ce qui donne :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S_m}}{\partial{t}} + \frac{\partial{Q_m}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q_m}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{m}^2}{S_m} \right ) = -g S_m \frac{\partial{Z}}{\partial{x}} - g S_m J_m + \gamma_{mM}
+  \end{array}
+ \right.
+\end{equation}
+
+et
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S_M}}{\partial{t}} + \frac{\partial{Q_M}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q_M}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{M}^2}{S_M} \right ) = -g S_M \frac{\partial{Z}}{\partial{x}} - g S_M J_M + \gamma_{Mm}
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $\gamma_{Mm} = -\gamma_{mM}$
+
+\vspace{0.5cm}
+
+En écrivant ceci, nous conservons l'hypothèse fondamentale, à savoir une cote de la surface libre $Z$ identique dans le lit mineur et le lit majeur.
+
+\vspace{0.5cm}
+
+Le terme $\gamma_{mM}$ représente l'interaction, inconnue a priori, des deux lits.
+
+\vspace{0.5cm}
+
+En sommant ces deux systèmes, et en appelant : $Q = Q_m + Q_M$ le débit total, et : $S = S_m + S_M$, on obtient :
+
+\begin{equation}
+ \label{sysGlob}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S}}{\partial{t}} + \frac{\partial{Q}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M} \right ) = -g S \frac{\partial{Z}}{\partial{x}} - g ( S_m J_m + S_M J_M )
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $\sqrt{J_m} = \frac{Q_m}{D_m}$ et  $\sqrt{J_M} = \frac{Q_M}{D_M}$
+
+\vspace{0.5cm}
+
+Les débitances mineures et majeures dépendent de la cote $Z$ :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    D_m = K_m S_m R_{m}^{2/3} \\
+    D_M = K_M S_M R_{M}^{2/3}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Le système (\ref{sysGlob}) est semblable au système (\ref{masse})(\ref{qmv}) en définissant une pente globale $J$ au moyen de la relation :
+
+\begin{equation}
+  SJ = S_m J_m + S_M J_M
+\end{equation}
+
+\vspace{0.5cm}
+
+et en choisissant un coefficient $\beta$ non plus égal à 1, mais satisfaisant la relation :
+
+\begin{equation}
+  \beta \frac{Q^2}{S} = \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M}
+\end{equation}
+
+soit :
+
+\begin{equation}
+  \beta =  \frac{S}{Q^2} \left ( \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M} \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Nous avons cependant deux inconnues supplémentaires, $Q_m$ et $Q_M$. Elles s'ajoutent aux inconnues \textit{habituelles} $Q$ et $Z$.
+
+\vspace{0.5cm}
+
+Nous disposons déjà d'une relation simple :
+
+\begin{equation}
+  Q_m + Q_M = Q
+\end{equation}
+
+\vspace{0.5cm}
+
+Pour résoudre le système (\ref{sysGlob}), il faut donc, en toute généralité, écrire une équation différentielle supplémentaire, ou bien, plus simplement, connaître une relation supplémentaire liant les inconnues. Cette relation peut s'obtenir en exprimant la débitance globale $D$ en fonction des débitances mineure et majeure $D_m$, $D_M$. La définition de la pente $J$ s'écrit tout d'abord :
+
+\begin{equation}
+  S \frac{Q^2}{D^2} = S_m \frac{Q_{m}^2}{D_{m}^2} + S_M \frac{Q_{M}^2}{D_{M}^2}
+\end{equation}
+
+\vspace{0.5cm}
+
+Une solution simple est de décider que les pentes des lignes d'énergie sont identiques dans chaque lit :
+
+\begin{equation}
+  \frac{Q_m}{D_m} = \frac{Q_M}{D_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+D'après la définition de $J$, cela revient à choisir comme débitance globale :
+
+\begin{equation}
+  D = D_m + D_M
+\end{equation}
+
+\vspace{0.5cm}
+
+En raison de sa simplicité, cette solution a l'avantage d'être aisément généralisable à un lit composé quelconque c'est-à-dire de plus de deux lits (ici mineur et majeur), chaque lit correspondant à une rugosité bien caractérisée. Tout ce qui précède reste valable, et il suffit de prendre comme débitance globale la somme des débitances de chaque lit.
+
+\vspace{0.5cm}
+
+Cependant, cette solution néglige les interactions entre chaque lit, interactions se traduisant par le fait que les lignes d'énergie ne sont plus identiques. Pour prendre en compte cette situation nous développons l'approche suivante.
+
+\vspace{0.5cm}
+
+Nous définissons tout d'abord les débitances mineure et majeure généralisée $D_{mg}$, $D_{Mg}$ par les relations :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    Q_m =  D_{mg} \sqrt{J}\\
+    Q_M =  D_{Mg} \sqrt{J}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+En posant : $\eta = \frac{Q_m}{Q_M}$, et en reprenant l'expression définissant $J$, nous voyons que :
+
+\begin{equation}
+    \frac{D_{mg}}{D_{Mg}} = \eta
+\end{equation}
+
+et :
+
+\begin{equation}
+     D_{mg}^2 = \frac{S}{\displaystyle  \frac{S_m}{D_{m}^2}+ \frac{1}{\eta^2}\frac{S_M}{D_{M}^2}}
+\end{equation}
+

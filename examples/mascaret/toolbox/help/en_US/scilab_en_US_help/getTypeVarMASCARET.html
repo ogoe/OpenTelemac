@@ -1,0 +1,104 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>getTypeVarMASCARET</title>
+    <style type="text/css" media="all">
+      @import url("scilab_code.css");
+      @import url("xml_code.css");
+      @import url("c_code.css");
+      @import url("style.css");
+    </style>
+  </head>
+  <body>
+    <div class="manualnavbar">
+    <table width="100%"><tr>
+      <td width="30%">
+    	<span class="previous"><a href="getStringMASCARET.html">&lt;&lt; getStringMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="getVersionMASCARET.html">getVersionMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+
+
+
+    <span class="path"><a href="index.html">Toolbox Mascaret</a> &gt;&gt; <a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a> &gt; getTypeVarMASCARET</span>
+
+    <br /><br />
+    <div class="refnamediv"><h1 class="refname">getTypeVarMASCARET</h1>
+        <p class="refpurpose">Accessor for retrieving information on a variable</p></div>
+    <div class="refsynopsisdiv"><h3 class="title">Calling sequence</h3>
+        <div class="synopsis"><pre><span class="default">[</span><span class="default">error</span><span class="default">,</span><span class="default">typeVar</span><span class="default">,</span><span class="default">category</span><span class="default">,</span><span class="default">modify</span><span class="default">,</span><span class="default">dimVar</span><span class="default">]=</span><span class="functionid">getTypeVarMASCARET</span><span class="default">(</span><span class="default">id</span><span class="default">,</span><span class="default">nomVar</span><span class="default">)</span></pre></div></div>
+    <div class="refsection"><h3 class="title">Arguments</h3>
+        <dl><dt><span class="term">error</span>
+                <dd><p class="para">(Output argument) Error code value : zero indicates that no errors occurred</p></dd></dt>
+            <dt><span class="term">typeVar</span>
+                <dd><p class="para">The type of a variable (real, integer, boolean, string)</p>
+                    <p class="para">Possible values :&#0034;INT&#0034; or &#0034;DOUBLE&#0034; or &#0034;BOOL&#0034; or &#0034;STRING&#0034; or &#0034;TABINT&#0034; or &#0034;TABDOUBLE&#0034; or &#0034;TABBOOL&#0034;</p></dd></dt>
+            <dt><span class="term">category</span>
+                <dd><p class="para">The category of a variable (model or state)</p>
+                    <p class="para">Possible values : &#0034;MODEL&#0034; (model) or &#0034;STATE&#0034; (state)</p></dd></dt>
+            <dt><span class="term">modify</span>
+                <dd><p class="para">Tells if a variable can be modified by using a function setXxxxxMascaret with the variable</p>
+                    <p class="para">At the present all the variables are alterable, thus this parameter has no effect</p></dd></dt>
+            <dt><span class="term">dimVar</span>
+                <dd><p class="para">Dimension of a variable</p>
+					<p class="para">The index number from 0 to 3 that comes with the functions getXxxxxMascaret and setXxxxxMascaret)</p></dd></dt>
+            <dt><span class="term">id</span>
+                <dd><p class="para">Identification number of the MASCARET instance returned by <a href="createMASCARET.html" class="link">createMASCARET</a></p></dd></dt>
+            <dt><span class="term">nameVar</span>
+                <dd><p class="para">Name of the variable (dot notation), the list of all the possible variables is returned by <a href="getDescVarMASCARET.html" class="link">getDescVarMASCARET</a></p></dd></dt></dl></div>
+    <div class="refsection"><h3 class="title">Description</h3>
+        <p class="para">Accessor for retrieving information on a variable</p></div>
+    <div class="refsection"><h3 class="title">Example</h3>
+        <div class="programlisting"><table border="0" width="100%"><tr><td width="98%"><pre class="scilabcode"><span class="scilabcomment">// creation of the MASCARET model</span>
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span> <span class="scilabid">id</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">createMASCARET</span><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checktrue">assert_checktrue</a><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilaboperator">&#0062;</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// get all the descriptions</span>
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabid">TabVar</span><span class="scilabdefault">,</span><span class="scilabid">TabDesc</span><span class="scilabopenclose">]</span><span class="scilaboperator">=</span><span class="scilabid">getDescVarMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// get one description</span>
+<span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabid">varType</span><span class="scilabdefault">,</span><span class="scilabid">category</span><span class="scilabdefault">,</span><span class="scilabid">modify</span><span class="scilabdefault">,</span><span class="scilabid">dimVar</span><span class="scilabopenclose">]</span><span class="scilaboperator">=</span><span class="scilabid">getTypeVarMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabdefault">,</span><span class="scilabid">TabVar</span><span class="scilabopenclose">(</span><span class="scilabnumber">2</span><span class="scilabopenclose">)</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>   
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><span class="scilabid">varType</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><span class="scilabid">category</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><span class="scilabid">modify</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabcommand" href="scilab://disp">disp</a><span class="scilabopenclose">(</span><span class="scilabid">dimVar</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+
+<span class="scilabcomment">// model deletion</span>
+<span class="scilabid">err</span> <span class="scilaboperator">=</span> <span class="scilabid">deleteMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span></pre></td><td valign="top"><a href="scilab://scilab.execexample/"><img src="ScilabExecute.png" border="0"/></a></td><td valign="top"><a href="scilab://scilab.editexample/"><img src="ScilabEdit.png" border="0"/></a></td><td></td></tr></table></div></div>
+    <div class="refsection"><h3 class="title">See also</h3>
+        <ul class="itemizedlist"><li class="member"><a href="getDescVarMASCARET.html" class="link">getDescVarMASCARET</a> &#8212; Gives the list of all the MASCARET variables with a description</li></ul></div>
+    <br />
+
+    <div class="manualnavbar">
+    <table width="100%">
+    <tr><td colspan="3" class="next"><a href="http://bugzilla.scilab.org/enter_bug.cgi?product=Scilab%20software&component=Documentation%20pages" class="ulink">Report an issue</a></td></tr>
+<tr>
+      <td width="30%">
+    	<span class="previous"><a href="getStringMASCARET.html">&lt;&lt; getStringMASCARET</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="getVersionMASCARET.html">getVersionMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+  </body>
+</html>

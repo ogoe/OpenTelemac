@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getTypeVarMASCARET" xml:lang="en">
+    <refnamediv>
+        <refname>getTypeVarMASCARET</refname>
+        <refpurpose>Accessor for retrieving information on a variable</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>[error,typeVar,category,modify,dimVar]=getTypeVarMASCARET(id,nomVar)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para>(Output argument) Error code value : zero indicates that no errors occurred</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>typeVar</term>
+                <listitem>
+                    <para>The type of a variable (real, integer, boolean, string)</para>
+                    <para>Possible values :"INT" or "DOUBLE" or "BOOL" or "STRING" or "TABINT" or "TABDOUBLE" or "TABBOOL"</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>category</term>
+                <listitem>
+                    <para>The category of a variable (model or state)</para>
+                    <para>Possible values : "MODEL" (model) or "STATE" (state)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>modify</term>
+                <listitem>
+                    <para>Tells if a variable can be modified by using a function setXxxxxMascaret with the variable</para>
+                    <para>At the present all the variables are alterable, thus this parameter has no effect</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>dimVar</term>
+                <listitem>
+                    <para>Dimension of a variable</para>
+					<para>The index number from 0 to 3 that comes with the functions getXxxxxMascaret and setXxxxxMascaret)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identification number of the MASCARET instance returned by <link linkend="createMASCARET">createMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>nameVar</term>
+                <listitem>
+                    <para>Name of the variable (dot notation), the list of all the possible variables is returned by <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Accessor for retrieving information on a variable</para>
+    </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">
+// creation of the MASCARET model
+[err, id] = createMASCARET();
+assert_checktrue(id>0);
+
+// get all the descriptions
+[err,TabVar,TabDesc]=getDescVarMASCARET(id);
+assert_checkequal(err,0);
+
+// get one description
+[err,varType,category,modify,dimVar]=getTypeVarMASCARET(id,TabVar(2));
+assert_checkequal(err,0);   
+disp(varType);
+disp(category);
+disp(modify);
+disp(dimVar);
+
+// model deletion
+err = deleteMASCARET(id);
+assert_checkequal(err,0);        
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See also</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="getDescVarMASCARET">getDescVarMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

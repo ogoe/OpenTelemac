@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="importModelMASCARET" xml:lang="fr">
+    <refnamediv>
+        <refname>importModelMASCARET</refname>
+        <refpurpose>Fonction d'import d'un modèle MASCARET</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Séquence d'appel</title>
+        <synopsis>[erreur] = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>erreur</term>
+                <listitem>
+                    <para>Argument de sortie indiquant la présence d'erreur si différent de zero</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>TabNomFichier</term>
+                <listitem>
+                    <para>Tableau des noms des fichiers natifs MASCARET à importer (un nom de fichier ne doit pas dépasser 255 caractères, les noms peuvent comporter le chemin des répertoires d'accès au fichier, le séparateur dépend du système hôte).</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>TypeNomFichier</term>
+                    <para>TypeNomFichier : Tableau des types des fichiers natifs MASCARET à importer. Il n'est pas possible d'importer une ligne d'eau initiale avec cette fonction.
+Les valeurs possibles sont :</para>
+					<listitem>
+					    <para>"casier"</para>
+					</listitem>
+					<listitem>
+					    <para>"geo"</para>
+					</listitem>
+					<listitem>
+					    <para>"loi"</para>
+					</listitem>
+					<listitem>
+					    <para>"xcas"</para>
+					</listitem>
+					<listitem>
+					    <para>"listing"</para>
+					</listitem>
+					<listitem>
+					    <para>"res"</para>
+					</listitem>
+					<listitem>
+					    <para>"listing_casier"</para>
+					</listitem>
+					<listitem>
+					    <para>"listing_liaison"</para>
+					</listitem>
+					<listitem>
+					    <para>"res_casier"</para>
+					</listitem>
+					<listitem>
+					    <para>"res_liaison"</para>			
+					</listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>impression</term>
+                <listitem>
+                    <para>Impression (écriture) sur les fichiers listing (1-> Vrai 0-> Faux)</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Fonction d'import d'un modèle MASCARET en utilisant les fichiers natifs MASCARET.</para>
+        <para>Cette fonction permet l'importation d'un modèle MASCARET à partir des fichiers natifs du code de calcul MASCARET. Ces fichiers sont disponibles dans Fudaa-MASCARET via le menu : « Fichier | Exporter | MASCARET ».</para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialiser une instance d'un modèle MASCARET, c'est-à-dire d'avoir fait appel à la fonction <link linkend="createMASCARET">createMASCARET</link>. Si l'on souhaite importer l'état, il faut avoir initialisé le Modèle, c'est-à-dire avoir fait appel à la fonction <link linkend="importModelMASCARET">importModelMASCARET</link>.</para>
+    </refsection>
+    <refsection>
+        <title>Exemple</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = createMASCARET();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);
+
+// model deletion
+err = deleteMASCARET(id);
+assert_checkequal(err,0);        
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>Voir aussi</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="initStateMASCARET">initStateMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

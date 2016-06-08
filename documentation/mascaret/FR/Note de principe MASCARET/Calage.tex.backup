@@ -1,0 +1,187 @@
+\section{Le calage automatique du coefficient de Strickler}
+
+\underline{Avertissement} : ce calage n'est possible qu'en régime permanent (noyau \texttt{SARAP}) et sur un seul bief avec la version 7.1 de \texttt{MASCARET}.
+
+\subsection{Introduction}
+
+Pour la modélisation hydraulique 1D et 2D basée sur la résolution des équations de Saint-Venant, il est nécessaire de disposer de différentes données que sont la géométrie, les conditions initiales en régime non permanent, les conditions limite et le coefficient de Strickler. Toutes les données, hormis le coefficient de Strickler, sont parfaitement définies par les conditions d'étude (les données de géométrie sont fournies par des campagnes de mesures ; les conditions aux limites et les conditions initiales correspondent au cas d'étude).
+
+\vspace{0.5cm}
+
+Le coefficient de Strickler modélise les pertes de charge linéaires dues au frottement sur le fond et les berges le long de la rivière. Or, dans le cadre d’une modélisation monodimensionnelle, il prend aussi en compte des phénomènes de dissipation qui ne sont pas modélisés par ailleurs. Par conséquent, la détermination de ce coefficient nécessite un calage, réalisé à partir de lignes d'eau mesurées pour des débits du même ordre de grandeur que ceux de l'étude.
+
+\vspace{0.5cm}
+
+Cette étape de calage, absolument essentielle pour la qualité de l'étude, est une des étapes les plus consommatrices de temps dans une étude.
+
+\vspace{0.5cm}
+
+Dans ce chapitre, nous présentons la méthode d'identification des coefficients de Strickler intégrée au système \texttt{MASCARET} et basée sur la résolution d'un problème inverse. Cette méthode d'identification des paramètres de calage permet de diminuer une des phases les plus longues des études et ainsi obtenir des gains importants sur les délais et de mieux maîtriser les incertitudes liées aux coefficients de Strickler.
+
+\vspace{0.5cm}
+
+La première partie est consacrée à la présentation générale d'un problème d'identification de paramètres. Puis, nous présentons l'algorithme complet appliqué au cas du coefficient de Strickler.
+
+\vspace{0.5cm}
+
+La validation sur des cas schématiques et sur un cas réel est détaillée dans la note \cite{GOUTAL05}.
+
+\subsection{Position du problème}
+
+\label{PosPb}
+
+Dans ce premier paragraphe, nous présentons brièvement le problème d'identification du coefficient de Strickler. L'estimation de paramètres revient à trouver les coefficients de Strickler qui minimisent une fonction coût $J$ égale à l'écart quadratique entre les mesures et le résultat d'une simulation numérique. On rappelle le principe général des méthodes existantes pour la minimisation d'un problème à plusieurs variables.
+
+\vspace{0.5cm}
+
+Considérons un écoulement permanent sur un tronçon de rivière. On dispose d'un certain nombre de points de mesure avec les cotes correspondant au débit qui nous intéresse. A partir de ces mesures, on cherche à identifier le coefficient de Strickler (ou les coefficients de Strickler sur différentes zones du domaine) qui va minimiser la fonctionnelle $J$ suivante :
+
+\begin{equation}
+ J(K) = \sum_{i=1..m} \alpha_i ( Z_{i}^m - Z_{i}^c (K) )^2
+\end{equation}
+
+o\`{u} :
+\begin{itemize}
+ \item $m$ est le nombre de points de mesure;
+ \item $\alpha_i$ est une pondération pour chaque mesure (ce coefficient peut être égal à zéro si la mesure n'est pas disponible);
+ \item $Z_{i}^m$ est la cote mesurée au point $i$ pour le débit considéré;
+ \item $Z_{i}^c$ est la cote calculée au point $i$ par la résolution des équations de Saint-Venant avec un ensemble de coefficients de Strickler $K_i$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\underline{Remarques} :
+\begin{itemize}
+ \item $J$ est une fonction coût qui mesure l'écart quadratique entre la cote mesurée et la cote calculée pour un ensemble de coefficients de Strickler donné;
+ \item $J$ n'est pas connue analytiquement. Pour la déterminer, il faut évaluer les cotes calculées pour un jeu de coefficients de Strickler donné à l'aide d'une résolution d'un problème de Saint-Venant.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Pour minimiser la fonctionnelle $J$, on peut trouver dans la littérature de nombreuses méthodes d'optimisation. A l'heure actuelle, la méthode utilisée dans l'ancienne version du code \texttt{CASTOR} a été reprise dans \texttt{MASCARET} \cite{LEBOSSE89_1}\cite{LEBOSSE89_2}\cite{LEBOSSE89_3}, c'est-à-dire une méthode de descente optimale.
+
+\vspace{0.5cm}
+
+L'algorithme de descente a la forme générale suivante :
+\begin{itemize}
+ \item[1]) détermination du point de départ;
+ \item[2]) pour : $k= 0,1,2...$ jusqu'à convergence :
+   \begin{itemize}
+     \item test de convergence de $x_k$;
+     \item calcul de la nouvelle direction de descente $d_k$;
+     \item calcul du pas de descente $\lambda_k$: problème de minimisation non linéaire à une seule variable;
+     \item actualisation dans la direction de descente : $x_{k+1} = x_k + \lambda_k d_k$.
+   \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Les différents algorithmes diffèrent par le choix de la direction de descente et par la méthode de calcul du pas optimal.
+
+\vspace{0.5cm}
+
+Dans le cas de la méthode de descente optimale, la direction de descente est l'opposé du gradient de la fonctionnelle. Le point délicat est l'estimation du gradient de cette fonctionnelle quand celle-ci n'est pas connue analytiquement. La minimisation à une seule variable pour trouver le paramètre est réalisée par dichotomie et approximation parabolique. Cette méthode de minimisation n'assure pas que le minimum trouvé soit un minimum global. De plus, la convergence devient très lente lorsqu'on s'approche du minimum local.
+
+\subsection{Algorithme d'identification des coefficients de Strickler}
+
+Dans ce paragraphe, on présente en détail l'algorithme d'identification des coefficients de Strickler pour un écoulement monodimensionnel permanent sur un seul bief et la méthode du gradient utilisée pour minimiser la fonction coût.
+
+\subsubsection{Rappels des équations de Saint-Venant}
+
+On représente l'écoulement filaire d'une rivière par un système d'équations aux dérivées partielles où le frottement a été modélisé par la relation de Strickler. Ces équations sont obtenues à partir des équations de Navier-Stokes après plusieurs hypothèses simplificatrices dont :
+
+\begin{itemize}
+ \item une direction des vitesses uniforme;
+ \item un profil des vitesses constant sur une section de la rivière.
+\end{itemize}
+
+\vspace{0.5cm}
+
+En régime permanent, on se donne des conditions limites qui sont un débit à l'entrée du domaine de modélisation et une cote ou une relation hauteur-débit à l'aval.
+
+\vspace{0.5cm}
+
+Les inconnues sont la cote en chaque point du domaine de calcul : $[x_0,x_1]$. Le débit est déterminé par la condition à la limite amont et les apports de débit le long du domaine de calcul $[x_0,x_1]$.
+
+\begin{equation}
+  \label{ContCas}
+  \frac{\partial Q}{\partial x}= q_a
+\end{equation}
+
+\begin{equation}
+  \label{DynCas}
+  \frac{\partial}{\partial x} \left ( \frac{Q^2}{S(Z)} \right ) + g S(Z) \frac{\partial Z}{\partial x} + \frac{g Q^2}{K^2 S(Z) R^{\frac{4}{3}}} = 0
+\end{equation}
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    Q(x_0) = Q_{am} \\
+    Z(x_1) = Z_{aval}
+  \end{array}
+ \right.
+\end{equation}
+
+avec:
+\begin{itemize}
+  \item $x$ est l'abscisse curviligne le long de la rivière;
+  \item $Q$ est le débit;
+  \item $S(Z)$ est la section mouillée de la rivière dépendant de la cote;
+  \item $R$ est le rayon hydraulique, $g$ la gravité et $K$ le coefficient de Strickler qui dépend de $x$. En fait, ce coefficient sera considéré constant par zone.
+\end{itemize}
+
+\vspace{0.5cm}
+
+L'équation de continuité (\ref{ContCas}) permet de calculer le débit en tous points du domaine de calcul, connaissant le débit imposé à la condition limite amont 
+
+\vspace{0.5cm}
+
+L'équation (\ref{DynCas}) de quantité de mouvement est une équation différentielle qui est discrétisée par différences finies. Après discrétisation, on a à résoudre une équation de la forme : $Z=F(Z)$.
+
+\vspace{0.5cm}
+
+Ce qui revient à chercher les zéros de la fonction : $Z-F(Z)$. A chaque résolution d'un problème de Saint-Venant, on fait alors appel au noyau de calcul dédié à la résolution des équations de Saint-Venant en régime permanent du système \texttt{MASCARET}. Pour plus de détails, on peut se reporter au chapitre consacré aux principes du noyau fluvial permanent.
+
+\vspace{0.5cm}
+
+La solution de cette équation différentielle, c'est-à-dire les cotes calculées en chaque point discret du domaine dépend du coefficient de Strickler qui n'est pas une donnée du problème mais résulte d'un calage.
+
+\subsubsection{Présentation détaillée de l'algorithme de minimisation}
+
+Dans la présentation de l'algorithme d'identification du coefficient de Strickler, la phase de résolution du problème discret de Saint-Venant permanent est appelée \textit{résolution d’un problème de Saint-Venant permanent pour un ensemble discret de coefficients de Strickler définis par zone}.
+
+\vspace{0.5cm}
+
+On considère le problème de minimisation comme présenté à la section \ref{PosPb}. L'algorithme d'identification se présente comme suit :
+
+\begin{itemize}
+  \item \textbf{Etape 1} : Initialisation \\
+   On choisit un coefficient de Strickler constant sur tout le domaine, c'est-à-dire un vecteur : $K_i \quad i=1..m$, $m$ étant le nombre de zones de Strickler;
+  \item \textbf{Etape 2} : Calcul de la direction de descente qui est le gradient de la fonctionnelle $J$ par rapport au vecteur $K$. \\
+    Le gradient de $J$ n'est pas connu directement car la fonctionnelle $J$ n'est pas connue analytiquement.
+    $J$ dépend des différentes valeurs du coefficient de Strickler défini par zones. Chaque dérivée partielle par rapport à une composante sera approchée par développement limité.
+    \begin{equation}
+      \frac{\partial J(K(K_i))}{\partial K_i} \simeq \frac{J(K(K_i+dK_i))-J(K)}{dK_i}
+    \end{equation}
+    Pour chaque composante $K_i$ du vecteur \textit{coefficient de Strickler constant par zones} incrémenté du pas de discrétisation $dK_i$, on doit résoudre un problème de Saint-Venant. Il y autant de problèmes de Saint-Venant à résoudre qu'il y de zones de Strickler différentes.
+    Ce gradient correspond au gradient du problème discret et non du problème continu.
+    \underline{Remarques} : pour cette étape, il y a autant de résolution de problèmes de Saint-Venant que de composantes du Strickler.
+    En régime transitoire, le calcul du gradient $\frac{\partial J}{\partial S_k}$ ne pourrait pas être réalisé de cette façon :
+    \vspace{0.5cm}
+    Pour $n$ pas de temps variant de $1$ à $M$ et $m$ points de mesure, le gradient s'exprime ainsi :
+    \begin{equation}
+      \frac{\partial J}{\partial S_k} = 2 \sum_{i,n} U_{i}^n (Z_{i}^n - m_{i}^n)
+    \end{equation}
+    avec : $U_{i}^n = \frac{\partial Z_{i}^n}{\partial S_k}$
+    \vspace{0.5cm}
+    Pour chaque pas de temps de la simulation et chaque points de mesure, on doit résoudre un problème de Saint-Venant pour évaluer le gradient.
+  \item \textbf{Etape 3} : Minimisation dans la direction de descente \\
+    Le problème est le suivant : il s'agit de minimiser la fonctionnelle $J$ dans la direction opposée au gradient, c'est-à-dire trouver $\rho$ minimisant : $J \left ( K_k - \rho \frac{\partial J(K_k)}{\partial K} \right )$. $J$ étant une fonctionnelle non linéaire.
+    L'idée pour estimer $\rho$ est de trouver par dichotomie une configuration telle que pour 3 points $\rho_1$,$\rho_2$ et $\rho_3$ : $\rho_1<\rho_2<\rho_3$, $J(\rho_2)<J(\rho_1)$ et $J(\rho_2)<J(\rho_3)$.
+    La fonctionnelle $J$ peut alors être localement approchée par une parabole. Le paramètre $\rho$ optimal est le minimum de cette parabole qu'on peut alors calculer analytiquement.
+    La recherche des 3 points $(\rho_1,\rho_2,\rho_3)$ se fait par dichotomie. A chaque estimation de la fonctionnelle $J$, il faut résoudre un problème de Saint-Venant.
+  \item \textbf{Etape 4} : Incrément dans la direction de descente \\
+    $K_{k+1} = K_{k} - \rho \Nabla J_{k}$
+  \item \textbf{Etape 5} : 
+\end{itemize}
+

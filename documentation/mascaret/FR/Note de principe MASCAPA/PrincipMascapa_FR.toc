@@ -1,0 +1,16 @@
+\select@language {french}
+\contentsline {section}{\numberline {1}Objectifs du Code}{2}{section.1}
+\contentsline {section}{\numberline {2}Principes Physiques}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Hypoth\`eses g\'en\'erales}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}D\'ebit solide le long du bief}{3}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Formule de Meyer-Peter \& M\"uller (1948)}{3}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Formule d'Engelund \& Hansen (1967)}{3}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.3}Formule de Smart \& J\"aggi (1983)}{3}{subsubsection.2.2.3}
+\contentsline {subsubsection}{\numberline {2.2.4}Formule de Van Rijn (1984)}{4}{subsubsection.2.2.4}
+\contentsline {subsubsection}{\numberline {2.2.5}Formule de Rieckenmann (1990)}{4}{subsubsection.2.2.5}
+\contentsline {subsubsection}{\numberline {2.2.6}Formule de Lefort (1991)}{4}{subsubsection.2.2.6}
+\contentsline {subsubsection}{\numberline {2.2.7}Formule de Lefort (2007)}{5}{subsubsection.2.2.7}
+\contentsline {subsubsection}{\numberline {2.2.8}Formule de Recking (2010)}{6}{subsubsection.2.2.8}
+\contentsline {subsubsection}{\numberline {2.2.9}Formule de Recking (2011)}{6}{subsubsection.2.2.9}
+\contentsline {section}{\numberline {3}Donn\'ees d'entr\'ee : Param\`etres s\'edimentaires}{7}{section.3}
+\contentsline {section}{R\'ef\'erences}{8}{figure.1}

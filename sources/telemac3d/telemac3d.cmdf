@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special hermes parallel damocles bief ad waqtel telemac2d sisyphe tomawac telemac3d
+liborder: special hermes parallel damocles bief ad stbtel waqtel telemac2d sisyphe tomawac telemac3d
 name: HOMERE_TELEMAC3D
 
 [ad]
@@ -689,6 +689,10 @@ files: declarations_special.f
   check_call.f
   extens.f
 
+[stbtel]
+path: <root>|sources|stbtel
+files: interp.f
+
 [telemac2d]
 path: <root>|sources|telemac2d
 files: friction_def.f
@@ -725,6 +729,8 @@ files: friction_def.f
   fdnrst.f
   wrihyd.f
   tel4del.f
+  entete.f
+  bilan.f
 
 [telemac3d]
 path: <root>|sources|telemac3d

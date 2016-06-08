@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getVersionMASCARET" xml:lang="fr">
+    <refnamediv>
+        <refname>getVersionMASCARET</refname>
+        <refpurpose>Renvoie le numéro de version du noyau de calcul MASCARET</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Séquence d'appel</title>
+        <synopsis>[a,b,c]=getVersionMASCARET()</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>a</term>
+                <listitem>
+                    <para>Identifiant de la version majeur de MASCARET</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>b</term>
+                <listitem>
+                    <para>Identifiant de la version mineure de MASCARET</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>c</term>
+                <listitem>
+                    <para>Identifiant de la version micro de MASCARET</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Renvoie le numéro de version du noyau de calcul MASCARET au format a.b.c</para>
+    </refsection>
+    <refsection>
+    <title>Exemple</title>
+    <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// version of the MASCARET computation kernel
+[a,b,c] = getVersionMASCARET();
+
+disp(strcat([ascii(a+48) '.' ascii(b+48) '.' ascii(c+48)]),'MASCARET version : ');
+      
+   </programlisting>
+</refsection>
+    <refsection role="see also">
+        <title>Voir aussi</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="createMASCARET">createMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

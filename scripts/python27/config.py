@@ -295,6 +295,9 @@ def parseConfig_CompileTELEMAC(cfg):
    # Get options for printing purposes
    get = getConfigKey(cfg,'options',False,False).lower()
    cfgTELEMAC.update({'options':get})
+   # Get cmd_obj_c for mascaret
+   get = getConfigKey(cfg,'cmd_obj_c',False,False)
+   cfgTELEMAC.update({'cmd_obj_c':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -719,12 +722,12 @@ def getFolders_ModulesTELEMAC(root):
       print '\nThe root key in your cfg file may not be valid.'
       sys.exit(1)
    for moddir in listdir(sources) :
-      if not (moddir[0] == '.' or path.isfile(path.join(sources,moddir))) :
+      if not (moddir[0] == '.' or path.isfile(path.join(sources,moddir))):
          modroot = path.join(sources,moddir.lower())
          if path.exists(modroot) :
             dirpath, dirnames, filenames = walk(modroot).next()
             # ~~> One level in modroot
-            for fle in filenames :
+            for fle in filenames:
                f = path.splitext(fle)
                if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
                   if not moddir in modules: modules.update({moddir:{'path':dirpath,'dico':fle,'cmdfs':[]}})
@@ -737,14 +740,19 @@ def getFolders_ModulesTELEMAC(root):
                   if not moddir in modules: modules.update({moddir:{'path':dirpath,'files':[path.join(dirpath,fle)],'cmdfs':[]}})
                   elif not 'files' in modules[moddir]: modules[moddir].update({'files':[path.join(dirpath,fle)]})
                   else: modules[moddir]['files'].append(path.join(dirpath,fle))
-            # ~~> Two levels in modroot
-
+            # ~~> Higher levels in modroot
             for subdir in dirnames:
-               if subdir[0] != '.':
-                  # Special treatment for folders in utils as they are like the one
-                  if path.basename(modroot) == 'utils':
-                     subpath, subnames, filenames = walk(path.join(modroot,subdir)).next()
+               if subdir[0] == '.': continue # .svn directories filter for old releases
+               for subpath, subnames, filenames in walk(path.join(modroot,subdir)):
+                  if moddir not in ['utils']:
                      for fle in filenames :
+                        f = path.splitext(fle)
+                        if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
+                           if not moddir in modules: modules.update({moddir:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
+                           elif not 'files' in modules[moddir]: modules[moddir].update({'files':[path.join(subpath,fle)]})
+                           else: modules[moddir]['files'].append(path.join(subpath,fle))
+                  else:
+                     for fle in filenames:
                         f = path.splitext(fle)
                         if f[len(f)-1].lower() in ['.dico']:   # /!\ you found an executable module
                            if not subdir in modules: modules.update({subdir:{'path':subpath,'dico':fle,'cmdfs':[]}})
@@ -757,26 +765,6 @@ def getFolders_ModulesTELEMAC(root):
                            if not subdir in modules: modules.update({subdir:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
                            elif not 'files' in modules[subdir]: modules[subdir].update({'files':[path.join(subpath,fle)]})
                            else: modules[subdir]['files'].append(path.join(subpath,fle))
-                     for subsubdir in subnames:
-                        if subsubdir[0] != '.':
-                           _, _, filenames = walk(path.join(modroot,subdir,subsubdir)).next()
-                           for fle in filenames :
-                              modName=path.basename(subsubdir)
-                              f = path.splitext(fle)
-                              if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                                 if not modName in modules: modules.update({modName:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
-                                 elif not 'files' in modules[modName]: modules[modName].update({'files':[path.join(subpath,fle)]})
-                                 else: modules[modName]['files'].append(path.join(subpath,fle))
-                  else:
-                     subpath, _, filenames = walk(path.join(modroot,subdir)).next()
-                     for fle in filenames :
-                        modName=path.basename(modroot)
-                        f = path.splitext(fle)
-                        if f[len(f)-1].lower() in ['.f','.f90']:      # /!\ you found a source file
-                           if not modName in modules: modules.update({modName:{'path':subpath,'files':[path.join(subpath,fle)],'cmdfs':[]}})
-                           elif not 'files' in modules[modName]: modules[modName].update({'files':[path.join(subpath,fle).replace(sep,'|')]})
-                           else: modules[modName]['files'].append(path.join(subpath,fle))
-
 
    return modules
 

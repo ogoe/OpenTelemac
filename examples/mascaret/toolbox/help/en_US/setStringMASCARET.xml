@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="setStringMASCARET" xml:lang="en">
+    <refnamediv>
+        <refname>setStringMASCARET</refname>
+        <refpurpose>Mutator to control changes to a string variable</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>[error]=setStringMASCARET(id,nameVar,index1,index2,index3,value)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para>(Output argument) Error code value : zero indicates that no errors occurred</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>nameVar</term>
+                <listitem>
+                    <para>Name of the variable (dot notation), the list of all the possible variables is returned by <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index1</term>
+                <listitem>
+                    <para>value of the 1st index</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index2</term>
+                <listitem>
+                    <para>value of the 2nd index</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index3</term>
+                <listitem>
+                    <para>value of the 3rd index</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>value</term>
+                <listitem>
+                    <para>New string value of a variable with the specific indices</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Mutator to control changes to a string variable of the model or of the state</para>
+   </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = createMASCARET();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);
+
+// set the title of the calculation
+[err] = setStringMASCARET(id,"Model.Title",0,0,0,"My study");
+assert_checkequal(err,0); 
+[err,TitreCas] = getStringMASCARET(id,"Model.Title",0,0,0);
+assert_checkequal(err,0); 
+disp(TitreCas,"Title : ");
+
+// model deletion
+err = deleteMASCARET(id);
+assert_checkequal(err,0);  
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See also</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="getStringMASCARET">getStringMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

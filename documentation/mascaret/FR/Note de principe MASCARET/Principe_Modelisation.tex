@@ -1,0 +1,817 @@
+\subsection{Principe de la modélisation}
+
+\subsubsection{Définitions et notations}
+
+Les hypothèses et notations sont données respectivement aux sections \ref{secDef} et \ref{secNot}.
+
+\subsubsection{Modélisation de base en lit mineur d'un bief}
+
+Nous utilisons le modèle classique, bien établi, des équations de Saint-Venant :
+
+\begin{itemize}
+ \item une équation de continuité :
+   \begin{equation}
+     \label{masse}
+     \frac{\partial Q}{\partial x} + \frac{\partial S}{\partial t}= q_l
+   \end{equation}
+   avec :
+   \begin{itemize}
+     \item $Q(x,t)$ le d\'{e}bit ($m^3.s^{-1}$);
+     \item $Z(x,t)$ la cote de la surface libre ($m$).
+   \end{itemize}
+
+  \vspace{0.5cm}
+
+ \item et une équation dynamique :
+   \begin{equation}
+     \label{qmv}
+     \frac{\partial Q}{\partial t} + \frac{\partial}{\partial x}\left( {\beta \frac{Q^2}{S}} \right) + g S \left( \frac{\partial Z}{\partial x} + J \right) = \gamma_l
+   \end{equation}
+   avec $g$ l'accélération de la pesanteur ($m.s^{-2}$).
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+L'équation de continuité traduit la conservation du débit, la deuxième équation correspond à  l'équation fondamentale de la dynamique : le premier membre représente l'accélération d'une \textit{tranche d'eau}, le second la somme des forces appliquées.
+
+\vspace{0.5cm}
+
+Lorsqu'il n'y a pas d'apport latéral : $q_l = \gamma_l = 0$. En cas d'apport, la version $7.1.4$ introduit deux choix :
+
+\begin{itemize}
+ \item l'apport est considéré perpendiculaire à  l'écoulement et : $\gamma_l = 0$
+ \item l'apport modifie l'équation dynamique et : $\gamma_l = \frac{Q}{S}q_l$
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le terme $gSJ$ traduit l'effet des forces de frottement : $J$ est un nombre sans dimension, représentant le taux moyen de dissipation de l'énergie. Il dépend du débit, des caractéristiques hydrauliques de la rivière, et bien sûr du coefficient de rugosité. Sa valeur est donnée par la loi de Strickler :
+
+   \begin{equation}
+     J = \frac{Q^2}{K_{m}^{2}S^{2}R^{4/3}}
+   \end{equation}
+où
+   \begin{equation}
+     J = \frac{Q^2}{D^2}
+   \end{equation}
+
+avec :
+\begin{itemize}
+ \item $K_m$ le coefficient de rugosité de Strickler;
+ \item $R$ le rayon hydraulique;
+ \item $D$ la débitance.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le coefficient $\beta$, adimensionnel, résulte des variations de la vitesse réelle de l'écoulement en une section, variations disparaissant sinon en raison de la seule considération de la vitesse moyenne. Sa définition est :
+
+   \begin{equation}
+     \beta = \frac{S}{Q^2} \int V^2 \,dS
+   \end{equation}
+
+\vspace{0.5cm}
+
+En lit unique, compte tenu des hypothèses acceptées (voir section \ref{secDef}), nous prenons : $\beta = 1$, c'est-à-dire que nous négligeons les variations de vitesse au sein d'une section.
+Cela n'est plus vrai en lit composé.
+Les conditions aux limites habituelles en régime fluvial sont :
+\begin{itemize}
+ \item un débit imposé à  l'amont;
+ \item une cote imposée ou (en non permanent) une relation cote/débit à  l'aval.
+\end{itemize}
+
+\vspace{0.5cm}
+
+En non permanent, il est numériquement possible d'imposer des conditions limites de tous les types (cote imposée, débit imposé ou une relation entre la cote et le débit) aussi bien à  l'amont qu'à  l'aval, mais elles doivent être cohérentes pour que la résolution se déroule ensuite normalement.
+
+\subsubsection{Modélisation en lit composé d'un bief}
+
+\paragraph{Problème à  résoudre\\}
+
+\hspace*{1cm}
+
+Le problème posé résulte du fait que nous ne pouvons écrire directement un système d'équations analogue à  (\ref{masse})(\ref{qmv}).
+Les pertes d'énergies dues au frottement ne sont pas identiques dans les deux lits, et de ce fait :
+\begin{itemize}
+ \item l'hypothèse d'une vitesse uniforme dans une section, et donc, en particulier, identique dans les deux lits mineur et majeur, n'est plus acceptable;
+ \item nous ne savons pas définir a priori un coefficient de perte de charge $J$ \emph{global}.
+\end{itemize}
+
+\vspace{0.5cm}
+
+
+Il est donc nécessaire d'écrire le système (\ref{masse})(\ref{qmv}) pour chacun des deux lits mineur (indice $m$) et majeur (indice $M$), ce qui donne :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S_m}}{\partial{t}} + \frac{\partial{Q_m}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q_m}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{m}^2}{S_m} \right ) = -g S_m \frac{\partial{Z}}{\partial{x}} - g S_m J_m + \gamma_{mM}
+  \end{array}
+ \right.
+\end{equation}
+
+et
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S_M}}{\partial{t}} + \frac{\partial{Q_M}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q_M}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{M}^2}{S_M} \right ) = -g S_M \frac{\partial{Z}}{\partial{x}} - g S_M J_M + \gamma_{Mm}
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $\gamma_{Mm} = -\gamma_{mM}$
+
+\vspace{0.5cm}
+
+En écrivant ceci, nous conservons l'hypothèse fondamentale, à  savoir une cote de la surface libre $Z$ identique dans le lit mineur et le lit majeur.
+
+\vspace{0.5cm}
+
+Le terme $\gamma_{mM}$ représente l'interaction, inconnue a priori, des deux lits.
+
+\vspace{0.5cm}
+
+En sommant ces deux systèmes, et en appelant : $Q = Q_m + Q_M$ le débit total, et : $S = S_m + S_M$, on obtient :
+
+\begin{equation}
+ \label{sysGlob}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S}}{\partial{t}} + \frac{\partial{Q}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M} \right ) = -g S \frac{\partial{Z}}{\partial{x}} - g ( S_m J_m + S_M J_M )
+  \end{array}
+ \right.
+\end{equation}
+
+avec : $\sqrt{J_m} = \frac{Q_m}{D_m}$ et  $\sqrt{J_M} = \frac{Q_M}{D_M}$
+
+\vspace{0.5cm}
+
+Les débitances mineures et majeures dépendent de la cote $Z$ :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    D_m = K_m S_m R_{m}^{2/3} \\
+    D_M = K_M S_M R_{M}^{2/3}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Le système (\ref{sysGlob}) est semblable au système (\ref{masse})(\ref{qmv}) en définissant une pente globale $J$ au moyen de la relation :
+
+\begin{equation}
+  SJ = S_m J_m + S_M J_M
+\end{equation}
+
+\vspace{0.5cm}
+
+et en choisissant un coefficient $\beta$ non plus égal à  1, mais satisfaisant la relation :
+
+\begin{equation}
+  \beta \frac{Q^2}{S} = \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M}
+\end{equation}
+
+soit :
+
+\begin{equation}
+  \beta =  \frac{S}{Q^2} \left ( \frac{Q_{m}^2}{S_m} + \frac{Q_{M}^2}{S_M} \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Nous avons cependant deux inconnues supplémentaires, $Q_m$ et $Q_M$. Elles s'ajoutent aux inconnues \textit{habituelles} $Q$ et $Z$.
+
+\vspace{0.5cm}
+
+Nous disposons déjà  d'une relation simple :
+
+\begin{equation}
+  Q_m + Q_M = Q
+\end{equation}
+
+\vspace{0.5cm}
+
+Pour résoudre le système (\ref{sysGlob}), il faut donc, en toute généralité, écrire une équation différentielle supplémentaire, ou bien, plus simplement, connaître une relation supplémentaire liant les inconnues. Cette relation peut s'obtenir en exprimant la débitance globale $D$ en fonction des débitances mineure et majeure $D_m$, $D_M$. La définition de la pente $J$ s'écrit tout d'abord :
+
+\begin{equation}
+  S \frac{Q^2}{D^2} = S_m \frac{Q_{m}^2}{D_{m}^2} + S_M \frac{Q_{M}^2}{D_{M}^2}
+\end{equation}
+
+\vspace{0.5cm}
+
+Une solution simple est de décider que les pentes des lignes d'énergie sont identiques dans chaque lit :
+
+\begin{equation}
+  \frac{Q_m}{D_m} = \frac{Q_M}{D_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+D'après la définition de $J$, cela revient à  choisir comme débitance globale :
+
+\begin{equation}
+  D = D_m + D_M
+\end{equation}
+
+\vspace{0.5cm}
+
+En raison de sa simplicité, cette solution a l'avantage d'être aisément généralisable à  un lit composé quelconque c'est-à -dire de plus de deux lits (ici mineur et majeur), chaque lit correspondant à  une rugosité bien caractérisée. Tout ce qui précède reste valable, et il suffit de prendre comme débitance globale la somme des débitances de chaque lit.
+
+\vspace{0.5cm}
+
+Cependant, cette solution néglige les interactions entre chaque lit, interactions se traduisant par le fait que les lignes d'énergie ne sont plus identiques. Pour prendre en compte cette situation nous développons l'approche suivante.
+
+\vspace{0.5cm}
+
+Nous définissons tout d'abord les débitances mineure et majeure généralisée $D_{mg}$, $D_{Mg}$ par les relations :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    Q_m =  D_{mg} \sqrt{J}\\
+    Q_M =  D_{Mg} \sqrt{J}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+En posant : $\eta = \frac{Q_m}{Q_M}$, et en reprenant l'expression définissant $J$, nous voyons que :
+
+\begin{equation}
+    \frac{D_{mg}}{D_{Mg}} = \eta
+\end{equation}
+
+et :
+
+\begin{equation}
+     D_{mg}^2 = \frac{S}{\displaystyle  \frac{S_m}{D_{m}^2}+ \frac{1}{\eta^2}\frac{S_M}{D_{M}^2}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Nous voyons donc qu'il est équivalent de se donner $\eta$, $D_{mg}$, ou $D_{Mg}$ : dès que l'une de ces trois grandeurs est donnée, les deux autres sont également déterminées.
+
+\vspace{0.5cm}
+
+Le système (\ref{sysGlob}) s'écrit alors :
+
+\begin{equation}
+ \label{sysFin}
+ \left \lbrace
+  \begin{array}{l}
+    \frac{\partial{S}}{\partial{t}} + \frac{\partial{Q}}{\partial{x}} = 0 \\
+    \\
+    \frac{\partial{Q}}{\partial{t}} + \frac{\partial}{\partial{x}} \left ( \beta \frac{Q^2}{S} \right ) = -g S \frac{\partial{Z}}{\partial{x}} - g S J
+  \end{array}
+ \right.
+\end{equation}
+
+avec :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \beta = \left ( \frac{\eta^2}{S_m} + \frac{1}{S_M} \right ) \frac{S}{(1+\eta)^2} \\
+    \\
+    \sqrt{J} = \frac{Q}{D_{mg}+D_{Mg}}
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Dès que l'on se donne $\eta$, $D_{mg}$ ou $D_{Mg}$, les grandeurs $\beta$ et $J$ sont parfaitement définies, et le système (\ref{sysFin}) est tout à  fait analogue au système (\ref{masse})(\ref{qmv}) caractéristique d'un lit simple. La résolution donne la valeur de $Q$, puis les relations suivantes fournissent immédiatement les valeurs de $Q_m$ et $Q_M$ :
+
+\begin{equation}
+  \eta = \frac{Q_m}{Q_M} = \frac{D_{mg}}{D_{Mg}}
+\end{equation}
+
+et :
+
+\begin{equation}
+  Q = Q_m + Q_M
+\end{equation}
+
+\vspace{0.5cm}
+
+Dans ce cadre, la solution \textit{simple} : $J_m = J_M = J$ rappelée ci-dessus revient à  écrire :
+
+\begin{equation}
+  D_{mg} = D_m
+\end{equation}
+
+et : 
+
+\begin{equation}
+  D_{Mg} = D_M
+\end{equation}
+
+\paragraph{Modélisation \emph{Debord}\\} \label{ModDeb}
+
+\hspace*{1cm}
+
+Ce modèle a été établi expérimentalement, en étudiant le régime uniforme, et en mettant en évidence une loi de répartition de débit : $\frac{Q_m}{Q_M}$ (voir \cite{UAN75},\cite{NICOLLET79}).
+
+\vspace{0.5cm}
+
+L'extrapolation au régime graduellement varié est tout à  fait admissible, puisque ce régime est justement défini comme proche des propriétés du régime uniforme.
+
+\vspace{0.5cm}
+
+Il repose sur l'observation suivante : dans les conditions énoncées ci-dessus, le débit s'écoulant dans le lit mineur en lit composé est le débit qui s'écoulerait dans un lit mineur unique identique, multiplié d'une grandeur caractéristique $A$ avec : $A \in ]0,1[$.
+
+\vspace{0.5cm}
+
+$A$ s'exprime comme une fonction des rugosités de chaque lit. Son expression exacte est donnée plus loin, l'important étant d'abord d'obtenir les expressions de $D_{mg}$ et $D_{Mg}$.
+
+\vspace{0.5cm}
+
+La définition même de $A$ s'écrit : $D_{mg} = A D_m$, ou encore : $Q_{m}^2 = A^2 D_{m}^2 J$.
+
+\vspace{0.5cm}
+
+Nous en déduisons alors $D_{Mg}$, en reprenant l'expression de $J$ :
+
+\begin{equation}
+  S J = S_m \frac{Q_{m}^2}{D_{m}^2} + S_M \frac{Q_{M}^2}{D_{M}^2} = A^2 S_m J + S_M \frac{Q_{M}^2}{D_{M}^2}
+\end{equation}
+
+donc :
+
+\begin{equation}
+  J ( S - A^2 S_m ) = Q_{M}^2 \frac{S_M}{D_{M}^2}
+\end{equation}
+
+soit :
+
+\begin{equation}
+  D_{Mg}^2 = \frac{Q_{M}^2}{J} = D_{M}^2 \left ( \frac{S - A^2 S_m}{S_M}  \right ) = D_{M}^2 \left ( 1 + \frac{S_m}{S_M} ( 1 - A^2 )  \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+La débitance majeure généralisée est donc égale à  la débitance majeure multipliée par la quantité :
+
+$$
+ \sqrt{1 + \frac{S_m}{S_M}(1-A^2)}
+$$
+
+\vspace{0.5cm}
+
+Quand : $A = 1$, nous retrouvons le modèle \textit{simpliste} rappelé précédemment. Le rapport $\eta = \frac{Q_m}{Q_M}$ s'écrit aussi :
+
+\begin{equation}
+  \eta = \frac{A}{\displaystyle \sqrt{1+\frac{S_m}{S_M}(1-A^2)}} \frac{D_m}{D_M}
+\end{equation}
+
+\vspace{0.5cm}
+
+$A$ est la constante du modèle de \emph{Debord}. Elle est évaluée par :
+
+\begin{equation}
+  A = \frac{1-A_0}{2}\cos \left ( \frac{\pi r}{0.3} \right ) + \frac{1+A_0}{2} \quad \mbox{pour} \quad r = \frac{R_M}{R_m} \in [0,0.3] 
+\end{equation}
+
+et :
+
+\begin{equation}
+  A = A_0 = 0.9 \left ( \frac{K_m}{K_M} \right )^{-1/6} \quad \mbox{pour} \quad r > 0.3
+\end{equation}
+
+\vspace{0.5cm}
+
+Cette expression résulte d'expérimentations sur modèle physique.
+
+\vspace{0.5cm}
+
+Notons que $A$ varie en fonction de $R_m$ et $R_M$, de manière à  trouver $A = 1$ lorque $R_M = 0$ (pas de débordement).
+
+\paragraph{Modélisation \emph{Fond-Berge}\\}
+
+\hspace*{1cm}
+
+Ce type de modélisation est introduit pour traiter les lits mineurs où il importe de distinguer la rugosité des berges de la rugosité des fonds. Nous pouvons cependant rester dans le schéma du paragraphe précédent, le lit composé résultant cette fois de l'association de la section située au-dessus du fond (à  la place du lit mineur) et de la section située au-dessus des berges (à  la place du lit majeur).
+
+\vspace{0.5cm}
+
+Le cadre théorique est l'hypothèse de Mülloffer-Einstein \cite{NICOLLET79} pour la composition des rugosités. Elle suppose que:
+\begin{itemize}
+ \item les pentes des lignes de charge sont les mêmes pour les deux écoulements;
+ \item les vitesses sont également les mêmes.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La première hypothèse conduit à  la méthode simple de composition des débitances rappelée dans le paragraphe précédent. Elle suffit à  résoudre le problème tel qu'il a été jusqu'ici posé, mais alors la seconde hypothèse (égalité des vitesses) n'a aucune raison d'être vérifiée. Pour l'imposer, nous devons considérer que les sections mouillées dans chaque lit sont aussi des inconnues, c'est-à-dire ne résultent pas de la seule valeur de la cote de la surface libre (cela revient à  considérer que la limite entre les écoulements n'est pas donnée par les deux verticales situées au-dessus des limites du fond en rive droite et en rive gauche).
+
+\vspace{0.5cm}
+
+En prenant l'indice 1 pour l'écoulement \textit{fond} et l'indice 2 pour l'écoulement \textit{berges}, nous introduisons donc deux inconnues supplémentaires $S_1$ et $S_2$. Les deux relations supplémentaires sont alors :
+
+\begin{itemize}
+ \item la surface totale : $S_1 + S_2 = S$;
+ \item l'égalité des vitesses : $\frac{Q_1}{S_1}=\frac{Q_2}{S_2}$ , que nous voulions imposer.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La débitance totale $D$ est calculée en introduisant une rugosité équivalente $k$ définie par :
+
+\begin{equation}
+  \label{rugEq}
+  D = \frac{Q}{\sqrt{J}}= k S R^{2/3}
+\end{equation}
+
+\vspace{0.5cm}
+
+L'égalité des lignes de charges se traduit par la relation :
+
+\begin{equation}
+  \label{EgLigCh}
+  D = D_1 + D_2 = k_1 S_1 R_{1}^{2/3} + k_2 S_2 R_{2}^{2/3}
+\end{equation}
+
+et l'égalité des vitesses par la relation (\ref{EgVit}) : loi de Strickler appliquée à  chaque écoulement dans le cadre des hypothèses retenues :
+
+\begin{equation}
+  \label{EgVit}
+  k_1 R_{1}^{2/3} = k_2 R_{2}^{2/3}
+\end{equation}
+
+\vspace{0.5cm}
+
+En combinant les relations (\ref{rugEq})(\ref{EgLigCh})(\ref{EgVit}) nous obtenons immédiatement :
+
+\begin{equation}
+  k R^{2/3} = k_1 R_{1}^{2/3} = k_2 R_{2}^{2/3}
+\end{equation}
+
+\begin{equation}
+  R_1 = \frac{S_1}{P_1}
+\end{equation}
+
+\begin{equation}
+  R_2 = \frac{S_2}{P_2}
+\end{equation}
+
+\begin{equation}
+  R = \frac{S}{P}
+\end{equation}
+
+\vspace{0.5cm}
+
+d'où se déduit l'expression de $k$ caractérisant la composition des rugosités :
+
+\begin{equation}
+  k^{3/2} = \frac{P}{\displaystyle \frac{P_1}{k_{1}^{3/2}}+\frac{P_2}{k_{2}^{3/2}}}
+\end{equation}
+
+\vspace{0.5cm}
+
+En définitive, cette méthode revient à  considérer un lit unique, mais dont la rugosité est fonction de la hauteur d'eau, et donnée par la formule ci-dessus.
+
+\subsubsection{Traitement des zones de stockage}
+
+Les zones de stockage\footnote{Attention, il s'agit ici de zones intégrées dans les profils en travers. On peut aussi décrire les zones de stockage par des casiers dont le principe de modélisation est décrit à  la section \ref{SectionCASIER}} agissent sur les écoulements en prélevant ou en restituant de l'eau, mais ne sont pas prises en compte dans les bilans énergétiques.
+En conséquence, dans l'équation de continuité, la section mouillée est la section totale (y compris la zone de stockage), tandis que dans l'équation dynamique la section mouillée est la seule section du lit actif (mineur et majeur). Numériquement, la section intervient souvent par l'intermédiaire de sa dérivée par rapport à  la cote, c'est-à-dire la largeur au miroir $L$. Ce sont donc de même les largeurs au miroir totale, ou du lit actif, qui sont à  utiliser suivant l'équation traitée. Notons que pour les calculs en permanent les zones de stockage sont sans effet.
+
+\vspace{0.5cm}
+
+L'équation de continuité s'écrit donc :
+
+\begin{equation}
+  \frac{\partial{(S + S_s)}}{\partial t} + \frac{\partial Q}{\partial x} = q_l
+\end{equation}
+
+soit :
+
+\begin{equation}
+  (L + L_s) \frac{\partial Z}{\partial t} + \frac{\partial Q}{\partial x} = q_l
+\end{equation}
+
+ou encore :
+
+\begin{equation}
+  L \frac{\partial Z}{\partial t} + \frac{\partial Q}{\partial x} = q_l - L_s \frac{\partial Z}{\partial t} = q_l + q_s
+\end{equation}
+
+l'indice $s$ désignant les variables relatives au stockage.
+
+\vspace{0.5cm}
+
+Le stockage équivaut donc à  introduire un apport latéral de débit $q_s$ (supposé perpendiculaire). L'influence de la sinuosité du lit pourrait être prise en compte en introduisant un paramètre supplémentaire $s$ sous la forme :
+
+\begin{equation}
+  q_l = - s L_s \frac{\partial Z}{\partial t}
+\end{equation}
+
+\vspace{0.5cm}
+
+Cela n'est pas fait en raison de la difficulté d'évaluer précisément $L_s$.
+
+\vspace{0.5cm}
+
+On rappelle bien que la cote calculée dans le cadre du traitement de ce type de zones de stockage est identique à  celle calculée dans le lit mineur, contrairement à  la modélisation avec casiers \ref{SectionCASIER}.
+
+\subsubsection{Traitement des apports}
+
+\label{TraitAp}
+
+Soit $q_l$ un apport latéral, exprimé en $m^2.s^{-1}$ (débit par unité de longueur).
+
+\vspace{0.5cm}
+
+Les équations de Saint-Venant s'obtiennent à  partir du système (\ref{masse})(\ref{qmv}) en ajoutant au second membre de l'équation de continuité $q_l$, et au second membre de l'équation dynamique $k q_l V_l$ (traduisant respectivement l'apport de masse et l'apport de quantité de mouvement).
+
+\vspace{0.5cm}
+
+Le coefficient $k$ résulte du fait que l'apport de quantité de mouvement dépend des axes respectifs de l'écoulement principal et de l'apport, seule la vitesse dans le sens de l'écoulement principal étant à  prendre en compte. Ainsi, pour un apport perpendiculaire à  l'axe de l'écoulement, $k$ est nul, tandis que dans le sens de l'écoulement, $k$ est théoriquement égal à  1.
+
+\vspace{0.5cm}
+
+Pour éviter la donnée d'un paramètre supplémentaire la version standard de \texttt{MASCARET} impose par défaut : $k = 0$, en privilégiant ainsi le premier cas, le plus utile.
+
+\vspace{0.5cm}
+
+Cette modélisation des apports est donc plutôt réservée au cas des apports \textit{diffus} où la quantité de mouvement relative à  ces apports est de toute façon négligeable vis-à -vis de celle de l'écoulement principal. Dans les autres situations, il est préférable d'introduire explicitement un bief représentant l'apport (réseau ramifié), auquel cas le traitement effectué revient à  choisir cette fois : $k = 1$.
+
+\subsubsection{Traitement des n\oe uds}
+
+\label{TrNd}
+
+Les équations de Saint-Venant sont appliquées seulement entre deux sections d'un même bief (voir aussi le traitement des singularités \ref{TS}). A chaque n\oe ud d'un réseau, il est donc nécessaire de trouver de nouvelles équations. Elles sont obtenues en écrivant l'égalité des cotes et la conservation des débits. C'est la généralisation du résultat pouvant être obtenu dans le cas simple (notamment sans perte de charge) présenté ci-dessous (voir figure \ref{SchemConf})
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5]{Schema_confluent.eps}
+  \caption{Schéma d'un confluent à  3 biefs}
+  \label{SchemConf}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Le n\oe ud est constitué des trois sections no. 1, no. 2 et no. 3 situées à  chacune des extrémités des biefs associés. Ces sections sont caractérisées par les variables hydrauliques $(Q_1,Z_1)$, $(Q_2,Z_2)$ et $(Q_3,Z_3)$.
+
+\vspace{0.5cm}
+
+Nous pouvons établir les équations du n\oe ud en nous plaçant dans le cas simple suivant :
+\begin{itemize}
+ \item lit unique;
+ \item écoulement permanent;
+ \item sections mouillées telles que les vitesses le long de l'axe moyen du confluent soient identiques dans chaque branche;
+ \item frottement nul le long du confluent.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Nous pouvons écrire les équations de Saint-Venant le long de l'axe du confluent, en considérant la section no. 1 puis la section no. 3, le bief correspondant à  la section no. 2 étant traité comme apport latéral (voir la section précédente \ref{TraitAp}).
+
+\vspace{0.5cm}
+
+L'équation de continuité donne immédiatement :
+
+\begin{equation}
+  Q_3 - Q_1 = Q_2
+\end{equation}
+
+\vspace{0.5cm}
+
+L'équation dynamique se transforme en :
+
+\begin{equation}
+  V \frac{\partial Q}{\partial x} + g S \frac{\partial}{\partial x} \left ( Z + \beta \frac{V^2}{2 g} \right ) = k q_l V_l
+\end{equation}
+
+\vspace{0.5cm}
+
+$k$ est le coefficient de quantité de mouvement comme indiqué à  la section \ref{TraitAp}.
+
+\vspace{0.5cm}
+
+L'hypothèse essentielle est la conservation des vitesses le long de l'axe. Elle entraîne :
+
+\begin{equation}
+  V = k V_l
+\end{equation}
+
+et :
+
+\begin{equation}
+  \frac{\partial}{\partial x} \left ( \beta \frac{V^2}{2g} \right ) = 0
+\end{equation}
+
+De plus :
+
+\begin{equation}
+  \frac{\partial Q}{\partial x} = q_l
+\end{equation}
+
+\vspace{0.5cm}
+
+L'équation dynamique se réduit donc à  :
+
+\begin{equation}
+  \frac{\partial Z}{\partial x} = 0
+\end{equation}
+
+soit :
+
+\begin{equation}
+  Z_3 = Z_1
+\end{equation}
+
+\vspace{0.5cm}
+
+En raisonnant de même en considérant cette fois les biefs correspondant aux sections no. 2 et no. 3, le bief de la section no. 1 étant traité en apport, nous obtiendrons : $Z_3 = Z_2$.
+
+\vspace{0.5cm}
+
+Ainsi l'équation de continuité donne la conservation des débits aux n\oe uds, et l'équation dynamique donne l'identité des cotes.
+
+\vspace{0.5cm}
+
+Dans le cas général, les hypothèses simples utilisées ici ne sont pas vérifiées, en particulier :
+\begin{itemize}
+ \item les vitesses le long de l'axe sont rarement semblables;
+ \item si le frottement peut souvent être négligé, s'ajoute cependant une perte de charge singulière beaucoup plus importante (voir la section suivante).
+\end{itemize}
+
+\vspace{0.5cm}
+
+Cependant, les relations simples obtenues sont conservées dans les noyaux fluviaux. Elles sont les seules à  pouvoir être mises en \oe uvre aisément sur le plan numérique.
+
+\vspace{0.5cm}
+
+En pratique, la conservation des débits est toujours bien vérifiée, mais l'identité des cotes pose au contraire un problème. Pour résoudre ces difficultés, il est souhaitable :
+\begin{itemize}
+ \item de choisir les sections extrêmes les plus rapprochées possibles (confluent \textit{ponctuel});
+ \item d'introduire des pertes de charge singulières sur les branches amont des confluents, pour rendre compte de la dissipation supplémentaire d'énergie (voir le rapport sur les confluents en bibliographie et la section suivante).
+\end{itemize}
+
+\subsubsection{Pertes de charges singulières}
+
+Dans l'équation dynamique, le terme $J$ représente les pertes de charge dites régulières, résultant du frottement sur le fond et les berges. Des pertes de charge plus localisées, dites singulières, peuvent se produire en présence d'obstacles, de variations brusques de sections, de confluents. Elles sont modélisées à  l'aide d'un terme $J_s$, s'ajoutant à  $J$ :
+\begin{itemize}
+ \item pour un élargissement : $J_s = \xi_1 \frac{1}{2 g}(\beta_j V_j - \beta_i V_i)^2$ avec :
+   \begin{itemize}
+     \item l'indice $j$ désignant la section amont et l'indice $i$ la section avale;
+     \item et : $\beta_j V_j < \beta_i V_i$.
+   \end{itemize}
+ \item pour un obstacle situé immédiatement à  l'aval de la section $j$ : \\ $J_s = \xi_2 \frac{1}{2g} \beta_j V_{j}^2$.
+\end{itemize}
+\vspace{0.5cm}
+ avec $\xi_1$ et $\xi_2$ les coefficients de perte de charge.
+
+\vspace{0.5cm}
+
+Dans la version actuelle de \texttt{MASCARET}, la valeur de $\xi_1$ a été imposée à  la suite d'études bibliographiques (constante égale à  0.3), elle est valable pour des élargissements progressifs (ces élargissements sont pris en compte automatiquement).
+
+\vspace{0.5cm}
+
+La valeur de $\xi_2$ est au choix de l'utilisateur et fera l'objet d'un calage. Une perte de charge singulière modélisée au moyen de $\xi_2$ devra être introduite aussi souvent que nécessaire, c'est-à-dire chaque fois qu'elle ne résulte pas d'un élargissement progressif\footnote{cette perte de charge est à  indiquer à  la section $i = j + 1$ : en fluvial, l'aval influenà§ant l'amont, une perte de charge indiquée à  la section $i$ va augmenter la charge calculée à  la section $j = i - 1$, et non diminuer la charge calculée à  la section $i$.} (rétrécissement ou élargissement ponctuel : ponts, etc.).
+
+\subsubsection{Singularités} \label{singu}
+
+\paragraph{Principe général\\}
+
+\hspace*{1cm}
+
+Les singularités les plus fréquemment rencontrées sont des seuils ou des barrages de régulation. Nous traiterons cependant ce problème dans le cas le plus général, en appelant singularité toute section de la rivière où les équations de Saint-Venant ne sont pas appliquées.
+
+\vspace{0.5cm}
+
+Pour mener à  bien les calculs de ligne d'eau, il est alors nécessaire d'utiliser, à  la place de ces équations de Saint-Venant, de nouvelles équations (relations de transfert) définissant la loi de la singularité traitée.
+
+\vspace{0.5cm}
+
+Nous supposons toujours que cette singularité est située entre deux sections de calcul d'indices $j$ avec : $j + 1 = i$ (voir figure \ref{SchemSing}).
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.8,angle=270]{Schema_singularite.eps}
+  \vspace{0.5cm}
+  \caption{Schéma d'une singularité}
+  \label{SchemSing}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+L'équation de continuité est toujours réduite à  $Q_i = Q_j$, traduisant l'égalité du débit de chaque côté de la singularité. En non permanent, cela introduit un léger biais, les volumes d'eau n'étant plus rigoureusement conservés, mais ce biais est négligeable si la distance séparant les deux sections de calcul est \textit{raisonnable}.
+
+\vspace{0.5cm}
+
+L'équation dynamique est spécifique à  chaque type de singularité. Son expression générale est : $ f(Q, Z_{amont},Z_{aval}) = 0$. La fonction $f$ n'est introduite que dans l'algorithme de résolution des systèmes d'équations à  traiter, sous sa forme discrétisée (voir la section \ref{MR}). Nous indiquons ci-dessous les lois considérées suivant le type de la singularité. On indique à  la section \ref{BilanSing} le bilan des différentes singularités disponibles dans \texttt{MASCARET}.
+
+\paragraph{Seuils\\}
+
+\hspace*{1cm}
+
+Sous la forme la plus générale, la loi du seuil (voir les figures ci-après) peut être de la forme : $Q = f(Z_{amont},Z_{aval})$, le type d'écoulement (noyé ou dénoyé) étant intégré directement dans l'expression de la fonction $f$. Cette dernière est indiquée sous forme discrétisée avec une série suffisante de triplets $(Q,Z_{amont},Z_{aval})$.
+
+\begin{itemize}
+ \item \textsf{Seuil dénoyé} : le débit $Q_d$ ne dépend que de la cote amont (voir la figure \ref{Sd});
+   \begin{figure}
+     \begin{center}
+        \includegraphics[scale=0.6,angle=270]{Schema_Seuil_Denoye.eps}
+        \vspace{1.5cm}
+        \caption{Seuil dénoyé}
+        \label{Sd}
+     \end{center}
+    \end{figure}
+   \\
+   avec $Q = Q_d = m L \sqrt{2g} (Z_{amont}-Z_0)^{3/2}$ et :
+      \begin{itemize}
+        \item $m$ : le coefficient de débit;
+        \item $L$ : la largeur du seuil. 
+      \end{itemize}
+
+ \item \textsf{Seuil noyé} ; le débit $Q_n$ est influencé par la cote aval (voir la figure \ref{Sn});
+    \begin{figure}
+     \begin{center}
+        \includegraphics[scale=0.6,angle=270]{Schema_Seuil_Noye.eps}
+        \vspace{1.5cm}
+        \caption{Seuil noyé}
+        \label{Sn}
+     \end{center}
+    \end{figure}
+    \\
+    avec $Q = Q_n = C Q_d$ et :
+    \begin{itemize}
+      \item $C$ : le coefficient noyé/dénoyé : $C = k \frac{Z_{aval}-Z_{0}}{Z_{amont}-Z_0}$;
+      \item $k$ : une fonction à  définir.
+    \end{itemize}
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+La loi du seuil peut aussi être donnée seulement en écoulement dénoyé (l'aval n'influence pas l'amont), donc sous la forme : $Q = f(Z_{amont})$, c'est-à-dire en indiquant une série suffisante de couples $(Q,Z_{amont})$.
+
+\vspace{0.5cm}
+
+Le régime est considéré comme noyé dès que : $R = \frac{Z_{aval}-Z_s}{Z_{amont}-Z_s}$ est supérieur à  une valeur test $R_0$ ($Z_s$ la cote de crête est un paramètre du seuil). Une correction automatique est alors appliquée : $Q = k(R) f(Z_{amont})$. La valeur de la constante $R_0$, et la forme de la fonction $k$, sont imposées dans \texttt{MASCARET}.
+
+\vspace{0.5cm}
+
+Dans la version actuelle de \texttt{MASCARET}, on distingue deux types de seuils en écoulement noyé avec une loi de seuil mince ou épais (voir la section \ref{LoiSeuilMinceEpais}). Ainsi, pour un seuil épais, $Ro$ est égal à  0.8, et $k$ est une fonction parabolique définie par :
+
+\begin{equation}
+  k(R) = -25 R^2 + 40 R -15
+\end{equation}
+avec :
+\begin{itemize}
+ \item $k(R_0) = 1$;
+ \item et $k(1) = 0$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le seuil peut être aussi défini par la géométrie de sa crête, auquel cas la loi appliquée en écoulement dénoyé est la loi des déversoirs :
+
+\begin{equation}
+  Q = m \sqrt{2 g} \sum_{k} L_k (Z_{amont} - Z_k)^{3/2}
+\end{equation}
+
+o\`{u} :
+\begin{itemize}
+ \item $L_k$ est la largeur d'un élément de la crête du seuil de cote $Z_k$;
+ \item $m$ est le coefficient de débit (paramètre du seuil).
+\end{itemize}
+
+\vspace{0.5cm}
+
+En écoulement noyé, la correction appliquée est identique à  celle définie ci-dessus pour un seuil épais.
+
+\paragraph{Ouvrages de régulation\\}
+
+\hspace*{1cm}
+
+La loi de la singularité utilisée est simplement la cote amont imposée (en fonction du temps).
+
+\paragraph{Sections de contrà´le\\}
+
+\hspace*{1cm}
+
+La loi de la singularité est une loi quelconque du type : $Q = f(Z_{amont})$.
+
+\vspace{0.5cm}
+
+Une loi : $Q = f(Z_{aval})$ peut également être imposée mais cela n'a pas de sens physiquement en régime fluvial. Cette possibilité existe surtout pour pouvoir effectuer des tests dans des situations précises.
+
+\subsubsection{Passages en charge}
+
+Les passages locaux en charge (exemple : sous un pont) ne nécessitent pas de modélisation spécifique dans le code. La prise en compte de ces cas particuliers est faite au niveau de la géométrie des profils. Les sections en charge doivent être surmontées d'une fente verticale de largeur négligeable (fente de Preissmann). Si la section se trouve effectivement en charge, la cote $Z$ calculée sera supérieure à  la cote du sommet de la section, et donnera la valeur de la pression $P$ au moyen de la relation : $P = \rho g Z$ .
+

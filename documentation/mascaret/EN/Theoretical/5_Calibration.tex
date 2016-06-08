@@ -1,0 +1,208 @@
+\section{Automatic calibration of the Strickler coefficient}
+
+\underline{Warning} : the automatic calibration is only possible in steady state (engine \texttt{SARAP}) and with only one reach with \texttt{MASCARET}.
+
+\subsection{Introduction}
+
+For 1D and 2D hydraulic modelling based on the Saint-Venant equations, it is necessary to define a number of data including the geometry, the initial conditions in non-stationary mode, the boundary conditions and the Strickler coefficient. All these data but the Strickler coefficient are well defined by the parameters of the study (the geometry data are provided by topographical surveys; the boundary conditions and the initial conditions are defined by the study case).
+
+\vspace{0.5cm}
+
+The Strickler coefficient models the linear head losses attributed to friction on the bottom and the river banks. With one-dimensional modelling, however, it also accounts for dissipation phenomena which are not directly modelled. The determination of this coefficient therefore requires some calibration. This is carried out from water levels measured for flows of the same order of magnitude as those of the study.
+
+\vspace{0.5cm}
+
+This calibration step, which is critical for the quality of the study, is one of the most time consuming tasks in a study.
+
+\vspace{0.5cm}
+
+This section presents the method integrated in the \texttt{MASCARET} system and based on the solution of an adjoint problem, by which the Strickler coefficients are identified. This method shortens one of the longest tasks in applied studies and allows better control of the uncertainties related to the Strickler coefficients.
+
+\vspace{0.5cm}
+
+The first part presents in general terms the problem of parameters identification. The complete algorithm is then presented, applied to the case of the Strickler coefficient.
+
+\vspace{0.5cm}
+
+The validation of the method on several simplified cases and a real case is detailed in \cite{GOUTAL05}.
+
+\subsection{Definition of the problem}
+
+\label{PosPb}
+
+The problem of the estimation of the Strickler coefficient is briefly presented in this section. Parameter estimation is equivalent to finding the Strickler coefficients that minimise a cost function $J$ equal to the standard deviation between the measured values and those predicted by a numerical simulation. The general principle of the existing methods to minimise a problem with several variables is reminded below.
+
+\vspace{0.5cm}
+
+Let us consider a steady flow in a stretch of river. A number of measurement are available that link flows to associated elevations. The purpose is to estimate, from these measurements, the Strickler coefficient (or Strickler coefficients in different areas of the model domain) which will minimise the following function $J$ :
+
+\begin{equation}
+ J(K) = \sum_{i=1..m} \alpha_i ( Z_{i}^m - Z_{i}^c (K) )^2
+\end{equation}
+
+where :
+\begin{itemize}
+ \item $m$ is the number of measurement points;
+ \item $\alpha_i$ is a weighting factor for each measurement (this coefficient can be equal to zero if no measurement is available);
+ \item $Z_{i}^m$ is the elevation measured at point $i$ for the flow considered;
+ \item $Z_{i}^c$ is the elevation computed at point $i$ when solving the Saint-Venant equations with a set of Strickler coefficients $K_i$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\underline{Notes} :
+\begin{itemize}
+ \item $J$ is a cost function quantifying the variance between the elevation measured and that computed for a given set of Strickler coefficients;
+ \item $J$ is not known analytically. To determine J, it is necessary to evaluate the elevations computed for a given set of Strickler coefficients using the Saint-Venant equations.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Many methods of optimisation are presented in the literature to minimise the $J$ function. Currently, the method implemented in \texttt{MASCARET} is that used in the old version of the \texttt{CASTOR} solver \cite{LEBOSSE89_1}\cite{LEBOSSE89_2}\cite{LEBOSSE89_3}. It is a method of gradient descent.
+
+\vspace{0.5cm}
+
+The algorithm of gradient descent has the following general form :
+\begin{itemize}
+ \item[1]) estimation of the starting point;
+ \item[2]) for : $k= 0,1,2...$ until convergence is reached :
+   \begin{itemize}
+     \item test of convergence of $x_k$;
+     \item computation of the new direction of descent $d_k$;
+     \item computation of the descent step $\lambda_k$: problem of non-linear minimisation with only one variable;
+     \item update in the direction of descent : $x_{k+1} = x_k + \lambda_k d_k$.
+   \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+The various algorithms differ by the choice of the direction of descent and by the method used to compute the optimum step.
+
+\vspace{0.5cm}
+
+In the case of the method of gradient descent, the direction of descent is opposite to the gradient of the function. The complexity is in the estimation of the gradient of this function when the function itself is not known analytically. Minimisation is carried out by dichotomy and parabolic approximation when only one variable is used to find the parameter. This method of minimisation does not ensure that the minimum found is a global minimum (as opposed to a local minimum). Besides, convergence becomes very slow as the local minimum is reached.
+
+\subsection{Algorithm of estimation of the Strickler coefficients}
+
+This section presents in detail the algorithm used to estimate the Strickler coefficients in the case of a one-dimensional steady flow in a single reach. The gradient method used to minimise the cost function will also be presented.
+
+\subsubsection{Reminder on the Saint-Venant equations}
+
+The one-dimensional flow in a river is represented by a system of partial derivative equations where friction is modelled by the Strickler relation. These equations are obtained from the Navier-Stokes equations after several simplifying assumptions including :
+
+\begin{itemize}
+ \item a uniform velocity direction;
+ \item a constant velocity profile in a section of the river.
+\end{itemize}
+
+\vspace{0.5cm}
+
+In steady state, the boundary conditions are a discharge at the upstream end of the model domain and an elevation or a stage-discharge relationship at the downstream end of the domain.
+
+\vspace{0.5cm}
+
+The unknown factors are the elevations at every node of the computational domain : $[x_0,x_1]$. The flow is determined by the upstream boundary condition and the flow contributions along the computational domain $[x_0,x_1]$.
+
+\begin{equation}
+  \label{ContCas}
+  \frac{\partial Q}{\partial x}= q_a
+\end{equation}
+
+\begin{equation}
+  \label{DynCas}
+  \frac{\partial}{\partial x} \left ( \frac{Q^2}{S(Z)} \right ) + g S(Z) \frac{\partial Z}{\partial x} + \frac{g Q^2}{K^2 S(Z) R^{\frac{4}{3}}} = 0
+\end{equation}
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    Q(x_0) = Q_{u/s} \\
+    Z(x_1) = Z_{d/s}
+  \end{array}
+ \right.
+\end{equation}
+
+with:
+\begin{itemize}
+  \item $x$ the curvilinear x-coordinate along the river;
+  \item $Q$ the discharge;
+  \item $S(Z)$ the wetted cross-section of the river, dependent upon the elevation;
+  \item $R$ the hydraulic radius, $g$ the gravity and $K$ the Strickler coefficient, as a function of $x$. In fact, this coefficient will be considered constant by zone.
+\end{itemize}
+
+\vspace{0.5cm}
+
+The flow can be computed at all points of the computational domain from the continuity equation (\ref{ContCas}) given the flow imposed at the upstream boundary condition. 
+
+\vspace{0.5cm}
+
+The momentum equation (\ref{DynCas}) is a differential equation which is discretised using a finite difference scheme. After discretisation, the equation to solve is of the form : $Z=F(Z)$.
+
+\vspace{0.5cm}
+
+This is equivalent to solving for the roots of function : $Z-F(Z)$. Each time the Saint-Venant equations are to be solved, the steady state subcritical is called. For more details, the reader is referred to the section introducing the principles of the steady state subcritical engine.
+
+\vspace{0.5cm}
+
+The solution to this differential equation, i.e. the elevations computed in each discrete point of the domain, depends on the Strickler coefficient. This coefficient is not known a priori but results from the calibration of the model.
+
+\subsubsection{Detailed presentation of the minimisation algorithm}
+
+In the presentation of the algorithm, the step where the discrete Saint-Venant equations are solved in steady state is called \textit{solution of the Saint-Venant equations in steady state for a discrete set of Strickler coefficients defined by zone}.
+
+\vspace{0.5cm}
+
+The minimisation problem presented in section \ref{PosPb} is considered. The algorithm for parameter estimation can be explained as follows :
+
+\begin{itemize}
+  \item \textbf{Step 1} : Initialisation \\
+   A spatially constant Strickler coefficient is selected over the whole domain, i.e. a vector : $K_i \quad i=1..m$, $m$ being the number of zones for the Strickler coefficients;
+  \item \textbf{Step 2} : Computation of the direction of descent, equal to the gradient of function $J$ with respect to vector $K$. \\
+    The gradient of $J$ is not immediately known because $J$ is not known analytically.
+    $J$ is a function of the various values taken by the Strickler coefficient in each zone. Each partial derivative with respect to a component will be approximated by a Taylor expansion.
+    \begin{equation}
+      \frac{\partial J(K(K_i))}{\partial K_i} \simeq \frac{J(K(K_i+dK_i))-J(K)}{dK_i}
+    \end{equation}
+    The Saint-Venant equations are solved for each component $K_i$ of the vector representing \textit{the constant Strickler coefficient by zones}, incremented by the discretisation step $dK_i$. There are as many Saint-Venant problems to solve as there are different Strickler zones.
+    This gradient corresponds to the gradient of the discrete problem and not that of the continuous problem.
+    \underline{Notes} : In transient state, the computation of the gradient $\frac{\partial J}{\partial S_k}$ could not be carried out by this method :
+    \vspace{0.5cm}
+    For $n$ time steps varying between $1$ and $M$, and $m$ measurement points, the gradient can be expressed as follows :
+    \begin{equation}
+      \frac{\partial J}{\partial S_k} = 2 \sum_{i,n} U_{i}^n (Z_{i}^n - m_{i}^n)
+    \end{equation}
+    with : $U_{i}^n = \frac{\partial Z_{i}^n}{\partial S_k}$
+    \vspace{0.5cm}
+    For each simulation time step and for each measurement point, the Saint-Venant equations must be solved to evaluate the gradient.
+  \item \textbf{Step 3} : Minimisation in the direction of descent \\
+    The problem is as follows: to minimise the function $J$ in the direction opposite that of the gradient, i.e. to find $\rho$ minimising : \\
+    $J \left ( K_k - \rho \frac{\partial J(K_k)}{\partial K} \right )$ where $J$ is a non-linear function.
+    The idea behind the estimation of $\rho$ is to find by dichotomy a configuration such that for 3 points $\rho_1$,$\rho_2$ and $\rho_3$ : $\rho_1<\rho_2<\rho_3$, $J(\rho_2)<J(\rho_1)$ and $J(\rho_2)<J(\rho_3)$.
+    The function $J$ can then be locally approximated by a parabola. The optimal $\rho$ parameter is the minimum of this parabola, which can be computed analytically.
+    The determination of the 3 points $(\rho_1,\rho_2,\rho_3)$ is done by dichotomy. For each estimate of function $J$, a Saint-Venant problem is solved.
+  \item \textbf{Step 4} : Increment in the direction of descent \\
+    $K_{k+1} = K_{k} - \rho \nabla J_{k}$
+  \item \textbf{Step 5} : Testing convergence \\
+    $\| J(K_{k+1}) \|< \epsilon$
+\end{itemize}
+
+\vspace{0.5cm}
+
+\underline{Notes} : this method only finds local minima. Although this minimisation technique is relatively old, it has the advantage of being very simple to implement.
+
+\subsection{Method of calibration for compound channels}
+
+The Strickler coefficients for the river bed (low flow channel) and floodplains (high flow channel) are defined by zones to reproduce measured water levels corresponding to bankfull and overtopping flows. As a first step, the Strickler coefficients for the river bed are estimated from the water levels measured for the bankfull flow using the automatic calibration algorithm. In a second step, the Strickler coefficients for the floodplain are then estimated using the calibrated Strickler coefficients for the river bed and the water levels measured for the overtopping flow, using again the automatic calibration algorithm.
+
+\subsection{Validation and conclusions}
+
+The algorithm for parameter estimation was initially validated on an idealised test case, such that the results obtained could be checked. The algorithm was then applied to a real study.
+
+\vspace{0.5cm}
+
+In steady state, automatic calibration of the Strickler coefficient is carried out using a method of parameter estimation and the computation of the cost function gradient. This approach gives satisfactory results for both idealised and real test cases. It is, however, noted that convergence is relatively slow, especially near a local minimum. In practice, the accuracy obtained with this approach is sufficient: it is indeed not realistic to expect a better accuracy than $1cm$ away from the measured levels.
+
+\vspace{0.5cm}
+
+Future developments will focus on the calibration for the unsteady flow state (introducing the adjoint problem to evaluate the gradient of the cost function) and on the improvement of the minimisation method (introducing more robust and more recent methods such as the conjugate gradient method or Quasi-Newton methods).
+

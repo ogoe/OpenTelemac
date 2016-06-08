@@ -1,0 +1,142 @@
+\section{Introduction et hypothèses générales}
+
+\subsection{Introduction}
+
+Ce rapport expose la modélisation mathématique unidimensionnelle des écoulements fluviaux et torrentiels sur laquelle repose les différents noyaux de calcul hydraulique du système de codes \texttt{MASCARET} (3 noyaux), ainsi que les méthodes de résolution des équations résultant de cette modélisation.
+On présente ci-dessous la structure du système de codes \texttt{MASCARET}, ce rapport ne portant que sur la partie \textit{hydraulique} du système.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.8]{systeme_MASCARET.eps}
+  \caption{Le logiciel \texttt{MASCARET}}
+ \end{center}
+\end{figure}
+
+Les méthodes de résolution varient suivant que les écoulements sont permanents ou non permanents, fluviaux ou torrentiels et aussi suivant le schéma du réseau hydraulique : réseau ramifié (noyau fluvial permanent) ou réseau maillé (noyau fluvial non permanent). On rappelle que les réseaux maillés autorisent un arrangement quelconque des branches, tandis que la caractéristique des réseaux ramifiés est qu'il n'existe qu'un seul chemin reliant deux points quelconques du réseau.
+
+\subsection{Hypothèses générales}
+
+On rappelle ci-dessous les principales hypothèses justifiant la modélisation adoptée dans les 3 noyaux d'hydraulique, et notamment le choix d'un modèle monodimensionnel:
+\vspace{0.5cm}
+\begin{itemize}
+ \item chaque bief possède un axe privilégié d'écoulement, les vecteurs vitesse étant toujours supposés parallèles à  cet axe ;
+ \item les écoulements sont à  faible courbure dans le plan horizontal ; les accélérations verticales sont négligeables, et la répartition des pressions est quasi hydrostatique ;
+ \item la pente moyenne des écoulements est faible (le cosinus de l'angle entre l'horizontale et le fond est proche de 1) ;
+ \item les contraintes de viscosité sur le fond et les berges sont prises en compte à  l'aide des lois empiriques de frottement (loi de Strickler).
+\end{itemize}
+
+\vspace{0.5cm}
+
+
+
+Dans chaque plan perpendiculaire à  son axe, l'écoulement est alors entièrement déterminé par la connaissance de la vitesse moyenne (ou du débit total), et de la cote de la surface libre.
+
+\vspace{0.5cm}
+
+Quelques autres hypothèses ont été ajoutées dans la modélisation pour simplifier l'entrée des données ou se placer dans les cas les plus usuels :
+\vspace{0.5cm}
+\begin{itemize}
+ \item l'influence du vent est négligée;
+ \item lorsqu'un confluent n'est pas modélisé au moyen d'un bief spécifique, il est supposé perpendiculaire à  l'axe principal de l'écoulement : sa représentation consiste à  introduire un apport latéral de débit, sans apport de quantité de mouvement.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Il existe d'autres codes qui ont été développés pour s'affranchir des principales contraintes résultant de ces choix de modélisation  et permettent de compléter ces noyaux :
+\vspace{0.5cm}
+\begin{itemize}
+ \item les écoulements bidimensionnels peuvent être traités au moyen du code \texttt{TELEMAC}\cite{HERVOUET07};
+ \item la géométrie des biefs est ici figée. Le code \texttt{COURLIS}, qui utilise les modules hydrauliques du système \texttt{MASCARET}, est dédié au traitement du transport solide et de ses conséquences ;
+ \item les   grandes   plaines   d'inondation,   où   les   écoulements   ne   sont   plus monodimensionnels, peuvent être modélisés à  l'aide d'un système de casiers interconnectés, c'est le rôle du code \texttt{CASIER}. Associé au noyau fluvial non permanent, ce code élargit alors le champ d'application du système \texttt{MASCARET}, en traitant conjointement un réseau de biefs et des casiers de stockage associés. Cela revient à  une pseudo-modélisation 2D ou modélisation 1.5D.
+\end{itemize}
+
+\subsection{Définitions et notations}
+
+\subsubsection{Définitions} \label{secDef}
+
+Nous avons souligné dans l'introduction les caractéristiques de base de la modélisation. Nous nous intéressons à  des écoulements fluviaux ou torrentiels dans des réseaux de biefs, chaque bief possédant un axe privilégié d'écoulement : les grandeurs calculées sont toujours relatives à  une section d'écoulement perpendiculaire à  cet axe, chaque section étant identifiée par son abscisse le long de cet axe.
+
+\vspace{0.5cm}
+
+Les sections d'écoulement sont considérées comme étant la réunion de trois sous-ensembles :
+\vspace{0.5cm}
+\begin{itemize}
+ \item \underline{le lit mineur}, lit naturel de l'écoulement hors les périodes de crues. Ce lit peut comprendre des îles, mais dans ce cas, la cote de la surface libre sera toujours supposée identique de chaque côté . Dans le cas contraire, il faudrait recourir à  une modélisation en réseau maillé;
+ \item \underline{le lit majeur}, sections d'écoulement supplémentaires actives en période de crue, lorsque la cote de l'eau passe au dessus de la crête des berges en rive droite ou en rive gauche. Ces sections sont représentées effectivement de chaque côté du lit, les cotes des deux berges étant distinctes dans le cas général ;
+ \item \underline{les zones de stockage}, considérées comme des réservoirs se remplissant en montée de crue, et se vidant en descente de crue. Elles servent donc bien à  stocker de l'eau, mais contrairement aux sections du lit majeur, elles ne participent pas à  l'écoulement proprement dit, dans la mesure où les vitesses dans le sens de l'axe d'écoulement sont supposées nulles.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Si le lit mineur est généralement assez aisé à  déterminer, la limite lit majeur/zones de stockage est au contraire beaucoup moins bien définie, et peut varier suivant l'importance de la crue.
+
+\vspace{0.5cm}
+
+Lorsque les zones de stockage sont susceptibles de générer des écoulements transversaux dans la plaine d'inondation, la présente modélisation devient insuffisante ; il est alors nécessaire de recourir au couplage avec un système de casiers.
+
+\vspace{0.5cm}
+
+Lorsque le modèle 1D atteint ses limites, une modélisation bidimensionnelle peut cependant être nécessaire, à  la place ou en complément.
+
+\vspace{0.5cm}
+
+L'estimation de l'énergie dissipée en frottement est un élément fondamental de la modélisation. Elle est obtenue au moyen de la valeur du coefficient de rugosité de Strickler (voir le paragraphe suivant), à  estimer séparément dans le lit mineur ou le lit majeur. Le rôle du calage est d'estimer au mieux ces coefficients, à  l'aide de lignes d'eau naturelles connues. Cette recherche s'effectue surtout au moyen de méthodes essais/erreurs. Un algorithme d'optimisation a été cependant spécialement développé pour le noyau fluvial permanent, ce qui permet de réaliser un calage automatique de ces coefficients.
+
+La figure \ref{SchemProf} et les notations ci-dessous résument les éléments essentiels de la modélisation caractérisant une section d'écoulement.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.8,angle=270]{Schema_profil.eps} \hspace{1.5cm}
+  \vspace{1.5cm}
+  \caption{Schématisation d'un profil - Notations}
+  \label{SchemProf}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+\textbf{Remarque :}
+il est important de distinguer les sections de données (ou profils) où les grandeurs géométriques seront calculées directement à  partir de relevés topographiques effectués au préalable, et les sections de calcul (choisies dans le modèle), où ces grandeurs seront obtenues en interpolant, le cas échéant, les valeurs réelles à  chaque profil.
+
+\subsubsection{Notations} \label{secNot}
+
+Dans tout le document, sauf mention contraire, on note les variables suivantes (voir figure \ref{SchemProf}) :
+\vspace{0.5cm}
+\begin{itemize}
+ \item $t$ le temps ($s$);
+ \item $x$ l'abscisse de l'axe d'écoulement principal de la rivière ($m$);
+\vspace{0.5cm}
+ \item $Q_m$ le débit qui passe dans le lit mineur ($m^3.s^{-1}$);
+ \item $Q_M$ le débit qui passe dans le lit majeur, rive gauche et droite ($m^3.s^{-1}$);
+ \item $Q$ le débit total qui passe dans le lit actif ($m^3.s^{-1}$) : $Q = Q_m + Q_M$;
+ \item $q_l$ le débit d'apport latéral par mètre de longueur ($m^2.s^{-1}$);
+\vspace{0.5cm}
+ \item $L_m$ la largeur au miroir du lit mineur ($m$);
+ \item $L_M$ la largeur au miroir du lit majeur ($m$) : $L_M = L^{'}_{M} + L^{''}_M$;
+ \item $L$ la largeur au miroir du lit actif ($m$) : $L = L_m + L_M$;
+ \item $L_s$ la largeur des zones de stockage ($m$);
+ \item $L_t$ la largeur au miroir du lit total avec stockage ($m$);
+\vspace{0.5cm}
+ \item $S_m$ l'aire du lit mineur ou section mouillée ($m^2$);
+ \item $S_M$ l'aire du lit majeur ($m^2$) : $S_M = S^{'}_{M} + S^{''}_M$;
+ \item $S$ l'aire du lit actif ($m^2$) : $S = S_m + S_M$;
+ \item $S_s$ l'aire des zones de stockage ($m^2$);
+ \item $S_t$ l'aire du lit total avec stockage ($m^2$);
+\vspace{0.5cm}
+ \item $K_m$ le coefficient de Strickler du lit mineur;
+ \item $K_M$ le coefficient de Strickler du lit majeur;
+\vspace{0.5cm}
+ \item $P_m$ le périmètre mouillé du lit mineur ($m$) : $P_m = AA^{'}$;
+ \item $P_M$ le périmètre mouillé du lit majeur ($m$) : $P_M = A^{'}B^{'}+AB$;
+ \item $P$ le périmètre mouillé du lit actif ($m$) : $P = P_m + P_M$;
+\vspace{0.5cm}
+ \item $R_m$ le rayon hydraulique du lit mineur ($m$) : $R_m = S_m / P_m$;
+ \item $R_M$ le rayon hydraulique du lit majeur ($m$) : $R_M = S_M / P_M$;
+ \item $R$ le rayon hydraulique du lit actif ($m$) : $R = S / P$;
+\vspace{0.5cm}
+ \item $V_m$ la vitesse de l'eau dans le lit mineur ($m.s^{-1}$) : $V_m = Q_m / S_m$;
+ \item $V_M$ la vitesse de l'eau dans le lit majeur ($m.s^{-1}$) : $V_M = Q_M / S_M$;
+ \item $V$ la vitesse moyenne de l'écoulement ($m.s^{-1}$) : $V = Q / S$;
+\end{itemize}
+
+\vspace{0.5cm}

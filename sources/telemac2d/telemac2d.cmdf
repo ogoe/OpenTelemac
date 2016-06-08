@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac2d
 module: telemac2d
-liborder: special parallel hermes damocles ad bief sisyphe tomawac waqtel telemac2d
+liborder: special parallel hermes damocles ad bief stbtel sisyphe tomawac waqtel telemac2d
 name: HOMERE_TELEMAC2D
 
 [ad]
@@ -703,6 +703,10 @@ files: declarations_special.f
   get_nodes_per_element.f
   check_allocate.f
   gracestop.f
+
+[stbtel]
+path: <root>|sources|stbtel
+files: interp.f
 
 [telemac2d]
 path: <root>|sources|telemac2d

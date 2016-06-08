@@ -1,0 +1,86 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>createMASCARET</title>
+    <style type="text/css" media="all">
+      @import url("scilab_code.css");
+      @import url("xml_code.css");
+      @import url("c_code.css");
+      @import url("style.css");
+    </style>
+  </head>
+  <body>
+    <div class="manualnavbar">
+    <table width="100%"><tr>
+      <td width="30%">
+    	<span class="previous"><a href="computeMASCARET_BC.html">&lt;&lt; computeMASCARET_BC</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="deleteMASCARET.html">deleteMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+
+
+
+    <span class="path"><a href="index.html">Toolbox Mascaret</a> &gt;&gt; <a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a> &gt; createMASCARET</span>
+
+    <br /><br />
+    <div class="refnamediv"><h1 class="refname">createMASCARET</h1>
+        <p class="refpurpose">Initialise all the MASCARET variables of an instance</p></div>
+    <div class="refsynopsisdiv"><h3 class="title">Calling sequence</h3>
+        <div class="synopsis"><pre><span class="default">[</span><span class="default">error</span><span class="default">, </span><span class="default">id</span><span class="default">] = </span><span class="functionid">createMASCARET</span><span class="default">()</span></pre></div></div>
+    <div class="refsection"><h3 class="title">Arguments</h3>
+        <dl><dt><span class="term">error</span>
+                <dd><p class="para">(Output argument) Error code value : zero indicates that no errors occurred</p></dd></dt>
+            <dt><span class="term">id</span>
+                <dd><p class="para">(Output argument) MASCARET instance number that will be used by all other the functions as a label</p></dd></dt></dl></div>
+    <div class="refsection"><h3 class="title">Description</h3>
+        <p class="para">Creation of a MASCARET instance</p>
+        <p class="para">This function initialise all the MASCARET variables of an instance, corresponding to the model and to the state.</p>
+        <p class="para">This function should be used first before all the other functions using an id. No data expected with the use of this function.</p></div>
+    <div class="refsection"><h3 class="title">Example</h3>
+        <div class="programlisting"><table border="0" width="100%"><tr><td width="98%"><pre class="scilabcode"><span class="scilabcomment">// creation of 3 MASCARET models</span>
+<span class="scilabid">id</span> <span class="scilaboperator">=</span> <a class="scilabcommand" href="scilab://zeros">zeros</a><span class="scilabopenclose">(</span><span class="scilabnumber">3</span><span class="scilabdefault">,</span><span class="scilabnumber">1</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<span class="scilabskeyword">for</span> <span class="scilabid">i</span> <span class="scilaboperator">=</span> <span class="scilabnumber">1</span><span class="scilabspecial">:</span><span class="scilabnumber">3</span>
+   <span class="scilabopenclose">[</span><span class="scilabid">err</span><span class="scilabdefault">,</span> <span class="scilabid">id</span><span class="scilabopenclose">(</span><span class="scilabid">i</span><span class="scilabopenclose">)</span><span class="scilabopenclose">]</span> <span class="scilaboperator">=</span> <span class="scilabid">createMASCARET</span><span class="scilabopenclose">(</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+   <a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>  
+   <a class="scilabcommand" href="scilab://printf">printf</a><span class="scilabopenclose">(</span><span class="scilabstring">&#0034;</span><span class="scilabstring">\tA new model is created with the identification number :%d\n</span><span class="scilabstring">&#0034;</span><span class="scilabdefault">,</span> <span class="scilabid">id</span><span class="scilabopenclose">(</span><span class="scilabid">i</span><span class="scilabopenclose">)</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+<span class="scilabskeyword">end</span>
+
+<span class="scilabcomment">// deletions</span>
+<span class="scilabskeyword">for</span> <span class="scilabid">i</span> <span class="scilaboperator">=</span> <span class="scilabnumber">1</span><span class="scilabspecial">:</span><span class="scilabnumber">3</span>
+   <span class="scilabid">err</span> <span class="scilaboperator">=</span> <span class="scilabid">deleteMASCARET</span><span class="scilabopenclose">(</span><span class="scilabid">id</span><span class="scilabopenclose">(</span><span class="scilabid">i</span><span class="scilabopenclose">)</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>
+   <a class="scilabmacro" href="scilab://assert_checkequal">assert_checkequal</a><span class="scilabopenclose">(</span><span class="scilabid">err</span><span class="scilabdefault">,</span><span class="scilabnumber">0</span><span class="scilabopenclose">)</span><span class="scilabdefault">;</span>  
+<span class="scilabskeyword">end</span></pre></td><td valign="top"><a href="scilab://scilab.execexample/"><img src="ScilabExecute.png" border="0"/></a></td><td valign="top"><a href="scilab://scilab.editexample/"><img src="ScilabEdit.png" border="0"/></a></td><td></td></tr></table></div></div>
+    <div class="refsection"><h3 class="title">See also</h3>
+        <ul class="itemizedlist"><li class="member"><a href="deleteMASCARET.html" class="link">deleteMASCARET</a> &#8212; Free all the variables of MASCARET for a specific instance</li></ul></div>
+    <br />
+
+    <div class="manualnavbar">
+    <table width="100%">
+    <tr><td colspan="3" class="next"><a href="http://bugzilla.scilab.org/enter_bug.cgi?product=Scilab%20software&component=Documentation%20pages" class="ulink">Report an issue</a></td></tr>
+<tr>
+      <td width="30%">
+    	<span class="previous"><a href="computeMASCARET_BC.html">&lt;&lt; computeMASCARET_BC</a></span>
+
+      </td>
+      <td width="40%" class="center">
+      	<span class="top"><a href="section_96709d40103a5b79e460c5bb05c53d18.html">Toolbox Mascaret</a></span>
+
+      </td>
+      <td width="30%" class="next">
+      	<span class="next"><a href="deleteMASCARET.html">deleteMASCARET &gt;&gt;</a></span>
+
+      </td>
+    </tr></table>
+      <hr />
+    </div>
+  </body>
+</html>

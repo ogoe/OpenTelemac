@@ -1,0 +1,2587 @@
+\documentclass[a4paper,11pt]{article}
+
+%\usepackage[utf8]{inputenc} % pour les accents
+\usepackage[T1]{fontenc} % caracteres francais
+\usepackage{geometry} %les marges
+\usepackage[french]{babel} %langue principale
+\usepackage[dvips]{graphicx}
+\geometry{ hmargin=2cm, vmargin=2cm }
+\usepackage{lscape}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{color}
+
+%
+% Debut du document
+%
+\begin{document}
+
+\begin{titlepage}
+
+\begin{center}
+
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[scale=0.4]{./Figures/EDF_Logo}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[scale=1.]{./Figures/CEREMA_Logo}
+%ministère
+\end{flushright}
+\end{minipage}
+% Upper part of the page
+\textsc{ }\\[7cm]
+\textsc{\Huge MASCARET v8.1}\\[1cm]
+{ \huge \bfseries API}\\[1cm]
+\textsc{\Large SPECIFICATIONS TECHNIQUES}\\
+\vfill
+
+% Bottom of the page
+{\Large Copyright {\copyright} 2015 EDF - CEREMA}\\[0.5cm]
+{EDF - SA au capital de 924.433.331 euros - R.C.S. Paris B 552 081 317}\\
+{CEREMA - Centre d'Etudes et d'Expertise sur les Risques, l'Environnement, la Mobilité et l'Aménagement}
+
+\end{center}
+
+\end{titlepage}
+
+\newpage
+
+\begin{center} Sommaire/Summary\end{center}\
+
+
+\tableofcontents
+
+\newpage
+
+\titlepage{
+\begin{LARGE}
+\begin{center}
+Synthèse
+ \end{center}
+ \end{LARGE}}
+ 
+ Ce document constitue les spécifications techniques détaillées de l'API\footnote{API : Application Programming Interface -- une interface fournie pour et par un programme informatique} proposée par le code de calcul \texttt{MASCARET}. \texttt{MASCARET} est utilisé pour la simulation numérique des écoulements à surface libre unidimensionnels. Il est capable de simuler les écoulements torrentiels et le transport de polluants.
+
+ \vspace{0.5cm} 
+
+ Le code de calcul propose une API pour faire face à des besoins déjà identifiés comme le couplage, le calcul d'incertitudes ou l'optimisation. Mais également, grâce à son approche générique, va permettre de répondre à des besoins non encore connus.
+
+ \vspace{0.5cm} 
+
+ Cette nouvelle API a été conçue suite à un REX d'une précédente version (\texttt{MASCARET} v5.1) et tente de remédier aux différents problèmes qui sont apparus avec cette version. De plus, de nouveaux besoins ont été pris en compte.
+
+ \vspace{0.5cm}  
+ 
+ Les principes qui ont servi de base pour la conception et le développement de l'API sont détaillés dans ce document.
+
+ \vspace{0.5cm}  
+   
+ L'ensemble des fonctions proposées par l'API sont :
+ 
+ \newpage
+ 
+\begin{center}
+\begin{tabular}{|l|}
+  \hline
+ \huge{API MASCARET}  \\ 
+ \hline
+ +CREATE\_MASCARET \\  
+ +DELETE\_MASCARET \\  
+ \\
+ +IMPORT\_MODELE\_MASCARET \\
+ +INIT\_ETAT\_MASCARET \\
+ +INIT\_LIGNE\_MASCARET \\
+ +CALCUL\_MASCARET \\
+ \\
+ +CALCUL\_MASCARET\_CONDITION\_LIMITE \\
+ +GET\_NB\_CONDITION\_LIMITE\_MASCARET \\
+ +GET\_NOM\_CONDITION\_LIMITE\_MASCARET \\
+ \\
+ +GET\_DESC\_VAR\_MASCARET \\
+ +GET\_NB\_VAR\_MASCARET \\
+ +GET\_TYPE\_VAR\_MASCARET \\
+ +GET\_TAILLE\_VAR\_MASCARET \\
+ +GET\_ERREUR\_MASCARET \\
+ \\
+ +GET\_DOUBLE\_MASCARET \\
+ +GET\_INT\_MASCARET \\
+ +GET\_BOOL\_MASCARET \\
+ +GET\_STRING\_MASCARET \\
+ \\
+ +SET\_DOUBLE\_MASCARET \\
+ +SET\_INT\_MASCARET \\
+ +SET\_BOOL\_MASCARET \\
+ +SET\_STRING\_MASCARET \\
+ \\
+ +VERSION\_MASCARET \\
+ \\
+ +EXPORT\_XML\_MASCARET \\
+ +OUVERTURE\_BALISE\_XML\_MASCARET \\
+ +EXPORT\_VAR\_XML\_MASCARET \\
+ +FERMETURE\_VAR\_XML\_MASCARET \\
+ \hline
+\end{tabular}
+\end{center}
+
+ \vspace{0.5cm}  
+ 
+ Cette API a pour ambition de permettre un nouveau type d'usage de \texttt{MASCARET} en particulier permettre du calcul intensif dans des plateformes dédiées ou un pilotage fin de la simulation.
+ 
+  \vspace{0.5cm}  
+  
+ La version présentée ici risque d'évoluer pour inclure de nouvelles fonctions nécessaires à une utilisation dans des domaines très différents. 
+ 
+\newpage
+
+\section{Introduction}
+
+  Ce document constitue les spécifications techniques détaillées de l'API\footnote{API : Application Programming Interface -- une interface fournie pour et par un programme informatique} proposée par le code de calcul \texttt{MASCARET}. \texttt{MASCARET} est utilisé pour la simulation numérique des écoulements à surface libre unidimensionnels. Il est capable de simuler les écoulements torrentiels et le transport de polluants.
+
+ \vspace{0.5cm} 
+
+ Le code de calcul propose une API pour faire face à des besoins déjà identifiés comme le couplage, le calcul d'incertitudes ou l'optimisation. Mais également, grâce à son approche générique, va permettre de répondre à des besoins non encore connus.
+
+ \vspace{0.5cm} 
+
+ Cette nouvelle API a été conçue suite à un REX d'une précédente version (\texttt{MASCARET} v5.1) et tente de remédier aux différents problèmes qui sont apparus avec cette version. De plus, de nouveaux besoins ont été pris en compte.
+
+ \vspace{0.5cm}  
+ 
+ Les principes qui ont servi de base pour la conception et le développement de l'API sont détaillés dans ce document.
+
+\section{Versions antérieures}
+
+ La première version de l'API (\texttt{MASCARET} v5.1) date de 2005 et fait apparaître les problèmes suivants :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+   \item la maintenance corrective et évolutive a été difficile à assurer car il y avait un volume de code source spécifique à l'API et une compléxité du "\textit{Wrapper}" C++/Fortran importants.
+         De plus il y avait des redondances entre structures C++ et Fortran;
+         \vspace{0.5cm}
+   \item la solution technique pour mélanger C++ et Fortran était spécifique au compilateur, qui aujourd'hui ne fonctionne plus sous les systèmes Windows actuels (VISTA, SEVEN ou 8).
+         De plus, ce compilateur ne fonctionnait que sous Windows et donc interdisait d'utiliser l'API sous GNU/Linux ou tout autre système;
+         \vspace{0.5cm}
+   \item les performances de l'API étaient moyennes car le "\textit{Wrapper}" imposait de dupliquer et copier toutes les structures de données C++ vers le Fortran (et inversement) à chaque simulation élémentaire;
+         \vspace{0.5cm}
+   \item il était impossible d'interdire au code de calcul d'écrire certains fichiers qui peuvent être au final très volumineux et ralentir l'exécution de la simulation;
+         \vspace{0.5cm}
+   \item des problèmes sont apparus lors de l'utilisation de plusieurs modèles en simultané sur la même machine. Ces problèmes étaient liés à des conflits sur des fichiers qui ne sont pas contrôlés par l'API;
+         \vspace{0.5cm}
+   \item l'API était accessible uniquement en C++. Ce choix a posé quelques problèmes liés directement à la complexité du langage vis-à-vis des compétences des développeurs et du manque de standardisation des librairies dynamiques basées sur ce langage où les compilateurs \textit{décorent} le nom des fonctions avec des caractères spéciaux spécifiques. 
+         De plus certaines plateformes, ne sont pas capables d'intégrer facilement des API C++ (par exemple \texttt{SCILAB});
+         \vspace{0.5cm}
+   \item cette API nécessitait parfois une compréhension du fonctionnement interne du code de calcul pour pouvoir être utilisée directement.
+ 
+ \end{itemize}
+
+\section{Objectifs actuels}
+
+ Par conséquent, pour cette nouvelle version de l'API, de nouveaux objectifs techniques ont été introduits en plus des fonctions de bases nécessaires.
+ 
+ \vspace{0.5cm}
+ 
+ Ainsi, le pilotage fin du code de calcul est toujours présent, à savoir :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+
+   \item arrêter la simulation suivant des critères spécifiques;
+         \vspace{0.5cm}
+   \item consulter et modifier les conditions limites ou les coefficients de frottement, ainsi que les autres variables de \texttt{MASCARET};
+         \vspace{0.5cm}
+   \item contrôler les ressources système utilisées : fichiers et mémoire. 
+ 
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+ Mais de nouveaux objectifs ou contraintes sont introduits :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item ne pas être restreint à un système d'exploitation, un langage informatique, une plateforme de simulation, ni même à une norme/standard, ni à un modèle de données spécifiques;
+          \vspace{0.5cm}
+    \item proposer une solution performante pour du calcul intensif;
+          \vspace{0.5cm}
+    \item prendre en compte les évolutions du code facilement. 
+ 
+ \end{itemize}
+
+
+\section{Principes de l'API}
+
+\subsection{Indépendance}
+
+ La solution retenue pour permettre l'indépendance vis à vis du langage et du système d'exploitation s'est faite à plusieurs niveaux.
+ 
+ \vspace{0.5cm}
+ 
+ L'API et les versions 7.1 et supérieures de \texttt{MASCARET} utilisent un compilateur multi-plateformes (GNU/Linux, Windows, Mac OS, architecture ARM, etc.) et multi-langages.
+ Il s'agit de GCC (GNU Compiler Collection) et en particulier, sa déclinaison pour le Fortran : GFortran. Il existe depuis 1984, et il est considéré comme pérenne et fiable.
+ Ce compilateur permet de génerer des librairies dynamiques aussi bien pour GNU/Linux que pour Windows.
+ 
+ \vspace{0.5cm}
+ 
+ De plus, l'API permet d'être utilisée directement en langage C ou en Fortran (même en Fortran 77). Le choix de ces deux langages permet d'être supporté par un maximum de plateformes, tout en conservant une performance excellente. De plus, la quasi-totalité des langages informatiques et des plateformes permet d'intégrer des librairies dynamiques écrites en langage C.
+ 
+ \vspace{0.5cm}
+ 
+ Enfin, pour faciliter l'intégration, l'API ne propose que des fonctions avec des arguments dont le type est primitif (tableau ou scalaire d'entiers, de réels ou de caractères). Cette approche permet d'éviter des "\textit{Wrappers}" potentiellement complexes, lents et pas toujours portables. Le fait de proposer une API sans type complexe évite d'être dépendant d'un modèle de données particulier. Ainsi, les fonctions de l'API (décrites dans les fichiers "\textit{apimascaret.h}" et "\textit{m\_apimascaret\_i.f90}" (\ref{les includes})) sont autoportantes et ne dépendent d'aucun autre élément et en particulier des structures internes du code \texttt{MASCARET}.
+
+\subsection{Performance}
+
+ Pour améliorer les performances, il fallait éviter de dupliquer les données entre les différents langages. Ainsi, en évitant d'écrire un "\textit{Wrapper}" et en supprimant l'existence de données spécifiques au langage C, la duplication d'information a été supprimée. Cette simplification n'a été possible que grâce à la suppression de structures complexes en arguments des fonctions de l'API.
+ 
+ \vspace{0.5cm}
+ 
+ De plus, avec la précédente version de l'API, il était impossible d'empêcher \texttt{MASCARET} d'écrire certains fichiers qui pouvaient être très volumineux et ralentir considérablement l'exécution. Cette nouvelle API permet la suppression de toute écriture de fichier sur le disque.
+
+\subsection{Maintenance}
+
+ Le code de calcul \texttt{MASCARET} est écrit en Fortran 90, il fallait donc, là encore, éviter d'écrire un "\textit{Wrapper}" en C complexe qui doit être modifié quand le noyau de calcul \texttt{MASCARET} est modifié. La suppression de ce "\textit{Wrapper}" facilite donc la maintenance mais décale l'essentiel du développement de l'API vers le Fortran.
+ 
+ \vspace{0.5cm}
+ 
+ Pour faciliter le développement initial et ses évolutions, un générateur de code Fortran a été écrit pour permettre la génération de fonctions qui permettent de consulter et modifier plusieurs centaines de variables réparties dans différentes structures de données du code.
+
+\subsection{Structure de données}
+
+ Le manque de structuration est compensé par l'accès à des méta-données directement accessibles par l'API. Par exemple, on peut obtenir la liste des variables du modèle et de l'état, connaître leur type, leur dimension, et même obtenir une description (en anglais) de chaque variable.
+
+\section{Spécifications détaillées}
+
+ Cette API est accessible depuis le langage C et le Fortran 77. Ces fonctions sont strictement identiques. En effet l'appel en C fait appel quasi directement à la subroutine Fortran correspondante, il n'y a plus d'utilisation de "\textit{Wrappers}", seules les chaînes de caractères C sont converties en chaînes Fortran.
+ 
+ \vspace{0.5cm}
+ 
+ Les fonctions principales de l'API permettent de gérer les instances d'un couple (modèle,état) de \texttt{MASCARET} et en particulier la création et la destruction d'une instance; ainsi que la possibilité d'effectuer des simulations fines; enfin de consulter et modifier les variables de l'état ou du modèle.
+ 
+ \vspace{0.5cm}
+ 
+ L'ensemble de ces fonctions est décrit en détails dans les paragraphes suivants.
+ 
+ \vspace{0.5cm}
+ 
+ \vspace{0.5cm}  
+
+\begin{center}
+\begin{tabular}{|l|l|}
+  \hline
+ \textbf{API MASCARET en Fortran 77} & \textbf{API MASCARET langage C} \\ 
+ \hline
+
+ \footnotesize +CREATE\_MASCARET & \footnotesize +C\_CREATE\_MASCARET\\  
+ \footnotesize +DELETE\_MASCARET & \footnotesize +C\_DELETE\_MASCARET\\  
+ & \\
+ \footnotesize +IMPORT\_MODELE\_MASCARET & \footnotesize +C\_IMPORT\_MODELE\_MASCARET\\
+ \footnotesize +INIT\_ETAT\_MASCARET & \footnotesize +C\_INIT\_ETAT\_MASCARET\\
+ \footnotesize +INIT\_LIGNE\_MASCARET & \footnotesize +C\_INIT\_LIGNE\_MASCARET\\
+ \footnotesize +CALCUL\_MASCARET & \footnotesize +C\_CALCUL\_MASCARET\\
+ & \\
+ \footnotesize +CALCUL\_MASCARET\_CONDITION\_LIMITE & \footnotesize +C\_CALCUL\_MASCARET\_CONDITION\_LIMITE\\
+ \footnotesize +GET\_NB\_CONDITION\_LIMITE\_MASCARET & \footnotesize +C\_GET\_NB\_CONDITION\_LIMITE\_MASCARET\\
+ \footnotesize +GET\_NOM\_CONDITION\_LIMITE\_MASCARET & \footnotesize +C\_GET\_NOM\_CONDITION\_LIMITE\_MASCARET\\
+ & \\
+ \footnotesize +GET\_DESC\_VAR\_MASCARET & \footnotesize +C\_GET\_DESC\_VAR\_MASCARET\\
+ \footnotesize +GET\_NB\_VAR\_MASCARET & \footnotesize +C\_GET\_NB\_VAR\_MASCARET\\
+ \footnotesize +GET\_TYPE\_VAR\_MASCARET & \footnotesize +C\_GET\_TYPE\_VAR\_MASCARET\\
+ \footnotesize +GET\_TAILLE\_VAR\_MASCARET & \footnotesize +C\_GET\_TAILLE\_VAR\_MASCARET\\
+ \footnotesize +GET\_ERREUR\_MASCARET & \footnotesize +C\_GET\_ERREUR\_MASCARET\\
+ & \\
+ \footnotesize +GET\_DOUBLE\_MASCARET & \footnotesize +C\_GET\_DOUBLE\_MASCARET\\
+ \footnotesize +GET\_INT\_MASCARET & \footnotesize +C\_GET\_INT\_MASCARET\\
+ \footnotesize +GET\_BOOL\_MASCARET & \footnotesize +C\_GET\_BOOL\_MASCARET\\
+ \footnotesize +GET\_STRING\_MASCARET & \footnotesize +C\_GET\_STRING\_MASCARET\\
+ & \\
+ \footnotesize +SET\_DOUBLE\_MASCARET & \footnotesize +C\_SET\_DOUBLE\_MASCARET\\
+ \footnotesize +SET\_INT\_MASCARET & \footnotesize +C\_SET\_INT\_MASCARET\\
+ \footnotesize +SET\_BOOL\_MASCARET & \footnotesize +C\_SET\_BOOL\_MASCARET\\
+ \footnotesize +SET\_STRING\_MASCARET & \footnotesize +C\_SET\_STRING\_MASCARET\\
+ & \\
+ \footnotesize +VERSION\_MASCARET & \footnotesize +C\_VERSION\_MASCARET\\
+ & \\
+ \footnotesize +EXPORT\_XML\_MASCARET & \footnotesize +C\_EXPORT\_XML\_MASCARET\\
+ \footnotesize +OUVERTURE\_BALISE\_XML\_MASCARET & \footnotesize +C\_OUVERTURE\_BALISE\_XML\_MASCARET\\
+ \footnotesize +EXPORT\_VAR\_XML\_MASCARET & \footnotesize +C\_EXPORT\_VAR\_XML\_MASCARET\\
+ \footnotesize +FERMETURE\_VAR\_XML\_MASCARET & \footnotesize +C\_FERMETURE\_VAR\_XML\_MASCARET\\
+ \hline
+
+\end{tabular}
+\end{center}
+
+\subsection{Fonctions pour gérer les instances}
+
+\subsubsection{Création d'une instance}
+
+ Cette fonction permet d'initialiser les ressources (allocation mémoire et initialisation de variables) associées à une instance \texttt{MASCARET}, c'est-à-dire les ressources concernant un modèle et son état.
+ 
+ \vspace{0.5cm}
+ 
+ C'est cette fonction qui doit être utilisée en premier avant de mettre \oe uvre un modèle et lancer des simulations. Il n'y a aucun pré-requis avant de pouvoir utiliser cette fonction.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_CREATE\_MASCARET(\textcolor{blue}{int} *Identifiant);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} CREATE\_MASCARET(Erreur, Identifiant)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Identifiant
+        
+    \textcolor{blue}{end subroutine} CREATE\_MASCARET
+
+  \vspace{0.5cm}
+
+ Il n'y a pas d'argument en entrée de la fonction.
+ 
+ \vspace{0.5cm}
+  
+ L'argument \textit{Identifiant} en sortie de la fonction identifie de manière unique l'instance de \texttt{MASCARET}. Cet identifiant est utilisé en entrée des autres fonctions de l'API.
+ 
+ \vspace{0.5cm}
+  
+ Actuellement, la création d'au plus 1000 instances de \texttt{MASCARET} est possible.
+ 
+ \vspace{0.5cm}
+  
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+  
+\subsubsection{Destruction d'une instance}
+
+ Cette fonction permet de libérer les ressources (désallocation mémoire) associées à une instance de \texttt{MASCARET}, c'est-à-dire les ressources concernant un modèle et son état.
+ 
+ \vspace{0.5cm}
+  
+ C'est cette fonction qui doit être utilisée en dernier après la création d'un modèle et le lancement des simulations.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé les ressources associées à une instance de \texttt{MASCARET}, c'est-à-dire d'avoir fait appel à la fonction décrite dans le paragraphe précédent.
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_DELETE\_MASCARET(\textcolor{blue}{int} Identifiant);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} DELETE\_MASCARET(Erreur, Identifiant)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+    \textcolor{blue}{end subroutine} DELETE\_MASCARET
+
+  \vspace{0.5cm}
+
+ L'argument en entrée est :
+ \vspace{0.5cm}
+ \begin{itemize}
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}".
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Sauvegarde de l'état d'un calcul}
+
+ Cette fonction permet de sauvegarder en mémoire l'état courant d'une instance de \texttt{MASCARET} dans une structure interne de l'API.
+ Elle sera utilisée conjointement avec la fonction 
+ 
+ "\textit{SET\_ETAT\_MASCARET}" qui permet de rendre courant un état préalablement sauvegardé.
+ 
+ \vspace{0.5cm}
+ 
+ Cette fonction est utilisée dans le cas, par exemple, d'un coupleur, qui calculera différents états pour le même temps de simulation pour converger.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé l'état du modèle sauvegardé.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_SAVE\_ETAT\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} *IdentifiantEtat );
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SAVE\_ETAT\_MASCARET(Erreur, Identifiant, IdentifiantEtat)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: IdentifiantEtat
+        
+    \textcolor{blue}{end subroutine} SAVE\_ETAT\_MASCARET
+
+ \vspace{0.5cm}
+
+ L'argument en entrée est :
+ \vspace{0.5cm}
+ \begin{itemize}
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}" dont on souhaite sauvegarder l'état courant pour une utilisation ultérieure.
+ \end{itemize}
+
+ \vspace{0.5cm}
+
+ L'argument en sortie est :
+ \vspace{0.5cm}
+ \begin{itemize}
+    \item \textit{IdentifiantEtat} : identifiant de l'état \texttt{MASCARET} sauvegardé.
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Récupération de l'état d'un calcul}
+
+ Cette fonction permet de récupérer un état préalablement sauvegardé par la fonction 
+ 
+ "\textit{SAVE\_ETAT\_MASCARET}" pour le rendre courant à l'instance.
+ Elle doit donc être utilisée conjointement avec la fonction précédente.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir sauvegardé l'état que l'on souhaite utiliser par la suite.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_SET\_ETAT\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} IdentifiantEtat );
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SET\_ETAT\_MASCARET(Erreur, Identifiant, IdentifiantEtat)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: IdentifiantEtat
+        
+    \textcolor{blue}{end subroutine} SET\_ETAT\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ \vspace{0.5cm}
+ \begin{itemize}
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}" dont on souhaite remplacer l'état courant par l'état sauvegardé;
+    \vspace{0.5cm}
+    \item \textit{IdentifiantEtat} : identifiant de l'état \texttt{MASCARET} sauvegardé qui va remplacer l'état courant.
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsection{Fonctions principales de la simulation}
+
+\subsubsection{Importation d'un modèle}
+
+\label{Import}
+
+ Cette fonction permet l'importation d'un modèle \texttt{MASCARET} à partir des fichiers natifs du code de calcul. Ces fichiers sont disponibles dans \texttt{FUDAA-MASCARET} via le menu : "Fichier | Exporter | Mascaret".
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_IMPORT\_MODELE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *TabNomFichier[],
+ 
+ \textcolor{blue}{char} *TypeNomFichier[],\textcolor{blue}{int} Taille,\textcolor{blue}{int} Impression);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} IMPORT\_MODELE\_MASCARET(Erreur, Identifiant, TabNomFichier, TypeNomFichier, Taille, Impression)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(LEN=255), dimension(*), intent(in)} :: TabNomFichier
+        
+        \hspace{1cm} \textcolor{blue}{character(LEN=40), dimension(*), intent(in)} :: TypeNomFichier
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Taille
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Impression
+        
+    \textcolor{blue}{end subroutine} IMPORT\_MODELE\_MASCARET
+
+ \vspace{0.5cm}
+
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé les ressources associées à une instance de \texttt{MASCARET}. \textsc{Attention, cette fonction ne permet pas d'importer des modèles avec qualité d'eau (le module Tracer n'est pas géré par l'API)}.
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ \vspace{0.5cm}
+ \begin{itemize}
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{TabNomFichier} : tableau des noms de fichiers natifs \texttt{MASCARET} à importer (un nom de fichier ne doit pas dépasser 255 caractères, les noms peuvent comporter le chemin des répertoires d'accès au fichier, le séparateur dépend du système hôte);
+    \vspace{0.5cm}
+    \item \textit{TypeNomFichier} : tableau des types de fichiers natifs \texttt{MASCARET} à importer. Il n'est pas possible d'importer une ligne d'eau initiale avec cette fonction. Les valeurs possibles sont :
+      \vspace{0.5cm}
+      \begin{itemize}
+        \item "xcas";
+        \item "geo";
+        \item "loi";
+        \item "casier";
+        \item "listing";
+        \item "listing\_casier";
+        \item "listing\_liaison";
+        \item "res";
+        \item "res\_casier";
+        \item "res\_liaison".
+      \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{Taille} : taille des deux tableaux \textit{TabNomFichier} et \textit{TypeNomFichier};
+    \vspace{0.5cm}
+    \item \textit{Impression} : impression sur les fichiers listing (1 --> Vrai, 0 --> Faux)
+ \end{itemize} 
+ 
+ \vspace{0.5cm}
+ 
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Initialisation de l'état initial}
+
+ \label{Init}
+
+ Deux fonctions permettent d'initialiser l'état de \texttt{MASCARET}. Elles peuvent être utilisées indifféremment. Avant d'utiliser ces fonctions, il est nécessaire d'avoir importé un modèle à une instance de \texttt{MASCARET}, c'est-à-dire d'avoir fait appel à la fonction décrite précédemment.
+ 
+ \vspace{0.5cm}
+
+ Dans le cas où le modèle importé est permanent, l'initialisation de l'état ne doit pas être faite.
+
+ \paragraph{Fonction "\textit{INIT\_ETAT\_MASCARET}"\\}
+
+ \hspace*{1cm}
+
+ La première fonction permet d'initialiser l'état à partir d'un fichier natif de \texttt{MASCARET} de type ligne d'eau adapté au modèle importé préalablement. Ce fichier est disponible dans \texttt{FUDAA-MASCARET} via le menu : "Hydraulique | Conditions Initiales | Ligne d'eau initiale | Exporter".
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_INIT\_ETAT\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomFichier, \textcolor{blue}{int} Impression);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} INIT\_ETAT\_MASCARET(Erreur, Identifiant, NomFichier, Impression)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(LEN=255), dimension(*), intent(in)} :: NomFichier
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Impression
+        
+    \textcolor{blue}{end subroutine} INIT\_ETAT\_MASCARET
+
+ \vspace{0.5cm}
+
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+   \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+   \item \textit{NomFichier} : nom du fichier natif contenant la ligne d'eau initiale (maximum 255 caractères);
+    \vspace{0.5cm}
+   \item  \textit{Impression} : impression sur les fichiers listing (1 --> Vrai, 0 --> Faux)
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+  
+  \paragraph{Fonction "\textit{INIT\_LIGNE\_MASCARET}"\\}
+
+ \hspace*{1cm}
+ 
+ La deuxième fonction permet d'initialiser l'état à partir de variables (2 tableaux) spécifiant le débit et la cote initiale dans le modèle.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_INIT\_LIGNE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{double} Q[],\textcolor{blue}{double} Z[], \textcolor{blue}{int} Taille);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} INIT\_LIGNE\_MASCARET(Erreur, Identifiant, Q, Z, Taille)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{real(8), dimension(*), intent(in)} :: Q
+        
+        \hspace{1cm} \textcolor{blue}{real(8), dimension(*), intent(in)} :: Z
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Taille
+        
+    \textcolor{blue}{end subroutine} INIT\_LIGNE\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{Q} : tableau des débits de la ligne d'eau initiale ($m^3.s^{-1}$);
+    \vspace{0.5cm}
+    \item \textit{Z} : tableau des cotes de la ligne d'eau initiale ($m$);
+    \vspace{0.5cm}
+    \item \textit{Taille} : taille des deux tableaux \textit{Q} et \textit{Z}. Cette taille doit être égale au nombre de sections de calcul dans le modèle (par la taille de la variable "\textit{Model.X}", accessible via la fonction \textit{GET\_TAILLE\_VAR\_MASCARET}). Si la taille n'est pas égale au nombre de sections de calcul, une erreur est retournée.
+ \end{itemize}
+
+\vspace{0.5cm}
+ 
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Simulation d'un modèle}
+
+ Deux fonctions permettent d'effectuer une simulation d'un ou plusieurs pas de temps. Ces fonctions vont calculer un nouvel état courant à partir du modèle courant et de l'état précédent. L'un possède en paramètre les conditions aux limites, l'autre non.
+ 
+ \vspace{0.5cm}
+ 
+ Habituellement ces fonctions sont appelées plusieurs fois en effectuant éventuellement des modifications au niveau du modèle. La fonction ayant les conditions aux limites en arguments évite l'utilisation de la fonction \textit{SET\_DOUBLE\_MASCARET} sur l'une des variables "\textit{Model.Graph.Level}", "\textit{Model.Graph.Discharge}" ou "\textit{Model.Graph.Time}".
+ 
+ \paragraph{Simulation d'un modèle sans modification des conditions aux limites\\}
+
+ \hspace*{1cm}
+ 
+ La signature de la fonction n'intégrant pas les conditions aux limites en langage C est :
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_CALCUL\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{double} TpsInitial,\textcolor{blue}{double} TpsFinal,\textcolor{blue}{double} PasTps,
+ 
+ \textcolor{blue}{int} Impression);
+ 
+ \vspace{0.5cm} 
+
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} CALCUL\_MASCARET(Erreur, Identifiant, TpsInitial, TpsFinal, PasTps, Impression)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: TpsInitial
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: TpsFinal
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: PasTps
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Impression
+        
+    \textcolor{blue}{end subroutine} CALCUL\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser ces fonctions, il est nécessaire d'avoir initialisé l'état (\ref{Init}) quand on utilise un modèle non permanent. Pour un modèle permanent, il est nécessaire d'avoir importé un modèle à une instance, c'est-à-dire d'avoir fait appel à la fonction décrite dans (\ref{Import}).
+
+ \vspace{0.5cm}
+
+ \textsc{Attention, cette fonction ne permet pas d'importer des modèles avec qualité d'eau (le module Tracer n'est pas géré par l'API)}
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{TpsInitial} : temps initial du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{TpsFinal} : temps final du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{PasTps} : pas de temps interne du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{Impression} : impression sur le fichier listing (1 --> Vrai, 0 --> Faux)
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\paragraph{Simulation d'un modèle avec modification des conditions aux limites\\}
+
+ \hspace*{1cm}
+
+ Cette fonction est à utiliser conjointement avec les fonctions
+ 
+ "\textit{GET\_NB\_CONDITION\_LIMITE\_MASCARET}" et
+ 
+ "\textit{GET\_NOM\_CONDITION\_LIMITE\_MASCARET}".
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction intégrant les conditions aux limites en langage C est :
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_CALCUL\_MASCARET\_CONDITION\_LIMITE(\textcolor{blue}{int} Identifiant,\textcolor{blue}{double} TpsInitial,\textcolor{blue}{double} TpsFinal,\textcolor{blue}{double} PasTps,\textcolor{blue}{double} TpsCl[],\textcolor{blue}{int} TailleTpsCL,\textcolor{blue}{double} Cl1[][TailleTpsCL],
+ 
+ \textcolor{blue}{double} Cl2[][TailleTpsCL],\textcolor{blue}{int} Impression);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} CALCUL\_MASCARET\_CONDITION\_LIMITE(Erreur, Identifiant, TpsInitial,
+    
+     TpsFinal, PasTps, Impression)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: TpsInitial
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: TpsFinal
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: PasTps
+        
+        \hspace{1cm} \textcolor{blue}{real(8), dimension(*), intent(in)}  :: TpsCl
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: TailleTpsCL
+        
+        \hspace{1cm} \textcolor{blue}{real(8), dimension(TailleTpsCL,*), intent(in)}  :: Cl1
+        
+        \hspace{1cm} \textcolor{blue}{real(8), dimension(TailleTpsCL,*), intent(in)}  :: Cl2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Impression
+        
+    \textcolor{blue}{end subroutine} CALCUL\_MASCARET\_CONDITION\_LIMITE
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{TpsInitial} : temps initial du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{TpsFinal} : temps final du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{PasTps} : pas de temps interne du calcul ($s$);
+    \vspace{0.5cm}
+    \item \textit{TpsCl} : le vecteur temps commun à toutes les nouvelles conditions aux limites, dimensionné à la taille \textit{TailleTpsCL}
+    \vspace{0.5cm}
+    \item \textit{TailleTpsCL} : nombre de pas pour les conditions aux limites
+    \vspace{0.5cm}
+    \item \textit{Cl1} : composante 1 de la condition limite, c'est une matrice décrivant l'évolution des nouvelles conditions aux limites :
+       \begin{itemize}
+          \item si la condition limite est de type 1 ou 2 alors cette composante n'est pas utilisée;
+          \item si la condition limite est de type 3 alors cette composante est une cote;
+          \item si la condition limite est de type 7 alors cette composante est la cote inférieure;
+          \item la dimension de cette matrice est différente en Fortran ou en C, à savoir :
+             \begin{itemize}
+                \item [TailleTpsCL, NbCL] en Fortran;
+                \item [NbCL, TailleTpsCL] en C.
+             \end{itemize}
+       \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{Cl2} : composante 2 de la condition limite, c'est une matrice décrivant l'évolution des nouvelles conditions aux limites quand la condition limite nécessite une deuxième composante :
+       \begin{itemize}
+          \item si la condition limite est de type 1 ou 3 alors cette composante est un débit;
+          \item si la condition limite est de type 2 alors cette composante est une cote;
+          \item si la condition limite est de type 7 alors cette composante est la cote supérieure;
+          \item la dimension de cette matrice est différente en Fortran ou en C, à savoir :
+             \begin{itemize}
+                \item [TailleTpsCL, NbCL] en Fortran;
+                \item [NbCL, TailleTpsCL] en C.
+             \end{itemize}
+       \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{Impression} : impression sur le fichier listing (1 --> Vrai, 0 --> Faux)
+ \end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Fonctions pour consulter le modèle ou l'état}
+
+ Ces fonctions permettent d'accéder ou de modifier les variables d'une instance courante de l'état ou du modèle. Elles sont décrites en respectant le même "pattern", c'est-à-dire :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item pour consulter : "GET\_TYPEDEBASE\_MASCARET(identifiant,nomVariable,index1,index2,
+    
+    index3,valeur)"
+    \begin{itemize}
+       \item \textit{valeur} : argument en sortie de la fonction dont le type dépend du type de base
+    \end{itemize}
+    \vspace{0.5cm}
+    \item pour modifier : "SET\_TYPEDEBASE\_MASCARET(identifiant,nomVariable,index1,index2,
+    
+    index3,valeur)"
+    \begin{itemize}
+       \item \textit{valeur} : argument en entrée de la fonction dont le type dépend du type de base
+    \end{itemize}
+ \end{itemize}
+
+\subsubsection{Consulter le modèle ou l'état (accesseurs)}
+
+ Il existe quatre fonctions, une par type de base (réel, entier, booléen, chaîne de caractères) qui permettent d'accéder aux valeurs du modèle ou de l'état courant d'une instance de \texttt{MASCARET}.
+ 
+ \vspace{0.5cm}
+ 
+ On peut connaître le type de base d'une variable grâce à l'argument \textit{TypeVar} en sortie de la fonction "\textit{GET\_TYPE\_VAR\_MASCARET}". Le choix de la fonction adaptée au type de base peut ainsi être déterminé via l'API.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de ces quatre fonctions en langage C est :
+ 
+  \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_DOUBLE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{double} *valeur);
+ 
+ \textcolor{blue}{int} C\_GET\_INT\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{int} *valeur);
+ 
+ \textcolor{blue}{int} C\_GET\_BOOL\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{int} *valeur);
+ 
+ \textcolor{blue}{int} C\_GET\_STRING\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{char} **valeur);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de ces quatre subroutines en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_DOUBLE\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(out)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}GET\_DOUBLE\_MASCARET
+
+ \vspace{0.5cm}
+ 
+
+    \textcolor{blue}{subroutine} GET\_INT\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}GET\_INT\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ 
+    \textcolor{blue}{subroutine} GET\_BOOL\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{logical, intent(out)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}GET\_BOOL\_MASCARET
+
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_STRING\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{character(len=256), intent(out)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}GET\_STRING\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{NomVar} : nom de la variable (notation pointée), la liste des variables est retournée par
+    
+     "\textit{GET\_DESC\_VAR\_MASCARET}". La taille de cette chaîne ne doit pas dépasser 40 caractères (sans compter le caractère de fin de chaîne en langage C);
+    \vspace{0.5cm}
+    \item \textit{index1} : valeur du 1er indice. Cet argument peut être ignoré si la dimension de la variable est 0 (cf. l'argument en sortie \textit{DimVar} de la fonction
+    
+     "\textit{GET\_TYPE\_VAR\_MASCARET}");
+    \vspace{0.5cm}
+    \item \textit{index2} : valeur du 2ème indice. Cet argument peut être ignoré si la dimension de la variable est inférieure ou égale à 1 (cf. l'argument en sortie \textit{DimVar} de la fonction
+    
+     "\textit{GET\_TYPE\_VAR\_MASCARET}");
+     \vspace{0.5cm}
+    \item \textit{index3} : valeur du 3ème indice. Cet argument peut être ignoré si la dimension de la variable est inférieure ou égale à 2 (cf. l'argument en sortie \textit{DimVar} de la fonction
+    
+     "\textit{GET\_TYPE\_VAR\_MASCARET}");
+
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ L'argument en sortie est :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{valeur} : valeur de la variable pour les index spécifiés. Le type de cet argument est associé directement au type de base de la fonction.
+     
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Modifier le modèle ou l'état (mutateurs)}
+
+ \label{Mut}
+
+ Il existe quatre fonctions, une par type de base (réel, entier, booléen, chaîne de caractères) qui permettent de modifier aux valeurs du modèle ou de l'état courant d'une instance de \texttt{MASCARET}. Elles ne permettent pas de modifier la dimension des tableaux.
+ 
+ \vspace{0.5cm}
+ 
+ On peut connaître le type de base d'une variable grâce à l'argument \textit{TypeVar} en sortie de la fonction "\textit{GET\_TYPE\_VAR\_MASCARET}". Le choix de la fonction adaptée au type de base peut ainsi être déterminé via l'API.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de ces quatre fonctions en langage C est :
+ 
+  \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_SET\_DOUBLE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{double} *valeur);
+ 
+ \textcolor{blue}{int} C\_SET\_INT\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{int} *valeur);
+ 
+ \textcolor{blue}{int} C\_SET\_BOOL\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{int} *valeur);
+ 
+ \textcolor{blue}{int} C\_SET\_STRING\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} index2,
+ 
+ \textcolor{blue}{int} index3,\textcolor{blue}{char} *valeur);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature de ces quatre subroutines en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SET\_DOUBLE\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{real(8), intent(in)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}SET\_DOUBLE\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SET\_INT\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}SET\_INT\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SET\_BOOL\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{logical, intent(in)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}SET\_BOOL\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} SET\_STRING\_MASCARET(Erreur, Identifiant, NomVar, index1, index2,
+    
+     index3, valeur)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index3
+        
+        \hspace{1cm} \textcolor{blue}{character(len=256), intent(in)}  :: valeur
+        
+    \textcolor{blue}{end subroutine}SET\_STRING\_MASCARET
+
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{NomVar} : nom de la variable (notation pointée), la liste des variables est retournée par
+    
+     "\textit{GET\_DESC\_VAR\_MASCARET}". La taille de cette chaîne ne doit pas dépasser 40 caractères (sans compter le caractère de fin de chaîne en langage C);
+    \vspace{0.5cm}
+    \item \textit{index1} : valeur du 1er indice. Cet argument peut être ignoré si la dimension de la variable est 0 (cf. l'argument en sortie \textit{DimVar} de la fonction "\textit{GET\_TYPE\_VAR\_MASCARET}");
+    \vspace{0.5cm}
+    \item \textit{index2} : valeur du 2ème indice. Cet argument peut être ignoré si la dimension de la variable est inférieure ou égale à 1 (cf. l'argument en sortie \textit{DimVar} de la fonction
+    
+     "\textit{GET\_TYPE\_VAR\_MASCARET}");
+     \vspace{0.5cm}
+    \item \textit{index3} : valeur du 3ème indice. Cet argument peut être ignoré si la dimension de la variable est inférieure ou égale à 2 (cf. l'argument en sortie \textit{DimVar} de la fonction
+    
+     "\textit{GET\_TYPE\_VAR\_MASCARET}");
+
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ L'argument en sortie est :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{valeur} : nouvelle valeur de la variable pour les index spécifiés. Le type de cet argument est associé directement au type de base de la fonction. En C, quand cette variable est une chaîne de caractères, elle doit être désallouée par l'utilisateur de l'API.
+     
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsection{Fonctions donnant des informations structurelles et métier}
+
+\subsubsection{Lister les variables de \texttt{MASCARET}}
+
+ Cette fonction permet de récupérer la liste des variables gérées par l'API. Elles sont toutes consultables via les fonctions "\textit{GET\_\textcolor{red}{TYPEDEBASE}\_MASCARET}" et pour la plupart modifiables via les fonctions "\textit{SET\_\textcolor{red}{TYPEDEBASE}\_MASCARET}". Cette liste est constituée de deux parties :
+
+ \begin{itemize}
+    \item liste des noms de chaque variable (identifiant unique) déterminés directement à partir des structures internes du code de calcul en utilisant une notation pointée (par exemple pour la cote d'eau, variable \textit{Z}, de la structure \textit{State}, le nom de la variable est "\textit{State.Z}";
+    \item liste des descriptions en anglais de chaque variable permettant d'obtenir une information compréhensible d'un point de vue métier sur le contenu de la variable. Ainsi la description de la variable "\textit{State.Z}" est "Water level (m)".
+ \end{itemize}
+
+\vspace{0.5cm}
+
+ C'est cette fonction qui permet de faire un \emph{pont} entre une vision technique et une vision métier.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est utile d'avoir initialisé les ressources associées à une instance de \texttt{MASCARET}, c'est-à-dire d'avoir fait appel à la fonction décrite dans (\ref{Init}). Cette fonction ne dépend pas directement d'une instance de \texttt{MASCARET} mais l'initialisation des ressources permet de mieux gérer les messages d'erreurs éventuels.
+ 
+ \vspace{0.5cm}
+ 
+  La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_DESC\_VAR\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *TabNom[],\textcolor{blue}{char} *TabDesc[],
+ 
+  \textcolor{blue}{int} *Taille);
+ 
+ \vspace{0.5cm} 
+ 
+ La signature des deux subroutines correspondantes en langage Fortran sont :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_DESC\_VAR\_MASCARET(Erreur, Identifiant, TabNom, TabDesc,
+    
+     NbVarMascaret)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), dimension(*), intent(out)}  :: TabNom
+        
+        \hspace{1cm} \textcolor{blue}{character(len=110), dimension(*), intent(out)}  :: TabDesc
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: NbVarMascaret
+        
+    \textcolor{blue}{end subroutine}GET\_DESC\_VAR\_MASCARET
+    
+    \textcolor{blue}{subroutine} GET\_NB\_VAR\_MASCARET(Taille)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}      
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: Taille
+    
+    \textcolor{blue}{end subroutine} GET\_NB\_VAR\_MASCARET
+
+ \vspace{0.5cm}
+ 
+  Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{NbVarMascaret} : taille des tableaux \textit{TabNom} et \textit{TabVar} en argument : \textsc{uniquement en Fortran. Cette valeur doit être égale à la valeur retournée par la subroutine "\textit{GET\_NB\_VAR\_MASCARET}"}.
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ Les arguments en sortie sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+
+    \item \textit{TabNom} : tableau des noms de variable du modèle ou de l'état;
+    \item \textit{TabDesc} : tableau des descriptions de variable du modèle ou de l'état;
+    \item \textit{Taille} : taille des tableaux des noms et des descriptions de variable. 
+ 
+ \end{itemize}
+
+ \vspace{0.5cm}
+ 
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Identifier le type d'une variable}
+
+ Cette fonction permet de récupérer des informations structurelles d'une variable particulière. C'est-à-dire son type (entier, réel, booléen ou chaîne de caractères et si c'est un tableau), sa catégorie (appartient au modèle ou à l'état), si elle est modifiable (via la fonction 
+ 
+ "\textit{SET\_\textcolor{red}{TYPEDEBASE}\_MASCARET}" et sa dimension (c'est-à-dire le nombre d'index à utiliser pour accéder à la valeur de la variable.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est utile d'avoir initialisé les ressources associées à une instance de \texttt{MASCARET}, c'est-à-dire d'avoir fait appel à la fonction décrite dans le paragraphe (\ref{Init}). Cette fonction ne dépend pas directement d'une instance de \texttt{MASCARET} mais l'initialisation des ressources permet de mieux gérer les messages d'erreurs éventuels.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_TYPE\_VAR\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{char} *TypeVar,
+ 
+ \textcolor{blue}{char} *Categorie,\textcolor{blue}{int} *Modifiable,\textcolor{blue}{int} *dimVar);
+ 
+ \vspace{0.5cm} 
+
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_TYPE\_VAR\_MASCARET(Erreur, Identifiant, NomVar, TypeVar, Categorie, Modifiable, dimVar)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{character(len=10), intent(out)}  :: TypeVar
+        
+        \hspace{1cm} \textcolor{blue}{character(len=10), intent(out)}  :: Categorie
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: Modifiable
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: dimVar
+        
+    \textcolor{blue}{end subroutine}GET\_TYPE\_VAR\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{NomVar} : nom de la variable (notation pointée), la liste des variables est retournée par 
+    
+    "\textit{GET\_DESC\_VAR\_MASCARET}". La taille de cette chaîne ne doit pas dépasser 40 caractères (sans compter le caractère de fin de chaîne en langage C).
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ Les arguments en sortie sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{TypeVar} : précise le type de la variable. Les valeurs possibles sont :
+            \begin{itemize}
+               \item "INT" : scalaire de type entier;
+               \item "DOUBLE" : scalaire de type réel;
+               \item "BOOL" : scalaire de type booléen;
+               \item "STRING" : chaîne de caractères;
+               \item "TABINT" : vecteur de type entier;
+               \item "TABDOUBLE" : vecteur de type réel;
+               \item "TABBOOL" : vecteur de type booléen.
+            \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{Categorie} : précise si la variable appartient à l'état. Les valeurs possibles sont :
+            \begin{itemize}
+               \item "MODEL" : la variable n'est pas modifiée par la fonction de simulation;
+               \item "STATE" : la variable est modifiée par la fonction de simulation.
+            \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{Modifiable} : indique si la variable est modifiable via les fonctions décrites dans (\ref{Mut}). Les valeurs possibles sont :
+            \begin{itemize}
+               \item 1 --> la variable est modifiable par une fonction mutateur (cf. \ref{Mut});
+               \item 0 --> la variable n'est pas modifiable par une fonction mutateur (cf. \ref{Mut}).
+            \end{itemize}
+    \vspace{0.5cm}
+    \item \textit{dimVar} : la dimension de la variable, c'est-à-dire le nombre d'index pour accéder à la variable. Les valeurs possibles varient entre 0 et 3.        
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Connaître la taille d'une variable}
+
+ Cette fonction permet de récupérer des informations sur la taille d'une variable particulière. C'est-à-dire la valeur maximale des index qui permet d'accéder en consultation ou en modification à la variable.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé une instance d'un modèle \texttt{MASCARET}. Si la variable appartient à l'état, il faut avoir initialisé l'état. Cette fonction dépend directement d'une instance de \texttt{MASCARET}.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_TAILLE\_VAR\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomVar,\textcolor{blue}{int} index1,\textcolor{blue}{int} *taille1,
+ 
+ \textcolor{blue}{int} *taille2,\textcolor{blue}{int} *taille3);
+ 
+ \vspace{0.5cm} 
+
+  La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_TAILLE\_VAR\_MASCARET(Erreur, Identifiant, NomVar, index1, taille1,
+    
+     taille2, taille3)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)}  :: NomVar
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: index1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: taille1
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: taille2
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)}  :: taille3
+        
+    \textcolor{blue}{end subroutine} GET\_TAILLE\_VAR\_MASCARET
+    
+ \vspace{0.5cm}
+
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    \vspace{0.5cm}
+    \item \textit{NomVar} : nom de la variable (notation pointée), la liste des variables est retournée par 
+    
+    "\textit{GET\_DESC\_VAR\_MASCARET}". La taille de cette chaîne ne doit pas dépasser 40 caractères (sans compter le caractère de fin de chaîne en langage C);
+    \vspace{0.5cm}
+    \item \textit{index1} : valeur du 1er indice utilisé de l'instance de la variable dont on souhaite connaître la taille. Cet argument est utilisé pour les variables commençant par "\textit{Model.CrossSection}",
+    
+    "\textit{Model.Graph}","\textit{Model.Weir}","\textit{Model.LateralWeir}","\textit{Model.Boundary}","\textit{Model.StoArea}" et 
+    
+    "\textit{Model.Junction}".
+    
+    Pour les autres variables, cet indice est ignoré car il n'a pas d'utilité.
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ Les arguments en sortie sont :
+
+  \vspace{0.5cm}
+
+  \begin{itemize}
+  
+     \item \textit{taille1} : valeur maximale du 1er indice pour accéder à la variable;
+     \vspace{0.5cm}
+     \item \textit{taille2} : valeur maximale du 2ème indice pour accéder à la variable;  
+     \vspace{0.5cm}
+     \item \textit{taille3} : valeur maximale du 3ème indice pour accéder à la variable;  
+     \vspace{0.5cm}
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Obtenir une description d'une erreur}
+
+ Cette fonction permet de récupérer le message d'erreur correspondant à une erreur qui s'est produite lors de l'appel précédent d'une fonction de l'API.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_ERREUR\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} **Message);
+ 
+ \vspace{0.5cm} 
+ 
+  La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_ERREUR\_MASCARET(Erreur, Identifiant, Message)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)}  :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=256), intent(out)}  :: Message
+        
+    \textcolor{blue}{end subroutine} GET\_ERREUR\_MASCARET
+    
+ \vspace{0.5cm}
+
+ L'argument en entrée est :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+
+ L'argument en sortie est :
+
+  \vspace{0.5cm}
+
+  \begin{itemize}
+  
+     \item \textit{Message} : le message décrivant l'erreur apparue lors de l'exécution de la fonction de l'API appelée précédemment. La longueur maximale du message est de 256 caractères. En C, cette variable doit être désallouée par l'utilisateur de l'API.
+    
+  \end{itemize}
+
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Récupérer la version du code de calcul}
+
+ Cette fonction utilitaire permet de récupérer simplement la version du code de calcul \texttt{MASCARET}.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_VERSION\_MASCARET(\textcolor{blue}{int} *Majeur,\textcolor{blue}{int} *Mineur,\textcolor{blue}{int} *Micro);
+ 
+  \vspace{0.5cm} 
+ 
+  La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_VERSION\_MASCARET(Majeur, Mineur, Micro)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Majeur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Mineur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Micro
+        
+    \textcolor{blue}{end subroutine} GET\_VERSION\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ La fonction n'a pas d'argument en entrée.
+ 
+ \vspace{0.5cm}
+ 
+  Les arguments en sortie sont :
+
+  \vspace{0.5cm}
+
+  \begin{itemize}
+  
+     \item \textit{Majeur} : numéro de la version majeure de \texttt{MASCARET}. Exemple, pour la version 7.1.2 de \texttt{MASCARET}, la valeur retournée est 7;
+     
+     \vspace{0.5cm}
+     
+     \item \textit{Mineur} : numéro de la version mineure de \texttt{MASCARET.} Exemple, pour la version 7.1.2 de \texttt{MASCARET}, la valeur retournée est 1;
+     
+     \vspace{0.5cm}
+     
+     \item \textit{Micro} : numéro de la version micro de \texttt{MASCARET.} Exemple, pour la version 7.1.2 de \texttt{MASCARET}, la valeur retournée est 2;
+    
+  \end{itemize}
+
+ \vspace{0.5cm}
+
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Récupérer des informations sur les conditions aux limites}
+
+ Ces fonctions permettent de récupérer le nombre de conditions aux limites, ainsi que leur nom.
+ 
+ \vspace{0.5cm}
+ 
+  Les signatures de ces fonctions en langage C sont:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_GET\_NB\_CONDITION\_LIMITE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} *NbCL);
+ 
+ \textcolor{blue}{int} C\_GET\_NOM\_CONDITION\_LIMITE\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} NumCL,
+ 
+ \textcolor{blue}{char} **NomCL,\textcolor{blue}{int} *NumLoi);
+ 
+ \vspace{0.5cm} 
+ 
+ Les signaturse des subroutine en langage Fortran sont :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} GET\_NB\_CONDITION\_LIMITE\_MASCARET(Erreur, Identifiant, NbCL)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: NbCL
+        
+    \textcolor{blue}{end subroutine} GET\_NB\_CONDITION\_LIMITE\_MASCARET
+    
+    \textcolor{blue}{subroutine} GET\_NOM\_CONDITION\_LIMITE\_MASCARET(Erreur, Identifiant, NumCL,
+    
+     NomCL, NumLoi)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: NumCL
+        
+        \hspace{1cm} \textcolor{blue}{character(LEN=30), intent(out)} :: NomCL
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: NumLoi
+        
+    \textcolor{blue}{end subroutine} GET\_NOM\_CONDITION\_LIMITE\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+  Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{NumCl} : numéro de la condition limite dont on souhaite connaître le nom, ce numéro doit être compris entre 1 et NbCL
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ Les arguments en sortie sont :
+
+  \vspace{0.5cm}
+
+  \begin{itemize}
+  
+     \item \textit{NbCL} : nombre de conditions aux limites dans le modèle;
+     \vspace{0.5cm}
+     \item \textit{NomCL} : nom de la condition à la limite. En C, cette variable doit être désallouée par l'utilisateur de l'API;  
+     \vspace{0.5cm}
+     \item \textit{NumLoi} : numéro de la loi dans le modèle correspondant à la condition limite demandée.  
+     \vspace{0.5cm}
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  
+  La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsection{Fonctions utilitaires XML}
+
+\subsubsection{Exporter un modèle ou un état dans un fichier XML}
+
+ Cette fonction permet d'exporter dans un fichier XML, le modèle ou l'état d'une instance de \texttt{MASCARET}.
+ 
+ \vspace{0.5cm}
+ 
+ Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé une instance d'un modèle \texttt{MASCARET}, c'est-à-dire d'avoir fait appel à la fonction décrite dans le paragraphe (\ref{Init}). Si l'on souhaite exporter l'état, il faut l'avoir initialisé.
+ 
+ \vspace{0.5cm}
+ 
+  La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_EXPORT\_XML\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomFichier,\textcolor{blue}{int} AvecDesc,
+ 
+ \textcolor{blue}{int} exportModele);
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} EXPORT\_XML\_MASCARET(Erreur, Identifiant, NomFichier, AvecDesc,
+    
+     exportModele)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=255), intent(in)} :: NomFichier
+        
+        \hspace{1cm} \textcolor{blue}{logical, intent(in)} :: AvecDesc
+        
+        \hspace{1cm} \textcolor{blue}{logical, intent(in)} :: exportModele
+        
+    \textcolor{blue}{end subroutine} EXPORT\_XML\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{NomFichier} : nom du fichier XML qui sera créé. La taille de cette chaîne ne doit pas dépasser 255 caractères (sans compter le caractère de fin de chaîne en langage C);
+    
+    \vspace{0.5cm}
+    
+    \item \textit{AvecDesc} : si vrai (valeur 1), ajoute la description de la variable;
+    
+    \vspace{0.5cm}
+    
+    \item \textit{exportModele} : si vrai (valeur 1), exportation du modèle, sinon de l'état.
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Ecrire l'en-tête d'un fichier XML}
+
+ Cette fonction doit être utilisée quand on souhaite créer un fichier XML contenant une liste spécifique de variables. Cette fonction permet d'écrire l'en-tête d'un fichier XML et une balise ouvrante au choix de l'utilisateur. On doit utiliser cette fonction avant d'utiliser la fonction qui permet d'écrire une variable spécifique ("\textit{EXPORT\_VAR\_XML\_MASCARET}").
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_OUVERTURE\_BALISE\_XML\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{char} *NomFichier,
+ 
+ \textcolor{blue}{int} uniteLogique,\textcolor{blue}{char} *balise);
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} OUVERTURE\_BALISE\_XML\_MASCARET(Erreur, Identifiant, NomFichier,
+    
+     uniteLogique, balise)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{character(len=255), intent(in)} :: NomFichier
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: uniteLogique
+        
+        \hspace{1cm} \textcolor{blue}{character(len=255), intent(in)} :: balise
+        
+    \textcolor{blue}{end subroutine} OUVERTURE\_BALISE\_XML\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{NomFichier} : nom du fichier XML qui sera créé. La taille de cette chaîne ne doit pas dépasser 255 caractères (sans compter le caractère de fin de chaîne en langage C);
+    
+    \vspace{0.5cm}
+    
+    \item \textit{uniteLogique} : unité logique utilisé par le fichier XML, elle doit être strictement supérieure à 36;
+    
+    \vspace{0.5cm}
+    
+    \item \textit{balise} : balise racine du fichier XML.
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Ecrire une variable dans un fichier XML}
+
+ Cette fonction doit être utilisée à la suite de la fonction d'écriture de l'en-tête de fichier XML et permet d'écrire une variable spécifique de \texttt{MASCARET} dans un fichier XML. Cette fonction peut être appelée plusieurs fois successivement.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_EXPORT\_VAR\_XML\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} uniteLogique,\textcolor{blue}{char} *nomVar,
+ 
+ \textcolor{blue}{int} avecDesc);
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} EXPORT\_VAR\_XML\_MASCARET(Erreur, Identifiant, uniteLogique, nomVar,
+    
+     avecDesc)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: uniteLogique
+        
+        \hspace{1cm} \textcolor{blue}{character(len=40), intent(in)} :: nomVar
+        
+        \hspace{1cm} \textcolor{blue}{logical, intent(in)} :: avecDesc
+        
+    \textcolor{blue}{end subroutine} EXPORT\_VAR\_XML\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{uniteLogique} : unité logique utilisé par le fichier XML, elle doit être égale à la valeur utilisée lors de l'appel à la fonction "\textit{OUVERTURE\_BALISE\_XML\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{nomVar} : nom de la variable (notation pointée) à exporter dans le fichier XML. La liste des variables est retournée par "\textit{GET\_DESC\_VAR\_MASCARET}". La taille de cette chaîne ne doit pas dépasser 40 caractères (sans compter le caractère de fin de chaîne en langage C);
+    
+    \vspace{0.5cm}
+    
+    \item \textit{avecDesc} : si vrai (valeur 1), ajoute la description de la variable dans le fichier XML.
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\subsubsection{Fermeture du fichier XML}
+
+ Cette fonction doit être utilisée à la suite de la fonction d'écriture de l'en-tête de fichier XML et des appels à la fonction d'écriture d'une variable en XML. Elle ferme la balise et le fichier XML.
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la fonction en langage C est:
+ 
+ \vspace{0.5cm}
+ 
+ \textcolor{blue}{int} C\_FERMETURE\_BALISE\_XML\_MASCARET(\textcolor{blue}{int} Identifiant,\textcolor{blue}{int} uniteLogique,
+ 
+ \textcolor{blue}{char} *balise);
+ 
+ \vspace{0.5cm}
+ 
+ La signature de la subroutine en langage Fortran est :
+ 
+ \vspace{0.5cm}
+ 
+    \textcolor{blue}{subroutine} FERMETURE\_BALISE\_XML\_MASCARET(Erreur, Identifiant, uniteLogique,
+    
+     balise)
+    
+        \hspace{1cm}\textcolor{blue}{implicit none}                 
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(out)} :: Erreur
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: Identifiant
+        
+        \hspace{1cm} \textcolor{blue}{integer, intent(in)} :: uniteLogique
+        
+        \hspace{1cm} \textcolor{blue}{character(len=255), intent(in)} :: balise
+        
+    \textcolor{blue}{end subroutine} FERMETURE\_BALISE\_XML\_MASCARET
+    
+ \vspace{0.5cm}
+ 
+ Les arguments en entrée sont :
+ 
+ \vspace{0.5cm}
+ 
+ \begin{itemize}
+ 
+    \item \textit{Identifiant} : identifiant de l'instance \texttt{MASCARET} retourné par "\textit{CREATE\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{uniteLogique} : unité logique utilisé par le fichier XML, elle doit être égale à la valeur utilisée lors de l'appel à la fonction "\textit{OUVERTURE\_BALISE\_XML\_MASCARET}";
+    
+    \vspace{0.5cm}
+    
+    \item \textit{balise} : balise racine du fichier XML à fermer. Elle doit être identique à celle utilisée pour l'ouverture ("\textit{OUVERTURE\_BALISE\_XML\_MASCARET}");
+    
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ 
+ La valeur de retour de la fonction C ou de l'argument Fortran \textit{Erreur} est identique et indique si la fonction s'est déroulée correctement (valeur 0). Pour toute valeur différente de 0, il y a eu un problème pendant l'exécution. Pour avoir plus de détails concernant l'erreur, il faut faire appel à la fonction "\textit{GET\_ERREUR\_MASCARET}".
+
+\section{Liste des variables}
+
+\subsection{Variables du modèle}
+
+\begin{landscape}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline \textsc{nom de la variable} & \textsc{description} & \textsc{type} & \textsc{dimension} \\ 
+\hline  Model.Connect.FirstNdNum & Number of the first node for a reach & TABINT & 1 \\
+\hline  Model.Connect.LastNdNum & Number of the last node for a reach & TABINT & 1 \\
+\hline  Model.Connect.NumReachJunction & The number of reaches for a junction & TABINT & 1 \\
+\hline  Model.Connect.ReachNum & The numbers of the reaches for a junction & TABINT & 2 \\
+\hline  Model.Connect.NodeNum & Node number for a junction & TABINT & 2 \\
+\hline  Model.Connect.ReachNumFreeOutflow & Reach number for the free outflow & TABINT & 1 \\
+\hline  Model.Connect.NodeNumFreeOutflow & Node number for the free outflow & TABINT & 1 \\
+\hline  Model.CrossSection.Name & Name of the cross section & STRING & 1 \\
+\hline  Model.CrossSection.RelAbs & Relative abscissa of the cross section & DOUBLE & 1 \\
+\hline  Model.CrossSection.AbsAbs & Absolute abscissa of the cross section & DOUBLE & 1 \\
+\hline  Model.CrossSection.ReachNum & Reach number of the cross section & INT & 1 \\
+\hline  Model.CrossSection.ReachName & Name of the reach & STRING & 1 \\
+\hline  Model.CrossSection.NumStep & Number of steps of the vertical discretisation & INT & 1 \\
+\hline  Model.CrossSection.Step & Step value for the vertical discretisation & DOUBLE & 1 \\
+\hline  Model.CrossSection.Zbot & Bottom level of the cross section & DOUBLE & 1 \\
+\hline  Model.CrossSection.Zbank & Bank level of the cross section & TABDOUBLE & 2 \\
+\hline  Model.CrossSection.X & X points & TABDOUBLE & 2 \\
+\hline  Model.CrossSection.Y & Y points & TABDOUBLE & 2 \\
+\hline  Model.CrossSection.Bound1 & Boundary of the main channel & TABINT & 2 \\
+\hline  Model.CrossSection.Bound2 & Boundary of the floodplain & TABINT & 2 \\
+\hline  Model.CrossSection.FricCoef1 & Friction coefficient of the main channel & DOUBLE & 1 \\
+\hline  Model.CrossSection.FricCoef2 & Friction coefficient of the floodplain & DOUBLE & 1 \\
+\hline  Model.VDSection.S & Total wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.S1 & Main channel wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.S2 & Floodplain wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.SS & Ineffective flow area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.S1GEO & Non-hydrostatic termsTermes (Scube) & TABDOUBLE & 2 \\
+\hline  Model.VDSection.CELER & Celerity & TABDOUBLE & 2 \\
+\hline  Model.VDSection.B & Total width & TABDOUBLE & 2 \\
+\hline  Model.VDSection.INV & Riemann invariants & TABDOUBLE & 2 \\
+\hline  Model.VDSection.INTE & INTE AIGEO & TABDOUBLE & 2 \\
+\hline  Model.VDSection.DYDX & dY/dx|s & TABDOUBLE & 2 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.VDSection.PRESS & Pressure & TABDOUBLE & 2 \\
+\hline  Model.VDSection.DEB & Conveyance & TABDOUBLE & 2 \\
+\hline  Model.VDSection.DEB1 & Main channel conveyance & TABDOUBLE & 2 \\
+\hline  Model.VDSection.DEB2 & Floodplain conveyance & TABDOUBLE & 2 \\
+\hline  Model.VDSection.SD & Shifted - Total wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.SD1 & Shifted - Main channel area & TABDOUBLE & 2 \\
+\hline  Model.VDSection.SD2 & Shifted - Floodplain & TABDOUBLE & 2 \\
+\hline  Model.VDSection.PRESSD & Shifted  - Pressure & TABDOUBLE & 2 \\
+\hline  Model.VDSection.BD & Shifted - Total width & TABDOUBLE & 2 \\
+\hline  Model.VDSection.DEBD & Shifted - Total conveyance & TABDOUBLE & 2 \\
+\hline  Model.DryArea.FirstNode & Number of the first node & INT & 1 \\
+\hline  Model.DryArea.LastNode & Number of the last node & INT & 1 \\
+\hline  Model.Graph.Name & Name of the graph & STRING & 1 \\
+\hline  Model.Graph.Type & Graph type : 1->Q=f(T) 2->Z=f(T) 3->Q,Z=f(T) 4->Z=f(Q) & INT & 1 \\
+                         &              5->Q=f(Z) 6->Zus=f(Zds,Q) 7->Zinf,Zsup=f(T) &  &  \\
+\hline  Model.Graph.Time & Time value & TABDOUBLE & 2 \\
+\hline  Model.Graph.Level & Level value & TABDOUBLE & 2 \\
+\hline  Model.Graph.Discharge & Discharge value & TABDOUBLE & 2 \\
+\hline  Model.Graph.SupLevel & Superior level & TABDOUBLE & 2 \\
+\hline  Model.Graph.InfLevel & Inferior level & TABDOUBLE & 2 \\
+\hline  Model.Graph.DownLevel & Downstream level & TABDOUBLE & 2 \\
+\hline  Model.Graph.UpLevel & Upstream level & TABDOUBLE & 3 \\
+\hline  Model.Weir.Name & Name of the weir or dam & STRING & 1 \\
+\hline  Model.Weir.Number & Weir number & INT & 1 \\
+\hline  Model.Weir.ReachNum & Numero de la branche & INT & 1 \\
+\hline  Model.Weir.RelAbscissa & Relative abscissa & DOUBLE & 1 \\
+\hline  Model.Weir.Node & Node number & INT & 1 \\
+\hline  Model.Weir.Type & Type & INT & 1 \\
+\hline  Model.Weir.State & Enabled or disabled & BOOL & 1 \\
+\hline  Model.Weir.Thickness & Thick or thin & INT & 1 \\
+\hline  Model.Weir.CrestLevel & Crest level (m) & DOUBLE & 1 \\
+\hline  Model.Weir.DischCoef & Discharge coefficient & DOUBLE & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.Weir.BrkLevel & Breaking water level & DOUBLE & 1 \\
+\hline  Model.Weir.Slope & Gradient of crest lowering (m/s) & DOUBLE & 1 \\
+\hline  Model.Weir.Discharge & Constant discharge ($m^3/s$) & DOUBLE & 1 \\
+\hline  Model.Weir.GateLength & Length of the gate & DOUBLE & 1 \\
+\hline  Model.Weir.GraphNum & Graph number & INT & 1 \\
+\hline  Model.Weir.PtZ & Z points (levels) for the graph & TABDOUBLE & 2 \\
+\hline  Model.Weir.PtQ & Q points (discharges) for the graph & TABDOUBLE & 2 \\
+\hline  Model.Weir.PtZus & Z upstream points (levels) for the graph & TABDOUBLE & 3 \\
+\hline  Model.Weir.PtZds & Z downstream points (levels) for the graph & TABDOUBLE & 2 \\
+\hline  Model.Weir.PtZup & Upper levels of the gate & DOUBLE & 1 \\
+\hline  Model.Weir.PtZlo & Lower levels of the gate & DOUBLE & 1 \\
+\hline  Model.Weir.PtX & Crest abscissa & TABDOUBLE & 2 \\
+\hline  Model.Weir.PtY & Crest ordinate & TABDOUBLE & 2 \\
+\hline  Model.LateralWeir.Name & Name of the lateral weir & STRING & 1 \\
+\hline  Model.LateralWeir.Type & Lateral weir definition & INT & 1 \\
+\hline  Model.LateralWeir.ReachNum & Reach number of the lateral weir & INT & 1 \\
+\hline  Model.LateralWeir.RelAbscissa & Relative abscissa of the lateral weir & DOUBLE & 1 \\
+\hline  Model.LateralWeir.Length & Length of the lateral weir & DOUBLE & 1 \\
+\hline  Model.LateralWeir.UpNode & Upstream node of the lateral weir & INT & 1 \\
+\hline  Model.LateralWeir.DownNode & Downstream node of the lateral weir & INT & 1 \\
+\hline  Model.LateralWeir.CrestLevel & Crest level of the lateral weir & DOUBLE & 1 \\
+\hline  Model.LateralWeir.DischCoef & Discharge coefficient of the lateral weir & DOUBLE & 1 \\
+\hline  Model.LateralWeir.GraphNum & Graph number associated with the lateral weir & INT & 1 \\
+\hline  Model.LateralWeir.PtZ & Z points of the graph (level (m)) & TABDOUBLE & 2 \\
+\hline  Model.LateralWeir.PtQ & Q points of the graph (discharge ($m^3/s$)) & TABDOUBLE & 2 \\
+\hline  Model.File.Listing.Unit & Logical unit number Listing & INT & 0 \\
+\hline  Model.File.Listing.Name & Name of the file Listing & STRING & 0 \\
+\hline  Model.Link.Type & Type of the link (Weir, channel, syphon or culvert) & INT & 1 \\
+\hline  Model.Link.Kind & River-TO-Storage Area or Storage Area-TO-Storage Area & INT & 1 \\
+\hline  Model.Link.CulverFlowDir & Flow direction for the culvert & INT & 1 \\
+\hline  Model.Link.StoR.NumS & Corresponding storage area number (link Storage Area --- River) & INT & 1 \\
+\hline  Model.Link.StoR.Abscissa & Abscissa of the link (link Storage Area --- River) & DOUBLE & 1 \\
+\hline  Model.Link.StoR.Node & Corresponding node of the link (link Storage Area --- River) & INT & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.Link.StoR.ReachNum & Number of the corresponding reach (link Storage Area --- River) & INT & 1 \\
+\hline  Model.Link.StoR.DQDZsto & Derivative of the discharge with respect to the storage area level (link Storage Area --- River) & DOUBLE & 1 \\
+\hline  Model.Link.StoR.DQDZriv & Derivative of the discharge with respect to the river level (link Storage Area --- River) & DOUBLE & 1 \\
+\hline  Model.Link.StoS.S\_i & Number of the storage area 'i' (discharge flowing from 'i' towards 'j') & INT & 1 \\
+\hline  Model.Link.StoS.S\_j & Number of the storage area 'j' (discharge flowing from 'i' towards 'j') & INT & 1 \\
+\hline  Model.Link.StoS.DQDZup & Derivative of the flow discharge with respect to the water level in the upstream storage area & DOUBLE & 1 \\
+\hline  Model.Link.StoS.DQDZdown & Derivative of the flow discharge with respect to the water level in the downstream storage area & DOUBLE & 1 \\
+\hline  Model.Link.Width & Width of the link (m) & DOUBLE & 1 \\
+\hline  Model.Link.Length & Length of the link (m) & DOUBLE & 1 \\
+\hline  Model.Link.Level & Level of the link (m) & DOUBLE & 1 \\
+\hline  Model.Link.MeanLevel & Mean level of the link (m) & DOUBLE & 1 \\
+\hline  Model.Link.CoefCulvertDischarge & Coefficient of the culvert discharge & DOUBLE & 1 \\
+\hline  Model.Link.CSection & Cross section of the culvert or the syphon ($m^2$) & DOUBLE & 1 \\
+\hline  Model.Link.Roughness & Roughness (Strickler) of the link & DOUBLE & 1 \\
+\hline  Model.Link.CoefWeirDischarge & Weir type discharge coefficient (weir or culvert) & DOUBLE & 1 \\
+\hline  Model.Link.HeadLossCoef & Head loss coefficient (syphon or culvert) & DOUBLE & 1 \\
+\hline  Model.Link.ActivationCoef & Activation coefficient for a weir & DOUBLE & 1 \\
+\hline  Model.Link.FlowExchange & Flow exchanged ($m^3/s$) & DOUBLE & 1 \\
+\hline  Model.Link.PrevDischarge & Discharge value at the previous time step ($m^3/s$) & DOUBLE & 1 \\
+\hline  Model.Link.MaxDischarge & Maximal discharge value ($m^3/s$) & DOUBLE & 1 \\
+\hline  Model.Link.TimeMaxDischarge & Time corresponding to the maximal discharge value (s) & DOUBLE & 1 \\
+\hline  Model.Link.ExchangeVelocity & Exchange velocity & DOUBLE & 1 \\
+\hline  Model.Link.MaxVelocity & Maximal velocity value & DOUBLE & 1 \\
+\hline  Model.Link.TimeMaxVelocity & Time corresponding to the maximal velocity value & DOUBLE & 1 \\
+\hline  Model.File.Result.Unit & Logical unit number Result & INT & 0 \\
+\hline  Model.File.Result.Name & Name of the file Result & STRING & 0 \\
+\hline  Model.File.Result2.Unit & Logical unit number Result2 & INT & 0 \\
+\hline  Model.File.Result2.Name & Name of the file Result2 & STRING & 0 \\
+\hline  Model.File.GeoStoArea.Unit & Logical unit number GeoStoArea & INT & 0 \\
+\hline  Model.File.GeoStoArea.Name & Name of the file GeoStoArea & STRING & 0 \\
+\hline  Model.File.ResultStoArea.Unit & Logical unit number ResultStoArea & INT & 0 \\
+\hline  Model.File.ResultStoArea.Name & Name of the file ResultStoArea & STRING & 0 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.File.ResultLink.Unit & Logical unit number ResultLink & INT & 0 \\
+\hline  Model.File.ResultLink.Name & Name of the file ResultLink & STRING & 0 \\
+\hline  Model.File.ListingStoArea.Unit & Logical unit number ListingStoArea & INT & 0 \\
+\hline  Model.File.ListingStoArea.Name & Name of the file ListingStoArea & STRING & 0 \\
+\hline  Model.File.ListingLink.Unit & Logical unit number ListingLink & INT & 0 \\
+\hline  Model.File.ListingLink.Name & Name of the file ListingLink & STRING & 0 \\
+\hline  Model.Boundary.Name & Name of a boundary & STRING & 1 \\
+\hline  Model.Boundary.Slope & Slope of the bottom & DOUBLE & 1 \\
+\hline  Model.Boundary.GraphNum & Graph number & INT & 1 \\
+\hline  Model.Boundary.Type & Type of the boundary (flow or stage hydrograph, rating curve, open ,etc.) & INT & 1 \\
+\hline  Model.Boundary.PtZ & Z points of the graph (level (m)) & TABDOUBLE & 2 \\
+\hline  Model.Boundary.PtQ & Q points of the graph (discharge ($m^3/s$)) & TABDOUBLE & 2 \\
+\hline  Model.StorageArea.BottomLevel & Bottom level of a storage area (m) & DOUBLE & 1 \\
+\hline  Model.StorageArea.Level & Water level of a storage area (m) & DOUBLE & 1 \\
+\hline  Model.StorageArea.Surface & Surface of a storage area ($m^2$) & DOUBLE & 1 \\
+\hline  Model.StorageArea.Volume & Volume of a storage area ($m^3$) & DOUBLE & 1 \\
+\hline  Model.StorageArea.InitVolume & Initial volume of a storage area ($m^3$) & DOUBLE & 1 \\
+\hline  Model.StorageArea.Statement & Statement of a storage area & DOUBLE & 1 \\
+\hline  Model.StorageArea.ErrorStatement & Error statement of a storage area & DOUBLE & 1 \\
+\hline  Model.StorageArea.DZ & Water level elevation of a storage area for one time step & DOUBLE & 1 \\
+\hline  Model.StorageArea.MaxLevel & Maximal water level of a storage area & DOUBLE & 1 \\
+\hline  Model.StorageArea.TimeMaxLevel & Time for the maximal water level & DOUBLE & 1 \\
+\hline  Model.StorageArea.SSLink & SSLink(:,1) : number of the link, SSLink(:,2) : number of the corresponding storage area & TABINT & 3 \\
+\hline  Model.StorageArea.RSLink & RSLink(:,1) : number of the link, RSLink(:,2) : number of the corresponding node & TABINT & 3 \\
+\hline  Model.StorageArea.Graph\_Z\_S & Surface of the storage area as a funtion of the elevation & TABDOUBLE & 3 \\
+\hline  Model.StorageArea.Graph\_Z\_V & Volume of the storage area as a funtion of the elevation & TABDOUBLE & 3 \\
+\hline  Model.StorageArea.VertDisc & Vertical discretisation step for a storage area & DOUBLE & 1 \\
+\hline  Model.StorageArea.NbVertDisc & Number of data for the vertical discretisation & INT & 1 \\
+\hline  Model.StorageArea.BoundPts & Coordinates of the boundary points & TABDOUBLE & 3 \\
+\hline  Model.StorageArea.InternalPts & Coordinates of the internal points & TABDOUBLE & 3 \\
+\hline  Model.Junction.Name & Name of the junction & STRING & 1 \\
+\hline  Model.Connect.ReachNum & The number of reaches & TABINT & 2 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.Junction.Abscissa & Abscissa of the reaches & TABDOUBLE & 2 \\
+\hline  Model.Junction.Ordinate & Ordinate of the reaches & TABDOUBLE & 2 \\
+\hline  Model.Junction.Angle & Angle of the reaches & TABDOUBLE & 2 \\
+\hline  Model.Junction.Isec & Node number for the reaches & TABINT & 2 \\
+\hline  Model.Junction.Isecvo & Node number for the reaches & TABINT & 2 \\
+\hline  Model.Junction.EndReach & End of the reach & TABINT & 2 \\
+\hline  Model.Inflow.Name & Name of the inflow & STRING & 1 \\
+\hline  Model.Inflow.ReachNum & Number of the corresponding reach & INT & 1 \\
+\hline  Model.Inflow.RelAbscissa & Relative abscissa of the inflow & DOUBLE & 1 \\
+\hline  Model.Inflow.Length & Length of the inflow & DOUBLE & 1 \\
+\hline  Model.Inflow.UpNode & Number of the upstream node & INT & 1 \\
+\hline  Model.Inflow.DownNode & Number of the downstream node & INT & 1 \\
+\hline  Model.Inflow.GraphNum & Number of the graph & INT & 1 \\
+\hline  Model.Inflow.Discharge & Value of the inflow ($m^3$/s or $m^3$/s/m) & DOUBLE & 1 \\
+\hline  Model.Dam.ReachNum & Reach number of the dam & INT & 0 \\
+\hline  Model.Dam.RelAbscissa & Relative abscissa of the dam & DOUBLE & 0 \\
+\hline  Model.Dam.Node & Node number of the dam & INT & 0 \\
+\hline  Model.Dam.BreakType & Type of dam breaking & INT & 0 \\
+\hline  Model.Dam.CrestLevel & Crest level of the dam & DOUBLE & 0 \\
+\hline  Model.ExternalInflow.Number & Number of the storage area with an external inflow & INT & 1 \\
+\hline  Model.ExternalInflow.GraphNumber & Number of the graph for an external inflow & INT & 1 \\
+\hline  Model.ExternalInflow.Discharge & Value of the external inflow (m3/s) & DOUBLE & 1 \\
+\hline  Model.VDCrossSection.B1 & Main channel width & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.B2 & Floodplain width & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.BS & Width of the ineffective flow area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.P1 & Main channel wetted perimeter & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.P2 & Floodplain wetted perimeter & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.S1 & Main channel wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.S2 & Floodplain wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.S2G & Left floodplain wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.SS & Wetted ineffective flow area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.C & Celerity & TABDOUBLE & 2 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.VDCrossSection.Conv1 & Conveyance of the main channel & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.Conv2 & Conveyance of the floodplain & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.Pr & Pressure & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.Inv & Riemann invariant & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.S1D & Shifted mesh - Main channel wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.S2D & Shifted mesh - Floodplain wetted area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.SSD & Shifted mesh - Ineffective flow area & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.PrD & Shifted mesh - Pressure & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.BD & Shifted mesh - Width & TABDOUBLE & 2 \\
+\hline  Model.VDCrossSection.DebD & Shifted mesh - Conveyance & TABDOUBLE & 2 \\
+\hline  Model.CSectionAbsX & Cross section in absolute abscissa? & BOOL & 0 \\
+\hline  Model.HeadLossEnlarg & Automatic head loss in case of enlargement? & BOOL & 0 \\
+\hline  Model.ImpSupCritKern & Implicitation of the super-critical kernel? & BOOL & 0 \\
+\hline  Model.HeadLossJunc & Automatic head losses at junctions? & BOOL & 0 \\
+\hline  Model.StoArea & Storage areas activation? & BOOL & 0 \\
+\hline  Model.RecVar & Recorded variables & TABBOOL & 1 \\
+\hline  Model.CompVar & Computed variables & TABBOOL & 1 \\
+\hline  Model.PrintComp & Write the listing along with the computation progress & BOOL & 0 \\
+\hline  Model.PrintVertCSection & Write the vertical discretisation of the cross sections & BOOL & 0 \\
+\hline  Model.HotStart & Hot start? & BOOL & 0 \\
+\hline  Model.InefFlowArea & Ineffective flow area? & BOOL & 0 \\
+\hline  Model.InterpFriction & Linear interpolation of the friction coefficients? & BOOL & 0 \\
+\hline  Model.ProgOverFlowIFA & Type of progressive overflow for the ineffective flow areas & BOOL & 0 \\
+\hline  Model.ProgOverFlowFP & Type of progressive overflow for the floodplains & BOOL & 0 \\
+\hline  Model.FricVertWall & Conservation of friction on the vertical walls? & BOOL & 0 \\
+\hline  Model.VarTimeStep & Variable time step? & BOOL & 0 \\
+\hline  Model.ImpFric & Implicitation of friction? & BOOL & 0 \\
+\hline  Model.ValidComp & Validate the computation? & BOOL & 0 \\
+\hline  Model.DamBrkFldWave & Computation of a dam break flood wave? & BOOL & 0 \\
+\hline  Model.Zbot & Bottom level (m) & TABDOUBLE & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.LevRightBk & Level of the right bank (m) & TABDOUBLE & 1 \\
+\hline  Model.LevLeftBk & Level of the left bank (m) & TABDOUBLE & 1 \\
+\hline  Model.Abac & Abacus for the head losses at junctions & TABDOUBLE & 3 \\
+\hline  Model.Heps & Miniam water depth (m) & DOUBLE & 0 \\
+\hline  Model.FricCoefFP & Friction coefficients for the floodplains & TABDOUBLE & 1 \\
+\hline  Model.FricCoefMainCh & Friction coefficients for the main channel & TABDOUBLE & 1 \\
+\hline  Model.LocalHeadLoss & Local head losses & TABDOUBLE & 1 \\
+\hline  Model.XDT & Relative position of nodes / cross sections & TABDOUBLE & 1 \\
+\hline  Model.X & Abscissa of nodes (m) & TABDOUBLE & 1 \\
+\hline  Model.CourantNum & Maximal Courant number & DOUBLE & 0 \\
+\hline  Model.MaxCompTime & Maximal computation time (s) & DOUBLE & 0 \\
+\hline  Model.InitTime & Initial time of the computation (s) & DOUBLE & 0 \\
+\hline  Model.DT & Time step (s) & DOUBLE & 0 \\
+\hline  Model.LimFroude & Limit Froude number for the boundary conditions & DOUBLE & 0 \\
+\hline  Model.DZwave & Level threshold identifying the wave (m) & DOUBLE & 0 \\
+\hline  Model.ResultFmt2 & Result format \#2 & INT & 0 \\
+\hline  Model.NodeRes & Nodes where the results are recorded & TABINT & 1 \\
+\hline  Model.RecOption & Option for the records & INT & 0 \\
+\hline  Model.ResultFmt & Result format & INT & 0 \\
+\hline  Model.RecNbFstTimeStep & Recording : number of the first time step to write & INT & 0 \\
+\hline  Model.RecNTimeStep & Recording : write data all N time steps & INT & 0 \\
+\hline  Model.RecListNTimeStep & Recording : write to the listing file all N time steps & INT & 0 \\
+\hline  Model.AlgoNet & Algorithm for the network solution & TABINT & 1 \\
+\hline  Model.1DMesh & Computational method for the 1D mesh generator & INT & 0 \\
+\hline  Model.IDT & Upstream cross section of a node & TABINT & 1 \\
+\hline  Model.GeoFileFmt & Format of the geometry file & INT & 0 \\
+\hline  Model.FricLaw & Type of friction law & INT & 0 \\
+\hline  Model.MaxNbTimeStep & Maximal number of time steps & INT & 0 \\
+\hline  Model.StopCriteria & Criteria for stopping calculations & INT & 0 \\
+\hline  Model.Regime & Regime : steady or unsteady & INT & 0 \\
+\hline  Model.CSectionLayout & Cross section layout & INT & 0 \\
+\hline  Model.ValidType & Type of validation (number) & INT & 0 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  Model.Kernel & Computational kernel : Steady, Unsteady subcritical or Super-critical & INT & 0 \\
+\hline  Model.Version & MASCARET version & INT & 0 \\
+\hline  Model.Title & Title of the computation & STRING & 0 \\
+\hline  Model.DZ & Features of the nodes & TABDOUBLE & 1 \\
+\hline  Model.XD & Abscissa of interfaces & TABDOUBLE & 1 \\
+\hline  Model.DZD & Vertical discretisation of interfaces & TABDOUBLE & 1 \\
+\hline  Model.FirstCSReach & First cross section of a reach & TABINT & 1 \\
+\hline  Model.LastCSReach & Last cross section of a reach & TABINT & 1 \\
+\hline  Model.RelXFirstNdReach & Relative abscissa of the first node of a reach & TABDOUBLE & 1 \\
+\hline  Model.RelXLastNdReach & Relative abscissa of the last node of a reach & TABDOUBLE & 1 \\
+\hline  Model.Opt & Optimisation of the super-critical kernel & BOOL & 0 \\
+\hline  Model.F1 & Pulse function & TABDOUBLE & 2 \\
+\hline  Model.Boussinesq & Non-hydrostatic terms for the super-critical kernel? & BOOL & 0 \\
+\hline  Model.NoConvection & Reduced momentum equation for sub-critical kernel? & BOOL & 0 \\
+\hline  Model.CQMV & Lateral inflow in the momentum equation? & INT & 0 \\
+
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+\end{landscape}
+
+\subsection{Variables de l'état}
+
+\begin{landscape}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline \textsc{nom de la variable} & \textsc{description} & \textsc{type} & \textsc{dimension} \\ 
+\hline  State.DPDZ2 & Derivative of the floodplain wetted perimeter with respect to the level & TABDOUBLE & 1 \\
+\hline  State.DPDZ1 & Derivative of main channel wetted perimeter with respect to the level & TABDOUBLE & 1 \\
+\hline  State.Qspilled & Spilled discharge (lateral weir) & TABDOUBLE & 1 \\
+\hline  State.Qinflow & Inflow discharge & TABDOUBLE & 1 \\
+\hline  State.Airs & State of the 2D junction & TABDOUBLE & 2 \\
+\hline  State.W & State of the 2D junction & TABDOUBLE & 3 \\
+\hline  State.YNode & Water depth (super-critical kernel) & TABDOUBLE & 1 \\
+\hline  State.CNode & Celerity (super-critical kernel) & TABDOUBLE & 1 \\
+\hline  State.UNode & Speed (super-critical kernel) & TABDOUBLE & 1 \\
+\hline  State.XFron & Front wave position & TABDOUBLE & 1 \\
+\hline  State.RH2 & Hydraulic radius of the floodplain & TABDOUBLE & 1 \\
+\hline  State.RH1 & Hydraulic radius of the main channel & TABDOUBLE & 1 \\
+\hline  State.BS & Width of the ineffective flow area & TABDOUBLE & 1 \\
+\hline  State.B2 & Width of the floodplain & TABDOUBLE & 1 \\
+\hline  State.B1 & Width of the main channelr & TABDOUBLE & 1 \\
+\hline  State.P2 & Floodplain wetted perimeter & TABDOUBLE & 1 \\
+\hline  State.P1 & Main channel wetted perimeter & TABDOUBLE & 1 \\
+\hline  State.Froude & Froude number & TABDOUBLE & 1 \\
+\hline  State.Beta & beta coefficient of the Debord's formula & TABDOUBLE & 1 \\
+\hline  State.S2 & Floodplain wetted area & TABDOUBLE & 1 \\
+\hline  State.S1 & Main channel wetted area & TABDOUBLE & 1 \\
+\hline  State.SS & Wetted ineffective flow area & TABDOUBLE & 1 \\
+\hline  State.Q2 & Floodplain discharge & TABDOUBLE & 1 \\
+\hline  State.Q1 & Main channel discharge & TABDOUBLE & 1 \\
+\hline  State.V1 & Velocity in main channel & TABDOUBLE & 1 \\
+\hline  State.V2 & Velocity in floodplain & TABDOUBLE & 1 \\
+\hline  State.Y & Water depth & TABDOUBLE & 1 \\
+\hline  State.VOL & Volume of the active channel & TABDOUBLE & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  State.VOLS & Volume of the ineffective flow areas & TABDOUBLE & 1 \\
+\hline  State.PreviousTime & Previous Time & DOUBLE & 0 \\
+\hline  State.TimeStepNum & Time step number & INT & 0 \\
+\hline  State.SimulPhase & Indicator of the simulation phase & INT & 0 \\
+\hline  State.DT & Time step (s) & DOUBLE & 0 \\
+\hline  State.Q & Total discharge ($m^3$/s) & TABDOUBLE & 1 \\
+\hline  State.Z & Water level (m) & TABDOUBLE & 1 \\
+\hline  State.Link.Discharge & Discharge ($m^3$/s) & DOUBLE & 1 \\
+\hline  State.Link.PrevDischarge & Previous discharge ($m^3$/s) & DOUBLE & 1 \\
+\hline  State.Link.MaxDischarge & Maximal discharge value ($m^3$/s) & DOUBLE & 1 \\
+\hline  State.Link.MaxDischTime & Time (s) corresponding to the maximal discharge value & DOUBLE & 1 \\
+\hline  State.Link.ExchangeV & Exchange velocity & DOUBLE & 1 \\
+\hline  State.Link.MaxV & Maximal velocity value & DOUBLE & 1 \\
+\hline  State.Link.MaxVTime & Time (s) corresponding to the maximal velocity value & DOUBLE & 1 \\
+\hline  State.Link.DQDZus & Derivative of the discharge with respect to the level in the upstream storage area & DOUBLE & 1 \\
+\hline  State.Link.DQDZds & Derivative of the discharge with respect to the level in the downstream storage area & DOUBLE & 1 \\
+\hline  State.Link.DQDZsto & Derivative of the discharge with respect to the storage area level & DOUBLE & 1 \\
+\hline  State.Link.DQDZriv & Derivative of the discharge with respect to the river level & DOUBLE & 1 \\
+\hline  State.StoArea.Level & Water level (m) & DOUBLE & 1 \\
+\hline  State.StoArea.Surface & Surface ($m^2$) & DOUBLE & 1 \\
+\hline  State.StoArea.Volume & Volume ($m^3$) & DOUBLE & 1 \\
+\hline  State.StoArea.InitVolume & Initial volume ($m^3$) & DOUBLE & 1 \\
+\hline  State.StoArea.VolStatement & Volume statement & DOUBLE & 1 \\
+\hline  State.StoArea.ErrVolStatement & Error volume statement & DOUBLE & 1 \\
+\hline  State.StoArea.DzSto & Level variation & DOUBLE & 1 \\
+\hline  State.StoArea.MaxLevel & Maximal water level (m) & DOUBLE & 1 \\
+\hline  State.StoArea.MaxTime & Time corresponding to the maximal level & DOUBLE & 1 \\
+\hline  State.JGNODE & index of the vertical discretisation GNode & TABINT & 1 \\
+\hline  State.JDNODE & index of the vertical discretisation DNODE & TABINT & 1 \\
+\hline  State.IFIGE & index of the vertical discretisation  Fige & TABINT & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  State.FLUX & Flux of the Roe's solver (FV) & TABDOUBLE & 2 \\
+\hline  State.Flow & Mass flow & TABDOUBLE & 1 \\
+\hline  State.DTRezo & Time step (REZO - subcritical kernel) & DOUBLE & 0 \\
+\hline  State.Rezomat.SOLV & Linear solver (REZO - subcritical kernel) & INT & 0 \\
+\hline  State.Rezomat.N & Matrix rank (REZO - subcritical kernel) & INT & 0 \\
+\hline  State.Rezomat.NNZ & Number of non-zero elements (REZO - subcritical kernel) & INT & 0 \\
+\hline  State.Rezomat.NN & Work aray dimension SNR (Y12M solver) & INT & 0 \\
+\hline  State.Rezomat.NN1 & Work aray dimension RNR (Y12M solver) & INT & 0 \\
+\hline  State.Rezomat.IHA & DWork aray dimension HA (Y12M solver) & INT & 0 \\
+\hline  State.Rezomat.KL & Lower bandwidth (LAPACK-DGBSV solver) & INT & 0 \\
+\hline  State.Rezomat.KU & Upper bandwidth (LAPACK-DGBSV solver) & INT & 0 \\
+\hline  State.Rezomat.LDAB & Workspace (LAPACK-DGBSV solver) & INT & 0 \\
+\hline  State.Rezomat.IFAIL & Error indicator & INT & 0 \\
+\hline  State.Rezomat.ipiv & Permutation matrix (LAPACK-DGBSV solver) & TABINT & 1 \\
+\hline  State.Rezomat.IFLAG & Numerical options and statistics (Y12M solver) & TABINT & 1 \\
+\hline  State.Rezomat.RowA & Row number of a non-zero element & TABINT & 1 \\
+\hline  State.Rezomat.ColA & Column number of a  non-zero element & TABINT & 1 \\
+\hline  State.Rezomat.snr & Work array SNR & TABINT & 1 \\
+\hline  State.Rezomat.rnr & Work array RNR & TABINT & 1 \\
+\hline  State.Rezomat.ha & Work array HA & TABINT & 2 \\
+\hline  State.Rezomat.noVarDQ & Pointers to DQ solutions (discharge) & TABINT & 1 \\
+\hline  State.Rezomat.noVarDZ & Pointers to DZ solutions (level) & TABINT & 1 \\
+\hline  State.Rezomat.noVarDQl & Pointers to DQl solutions (link) & TABINT & 1 \\
+\hline  State.Rezomat.noVarDZc & Pointers to DZc solutions (Storage area) & TABINT & 1 \\
+\hline  State.Rezomat.KdNode & Kind of nodes : 0->undefined, -1 ->discharge, -2 ->level, >0 ->junction & TABINT & 1 \\
+\hline  State.Rezomat.headJunction & For each junction, first element (node number) & TABINT & 1 \\
+\hline  State.Rezomat.nxtNdJunction & Next element in the list of nodes of a junction & TABINT & 1 \\
+\hline  State.Rezomat.WeirNd & Positions of weirs --- nodes & TABINT & 1 \\
+\hline  State.Rezomat.LinkNd & Positions of links --- nodes & TABINT & 1 \\
+\hline  State.Rezomat.NdLink & For each link, gives the upstream node or 0 if the link is not connected to the river & TABINT & 1 \\
+\hline
+
+\end{tabular} 
+\end{center}
+\end{table}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+
+\hline  State.Rezomat.AFLAG & Numerical parameters (Y12M solver) & TABDOUBLE & 1 \\
+\hline  State.Rezomat.valA & Values of the non-zero elements & TABDOUBLE & 1 \\
+\hline  State.Rezomat.b & RHS vector of the linear system : A.x = b & TABDOUBLE & 1 \\
+\hline  State.Rezomat.pivot & Pivot value of the Gauss elimination & TABDOUBLE & 1 \\
+\hline  State.Rezomat.AB & Band matrix (LAPACK-DGBSV solver) & TABDOUBLE & 2 \\
+\hline  State.NBARAD & Number of downstream dams (super-critical kernel) & INT & 0 \\
+\hline  State.IDEB & Beginning of the computation area per reach (super-critical kernel) & TABINT & 1 \\
+\hline  State.IFIN & End of the computation area per reach (super-critical kernel) & TABINT & 1 \\
+\hline  State.ITEM0 & ITEM0 (super-critical kernel) & TABINT & 1 \\
+\hline  State.Save.H2OIB & Initial water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.H2OTB & Total water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.H2OEB & Incoming water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.H2OSB & Outgoing water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.H2OIC & Initial water mass - JUNCTION & TABDOUBLE & 1 \\
+\hline  State.Save.H2OTC & Total water mass - JUNCTION & TABDOUBLE & 1 \\
+\hline  State.Save.H2OEC & Incoming water mass - JUNCTION & TABDOUBLE & 1 \\
+\hline  State.Save.H2OSC & Outgoing water mass - JUNCTION & TABDOUBLE & 1 \\
+\hline  State.Save.H2OTBS & Total outgoing water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.H2OIBS & Initial outgoing water mass - REACH & TABDOUBLE & 1 \\
+\hline  State.Save.SPREC & Previous wetted area & TABDOUBLE & 1 \\
+\hline  State.Save.QPREC & Previous discharge & TABDOUBLE & 1 \\
+\hline  State.Save.H2OIG & Global initial water mass & DOUBLE & 0 \\
+\hline  State.Save.H2OIGS & Outgoing global initial water mass & DOUBLE & 0 \\
+\hline  State.Save.H2OTG & Global total water mass & DOUBLE & 0 \\
+\hline  State.Save.H2OTGS & Outgoing global total water mass & DOUBLE & 0 \\
+\hline  State.Save.H2OEG & Global incoming water mass & DOUBLE & 0 \\
+\hline  State.Save.H2OSG & Global outgoing water mass & DOUBLE & 0 \\
+\hline  State.ZINIT & Initial water level (super-critical kernel) & TABDOUBLE & 1 \\
+
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+\end{landscape}
+
+\section{Fichiers d'inclusions}
+
+\label{les includes}
+
+\subsection{Langage C : 'apimascaret.h'}
+
+\href{run:../../../src/API/cpp/apimascaret.h}{voir ce fichier : \hspace{0.5cm}$\sim$/Mascaret/src/API/cpp/apimascaret.h}
+
+\subsection{Langage Fortran : 'm\_apimascaret\_i.f90'}
+
+\href{run:../../../src/ModulesAPI/m\_apimascaret\_i.f90}{voir ce fichier :  \hspace{0.5cm}$\sim$/Mascaret/src/ModulesAPI/m\_apimascaret\_i.f90}
+
+\section{Conclusion}
+
+L'API permet un nouveau type d'usage de \texttt{MASCARET} tourné vers le calcul intensif et la simulation fine. A moyen terme, l'API devrait devenir la seule façon d'utiliser le code de calcul.
+
+\vspace{0.5cm}
+
+En attendant un certain nombre d'évolutions sont possibles et souhaitées :
+
+\vspace{0.5cm}
+
+\begin{itemize}
+   \item ajout de nouvelles fonctions comme la possibilité d'importation de flux XML;
+   \vspace{0.5cm}
+   \item rendre modifiable la taille de certaines variables;
+   \vspace{0.5cm}
+   \item faciliter la consultation d'un tableau complet;
+   \vspace{0.5cm}
+   \item ajouter le module de qualité d'eau;
+   \vspace{0.5cm}
+   \item etc.
+\end{itemize}
+
+
+%
+% fin du document
+%
+\end{document}     

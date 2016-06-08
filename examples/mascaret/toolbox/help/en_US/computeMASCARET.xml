@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="computeMASCARET" xml:lang="en">
+    <refnamediv>
+        <refname>computeMASCARET</refname>
+        <refpurpose>Computing function for one or more time steps.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>[error]=computeMASCARET(id,InitTime,FinalTime,TimeStep,print)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para>(Output argument) Error code value : zero indicates that no errors occurred</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>InitTime</term>
+                <listitem>
+                    <para>Initial time of the simulation (s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>FinalTime</term>
+                <listitem>
+                    <para>Final time of the simulation (s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TimeStep</term>
+                <listitem>
+                    <para>Computational time step in second(s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>print</term>
+                <listitem>
+                    <para>Flag for writing on listing files (1-> write 0-> no write)</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Function for the simulation of one or more time steps. Compute a new hydraulic state with the help of the previous state and of the current model.</para>
+        <para>Another API function can also do the same job but with more arguments, it is <link linkend="computeMASCARET_BC">computeMASCARET_BC</link></para>
+        <para>Before using this function, it is necessary to initialise the MASCARET state, calling one of the following functions <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>, <link linkend="initStateMASCARET">initStateMASCARET</link> ou <link linkend="importXmlMASCARET">importXmlMASCARET</link> with the last parameter set to 0 (zero).</para>
+    </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = createMASCARET();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);
+        
+// initialisation
+err = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+assert_checkequal(err,0);      
+        
+// get the initial state on the cross-section #5 (water level)        
+[err,Zsection5] = getDoubleMASCARET(id,"State.Z",5,0,0);
+assert_checkequal(err,0);  
+
+printf("\tWater level on the cross-section #5 before the simulation :%f\n", Zsection5);
+
+// computation
+err = computeMASCARET(id,0., 36000., 1., impression);
+assert_checkequal(err,0);
+
+// get the result on the cross-section #5 (water level)   
+[err,Zsection5] = getDoubleMASCARET(id,"State.Z",5,0,0);
+assert_checkequal(err,0); 
+
+printf("\tWater level on the cross-section #5 after the simulation :%f\n", Zsection5);
+
+// model deletion
+err = deleteMASCARET(id);
+assert_checkequal(err,0);
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See also</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="computeMASCARET_BC">computeMASCARET_BC</link>
+            </member>
+            <member>
+                <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>
+            </member>
+            <member>
+                <link linkend="initStateMASCARET">initStateMASCARET</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>
