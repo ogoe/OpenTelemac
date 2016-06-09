@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|api
 module: api
-liborder: special hermes parallel damocles ad bief tomawac sisyphe waqtel telemac2d api
+liborder: special hermes parallel damocles ad bief stbtel tomawac sisyphe waqtel telemac2d api
 name: API_DUMMY_EXE_T2D
 
 [ad]
