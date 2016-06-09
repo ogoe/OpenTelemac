@@ -1037,14 +1037,9 @@ def scanSources(cfgdir,cfg,BYPASS):
                      if call in wcw[u]:
                         wcw[u][call]['called'].append(name)
 
-<<<<<<< .working
-   putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
-
-=======
    if debug:
       putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
 
->>>>>>> .merge-right.r7645
    return fic,mdl,sbt,fct,prg,dep,wcw
 
 def sortFunctions(ifcts,iuses,list,mods,xuses):
