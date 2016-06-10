@@ -4,11 +4,11 @@
 !
      &(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UDEL,VDEL,DM1,ZCONV,SOLSYS,
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
-     & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
+     & T1,T2,T3,T4,T5,T6,T7,HNT,HT,T8,T9,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,GLOSEG1,GLOSEG2,NBOR,
      & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN,
-     & NITMAX,NCO_DIST)
+     & NITMAX,NCO_DIST,OPTADV)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -89,11 +89,11 @@
 !+   Adaptation to the fact that MESH%FAC is now replaced by MESH%IFAC.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        25/03/2016
+!+        03/06/2016
 !+        V7P2
 !+   OPTION now active 1: ERIA algorithm
 !+                     2: edge-based, classic NERD
-!+   Argument NCO_DIST added.
+!+   Argument NCO_DIST added. Argument OPTADV added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -147,6 +147,8 @@
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
+!| OPTADV         |-->| FOR ERIA SCHEME 1: FIRST ORDER
+!|                |   |                 2: SECOND ORDER
 !| OPTION         |-->| 1: ELEMENT BASED
 !|                |   | 2: EDGE-BASED
 !| OPTSOU         |-->| TYPE OF SOURCES
@@ -194,7 +196,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX
+      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX,OPTADV
       INTEGER, INTENT(IN)             :: NCO_DIST
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
@@ -210,7 +212,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
       TYPE(BIEF_OBJ), INTENT(IN)      :: UDEL,VDEL,FN,SMI,SMH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA,FBOR
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8,T9
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE,GIVEN_FLUX

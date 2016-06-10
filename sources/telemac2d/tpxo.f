@@ -931,7 +931,7 @@
               DOUBLE PRECISION FUNCTION PTIDE
 !             *******************************
 !
-     &( Z1_R,Z1_I,CID,NCON,IND,LAT,TIME_MJD,INTERP ) !,NTIME=1
+     &( Z1_R,Z1_I,CID,NCON,IND,LAT,TIME_MJD,INTERP)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2                                   26/01/2016
@@ -973,7 +973,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IERR
+      INTEGER IERR
       DOUBLE PRECISION, PARAMETER :: SECONDSPERDAY = 86400.D0
       DOUBLE PRECISION TIME,DH
       DOUBLE PRECISION WW(TPXO_NCON,8)
@@ -985,15 +985,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF( INTERP ) CALL MKW( INTERP,IND,NCON,WW )
-!      ALLOCATE( A(NCON) )
+      IF(INTERP) CALL MKW( INTERP,IND,NCON,WW )
+!
       ALLOCATE( A_R(NCON), A_I(NCON) )
-! DLAT AND LAT AR NOT USED IN NODAL
+!     DLAT AND LAT AR NOT USED IN NODAL
       DLAT = LAT
       IERR = 0
       DH = 0.D0
-!
-      K=1 !DO K=1,NTIME
 !
       CALL NODAL( TIME_MJD,DLAT,PU,PF )
 !     TO USE PHASE SHIFTS FROM CONSTIT, TIME SHOULD BE
@@ -1014,9 +1012,6 @@
 !     ADDS MINOR CONSTITUENTS
       PTIDE = PTIDE + DH
 !
-      !ENDDO
-!
-!      DEALLOCATE(A)
       DEALLOCATE(A_R,A_I)
 !
 !-----------------------------------------------------------------------
@@ -2342,6 +2337,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -2367,10 +2363,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M,NPTFRL
-      INTEGER IPTFR,IPTFRL
+      INTEGER IPTFRL
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
       DOUBLE PRECISION PI,DTR,RTD
-      DOUBLE PRECISION Z
       DOUBLE PRECISION STIME_MJD
       DOUBLE PRECISION XM,XL,YL,XO,YO,ALPHA,RADIUS
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
@@ -2401,9 +2396,6 @@
 !     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
 !
       INTRINSIC ATAN
-!
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
@@ -3225,7 +3217,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
-      INTEGER IPTFR,NPTFRL,IPTFRL
+      INTEGER NPTFRL,IPTFRL
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
 !
       DOUBLE PRECISION PI,DTR,RTD
@@ -3894,13 +3886,9 @@
 !
 !-----------------------------------------------------------------------
 !
-!
-!
 !  LOOP ON ALL BOUNDARY POINTS
 !
       DO K=1,NPTFR
-!
-        IPTFR=BOUNDARY_COLOUR%I(K)
 !
 !     LEVEL IMPOSED WITH VALUE GIVEN IN THE CAS FILE (NCOTE0)
 !

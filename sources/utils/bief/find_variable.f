@@ -5,7 +5,7 @@
      &(FFORMAT,FID,VAR_NAME,RES,N,IERR,TIME,EPS_TIME,RECORD,TIME_RECORD)
 !
 !***********************************************************************
-! HERMES   V7P1
+! HERMES   V7P2
 !***********************************************************************
 !
 !brief    Returns the value for each point of a given variable,
@@ -21,6 +21,11 @@
 !+        28/07/2015
 !+        V7P1
 !+   First version.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2016
+!+        V7P2
+!+   Just a message corrected.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EPS_TIME       |-->| EPSILON TO DETERMINE IF TWO TIMES ARE EQUAL
@@ -198,7 +203,7 @@
           IF(IERR.NE.0) THEN
             IF (LNG.EQ.1) WRITE(LU,*) 'ERREUR LORS DE LA LECTURE DE LA',
      &                                ' VALEUR DU PAS DE TEMPS POUR ',
-     &                                'L ITERATION :', RRECORD
+     &                                'L''ITERATION :', RRECORD
             IF (LNG.EQ.2) WRITE(LU,*) 'ERROR WHILE READING TIME VALUE ',
      &                                'FOR RECORD:',RRECORD
             CALL PLANTE(1)
@@ -213,7 +218,7 @@
      &                               VAR_NAME,
      &                              'A L ITERATION :', RRECORD
           IF (LNG.EQ.2) WRITE(LU,*) 'ERROR WHILE READING VALUE ',
-     &                              'FOR FOR VARIABLE:',VAR_NAME,
+     &                              'FOR VARIABLE:',VAR_NAME,
      &                              'FOR RECORD:',RRECORD
           CALL PLANTE(1)
           STOP

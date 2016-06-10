@@ -146,11 +146,11 @@
 !+   diffusion.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        08/03/2016
+!+        03/06/2016
 !+        V7P2
-!+   Adapting to new scheme ADV_PSI_TF = 15. Computation of HPROP
+!+   Adapting to new scheme ERIA, ADV_PSI_TF = 15. Computation of HPROP
 !+   removed, HPROP must now be given and is not rebuilt with TETA,
-!+   which was a mistake.
+!+   which was a mistake. Adding OPTADV in cvtrvf_pos.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
@@ -609,7 +609,7 @@
      &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
      &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,
+     &              TB%ADR(22)%P,TB%ADR(23)%P,
      &              AGGLOT,TE1,DT,ENTET,BILAN,
      &              OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
 !                                                       YAFLBOR
@@ -618,7 +618,7 @@
      &              MESH%GLOSEG%I(       1:  DIMGLO),
      &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,RAIN,PLUIE,
-     &              TRAIN,GIVEN_FLUX,FLUX_GIVEN,MAXADV,NCO_DIST)
+     &              TRAIN,GIVEN_FLUX,FLUX_GIVEN,MAXADV,NCO_DIST,OPTADV)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN

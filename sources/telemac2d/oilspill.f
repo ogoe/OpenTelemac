@@ -2572,6 +2572,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -2586,12 +2587,8 @@
       DOUBLE PRECISION MASSE_PART,MASSE_INACT,MASSE_INI,MASSE_EVAP
       DOUBLE PRECISION MASSE_DISS,BILAN_OIL
 !> CG @ EDF: ALGORITHMIC DIFFERENTIATION
-      DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3
+      DOUBLE PRECISION :: DTMP1,DTMP2
 !< CG @ EDF
-!
-      INTEGER P_IMAX
-      DOUBLE PRECISION P_DSUM,P_DMAX
-      EXTERNAL P_DSUM,P_IMAX,P_DMAX
 !
 !-----------------------------------------------------------------------
 !--------------------------INITIALIZATION-------------------------------

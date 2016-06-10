@@ -931,7 +931,8 @@
      &        FU,S,.FALSE.,S,.FALSE.,UBOR,MASK,MESH,
      &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,TB%ADR(22)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &        TB%ADR(22)%P,TB%ADR(23)%P,
      &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
      &        LIMPRO%I(1+DIMLIM:2*DIMLIM),
      &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
@@ -939,13 +940,14 @@
      &        MESH%GLOSEG%I(       1:  DIMGLO),
      &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV,NCO_DIST)
+     &        S,.FALSE.,MAXADV,NCO_DIST,OPTADV_VI)
           CALL CVTRVF_POS(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &        HPROP,UCONV,VCONV,S,S,1,S,S,
      &        FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
      &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,TB%ADR(22)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &        TB%ADR(22)%P,TB%ADR(23)%P,
      &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
      &        LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
      &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
@@ -953,7 +955,7 @@
      &        MESH%GLOSEG%I(       1:  DIMGLO),
      &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV,NCO_DIST)
+     &        S,.FALSE.,MAXADV,NCO_DIST,OPTADV_VI)
 !  
         ENDIF
 !

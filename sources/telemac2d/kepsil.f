@@ -357,7 +357,7 @@
      &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
      &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,
+     &              TB%ADR(22)%P,TB%ADR(23)%P,
 !                                         BILAN
      &              AGGLOK,TE1,DT,INFOKE,.FALSE.,
 !                   OPDTRA
@@ -370,7 +370,7 @@
 !                                                              RAIN PLUIE
      &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
 !                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST)
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST,OPTADV_KE)
         CALL CVTRVF_POS(EPTILD,EPN,SME,.FALSE.,.TRUE.,
      &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
 !                                                   SMI YASMI
@@ -379,7 +379,7 @@
      &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
      &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,
+     &              TB%ADR(22)%P,TB%ADR(23)%P,
 !                                         BILAN
      &              AGGLOE,TE1,DT,INFOKE,.FALSE.,
 !                   OPDTRA
@@ -392,7 +392,7 @@
 !                                                              RAIN PLUIE
      &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
 !                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST)
+     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST,OPTADV_KE)
         CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
         CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
 !
