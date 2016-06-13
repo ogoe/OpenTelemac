@@ -295,10 +295,10 @@
      &  STSDER%R,STRA36%R, STRA37%R, STRA38%R, STRA39%R)
       ENDIF
 !
-!     ------------------------------- DIRECTIONAL SPREADING
+!     ------------------------------- DIRECTIONAL DIR_SPREADING
 !
       IF(SORLEO(4)) THEN
-        CALL SPREAD
+        CALL DIR_SPREAD
      &( STRA31%R,XF1,SCOSTE%R,SSINTE%R,NPLAN ,
      &  SFR%R,SDFR%R,NF,NPOIN2,TAILF,
      &  STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R,
