@@ -45,7 +45,6 @@ files: interface_hermes.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   open_bnd.f
-  utils_serafin.F
 
 [special]
 path: <root>|sources|utils|special

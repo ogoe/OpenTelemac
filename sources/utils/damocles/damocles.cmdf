@@ -10,9 +10,9 @@ files: longlu.f
   precar.f
   next.f
   mycarlu.f
-  myaidelu.f
   preval.f
   intlu.f
+  myaidelu.f
   prev.f
   realu.f
   majus.f
