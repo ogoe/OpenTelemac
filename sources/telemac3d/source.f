@@ -84,12 +84,12 @@
       LOGICAL, INTENT(IN)           :: NONHYD
 !
       INTEGER, INTENT(IN)           :: NPOIN2
-      INTEGER, INTENT(IN)           ::           NSCE
-      INTEGER, INTENT(IN)           ::           ISCE(NSCE)
-      INTEGER, INTENT(IN)           ::           KSCE(NSCE)
-      DOUBLE PRECISION, INTENT(IN)           ::  QSCE(NSCE)
-      DOUBLE PRECISION, INTENT(IN)           ::  USCE(NSCE)
-      DOUBLE PRECISION, INTENT(IN)           ::  VSCE(NSCE)
+      INTEGER, INTENT(IN)           :: NSCE
+      INTEGER, INTENT(IN)           :: ISCE(NSCE)
+      INTEGER, INTENT(IN)           :: KSCE(NSCE)
+      DOUBLE PRECISION, INTENT(IN)  :: QSCE(NSCE)
+      DOUBLE PRECISION, INTENT(IN)  :: USCE(NSCE)
+      DOUBLE PRECISION, INTENT(IN)  :: VSCE(NSCE)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -130,12 +130,14 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_PARALLEL
-      USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC, QWA, QWB,
-     &  MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,MESH,MSK,MASKEL,
-     &  IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,WATQUA,IND_T,
-     &  ICONVFT,OPTADV_TR,WAQPROCESS,PATMOS,LISTIN,GRAV,ZF,DEBUG
-      USE DECLARATIONS_WAQTEL,ONLY: FORMRS,O2SATU,ADDTR,
-     &                              WATTEMP,RSW,ABRS,RAYEFF
+      USE DECLARATIONS_TELEMAC2D, ONLY: LOITRAC, COEF1TRAC, QWA, QWB,
+     &  MAXNPS,U,V,UNSV2D,V2DPAR,VOLU2D,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,
+     &  T11,T12,MESH,MSK,
+     &  IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,IND_T,LT,
+     &  ICONVFT,OPTADV_TR,PATMOS,LISTIN,GRAV,ZF,DEBUG,IND_S,MASKEL,
+     &  MARDAT,MARTIM,LAMBD0,PHI0
+      USE DECLARATIONS_WAQTEL,ONLY: FORMRS,O2SATU,ADDTR,WAQPROCESS,
+     &  WATTEMP,RSW,ABRS,RAYEFF
       USE INTERFACE_WAQTEL
 !
       IMPLICIT NONE
@@ -191,19 +193,33 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
+!     INITIALIALIZATION OF YASMI
+      IF(LT.EQ.1)THEN
+        DO ITRAC=1,NTRA   
+          IF(LOITRAC(ITRAC).EQ.0) THEN
+            YASMI(ITRAC)=.FALSE.
+          ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
+            YASMI(ITRAC)=.TRUE.
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,*) 'DIFSOU : LOI NON PROGRAMMEE'
+            IF(LNG.EQ.2) WRITE(LU,*) 'DIFSOU : LAW NOT IMPLEMENTED'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDDO
+!       WHEN COUPLING WITH WAQTEL, PREPARE IMPLICIT SOURCE TERMS
+!
+        IF(INCLUS(COUPLING,'WAQTEL')) THEN
+          CALL YASMI_WAQ(NTRA,YASMI)
+        ENDIF
+      ENDIF
 !
 !     IMPLICIT SOURCE TERMS (DEPENDING ON THE LAW CHOSEN)
 !
       DO ITRAC=1,NTRA
-        IF(LOITRAC(ITRAC).EQ.0) THEN
-          YASMI(ITRAC)=.FALSE.
-        ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
-          YASMI(ITRAC)=.TRUE.
+        IF(LOITRAC(ITRAC).EQ.1) THEN
           CALL OS('X=CY    ',X=TIMP%ADR(ITRAC)%P,Y=HPROP,
      &            C=-2.3D0/COEF1TRAC(ITRAC)/3600.D0)
-        ELSE
-          IF(LNG.EQ.1) WRITE(LU,*) 'DIFSOU : LOI NON PROGRAMMEE'
-          IF(LNG.EQ.2) WRITE(LU,*) 'DIFSOU : LAW NOT IMPLEMENTED'
         ENDIF
       ENDDO
 !
@@ -370,7 +386,8 @@
      &             TWEIRA%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
 !               RECUPERATE H FOR WAQ (O2 OR EUTRO)
-                IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN
+                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
+     &                                            WAQPROCESS.EQ.3))THEN
                   H1   = HPROP%R(IR)
                   TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
                   IF(NCSIZE.GT.1)THEN
@@ -396,22 +413,24 @@
      &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
      &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
 !               RECUPERATE H FOR WAQ
-                IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN
+                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
+     &                                            WAQPROCESS.EQ.3))THEN
                   H2  = HPROP%R(IR)
                   IF(NCSIZE.GT.1)THEN
                     H2   = P_DMIN(H2  )+P_DMAX(H2  )
                   ENDIF
                 ENDIF
 !               CONTRIBUTION TO WAQ
-                IF(WATQUA.AND.(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3))THEN
+!                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
+!    &                                             WAQPROCESS.EQ.3))THEN
 !       warning: this process is a bit strange and then difficult to
 !                implement: impose that tracer TN increases spontaneously
 !                under the effect of "nothing" (sources,boundary conditions... )
 !                needs to think more about it.
-!                   CALL REAER_WEIR (FORMRS,H1,H2,ABRS,WATTEMP,EPS,
-!     &                              O2SATU,TRUP,TN,ADDTR,WAQPROCESS,
-!     &                              IR,NTRAC)
-                ENDIF
+!                  CALL REAER_WEIR (FORMRS,H1,H2,ABRS,WATTEMP,EPS,
+!     &                             O2SATU,TRUP,TN,ADDTR,WAQPROCESS,
+!     &                             IR,NTRAC)
+!                ENDIF
               ENDIF
             ENDDO
           ENDDO
@@ -419,18 +438,24 @@
 !
         IF(NCSIZE.GT.1.AND.
      &     (NREJET.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0.OR.
-     &      (NWEIRS.GT.0.AND.TYPSEUIL.EQ.2))) THEN
-          MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+     &     (NWEIRS.GT.0.AND.TYPSEUIL.EQ.2))) THEN
+           MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
         ENDIF
 !
       ENDDO
 !
 !     WATER QUALITY CONTRIBUTION TO TRACER SOURCES
-      IF(WATQUA)THEN
-        CALL SOURCE_WAQ(NPOIN,TEXP,TIMP,TN,NTRAC,WAQPROCESS,
-     &                  RAYEFF,IND_T,HPROP,U,V,CF,T1,T2,T3,T4,
-     &                  PATMOS,LISTIN,GRAV,ZF,DEBUG)
+!
+      IF(INCLUS(COUPLING,'WAQTEL')) THEN
+      IF(DEBUG.GT.0) WRITE(LU,*) 'CALL OF SOURCE_WAQ'
+        CALL SOURCE_WAQ
+     & (NPOIN,NPOIN,TEXP,TIMP,TN,NTRAC,WAQPROCESS,RAYEFF,IND_T,IND_S,H,
+     &  HPROP,U,V,CF,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T1,T2,T3,
+     &  PATMOS,LISTIN,GRAV,ZF,DEBUG,MASSOU,DT,2,VOLU2D,1,LAMBD0,PHI0,
+     &  AT,MARDAT,MARTIM,MESH%X)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SOURCE_WAQ'
       ENDIF
+
 !
 !-----------------------------------------------------------------------
 !

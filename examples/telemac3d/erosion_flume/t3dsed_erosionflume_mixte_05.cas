@@ -30,7 +30,7 @@ VARIABLES FOR 2D GRAPHIC PRINTOUTS     = 'U,V,H,S,B,TA*,PVSCO,PVSNCO'
 VARIABLES FOR 3D GRAPHIC PRINTOUTS     = 'Z,U,V,W,RHO,TA*'
 /
 GRAPHIC PRINTOUT PERIOD                = 100
-LISTING PRINTOUT PERIOD                = 1
+LISTING PRINTOUT PERIOD                = 20
 MASS-BALANCE                           = YES
 INITIAL TIME SET TO ZERO               = YES 
 TIME STEP                              = 0.2

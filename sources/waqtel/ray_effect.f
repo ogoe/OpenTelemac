@@ -2,7 +2,7 @@
                      SUBROUTINE RAY_EFFECT
 !                    **********************
 !
-     &(SECCHI,TRR,NPOIN,BETA,I0,IK,EFF,H)
+     &(SECCHI,TRR,NPOIN,MEXT,I0,IK,KPE,EFF,H,T1,T2)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P1
@@ -17,12 +17,14 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |-->| COEFFICIENT OF VEGETAL TURBIDITY WITHOUT
-!|                |   | PHYTOPLANKTON
 !| EFF            |<--| SUNSHINE EFFECT ON ALGAE GROWTH
 !| H              |-->| WATER DEPTH ON ALL MESH NODES
+!| KPE            |-->| COEFFICIENT OF VEGETAL TURBIDITY WITHOUT
+!|                |   | PHYTOPLANKTON
+!| I0             |-->| PARAMETER FOR THE CALIBRATION OF SMITH FORMULA
 !| IK             |-->| PARAMETER FOR THE CALIBRATION OF SMITH FORMULA
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
+!| MEXT           |-->| METHOD OF RAY EXTINCTION
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
 !| SECCHI         |-->| SECCHI DEPTH
 !| TRR            |-->| TRACER (CAN BE PHY: PHYTOPLAKTONIC BIOMASS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,16 +38,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)    :: NPOIN
-      DOUBLE PRECISION, INTENT(IN)    :: TRR(NPOIN),BETA,I0,IK,SECCHI
-      TYPE(BIEF_OBJ)  , INTENT(IN)    :: H
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: EFF
+      INTEGER         , INTENT(IN)    :: NPOIN,MEXT
+      DOUBLE PRECISION, INTENT(IN)    :: KPE,I0,IK,SECCHI
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: H,TRR
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: EFF,T1,T2
 !   LOCAL VARIABLES
-      INTEGER                    :: KK,ERR
+      INTEGER                    :: KK
       DOUBLE PRECISION, PARAMETER:: EPS=1.E-6
       DOUBLE PRECISION, PARAMETER:: MOSS=0.015D0
       DOUBLE PRECISION           :: CC,IK2,I02,CNUM
-      DOUBLE PRECISION, ALLOCATABLE::KE(:),IH(:)
       INTRINSIC MAX,SQRT,LOG,EXP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -56,65 +57,57 @@
       I02=I0**2
       CNUM=I0+SQRT(I02+IK2)
 !
-!     ALLOCATION
-!
-      ALLOCATE( KE(NPOIN),STAT=ERR)
-      ALLOCATE( IH(NPOIN),STAT=ERR)
-      IF(ERR.NE.0)GOTO 100
-!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     INITIALISATION
-      CALL OV( 'X=C     ' ,KE,KE,KE,0.D0,NPOIN )
-      CALL OV( 'X=C     ' ,IH,IH,IH,0.D0,NPOIN )
+!
       CALL OS( 'X=0     ' ,X=EFF)
 !
-!     COMPUTE KE
-!
-      IF(SECCHI.GT.EPS)THEN
-        CC=1.7D0/SECCHI
-        CALL OV( 'X=C     ' ,KE,KE,KE,CC,NPOIN )
+!     COMPUTE KE AND PUT IT IN T1 
+! 
+      IF(MEXT.EQ.1)THEN
+!       ATKINS METHOD
+        CC=1.7D0/MAX(SECCHI,EPS)
+        CALL OS( 'X=C     ' ,X=T1,       C=CC  )
+      ELSEIF(MEXT.EQ.2)THEN
+!       MOSS METHOD           
+        CALL OS( 'X=CY     ' ,X=T1,Y=TRR,C=MOSS)
+        CALL OS( 'X=X+C    ' ,X=T1,      C=KPE )
       ELSE
-        CALL OV( 'X=CY    ' ,KE,TRR,KE,MOSS,NPOIN )
-        CALL OV( 'X=X+C   ' ,KE,KE,KE,BETA,NPOIN )
-      ENDIF
-!
-!     COMPUTE Ih:
-!
-      DO KK=1,NPOIN
-        IH(KK)=I0*EXP(-KE(KK)*MAX(H%R(KK),0.D0))
-      ENDDO
-!
-!     RAY EFFECT IS READY TO BE COMPUTED
-!
-      DO KK=1,NPOIN
-        CC=H%R(KK)*KE(KK)
-        IF(CC.GT.EPS)THEN
-          EFF%R(KK)=LOG(CNUM/(IH(KK)+SQRT(IK2+IH(KK)**2)))/CC
-        ENDIF
-      ENDDO
-!
-!     DEALLOCATION
-!
-      DEALLOCATE(KE,STAT=ERR)
-      DEALLOCATE(IH,STAT=ERR)
-!
-!-----------------------------------------------------------------------
-!
-100   CONTINUE
-      IF(ERR.NE.0)THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'RAY_EFFECT: PROBLEME D''ALLOCATION DE VECTEURS'
-          WRITE(LU,*) '            PEUT ETRE MEMOIRE INSUFFISANTE'
-          WRITE(LU,*) '            LIBERER MEMOIRE ET RECOMMENCER'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'RAY_EFFECT: PROBLEM WITH ARRAY ALLOCATION'
-          WRITE(LU,*) '            COULD BE NOT ENOUGH MEMORY'
-          WRITE(LU,*) '            LIBERATE MEMORY AND RESTART'
+        IF(LNG.EQ.1)THEN
+          WRITE(LU,100)MEXT
+        ELSEIF(LNG.EQ.2)THEN
+          WRITE(LU,101)MEXT
         ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!     COMPUTE Ih: STOCKED IN T2
+! 
+      DO KK=1,NPOIN
+        T2%R(KK)=I0*EXP(-T1%R(KK)*MAX(H%R(KK),0.D0))
+      ENDDO
+!
+!     RAY EFFECT IS READY TO BE COMPUTED
+!
+!     warning: the formula of smith is depth integrated, here after a tentative 
+!              generalization, to be investigated later.
+      DO KK=1,NPOIN
+        CC=H%R(KK)*T1%R(KK)
+        IF(CC.GT.EPS)THEN
+          EFF%R(KK)=LOG(CNUM/(T2%R(KK)+SQRT(IK2+T2%R(KK)**2)))/CC
+        ENDIF
+      ENDDO
+!
+100    FORMAT(1X,'RAY_EFFECT: METHODE DE CALCUL DU COEFFICIENT',
+     &      /,1X,'D EXTINCTION DU RAYONNEMENT SOLAIRE DANS L EAU',
+     &      /,1X,'NON PROGRAMMEE ENCORE',I6)
+!
+101    FORMAT(1X,'RAY_EFFECT: METHOD OF COMPUTATION OF THE COEFFICIENT',
+     &      /,1X,'OF EXTINCTION OF SUN RAY NOT IMPLEMENTED YET :',I6/)
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

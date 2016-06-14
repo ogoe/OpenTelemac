@@ -3,8 +3,8 @@
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN,
-     & AWATER_QUALITY,PLUIE,AATMOSEXCH,AOPTWIND,AWIND_SPD,APATMOS_VALUE)
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN,PATMOS_VALUE,
+     & AWATER_QUALITY,PLUIE,AOPTWIND,AWIND_SPD)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P1
@@ -93,8 +93,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
-     &                                HREL,RAINFALL,ZSD 
+      USE DECLARATIONS_WAQTEL,ONLY: PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                              HREL,RAINFALL,EVAPORATION,ATMOSEXCH
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -107,23 +107,22 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AT,GRAV,ROEAU,NORD
+      DOUBLE PRECISION, INTENT(IN)    :: AT,GRAV,ROEAU,NORD,PATMOS_VALUE
       DOUBLE PRECISION, INTENT(INOUT) :: FUAIR,FVAIR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
 !     OPTIONAL
       LOGICAL, INTENT(IN)          ,OPTIONAL :: AWATER_QUALITY
       TYPE(BIEF_OBJ), INTENT(INOUT),OPTIONAL :: PLUIE
-      INTEGER, INTENT(IN)          ,OPTIONAL :: AATMOSEXCH,AOPTWIND
+      INTEGER, INTENT(IN)          ,OPTIONAL :: AOPTWIND
       DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: AWIND_SPD(2)
-      DOUBLE PRECISION, INTENT(IN) ,OPTIONAL :: APATMOS_VALUE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL WATER_QUALITY
-      INTEGER UL,OPTWIND,ATMOSEXCH
-      DOUBLE PRECISION Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
-      DOUBLE PRECISION UAIR,VAIR,PATMOS_VALUE,WIND_SPD(2)
+      INTEGER UL,OPTWIND
+      DOUBLE PRECISION AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION UAIR,VAIR,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION PATM,WW,PI
 !
@@ -159,8 +158,6 @@
 !
 !     DEFAULT VALUES OF PARAMETERS WHEN THEY ARE NOT GIVEN
 !
-      ATMOSEXCH=0
-      IF(PRESENT(AATMOSEXCH)) ATMOSEXCH=AATMOSEXCH
       WATER_QUALITY=.FALSE.
       IF(PRESENT(AWATER_QUALITY)) WATER_QUALITY=AWATER_QUALITY
       OPTWIND=1
@@ -171,12 +168,6 @@
         WIND_SPD(1)=AWIND_SPD(1)
         WIND_SPD(2)=AWIND_SPD(2)
       ENDIF
-      PATMOS_VALUE=0.D0
-      IF(PRESENT(APATMOS_VALUE)) PATMOS_VALUE=APATMOS_VALUE
-!
-!-----------------------------------------------------------------------
-!
-
 !
 !-----------------------------------------------------------------------
 !
@@ -197,27 +188,9 @@
 !
         IF(VENT.OR.WATER_QUALITY) THEN
           IF(OPTWIND.EQ.1)THEN
-!         IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
-!            MAY REQUIRE A ROTATION,
-!            DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
-            IF(WIND_SPD(1).GT.EPS) THEN ! THERE IS WIND !!!
-              FUAIR = WIND_SPD(1)*SIN(WIND_SPD(2)*PI/180.D0)
-              FVAIR = WIND_SPD(1)*COS(WIND_SPD(2)*PI/180.D0)
-            ELSE
-              IF(LNG.EQ.1)THEN
-                WRITE(LU,*)''
-                WRITE(LU,*)'ATTENTION: PAS DE VENT OU VENT TRES FAIBLE '
-                WRITE(LU,*)''
-              ELSE
-                WRITE(LU,*)''
-                WRITE(LU,*)'NO WIND GIVEN OR VERY WEAK VALUE OF WIND'
-                WRITE(LU,*)''
-              ENDIF
-            ENDIF
-!        IN NEXT RELEASE, MAYBE THINK TO REMOVE KEYWORD FOR FUAIR AND FVAIR
-            CALL OV( 'X=C     ' , WINDX , Y , Y , FUAIR , NPOIN )
-            CALL OV( 'X=C     ' , WINDY , Y , Y , FVAIR , NPOIN )
-
+!           IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
+            CALL OV( 'X=C     ' ,WINDX,WINDX,WINDX, FUAIR , NPOIN )
+            CALL OV( 'X=C     ' ,WINDY,WINDY,WINDY, FVAIR , NPOIN )
           ELSEIF(OPTWIND.EQ.2) THEN
 !           JUMPING TWO LINES OF COMMENTS
             READ(UL,*)
@@ -230,6 +203,7 @@
               IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
               IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
               CALL PLANTE(1)
+              STOP
             ENDIF
 !
 ! ######################################################################
@@ -273,7 +247,6 @@
             ENDDO
 !
 ! #######################################################################
-!
           ENDIF
         ENDIF
       ENDIF
@@ -282,30 +255,32 @@
 !
 !     FOR THE REMAINING TIME STEPS
 !
-      IF(VENT.OR.WATER_QUALITY.OR.ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+      IF(VENT.OR.WATER_QUALITY) THEN
 !
 !       WATER QUALITY
 !
         IF(WATER_QUALITY.AND.FILES(FO1)%NAME(1:1).NE.' ')THEN
-          CALL INTERPMETEO2(NWIND,UAIR,VAIR,TAIR,PATM,NEBU,RAINFALL,
-     &                      PVAP,RAY3,AT,UL)
+          IF(ATMOSEXCH.EQ.0)THEN
+            CALL INTERPMETEO2(NWIND,UAIR,VAIR,TAIR,PATM,NEBU,RAINFALL,
+     &                        PVAP,RAY3,AT,UL)
 !
-          CALL OV('X=C     ',WINDX,WINDX,WINDX,UAIR,NPOIN)
-          CALL OV('X=C     ',WINDY,WINDY,WINDY,VAIR,NPOIN)
-          CALL OV('X=C     ',PATMOS,PATMOS,PATMOS,PATM,NPOIN)
-          IF(PRESENT(PLUIE))THEN
-            CALL OS('X=C     ',X = PLUIE, C=RAINFALL) ! MM/S
+            CALL OV('X=C     ',WINDX,WINDX,WINDX,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,WINDY,WINDY,VAIR,NPOIN)
+            CALL OV('X=C     ',PATMOS,PATMOS,PATMOS,PATM,NPOIN)
+            IF(PRESENT(PLUIE))THEN
+              CALL OS('X=C     ',X = PLUIE, C=RAINFALL) ! MM/S
+            ENDIF
+!
+!           HEAT EXCHANGE WITH ATMOSPHERE
+!
+          ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+            CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,PATM,
+     &                       HREL,NEBU,RAINFALL,EVAPORATION,AT,UL)
+            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
+!
+            CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
           ENDIF
-!
-!       HEAT EXCHANGE WITH ATMOSPHERE
-!
-        ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-          CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,
-     &                       PATM,HREL,NEBU,RAINFALL,ZSD,AT,UL)
-          CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
-          CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
-!
-          CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
 !
 !      NO HEAT EXHANGE NEITHER WATER_QUALITY
 !
@@ -436,7 +411,6 @@
             ENDDO !K
 !
 ! #######################################################################
-!
           ENDIF
         ENDIF
       ENDIF
@@ -445,6 +419,8 @@
 !
       RETURN
       END
+
+
 !                    *******************
                      SUBROUTINE IDWM_T2D
 !                    *******************

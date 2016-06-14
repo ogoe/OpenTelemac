@@ -2,10 +2,10 @@
                      SUBROUTINE DEPOS_FX
 !                    **********************
 !
-     &(SEDP,TAUB,TAUS,VITCHU,NPOIN)
+     &(SEDP,TAUB,CSUS,TAUS,VITCHU,NPOIN)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D                                                       V7P2
 !***********************************************************************
 !
 !brief    COMPUTES DEPOSITION FLUX
@@ -22,6 +22,7 @@
 !| SEDP           |<--| DEPOSITION FLUX
 !| TAUB           |-->| BED SHEAR STRESS
 !| TAUS           |-->| SEDIMENTATION CRITICAL STRESS
+!| CSUS           |-->| SUSPENDED LOAD (TRACER 1)
 !| VITCHU         |-->| SEDIMENT SETTLING VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -36,7 +37,7 @@
 !
       INTEGER         , INTENT(IN)     :: NPOIN
       DOUBLE PRECISION, INTENT(IN)     :: TAUS,VITCHU
-      TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TAUB
+      TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TAUB,CSUS
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: SEDP
       INTRINSIC MAX
 !
@@ -62,8 +63,10 @@
         STOP
       ENDIF
 !
+!     THIS WAY WORKS WELL FOR 2D AND FOR 3D AS WELL SINCE BED LAYER IS 
+!     FOR I=1 TO NPOIN    
       DO I=1,NPOIN
-        SEDP%R(I)=VITCHU*MAX(1.D0-TAUB%R(I)/TAUS,0.D0)
+        SEDP%R(I)=VITCHU*CSUS%R(I)*MAX(1.D0-TAUB%R(I)/TAUS,0.D0)
       ENDDO
 !
       RETURN

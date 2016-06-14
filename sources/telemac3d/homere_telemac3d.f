@@ -37,16 +37,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R.ATA
+!+        21/01/2016
+!+        V7P2
+!+   coupling with waqtel
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
       USE BIEF
-      USE INTERFACE_TELEMAC3D
       USE DECLARATIONS_TELEMAC, ONLY : COUPLING
       USE DECLARATIONS_SISYPHE, ONLY : SIS_FILES,MAXLU_SIS
       USE DECLARATIONS_TOMAWAC, ONLY : WAC_FILES,MAXLU_WAC
+      USE DECLARATIONS_WAQTEL , ONLY : WAQ_FILES,MAXLU_WAQ,WAQPROCESS
       USE DECLARATIONS_TELEMAC3D
+      USE DECLARATIONS_TELEMAC2D, ONLY:WINDX,WINDY
+      USE INTERFACE_TELEMAC3D
+      USE INTERFACE_WAQTEL
 !
       IMPLICIT NONE
       INTEGER     LNG,LU
@@ -57,6 +65,7 @@
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC3D               '
       CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
       CHARACTER(LEN=24), PARAMETER :: CODE3='TOMAWAC                 '
+      CHARACTER(LEN=24), PARAMETER :: CODE4='WAQTEL                  '
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEYWORD),FILE_DESC(4,MAXKEYWORD)
@@ -86,7 +95,9 @@
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T3D_FILES,MAXLU_T3D,PATH,NCAR,
      &                     INCLUS(COUPLING,'SISYPHE').OR.
-     &                     INCLUS(COUPLING,'TOMAWAC') ,IFLOT,1,.FALSE.)
+     &                     INCLUS(COUPLING,'TOMAWAC').OR.      
+     &                     INCLUS(COUPLING,'WAQTEL'),
+     &                     IFLOT,1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !
@@ -102,11 +113,18 @@
 !
         CALL PRINT_HEADER(CODE2,CODE1)
 !
-        CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
-        CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
-     &                       INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
-        CALL CONFIG_CODE(1)
-        CALL POINT_SISYPHE
+      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
+!
+      CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
+     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
+!
+!     RESETS TELEMAC3D CONFIGURATION 
+!
+      CALL CONFIG_CODE(1)
+!
+!     MEMORY ORGANIZATION
+!
+      CALL POINT_SISYPHE
 !
       ENDIF
 !
@@ -118,11 +136,63 @@
 !
         CALL PRINT_HEADER(CODE3,CODE1)
 !
-        CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
-        CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                       .TRUE.,IFLOT,3,.FALSE.)
-        CALL CONFIG_CODE(1)
-        CALL POINT_TOMAWAC
+      CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
+      CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
+     &                     .TRUE.,IFLOT,3,.FALSE.)
+!
+!     RESETS TELEMAC3D CONFIGURATION 
+!
+      CALL CONFIG_CODE(1)
+!
+!     MEMORY ORGANIZATION
+!
+      CALL POINT_TOMAWAC
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISES WAQTEL
+!
+      IF(INCLUS(COUPLING,'WAQTEL')) THEN
+!
+        WRITE(LU,108)
+        WRITE(LU,109)
+108   FORMAT(100('-'),////////,
+     &16X,
+     &'W   W  AAAAA  QQQQQ  TTTTT  EEEEE  L     ',/,16X,
+     &'W   W  A   A  Q   Q    T    E      L     ',/,16X,
+     &'W W W  AAAAA  Q Q Q    T    EEE    L     ',/,16X,
+     &'WW WW  A   A  Q  QQ    T    E      L     ',/,16X,
+     &'W   W  A   A  QQQQQ    T    EEEEE  LLLLL ',//)
+109   FORMAT(15X,
+     &"                                           ",/,15X,
+     &"                                           ",/,15X,
+     &"         ,      ,      ,      ,            ",/,15X,
+     &"         )\     )\     )\     )\           ",/,15X,
+     &"        /  \   /  \   /  \   /  \          ",/,15X,
+     &"       '    ' '    ' '    ' '    '         ",/,15X,
+     &"       ',  ,' ',  ,' ',  ,' ',  ,'         ",/,15X,
+     &"         `'     `'     `'     `'           ",/,15X,
+     &"                                           ",///)
+!
+      CALL LECDON_WAQTEL(FILE_DESC,PATH,NCAR,CODE4)
+      CALL BIEF_OPEN_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,PATH,NCAR,
+     &                     .TRUE.,IFLOT,4,.FALSE.)
+!
+!     UPDATING TRACER INFORMATION OF WAQTEL
+!
+      CALL NAMETRAC_WAQ(TEXT3,TEXTP3,NAMETRAC,NTRAC,IND_T,
+     &                  MAXTRA,SCHCTA,VISCTA,3)
+!
+!     RESETS TELEMAC2D CONFIGURATION
+!
+      CALL CONFIG_CODE(1)
+!
+!     MEMORY ORGANISATION
+!
+      CALL POINT_WAQTEL(WAQPROCESS,MESH2D,IELM2H,VENT,WINDX,WINDY,
+     &                  MESH3D,IELM3)
 !
       ENDIF
 !
@@ -142,6 +212,11 @@
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
         CALL CONFIG_CODE(3)
         CALL BIEF_CLOSE_FILES(CODE3,WAC_FILES,MAXLU_WAC,.FALSE.)
+      ENDIF
+!
+      IF(INCLUS(COUPLING,'WAQTEL')) THEN
+        CALL CONFIG_CODE(4)
+        CALL BIEF_CLOSE_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,.FALSE.)
       ENDIF
 !
 !-----------------------------------------------------------------------

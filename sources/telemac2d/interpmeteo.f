@@ -2,7 +2,11 @@
                      SUBROUTINE INTERPMETEO
 !                    **********************
 !
+<<<<<<< .working
      &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,EVAPOR,AT,NFO)
+=======
+     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,EVAPORATION,AT,NFO)
+>>>>>>> .merge-right.r7666
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
@@ -24,6 +28,12 @@
 !+        is now correct and the Secchi length is added in the
 !+        variables to be read
 !+
+!history  R.ATA (EDF-LNHE)
+!+        25/03/2016
+!+        V7P2
+!+        harmonization with meteo file, last column is evaporation
+!+         not secchi length
+!+        all out are changed to inout
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
@@ -32,7 +42,7 @@
 !| NFO            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| PATM           |<--| ATMOSPHERIC PRESSURE
 !| RAINFALL       |<--| RAINFALL
-!| EVAPOR         |<--| EVAPORATION RATE
+!| EVAPORATION    |<--| EVAPORATION RATE
 !| TAIR           |<--| AIR TEMPERATURE
 !| WINDX          |<--| WIND ALONG X
 !| WINDY          |<--| WIND ALONG Y
@@ -46,10 +56,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: NFO
-      DOUBLE PRECISION, INTENT(IN)  :: AT
-      DOUBLE PRECISION, INTENT(OUT) :: WW,WINDX,WINDY,TAIR,PATM,HREL
-      DOUBLE PRECISION, INTENT(OUT) :: NEBU,RAINFALL,EVAPOR
+      INTEGER, INTENT(IN)             :: NFO
+      DOUBLE PRECISION, INTENT(IN)    :: AT
+      DOUBLE PRECISION, INTENT(INOUT) :: WW,WINDX,WINDY,TAIR,PATM,HREL
+      DOUBLE PRECISION, INTENT(INOUT) :: NEBU,RAINFALL,EVAPORATION
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -232,7 +242,7 @@
 !
       RAINFALL = TABENT(POSTAB+1,8)/DELTAT
 !
-      EVAPOR   = TABENT(POSTAB,9)
+      EVAPORATION = TABENT(POSTAB,9)
      &      + (TABENT(POSTAB+1,9)-TABENT(POSTAB,9))*ALPHA
 !
 !-----------------------------------------------------------------------

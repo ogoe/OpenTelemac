@@ -5777,20 +5777,23 @@ NIVEAU = 2
 AIDE = 'Coefficient de dissipation de Omega'
 AIDE1 = 'Coefficient of dissipation term of Omega'
 
-NOM = 'QUALITE D''EAU'
-NOM1 = 'WATER QUALITY'
-TYPE = LOGIQUE
-INDEX = 48
-MNEMO = 'WATQUA'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'EQUATIONS';'QUALITE D EAU'
-RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY'
-NIVEAU = 1
-AIDE = 'Prise en compte ou non de qualite d eau'
-AIDE1 = 'waq effects are to be taken into
-account or not.'
+
+/ REPLACED BY COUPLING WITH 
+/NOM = 'QUALITE D''EAU' 
+/NOM1 = 'WATER QUALITY' 
+/TYPE = LOGIQUE 
+/INDEX = 48
+/MNEMO = 'WATQUA' 
+/TAILLE = 0 
+/DEFAUT = NON 
+/DEFAUT1 = NO 
+/RUBRIQUE = 'EQUATIONS';'QUALITE D EAU' 
+/RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY' 
+/NIVEAU = 1 
+/AIDE = 'Prise en compte ou non de qualite d eau' 
+/AIDE1 = 'waq effects are to be taken into 
+/account or not.' 
+
 
 NOM = 'OPTION DU VENT'
 NOM1 = 'OPTION FOR WIND'

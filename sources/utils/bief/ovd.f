@@ -21,6 +21,7 @@
 !+   THE RESULT IS VECTOR X.
 !+
 !+   OP = 'X=1/Y   '     :  COPIES INVERSE OF Y IN X
+!+   OP = 'X=C/Y   '     :  DIVIDES C BY Y 
 !+   OP = 'X=Y/Z   '     :  DIVIDES Y BY Z
 !+   OP = 'X=CY/Z  '     :  DIVIDES C.Y BY Z
 !+   OP = 'X=CXY/Z '     :  DIVIDES C.X.Y BY Z
@@ -122,6 +123,59 @@
 !
           IF (ABS(Y(I)).GT.EPS) THEN
             X(I) = 1.D0/Y(I)
+          ELSEIF (Y(I).GE.0.D0) THEN
+            X(I) =  1.D0/EPS
+          ELSE
+            X(I) = -1.D0/EPS
+          ENDIF
+!
+        ENDDO ! I
+!
+        ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(OP(1:8).EQ.'X=C/Y   ') THEN
+!
+        IF(IOPT.EQ.1) THEN
+!
+        DO I=1,NPOIN
+            X(I) = C/Y(I)
+        ENDDO ! I
+!
+        ELSEIF(IOPT.EQ.2) THEN
+!
+        DO I=1,NPOIN
+!
+          IF (ABS(Y(I)).GT.EPS) THEN
+            X(I) = C/Y(I)
+          ELSE
+            X(I) = D
+          ENDIF
+!
+        ENDDO ! I
+!
+        ELSEIF(IOPT.EQ.3) THEN
+!
+        DO I=1,NPOIN
+!
+          IF (ABS(Y(I)).GT.EPS) THEN
+            X(I) = C/Y(I)
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,1000) I,OP,EPS
+            IF(LNG.EQ.2) WRITE(LU,2000) I,OP,EPS
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!
+        ENDDO ! I
+!
+        ELSEIF(IOPT.EQ.4) THEN
+!
+        DO I=1,NPOIN
+!
+          IF (ABS(Y(I)).GT.EPS) THEN
+            X(I) = C/Y(I)
           ELSEIF (Y(I).GE.0.D0) THEN
             X(I) =  1.D0/EPS
           ELSE

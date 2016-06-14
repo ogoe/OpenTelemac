@@ -4422,11 +4422,13 @@ NIVEAU = 1
 AIDE = 'Liste des codes avec lesquels on couple TELEMAC-3D
         SISYPHE : couplage interne avec Sisyphe
         TOMAWAC : couplage interne avec Tomawac
+        WAQTEL  : couplage interne avec WAQTEL 
         DELWAQ : sortie de fichiers de resultats pour Delwaq'
 AIDE1 = 'List of codes to be coupled with TELEMAC-3D
         SISYPHE : internal coupling with Sisyphe
         TOMAWAC : internal coupling with Tomawac
-        DELWAQ: will yield results file for Delwaq'
+        WAQTEL  : internal coupling with WAQTEL 
+        DELWAQ: will yield results file for Delwaq' 
 /
 NOM = 'DIAMETRE MOYEN DES GRAINS'
 NOM1 = 'MEAN DIAMETER OF THE SEDIMENT'
@@ -5995,47 +5997,51 @@ NIVEAU = 1
 AIDE = 'Active la prise en compte de la force generatrice de la maree'
 AIDE1 = 'The tide generating force is taken into account. '
 
-NOM = 'MODELE D''ECHANGES EAU-ATMOSPHERE'
-NOM1 = 'ATMOSPHERE-WATER EXCHANGE MODEL'
-TYPE = ENTIER
-INDEX = 50
-MNEMO = 'ATMOSEXCH'
-TAILLE = 0
-DEFAUT = 0
-DEFAUT1 = 0
-CHOIX=
-'0="PAS DE MODELE D ECHANGES EAU-ATMOSPHERE"';
-'1="FORMULE LINEARISEE A LA SURFACE"';
-'2="MODELE A BILAN COMPLET"'
-CHOIX1=
-'0="NO MODEL"';
-'1="LINEARISED FORMULA AT THE FREE SURFACE"';
-'2="MODEL WITH COMPLETE BALANCE"'
-RUBRIQUE = 'PARAMETRES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 2
-AIDE = 'Choix du modele d echanges entre l eau et l atmosphere'
-AIDE1 = 'Choice of the atmosphere-water exchange model.'
+/ THESE KEYWORDS ARE MOVED TO WAQTEL DICO
+/NOM = 'MODELE D''ECHANGES EAU-ATMOSPHERE'
+/NOM1 = 'ATMOSPHERE-WATER EXCHANGE MODEL'
+/TYPE = ENTIER
+/INDEX = 50
+/MNEMO = 'ATMOSEXCH'
+/TAILLE = 0
+/DEFAUT = 0
+/DEFAUT1 = 0
+/CHOIX=
+/'0="PAS DE MODELE D ECHANGES EAU-ATMOSPHERE"';
+/'1="FORMULE LINEARISEE A LA SURFACE"';
+/'2="MODELE A BILAN COMPLET"'
+/CHOIX1=
+/'0="NO MODEL"';
+/'1="LINEARISED FORMULA AT THE FREE SURFACE"';
+/'2="MODEL WITH COMPLETE BALANCE"'
+/RUBRIQUE = 'PARAMETRES PHYSIQUES'
+/RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+/NIVEAU = 2
+/AIDE = 'Choix du modele d echanges entre l eau et l atmosphere'
+/AIDE1 = 'Choice of the atmosphere-water exchange model.'
 /
-NOM = 'COEFFICIENT DE CALAGE DU MODELE D''ECHANGES EAU-ATMOSPHERE'
-NOM1 = 'COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL'
-TYPE = REEL
-INDEX = 37
-MNEMO = 'C\_ATMOS'
-TAILLE = 0
-DEFAUT = 0.0025
-DEFAUT1 = 0.0025
-RUBRIQUE = 'PARAMETRES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 2
-AIDE = 'Valeur du coefficient de calage pour la fonction de vent
-dans les modeles d echanges eau-atmosphere
-(formule linearisee a la surface ou bilan complet).
-Une valeur comprise entre 0.0017 et 0.0035 est conseillee'
-AIDE1 = 'Value of the calibration coefficient for the wind function
-of the atmosphere-water exchange models
-(linearised formula at the free surface or complete balance).
-A value between 0.0017 and 0.0035 is advised'
+
+/changed to waqtel.dico
+/NOM = 'COEFFICIENT DE CALAGE DU MODELE D''ECHANGES EAU-ATMOSPHERE'
+/NOM1 = 'COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL'
+/TYPE = REEL
+/INDEX = 37
+/MNEMO = 'C_ATMOS'
+/TAILLE = 0
+/DEFAUT = 0.0025
+/DEFAUT1 = 0.0025
+/RUBRIQUE = 'PARAMETRES PHYSIQUES'
+/RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+/NIVEAU = 2
+/AIDE = 'Valeur du coefficient de calage pour la fonction de vent
+/dans les modeles d echanges eau-atmosphere
+/(formule linearisee a la surface ou bilan complet).
+/Une valeur comprise entre 0.0017 et 0.0035 est conseillee'
+/AIDE1 = 'Value of the calibration coefficient for the wind function
+/of the atmosphere-water exchange models
+/(linearised formula at the free surface or complete balance).
+/A value between 0.0017 and 0.0035 is advised'
+
 /
 NOM = 'SEDIMENT MIXTE'
 NOM1 = 'MIXED SEDIMENT'
@@ -6685,8 +6691,57 @@ EPSILON.
 2: Hans and Burchard formula'
 
 /
-/  VERSION 7.2
+/  VERSION 7.2 
 /
+NOM = 'FICHIER DES PARAMETRES DE WAQTEL'
+NOM1 = 'WAQTEL STEERING FILE'
+TYPE = CARACTERE 
+INDEX = 95
+MNEMO = '' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'fichier des parametres physiques pour les 
+processus de qualite d eau (internes non ceux de DELWAQ)' 
+AIDE1 = 'file for physical parameters of waq processes
+(local ones of Telemac-tracer not those of DELWAQ)' 
+
+
+NOM = 'PROCESSUS DE QUALITE D''EAU'
+NOM1 = 'WATER QUALITY PROCESS'
+TYPE = ENTIER
+INDEX = 127
+MNEMO = 'WAQPROCESS'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'EQUATIONS, SOURCE';'TRACEUR'
+RUBRIQUE1 = 'EQUATIONS, SOURCE';'TRACER'
+NIVEAU = 1
+AIDE = 'donne le numero du processus waq (1 ou 2 ou 3
+ou 4 ou 5)
+0- RIEN, 1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)'
+AIDE1 = 'gives the waq process number (from 1 to 5)
+0-NOTHING, 1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)'
+
+NOM = 'VALEUR DE LA PRESSION ATMOSPHERIQUE'
+NOM1 = 'VALUE OF ATMOSPHERIC PRESSURE'
+TYPE = REEL
+INDEX = 107
+MNEMO = 'PATMOS_VALUE'
+TAILLE = 1
+DEFAUT = 100000.
+DEFAUT1 = 100000.
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'donne la valeur de la pression atmospherique lorsqu elle est 
+constante en temps et en espace'
+AIDE1 = 'gives the value of atmospheric pressure when it is contant
+in time and space'
 
 NOM = 'OPTION DU SCHEMA POUR LA CONVECTION DES VITESSES'
 NOM1 = 'SCHEME OPTION FOR ADVECTION OF VELOCITIES'

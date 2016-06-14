@@ -31,22 +31,17 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
       PRIVATE
-      PUBLIC :: SOLRAD,SHORTRAD,EVAPO,RO0,CP
+      PUBLIC :: SOLRAD,SHORTRAD,EVAPO
 !
 !-----------------------------------------------------------------------
 !
-!  BOLT: BOLTZMANN'S CONSTANT
-      DOUBLE PRECISION, PARAMETER :: BOLT      = 5.67D-8
-!  RO0: REFERENCE DENSITY OF WATER AT 4 C AND SAL = 0
-      DOUBLE PRECISION, PARAMETER :: RO0       = 999.972D0
+!  brought to declarations_waqtel
 !  CP: SPECIFIC HEAT OF WATER AT CONSTANT PRESSURE
-      DOUBLE PRECISION, PARAMETER :: CP        = 4.18D3
-!  CP_AIR: SPECIFIC HEAT OF AIR AT CONSTANT PRESSURE
-      DOUBLE PRECISION, PARAMETER :: CP_AIR    = 1005.D0
-!  EMI_EAU: WATER EMISSIVITY
-      DOUBLE PRECISION, PARAMETER :: EMI_EAU   = 0.97D0
+!      DOUBLE PRECISION, PARAMETER :: CP        = 4.18D3
 !
 !-----------------------------------------------------------------------
 !
@@ -106,6 +101,7 @@
 !| RAY_SOL        |<--| SOLAR RADIATION INCIDENT ON THE SEA SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_WAQTEL,ONLY: ISKYTYPE
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -118,8 +114,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IYEAR,IMONTH,IDAY,IHOUR,IMIN,ISEC
-!  TYPE OF SKY
-      INTEGER ISKYTYPE
 !
       DOUBLE PRECISION DTR,PI,ALB
       DOUBLE PRECISION DAY,DAYREEL,NDAYS
@@ -138,8 +132,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!  DEFAULT VALUE, MAY BE CHANGED
-      ISKYTYPE = 2
 !
       IF(ISKYTYPE.EQ.1) THEN
 !  VERY PURE SKY
@@ -380,6 +372,7 @@
 !| TREEL          |-->| REAL WATER TEMPERATURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_WAQTEL, ONLY: EMI_EAU,BOLTZ,EMA
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -421,10 +414,12 @@
 !  ATMOSPHERE RADIATION
       EMI_AIR = 0.937D-5*((TAIR+273.15D0)**2)
 !  THE NEBULOSITY IS GIVEN IN OCTAS
-      RAY_ATM = 0.97D0*EMI_AIR*BOLT*(TAIR+273.15D0)**4
+!      RAY_ATM = 0.97D0*EMI_AIR*BOLTZ*(TAIR+273.15D0)**4
+!     &                *(1.D0+NUA*(NEBU/8.D0)**2)
+      RAY_ATM = EMA*EMI_AIR*BOLTZ*(TAIR+273.15D0)**4
      &                *(1.D0+NUA*(NEBU/8.D0)**2)
 !  WATER RADIATION
-      RAY_EAU = EMI_EAU*BOLT*(TREEL+273.15D0)**4
+      RAY_EAU = EMI_EAU*BOLTZ*(TREEL+273.15D0)**4
 !
 !-----------------------------------------------------------------------
 !
@@ -477,7 +472,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| PARAMETER TO CALIBRATE
 !| DEB_EVAP       |<--| EVAPORATION FLOWRATE AT THE SURFACE
-!| FLUX_EVAP      |<--| EVAPORATED WATER FLOWRATE
+!| FLUX_EVAP      |<--| ENERGY FLUX DUE TO EVAPORATED WATER
 !| FLUX_SENS      |<--| HEAT FLUX BY CONVECTION
 !| HREL           |-->| RELATIVE HUMIDITY
 !| PATM           |-->| ATMOSPHERIC PRESSURE
@@ -487,6 +482,7 @@
 !| W2             |-->| RELATIVE MAGNITUDE OF WIND AT 2 M
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_WAQTEL, ONLY: CP_AIR
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -503,11 +499,11 @@
 !  SATURATION VAPOUR PRESSURE (MAGNUS TETENS)
       Q_SAT_EAU  = EXP(2.3026D0*(7.5D0*TREEL/(TREEL+237.3D0)+0.7858D0))
       Q_SAT_AIR  = EXP(2.3026D0*(7.5D0*TAIR/(TAIR+237.3D0)+0.7858D0))
-
+!
 !  AIR DENSITY : IDEAL GAZ LAW
       ROAIR =    PATM*100.D0/(287.D0*(TAIR+273.15D0))
      &      - 1.32D-5*HREL*Q_SAT_AIR/(TAIR+273.15D0)
-
+!
 !  HUMIDITY
 !  0.378D0 = 1.D0-0.622D0
       HUMI_EAU  = 0.622D0*Q_SAT_EAU/(PATM-0.378D0*Q_SAT_EAU)

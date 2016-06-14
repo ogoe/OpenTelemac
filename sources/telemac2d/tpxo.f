@@ -931,7 +931,7 @@
               DOUBLE PRECISION FUNCTION PTIDE
 !             *******************************
 !
-     &( Z1_R,Z1_I,CID,NCON,IND,LAT,TIME_MJD,INTERP)
+     &( Z1_R,Z1_I,CID,NCON,IND,LAT,TIME_MJD,INTERP ) !,NTIME=1
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2                                   26/01/2016
@@ -1012,6 +1012,7 @@
 !     ADDS MINOR CONSTITUENTS
       PTIDE = PTIDE + DH
 !
+!      DEALLOCATE(A)
       DEALLOCATE(A_R,A_I)
 !
 !-----------------------------------------------------------------------

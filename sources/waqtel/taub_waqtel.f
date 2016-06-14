@@ -56,7 +56,7 @@
       CALL CPSTVC(CF,TAUB)
 !
       DO I=1,NPOIN
-        TAUB%R(I)=CC*CF%R(I)*SQRT(UN%R(I)**2+VN%R(I)**2)
+        TAUB%R(I)=CC*CF%R(I)*(UN%R(I)**2+VN%R(I)**2)
       ENDDO
 !
 !-----------------------------------------------------------------------

@@ -826,6 +826,7 @@
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
       INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX,OPTADV
       INTEGER, INTENT(IN)             :: NCO_DIST
+      INTEGER, INTENT(IN)             :: NCO_DIST
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)

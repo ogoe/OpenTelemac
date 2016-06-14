@@ -1899,6 +1899,16 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE SOURCE_TRAC
+     &  (LT)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)           :: LT
+      END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
 !###>TBE - new SUISED method reads from 2D file
 !      INTERFACE
 !        SUBROUTINE SUISED

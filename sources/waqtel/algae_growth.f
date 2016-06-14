@@ -14,6 +14,10 @@
 !+        02/09/2015
 !+        V7P1
 !+
+!history  R. ATA (LNHE)
+!+        02/04/2016
+!+        V7P2
+!+        VARIABLE TEMPERATURE
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALG            |<--| ALGAE GROWTH
@@ -25,6 +29,7 @@
 !| TOX            |-->| COEFFICIENT OF WATER TOXICITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF
       USE INTERFACE_WAQTEL, EX_ALGAE_GROWTH => ALGAE_GROWTH
 !
       IMPLICIT NONE
@@ -33,14 +38,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN):: NPOIN
-      DOUBLE PRECISION, INTENT(IN):: CMAX,RAY(NPOIN),GT,NUTR(NPOIN),TOX
-      DOUBLE PRECISION, INTENT(INOUT)::ALG(NPOIN)
+      INTEGER         , INTENT(IN   ) :: NPOIN
+      DOUBLE PRECISION, INTENT(IN   ) :: CMAX,RAY(NPOIN),NUTR(NPOIN),TOX
+      DOUBLE PRECISION, INTENT(INOUT) :: ALG(NPOIN)
+      TYPE(BIEF_OBJ)   , INTENT(IN  ) :: GT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DO I=1,NPOIN
-        ALG(I)=CMAX*RAY(I)*GT*NUTR(I)*TOX
+        ALG(I)=CMAX*RAY(I)*GT%R(I)*NUTR(I)*TOX
       ENDDO
 !
 !-----------------------------------------------------------------------

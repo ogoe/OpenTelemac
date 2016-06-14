@@ -373,12 +373,14 @@
      &                      MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
             ELSE
               IF(LNG.EQ.1) THEN
-                WRITE(LU,621) IVBIL-5,FLUX%R(IVBIL),
+                WRITE(LU,621) IVBIL-5,NAMETRAC(IVBIL-5)(1:16),
+     &           NAMETRAC(IVBIL-5)(17:32), FLUX%R(IVBIL),
      &          -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                        MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
               ENDIF
               IF(LNG.EQ.2) THEN
-                WRITE(LU,622) IVBIL-5,FLUX%R(IVBIL),
+             WRITE(LU,622) IVBIL-5,NAMETRAC(IVBIL-5)(1:16),
+     &           NAMETRAC(IVBIL-5)(17:32), FLUX%R(IVBIL),
      &          -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                        MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
               ENDIF
@@ -422,7 +424,7 @@
      &       /,'MASS LEAVING THE DOMAIN DURING THIS TIME STEP : ',G16.7,
      &       /,'ERROR ON THE MASS DURING THIS TIME STEP       : ',G16.7)
 !
-621   FORMAT(/,'  TRACEUR  ',I2,
+621   FORMAT(/,'  TRACEUR  ',I2,': ',A16,', UNITE : ',A16,'* M3)',
      &       /,'FLUX CONVECTIF A TRAVERS BORDS OU SOURCES     : ',G16.7,
      &       /,'FLUX DIFFUSIF A TRAVERS LES BORDS             : ',G16.7,
      &       /,'MASSE AU PAS DE TEMPS PRECEDENT               : ',G16.7,
@@ -430,7 +432,8 @@
      &       /,'MASSE SORTIE (FRONTIERES OU SOURCE)           : ',G16.7,
      &       /,'ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  : ',G16.7)
 !
-622   FORMAT(/,'  TRACER ',I2,
+622   FORMAT(/,'  TRACER ',I2,': ',A16,', UNIT : ',A16,'* M3)',
+     &       /,' '
      &       /,'ADVECTIVE FLUX THROUGH BOUNDARIES OR SOURCES  : ',G16.7,
      &       /,'DIFFUSIVE FLUX THROUGH THE BOUNDARIES         : ',G16.7,
      &       /,'MASS AT THE PREVIOUS TIME STEP                : ',G16.7,
@@ -474,9 +477,11 @@
      &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,721) IVBIL-5,
+     &              NAMETRAC(IVBIL-5)(1:16),NAMETRAC(IVBIL-5)(17:32),
      &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
      &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
               IF(LNG.EQ.2) WRITE(LU,722) IVBIL-5,
+     &              NAMETRAC(IVBIL-5)(1:16),NAMETRAC(IVBIL-5)(17:32),
      &              MASINI%R(IVBIL),MASSE%R(IVBIL),DT*FLUCUM%R(IVBIL),
      &              MASINI%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUCUM%R(IVBIL)
             ENDIF
@@ -513,13 +518,13 @@
      &       /,'MASS LEAVING THE DOMAIN             : ',G16.7,
      &       /,'MASS LOSS                           : ',G16.7)
 !
-721   FORMAT(//,'--- TRACEUR ',I2,' ---',
+721   FORMAT(//,'--- TRACEUR ',I2,': ',A16,', UNITE: ',A16,'* M3)',
      &       /,'MASSE INITIALE (DEBUT DE CE CALCUL) : ',G16.7,
      &       /,'MASSE FINALE                        : ',G16.7,
      &       /,'MASSE SORTIE (FRONTIERES OU SOURCE) : ',G16.7,
      &       /,'MASSE PERDUE                        : ',G16.7)
 !
-722   FORMAT(//,'--- TRACER',I2,' ---',
+722   FORMAT(//,'--- TRACER',I2,': ',A16,', UNIT : ',A16,'* M3)',
      &       /,'INITIAL MASS                        : ',G16.7,
      &       /,'FINAL MASS                          : ',G16.7,
      &       /,'MASS EXITING (BOUNDARIES OR SOURCE) : ',G16.7,

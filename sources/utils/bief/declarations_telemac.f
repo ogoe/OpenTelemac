@@ -265,4 +265,14 @@
 !
 !-----------------------------------------------------------------------
 !
+!     IF YES, WATER QUALITY CONSIDERED
+!
+!      LOGICAL WATQUA
+!
+!     WAQ PROCESS (1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)
+!
+!      INTEGER WAQPROCESS
+!
+!-----------------------------------------------------------------------
+!
       END MODULE DECLARATIONS_TELEMAC

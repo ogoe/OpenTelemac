@@ -387,7 +387,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
-      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU
+      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
+     &                               ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
       USE EXCHANGE_WITH_ATMOSPHERE
 !
@@ -423,12 +424,6 @@
 !
       INTEGER YADEB(MAXFRO),MSK1,IJK
 !
-!     DECLARATION RELATED TO HEAT EXCHANGE
-      DOUBLE PRECISION WW2
-      DOUBLE PRECISION RAY_ATM,RAY_EAU,FLUX_EVAP,FLUX_SENS,DEBEVAP
-!
-      DOUBLE PRECISION WW,TREEL,A,B,LAMB,RO,SAL
-!     DOUBLE PRECISION XB,YB,ZB
 !     NORMALS TO THE BED
       DOUBLE PRECISION XNB,YNB,ZNB
 !
@@ -794,7 +789,7 @@
 !
       IF(NBEDFLO.GT.0) THEN
 !
-!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER
 !       -------------------------------------------------
 !
         CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,
@@ -1019,50 +1014,16 @@
 !    TAIR  = AIR TEMPERATURE WHICH MAY VARY WITH TIME
 !    SAL   = SALINITY WHICH MAY VARY WITH TIME
 !
-      IF (ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-        DO IPOIN2=1,NPOIN2
-          TREEL=TA%ADR(IND_T)%P%R(NPOIN3-NPOIN2+IPOIN2)
-          IF (IND_S.EQ.0) THEN
-            SAL = 0.D0
-          ELSE
-            SAL = TA%ADR(IND_S)%P%R(NPOIN3-NPOIN2+IPOIN2)
-          ENDIF
-          RO = RO0*(1.D0-(7.D0*(TREEL-4.D0)**2-750.D0*SAL)*1.D-6)
-          LAMB=RO*CP
-
-          WW = SQRT(WIND%ADR(1)%P%R(IPOIN2)*WIND%ADR(1)%P%R(IPOIN2)
-     &       + WIND%ADR(2)%P%R(IPOIN2)*WIND%ADR(2)%P%R(IPOIN2))
-!         LOG LAW FOR WIND AT 2 METERS
-!          WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
-!         WRITTEN BELOW AS:
-          WW2 = WW * LOG(1.D4)/LOG(5.D4)
-!         ALTERNATIVE LAW FOR WIND AT 2 METERS
-!          WW2 = 0.6D0*WW
-          IF(ATMOSEXCH.EQ.1) THEN
-            A=(4.48D0+0.049D0*TREEL)+2021.5D0*C_ATMOS*(1.D0+WW)*
-     &        (1.12D0+0.018D0*TREEL+0.00158D0*TREEL**2)
-            ATABOS%ADR(IND_T)%P%R(IPOIN2)=-A/LAMB
-            BTABOS%ADR(IND_T)%P%R(IPOIN2)= A*TAIR/LAMB
-          ELSEIF(ATMOSEXCH.EQ.2) THEN
-!     SENSIBLE HEAT FLUXES
-            CALL EVAPO(TREEL,TAIR,WW2,PATMOS%R(IPOIN2),HREL,RO,
-     &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
-!     LONGWAVE HEAT FLUXES
-            CALL SHORTRAD(TREEL,TAIR,NEBU,RAY_ATM,RAY_EAU)
-!
-!     BOUNDARY CONDITION FOR TEMPERATURE AT SURFACE
-            ATABOS%ADR(IND_T)%P%R(IPOIN2) = 0.D0
-            BTABOS%ADR(IND_T)%P%R(IPOIN2) = (RAY_ATM-RAY_EAU-FLUX_EVAP
-     &                                      -FLUX_SENS)/LAMB
-          ENDIF
-        ENDDO
-      ENDIF
-!     IMPORTANT:
-!     STATES THAT ATABOS AND BTABOS ARE NOT ZERO (SEE LIMI3D AND DIFF3D)
-!     OTHERWISE THEY WILL NOT BE CONSIDERED
-      IF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+!     EXCHANGE WITH ATMOSPHERE CORRESPONDS NOW TO WAQPROCESS=5
+      IF(INCLUS(COUPLING,'WAQTEL').AND.WAQPROCESS.EQ.5)THEN
+!       IMPORTANT:
+!       STATES THAT ATABOS AND BTABOS ARE NOT ZERO (SEE LIMI3D AND DIFF3D)
+!       OTHERWISE THEY WILL NOT BE CONSIDERED
         ATABOS%ADR(IND_T)%P%TYPR='Q'
         BTABOS%ADR(IND_T)%P%TYPR='Q'
+! 
+        CALL CALCS3D_THERMICS(NPOIN2,NPOIN3,IND_T,IND_S,TA,ATABOS,
+     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)   
       ENDIF
 !
 !
@@ -1105,227 +1066,8 @@
 !
       RETURN
       END
-!                    *****************
-                     SUBROUTINE CALCOT
-!                    *****************
-!
-     &(ZZ,HH)
-!
-!***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
-!***********************************************************************
-!
-!brief    BUILDS THE ARRAY OF THE ELEVATIONS OF THE MESH.
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/1999
-!+
-!+   FORTRAN95 VERSION
-!
-!history  J-M HERVOUET (LNHE)     ; F LEPEINTRE (LNH)    ; J-M JANIN (LNH)
-!+        11/03/2010
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HH             |-->| WATER DEPTH
-!| ZZ             |<->| ELEVATION OF MESH POINTS
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D
-      USE INTERFACE_TELEMAC3D, EX_CALCOT => CALCOT
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      DOUBLE PRECISION, INTENT(IN)    :: HH(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: ZZ(NPOIN2,NPLAN)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      DOUBLE PRECISION RPLS,RPLI,ZFP,ZSP,DISBOT,DISSUR
-      DOUBLE PRECISION DISMIN_BOT,DISMIN_SUR,MIN_DZ
-      INTEGER IPOIN,IPLAN,I1,I2,ITRAC
-!
-!***********************************************************************
-!
-!     HARDCODED
-!
-      DISMIN_SUR = 0.2D0
-! BEGINNING OF SPECIFIC TO THIS CASE
-!     DISMIN_BOT = 0.2D0
-      DISMIN_BOT = 0.D0
-! END OF PART SPECIFIC TO THIS CASE
-      MIN_DZ     = 0.D0
-!
-!     1) IN ALL CASES: FREE SURFACE = BOTTOM+DEPTH
-!
-      IF(OPTBAN.EQ.1.AND.OPT_HNEG.NE.2) THEN
-        DO IPOIN = 1,NPOIN2
-          ZZ(IPOIN,NPLAN) = ZZ(IPOIN,1) + MAX(HH(IPOIN),0.D0)
-        ENDDO
-      ELSE
-        DO IPOIN = 1,NPOIN2
-          ZZ(IPOIN,NPLAN) = ZZ(IPOIN,1) + HH(IPOIN)
-        ENDDO
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!     HERE IMPLEMENTATION BY USER
-!
-      IF(TRANSF.EQ.0) THEN
-!
-        IF(LNG.EQ.1) WRITE(LU,81)
-        IF(LNG.EQ.2) WRITE(LU,82)
-81      FORMAT('CALCOT: TRANSFORMATION A PROGRAMMER PAR L''UTILISATEUR')
-82      FORMAT('CALCOT: TRANSFORMATION TO BE PROGRAMMED BY USER')
-        CALL PLANTE(1)
-        STOP
-!
-!-----------------------------------------------------------------------
-!
-!     ADAPTIVE MESH REFINEMENT (BY CHRIS CAWTHORN)
-!
-      ELSEIF(TRANSF.EQ.5.AND.AT.GT.1.D-4) THEN
-!
-!       ITRAC: CHOICE OF TRACER FOR ADAPTIVE MESH
-        ITRAC=1
-        CALL AMR_PLAN(ZZ,TA%ADR(ITRAC)%P%R,'A',NPOIN2,NPLAN,
-     &                MESH2D%NSEG,MESH2D%GLOSEG%I,MESH2D%GLOSEG%DIM1,
-     &                T3_01%R,T3_02%R,T3_03%R,T3_04%R,T3_05%R,T3_06,
-     &                T3_06%R,IT1%I,T2_01,T2_01%R,T2_02%R,MESH2D,MESH3D)
-!
-!-----------------------------------------------------------------------
-!
-!     NOW ALL OTHER CASES: SEQUENCES OF SIGMA TRANSFORMATIONS
-!                          AND PLANES WITH PRESCRIBED ELEVATION
-!
-      ELSEIF(NPLAN.GT.2) THEN
-!
-!-----------------------------------------------------------------------
-!
-!       2) SETS THE PLANES WITH PRESCRIBED ELEVATION
-!
-        DO IPLAN=2,NPLAN-1
-          IF(TRANSF_PLANE%I(IPLAN).EQ.3) THEN
-!           IF NOT POSSIBLE BECAUSE OF FREE SURFACE OR BOTTOM, A SECURITY
-!           DISTANCE, DISMIN, IS USED. ALL PLANES THAT WOULD CROSS E.G.
-!           THE BOTTOM AVOID IT AT A DISTANCE DISMIN*RPLI, SEE RPLI BELOW
-            RPLS = DBLE(NPLAN-IPLAN) / DBLE(NPLAN)
-            RPLI = DBLE(IPLAN-    1) / DBLE(NPLAN)
-            DO IPOIN = 1,NPOIN2
-              ZFP = ZZ(IPOIN,1)
-              ZSP = ZZ(IPOIN,NPLAN)
-              DISBOT = MIN(ZSP-ZFP,DISMIN_BOT)
-              DISSUR = MIN(ZSP-ZFP,DISMIN_SUR)
-              ZZ(IPOIN,IPLAN)=MIN(                    ZSP-DISSUR*RPLS,
-     &                            MAX(ZPLANE%R(IPLAN),ZFP+DISBOT*RPLI))
-            ENDDO
-          ENDIF
-        ENDDO
-!
-!       3) SETS THE PLANES WITH SIGMA TRANSFORMATION
-!
-        I1=2
-        DO WHILE(I1.NE.NPLAN)
-          IF(TRANSF_PLANE%I(I1).EQ.3) THEN
-            I1=I1+1
-          ELSE
-!           LOOKS FOR SEQUENCES OF SIGMA TRANSFORMATION PLANES
-            I2=I1
-            DO WHILE(TRANSF_PLANE%I(I2+1).NE.3.AND.I2+1.NE.NPLAN)
-              I2=I2+1
-            ENDDO
-!           SIGMA TRANSFORMATION FOR PLANES I1 TO I2
-!           BETWEEN ALREADY TREATED PLANES I1-1 AND I2+1
-            DO IPLAN=I1,I2
-              IF(TRANSF_PLANE%I(IPLAN).EQ.1) THEN
-                ZSTAR%R(IPLAN)=FLOAT(IPLAN-I1+1)/FLOAT(I2-I1+2)
-!             ELSE
-!               ZSTAR%R(IPLAN) HAS BEEN GIVEN BY USER IN CONDIM
-              ENDIF
-              DO IPOIN = 1,NPOIN2
-                ZZ(IPOIN,IPLAN) = ZZ(IPOIN,I1-1)
-     &                          + ZSTAR%R(IPLAN)*(  ZZ(IPOIN,I2+1)
-     &                                             -ZZ(IPOIN,I1-1) )
-              ENDDO
-            ENDDO
-            I1=I2+1
-          ENDIF
-        ENDDO
-!
-!       4) CHECKS
-!
-        IF(NPLAN.GT.2) THEN
-          DO IPLAN=2,NPLAN-1
-            DO IPOIN = 1,NPOIN2
-              IF(ZZ(IPOIN,IPLAN).LT.ZZ(IPOIN,IPLAN-1)) THEN
-                IF(LNG.EQ.1) THEN
-                  WRITE(LU,*) 'CALCOT : LES PLANS ',IPLAN-1,' ET ',IPLAN
-                  WRITE(LU,*) '         SE CROISENT AU POINT ',IPOIN
-                  WRITE(LU,*) '         COTE BASSE : ',ZZ(IPOIN,IPLAN-1)
-                  WRITE(LU,*) '         COTE HAUTE : ',ZZ(IPOIN,IPLAN)
-                  WRITE(LU,*) '         DIFFERENCE : ',ZZ(IPOIN,IPLAN)-
-     &                                                 ZZ(IPOIN,IPLAN-1)
-                  WRITE(LU,*) '         HAUTEUR    : ',HH(IPOIN)
-                ENDIF
-                 IF(LNG.EQ.2) THEN
-                  WRITE(LU,*) 'CALCOT: PLANES ',IPLAN-1,' AND ',IPLAN
-                  WRITE(LU,*) '        INTERCROSS AT POINT ',IPOIN
-                  WRITE(LU,*) '        LOWER POINT : ',ZZ(IPOIN,IPLAN-1)
-                  WRITE(LU,*) '        HIGHER POINT: ',ZZ(IPOIN,IPLAN)
-                  WRITE(LU,*) '        DIFFERENCE  : ',ZZ(IPOIN,IPLAN)-
-     &                                                 ZZ(IPOIN,IPLAN-1)
-                  WRITE(LU,*) '        DEPTH       : ',HH(IPOIN)
-                ENDIF
-                CALL PLANTE(1)
-                STOP
-              ENDIF
-            ENDDO
-          ENDDO
-        ENDIF
-!
-!       5) A POINT THAT IS TOO CLOSE TO THE LOWER ONE ON A VERTICAL
-!          IS PUT ON THE LOWER, I.E. A MINIMUM HEIGHT IS PRESCRIBED
-!          IN ELEMENTS, OTHERS ARE FRANKLY SMASHED. THIS IS NOT DONE
-!          FOR FREE SURFACE.
-!
-        IF(NPLAN.GT.2.AND.MIN_DZ.GT.0.D0) THEN
-          DO IPLAN=2,NPLAN-1
-            DO IPOIN = 1,NPOIN2
-              IF(ZZ(IPOIN,IPLAN).LT.ZZ(IPOIN,IPLAN-1)+MIN_DZ) THEN
-                ZZ(IPOIN,IPLAN)=ZZ(IPOIN,IPLAN-1)
-              ENDIF
-            ENDDO
-          ENDDO
-        ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      RETURN
-      END
+
+
 !                    *********************
                      SUBROUTINE T3D_CORFON
 !                    *********************

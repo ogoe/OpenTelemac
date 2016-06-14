@@ -60,13 +60,16 @@
 !
       INTEGER, PARAMETER :: MAXWQVAR = 50
 !
+!-----------------------------------------------------------------------
+!
+!
 !     WAQ PROCESS (1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)
 !
-!      INTEGER WAQPROCESS
+      INTEGER WAQPROCESS
 !
 !     NUMBER OF TRACERS ADDED WHEN USING WAQPROCESS
 !
-      INTEGER    ADDTR
+      INTEGER  ADDTR
 !
 !     TO KNOW IF A VARIABLE WILL BE EXITED ON FILE, ON LISTING
 !
@@ -116,6 +119,18 @@
 !
       INTEGER CFORMAERA(2)
 !
+!     ATMOSPHERE-WATER EXCHANGE MODEL
+!
+      INTEGER ATMOSEXCH
+!
+!     BRIGHTNESS OF THE SKY
+!
+      INTEGER ISKYTYPE
+!
+!     METHOD OF COMPUTATION OF EXTINCTION OF SUN RAY
+!
+      INTEGER MEXTINC
+!
 !-----------------------------------------------------------------------
 !
 !       3) LOGICAL
@@ -133,6 +148,10 @@
 !     STEADY HYDRODYNAMICS
 !
       LOGICAL  PERMA
+!
+!     IF TEMPERATURE IS VARIABLE
+!
+      LOGICAL YATEMP
 !-----------------------------------------------------------------------
 !
 !       4) REALS
@@ -140,8 +159,13 @@
 !-----------------------------------------------------------------------
 !
 !     WATER DENSITY
+<<<<<<< .working
 !
       DOUBLE PRECISION ROO
+=======
+>>>>>>> .merge-right.r7666
+!
+      DOUBLE PRECISION RO0 ! (RHO ZERO)
 !
 !     KINEMATIC VISCOSITY
 !
@@ -202,7 +226,14 @@
 !     WEIR COEFFICIENT OF REAERATION
 !
       DOUBLE PRECISION RSW
-
+!
+!     COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL
+!
+      DOUBLE PRECISION C_ATMOS
+!
+!     WATER QUALITY VARIABLE: EVAPORATION
+!     
+      DOUBLE PRECISION EVAPORATION
 !
 ! Water quality specific key-words
 !
@@ -250,22 +281,36 @@
 !
       DOUBLE PRECISION CMAX
 !
+<<<<<<< .working
 !     SECCHI DEPTH
 !
       DOUBLE PRECISION  PS
+=======
+!     COEF VEGETAL TURBIDITY WITHOUT PHYTOPLANKTON
+>>>>>>> .merge-right.r7666
 !
+<<<<<<< .working
 !     COEF EXTINCTION OF RAY
 !
+=======
+>>>>>>> .merge-right.r7666
       DOUBLE PRECISION KPE
 !
-!     COEF VEGETAL TURBIDITY
+!     PARAMETER OF CALIBRATION OF SMITH FORMULA
 !
+<<<<<<< .working
       DOUBLE PRECISION BETA
+=======
+      DOUBLE PRECISION IK
+>>>>>>> .merge-right.r7666
 !
+<<<<<<< .working
 !     PARAMETER OF CALIBRATION OF SMITH FORMULA
 !
       DOUBLE PRECISION IK
 !
+=======
+>>>>>>> .merge-right.r7666
 !     CONSTANT OF HALF-SATURATION WITH PHOSPHATE
 !
       DOUBLE PRECISION KP
@@ -335,7 +380,7 @@
 !
       DOUBLE PRECISION K1
 !
-!     COEFFICIENT OF REAERATION K2 (if contant)
+!     COEFFICIENT OF REAERATION K2 (if constant)
 !
       DOUBLE PRECISION K22
 !
@@ -410,7 +455,15 @@
 !
 !     BOLTZMANN CONSTANT (wM-2K-4)
 !
+<<<<<<< .working
       DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8
+=======
+      DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8    
+>>>>>>> .merge-right.r7666
+!
+!     CONVERSION SECOND TO DAYS
+!
+      DOUBLE PRECISION, PARAMETER :: SECTODAY=1.D0/86400.D0
 !
 !     COEFFICIENTS OF RAERATION FORMULA
 !
@@ -420,14 +473,22 @@
 !     MES PROCESS
 !
 !
+<<<<<<< .working
 !     EXPONENETIAL DESINTEGRATION CONSTANT (LAMBD)
+=======
+!    EXPONENTIAL DESINTEGRATION CONSTANT (LAMBD)
+>>>>>>> .merge-right.r7666
 !
       DOUBLE PRECISION CCSEDIM
+<<<<<<< .working
 !
 !     EVAPORATION
 !
       DOUBLE PRECISION EVAPOR
 !
+=======
+!
+>>>>>>> .merge-right.r7666
 !-----------------------------------------------------------------------
 !
 !       5) STRINGS

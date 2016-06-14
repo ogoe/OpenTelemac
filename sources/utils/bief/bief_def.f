@@ -118,7 +118,7 @@
 !         '0' : NIL   '1' : EQUAL TO 1  'Q' : NO SPECIFIC PROPERTY
           CHARACTER*1 TYPR
 !
-!         TYPR: TYPE OF VECTOR OF REALS
+!         TYPI: TYPE OF VECTOR OF INTEGERS
 !         '0' : NIL   '1' : EQUAL TO 1  'Q' : NO SPECIFIC PROPERTY
           CHARACTER*1 TYPI
 !
