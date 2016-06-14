@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac3d
 module: telemac3d
-liborder: special hermes parallel damocles bief ad stbtel waqtel telemac2d sisyphe tomawac telemac3d
+liborder: special parallel hermes damocles bief stbtel waqtel ad sisyphe tomawac telemac2d telemac3d
 name: HOMERE_TELEMAC3D
 
 [ad]
@@ -475,6 +475,7 @@ files: declarations_telemac.f
   masktf.f
   global_to_local_point.f
   gregtim.f
+  anti_dirac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -752,7 +753,6 @@ files: declarations_telemac3d.f
   utimp.f
   source.f
   check.f
-  exchange_with_atmosphere.f
   q3.f
   vel_prof_z.f
   debimp_3d.f
@@ -972,3 +972,30 @@ files: declarations_tomawac.f
 [waqtel]
 path: <root>|sources|waqtel
 files: declarations_waqtel.f
+  interface_waqtel.f
+  point_waqtel.f
+  increase_ntrac.f
+  nametrac_waq.f
+  exchange_with_atmosphere.f
+  calcs3d_thermics.f
+  reaer.f
+  satur_o2.f
+  calcs2d_o2.f
+  algae_death.f
+  ray_effect.f
+  nuteff.f
+  algae_growth.f
+  calcs3d_eutro.f
+  erosion_fx.f
+  taub_waqtel.f
+  depos_fx.f
+  calcs2d_micropol.f
+  calcs3d_biomass.f
+  calcs3d_o2.f
+  calcs2d_thermic.f
+  calcs3d_micropol.f
+  calcs2d_biomass.f
+  calcs3d_thermicv.f
+  calcs2d_eutro.f
+  source_waq.f
+  lecdon_waqtel.f

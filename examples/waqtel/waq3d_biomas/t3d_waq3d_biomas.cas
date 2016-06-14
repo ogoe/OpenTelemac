@@ -1,0 +1,88 @@
+/
+/
+/ This case validates the BIOMASS process
+/  of  added WAQTEL module
+/
+/  Version V7P1
+/  HP Z600 Nag compiler      1 proc : 1min13s   version 7.0 26/10/2014
+/  HP Z600 Nag compiler      8 proc : 24 s      version 7.0 26/10/2014
+/  HP Z600 Intel compiler    1 proc : 4min48s   version 7.0 26/10/2014
+/  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.0 26/10/2014
+/ 
+/**********************************************************
+TITLE = 'Water Quality- BIOMASS  process for Channel in 3D'
+/**********************************************************
+/ ORIGINAL DATE OF TIME : 2006;10;1
+/ ORIGINAL HOUR OF TIME : 0;0;0
+/----------------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------------
+/
+GEOMETRY FILE             = 'geo_waq3d_biomas.slf'
+BOUNDARY CONDITIONS FILE  = 'geo_waq3d_biomas.cli'
+3D RESULT FILE            = 'r3d_waq3d_biomas.slf'
+2D RESULT FILE            = 'r2d_waq3d_biomas.slf'
+/FORTRAN FILE              = 't3d_waq3d_biomas.f'
+/REFERENCE FILE            = 'f3d_waq3d_biomas.slf'
+/VALIDATION                = YES
+/DEBUGGER   : 1
+/----------------------------------------------------------------------
+/     GENERAL OPTIONS 
+/----------------------------------------------------------------------
+MATRIX STORAGE                                           = 3
+/SIMULATION TIME : 1 YEAR
+NUMBER OF TIME STEPS                                     = 8760  
+TIME STEP                                                = 3600
+/OUTPUT EVERY 1 MONTH
+GRAPHIC PRINTOUT PERIOD                                  = 720
+LISTING PRINTOUT PERIOD                                  = 720
+NUMBER OF HORIZONTAL LEVELS                              = 5
+/
+VARIABLES FOR 2D GRAPHIC PRINTOUTS                       = U,V,H,T*
+VARIABLES FOR 3D GRAPHIC PRINTOUTS                       = Z,U,V,W,TA*
+MASS-BALANCE                                             = YES
+INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT = YES
+/
+/----------------------------------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------------------------------
+/
+INITIAL CONDITIONS        = 'CONSTANT DEPTH'   
+INITIAL DEPTH             = 2.
+/----------------------------------------------------------------------
+/  ADVECTION-DIFFUSION
+/----------------------------------------------------------------------
+COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 0.1D0
+VERTICAL TURBULENCE MODEL                          = 2
+MIXING LENGTH MODEL                                = 3
+PRECONDITIONING FOR DIFFUSION OF VELOCITIES        = 14
+/----------------------------
+/     SOURCES
+/----------------------------
+/FRICTION COEFFICIENT FOR THE BOTTOM              = 0.0162
+LAW OF BOTTOM FRICTION                            = 0
+FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES = 1.
+MASS-LUMPING FOR DEPTH                            = 1.
+MASS-LUMPING FOR VELOCITIES                       = 1.
+MASS-LUMPING FOR DIFFUSION                        = 1.
+/----------------------------
+/          TRACER
+/----------------------------
+INITIAL VALUES OF TRACERS                     = 50.;3.;0.01;2.9;9.0
+/DENSITY LAW : 1
+SCHEME FOR DIFFUSION OF TRACERS                       = 1
+/COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS        = 0.
+MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
+/----------------------------
+/ ECHANGES AVEC L ATMOSPHERE
+/----------------------------
+/ATMOSPHERE-WATER EXCHANGE MODEL = 2
+/ COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL = 0.0026
+/************************************
+/  WATER QUALITY
+/************************************
+COUPLING WITH         = 'WAQTEL'
+WAQTEL STEERING FILE  = 'biomass_steer.cas'
+WATER QUALITY PROCESS =2 
+
+&FIN

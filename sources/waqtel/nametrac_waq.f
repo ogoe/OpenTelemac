@@ -69,13 +69,8 @@
             NAMETRAC(NTRAC1+2) = 'ORGANIC LOAD    '
      &                        // '   mgO2/l       '
             NAMETRAC(NTRAC1+3) = 'NH4 LOAD        '
-<<<<<<< .working
-     &                       // '   mgNH4/l      '
-          ENDIF
-=======
      &                        // '   mgNH4/l      '
           ENDIF
->>>>>>> .merge-right.r7666
 !       BIOMASS MODULE
         CASE(2)
           IF(LNG.EQ.1)THEN
@@ -97,58 +92,15 @@
             NAMETRAC(NTRAC1+3) = 'POR NON ASSIM   '
      &                       //  '   mg/l         '
             NAMETRAC(NTRAC1+4) = 'DISSOLVED NO3   '
-<<<<<<< .working
-     &                      //  '   mg/l         '
-            NAMETRAC(NTRAC1+5) = 'NO3 NON ASSIM   '
-     &                      //  '   mg/l         '
-          ENDIF
-=======
      &                       //  '   mg/l         '
             NAMETRAC(NTRAC1+5) = 'NOR NON ASSIM   '
      &                       //  '   mg/l         '
           ENDIF
 !
->>>>>>> .merge-right.r7666
 !       EUTRO MODULE
 !
         CASE(3)
           IF(LNG.EQ.1)THEN
-<<<<<<< .working
-              NAMETRAC(NTRAC1+1) = 'BIOMASSE PHYTO  '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+2) = 'PO4 DISSOUS     '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+3) = 'POR NON ASSIMILE'
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+4) = 'NO3 DISSOUS     '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+5) = 'NOR NON ASSIMILE'
-     &                         // '   mg/l         '
-              NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
-     &                         // '   mgNH4/l      '
-              NAMETRAC(NTRAC1+7) = 'CHARGE ORGANIQUE'
-     &                         // '   mgO2/l       '
-              NAMETRAC(NTRAC1+8) = 'O2 DISSOUS      '
-     &                        //  '   mgO2/l       '
-            ELSE
-              NAMETRAC(NTRAC1+1) = 'PHYTO BIOMASS   '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+2) = 'DISSOLVED PO4   '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+3) = 'POR NON ASSIMIL '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+4) = 'DISSOLVED NO3   '
-     &                        //  '   mg/l         '
-              NAMETRAC(NTRAC1+5) = 'NOR NON ASSIM   '
-     &                        //    '   mg/l         '
-              NAMETRAC(NTRAC1+6) = 'CHARGE NH4      '
-     &                        //  '   mgNH4/l      '
-              NAMETRAC(NTRAC1+7) = 'ORGANIC CHARGE  '
-     &                        //  '   mgO2/l       '
-              NAMETRAC(NTRAC1+8) = 'DISSOLVED O2    '
-     &                        //  '   mgO2/l       '
-          ENDIF
-=======
             NAMETRAC(NTRAC1+1) = 'BIOMASSE PHYTO  '
      &                       //  '  micro_g/l     '
             NAMETRAC(NTRAC1+2) = 'PO4 DISSOUS     '
@@ -184,7 +136,6 @@
      &                       //  '   mgO2/l       '
           ENDIF
 !
->>>>>>> .merge-right.r7666
 !       MICROPOL MODULE
 !
         CASE(4)
@@ -209,19 +160,12 @@
             NAMETRAC(NTRAC1+4) = 'ABS. SUSP. LOAD.'
      &                       //  '   mg/l         '
             NAMETRAC(NTRAC1+5) = 'ABSORB. BED SED.'
-<<<<<<< .working
-     &                      //  '   mg/l         '
-          ENDIF
-!         TRACER 2 IS NOT ADVECTED NEIHTER DIFFUSED
-          ICONVFT(NTRAC1+5)=0
-=======
      &                       //  '   mg/l         '
           ENDIF
 !         TRACERS 2 AND 5 ARE NOT ADVECTED NEITHER DIFFUSED
 !          ICONVFT(NTRAC1+2)=0
 !          ICONVFT(NTRAC1+5)=0
           CALL OS( 'X=0     ' , X=VISCT%ADR(NTRAC1+2)%P)
->>>>>>> .merge-right.r7666
           CALL OS( 'X=0     ' , X=VISCT%ADR(NTRAC1+5)%P)
 !
 !      THERMIC MODULE

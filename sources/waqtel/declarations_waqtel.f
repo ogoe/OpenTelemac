@@ -159,11 +159,6 @@
 !-----------------------------------------------------------------------
 !
 !     WATER DENSITY
-<<<<<<< .working
-!
-      DOUBLE PRECISION ROO
-=======
->>>>>>> .merge-right.r7666
 !
       DOUBLE PRECISION RO0 ! (RHO ZERO)
 !
@@ -232,7 +227,7 @@
       DOUBLE PRECISION C_ATMOS
 !
 !     WATER QUALITY VARIABLE: EVAPORATION
-!     
+!
       DOUBLE PRECISION EVAPORATION
 !
 ! Water quality specific key-words
@@ -281,36 +276,14 @@
 !
       DOUBLE PRECISION CMAX
 !
-<<<<<<< .working
-!     SECCHI DEPTH
-!
-      DOUBLE PRECISION  PS
-=======
 !     COEF VEGETAL TURBIDITY WITHOUT PHYTOPLANKTON
->>>>>>> .merge-right.r7666
 !
-<<<<<<< .working
-!     COEF EXTINCTION OF RAY
-!
-=======
->>>>>>> .merge-right.r7666
       DOUBLE PRECISION KPE
 !
 !     PARAMETER OF CALIBRATION OF SMITH FORMULA
 !
-<<<<<<< .working
-      DOUBLE PRECISION BETA
-=======
-      DOUBLE PRECISION IK
->>>>>>> .merge-right.r7666
-!
-<<<<<<< .working
-!     PARAMETER OF CALIBRATION OF SMITH FORMULA
-!
       DOUBLE PRECISION IK
 !
-=======
->>>>>>> .merge-right.r7666
 !     CONSTANT OF HALF-SATURATION WITH PHOSPHATE
 !
       DOUBLE PRECISION KP
@@ -455,11 +428,7 @@
 !
 !     BOLTZMANN CONSTANT (wM-2K-4)
 !
-<<<<<<< .working
       DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8
-=======
-      DOUBLE PRECISION, PARAMETER :: BOLTZ=5.67D-8    
->>>>>>> .merge-right.r7666
 !
 !     CONVERSION SECOND TO DAYS
 !
@@ -473,22 +442,14 @@
 !     MES PROCESS
 !
 !
-<<<<<<< .working
-!     EXPONENETIAL DESINTEGRATION CONSTANT (LAMBD)
-=======
-!    EXPONENTIAL DESINTEGRATION CONSTANT (LAMBD)
->>>>>>> .merge-right.r7666
+!     EXPONENTIAL DESINTEGRATION CONSTANT (LAMBD)
 !
       DOUBLE PRECISION CCSEDIM
-<<<<<<< .working
 !
 !     EVAPORATION
 !
       DOUBLE PRECISION EVAPOR
 !
-=======
-!
->>>>>>> .merge-right.r7666
 !-----------------------------------------------------------------------
 !
 !       5) STRINGS

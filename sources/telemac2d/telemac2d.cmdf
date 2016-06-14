@@ -1006,18 +1006,25 @@ files: interface_waqtel.f
   lecdon_waqtel.f
   reaer.f
   satur_o2.f
-  calcs_o2.f
-  calcs_thermic.f
   erosion_fx.f
   taub_waqtel.f
   depos_fx.f
-  calcs_micropol.f
   algae_death.f
   ray_effect.f
   nuteff.f
   algae_growth.f
-  calcs_eutro.f
-  calcs_biomass.f
   source_waq.f
   nametrac_waq.f
   point_waqtel.f
+  yasmi_waq.f
+  calcs2d_o2.f
+  calcs3d_eutro.f
+  calcs2d_micropol.f
+  calcs3d_biomass.f
+  calcs3d_o2.f
+  calcs2d_thermic.f
+  calcs3d_micropol.f
+  calcs2d_biomass.f
+  exchange_with_atmosphere.f
+  calcs3d_thermicv.f
+  calcs2d_eutro.f

@@ -1386,10 +1386,6 @@
 !
       LOGICAL DOFLUX
 !
-!     IF YES, CROSS SECTIONS WITH FLUXLINE METHOD
-!
-      LOGICAL DOFLUX
-!
 !-----------------------------------------------------------------------
 !
 !       6) REALS

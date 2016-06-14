@@ -198,7 +198,6 @@
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
       INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX,OPTADV
       INTEGER, INTENT(IN)             :: NCO_DIST
-      INTEGER, INTENT(IN)             :: NCO_DIST
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT)          :: LIMTRA(NPTFR)
@@ -280,11 +279,11 @@
         STOP
       ENDIF
 !
-!-----------------------------------------------------------------------   
+!-----------------------------------------------------------------------
 !
 !     THERE IS PLENTY OF MEMORY AVAILABLE IN A BIEF_MESH STRUCTURE...
 !
-      IF(OPTION.EQ.1) THEN      
+      IF(OPTION.EQ.1) THEN
         FLOP1=>MESH%MSEG%X%R(        1:  NELEM)
         FLOP2=>MESH%MSEG%X%R(  NELEM+1:2*NELEM)
         FLOP3=>MESH%MSEG%X%R(2*NELEM+1:3*NELEM)
@@ -354,7 +353,7 @@
      &              HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL)
 !                   T1 AS HUGRADP IS NOT USED AS AN ASSEMBLED VECTOR
 !                   BUT TO GET THE NON ASSEMBLED FORM MESH%W
-!   
+!
 !       COPYING EBE FLUXES INTO FLOPOINT
 !
         DO I=1,NELEM
@@ -364,11 +363,11 @@
         ENDDO
 !
 !       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS
-!  
+!
         DO IELEM = 1,NELEM
           A1 = ABS(FLOP1(IELEM))
           A2 = ABS(FLOP2(IELEM))
-          A3 = ABS(FLOP3(IELEM))          
+          A3 = ABS(FLOP3(IELEM))
           IF(A1.GE.A2.AND.A1.GE.A3) THEN
 !           ALL FLOW TO AND FROM NODE 1
             FLOP1(IELEM)=-FLOP2(IELEM)
@@ -543,7 +542,7 @@
           CPREV=CPREV+ABS(FXMAT(I))
         ENDDO
       ENDIF
-      IF(NCSIZE.GT.1) CPREV=P_DSUM(CPREV)      
+      IF(NCSIZE.GT.1) CPREV=P_DSUM(CPREV)
       IF(TESTING) WRITE(LU,*) 'INITIAL SUM OF FLUXES=',CPREV
       CINIT=CPREV
 !
@@ -569,8 +568,8 @@
           I2=MESH%IKLE%I(I  +NELEM)
           I3=MESH%IKLE%I(I+2*NELEM)
 !         A PRIORI AVAILABLE VOLUMES
-          VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS   
-          VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS   
+          VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS
+          VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
           VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
 !         FLUXES LEAVING POINTS AGAIN
           F1= FLOP1(I)-FLOP3(I)
@@ -705,7 +704,7 @@
       IF(NCSIZE.GT.1) THEN
         FMIN=P_DMIN(FMIN)
         FMAX=P_DMAX(FMAX)
-      ENDIF   
+      ENDIF
 !
 !     NOW THE LOOP ON REMAINING ELEMENTS
 !
@@ -719,8 +718,8 @@
 !
 !       A PRIORI AVAILABLE VOLUMES FOR THIS ELEMENT
 !
-        VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS   
-        VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS   
+        VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS
+        VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
         VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
 !
         F1= FLOP1(I)-FLOP3(I)
@@ -784,7 +783,7 @@
 !
         SVOL1(I)=VOL1
         SVOL2(I)=VOL2
-        SVOL3(I)=VOL3      
+        SVOL3(I)=VOL3
 !
 !       LIMITATION OF FLUXES, FIRST IN TERMS OF LIMITED TIME-STEP
 !
@@ -853,7 +852,7 @@
           FI3=FI3+FP2*(F%R(I2)-F%R(I3))
         ENDIF
         IF(FLOP3(I).LT.0.D0) THEN
-          FI3=FI3-FP3*(F%R(I1)-F%R(I3)) 
+          FI3=FI3-FP3*(F%R(I1)-F%R(I3))
         ELSE
           FI1=FI1+FP3*(F%R(I3)-F%R(I1))
         ENDIF
@@ -919,7 +918,7 @@
       DO N=1,NCO_DIST
 !
       CALL OS('X=0     ',X=T5)
-!     
+!
       DO I=1,F%DIM1
 !      THIS ALLOWS TO CANCEL THE PART "FIRST C * DELTA(H)" BELOW
        T6%R(I)=F%R(I)*HT%R(I)
@@ -1034,7 +1033,7 @@
 !       VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
 !       VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
 !
-        FI1=(F%R(I1)-T3%R(I1))*VOL1 
+        FI1=(F%R(I1)-T3%R(I1))*VOL1
         FI2=(F%R(I2)-T3%R(I2))*VOL2
         FI3=(F%R(I3)-T3%R(I3))*VOL3
 !
@@ -1094,7 +1093,7 @@
 !         NO REDUCTION
         ENDIF
 !
-!       ADDING TO FINAL CONTRIBUTIONS THAT WILL BE REDUCED AGAIN   
+!       ADDING TO FINAL CONTRIBUTIONS THAT WILL BE REDUCED AGAIN
 !
         FI1=FI1+FIP1
         FI2=FI2+FIP2
@@ -1174,8 +1173,8 @@
 !         AFTER  NEWREMAIN: STILL VALID FOR NEXT ITERATION
           INDIC(NEWREMAIN)=I
           FLOP1(I)=FLOP1(I)*(1.D0-DTLIM1(I)*SURDT)
-          FLOP2(I)=FLOP2(I)*(1.D0-DTLIM2(I)*SURDT)    
-          FLOP3(I)=FLOP3(I)*(1.D0-DTLIM3(I)*SURDT) 
+          FLOP2(I)=FLOP2(I)*(1.D0-DTLIM2(I)*SURDT)
+          FLOP3(I)=FLOP3(I)*(1.D0-DTLIM3(I)*SURDT)
           C=C+ABS(FLOP1(I))+ABS(FLOP2(I))+ABS(FLOP3(I))
         ENDIF
       ENDDO

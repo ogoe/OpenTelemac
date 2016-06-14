@@ -2,11 +2,7 @@
                      SUBROUTINE INTERPMETEO
 !                    **********************
 !
-<<<<<<< .working
-     &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,EVAPOR,AT,NFO)
-=======
      &(WW,WINDX,WINDY,TAIR,PATM,HREL,NEBU,RAINFALL,EVAPORATION,AT,NFO)
->>>>>>> .merge-right.r7666
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
