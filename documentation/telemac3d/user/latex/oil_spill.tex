@@ -21,7 +21,8 @@ water, an Eulerian advection-diffusion model is used. The fraction of each
 dissolved component is represented by a tracer whose mass directly depends on
 the dissolved mass of oil particles. The hydrodynamic data required for either
 Lagrangian and Eulerian transport approach are provided by the \telemac{3D}
-hydrodynamic model. The oil spill theoretical background is explained in [7].
+hydrodynamic model. The oil spill theoretical background is explained in
+\cite{JolyGoeury2013}.
 
 The result of the oil spill modelling is provided in the form of a TECPLOT
 formatted file which contains the various positions of the oil particles and a
@@ -48,17 +49,17 @@ hydrodynamic model the following essential information must be specified in the
 (= YES, default = NO),
 
 \item The name of the oil spill steering file which contains the oil
-characteristics: \telkey{OIL SPILL STEERING FILE}(\telkey{= name chosen by the
+characteristics: \telkey{OIL SPILL STEERING FILE} (\telkey{= name chosen by the
 user}),
 
 \item The number of oil releases during oil spill: \telkey{NUMBER OF
-DROGUES}(= number chosen by the user),
+DROGUES} (= number chosen by the user),
 
 \item The frequency of the drogues printout period: \telkey{PRINTOUT PERIOD FOR
-DROGUES}(= number chosen by the user),
+DROGUES} (= number chosen by the user),
 
 \item The name of the tecplot oil file containing the oil displacement:
-\telkey{DROGUES FILE}(= name chosen by the user, default = 1).
+\telkey{DROGUES FILE} (= name chosen by the user, default = 1).
 \end{itemize}
 
 With the oil spill module, it is possible to take into account the transport of
@@ -168,9 +169,9 @@ CONSTANT AREA VALUE CHOSEN BY THE USER FOR EACH OIL PARTICLE
 \end{lstlisting}
 
 
-\section{The oil\_flot subroutine}
+\section{The OIL\_FLOT subroutine}
 
-After inserting the \telfile{OIL\_FLOT} subroutine in the Fortran file, it must
+After inserting the \telfile{OIL\_FLOT} subroutine in the FORTRAN file, it must
 be modified it in order to indicate the release time step, together with the
 coordinates of the release point. If the release point coordinates are outside
 the domain, the run is interrupted and an error message is displayed. In
@@ -223,17 +224,17 @@ output files:
 
 \subsection{The 3d result file}
 
-this is the file in which \telemac{3D} stores information during the computation.
+This is the file in which \telemac{3D} stores information during the computation.
 It is normally in SERAFIN format. First of all, it contains information on the
 mesh geometry, then the names of the stored variables. It then contains the
 time for each time step and the values of the different variables for all mesh
 points. For complementary information on the \telkey{3D RESULT FILE}, the
-reader may refer to 3.11.
+reader may refer to \ref{sec:3dres}.
 
 
 \subsection{The output drogues file}
 
-this is a formatted file created by \telemac{3D} during the computation. It
+This is an ASCII file created by \telemac{3D} during the computation. It
 stores drogue positions in TECPLOT format. To visualize the drogue positions
 with Tecplot software, the user must:
 

@@ -1,4 +1,5 @@
 \chapter{Drogues}
+\label{sec:drogues}
 
 During a hydrodynamic simulation, \telemac{3D} offers an opportunity to follow
 the paths of a number of particles (drogues) which are released into the fluid
@@ -18,19 +19,21 @@ keyword \telkey{PRINTOUT PERIOD FOR DROGUES} (default value = 1). That value is
 expressed in a number of time steps and is quite independent from of the
 printout period of the other results in \telemac{3D}.
 
-The subroutine ADD\_PARTICLE is called within the FLOT3D subroutine to set the
-initial values of variables XFLOT, YFLOT, ZFLOT and TAGFLO, which are the
-three-dimensional coordinates of the release point and an identifier of the
-particle for each drogue. The release time step is also to be amended. A
-commented example can be found within the subroutine FLOT3D or in the example
-``particles''. This subroutine is to be inserted in the FORTRAN file.
+The subroutine \telfile{ADD\_PARTICLE} is called within the \telfile{FLOT3D}
+subroutine to set the initial values of variables \telfile{XFLOT, YFLOT, ZFLOT}
+and \telfile{TAGFLO}, which are the three-dimensional coordinates of the
+release point and an identifier of the particle for each drogue.
+The release time step is also to be amended.
+A commented example can be found within the subroutine \telfile{FLOT3D} or
+in the example ``particles''.
+This subroutine is to be inserted in the FORTRAN file.
 
 The example below illustrates the programming of the steering file in the case
 of two drogues being release at different times.
 
 \begin{lstlisting}[language=TelemacCas]
 NUMBER OF DROGUES                   = 2
-BINARY RESULTS FILE                 = './drogues'
+DROGUES FILE                        = './drogues'
 PRINTOUT PERIOD FOR DROGUES         = 10
 \end{lstlisting}
 
@@ -43,7 +46,7 @@ the coordinates of the different drogue positions to export them to another
 viewer. It is also possible to develop a new drogue output format, but this
 must be done in the subroutine \telfile{DERIVE}.
 
-Within TECPLOT, in order to add the Tecplot \telkey{DROGUES FILE} to Telemac
+Within TECPLOT, in order to add the Tecplot \telkey{DROGUES FILE} to TELEMAC
 result data already loaded, select ``Add to current data'' set in the
 \textbf{Load Data File Warning dialogue} (cf. Figure \ref{fig:load_data}). The
 Load Data File Warning dialogue will appear after the user has selected the
@@ -80,7 +83,7 @@ Style dialogue} (cf. Figure \ref{fig:zone_style}).
 \caption
 [Zone Style dialogue in TECPLOT]
 {Zone Style dialogue in TECPLOT.}
-\label{fig:load_data}
+\label{fig:zone_style}
 \end{figure}
 
 Then, you can modify your Scatter plot using the Scatter page of the

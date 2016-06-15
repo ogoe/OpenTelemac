@@ -9,81 +9,81 @@ their counterparts in \telemac{2D}.
 The input files are:
 
 \begin{itemize}
-\item the steering file (mandatory), which contains the "configuration" of the
+\item The steering file (mandatory), which contains the "configuration" of the
 simulation,
 
-\item the geometry file (mandatory), which contains the information regarding
+\item The geometry file (mandatory), which contains the information regarding
 the mesh,
 
-\item the boundary conditions file (mandatory), which contains the description
+\item The boundary conditions file (mandatory), which contains the description
 of the type of each boundary,
 
-\item the Fortran file, which contains the specific subroutines of the
+\item The FORTRAN file, which contains the specific subroutines of the
 simulation (modified TELEMAC subroutine or specifically created),
 
-\item the bottom topography file, which contains the description of the bottom
+\item The bottom topography file, which contains the description of the bottom
 topography. Generally, the topographic data are already contained in the
 geometry file and the bottom topography file is generally not used,
 
-\item the liquid boundaries file, which contains the information on the
+\item The liquid boundaries file, which contains the information on the
 imposed values at liquid boundaries,
 
-\item the previous computation file, which provides the initial state of the
-calculation in the case of a continuation calculation,
+\item The previous computation file, which provides the initial state of the
+calculation in the case of a restart calculation,
 
-\item the reference file, which contains the calculation of "reference" used
+\item The reference file, which contains the calculation of "reference" used
 for the validation process,
 
-\item the stage-discharge curves file, which contains the information on the
+\item The stage-discharge curves file, which contains the information on the
 imposed values at liquid boundaries in case of height / flow rate law,
 
-\item the sources file, which contains the information regarding the sources.
+\item The sources file, which contains the information regarding the sources.
 \end{itemize}
 
 The output files are:
 
 \begin{itemize}
-\item the 3D result file, which contains the graphical results associated to
+\item The 3D result file, which contains the graphical results associated to
 the 3D mesh,
 
-\item the 2D result file, which contains the graphical results associated to
+\item The 2D result file, which contains the graphical results associated to
 the 2D mesh,
 
-\item the output listing, which is simulation report. In case of difficulty in
+\item The output listing, which is simulation report. In case of difficulty in
 performing a calculation, the user can request the printing of additional
 information by activating the logical keyword \telkey{DEBUGGER}.
 \telkey{DEBUGGER = 1} provides the calling sequences of subroutines from the
-main program telemac3d.f. This technique is useful in case of critical
-computation crash to identify the responsible subroutine,
+main program \telfile{telemac3d.f}. This technique is useful in case of
+critical computation crash to identify the responsible subroutine,
 
-\item the file for Scope, which is an additional test file available for the
+\item The file for Scope, which is an additional test file available for the
 user,
 
-\item the restart file, allowing to perform a continuation computation without
+\item The restart file, allowing to perform a restart computation without
 information loss.
 \end{itemize}
 
 In addition, the user may have to manage additional files:
 
 \begin{itemize}
-\item the binary data files 1 and 2, in input,
+\item The binary data files 1 and 2, in input,
 
-\item the formatted data files 1 and 2, in input,
+\item The formatted data files 1 and 2, in input,
 
-\item the binary results file, in output,
+\item The binary results file, in output,
 
-\item the formatted results file, in output.
+\item The formatted results file, in output.
 \end{itemize}
 
 
 \subsection{Binary files format}
 \label{sec:binfile}
-the binary files used within the TELEMAC system can have various formats. The
+The binary files used within the TELEMAC system can have various formats. The
 most common format is the SERAFIN format (also known as SELAFIN, for
 misidentified historical reasons) which is the standard internal TELEMAC system
-format (described in Appendix N${}^\circ$ 3). This SERAFIN format can be
+format (described in Appendix \ref{sec:srffmt}). This SERAFIN format can be
 configured so as to store the real-typed values in single or double precision.
-The other available format is the MED format which is used by the Salomé
+The other available format is the MED format which is used by the SALOME
 platform jointly developed by EDF and the French atomic energy commission
 (CEA). In the current TELEMAC release, this format is restricted to EDF
 internal use.
@@ -101,7 +101,7 @@ SERAFIN format, which is the default and recommended value (do not forget the
 space in last position). The 'SERAFIND' value corresponds to the double
 precision SERAFIN format which allows to increase the precision of the results,
 especially in case of a restart or reference file. Finally, the 'MED' value
-corresponds to the hdf5 MED format (internal EDF use).
+corresponds to the hdf5 MED format (internal EDF use), double precision.
 
 The keywords involved are:
 
@@ -125,7 +125,7 @@ The keywords involved are:
 
 \section{The steering file}
 
-the steering file contains all the data about the selection of computational
+The steering file contains all the data about the selection of computational
 options (physical, numerical, etc.). It is an ASCII file which can be generated
 either through the FUDAA-PREPRO software or directly using a text
 editor. In a way, it serves as the computation dashboard. It includes a set of
@@ -138,21 +138,22 @@ value is 10 seconds.
 
 \telemac{3D} reads the steering file at the beginning of the computation.
 
-Both dictionary file and steering file are read using the DAMOCLES library
-which is included in the TELEMAC chain. It is therefore necessary, when
-generating the steering file, to observe the DAMOCLES syntax rules (what is
-performed automatically if the file is generated using FUDAA-PREPRO).
+Both dictionary file and steering file are read using the \telfile{DAMOCLES}
+library which is included in the TELEMAC chain. It is therefore necessary,
+when generating the steering file, to observe the \telfile{DAMOCLES} syntax
+rules (what is performed automatically if the file is generated using
+FUDAA-PREPRO).
 
 The writing rules are as follows:
 
 \begin{itemize}
-\item the keywords can be of the Integer, Real, Logical or Character type,
+\item The keywords can be of the Integer, Real, Logical or Character type,
 
-\item the sequence order in the steering file is of no importance,
+\item The sequence order in the steering file is of no importance,
 
-\item several keywords can be on the same line,
+\item Several keywords can be on the same line,
 
-\item each line cannot exceed 72 characters. However, one can start a new line
+\item Each line cannot exceed 72 characters. However, one can start a new line
 as many times as one wishes provided that the keyword name is not astride two
 lines,
 
@@ -216,7 +217,7 @@ hand, are accepted,
 
 \item Writing the character strings: the strings including blanks or reserved
 symbols ("/",":", "=", "\&") should be inserted between quotes ('). The value
-of a character keyword may contain up to 144 characters. As in Fortran, the
+of a character keyword may contain up to 144 characters. As in FORTRAN, the
 quotes included in a string should be doubled. A string may not begin or end
 with a blank. For example:
 
@@ -231,38 +232,40 @@ which are interpreted during the sequential reading of the steering file can
 also be used:
 
 \begin{itemize}
-\item the \telkey{\&FIN} command specifies the file end (even though the
+\item The \telkey{\&FIN} command specifies the file end (even though the
 file is not over). Thus, some keywords can be disabled simply by placing them
 behind that command so that they can easily be reactivated later on. However,
 the computation keeps running,
 
-\item the \telkey{\&ETA} command prints the list of keywords and the
+\item The \telkey{\&ETA} command prints the list of keywords and the
 values which are assigned to them when DAMOCLES meets that command. That
 display will take place at the head of the output listing,
 
-\item the \telkey{\&LIS} command prints the list of keywords. That
+\item The \telkey{\&LIS} command prints the list of keywords. That
 display will take place at the head of the output listing,
 
-\item the \telkey{\&IND} command prints the detailed list of keywords.
+\item The \telkey{\&IND} command prints the detailed list of keywords.
 That display will take place at the head of the output listing,
 
-\item the \telkey{\&STO} command causes the program to be halted, whereas
+\item The \telkey{\&STO} command causes the program to be halted, whereas
 the computation does not keep running.
 \end{itemize}
 
 \section{The geometry file}
 
-it is the same file as that used by \telemac{2D}. It is a SERAFIN-formatted
+It is the same file as that used by \telemac{2D}. It is a SERAFIN-formatted
 binary file which can then be read by RUBENS or FUDAA-PREPRO and is generated
 either by MATISSE, BLUE KENUE or JANET or by the \stbtel module (from the
 file(s) originating from of mesh generator). The SERAFIN format structure is
 described in Appendix \ref{sec:srffmt}.
 
 That file contains all the data about the two-dimensional mesh (see in
-subsection 2.3.2). It includes the number of points in the mesh (NPOIN2NPOIN2
-variable), the number of elements (NELEM2 variable), the number of vertices per
-element (NDPNDP variable), the X and Y arrays containing the co-ordinates of
-all the points and, lastly, the IKLE array containing the connectivity table.
+subsection \ref{sec:2dmesh}).
+It includes the number of points in the mesh (\telfile{NPOIN2}
+variable), the number of elements (\telfile{NELEM2} variable), the number of
+vertices per element (\telfile{NDP} variable), the \telfile{X} and \telfile{Y}
+arrays containing the co-ordinates of all the points and, lastly,
+the \telfile{IKLE} array containing the connectivity table.
 
 That file may also contain bathymetric and bottom friction data for each point
 in the mesh.
@@ -278,7 +281,7 @@ value: 'SERAFIN '), see subsection \ref{sec:binfile}.
 
 \section{The boundary conditions file}
 
-it is the same file as that used by \telemac{2D}. It is a formatted file which is
+It is the same file as that used by \telemac{2D}. It is a formatted file which is
 generated automatically by MATISSE or \stbtel and can be amended
 using FUDAA-PREPRO or a text editor. Each line in that file is
 dedicated to a point at the 2D mesh boundary. The edge point numbering is that
@@ -294,9 +297,9 @@ That name of file is provided using the keyword: \telkey{BOUNDARY CONDITIONS
 FILE}.
 
 
-\section{The fortran file}
+\section{The FORTRAN file}
 
-the Fortran file may include a number of subroutines (so-called "user"
+The FORTRAN file may include a number of subroutines (so-called "user"
 subroutines) available under the \telemac{3D} tree structure which the user can
 modify as well as those subroutines which have been specifically developed for
 the computation.
@@ -304,10 +307,10 @@ the computation.
 The user subroutines from the various libraries used by \telemac{3D} are listed
 in Appendix \ref{sec:usrsub}. Since \telemac{3D} is available in Open Source, every
 subroutine can be freely used. Every user subroutine copied into the user
-Fortran file is automatically substituted for the same named subroutine
+FORTRAN file is automatically substituted for the same named subroutine
 occurring in the \telemac{3D} compiled libraries.
 
-Upon the creation and every amendment of the Fortran file, a new executable
+Upon the creation and every amendment of the FORTRAN file, a new executable
 program is generated (compilation and link) for the simulation.
 
 That file name is provided using the keyword: \telkey{FORTRAN FILE}.
@@ -315,7 +318,7 @@ That file name is provided using the keyword: \telkey{FORTRAN FILE}.
 
 \section{The liquid boundaries file}
 
-it is an ASCII file enabling the user to specify time-varying boundary
+It is an ASCII file enabling the user to specify time-varying boundary
 conditions values (flow rate, depth, velocity, tracer concentration) at all the
 liquid boundaries. That file can be generated under the FUDAA-PREPRO software
 interface.
@@ -328,8 +331,9 @@ FILE}.
 
 
 \section{The previous computation file}
+\label{sec:previousfile}
 
-it is a \telemac{3D} result file which is used for initializing a new
+It is a \telemac{3D} result file which is used for initializing a new
 computation. In order to activate the optional use of that file, the keyword
 \telkey{COMPUTATION CONTINUED} should be activated. In order to specify the
 previous computation file, its name should be stated through the keyword:
@@ -348,8 +352,9 @@ value: 'SERAFIN '), see subsection \ref{sec:binfile}.
 
 \section{The reference file}
 
-when a calculation is validated, this file contains the reference result. At
-the end of the calculation, the result of the simulation is compared to the
+During the validation step of a calculation, this file contains the reference
+result.
+At the end of the calculation, the result of the simulation is compared to the
 last time step stored in this file. The result of the comparison is given in
 the control printout in the form of a maximum difference in elevation and the
 three components of velocity.
@@ -361,7 +366,7 @@ value: 'SERAFIN '), see subsection \ref{sec:binfile}.
 
 \section{The stage-discharge curves file}
 
-this text file enables the user to configure the evolution of the prescribed
+This text file enables the user to configure the evolution of the prescribed
 value on specific open boundaries. This file is used when the prescribed
 elevation is determined by a discharge-elevation law. The descriptions of the
 appropriate laws are given through this file.
@@ -374,7 +379,7 @@ CURVES FILE}.
 
 \section{The sources file}
 
-this text file enables the user to specify values for time-dependent conditions
+This text file enables the user to specify values for time-dependent conditions
 for sources (discharge, tracers concentration).
 
 See section \ref{sec:srcfile} for a complete description of this file.
@@ -384,7 +389,7 @@ The file name is specified with the keyword: \telkey{SOURCES FILE}.
 
 \section{The 3d result file}
 \label{sec:3dres}
-it is the file into which \telemac{3D} stores the information during the
+It is the file into which \telemac{3D} stores the information during the
 computation. It is a SERAFIN-formatted file (refer to Appendix
 \ref{sec:srffmt}) or a MED-formatted file. It first contains all the data about
 mesh geometry, then the names of the stored variables. It also contains, for
@@ -395,13 +400,13 @@ Its content varies according to the values of the following keywords:
 
 \telkey{NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS}: provided to set from
 which time step onwards the information will be stored, in order to prevent too
-bulky files, especially when the computation begins with an uninteresting
+large files, especially when the computation begins with an uninteresting
 transient stage related to the definition of unrealistic initial conditions
 (e.g. invariably zero currents). The default value is 0 (writing of the graphic
 printouts at the beginning of the simulation).
 
 \telkey{GRAPHIC PRINTOUT PERIOD}: sets the period (in number of time steps) of
-printouts in order to prevent a too bulky file.  Default value is 1 (writing at
+printouts in order to prevent a too large file.  Default value is 1 (writing at
 every time step). For instance:
 
 \begin{lstlisting}[language=TelemacCas]
@@ -409,8 +414,8 @@ TIME STEP  =  60.0
 GRAPHIC PRINTOUT PERIOD =  30
 \end{lstlisting}
 
-The results will be backed up every 1,800${}^{th}$ second, i.e. 30${}^{th}$
-minute.
+The results will be backed up every ${1,800}^{\rm{th}}$ second, i.e.
+${30}^{\rm{th}}$ minute.
 
 \telkey{VARIABLES FOR 3D GRAPHIC PRINTOUTS}: keyword specifying the list of
 variables which will be stored in the result file. Each variable is identified
@@ -419,30 +424,30 @@ by means of a name from the list below.
 \begin{itemize}
 \item Z elevation (m),
 
-\item U velocity along \textit{x} axis (m/s),
+\item U velocity along $x$ axis (m/s),
 
-\item V velocity along \textit{y} axis (m/s),
+\item V velocity along $y$ axis (m/s),
 
-\item W velocity along \textit{z} axis (m/s),
+\item W velocity along $z$ axis (m/s),
 
-\item TA concentrations for tracers (TA1 for the 1${}^{st}$ one, TA2 for the
-2${}^{nd}$ one\dots ),
+\item TA concentrations for tracers (TA1 for the ${1}^{\rm{st}}$ one, TA2 for the
+${2}^{\rm{nd}}$ one\dots ),
 
-\item NUX viscosity for U and V along \textit{x} axis (m${}^{2}$/s),
+\item NUX viscosity for U and V along $x$ axis (m${}^{2}$/s),
 
-\item NUY viscosity for U and V along \textit{y} axis (m${}^{2}$/s),
+\item NUY viscosity for U and V along $y$ axis (m${}^{2}$/s),
 
-\item NUZ viscosity for U and V along \textit{z} axis (m${}^{2}$/s),
+\item NUZ viscosity for U and V along $z$ axis (m${}^{2}$/s),
 
-\item NAX viscosity for tracers along \textit{x} axis (m${}^{2}$/s),
+\item NAX viscosity for tracers along $x$ axis (m${}^{2}$/s),
 
-\item NAY viscosity for tracers along \textit{y} axis (m${}^{2}$/s),
+\item NAY viscosity for tracers along $y$ axis (m${}^{2}$/s),
 
-\item NAZ viscosity for tracers along \textit{z} axis (m${}^{2}$/s),
+\item NAZ viscosity for tracers along $z$ axis (m${}^{2}$/s),
 
 \item RI Richardson number in case of a mixing length model,
 
-\item K turbulent energy for \textit{k}-$\epsilon$ model (J/kg),
+\item K turbulent energy for $k$-$\epsilon$ model (J/kg),
 
 \item EPS dissipation of turbulent energy (W/kg),
 
@@ -471,7 +476,7 @@ section \ref{sec:privarray}).
 
 \section{The 2d result file}
 
-it is the file into which \telemac{3D} stores the specifically two-dimensional
+It is the file into which \telemac{3D} stores the specifically two-dimensional
 data during the computation (such as the free surface, the depth-averaged
 horizontal components of velocity and the depth-averaged tracers). It has a
 SERAFIN format. The free surface and the horizontal components of velocity will
@@ -486,16 +491,16 @@ Its content varies according to the values of the following keywords:
 described in section \ref{sec:3dres}.
 
 \telkey{GRAPHIC PRINTOUT PERIOD}: same keyword as that described in section
-3.11.
+\ref{sec:3dres}.
 
 \telkey{VARIABLES FOR 2D GRAPHIC PRINTOUTS}: keyword specifying the list of
 variables which will be stored in the result file. Each variable is identified
 by means of a name from the list below.
 
 \begin{itemize}
-\item U average velocity along \textit{x} axis (m/s),
+\item U average velocity along $x$ axis (m/s),
 
-\item V average velocity along \textit{y} axis (m/s),
+\item V average velocity along $y$ axis (m/s),
 
 \item C celerity (m/s),
 
@@ -505,22 +510,22 @@ by means of a name from the list below.
 
 \item B bottom elevation (m),
 
-\item TA averaged concentrations for tracers (TA1 for the 1${}^{st}$ one, TA2
-for the 2${}^{nd}$ one\dots ),
+\item TA averaged concentrations for tracers (TA1 for the ${1}^{\rm{st}}$ one, TA2 for the
+${2}^{\rm{nd}}$ one\dots ),
 
-\item F Froude number (m),
+\item F Froude number,
 
 \item Q scalar discharge (m${}^{2}$/s),
 
-\item I discharge along \textit{x} (m${}^{2}$/s),
+\item I discharge along $x$ (m${}^{2}$/s),
 
-\item J discharge along \textit{y} (m${}^{2}$/s),
+\item J discharge along $y$ (m${}^{2}$/s),
 
 \item M norm of velocity (m/s),
 
-\item X wind along \textit{x} axis (m/s),
+\item X wind along $x$ axis (m/s),
 
-\item Y wind along \textit{y} axis (m/s),
+\item Y wind along $y$ axis (m/s),
 
 \item P air pressure (Pa),
 
@@ -530,9 +535,9 @@ for the 2${}^{nd}$ one\dots ),
 
 \item HD thickness of the sediment bed layer (m),
 
-\item EF erosion rate (kg/m${}^{3}$/s),
+\item EF erosion rate (kg/m${}^{2}$/s),
 
-\item DF deposition flux (kg/m${}^{3}$/s),
+\item DF deposition flux (kg/m${}^{2}$/s),
 
 \item DZF bed evolution,
 
@@ -546,9 +551,9 @@ for the 2${}^{nd}$ one\dots ),
 
 \item QS  solid discharge (m${}^{2}$/s),
 
-\item QSX  solid discharge along \textit{x} (m${}^{2}$/s),
+\item QSX  solid discharge along $x$ (m${}^{2}$/s),
 
-\item QSY  solid discharge along \textit{y} (m${}^{2}$/s),
+\item QSY  solid discharge along $y$ (m${}^{2}$/s),
 
 \item US  friction velocity (m/s),
 
@@ -561,20 +566,20 @@ That file name is provided by means of the keyword: \telkey{2D RESULT FILE} and
 its format using \telkey{2D RESULT FILE FORMAT} (default value: `SERAFIN ').
 Stored variables by default are `U, V, H, B'.
 
-Using the private arrays requires updating the keyword \telkey{NUMBER OF
+Using the private arrays requires updating the keyword \telkey{NUMBER OF 2D
 PRIVATE ARRAYS} in order to perform the required memory allocations (see
 section \ref{sec:privarray}).
 
 \section{The output listing}
 
-it is a formatted file which can be created by \telemac{3D} during the
+It is a formatted file which can be created by \telemac{3D} during the
 computation (program launched with the -s option). It contains the report of a
 \telemac{3D} running. Its contents vary according to the values of the following
 keywords:
 
 \telkey{NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS}: provided to set at
 which time step it is desired to begin printing the data, in order to prevent
-too bulky files.
+too large files.
 
 \telkey{LISTING PRINTOUT PERIOD}: sets the period between two time step
 printings. The value is given as a time step number. For instance, the
@@ -599,14 +604,14 @@ information about the flows within the domain.
 The file name is directly managed by the \telemac{3D} launching procedure.
 Generally, the file has a name which is created from the name in the steering
 file and the number of the processors used in the computation, followed by the
-suffix ".sortie".
+suffix "\telfile{.sortie}".
 
 \section{The file for scope}
 
-tELEMAC-3D gives the user an opportunity to retrieve computation variables
+\telemac{3D} the user an opportunity to retrieve computation variables
 along a 1D profile during a computation. These profiles will then be stored in
 a dedicated file the name of which is defined by the keyword \telkey{FILE FOR
-SCOPE}. For that purpose, the user should program the SCOPE subroutine.
+SCOPE}. For that purpose, the user should program the \telkey{SCOPE} subroutine.
 
 That subroutine is provided to define profiles of computed variables, or other
 variables, as created by a user along a segment with (X1, Y1, Z1) and (X2, Y2,
@@ -624,38 +629,39 @@ Other files can be used by \telemac{3D}:
 \telkey{BINARY DATA FILE 1} and \telkey{BINARY DATA FILE 2}. These files can be
 used to provide data to the program, the user has to handle their reading
 within the \telkey{FORTRAN FILE}. The data from these files shall be read using
-the T3DBI1 logic unit for binary data file 1 and the T3DBI2 logic unit for
-binary data file 2,
+the \telfile{T3DBI1} logic unit for binary data file 1 and the \telfile{T3DBI2}
+logic unit for binary data file 2,
 
 \item One or two formatted data files, as specified by the keywords
 \telkey{FORMATTED DATA FILE 1} and \telkey{FORMATTED DATA FILE 2}. These files
 can be used to provide data to the program, the user has to handle their
 reading within the \telkey{FORTRAN FILE}. The data from these files shall be
-read using the T3DFO1 logic unit for formatted data file 1 and the T3DFO2 logic
-unit for formatted data file 2,
+read using the \telfile{T3DFO1} logic unit for formatted data file 1 and the
+\telfile{T3DFO2} logic unit for formatted data file 2,
 
 \item A binary results file, as specified by the keyword \telkey{BINARY
-RESULTS FILE}. \telkey{BINARY RESULTS FILE}This file can be used to store
-additional results, the user has to handle their writing within the Fortran
-program using the T3DRBI logic unit.
+RESULTS FILE}. This file can be used to store
+additional results, the user has to handle their writing within the FORTRAN
+program using the \telkey{T3DRBI} logic unit.
 
 \item A formatted results file, as specified by the keyword \telkey{FORMATTED
 RESULTS FILE}. This file can be used to store additional results (for instance,
 results readable by an external 1D simulation code used for a coupling with
-TELEMAC), the user has to handle their writing within the Fortran program using
-the T3DRBO logic unit.
+TELEMAC), the user has to handle their writing within the FORTRAN program using
+the \telkey{T3DRFO} logic unit.
 \end{itemize}
 
 The read or write operations from/into these files should be thoroughly managed
 by the user (the files are opened and closed by the program). That management
-can be performed from any point which the user can gain access to.  The logic
-unit numbers are stated in the \telfile{DECLARATIONS\_TELEMAC3D} module and the user can
-access them through a \telfile{USE DECLARATIONS\_TELEMAC3D} command at the beginning of a
+can be performed from any point which the user can gain access to.
+The logic unit numbers are stated in the \telfile{DECLARATIONS\_TELEMAC3D}
+module and the user can access them through a
+\telfile{USE DECLARATIONS\_TELEMAC3D} command at the beginning of a
 subroutine. For instance, using a file for providing the initial conditions
-will result in managing that file within the CONDIM subroutine. Likewise, using
-a file for inserting boundary conditions will be possible at the BORD3D
-subroutine. In case of conflicting statements, one can use, for example:
-\telfile{USE DECLARATIONS\_TELEMAC3D, ONLY: T3DBI1}.
+will result in managing that file within the \telfile{CONDIM subroutine}.
+Likewise, using a file for inserting boundary conditions will be possible at
+the \telfile{BORD3D} subroutine. In case of conflicting statements, one can use,
+for example: \telfile{USE DECLARATIONS\_TELEMAC3D, ONLY: T3DBI1}.
 
 \section{The dictionnary file}
 

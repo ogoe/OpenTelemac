@@ -1,6 +1,6 @@
 \chapter{Launching the computation}
 
-A computation is launched through the telemac3d.py command. That command
+A computation is launched through the \telfile{telemac3d.py} command. That command
 activates the execution of a script which is common to all the computation
 modules in the TELEMAC system. Depending on the platform, some options may be
 unavailable.
@@ -36,17 +36,18 @@ displays the control listing on the monitor.
 The operations performed by that script are as follows:
 
 \begin{itemize}
-\item Creation of a temporary directory (name\_cas\_YYYY-MM-DD\_HHhMMminSSs),
+\item Creation of a temporary directory
+(\telfile{name\_cas\_YYYY-MM-DD\_HHhMMminSSs}),
 
 \item Duplication of the dictionary and the input files into that directory,
 
-\item Execution of the DAMOCLESDAMOCLES software in order to determine the work file names,
+\item Execution of the DAMOCLES software in order to determine the work file names,
 
 \item Creation of the computation launching script,
 
 \item Allocation of the files,
 
-\item Compilation of the Fortran file and link editing (as required),
+\item Compilation of the FORTRAN file and link editing (as required),
 
 \item Launching of the computation,
 

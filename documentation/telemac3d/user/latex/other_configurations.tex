@@ -1,6 +1,6 @@
 \chapter{Others configurations}
 
-\section{Modification of bottom topography (CORFON)}
+\section{Modification of bottom topography (\telfile{CORFON})}
 
 Bottom topography may be introduced at various levels, as stated in section
 \ref{sec:topo}.
@@ -8,12 +8,12 @@ Bottom topography may be introduced at various levels, as stated in section
 \telemac{3D} offers the possibility of modifying the bottom topography at the
 beginning of a computation using the \telfile{T3D\_CORFON} subroutine. This is
 called up once at the beginning of the computation and enables the value of
-variable ZF to be modified at each point of the mesh. To do this, a number of
+variable \telfile{ZF} to be modified at each point of the mesh. To do this, a number of
 variables such as the point coordinates, the element surface value,
 connectivity table, etc, are made available to the user.
 
 By default, the \telfile{T3D\_CORFON} subroutine carries out a number of bottom
-smoothings equal to LISFON, i.e. equal to the number specified by the keyword
+smoothings equal to \telfile{LISFON}, i.e. equal to the number specified by the keyword
 \telkey{NUMBER OF BOTTOM SMOOTHINGS} for which the default value is 0 (no
 smoothing).
 
@@ -40,7 +40,7 @@ integers. These 2 integers will be transmitted to the results file in the
 SERAFIN format, for a use by post-processors for superimposition of results
 with digital maps (coordinates in meshes may be reduced to avoid dealing with
 large real numbers). These 2 integers may also be used in subroutines under the
-names I\_ORIG and J\_ORIG. Otherwise they do not have a use yet.
+names \telfile{I\_ORIG} and \telfile{J\_ORIG}. Otherwise they do not have a use yet.
 
 
 \section{Spherical coordinates (\telfile{LATITU})}
@@ -50,11 +50,12 @@ possibility of running the computation with spherical coordinates.
 
 This option is activated when the keyword \telkey{SPHERICAL COORDINATES} is set
 to YES (default value is NO). In this case, \telemac{3D} calls a subroutine named
-\telfile{LATITU} through the subroutine \telfile{INBIEF} at the beginning of the computation. This
-calculates a set of tables depending on the latitude of each point. To do this,
-it uses the Cartesian coordinates of each point provided in the geometry file,
-and the latitude of the point of origin of the mesh provided by the user in the
-steering file with the keyword \telkey{LATITUDE OF ORIGIN POINT}.
+\telfile{LATITU} through the subroutine \telfile{INBIEF} at the beginning of the
+computation. This calculates a set of tables depending on the latitude of each
+point. To do this, it uses the Cartesian coordinates of each point provided in
+the geometry file, and the latitude of the point of origin of the mesh provided
+by the user in the steering file with the keyword
+\telkey{LATITUDE OF ORIGIN POINT}.
 
 The spatial projection type used for the mesh is then specified with the
 keyword \telkey{SPATIAL PROJECTION TYPE}. That can take the following values:
@@ -98,10 +99,11 @@ have the numbers 25, 26, 27 and 28 (for 3D variables) and 27, 28, 29 and 30
 (for 2D variables).
 
 In the same way, each variable is identified by a letter in the keywords
-\telkey{VARIABLES FOR 2D GRAPHIC PRINTOUTS} and \telkey{VARIABLES FOR 3D
-GRAPHIC PRINTOUTS}. The new variables are identified by the strings PRIVE,
-PRIVE2, PRIVE3 and PRIVE4 for 2D variables and P1, P2, P3 and P4 for 3D
-variables.
+\telkey{VARIABLES FOR 2D GRAPHIC PRINTOUTS} and
+\telkey{VARIABLES FOR 3D GRAPHIC PRINTOUTS}.
+The new variables are identified by the strings \telfile{PRIVE1, PRIVE2, PRIVE3}
+and \telfile{PRIVE4} for 2D variables and \telfile{P1, P2, P3} and \telfile{P4}
+for 3D variables.
 
 At the end of the \telfile{NOMVAR\_XX} subroutine (XX = 2D or 3D), it is
 possible to change the abbreviations (mnemonics) used for the keywords
@@ -115,22 +117,25 @@ VARIABLES FOR GRAPHIC PRINTOUTS : 'U, V, H, B'
 \end{lstlisting}
 
 In the software data structure, these four variables correspond to the tables
-PRIVE\%ADR(1)\%P\%R(X), PRIVE\%ADR(2)\%P\%R(X), PRIVE\%ADR(3)\%P\%R(X) and
-PRIVE\%ADR(4)\%P\%R(X) (in which X is the number of nodes in the mesh). These
-may be used in several places in the programming, like all TELEMAC variables.
+\telfile{PRIVE\%ADR(1)\%P\%R(X), PRIVE\%ADR(2)\%P\%R(X), PRIVE\%ADR(3)\%P\%R(X)}
+and \telfile{PRIVE\%ADR(4)\%P\%R(X)} (in which \telfile{X} is the number of
+nodes in the mesh). These may be used in several places in the programming,
+like all TELEMAC variables.
 For example, they may be used in the subroutines \telfile{CORRXY},
-\telfile{CORSTR}, \telfile{BORD3D}, etc.  If a PRIVE table is used to program a
-case, it is essential to check the value of the keyword \telkey{NUMBER OF
-PRIVATE ARRAYS}. This value fixes the number of tables used (0, 1, 2, 3 or 4)
+\telfile{CORSTR}, \telfile{BORD3D}, etc.  If a \telfile{PRIVE} table is used
+to program a case, it is essential to check the value of the keyword
+\telkey{NUMBER OF PRIVATE ARRAYS}.
+This value fixes the number of tables used (0, 1, 2, 3 or 4)
 and then determines the amount of memory space required. The user can also
-access the tables via the aliases PRIVE1, PRIVE2, PRIVE3 and PRIVE4.
+access the tables via the aliases \telfile{PRIVE1, PRIVE2, PRIVE3} and
+\telfile{PRIVE4}.
 
-An example of programming using the second PRIVE table is given below. It is
-initialised with the value 10.
+An example of programming using the second \telfile{PRIVE} table is given below.
+It is initialised with the value 10.
 
 \begin{lstlisting}[language=TelFortran]
 DO I=1,NPOIN2
-  PRIVE%ADR(2)%P%R(I) = 10.D0
+  PRIVE\%ADR(2)\%P\%R(I) = 10.D0
 ENDDO
 \end{lstlisting}
 
@@ -142,54 +147,63 @@ filling in the \telfile{NOMVAR\_TELEMAC3D} (or \telfile{NOMVAR\_2D\_IN\_3D})
 subroutine. This consists of two equivalent structures, one for English and the
 other for French. Each structure defines the name of the variables in the
 results file that is to be generated and then the name of the variables to be
-read from the previous computation if this is a continuation. This subroutine
+read from the previous computation if this is a restart. This subroutine
 may also be modified when, for example, a file generated with the English
 version of \telemac{3D} is to be continued with the French version. In this
-case, the TEXTPR table of the French part of the subroutine must contain the
-English names of the variables.
+case, the \telfile{TEXTPR} table of the French part of the subroutine must
+contain the English names of the variables.
 
 \item  Secondly, it is necessary to modify the \telfile{PRERES\_TELEMAC3D}
 subroutine in order to introduce the computation of the new variable(s). The
-variables LEOLEO, SORG2D and SORG3D are also used to determine whether the
-variable is to be printed in the printout file or in the results file at the
-time step in question.
+variables \telfile{LEO, SORG2D} and \telfile{SORG3D} are also used to
+determine whether the variable is to be printed in the printout file or in
+the results file at the time step in question.
 \end{itemize}
 
+User arrays can be handled to store extra variables in 2D with the help of
+two keywords to define the number and the name of the extra variables
+in the 2D private arrays: \telkey{NUMBER OF 2D PRIVATE ARRAYS} (up to 4,
+default value = 0) and \telkey{NAMES OF 2D PRIVATE VARIABLES}.
+It is the names of the user arrays \telfile{PRIVE\%ADR(1)\%P, PRIVE\%ADR(2)\%P}
+\ldots up to 4, that will be seen in the results files.
+The great advantage is that these variables will be read if present in the
+\telkey{GEOMETRY FILE}.
 
 \section{Array modification or initialization}
 
-when programming \telemac{3D} subroutines, it is sometimes necessary to
+When programming \telemac{3D} subroutines, it is sometimes necessary to
 initialize a table or memory space to a particular value. To do that, the \bief
 library furnishes a subroutine called \telfile{FILPOL} that lets the user modify or
 initialize tables in particular mesh areas.
 
-A call of the type CALL FILPOL (F, C, XSOM, YSOM, NSOM, MESH) fills table F
-with the C value in the convex polygon defined by NSOMNSOM nodes (coordinates
-XSOM, YSOM). The variable MESH is needed for the \telfile{FILPOL} subroutine
+A call of the type \telfile{CALL FILPOL (F, C, XSOM, YSOM, NSOM, MESH)} fills
+table \telfile{F} with the \telfile{C} value in the convex polygon defined by
+\telfile{NSOM} nodes (coordinates \telfile{XSOM, YSOM}).
+The variable \telfile{MESH} is needed for the \telfile{FILPOL} subroutine
 but have no meaning for the user.
 
 
 \section{Validating a computation (\telfile{VALIDA})}
 
 The structure of the \telemac{3D} software offers an entry point for validating a
-computation, in the form of a subroutine named VALIDA, which has to be filled
-by the user in accordance with each particular case. Validation may be carried
-out either with respect to a reference file (which is therefore a file of
-results from the same computation that is taken as reference, the name of which
-is supplied by the keyword \telkey{REFERENCE FILE}), or with respect to an
-analytical solution that must then be programmed entirely by the user.
+computation, in the form of a subroutine named \telfile{VALIDA}, which has to
+be filled by the user in accordance with each particular case.
+Validation may be carried out either with respect to a reference file (which is
+therefore a file of results from the same computation that is taken as reference,
+the name of which is supplied by the keyword \telkey{REFERENCE FILE}), or with
+respect to an analytical solution that must then be programmed entirely by the user.
 
 When using a reference file, the keyword \telkey{REFERENCE FILE FORMAT}
 specifies the format of this binary file (SERAFIN by default).
 
-The VALIDA subroutine is called at each time step when the keyword
+The \telfile{VALIDA} subroutine is called at each time step when the keyword
 \telkey{VALIDATION} has the value YES, enabling a comparison to be made with
-the validation solution at each time step. By default, the VALIDA subroutine
-only does a comparison with the last time step. The results of this comparison
-are given in the output listing.
+the validation solution at each time step. By default, the \telfile{VALIDA}
+subroutine only does a comparison with the last time step. The results of this
+comparison are given in the output listing.
 
 
-\section{ COUPLING}
+\section{Coupling}
 
 The principle of coupling two (or in theory more) simulation modules involves
 running the two calculations simultaneously and exchanging the various results
@@ -213,7 +227,7 @@ module at the next time step, and so on.
 \end{itemize}
 
 Two modules can be coupled in the current version of the code: the sedimentary
-transport module SISYPHE and the sea state computational module TOMAWAC. The
+transport module SISYPHE and the sea state computational module \tomawac. The
 time step used for the two calculations is not necessarily the same and is
 managed automatically by the coupling algorithms and the keyword
 \telkey{COUPLING PERIOD FOR SISYPHE} and \telkey{COUPLING PERIOD FOR TOMAWAC}
@@ -224,15 +238,15 @@ indicates which simulation code is to be coupled with \telemac{3D}. The values o
 this keyword can be:
 
 \begin{itemize}
-\item  \telkey{COUPLING WITH}= `SISYPHE' for coupling with the SISYPHE module,
+\item  \telkey{COUPLING WITH}= `SISYPHE' for coupling with the \sisyphe module,
 
-\item  \telkey{COUPLING WITH}= `TOMAWAC' for coupling with the TOMAWAC module,
+\item  \telkey{COUPLING WITH}= `TOMAWAC' for coupling with the \tomawac module,
 
 \item  \telkey{COUPLING WITH}= `SISYPHE, TOMAWAC' for coupling with both.
 \end{itemize}
 
 Depending on the module(s) used, the keywords \telkey{SISYPHE STEERING
-FILE}and\telkey{TOMAWAC STEERING FILE} indicate the names of the steering files
+FILE} and \telkey{TOMAWAC STEERING FILE} indicate the names of the steering files
 of the coupled modules.
 
 The keyword \telkey{COUPLING WITH} is also used if the computation has to
@@ -241,3 +255,9 @@ DELWAQ. In that case, it is necessary to specify \telkey{COUPLING WITH=
 }'DELWAQ'. Please refer to Appendix \ref{sec:delwaq} for all informations
 concerning communications with DELWAQ.
 
+\section{Checking the mesh (\telfile{CHECKMESH})}
+
+The subroutine \telfile{CHECKMESH} of the \bief library is available to look for
+errors in the mesh, e.g. superimposed points \ldots
+The keyword \telkey{CHECKING THE MESH} (default value = NO) should be activated
+to YES to call this subroutine.

@@ -1,29 +1,29 @@
 \chapter{Physical setup of the hydrodynamic computation}
 
-in addition to the general setup given in the steering file, a number of
+In addition to the general setup given in the steering file, a number of
 physical parameters may or should be specified upon a simulation.
 
 
 \section{Hydrostatic pressure hypothesis}
 
-firstly, it should be specified whether one wants to use the hydrostatic
+Firstly, it should be specified whether one wants to use the hydrostatic
 pressure hypothesis or not. That choice is made using the keyword
 \telkey{NON-HYDROSTATIC VERSION} which, by default, is set to NO. As a
 reminder, the hydrostatic pressure hypothesis consists in simplifying the
-\textit{W} vertical velocity, ignoring the diffusion, advection and other
+$W$ vertical velocity, ignoring the diffusion, advection and other
 terms. Therefore, the pressure at a point is only related to the weight of the
 overlying water column and to the atmospheric pressure at the surface. Without
 the hydrostatic pressure hypothesis (\telkey{NON-HYDROSTATIC VERSION} = YES),
-\telemac{3D} solves a \textit{W} vertical velocity equation which is similar to
-the \textit{U} and \textit{V} equations, with the additional gravity term.
+\telemac{3D} solves a $W$ vertical velocity equation which is similar to
+the $U$ and $V$ equations, with the additional gravity term.
 
 
 \section{Modelling turbulence}
 
-the Reynolds numbers ($R=U.L/\upsilon$) reached for tidal
+The Reynolds numbers ($Re = U.L/\upsilon$) reached for tidal
 flows or in an estuary are excessively high and illustrate basically turbulent
-flows (\textit{L}, the scale of eddies, for example, assumes the value of water
-depth \textit{h} for a vertically homogeneous flow). For such a kind of flow,
+flows ($L$, the scale of eddies, for example, assumes the value of water
+depth $h$ for a vertically homogeneous flow). For such a kind of flow,
 the turbulence-induced momentum prevails (in relation to the molecular
 diffusion). That diffusion is strictly defined by a tensor which could be
 anisotropic.
@@ -54,15 +54,16 @@ eddy diffusivity) can be changed with the keywords \telkey{KARMAN CONSTANT}
 
 \subsection{Constant viscosity}
 
-the simplest turbulence model consists in using a constant viscosity
+The simplest turbulence model consists in using a constant viscosity
 coefficient (option for parameters: 1="CONSTANT VISCOSITY", default value). In
 that case, the latter includes the effects of molecular viscosity and
-dispersion (refer to Theoretical note [1]). The horizontal and vertical
+dispersion (refer to Theoretical note \cite{Hervouet2007}).
+The horizontal and vertical
 turbulent viscosities are then constant throughout the domain. The global
 (molecular + turbulent) viscosity coefficients are provided by the user by
 means of the keywords \telkey{COEFFICIENT FOR HORIZONTAL DIFFUSION OF
 VELOCITIES} and \telkey{COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES}, set
-by default to 10${}^{-6}$.
+by default to $10^{-6}$.
 
 The value of that coefficient has a definite effect on both size and shape of
 the recirculations and eddies. A low value will tend to only dissipate the
@@ -76,16 +77,17 @@ threshold beyond which the viscosity or turbulence value has substantially no
 effect).
 
 \telemac{3D} makes it possible to get a space- and time-variable coefficient.
-The VISCOS subroutine will necessarily be programmed. Within that subroutine,
-geometrical information, basic hydrodynamic information (water depth, velocity
-components) and time are made available to the user.
+The \telfile{VISCOS} subroutine will necessarily be programmed.
+Within that subroutine, geometrical information, basic hydrodynamic
+information (water depth, velocity components) and time are made available
+to the user.
 
 That option theoretically aims at enabling the user to define the turbulent
-viscosity by programming the VISCOS subroutine.
+viscosity by programming the  \telfile{VISCOS} subroutine.
 
 \subsection{Mixing length (vertical model)}
 
-the user also has the opportunity to use a vertical mixing length model
+The user also has the opportunity to use a vertical mixing length model
 (\telkey{VERTICAL TURBULENCE MODEL}: 2="MIXING LENGTH"). The vertical
 diffusivity of velocities is then automatically computed by \telemac{3D} by means
 of the selected mixing length model taking or not taking the effects of density
@@ -94,7 +96,7 @@ diffusion coefficient) as a function of the mean velocity gradient and the
 mixing length (Prandtl's theory):
 %TODO:See how to handle where
 \begin{align}
-\nu =L_{m}^{2} \sqrt{2D_{ij} D_{ij}} \text{ where }  D_{ij} =\frac{1}{2}
+\nu =L_{m}^{2} \sqrt{2D_{ij} D_{ij}} \textrm{ where }  D_{ij} =\frac{1}{2}
 \left(\frac{\partial \bar{U}_{i} }{\partial x_{j} }
       +\frac{\partial \bar{U}_{j}}{\partial x_{i} } \right)
 \end{align}
@@ -108,10 +110,10 @@ such flows with a strong barotropic component as the tidal flows,
 
 \item  3: Nezu and Nakagawa. Nezu and Nakagawa model,
 
-\item  5: Quetin. Better representation of wind drift. In windy weather, a
-surface boundary layer is formed and viscosity decreases,
+\item  5: Quetin \cite{Quetin1977}. Better representation of wind drift.
+In windy weather, a surface boundary layer is formed and viscosity decreases,
 
-\item  6: Tsanis. Better representation of wind drift.
+\item  6: Tsanis \cite{Tsanis1989}. Better representation of wind drift.
 \end{itemize}
 
 The graph below shows the variations of the mixing length for the various models.
@@ -144,7 +146,7 @@ Richardson number. The user can set the damping function through the keyword
 \begin{itemize}
 \item  0: nothing (default value),
 
-\item  1: user-performed; Law programming in the DRIUTIDRIUTI subroutine,
+\item  1: user-performed; Law programming in the \telfile{DRIUTI} subroutine,
 
 \item  2: Viollet,
 
@@ -175,34 +177,34 @@ VELOCITY DERIVATIVES}. Default value 1 corresponds
 to a vertical derivative that is linear. Value 2 activates a logarithmic
 computation between the bottom and 0.2 times the water depth. This allows
 getting better results when modelling the velocity profile near the bottom.
-This algorithm is implemented in the subroutine VISCLM.
+This algorithm is implemented in the subroutine \telfile{VISCLM}.
 
 
 \subsection{Smagorinsky}
 
-that option is activated by setting the horizontal or vertical turbulence
+That option is activated by setting the horizontal or vertical turbulence
 model to 4 (Smagorinsky).
 
 The Smagorinsky scheme is recommended, in particular, in the presence of a
-highly non-linear flow.
+highly non-linear flow \cite{Smagorinsky1963}.
 
 
-\subsection{k-$\epsilon$}
+\subsection{$k$-$\epsilon$}
 
-\telemac{3D} gives an opportunity to use the so-called \textit{k}-$\epsilon$
+\telemac{3D} gives an opportunity to use the so-called $k$-$\epsilon$
 model as proposed by Rodi and Launder for solving the turbulence equations.
 That model is activated by setting the keywords of turbulence models
 (\telkey{HORIZONTAL TURBULENCE MODEL} and \telkey{VERTICAL TURBULENCE MODEL})
 to the value 3.
 
-The \textit{k}-$\epsilon$ model is defined through a couple of equations
-solving the balance equations for \textit{k} (turbulent energy) and $\epsilon$
-(turbulent dissipation). Applying the \textit{k}-$\epsilon$ model often
+The $k$-$\epsilon$ model is defined through a couple of equations
+solving the balance equations for $k$ (turbulent energy) and $\epsilon$
+(turbulent dissipation). Applying the $k$-$\epsilon$ model often
 requires using a finer two-dimensional mesh than the constant viscosity model
 and then increases the computation times.
 
 For detailed information about the formulation of the mixing length and
-\textit{k}-$\epsilon$ models, the user can refer to the \telemac{3D} Theoretical
+$k$-$\epsilon$ models, the user can refer to the \telemac{3D} Theoretical
 Note.
 
 Strictly speaking, except for the constant viscosity model, the diffusion
@@ -213,21 +215,31 @@ COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 1.D-6
 COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES = 1.D-6
 \end{lstlisting}
 
-The basic value of that viscosity may have to be increased to ensure a minimum
-diffusion, especially upon the initial instants of the computation.
+The default value of that viscosity may have to be increased to ensure a minimum
+diffusion, especially during the first time steps of the computation.
 
+There are two options to compute the lateral boundary conditions of $k$ and
+$\epsilon$ (in subroutine KEPCL3) with the keyword
+\telkey{OPTION FOR THE BOUNDARY CONDITIONS OF K-EPSILON}:
+\begin{itemize}
+\item 1 = No turbulence ($k$ and $\epsilon$ takes the minimum values
+\telfile{KMIN} and \telfile{EMIN} defined in subroutine \telfile{CSTKEP}),
+which is the default value,
+\item 2 = Hans and Burchard’s formula (introduced in version 7.0).
+\end{itemize}
 
 \section{Setting up the friction}
 
-the bottom or sidewall friction reflects the continuity of the constraint at
+The bottom or sidewall friction reflects the continuity of the constraint at
 the fluid-solid interface. Knowing the constraint involves knowing the flow in
 the vicinity of the bottom. The turbulence models provide a modelling for that
 flow.
 
 The constraint can be written in several forms:
 \begin{align}
-\vec{\tau } = -\rho U^{*2} = -\frac{1}{2} \rho C_{f} \sqrt{U^{2} +V^{2} }
-\vec{U}=\mu \frac{\partial \vec{U}}{\partial n}
+\vec{\tau } & = \mu \frac{\partial \vec{U}}{\partial n}
+            = -\frac{1}{2} \rho C_{f} \sqrt{U^{2} +V^{2} } \vec{U}\\
+            & = -\rho U^{*2} 
 \end{align}
 where $U^{*}$ denotes the friction, $C_{f}$ - a dimensionless friction, $U$ -
 the velocity of current recorded far enough from the wall.
@@ -248,7 +260,7 @@ The same approach is adopted for both sidewalls and bottom.
 
 \subsection{Bottom friction}
 
-the friction law used for the bottom friction modelling is set by the keyword
+The friction law used for the bottom friction modelling is set by the keyword
 \telkey{LAW OF BOTTOM FRICTION} which can assume the following values:
 
 \begin{itemize}
@@ -279,7 +291,7 @@ and the friction regime is rough. On the other hand, when there is a viscous
 sub-layer, the friction regime is smooth.
 
 The computation of the turbulent constraint depends on the keyword
-\telkey{TURBULENCE MODEL FOR THE BOTTOM}. The available options are:
+\telkey{TURBULENCE REGIME FOR THE BOTTOM}. The available options are:
 
 \begin{itemize}
 \item  1: smooth regime,
@@ -300,7 +312,7 @@ asperity size $k_{s}$ (\telkey{FRICTION COEFFICIENT FOR THE BOTTOM}).
 
 \subsection{Sidewall friction}
 
-the friction law used to model the sidewall friction is set by the keyword
+The friction law used to model the sidewall friction is set by the keyword
 \telkey{LAW OF FRICTION ON LATERAL BOUNDARIES} which can take the following
 values:
 
@@ -313,7 +325,7 @@ values:
 The size of asperities (which is used in the Nikuradse law) is given by the
 \telkey{FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES} (default value 60!).
 
-The friction is activated using the keyword \telkey{TURBULENCE MODEL FOR
+The friction is activated using the keyword \telkey{TURBULENCE REGIME FOR
 LATERAL SOLID BOUNDARIES}. The available options are:
 
 \begin{itemize}
@@ -327,7 +339,7 @@ the friction velocity. See previous section for more information.
 
 \section{Punctual source terms}
 \label{sec:srcfile}
-tELEMAC-3D offers an opportunity to place momentum sources or sinks in any
+\telemac{3D} offers an opportunity to place momentum sources or sinks in any
 point of the domain.
 
 The user places horizontally the various sources using the keywords
@@ -349,9 +361,10 @@ rate is given (in m${}^{3}$/s) using the keyword \telkey{WATER DISCHARGE OF
 SOURCES}.
 
 In case of sources with variable characteristics, the user can then either use
-specific programming in the T3D\_DEBSCE subroutine (and T3D\_TRSCE in the
-presence of tracer), or use the source file whose name is given by the keyword
-\telkey{SOURCES FILE}. This file has exactly the same structure as the liquid
+specific programming in the \telfile{T3D\_DEBSCE} subroutine (and
+\telfile{T3D\_TRSCE} in the presence of tracer), or use the source file whose
+name is given by the keyword \telkey{SOURCES FILE}.
+This file has exactly the same structure as the liquid
 boundary file. An example is shown below with two sources and two tracers.
 Between two specified times, the information used by \telemac{3D} at sources is
 obtained by linear interpolation.
@@ -382,18 +395,33 @@ Besides, \telemac{3D} is capable of taking into account an injection velocity (i
 m/s) at the sources in the dynamic equations. By default, the injection takes
 places without any momentum input. The user may prescribe a particular
 velocity. If the latter is constant throughout the simulation, then its value
-can be given using the couple of keywords \telkey{VELOCITIES OF THE SOURCES
-ALONG X} and \telkey{VELOCITIES OF THE SOURCES ALONG Y}. Otherwise, the user
-should program the SOURCE subroutine in order to amend USCE (for the velocity
-at sources along \textit{X}) and VSCE (for the velocity at sources along
-\textit{Y}). The user can use the time and all the parameters of the sources
+can be given using the keywords \telkey{VELOCITIES OF THE SOURCES ALONG X},
+\telkey{VELOCITIES OF THE SOURCES ALONG Y} and
+\telkey{VELOCITIES OF THE SOURCES ALONG Z}. Otherwise, the user
+should program the SOURCE subroutine in order to amend \telfile{USCE} (for the
+velocity at sources along $X$) and \telfile{VSCE} (for the velocity at sources
+along $Y$). The user can use the time and all the parameters of the sources
 within that subroutine.
+
+From a theoretical point of view, complete mass conservation can only be ensured
+if the source is treated as a Dirac function and not as a linear function.
+The type of treatment is indicated by the user with the keyword
+\telkey{TYPE OF SOURCES}, which can have a value of 1 (linear function,
+default value) or 2 (Dirac function).
+It should be noted that in the second case, the solutions are of course
+less smoothed.
+It is the same implementation as in \telemac{2D} and the Dirac option is
+recommended with a big number of sources.
+The maximum number of sources is set to 20 by default but it can be changed
+by the user with the keyword \telkey{MAXIMUM NUMBER OF SOURCES}.
+This avoids changing the previously hardcoded values (until version 7.0),
+which required recompiling the whole package.
 
 \section{Setting up the water-atmosphere exchanges}
 
 \subsection{The wind}
 
-tELEMAC-3D can be used to simulate flow while taking into account the influence
+\telemac{3D} can be used to simulate flow while taking into account the influence
 of a wind blowing on the water surface. The logical keyword \telkey{WIND} is
 used first of all for determining whether this influence is taken into account
 and if so, the coefficient is then provided with the keyword
@@ -411,28 +439,30 @@ This is the formula used by the Institute of Oceanographic Sciences (United
 Kingdom):
 
 \begin{tabular}{ll}
-if $\overrightarrow{U}_{vent} < 5$m/s & $a_{vent}$  = 0.565 10-3 \\
-if $5 < \overrightarrow{U}_{vent}  < 19.22 $m/s & $a_{vent}$ = (- 0.12 + 0.137$\overrightarrow{U}_{vent}$ ) 10-3 \\
-if $\overrightarrow{U}_{vent} > 19.22$ m/s & $a_{vent}$ = 2.513 10-3 \\
+if $\overrightarrow{U}_{vent} < 5$ m/s & $a_{vent}  = 0.565 \times 10^{-3}$ \\
+if $5 < \overrightarrow{U}_{vent}  < 19.22$ m/s & $a_{vent} = (- 0.12 + 0.137\overrightarrow{U}_{vent} ) 10^{-3}$ \\
+if $\overrightarrow{U}_{vent} > 19.22$ m/s & $a_{vent} = 2.513 \times 10^{-3}$ \\
 \end{tabular}
 
 The parameter \telkey{COEFFICIENT OF WIND INFLUENCE} asked for by \telemac{3D}
-is: avent (rair / r) and not only avent.  rair is approximately 1.2 kg/m3 and r
-is approximately 1,000 kg/m3. Thus it is necessary to divide the value of
+is: $a_{vent} (\rho_{air} / \rho)$ and not only $a_{vent}$.
+$\rho_{air}$ is approximately 1.2 kg/m$^3$ and $\rho$
+is approximately 1,000 kg/m$^3$. Thus it is necessary to divide the value of
 $a_{vent}$ by 1,000 to obtain the value of the \telemac{3D} keyword.
 
 The whole formulation used to consider the wind effects, through the keyword
 \telkey{COEFFICIENT OF WIND INFLUENCE} (refer to the Theoretical Note for the
 definition of that coefficient), on the surface flows is fully stated in the
-BORD3D subroutine.
+\telfile{BORD3D} subroutine.
 
 If the wind velocity is space- or time-variable, the user should modify the
-METEO subroutine.
+\telfile{METEO} subroutine.
 
 \begin{WarningBlock}{Warning:}
-The METEO subroutine is provided to define the wind velocity and direction even
-though they are space- or time-variable. The BORD3D subroutine describes the
-law of wind-induced drift of water bodies.
+The \telfile{METEO} subroutine is provided to define the wind velocity and
+direction even though they are space- or time-variable.
+The \telfile{BORD3D} subroutine describes the law of wind-induced drift
+of water bodies.
 \end{WarningBlock}
 
 If there are tidal flats or dry zones in the domain, the wind may trigger
@@ -444,22 +474,22 @@ depth, with the key-word \telkey{THRESHOLD DEPTH FOR WIND} (default value at
 
 \subsection{The temperature}
 
-air temperature may be specified using the keyword \telkey{AIR TEMPERATURE} if
+Air temperature may be specified using the keyword \telkey{AIR TEMPERATURE} if
 it is constant in time and space.
 
 
 \subsection{The pressure}
 
-the influence of air pressure is taken into account from the moment when the
+The influence of air pressure is taken into account from the moment when the
 keyword \telkey{AIR PRESSURE} is set to YES (the default value is
-NO). The value of that pressure is directly set in the METEO subroutine.
-By default, the latter initializes a pressure of 105 Pa ($\approx$ 1 atm) over
+NO). The value of that pressure is directly set in the \telfile{METEO} subroutine.
+By default, the latter initializes a pressure of $10^5$ Pa ($\approx$ 1 atm) over
 the whole domain.
 
 
 \subsection{Rain or evaporation}
 
-the modelling of the influence of precipitation or evaporation is activated
+The modelling of the influence of precipitation or evaporation is activated
 with the logical keyword \telkey{RAIN OR EVAPORATION}. The value of the
 contribution or the loss of water at the surface is specified using the keyword
 \telkey{RAIN OR EVAPORATION IN MM PER DAY} which default value is 0. (a
@@ -473,25 +503,25 @@ incorrect if the tracer is the temperature.
 
 \subsection{Atmosphere-water exchange models}
 
-before version 7.0, heat exchange between water and atmosphere could have been
+Before version 7.0, heat exchange between water and atmosphere could have been
 done with a linearised formula of the balance of heat exchange fluxes at the
 free surface. An example of an exchange with a constant atmosphere temperature
 and a constant sea salinity was given as standard (as comments) through a
-direct programming in the BORD3D subroutine.
+direct programming in the \telfile{BORD3D} subroutine.
 
 A much more elaborated model has been introduced in \telemac{3D}. This module
 calculates the complete balance of exchanged fluxes involved:
 
 \begin{itemize}
-\item  the solar radiation,
+\item  The solar radiation,
 
-\item  the atmospheric radiation,
+\item  The atmospheric radiation,
 
-\item  the water radiation,
+\item  The water radiation,
 
-\item  the latent heat due to evaporation,
+\item  The latent heat due to evaporation,
 
-\item  the sensitive heat of conductive origin.
+\item  The sensitive heat of conductive origin.
 \end{itemize}
 
 It takes into account the solar radiation penetration in the water column.
@@ -511,13 +541,13 @@ the user has to provide rainfall data with units homogeneous with length over
 time.
 
 The main developments of this module are implemented in the module
-EXCHANGE\_WITH\_ATMOSPHERE.
+\telfile{EXCHANGE\_WITH\_ATMOSPHERE}.
 
 Some physical parameters have been hard-coded in the module, often imposed as
 the mean value: the type of sky related to the luminosity of the site (very
 pure sky, mean pure sky or industrial zone sky), the type of cloud (cirrus,
 cirro stratus, alto cumulus, alto stratus, stratus), but these values can be
-changed in the module EXCHANGE\_WITH\_ATMOSPHERE).
+changed in the module \telfile{EXCHANGE\_WITH\_ATMOSPHERE}).
 
 Because the site of a study may not be equipped with local wind measurements
 and these kinds of data are available at a different location, possibly far
@@ -526,19 +556,19 @@ a single coefficient of calibration $b:f(U_{2}) = b(1+U_{2}$) where $U_{2}$ is
 the wind velocity at 2~m high.
 
 To get the wind velocity at 2~m high from classical wind data at 10~m high, a
-roughness length of \textit{z}${}_{0}$~=~0.0002~m has been chosen in the code,
-that leads to \textit{U}${}_{2}$ $\approx$ 0.85\textit{U}${}_{10}$. This value
+roughness length of ${z}_{0}~=~0.0002$~m has been chosen in the code,
+that leads to $U_{2} \approx 0.85 U_{10}$. This value
 of 0.85 (or the roughness length) may be changed by the user if needed.
 
 Examples of solar radiation penetration are given in comments in the
-SOURCE\_TRAC subroutines. Two laws are suggested: the first one
-uses the \textit{in situ} measurements of Secchi length and is
+\telfile{SOURCE\_TRAC} subroutines. Two laws are suggested: the first one
+uses the \emph{in situ} measurements of Secchi length and is
 recommended if available; the second one uses two exponential laws that may be
 difficult to calibrate and require an estimation of the type of water from
 turbidity.
 
 Except for the coefficient to model the penetration of solar radiation in the
-water column, the parameter \textit{b} that appears in the wind function is the
+water column, the parameter $b$ that appears in the wind function is the
 single calibration parameter of this module. Its value is given by the keyword
 \telkey{COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL}. (default
 value = 0.0025 but recommended values are between 0.0017 and 0.0035). This
@@ -549,7 +579,7 @@ model with complete balance (values 1 and 2 for the keyword
 
 \section{Astral potential}
 
-when modelling large maritime areas, it is sometimes necessary to take into
+When modelling large maritime areas, it is sometimes necessary to take into
 account the effect of astral forces generating tide inside the area. For this,
 the user has several keywords at his disposal.
 
@@ -566,23 +596,23 @@ to compute the respective position of the moon and the sun.
 
 \section{Consideration of wave driven currents}
 
-it is possible to take into account the wave driven currents by retrieving
+It is possible to take into account the wave driven currents by retrieving
 information calculated by a wave propagation module of the TELEMAC modelling
-system (mainly TOMAWACTOMAWAC but also ARTEMISARTEMIS). In the current version,
+system (mainly \tomawac but also \artemis). In the current version,
 only taking into account a steady state is possible. The procedure is as
 follows:
 
 \begin{itemize}
-\item  perform a calculation of wave propagation on the same mesh as the
+\item  Perform a calculation of wave propagation on the same mesh as the
 \telemac{3D} calculation requesting the storage of the driving forces. In the
-case of TOMAWAC, the variables FX and FY,
+case of \tomawac, the variables \telfile{FX} and \telfile{FY},
 
-\item  get the wave results file and provide its name through the keyword
+\item  Get the wave results file and provide its name through the keyword
 \telkey{BINARY DATA FILE 1},
 
-\item  activate the keyword \telkey{WAVE DRIVEN CURRENTS},
+\item  Activate the keyword \telkey{WAVE DRIVEN CURRENTS},
 
-\item  fill the keyword \telkey{RRECORD NUMBER IN WAVE FILE}. This value
+\item  Fill the keyword \telkey{RECORD NUMBER IN WAVE FILE}. This value
 corresponds to the iteration number stored in the wave file which must be taken
 into account by \telemac{3D}. Usually, this is the last iteration stored, by
 default this number is set to 1. The name of the variables to read is "FORCE
@@ -593,7 +623,7 @@ In the current version of \telemac{3D}, this driving force is considered as bein
 constant over the vertical.
 
 If the user wishes to take into account several results of the wave propagation
-module (e.g. to take into account changes in the level of the sea), Fortran
+module (e.g. to take into account changes in the level of the sea), FORTRAN
 programming is required.
 
 \section{Other physical parameters}
@@ -607,7 +637,7 @@ be computed according to latitude l through the formula:
 
 \begin{itemize}
 \item  $2\, \omega \, \sin \, \left(\lambda \right)$ where $\omega$ is the
-Earth's rotational velocity of 7.27 x 10${}^{-5}$ rad/s and $\lambda$ is the
+Earth's rotational velocity of $7.27 \times {10}^{-5}$ rad/s and $\lambda$ is the
 average latitude of the model.
 \end{itemize}
 
@@ -618,4 +648,4 @@ Coriolis coefficient is adjusted automatically at each point of the domain (see
 
 \telemac{3D} additionally offers the opportunity to set the acceleration due to
 gravity (keyword \telkey{GRAVITY ACCELERATION} which, by
-default, is set to 9.81m/s${}^{2}$).
+default, is set to 9.81~m/s${}^{2}$).

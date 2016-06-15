@@ -1,15 +1,19 @@
 \chapter{Tracer transport}
 
-the \telemac{3D} software makes it possible to take into account the transport of
+The \telemac{3D} software makes it possible to take into account the transport of
 passive or active tracers (active tracers affect the hydrodynamics), being
 either conservative or not.
 
 This chapter discloses the tracer transport features.
 
+The maximum number of tracers is set to 20 by default but it can be changed by
+the user with the keyword \telkey{MAXIMUM NUMBER OF TRACERS}.
+This avoids changing the previously hardcoded values (until version 7.0),
+which required recompiling the whole package.
 
 \section{General setup}
 
-the number of tracers is defined by the keywords \telkey{NUMBER OF TRACERS}. If
+The number of tracers is defined by the keywords \telkey{NUMBER OF TRACERS}. If
 that number is set to zero (default value), then the tracers will not be taken
 into account by \telemac{3D}.
 
@@ -25,33 +29,33 @@ NAMES OF TRACERS: 'TEMPERATURE      C             '; 'SALINITY                  
 
 \subsection{Prescribing the initial conditions}
 
-if the initial values of tracers are constant all over the domain, just insert,
+If the initial values of tracers are constant all over the domain, just insert,
 into the steering file, the keyword \telkey{INITIAL VALUES OF TRACERS} with the
 desired value(s) separated with ; if more than one.
 
-In more complex cases, an action shall be taken directly at the CONDIM
-subroutine, in the same fashion as described in subsection 4.2.2 dealing with
-the initial hydrodynamic conditions.
+In more complex cases, an action shall be taken directly at the \telfile{CONDIM}
+subroutine, in the same fashion as described in subsection \ref{sec:prescr_IC}
+dealing with the initial hydrodynamic conditions.
 
 When resuming a computation, the initial condition of tracers corresponds to
-the condition of the last time step which was stored into the resumption file.
+the condition of the last time step which was stored into the restart file.
 The tracer management sequence order during the previous computation needs to
 be well known and the same sequence order shall be followed in the
-computational suite in order to prevent on confusion. If the resumption file
+computational suite in order to prevent on confusion. If the restart file
 includes no information about the tracer, \telemac{3D} will use the value as set
 by the keyword \telkey{INITIAL VALUES OF TRACERS}.
 
 
 \subsection{Prescribing the boundary conditions}
 
-the tracer boundary conditions are prescribed according to the same principle
-as the hydrodynamic boundary conditions (see section 4.3).
+The tracer boundary conditions are prescribed according to the same principle
+as the hydrodynamic boundary conditions (see section \ref{sec:prescr_BC}).
 
-The boundary condition type will be yielded by the value of LITBOR in
+The boundary condition type will be yielded by the value of \telfile{LITBOR} in
 the boundary conditions file.
 
 In case of an entering liquid boundary with a prescribed tracer (the value of
-LITBOR of 5), then the tracer value can be yielded in various ways:
+\telfile{LITBOR} of 5), then the tracer value can be yielded in various ways:
 
 \begin{itemize}
 \item  If that value is constant both along the boundary and in time, then it
@@ -63,13 +67,14 @@ boundary 1, value of tracer 1 at boundary 2, value of tracer 2 at boundary,
 in the case of hydrodynamic boundary conditions.
 
 \item  If the value is constant in time but varies along the boundary, it will
-be set directly by the TBORTBOR variable in the \telkey{BOUNDARY CONDITIONS
-FILE},
+be set directly by the \telfile{TBOR} variable in the
+\telkey{BOUNDARY CONDITIONS FILE},
 
 \item  If the value is constant along the boundary but varies in time, the user
 may either use the \telkey{LIQUID BOUNDARIES FILE} or take action at the
-function TR3. The latter will be programmed somewhat like the functions VIT3,
-Q3 and SL3. Note that the liquid boundaries file will not be taken into account
+function \telfile{TR3}. The latter will be programmed somewhat like the functions
+\telfile{VIT3, Q3} and \telfile{SL3}.
+Note that the liquid boundaries file will not be taken into account
 if the keywords \telkey{PRESCRIBED ELEVATIONS} and \telkey{PRESCRIBED
 FLOWRATES} do not appear in the steering file.
 \end{itemize}
@@ -87,7 +92,7 @@ number of the tracer.
 
 \begin{itemize}
 \item  If the value varies in both time and space, the user should then modify
-the BORD3D subroutine BORD3D, at the part regarding the tracer.
+the \telfile{BORD3D} subroutine, at the part regarding the tracer.
 \end{itemize}
 
 The keyword \telkey{TREATMENT OF FLUXES AT THE BOUNDARIES} enables, during the
@@ -103,7 +108,7 @@ concentration profile in the vertical using the keyword \telkey{TRACERS
 VERTICAL PROFILES}. The options are:
 
 \begin{itemize}
-\item  0: user programming (in BORD3D),
+\item  0: user programming (in \telfile{BORD3D}),
 
 \item  1: constant profile (default),
 
@@ -117,7 +122,7 @@ VERTICAL PROFILES}. The options are:
 
 \subsection{Active tracers}
 
-the active tracers affect the flow through the hydrostatic pressure gradient
+The active tracers affect the flow through the hydrostatic pressure gradient
 term. As a rule, indeed, the pressure is written as:
 
 \begin{align}
@@ -128,7 +133,7 @@ p=p_{h} +p_{d} =\rho g(Z_{s} -z)+\rho _{0} g\int _{z}^{Z_{s} }\frac{\Delta \rho
 where $p_{h} $ and $p_{d} $ denote the hydrostatic pressure and the dynamic
 pressure, respectively.
 
-Thus, two elements should be defined, namely: $\rho _{0} $ and $\frac{\Delta
+Thus, two elements should be defined, namely: $\rho_{0} $ and $\frac{\Delta
 \rho }{\rho _{0} } $.
 
 The term $\rho _{0} $ is defined by the keyword \telkey{AVERAGE WATER DENSITY}.
@@ -158,7 +163,7 @@ kg/m${}^{3}$) shall necessarily begin with SALINI and the name of the
 temperature tracer (in ${}^\circ$C) shall begin with TEMPER.
 
 With option 4, the term $\frac{\Delta \rho }{\rho _{0} } $ is described by a
-linear function of the \textit{Ti} tracer of the type:
+linear function of the $T_i$ tracer of the type:
 \begin{align}
 \frac{\Delta \rho }{\rho _{0} } =-\sum _{i}\beta _{i}  (T_{i} -T_{i}^{0} )_{i}
 \end{align}
@@ -178,9 +183,9 @@ For each source, the user shall enter the tracer value at the sources by means
 of the keyword \telkey{VALUE OF THE TRACERS AT THE SOURCES}. Thus, it is an
 array of reals specifying the concentration of tracers at the source. The
 writing convention is as follows: source value 1~of tracer 1; source value 2~of
-tracer 1;~\dots , source value \textit{n}~of tracer 1; source value 1~of tracer
-2; \dots ,~source value \textit{n}~of tracer 2 etc. In case of time dependent
-value, it is necessary to use the source file or a specific Fortran programming
+tracer 1;~\dots , source value $n$~of tracer 1; source value 1~of tracer
+2; \dots ,~source value $n$~of tracer 2 etc. In case of time dependent
+value, it is necessary to use the source file or a specific FORTRAN programming
 (function \telfile{T3D\_TRSCE}).
 
 
@@ -193,10 +198,14 @@ subroutine.
 \section{Numerical setup}
 
 As with hydrodynamics, the advection schemes \telkey{SCHEME FOR ADVECTION OF
-TRACERS} (refer to subsection 6.1.1) and the diffusion schemes \telkey{SCHEME
-FOR DIFFUSION OF TRACERS} (refer to subsection 6.1.2) can be modified.
+TRACERS} (refer to subsection \ref{sec:advstep}) and the diffusion schemes
+\telkey{SCHEME FOR DIFFUSION OF TRACERS} (refer to subsection
+\ref{sec:difstep}) can be modified.
 
 Otherwise, the horizontal and vertical diffusion of the tracers can be set with
 the keywords \telkey{COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS } and
 \telkey{COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS}. Their default values
-are 10${}^{-6}$~m${}^{2}$/s.
+are $10^{-6}$~m${}^{2}$/s.
+These two keywords are arrays since version 7.1, with one value per tracer,
+separated by semicolons, so that different values can be given for different
+tracers.

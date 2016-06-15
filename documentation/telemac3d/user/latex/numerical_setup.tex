@@ -23,6 +23,7 @@ these stages.
 
 
 \subsection{Advection step}
+\label{sec:advstep}
 Whether the convection terms will be considered or not will be determined by
 means of the logical keyword \telkey{ADVECTION STEP} (default
 value YES). However, even though that keyword is set to YES, then some
@@ -46,6 +47,7 @@ and turbulent dissipation,
 See section \ref{sec:advection} for more information on the possible choices.
 
 \subsection{Diffusion step}
+\label{sec:difstep}
 
 Whether the diffusion terms are taken into account or not is established by
 means of the logical keyword \telkey{DIFFUSION STEP} (default value YES).
@@ -72,7 +74,7 @@ horizontal diffusion and the vertical diffusion.
 
 \subsection{Propagation step}
 
-the velocity and water depth propagation processes are taken into account by
+The velocity and water depth propagation processes are taken into account by
 the logical keyword \telkey{PROPAGATION STEP} (default value YES).
 
 Since the version 6.0 of TELEMAC, the propagation step is necessarily treated
@@ -97,12 +99,12 @@ logical keyword \telkey{DYNAMIC PRESSURE IN WAVE EQUATION} but it leads a
 dilemma:
 
 \begin{itemize}
-\item if the keyword is set to YES, the dynamic pressure gradient is taken
+\item If the keyword is set to YES, the dynamic pressure gradient is taken
 into account when calculating the evolution of the water depth (advantage), but
 the evolution of the water depth is not known when calculating the dynamic
 pressure (disadvantage),
 
-\item if the keyword is set to NO (which is the default value), the dynamic
+\item If the keyword is set to NO (which is the default value), the dynamic
 pressure is calculated taking into account the evolution of the water depth
 (advantage) but it is not taken into account in the calculation of the water
 depth (disadvantage).
@@ -168,7 +170,7 @@ number of sub-iterations exceeds 100, \telemac{3D} considers that the treatment
 of the advection term is problematic and the calculation is interrupted,
 printing an error message in the list control.
 
-The default value for both velocity and \textit{k}-$\epsilon$ is 1. That value
+The default value for both velocity and $k$-$\epsilon$ is 1. That value
 is advisable, since it is satisfactory in many instances and is by far the
 fastest. On the contrary, the default value for the tracers is 5. It is the
 most reliable scheme, since the "mass" conservation of the active tracers is a
@@ -191,12 +193,12 @@ Theoretical Note).
 
 The SUPG scheme can be configured using specific keywords (see \ref{sec:supg}).
 
-\subsection{Configuration of the supg scheme}
+\subsection{Configuration of the SUPG scheme}
 \label{sec:supg}
 When using the SUPG method, the user must determine the type of upwinding
 desired using the keyword \telkey{SUPG OPTION} which is an array of
 4 integers related, to the velocity, the water depth, tracers and
-\textit{k}-$\varepsilon $ model respectively.
+$k$-$\varepsilon $ model respectively.
 
 The possible values are:
 
@@ -218,7 +220,7 @@ considered as the most universal).
 
 \subsection{Configuration of the weak characteristics}
 
-when choosing the method of characteristics, two forms can be used with the
+When choosing the method of characteristics, two forms can be used with the
 keyword\telkey{OPTION FOR CHARACTERISTICS}:
 
 \begin{itemize}
@@ -240,14 +242,14 @@ computational costs are.
 
 \section{Specific parameters in the non-hydrostatic version}
 
-the application of the software \telkey{NON-HYDROSTATIC VERSION} (default = NO)
+The application of the software \telkey{NON-HYDROSTATIC VERSION} (default = NO)
 requires that complementary keywords be defined.
 
 An equation for vertical velocity is initially solved in a same way as the
-\textit{U} and \textit{V} components. That equation is only written with the
+$U$ and $V$ components. That equation is only written with the
 hydrostatic pressure which, under that hypothesis, is cancelled out with the
 gravity term. The convection scheme in that equation is identical to that
-chosen for \textit{U} and \textit{V} (keyword \telkey{SCHEME FOR ADVECTION OF
+chosen for $U$ and $V$ (keyword \telkey{SCHEME FOR ADVECTION OF
 VELOCITIES}). The solution of the linear system (for the diffusion step
 integrating the advection terms or not) is managed by the various following
 keywords:
@@ -270,16 +272,16 @@ zero divergence on velocity. The solution of the linear system in that equation
 is managed by the following keywords:
 
 \begin{itemize}
-\item \telkey{SOLVER FOR PPE} refer to subsection 6.5.1 below,
+\item \telkey{SOLVER FOR PPE} refer to subsection \ref{sec:solver} below,
 
-\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR PPE} refer to subsection 6.5.2
+\item \telkey{MAXIMUM NUMBER OF ITERATIONS FOR PPE} refer to subsection \ref{sec:accuracy}
 below,
 
-\item \telkey{ACCURACY FOR PPE} refer to subsection 6.5.2 below,
+\item \telkey{ACCURACY FOR PPE} refer to subsection \ref{sec:accuracy} below,
 
-\item \telkey{OPTION OF SOLVER FOR PPE} refer to subsection 6.5.1 below,
+\item \telkey{OPTION OF SOLVER FOR PPE} refer to subsection \ref{sec:solver} below,
 
-\item \telkey{PRECONDITIONING FOR PPE} refer to subsection 6.5.3 below.
+\item \telkey{PRECONDITIONING FOR PPE} refer to subsection \ref{sec:precond} below.
 \end{itemize}
 
 Once that pressure is computed, all the velocity components are updated with
@@ -294,7 +296,7 @@ water depth components) can be considered in both extreme instants $t^{n}$ (the
 equation is then referred to as explicit) or $t^{n+1}$ (the equation is then
 referred to as implicit). Strictly speaking, and for a 2-order solution in
 time, an approach consists in considering the terms in the intermediate
-instant$(f^{n} +f^{n+1} )/2$. Practically, the latter approach is unstable and
+instant$(f^{n} +f^{n+1})/2$. Practically, the latter approach is unstable and
 it becomes necessary to define an implicitation coefficient for which the
 unknowns are actually discretized in time in the following form:
 \[\theta f^{n+1} +(1-\theta )f^{n} .\]
@@ -314,10 +316,11 @@ $\theta_{u}^{d}$ is provided (keyword \telkey{IMPLICITATION FOR DIFFUSION}
 \section{Solution of the linear systems}
 
 Both discretization and variational formulation of the equations lead to a
-linear system which now has to be solved. The direct solution methods are not
-suitable and are overly expensive as soon as there are many unknowns. Thus, the
-only ways developed in \telemac{3D} consist in solving the linear systems by
-means of iterative solvers or a direct solver.
+linear system which now has to be solved. The direct solution methods are often
+not suitable and are overly expensive as soon as there are many unknowns.
+Thus, the main ways developed in \telemac{3D} consist in solving the linear
+systems by means of iterative solvers. Nevertheless for specific applications,
+a direct solver can be used.
 
 
 \subsection{Solvers}
@@ -345,7 +348,8 @@ Each of these keywords can assume a value ranging from 1 to 8, which values
 correspond to the following possibilities:
 
 \begin{itemize}
-\item 1: conjugate gradient method,
+\item 1: conjugate gradient method (when the matrix of the system to solve
+is symmetric),
 
 \item 2: conjugate residual method,
 
@@ -387,7 +391,7 @@ convergence is.
 \label{sec:accuracy}
 The principle of iterative methods consists in getting gradually closer to the
 exact solution during the iterations. The systems to be solved imply a relative
-accuracy within a range from 10${}^{-4}$ to 10${}^{-10}$ with a restricted
+accuracy within a range from $10^{-4}$ to $10^{-10}$ with a restricted
 number of iterations. Both accuracy and maximum number of iterations should be
 set for each system.
 
@@ -440,8 +444,8 @@ number of iterations, and then \telemac{3D} will provide the number of actually
 performed iterations, as well as the achieved accuracy,
 
 \item Or the treatment did not converge early enough. \telemac{3D} will then
-provide the message "MAXIMUM NUMBER OF ITERATIONS IS REACHED" and give the
-actually achieved accuracy. In some cases, and if the maximum number of
+provide the message "\telfile{MAXIMUM NUMBER OF ITERATIONS IS REACHED}" and give
+the actually achieved accuracy. In some cases, and if the maximum number of
 iterations is already set to a high value (for instance over 100), convergence
 can then be improved by reducing the time step or, quite often, by improving
 the quality of the mesh.
@@ -483,9 +487,9 @@ The available options are:
 
 \item 5:  diagonal preconditioning with absolute values,
 
-\item 7:  Crout preconditioning per elementCrout ,
+\item 7:  Crout preconditioning per elementCrout (downgraded in parallel),
 
-\item 11: Gauss-Seidel preconditioning per element,
+\item 11: Gauss-Seidel preconditioning per element (downgraded in parallel),
 
 \item 13: preconditioning matrix is provided by the user,
 
@@ -572,7 +576,8 @@ element (default value),
 
 The keyword \telkey{THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS} (default
 value is 0.2) allows to specify the minimum water depth from which the
-viscosity is gradually reduced (see programming within the VISCLIP subroutine).
+viscosity is gradually reduced (see programming within the \telfile{VISCLIP}
+subroutine).
 
 When the three-dimensional mesh has crushed levels (null water depth or fixed
 level "hitting" the bottom), it is recommended to activate a specific treatment
@@ -613,9 +618,9 @@ Theoretical Note.
 
 Another way to speed up the system convergence when solving the propagation
 step consists in acting upon the initial solution rather than the matrix
-proper. To that purpose, the initial value being set for \textit{h} (actually,
-the unknown $h^{n+1}$ is replaced by the incrementation$\delta h=h^{n+1} -h^{n}
-$) is modified at the beginning of computation, the user can take action at the
+proper. To that purpose, the initial value being set for $h$ (actually,
+the unknown $h^{n+1}$ is replaced by the incrementation $\delta h=h^{n+1} -h^{n}$)
+is modified at the beginning of computation, the user can take action at the
 keyword \telkey{INITIAL GUESS FOR DEPTH} which can assume the following values:
 
 \begin{itemize}
