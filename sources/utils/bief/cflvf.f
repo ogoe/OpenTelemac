@@ -138,7 +138,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,J,IELEM,I1,I2,I3,N,ISEG
-      DOUBLE PRECISION DENOM,A,B,DIFF,DI,MINEL,MAXEL
+      DOUBLE PRECISION DI,MINEL,MAXEL
 !
 !     HARDCODED OPTION (1: CLASSICAL 2: BASED ON LOCAL MIN AND MAX
 !                                    3: MIN AND MAX GIVEN)

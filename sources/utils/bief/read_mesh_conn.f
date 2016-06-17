@@ -6,7 +6,7 @@
      &  IPOBO)
 !
 !***********************************************************************
-! HERMES   V6P3                                   21/08/2010
+! HERMES   V7P0
 !***********************************************************************
 !
 !brief    READS THE CONNECTIVITY TABLE AND NUMBERING FOR THE
@@ -16,7 +16,6 @@
 !+        21/05/2015
 !+        V7P0
 !+   First version.
-!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT FOR GEOMETRY FILE
@@ -28,7 +27,6 @@
 !| NPTFR          |<--| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, ONLY: NCSIZE
       USE INTERFACE_HERMES
       IMPLICIT NONE
       INTEGER LNG,LU

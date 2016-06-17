@@ -731,7 +731,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     CHECKS WHETHER THERE IS A VALIDATION FILE
+!     CHECKS WHETHER THERE IS A REFERENCE FILE
 !
       IF (VALID.AND.SIS_FILES(SISREF)%NAME.EQ.' ') THEN
           VALID=.FALSE.
@@ -739,9 +739,11 @@
         IF (LNG.EQ.2) WRITE(LU,71)
         WRITE(LU,*)
 70      FORMAT(/,1X,'VALIDATION IMPOSSIBLE  :      ',/
-     &          ,1X,'PAS DE FICHIER DE VALIDATION !        ')
+     &          ,1X,'PAS DE FICHIER DE REFERENCE !        ')
 71      FORMAT(/,1X,'VALIDATION IS NOT POSSIBLE :  ',/
-     &          ,1X,'NO VALIDATION FILE  !                 ')
+     &          ,1X,'NO REFERENCE FILE  !                 ')
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !MGDL
