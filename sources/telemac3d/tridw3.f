@@ -10,7 +10,7 @@
      & GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    CORRECTS FLUXES AND COMPUTES AN AVERAGED VALUE OF
@@ -32,6 +32,12 @@
 !+        V7P1
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        20/06/2016
+!+        V7P2
+!+   OPTSOU added at the end of the call to RHS_PRESSURE. Missing
+!+   USE INTERFACE_TELEMAC3D added (reason why this bug was overlooked).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COR_EXT        |<->| WORK ARRAY, CORRECTION OF FLUEXT
@@ -88,6 +94,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
+      USE INTERFACE_TELEMAC3D, EX_TRIDW3 => TRIDW3
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -170,7 +177,7 @@
       CALL RHS_PRESSURE(SEM3D,UCONV,VCONV,WCONV,IELM3,DM1,
      &                  GRAZCO,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
      &                  NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,
-     &                  DSSUDT,NPOIN2,NPOIN3,NPLAN)
+     &                  DSSUDT,NPOIN2,NPOIN3,NPLAN,OPTSOU)
       CALL OS('X=Y-Z   ',X=COR_VER,Y=SEM3D,Z=COR_INT)
 !
       IF(TESTING) THEN
@@ -399,3 +406,4 @@
 !
       RETURN
       END
+
