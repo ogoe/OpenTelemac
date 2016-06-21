@@ -127,6 +127,12 @@
 !+        V7P2
 !+ CALFA,SALFA dependent of grain classes
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/06/2016
+!+        V7P2
+!+   Changing the formula for VALNIT when coupling. For some reason the
+!+   old formula is no longer valid.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -235,7 +241,6 @@
       SAVE AT0                 ! TIME
 !     NUMEN0 : 1ST RECORD TO READ
       INTEGER :: NUMEN0
-      INTEGER :: RECORD
 !
 !     VARIABLES TO READ IF COMPUTATION IS CONTINUED
 !     --------------------------------
@@ -994,7 +999,9 @@
 !
         IF(CODE(1:7) == 'TELEMAC') THEN
 !         VALNIT WILL BE USED FOR CALLING VALIDA
-          VALNIT = (TELNIT/PERICOU)*PERICOU-PERICOU+1
+!         JMH ON 21/06/2016: IT SEEMS THAT THE FORMULA ON NEXT LINE IS OUTDATED...
+!         VALNIT = (TELNIT/PERICOU)*PERICOU-PERICOU+1
+          VALNIT = (TELNIT/PERICOU)*PERICOU
 !         MODIFICATION JMH + CV: TO AVOID 2 SUCCESSIVE CALLS TO VALIDA
 !         WHEN BEDLOAD AND SUSPENSION
           IF(GRAFCOUNT.GT.TELNIT) VALNIT=NIT+1
@@ -1088,7 +1095,6 @@
      &        Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
               IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
 !
-!             BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
 !             NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
 !
               IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
@@ -1893,3 +1899,4 @@
 !
       RETURN
       END
+

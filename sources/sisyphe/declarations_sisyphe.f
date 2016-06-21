@@ -1234,6 +1234,10 @@
 !
       DOUBLE PRECISION :: MASBED0,MASBED
 !
+!     MINIMUM DEPTH FOR BEDLOAD
+!
+      DOUBLE PRECISION :: HMIN_BEDLOAD
+!
 !-----------------------------------------------------------------------
 !
 !       7) STRINGS

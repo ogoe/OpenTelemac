@@ -87,6 +87,11 @@
 !+  Call to flusec_sis added for new computation of discharges through
 !+  cross-sections.
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        10/06/2016
+!+        V7P2
+!+  Cancelling sediment fluxes to and from dry nodes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| DT             |-->| TIME STEP
@@ -129,7 +134,7 @@
 !
       USE BIEF
       USE INTERFACE_SISYPHE, EX_BEDLOAD_SOLVS_FE => BEDLOAD_SOLVS_FE
-      USE DECLARATIONS_SISYPHE, ONLY : DOFLUX
+      USE DECLARATIONS_SISYPHE, ONLY : DOFLUX,HN,HMIN_BEDLOAD
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -152,10 +157,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,N
-!
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+      INTEGER K,N,I1,I2,ISEG
 !
 !-----------------------------------------------------------------------
 !
@@ -184,14 +186,37 @@
         ENDIF
       ENDDO
 !
-!     HERE T1 MAY NOT BE ASSEMBLED, WE WORK DIRECTLY ON MESH%W%R AFTER
-!     ADD LEGO=.FALSE. WHEN IT IS AN OPTIONAL ARGUMENT
+!     HERE T1 MAY NOT BE ASSEMBLED, WE WORK DIRECTLY ON MESH%W%R AFTER,
+!     FOR CALLING FLUX_EF_VF (IT IS T1 IN NON ASSEMBLED FORM)
 !
       CALL VECTOR(T1,'=','VGRADP          ',QSX%ELM,-1.D0,
      &            S,S,S,QSX,QSY,S,MESH,MSK,MASKEL,LEGO=.FALSE.)
 !
+!     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!     NEW SECTION JMH 10/06/2016: FLODEL COMPUTED HERE, NOT IN POSITIVE_DEPTHS
+!
+      CALL FLUX_EF_VF(FLODEL%R,MESH%W%R,MESH%NSEG,MESH%NELEM,
+     &                MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                MESH%IKLE%I,.TRUE.,2)
+!
+!     CANCELLING THE FLUXES TO AND FROM DRY POINTS
+!
+      DO ISEG=1,NSEG
+        I1=GLOSEG(ISEG,1)
+        I2=GLOSEG(ISEG,2)
+        IF(HN%R(I1).LT.HMIN_BEDLOAD.OR.
+     &     HN%R(I2).LT.HMIN_BEDLOAD) FLODEL%R(ISEG)=0.D0
+      ENDDO
+!
+!     END OF NEW SECTION (ONLY TRUE CHANGED INTO FALSE AFTER FLODEL IN THE NEXT CALL)
+!
+!     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,HZ,HZN,MESH,
-     &                     FLODEL,.TRUE.,FLBCLA,DT,UNSV2D,NPOIN,
+!                                  !!!!!!
+!    &                     FLODEL, .TRUE.,FLBCLA,DT,UNSV2D,NPOIN,
+     &                     FLODEL,.FALSE.,FLBCLA,DT,UNSV2D,NPOIN,
      &                     GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
      &                     MESH%NBOR%I,NPTFR,T8,.FALSE.,
 !                                            VOID
@@ -219,3 +244,4 @@
 !
       RETURN
       END
+

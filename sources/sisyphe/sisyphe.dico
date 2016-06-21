@@ -3166,18 +3166,18 @@ Should be chosen between 0.75 (rough bottom) and 1 (smooth bottom)'
 /
 / UM MORPHOLOGICAL FACTOR
 /
-NOM = 'MORPHOLOGICAL FACTOR'
+NOM = 'FACTEUR MORPHOLOGIQUE'
 NOM1 = 'MORPHOLOGICAL FACTOR'
 TYPE = REEL
 INDEX = 262
 MNEMO = 'MOFAC'
-DEFAUT = 1.0E-00
-DEFAUT1 = 1.0E-00
+DEFAUT = 1.
+DEFAUT1 = 1.
 RUBRIQUE = 'CALCUL';'GENERAL'
 RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
 NIVEAU = 1
-AIDE = '(-)'
-AIDE1 = 'Amplification for the morphological time scale(-)'
+AIDE = 'Coefficient de l''echelle des temps'
+AIDE1 = 'Amplification for the morphological time scale'
 /
 / New file for variations in time of boundary conditions
 /
@@ -3650,6 +3650,19 @@ RUBRIQUE1 = 'GENERAL'
 NIVEAU = 2
 AIDE = 'FLUXLINE'
 AIDE1 ='Use Fluxline to compute flux over lines'
+
+NOM = 'PROFONDEUR MINIMUM POUR LE CHARRIAGE'
+NOM1 = 'MINIMUM DEPTH FOR BEDLOAD'
+TYPE = REEL
+INDEX = 52
+MNEMO = 'HMIN_BEDLOAD'
+DEFAUT = 1.E-2
+DEFAUT1 = 1.E-2
+RUBRIQUE = 'CALCUL';'GENERAL'
+RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
+NIVEAU = 1
+AIDE = 'Suppression des flux de sediment de et vers les points secs'
+AIDE1 = 'To cancel sediment fluxes to and from dry points'
 
 /
 / FOR PERL OR PYTHON SCRIPTS
