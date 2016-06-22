@@ -297,6 +297,9 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                      cdir = path.join(getcwd(),cref)
                      cfor = []
                      for file in listdir(cdir):
+                        if file == cref:
+                           continue
+                        # Skipping the executable that has the same name as the folder
                         if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
                      print '   re-bundling: ', path.basename(cref),crun
                      putFileContent(crun,cfor+[''])
@@ -350,6 +353,8 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                cdir = path.join(getcwd(),cref)
                cfor = []
                for file in listdir(cdir):
+                  if file == cref:
+                     continue
                   if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
                print '      bundling: ', path.basename(cref),crun
                putFileContent(crun,cfor+[''])
@@ -1050,12 +1055,15 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                                 +cfg['SYSTEM']['sfx_exe'])
             # /!\ removing dependency over cfg['REBUILD']:
             if path.exists(useFile):
-               if cfg['REBUILD'] == 1:
-                  remove(useFile)
-               elif isNewer(useFile,exeFile) == 1:
-                  remove(useFile)
-               elif isNewer(useFile,useFort) == 1:
-                  remove(useFile)
+               if path.isdir(useFile):
+                  useFile = useFile + sep + path.basename(useFile)
+               if path.exists(useFile):
+                  if cfg['REBUILD'] == 1:
+                     remove(useFile)
+                  elif isNewer(useFile,exeFile) == 1:
+                     remove(useFile)
+                  elif isNewer(useFile,useFort) == 1:
+                     remove(useFile)
             #> default command line compilation and linkage
          if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdo')):
             raise Exception([{'name':'runCAS','msg': \
