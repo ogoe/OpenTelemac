@@ -234,6 +234,64 @@
           IF(NDP.EQ.4) TYP_ELT = QUADRANGLE_ELT_TYPE
         ENDIF
       END SUBROUTINE
+!***********************************************************************
+      SUBROUTINE IDENTIFY_ENDIAN_TYPE
+!***********************************************************************
+!
+     &(FILE_NAME,OPENMODE,ENDIAN)
+!
+!***********************************************************************
+! HERMES   V7P0                                               01/05/2014
+!***********************************************************************
+!
+!brief    Read the first tag of a Serafin file to detect if it is in
+!+        little or big Endian
+!
+!history  Y AUDOUIN (LNHE)
+!+        11/05/2016
+!+        V7P2
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FILE_NAME      |<--| Name of the file
+!| OPENMODE       |-->| READ, READWRITE OR WRITE
+!| ENDIAN         |-->| Encoding of integer and real in the file
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+        IMPLICIT NONE
+        !
+        CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
+        CHARACTER(LEN=9), INTENT(IN) :: OPENMODE
+        CHARACTER(LEN=13),INTENT(OUT) :: ENDIAN
+        !
+        INTEGER(KIND=K4) :: I
+        INTEGER :: FILE_ID
+        LOGICAL :: FILE_EXIST
+        INTEGER :: IERR
+        !
+        ENDIAN = 'BIG_ENDIAN'
+        ! If the file does not exist return BIG_ENDIAN (i.e output file)
+        INQUIRE(FILE=FILE_NAME,EXIST=FILE_EXIST)
+        IF(.NOT.FILE_EXIST) RETURN
+
+        OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
+     &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
+     &       IOSTAT=IERR)
+        CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:BIG')
+        READ(FILE_ID,POS=1,IOSTAT=IERR) I
+        CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:BIG')
+        CLOSE(FILE_ID)
+        IF(I.NE.80) THEN
+          ENDIAN = 'LITTLE_ENDIAN'
+          OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
+     &         FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
+     &         IOSTAT=IERR)
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:LITTLE')
+          READ(FILE_ID,POS=1,IOSTAT=IERR) I
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:LITTLE')
+          CLOSE(FILE_ID)
+        ENDIF
+      END SUBROUTINE
 
 !***********************************************************************
       SUBROUTINE OPEN_MESH_SRF
@@ -277,12 +335,13 @@
         INTEGER(KIND=K4) :: TAG
         REAL :: TIME
         INTEGER(KIND=I8) :: I, POS, FSIZE
+        CHARACTER(LEN=13) :: ENDIAN
         !
         ! ADD A NEW FILE TO THE HASH TABLE
         CALL ADD_SRF_FILE(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:ADD_SRF_FILE')
         !
-        ! BECAUSE of the stream mode in write only we need t ohave read access
+        ! BECAUSE of the stream mode in write only we need to have read access
         ! to position the file pointer so if the file is in write only
         ! we open it in readwrite
         IF(OPENMODE(1:5).EQ.'WRITE') THEN
@@ -290,10 +349,12 @@
         ELSE
           SRF_OPENMODE = OPENMODE
         ENDIF
-        !
+        ! Get the Endian for the file
+        CALL IDENTIFY_ENDIAN_TYPE(FILE_NAME,OPENMODE,ENDIAN)
         ! OPEN THE FILE IN STREAM MODE
         OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
-     &       FORM='UNFORMATTED', ACCESS='STREAM',IOSTAT=IERR)
+     &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
+     &       IOSTAT=IERR)
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
         !
         ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
@@ -2292,14 +2353,6 @@
           TAG = SRF_OBJ_TAB(SRF_ID)%RS*N
           WRITE(FILE_ID,IOSTAT=IERR) TAG,(REAL(VAR_VALUE(I)),I=1,N),TAG
           CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
-         !WRITE(FILE_ID,IOSTAT=IERR) TAG
-         !CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
-         !DO I=1,N
-         !  WRITE(FILE_ID,IOSTAT=IERR) REAL(VAR_VALUE(I))
-         !  CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
-         !ENDDO
-         !WRITE(FILE_ID,IOSTAT=IERR) TAG
-         !CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
         ELSE
           ! write time of the dataset if it is the first variable
           ! write the data for that variable
