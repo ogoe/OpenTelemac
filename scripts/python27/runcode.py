@@ -541,7 +541,7 @@ def getHPCDepend(cfgHPC):
 
 def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
 
-   if path.exists(f90Name) and not path.exists(useName):
+   if path.exists(f90Name) and (not path.exists(useName) or path.isdir(useName)):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       objCmd = objCmd.replace('<f95name>',f90Name)
       mes = MESSAGES(size=10)
