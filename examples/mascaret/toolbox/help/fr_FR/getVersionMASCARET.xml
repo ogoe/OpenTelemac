@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getVersionMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getVersion" xml:lang="fr">
     <refnamediv>
-        <refname>getVersionMASCARET</refname>
+        <refname>MASCARET_getVersion</refname>
         <refpurpose>Renvoie le numéro de version du noyau de calcul MASCARET</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[a,b,c]=getVersionMASCARET()</synopsis>
+        <synopsis>[a,b,c]=MASCARET_getVersion()</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -47,7 +47,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // version of the MASCARET computation kernel
-[a,b,c] = getVersionMASCARET();
+[a,b,c] = MASCARET_getVersion();
 
 disp(strcat([ascii(a+48) '.' ascii(b+48) '.' ascii(c+48)]),'MASCARET version : ');
       
@@ -57,7 +57,7 @@ disp(strcat([ascii(a+48) '.' ascii(b+48) '.' ascii(c+48)]),'MASCARET version : '
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="createMASCARET">createMASCARET</link>
+                <link linkend="MASCARET_create">MASCARET_create</link>
             </member>
         </simplelist>
     </refsection>

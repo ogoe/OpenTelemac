@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getErrorMASCARET" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getError" xml:lang="en">
     <refnamediv>
-        <refname>getErrorMASCARET</refname>
+        <refname>MASCARET_getError</refname>
         <refpurpose>Gives the error message of a MASCARET instance</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error,message]=getErrorMASCARET(id)</synopsis>
+        <synopsis>[error,message]=MASCARET_getError(id)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -19,7 +19,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -47,7 +47,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -61,16 +61,16 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xxcas","geo","loi","loi","listing","res"]; // "xxcas" is not a valid extension!
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 // assert_checkequal(err,0);
         
 // get the error message
 if err then 
-   [err,message] = getErrorMASCARET(id)
+   [err,message] = MASCARET_getError(id)
 end   
         
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);       
    </programlisting>
 </refsection>
@@ -78,13 +78,13 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
             <member>
-                <link linkend="createMASCARET">createMASCARET</link>
+                <link linkend="MASCARET_create">MASCARET_create</link>
             </member>
             <member>
-                <link linkend="importModelMASCARET">importModelMASCARET</link>
+                <link linkend="MASCARET_importModel">MASCARET_importModel</link>
             </member>
             <member>
-                <link linkend="deleteMASCARET">deleteMASCARET</link>
+                <link linkend="MASCARET_delete">MASCARET_delete</link>
             </member>
         </simplelist>
     </refsection>

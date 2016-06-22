@@ -568,8 +568,8 @@ files:
   Y12M|y12mbf.f
   Y12M|y12mcf.f
   Y12M|y12mdf.f
-  err_alloc.f90
-  print_stat_masc.f90
+  Super|err_alloc.f90
+  Super|print_stat_masc.f90
   homere_mascaret.f90
   API|f90|calcul_mascaret_condition_limite.f90
   API|f90|calcul_mascaret.f90

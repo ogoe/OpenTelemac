@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="setIntMASCARET" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_setInt" xml:lang="en">
     <refnamediv>
-        <refname>setIntMASCARET</refname>
+        <refname>MASCARET_setInt</refname>
         <refpurpose>Mutator to control changes to an integer variable</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error]=setIntMASCARET(id,nameVar,index1,index2,index3,value)</synopsis>
+        <synopsis>[error]=MASCARET_setInt(id,nameVar,index1,index2,index3,value)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,13 +25,13 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
                 <term>nameVar</term>
                 <listitem>
-                    <para>Name of the variable (dot notation), the list of all the possible variables is returned by <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                    <para>Name of the variable (dot notation), the list of all the possible variables is returned by <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -71,7 +71,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -85,18 +85,18 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
 
 // set the cross section layout
-[err] = setIntMASCARET(id,"Model.CSectionLayout",0,0,0,2);
+[err] = MASCARET_setInt(id,"Model.CSectionLayout",0,0,0,2);
 assert_checkequal(err,0); 
-[err,ModeleLit] = getIntMASCARET(id,"Model.CSectionLayout",0,0,0);
+[err,ModeleLit] = MASCARET_getInt(id,"Model.CSectionLayout",0,0,0);
 assert_checkequal(err,0); 
 disp(ModeleLit,"Cross section layout : ");
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);                
 		</programlisting>
     </refsection>
@@ -104,7 +104,7 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
             <member>
-                <link linkend="getIntMASCARET">getIntMASCARET</link>
+                <link linkend="MASCARET_getInt">MASCARET_getInt</link>
             </member>
         </simplelist>
     </refsection>

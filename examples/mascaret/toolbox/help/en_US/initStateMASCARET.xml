@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="initStateMASCARET" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_initState" xml:lang="en">
     <refnamediv>
-        <refname>initStateMASCARET</refname>
+        <refname>MASCARET_initState</refname>
         <refpurpose>Initialise a MASCARET model with water level and discharge values</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error] = initStateMASCARET(id,Q,Z)</synopsis>
+        <synopsis>[error] = MASCARET_initState(id,Q,Z)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -46,7 +46,7 @@
         <title>Description</title>
         <para>Function for initialising a MASCARET model with water level and discharge values.</para>
         <para>This function initialises the state with two vectors (discharge and water level) for an initial solution.</para>
-        <para>Before using this function, it is necessary to import a MASCARET model with the function <link linkend="importModelMASCARET">importModelMASCARET</link>.</para>
+        <para>Before using this function, it is necessary to import a MASCARET model with the function <link linkend="MASCARET_importModel">MASCARET_importModel</link>.</para>
     </refsection>
     <refsection>
         <title>Example</title>
@@ -55,7 +55,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -69,19 +69,19 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
         
 // initialisation
-[err,size1,size2,size3] = getSizeVarMASCARET(id,"Model.X", 0);
+[err,size1,size2,size3] = MASCARET_getSizeVar(id,"Model.X", 0);
 assert_checkequal(err,0);  
 Qinit = zeros(size1,1);
 Zinit = 2*ones(size1,1);
-err = initStateMASCARET(id,Qinit,Zinit);
+err = MASCARET_initState(id,Qinit,Zinit);
 assert_checkequal(err,0);     
         
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -89,7 +89,7 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
 			<member>
-                <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>	
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>	
             </member>
         </simplelist>
     </refsection>

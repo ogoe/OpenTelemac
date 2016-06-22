@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="importXmlMASCARET" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_importXml" xml:lang="en">
     <refnamediv>
-        <refname>importXmlMASCARET</refname>
+        <refname>MASCARET_importXml</refname>
         <refpurpose>Export the MASCARET model or state in a file with the XML format</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error] = importXmlMASCARET(id,FileName,importModel)</synopsis>
+        <synopsis>[error] = MASCARET_importXml(id,FileName,importModel)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -45,8 +45,8 @@
     <refsection>
         <title>Description</title>
         <para>Export the MASCARET model or state in a file with the XML format</para>
-        <para>This function gives the possibility to import XML files containing a MASCARET model or state previously created by the function <link linkend="exportXmlMASCARET">exportXmlMASCARET</link></para>
-        <para>Before using this function, it is necessary to create a MASCARET instance, with the help of the function <link linkend="createMASCARET">createMASCARET</link>. If the state is imported, the model has to be initialized, with the help of one of the functions <link linkend="importModelMASCARET">importModelMASCARET</link> or <link linkend="importXmlMASCARET">importXmlMASCARET</link> with the last parameter equal to 1.</para>
+        <para>This function gives the possibility to import XML files containing a MASCARET model or state previously created by the function <link linkend="MASCARET_exportXml">MASCARET_exportXml</link></para>
+        <para>Before using this function, it is necessary to create a MASCARET instance, with the help of the function <link linkend="MASCARET_create">MASCARET_create</link>. If the state is imported, the model has to be initialized, with the help of one of the functions <link linkend="MASCARET_importModel">MASCARET_importModel</link> or <link linkend="MASCARET_importXml">MASCARET_importXml</link> with the last parameter equal to 1.</para>
     </refsection>
     <refsection>
         <title>Example</title>
@@ -55,17 +55,17 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();        
     
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // import Model and State
-err = importXmlMASCARET(id,"file:"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_Model.xml",1);
+err = MASCARET_importXml(id,"file:"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_Model.xml",1);
 assert_checkequal(err,0);    
-err = importXmlMASCARET(id,"file:"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_State.xml",0);
+err = MASCARET_importXml(id,"file:"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_State.xml",0);
 assert_checkequal(err,0);    
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);        
         
 		</programlisting>
@@ -74,10 +74,10 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
             <member>
-                <link linkend="exportXmlMASCARET">exportXmlMASCARET</link>
+                <link linkend="MASCARET_exportXml">MASCARET_exportXml</link>
             </member>
             <member>
-                <link linkend="importModelMASCARET">importModelMASCARET</link>
+                <link linkend="MASCARET_importModel">MASCARET_importModel</link>
             </member>
         </simplelist>
     </refsection>

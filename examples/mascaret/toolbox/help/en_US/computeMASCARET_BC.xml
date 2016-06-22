@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="computeMASCARET_BC" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_compute_BC" xml:lang="en">
     <refnamediv>
-        <refname>computeMASCARET_BC</refname>
+        <refname>MASCARET_compute_BC</refname>
         <refpurpose>Computing function for one or more time steps with the boundary conditions.</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error]=computeMASCARET_BC(id,InitTime,FinalTime,TimeStep,TimeCl,Cl1,Cl2,print)</synopsis>
+        <synopsis>[error]=MASCARET_compute_BC(id,InitTime,FinalTime,TimeStep,TimeCl,Cl1,Cl2,print)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>MASCARET instance number returned by the function <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -79,8 +79,8 @@
     <refsection>
         <title>Description</title>
         <para>Function for the simulation of one or more time steps specifying new values for the boundary conditions. Compute a new hydraulic state with the help of the previous state and of the current model.</para>
-        <para>Another API function can also do the same job but with less arguments, it is  <link linkend="computeMASCARET">computeMASCARET</link></para>
-        <para>Before using this function, it is necessary to initialise the MASCARET state, calling one of the following functions  <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>, <link linkend="initStateMASCARET">initStateMASCARET</link> ou <link linkend="importXmlMASCARET">importXmlMASCARET</link> with the last parameter set to 0 (zero).</para>
+        <para>Another API function can also do the same job but with less arguments, it is  <link linkend="MASCARET_compute">MASCARET_compute</link></para>
+        <para>Before using this function, it is necessary to initialise the MASCARET state, calling one of the following functions  <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>, <link linkend="MASCARET_initState">MASCARET_initState</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> with the last parameter set to 0 (zero).</para>
     </refsection>
     <refsection>
         <title>Example</title>
@@ -89,7 +89,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -103,22 +103,22 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);        
         
 // get Boundary Conditions info        
-[err,pasTpsCalcul]=getDoubleMASCARET(id,"Model.DT",0,0,0);
+[err,pasTpsCalcul]=MASCARET_getDouble(id,"Model.DT",0,0,0);
 assert_checkequal(err,0);  
-[err,nbCl]=getNbBoundCondMASCARET(id);
+[err,nbCl]=MASCARET_getNbBoundCond(id);
 assert_checkequal(err,0);  
 for i = 1:nbCl
-    [err,nomCL,numLoi]=getNameBoundCondMASCARET(id,i);
+    [err,nomCL,numLoi]=MASCARET_getNameBndCond(id,i);
     assert_checkequal(err,0);
     printf("Name of the Boundary Condition # %d is : %s corresponding to the graph # %d\n", i, nomCL, numLoi);
 end
 
 // initialisation
-err = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
 assert_checkequal(err,0);
 
 // computation
@@ -131,11 +131,11 @@ deltaT       =    600.0;
 tpsCalcul1   =   deltaT; 
 tpsCl = (tpsCalcul0:deltaT/2:tpsCalcul1).';
 cl1(:,1) = 150./3600.* tpsCl;
-err = computeMASCARET_BC(id,tpsCalcul0, tpsCalcul1, pasTpsCalcul, tpsCl, cl1, cl2, impression);
+err = MASCARET_compute_BC(id,tpsCalcul0, tpsCalcul1, pasTpsCalcul, tpsCl, cl1, cl2, impression);
 assert_checkequal(err,0);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -143,13 +143,13 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
             <member>
-                <link linkend="computeMASCARET">computeMASCARET</link>
+                <link linkend="MASCARET_compute">MASCARET_compute</link>
             </member>
             <member>
-                <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>
             </member>
             <member>
-                <link linkend="initStateMASCARET">initStateMASCARET</link>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
             </member>
         </simplelist>
     </refsection>

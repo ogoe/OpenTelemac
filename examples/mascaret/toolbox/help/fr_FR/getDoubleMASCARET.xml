@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getDoubleMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getDouble" xml:lang="fr">
     <refnamediv>
-        <refname>getDoubleMASCARET</refname>
+        <refname>MASCARET_getDouble</refname>
         <refpurpose>Accesseur permettant d'accéder aux valeurs réelles</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur,valeur]=getDoubleMASCARET(id,nomVar,index1,index2,index3)</synopsis>
+        <synopsis>[erreur,valeur]=MASCARET_getDouble(id,nomVar,index1,index2,index3)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -31,13 +31,13 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
                 <term>nomVar</term>
                 <listitem>
-                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -66,12 +66,12 @@
    </refsection>
     <refsection>
         <title>Exemple</title>
-        <programlisting role="example">[erreur, id] = createMASCARET();
+        <programlisting role="example">[erreur, id] = MASCARET_create();
 toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -85,24 +85,24 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
         
 // initialisation
-err = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
 assert_checkequal(err,0);      
         
 // get the initial state on the cross-section #10 (water level)        
-[err,Z] = getDoubleMASCARET(id,"State.Z",10,0,0);
+[err,Z] = MASCARET_getDouble(id,"State.Z",10,0,0);
 assert_checkequal(err,0);  
 // get the initial state on the cross-section #10 (water discharge)        
-[err,Q] = getDoubleMASCARET(id,"State.Q",10,0,0);
+[err,Q] = MASCARET_getDouble(id,"State.Q",10,0,0);
 assert_checkequal(err,0);  
 
 printf("\tState on the cross-section #10 before the simulation :%f (m) and %f (m^3/s)\n",Z,Q);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -110,7 +110,7 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="setDoubleMASCARET">setDoubleMASCARET</link>
+                <link linkend="MASCARET_setDouble">MASCARET_setDouble</link>
             </member>
         </simplelist>
     </refsection>

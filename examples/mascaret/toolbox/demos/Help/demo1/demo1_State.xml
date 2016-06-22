@@ -821,17 +821,17 @@
  <State.NBARAD type="INT" description="Number of downstream dams (super-critical kernel)" dimension="0">0</State.NBARAD>
  <State.IDEB type="TABINT" description="Beginning of the computation area per reach (super-critical kernel)" dimension="1">
   <TABINT dim="1" taille="1">
-   <v>691273782</v>
+   <v>691273776</v>
   </TABINT>
  </State.IDEB>
  <State.IFIN type="TABINT" description="End of the computation area per reach (super-critical kernel)" dimension="1">
   <TABINT dim="1" taille="1">
-   <v>1764294686</v>
+   <v>1646854177</v>
   </TABINT>
  </State.IFIN>
  <State.ITEM0 type="TABINT" description="ITEM0 (super-critical kernel)" dimension="1">
   <TABINT dim="1" taille="1">
-   <v>2019885116</v>
+   <v>1936457773</v>
   </TABINT>
  </State.ITEM0>
  <State.Save.H2OIB type="TABDOUBLE" description="Initial water mass - REACH" dimension="1">

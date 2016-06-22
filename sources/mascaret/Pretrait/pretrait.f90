@@ -3006,8 +3006,8 @@ subroutine  PRETRAIT                                       ( &
 
    end if
 
-   call destroy(document)
-   call destroy(config)
+   !call destroy(document)
+   !call destroy(config)
    
    !Erreur%arbredappel = !arbredappel_old
 

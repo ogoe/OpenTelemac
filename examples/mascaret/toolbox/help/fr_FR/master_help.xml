@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book [
 <!--Begin Entities-->
-<!ENTITY a125a29a9916e6b6a2dcf75262a550d35 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/computeMASCARET.xml">
-<!ENTITY a0f425bfe3acf6580df128686687c036e SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/computeMASCARET_BC.xml">
-<!ENTITY a56808a06ddc20e766717048d1def87ee SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/createMASCARET.xml">
-<!ENTITY acb438217ab1caf5c660f91d6373c14db SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/deleteMASCARET .xml">
-<!ENTITY a7151db35e2b8706a6ce54e38853aa406 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/exportXmlMASCARET.xml">
-<!ENTITY a2bf83a6f5a661fdefec2707e6caafe51 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getBoolMASCARET.xml">
-<!ENTITY a3faa22393ee4c7df6d3ae6a628f05387 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getDescVarMASCARET.xml">
-<!ENTITY a2e6677fce8f216962770a46543a764b6 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getDoubleMASCARET.xml">
-<!ENTITY a205530fde67a019cab13a1ccf4a860d8 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getErrorMASCARET.xml">
-<!ENTITY abb9382c37ddb0e8594fb49deb51a88d8 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getIntMASCARET.xml">
-<!ENTITY a83a5c2bf37336d3a128a43867aac328c SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getSizeVarMASCARET.xml">
-<!ENTITY a460a028d80c6f2fdc89bef5ec1a95611 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getStringMASCARET.xml">
-<!ENTITY aae3a12d58f7c356ee291c79d10312788 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getTypeVarMASCARET.xml">
-<!ENTITY a42d3bfd2f91a4e2fc62b1d84466a97af SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/getVersionMASCARET.xml">
-<!ENTITY aa718a7fcb2163b6705f2165fefa27bab SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/importModelMASCARET.xml">
-<!ENTITY ab80f5203b0dfdf4c0ce4957d42c92c13 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/importXmlMASCARET.xml">
-<!ENTITY afdbe14230de74431a47782c31a2b7b43 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/initStateMASCARET.xml">
-<!ENTITY a1e0a4fca610537e8d156f46ca24cf50f SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/initStateNameMASCARET.xml">
-<!ENTITY ab5405f5cc3dcabeee290e49b74352dee SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/setBoolMASCARET.xml">
-<!ENTITY ae85c459ed1c2b6bcce40e6822cd25710 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/setDoubleMASCARET.xml">
-<!ENTITY a81b059a3600d13aad9d0b13afbc0349f SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/setIntMASCARET.xml">
-<!ENTITY a648700941e49c1410f475e85bc113ae5 SYSTEM "/home/B61570/opentelemac/branches/chromis/examples/mascaret/toolbox/help/fr_FR/setStringMASCARET.xml">
+<!ENTITY af07748c8691874ad28ff49fc5adfdc1c SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/computeMASCARET.xml">
+<!ENTITY a2295b3e3cccebed2d8f208aff0768231 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/computeMASCARET_BC.xml">
+<!ENTITY ae96c26c7e61eb491db437e4038fe11f5 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/createMASCARET.xml">
+<!ENTITY a23f369d5b58dd32552ebb8b9981f044b SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/deleteMASCARET .xml">
+<!ENTITY ad5e54930c9f62a21bbc045c586c3ed96 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/exportXmlMASCARET.xml">
+<!ENTITY ac1a85b59bf0b3bdf063484b2c02f54fd SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getBoolMASCARET.xml">
+<!ENTITY a7d4bd7c48616f62c9e6167b49213564b SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getDescVarMASCARET.xml">
+<!ENTITY a93d47fefadd986a9fba3cab4cf460a5d SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getDoubleMASCARET.xml">
+<!ENTITY a4528b8527ab4269f342890b7322e7c09 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getErrorMASCARET.xml">
+<!ENTITY a7449d090d0c3f205aeb6de3791e40dd6 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getIntMASCARET.xml">
+<!ENTITY af3d7bb67ce0ff0fdbf20a0e08215c74b SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getSizeVarMASCARET.xml">
+<!ENTITY a3c8828e05dd7de0750eb1ec748a61269 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getStringMASCARET.xml">
+<!ENTITY a0f4ffe1ecf7966bd40c103c4db51d4b1 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getTypeVarMASCARET.xml">
+<!ENTITY acd66f519ef9d65eb348e309e5a917dd1 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/getVersionMASCARET.xml">
+<!ENTITY a7eb6063bd5f4f3b75c25959d4635afdd SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/importModelMASCARET.xml">
+<!ENTITY a64b31ab78b5971c4eec6ddc58c66ab2a SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/importXmlMASCARET.xml">
+<!ENTITY a91d32112916016725f0bcf96e382c40d SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/initStateMASCARET.xml">
+<!ENTITY a7cef6c7adb90c2aedb4bb2e3594fb87c SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/initStateNameMASCARET.xml">
+<!ENTITY a51e71d82a37efab25a896e68b8f8052b SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/setBoolMASCARET.xml">
+<!ENTITY a3a440a9e372b29ca68c5aa40f2973681 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/setDoubleMASCARET.xml">
+<!ENTITY a99910c86856fd3c65a56014f92b6a1d3 SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/setIntMASCARET.xml">
+<!ENTITY a4b8d4d9e0578a000bb6a5dff96869d2e SYSTEM "file:///E:/Mascaret/toolbox/help/fr_FR/setStringMASCARET.xml">
 <!--End Entities-->
 ]>
 <book version="5.0-subset Scilab" xml:lang="fr_FR"
@@ -37,29 +37,29 @@
     <title>Toolbox Mascaret</title>
   </info>
 
-<part xml:id='section_b97b4e1a03e36210ca742f13a6174e4d'>
+<part xml:id='section_4aeed773b5a405cd24db8fc0dfe72986'>
 <title>Toolbox Mascaret</title>
-&a125a29a9916e6b6a2dcf75262a550d35;
-&a0f425bfe3acf6580df128686687c036e;
-&a56808a06ddc20e766717048d1def87ee;
-&acb438217ab1caf5c660f91d6373c14db;
-&a7151db35e2b8706a6ce54e38853aa406;
-&a2bf83a6f5a661fdefec2707e6caafe51;
-&a3faa22393ee4c7df6d3ae6a628f05387;
-&a2e6677fce8f216962770a46543a764b6;
-&a205530fde67a019cab13a1ccf4a860d8;
-&abb9382c37ddb0e8594fb49deb51a88d8;
-&a83a5c2bf37336d3a128a43867aac328c;
-&a460a028d80c6f2fdc89bef5ec1a95611;
-&aae3a12d58f7c356ee291c79d10312788;
-&a42d3bfd2f91a4e2fc62b1d84466a97af;
-&aa718a7fcb2163b6705f2165fefa27bab;
-&ab80f5203b0dfdf4c0ce4957d42c92c13;
-&afdbe14230de74431a47782c31a2b7b43;
-&a1e0a4fca610537e8d156f46ca24cf50f;
-&ab5405f5cc3dcabeee290e49b74352dee;
-&ae85c459ed1c2b6bcce40e6822cd25710;
-&a81b059a3600d13aad9d0b13afbc0349f;
-&a648700941e49c1410f475e85bc113ae5;
+&af07748c8691874ad28ff49fc5adfdc1c;
+&a2295b3e3cccebed2d8f208aff0768231;
+&ae96c26c7e61eb491db437e4038fe11f5;
+&a23f369d5b58dd32552ebb8b9981f044b;
+&ad5e54930c9f62a21bbc045c586c3ed96;
+&ac1a85b59bf0b3bdf063484b2c02f54fd;
+&a7d4bd7c48616f62c9e6167b49213564b;
+&a93d47fefadd986a9fba3cab4cf460a5d;
+&a4528b8527ab4269f342890b7322e7c09;
+&a7449d090d0c3f205aeb6de3791e40dd6;
+&af3d7bb67ce0ff0fdbf20a0e08215c74b;
+&a3c8828e05dd7de0750eb1ec748a61269;
+&a0f4ffe1ecf7966bd40c103c4db51d4b1;
+&acd66f519ef9d65eb348e309e5a917dd1;
+&a7eb6063bd5f4f3b75c25959d4635afdd;
+&a64b31ab78b5971c4eec6ddc58c66ab2a;
+&a91d32112916016725f0bcf96e382c40d;
+&a7cef6c7adb90c2aedb4bb2e3594fb87c;
+&a51e71d82a37efab25a896e68b8f8052b;
+&a3a440a9e372b29ca68c5aa40f2973681;
+&a99910c86856fd3c65a56014f92b6a1d3;
+&a4b8d4d9e0578a000bb6a5dff96869d2e;
 </part>
 </book>

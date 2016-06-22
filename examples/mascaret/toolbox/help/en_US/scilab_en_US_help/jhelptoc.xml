@@ -2,29 +2,29 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
 <tocitem target="index" text="Toolbox Mascaret">
-<tocitem target="section_96709d40103a5b79e460c5bb05c53d18" text="Toolbox Mascaret">
-<tocitem target="computeMASCARET" text="computeMASCARET"/>
-<tocitem target="computeMASCARET_BC" text="computeMASCARET_BC"/>
-<tocitem target="createMASCARET" text="createMASCARET"/>
-<tocitem target="deleteMASCARET" text="deleteMASCARET"/>
-<tocitem target="exportXmlMASCARET" text="exportXmlMASCARET"/>
-<tocitem target="getBoolMASCARET" text="getBoolMASCARET"/>
-<tocitem target="getDescVarMASCARET" text="getDescVarMASCARET"/>
-<tocitem target="getDoubleMASCARET" text="getDoubleMASCARET"/>
-<tocitem target="getErrorMASCARET" text="getErrorMASCARET"/>
-<tocitem target="getIntMASCARET" text="getIntMASCARET"/>
-<tocitem target="getSizeVarMASCARET" text="getSizeVarMASCARET"/>
-<tocitem target="getStringMASCARET" text="getStringMASCARET"/>
-<tocitem target="getTypeVarMASCARET" text="getTypeVarMASCARET"/>
-<tocitem target="getVersionMASCARET" text="getVersionMASCARET"/>
-<tocitem target="importModelMASCARET" text="importModelMASCARET"/>
-<tocitem target="importXmlMASCARET" text="importXmlMASCARET"/>
-<tocitem target="initStateMASCARET" text="initStateMASCARET"/>
-<tocitem target="initStateNameMASCARET" text="initStateNameMASCARET"/>
-<tocitem target="setBoolMASCARET" text="setBoolMASCARET"/>
-<tocitem target="setDoubleMASCARET" text="setDoubleMASCARET"/>
-<tocitem target="setIntMASCARET" text="setIntMASCARET"/>
-<tocitem target="setStringMASCARET" text="setStringMASCARET"/>
+<tocitem target="section_fc1a5f615a9597d48d09304f2898012d" text="Toolbox Mascaret">
+<tocitem target="MASCARET_compute" text="MASCARET_compute"/>
+<tocitem target="MASCARET_compute_BC" text="MASCARET_compute_BC"/>
+<tocitem target="MASCARET_create" text="MASCARET_create"/>
+<tocitem target="MASCARET_delete" text="MASCARET_delete"/>
+<tocitem target="MASCARET_exportXml" text="MASCARET_exportXml"/>
+<tocitem target="MASCARET_getBool" text="MASCARET_getBool"/>
+<tocitem target="MASCARET_getDescVar" text="MASCARET_getDescVar"/>
+<tocitem target="MASCARET_getDouble" text="MASCARET_getDouble"/>
+<tocitem target="MASCARET_getError" text="MASCARET_getError"/>
+<tocitem target="MASCARET_getInt" text="MASCARET_getInt"/>
+<tocitem target="MASCARET_getSizeVar" text="MASCARET_getSizeVar"/>
+<tocitem target="MASCARET_getString" text="MASCARET_getString"/>
+<tocitem target="MASCARET_getTypeVar" text="MASCARET_getTypeVar"/>
+<tocitem target="MASCARET_getVersion" text="MASCARET_getVersion"/>
+<tocitem target="MASCARET_importModel" text="MASCARET_importModel"/>
+<tocitem target="MASCARET_importXml" text="MASCARET_importXml"/>
+<tocitem target="MASCARET_initState" text="MASCARET_initState"/>
+<tocitem target="MASCARET_initStateName" text="MASCARET_initStateName"/>
+<tocitem target="MASCARET_setBool" text="MASCARET_setBool"/>
+<tocitem target="MASCARET_setDouble" text="MASCARET_setDouble"/>
+<tocitem target="MASCARET_setInt" text="MASCARET_setInt"/>
+<tocitem target="MASCARET_setString" text="MASCARET_setString"/>
 </tocitem>
 </tocitem>
 </toc>

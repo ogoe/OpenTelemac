@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="importModelMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_importModel" xml:lang="fr">
     <refnamediv>
-        <refname>importModelMASCARET</refname>
+        <refname>MASCARET_importModel</refname>
         <refpurpose>Fonction d'import d'un modèle MASCARET</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur] = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression)</synopsis>
+        <synopsis>[erreur] = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -81,7 +81,7 @@ Les valeurs possibles sont :</para>
         <title>Description</title>
         <para>Fonction d'import d'un modèle MASCARET en utilisant les fichiers natifs MASCARET.</para>
         <para>Cette fonction permet l'importation d'un modèle MASCARET à partir des fichiers natifs du code de calcul MASCARET. Ces fichiers sont disponibles dans Fudaa-MASCARET via le menu : « Fichier | Exporter | MASCARET ».</para>
-        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialiser une instance d'un modèle MASCARET, c'est-à-dire d'avoir fait appel à la fonction <link linkend="createMASCARET">createMASCARET</link>. Si l'on souhaite importer l'état, il faut avoir initialisé le Modèle, c'est-à-dire avoir fait appel à la fonction <link linkend="importModelMASCARET">importModelMASCARET</link>.</para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialiser une instance d'un modèle MASCARET, c'est-à-dire d'avoir fait appel à la fonction <link linkend="MASCARET_create">MASCARET_create</link>. Si l'on souhaite importer l'état, il faut avoir initialisé le Modèle, c'est-à-dire avoir fait appel à la fonction <link linkend="MASCARET_importModel">MASCARET_importModel</link>.</para>
     </refsection>
     <refsection>
         <title>Exemple</title>
@@ -90,7 +90,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -104,11 +104,11 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);        
 		</programlisting>
     </refsection>
@@ -116,7 +116,7 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="initStateMASCARET">initStateMASCARET</link>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
             </member>
         </simplelist>
     </refsection>

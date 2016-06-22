@@ -2302,8 +2302,8 @@ call LEC_DEVER             ( &
   !Erreur%arbredappel = !arbredappel_old
 !     write(12,*)'Fin Pretrait'
 
-   call destroy(document)
-   call destroy(config)
+   !call destroy(document)
+   !call destroy(config)
   
   return
 

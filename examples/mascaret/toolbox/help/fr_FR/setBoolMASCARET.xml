@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="setBoolMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_setBool" xml:lang="fr">
     <refnamediv>
-        <refname>setBoolMASCARET</refname>
+        <refname>MASCARET_setBool</refname>
         <refpurpose>Mutateur permettant de modifier les valeurs booléennes</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur]=setBoolMASCARET(id,nomVar,index1,index2,index3,valeur)</synopsis>
+        <synopsis>[erreur]=MASCARET_setBool(id,nomVar,index1,index2,index3,valeur)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,13 +25,13 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
                 <term>nomVar</term>
                 <listitem>
-                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -71,7 +71,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -85,15 +85,15 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
 
 // set the implicit mode to false
-[err]=setBoolMASCARET(id,"Model.ImpSupCritKern",0,0,0,0);
+[err]=MASCARET_setBool(id,"Model.ImpSupCritKern",0,0,0,0);
 assert_checkequal(err,0); 
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);        
 		</programlisting>
     </refsection>
@@ -101,7 +101,7 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="getBoolMASCARET">getBoolMASCARET</link>
+                <link linkend="MASCARET_getBool">MASCARET_getBool</link>
             </member>
         </simplelist>
     </refsection>

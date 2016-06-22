@@ -160,14 +160,14 @@
  </Model.CrossSection.Bound2>
  <Model.CrossSection.FricCoef1 type="DOUBLE" description="Friction coefficient of the main channel" dimension="1">
   <DOUBLE dim="1" taille="2">
-   <v>1.1888343537097810E-315</v>
-   <v>8.5448274005827584E-316</v>
+   <v>8.8931816251424378E-323</v>
+   <v>1.4853970540215366E-313</v>
   </DOUBLE>
  </Model.CrossSection.FricCoef1>
  <Model.CrossSection.FricCoef2 type="DOUBLE" description="Friction coefficient of the floodplain" dimension="1">
   <DOUBLE dim="1" taille="2">
-   <v>1.1888354604168277E-315</v>
-   <v>8.5448384676532252E-316</v>
+   <v>1.9097962121157779E-313</v>
+   <v>9.4004413543467056E-312</v>
   </DOUBLE>
  </Model.CrossSection.FricCoef2>
  <Model.VDSection.S type="TABDOUBLE" description="Total wetted area" dimension="2">
@@ -5401,7 +5401,7 @@
   </TABDOUBLE>
  </Model.LateralWeir.PtQ>
  <Model.File.Listing.Unit type="INT" description="Logical unit number Listing" dimension="0">-1</Model.File.Listing.Unit>
- <Model.File.Listing.Name type="STRING" description="Name of the file Listing" dimension="0">E:\Mascaret\toolbox\\demos\Help\demo1\demo1.lis</Model.File.Listing.Name>
+ <Model.File.Listing.Name type="STRING" description="Name of the file Listing" dimension="0">C:\Users\I21149\DOCUME~1\DEVELO~1\SCILAB~1\MASCAR~1.4-S\toolbox\demos\Help\demo1\demo1.lis</Model.File.Listing.Name>
  <Model.Link.Type type="INT" description="Type of the link (Weir, channel, syphon or culvert)" dimension="1">
   <INT dim="1" taille="0">
   </INT>
@@ -5523,7 +5523,7 @@
   </DOUBLE>
  </Model.Link.TimeMaxVelocity>
  <Model.File.Result.Unit type="INT" description="Logical unit number Result" dimension="0">-1</Model.File.Result.Unit>
- <Model.File.Result.Name type="STRING" description="Name of the file Result" dimension="0">E:\Mascaret\toolbox\\demos\Help\demo1\demo1.opt</Model.File.Result.Name>
+ <Model.File.Result.Name type="STRING" description="Name of the file Result" dimension="0">C:\Users\I21149\DOCUME~1\DEVELO~1\SCILAB~1\MASCAR~1.4-S\toolbox\demos\Help\demo1\demo1.opt</Model.File.Result.Name>
  <Model.File.Result2.Unit type="INT" description="Logical unit number Result2" dimension="0">-1</Model.File.Result2.Unit>
  <Model.File.Result2.Name type="STRING" description="Name of the file Result2" dimension="0"></Model.File.Result2.Name>
  <Model.File.GeoStoArea.Unit type="INT" description="Logical unit number GeoStoArea" dimension="0">37</Model.File.GeoStoArea.Unit>
@@ -5563,20 +5563,20 @@
  <Model.Boundary.PtZ type="TABDOUBLE" description="Z points of the graph (level (m))" dimension="2">
   <TABDOUBLE dim="2" taille="2">
    <TABDOUBLE dim="1" taille="1">
-    <v>1.1886363173769584E-315</v>
+    <v>8.7099792180837577E-316</v>
    </TABDOUBLE>
    <TABDOUBLE dim="1" taille="1">
-    <v>1.1886364013681182E-315</v>
+    <v>8.7099800579953556E-316</v>
    </TABDOUBLE>
   </TABDOUBLE>
  </Model.Boundary.PtZ>
  <Model.Boundary.PtQ type="TABDOUBLE" description="Q points of the graph (discharge (m3/s))" dimension="2">
   <TABDOUBLE dim="2" taille="2">
    <TABDOUBLE dim="1" taille="1">
-    <v>4.2439915967525140E-314</v>
+    <v>4.2439916407243565E-314</v>
    </TABDOUBLE>
    <TABDOUBLE dim="1" taille="1">
-    <v>5.6187078594247734E-310</v>
+    <v>2.0700706159701558E+026</v>
    </TABDOUBLE>
   </TABDOUBLE>
  </Model.Boundary.PtQ>
@@ -5716,11 +5716,11 @@
   <DOUBLE dim="1" taille="0">
   </DOUBLE>
  </Model.Inflow.Discharge>
- <Model.Dam.ReachNum type="INT" description="Reach number of the dam" dimension="0">0</Model.Dam.ReachNum>
- <Model.Dam.RelAbscissa type="DOUBLE" description="Relative abscissa of the dam" dimension="0">0.0000000000000000</Model.Dam.RelAbscissa>
- <Model.Dam.Node type="INT" description="Node number of the dam" dimension="0">0</Model.Dam.Node>
+ <Model.Dam.ReachNum type="INT" description="Reach number of the dam" dimension="0">16</Model.Dam.ReachNum>
+ <Model.Dam.RelAbscissa type="DOUBLE" description="Relative abscissa of the dam" dimension="0">2.9465296470514098E-316</Model.Dam.RelAbscissa>
+ <Model.Dam.Node type="INT" description="Node number of the dam" dimension="0">1999895464</Model.Dam.Node>
  <Model.Dam.BreakType type="INT" description="Type of dam breaking" dimension="0">0</Model.Dam.BreakType>
- <Model.Dam.CrestLevel type="DOUBLE" description="Crest level of the dam" dimension="0">2.1219958067753730E-314</Model.Dam.CrestLevel>
+ <Model.Dam.CrestLevel type="DOUBLE" description="Crest level of the dam" dimension="0">2.1219957909652723E-314</Model.Dam.CrestLevel>
  <Model.ExternalInflow.Number type="INT" description="Number of the storage area with an external inflow" dimension="1">
   <INT dim="1" taille="0">
   </INT>

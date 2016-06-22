@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getDescVarMASCARET" xml:lang="en">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getDescVar" xml:lang="en">
     <refnamediv>
-        <refname>getDescVarMASCARET</refname>
+        <refname>MASCARET_getDescVar</refname>
         <refpurpose>Gives the list of all the MASCARET variables with a description</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Calling sequence</title>
-        <synopsis>[error,TabVar,TabDesc]=getDescVarMASCARET(id)</synopsis>
+        <synopsis>[error,TabVar,TabDesc]=MASCARET_getDescVar(id)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -37,7 +37,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identification number of the MASCARET instance returned by <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identification number of the MASCARET instance returned by <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
         </variablelist>
@@ -50,16 +50,16 @@
         <title>Example</title>
         <programlisting role="example">
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // get the description
-[err,TabVar,TabDesc]=getDescVarMASCARET(id);
+[err,TabVar,TabDesc]=MASCARET_getDescVar(id);
 assert_checkequal(err,0);
 disp(TabVar+" : "+TabDesc);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -67,7 +67,7 @@ assert_checkequal(err,0);
         <title>See also</title>
         <simplelist type="inline">
             <member>
-                <link linkend="getTypeVarMASCARET">getTypeVarMASCARET</link>
+                <link linkend="MASCARET_getTypeVar">MASCARET_getTypeVar</link>
             </member>
         </simplelist>
     </refsection>

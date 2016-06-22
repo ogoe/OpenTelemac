@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="initStateNameMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_initStateName" xml:lang="fr">
     <refnamediv>
-        <refname>initStateNameMASCARET</refname>
+        <refname>MASCARET_initStateName</refname>
         <refpurpose>Fonction d'import d'un état MASCARET</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur] = initStateNameMASCARET(id,nomFichier,impression)</synopsis>
+        <synopsis>[erreur] = MASCARET_initStateName(id,nomFichier,impression)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -46,7 +46,7 @@
         <title>Description</title>
         <para>Fonction d'import d'un état MASCARET en utilisant un fichier natif MASCARET.</para>
         <para>Cette fonction permet d'initialiser l'état à partir d'un fichier natif de MASCARET de type ligne d'eau adapté au modèle importé préalablement. Ce fichier est disponible dans Fudaa-MASCARET via le menu : « Fichier | Exporter | MASCARET | Fichier ligne d'eau initiale (Format MASCARET) » ou via le menu : « Hydraulique | Conditions Initiales | Ligne d'eau initiale | Exporter »</para>
-        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir importé un modèle à une instance de MASCARET, c'est à dire d'avoir fait appel à une des fonctions <link linkend="importModelMASCARET">importModelMASCARET</link> ou <link linkend="importXmlMASCARET">importXmlMASCARET</link> avec le dernier parametre à 1.</para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir importé un modèle à une instance de MASCARET, c'est à dire d'avoir fait appel à une des fonctions <link linkend="MASCARET_importModel">MASCARET_importModel</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> avec le dernier parametre à 1.</para>
     </refsection>
     <refsection>
         <title>Exemple</title>
@@ -55,7 +55,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -69,15 +69,15 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
         
 // initialisation
-err = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
 assert_checkequal(err,0);      
         
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -85,7 +85,7 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="initStateMASCARET">initStateMASCARET</link>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
             </member>
         </simplelist>
     </refsection>

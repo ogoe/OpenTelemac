@@ -4,7 +4,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation du modele
-[erreur, id] = createMASCARET();
+[erreur, id] = MASCARET_create();
 assert_checkequal(id,1);
 
 // importation du modele
@@ -21,19 +21,19 @@ TabNomFichier = [
  
 TypeNomFichier = ["xcas","geo","loi","loi","loi","loi","listing","res"];
 impression = 0;
-erreur = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+erreur = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(erreur,0);
 
 // initialisation
-erreur = initStateNameMASCARET(id,toolbox_dir+c+".."+c+"test"+c+"Test_Plan"+c+"Test28"+c+"data"+c+"xml"+c+"mascaret0.lig",impression);
+erreur = MASCARET_initStateName(id,toolbox_dir+c+".."+c+"test"+c+"Test_Plan"+c+"Test28"+c+"data"+c+"xml"+c+"mascaret0.lig",impression);
 assert_checkequal(erreur,0);
 
 // acces aux pas de temps de simulation
-[erreur,pasTps] = getDoubleMASCARET(id,"Model.DT",0,0,0);
+[erreur,pasTps] = MASCARET_getDouble(id,"Model.DT",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,T0] = getDoubleMASCARET(id,"Model.InitTime",0,0,0);
+[erreur,T0] = MASCARET_getDouble(id,"Model.InitTime",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,TF] = getDoubleMASCARET(id,"Model.MaxCompTime",0,0,0);
+[erreur,TF] = MASCARET_getDouble(id,"Model.MaxCompTime",0,0,0);
 assert_checkequal(erreur,0);
 TF = 6.0;
 pasTps = 0.02;
@@ -44,12 +44,12 @@ Z28m = zeros(600,1);
 tpc  = zeros(600,1);
 i = 1;
 while (tpsCalcul <= TF)
-  erreur = computeMASCARET(id,T0,tpsCalcul,pasTps,impression);
+  erreur = MASCARET_compute(id,T0,tpsCalcul,pasTps,impression);
   assert_checkequal(erreur,0);
   T0 = tpsCalcul;
   tpc(i) = T0;
   tpsCalcul = tpsCalcul + pasTps;
-  [erreur,Zc] = getDoubleMASCARET(id,"State.Z",560,0,0); // section 560
+  [erreur,Zc] = MASCARET_getDouble(id,"State.Z",560,0,0); // section 560
   assert_checkequal(erreur,0);
   Z28m(i) = Zc;
   i = i + 1;
@@ -68,6 +68,6 @@ code_retour = assert_checkalmostequal(Zinterp,ResRef(:,2),7.D-2);
 assert_checktrue(code_retour);
 
 // destruction du modele
-erreur=deleteMASCARET(id);
+erreur=MASCARET_delete(id);
 assert_checkequal(erreur,0);
 

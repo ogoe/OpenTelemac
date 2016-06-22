@@ -1667,6 +1667,11 @@ program HOMERE_MASCARET
                  Nbtrac , & ! Nombre de traceurs
                   Temps , & ! Temps courant
                  Erreur )
+         if( Erreur%Numero /= 0 ) then
+            write(*,321)
+            Print * , Erreur%Message  
+            stop 1
+         endif
          !
          !  Equations de transport diffusion du traceur
          !
@@ -1708,7 +1713,12 @@ program HOMERE_MASCARET
                ImpressionBilanTracer , & ! Logique pour calcul du bilan
                            NbCourant , & ! Nombre de courant max
                               ERREUR )
-
+         if( Erreur%Numero /= 0 ) then
+            write(*,321)
+            Print * , Erreur%Message  
+            stop 1
+         endif
+         
          QT_ANT(:) = QT(:)
          ST_ANT(:) = ST(:)
          BT_ANT(:) = BT(:)
@@ -1766,6 +1776,11 @@ program HOMERE_MASCARET
                       SectionStockage   , &
                       FichierMotCle     , &
                       Erreur              )
+            if( Erreur%Numero /= 0 ) then
+               write(*,321)
+               Print * , Erreur%Message  
+               stop 1
+            endif
 
          endif
 
@@ -1845,6 +1860,11 @@ program HOMERE_MASCARET
                                VarSto          , &
                                SectionStockage , &
                                Erreur          )
+            if( Erreur%Numero /= 0 ) then
+               write(*,321)
+               Print * , Erreur%Message  
+               stop 1
+            endif
          endif
 !--TAPENADE
          exit

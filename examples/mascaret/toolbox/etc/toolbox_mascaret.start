@@ -18,6 +18,10 @@ function toolbox_mascaretlib = startModule()
   etc_tlbx  = getshortpathname(etc_tlbx);
   root_tlbx = strncpy( etc_tlbx, length(etc_tlbx)-length("\etc\") );
 
+  global toolbox_dir;
+  toolbox_dir   = root_tlbx;
+  setenv("toolbox_dir",toolbox_dir)
+
 //Load  functions library
 // =============================================================================
   mprintf("\tLoad macros\n");

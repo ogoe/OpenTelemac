@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="getTypeVarMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getTypeVar" xml:lang="fr">
     <refnamediv>
-        <refname>getTypeVarMASCARET</refname>
+        <refname>MASCARET_getTypeVar</refname>
         <refpurpose>Récupère des informations sur une variable</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur,typeVar,categorie,modifiable,dimVar]=getTypeVarMASCARET(id,nomVar)</synopsis>
+        <synopsis>[erreur,typeVar,categorie,modifiable,dimVar]=MASCARET_getTypeVar(id,nomVar)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -53,13 +53,13 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
                 <term>nomVar</term>
                 <listitem>
-                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="getDescVarMASCARET">getDescVarMASCARET</link></para>
+                    <para>Nom de la variable (notation pointée), la liste des variables est retournée par <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link></para>
                 </listitem>
             </varlistentry>
         </variablelist>
@@ -72,15 +72,15 @@
         <title>Exemple</title>
         <programlisting role="example">
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // get all the descriptions
-[err,TabVar,TabDesc]=getDescVarMASCARET(id);
+[err,TabVar,TabDesc]=MASCARET_getDescVar(id);
 assert_checkequal(err,0);
 
 // get one description
-[err,varType,category,modify,dimVar]=getTypeVarMASCARET(id,TabVar(2));
+[err,varType,category,modify,dimVar]=MASCARET_getTypeVar(id,TabVar(2));
 assert_checkequal(err,0);   
 disp(varType);
 disp(category);
@@ -88,7 +88,7 @@ disp(modify);
 disp(dimVar);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);        
 		</programlisting>
     </refsection>
@@ -96,7 +96,7 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="getDescVarMASCARET">getDescVarMASCARET</link>
+                <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link>
             </member>
         </simplelist>
     </refsection>

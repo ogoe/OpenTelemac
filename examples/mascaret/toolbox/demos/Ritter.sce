@@ -9,7 +9,7 @@
 //      Copyright EDF 2014
 //
 clc();
-[a,b,c]=getVersionMASCARET();
+[a,b,c]=MASCARET_getVersion();
 disp("***************************************");
 disp("MASCARET demo : Dam break wave (Ritter)");
 disp("***************************************");
@@ -29,7 +29,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[erreur, id] = createMASCARET();
+[erreur, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -43,23 +43,23 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-erreur = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+erreur = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(erreur,0);
 
 // initialisation
-erreur = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Ritter"+c+"mascaret0.lig",impression);
+erreur = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Ritter"+c+"mascaret0.lig",impression);
 assert_checkequal(erreur,0);
 
 // get the time parameters
-[erreur,pasTps] = getDoubleMASCARET(id,"Model.DT",0,0,0);
+[erreur,pasTps] = MASCARET_getDouble(id,"Model.DT",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,T0] = getDoubleMASCARET(id,"Model.InitTime",0,0,0);
+[erreur,T0] = MASCARET_getDouble(id,"Model.InitTime",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,TF] = getDoubleMASCARET(id,"Model.MaxCompTime",0,0,0);
+[erreur,TF] = MASCARET_getDouble(id,"Model.MaxCompTime",0,0,0);
 assert_checkequal(erreur,0);
 
 // get the number of cross sections
-[erreur,nbSec,taille2,taille3] = getSizeVarMASCARET(id,"Model.X", 0);
+[erreur,nbSec,taille2,taille3] = MASCARET_getSizeVar(id,"Model.X", 0);
 assert_checkequal(erreur,0);
 
 // initialise the results
@@ -67,11 +67,11 @@ Z = zeros(nbSec,1);
 Q = zeros(nbSec,1);
 X = zeros(nbSec,1);
 for i = 1:nbSec
-    [erreur,Z(i)] = getDoubleMASCARET(id,"State.Z",i,0,0);
+    [erreur,Z(i)] = MASCARET_getDouble(id,"State.Z",i,0,0);
     assert_checkequal(erreur,0);
-    [erreur,Q(i)] = getDoubleMASCARET(id,"State.Q",i,0,0);
+    [erreur,Q(i)] = MASCARET_getDouble(id,"State.Q",i,0,0);
     assert_checkequal(erreur,0);
-    [erreur,X(i)] = getDoubleMASCARET(id,"Model.X",i,0,0);
+    [erreur,X(i)] = MASCARET_getDouble(id,"Model.X",i,0,0);
     assert_checkequal(erreur,0);
 end
 
@@ -121,14 +121,14 @@ tpsCalcul = pasTps;
 j = 1;
 k = 1;
 while (tpsCalcul <= TF)
-  erreur = computeMASCARET(id,T0,tpsCalcul,pasTps,impression);
+  erreur = MASCARET_compute(id,T0,tpsCalcul,pasTps,impression);
   assert_checkequal(erreur,0);
   // get the spatial results on the water level
   if(modulo(j,freqplot)==0) then
      for i = 1:nbSec
-       [erreur,Z(i)] = getDoubleMASCARET(id,"State.Z",i,0,0);
+       [erreur,Z(i)] = MASCARET_getDouble(id,"State.Z",i,0,0);
        assert_checkequal(erreur,0);
-       [erreur,Q(i)] = getDoubleMASCARET(id,"State.Q",i,0,0);
+       [erreur,Q(i)] = MASCARET_getDouble(id,"State.Q",i,0,0);
        assert_checkequal(erreur,0);
      end
      e1.children.data = [X Z];
@@ -143,7 +143,7 @@ while (tpsCalcul <= TF)
 end
 
 // model deletion
-erreur=deleteMASCARET(id);
+erreur=MASCARET_delete(id);
 assert_checkequal(erreur,0);
 
 disp("--> Computation done with the unsteady supercritical kernel (FV Roe Scheme)");

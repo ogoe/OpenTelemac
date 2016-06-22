@@ -4,7 +4,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation du modele
-[erreur, id] = createMASCARET();
+[erreur, id] = MASCARET_create();
 assert_checkequal(id,1);
 
 // importation du modele
@@ -24,23 +24,23 @@ TabNomFichier = [
  
 TypeNomFichier = ["xcas","geo","casier","loi","loi","listing","listing_casier","listing_liaison","res","res_casier","res_liaison"];
 impression = 0;
-erreur = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+erreur = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(erreur,0);
 
 // initialisation
-erreur = initStateNameMASCARET(id,toolbox_dir+c+".."+c+"test"+c+"Test_Plan"+c+"Test27"+c+"data"+c+"xml"+c+"mascaret0.lig",impression);
+erreur = MASCARET_initStateName(id,toolbox_dir+c+".."+c+"test"+c+"Test_Plan"+c+"Test27"+c+"data"+c+"xml"+c+"mascaret0.lig",impression);
 assert_checkequal(erreur,0);
 
 // acces aux pas de temps de simulation
-[erreur,pasTps] = getDoubleMASCARET(id,"Model.DT",0,0,0);
+[erreur,pasTps] = MASCARET_getDouble(id,"Model.DT",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,T0] = getDoubleMASCARET(id,"Model.InitTime",0,0,0);
+[erreur,T0] = MASCARET_getDouble(id,"Model.InitTime",0,0,0);
 assert_checkequal(erreur,0);
-[erreur,TF] = getDoubleMASCARET(id,"Model.MaxCompTime",0,0,0);
+[erreur,TF] = MASCARET_getDouble(id,"Model.MaxCompTime",0,0,0);
 assert_checkequal(erreur,0);
 
 // recuperation nombre de sections
-[erreur,nbSec,taille2,taille3] = getSizeVarMASCARET(id,"Model.X", 0);
+[erreur,nbSec,taille2,taille3] = MASCARET_getSizeVar(id,"Model.X", 0);
 assert_checkequal(erreur,0);
 
 // resultats temporels
@@ -55,21 +55,21 @@ ZS87 = zeros(4201,1); // evolution temporelle de la cote a la section 87 (pk = 2
 TPS  = zeros(4201,1); // les temps de calcul
 
 // premieres valeurs
-[erreur,ZCG2(1)] = getDoubleMASCARET(id,"State.StoArea.Level",2,0,0);
+[erreur,ZCG2(1)] = MASCARET_getDouble(id,"State.StoArea.Level",2,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZCG4(1)] = getDoubleMASCARET(id,"State.StoArea.Level",4,0,0);
+[erreur,ZCG4(1)] = MASCARET_getDouble(id,"State.StoArea.Level",4,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZCG5(1)] = getDoubleMASCARET(id,"State.StoArea.Level",5,0,0);
+[erreur,ZCG5(1)] = MASCARET_getDouble(id,"State.StoArea.Level",5,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZCG7(1)] = getDoubleMASCARET(id,"State.StoArea.Level",7,0,0);
+[erreur,ZCG7(1)] = MASCARET_getDouble(id,"State.StoArea.Level",7,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZS15(1)] = getDoubleMASCARET(id,"State.Z",15,0,0);
+[erreur,ZS15(1)] = MASCARET_getDouble(id,"State.Z",15,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZS39(1)] = getDoubleMASCARET(id,"State.Z",39,0,0);
+[erreur,ZS39(1)] = MASCARET_getDouble(id,"State.Z",39,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZS63(1)] = getDoubleMASCARET(id,"State.Z",63,0,0);
+[erreur,ZS63(1)] = MASCARET_getDouble(id,"State.Z",63,0,0);
 assert_checkequal(erreur,0);
-[erreur,ZS87(1)] = getDoubleMASCARET(id,"State.Z",87,0,0);
+[erreur,ZS87(1)] = MASCARET_getDouble(id,"State.Z",87,0,0);
 assert_checkequal(erreur,0);
 
 TPS(1) = 0.;
@@ -78,25 +78,25 @@ i = 2;
 
 // calcul
 while (tpsCalcul <= TF)
-  erreur = computeMASCARET(id,T0,tpsCalcul,pasTps,impression);
+  erreur = MASCARET_compute(id,T0,tpsCalcul,pasTps,impression);
   assert_checkequal(erreur,0);
   T0 = tpsCalcul;
   tpsCalcul = tpsCalcul + pasTps;
-  [erreur,ZCG2(i)] = getDoubleMASCARET(id,"State.StoArea.Level",2,0,0);
+  [erreur,ZCG2(i)] = MASCARET_getDouble(id,"State.StoArea.Level",2,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZCG4(i)] = getDoubleMASCARET(id,"State.StoArea.Level",4,0,0);
+  [erreur,ZCG4(i)] = MASCARET_getDouble(id,"State.StoArea.Level",4,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZCG5(i)] = getDoubleMASCARET(id,"State.StoArea.Level",5,0,0);
+  [erreur,ZCG5(i)] = MASCARET_getDouble(id,"State.StoArea.Level",5,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZCG7(i)] = getDoubleMASCARET(id,"State.StoArea.Level",7,0,0);
+  [erreur,ZCG7(i)] = MASCARET_getDouble(id,"State.StoArea.Level",7,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZS15(i)] = getDoubleMASCARET(id,"State.Z",15,0,0);
+  [erreur,ZS15(i)] = MASCARET_getDouble(id,"State.Z",15,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZS39(i)] = getDoubleMASCARET(id,"State.Z",39,0,0);
+  [erreur,ZS39(i)] = MASCARET_getDouble(id,"State.Z",39,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZS63(i)] = getDoubleMASCARET(id,"State.Z",63,0,0);
+  [erreur,ZS63(i)] = MASCARET_getDouble(id,"State.Z",63,0,0);
   assert_checkequal(erreur,0);
-  [erreur,ZS87(i)] = getDoubleMASCARET(id,"State.Z",87,0,0);
+  [erreur,ZS87(i)] = MASCARET_getDouble(id,"State.Z",87,0,0);
   assert_checkequal(erreur,0);
   TPS(i) = T0;
   i = i + 1;
@@ -147,6 +147,6 @@ code_retour = assert_checkalmostequal(ZCG7_interp,ResRef2(:,5),2.D-2);
 assert_checktrue(code_retour);
 
 // destruction du modele
-erreur=deleteMASCARET(id);
+erreur=MASCARET_delete(id);
 assert_checkequal(erreur,0);
 

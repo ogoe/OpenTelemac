@@ -4,14 +4,14 @@
  * This file is released under the 3-clause BSD license. See COPYING-BSD.
  *
  -->
-<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="computeMASCARET" xml:lang="fr">
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_compute" xml:lang="fr">
     <refnamediv>
-        <refname>computeMASCARET</refname>
+        <refname>MASCARET_compute</refname>
         <refpurpose>Fonction de simulation d'un ou plusieurs pas de temps.</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
         <title>Séquence d'appel</title>
-        <synopsis>[erreur]=computeMASCARET(id,TpsInitial, TpsFinal, PasTps,impression)</synopsis>
+        <synopsis>[erreur]=MASCARET_compute(id,TpsInitial, TpsFinal, PasTps,impression)</synopsis>
     </refsynopsisdiv>
     <refsection>
         <title>Arguments</title>
@@ -25,7 +25,7 @@
             <varlistentry>
                 <term>id</term>
                 <listitem>
-                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="createMASCARET">createMASCARET</link></para>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
                 </listitem>
             </varlistentry>
             <varlistentry>
@@ -57,8 +57,8 @@
     <refsection>
         <title>Description</title>
         <para>Fonction qui permet d'effectuer une simulation d'un ou plusieurs pas de temps. C'est notamment cette fonction qui va calculer un nouvel état courant à partir du modèle courant et de l'état précédent</para>
-        <para>Une autre fonction de l'API permet également de faire la même chose avec des paramètres différents, il s'agit de <link linkend="computeMASCARET_BC">computeMASCARET_BC</link></para>
-        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé l'état MASCARET, c'est à dire d'avoir fait appel à une des fonctions <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>, <link linkend="initStateMASCARET">initStateMASCARET</link> ou <link linkend="importXmlMASCARET">importXmlMASCARET</link> avec le dernier parametre à 0.</para>
+        <para>Une autre fonction de l'API permet également de faire la même chose avec des paramètres différents, il s'agit de <link linkend="MASCARET_compute_BC">MASCARET_compute_BC</link></para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialisé l'état MASCARET, c'est à dire d'avoir fait appel à une des fonctions <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>, <link linkend="MASCARET_initState">MASCARET_initState</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> avec le dernier parametre à 0.</para>
     </refsection>
     <refsection>
         <title>Exemple</title>
@@ -67,7 +67,7 @@ toolbox_dir=getenv("toolbox_dir");
 c = filesep();
 
 // creation of the MASCARET model
-[err, id] = createMASCARET();
+[err, id] = MASCARET_create();
 assert_checktrue(id>0);
 
 // read data from files
@@ -81,31 +81,31 @@ TabNomFichier = [strsubst(path_xml,'\','/'), ..
  
 TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
 impression = 0;
-err = importModelMASCARET(id,TabNomFichier,TypeNomFichier,impression);
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
 assert_checkequal(err,0);
         
 // initialisation
-err = initStateNameMASCARET(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
 assert_checkequal(err,0);      
         
 // get the initial state on the cross-section #5 (water level)        
-[err,Zsection5] = getDoubleMASCARET(id,"State.Z",5,0,0);
+[err,Zsection5] = MASCARET_getDouble(id,"State.Z",5,0,0);
 assert_checkequal(err,0);  
 
 printf("\tWater level on the cross-section #5 before the simulation :%f\n", Zsection5);
 
 // computation
-err = computeMASCARET(id,0., 36000., 1., impression);
+err = MASCARET_compute(id,0., 36000., 1., impression);
 assert_checkequal(err,0);
 
 // get the result on the cross-section #5 (water level)   
-[err,Zsection5] = getDoubleMASCARET(id,"State.Z",5,0,0);
+[err,Zsection5] = MASCARET_getDouble(id,"State.Z",5,0,0);
 assert_checkequal(err,0); 
 
 printf("\tWater level on the cross-section #5 after the simulation :%f\n", Zsection5);
 
 // model deletion
-err = deleteMASCARET(id);
+err = MASCARET_delete(id);
 assert_checkequal(err,0);
 		</programlisting>
     </refsection>
@@ -113,13 +113,13 @@ assert_checkequal(err,0);
         <title>Voir aussi</title>
         <simplelist type="inline">
             <member>
-                <link linkend="computeMASCARET_BC">computeMASCARET_BC</link>
+                <link linkend="MASCARET_compute_BC">MASCARET_compute_BC</link>
             </member>
             <member>
-                <link linkend="initStateNameMASCARET">initStateNameMASCARET</link>
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>
             </member>
             <member>
-                <link linkend="initStateMASCARET">initStateMASCARET</link>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
             </member>
         </simplelist>
     </refsection>
