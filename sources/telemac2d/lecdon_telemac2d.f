@@ -95,6 +95,11 @@
 !+  This condition is somewhat relaxed for velocities and k-epsilon
 !+  Schemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/06/2016
+!+        V7P2
+!+  Allocating NAMETRAC added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -421,6 +426,7 @@
       ALLOCATE(OPTADV_TR(MAXTRA))
       ALLOCATE(SLVTRA(MAXTRA))
       ALLOCATE(TRAC0(MAXTRA))
+      ALLOCATE(NAMETRAC(MAXTRA))
 !
 !     INITIALISING
 !

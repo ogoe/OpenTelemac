@@ -77,6 +77,11 @@
 !+        V7P1
 !+   A number of arrays now allocatable, depending on new keywords
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/06/2016
+!+        V7P2
+!+   NAMETRAC now allocatable.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1728,7 +1733,7 @@
 !
 !     NAMES OF TRACERS
 !
-      CHARACTER(LEN=32) NAMETRAC(MAXVAR)
+      CHARACTER(LEN=32), ALLOCATABLE :: NAMETRAC(:)
 !
 !     NAMES OF PRIVATE ARRAYS (GIVEN BY USER)
 !
