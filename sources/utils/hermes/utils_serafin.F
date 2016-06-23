@@ -279,6 +279,12 @@
      &       IOSTAT=IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:BIG')
         READ(FILE_ID,POS=1,IOSTAT=IERR) I
+        IF(IERR.LT.0) THEN
+          ! We've reached the end of the file i.e. the file is empty do
+          ! big_endian it is
+          CLOSE(FILE_ID)
+          RETURN
+        ENDIF
         CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:BIG')
         CLOSE(FILE_ID)
         IF(I.NE.80) THEN
