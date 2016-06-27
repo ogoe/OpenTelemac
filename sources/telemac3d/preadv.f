@@ -5,7 +5,7 @@
      &(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    PREPARES THE ADVECTION STEP BY COMPUTING THE
@@ -92,6 +92,12 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
+!history  J-M HERVOUET (LNHE)
+!+        24/06/2016
+!+        V7P2
+!+   Adding a banner when TRIDW3 is called, to understand where 
+!+   information on a solver comes from.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -104,7 +110,7 @@
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_PREADV => PREADV
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D, ONLY : MESH3D,FLUINT,FLUEXT,
+      USE DECLARATIONS_TELEMAC3D, ONLY : MESH3D,FLUINT,FLUEXT,AT,INFOGR,
      &                                   FLUEXTPAR,UCONV,VCONV,T3_01,
      &                                   T3_02,T3_03,T3_04,T3_05,
      &                                   NETAGE,NPLAN,Z,OPTSUP,FN3D,
@@ -180,7 +186,7 @@
 !     3: DIVERGENCE-FREE FLUXES OBTAINED BY MODIFYING ALL FLUXES
 !        WITH THE HELP OF WCONV AND A PRESSURE EQUATION
 !
-      OPT_TRID=2
+      OPT_TRID=3
 !
       IF(OPT_TRID.EQ.2) THEN
         CALL TRIDW2(WSCONV,VOLU,VOLUN,SEM2D,FLUINT,FLUEXT,SOURCES,
@@ -188,6 +194,7 @@
       ELSEIF(OPT_TRID.EQ.3) THEN
 !       OTHERWISE WCONV DONE IN WAVE_EQUATION
         IF(LT.EQ.0) CALL OS('X=Y     ',X=WCONV,Y=W)
+        IF(INFOGR) CALL MITTIT(22,AT,LT)
         CALL TRIDW3(WSCONV,T3_01,T3_02,T3_03,T3_04,T3_05,MTRA1%D,LT,
      &              VOLU,VOLUN,U,UCONV,VCONV,WCONV,DT,NPOIN3,SIGMAG,
      &              OPTBAN,MESH3D,MTRA1,MASKEL,NPOIN2,T2_01,NPLAN,
@@ -479,3 +486,4 @@
 !
       RETURN
       END
+

@@ -5,23 +5,13 @@
      & (IETAPE,AT,LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    WRITES HEADERS TO THE LISTING AT THE VARIOUS STAGES
-!+                OF THE PROGRAM.
+!+        OF THE PROGRAM.
 !+
 !+           (NON-HYDROSTATIC VERSION MESSAGES ADDED).
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/99
-!+
-!+   FORTRAN95 VERSION
-!
-!history  J.M. HERVOUET  (LNH)
-!+        05/07/05
-!+        V5P6
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -34,6 +24,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        24/06/2016
+!+        V7P2
+!+   Adding the step of 3D continuity in the transformed mesh, when
+!+   TRIDW3 is called (call hardcoded in preadv.f).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
@@ -53,7 +49,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=50) :: FR(17), GB(17)
-      CHARACTER(LEN=50) :: FRNH(4), GBNH(4)
+      CHARACTER(LEN=50) :: FRNH(5), GBNH(5)
 !
       DOUBLE PRECISION S
       INTEGER J,H,M
@@ -81,7 +77,8 @@
       DATA FRNH/'ETAPE DE CONVECTION - DIFFUSION                   ',
      &          'ETAPE DE PRESSION DYNAMIQUE                       ',
      &          'ETAPE DE PROJECTION DES VITESSES                  ',
-     &          'ETAPE DE PRESSION DYNAMIQUE, PREDICTION           '/
+     &          'ETAPE DE PRESSION DYNAMIQUE, PREDICTION           ',
+     &          'ETAPE DE CONTINUITE 3D DANS LE DOMAINE TRANSFORME '/
 !
 !-----------------------------------------------------------------------
 !
@@ -106,7 +103,8 @@
       DATA GBNH/'ADVECTION AND DIFFUSION-FORCING STEP              ',
      &          'DYNAMIC PRESSURE STAGE                            ',
      &          'VELOCITY PROJECTION STEP                          ',
-     &          'DYNAMIC PRESSURE STAGE, PREDICTION                '/
+     &          'DYNAMIC PRESSURE STAGE, PREDICTION                ',
+     &          'STAGE OF 3D CONTINUITY IN TRANSFORMED MESH        '/
 !
 !***********************************************************************
 !
@@ -132,8 +130,8 @@
           WRITE(LU,200) FR(IETAPE)
         ENDIF
         IF(IETAPE.GE.13.AND.IETAPE.LE.16) WRITE(LU,300) FR(IETAPE)
-        IF(IETAPE.GE.18.AND.IETAPE.LE.21) WRITE(LU,200) FRNH(IETAPE-17)
-      ELSEIF (LNG.EQ.2) THEN
+        IF(IETAPE.GE.18.AND.IETAPE.LE.22) WRITE(LU,200) FRNH(IETAPE-17)
+      ELSEIF(LNG.EQ.2) THEN
         IF(IETAPE.EQ. 1) THEN
           WRITE(LU,11) 'ITERATION ',LT,' TIME ',J,H,M,S,AT
         ENDIF
@@ -141,7 +139,7 @@
           WRITE(LU,200) GB(IETAPE)
         ENDIF
         IF(IETAPE.GE.13.AND.IETAPE.LE.16) WRITE(LU,300) GB(IETAPE)
-        IF(IETAPE.GE.18.AND.IETAPE.LE.21) WRITE(LU,200) GBNH(IETAPE-17)
+        IF(IETAPE.GE.18.AND.IETAPE.LE.22) WRITE(LU,200) GBNH(IETAPE-17)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -160,3 +158,4 @@
 !
       RETURN
       END
+
