@@ -11,15 +11,10 @@
 !brief    COMPLEMENTS A VECTOR AT THE INTERFACES BETWEEN
 !+                SUB-DOMAINS. HERE BOUNDARY VECTOR OF TYPE 1.
 !
-!history  REINHARD HINKELMANN (HANNOVER UNI.)
-!+
-!+
-!+
-!
 !history  J-M HERVOUET (LNHE)
 !+        24/10/2008
 !+        V5P9
-!+
+!+   First version, inspired from parcom.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -49,7 +44,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: ICOM
 !
@@ -58,7 +53,7 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       DOUBLE PRECISION, INTENT(INOUT) :: X(*)
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NPTFR,I,TELM,TDIM1,TDIM2,TDIMDISC
 !

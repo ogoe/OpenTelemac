@@ -6841,6 +6841,22 @@ AIDE = 'Pour les options predicteur-correcteur
 avec schema localement implicite'
 AIDE1 = 'Only for implicit scheme with predictor-corrector'
 
+NOM = 'CORRECTION DE CONTINUITE SUR FRONTIERES OUVERTES'
+NOM1 = 'CONTINUITY CORRECTION ON OPEN BOUNDARIES'
+TYPE = LOGIQUE
+INDEX = 93
+MNEMO = 'CONCOR'
+TAILLE = 1
+DEFAUT = NO
+DEFAUT1 = NO
+NIVEAU = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+AIDE = 'Modifie les vitesses libres sur les frontieres ouvertes
+pour avoir un meilleur champ a divergence nulle'
+AIDE1 = 'Changes the free velocities on open boundaries to get
+a better divergence-free field'
+
 /
 / FOR SCRIPTS
 /

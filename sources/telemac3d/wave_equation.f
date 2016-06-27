@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -82,6 +82,12 @@
 !+   SMH (assembled in parallel). SEM2D is now shared again after copy
 !+   of SMH.
 !
+!history  J-M HERVOUET (LNHE)
+!+        27/06/2016
+!+        V7P2
+!+   Changing the call to VELRES and the memory for UAUX and VAUX, now
+!+   taken in the diagonals of MTRA1 and MTRA2.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -124,8 +130,8 @@
       TRIE=>MTRA2%X%R( 2*NPOIN3+1: 3*NPOIN3)
 !         =>MTRA2%X%R( 3*NPOIN3+1: 4*NPOIN3) USED IN TRID3D
 !         =>MTRA2%X%R( 4*NPOIN3+1: 5*NPOIN3) USED IN TRID3D
-      UAUX=>MTRA2%X%R( 5*NPOIN3+1: 6*NPOIN3)
-      VAUX=>MTRA2%X%R( 6*NPOIN3+1: 7*NPOIN3)
+      UAUX=>MTRA1%D%R(          1:   NPOIN3)
+      VAUX=>MTRA2%D%R(          1:   NPOIN3)
 !
       IF(7*NPOIN3.GT.30*MESH3D%NELMAX.OR.
      &   7*NPOIN3.GT.2*MESH3D%NSEG) THEN
@@ -147,6 +153,8 @@
 !=======================================================================
 !
       FORMUL='MATDIF          '
+!     NOTE JMH, NEXT LINE TO TEST, IT WOULD BE CONSISTENT WITH W IN CVDF3D
+!     FORMUL='MATDIF       MON'
       IF(INCHYD) FORMUL(7:7)='2'
 !     NOTE: COULD BE OPTIMISED IF SCHDVI=0
       CALL MATRIX(MDIFF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,
@@ -431,12 +439,15 @@
 !       BEWARE: PREDIV WILL ERASE ALL T3_** WORK ARRAYS BECAUSE CALLS SOLVE
         CALL PREDIV(DP,T3_04,T3_05,T3_06,INFOGR,.TRUE.,1,
      &              .TRUE.,.TRUE.,.TRUE.)
-!       APPLIES CORRECTION TO UAUX
-        CALL VELRES(UAUX,VAUX,WD%R,DP,
+!       APPLIES CORRECTION TO UAUX, VAUX AND WD
+!       UAUX VAUX HAVE BEEN PUT IN MTRA1%D AND MTRA2%D, BUT THE STRUCTURES ARE SECURED HERE
+        CALL CPSTVC(WD,MTRA1%D)
+        CALL CPSTVC(WD,MTRA2%D)
+        CALL VELRES(MTRA1%D,MTRA2%D,WD,DP,
      &              T3_08,T3_09,T3_10,MSK,MASKEL,MESH3D,
      &              SVIDE,IELM3,NPLAN,OPTBAN,UNSV3D,.FALSE.,
      &              NPOIN3,NPOIN2,
-     &              SIGMAG,IPBOT%I,AGGLOH)
+     &              SIGMAG,IPBOT%I,AGGLOH,KSORT,NPTFR3,LIUBOL,CONCOR)
 !
       ENDIF
 !
