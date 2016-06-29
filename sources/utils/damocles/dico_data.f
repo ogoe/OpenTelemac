@@ -1134,9 +1134,9 @@
 !
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       IF(LNG.EQ.1) THEN
-        WRITE(NFIC,'(A)') '\chapter{glossaire}'
+        WRITE(NFIC,'(A)') '\chapter{Glossaire}'
       ELSE
-        WRITE(NFIC,'(A)') '\chapter{glossary}'
+        WRITE(NFIC,'(A)') '\chapter{Glossary}'
       ENDIF
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       WRITE(NFIC,'(A)') ' '
@@ -1145,9 +1145,9 @@
       !
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       IF(LNG.EQ.1) THEN
-        WRITE(NFIC,'(A)') '\section{glossaire francais/anglais}'
+        WRITE(NFIC,'(A)') '\section{Glossaire Francais/Anglais}'
       ELSE
-        WRITE(NFIC,'(A)') '\section{english/french glossary}'
+        WRITE(NFIC,'(A)') '\section{English/French glossary}'
       ENDIF
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       WRITE(NFIC,'(A)') ' '
