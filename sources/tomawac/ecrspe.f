@@ -97,12 +97,10 @@
 !
       USE INTERFACE_HERMES
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
-      USE DECLARATIONS_SPECIAL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -143,8 +141,6 @@
 !
       DOUBLE PRECISION, ALLOCATABLE :: F_INTF(:,:)
 !
-      SAVE
-!
 !-----------------------------------------------------------------------
 !
       DTETAR=DEUPI/DBLE(NPLAN)
@@ -176,6 +172,7 @@
 !
 !     FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
 !
+      ALLOCATE(F_INTF(NLEO,NF))
       IF(DEBRES) THEN
 !
 !       CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
@@ -195,7 +192,6 @@
         ALLOCATE(MESHF%KNOLG)
         ALLOCATE(MESHF%KNOLG%I(NPSPE))
 !
-        ALLOCATE(F_INTF(NLEO,NF))
 !
         MESHF%NAME = 'MESH'
         MESHF%TYPELM = TRIANGLE_ELT_TYPE !TRIANGLE 2D MESH

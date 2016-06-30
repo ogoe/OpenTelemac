@@ -993,13 +993,13 @@
 !brief NAME OF THE TOMAWAC DATA FILE 1 (BINARY)
 ! nom du fichier de donnees tomawac 1 (binaire)
       INTEGER :: ARTTC1
-
+!
+      DOUBLE PRECISION FP,GAM,DELTA
+      DOUBLE PRECISION EXPO
 
 
 !brief
 !
       TYPE(BIEF_FILE) :: ART_FILES(MAXLU_ART)
-!
-      SAVE
 !
       END MODULE DECLARATIONS_ARTEMIS

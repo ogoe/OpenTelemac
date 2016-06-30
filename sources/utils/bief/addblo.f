@@ -34,9 +34,8 @@
 !
       USE BIEF, EX_ADDBLO => ADDBLO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -69,12 +68,12 @@
 !
 !-----------------------------------------------------------------------
 !
-!      IF(LNG.EQ.1) THEN
-!        WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' AJOUTE A ',BLOC%NAME
-!      ENDIF
-!      IF(LNG.EQ.2) THEN
-!        WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,'  ADDED TO ',BLOC%NAME
-!      ENDIF
+!     IF(LNG.EQ.1) THEN
+!       WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,' AJOUTE A ',BLOC%NAME
+!     ENDIF
+!     IF(LNG.EQ.2) THEN
+!       WRITE(LU,*) 'ADDBLO : ',OBJ%NAME,'  ADDED TO ',BLOC%NAME
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !

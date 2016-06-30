@@ -39,11 +39,10 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_TOM_CORFON => TOM_CORFON
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !
 !-----------------------------------------------------------------------

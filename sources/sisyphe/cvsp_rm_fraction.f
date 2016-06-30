@@ -31,9 +31,8 @@
       USE DECLARATIONS_SISYPHE
       USE CVSP_OUTPUTFILES
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

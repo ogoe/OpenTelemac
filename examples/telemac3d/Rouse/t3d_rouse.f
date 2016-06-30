@@ -87,9 +87,8 @@
       USE DECLARATIONS_TELEMAC3D
       USE TPXO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
@@ -412,9 +411,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -509,9 +507,8 @@
       USE INTERFACE_TELEMAC3D, EX_PRERES_TELEMAC3D => PRERES_TELEMAC3D
       USE DECLARATIONS_TELEMAC3D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -916,9 +913,8 @@
 !     TRIGGERS A PGI COMPILER ERROR
       USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1141,9 +1137,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,SIGMAG,OPTBAN
       USE INTERFACE_TELEMAC3D, EX_FLUSED => FLUSED
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

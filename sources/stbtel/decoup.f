@@ -46,21 +46,20 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION X(*) , Y(*)
 !
-      INTEGER NELEM , NELEM2 , MESH , NDP , NPOIN , NPOIN2 , NPMAX
-      INTEGER NELMAX , KELEM
+      INTEGER NELEM2 , NPOIN2
+      INTEGER KELEM
       INTEGER ISURC , IFAC , ICOLOR , I , I1 , I2 , I3
       INTEGER IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER IFABOR(NELMAX,*)
 !
       LOGICAL COLOR
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! CALCUL DES COORDONNEES DU NOUVEAU NOEUD 4 (DE NUMERO NPOIN2)

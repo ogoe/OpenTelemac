@@ -63,11 +63,22 @@ files: declarations_telemac.f
   read_mesh_coord.f
   almesh.f
   bief_open_files.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
+  deall_bief.f
   ovd.f
   cmpobj.f
   ovd_2.f
   os.f
   bief_close_files.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
+  deall_bief.f
+  dealmesh.f
   streamline.f
   vc13cc.f
   vc04tt.f
@@ -479,7 +490,8 @@ files: declarations_telemac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: majus.f
+files: declarations_damocles.f
+  majus.f
   preval.f
   next.f
   intlu.f

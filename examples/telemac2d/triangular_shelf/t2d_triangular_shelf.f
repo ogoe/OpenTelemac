@@ -31,12 +31,11 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       DOUBLE PRECISION A,WPLG,PER, PI, WH, WD, K, C, G, T0
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -154,12 +153,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -216,7 +214,7 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!         FOR GRAPHICAL OUTPUTS          
+!         FOR GRAPHICAL OUTPUTS
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
@@ -236,7 +234,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
@@ -417,9 +415,8 @@
 !| SECCURRENTS    |-->| IF YES SECONDARY CURRENTS COMPUTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -45,9 +45,8 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION XBID(1)
       REAL W(*)

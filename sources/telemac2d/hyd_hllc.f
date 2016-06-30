@@ -61,9 +61,8 @@
       USE BIEF_DEF
       USE INTERFACE_TELEMAC2D, EX_HYD_HLLC => HYD_HLLC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

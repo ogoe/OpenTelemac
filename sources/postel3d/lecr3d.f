@@ -57,9 +57,8 @@
       USE INTERFACE_HERMES
       USE INTERFACE_POSTEL3D, EX_LECR3D => LECR3D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

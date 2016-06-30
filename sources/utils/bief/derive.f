@@ -113,12 +113,14 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERIVE => DERIVE
+      USE DECLARATIONS_TELEMAC, ONLY : DEJA_DERIVE, SVOID_DERIVE,
+     &                                 INIT_ALG, SIZEBUF2_D,BUFF_1D_D,
+     &                                 BUFF_2D_D
       USE STREAMLINE
       USE ALGAE_TRANSP
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -164,7 +166,6 @@
 !
       LOGICAL YESITIS
 !
-      TYPE(BIEF_OBJ) :: SVOID
 !
       INTEGER  P_ISUM
       EXTERNAL P_ISUM
@@ -172,20 +173,7 @@
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
 !
-      LOGICAL DEJA
-      DATA    DEJA/.FALSE./
-!
-!     DEFINE VARIABLES THAT ARE USED IN ALGAE TRANSPORT
-!     THESE ARE NECESSARY IF NFLOT_MAX IS TOO LARGE
-!
-      LOGICAL INIT_ALG
-      DATA    INIT_ALG/.TRUE./
       LOGICAL ALGAE
-      INTEGER SIZEBUF2
-      DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE::BUFF_1D
-      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::BUFF_2D
-!
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -238,15 +226,16 @@
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISING SVOID AND HEADER OF A TECPLOT FILE
+!     INITIALISING SVOID_DERIVE AND HEADER OF A TECPLOT FILE
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_DERIVE) THEN
 !
 !       THOUGH NOMB = 0, THESE COMPONENTS WILL BE USED IN SCARACT
 !
-        SVOID%TYPE=2
-        SVOID%DIM1=1
-        ALLOCATE(SVOID%R(1))
+        SVOID_DERIVE%TYPE=2
+        SVOID_DERIVE%NAT = 1
+        SVOID_DERIVE%DIM1=1
+        ALLOCATE(SVOID_DERIVE%R(1))
 !
 !       HEADER OF TECPLOT FILE
 !
@@ -271,11 +260,11 @@
      &      TEXTE(1)//'","'//TEXTE(2)//'","'//TEXTE(3)//'","COLOUR"'
           ENDIF
         ENDIF
-        DEJA=.TRUE.
+        DEJA_DERIVE=.TRUE.
 100     FORMAT(A)
       ENDIF
 !
-      SVOID%ELM=IELM
+      SVOID_DERIVE%ELM=IELM
 !
 !-----------------------------------------------------------------------
 !
@@ -287,9 +276,9 @@
         INIT_ALG=.FALSE.
 !       VERIFY THAT THE BUFFER SIZE IS BIG ENOUGH FOR PARTICLE TRANSPORT
         IF(NFLOT_MAX.GT.SIZEBUF)THEN
-          SIZEBUF2=NFLOT_MAX
-          ALLOCATE(BUFF_1D(SIZEBUF2))
-          ALLOCATE(BUFF_2D(NDP,SIZEBUF2))
+          SIZEBUF2_D=NFLOT_MAX
+          ALLOCATE(BUFF_1D_D(SIZEBUF2_D))
+          ALLOCATE(BUFF_2D_D(NDP,SIZEBUF2_D))
         ENDIF
       ENDIF
 !
@@ -355,17 +344,19 @@
 ! IF SIZEBUF.LT.NFLOT_MAX)
 !
         IF(NFLOT_MAX.GT.SIZEBUF)THEN
-          CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+          CALL SCARACT(SVOID_DERIVE,SVOID_DERIVE,U,V,W,W,X,Y,ZSTAR,
+     &                 ZSTAR,
      &                 XFLOT,YFLOT,ZFLOT,ZFLOT,DX,DY,DZ,DZ,Z,
      &                 SHPFLO,SHZFLO,SHZFLO,
      &                 SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
      &                 FRE,ELTBUF,ISUB,IELM,IELMU,
      &                 NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,
      &                 NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
-     &                 BUFF_2D,BUFF_1D,BUFF_1D,FREBUF,SIZEBUF2,
+     &                 BUFF_2D_D,BUFF_1D_D,BUFF_1D_D,FREBUF,SIZEBUF2_D,
      &                 AALG=ALGAE,APOST=.TRUE.)
         ELSE
-          CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+          CALL SCARACT(SVOID_DERIVE,SVOID_DERIVE,U,V,W,W,X,Y,ZSTAR,
+     &                 ZSTAR,
      &                 XFLOT,YFLOT,ZFLOT,ZFLOT,DX,DY,DZ,DZ,Z,
      &                 SHPFLO,SHZFLO,SHZFLO,
      &                 SURDET,DT,IKLE,IFABOR,ELTFLO,ETAFLO,
@@ -376,7 +367,7 @@
      &                 AALG=ALGAE,APOST=.TRUE.)
         ENDIF
       ELSE
-        CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+        CALL SCARACT(SVOID_DERIVE,SVOID_DERIVE,U,V,W,W,X,Y,ZSTAR,ZSTAR,
      &               XFLOT,YFLOT,ZFLOT,ZFLOT,
      &               DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &               IKLE,IFABOR,ELTFLO,ETAFLO,

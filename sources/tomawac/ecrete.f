@@ -43,11 +43,10 @@
 !| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_ECRETE => ECRETE
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
       INTEGER, INTENT(IN)             :: NPOIN2 , NPLAN, NF
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),PROMIN

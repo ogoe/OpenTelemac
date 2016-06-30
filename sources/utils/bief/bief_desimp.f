@@ -69,9 +69,8 @@
       USE BIEF, EX_BIEF_DESIMP => BIEF_DESIMP
       USE INTERFACE_HERMES
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -69,10 +69,9 @@
       USE INTERFACE_PARALLEL
       USE BIEF, EX_PROXIM => PROXIM
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

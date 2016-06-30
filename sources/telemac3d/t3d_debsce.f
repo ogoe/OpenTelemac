@@ -50,12 +50,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!     USE DECLARATIONS_TELEMAC3D, ONLY: MAXSCE,AT,INFOGR,NSCE,T3D_FILES
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC3D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

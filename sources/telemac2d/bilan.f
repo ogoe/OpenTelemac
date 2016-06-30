@@ -71,10 +71,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : FLUX1_OLD,MASSE0,MASSE1,
+     &                                   MASSE2,MASENT,MASSET
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -98,13 +99,10 @@
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
 !
-      DOUBLE PRECISION ERREUR,FLUX1,PERDUE,DENOM
-      DOUBLE PRECISION MASSE0,MASSE1,MASSE2,MASENT,RELATI,MASSET
+      DOUBLE PRECISION ERREUR,FLUX1,PERDUE,DENOM,RELATI
 !
-      DOUBLE PRECISION FLUX1_OLD,CONTRIB
+      DOUBLE PRECISION CONTRIB
       INTRINSIC ABS
-!
-      SAVE MASSE0,MASSE1,MASSE2,MASENT,MASSET,FLUX1_OLD
 !
 !-----------------------------------------------------------------------
 !

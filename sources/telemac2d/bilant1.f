@@ -61,11 +61,13 @@
 !| WORK5          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY : MASTR0_BT1,MASTR1_BT1,
+     &                                   MASTR2_BT1,MASTEN_BT1,
+     &                                   MASTOU_BT1,DIRTOT_BT1
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -90,14 +92,8 @@
       DOUBLE PRECISION FLTDIR,FLTDDL,FLTOND
       DOUBLE PRECISION C,RELATI,DENOM
 !
-      DOUBLE PRECISION MASTR0(100),MASTR1(100),MASTR2(100),MASTEN(100)
-      DOUBLE PRECISION MASTOU(100),DIRTOT(100)
 !
       INTRINSIC ABS,MAX
-!
-!-----------------------------------------------------------------------
-!
-      SAVE MASTR0,MASTR1,MASTR2,MASTEN,MASTOU,DIRTOT
 !
 !-----------------------------------------------------------------------
 !
@@ -122,7 +118,7 @@
 !
 !  COMPATIBLE CALCULATION OF THE QUANTITY OF TRACER:
 !
-      IF(LT.NE.0) MASTR1(ITRAC) = MASTR2(ITRAC)
+      IF(LT.NE.0) MASTR1_BT1(ITRAC) = MASTR2_BT1(ITRAC)
 !     H IS PUT HERE AS A DUMMY STRUCTURE
 !
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
@@ -133,15 +129,15 @@
         CALL VECTOR(WORK2,'=','MASVEC          ',IELMT,
      &              1.D0,T,H,H,H,H,H,MESH,MSK,MASKEL)
       ENDIF
-      MASTR2(ITRAC) = DOTS(WORK2,WORK4)
-      IF(NCSIZE.GT.1) MASTR2(ITRAC)=P_DSUM(MASTR2(ITRAC))
+      MASTR2_BT1(ITRAC) = DOTS(WORK2,WORK4)
+      IF(NCSIZE.GT.1) MASTR2_BT1(ITRAC)=P_DSUM(MASTR2_BT1(ITRAC))
 !
       IF(LT.EQ.0) THEN
-        MASTR0(ITRAC) = MASTR2(ITRAC)
-        MASTR1(ITRAC) = MASTR2(ITRAC)
-        MASTEN(ITRAC) = 0.D0
-        MASTOU(ITRAC) = 0.D0
-        DIRTOT(ITRAC) = 0.D0
+        MASTR0_BT1(ITRAC) = MASTR2_BT1(ITRAC)
+        MASTR1_BT1(ITRAC) = MASTR2_BT1(ITRAC)
+        MASTEN_BT1(ITRAC) = 0.D0
+        MASTOU_BT1(ITRAC) = 0.D0
+        DIRTOT_BT1(ITRAC) = 0.D0
       ENDIF
 !
 !=======================================================================
@@ -206,9 +202,9 @@
 !   CALCULATES FLUXES AT THE LIQUID BOUNDARIES
 !
       FLUXT = FLTDIR + FLTDDL + FLTOND
-      MASTEN(ITRAC) = MASTEN(ITRAC) - FLUXT
-      MASTOU(ITRAC) = MASTOU(ITRAC) + MASSOU
-      DIRTOT(ITRAC) = DIRTOT(ITRAC) - FLTDIR
+      MASTEN_BT1(ITRAC) = MASTEN_BT1(ITRAC) - FLUXT
+      MASTOU_BT1(ITRAC) = MASTOU_BT1(ITRAC) + MASSOU
+      DIRTOT_BT1(ITRAC) = DIRTOT_BT1(ITRAC) - FLTDIR
 !
 !=======================================================================
 !
@@ -232,29 +228,30 @@
 !
         IF(LT.EQ.0) THEN
 !
-          IF(LNG.EQ.1) WRITE(LU,1090) MASTR0(ITRAC)
-          IF(LNG.EQ.2) WRITE(LU,2090) MASTR0(ITRAC)
+          IF(LNG.EQ.1) WRITE(LU,1090) MASTR0_BT1(ITRAC)
+          IF(LNG.EQ.2) WRITE(LU,2090) MASTR0_BT1(ITRAC)
 !
         ELSE
 !
           IF(LNG.EQ.1) THEN
-            WRITE(LU,1100) MASTR2(ITRAC)
+            WRITE(LU,1100) MASTR2_BT1(ITRAC)
             IF(ABS(FLTDIR).GT.1.D-8) WRITE(LU,1110) -FLTDIR
             IF(ABS(FLTDDL).GT.1.D-8) WRITE(LU,1111) -FLTDDL
             IF(ABS(FLTOND).GT.1.D-8) WRITE(LU,1112) -FLTOND
             IF(ABS(MASSOU).GT.1.D-8) WRITE(LU,1113) MASSOU
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,2100) MASTR2(ITRAC)
+            WRITE(LU,2100) MASTR2_BT1(ITRAC)
             IF(ABS(FLTDIR).GT.1.D-8) WRITE(LU,2110) -FLTDIR
             IF(ABS(FLTDDL).GT.1.D-8) WRITE(LU,2111) -FLTDDL
             IF(ABS(FLTOND).GT.1.D-8) WRITE(LU,2112) -FLTOND
             IF(ABS(MASSOU).GT.1.D-8) WRITE(LU,2113) MASSOU
           ENDIF
 !
-          PERDUE = MASTR0(ITRAC)+MASTEN(ITRAC)+
-     &             MASBOR+MASTOU(ITRAC)-MASTR2(ITRAC)
-          DENOM = MAX(MASTR0(ITRAC),MASTR2(ITRAC),ABS(DIRTOT(ITRAC)))
+          PERDUE = MASTR0_BT1(ITRAC)+MASTEN_BT1(ITRAC)+
+     &             MASBOR+MASTOU_BT1(ITRAC)-MASTR2_BT1(ITRAC)
+          DENOM = MAX(MASTR0_BT1(ITRAC),MASTR2_BT1(ITRAC),
+     &                ABS(DIRTOT_BT1(ITRAC)))
           IF(DENOM.GT.1.D-8) THEN
             RELATI = PERDUE / DENOM
             IF(LNG.EQ.1) WRITE(LU,1140) RELATI
@@ -266,12 +263,16 @@
           ENDIF
 !
           IF(LNG.EQ.1) THEN
-            IF(ABS(MASTEN(ITRAC)).GT.1.D-8) WRITE(LU,1161) MASTEN(ITRAC)
-            IF(ABS(MASTOU(ITRAC)).GT.1.D-8) WRITE(LU,1164) MASTOU(ITRAC)
+            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8) 
+     &                WRITE(LU,1161) MASTEN_BT1(ITRAC)
+            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8) 
+     &                WRITE(LU,1164) MASTOU_BT1(ITRAC)
           ENDIF
           IF(LNG.EQ.2) THEN
-            IF(ABS(MASTEN(ITRAC)).GT.1.D-8) WRITE(LU,2161) MASTEN(ITRAC)
-            IF(ABS(MASTOU(ITRAC)).GT.1.D-8) WRITE(LU,2164) MASTOU(ITRAC)
+            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8) 
+     &                WRITE(LU,2161) MASTEN_BT1(ITRAC)
+            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8) 
+     &                WRITE(LU,2164) MASTOU_BT1(ITRAC)
           ENDIF
 !
         ENDIF
@@ -286,15 +287,15 @@
         IF(LNG.EQ.1) WRITE(LU,600) ITRAC
         IF(LNG.EQ.2) WRITE(LU,601) ITRAC
 !
-        PERDUE = MASTR0(ITRAC)+MASTEN(ITRAC)+
-     &           MASBOR+MASTOU(ITRAC)-MASTR2(ITRAC)
+        PERDUE = MASTR0_BT1(ITRAC)+MASTEN_BT1(ITRAC)+
+     &           MASBOR+MASTOU_BT1(ITRAC)-MASTR2_BT1(ITRAC)
 !
         IF(LNG.EQ.1) THEN
-          WRITE(LU,1160) MASTR0(ITRAC),MASTR2(ITRAC)
+          WRITE(LU,1160) MASTR0_BT1(ITRAC),MASTR2_BT1(ITRAC)
           WRITE(LU,1165) PERDUE
         ENDIF
         IF(LNG.EQ.2) THEN
-          WRITE(LU,2160) MASTR0(ITRAC),MASTR2(ITRAC)
+          WRITE(LU,2160) MASTR0_BT1(ITRAC),MASTR2_BT1(ITRAC)
           WRITE(LU,2165) PERDUE
         ENDIF
 !

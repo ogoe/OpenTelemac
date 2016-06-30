@@ -40,9 +40,9 @@
 ! APPEL DE :
 !***********************************************************************
 !
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
-      INTEGER       MESH, NDP, NPOIN, NELEM, NPMAX, NELMAX
       INTEGER       NGEO
       INTEGER       NPOIN1, NFO1
       CHARACTER*(*) TYPELE
@@ -50,7 +50,6 @@
 !
 ! COMMON
 !
-      COMMON/GEO/MESH, NDP, NPOIN, NELEM, NPMAX, NELMAX
 !
       REWIND (NGEO)
       REWIND (NFO1)

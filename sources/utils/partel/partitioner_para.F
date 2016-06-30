@@ -29,6 +29,7 @@
 #if defined (HAVE_PTSCOTCH)
       USE ISO_C_BINDING
 #endif
+      USE DECLARATIONS_SPECIAL
       USE BIEF
       USE DECLARATIONS_PARALLEL
       USE INTERFACE_PARALLEL
@@ -52,8 +53,6 @@
 !-----------------------------------------------------------------------
 !
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER :: ERR, I, J, K
 !

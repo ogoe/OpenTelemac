@@ -39,9 +39,8 @@
 !
       USE BIEF, EX_ALLBLO => ALLBLO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -50,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ERR
+      INTEGER I,ERR
 !
 !-----------------------------------------------------------------------
 !  COMMON PART FOR ALL OBJECTS
@@ -63,6 +62,10 @@
 !     TYPE OF THE OBJECT
 !
       BLO%TYPE = 4
+!
+!     Defines how the object was created
+!
+      BLO%FATHER = 'XXXXXX'
 !
 !     NAME OF THE OBJECT
 !
@@ -80,6 +83,9 @@
 !
       BLO%MAXBLOCK = 256
       ALLOCATE(BLO%ADR(BLO%MAXBLOCK),STAT=ERR)
+      DO I=1,BLO%MAXBLOCK
+        NULLIFY(BLO%ADR(I)%P)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

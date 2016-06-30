@@ -78,6 +78,10 @@
 !         TYPE: 2: VECTOR,  3: MATRIX,  4: BLOCK
           INTEGER TYPE
 !
+!         Contains the name of its father (i.e the bloc that created it)
+!         If father is XXXXXX the bief_obj was created on its own
+          CHARACTER(LEN=6) FATHER
+!
 !         NAME: FORTRAN NAME OF OBJECT IN 6 CHARACTERS
           CHARACTER(LEN=6) NAME
 !

@@ -56,12 +56,11 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER I , NPT , NPOIN , NPMAX , NPTFR , IVOIS , NBAT
-      INTEGER NELMAX , NELEM , MESH , NDP
+      INTEGER I , NPT , NPTFR , IVOIS , NBAT
       INTEGER NFOND(*) , NBOR(NPTFR,2) , NP(5) , NBFOND
       INTEGER NGEO, KP1BOR(NPTFR)
 !
@@ -72,12 +71,10 @@
 !
       CHARACTER*72 FOND(NBFOND)
 !
-! Ajout PCt - 11/07/96
       CHARACTER*9  MAILLE
 !
       LOGICAL FONTRI
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !  LECTURE DES FICHIERS DES FONDS

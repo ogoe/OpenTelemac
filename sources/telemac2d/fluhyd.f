@@ -107,9 +107,8 @@
       USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG
       USE INTERFACE_TELEMAC2D, EX_FLUHYD => FLUHYD
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

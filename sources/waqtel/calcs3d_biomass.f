@@ -26,7 +26,7 @@
 !| NTRAC          |-->| OLD NUMBER OF TRACER (BEFORE WAQ RTACERS)
 !| RAYEFF         |-->| EFFECT OF SUNSHINE ON ALGAE GROWTH
 !| T1,..,T6       |<->| 3D WORKING STRUCTURES
-!| T2_1,T2_2      |<->| 2D WORKING STRUCTURES 
+!| T2_1,T2_2      |<->| 2D WORKING STRUCTURES
 !| TN             |-->| TRACER STRUCUTRE
 !| TEXP           |<--| EXPLICIT SOURCE TERMES
 !| VOLU2D         |-->| BASES AREA (NON ASSEMBLED)
@@ -73,15 +73,14 @@
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
 !***********************************************************************
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          , INTENT(IN   ) :: NPOIN2,NPOIN3,NTRAC
       INTEGER          , INTENT(IN   ) :: DEBUG,IND_T,NPLAN
-      LOGICAL          , INTENT(IN   ) :: YATEMP  
+      LOGICAL          , INTENT(IN   ) :: YATEMP
       DOUBLE PRECISION , INTENT(IN   ) :: WATTEMP
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,ZPROP
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TEXP,RAYEFF
@@ -118,7 +117,7 @@
       RANKTR5 = NTRAC        ! NOR
 !
 !     G1 IS STOCKED IN T6, WE TAKE INTO ACCOUNT VARIABLE TEMPERATURE
-!     
+!
       G1 = WATTEMP/20.D0
       IF(YATEMP)THEN
         CALL OS('X=CY    ',X=T6,Y=TN%ADR(IND_T)%P,C=UNSURVINGT)
@@ -179,10 +178,10 @@
       CALL OS( 'X=C(Y-Z)' ,X=T1,Y=T1                 ,Z=T3,C=PRONITC)
       CALL OS( 'X=XY    ' ,X=T1,Y=TN%ADR(RANKTR1)%P                 )
       CALL OS( 'X=CYZ   ' ,X=T2,Y=TN%ADR(RANKTR5)%P  ,Z=T6,C=K360   )
-!    
+!
       CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR4)%P,Y=T1,Z=T2          )
 !
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
 !
       G1=PRONITC*(1.D0-PERNITS)
       CALL OS( 'X=CYZ   ' ,X=T1,Y=T4,Z=TN%ADR(RANKTR1)%P,C=G1       )
@@ -201,8 +200,8 @@
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR4)%P,C=SECTODAY)
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR5)%P,C=SECTODAY)
 !
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
 !     ACTIVATE BIEF_OBJ FOR FURTHER CALCULATIONS

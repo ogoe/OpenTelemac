@@ -26,11 +26,11 @@
 !| IND_T         |-->| INDEX OF TEMPERATURE IN TRACER TABLE
 !| K1            |-->| CONST. OF DEGRADATION KINETIC OF ORGANIC LOAD
 !| K22           |<--| CONST. OF REAERATION
-!| K44           |-->| CONST. OF NITRIFICATION KINETIC 
+!| K44           |-->| CONST. OF NITRIFICATION KINETIC
 !| MASSOU        |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !| NPOIN         |-->| NUMBER OF NODES IN THE MESH
 !| NTRAC         |-->| TOTAL NUMBER OF TRACERS
-!| O2SATU        |<--| O2 SATURATION DENSITY OF WATER (CS) 
+!| O2SATU        |<--| O2 SATURATION DENSITY OF WATER (CS)
 !| PHOTO         |-->| PHOTOSYNTHESIS
 !| WATTEMP       |-->| TEMPERATURE OF WATER (DEG CELSIUS)
 !| T1,T2         |-->| WORKING ARRAYS
@@ -44,13 +44,12 @@
 !
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY: FORMCS,K2,SECTODAY
       USE INTERFACE_PARALLEL
       USE INTERFACE_WAQTEL, EX_CALCS3D_O2 => CALCS3D_O2
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -83,8 +82,8 @@
       RANKTR3 = NTRAC
 !     INITIALIZE
       CALL OS('X=0     ',X=TEXP%ADR(RANKTR1)%P)
-      CALL OS('X=0     ',X=TIMP%ADR(RANKTR2)%P) 
-      CALL OS('X=0     ',X=TIMP%ADR(RANKTR3)%P) 
+      CALL OS('X=0     ',X=TIMP%ADR(RANKTR2)%P)
+      CALL OS('X=0     ',X=TIMP%ADR(RANKTR3)%P)
 !
       PMOINR  = (PHOTO-RESP)*SECTODAY
 !     CONVERT DAYS TO SECONDS
@@ -99,7 +98,7 @@
         T32%R(I)=BENCORR*(CORR1**POWER)
       ENDDO
 !
-!     COMPUTE CS (O2SATU, STOCKED IN T21) 
+!     COMPUTE CS (O2SATU, STOCKED IN T21)
 !
       IF(.NOT.YATEMP)THEN
         CALL SATUR_O2(O2SATU,FORMCS,WATTEMP,EPS)
@@ -122,16 +121,16 @@
 !----------------------------------------------------------------------
 !     LET'S NOW COMPUTE SOURCE TERMS
 !
-!     FIRST TRACER O2 (RANK NTRAC-ADDTR+1) 
-!     warning: here there are lots of choices that can be changed 
-!              by the user: 
+!     FIRST TRACER O2 (RANK NTRAC-ADDTR+1)
+!     warning: here there are lots of choices that can be changed
+!              by the user:
 !              1- reareration is considered for only water surface,
 !              2- bentic demand concerns only the bottom or all the water
 !              column (here the second choice is considered)
 !              these choices and many others, have to be decided by WAQ
 !              experts
 !
-!     EXPLICIT PART 
+!     EXPLICIT PART
 !     =============
 !
 !     SURFACE SOURCES
@@ -139,7 +138,7 @@
         J=(NPLAN-1)*NPOIN2+I
         TEXP%ADR(RANKTR1)%P%R(J)= T31%R(J)*K2%R(I)*
      &          MAX((T21%R(I)-TN%ADR(RANKTR1)%P%R(J)),0.D0)-
-!               O2 DENSITY CAN NOT BE GREATER THAN O2SATU 
+!               O2 DENSITY CAN NOT BE GREATER THAN O2SATU
      &          T32%R(I)/MAX(EPS,ZPROP%R(J))
       ENDDO
 !
@@ -147,15 +146,15 @@
 !
       CALL OS('X=X+C   ',X=TEXP%ADR(RANKTR1)%P,C=PMOINR)
 !
-!     THE REMAINING TERMS 
+!     THE REMAINING TERMS
 !
       CALL OS('X=X+CY  ',X=TEXP%ADR(RANKTR1)%P,Y=TN%ADR(RANKTR2)%P,
      &         C=-CONV_K1 )
       CALL OS('X=X+CY  ',X=TEXP%ADR(RANKTR1)%P,Y=TN%ADR(NTRAC  )%P,
      &         C=-CONV_K44)
-!     IMPLICIT PART: 
+!     IMPLICIT PART:
 !     ==============
-!     SOFAR, ALL TERMS ARE EXPLICIT FOR O2. CHANGE   
+!     SOFAR, ALL TERMS ARE EXPLICIT FOR O2. CHANGE
 !     IF THERE ARE DISAPPOINTING RESULTS
 !
 !     SECOND TRACER [L] ORGANIC LOAD
@@ -165,7 +164,7 @@
 !     THIRD TRACER [NH4]
 !
       CALL OS('X=C     ',X=TIMP%ADR(RANKTR3)%P,C=CONV_K44)
-!    
+!
 !     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS (TO CHECK)
 !
 !     ACTIVATE BIEF_OBJ FOR FURTHER CALCULATIONS

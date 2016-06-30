@@ -45,10 +45,9 @@
 ! APPELE PAR : STBTEL
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL
       IMPLICIT NONE
-!
-      INTEGER      MESH, NDP , NPOIN , NELEM , NPMAX , NELMAX
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       INTEGER IKLE(NELMAX,4), ISDRY(NPMAX), NEW(NPMAX)
       INTEGER NCOLOR(NPMAX)
@@ -57,8 +56,6 @@
 !
       DOUBLE PRECISION X(NPMAX) , Y(NPMAX)
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !     -------------------------------------------------------------
 !     ELIMINATION DES ELEMENTS COMPORTANT DES POINTS A PROBLEME

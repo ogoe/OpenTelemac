@@ -52,14 +52,13 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION X1
 !
       INTEGER NPOIN1 , NPOIN2
-      INTEGER NPOIN , NELEM , NPMAX , NELMAX , MESH , NDP
       INTEGER NSEC11 , NSEC12 , NSEC2 , N1
       INTEGER NSEC , NGEO , N2
       INTEGER INDI11 , INDI12 , INDIC2
@@ -72,7 +71,6 @@
 !
 ! COMMON
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! INITIALISATION

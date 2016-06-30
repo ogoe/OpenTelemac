@@ -31,10 +31,9 @@
 !
       USE BIEF
       USE INTERFACE_WAQTEL, EX_ALGAE_GROWTH => ALGAE_GROWTH
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU,I
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -45,6 +44,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER I
+!      
       DO I=1,NPOIN
         ALG(I)=CMAX*RAY(I)*GT%R(I)*NUTR(I)*TOX
       ENDDO

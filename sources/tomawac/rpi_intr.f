@@ -53,6 +53,7 @@
 !| SCNDDIV        |-->| IF TRUE COMPUTES 2ND DERIVATIVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEJA_RPI_INTR, WU_OM_RPI
       USE INTERFACE_TOMAWAC, EX_RPI_INTR => RPI_INTR
       IMPLICIT NONE
 !
@@ -74,26 +75,20 @@
 !
       INTEGER IPOIN,IP1
 
-      DOUBLE PRECISION,ALLOCATABLE:: WU_OM(:)
       DOUBLE PRECISION WZX1,WZY1,WZX2,WZY2
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-!
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(WU_OM(MAXNSP))
-        DEJA=.TRUE.
+      IF(.NOT.DEJA_RPI_INTR) THEN
+        ALLOCATE(WU_OM_RPI(MAXNSP))
+        DEJA_RPI_INTR=.TRUE.
       ENDIF
 !
 !     FFD the field function where data are coming from.
 !
       DO IP1 =1,NB_CLOSE(I)
         IPOIN=NEIGB(I,IP1)
-        WU_OM(IP1)=FFD(IPOIN)
+        WU_OM_RPI(IP1)=FFD(IPOIN)
       ENDDO
 !
 !     Calculate derivatives in IPOIN
@@ -103,8 +98,8 @@
         WZX1=0.D0
         WZY1=0.D0
         DO IP1 =1,NB_CLOSE(I)
-          WZX1=WZX1+RX(IP1)*WU_OM(IP1)
-          WZY1=WZY1+RY(IP1)*WU_OM(IP1)
+          WZX1=WZX1+RX(IP1)*WU_OM_RPI(IP1)
+          WZY1=WZY1+RY(IP1)*WU_OM_RPI(IP1)
         ENDDO
         FIRDIV1=WZX1
         FIRDIV2=WZY1
@@ -116,8 +111,8 @@
         WZX2=0.D0
         WZY2=0.D0
         DO IP1 =1,NB_CLOSE(I)
-          WZX2=WZX2+RXX(IP1)*WU_OM(IP1)
-          WZY2=WZY2+RYY(IP1)*WU_OM(IP1)
+          WZX2=WZX2+RXX(IP1)*WU_OM_RPI(IP1)
+          WZY2=WZY2+RYY(IP1)*WU_OM_RPI(IP1)
         ENDDO
         SECDIV1=WZX2
         SECDIV2=WZY2

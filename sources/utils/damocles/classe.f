@@ -71,13 +71,9 @@
 !| SIZE           |<->| TABLEAU DES LONGUEURS DES MOTS CLES
 !| UTINDX         |<->| TABLEAU DE LOGIQUES D'UTILISATION DES INDEX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-!
-      INTEGER          LNG,LU
-      INTEGER          INDX,NTYP,ITAI,LONGU,NMOT(4),DEFLU
-      INTEGER          NLIGN,LONGLI
-      CHARACTER*72     PARAM
 !
       INTEGER          NMAX,MOTINT(*),ADRESS(4,*),DIMENS(4,*)
       INTEGER          SIZE(4,*),OFFSET(4),DEFINT(*),INDIC(4,*)
@@ -93,10 +89,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCNGE  / INDX,NTYP,ITAI,LONGU,NMOT,DEFLU
-      COMMON / DCMLIG / NLIGN , LONGLI
-      COMMON / DCNGEC / PARAM
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

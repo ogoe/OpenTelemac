@@ -34,9 +34,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -45,8 +44,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 #if defined (HAVE_MPI)
-      INTEGER WAIT_REQ(MPI_STATUS_SIZE,100),IER
-      SAVE
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
 !
@@ -57,7 +55,7 @@
         STOP
       ENDIF
 !
-      CALL MPI_WAITALL(NB,IBUF,WAIT_REQ,IER)
+      CALL MPI_WAITALL(NB,IBUF,WAIT_REQ_PARACO,IER)
 !
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'WAIT_PARACO:'

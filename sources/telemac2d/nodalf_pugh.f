@@ -19,14 +19,16 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFMN2          |<--| NODAL FACTOR FOR WAVES M2 AND N2
 !| FFM4           |<--| NODAL FACTOR FOR WAVE  M4
-!| MARDAT         |-->| DATE (YEAR,MONTH,DAY)
-!| MARTIM         |-->| TIME (HOUR,MINUTE,SECOND)
+!| MARDAT         |-->| DATE (YEAR_NP,MONTH,DAY)
+!| MARTIM         |-->| TIME (HOUR_NP,MINUTE_NP,SECOND_NP)
 !| NODALCORR      |-->| OPTION FOR CALCULATION OF NODAL FACTOR CORRECTION
 !| TEMPS          |-->| TIME
 !| DEJA           |-->| LOGICAL FOR 1ST TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_NODALF_PUGH => NODALF_PUGH
+      USE DECLARATIONS_TELEMAC2d, ONLY : YEAR_NP,HOUR_NP,MINUTE_NP,
+     &                                   SECOND_NP,NDAY_NP
 !
       IMPLICIT NONE
 !
@@ -41,9 +43,7 @@
 !
       DOUBLE PRECISION PI,DTR,NLUNPUGH,TJ,TJMIL,NMIL
 !
-      INTEGER YEAR,MONTH,DAY,NDAY,HOUR,MINUTE,SECOND,I
-!
-      SAVE YEAR,HOUR,MINUTE,SECOND,NDAY
+      INTEGER MONTH,DAY,I
 !
       INTRINSIC INT,MOD,DBLE,COS,ATAN
 !
@@ -53,43 +53,45 @@
       DTR = PI/180.D0
 !
       IF(.NOT.DEJA) THEN
-        YEAR  = MARDAT(1)
+        YEAR_NP  = MARDAT(1)
         MONTH = MARDAT(2)
         DAY   = MARDAT(3)
 !
-        HOUR   = MARTIM(1)
-        MINUTE = MARTIM(2)
-        SECOND = MARTIM(3)
-!       NUMBER OF THE DAY IN YEAR YEAR
-        NDAY = DAY
+        HOUR_NP   = MARTIM(1)
+        MINUTE_NP = MARTIM(2)
+        SECOND_NP = MARTIM(3)
+!       NUMBER OF THE DAY IN YEAR_NP YEAR_NP 
+        NDAY_NP = DAY
 !
         DO I=MONTH-1,1,-1
           IF((I.EQ.1).OR.(I.EQ.3).OR.(I.EQ.5).OR.(I.EQ.7).OR.(I.EQ.8)
      &    .OR.(I.EQ.10)) THEN
-            NDAY = NDAY + 31
+            NDAY_NP = NDAY_NP + 31
           ELSEIF((I.EQ.4).OR.(I.EQ.6).OR.(I.EQ.9).OR.(I.EQ.11)) THEN
-            NDAY = NDAY + 30
+            NDAY_NP = NDAY_NP + 30
           ELSEIF(I.EQ.2) THEN
-            IF((MOD(YEAR,4).NE.0)
-     &      .OR.((MOD(YEAR,100).EQ.0).AND.(MOD(YEAR,400).NE.0))) THEN
-              NDAY = NDAY + 28
+            IF((MOD(YEAR_NP,4).NE.0)
+     &      .OR.((MOD(YEAR_NP,100).EQ.0)
+     &           .AND.(MOD(YEAR_NP,400).NE.0))) THEN
+              NDAY_NP = NDAY_NP + 28
             ELSE
-              NDAY = NDAY + 29
+              NDAY_NP = NDAY_NP + 29
             ENDIF
           ENDIF
         ENDDO
       ENDIF
 !
-      TJ = DBLE(365*(YEAR-1900)+(NDAY-1)
-     &         +DBLE(INT(DBLE(YEAR-1901)/4.D0)))/36525.D0
-     &   +(DBLE(HOUR)+DBLE(MINUTE)/60.D0+DBLE(SECOND)/3600.D0)/876600.D0
+      TJ = DBLE(365*(YEAR_NP-1900)+(NDAY_NP-1)
+     &         +DBLE(INT(DBLE(YEAR_NP-1901)/4.D0)))/36525.D0
+     &   +(DBLE(HOUR_NP)+DBLE(MINUTE_NP)/60.D0
+     &     +DBLE(SECOND_NP)/3600.D0)/876600.D0
      &   +TEMPS/3.15576D9
 !
       NLUNPUGH = MOD(259.16D0-1934.14D0*TJ+0.0021D0*TJ**2,360.D0)
 !
       IF(NODALCORR.EQ.2) THEN
-        TJMIL = DBLE(365*(YEAR-1900)+(183-1)
-     &              +DBLE(INT(DBLE(YEAR-1901)/4.D0)))/36525.D0
+        TJMIL = DBLE(365*(YEAR_NP-1900)+(183-1)
+     &              +DBLE(INT(DBLE(YEAR_NP-1901)/4.D0)))/36525.D0
         NMIL  = MOD(259.16D0-1934.14D0*TJMIL+0.0021D0*TJMIL**2,360.D0)
         FFMN2 = 1.D0-0.037D0*COS(NMIL*DTR)
       ELSE

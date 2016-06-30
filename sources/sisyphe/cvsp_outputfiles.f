@@ -85,8 +85,6 @@
       TYPE(BIEF_MESH) :: USRMSH_2DHYD
       INTEGER USRMSH_NPLAN               ! NUMBER OF PLANES IN T3D_UR
       INTEGER USRMSH_2DHYD_NPLAN         ! NUMBER OF PLANES FOR 2DHYD TO 3D FILE
-
-      SAVE
 !
 !-----------------------------------------------------------------------
 !

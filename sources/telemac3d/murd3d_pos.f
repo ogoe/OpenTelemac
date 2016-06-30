@@ -45,7 +45,7 @@
 !+        28/10/2011
 !+        V6P2
 !+   Updated for element 51 (prisms cut into tetrahedra). Better memory
-!+   allocation of INDIC.
+!+   allocation of INDIC_MURD3D_POS.
 !
 !history  J-M HERVOUET (LNHE)
 !+        23/04/2012
@@ -119,12 +119,14 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D, ONLY: BEDBOU,BEDFLU,T2_18,MESH2D,
-     &                                  KSCE,ISCE
+      USE DECLARATIONS_TELEMAC3D, ONLY : DEJA_MURD3D_POS, 
+     &                                   INDIC_MURD3D_POS,
+     &                                   SIZEINDIC_MURD3D_POS,
+     &                                   BEDBOU,BEDFLU,T2_18,MESH2D,
+     &                                   KSCE,ISCE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -164,7 +166,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,NITER,IS,IIS,I,NSEGH,NSEGV,OPT,IR
-      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR,SIZEINDIC
+      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR
       INTEGER REMAIN_SEG,NEWREMAIN,REMAIN_TOT
 !
 !-----------------------------------------------------------------------
@@ -177,26 +179,15 @@
       DOUBLE PRECISION RINIT,C,NEWVOL,RFLUX,RFLUX_OLD
       DOUBLE PRECISION VOLSEG1,VOLSEG2
 !
-      DOUBLE PRECISION EPS
-      DATA EPS /1.D-6/
-      DOUBLE PRECISION ALLOW
-      DATA ALLOW /1.D-5/
-      DOUBLE PRECISION REDUC
-      DATA REDUC /1.D-9/
-      DOUBLE PRECISION EPS_VOLUME
-      DATA EPS_VOLUME /1.D-8/
+      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-6
+      DOUBLE PRECISION, PARAMETER :: ALLOW = 1.D-5
+      DOUBLE PRECISION, PARAMETER :: REDUC = 1.D-9
+      DOUBLE PRECISION, PARAMETER :: EPS_VOLUME = 1.D-8
 !
-      LOGICAL TESTING
-      DATA    TESTING/.FALSE./
+      LOGICAL, PARAMETER :: TESTING = .FALSE.
 !
 !-----------------------------------------------------------------------
 !
-!     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      INTEGER, ALLOCATABLE :: INDIC(:)
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -257,18 +248,18 @@
         STOP
       ENDIF
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(INDIC(REMAIN_SEG))
-        SIZEINDIC=REMAIN_SEG
-        DEJA=.TRUE.
+      IF(.NOT.DEJA_MURD3D_POS) THEN  
+        ALLOCATE(INDIC_MURD3D_POS(REMAIN_SEG)) 
+        SIZEINDIC_MURD3D_POS=REMAIN_SEG   
+        DEJA_MURD3D_POS=.TRUE.
       ELSE
-        IF(REMAIN_SEG.GT.SIZEINDIC) THEN
-!         LARGER SIZE OF INDIC REQUIRED (CASE OF SEVERAL CALLS WITH
+        IF(REMAIN_SEG.GT.SIZEINDIC_MURD3D_POS) THEN
+!         LARGER SIZE OF INDIC_MURD3D_POS REQUIRED (CASE OF SEVERAL CALLS WITH
 !         DIFFERENT SCHEMES THAT IMPLY DIFFERENT NUMBERS OF SEGMENTS
 !         LIKE SCHEMES LPO_TF AND NSC_TF IN PRISMS
-          DEALLOCATE(INDIC)
-          ALLOCATE(INDIC(REMAIN_SEG))
-          SIZEINDIC=REMAIN_SEG
+          DEALLOCATE(INDIC_MURD3D_POS) 
+          ALLOCATE(INDIC_MURD3D_POS(REMAIN_SEG)) 
+          SIZEINDIC_MURD3D_POS=REMAIN_SEG 
         ENDIF
       ENDIF
 !
@@ -277,10 +268,10 @@
 !***********************************************************************
 !
 !     COPIES FLUXES FROM FLODEL TO ARRAY RMASS (REMAINING MASSES
-!     TO BE TRANSFERRED AND THEIR ADDRESS IN INDIC)
+!     TO BE TRANSFERRED AND THEIR ADDRESS IN INDIC_MURD3D_POS)
 !
       DO I=1,REMAIN_SEG
-        INDIC(I)=I
+        INDIC_MURD3D_POS(I)=I
         RMASS(I)=-DT*FLOPAR(I)
       ENDDO
 !
@@ -478,7 +469,7 @@
       ELSE
 !       NOT ALL THE POINTS NEED TO BE INITIALISED NOW
         DO IR=1,REMAIN_SEG
-          I=INDIC(IR)
+          I=INDIC_MURD3D_POS(IR)
           I1=GLOSEG(I,1)
           I2=GLOSEG(I,2)
           FLUX_REMOVED%R(I1)=0.D0
@@ -509,7 +500,7 @@
         ENDIF
       ENDIF
       DO I=1,REMAIN_SEG
-        ISEG3D=INDIC(I)
+        ISEG3D=INDIC_MURD3D_POS(I)
         I1=GLOSEG(ISEG3D,1)
         I2=GLOSEG(ISEG3D,2)
 !       POSITIVE FLUXES FROM 1 TO 2 !!!
@@ -555,7 +546,7 @@
       NEWREMAIN=0
 !
       DO IR=1,REMAIN_SEG
-        I=INDIC(IR)
+        I=INDIC_MURD3D_POS(IR)
         IF(RMASS(I).GT.EPS_VOLUME) THEN
           I1=GLOSEG(I,1)
 !         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
@@ -576,7 +567,7 @@
               FC(I2)=T5%R(I2)/VOLU2(I2)
               RFLUX=RFLUX+RMASS(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_MURD3D_POS(NEWREMAIN)=I
             ELSE
               VOLSEG1=VOLSEG1-RMASS(I)
 !             GATHERING VOLUMES (HERE VOLU2(I2) WILL REMAIN POSITIVE)
@@ -590,7 +581,7 @@
           ELSE
             RFLUX=RFLUX+RMASS(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_MURD3D_POS(NEWREMAIN)=I
           ENDIF
         ELSEIF(RMASS(I).LT.-EPS_VOLUME) THEN
           I2=GLOSEG(I,2)
@@ -609,7 +600,7 @@
               FC(I1)=T5%R(I1)/VOLU2(I1)
               RFLUX=RFLUX-RMASS(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_MURD3D_POS(NEWREMAIN)=I
             ELSE
               VOLSEG2=VOLSEG2+RMASS(I)
 !             GATHERING VOLUMES (HERE VOLU2(I1) WILL REMAIN POSITIVE)
@@ -623,7 +614,7 @@
           ELSE
             RFLUX=RFLUX-RMASS(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_MURD3D_POS(NEWREMAIN)=I
           ENDIF
         ENDIF
       ENDDO

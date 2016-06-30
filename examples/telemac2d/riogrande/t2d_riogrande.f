@@ -23,9 +23,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -187,11 +186,10 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      DOUBLE PRECISION PI,L0,LI,LO,HDUNE,LM
+      DOUBLE PRECISION PI,L0,LO,HDUNE,LM
       INTEGER I
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -202,7 +200,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  Bosse � t=0
+!  Bosse a t=0
 !
 
 !      Lo=1.5D0

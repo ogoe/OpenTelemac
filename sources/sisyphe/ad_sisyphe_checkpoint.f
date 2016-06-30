@@ -1,15 +1,15 @@
 
-C     ********************************************
+!     ********************************************
       MODULE AD_SISYPHE_CHECKPOINT
-C     ********************************************
-C
+!     ********************************************
+!
       USE BIEF_DEF
 !      USE FRICTION_DEF
-C
+!
       IMPLICIT NONE
-        
-      PRIVATE 
-        
+
+      PRIVATE
+
       PUBLIC :: CHECKPOINT_SIS_INIT
       PUBLIC :: CHECKPOINT_SIS_STORE, CHECKPOINT_SIS_RESTORE
       PUBLIC :: CHECKPOINT_SIS_COPY_TO_TMP_CP
@@ -27,7 +27,7 @@ C
 !!        TYPE(BIEF_OBJ)                                       :: AVAI
 !        Active Layer Thickness
 !!        TYPE(BIEF_OBJ)                                       :: ELAY
-!        EVOLUTION 
+!        EVOLUTION
         TYPE(BIEF_OBJ)                                       :: E
 !        Active Stratum Thickness
 !!        TYPE(BIEF_OBJ)                                       :: ESTRAT
@@ -42,12 +42,12 @@ C
 !        MAXIMUM EVOLUTION
         TYPE(BIEF_OBJ)                                       :: EMAX
 !!
-c$$$!       Simulation time
-c$$$      DOUBLE PRECISION                                      :: AT
+!$$$!       Simulation time
+!$$$      DOUBLE PRECISION                                      :: AT
 
       END TYPE CHECKPOINT_SIS_TYPE
 
-      TYPE(CHECKPOINT_SIS_TYPE), DIMENSION(:), 
+      TYPE(CHECKPOINT_SIS_TYPE), DIMENSION(:),
      $                    ALLOCATABLE, TARGET        :: CP_SIS
 
 
@@ -55,50 +55,49 @@ c$$$      DOUBLE PRECISION                                      :: AT
       TYPE(CHECKPOINT_SIS_TYPE), POINTER             :: SIS_TMP_CP
 
       ! Number of Check Points
-      INTEGER                                         :: NumCP_SIS = -1 
+      INTEGER                                         :: NumCP_SIS = -1
 
-C
+!
 
       CONTAINS
 
 
-C                       *****************
+!                       *****************
       SUBROUTINE CHECKPOINT_SIS_INIT
-C                       *****************
+!                       *****************
      &( NumCP )
-C
-C***********************************************************************
-C SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C SISYPHE VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C  FUNCTION  : Allocates / Inits all Checkpointing Parameters / Struktures
-C              Use this only ones outside of the time loop
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |   NumCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+! SISYPHE VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!  FUNCTION  : Allocates / Inits all Checkpointing Parameters / Struktures
+!              Use this only ones outside of the time loop
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |   NumCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
       INTEGER, INTENT(IN)  :: NumCP
 
       INTEGER K
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       print *,'CHECKPOINT_SIS_INIT : NUMCP ', NumCP
 
       IF ( NumCP_SIS .NE. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 
+         IF(LNG.EQ.1) WRITE(LU,*)
      $        'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
          IF(LNG.EQ.2) WRITE(LU,*)
      $        'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
@@ -106,15 +105,15 @@ C-----------------------------------------------------------------------
          STOP
       ENDIF
 
-C-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 
       NumCP_SIS = NumCP
 
       ALLOCATE( CP_SIS(-2:NumCP_SIS) )
 
       Do K = -2, NumCP_SIS
-C     
-C     COMPONENTS OF VELOCITY
+!
+!     COMPONENTS OF VELOCITY
 
          ALLOCATE(CP_SIS(K)%AVAIL(NPOIN,9,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
          ALLOCATE(CP_SIS(K)%ES(NPOIN,9))           ! THICKNESS OF EACH CLASS ???
@@ -137,13 +136,13 @@ C     COMPONENTS OF VELOCITY
          CALL BIEF_ALLVEC(1,CP_SIS(K)%ZR    ,'ZR    ', IELMT,1,2,MESH) ! NON-ERODABLE BED ELEVATIONS
 !        MAXIMUM EVOLUTION
          CALL BIEF_ALLVEC(1,CP_SIS(K)%EMAX  ,'EMAX  ', IELMT,1,2,MESH) ! VARIABLES E SUMMED U
-C
+!
       ENDDO
 
-C     Set pointer for adjoint buffer
+!     Set pointer for adjoint buffer
       SIS_ADJ_BUFFER => CP_SIS(-1)
       SIS_TMP_CP     => CP_SIS(-2)
-      
+
       RETURN
       END SUBROUTINE CHECKPOINT_SIS_INIT
 
@@ -152,38 +151,37 @@ C     Set pointer for adjoint buffer
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C                       *****************
+!                       *****************
       SUBROUTINE CHECKPOINT_SIS_STORE
-C                       *****************
+!                       *****************
      &(CP_ID)
-C
-C***********************************************************************
-C SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C SISYPHE VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C  FUNCTION  : Stores a CHECKPOINT of the main SISYPHE PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |   CP_ID        | -->| CHECKPOINT SLOT TO OVERWRITE.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+! SISYPHE VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!  FUNCTION  : Stores a CHECKPOINT of the main SISYPHE PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |   CP_ID        | -->| CHECKPOINT SLOT TO OVERWRITE.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
       INTEGER,          INTENT(IN) :: CP_ID
 
       INTEGER I,J,K, N
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_SIS_STORE: LT, CP_ID ',LT, CP_ID
 
@@ -197,7 +195,7 @@ C-----------------------------------------------------------------------
       ENDIF
 
       IF ( CP_ID < 0 .OR. CP_ID .GT. NumCP_SIS )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 
+         IF(LNG.EQ.1) WRITE(LU,*)
      $        'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
          IF(LNG.EQ.2) WRITE(LU,*)
      $        'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
@@ -229,8 +227,8 @@ C-----------------------------------------------------------------------
 
 !-----------------------------------------------------------------------
 
-c$$$!     Simulation time
-c$$$      CP_SIS(CP_ID)%AT  = AT
+!$$$!     Simulation time
+!$$$      CP_SIS(CP_ID)%AT  = AT
 
       RETURN
       END SUBROUTINE CHECKPOINT_SIS_STORE
@@ -240,42 +238,41 @@ c$$$      CP_SIS(CP_ID)%AT  = AT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C                       *****************
+!                       *****************
                         SUBROUTINE CHECKPOINT_SIS_RESTORE
-C                       *****************
+!                       *****************
      &(CP_ID)
-C
-C***********************************************************************
-C SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C SISYPHE VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C
-C  FUNCTION  : RESTORES a CHECKPOINT of the main SISYPHE PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |   CP_ID        | -->| CHECKPOINT SLOT TO READ
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+! SISYPHE VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!
+!  FUNCTION  : RESTORES a CHECKPOINT of the main SISYPHE PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |   CP_ID        | -->| CHECKPOINT SLOT TO READ
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+!
+!***********************************************************************
+!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
       INTEGER,          INTENT(IN) :: CP_ID
 
       INTEGER                      :: I, J, K
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_SIS_RESTORE : LT, CP_ID ',LT, CP_ID
 
@@ -289,7 +286,7 @@ C
       ENDIF
 
       IF ( CP_ID < 0 .OR. CP_ID .GT. NumCP_SIS )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 
+         IF(LNG.EQ.1) WRITE(LU,*)
      $        'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
          IF(LNG.EQ.2) WRITE(LU,*)
      $        'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
@@ -321,8 +318,8 @@ C
 
 !-----------------------------------------------------------------------
 
-c$$$!     Simulation time
-c$$$      AT = CP_SIS(CP_ID)%AT
+!$$$!     Simulation time
+!$$$      AT = CP_SIS(CP_ID)%AT
 
       RETURN
       END SUBROUTINE CHECKPOINT_SIS_RESTORE
@@ -332,35 +329,34 @@ c$$$      AT = CP_SIS(CP_ID)%AT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C                       *****************
+!                       *****************
       SUBROUTINE CHECKPOINT_SIS_COPY_TO_TMP_CP
-C                       *****************
+!                       *****************
      &()
-C
-C***********************************************************************
-C SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C SISYPHE VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C  FUNCTION  : Stores a CHECKPOINT of the main SISYPHE PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+! SISYPHE VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!  FUNCTION  : Stores a CHECKPOINT of the main SISYPHE PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
       INTEGER I,J,K, N
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_SIS_COPY_TO_TMP_CP: LT ',LT
 
@@ -398,8 +394,8 @@ C-----------------------------------------------------------------------
 
 !-----------------------------------------------------------------------
 
-c$$$!     Simulation time
-c$$$      CP_SIS(-2)%AT  = AT
+!$$$!     Simulation time
+!$$$      CP_SIS(-2)%AT  = AT
 
       RETURN
       END SUBROUTINE CHECKPOINT_SIS_COPY_TO_TMP_CP
@@ -409,39 +405,38 @@ c$$$      CP_SIS(-2)%AT  = AT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C                       *****************
+!                       *****************
                         SUBROUTINE CHECKPOINT_SIS_COPY_FROM_TMP_CP
-C                       *****************
+!                       *****************
      &()
-C
-C***********************************************************************
-C SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C SISYPHE VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C
-C  FUNCTION  : RESTORES a CHECKPOINT of the main SISYPHE PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+! SISYPHE VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!
+!  FUNCTION  : RESTORES a CHECKPOINT of the main SISYPHE PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+!
+!***********************************************************************
+!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
       INTEGER                      :: I, J, K
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_SIS_COPY_FROM_TMP_CP : LT, -2 ',LT, -2
 
@@ -479,8 +474,8 @@ C
 
 !-----------------------------------------------------------------------
 
-c$$$!     Simulation time
-c$$$      AT = CP_SIS(-2)%AT
+!$$$!     Simulation time
+!$$$      AT = CP_SIS(-2)%AT
 
       RETURN
       END SUBROUTINE CHECKPOINT_SIS_COPY_FROM_TMP_CP
@@ -490,7 +485,7 @@ c$$$      AT = CP_SIS(-2)%AT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-      
+
 
       END MODULE AD_SISYPHE_CHECKPOINT
 

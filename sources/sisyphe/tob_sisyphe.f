@@ -85,9 +85,8 @@
       USE BIEF
       USE INTERFACE_SISYPHE, EX_TOB_SISYPHE=>TOB_SISYPHE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

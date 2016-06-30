@@ -79,9 +79,8 @@
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
       USE EXCHANGE_WITH_ATMOSPHERE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -871,9 +870,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -994,9 +992,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !

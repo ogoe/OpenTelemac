@@ -19,7 +19,7 @@
 !history  R. ATA (LNHE)
 !+        22/02/2016
 !+        V7P2
-!+  ADD CONVERSION SEC TO DAY 
+!+  ADD CONVERSION SEC TO DAY
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,12 +34,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY: SECTODAY
       USE INTERFACE_WAQTEL, EX_REAER => REAER
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -61,7 +60,7 @@
         CALL OS('X=C     ',X=K2,C=K22)
       ELSE  ! ==> VARIABLE K2
         DO J =1,NPOIN2
-!         
+!
           I=(NPLAN-1)*NPOIN2+J
           UNORM = SQRT(UN%R(I)**2+VN%R(I)**2) !  GENERALIZATION OF U IN 1D
 !         HEAD OR WATER DEPTH TO REPLACE RH ?

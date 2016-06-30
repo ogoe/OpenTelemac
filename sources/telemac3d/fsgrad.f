@@ -57,9 +57,8 @@
       USE DECLARATIONS_TELEMAC3D, ONLY : ATMOS,RHO0,GRAV,HN,TE3,T2_02,
      &                                   PATMOS,NELEM2,SVIDE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

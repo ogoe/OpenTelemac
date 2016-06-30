@@ -46,16 +46,9 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_STBTEL
-!
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-      INTEGER  NPMAX,NPOIN,NELMAX,NELEM,MESH
-      INTEGER  NDP
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !  POUR PREVOIR L'ELIMINATION DES TRIANGLES SURCONTRAINTS , LES VALEURS

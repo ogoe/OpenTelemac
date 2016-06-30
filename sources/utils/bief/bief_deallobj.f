@@ -21,9 +21,8 @@
 !
       USE BIEF, EX_BIEF_DEALLOBJ => BIEF_DEALLOBJ
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -40,6 +39,12 @@
       ! BLOCK
       ELSEIF(OBJ%TYPE.EQ.4) THEN
         CALL DEALLBLO(OBJ)
+      ELSE
+        WRITE(LU,*) 'UNKNOWN BIEF_OBJ TYPE'
+        WRITE(LU,*) 'FOR OBJECT NAMED: ',OBJ%NAME
+        WRITE(LU,*) 'OF TYPE: ',OBJ%TYPE
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -63,7 +63,7 @@
      &            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      &            0, 0, 0, 0 /)
 !
-      TYPE(MED_INFO),SAVE :: MED_OBJ_TAB(MAX_FILE)
+      TYPE(MED_INFO) :: MED_OBJ_TAB(MAX_FILE)
 !
 !-----------------------------------------------------------------------
 !
@@ -448,22 +448,25 @@
         IERR = 0
         IF(ISOPENED) THEN
           CLOSE(MED_OBJ_TAB(MED_ID)%NCLI,IOSTAT=IERR)
-          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%NBOR)) THEN
-            DEALLOCATE(MED_OBJ_TAB(MED_ID)%NBOR)
-          ENDIF
-          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)) THEN
-            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)
-          ENDIF
-          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_FAM)) THEN
-            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_FAM)
-          ENDIF
-#if defined(HAVE_MED)
-          IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)) THEN
-            DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)
-          ENDIF
-#endif
         ENDIF
         CALL CHECK_CALL(IERR,'CLOSE_BND_MED:CLOSE')
+        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%NBOR)) THEN
+          DEALLOCATE(MED_OBJ_TAB(MED_ID)%NBOR)
+        ENDIF
+        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%IS_BND)) THEN
+          DEALLOCATE(MED_OBJ_TAB(MED_ID)%IS_BND)
+        ENDIF
+        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)) THEN
+          DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL)
+        ENDIF
+        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_FAM)) THEN
+          DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_FAM)
+        ENDIF
+#if defined(HAVE_MED)
+        IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)) THEN
+          DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)
+        ENDIF
+#endif
 !
       RETURN
       END SUBROUTINE

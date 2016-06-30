@@ -45,6 +45,7 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D, EX_COST_FUNCTION => COST_FUNCTION
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -55,8 +56,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      COMMON/INFO/LNG,LU
-      INTEGER LNG,LU
 !
       INTEGER I,J
       DOUBLE PRECISION C

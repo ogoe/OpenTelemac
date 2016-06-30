@@ -50,10 +50,9 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !.....VARIABLES TRANSMISES
 !     """"""""""""""""""""
@@ -118,9 +117,8 @@
 !
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !MB--------------------------------------Modif debut
       INTEGER IP
@@ -178,9 +176,8 @@
 !
       USE BIEF, EX_CORRXY => CORRXY
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
 !
@@ -254,10 +251,9 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
       INTEGER NF
 !
@@ -426,10 +422,9 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
       INTEGER NPLAN,NF,NPOIN2,NPTFR,LT,NPRIV
 !

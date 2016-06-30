@@ -98,9 +98,8 @@
       USE BIEF, EX_INBIEF => INBIEF
       USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

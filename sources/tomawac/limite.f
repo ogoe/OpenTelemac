@@ -28,11 +28,10 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_LIMITE => LIMITE
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -60,9 +60,8 @@
       USE BIEF
       USE INTERFACE_SISYPHE, EX_BEDLOAD_MEYER => BEDLOAD_MEYER
       USE DECLARATIONS_SISYPHE, ONLY : MPM_ARAY
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

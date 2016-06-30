@@ -33,9 +33,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -164,6 +163,7 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       DOUBLE PRECISION T,G,YG,YD,CG,CD,FC1,H(21,81),X(21,81),V(21,81)
@@ -292,6 +292,7 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       DOUBLE PRECISION A0,A1,A2,A3,A4,A5,A6,CD,CG,X
@@ -378,9 +379,8 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -432,7 +432,7 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!         FOR GRAPHICAL OUTPUTS          
+!         FOR GRAPHICAL OUTPUTS
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
@@ -452,7 +452,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
@@ -738,9 +738,8 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION A,B,C,D,E,X1,X2,FA,FB,FC,EPS,EPS2,XM,S,P,Q,R
 !
@@ -890,9 +889,8 @@
 !| SECCURRENTS    |-->| IF YES SECONDARY CURRENTS COMPUTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1208,4 +1206,3 @@
 !
       RETURN
       END
-

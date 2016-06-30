@@ -25,8 +25,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -47,9 +45,8 @@
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: XL, YL, XP, YP
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER*1 CHIFFRE(0:9)
-      DATA CHIFFRE/'0','1','2','3','4','5','6','7','8','9'/
-      SAVE CHIFFRE
+      CHARACTER*1,PARAMETER :: CHIFFRE(0:9) = 
+     &             /('0','1','2','3','4','5','6','7','8','9')/
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

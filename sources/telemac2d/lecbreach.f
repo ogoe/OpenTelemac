@@ -29,9 +29,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -48,9 +47,8 @@
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: DS
 !
       CHARACTER(LEN=6) :: NOM, NOMX, NOMY, NOMDS
-      CHARACTER*1 CHIFFRE(0:9)
-      DATA CHIFFRE/'0','1','2','3','4','5','6','7','8','9'/
-      SAVE CHIFFRE
+      CHARACTER*1, PARAMETER :: CHIFFRE(0:9) =
+     &           (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -268,6 +266,7 @@
           ENDIF
           ALLOCATE(INDBR%ADR(N)%P)
           CALL BIEF_ALLVEC(2,INDBR%ADR(N)%P,NOM,NBNDBR%I(N),1,0,MESH)
+          INDBR%ADR(N)%P%FATHER = INDBR%NAME
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LECBREACH :'
@@ -332,6 +331,9 @@
             CALL BIEF_ALLVEC(1,DKAXCR%ADR(N)%P,NOMX,NBL,1,0,MESH)
             CALL BIEF_ALLVEC(1,DKAYCR%ADR(N)%P,NOMY,NBL,1,0,MESH)
             CALL BIEF_ALLVEC(1,PONDSB%ADR(N)%P,NOMDS,NBL-1,1,0,MESH)
+            DKAXCR%ADR(N)%P%FATHER = DKAXCR%NAME
+            DKAYCR%ADR(N)%P%FATHER = DKAYCR%NAME
+            PONDSB%ADR(N)%P%FATHER = PONDSB%NAME
           ELSE
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'LECBREACH :'

@@ -51,10 +51,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : DEJA_TESTEUR, FLUX_TESTEUR
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -77,14 +77,8 @@
 !
 !------------------------------------------------------------------------
 !
-!     FORMER ARRAY !!!
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: FLUXTEST(:)
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-!
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(FLUXTEST(NS),STAT=ERR)
+      IF(.NOT.DEJA_TESTEUR) THEN
+        ALLOCATE(FLUX_TESTEUR(NS),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
         GO TO 1002
 1001    CONTINUE
@@ -97,7 +91,7 @@
         CALL PLANTE(1)
         STOP
 1002    CONTINUE
-        DEJA=.TRUE.
+        DEJA_TESTEUR=.TRUE.
       ENDIF
 !
 !------------------------------------------------------------------------
@@ -107,7 +101,7 @@
       DO ITRAC=1,NTRAC
 !
         DO IS=1,NS
-          FLUXTEST(IS) = 0.D0
+          FLUX_TESTEUR(IS) = 0.D0
         ENDDO
 !
 !   TEST FOR ORDER 1
@@ -120,9 +114,9 @@
             AUX = FLUXT%ADR(ITRAC)%P%R(NSG)
      &            + DT*FLUXTEMP%ADR(ITRAC)%P%R(NSG)
             IF(AUX.GE.0.D0) THEN
-              FLUXTEST(NUBO1) = FLUXTEST(NUBO1) + AUX
+              FLUX_TESTEUR(NUBO1) = FLUX_TESTEUR(NUBO1) + AUX
             ELSE
-              FLUXTEST(NUBO2) = FLUXTEST(NUBO2) - AUX
+              FLUX_TESTEUR(NUBO2) = FLUX_TESTEUR(NUBO2) - AUX
             ENDIF
           ENDDO
           IF(NPTFR.GT.0)THEN !USEFUL FOR PARALLEL CASES
@@ -130,11 +124,11 @@
               IS =NBOR(K)
               AUX = FLUHBOR%ADR(ITRAC)%P%R(K)
      &            + DT*FLUHBTEMP%ADR(ITRAC)%P%R(K)
-              IF(AUX.GE.0.D0) FLUXTEST(IS)=FLUXTEST(IS)+AUX
+              IF(AUX.GE.0.D0) FLUX_TESTEUR(IS)=FLUX_TESTEUR(IS)+AUX
             ENDDO
           ENDIF
           DO IS=1,NS
-            TEST=AIRS(IS)*HSTOK(IS)-FLUXTEST(IS)
+            TEST=AIRS(IS)*HSTOK(IS)-FLUX_TESTEUR(IS)
             IF(TEST.LT.0.D0) RETURN
           ENDDO
 !
@@ -154,7 +148,7 @@
               TEST=AIRST(1,NSG)*HCSTOK(1,NSG)-AUX
               IF(LOGFR(NUBO1).NE.0.AND.
      &           AIRST(1,NSG)*HCSTOK(1,NSG).GT.0.D0) THEN
-                FLUXTEST(NUBO1)= MAX(FLUXTEST(NUBO1),
+                FLUX_TESTEUR(NUBO1)= MAX(FLUX_TESTEUR(NUBO1),
      &          AUX/(AIRST(1,NSG)*HCSTOK(1,NSG)))
               ENDIF
 !
@@ -163,7 +157,7 @@
               TEST=AIRST(2,NSG)*HCSTOK(2,NSG)+AUX
               IF(LOGFR(NUBO2).NE.0.AND.
      &          AIRST(2,NSG)*HCSTOK(2,NSG).GT.0.D0) THEN
-                FLUXTEST(NUBO2)= MAX(FLUXTEST(NUBO2),
+                FLUX_TESTEUR(NUBO2)= MAX(FLUX_TESTEUR(NUBO2),
      &          -AUX/(AIRST(2,NSG)*HCSTOK(2,NSG)))
               ENDIF
 !
@@ -180,7 +174,7 @@
             IF(AUX.GE.0.D0) THEN
               TEST=AIRS(IS)*HSTOK(IS)-AUX
               IF(AIRS(IS)*HSTOK(IS).GT.0.D0.AND.
-     &        (1.D0-FLUXTEST(IS)).LT. AUX/(AIRS(IS)*HSTOK(IS)))
+     &        (1.D0-FLUX_TESTEUR(IS)).LT. AUX/(AIRS(IS)*HSTOK(IS)))
      &        TEST =-1.D0
             ENDIF
             IF(TEST.LT.0.D0) RETURN

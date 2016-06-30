@@ -98,9 +98,8 @@
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
 
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

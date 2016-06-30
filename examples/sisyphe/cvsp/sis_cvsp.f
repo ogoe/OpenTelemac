@@ -10,9 +10,10 @@
         MODULE RECIRCMODUL
 !              use declarations_sisyphe :: nsicla
 
+        USE DECLARATIONS_SPECIAL
         IMPLICIT NONE
-!              DOUBLE PRECISION, SAVE  :: Q_outCLA(NSICLA)
-              DOUBLE PRECISION, SAVE  :: Q_OUTCLA(10)=0.0000001
+!              DOUBLE PRECISION  :: Q_OUTCLA(NSICLA)
+              DOUBLE PRECISION  :: Q_OUTCLA(10)=0.0000001
 !
               INTEGER       :: OUTPUTCOUNTER = 0
 !
@@ -56,9 +57,8 @@
 !-----------------------------------------------------------------------
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER, INTENT(IN):: NPOIN , CHOIX
       INTEGER, INTENT(INOUT):: NLISS
@@ -144,10 +144,9 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU,KK
       CHARACTER*2 BLOMCASE
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -156,7 +155,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I, J, K
+      INTEGER I, J, K, KK
 !
 !-----------------------------------------------------------------------
 !
@@ -210,7 +209,7 @@
 !-----------------------------------------------------------------------
 !
       IF(VSMTYPE.EQ.1) THEN
-!       Folder for Hirano Profile Outputs
+!       FOLDER FOR HIRANO PROFILE OUTPUTS
         DO KK = 1,100
         IF(CVSMOUTPUT(KK).GT.0) THEN
           CALL LAYERS_P('./VSP_',CVSMOUTPUT(KK))
@@ -287,9 +286,8 @@
       USE DECLARATIONS_TELEMAC
       USE RECIRCMODUL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -436,6 +434,7 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER  I, J, K, M, L, MDISC, UBS
@@ -468,17 +467,17 @@
 !-----------------------------------------------------------------------
 !
         DO M=1,NLAYER%I(J)-1   !FOR THE UPPER 8 LAYERS
-           DEPTH = DEPTH + ES(J,M)
-           L = L - 1
-           DO I=1,NSICLA
-             PRO_D(J,L,I) = ZF%R(J) - DEPTH
-             PRO_F(J,L,I) = AVAIL(J,M,I)
-           ENDDO
-           L = L - 1
-           DO I=1,NSICLA
-             PRO_D(J,L,I) = ZF%R(J) - DEPTH
-             PRO_F(J,L,I) = AVAIL(J,M+1,I)
-           ENDDO
+          DEPTH = DEPTH + ES(J,M)
+          L = L - 1
+          DO I=1,NSICLA
+            PRO_D(J,L,I) = ZF%R(J) - DEPTH
+            PRO_F(J,L,I) = AVAIL(J,M,I)
+          ENDDO
+          L = L - 1
+          DO I=1,NSICLA
+            PRO_D(J,L,I) = ZF%R(J) - DEPTH
+            PRO_F(J,L,I) = AVAIL(J,M+1,I)
+          ENDDO
         ENDDO
 !
 !-----------------------------------------------------------------------
@@ -535,6 +534,7 @@
       USE CVSP_OUTPUTFILES
       USE INTERFACE_HERMES
 
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 
       CHARACTER*32 VLABEL

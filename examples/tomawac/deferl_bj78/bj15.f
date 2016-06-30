@@ -53,10 +53,9 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER IP
       DOUBLE PRECISION DMIN, XMIN
@@ -136,9 +135,8 @@
 !
       USE BIEF, EX_CORRXY => CORRXY
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
 !     xr et yr : permet de passer les coor en real pour comparer avec le fichier geom

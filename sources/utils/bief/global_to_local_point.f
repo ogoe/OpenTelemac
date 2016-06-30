@@ -27,9 +27,8 @@
 !
       USE BIEF, EX_GLOBAL_TO_LOCAL_POINT => GLOBAL_TO_LOCAL_POINT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

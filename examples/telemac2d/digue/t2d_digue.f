@@ -34,12 +34,11 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -128,11 +127,10 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -52,9 +52,8 @@
       USE FRICTION_DEF
       USE INTERFACE_TELEMAC2D, EX_FRICTION_READ => FRICTION_READ
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

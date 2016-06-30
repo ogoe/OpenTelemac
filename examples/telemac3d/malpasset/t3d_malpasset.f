@@ -83,9 +83,8 @@
       USE DECLARATIONS_TELEMAC3D
       USE TPXO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
@@ -342,6 +341,7 @@
 !***********************************************************************
 !
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       DOUBLE PRECISION X1,X2,X3,Y1,Y2,Y3
       DOUBLE PRECISION A1,B1,C1,DET
@@ -388,6 +388,7 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER NPOIN,I

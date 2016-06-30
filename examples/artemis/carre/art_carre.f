@@ -70,12 +70,9 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
-
-
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !
       DOUBLE PRECISION PI,BID
@@ -240,11 +237,10 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_ARTEMIS
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER I
 !

@@ -28,9 +28,8 @@
 ! APPELE PAR : STBTEL
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER NPOIN , NELEM , NELMAX , NSOM2 , IELEM , IPOIN , ISOM
       INTEGER IKLE(NELMAX,*) , NCOLOR(*) , INDICP(*) , INDICE(*)

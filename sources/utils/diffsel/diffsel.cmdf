@@ -10,4 +10,5 @@ files: diffsel.f
 
 [special]
 path: <root>|sources|utils|special
-files: plante.F
+files: declarations_special.f
+  plante.F

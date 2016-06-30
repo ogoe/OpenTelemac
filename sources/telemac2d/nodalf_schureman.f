@@ -32,6 +32,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_NODALF_SCHUREMAN => NODALF_SCHUREMAN
+      USE DECLARATIONS_TELEMAC2D, ONLY : YEAR,NDAY,HOUR,MINUTE,SECOND
 !
       IMPLICIT NONE
 !
@@ -44,7 +45,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER YEAR,MONTH,DAY,NDAY,HOUR,MINUTE,SECOND,I
+      INTEGER I,DAY,MONTH
 !
       DOUBLE PRECISION PI,TWOPI,DTR
       DOUBLE PRECISION TJ,PLUN,NLUN
@@ -52,7 +53,6 @@
       DOUBLE PRECISION F73,F74,F75,F76,F77,F78,F79,F144,F149,F207,F215,
      &                 F227,F235
 !
-      SAVE YEAR,HOUR,MINUTE,SECOND,NDAY
 !
       INTRINSIC INT,MOD,DBLE,COS,ATAN
 !

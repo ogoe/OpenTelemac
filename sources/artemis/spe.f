@@ -40,14 +40,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_SPE => SPE
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_ARTEMIS, ONLY: FP,GAM,DELTA
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION F,SIGMA
-!
-      DOUBLE PRECISION FP,GAM,DELTA
-      COMMON /COEFHE/ FP,GAM,DELTA
 !
       INTRINSIC EXP
 !

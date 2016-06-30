@@ -24,10 +24,9 @@
 !***********************************************************************
       USE DECLARATIONS_STBTEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       CHARACTER(LEN=MAXLENHARD),INTENT(IN) :: LIMFILE
 !
@@ -168,10 +167,9 @@
 !***********************************************************************
       USE DECLARATIONS_STBTEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       CHARACTER(LEN=MAXLENHARD),INTENT(IN) :: LIMFILE
 !

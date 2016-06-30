@@ -69,11 +69,10 @@
       USE DECLARATIONS_TOMAWAC
       USE DECLARATIONS_SPECIAL
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_LECDON_TOMAWAC => LECDON_TOMAWAC
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !

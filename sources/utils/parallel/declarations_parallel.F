@@ -2,18 +2,19 @@
         IMPLICIT NONE
 #if defined (HAVE_MPI)
         INCLUDE 'mpif.h'
+        INTEGER WAIT_REQ_PARACO(MPI_STATUS_SIZE,100)
 #endif
 
 #if !defined (HAVE_MPI)
         ! Creating wrapper for some of MPI keywords that are used in variable declaration
         ! Using boggus values they should never be used
         ! They are include in mpi.hf
-        INTEGER, PARAMETER :: MPI_ADDRESS_KIND=4
-        INTEGER, PARAMETER :: MPI_INTEGER =0
-        INTEGER, PARAMETER :: MPI_DOUBLE_PRECISION  =0
-        INTEGER, PARAMETER :: MPI_UB      =0
-        INTEGER, PARAMETER :: MPI_COMM_WORLD=0
-        INTEGER, PARAMETER :: MPI_SUCCESS   =0
+        INTEGER, PARAMETER :: MPI_ADDRESS_KIND = 4
+        INTEGER, PARAMETER :: MPI_INTEGER = 0
+        INTEGER, PARAMETER :: MPI_DOUBLE_PRECISION = 0
+        INTEGER, PARAMETER :: MPI_UB = 0
+        INTEGER, PARAMETER :: MPI_COMM_WORLD = 0
+        INTEGER, PARAMETER :: MPI_SUCCESS =0
 #endif
         TYPE CHARAC_TYPE
           SEQUENCE   ! BUT SEEMS USELESS (HENCE TRICK BELOW WITH VOID)

@@ -131,9 +131,8 @@
      &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA,
      &                                   U,UN,V,VN,WN,NSOUSI,OPTSOU
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

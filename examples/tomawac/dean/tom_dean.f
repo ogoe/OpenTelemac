@@ -39,10 +39,9 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !
 !VB---------------------------------MODIF Dean, 1991
@@ -93,6 +92,7 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT,PI,X
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -166,7 +166,6 @@
 !
 !-----------------------------------------------------------------------
 !
-
 !======================================================================
 !MJTS - sous-programme ajoute pour mettre a zero toutes les valeurs du
 !       spectre, sauf celle du bin (IFREQ, JDIR)
@@ -174,6 +173,7 @@
       SUBROUTINE MONOCRO
      &(F, NPOIN2, NF, NPLAN, IFREQ, JDIR)
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !.....Variables transmises
@@ -258,6 +258,7 @@
       USE DECLARATIONS_TOMAWAC
       USE INTERFACE_TOMAWAC, EX_DUMP2D => DUMP2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -562,10 +563,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER, INTENT(IN)            :: NPTFR,NPLAN,NF,NPOIN2,LT,NPRIV
       INTEGER, INTENT(IN)            :: LIMSPE,KENT,KSORT,FRABL

@@ -57,12 +57,14 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY: CHAIN,MESH
+      USE DECLARATIONS_SISYPHE, ONLY: CHAIN,MESH,OLD_METHOD_FLUSEC,
+     &                                LISTE,DEJA_FLUSEC,NSEG,VOLNEG,
+     &                                VOLPOS,FLX,FLXS,VOLNEGS,VOLPOSS,
+     &                                FLXC,VOLNEGC,VOLPOSC
       USE INTERFACE_SISYPHE, EX_FLUSEC_SISYPHE => FLUSEC_SISYPHE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -84,18 +86,6 @@
       DOUBLE PRECISION DIST,DIST1,DIST2,DIST3
       DOUBLE PRECISION H1,H2,X1,Y1,X2,Y2,UN1,UN2,NX,NY,SUR6
 !
-      DOUBLE PRECISION, ALLOCATABLE :: FLX(:),VOLNEG(:),VOLPOS(:)
-      DOUBLE PRECISION, ALLOCATABLE :: FLXS(:),FLXC(:)
-      DOUBLE PRECISION, ALLOCATABLE :: VOLNEGS(:),VOLPOSS(:)
-      DOUBLE PRECISION, ALLOCATABLE :: VOLNEGC(:),VOLPOSC(:)
-      INTEGER, ALLOCATABLE :: NSEG(:),LISTE(:,:,:)
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      LOGICAL :: OLD_METHOD=.FALSE.
-!
-      SAVE LISTE,DEJA,NSEG,VOLNEG,VOLPOS,FLX,FLXS,VOLNEGS,VOLPOSS
-      SAVE FLXC,VOLNEGC,VOLPOSC,OLD_METHOD
 !
 !-----------------------------------------------------------------------
 !
@@ -104,7 +94,7 @@
 !
 !  LOOKS FOR WAYS THAT JOIN THE POINT COUPLES:
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_FLUSEC) THEN
 !
 !     DYNAMICALLY ALLOCATES FLX, VOLNEG, VOLPOS, ETC.
 !
@@ -130,7 +120,7 @@
      &            'ERROR CODE: ',1I6)
       ENDIF
 !
-      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
+      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD_FLUSEC=.TRUE.
 !
       DO ISEC=1,NSEC
         FLX(ISEC)=0.0D0
@@ -149,7 +139,7 @@
 !
 ! NOTE: IF YOU CHANGE THE ALGORITHM, CHANGE IT IN PARTEL AS WELL
 !
-        IF (NCSIZE.LE.1 .OR. OLD_METHOD) THEN
+        IF (NCSIZE.LE.1 .OR. OLD_METHOD_FLUSEC) THEN
 !
         DEP = CTRLSC(1+2*(ISEC-1))
         ARR = CTRLSC(2+2*(ISEC-1))
@@ -261,12 +251,12 @@
 !
       ENDDO
 !
-!     IF(.NOT.DEJA) THEN
+!     IF(.NOT.DEJA_FLUSEC) THEN
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      DEJA = .TRUE.
+      DEJA_FLUSEC = .TRUE.
 !
 !-----------------------------------------------------------------------
 !

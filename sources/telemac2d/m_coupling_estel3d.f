@@ -29,6 +29,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       PRIVATE
       PUBLIC :: INFILTRATION_INIT
@@ -41,6 +42,7 @@
       LOGICAL :: DOINFILTRATION
       DOUBLE PRECISION, ALLOCATABLE :: FLUX_FROM_ESTEL3D(:)
       DOUBLE PRECISION, ALLOCATABLE :: DEPTH_FROM_T2D(:)
+      LOGICAL :: DEJA_ESTEL3D = .FALSE.
 !-----------------------------------------------------------------------
       CONTAINS
 !-----------------------------------------------------------------------
@@ -54,8 +56,7 @@
       LOGICAL, INTENT(IN) :: ACTIVATE
 !-----------------------------------------------------------------------
 !
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
+      INTEGER I
 !
 !-----------------------------------------------------------------------
 !
@@ -64,13 +65,15 @@
         NPOIN2D        = NPOIN
         DOINFILTRATION = .TRUE.
       ENDIF
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_ESTEL3D) THEN
         ALLOCATE( FLUX_FROM_ESTEL3D( NPOIN2D ) )
         ALLOCATE( DEPTH_FROM_T2D( NPOIN2D ) )
-        DEJA=.TRUE.
+        DEJA_ESTEL3D=.TRUE.
       ENDIF
-      FLUX_FROM_ESTEL3D(:) = 0.D0
-      DEPTH_FROM_T2D(:)    = 0.D0
+      DO I=1,NPOIN2D
+        FLUX_FROM_ESTEL3D(I) = 0.D0
+        DEPTH_FROM_T2D(I)    = 0.D0
+      ENDDO
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE INFILTRATION_INIT
@@ -84,6 +87,7 @@
 !
       DEALLOCATE( FLUX_FROM_ESTEL3D )
       DEALLOCATE( DEPTH_FROM_T2D )
+      DEJA_ESTEL3D = .FALSE.
 !
 !-----------------------------------------------------------------------
       RETURN

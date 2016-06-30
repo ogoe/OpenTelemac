@@ -1,5 +1,6 @@
       MODULE ALGAE_TRANSP
         USE BIEF_DEF, ONLY : BIEF_OBJ
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   14/06/2013
@@ -14,10 +15,10 @@
 !+   First version
 !
 ! SUBROUTINES MADE AVAILABLE
-      PUBLIC :: ALLOC_ALGAE,INTERP_ALGAE,DISP_ALGAE
+      PUBLIC :: DEALLOC_ALGAE,ALLOC_ALGAE,INTERP_ALGAE,
+     &          DISP_ALGAE
 ! MODEL VARIABLES
-      INTEGER :: ALGAE_START
-      DATA ALGAE_START / 1 / ! THIS VALUE NEEDS TO BE UPDATED IN FLOT
+      INTEGER :: ALGAE_START = 1 ! THIS VALUE NEEDS TO BE UPDATED IN FLOT
 ! MEAN FLUID VARIABLES AT THE POSITION OF EACH ALGAE PARTICLES
       TYPE(BIEF_OBJ):: U_X_AV_0
       TYPE(BIEF_OBJ):: U_Y_AV_0
@@ -64,6 +65,14 @@
       DOUBLE PRECISION,DIMENSION(:,:,:),ALLOCATABLE:: FI_P
       DOUBLE PRECISION:: F_TAIL
       DOUBLE PRECISION:: CI_BAS
+      ! algae_transp
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: U_I_0_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: U_I_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: V_I_0_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: V_I_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: X_I_0_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: X_I_ALGAE
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: C_I_ALGAE
 !
       CONTAINS
 !
@@ -103,9 +112,8 @@
       USE BIEF
       USE STREAMLINE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -213,6 +221,7 @@
 !***********************************************************************
 !
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -349,9 +358,8 @@
       USE BIEF
       USE STREAMLINE, ONLY : BIEF_INTERP
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -486,8 +494,8 @@
 !
 !***********************************************************************
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -516,12 +524,6 @@
 ! TEMPORARY VARIABLES TO CLACULATE VARIABLES FOR EACH DIRECTION
       INTEGER         ,INTENT(IN)    :: NDIM
       INTEGER                        :: I_DIM
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: U_I_0
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: U_I
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: V_I_0
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: V_I
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: X_I_0
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: X_I
 ! PROPERTIES OF THE BODIES
       DOUBLE PRECISION               :: F_A
       DOUBLE PRECISION               :: F_B
@@ -529,7 +531,6 @@
       DOUBLE PRECISION               :: FI_C
 ! PROPERTIES OF THE FLOW
       DOUBLE PRECISION               :: T_I
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: C_I
       DOUBLE PRECISION               :: B_I
       DOUBLE PRECISION               :: NORME_U0_V0
 ! MEAN FLUID VARIABLES
@@ -599,11 +600,6 @@
       DOUBLE PRECISION               :: K_CHECK
       DOUBLE PRECISION               :: Q_CHECK
       DOUBLE PRECISION               :: G_CHECK
-! SAVE ALLOCATABLE VARIABLES
-      SAVE :: U_I_0,U_I,V_I_0,V_I,X_I_0,X_I,C_I
-! DAJ
-!     CHARACTER(LEN=100)              :: LOG_NAME
-! FAJ
 !
 !-----------------------------------------------------------------------
 !
@@ -631,13 +627,13 @@
 ! PREAMBLE OF THE CALCULATIONS
 !=======================================================================
 ! ALLOCATE VARIABLES
-      IF(.NOT.ALLOCATED(U_I_0))ALLOCATE(U_I_0(NDIM))
-      IF(.NOT.ALLOCATED(U_I))ALLOCATE(U_I(NDIM))
-      IF(.NOT.ALLOCATED(V_I_0))ALLOCATE(V_I_0(NDIM))
-      IF(.NOT.ALLOCATED(V_I))ALLOCATE(V_I(NDIM))
-      IF(.NOT.ALLOCATED(X_I_0))ALLOCATE(X_I_0(NDIM))
-      IF(.NOT.ALLOCATED(X_I))ALLOCATE(X_I(NDIM))
-      IF(.NOT.ALLOCATED(C_I))ALLOCATE(C_I(NDIM))
+      IF(.NOT.ALLOCATED(U_I_0_ALGAE))ALLOCATE(U_I_0_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(U_I_ALGAE))ALLOCATE(U_I_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(V_I_0_ALGAE))ALLOCATE(V_I_0_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(V_I_ALGAE))ALLOCATE(V_I_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(X_I_0_ALGAE))ALLOCATE(X_I_0_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(X_I_ALGAE))ALLOCATE(X_I_ALGAE(NDIM))
+      IF(.NOT.ALLOCATED(C_I_ALGAE))ALLOCATE(C_I_ALGAE(NDIM))
 ! CONSTANTS
       IF(ALGTYP.EQ.1)THEN !SPHERE
         S=PI*DALGAE**2/4.D0
@@ -672,30 +668,35 @@
 !=======================================================================
 ! REDEFINE THE PREVIOUS VARIABLES
 !=======================================================================
-        U_I_0(1)=U_X_0(I_A)
-        U_I_0(2)=U_Y_0(I_A)
-        V_I_0(1)=V_X_0(I_A)
-        V_I_0(2)=V_Y_0(I_A)
-        X_I_0(1)=X_A(I_A)
-        X_I_0(2)=Y_A(I_A)
+        U_I_0_ALGAE(1)=U_X_0(I_A)
+        U_I_0_ALGAE(2)=U_Y_0(I_A)
+        V_I_0_ALGAE(1)=V_X_0(I_A)
+        V_I_0_ALGAE(2)=V_Y_0(I_A)
+        X_I_0_ALGAE(1)=X_A(I_A)
+        X_I_0_ALGAE(2)=Y_A(I_A)
         IF(NDIM.EQ.3)THEN
-          U_I_0(3)=U_Z_0(I_A)
-          V_I_0(3)=V_Z_0(I_A)
-          X_I_0(3)=Z_A(I_A)
+          U_I_0_ALGAE(3)=U_Z_0(I_A)
+          V_I_0_ALGAE(3)=V_Z_0(I_A)
+          X_I_0_ALGAE(3)=Z_A(I_A)
         END IF
 !=======================================================================
 ! REDEFINE THE FLUID PROPERTIES
 !=======================================================================
         T_I=1.D0/(0.5D0+0.75D0*C0)*K_AV_0(I_A)/EPS_AV_0(I_A)
-! IN C_I IT IS ASSUMED THAT 1/RHO_F*dP/dX_i = (U_X_AV(I_A)-U_X_AV_0(I_A))/DT
-!    => maybe use variation in surface elevation ALONG X (I.E. HYDROSTATIC PRESSURE)
-        C_I(1)=(U_X_AV(I_A)-U_X_AV_0(I_A))/DT+1.D0/T_I*U_X_AV_0(I_A)
-        C_I(2)=(U_Y_AV(I_A)-U_Y_AV_0(I_A))/DT+1.D0/T_I*U_Y_AV_0(I_A)
+! IN C_I_ALGAE IT IS ASSUMED THAT 
+! 1/RHO_F*dP/dX_i = (U_X_AV(I_A)-U_X_AV_0(I_A))/DT
+!    => maybe use variation in surface elevation 
+!               ALONG X (I.E. HYDROSTATIC PRESSURE)
+        C_I_ALGAE(1)=(U_X_AV(I_A)-U_X_AV_0(I_A))/DT
+     &               +1.D0/T_I*U_X_AV_0(I_A)
+        C_I_ALGAE(2)=(U_Y_AV(I_A)-U_Y_AV_0(I_A))/DT
+     &               +1.D0/T_I*U_Y_AV_0(I_A)
         B_I=(C0*EPS_AV_0(I_A))**0.5
         NORME_U0_V0=SQRT((U_X_0(I_A)-V_X_0(I_A))**2+(U_Y_0(I_A)
      &   -V_Y_0(I_A))**2)
         IF(NDIM.EQ.3)THEN
-          C_I(2)=(U_Z_AV(I_A)-U_Z_AV_0(I_A))/DT+1.D0/T_I*U_Z_AV_0(I_A)
+          C_I_ALGAE(2)=(U_Z_AV(I_A)-U_Z_AV_0(I_A))/DT
+     &                 +1.D0/T_I*U_Z_AV_0(I_A)
           NORME_U0_V0=SQRT((U_X_0(I_A)-V_X_0(I_A))**2+(U_Y_0(I_A)
      &     -V_Y_0(I_A))**2+(U_Z_0(I_A)-V_Z_0(I_A))**2)
         END IF
@@ -1036,7 +1037,8 @@
           L11=SQRT(COV_G_I2)
           GAMMA_I=L11*XI_G_I
 !FLUID VELOCITY
-          U_I(I_DIM)=ALPHA*U_I_0(I_DIM)+(1.D0-ALPHA)*C_I(I_DIM)*T_I
+          U_I_ALGAE(I_DIM)=ALPHA*U_I_0_ALGAE(I_DIM)
+     &               +(1.D0-ALPHA)*C_I_ALGAE(I_DIM)*T_I
      &               +GAMMA_I
 !
 !=======================================================================
@@ -1067,8 +1069,10 @@
 !
           CAPGAMMA_I=L21*XI_G_I+L22*XI_CAPG_I
 ! BODY VELOCITY
-          V_I(I_DIM)=BETA*V_I_0(I_DIM)+(1.D0-BETA)*(C_I(I_DIM)*T_I+FI_C)
-     &               +(ALPHA-BETA)*C_CHECK*(U_I_0(I_DIM)-C_I(I_DIM)*T_I)
+          V_I_ALGAE(I_DIM)=BETA*V_I_0_ALGAE(I_DIM)
+     &               +(1.D0-BETA)*(C_I_ALGAE(I_DIM)*T_I+FI_C)
+     &               +(ALPHA-BETA)*C_CHECK*(U_I_0_ALGAE(I_DIM)
+     &                                      -C_I_ALGAE(I_DIM)*T_I)
      &               +CAPGAMMA_I
 !
 !=======================================================================
@@ -1101,15 +1105,17 @@
 !
           CAPPHI_I=L31*XI_G_I+L32*XI_CAPG_I+L33*XI_CAPP_I
 !ALGAE POSITION
-          X_I(I_DIM)=X_I_0(I_DIM)+(1.D0-BETA)*TAU_PART*V_I_0(I_DIM)+(DT
-     &     -(1.D0-BETA)*TAU_PART)*(C_I(I_DIM)*T_I+FI_C*TAU_PART)+C_CHECK
-     &     *(U_I_0(I_DIM)-C_I(I_DIM)*T_I)*((1.D0-ALPHA)*T_I-(1.D0-BETA)
-     &     *TAU_PART)+CAPPHI_I
+          X_I_ALGAE(I_DIM)=X_I_0_ALGAE(I_DIM)
+     &     +(1.D0-BETA)*TAU_PART*V_I_0_ALGAE(I_DIM)+(DT
+     &     -(1.D0-BETA)*TAU_PART)*(C_I_ALGAE(I_DIM)*T_I+FI_C*TAU_PART)
+     &     +C_CHECK*(U_I_0_ALGAE(I_DIM)-C_I_ALGAE(I_DIM)*T_I)
+     &             *((1.D0-ALPHA)*T_I-(1.D0-BETA)*TAU_PART)
+     &     +CAPPHI_I
 !
 !=======================================================================
 ! CHECK FOR POSSIBLE ERRORS
 !=======================================================================
-          IF(ABS(X_I(I_DIM)).GT.10.D0**10)THEN
+          IF(ABS(X_I_ALGAE(I_DIM)).GT.10.D0**10)THEN
             WRITE(LU,*)''
             WRITE(LU,*)'                           **************'
             WRITE(LU,*)'                           *POSITION INF*'
@@ -1125,26 +1131,26 @@
           DO IWIN=1,NWIN
              PSI(I_A,I_DIM,NWIN+1-IWIN+1)=PSI(I_A,I_DIM,NWIN+1-IWIN)
           END DO
-          PSI(I_A,I_DIM,1)=((U_I(I_DIM)-V_I(I_DIM))-(U_I_0(I_DIM)
-     &     -V_I_0(I_DIM)))/DT
+          PSI(I_A,I_DIM,1)=((U_I_ALGAE(I_DIM)-V_I_ALGAE(I_DIM))
+     &                    -(U_I_0_ALGAE(I_DIM)-V_I_0_ALGAE(I_DIM)))/DT
 !=======================================================================
         END DO
 !=======================================================================
 !=======================================================================
 ! REDEFINIR THE CURRENT VARIABLES VARIABLES ACTUELLES
 !=======================================================================
-        U_X(I_A)=U_I(1)
-        U_Y(I_A)=U_I(2)
-        V_X(I_A)=V_I(1)
-        V_Y(I_A)=V_I(2)
-        X_A(I_A)=X_I(1)
-        Y_A(I_A)=X_I(2)
+        U_X(I_A)=U_I_ALGAE(1)
+        U_Y(I_A)=U_I_ALGAE(2)
+        V_X(I_A)=V_I_ALGAE(1)
+        V_Y(I_A)=V_I_ALGAE(2)
+        X_A(I_A)=X_I_ALGAE(1)
+        Y_A(I_A)=X_I_ALGAE(2)
 !
-        DX_A(I_A)=X_I(1)-X_I_0(1)
-        DY_A(I_A)=X_I(2)-X_I_0(2)
+        DX_A(I_A)=X_I_ALGAE(1)-X_I_0_ALGAE(1)
+        DY_A(I_A)=X_I_ALGAE(2)-X_I_0_ALGAE(2)
         IF(NDIM.EQ.3)THEN
-          Z_A(I_A)=X_I(3)
-          DZ_A(I_A)=X_I(3)-X_I_0(3)
+          Z_A(I_A)=X_I_ALGAE(3)
+          DZ_A(I_A)=X_I_ALGAE(3)-X_I_0_ALGAE(3)
         END IF
 
 !
@@ -1172,5 +1178,74 @@
 !
       RETURN
       END SUBROUTINE DISP_ALGAE
+!
+!                    **********************
+                     SUBROUTINE DEALLOC_ALGAE
+!                    **********************
+!
+     &()
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 6.3    MAI 2013                       ANTOINE JOLY
+! EDF R&D                                           antoine.joly@edf.fr
+!***********************************************************************
+!
+!brief    DEALLOCATES THE VARIABLES ASSOCIATED TO THE ALGAE PARTICLES
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |  NAME          |MODE|                  ROLE                        |
+! |________________|____|______________________________________________|
+! |________________|____|______________________________________________|
+! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
+!
+!-----------------------------------------------------------------------
+!
+!***********************************************************************
+!
+      if(allocated(T_TIL_P)) deallocate(T_TIL_P)
+      if(allocated(A_P)) deallocate(A_P)
+      if(allocated(PSI)) deallocate(PSI)
+      if(allocated(FI_P)) deallocate(FI_P)
+      if(allocated(U_I_0_ALGAE)) deallocate(U_I_0_ALGAE)
+      if(allocated(U_I_ALGAE)) deallocate(U_I_ALGAE)
+      if(allocated(V_I_0_ALGAE)) deallocate(V_I_0_ALGAE)
+      if(allocated(V_I_ALGAE)) deallocate(V_I_ALGAE)
+      if(allocated(X_I_0_ALGAE)) deallocate(X_I_0_ALGAE)
+      if(allocated(X_I_ALGAE)) deallocate(X_I_ALGAE)
+      if(allocated(C_I_ALGAE)) deallocate(C_I_ALGAE)
+      if(algae_start.ne.1) then
+      call bief_deallobj(U_X_AV_0)
+      call bief_deallobj(U_Y_AV_0)
+      call bief_deallobj(U_Z_AV_0)
+      call bief_deallobj(U_X_AV)
+      call bief_deallobj(U_Y_AV)
+      call bief_deallobj(U_Z_AV)
+      call bief_deallobj(K_AV_0)
+      call bief_deallobj(EPS_AV_0)
+      call bief_deallobj(K_AV)
+      call bief_deallobj(EPS_AV)
+      call bief_deallobj(H_FLU)
+      call bief_deallobj(U_X_0)
+      call bief_deallobj(U_Y_0)
+      call bief_deallobj(U_Z_0)
+      call bief_deallobj(U_X)
+      call bief_deallobj(U_Y)
+      call bief_deallobj(U_Z)
+      call bief_deallobj(V_X_0)
+      call bief_deallobj(V_Y_0)
+      call bief_deallobj(V_Z_0)
+      call bief_deallobj(V_X)
+      call bief_deallobj(V_Y)
+      call bief_deallobj(V_Z)
+      call bief_deallobj(DX_A)
+      call bief_deallobj(DY_A)
+      call bief_deallobj(DZ_A)
+      call bief_deallobj(I_A_GL)
+      endif
+!
+      RETURN
+      END SUBROUTINE DEALLOC_ALGAE
 !
       END MODULE ALGAE_TRANSP

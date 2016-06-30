@@ -41,9 +41,8 @@
 !
       USE BIEF, EX_BIEF_ALLMAT => BIEF_ALLMAT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -70,6 +69,10 @@
 !     TYPE OF THE OBJECT (HERE MATRIX)
 !
       MAT%TYPE = 3
+!
+!     Defines how the object was created
+!
+      MAT%FATHER = 'XXXXXX'
 !
 !     NAME OF THE OBJECT
 !

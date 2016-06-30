@@ -53,10 +53,9 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
@@ -122,10 +121,9 @@
       USE BIEF
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !
 !---------------------------------MODIF debut

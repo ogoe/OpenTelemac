@@ -37,9 +37,8 @@
 !
       USE BIEF, EX_ALLBLO_IN_BLOCK => ALLBLO_IN_BLOCK
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -52,9 +51,8 @@
       INTEGER IDEB,I,II
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER(LEN=1) :: CHIFFRE(0:9)
-      DATA CHIFFRE/'0','1','2','3','4','5','6','7','8','9'/
-      SAVE CHIFFRE
+      CHARACTER*1, PARAMETER :: CHIFFRE(0:9) =
+     &            (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------
 !
@@ -97,6 +95,7 @@
         ALLOCATE(BLO%ADR(I)%P)
         CALL ALLBLO(BLO%ADR(I)%P,NOM)
         BLO%N=BLO%N+1
+        BLO%ADR(I)%P%FATHER = BLO%NAME
 !
       ENDDO
 !

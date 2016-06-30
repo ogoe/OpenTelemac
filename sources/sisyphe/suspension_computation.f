@@ -331,9 +331,8 @@
      &    EX_SUSPENSION_COMPUTATION => SUSPENSION_COMPUTATION
       USE BIEF
       USE DECLARATIONS_SISYPHE, ONLY : FLULIM,TB2,NCO_DIST,NSP_DIST
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

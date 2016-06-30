@@ -35,12 +35,12 @@
 !history  C. COULET (ARTELIA GROUP)
 !+        08/11/2011
 !+        V6P2
-!+   Modification size WHAT and CHOIX due to modification of TRACER
+!+   Modification size WHAT and CHOIX_RFF due to modification of TRACER
 !
 !history  U.H. Merkel (BAW)
 !+        17/07/2012
 !+        V6P2
-!+   NAG: MAXVAL intrinsic! -> MAXVALUE
+!+   NAG: MAXVAL intrinsic! -> MAXVALUE_RFF
 !
 !history  J-M HERVOUET (LNHE)
 !+        13/12/2012
@@ -48,7 +48,7 @@
 !+   Now works with tabs as well as spaces as delimiters
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TIME IN SECONDS
+!| AT             |-->| TIME_RFF IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
@@ -56,9 +56,13 @@
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY : INFIC_RFF,TIME_RFF,CHOIX_RFF,
+     &                                   IL1_RFF,IL2_RFF,TL1_RFF,
+     &                                   TL2_RFF,NVALUE_RFF,
+     &                                   LASTWHAT_RFF,LASTAT_RFF,
+     &                                   NLIG_RFF,MAXVALUE_RFF,DEJA_RFF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -71,25 +75,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL, SAVE :: DEJA=.FALSE.
 !
 !     MAXIMUM NUMBER OF CHARACTERS PER LIGN (MAY BE CHANGED)
 !
       INTEGER, PARAMETER :: SIZELIGN = 3000
 !
-      INTEGER IVALUE,NVALUE,ILIG,NLIG,OK,J,IWHAT,IDEB,IFIN,IL1,IL2
-      INTEGER, PARAMETER :: MAXVALUE=2100
-      DOUBLE PRECISION TL1,TL2,TETA,TOL,LASTAT
+      INTEGER IVALUE,ILIG,OK,J,IWHAT,IDEB,IFIN
+      DOUBLE PRECISION TETA
+      DOUBLE PRECISION, PARAMETER :: TOL = 1.D-3
 !
       CHARACTER(LEN=SIZELIGN) :: LIGNE
-      CHARACTER*9 CHOIX(MAXVALUE),LASTWHAT
-!
-      DATA TOL /1.D-3/
-!
-      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INFIC
-      DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: TIME
-!
-      SAVE INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT,NLIG
 !
       INTRINSIC ABS,CHAR
 !
@@ -97,9 +92,9 @@
 !
 !     1) (AT FIRST CALL)
 !        READS THE LIQUID BOUNDARY FILE
-!        INITIALISES CURRENT LINES AND INTERVAL OF TIME
+!        INITIALISES CURRENT LINES AND INTERVAL OF TIME_RFF
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_RFF) THEN
         REWIND(NFIC)
 !       SKIPS COMMENTS
 1       READ(NFIC,FMT='(A)',ERR=10) LIGNE
@@ -109,14 +104,14 @@
           WRITE(LU,*) 'ERREUR DE LECTURE DANS LE'
           WRITE(LU,*) 'FICHIER DES FRONTIERES LIQUIDES'
           WRITE(LU,*) 'SANS DOUTE UN PROBLEME DE FORMAT DE FICHIER'
-          WRITE(LU,*) 'RETOURS CHARRIOTS WINDOWS SUR UNIX OU LINUX ?'
+          WRITE(LU,*) 'RETOURS CHARRIOTS WINDOWS SUR UNIX OU LINUX'
           WRITE(LU,*) 'LIGNE FAUTIVE :'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'READ ERROR IN THE'
           WRITE(LU,*) 'LIQUID BOUNDARIES FILE'
           WRITE(LU,*) 'PROBABLY A PROBLEM OF FORMAT'
-          WRITE(LU,*) 'ANY WINDOWS CARRIAGE RETURNS ON UNIX OR LINUX ?'
+          WRITE(LU,*) 'ANY WINDOWS CARRIAGE RETURNS ON UNIX OR LINUX'
           WRITE(LU,*) 'GUILTY LINE:'
         ENDIF
         WRITE(LU,*) LIGNE
@@ -127,7 +122,7 @@
 !
 !       FINDS OUT WHAT AND HOW MANY VALUES ARE GIVEN IN THE FILE
 !
-        NVALUE = -1
+        NVALUE_RFF = -1
         IFIN = 1
 40      IDEB = IFIN
 !
@@ -149,8 +144,8 @@
 !
         IF(IDEB.EQ.IFIN) GO TO 4
 !
-        NVALUE = NVALUE + 1
-        IF(NVALUE.EQ.0) THEN
+        NVALUE_RFF = NVALUE_RFF + 1
+        IF(NVALUE_RFF.EQ.0) THEN
           IF(LIGNE(IDEB:IFIN-1).NE.'T') THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LA PREMIERE VARIABLE DOIT ETRE LE TEMPS T'
@@ -160,7 +155,7 @@
             WRITE(LU,*) 'CHANGER LES TABULATIONS EN ESPACES'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'FIRST VALUE MUST BE TIME, DENOTED T'
+            WRITE(LU,*) 'FIRST VALUE MUST BE TIME_RFF, DENOTED T'
             WRITE(LU,*) 'IN FILE OF LIQUID BOUNDARIES'
             WRITE(LU,*) 'OTHER POSSIBLE CAUSE:'
             WRITE(LU,*) 'THERE ARE TABS IN THE FILE'
@@ -169,15 +164,15 @@
           CALL PLANTE(1)
           STOP
           ENDIF
-        ELSEIF(NVALUE.LE.MAXVALUE) THEN
-          CHOIX(NVALUE)='         '
-          CHOIX(NVALUE)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
+        ELSEIF(NVALUE_RFF.LE.MAXVALUE_RFF) THEN
+          CHOIX_RFF(NVALUE_RFF)='         '
+          CHOIX_RFF(NVALUE_RFF)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'AUGMENTER MAXVALUE DANS READ_FIC_FRLIQ'
+            WRITE(LU,*) 'AUGMENTER MAXVALUE_RFF DANS READ_FIC_FRLIQ'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'INCREASE MAXVALUE IN READ_FIC_FRLIQ'
+            WRITE(LU,*) 'INCREASE MAXVALUE_RFF IN READ_FIC_FRLIQ'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -189,33 +184,33 @@
         IF(LIGNE(1:1).EQ.'#') GO TO 4
 !
 !       COUNTS LINES OF DATA
-        NLIG = 0
+        NLIG_RFF = 0
 998     READ(NFIC,*,END=1000,ERR=999) LIGNE
-        IF(LIGNE(1:1).NE.'#') NLIG=NLIG+1
+        IF(LIGNE(1:1).NE.'#') NLIG_RFF=NLIG_RFF+1
         GO TO 998
 999     CONTINUE
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'ERREUR DE LECTURE SUR LE FICHIER DES FRONTIERES'
-          WRITE(LU,*) 'LIQUIDES A LA LIGNE DE DONNEES : ',NLIG
+          WRITE(LU,*) 'LIQUIDES A LA LIGNE DE DONNEES : ',NLIG_RFF
           WRITE(LU,*) '(COMMENTAIRES NON COMPTES)'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'READING ERROR ON THE LIQUID BOUNDARIES FILE'
-          WRITE(LU,*) 'AT LINE OF DATA : ',NLIG
+          WRITE(LU,*) 'AT LINE OF DATA : ',NLIG_RFF
           WRITE(LU,*) '(COMMENTS EXCLUDED)'
         ENDIF
         CALL PLANTE(1)
         STOP
 1000    CONTINUE
 !
-!       DYNAMICALLY ALLOCATES TIME AND INFIC
+!       DYNAMICALLY ALLOCATES TIME_RFF AND INFIC_RFF
 !
-        ALLOCATE(TIME(NLIG),STAT=OK)
-        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR TIME'
-        ALLOCATE(INFIC(NVALUE,NLIG),STAT=OK)
-        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR INFIC'
+        ALLOCATE(TIME_RFF(NLIG_RFF),STAT=OK)
+        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR TIME_RFF'
+        ALLOCATE(INFIC_RFF(NVALUE_RFF,NLIG_RFF),STAT=OK)
+        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR INFIC_RFF'
 !
-!       FINAL READ OF TIME AND INFIC
+!       FINAL READ OF TIME_RFF AND INFIC_RFF
 !
         REWIND(NFIC)
 !       SKIPS COMMENTS AND FIRST TWO MANDATORY LINES
@@ -223,77 +218,78 @@
         IF(LIGNE(1:1).EQ.'#') GO TO 2
         READ(NFIC,FMT='(A)') LIGNE
 !
-        DO ILIG=1,NLIG
+        DO ILIG=1,NLIG_RFF
 3         READ(NFIC,FMT='(A)') LIGNE
           IF(LIGNE(1:1).EQ.'#') THEN
             GO TO 3
           ELSE
             BACKSPACE(NFIC)
 !           COMPILERS SKIP SPACES AS WELL AS TABS
-            READ(NFIC,*) TIME(ILIG),(INFIC(IVALUE,ILIG),IVALUE=1,NVALUE)
+            READ(NFIC,*) TIME_RFF(ILIG),
+     &                (INFIC_RFF(IVALUE,ILIG),IVALUE=1,NVALUE_RFF)
           ENDIF
         ENDDO
 !
         CLOSE(NFIC)
-        DEJA = .TRUE.
+        DEJA_RFF = .TRUE.
 !
-        IL1 = 1
-        IL2 = 2
-        TL1 = TIME(1)
-        TL2 = TIME(2)
+        IL1_RFF = 1
+        IL2_RFF = 2
+        TL1_RFF = TIME_RFF(1)
+        TL2_RFF = TIME_RFF(2)
 !
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LE FICHIER DES FRONTIERES LIQUIDES CONTIENT'
-          WRITE(LU,*) NLIG,' LIGNES AVEC :'
+          WRITE(LU,*) NLIG_RFF,' LIGNES AVEC :'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'THE LIQUID BOUNDARIES FILE CONTAINS'
-          WRITE(LU,*) NLIG,' LINES WITH:'
+          WRITE(LU,*) NLIG_RFF,' LINES WITH:'
         ENDIF
-        WRITE(LU,*) (CHOIX(IVALUE),IVALUE=1,NVALUE)
+        WRITE(LU,*) (CHOIX_RFF(IVALUE),IVALUE=1,NVALUE_RFF)
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     2) INTERPOLATES THE DATA TO GET THE CORRECT TIME
+!     2) INTERPOLATES THE DATA TO GET THE CORRECT TIME_RFF
 !
 !     2.A) FINDS THE ADDRESS IN THE ARRAY OF STORED DATA
 !
-!     2.B) INTERPOLATES DATA FROM THE ARRAY INFIC
+!     2.B) INTERPOLATES DATA FROM THE ARRAY INFIC_RFF
 !
 !-----------------------------------------------------------------------
 !
 !
 !     WHICH VARIABLE ?
       IWHAT = 0
-      DO J=1,NVALUE
-        IF(WHAT.EQ.CHOIX(J)) IWHAT=J
+      DO J=1,NVALUE_RFF
+        IF(WHAT.EQ.CHOIX_RFF(J)) IWHAT=J
       ENDDO
       IF(IWHAT.EQ.0) THEN
         STAT=.FALSE.
         RETURN
       ENDIF
 !
-70    IF(AT.GE.TL1-TOL.AND.AT.LE.TL2+TOL) THEN
-        TETA = (AT-TL1)/(TL2-TL1)
+70    IF(AT.GE.TL1_RFF-TOL.AND.AT.LE.TL2_RFF+TOL) THEN
+        TETA = (AT-TL1_RFF)/(TL2_RFF-TL1_RFF)
       ELSE
-        DO J=1,NLIG-1
-          IF(AT.GE.TIME(J)-TOL.AND.AT.LE.TIME(J+1)+TOL) THEN
-            TL1=TIME(J)
-            TL2=TIME(J+1)
-            IL1=J
-            IL2=J+1
+        DO J=1,NLIG_RFF-1
+          IF(AT.GE.TIME_RFF(J)-TOL.AND.AT.LE.TIME_RFF(J+1)+TOL) THEN
+            TL1_RFF=TIME_RFF(J)
+            TL2_RFF=TIME_RFF(J+1)
+            IL1_RFF=J
+            IL2_RFF=J+1
             GO TO 70
           ENDIF
         ENDDO
-        IL1=IL2
-        IL2=IL2+1
-        IF(IL2.GT.NLIG) THEN
+        IL1_RFF=IL2_RFF
+        IL2_RFF=IL2_RFF+1
+        IF(IL2_RFF.GT.NLIG_RFF) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'T=',AT,' HORS LIMITES'
             WRITE(LU,*) 'DU FICHIER DES FRONTIERES LIQUIDES'
-            WRITE(LU,*) 'NOMBRE DE LIGNES : ',NLIG
+            WRITE(LU,*) 'NOMBRE DE LIGNES : ',NLIG_RFF
             WRITE(LU,*) 'SUR CERTAINS COMPILATEURS'
             WRITE(LU,*) 'IL FAUT AJOUTER UNE LIGNE VIDE'
             WRITE(LU,*) 'A LA FIN DU FICHIER'
@@ -301,33 +297,33 @@
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'T=',AT,' OUT OF RANGE'
             WRITE(LU,*) 'OF THE FILE OF LIQUID BOUNDARIES'
-            WRITE(LU,*) 'NUMBER OF LINES : ',NLIG
+            WRITE(LU,*) 'NUMBER OF LINES : ',NLIG_RFF
             WRITE(LU,*) 'SOME COMPILERS REQUIRE AN'
             WRITE(LU,*) 'EMPTY LINE AT THE END OF THE FILE'
           ENDIF
           CALL PLANTE(1)
           STOP
         ENDIF
-        TL1=TIME(IL1)
-        TL2=TIME(IL2)
+        TL1_RFF=TIME_RFF(IL1_RFF)
+        TL2_RFF=TIME_RFF(IL2_RFF)
         GO TO 70
       ENDIF
 !
-      Q = (1.D0-TETA)*INFIC(IWHAT,IL1)
-     &  +       TETA *INFIC(IWHAT,IL2)
+      Q = (1.D0-TETA)*INFIC_RFF(IWHAT,IL1_RFF)
+     &  +       TETA *INFIC_RFF(IWHAT,IL2_RFF)
 !
       STAT=.TRUE.
 !
-!     PRINTS ONLY IF NEW TIME OR NEW VALUE IS ASKED
+!     PRINTS ONLY IF NEW TIME_RFF OR NEW VALUE IS ASKED
 !
       IF(LISTIN) THEN
-        IF(ABS(AT-LASTAT).GT.TOL.OR.LASTWHAT.NE.WHAT) THEN
+        IF(ABS(AT-LASTAT_RFF).GT.TOL.OR.LASTWHAT_RFF.NE.WHAT) THEN
           IF(LNG.EQ.1) WRITE(LU,*) 'FRONTIERE LIQUIDE : ',WHAT,'=',Q
           IF(LNG.EQ.2) WRITE(LU,*) 'LIQUID BOUNDARY: ',WHAT,'=',Q
         ENDIF
       ENDIF
-      LASTAT=AT
-      LASTWHAT=WHAT
+      LASTAT_RFF=AT
+      LASTWHAT_RFF=WHAT
 !
 !-----------------------------------------------------------------------
 !

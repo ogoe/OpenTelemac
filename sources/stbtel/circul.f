@@ -40,17 +40,16 @@
 ! APPEL DE :
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER IELEM , NELEM , NPOIN , MESH , NDP , NELMAX , NPMAX
+      INTEGER IELEM 
       INTEGER IKLE(NELMAX,4) , I1 , I2 , I3 , ITEST1 , I
 !
       DOUBLE PRECISION X2 , X3 , Y2 , Y3 , X(*) , Y(*)
       DOUBLE PRECISION AIRE
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       X2 = X(IKLE(IELEM,I2))-X(IKLE(IELEM,I1))
       X3 = X(IKLE(IELEM,I3))-X(IKLE(IELEM,I1))

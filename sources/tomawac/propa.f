@@ -73,9 +73,8 @@
       USE INTERFACE_TOMAWAC, EX_PROPA => PROPA
       USE STREAMLINE, ONLY : POST_INTERP
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

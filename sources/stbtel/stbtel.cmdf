@@ -6,8 +6,8 @@ name: HOMERE_STBTEL
 
 [bief]
 path: <root>|sources|utils|bief
-files: declarations_telemac.f
-  bief_def.f
+files: bief_def.f
+  declarations_telemac.f
   bief.f
   corrxy.f
   read_mesh_coord.f
@@ -24,7 +24,8 @@ files: declarations_telemac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: preval.f
+files: declarations_damocles.f
+  preval.f
   longlu.f
   cmd.f
   majus.f

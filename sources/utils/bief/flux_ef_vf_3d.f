@@ -72,9 +72,8 @@
       USE BIEF, EX_FLUX_EF_VF_3D => FLUX_EF_VF_3D
       USE DECLARATIONS_TELEMAC, ONLY : TETRA
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !

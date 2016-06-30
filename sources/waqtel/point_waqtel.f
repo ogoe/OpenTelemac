@@ -21,13 +21,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_WAQTEL,ONLY:K2,RAYEFF
       USE INTERFACE_WAQTEL, EX_POINT_WAQTEL => POINT_WAQTEL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -40,7 +39,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     
+!
       IF(WAQPROCESS.EQ.1.OR.WAQPROCESS.EQ.3) THEN
         CALL BIEF_ALLVEC(1,K2   ,'K2    ',IELM1,1,1,MESH2D)
       ELSE

@@ -44,19 +44,18 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION X(*) , Y(*) , W(*)
 !
-      INTEGER MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX , NPTFR
+      INTEGER NPTFR
       INTEGER TAB(*) , IPOIN , IELEM , IPTFR , I1 , I2 , TABMAX
       INTEGER TRAV1(*) , TRAV2(*) , IKLE(NELMAX,3) , NCOLOR(*) , NBOR(*)
 !
       LOGICAL COLOR
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! CALCUL DU NOMBRE DE POINTS ET ELEMENTS VOISINS

@@ -2,7 +2,7 @@
                      SUBROUTINE READ_CONFIG
 !                    **********************
 !
-     &(LNG,LU,CHAINE,NCAR)
+     &(CHAINE,NCAR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -35,11 +35,11 @@
 !| NCAR           |-->| LENGTH OF STRING CHAINE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER      , INTENT(INOUT) :: LNG,LU
       CHARACTER*250, INTENT(IN)    :: CHAINE
       INTEGER      , INTENT(IN)    :: NCAR
 !

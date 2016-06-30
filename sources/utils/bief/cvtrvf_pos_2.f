@@ -153,10 +153,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC, ONLY : DEJA_CPOS2, INDIC_CPOS2 
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -197,22 +197,16 @@
       DOUBLE PRECISION H1N,H2N,HSEG1,HSEG2
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT
-      LOGICAL TESTING
-      DATA TESTING/.FALSE./
-      DOUBLE PRECISION EPS_FLUX
-      DATA             EPS_FLUX/1.D-15/
+      LOGICAL, PARAMETER :: TESTING = .FALSE.
+      DOUBLE PRECISION, PARAMETER :: EPS_FLUX = 1.D-15
 !
 !-----------------------------------------------------------------------
 !
-!     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
+!     INDIC_CPOS2 WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
 !
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      INTEGER, ALLOCATABLE          :: INDIC(:)
-      SAVE
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(INDIC(MESH%NSEG))
-        DEJA=.TRUE.
+      IF(.NOT.DEJA_CPOS2) THEN
+        ALLOCATE(INDIC_CPOS2(MESH%NSEG))
+        DEJA_CPOS2=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -420,7 +414,7 @@
 !
       REMAIN_SEG=MESH%NSEG
       DO I=1,REMAIN_SEG
-        INDIC(I)=I
+        INDIC_CPOS2(I)=I
       ENDDO
 !
       NITER = 0
@@ -460,7 +454,7 @@
       ELSE
 !       NOT ALL THE POINTS NEED TO BE INITIALISED NOW
         DO IR=1,REMAIN_SEG
-          I=INDIC(IR)
+          I=INDIC_CPOS2(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
           T1%R(I1)=0.D0
@@ -495,7 +489,7 @@
         ENDIF
       ENDIF
       DO IR=1,REMAIN_SEG
-        I=INDIC(IR)
+        I=INDIC_CPOS2(IR)
         I1=GLOSEG1(I)
         I2=GLOSEG2(I)
         IF(FXMAT(I).GT.EPS_FLUX) THEN
@@ -532,7 +526,7 @@
       NEWREMAIN=0
 !
       DO IR=1,REMAIN_SEG
-        I=INDIC(IR)
+        I=INDIC_CPOS2(IR)
         I1=GLOSEG1(I)
         I2=GLOSEG2(I)
         IF(FXMAT(I).GT.EPS_FLUX) THEN
@@ -558,7 +552,7 @@
               FXMAT(I)=FXMAT(I)*(1.D0-TET)
               C=C+FXMAT(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_CPOS2(NEWREMAIN)=I
             ELSE
               HSEG1=HSEG1-HFL1
               HSEG2=DT*UNSV2D%R(I2)*FXMAT(I)
@@ -581,7 +575,7 @@
 !           NO WATER NO FLUX TRANSMITTED, NOTHING CHANGED
             C=C+FXMAT(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_CPOS2(NEWREMAIN)=I
           ENDIF
         ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
 !         SHARING ON DEMAND
@@ -602,7 +596,7 @@
               FXMAT(I)=FXMAT(I)*(1.D0-TET)
               C=C-FXMAT(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_CPOS2(NEWREMAIN)=I
             ELSE
               HSEG1=-DT*UNSV2D%R(I1)*FXMAT(I)
               HSEG2=HSEG2-HFL2
@@ -624,7 +618,7 @@
 !           NO WATER NO FLUX TRANSMITTED, NOTHING CHANGED
             C=C-FXMAT(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_CPOS2(NEWREMAIN)=I
           ENDIF
         ENDIF
       ENDDO
@@ -774,4 +768,3 @@
 !
       RETURN
       END
-

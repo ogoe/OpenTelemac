@@ -76,6 +76,12 @@ files: bief_def.f
   ovd_2.f
   os.f
   read_dataset.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
+  deall_bief.f
+  dealmesh.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
@@ -492,7 +498,8 @@ files: bief_def.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: majus.f
+files: declarations_damocles.f
+  majus.f
   preval.f
   next.f
   intlu.f
@@ -891,6 +898,8 @@ files: friction_def.f
   homere_adj_t2d.f
   read_sections_telemac2d.f
   point_telemac2d.f
+  deall_telemac2d.f
+  deall_adj_t2d.f
   homere_telemac2d.F
 
 [tomawac]

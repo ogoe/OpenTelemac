@@ -28,6 +28,7 @@
 !
       USE ISO_C_BINDING
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 #if defined (HAVE_SCOTCH)
       INCLUDE 'scotchf.h'
@@ -46,8 +47,6 @@
 !-----------------------------------------------------------------------
 !
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER I,J,K,ERR,NUMFLAG,EDGECUT,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)

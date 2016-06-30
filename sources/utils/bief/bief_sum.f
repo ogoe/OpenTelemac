@@ -41,9 +41,8 @@
 !
       USE BIEF, EX_BIEF_SUM => BIEF_SUM
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !

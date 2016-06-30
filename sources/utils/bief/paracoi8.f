@@ -41,12 +41,11 @@
 !| V3             |<->| INTEGER VECTOR TO BE COMPLETED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_SPECIAL
       USE BIEF, EX_PARACOI8 => PARACOI8
+      USE DECLARATIONS_TELEMAC, ONLY : PARACOI8_MSG_TAG
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -68,10 +67,6 @@
       INTRINSIC ABS
 !
       INTEGER SEND_REQ(100),RECV_REQ(100)
-      INTEGER PARACO_MSG_TAG
-      DATA PARACO_MSG_TAG/5000/
-!
-      SAVE
 !
 !----------------------------------------------------------------------
 !
@@ -84,10 +79,10 @@
 !
 !     MESSAGE TAG UPDATE
 !
-      IF(PARACO_MSG_TAG.LT.1000000) THEN
-        PARACO_MSG_TAG = PARACO_MSG_TAG + 1
+      IF(PARACOI8_MSG_TAG.LT.1000000) THEN
+        PARACOI8_MSG_TAG = PARACOI8_MSG_TAG + 1
       ELSE
-        PARACO_MSG_TAG = 5001
+        PARACOI8_MSG_TAG = 5001
       ENDIF
 !
 !== RECEIVE STEP
@@ -96,7 +91,7 @@
         IKA = NB_NEIGHB_PT(IL)
         IPA = LIST_SEND(IL)
         CALL P_IREADI8(BUF_RECV(1,IL),IAN*IKA*NPLAN,
-     &                 IPA,PARACO_MSG_TAG,RECV_REQ(IL))
+     &                 IPA,PARACOI8_MSG_TAG,RECV_REQ(IL))
       ENDDO
 !
 !== SEND STEP
@@ -138,7 +133,7 @@
         ENDIF
 !
         CALL P_IWRITI8(BUF_SEND(1,IL),IAN*IKA*NPLAN,
-     &                 IPA,PARACO_MSG_TAG,SEND_REQ(IL))
+     &                 IPA,PARACOI8_MSG_TAG,SEND_REQ(IL))
 !
       ENDDO
 !

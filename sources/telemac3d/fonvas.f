@@ -134,10 +134,9 @@
       USE INTERFACE_TELEMAC3D, EX_FONVAS => FONVAS
       USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,OPTBAN,NPLAN
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

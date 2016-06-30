@@ -104,9 +104,8 @@
      &                                  FLUX_BOUNDARIES,MAXFRO,FRTYPE,
      &                                  TIDALTYPE,BOUNDARY_COLOUR,LT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

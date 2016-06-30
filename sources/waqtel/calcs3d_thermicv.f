@@ -45,13 +45,11 @@
 !***********************************************************************
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY:NEBU,ZSD,CP_EAU,RO0
       USE EXCHANGE_WITH_ATMOSPHERE
       USE INTERFACE_WAQTEL, EX_CALCS3D_THERMICV => CALCS3D_THERMICV
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -63,7 +61,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP,TIMP
       LOGICAL,        INTENT(IN)      :: LISTIN
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  LOCAL VARIABLES
 !
@@ -78,7 +76,7 @@
 !       EXAMPLE OF PENETRATION OF THE SOLAR RADIATION
 !
 !       SOURCE IN TEMPERATURE NOT EQUAL TO ZERO
-         
+
         TEXP%ADR(IND_T)%P%TYPR='Q'
 !
 !       INCIDENT SOLAR RADIATION

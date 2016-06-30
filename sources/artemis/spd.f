@@ -48,14 +48,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_SPD => SPD
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_ARTEMIS, ONLY: EXPO
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION TETA,PI,DEGRAD
-!
-      DOUBLE PRECISION EXPO
-      COMMON /COEFHD/ EXPO
 !
       INTRINSIC COS
 !

@@ -61,9 +61,8 @@
       USE BIEF, EX_GETTRIEBE => GETTRIEBE
       USE DECLARATIONS_TELEMAC, ONLY : TETRA,ISEGT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

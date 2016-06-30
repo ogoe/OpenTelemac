@@ -126,10 +126,13 @@
 !
       USE BIEF, EX_CHARAC => CHARAC
       USE STREAMLINE, ONLY : SCARACT
+      USE DECLARATIONS_TELEMAC, ONLY: DEJA_CHARAC,T1WEAK,T2WEAK,
+     &                                T3WEAK,T4WEAK,T5WEAK,T6WEAK,
+     &                                T7WEAK,SHPWEA,FTILD_WEAK,SHPBUF,
+     &                                SHZBUF,SHZWEA
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -167,16 +170,11 @@
 !
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,AVISC
       TYPE(BIEF_OBJ), POINTER :: PT_FTILD,PT_SHPBUF
-      TYPE(BIEF_OBJ), TARGET  :: T1WEAK,T2WEAK,T3WEAK,T4WEAK,T5WEAK
-      TYPE(BIEF_OBJ), TARGET  :: T6WEAK,T7WEAK,SHPWEA
-      TYPE(BIEF_OBJ), TARGET  :: FTILD_WEAK,SHPBUF,SHZBUF,SHZWEA
       INTEGER, DIMENSION(:), POINTER :: IFA
       DOUBLE PRECISION, DIMENSION(:), POINTER :: PT_SHP,PT_SHZ
       INTEGER I,NPT,DIM1F,IPLAN,NG,NRK
-      LOGICAL QUAD,QUAB,APOST,APERIO,AYA4D,ASIGMA,DEJA
-      DATA DEJA/.FALSE./
+      LOGICAL QUAD,QUAB,APOST,APERIO,AYA4D,ASIGMA
       INTRINSIC MIN
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -192,7 +190,7 @@
         ELSEIF(IELM.EQ.41) THEN
           NG=NGAUSS*NELEM2*(NPLAN-1)
         ENDIF
-        IF(.NOT.DEJA) THEN
+        IF(.NOT.DEJA_CHARAC) THEN
           CALL ALLBLO(FTILD_WEAK,'FTIWEA')
           CALL BIEF_ALLVEC_IN_BLOCK(FTILD_WEAK,FTILD%N,1,
      &                              'FTW   ',NG,1,0,MESH)
@@ -222,7 +220,7 @@
           ELSE
             CALL BIEF_ALLVEC(1,SHZBUF,'SHZBUF',1 ,1,0,MESH)
           ENDIF
-          DEJA=.TRUE.
+          DEJA_CHARAC=.TRUE.
         ENDIF
       ENDIF
 !

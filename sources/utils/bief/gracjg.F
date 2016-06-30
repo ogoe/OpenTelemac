@@ -70,11 +70,10 @@
 !| X              |<->| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE BIEF, EX_GRACJG => GRACJG
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -95,8 +94,7 @@
 !
       LOGICAL RELAT,PREC,CROUT,GSEB,PRE3D,PREBE
 !
-      DOUBLE PRECISION RMIN
-      DATA RMIN/1.D-15/
+      DOUBLE PRECISION, PARAMETER :: RMIN = 1.D-15
 !
 !-----------------------------------------------------------------------
 !
@@ -109,7 +107,7 @@
       INTEGER           :: DRV_ELMS
       DOUBLE PRECISION  :: DRV_ERR
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE  :: DRV0, DRV1
-#  endif ! COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#  endif
 #endif
 !< JR @ RWTH
 !
@@ -141,7 +139,7 @@
       CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV0, 1 )
 !
 #  endif
-#endif COMPAD
+#endif
 !
 !< JR @ RWTH
 !

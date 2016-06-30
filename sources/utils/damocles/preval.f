@@ -43,21 +43,16 @@
 !| LIGNE          |-->| LIGNE EN COURS DE DECODAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
       IMPLICIT NONE
 !
       INTEGER       ICOL
       CHARACTER*1   CAR1,CAR2,CAR3
       CHARACTER*(*) LIGNE
 !
-      INTEGER       LONGLI,NLIGN
-!
 !-----------------------------------------------------------------------
 !
       INTEGER       I,J
-!
-!-----------------------------------------------------------------------
-!
-      COMMON / DCMLIG / NLIGN,LONGLI
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

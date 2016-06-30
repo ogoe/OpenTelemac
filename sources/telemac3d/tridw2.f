@@ -102,9 +102,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

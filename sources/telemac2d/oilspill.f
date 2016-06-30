@@ -57,11 +57,35 @@
       MODULE OILSPILL
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_OBJ) :: UCONV_OIL,VCONV_OIL
       TYPE(OIL_PART),DIMENSION(:),ALLOCATABLE ::PARTICULES
-      INTEGER :: NB_HAP
+      ! For OIL_SPILL_2D
+      INTEGER :: ETAL_2D
+      LOGICAL :: INIT_2D = .FALSE.
+      INTEGER NB_COMPO_2D,NB_HAP_2D
+      DOUBLE PRECISION ETA_OIL_2D,RHO_OIL_2D,VOLDEV_2D
+      DOUBLE PRECISION TAMB_2D,AREA_2D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_COMPO_2D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: FM_COMPO_2D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_HAP_2D,FM_HAP_2D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: SOLU_2D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: KDISS_2D,KVOL_2D
+      ! For oil_derive
+      LOGICAL :: DEJA_DERIVE2 = .FALSE.
+      ! For oil_spill_3d
+      LOGICAL :: INIT_3D = .FALSE.
+      INTEGER ETAL_3D
+      INTEGER NB_COMPO_3D,NB_HAP_3D
+      DOUBLE PRECISION ETA_OIL_3D,RHO_OIL_3D,VOLDEV_3D
+      DOUBLE PRECISION TAMB_3D,AREA_3D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_COMPO_3D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: FM_COMPO_3D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_HAP_3D,FM_HAP_3D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: SOLU_3D
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: KDISS_3D,KVOL_3D
 !
       CONTAINS
 !
@@ -109,31 +133,20 @@
       USE DECLARATIONS_TELEMAC2D
       USE STREAMLINE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL INIT
-      DATA INIT /.FALSE./
-      INTEGER I,K,IFLOT,ETAL
-      INTEGER NB_COMPO,NB_HAP
-      DOUBLE PRECISION ETA_OIL,RHO_OIL,VOLDEV
-      DOUBLE PRECISION TAMB,VERIF,AREA
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_COMPO,FM_COMPO
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_HAP,FM_HAP,SOLU
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: KDISS,KVOL
-!
-      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB,ETAL
-      SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL,AREA
+      INTEGER I,K,IFLOT
+      DOUBLE PRECISION VERIF
 !
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.INIT) THEN
+      IF(.NOT.INIT_2D) THEN
 !
         CALL BIEF_ALLVEC(1,UCONV_OIL,'UCONVO',11,1,2,MESH)
         CALL BIEF_ALLVEC(1,VCONV_OIL,'VCONVO',11,1,2,MESH)
@@ -149,51 +162,51 @@
 !======================================================================
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) NB_COMPO
-        WRITE(LU,*) 'NB_COMPO = ',NB_COMPO
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) NB_COMPO_2D
+        WRITE(LU,*) 'NB_COMPO_2D = ',NB_COMPO_2D
 !
         DO I=1,NFLOT_MAX
-          ALLOCATE(PARTICULES(I)%COMPO(MAX(NB_COMPO,1)))
+          ALLOCATE(PARTICULES(I)%COMPO(MAX(NB_COMPO_2D,1)))
         END DO
 !
-        ALLOCATE(TB_COMPO(MAX(NB_COMPO,1)))
-        ALLOCATE(FM_COMPO(MAX(NB_COMPO,1)))
-        IF(NB_COMPO.GT.0)THEN
+        ALLOCATE(TB_COMPO_2D(MAX(NB_COMPO_2D,1)))
+        ALLOCATE(FM_COMPO_2D(MAX(NB_COMPO_2D,1)))
+        IF(NB_COMPO_2D.GT.0)THEN
           READ(T2D_FILES(T2DMIG)%LU,*)
-          DO I=1,NB_COMPO
-            READ(T2D_FILES(T2DMIG)%LU,*) FM_COMPO(I),
-     &            TB_COMPO(I)
-            VERIF=VERIF+FM_COMPO(I)
-            WRITE(LU,*) 'COMPO',I,FM_COMPO(I),
-     &           TB_COMPO(I)
+          DO I=1,NB_COMPO_2D
+            READ(T2D_FILES(T2DMIG)%LU,*) FM_COMPO_2D(I),
+     &            TB_COMPO_2D(I)
+            VERIF=VERIF+FM_COMPO_2D(I)
+            WRITE(LU,*) 'COMPO',I,FM_COMPO_2D(I),
+     &           TB_COMPO_2D(I)
           END DO
         END IF
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) NB_HAP
-        WRITE(LU,*) 'NB_HAP = ',NB_HAP
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) NB_HAP_2D
+        WRITE(LU,*) 'NB_HAP_2D = ',NB_HAP_2D
 !
         DO I=1,NFLOT_MAX
-          ALLOCATE(PARTICULES(I)%HAP(MAX(NB_HAP,1)))
+          ALLOCATE(PARTICULES(I)%HAP(MAX(NB_HAP_2D,1)))
         END DO
 !
-        ALLOCATE(TB_HAP(MAX(NB_HAP,1)))
-        ALLOCATE(FM_HAP(MAX(NB_HAP,1)))
-        ALLOCATE(SOLU(MAX(NB_HAP,1)))
-        ALLOCATE(KDISS(MAX(NB_HAP,1)))
-        ALLOCATE(KVOL(MAX(NB_HAP,1)))
-        IF(NB_HAP.GT.0)THEN
+        ALLOCATE(TB_HAP_2D(MAX(NB_HAP_2D,1)))
+        ALLOCATE(FM_HAP_2D(MAX(NB_HAP_2D,1)))
+        ALLOCATE(SOLU_2D(MAX(NB_HAP_2D,1)))
+        ALLOCATE(KDISS_2D(MAX(NB_HAP_2D,1)))
+        ALLOCATE(KVOL_2D(MAX(NB_HAP_2D,1)))
+        IF(NB_HAP_2D.GT.0)THEN
           READ(T2D_FILES(T2DMIG)%LU,*)
-            DO I=1,NB_HAP
-             READ(T2D_FILES(T2DMIG)%LU,*) FM_HAP(I),
-     &              TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
-             VERIF=VERIF+FM_HAP(I)
-             WRITE(LU,*) 'HAP',I,FM_HAP(I),
-     &            TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
+            DO I=1,NB_HAP_2D
+             READ(T2D_FILES(T2DMIG)%LU,*) FM_HAP_2D(I),
+     &              TB_HAP_2D(I),SOLU_2D(I),KDISS_2D(I),KVOL_2D(I)
+             VERIF=VERIF+FM_HAP_2D(I)
+             WRITE(LU,*) 'HAP',I,FM_HAP_2D(I),
+     &            TB_HAP_2D(I),SOLU_2D(I),KDISS_2D(I),KVOL_2D(I)
             END DO
         END IF
 !
-        IF(NB_HAP.GT.0.OR.NB_COMPO.GT.0)THEN
+        IF(NB_HAP_2D.GT.0.OR.NB_COMPO_2D.GT.0)THEN
           IF(1.D0-VERIF.GT.ABS(1.D-10)) THEN
             WRITE(LU,*) 'WARNING::THE SUM OF EACH COMPONENT',
      &            ' MASS FRACTION IS NOT EQUAL TO 1'
@@ -203,29 +216,29 @@
         END IF
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) RHO_OIL
-        WRITE(LU,*) 'RHO_OIL = ',RHO_OIL
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) RHO_OIL_2D
+        WRITE(LU,*) 'RHO_OIL_2D = ',RHO_OIL_2D
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) ETA_OIL
-        WRITE(LU,*) 'ETA_OIL = ',ETA_OIL
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) ETA_OIL_2D
+        WRITE(LU,*) 'ETA_OIL_2D = ',ETA_OIL_2D
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) VOLDEV
-        WRITE(LU,*) 'VOLDEV = ',VOLDEV
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) VOLDEV_2D
+        WRITE(LU,*) 'VOLDEV_2D = ',VOLDEV_2D
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) TAMB
-        WRITE(LU,*) 'TAMB = ',TAMB
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) TAMB_2D
+        WRITE(LU,*) 'TAMB_2D = ',TAMB_2D
 !
         READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) ETAL
-        WRITE(LU,*) 'ETAL = ',ETAL
+        READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) ETAL_2D
+        WRITE(LU,*) 'ETAL_2D = ',ETAL_2D
 !
-        IF(ETAL.EQ.3)THEN
+        IF(ETAL_2D.EQ.3)THEN
           READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3)
-          READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) AREA
-          WRITE(LU,*) 'AREA = ',AREA
+          READ(T2D_FILES(T2DMIG)%LU,*,END=2,ERR=3) AREA_2D
+          WRITE(LU,*) 'AREA_2D = ',AREA_2D
         END IF
 !
         GOTO 2
@@ -253,15 +266,15 @@
           PARTICULES(I)%MASS_EVAP=0.D0
           PARTICULES(I)%MASS_DISS=0.D0
           PARTICULES(I)%SURFACE=0.D0
-          IF(NB_COMPO.GT.0) THEN
-            DO K=1,NB_COMPO
+          IF(NB_COMPO_2D.GT.0) THEN
+            DO K=1,NB_COMPO_2D
               PARTICULES(I)%COMPO(K)%MASS=0.D0
               PARTICULES(I)%COMPO(K)%TB=0.D0
               PARTICULES(I)%COMPO(K)%SOL=0.D0
             END DO
           END IF
-          IF(NB_COMPO.GT.0) THEN
-            DO K=1,NB_HAP
+          IF(NB_COMPO_2D.GT.0) THEN
+            DO K=1,NB_HAP_2D
               PARTICULES(I)%HAP(K)%MASS=0.D0
               PARTICULES(I)%HAP(K)%TB=0.D0
               PARTICULES(I)%HAP(K)%SOL=0.D0
@@ -274,7 +287,7 @@
 !======================================================================
 !
         IF(NCSIZE.GT.1) CALL OIL_ORGANISE_CHARS(NFLOT_MAX)
-        INIT=.TRUE.
+        INIT_2D=.TRUE.
 !
       ENDIF
 !
@@ -303,24 +316,25 @@
 !------------INITIALIZATION OF PARTICULES STRUCTURE--------------------
 !======================================================================
 !
-      CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV,RHO_OIL,
-     &             NB_COMPO,NB_HAP,FM_COMPO,TB_COMPO,FM_HAP,TB_HAP,SOLU,
-     &             ETAL,AREA,1,GRAV)
+      CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH,LT,VOLDEV_2D,
+     &             RHO_OIL_2D,NB_COMPO_2D,NB_HAP_2D,FM_COMPO_2D,
+     &             TB_COMPO_2D,FM_HAP_2D,TB_HAP_2D,SOLU_2D,
+     &             ETAL_2D,AREA_2D,1,GRAV)
 !
 !
 !======================================================================
 !-------------------------PARTICLE SPREADING---------------------------
 !======================================================================
 !
-      CALL OIL_SPREADING(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,NFLOT_MAX,DT,ETAL,
-     &                  GRAV)
+      CALL OIL_SPREADING(VOLDEV_2D,ETA_OIL_2D,RHO_OIL_2D,NFLOT,
+     &                  NFLOT_MAX,DT,ETAL_2D,GRAV)
 !
 !======================================================================
 !-------OIL/SHORELINE INTERACTION (RELEASE OF BEACHING PARTICLE)-------
 !======================================================================
 !
       CALL OIL_REFLOATING(LT,DT,NPOIN,NELMAX,3,MESH%IKLE%I,H%R,HN%R,
-     &                   RHO_OIL,NFLOT,CF%R,1)
+     &                   RHO_OIL_2D,NFLOT,CF%R,1)
 !
 !======================================================================
 !-------------ADVECTION AND DIFFUSION OF THE OIL PARTICLE--------------
@@ -333,51 +347,52 @@
      &               SHPFLO%R,SHPFLO%R,TAGFLO%I,ELTFLO%I,ELTFLO%I,NFLOT,
      &               NFLOT_MAX,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,IT1%I,
      &               T1%R,T2%R,T2%R,IT2%I,W1%R,W1%R,NPOIN,1,VISC,
-     &               NB_COMPO,NB_HAP)
+     &               NB_COMPO_2D,NB_HAP_2D)
 !
 !======================================================================
 !------------OIL/SHORELINE INTERACTION (BEACHING PARTICLE)-------------
 !======================================================================
 !
       CALL OIL_BEACHING(MESH%IKLE%I,NPOIN,NELMAX,3,H%R,HN%R,NFLOT,
-     &                 RHO_OIL,MESH%SURFAC%R,CF%R,ETA_OIL,LT)
+     &                 RHO_OIL_2D,MESH%SURFAC%R,CF%R,ETA_OIL_2D,LT)
 !
 !======================================================================
 !------------------EVAPORATION OF OIL PARTICLES------------------------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
-        CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,DT,3,NELMAX,MESH%IKLE%I,
-     &               TAMB,WINDX%R,WINDY%R,VENT,NPOIN,UCONV_OIL%R,
-     &               VCONV_OIL%R)
+      IF(NB_COMPO_2D.GT.0.OR.NB_HAP_2D.GT.0)THEN
+        CALL OIL_EVAP(NB_COMPO_2D,NB_HAP_2D,NFLOT,DT,3,NELMAX,
+     &               MESH%IKLE%I,TAMB_2D,WINDX%R,WINDY%R,VENT,NPOIN,
+     &               UCONV_OIL%R,VCONV_OIL%R)
       END IF
 !
 !======================================================================
 !-------------------DISSOLUTION OF OIL PARTICLES-----------------------
 !======================================================================
 !
-      IF(NB_HAP.GT.0.AND.NTRAC.EQ.0)THEN
+      IF(NB_HAP_2D.GT.0.AND.NTRAC.EQ.0)THEN
         WRITE(LU,*) 'WARNING::THERE ARE SOME SOLUBLE COMPONENT',
      &        ' BUT NO TRACER IN THE TELEMAC FILE .CAS'
         WRITE(LU,*) 'PLEASE, MODIFIED THE TELEMAC FILE.CAS '
         CALL PLANTE(1)
       END IF
 !
-      IF(NB_HAP.GT.0.AND.NTRAC.GT.0)THEN
-        CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,DT,3,NELMAX,MESH%IKLE%I,
-     &                HN%R,NPOIN,UNSV2D,TN,TB,MESH,KDISS,1,NTRAC)
+      IF(NB_HAP_2D.GT.0.AND.NTRAC.GT.0)THEN
+        CALL OIL_DISSO(NB_COMPO_2D,NB_HAP_2D,NFLOT,DT,3,NELMAX,
+     &                MESH%IKLE%I,HN%R,NPOIN,UNSV2D,TN,TB,MESH,
+     &                KDISS_2D,1,NTRAC)
       END IF
 !
 !======================================================================
 !-------MANAGEMENT OF LOST PARTICLES IF THEIR MASS EQUALS TO 0---------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+      IF(NB_COMPO_2D.GT.0.OR.NB_HAP_2D.GT.0)THEN
         DO IFLOT=1,NFLOT
           IF(PARTICULES(IFLOT)%MASS.EQ.0.D0) THEN
              CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT,NFLOT_MAX,
-     &                            MESH%TYPELM,IT1%I,PARTICULES,NB_COMPO,
-     &                            NB_HAP)
+     &                            MESH%TYPELM,IT1%I,PARTICULES,
+     &                            NB_COMPO_2D,NB_HAP_2D)
           END IF
         END DO
       END IF
@@ -387,16 +402,16 @@
 !-------------------------IN THE WATER COLUMN--------------------------
 !======================================================================
 !
-      IF(NB_HAP.GT.0)THEN
+      IF(NB_HAP_2D.GT.0)THEN
         CALL OIL_VOLATI(T3,TIMP,HPROP,NFLOT,3,NELMAX,MESH%IKLE%I,NPOIN,
-     &                 MESH,NB_HAP,KVOL,NTRAC,AYASMI=YASMI)
+     &                 MESH,NB_HAP_2D,KVOL_2D,NTRAC,AYASMI=YASMI)
       END IF
 !
 !======================================================================
 !--------------------MASS BALANCE OF OIL)------------------------------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+      IF(NB_COMPO_2D.GT.0.OR.NB_HAP_2D.GT.0)THEN
         CALL OIL_BILAN(NFLOT,LT,FLOPRD)
       END IF
 !
@@ -490,7 +505,7 @@
 !| T3_01      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| T3_02      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| T3_03      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
-!| T2_18      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T1_18      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| T2_17      |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| MTRA1      |<->| 3D WORK MATRIX
 !| MTRA2      |<->| 3D WORK MATRIX
@@ -507,9 +522,8 @@
       USE BIEF
       USE STREAMLINE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -544,22 +558,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL INIT
-      DATA INIT /.FALSE./
-      INTEGER I,K,IFLOT,ETAL
-      INTEGER NB_COMPO,NB_HAP
-      DOUBLE PRECISION ETA_OIL,RHO_OIL,VOLDEV
-      DOUBLE PRECISION TAMB,VERIF,AREA
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_COMPO,FM_COMPO
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: TB_HAP,FM_HAP,SOLU
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: KDISS,KVOL
-!
-      SAVE RHO_OIL,VOLDEV,NB_COMPO,ETA_OIL,NB_HAP,TAMB,ETAL
-      SAVE TB_COMPO,FM_COMPO,TB_HAP,FM_HAP,SOLU,KDISS,KVOL,AREA
+      INTEGER I,K,IFLOT
+      DOUBLE PRECISION VERIF
 !
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.INIT) THEN
+      IF(.NOT.INIT_3D) THEN
 !
         CALL BIEF_ALLVEC(1,UCONV_OIL,'UCONVO',IELM2H,1,1,MESH2D)
         CALL BIEF_ALLVEC(1,VCONV_OIL,'VCONVO',IELM2H,1,1,MESH2D)
@@ -575,51 +579,51 @@
 !
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) NB_COMPO
-        WRITE(LU,*) 'NB_COMPO = ',NB_COMPO
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) NB_COMPO_3D
+        WRITE(LU,*) 'NB_COMPO_3D = ',NB_COMPO_3D
 !
         DO I=1,NFLOT_MAX
-          ALLOCATE(PARTICULES(I)%COMPO(MAX(NB_COMPO,1)))
+          ALLOCATE(PARTICULES(I)%COMPO(MAX(NB_COMPO_3D,1)))
         END DO
 !
-        ALLOCATE(TB_COMPO(MAX(NB_COMPO,1)))
-        ALLOCATE(FM_COMPO(MAX(NB_COMPO,1)))
-        IF(NB_COMPO.GT.0)THEN
+        ALLOCATE(TB_COMPO_3D(MAX(NB_COMPO_3D,1)))
+        ALLOCATE(FM_COMPO_3D(MAX(NB_COMPO_3D,1)))
+        IF(NB_COMPO_3D.GT.0)THEN
           READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-          DO I=1,NB_COMPO
-            READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) FM_COMPO(I),
-     &            TB_COMPO(I)
-            VERIF=VERIF+FM_COMPO(I)
-            WRITE(LU,*) 'COMPO',I,FM_COMPO(I),
-     &           TB_COMPO(I)
+          DO I=1,NB_COMPO_3D
+            READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) FM_COMPO_3D(I),
+     &            TB_COMPO_3D(I)
+            VERIF=VERIF+FM_COMPO_3D(I)
+            WRITE(LU,*) 'COMPO',I,FM_COMPO_3D(I),
+     &           TB_COMPO_3D(I)
           END DO
         END IF
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) NB_HAP
-        WRITE(LU,*) 'NB_HAP = ',NB_HAP
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) NB_HAP_3D
+        WRITE(LU,*) 'NB_HAP_3D = ',NB_HAP_3D
 !
         DO I=1,NFLOT_MAX
-          ALLOCATE(PARTICULES(I)%HAP(MAX(NB_HAP,1)))
+          ALLOCATE(PARTICULES(I)%HAP(MAX(NB_HAP_3D,1)))
         END DO
 !
-        ALLOCATE(TB_HAP(MAX(NB_HAP,1)))
-        ALLOCATE(FM_HAP(MAX(NB_HAP,1)))
-        ALLOCATE(SOLU(MAX(NB_HAP,1)))
-        ALLOCATE(KDISS(MAX(NB_HAP,1)))
-        ALLOCATE(KVOL(MAX(NB_HAP,1)))
-        IF(NB_HAP.GT.0)THEN
+        ALLOCATE(TB_HAP_3D(MAX(NB_HAP_3D,1)))
+        ALLOCATE(FM_HAP_3D(MAX(NB_HAP_3D,1)))
+        ALLOCATE(SOLU_3D(MAX(NB_HAP_3D,1)))
+        ALLOCATE(KDISS_3D(MAX(NB_HAP_3D,1)))
+        ALLOCATE(KVOL_3D(MAX(NB_HAP_3D,1)))
+        IF(NB_HAP_3D.GT.0)THEN
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-          DO I=1,NB_HAP
-            READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) FM_HAP(I),
-     &            TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
-            VERIF=VERIF+FM_HAP(I)
-            WRITE(LU,*) 'HAP',I,FM_HAP(I),
-     &           TB_HAP(I),SOLU(I),KDISS(I),KVOL(I)
+          DO I=1,NB_HAP_3D
+            READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) FM_HAP_3D(I),
+     &            TB_HAP_3D(I),SOLU_3D(I),KDISS_3D(I),KVOL_3D(I)
+            VERIF=VERIF+FM_HAP_3D(I)
+            WRITE(LU,*) 'HAP',I,FM_HAP_3D(I),
+     &           TB_HAP_3D(I),SOLU_3D(I),KDISS_3D(I),KVOL_3D(I)
           END DO
         END IF
 !
-        IF(NB_HAP.GT.0.OR.NB_COMPO.GT.0) THEN
+        IF(NB_HAP_3D.GT.0.OR.NB_COMPO_3D.GT.0) THEN
           IF(1.D0-VERIF.GT.ABS(1.D-10)) THEN
             WRITE(LU,*) 'WARNING::THE SUM OF EACH COMPONENT',
      &            ' MASS FRACTION IS NOT EQUAL TO 1'
@@ -629,28 +633,28 @@
         END IF
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) RHO_OIL
-        WRITE(LU,*) 'RHO_OIL = ',RHO_OIL
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) RHO_OIL_3D
+        WRITE(LU,*) 'RHO_OIL_3D = ',RHO_OIL_3D
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) ETA_OIL
-        WRITE(LU,*) 'ETA_OIL = ',ETA_OIL
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) ETA_OIL_3D
+        WRITE(LU,*) 'ETA_OIL_3D = ',ETA_OIL_3D
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) VOLDEV
-        WRITE(LU,*) 'VOLDEV = ',VOLDEV
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) VOLDEV_3D
+        WRITE(LU,*) 'VOLDEV_3D = ',VOLDEV_3D
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) TAMB
-        WRITE(LU,*) 'TAMB = ',TAMB
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) TAMB_3D
+        WRITE(LU,*) 'TAMB_3D = ',TAMB_3D
 !
         READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) ETAL
-        WRITE(LU,*) 'ETAL = ',ETAL
+        READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) ETAL_3D
+        WRITE(LU,*) 'ETAL_3D = ',ETAL_3D
 !
-        IF(ETAL.EQ.3)THEN
+        IF(ETAL_3D.EQ.3)THEN
           READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3)
-          READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) AREA
+          READ(T3D_FILES(T3DMIG)%LU,*,END=2,ERR=3) AREA_3D
         END IF
 !
         GOTO 2
@@ -678,15 +682,15 @@
           PARTICULES(I)%MASS_EVAP=0.D0
           PARTICULES(I)%MASS_DISS=0.D0
           PARTICULES(I)%SURFACE=0.D0
-          IF(NB_COMPO.GT.0) THEN
-            DO K=1,NB_COMPO
+          IF(NB_COMPO_3D.GT.0) THEN
+            DO K=1,NB_COMPO_3D
               PARTICULES(I)%COMPO(K)%MASS=0.D0
               PARTICULES(I)%COMPO(K)%TB=0.D0
               PARTICULES(I)%COMPO(K)%SOL=0.D0
             END DO
           END IF
-          IF(NB_HAP.GT.0) THEN
-            DO K=1,NB_HAP
+          IF(NB_HAP_3D.GT.0) THEN
+            DO K=1,NB_HAP_3D
               PARTICULES(I)%HAP(K)%MASS=0.D0
               PARTICULES(I)%HAP(K)%TB=0.D0
               PARTICULES(I)%HAP(K)%SOL=0.D0
@@ -699,7 +703,7 @@
 !======================================================================
 !
         IF(NCSIZE.GT.1) CALL OIL_ORGANISE_CHARS(NFLOT_MAX)
-        INIT=.TRUE.
+        INIT_3D=.TRUE.
 !
       ENDIF
 !
@@ -711,23 +715,24 @@
 !--------------INITIALIZATION OF PARTICULES STRUCTURE------------------
 !======================================================================
 !
-      CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH3D,LT,VOLDEV,RHO_OIL,
-     &             NB_COMPO,NB_HAP,FM_COMPO,TB_COMPO,FM_HAP,TB_HAP,SOLU,
-     &             ETAL,AREA,NPLAN,GRAV)
+      CALL OIL_FLOT(PARTICULES,NFLOT,NFLOT_MAX,MESH3D,LT,VOLDEV_3D,
+     &             RHO_OIL_3D,NB_COMPO_3D,NB_HAP_3D,FM_COMPO_3D,
+     &             TB_COMPO_3D,FM_HAP_3D,TB_HAP_3D,SOLU_3D,
+     &             ETAL_3D,AREA_3D,NPLAN,GRAV)
 !
 !======================================================================
 !----------------------SPREADING OF PARTICLES--------------------------
 !======================================================================
 !
-      CALL OIL_SPREADING(VOLDEV,ETA_OIL,RHO_OIL,NFLOT,NFLOT_MAX,DT,ETAL,
-     &                  GRAV)
+      CALL OIL_SPREADING(VOLDEV_3D,ETA_OIL_3D,RHO_OIL_3D,NFLOT,
+     &                  NFLOT_MAX,DT,ETAL_3D,GRAV)
 !
 !======================================================================
 !-------OIL/SHORELINE INTERACTION (RELEASE OF BEACHING PARTICLE)-------
 !======================================================================
 !
       CALL OIL_REFLOATING(LT,DT,NPOIN2,MESH2D%NELMAX,3,MESH2D%IKLE%I,
-     &                   H%R,HN%R,RHO_OIL,NFLOT,CF%R,NPLAN,Z)
+     &                   H%R,HN%R,RHO_OIL_3D,NFLOT,CF%R,NPLAN,Z)
 !
 !======================================================================
 !-------------ADVECTION AND DIFFUSION OF THE OIL PARTICLE--------------
@@ -739,25 +744,27 @@
      &               XFLOT%R,YFLOT%R,ZFLOT%R,SHPFLO%R,SHZFLO%R,TAGFLO%I,
      &               ELTFLO%I,ETAFLO%I,NFLOT,NFLOT_MAX,FLOPRD,MESH3D,
      &               T3D_FILES(T3DFLO)%LU,IT1%I,T3_01%R,T3_02%R,T3_03%R,
-     &               IT2%I,MTRA1%X%R,MTRA2%X%R,NPOIN3,1,VISCVI,NB_COMPO,
-     &               NB_HAP)
+     &               IT2%I,MTRA1%X%R,MTRA2%X%R,NPOIN3,1,VISCVI,
+     &               NB_COMPO_3D,NB_HAP_3D)
 !
 !======================================================================
 !-------OIL/SHORELINE (INTERACTION CALLING OIL_BEACHING)---------------
 !======================================================================
 !
       CALL OIL_BEACHING(MESH2D%IKLE%I,NPOIN2,MESH2D%NELMAX,3,H%R,HN%R,
-     &                 NFLOT,RHO_OIL,MESH2D%SURFAC%R,CF%R,ETA_OIL,LT)
+     &                 NFLOT,RHO_OIL_3D,MESH2D%SURFAC%R,CF%R,
+     &                 ETA_OIL_3D,LT)
 !
 !
 !======================================================================
 !---------------------EVAPORATION OF OIL PARTICLES)--------------------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
-        CALL OIL_EVAP(NB_COMPO,NB_HAP,NFLOT,DT,3,MESH2D%NELMAX,
-     &               MESH2D%IKLE%I,TAMB,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,
-     &               VENT,NPOIN2,UCONV_OIL%R,VCONV_OIL%R)
+      IF(NB_COMPO_3D.GT.0.OR.NB_HAP_3D.GT.0)THEN
+        CALL OIL_EVAP(NB_COMPO_3D,NB_HAP_3D,NFLOT,DT,3,MESH2D%NELMAX,
+     &               MESH2D%IKLE%I,TAMB_3D,WIND%ADR(1)%P%R,
+     &               WIND%ADR(2)%P%R,VENT,NPOIN2,UCONV_OIL%R,
+     &               VCONV_OIL%R)
       END IF
 !
 !======================================================================
@@ -765,29 +772,29 @@
 !======================================================================
 !
 !
-      IF(NB_HAP.GT.0.AND.NTRAC.EQ.0)THEN
+      IF(NB_HAP_3D.GT.0.AND.NTRAC.EQ.0)THEN
         WRITE(LU,*) 'WARNING::THERE ARE SOME SOLUBLE COMPONENT',
      &        ' BUT NO TRACER IN THE TELEMAC FILE .CAS'
         WRITE(LU,*) 'PLEASE, MODIFIED THE TELEMAC FILE.CAS '
         CALL PLANTE(1)
       END IF
 !
-      IF(NB_HAP.GT.0.AND.NTRAC.GT.0)THEN
-        CALL OIL_DISSO(NB_COMPO,NB_HAP,NFLOT,DT,3,MESH2D%NELMAX,
+      IF(NB_HAP_3D.GT.0.AND.NTRAC.GT.0)THEN
+        CALL OIL_DISSO(NB_COMPO_3D,NB_HAP_3D,NFLOT,DT,3,MESH2D%NELMAX,
      &                MESH2D%IKLE%I,HN%R,NPOIN2,UNSV3D,TRN,TRAV3,MESH3D,
-     &                KDISS,NPLAN,NTRAC)
+     &                KDISS_3D,NPLAN,NTRAC)
       END IF
 !
 !======================================================================
 !-------MANAGEMENT OF LOST PARTICLES IF THEIR MASS EQUALS TO 0---------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+      IF(NB_COMPO_3D.GT.0.OR.NB_HAP_3D.GT.0)THEN
         DO IFLOT=1,NFLOT
           IF(PARTICULES(IFLOT)%MASS.EQ.0.D0) THEN
             CALL OIL_DEL_PARTICLE(PARTICULES(IFLOT)%ID,NFLOT, NFLOT_MAX,
      &                           MESH3D%TYPELM,IT1%I,PARTICULES,
-     &                           NB_COMPO,NB_HAP)
+     &                           NB_COMPO_3D,NB_HAP_3D)
           END IF
         END DO
       END IF
@@ -797,16 +804,17 @@
 !--------------------COMPONENTS IN THE WATER COLUMN--------------------
 !======================================================================
 !
-      IF(NB_HAP.GT.0)THEN
+      IF(NB_HAP_3D.GT.0)THEN
         CALL OIL_VOLATI(T2_17,ATABOS,H,NFLOT,3,MESH2D%NELMAX,
-     &                 MESH2D%IKLE%I,NPOIN2,MESH2D,NB_HAP,KVOL,NTRAC)
+     &                 MESH2D%IKLE%I,NPOIN2,MESH2D,NB_HAP_3D,
+     &                 KVOL_3D,NTRAC)
       END IF
 !
 !======================================================================
 !-----------------------MASS BALANCE OF OIL)---------------------------
 !======================================================================
 !
-      IF(NB_COMPO.GT.0.OR.NB_HAP.GT.0)THEN
+      IF(NB_COMPO_3D.GT.0.OR.NB_HAP_3D.GT.0)THEN
         CALL OIL_BILAN(NFLOT,LT,FLOPRD)
       END IF
 !
@@ -898,9 +906,8 @@
       USE BIEF
       USE STREAMLINE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -950,11 +957,6 @@
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
 !
-      LOGICAL DEJA
-      DATA    DEJA/.FALSE./
-!
-      SAVE
-!
 !-----------------------------------------------------------------------
 !
 !     PARAMETERISING THE CALL TO SCARACT
@@ -981,13 +983,7 @@
 !
 !     INITIALISING SVOID AND HEADER OF A TECPLOT FILE
 !
-      IF(.NOT.DEJA) THEN
-!
-!       THOUGH NOMB = 0, THESE COMPONENTS WILL BE USED IN SCARACT
-!
-        SVOID%TYPE=2
-        SVOID%DIM1=1
-        ALLOCATE(SVOID%R(1))
+      IF(.NOT.DEJA_DERIVE2) THEN
 !
 !       HEADER OF TECPLOT FILE
 !
@@ -1012,10 +1008,15 @@
      &      TEXTE(1)//'","'//TEXTE(2)//'","'//TEXTE(3)//'","COLOUR"'
           ENDIF
         ENDIF
-        DEJA=.TRUE.
+        DEJA_DERIVE2=.TRUE.
 100     FORMAT(A)
       ENDIF
 !
+!     THOUGH NOMB = 0, THESE COMPONENTS WILL BE USED IN SCARACT
+!
+      SVOID%TYPE=2
+      SVOID%DIM1=1
+      ALLOCATE(SVOID%R(1))
       SVOID%ELM=IELM
 !
 !-----------------------------------------------------------------------
@@ -1426,6 +1427,7 @@
         ENDIF
 !
       ENDIF
+      DEALLOCATE(SVOID%R)
 !
 !-----------------------------------------------------------------------
 !
@@ -1476,9 +1478,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1489,8 +1490,6 @@
 !
       INTEGER IFLOT
       DOUBLE PRECISION PI,RHO_EAU,DELTA,VOL,NU,NU2,COEF1,COEF2
-!
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -1586,9 +1585,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1605,28 +1603,10 @@
       INTEGER IFLOT,K,I1,I2,I3
       DOUBLE PRECISION TOTALE,KE,MW,MASSE,BILAN
       DOUBLE PRECISION VENT_RELAT,VENTX,VENTY
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MASSE_EVAP_COMPO,C,D
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MASSE_EVAP_HAP
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MW_HAP,MW_COMPO
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
-      IF(.NOT.DEJA)THEN
-        IF(NB_COMPO.GT.0)THEN
-          ALLOCATE(MASSE_EVAP_COMPO(NB_COMPO))
-          ALLOCATE(MW_COMPO(NB_COMPO))
-          ALLOCATE(C(NB_COMPO))
-        END IF
-        IF(NB_HAP.GT.0)THEN
-          ALLOCATE(MASSE_EVAP_HAP(NB_HAP))
-          ALLOCATE(MW_HAP(NB_HAP))
-          ALLOCATE(D(NB_HAP))
-        END IF
-        DEJA=.TRUE.
-      END IF
+      DOUBLE PRECISION :: MASSE_EVAP_COMPO(NB_COMPO)
+      DOUBLE PRECISION :: C(NB_COMPO),D(NB_HAP)
+      DOUBLE PRECISION :: MASSE_EVAP_HAP(NB_HAP)
+      DOUBLE PRECISION :: MW_HAP(NB_HAP),MW_COMPO(NB_COMPO)
 !
 !-----------------------------------------------------------------------
 !-----------------------INITIALIZATION----------------------------------
@@ -1837,9 +1817,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1859,35 +1838,17 @@
 !
       INTEGER K,J,IFLOT,I1,I2,I3
       DOUBLE PRECISION X0,MASSE
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::INVOL,HAUT
-      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::C
-      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::ALPHA
-      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::M
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE::MW_HAP,MW_COMPO
+      DOUBLE PRECISION :: INVOL(NDP),HAUT(NDP)
+      DOUBLE PRECISION :: C(NB_HAP,NDP)
+      DOUBLE PRECISION :: ALPHA(NB_HAP,NDP)
+      DOUBLE PRECISION :: M(NDP,NB_HAP)
+      DOUBLE PRECISION :: MW_HAP(NB_HAP),MW_COMPO(NB_COMPO)
       DOUBLE PRECISION TOT,TOTALE
-      LOGICAL DEJA
-      DATA DEJA /.FALSE./
-!
-      SAVE
 !
 !-----------------------------------------------------------------------
 !-----------------------TABLE ALLOCATION--------------------------------
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(INVOL(NDP))
-        ALLOCATE(HAUT(NDP))
-        IF(NB_HAP.GT.0) THEN
-          ALLOCATE(C(NB_HAP,NDP))
-          ALLOCATE(M(NDP,NB_HAP))
-          ALLOCATE(ALPHA(NB_HAP,NDP))
-          ALLOCATE(MW_HAP(NB_HAP))
-        END IF
-        IF(NB_COMPO.GT.0) THEN
-          ALLOCATE(MW_COMPO(NB_COMPO))
-        END IF
-        DEJA=.TRUE.
-      ENDIF
       DO K= 1,NB_HAP
         CALL CPSTVC(TN%ADR(NTRAC-NB_HAP+K)%P,TB%ADR(K)%P)
         CALL OS('X=0     ',TB%ADR(K)%P)
@@ -2120,9 +2081,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2242,9 +2202,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2436,9 +2395,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2572,10 +2530,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_PARALLEL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

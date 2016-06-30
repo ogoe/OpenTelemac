@@ -117,6 +117,7 @@
       PUBLIC :: DEL_INFO_ALG
       PUBLIC :: OIL_SEND_PARTICLES,OIL_DEL_PARTICLE,OIL_SEND_INFO
       PUBLIC :: OIL_ORGANISE_CHARS
+      PUBLIC :: DEALLOC_STREAMLINE
 !
 !     MAX_BASKET_SIZE IS THE NUMBER OF ADVECTED VARIABLES IN ONE PROCEDURE CALL
 !
@@ -151,27 +152,29 @@
 !     END TYPE CHARAC_TYPE
 !
 !     THE CORRESPONDING MPI TYPE
-!
-      INTEGER :: CHARACTERISTIC
-!
-!     STRUCTURES FOR ALL-TO-ALL COMMUNICATION / SEND AND RECEIVE WITH COUNTERS
-!     HEAP/SEND/RECVCOUNTS : COUNT THE NUMBER OF LOST TRACEBACKS PARTITION-WISE
-!     S/RDISPLS : DISPLACEMENTS IN PARTITION-WISE SORTED SEND/RECVCHARS
-!     HEAPCHAR : FOR SAVING INITIALLY LOST CHARACTERISTICS AND COLLECTING
-!                THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION
-!     WHILE COLLECTING IS DONE IN HEAPCHARS, MOST ACTIVE OPERATIONS IN RECVCHAR
-!     SENDCHAR REQUIRED DUE TO THE SPECIFIC SORTING FOR MPI_ALLTOALLV (OPTIMISE?)
-!
-      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPCHAR
-      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDCHAR
-      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVCHAR
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::SENDCOUNTS,SDISPLS
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::RECVCOUNTS,RDISPLS
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::HEAPCOUNTS
-!
+!  
+      INTEGER :: CHARACTERISTIC 
+! 
+!     STRUCTURES FOR ALL-TO-ALL COMMUNICATION / SEND AND RECEIVE WITH COUNTERS 
+!     HEAP/SEND/RECVCOUNTS : COUNT THE NUMBER OF LOST TRACEBACKS PARTITION-WISE 
+!     S/RDISPLS : DISPLACEMENTS IN PARTITION-WISE SORTED SEND/RECVCHARS  
+!     HEAPCHAR : FOR SAVING INITIALLY LOST CHARACTERISTICS AND COLLECTING  
+!                THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION  
+!     WHILE COLLECTING IS DONE IN HEAPCHARS, MOST ACTIVE OPERATIONS IN RECVCHAR 
+!     SENDCHAR REQUIRED DUE TO THE SPECIFIC SORTING FOR MPI_ALLTOALLV (OPTIMISE?)  
+! 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:)::HEAPCHAR 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:)::SENDCHAR 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:)::RECVCHAR 
+      INTEGER, ALLOCATABLE, DIMENSION(:)::SENDCOUNTS,SDISPLS 
+      INTEGER, ALLOCATABLE, DIMENSION(:)::RECVCOUNTS,RDISPLS 
+      INTEGER, ALLOCATABLE, DIMENSION(:)::HEAPCOUNTS 
+!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC) in scarat 
+      INTEGER NCHDIM 
+! 
 !     WORK FIELD FOR COUNTING OCCURANCES PRO RANK / SORTING SENDCHAR
-!
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE :: ICHA
+!  
+      INTEGER, ALLOCATABLE, DIMENSION(:) :: ICHA 
 !
 !     STRUCTURE TO SEND THE INFO ASSOCIATED WITH ALGAE TRANSPORT
 !
@@ -202,12 +205,12 @@
 !     HEAPALG : FOR SAVING INFORMATION TO BE SEND TO AT THE SAME TIME AS
 !               PARTICLE POSITION. HEAP/SEND/RECVCOUNTS AND S/RDISPLS ARE USED
 !               AS WELL. SENDALG AND RECVALG ARE USED IN A SIMILAR FASHION AS
-!               SENDCHAR AND RECVCHAR
-!
-      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPALG
-      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDALG
-      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVALG
-!
+!               SENDCHAR AND RECVCHAR  
+! 
+      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:)::HEAPALG 
+      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:)::SENDALG 
+      TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:)::RECVALG 
+! 
 !     FOR OIL SPILLS
 !
 !     TYPE OIL_TYPE
@@ -245,9 +248,9 @@
 !     WHILE COLLECTING IS DONE IN HEAPCHARS, MOST ACTIVE OPERATIONS IN RECVCHAR
 !     SENDCHAR REQUIRED DUE TO THE SPECIFIC SORTING FOR MPI_ALLTOALLV (OPTIMISE?)
 !
-      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPOIL
-      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDOIL
-      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVOIL
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:)::HEAPOIL
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:)::SENDOIL 
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:)::RECVOIL 
 !
 !     IF SET TO TRUE, EVERY DETAILED DEBUGGING IS SWITCHED ON
 !
@@ -277,6 +280,10 @@
      &          172,173,174,175,176,177,178,179,180,181,
      &          182,183,184,185,186,187,188,189,190,191,
      &          192,193,194,195,196,197,198,199,200,201/
+!      
+!     Initialisation marker for SCARACT
+!
+      LOGICAL :: INIT=.TRUE. 
 !
       CONTAINS
 !
@@ -289,6 +296,25 @@
         CALL P_MPI_TYPE_FREE(CHARACTERISTIC,IER)
         RETURN
       END SUBROUTINE DEORG_CHARAC_TYPE
+!
+      SUBROUTINE DEALLOC_STREAMLINE
+        IF(ALLOCATED(HEAPCHAR)) DEALLOCATE(HEAPCHAR) 
+        IF(ALLOCATED(SENDCHAR)) DEALLOCATE(SENDCHAR) 
+        IF(ALLOCATED(RECVCHAR)) DEALLOCATE(RECVCHAR) 
+        IF(ALLOCATED(SENDCOUNTS)) DEALLOCATE(SENDCOUNTS)
+        IF(ALLOCATED(SDISPLS)) DEALLOCATE(SDISPLS) 
+        IF(ALLOCATED(RECVCOUNTS)) DEALLOCATE(RECVCOUNTS)
+        IF(ALLOCATED(RDISPLS)) DEALLOCATE(RDISPLS) 
+        IF(ALLOCATED(HEAPCOUNTS)) DEALLOCATE(HEAPCOUNTS) 
+        IF(ALLOCATED(ICHA)) DEALLOCATE(ICHA) 
+        IF(ALLOCATED(HEAPALG)) DEALLOCATE(HEAPALG) 
+        IF(ALLOCATED(SENDALG)) DEALLOCATE(SENDALG) 
+        IF(ALLOCATED(RECVALG)) DEALLOCATE(RECVALG) 
+        IF(ALLOCATED(HEAPOIL)) DEALLOCATE(HEAPOIL)
+        IF(ALLOCATED(SENDOIL)) DEALLOCATE(SENDOIL) 
+        IF(ALLOCATED(RECVOIL)) DEALLOCATE(RECVOIL) 
+        RETURN
+      END SUBROUTINE DEALLOC_STREAMLINE
 !
 !---------------------------------------------------------------------
 !     GET/SET ON DIMENSIONS AND COUNTERS
@@ -477,9 +503,8 @@
         SUBROUTINE COLLECT_CHAR(MYPID,IOR,MYII,IFACE,KNE,IFR,
      &                          ISP,NSP,XP,YP,ZP,FP,DX,DY,DZ,DF,
      &                          IFAPAR,NCHDIM,NCHARA)
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER,  INTENT(IN) :: MYPID,IOR,MYII,IFACE,KNE,IFR
           INTEGER,  INTENT(IN) :: ISP,NSP,NCHDIM
           INTEGER,  INTENT(IN) :: IFAPAR(6,*)
@@ -528,9 +553,8 @@
         SUBROUTINE COLLECT_ALG(MYPID,NEPID,INE,KNE,ISP,NSP,
      &                         IFR,XP,YP,ZP,FP,DX,DY,DZ,DF,
      &                         NCHARA,NCHDIM)
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER,  INTENT(IN) :: MYPID,NEPID,INE(*),KNE(*)
           INTEGER,  INTENT(IN) :: ISP,NSP,IFR,NCHARA,NCHDIM
           DOUBLE PRECISION, INTENT(IN) :: XP(*),YP(*),ZP(*),FP(*)
@@ -621,8 +645,6 @@
         SUBROUTINE PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN)    :: NSEND
           INTEGER, INTENT(OUT)   :: NLOSTCHAR
           INTEGER, INTENT(INOUT) :: NCHARA
@@ -657,8 +679,6 @@
         SUBROUTINE PREP_INITIAL_SEND_ALG(NSEND,NLOSTCHAR,NCHARA)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN)    :: NSEND
           INTEGER, INTENT(OUT)   :: NLOSTCHAR
           INTEGER, INTENT(INOUT) :: NCHARA
@@ -692,8 +712,6 @@
         SUBROUTINE OIL_PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN)    :: NSEND
           INTEGER, INTENT(OUT)   :: NLOSTCHAR
           INTEGER, INTENT(INOUT) :: NCHARA
@@ -734,8 +752,6 @@
 !
         SUBROUTINE HEAP_FOUND(NLOSTAGAIN,NARRV,NCHARA)
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(OUT)    :: NLOSTAGAIN
           INTEGER, INTENT(IN)     :: NARRV
           INTEGER, INTENT(INOUT)  :: NCHARA
@@ -768,8 +784,6 @@
         SUBROUTINE PREP_LOST_AGAIN(NSEND,NARRV)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER,INTENT(IN)   :: NARRV
           INTEGER, INTENT(OUT) :: NSEND
           INTEGER I,N
@@ -800,8 +814,6 @@
         SUBROUTINE PREP_SENDBACK(NCHARA)
           USE BIEF_DEF, ONLY: IPID, NCSIZE
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(INOUT) :: NCHARA
           INTEGER  :: I,N
 !
@@ -837,9 +849,8 @@
 !
         SUBROUTINE GLOB_CHAR_COMM()
           USE BIEF_DEF, ONLY : NCSIZE
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER :: I,IER
           CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,
      &                        RECVCOUNTS,1,MPI_INTEGER,
@@ -877,9 +888,8 @@
 !
         SUBROUTINE GLOB_ALG_COMM()
           USE BIEF_DEF, ONLY : NCSIZE
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER :: I,IER
 !
           CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,
@@ -917,9 +927,8 @@
 
         SUBROUTINE OIL_GLOB_CHAR_COMM()
           USE BIEF_DEF, ONLY : NCSIZE
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER :: I,IER
           CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,
      &                        RECVCOUNTS,1,MPI_INTEGER,
@@ -962,9 +971,8 @@
         SUBROUTINE INTERP_RECVCHAR_41
      &    (VAL,N,IKLE,ELT,ETA,FRE,SHP,SHZ,SHF,NELEM,NPOIN2,
      &     NPLAN,NRANGE,POST,NOMB,PERIO,YA4D)
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN) :: N,NELEM,NPOIN2,NPLAN,NRANGE,NOMB
           INTEGER, INTENT(IN) :: IKLE(NELEM,3)
           INTEGER, INTENT(IN) :: ELT(NRANGE),ETA(NRANGE)
@@ -1105,9 +1113,8 @@
         SUBROUTINE INTERP_RECVCHAR_11
      &      (VAL,N,IKLE,ELT,SHP,NELEM,NPOIN,NRANGE,IELM,POST,NOMB)
           USE BIEF
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN) :: N,NELEM,NPOIN,NRANGE,IELM,NOMB
           INTEGER, INTENT(IN) :: IKLE(NELEM,*)
           INTEGER, INTENT(IN) :: ELT(NRANGE)
@@ -1120,8 +1127,7 @@
           DOUBLE PRECISION SHP33,SHP31,SHP34
 !
 !         SHOULD BE SAME EPSILO THAN SCHAR11 AND INTERP
-          DOUBLE PRECISION EPSILO
-          DATA EPSILO / 1.D-6 /
+          DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-6
           INTEGER I
 !
           IF(NOMB.GT.0) THEN
@@ -1254,8 +1260,6 @@
      &                                POST,YA4D)
           USE BIEF
           IMPLICIT NONE
-          INTEGER LNG,LU
-          COMMON/INFO/LNG,LU
           INTEGER, INTENT(IN)    :: NOMB,NARRV,IELM
           INTEGER, INTENT(INOUT) :: ELT(*),ETA(*),FRE(*)
           DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,*),SHZ(*)
@@ -1452,8 +1456,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2199,8 +2201,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2997,8 +2997,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -3669,8 +3667,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -4411,8 +4407,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -5144,8 +5138,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -5549,8 +5541,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -6054,8 +6044,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -6523,8 +6511,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -6975,8 +6961,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -7029,18 +7013,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      LOGICAL :: INIT=.TRUE.
-!
-! PRE-NUMBER OF INITIALLY COLLECTED LOST CHARACTERISTICS
-! LATER ON, IT COUNTS THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION
-!
-      INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN,MAXNPLOT
-      INTEGER  P_ISUM,P_IMAX
-      EXTERNAL P_ISUM,P_IMAX
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC)
-      INTEGER NCHDIM
-!
-      SAVE
+      INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN,MAXNPLOT 
+      INTEGER  P_ISUM,P_IMAX 
+      EXTERNAL P_ISUM,P_IMAX 
 !
       ETABUF => ISUB
 !
@@ -7741,8 +7716,6 @@
 !
       USE BIEF
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -8036,8 +8009,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -8056,24 +8027,20 @@
       INTEGER, INTENT(INOUT)          :: WELT(SIZEBUF),WETA(SIZEBUF)
       INTEGER, INTENT(INOUT)          :: WFRE(SIZEBUF)
       LOGICAL, INTENT(IN)             :: PERIO,YA4D
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER I,ISTOP,ISTOP2,IPLOT
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR
-      INTEGER NCHDIM
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
-      IF(NOMB.EQ.0) RETURN
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER I,ISTOP,ISTOP2,IPLOT 
+! 
+!----------------------------------------------------------------------- 
+! 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN 
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+! 
+!----------------------------------------------------------------------- 
+!     
+      IF(NOMB.EQ.0) RETURN 
 !
       IF(IELM.NE.11.AND.IELM.NE.41) THEN
         WRITE(LU,*) 'STREAMLINE::POST_INTERP:: ',
@@ -8479,8 +8446,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -8505,15 +8470,11 @@
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN
       DOUBLE PRECISION XVOID,YVOID,ZVOID
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR
-      INTEGER NCHDIM
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+! 
+!----------------------------------------------------------------------- 
+! 
       NCHDIM=LAST_NPLOT
 !
 !     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
@@ -8724,8 +8685,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9021,8 +8980,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9170,8 +9127,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9205,19 +9160,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG,IDIR,IWIN
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR
-      INTEGER NCHDIM
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
+! 
+!----------------------------------------------------------------------- 
+! 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND 
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+! 
+!----------------------------------------------------------------------- 
+! 
       NCHDIM=LAST_NPLOT
 !
 !     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
@@ -9420,8 +9371,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9566,8 +9515,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9590,15 +9537,11 @@
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN,NFLOT_OIL
       DOUBLE PRECISION XVOID,YVOID,ZVOID
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR
-      INTEGER NCHDIM
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+! 
+!----------------------------------------------------------------------- 
+! 
       NCHDIM=LAST_NPLOT
 !
 !     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
@@ -9809,8 +9752,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -9833,16 +9774,12 @@
 !-----------------------------------------------------------------------
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR
-      INTEGER NCHDIM
-!
-      SAVE
-!
-!-----------------------------------------------------------------------
-!
-!
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+! 
+!----------------------------------------------------------------------- 
+!  
+!  
 !     INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS)
       NCHDIM=LAST_NPLOT
       NCHARA=0
@@ -10041,8 +9978,6 @@
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

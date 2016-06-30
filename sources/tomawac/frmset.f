@@ -41,11 +41,13 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : ILM_POIN,CLM,KACC,NB_C,SUR_P,
+     &                                 STACK,STACK2,ALREADY_POM,
+     &                                 MINDIST, DEJA_FRMSET
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_FRMSET => FRMSET
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
@@ -66,20 +68,10 @@
       INTEGER ICLM, J, IELEM,ILM
       INTEGER M, ICST, ICST2, NCST, IP_S, ILP, L(2)
       DOUBLE PRECISION AC,QUO,RAD1
-      INTEGER,ALLOCATABLE:: ILM_POIN(:,:), CLM(:), KACC(:)
-      INTEGER,ALLOCATABLE:: NB_C(:), SUR_P(:,:)
-      INTEGER,ALLOCATABLE:: STACK(:), STACK2(:)
-      LOGICAL,ALLOCATABLE:: ALREADY_POM(:)
-      DOUBLE PRECISION,ALLOCATABLE:: MINDIST(:)
-
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-
-      SAVE
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IF(.NOT.DEJA)THEN
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+! 
+      IF(.NOT.DEJA_FRMSET)THEN
         ALLOCATE(ILM_POIN(NPOIN2,8))
         ALLOCATE(CLM(NPOIN2))
         ALLOCATE(KACC(NPOIN2))
@@ -89,7 +81,7 @@
         ALLOCATE(STACK2(NPOIN2))
         ALLOCATE(ALREADY_POM(NPOIN2))
         ALLOCATE(MINDIST(NPOIN2))
-        DEJA=.TRUE.
+        DEJA_FRMSET=.TRUE.
       ENDIF
 !
 ! ILM_POIN array with the elements to which a point belongs

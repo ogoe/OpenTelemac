@@ -78,6 +78,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
+      USE DECLARATIONS_SPECIAL
       USE BIEF, ONLY : BIEF_NCSIZE => NCSIZE, NBMAXNSHARE, IPID
       IMPLICIT NONE
 !
@@ -156,9 +157,6 @@
       INTEGER, ALLOCATABLE :: NULONE(:,:)
       INTEGER, ALLOCATABLE :: IKLE(:,:), IKLBOR(:,:), ISEGF(:)
       INTEGER, ALLOCATABLE :: IT1(:), IT2(:), IT3(:)
-!
-      INTEGER LNG,LU
-      COMMON /INFO/ LNG,LU
 !
 !   TIME MEASURING
 !

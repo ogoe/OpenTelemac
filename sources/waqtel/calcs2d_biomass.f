@@ -71,14 +71,13 @@
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
 !***********************************************************************
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          , INTENT(IN   ) :: NPOIN,NTRAC,DEBUG,IND_T
-      LOGICAL          , INTENT(IN   ) :: YATEMP  
+      LOGICAL          , INTENT(IN   ) :: YATEMP
       DOUBLE PRECISION , INTENT(IN   ) :: WATTEMP,DT
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,HPROP,HN,VOLU2D
@@ -99,7 +98,7 @@
 !
 !    INITIALISATION
 !
-!     CP IS STOCKED IN T3 
+!     CP IS STOCKED IN T3
       CALL OS( 'X=0     ',X=T3)
 !     DP IS STOCKED IN T4
       CALL OS( 'X=0     ',X=T4)
@@ -115,7 +114,7 @@
       RANKTR5 = NTRAC        ! NOR
 !
 !     G1 IS STOCKED IN T6, WE TAKE INTO ACCOUNT VARIABLE TEMPERATURE
-!     
+!
       G1 = WATTEMP/20.D0
       IF(YATEMP)THEN
         CALL OS('X=CY    ',X=T6,Y=TN%ADR(IND_T)%P,C=UNSURVINGT)
@@ -161,7 +160,7 @@
      &                     Z=TN%ADR(RANKTR1)%P)
 !
 !
-      IF(DEBUG.GT.0)WRITE(LU,*)'IN BIOMASS, STEP 6' 
+      IF(DEBUG.GT.0)WRITE(LU,*)'IN BIOMASS, STEP 6'
 !
 !     SECOND TRACER [PO4] (RANKTR2)
 !
@@ -169,7 +168,7 @@
       CALL OS( 'X=X-Y   ' ,X=T1,Y=T3                                )
       CALL OS( 'X=CXY   ' ,X=T1,Y=TN%ADR(RANKTR1)%P     ,C=PROPHOC  )
       CALL OS( 'X=CYZ   ' ,X=T2,Y=TN%ADR(RANKTR3)%P,Z=T6,C=K320     )
-!    
+!
       CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR2)%P,Y=T1,Z=T2          )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN BIOMASS, STEP 7'
@@ -192,12 +191,12 @@
       CALL OS( 'X=C(Y-Z)' ,X=T1,Y=T1                 ,Z=T3,C=PRONITC)
       CALL OS( 'X=XY    ' ,X=T1,Y=TN%ADR(RANKTR1)%P                 )
       CALL OS( 'X=CYZ   ' ,X=T2,Y=TN%ADR(RANKTR5)%P  ,Z=T6,C=K360   )
-!    
+!
       CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR4)%P,Y=T1,Z=T2          )
 !!
       IF(DEBUG.GT.0)WRITE(LU,*)'IN BIOMASS, STEP 9'
 
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
       G1=PRONITC*(1.D0-PERNITS)
       CALL OS( 'X=CYZ   ' ,X=T1,Y=T4,Z=TN%ADR(RANKTR1)%P,C=G1       )
       CALL OS( 'X=X-Y   ' ,X=T1,Y=T2                                )
@@ -218,8 +217,8 @@
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN BIOMASS, STEP 11'
 !
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
        DO J=1,ADDTR

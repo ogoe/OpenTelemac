@@ -66,10 +66,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID
-      USE DECLARATIONS_SISYPHE, ONLY: SIS_FILES,SISSEO,CHAIN
+      USE DECLARATIONS_SISYPHE, ONLY: SIS_FILES,SISSEO,CHAIN,
+     &                                INIT_FLUXPR,WORK,WORKB
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -85,7 +85,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: WORK(:),WORKB(:)
       DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
 
       INTEGER                        P_IMIN
@@ -94,7 +93,6 @@
       INTEGER ISEC,II,ERR,NSEO
       CHARACTER(LEN=16) :: FMTZON='(4(1X,1PG21.14))'
       LOGICAL :: OLD_METHOD=.FALSE.
-      LOGICAL, SAVE :: INIT=.TRUE.
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
       DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3,DTMP4
 !< JR @ RWTH
@@ -109,7 +107,7 @@
 !
 !     DONE ONCE FOR ALL
 !
-      IF(INIT.AND.(TRIM(SIS_FILES(SISSEO)%NAME).NE.'') ) THEN
+      IF(INIT_FLUXPR.AND.(TRIM(SIS_FILES(SISSEO)%NAME).NE.'') ) THEN
 !
         IF(NCSIZE.GT.1) THEN
           ALLOCATE (WORK(NSEC), STAT=ERR)
@@ -128,7 +126,7 @@
           ENDIF
         ENDIF
 !
-        INIT=.FALSE.
+        INIT_FLUXPR=.FALSE.
 !
         IF(CHARR.AND..NOT.SUSP) THEN
           WRITE(NSEO,*) ' INTEGRATED BEDLOAD DISCHARGES '

@@ -46,10 +46,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID
-      USE DECLARATIONS_TELEMAC2D, ONLY: T2D_FILES,T2DSEO,CHAIN,TITCAS
+      USE DECLARATIONS_TELEMAC2D, ONLY: T2D_FILES,T2DSEO,CHAIN,TITCAS,
+     &                                  WORK_FPR, OLD_METHOD_FPR, 
+     &                                  INIT_FPR, NSEO_FPR
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -63,27 +64,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: WORK(:)
       DOUBLE PRECISION P_DMAX,P_DMIN, P_DSUM
       INTEGER                        P_IMIN
       EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
 !
       INTEGER ISEC,II,ERR
-      CHARACTER(LEN=16) :: FMTZON='(4(1X,1PG21.14))'
-      LOGICAL :: OLD_METHOD=.FALSE.
-      LOGICAL, SAVE :: INIT=.TRUE.
-      INTEGER, SAVE :: NSEO
+      CHARACTER(LEN=16), PARAMETER :: FMTZON='(4(1X,1PG21.14))'
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
       DOUBLE PRECISION :: DTMP1,DTMP2,DTMP3,DTMP4
 !< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
-      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
+      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD_FPR=.TRUE.
 !
       IF(INFO) THEN
 !
-      IF (OLD_METHOD) THEN ! FOLLOW FLUXPR.F OF BIEF BLINDLY
+      IF (OLD_METHOD_FPR) THEN ! FOLLOW FLUXPR.F OF BIEF BLINDLY
 !
       IF(NCSIZE.LE.1) THEN
 !
@@ -248,25 +245,25 @@
 !-----------------------------------------------------------------------
 ! MASTER WRITES A NICE SECTIONS OUTPUT FILE, THE HEADER ONLY ONCE
 !
-      IF ( (.NOT.OLD_METHOD) .AND.
+      IF ( (.NOT.OLD_METHOD_FPR) .AND.
      &      (TRIM(T2D_FILES(T2DSEO)%NAME).NE.'') ) THEN
-        IF (INIT) THEN
-          INIT=.FALSE.
+        IF (INIT_FPR) THEN
+          INIT_FPR=.FALSE.
           IF ((NCSIZE.GT.1 .AND. IPID.EQ.0).OR.(NCSIZE.LE.1)) THEN
-            NSEO=T2D_FILES(T2DSEO)%LU
+            NSEO_FPR=T2D_FILES(T2DSEO)%LU
             IF(LNG.EQ.1) THEN
-              WRITE(NSEO,*) 'TITRE = "FLUX POUR ',TRIM(TITCAS),'"'
+              WRITE(NSEO_FPR,*) 'TITRE = "FLUX POUR ',TRIM(TITCAS),'"'
             ELSEIF(LNG.EQ.2) THEN
-              WRITE(NSEO,*) 'TITLE = "FLUXES FOR ',TRIM(TITCAS),'"'
+              WRITE(NSEO_FPR,*) 'TITLE = "FLUXES FOR ',TRIM(TITCAS),'"'
             ENDIF
-            WRITE(NSEO,*) 'VARIABLES = TIME',
+            WRITE(NSEO_FPR,*) 'VARIABLES = TIME',
      &         (' '//TRIM(CHAIN(ISEC)%DESCR),ISEC=1,NSEC)
           ENDIF
           IF (NCSIZE.GT.1) THEN
-            ALLOCATE (WORK(NSEC), STAT=ERR)
+            ALLOCATE (WORK_FPR(NSEC), STAT=ERR)
             IF (ERR.NE.0) THEN
               WRITE(LU,*)
-     &          'FLUXPR_TELEMAC2D: ERROR ALLOCATING WORK:',ERR
+     &          'FLUXPR_TELEMAC2D: ERROR ALLOCATING WORK_FPR:',ERR
               CALL PLANTE(1)
               STOP
             ENDIF
@@ -276,12 +273,13 @@
         ! BECAUSE IT IS ONLY MASTER TO WRITE THE MESSAGE...
         IF (NCSIZE.GT.1) THEN
           DO ISEC=1,NSEC
-            WORK(ISEC) = P_DSUM(FLX(ISEC))
+            WORK_FPR(ISEC) = P_DSUM(FLX(ISEC))
           END DO
           IF (IPID.EQ.0)
-     &      WRITE (NSEO, FMT=FMTZON) TPS, (WORK(ISEC), ISEC=1,NSEC)
+     &      WRITE (NSEO_FPR, FMT=FMTZON) TPS, 
+     &                     (WORK_FPR(ISEC), ISEC=1,NSEC)
         ELSE
-          WRITE (NSEO, FMT=FMTZON) TPS, (FLX(ISEC), ISEC=1,NSEC)
+          WRITE (NSEO_FPR, FMT=FMTZON) TPS, (FLX(ISEC), ISEC=1,NSEC)
         ENDIF
       ENDIF
 !

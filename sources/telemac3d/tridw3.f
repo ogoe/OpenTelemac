@@ -96,9 +96,8 @@
       USE DECLARATIONS_TELEMAC3D, ONLY:BEDBOU,BEDFLU
       USE INTERFACE_TELEMAC3D, EX_TRIDW3 => TRIDW3
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

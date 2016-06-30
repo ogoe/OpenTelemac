@@ -48,6 +48,8 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !
@@ -58,22 +60,12 @@
       INTEGER  NEXT,PRECAR
       EXTERNAL NEXT,PRECAR
 !
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR,RETOUR
-!
 !-----------------------------------------------------------------------
 !
       INTEGER       IDEB,IFIN,JCOL
       CHARACTER*1   QUOTE,TABUL,PTVIRG
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !

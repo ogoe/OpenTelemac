@@ -45,6 +45,8 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_DAMOCLES
       IMPLICIT NONE
 !
 !
@@ -54,10 +56,6 @@
       INTEGER  NEXT,PRECAR
       EXTERNAL NEXT,PRECAR
 !
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR,RETOUR
       INTEGER AIDELEN
 !
 !-----------------------------------------------------------------------
@@ -66,11 +64,6 @@
       CHARACTER*1   QUOTE,TABUL,PTVIRG
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !
@@ -115,7 +108,7 @@
 !         NO QUOTE ON THE LINE, IT'S WRITTEN OUT AND GOES TO NEXT
           MYAIDELU = MYAIDELU(1:AIDELEN)//' '//TRIM(LIGNE(IDEB:LONGLI))
           AIDELEN = AIDELEN + LEN(TRIM(LIGNE(IDEB:LONGLI))) +1
-          
+
 !         READS NEXT LINE
           READ(NFIC,END=900,ERR=998,FMT='(A)') LIGNE
           NLIGN = NLIGN + 1

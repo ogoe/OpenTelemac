@@ -50,7 +50,8 @@ files: bief_def.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: preval.f
+files: declarations_damocles.f
+  preval.f
   longlu.f
   cmd.f
   majus.f

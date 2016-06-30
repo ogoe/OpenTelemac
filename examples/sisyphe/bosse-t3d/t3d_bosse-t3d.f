@@ -24,9 +24,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
@@ -251,9 +250,8 @@
 !
       USE BIEF
 
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !------------------------------------------------------------------
 !

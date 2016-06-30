@@ -45,11 +45,10 @@
       USE M_DREDGESIM_DATA, ONLY: NODE_SEDIMENT_FRACTION
 
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
       INTEGER IPOIN,ISICLA
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

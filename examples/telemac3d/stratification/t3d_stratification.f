@@ -51,9 +51,8 @@
 !
 !     USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
 !
@@ -194,9 +193,8 @@
       USE DECLARATIONS_TELEMAC3D
       USE TPXO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
@@ -506,9 +504,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -629,9 +626,8 @@
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
       USE EXCHANGE_WITH_ATMOSPHERE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

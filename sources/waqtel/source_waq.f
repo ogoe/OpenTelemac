@@ -48,13 +48,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY : DEMBEN,PHOTO,RESP,FORMK2,
      &                               O2SATU,K1,K22,K44,WATTEMP
       USE INTERFACE_WAQTEL, EX_SOURCE_WAQ => SOURCE_WAQ
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

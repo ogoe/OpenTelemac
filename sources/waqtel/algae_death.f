@@ -29,10 +29,9 @@
 !
       USE BIEF
       USE INTERFACE_WAQTEL, EX_ALGAE_DEATH=>ALGAE_DEATH
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

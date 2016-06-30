@@ -90,13 +90,14 @@
 !
       USE BIEF
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,ST1,ST0,IELM2,SA,MESH,
-     &                                 SCCG,SDELTA,SXKONPT,SDDX,SDDY
+     &                                 SCCG,SDELTA,SXKONPT,SDDX,SDDY,
+     &                                 SQRDELTA,SQRCCG,FRDK,FRDA,SCDA,
+     &                                 L_DELTA,DEJA_DIFFRAC
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_DIFFRAC => DIFFRAC
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -130,30 +131,21 @@
 !
       INTEGER I, IP, IPOIN
       DOUBLE PRECISION CDELTA,DELTAN
-      DOUBLE PRECISION,ALLOCATABLE:: SQRDELTA(:)
-      DOUBLE PRECISION,ALLOCATABLE:: SQRCCG(:)
-      DOUBLE PRECISION,ALLOCATABLE:: FRDK(:,:),FRDA(:,:),SCDA(:,:)
-      LOGICAL,ALLOCATABLE:: L_DELTA(:)
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-!
+!      
       INTRINSIC ABS,SQRT
-!
-      SAVE
 !
 !***********************************************************************
 !
 !     NOTE JMH: THERE ARE ENOUGH ARRAYS ELSEWHERE, THIS IS USELESS...
 !
-      IF(.NOT.DEJA)THEN
+      IF(.NOT.DEJA_DIFFRAC)THEN
         ALLOCATE(SQRDELTA(NPOIN2))
         ALLOCATE(SQRCCG(NPOIN2))
         ALLOCATE(FRDK(NPOIN2,2))
         ALLOCATE(FRDA(NPOIN2,2))
         ALLOCATE(SCDA(NPOIN2,3))
         ALLOCATE(L_DELTA(NPOIN2))
-        DEJA=.TRUE.
+        DEJA_DIFFRAC=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------

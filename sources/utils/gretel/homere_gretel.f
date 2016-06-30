@@ -19,10 +19,8 @@
 !
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_PARTEL
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      INTEGER LI
-      COMMON/INFO/LNG,LU
 !
 !-------------------------------------------------------------------------
 !

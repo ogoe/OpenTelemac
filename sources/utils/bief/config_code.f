@@ -35,9 +35,8 @@
       USE BIEF, EX_CONFIG_CODE => CONFIG_CODE
       USE DECLARATIONS_TELEMAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER     LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

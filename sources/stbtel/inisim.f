@@ -45,19 +45,14 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER NGEO
-      INTEGER NPOIN1 , NELEM , NPMAX , NELMAX , MESH
-      INTEGER NPOIN , IA(32) , INOP5
-      INTEGER LONG , I , J , NTASD , MESHT , MESHQ , NDP
+      INTEGER NPOIN1 , IA(32) , INOP5
+      INTEGER LONG , I , J , NTASD , MESHT , MESHQ
       CHARACTER*11 TYPELE
-!
-! COMMON
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! INITIALISATION

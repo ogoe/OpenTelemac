@@ -35,9 +35,8 @@
 !
       USE BIEF, EX_MT15PP => MT15PP
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -144,4 +143,3 @@
 !
       RETURN
       END
-

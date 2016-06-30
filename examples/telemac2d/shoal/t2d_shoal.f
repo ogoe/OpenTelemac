@@ -97,9 +97,8 @@
      &                                  FLUX_BOUNDARIES,MAXFRO,
      &                                  TIDALTYPE,BOUNDARY_COLOUR
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -444,10 +443,10 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU,I
       DOUBLE PRECISION H1, R0, R1, GAMMA2, HDELTA, R
-      COMMON/INFO/LNG,LU
+      INTEGER :: I
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -581,9 +580,8 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -591,24 +589,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL DEJA1,DEJA2
-!
       INTEGER LTT,N,IMAX,I,II,JJ
 !
       DOUBLE PRECISION HHH,XMAX
-      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION, PARAMETER :: EPSS=1.E-10
       DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
       INTRINSIC MAX,SQRT,CEILING
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN
-!
-!-----------------------------------------------------------------------
-!
-      DATA DEJA1/.FALSE./
-      DATA DEJA2/.FALSE./
-      SAVE DEJA1,DEJA2
 !
 !-----------------------------------------------------------------------
 !
@@ -624,7 +614,7 @@
 !        IMP=.FALSE.
 !        LEO=.FALSE.
 !      ENDIF
-!     Always write the intial conditions
+!     Always write the initial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
         LEO=.TRUE.
@@ -636,9 +626,8 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-          IF(NIT.EQ.LT) LEO=.TRUE.  ! LAST TIME STEP
-!         FOR GRAPHICAL OUTPUTS          
-          IF(LEO)COMPLEO=COMPLEO+1     
+!         FOR GRAPHICAL OUTPUTS
+          IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
           GPRDTIME=LEOPRD*DTINI
@@ -657,7 +646,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
@@ -674,8 +663,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-!
 ! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS TIMESTEP
 !     BUT ONLY AFTER FIRST TIMESTEP FOR GRAPHIC PRINTOUTS
 !
@@ -688,10 +675,10 @@
 !=======================================================================
 !
       IF(SORLEO(27).OR.SORIMP(27)) THEN
-        IF(.NOT.DEJA1) THEN
+        IF(.NOT.DEJA1_PRERES) THEN
           CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
           CALL OS('X=C     ',X=TMAXZ,C=AT)
-          DEJA1=.TRUE.
+          DEJA1_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=H%R(N)+ZF%R(N)
@@ -714,10 +701,10 @@
 !=======================================================================
 !
       IF(SORLEO(29).OR.SORIMP(29)) THEN
-        IF(.NOT.DEJA2) THEN
+        IF(.NOT.DEJA2_PRERES) THEN
           CALL OS('X=C     ',X=MAXV ,C=0.D0)
           CALL OS('X=C     ',X=TMAXV,C=AT)
-          DEJA2=.TRUE.
+          DEJA2_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=SQRT(U%R(N)**2+V%R(N)**2)
@@ -764,10 +751,10 @@
 !
 !     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
 !     OTHERWISE THEY WOULD NOT BE INITIALISED
-      IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-      IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
-      IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
-      IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
+        IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+        IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+        IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF

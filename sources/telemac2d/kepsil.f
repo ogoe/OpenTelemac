@@ -106,9 +106,8 @@
      & HPROP,ZCONV,SOLSYS,MASKTR,NCO_DIST,NSP_DIST,OPTADV_KE,FLODEL,
      & SMH,UNSV2D,V2DPAR,VOLU2D,TB2,VISC_S,DM1,OPTSOU,FLBOR,FLBORTRA
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

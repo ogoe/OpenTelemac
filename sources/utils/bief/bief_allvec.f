@@ -46,9 +46,8 @@
 !
       USE BIEF, EX_BIEF_ALLVEC => BIEF_ALLVEC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -76,6 +75,10 @@
 !     TYPE OF THE OBJECT (HERE VECTOR)
 !
       VEC%TYPE = 2
+!
+!     Defines how the object was created
+!
+      VEC%FATHER = 'XXXXXX'
 !
 !     NAME OF THE OBJECT
 !

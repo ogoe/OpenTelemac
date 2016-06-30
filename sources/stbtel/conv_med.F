@@ -22,12 +22,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
-      USE DECLARATIONS_SPECIAL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -498,8 +496,6 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -908,10 +904,9 @@
 !
         USE DECLARATIONS_STBTEL
 !
+        USE DECLARATIONS_SPECIAL
         IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
-        INTEGER LNG,LU
-        COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1019,10 +1014,9 @@
 !
         USE DECLARATIONS_STBTEL
 !
+        USE DECLARATIONS_SPECIAL
         IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
-        INTEGER LNG,LU
-        COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1112,10 +1106,9 @@
         USE DECLARATIONS_STBTEL
         USE CONV_LIM
 !
+        USE DECLARATIONS_SPECIAL
         IMPLICIT NONE
         ! LANGAE AND OUTPUT VALUE
-        INTEGER LNG,LU
-        COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1264,10 +1257,9 @@
       USE DECLARATIONS_STBTEL
       USE CONV_LIM
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1311,10 +1303,9 @@
       SUBROUTINE STB2MED_GEO(TYPE_ELEM,TYPGEO)
 !         GIVE MED EQUIVALENT FOR A GIVEN TELEMAC ELEMENT TYPE
       USE DECLARATIONS_STBTEL
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       INTEGER TYPE_ELEM
       INTEGER TYPGEO
 !

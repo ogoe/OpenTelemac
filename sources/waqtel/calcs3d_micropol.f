@@ -10,7 +10,7 @@
 !***********************************************************************
 !
 !brief    COMPUTES SOURCE TERMS FOR MICROPOL WAQ PROCESS IN 3D
-!          WAQ PROCESS OF CODE_TRACER (MASCARET SYSTEM) 
+!          WAQ PROCESS OF CODE_TRACER (MASCARET SYSTEM)
 !
 !history  R. ATA
 !+        21/05/2016
@@ -18,16 +18,16 @@
 !+       REAL CREATION
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CCSEDIM        |-->| CONSTANT OF EXPONENTIAL DESINTEGRATION       
-!| CDISTRIB       |-->| COEFFICIENT OF DISTRIBUTION (KD)             
+!| CCSEDIM        |-->| CONSTANT OF EXPONENTIAL DESINTEGRATION
+!| CDISTRIB       |-->| COEFFICIENT OF DISTRIBUTION (KD)
 !| DEBUG          |-->| IF NE.0 THEN DEBUG MODE
 !| DT             |-->| TIME STEP
-!| ERO            |-->| EROSION RATE    
-!| KDESORP        |-->| KINETIC CONSTANT OF  DESORPTION                     
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
+!| ERO            |-->| EROSION RATE
+!| KDESORP        |-->| KINETIC CONSTANT OF  DESORPTION
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| NTRAC          |-->| NUMBER OF TRACERS
-!| TAUB           |-->| BED SHEAR       
-!| TAUS           |-->| CRITICAL STRESS OF RESUSPENSION              
+!| TAUB           |-->| BED SHEAR
+!| TAUS           |-->| CRITICAL STRESS OF RESUSPENSION
 !| TAUR           |-->| SEDIMENTATION CRITICAL STRESS
 !| TEXP           |<--| EXPLICIT SOURCE TERMS OF TRACERS
 !| TIMP           |<--| IMPLICIT SOURCE TERMS OF TRACERS
@@ -36,24 +36,23 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_WAQTEL,ONLY:ERO,TAUR,TAUS,VITCHU,CDISTRIB,
      &                             RO0,KDESORP,CCSEDIM
       USE INTERFACE_WAQTEL, EX_CALCS3D_MICROPOL => CALCS3D_MICROPOL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          , INTENT(IN   ) :: NPOIN2,NPOIN3,NTRAC
       INTEGER          , INTENT(IN   ) :: NPLAN,DEBUG
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,ZPROP,CF,UN,VN
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TEXP,TIMP,T2_1,T2_2,T2_3,T3_1
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 !     LOCAL VARIABLES
       INTEGER                     :: RANKTR1,RANKTR2,RANKTR3,RANKTR4
       INTEGER                     :: RANKTR5,I
@@ -88,7 +87,7 @@
       IF(DEBUG.GT.0)WRITE(LU,*)'IN MICROPOL3D, STEP 1'
 !
 !     BED SHEAR STRESS (TAUB-STOCKED IN T2_1==>2D TABLE)
-!    
+!
       CALL TAUB_WAQTEL(CF,RO0,T2_1,NPOIN2,UN,VN)
 !
 !     DEPOTION PROBABILITY (SED): STOCKED IN T2_2==>2D TABLE
@@ -114,7 +113,7 @@
         TEXP%ADR(RANKTR1)%P%R(I)=T2_3%R(I)-T2_2%R(I)
       ENDDO
       CALL OVD('X=Y/Z   ',TEXP%ADR(RANKTR1)%P%R,TEXP%ADR(RANKTR1)%P%R,
-     &         ZPROP%R,0.D0,NPOIN2,2,0.D0,EPS                          )    
+     &         ZPROP%R,0.D0,NPOIN2,2,0.D0,EPS                          )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN MICROPOL3D, STEP 5'
 !
@@ -129,9 +128,9 @@
 !
 !     THIRD TRACER: POLLUTANT DENSITY [C] (RANKTR3)
 !
-!     implicit part  
+!     implicit part
       CALL OS( 'X=C     ' ,X=TIMP%ADR(RANKTR3)%P,C=CCSEDIM             )
-!     explicit part  
+!     explicit part
       CALL OS( 'X=CY    ' ,X=TEXP%ADR(RANKTR3)%P,Y=TN%ADR(RANKTR4)%P,
      &                     C=KDESORP                                   )
       CC =-KDESORP*CDISTRIB
@@ -168,8 +167,8 @@
      &                     C=-CCSEDIM                                  )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN MICROPOL3D, STEP 9'
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
 !     ACTIVATE BIEF_OBJ FOR FURTHER CALCULATIONS
@@ -183,7 +182,7 @@
       TIMP%ADR(RANKTR3)%P%TYPR='Q'
       TIMP%ADR(RANKTR4)%P%TYPR='Q'
 
-!      
+!
 !-----------------------------------------------------------------------
 !
       RETURN

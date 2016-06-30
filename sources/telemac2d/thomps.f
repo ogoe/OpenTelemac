@@ -146,10 +146,10 @@
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_THOMPS => THOMPS
       USE STREAMLINE, ONLY : SCARACT
+      USE DECLARATIONS_TELEMAC2D, ONLY: INIT_THOMPS, FNCAR1,FTILD1
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -192,17 +192,12 @@
       INTEGER, DIMENSION(:),POINTER :: ELT_T
       INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT,NRK
       INTEGER FREBUF(1)
-      DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
+      DOUBLE PRECISION HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
       INTEGER IELEM,SIZEBUF
 !
-      DATA HMIN  /2.D-2/
-!
-      LOGICAL INIT
-      DATA    INIT/.TRUE./
-      TYPE(BIEF_OBJ) :: FNCAR1,FTILD1
-      SAVE
+      DOUBLE PRECISION, PARAMETER :: HMIN = 2.D-2
 !
 !-----------------------------------------------------------------------
 !
@@ -218,7 +213,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(INIT) THEN
+      IF(INIT_THOMPS) THEN
         CALL ALLBLO(FNCAR1,'FNCAR1')
         CALL ALLBLO(FTILD1,'FTILD1')
         CALL ADDBLO(FNCAR1,UFIELD)
@@ -235,7 +230,7 @@
             CALL ADDBLO(FTILD1,TBTIL%ADR(ITRAC)%P)
           ENDDO
         ENDIF
-        INIT=.FALSE.
+        INIT_THOMPS=.FALSE.     
       ENDIF
 !
       ETA(1)=1

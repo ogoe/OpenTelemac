@@ -17,6 +17,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF_DEF
       IMPLICIT NONE
 !----------------------------------------------------------------------
 !
@@ -253,15 +254,90 @@
 !     HERE INITIALISED AT 1, IN CASE NO KEYWORD IS DEDICATED TO THIS
 !     PARAMETER
 !
-      INTEGER MODASS
-      DATA MODASS/1/
+      INTEGER :: MODASS = 1
+!
+!     SAVED VARIABLE
+!
+      ! TODO: Init values in bief_ini
+      ! matvec
+      LOGICAL :: W_IS_FULL = .FALSE.
+      ! solve
+      TYPE(BIEF_OBJ)          :: TBB
+      TYPE(BIEF_OBJ), TARGET  :: BB,BX
+      LOGICAL :: FIRST_SOLVE = .TRUE.
+      ! paraco
+      INTEGER :: PARACO_MSG_TAG = 5000
+      ! paracoi
+      INTEGER :: PARACOI_MSG_TAG = 5000
+      ! paracoi8
+      INTEGER :: PARACOI8_MSG_TAG = 5000
+      ! cvtrvf_pos_2
+      LOGICAL :: DEJA_CPOS2 = .FALSE.
+      INTEGER, ALLOCATABLE :: INDIC_CPOS2(:)
+      ! positive_depths
+      LOGICAL :: DEJA_PDEPT = .FALSE.
+      INTEGER, ALLOCATABLE :: INDIC_PDEPT(:)
+      ! cvtrvf_pos
+      LOGICAL :: DEJA_CPOS = .FALSE.
+      INTEGER, ALLOCATABLE :: INDIC_CPOS(:)
+      ! sd_solve_1
+!     MANAGES THE SIZE OF ALLOCATABLE ARRAYS
+      INTEGER :: SIZE_IN = 0
+      INTEGER :: SIZE_IP = 0
+      INTEGER :: SIZE_ISEGIP = 0
+      INTEGER :: SIZE_IW1 = 0
+      INTEGER :: SIZE_INDTRI = 0
+      INTEGER :: SIZE_INX = 0
+      INTEGER :: SIZE_IPX = 0
+      INTEGER :: SIZE_AC = 0
+      INTEGER :: SIZE_ACTRI = 0
+      INTEGER :: SIZE_ISP = 0
+      INTEGER :: SIZE_RSP = 0
+      INTEGER, ALLOCATABLE :: INDTRI_SS1(:),INX_SS1(:),IPX_SS1(:)
+      INTEGER, ALLOCATABLE :: IN_SS1(:),IP_SS1(:),ISP_SS1(:),IW1_SS1(:)
+      INTEGER, ALLOCATABLE :: ISEGIP_SS1(:)
+      DOUBLE PRECISION, ALLOCATABLE :: AC_SS1(:),ACTRI_SS1(:),RSP_SS1(:)
+      ! sd_solve_4
+      INTEGER, ALLOCATABLE          :: GLOSEG4_SS4(:)
+      DOUBLE PRECISION, ALLOCATABLE :: XA_SS4(:),DA_SS4(:)
+      DOUBLE PRECISION, ALLOCATABLE :: RHS_SS4(:),XINC_SS4(:)
+      INTEGER :: SIZE_GLOSEG4 = 0
+      INTEGER :: SIZE_DA = 0
+      INTEGER :: SIZE_XA = 0
+      INTEGER :: SIZE_RHS = 0
+      INTEGER :: SIZE_XINC = 0
+      ! pre4_mumps
+      INTEGER, ALLOCATABLE          :: GLOSEG4_P4M(:)
+      DOUBLE PRECISION, ALLOCATABLE :: XA_P4M(:),DA_P4M(:)
+      DOUBLE PRECISION, ALLOCATABLE :: RHS_P4M(:),XINC_P4M(:)     
+      INTEGER :: SIZE_GLOSEG4_P4M = 0
+      INTEGER :: SIZE_DA_P4M = 0
+      INTEGER :: SIZE_XA_P4M = 0
+      INTEGER :: SIZE_RHS_P4M = 0
+      INTEGER :: SIZE_XINC_P4M = 0
+      ! charac
+      LOGICAL :: DEJA_CHARAC = .FALSE.
+      TYPE(BIEF_OBJ), TARGET  :: T1WEAK,T2WEAK,T3WEAK,T4WEAK,T5WEAK
+      TYPE(BIEF_OBJ), TARGET  :: T6WEAK,T7WEAK,SHPWEA
+      TYPE(BIEF_OBJ), TARGET  :: FTILD_WEAK,SHPBUF,SHZBUF,SHZWEA
+      ! derive
+      LOGICAL :: DEJA_DERIVE = .FALSE.
+      TYPE(BIEF_OBJ) :: SVOID_DERIVE
+!     DEFINE VARIABLES THAT ARE USED IN ALGAE TRANSPORT
+!     THESE ARE NECESSARY IF NFLOT_MAX IS TOO LARGE
+      LOGICAL :: INIT_ALG = .TRUE.
+      INTEGER SIZEBUF2_D
+      DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE::BUFF_1D_D
+      DOUBLE PRECISION,DIMENSION(:,:),ALLOCATABLE::BUFF_2D_D
+       
+      
+
 !
 ! 7./ CHECKING THE MESH
 !
 !     KEYWORD INITIALISED TO FALSE (MAY BE MODIFIED BY KEYWORDS)
 !
-      LOGICAL CHECK_MESH
-      DATA CHECK_MESH/.FALSE./
+      LOGICAL :: CHECK_MESH = .FALSE.
 !
 !-----------------------------------------------------------------------
 !

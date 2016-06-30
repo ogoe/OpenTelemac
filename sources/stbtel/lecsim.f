@@ -50,18 +50,17 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER NGEO , NPOIN , ERR
-      INTEGER NELEM , MESH , NDP , NELMAX , NPMAX
+      INTEGER NGEO, ERR
       INTEGER IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER I,J,K
       INTEGER NOP5(*)
-      INTEGER LONG , NTASD
-      INTEGER NCGE , NMAE , NDSDE , NNO , NCOPNP ,NPO
-      INTEGER INING , NBEGM , INDIC
+      INTEGER LONG, NTASD
+      INTEGER NCGE, NMAE , NDSDE , NNO , NCOPNP ,NPO
+      INTEGER INING, NBEGM , INDIC
 !
       DOUBLE PRECISION X(*) , Y(*)
 !
@@ -70,10 +69,6 @@
       CHARACTER*80 TITRE
 !
       INTRINSIC DBLE
-!
-! COMMON
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !-----------------------------------------------------------------------
 !

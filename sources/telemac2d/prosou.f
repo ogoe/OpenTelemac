@@ -202,12 +202,10 @@
      &                                   ROEAU,CF,S,IELMU,T
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
       USE M_COUPLING_ESTEL3D
-      USE DECLARATIONS_SPECIAL
       USE INTERFACE_HERMES
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

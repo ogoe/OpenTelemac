@@ -30,9 +30,8 @@
       USE DECLARATIONS_SISYPHE, ONLY: SFON,U2D,V2D,DT
       USE INTERFACE_SISYPHE,EX_SUSPENSION_MILES => SUSPENSION_MILES
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

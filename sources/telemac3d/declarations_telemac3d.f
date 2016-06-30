@@ -2334,7 +2334,21 @@
 !
       TYPE(BIEF_FILE) :: T3D_FILES(MAXLU_T3D)
 !
-      SAVE
+!
+!-----------------------------------------------------------------------
+!
+!      12) SAVED VALUES
+!
+!-----------------------------------------------------------------------
+!
+      ! TODO: DO initialisation of value in point_telemac3d.f
+      ! MURD3D_POS
+      LOGICAL :: DEJA_MURD3D_POS = .FALSE.
+!     INDIC_MURD3D_POS WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
+      INTEGER, ALLOCATABLE :: INDIC_MURD3D_POS (:)
+      INTEGER SIZEINDIC_MURD3D_POS
+!     TRISOU WAVE DRIVEN CURRENT
+      LOGICAL :: DEJALU_TRISOU = .FALSE.
 !
       END MODULE DECLARATIONS_TELEMAC3D
 

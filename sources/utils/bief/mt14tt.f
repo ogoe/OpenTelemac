@@ -63,9 +63,8 @@
       USE BIEF           !, EX_MT14TT => MT14TT
       USE DECLARATIONS_TELEMAC, ONLY : ISEGT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

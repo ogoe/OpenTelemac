@@ -49,20 +49,15 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER NGEO , NPOIN , IBID
-      INTEGER NELEM , MESH , NDP , NELMAX , NPMAX
+      INTEGER NGEO, IBID
       INTEGER IKLE(NELMAX,4)
       INTEGER I,J
 !
       DOUBLE PRECISION X(*) , Y(*),ZF(*)
-!
-! COMMON
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !   INITIALISATION

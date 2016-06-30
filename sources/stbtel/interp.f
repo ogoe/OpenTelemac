@@ -53,9 +53,8 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER IELEM , JELEM , NPINIT , NEINIT , IPOIN , NPOIN , NPMAX
       INTEGER IKINIT(NEINIT,3) , ELT(NPMAX)

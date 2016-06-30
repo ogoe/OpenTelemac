@@ -54,10 +54,13 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_SOLVE_4 => SD_SOLVE_4
+      USE DECLARATIONS_TELEMAC, ONLY : GLOSEG4_SS4,DA_SS4,XA_SS4,
+     &                                 RHS_SS4,XINC_SS4,SIZE_GLOSEG4,
+     &                                 SIZE_DA,SIZE_XA,SIZE_RHS,
+     &                                 SIZE_XINC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -77,63 +80,49 @@
 !
       INTEGER NPBLK,NSEGBLK,I
 !
-      INTEGER, ALLOCATABLE          :: GLOSEG4(:)
-      DOUBLE PRECISION, ALLOCATABLE :: XA(:),DA(:)
-      DOUBLE PRECISION, ALLOCATABLE :: RHS(:),XINC(:)
-!
-      INTEGER SIZE_GLOSEG4,SIZE_DA,SIZE_XA,SIZE_RHS,SIZE_XINC
-!
-      DATA SIZE_GLOSEG4/0/
-      DATA SIZE_DA     /0/
-      DATA SIZE_XA     /0/
-      DATA SIZE_RHS    /0/
-      DATA SIZE_XINC   /0/
-!
-      SAVE
-!
 !-----------------------------------------------------------------------
 !
       NPBLK=NPOIN*2
       NSEGBLK=4*NSEGB+NPOIN
 !
       IF(SIZE_GLOSEG4.EQ.0) THEN
-        ALLOCATE(GLOSEG4(2*NSEGBLK))
+        ALLOCATE(GLOSEG4_SS4(2*NSEGBLK))
         SIZE_GLOSEG4=    2*NSEGBLK
       ELSEIF(            2*NSEGBLK.GT.SIZE_GLOSEG4) THEN
-        DEALLOCATE(GLOSEG4)
-        ALLOCATE(GLOSEG4(2*NSEGBLK))
+        DEALLOCATE(GLOSEG4_SS4)
+        ALLOCATE(GLOSEG4_SS4(2*NSEGBLK))
         SIZE_GLOSEG4=    2*NSEGBLK
       ENDIF
       IF(SIZE_DA.EQ.0) THEN
-        ALLOCATE(DA(NPBLK))
+        ALLOCATE(DA_SS4(NPBLK))
         SIZE_DA=    NPBLK
       ELSEIF(       NPBLK.GT.SIZE_DA) THEN
-        DEALLOCATE(DA)
-        ALLOCATE(DA(NPBLK))
+        DEALLOCATE(DA_SS4)
+        ALLOCATE(DA_SS4(NPBLK))
         SIZE_DA=    NPBLK
       ENDIF
       IF(SIZE_XA.EQ.0) THEN
-        ALLOCATE(XA(2*NSEGBLK))
+        ALLOCATE(XA_SS4(2*NSEGBLK))
         SIZE_XA=    2*NSEGBLK
       ELSEIF(       2*NSEGBLK.GT.SIZE_XA) THEN
-        DEALLOCATE(XA)
-        ALLOCATE(XA(2*NSEGBLK))
+        DEALLOCATE(XA_SS4)
+        ALLOCATE(XA_SS4(2*NSEGBLK))
         SIZE_XA=    2*NSEGBLK
       ENDIF
       IF(SIZE_RHS.EQ.0) THEN
-        ALLOCATE(RHS(NPBLK))
+        ALLOCATE(RHS_SS4(NPBLK))
         SIZE_RHS=    NPBLK
       ELSEIF(        NPBLK.GT.SIZE_RHS) THEN
-        DEALLOCATE(RHS)
-        ALLOCATE(RHS(NPBLK))
+        DEALLOCATE(RHS_SS4)
+        ALLOCATE(RHS_SS4(NPBLK))
         SIZE_RHS=    NPBLK
       ENDIF
       IF(SIZE_XINC.EQ.0) THEN
-        ALLOCATE(XINC(NPBLK))
+        ALLOCATE(XINC_SS4(NPBLK))
         SIZE_XINC=    NPBLK
       ELSEIF(         NPBLK.GT.SIZE_XINC) THEN
-        DEALLOCATE(XINC)
-        ALLOCATE(XINC(NPBLK))
+        DEALLOCATE(XINC_SS4)
+        ALLOCATE(XINC_SS4(NPBLK))
         SIZE_XINC=    NPBLK
       ENDIF
 !
@@ -143,17 +132,17 @@
 !     ===========================
 !
       DO I=1,NPOIN
-        RHS(I)      = CVB1(I)
-        RHS(I+NPOIN)= CVB2(I)
+        RHS_SS4(I)      = CVB1(I)
+        RHS_SS4(I+NPOIN)= CVB2(I)
       ENDDO
 !
 !     2. BUILDS SEGMENT STORAGE MATRIX BLOCK (OF 4)
 !     =====================================================
 !
-      CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
+      CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4_SS4)
 !
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
-     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA,
+     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA_SS4,XA_SS4,
      &               TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
 !
 !     3. SOLVES LIKE A STANDARD SYMMETRICAL MATRIX
@@ -162,15 +151,15 @@
 !     HERE TYPEXT1 IS TENTATIVE ACTUALLY IT WOULD BE BETTER TO
 !     DECLARE THE SYSTEM AS ALWAYS NON-SYMMETRIC
 !
-      CALL SD_SOLVE_1(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     &                XINC,RHS,INFOGR,TYPEXT1)
+      CALL SD_SOLVE_1(NPBLK,NSEGBLK,GLOSEG4_SS4,NSEGBLK,DA_SS4,XA_SS4,
+     &                XINC_SS4,RHS_SS4,INFOGR,TYPEXT1)
 !
 !     4. RECOVERS THE UNKNOWNS
 !     =============================
 !
       DO I=1,NPOIN
-        XX1(I) = XINC(I)
-        XX2(I) = XINC(I+NPOIN)
+        XX1(I) = XINC_SS4(I)
+        XX2(I) = XINC_SS4(I+NPOIN)
       ENDDO
 !
 !-----------------------------------------------------------------------

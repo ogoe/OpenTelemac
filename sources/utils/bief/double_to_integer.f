@@ -23,13 +23,11 @@
 !| X              |-->| DOUBLE PRECISION ARRAY TO BE CODED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_SPECIAL
       USE INTERFACE_PARALLEL
       USE BIEF, EX_DOUBLE_TO_INTEGER => DOUBLE_TO_INTEGER
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

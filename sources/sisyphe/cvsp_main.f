@@ -54,9 +54,8 @@
      &                                PRO_D,PRO_MAX,PRO_MAX_MAX,PERCOU,
      &                                HN,LT,DT,MESH,Z
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

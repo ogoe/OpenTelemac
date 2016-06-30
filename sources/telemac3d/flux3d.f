@@ -112,9 +112,8 @@
       USE DECLARATIONS_TELEMAC,   ONLY : ADV_NSC,ADV_PSI,ADV_NSC_TF
       USE DECLARATIONS_TELEMAC3D, ONLY : LV
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

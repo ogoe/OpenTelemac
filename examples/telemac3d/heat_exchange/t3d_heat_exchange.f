@@ -50,9 +50,8 @@
 !
 !     USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       INTEGER, INTENT(IN) :: NPOIN
       DOUBLE PRECISION, INTENT(INOUT) :: X(NPOIN),Y(NPOIN)
 !
@@ -194,9 +193,8 @@
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
       USE EXCHANGE_WITH_ATMOSPHERE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -584,7 +582,7 @@
 !
       IF(NBEDFLO.GT.0) THEN
 !
-!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER 
+!       PRESCRIBED FLOWRATES ON THE BED GIVEN BY THE USER
 !       -------------------------------------------------
 !
         CALL VECTOR(T2_01,'=','MASBAS          ',IELM2H,1.D0,
@@ -818,7 +816,7 @@
         BTABOS%ADR(IND_T)%P%TYPR='Q'
 !
         CALL CALCS3D_THERMICS(NPOIN2,NPOIN3,IND_T,IND_S,TA,ATABOS,
-     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)  
+     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)
       ENDIF
 !
 !
@@ -861,6 +859,3 @@
 !
       RETURN
       END
-
-
-

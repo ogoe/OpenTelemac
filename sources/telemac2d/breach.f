@@ -18,22 +18,20 @@
 !history  Y.B. TADESSE (TUHH, INSTITUTE OF RIVER AND COASTAL ENGINEERING)
 !+        14/02/2014
 !+        V6P3R2
-!+   Addition of later breach growth option
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC2D
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      LOGICAL, SAVE :: DEJALU=.FALSE.
-!
+!+   Addition of later breach growth option      
+! 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+! 
+      USE BIEF 
+      USE DECLARATIONS_TELEMAC2D 
+! 
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+! 
       INTEGER I, J, K, N, M,END1, END2,CURNBR
       INTEGER ISTAT,VECZ
       INTEGER TEMPND(NPOIN)
@@ -47,14 +45,14 @@
       INTEGER          P_ISUM,P_IMAX,P_IMIN
       DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
       EXTERNAL         P_ISUM,P_DMAX,P_DMIN,P_DSUM,P_IMAX,P_IMIN
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      IF (.NOT.DEJALU) THEN
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECBREACH'
-        CALL LECBREACH(T2D_FILES(T2DBRC)%LU)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECBREACH'
-        DEJALU=.TRUE.
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      IF (.NOT.DEJALU_BREACH) THEN 
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECBREACH' 
+        CALL LECBREACH(T2D_FILES(T2DBRC)%LU) 
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECBREACH' 
+        DEJALU_BREACH=.TRUE. 
         IF(LNG.EQ.1) WRITE (LU,*) 'LECTURE DONNEES BRECHE = OK'
         IF(LNG.EQ.2) WRITE (LU,*) 'READING BREACH DATA = OK'
 !
@@ -253,6 +251,7 @@
             IF(LNG.EQ.2)
      &        WRITE(LU,*) 'PROBLEM IN DEFINITION OF BREACH :',I
               CALL PLANTE(1)
+              STOP
           ENDIF
           V1 = -U2
           V2 = U1
@@ -276,6 +275,7 @@
             IF(LNG.EQ.2)
      &        WRITE(LU,*) 'PROBLEM IN DEFINITION OF BREACH :',I
             CALL PLANTE(1)
+            STOP
           ENDIF
           V1 = -U2
           V2 = U1

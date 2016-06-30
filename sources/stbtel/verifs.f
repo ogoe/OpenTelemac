@@ -43,12 +43,11 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER MESH , NDP , NELEM , I, J
-      INTEGER NELMAX , NPOIN , NPMAX
+      INTEGER I, J
       INTEGER IFABOR(NELMAX,*) , IKLE(NELMAX,4)
       INTEGER TRAV1(NPOIN,2)
       INTEGER ISUIV , IELEM , IFACE , NPTFR
@@ -57,7 +56,6 @@
 !
       LOGICAL EXIST
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       DATA SOMSUI / 2 , 3 , 4 , 0 /
 !

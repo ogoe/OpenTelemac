@@ -154,11 +154,10 @@
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_TRISOU => TRISOU
       USE DECLARATIONS_TELEMAC3D, ONLY : SPHERI,MAREE,MARDAT,MARTIM,
-     &                                   T2_01,T2_02
+     &                                   T2_01,T2_02,DEJALU_TRISOU
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -228,8 +227,7 @@
 !     FOR WAVE DRIVEN CURRENTS
 !
       CHARACTER*16 NOMX,NOMY
-      LOGICAL DEJALU,OKX,OKY
-      DATA DEJALU /.FALSE./
+      LOGICAL OKX,OKY
 !
 !***********************************************************************
 !
@@ -549,7 +547,7 @@
 !
       IF(COUROU) THEN
 !
-        IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
+        IF(.NOT.DEJALU_TRISOU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
 !
 !
 !         T3DBI1 : BINARY DATA FILE 1
@@ -581,7 +579,7 @@
      &                1X,'         LECTURE AU TEMPS ',F10.3,/)
 116       FORMAT(1X,/,1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING',/,
      &                1X,'         READING FILE AT TIME ',F10.3,/)
-          DEJALU = .TRUE.
+          DEJALU_TRISOU = .TRUE.
 !
         ENDIF
 !

@@ -60,12 +60,12 @@
 !+        V7P0
 !+  Adding USE WAQTEL...
 !
-!history  J-M HERVOUET (EDF R&D, LNHE)
-!+        16/02/2015
-!+        V7P0
-!+   Shifting the stations coordinates removed in case of wind varying
-!+   in time and space (option 99). Managing the divisions by 0 is now
-!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!history A. LEROY (LNHE)
+!+        25/11/2015
+!+        V7P1
+!+  INTERPMETEO now writes directly in variables of WAQTEL which
+!+  can be used by the other modules. This makes it possible to
+!+  remove subsequent calls to INTERPMETEO in TELEMAC3D
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -93,12 +93,15 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL,ONLY: PVAP,RAY3,NWIND,NEBU,TAIR,
-     &                              HREL,RAINFALL,EVAPORATION,ATMOSEXCH
+      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                                HREL,RAINFALL,ZSD,EVAPORATION,
+     &                                ATMOSEXCH
+      USE DECLARATIONS_TELEMAC2D, ONLY : AT1_METEO,AT2_METEO,
+     &                                   FUAIR1_METEO,FUAIR2_METEO,
+     &                                   FVAIR1_METEO,FVAIR2_METEO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -121,7 +124,7 @@
 !
       LOGICAL WATER_QUALITY
       INTEGER UL,OPTWIND
-      DOUBLE PRECISION AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION COEF
       DOUBLE PRECISION UAIR,VAIR,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
       DOUBLE PRECISION PATM,WW,PI
@@ -132,7 +135,7 @@
 ! IDWM WIND INTERPOLATION CUSTOM VARIABLES
 ! ######################################################################
 !
-      INTEGER I, NUMSTA, NUMPOINTS, A, B, J, K, JUNK
+      INTEGER I, NUMSTA, NUMPOINTS, A, B, K
       DOUBLE PRECISION THETA_RAD
 !
 !     COORDINATES OF THE STATIONS UTM
@@ -152,7 +155,9 @@
 !     WITHOUT THE SAVE COMMAND, ALL LOCAL DATA ARE FORGOTTEN IN THE NEXT
 !     CALL.
 !
-      SAVE
+      SAVE NUMSTA, NUMPOINTS
+      SAVE XX, YY, AT_WIND, OUT_WSPD, OUT_WDIR, WIND, POINTS
+      SAVE INPSTA_S, INPSTA_D
 !
 !-----------------------------------------------------------------------
 !
@@ -196,8 +201,8 @@
             READ(UL,*)
             READ(UL,*)
 !           READING THE FIRST TWO LINES OF DATA
-            READ(UL,*) AT1,FUAIR1,FVAIR1
-            IF(AT.LT.AT1) THEN
+            READ(UL,*) AT1_METEO,FUAIR1_METEO,FVAIR1_METEO
+            IF(AT.LT.AT1_METEO) THEN
               WRITE(LU,*) ' '
               WRITE(LU,*) 'METEO'
               IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
@@ -290,14 +295,14 @@
 !
           IF(OPTWIND.EQ.2)THEN
 10          CONTINUE
-            IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
-              IF(AT2-AT1.GT.1.D-6) THEN
-                COEF=(AT-AT1)/(AT2-AT1)
+            IF(AT.GE.AT1_METEO.AND.AT.LT.AT2_METEO) THEN
+              IF(AT2_METEO-AT1_METEO.GT.1.D-6) THEN
+                COEF=(AT-AT1_METEO)/(AT2_METEO-AT1_METEO)
               ELSE
                 COEF=0.D0
               ENDIF
-              UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
-              VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
+              UAIR=FUAIR1_METEO+COEF*(FUAIR2_METEO-FUAIR1_METEO)
+              VAIR=FVAIR1_METEO+COEF*(FVAIR2_METEO-FVAIR1_METEO)
               IF(LISTIN) THEN
                 IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
      &                                                  ' VAIR=',VAIR
@@ -305,10 +310,11 @@
      &                                                   ' VAIR=',VAIR
               ENDIF
             ELSE
-              AT1=AT2
-              FUAIR1=FUAIR2
-              FVAIR1=FVAIR2
-              READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+              AT1_METEO=AT2_METEO
+              FUAIR1_METEO=FUAIR2_METEO
+              FVAIR1_METEO=FVAIR2_METEO
+              READ(UL,*,ERR=100,END=200) AT2_METEO,FUAIR2_METEO,
+     &                                   FVAIR2_METEO
               GO TO 10
 !
 !-----------------------------------------------------------------------
@@ -447,9 +453,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -615,9 +620,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -37,7 +37,10 @@
      &                                 SISMAF,SISGEO,ZF, MSK, MASKEL,
      &                                 MESH,T13,T14,IELMH_SIS,NELEM,
      &                                 NLAYER,E,ZR,HN,FDM,LEOPR,
-     &                                 PTINIG,LT,MARDAT,MARTIM,XKV,XMVS
+     &                                 PTINIG,LT,MARDAT,MARTIM,XKV,XMVS,
+     &                                 TDS_SIS_NODE_DEPTH,
+     &                                 TDS_NODE_SEDIMENT_FRACTION, 
+     &                                 TDS_HN
 #if defined (HAVE_DREDGESIM)
       USE P_SISYPHE_UI, ONLY : INIT_AND_SETUP_DS,CLEAR_SISYDREDGE
       USE P_DREDGESIM_UI, ONLY : STOP_DREDGESIM,CLEAR_DREDGESIM
@@ -46,6 +49,7 @@
 #endif
 
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -54,8 +58,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 #if defined (HAVE_DREDGESIM)
       CHARACTER(LEN=250) :: DREDGEINP,SEDGEO
@@ -64,13 +66,6 @@
       INTEGER I,J
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
-      !LEO new variable for node_Depth of sisyphe
-      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE,
-     &          SAVE,TARGET :: TDS_SIS_NODE_DEPTH
-      DOUBLE PRECISION, DIMENSION (:,:), ALLOCATABLE,
-     &          SAVE,TARGET :: TDS_NODE_SEDIMENT_FRACTION
-      DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE,
-     &          SAVE,TARGET :: TDS_HN
 #endif
 !
 !-----------------------------------------------------------------------

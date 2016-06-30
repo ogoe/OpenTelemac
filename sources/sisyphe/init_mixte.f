@@ -71,9 +71,8 @@
       USE DECLARATIONS_SISYPHE, ONLY :MASVT,MASV0,T1,BILMA,VOLU2D
       USE DECLARATIONS_SISYPHE, ONLY :MASST,MASS0,T2
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

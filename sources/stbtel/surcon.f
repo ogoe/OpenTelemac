@@ -43,13 +43,13 @@
 ! APPEL DE : DECOUP
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER NPOIN2 , NPOIN , NELEM2 , NELEM
+      INTEGER NPOIN2 , NELEM2
       INTEGER ITEST , IELEM , KELEM , ISWAP , KSWAP
-      INTEGER I , J , K , NPTFR , NPMAX , MESH , NDP , NELMAX
+      INTEGER I , J , K , NPTFR
       INTEGER NBOR(*) , IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER IFABOR(NELMAX,*) , IPO(*) , IP(3) , KP , ISUI(3)
 !
@@ -57,7 +57,6 @@
 !
       LOGICAL COLOR
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       DATA ISUI / 2 , 3 , 1 /
 !

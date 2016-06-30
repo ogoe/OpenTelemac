@@ -21,9 +21,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -31,25 +30,42 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I, J, NLEN
-      LOGICAL INVEC
+      INTEGER I,J
 !
 !-----------------------------------------------------------------------
 !
       ! If the block contains nothing ... do nothing
       IF(BLO%N.GT.0) THEN
         DO I=1,BLO%N
-            ! If the element of the block was added using bief_all_in_vec
-            ! This means we have to deallocate the vector and the pointer
-            IF(BLO%ADR(I)%P%TYPDIA(1:1).EQ.'W') THEN
-              CALL BIEF_DEALLVEC(BLO%ADR(I)%P)
-              BLO%ADR(I)%P%TYPDIA = ' '
+          IF(ASSOCIATED(BLO%ADR(I)%P)) THEN
+            IF(BLO%ADR(I)%P%FATHER.EQ.BLO%NAME) THEN
+              IF(BLO%ADR(I)%P%TYPE.eq.4) THEN
+                ! Not deallocating element in the block as they should
+                ! point on block from a higher level that will be
+                ! deallocatted later
+                DO J=1,BLO%ADR(I)%P%N
+                  NULLIFY(BLO%ADR(I)%P%ADR(J)%P)
+                ENDDO
+                DEALLOCATE(BLO%ADR(I)%P%ADR)
+              ELSE IF(BLO%ADR(I)%P%TYPE.eq.2) THEN
+                CALL BIEF_DEALLVEC(BLO%ADR(I)%P)
+              ELSE IF(BLO%ADR(I)%P%TYPE.eq.3) THEN
+                CALL BIEF_DEALLMAT(BLO%ADR(I)%P)
+              ELSE
+                WRITE(LU,*) 'UNKNOWN BIEF_OBJ TYPE'
+                WRITE(LU,*) 'FOR OBJECT NAMED: ',BLO%ADR(I)%P%NAME
+                WRITE(LU,*) 'OF TYPE: ',BLO%ADR(I)%P%TYPE
+                CALL PLANTE(1)
+                STOP
+              ENDIF
               DEALLOCATE(BLO%ADR(I)%P)
             ENDIF
-          NULLIFY(BLO%ADR(I)%P)
+          ELSE
+            NULLIFY(BLO%ADR(I)%P)
+          ENDIF
         ENDDO
-        DEALLOCATE(BLO%ADR)
       ENDIF
+      DEALLOCATE(BLO%ADR)
 !
 !-----------------------------------------------------------------------
 !

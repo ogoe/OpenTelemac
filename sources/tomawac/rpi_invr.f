@@ -41,6 +41,8 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEJA_RPI,RK_I,RN,RX_I,RY_I,
+     &                                 RXX_I,RYY_I,RAD1
       USE INTERFACE_TOMAWAC, EX_RPI_INVR => RPI_INVR
       IMPLICIT NONE
 !
@@ -59,21 +61,12 @@
 !
       INTEGER IP, IPOIN, IP1, IPOIN1, NP
 
-      DOUBLE PRECISION, ALLOCATABLE:: RK_I(:,:), RN(:,:)
-      DOUBLE PRECISION, ALLOCATABLE:: RX_I(:,:), RY_I(:,:)
-      DOUBLE PRECISION, ALLOCATABLE:: RXX_I(:,:), RYY_I(:,:)
-      DOUBLE PRECISION, ALLOCATABLE:: RAD1(:,:)
 !
       DOUBLE PRECISION DC, WZ, WZX1, WZY1, WZX2, WZY2
-!
-      LOGICAL DEJA
-      DATA DEJA /.FALSE./
-!
-      SAVE
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IF(.NOT.DEJA)THEN
+!      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+! 
+      IF(.NOT.DEJA_RPI)THEN
         ALLOCATE(RK_I(MAXNSP,MAXNSP))
         ALLOCATE(RN(MAXNSP,MAXNSP))
         ALLOCATE(RX_I(MAXNSP,MAXNSP))
@@ -81,7 +74,7 @@
         ALLOCATE(RXX_I(MAXNSP,MAXNSP))
         ALLOCATE(RYY_I(MAXNSP,MAXNSP))
         ALLOCATE(RAD1(MAXNSP,MAXNSP))
-        DEJA=.TRUE.
+        DEJA_RPI=.TRUE.
       ENDIF
 !
       DO IP1 =1,NB_CLOSE(I)

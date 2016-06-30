@@ -41,12 +41,11 @@
 !
       USE BIEF
       USE DECLARATIONS_SISYPHE
+      USE DECLARATIONS_SPECIAL
 !
 !      USE INTERFACE_SISYPHE, EX_CGL => CGL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

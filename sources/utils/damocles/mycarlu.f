@@ -58,6 +58,8 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_DAMOCLES
       IMPLICIT NONE
 !
       INTEGER       LCAR,ICOL,NMAXR(4),LGVAR
@@ -79,14 +81,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR , RETOUR
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !

@@ -80,14 +80,13 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
       USE TPXO
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
@@ -386,6 +385,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
       USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
      &                               ATMOSEXCH,WAQPROCESS
@@ -393,8 +393,6 @@
       USE EXCHANGE_WITH_ATMOSPHERE
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1021,9 +1019,9 @@
 !       OTHERWISE THEY WILL NOT BE CONSIDERED
         ATABOS%ADR(IND_T)%P%TYPR='Q'
         BTABOS%ADR(IND_T)%P%TYPR='Q'
-! 
+!
         CALL CALCS3D_THERMICS(NPOIN2,NPOIN3,IND_T,IND_S,TA,ATABOS,
-     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)   
+     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)
       ENDIF
 !
 !
@@ -1135,10 +1133,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

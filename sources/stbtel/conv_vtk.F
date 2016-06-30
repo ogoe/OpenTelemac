@@ -22,13 +22,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_STBTEL
-      USE DECLARATIONS_SPECIAL
       USE LIB_VTK_IO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

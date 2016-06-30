@@ -51,9 +51,8 @@
       USE INTERFACE_TELEMAC2D, EX_CONV_MERCATOR_TO_DEGDEC
      &                         => CONV_MERCATOR_TO_DEGDEC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

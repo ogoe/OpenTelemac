@@ -64,9 +64,8 @@
 !
       USE BIEF_DEF
       USE INTERFACE_TELEMAC2D, EX_GRADZ => GRADZ
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

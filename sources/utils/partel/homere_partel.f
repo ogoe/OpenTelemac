@@ -36,9 +36,6 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER :: LNG,LU,LI
-      COMMON /INFO/ LNG,LU,LI
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       CHARACTER(LEN=MAXLENHARD) :: NAMEINP,NAMEGEO

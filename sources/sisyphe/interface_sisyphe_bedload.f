@@ -41,6 +41,7 @@
      & XMVE,GRAV,DENS,XWC,ALPHAW,QSCX,QSCY,QSSX,QSSY,
      & UC3X,UC3Y,US4X,US4Y,THETAC,FCW,QSC,QSS,HOULE)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,UCMOY, TOB
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOBW, THETAW, UW, FW, CF
@@ -67,6 +68,7 @@
      &     KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOBW, TOB, MU,KSP,KSR,HN
       INTEGER,          INTENT(IN)    :: NPOIN
@@ -88,6 +90,7 @@
      &  (UCW, UW, TW, NPOIN, PI, UW1, UW2, TW1, TW2)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: UCW, UW, TW
       INTEGER,          INTENT(IN)  :: NPOIN
@@ -107,6 +110,7 @@
      &   UW1, UW2, TW1, TW2, THETAC, FCW, QSC,HOULE)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,UCMOY, CF, TOB, TOBW
@@ -134,6 +138,7 @@
      & KENT, KSORT, KLOG, KDIR, KDDL, KNEU, MSK, CLT, LITBOR,
      & MASKTR, LIMTRA,IKLBOR,NELEB,NELEBX)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ), INTENT(IN)    :: U,V,NBOR,XNEBOR,YNEBOR
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,NELBOR
@@ -154,6 +159,7 @@
      &  (QU, QV, NPOIN, PI, THETAC)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: QU, QV
       INTEGER,          INTENT(IN)  :: NPOIN
@@ -175,6 +181,7 @@
      & TOB,XMVS,XMVE,DM,GRAV,UNSV2D)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,LIQBOR,S,UNSV2D
@@ -200,6 +207,7 @@
      &  (TETAP, NPOIN, DENS, GRAV, DM, DSTAR, QSC)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP
       INTEGER,          INTENT(IN)    :: NPOIN
@@ -216,6 +224,7 @@
      &        (TOB, CF, DENS, GRAV, DM, XMVE, T1, QSC)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOB, CF
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, XMVE
@@ -232,6 +241,7 @@
      &   (TETAP,CF,NPOIN,GRAV,DM,DENS,TETA,QSC)
       !----------------------------------------------------------------!
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP, CF
@@ -257,6 +267,7 @@
      & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA,
      & FLBCLA,LIQBOR,QBOR,MAXADV)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ELAY,ACLADM
@@ -296,6 +307,7 @@
      &   COEFPN, CALFA, SALFA,BIJK,HOULE)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D, V2D, UCMOY,HN, CF, TOB
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MU,TOBW, UW, TW, THETAW, FW
@@ -326,6 +338,7 @@
      &  (ACLADM, HIDFAC, NPOIN, HIDI, DM, KARIM_HOLLY_YANG, HIDING)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: ACLADM
       INTEGER,          INTENT(IN)  :: HIDFAC, NPOIN
@@ -343,6 +356,7 @@
      &    TETAP, AHUNZI, ACP, HIDING, QSC)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOB, MU, ACLADM, UNLADM
       INTEGER,          INTENT(IN)    :: NPOIN
@@ -361,6 +375,7 @@
      &  (UCMOY, TOBW, TOB, ALPHAW, FW, CF, UW, NPOIN, XMVE, FCW)
       !----------------------------------------------------------------!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: UCMOY, TOBW, TOB, ALPHAW
       TYPE(BIEF_OBJ),   INTENT(IN)  :: FW, CF, UW
@@ -397,6 +412,7 @@
 !
       USE BIEF_DEF
       USE DECLARATIONS_SISYPHE, ONLY : NOMBLAY
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, KSR,MASBAS,UNSV2D
@@ -458,6 +474,7 @@
      &   ACP, QSC, SLOPEFF, COEFPN)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       ! 2/ GLOBAL VARIABLES
@@ -482,6 +499,7 @@
      &   T4, T5, T6, T7, T8, T9, T10,MSK,MASKEL)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE (BIEF_OBJ),   INTENT(IN)    :: HN, Q, S, CALFA, SALFA, MASK
       TYPE (BIEF_OBJ),   INTENT(IN)    :: MASKEL
@@ -503,6 +521,7 @@
      &(MESH,LIEBOR,KSORT,ELAY,V2DPAR,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
      & DT,QS,T1,T2,T3,BREACH,CSF_SABLE,NUBO,VNOIN)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR
@@ -535,6 +554,7 @@
      &   DEVIA, BETA2, SECCURRENT,BIJK,HOULE,UNSV2D,
      &   U3D,V3D,CODE)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -574,9 +594,8 @@
       !----------------------------------------------------------------!
      &(UCMOY,HN,UW,NPOIN,DENS,GRAV,DM,DSTAR,HMIN,D90,QSC,QSS)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       TYPE(BIEF_OBJ),   INTENT(IN)  :: HN, UCMOY, UW
       INTEGER,          INTENT(IN)  :: NPOIN
       DOUBLE PRECISION, INTENT(IN)  :: DENS, GRAV, DM, DSTAR, HMIN, D90
@@ -595,6 +614,7 @@
      & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
      & ICLA,FLBCLA,AVA,LIQBOR,QBOR,MAXADV)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,MASKEL,MASK,QSX,QSY
@@ -619,6 +639,7 @@
      & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR,
      & NUBO,VNOIN)
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX,QSY,LIMTEC,UNSV2D,EBOR
@@ -639,6 +660,7 @@
      &  (TOB,MU, NPOIN, DM, DENS, GRAV, DSTAR, AC, QSC)
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: TOB,MU
       INTEGER,          INTENT(IN)  :: NPOIN

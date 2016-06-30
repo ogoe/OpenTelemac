@@ -102,10 +102,9 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY : H,Z,NPLAN
       USE INTERFACE_TELEMAC3D, EX_CONDIS => CONDIS
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

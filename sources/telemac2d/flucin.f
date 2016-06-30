@@ -75,11 +75,13 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D , ONLY:DEBUG
+      USE DECLARATIONS_TELEMAC2D , ONLY : DEBUG,DSH_FC,DSU_FC,DSV_FC,
+     &                                    DSP_FC,DSM_FC,DSZ_FC,CORR_FC,
+     &                                    DTLL_FC,GRADI_FC,GRADJ_FC,
+     &                                    GRADIJ_FC,GRADJI_FC,DEJA_FC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -99,19 +101,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     AUTOMATIC EX ARRAYS!!!!!!
-!
-      DOUBLE PRECISION, ALLOCATABLE,SAVE :: DSH(:,:),DSU(:,:)
-      DOUBLE PRECISION, ALLOCATABLE,SAVE :: DSV(:,:)
-      DOUBLE PRECISION, ALLOCATABLE,SAVE :: DSP(:),DSM(:),DSZ(:,:)
-      DOUBLE PRECISION, ALLOCATABLE,SAVE :: CORR(:),DTLL(:)
-! ra29/042013      DOUBLE PRECISION GRADI(3),GRADJ(3),GRADIJ(3),GRADJI(3)
-      DOUBLE PRECISION,ALLOCATABLE,SAVE  :: GRADI(:,:),GRADJ(:,:)
-      DOUBLE PRECISION,ALLOCATABLE,SAVE  :: GRADIJ(:,:),GRADJI(:,:)
-!end ra
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
 !
 !-----------------------------------------------------------------------
 !
@@ -134,26 +123,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(DSH(2,NSEG),STAT=ERR)
+      IF(.NOT.DEJA_FC) THEN
+        ALLOCATE(DSH_FC(2,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSU(2,NSEG),STAT=ERR)
+        ALLOCATE(DSU_FC(2,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSV(2,NSEG),STAT=ERR)
+        ALLOCATE(DSV_FC(2,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSP(NS)    ,STAT=ERR)
+        ALLOCATE(DSP_FC(NS)    ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSM(NS)    ,STAT=ERR)
+        ALLOCATE(DSM_FC(NS)    ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSZ(2,NSEG),STAT=ERR)
+        ALLOCATE(DSZ_FC(2,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(CORR(NS)   ,STAT=ERR)
+        ALLOCATE(CORR_FC(NS)   ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DTLL(NS)   ,STAT=ERR)
+        ALLOCATE(DTLL_FC(NS)   ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(GRADI(3,NSEG),GRADJ(3,NSEG),STAT=ERR)
+        ALLOCATE(GRADI_FC(3,NSEG),GRADJ_FC(3,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(GRADIJ(3,NSEG),GRADJI(3,NSEG),STAT=ERR)
+        ALLOCATE(GRADIJ_FC(3,NSEG),GRADJI_FC(3,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
         GO TO 1002
 1001    CONTINUE
@@ -166,7 +155,7 @@
         CALL PLANTE(1)
         STOP
 1002    CONTINUE
-        DEJA=.TRUE.
+        DEJA_FC=.TRUE.
       ENDIF
       DEMI = 0.5D0
 !
@@ -194,36 +183,36 @@
 !  ************************
 !
 !    INITIALIZATION
-      DTLL(:)=(/(1.E10,I=1,NS)/)
-      DSP (:)=(/(0.D0,I=1,NS)/)
-      DSM (:)=(/(0.D0,I=1,NS)/)
-      DSH(1,:)=(/(0.D0,I=1,NSEG)/)
-      DSH(2,:)=(/(0.D0,I=1,NSEG)/)
-      DSU(1,:)=(/(0.D0,I=1,NSEG)/)
-      DSU(2,:)=(/(0.D0,I=1,NSEG)/)
-      DSV(1,:)=(/(0.D0,I=1,NSEG)/)
-      DSV(2,:)=(/(0.D0,I=1,NSEG)/)
-      DSZ(1,:)=(/(0.D0,I=1,NSEG)/)
-      DSZ(2,:)=(/(0.D0,I=1,NSEG)/)
+      DTLL_FC(:)=(/(1.E10,I=1,NS)/)
+      DSP_FC (:)=(/(0.D0,I=1,NS)/)
+      DSM_FC (:)=(/(0.D0,I=1,NS)/)
+      DSH_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      DSH_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      DSU_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      DSU_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      DSV_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      DSV_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      DSZ_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      DSZ_FC(2,:)=(/(0.D0,I=1,NSEG)/)
 !GIVES ERROR WITH INTEL COMPILER IF WRITTEN LIKE THIS
-!       CALL OV( 'X=C     ' ,DSH(1,1:NSEG),DSM ,DSM ,0.D0,NSEG)
+!       CALL OV( 'X=C     ' ,DSH_FC(1,1:NSEG),DSM_FC ,DSM_FC ,0.D0,NSEG)
 !
 !    INITIALIZATION  OF GRADIENTS
-      GRADI(1,:)=(/(0.D0,I=1,NSEG)/)
-      GRADI(2,:)=(/(0.D0,I=1,NSEG)/)
-      GRADI(3,:)=(/(0.D0,I=1,NSEG)/)
+      GRADI_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      GRADI_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      GRADI_FC(3,:)=(/(0.D0,I=1,NSEG)/)
 !
-      GRADJ(1,:)=(/(0.D0,I=1,NSEG)/)
-      GRADJ(2,:)=(/(0.D0,I=1,NSEG)/)
-      GRADJ(3,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJ_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJ_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJ_FC(3,:)=(/(0.D0,I=1,NSEG)/)
 !
-      GRADIJ(1,:)=(/(0.D0,I=1,NSEG)/)
-      GRADIJ(2,:)=(/(0.D0,I=1,NSEG)/)
-      GRADIJ(3,:)=(/(0.D0,I=1,NSEG)/)
+      GRADIJ_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      GRADIJ_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      GRADIJ_FC(3,:)=(/(0.D0,I=1,NSEG)/)
 !
-      GRADJI(1,:)=(/(0.D0,I=1,NSEG)/)
-      GRADJI(2,:)=(/(0.D0,I=1,NSEG)/)
-      GRADJI(3,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJI_FC(1,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJI_FC(2,:)=(/(0.D0,I=1,NSEG)/)
+      GRADJI_FC(3,:)=(/(0.D0,I=1,NSEG)/)
 !
       DO IEL=1, NELEM
         DO I = 1,3
@@ -247,11 +236,11 @@
             ZF1        = ZF(NUBO1)
             ZF2        = ZF(NUBO2)
             IF(PROD_SCAL.LT.0.D0)THEN
-              DSZ(1,NSG) = DSZ0(2,NSG)
-              DSZ(2,NSG) = DSZ0(1,NSG)
+              DSZ_FC(1,NSG) = DSZ0(2,NSG)
+              DSZ_FC(2,NSG) = DSZ0(1,NSG)
             ELSE
-              DSZ(1,NSG) = DSZ0(1,NSG)
-              DSZ(2,NSG) = DSZ0(2,NSG)
+              DSZ_FC(1,NSG) = DSZ0(1,NSG)
+              DSZ_FC(2,NSG) = DSZ0(2,NSG)
             ENDIF
 !
             HI0=UA(1,NUBO1)
@@ -260,21 +249,21 @@
 !   FOR AN EDGE BEING RECOVERED, ONE WILL REMAIN 1ST ORDER
 !
             IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HJ0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HJ0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR OPTIMIZATION
               YESNO(NSG)=.TRUE.
               CYCLE
-!           DSH(1,NSG) =0.D0
-!           DSH(2,NSG) =0.D0
-!           DSU(1,NSG) =0.D0
-!           DSU(2,NSG) =0.D0
-!           DSV(1,NSG) =0.D0
-!           DSV(2,NSG) =0.D0
-!           DSZ(1,NSG) =0.D0
-!           DSZ(2,NSG) =0.D0
+!           DSH_FC(1,NSG) =0.D0
+!           DSH_FC(2,NSG) =0.D0
+!           DSU_FC(1,NSG) =0.D0
+!           DSU_FC(2,NSG) =0.D0
+!           DSV_FC(1,NSG) =0.D0
+!           DSV_FC(2,NSG) =0.D0
+!           DSZ_FC(1,NSG) =0.D0
+!           DSZ_FC(2,NSG) =0.D0
             ELSE
 !
               AIX = CMI(1,NSG)-X(NUBO1) ! THESE ARE COORDINATES OF
@@ -283,11 +272,13 @@
               AJY = CMI(2,NSG)-Y(NUBO2) ! M: CMI(NSG)
 !
               DO IVAR=1,3
-                GRADI(IVAR,NSG) = AIX*DX(IVAR,NUBO1)+AIY*DY(IVAR,NUBO1)!NODE GRADIENT (PM.GRADZ)
-                GRADJ(IVAR,NSG) = AJX*DX(IVAR,NUBO2)+AJY*DY(IVAR,NUBO2)!eq 5.1 of audusse paper)
+                GRADI_FC(IVAR,NSG) = 
+     &                 AIX*DX(IVAR,NUBO1)+AIY*DY(IVAR,NUBO1)!NODE GRADIENT (PM.GRADZ)
+                GRADJ_FC(IVAR,NSG) =
+     &                 AJX*DX(IVAR,NUBO2)+AJY*DY(IVAR,NUBO2)!eq 5.1 of audusse paper)
 !
-                GRADIJ(IVAR,NSG) = AIX*DJX(IVAR,J) + AIY*DJY(IVAR,J)
-                GRADJI(IVAR,NSG) = AJX*DJX(IVAR,J) + AJY*DJY(IVAR,J)
+                GRADIJ_FC(IVAR,NSG) = AIX*DJX(IVAR,J) + AIY*DJY(IVAR,J)
+                GRADJI_FC(IVAR,NSG) = AJX*DJX(IVAR,J) + AJY*DJY(IVAR,J)
               ENDDO
 !
             ENDIF
@@ -321,11 +312,11 @@
             ZF1        = ZF(NUBO1)
             ZF2        = ZF(NUBO2)
             IF(PROD_SCAL.LT.0.D0)THEN
-              DSZ(1,NSG) = DSZ0(2,NSG)
-              DSZ(2,NSG) = DSZ0(1,NSG)
+              DSZ_FC(1,NSG) = DSZ0(2,NSG)
+              DSZ_FC(2,NSG) = DSZ0(1,NSG)
             ELSE
-              DSZ(1,NSG) = DSZ0(1,NSG)
-              DSZ(2,NSG) = DSZ0(2,NSG)
+              DSZ_FC(1,NSG) = DSZ0(1,NSG)
+              DSZ_FC(2,NSG) = DSZ0(2,NSG)
             ENDIF
 !
             HI0=UA(1,NUBO1)
@@ -334,10 +325,10 @@
 !   FOR AN EDGE BEING RECOVERED, ONE WILL REMAIN 1ST ORDER
 !
             IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HJ0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  THEN
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HJ0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HJ0)  THEN
 !ra02/05/2013 FOR APTIMIZATION
               YESNO(NSG)=.TRUE.
               CYCLE
@@ -350,51 +341,61 @@
               RNN = VNOCL(3,NSG)
 ! ROTATION OF THE GRADIENTS
 !
-              GRADI2       = GRADI(2,NSG)
-              GRADI(2,NSG) = XNN*GRADI2+YNN*GRADI(3,NSG)
-              GRADI(3,NSG) =-YNN*GRADI2+XNN*GRADI(3,NSG)
+              GRADI2       = GRADI_FC(2,NSG)
+              GRADI_FC(2,NSG) = XNN*GRADI2+YNN*GRADI_FC(3,NSG)
+              GRADI_FC(3,NSG) =-YNN*GRADI2+XNN*GRADI_FC(3,NSG)
 !
-              GRADIJ2      = GRADIJ(2,NSG)
-              GRADIJ(2,NSG)= XNN*GRADIJ2+YNN*GRADIJ(3,NSG)
-              GRADIJ(3,NSG)=-YNN*GRADIJ2+XNN*GRADIJ(3,NSG)
+              GRADIJ2      = GRADIJ_FC(2,NSG)
+              GRADIJ_FC(2,NSG)= XNN*GRADIJ2+YNN*GRADIJ_FC(3,NSG)
+              GRADIJ_FC(3,NSG)=-YNN*GRADIJ2+XNN*GRADIJ_FC(3,NSG)
 !
-              GRADJ2       = GRADJ(2,NSG)
-              GRADJ(2,NSG) = XNN*GRADJ2+YNN*GRADJ(3,NSG)
-              GRADJ(3,NSG) =-YNN*GRADJ2+XNN*GRADJ(3,NSG)
+              GRADJ2       = GRADJ_FC(2,NSG)
+              GRADJ_FC(2,NSG) = XNN*GRADJ2+YNN*GRADJ_FC(3,NSG)
+              GRADJ_FC(3,NSG) =-YNN*GRADJ2+XNN*GRADJ_FC(3,NSG)
 !
-              GRADJI2      = GRADJI(2,NSG)
-              GRADJI(2,NSG)= XNN*GRADJI2+YNN*GRADJI(3,NSG)
-              GRADJI(3,NSG)=-YNN*GRADJI2+XNN*GRADJI(3,NSG)
+              GRADJI2      = GRADJI_FC(2,NSG)
+              GRADJI_FC(2,NSG)= XNN*GRADJI2+YNN*GRADJI_FC(3,NSG)
+              GRADJI_FC(3,NSG)=-YNN*GRADJI2+XNN*GRADJI_FC(3,NSG)
 !
-!   ONE REBUILDS H+Z, DSH = VARIATION OF H+Z
+!   ONE REBUILDS H+Z, DSH_FC = VARIATION OF H+Z
 !
               ILIM=1
               BETA=1.D0
 !
-              DSH(1,NSG) = EXLIM(ILIM,BETA,GRADI(1,NSG),GRADIJ(1,NSG))
-              DSH(2,NSG) = EXLIM(ILIM,BETA,GRADJ(1,NSG),GRADJI(1,NSG))
+              DSH_FC(1,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADI_FC(1,NSG),GRADIJ_FC(1,NSG))
+              DSH_FC(2,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADJ_FC(1,NSG),GRADJI_FC(1,NSG))
               !   FOR PARALLELILSM
               IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
-                IF(DSH(1,NSG).GE.0.D0) THEN
-                  DSP(NUBO1) = DSP(NUBO1)+DEMI*AIRST(1,NSG)*DSH(1,NSG) ! WE CONSIDER ONLY
+                IF(DSH_FC(1,NSG).GE.0.D0) THEN
+                  DSP_FC(NUBO1) = 
+     &                DSP_FC(NUBO1)+DEMI*AIRST(1,NSG)*DSH_FC(1,NSG) ! WE CONSIDER ONLY
                 ELSE                                                  ! 0.5 AIRST
-                  DSM(NUBO1) = DSM(NUBO1)-DEMI*AIRST(1,NSG)*DSH(1,NSG) ! PARCOM2 WILL ADD
+                  DSM_FC(NUBO1) = DSM_FC(NUBO1)
+     &                            -DEMI*AIRST(1,NSG)*DSH_FC(1,NSG) ! PARCOM2 WILL ADD
                 ENDIF                                                 ! CONTRIBUTIONS
-                IF(DSH(2,NSG).GE.0.D0) THEN
-                  DSP(NUBO2) = DSP(NUBO2)+DEMI*AIRST(2,NSG)*DSH(2,NSG)
+                IF(DSH_FC(2,NSG).GE.0.D0) THEN
+                  DSP_FC(NUBO2) = 
+     &                DSP_FC(NUBO2)+DEMI*AIRST(2,NSG)*DSH_FC(2,NSG)
                 ELSE
-                  DSM(NUBO2) = DSM(NUBO2)-DEMI*AIRST(2,NSG)*DSH(2,NSG)
+                  DSM_FC(NUBO2) = 
+     &                DSM_FC(NUBO2)-DEMI*AIRST(2,NSG)*DSH_FC(2,NSG)
                 ENDIF
               ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
-                IF(DSH(1,NSG).GE.0.D0) THEN
-                  DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSH(1,NSG)
+                IF(DSH_FC(1,NSG).GE.0.D0) THEN
+                  DSP_FC(NUBO1) = DSP_FC(NUBO1) 
+     &                + AIRST(1,NSG)*DSH_FC(1,NSG)
                 ELSE
-                  DSM(NUBO1) = DSM(NUBO1) - AIRST(1,NSG)*DSH(1,NSG)
+                  DSM_FC(NUBO1) = DSM_FC(NUBO1) 
+     &                - AIRST(1,NSG)*DSH_FC(1,NSG)
                 ENDIF
-                IF(DSH(2,NSG).GE.0.D0) THEN
-                  DSP(NUBO2) = DSP(NUBO2) + AIRST(2,NSG)*DSH(2,NSG)
+                IF(DSH_FC(2,NSG).GE.0.D0) THEN
+                  DSP_FC(NUBO2) = DSP_FC(NUBO2) 
+     &                + AIRST(2,NSG)*DSH_FC(2,NSG)
                 ELSE
-                  DSM(NUBO2) = DSM(NUBO2) - AIRST(2,NSG)*DSH(2,NSG)
+                  DSM_FC(NUBO2) = DSM_FC(NUBO2) 
+     &                - AIRST(2,NSG)*DSH_FC(2,NSG)
                 ENDIF
               ENDIF
 !
@@ -402,11 +403,15 @@
               BETA=0.3333D0 ! THESE ARE CHOICES OF INRIA 1/3 FOR
                             ! VELOCITIES AND 1 FOR H
 !
-              DSU(1,NSG) = EXLIM(ILIM,BETA,GRADI(2,NSG),GRADIJ(2,NSG))
-              DSU(2,NSG) = EXLIM(ILIM,BETA,GRADJ(2,NSG),GRADJI(2,NSG))
+              DSU_FC(1,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADI_FC(2,NSG),GRADIJ_FC(2,NSG))
+              DSU_FC(2,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADJ_FC(2,NSG),GRADJI_FC(2,NSG))
 !
-              DSV(1,NSG) = EXLIM(ILIM,BETA,GRADI(3,NSG),GRADIJ(3,NSG))
-              DSV(2,NSG) = EXLIM(ILIM,BETA,GRADJ(3,NSG),GRADJI(3,NSG))
+              DSV_FC(1,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADI_FC(3,NSG),GRADIJ_FC(3,NSG))
+              DSV_FC(2,NSG) = 
+     &                EXLIM(ILIM,BETA,GRADJ_FC(3,NSG),GRADJI_FC(3,NSG))
 !
             ENDIF
             YESNO(NSG)=.TRUE.
@@ -415,16 +420,16 @@
       ENDDO
       !  FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN
-        CALL PARCOM2(DSP,DSM,DSM,NS,1,2,2,MESH)
+        CALL PARCOM2(DSP_FC,DSM_FC,DSM_FC,NS,1,2,2,MESH)
       ENDIF
 !
 !  ONE CALCULATES THE CORRECTIONS TO ENSURE THE CONSERVATION OF H
 !
       DO IS=1,NS
-        CORR(IS) =  DSM(IS) - DSP(IS)
-        AMDS =MAX(DSP(IS),DSM(IS))
+        CORR_FC(IS) =  DSM_FC(IS) - DSP_FC(IS)
+        AMDS =MAX(DSP_FC(IS),DSM_FC(IS))
         IF(AMDS.GT.0.D0) THEN
-          CORR(IS) = CORR(IS)/AMDS
+          CORR_FC(IS) = CORR_FC(IS)/AMDS
         ENDIF
       ENDDO
 ! IF ORDER 2 REINITIALIZATION OF YESNO
@@ -490,28 +495,28 @@
 !   FOR AN EDGE BEING RECOVERED, ONE REMAINS 1ST ORDER
 !
             IF(ZF1.GE. (HJ0+ZF2) .OR. ZF2.GE. (HI0+ZF1)
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(1,NSG)).GE.HJ0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HI0
-     &     .OR. 2.*ABS(DSZ(2,NSG)).GE.HJ0)  GOTO 1234
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(1,NSG)).GE.HJ0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HI0
+     &     .OR. 2.*ABS(DSZ_FC(2,NSG)).GE.HJ0)  GOTO 1234
 !
 !
-            UAS11  = UAS11  + DSH(1,NSG)  -  DSZ(1,NSG) +
-     &        MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH(1,NSG))+
-     &        MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH(1,NSG))
+            UAS11  = UAS11  + DSH_FC(1,NSG)  -  DSZ_FC(1,NSG) +
+     &        MIN(0.D0,CORR_FC(NUBO1))*MAX(0.D0,DSH_FC(1,NSG))+
+     &        MAX(0.D0,CORR_FC(NUBO1))*MAX(0.D0,-DSH_FC(1,NSG))
 !
-            UAS21  = UAS21 + DSU(1,NSG)
-            UAS31  = UAS31 + DSV(1,NSG)
-            DSZ1   = DSZ(1,NSG)
+            UAS21  = UAS21 + DSU_FC(1,NSG)
+            UAS31  = UAS31 + DSV_FC(1,NSG)
+            DSZ1   = DSZ_FC(1,NSG)
             ZF1    = ZF1 + DSZ1
 !
-            UAS12  = UAS12  + DSH(2,NSG)  -  DSZ(2,NSG) +
-     &        MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH(2,NSG))+
-     &        MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH(2,NSG))
+            UAS12  = UAS12  + DSH_FC(2,NSG)  -  DSZ_FC(2,NSG) +
+     &        MIN(0.D0,CORR_FC(NUBO2))*MAX(0.D0,DSH_FC(2,NSG))+
+     &        MAX(0.D0,CORR_FC(NUBO2))*MAX(0.D0,-DSH_FC(2,NSG))
 !
-            UAS22  = UAS22 + DSU(2,NSG)
-            UAS32  = UAS32 + DSV(2,NSG)
-            DSZ2   = DSZ(2,NSG)
+            UAS22  = UAS22 + DSU_FC(2,NSG)
+            UAS32  = UAS32 + DSV_FC(2,NSG)
+            DSZ2   = DSZ_FC(2,NSG)
             ZF2    = ZF2 + DSZ2
 !
 !
@@ -533,12 +538,12 @@
 !
             SIGMAX=MAX( 1.D-2, RA3* SQRT(UAS11) + ABS(UAS21) )
             DTL    = CFL*AIRST(1,NSG)/(RNN*SIGMAX)
-            DTLL(NUBO1) = MIN (DTL,DTLL(NUBO1))
+            DTLL_FC(NUBO1) = MIN (DTL,DTLL_FC(NUBO1))
             DT          = MIN(DT, DTL)
 !
             SIGMAX=MAX( 1.D-2, RA3* SQRT(UAS12) + ABS(UAS22) )
             DTL    = CFL*AIRST(2,NSG)/(RNN*SIGMAX)
-            DTLL(NUBO2) = MIN (DTL,DTLL(NUBO2))
+            DTLL_FC(NUBO2) = MIN (DTL,DTLL_FC(NUBO2))
             DT          = MIN(DT, DTL)
 ! PARALLEL: TAKE MIN DT OF ALL SUBDOMAINS
 !          IF(NCSIZE.GT.1)DT = P_DMIN(DT) !WILL BE PLACED AT THE END (SEE BELOW)
@@ -681,9 +686,9 @@
             UNORM=SQRT(UA(2,IS)*UA(2,IS) + UA(3,IS)*UA(3,IS))
             SIGMAX=MAX( 1.D-2, RA3*SIGMAX +UNORM )
             DTL   = CFL*AIRS(IS)/(VNL*SIGMAX)
-            AUX   = DTL/DTLL(IS)
+            AUX   = DTL/DTLL_FC(IS)
             AUX1  =AUX/(1.D0+AUX)
-            DT    =MIN(DT, AUX1*DTLL(IS))
+            DT    =MIN(DT, AUX1*DTLL_FC(IS))
           ENDDO
         ENDIF
 !       FOR PARALLELISME

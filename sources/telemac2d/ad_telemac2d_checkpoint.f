@@ -5,11 +5,11 @@
 !!!!!!!!!!!!INITIAL GUESS FOR U =  0
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C     ********************************************
+!     ********************************************
       MODULE AD_TELEMAC2D_CHECKPOINT
-C     ********************************************
-C
-C
+!     ********************************************
+!
+!
       USE BIEF_DEF
       USE FRICTION_DEF
 
@@ -25,19 +25,19 @@ C
       PUBLIC :: T2D_ADJ_BUFFER,         T2D_TMP_CP
 
       TYPE CHECKPOINT_T2D_TYPE
-C
-C     COMPONENTS OF VELOCITY
+!
+!     COMPONENTS OF VELOCITY
         TYPE(BIEF_OBJ)        :: U
         TYPE(BIEF_OBJ)        :: V
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
         TYPE(BIEF_OBJ)        :: H
-C     SURFACE
+!     SURFACE
 !!        TYPE(BIEF_OBJ)        :: S
-C
-C     K AND EPSILON AT NEW TIME-STEP
+!
+!     K AND EPSILON AT NEW TIME-STEP
 !!        TYPE(BIEF_OBJ)        :: AK,EP
-C
+!
 
 !     U AND V AT OLD TIME-STEP
 !!        TYPE(BIEF_OBJ)        :: UN,VN
@@ -78,7 +78,7 @@ C
 
 
       SAVE
-C
+!
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -89,39 +89,37 @@ C
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-C     *****************
+!     *****************
       SUBROUTINE CHECKPOINT_T2D_INIT
-C     *****************
+!     *****************
      &     ( NumCP )
-C
-C***********************************************************************
-C     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C     FUNCTION  : Allocates / Inits all Checkpointing Parameters / Struktures
-C     Use this only ones outside of the telemac2d.f time loop
-C
-C-----------------------------------------------------------------------
-C     ARGUMENTS USED
-C     .________________.____.______________________________________________
-C     |      NOM       |MODE|                   ROLE
-C     |________________|____|_______________________________________________
-C     |   NumCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
-C     |________________|____|______________________________________________
-C     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+!     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+!     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!     FUNCTION  : Allocates / Inits all Checkpointing Parameters / Struktures
+!     Use this only ones outside of the telemac2d.f time loop
+!
+!-----------------------------------------------------------------------
+!     ARGUMENTS USED
+!     .________________.____.______________________________________________
+!     |      NOM       |MODE|                   ROLE
+!     |________________|____|_______________________________________________
+!     |   NumCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
+!     |________________|____|______________________________________________
+!     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
 
       INTEGER, INTENT(IN)       :: NumCP
 
       INTEGER K, IELBU, IELBH, I
-
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       print *,'CHECKPOINT_T2D_INIT : NUMCP ', NumCP
 
@@ -140,16 +138,16 @@ C-----------------------------------------------------------------------
       ALLOCATE( CP_T2D(-2:NumCP_T2D) )
 
       Do K = -2, NumCP_T2D
-C
-C     COMPONENTS OF VELOCITY
+!
+!     COMPONENTS OF VELOCITY
          CALL BIEF_ALLVEC(1,CP_T2D(K)%U,'U_CP  ',IELMU,1,1,MESH)
          CALL BIEF_ALLVEC(1,CP_T2D(K)%V,'V_CP  ',IELMU,1,1,MESH)
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
          CALL BIEF_ALLVEC(1,CP_T2D(K)%H,'H_CP  ',IELMH,1,1,MESH)
 !!         CALL BIEF_ALLVEC(1,CP_T2D(K)%S,'S_CP  ',0,1,1,MESH)
 !
-C     K AND EPSILON AT NEW TIME-STEP,
+!     K AND EPSILON AT NEW TIME-STEP,
 !     AK AT OLD TIME-STEP, EP AT OLD TIME-STEP
 !!         if(ITURB.EQ.3) then
 !!            CALL BIEF_ALLVEC(1,CP_T2D(K)%AK,'AK_CP ',IELMK,1,1,MESH)
@@ -189,10 +187,10 @@ C     K AND EPSILON AT NEW TIME-STEP,
 !     VALUES ON BOUNDARIES: H
 !!         CALL BIEF_ALLVEC(1,CP_T2D(K)%HBOR ,'HBORCB',IELBH,1,1,MESH)
 
-C
+!
       ENDDO
 
-C     Set pointer for adjoint buffer
+!     Set pointer for adjoint buffer
       T2D_ADJ_BUFFER => CP_T2D(-1)
       T2D_TMP_CP     => CP_T2D(-2)
 
@@ -207,38 +205,37 @@ C     Set pointer for adjoint buffer
 
 
 
-C     *****************
+!     *****************
       SUBROUTINE CHECKPOINT_T2D_STORE
-C     *****************
+!     *****************
      &     (CP_ID)
-C
-C***********************************************************************
-C     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C     FUNCTION  : Takes a CHECKPOINT of the main HYDRAULIC PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C     ARGUMENTS USED
-C     .________________.____.______________________________________________
-C     |      NOM       |MODE|                   ROLE
-C     |________________|____|_______________________________________________
-C     |   CP_ID        | -->| CHECKPOINT SLOT TO OVERWRITE.
-C     |________________|____|______________________________________________
-C     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+!     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+!     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!     FUNCTION  : Takes a CHECKPOINT of the main HYDRAULIC PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!     ARGUMENTS USED
+!     .________________.____.______________________________________________
+!     |      NOM       |MODE|                   ROLE
+!     |________________|____|_______________________________________________
+!     |   CP_ID        | -->| CHECKPOINT SLOT TO OVERWRITE.
+!     |________________|____|______________________________________________
+!     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_SPECIAL
 
       INTEGER,          INTENT(IN) :: CP_ID
 
       INTEGER K, N
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_T2D_STORE: LT, CP_ID ',LT, CP_ID
 
@@ -259,28 +256,28 @@ C-----------------------------------------------------------------------
          CALL PLANTE(1)
          STOP
       ENDIF
-C
-C     COMPONENTS OF VELOCITY AT NEW TIME-STEP
+!
+!     COMPONENTS OF VELOCITY AT NEW TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(CP_ID)%U ,Y=U)
       CALL OS('X=Y     ',X=CP_T2D(CP_ID)%V ,Y=V)
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(CP_ID)%H ,Y=H)
 !!     CALL OS('X=Y     ',X=CP_T2D(CP_ID)%S ,Y=S)
-C
-C     K AND EPSILON AT NEW TIME-STEP
+!
+!     K AND EPSILON AT NEW TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%AK ,Y=AK)
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%EP ,Y=EP)
 
-C     COMPONENTS OF VELOCITY OLD TIME-STEP
+!     COMPONENTS OF VELOCITY OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%UN ,Y=UN)
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%VN ,Y=VN)
-C
-C     DEPTH AT OLD TIME-STEP
+!
+!     DEPTH AT OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%HN ,Y=HN)
 !CALL OS('X=Y     ',X=CP_T2D(CP_ID)%SN ,Y=SN)
-C
-C     K AND EPSILON AT OLD TIME-STEP
+!
+!     K AND EPSILON AT OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%AKN ,Y=AKN)
 !!!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%EPN ,Y=EPN)
 
@@ -290,7 +287,7 @@ C     K AND EPSILON AT OLD TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(CP_ID)%CHESTR ,Y=CHESTR)
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%CHBORD ,Y=CHBORD)
 
-C     BOUNDS
+!     BOUNDS
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%UBOR ,Y=UBOR)
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%VBOR ,Y=VBOR)
 !!      CALL OS('X=Y     ',X=CP_T2D(CP_ID)%HBOR ,Y=HBOR)
@@ -308,42 +305,40 @@ C     BOUNDS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C     *****************
+!     *****************
       SUBROUTINE CHECKPOINT_T2D_RESTORE
-C     *****************
+!     *****************
      &     (CP_ID)
-C
-C***********************************************************************
-C     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C     FUNCTION  : Restores a CHECKPOINT of the main HYDRAULIC PARAMETERS
-C
-C
-C-----------------------------------------------------------------------
-C     ARGUMENTS USED
-C     .________________.____.______________________________________________
-C     |      NOM       |MODE|                   ROLE
-C     |________________|____|_______________________________________________
-C     |   CP_ID        | -->| CHECKPOINT SLOT TO READ
-C     |________________|____|______________________________________________
-C     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+!     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!     FUNCTION  : Restores a CHECKPOINT of the main HYDRAULIC PARAMETERS
+!
+!
+!-----------------------------------------------------------------------
+!     ARGUMENTS USED
+!     .________________.____.______________________________________________
+!     |      NOM       |MODE|                   ROLE
+!     |________________|____|_______________________________________________
+!     |   CP_ID        | -->| CHECKPOINT SLOT TO READ
+!     |________________|____|______________________________________________
+!     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+!
+!***********************************************************************
+!
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
 
-      implicit none
+      IMPLICIT NONE
 
       INTEGER,          INTENT(IN) :: CP_ID
-
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
 
       PRINT *,'CHECKPOINT_T2D_RESTORE: LT, CP_ID ',LT, CP_ID
@@ -365,27 +360,27 @@ C
          CALL PLANTE(1)
          STOP
       ENDIF
-C
-C     COMPONENTS OF VELOCITY
+!
+!     COMPONENTS OF VELOCITY
       CALL OS('X=Y     ',X=U ,Y=CP_T2D(CP_ID)%U)
       CALL OS('X=Y     ',X=V ,Y=CP_T2D(CP_ID)%V)
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
       CALL OS('X=Y     ',X=H ,Y=CP_T2D(CP_ID)%H)
 !CALL OS('X=Y     ',X=S ,Y=CP_T2D(CP_ID)%S)
-C
-C     K AND EPSILON AT NEW TIME-STEP
+!
+!     K AND EPSILON AT NEW TIME-STEP
 !CALL OS('X=Y     ',X=AK ,Y=CP_T2D(CP_ID)%AK)
 !CALL OS('X=Y     ',X=EP ,Y=CP_T2D(CP_ID)%EP)
 
-C     COMPONENTS OF VELOCITY OLD TIME-STEP
+!     COMPONENTS OF VELOCITY OLD TIME-STEP
 !CALL OS('X=Y     ',X=UN ,Y=CP_T2D(CP_ID)%UN)
 !CALL OS('X=Y     ',X=VN ,Y=CP_T2D(CP_ID)%VN)
-C
-C     DEPTH AT OLD TIME-STEP
+!
+!     DEPTH AT OLD TIME-STEP
 !CALL OS('X=Y     ',X=HN ,Y=CP_T2D(CP_ID)%HN)
-C
-C     K AND EPSILON AT OLD TIME-STEP
+!
+!     K AND EPSILON AT OLD TIME-STEP
 !CALL OS('X=Y     ',X=AKN ,Y=CP_T2D(CP_ID)%AKN)
 !CALL OS('X=Y     ',X=EPN ,Y=CP_T2D(CP_ID)%EPN)
 
@@ -414,35 +409,34 @@ C     K AND EPSILON AT OLD TIME-STEP
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-C     *****************
+!     *****************
       SUBROUTINE CHECKPOINT_T2D_COPY_TO_TMP_CP
-C     *****************
+!     *****************
      &     ( )
-C
-C***********************************************************************
-C     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
-C     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C     FUNCTION  : Copies variables to special checkpoint
-C
-C
-C-----------------------------------------------------------------------
-C     ARGUMENTS USED
-C     .________________.____.______________________________________________
-C     |      NOM       |MODE|                   ROLE
-C     |________________|____|_______________________________________________
-C     |________________|____|______________________________________________
-C     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+!     TELEMAC 2D VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
+!     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!     FUNCTION  : Copies variables to special checkpoint
+!
+!
+!-----------------------------------------------------------------------
+!     ARGUMENTS USED
+!     .________________.____.______________________________________________
+!     |      NOM       |MODE|                   ROLE
+!     |________________|____|_______________________________________________
+!     |________________|____|______________________________________________
+!     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
 
       INTEGER K, N
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_T2D_COPY_TO_TMP_CP ', LT
 
@@ -454,28 +448,28 @@ C-----------------------------------------------------------------------
          CALL PLANTE(1)
          STOP
       ENDIF
-C
-C     COMPONENTS OF VELOCITY AT NEW TIME-STEP
+!
+!     COMPONENTS OF VELOCITY AT NEW TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(-2)%U ,Y=U)
       CALL OS('X=Y     ',X=CP_T2D(-2)%V ,Y=V)
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(-2)%H ,Y=H)
 !!     CALL OS('X=Y     ',X=CP_T2D(-2)%S ,Y=S)
-C
-C     K AND EPSILON AT NEW TIME-STEP
+!
+!     K AND EPSILON AT NEW TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%AK ,Y=AK)
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%EP ,Y=EP)
 
-C     COMPONENTS OF VELOCITY OLD TIME-STEP
+!     COMPONENTS OF VELOCITY OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%UN ,Y=UN)
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%VN ,Y=VN)
-C
-C     DEPTH AT OLD TIME-STEP
+!
+!     DEPTH AT OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%HN ,Y=HN)
 !CALL OS('X=Y     ',X=CP_T2D(-2)%SN ,Y=SN)
-C
-C     K AND EPSILON AT OLD TIME-STEP
+!
+!     K AND EPSILON AT OLD TIME-STEP
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%AKN ,Y=AKN)
 !!!      CALL OS('X=Y     ',X=CP_T2D(-2)%EPN ,Y=EPN)
 
@@ -485,7 +479,7 @@ C     K AND EPSILON AT OLD TIME-STEP
       CALL OS('X=Y     ',X=CP_T2D(-2)%CHESTR ,Y=CHESTR)
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%CHBORD ,Y=CHBORD)
 
-C     BOUNDS
+!     BOUNDS
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%UBOR ,Y=UBOR)
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%VBOR ,Y=VBOR)
 !!      CALL OS('X=Y     ',X=CP_T2D(-2)%HBOR ,Y=HBOR)
@@ -503,35 +497,34 @@ C     BOUNDS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-C     *****************
+!     *****************
       SUBROUTINE CHECKPOINT_T2D_COPY_FROM_TMP_CP
-C     *****************
+!     *****************
      &     ( fts )
-C
-C***********************************************************************
-C     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C     FUNCTION  : Copies variables to special checkpoint
-C
-C
-C-----------------------------------------------------------------------
-C     ARGUMENTS USED
-C     .________________.____.______________________________________________
-C     |      NOM       |MODE|                   ROLE
-C     |________________|____|_______________________________________________
-C     |________________|____|______________________________________________
-C     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!
+!***********************************************************************
+!     TELEMAC 2D VERSION 6.2          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!     FUNCTION  : Copies variables to special checkpoint
+!
+!
+!-----------------------------------------------------------------------
+!     ARGUMENTS USED
+!     .________________.____.______________________________________________
+!     |      NOM       |MODE|                   ROLE
+!     |________________|____|_______________________________________________
+!     |________________|____|______________________________________________
+!     MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
 
       LOGICAL, INTENT(IN)    :: fts  !  First Time Step
       INTEGER K, N
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       PRINT *,'CHECKPOINT_T2D_COPY_FROM_TMP_CP  ', LT
 
@@ -543,28 +536,28 @@ C-----------------------------------------------------------------------
          CALL PLANTE(1)
          STOP
       ENDIF
-C
-C
-C     COMPONENTS OF VELOCITY
+!
+!
+!     COMPONENTS OF VELOCITY
       CALL OS('X=Y     ',X=U ,Y=CP_T2D(-2)%U)
       CALL OS('X=Y     ',X=V ,Y=CP_T2D(-2)%V)
-C
-C     DEPTH AT NEW TIME-STEP
+!
+!     DEPTH AT NEW TIME-STEP
       CALL OS('X=Y     ',X=H ,Y=CP_T2D(-2)%H)
 !CALL OS('X=Y     ',X=S ,Y=CP_T2D(-2)%S)
-C
-C     K AND EPSILON AT NEW TIME-STEP
+!
+!     K AND EPSILON AT NEW TIME-STEP
 !CALL OS('X=Y     ',X=AK ,Y=CP_T2D(-2)%AK)
 !CALL OS('X=Y     ',X=EP ,Y=CP_T2D(-2)%EP)
 
-C     COMPONENTS OF VELOCITY OLD TIME-STEP
+!     COMPONENTS OF VELOCITY OLD TIME-STEP
 !CALL OS('X=Y     ',X=UN ,Y=CP_T2D(-2)%UN)
 !CALL OS('X=Y     ',X=VN ,Y=CP_T2D(-2)%VN)
-C
-C     DEPTH AT OLD TIME-STEP
+!
+!     DEPTH AT OLD TIME-STEP
 !CALL OS('X=Y     ',X=HN ,Y=CP_T2D(-2)%HN)
-C
-C     K AND EPSILON AT OLD TIME-STEP
+!
+!     K AND EPSILON AT OLD TIME-STEP
 !CALL OS('X=Y     ',X=AKN ,Y=CP_T2D(-2)%AKN)
 !CALL OS('X=Y     ',X=EPN ,Y=CP_T2D(-2)%EPN)
 
@@ -595,33 +588,33 @@ C     K AND EPSILON AT OLD TIME-STEP
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-C                       *****************
+!                       *****************
       SUBROUTINE CHECKPOINT_T2D_COMPARE( cp1, cp2 )
-C                       *****************
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 6.1          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C  FUNCTION  : CHECKPOINT TESTING / DEBUGGING ........
-C
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC 2D VERSION 6.1          01/04/2012    U.Merkel
+!***********************************************************************
+!
+!
+!  FUNCTION  : CHECKPOINT TESTING / DEBUGGING ........
+!
+!
+!-----------------------------------------------------------------------
+!  ARGUMENTS USED
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
 
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
 
       INTEGER, INTENT(IN)   :: cp1, cp2
-C     UHM DEBUG / Delete later
+!     UHM DEBUG / Delete later
       TYPE(BIEF_OBJ), SAVE, TARGET :: UHM_DU, UHM_DV, UHM_DH,
      $                                UHM_DZF, UHM_DCST, UHM_DCHB
 
@@ -630,7 +623,7 @@ C     UHM DEBUG / Delete later
       INTEGER J, K
       INTEGER, SAVE :: CALLED = 0
 
-C     UHM DEBUG / Delete later
+!     UHM DEBUG / Delete later
       IF ( CALLED .EQ. 0 ) THEN
          CALL BIEF_ALLVEC(1,UHM_DU,'UHM_DU',IELMU,1,1,MESH)
          CALL BIEF_ALLVEC(1,UHM_DV,'UHM_DV',IELMU,1,1,MESH)

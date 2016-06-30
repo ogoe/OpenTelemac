@@ -69,6 +69,8 @@
 !|                |   | =10 : FICHIER CAS  : SUBMIT + VALEUR LANCEUR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       EXTERNAL NEXT,PRECAR,CARLU,LONGLU
@@ -83,12 +85,6 @@
       INTEGER       NEXT,PRECAR,LONGLU
       CHARACTER*144 CARLU
 !
-      INTEGER       LNG,LU
-      INTEGER       INDX,NTYP,ITAI,LONGU,NMOT(4),DEFLU
-      INTEGER       NLIGN,LONGLI
-      LOGICAL       ERREUR,RETOUR
-      CHARACTER*72  PARAM
-!
 !-----------------------------------------------------------------------
 !
       INTEGER       NBCHP1
@@ -100,14 +96,6 @@
       CHARACTER*72  MESERR(2*NBCHP1)
       CHARACTER*10  MOTCH1(NBCHP1)
       CHARACTER*144 NULATT,ANALYS,FIELD,FIELD0
-!
-!-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCNGE  / INDX,NTYP,ITAI,LONGU,NMOT,DEFLU
-      COMMON / DCNGEC / PARAM
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
 !
 !-----------------------------------------------------------------------
 !

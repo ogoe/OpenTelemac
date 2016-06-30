@@ -41,9 +41,8 @@
       USE BIEF, EX_STOSEG31 => STOSEG31
       USE DECLARATIONS_TELEMAC, ONLY : ISEGT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

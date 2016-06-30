@@ -78,7 +78,7 @@
 
       ! HASH TABLE FOR SERAFIN FILES
       INTEGER :: HASH(MAX_FILE) = 0
-      TYPE(SRF_INFO),SAVE :: SRF_OBJ_TAB(MAX_FILE)
+      TYPE(SRF_INFO) :: SRF_OBJ_TAB(MAX_FILE)
 !
 !-----------------------------------------------------------------------
 !

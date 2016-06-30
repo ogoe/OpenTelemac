@@ -2,7 +2,7 @@
                      SUBROUTINE DICO
 !                    ***************
 !
-     &( ITYP   , NUMERO , ILONG  , CHAINE , MOTCLE , NMOT   , MOTPRO ,
+     &( ITYP   , NUMERO , ILONG  , CHAINE , MOTCLE , NMOT2   , MOTPRO ,
      &  LONPRO , SIZE   , UTINDX , LANGUE , AIDLNG , MOTIGN , NIGN   ,
      &  LUIGN  , TYPIGN , LONIGN , NFICDA , NBLANG , NMAXR )
 !
@@ -68,20 +68,22 @@
 !| NFICDA         |-->| NUMERO DE CANAL DU FICHIER DES DONNEES
 !| NIGN           |-->| NOMBRE DE MOTS CLES DUS A EDAMOX A IGNORER
 !| NMAXR          |-->| TABLEAU DES INDEX MAXIMUM REELS PAR TYPES
-!| NMOT           |<->| TABLEAU DU NOMBRE DE MOTS CLES PAR TYPE
-!|                |   | NMOT(1) ENTIERS
-!|                |   | NMOT(2) REELS
-!|                |   | NMOT(3) LOGIQUES
-!|                |   | NMOT(4) CARACTERES
+!| NMOT2          |<->| TABLEAU DU NOMBRE DE MOTS CLES PAR TYPE
+!|                |   | NMOT2(1) ENTIERS
+!|                |   | NMOT2(2) REELS
+!|                |   | NMOT2(3) LOGIQUES
+!|                |   | NMOT2(4) CARACTERES
 !| NUMERO         |<--| ORDRE DU MOT-CLE PARMI CEUX DE SON TYPE
 !| SIZE           |-->| TABLEAU DES LONGUEURS DES MOTS CLES
 !| TYPIGN         |-->| TABLEAU DES TYPES DES MOTS EDAMOX A IGNORER
 !| UTINDX         |-->| TABLEAU DE LOGIQUES D'UTILISATION DES INDEX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER       NMOT(4),SIZE(4,*),ITYP,NUMERO,ILONG,NBLANG,NMAXR(4)
+      INTEGER       NMOT2(4),SIZE(4,*),ITYP,NUMERO,ILONG,NBLANG,NMAXR(4)
       INTEGER       NIGN,NFICDA,TYPIGN(100),LONIGN(100),LONPRO(15)
       LOGICAL       UTINDX(4,*),LANGUE,LUIGN,AIDLNG
       CHARACTER*(*) MOTCLE(4,*),MOTPRO(*),CHAINE
@@ -89,21 +91,12 @@
       CHARACTER*9   RUBPRO(5),MOTLNG
       CHARACTER*72  MOTIGN(100)
 !
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR,RETOUR
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER       INDX,LGRUB(5),I,K,LNGINT,VALNUM(5)
+      INTEGER       INDX2,LGRUB(5),I,K,LNGINT,VALNUM(5)
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
 !-----------------------------------------------------------------------
 !
@@ -133,17 +126,17 @@
 !
       IF (NFIC.EQ.NFICDA) THEN
         DO ITYP = 1,4
-          DO INDX=1,NMAXR(ITYP)
-            IF (UTINDX(ITYP,INDX)) THEN
-              K=SIZE(ITYP,INDX)
+          DO INDX2=1,NMAXR(ITYP)
+            IF (UTINDX(ITYP,INDX2)) THEN
+              K=SIZE(ITYP,INDX2)
               IF(K.EQ.ILONG) THEN
-                IF(CHAINE(1:K).EQ.MOTCLE(ITYP,INDX)(1:K)) THEN
-                  NUMERO=INDX
+                IF(CHAINE(1:K).EQ.MOTCLE(ITYP,INDX2)(1:K)) THEN
+                  NUMERO=INDX2
                   GO TO 1000
                 ENDIF
               ENDIF
             ENDIF
-          ENDDO ! INDX
+          ENDDO ! INDX2
         ENDDO ! ITYP
 !
 ! IF NOT, DETERMINES IF ITS AN EDAMOX KEYWORD OF INDEX = -1

@@ -51,14 +51,13 @@
       USE DECLARATIONS_PARTEL
       USE UTIL_PARES
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 #if defined (HAVE_MED)
       INCLUDE 'med.hf'
 #endif
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

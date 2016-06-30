@@ -62,8 +62,6 @@
       USE BIEF, ONLY : INPOLY
       USE BIEF_DEF
       IMPLICIT  NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

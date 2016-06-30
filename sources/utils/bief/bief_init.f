@@ -37,9 +37,8 @@
       USE BIEF, EX_BIEF_INIT => BIEF_INIT
       USE DECLARATIONS_TELEMAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER     LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -61,7 +60,7 @@
 !
 !     LANGUAGE AND LOGICAL UNIT FOR OUTPUTS
 !
-      CALL READ_CONFIG(LNG,LU,CHAINE,NCAR)
+      CALL READ_CONFIG(CHAINE,NCAR)
 !
 !-----------------------------------------------------------------------
 !

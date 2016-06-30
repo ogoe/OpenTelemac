@@ -43,15 +43,12 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER       ICOL
       CHARACTER*(*) LIGNE*(*)
-!
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR,RETOUR
 !
 !-----------------------------------------------------------------------
 !
@@ -59,11 +56,6 @@
       CHARACTER*1   TABUL
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !

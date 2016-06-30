@@ -39,11 +39,10 @@
 ! APPEL DE : REMAIL, CIRCUL
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER MESH , NDP , NELEM , NPOIN , NELMAX , NPMAX
       INTEGER IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER ITEST , ITEST1 , IELEM
       INTEGER TRAV1(*)
@@ -52,7 +51,6 @@
 !
 ! COMMON
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! ON VERIFIE QUE TOUS LES POINTS SONT DISTINCTS

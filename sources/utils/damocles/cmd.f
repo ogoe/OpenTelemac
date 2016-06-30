@@ -2,7 +2,7 @@
                      SUBROUTINE CMD
 !                    **************
 !
-     &(ICOL   , LIGNE  , ADRESS , DIMENS , TROUVE , MOTCLE , NMOT ,
+     &(ICOL   , LIGNE  , ADRESS , DIMENS , TROUVE , MOTCLE , NMOT2 ,
      & MOTINT , MOTREA , MOTLOG , MOTCAR , MOTATT , INDIC  , SIZE ,
      & UTINDX , DYNAM  , VUCMD  , EXECMD , NFICDA , NMAXR  )
 !
@@ -61,7 +61,7 @@
 !| MOTREA         |-->| TABLEAU DES VALEURS REELLES
 !| NFICDA         |-->| NUMERO DE CANAL DU FICHIER DES DONNEES
 !| NMAXR          |-->| TABLEAU DES INDEX MAXIMUM REELS PAR TYPES
-!| NMOT           |-->| TABLEAU DU NOMBRE DE MOTS CLES PAR TYPE
+!| NMOT2           |-->| TABLEAU DU NOMBRE DE MOTS CLES PAR TYPE
 !| SIZE           |-->| TABLEAU DES LONGUEURS DES MOTS CLES
 !| TROUVE         |-->| INDICATEUR D'ETAT DES MOTS CLES
 !|                |   | = 0 : AUCUNE VALEUR TROUVEE
@@ -78,10 +78,12 @@
 !| VUCMD          |<->| TABLEAU DE LOGIQUES (MEMORISATION DES CMDES)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !
-      INTEGER          ICOL,ADRESS(4,*),DIMENS(4,*),NMOT(4),TROUVE(4,*)
+      INTEGER          ICOL,NMOT2(4),ADRESS(4,*),DIMENS(4,*),TROUVE(4,*)
       INTEGER          SIZE(4,*),INDIC(4,*),MOTINT(*),NFICDA,NMAXR(4)
       LOGICAL          MOTLOG(*),DYNAM,UTINDX(4,*),VUCMD(5),EXECMD
       CHARACTER*(*)    MOTCLE(4,*),LIGNE
@@ -90,11 +92,6 @@
 !
       INTEGER  PREVAL,LONGLU
       EXTERNAL PREVAL,LONGLU
-!
-      INTEGER          LNG,LU
-      INTEGER          NLIGN,LONGLI
-      INTEGER          NFIC
-      LOGICAL          ERREUR , RETOUR
 !
 !-----------------------------------------------------------------------
 !
@@ -108,11 +105,6 @@
       CHARACTER*1      TABUL
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCCHIE / NFIC
-      COMMON / DCMLIG / NLIGN , LONGLI
-      COMMON / DCRARE / ERREUR , RETOUR
 !
       INTRINSIC CHAR
 !
@@ -299,12 +291,12 @@
 !
           WRITE(LU,*)' '
           WRITE(LU,*)'====================================='
-          WRITE(LU,FMT25) NMOT(1),NMAXR(1)
-          WRITE(LU,FMT27) NMOT(2),NMAXR(2)
-          WRITE(LU,FMT29) NMOT(3),NMAXR(3)
-          WRITE(LU,FMT25) NMOT(4),NMAXR(4)
+          WRITE(LU,FMT25) NMOT2(1),NMAXR(1)
+          WRITE(LU,FMT27) NMOT2(2),NMAXR(2)
+          WRITE(LU,FMT29) NMOT2(3),NMAXR(3)
+          WRITE(LU,FMT25) NMOT2(4),NMAXR(4)
           WRITE(LU,*)'-------------------------------------'
-          WRITE(LU,FMT33) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
+          WRITE(LU,FMT33) NMOT2(1)+NMOT2(2)+NMOT2(3)+NMOT2(4)
           WRITE(LU,*)'====================================='
           WRITE(LU,*)' '
         ELSE
@@ -312,12 +304,12 @@
 !
           WRITE(LU,*)' '
           WRITE(LU,*)'====================================='
-          WRITE(LU,FMT26) NMOT(1),NMAXR(1)
-          WRITE(LU,FMT28) NMOT(2),NMAXR(2)
-          WRITE(LU,FMT30) NMOT(3),NMAXR(3)
-          WRITE(LU,FMT26) NMOT(4),NMAXR(4)
+          WRITE(LU,FMT26) NMOT2(1),NMAXR(1)
+          WRITE(LU,FMT28) NMOT2(2),NMAXR(2)
+          WRITE(LU,FMT30) NMOT2(3),NMAXR(3)
+          WRITE(LU,FMT26) NMOT2(4),NMAXR(4)
           WRITE(LU,*)'-------------------------------------'
-          WRITE(LU,FMT34) NMOT(1)+NMOT(2)+NMOT(3)+NMOT(4)
+          WRITE(LU,FMT34) NMOT2(1)+NMOT2(2)+NMOT2(3)+NMOT2(4)
           WRITE(LU,*)'====================================='
           WRITE(LU,*)' '
 

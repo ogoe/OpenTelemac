@@ -16,7 +16,7 @@
 !history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE)
 !+        05/09/2015
 !+        V7P2
-!+    First version  
+!+    First version
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DFDT           |-->| DERIVATIVE IN TIME (F*-FN/DT) FOR THE ACTUAL TIME-STEP
@@ -37,12 +37,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -94,16 +93,16 @@
             I5 = IKLE3(IELEM,5)
             I6 = IKLE3(IELEM,6)
 !
-!           COMPUTE \INT_P PSI *(1-TETA)*\DELTA Z{N+1}-TETA*\DELTA Z{N}) 
+!           COMPUTE \INT_P PSI *(1-TETA)*\DELTA Z{N+1}-TETA*\DELTA Z{N})
 !           (N (6) AND N+1 (5) WITH RESPECT TO THE SUB-ITER)
 !
             H1N = ZSTART(I4) - ZSTART(I1)
             H2N = ZSTART(I5) - ZSTART(I2)
-            H3N = ZSTART(I6) - ZSTART(I3)     
+            H3N = ZSTART(I6) - ZSTART(I3)
 !
             H1 = ZEND(I4) - ZEND(I1)
             H2 = ZEND(I5) - ZEND(I2)
-            H3 = ZEND(I6) - ZEND(I3) 
+            H3 = ZEND(I6) - ZEND(I3)
 !
             COEF = MESH3%SURFAC%R(IELEM)/6.D0
 !
@@ -206,12 +205,12 @@
                 BETA4PSI=MAX(0.D0,BETA4)/SUMAX
                 BETA5PSI=MAX(0.D0,BETA5)/SUMAX
                 BETA6PSI=MAX(0.D0,BETA6)/SUMAX
-                FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
+                FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR
                 FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-                FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR 
-                FI_I(I4)=FI_I(I4)+BETA4PSI*PHITCOR 
+                FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
+                FI_I(I4)=FI_I(I4)+BETA4PSI*PHITCOR
                 FI_I(I5)=FI_I(I5)+BETA5PSI*PHITCOR
-                FI_I(I6)=FI_I(I6)+BETA6PSI*PHITCOR 
+                FI_I(I6)=FI_I(I6)+BETA6PSI*PHITCOR
               ENDIF
             ENDIF
           ENDDO !IELEM
@@ -267,7 +266,7 @@
      &                        + XB(30,IELEM) * (FINSUB(I6)-FINSUB(I5)))
 !
 !           FALSE PHITCOR
-!              
+!
             PHITCOR=FINCOR1+FINCOR2+FINCOR3+FINCOR4+FINCOR5+FINCOR6
             IF(ABS(PHITCOR).GT.EPSPHI) THEN
               BETA1=FINCOR1/PHITCOR
@@ -287,12 +286,12 @@
                 BETA5PSI=MAX(0.D0,BETA5)/SUMAX
                 BETA6PSI=MAX(0.D0,BETA6)/SUMAX
 !               PSI CONTRIBUTIONS
-                AUX1=(1.D0-TETA)*BETA1PSI*PHITCOR 
+                AUX1=(1.D0-TETA)*BETA1PSI*PHITCOR
                 AUX2=(1.D0-TETA)*BETA2PSI*PHITCOR
-                AUX3=(1.D0-TETA)*BETA3PSI*PHITCOR 
-                AUX4=(1.D0-TETA)*BETA4PSI*PHITCOR 
+                AUX3=(1.D0-TETA)*BETA3PSI*PHITCOR
+                AUX4=(1.D0-TETA)*BETA4PSI*PHITCOR
                 AUX5=(1.D0-TETA)*BETA5PSI*PHITCOR
-                AUX6=(1.D0-TETA)*BETA6PSI*PHITCOR 
+                AUX6=(1.D0-TETA)*BETA6PSI*PHITCOR
               ELSE
                 AUX1=0.D0
                 AUX2=0.D0
@@ -370,25 +369,25 @@
                 BETA5PSI=MAX(0.D0,BETA5)/SUMAX
                 BETA6PSI=MAX(0.D0,BETA6)/SUMAX
 !               PSI CONTRIBUTIONS
-                AUX1=AUX1+TETA*BETA1PSI*PHITCOR 
+                AUX1=AUX1+TETA*BETA1PSI*PHITCOR
                 AUX2=AUX2+TETA*BETA2PSI*PHITCOR
-                AUX3=AUX3+TETA*BETA3PSI*PHITCOR 
-                AUX4=AUX4+TETA*BETA4PSI*PHITCOR 
+                AUX3=AUX3+TETA*BETA3PSI*PHITCOR
+                AUX4=AUX4+TETA*BETA4PSI*PHITCOR
                 AUX5=AUX5+TETA*BETA5PSI*PHITCOR
-                AUX6=AUX6+TETA*BETA6PSI*PHITCOR 
+                AUX6=AUX6+TETA*BETA6PSI*PHITCOR
               ENDIF
             ENDIF
-!            
-!           COMPUTE \INT_P PSI *(1-TETA)*\DELTA Z{N+1}-TETA*\DELTA Z{N}) 
+!
+!           COMPUTE \INT_P PSI *(1-TETA)*\DELTA Z{N+1}-TETA*\DELTA Z{N})
 !           (N (6) AND N+1 (5) RESPECT TO THE SUB-ITER)
 !
             H1N = ZSTART(I4) - ZSTART(I1)
             H2N = ZSTART(I5) - ZSTART(I2)
-            H3N = ZSTART(I6) - ZSTART(I3)     
+            H3N = ZSTART(I6) - ZSTART(I3)
 !
             H1 = ZEND(I4) - ZEND(I1)
             H2 = ZEND(I5) - ZEND(I2)
-            H3 = ZEND(I6) - ZEND(I3) 
+            H3 = ZEND(I6) - ZEND(I3)
 !
             COEF = MESH3%SURFAC%R(IELEM)/6.D0
 !
@@ -431,19 +430,19 @@
                 BETA4PSI=MAX(0.D0,BETA4)/SUMAX
                 BETA5PSI=MAX(0.D0,BETA5)/SUMAX
                 BETA6PSI=MAX(0.D0,BETA6)/SUMAX
-                FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR 
+                FI_I(I1)=FI_I(I1)+BETA1PSI*PHITCOR
                 FI_I(I2)=FI_I(I2)+BETA2PSI*PHITCOR
-                FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR 
-                FI_I(I4)=FI_I(I4)+BETA4PSI*PHITCOR 
+                FI_I(I3)=FI_I(I3)+BETA3PSI*PHITCOR
+                FI_I(I4)=FI_I(I4)+BETA4PSI*PHITCOR
                 FI_I(I5)=FI_I(I5)+BETA5PSI*PHITCOR
-                FI_I(I6)=FI_I(I6)+BETA6PSI*PHITCOR 
+                FI_I(I6)=FI_I(I6)+BETA6PSI*PHITCOR
               ENDIF
             ENDIF
 !
           ENDDO !IELEM
         ENDIF ! SCHCF.EQ.ADV_NSC OR SCHCF.EQ.ADV_PSI
-!     
-      ELSE 
+!
+      ELSE
         WRITE(LU,*)'OTHER ELEMENTS THAN PRISMS NOT IMPLEMENTED'
         CALL PLANTE(1)
         STOP

@@ -70,9 +70,8 @@
       USE INTERFACE_TELEMAC3D, EX_VISSMA => VISSMA
       USE DECLARATIONS_TELEMAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

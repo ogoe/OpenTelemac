@@ -64,15 +64,13 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
 !| IOPTAN         |<--| OPTION FOR TANGENTIAL VELOCITIES
-!| TYPSEUIL       |<--| OPTION FOR TYPE OF WEIRS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -85,9 +83,8 @@
       DOUBLE PRECISION XDIG1,XDIG2,YDIG1,YDIG2
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER*1 CHIFFRE(0:9)
-      DATA CHIFFRE/'0','1','2','3','4','5','6','7','8','9'/
-      SAVE CHIFFRE
+      CHARACTER*1, PARAMETER :: CHIFFRE(0:9) =
+     &           (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------
 !
@@ -182,51 +179,78 @@
 !       GEENRAL
         NOM(1:3) = 'NA1'
         ALLOCATE(NDGA1%ADR(N)%P)
+        NDGA1%N=NDGA1%N+1
         CALL BIEF_ALLVEC(2,NDGA1%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+        NDGA1%ADR(N)%P%FATHER = NDGA1%NAME
         NOM(1:3) = 'NB1'
         ALLOCATE(NDGB1%ADR(N)%P)
+        NDGB1%N=NDGB1%N+1
         CALL BIEF_ALLVEC(2,NDGB1%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+        NDGB1%ADR(N)%P%FATHER = NDGB1%NAME
         NOM(1:3) = 'ZDG'
         ALLOCATE(ZDIG%ADR(N)%P)
+        ZDIG%N=ZDIG%N+1
         CALL BIEF_ALLVEC(1,ZDIG%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+        ZDIG%ADR(N)%P%FATHER = ZDIG%NAME
 !       SPECIFIC
         IF(TYPSEUIL.EQ.1) THEN
           NOM(1:3) = 'PDG'
+          PHIDIG%N=PHIDIG%N+1
           ALLOCATE(PHIDIG%ADR(N)%P)
           CALL BIEF_ALLVEC(1,PHIDIG%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          PHIDIG%ADR(N)%P%FATHER = PHIDIG%NAME
         ELSEIF(TYPSEUIL.EQ.2) THEN
           NOM(1:3) = 'NA2'
+          NDGA2%N=NDGA2%N+1
           ALLOCATE(NDGA2%ADR(N)%P)
           CALL BIEF_ALLVEC(2,NDGA2%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          NDGA2%ADR(N)%P%FATHER = NDGA2%NAME
           NOM(1:3) = 'NB2'
+          NDGB2%N=NDGB2%N+1
           ALLOCATE(NDGB2%ADR(N)%P)
           CALL BIEF_ALLVEC(2,NDGB2%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          NDGB2%ADR(N)%P%FATHER = NDGB2%NAME
           NOM(1:3) = 'QWA'
+          QWA%N=QWA%N+1
           ALLOCATE(QWA%ADR(N)%P)
           CALL BIEF_ALLVEC(1,QWA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          QWA%ADR(N)%P%FATHER = QWA%NAME
           NOM(1:3) = 'QWB'
+          QWB%N=QWB%N+1
           ALLOCATE(QWB%ADR(N)%P)
           CALL BIEF_ALLVEC(1,QWB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          QWB%ADR(N)%P%FATHER = QWB%NAME
           NOM(1:3) = 'UWA'
+          UWEIRA%N=UWEIRA%N+1
           ALLOCATE(UWEIRA%ADR(N)%P)
           CALL BIEF_ALLVEC(1,UWEIRA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          UWEIRA%ADR(N)%P%FATHER = UWEIRA%NAME
           NOM(1:3) = 'UWB'
+          UWEIRB%N=UWEIRB%N+1
           ALLOCATE(UWEIRB%ADR(N)%P)
           CALL BIEF_ALLVEC(1,UWEIRB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          UWEIRB%ADR(N)%P%FATHER = UWEIRB%NAME
           NOM(1:3) = 'VWA'
+          VWEIRA%N=VWEIRA%N+1
           ALLOCATE(VWEIRA%ADR(N)%P)
           CALL BIEF_ALLVEC(1,VWEIRA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          VWEIRA%ADR(N)%P%FATHER = VWEIRA%NAME
           NOM(1:3) = 'VWB'
+          VWEIRB%N=VWEIRB%N+1
           ALLOCATE(VWEIRB%ADR(N)%P)
           CALL BIEF_ALLVEC(1,VWEIRB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+          VWEIRB%ADR(N)%P%FATHER = VWEIRB%NAME
           NOM(1:3) = 'WDG'
+          WDIG%N=WDIG%N+1
           ALLOCATE(WDIG%ADR(N)%P)
           CALL BIEF_ALLVEC(1,WDIG%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
+          WDIG%ADR(N)%P%FATHER = WDIG%NAME
           NOM(1:3) = 'QP0'
 !         JMH 05/08/2013: IF NOT INCREMENTED, QP0%N WILL REMAIN 0
           QP0%N=QP0%N+1
           ALLOCATE(QP0%ADR(N)%P)
           CALL BIEF_ALLVEC(1,QP0%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
+          QP0%ADR(N)%P%FATHER = QP0%NAME
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '

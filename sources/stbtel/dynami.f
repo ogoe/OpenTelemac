@@ -41,13 +41,13 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER ILOG , IADH , IENT , IENTU , IINC , ISORT
       INTEGER NLIM , NPTFR
-      INTEGER NELMAX , NELEM , NPOIN , MESH , NDP , NPMAX , J
+      INTEGER J
       INTEGER NBOR(*) , NCOLFR(*)
       INTEGER LIHBOR(*) , LIUBOR(*) ,LIVBOR(*) ,LITBOR(*)
 !
@@ -55,7 +55,6 @@
 !
       CHARACTER*9  MAILLE
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !***********************************************************************
 !

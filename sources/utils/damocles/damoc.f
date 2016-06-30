@@ -92,6 +92,8 @@
 !| UTINDX         |<--| TABLEAU DE LOGIQUES D'UTILISATION DES INDEX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER            NMAX,LLNG,LLU,NFICMO,NFICDA,NBLANG,RETRY
@@ -109,12 +111,6 @@
       CHARACTER(LEN=144) CARLU,PARAM2
       DOUBLE PRECISION   REALU
 !
-      INTEGER            LNG,LU
-      INTEGER            INDX,NTYP,ITAI,LONGU,NMOT(4),DEFLU
-      INTEGER            NLIGN,LONGLI,NFIC
-      LOGICAL            ERREUR,RETOUR
-      CHARACTER(LEN=72)  PARAM
-!
 !-----------------------------------------------------------------------
 !
       INTEGER            I,K,IVAL,LCAR,ICOL,JCOL,ILONG,ITYP,NUMERO,I2
@@ -130,13 +126,6 @@
       DOUBLE PRECISION   NULREA
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR , RETOUR
-      COMMON / DCMLIG / NLIGN , LONGLI
-      COMMON / DCCHIE / NFIC
-      COMMON / DCNGE  / INDX,NTYP,ITAI,LONGU,NMOT,DEFLU
-      COMMON / DCNGEC / PARAM
 !
       EXTERNAL CARLU,INTLU,LOGLU,REALU,NEXT,PREV,PREVAL,LONGLU
 !

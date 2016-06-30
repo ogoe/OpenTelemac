@@ -45,10 +45,9 @@
       USE DECLARATIONS_SISYPHE
       USE INTERFACE_SISYPHE, EX_INIT_AVAI=> INIT_AVAI
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !

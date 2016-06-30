@@ -47,9 +47,8 @@
 !
       USE BIEF, EX_SD_MDP => SD_MDP
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -59,7 +58,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER TAG,FREE,LI,VI,LVI,EVI,S,LS,ES,ILP,ILPMAX,I
+      INTEGER TAG,FREE,ILI,VI,LVI,EVI,S,LS,ES,ILP,ILPMAX,I
 !
 !----INITIALISES TAG
 !
@@ -67,13 +66,13 @@
 !
 !----FOR EACH VERTEX VI IN EK
 !
-      LI = EK
+      ILI = EK
       ILPMAX = LAST(EK)
       IF(ILPMAX.LE.0)  GO TO 12
       DO 11 ILP=1,ILPMAX
-        I = LI
-        LI = L(I)
-        VI = V(LI)
+        I = ILI
+        ILI = L(I)
+        VI = V(ILI)
 !
 !------REMOVES VI FROM DEGREE LIST
 !
@@ -101,8 +100,8 @@
 !
 6       LVI = L(VI)
         IF(LVI.NE.0)  GO TO 7
-        L(I) = L(LI)
-        LI = I
+        L(I) = L(ILI)
+        ILI = I
 !
         K = K+1
         NEXT(VI) = -K
@@ -123,10 +122,10 @@
 !
         LAST(VI) = EVI
         MARK(EVI) = -1
-        L(TAIL) = LI
-        TAIL = LI
-        L(I) = L(LI)
-        LI = I
+        L(TAIL) = ILI
+        TAIL = ILI
+        L(I) = L(ILI)
+        ILI = I
         GO TO 10
 !
 !----------ELSE IF VI IS DUPLICATE VERTEX, THEN MARKS AS SUCH AND ADJUSTS

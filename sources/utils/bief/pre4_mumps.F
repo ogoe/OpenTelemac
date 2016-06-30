@@ -66,11 +66,14 @@
 !| XX1,XX2        |<--| SOLUTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC, ONLY : GLOSEG4_P4M,XA_P4M,DA_P4M,
+     &                                 RHS_P4M,XINC_P4M,SIZE_RHS_P4M,
+     &                                 SIZE_DA_P4M,SIZE_XA_P4M,
+     &                                 SIZE_XINC_P4M,SIZE_GLOSEG4_P4M
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -89,64 +92,50 @@
 #if defined(HAVE_MUMPS)
       INTEGER NPBLK,NSEGBLK,I
 !
-      INTEGER, ALLOCATABLE          :: GLOSEG4(:)
-      DOUBLE PRECISION, ALLOCATABLE :: XA(:),DA(:)
-      DOUBLE PRECISION, ALLOCATABLE :: RHS(:),XINC(:)
-!
-      INTEGER SIZE_GLOSEG4,SIZE_DA,SIZE_XA,SIZE_RHS,SIZE_XINC
-!
-      DATA SIZE_GLOSEG4/0/
-      DATA SIZE_DA     /0/
-      DATA SIZE_XA     /0/
-      DATA SIZE_RHS    /0/
-      DATA SIZE_XINC   /0/
-!
-      SAVE
-!
 !-----------------------------------------------------------------------
 !
       NPBLK=NPOIN*2
       NSEGBLK=4*NSEGB+NPOIN
 !
-      IF(SIZE_GLOSEG4.EQ.0) THEN
-        ALLOCATE(GLOSEG4(2*NSEGBLK))
-        SIZE_GLOSEG4=    2*NSEGBLK
-      ELSEIF(            2*NSEGBLK.GT.SIZE_GLOSEG4) THEN
-        DEALLOCATE(GLOSEG4)
-        ALLOCATE(GLOSEG4(2*NSEGBLK))
-        SIZE_GLOSEG4=    2*NSEGBLK
+      IF(SIZE_GLOSEG4_P4M.EQ.0) THEN
+        ALLOCATE(GLOSEG4_P4M(2*NSEGBLK))
+        SIZE_GLOSEG4_P4M=    2*NSEGBLK
+      ELSEIF(            2*NSEGBLK.GT.SIZE_GLOSEG4_P4M) THEN
+        DEALLOCATE(GLOSEG4_P4M)
+        ALLOCATE(GLOSEG4_P4M(2*NSEGBLK))
+        SIZE_GLOSEG4_P4M=    2*NSEGBLK
       ENDIF
-      IF(SIZE_DA.EQ.0) THEN
-        ALLOCATE(DA(NPBLK))
-        SIZE_DA=    NPBLK
-      ELSEIF(       NPBLK.GT.SIZE_DA) THEN
-        DEALLOCATE(DA)
-        ALLOCATE(DA(NPBLK))
-        SIZE_DA=    NPBLK
+      IF(SIZE_DA_P4M.EQ.0) THEN
+        ALLOCATE(DA_P4M(NPBLK))
+        SIZE_DA_P4M=    NPBLK
+      ELSEIF(       NPBLK.GT.SIZE_DA_P4M) THEN
+        DEALLOCATE(DA_P4M)
+        ALLOCATE(DA_P4M(NPBLK))
+        SIZE_DA_P4M=    NPBLK
       ENDIF
-      IF(SIZE_XA.EQ.0) THEN
-        ALLOCATE(XA(2*NSEGBLK))
-        SIZE_XA=    2*NSEGBLK
-      ELSEIF(       2*NSEGBLK.GT.SIZE_XA) THEN
-        DEALLOCATE(XA)
-        ALLOCATE(XA(2*NSEGBLK))
-        SIZE_XA=    2*NSEGBLK
+      IF(SIZE_XA_P4M.EQ.0) THEN
+        ALLOCATE(XA_P4M(2*NSEGBLK))
+        SIZE_XA_P4M=    2*NSEGBLK
+      ELSEIF(       2*NSEGBLK.GT.SIZE_XA_P4M) THEN
+        DEALLOCATE(XA_P4M)
+        ALLOCATE(XA_P4M(2*NSEGBLK))
+        SIZE_XA_P4M=    2*NSEGBLK
       ENDIF
-      IF(SIZE_RHS.EQ.0) THEN
-        ALLOCATE(RHS(NPBLK))
-        SIZE_RHS=    NPBLK
-      ELSEIF(        NPBLK.GT.SIZE_RHS) THEN
-        DEALLOCATE(RHS)
-        ALLOCATE(RHS(NPBLK))
-        SIZE_RHS=    NPBLK
+      IF(SIZE_RHS_P4M.EQ.0) THEN
+        ALLOCATE(RHS_P4M(NPBLK))
+        SIZE_RHS_P4M=    NPBLK
+      ELSEIF(        NPBLK.GT.SIZE_RHS_P4M) THEN
+        DEALLOCATE(RHS_P4M)
+        ALLOCATE(RHS_P4M(NPBLK))
+        SIZE_RHS_P4M=    NPBLK
       ENDIF
-      IF(SIZE_XINC.EQ.0) THEN
-        ALLOCATE(XINC(NPBLK))
-        SIZE_XINC=    NPBLK
-      ELSEIF(         NPBLK.GT.SIZE_XINC) THEN
-        DEALLOCATE(XINC)
-        ALLOCATE(XINC(NPBLK))
-        SIZE_XINC=    NPBLK
+      IF(SIZE_XINC_P4M.EQ.0) THEN
+        ALLOCATE(XINC_P4M(NPBLK))
+        SIZE_XINC_P4M=    NPBLK
+      ELSEIF(         NPBLK.GT.SIZE_XINC_P4M) THEN
+        DEALLOCATE(XINC_P4M)
+        ALLOCATE(XINC_P4M(NPBLK))
+        SIZE_XINC_P4M=    NPBLK
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -155,40 +144,40 @@
 !     ===========================
 !
       DO I=1,NPOIN
-        RHS(I)      = CVB1(I)
-        RHS(I+NPOIN)= CVB2(I)
+        RHS_P4M(I)      = CVB1(I)
+        RHS_P4M(I+NPOIN)= CVB2(I)
       ENDDO
 !
 !     2. CONSTRUCTION STOCKAGE SEGMENT MATRICE BLOCK (DE 4)
 !     =====================================================
 !
-      CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
+      CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4_P4M)
 !
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
-     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA,
+     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA_P4M,XA_P4M,
      &               TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
 !
 !     3. RESOLUTION : APPEL A MUMPS
 !     =============================
 !
+
 !     NOTE JMH 23/02/2015 : THE ARGUMENTS GIVEN TO SOLVE_MUMPS ARE THOSE
 !                           OF SOLVE_MUMPS_PAR !!!!
 !                           AND SOLVE_MUMPS IS VOID !!!!!
 !
-!     CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-!    &                 XINC,RHS,INFOGR,TYPEXT,KNOLG,
-!    &                 NPOIN_TOT,IPID)
+!     CALL SOLVE_MUMPS(NPBLK,NSEGBLK,GLOSEG4_P4M,NSEGBLK,DA_P4M,XA_P4M,
+!    &     XINC_P4M,RHS_P4M,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
 !
-      CALL SOLVE_MUMPS_PAR(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     &                     XINC,RHS,INFOGR,'Q',KNOLG,
+      CALL SOLVE_MUMPS_PAR(NPBLK,NSEGBLK,GLOSEG4_P4M,NSEGBLK,DA_P4M,
+     &                     XA_P4M,XINC_P4M,RHS_P4M,INFOGR,'Q',KNOLG,
      &                     NPOIN_TOT,IPID)
 !
 !     4. RECUPERATION DES INCONNUES
 !     =============================
 !
       DO I=1,NPOIN
-        XX1(I)= XINC(I)
-        XX2(I)= XINC(I+NPOIN)
+        XX1(I)= XINC_P4M(I)
+        XX2(I)= XINC_P4M(I+NPOIN)
       ENDDO
 !
 #else

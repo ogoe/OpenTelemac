@@ -131,10 +131,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SOLVE => SOLVE
+      USE DECLARATIONS_TELEMAC, ONLY : TBB, BB, BX, FIRST_SOLVE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -173,29 +173,27 @@
 !
 !     STRUCTURES OF BLOCKS OF WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ)          :: TBB
-      TYPE(BIEF_OBJ), TARGET  :: BB,BX
       TYPE(BIEF_OBJ), POINTER :: PB,PX
 !
 !-----------------------------------------------------------------------
 !
-      LOGICAL FIRST
-      DATA FIRST/.TRUE./
-!
-      SAVE TBB,BB,BX
-!-----------------------------------------------------------------------
-!
 !  ALLOCATES THE BLOCK OF BLOCKS TBB AND THE BLOCKS IN TBB
 !
-      IF(FIRST) THEN
+      IF(FIRST_SOLVE) THEN
         CALL ALLBLO(TBB,'TBB   ')
         CALL ALLBLO(BB ,'BB    ')
         CALL ALLBLO(BX ,'BX    ')
-        FIRST=.FALSE.
+        FIRST_SOLVE=.FALSE.
       ENDIF
       NBL = 7
       IF(CFG%SLV.EQ.7) NBL = MAX(NBL,4+2*CFG%KRYLOV)
       IF(NBL.GT.TBB%N) THEN
+        IF(TBB%N.ne.0) THEN
+          DO I=1,TBB%N
+            DEALLOCATE(TBB%ADR(I)%P%ADR)
+            DEALLOCATE(TBB%ADR(I)%P)
+          ENDDO
+        ENDIF
         TBB%N=0
         CALL ALLBLO_IN_BLOCK(TBB,NBL,'BL    ')
       ENDIF
@@ -414,7 +412,13 @@
         ITBB = ITBB + 1
         IBL2=ITBB
         ITBB = ITBB + 1
+        DO I=1,TBB%ADR(IBL1)%P%N
+          NULLIFY(TBB%ADR(IBL1)%P%ADR(I)%P)
+        ENDDO
         TBB%ADR(IBL1)%P%N=0
+        DO I=1,TBB%ADR(IBL2)%P%N
+          NULLIFY(TBB%ADR(IBL2)%P%ADR(I)%P)
+        ENDDO
         TBB%ADR(IBL2)%P%N=0
         DO K=1,CFG%KRYLOV
           CALL SOLAUX(IAD, TB,TBB,ITB,ITBB,S)

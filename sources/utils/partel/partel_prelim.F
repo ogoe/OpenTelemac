@@ -72,6 +72,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !   MAXIMUM GEOMETRICAL MULTIPLICITY OF A NODE (VARIABLE AUSSI
@@ -114,9 +115,6 @@
 !
       INTEGER NPARTS
       INTEGER, ALLOCATABLE :: EPART(:), NPART(:)
-!
-      INTEGER LNG,LU
-      COMMON /INFO/ LNG,LU
 !
 !----------------------------------------------------------------------
 !

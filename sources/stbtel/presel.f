@@ -27,9 +27,8 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER NDP,NELEM,NELMAX,NBFOND,NSFOND,NVARIN,NVAROU
       INTEGER TRAV1(NELEM,NDP),IKLE(NELMAX,NDP),I,IDP,IELEM

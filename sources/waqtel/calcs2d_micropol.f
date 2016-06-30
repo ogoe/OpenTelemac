@@ -22,45 +22,44 @@
 !+       REAL CREATION
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CCSEDIM        |-->| CONSTANT OF EXPONENTIAL DESINTEGRATION       
-!| CDISTRIB       |-->| COEFFICIENT OF DISTRIBUTION (KD)             
+!| CCSEDIM        |-->| CONSTANT OF EXPONENTIAL DESINTEGRATION
+!| CDISTRIB       |-->| COEFFICIENT OF DISTRIBUTION (KD)
 !| DT             |-->| TIME STEP
-!| ERO            |-->| EROSION RATE    
-!| KDESORP        |-->| KINETIC CONSTANT OF  DESORPTION   
-!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM                     
-!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES 
+!| ERO            |-->| EROSION RATE
+!| KDESORP        |-->| KINETIC CONSTANT OF  DESORPTION
+!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
+!| NPOIN          |-->| TOTAL NUMBER OF MESH NODES
 !| NTRAC          |-->| NUMBER OF TRACERS
-!| TAUB           |-->| BED SHEAR       
-!| TAUS           |-->| CRITICAL STRESS OF RESUSPENSION              
+!| TAUB           |-->| BED SHEAR
+!| TAUS           |-->| CRITICAL STRESS OF RESUSPENSION
 !| TAUR           |-->| SEDIMENTATION CRITICAL STRESS
 !| TEXP           |<--| EXPLICIT SOURCE TERMS OF TRACERS
 !| TIMP           |<--| IMPLICIT SOURCE TERMS OF TRACERS
 !| TN             |-->| TRACERS
-!| VITCHU         |-->| SEDIMENT SETTLING VELOCITY    
+!| VITCHU         |-->| SEDIMENT SETTLING VELOCITY
 !| VOLU2D         |-->| BASE AREA (NOT ASSEMBLED)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_PARALLEL
       USE DECLARATIONS_WAQTEL,ONLY:ERO,TAUR,TAUS,VITCHU,CDISTRIB,
      &                             RO0,KDESORP,CCSEDIM
       USE INTERFACE_WAQTEL, EX_CALCS2D_MICROPOL => CALCS2D_MICROPOL
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 !
       INTEGER          , INTENT(IN   ) :: NPOIN,NTRAC
       DOUBLE PRECISION , INTENT(IN   ) :: DT
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,HPROP,CF,HN,UN,VN,VOLU2D
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TEXP,T1,T2,T3,T4,TIMP
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 !     LOCAL VARIABLES
       INTEGER                     :: RANKTR1,RANKTR2,RANKTR3,RANKTR4
       INTEGER                     :: RANKTR5,I,J,ITRAC
@@ -82,7 +81,7 @@
       RANKTR5 = NTRAC          ! CFF (ABSORBED POLLUTANT BY BED SEDIMENT)
 !
 !     BED SHEAR STRESS (TAUB-STOCKED IN T1)
-!    
+!
       CALL TAUB_WAQTEL(CF,RO0,T1,NPOIN,UN,VN)
 !
 !     DEPOTION PROBABILITY (SED): STOCKED IN T2
@@ -102,7 +101,7 @@
 !
       CALL OS ('X=Y-Z   ',TEXP%ADR(RANKTR1)%P,T3,T2)
       CALL OVD('X=Y/Z   ',TEXP%ADR(RANKTR1)%P%R,TEXP%ADR(RANKTR1)%P%R,
-     &         HPROP%R,0.D0,NPOIN,2,0.D0,EPS)    
+     &         HPROP%R,0.D0,NPOIN,2,0.D0,EPS)
 !
 !     SECOND TRACER: BED SEDIMENT [SF] (RANKTR2)
 !      warning: no advection neither diffusion for this tracer
@@ -111,9 +110,9 @@
 !
 !     THIRD TRACER: POLLUTANT DENSITY [C] (RANKTR3)
 !
-!     implicit part  
+!     implicit part
       CALL OS( 'X=C     ' ,X=TIMP%ADR(RANKTR3)%P,C=CCSEDIM             )
-!     explicit part  
+!     explicit part
       CALL OS( 'X=CY    ' ,X=TEXP%ADR(RANKTR3)%P,Y=TN%ADR(RANKTR4)%P,
      &                     C=KDESORP                                   )
       CC =-KDESORP*CDISTRIB
@@ -141,8 +140,8 @@
       CALL OS( 'X=X+CY  ' ,X=TEXP%ADR(RANKTR5)%P,Y=TN%ADR(RANKTR5)%P,
      &                     C=-CCSEDIM                                  )
 !
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
        DO J=1,ADDTR
@@ -155,7 +154,7 @@
          MASSOU(ITRAC)=MASSOU(ITRAC)*DT
          IF(NCSIZE.GT.0) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
        ENDDO
-!      
+!
 !-----------------------------------------------------------------------
 !
       RETURN

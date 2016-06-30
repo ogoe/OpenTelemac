@@ -97,10 +97,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER, INTENT(IN)            :: NPTFR,NPLAN,NF,NPOIN2,LT,NPRIV
       INTEGER, INTENT(IN)            :: LIMSPE,KENT,KSORT,FRABL
@@ -354,11 +352,9 @@
 !
       USE BIEF
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH, NCSIZE
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
       INTEGER NPLAN,NF,NPOIN2,NPTFR,LT,NPRIV
 !
@@ -454,10 +450,8 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""

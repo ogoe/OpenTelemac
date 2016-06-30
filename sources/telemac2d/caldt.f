@@ -58,9 +58,8 @@
       USE BIEF_DEF, ONLY:NCSIZE
       USE DECLARATIONS_TELEMAC2D,ONLY:DTINI,LEOPRD
       USE INTERFACE_TELEMAC2D, EX_CALDT => CALDT
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

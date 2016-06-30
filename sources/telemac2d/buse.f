@@ -67,9 +67,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR,DT,SECBUS
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

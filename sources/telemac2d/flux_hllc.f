@@ -56,9 +56,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -172,9 +171,6 @@
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !       SSTAR = SL
         GOTO 35
-! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
-!        SSTAR = SL
-        GOTO 35
       ENDIF
 !
       IF(HR.GT.EPS)THEN
@@ -184,9 +180,6 @@
         SR = UL + 2.0D0*AL
 ! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
 !       SSTAR = SR
-        GOTO 35
-! RA+SP: USE OF ANALYTICAL FORMULA FOR SSTAR
-!         SSTAR = SR
         GOTO 35
       ENDIF
 !RA      SSTAR = USTAR

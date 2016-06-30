@@ -47,6 +47,8 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER, INTENT(INOUT)       :: ICOL
@@ -54,11 +56,6 @@
 !
       INTEGER          NEXT,PREVAL
       EXTERNAL NEXT,PREVAL
-!
-      INTEGER          LNG,LU
-      INTEGER          NLIGN,LONGLI
-      INTEGER          NFIC
-      LOGICAL          ERREUR , RETOUR
 !
 !-----------------------------------------------------------------------
 !
@@ -69,13 +66,6 @@
       CHARACTER(LEN=1)  CDEB,TABUL
       CHARACTER(LEN=3)  LLONG
       CHARACTER(LEN=72) LIGNE2,FORMA
-!
-!-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR , RETOUR
-      COMMON / DCMLIG / NLIGN , LONGLI
-      COMMON / DCCHIE / NFIC
 !
 !***********************************************************************
 !

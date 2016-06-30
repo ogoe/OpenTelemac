@@ -87,10 +87,9 @@
       USE DECLARATIONS_TOMAWAC,ONLY: DEBUG
       USE INTERFACE_TOMAWAC, EX_NOUDON => NOUDON
       USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -44,9 +44,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER I
 !
@@ -186,9 +185,8 @@
 !-----------------------------------------------------------------------
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER, INTENT(IN):: NPOIN , CHOIX
       INTEGER, INTENT(INOUT):: NLISS
@@ -351,9 +349,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

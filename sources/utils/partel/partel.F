@@ -91,8 +91,6 @@
 !
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON /INFO/ LNG,LU
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEINP

@@ -27,9 +27,8 @@
 !
       USE UTILS_SERAFIN
       USE UTILS_MED
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER     LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -140,9 +140,8 @@
      &  WATTEMP,RSW,ABRS,RAYEFF
       USE INTERFACE_WAQTEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -195,7 +194,7 @@
 !-----------------------------------------------------------------------
 !     INITIALIALIZATION OF YASMI
       IF(LT.EQ.1)THEN
-        DO ITRAC=1,NTRA   
+        DO ITRAC=1,NTRA
           IF(LOITRAC(ITRAC).EQ.0) THEN
             YASMI(ITRAC)=.FALSE.
           ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
@@ -458,15 +457,17 @@
       ENDDO
 !
 !     WATER QUALITY CONTRIBUTION TO TRACER SOURCES
-      IF(DEBUG.GT.0) WRITE(LU,*) 'CALL OF SOURCE_WAQ'
+!
       IF(INCLUS(COUPLING,'WAQTEL')) THEN
+      IF(DEBUG.GT.0) WRITE(LU,*) 'CALL OF SOURCE_WAQ'
         CALL SOURCE_WAQ
      & (NPOIN,NPOIN,TEXP,TIMP,TN,NTRAC,WAQPROCESS,RAYEFF,IND_T,IND_S,H,
      &  HPROP,U,V,CF,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T1,T2,T3,
      &  PATMOS,LISTIN,GRAV,ZF,DEBUG,MASSOU,DT,2,VOLU2D,1,LAMBD0,PHI0,
      &  AT,MARDAT,MARTIM,MESH%X)
-      ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SOURCE_WAQ'
+      ENDIF
+
 !
 !-----------------------------------------------------------------------
 !
@@ -571,9 +572,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -762,9 +762,8 @@
       USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
      &                                  FLUX_BOUNDARIES,MAXFRO,TIDALTYPE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1044,7 +1043,3 @@
 !
       RETURN
       END
-
-                                       
-
-                                                                                                                                                                                                                                                                                                                                     

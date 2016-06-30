@@ -28,16 +28,13 @@
 !|           |   | THE ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER LGVEC , MESH , NDP , NDEPAR , IELEM , NELEM , K
-      INTEGER NPMAX , NPOIN , NELMAX
+      INTEGER LGVEC, NDEPAR , IELEM , K
       INTEGER I1 , I2 , I3 , J1 , J2 , J3 , IEL1
       INTEGER IKLE(NELMAX,4)
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !

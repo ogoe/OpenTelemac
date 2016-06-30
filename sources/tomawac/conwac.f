@@ -68,11 +68,10 @@
 !
       USE DECLARATIONS_TOMAWAC, ONLY : GRADEG,DEUPI,SR,GRAVIT
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_CONWAC => CONWAC
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -188,10 +188,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVTRVF_POS => CVTRVF_POS
+      USE DECLARATIONS_TELEMAC, ONLY : DEJA_CPOS, INDIC_CPOS
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -236,34 +236,28 @@
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT
       DOUBLE PRECISION, PARAMETER :: TIERS=1.D0/3.D0
-      LOGICAL TESTING
-      DATA TESTING/.FALSE./
-      DOUBLE PRECISION EPS_FLUX
-      DATA             EPS_FLUX/1.D-15/
-!
-!-----------------------------------------------------------------------
-!
-!     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      INTEGER, ALLOCATABLE      :: INDIC(:)
+      LOGICAL, PARAMETER :: TESTING = .FALSE.
+      DOUBLE PRECISION, PARAMETER :: EPS_FLUX = 1.D-15
       DOUBLE PRECISION, POINTER :: FLOP1(:),FLOP2(:),FLOP3(:)
       DOUBLE PRECISION, POINTER :: DTLIM1(:),DTLIM2(:),DTLIM3(:)
       DOUBLE PRECISION, POINTER :: SVOL1(:),SVOL2(:),SVOL3(:)
-      SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     INDIC_CPOS WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
+!
       NELEM=MESH%NELEM
       NSEG=MESH%NSEG
       NPOIN=H%DIM1
       SURDT=1.D0/DT
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_CPOS) THEN
         IF(OPTION.EQ.1) THEN
-          ALLOCATE(INDIC(NELEM))
+          ALLOCATE(INDIC_CPOS(NELEM))
         ELSEIF(OPTION.EQ.2) THEN
-          ALLOCATE(INDIC(MESH%NSEG))
+          ALLOCATE(INDIC_CPOS(MESH%NSEG))
         ENDIF
-        DEJA=.TRUE.
+        DEJA_CPOS=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -527,7 +521,7 @@
       ENDIF
 !
       DO I=1,REMAIN
-        INDIC(I)=I
+        INDIC_CPOS(I)=I
       ENDDO
 !
 !     MAXIMUM INITIAL FLUX
@@ -563,7 +557,7 @@
         CALL OS('X=0     ',X=T7)
         CALL OS('X=0     ',X=T1)
         DO IR=1,REMAIN
-          I=INDIC(IR)
+          I=INDIC_CPOS(IR)
           I1=MESH%IKLE%I(I        )
           I2=MESH%IKLE%I(I  +NELEM)
           I3=MESH%IKLE%I(I+2*NELEM)
@@ -619,7 +613,7 @@
         ELSE
 !         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
           DO IR=1,REMAIN
-            I=INDIC(IR)
+            I=INDIC_CPOS(IR)
             I1=GLOSEG1(I)
             I2=GLOSEG2(I)
             T1%R(I1)=0.D0
@@ -649,7 +643,7 @@
           ENDIF
         ENDIF
         DO IR=1,REMAIN
-          I=INDIC(IR)
+          I=INDIC_CPOS(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
           IF(FXMAT(I).GT.EPS_FLUX) THEN
@@ -710,7 +704,7 @@
 !
       DO IR=1,REMAIN
 !
-        I=INDIC(IR)
+        I=INDIC_CPOS(IR)
 !
         I1=MESH%IKLE%I(I        )
         I2=MESH%IKLE%I(I  +NELEM)
@@ -931,7 +925,7 @@
 !     EVALUATING OFFER AND DEMAND
 !
       DO IR=1,REMAIN
-        I=INDIC(IR)
+        I=INDIC_CPOS(IR)
 !
         I1=MESH%IKLE%I(I        )
         I2=MESH%IKLE%I(I  +NELEM)
@@ -976,7 +970,7 @@
 !
       DO IR=1,REMAIN
 !
-        I=INDIC(IR)
+        I=INDIC_CPOS(IR)
 !
         I1=MESH%IKLE%I(I        )
         I2=MESH%IKLE%I(I  +NELEM)
@@ -1161,7 +1155,7 @@
       C=0.D0
 !
       DO IR=1,REMAIN
-        I=INDIC(IR)
+        I=INDIC_CPOS(IR)
         IF(DTLIM1(I).EQ.DT.AND.DTLIM2(I).EQ.DT.AND.
      &     DTLIM3(I).EQ.DT) THEN
           FLOP1(I)=0.D0
@@ -1171,7 +1165,7 @@
           NEWREMAIN=NEWREMAIN+1
 !         BEFORE NEWREMAIN: FOR NEXT ITERATION
 !         AFTER  NEWREMAIN: STILL VALID FOR NEXT ITERATION
-          INDIC(NEWREMAIN)=I
+          INDIC_CPOS(NEWREMAIN)=I
           FLOP1(I)=FLOP1(I)*(1.D0-DTLIM1(I)*SURDT)
           FLOP2(I)=FLOP2(I)*(1.D0-DTLIM2(I)*SURDT)
           FLOP3(I)=FLOP3(I)*(1.D0-DTLIM3(I)*SURDT)
@@ -1185,7 +1179,7 @@
       NEWREMAIN=0
 !
       DO IR=1,REMAIN
-        I=INDIC(IR)
+        I=INDIC_CPOS(IR)
         I1=GLOSEG1(I)
         I2=GLOSEG2(I)
         IF(FXMAT(I).GT.EPS_FLUX) THEN
@@ -1211,7 +1205,7 @@
               FXMAT(I)=FXMAT(I)*(1.D0-TET)
               C=C+FXMAT(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_CPOS(NEWREMAIN)=I
             ELSE
               HSEG1=HSEG1-HFL1
               HSEG2=DT*UNSV2D%R(I2)*FXMAT(I)
@@ -1230,7 +1224,7 @@
 !           NO WATER NO FLUX TRANSMITTED, NOTHING CHANGED
             C=C+FXMAT(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_CPOS(NEWREMAIN)=I
           ENDIF
         ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
 !         SHARING ON DEMAND
@@ -1251,7 +1245,7 @@
               FXMAT(I)=FXMAT(I)*(1.D0-TET)
               C=C-FXMAT(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_CPOS(NEWREMAIN)=I
             ELSE
               HSEG1=-DT*UNSV2D%R(I1)*FXMAT(I)
               HSEG2=HSEG2-HFL2
@@ -1269,7 +1263,7 @@
 !           NO WATER NO FLUX TRANSMITTED, NOTHING CHANGED
             C=C-FXMAT(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I
+            INDIC_CPOS(NEWREMAIN)=I
           ENDIF
         ENDIF
       ENDDO

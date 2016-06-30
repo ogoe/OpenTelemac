@@ -21,9 +21,8 @@
 !| I              |-->| RANK OF THE PROCESSOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       INTEGER,       INTENT(IN) :: IERR
       CHARACTER*(*), INTENT(IN) :: CHFILE

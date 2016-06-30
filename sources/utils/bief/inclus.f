@@ -33,9 +33,8 @@
 !| C2             |-->| CHARACTER STRING LOOKED FOR INTO C1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       CHARACTER*(*) C1 , C2
 !

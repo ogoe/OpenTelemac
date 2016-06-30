@@ -42,11 +42,10 @@
 !| XM             |-->| PARAMETER XM OF THE FUNCTION TO INTGRATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_BORNES => BORNES
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !     VARIABLES IN ARGUMENT
 !     """""""""""""""""""""

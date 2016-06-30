@@ -227,9 +227,8 @@
       USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
       USE DECLARATIONS_TELEMAC3D, ONLY : KSCE, ISCE,BEDBOU,BEDFLU
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

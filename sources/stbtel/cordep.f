@@ -34,19 +34,17 @@
 ! APPEL DE : ECHELE
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER IELEM , NELEM , IEL1 , IEL2
+      INTEGER IELEM , IEL1 , IEL2
       INTEGER I1 , I2 , I3 , J1 , J2 , J3
-      INTEGER LGVEC , MESH , NDP , K
-      INTEGER NPMAX , NPOIN , NELMAX
+      INTEGER LGVEC , K
       INTEGER IKLE(NELMAX,4)
 !
       LOGICAL DEP
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !

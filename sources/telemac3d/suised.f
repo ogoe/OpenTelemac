@@ -74,10 +74,9 @@
       USE BIEF
       USE INTERFACE_HERMES
 !!!      USE DECLARATIONS_TELEMAC3D, ONLY: RHOS
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !----------------------------------------------------------------------
 !

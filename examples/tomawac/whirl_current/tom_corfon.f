@@ -22,9 +22,8 @@
 !
       USE DECLARATIONS_TOMAWAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !MB--------------------------------------Modif debut
       INTEGER IP

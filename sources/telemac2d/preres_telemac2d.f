@@ -64,17 +64,14 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL ,INTENT(INOUT)::IMP,LEO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      LOGICAL DEJA1,DEJA2
 !
       INTEGER LTT,N,IMAX,I
 !
@@ -86,12 +83,6 @@
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN
-!
-!-----------------------------------------------------------------------
-!
-      DATA DEJA1/.FALSE./
-      DATA DEJA2/.FALSE./
-      SAVE DEJA1,DEJA2
 !
 !-----------------------------------------------------------------------
 !
@@ -168,10 +159,10 @@
 !=======================================================================
 !
       IF(SORLEO(27).OR.SORIMP(27)) THEN
-        IF(.NOT.DEJA1) THEN
+        IF(.NOT.DEJA1_PRERES) THEN
           CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
           CALL OS('X=C     ',X=TMAXZ,C=AT)
-          DEJA1=.TRUE.
+          DEJA1_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=H%R(N)+ZF%R(N)
@@ -189,10 +180,10 @@
 !=======================================================================
 !
       IF(SORLEO(29).OR.SORIMP(29)) THEN
-        IF(.NOT.DEJA2) THEN
+        IF(.NOT.DEJA2_PRERES) THEN
           CALL OS('X=C     ',X=MAXV ,C=0.D0)
           CALL OS('X=C     ',X=TMAXV,C=AT)
-          DEJA2=.TRUE.
+          DEJA2_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=SQRT(U%R(N)**2+V%R(N)**2)

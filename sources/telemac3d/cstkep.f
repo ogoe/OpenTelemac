@@ -73,9 +73,8 @@
      &                                   CLIPK,CLIPE,WSIK,YAP,
      &                                   PERNORM2,PERPROD,RIMIN,RIMAX,
      &                                   OPTPROD,LIMKF,LIMEF,LIMKS,LIMES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

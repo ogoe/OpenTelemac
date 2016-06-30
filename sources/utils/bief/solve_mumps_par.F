@@ -31,6 +31,7 @@
 !     PARALLEL SOLVING USING MUMPS
       USE DECLARATIONS_PARALLEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !     structures MPI et MUMPS
 #if defined (HAVE_MUMPS)
@@ -49,8 +50,6 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      COMMON/INFO/LNG,LU
-      INTEGER LNG,LU
 #if defined (HAVE_MUMPS)
 !
       DOUBLE PRECISION TIME_IN_SECONDS2

@@ -82,10 +82,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATVEC => MATVEC
+      USE DECLARATIONS_TELEMAC, ONLY : W_IS_FULL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -103,10 +103,7 @@
 !
       INTEGER, DIMENSION(:), POINTER :: IKLE
 !
-      LOGICAL TRANS,W_IS_FULL,LEGO2
-!
-      DATA W_IS_FULL/.FALSE./
-      SAVE W_IS_FULL
+      LOGICAL TRANS,LEGO2
 !
 !-----------------------------------------------------------------------
 !

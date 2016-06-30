@@ -7,9 +7,8 @@
      &  (XLE,YLI,ZLI,XRI,YRI,ZRE,XM,YM,ZM,
      &   X,Y,ZS,ZF,IKLE,ELEM,NSEC,NPOIN2)
 
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
       INTEGER, INTENT(IN) :: NSEC,NPOIN2
       DOUBLE PRECISION, INTENT(IN)    :: XLE(NSEC),YLI(NSEC),ZLI(NSEC)
@@ -118,9 +117,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -332,9 +330,8 @@
      &                                  FLUX_BOUNDARIES,MAXFRO,FRTYPE,
      &                                  TIDALTYPE,BOUNDARY_COLOUR,LT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

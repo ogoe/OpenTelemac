@@ -48,9 +48,8 @@
 ! THIS SHOULD BE AN INPUT ARGUMENT (REQUIRES EXTRA CVDF3D ARGUMENT)
       USE DECLARATIONS_TELEMAC3D, ONLY: TRAV1
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

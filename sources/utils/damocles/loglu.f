@@ -41,6 +41,8 @@
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -49,11 +51,6 @@
       CHARACTER*(*), INTENT(INOUT) :: LIGNE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR,RETOUR
 !
       INTEGER  NEXT,PRECAR
       EXTERNAL NEXT,PRECAR
@@ -67,11 +64,6 @@
       LOGICAL       LUFIC,LISUIV
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR , RETOUR
-      COMMON / DCMLIG / NLIGN , LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !

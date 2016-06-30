@@ -46,9 +46,8 @@
 !
       USE BIEF, EX_SOLAUX => SOLAUX
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -78,6 +77,9 @@
       MAXTB = TB%N
       ITBB = ITBB + 1
 !     REINITIALISES THE BLOCK
+      DO K=1,TBB%ADR(IPT)%P%N
+        NULLIFY(TBB%ADR(IPT)%P%ADR(K)%P)
+      ENDDO
       TBB%ADR(IPT)%P%N=0
       DO K = 1 , MAX(S,1)
         IF(ITB.GT.MAXTB) THEN

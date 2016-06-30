@@ -22,9 +22,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -140,9 +139,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -238,17 +236,14 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL ,INTENT(INOUT)::IMP,LEO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      LOGICAL DEJA1,DEJA2
 !
       INTEGER LTT,N,IMAX,I,II,JJ
 !
@@ -260,12 +255,6 @@
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN
-!
-!-----------------------------------------------------------------------
-!
-      DATA DEJA1/.FALSE./
-      DATA DEJA2/.FALSE./
-      SAVE DEJA1,DEJA2
 !
 !-----------------------------------------------------------------------
 !
@@ -293,7 +282,7 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!         FOR GRAPHICAL OUTPUTS          
+!         FOR GRAPHICAL OUTPUTS
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
@@ -313,7 +302,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
@@ -341,10 +330,10 @@
 !=======================================================================
 !
       IF(SORLEO(27).OR.SORIMP(27)) THEN
-        IF(.NOT.DEJA1) THEN
+        IF(.NOT.DEJA1_PRERES) THEN
           CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
           CALL OS('X=C     ',X=TMAXZ,C=AT)
-          DEJA1=.TRUE.
+          DEJA1_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=H%R(N)+ZF%R(N)
@@ -362,10 +351,10 @@
 !=======================================================================
 !
       IF(SORLEO(29).OR.SORIMP(29)) THEN
-        IF(.NOT.DEJA2) THEN
+        IF(.NOT.DEJA2_PRERES) THEN
           CALL OS('X=C     ',X=MAXV ,C=0.D0)
           CALL OS('X=C     ',X=TMAXV,C=AT)
-          DEJA2=.TRUE.
+          DEJA2_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=SQRT(U%R(N)**2+V%R(N)**2)
@@ -622,9 +611,8 @@
 !| SECCURRENTS    |-->| IF YES SECONDARY CURRENTS COMPUTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -962,9 +950,8 @@
 ! |________________|____|______________________________________________|
 !**********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER I,J,NPOIN
       INTEGER, PARAMETER :: ITMAX = 4000

@@ -39,9 +39,8 @@
 !
       USE BIEF, EX_PARCOM2I => PARCOM2I
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !

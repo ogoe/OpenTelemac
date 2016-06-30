@@ -207,7 +207,6 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
-  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -452,10 +451,12 @@ files: bief_def.f
   write_header.f
   write_mesh.f
   bief_close_files.f
+  solve_mumps_par.F
 
 [damocles]
 path: <root>|sources|utils|damocles
 files: majus.f
+  declarations_damocles.f
   preval.f
   next.f
   intlu.f

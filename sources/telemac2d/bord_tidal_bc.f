@@ -47,10 +47,10 @@
 !
       USE INTERFACE_TELEMAC2D, EX_BORD_TIDAL_BC => BORD_TIDAL_BC
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : DEJA_TBC, FIRSTTIDE, LASTTIDE
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -71,7 +71,6 @@
       INTEGER, PARAMETER :: NPOINJMJ=15350
       INTEGER CJMJ(NPOINJMJ,24)
       INTEGER, ALLOCATABLE :: IPOBO(:),NBTIDE(:),IKLESA(:,:)
-      INTEGER, ALLOCATABLE :: FIRSTTIDE(:),LASTTIDE(:)
 !
       DOUBLE PRECISION X1,X2,X3,Y1,Y2,Y3,PI,DTR,RTD,REARTH
       DOUBLE PRECISION XM,YM,DIS,A1,A2,A3,DISEL,ZP,XL,YL
@@ -84,12 +83,6 @@
 !
       REAL TPS
       REAL, ALLOCATABLE :: XTIDER(:),YTIDER(:),ZTIDER(:)
-!
-      LOGICAL DEJA_TBC
-      DATA    DEJA_TBC /.FALSE./
-!
-      SAVE FIRSTTIDE,LASTTIDE
-      SAVE DEJA_TBC
 !
 !-----------------------------------------------------------------------
 !

@@ -58,10 +58,11 @@
 !
 !***********************************************************************
 !
+      USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
+      USE DECLARATIONS_TOMAWAC, ONLY : UV2D,VV2D,PROF,FB_CTE,NPB
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
       INTEGER NPLAN,NF,NPOIN2,NPTFR,LT,NPRIV
 !
@@ -82,7 +83,6 @@
       INTEGER KENT,KSORT,IFF,IPLAN,IPTFR,LIMSPE,FRABL
 !
       DOUBLE PRECISION, ALLOCATABLE :: TRAV(:)
-      DOUBLE PRECISION, ALLOCATABLE :: UV2D(:),VV2D(:),PROF(:)
 !
       DOUBLE PRECISION S00, DTETA
       DOUBLE PRECISION HM0   , AL    , FP    , GAMMA , SIGMAA, SIGMAB
@@ -91,7 +91,6 @@
 !
       CHARACTER*3 BINBI1
 !
-      SAVE UV2D,VV2D,PROF
 !
 !***********************************************************************
 !
@@ -188,3 +187,4 @@
 !
       RETURN
       END
+

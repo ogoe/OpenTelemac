@@ -27,11 +27,11 @@
 !| HPROP         |-->| PROPAGATION DEPTH
 !| IND_T         |-->| INDEX OF TEMPERATURE IN TRACER TABLE
 !| K22           |<--| CONST. OF REAERATION
-!| K44           |-->| CONST. OF NITRIFICATION KINETIC 
+!| K44           |-->| CONST. OF NITRIFICATION KINETIC
 !| MASSOU        |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !| NPOIN         |-->| NUMBER OF NODES IN THE MESH
 !| NTRAC         |-->| TOTAL NUMBER OF TRACERS
-!| O2SATU        |<--| O2 SATURATION DENSITY OF WATER (CS) 
+!| O2SATU        |<--| O2 SATURATION DENSITY OF WATER (CS)
 !| PHOTO         |-->| PHOTOSYNTHESIS
 !| WATTEMP       |-->| TEMPERATURE OF WATER (DEG CELSIUS)
 !| T1,T2,T3,T4   |-->| WORKING ARRAY
@@ -45,19 +45,18 @@
 !
 
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY: FORMCS,K2,SECTODAY
       USE INTERFACE_PARALLEL
       USE INTERFACE_WAQTEL, EX_CALCS2D_O2 => CALCS2D_O2
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
       INTEGER          , INTENT(IN   ) :: FORMK2,NPOIN,NTRAC,IND_T,DEBUG
-      LOGICAL          , INTENT(IN   ) :: YATEMP  
+      LOGICAL          , INTENT(IN   ) :: YATEMP
       DOUBLE PRECISION , INTENT(IN   ) :: DEMBEN,WATTEMP
       DOUBLE PRECISION , INTENT(IN   ) :: PHOTO,RESP,K1,K44,DT
       DOUBLE PRECISION , INTENT(INOUT) :: O2SATU,K22,MASSOU(*)
@@ -86,8 +85,8 @@
       RANKTR3 = NTRAC
 !     INITIALIZE
       CALL OS('X=0     ',X=TEXP%ADR(RANKTR1)%P)
-      CALL OS('X=0     ',X=TIMP%ADR(RANKTR2)%P) 
-      CALL OS('X=0     ',X=TIMP%ADR(RANKTR3)%P) 
+      CALL OS('X=0     ',X=TIMP%ADR(RANKTR2)%P)
+      CALL OS('X=0     ',X=TIMP%ADR(RANKTR3)%P)
 !
       PMOINR  = (PHOTO-RESP)*SECTODAY
 !     CONVERT DAYS TO SECONDS
@@ -102,7 +101,7 @@
         T4%R(I)=BENCORR*(CORR1**POWER)
       ENDDO
 !
-!     COMPUTE CS (O2SATU, STOCKED IN T2) 
+!     COMPUTE CS (O2SATU, STOCKED IN T2)
 !
       IF(.NOT.YATEMP)THEN
         CALL SATUR_O2(O2SATU,FORMCS,WATTEMP,EPS)
@@ -124,30 +123,30 @@
 !----------------------------------------------------------------------
 !     LET'S NOW COMPUTE SOURCE TERMS
 !
-!     FIRST TRACER O2 (RANK NTRAC-ADDTR+1) 
-!     warning: here there are lots of choices that can be changed 
-!              by the user: 
+!     FIRST TRACER O2 (RANK NTRAC-ADDTR+1)
+!     warning: here there are lots of choices that can be changed
+!              by the user:
 !              1- reareration is considered for only water surface,
 !              2- bentic demand concerns only the bottom or all the water
 !              column (here the second choice is considered)
 !              these choices and many others, have to be decided by WAQ
 !              experts
 !
-!     EXPLICIT PART 
+!     EXPLICIT PART
 !     =============
 !
 !     SURFACE SOURCES
       DO I=1,NPOIN
         TEXP%ADR(RANKTR1)%P%R(I)= T3%R(I)*K2%R(I)*
      &          MAX((T2%R(I)-TN%ADR(RANKTR1)%P%R(I)),0.D0)
-!               O2 DENSITY CAN NOT BE GREATER THAN O2SATU    
+!               O2 DENSITY CAN NOT BE GREATER THAN O2SATU
       ENDDO
 !
 !     ADD PHOTOSYNTHESIS - RESPIRATION
 !
       CALL OS('X=X+C   ',X=TEXP%ADR(RANKTR1)%P,C=PMOINR)
 !
-!     THE REMAINING TERMS 
+!     THE REMAINING TERMS
 !
       CALL OS('X=X+CY  ',X=TEXP%ADR(RANKTR1)%P,Y=TN%ADR(RANKTR2)%P,
      &         C=-CONV_K1 )
@@ -160,9 +159,9 @@
       ENDDO
       IF(DEBUG.GT.0)WRITE(LU,*)'IN O2, STEP1:',TEXP%ADR(RANKTR1)%P%R(1)
 
-!     IMPLICIT PART: 
+!     IMPLICIT PART:
 !     ==============
-!     SOFAR, ALL TERMS ARE EXPLICIT FOR O2. CHANGE   
+!     SOFAR, ALL TERMS ARE EXPLICIT FOR O2. CHANGE
 !     IF THERE ARE DISAPPOINTING RESULTS
 !
 !     SECOND TRACER [L] ORGANIC LOAD
@@ -176,8 +175,8 @@
       IF(DEBUG.GT.0)WRITE(LU,*)'IN O2, STEP3:',TIMP%ADR(RANKTR3)%P%R(1)
 !
 !     CONVERT DAYS TO SECONDS: NOW DONE IN REAER
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
       MASSOU(RANKTR1) = 0.D0

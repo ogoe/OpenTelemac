@@ -41,9 +41,8 @@
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER     LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !     TYPE INTEGER:
 !
@@ -622,6 +621,8 @@
      &                   SORLEOA,SORIMPA,MAXVAR,TEXTE,0,0)
 !
       ENDIF
+!      
+      CALL DEALL_ADJ_T2D()
 !
 !-----------------------------------------------------------------------
 !

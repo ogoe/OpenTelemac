@@ -41,19 +41,18 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER MESH , NDP , I , NPOIN , J , NELEM , NPTELI , NELELI
-      INTEGER NELMAX , NPMAX , I1, I2, I3, I4, J1, J2, J3, J4
+      INTEGER I , J , NPTELI , NELELI
+      INTEGER I1, I2, I3, I4, J1, J2, J3, J4
       INTEGER IKLE(NELMAX,4) , NEW(*) , NCOLOR(*)
 !
       DOUBLE PRECISION X(*) , Y(*) , EPSI
 !
       LOGICAL PTPRO , PTELI , ELELI
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 ! RECHERCHE DES POINTS N'APPARTENANT A AUCUN ELEMENT

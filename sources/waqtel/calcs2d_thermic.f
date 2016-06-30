@@ -43,15 +43,13 @@
 !***********************************************************************
 !
       USE BIEF_DEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY:COEF_K,EMA,CFAER,PVAP,RAY3,
      &                             TAIR,NEBU,NWIND,BOLTZ,CP_EAU,CP_AIR,
      &                             EMI_EAU,EMA,RO0
 !      USE EXCHANGE_WITH_ATMOSPHERE
       USE INTERFACE_WAQTEL, EX_CALCS2D_THERMIC => CALCS2D_THERMIC
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -63,27 +61,27 @@
       INTEGER,        INTENT(IN)      :: IND_T
       LOGICAL,        INTENT(IN)      :: LISTIN
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  LOCAL VARIABLES
 !
-      INTEGER                     :: I 
+      INTEGER                     :: I
       DOUBLE PRECISION, PARAMETER :: EPS=1.D-3
       DOUBLE PRECISION            :: CE,CV,RE,L_VAP
       DOUBLE PRECISION            :: RAJ,RA,PATMC
       DOUBLE PRECISION            :: TEMPER,HA_SAT
       DOUBLE PRECISION            :: ROA,HA,P_VAP_SAT
-      DOUBLE PRECISION   :: CONSTCE,CONSTCV,CONSTRA,CONSTSS,CONSTRE   
+      DOUBLE PRECISION   :: CONSTCE,CONSTCV,CONSTRA,CONSTSS,CONSTRE
 !
       INTRINSIC MAX
 !
 ! ----------------------------------------------------------------
 !
-!     SOME OPTIMIZATION 
+!     SOME OPTIMIZATION
       CONSTRE = EMI_EAU*BOLTZ
       CONSTCV = CP_AIR*(CFAER(1)+CFAER(2)*NWIND)
       CONSTCE = CFAER(1)+CFAER(2)*NWIND
-      CONSTRA = EMA*BOLTZ *(TAIR+273.15D0)**4 * 
+      CONSTRA = EMA*BOLTZ *(TAIR+273.15D0)**4 *
      &          (1.D0+COEF_K*(NEBU/8.D0)**2)
 !
 !     MAJORATED RADIATION
@@ -96,13 +94,13 @@
       DO I=1,NPOIN
         TEMPER = TN%ADR(IND_T)%P%R(I)
 !       AIR DENSITY
-        ROA = 100.D0*PATMOS%R(I)/((TAIR+273.15D0)*287.D0) 
-!       AIR SPECIFIC MOISTURE 
+        ROA = 100.D0*PATMOS%R(I)/((TAIR+273.15D0)*287.D0)
+!       AIR SPECIFIC MOISTURE
         PATMC=PATMOS%R(I)-0.378D0*P_VAP_SAT
         HA  = 0.622D0*PVAP/(MAX(PATMC,EPS))
-!       RADIATION ON WATER SURFACE     
+!       RADIATION ON WATER SURFACE
         RE = CONSTRE*(TEMPER+273.15D0)**4
-!       ADVECTIVE HEAT FLUX 
+!       ADVECTIVE HEAT FLUX
         CV = ROA*CONSTCV*(TEMPER-TAIR)    ! WIND IS CONSIDERED CONST IN SPACE !
 !       VAPOR LATENT HEAT
         L_VAP = 2500900.D0 - 2365.D0*TEMPER
@@ -118,7 +116,7 @@
         CE = ROA*L_VAP*CONSTCE*(HA_SAT-HA)
 !       ATMOSPHERIC RADIATION
         IF(HA_SAT.LT.HA)THEN
-          RA = RAJ 
+          RA = RAJ
         ELSE
           RA = CONSTRA
         ENDIF

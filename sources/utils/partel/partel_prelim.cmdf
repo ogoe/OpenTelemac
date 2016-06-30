@@ -11,5 +11,6 @@ files: partitioner.F
 
 [special]
 path: <root>|sources|utils|special
-files: plante.F
+files: declarations_special.f
+  plante.F
   check_allocate.f

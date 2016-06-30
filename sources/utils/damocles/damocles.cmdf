@@ -6,7 +6,8 @@ name: HOMERE_DAMOCLES
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: longlu.f
+files: declarations_damocles.f
+  longlu.f
   precar.f
   next.f
   mycarlu.f

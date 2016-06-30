@@ -55,9 +55,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       USE INTERFACE_SISYPHE,EX_SUSPENSION_EVOL => SUSPENSION_EVOL
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
       ! 2/ GLOBAL VARIABLES
       TYPE (BIEF_OBJ),  INTENT(INOUT)   :: ZFCL_S,FLUDP,FLUER,QFLUX
       DOUBLE PRECISION, INTENT(IN)      :: DT, XMVS

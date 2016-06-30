@@ -30,10 +30,9 @@
       USE CONV_CGNS
       USE CONV_UNV
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

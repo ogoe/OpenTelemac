@@ -109,11 +109,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_POSITIVE_DEPTHS => POSITIVE_DEPTHS
+      USE DECLARATIONS_TELEMAC, ONLY : DEJA_PDEPT, INDIC_PDEPT
       USE INTERFACE_PARALLEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -141,20 +141,14 @@
       DOUBLE PRECISION SURDT,HSEG1,HSEG2,TET,HFL2,A1,A2,A3
       DOUBLE PRECISION, PARAMETER :: TIERS=1.D0/3.D0
 !
-      DOUBLE PRECISION EPS_FLUX
-      DATA             EPS_FLUX/1.D-15/
-      LOGICAL TESTING
-      DATA TESTING/.FALSE./
+      DOUBLE PRECISION, PARAMETER :: EPS_FLUX = 1.D-15
+      LOGICAL, PARAMETER :: TESTING = .FALSE.
 !
 !-----------------------------------------------------------------------
 !
-!     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
+!     INDIC_PDEPT WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
 !     HSEG IS THE DEPTH SHARED BETWEEN SEGMENTS
 !
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      INTEGER, ALLOCATABLE :: INDIC(:)
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -162,13 +156,13 @@
       NELEM=MESH%NELEM
       NSEG=MESH%NSEG
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_PDEPT) THEN
         IF(OPTION.EQ.1) THEN
-          ALLOCATE(INDIC(NELEM))
+          ALLOCATE(INDIC_PDEPT(NELEM))
         ELSEIF(OPTION.EQ.2) THEN
-          ALLOCATE(INDIC(NSEG))
+          ALLOCATE(INDIC_PDEPT(NSEG))
         ENDIF
-        DEJA=.TRUE.
+        DEJA_PDEPT=.TRUE.
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -231,11 +225,11 @@
 !
       IF(OPTION.EQ.1) THEN
 !
-!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS    
+!       CHANGING FLUXES FROM POINTS INTO N FLUXES BETWEEN POINTS
         DO IELEM = 1,NELEM
           A1 = ABS(FLOPOINT(IELEM,1))
           A2 = ABS(FLOPOINT(IELEM,2))
-          A3 = ABS(FLOPOINT(IELEM,3))          
+          A3 = ABS(FLOPOINT(IELEM,3))
           IF(A1.GE.A2.AND.A1.GE.A3) THEN
 !           ALL FLOW TO AND FROM NODE 1
             FLOPOINT(IELEM,1)=-FLOPOINT(IELEM,2)
@@ -325,7 +319,7 @@
       ENDIF
 !
       DO I=1,REMAIN
-        INDIC(I)=I
+        INDIC_PDEPT(I)=I
       ENDDO
 !
       CPREV=0.D0
@@ -369,13 +363,13 @@
         CALL OS('X=0     ',X=T1)
         CALL OS('X=0     ',X=T3)
         DO IR=1,REMAIN
-          I=INDIC(IR)
+          I=INDIC_PDEPT(IR)
           I1=MESH%IKLE%I(I        )
           I2=MESH%IKLE%I(I  +NELEM)
           I3=MESH%IKLE%I(I+2*NELEM)
 !         A PRIORI AVAILABLE VOLUMES
-          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS   
-          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS   
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
           VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
 !         FLUXES FROM POINTS
           F1= FLOPOINT(I,1)-FLOPOINT(I,3)
@@ -405,7 +399,7 @@
 !
         DO IR=1,REMAIN
 !
-          I=INDIC(IR)
+          I=INDIC_PDEPT(IR)
 !
           I1=MESH%IKLE%I(I        )
           I2=MESH%IKLE%I(I  +NELEM)
@@ -413,8 +407,8 @@
 !
 !         A PRIORI AVAILABLE VOLUMES
 !
-          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS   
-          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS   
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
           VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
 !
 !         FLUXES FROM POINTS
@@ -500,17 +494,17 @@
 !         IF REMAINING FLUXES, THE ELEMENT IS KEPT IN THE LIST
 !
           IF(DTLIM1.EQ.DT.AND.DTLIM2.EQ.DT.AND.DTLIM3.EQ.DT) THEN
-            FLOPOINT(I,1)=0.D0  
+            FLOPOINT(I,1)=0.D0
             FLOPOINT(I,2)=0.D0
-            FLOPOINT(I,3)=0.D0    
+            FLOPOINT(I,3)=0.D0
           ELSE
             NEWREMAIN=NEWREMAIN+1
 !           BEFORE NEWREMAIN: FOR NEXT ITERATION
 !           AFTER  NEWREMAIN: STILL VALID FOR NEXT ITERATION
-            INDIC(NEWREMAIN)=I
+            INDIC_PDEPT(NEWREMAIN)=I
             FLOPOINT(I,1)=FLOPOINT(I,1)*(1.D0-DTLIM1*SURDT)
-            FLOPOINT(I,2)=FLOPOINT(I,2)*(1.D0-DTLIM2*SURDT)    
-            FLOPOINT(I,3)=FLOPOINT(I,3)*(1.D0-DTLIM3*SURDT)   
+            FLOPOINT(I,2)=FLOPOINT(I,2)*(1.D0-DTLIM2*SURDT)
+            FLOPOINT(I,3)=FLOPOINT(I,3)*(1.D0-DTLIM3*SURDT)
             C=C+ABS(FLOPOINT(I,1))+ABS(FLOPOINT(I,2))
      &         +ABS(FLOPOINT(I,3))
           ENDIF
@@ -527,7 +521,7 @@
         ELSE
 !         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
           DO IR=1,REMAIN
-            I=INDIC(IR)
+            I=INDIC_PDEPT(IR)
             I1=GLOSEG1(I)
             I2=GLOSEG2(I)
             T1%R(I1)=0.D0
@@ -554,7 +548,7 @@
 !       ANYWAY THEY ARE STORED IN T4 THAT WILL BE USED INSTEAD
 !
         DO IR=1,REMAIN
-          I=INDIC(IR)
+          I=INDIC_PDEPT(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
           IF(FLODEL%R(I).GT.EPS_FLUX) THEN
@@ -597,7 +591,7 @@
 !       TRANSFER OF FLUXES
 !
         DO IR=1,REMAIN
-          I=INDIC(IR)
+          I=INDIC_PDEPT(IR)
           I1=GLOSEG1(I)
           I2=GLOSEG2(I)
           IF(FLODEL%R(I).GT.EPS_FLUX) THEN
@@ -611,7 +605,7 @@
               FLODEL%R(I)=FLODEL%R(I)*(1.D0-TET)
               C=C+FLODEL%R(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_PDEPT(NEWREMAIN)=I
             ELSE
               H%R(I1)=H%R(I1)+HSEG1-HFL1
               H%R(I2)=H%R(I2)+DT*UNSV2D%R(I2)*FLODEL%R(I)
@@ -629,7 +623,7 @@
               FLODEL%R(I)=FLODEL%R(I)*(1.D0-TET)
               C=C-FLODEL%R(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I
+              INDIC_PDEPT(NEWREMAIN)=I
             ELSE
 !             GATHERING DEPTHS
               H%R(I1)=H%R(I1)-DT*UNSV2D%R(I1)*FLODEL%R(I)
@@ -876,7 +870,7 @@
           T1%R(I)=T1%R(I)-DT*UNSV2D%R(I)*FLBOR%R(IPTFR)
         ENDDO
         IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
-        DO I=1,NPOIN           
+        DO I=1,NPOIN
           T1%R(I)=T1%R(I)+HN%R(I)-H%R(I)
         ENDDO
         WRITE(LU,*) 'ERREUR POSITIVE_DEPTHS=',P_DOTS(T1,T1,MESH)

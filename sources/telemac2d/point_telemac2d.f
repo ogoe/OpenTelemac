@@ -112,9 +112,8 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1006,21 +1005,6 @@
       CALL BIEF_ALLVEC(1,SHPFLO,'SHPFLO',
      &                        BIEF_NBPEL(IELM1,MESH)*NFLOT_MAX,1,0,MESH)
 !
-!_______________________________________________________________________
-!
-!  ARRAYS USED FOR WEIRS
-!
-!-----------------------------------------------------------------------
-!
-      IF(NWEIRS.NE.0) THEN
-!       IN FACT ARRAYS (NWEIRS,NPSMAX) OR NPOIN>NWEIRS*NPSMAX
-        CALL BIEF_ALLVEC(1,ZDIG  ,'ZDIG  ',IELM1,1,1,MESH)
-        CALL BIEF_ALLVEC(1,PHIDIG,'PHIDIG',IELM1,1,1,MESH)
-      ELSE
-        CALL BIEF_ALLVEC(1,ZDIG  ,'ZDIG  ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,PHIDIG,'PHIDIG',0,1,0,MESH)
-      ENDIF
-!
 !-----------------------------------------------------------------------
 !
 !  ARRAYS USED FOR CULVERT
@@ -1274,7 +1258,6 @@
         CALL BIEF_ALLVEC(1,QV       ,'QV    ',IELM1,1        ,1,MESH)
         CALL BIEF_ALLVEC(1,HSTOK    ,'HSTOK ',IELM1,1        ,1,MESH)
         CALL BIEF_ALLVEC(1,HCSTOK   ,'HCSTOK',2    ,MESH%NSEG,0,MESH)
-        CALL BIEF_ALLVEC(1,SMTR     ,'SMTR  ',IELM1,1        ,1,MESH)
         CALL BIEF_ALLVEC(2,LOGFR    ,'LOGFR ',IELM1,1        ,1,MESH)
         CALL BIEF_ALLVEC(1,HC       ,'HC    ',2    ,MESH%NSEG,0,MESH)
         CALL BIEF_ALLVEC(1,DSZ      ,'DSZ   ',2    ,MESH%NSEG,0,MESH)

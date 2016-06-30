@@ -502,7 +502,8 @@ files: bief_def.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: majus.f
+files: declarations_damocles.f
+  majus.f
   preval.f
   longlu.f
   cmd.f
@@ -721,7 +722,6 @@ files: friction_def.f
   point_telemac2d.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
-  deall_telemac2d.f
   m_coupling_estel3d.f
   oil_flot.f
   entete.f
@@ -890,6 +890,7 @@ files: friction_def.f
   fdnrst.f
   wrihyd.f
   tel4del.f
+  deall_telemac2d.f
   telemac2d.F
 
 [tomawac]

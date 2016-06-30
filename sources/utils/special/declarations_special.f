@@ -26,6 +26,9 @@
       IMPLICIT NONE
 !----------------------------------------------------------------------
 !
+      INTEGER :: LNG ! Language for listing outputs
+      INTEGER :: LU ! Output id
+      INTEGER :: LI ! Input id
       ! VERSION THAT IS DISPLAYED everywher in the system
       CHARACTER(LEN=6), PARAMETER :: VERSION = 'DEV   '
       ! Max number of keywords

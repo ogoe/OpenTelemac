@@ -54,10 +54,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
+      USE DECLARATIONS_TELEMAC, ONLY : PARACO_MSG_TAG
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -79,10 +79,6 @@
       INTRINSIC ABS
 !
       INTEGER SEND_REQ(100),RECV_REQ(100)
-      INTEGER PARACO_MSG_TAG
-      DATA PARACO_MSG_TAG/5000/
-!
-      SAVE
 !
 !----------------------------------------------------------------------
 !

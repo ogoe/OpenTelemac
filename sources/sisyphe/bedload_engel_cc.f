@@ -59,9 +59,8 @@
       USE INTERFACE_SISYPHE,EX_BEDLOAD_ENGEL_CC => BEDLOAD_ENGEL_CC
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

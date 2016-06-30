@@ -58,9 +58,8 @@
       USE INTERFACE_WAQTEL
       USE INTERFACE_TELEMAC3D,EX_SOURCE_TRAC =>SOURCE_TRAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

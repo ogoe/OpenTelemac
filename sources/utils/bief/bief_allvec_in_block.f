@@ -56,9 +56,8 @@
 !
       USE BIEF, EX_BIEF_ALLVEC_IN_BLOCK => BIEF_ALLVEC_IN_BLOCK
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -72,9 +71,8 @@
       INTEGER IDEB,I,II
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER*1 CHIFFRE(0:9)
-      DATA CHIFFRE/'0','1','2','3','4','5','6','7','8','9'/
-      SAVE CHIFFRE
+      CHARACTER(LEN=1), PARAMETER :: CHIFFRE(0:9) =
+     &            (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------
 !
@@ -120,7 +118,7 @@
 !
             ALLOCATE(BLO%ADR(I)%P)
             CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
-            BLO%ADR(I)%P%TYPDIA = 'W'
+            BLO%ADR(I)%P%FATHER = BLO%NAME
 !
           ENDDO ! I
 !

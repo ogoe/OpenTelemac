@@ -34,15 +34,13 @@
 ! APPELE PAR : SHUFLE
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER MESH , NDP , I , IEL1 , IEL2 , NPMAX , NELEM
-      INTEGER NPOIN , NELMAX
+      INTEGER I , IEL1 , IEL2
       INTEGER IKLE(NELMAX,4) , STO(4)
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !

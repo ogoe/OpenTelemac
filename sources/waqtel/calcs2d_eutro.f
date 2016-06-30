@@ -20,11 +20,11 @@
 !+        21/09/2015
 !+        V7P1
 !+       REAL IMPLEMENTATION
-! 
+!
 !history  R. ATA
 !+        21/03/2016
 !+        V7P2
-!+       IMPROVEMENT- REMOVE LOCAL DECLARATIONS 
+!+       IMPROVEMENT- REMOVE LOCAL DECLARATIONS
 !+       AND ALLOCATIONS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,14 +103,13 @@
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
 !***********************************************************************
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          , INTENT(IN   ) :: NPOIN,NTRAC,DEBUG,IND_T
-      LOGICAL          , INTENT(IN   ) :: YATEMP  
+      LOGICAL          , INTENT(IN   ) :: YATEMP
       DOUBLE PRECISION , INTENT(IN   ) :: WATTEMP,DT
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,HPROP,HN,VOLU2D,UN,VN
@@ -141,7 +140,7 @@
       CALL OS( 'X=0     ',X=T3)
 !     G2 IS STOCKED IN T6
       CALL OS( 'X=0     ',X=T6)
-!     CP IS STOCKED IN T7 
+!     CP IS STOCKED IN T7
       CALL OS( 'X=0     ',X=T7)
 !     DP IS STOCKED IN T4
       CALL OS( 'X=0     ',X=T4)
@@ -162,7 +161,7 @@
       RANKTR8 = NTRAC          ! O2
 !
 !     G2 IS STOCKED IN T6,WE TAKE INTO ACCOUNT VARIABLE TEMPERATURE
-!     
+!
       G2 = WATTEMP/20.D0
       IF(YATEMP)THEN
         CALL OS('X=CY    ',X=T6,Y=TN%ADR(IND_T)%P,C=UNSURVINGT)
@@ -186,7 +185,7 @@
         T11%R(I)=G3
       ENDDO
 !
-!     COMPUTE CS (O2SATU, STOCKED IN T2) 
+!     COMPUTE CS (O2SATU, STOCKED IN T2)
 !
       IF(.NOT.YATEMP)THEN
         CALL SATUR_O2(O2SATU,FORMCS,WATTEMP,EPS)
@@ -206,7 +205,7 @@
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 2'
 !
-!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS 
+!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS
 !           NUTRIMENTS ON ALGAE GROWTH ==>STOCKED IN T5
 !
       CALL NUTEFF(T5%R,TN,NPOIN,RANKTR2,RANKTR4,KP,KN)
@@ -214,13 +213,13 @@
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 3'
 !
 !     RATE OF ALGAE GROWTH: CP (STOCKED IN T7)
-!      
+!
       CALL ALGAE_GROWTH(T7%R,CMAX,RAYEFF%R,T6,T5%R,CTOXIC(1),NPOIN)
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 4'
 !
 !     RATE OF ALGAE DISAPPEARANCE DP (STOCKED IN T4) AND MP (STOPCKED IN T12)
-!       
+!
       CALL ALGAE_DEATH(T4%R,T12%R,CMORALG,TN%ADR(RANKTR1)%P%R,TRESPIR,
      &                  T6,CTOXIC(2),NPOIN)
 !
@@ -257,7 +256,7 @@
       CALL OS( 'X=CY    ' ,X=T1,Y=T4                    ,C=DTP      )
       CALL OS( 'X=X-Y   ' ,X=T1,Y=T7                                )
       CALL OS( 'X=CXY   ' ,X=T1,Y=TN%ADR(RANKTR1)%P     ,C=PROPHOC  )
-      CALL OS( 'X=CYZ   ' ,X=T3,Y=TN%ADR(RANKTR3)%P,Z=T6,C=K320     )    
+      CALL OS( 'X=CYZ   ' ,X=T3,Y=TN%ADR(RANKTR3)%P,Z=T6,C=K320     )
       CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR2)%P,Y=T1,Z=T3          )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 7'
@@ -282,7 +281,7 @@
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 9'
 !
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
 !
       G2=PRONITC*(1.D0-PERNITS)
       CALL OS( 'X=CYZ   ' ,X=T1,Y=T4,Z=TN%ADR(RANKTR1)%P,C=G2       )
@@ -304,15 +303,15 @@
       CALL OS( 'X=C(Y-Z)' ,X=T3,Y=T1,Z=T3                 ,C=PRONITC )
       CALL OS( 'X=XY    ' ,X=T3,Y=TN%ADR(RANKTR1)%P                  )
       CALL OS( 'X=CYZ   ' ,X=T1,Y=TN%ADR(RANKTR5)%P  ,Z=T6,C=K360    )
-      CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR6)%P,Y=T1,Z=T3           )   
+      CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR6)%P,Y=T1,Z=T3           )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 11'
 !
 !     SEVENTH TRACER [L]: ORGANIC LOAD (RANKTR7)
-!     
+!
 !     IMPLICIT PART
       CALL OS( 'X=CYZ   ' ,X=TIMP%ADR(RANKTR7)%P,Y=T11,Z=HPROP,C=-K120)
-!     EXPLICIT PART 
+!     EXPLICIT PART
       CALL OS( 'X=CYZ   ' ,X=T1,Y=T12,Z=TN%ADR(RANKTR1)%P,C=O2PHOTO   )
       CALL OVD('X=CY/Z  ' ,T3%R,TN%ADR(RANKTR7)%P%R,HPROP%R,WLOR,
      &          NPOIN ,2,0.D0,EPS                                     )
@@ -336,14 +335,14 @@
       CALL OS( 'X=Y-Z   ' ,X=T1,Y=T2,Z=TN%ADR(RANKTR8)%P             )
       CALL OS( 'X=CXYZ  ' ,X=T1,Y=T9,Z=K2,C=1.D0                     )
       CALL OS( 'X=X+Y   ' ,X=TEXP%ADR(RANKTR8)%P,Y=T1                )
-!     -BEN/h  
+!     -BEN/h
       CALL OVD('X=1/Y   ' ,T3%R,HPROP%R,HPROP%R,0.D0,
      &          NPOIN ,2,0.D0,EPS )
       CALL OS( 'X=X+CY  ' ,X=TEXP%ADR(RANKTR8)%P,Y=T3,C=-DEMBEN      )
 !
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 14'
-!     CONVERT SECONDS TO DAYS 
+!     CONVERT SECONDS TO DAYS
 !     warning: this conversions assumes linearity which is not the case here
 !              to check and verify.
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR1)%P,C=SECTODAY)
@@ -360,11 +359,11 @@
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 16'
 !
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
       DO J=1,ADDTR
-        ITRAC=NTRAC-ADDTR+J 
+        ITRAC=NTRAC-ADDTR+J
         MASSOU(ITRAC) = 0.D0
         DO I=1,NPOIN
           MASSOU(ITRAC) = MASSOU(ITRAC)

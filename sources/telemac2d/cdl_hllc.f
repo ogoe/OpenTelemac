@@ -59,9 +59,8 @@
       USE DECLARATIONS_TELEMAC2D,ONLY:NUMLIQ,LIUBOR,ENTET
       USE INTERFACE_TELEMAC2D, EX_CDL_HLLC => CDL_HLLC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

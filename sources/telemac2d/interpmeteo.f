@@ -45,10 +45,11 @@
 !| WW             |<--| MAGNITUDE OF WIND VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY: DEJA_IPM,DUMMY_IPM,TABENT_IPM,
+     &                                  POSTAB_IPM,NBENR_IPM
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -59,20 +60,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER POSTAB,I,NBENR
+      INTEGER I
 !     NUMBER OF VARIABLES IN THE ASCII FILE NFO
       INTEGER, PARAMETER :: NINPUTVAR = 9
       INTEGER, PARAMETER :: NLINESTOSKIP = 2
 !
       DOUBLE PRECISION DELTAT,ALPHA
       DOUBLE PRECISION DTR
-      DOUBLE PRECISION, ALLOCATABLE :: TABENT(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: DUMMY(:)
-!
-      LOGICAL DEJA
-      DATA    DEJA /.FALSE./
-!
-      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -81,9 +75,9 @@
 !-----------------------------------------------------------------------
 !
 !  READS INPUT DATA FILE
-!  AT THE FIRST TIME STEP AND FILLS IN TABENT ARRAY
+!  AT THE FIRST TIME STEP AND FILLS IN TABENT_IPM ARRAY
 !
-      IF (.NOT.DEJA) THEN
+      IF (.NOT.DEJA_IPM) THEN
 !
         IF(LNG.EQ.1) THEN
           WRITE(LU,*)'====================================='
@@ -104,23 +98,21 @@
           READ(NFO,*)
         ENDDO
 !
-        NBENR = 0
+        NBENR_IPM = 0
 !
-        IF(.NOT.DEJA) ALLOCATE(DUMMY(NINPUTVAR))
+        ALLOCATE(DUMMY_IPM(NINPUTVAR))
 !
-!  READS VARIABLES AND FILLS IN TABENT ARRAY
+!  READS VARIABLES AND FILLS IN TABENT_IPM ARRAY
 !
- 100    READ(NFO,*,END=20) DUMMY(1:NINPUTVAR)
-        NBENR = NBENR + 1
+ 100    READ(NFO,*,END=20) DUMMY_IPM(1:NINPUTVAR)
+        NBENR_IPM = NBENR_IPM + 1
         GO TO 100
 !
  20     CONTINUE
 !
-        IF(.NOT.DEJA) THEN
 !  +2 TO STORE 2 EXTRA DATA (THE X AND Y COMPONENTS OF WIND VELOCITY)
-          ALLOCATE(TABENT(NBENR,NINPUTVAR+2))
-          DEJA = .TRUE.
-        ENDIF
+        ALLOCATE(TABENT_IPM(NBENR_IPM,NINPUTVAR+2))
+        DEJA_IPM = .TRUE.
 !
 !-----------------------------------------------------------------------
 !
@@ -132,80 +124,85 @@
           READ(NFO,*)
         ENDDO
 !
-!  READS VARIABLES AND FILLS IN TABENT ARRAY
+!  READS VARIABLES AND FILLS IN TABENT_IPM ARRAY
 !
-        DO I=1,NBENR
-          READ(NFO,*)TABENT(I,1:NINPUTVAR)
+        DO I=1,NBENR_IPM
+          READ(NFO,*)TABENT_IPM(I,1:NINPUTVAR)
         ENDDO
 !
         IF(LNG.EQ.1) THEN
           WRITE(LU,*)'======================================='
           WRITE(LU,*)'  FIN DE LECTURE DU FICHIER D''ENTREE  '
-          WRITE(LU,*)'     IL Y A ',NBENR,' ENREGISTREMENTS  '
-          WRITE(LU,*)'  DE T = ',TABENT(1,1), ' A  = ',
-     &               TABENT(NBENR,1),' SECONDES '
+          WRITE(LU,*)'     IL Y A ',NBENR_IPM,' ENREGISTREMENTS  '
+          WRITE(LU,*)'  DE T = ',TABENT_IPM(1,1), ' A  = ',
+     &               TABENT_IPM(NBENR_IPM,1),' SECONDES '
           WRITE(LU,*)'======================================='
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*)'======================================='
           WRITE(LU,*)'  END OF READING OF INPUT DATA         '
-          WRITE(LU,*)'  THERE ARE ',NBENR,' RECORDS          '
-          WRITE(LU,*)'  FROM T = ',TABENT(1,1), ' TO = ',
-     &               TABENT(NBENR,1),' SECONDS '
+          WRITE(LU,*)'  THERE ARE ',NBENR_IPM,' RECORDS          '
+          WRITE(LU,*)'  FROM T = ',TABENT_IPM(1,1), ' TO = ',
+     &               TABENT_IPM(NBENR_IPM,1),' SECONDS '
           WRITE(LU,*)'======================================='
         ENDIF
 !
 !  FILLS IN WITH X AND Y COMPONENTS OF WIND VELOCITY
 !
-        DO I=1,NBENR
-          TABENT(I,NINPUTVAR+1) = -TABENT(I,2)*SIN(TABENT(I,3)*DTR)
-          TABENT(I,NINPUTVAR+2) = -TABENT(I,2)*COS(TABENT(I,3)*DTR)
+        DO I=1,NBENR_IPM
+          TABENT_IPM(I,NINPUTVAR+1) =
+     &             -TABENT_IPM(I,2)*SIN(TABENT_IPM(I,3)*DTR)
+          TABENT_IPM(I,NINPUTVAR+2) =
+     &             -TABENT_IPM(I,2)*COS(TABENT_IPM(I,3)*DTR)
         ENDDO
 !
-!  END TO FILL IN TABENT ARRAY
-!  INITIALISATION OF THE POINTER POSTAB
+!  END TO FILL IN TABENT_IPM ARRAY
+!  INITIALISATION OF THE POINTER POSTAB_IPM
 !
-        POSTAB = 1
+        POSTAB_IPM = 1
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !  INTERPOLATES DATA AT EACH TIME STEP
-!  POINTER POSTAB POSITIONNED AT EACH TIME STEP
+!  POINTER POSTAB_IPM POSITIONNED AT EACH TIME STEP
 !
-120   IF(AT.LT.TABENT(POSTAB,1).OR.AT.GE.TABENT(POSTAB+1,1)) THEN
-        IF(AT.LT.TABENT(POSTAB,1))   POSTAB = POSTAB - 1
-        IF(AT.GE.TABENT(POSTAB+1,1)) POSTAB = POSTAB + 1
-        IF(POSTAB.GT.NBENR) THEN
+120   IF(AT.LT.TABENT_IPM(POSTAB_IPM,1) .OR.
+     &   AT.GE.TABENT_IPM(POSTAB_IPM+1,1))
+     &  THEN
+        IF(AT.LT.TABENT_IPM(POSTAB_IPM,1))   POSTAB_IPM = POSTAB_IPM - 1
+        IF(AT.GE.TABENT_IPM(POSTAB_IPM+1,1)) POSTAB_IPM = POSTAB_IPM + 1
+        IF(POSTAB_IPM.GT.NBENR_IPM) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
             WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST SUPERIEUR AU TEMPS MAXIMUM DE VOTRE FICHIER'
-            WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(NBENR,1)
+            WRITE(LU,*)'DE DONNEES D''ENTREE T = ',
+     &                  TABENT_IPM(NBENR_IPM,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
             WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS BIGGER THAN MAXIMUM TIME IN YOUR INPUT DATA '
-            WRITE(LU,*)'FILE T = ', TABENT(NBENR,1)
+            WRITE(LU,*)'FILE T = ', TABENT_IPM(NBENR_IPM,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           CALL PLANTE(1)
-        ELSEIF(POSTAB.LT.1) THEN
+        ELSEIF(POSTAB_IPM.LT.1) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'==============================================='
             WRITE(LU,*)'ATTENTION : LE TEMPS DU CALCUL AT = ', AT
             WRITE(LU,*)'EST INFERIEUR AU TEMPS MINIMUM DE VOTRE FICHIER'
-            WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT(1,1)
+            WRITE(LU,*)'DE DONNEES D''ENTREE T = ', TABENT_IPM(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*)'==============================================='
             WRITE(LU,*)'WARNING: TIME OF CALCULATION AT = ', AT
             WRITE(LU,*)'IS LOWER THAN MINIMUM TIME IN YOUR INPUT DATA '
-            WRITE(LU,*)'FILE T = ', TABENT(1,1)
+            WRITE(LU,*)'FILE T = ', TABENT_IPM(1,1)
             WRITE(LU,*)'==============================================='
           ENDIF
           CALL PLANTE(1)
@@ -213,33 +210,37 @@
         GO TO 120
       ENDIF
 !
-      DELTAT = TABENT(POSTAB+1,1)-TABENT(POSTAB,1)
-      ALPHA  = (AT-TABENT(POSTAB,1))/DELTAT
+      DELTAT = TABENT_IPM(POSTAB_IPM+1,1)-TABENT_IPM(POSTAB_IPM,1)
+      ALPHA  = (AT-TABENT_IPM(POSTAB_IPM,1))/DELTAT
 !
 !-----------------------------------------------------------------------
 !
-      WINDX =  TABENT(POSTAB,NINPUTVAR+1)
-     &      + (TABENT(POSTAB+1,NINPUTVAR+1)
-     &      -  TABENT(POSTAB,NINPUTVAR+1))*ALPHA
-      WINDY =  TABENT(POSTAB,NINPUTVAR+2)
-     &      + (TABENT(POSTAB+1,NINPUTVAR+2)
-     &      -  TABENT(POSTAB,NINPUTVAR+2))*ALPHA
+      WINDX =  TABENT_IPM(POSTAB_IPM,NINPUTVAR+1)
+     &      + (TABENT_IPM(POSTAB_IPM+1,NINPUTVAR+1)
+     &      -  TABENT_IPM(POSTAB_IPM,NINPUTVAR+1))*ALPHA
+      WINDY =  TABENT_IPM(POSTAB_IPM,NINPUTVAR+2)
+     &      + (TABENT_IPM(POSTAB_IPM+1,NINPUTVAR+2)
+     &      -  TABENT_IPM(POSTAB_IPM,NINPUTVAR+2))*ALPHA
       WW    =  SQRT(WINDX**2+WINDY**2)
 !
-      TAIR  =  TABENT(POSTAB,4)
-     &      + (TABENT(POSTAB+1,4)-TABENT(POSTAB,4))*ALPHA
-      PATM  =  TABENT(POSTAB,5)
-     &      + (TABENT(POSTAB+1,5)-TABENT(POSTAB,5))*ALPHA
-      HREL  =  TABENT(POSTAB,6)
-     &      + (TABENT(POSTAB+1,6)-TABENT(POSTAB,6))*ALPHA
+      TAIR  =  TABENT_IPM(POSTAB_IPM,4)
+     &      + (TABENT_IPM(POSTAB_IPM+1,4)
+     &         -TABENT_IPM(POSTAB_IPM,4))*ALPHA
+      PATM  =  TABENT_IPM(POSTAB_IPM,5)
+     &      + (TABENT_IPM(POSTAB_IPM+1,5)
+     &         -TABENT_IPM(POSTAB_IPM,5))*ALPHA
+      HREL  =  TABENT_IPM(POSTAB_IPM,6)
+     &      + (TABENT_IPM(POSTAB_IPM+1,6)
+     &         -TABENT_IPM(POSTAB_IPM,6))*ALPHA
 
-      NEBU  =  TABENT(POSTAB,7)
-     &      + (TABENT(POSTAB+1,7)-TABENT(POSTAB,7))*ALPHA
+      NEBU  =  TABENT_IPM(POSTAB_IPM,7)
+     &      + (TABENT_IPM(POSTAB_IPM+1,7)
+     &         -TABENT_IPM(POSTAB_IPM,7))*ALPHA
 !
-      RAINFALL = TABENT(POSTAB+1,8)/DELTAT
+      RAINFALL = TABENT_IPM(POSTAB_IPM+1,8)/DELTAT
 !
-      EVAPORATION = TABENT(POSTAB,9)
-     &      + (TABENT(POSTAB+1,9)-TABENT(POSTAB,9))*ALPHA
+      EVAPORATION   = TABENT_IPM(POSTAB_IPM,9)
+     &     + (TABENT_IPM(POSTAB_IPM+1,9)-TABENT_IPM(POSTAB_IPM,9))*ALPHA
 !
 !-----------------------------------------------------------------------
 !

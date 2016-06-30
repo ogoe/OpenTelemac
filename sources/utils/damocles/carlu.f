@@ -65,6 +65,8 @@
 !| SIZE           |-->| TABLEAU DES LONGUEURS DES MOTS CLES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_DAMOCLES
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       INTEGER       LCAR,ICOL,NMAXR(4),NFICDA,LGVAR,SIZE(4,*)
@@ -75,11 +77,6 @@
 !
       INTEGER  NEXT,PRECAR,LONGLU
       EXTERNAL NEXT,PRECAR,LONGLU
-!
-      INTEGER       LNG,LU
-      INTEGER       NLIGN,LONGLI
-      INTEGER       NFIC
-      LOGICAL       ERREUR , RETOUR
 !
 !-----------------------------------------------------------------------
 !
@@ -92,11 +89,6 @@
       CHARACTER(LEN=144) LIGNED
 !
 !-----------------------------------------------------------------------
-!
-      COMMON / DCINFO / LNG,LU
-      COMMON / DCRARE / ERREUR,RETOUR
-      COMMON / DCMLIG / NLIGN,LONGLI
-      COMMON / DCCHIE / NFIC
 !
       INTRINSIC CHAR
 !

@@ -108,11 +108,10 @@
 !
       USE BIEF
       USE DECLARATIONS_TOMAWAC, ONLY : PROMIN,OPTDER,COSF,TGF
+      USE DECLARATIONS_SPECIAL
       USE INTERFACE_TOMAWAC, EX_PREDIF => PREDIF
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

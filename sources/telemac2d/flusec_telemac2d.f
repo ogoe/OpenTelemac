@@ -72,11 +72,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY: CHAIN
+      USE DECLARATIONS_TELEMAC2D, ONLY: CHAIN,LISTE_FS,DEJA_FS,NSEG_FS,
+     &                                  VOLNEG_FS,VOLPOS_FS,VLX_FS,
+     &                                  OLD_METHOD_FS,DEJA_FS
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -94,25 +95,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSEMAX,ERR
-      PARAMETER(NSEMAX=200)
+      INTEGER, PARAMETER :: NSEMAX = 200
 !
       INTEGER IELEM,IEL,I1,I2,I3,J1,J2,J3,ELBEST,IGBEST,ILBEST,IELMH
-      INTEGER ILPREC,ISEG,ISEC,NSEC,PT,DEP,ARR,IELMU
+      INTEGER ILPREC,ISEG,ISEC,NSEC,PT,DEP,ARR,IELMU,ERR
 !
       DOUBLE PRECISION DIST,DIST1,DIST2,DIST3
       DOUBLE PRECISION H1,H2,X1,Y1,X2,Y2,UN1,UN2,NX,NY,SUR6
 !
       LOGICAL OK
-!
-      DOUBLE PRECISION, ALLOCATABLE :: FLX(:),VOLNEG(:),VOLPOS(:)
-      INTEGER, ALLOCATABLE :: NSEG(:),LISTE(:,:,:)
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-      LOGICAL :: OLD_METHOD=.FALSE.
-!
-      SAVE LISTE,DEJA,NSEG,VOLNEG,VOLPOS,FLX,OLD_METHOD
 !
 !-----------------------------------------------------------------------
 !
@@ -121,15 +112,15 @@
 !
 !  SEARCHES PATHS JOINING POINT PAIRS:
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_FS) THEN
 !
-!     DYNAMIC ALLOCATION OF FLX, VOLNEG, VOLPOS
+!     DYNAMIC ALLOCATION OF VLX_FS, VOLNEG_FS, VOLPOS_FS
 !
-      ALLOCATE(FLX(NCP)             ,STAT=ERR)
-      ALLOCATE(VOLNEG(NCP)          ,STAT=ERR)
-      ALLOCATE(VOLPOS(NCP)          ,STAT=ERR)
-      ALLOCATE(NSEG(NCP)            ,STAT=ERR)
-      ALLOCATE(LISTE(NCP,NSEMAX,2)  ,STAT=ERR)
+      ALLOCATE(VLX_FS(NCP)             ,STAT=ERR)
+      ALLOCATE(VOLNEG_FS(NCP)          ,STAT=ERR)
+      ALLOCATE(VOLPOS_FS(NCP)          ,STAT=ERR)
+      ALLOCATE(NSEG_FS(NCP)            ,STAT=ERR)
+      ALLOCATE(LISTE_FS(NCP,NSEMAX,2)  ,STAT=ERR)
 !
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,100) ERR
@@ -140,28 +131,28 @@
      &            'ERROR CODE: ',1I6)
       ENDIF
 !
-      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD=.TRUE.
+      IF (.NOT.ALLOCATED(CHAIN)) OLD_METHOD_FS=.TRUE.
       DO ISEC =1,NSEC
 !!JAJ #### IN THE SERIAL CASE, OR "CLASSICAL" IN PARALLEL,
 !     FOLLOW THE ALGORITHM OF FINDING SEGMENT CHAINS
 !
 ! NOTE: IF YOU CHANGE THE ALGORITHM, CHANGE IT IN PARTEL AS WELL
 !
-        IF (NCSIZE.LE.1 .OR. OLD_METHOD) THEN
+        IF (NCSIZE.LE.1 .OR. OLD_METHOD_FS) THEN
 !
         DEP = CTRLSC(1+2*(ISEC-1))
         ARR = CTRLSC(2+2*(ISEC-1))
-        VOLNEG(ISEC)=0.D0
-        VOLPOS(ISEC)=0.D0
+        VOLNEG_FS(ISEC)=0.D0
+        VOLPOS_FS(ISEC)=0.D0
         IF(NCSIZE.GT.1) THEN
           DEP=GLOBAL_TO_LOCAL_POINT(DEP,MESH)
           ARR=GLOBAL_TO_LOCAL_POINT(ARR,MESH)
           IF(DEP.EQ.0.AND.ARR.EQ.0) THEN
-            NSEG(ISEC)=0
+            NSEG_FS(ISEC)=0
             CYCLE
           ENDIF
           IF((DEP.EQ.0.AND.ARR.NE.0).OR.(DEP.NE.0.AND.ARR.EQ.0)) THEN
-            NSEG(ISEC)=-1
+            NSEG_FS(ISEC)=-1
             CYCLE
           ENDIF
         ENDIF
@@ -233,32 +224,32 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          LISTE(ISEC,ISEG,1) = IKLE(ELBEST,ILPREC)
-          LISTE(ISEC,ISEG,2) = IKLE(ELBEST,ILBEST)
+          LISTE_FS(ISEC,ISEG,1) = IKLE(ELBEST,ILPREC)
+          LISTE_FS(ISEC,ISEG,2) = IKLE(ELBEST,ILBEST)
           IF(IGBEST.NE.ARR) GO TO 10
         ENDIF
 !
-        NSEG(ISEC) = ISEG
+        NSEG_FS(ISEC) = ISEG
 !
-!JAJ #### THIS PART TO BE DONE IN THE PARALLEL CASE; FILL LISTE
+!JAJ #### THIS PART TO BE DONE IN THE PARALLEL CASE; FILL LISTE_FS
 ! WITH READY SEGMENT CHAINS PROVIDED BY PARTEL: SEE READ_SECTIONS
 ! NOTE: FUTURE OPTIMISATION - USE CHAIN STRUCTURE IN THE WHOLE ROUTINE
 !
         ELSE
 !
-          FLX(ISEC)=0.0D0
-          VOLNEG(ISEC)=0.0D0
-          VOLPOS(ISEC)=0.0D0
-          NSEG(ISEC) = CHAIN(ISEC)%NSEG
-          LISTE(ISEC,:,:)=0
-          DO ISEG=1,NSEG(ISEC)
-            LISTE(ISEC,ISEG,1) = CHAIN(ISEC)%LISTE(ISEG,1)
-            LISTE(ISEC,ISEG,2) = CHAIN(ISEC)%LISTE(ISEG,2)
+          VLX_FS(ISEC)=0.0D0
+          VOLNEG_FS(ISEC)=0.0D0
+          VOLPOS_FS(ISEC)=0.0D0
+          NSEG_FS(ISEC) = CHAIN(ISEC)%NSEG
+          LISTE_FS(ISEC,:,:)=0
+          DO ISEG=1,NSEG_FS(ISEC)
+            LISTE_FS(ISEC,ISEG,1) = CHAIN(ISEC)%LISTE(ISEG,1)
+            LISTE_FS(ISEC,ISEG,2) = CHAIN(ISEC)%LISTE(ISEG,2)
           END DO
         ENDIF
 !
 !       IF COMPATIBLE COMPUTATION OF FLUXES=YES
-        IF(COMFLU.AND.NSEG(ISEC).GE.1) THEN
+        IF(COMFLU.AND.NSEG_FS(ISEC).GE.1) THEN
 !
 !       LOOKING AT ALL ELEMENTS TOUCHING THE SECTION WITH 2 POINTS
 !       MARKING THEM WITH 1 ON ONE SIDE AND -1 ON THE OTHER SIDE
@@ -268,9 +259,9 @@
           J1=IKLE(IEL,1)
           J2=IKLE(IEL,2)
           J3=IKLE(IEL,3)
-          DO ISEG=1,NSEG(ISEC)
-            I1 = LISTE(ISEC,ISEG,1)
-            I2 = LISTE(ISEC,ISEG,2)
+          DO ISEG=1,NSEG_FS(ISEC)
+            I1 = LISTE_FS(ISEC,ISEG,1)
+            I2 = LISTE_FS(ISEC,ISEG,2)
 !           LEFT SIDE
             IF    ( (J1.EQ.I1.AND.J2.EQ.I2) .OR.
      &              (J2.EQ.I1.AND.J3.EQ.I2) .OR.
@@ -294,9 +285,9 @@
             J1=IKLE(IEL,1)
             J2=IKLE(IEL,2)
             J3=IKLE(IEL,3)
-            DO ISEG=1,NSEG(ISEC)
-              I1 = LISTE(ISEC,ISEG,1)
-              I2 = LISTE(ISEC,ISEG,2)
+            DO ISEG=1,NSEG_FS(ISEC)
+              I1 = LISTE_FS(ISEC,ISEG,1)
+              I2 = LISTE_FS(ISEC,ISEG,2)
               IF((J1.EQ.I1.OR.J2.EQ.I1.OR.J3.EQ.I1.OR.
      &            J1.EQ.I2.OR.J2.EQ.I2.OR.J3.EQ.I2).AND.
      &            ABS(MSKSEC%ADR(ISEC)%P%R(IEL)).LT.0.5D0) THEN
@@ -331,17 +322,17 @@
           IF(OK) EXIT
         ENDDO
 !
-!       IF(COMFLU.AND.NSEG(ISEC).GE.1) THEN
+!       IF(COMFLU.AND.NSEG_FS(ISEC).GE.1) THEN
         ENDIF
 !
       ENDDO ! ISEC
 !
-!     IF(.NOT.DEJA) THEN
+!     IF(.NOT.DEJA_FS) THEN
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      DEJA = .TRUE.
+      DEJA_FS = .TRUE.
 !
 !-----------------------------------------------------------------------
 !
@@ -349,8 +340,8 @@
       IELMU=U%ELM
 !
       DO ISEC = 1 , NSEC
-      FLX(ISEC) = 0.D0
-      IF(NSEG(ISEC).GE.1) THEN
+      VLX_FS(ISEC) = 0.D0
+      IF(NSEG_FS(ISEC).GE.1) THEN
 !
       IF(COMFLU) THEN
 !
@@ -368,27 +359,27 @@
 !     SUMMING CV1 FOR ALL POINTS OF THE SECTION, THIS IS THE FLUX !
 !     (OBTAINED BY CONTINUITY EQUATION AND AN INTEGRATION BY PARTS)
 !
-      DO ISEG = 1 , NSEG(ISEC)
-        I1   = LISTE(ISEC,ISEG,1)
-        FLX(ISEC) = FLX(ISEC) + CV1%R(I1)
+      DO ISEG = 1 , NSEG_FS(ISEC)
+        I1   = LISTE_FS(ISEC,ISEG,1)
+        VLX_FS(ISEC) = VLX_FS(ISEC) + CV1%R(I1)
       ENDDO
 !     LAST SEGMENT, ADDING THE LAST POINT
-      I2   = LISTE(ISEC,NSEG(ISEC),2)
-      FLX(ISEC) = FLX(ISEC) + CV1%R(I2)
+      I2   = LISTE_FS(ISEC,NSEG_FS(ISEC),2)
+      VLX_FS(ISEC) = VLX_FS(ISEC) + CV1%R(I2)
 !
 !     WHEN BOTH UPWIND AND DOWNSTREAM ELEMENTS ARE TAKEN INTO ACCOUNT
 !     WITH DIFFERENT SIGNS, WE GET TWICE THE FLUX
 !
-      FLX(ISEC)=FLX(ISEC)*0.5D0
+      VLX_FS(ISEC)=VLX_FS(ISEC)*0.5D0
 !
       ELSE
 !
 !       COMPUTING THE FLUX DIRECTLY, REGARDLESS OF THE WEAK FORM
 !       OF THE IMPERMEABILITY CONDITION
 !
-        DO ISEG = 1 , NSEG(ISEC)
-          I1 = LISTE(ISEC,ISEG,1)
-          I2 = LISTE(ISEC,ISEG,2)
+        DO ISEG = 1 , NSEG_FS(ISEC)
+          I1 = LISTE_FS(ISEC,ISEG,1)
+          I2 = LISTE_FS(ISEC,ISEG,2)
           X1 = X(I1)
           X2 = X(I2)
           Y1 = Y(I1)
@@ -399,18 +390,19 @@
           NY = X2-X1
           UN1= U%R(I1)*NX + V%R(I1)*NY
           UN2= U%R(I2)*NX + V%R(I2)*NY
-          FLX(ISEC) = FLX(ISEC) + ((H1+H2)*(UN1+UN2)+H2*UN2+H1*UN1)*SUR6
+          VLX_FS(ISEC) = VLX_FS(ISEC) 
+     &                  + ((H1+H2)*(UN1+UN2)+H2*UN2+H1*UN1)*SUR6
         ENDDO
 !
       ENDIF
 !
-      IF(FLX(ISEC).GT.0.D0) THEN
-        VOLPOS(ISEC) = VOLPOS(ISEC) + FLX(ISEC)*DT
+      IF(VLX_FS(ISEC).GT.0.D0) THEN
+        VOLPOS_FS(ISEC) = VOLPOS_FS(ISEC) + VLX_FS(ISEC)*DT
       ELSE
-        VOLNEG(ISEC) = VOLNEG(ISEC) + FLX(ISEC)*DT
+        VOLNEG_FS(ISEC) = VOLNEG_FS(ISEC) + VLX_FS(ISEC)*DT
       ENDIF
 !
-!     IF(NSEG(ISEC).GT.1)...
+!     IF(NSEG_FS(ISEC).GT.1)...
       ENDIF
 !
       ENDDO ! ISEC
@@ -420,8 +412,8 @@
 !     PRINTING THE RESULTS / !JAJ HERE ALLREDUCES FOR VALUES
 !
       CALL FLUXPR_TELEMAC2D
-     &  (NSEC,CTRLSC,FLX,VOLNEG,VOLPOS,INFO,TPS,
-     &   NSEG,NCSIZE,CUMFLO)
+     &  (NSEC,CTRLSC,VLX_FS,VOLNEG_FS,VOLPOS_FS,INFO,TPS,
+     &   NSEG_FS,NCSIZE,CUMFLO)
 !
 !-----------------------------------------------------------------------
 !

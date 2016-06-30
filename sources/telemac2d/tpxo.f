@@ -56,10 +56,11 @@
 !+      2ND: CONTAINS SUBROUTINE AND FUNCTIONS OF THE TPXO MODEL
 !+      ...
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
       PRIVATE
-      PUBLIC :: CONDI_TPXO,BORD_TIDE_TPXO,CD2MSL_TPXO,DEJA
+      PUBLIC :: CONDI_TPXO,BORD_TIDE_TPXO,CD2MSL_TPXO,DEJA,DEALLOC_TPXO
 !
 !-----------------------------------------------------------------------
 !
@@ -313,12 +314,7 @@
 !
 !     WHETHER DATA ARE ALREADY READ OR NOT
 !
-      LOGICAL DEJA
-      DATA    DEJA /.FALSE./
-!
-!-----------------------------------------------------------------------
-!
-      SAVE
+      LOGICAL :: DEJA = .FALSE.
 !
 !-----------------------------------------------------------------------
 !
@@ -393,9 +389,8 @@
 !|  NC0           |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -452,6 +447,7 @@
 !|  N             |-->| CLASS OF MODULO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -493,6 +489,7 @@
 !|  P_R           |-->| ARRAY OF REAL PARTS OF COMPLEX CONSTITUENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -562,6 +559,7 @@
 !|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -685,6 +683,7 @@
 !|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -792,9 +791,8 @@
 !|  ZUVM          |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -956,9 +954,8 @@
 !|  Z1_R          |-->| FIELD TO INTERPOLATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1048,6 +1045,7 @@
 !|  Z1_R          |-->| FIELD TO INTERPOLATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1122,6 +1120,7 @@
 !|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1190,6 +1189,7 @@
 !|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1236,6 +1236,7 @@
 !|  WR            |<--| FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1292,6 +1293,7 @@
 !|  PU            |<--| NODAL FACTOR U (IN RADIANS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1368,6 +1370,7 @@
 !|  U             |<--| NODAL FACTOR U (IN DEGREES)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1668,6 +1671,7 @@
 !|  W             |-->| FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1799,6 +1803,7 @@
 !|  TIME          |-->| TIME IN SECONDS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1879,6 +1884,7 @@
 !|  ZMAJ_R        |-->| HC FOR GIVEN CONSTITUENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2117,6 +2123,7 @@
 !|  TIME          |-->| MODIFIED JULIAN DAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2186,9 +2193,8 @@
 !|  MM            |<->| MONTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2340,9 +2346,8 @@
       USE BIEF
       USE INTERFACE_PARALLEL
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -3191,9 +3196,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -3249,8 +3253,6 @@
 !     ZT,UT,VT,UV,ZCON: PHASES AND PERIODS FOR U, V AND H
 !     HERE DEFINED AS COMPLEX
 !     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-!
-      SAVE
 !
       INTRINSIC ATAN
 !
@@ -4046,9 +4048,8 @@
 !
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -4308,6 +4309,41 @@
 !-----------------------------------------------------------------------
 !
       END SUBROUTINE CD2MSL_TPXO
+!                    ***********************
+                     SUBROUTINE DEALLOC_TPXO
+!                    ***********************
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   16/01/2012
+!***********************************************************************
+!
+!brief DEALLOCATE TPXO ARRAYS
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE
+!
+!-----------------------------------------------------------------------
+!
+      IF(ALLOCATED(INDW)) DEALLOCATE(INDW)
+      IF(ALLOCATED(C_ID2)) DEALLOCATE(C_ID2)
+      IF(ALLOCATED(CCIND)) DEALLOCATE(CCIND)
+      IF(ALLOCATED(CCIND2)) DEALLOCATE(CCIND2)
+      IF(ALLOCATED(TPXO_NFR)) DEALLOCATE(TPXO_NFR)
+      IF(ALLOCATED(TPXO_BOR_R)) DEALLOCATE(TPXO_BOR_R)
+      IF(ALLOCATED(TPXO_BOR_I)) DEALLOCATE(TPXO_BOR_I)
+      IF(ALLOCATED(TPXO_BOR2_R)) DEALLOCATE(TPXO_BOR2_R)
+      IF(ALLOCATED(TPXO_BOR2_I)) DEALLOCATE(TPXO_BOR2_I)
+      IF(ALLOCATED(BOR2HW_R)) DEALLOCATE(BOR2HW_R)
+      IF(ALLOCATED(BOR2HW_I)) DEALLOCATE(BOR2HW_I)
+      IF(ALLOCATED(ARGHW)) DEALLOCATE(ARGHW)
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE DEALLOC_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

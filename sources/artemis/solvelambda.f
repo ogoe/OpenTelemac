@@ -25,10 +25,9 @@
 !
       USE DECLARATIONS_ARTEMIS
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -38,7 +37,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          NIT
-      DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,DELTA,AK01,AK02,AK03
+      DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,delta2,AK01,AK02,AK03
 !
 !-----------------------------------------------------------------------
 !
@@ -93,10 +92,10 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-      DELTA=ABS(K20-K10)/K20
+      delta2=ABS(K20-K10)/K20
       K30=(K10+K20)*0.5D0
 !
-      IF(DELTA.GT.1D-06)THEN
+      IF(delta2.GT.1D-06)THEN
         GOTO 97
       ELSE
         XK=K30

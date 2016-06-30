@@ -79,11 +79,13 @@
 !
       USE INTERFACE_TELEMAC2D, EX_MAJTRAC => MAJTRAC
       USE BIEF_DEF
-      USE DECLARATIONS_TELEMAC2D,ONLY: DEBUG
+      USE DECLARATIONS_TELEMAC2D,ONLY: DEBUG, CET_MT,DST_MT,DSP_MT,
+     &                                 DSM_MT,CORRT_MT,GRADI_MT,
+     &                                 GRADJ_MT,GRADJI_MT,GRADIJ_MT,
+     &                                 DEJA_MT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -118,32 +120,24 @@
 !
 !     DYNAMIC ARRAY ALLOCATION !!!!!!!!
 !
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: CET(:),DST(:,:)
-      DOUBLE PRECISION, ALLOCATABLE, SAVE :: DSP(:),DSM(:),CORRT(:)
-!
-      DOUBLE PRECISION,ALLOCATABLE,SAVE  :: GRADI(:),GRADJ(:)
-      DOUBLE PRECISION,ALLOCATABLE,SAVE  :: GRADIJ(:),GRADJI(:)
       LOGICAL, ALLOCATABLE ::   YESNO(:)
-!
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
 !
 !-----------------------------------------------------------------------
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(CET(NS),STAT=ERR)
+      IF(.NOT.DEJA_MT) THEN
+        ALLOCATE(CET_MT(NS),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DST(2,NSEG),STAT=ERR)
+        ALLOCATE(DST_MT(2,NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSP(NS),STAT=ERR)
+        ALLOCATE(DSP_MT(NS),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(DSM(NS)    ,STAT=ERR)
+        ALLOCATE(DSM_MT(NS)    ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(CORRT(NS)   ,STAT=ERR)
+        ALLOCATE(CORRT_MT(NS)   ,STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(GRADI(NSEG),GRADJ(NSEG),STAT=ERR)
+        ALLOCATE(GRADI_MT(NSEG),GRADJ_MT(NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
-        ALLOCATE(GRADIJ(NSEG),GRADJI(NSEG),STAT=ERR)
+        ALLOCATE(GRADIJ_MT(NSEG),GRADJI_MT(NSEG),STAT=ERR)
         IF(ERR.NE.0) GO TO 1001
         GO TO 1002
 1001    CONTINUE
@@ -156,7 +150,7 @@
         CALL PLANTE(1)
         STOP
 1002    CONTINUE
-        DEJA=.TRUE.
+        DEJA_MT=.TRUE.
       ENDIF
       DEMI = 0.5D0
 !
@@ -164,7 +158,7 @@
 !
 !  INITIALISES
 !
-      CET(:)=(/(0.D0,IS=1,NS)/)
+      CET_MT(:)=(/(0.D0,IS=1,NS)/)
       ALLOCATE(YESNO(NSEG),STAT=ERR)
       IF(ERR.GT.0)THEN
         IF(LNG.EQ.1) WRITE(LU,1000) ERR
@@ -182,7 +176,7 @@
 !   COMPUTES THE DIFFUSION TERM
 !
       IF(DIFT.OR.NORDRE.EQ.2) CALL GRADNODT(NS,NT,NU,AIRE,AIRS,
-     &HSTOK,TN,DPX,DPY,DJXT,DJYT,DXT,DYT,DIFT,CVIST,CET,DTT,MESH)
+     &HSTOK,TN,DPX,DPY,DJXT,DJYT,DXT,DYT,DIFT,CVIST,CET_MT,DTT,MESH)
 !
       IF(NORDRE.EQ.2) THEN
 !
@@ -190,15 +184,15 @@
 !  *************************************
 !
 !    INITIALIZATION
-      DSP(:)  =(/(0.D0,IS=1,NS)/)
-      DSM(:)  =(/(0.D0,IS=1,NS)/)
-      DST(1,:)=(/(0.D0,IS=1,NSEG)/)
-      DST(2,:)=(/(0.D0,IS=1,NSEG)/)
+      DSP_MT(:)  =(/(0.D0,IS=1,NS)/)
+      DSM_MT(:)  =(/(0.D0,IS=1,NS)/)
+      DST_MT(1,:)=(/(0.D0,IS=1,NSEG)/)
+      DST_MT(2,:)=(/(0.D0,IS=1,NSEG)/)
 !    INITIALIZATION  OF GRADIENTS
-      GRADI(:) =(/(0.D0,IS=1,NSEG)/)
-      GRADJ(:) =(/(0.D0,IS=1,NSEG)/)
-      GRADIJ(:)=(/(0.D0,IS=1,NSEG)/)
-      GRADJI(:)=(/(0.D0,IS=1,NSEG)/)
+      GRADI_MT(:) =(/(0.D0,IS=1,NSEG)/)
+      GRADJ_MT(:) =(/(0.D0,IS=1,NSEG)/)
+      GRADIJ_MT(:)=(/(0.D0,IS=1,NSEG)/)
+      GRADJI_MT(:)=(/(0.D0,IS=1,NSEG)/)
 !
 !
       DO IEL=1, NT
@@ -241,8 +235,8 @@
      &         .OR. 2.*ABS(DSZ1).GE.HJ0
      &         .OR. 2.*ABS(DSZ2).GE.HI0
      &         .OR. 2.*ABS(DSZ2).GE.HJ0)  THEN
-!             DST(1,NSG) =0.D0
-!             DST(2,NSG) =0.D0
+!             DST_MT(1,NSG) =0.D0
+!             DST_MT(2,NSG) =0.D0
               CYCLE
             ELSE
 !
@@ -251,19 +245,19 @@
               AJX         = CMI(1,NSG)-X(NUBO2)
               AJY         = CMI(2,NSG)-Y(NUBO2)
 !
-              GRADI(NSG)  = AIX*DXT(NUBO1) + AIY*DYT(NUBO1)
-              GRADJ(NSG)  = AJX*DXT(NUBO2) + AJY*DYT(NUBO2)
-              GRADIJ(NSG) = AIX*DJXT(J) + AIY*DJYT(J)
-              GRADJI(NSG) = AJX*DJXT(J) + AJY*DJYT(J)
+              GRADI_MT(NSG)  = AIX*DXT(NUBO1) + AIY*DYT(NUBO1)
+              GRADJ_MT(NSG)  = AJX*DXT(NUBO2) + AJY*DYT(NUBO2)
+              GRADIJ_MT(NSG) = AIX*DJXT(J) + AIY*DJYT(J)
+              GRADJI_MT(NSG) = AJX*DJXT(J) + AJY*DJYT(J)
             ENDIF
             YESNO(NSG)=.TRUE.
           ENDIF
         ENDDO
       ENDDO
       IF(NCSIZE.GT.1)THEN      ! NPON,NPLAN,ICOM,IAN , HERE ICOM=1 VALUE WITH MAX | |
-        CALL PARCOM2_SEG(GRADI,GRADJ,GRADI,
+        CALL PARCOM2_SEG(GRADI_MT,GRADJ_MT,GRADI_MT,
      &              NSEG,1,2,2,MESH,1,11)
-        CALL PARCOM2_SEG(GRADIJ,GRADJI,GRADJI,
+        CALL PARCOM2_SEG(GRADIJ_MT,GRADJI_MT,GRADJI_MT,
      &              NSEG,1,2,2,MESH,1,11)
       ENDIF
 !
@@ -272,8 +266,8 @@
       ILIM=2
       BETA=0.3333D0
       DO NSG=1,NSEG
-        DST(1,NSG)  = EXLIM (ILIM,BETA,GRADI(NSG),GRADIJ(NSG))
-        DST(2,NSG)  = EXLIM (ILIM,BETA,GRADJ(NSG),GRADJI(NSG))
+        DST_MT(1,NSG)  = EXLIM (ILIM,BETA,GRADI_MT(NSG),GRADIJ_MT(NSG))
+        DST_MT(2,NSG)  = EXLIM (ILIM,BETA,GRADJ_MT(NSG),GRADJI_MT(NSG))
       ENDDO
 !
 ! INITIALIZATION OF YESNO
@@ -297,34 +291,41 @@
 !
 !           FOR PARALLELILSM
             IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
-              IF(DST(1,NSG).GE.0.D0) THEN
-                DSP(NUBO1) = DSP(NUBO1) +
-     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! WE CONSIDER ONLY
+              IF(DST_MT(1,NSG).GE.0.D0) THEN
+                DSP_MT(NUBO1) = DSP_MT(NUBO1) +
+     &                   DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST_MT(1,NSG) ! WE CONSIDER ONLY
               ELSE                                                      ! 0.5 AIRST
-                DSM(NUBO1) = DSM(NUBO1) -
-     &                      DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST(1,NSG) ! PARCOM2 WILL ADD
+                DSM_MT(NUBO1) = DSM_MT(NUBO1) -
+     &                   DEMI*AIRST(1,NSG)*HCSTOK(1,NSG)*DST_MT(1,NSG) ! PARCOM2 WILL ADD
               ENDIF                                                     ! CONTRIBUTIONS
-              IF(DST(2,NSG).GE.0.D0) THEN
-                DSP(NUBO2) = DSP(NUBO2) +
-     &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
+              IF(DST_MT(2,NSG).GE.0.D0) THEN
+                DSP_MT(NUBO2) = DSP_MT(NUBO2) +
+     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
               ELSE
-                DSM(NUBO2) = DSM(NUBO2) -
-     &                      DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST(2,NSG)
+                DSM_MT(NUBO2) = DSM_MT(NUBO2) -
+     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
               ENDIF
+              IF(DST_MT(2,NSG).GE.0.D0) THEN
+                DSP_MT(NUBO2) = DSP_MT(NUBO2) + 
+     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
+              ELSE
+                DSM_MT(NUBO2) = DSM_MT(NUBO2) - 
+     &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
+              ENDIF 
             ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
-              IF(DST(1,NSG).GE.0.D0) THEN
-                DSP(NUBO1) = DSP(NUBO1) +
-     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
+              IF(DST_MT(1,NSG).GE.0.D0) THEN
+                DSP_MT(NUBO1) = DSP_MT(NUBO1) +
+     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST_MT(1,NSG)
               ELSE
-                DSM(NUBO1) = DSM(NUBO1) -
-     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST(1,NSG)
+                DSM_MT(NUBO1) = DSM_MT(NUBO1) -
+     &          AIRST(1,NSG)* HCSTOK(1,NSG)*DST_MT(1,NSG)
               ENDIF
-              IF(DST(2,NSG).GE.0.) THEN
-                DSP(NUBO2) = DSP(NUBO2) +
-     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
+              IF(DST_MT(2,NSG).GE.0.) THEN
+                DSP_MT(NUBO2) = DSP_MT(NUBO2) +
+     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST_MT(2,NSG)
               ELSE
-                DSM(NUBO2) = DSM(NUBO2) -
-     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST(2,NSG)
+                DSM_MT(NUBO2) = DSM_MT(NUBO2) -
+     &          AIRST(2,NSG)* HCSTOK(2,NSG)*DST_MT(2,NSG)
               ENDIF
             ENDIF
 !
@@ -334,17 +335,17 @@
       ENDDO
       !  FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN
-        CALL PARCOM2(DSP,DSM,DSM,NS,1,2,2,MESH)
+        CALL PARCOM2(DSP_MT,DSM_MT,DSM_MT,NS,1,2,2,MESH)
       ENDIF
 !
 !     COMPUTES THE CORRECTIONS TO ENSURE CONSERVATION OF HT
 !                  ***********           ******************
 !
       DO IS=1,NS
-        CORRT(IS) =  DSM(IS) - DSP(IS)
-        AMDS =MAX(DSP(IS),DSM(IS))
+        CORRT_MT(IS) =  DSM_MT(IS) - DSP_MT(IS)
+        AMDS =MAX(DSP_MT(IS),DSM_MT(IS))
         IF(AMDS.GT.0.D0) THEN
-          CORRT(IS) = CORRT(IS)/AMDS
+          CORRT_MT(IS) = CORRT_MT(IS)/AMDS
         ENDIF
       ENDDO
 !
@@ -383,22 +384,22 @@
 !
             IF (FLU11.GE.0.) THEN
               IF(NORDRE.GE.2) THEN
-                UAS41 = UAS41  + DST(1,NSG) +
-     &          MIN(0.D0,CORRT(NUBO1))*MAX(0.D0,DST(1,NSG))+
-     &          MAX(0.D0,CORRT(NUBO1))*MAX(0.D0,-DST(1,NSG))
+                UAS41 = UAS41  + DST_MT(1,NSG) +
+     &          MIN(0.D0,CORRT_MT(NUBO1))*MAX(0.D0,DST_MT(1,NSG))+
+     &          MAX(0.D0,CORRT_MT(NUBO1))*MAX(0.D0,-DST_MT(1,NSG))
               ENDIF
               FLU41 =  UAS41 * FLU11
             ELSE
               IF(NORDRE.GE.2) THEN
-                UAS42 = UAS42 + DST(2,NSG) +
-     &          MIN(0.D0,CORRT(NUBO2))*MAX(0.D0,DST(2,NSG))+
-     &          MAX(0.D0,CORRT(NUBO2))*MAX(0.D0,-DST(2,NSG))
+                UAS42 = UAS42 + DST_MT(2,NSG) +
+     &          MIN(0.D0,CORRT_MT(NUBO2))*MAX(0.D0,DST_MT(2,NSG))+
+     &          MAX(0.D0,CORRT_MT(NUBO2))*MAX(0.D0,-DST_MT(2,NSG))
               ENDIF
               FLU41 =  UAS42 * FLU11
             ENDIF
 !
-            CET(NUBO1) = CET(NUBO1) - FLU41
-            CET(NUBO2) = CET(NUBO2) + FLU41
+            CET_MT(NUBO1) = CET_MT(NUBO1) - FLU41
+            CET_MT(NUBO2) = CET_MT(NUBO2) + FLU41
 !
             YESNO(NSG)=.TRUE.
           ENDIF
@@ -406,7 +407,7 @@
       ENDDO
       !  FOR PARALLELILSM
       IF(NCSIZE.GT.1)THEN
-        CALL PARCOM2(CET,CET,CET,NS,1,2,1,MESH)
+        CALL PARCOM2(CET_MT,CET_MT,CET_MT,NS,1,2,1,MESH)
       ENDIF
 !
 !     BOUNDARY FLUX
@@ -425,7 +426,7 @@
             FLUTENT = FLUTENT +FLUT
           ENDIF
 !
-          CET(IS)  = CET(IS) - FLUT
+          CET_MT(IS)  = CET_MT(IS) - FLUT
 !
         ENDDO
       ENDIF
@@ -434,7 +435,7 @@
 !
       DO IS =1,NS
 !
-        HT(IS)  = HTN(IS) +  (CET(IS)+SMTR(IS))/AIRS(IS)
+        HT(IS)  = HTN(IS) +  (CET_MT(IS)+SMTR(IS))/AIRS(IS)
         MASSOU = MASSOU + SMTR(IS)
 !
         IF(HT(IS).LE.1.D-15) HT(IS)=0.D0

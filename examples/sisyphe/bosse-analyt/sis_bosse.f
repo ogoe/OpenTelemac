@@ -58,9 +58,8 @@
 !
       USE DECLARATIONS_SISYPHE, ONLY : NSICLM,NLAYMAX
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -467,9 +466,8 @@
 ! PROGRAMMES APPELES :
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -532,6 +530,7 @@
 !
 !----------------------------------------------------------------
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       INTEGER, PARAMETER :: NN = 1600
       INTEGER, INTENT(IN) :: NPOIN
@@ -661,6 +660,7 @@
 !
       USE BIEF
       USE DECLARATIONS_SISYPHE
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

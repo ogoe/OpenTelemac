@@ -19,11 +19,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC, ONLY : MODASS
+      USE DECLARATIONS_TELEMAC
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -37,15 +36,14 @@
       ENDIF
 !
 !     THESE STUCTURES ARE ALLOCATED IN PARINI
-      CALL BIEF_DEALLVEC(MESH%NB_NEIGHB_PT    )
-      CALL BIEF_DEALLVEC(MESH%LIST_SEND       )
-      CALL BIEF_DEALLVEC(MESH%NH_COM          )
-      CALL BIEF_DEALLVEC(MESH%NB_NEIGHB_PT_SEG)
-      CALL BIEF_DEALLVEC(MESH%LIST_SEND_SEG   )
-      CALL BIEF_DEALLVEC(MESH%NH_COM_SEG      )
-      CALL BIEF_DEALLVEC(MESH%BUF_SEND        )
-      CALL BIEF_DEALLVEC(MESH%BUF_RECV        )
-!
+      CALL BIEF_DEALLOBJ(MESH%NB_NEIGHB_PT    )
+      CALL BIEF_DEALLOBJ(MESH%LIST_SEND       )
+      CALL BIEF_DEALLOBJ(MESH%NH_COM          )
+      CALL BIEF_DEALLOBJ(MESH%NB_NEIGHB_PT_SEG)
+      CALL BIEF_DEALLOBJ(MESH%LIST_SEND_SEG   )
+      CALL BIEF_DEALLOBJ(MESH%NH_COM_SEG      )
+      CALL BIEF_DEALLOBJ(MESH%BUF_SEND        )
+      CALL BIEF_DEALLOBJ(MESH%BUF_RECV        )
 !
 !-----------------------------------------------------------------------
 !

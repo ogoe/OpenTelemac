@@ -76,9 +76,8 @@
       USE BIEF, EX_MT02PT => MT02PT
       USE DECLARATIONS_TELEMAC, ONLY : TETRA
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -16,7 +16,7 @@
 !+        21/03/2016
 !+        V7P2
 !+       CREATION (VOID)
-! 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBUG          |-->| IF NE.0 THEN DEBUG MODE
 !| DT             |-->| TIME STEP
@@ -28,7 +28,7 @@
 !| NTRAC          |-->| OLD NUMBER OF TRACER (BEFORE WAQ RTACERS)
 !| RAYEFF         |-->| EFFECT OF SUNSHINE ON ALGAE GROWTH
 !| T1,..,T12      |<->| 3D WORKING STRUCTURES
-!| T2_1,T2_2      |<->| 2D WORKING STRUCTURES 
+!| T2_1,T2_2      |<->| 2D WORKING STRUCTURES
 !| TN             |-->| TRACER STRUCUTRE
 !| TEXP           |<--| EXPLICIT SOURCE TERMES
 !| VOLU2D         |-->| BASES AREA (NON ASSEMBLED)
@@ -95,13 +95,12 @@
 !               (ENTREE)              (SORTIE)       (ENTREE/SORTIE)
 !-----------------------------------------------------------------------
 !***********************************************************************
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       INTEGER          , INTENT(IN   ) :: NPOIN3,NPOIN2,NPLAN
       INTEGER          , INTENT(IN   ) :: NTRAC,DEBUG,IND_T
-      LOGICAL          , INTENT(IN   ) :: YATEMP  
+      LOGICAL          , INTENT(IN   ) :: YATEMP
       DOUBLE PRECISION , INTENT(IN   ) :: WATTEMP
       TYPE(BIEF_OBJ)   , INTENT(IN   ) :: TN,HPROP,ZPROP,UN,VN
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TEXP,TIMP,RAYEFF
@@ -129,7 +128,7 @@
       CALL OS( 'X=0     ',X=T2_1)
 !     G2 IS STOCKED IN T6 ==> 3D TABLE
       CALL OS( 'X=0     ',X=T6)
-!     CP IS STOCKED IN T7 
+!     CP IS STOCKED IN T7
       CALL OS( 'X=0     ',X=T7)
 !     DP IS STOCKED IN T4
       CALL OS( 'X=0     ',X=T4)
@@ -150,7 +149,7 @@
       RANKTR8 = NTRAC          ! O2
 !
 !     G2 IS STOCKED IN T6,WE TAKE INTO ACCOUNT FOR VARIABLE TEMPERATURE
-!     
+!
       G2 = WATTEMP/20.D0
       IF(YATEMP)THEN
         CALL OS('X=CY    ',X=T6,Y=TN%ADR(IND_T)%P,C=UNSURVINGT)
@@ -193,7 +192,7 @@
       CALL RAY_EFFECT(ZSD,TN%ADR(RANKTR1)%P,NPOIN3,MEXTINC,I0,IK,KPE,
      &                RAYEFF,ZPROP,T3,T4)
 !
-!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS 
+!     COMPUTE LNUT: EFFECTS OF PHOSPHORIOUS AND NITROGENIOUS
 !           NUTRIMENTS ON ALGAE GROWTH ==>STOCKED IN T5
 !
       CALL NUTEFF(T5%R,TN,NPOIN3,RANKTR2,RANKTR4,KP,KN)
@@ -201,13 +200,13 @@
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 3'
 !
 !     RATE OF ALGAE GROWTH: CP (STOCKED IN T7)
-! 
+!
       CALL ALGAE_GROWTH(T7%R,CMAX,RAYEFF%R,T6,T5%R,CTOXIC(1),NPOIN3)
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 4'
 !
 !     RATE OF ALGAE DISAPPEARANCE DP (STOCKED IN T4) AND MP (STOPCKED IN T12)
-!       
+!
       CALL ALGAE_DEATH(T4%R,T12%R,CMORALG,TN%ADR(RANKTR1)%P%R,TRESPIR,
      &                 T6,CTOXIC(2),NPOIN3)
 !
@@ -268,12 +267,12 @@
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 9'
 !
-!     FIFTH TRACER [NOR] (RANKTR5) 
+!     FIFTH TRACER [NOR] (RANKTR5)
 !
       CC=PRONITC*(1.D0-PERNITS)
       CALL OS( 'X=CYZ   ' ,X=T1,Y=T4,Z=TN%ADR(RANKTR1)%P,C=CC       )
       CALL OS( 'X=CYZ   ' ,X=T3,Y=TN%ADR(RANKTR5)%P  ,Z=T6,C=K360   )
-      CALL OS( 'X=Y-Z   ' ,X=TEXP%ADR(RANKTR5)%P,Y=T1,Z=T3          ) 
+      CALL OS( 'X=Y-Z   ' ,X=TEXP%ADR(RANKTR5)%P,Y=T1,Z=T3          )
 !     surface sources
       DO I=1,NPOIN2
         J=(NPLAN-1)*NPOIN2+I
@@ -293,15 +292,15 @@
       CALL OS( 'X=C(Y-Z)' ,X=T3,Y=T1,Z=T3                 ,C=PRONITC )
       CALL OS( 'X=XY    ' ,X=T3,Y=TN%ADR(RANKTR1)%P                  )
       CALL OS( 'X=CYZ   ' ,X=T1,Y=TN%ADR(RANKTR5)%P  ,Z=T6,C=K360    )
-      CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR6)%P,Y=T1,Z=T3           )   
+      CALL OS( 'X=Y+Z   ' ,X=TEXP%ADR(RANKTR6)%P,Y=T1,Z=T3           )
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 11'
 !
 !     SEVENTH TRACER [L]: ORGANIC LOAD (RANKTR7)
-!     
+!
 !     implicit part
       CALL OS( 'X=CY    ' ,X=TIMP%ADR(RANKTR7)%P,Y=T11,C=K120)
-!     explicit part 
+!     explicit part
       CALL OS( 'X=CYZ   ' ,X=TEXP%ADR(RANKTR7)%P,Y=T12,
      &                     Z=TN%ADR(RANKTR1)%P,C=O2PHOTO             )
 !     surface terms
@@ -310,7 +309,7 @@
 !       - FLOR/H = WLOR[L]/H
         TEXP%ADR(RANKTR7)%P%R(J)= TEXP%ADR(RANKTR7)%P%R(J)-
      &           WLOR*TN%ADR(RANKTR7)%P%R(J)/MAX(EPS,ZPROP%R(J)      )
-      ENDDO   
+      ENDDO
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 12'
 !
@@ -333,11 +332,11 @@
         TEXP%ADR(RANKTR8)%P%R(J)= TEXP%ADR(RANKTR8)%P%R(J)+
      &    K2%R(I)*T9%R(J)*MAX((T2_1%R(I)-TN%ADR(RANKTR8)%P%R(J)),0.D0 )
      &   -DEMBEN/MAX(EPS,ZPROP%R(J)                                  )
-      ENDDO   
+      ENDDO
 !
       IF(DEBUG.GT.0)WRITE(LU,*)'IN EUTRO, STEP 14'
 !
-!     CONVERT SECONDS TO DAYS 
+!     CONVERT SECONDS TO DAYS
 !     warning: this conversions assumes linearity which is not the case here
 !              to check and verify.
       CALL OS('X=CX    ',X=TEXP%ADR(RANKTR1)%P,C=SECTODAY)
@@ -352,8 +351,8 @@
       CALL OS('X=CX    ',X=TIMP%ADR(RANKTR6)%P,C=SECTODAY)
       CALL OS('X=CX    ',X=TIMP%ADR(RANKTR7)%P,C=SECTODAY)
 !
-!    
-!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS 
+!
+!     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
 !     ACTIVATE BIEF_OBJ FOR FURTHER CALCULATIONS

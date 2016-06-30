@@ -14,7 +14,7 @@
 !+            SUBROUTINE READ_FIC_FRLIQ BECAUSE IT USES THE SAME
 !+            FILE FORMAT (LISTING MESSAGES ONLY ARE CHANGED).
 !+            THE ONLY DIFFERENCE IS THAT
-!+            THE ALLOCATABLE ARRAYS TIME AND INFIC WILL HERE
+!+            THE ALLOCATABLE ARRAYS TIME_RFS AND INFIC_RFS WILL HERE
 !+            STORE DIFFERENT DATA.
 !+
 !note     THE PROBLEM IS : WHERE TO STORE THESE DATA BECAUSE
@@ -46,14 +46,14 @@
 !history  C. COULET (ARTELIA GROUP)
 !+        07/10/2011
 !+        V6P2
-!+   Modification size WHAT and CHOIX due to modification of TRACER
+!+   Modification size WHAT and CHOIX_RFS due to modification of TRACER
 !+    numbering TRACER is now identified by 2 values (Isource, Itracer)
 !+   So MAXVAL is now equal to MAXSCE+MAXSCE*MAXTRA
 !
 !history  U.H.Merkel
 !+        17/07/2012
 !+        V6P2
-!+   NAG: MAXVAL intrinsic! -> MAXVALUE
+!+   NAG: MAXVAL intrinsic! -> MAXVALUE_RFS
 !
 !history  J-M HERVOUET (LNHE)
 !+        13/12/2012
@@ -61,7 +61,7 @@
 !+   Now works with tabs as well as spaces as delimiters
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TIME IN SECONDS
+!| AT             |-->| TIME_RFS IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
@@ -69,9 +69,13 @@
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC2D, ONLY : DEJA_RFS,INFIC_RFS,TIME_RFS,
+     &                                   CHOIX_RFS,IL1_RFS,IL2_RFS,
+     &                                   TL1_RFS,TL2_RFS,NVALUE_RFS,
+     &                                   LASTWHAT_RFS,LASTAT_RFS,
+     &                                   NLIG_RFS, MAXVALUE_RFS
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -84,25 +88,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL, SAVE :: DEJA=.FALSE.
 !
 !     MAXIMUM NUMBER OF CHARACTERS PER LIGN (MAY BE CHANGED)
 !
       INTEGER, PARAMETER :: SIZELIGN = 3000
 !
-      INTEGER IVALUE,NVALUE,ILIG,NLIG,OK,J,IWHAT,IDEB,IFIN,IL1,IL2
-      INTEGER, PARAMETER :: MAXVALUE=2100
-      DOUBLE PRECISION TL1,TL2,TETA,TOL,LASTAT
+      INTEGER IVALUE,ILIG,OK,J,IWHAT,IDEB,IFIN
+      DOUBLE PRECISION TETA
 !
       CHARACTER(LEN=SIZELIGN) :: LIGNE
-      CHARACTER*9 CHOIX(MAXVALUE),LASTWHAT
 !
-      DATA TOL /1.D-3/
+      DOUBLE PRECISION, PARAMETER :: TOL = 1.D-3
 !
-      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INFIC
-      DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: TIME
-!
-      SAVE INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT,NLIG
+      
 !
       INTRINSIC ABS,CHAR
 !
@@ -110,9 +108,9 @@
 !
 !     1) (AT FIRST CALL)
 !        READS THE SOURCE FILE
-!        INITIALISES CURRENT LINES AND INTERVAL OF TIME
+!        INITIALISES CURRENT LINES AND INTERVAL OF TIME_RFS
 !
-      IF(.NOT.DEJA) THEN
+      IF(.NOT.DEJA_RFS) THEN
         REWIND(NFIC)
 !       SKIPS COMMENTS
 1       READ(NFIC,FMT='(A)') LIGNE
@@ -120,7 +118,7 @@
 !
 !       FINDS OUT WHAT AND HOW MANY VALUES ARE GIVEN IN THE FILE
 !
-        NVALUE = -1
+        NVALUE_RFS = -1
         IFIN = 1
 40      IDEB = IFIN
 !
@@ -142,29 +140,31 @@
 !
         IF(IDEB.EQ.IFIN) GO TO 4
 !
-        NVALUE = NVALUE + 1
-        IF(NVALUE.EQ.0) THEN
+        NVALUE_RFS = NVALUE_RFS + 1
+        IF(NVALUE_RFS.EQ.0) THEN
           IF(LIGNE(IDEB:IFIN-1).NE.'T') THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LA PREMIERE VARIABLE DOIT ETRE LE TEMPS T'
             WRITE(LU,*) 'DANS LE FICHIER DES SOURCES'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'FIRST VALUE MUST BE TIME, DENOTED T'
+            WRITE(LU,*) 'FIRST VALUE MUST BE TIME_RFS, DENOTED T'
             WRITE(LU,*) 'IN SOURCES FILE'
           ENDIF
           CALL PLANTE(1)
           STOP
           ENDIF
-        ELSEIF(NVALUE.LE.MAXVALUE) THEN
-          CHOIX(NVALUE)='         '
-          CHOIX(NVALUE)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
+        ELSEIF(NVALUE_RFS.LE.MAXVALUE_RFS) THEN
+          CHOIX_RFS(NVALUE_RFS)='         '
+          CHOIX_RFS(NVALUE_RFS)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'AUGMENTER MAXVALUE DANS READ_FIC_SOURCES'
+            WRITE(LU,*) 
+     &        'AUGMENTER MAXVALUE_RFS DANS DECLARATIONS_TELEMAC2D'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'INCREASE MAXVALUE IN READ_FIC_SOURCES'
+            WRITE(LU,*) 
+     &        'INCREASE MAXVALUE_RFS IN DECLARATIONS_TELEMAC2D'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -176,33 +176,33 @@
         IF(LIGNE(1:1).EQ.'#') GO TO 4
 !
 !       COUNTS LINES OF DATA
-        NLIG = 0
+        NLIG_RFS = 0
 998     READ(NFIC,*,END=1000,ERR=999) LIGNE
-        IF(LIGNE(1:1).NE.'#') NLIG=NLIG+1
+        IF(LIGNE(1:1).NE.'#') NLIG_RFS=NLIG_RFS+1
         GO TO 998
 999     CONTINUE
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'ERREUR DE LECTURE SUR LE FICHIER DES SOURCES'
-          WRITE(LU,*) 'LIQUIDES A LA LIGNE DE DONNEES : ',NLIG
+          WRITE(LU,*) 'LIQUIDES A LA LIGNE DE DONNEES : ',NLIG_RFS
           WRITE(LU,*) '(COMMENTAIRES NON COMPTES)'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'READING ERROR ON THE SOURCES FILE'
-          WRITE(LU,*) 'AT LINE OF DATA : ',NLIG
+          WRITE(LU,*) 'AT LINE OF DATA : ',NLIG_RFS
           WRITE(LU,*) '(COMMENTS EXCLUDED)'
         ENDIF
         CALL PLANTE(1)
         STOP
 1000    CONTINUE
 !
-!       DYNAMICALLY ALLOCATES TIME AND INFIC
+!       DYNAMICALLY ALLOCATES TIME_RFS AND INFIC_RFS
 !
-        ALLOCATE(TIME(NLIG),STAT=OK)
-        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR TIME'
-        ALLOCATE(INFIC(NVALUE,NLIG),STAT=OK)
-        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR INFIC'
+        ALLOCATE(TIME_RFS(NLIG_RFS),STAT=OK)
+        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR TIME_RFS'
+        ALLOCATE(INFIC_RFS(NVALUE_RFS,NLIG_RFS),STAT=OK)
+        IF(OK.NE.0) WRITE(LU,*) 'MEMORY ALLOCATION ERROR FOR INFIC_RFS'
 !
-!       FINAL READ OF TIME AND INFIC
+!       FINAL READ OF TIME_RFS AND INFIC_RFS
 !
         REWIND(NFIC)
 !       SKIPS COMMENTS AND FIRST TWO MANDATORY LINES
@@ -210,62 +210,63 @@
         IF(LIGNE(1:1).EQ.'#') GO TO 2
         READ(NFIC,FMT='(A)') LIGNE
 !
-        DO ILIG=1,NLIG
+        DO ILIG=1,NLIG_RFS
 3         READ(NFIC,FMT='(A)') LIGNE
           IF(LIGNE(1:1).EQ.'#') THEN
             GO TO 3
           ELSE
             BACKSPACE(NFIC)
-            READ(NFIC,*) TIME(ILIG),(INFIC(IVALUE,ILIG),IVALUE=1,NVALUE)
+            READ(NFIC,*) TIME_RFS(ILIG),
+     &                   (INFIC_RFS(IVALUE,ILIG),IVALUE=1,NVALUE_RFS)
           ENDIF
         ENDDO
 !
         CLOSE(NFIC)
-        DEJA = .TRUE.
+        DEJA_RFS = .TRUE.
 !
-        IL1 = 1
-        IL2 = 2
-        TL1 = TIME(1)
-        TL2 = TIME(2)
+        IL1_RFS = 1
+        IL2_RFS = 2
+        TL1_RFS = TIME_RFS(1)
+        TL2_RFS = TIME_RFS(2)
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     2) INTERPOLATES THE DATA TO GET THE CORRECT TIME
+!     2) INTERPOLATES THE DATA TO GET THE CORRECT TIME_RFS
 !
 !     2.A) FINDS THE ADDRESS IN THE ARRAY OF STORED DATA
 !
-!     2.B) INTERPOLATES DATA OF THE ARRAY INFIC
+!     2.B) INTERPOLATES DATA OF THE ARRAY INFIC_RFS
 !
 !-----------------------------------------------------------------------
 !
 !
 !     WHICH VARIABLE ?
       IWHAT = 0
-      DO J=1,NVALUE
-        IF(WHAT.EQ.CHOIX(J)) IWHAT=J
+      DO J=1,NVALUE_RFS
+        IF(WHAT.EQ.CHOIX_RFS(J)) IWHAT=J
       ENDDO
       IF(IWHAT.EQ.0) THEN
         STAT=.FALSE.
         RETURN
       ENDIF
 !
-70    IF(AT.GE.TL1-TOL.AND.AT.LE.TL2+TOL) THEN
-        TETA = (AT-TL1)/(TL2-TL1)
+70    IF(AT.GE.TL1_RFS-TOL.AND.AT.LE.TL2_RFS+TOL) THEN
+        TETA = (AT-TL1_RFS)/(TL2_RFS-TL1_RFS)
       ELSE
-        DO J=1,NLIG-1
-          IF(AT.GE.TIME(J)-TOL.AND.AT.LE.TIME(J+1)+TOL) THEN
-            TL1=TIME(J)
-            TL2=TIME(J+1)
-            IL1=J
-            IL2=J+1
+        DO J=1,NLIG_RFS-1
+          IF(AT.GE.TIME_RFS(J)-TOL.AND.AT.LE.TIME_RFS(J+1)+TOL) THEN
+            TL1_RFS=TIME_RFS(J)
+            TL2_RFS=TIME_RFS(J+1)
+            IL1_RFS=J
+            IL2_RFS=J+1
             GO TO 70
           ENDIF
         ENDDO
-        IL1=IL2
-        IL2=IL2+1
-        IF(IL2.GT.NLIG) THEN
+        IL1_RFS=IL2_RFS
+        IL2_RFS=IL2_RFS+1
+        IF(IL2_RFS.GT.NLIG_RFS) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'T=',AT,' HORS LIMITES'
             WRITE(LU,*) 'DU FICHIER DES SOURCES'
@@ -277,25 +278,25 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        TL1=TIME(IL1)
-        TL2=TIME(IL2)
+        TL1_RFS=TIME_RFS(IL1_RFS)
+        TL2_RFS=TIME_RFS(IL2_RFS)
         GO TO 70
       ENDIF
 !
-      Q = (1.D0-TETA)*INFIC(IWHAT,IL1)
-     &  +       TETA *INFIC(IWHAT,IL2)
+      Q = (1.D0-TETA)*INFIC_RFS(IWHAT,IL1_RFS)
+     &  +       TETA *INFIC_RFS(IWHAT,IL2_RFS)
 !
       STAT=.TRUE.
 !
-!     PRINTS ONLY IF NEW TIME OR NEW VALUE IS ASKED
+!     PRINTS ONLY IF NEW TIME_RFS OR NEW VALUE IS ASKED
 !
       IF(LISTIN) THEN
-        IF(ABS(AT-LASTAT).GT.TOL.OR.LASTWHAT.NE.WHAT) THEN
+        IF(ABS(AT-LASTAT_RFS).GT.TOL.OR.LASTWHAT_RFS.NE.WHAT) THEN
           WRITE(LU,*) 'SOURCES : ',WHAT,'=',Q
         ENDIF
       ENDIF
-      LASTAT=AT
-      LASTWHAT=WHAT
+      LASTAT_RFS=AT
+      LASTWHAT_RFS=WHAT
 !
 !-----------------------------------------------------------------------
 !

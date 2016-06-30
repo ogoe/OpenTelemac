@@ -90,10 +90,9 @@
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
       USE INTERFACE_TOMAWAC, EX_SPEINI => SPEINI
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

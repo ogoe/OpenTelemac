@@ -70,10 +70,9 @@
       USE DECLARATIONS_TOMAWAC
       USE INTERFACE_TOMAWAC, EX_CORMAR => CORMAR
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -40,12 +40,11 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER MESH , NDP , NELEM , IILE , NILE , I
-      INTEGER NELMAX , NPOIN , NPMAX
+      INTEGER IILE , NILE , I
       INTEGER IFABOR(NELMAX,*) , IKLE(NELMAX,4) , NCOLOR(*) , NCOLFR(*)
       INTEGER TRAV1(NPOIN,2)
       INTEGER ISUIV , IELEM , IFACE , NPTFR , NOEUD1 , NOEUD2
@@ -55,7 +54,6 @@
 !
       LOGICAL SWAP
 !
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
       DATA SOMSUI / 2 , 3 , 4 , 0 /
       DATA EPSILO / 1.D-6 /

@@ -9,7 +9,7 @@
 ! TELEMAC2D   V7P0                                        21/09/2014
 !***********************************************************************
 !
-!brief   COMPUTES BOUNDARY CONDITIONS FOR  WAQ THERMIC PROCESS 
+!brief   COMPUTES BOUNDARY CONDITIONS FOR  WAQ THERMIC PROCESS
 !         COUPLED WITH T3D
 !
 !history  R. ATA
@@ -44,13 +44,11 @@
 !***********************************************************************
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL,ONLY:C_ATMOS,HREL,TAIR,NEBU,CP_EAU,RO0
       USE EXCHANGE_WITH_ATMOSPHERE
       USE INTERFACE_WAQTEL, EX_CALCS3D_THERMICS => CALCS3D_THERMICS
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -61,7 +59,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: PATMOS
       LOGICAL,        INTENT(IN)      :: LISTIN
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  LOCAL VARIABLES
 !

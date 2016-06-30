@@ -57,12 +57,11 @@
 !
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
-      INTEGER INDIC3 , NGEO , NPOIN , NSEC3 , NPOIN1 , N1 , N2 ,NCOLOI
-      INTEGER NELEM , MESH , NDP , NELMAX , NPMAX
+      INTEGER INDIC3 , NGEO , NSEC3 , NPOIN1 , N1 , N2 ,NCOLOI
       INTEGER IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER NSEC11 , NSEC12 , NSEC2 , NSEC
       INTEGER INDIC1 , INDIC2 , I
@@ -75,10 +74,6 @@
       CHARACTER*4  BLANC
 !
       INTRINSIC DBLE
-!
-! COMMON
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !=======================================================================
 !   INITIALISATION

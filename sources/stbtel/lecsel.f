@@ -45,16 +45,15 @@
 ! APPEL DE : -
 !***********************************************************************
 !
+      USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
       DOUBLE PRECISION XBID(1) , XINIT(*) , YINIT(*) , X(*) , Y(*)
 !
       REAL W(*)
 !
       INTEGER NGEO , NFO1,IPARAM(10),DATE(3),TIME(3)
-      INTEGER MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
       INTEGER NEINIT , NPINIT, NPOIN1 , NELEM1 , NPOIN2 , NELEM2
       INTEGER IBID(1) , NVARIN , NVAR2 , I , IELEM , IB(10) , ISTAT
       INTEGER IKINIT(NELEM,NDP),IKLE(NELMAX,NDP),IKLES(NDP,NELEM)
@@ -65,10 +64,6 @@
       CHARACTER*72 CBID,TITRE
       CHARACTER*32 TEXTE(26)
       CHARACTER*3  STD
-!
-! COMMON
-!
-      COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
 !
 !=======================================================================

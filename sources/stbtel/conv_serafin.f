@@ -33,10 +33,9 @@
       USE INTERFACE_HERMES
       USE BIEF
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -289,10 +288,9 @@
       USE CONV_LIM
       USE INTERFACE_HERMES
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

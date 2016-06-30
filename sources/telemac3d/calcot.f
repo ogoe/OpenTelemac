@@ -42,9 +42,8 @@
       USE DECLARATIONS_TELEMAC3D
       USE INTERFACE_TELEMAC3D, EX_CALCOT => CALCOT
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -48,9 +48,8 @@
       USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       USE INTERFACE_SISYPHE, EX_TASSEMENT_2 => TASSEMENT_2
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
