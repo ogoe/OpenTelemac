@@ -9,7 +9,7 @@
      & CONC,NLAYER,DEBU,MIXTE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V7P2                                   27/06/2016
 !***********************************************************************
 !
 !brief
@@ -52,6 +52,11 @@
 !+        06/07/2012
 !+        V6P2
 !+  Line MIXTE=.FALSE. added.
+!
+!history  R.KOPMANN (BAW)
+!+        27/06/2016
+!+        V7P2
+!+  CONTINUOUS APPROSIMATION CRITICAL SHILEDS CURVE DSTAR > 72 AC(I) = 0.045D0
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -211,7 +216,9 @@
             AC(I) = 0.14D0*DSTAR**(-0.64D0)
           ELSEIF (DSTAR <= 20.D0) THEN
             AC(I) = 0.04D0*DSTAR**(-0.1D0)
-          ELSEIF (DSTAR <= 150.D0) THEN
+!           CORRECTION 27/06/2016
+!          ELSEIF (DSTAR <= 150.D0) THEN
+          ELSEIF (DSTAR <= 72.D0) THEN 
             AC(I) = 0.013D0*DSTAR**0.29D0
           ELSE
 !           CORRECTION 30/05/2012
