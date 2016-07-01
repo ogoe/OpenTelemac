@@ -38,15 +38,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER N, M, NUM, NBL, ISTAT
-      INTEGER ITMP(NPOIN)
+      INTEGER,ALLOCATABLE :: ITMP(:)
       DOUBLE PRECISION LEMPRISE
       DOUBLE PRECISION X1, X2, Y1, Y2, DX, DY
       DOUBLE PRECISION U1, U2, V1, V2, DS
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: XL, YL, XP, YP
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER*1,PARAMETER :: CHIFFRE(0:9) = 
-     &             /('0','1','2','3','4','5','6','7','8','9')/
+      CHARACTER*1,PARAMETER :: CHIFFRE(0:9) =
+     &             (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -80,6 +80,8 @@
       READ(IFIC,*,END=900) ! COMMENT LINE
       READ(IFIC,*,ERR=998) LEMPRISE
 !
+      ALLOCATE(ITMP(NPOIN),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'ITMP')
       DO N = 1, NBRECH
         READ(IFIC,*,END=900) ! COMMENT LINE
         READ(IFIC,*,END=900) ! COMMENT LINE
