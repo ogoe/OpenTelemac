@@ -2580,7 +2580,7 @@
       COMP_NUM = 0
 
       write(*,*) 'Testing: ',string
-      IF (STRING(1:6)/='COTE_Z') THEN
+      IF (STRING(1:6)/='COTE Z') THEN
       DO J = 2,31
         IF (STRING(J-1:J+1) .EQ. ' U ') THEN
           STRING(J:J) = '*'
