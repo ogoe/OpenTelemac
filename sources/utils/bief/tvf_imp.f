@@ -10,7 +10,7 @@
      & PREDICTOR,CORRECTOR,ICOR,NCOR,MASSOU)
 !
 !***********************************************************************
-! BIEF   V7P1
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    Semi-implicit distributive scheme.
@@ -28,6 +28,13 @@
 !+   unchanged.
 !+   Jacobi solver programmed here, when GMRES or direct solver
 !+   is not asked.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/06/2016
+!+        V7P2
+!+   Computing the global extrema for clipping the results that may be
+!+   out of range due to truncation errors. True errors may be hidden
+!+   but will be seen with the mass balance.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
@@ -75,9 +82,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TVF_IMP => TVF_IMP
-      USE DECLARATIONS_SPECIAL
+      USE INTERFACE_PARALLEL
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -107,10 +116,12 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,N,I1,I2
-      DOUBLE PRECISION NORMR,NORMB
+      DOUBLE PRECISION NORMR,NORMB,FMIN,FMAX
       TYPE(BIEF_OBJ), POINTER :: BB1,SURDIAG,R
 !
       INTRINSIC SQRT
+!
+!-----------------------------------------------------------------------
 !
       BB1    =>BB%ADR(1)%P
       R      =>BB%ADR(2)%P
@@ -118,6 +129,37 @@
       CALL CPSTVC(SF,BB1)
       CALL CPSTVC(SF,R)
       CALL CPSTVC(SF,SURDIAG)
+!
+!-----------------------------------------------------------------------
+!
+!     COMPUTING GLOBAL EXTREMA, FOR CLIPPING TRUNCATION ERRORS
+!
+      FMIN=FC(1)
+      FMAX=FC(1)
+      DO I=1,NPOIN
+        FMIN=MIN(FMIN,FC(I))
+        FMAX=MAX(FMAX,FC(I))
+      ENDDO
+      DO I=1,NPTFR
+        IF(LIMTRA(I).EQ.KDIR) THEN
+          FMIN=MIN(FMIN,FBOR(I))
+          FMAX=MAX(FMAX,FBOR(I))        
+        ENDIF
+      ENDDO
+      IF(YASMH) THEN
+        DO I=1,NPOIN
+          FMIN=MIN(FMIN,FSCEXP(I))
+          FMAX=MAX(FMAX,FSCEXP(I))
+        ENDDO
+      ENDIF
+      IF(RAIN) THEN
+        FMIN=MIN(FMIN,TRAIN)
+        FMAX=MAX(FMAX,TRAIN)
+      ENDIF
+      IF(NCSIZE.GT.1) THEN
+        FMIN=P_DMIN(FMIN)
+        FMAX=P_DMAX(FMAX)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -355,9 +397,11 @@
           ENDDO
           IF(NCSIZE.GT.1) CALL PARCOM(R,2,MESH)
           NORMR=SQRT(P_DOTS(R,R,MESH))
-!         COPY OF NEW SOLUTION ON F
+!         COPY OF NEW SOLUTION ON F, WITH CLIPPING WITH GLOBAL EXTREMA
+!         TO COPE WITH TRUNCATION ERRORS. IF CLIPPING TRUE ERRORS IT
+!         WILL DO MASS ERRORS      
           DO I=1,NPOIN
-            F(I)=BB1%R(I)
+            F(I)=MAX(MIN(BB1%R(I),FMAX),FMIN)
           ENDDO
           IF(N.LT.SLVPSI%NITMAX.AND.NORMR.GT.SLVPSI%EPS*NORMB) THEN
             GO TO 100

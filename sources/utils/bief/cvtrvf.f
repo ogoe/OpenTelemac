@@ -11,7 +11,7 @@
      & YAFLULIM,FLULIM,SLVTRA)
 !
 !***********************************************************************
-! BIEF   V7P1
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    DISTRIBUTIVE EXPLICIT OR IMPLICIT ADVECTOR.
@@ -70,6 +70,12 @@
 !+   FLULIM. The solver configuration of tracers is copied but the
 !+   choice of the solver, if not GMRES or direct, is set to Jacobi
 !+   in TVF_IMP.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/06/2016
+!+        V7P2
+!+   Stability criterion for the LIPS scheme was too restrictive
+!+   compared to theory. The real theoretical value is now taken.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -519,9 +525,8 @@
         SECU=1.D0
         COEMIN=-1.D0
       ELSEIF(LIPS) THEN
-!       SAME AS PREDICOR
         SECU=1.D0
-        COEMIN=-1.D0
+        COEMIN=0.D0
       ELSE
         SECU=0.99D0
         COEMIN=0.D0
