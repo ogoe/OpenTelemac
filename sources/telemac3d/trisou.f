@@ -208,7 +208,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM3,IPLAN,IETAGE,IZ,IZM,IZS,ERR,NP,I3D
+      INTEGER IELEM3,IPLAN,IETAGE,IZ,IZM,IZS,ERR,I3D
       DOUBLE PRECISION A,OMEGA,PI,CORI
 !
       INTEGER I,OPTFLO
@@ -226,7 +226,7 @@
 !
 !     FOR WAVE DRIVEN CURRENTS
 !
-      CHARACTER*16 NOMX,NOMY
+      CHARACTER(LEN=16) NOMX,NOMY
       LOGICAL OKX,OKY
 !
 !***********************************************************************
