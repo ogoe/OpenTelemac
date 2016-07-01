@@ -18,7 +18,7 @@ clip.f       cmpobj.f       comp_fac.f    comp_ikle.f \
 comp_nh_com_seg.f           comp_seg.f    config_code.f   corlat.f  \
 corrsl.f     corrxy.f       cpik12.f      cpik13.f      cpikle2.f \
 cpikle3.f    cpstmt.f       cpstvc.f      crosfr.f      crsl11.f  \
-crsl12.f     cvdftr.f       cvtrvf.f      cvtrvf_pos.f  cvtrvf_pos_2.f  dcpldu.f      decldu.f      decv11.f  desseg.f \
+crsl12.f     cvdftr.f       cvtrvf.f      cvtrvf_pos.f  cvtrvf_pos_2.f  dcpldu.f   deall_bief.f   decldu.f      decv11.f  desseg.f \
 decv21.f     decvrt.f       derive.f      derlag.f  \
 des11.f      des21.f        des41.f       descen.f  \
 diffcl.f     diffin.f       dimens.f  \
