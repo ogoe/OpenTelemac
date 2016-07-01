@@ -59,9 +59,8 @@
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
-      INTEGER LNG, LU
-      COMMON/INFO/ LNG, LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -97,7 +96,7 @@
 !EGR MODIF SUPPL MF
         DIST = (Z(IPOIN2,2)-ZF(IPOIN2))/FICTIFEPS
         HAUT = MAX(Z(IPOIN2,NPLAN)-ZF(IPOIN2),1.D-7)
-!EGR END MODIF SUPPL      
+!EGR END MODIF SUPPL
         DO IPLAN = 1,NPLAN
 !
 !         ARBITRARY COMPUTATION OF K EXPRESSED AS A PERCENTAGE OF SPEED
@@ -126,7 +125,7 @@
           ENDIF
           EP(IPOIN2,IPLAN)=CMU**0.75*SQRT(AK(IPOIN2,1)**3)/KARMAN/
      &                     DISTFOND/SQRT(1.D0-(DISTFOND-DIST)/HAUT)
-!EGR END MODIF SUPPL 
+!EGR END MODIF SUPPL
           EP(IPOIN2,IPLAN)=MAX(EP(IPOIN2,IPLAN),EMIN)
         ENDDO
       ENDDO
@@ -218,6 +217,7 @@
 !| VIRT           |<->| VIRTUAL ORIGIN FOR EPSILON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+                       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC3D, ONLY : CMU,C1,C2,SIGMAK,SIGMAE,
      &                                   VIRT,SCHMIT,KMIN,KMAX,
      &                                   EMIN,EMAX,ALPHA,
@@ -226,8 +226,6 @@
      &                                   PERNORM2,PERPROD,RIMIN,RIMAX,
      &                                   OPTPROD,LIMKF,LIMEF,LIMKS,LIMES
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -475,11 +473,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC3D, ONLY: IPBOT,AEBORF,BEBORF,SIGMAE,RUGOF
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -638,11 +634,11 @@
           ELSEIF(IPLAN.GT.((NPLAN+1)/2)) THEN
 !EGR DISTANCE BETWEEN 2 LAYERS
             DISTFOND =  Z(IPOIN2,IPLAN)-Z(IPOIN2,(NPLAN+1)/2)
-!EGR POURQUOI EST-CE QU ON DIVISE PAR LA HAUTEUR DE LA COUCHE DU HAUT ?     
+!EGR POURQUOI EST-CE QU ON DIVISE PAR LA HAUTEUR DE LA COUCHE DU HAUT ?
             D_SURF = (Z(IPOIN2,NPLAN)-Z(IPOIN2,IPLAN))/
      &               (Z(IPOIN2,NPLAN)-Z(IPOIN2,(NPLAN+1)/2))
           ELSE
-!EGR MINIMUM DISTANCE BETWEEN BOTTOM AND UPPER LAYER           
+!EGR MINIMUM DISTANCE BETWEEN BOTTOM AND UPPER LAYER
             DISTFOND = MIN(Z(IPOIN2,(NPLAN+1)/2)-Z(IPOIN2,IPLAN),
      &                     Z(IPOIN2,IPLAN)-Z(IPOIN2,1))
           ENDIF
@@ -842,12 +838,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC3D, ONLY : LIMKF,LIMEF,LIMKS,LIMES
+      USE DECLARATIONS_SPECIAL
 !
       USE BIEF
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1030,11 +1025,10 @@
       USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
+      USE DECLARATIONS_SPECIAL
       USE TPXO
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 ! BEGIN OF PART SPECIFIC TO THIS CASE
       INTEGER ITRAC,NFO1
       DOUBLE PRECISION TEMP0,TEMP1,FROUD
@@ -1371,11 +1365,10 @@
       USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
      &                               ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
+      USE DECLARATIONS_SPECIAL
       USE EXCHANGE_WITH_ATMOSPHERE
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2089,9 +2082,9 @@
 !       OTHERWISE THEY WILL NOT BE CONSIDERED
         ATABOS%ADR(IND_T)%P%TYPR='Q'
         BTABOS%ADR(IND_T)%P%TYPR='Q'
-! 
+!
         CALL CALCS3D_THERMICS(NPOIN2,NPOIN3,IND_T,IND_S,TA,ATABOS,
-     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)   
+     &                        BTABOS,PATMOS,ATMOSEXCH,WIND,LISTIN)
       ENDIF
 !
 !
@@ -2195,11 +2188,10 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC3D
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2209,7 +2201,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTRINSIC MOD
-   
+
 !
 !***********************************************************************
 ! USER OUTPUT ACCORDING TO THE VALUES: TO BE IMPLEMENTED
@@ -2261,13 +2253,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
 !
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: NRFO,NPOIN3,NPOIN2,NPLAN,MAXTAB
       DOUBLE PRECISION, INTENT(IN)  :: X(NPOIN3), Y(NPOIN3)
@@ -2276,7 +2266,7 @@
 !
       TYPE(BIEF_OBJ), INTENT(INOUT) :: VARSOR
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IVAR,I,IPOIN2,IPLAN,INUM(3),I0,IT,IU
       DOUBLE PRECISION EPS,Z_RED,TEMP(NPLAN),U0(NPLAN),T_MIN,T_MAX,U1,
@@ -2388,7 +2378,7 @@
       ENDDO
 
 
- 1001 FORMAT(F7.4,F7.4,F7.4,F7.4,F7.4,F7.4,F7.4)     
+ 1001 FORMAT(F7.4,F7.4,F7.4,F7.4,F7.4,F7.4,F7.4)
 !
 !-----------------------------------------------------------------------
 !
