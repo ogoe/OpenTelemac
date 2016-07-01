@@ -37,7 +37,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N, M, NUM, NBL, ISTAT
+      INTEGER N, M, NUM, NBL, ISTAT,IERR
       INTEGER,ALLOCATABLE :: ITMP(:)
       DOUBLE PRECISION LEMPRISE
       DOUBLE PRECISION X1, X2, Y1, Y2, DX, DY

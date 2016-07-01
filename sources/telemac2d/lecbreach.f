@@ -5,7 +5,7 @@
      &(IFIC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   03/08/2012
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    READ THE BREACHES DATA FILE, ALLOCATE THE DEDICATED ARRAY
@@ -21,6 +21,11 @@
 !+        14/02/2014
 !+        V6P3R2
 !+   Addition of later breach growth option
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        01/07/2016
+!+        V7P2
+!+   ITMP now an allocatable array, not automatic array ITMP(NPOIN).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF BREACHES DATA FILE
@@ -39,19 +44,21 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER N, M, NUM, NBL, ISTAT
-      INTEGER ITMP(NPOIN)
-!      DOUBLE PRECISION LEMPRISE
       DOUBLE PRECISION X1, X2, Y1, Y2, DX, DY
       DOUBLE PRECISION U1, U2, V1, V2, DELS, MIDDIS
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: XL, YL, XP, YP
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: DS
 !
       CHARACTER(LEN=6) :: NOM, NOMX, NOMY, NOMDS
-      CHARACTER*1, PARAMETER :: CHIFFRE(0:9) =
+      CHARACTER(LEN=1), PARAMETER :: CHIFFRE(0:9) =
      &           (/'0','1','2','3','4','5','6','7','8','9'/)
+!
+      INTEGER, ALLOCATABLE :: ITMP(:)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
+!
+      ALLOCATE(ITMP(NPOIN))
 !
       READ(IFIC,*,END=900) ! COMMENT LINE
       READ(IFIC,*,ERR=999) NBRECH
@@ -398,40 +405,39 @@
       GOTO 1000
 !
 !-----------------------------------------------------------------------
-!     MESSAGES D'ERREURS
+!     ERROR MESSAGES
 !-----------------------------------------------------------------------
 !
 810   CONTINUE
       IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES DES BRECHES'
-        WRITE(LU,*) '         POUR LA BRECHE ',N
-        WRITE(LU,*) '         OPTION DE EROSION ILLISIBLE'
+        WRITE(LU,*) 'LECBREACH : ERREUR DE LECTURE SUR LE'
+        WRITE(LU,*) '            FICHIER DE DONNEES DES BRECHES'
+        WRITE(LU,*) '            POUR LA BRECHE ',N
+        WRITE(LU,*) '            OPTION DE EROSION ILLISIBLE'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'BRECHE : READ ERROR ON THE'
-        WRITE(LU,*) '         BREACHES DATA FILE'
-        WRITE(LU,*) '         FOR THE BREACH ',N
-        WRITE(LU,*) '         EROSION OPTION CANNOT BE READ'
+        WRITE(LU,*) 'LECBREACH : READ ERROR ON THE'
+        WRITE(LU,*) '            BREACHES DATA FILE'
+        WRITE(LU,*) '            FOR THE BREACH ',N
+        WRITE(LU,*) '            EROSION OPTION CANNOT BE READ'
       ENDIF
       GO TO 2000
 !
 800   CONTINUE
       IF (LNG.EQ.1) THEN
-        WRITE (LU,*) 'BRECHE : INDISPONIBLE EROSION OPTION'
+        WRITE (LU,*) 'LECBREACH : INDISPONIBLE EROSION OPTION'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'BREACH : UNAVAILABLE EROSION OPTION'
+        WRITE(LU,*) 'LECBREACH: UNAVAILABLE EROSION OPTION'
       ENDIF
       GO TO 2000
 !
 999   CONTINUE
       IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES DES BRECHES'
-        WRITE(LU,*) '         2EME LIGNE DU FICHIER NON CONFORME.'
+        WRITE(LU,*) 'LECBREACH : ERREUR DE LECTURE SUR LE'
+        WRITE(LU,*) '            FICHIER DE DONNEES DES BRECHES'
+        WRITE(LU,*) '            2EME LIGNE DU FICHIER NON CONFORME.'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'BRECHE : READ ERROR ON THE'
-        WRITE(LU,*) '         BREACHES DATA FILE'
-        WRITE(LU,*) '         AT LINE 2'
+        WRITE(LU,*) 'LECBREACH: READ ERROR ON THE BREACHES DATA FILE'
+        WRITE(LU,*) '           AT LINE 2'
       ENDIF
       GO TO 2000
 !
@@ -581,6 +587,13 @@
       STOP
 !
 1000  CONTINUE
+!
+!-----------------------------------------------------------------------
+!
+      DEALLOCATE(ITMP)
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 
