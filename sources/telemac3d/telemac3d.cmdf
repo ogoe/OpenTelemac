@@ -77,6 +77,7 @@ files: declarations_telemac.f
   bief_deallmat.f
   deallblo.f
   bief_deallobj.f
+  algae_transp.f
   deall_bief.f
   dealmesh.f
   streamline.f
@@ -270,7 +271,6 @@ files: declarations_telemac.f
   matriy.f
   matrix.f
   filter.f
-  algae_transp.f
   derive.f
   osdbif.f
   diraux.f
