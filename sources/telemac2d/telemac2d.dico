@@ -3333,7 +3333,7 @@ They must be described as boundaries of the domain and their features
 are given in the weir data file (see written documentation)'
 
 NOM = 'NOMBRE DE SIPHONS'
-NOM1 = 'NUMBER OF CULVERTS'
+NOM1 = 'NUMBER OF SIPHONS'
 TYPE = ENTIER
 INDEX = 46
 MNEMO = 'NSIPH'
@@ -3347,7 +3347,7 @@ AIDE = 'Nombre de siphons traites comme des termes sources ou
 puits. Ces siphons doivent etre decrits comme des sources dans le
 fichier cas. Leurs caracteristiques sont donnees dans le
 fichier de donnees des siphons (voir la documentation ecrite)'
-AIDE1 = 'Number of culverts treated as source terms.
+AIDE1 = 'Number of siphons treated as source terms.
 They must be described as sources in the domain and their features
 are given in the culvert data file (see written documentation)'
 
@@ -5004,7 +5004,7 @@ AIDE = ''
 AIDE1 = ''
 
 NOM = 'NOMBRE DE BUSES'
-NOM1 = 'NUMBER OF TUBES'
+NOM1 = 'NUMBER OF CULVERTS'
 TYPE = ENTIER
 INDEX = 6
 MNEMO = 'NBUSE'
@@ -5018,9 +5018,25 @@ AIDE = 'Nombre de buses ou ponts traites comme des termes sources ou
 puits. Ces buses doivent etre decrits comme des sources dans le
 fichier cas. Leurs caracteristiques sont donnees dans le
 fichier de donnees des buses (voir la documentation ecrite)'
-AIDE1 = 'Number of tubes or bridges treated as source terms.
+AIDE1 = 'Number of culverts, tubes or bridges treated as source terms.
 They must be described as sources in the domain and their features
-are given in the tubes data file (see written documentation)'
+are given in the culverts data file (see written documentation)'
+
+NOM = 'OPTION POUR LES BUSES'
+NOM1 = 'OPTION FOR CULVERTS'
+TYPE = ENTIER
+INDEX = 102
+MNEMO = 'OPTBUSE'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 2
+AIDE = 'Option pour le traitement des buses. Il existe deux formulations
+dans Telemac'
+AIDE1 = 'Option for the treatment of culverts. There are two options in
+Telemac'
 
 NOM = 'FICHIER DE DONNEES DES SEUILS'
 NOM1 = 'WEIRS DATA FILE'
@@ -5038,7 +5054,7 @@ AIDE = 'Fichier de description des seuils presents dans le modele'
 AIDE1 = 'Description of weirs existing in the model'
 
 NOM = 'FICHIER DE DONNEES DES SIPHONS'
-NOM1 = 'CULVERT DATA FILE'
+NOM1 = 'SIPHONS DATA FILE'
 TYPE = CARACTERE
 INDEX = 89
 MNEMO = 'T2D\_FILES(T2DSIP)%NAME'
@@ -5053,7 +5069,7 @@ AIDE = 'Fichier de description des siphons presents dans le modele'
 AIDE1 = 'Description of culvert existing in the model'
 
 NOM = 'FICHIER DE DONNEES DES BUSES'
-NOM1 = 'TUBES DATA FILE'
+NOM1 = 'CULVERTS DATA FILE'
 TYPE = CARACTERE
 INDEX = 90
 MNEMO = 'T2D\_FILES(T2DBUS)%NAME'
@@ -5065,7 +5081,7 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Fichier de description des buses/ponts presents dans le modele'
-AIDE1 = 'Description of tubes/bridges existing in the model'
+AIDE1 = 'Description of culverts/tubes/bridges existing in the model'
 
 NOM = 'COEFFICIENT DE CALAGE DU MARNAGE'
 NOM1 = 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
@@ -5778,21 +5794,21 @@ AIDE = 'Coefficient de dissipation de Omega'
 AIDE1 = 'Coefficient of dissipation term of Omega'
 
 
-/ REPLACED BY COUPLING WITH 
-/NOM = 'QUALITE D''EAU' 
-/NOM1 = 'WATER QUALITY' 
-/TYPE = LOGIQUE 
+/ REPLACED BY COUPLING WITH
+/NOM = 'QUALITE D''EAU'
+/NOM1 = 'WATER QUALITY'
+/TYPE = LOGIQUE
 /INDEX = 48
-/MNEMO = 'WATQUA' 
-/TAILLE = 0 
-/DEFAUT = NON 
-/DEFAUT1 = NO 
-/RUBRIQUE = 'EQUATIONS';'QUALITE D EAU' 
-/RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY' 
-/NIVEAU = 1 
-/AIDE = 'Prise en compte ou non de qualite d eau' 
-/AIDE1 = 'waq effects are to be taken into 
-/account or not.' 
+/MNEMO = 'WATQUA'
+/TAILLE = 0
+/DEFAUT = NON
+/DEFAUT1 = NO
+/RUBRIQUE = 'EQUATIONS';'QUALITE D EAU'
+/RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY'
+/NIVEAU = 1
+/AIDE = 'Prise en compte ou non de qualite d eau'
+/AIDE1 = 'waq effects are to be taken into
+/account or not.'
 
 
 NOM = 'OPTION DU VENT'
@@ -6045,11 +6061,11 @@ DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, SOURCE'
 RUBRIQUE1 = 'EQUATIONS, SOURCE'
 NIVEAU = 1
-AIDE = 'donne l option de la reconstruction hydrostatique 
+AIDE = 'donne l option de la reconstruction hydrostatique
 (option utile uniquement pour les volumes finis):
 1: option d Audusse, 2: option de Noelle'
 AIDE1 = 'gives the option for hydrostatic reconstruction
-(used only for finite volumes): 
+(used only for finite volumes):
 1: option of Audusse, 2: option of Noelle'
 
 /
@@ -6146,8 +6162,8 @@ DEFAUT1 ='STEERING FILE';
          'BINARY DATABASE 1 FOR TIDE';
          'BINARY DATABASE 2 FOR TIDE';
          'WEIRS DATA FILE';
-         'CULVERT DATA FILE';
-         'TUBES DATA FILE';
+         'SIPHONS DATA FILE';
+         'CULVERTS DATA FILE';
          'BREACHES DATA FILE';
          'DROGUES FILE';
          'ZONES FILE';

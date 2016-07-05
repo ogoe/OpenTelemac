@@ -47,7 +47,7 @@
 !history  C.COULET (ARTELIA)
 !+        30/03/2012
 !+        V6P2
-!+   Modification for culvert management
+!+   Modification for siphon management
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSIP         |-->| ELEVATIONS OF PIPES
@@ -55,23 +55,23 @@
 !| CESIP          |-->| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
 !| CSSIP          |-->| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
 !| DELSIP         |-->| ANGLE OF PIPES WITH BOTTOM
-!| DSIP           |-->| DISCHARGE OF CULVERT.
+!| DSIP           |-->| DISCHARGE OF SIPHON.
 !| ENTET          |-->| IF YES, PRINTING INFORMATION ON LISTING
 !| ENTSIP         |-->| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| GRAV           |-->| GRAVITY
 !| H              |-->| DEPTH
 !| LSIP           |-->| LINEAR HEAD LOSS OF PIPE
-!| NSIPH          |-->| NUMBER OF CULVERTS
+!| NSIPH          |-->| NUMBER OF SIPHONS
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| RELAXS         |-->| RELAXATION COEFFICIENT
-!| SECSIP         |-->| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
+!| SECSIP         |-->| CROSS SECTION OF SIPHONS (NUMBERED AS SOURCES)
 !| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
 !| T              |-->| BLOCK OF TRACERS
-!| TSIP           |<->| VALUES OF TRACERS AT CULVERT EXTREMITY
+!| TSIP           |<->| VALUES OF TRACERS AT SIPHON EXTREMITY
 !| U              |-->| X-COMPONENT OF VELOCITY
-!| USIP           |<->| VELOCITY U AT CULVERT EXTREMITY
+!| USIP           |<->| VELOCITY U AT SIPHON EXTREMITY
 !| V              |-->| Y-COMPONENT OF VELOCITY
-!| VSIP           |<->| VELOCITY V AT CULVERT EXTREMITY
+!| VSIP           |<->| VELOCITY V AT SIPHON EXTREMITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -197,7 +197,7 @@
           WRITE(LU,*) 'SIPHON ',N,' DEBIT DE ',DSIP(N),' M3/S'
         ENDIF
         IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CULVERT ',N,' DISCHARGE OF ',DSIP(N),' M3/S'
+          WRITE(LU,*) 'SIPHON ',N,' DISCHARGE OF ',DSIP(N),' M3/S'
         ENDIF
         WRITE(LU,*) ' '
       ENDIF

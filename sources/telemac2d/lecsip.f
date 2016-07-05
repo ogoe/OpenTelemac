@@ -36,7 +36,7 @@
 !history  C.COULET (ARTELIA)
 !+        10/05/2012
 !+        V6P2
-!+   Modification of culvert file
+!+   Modification of siphon file
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        25/01/2013
@@ -52,9 +52,9 @@
 !| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| IFIC           |-->| LOGICAL UNIT OF FORMATTED DATA FILE 1
 !| LSIP           |<--| LINEAR HEAD LOSS OF PIPE
-!| NSIPH          |<--| NUMBER OF CULVERTS
+!| NSIPH          |<--| NUMBER OF SIPHONS
 !| RELAXS         |<--| RELAXATION COEFFICIENT.
-!| SECSIP         |<--| CROSS SECTION OF CULVERTS
+!| SECSIP         |<--| CROSS SECTION OF SIPHONS
 !| SORSIP         |<--| INDICES OF PIPES EXITS IN GLOBAL MESH NUMBERING
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -75,7 +75,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N
+      INTEGER N,NUMSIPH
 !
       DOUBLE PRECISION DELTA1,DELTA2,ALT1,ALT2
       DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2
@@ -92,8 +92,22 @@
 !-----------------------------------------------------------------------
 !
       READ(IFIC,*,END=900)
-      READ(IFIC,*,ERR=998) RELAXS
+      READ(IFIC,*,ERR=998) RELAXS,NUMSIPH
       READ(IFIC,*,END=900)
+!
+      IF (NUMSIPH.NE.NSIPH) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LECSIP : NOMBRE DE SIPHONS : ',NUMSIPH
+          WRITE(LU,*) '         DIFFERENT DE LA VALEUR DONNEE DANS LE'
+          WRITE(LU,*) '         FICHIER DES PARAMETRES :',NSIPH
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'LECSIP: NUMBER OF SIPHONS:',NUMSIPH
+          WRITE(LU,*) '        DIFFERENT FROM THE ONE GIVEN IN THE'
+          WRITE(LU,*) '        STEERING FILE: ',NSIPH
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       DO N=1,NSIPH
         READ(IFIC,*,ERR=997) ENTSIP(N),SORSIP(N),
@@ -134,9 +148,9 @@
         WRITE(LU,*) '         FICHIER DE DONNEES DES SIPHONS'
         WRITE(LU,*) '         2EME LIGNE DU FICHIER NON CONFORME.'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'LECSIP : READ ERROR ON THE'
-        WRITE(LU,*) '         CULVERT DATA FILE'
-        WRITE(LU,*) '         AT LINE 2'
+        WRITE(LU,*) 'LECSIP: READ ERROR ON THE'
+        WRITE(LU,*) '        SIPHONS DATA FILE'
+        WRITE(LU,*) '        AT LINE 2'
       ENDIF
       CALL PLANTE(1)
       STOP
@@ -148,10 +162,10 @@
         WRITE(LU,*) '         POUR LE SIPHON ',N
         WRITE(LU,*) '         DONNEES ILLISIBLES'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'LECSIP : READ ERROR ON THE'
-        WRITE(LU,*) '         CULVERT DATA FILE'
-        WRITE(LU,*) '         FOR CULVERT NUMBER ',N
-        WRITE(LU,*) '         THE DATA CANNOT BE READ'
+        WRITE(LU,*) 'LECSIP: READ ERROR ON THE'
+        WRITE(LU,*) '        SIPHONS DATA FILE'
+        WRITE(LU,*) '        FOR SIPHON NUMBER ',N
+        WRITE(LU,*) '        THE DATA CANNOT BE READ'
       ENDIF
       CALL PLANTE(1)
       STOP
@@ -162,9 +176,9 @@
         WRITE(LU,*) '         FICHIER DE DONNEES DES SIPHONS'
         WRITE(LU,*) '         FIN DE FICHIER PREMATUREE'
       ELSEIF(LNG.EQ.2) THEN
-        WRITE(LU,*) 'LECSIP : READ ERROR ON THE'
-        WRITE(LU,*) '         CULVERT DATA FILE'
-        WRITE(LU,*) '         UNEXPECTED END OF FILE'
+        WRITE(LU,*) 'LECSIP: READ ERROR ON THE'
+        WRITE(LU,*) '        SIPHONS DATA FILE'
+        WRITE(LU,*) '        UNEXPECTED END OF FILE'
       ENDIF
       CALL PLANTE(1)
       STOP

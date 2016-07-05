@@ -3467,6 +3467,56 @@ The comparison is done by the subroutine VALIDA, which can be
 modified so as to include, for example, a comparison with an exact
 solution.'
 
+NOM = 'FICHIER DE DONNEES DES BUSES'
+NOM1 = 'CULVERTS DATA FILE'
+TYPE = CARACTERE
+INDEX = 50
+MNEMO = 'T3D\_FILES(T3DBUS)%NAME'
+SUBMIT = 'T3DBUS-READ-20;T3DBUS;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier de description des buses/ponts presents dans le modele'
+AIDE1 = 'Description of culverts/bridges existing in the model'
+
+NOM = 'NOMBRE DE BUSES'
+NOM1 = 'NUMBER OF CULVERTS'
+TYPE = ENTIER
+INDEX = 58
+MNEMO = 'NBUSE'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 2
+AIDE = 'Nombre de buses ou ponts traites comme des termes sources ou
+puits. Ces buses doivent etre decrits comme des sources dans le
+fichier cas. Leurs caracteristiques sont donnees dans le
+fichier de donnees des buses (voir la documentation ecrite)'
+AIDE1 = 'Number of culverts, tubes or bridges treated as source terms.
+They must be described as sources in the domain and their features
+are given in the culverts data file (see written documentation)'
+
+NOM = 'OPTION POUR LES BUSES'
+NOM1 = 'OPTION FOR CULVERTS'
+TYPE = ENTIER
+INDEX = 57
+MNEMO = 'OPTBUSE'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 2
+AIDE = 'Option pour le traitement des buses. Il existe deux formulations
+dans Telemac'
+AIDE1 = 'Option for the treatment of culverts. There are two options
+in Telemac'
+
 / DEFINITIONS DES MOTS CLES POUR LA SEDIMENTOLOGIE (DEBUTE A L INDEX 51)
 
 
@@ -7767,10 +7817,12 @@ DEFAUT1 = 20
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
-AIDE = 'Nombre maximal de points sources dans le maillage.
-Sert au dimensionnement de la memoire, a augmenter si necessaire.'
-AIDE1 = 'Maximal number of punctual sources in the mesh.
-Used for dimensioning arrays. Can be increased if needed.'
+AIDE = 'Nombre maximal de points sources dans le maillage,
+incluant les sources ponctuelles et 2 fois le nombre de buses.
+Sert au dimensionnement de la memoire, a augmenter si necessaire'
+AIDE1 = 'Maximal number of source points in the mesh, including
+punctual sources and twice the number of culverts.
+Used for dimensioning arrays. Can be increased if needed'
 
 NOM = 'NOMBRE MAXIMUM DE TRACEURS'
 NOM1 = 'MAXIMUM NUMBER OF TRACERS'
@@ -7833,7 +7885,7 @@ and $\epsilon$. Possible choices are:
 \end{itemize}'
 
 /
-/  VERSION 7.2 
+/  VERSION 7.2
 /
 NOM = 'FICHIER DES PARAMETRES DE WAQTEL'
 NOM1 = 'WAQTEL STEERING FILE'
@@ -7894,7 +7946,7 @@ DEFAUT1 = 100000.
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
 NIVEAU = 2
-AIDE = 'Donne la valeur de la pression atmospherique lorsqu''elle est 
+AIDE = 'Donne la valeur de la pression atmospherique lorsqu''elle est
 constante en temps et en espace.'
 AIDE1 = 'Gives the value of atmospheric pressure when it is constant
 in time and space.'
@@ -8065,7 +8117,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 43
+TAILLE = 44
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -8108,7 +8160,8 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'BASE BINAIRE 1 DE DONNEES DE MAREE';
           'BASE BINAIRE 2 DE DONNEES DE MAREE';
           'FICHIER DES FLOTTEURS';
-          'FICHIER POUR SUITE 2D'
+          'FICHIER POUR SUITE 2D';
+          'FICHIER DE DONNEES DES BUSES'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -8151,7 +8204,8 @@ DEFAUT1 = 'STEERING FILE';
           'BINARY DATABASE 1 FOR TIDE';
           'BINARY DATABASE 2 FOR TIDE';
           'DROGUES FILE';
-          'FILE FOR 2D CONTINUATION'
+          'FILE FOR 2D CONTINUATION';
+          'CULVERTS DATA FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1

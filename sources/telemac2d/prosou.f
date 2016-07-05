@@ -251,7 +251,7 @@
       INTEGER          , INTENT(IN)    :: NBUSE
       INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
       DOUBLE PRECISION , INTENT(IN)    :: DBUS(NBUSE)
-      DOUBLE PRECISION , INTENT(IN)    :: UBUS(NBUSE,2),VBUS(NBUSE,2)
+      DOUBLE PRECISION , INTENT(IN)    :: UBUS(2,NBUSE),VBUS(2,NBUSE)
 !
       INTEGER          , INTENT(IN)    :: TYPSEUIL,NWEIRS
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: NBOR,NPSING,NDGA1,NDGB1
@@ -558,9 +558,9 @@
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)-DBUS(I)
             ENDIF
-            FU%R(IR) = FU%R(IR) - (UBUS(I,1)-UN%R(IR))*
+            FU%R(IR) = FU%R(IR) - (UBUS(1,I)-UN%R(IR))*
      &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            FV%R(IR) = FV%R(IR) - (VBUS(I,1)-VN%R(IR))*
+            FV%R(IR) = FV%R(IR) - (VBUS(1,I)-VN%R(IR))*
      &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
           ENDIF
           IR = SORBUS(I)
@@ -572,9 +572,9 @@
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)+DBUS(I)
             ENDIF
-            FU%R(IR) = FU%R(IR) + (UBUS(I,2)-UN%R(IR))*
+            FU%R(IR) = FU%R(IR) + (UBUS(2,I)-UN%R(IR))*
      &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            FV%R(IR) = FV%R(IR) + (VBUS(I,2)-VN%R(IR))*
+            FV%R(IR) = FV%R(IR) + (VBUS(2,I)-VN%R(IR))*
      &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
           ENDIF
         ENDDO

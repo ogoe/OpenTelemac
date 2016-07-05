@@ -311,9 +311,11 @@
           T3DFLO=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DS2D') THEN
           T3DS2D=I
+        ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DBUS') THEN
+          T3DBUS=I
         ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
      &         I.NE.15.AND.I.NE.16.AND.I.NE.17.AND.
-     &         I.NE.19.AND.I.NE.20.AND.I.NE.21.AND.I.NE.33) THEN
+     &         I.NE.19.AND.I.NE.21.AND.I.NE.33) THEN
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           IF(LNG.EQ.1) THEN
@@ -601,6 +603,8 @@
       MARTIM(3)     = MOTINT( ADRESS(1,92) + 2 )
       OPTDIF        = MOTINT( ADRESS(1,93) )
 !     HYDSTEP       = MOTINT( ADRESS(1,94) )
+      NBUSE         = MOTINT( ADRESS(1,58) )
+      OPTBUSE       = MOTINT( ADRESS(1,57) )
       DIRFLU(0)=0
       DO K=1,MAXFRO
         PROFVEL(K)=1
@@ -1018,13 +1022,15 @@
 !     THE NUMBER OF SOURCES IS CONSIDERED TO BE THE NUMBER OF
 !     ABSCISSAE GIVEN
 !
-      NSCE=DIMEN(2,80)
-      DO I=1,NSCE
+      NPTSCE=DIMEN(2,80)
+      NSCE = NPTSCE + 2*NBUSE
+      
+      DO I=1,NPTSCE
         XSCE(I) = MOTREA(ADRESS(2,80)+I-1)
       ENDDO
 !
-      IF(DIMEN(2,81).EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(DIMEN(2,81).EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           YSCE(I) = MOTREA(ADRESS(2,81)+I-1)
         ENDDO
       ELSE
@@ -1036,8 +1042,8 @@
         STOP
       ENDIF
 !
-      IF(DIMEN(2,82).EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(DIMEN(2,82).EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           ZSCE(I) = MOTREA(ADRESS(2,82)+I-1)
         ENDDO
       ELSE
@@ -1049,8 +1055,8 @@
         STOP
       ENDIF
 !
-      IF(DIMEN(2,83).EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(DIMEN(2,83).EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           QSCE(I) = MOTREA(ADRESS(2,83)+I-1)
         ENDDO
       ELSE
@@ -1064,7 +1070,7 @@
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          DO J=1,NSCE
+          DO J=1,NPTSCE
             TASCE(J,I) = MOTREA(ADRESS(2,84)+((J-1)*NTRAC)+I-1)
           ENDDO
         ENDDO
@@ -1078,12 +1084,12 @@
       ENDIF
 !
       NREJEU = DIMEN(2,86)
-      IF(NREJEU.EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(NREJEU.EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           USCE(I) = MOTREA(ADRESS(2,86)+I-1)
         ENDDO
       ELSEIF(NREJEU.EQ.0) THEN
-        DO I=1,NSCE
+        DO I=1,NPTSCE
           USCE(I) = 0.D0
         ENDDO
       ELSE
@@ -1095,12 +1101,12 @@
         STOP
       ENDIF
 !
-      IF(DIMEN(2,87).EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(DIMEN(2,87).EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           VSCE(I) = MOTREA(ADRESS(2,87)+I-1)
         ENDDO
       ELSEIF(DIMEN(2,87).EQ.0) THEN
-        DO I=1,NSCE
+        DO I=1,NPTSCE
           VSCE(I) = 0.D0
         ENDDO
       ELSE
@@ -1112,12 +1118,12 @@
         STOP
       ENDIF
 !
-      IF(DIMEN(2,72).EQ.NSCE) THEN
-        DO I=1,NSCE
+      IF(DIMEN(2,72).EQ.NPTSCE) THEN
+        DO I=1,NPTSCE
           WSCE(I) = MOTREA(ADRESS(2,72)+I-1)
         ENDDO
       ELSEIF(DIMEN(2,72).EQ.0) THEN
-        DO I=1,NSCE
+        DO I=1,NPTSCE
           WSCE(I) = 0.D0
         ENDDO
       ELSE
@@ -1128,6 +1134,8 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+      
+      NREJEU = NREJEU + 2*NBUSE
 !
 ! END OF SOGREAH ADDITIONS
 !
@@ -1284,6 +1292,7 @@
       T3D_FILES(T3DFO2)%NAME=MOTCAR( ADRESS(4,20) )
       T3D_FILES(T3DBI1)%NAME=MOTCAR( ADRESS(4,21) )
       T3D_FILES(T3DBI2)%NAME=MOTCAR( ADRESS(4,22) )
+      T3D_FILES(T3DBUS)%NAME=MOTCAR( ADRESS(4,50) )
       T3D_FILES(T3DREF)%NAME=MOTCAR( ADRESS(4,55) )
 !     MIGRHYCAR STEERING FILE
       T3D_FILES(T3DMIG)%NAME=MOTCAR( ADRESS(4,57) )
