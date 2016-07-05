@@ -3479,8 +3479,8 @@ APPARENCE = 'LISTE IS FICHIER'
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Fichier de description des buses/ponts presents dans le modele'
-AIDE1 = 'Description of culverts/bridges existing in the model'
+AIDE = 'Fichier de description des buses/ponts presents dans le modele.'
+AIDE1 = 'Description of culverts/bridges existing in the model.'
 
 NOM = 'NOMBRE DE BUSES'
 NOM1 = 'NUMBER OF CULVERTS'
@@ -3494,12 +3494,13 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 2
 AIDE = 'Nombre de buses ou ponts traites comme des termes sources ou
-puits. Ces buses doivent etre decrits comme des sources dans le
+puits. Ces buses doivent etre decrites comme des sources dans le
 fichier cas. Leurs caracteristiques sont donnees dans le
-fichier de donnees des buses (voir la documentation ecrite)'
+\telkey{FICHIER DE DONNEES DES BUSES} (voir la documentation ecrite).'
 AIDE1 = 'Number of culverts, tubes or bridges treated as source terms.
 They must be described as sources in the domain and their features
-are given in the culverts data file (see written documentation)'
+are given in the \telkey{CULVERTS DATA FILE} (see written
+documentation).'
 
 NOM = 'OPTION POUR LES BUSES'
 NOM1 = 'OPTION FOR CULVERTS'
@@ -3513,9 +3514,9 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 2
 AIDE = 'Option pour le traitement des buses. Il existe deux formulations
-dans Telemac'
+dans \tel.'
 AIDE1 = 'Option for the treatment of culverts. There are two options
-in Telemac'
+in \tel.'
 
 / DEFINITIONS DES MOTS CLES POUR LA SEDIMENTOLOGIE (DEBUTE A L INDEX 51)
 
@@ -7819,10 +7820,10 @@ RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
 AIDE = 'Nombre maximal de points sources dans le maillage,
 incluant les sources ponctuelles et 2 fois le nombre de buses.
-Sert au dimensionnement de la memoire, a augmenter si necessaire'
+Sert au dimensionnement de la memoire, a augmenter si necessaire.'
 AIDE1 = 'Maximal number of source points in the mesh, including
 punctual sources and twice the number of culverts.
-Used for dimensioning arrays. Can be increased if needed'
+Used for dimensioning arrays. Can be increased if needed.'
 
 NOM = 'NOMBRE MAXIMUM DE TRACEURS'
 NOM1 = 'MAXIMUM NUMBER OF TRACERS'
