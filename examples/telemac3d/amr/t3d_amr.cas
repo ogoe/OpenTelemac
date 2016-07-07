@@ -31,7 +31,6 @@ LISTING PRINTOUT PERIOD = 150
 INITIAL CONDITIONS : 'CONSTANT ELEVATION'
 INITIAL ELEVATION : 0.0
 /--------------------------------------------------------------------/
-/OPTION FOR THE HYDROSTATIC STEP = 2
 DAMPING FUNCTION : 2
 /--------------------------------------------------------------------/
 PRESCRIBED ELEVATIONS :      0.0; 0.0

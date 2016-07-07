@@ -93,7 +93,6 @@ IMPLICITATION FOR DEPTH                             : 1.
 IMPLICITATION FOR VELOCITIES                        : 1.
 IMPLICITATION FOR DIFFUSION                         : 1.
 /
-OPTION FOR THE HYDROSTATIC STEP                     : 2
 MASS-LUMPING FOR DEPTH                              : 1.
 MASS-LUMPING FOR VELOCITIES                         : 1.
 MASS-LUMPING FOR DIFFUSION                          : 1.

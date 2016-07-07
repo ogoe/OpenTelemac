@@ -291,23 +291,6 @@ iterations, the results of the previous sub-iteration is used to
 update the advection and propagation field.
 The non-linearities can be taken into account through this technique.'
 
-NOM = 'NUMERO DU PLAN DE REFERENCE INTERMEDIAIRE'
-NOM1 = 'NUMBER OF THE INTERMEDIATE REFERENCE LEVEL'
-TYPE = ENTIER
-INDEX = 13
-MNEMO = 'PLAN\_REF'
-TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = 'Permet lorsque cet entier est strictement compris
-entre 1 et NPLAN
-de scinder suivant Z le domaine en 2
-impliquant 2 transformations sigma.'
-AIDE1 = ''
-
 NOM = 'MODELE DE TURBULENCE VERTICAL'
 NOM1 = 'VERTICAL TURBULENCE MODEL'
 TYPE = ENTIER
@@ -2642,37 +2625,6 @@ elevation during the computation (m),
 \item TMXZ: time corresponding to this maximum elevation (s).
 \end{itemize}'
 
-NOM = 'USER CRAY'
-NOM1 = 'USER ON CRAY'
-TYPE = CARACTERE
-INDEX = 4
-MNEMO = ''
-TAILLE = 0
-DEFAUT = ' '
-DEFAUT1 = ' '
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-NIVEAU = 2
-COMPORT =
-'Foreground ("ENTREES-SORTIES, GENERALITES*ENVIRONNEMENT")
-IS BRUT (red)'
-AIDE = 'Identite CRAY de l''utilisateur.'
-AIDE1 = 'User''s identity on CRAY.'
-
-NOM = 'MOT DE PASSE CRAY'
-NOM1 = 'PASSWORD ON CRAY'
-TYPE = CARACTERE
-INDEX = 5
-MNEMO = ''
-TAILLE = 0
-DEFAUT = ' '
-DEFAUT1 = ' '
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-NIVEAU = 2
-AIDE = 'Mot de passe associe a l''\telkey{USER CRAY}.'
-AIDE1 = 'Password related to \telkey{USER ON CRAY}.'
-
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
 TYPE = CARACTERE
@@ -2811,54 +2763,6 @@ Si ce nom commence par D il s''agit de l''option Debug (exemple DV2P2)
 Si ce nom commence par F il s''agit de l''option Flowtrace'
 AIDE1 = ''
 
-NOM = 'NUMERO DE VERSION DE TELEMAC-2D'
-NOM1 = 'TELEMAC-2D RELEASE'
-TYPE = CARACTERE
-INDEX = 13
-MNEMO = ''
-TAILLE = 0
-DEFAUT = 'V7P1'
-DEFAUT1 = 'V7P1'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE = 'Numero de version des bibliotheques utilisees par TELEMAC.
-Si ce nom commence par D il s''agit de l''option Debug (exemple DV3P2)
-Si ce nom commence par F il s''agit de l''option Flowtrace'
-AIDE1 = ''
-
-NOM = 'TEMPS MACHINE CRAY'
-NOM1 = 'CPU TIME ON CRAY'
-TYPE = CARACTERE
-INDEX = 14
-MNEMO = ''
-TAILLE = 0
-DEFAUT = '10'
-DEFAUT1 = '10'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 2
-AIDE = 'Temps CPU (en secondes) alloue pour la realisation du calcul.
-Attention; il s''agit bien d''une chaine de caracteres.'
-AIDE1 = 'C.P.U. time (in seconds) allowed for making the computation.
-Please note that this keyword is a string of characters.'
-
-NOM = 'PLACE MEMOIRE CRAY'
-NOM1 = 'MEMORY SPACE ON CRAY'
-TYPE = CARACTERE
-INDEX = 15
-MNEMO = ''
-TAILLE = 0
-DEFAUT = '1500000W'
-DEFAUT1 = '1500000W'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 2
-AIDE = 'Place memoire (en mots de 8 octets) reservee en machine pour la
-realisation du calcul.'
-AIDE1 = 'Storage capacity (in words of 8 bytes) reserved in machine for
-making the computation.'
-
 NOM = 'FICHIER DES FONDS'
 NOM1 = 'BOTTOM TOPOGRAPHY FILE'
 TYPE = CARACTERE
@@ -2977,67 +2881,6 @@ AIDE = 'Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.'
 AIDE1 = 'Data file in binary mode available to the user.'
 
-NOM = 'FACTURATION'
-NOM1 = 'PRIORITY'
-TYPE = CARACTERE
-INDEX = 23
-MNEMO = ''
-TAILLE = 0
-DEFAUT = 'JOUR'
-DEFAUT1 = 'JOUR'
-CHOIX = 'JOUR';
-        'NUIT';
-        'WEEK-END'
-CHOIX1 = 'JOUR';
-         'NUIT';
-         'WEEK-END'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-NIVEAU = 2
-AIDE = 'Choix de l''instant de lancement.'
-AIDE1 = ''
-
-NOM = 'BINAIRE DU FICHIER DE GEOMETRIE'
-NOM1 = 'GEOMETRY FILE BINARY'
-TYPE = CARACTERE
-INDEX = 24
-MNEMO = 'BINGEO'
-TAILLE = 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-        'IBM';
-        'I3E'
-CHOIX1 = 'STD';
-         'IBM';
-         'I3E'
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
-NIVEAU = 3
-COMPORT =
-'Foreground ("ENTREES-SORTIES, FICHIERS*TYPE DU BINAIRE")
-IS BRUT (red)'
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-de geometrie .
-Ce type depend de la machine sur laquelle le fichier a ete
-genere.
-Les valeurs possibles sont :
-\begin{itemize}
-\item IBM pour un fichier cree sur IBM ;
-\item I3E pour un fichier cree sur HP ;
-\item STD.
-\end{itemize}
-Il s''agit alors d''ordres READ et WRITE normaux.'
-AIDE1 = 'Binary file type used for writing the geometry file.
-This type depends on the machine on which the file was generated.
-The possible values are as follows:
-\begin{itemize}
-\item IBM, for a file on an IBM (from a CRAY),
-\item I3E, for a file on an HP (from a CRAY),
-\item STD, binary type of the machine on which the user is working.
-\end{itemize}
-In that case, normal READ and WRITE commands are used.'
-
 NOM = 'BINAIRE DU FICHIER DES RESULTATS 3D'
 NOM1 = '3D RESULT FILE BINARY'
 TYPE = CARACTERE
@@ -3055,38 +2898,26 @@ CHOIX1 = 'STD';
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
 NIVEAU = 3
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier des resultat
+AIDE = 'Type du binaire utilise pour l''ecriture du
+\telkey{FICHIER DES RESULTATS 3D}.
 Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont les memes que pour le fichier de geometrie'
-AIDE1 = 'Binary file type used for writing the results file.
+Les valeurs possibles sont :
+\begin{itemize}
+\item IBM pour un fichier cree sur IBM ;
+\item I3E pour un fichier cree sur HP ;
+\item STD.
+\end{itemize}
+Il s''agit alors d''ordres READ et WRITE normaux.'
+AIDE1 = 'Binary file type used for writing the
+\telkey{3D RESULT FILE}.
 This type depends on the machine on which the file was generated.
-The possible values are the same as for the geometry file.'
-
-NOM = 'BINAIRE DU FICHIER DU CALCUL PRECEDENT'
-NOM1 = 'PREVIOUS COMPUTATION FILE BINARY'
-TYPE = CARACTERE
-INDEX = 26
-MNEMO = 'BINPRE'
-TAILLE = 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-        'IBM';
-        'I3E'
-CHOIX1 = 'STD';
-         'IBM';
-         'I3E'
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
-NIVEAU = 3
-AIDE = 'Type du binaire utlise pour l''ecriture du fichier des resultats
-du calcul precedent.
-Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont les memes que pour le fichier de geometrie'
-AIDE1 = 'Binary file type used for writing the previous computation
-results file.
-This type depends on the machine on which the file was generated.
-The possible values are the same as for the geometry file.'
+The possible values are as follows:
+\begin{itemize}
+\item IBM, for a file on an IBM (from a CRAY),
+\item I3E, for a file on an HP (from a CRAY),
+\item STD, binary type of the machine on which the user is working.
+\end{itemize}
+In that case, normal READ and WRITE commands are used.'
 
 NOM = 'BINAIRE DU FICHIER DES RESULTATS 2D'
 NOM1 = '2D RESULT FILE BINARY'
@@ -3105,12 +2936,26 @@ CHOIX1 = 'STD';
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
 NIVEAU = 3
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier des resultat
+AIDE = 'Type du binaire utilise pour l''ecriture du
+\telkey{FICHIER DES RESULTATS 2D}.
 Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont les memes que pour le fichier de geometrie'
-AIDE1 = 'Binary file type used for writing the results file.
+Les valeurs possibles sont :
+\begin{itemize}
+\item IBM pour un fichier cree sur IBM ;
+\item I3E pour un fichier cree sur HP ;
+\item STD.
+\end{itemize}
+Il s''agit alors d''ordres READ et WRITE normaux.'
+AIDE1 = 'Binary file type used for writing the
+\telkey{2D RESULT FILE}.
 This type depends on the machine on which the file was generated.
-The possible values are the same as for the geometry file.'
+The possible values are as follows:
+\begin{itemize}
+\item IBM, for a file on an IBM (from a CRAY),
+\item I3E, for a file on an HP (from a CRAY),
+\item STD, binary type of the machine on which the user is working.
+\end{itemize}
+In that case, normal READ and WRITE commands are used.'
 
 NOM = 'SUITE DE CALCUL'
 NOM1 = 'COMPUTATION CONTINUED'
@@ -3799,7 +3644,7 @@ AIDE = 'Vitesse de chute constante en m/s (> 0 depuis v6.3).
 Valeur imposee si
 \telkey{INFLUENCE DE LA TURBULENCE SUR LA VITESSE DE CHUTE}
 = NON.'
-AIDE1 = 'Constant sediment settling velocity in m/s (>0 since v6.3)
+AIDE1 = 'Constant sediment settling velocity in m/s (>0 since v6.3).
 Prescribed value if
 \telkey{INFLUENCE OF TURBULENCE ON SETTLING VELOCITY} = NO.'
 
@@ -3886,10 +3731,22 @@ NIVEAU = 1
 AIDE = 'Type du binaire utilise pour l''ecriture du fichier
 des resultats sedimentologiques.
 Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont les memes que pour le fichier de geometrie.'
+Les valeurs possibles sont :
+\begin{itemize}
+\item IBM pour un fichier cree sur IBM ;
+\item I3E pour un fichier cree sur HP ;
+\item STD.
+\end{itemize}
+Il s''agit alors d''ordres READ et WRITE normaux.'
 AIDE1 = 'Binary file type used for writing the results file.
 This type depends on the machine on which the file was generated.
-The possible values are the same as for the geometry file.'
+The possible values are as follows:
+\begin{itemize}
+\item IBM, for a file on an IBM (from a CRAY),
+\item I3E, for a file on an HP (from a CRAY),
+\item STD, binary type of the machine on which the user is working.
+\end{itemize}
+In that case, normal READ and WRITE commands are used.'
 
 NOM = 'BINAIRE DU FICHIER SEDIMENTOLOGIQUE DU CALCUL PRECEDENT'
 NOM1 = 'PREVIOUS COMPUTATION SEDIMENTOLOGICAL FILE BINARY'
@@ -3911,10 +3768,22 @@ NIVEAU = 1
 AIDE = 'Type du binaire utilise pour l''ecriture du fichier des
 resultats sedimentologiques du calcul precedent.
 Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont les memes que pour le fichier de geometrie'
+Les valeurs possibles sont :
+\begin{itemize}
+\item IBM pour un fichier cree sur IBM ;
+\item I3E pour un fichier cree sur HP ;
+\item STD.
+\end{itemize}
+Il s''agit alors d''ordres READ et WRITE normaux.'
 AIDE1 = 'Binary file type used for writing the sedimentological file.
 This type depends on the machine on which the file was generated.
-The possible values are the same as for the geometry file.'
+The possible values are as follows:
+\begin{itemize}
+\item IBM, for a file on an IBM (from a CRAY),
+\item I3E, for a file on an HP (from a CRAY),
+\item STD, binary type of the machine on which the user is working.
+\end{itemize}
+In that case, normal READ and WRITE commands are used.'
 
 
 /----------------------------------------------------------
@@ -3932,8 +3801,8 @@ DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 3
-AIDE = 'LONGUEUR DU VECTEUR POUR LES MACHINES VECTORIELLES'
-AIDE1 = 'VECTOR LENGTH ON VECTOR MACHINES'
+AIDE = 'Longueur du vecteur pour les machines vectorielles.'
+AIDE1 = 'Vector length on vector machines.'
 
 NOM = 'NOMBRE DE TABLEAUX PRIVES'
 NOM1 = 'NUMBER OF PRIVATE ARRAYS'
@@ -4168,145 +4037,6 @@ NIVEAU = 1
 AIDE  = 'Dimension de l''espace de Krylov pour la methode GMRES (7).'
 AIDE1 = 'Dimension of Krylov space for the GMRES method (7).'
 
-NOM = 'PRECONDITIONNEMENT POUR LA PROJECTION'
-NOM1 = 'PRECONDITIONING FOR PROJECTION'
-TYPE = ENTIER
-INDEX = 78
-MNEMO = 'SLVPRJ\%PRECON'
-TAILLE = 0
-DEFAUT = 2
-DEFAUT1 = 2
-CHOIX = '0="AUCUN"';
-        '2="DIAGONAL"';
-        '3="DIAGONAL CONDENSEE"';
-        '5="DIAGONAL A VALEURS ABSOLUES"';
-        '7="CROUT"';
-        '11="GAUSS-SEIDEL EBE"';
-        '13="MATRICE DEFINIE PAR L UTILISATEUR"';
-        '14="DIAGONAL ET CROUT"';
-        '17="SOLVEUR DIRECT SUR LA VERTICALE"';
-        '21="DIAGONAL CONDENSE ET CROUT"';
-        '34="DIAGONAL ET SOLVEUR DIRECT SUR LA VERTICALE"'
-CHOIX1 = '0="no preconditioning"';
-         '2="diagonal"';
-         '3="diagonal condensed"';
-         '5="diagonal with absolute values"';
-         '7="Crout"';
-         '11="Gauss-Seidel EBE"';
-         '13="Matrix defined by the user"';
-         '14="diagonal and Crout"';
-         '17="direct solver on the vertical"';
-         '21="diagonal condensed and Crout"';
-         '34="diagonal and direct solver on the vertical"'
-RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
-RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-NIVEAU = 1
-COMPORT =
-'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
-IS BRUT (brown)'
-AIDE = 'Preconditionnement pour la projection.
-Les choix possibles sont :
-\begin{itemize}
-\item 0 : aucun ;
-\item 2 : diagonal ;
-\item 3 : diagonal avec matrice condensee ;
-\item 5 : diagonal avec valeurs absolues ;
-\item 7 : Crout ;
-\item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
-\item 14 : diagonal et Crout ;
-\item 17 : solveur direct sur la verticale ;
-\item 21 : diagonal condensee et Crout ;
-\item 34 : diagonal et solveur direct sur la verticale.
-\end{itemize}'
-AIDE1 = 'Preconditioning for the projection step.
-Possible choices are:
-\begin{itemize}
-\item 0: no preconditioning,
-\item 2: diagonal,
-\item 3: diagonal with the condensed matrix,
-\item 5: diagonal with absolute values,
-\item 7: Crout,
-\item 11: Gauss-Seidel EBE,
-\item 13: matrix defined by the user,
-\item 14: diagonal and Crout,
-\item 17: direct solver on the vertical,
-\item 21: diagonal condensed and Crout,
-\item 34: diagonal and direct solver on the vertical.
-\end{itemize}'
-
-NOM = 'SOLVEUR POUR LA PROJECTION'
-NOM1 = 'SOLVER FOR PROJECTION'
-TYPE = ENTIER
-INDEX = 79
-MNEMO = 'SLVPRJ\%SLV'
-TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
-CHOIX = '1="GRADIENT CONJUGUE"';
-        '2="RESIDU CONJUGUE"';
-        '3="GRADIENT CONJUGUE SUR EQUATION NORMALE"';
-        '4="ERREUR MINIMALE"';
-        '5="GRADIENT CONJUGUE CARRE"';
-        '6="CGSTAB"';
-        '7="GMRES"';
-        '8="SOLVEUR DIRECT"'
-CHOIX1 = '1="conjugate gradient"';
-         '2="conjugate residual"';
-         '3="conjugate gradient on a normal equation"';
-         '4="minimum error"';
-         '5="squared conjugate gradient"';
-         '6="cgstab"';
-         '7="gmres"';
-         '8="direct solver"'
-RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
-RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-NIVEAU = 1
-COMPORT =
-'Foreground ("EQUATIONS, DIFFUSION*GENERAL")
-IS BRUT (brown)'
-AIDE = 'Solveur pour la projection.'
-AIDE1 = 'Solver type for the projection step.'
-AIDE = 'Permet de choisir le solveur utilise pour la resolution de
-l''etape de projection.
-Les choix possibles sont :
-\begin{itemize}
-\item 1 : gradient conjugue ;
-\item 2 : residu conjugue ;
-\item 3 : gradient conjugue sur equation normale ;
-\item 4 : erreur minimale ;
-\item 5 : gradient conjugue carre ;
-\item 6 : CGSTAB ;
-\item 7 : GMRES ;
-\item 8 : solveur direct.
-\end{itemize}'
-AIDE1 = 'Choice of the solver for the projection equation.
-Possible choices are:
-\begin{itemize}
-\item 1: conjugate gradient,
-\item 2: conjugate residual,
-\item 3: conjugate gradient on a normal equation,
-\item 4: minimum error,
-\item 5: squared conjugate gradient,
-\item 6: CGSTAB,
-\item 7: GMRES,
-\item 8: direct solver.
-\end{itemize}'
-
-NOM = 'MAXIMUM D''ITERATIONS POUR LA PROJECTION'
-NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR PROJECTION'
-TYPE = ENTIER
-INDEX = 80
-MNEMO = 'SLVPRJ\%NITMAX'
-TAILLE = 0
-DEFAUT = 100
-DEFAUT1 = 100
-RUBRIQUE = 'EQUATIONS, DIFFUSION';'GENERAL'
-RUBRIQUE1 = 'EQUATIONS, DIFFUSION';'GENERAL'
-NIVEAU = 1
-AIDE = 'Limite le nombre d iterations pour la projection.'
-AIDE1 = 'Limits the number of solver iterations for the free surface.'
-
 NOM = 'OPTION DU SOLVEUR POUR PPE'
 NOM1 = 'OPTION OF SOLVER FOR PPE'
 TYPE = ENTIER
@@ -4338,20 +4068,6 @@ que l''on prend le dernier enregistrement'
 AIDE1 ='In case of \telkey{COMPUTATION CONTINUED}, record number to
 start from in the \telkey{PREVIOUS COMPUTATION FILE}.
 0 means that the last record is taken.'
-
-NOM = 'OPTION DU SOLVEUR POUR LA PROJECTION'
-NOM1 = 'OPTION OF SOLVER FOR PROJECTION'
-TYPE = ENTIER
-INDEX = 83
-MNEMO = 'SLVPRJ\%KRYLOV'
-TAILLE = 0
-DEFAUT = 3
-DEFAUT1 = 3
-RUBRIQUE = ' '
-RUBRIQUE1 = ' '
-NIVEAU = 1
-AIDE  = 'Dimension de l''espace de Krylov pour la methode GMRES (7).'
-AIDE1 = 'Dimension of Krylov space for the GMRES method (7).'
 
 NOM = 'OPTION DU SOLVEUR POUR LA DIFFUSION DU SEDIMENT'
 NOM1 = 'OPTION OF SOLVER FOR DIFFUSION OF THE SEDIMENT'
@@ -4401,71 +4117,6 @@ AIDE1 = 'Specifies the compoment along $z$ of the velocities of the
 sources. If nothing is specified, the sources diffuse without any
 velocity in every direction (cf. validation case source).'
 
-NOM = 'PRECISION POUR LA PROJECTION'
-NOM1 = 'ACCURACY FOR PROJECTION'
-TYPE = REEL
-INDEX = 73
-MNEMO = 'SLVPRJ\%EPS'
-TAILLE = 0
-DEFAUT = 1.E-6
-DEFAUT1 = 1.E-6
-RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
-RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
-NIVEAU = 1
-AIDE = 'Fixe la precision pour l''etape de projection.'
-AIDE1 = 'Sets the precision needed for the projection step.'
-
-NOM =  'REEL 74'
-NOM1 = 'REAL 74'
-TYPE = REEL
-INDEX = 74
-MNEMO = ''
-TAILLE = 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = ' '
-RUBRIQUE1 = ' '
-NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' '
-
-NOM = 'LATITUDE'
-NOM1 = 'LATITUDE'
-TYPE = REEL
-INDEX = 75
-MNEMO = 'PHILAT'
-TAILLE = 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = 'CONSTANTES PHYSIQUES'
-RUBRIQUE1 = 'PHYSICAL CONSTANTS'
-NIVEAU = 1
-COMPORT =
-'Foreground ("CONSTANTES PHYSIQUES")
-IS BRUT (brown)'
-AIDE = 'Latitude en degres ou les coefficients de Coriolis
-sont calcules.'
-AIDE1 = 'The latitude in degrees for which the Coriolis
-coefficients are computed.'
-
-NOM = 'ECHELLE DE LONGUEUR DE MELANGE'
-NOM1 = 'MIXING LENGTH SCALE'
-TYPE = REEL
-INDEX = 76
-MNEMO = 'DELTA'
-TAILLE = 0
-DEFAUT = 10.
-DEFAUT1 = 10.
-RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE'
-RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL'
-NIVEAU = 1
-COMPORT =
-'Foreground ("EQUATIONS*MODELE DE TURBULENCE")
-IS BRUT (brown)'
-AIDE = 'Fixe l echelle de longueur de melange pour les grandes
-profondeurs'
-AIDE1 = 'Set the mixing length scale for deep waters.'
-
 NOM = 'VERSION NON-HYDROSTATIQUE'
 NOM1 = 'NON-HYDROSTATIC VERSION'
 TYPE = LOGIQUE
@@ -4499,24 +4150,6 @@ AIDE = 'Initialisation de la consolidation du sediment, voir
 le sous-programme \telfile{CONDIS}.'
 AIDE1 = 'Initial stabilisation of sediment, see subroutine
 \telfile{CONDIS}.'
-
-NOM = 'PROJECTION COHERENTE'
-NOM1 = 'CONSISTENT PROJECTION'
-TYPE = LOGIQUE
-INDEX = 74
-MNEMO = 'CONPRO'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'EQUATIONS'
-RUBRIQUE1 = 'EQUATIONS'
-NIVEAU = 1
-COMPORT =
-'Foreground ("EQUATIONS")
-IS BRUT (brown)'
-AIDE = 'Etape de projection realisee en resolvant 3 equations
-lineaires'
-AIDE1 = 'Projection step realised by solving 3 linear equations.'
 
 NOM = 'SUITE 2D'
 NOM1 = '2D CONTINUATION'
@@ -4933,38 +4566,6 @@ AIDE1 = 'Defines the method to store matrices. The possible choices are:
 \item 3: edge-based storage.
 \end{itemize}'
 
-NOM = 'OPTIONS POUR TELEMAC-2D'
-NOM1 = 'TELEMAC-2D OPTIONS'
-TYPE = ENTIER
-INDEX = 88
-MNEMO = 'OPTT2D;SOLSYS'
-TAILLE = 2
-DEFAUT = 1;1
-DEFAUT1 = 1;1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = 'Premier entier :
-\begin{itemize}
-\item 1 : systeme St-Venant tronque ;
-\item 2 : systeme St-Venant complet.
-\end{itemize}
-Deuxieme entier :
-\begin{itemize}
-\item 1 : Equations primitives ;
-\item 2 : Equation d''onde.
-\end{itemize}'
-AIDE1 = 'First integer:
-\begin{itemize}
-\item 1: partial St-Venant system,
-\item 2: complete St-Venant system.
-\end{itemize}
-Second integer:
-\begin{itemize}
-\item 1: primitive equations,
-\item 2: wave equation.
-\end{itemize}'
-
 NOM = 'LOI DE DENSITE'
 NOM1 = 'DENSITY LAW'
 TYPE = ENTIER
@@ -5319,28 +4920,6 @@ NIVEAU = 1
 AIDE = ' '
 AIDE1 = ' '
 /
-NOM = 'OPTION POUR L''ETAPE HYDROSTATIQUE'
-NOM1 = 'OPTION FOR THE HYDROSTATIC STEP'
-TYPE = ENTIER
-INDEX = 94
-MNEMO = 'HYDSTEP'
-TAILLE = 0
-DEFAUT  = 2
-DEFAUT1 = 2
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = '
-\begin{itemize}
-\item 1 : classique (supprime) ;
-\item 2 : equation d''onde, seule option.
-\end{itemize}'
-AIDE1= '
-\begin{itemize}
-\item 1: classic (suppressed),
-\item 2: wave equation, only option.
-\end{itemize}'
-/
 /---------------------------------------------------------------------
 /
 /  VERSION 5.5
@@ -5579,7 +5158,7 @@ INDEX = 8
 MNEMO = 'RAZTIM'
 TAILLE = 0
 DEFAUT = NON
-DEFAUT1 =  NO
+DEFAUT1 = NO
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 2
@@ -5599,7 +5178,7 @@ INDEX = 93
 MNEMO = 'DUREE'
 TAILLE = 0
 DEFAUT = 0.
-DEFAUT1= 0.
+DEFAUT1 = 0.
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'DUREE DU CALCUL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'DURATION'
 NIVEAU = 1
@@ -5622,7 +5201,7 @@ INDEX = 94
 MNEMO = 'TETAZCOMP'
 TAILLE = 0
 DEFAUT = 1.
-DEFAUT1= 1.
+DEFAUT1 = 1.
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'DUREE DU CALCUL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'DURATION'
 NIVEAU = 1
@@ -6455,7 +6034,7 @@ INDEX = 85
 MNEMO = 'SPILL\_MODEL'
 TAILLE = 0
 DEFAUT = NON
-DEFAUT1 =  NO
+DEFAUT1 = NO
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CONTROLE'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'CONTROL'
 NIVEAU = 1
@@ -7221,8 +6800,8 @@ TYPE = REEL
 INDEX = 105
 TAILLE = 0
 MNEMO = 'WCS'
-DEFAUT  = 0.
-DEFAUT1  = 0.
+DEFAUT = 0.
+DEFAUT1 = 0.
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 2
@@ -7235,8 +6814,8 @@ TYPE = REEL
 INDEX = 106
 TAILLE = 0
 MNEMO = 'PVSNCO0'
-DEFAUT  = 0.
-DEFAUT1  = 0.
+DEFAUT = 0.
+DEFAUT1 = 0.
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 2
@@ -7749,7 +7328,7 @@ INDEX = 119
 MNEMO = 'ICALHWB'
 TAILLE = 0
 DEFAUT = 0
-DEFAUT1= 0
+DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
@@ -7776,7 +7355,7 @@ INDEX = 120
 MNEMO = 'ICALHWG'
 TAILLE = 0
 DEFAUT = 0
-DEFAUT1= 0
+DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
@@ -8267,7 +7846,7 @@ DEFAUT1 = 'builds|PPP|lib|telemac3dMMMVVV.LLL';
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
-AIDE  = 'Description des librairies de \telemac{3d}.'
+AIDE  = 'Description des bibliotheques de \telemac{3d}.'
 AIDE1 = 'Libraries description of \telemac{3d}.'
 
 //----Executable par defaut du code---------------------------------

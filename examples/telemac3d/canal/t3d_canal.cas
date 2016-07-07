@@ -17,7 +17,6 @@ STOCKAGE DES MATRICES : 3
 /
 /         en 22 s   version 6.2  25/05/2012 
 /
-OPTION POUR L'ETAPE HYDROSTATIQUE : 2
 IMPLICITATION POUR LA DIFFUSION : 2.
 /
 /**********************************************************************/

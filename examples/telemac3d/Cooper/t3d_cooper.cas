@@ -99,7 +99,6 @@ STANDARD VALUES FOR TRACERS : 0.
  ACCURACY FOR PPE = 1.E-6
  TIDAL FLATS : NO
  NON-HYDROSTATIC VERSION : YES
- CONSISTENT PROJECTION : YES
 /
 /----------------------------------------------------------------------/
 /
