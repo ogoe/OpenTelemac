@@ -238,10 +238,10 @@
       SUBROUTINE IDENTIFY_ENDIAN_TYPE
 !***********************************************************************
 !
-     &(FILE_NAME,OPENMODE,ENDIAN)
+     &(FILE_NAME,OPENMODE,ENDIAN,FILE_ID)
 !
 !***********************************************************************
-! HERMES   V7P0                                               01/05/2014
+! HERMES   V7P2
 !***********************************************************************
 !
 !brief    Read the first tag of a Serafin file to detect if it is in
@@ -250,7 +250,12 @@
 !history  Y AUDOUIN (LNHE)
 !+        11/05/2016
 !+        V7P2
-!+
+!+    First version.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/07/2016
+!+        V7P2
+!+    Adding FILE_ID in the list of arguments.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_NAME      |<--| Name of the file
@@ -259,29 +264,29 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
-        !
-        CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
-        CHARACTER(LEN=9), INTENT(IN) :: OPENMODE
+!
+        INTEGER, INTENT(IN)           :: FILE_ID
+        CHARACTER(LEN=*), INTENT(IN)  :: FILE_NAME
+        CHARACTER(LEN=9), INTENT(IN)  :: OPENMODE
         CHARACTER(LEN=13),INTENT(OUT) :: ENDIAN
-        !
+!
         INTEGER(KIND=K4) :: I
-        INTEGER :: FILE_ID
         LOGICAL :: FILE_EXIST
         INTEGER :: IERR
-        !
+!
         ENDIAN = 'BIG_ENDIAN'
-        ! If the file does not exist return BIG_ENDIAN (i.e output file)
+!       If the file does not exist return BIG_ENDIAN (i.e output file)
         INQUIRE(FILE=FILE_NAME,EXIST=FILE_EXIST)
         IF(.NOT.FILE_EXIST) RETURN
-
+!
         OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
      &       IOSTAT=IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:BIG')
         READ(FILE_ID,POS=1,IOSTAT=IERR) I
         IF(IERR.LT.0) THEN
-          ! We've reached the end of the file i.e. the file is empty do
-          ! big_endian it is
+!         We've reached the end of the file i.e. the file is empty do
+!         big_endian it is
           CLOSE(FILE_ID)
           RETURN
         ENDIF
@@ -356,7 +361,7 @@
           SRF_OPENMODE = OPENMODE
         ENDIF
         ! Get the Endian for the file
-        CALL IDENTIFY_ENDIAN_TYPE(FILE_NAME,OPENMODE,ENDIAN)
+        CALL IDENTIFY_ENDIAN_TYPE(FILE_NAME,OPENMODE,ENDIAN,FILE_ID)
         ! OPEN THE FILE IN STREAM MODE
         OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
