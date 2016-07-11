@@ -1,64 +1,176 @@
-\subsection{source}
+% case name
+\chapter{source}
 %
-
-% - Purpose & Problem description:
+% - Purpose & Description:
 %     These first two parts give reader short details about the test case,
-%     the physical phenomena involved and specify how the numerical solution will be validated
+%     the physical phenomena involved, the geometry and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\section{Purpose}
 %
-
+This test shows the capability of \telemac{3d} to manage multiple
+sources of fluid and tracers.
+It also demonstrates the ability to compute injection and conservation
+of multiple tracers.
 %
-\subsubsection{Description of the problem}
+\section{Description}
 %
-
+We consider a basin at rest.
+Sources are specified at some points of the mesh.
+%
 % - Reference:
 %     This part gives the reference solution we are comparing to and
 %     explicits the analytical solution when available;
 %
-%
-\subsubsection{Reference}
-%
-
-% - Physical parameters:
-%     This part specifies the geometry, details all the physical parameters
-%     used to describe both porous media (soil model in particularly) and
-%     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
+% bibliography can be here or at the end
+%\subsection{Reference}
 %
 %
-\subsubsection{Physical parameters}
+\subsection{Reference}
 %
 
+%
 % - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
-
+\subsubsection{Bathymetry}
+%
+Flat bottom ($z$ = -1~m)\\
+Constant water depth = 1.0~m
+%
+\subsubsection{Geometry}
+%
+Basin length = 100~m\\
+Basin width = 40~m (figure 3.7.1)
+%
+\subsubsection{Mesh}
+%
+674 triangular elements\\
+373 nodes\\
+5 layers regularly spaced on the vertical
+%
+% - Physical parameters:
+%     This part specifies the physical parameters
+%
+%
+\subsection{Physical parameters}
+%
+Constant vertical and horizontal viscosities: 10$^{-6}$ m$^2$/s\\
+Coriolis: no\\
+Wind: no
+%
+% Experimental results (if needed)
+%\subsection{Experimental results}
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+% Section for computational options
+%\section{Computational options}
+%
 % - Initial and boundary conditions:
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 %
-
+\subsubsection{Initial conditions}
+%
+No velocity\\
+Null water level\\
+No tracers
+%
+\subsubsection{Boundary conditions}
+%
+Channel banks: solid boundary without roughness\\
+Bottom: solid boundary roughness
+%
+\subsection{General parameters}
+%
+Time step: 1.1~s\\
+Simulation duration: 1,100~s
+%
 % - Numerical parameters:
 %     This part is used to specify the numerical parameters used
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
-
+Hydrostatic simulation\\
+Advection of velocities: Characteristic\\
+Advection of tracers: edge by edge explicit finite volume Leo Postma
+scheme for tidal flats
+%
+\subsection{Definition of sources}
+%
+position source 1: $x \approx$ -21.6~m, $y \approx$ 5.3~m, $z$ = -0.5~m\\
+position source 2: $x \approx$ -0.8~m, $y \approx$ -10.~m, $z$ = -0.5~m\\
+constant discharge of 1.0~m3/s at both sources\\
+tracer concentration at sources: 10.~g/L (or kg/m$^3$)\\
+source 1 discharges tracer 1 and 2\\
+source 2 discharges tracer 2 and 3\\
+source 2 has an initial velocity: $U$ = 0.5~m/s $V$ = 2.0~m/s
+%
+\subsection{Comments}
+%
 % - Results:
 %     We comment in this part the numerical results against the reference ones,
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\section{Results}
 %
+Figure 3.7.1 shows the horizontal mesh and sources positions in the
+upper panel.
+The lower panel highlights the influence of source 2 initial velocity
+on the horizontal velocity field at mid depth at 550~s.
+Additionally, the lower panel shows tracer 2 spreads in every direction
+at source 1, unlike at source 2 where tracer 2 diffuses in the initial
+velocity direction.
+The horizontal and vertical plumes of each tracer at 1,100~s, on
+figures 3.7.2 and 3.7.3 respectively, allows verifying that tracer 2
+plume is the combination of tracer 1 and 3 plumes.
+Moreover, the following mass balance of the \telemac{3d} simulation
+shows that the amount of water injected by the sources is correct
+(2,200~m$^3$ = 2 sources $\times$ 1~m$^3$/s $\times$ 1,100~s
+with an error of 6 $\times$ 10$^{-4}$).
+The mass balance also shows the conservation and the amount of
+discharged tracer 1, 2 and 3 is correct.
+(e.g. for tracer 2: 10~kg/m$^3 \times$ 2 sources $\times$ 1,100~s
+$\times$ 1~m$^3$/s = 22,000~kg with an error of 5. 10$^{-2}$).
 
+\begin{lstlisting}[language=TelFortran]
+        BILAN DE MASSE FINAL      T=     1100.0000
+        --- EAU ---
+        MASSE INITIALE (DEBUT DE CE CALCUL) :            4000.000
+        MASSE FINALE                              :      6200.001
+        MASSE SORTIE DU DOMAINE(OU SOURCE) :            -2200.000
+        MASSE PERDUE                              :     -0.6358517E-03
+        --- TRACEUR 1 ---
+        MASSE INITIALE (DEBUT DE CE CALCUL)        :     0.000000
+        MASSE FINALE                               :      10999.98
+        MASSE SORTIE (FRONTIERES OU SOURCE) :            -11000.00
+        MASSE PERDUE                                :    0.1617723E-01
+        --- TRACEUR 2 ---
+        MASSE INITIALE (DEBUT DE CE CALCUL)          :     0.000000
+        MASSE FINALE                                 :     21999.95
+        MASSE SORTIE (FRONTIERES OU SOURCE) :            -22000.00
+        MASSE PERDUE                                :     0.4578111E-01
+        --- TRACEUR 3 ---
+        MASSE INITIALE (DEBUT DE CE CALCUL)          :     0.000000
+        MASSE FINALE                                 :     10999.97
+        MASSE SORTIE (FRONTIERES OU SOURCE) :             -11000.00
+        MASSE PERDUE                                  :   0.3159172E-01
+\end{lstlisting}
+%
+\section{Conclusion}
+%
+\telemac{3d} is able to compute the evolution and conservation of a
+tracer discharged by a source.
+%
 % Here is an example of how to include the graph generated by validateTELEMAC.py
 % They should be in test_case/img
 %\begin{figure} [!h]
@@ -66,5 +178,6 @@
 %\includegraphics[scale=0.3]{../img/mygraph.png}
 % \caption{mycaption}\label{mylabel}
 %\end{figure}
-
-
+%
+% bibliography
+%\section{Reference}

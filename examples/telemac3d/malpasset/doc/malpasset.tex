@@ -1,64 +1,154 @@
-\subsection{malpasset}
+% case name
+\chapter{malpasset}
 %
-
-% - Purpose & Problem description:
+% - Purpose & Description:
 %     These first two parts give reader short details about the test case,
-%     the physical phenomena involved and specify how the numerical solution will be validated
+%     the physical phenomena involved, the geometry and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\section{Purpose}
 %
-
+This test illustrates that \telemac{3d} is able simulating a real dam
+break flow on initially dry domain.
+It also shows the propagation of the wave front and the evolution in
+time of the water surface and velocities in the valley downstream.
 %
-\subsubsection{Description of the problem}
+\section{Description}
 %
-
+This case is the simulation of the propagation of the wave following the
+break of the Malpasset dam (South-East of France).
+Such accident really occurred in December 1959.
+The model represents the reservoir upstream from the dam and the valley
+and flood plain downstream.
+The entire valley is approximately 18~km long and between 200~m (valley)
+and 7~km wide (flood plain).
+The complete study is described in details in [1].
+The simulation is performed using 2 or 6 vertical planes ("p2" and
+"p6").
+An additional simulation using 2 vertical planes (named "pos") is
+made using the new treatment of negative depth developed in
+\telemac{3d} 7.0.
+A simulation using 2 vertical planes with a large mesh (named
+"p2\_large") is also performed.
+%
 % - Reference:
 %     This part gives the reference solution we are comparing to and
 %     explicits the analytical solution when available;
 %
-%
-\subsubsection{Reference}
-%
-
-% - Physical parameters:
-%     This part specifies the geometry, details all the physical parameters
-%     used to describe both porous media (soil model in particularly) and
-%     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
+% bibliography can be here or at the end
+%\subsection{Reference}
 %
 %
-\subsubsection{Physical parameters}
+\subsection{Reference}
 %
-
+Hydrodynamics of Free Surface Flows modelling with the finite element
+method. Jean-Michel Hervouet (Wiley, 2007) pp. 281-288.
+%
 % - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
-
+\subsubsection{Bathymetry}
+%
+Real topography (see figures 3.8.1 and 3.8.2)
+%
+\subsubsection{Geometry}
+%
+Size of the model domain $\approx$ 17~km $\times$ 9~km
+%
+\subsubsection{Mesh}
+%
+Regular mesh: 26,000 triangular elements / 13,541 nodes
+(see figure 3.8.1)\\
+Large mesh: 104,000 triangular elements / 53,081 nodes
+(see figure 3.8.2)\\
+2 or 6 layers regularly spaced on the vertical
+%
+% - Physical parameters:
+%     This part specifies the physical parameters
+%
+%
+\subsection{Physical parameters}
+%
+Constant viscosity equal to 0.1~m$^2$/s on vertical and horizontal
+directions\\
+Coriolis: no\\
+Wind: no
+%
+% Experimental results (if needed)
+%\subsection{Experimental results}
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+% Section for computational options
+%\section{Computational options}
+%
 % - Initial and boundary conditions:
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 %
-
+\subsubsection{Initial conditions}
+%
+Full reservoir at initial time\\
+No water in the downstream valley\\
+No velocity
+%
+\subsubsection{Boundary conditions}
+%
+Channel banks: solid boundary without roughness\\
+Bottom: solid boundary with roughness\\
+Solid boundary everywhere
+%
+\subsection{General parameters}
+%
+Time step: 4~s for regular mesh cases and 1~s for large mesh case\\
+Simulation duration: 4,000~s
+%
 % - Numerical parameters:
 %     This part is used to specify the numerical parameters used
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
-
+Non-hydrostatic simulation\\
+Advection of velocities: Characteristics for three cases, N-type MURD
+scheme for tidal flats for the new treatment of negative depth)
+%
+\subsection{Comments}
+%
 % - Results:
 %     We comment in this part the numerical results against the reference ones,
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\section{Results}
 %
-
+Figure 3.8.3 illustrates the progression of the flood wave after the dam
+break (simulation using the treatment of negative depth that smoothes
+the results on tidal flats).
+The propagation of the wave front is very fast.
+The water depths increase rapidly in the valley downstream from the dam
+location.
+The wave spreads in the plain when arriving to the sea.
+During the simulation, no negative water depths are observed.
+Figure 3.8.4 presents the water depth at time = 400~s obtained with 2
+planes (p2), 6 planes (p6), 2 planes using the treatment of negative
+depth (pos) and 2 planes using the fine mesh (p2\_large) calculations.
+The results are similar.
+However, the time profiles concerning the point located as indicated by
+squares in the upper panels of the figure, show that the "pos"
+planes simulation slightly underestimate the maximum water elevation.
+%
+\section{Conclusion}
+%
+\telemac{3d} is capable of simulating the propagation of a dam break
+wave in a river valley initially dry.
+%
 % Here is an example of how to include the graph generated by validateTELEMAC.py
 % They should be in test_case/img
 %\begin{figure} [!h]
@@ -66,5 +156,6 @@
 %\includegraphics[scale=0.3]{../img/mygraph.png}
 % \caption{mycaption}\label{mylabel}
 %\end{figure}
-
-
+%
+% bibliography
+%\section{Reference}

@@ -1,7 +1,6 @@
 % case name
 \chapter{Cooper}
 %
-
 % - Purpose & Description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved, the geometry and specify how the numerical solution will be validated
@@ -18,6 +17,7 @@ $z = -10$~m with a bump at $z = -6$~m in the middle
 ($x = 2,000$~m; $y = 2,000$~m) (cf. figure 3.15.1).
 The source of tracer is located above the bump at $z = -5$~m.\\
 We observe the buoyancy of the active tracer.
+%
 % - Reference:
 %     This part gives the reference solution we are comparing to and
 %     explicits the analytical solution when available;
@@ -28,6 +28,8 @@ We observe the buoyancy of the active tracer.
 %
 \subsection{Reference}
 %
+
+%
 % - Geometry and Mesh:
 %     This part describes the mesh used in the computation
 %
@@ -35,11 +37,16 @@ We observe the buoyancy of the active tracer.
 \subsection{Geometry and Mesh}
 %
 \subsubsection{Bathymetry}
+%
 Flat bottom at $z$ = -10~m with a bump at $z$~=~-6~m in the middle of the domain.
+%
 \subsubsection{Geometry}
+%
 Channel length = 4,000~m\\
 Channel width = 4,000~m
+%
 \subsubsection{Mesh}
+%
 3,204 triangular elements\\
 1,683 nodes\\
 11 fixed planes regularly spaced
@@ -81,9 +88,12 @@ Wind: no
 \subsection{Initial and Boundary Conditions}
 %
 \subsubsection{Initial conditions}
+%
 Constant water level at $z = 0$~m\\
 Initial value of tracer = 0\\
+%
 \subsubsection{Boundary conditions}
+%
 Closed boundaries\\
 Bottom friction: Nikuradse’s formula with asperities of 0.01~m\\
 Tracer discharge at source: 20.0~m$^3$/s\\
