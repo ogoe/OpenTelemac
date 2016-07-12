@@ -63,11 +63,6 @@ files: declarations_telemac.f
   read_mesh_coord.f
   almesh.f
   bief_open_files.f
-  bief_deallvec.f
-  bief_deallmat.f
-  deallblo.f
-  bief_deallobj.f
-  deall_bief.f
   ovd.f
   cmpobj.f
   ovd_2.f
@@ -384,8 +379,6 @@ files: declarations_telemac.f
   jultim.f
   dmo.f
   tsloc.f
-  algae_transp.f
-  derive.f
   na_flux3d_lim.f
   flux_ef_vf.f
   flux_ef_vf_3d.f
