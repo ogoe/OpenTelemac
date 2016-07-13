@@ -7,9 +7,13 @@
 %
 \section{Purpose}
 %
-
+This test demonstrates the availability of \telemac{3d} to propagate
+a wave over an uneven seabed.
 %
 \section{Description}
+%
+A rectangular channel is considered.\\
+A solitary wave propagates over an uneven seabed.
 %
 % - Reference:
 %     This part gives the reference solution we are comparing to and
@@ -31,15 +35,19 @@
 %
 \subsubsection{Bathymetry}
 %
-
+A piecewise affine bathymetry only dependent on the abscissa coordinate
+$x$ is defined.
 %
 \subsubsection{Geometry}
 %
-
+Channel length = 600~m\\
+Channel width = 6~m
 %
 \subsubsection{Mesh}
 %
-
+7,206 triangular elements\\
+4,210 nodes\\
+3 planes regularly spaced on the vertical
 %
 % - Physical parameters:
 %     This part specifies the physical parameters
@@ -47,7 +55,8 @@
 %
 \subsection{Physical parameters}
 %
-
+No diffusion\\
+Coriolis: no
 %
 % Experimental results (if needed)
 %\subsection{Experimental results}
@@ -66,15 +75,17 @@
 %
 \subsubsection{Initial conditions}
 %
-
+Solitary wave initial velocity (analytical solution) for the water depth
+and the horizontal velocity components
 %
 \subsubsection{Boundary conditions}
 %
-
+Closed boundaries. No bottom friction
 %
 \subsection{General parameters}
 %
-
+Time step: 0.25~s\\
+Simulation duration: 25~s
 %
 % - Numerical parameters:
 %     This part is used to specify the numerical parameters used
@@ -83,7 +94,8 @@
 %
 \subsection{Numerical parameters}
 %
-
+Non-hydrostatic version\\
+Advection for velocities: Characteristics method
 %
 \subsection{Comments}
 %

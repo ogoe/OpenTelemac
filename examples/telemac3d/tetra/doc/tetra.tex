@@ -7,9 +7,19 @@
 %
 \section{Purpose}
 %
-
+This test demonstrates the ability of \telemac{3d} to be discretised
+with prisms split into tetrahedra.\\
+To compare the solution produced by \telemac{3d} in a frictionless
+channel presenting an idealised bump on the bottom with the analytical
+solution to this problem.\\
+The flow regime is sub-critical.\\
+The channel is horizontal with a 4~m long bump in its middle.
+The maximum elevation of the bump is 20~cm.\\
+The tracer used is salinity.
 %
 \section{Description}
+%
+
 %
 % - Reference:
 %     This part gives the reference solution we are comparing to and
@@ -31,15 +41,20 @@
 %
 \subsubsection{Bathymetry}
 %
-
+If 6.51~m < $x$ < 13.49~m, $z_{\rm{f}} = -0.0246875(x-10)^2$\\
+If $x$ < 1.44~m, $z_{\rm{f}} = -0.2-0.3(\frac{x}{2.5})^2$\\
+$z_{\rm{f}}$ = -0.3~m elsewhere
 %
 \subsubsection{Geometry}
 %
-
+It is the same geometry as the \telemac{2d} test case ``bumflu''.
 %
 \subsubsection{Mesh}
 %
-
+2,620 triangular elements\\
+1,452 nodes\\
+10 planes regularly spaced in the vertical direction except one fixed
+plane with the elevation -0.2~m (plane number 4).
 %
 % - Physical parameters:
 %     This part specifies the physical parameters
@@ -47,7 +62,8 @@
 %
 \subsection{Physical parameters}
 %
-
+Turbulence model: $k-\epsilon$ model\\
+Coriolis: no
 %
 % Experimental results (if needed)
 %\subsection{Experimental results}
@@ -66,15 +82,20 @@
 %
 \subsubsection{Initial conditions}
 %
-
+Constant initial water level at $z$ = 1.8~m\\
+No velocity\\
+Initial tracer: uniform 30
 %
 \subsubsection{Boundary conditions}
 %
-
+Upstream: imposed flow rate (4~m$^3$/s) and imposed tracer
+(40 if $z \leq$ -0.2~m, 30 if $z$ > -0.2~m)\\
+Downstream: prescribed elevation 1.8~m so that the water depth is 2~m
 %
 \subsection{General parameters}
 %
-
+Time step: 0.04~s\\
+Simulation duration: 40~s
 %
 % - Numerical parameters:
 %     This part is used to specify the numerical parameters used
@@ -83,7 +104,13 @@
 %
 \subsection{Numerical parameters}
 %
-
+Non-hydrostatic version\\
+Advection for velocities: edge by edge explicit finite volume Leo
+Postma\\
+Advection for tracers: edge by edge explicit finite volume Leo
+Postma\\
+Advection for $k-\epsilon$: edge by edge explicit finite volume Leo
+Postma
 %
 \subsection{Comments}
 %
