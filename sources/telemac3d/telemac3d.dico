@@ -5086,10 +5086,13 @@ INDEX = 99
 MNEMO = 'VERPROTRA'
 TAILLE = 2
 CHOIX='0="Programmation utilisateur"';
-'1="Constant"';'2="Constant ou Rouse si sediment"'
+'1="Constant"';'2="Constant ou Rouse si sediment"';
+'3= "Profil de Rouse normalise et concentration imposee"';
+'4= "Profil de Rouse modifie avec viscosite moleculaire"'
 CHOIX1='0="User defined"';'1="Constant"';
 '2="Constant or Rouse if sediment"';
-'3= "Normalized Rouse profile and imposed conc"'
+'3= "Normalized Rouse profile and imposed conc"';
+'4= "Modified Rouse profile accounting for molecular viscosity"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES'
 RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'
 NIVEAU = 1
@@ -5100,6 +5103,7 @@ traceurs sur la verticale. Les choix possibles sont :
 \item 1 : Constant ;
 \item 2 : Rouse equilibrium concentration ;
 \item 3 : Rouse (normalise) et concentration imposee.
+\item 4 : Rouse modifie avec viscosite moleculaire.
 \end{itemize}'
 AIDE1= 'Specifies the type of profiles of tracer concentration on the
 vertical. Possible choices are:
@@ -5109,6 +5113,7 @@ vertical. Possible choices are:
 \item 2: Rouse equilibrium, constant (diluted tracer)
 or Rouse (sediment),
 \item 3: Rouse (normalized) and imposed concentration.
+\item 4: Rouse modified with molecular viscosity.
 \end{itemize}'
 /
 NOM = 'OPTION DE SUPG'

@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -55,6 +55,11 @@
 !+        27/08/2015
 !+        V7P1
 !+   Imposed flowrates on the bed.
+!
+!history  J_M HERVOUET (EDF LAB, LNHE)
+!+        15/07/2016
+!+        V7P2
+!+   TRACERS VERTICAL PROFILES had an option 4 not recognised by bord3d.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
@@ -432,8 +437,8 @@
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),AT,LT,NP,
      &                         INFOGR,IPROF,ITRAC)
-              IF(IPROF.EQ.2.OR.IPROF.EQ.0) THEN
-!               Rouse concentrations profiles (IPROF=2) or values given by user (IPROF=0)
+              IF(IPROF.EQ.2.OR.IPROF.EQ.4.OR.IPROF.EQ.0) THEN
+!               Rouse concentrations profiles (IPROF=2 or 4) or given by user (IPROF=0)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSEIF(IPROF.EQ.3) THEN
 !               Normalised concentrations profiles (IPROF=3)
