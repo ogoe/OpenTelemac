@@ -5,7 +5,7 @@
      &( Q , WHAT , AT , NFIC , LISTIN , STAT )
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                   08/11/2011
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES FROM THE LIQUID BOUNDARY FILE.
@@ -45,7 +45,13 @@
 !history  J-M HERVOUET (LNHE)
 !+        13/12/2012
 !+        V6P3
-!+   Now works with tabs as well as spaces as delimiters
+!+   Now works with tabs as well as spaces as delimiters.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        15/07/2016
+!+        V7P2
+!+   Now controlling that the time of a new line is greater than the
+!+   time of the previous line.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME_RFF IN SECONDS
@@ -66,7 +72,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9     , INTENT(IN)       :: WHAT
+      CHARACTER(LEN=9), INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
@@ -272,7 +278,24 @@
       ENDIF
 !
 70    IF(AT.GE.TL1_RFF-TOL.AND.AT.LE.TL2_RFF+TOL) THEN
-        TETA = (AT-TL1_RFF)/(TL2_RFF-TL1_RFF)
+        IF(TL2_RFF.GT.TL1_RFF) THEN
+          TETA = (AT-TL1_RFF)/(TL2_RFF-TL1_RFF)
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ERREUR, LE TEMPS ',TL2_RFF
+            WRITE(LU,*) 'EST INFERIEUR OU EGAL A CELUI'
+            WRITE(LU,*) 'DE LA LIGNE PRECEDENTE : ',TL1_RFF
+            WRITE(LU,*) 'DANS LE FICHIER DES FRONTIERES LIQUIDES'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'ERROR, TIME ',TL2_RFF
+            WRITE(LU,*) 'IS LESS OR EQUAL TO THE TIME'
+            WRITE(LU,*) 'OF THE PREVIOUS LINE: ',TL1_RFF
+            WRITE(LU,*) 'IN THE FILE OF LIQUID BOUNDARIES'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ELSE
         DO J=1,NLIG_RFF-1
           IF(AT.GE.TIME_RFF(J)-TOL.AND.AT.LE.TIME_RFF(J+1)+TOL) THEN

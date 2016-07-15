@@ -463,7 +463,7 @@ NOM1 = 'SOLVER FOR DIFFUSION OF TRACERS'
 TYPE = ENTIER
 INDEX = 11
 MNEMO = 'SLVTRA(ITRAC)%SLV'
-TAILLE = 0
+TAILLE = 2
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '1="gradient conjuge"';
@@ -3913,12 +3913,12 @@ TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '0="schema de Roe"';
-'1="schéma cinetique ordre 1"';
-'2="schéma cinetique ordre 2"' ;
-'3="schéma Zokagoa ordre 1"';
-'4="schéma Tchamen ordre 1"';
-'5="schéma HLLC ordre 1"';
-'6="schéma WAF ordre 2"'
+'1="sch\E9ma cinetique ordre 1"';
+'2="sch\E9ma cinetique ordre 2"' ;
+'3="sch\E9ma Zokagoa ordre 1"';
+'4="sch\E9ma Tchamen ordre 1"';
+'5="sch\E9ma HLLC ordre 1"';
+'6="sch\E9ma WAF ordre 2"'
 CHOIX1 = '0="Roe scheme"';
 '1="kinetic order 1"';
 '2="kinetic order 2"';
@@ -5541,7 +5541,7 @@ UPSTREAM/DOWNSTREAM (Historical solution with bord)"';
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = 'Méthode de traitement des seuils'
+AIDE = 'M\E9thode de traitement des seuils'
 AIDE1 = 'Method for treatment of weirs'
 /
 / VERSION 7.0
