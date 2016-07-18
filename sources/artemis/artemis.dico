@@ -60,6 +60,21 @@ IS VALEUR (red)'
 NIVEAU = 1
 AIDE = 'Titre du cas etudie.'
 AIDE1 = 'Title of the studied case.'
+/
+NOM  = 'DEBUGGER'
+NOM1 = 'DEBUGGER'
+TYPE = INTEGER
+INDEX = 30
+MNEMO = 'DEBUG'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+COMPORT = 'Foreground ("PARAMETRES NUMERIQUES") IS VALEUR (Blue)'
+NIVEAU = 1
+AIDE= 'Pour imprimer la sequence des appels, mettre 1'
+AIDE1 = 'If 1, calls of subroutines will be printed in the listing'
 
 NOM = 'LONGUEUR DU VECTEUR'
 NOM1 = 'VECTOR LENGTH'
@@ -1136,9 +1151,9 @@ CHOIX =
 'E="prive(1,2)"';
 'F="prive(1,3)"';
 'G="prive(1,4)"';
-'T01="première période moyenne spectrale"';
-'T02="deuxième période moyenne spectrale"';
-'TM="troisième période moyenne spectrale"';
+'T01="premiï¿½re pï¿½riode moyenne spectrale"';
+'T02="deuxiï¿½me pï¿½riode moyenne spectrale"';
+'TM="troisiï¿½me pï¿½riode moyenne spectrale"';
 'FX="force en X"';
 'FY="force en Y"';
 'INC="incidence de la houle"';
@@ -1197,9 +1212,9 @@ Les possibilites offertes sont les suivantes :
     - E prive(1,2) (variable 14)
     - F prive(1,3) (variable 15)
     - G prive(1,4) (variable 16)
-    - T01 première période moyenne spectrale
-    - T02 deuxième période moyenne spectrale
-    - TM troisième période moyenne spectrale
+    - T01 premiï¿½re pï¿½riode moyenne spectrale
+    - T02 deuxiï¿½me pï¿½riode moyenne spectrale
+    - TM troisiï¿½me pï¿½riode moyenne spectrale
     - FX force en X
     - FY force en Y
     - INC incidence de la houle
@@ -1290,9 +1305,9 @@ CHOIX =
 'E="prive(1,2)"';
 'F="prive(1,3)"';
 'G="prive(1,4)"';
-'T01="première période moyenne spectrale"';
-'T02="deuxième période moyenne spectrale"';
-'TM="troisième période moyenne spectrale"';
+'T01="premiï¿½re pï¿½riode moyenne spectrale"';
+'T02="deuxiï¿½me pï¿½riode moyenne spectrale"';
+'TM="troisiï¿½me pï¿½riode moyenne spectrale"';
 'FX="force en X"';
 'FY="force en Y"';
 'INC="incidence de la houle"';

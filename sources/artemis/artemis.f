@@ -156,6 +156,7 @@
 !       This way LECLIM ONLY READ the boundary conditions file and
 !       DO NOT CHANGE the LIHBOR values
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING LECLIM'
       CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
      &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
      &             TB1%R      , TB1%R    , TB1%R  ,
@@ -163,27 +164,33 @@
      &             ART_FILES(ARTGEO)%FMT,ART_FILES(ARTGEO)%LU,
      &             0       , 0    , 0 ,  0 , 0 , 0,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< LECLIM CALLED'
 !
 !-----------------------------------------------------------------------
 !
 ! COMPLEMENTS THE DATA STRUCTURE FOR BIEF
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING INBIEF'
       CALL INBIEF(LIHBOR%I,KLOG,IT1,IT2,IT3,LVMAC,IELM,
      &         LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< INBIEF CALLED'
 !-----------------------------------------------------------------------
 !  LOOKS FOR BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE :
 !-----------------------------------------------------------------------
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING FONSTR'
       CALL FONSTR(T1,ZF,T2,FW,ART_FILES(ARTGEO)%LU,
      &            ART_FILES(ARTGEO)%FMT,ART_FILES(ARTFON)%LU,
      &            ART_FILES(ARTFON)%NAME,MESH,FFON,LISTIN,
      &            0,NAMES_PRIVE,PRIVE)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< FONSTR CALLED'
 !-----------------------------------------------------------------------
 !
 ! PREPARES THE RESULTS FILE (OPTIONAL)
 !
 !     STANDARD SELAFIN FORMAT
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> PREPARES THE RESULTS FILE'
         ! CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES.
         ! THE DATA ARE CREATED IN THE FILE: NRES, AND ARE
         ! CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
@@ -205,6 +212,7 @@
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
      &                  MARTIM)        ! START TIME
+      IF(DEBUG.GT.0) WRITE(LU,*) '< RESULTS FILE PREPARED'
 !
 !-----------------------------------------------------------------------
 !
@@ -214,6 +222,7 @@
 !
 !=======================================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> PREPARES LIQUID BOUNDARIES'
       IF(NCSIZE.GT.1) THEN
         NFRLIQ=0
         DO I=1,NPTFR
@@ -230,6 +239,7 @@
      &        MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
      &        IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
       ENDIF
+      IF(DEBUG.GT.0) WRITE(LU,*) '< LIQUID BOUNDARIES PREPARED'
 ! LOCATES THE BOUNDARIES
 !
 !=======================================================================
@@ -238,12 +248,15 @@
 !
 ! STANDARD SUBROUTINE DOES NOT DO ANYTHING
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING ART_CORFON'
       CALL ART_CORFON
+      IF(DEBUG.GT.0) WRITE(LU,*) '< ART_CORFON CALLED'
 !
 !-----------------------------------------------------------------------
 !
 !     READ TOMAWAC SPECTRUM IF NECESSARY
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> PREPARES FOR CHAINING WITH TOMAWAC'
       IF (CHAINTWC.AND.(.NOT.ALEMUL)) THEN
         WRITE(LU,*) 'CHAINING WITH TOMAWAC NEEDS MULTIDIRECTIONAL
      &                    RAMDOM SEA OPTION                          '
@@ -253,6 +266,7 @@
       IF (CHAINTWC) THEN
         CALL LECWAC1
       ENDIF
+      IF(DEBUG.GT.0) WRITE(LU,*) '< CHAINING WITH TOMAWAC PREPARED'
 !
 !=======================================================================
 !
@@ -268,6 +282,7 @@
 ! DETERMINES THE DIFFERENT DIRECTIONS FOR A MULTIDIRECTIONAL RANDOM
 ! SEA COMPUTATION
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> PREPARES FOR MULTIDIRECTIONAL SEA'
 !     IF SPECTRUM TAKEN FROM TOMAWAC
       IF (CHAINTWC) THEN
         CALL TWCALE
@@ -283,8 +298,6 @@
      &               T1%R,NPOIN,PRIVE,NPRIV)
         ENDIF
 !
-!
-!
 !       DETERMINES THE DIFFERENT PERIODS FOR A RANDOM SEA COMPUTATION
 !
         IF (ALEMON.OR.ALEMUL) THEN
@@ -294,10 +307,12 @@
         ENDIF
 !
       ENDIF
+      IF(DEBUG.GT.0) WRITE(LU,*) '< MULTIDIRECTIONAL SEA PREPARED'
 !
 !=======================================================================
 !
 ! START OF COMPUTATION
+      IF(DEBUG.GT.0) WRITE(LU,*) '###> START OF COMPUTATION'
 !
 ! LT REFERS TO THE CURRENT CALCULATION
 !  (STARTS FROM 0 SO THAT THE FIRST COMPUTATION ALWAYS BE RECORDED)
@@ -349,16 +364,22 @@
 !
 200   IF (ALEMUL) THEN
         CALL OS('X=C     ', TETAB ,SBID,SBID, DALE%R(LDIR) )
+        IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING ENTART'
         CALL ENTART(2,DALE%R(LDIR),LT,LDIR,NDALE,ALEMON,ALEMUL,BALAYE)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< ENTART CALLED'
       ENDIF
 !
 100   CONTINUE
 !
 !     PRINT NEW VALUE OF THE PERIOD
       IF (BALAYE) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING ENTART'
         CALL ENTART(1,PER,LT,LPER,NPERBA,ALEMON,ALEMUL,BALAYE)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< ENTART CALLED'
       ELSE
+        IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING ENTART'
         CALL ENTART(1,PER,LT,LPER,NPALE,ALEMON,ALEMUL,BALAYE)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< ENTART CALLED'
       ENDIF
 !
 !
@@ -371,7 +392,9 @@
 ! INITIALISES PHYSICAL PARAMETERS
 !
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CONDIH'
       CALL CONDIH
+      IF(DEBUG.GT.0) WRITE(LU,*) '< CONDIH CALLED'
 !
 !=======================================================================
 !
@@ -383,7 +406,9 @@
 !
 ! CALLS THE USER SUBROUTINE
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING BORH'
       CALL BORH
+      IF(DEBUG.GT.0) WRITE(LU,*) '< BORH CALLED'
 !     IMPOSE THE OLD TETAP TO THE BOUNDARY EXCEPT FOR THE FIRST COMPUTATION
       IF ((LANGAUTO).AND.(LT.GT.0)) THEN
         DO I=1,NPTFR
@@ -419,9 +444,13 @@
       ENDIF
 !
 !      IF (LT .EQ. 0) THEN
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING MASQUE_ARTEMIS'
       CALL MASQUE_ARTEMIS
+      IF(DEBUG.GT.0) WRITE(LU,*) '< MASQUE_ARTEMIS CALLED'
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING PHBOR'
       CALL PHBOR
+      IF(DEBUG.GT.0) WRITE(LU,*) '< PHBOR CALLED'
 !      END IF
 !
 !=======================================================================
@@ -430,7 +459,9 @@
 !
 !=======================================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> SOLVING THE BERKHOFF EQUATION'
       CALL BERKHO (LF)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< BERKHOFF EQUATION SOLVED'
 !
 !
 !=======================================================================
@@ -440,13 +471,17 @@
 !
 !=======================================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALRES'
       CALL CALRES
+      IF(DEBUG.GT.0) WRITE(LU,*) '< CALRES CALLED'
 !
       IF (ALEMON .OR. ALEMUL) THEN
 !
 !       CUMULATIVELY COMPUTES THE M1, M2, AND MT1 MOMENTUMS
 !       STORED UNTIL THE LAST COMPUTATION IN T01, T02, AND TM
+        IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALCMN'
         CALL CALCMN
+        IF(DEBUG.GT.0) WRITE(LU,*) '< CALCMN CALLED'
 !
       ENDIF
 !
@@ -461,13 +496,17 @@
       IF (.NOT.ALEMON .AND. .NOT.ALEMUL) THEN
 !
         IF (LISHOU) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING DISMOY'
           CALL DISMOY
      &    (NPOIN,NELEM,MESH%X%R,MESH%Y%R,MESH%IKLE%I,K%R,LISHHO)
+          IF(DEBUG.GT.0) WRITE(LU,*) '< DISMOY CALLED'
         ELSE
           LISHHO = 0
         ENDIF
 !
+        IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING RADIA1'
         CALL RADIA1 (LISHHO)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< RADIA1 CALLED'
 !
       ELSE
         LISHHO = 0
@@ -479,11 +518,13 @@
 !
 !=======================================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> PRINTING USER VARIABLES'
       CALL UTIMP
      &(PHIR%R,PHII%R,C%R,CG%R,K%R,MESH%X%R,MESH%Y%R,ZF%R,H%R,
      & HHO%R,U0%R,V0%R,PHAS%R,S%R,T1%R,T2%R,T3%R,T4%R,INCI%R,
      & GRAV,PER,OMEGA,MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
      & NELEM,NELMAX,IELM,IELMB,NPTFR,NPOIN,PRIVE)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< USER VARIABLES PRINTED'
 !
 !=======================================================================
 !
@@ -507,10 +548,12 @@
 !
 ! RUBENS FILE
 !
+        IF(DEBUG.GT.0) WRITE(LU,*) '> WRITING RESULT FILE'
         CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
      &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< RESULT FILE WRITTEN'
 !
 !=======================================================================
 !
@@ -523,11 +566,13 @@
 !     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
 !
         IF(VALID) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) '> VALIDATING RESULTS'
           CALL BIEF_VALIDA(TB,TEXTE,
      &                      ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
      &                      VARSOR,TEXTE,
      &                      ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
      &                      MAXVAR,NPOIN,LT,LT,ALIRE)
+          IF(DEBUG.GT.0) WRITE(LU,*) '< RESULTS VALIDATED'
         ENDIF
 !
       ENDIF
@@ -570,7 +615,9 @@
           CALL OS('X=X+CYZ ',HALE,HHO,HHO,1.D0)
 !
 !         VELOCITY FOR BOTTOM FRICTION
+          IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALUEB2'
           CALL CALUEB2
+          IF(DEBUG.GT.0) WRITE(LU,*) '< CALUEB2 CALLED'
 !
 !
 !         GOES TO NEXT PERIOD
@@ -598,11 +645,15 @@
 !         (T01 AND T02), AND THE MEAN DIRECTION (INCI)
 !
 !
+          IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALCTM'
           CALL CALCTM
+          IF(DEBUG.GT.0) WRITE(LU,*) '< CALCTM CALLED'
 !
 !         DETERMINES MEAN K, C AND CG
 !
+          IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALRE2'
           CALL CALRE2
+          IF(DEBUG.GT.0) WRITE(LU,*) '< CALRE2 CALLED'
 !
 !         TAKES INTO ACCOUNT THE LAST WAVE HEIGHT
 !         FOR RANDOM SEAS
@@ -610,7 +661,9 @@
           CALL OS('X=SQR(Y)', HALE , HALE , SBID , BID )
 !
 !         VELOCITY FOR BOTTOM FRICTION
+          IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALUEB2'
           CALL CALUEB2
+          IF(DEBUG.GT.0) WRITE(LU,*) '< CALUEB2 CALLED'
           CALL OS('X=SQR(Y)', UEB , UEB , SBID , BID )
 !
 !
@@ -619,10 +672,14 @@
 !                    FOR IRREGULAR WAVES
 !
           IF (DEFERL .OR. FROTTE) THEN
+            IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING CALCMU'
             CALL CALCMU(ITERMUR)
+            IF(DEBUG.GT.0) WRITE(LU,*) '< CALCMU CALLED'
 !           WORK TABLE USED                      : T1,T4
 !           WORK TABLE USED AND TO BE CONSERVED  : T3 => QB
+            IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING RELAXMU'
             CALL RELAXMU(ECRHMU,MODHMU,ITERMUR)
+            IF(DEBUG.GT.0) WRITE(LU,*) '< RELAXMU CALLED'
 !           ----------------------------------------------------
 !           CHECKS CONVERGENCE ON THE DISSIPATION ITERATIVE LOOP
 !           ----------------------------------------------------
@@ -649,6 +706,8 @@
  220      FORMAT(/,1X,'SOUS-ITERATION NUMERO :',1X,I3,/)
  221      FORMAT(/,1X,'SUB-ITERATION NUMBER :',1X,I3,/)
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '###< END OF COMPUTATION'
+!
 !=======================================================================
 !
 !           COMPUTES RADIATION STRESSES
@@ -656,7 +715,9 @@
 !
 !=======================================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING RADIA2'
           CALL RADIA2 (LISHHO)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< RADIA2 CALLED'
 !
 !=======================================================================
 !
@@ -679,10 +740,12 @@
 !              PRIVE%ADR(4)%P%R(I) = PERPIC
 !            ENDDO
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) '> WRITES RESULTS'
           CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
      &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< RESULTS WRITTEN'
 !
 !=======================================================================
 !
@@ -696,11 +759,13 @@
 !     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
 !
           IF(VALID) THEN
+      IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING BIEF_VALIDA'
             CALL BIEF_VALIDA(TB,TEXTE,
      &                       ART_FILES(ARTREF)%LU,ART_FILES(ARTREF)%FMT,
      &                       VARSOR,TEXTE,
      &                       ART_FILES(ARTRES)%LU,ART_FILES(ARTRES)%FMT,
      &                       MAXVAR,NPOIN,LT,LT,ALIRE)
+      IF(DEBUG.GT.0) WRITE(LU,*) '< BIEF_VALIDA CALLED'
           ENDIF
 !
         ENDIF

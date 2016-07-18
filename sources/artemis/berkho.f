@@ -211,6 +211,7 @@
         IF (COURANT) THEN
 !       COMPUTE WAVE VECTOR (FIRST ITERATION U=0, SO NO NEED TO DO THAT)
 !       ---------------------------------------------------------------
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - COMPUTING WAVE VECTOR (1st)'
           DO I=1,NPOIN
             XK =K%R(I)
             CALL SOLVELAMBDA(XK,
@@ -222,6 +223,7 @@
             CG%R(I)=0.5D0*C%R(I)*
      &           (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
           ENDDO
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - WAVE VECTOR (1st) COMPUTED'
 !
         ENDIF
 !       ------------------------------------------------------
@@ -244,7 +246,9 @@
 !           1/ CURRENT     : K HAS CHANGED
 !           2/ AUTO ANGLES : TETAP HAS CHANGED
 !       ----------
+        IF(DEBUG.GT.0) WRITE(LU,*) ' - ACTUALIZING BOUNDARY CONDITIONS'
         CALL PHBOR
+        IF(DEBUG.GT.0) WRITE(LU,*) ' - BOUNDARY CONDITIONS ACTUALIZED'
 !       ----------
 !      ------------------------------------------------------
 !     END OF FIRST STEP : NEXT STEP IS COMPUTING AM AND BM
@@ -253,6 +257,7 @@
 !     =========================================
 !                   MATRIX AM
 !     =========================================
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - PREPARING THE AM MATRIX'
 !      WRITE(LU,*) 'MATRIX AM'
 !     ---------------------------
 !     DIFFUSION MATRIX FOR AM1
@@ -416,9 +421,12 @@
 !
       ENDIF
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - AM MATRIX PREPARED'
+!
 !     =========================================
 !                   SECOND MEMBERS
 !     =========================================
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - PREPARING SECOND MEMBERS CV1,CV2'
 !     WRITE(LU,*) 'CV1 et CV2'
 !     ---------------------
 !     SECOND MEMBERS : CV1
@@ -589,9 +597,12 @@
 !           CALL PARCOM(CV2,2,MESH)
 !         ENDIF
 !CP
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - SECOND MEMBERS CV1,CV2 PREPARED'
+!
 !     =========================================
 !                   MATRIX BM
 !     =========================================
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - PREPARING THE BM MATRIX'
 !      WRITE(LU,*) 'MATRIX BM'
 !
 !     ----------------------------------------------------------
@@ -724,6 +735,8 @@
 !
       CALL OM( 'M=CN    ' , BM2 , BM1 , C , -1.D0 , MESH )
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - BM MATRIX PREPARED'
+!
 !     =======================================
 !
 !     TAKES INTO ACCOUNT DIRICHLET POINTS
@@ -739,7 +752,9 @@
  220  FORMAT(/,1X,'SOUS-ITERATION NUMERO :',1X,I3,/)
  221  FORMAT(/,1X,'SUB-ITERATION NUMBER :',1X,I3,/)
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING DIRICH'
       CALL DIRICH(UNK,MAT,RHS,PHIB,LIDIR%I,TB,MESH,KENT,MSK,MASKEL)
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - DIRICH CALLED'
 !
 !     ===============================================================
 !
@@ -748,7 +763,9 @@
 !
 !     ===============================================================
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING CNTPRE'
       CALL CNTPRE(AM1%D%R,NPOIN,SLVART%PRECON,SLVART%PRECON)
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - CNTPRE CALLED'
 !      IF (LNG.EQ.1) WRITE(LU,230) SLVART%PRECON
 !      IF (LNG.EQ.2) WRITE(LU,231) SLVART%PRECON
 ! 230  FORMAT(/,1X,'PRECONDITIONNEMENT APRES CONTROLE :',1X,I3)
@@ -788,7 +805,9 @@
  240  FORMAT(/,1X,'RESOLUTION DU SYSTEME LINEAIRE (SOLVE)',/)
  241  FORMAT(/,1X,'LINEAR SYSTEM SOLVING (SOLVE)',/)
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - SOVING THE LINEAR SYSTEM'
       CALL SOLVE(UNK,MAT,RHS,TB,SLVART,INFOGR,MESH,AM3)
+      IF(DEBUG.GT.0) WRITE(LU,*) ' - LINEAR SYSTEM SOLVED'
 !
 !     ============================================================
 !     DIRECTION LOOP
@@ -800,7 +819,9 @@
 !      COMPUTE WAVE INCIDENCE USING SPEED AT THE FREE SURFACE
 !
 !       -----------
+        IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING CALDIR'
         CALL CALDIR()
+        IF(DEBUG.GT.0) WRITE(LU,*) ' - CALDIR CALLED'
 !       -----------
 !          --> PHIR,PHII
 !          --  T1,T2,T3,T4
@@ -854,8 +875,10 @@
             ANGDIR(I)=INCI%R(IG)
           ENDDO
 !         TETAP COMPUTATION
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING CALTETAP'
           CALL CALTETAP(TETA,MESH%XNEBOR%R,MESH%YNEBOR%R,
      &                     MESH%XSGBOR%R,MESH%YSGBOR%R,ANGDIR,NPTFR)
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALTETAP CALLED'
 !       MAX ERROR CALCULATION : MAX(cos(TETAPnew) - cos(TETAPold)) < EPSTP
 !       ----------------------
           IF (ITERKN.GT.0) THEN
@@ -933,12 +956,17 @@
         IF (DEFERL .OR. FROTTE) THEN
           ECRHMU=0D0
 !         COMPUTES DISSIPATION COEFFICIENT MU2
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING CALCMU'
           CALL CALCMU(ITERMU)
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALCMU CALLED'
 !              WORK TABLE USED                      : T1,T4
 !              WORK TABLE USED AND TO BE CONSERVED  : T3 => QB
 !
 !         USE RELAXATION METHOD FOR DISSPATION COEFFICIENT MU
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING RELAXMU'
           CALL RELAXMU(ECRHMU,MODHMU,ITERMU)
+          IF(DEBUG.GT.0) WRITE(LU,*) ' - CALLING RELAXMU'
+
 !              WORK TABLE USED                      : NONE
 
 !         ----------------------------------------------------
