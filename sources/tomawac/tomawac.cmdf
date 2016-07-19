@@ -241,6 +241,7 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -386,17 +387,16 @@ files: bief_def.f
   bief_nbfel.f
   bief_ininds.f
   cpikle2.f
-  mxptel31.f
-  mxptel.f
-  cpikle3.f
-  read_mesh_conn.f
   corrxy.f
   read_mesh_coord.f
+  cpikle3.f
+  read_mesh_conn.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   read_submit.f
   sortie.f
   bief_close_files.f
-  solve_mumps_par.F
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -449,9 +449,9 @@ files: interface_hermes.f
   open_mesh.f
   open_bnd.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   close_bnd.f
   close_mesh.f
 

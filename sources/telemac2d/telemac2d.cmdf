@@ -39,8 +39,8 @@ files: bief_def.f
   bief_open_files.f
   allblo.f
   ov.f
-  bief_nbmpts.f
   bief_nbpts.f
+  bief_nbmpts.f
   bief_allvec.f
   bief_nbpel.f
   bief_dim2_ext.f
@@ -63,25 +63,25 @@ files: bief_def.f
   bief_ininds.f
   cpikle2.f
   read_mesh_info.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   ovd.f
   cmpobj.f
   ovd_2.f
   os.f
   read_dataset.f
-  bief_deallvec.f
-  bief_deallmat.f
-  deallblo.f
-  bief_deallobj.f
-  deall_bief.f
-  dealmesh.f
+  inclu2.f
+  write_data.f
+  impvec.f
+  bief_desimp.f
+  errmax.f
+  streamline.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
@@ -143,24 +143,14 @@ files: bief_def.f
   vc15aa.f
   vectos.f
   vector.f
-  inclu2.f
-  slop10.f
-  slopes.f
-  cg1113.f
-  cg1112.f
-  chgdis.f
-  inpoly.f
-  write_data.f
-  impvec.f
-  bief_desimp.f
-  errmax.f
-  write_header.f
-  find_variable.f
-  strche.f
-  write_mesh.f
-  streamline.f
   somme.f
   bief_sum.f
+  jultim.f
+  gregtim.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
   algae_transp.f
   flux_ef_vf.f
   clip.f
@@ -302,6 +292,12 @@ files: bief_def.f
   diri04.f
   diri09.f
   dirich.f
+  cg1113.f
+  cg1112.f
+  chgdis.f
+  slop10.f
+  slopes.f
+  inpoly.f
   solaux.f
   asmve1.f
   asmvec.f
@@ -383,6 +379,7 @@ files: bief_def.f
   gmres.f
   allblo_in_block.f
   solve.f
+  find_variable.f
   ludcmp.f
   lubksb.f
   invmtx.f
@@ -394,6 +391,7 @@ files: bief_def.f
   bief_valida.f
   global_to_local_point.f
   diffcl.f
+  write_mesh.f
   maskto.f
   derive.f
   dots.f
@@ -404,7 +402,6 @@ files: bief_def.f
   gtsh11.f
   char_gauss.f
   charac.f
-  jultim.f
   dmo.f
   tsloc.f
   flux_mask.f
@@ -437,7 +434,9 @@ files: bief_def.f
   crosfr.f
   fasp.f
   fond.f
+  strche.f
   fonstr.f
+  write_header.f
   build_ikle_ext.f
   longitu.f
   vecle3.f
@@ -490,7 +489,6 @@ files: bief_def.f
   bief_gammp.f
   bief_erf.f
   masktf.f
-  gregtim.f
   elapse.f
   bief_close_files.f
   read_config.f
@@ -498,8 +496,8 @@ files: bief_def.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: declarations_damocles.f
-  majus.f
+files: majus.f
+  declarations_damocles.f
   preval.f
   next.f
   intlu.f
@@ -535,19 +533,19 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   get_data_time.f
   get_data_value.f
   get_data_var_list.f
   get_data_ntimestep.f
   add_data.f
   update_data_mesh.f
-  set_header.f
   set_mesh.f
   get_bnd_numbering.f
   get_bnd_value.f
+  set_header.f
   lit.F
   ecri2.f
   close_bnd.f
@@ -564,8 +562,6 @@ files: declarations_parallel.F
   p_iread.F
   p_dmax.F
   p_dmin.F
-  p_ireadi8.F
-  p_iwriti8.F
   p_dsum.F
   p_sync.F
   p_mpi_type_get_extent.F
@@ -579,6 +575,8 @@ files: declarations_parallel.F
   oil_org_charac_type.F
   p_mpi_alltoallv_alg.F
   org_charac_type_alg.F
+  p_ireadi8.F
+  p_iwriti8.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
@@ -723,21 +721,16 @@ files: friction_def.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
   initstr.f
-  dragfo.f
-  fricti.f
-  cost_function.f
-  metgra.f
-  point_adj_t2d.f
   assignstr.f
   newstr.f
-  def_zones.f
-  mesures.f
-  interpol.f
   m_coupling_estel3d.f
   oil_flot.f
   entete.f
   bilan.f
   oilspill.f
+  fdnrst.f
+  wrihyd.f
+  tel4del.f
   read_fic_frliq.f
   vit.f
   sta_dis_cur.f
@@ -776,6 +769,10 @@ files: friction_def.f
   friction_lindner.f
   friction_calc.f
   friction_unif.f
+  dragfo.f
+  fricti.f
+  cost_function.f
+  mesures.f
   propag_adj.f
   coefmat.f
   spectre.f
@@ -877,6 +874,7 @@ files: friction_def.f
   flusec_telemac2d.f
   kepscl.f
   read_fic_curves.f
+  def_zones.f
   mixlength.f
   siphon.f
   isitok.f
@@ -891,15 +889,14 @@ files: friction_def.f
   bilant1.f
   lecbreach.f
   breach.f
-  fdnrst.f
-  wrihyd.f
-  tel4del.f
   telemac2d.F
+  interpol.f
+  metgra.f
+  deall_adj_t2d.f
+  point_adj_t2d.f
   homere_adj_t2d.f
   read_sections_telemac2d.f
   point_telemac2d.f
-  deall_telemac2d.f
-  deall_adj_t2d.f
   homere_telemac2d.F
 
 [tomawac]
@@ -1013,21 +1010,18 @@ files: interface_waqtel.f
   declarations_waqtel.f
   increase_ntrac.f
   lecdon_waqtel.f
+  yasmi_waq.f
   reaer.f
   satur_o2.f
-  erosion_fx.f
-  taub_waqtel.f
-  depos_fx.f
+  calcs2d_o2.f
   algae_death.f
   ray_effect.f
   nuteff.f
   algae_growth.f
-  source_waq.f
-  nametrac_waq.f
-  point_waqtel.f
-  yasmi_waq.f
-  calcs2d_o2.f
   calcs3d_eutro.f
+  erosion_fx.f
+  taub_waqtel.f
+  depos_fx.f
   calcs2d_micropol.f
   calcs3d_biomass.f
   calcs3d_o2.f
@@ -1037,3 +1031,6 @@ files: interface_waqtel.f
   exchange_with_atmosphere.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
+  source_waq.f
+  nametrac_waq.f
+  point_waqtel.f

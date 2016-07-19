@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|api
 module: api
-liborder: special damocles hermes parallel ad bief stbtel tomawac sisyphe waqtel telemac2d api
+liborder: special damocles hermes parallel ad bief tomawac sisyphe stbtel waqtel telemac2d api
 name: API_DUMMY_EXE_T2D
 
 [ad]
@@ -69,13 +69,13 @@ files: bief_def.f
   bief_ininds.f
   cpikle2.f
   read_mesh_info.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   ovd.f
   cmpobj.f
@@ -83,13 +83,8 @@ files: bief_def.f
   os.f
   read_submit.f
   sortie.f
-  bief_deallvec.f
-  bief_deallmat.f
-  deallblo.f
-  bief_deallobj.f
-  outbief.f
-  dealmesh.f
-  bief_close_files.f
+  jultim.f
+  gregtim.f
   streamline.f
   vc13cc.f
   vc04tt.f
@@ -154,6 +149,12 @@ files: bief_def.f
   vector.f
   somme.f
   bief_sum.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
+  dealmesh.f
+  bief_close_files.f
   algae_transp.f
   flux_ef_vf.f
   clip.f
@@ -410,7 +411,6 @@ files: bief_def.f
   gtsh11.f
   char_gauss.f
   charac.f
-  jultim.f
   dmo.f
   tsloc.f
   flux_mask.f
@@ -498,12 +498,11 @@ files: bief_def.f
   bief_gammp.f
   bief_erf.f
   masktf.f
-  gregtim.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: declarations_damocles.f
-  majus.f
+files: majus.f
+  declarations_damocles.f
   preval.f
   longlu.f
   cmd.f
@@ -539,9 +538,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   close_bnd.f
   close_mesh.f
   get_data_time.f
@@ -569,7 +568,6 @@ files: declarations_parallel.F
   p_dmax.F
   p_imax.F
   p_dmin.F
-  p_exit.F
   p_dsum.F
   p_sync.F
   p_mpi_type_get_extent.F
@@ -585,6 +583,7 @@ files: declarations_parallel.F
   org_charac_type_alg.F
   p_ireadi8.F
   p_iwriti8.F
+  p_exit.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
@@ -722,11 +721,18 @@ files: friction_def.f
   point_telemac2d.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
-  m_coupling_estel3d.f
+  fdnrst.f
+  wrihyd.f
+  tel4del.f
   oil_flot.f
   entete.f
   bilan.f
   oilspill.f
+  conv_mercator_to_degdec.f
+  conv_lambert_to_degdec.f
+  tpxo.f
+  deall_telemac2d.f
+  m_coupling_estel3d.f
   read_fic_frliq.f
   vit.f
   sta_dis_cur.f
@@ -734,9 +740,6 @@ files: friction_def.f
   q.f
   debimp.f
   sl.f
-  conv_mercator_to_degdec.f
-  conv_lambert_to_degdec.f
-  tpxo.f
   nodalf_pugh.f
   nodalupv_pugh.f
   bord_tide.f
@@ -887,10 +890,6 @@ files: friction_def.f
   bilant1.f
   lecbreach.f
   breach.f
-  fdnrst.f
-  wrihyd.f
-  tel4del.f
-  deall_telemac2d.f
   telemac2d.F
 
 [tomawac]
@@ -999,19 +998,18 @@ path: <root>|sources|waqtel
 files: interface_waqtel.f
   declarations_waqtel.f
   increase_ntrac.f
+  yasmi_waq.f
   reaer.f
   satur_o2.f
-  erosion_fx.f
-  taub_waqtel.f
-  depos_fx.f
+  calcs2d_o2.f
   algae_death.f
   ray_effect.f
   nuteff.f
   algae_growth.f
-  source_waq.f
-  yasmi_waq.f
-  calcs2d_o2.f
   calcs3d_eutro.f
+  erosion_fx.f
+  taub_waqtel.f
+  depos_fx.f
   calcs2d_micropol.f
   calcs3d_biomass.f
   calcs3d_o2.f
@@ -1021,3 +1019,4 @@ files: interface_waqtel.f
   exchange_with_atmosphere.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
+  source_waq.f

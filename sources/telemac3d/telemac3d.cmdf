@@ -18,12 +18,13 @@ files: ad_sisyphe_looprecords_end.f
 
 [bief]
 path: <root>|sources|utils|bief
-files: declarations_telemac.f
-  bief_def.f
+files: bief_def.f
+  declarations_telemac.f
   bief.f
   elapse.f
   read_submit.f
   sortie.f
+  bief_close_files.f
   read_config.f
   bief_init.f
   inclus.f
@@ -54,27 +55,21 @@ files: declarations_telemac.f
   bief_ininds.f
   cpikle2.f
   read_mesh_info.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   bief_open_files.f
   ovd.f
   cmpobj.f
   ovd_2.f
   os.f
-  bief_close_files.f
-  bief_deallvec.f
-  bief_deallmat.f
-  deallblo.f
-  bief_deallobj.f
-  algae_transp.f
-  deall_bief.f
-  dealmesh.f
+  jultim.f
+  gregtim.f
   streamline.f
   vc13cc.f
   vc04tt.f
@@ -266,7 +261,7 @@ files: declarations_telemac.f
   matriy.f
   matrix.f
   filter.f
-  derive.f
+  write_header.f
   osdbif.f
   diraux.f
   diri01.f
@@ -360,11 +355,11 @@ files: declarations_telemac.f
   goup.f
   gmres.f
   solve.f
+  parcom_bord.f
   ovbd.f
   osbd.f
   slop10.f
   slopes.f
-  parcom_bord.f
   clip.f
   share_3d_fluxes.f
   flux3dlim.f
@@ -376,9 +371,14 @@ files: declarations_telemac.f
   impvec.f
   bief_desimp.f
   global_to_local_point.f
-  jultim.f
   dmo.f
   tsloc.f
+  bief_deallvec.f
+  bief_deallmat.f
+  deallblo.f
+  bief_deallobj.f
+  algae_transp.f
+  derive.f
   na_flux3d_lim.f
   flux_ef_vf.f
   flux_ef_vf_3d.f
@@ -391,8 +391,6 @@ files: declarations_telemac.f
   gtsh11.f
   char_gauss.f
   charac.f
-  maskbd.f
-  maskto.f
   decv11.f
   decv21.f
   decvrt.f
@@ -405,7 +403,6 @@ files: declarations_telemac.f
   fond.f
   strche.f
   fonstr.f
-  write_header.f
   build_ikle_ext.f
   ludcmp.f
   lubksb.f
@@ -451,9 +448,12 @@ files: declarations_telemac.f
   survol.f
   geoelt.f
   inbief.f
+  maskbd.f
+  maskto.f
   config_code.f
   positive_depths.f
   front2.f
+  anti_dirac.f
   topogr.f
   dots.f
   kspg11.f
@@ -480,13 +480,11 @@ files: declarations_telemac.f
   bief_gammp.f
   bief_erf.f
   masktf.f
-  gregtim.f
-  anti_dirac.f
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: declarations_damocles.f
-  majus.f
+files: majus.f
+  declarations_damocles.f
   preval.f
   next.f
   intlu.f
@@ -509,6 +507,8 @@ path: <root>|sources|utils|hermes
 files: interface_hermes.f
   utils_med.F
   utils_serafin.F
+  close_bnd.f
+  close_mesh.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_mesh_nplan.f
@@ -520,13 +520,11 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   open_mesh.f
   open_bnd.f
-  close_bnd.f
-  close_mesh.f
   set_header.f
   set_mesh.f
   add_data.f
@@ -543,6 +541,7 @@ files: interface_hermes.f
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
+  p_exit.F
   p_init.F
   interface_parallel.f
   p_isum.F
@@ -552,7 +551,6 @@ files: declarations_parallel.F
   p_dmax.F
   p_imax.F
   p_dmin.F
-  p_exit.F
   p_dsum.F
   p_sync.F
   p_mpi_type_get_extent.F
@@ -706,6 +704,9 @@ path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
   interface_telemac2d.f
+  fdnrst.f
+  wrihyd.f
+  tel4del.f
   oil_flot.f
   entete.f
   bilan.f
@@ -732,23 +733,20 @@ files: friction_def.f
   lecbus.f
   astro.f
   marast.f
-  maskob.f
   thomps.f
   cornor.f
   masbas2d.f
   coefro.f
   prebor.f
-  fdnrst.f
-  wrihyd.f
-  tel4del.f
+  maskob.f
 
 [telemac3d]
 path: <root>|sources|telemac3d
 files: declarations_telemac3d.f
   interface_telemac3d.f
   point_telemac3d.f
-  nomvar_telemac3d.f
   nomvar_2d_in_3d.f
+  nomvar_telemac3d.f
   lecdon_telemac3d.f
   amr_plan.f
   calcot.f
@@ -777,7 +775,6 @@ files: declarations_telemac3d.f
   scope.f
   t3d_debsce.f
   viscke.f
-  mittit.f
   t3d_stress.f
   sumver.f
   flupri.f
@@ -800,6 +797,7 @@ files: declarations_telemac3d.f
   diff3d.f
   murd3d_pos.f
   cvdf3d.f
+  fonvas.f
   mudstress3d.f
   limi3d.f
   numliq_3d.f
@@ -812,6 +810,7 @@ files: declarations_telemac3d.f
   thomps_bc.f
   trisou.f
   wstarw.f
+  mittit.f
   tridw2.f
   complete_ebe_fluint.f
   tridw3.f
@@ -824,7 +823,6 @@ files: declarations_telemac3d.f
   diag_murd.f
   wstar.f
   preadv.f
-  mask3d.f
   visclip.f
   impsed.f
   massed.f
@@ -837,8 +835,8 @@ files: declarations_telemac3d.f
   vissma.f
   airwik2.f
   viscos.f
-  source_trac.f
   transf_zchar.f
+  mask3d.f
   kepicl.f
   t3d_read_fic_curves.f
   findksce.f
@@ -865,7 +863,7 @@ files: declarations_telemac3d.f
   mesh_prop.f
   drsurr.f
   ifab3dt.f
-  fonvas.f
+  source_trac.f
   condim.f
   sed3d.f
   mass3d.f
@@ -980,8 +978,8 @@ files: declarations_tomawac.f
 
 [waqtel]
 path: <root>|sources|waqtel
-files: declarations_waqtel.f
-  interface_waqtel.f
+files: interface_waqtel.f
+  declarations_waqtel.f
   point_waqtel.f
   increase_ntrac.f
   nametrac_waq.f

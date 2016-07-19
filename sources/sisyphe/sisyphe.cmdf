@@ -31,8 +31,8 @@ files: bief_def.f
   bief_open_files.f
   allblo.f
   ov.f
-  bief_nbmpts.f
   bief_nbpts.f
+  bief_nbmpts.f
   bief_allvec.f
   bief_nbfel.f
   bief_nbpel.f
@@ -55,13 +55,13 @@ files: bief_def.f
   bief_ininds.f
   cpikle2.f
   read_mesh_info.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   ovd.f
   cmpobj.f
@@ -207,6 +207,7 @@ files: bief_def.f
   dlduseg.f
   decldu.f
   dcpldu.f
+  solve_mumps_par.F
   sd_strsg4.f
   sd_fabsg4.f
   pre4_mumps.F
@@ -451,7 +452,6 @@ files: bief_def.f
   write_header.f
   write_mesh.f
   bief_close_files.f
-  solve_mumps_par.F
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -492,9 +492,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   get_data_value.f
   get_data_var_list.f
   get_data_time.f

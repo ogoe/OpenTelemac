@@ -1158,7 +1158,7 @@
       INTEGER NCO_DIST,NSP_DIST
 !
 !     WAQ PROCESS (1-O2, 2-BIOMASS, 3-EUTRO 4-MICROPOL 5-THERMIC)
-!     moved to declarations_telemac
+!     moved to declarations_waqtel
 !
 !      INTEGER WAQPROCESS
 !
