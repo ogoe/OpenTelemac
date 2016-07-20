@@ -98,12 +98,18 @@
 !history R. ATA (EDF LAB, LNHE)
 !+        10/11/2014
 !+        V7P0
-!+   adding varibles for waq, wind and rain
+!+   Adding variables for waq, wind and rain
 !
 !history J-M HERVOUET (EDF LAB, LNHE)
 !+        15/03/2016
 !+        V7P2
 !+   Advection scheme ADV_NSC_NC removed.
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        20/07/2016
+!+        V7P2
+!+   In VARSOR bief_obj T10 put instead of VISC when Elder model of
+!+   turbulence is asked.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1390,7 +1396,13 @@
 ! 11
       CALL ADDBLO(VARSOR,EP)
 ! 12
-      CALL ADDBLO(VARSOR,VISC)
+      IF(ITURB.EQ.2) THEN
+!       WITH ELDER MODEL THE LONGITUDINAL VISCOSITY WILL BE GIVEN
+!       INSTEAD OF THE VISCOSITY, T10 BUILT IN PRERES_TELEMAC2D
+        CALL ADDBLO(VARSOR,T10)
+      ELSE
+        CALL ADDBLO(VARSOR,VISC)
+      ENDIF
 ! 13
       CALL ADDBLO(VARSOR,T4)
 ! 14

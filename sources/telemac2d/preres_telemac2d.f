@@ -57,6 +57,13 @@
 !+   Now preres gives instruction to bief_desimp to write graphical
 !+   results (through leo and imp)
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        20/07/2016
+!+        V7P2
+!+   When Elder model of turbulence is asked, the longitudinal
+!+   dispersion is retrieved from NUXX and NUYY, and KL+PROPNU put in
+!+   T10.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -262,6 +269,18 @@
         CALL CPSTVC(ZF,T3)
         DO N=1,NPOIN
           T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
+        ENDDO
+      ENDIF
+!
+!=======================================================================
+! RETRIEVING LONGITUDINAL DISPERSION
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12))) THEN
+        DO N=1,NPOIN
+!         RETRIEVING KL (SEE SUBROUTINE DISPER) AND ADDING PROPNU.
+          T10%R(N) = (VISC%R(N)+VISC%R(N+NPOIN)-2*PROPNU)*ELDER(1)/
+     &              (ELDER(1)+ELDER(2)) + PROPNU
         ENDDO
       ENDIF
 !

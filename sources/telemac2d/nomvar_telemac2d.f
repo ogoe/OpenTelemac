@@ -6,7 +6,7 @@
      & NAMES_PRIVE,SECCURRENTS)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -44,6 +44,12 @@
 !+        V7P1
 !+   Now taking into account names of private arrays given by user.
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        20/07/2016
+!+        V7P2
+!+   Elder model of turbulence is asked, the name of viscosity is
+!+   replaced by longitudinal dispersion.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |<--| MNEMONIC FOR 'VARIABLES FOR GRAPHIC OUTPUTS'
 !| N_NAMES_PRIV   |-->| NUMBER OF NAMES OF PRIVATE VARIABLES GIVEN
@@ -57,7 +63,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_TELEMAC2D, ONLY : IND_SEC
+      USE DECLARATIONS_TELEMAC2D, ONLY : IND_SEC,ITURB
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -94,7 +100,11 @@
       TEXTE (9 ) = 'EX TRACER                       '
       TEXTE (10) = 'TURBULENT ENERG.JOULE/KG        '
       TEXTE (11) = 'DISSIPATION     WATT/KG         '
-      TEXTE (12) = 'VISCOSITY       M2/S            '
+      IF(ITURB.EQ.2) THEN
+        TEXTE (12) = 'LONG. DISPERSIONM2/S            '
+      ELSE
+        TEXTE (12) = 'VISCOSITY       M2/S            '
+      ENDIF
       TEXTE (13) = 'FLOWRATE ALONG XM2/S            '
       TEXTE (14) = 'FLOWRATE ALONG YM2/S            '
       TEXTE (15) = 'SCALAR VELOCITY M/S             '
@@ -133,7 +143,11 @@
       TEXTPR (9 ) = 'EX TRACER                       '
       TEXTPR (10) = 'TURBULENT ENERG.JOULE/KG        '
       TEXTPR (11) = 'DISSIPATION     WATT/KG         '
-      TEXTPR (12) = 'VISCOSITY       M2/S            '
+      IF(ITURB.EQ.2) THEN
+        TEXTPR(12) = 'LONG. DISPERSIONM2/S            '
+      ELSE
+        TEXTPR(12) = 'VISCOSITY       M2/S            '
+      ENDIF
       TEXTPR (13) = 'FLOWRATE ALONG XM2/S            '
       TEXTPR (14) = 'FLOWRATE ALONG YM2/S            '
       TEXTPR (15) = 'SCALAR VELOCITY M/S             '
@@ -173,7 +187,11 @@
       TEXTE (9 ) = 'EX TRACEUR                      '
       TEXTE (10) = 'ENERGIE TURBUL. JOULE/KG        '
       TEXTE (11) = 'DISSIPATION     WATT/KG         '
-      TEXTE (12) = 'VISCOSITE TURB. M2/S            '
+      IF(ITURB.EQ.2) THEN
+        TEXTE (12) = 'DISPERSION LONG.M2/S            '
+      ELSE
+        TEXTE (12) = 'VISCOSITE TURB. M2/S            '
+      ENDIF
       TEXTE (13) = 'DEBIT SUIVANT X M2/S            '
       TEXTE (14) = 'DEBIT SUIVANT Y M2/S            '
       TEXTE (15) = 'VITESSE SCALAIREM/S             '
@@ -211,7 +229,11 @@
       TEXTPR (9 ) = 'EX TRACEUR                      '
       TEXTPR (10) = 'ENERGIE TURBUL. JOULE/KG        '
       TEXTPR (11) = 'DISSIPATION     WATT/KG         '
-      TEXTPR (12) = 'VISCOSITE TURB. M2/S            '
+      IF(ITURB.EQ.2) THEN
+        TEXTPR(12) = 'DISPERSION LONG.M2/S            '
+      ELSE
+        TEXTPR(12) = 'VISCOSITE TURB. M2/S            '
+      ENDIF
       TEXTPR (13) = 'DEBIT SUIVANT X M2/S            '
       TEXTPR (14) = 'DEBIT SUIVANT Y M2/S            '
       TEXTPR (15) = 'VITESSE SCALAIREM/S             '
