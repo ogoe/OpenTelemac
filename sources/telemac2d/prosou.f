@@ -196,10 +196,11 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !     FOR SEEING OTHER VARIABLES IN DECLARATIONS_TELEMAC2D:
-      USE DECLARATIONS_TELEMAC2D, ONLY : QWA,QWB,U,V,H,
-     &                                   SECCURRENTS,NTRAC,SEC_R,
-     &                                   SEC_TAU,T2,T3,T7,
-     &                                   ROEAU,CF,S,IELMU,T
+      USE DECLARATIONS_TELEMAC2D, ONLY : QWA,QWB,U,V,H,RAIN_HDUR,
+     &                                   SECCURRENTS,NTRAC,SEC_R,CN,
+     &                                   SEC_TAU,T2,T3,T7,ROEAU,CF,S,
+     &                                   IELMU,T,ACCROF,RUNOFFOPT,AMC,
+     &                                   T2DFO2,ZF,ZFSLOP
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
       USE M_COUPLING_ESTEL3D
       USE INTERFACE_HERMES
@@ -450,10 +451,30 @@
         RAIN_MPS=RAIN_MMPD/86400000.D0
         SURDT=1.D0/DT
         IF(BANDEC) THEN
-!         EVAPORATION (TENTATIVELY...) LIMITED BY AVAILABLE WATER
-          DO I=1,NPOIN
-            PLUIE%R(I)=MAX(RAIN_MPS,-MAX(HN%R(I),0.D0)*SURDT)
-          ENDDO
+          IF(RUNOFFOPT.EQ.1)THEN
+!           EVAPORATION (TENTATIVELY...) LIMITED BY AVAILABLE WATER
+            DO I=1,NPOIN
+              PLUIE%R(I)=MAX(RAIN_MPS,-MAX(HN%R(I),0.D0)*SURDT)
+            ENDDO
+          ELSEIF(RUNOFFOPT.EQ.2)THEN
+            CALL RUNOFF_SCS_CN(PLUIE,T1%R,T2%R,T3%R,ACCROF,RAIN_MPS,AMC,
+     &                         CN,ZF,ZFSLOP,RAIN_HDUR,T2D_FILES,T2DFO2,
+     &                         NPOIN,MASKEL,MSK,IELM1,MESH)
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,221)
+            IF(LNG.EQ.2) WRITE(LU,222)
+221         FORMAT(1X,'PROSOU : OPTION DE PLUIE NON IMPLEMENTEE',/,
+     &           1X,'           LES OPTIONS DISPONIBLES SONT :',/,
+     &           1X,'           1 : PLUIE UNIFORME EN ESPACE',/,
+     &           1X,'           2 : METHODE ''NOMBRE COURBE'' SCS CN')
+222         FORMAT(1X,'PROSOU : RAIN OPTION NOT IMPLEMENTED YET',/,
+     &           1X,'           AVAILABLE OPTIONS ARE:',/,
+     &           1X,'           1 : SPACIALLY UNIFORM RAIN',/,
+     &           1X,'           2 : CURVE NUMBER, RUNOFF PREDICTION')
+!
+            CALL PLANTE(1)
+            STOP
+          ENDIF
         ELSE
           CALL OS('X=C     ',X=PLUIE,C=RAIN_MPS)
         ENDIF

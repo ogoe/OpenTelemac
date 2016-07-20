@@ -6068,6 +6068,61 @@ AIDE1 = 'gives the option for hydrostatic reconstruction
 (used only for finite volumes):
 1: option of Audusse, 2: option of Noelle'
 
+NOM = 'MODELE DE RUISSELLEMENT'
+NOM1 = 'RAINFALL-RUNOFF MODEL'
+TYPE = ENTIER
+INDEX = 103
+MNEMO = 'RUNOFFOPT'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'donne l option de la pluie. les options disponibles sont:
+  1 : uniforme en espace
+  2 : avec la methode CN (curve number du SCS)'
+AIDE1 = 'gives the option for the rainfall: 
+1: spatially uniform option, 2: option with CN method of the SCS'
+
+NOM = 'CONDITIONS D''HUMIDITE PRECEDENTE'
+NOM1 = 'ANTECEDENT MOISTURE CONDITIONS'
+TYPE = ENTIER
+INDEX = 105
+MNEMO = 'AMC'
+TAILLE = 1
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'donne les conditions d humidite precedant un episode de pluie.
+ les options disponibles sont:
+  1 : conditions precedentes seches
+  2 : conditions precedentes normales
+  3 : conditions prcedentes mouillees
+ce mot cle est uniquement utile pour le modele de ruissellement 2 (CN)'
+AIDE1 = 'gives the antecedent moisture conditions before a rainfall 
+ event. Available options are:  
+  1 : dry antecedent conditions
+  2 : normal antecedent conditions
+  3 : wet antecedent conditions
+this keyword is only usefull for runoff model 2 (CN Curves)'
+
+NOM = 'DUREE DE LA PLUIE OU EVAPORATION EN HEURES'
+NOM1 = 'DURATION OF RAIN OR EVAPORATION IN HOURS'
+TYPE = REEL
+INDEX = 76
+MNEMO = 'RAIN_HDUR'
+TAILLE = 1
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'donne la duree de la pluie en heure'
+AIDE1 = 'gives the duration of the rain in hour'
+
 /
 / POUR LES LANCEURS PERL :
 /

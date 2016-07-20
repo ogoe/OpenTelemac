@@ -413,6 +413,9 @@ files: bief_def.f
   charac.f
   dmo.f
   tsloc.f
+  crosfr.f
+  fasp.f
+  hydromap.f
   flux_mask.f
   flux_ef_vf_3.f
   flux_ef_vf_2.f
@@ -440,8 +443,6 @@ files: bief_def.f
   proxim.f
   read_partel_info.f
   leclim.f
-  crosfr.f
-  fasp.f
   fond.f
   strche.f
   fonstr.f
@@ -810,6 +811,8 @@ files: friction_def.f
   astro.f
   marast.f
   vusce.f
+  zslope.f
+  runoff_scs_cn.f
   prosou.f
   cornor.f
   rotne0.f

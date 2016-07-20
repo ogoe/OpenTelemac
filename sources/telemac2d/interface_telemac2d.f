@@ -2394,6 +2394,26 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE RUNOFF_SCS_CN
+     & (PLUIE,ACCFA,ACCIA,ACCROFF,ACCROF_OLD,RAIN_MPS,AMC,CN,ZF,ZFSLOP,
+     &  RAIN_HDUR,FILES,FO2,NPOIN,MASKEL,MSK,IELM,MESH)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER            , INTENT(IN)    :: NPOIN,AMC,FO2,IELM
+      LOGICAL            , INTENT(IN)    :: MSK
+      DOUBLE PRECISION   , INTENT(IN)    :: RAIN_MPS,RAIN_HDUR
+      DOUBLE PRECISION   , INTENT(INOUT) :: ACCIA(NPOIN),ACCFA(NPOIN)
+      DOUBLE PRECISION   , INTENT(INOUT) :: ACCROFF(NPOIN)
+      TYPE(BIEF_OBJ)     , INTENT(IN)    :: ZF,MASKEL
+      TYPE(BIEF_OBJ)     , INTENT(INOUT) :: PLUIE,ACCROF_OLD,CN,ZFSLOP
+      TYPE(BIEF_FILE), INTENT(IN)        :: FILES(*)
+      TYPE(BIEF_MESH), INTENT(INOUT)     :: MESH
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE SEG_NEIGHBORS
      & ( XX,YY,IKLE ,NPOIN,
      &   NVMAX,NELEM,NELMAX,NSEG, NEISEG)
@@ -2847,6 +2867,20 @@
       DOUBLE PRECISION, INTENT(IN)    :: G,HI,HJ,ETAI,ETAJ,UI,UJ
       DOUBLE PRECISION, INTENT(IN)    :: VI,VJ
       DOUBLE PRECISION, INTENT(INOUT) :: FLX(3)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE ZSLOPE(SLOPE,ZF,T1,T2,MSK,MASKEL,IELM,MESH)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)             :: IELM
+      LOGICAL, INTENT(IN)             :: MSK
+      TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,ZF
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: SLOPE,T1,T2
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
         END SUBROUTINE
       END INTERFACE
 !
