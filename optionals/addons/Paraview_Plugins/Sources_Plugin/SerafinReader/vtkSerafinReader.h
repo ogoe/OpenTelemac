@@ -52,13 +52,13 @@ using namespace std;
 /** -- Definition de la classe de lecture des fichiers externes au format Serafin pour Telemac -- **/
 /** ********************************************************************************************* **/
 
-class VTK_IO_EXPORT vtkSerafinReader  : public vtkUnstructuredGridAlgorithm
+class VTK_EXPORT vtkSerafinReader  : public vtkUnstructuredGridAlgorithm
 {
 public:
 
 	static vtkSerafinReader *New();
 
-	vtkTypeRevisionMacro(vtkSerafinReader,vtkUnstructuredGridAlgorithm);
+	vtkTypeMacro(vtkSerafinReader,vtkUnstructuredGridAlgorithm);
 	void PrintSelf(ostream& os, vtkIndent indent);
 
 	vtkSetStringMacro(FileName);
@@ -66,8 +66,10 @@ public:
 
 	vtkSetMacro(TimeStep, int);
 	vtkGetMacro(TimeStep, int);
+        
+        void SetTimeUnit(int);
 
-	int IsValidFile();
+        int IsValidFile();
 
 protected:
 	

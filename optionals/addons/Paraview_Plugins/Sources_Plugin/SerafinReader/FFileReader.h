@@ -28,6 +28,7 @@
 #include <cstdio>
 #include <iostream>
 #include <cstring>
+#include <stdint.h>   // need 64bit file position variables
 
 using namespace std;
 
@@ -73,11 +74,13 @@ public:
 
 	// [inline] Retourne la taille du bloc d'écriture actuel .
 	int	  GetBlocSize(){return this->BlocSize;};
+        // float size - allow for 32 or 64 bit floats
 	
 	// Lit et stocke des tableaux sous différents formats (la taille est spécifiée en second argument)
-	int	  (FFileReader:: *readIntArray)    (int* , const int); 
-	int	  (FFileReader:: *readFloatArray)  (float*, const int);
-	int	  (FFileReader:: *readStringArray) (vtkStringArray*, const int); // nom implémentée
+        // these functions return a file position
+	int64_t	  (FFileReader:: *readIntArray)    (int* , const int); 
+	int64_t	  (FFileReader:: *readFloatArray)  (float*, const int);
+	int64_t	  (FFileReader:: *readStringArray) (vtkStringArray*, const int); // nom implémentée
 	
 	// Quelques macros pour simplification d'écriture sur pointeur de fonction
 	// TODO Redefinir les macros, elle ne sont plus valables ...	à dédéfinir du type '(*this.*readFloatArray)' pour utilisation ultérieure .
@@ -86,39 +89,44 @@ public:
 	/*#define ReadStringArray (*ReadStringArray)*/
 	
 	// [inline] Lit une chaîne de caractères en fonction de la taille passée en argument et se déplace sur le bloc suivant
-	int	  ReadString(char* s, int size)
+	int64_t	  ReadString(char* s, int size)
 	{
-		skipReadingHeader(FileStream);FileStream->read  (s, size);skipReadingHeader(FileStream);
-		if (IsBigEndian()) s_readBlocSize ();else  ns_readBlocSize ();
-		
+		skipReadingHeader(FileStream);
+                FileStream->read  (s, size);
+                skipReadingHeader(FileStream);
+		readBlocSize ();
+		// if (IsBigEndian()) s_readBlocSize ();else  ns_readBlocSize ();
+                
 		return FileStream->tellg();
 	};
 	
 	// lecture de tableaux avec inversion des octets ou non 	
-	int s_readInt32Array(int* arr, const int size);
-	int ns_readInt32Array(int* arr, const int size);
+	int64_t s_readInt32Array(int* arr, const int size);
+	int64_t ns_readInt32Array(int* arr, const int size);
+	int64_t g_readInt32Array(int* arr, const int size);
 
-	int s_readFloat32Array(float* arr, const int size);
-	int ns_readFloat32Array(float* arr, const int size);
+	int64_t s_readFloat32Array(float* arr, const int size);
+	int64_t ns_readFloat32Array(float* arr, const int size);
+	int64_t g_readFloat32Array(float* arr, const int size);
 	
 	// Retourne la taille du fichier 
 	// TODO A placer en protected par la suite
-	int GetFileSize()
+	int64_t GetFileSize()
 	{
     		// sauvegarder la position courante
-		int pos = FileStream->tellg();
+		int64_t pos = FileStream->tellg();
 		
     		// se placer en fin de fichier
 		FileStream->seekg( 0 , std::ios_base::end );
 		
     		// récupérer la nouvelle position = la taille du fichier
-		long size = FileStream->tellg() ;
+		int64_t size = FileStream->tellg() ;
 		
     		// restaurer la position initiale du fichier
 		FileStream->seekg( pos,  std::ios_base::beg ) ;
 		
 		return size ;
-	}
+	};
 
 	
 protected:
@@ -127,12 +135,25 @@ protected:
 	
 	bool	  BigEndian; // Système d'écriture du fichier
 	int	  BlocSize;  // Taille du bloc d'écriture suivant
+        int       FloatSize;
 
 	ifstream *FileStream;	// Le flux d'entrée du fichier
 
 	// [inline] Lecture d'un entête avec ou sans swap (indicateur par préfixe)
 	void 	  s_readBlocSize ()  {ns_readBlocSize (); Swap32((char*)(&BlocSize));};
 	void 	  ns_readBlocSize () {FileStream->read ((char*)(&BlocSize), sizeof(int));FileStream->seekg ( -sizeof(int), ios_base::cur );};
+        
+	void 	  readBlocSize()
+        {
+            FileStream->read ((char*)(&BlocSize), sizeof(int));
+            // always reposition it back to its start .....
+            FileStream->seekg ( -sizeof(int), ios_base::cur );
+            if ( this->BigEndian) {
+                Swap32((char*)(&BlocSize));
+            }
+            cerr << "BlocSize " << BlocSize << "\n";
+                
+        };
 
 private:
 	//[inline] Gestion des swaps pour la prise en charge l/ge

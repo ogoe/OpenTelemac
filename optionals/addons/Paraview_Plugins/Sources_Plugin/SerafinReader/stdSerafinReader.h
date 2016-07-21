@@ -117,6 +117,7 @@ typedef struct
 	char  	Title[TITLE_MAX_SIZE] ; 		// le titre
 	int   	VarNumber ; 				// le nombre de variables
 	char* 	VarList ; 				// Un pointeur vers la liste des variables
+	SerafinVar* nVarList ; 				// Un pointeur vers la liste des variables
 	int	IParam[PARAM_NUMBER] ;  		// l'information IParam
 	int	Date[DATE_NUMBER] ;			// La date du début de la simulation
 	int	DiscretizationInfo[DISC_DESC_SIZE] ;	// Le informations de discrétisation (nombre d'éléments, nombre de points, ...)
@@ -126,15 +127,15 @@ typedef struct
 // Définit l'index général d'un fichier serafin pour faciliter le positionnement la de la lecture
 typedef struct
 {
-	int FileSize ;			// taille du fichier
-	int MetaSize ;			// taille des metadonnées
-	int DataSize ;			// Taille totale des blocs de données
-	int DataBlocSize ;		// Taille d'un bloc de données
+	int64_t FileSize ;			// taille du fichier
+	int64_t MetaSize ;			// taille des metadonnées
+	int64_t DataSize ;			// Taille totale des blocs de données
+	int64_t DataBlocSize ;		// Taille d'un bloc de données
 	
-	int ConnectivityPosition ;	// La position dans le fichier de la table de connectivité
-	int XPosition;			// La position dans le fichier de la table des valeurs de X
-	int YPosition;			// La position dans le fichier de la table des valeurs de Y
-	int DataPosision;		// La position dans le fichier des blocs de données
+	int64_t ConnectivityPosition ;	// La position dans le fichier de la table de connectivité
+	int64_t XPosition;			// La position dans le fichier de la table des valeurs de X
+	int64_t YPosition;			// La position dans le fichier de la table des valeurs de Y
+	int64_t DataPosision;		// La position dans le fichier des blocs de données
 	
 	int NumberOfDate ;		// Information sur le temps étudié 
 	
@@ -165,28 +166,50 @@ public:
 	stdSerafinReader(ifstream* stream);
 	
 	// Destructeur de base
-	~stdSerafinReader();
+	~stdSerafinReader() {
+            // remove cache values
+            delete XValues, YValues;
+        }
 	
 	// Renvoie 1 si le fichier est un fichier serafin 3D
+	
+	int Is3D = NULL;
+        
 	int Is3Dfile ()
-	{		
-		if (strstr ( this->metadata->VarList, "ELEVATION") != NULL ||  strstr (this->metadata->VarList, "COTE Z") != NULL ) return 1;
-		return 0;
+	{
+            if (this->Is3D == NULL) {
+                int id;
+                char name[VAR_DESC_SIZE];
+                this->Is3D = 0;
+                for (id=0; id<GetNumberOfVars(); id++) {
+                    GetVarNameById(id,&name[0]);
+    // 		if (strstr ( this->metadata->VarList, "ELEVATION") != NULL 
+    //                     ||  strstr (this->metadata->VarList, "COTE Z") != NULL ) return 1;
+                    if (strstr ( name, "ELEVATION") != NULL \
+                        ||  strstr (name, "COTE Z") != NULL ) {
+                        this->Is3D = 1;
+                    }
+                }
+            }
+            return this->Is3D;
 	};
 	
 	// Renvoie la variable associée à un identifiant dans la liste stockée dans le fichier Serafin 
 	void GetVarById(const int id, SerafinVar* var)
 	{
 		if (id > GetNumberOfVars()) return;
-		DeleteBlank((metadata->VarList+(id*VAR_DESC_SIZE*2)), 32);
-		strcpy ( (char*)var, metadata->VarList+(id*VAR_DESC_SIZE*2) );
+// 		DeleteBlank((metadata->VarList+(id*VAR_DESC_SIZE*2)), 32);
+// 		strcpy ( (char*)var, metadata->VarList+(id*VAR_DESC_SIZE*2) );
+                strncpy(metadata->nVarList[id].name, var->name, VAR_DESC_SIZE);
+                strncpy(metadata->nVarList[id].unit, var->unit, VAR_DESC_SIZE);
 	};
 	
 	// Associe le nom de la variable selon le rang dans la table (name doit avoir 17 caractères disponibles )
 	void GetVarNameById(const int id, char* name)
 	{
 		if (id > GetNumberOfVars()) return;
-		memcpy ( name, metadata->VarList+(id*VAR_DESC_SIZE*2), VAR_DESC_SIZE );
+// 		memcpy ( name, metadata->VarList+(id*VAR_DESC_SIZE*2), VAR_DESC_SIZE );
+		memcpy ( name, metadata->nVarList[id].name, VAR_DESC_SIZE );
 		name[VAR_DESC_SIZE] = '\0' ;
 	};
 	
@@ -194,7 +217,8 @@ public:
 	void GetVarUnitById(const int id, char* unit)
 	{
 		if (id > GetNumberOfVars()) return;
-		memcpy ( unit, metadata->VarList+(id*VAR_DESC_SIZE*2)+VAR_DESC_SIZE, VAR_DESC_SIZE );
+// 		memcpy ( unit, metadata->VarList+(id*VAR_DESC_SIZE*2)+VAR_DESC_SIZE, VAR_DESC_SIZE );
+		memcpy ( unit, metadata->nVarList[id].unit, VAR_DESC_SIZE );
 		unit[VAR_DESC_SIZE] = '\0' ;
 	};
 	
@@ -224,7 +248,8 @@ public:
 		{
 			this->GetVarNameById(j, name);
 			if ((strstr ( name, "VELOCITY") != NULL || strstr ( name, "VITESSE") != NULL) 
-                         && (strstr ( name, "SCALAR VELOCITY") == NULL && strstr ( name, "VITESSE SCALAIRE") == NULL )) i++;
+                         && (strstr ( name, "SCALAR VELOCITY") == NULL 
+                         && strstr ( name, "VITESSE SCALAIRE") == NULL )) i++;
 		}
 		return i;
 	}
@@ -303,6 +328,10 @@ public:
 		return FileStream->tellg();
 	}
 
+        // cache xy values - dont change with time
+	float* XValues = NULL;
+        float* YValues = NULL;
+	
 	void WriteCoord(float *coords, const int time)
 	{
 		int i = 0;
@@ -310,23 +339,35 @@ public:
 		float* arr = new float[size];
 				
 		// Ecriture des valeurs X
-		this->GetXValues(0, size, arr);
-		for (i=0;i<size;i++){coords[3*i] = arr[i];}
+                
+                if (XValues == NULL) {
+                    XValues = new float[size];
+                    this->GetXValues(0, size, XValues);
+                    cerr << "Caching XValues\n";
+                }
+		for (i=0;i<size;i++){coords[3*i] = XValues[i];}
 		
 		// Ecriture des valeurs Y
-		this->GetYValues(0, size, arr);	
-		for (i=0;i<size;i++){coords[3*i+1] = arr[i];}	
+                if (YValues == NULL) {
+                    YValues = new float[size];
+                    this->GetYValues(0, size, YValues);
+                }
+		for (i=0;i<size;i++){coords[3*i+1] = YValues[i];}	
 			
 		// Ecriture des valeurs Z
 		this->GetZValues(0, size, arr, time);
-		if (this->Is3Dfile ())
-			for (i=0;i<size;i++){coords[3*i+2] = arr[i];}
-		else
+		if (this->Is3Dfile ()) {
+			for (i=0;i<size;i++) {
+                            coords[3*i+2] = arr[i];
+                        }
+                } else {
 			for (i=0;i<size;i++){coords[3*i+2] = 0;}
+                }
 	}
 	
 	void GetVarRangeValues(const int size, const int range, const int varid, float *coords, const int time)
 	{
+                // retrieve vector components - assumes that components are output sequentially
 		int i = 0, j=0;
 		float* arr = new float[size];
 		
@@ -336,6 +377,7 @@ public:
 			for (j=0;j<size;j++){coords[3*j+i] = arr[j];}
 		}
 		
+		// if not 3 components fill rest with zeros
 		if(range<3)
 			for (j=0;j<size;j++){coords[3*j+2] = 0;}
 	}
@@ -376,11 +418,17 @@ protected:
 	////// Ensemble de fonction de lecture de la table d'index \\\\\\
 	
 	// [fixés] Déplace la tête de lecture sur la positon id dans la table des valeurs de X ou Y
-	int GoToXPosition (const int id) {FileStream->seekg( this->index->XPosition +4*(1+id),  std::ios_base::beg ) ;return FileStream->tellg();};
-	int GoToYPosition (const int id) {FileStream->seekg( this->index->YPosition +4*(1+id),  std::ios_base::beg ) ;return FileStream->tellg();};
+	int64_t GoToXPosition (const int id) {
+            FileStream->seekg( this->index->XPosition +4*(1+id),  std::ios_base::beg ) ;
+            return FileStream->tellg();
+        }
+	int64_t GoToYPosition (const int id) {
+            FileStream->seekg( this->index->YPosition +4*(1+id),  std::ios_base::beg ) ;
+            return FileStream->tellg();
+        }
 	
 	// [fixé] Déplace la tête de lecture sur l'élément N dans la table de connectivité
-	int GoToConnectivityPosition (const int N) 
+	int64_t GoToConnectivityPosition (const int N) 
 	{
 		FileStream->seekg( this->index->ConnectivityPosition +4 * (1+N*GetNodeByElements()),  std::ios_base::beg ) ;
 		return FileStream->tellg();
@@ -389,7 +437,7 @@ protected:
 	// TODO Améliorer les trois méthodes ci-dessous
 	
 	// Déplace la tête de lecture sur un bloc de données en fonction du temps spécifié en argument
-	int GoToData(const int time)
+	int64_t GoToData(const int time)
 	{
 		if (time >= GetTotalTime()) return 0 ;
 		FileStream->seekg( this->index->DataPosision + this->index->DataBlocSize * time + 12,  std::ios_base::beg ) ; 
@@ -397,7 +445,7 @@ protected:
 	};
 	
 	// Déplace la tête de lecture sur un bloc de données en fonction du temps et de l'identifiant de variable spécifiés en argument
-	int GoToData(const int time, const int idvar)
+	int64_t GoToData(const int time, const int idvar)
 	{
 		int blocNode = 4 * GetNumberOfNodes() + 8 ;
 		int blocElem = 4 * GetNumberOfElement() + 8 ;
@@ -417,7 +465,7 @@ protected:
 	};
 	
 	// Déplace la tête de lecture sur un bloc de données en fonction du temps, de l'identifiant de variable et du point spécifiés en argument 
-	int GoToData(const int time, const int idvar, const int id)
+	int64_t GoToData(const int time, const int idvar, const int id)
 	{
 		GoToData(time, idvar);
 		FileStream->seekg( 4*(1+id),  std::ios_base::cur ) ;

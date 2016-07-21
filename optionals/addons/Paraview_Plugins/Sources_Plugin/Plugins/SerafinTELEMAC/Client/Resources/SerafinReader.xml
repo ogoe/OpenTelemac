@@ -1,6 +1,0 @@
-<ParaViewReaders>
-	<Reader name="SerafinReader"
-		extensions="srf slf sel"
-		file_description="Serafin file reader">
-	</Reader>
-</ParaViewReaders>

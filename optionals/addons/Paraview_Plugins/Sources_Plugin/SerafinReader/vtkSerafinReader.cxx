@@ -28,12 +28,14 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkUnstructuredGrid.h"
 #include "vtkMultiBlockDataSet.h"
-#include "vtkTemporalDataSet.h"
+//#include "vtkTemporalDataSet.h"
 #include "vtkPointData.h"
 #include "vtkCellData.h"
 #include "vtkDoubleArray.h"
 #include "vtkIntArray.h"
 #include "vtkCellArray.h"
+
+#include <iostream>  // use cerr
 
 /** +++++++++++++++++ Définition des méthodes de la classe FFileReader +++++++++++++++++ **/
 
@@ -50,30 +52,30 @@ FFileReader :: FFileReader(ifstream* stream)
 	this->BigEndian  = false ;
 	this->BlocSize	 = 0 ;
 	this->FileStream = stream;
+        this->FloatSize  = sizeof(float);
 
 	// lecture de l'entête
-	ns_readBlocSize ();
+	readBlocSize ();
 	if (this->BlocSize != TITLE_MAX_SIZE) // pas d'échange d'octet à la lecture
 	{
 		this->BigEndian = true ;
-
 		// Relecture de l'entête
-		s_readBlocSize ();
-
-		// Association des fonctions de lecture
-		FFileReader::readIntArray   = &FFileReader::s_readInt32Array   ;
-		FFileReader::readFloatArray = &FFileReader::s_readFloat32Array ;
-
-		return;
-	}
-	
-	// Association des fonctions de lecture
-	FFileReader::readIntArray   = &FFileReader::ns_readInt32Array   ;
-	FFileReader::readFloatArray = &FFileReader::ns_readFloat32Array ;
+		readBlocSize ();
+        }
+        
+        FFileReader::readIntArray   = &FFileReader::g_readInt32Array   ;
+        FFileReader::readFloatArray = &FFileReader::g_readFloat32Array ;
+        /**********
+         * need to check the size of float variables somewhere
+         * 
+         * first float variable is coordinates but class nos nothing about file structure
+         * 
+         * So need to do this elsewhere but allow to reset the read functions from outside
+         ************/ 
 };
 
 /* Lecture d'un tableau d'entier arr de taille size avec inversion de octets */
-int FFileReader :: s_readInt32Array(int* arr, const int size)
+int64_t FFileReader :: s_readInt32Array(int* arr, const int size)
 {
 	FileStream->read ((char*)(arr), sizeof(int)*size);
 	Swap32Array (size, (char*)(arr));
@@ -81,14 +83,14 @@ int FFileReader :: s_readInt32Array(int* arr, const int size)
 };
 
 /* Lecture d'un tableau d'entier arr de taille size sans inversion de octets */
-int FFileReader :: ns_readInt32Array(int* arr, const int size)
+int64_t FFileReader :: ns_readInt32Array(int* arr, const int size)
 {
 	FileStream->read ((char*)(arr), sizeof(int)*size);
 	return FileStream->tellg();
 };
 
 /* Lecture d'un tableau de flottants arr de taille size avec inversion de octets */
-int FFileReader :: s_readFloat32Array(float* arr, const int size)
+int64_t FFileReader :: s_readFloat32Array(float* arr, const int size)
 {
 	FileStream->read ((char*)(arr), sizeof(float)*size);
 	Swap32Array (size, (char*)(arr));
@@ -96,9 +98,27 @@ int FFileReader :: s_readFloat32Array(float* arr, const int size)
 };
 
 /* Lecture d'un tableau de flottants arr de taille size sans inversion de octets */
-int FFileReader :: ns_readFloat32Array(float* arr, const int size)
+int64_t FFileReader :: ns_readFloat32Array(float* arr, const int size)
 {
 	FileStream->read ((char*)(arr), sizeof(float)*size);
+	return FileStream->tellg();
+};
+// generic single entry read functions
+int64_t FFileReader :: g_readInt32Array(int* arr, const int size)
+{
+	FileStream->read ((char*)(arr), sizeof(int)*size);
+        if ( this->BigEndian ) {
+            Swap32Array (size, (char*)(arr));
+        }
+	return FileStream->tellg();
+};
+
+int64_t FFileReader :: g_readFloat32Array(float* arr, const int size)
+{
+	FileStream->read ((char*)(arr), sizeof(float)*size);
+        if ( this->BigEndian ) {
+            Swap32Array (size, (char*)(arr));
+        }
 	return FileStream->tellg();
 };
 
@@ -127,10 +147,10 @@ stdSerafinReader :: stdSerafinReader(ifstream* stream) : FFileReader(stream)
 
 /* ******************* Destructeur ***************** */
 // TODO compléter cette méthode !!!
-stdSerafinReader :: ~stdSerafinReader()
-{
-	// Ne rien faire pour le moment, provoque une 'legere fuite memoire' maitrisee
-};
+//stdSerafinReader :: ~stdSerafinReader()
+//{
+//	// Ne rien faire pour le moment, provoque une 'legere fuite memoire' maitrisee
+//};
 
 /* ******************* createIndex ***************** */
 /* Cette méthode crée un index de taille et de position à partir des informations meta 
@@ -200,19 +220,37 @@ int stdSerafinReader :: readMetaData ()
 	DeleteBlank(metadata->Title, TITLE_MAX_SIZE-8);
 	
 	//lecture du nombre de variables (on passe les entete)
-	skipReadingHeader(FileStream);
+	skipReadingHeader(FileStream);   //skip reclen
+        // read linear varsno 
 	if ((*this.*readIntArray)(&(metadata->VarNumber), 1) != 96) return 0;
-	skipReadingHeader(FileStream);skipReadingHeader(FileStream);
+	skipReadingHeader(FileStream);  // skip quad varno
+        skipReadingHeader(FileStream);  // skip reclen
 	
 	//lecture des variables
 	// TODO recommencer les contrôles de position à partir d'ici
-	metadata->VarList = (char*)new SerafinVar[metadata->VarNumber];
+//         cerr << "NoVarlist " <<  metadata->VarNumber << endl ;
+	metadata->VarList = (char *)new SerafinVar[metadata->VarNumber];
+	metadata->nVarList = new SerafinVar[metadata->VarNumber];
+        
+        cerr << "nVarList Size " << sizeof(metadata->nVarList);
+        
 	{
 		int compteur = 0 ;
-		for( compteur; compteur < metadata->VarNumber ; compteur++)
-			ReadString(metadata->VarList+compteur*VAR_DESC_SIZE*2, VAR_DESC_SIZE*2);
+                char buffer[VAR_DESC_SIZE*2];
+		for( compteur; compteur < metadata->VarNumber ; compteur++) {
+//  			ReadString(metadata->VarList+compteur*VAR_DESC_SIZE*2, VAR_DESC_SIZE*2);
+                        // must read full buffer as each varaible is a file record 
+  			ReadString(&buffer[0], VAR_DESC_SIZE*2);
+  			strncpy(metadata->nVarList[compteur].name, &buffer[0], VAR_DESC_SIZE);
+  			strncpy(metadata->nVarList[compteur].unit, &buffer[VAR_DESC_SIZE], VAR_DESC_SIZE);
+                        metadata->nVarList[compteur].name[15]=0;
+                        metadata->nVarList[compteur].unit[15]=0;
+                        cerr << "VarList Items " << metadata->nVarList[compteur].name << "\n";
+                        cerr << "VarList Items " << metadata->nVarList[compteur].unit << "\n";
+                }
 	};
-	
+        cerr << "\n";
+
 	// Lecture des parametres et, si necessaire, de la date de simu
 	skipReadingHeader(FileStream);
 	(*this.*readIntArray)(metadata->IParam, PARAM_NUMBER);
@@ -224,7 +262,7 @@ int stdSerafinReader :: readMetaData ()
 		(*this.*readIntArray)(metadata->Date, DATE_NUMBER);
 		skipReadingHeader(FileStream);
 	};
-	
+        
 	//lecture des information de discrietisation
 	skipReadingHeader(FileStream);
 	(*this.*readIntArray)(metadata->DiscretizationInfo, DISC_DESC_SIZE);
@@ -232,7 +270,7 @@ int stdSerafinReader :: readMetaData ()
 	
 	// On lit l'entete du bloc de lecture pour connaitre la taille de la table de connectivite
 	if (IsBigEndian()) s_readBlocSize ();else  ns_readBlocSize ();
-	
+        
 	
 	return FileStream->tellg();
 };
@@ -241,7 +279,7 @@ int stdSerafinReader :: readMetaData ()
 
 #include "vtkObjectFactory.h"
 
-vtkCxxRevisionMacro(vtkSerafinReader, "$Revision: 0.2 $");
+//vtkCxxRevisionMacro(vtkSerafinReader, "$Revision: 0.2 $");
 vtkStandardNewMacro(vtkSerafinReader);
 
 vtkSerafinReader::vtkSerafinReader()
@@ -265,12 +303,30 @@ vtkSerafinReader::~vtkSerafinReader()
 	}
 }
 
+void vtkSerafinReader::SetTimeUnit(int value) 
+{
+    
+    cerr << "TimeUnit " << value << endl;
+    
+//     // seconds
+//     if (value==1)      { this->timefactor=1.0 };
+//     // hours
+//     else if (value==2) { this->timefactor=3600.0 };
+//     // days
+//     else if (value==3) { this->timefactor=24*3600.0 };
+//     // years
+//     else if (value==4) { this->timefactor=24*3600.0 };
+    
+    
+    
+}
+
 int vtkSerafinReader::RequestInformation(vtkInformation *vtkNotUsed(request),
 					 vtkInformationVector **vtkNotUsed(inputVector),
 					 vtkInformationVector *outputVector)
 {	
 	vtkInformation* outInfo = outputVector->GetInformationObject(0);
-	outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),1);
+	//outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),1);
 
 	if ( !this->FileName )
 	{
@@ -350,29 +406,33 @@ int vtkSerafinReader::RequestData(vtkInformation *vtkNotUsed(request),
 	vtkInformation 		*outInfo = outputVector->GetInformationObject(0);	
 	vtkUnstructuredGrid 	*output = vtkUnstructuredGrid::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 	int tsLength = outInfo->Length(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
-	double* steps =   outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
+	double *steps =   outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
+        double requestedTimeSteps = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP());
 
-	if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS()) && tsLength>0)
+	if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP()) && tsLength>0)
 	{
 		// Get the requested time step. We only support requests of a single time
 		// step in this reader right now
-		double *requestedTimeSteps = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS());
+		double requestedTimeSteps = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP());
 	    
 		// find the first time value larger than requested time value
 		// this logic could be improved
 		int cnt = 0;
-		while (cnt < tsLength-1 && steps[cnt] < requestedTimeSteps[0])
+		while (cnt < tsLength-1 && steps[cnt] < requestedTimeSteps)
 		{
 			cnt++;
 		}
 		
 		this->TimeStep = cnt;
 	}
+        
+        vtkDebugMacro( << "Serafin steps <" << steps << ">..." << requestedTimeSteps << this->TimeStep);
 	
-	if ( outInfo->Has( vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS() ) )
+	if ( outInfo->Has( vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEP() ) )
 	{
 		double* steps = outInfo->Get( vtkStreamingDemandDrivenPipeline::TIME_STEPS() );
-		output->GetInformation()->Set( vtkDataObject::DATA_TIME_STEPS(), steps+this->TimeStep, 1 );
+//		output->GetInformation()->Set( vtkDataObject::DATA_TIME_STEP(), steps+this->TimeStep, 1 );
+		//output->GetInformation()->Set( vtkDataObject::DATA_TIME_STEP(), steps);
 	};
 
 
@@ -394,13 +454,13 @@ void vtkSerafinReader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Number Of Nodes: " 		<< this->Reader->GetNumberOfNodes()		<< endl;
   os << indent << "Number Of Node Fields: "     << this->Reader->GetNumberOfVars() 		<< endl;
   os << indent << "Number Of Cells: " 		<< this->Reader->GetNumberOfElement() 		<< endl;
-
-  
 }
 
 void vtkSerafinReader::ReadFile(vtkUnstructuredGrid *output, int time)
 {
 	output->Reset();
+        
+        cerr << "Reading Time " << time << endl;
 	
 	// Lecture de la geometrie
 	this->ReadGeometry(output,  time);
@@ -471,17 +531,22 @@ void vtkSerafinReader::ReadData(vtkUnstructuredGrid *output, int time)
 	
 	int sveldim = this->Reader->getSVelDim();
 	int veldim = this->Reader->getVelDim()-sveldim;
-	
+        
 	const int size = this->Reader->GetNumberOfNodes();
 	
-	const int ideb = (this->Reader->Is3Dfile ()) ? 1 : 0;
+	//const int ideb = (this->Reader->Is3Dfile ()) ? 1 : 0;
+        // jmf
+        const int ideb = 0;
 	const int ifin = this->Reader->GetNumberOfVars();
-	
+        
 	for (i = ideb ; i<ifin ; i++)
 	{
 		vtkFloatArray *data = vtkFloatArray::New();
 		
 		this->Reader->GetVarNameById(i, name);
+                
+                cerr << "ReadData varname" << i << name << '\n';
+
 		
 		if ((strstr ( name, "VELOCITY") != NULL|| strstr ( name, "VITESSE") != NULL) 
                   && strstr ( name, "SCALAR VELOCITY") == NULL   
@@ -511,6 +576,7 @@ void vtkSerafinReader::ReadData(vtkUnstructuredGrid *output, int time)
 				i+= (veldim-1);
 				
 			}
+                        output->GetPointData()->SetVectors(data);
 			
 		} else {
 			data->SetName(name);			
@@ -520,13 +586,12 @@ void vtkSerafinReader::ReadData(vtkUnstructuredGrid *output, int time)
 			{//Stockage des donn�es
 				this->Reader->GetVarValues(time, i, 0, data->GetPointer (0), size);
 			};
+                        output->GetPointData()->AddArray(data);
 		}
-		output->GetPointData()->AddArray(data);
 		
-		if (!output->GetPointData()->GetVectors())
-		{
-			output->GetPointData()->SetVectors(data);
-		}
+// 		if (!output->GetPointData()->GetVectors()) {  // checking that vectors have not been loaded
+//                         output->GetPointData()->SetVectors(data);
+		
 		data->Delete();
 		
 	}
