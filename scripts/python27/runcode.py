@@ -220,6 +220,46 @@ def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
 
    return True
 
+def getGretelCmd(pbin,cfg):
+   """
+   @brief Returns the command to run to execute gretel
+
+   @param pbin Path to to partel executable from root
+   @param cfg Configuration file information
+   """
+   PARDir = pbin
+   if cfg['PARTEL'] != {}:
+      if cfg['PARTEL'].has_key('PATH'):
+         PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+   # ~~> GRETEL Executable
+   execmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['sfx_exe'])
+
+   return execmd
+
+
+def getPartelCmd(pbin,cfg,CASFile):
+   """
+   @brief Returns the command to run to execute partel
+
+   @param pbin Path to to partel executable from root
+   @param cfg Configuration file information
+   @param CASFile Steering file information
+   """
+   PARDir = pbin
+   if cfg['PARTEL'] != {}:
+       if 'PATH' in cfg['PARTEL']:
+         PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+   # ~~> Call to PARTEL
+   parcmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+   if cfg['PARTEL'] != {}:
+      if 'EXEC' in cfg['PARTEL']:
+         parcmd = cfg['PARTEL']['EXEC']
+   # <mpi_cmdexec> and <exename> should be known by now
+   if cfg['MPI'] != {}:
+      parcmd = parcmd.replace('<mpi_cmdexec>',CASFile['mpi']).replace('<exename>','')
+   parcmd = parcmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
+   return parcmd
+
 def processCAS(casFiles,dico,frgb):
 
    # ~~ Aquire CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1156,18 +1196,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       for name in CASFiles:
          chdir(CASFiles[name]['wir'])
          # ~~> Path
-         PARDir = pbin
-         if cfg['PARTEL'] != {}:
-            if cfg['PARTEL'].has_key('PATH'):
-               PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
-         # ~~> Call to PARTEL
-         parcmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
-         if cfg['PARTEL'] != {}:
-            if cfg['PARTEL'].has_key('EXEC'): parcmd = cfg['PARTEL']['EXEC']
-         # <mpi_cmdexec> and <exename> should be known by now
-         if cfg['MPI'] != {}:
-            parcmd = parcmd.replace('<mpi_cmdexec>',CASFiles[name]['mpi']).replace('<exename>','')
-         parcmd = parcmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
+         parcmd = getPartelCmd(pbin,cfg,CASFiles[name])
          # >>> Add running command
          CASFiles[name].update({ 'par':parcmd })
 
@@ -1361,12 +1390,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       print '\n\n'+'~'*72+'\n'
       print '... merging separated result files\n'
       # ~~> Path
-      PARDir = pbin
-      if cfg['PARTEL'] != {}:
-         if cfg['PARTEL'].has_key('PATH'):
-            PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
-      # ~~> GRETEL Executable
-      execmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['sfx_exe'])
+      execmd = getGretelCmd(pbin,cfg)
       # ~~> Run GRETEL
       for name in CASFiles:
          print '    +> ',name
