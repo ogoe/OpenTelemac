@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET-TRACER.
 !
@@ -27,7 +27,7 @@ subroutine LEC_FIC_CONC_INI_TRACER( &
 !***********************************************************************
 ! PROGICIEL : TRACER         S.MANDELKERN - M. LUCK
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 !
 !  FONCTION :   LECTURE DU FICHIER D'UNE LIGNE D'EAU INITIALE

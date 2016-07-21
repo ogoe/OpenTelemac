@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -31,7 +31,7 @@ subroutine LEC_HYDRAU( &
 ! PROGICIEL : MASCARET       S. MANDELKERN
 !                            D. POIZAT
 !
-! VERSION : 8.1.0                EDF-CEREMA
+! VERSION : 8.1.1                EDF-CEREMA
 ! *********************************************************************
 !
 !  FONCTION : LECTURE DES FICHIERS DE DONNEES HYDRAULIQUE

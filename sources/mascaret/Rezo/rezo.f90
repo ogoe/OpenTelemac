@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -75,7 +75,7 @@ subroutine  REZO    ( &
 !                             F. ZAOUI
 !                             S. DELMAS       C. COULET
 !
-! VERSION : 8.1.0               EDF-CEREMA-ARTELIA
+! VERSION : 8.1.1               EDF-CEREMA-ARTELIA
 ! *********************************************************************
 ! FONCTION :
 !

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -28,7 +28,7 @@ SUBROUTINE MATRIA( &
 !***********************************************************************
 ! PROGICIEL : MASCARET        N. GOUTAL
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 !   FONCTION : CONSTRUCTION DES MATRICES POUR L'IMPLICITATION
 !

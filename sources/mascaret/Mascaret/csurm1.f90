@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -25,7 +25,7 @@ function CSURM1( &
 !***********************************************************************
 ! PROGICIEL : MASCARET        N. GOUTAL
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 !     FONCTION : CALCUL DU TIRANT D'EAU A PARTIR DE LA SURFACE
 !                     MOUILLEE SUR MAILLAGE INITIAL

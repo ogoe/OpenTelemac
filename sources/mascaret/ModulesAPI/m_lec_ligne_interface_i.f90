@@ -1,4 +1,4 @@
-  !== Copyright (C) 2000-2015 EDF-CEREMA ==
+  !== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -21,7 +21,7 @@ module M_LEC_LIGNE_INTERFACE_I
 !***********************************************************************
 ! PROGICIEL : MASCARET        J.-M. LACOMBE
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 
 interface
@@ -48,7 +48,7 @@ subroutine LEC_LIGNE_INTERFACE( &
 ! *********************************************************************
 ! PROGICIEL : MASCARET       S. MANDELKERN
 !
-! VERSION : 8.1.0                EDF-CEREMA
+! VERSION : 8.1.1                EDF-CEREMA
 ! *********************************************************************
 !
 !

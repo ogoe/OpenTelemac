@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -25,7 +25,7 @@ program HOMERE_MASCARET
 !                             C.COULET
 !                             F. DEMANGEON
 !
-! VERSION : 8.1.0               EDF-CEREMA-ARTELIA
+! VERSION : 8.1.1               EDF-CEREMA-ARTELIA
 ! *********************************************************************
 ! Fonction : Programme Chef d'Orchestre, Execution pas a pas d'un des
 !            trois noyaux de calculs :
@@ -416,7 +416,7 @@ program HOMERE_MASCARET
    retour        = 0
    !Erreur%arbredappel = 'MAIN'
    Print *
-   Print * ,'MASCARET v8.1.0 == Copyright (C) 2000-2015 EDF-CEREMA =='
+   Print * ,'MASCARET v8.1.1 == Copyright (C) 2000-2016 EDF-CEREMA =='
    Print *
    Print * , 'Data File : ' // TRIM(FichierMotCle%Nom)
    Print *

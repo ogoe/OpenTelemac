@@ -2,8 +2,12 @@
 
 \subsection{Introduction}
 
-This report sets out the mathematical modelling of one-dimensional subcritical and supercritical flows on which the three different hydraulic engines of the code system \texttt{MASCARET} are based, as well as the methods of solving equations resulting from these models.
-We present below the structure of the \texttt{MASCARET} system. This report only covers the \textit{hydraulic} part of the system.
+This report sets out the mathematical modelling of one-dimensional subcritical
+and supercritical flows on which the three different hydraulic engines of the
+code system \texttt{MASCARET} are based, as well as the methods of solving
+equations resulting from these models.
+We present below the structure of the \texttt{MASCARET} system. This report
+only covers the \textit{hydraulic} part of the system.
 
 \begin{figure}[h]
  \begin{center}
@@ -12,18 +16,29 @@ We present below the structure of the \texttt{MASCARET} system. This report only
  \end{center}
 \end{figure}
 
-The numerical methods used vary depending on whether the flows are steady or unsteady, subcritical or supercritical and also depending on the type of hydraulic network : branched network (subcritical steady flow engine) or meshed network (subcritical unsteady flow engine). It is recalled that any branch arrangement are allowed in a meshed network, whilst in a branched network there is only one single path connecting two points of the network.
+The numerical methods used vary depending on whether the flows are steady or
+unsteady, subcritical or supercritical and also depending on the type of
+hydraulic network : branched network (subcritical steady flow engine) or meshed
+network (subcritical unsteady flow engine). It is recalled that any branch
+arrangement are allowed in a meshed network, whilst in a branched network there
+is only one single path connecting two points of the network.
 
 \subsection{General hypothesis}
 
-The principal hypotheses justifying the modelling approach (1-D) used in the 3 hydraulic engines are stated below:
+The principal hypotheses justifying the modelling approach (1-D) used in the 3
+hydraulic engines are stated below:
 
 \vspace{0.5cm}
 \begin{itemize}
- \item each reach has a prefered axis of flow, the velocity vectors are always considered parallel to this axis ;
- \item the flow has a small curvature in the horizontal plane ; the vertical accelerations are negligible, and the distribution of pressures is quasi-hydrostatic ;
- \item the average slope of the flow is small (the cosine of the angle between the horizontal and the bottom is close to 1) ;
- \item the viscosity shear stress on the bottom and the banks are taken into account using empirical friction laws (Strickler's relation).
+ \item each reach has a prefered axis of flow, the velocity vectors are always
+   considered parallel to this axis ;
+ \item the flow has a small curvature in the horizontal plane ; the vertical
+   accelerations are negligible, and the distribution of pressures is
+   quasi-hydrostatic ;
+ \item the average slope of the flow is small (the cosine of the angle between
+   the horizontal and the bottom is close to 1) ;
+ \item the viscosity shear stress on the bottom and the banks are taken into
+   account using empirical friction laws (Strickler's relation).
 \end{itemize}
 
 \vspace{0.5cm}
@@ -81,7 +96,7 @@ It can be necessary to use a two-dimensional model instead of or in complement t
 
 \vspace{0.5cm}
 
-The estimation of the energy dissipated by friction is a fundamental element of the modelling. This is usually done with the Strickler roughness coefficient (see the following paragraph), it should be estimated separately in the low flow or high flow channel. The role of the calibration is to estimate the friction coefficients as well as possible by using the known natural level of the water. This calibration is often done by trial and errors. However, an optimisation algorithm has been specially developed for the steady flow engine, and this allows an automatic calibration of the friction coefficients. 
+The estimation of the energy dissipated by friction is a fundamental element of the modelling. This is usually done with the Strickler roughness coefficient (see the following paragraph), it should be estimated separately in the low flow or high flow channel. The role of the calibration is to estimate the friction coefficients as well as possible by using the known natural level of the water. This calibration is often done by trial and errors. However, an optimisation algorithm has been specially developed for the steady flow engine, and this allows an automatic calibration of the friction coefficients.
 
 Figure \ref{SchemProf} and its notations summarise the key elements of the modelling approach in a flow section.
 
@@ -96,7 +111,7 @@ Figure \ref{SchemProf} and its notations summarise the key elements of the model
 \vspace{0.5cm}
 
 \textbf{Comment :}
-it is important to distinguish between the ``data'' sections (or profiles) where the geometry is calculated directly from topographic information (survey, digital terrain model), and the ``computation'' sections (chosen by the user) where the values will be obtained by interpolation between ``data'' profiles. 
+it is important to distinguish between the ``data'' sections (or profiles) where the geometry is calculated directly from topographic information (survey, digital terrain model), and the ``computation'' sections (chosen by the user) where the values will be obtained by interpolation between ``data'' profiles.
 \textit{In the computational sections, the flow variables are interpolated between data sections, not the bathymetry/geometry}
 
 \subsubsection{Notations} \label{secNot}

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -44,7 +44,7 @@ subroutine  PAPY            ( &
 !                             E. BENSLAMA
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.0                EDF-CEREMA
+! VERSION : 8.1.1                EDF-CEREMA
 ! *********************************************************************
 !  FONCTION :
 !
@@ -386,8 +386,13 @@ subroutine  PAPY            ( &
          DSRD  = DSRD + ( W1 - ALPHA ) * S2SousCoteDebord(2)
          DBRD  = DBRD + ( W1 - ALPHA )**2 * DB2D
       else
-         DSS = DSS + DS2D
-         DBS = DBS + DB2D
+ !        DSS = DSS + DS2D
+ !        DBS = DBS + DB2D
+ !       correction nicole
+ ! LE LIT MAJEUR EST SOLLICITE EN DESSOUS DES ZONES DE  DEBORDEMENT
+ ! CELA N EST PAS COMPTE : TOUT EST MIS EN ZONE DE STOCKAGE
+         DSRD  = DSRD + DS2D
+         DBRD  = DBRD + DB2D 
          DS2D = W0
          DS2 = DS2 + DS2D
          DB2D = W0

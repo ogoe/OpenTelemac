@@ -24,7 +24,7 @@ function main_builder()
     error(gettext("Scilab 5.3 or more is required."));
   end
 
-  if v(2) < 3 then
+  if v(1) < 6 & v(2) < 3 then
     // new API in scilab 5.3
     error(gettext('Scilab 5.3 or more is required.'));
   end
@@ -33,7 +33,7 @@ function main_builder()
 // =============================================================================
 
 if ~isdef('tbx_build_loader') then
-  error(msprintf(gettext('%s module not installed."), 'modules_manager'));
+  error(msprintf(gettext("%s module not installed."), 'modules_manager'));
 end
 
 // Action

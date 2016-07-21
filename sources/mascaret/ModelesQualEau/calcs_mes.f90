@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET-TRACER.
 !
@@ -24,7 +24,7 @@ SUBROUTINE CALCS_MES( RNU , S , &
 !***********************************************************************
 ! PROGICIEL : TRACER         S.MANDELKERN - N.GOUTAL
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 !
 !  FONCTION : MODELE MES ET SEDIMENTS

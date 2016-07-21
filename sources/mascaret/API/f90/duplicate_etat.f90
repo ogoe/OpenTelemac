@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -19,7 +19,7 @@
 ! *********************************************************************
 ! PROGICIEL : MASCARET       J.-M. LACOMBE
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 ! *********************************************************************
   function DUPLICATE_ETAT(Source, Dest)
     use M_ETAT_MASCARET_T
@@ -529,8 +529,8 @@
   function dupliqueR1(Source, Dest)
     implicit none
     integer                             :: dupliqueR1 ! retourne 1 si erreur
-    real(8), dimension(:), pointer     :: Source     ! Instance du type derive que l'on souhaite dupliquer
-    real(8), dimension(:), pointer     :: Dest       ! etat dupliquer et alloue
+    real(8), dimension(:), pointer, intent(in)     :: Source     ! Instance du type derive que l'on souhaite dupliquer
+    real(8), dimension(:), pointer, intent(inout)  :: Dest       ! etat dupliquer et alloue
 
     integer err
     integer taille

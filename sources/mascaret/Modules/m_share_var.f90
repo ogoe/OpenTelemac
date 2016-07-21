@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@ MODULE M_SHARE_VAR
 ! PROGICIEL : MASCARET        F. DEMANGEON
 !                             F. ZAOUI
 !
-! VERSION : 8.1.0              EDF-CEREMA
+! VERSION : 8.1.1              EDF-CEREMA
 !***********************************************************************
 ! Commentaire : ce module constitue un regroupement de variables
 !               globales pour un acces direct depuis le simulateur

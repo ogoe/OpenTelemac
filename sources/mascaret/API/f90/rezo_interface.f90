@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2015 EDF-CEREMA ==
+!== Copyright (C) 2000-2016 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -76,7 +76,7 @@ subroutine  REZO_INTERFACE    ( &
 !                             E. BEN SLAMA    S. MANDELKERN
 !                             F. ZAOUI
 !
-! VERSION : 8.1.0               EDF-CEREMA
+! VERSION : 8.1.1               EDF-CEREMA
 ! *********************************************************************
 ! FONCTION :
 !
