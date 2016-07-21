@@ -276,7 +276,8 @@
 ! RETRIEVING LONGITUDINAL DISPERSION
 !=======================================================================
 !
-      IF((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12))) THEN
+      IF(((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12)))
+     &   .AND.(ITURB.EQ.2)) THEN
         DO N=1,NPOIN
 !         RETRIEVING KL (SEE SUBROUTINE DISPER) AND ADDING PROPNU.
           T10%R(N) = (VISC%R(N)+VISC%R(N+NPOIN)-2*PROPNU)*ELDER(1)/
