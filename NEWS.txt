@@ -1,0 +1,32 @@
+Trunk (Unreleased)
+===========================
+
+Release V7P2R0 (Unreleased)
+===========================
+
+Features
+---------------------
+
+- Integration of the MASCARET source code into the TELEMAC-MASCARET system
+  (script mascaret.py to run code).
+- Adding NEWS file that contains the major modifications in the code.
+- TELEMAC-3D: culvert modeling.
+- TELEMAC-2D: Adding a deall_telemac2d subroutine that dallocates all that was
+  allocated by point_telemac2d. Same thing for bief_all* and do on. This is
+  mainly for API as in normal run the Fortran is cleaning on its own.
+- Automatic detection of Little/Big Endian for Serafin File
+  (needs FORTRAN Gnu extension).
+
+Addons
+---------------------
+
+- New version of ParaView plugin (SerafinReader) which allows to read Serafin
+  file in Paraview.
+
+Documentation
+---------------------
+
+- LaTeX documentation in folder documentation.
+- New developer guide in documentation/Misc/developer_guide.
+
+
