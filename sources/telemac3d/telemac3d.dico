@@ -1585,7 +1585,7 @@ RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
 AIDE = 'Nombre de processeurs pour la decomposition en parallele.
 La valeur 0 correspond a un calcul scalaire.'
-AIDE1 = 'Number of processors for domain decomposition.
+AIDE1 = 'Number of processors for domain partition.
 Value 0 corresponds to a scalar computation.'
 
 NOM = 'PARTITIONNEUR'
@@ -1604,14 +1604,14 @@ AIDE = 'Choix du partitionneur :
 \item 1 : METIS ;
 \item 2 : SCOTCH ;
 \item 3 : PARMETIS ;
-\item 4 : PTSCOTCH\ldots
+\item 4 : PTSCOTCH.
 \end{itemize}'
 AIDE1 = 'Partitioning tool selection:
 \begin{itemize}
 \item 1: METIS,
 \item 2: SCOTCH,
 \item 3: PARMETIS,
-\item 4: PTSCOTCH\ldots
+\item 4: PTSCOTCH.
 \end{itemize}'
 
 NOM = 'TRAITEMENT SUR LES BANCS DECOUVRANTS POUR LES VITESSES'
@@ -2717,7 +2717,7 @@ le \telkey{FICHIER DU CALCUL PRECEDENT} doit etre le
 etant alors un fichier de sortie du dernier calcul.
 Le \telkey{FORMAT DU FICHIER DU CALCUL PRECEDENT} et le
 \telkey{FORMAT DU FICHIER POUR SUITE} doivent alors etre mis a
- ''SERAFIND''.'
+ ''SERAFIND'' ou ''MED''.'
 AIDE1 = 'Name of a file containing the results of an earlier computation
 which was made on the same mesh. The last recorded time step will
 provide the initial conditions for the new computation.
@@ -2726,7 +2726,8 @@ In case of a perfect continued computation, the
 of the last computation.
 This last file is then an output file of the last computation.
 The \telkey{PREVIOUS COMPUTATION FILE FORMAT} and the
-\telkey{RESTART FILE FORMAT} have to be set with ''SERAFIND''.'
+\telkey{RESTART FILE FORMAT} have to be set with ''SERAFIND''
+or ''MED''.'
 
 NOM = 'FICHIER DES RESULTATS 3D'
 NOM1 = '3D RESULT FILE'
@@ -4577,8 +4578,8 @@ DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = 'Donne la loi de densite utilisee dans le cas de l''utilisation
-de traceurs actifs. Les choix possibles sont :
+AIDE = 'Donne le type de loi de densite utilisee dans le cas de
+l''utilisation de traceurs actifs. Les choix possibles sont :
 \begin{itemize}
 \item 0 : rien ;
 \item 1 : fonction de temperature ;
@@ -4586,8 +4587,8 @@ de traceurs actifs. Les choix possibles sont :
 \item 3 : fonction de temperature et salinite ;
 \item 4 : BETA donne.
 \end{itemize}'
-AIDE1 = 'Gives the law of density used in the case of active tracers.
-The possible choices are:
+AIDE1 = 'Gives the type of the law of density used in the case of
+active tracers. The possible choices are:
 \begin{itemize}
 \item 0: nothing,
 \item 1: function of temperature,
@@ -5737,14 +5738,14 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{GEOMETRY FILE}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DES RESULTATS 2D'
@@ -5763,13 +5764,13 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{2D RESULT FILE}. Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DES RESULTATS 3D'
@@ -5788,13 +5789,13 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{3D RESULT FILE}. Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT'
@@ -5813,14 +5814,14 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{PREVIOUS COMPUTATION FILE}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DE REFERENCE'
@@ -5839,14 +5840,14 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{REFERENCE FILE}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1'
@@ -5865,14 +5866,14 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{BINARY DATA FILE 1}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
 NOM  = 'TRAITEMENT DES HAUTEURS NEGATIVES'
@@ -6133,7 +6134,7 @@ souhaite parfaite (le mot-cle \telkey{FICHIER DU CALCUL PRECEDENT}
 est alors utilise).
 Le \telkey{FORMAT DU FICHIER POUR SUITE} et le
 \telkey{FORMAT DU FICHIER DU CALCUL PRECEDENT} doivent alors etre mis a
- ''SERAFIND''.'
+ ''SERAFIND'' ou ''MED''.'
 AIDE1 = 'Name of the file into which the last computation results shall
 be written in order to get a perfect continued computation.
 It is then an output file for the current computation,
@@ -6142,7 +6143,7 @@ is expected to be perfect (the keyword
 \telkey{PREVIOUS COMPUTATION FILE} is then used).
 The \telkey{RESTART FILE FORMAT} and the
 \telkey{PREVIOUS COMPUTATION FILE FORMAT} have to be set with
- ''SERAFIND''.'
+ ''SERAFIND'' or ''MED''.'
 
 NOM = 'FORMAT DU FICHIER POUR SUITE'
 NOM1 = 'RESTART FILE FORMAT'
@@ -6160,17 +6161,17 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}
-Seul SERAFIND assure une suite parfaite'
+Seul les formats double precision assurent une suite parfaite.'
 AIDE1 = 'Format of the \telkey{RESTART FILE}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}
-Only SERAFIND ensures a perfect restart.'
+Only double precision formats ensure a perfect restart.'
 
 NOM = 'VALEURS DES TRACEURS DANS LA PLUIE'
 NOM1 = 'VALUES OF TRACERS IN THE RAIN'
@@ -6627,14 +6628,14 @@ Les valeurs possibles sont :
 \begin{itemize}
 \item SERAFIN : format standard simple precision pour \tel ;
 \item SERAFIND: format standard double precision pour \tel ;
-\item MED     : format MED base sur HDF5.
+\item MED     : format MED double precision base sur HDF5.
 \end{itemize}'
 AIDE1 = 'Format of the \telkey{FILE FOR 2D CONTINUATION}.
 Possible choices are:
 \begin{itemize}
 \item SERAFIN : classical single precision format in \tel,
 \item SERAFIND: classical double precision format in \tel,
-\item MED     : MED format based on HDF5.
+\item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 /
 / VERSION 6.2
