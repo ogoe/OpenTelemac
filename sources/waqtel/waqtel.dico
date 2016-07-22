@@ -1266,7 +1266,7 @@ NOM = 'COEFFICIENT DE CALAGE DU MODELE D''ECHANGES EAU-ATMOSPHERE'
 NOM1 = 'COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL'
 TYPE = REEL
 INDEX = 135
-MNEMO = 'C_ATMOS'
+MNEMO = 'C\_ATMOS'
 TAILLE = 0
 DEFAUT = 0.0025
 DEFAUT1 = 0.0025
@@ -1297,8 +1297,8 @@ AIDE = 'taux d evaporation- meme unite que la pluie en m3/s/m2 '
 AIDE1 = 'rate of evaporation - same unit as rainfall in m3/s/m2'
 
 NOM = 'METHODE DE CALCUL DU COEFFICIENT D''EXTINCTION DU RAY'
-NOM1 = 'METHOD OF COMPUTATION OF RAY EXCTINCTION COEFFICIENT'     
-TYPE = ENTIER    
+NOM1 = 'METHOD OF COMPUTATION OF RAY EXCTINCTION COEFFICIENT'
+TYPE = ENTIER
 INDEX = 12
 MNEMO = 'MEXTINC'
 DEFAUT = 1
@@ -1306,7 +1306,7 @@ DEFAUT1 = 1
 RUBRIQUE = 'BIOMASSE,QE'
 RUBRIQUE1 = 'BIOMASS,WQ'
 AIDE = 'Choix de la methode de calcul du coefficient d extinction
-       du rayonnement solaire- les choix sont: 
+       du rayonnement solaire- les choix sont:
         1 - formule d Atkins (1.7/secchi)
         2 - formule de Moss'
 AIDE1 = 'choice of the method of calculation of the extinction of

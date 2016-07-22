@@ -3161,7 +3161,7 @@ RUBRIQUE = 'SEDIMENTOLOGIE';'GENERAL'
 RUBRIQUE1 = 'SEDIMENTOLOGY';'GENERAL'
 NIVEAU = 1
 AIDE = '(-)'
-AIDE1 = 'Alpha coefficient of secondary current(-), 
+AIDE1 = 'Alpha coefficient of secondary current(-),
 Should be chosen between 0.75 (rough bottom) and 1 (smooth bottom)'
 /
 / UM MORPHOLOGICAL FACTOR
@@ -3655,7 +3655,7 @@ NOM = 'PROFONDEUR MINIMUM POUR LE CHARRIAGE'
 NOM1 = 'MINIMUM DEPTH FOR BEDLOAD'
 TYPE = REEL
 INDEX = 52
-MNEMO = 'HMIN_BEDLOAD'
+MNEMO = 'HMIN\_BEDLOAD'
 DEFAUT = 1.E-2
 DEFAUT1 = 1.E-2
 RUBRIQUE = 'CALCUL';'GENERAL'
@@ -3785,5 +3785,5 @@ RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
 AIDE = 'Executable par defaut de SISYPHE'
 AIDE1 = 'Default executable for SISYPHE'
-                                                            
+
 /

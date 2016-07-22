@@ -6082,7 +6082,7 @@ NIVEAU = 1
 AIDE = 'donne l option de la pluie. les options disponibles sont:
   1 : uniforme en espace
   2 : avec la methode CN (curve number du SCS)'
-AIDE1 = 'gives the option for the rainfall: 
+AIDE1 = 'gives the option for the rainfall:
 1: spatially uniform option, 2: option with CN method of the SCS'
 
 NOM = 'CONDITIONS D''HUMIDITE PRECEDENTE'
@@ -6102,8 +6102,8 @@ AIDE = 'donne les conditions d humidite precedant un episode de pluie.
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
 ce mot cle est uniquement utile pour le modele de ruissellement 2 (CN)'
-AIDE1 = 'gives the antecedent moisture conditions before a rainfall 
- event. Available options are:  
+AIDE1 = 'gives the antecedent moisture conditions before a rainfall
+ event. Available options are:
   1 : dry antecedent conditions
   2 : normal antecedent conditions
   3 : wet antecedent conditions
@@ -6113,7 +6113,7 @@ NOM = 'DUREE DE LA PLUIE OU EVAPORATION EN HEURES'
 NOM1 = 'DURATION OF RAIN OR EVAPORATION IN HOURS'
 TYPE = REEL
 INDEX = 76
-MNEMO = 'RAIN_HDUR'
+MNEMO = 'RAIN\_HDUR'
 TAILLE = 1
 DEFAUT = 0.
 DEFAUT1 = 0.
