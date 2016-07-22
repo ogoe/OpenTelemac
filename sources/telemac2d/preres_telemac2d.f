@@ -4,18 +4,12 @@
 !
      &(IMP,LEO)
 !
-!
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
 !+                THE RESULTS FILE OR TO THE LISTING.
-!
-!history  J-M HERVOUET (LNHE)
-!+        24/11/2009
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -277,7 +271,7 @@
 !=======================================================================
 !
       IF(((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12)))
-     &   .AND.(ITURB.EQ.2)) THEN
+     &   .AND.ITURB.EQ.2) THEN
         DO N=1,NPOIN
 !         RETRIEVING KL (SEE SUBROUTINE DISPER) AND ADDING PROPNU.
           T10%R(N) = (VISC%R(N)+VISC%R(N+NPOIN)-2*PROPNU)*ELDER(1)/
