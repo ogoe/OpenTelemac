@@ -66,7 +66,7 @@ config = {
 #     era40  -	ECMWF Global Reanalysis Data - ERA-40 (Sep 1957 - Aug 2002)
 #     eraclim  -	ERA-20CM: Ensemble of climate model integrations
 #     icoads  -	ICOADS v2.5.1 with interpolated 20CR feedback
-#     interim  -	ECMWF Global Reanalysis Data - ERA Interim (Jan 1979 - present) 
+#     interim  -	ECMWF Global Reanalysis Data - ERA Interim (Jan 1979 - present)
 #     ispd  -	ISPD v2.2
 #     yotc  -	YOTC (Year of Tropical Convection)
 #  'step', "6" being the default:
@@ -89,8 +89,8 @@ config = {
 # (C) Copyright 2012-2013 ECMWF.
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
-# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
-# In applying this licence, ECMWF does not waive the privileges and immunities 
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
 # granted to it by virtue of its status as an intergovernmental organisation nor
 # does it submit to any jurisdiction.
 #
@@ -172,7 +172,7 @@ class Ignore303(urllib2.HTTPRedirectHandler):
                SAY = False
          data = None
          if req.has_data(): data = req.get_data()
-         return urllib2.Request(newurl, data=data, headers = req.headers, 
+         return urllib2.Request(newurl, data=data, headers = req.headers,
                                 origin_req_host=req.get_origin_req_host(), unverifiable=True)
       return None
 
@@ -313,7 +313,8 @@ class ECMWF():
       # ~~> inheritence
       self.slf2d = SELAFIN('')     # surface
       self.slf2d.DATETIME = dates[0]
-   
+      self.typ = request['stream']
+
       # ~> Initialisation
       self.moddates = [ datetime(*dates[0]),datetime(*dates[1]) ]
       status = ''
@@ -346,7 +347,7 @@ class ECMWF():
       # ~> tries connecting 3 times before stopping
       tries = 0
       while True:
-         
+
          # ~> downloading file by blocks
          http = urllib2.urlopen(result["href"])
          f = open(fileName,"wb")
@@ -367,7 +368,7 @@ class ECMWF():
             sys.exit()
          print "    ... trying to download the data once more ..."
          tries += 1
-      
+
    def appendHeaderECMWF(self,ecmwfdata):
 
       # ~~> variables
@@ -375,13 +376,19 @@ class ECMWF():
       self.slf2d.NBV1 = len(ecmwfdata.variables) - 3 # less longitude, latitude and time
       self.slf2d.NVAR = self.slf2d.NBV1
       self.slf2d.VARINDEX = range(self.slf2d.NVAR)
-      self.slf2d.VARNAMES = ['SURFACE PRESSURE', \
-         'WIND VELOCITY U ','WIND VELOCITY V ', \
-         'AIR TEMPERATURE ']
-      self.slf2d.VARUNITS = ['UI              ', \
-         'M/S             ','M/S             ', \
-         'DEGREES         ']
-      
+      if self.typ == 'wave':
+         self.slf2d.VARNAMES = ['WAVE HEIGHT     ', \
+            'WAVE PERIOD     ','WAVE DIRECTION  ']
+         self.slf2d.VARUNITS = ['M               ', \
+            'S               ','DEGREES         ']
+      else:
+         self.slf2d.VARNAMES = ['SURFACE PRESSURE', \
+            'WIND VELOCITY U ','WIND VELOCITY V ', \
+            'AIR TEMPERATURE ']
+         self.slf2d.VARUNITS = ['UI              ', \
+            'M/S             ','M/S             ', \
+            'DEGREES         ']
+
       # ~~> 2D grid
       x = ecmwfdata.variables['longitude'][:]
       NX1D = len(x)
@@ -449,46 +456,66 @@ class ECMWF():
       self.slf2d.appendHeaderSLF()
 
    def appendCoreTimeECMWF(self,t): self.slf2d.appendCoreTimeSLF(t)
-   
+
    def appendCoreVarsECMWF(self,ecmwfdata,itime):
       # Note: this is how you get to the attributes ...
       # ecmwfdata.variables['sp'].ncattrs()
       # in particular ...
       # ecmwfdata.variables['sp'].units
       # ecmwfdata.variables['sp'].missing_value
-      
-      # ~~> SURFACE PRESSURE == 'sp'
-      var2d = np.swapaxes( ecmwfdata.variables['sp'][itime][:], 0,1).ravel()
-      varof = ecmwfdata.variables['sp'].add_offset
-      varsf = ecmwfdata.variables['sp'].scale_factor
-      #print ecmwfdata.variables['sp'].units
-      self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
-      
-      # ~~> WIND VELOCITY U == 'u10'
-      var2d = np.swapaxes( ecmwfdata.variables['u10'][itime][:], 0,1).ravel()
-      varof = ecmwfdata.variables['u10'].add_offset
-      varsf = ecmwfdata.variables['u10'].scale_factor
-      #print ecmwfdata.variables['u10'].units
-      self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
-      
-      # ~~> WIND VELOCITY V == 'v10'
-      var2d = np.swapaxes( ecmwfdata.variables['v10'][itime][:], 0,1).ravel()
-      varof = ecmwfdata.variables['v10'].add_offset
-      varsf = ecmwfdata.variables['v10'].scale_factor
-      #print ecmwfdata.variables['v10'].units
-      self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
-      
-      # ~~> AIR TEMPERATURE == 't2m'
-      var2d = np.swapaxes( ecmwfdata.variables['t2m'][itime][:], 0,1).ravel()
-      varof = ecmwfdata.variables['t2m'].add_offset
-      varsf = ecmwfdata.variables['t2m'].scale_factor
-      self.slf2d.appendCoreVarsSLF([varsf*var2d+varof-273.15])  # Kelvin to Celsius
+
+      if self.type == 'wave':
+         # ~~> SIGNIFICANT WAVE PERIOD == 'mwp'
+         var2d = np.swapaxes( ecmwfdata.variables['mwp'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['mwp'].add_offset
+         varsf = ecmwfdata.variables['mwp'].scale_factor
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+         # ~~> MEAN WAVE DIRECTION == 'mwd'
+         var2d = np.swapaxes( ecmwfdata.variables['mwd'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['mwd'].add_offset
+         varsf = ecmwfdata.variables['mwd'].scale_factor
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+         # ~~> MEAN WAVE DIRECTION == 'mwd'
+         var2d = np.swapaxes( ecmwfdata.variables['mwd'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['mwd'].add_offset
+         varsf = ecmwfdata.variables['mwd'].scale_factor
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+      else:
+         # ~~> SURFACE PRESSURE == 'sp'
+         var2d = np.swapaxes( ecmwfdata.variables['sp'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['sp'].add_offset
+         varsf = ecmwfdata.variables['sp'].scale_factor
+         #print ecmwfdata.variables['sp'].units
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+         # ~~> WIND VELOCITY U == 'u10'
+         var2d = np.swapaxes( ecmwfdata.variables['u10'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['u10'].add_offset
+         varsf = ecmwfdata.variables['u10'].scale_factor
+         #print ecmwfdata.variables['u10'].units
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+         # ~~> WIND VELOCITY V == 'v10'
+         var2d = np.swapaxes( ecmwfdata.variables['v10'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['v10'].add_offset
+         varsf = ecmwfdata.variables['v10'].scale_factor
+         #print ecmwfdata.variables['v10'].units
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof])
+
+         # ~~> AIR TEMPERATURE == 't2m'
+         var2d = np.swapaxes( ecmwfdata.variables['t2m'][itime][:], 0,1).ravel()
+         varof = ecmwfdata.variables['t2m'].add_offset
+         varsf = ecmwfdata.variables['t2m'].scale_factor
+         self.slf2d.appendCoreVarsSLF([varsf*var2d+varof-273.15])  # Kelvin to Celsius
 
    def putContent(self,fileName,showbar=True):
 
       # ~~> netcdf reader
       ecmwfdata = netcdf.netcdf_file(self.request.get("target"), 'r')
-      
+
       # ~~> new SELAFIN writer
       self.slf2d.fole = {}
       self.slf2d.fole.update({ 'hook': open(fileName,'wb') })
@@ -530,10 +557,10 @@ if __name__ == "__main__":
    parser.add_option("-s", "--stop",type="string",dest="tstop",default=None,help="specify the last date included (1980-12-31)" )
    parser.add_option("--bl",type="string",dest="blcorner",default=None,help="specify the bottom left corner (25,-117)" )
    parser.add_option("--tr",type="string",dest="trcorner",default=None,help="specify the top right corner (27,-110)" )
-   parser.add_option("--dataset",type="string",dest="dataset",default='interim',help="type of dataset requested amongst era15, era20c, era20cmv0, era40, eraclim, icoads, interim, ispd, yotc")
+   parser.add_option("--dataset",type="string",dest="dataset",default='oper',help="type of dataset requested either 'oper' (atmospheric) or 'wave' (waves), etc.")
    options, args = parser.parse_args()
 
-   
+
    # Arbitrary 6-day period
    period = [[],[]]
    if options.tfrom != None:
@@ -565,7 +592,7 @@ if __name__ == "__main__":
       print '... only one file name is necessary to capture the processed dataset.\n\n'
       sys.exit(1)
    rootName = args[-1]
-   head,tail = path.splitext(rootName)   
+   head,tail = path.splitext(rootName)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Making a request ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -584,28 +611,33 @@ if __name__ == "__main__":
           'target'  : head+'.nc',
           'format'  : 'netcdf',
           'class'   : "ei",
-          'stream'  : "oper"
+          'stream'  : options.dataset
           }
+   req['date'] = options.tfrom + '/to/' + options.tstop
+   req['area'] = options.blcorner.replace(',','/') + '/' + options.trcorner.replace(',','/')
+   if options.dataset == 'wave': req['param'] = "swh/mwp/mwd"
+   else: req['param'] = "134.128/165.128/166.128/167.128"
+
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '\nMaking an ECMWF request\n'
-   ecmwf2slf = ECMWF("datasets/%s" % (options.dataset,),period,req)
+   ecmwf2slf = ECMWF("datasets/%s" % (req['dataset']),period,req)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Downloading the NetCDF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # Unfortunately, I did not manage to access the NetCDF file remotely
-   
+
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '\nHaving to download the ECMWF file first\n'
-   
+
    ecmwf2slf.downloadECMWF()
    print "   ~> download completed."
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Convert to SELAFIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '\nConverting netcdf file into SELAFIN\n'

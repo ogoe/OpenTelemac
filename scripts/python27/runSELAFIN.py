@@ -80,7 +80,7 @@ from parsers.parserLQD import LQD
 from parsers.parserKenue import InS
 from utils.files import moveFile
 from utils.progressbar import ProgressBar
-from samplers.meshes import subdivideMesh,tessellatePoly
+from samplers.meshes import subdivideMesh4,subdivideMesh3,tessellatePoly
 from converters import convertUTM as utm
 
 # _____                   __________________________________________
@@ -405,7 +405,8 @@ class subSELAFIN(SELAFIN): # TODO with 3D
 
    def __init__(self,f):
       SELAFIN.__init__(self,f)
-      self.IKLE2,self.MESHX,self.MESHY,self.IPOB2,self.INTERP = subdivideMesh(self.IKLE2,self.MESHX,self.MESHY)
+      self.IKLE2,self.MESHX,self.MESHY,self.IPOB2,self.INTERP,self.INTERP3 = subdivideMesh4(self.IKLE2,self.MESHX,self.MESHY)
+      #self.IKLE2,self.MESHX,self.MESHY,self.IPOB2,self.INTERP2,self.INTERP3 = subdivideMesh3(self.IKLE2,self.MESHX,self.MESHY)
 
    def putContent(self,fileName):
       # ~~> Doubling the number of NPLAN
@@ -931,7 +932,7 @@ def main(action=None):
       if options.freplace: moveFile(outFile,slfFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Case of SCAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~ Case of TESSELLATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    elif codeName == 'tessellate':
       if not options.freplace:
          if len(args) != 3:

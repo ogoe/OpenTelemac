@@ -49,7 +49,7 @@ except ImportError:
    SYMLINK_AVAIL = False
 import errno
 from fnmatch import fnmatch #,translate
-from zipfile import ZipFile as zipfile
+import zipfile
 from distutils.archive_util import make_archive
 from distutils.dep_util import newer
 import urllib2
@@ -307,6 +307,24 @@ def zip(zname,bname,form):
    zipfile = make_archive(zname,form,base_dir=path.basename(bname))
    chdir(cpath)
    return zipfile
+"""
+   zip files and remove virtually all of them !
+"""
+def zipsortie(sortie):
+   head,tail = path.splitext(path.basename(sortie))
+   zname = head + '.zip'
+   if path.dirname(sortie) != '': dirname, _, filenames = walk(path.dirname(sortie)).next()
+   else: dirname, _, filenames = walk('.').next()
+   cpath = getcwd()
+   chdir(dirname)
+   z = zipfile.ZipFile(zname,'a',compression=zipfile.ZIP_DEFLATED,allowZip64=True)
+   for filename in filenames:
+      if head == filename[:len(head)] and tail == path.splitext(filename)[1]:
+         z.write(filename)
+         if filename != path.basename(sortie): remove(filename)
+   chdir(cpath)
+   return zname
+
 """
     bname is a the root directory where the archive is to be extracted --
 """

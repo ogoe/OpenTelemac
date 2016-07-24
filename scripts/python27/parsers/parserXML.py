@@ -90,7 +90,7 @@ from mtlplots.myplot2d import Figure2D,Dumper2D
 from mtlplots.myplot3d import Figure3D,Dumper3D
 from samplers.mycast import Caster
 
-# _____                  ___________________________________________
+# _____                               ______________________________
 # ____/ Test case validation Toolkit /_____________________________/
 #
 # Function used in the xml files to do the comparaison between two files

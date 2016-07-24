@@ -56,6 +56,7 @@
 # ~~> dependencies towards standard python
 import re
 import sys
+from optparse import Values
 from copy import copy,deepcopy
 from os import path,walk,remove, environ, sep
 # ~~> dependencies towards the root of pytel
@@ -117,7 +118,7 @@ listINTRINSIC = [ \
 # ____/ Global Regular Expressions /_______________________________/
 #
 """
-
+  Softer regular expression to ensure scanning of any sources
 """
 #?beforethisafter=r'\s*(?P<before>%s(?=\s*(\b(%s)\b)))'+ \
 #?                          r'\s*(?P<this>(\b(%s)\b))'+ \
@@ -223,6 +224,13 @@ typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90xport)) #,re.I)
 pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|PURE FUNCTION|RECURSIVE FUNCTION|SUBROUTINE|RECURSIVE SUBROUTINE|MODULE|BLOCK DATA))\b\s+(?P<after>.*?)\s*(\bRESULT\b[\s\(]*(?P<result>\w+[\w\s]*)\)?|)\Z') #,re.I)
 #?pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z') #,re.I)
 pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
+
+"""
+  Ruled regular expression to ensure proper coding for the TELEMAC system
+"""
+#rle_indent = re.compile(r'')
+#rle_comment = re.compile(r'[!#]')
+#f77comment = re.compile(r'[C!#*]') #,re.I)
 
 # _____                         ____________________________________
 # ____/ FORTRAN Parser Toolbox /___________________________________/
@@ -1063,6 +1071,88 @@ def sortFunctions(ifcts,iuses,list,mods,xuses):
          ifcts,iuses = sortFunctions(ifcts,iuses,list,mods,list[mods[u][0]][u]['uses'])
 
    return ifcts,iuses
+
+
+# _____                _____________________________________________
+# ____/ Coding Rules  /____________________________________________/
+#
+def scanEnunciation(name):
+
+   # ~~ get file content ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   lines = getFileContent(name)
+
+   # ~~ scan indents ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # grep -ER -n $2 '^(\ ){9}[^\ ]|^(\ ){7}[^\ ]|^(\ ){15}[^\ ]' $1 --include=*.[fF]
+   indent =[]
+
+   # ~~ scan comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # grep -ER -n $2 '^[^!\n0-9#\ ]' $1 --include=*.[fF]
+   check =[]
+   rle_indent = re.compile(r'')
+   rle_comment = re.compile(r'[!#]')
+   #f77comment = re.compile(r'[C!#*]') #,re.I)
+
+   # ~~ proposed file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   difFile = name+'.mdf'
+   putFileContent(difFile,lines)
+
+   # ~~ differentiation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> default options
+   options = Values()
+   options.unified = False
+   options.ndiff = False
+   options.html = True
+   options.ablines = 3
+   options.context = False
+   # ~~> differentiate
+   print '\n\nDifferenciating:\n    +> ' + name + '\nand +> ' + difFile + '\n'+'~'*72+'\n'
+   # ~~> use of writelines because diff is a generator
+   diff = diffTextFiles(name,difFile,options)
+   # ~~> write differentiator
+   if options.html:
+      htmlFile = path.splitext(difFile)[0]+'.html'
+      of = open(htmlFile,'wb')
+      of.writelines( diff )
+      of.close()
+      print '\n      ~> produced: ',htmlFile,'\n'
+   #elif options.unified:
+   #   diffFile = path.splitext(difFile)[0]+'.diff'
+   #   of = open(diffFile,'wb')
+   #   of.writelines( diff )
+   #   of.close()
+   #   print '\n      ~> produced: ',diffFile,'\n'
+   #else:
+   #   sys.stdout.writelines( diff )
+   sys.exit()
+
+   return name
+
+"""
+echo '*****************'
+echo 'Comments error'
+echo '*****************'
+wc -l comments.log
+echo '*****************'
+echo 'Continuation line error'
+echo '*****************'
+grep -ER -n $2 '^(\ ){5}[^\&\ ]' $1 --include=*.[fF] > continuation.log
+wc -l continuation.log
+echo '*****************'
+echo 'Lowercase error'
+echo '*****************'
+grep -ER -n $2 '^[^!#\"'\'']*[azertyuiopqsdfghjklmnbvcxw]' $1 --include=*.[fF] > lowercas.log
+wc -l lowercas.log
+echo '*****************'
+echo 'Line too long error'
+echo '*****************'
+grep -ER -n $2 '^[^!]{73}' $1 --include=*.[fF] > linetoolong.log
+wc -l linetoolong.log
+echo '*****************'
+echo 'Invalid character error'
+echo '*****************'
+grep -PR -n $2 '\t|\r' $1 --include=*.[fF] > invalidchar.log
+wc -l invalidchar.log
+"""
 
 # _____                 ____________________________________________
 # ____/ DOXYGEN parse  /___________________________________________/

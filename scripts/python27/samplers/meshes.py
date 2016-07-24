@@ -130,12 +130,16 @@ def xyTraceMesh(inear,xyi,xyo,IKLE,MESHX,MESHY,neighbours=None):
 
    return found,ray,neighbours
 
-def subdivideMesh(IKLE,MESHX,MESHY):
+def subdivideMesh4(IKLE,MESHX,MESHY):
    """
    Requires the matplotlib.tri package to be loaded.
     - Will use already computed edges or re-create it if necessary.
    This function return a new tuple IKLE,MESHX,MESHY where each triangle has been
       subdivided in 4.
+   Note: in order to search for segments (split node number on segment), these
+      are ordered by the minimum of their node number. Thus two neighbouring
+      elements see the common segment the same way, from the minimum number to
+      the maximum number.
    """
    # ~~> Singling out edges
    from matplotlib.tri import Triangulation
@@ -145,6 +149,7 @@ def subdivideMesh(IKLE,MESHX,MESHY):
    IELEM = len(IKLE); IPOIN = len(MESHX); IEDGE = len(edges)
    JKLE = np.zeros((IELEM*4,3),dtype=np.int)       # you subdivide every elements by 4
    MESHJ = np.zeros((IEDGE,2),dtype=np.int)        # you add one point on every edges
+   MESHK = np.array([],dtype=np.int)               # no 3-node interpolation not necessary
 
    # ~~> Lookup tables for node numbering on common edges
    pa,pb = edges.T
@@ -195,7 +200,132 @@ def subdivideMesh(IKLE,MESHX,MESHY):
         JPOBO[e3] = e3+1
         JPOBO[e1] = e1+1
 
-   return JKLE,MESHX,MESHY,JPOBO,MESHJ
+   return JKLE,MESHX,MESHY,JPOBO,MESHJ,MESHK
+
+def subdivideMesh3(IKLE,MESHX,MESHY):
+   """
+   Requires the matplotlib.tri package to be loaded.
+    - Will use already computed edges or re-create it if necessary.
+   This function return a new tuple IKLE,MESHX,MESHY where each triangle has been
+      subdivided in 3, and where possible re-combined with neighbouring triangles.
+   """
+   # ~~> Singling out edges
+   from matplotlib.tri import Triangulation
+   triangles = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation()
+   edges = triangles.get_edges()
+   neighbours = triangles.get_neighbors()
+
+   # ~~> Memory allocation for new MESH
+   IELEM = len(IKLE); IPOIN = len(MESHX); IEDGE = len(edges)
+   ISBND = 3*IELEM - np.count_nonzero(neighbours+1)
+   JKLE = np.zeros((IELEM*3+ISBND,3),dtype=np.int) # you subdivide every elements by 3 swap + boundary edges
+   MESHK = np.zeros((IELEM,3),dtype=np.int)        # you add one point in the middle of every triangle
+   MESHJ = np.zeros((ISBND,2),dtype=np.int)        # you add one point on every boundary edges
+
+   # ~~> Lookup tables for node numbering on common edges
+   pa,pb = edges.T
+   k1b,k1a = np.sort(np.take(IKLE,[0,1],axis=1)).T
+   indx1 = np.searchsorted(pa,k1a)
+   jndx1 = np.searchsorted(pa,k1a,side='right')
+   k2b,k2a = np.sort(np.take(IKLE,[1,2],axis=1)).T
+   indx2 = np.searchsorted(pa,k2a)
+   jndx2 = np.searchsorted(pa,k2a,side='right')
+   k3b,k3a = np.sort(np.take(IKLE,[2,0],axis=1)).T
+   indx3 = np.searchsorted(pa,k3a)
+   jndx3 = np.searchsorted(pa,k3a,side='right')
+
+   # ~~> Building one triangle at a time /!\ Please get this loop parallelised
+   j = 0
+   k = 0
+   for i in range(IELEM):
+      s1,s2,s3 = neighbours[i]
+      MESHK[i] = IKLE[i]
+      # ~~> New boundary segments
+      if s1 < 0:
+         JKLE[j] = [IKLE[i][0],IPOIN+IELEM+k,IPOIN+i]
+         JKLE[3*IELEM+k] = [IPOIN+i,IPOIN+IELEM+k,IKLE[i][1]]
+         MESHJ[k] = [IKLE[i][0],IKLE[i][1]]
+         j += 1
+         k += 1
+      # ~~> New inside segment, swapped
+      else:
+         # look for the connection with s1
+         e1,e2,e3 = neighbours[s1]
+         n = -1
+         if e1 == i: n = 0
+         if e2 == i: n = 1
+         if e3 == i: n = 2
+         if n != -1:
+            JKLE[j] = [IKLE[i][0],IPOIN+s1,IPOIN+i]
+            JKLE[j+1] = [IPOIN+s1,IKLE[i][1],IPOIN+i]
+            j += 2
+            neighbours[i][0] = -1
+      # ~~> New boundary segments
+      if s2 < 0:
+         JKLE[j] = [IKLE[i][1],IPOIN+IELEM+k,IPOIN+i]
+         JKLE[3*IELEM+k] = [IPOIN+i,IPOIN+IELEM+k,IKLE[i][2]]
+         MESHJ[k] = [IKLE[i][1],IKLE[i][2]]
+         j += 1
+         k += 1
+      # ~~> New inside segment, swapped
+      else:
+         # look for the connection with s1
+         e1,e2,e3 = neighbours[s2]
+         n = -1
+         if e1 == i: n = 0
+         if e2 == i: n = 1
+         if e3 == i: n = 2
+         if n != -1:
+            JKLE[j] = [IKLE[i][1],IPOIN+s2,IPOIN+i]
+            JKLE[j+1] = [IPOIN+s2,IKLE[i][2],IPOIN+i]
+            j += 2
+            neighbours[i][1] = -1
+      # ~~> New boundary segments
+      if s3 < 0:
+         JKLE[j] = [IKLE[i][2],IPOIN+IELEM+k,IPOIN+i]
+         JKLE[3*IELEM+k] = [IPOIN+i,IPOIN+IELEM+k,IKLE[i][0]]
+         MESHJ[k] = [IKLE[i][2],IKLE[i][0]]
+         j += 1
+         k += 1
+      # ~~> New inside segment, swapped
+      else:
+         # look for the connection with s1
+         e1,e2,e3 = neighbours[s3]
+         n = -1
+         if e1 == i: n = 0
+         if e2 == i: n = 1
+         if e3 == i: n = 2
+         if n != -1:
+            JKLE[j] = [IKLE[i][2],IPOIN+s3,IPOIN+i]
+            JKLE[j+1] = [IPOIN+s3,IKLE[i][0],IPOIN+i]
+            j += 2
+            neighbours[i][2] = -1
+
+   # ~~> Building the new mesh and the new neighbouring
+   MESHX = np.resize(MESHX,IPOIN+IELEM+ISBND)
+   MESHY = np.resize(MESHY,IPOIN+IELEM+ISBND)
+   MESHX[IPOIN:IPOIN+IELEM] = np.sum(MESHX[MESHK],axis=1)/3.
+   MESHY[IPOIN:IPOIN+IELEM] = np.sum(MESHY[MESHK],axis=1)/3.
+   MESHX[IPOIN+IELEM:] = np.sum(MESHX[MESHJ],axis=1)/2.
+   MESHY[IPOIN+IELEM:] = np.sum(MESHY[MESHJ],axis=1)/2.
+   neighbours = Triangulation(MESHX,MESHY,JKLE).get_cpp_triangulation().get_neighbors()
+   # ~~> Reset IPOBO while you are at it
+   JPOBO = np.zeros(IPOIN+IELEM+ISBND,np.int)
+
+   for n in range(IPOIN+IELEM+ISBND):
+      s1,s2,s3 = neighbours[n]
+      e1,e2,e3 = JKLE[n]
+      if s1 < 0:
+        JPOBO[e1] = e1+1
+        JPOBO[e2] = e2+1
+      if s2 < 0:
+        JPOBO[e2] = e2+1
+        JPOBO[e3] = e3+1
+      if s3 < 0:
+        JPOBO[e3] = e3+1
+        JPOBO[e1] = e1+1
+
+   return JKLE,MESHX,MESHY,JPOBO,MESHJ,MESHK
 
 def traceRay2XY(IKLE,MESHX,MESHY,neighbours,ei,xyi,en,xyn):
    """
@@ -928,6 +1058,7 @@ __author__="Sebastien E. Bourban"
 __date__ ="$12-Dec-2012 08:51:29$"
 
 if __name__ == "__main__":
+   debug = False
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Command line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1054,3 +1185,34 @@ if __name__ == "__main__":
    print '\n\nMy work is done\n\n'
 
    sys.exit(0)
+
+"""
+
+   from meshpy.triangle import MeshInfo, build
+
+   mesh_info = MeshInfo()
+   mesh_info.set_points([ (0,0), (2,0), (2,20), (0,20) ])
+   mesh_info.set_facets([ [0,1],[1,2],[2,3],[3,0] ])
+   mesh = build(mesh_info,)
+   for i,p in enumerate(mesh_info.points):
+      print i,p
+
+   sys.exit()
+
+   slf = SELAFIN( slfFile )
+   slf.setMPLTri(True)
+   msk = np.zeros( slf.NPOIN2,dtype=np.int )
+   mck = [[0,1],[1,2],[2,0]]
+   # ~> set the boundary points to -1
+   for elem,neigh in zip(slf.IKLE2,slf.neighbours):
+      if neigh[0] < 0: msk[elem[0:2]] = -1
+      if neigh[1] < 0: msk[elem[1:2]] = -1
+      if neigh[2] < 0: msk[elem[0:2:2]] = -1
+   # ~> add up number of neighbours for internal nodes
+   for i1,i2,i3 in slf.IKLE2:
+      if msk[i1] >= 0: msk[i1] = msk[i1]+1
+      if msk[i2] >= 0: msk[i2] = msk[i2]+1
+      if msk[i3] >= 0: msk[i3] = msk[i3]+1
+
+   print msk[0:15]
+"""

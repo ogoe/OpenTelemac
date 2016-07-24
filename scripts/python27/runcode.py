@@ -129,7 +129,7 @@ from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,addFileContent,removeDirectories,isNewer
+from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,addFileContent,removeDirectories,isNewer,zipsortie
 from utils.messages import MESSAGES,filterMessage,banner
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
@@ -517,10 +517,8 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
       print '       copying: ', path.basename(cref)
       sortiefiles.append(cref)
 
-      # ~~~ If in parallel, also copy the slave log files     ~~~~~~
-      # ~~~ called PEnnnnn_xxxxx.log for slave x of n         ~~~~~~
-      # ~~~ Note that n=ncsize-1; output from the Master goes ~~~~~~
-      # ~~~ directly in to the sortie file                    ~~~~~~
+      # ~~~> If in parallel, also copy the slave log files called PEnnnnn_xxxxx.log
+      #   for slave x of n but for the last one called the sortie file
       if ncsize > 1:
          for i in range(ncsize-1):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
@@ -1425,6 +1423,8 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
                             CASFiles[name]['dir'],CASFiles[name]['wir'],None,
                             ncsize,options.bypass)
          sortiefiles.extend(files)
+      if not options.nozip and ncsize > 1:
+         zipsortie(sortiefiles[0])
    #except Exception as e:
    #   raise Exception([filterMessage(
    #                       {'name':'runCAS','msg':
@@ -1472,6 +1472,8 @@ def main(module=None):
       help="specify whether to only create an executable but not run, default is no" )
    parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
+   parser.add_option("--nozip",action="store_true",dest="nozip",default=False,
+      help="specify whether to zip the extra sortie file if simulation in parallel" )
    # ~~> HPC / parallel
    if module is None:
       parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
