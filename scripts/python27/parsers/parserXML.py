@@ -612,6 +612,7 @@ class actionRUN(ACTION):
       specs.rootDir = options.rootDir
       specs.wDir = options.wDir
       specs.compileonly = False
+      specs.nozip = False
       if options.hosts != '':
          specs.hosts = options.hosts
       else:
