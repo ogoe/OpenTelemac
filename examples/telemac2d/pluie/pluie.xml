@@ -47,22 +47,8 @@
 
 <!-- Check solution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <cast xref="volume" config="oneofall" >
-      <v1 vars="Z:line" extract="(0;0)#[-1]" type="1d:history" time="[0:-1]" target="1:T2DRES" />
-      <python>
-def volume(a1):
-   # <!-- initial water depth: 10m | rain of 864000mm per day -->
-   return [],[],a1.support, 10.0 + a1.support*864000.0*1.e-3/86400.0
-      </python>
-      <v0 vars="volume(v1)" />
-      <return title="Correct increase in volume due to rain"
-         fail="max(np.ravel(v1.values)-np.ravel(v0.values)) > 1.e-6"
-         warn="max(np.ravel(v1.values)-np.ravel(v0.values)) > 1.e-12"
-         value="max(np.ravel(v1.values)-np.ravel(v0.values))" />
-   </cast>
-
    <cast xref="momentum" config="oneofall" >
-      <v2 vars="vitesse U:map" extract="[]#[-1]" target="1:T2DRES" type="3d:" time="[-1]"  />
+      <v2 vars="VELOCITY U:map" extract="[]#[-1]" target="1:T2DRES" type="3d:" time="[-1]"  />
       <return title="Correct absence of current velocities"
          fail="max(np.ravel(v2.values)) > 1.e-6"
          warn="max(np.ravel(v2.values)) > 1.e-12"
