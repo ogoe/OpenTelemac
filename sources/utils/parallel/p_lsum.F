@@ -63,7 +63,7 @@
       ENDDO
 !
       CALL MPI_ALLREDUCE(LAUX,LBUFFER,BUFFER_LENGTH,MPI_LOGICAL,
-     &                   MPI_LOR,MPI_COMM_WORLD,IER)
+     &                   MPI_LOR,COMM,IER)
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_LSUM: ERREUR DANS MPI_ALLREDUCE'

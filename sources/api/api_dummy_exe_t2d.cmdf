@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|api
 module: api
-liborder: special damocles hermes parallel ad bief tomawac sisyphe stbtel waqtel telemac2d api
+liborder: special damocles hermes parallel ad bief tomawac sisyphe stbtel waqtel gretel partel telemac2d api
 name: API_DUMMY_EXE_T2D
 
 [ad]
@@ -521,6 +521,10 @@ files: majus.f
   damoc.f
   damocle.f
 
+[gretel]
+path: <root>|sources|utils|gretel
+files: gretel_autop.f
+
 [hermes]
 path: <root>|sources|utils|hermes
 files: interface_hermes.f
@@ -556,6 +560,9 @@ files: interface_hermes.f
   set_header.f
   lit.F
   ecri2.f
+  set_bnd.f
+  get_mesh_date.f
+  get_bnd_connectivity.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -588,6 +595,12 @@ files: declarations_parallel.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
+
+[partel]
+path: <root>|sources|utils|partel
+files: declarations_partel.f
+  partitioner.F
+  partel.F
 
 [sisyphe]
 path: <root>|sources|sisyphe

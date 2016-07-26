@@ -3,7 +3,7 @@
 !                    ******************************
 !
      &(SEND_BUFFER,NSEND,SEND_DISPL,SEND_DATYP,RECV_BUFFER,NRECV,
-     & RECV_DISPL,RECV_DATYP,COMM,IERR)
+     & RECV_DISPL,RECV_DATYP,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P3                                  21/08/2010
@@ -38,7 +38,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)  :: NSEND(*),SEND_DISPL(*),SEND_DATYP,NRECV(*)
-      INTEGER, INTENT(IN)  :: RECV_DISPL(*),RECV_DATYP,COMM
+      INTEGER, INTENT(IN)  :: RECV_DISPL(*),RECV_DATYP
       INTEGER, INTENT(OUT) :: IERR
       TYPE(OIL_TYPE), INTENT(IN)  :: SEND_BUFFER(*)
       TYPE(OIL_TYPE), INTENT(OUT) :: RECV_BUFFER(*)

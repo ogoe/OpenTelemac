@@ -39,7 +39,7 @@
       RECV_BUFFER = 0
 #if defined (HAVE_MPI)
       CALL MPI_ALLREDUCE(SEND_BUFFER,RECV_BUFFER,NCOUNT,MPI_INTEGER,
-     &                   MPI_MAX,MPI_COMM_WORLD,IERR)
+     &                   MPI_MAX,COMM,IERR)
 !
       IF(IERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*)

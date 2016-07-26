@@ -48,7 +48,7 @@
 !
 !                                8: TO BE PARAMETERISED ????
       CALL MPI_IRECV(BUFFER,NVAL*8,MPI_BYTE,SOURCE,ITAG,
-     &               MPI_COMM_WORLD,IREQ,IER)
+     &               COMM,IREQ,IER)
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IREADI8: ERREUR IN MPI_IRECV'

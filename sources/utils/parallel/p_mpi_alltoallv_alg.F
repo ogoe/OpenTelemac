@@ -3,7 +3,7 @@
 !                    ******************************
 !
      &(SEND_BUFFER,NSEND,SEND_DISPL,SEND_DATYP,RECV_BUFFER,NRECV,
-     & RECV_DISPL,RECV_DATYP,COMM,IERR)
+     & RECV_DISPL,RECV_DATYP,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P3                                  21/08/2010
@@ -27,7 +27,6 @@
 !|                |   | CAN BE RECEIVED FROM EACH PROCESSOR
 !| RECV_DISPL     |-->| DISPLACEMENT ARRAY FOR THE RECEIVE BUFFER
 !| RECV_DATYP     |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
-!| COMM           |-->| COMMUNICATOR
 !| IERR           |-->| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -38,7 +37,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)  :: NSEND(*),SEND_DISPL(*),SEND_DATYP,NRECV(*)
-      INTEGER, INTENT(IN)  :: RECV_DISPL(*),RECV_DATYP,COMM
+      INTEGER, INTENT(IN)  :: RECV_DISPL(*),RECV_DATYP
       INTEGER, INTENT(OUT) :: IERR
       TYPE(ALG_TYPE), INTENT(IN)  :: SEND_BUFFER(*)
       TYPE(ALG_TYPE), INTENT(OUT) :: RECV_BUFFER(*)

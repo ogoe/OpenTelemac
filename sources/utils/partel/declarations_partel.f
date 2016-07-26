@@ -29,6 +29,8 @@
       INTEGER, PARAMETER :: MAXLENHARD = 250 ! HARD MAX FILE NAME LENGTH
       INTEGER, PARAMETER :: MAXADDCH = 10 ! MAX ADDED SUFFIX LENGTH
       INTEGER, PARAMETER :: MAXVAR = 100  ! MAX NUMBER OF VARIABLES
+
+      CHARACTER(LEN=3) :: CODE = '   '
 !
 !-----------------------------------------------------------------------
 !

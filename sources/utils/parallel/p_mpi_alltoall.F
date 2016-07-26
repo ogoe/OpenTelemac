@@ -2,7 +2,7 @@
                      SUBROUTINE P_MPI_ALLTOALL
 !                    *************************
 !
-     &(SEND_BUFFER,NSEND,SEND_DATYP,RECV_BUFFER,NRECV,RECV_DATYP,COMM,
+     &(SEND_BUFFER,NSEND,SEND_DATYP,RECV_BUFFER,NRECV,RECV_DATYP,
      & IERR)
 !
 !***********************************************************************
@@ -37,7 +37,6 @@
 !| NRECV         |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT
 !|               |   | CAN BE RECEIVED FROM EACH PROCESSOR
 !| RECV_DATYP    |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
-!| COMM          |-->| COMMUNICATOR
 !| IERR          |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -48,7 +47,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)  :: SEND_BUFFER(*),NSEND,SEND_DATYP,NRECV
-      INTEGER, INTENT(IN)  :: RECV_DATYP,COMM
+      INTEGER, INTENT(IN)  :: RECV_DATYP
       INTEGER, INTENT(OUT) :: RECV_BUFFER(*),IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

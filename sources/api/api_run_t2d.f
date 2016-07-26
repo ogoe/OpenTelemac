@@ -15,6 +15,7 @@
       USE API_INSTANCE_T2D
       USE INTERFACE_TELEMAC2D, ONLY : TELEMAC2D, LECDON_TELEMAC2D
       USE BIEF, ONLY : BIEF_OPEN_FILES, BIEF_INIT, INCLUS
+      USE DECLARATIONS_PARALLEL, ONLY : COMM
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       PRIVATE
@@ -53,18 +54,20 @@
       !PARAM INST [IN,OUT]    THE INSTANCE
       !PARAM LU       [IN]    OUTPUT STREAM ID
       !PARAM LNG      [IN]    OUTPUT KANGUAGE 2 ENGLISH 1 FRENCH
+      !PARAM COMM     [IN]    THE MPI COMMUNICATOR (-1 IF NONE)
       !PARAM IERR    [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                      ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE RUN_SET_CONFIG_T2D_D(INST, U_LU, U_LNG, IERR)
+      SUBROUTINE RUN_SET_CONFIG_T2D_D(INST, U_LU, U_LNG, U_COMM, IERR)
         TYPE(INSTANCE_T2D),  INTENT(INOUT) :: INST
-        INTEGER,             INTENT(IN) :: U_LU, U_LNG
+        INTEGER,             INTENT(IN) :: U_LU, U_LNG, U_COMM
         INTEGER,             INTENT(OUT) :: IERR
 !
         IERR = 0
 !
         LU = U_LU
         LNG = U_LNG
+        COMM = U_COMM
 !
       END SUBROUTINE RUN_SET_CONFIG_T2D_D
 !
@@ -353,7 +356,7 @@
         IERR = 0
 !
         CALL BIEF_CLOSE_FILES(CODE1,INST%T2D_FILES,
-     &                        INST%MAXLU_T2D,.TRUE.)
+     &                        INST%MAXLU_T2D,.FALSE.)
 !
 !       IF(INCLUS(COUPLING,'SISYPHE')) THEN
 !         CALL CONFIG_CODE(2)

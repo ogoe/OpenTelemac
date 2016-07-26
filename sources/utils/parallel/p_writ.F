@@ -81,7 +81,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CALL MPI_SEND(BUFFER,NBYTES,MPI_BYTE,DEST,4711,MPI_COMM_WORLD,IER)
+      CALL MPI_SEND(BUFFER,NBYTES,MPI_BYTE,DEST,4711,COMM,IER)
 !
       IF (IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_WRITE: ERREUR IN MPI_SEND'

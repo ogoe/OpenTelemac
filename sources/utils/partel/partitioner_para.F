@@ -157,7 +157,7 @@
      &                              WGTFLAG, NUMFLAG,
      &                              NCON, NCOMMONNODES, NPARTS, TPWGTS,
      &                              UBVEC, OPTIONS, EDGECUT, EPART_LOC,
-     &                              MPI_COMM_WORLD)
+     &                              COMM)
           DEALLOCATE(TPWGTS)
           DEALLOCATE(UBVEC)
           DEALLOCATE(VWGT)
@@ -178,7 +178,7 @@
 !
           CALL P_ALLGATHERV_I(EPART_LOC,NELEM_LOC,MPI_INTEGER,EPART,
      &                      RECVCOUNT,DISPLS,MPI_INTEGER,
-     &                      MPI_COMM_WORLD,ERR)
+     &                      COMM,ERR)
 !
           DEALLOCATE(ELMDIST)
           DEALLOCATE(DISPLS)
@@ -249,7 +249,7 @@
           CALL PARMETIS_V3_MESH2DUAL(ELMDIST, EPTR, EIND,
      &                             NUMFLAG, NCOMMONNODES,
      &                             PTXADJ,PTADJNCY,
-     &                             MPI_COMM_WORLD)
+     &                             COMM)
 !
 !          DEALLOCATE(EPTR,EIND)
           ALLOCATE(RECVBUF(1))
@@ -269,7 +269,6 @@
             CALL PLANTE(1)
           ENDIF
 !
-          COMM = MPI_COMM_WORLD
           CALL SCOTCHFDGRAPHINIT(PTSCOTCHGRAPH,COMM,ERR)
           IF (ERR.NE.0) THEN
             WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE GRAPH'
@@ -336,7 +335,7 @@
 !
           CALL P_ALLGATHERV_I(EPART_LOC,NELEM_LOC,MPI_INTEGER,EPART,
      &                      RECVCOUNT,DISPLS,MPI_INTEGER,
-     &                      MPI_COMM_WORLD,ERR)
+     &                      COMM,ERR)
 !          DEALLOCATE(XADJ2)
 !          DEALLOCATE(ADJNCY2)
           DEALLOCATE(PTXADJ)

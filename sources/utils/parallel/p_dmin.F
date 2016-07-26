@@ -57,7 +57,7 @@
 !-----------------------------------------------------------------------
 !
       CALL MPI_ALLREDUCE(MYPART,P_DMIN,1,MPI_DOUBLE_PRECISION,MPI_MIN,
-     &                   MPI_COMM_WORLD,IER)
+     &                   COMM,IER)
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_DMIN: ERREUR DANS MPI_ALLREDUCE'

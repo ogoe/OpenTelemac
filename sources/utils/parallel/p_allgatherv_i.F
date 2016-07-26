@@ -3,7 +3,7 @@
 !                    *************************
 !
      &(SEND_BUFFER, SEND_COUNT, SEND_TYPE, RECV_BUFFER,
-     & RECV_COUNT, DISPLS, RECV_TYPE, COMM, IERR)
+     & RECV_COUNT, DISPLS, RECV_TYPE, IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P3                                   21/08/2010
@@ -34,7 +34,6 @@
       INTEGER, INTENT(IN)    :: RECV_COUNT(*)
       INTEGER, INTENT(IN)    :: DISPLS(*)
       INTEGER, INTENT(IN)    :: RECV_TYPE
-      INTEGER, INTENT(IN)    :: COMM
       INTEGER, INTENT(OUT)   :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

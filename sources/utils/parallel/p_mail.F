@@ -59,7 +59,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CALL MPI_BCAST(CHAINE,NCAR,MPI_CHARACTER,0,MPI_COMM_WORLD,IER)
+      CALL MPI_BCAST(CHAINE,NCAR,MPI_CHARACTER,0,COMM,IER)
 !
       IF (IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_MAIL: PROBLEME DANS MPI_BCAST'

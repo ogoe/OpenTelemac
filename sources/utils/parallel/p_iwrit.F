@@ -55,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       CALL MPI_ISEND(BUFFER,NBYTES,MPI_BYTE,DEST,ITAG,
-     &               MPI_COMM_WORLD,IREQ,IER)
+     &               COMM,IREQ,IER)
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRIT: ERREUR IN MPI_ISEND'

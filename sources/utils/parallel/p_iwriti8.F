@@ -43,7 +43,7 @@
 !
 !                                8: TO BE PARAMETERISED ????
       CALL MPI_ISEND(BUFFER,NVAL*8,MPI_BYTE,DEST,ITAG,
-     &               MPI_COMM_WORLD,IREQ,IER)
+     &               COMM,IREQ,IER)
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRITI8: ERREUR IN MPI_ISEND'
