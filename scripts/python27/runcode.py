@@ -1416,14 +1416,14 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],
                          CASFiles[name]['dir'],CASFiles[name]['wir'],
                          CASFiles[name]['sortie'],ncsize,options.bypass)
-      sortiefiles.extend(files)
+      if options.sortieFile: sortiefiles.extend(files)
       for cplage in CASFiles[name]['with']:
          files = processECR(CASFiles[name]['with'][cplage]['cas'],
                             MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],
                             CASFiles[name]['dir'],CASFiles[name]['wir'],None,
                             ncsize,options.bypass)
-         sortiefiles.extend(files)
-      if not options.nozip and ncsize > 1:
+         if options.sortieFile: sortiefiles.extend(files)
+      if not options.nozip and ncsize > 1 and options.sortieFile:
          zipsortie(sortiefiles[0])
    #except Exception as e:
    #   raise Exception([filterMessage(
