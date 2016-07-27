@@ -8,7 +8,7 @@
 ! BIEF   V7P2                                         
 !***********************************************************************
 !
-!brief    INTERPOLATE CN (ANTECEDENT MOISTURE CONDITIONS) ON THE MESH
+!brief    INTERPOLATE CN (CURVE NUMBER, RUNOFF PARAMETER) ON THE MESH
 !         (INSPIRED FROM SUBROUTINE FOND (BIEF))
 !
 !history  RIADH ATA (LNHE)
@@ -71,10 +71,10 @@
       IF(LNG.EQ.1) WRITE(LU,18) NP
       IF(LNG.EQ.2) WRITE(LU,19) NP
 18    FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'ERREUR DANS LE FICHIER DE L HUMIDITE PRECEDENTE'
+     &      ,/,1X,'ERREUR DANS LE FICHIER DES COEFFICIENTS CN'
      &      ,/,1X,'A LA LIGNE ',I7)
 19    FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'ERROR IN THE PREVIOUS MOISTURE FILE'
+     &      ,/,1X,'ERROR IN CURVE NUMBERS FILE'
      &      ,/,1X,'AT LINE ',I7)
       CALL PLANTE(1)
       STOP

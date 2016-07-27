@@ -33,6 +33,16 @@
        code="telemac2d" target="t2d_pluie_cn.cas"
        title="rain with runoff model parallel mode"
    />
+   <action xref="5" 
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn_geo_hyetograph.cas"
+       title="rain with hyetopgraph model scalar mode"
+   />   
+   <action xref="6" ncsize="8"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn_geo_hyetograph.cas"
+       title="rain with hyetopgraph model parallel mode"
+   />
 <!-- No parallel run because of the use of a direct solver
    -->
 

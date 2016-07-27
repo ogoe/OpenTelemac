@@ -1,24 +1,26 @@
 /---------------------------------------------------------------------
 / TELEMAC2D Version v7p2  
 / VALIDATION TEST FOR RAIN IN 2D:
-/   1- case with constant rain
-/   2- case with CN rainfall-runoff model 
+/   1- case without infiltration
+/   2- case with CN rainfall-runoff model and CN values in formatted 
+/      data file
+/   3- case with CN rainfall-runoff model and CN values in geometry
+/      file and rainfall defined as a hyetograph in formatted data file
 /
 /  Statistics of CPU Time
 /
-/  Lenovo D30 2.8 MHz Nag compil.(1procs):1min48s version 7.2 20/07/16
-/  Lenovo D30 2.8 MHz Nag compil.(8procs):0min43 s version 7.2 20/07/16
-
+/  Lenovo D30 2.8 MHz Nag compil.(1procs):1min39s version 7.2 20/XX/XX
+/  Lenovo D30 2.8 MHz Nag compil.(8procs):15s     version 7.2 20/XX/XX
+/
 /---------------------------------------------------------------------
-RAINFALL-RUNOFF MODEL                    = 2
+RAINFALL-RUNOFF MODEL                    = 1
 DURATION OF RAIN OR EVAPORATION IN HOURS = 6.
 ANTECEDENT MOISTURE CONDITIONS           = 2
 RAIN OR EVAPORATION                      = YES
 RAIN OR EVAPORATION IN MM PER DAY        = 100.0
-NAMES OF PRIVATE VARIABLES = 
-'CN                              ';
-'SLOPE           M/M             '
+NUMBER OF PRIVATE ARRAYS = 3
 FORMATTED DATA FILE 2 =runoff_data.dat
+/
 /---------------------------------------------------------------------
 / EQUATIONS
 /---------------------------------------------------------------------
@@ -48,13 +50,16 @@ INITIAL ELEVATION  =0.0
 BOUNDARY CONDITIONS FILE ='t2d_geo_pluie.cli'
 GEOMETRY FILE            ='t2d_geo_pluie.slf'
 RESULTS FILE             ='res_rain_CN.slf'
+FORTRAN FILE             ='t2d_pluie_cn.f' 
+/ Fortran file used to print rainfall parameters to result file 
+/ (variables N,O,R), but the case works also without 
 /---------------------------------------------------------------------
 / INPUT-OUTPUT, GRAPHICS AND LISTING
 /---------------------------------------------------------------------
-LISTING PRINTOUT PERIOD         =50
+LISTING PRINTOUT PERIOD         =18
 INFORMATION ABOUT SOLVER        =YES
-GRAPHIC PRINTOUT PERIOD         =50
-VARIABLES FOR GRAPHIC PRINTOUTS =U,V,B,H,S,L,F
+GRAPHIC PRINTOUT PERIOD         =36
+VARIABLES FOR GRAPHIC PRINTOUTS =U,V,B,H,S,L,F,N,O,R
 MASS-BALANCE                    =true
 /---------------------------------------------------------------------
 / INPUT-OUTPUT, INFORMATION

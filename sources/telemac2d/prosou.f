@@ -448,34 +448,53 @@
 !     RAIN-EVAPORATION
 !
       IF(RAIN) THEN
-        RAIN_MPS=RAIN_MMPD/86400000.D0
+!
+!       RAIN OR EVAPORATION = 0 FOR AT > RAIN_HDUR
+!
+        IF(AT.LE.RAIN_HDUR*3600.D0) THEN
+          RAIN_MPS=RAIN_MMPD/86400000.D0
+        ELSE
+          RAIN_MPS=0.D0
+        ENDIF
         SURDT=1.D0/DT
         IF(BANDEC) THEN
-          IF(RUNOFFOPT.EQ.1)THEN
+          IF(RUNOFFOPT.EQ.0)THEN
 !           EVAPORATION (TENTATIVELY...) LIMITED BY AVAILABLE WATER
             DO I=1,NPOIN
               PLUIE%R(I)=MAX(RAIN_MPS,-MAX(HN%R(I),0.D0)*SURDT)
             ENDDO
-          ELSEIF(RUNOFFOPT.EQ.2)THEN
+          ELSEIF(RUNOFFOPT.EQ.1)THEN
             CALL RUNOFF_SCS_CN(PLUIE,T1%R,T2%R,T3%R,ACCROF,RAIN_MPS,AMC,
      &                         CN,ZF,ZFSLOP,RAIN_HDUR,T2D_FILES,T2DFO2,
      &                         NPOIN,MASKEL,MSK,IELM1,MESH)
           ELSE
             IF(LNG.EQ.1) WRITE(LU,221)
             IF(LNG.EQ.2) WRITE(LU,222)
-221         FORMAT(1X,'PROSOU : OPTION DE PLUIE NON IMPLEMENTEE',/,
-     &           1X,'           LES OPTIONS DISPONIBLES SONT :',/,
-     &           1X,'           1 : PLUIE UNIFORME EN ESPACE',/,
-     &           1X,'           2 : METHODE ''NOMBRE COURBE'' SCS CN')
-222         FORMAT(1X,'PROSOU : RAIN OPTION NOT IMPLEMENTED YET',/,
-     &           1X,'           AVAILABLE OPTIONS ARE:',/,
-     &           1X,'           1 : SPACIALLY UNIFORM RAIN',/,
-     &           1X,'           2 : CURVE NUMBER, RUNOFF PREDICTION')
+221         FORMAT(1X,'PROSOU : MODELE PLUIE-DEBIT NON IMPLEMENTE',/,
+     &             1X,'         LES OPTIONS DISPONIBLES SONT :',/,
+     &             1X,'         0 : PAS D''INFILTRATION',/,
+     &             1X,'         1 : MODELE SCS CN')
+222         FORMAT(1X,'PROSOU : RUNOFF MODEL NOT IMPLEMENTED YET',/,
+     &             1X,'         AVAILABLE OPTIONS ARE:',/,
+     &             1X,'         0 : NO INFILTRATION',/,
+     &             1X,'         1 : SCS CN MODEL')
 !
             CALL PLANTE(1)
             STOP
           ENDIF
         ELSE
+          IF(RUNOFFOPT.EQ.1) THEN
+            IF(LNG.EQ.1) WRITE(LU,223)
+            IF(LNG.EQ.2) WRITE(LU,224)
+223         FORMAT(1X,'PROSOU : LE MODELE PLUIE-DEBIT SCS CN',/,
+     &             1X,'         NECESSITE D''ACTIVER L''OPTION',/,
+     &             1X,'         BANCS DECOUVRANTS')
+224         FORMAT(1X,'PROSOU : TIDAL FLATS OPTION MUST BE ACTIVATED',/,
+     &             1X,'         WITH SCS CN RUNOFF MODEL')
+!
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL OS('X=C     ',X=PLUIE,C=RAIN_MPS)
         ENDIF
       ENDIF

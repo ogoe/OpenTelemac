@@ -24,7 +24,7 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| SLOPE          |<->| BOTTOM SLOPE 
 !| T1,T2          |-->| WORKING ARRAYS
-!| ZF             |<->| BOTTOM THAT WILL BE MODIFIED
+!| ZF             |-->| BOTTOM ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

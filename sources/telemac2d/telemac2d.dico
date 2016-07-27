@@ -6068,22 +6068,23 @@ AIDE1 = 'gives the option for hydrostatic reconstruction
 (used only for finite volumes):
 1: option of Audusse, 2: option of Noelle'
 
-NOM = 'MODELE DE RUISSELLEMENT'
+NOM = 'MODELE PLUIE-DEBIT'
 NOM1 = 'RAINFALL-RUNOFF MODEL'
 TYPE = ENTIER
 INDEX = 103
 MNEMO = 'RUNOFFOPT'
 TAILLE = 1
-DEFAUT = 1
-DEFAUT1 = 1
+DEFAUT = 0
+DEFAUT1 = 0
 RUBRIQUE = 'EQUATIONS, SOURCE'
 RUBRIQUE1 = 'EQUATIONS, SOURCE'
 NIVEAU = 1
-AIDE = 'donne l option de la pluie. les options disponibles sont:
-  1 : uniforme en espace
-  2 : avec la methode CN (curve number du SCS)'
-AIDE1 = 'gives the option for the rainfall:
-1: spatially uniform option, 2: option with CN method of the SCS'
+AIDE = 'Option pour modele pluie-debit. Les options disponibles sont:
+  0 : Pas d infiltration (fonction de base)
+  1 : Modele CN (Curve Number du SCS)'
+AIDE1 = 'Option for the rainfall-runoff model. Available options are: 
+  1 : No infiltration
+  2 : CN runoff model (Curve Number method of the SCS)'
 
 NOM = 'CONDITIONS D''HUMIDITE PRECEDENTE'
 NOM1 = 'ANTECEDENT MOISTURE CONDITIONS'
@@ -6096,18 +6097,18 @@ DEFAUT1 = 2
 RUBRIQUE = 'EQUATIONS, SOURCE'
 RUBRIQUE1 = 'EQUATIONS, SOURCE'
 NIVEAU = 1
-AIDE = 'donne les conditions d humidite precedant un episode de pluie.
- les options disponibles sont:
+AIDE = 'Donne les conditions d humidite precedant un episode de pluie pour
+le modele CN du SCS. Les options disponibles sont:
   1 : conditions precedentes seches
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
-ce mot cle est uniquement utile pour le modele de ruissellement 2 (CN)'
-AIDE1 = 'gives the antecedent moisture conditions before a rainfall
- event. Available options are:
+ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)'
+AIDE1 = 'gives the antecedent moisture conditions before a rainfall 
+ event for the SCS CN runoff model. Available options are:  
   1 : dry antecedent conditions
   2 : normal antecedent conditions
   3 : wet antecedent conditions
-this keyword is only usefull for runoff model 2 (CN Curves)'
+this keyword is only usefull for runoff model 1 (SCS CN model)'
 
 NOM = 'DUREE DE LA PLUIE OU EVAPORATION EN HEURES'
 NOM1 = 'DURATION OF RAIN OR EVAPORATION IN HOURS'
@@ -6115,13 +6116,14 @@ TYPE = REEL
 INDEX = 76
 MNEMO = 'RAIN\_HDUR'
 TAILLE = 1
-DEFAUT = 0.
-DEFAUT1 = 0.
+DEFAUT = 1.E6
+DEFAUT1 = 1.E6
 RUBRIQUE = 'EQUATIONS, SOURCE'
 RUBRIQUE1 = 'EQUATIONS, SOURCE'
 NIVEAU = 1
-AIDE = 'donne la duree de la pluie en heure'
-AIDE1 = 'gives the duration of the rain in hour'
+AIDE = 'donne la duree de la pluie en heure, par defaut pluie infinie'
+AIDE1 = 'gives the duration of the rain in hour, 
+default value is infinite'
 
 /
 / POUR LES LANCEURS PERL :
