@@ -150,18 +150,13 @@
       write(*,*)  '!     FOR SOURCE TERMS '
 !(BUT ALWAYS ALLOCATED, USED AS WORK ARRAYS)
 !
-      write(*,*) 'avant stsder'
       CALL BIEF_ALLVEC(1,STSDER ,'STSDER' ,NF*NPOIN3 , 1 , 0 ,MESH)
-      write(*,*) 'avant ststot'
       CALL BIEF_ALLVEC(1,STSTOT ,'STSTOT' ,NF*NPOIN3 , 1 , 0 ,MESH)
-      write(*,*) 'avant sdflim'
       CALL BIEF_ALLVEC(1,SDF_LIM,'SDF_LIM',IELM2     , 1 , 2 ,MESH)
 !
       TSDER   => STSDER%R
       TSTOT   => STSTOT%R
       DF_LIM  => SDF_LIM%R
-!
-      write(*,*) 'FOR THE BOUNDARY CONDITIONS'
 !
       CALL BIEF_ALLVEC(1,SFBOR,'SFBOR ',IELBT, NPLAN*NF , 2 ,MESH)
 !
@@ -228,7 +223,6 @@
 !
       write(*,*) '!     ADDED BY JMH 16/12/2008 (MAYBE NOT ALWAYS USED)'
 !
-      write(*,*) 'alloue sbeta'
       CALL BIEF_ALLVEC(1,SBETA,'SBETA ',IELM2,1,2,MESH)
       BETA => SBETA%R
 !
@@ -488,7 +482,6 @@
       TRA66   => STRA66%R
 !
 !     BLOCK FOR GRAPHICAL OUTPUTS: VARSOR
-      write(*,*) 'addblo'
 !
       CALL ALLBLO(VARSOR,'VARSOR')
 !     1:
