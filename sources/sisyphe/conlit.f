@@ -5,7 +5,7 @@
      &(NBOR,AT)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   01/07/2013
+! SISYPHE   V7P2                                   24/06/2016
 !***********************************************************************
 !
 !brief    ALLOWS TO IMPOSE TIME VARYING BOUNDARY CONDITIONS
@@ -50,6 +50,11 @@
 !+   Correction for multiples boundaries. Thanks to Dougal Clunie
 !+   for pointing out this error.
 !
+!history  R. KOPMANN (BAW)
+!+        13/07/2016
+!+        V7P2
+!+        Integrating liquid boundary file for QS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
 !| AT             |-->| TEMPS (s)
@@ -74,6 +79,7 @@
 !
       INTEGER, EXTERNAL          :: P_IMAX
       DOUBLE PRECISION, EXTERNAL :: CGL
+      DOUBLE PRECISION, EXTERNAL :: QGL
 !
 !-----------------------------------------------------------------------
 !
@@ -151,6 +157,13 @@
         DO IFRLIQ=1,NFRLIQ
           IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
           IF(YADEB(IFRLIQ).EQ.1) THEN
+!
+!         READING BOUNDARY CONDITION FILE WITH SOLID DISCHARGE
+!
+          IF(SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
+                SOLDIS(IFRLIQ)=QGL(IFRLIQ,AT)
+          ENDIF
+
             CALL DISIMP(SOLDIS(IFRLIQ),Q2BOR,NUMLIQ%I,IFRLIQ,NSOLDIS,
      &                  T5,T1,
 !                             MASK OF LIQUID BOUNDARIES DONE IN SISYPHE

@@ -191,7 +191,7 @@
 !
       USE BIEF
       USE INTERFACE_SISYPHE, EX_BEDLOAD_MAIN => BEDLOAD_MAIN
-      USE DECLARATIONS_SISYPHE, ONLY : DREDGESIM,NOMBLAY
+      USE DECLARATIONS_SISYPHE, ONLY : NESTOR,NOMBLAY
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
@@ -337,9 +337,8 @@
 !
       ENDDO
 !
-!     CALLS DREDGESIM
+      IF(NESTOR) CALL NESTOR_INTERFACE(2)
 !
-      IF(DREDGESIM) CALL DREDGESIM_INTERFACE(2)
       ! *********************************************** !
       ! II - EVOLUTIONS AND QS FOR EACH CLASS ARE ADDED !
       ! *********************************************** !

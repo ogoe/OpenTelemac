@@ -277,7 +277,7 @@
 !        IF(NCSIZE.GT.1) MASST = P_DSUM(MASST)
 !        MASS_GF = MASS_GF + MASST
 !     ENDIF
-!     IF(DREDGESIM) ...   ?????
+!     IF(NESTOR) ...   ?????
 !
       VOLDEPC=0.D0
       IF(SUSP) THEN

@@ -915,10 +915,11 @@
 !
 !      COUPLING
 !
-        IF(DREDGESIM) THEN
-          CALL DREDGESIM_INTERFACE(1)
-          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC DREDGESIM'
-          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH DREDGESIM'
+        IF(NESTOR) THEN
+          LEOPR = GRAFCOUNT
+          CALL NESTOR_INTERFACE(1)
+          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC NESTOR'
+          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH NESTOR'
         ENDIF
 !
         IF(CODE(1:7).NE.'SISYPHE') THEN
@@ -1872,10 +1873,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(DREDGESIM.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
-     &                                      .OR.PART.EQ.-1)) THEN
-        CALL DREDGESIM_INTERFACE(3)
-      ENDIF
+!      IF(NESTOR.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
+!     &                                      .OR.PART.EQ.-1)) THEN
+!        CALL NESTOR_INTERFACE(3)
+!      ENDIF
 !
 !------------------------------------------------------------------
 !

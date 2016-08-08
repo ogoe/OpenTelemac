@@ -71,12 +71,17 @@
 !+        11/09/2015
 !+        V7P1
 !+ Arrays of size MAXFRO now allocatable.
-!+
+!
 !history  R KOPMANN (BAW)
 !+        10/05/2016
 !+        V7P2
 !+ CALFA,SALFA dependent of grain classes
 !
+!history  R. KOPMANN (BAW)
+!+        13/07/2016
+!+        V7P2
+!+        Integrating liquid boundary file for QS
+! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -863,6 +868,10 @@
 !
       LOGICAL, ALLOCATABLE :: OKCGL(:)
 !
+!     USED IN FUNCTION QGL!                                                                                                    
+!
+      LOGICAL, ALLOCATABLE :: OKQGL(:)
+!
 !     C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
 !
       LOGICAL :: CVSM_OUT !UHM
@@ -995,9 +1004,9 @@
 !
       LOGICAL :: MIXTE
 !
-!     COUPLING WITH DREDGESIM
+!     COUPLING WITH NESTOR
 !
-      LOGICAL :: DREDGESIM
+      LOGICAL :: NESTOR
 !
 !     BED FRICTION PREDICTION
 !

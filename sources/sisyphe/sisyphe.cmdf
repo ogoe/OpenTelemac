@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special hermes parallel damocles ad bief sisyphe
+liborder: special hermes parallel damocles bief nestor ad sisyphe
 name: HOMERE_SISYPHE
 
 [ad]
@@ -508,6 +508,44 @@ files: interface_hermes.f
   close_bnd.f
   close_mesh.f
 
+[nestor]
+path: <root>|sources|nestor
+files: m_typedefs_interface.f
+  m_typedefs_nestor.f
+  m_nestor.f
+  errmsgandstop.f
+  calculate_planarlevel.f
+  errmsgandstop2.f
+  dump_by_rate.f
+  dig_by_time.f
+  open_file.f
+  intersection.f
+  intpol_z_angular_profils.f
+  intpol_z_parallel_profils.f
+  set_reflevelbyprofiles.f
+  writeactiontorestart.f
+  readfieldtorestart.f
+  writefieldtorestart.f
+  writedigaction.f
+  writefield.f
+  readactiontorestart.f
+  readwriterestart.f
+  calcdigvolumeinradius.f
+  dig_by_criterion.f
+  mainnestor.f
+  interfacerunnestor.f
+  inside_point_2d_d.f
+  errmsgwriteheader.f
+  readpolygons.f
+  isactioncompletelydefined.f
+  parsesteerline.f
+  readdigactions.f
+  initialisenestor.f
+  interfaceinitnestor.f
+  datestringtoseconds.f
+  diff_time.f
+  threedigitsnumeral.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
@@ -551,12 +589,13 @@ files: declarations_sisyphe.f
   lecdon_sisyphe.f
   read_sections_sisyphe.f
   point_sisyphe.f
-  dredgesim_interface.F
+  nestor_interface.f
   maxslope.f
   condis_sisyphe.f
   disimp.f
   read_fic_conc.f
   cgl.f
+  qgl.f
   conlit.f
   bedload_direction.f
   bedload_interact.f

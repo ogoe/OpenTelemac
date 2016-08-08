@@ -44,6 +44,11 @@
 !+        V7P1
 !+  Adding CHECK_MESH for the keyword 'CHECKING THE MESH'
 !
+!history  R. KOPMANN (BAW)
+!+        13/07/2016
+!+        V7P2
+!+        Integrating liquid boundary file for QS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -185,10 +190,12 @@
       ALLOCATE(FINSOL(MAXFRO))
       ALLOCATE(SOLDIS(MAXFRO))
       ALLOCATE(OKCGL(MAXFRO))
+      ALLOCATE(OKQGL(MAXFRO))
       ALLOCATE(CBOR_CLASSE(NSICLM*MAXFRO))
 !
       DO K=1,MAXFRO
         OKCGL(K)=.TRUE.
+        OKQGL(K)=.TRUE.
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -573,8 +580,8 @@
       ENDIF
 !
       MIXTE=MOTLOG(ADRESS(3,24))
-!     COUPLING WITH DREDGESIM
-      DREDGESIM=MOTLOG(ADRESS(3,25))
+!     COUPLING WITH NESTOR
+      NESTOR=MOTLOG(ADRESS(3,25))
 !     V6P1
       KSPRED   =MOTLOG(ADRESS(3,26))
 !
@@ -624,7 +631,7 @@
       BINRESSIS        = MOTCAR( ADRESS(4,21) )(1:3)
       SIS_FILES(SISREF)%NAME=MOTCAR( ADRESS(4,22) )
       BINREFSIS        = MOTCAR( ADRESS(4,23) )(1:3)
-!     DREDGESIM STEERING FILE
+!     NESTOR STEERING FILE
       SIS_FILES(SISMAF)%NAME = MOTCAR( ADRESS(4,27) )
 !     ******           = MOTCAR( ADRESS(4,28) )
 !     WAVE FILE
