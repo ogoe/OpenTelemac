@@ -31,7 +31,7 @@ files: api_handle_error_t2d.f
   api_handle_var_t2d.f
   api_run_t2d.f
   api_interface_t2d.f
-  api_dummy_exe_t2d.f
+  api_dummy_exe_t2d.F
 
 [bief]
 path: <root>|sources|utils|bief

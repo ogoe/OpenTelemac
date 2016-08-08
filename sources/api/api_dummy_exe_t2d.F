@@ -35,6 +35,7 @@
         ! Partitioning method to use 1: metis
         PMETHOD=1
 !
+#if defined(HAVE_MPI)
         ! Initialising mpi
         CALL MPI_INIT(IERR)
         ! Getting rank
@@ -61,6 +62,7 @@
      &                FFORMAT,NAMESEC,NAMEZONE)
         ENDIF
         CALL MPI_BARRIER(MPI_COMM_WORLD,IERR)
+#endif
 
 !
         CALL RUN_SET_CONFIG_T2D(ID,666+COLOR,LNG,SPLIT_COMM,IERR)
@@ -112,6 +114,7 @@
         ENDDO
 !
         CALL RUN_FINALIZE_T2D(ID,IERR)
+#if defined(HAVE_MPI)
         ! Mergin step
         call MPI_BARRIER(MPI_COMM_WORLD,IERR)
         IF(IPID2.EQ.0) THEN
@@ -120,6 +123,7 @@
      &                      NCSIZE2,NPLAN)
         ENDIF
         CALL MPI_FINALIZE(IERR)
+#endif
 
         END PROGRAM
 !                    *****************
