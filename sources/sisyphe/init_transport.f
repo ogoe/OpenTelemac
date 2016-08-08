@@ -235,18 +235,18 @@
           ENDIF
         ENDDO
       ELSE
-        CALL OS('X=Y/Z   ',CALFA_CL%ADR(1)%P, U2D, UNORM, 
+        CALL OS('X=Y/Z   ',CALFA_CL%ADR(1)%P, U2D, UNORM,
      &           0.D0, 2, 1.D0, 1.D-12)
-        CALL OS('X=Y/Z   ',SALFA_CL%ADR(1)%P, V2D, UNORM, 
+        CALL OS('X=Y/Z   ',SALFA_CL%ADR(1)%P, V2D, UNORM,
      &           0.D0, 2, 0.D0, 1.D-12)
       ENDIF
       IF(NSICLA.GT.1) THEN
-       DO I=2,NSICLA
-        CALL OS('X=Y     ', X=CALFA_CL%ADR(I)%P, 
-     &          Y=CALFA_CL%ADR(1)%P)
-        CALL OS('X=Y     ', X=SALFA_CL%ADR(I)%P, 
-     &          Y=SALFA_CL%ADR(1)%P)
-       ENDDO
+        DO I=2,NSICLA
+          CALL OS('X=Y     ', X=CALFA_CL%ADR(I)%P,
+     &            Y=CALFA_CL%ADR(1)%P)
+          CALL OS('X=Y     ', X=SALFA_CL%ADR(I)%P,
+     &            Y=SALFA_CL%ADR(1)%P)
+        ENDDO
       ENDIF
 !
 !     appel a effpnt ?
@@ -278,7 +278,7 @@
      &        IELMT,SECCURRENT,SLOPEFF,
      &        COEFPN,CALFA_CL%ADR(I)%P,SALFA_CL%ADR(I)%P,
      &        BIJK,HOULE)
-!     
+!
           ENDIF
 !         SUM ON ALL CLASSES
           DO J=1,NPOIN

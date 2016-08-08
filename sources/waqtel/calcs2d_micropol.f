@@ -144,16 +144,16 @@
 !     MASS BALANCE: MASS ADDED BY EXPLICIT TERMS
 !                   (IMPLICIT PART IS ADDED IN CVDFTR)
 !
-       DO J=1,ADDTR
-         ITRAC=NTRAC-J+1
-         MASSOU(ITRAC) = 0.D0
-         DO I=1,NPOIN
-           MASSOU(ITRAC)= MASSOU(ITRAC)
-     &                  + HN%R(I)*TEXP%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
-         ENDDO
-         MASSOU(ITRAC)=MASSOU(ITRAC)*DT
-         IF(NCSIZE.GT.0) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
-       ENDDO
+      DO J=1,ADDTR
+        ITRAC=NTRAC-J+1
+        MASSOU(ITRAC) = 0.D0
+        DO I=1,NPOIN
+          MASSOU(ITRAC)= MASSOU(ITRAC)
+     &                 + HN%R(I)*TEXP%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+        ENDDO
+        MASSOU(ITRAC)=MASSOU(ITRAC)*DT
+        IF(NCSIZE.GT.0) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

@@ -1025,7 +1025,7 @@
 !
       NPTSCE=DIMEN(2,80)
       NSCE = NPTSCE + 2*NBUSE
-      
+
       DO I=1,NPTSCE
         XSCE(I) = MOTREA(ADRESS(2,80)+I-1)
       ENDDO
@@ -1135,7 +1135,7 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-      
+
       NREJEU = NREJEU + 2*NBUSE
 !
 ! END OF SOGREAH ADDITIONS
@@ -2825,7 +2825,7 @@
      &                  'ARE NOT TAKEN INTO ACCOUNT',/,1X,
      &                  'OUTSIDE THIS MODULE',///)
         ENDIF
-       ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

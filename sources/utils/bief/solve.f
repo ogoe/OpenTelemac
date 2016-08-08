@@ -188,7 +188,7 @@
       NBL = 7
       IF(CFG%SLV.EQ.7) NBL = MAX(NBL,4+2*CFG%KRYLOV)
       IF(NBL.GT.TBB%N) THEN
-        IF(TBB%N.ne.0) THEN
+        IF(TBB%N.NE.0) THEN
           DO I=1,TBB%N
             DEALLOCATE(TBB%ADR(I)%P%ADR)
             DEALLOCATE(TBB%ADR(I)%P)

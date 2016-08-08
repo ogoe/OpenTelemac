@@ -499,8 +499,8 @@
             ENDIF
             WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
           ENDDO
-          DO IBOR = 1, TEL4DEL_NPTFR2                                      ! LP 05/04/2009
-            IF ( LIHBOR(IBOR) .NE. 2 ) THEN                       ! OPEN BOUNDARY
+          DO IBOR = 1, TEL4DEL_NPTFR2                            ! LP 05/04/2009
+            IF ( LIHBOR(IBOR) .NE. 2 ) THEN                      ! OPEN BOUNDARY
               IFROM = NODENRS(NBOR(IBOR))                        ! EXCHANGES ADDED
               ITO   = NBOR(IBOR)
               IF ( NLAY .EQ. 1 ) THEN

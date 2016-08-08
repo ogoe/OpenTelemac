@@ -39,7 +39,7 @@
         DO I=1,BLO%N
           IF(ASSOCIATED(BLO%ADR(I)%P)) THEN
             IF(BLO%ADR(I)%P%FATHER.EQ.BLO%NAME) THEN
-              IF(BLO%ADR(I)%P%TYPE.eq.4) THEN
+              IF(BLO%ADR(I)%P%TYPE.EQ.4) THEN
                 ! Not deallocating element in the block as they should
                 ! point on block from a higher level that will be
                 ! deallocatted later
@@ -47,9 +47,9 @@
                   NULLIFY(BLO%ADR(I)%P%ADR(J)%P)
                 ENDDO
                 DEALLOCATE(BLO%ADR(I)%P%ADR)
-              ELSE IF(BLO%ADR(I)%P%TYPE.eq.2) THEN
+              ELSE IF(BLO%ADR(I)%P%TYPE.EQ.2) THEN
                 CALL BIEF_DEALLVEC(BLO%ADR(I)%P)
-              ELSE IF(BLO%ADR(I)%P%TYPE.eq.3) THEN
+              ELSE IF(BLO%ADR(I)%P%TYPE.EQ.3) THEN
                 CALL BIEF_DEALLMAT(BLO%ADR(I)%P)
               ELSE
                 WRITE(LU,*) 'UNKNOWN BIEF_OBJ TYPE'

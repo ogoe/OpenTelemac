@@ -33,11 +33,11 @@
 !
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LISTING DE ',trim(CODE),
-     &                         repeat('-',78)
+     &                         REPEAT('-',78)
       ENDIF
       IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LISTING OF ',trim(CODE),
-     &                         repeat('-',78)
+     &                         REPEAT('-',78)
       ENDIF
 !
       IF(CODE(1:7).EQ."ARTEMIS") THEN
@@ -250,8 +250,8 @@
       ELSE
       ENDIF
       ! Coupling
-      IF(CODE1(1:1).ne.' ') THEN
-        WRITE(LU,*) repeat(' ',14),
+      IF(CODE1(1:1).NE.' ') THEN
+        WRITE(LU,*) REPEAT(' ',14),
      &              '      COUPLED WITH '//TRIM(CODE1)//' INTERNALLY  '
       ENDIF
 !

@@ -112,7 +112,6 @@
       IELBT = IELBOR(IELM2,1)
 !
       NPOIN3=NPOIN2*NPLAN
-      write(*,*) 'NPOIN3,NPOIN2,NPLAN',NPOIN3,NPOIN2,NPLAN
 !
 !-----------------------------------------------------------------------
 !
@@ -127,27 +126,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      write(*,*)  'VARIABLES 4D TO ADVECT'
-!
       CALL BIEF_ALLVEC(1,SF,'SF    ',NPOIN3*NF , 1 , 0 ,MESH)
 !
-      write(*,*)  '!     COEFFICIENT B FOR ADVECTION'
-!
       CALL BIEF_ALLVEC(1,SB,'SB    ',NPOIN2*NF , 1 , 0 ,MESH)
-!
-      write(*,*)  '! ARRAY OF DISCRETISED FREQUENCIES, AND OF DELTA F'
 !
       CALL BIEF_ALLVEC(1,SFR,'SFR   ' ,NF , 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SDFR,'SDFR  ',NF , 1 , 0 ,MESH)
       FREQ     =>SFR%R
       DFREQ    =>SDFR%R
 !
-      write(*,*)  '!     "PHYSICAL" VARIABLES OF SIZE NPOIN3'
-!
       CALL BIEF_ALLVEC(1,SXK,'SXK   ',NPOIN2*NF, 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SCG,'SCG   ',NPOIN2*NF, 1 , 0 ,MESH)
 !
-      write(*,*)  '!     FOR SOURCE TERMS '
 !(BUT ALWAYS ALLOCATED, USED AS WORK ARRAYS)
 !
       CALL BIEF_ALLVEC(1,STSDER ,'STSDER' ,NF*NPOIN3 , 1 , 0 ,MESH)
@@ -169,8 +159,6 @@
       ENDIF
       COEFNL   =>SCOEF%R
 !
-      write(*,*) '!     ADVECTION FIELD'
-!
       IF(COUSTA .OR. MAREE.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
         NC=NPOIN3*NF
         NS=NPOIN3*NF
@@ -190,7 +178,6 @@
       CALL ALLBLO(SSHF ,'SSHF  ')
 !
       IF(PROP) THEN
-      write(*,*) '!       FOOT OF THE CHARACTERISTICS'
         CALL BIEF_ALLVEC_IN_BLOCK(SSHP1,NF,1,'SHP   ',NPOIN3,3,0,MESH)
         CALL BIEF_ALLVEC_IN_BLOCK(SSHZ ,NF,1,'SHZ   ',NPOIN3,1,0,MESH)
         CALL BIEF_ALLVEC(1,SCT,'SCT   ',NC , 1 , 0 ,MESH)
@@ -214,14 +201,10 @@
       SHF   =>SSHF%R
       CF    =>SCF%R
 !
-      write(*,*) '! ARRAYS OF SIZE NPOIN2'
-!
       CALL BIEF_ALLVEC(1,SZF,'SZF   ',IELM2 , 1 , 2 ,MESH)
       ZF    =>SZF%R
       CALL BIEF_ALLVEC(1,SDEPTH,'SDEPTH',IELM2 , 1 , 2 ,MESH)
       DEPTH =>SDEPTH%R
-!
-      write(*,*) '!     ADDED BY JMH 16/12/2008 (MAYBE NOT ALWAYS USED)'
 !
       CALL BIEF_ALLVEC(1,SBETA,'SBETA ',IELM2,1,2,MESH)
       BETA => SBETA%R

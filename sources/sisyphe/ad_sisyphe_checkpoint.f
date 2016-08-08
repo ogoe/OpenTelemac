@@ -48,14 +48,14 @@
       END TYPE CHECKPOINT_SIS_TYPE
 
       TYPE(CHECKPOINT_SIS_TYPE), DIMENSION(:),
-     $                    ALLOCATABLE, TARGET        :: CP_SIS
+     &                    ALLOCATABLE, TARGET        :: CP_SIS
 
 
       TYPE(CHECKPOINT_SIS_TYPE), POINTER             :: SIS_ADJ_BUFFER
       TYPE(CHECKPOINT_SIS_TYPE), POINTER             :: SIS_TMP_CP
 
       ! Number of Check Points
-      INTEGER                                         :: NumCP_SIS = -1
+      INTEGER                                         :: NUMCP_SIS = -1
 
 !
 
@@ -65,7 +65,7 @@
 !                       *****************
       SUBROUTINE CHECKPOINT_SIS_INIT
 !                       *****************
-     &( NumCP )
+     &( NUMCP )
 !
 !***********************************************************************
 ! SISYPHE VERSION 6.2          07/05/2013    J.Riehme STCE, RWTH Aachen
@@ -81,7 +81,7 @@
 ! .________________.____.______________________________________________
 ! |      NOM       |MODE|                   ROLE
 ! |________________|____|_______________________________________________
-! |   NumCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
+! |   NUMCP        | -->| NUMBER OF CHECKPOINTS TO ALLOCATE
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
@@ -90,52 +90,52 @@
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 
-      INTEGER, INTENT(IN)  :: NumCP
+      INTEGER, INTENT(IN)  :: NUMCP
 
       INTEGER K
 
-      print *,'CHECKPOINT_SIS_INIT : NUMCP ', NumCP
+      PRINT *,'CHECKPOINT_SIS_INIT : NUMCP ', NUMCP
 
-      IF ( NumCP_SIS .NE. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
-         IF(LNG.EQ.2) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
-         CALL PLANTE(1)
-         STOP
+      IF ( NUMCP_SIS .NE. -1 )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_INIT :: CHECKPOINTS ALREADY INITIALISED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
 !-----------------------------------------------------------------------
 
-      NumCP_SIS = NumCP
+      NUMCP_SIS = NUMCP
 
-      ALLOCATE( CP_SIS(-2:NumCP_SIS) )
+      ALLOCATE( CP_SIS(-2:NUMCP_SIS) )
 
-      Do K = -2, NumCP_SIS
+      DO K = -2, NUMCP_SIS
 !
 !     COMPONENTS OF VELOCITY
 
-         ALLOCATE(CP_SIS(K)%AVAIL(NPOIN,9,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
-         ALLOCATE(CP_SIS(K)%ES(NPOIN,9))           ! THICKNESS OF EACH CLASS ???
+        ALLOCATE(CP_SIS(K)%AVAIL(NPOIN,9,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
+        ALLOCATE(CP_SIS(K)%ES(NPOIN,9))           ! THICKNESS OF EACH CLASS ???
 
-!        SEDIMENT COMPOSITION
-!          CALL ALLBLO(CP_SIS(K)%AVAI  , 'AVAI  ')       ! FRACTION OF EACH CLASS FOR THE TWO FIRST LAYERS
-!        Active Layer Thickness
-!          CALL BIEF_ALLVEC(1,CP_SIS(K)%ELAY, 'ELAY  ', IELMT, 1, 2,MESH) ! ACTIVE LAYER THICKNESS
-!        EVOLUTION
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%E     ,'E     ', IELMT, 1, 2,MESH)
-!        Active Stratum Thickness
-!          CALL BIEF_ALLVEC(1,CP_SIS(K)%ESTRAT, 'ESTRAT', IELMT,1,2,MESH) ! 2ND LAYER THICKNESS
-!        MEAN DIAMETER OF ACTIVE-LAYER
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%ACLADM,'ACLADM', IELMT,1,2,MESH) ! MEAN DIAMETER IN ACTIVE LAYER
-!        BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STICKLER)
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%CHESTR,'CHESTR', IELMT,1,2,MESH) ! FRICTION COEFFICIENT
-!        BOTTOM ELEVATION
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%ZF    ,'ZF    ', IELMT,1,2,MESH) ! BED ELEVATIONS
-!        NON ERODABLE (RIGID) BOTTOM ELEVATION
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%ZR    ,'ZR    ', IELMT,1,2,MESH) ! NON-ERODABLE BED ELEVATIONS
-!        MAXIMUM EVOLUTION
-         CALL BIEF_ALLVEC(1,CP_SIS(K)%EMAX  ,'EMAX  ', IELMT,1,2,MESH) ! VARIABLES E SUMMED U
+!       SEDIMENT COMPOSITION
+!         CALL ALLBLO(CP_SIS(K)%AVAI  , 'AVAI  ')       ! FRACTION OF EACH CLASS FOR THE TWO FIRST LAYERS
+!       Active Layer Thickness
+!         CALL BIEF_ALLVEC(1,CP_SIS(K)%ELAY, 'ELAY  ', IELMT, 1, 2,MESH) ! ACTIVE LAYER THICKNESS
+!       EVOLUTION
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%E     ,'E     ', IELMT, 1, 2,MESH)
+!       Active Stratum Thickness
+!         CALL BIEF_ALLVEC(1,CP_SIS(K)%ESTRAT, 'ESTRAT', IELMT,1,2,MESH) ! 2ND LAYER THICKNESS
+!       MEAN DIAMETER OF ACTIVE-LAYER
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%ACLADM,'ACLADM', IELMT,1,2,MESH) ! MEAN DIAMETER IN ACTIVE LAYER
+!       BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STICKLER)
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%CHESTR,'CHESTR', IELMT,1,2,MESH) ! FRICTION COEFFICIENT
+!       BOTTOM ELEVATION
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%ZF    ,'ZF    ', IELMT,1,2,MESH) ! BED ELEVATIONS
+!       NON ERODABLE (RIGID) BOTTOM ELEVATION
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%ZR    ,'ZR    ', IELMT,1,2,MESH) ! NON-ERODABLE BED ELEVATIONS
+!       MAXIMUM EVOLUTION
+        CALL BIEF_ALLVEC(1,CP_SIS(K)%EMAX  ,'EMAX  ', IELMT,1,2,MESH) ! VARIABLES E SUMMED U
 !
       ENDDO
 
@@ -185,22 +185,22 @@
 
       PRINT *,'CHECKPOINT_SIS_STORE: LT, CP_ID ',LT, CP_ID
 
-      IF ( NumCP_SIS .EQ. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_STORE ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_STORE ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         CALL PLANTE(1)
-         STOP
+      IF ( NUMCP_SIS .EQ. -1 )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_STORE ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_STORE ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
-      IF ( CP_ID < 0 .OR. CP_ID .GT. NumCP_SIS )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
-         IF(LNG.EQ.2) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
-         CALL PLANTE(1)
-         STOP
+      IF ( CP_ID < 0 .OR. CP_ID .GT. NUMCP_SIS )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_STORE :: WRONG CHECKPOINT ID ', CP_ID
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
       CP_SIS(CP_ID)%AVAIL   = AVAIL   ! FRACTION OF EACH CLASS FOR EACH LAYER
@@ -276,22 +276,22 @@
 
       PRINT *,'CHECKPOINT_SIS_RESTORE : LT, CP_ID ',LT, CP_ID
 
-      IF ( NumCP_SIS .EQ. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_RESTORE ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_RESTORE ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         CALL PLANTE(1)
-         STOP
+      IF ( NUMCP_SIS .EQ. -1 )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_RESTORE ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_RESTORE ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
-      IF ( CP_ID < 0 .OR. CP_ID .GT. NumCP_SIS )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
-         IF(LNG.EQ.2) WRITE(LU,*)
-     $        'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
-         CALL PLANTE(1)
-         STOP
+      IF ( CP_ID < 0 .OR. CP_ID .GT. NUMCP_SIS )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &       'CHECKPOINT_SIS_RESTORE :: WRONG CHECKPOINT ID ', CP_ID
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
       AVAIL  = CP_SIS(CP_ID)%AVAIL   ! FRACTION OF EACH CLASS FOR EACH LAYER
@@ -360,13 +360,13 @@
 
       PRINT *,'CHECKPOINT_SIS_COPY_TO_TMP_CP: LT ',LT
 
-      IF ( NumCP_SIS .EQ. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_TO_TMP_CP ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_TO_TMP_CP ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         CALL PLANTE(1)
-         STOP
+      IF ( NUMCP_SIS .EQ. -1 )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_TO_TMP_CP ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_TO_TMP_CP ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
 
@@ -440,13 +440,13 @@
 
       PRINT *,'CHECKPOINT_SIS_COPY_FROM_TMP_CP : LT, -2 ',LT, -2
 
-      IF ( NumCP_SIS .EQ. -1 )  THEN
-         IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_FROM_TMP_CP ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_FROM_TMP_CP ::',
-     $        ' CHECKPOINT SYSTEM NOT INTIALISED'
-         CALL PLANTE(1)
-         STOP
+      IF ( NUMCP_SIS .EQ. -1 )  THEN
+        IF(LNG.EQ.1) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_FROM_TMP_CP ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        IF(LNG.EQ.2) WRITE(LU,*)  'CHECKPOINT_SIS_COPY_FROM_TMP_CP ::',
+     &       ' CHECKPOINT SYSTEM NOT INTIALISED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 
       AVAIL  = CP_SIS(-2)%AVAIL   ! FRACTION OF EACH CLASS FOR EACH LAYER

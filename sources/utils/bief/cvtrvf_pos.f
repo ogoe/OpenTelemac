@@ -1015,12 +1015,12 @@
       CALL OS('X=0     ',X=T5)
 !
       DO I=1,F%DIM1
-!      THIS ALLOWS TO CANCEL THE PART "FIRST C * DELTA(H)" BELOW
-       T6%R(I)=F%R(I)*HT%R(I)
-!      T7: DEMAND
-       T7%R(I)=0.D0
-!      T1: OFFER
-       T1%R(I)=0.D0
+!       THIS ALLOWS TO CANCEL THE PART "FIRST C * DELTA(H)" BELOW
+        T6%R(I)=F%R(I)*HT%R(I)
+!       T7: DEMAND
+        T7%R(I)=0.D0
+!       T1: OFFER
+        T1%R(I)=0.D0
       ENDDO
 !
 !     EVALUATING OFFER AND DEMAND

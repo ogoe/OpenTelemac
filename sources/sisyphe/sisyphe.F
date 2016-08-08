@@ -1277,11 +1277,9 @@
 !
 !------------------------------------------------------------------
 !
-!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
 #ifdef COMPAD
-         CALL AD_SISYPHE_SUBITERATION_BEGIN
+        CALL AD_SISYPHE_SUBITERATION_BEGIN
 #endif
-!< JR @ RWTH
 !
 !------------------------------------------------------------------
 !

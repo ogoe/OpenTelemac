@@ -1065,7 +1065,7 @@
           WRITE(NFIC,'(3A)') "French keyword : & \telkey{",
      &                         TRIM(MYDICO(IKEY)%KNOM(1)),"}\\"
         ENDIF
-        write(nfic,'(a)') "\end{tabular}"
+        WRITE(NFIC,'(A)') "\end{tabular}"
         WRITE(NFIC,'(A)') "\\"
         ! The help informations
         IF(MYDICO(IKEY)%AIDE(LNG)(1:3).EQ.'  ') THEN
@@ -1092,7 +1092,7 @@
       !
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       IF(LNG.EQ.1) THEN
-        write(nfic,'(a)') '\chapter{Liste des mots clefs par rubrique}'
+        WRITE(NFIC,'(A)') '\chapter{Liste des mots clefs par rubrique}'
       ELSE
         WRITE(NFIC,'(A)')
      &    '\chapter{List of keywords classified according to type}'

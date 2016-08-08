@@ -27,7 +27,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_NODALF_PUGH => NODALF_PUGH
-      USE DECLARATIONS_TELEMAC2d, ONLY : YEAR_NP,HOUR_NP,MINUTE_NP,
+      USE DECLARATIONS_TELEMAC2D, ONLY : YEAR_NP,HOUR_NP,MINUTE_NP,
      &                                   SECOND_NP,NDAY_NP
 !
       IMPLICIT NONE
@@ -60,7 +60,7 @@
         HOUR_NP   = MARTIM(1)
         MINUTE_NP = MARTIM(2)
         SECOND_NP = MARTIM(3)
-!       NUMBER OF THE DAY IN YEAR_NP YEAR_NP 
+!       NUMBER OF THE DAY IN YEAR_NP YEAR_NP
         NDAY_NP = DAY
 !
         DO I=MONTH-1,1,-1

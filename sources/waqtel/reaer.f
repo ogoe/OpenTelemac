@@ -66,7 +66,6 @@
 !         HEAD OR WATER DEPTH TO REPLACE RH ?
           PJ = H%R(I)  !ZF%R(I)+H%R(I)+UNORM**2/DEUXG
 !         FORMULA OF THE TENESSEE VALLEY AUTHORITY
-         write(399,*)j,i,H%R(I),UN%R(I),VN%R(I)
           IF( FORMK2.EQ.1 ) THEN
             K2%R(J) = 5.23D0*UNORM* MAX(H%R(I),EPS)**(-1.67D0)
 !         FORMULA OF OWENS ET AL.

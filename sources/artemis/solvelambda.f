@@ -37,7 +37,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          NIT
-      DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,delta2,AK01,AK02,AK03
+      DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,DELTA2,AK01,AK02,AK03
 !
 !-----------------------------------------------------------------------
 !
@@ -92,10 +92,10 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-      delta2=ABS(K20-K10)/K20
+      DELTA2=ABS(K20-K10)/K20
       K30=(K10+K20)*0.5D0
 !
-      IF(delta2.GT.1D-06)THEN
+      IF(DELTA2.GT.1D-06)THEN
         GOTO 97
       ELSE
         XK=K30

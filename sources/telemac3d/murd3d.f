@@ -1385,9 +1385,9 @@
                     FLUX=FLUX
      &             -DTJALFA*SOURCES%ADR(IIS)%P%R(IPOIN)*
      &             ((1.D0-TETA)*FINSUB(IPOIN)+TETA*FC(IPOIN))
-                 ENDIF
-               ENDDO
-             ENDDO
+                  ENDIF
+                ENDDO
+              ENDDO
             ENDIF ! NSCE.GT.0
           ENDIF !CALFLU.AND.ICOR.EQ.NCO_DIST
 !

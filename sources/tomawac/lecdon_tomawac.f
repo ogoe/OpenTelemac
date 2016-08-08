@@ -467,9 +467,9 @@
       VERS   = MOTCAR( ADRESS(4,22) )(1:4)
       IF( WAC_FILES(WACRBI)%NAME.NE.' ') THEN
 ! ONE WANTS TO HAVE A GLOBAL RESULT
-         GLOB=.TRUE.
+        GLOB=.TRUE.
       ELSE
-         GLOB=.FALSE.
+        GLOB=.FALSE.
       ENDIF
 !
 !     FROM 23 TO 28 : FOR CRAY, NOT USEFUL HERE

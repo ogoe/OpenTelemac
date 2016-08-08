@@ -75,11 +75,11 @@
 #if defined (HAVE_MPI)
       INTEGER IER,NPREAD
 !
-      CHARACTER(len=255) EXE
+      CHARACTER(LEN=255) EXE
 !
       LOGICAL YAPARA,INIT
-      CHARACTER(len=11) PNUMBER
-      CHARACTER(len=13) MYNAM
+      CHARACTER(LEN=11) PNUMBER
+      CHARACTER(LEN=13) MYNAM
 !
 !-----------------------------------------------------------------------
 ! MPI IS SILENT WHEN EVERYTHING IS GOING ON PROPERLY

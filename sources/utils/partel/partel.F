@@ -881,11 +881,11 @@
 
         ! Working on the parallel informations
         IF(DIM_MESH.NE.3) THEN
-        IF (CODE.ne.'  ') then
+        IF (CODE.NE.'  ') THEN
           NAMECLM = CODE//'PAR'//EXTENS(NPARTS-1,I-1)
-        else
+        ELSE
           NAMECLM = NAMECLI(1:3)//'PAR'//EXTENS(NPARTS-1,I-1)
-        endif
+        ENDIF
         OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
         REWIND(NCLM)
         WRITE(NCLM,*) NPTFR_P(I)

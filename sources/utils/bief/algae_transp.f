@@ -683,9 +683,9 @@
 ! REDEFINE THE FLUID PROPERTIES
 !=======================================================================
         T_I=1.D0/(0.5D0+0.75D0*C0)*K_AV_0(I_A)/EPS_AV_0(I_A)
-! IN C_I_ALGAE IT IS ASSUMED THAT 
+! IN C_I_ALGAE IT IS ASSUMED THAT
 ! 1/RHO_F*dP/dX_i = (U_X_AV(I_A)-U_X_AV_0(I_A))/DT
-!    => maybe use variation in surface elevation 
+!    => maybe use variation in surface elevation
 !               ALONG X (I.E. HYDROSTATIC PRESSURE)
         C_I_ALGAE(1)=(U_X_AV(I_A)-U_X_AV_0(I_A))/DT
      &               +1.D0/T_I*U_X_AV_0(I_A)
@@ -1204,46 +1204,46 @@
 !
 !***********************************************************************
 !
-      if(allocated(T_TIL_P)) deallocate(T_TIL_P)
-      if(allocated(A_P)) deallocate(A_P)
-      if(allocated(PSI)) deallocate(PSI)
-      if(allocated(FI_P)) deallocate(FI_P)
-      if(allocated(U_I_0_ALGAE)) deallocate(U_I_0_ALGAE)
-      if(allocated(U_I_ALGAE)) deallocate(U_I_ALGAE)
-      if(allocated(V_I_0_ALGAE)) deallocate(V_I_0_ALGAE)
-      if(allocated(V_I_ALGAE)) deallocate(V_I_ALGAE)
-      if(allocated(X_I_0_ALGAE)) deallocate(X_I_0_ALGAE)
-      if(allocated(X_I_ALGAE)) deallocate(X_I_ALGAE)
-      if(allocated(C_I_ALGAE)) deallocate(C_I_ALGAE)
-      if(algae_start.ne.1) then
-      call bief_deallobj(U_X_AV_0)
-      call bief_deallobj(U_Y_AV_0)
-      call bief_deallobj(U_Z_AV_0)
-      call bief_deallobj(U_X_AV)
-      call bief_deallobj(U_Y_AV)
-      call bief_deallobj(U_Z_AV)
-      call bief_deallobj(K_AV_0)
-      call bief_deallobj(EPS_AV_0)
-      call bief_deallobj(K_AV)
-      call bief_deallobj(EPS_AV)
-      call bief_deallobj(H_FLU)
-      call bief_deallobj(U_X_0)
-      call bief_deallobj(U_Y_0)
-      call bief_deallobj(U_Z_0)
-      call bief_deallobj(U_X)
-      call bief_deallobj(U_Y)
-      call bief_deallobj(U_Z)
-      call bief_deallobj(V_X_0)
-      call bief_deallobj(V_Y_0)
-      call bief_deallobj(V_Z_0)
-      call bief_deallobj(V_X)
-      call bief_deallobj(V_Y)
-      call bief_deallobj(V_Z)
-      call bief_deallobj(DX_A)
-      call bief_deallobj(DY_A)
-      call bief_deallobj(DZ_A)
-      call bief_deallobj(I_A_GL)
-      endif
+      IF(ALLOCATED(T_TIL_P)) DEALLOCATE(T_TIL_P)
+      IF(ALLOCATED(A_P)) DEALLOCATE(A_P)
+      IF(ALLOCATED(PSI)) DEALLOCATE(PSI)
+      IF(ALLOCATED(FI_P)) DEALLOCATE(FI_P)
+      IF(ALLOCATED(U_I_0_ALGAE)) DEALLOCATE(U_I_0_ALGAE)
+      IF(ALLOCATED(U_I_ALGAE)) DEALLOCATE(U_I_ALGAE)
+      IF(ALLOCATED(V_I_0_ALGAE)) DEALLOCATE(V_I_0_ALGAE)
+      IF(ALLOCATED(V_I_ALGAE)) DEALLOCATE(V_I_ALGAE)
+      IF(ALLOCATED(X_I_0_ALGAE)) DEALLOCATE(X_I_0_ALGAE)
+      IF(ALLOCATED(X_I_ALGAE)) DEALLOCATE(X_I_ALGAE)
+      IF(ALLOCATED(C_I_ALGAE)) DEALLOCATE(C_I_ALGAE)
+      IF(ALGAE_START.NE.1) THEN
+        CALL BIEF_DEALLOBJ(U_X_AV_0)
+        CALL BIEF_DEALLOBJ(U_Y_AV_0)
+        CALL BIEF_DEALLOBJ(U_Z_AV_0)
+        CALL BIEF_DEALLOBJ(U_X_AV)
+        CALL BIEF_DEALLOBJ(U_Y_AV)
+        CALL BIEF_DEALLOBJ(U_Z_AV)
+        CALL BIEF_DEALLOBJ(K_AV_0)
+        CALL BIEF_DEALLOBJ(EPS_AV_0)
+        CALL BIEF_DEALLOBJ(K_AV)
+        CALL BIEF_DEALLOBJ(EPS_AV)
+        CALL BIEF_DEALLOBJ(H_FLU)
+        CALL BIEF_DEALLOBJ(U_X_0)
+        CALL BIEF_DEALLOBJ(U_Y_0)
+        CALL BIEF_DEALLOBJ(U_Z_0)
+        CALL BIEF_DEALLOBJ(U_X)
+        CALL BIEF_DEALLOBJ(U_Y)
+        CALL BIEF_DEALLOBJ(U_Z)
+        CALL BIEF_DEALLOBJ(V_X_0)
+        CALL BIEF_DEALLOBJ(V_Y_0)
+        CALL BIEF_DEALLOBJ(V_Z_0)
+        CALL BIEF_DEALLOBJ(V_X)
+        CALL BIEF_DEALLOBJ(V_Y)
+        CALL BIEF_DEALLOBJ(V_Z)
+        CALL BIEF_DEALLOBJ(DX_A)
+        CALL BIEF_DEALLOBJ(DY_A)
+        CALL BIEF_DEALLOBJ(DZ_A)
+        CALL BIEF_DEALLOBJ(I_A_GL)
+      ENDIF
 !
       RETURN
       END SUBROUTINE DEALLOC_ALGAE
