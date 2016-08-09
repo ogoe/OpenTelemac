@@ -16,7 +16,8 @@ Features
   mainly for API as in normal run the Fortran is cleaning on its own.
 - Automatic detection of Little/Big Endian for Serafin File
   (needs FORTRAN Gnu extension).
-
+- Replacing DredgeSim with Nestor
+- SISYPHE: Liquid boundaries file for bed load discharge
 Addons
 ---------------------
 

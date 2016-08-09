@@ -631,12 +631,13 @@ files: declarations_sisyphe.f
   interface_sisyphe_bedload.f
   interface_sisyphe_suspension.f
   interface_sisyphe.f
-  dredgesim_interface.F
+  nestor_interface.f
   maxslope.f
   condis_sisyphe.f
   disimp.f
   read_fic_conc.f
   cgl.f
+  qgl.f
   conlit.f
   bedload_direction.f
   bedload_interact.f
