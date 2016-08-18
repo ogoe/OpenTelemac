@@ -140,7 +140,6 @@
             IF(TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
               FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,1))/
      &                                MAX(TOCE(IPOIN,1),1.D-20)
-              QS=CONC(IPOIN,IC)*EPAI(IPOIN,IC)
 !CV ..        LAYER THICKNESS AFTER EROSION ----
 !             EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
 !     &                             (FLUER(IPOIN)*TEMPS/CONC(IC)))
