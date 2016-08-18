@@ -114,7 +114,7 @@
           ELSEIF(TOB(IPOIN).GT.TOCE(IPOIN,1)) THEN
 !           EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS
             FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,1))/
-     &                                MAX(TOCE(IPOIN,1),1.D-20)
+     &                              MAX(TOCE(IPOIN,1),1.D-20)
 !           LIMITING LARGE VALUES IN VIEW OF AVAILABLE SEDIMENT
             QERODE=MIN(FLUER_LOC*DT,CONC(IPOIN,1)*EPAICO(IPOIN))
           ELSE
@@ -138,8 +138,8 @@
             IF(TEMPS.LE.1.D-12) EXIT
 !           EROSION OF TOP LAYER IF TOB > CRITICAL SHEAR STRESS
             IF(TOB(IPOIN).GT.TOCE(IPOIN,IC)) THEN
-              FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,1))/
-     &                                MAX(TOCE(IPOIN,1),1.D-20)
+              FLUER_LOC=MPART*(TOB(IPOIN)-TOCE(IPOIN,IC))/
+     &                                MAX(TOCE(IPOIN,IC),1.D-20)
 !CV ..        LAYER THICKNESS AFTER EROSION ----
 !             EPAI(IC,IPOIN)=MAX(0.D0,EPAI(IC,IPOIN)-
 !     &                             (FLUER(IPOIN)*TEMPS/CONC(IC)))
