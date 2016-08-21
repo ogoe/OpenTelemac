@@ -6,12 +6,13 @@ declarations_sisyphe.f         \
 interface_sisyphe_bedload.f    \
 interface_sisyphe_suspension.f \
 interface_sisyphe.f            \
+nestor_interface.f            \
 homere_sisyphe.f               \
 bedload_main.f             qsform.f\
 sis_arret.f                bedload_meyer.f            rescue_sisyphe.f\
 bedload_bailard.f          diricl.f     ride.f\
 bedload_bijker.f           entete_sisyphe.f\
-bedload_nerbed_vf.f                     suspension_bilan.f\
+bedload_nerbed_vf.f        suspension_bilan.f\
 bedload_calcdw.f           suspension_computation.f  \
 bedload_dibwat.f           init_avai.f                suspension_dispersion.f \
 bedload_diffin.f           bedload_solidischarge.f    init_compo.f\
@@ -35,14 +36,13 @@ ride_vr.f\
 bedload_hunz_meyer.f       condim_susp.f              noerod.f\
 suspension_evol.f\
 condis_sisyphe.f           nomvar_sisyphe.f           vitchu_sisyphe.f\
-dredgesim_interface.F\
 bedload_interact.f         conlit.f                   point_sisyphe.f  \
 corstr_sisyphe.f           predes.f                         maxslope.f \
 init_transport.f          init_mixte.f   init_compo_coh.f      init_zero.f\
 init_sediment.f            ks_sisyphe.f               tassement_2.f\
 sisyphe.f                 read_sections_sisyphe.f   suspension_sandflow.f \
 rescue_sisyphe_notperma.f \
-tassement.f               read_fic_conc.f            cgl.f \
+tassement.f               read_fic_conc.f    qgl.f   cgl.f \
 db.f cvsp_add_fraction.f cvsp_add_section.f cvsp_alt.f \
 cvsp_check_f.f cvsp_check_steady.f \
 cvsp_compress_brut.f \

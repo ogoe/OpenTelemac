@@ -45,7 +45,7 @@ MODE          =
 LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
 
 EXEDEF        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/dredgesim$(MODE)$(VERSION).a \
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/nestor$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/damo$(MODE)$(VERSION).a \
                 $(PROJECT)/builds/$(DIRLIB)/lib/hermes$(MODE)$(VERSION).a \

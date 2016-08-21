@@ -1,0 +1,13 @@
+#
+#------- Sources Fortran
+
+SRCS= \
+m_typedefs_nestor.f  m_nestor.f   m_typedefs_interface.f  calcdigvolumeinradius.f calculate_planarlevel.f \
+datestringtoseconds.f        diff_time.f         dig_by_criterion.f           dig_by_time.f       dump_by_rate.f  \
+errmsgandstop.f         errmsgandstop2.f         errmsgwriteheader.f         initialisenestor.f         \
+inside_point_2d_d.f         interfaceinitnestor.f        interfacerunnestor.f        intersection.f        \
+intpol_z_angular_profils.f           intpol_z_parallel_profils.f isactioncompletelydefined.f     \
+mainnestor.f         my_flush.f         open_file.f         parsesteerline.f         \
+readactiontorestart.f          readdigactions.f          readfieldtorestart.f         readpolygons.f \
+readwriterestart.f set_reflevelbyprofiles.f threedigitsnumeral.f                  \
+writeactiontorestart.f         writedigaction.f         writefield.f          writefieldtorestart.f 
