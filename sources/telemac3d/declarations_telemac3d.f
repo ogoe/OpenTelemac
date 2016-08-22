@@ -860,6 +860,10 @@
 !
       TYPE(BIEF_OBJ), TARGET :: U_SCE,V_SCE,W_SCE,AK_SCE,EP_SCE,TA_SCE
 !
+!     BLOCK OF WORk ARRAYS FOR LIPS ADVECTION SCHEME
+!
+      TYPE(BIEF_OBJ), TARGET :: TB2
+!
 !-----------------------------------------------------------------------
 ! (4) INTEGERS
 !-----------------------------------------------------------------------

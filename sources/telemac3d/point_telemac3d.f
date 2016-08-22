@@ -71,6 +71,11 @@
 !+        V7P2
 !+   Adding ZN.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        22/08/2016
+!+        V7P2
+!+   Adding TB2, a block of work arrays for the LIPS advection scheme.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -85,7 +90,7 @@
 !
       INTEGER CFG(2),CFG2D(2),CFGMURD(2),CFGBOR2D(2),CFGMURD_TF(2)
       INTEGER ITRAC,ITAB,IELM,IELV,IELH,STATUT,NTR,I,NSEG,SIZ,K
-      LOGICAL YESWEAK
+      LOGICAL YESWEAK,YESLIPS
       CHARACTER(LEN=1) TYPDIA, TYPEXT
 !
 !-----------------------------------------------------------------------
@@ -107,6 +112,31 @@
         IF(SCHCKE.EQ.ADV_CAR) YESWEAK=.TRUE.
         DO ITRAC=1,NTRAC
           IF(SCHCTA(ITRAC).EQ.ADV_CAR) YESWEAK=.TRUE.
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     WILL THERE BE A LIPS SCHEME?
+!
+      YESLIPS=.FALSE.
+!     LOOKING AT VELOCITIES
+      IF((SCHCVI.EQ.ADV_NSC.OR.SCHCVI.EQ.ADV_PSI).AND.
+     &   OPTADV_VI.EQ.4) THEN
+        YESLIPS=.TRUE.
+      ENDIF
+!     LOOKING AT K-EPSILON
+      IF((SCHCKE.EQ.ADV_NSC.OR.SCHCKE.EQ.ADV_PSI).AND.
+     &   OPTADV_KE.EQ.4) THEN
+        YESLIPS=.TRUE.
+      ENDIF
+!     LOOKING AT TRACERS
+      IF(NTRAC.GT.0) THEN
+        DO ITRAC=1,NTRAC
+          IF((SCHCTA(ITRAC).EQ.ADV_NSC.OR.SCHCTA(ITRAC).EQ.ADV_PSI).AND.
+     &        OPTADV_TR(ITRAC).EQ.4) THEN
+            YESLIPS=.TRUE.
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -1167,7 +1197,17 @@
       CALL ALLBLO(TRAV3, 'TRAV3 ')
       CALL BIEF_ALLVEC_IN_BLOCK(TRAV3,NTR,1,'TRAV  ',IELM3,1,2,MESH3D)
 !
-! POINTERS TO THESE 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
+!     ANOTHER SUCH BLOCK FOR THE LIPS SCHEME
+!
+      CALL ALLBLO(TB2, 'TB2   ')
+      IF(YESLIPS) THEN
+!       9 IS THE VALUE CORRESPONDING TO SOLVER 7=GMRES
+        CALL BIEF_ALLVEC_IN_BLOCK(TB2,9,1,'TB2   ',IELM3,1,2,MESH3D)
+      ELSE
+        CALL BIEF_ALLVEC_IN_BLOCK(TB2,9,1,'TB2   ',    0,1,0,MESH3D)
+      ENDIF
+!
+! POINTERS TO 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
 !
       T3_01 => TRAV3%ADR(01)%P
       T3_02 => TRAV3%ADR(02)%P
