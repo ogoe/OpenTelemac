@@ -638,9 +638,10 @@
             ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_READ_DATASET'
             IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
-            CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,
-     &                        ZF%R,HW%R,TW%R,THETAW%R,NPOIN,
-     &                        TROUVE,ALIRE,PASS,ICF,.TRUE.,MAXVAR)
+           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
+     &                        ZR%R,ES,HW%R,TW%R,THETAW%R,NPOIN,NOMBLAY,
+     &                        NSICLA,TROUVE,ALIRE,PASS,ICF,.TRUE.,
+     &                        MAXVAR)
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE'
           ENDIF
 !
@@ -657,20 +658,21 @@
           CALL READ_DATASET(SIS_FILES(SISPRE)%FMT,SIS_FILES(SISPRE)%LU,
      &                      VARSOR,NPOIN,NUMENX,AT0,TEXTPR,TROUVE,ALIRE,
      &                      .TRUE.,.TRUE.,MAXVAR)
-          IF(TROUVE(9).EQ.1) YAZR=.TRUE.
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_READ_DATASET'
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
-     &                        HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,
-     &                        PASS,ICF,.TRUE.,MAXVAR)
+     &                        ZR%R,ES,HW%R,TW%R,THETAW%R,NPOIN,NOMBLAY,
+     &                        NSICLA,TROUVE,ALIRE,PASS,ICF,.TRUE.,
+     &                        MAXVAR)
+          IF(TROUVE(9).EQ.1) YAZR=.TRUE.
           IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE RESCUE_SISYPHE'
 !
 !         CHANGES THE UNITS OF CONCENTRATIONS
 !
           IF(SUSP.AND.UNIT) THEN
             DO I=1,NSICLA
-              IF(TROUVE(21+(NOMBLAY+1)*NSICLA+I).EQ.1) THEN
+              IF(TROUVE(22+(NOMBLAY+1)*NSICLA+I).EQ.1) THEN
                 CALL OS('X=CX    ',X=CS%ADR(I)%P,C=1.D0/XMVS)
               ENDIF
             ENDDO

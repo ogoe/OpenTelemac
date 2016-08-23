@@ -80,8 +80,8 @@ NOM = 'VARIABLES POUR LES SORTIES GRAPHIQUES'
 NOM1 = 'VARIABLES FOR GRAPHIC PRINTOUTS'
 TYPE = CARACTERE
 INDEX = 2
-DEFAUT = 'U,V,H,S,B,E'
-DEFAUT1 = 'U,V,H,S,B,E'
+DEFAUT = 'U,V,H,S,B,R,E'
+DEFAUT1 = 'U,V,H,S,B,R,E'
 APPARENCE = 'LISTE IS EDITABLE'
 CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'V="vitesse suivant l''axe des y (m/s)"';

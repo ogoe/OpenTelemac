@@ -2,11 +2,11 @@
                      SUBROUTINE RESCUE_SISYPHE
 !                    *************************
 !
-     &(QU,QV,Q,U,V,H,S,ZF,HW,TW,THETAW,NPOIN,TROUVE,ALIRE,PASS,
-     & ICF,LISTI,MAXVAR)
+     &(QU,QV,Q,U,V,H,S,ZF,ZR,ES,HW,TW,THETAW,NPOIN,NOMBLAY,NSICLA,
+     & TROUVE,ALIRE,PASS,ICF,LISTI,MAXVAR)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES MISSING DATA/VARIABLES FOR HYDRODYNAMIC
@@ -28,6 +28,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history M.SECHER (EDF-CIH)
+!+       22/08/2016
+!+       V7P2
+!+   Add calculation of the rigid bed from bottom elevation and
+!+   layers thickness of a previous sedimentology computation file
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |-->| LIST VARIABLES TO BE READ
@@ -61,19 +67,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: MAXVAR
-      INTEGER, INTENT(IN) :: TROUVE(MAXVAR),ALIRE(MAXVAR),NPOIN,ICF
+      INTEGER, INTENT(IN) :: MAXVAR,NOMBLAY,NSICLA
+      INTEGER, INTENT(IN) :: ALIRE(MAXVAR),NPOIN,ICF
       LOGICAL, INTENT(IN) :: PASS,LISTI
+      DOUBLE PRECISION, INTENT(IN) :: ES(NPOIN,NOMBLAY)
 !
+      INTEGER, INTENT(INOUT) :: TROUVE(MAXVAR)
       DOUBLE PRECISION, INTENT(INOUT) :: QU(NPOIN), QV(NPOIN), Q(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN) , V(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: S(NPOIN) , ZF(NPOIN), H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZR(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: HW(NPOIN), TW(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: THETAW(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K
+      INTEGER K,I,J
+      INTEGER CHECK_ES
 !
 !-----------------------------------------------------------------------
 !
@@ -175,10 +185,33 @@
       IF(ALIRE(9).EQ.1.AND.TROUVE(9).EQ.0) THEN
         IF(LNG.EQ.1) WRITE(LU,907)
         IF(LNG.EQ.2) WRITE(LU,908)
+        CHECK_ES=0
+        DO I = 1,NOMBLAY
+          IF(TROUVE(5).AND.TROUVE(28+I+NSICLA*(NOMBLAY+4))) THEN
+            CHECK_ES=CHECK_ES+1
+          ENDIF
+        ENDDO
+        IF(CHECK_ES.EQ.NOMBLAY) THEN
+          IF(LNG.EQ.1) WRITE(LU,909)
+          IF(LNG.EQ.2) WRITE(LU,910)
+          DO I = 1,NPOIN
+            ZR(I)=ZF(I)
+            DO J = 1,NOMBLAY
+              ZR(I)=ZR(I)-ES(I,J)
+            ENDDO
+          ENDDO
+          TROUVE(9) = 1
+         ENDIF
       ENDIF
 907   FORMAT(1X,'CALCUL PRECEDENT SANS FOND NON ERODABLE')
 908   FORMAT(1X,'PREVIOUS CALCULATION WITHOUT NON ERODABLE',
      &         /,1X,'BOTTOM')
+909   FORMAT(1X,'CALCUL PRECEDENT CONTIENT TOUTES LES COUCHES',
+     &         /,1X,'LE FOND NON ERODABLE CALCULE AVEC LES EPAISSEURS',
+     &         /,1X,'DES COUCHES ET LE FOND')
+910   FORMAT(1X,'PREVIOUS CALCULATION CONTAINS ALL LAYERS',
+     &         /,1X,'RIGID BED COMPUTED FROM LAYERS THICKNESS',
+     &         /,1X,'AND BOTTOM')
 !
 !-----------------------------------------------------------------------
 !  BED ELEVATION
