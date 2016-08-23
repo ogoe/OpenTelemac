@@ -21,95 +21,95 @@
 / HP C3700     : compilateur HP     34 s    04/05/2012
 / Note JMH: probleme sur les amplitudes, a voir.
 /
-/-------------------------------------------------------------------/
+/-------------------------------------------------------------------
 /
 /         TELEMAC-2D - ONDE M2 DANS LA MANCHE
 /
-/-------------------------------------------------------------------/
+/-------------------------------------------------------------------
 /
 /----------------------------------------------
 /  FICHIERS DE DONNEES ET DE RESULTATS
 /----------------------------------------------
 /
-FICHIER DE GEOMETRIE                = geo_ondem2.slf
-FICHIER FORTRAN                     = t2d_ondem2.f
-FICHIER DES CONDITIONS AUX LIMITES  = geo_ondem2.cli
-FICHIER DES RESULTATS               = r2d_ondem2.slf
-FICHIER DE DONNEES FORMATE 1        = fo1_ondem2.txt
-FICHIER DE DONNEES FORMATE 2        = fo2_ondem2.txt
-FICHIER DE RESULTATS FORMATE        = rfo_ondem2.txt
+GEOMETRY FILE                = geo_ondem2.slf
+FORTRAN FILE                     = t2d_ondem2.f
+BOUNDARY CONDITIONS FILE  = geo_ondem2.cli
+RESULTS FILE               = r2d_ondem2.slf
+FORMATTED DATA FILE 1        = fo1_ondem2.txt
+FORMATTED DATA FILE 2        = fo2_ondem2.txt
+FORMATTED RESULTS FILE        = rfo_ondem2.txt
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
 /----------------------------------------------
 /
-TITRE = 'ONDE M2 DANS LA MANCHE'
-VARIABLES POUR LES SORTIES GRAPHIQUES =
-          'U,V,H,S,B,W,T,MAXZ,TMXZ,MAXV,TMXV'
-PERIODE POUR LES SORTIES GRAPHIQUES = 149
-PERIODE DE SORTIE LISTING           = 50
-NUMERO DU PREMIER PAS DE TEMPS POUR LES SORTIES GRAPHIQUES = 894
-PAS DE TEMPS                                    = 150.
-BORNES EN TEMPS POUR L'ANALYSE DE FOURIER : 44714.;178800.
+TITLE = 'ONDE M2 DANS LA MANCHE'
+VARIABLES FOR GRAPHIC PRINTOUTS =
+'U,V,H,S,B,W,T,MAXZ,TMXZ,MAXV,TMXV'
+GRAPHIC PRINTOUT PERIOD = 149
+LISTING PRINTOUT PERIOD           = 50
+NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS = 894
+TIME STEP                                    = 150.
+TIME RANGE FOR FOURIER ANALYSIS : 44714.;178800.
 /PERIODES D'ANALYSE DE FOURIER  = 44714.15975593032
- PERIODES D'ANALYSE DE FOURIER  = 44714.
-LISTE DE POINTS : 270 ; 8 ; 74 ; 15 ; 769 ; 804 ; 4071 ; 2399
-NOMS DES POINTS : 'ZEEBRUGGE';
-                  'CALAIS';
-                  'BOULOGNE';
-                  'DIEPPE'; 
-                  'CHERBOURG';
-                  'SAINT-MALO';
-                  'C1';
-                  'OUESSANT'
-NOMBRE DE PAS DE TEMPS       = 1192
-BILAN DE MASSE               = NO
-INFORMATIONS SUR LE SOLVEUR  = YES
+FOURIER ANALYSIS PERIODS  = 44714.
+LIST OF POINTS : 270 ; 8 ; 74 ; 15 ; 769 ; 804 ; 4071 ; 2399
+NAMES OF POINTS : 'ZEEBRUGGE';
+'CALAIS';
+'BOULOGNE';
+'DIEPPE';
+'CHERBOURG';
+'SAINT-MALO';
+'C1';
+'OUESSANT'
+NUMBER OF TIME STEPS       = 1192
+MASS-BALANCE               = NO
+INFORMATION ABOUT SOLVER  = YES
 /
 /----------------------------------------------
 /  PARAMETRES PHYSIQUES
 /----------------------------------------------
 /
-LOI DE FROTTEMENT SUR LE FOND    = 2
-COEFFICIENT DE FROTTEMENT        = 40.
-MODELE DE TURBULENCE             = 1
-CORIOLIS                         = OUI
+LAW OF BOTTOM FRICTION    = 2
+FRICTION COEFFICIENT        = 40.
+TURBULENCE MODEL             = 1
+CORIOLIS                         = YES
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
-NOMBRE DE TABLEAUX PRIVES        = 1
-BANCS DECOUVRANTS                = NON
-COORDONNEES SPHERIQUES=OUI TYPE DE PROJECTION SPATIALE=2
-CONVECTION DE U ET V             = NON
-DIFFUSION DES VITESSES           = NON
-FORME DE LA CONVECTION           = 1;5
-OPTION DE SUPG                   = 1;0
-SOLVEUR : 7
-OPTION DU SOLVEUR                = 3
-PRECISION DU SOLVEUR             = 1.E-3
-PRECONDITIONNEMENT               = 2
-ORDRE DU TIR INITIAL POUR H      = 1
-ORDRE DU TIR INITIAL POUR U      = 2
-IMPLICITATION POUR LA HAUTEUR    = 0.55
-IMPLICITATION POUR LA VITESSE    = 0.55
-MASS-LUMPING SUR H               = 1.
-STOCKAGE DES MATRICES            = 3
-PRODUIT MATRICE-VECTEUR          = 1 
-/DISCRETISATIONS EN ESPACE        = 12 ; 11 
+NUMBER OF PRIVATE ARRAYS        = 1
+TIDAL FLATS                = NO
+SPHERICAL COORDINATES=YES SPATIAL PROJECTION TYPE=2
+ADVECTION OF U AND V             = NO
+DIFFUSION OF VELOCITY           = NO
+TYPE OF ADVECTION           = 1;5
+SUPG OPTION                   = 1;0
+SOLVER : 7
+SOLVER OPTION                = 3
+SOLVER ACCURACY             = 1.E-3
+PRECONDITIONING               = 2
+INITIAL GUESS FOR H      = 1
+INITIAL GUESS FOR U      = 2
+IMPLICITATION FOR DEPTH    = 0.55
+IMPLICITATION FOR VELOCITY    = 0.55
+MASS-LUMPING ON H               = 1.
+MATRIX STORAGE            = 3
+MATRIX-VECTOR PRODUCT          = 1
+/DISCRETISATIONS EN ESPACE        = 12 ; 11
 /
 / Equation d'onde :
 /
-DISCRETISATIONS EN ESPACE        = 11 ; 11 
-TRAITEMENT DU SYSTEME LINEAIRE : 2  SOLVEUR : 1
-COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9
-/ 
+DISCRETIZATIONS IN SPACE        = 11 ; 11
+TREATMENT OF THE LINEAR SYSTEM : 2  SOLVER : 1
+FREE SURFACE GRADIENT COMPATIBILITY : 0.9
+/
 / Traceur
 /
-/TRACEUR : OUI
+/TRACEUR : YES
 /ABSCISSES DES SOURCES : -266565.  ORDONNEES DES SOURCES : 232753.
 /DEBITS DES SOURCES : 1.
 /VALEURS DU TRACEUR AUX SOURCES : 1000000.
-/ 
+/
 &FIN

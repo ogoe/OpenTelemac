@@ -1,68 +1,68 @@
-/--------------------------------------------------------------------/
-/             FICHIER DES PARAMETRES DE TOMAWAC                      /
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+/             FICHIER DES PARAMETRES DE TOMAWAC
+/--------------------------------------------------------------------
 /     FICHIERS
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 /FICHIER FORTRAN = 'tom_fetch_lim_fd.f'
 /FICHIER DE GEOMETRIE = 'geo_fetch_lim.slf'
-FICHIER DE GEOMETRIE = 'geom.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'geo_fetch_lim.cli'
+GEOMETRY FILE = 'geom.slf'
+BOUNDARY CONDITIONS FILE = 'geo_fetch_lim.cli'
 /
-FICHIER DES RESULTATS 2D = 'tom_fetch_lim_fd.slf'
-FICHIER DES RESULTATS PONCTUELS = 'tom_fetch_lim_fd.spe'
-/--------------------------------------------------------------------/
+2D RESULTS FILE = 'tom_fetch_lim_fd.slf'
+PUNCTUAL RESULTS FILE = 'tom_fetch_lim_fd.spe'
+/--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
-/--------------------------------------------------------------------/
-TITRE = 'FETCH LIMITED TEST-CASE CONSTANT WIND 20 M/S FINITE DEPTH'
-PERIODE POUR LES SORTIES GRAPHIQUES = 10
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
+/--------------------------------------------------------------------
+TITLE = 'FETCH LIMITED TEST-CASE CONSTANT WIND 20 M/S FINITE DEPTH'
+PERIOD FOR GRAPHIC PRINTOUTS = 10
+VARIABLES FOR 2D GRAPHIC PRINTOUTS =
 'HM0,DMOY,SPD,FM01,FPD,FPR5,TMOY,TPR5,VX,VY,US,WD'
-PERIODE POUR LES SORTIES LISTING = 10
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 252135.5; 489173.875 ; 
-1000000.0		
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 254698.640625; 258180.75 ; 
+PERIOD FOR LISTING PRINTOUTS = 10
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS = 252135.5; 489173.875 ;
+1000000.0
+ORDINATES OF SPECTRUM PRINTOUT POINTS = 254698.640625; 258180.75 ;
 274977.5
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 / DISCRETISATION
-/--------------------------------------------------------------------/
-PAS DE TEMPS = 900
-NOMBRE DE PAS DE TEMPS = 192 
-NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
-NOMBRE DE DIRECTIONS = 36
-FREQUENCE MINIMALE = 0.04
-RAISON FREQUENTIELLE = 1.05
-NOMBRE DE FREQUENCES = 50
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TIME STEP = 900
+NUMBER OF TIME STEP = 192
+NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
+NUMBER OF DIRECTIONS = 36
+MINIMAL FREQUENCY = 0.04
+FREQUENTIAL RATIO = 1.05
+NUMBER OF FREQUENCIES = 50
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-FACTEUR DE QUEUE DU SPECTRE = 5.
-COORDONNEES SPHERIQUES = NON
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
-PRISE EN COMPTE DU VENT = OUI
-VENT STATIONNAIRE = TRUE
-PRISE EN COMPTE DE LA PROPAGATION = OUI
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-LIMITEUR DE CROISSANCE = 2
+/--------------------------------------------------------------------
+SPECTRUM TAIL FACTOR = 5.
+SPHERICAL COORDINATES = NO
+CONSIDERATION OF A STATIONARY CURRENT = NO
+CONSIDERATION OF A WIND = YES
+STATIONARY WIND = YES
+CONSIDERATION OF PROPAGATION = YES
+CONSIDERATION OF SOURCE TERMS = YES
+WAVE GROWTH LIMITER = 2
 /DEBUGGER = 1
-/--------------------------------------------------------------------/
-/ SPECTRE INITIAL 
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 1
-ETALEMENT DIRECTIONNEL 1 INITIAL = 1.
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+/ SPECTRE INITIAL
+/--------------------------------------------------------------------
+TYPE OF INITIAL DIRECTIONAL SPECTRUM = 1
+INITIAL DIRECTIONAL SPREAD 1 = 1.
+/--------------------------------------------------------------------
 / CONDITIONS AUX LIMITES
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
+BOUNDARY SIGNIFICANT WAVE HEIGHT = 0.
+/--------------------------------------------------------------------
 / TERMES SOURCES
-/--------------------------------------------------------------------/
-PROFONDEUR INFINIE = NON
-APPORTS DUS AU VENT = 2
-VITESSE DU VENT SUIVANT X = 20.
-VITESSE DU VENT SUIVANT Y = 0.
-DISSIPATION PAR MOUTONNEMENT = 2
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
-TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
-CROISSANCE LINEAIRE DES VAGUES = 1
+/--------------------------------------------------------------------
+INFINITE DEPTH = NO
+WIND GENERATION = 2
+WIND VELOCITY ALONG X = 20.
+WIND VELOCITY ALONG Y = 0.
+WHITE CAPPING DISSIPATION = 2
+BOTTOM FRICTION DISSIPATION = 1
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES = 1
+LINEAR WAVE GROWTH = 1
 /DISSIPATION PAR DEFERLEMENT = 1

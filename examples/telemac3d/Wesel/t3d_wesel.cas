@@ -1,14 +1,14 @@
 /
-/   HP C3700 compilateur HP      : 742 s 6.0 JMH  21/05/2010 
-/   HP Z600 calibre 5 8 procs    :  44 s 6.1 JMH  27/12/2010 
+/   HP C3700 compilateur HP      : 742 s 6.0 JMH  21/05/2010
+/   HP Z600 calibre 5 8 procs    :  44 s 6.1 JMH  27/12/2010
 /
 /   Version 6.2
 /
-/   HP C3700 compilateur HP : 1032 s 6.2 30/12/2011 
+/   HP C3700 compilateur HP : 1032 s 6.2 30/12/2011
 /   HP Linux Calibre 7      :  199 s 6.2 29/05/2012 (1 proc.)
 /   HP Linux Calibre 7      :   35 s 6.2 29/05/2012 (8 proc.)
 /
-/   note JMH : large differences between 1 and 8 procs. 
+/   note JMH : large differences between 1 and 8 procs.
 /              e.g. 2.71 m/s on velocity
 /
 /---------------------------------------
@@ -54,7 +54,7 @@ SOLVER FOR DIFFUSION OF VELOCITIES = 1
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES  = 2.
 COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES    = 0.1
 /
-IMPLICITATION FOR DEPTH      = 1.0 
+IMPLICITATION FOR DEPTH      = 1.0
 IMPLICITATION FOR VELOCITIES = 1.0
 /
 TITLE = 'Wesel-Xanten'
@@ -65,7 +65,7 @@ MASS-BALANCE : YES
 INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : YES
 /
 SOLVER FOR PROPAGATION : 1 ACCURACY FOR PROPAGATION : 1.E-4
-/ 
+/
 SCHEME FOR ADVECTION OF VELOCITIES = 13
 /
- LAW OF BOTTOM FRICTION : 3
+LAW OF BOTTOM FRICTION : 3

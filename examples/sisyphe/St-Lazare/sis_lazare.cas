@@ -5,7 +5,7 @@
 /----------------------------------------------------------------
 /	INPUTS-OUTPUTS, FILES (1)
 /----------------------------------------------------------------
-TITLE                                          = 'St. Lazare'    
+TITLE                                          = 'St. Lazare'
 /
 GEOMETRY FILE                                  =  geo_lazare-t2d.slf
 BOUNDARY CONDITIONS FILE                       =  geo_lazare-t2d.cli
@@ -13,7 +13,7 @@ RESULTS FILE                                   =  sis_lazare.slf
 /----------------------------------------------------------------
 /	DUREE DU CALCUL (2)
 /----------------------------------------------------------------
-/ 
+/
 /TIME STEP                                      =  5.
 /----------------------------------------------------------------
 /	INPUT-OUTPUT, GRAPHICS AND LISTINGS (3)

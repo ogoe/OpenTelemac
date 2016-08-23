@@ -8,7 +8,7 @@
 / Dell 2.8 MHz compilateur pgi :  59 s  version 5.7 20/04/2007
 /
 / HP C3700 compilateur HP      :  90 s  version 5.8 30/11/2007
-/ HP C3700 compilateur Nag     : 238 s  version 5.8 26/12/2007 
+/ HP C3700 compilateur Nag     : 238 s  version 5.8 26/12/2007
 / Dell 2.8 MHz compilateur pgi :  60 s  version 5.8 19/12/2007
 /
 / HP C3700 compilateur HP      :  91 s  version 5.9 16/10/2008
@@ -51,7 +51,7 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED            = NO 
+COMPUTATION CONTINUED            = NO
 INITIAL CONDITIONS               = 'CONSTANT ELEVATION'
 INITIAL ELEVATION                = 0.2852
 /
@@ -73,17 +73,17 @@ TURBULENCE MODEL                 = 1
 VELOCITY DIFFUSIVITY             = 1.E-3
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TYPE OF ADVECTION                 = 1;5
 SUPG OPTION                       = 2;2
-TREATMENT OF THE LINEAR SYSTEM    = 2       
+TREATMENT OF THE LINEAR SYSTEM    = 2
 SOLVER                            = 1
-SOLVER OPTION                     = 3  
+SOLVER OPTION                     = 3
 IMPLICITATION FOR DEPTH           = 1.
-IMPLICITATION FOR VELOCITY        = 1.     
+IMPLICITATION FOR VELOCITY        = 1.
 MASS-LUMPING ON H                 = 1.
-H CLIPPING                        = NO         
-/          
+H CLIPPING                        = NO
+/
 &FIN

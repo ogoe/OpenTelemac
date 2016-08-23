@@ -1,67 +1,67 @@
 /
 /  4 elements and 5 points in this case : will not work in parallel !!!!!
 /
-/--------------------------------------------------------------------/
-/             FICHIER DES PARAMETRES DE TOMAWAC                      /
-/--------------------------------------------------------------------/
-/MODE TROISIEME GENERATION = OUI
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+/             FICHIER DES PARAMETRES DE TOMAWAC
+/--------------------------------------------------------------------
+/MODE TROISIEME GENERATION = YES
+/--------------------------------------------------------------------
 /     FICHIERS
-/--------------------------------------------------------------------/
-FICHIER DE GEOMETRIE = 'geo_TW.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'geo_TW.cli'
+/--------------------------------------------------------------------
+GEOMETRY FILE = 'geo_TW.slf'
+BOUNDARY CONDITIONS FILE = 'geo_TW.cli'
 /
-FICHIER DES RESULTATS 2D = 'turningwind.slf'
+2D RESULTS FILE = 'turningwind.slf'
 /FICHIER DES RESULTATS 2D = 'wind.slf'
-FICHIER DES RESULTATS PONCTUELS = 'turningwind.spe'
-/--------------------------------------------------------------------/
+PUNCTUAL RESULTS FILE = 'turningwind.spe'
+/--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
-/--------------------------------------------------------------------/
-TITRE = 'CAS TEST DE VENT DE 20 M/S TOURNANT BRUSQUEMENT DE 60 DEG '
-PERIODE POUR LES SORTIES GRAPHIQUES = 1
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FM01,FPD,VX,VY
+/--------------------------------------------------------------------
+TITLE = 'CAS TEST DE VENT DE 20 M/S TOURNANT BRUSQUEMENT DE 60 DEG '
+PERIOD FOR GRAPHIC PRINTOUTS = 1
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,DMOY,FM01,FPD,VX,VY
 /VARIABLES POUR LES SORTIES GRAPHIQUES 2D = VX,VY
-PERIODE POUR LES SORTIES LISTING = 2
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
-/--------------------------------------------------------------------/
+PERIOD FOR LISTING PRINTOUTS = 2
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS = 0.
+ORDINATES OF SPECTRUM PRINTOUT POINTS = 0.
+/--------------------------------------------------------------------
 / DISCRETISATION
-/--------------------------------------------------------------------/
-PAS DE TEMPS = 900.
-NOMBRE DE PAS DE TEMPS = 128
+/--------------------------------------------------------------------
+TIME STEP = 900.
+NUMBER OF TIME STEP = 128
 /PAS DE TEMPS = 4.
 /NOMBRE DE PAS DE TEMPS = 28800
-NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
-NOMBRE DE DIRECTIONS = 12
-FREQUENCE MINIMALE = 0.04177248
-RAISON FREQUENTIELLE = 1.1
-NOMBRE DE FREQUENCES = 26
-/--------------------------------------------------------------------/
+NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
+NUMBER OF DIRECTIONS = 12
+MINIMAL FREQUENCY = 0.04177248
+FREQUENTIAL RATIO = 1.1
+NUMBER OF FREQUENCIES = 26
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-FACTEUR DE QUEUE DU SPECTRE = 5.
-PROFONDEUR INFINIE = OUI
-COORDONNEES SPHERIQUES = NON
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
-PRISE EN COMPTE DU VENT = OUI
-VENT STATIONNAIRE = FALSE
-PRISE EN COMPTE DE LA PROPAGATION = NON
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-/--------------------------------------------------------------------/
-/ SPECTRE INITIAL 
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 4
-CONSTANTE DE PHILLIPS INITIALE = 0.024
-FREQUENCE DE PIC INITIALE = 0.3
-DIRECTION PRINCIPALE 1 INITIALE = 90.
-ETALEMENT DIRECTIONNEL 1 INITIAL = 1.
-FACTEUR DE PIC INITIAL = 1.0
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+SPECTRUM TAIL FACTOR = 5.
+INFINITE DEPTH = YES
+SPHERICAL COORDINATES = NO
+CONSIDERATION OF A STATIONARY CURRENT = NO
+CONSIDERATION OF A WIND = YES
+STATIONARY WIND = NO
+CONSIDERATION OF PROPAGATION = NO
+CONSIDERATION OF SOURCE TERMS = YES
+/--------------------------------------------------------------------
+/ SPECTRE INITIAL
+/--------------------------------------------------------------------
+TYPE OF INITIAL DIRECTIONAL SPECTRUM = 4
+INITIAL PHILLIPS CONSTANT = 0.024
+INITIAL PEAK FREQUENCY = 0.3
+INITIAL MAIN DIRECTION 1 = 90.
+INITIAL DIRECTIONAL SPREAD 1 = 1.
+INITIAL PEAK FACTOR = 1.0
+/--------------------------------------------------------------------
 / TERMES SOURCES
-/--------------------------------------------------------------------/
-FORMAT DU FICHIER DES VENTS = 3
-FICHIER DES VENTS BINAIRE = 'wind.slf'
-APPORTS DUS AU VENT = 1
-DISSIPATION PAR MOUTONNEMENT = 1
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 0
-TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
+/--------------------------------------------------------------------
+WINDS FILE FORMAT = 3
+BINARY WINDS FILE = 'wind.slf'
+WIND GENERATION = 1
+WHITE CAPPING DISSIPATION = 1
+BOTTOM FRICTION DISSIPATION = 0
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES = 1

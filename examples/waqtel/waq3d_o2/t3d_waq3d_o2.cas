@@ -8,7 +8,7 @@
 /  HP Z600 Nag compiler      8 proc : 24 s      version 7.0 26/10/2014
 /  HP Z600 Intel compiler    1 proc : 4min48s   version 7.0 26/10/2014
 /  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.0 26/10/2014
-/ 
+/
 /****************************************************
 TITLE = 'Water Quality- O2 process for Channel in 3D'
 /****************************************************
@@ -27,7 +27,7 @@ BOUNDARY CONDITIONS FILE  = 'geo_waq3d_o2.cli'
 /VALIDATION                = YES
 /DEBUGGER   : 1
 /----------------------------------------------------------------------
-/     GENERAL OPTIONS 
+/     GENERAL OPTIONS
 /----------------------------------------------------------------------
 MATRIX STORAGE            = 3
 /NUMBER OF TIME STEPS      = 21600 TIME STEP                 = 4
@@ -46,7 +46,7 @@ INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-INITIAL CONDITIONS        = 'CONSTANT DEPTH'   
+INITIAL CONDITIONS        = 'CONSTANT DEPTH'
 INITIAL DEPTH             = 2.
 /-------------------------
 /  ADVECTION-DIFFUSION
@@ -85,5 +85,5 @@ MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'o2_waq_steer.cas'
 WATER QUALITY PROCESS = 1
-
+/
 &FIN

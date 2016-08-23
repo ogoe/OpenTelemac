@@ -8,9 +8,9 @@
 /  HP Z600 Nag compiler      8 proc : 24 s      version 7.0 26/10/2014
 /  HP Z600 Intel compiler    1 proc : 4min48s   version 7.0 26/10/2014
 /  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.0 26/10/2014
-/ 
-
-
+/
+/
+/
 /****************************************************
 TITLE = 'Water Quality- O2 process for Channel'
 /****************************************************
@@ -47,7 +47,7 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 INITIAL CONDITIONS              = PARTICULAR
 /
 /----------------------------------------------
@@ -64,25 +64,25 @@ INITIAL CONDITIONS              = PARTICULAR
 /
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TIDAL FLATS                       = NO
 CONTINUITY CORRECTION             = YES
 /************************************
-/ TRACER 
+/ TRACER
 /************************************
 /NUMBER OF TRACERS = 1
 / here after, initial values of O2,L, NH4
 INITIAL VALUES OF TRACERS            = 5.;3.;0.01
 DIFFUSION OF TRACERS                 = NO
-COEFFICIENT FOR DIFFUSION OF TRACERS = 0.;0.;0. 
+COEFFICIENT FOR DIFFUSION OF TRACERS = 0.;0.;0.
 /************************************
 /  WATER QUALITY
 /************************************
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'o2_waq_steer.cas'
 WATER QUALITY PROCESS = 1
-
+/
 &FIN
-
+/

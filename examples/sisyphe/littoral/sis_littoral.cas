@@ -20,7 +20,7 @@ RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER = 3
 /
 VARIABLES FOR GRAPHIC PRINTOUTS = U,V,H,M,W,X,TOB
 /
-MASS-BALANCE = TRUE
+MASS-BALANCE = YES
 / meme que pour fichier cas Telemac
 GRAPHIC PRINTOUT PERIOD = 1
 LISTING PRINTOUT PERIOD = 1
@@ -29,13 +29,13 @@ TIME STEP = 10.
 /
 / NUMERICAL PARAMETERS (1)
 / -----------------------
-
+/
 ZERO = 1e-12
 TETA = 0.5
-
+/
 /TRANSPORT SOLIDE (1)
 / __________________
-
+/
 BED-LOAD TRANSPORT FORMULA = 5
 EFFECT OF WAVES = YES
 / attention seule la deviation est prise en compte

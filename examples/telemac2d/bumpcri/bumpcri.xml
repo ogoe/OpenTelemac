@@ -85,13 +85,13 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="mesh" size="(20;5)" >
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
    <plot2d xref="bathy" size="(20;5)" >
-      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
     <plot2d xref="free-surface" size="(20;5)" >
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 
 </validation>

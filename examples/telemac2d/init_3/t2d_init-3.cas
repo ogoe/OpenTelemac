@@ -10,7 +10,7 @@
 /
 / HP C3700 compilateur HP          :  75 s   5.9 16/10/2008
 / HP C3700 compilateur Nag         : 214 s   5.9 16/10/2008
-/ Dell 2.8 MHz compilateur pgi 6.2 :  55 s   5.9 16/10/2008   
+/ Dell 2.8 MHz compilateur pgi 6.2 :  55 s   5.9 16/10/2008
 /
 / HP C3700 compilateur HP          :  72 s   6.0 24/11/2009
 / HP C3700 compilateur Nag         : 211 s   6.0 26/11/2009
@@ -22,74 +22,74 @@
 /
 /----------------------------------------------------------------------
 /             Exemple d'initiation - Calcul numero 3
-/             Calcul avec reprise et sans turbulence 
+/             Calcul avec reprise et sans turbulence
 /             Introduction intermittente d'un traceur
 /----------------------------------------------------------------------
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FICHIER FORTRAN                               : t2d_init-3.f
-FICHIER DES CONDITIONS AUX LIMITES            : geo_init-3.cli
-FICHIER DE GEOMETRIE                          : geo_init-3.slf
-FICHIER DES RESULTATS                         : r2d_init-3.slf
-FICHIER DU CALCUL PRECEDENT                   : ini_init-3.slf
+FORTRAN FILE                               : t2d_init-3.f
+BOUNDARY CONDITIONS FILE            : geo_init-3.cli
+GEOMETRY FILE                          : geo_init-3.slf
+RESULTS FILE                         : r2d_init-3.slf
+PREVIOUS COMPUTATION FILE                   : ini_init-3.slf
 /
 /----------------------------------------------------------------------
-/                        OPTIONS GENERALES                              
+/                        OPTIONS GENERALES
 /----------------------------------------------------------------------
-/                                                                       
-TITRE : 'TELEMAC-2D - Initiation - Calcul numero 3' 
-/               
-VARIABLES POUR LES SORTIES GRAPHIQUES             : 'U,V,S,B,H,T1,Q'
-VARIABLES A IMPRIMER                              : ''
-PAS DE TEMPS                                      : 2.5 
+/
+TITLE : 'TELEMAC-2D - Initiation - Calcul numero 3'
+/
+VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,T1,Q'
+VARIABLES TO BE PRINTED                              : ''
+TIME STEP                                      : 2.5
 /DUREE DU CALCUL                                   : 10800.
-NOMBRE DE PAS DE TEMPS : 4320
-PERIODE POUR LES SORTIES GRAPHIQUES               : 1080
-PERIODE DE SORTIE LISTING                         : 108
-SUITE DE CALCUL                                   : OUI
-REMISE A ZERO DU TEMPS                            : OUI
-/  
+NUMBER OF TIME STEPS : 4320
+GRAPHIC PRINTOUT PERIOD               : 1080
+LISTING PRINTOUT PERIOD                         : 108
+COMPUTATION CONTINUED                                   : YES
+INITIAL TIME SET TO ZERO                            : YES
+/
 /----------------------------------------------------------------------
 /                    CONDITIONS AUX LIMITES
 /----------------------------------------------------------------------
 /
-LOI DE FROTTEMENT SUR LE FOND                     :    3    
-COEFFICIENT DE FROTTEMENT                         :   55. 
-COTES IMPOSEES                                    :  265.;0.
-DEBITS IMPOSES                                    : 0.;700.
-/    
+LAW OF BOTTOM FRICTION                     :    3
+FRICTION COEFFICIENT                         :   55.
+PRESCRIBED ELEVATIONS                                    :  265.;0.
+PRESCRIBED FLOWRATES                                    : 0.;700.
+/
 /----------------------------------------------------------------------
 /                       OPTIONS NUMERIQUES
 /----------------------------------------------------------------------
 /
-BANCS DECOUVRANTS                                 : NON
-MODELE DE TURBULENCE                              : 1                    
-BILAN DE MASSE                                    : OUI
-PRECISION DU SOLVEUR                              : 1.E-8
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR              : 100
-FORME DE LA CONVECTION                            : 1;5;5
-SOLVEUR                                           : 7
-SOLVEUR POUR LA DIFFUSION DES TRACEURS            : 7
-COEFFICIENT DE DIFFUSION DES VITESSES             : 1.E-2
-COEFFICIENT DE DIFFUSION DES TRACEURS             : 0.
-TRAITEMENT DU SYSTEME LINEAIRE                    : 2
+TIDAL FLATS                                 : NO
+TURBULENCE MODEL                              : 1
+MASS-BALANCE                                    : YES
+SOLVER ACCURACY                              : 1.E-8
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER              : 100
+TYPE OF ADVECTION                            : 1;5;5
+SOLVER                                           : 7
+SOLVER FOR DIFFUSION OF TRACERS            : 7
+VELOCITY DIFFUSIVITY             : 1.E-2
+COEFFICIENT FOR DIFFUSION OF TRACERS             : 0.
+TREATMENT OF THE LINEAR SYSTEM                    : 2
 / FOR A PERFECT MASS BALANCE
-CORRECTION DE CONTINUITE                          : OUI
-TRAITEMENT DES HAUTEURS NEGATIVES                 : 2
+CONTINUITY CORRECTION                          : YES
+TREATMENT OF NEGATIVE DEPTHS                 : 2
 /
 /----------------------------------------------------------------------
 /                       TRACEUR
 /----------------------------------------------------------------------
 /
-NOMBRE DE TRACEURS : 1
-ABSCISSES DES SOURCES              : 247.360992431641
-ORDONNEES DES SOURCES              : 559.887023925781
-VALEURS DES TRACEURS DES SOURCES   : 100.
-DEBITS DES SOURCES                 : 10.
-MASS-LUMPING SUR LES TRACEURS      : 1.
-MASS-LUMPING SUR H                 : 1.
-MASS-LUMPING SUR LA VITESSE        : 1.
-IMPLICITATION POUR LA HAUTEUR      : 1.
+NUMBER OF TRACERS : 1
+ABSCISSAE OF SOURCES              : 247.360992431641
+ORDINATES OF SOURCES              : 559.887023925781
+VALUES OF THE TRACERS AT THE SOURCES   : 100.
+WATER DISCHARGE OF SOURCES                 : 10.
+MASS-LUMPING ON TRACERS      : 1.
+MASS-LUMPING ON H                 : 1.
+MASS-LUMPING ON VELOCITY        : 1.
+IMPLICITATION FOR DEPTH      : 1.
 /
-&FIN                                                              
+&FIN

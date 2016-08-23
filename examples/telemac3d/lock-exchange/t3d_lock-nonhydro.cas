@@ -16,10 +16,10 @@ MATRIX STORAGE : 3
 /  55 s   HP C3700 5.8  26/12/2007 (Dell :38 s, Nag:141 s)
 /  69 s ? HP C3700 5.9  20/10/2008 (Dell :36 s, Nag:??? s)
 /  50 s   HP C3700 6.0  21/05/2010 (Intel:23 s, Nag:122 s)
-/  48 s   HP C3700 6.1  06/12/2010 
-/  New parameters 
-/  57 s   HP C3700 6.2  24/05/2012 
-/               
+/  48 s   HP C3700 6.1  06/12/2010
+/  New parameters
+/  57 s   HP C3700 6.2  24/05/2012
+/
 /
 FORTRAN FILE             : t3d_lock-hydro.f
 GEOMETRY FILE            : geo_lock-hydro.slf
@@ -33,7 +33,7 @@ GRAPHIC PRINTOUT PERIOD = 50
 LISTING PRINTOUT PERIOD = 10
 NUMBER OF HORIZONTAL LEVELS = 12
 NUMBER OF TRACERS = 1
-/ 
+/
 SCHEME FOR ADVECTION OF VELOCITIES = 1
 SCHEME FOR ADVECTION OF TRACERS = 5
 /

@@ -18,6 +18,6 @@ FICHIER DES CONDITIONS AUX LIMITES          : './geo_times_4.cli'
 /
 MAILLEUR                                    : SELAFIN
 /
-DECOUPAGE DES TRIANGLES EN QUATRE            : OUI
+DECOUPAGE DES TRIANGLES EN QUATRE            : YES
 /
 &FIN

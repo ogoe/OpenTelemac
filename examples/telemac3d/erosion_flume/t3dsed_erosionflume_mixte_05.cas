@@ -32,12 +32,12 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS     = 'Z,U,V,W,RHO,TA*'
 GRAPHIC PRINTOUT PERIOD                = 100
 LISTING PRINTOUT PERIOD                = 20
 MASS-BALANCE                           = YES
-INITIAL TIME SET TO ZERO               = YES 
+INITIAL TIME SET TO ZERO               = YES
 TIME STEP                              = 0.2
 NUMBER OF TIME STEPS                   = 200
 /
 /--------------------------------------------------
-/ VERTICAL MESH 
+/ VERTICAL MESH
 /--------------------------------------------------
 NUMBER OF HORIZONTAL LEVELS                     : 10
 MESH TRANSFORMATION                             : 1
@@ -58,7 +58,7 @@ NUMBER OF BOTTOM SMOOTHINGS                     : 2
 LAW OF BOTTOM FRICTION                          : 3
 FRICTION COEFFICIENT FOR THE BOTTOM             : 50.
 /
-/VERTICAL TURBULENCE MODEL                       : 2 
+/VERTICAL TURBULENCE MODEL                       : 2
 /MIXING LENGTH MODEL = 3 / Nezu and Nakagawa
 /HORIZONTAL TURBULENCE MODEL                     : 1
 /COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES : 0.1
@@ -82,14 +82,14 @@ TREATMENT OF FLUXES AT THE BOUNDARIES           : 1;1
 /
 ACCURACY FOR DIFFUSION OF VELOCITIES            : 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES : 500
-PRECONDITIONING FOR DIFFUSION OF VELOCITIES     : 2 
+PRECONDITIONING FOR DIFFUSION OF VELOCITIES     : 2
 /
 /---------------------------------------------------------------------/
 /     PROPAGATION                                                     /
 /---------------------------------------------------------------------/
 /
 ACCURACY FOR PROPAGATION                            : 1.E-6
-MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION        : 500 
+MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION        : 500
 PRECONDITIONING FOR PROPAGATION                     : 2
 SOLVER FOR PROPAGATION                              : 2
 INITIAL GUESS FOR DEPTH                             : 1
@@ -117,14 +117,14 @@ MASS-LUMPING FOR DIFFUSION                          : 1.
 /
 PRESCRIBED FLOWRATES             = 0;0.1
 PRESCRIBED ELEVATIONS            = 9.9;10.13
-VELOCITY PROFILES                = 1;1  
+VELOCITY PROFILES                = 1;1
 /
 /----------------------------------------------------------------
 /	SEDIMENTS
 /----------------------------------------------------------------
 NUMBER OF TRACERS = 2
 NAMES OF TRACERS  =  'sand            g/l             ';
-                     'mud             g/l             '
+                    'mud             g/l             '
 SCHEME FOR DIFFUSION OF TRACERS = 1
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF SEDIMENT = 200
 SOLVER FOR DIFFUSION OF THE SEDIMENT : 7
@@ -148,7 +148,7 @@ INITIAL THICKNESS OF SEDIMENT LAYERS  = 5.D-2
 MUD CONCENTRATIONS PER LAYER     = 900.D0   / top first...downwards
 /
 CRITICAL EROSION SHEAR STRESS OF THE MUD LAYERS = 1.D0
-EROSION COEFFICIENT                             = 5.D-3   
+EROSION COEFFICIENT                             = 5.D-3
 CRITICAL SHEAR STRESS FOR DEPOSITION            = 5.D-1
 /
 CONSTANT SEDIMENT SETTLING VELOCITY             = 1.5D-3
@@ -156,7 +156,7 @@ CONSTANT SEDIMENT SETTLING VELOCITY             = 1.5D-3
 / non cohésif
 MEAN DIAMETER OF THE SEDIMENT = 4.D-4
 SETTLING VELOCITY OF SANDS    = 6.3D-3
-/        
+/
 &FIN
 /
 /

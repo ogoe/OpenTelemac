@@ -1,6 +1,6 @@
 /****************************************************************
-/                      STEERING FILE 
-/                       TELEMAC-2D 
+/                      STEERING FILE
+/                       TELEMAC-2D
 /****************************************************************
 /
 /----------------------------------------------------------------
@@ -10,16 +10,16 @@ TITLE                                          =  'Uniform flow'
 /
 / maillage de base DX=10 m - partie amont
 /                  Dx=20m -  partie avalr
-/                  6859 points 
+/                  6859 points
 /
 FORTRAN FILE : t2d_lazare.f
-GEOMETRY FILE                =  geo_lazare-t2d.slf 
+GEOMETRY FILE                =  geo_lazare-t2d.slf
 BOUNDARY CONDITIONS FILE     =  geo_lazare-t2d.cli
 /
 /
-/ Dell 2.8 GHz Linux, compilateur pgi :     s version 5.7 
+/ Dell 2.8 GHz Linux, compilateur pgi :     s version 5.7
 / HP C3700, compilateur HP            : 160 s version 5.7 JMH 18/05/2007
-/ HP C3700, compilateur Nag           :     s version 5.7 
+/ HP C3700, compilateur Nag           :     s version 5.7
 /
 /
 RESULTS FILE                                   =  f2d_lazare.slf
@@ -63,8 +63,8 @@ TYPE OF ADVECTION                              =  1;5
 / 6 : SCHEMA PSI
 / 7 : SCHEMA N
 SUPG OPTION                                    =  1;1
-/ 0 : pas de decentrement SUPG  
-/ 1 : SUPG classique   
+/ 0 : pas de decentrement SUPG
+/ 1 : SUPG classique
 / 2 : SUPG modifiee
 SOLVER                                         =  1 / 7
 / 1 : gradient conjuge
@@ -98,5 +98,5 @@ LAW OF BOTTOM FRICTION                         =  3
 FRICTION COEFFICIENT                           =  50
 TURBULENCE MODEL                               =  1
 VELOCITY DIFFUSIVITY                           =  0.1 / 1.E-6
-&FIN                                           
-
+&FIN
+/

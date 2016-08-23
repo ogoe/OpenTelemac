@@ -8,9 +8,9 @@
 /  HP Z600 Nag compiler      8 proc : 24 s      version 7.0 26/10/2014
 /  HP Z600 Intel compiler    1 proc : 4min48s   version 7.0 26/10/2014
 /  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.0 26/10/2014
-/ 
-
-
+/
+/
+/
 /****************************************************
 TITLE = 'Water Quality- BIOMASS process for Channel'
 /****************************************************
@@ -47,7 +47,7 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 INITIAL CONDITIONS              = PARTICULAR
 /
 /----------------------------------------------
@@ -64,13 +64,13 @@ INITIAL CONDITIONS              = PARTICULAR
 /
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TIDAL FLATS                       = NO
 CONTINUITY CORRECTION             = YES
 /************************************
-/ TRACER 
+/ TRACER
 /************************************
 /NUMBER OF TRACERS = 1
 / here after, initial values of PHY,PO4,POR,NO3,NOR
@@ -81,6 +81,6 @@ INITIAL VALUES OF TRACERS      = 0.5;3.;1.1;0.2;4.9
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'biomass_steer.cas'
 WATER QUALITY PROCESS = 2
-
+/
 &FIN
-
+/

@@ -161,6 +161,7 @@
 <!-- plot3d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
+   <!--
    <plot3d xref="3d_nonhyd_sal_map" config="oneofall" time="[-1]" deco="3D_Plot1">
       <layer vars="salinity:map" target="2:T3DRES" deco="3D_Layer1"/>
    </plot3d>
@@ -181,7 +182,6 @@
       <layer vars="salinity:map" extract="(0;0.6)(30;0.6)" target="2:T3DRES" deco="3D_Layer1"/>
       <layer vars="salinity:map" extract="(0;1.2)(30;0)" target="2:T3DRES" deco="3D_Layer1"/>
    </plot3d>
-
    <plot3d xref="3d_nonhyd_h+vsection" config="oneofall" time="[-1]" deco="3D_Plot1">
       <layer vars="salinity:map" type="3d:p-section" extract="[]#[0]" target="2:T3DRES" deco="3D_Layer1"/>
       <layer vars="salinity:map" type="3d:p-section" extract="[]#[-1]" target="2:T3DRES" deco="3D_Layer1"/>
@@ -197,5 +197,6 @@
    <plot3d xref="3d_nonhyd_vectors" config="oneofall" time="[-1]" deco="3D_Plot1">
       <layer vars="velocity:arrow" target="2:T3DRES" />
    </plot3d>
+   -->
 
 </validation>

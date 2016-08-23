@@ -53,19 +53,19 @@ TURBULENCE MODEL                             = 1
 VELOCITY DIFFUSIVITY                         = 0.
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TYPE OF ADVECTION                            = 1;5
 SUPG OPTION                                  = 1;2
 SOLVER ACCURACY                              = 1.E-8
-DISCRETIZATIONS IN SPACE                     = 11 ; 11 
+DISCRETIZATIONS IN SPACE                     = 11 ; 11
 PRECONDITIONING                              = 2
 IMPLICITATION FOR DEPTH                      = 0.5
-IMPLICITATION FOR VELOCITY                   = 0.5 
+IMPLICITATION FOR VELOCITY                   = 0.5
 INITIAL GUESS FOR H                          = 1
 MATRIX STORAGE                               = 3
-MATRIX-VECTOR PRODUCT                        = 2  
+MATRIX-VECTOR PRODUCT                        = 2
 /
 /----------------------------------------------
 /  WIND
@@ -73,9 +73,9 @@ MATRIX-VECTOR PRODUCT                        = 2
 /
 WIND                                         = YES
 OPTION FOR WIND                              = 3
-COEFFICIENT OF WIND INFLUENCE                = 1.2615E-3 
+COEFFICIENT OF WIND INFLUENCE                = 1.2615E-3
 WIND VELOCITY ALONG X                        = 5.
 WIND VELOCITY ALONG Y                        = 0.
-/  END OF STEERING FILE 
-/             
+/  END OF STEERING FILE
+/
 &FIN

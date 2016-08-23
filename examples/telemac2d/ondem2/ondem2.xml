@@ -57,22 +57,22 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="(12;5)" >
-      <layer vars="surface libre:line" extract="(-280000;200000)" target="1:T2DRES" />
+      <layer vars="free surface:line" extract="(-280000;200000)" target="1:T2DRES" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="(10;10)" >
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
    <plot2d xref="Bathy" size="(10;10)" >
-      <layer vars="fond:map" target="1:T2DRES" config="oneofall" />
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
    <plot2d xref="Amplitude" size="(10;10)" >
-      <layer vars="AMPLI PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="AMPLI PERIOD  1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
    <plot2d xref="Phase" size="(10;10)" >
-      <layer vars="PHASE PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="PHASE PERIOD  1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 
 </validation>

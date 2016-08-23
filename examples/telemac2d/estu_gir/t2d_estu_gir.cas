@@ -1,14 +1,14 @@
 /
 /  GIRONDE ESTUARY
-/ 
+/
 /  Version 6.3
-/ 
+/
 /  HP Linux Calibre 7 compilateur Nag 8 processeurs : 28 min 7 s  22/05/2012
-/  
+/
 /----------------------------------------------------------------------
 /                      FILE DEFINITION
 /----------------------------------------------------------------------
-/ 
+/
 BOUNDARY CONDITIONS FILE                     : geo_estu_gir.cli
 GEOMETRY FILE                                : geo_estu_gir.slf
 FORTRAN FILE                                 : t2d_estu_gir.f

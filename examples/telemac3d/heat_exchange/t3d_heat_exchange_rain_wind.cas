@@ -1,93 +1,87 @@
 /
 /      A PARTIR DU CAS PLUIE
 /
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /      POUR LE FICHIER CNTL
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /
-TITRE = 'TELEMAC 3D : CANAL'
-DATE DE L'ORIGINE DES TEMPS : 2006;10;1
-HEURE DE L'ORIGINE DES TEMPS : 0;0;0
+TITLE = 'TELEMAC 3D : CANAL'
+ORIGINAL DATE OF TIME : 2006;10;1
+ORIGINAL HOUR OF TIME : 0;0;0
 /
-FICHIER FORTRAN                    : t3d_heat_exchange.f
-FICHIER DES CONDITIONS AUX LIMITES : geo_heat_exchange.cli
-FICHIER DE GEOMETRIE               : geo_heat_exchange.slf
-FICHIER DE DONNEES FORMATE 1       : meteo_data.txt
-FICHIER DES RESULTATS 3D           : r3d_heat_exchange_rain_wind.slf
-FICHIER DES RESULTATS 2D           : r2d_heat_exchange_rain_wind.slf
+FORTRAN FILE                    : t3d_heat_exchange.f
+BOUNDARY CONDITIONS FILE : geo_heat_exchange.cli
+GEOMETRY FILE               : geo_heat_exchange.slf
+FORMATTED DATA FILE 1       : meteo_data.txt
+3D RESULT FILE           : r3d_heat_exchange_rain_wind.slf
+2D RESULT FILE           : r2d_heat_exchange_rain_wind.slf
 /
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /     OPTIONS GENERALES
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /
-STOCKAGE DES MATRICES : 3
+MATRIX STORAGE : 3
 /
 / 30 j
-NOMBRE DE PAS DE TEMPS = 4320
-PAS DE TEMPS = 600
-PERIODE POUR LES SORTIES GRAPHIQUES = 18
-PERIODE POUR LES SORTIES LISTING    = 144
-NOMBRE DE PLANS HORIZONTAUX = 26
+NUMBER OF TIME STEPS = 4320
+TIME STEP = 600
+GRAPHIC PRINTOUT PERIOD = 18
+LISTING PRINTOUT PERIOD    = 144
+NUMBER OF HORIZONTAL LEVELS = 26
 /
-CONDITIONS INITIALES : 'HAUTEUR CONSTANTE'   HAUTEUR INITIALE : 5.
+INITIAL CONDITIONS : 'CONSTANT DEPTH'
+INITIAL DEPTH : 5.
 /
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = U,V,H,TA1
-VARIABLES POUR LES SORTIES GRAPHIQUES 3D = Z,U,V,W,TA1
-BILAN DE MASSE = OUI
-/INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING = OUI
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = U,V,H,TA1
+VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA1
+MASS-BALANCE = YES
+/INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING = YES
 /
 /-------------------------
 /  CONVECTION-DIFFUSION
 /-------------------------
 /
- COEFFICIENT DE DIFFUSION HORIZONTAL DES VITESSES = 0.1D0
- MODELE DE TURBULENCE VERTICAL = 2
- MODELE DE LONGUEUR DE MELANGE : 3
+COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 0.1D0
+VERTICAL TURBULENCE MODEL = 2
+MIXING LENGTH MODEL : 3
 /
-PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES = 14
+PRECONDITIONING FOR DIFFUSION OF VELOCITIES = 14
 /
-/----------------------------/
+/----------------------------
 /     TERMES SOURCES
-/----------------------------/
+/----------------------------
 /
- COEFFICIENT DE FROTTEMENT POUR LE FOND = 0.0162  
- LOI DE FROTTEMENT SUR LE FOND = 5 
+FRICTION COEFFICIENT FOR THE BOTTOM = 0.0162
+LAW OF BOTTOM FRICTION = 5
 /
-/----------------------------/
+/----------------------------
 /          TRACEUR
-/----------------------------/
+/----------------------------
 /
-NOMBRE DE TRACEURS : 1 
-NOMS DES TRACEURS : 'TEMPERATURE     DEGRE C         '
-VALEURS INITIALES DES TRACEURS : 20.
-LOI DE DENSITE : 1
+NUMBER OF TRACERS : 1
+NAMES OF TRACERS : 'TEMPERATURE     DEGRE C         '
+INITIAL VALUES OF TRACERS : 20.
+DENSITY LAW : 1
 /
-COEFFICIENT DE DIFFUSION VERTICAL DES TRACEURS = 1.E-4
+COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS = 1.E-4
 /
-MAXIMUM D'ITERATIONS POUR LA DIFFUSION DES TRACEURS = 200
+MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
 /
-COEFFICIENT DE FROTTEMENT POUR LES PAROIS LATERALES : 1.
+FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES : 1.
 /
-MASS-LUMPING POUR LA HAUTEUR : 1.
-MASS-LUMPING POUR LES VITESSES : 1.
-MASS-LUMPING POUR LA DIFFUSION : 1.
+MASS-LUMPING FOR DEPTH : 1.
+MASS-LUMPING FOR VELOCITIES : 1.
+MASS-LUMPING FOR DIFFUSION : 1.
 /
-/----------------------------/
+/----------------------------
 / ECHANGES AVEC L ATMOSPHERE
-/----------------------------/
-/ switched to WAQTEL
-/MODELE D'ECHANGES EAU-ATMOSPHERE = 2
-/COEFFICIENT DE CALAGE DU MODELE D'ECHANGES EAU-ATMOSPHERE = 0.0026
-/
-PLUIE OU EVAPORATION = OUI
-VENT = OUI
-
+/----------------------------
 /************************************
 /  WATER QUALITY
 /************************************
-COUPLAGE AVEC          = 'WAQTEL'
-FICHIER DES PARAMETRES DE WAQTEL   = 'waq_steer.cas'
-PROCESSUS DE QUALITE D'EAU  = 5
-
+COUPLING WITH          = 'WAQTEL'
+WAQTEL STEERING FILE   = 'waq_steer.cas'
+WATER QUALITY PROCESS  = 5
 /
-&FIN
+RAIN OR EVAPORATION = YES
+WIND = YES

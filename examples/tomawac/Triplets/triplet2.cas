@@ -1,62 +1,62 @@
-/********************************************************************/
-/              TOMAWAC  STEERING FILE                                /
-/********************************************************************/
+/********************************************************************
+/              TOMAWAC  STEERING FILE
+/********************************************************************
 /DEBUGGER=1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 /     FILES
-/--------------------------------------------------------------------/
-FICHIER DE GEOMETRIE = geo.slf
-FICHIER DES CONDITIONS AUX LIMITES = limite.cli
-FICHIER DES RESULTATS 2D = res2.slf
-/--------------------------------------------------------------------/
-/ MISCELLANEOUS INPUT-OUTPUT 
-/--------------------------------------------------------------------/
-TITRE = 'CAS TEST TRIA2'
-PERIODE POUR LES SORTIES GRAPHIQUES = 30
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+/--------------------------------------------------------------------
+GEOMETRY FILE = geo.slf
+BOUNDARY CONDITIONS FILE = limite.cli
+2D RESULTS FILE = res2.slf
+/--------------------------------------------------------------------
+/ MISCELLANEOUS INPUT-OUTPUT
+/--------------------------------------------------------------------
+TITLE = 'CAS TEST TRIA2'
+PERIOD FOR GRAPHIC PRINTOUTS = 30
+VARIABLES FOR 2D GRAPHIC PRINTOUTS =
 M0,HM0,DMOY,TMOY,VX,VY,ZF,FMOY,TPD,POW
-PERIODE POUR LES SORTIES LISTING = 30
-/--------------------------------------------------------------------/
+PERIOD FOR LISTING PRINTOUTS = 30
+/--------------------------------------------------------------------
 / DISCRETIZATION
-/--------------------------------------------------------------------/
-PAS DE TEMPS = 1
-NOMBRE DE PAS DE TEMPS = 120
-NOMBRE DE DIRECTIONS = 36
-NOMBRE DE FREQUENCES = 10
-FREQUENCE MINIMALE = 0.9705
-RAISON FREQUENTIELLE = 1.1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TIME STEP = 1
+NUMBER OF TIME STEP = 120
+NUMBER OF DIRECTIONS = 36
+NUMBER OF FREQUENCIES = 10
+MINIMAL FREQUENCY = 0.9705
+FREQUENTIAL RATIO = 1.1
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-FACTEUR DE QUEUE DU SPECTRE = 4.
-PROFONDEUR INFINIE = NON
-NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
-PRISE EN COMPTE DE LA PROPAGATION = OUI
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-/--------------------------------------------------------------------/
-/  INITIAL CONDITIONS 
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 7
-HAUTEUR SIGNIFICATIVE INITIALE = 3.54 
-FREQUENCE DE PIC INITIALE = 1.
-FACTEUR DE PIC INITIAL = 3.3 /valeur moyenne JONSWAP
-FONCTION DE REPARTITION ANGULAIRE INITIALE = 2
-ETALEMENT DIRECTIONNEL 1 INITIAL = 0
-DIRECTION PRINCIPALE 1 INITIALE = 90.
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+SPECTRUM TAIL FACTOR = 4.
+INFINITE DEPTH = NO
+NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
+CONSIDERATION OF PROPAGATION = YES
+CONSIDERATION OF SOURCE TERMS = YES
+/--------------------------------------------------------------------
+/  INITIAL CONDITIONS
+/--------------------------------------------------------------------
+TYPE OF INITIAL DIRECTIONAL SPECTRUM = 7
+INITIAL SIGNIFICANT WAVE HEIGHT = 3.54
+INITIAL PEAK FREQUENCY = 1.
+INITIAL PEAK FACTOR = 3.3/valeur moyenne JONSWAP
+INITIAL ANGULAR DISTRIBUTION FUNCTION = 2
+INITIAL DIRECTIONAL SPREAD 1 = 0
+INITIAL MAIN DIRECTION 1 = 90.
+/--------------------------------------------------------------------
 /   BOUNDARY CONDITIONS
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
-FACTEUR DE PIC AUX LIMITES = 3.3 /valeur moyenne JONSWAP
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 3.54 
-FREQUENCE DE PIC AUX LIMITES = 1.
-DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
-FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 2
-ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 64.66
-/--------------------------------------------------------------------/
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
+BOUNDARY PEAK FACTOR = 3.3/valeur moyenne JONSWAP
+BOUNDARY SIGNIFICANT WAVE HEIGHT = 3.54
+BOUNDARY PEAK FREQUENCY = 1.
+BOUNDARY MAIN DIRECTION 1 = 90.
+BOUNDARY ANGULAR DISTRIBUTION FUNCTION = 2
+BOUNDARY DIRECTIONAL SPREAD 1 = 64.66
+/--------------------------------------------------------------------
+/--------------------------------------------------------------------
 /DISSIPATION PAR DEFERLEMENT = 1
-DISSIPATION PAR DEFERLEMENT = 2
-DEFERLEMENT 2 (TG) CONSTANTE GAMMA = 0.6
-DEFERLEMENT 2 (TG) CHOIX FREQUENCE CARACTERISTIQUE = 3
-TRANSFERTS ENTRE TRIPLETS DE FREQUENCES = 2
+DEPTH-INDUCED BREAKING DISSIPATION = 2
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA = 0.6
+DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY = 3
+TRIAD INTERACTIONS = 2

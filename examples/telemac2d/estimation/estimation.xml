@@ -57,7 +57,7 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="FreeSurfaceProfiles" type="v-section" config="together" size="(12;5)" >
-      <layer vars="surface libre:line" extract="(0;50)(500;50)" target="1:T2DRES" time="[0:-1]" />
+      <layer vars="free surface:line" extract="(0;50)(500;50)" target="1:T2DRES" time="[0:-1]" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,10 +66,10 @@
       <layer vars="maillage:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
     <plot2d xref="FreeSurfacetf" size="(20;5)" >
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
    <plot2d xref="FreeSurfacet5" size="(20;5)" >
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[5]" />
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[5]" />
    </plot2d>
 
 </validation>

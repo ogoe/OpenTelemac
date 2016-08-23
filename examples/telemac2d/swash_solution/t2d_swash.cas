@@ -32,7 +32,7 @@ INFORMATION ABOUT SOLVER        = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 /
 /----------------------------------------------
 /  PHYSICAL PARAMETERS
@@ -50,7 +50,7 @@ PRESCRIBED ELEVATIONS           = -0.2499375
 OPTION FOR LIQUID BOUNDARIES    = 2
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 EQUATIONS                       = 'SAINT-VENANT VF'

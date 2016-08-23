@@ -1,7 +1,7 @@
 /
 /
 / This case has been provided on Telemac forum
-/ by user "sumit". Many thanks!!
+/ by user 'sumit'. Many thanks!!
 /
 /
 /****************************************************
@@ -38,15 +38,15 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 INITIAL CONDITIONS              = 'PARTICULAR'
 /
 /----------------------------------------------
 /  BOUNDARY CONDITIONS
 /----------------------------------------------
 /
-PRESCRIBED VELOCITIES               = -0.03;0.03 
-PRESCRIBED TRACERS VALUES           =  0.;30.           
+PRESCRIBED VELOCITIES               = -0.03;0.03
+PRESCRIBED TRACERS VALUES           =  0.;30.
 /
 /----------------------------------------------
 /  CONTROL SECTIONS
@@ -62,7 +62,7 @@ SECTIONS OUTPUT FILE = Control_Section_Output.dat
 /
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 SOLVER FOR DIFFUSION OF TRACERS    =  1
@@ -73,12 +73,12 @@ ADVECTION OF U AND V              = NO
 ADVECTION OF H                    = NO
 ADVECTION OF TRACERS              = YES
 TYPE OF ADVECTION                 = 1
-DIFFUSION OF VELOCITY              =NO 
+DIFFUSION OF VELOCITY              =NO
 CONTINUITY CORRECTION             = YES
 /************************************
 /NON_CONSERVATIVE TRACER IS ADDED
 /************************************
 NUMBER OF TRACERS = 1
 NAMES OF TRACERS = 'TRAC MG/L'
-COEFFICIENT FOR DIFFUSION OF TRACERS = 30. 
+COEFFICIENT FOR DIFFUSION OF TRACERS = 30.
 &FIN

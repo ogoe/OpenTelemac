@@ -8,9 +8,9 @@
 /  HP Z600 Nag compiler      8 proc : 24 s      version 7.2 26/10/2016
 /  HP Z600 Intel compiler    1 proc : 4min48s   version 7.2 26/10/2016
 /  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.2 26/10/2016
-/ 
-
-
+/
+/
+/
 /****************************************************
 TITLE = 'Water Quality- micropol  process for Channel'
 /****************************************************
@@ -29,11 +29,11 @@ FORTRAN FILE              = 't3d_waq3d_micropol.f'
 /DEBUGGER   : 1
 /
 /----------------------------------------------------------------------
-/     GENERAL OPTIONS 
+/     GENERAL OPTIONS
 /----------------------------------------------------------------------
 MATRIX STORAGE                                           = 3
 /SIMULATION TIME : 1 YEAR
-NUMBER OF TIME STEPS                                     = 8760  
+NUMBER OF TIME STEPS                                     = 8760
 TIME STEP                                                = 3600
 /OUTPUT EVERY 1 MONTH
 GRAPHIC PRINTOUT PERIOD                                  = 720
@@ -49,7 +49,7 @@ INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------------------------------
 /
-INITIAL CONDITIONS        = 'CONSTANT DEPTH'   
+INITIAL CONDITIONS        = 'CONSTANT DEPTH'
 INITIAL DEPTH             = 2.
 /----------------------------------------------------------------------
 /  ADVECTION-DIFFUSION
@@ -86,5 +86,5 @@ MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'micropol_steer.cas'
 WATER QUALITY PROCESS =4
-
+/
 &FIN

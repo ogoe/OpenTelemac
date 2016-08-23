@@ -28,14 +28,14 @@ TITLE : 'Bars Test Case: Linear channel,bed configuration: Ripples'
 COUPLING WITH   : 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE                     : 1
 VARIABLES FOR GRAPHIC PRINTOUTS                 : 'H,U,V,Q,US'
-TIME STEP                                       : 0.1       
+TIME STEP                                       : 0.1
 GRAPHIC PRINTOUT PERIOD                         : 10000
-LISTING PRINTOUT PERIOD                         : 1000   
-NUMBER OF TIME STEPS                            : 10000 
+LISTING PRINTOUT PERIOD                         : 1000
+NUMBER OF TIME STEPS                            : 10000
 MASS-BALANCE                                    : YES
 INFORMATION ABOUT SOLVER                        : YES
-/TREATMENT OF THE LINEAR SYSTEM : 2 
-SOLVER : 7 
+/TREATMENT OF THE LINEAR SYSTEM : 2
+SOLVER : 7
 /PRECONDITIONING : 2
 /
 /---------------------------------------------------------------------/

@@ -67,19 +67,19 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="cote z:mesh" target="1:T3DRES" />
+      <layer vars="elevation z:mesh" target="1:T3DRES" />
    </plot2d>
    <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="Z:mesh" extract="(0;10)(20;10)" target="1:T3DRES"  />
+      <layer vars="elevation Z:mesh" extract="(0;10)(20;10)" target="1:T3DRES"  />
    </plot2d>
    <plot2d xref="z_section2d" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="Z:map" extract="(0;10)(20;10)" target="1:T3DRES"  />
+      <layer vars="elevation Z:map" extract="(0;10)(20;10)" target="1:T3DRES"  />
    </plot2d>
    <plot2d xref="z_map_t5" config="oneofall" time="[5]" size="(12;7)" >
-      <layer vars="Z:map" extract="[]#[2]" target="1:T3DRES"  />
+      <layer vars="elevation Z:map" extract="[]#[2]" target="1:T3DRES"  />
    </plot2d>
    <plot2d xref="z_map_t8" config="oneofall" time="[8]" size="(12;7)" >
-      <layer vars="Z:map" extract="[]#[2]" target="1:T3DRES"  />
+      <layer vars="elevation Z:map" extract="[]#[2]" target="1:T3DRES"  />
    </plot2d>
 
 </validation>

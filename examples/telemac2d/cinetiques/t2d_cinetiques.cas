@@ -10,61 +10,61 @@
 / HP C3700 compilateur Nag         : 22 s  5.8 20/12/2007
 / Dell 2.8 MHz compilateur pgi 6.2 :  3 s  5.8 19/12/2007
 /
-/ HP C3700 compilateur HP          :  8 s  5.9 15/10/2008 
+/ HP C3700 compilateur HP          :  8 s  5.9 15/10/2008
 / HP C3700 compilateur Nag         : 22 s  5.9 16/10/2008
 / Dell 2.8 MHz compilateur pgi 6.2 :  3 s  5.9 15/10/2008
 /
-/ HP C3700 compilateur HP          :  7 s  6.0 23/11/2009 
+/ HP C3700 compilateur HP          :  7 s  6.0 23/11/2009
 / HP C3700 compilateur Nag         : 21 s  6.0 26/11/2009
 / Dell 2.8 MHz compilateur pgi 6.2 :  3 s  6.0 26/11/2009
 /
 / Version 6.2
 /
-/ HP C3700 compilateur HP          : 13 s  04/05/2012 
+/ HP C3700 compilateur HP          : 13 s  04/05/2012
 /
-FICHIER FORTRAN                      : t2d_cinetiques.f
-FICHIER DES CONDITIONS AUX LIMITES   : geo_cinetiques.cli
-FICHIER DE GEOMETRIE                 : geo_cinetiques.slf
-FICHIER DES RESULTATS                : r2d_cinetiques.slf
+FORTRAN FILE                      : t2d_cinetiques.f
+BOUNDARY CONDITIONS FILE   : geo_cinetiques.cli
+GEOMETRY FILE                 : geo_cinetiques.slf
+RESULTS FILE                : r2d_cinetiques.slf
 /
 EQUATIONS : 'SAINT-VENANT VF'
-SCHEMA EN VOLUMES FINIS : 2
-/                                                    
-/----------------------------------------------------------------------/    
-/                        OPTIONS GENERALES                                  
-/----------------------------------------------------------------------/    
-TITRE = 'TELEMAC 2D : RUPTURE DE BARRAGE UNIDIMENSIONNELLE'                                   
-VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,F,L,N,O'                         
-VARIABLES A IMPRIMER : ''                                                   
-PAS DE TEMPS = 0.01   
-DUREE DU CALCUL : 0.8
-PAS DE TEMPS VARIABLE : OUI
-NOMBRE DE COURANT SOUHAITE : 0.9
-PERIODE POUR LES SORTIES GRAPHIQUES : 10 
-PERIODE POUR LES SORTIES LISTING : 20
-PAS DE TEMPS VARIABLE : OUI                                             
-/----------------------------------------------------------------------/    
-MODELE DE TURBULENCE = 1    / 1:LAMINAIRE  3:K-EPSILON /                    
-/----------------------------------------------------------------------/    
-/ 0:RIEN 1:LINEAIRE 2:CHEZY 3:STRICKLER                                     
-LOI DE FROTTEMENT SUR LE FOND : 0           
-/----------------------------------------------------------------------/    
-/     PROPAGATION                                                           
-/----------------------------------------------------------------------/    
-COEFFICIENT DE DIFFUSION DES VITESSES = 0.                                  
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4     
-SOLVEUR : 7   
-PRECONDITIONNEMENT : 2    
-ORDRE DU TIR INITIAL POUR H :1     
-OPTION DU SOLVEUR : 3                                                       
-IMPLICITATION POUR LA HAUTEUR = 0.6 
-IMPLICITATION POUR LA VITESSE = 0.6     
-BILAN DE MASSE : NON   
-CONDITIONS INITIALES : PARTICULIERES                 
-FORME DE LA CONVECTION : 1;1                             
-OPTION DE SUPG      : 2;2     
-CLIPPING DE H : NON    
-BANCS DECOUVRANTS : OUI                              
-/----------------------------------------------------------------------/ 
-/TRACEUR : OUI 
-BILAN DE MASSE : OUI  
+FINITE VOLUME SCHEME : 2
+/
+/----------------------------------------------------------------------/
+/                        OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D : RUPTURE DE BARRAGE UNIDIMENSIONNELLE'
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,F,L,N,O'
+VARIABLES TO BE PRINTED : ''
+TIME STEP = 0.01
+DURATION : 0.8
+VARIABLE TIME-STEP : YES
+DESIRED COURANT NUMBER : 0.9
+GRAPHIC PRINTOUT PERIOD : 10
+LISTING FOR PRINTOUT PERIOD : 20
+VARIABLE TIME-STEP : YES
+/----------------------------------------------------------------------/
+TURBULENCE MODEL = 1/ 1:LAMINAIRE  3:K-EPSILON /
+/----------------------------------------------------------------------/
+/ 0:RIEN 1:LINEAIRE 2:CHEZY 3:STRICKLER
+LAW OF BOTTOM FRICTION : 0
+/----------------------------------------------------------------------/
+/     PROPAGATION
+/----------------------------------------------------------------------/
+VELOCITY DIFFUSIVITY = 0.
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER : 100 SOLVER ACCURACY = 1.E-4
+SOLVER : 7
+PRECONDITIONING : 2
+INITIAL GUESS FOR H :1
+SOLVER OPTION : 3
+IMPLICITATION FOR DEPTH = 0.6
+IMPLICITATION FOR VELOCITY = 0.6
+MASS-BALANCE : NO
+INITIAL CONDITIONS : PARTICULIERES
+TYPE OF ADVECTION : 1;1
+SUPG OPTION      : 2;2
+H CLIPPING : NO
+TIDAL FLATS : YES
+/----------------------------------------------------------------------/
+/TRACEUR : YES
+MASS-BALANCE : YES

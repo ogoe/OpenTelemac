@@ -6,7 +6,7 @@
 GEOMETRY FILE             = geo_cvsp.slf
 BOUNDARY CONDITIONS FILE  = geo_cvsp_t2d.cli
 RESULTS FILE              = t2d_cvsp.res
-FORTRAN FILE		  = t2d_cvsp.f 
+FORTRAN FILE		  = t2d_cvsp.f
 /
 /------------------------------------------------------------------------------
 /                   COMPUTATIONAL INFORMATION
@@ -21,19 +21,19 @@ PREVIOUS COMPUTATION FILE = t2d_cvsp_pre.slf
 /                           DURATION
 /------------------------------------------------------------------------------
 /
-TIME STEP                         = 0.5 
-NUMBER OF TIME STEPS              = 10000 / 1440000 
-GRAPHIC PRINTOUT PERIOD           = 1000 / 144000 
-LISTING PRINTOUT PERIOD           = 100 / 14400 
-INITIAL TIME SET TO ZERO          = YES 
-VARIABLES FOR GRAPHIC PRINTOUTS   = U,V,H,S,B,K,E,D,M,W,L,F 
-INITIAL TIME SET TO ZERO          = YES 
-/ 
-COUPLING WITH                     = 'SISYPHE' 
-COUPLING PERIOD FOR SISYPHE       = 100 
-SISYPHE STEERING FILE             = sis_cvsp.cas 
-/ 
-MASS-BALANCE                      = YES 
+TIME STEP                         = 0.5
+NUMBER OF TIME STEPS              = 10000 / 1440000
+GRAPHIC PRINTOUT PERIOD           = 1000 / 144000
+LISTING PRINTOUT PERIOD           = 100 / 14400
+INITIAL TIME SET TO ZERO          = YES
+VARIABLES FOR GRAPHIC PRINTOUTS   = U,V,H,S,B,K,E,D,M,W,L,F
+INITIAL TIME SET TO ZERO          = YES
+/
+COUPLING WITH                     = 'SISYPHE'
+COUPLING PERIOD FOR SISYPHE       = 100
+SISYPHE STEERING FILE             = sis_cvsp.cas
+/
+MASS-BALANCE                      = YES
 /
 COUPLING WITH                     = 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE       = 100
@@ -97,5 +97,5 @@ COMPATIBLE COMPUTATION OF FLUXES             = YES
 CONTINUITY CORRECTION                        = YES
 TREATMENT OF NEGATIVE DEPTHS                 = 2 / geht nur mit tidal options 1
 &FIN
-
-
+/
+/

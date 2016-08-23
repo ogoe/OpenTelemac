@@ -101,7 +101,7 @@
    -->
 
    <plot1d xref="WaterDepthProfile" type="v-section" size="(12;5)" config="together">
-      <layer vars="hauteur d'eau:line" extract="(0;10)(20;10)" target="3:T2DRES" time="[0:-1]" />
+      <layer vars="water depth:line" extract="(0;10)(20;10)" target="3:T2DRES" time="[0:-1]" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,16 +110,16 @@
       <layer vars="maillage:mesh" target="2:T2DGEO" config="oneofall" />
    </plot2d>
    <plot2d xref="WaterDepth_t1_cin" size="(7;7)" >
-      <layer vars="hauteur d'eau:map" target="2:T2DRES" config="oneofall" time="[1]" />
+      <layer vars="water depth:map" target="2:T2DRES" config="oneofall" time="[1]" />
    </plot2d>
    <plot2d xref="WaterDepth_tf_cin" size="(7;7)" >
-      <layer vars="hauteur d'eau:map" target="2:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="water depth:map" target="2:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
    <plot2d xref="WaterDepth_t1_qua" size="(7;7)" >
-      <layer vars="hauteur d'eau:map" target="3:T2DRES" config="oneofall" time="[1]" />
+      <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[1]" />
    </plot2d>
    <plot2d xref="WaterDepth_tf_qua" size="(7;7)" >
-      <layer vars="hauteur d'eau:map" target="3:T2DRES" config="oneofall" time="[-1]" />
+    <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 
 

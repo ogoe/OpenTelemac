@@ -44,7 +44,7 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 INITIAL CONDITIONS              = PARTICULAR
 /----------------------------------------------
 /  BOUNDARY CONDITIONS
@@ -61,7 +61,7 @@ INITIAL CONDITIONS              = PARTICULAR
 AIR PRESSURE : YES
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 /SOLVER FOR DIFFUSION OF TRACERS    =  1
@@ -72,16 +72,16 @@ TIDAL FLATS                       = NO
 /ADVECTION OF H                    = NO
 /ADVECTION OF TRACERS              = YES
 /TYPE OF ADVECTION                 = 1
-/DIFFUSION OF VELOCITY              =NO 
+/DIFFUSION OF VELOCITY              =NO
 CONTINUITY CORRECTION             = YES
 /************************************
-/ TRACER 
+/ TRACER
 /************************************
 NUMBER OF TRACERS = 1
 NAMES OF TRACERS = 'TEMPERATURE     °C              '
 INITIAL VALUES OF TRACERS            = 20.
 DIFFUSION OF TRACERS                 = NO
-COEFFICIENT FOR DIFFUSION OF TRACERS = 0. 
+COEFFICIENT FOR DIFFUSION OF TRACERS = 0.
 /************************************
 /  WATER QUALITY
 /************************************
@@ -89,4 +89,4 @@ COUPLING WITH          = 'WAQTEL'
 WAQTEL STEERING FILE   = 'waq_thermic_steer.cas'
 WATER QUALITY PROCESS  = 5
 &FIN
-
+/

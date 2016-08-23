@@ -51,7 +51,7 @@ INFORMATION ABOUT SOLVER                     = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED                        = NO 
+COMPUTATION CONTINUED                        = NO
 INITIAL CONDITIONS                           = 'CONSTANT ELEVATION'
 INITIAL ELEVATION                            = 1.35
 /
@@ -73,22 +73,22 @@ TURBULENCE MODEL                             = 1
 VELOCITY DIFFUSIVITY                         = 1.
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TIDAL FLATS                                  = NO
 TYPE OF ADVECTION                            = 1;5;4
 DISCRETIZATIONS IN SPACE                     = 12;11
 SUPG OPTION                                  = 1;0
-SOLVER ACCURACY                              = 1.E-10 
+SOLVER ACCURACY                              = 1.E-10
 SOLVER                                       = 7
 SOLVER OPTION                                = 5
 PRECONDITIONING                              = 2
 INITIAL GUESS FOR H                          = 1
 IMPLICITATION FOR DEPTH                      = 0.55
-IMPLICITATION FOR VELOCITY                   = 0.55 
-CONTINUITY CORRECTION                        = YES 
-COMPATIBLE COMPUTATION OF FLUXES             = YES 
+IMPLICITATION FOR VELOCITY                   = 0.55
+CONTINUITY CORRECTION                        = YES
+COMPATIBLE COMPUTATION OF FLUXES             = YES
 /
 /----------------------------------------------
 /   TRACER
@@ -100,5 +100,5 @@ PRESCRIBED TRACERS VALUES  = 100.;0.
 / direct solver (but will nor work in parallel)
 /SOLVER FOR DIFFUSION OF TRACERS : 8
 SOLVER FOR DIFFUSION OF TRACERS : 1
-/             
+/
 &FIN

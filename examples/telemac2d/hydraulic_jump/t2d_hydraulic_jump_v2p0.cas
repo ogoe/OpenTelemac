@@ -3,7 +3,7 @@
 /                             BUMP CASE 3                           /
 /-------------------------------------------------------------------/
 /
-/ HP C3700  compilateur HP        : 138 s  version 5.9 16/10/2008 
+/ HP C3700  compilateur HP        : 138 s  version 5.9 16/10/2008
 / HP C3700  compilateur Nag       : 354 s  version 5.9 17/10/2008
 / Dell 2.8 MHz  compilateur pgi   :  96 s  version 5.9 16/10/2008
 /
@@ -63,19 +63,19 @@ TURBULENCE MODEL                             = 1
 VELOCITY DIFFUSIVITY                         = 0.
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TYPE OF ADVECTION                            = 1;5
 SUPG OPTION                                  = 0;2
 DISCRETIZATIONS IN SPACE                     = 13;11
-SOLVER ACCURACY                              = 1.E-5 
+SOLVER ACCURACY                              = 1.E-5
 IMPLICITATION FOR DEPTH                      = 0.6
-IMPLICITATION FOR VELOCITY                   = 0.6 
+IMPLICITATION FOR VELOCITY                   = 0.6
 SOLVER                                       = 7
-SOLVER OPTION                                = 3   
+SOLVER OPTION                                = 3
 /
 MATRIX STORAGE : 1
-TREATMENT OF THE LINEAR SYSTEM : 1   SOLVER : 7            
-/                                           
+TREATMENT OF THE LINEAR SYSTEM : 1   SOLVER : 7
+/
 &FIN

@@ -7,24 +7,24 @@ MATRIX STORAGE : 3
 /  PRISME AVEC 2 PLANS         : 91 s  version 5.5  changement de solveur
 /  PRISME AVEC 2 PLANS         : 86 s  version 5.5  03/03/2005 nouvelle diffusion
 /  PRISME AVEC 2 PLANS         : 66 s  version 5.6  29/09/2005 segments
-/ 
-/  HP C3700 compilateur HP      : 58 s  version 5.7  23/04/2007 
+/
+/  HP C3700 compilateur HP      : 58 s  version 5.7  23/04/2007
 /  Dell 2.8 MHz compilateur pgi : 40 s  version 5.7  13/02/2007
 /
-/  HP C3700 compilateur HP      : 52 s  version 5.8  26/12/2007 
+/  HP C3700 compilateur HP      : 52 s  version 5.8  26/12/2007
 /  HP C3700 compilateur Nag     :133 s  version 5.8  18/01/2008
 /  Dell 2.8 MHz compilateur pgi : 41 s  version 5.8  03/01/2008
 /
 /  HP C3700 compilateur HP      : 51 s  version 5.9  20/10/2008
-/  HP C3700 compilateur Nag     :??? s  version 5.9  
-/  Dell 2.8 MHz compilateur pgi : 40 s  version 5.9  20/10/2008  
+/  HP C3700 compilateur Nag     :??? s  version 5.9
+/  Dell 2.8 MHz compilateur pgi : 40 s  version 5.9  20/10/2008
 /
 /  Version 6.2
 /
 /  HP C3700 compilateur HP      : 39 s  24/05/2012
 /
 TITLE = 'Solitary wave in a long channel '
-/ 
+/
 FORTRAN FILE             = t3d_solit.f
 GEOMETRY FILE            = geo_solit.slf
 BOUNDARY CONDITIONS FILE = geo_solit.cli
@@ -58,7 +58,7 @@ MASS-BALANCE : YES
 INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : NO
 /
 /PRECONDITIONING FOR PPE = 7  SOLVER FOR PPE = 6
- PRECONDITIONING FOR PPE = 2  SOLVER FOR PPE = 1
+PRECONDITIONING FOR PPE = 2  SOLVER FOR PPE = 1
 ACCURACY FOR PPE = 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR PPE = 500
 /

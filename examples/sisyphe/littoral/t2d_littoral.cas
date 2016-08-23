@@ -1,8 +1,8 @@
 /DEBUGGER = 1
 /----------------------------------------------------------------------
-
+/
 /           STEERING FILE
-
+/
 /           TELEMAC
 /----------------------------------------------------------------------
 /                    SETTINGS
@@ -22,12 +22,12 @@ BOUNDARY CONDITIONS FILE  = 'geo_t2d_littoral.cli'
 GEOMETRY FILE             = 'geo_littoral.slf'
 RESULTS FILE              = 't2d_littoral.slf'
 /----------------------------------------------------------------------
-/ INITIAL CONDITIONS 
+/ INITIAL CONDITIONS
 /----------------------------------------------------------------------
 INITIAL CONDITIONS = 'COTE NULLE'
 /
 /----------------------------------------------------------------------
-/                         GENERAL OPTIONS 
+/                         GENERAL OPTIONS
 /----------------------------------------------------------------------
 /
 TITLE = 'LITTORAL'
@@ -62,9 +62,9 @@ DISCRETIZATIONS IN SPACE = 12;11
 /
 TIDAL FLATS   = NO
 OPTION FOR THE TREATMENT OF TIDAL FLATS = 1
-H CLIPPING    = FALSE
+H CLIPPING    = NO
 /
-MASS-BALANCE  = TRUE
+MASS-BALANCE  = YES
 /
 SOLVER ACCURACY                         = 1e-05
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 100
@@ -72,7 +72,7 @@ MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 100
 TYPE OF ADVECTION                            = 1;5
 NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES = 1
 /
-PROPAGATION                   = TRUE
+PROPAGATION                   = YES
 IMPLICITATION FOR DEPTH       = 0.6
 IMPLICITATION FOR VELOCITY    = 0.6
 /

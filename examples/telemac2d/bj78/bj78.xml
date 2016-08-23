@@ -57,10 +57,10 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" size="(12;5)" >
-      <layer vars="surface libre:line" extract="(10;0.4)" target="1:T2DRES"  time="[0:-1]"/>
+      <layer vars="free surface:line" extract="(10;0.4)" target="1:T2DRES"  time="[0:-1]"/>
    </plot1d>
    <plot1d xref="FreeSurfaceSection" type="v-section" config="together" size="(12;5)" >
-      <layer vars="surface libre:line" extract="(-5;0.4)(10;0.4)" target="1:T2DRES"  time="[0:-1:5]"/>
+      <layer vars="free surface:line" extract="(-5;0.4)(10;0.4)" target="1:T2DRES"  time="[0:-1:5]"/>
    </plot1d>
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->

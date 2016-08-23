@@ -19,72 +19,71 @@
 /
 /  HP C3700  compilateur HP   : 615 s   22/05/2012
 /
-/-----------------------------------------------------------------------/
+/-----------------------------------------------------------------------
 /            		RIVIERE 1 PILE de PONT
-/-----------------------------------------------------------------------/
+/-----------------------------------------------------------------------
 /                          ENTREES-SORTIES
-/-----------------------------------------------------------------------/
+/-----------------------------------------------------------------------
 /
-FICHIER FORTRAN                    : t2d_dragforce.f
-FICHIER DES CONDITIONS AUX LIMITES : geo_dragforce.cli
-FICHIER DE GEOMETRIE 		   : geo_dragforce.slf
-FICHIER DES RESULTATS              : r2d_dragforce.slf
+FORTRAN FILE                    : t2d_dragforce.f
+BOUNDARY CONDITIONS FILE : geo_dragforce.cli
+GEOMETRY FILE 		   : geo_dragforce.slf
+RESULTS FILE              : r2d_dragforce.slf
 /
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /                         OPTIONS GENERALES
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /
 EQUATIONS 					: 'SAINT-VENANT EF'
-SUITE DE CALCUL 				: NON
-VARIABLES POUR LES SORTIES GRAPHIQUES 		: 'U,V,H,S,M,F'
-VARIABLES A IMPRIMER  				: ''
-PAS DE TEMPS 					: 0.2
-NOMBRE DE PAS DE TEMPS                          : 10000
-PERIODE POUR LES SORTIES GRAPHIQUES		: 1000
-PERIODE DE SORTIE LISTING 			: 100
+COMPUTATION CONTINUED 				: NO
+VARIABLES FOR GRAPHIC PRINTOUTS 		: 'U,V,H,S,M,F'
+VARIABLES TO BE PRINTED  				: ''
+TIME STEP 					: 0.2
+NUMBER OF TIME STEPS                          : 10000
+GRAPHIC PRINTOUT PERIOD		: 1000
+LISTING PRINTOUT PERIOD 			: 100
 /
-/---------------------------------------------------------------------/
+/---------------------------------------------------------------------
 /			CONDITIONS INITIALES
-/---------------------------------------------------------------------/
+/---------------------------------------------------------------------
 /
-CONDITIONS INITIALES 				: 'HAUTEUR CONSTANTE'
-HAUTEUR INITIALE				: 4.
+INITIAL CONDITIONS 				: 'HAUTEUR CONSTANTE'
+INITIAL DEPTH				: 4.
 /
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /			CONDITIONS AUX LIMITES
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /
-LOI DE FROTTEMENT SUR LE FOND   		: 3
-COEFFICIENT DE FROTTEMENT 			: 40.
-STRUCTURES VERTICALES				: OUI
-DEBITS IMPOSES 					: 0.;100.
-COTES IMPOSEES 					: 4.;0.
+LAW OF BOTTOM FRICTION   		: 3
+FRICTION COEFFICIENT 			: 40.
+VERTICAL STRUCTURES				: YES
+PRESCRIBED FLOWRATES 					: 0.;100.
+PRESCRIBED ELEVATIONS 					: 4.;0.
 /
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /			OPTIONS NUMERIQUES
-/----------------------------------------------------------------------/
+/----------------------------------------------------------------------
 /
-BANCS DECOUVRANTS				: OUI
-OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 3
-MODELE DE TURBULENCE : 3
-COEFFICIENT DE DIFFUSION DES VITESSES 		: 1.E-6
+TIDAL FLATS				: YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS : 3
+TURBULENCE MODEL : 3
+VELOCITY DIFFUSIVITY 		: 1.E-6
 /
-BILAN DE MASSE 					: OUI
-FORME DE LA CONVECTION 				: 1;5
-OPTION DE SUPG     				: 1;2
+MASS-BALANCE 					: YES
+TYPE OF ADVECTION 				: 1;5
+SUPG OPTION     				: 1;2
 /
- TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1 PRECONDITIONNEMENT:2
+TREATMENT OF THE LINEAR SYSTEM : 2 SOLVER : 1 PRECONDITIONING:2
 /TRAITEMENT DU SYSTEME LINEAIRE : 1 SOLVEUR : 7 OPTION DU SOLVEUR :3
-PRECISION DU SOLVEUR 				: 1.E-5
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR 		: 100
-IMPLICITATION POUR LA HAUTEUR 			: 1.
-IMPLICITATION POUR LA VITESSE			: 0.6
-PRECONDITIONNEMENT 				: 2
-ORDRE DU TIR INITIAL POUR H 			: 1
-DISCRETISATIONS EN ESPACE 			: 11 ; 11
-MASS-LUMPING SUR H 				: 1.
+SOLVER ACCURACY 				: 1.E-5
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER 		: 100
+IMPLICITATION FOR DEPTH 			: 1.
+IMPLICITATION FOR VELOCITY			: 0.6
+PRECONDITIONING 				: 2
+INITIAL GUESS FOR H 			: 1
+DISCRETIZATIONS IN SPACE 			: 11 ; 11
+MASS-LUMPING ON H 				: 1.
 /
 &FIN
-
-
-
+/
+/

@@ -11,7 +11,7 @@ RESULTS FILE                                 = sis_yen-exp_YES.slf
 /  GENERAL AND OUTPUT
 /----------------------------------------------
 TITLE : 'Yen-180-bend'
-VARIABLES FOR GRAPHIC PRINTOUTS = 
+VARIABLES FOR GRAPHIC PRINTOUTS =
 'U,V,S,E,H,B,KS,CS1,TOB,M,N,P'
 /
 /----------------------------------------------
@@ -31,7 +31,7 @@ BETA = 1.3
 /----------------------------------------------
 / PHYSICAL PARAMETERS - HYDRODYNAMICS
 /----------------------------------------------
-/ 
+/
 /FRICTION COEFFICIENT = 65.
 /LAW OF BOTTOM FRICTION = 0
 / 0: wird berechnet: ks = 3*D50
@@ -39,16 +39,16 @@ BETA = 1.3
 /
 /----------------------------------------------
 / PHYSICAL PARAMETERS - BED LOAD
-/---------------------------------------------- 
+/----------------------------------------------
 BED LOAD = YES
 SUSPENSION = NO
 BED-LOAD TRANSPORT FORMULA                 = 2
 SHIELDS PARAMETERS = 0.047
 CRITICAL EVOLUTION RATIO                   = 1000.
-/COEFFICIENT FUNCTION OF THE POROSITY       = 1.6 
+/COEFFICIENT FUNCTION OF THE POROSITY       = 1.6
 NON COHESIVE BED POROSITY                   = 0.37500
 /
-SEDIMENT DIAMETERS = 0.001 
+SEDIMENT DIAMETERS = 0.001
 ////FINITE VOLUMES = YES
 /
 TYPE OF ADVECTION = 6
@@ -57,6 +57,6 @@ TYPE OF ADVECTION = 6
 //SLOPE EFFECT = YES
 //BETA = 0.
 &FIN
-
-
-
+/
+/
+/

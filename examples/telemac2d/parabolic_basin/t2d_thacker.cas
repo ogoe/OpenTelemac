@@ -42,7 +42,7 @@ TURBULENCE MODEL                = 1
 VELOCITY DIFFUSIVITY            = 0
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 EQUATIONS                       = 'SAINT-VENANT FV'
@@ -59,6 +59,6 @@ SOLVER OPTION                   = 3
 PRECONDITIONING                 = 2
 IMPLICITATION FOR DEPTH         = 1.
 IMPLICITATION FOR VELOCITY      = 0.6
-INITIAL GUESS FOR H             = 1   
-/  
+INITIAL GUESS FOR H             = 1
+/
 &FIN

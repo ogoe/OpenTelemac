@@ -56,12 +56,12 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="figure1" type="v-section" size="(12;3)" >
-      <layer vars="hauteur d:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
-      <layer vars="hauteur e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="water depth:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="exact depth:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
    </plot1d>
    <plot1d xref="figure2" type="v-section" size="(12;3)" >
-      <layer vars="surface l:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
-      <layer vars="surface e:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="free surface:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
+      <layer vars="exact elevation:line" extract="(0.0;225.0):(41000.0;225.0)" time="[-1]" target="1:T2DRES" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

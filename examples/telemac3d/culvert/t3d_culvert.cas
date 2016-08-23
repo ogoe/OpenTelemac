@@ -33,7 +33,7 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS    =Z,U,V,W,TA1
 ORIGINAL DATE OF TIME                 =2013;12;05
 ORIGINAL HOUR OF TIME                 =00;00;00
 
-MASS-BALANCE                          =TRUE
+MASS-BALANCE                          =YES
 
 /---------------------------------------------------------------------/
 /                             FRICTION                                /

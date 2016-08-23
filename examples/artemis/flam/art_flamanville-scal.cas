@@ -27,7 +27,7 @@ NUMBER OF PERIODS          : 10
 MINIMUM SPECTRAL PERIOD    : 6.
 MAXIMUM SPECTRAL PERIOD    : 26.
 /--------------------------------------------------------------------/
-/ INITIAL CONDITIONS  
+/ INITIAL CONDITIONS
 /--------------------------------------------------------------------/
 INITIAL CONDITIONS   : 'CONSTANT ELEVATION'
 INITIAL WATER LEVEL  : 12.71
@@ -40,5 +40,5 @@ MATRIX STORAGE        : 3
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS : n
 /replace SOLVER : 8 by SOLVER : 9
-SOLVER                : 8 
+SOLVER                : 8
 /

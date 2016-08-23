@@ -81,7 +81,7 @@
       - File:      extraction from xref 1:T2DRES above
    -->
    <plot1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" size="(12;3)" >
-      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" />
+      <layer vars="free surface:line" extract="703;(0;1)" target="1:T2DRES" />
    </plot1d>
    <!-- Plot a profile along a line into the PNG file "figure2.png".
       - Locations: extraction along the line defined by the 2 points (0;0.93) and (21;1.07)
@@ -91,8 +91,8 @@
       - NOTE:  the key extract, can also be moved up a level to the tag saved1d
    -->
    <plot1d xref="figure2" type="v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" size="(12;5)" >
-      <layer vars="surface libre:line" target="1:T2DRES" />
-      <layer vars="fond:line" target="1:T2DRES" />
+      <layer vars="free surface:line" target="1:T2DRES" />
+      <layer vars="bottom:line" target="1:T2DRES" />
    </plot1d>
 
    <!-- Plot a coloured surface into the PNG file "figure6.png".
@@ -103,8 +103,8 @@
       - File:      extraction from file 1:T2DRES above
    -->
    <plot2d xref="figure6" config="oneofall" time="[-1]" size="(12;3)" >
-      <layer vars="VITESSE:map" target="1:T2DRES" />
-      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" />
+      <layer vars="VELOCITY:map" target="1:T2DRES" />
+      <layer vars="VELOCITY:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" />
    </plot2d>
 
    <!-- Plot a mesh into the PNG file "figure7.png".
@@ -112,7 +112,7 @@
       - File:      extraction from file 1:T2DGEO above
    -->
    <plot2d xref="figure7" size="(12;3)" deco="default" >
-      <layer vars="FOND:mesh" target="1:T2DGEO" config="oneofall" />
+      <layer vars="BOTTOM:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
 
    <!-- Plot a coloured surface into the PNG file "figure6.png".
@@ -123,8 +123,8 @@
       - File:      extraction from file 1:T2DRES above
    -->
    <plot2d xref="figure8" size="(20;5)" >
-      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
-      <layer vars="surface libre:wire" sample="(7;0.25)(13.5;1.75){10;4}" target="1:T2DRES" config="oneofall" />
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="free surface:wire" sample="(7;0.25)(13.5;1.75){10;4}" target="1:T2DRES" config="oneofall" />
    </plot2d>
 
 </validation>

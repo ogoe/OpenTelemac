@@ -1,72 +1,76 @@
-/********************************************************************/
-/              TOMAWAC  STEERING FILE                                /
-/********************************************************************/
+/********************************************************************
+/              TOMAWAC  STEERING FILE
+/********************************************************************
 /DEBUGGER=1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 /     FILES
-/--------------------------------------------------------------------/
-FICHIER DE GEOMETRIE = 'geom.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'geo_mesh_veg.cli'
-FICHIER DES RESULTATS GLOBAUX='next_comput.glob'
-FORMAT DU FICHIER DES RESULTATS GLOBAUX = 'SERAFIND'
-FICHIER DES RESULTATS 2D = 'res_veg_Tp1.slf'
+/--------------------------------------------------------------------
+GEOMETRY FILE = 'geom.slf'
+BOUNDARY CONDITIONS FILE = 'geo_mesh_veg.cli'
+GLOBAL RESULT FILE='next_comput.glob'
+GLOBAL RESULT FILE FORMAT = 'SERAFIND'
+2D RESULTS FILE = 'res_veg_Tp1.slf'
 /
-/--------------------------------------------------------------------/
-/ MISCELLANEOUS INPUT-OUTPUT 
-/--------------------------------------------------------------------/
-TITRE = 'CAS1 VEG TEST MENDEZ ET AL. 2004'
-PERIODE POUR LES SORTIES GRAPHIQUES = 30
+/--------------------------------------------------------------------
+/ MISCELLANEOUS INPUT-OUTPUT
+/--------------------------------------------------------------------
+TITLE = 'CAS1 VEG TEST MENDEZ ET AL. 2004'
+PERIOD FOR GRAPHIC PRINTOUTS = 30
 /NOMBRE DE TABLEAUX PRIVES = 1
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = 
+VARIABLES FOR 2D GRAPHIC PRINTOUTS =
 M0,HM0,DMOY,TMOY,VX,VY,ZF,FMOY,TPD
 /,PRI
-PERIODE POUR LES SORTIES LISTING = 30
-/--------------------------------------------------------------------/
+PERIOD FOR LISTING PRINTOUTS = 30
+/--------------------------------------------------------------------
 / DISCRETIZATION
-/--------------------------------------------------------------------/
-PAS DE TEMPS = 1
-NOMBRE DE PAS DE TEMPS = 1200
-NOMBRE DE DIRECTIONS = 36
-NOMBRE DE FREQUENCES = 6
-FREQUENCE MINIMALE = 0.9705 /0.48225
-RAISON FREQUENTIELLE = 1.01
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TIME STEP = 1
+NUMBER OF TIME STEP = 1200
+NUMBER OF DIRECTIONS = 36
+NUMBER OF FREQUENCIES = 6
+MINIMAL FREQUENCY = 0.9705/0.48225
+FREQUENTIAL RATIO = 1.01
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-FACTEUR DE QUEUE DU SPECTRE = 4.
-PROFONDEUR INFINIE = NON
-NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
-PRISE EN COMPTE DE LA PROPAGATION = OUI
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-/--------------------------------------------------------------------/
-/  INITIAL CONDITIONS 
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+SPECTRUM TAIL FACTOR = 4.
+INFINITE DEPTH = NO
+NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
+CONSIDERATION OF PROPAGATION = YES
+CONSIDERATION OF SOURCE TERMS = YES
+/--------------------------------------------------------------------
+/  INITIAL CONDITIONS
+/--------------------------------------------------------------------
 /HAUTEUR SIGNIFICATIVE INITIALE = 0.5656 /(Hrms*racine2)
 /FREQUENCE DE PIC INITIALE = 1.
 /FACTEUR DE PIC INITIAL = 3.3 /valeur moyenne JONSWAP
 /FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
 /ETALEMENT DIRECTIONNEL 1 INITIAL = 2.
 /DIRECTION PRINCIPALE 1 INITIALE = 90.
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 7
-HAUTEUR SIGNIFICATIVE INITIALE = 0.015 /(Hrms*racine2)
-FREQUENCE DE PIC INITIALE = 1.
-FACTEUR DE PIC INITIAL = 3.3 /valeur moyenne JONSWAP
-FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
-ETALEMENT DIRECTIONNEL 1 INITIAL = 0
-DIRECTION PRINCIPALE 1 INITIALE = 90.
-/--------------------------------------------------------------------/
+TYPE OF INITIAL DIRECTIONAL SPECTRUM = 7
+/(Hrms*racine2)
+INITIAL SIGNIFICANT WAVE HEIGHT = 0.015
+INITIAL PEAK FREQUENCY = 1.
+/valeur moyenne JONSWAP
+INITIAL PEAK FACTOR = 3.3
+INITIAL ANGULAR DISTRIBUTION FUNCTION = 3
+INITIAL DIRECTIONAL SPREAD 1 = 0
+INITIAL MAIN DIRECTION 1 = 90.
+/--------------------------------------------------------------------
 /   BOUNDARY CONDITIONS
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
-FACTEUR DE PIC AUX LIMITES = 3.3 /valeur moyenne JONSWAP
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.5656 /0.57
-FREQUENCE DE PIC AUX LIMITES = 1.
-DIRECTION PRINCIPALE 1 AUX LIMITES = 90.
-FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
+/--------------------------------------------------------------------
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
+/valeur moyenne JONSWAP
+BOUNDARY PEAK FACTOR = 3.3
+/0.57
+BOUNDARY SIGNIFICANT WAVE HEIGHT = 0.5656
+BOUNDARY PEAK FREQUENCY = 1.
+BOUNDARY MAIN DIRECTION 1 = 90.
+BOUNDARY ANGULAR DISTRIBUTION FUNCTION = 3
 /ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 2. /30
-ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 64.66
-/--------------------------------------------------------------------/
+BOUNDARY DIRECTIONAL SPREAD 1 = 64.66
+/--------------------------------------------------------------------
 /   VEGETATION
-/--------------------------------------------------------------------/
-PRISE EN COMPTE DE LA VEGETATION = OUI
-DISSIPATION PAR DEFERLEMENT = 1
+/--------------------------------------------------------------------
+VEGETATION TAKEN INTO ACCOUNT = YES
+DEPTH-INDUCED BREAKING DISSIPATION = 1

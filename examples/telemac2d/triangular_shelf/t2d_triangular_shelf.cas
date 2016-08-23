@@ -57,12 +57,12 @@ PRESCRIBED ELEVATIONS           = 0.;0.
 OPTION FOR LIQUID BOUNDARIES    = 2;2
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TREATMENT OF THE LINEAR SYSTEM  = 2
 CONTINUITY CORRECTION           = YES
-PROPAGATION                     = YES      
+PROPAGATION                     = YES
 ADVECTION                       = no
 INFORMATION ABOUT SOLVER        = YES
 SOLVER                          = 7

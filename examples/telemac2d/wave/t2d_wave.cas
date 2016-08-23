@@ -10,7 +10,7 @@
 /  Dell 2.8 MHz compilateur pgi 6.2 :  44 s   version 5.7 20/04/2007
 /
 /  HP C3700 compilateur HP          :  52 s   version 5.8 20/12/2007
-/  HP C3700 compilateur Nag         : 130 s   version 5.8 26/12/2007 
+/  HP C3700 compilateur Nag         : 130 s   version 5.8 26/12/2007
 /  Dell 2.8 MHz compilateur pgi 6.2 :  43 s   version 5.8 20/12/2007
 /
 /  HP C3700 compilateur HP          :  50 s   version 5.9 16/10/2008
@@ -70,10 +70,10 @@ PRESCRIBED ELEVATIONS           = 0.;10.
 OPTION FOR LIQUID BOUNDARIES    = 2;2
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
-PROPAGATION                     = YES      
+PROPAGATION                     = YES
 ADVECTION                       = NO
 INFORMATION ABOUT SOLVER        = YES
 SOLVER                          = 7
@@ -84,5 +84,5 @@ INITIAL GUESS FOR H             = 2
 MATRIX STORAGE                  = 3
 IMPLICITATION FOR DEPTH         = 0.5
 IMPLICITATION FOR VELOCITY      = 0.5
-/           
+/
 &FIN

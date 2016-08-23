@@ -1,7 +1,7 @@
 /
 /-------------------------------------------------------------------/
 /   TELEMAC-2D   -  VALIDATION TEST CASE  -                         /
-/                       TEST CHANNEL                                / 
+/                       TEST CHANNEL                                /
 /-------------------------------------------------------------------/
 /
 /
@@ -51,11 +51,11 @@ CORIOLIS                        = NO
 PRESCRIBED ELEVATIONS           = 0.07
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 DISCRETIZATIONS IN SPACE        = 12;11
-TYPE OF ADVECTION               = 1;5;5;1   
+TYPE OF ADVECTION               = 1;5;5;1
 ADVECTION                       = YES
 INFORMATION ABOUT SOLVER        = YES
 SOLVER                          = 7

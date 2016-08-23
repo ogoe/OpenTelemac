@@ -39,9 +39,9 @@ SEDIMENT DIAMETERS                             : 0.00048
 /       SLOPE                                                         /
 /---------------------------------------------------------------------/
 /
-SLOPE EFFECT                                   : YES 
+SLOPE EFFECT                                   : YES
 FORMULA FOR SLOPE EFFECT                       : 1 / Koch and Flokstra
-BETA                                           : 1.3  
+BETA                                           : 1.3
 /
 /---------------------------------------------------------------------/
 /	SECONDARY CURRENTS EFFECTS                                    /

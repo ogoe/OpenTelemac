@@ -2,119 +2,119 @@
 / TELEMAC2D Version v6p1 16 juil. 2012
 / TELEMAC 2D : rupture digue  - Qinitial
 /---------------------------------------------------------------------
-
+/
 / ENTREES-SORTIES, FICHIERS
 /---------------------------------------------------------------------
-
-FICHIER DES RESULTATS              ='r2d_breach.slf'
-
-FICHIER DES CONDITIONS AUX LIMITES ='geo_breach.cli'
-
-FICHIER DES FRONTIERES LIQUIDES    ='t2d_breach.liq'
-
-FICHIER DE GEOMETRIE               ='geo_breach.slf'
-
-FICHIER DU CALCUL PRECEDENT        ='ini_breach.slf'
-
-FICHIER DE DONNEES DES BRECHES     ='breach.txt'
-
+/
+RESULTS FILE              ='r2d_breach.slf'
+/
+BOUNDARY CONDITIONS FILE ='geo_breach.cli'
+/
+LIQUID BOUNDARIES FILE    ='t2d_breach.liq'
+/
+GEOMETRY FILE               ='geo_breach.slf'
+/
+PREVIOUS COMPUTATION FILE        ='ini_breach.slf'
+/
+BREACHES DATA FILE     ='breach.txt'
+/
 /---------------------------------------------------------------------
 / ENTREES-SORTIES, GENERALITES
 /---------------------------------------------------------------------
-
-SUITE DE CALCUL =true
-
+/
+COMPUTATION CONTINUED =true
+/
 /-------------------------------------------------------------------
-/---/
-/ 
-TITRE='TELEMAC 2D : rupture digue  - Qinitial'
-
-
+/---
+/
+TITLE='TELEMAC 2D : rupture digue  - Qinitial'
+/
+/
 /---------------------------------------------------------------------
 / ENTREES-SORTIES, GRAPHIQUES ET LISTING
 /---------------------------------------------------------------------
-
-BILAN DE MASSE                        =OUI
-
-PERIODE DE SORTIE LISTING             =20
-
-VARIABLES POUR LES SORTIES GRAPHIQUES =U,V,S,H,B,L,D,W
-
-PERIODE POUR LES SORTIES GRAPHIQUES   =120
-
-INFORMATIONS SUR LE SOLVEUR           =OUI
-
-
+/
+MASS-BALANCE                        =YES
+/
+LISTING PRINTOUT PERIOD             =20
+/
+VARIABLES FOR GRAPHIC PRINTOUTS =U,V,S,H,B,L,D,W
+/
+GRAPHIC PRINTOUT PERIOD   =120
+/
+INFORMATION ABOUT SOLVER           =YES
+/
+/
 /---------------------------------------------------------------------
 / EQUATIONS
 /---------------------------------------------------------------------
-
-COEFFICIENT DE FROTTEMENT             =15.
-
-COEFFICIENT DE DIFFUSION DES VITESSES =0.005
-
-LOI DE FROTTEMENT SUR LE FOND         =3
-
-
+/
+FRICTION COEFFICIENT             =15.
+/
+VELOCITY DIFFUSIVITY =0.005
+/
+LAW OF BOTTOM FRICTION         =3
+/
+/
 /---------------------------------------------------------------------
 / EQUATIONS, CONDITIONS INITIALES
 /---------------------------------------------------------------------
-
-CONDITIONS INITIALES ='COTE CONSTANTE'
-
-COTE INITIALE        =2.0
-
-
+/
+INITIAL CONDITIONS ='COTE CONSTANTE'
+/
+INITIAL ELEVATION        =2.0
+/
+/
 /---------------------------------------------------------------------
 / EQUATIONS, CONDITIONS LIMITES
 /---------------------------------------------------------------------
-
-DEBITS IMPOSES                      =0;50.0
-
-PROFILS DE VITESSE                  =1;4
-
-COTES IMPOSEES                      =2.0;0
-
-OPTION POUR LES FRONTIERES LIQUIDES =1;1
-
-
+/
+PRESCRIBED FLOWRATES                      =0;50.0
+/
+VELOCITY PROFILES                  =1;4
+/
+PRESCRIBED ELEVATIONS                      =2.0;0
+/
+OPTION FOR LIQUID BOUNDARIES =1;1
+/
+/
 /---------------------------------------------------------------------
 / PARAMETRES NUMERIQUES
 /---------------------------------------------------------------------
-
-BRECHE                                     =TRUE
-
-TRAITEMENT DU SYSTEME LINEAIRE             =2
-
-COMPATIBILITE DU GRADIENT DE SURFACE LIBRE =0.9
-
-REMISE A ZERO DU TEMPS                     =true
-
-PAS DE TEMPS                               =0.5
-
-OPTION DE SUPG                             =1;2
-
-DUREE DU CALCUL                            =2700
-
-CORRECTION DE CONTINUITE                   =true
-
+/
+BREACH                                     =YES
+/
+TREATMENT OF THE LINEAR SYSTEM             =2
+/
+FREE SURFACE GRADIENT COMPATIBILITY =0.9
+/
+INITIAL TIME SET TO ZERO                     =true
+/
+TIME STEP                               =0.5
+/
+SUPG OPTION                             =1;2
+/
+DURATION                            =2700
+/
+CONTINUITY CORRECTION                   =true
+/
 /---------------------------------------------------------------------
 / PARAMETRES NUMERIQUES, SOLVEUR
 /---------------------------------------------------------------------
-
-SOLVEUR              =1
-
-PRECISION DU SOLVEUR =1.E-5
-
-
+/
+SOLVER              =1
+/
+SOLVER ACCURACY =1.E-5
+/
+/
 /---------------------------------------------------------------------
 / PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR
 /---------------------------------------------------------------------
-
-MASS-LUMPING SUR LA VITESSE   =1.
-
-IMPLICITATION POUR LA HAUTEUR =0.6
-
-MASS-LUMPING SUR H            =1.
-
-IMPLICITATION POUR LA VITESSE =0.6
+/
+MASS-LUMPING ON VELOCITY   =1.
+/
+IMPLICITATION FOR DEPTH =0.6
+/
+MASS-LUMPING ON H            =1.
+/
+IMPLICITATION FOR VELOCITY =0.6

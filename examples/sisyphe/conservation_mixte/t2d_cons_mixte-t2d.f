@@ -53,15 +53,20 @@
 !
 !   INITIALISATION DE H , LA HAUTEUR D'EAU
 !
-      IF(CDTINI(1:10).EQ.'COTE NULLE') THEN
+      IF(CDTINI(1:10).EQ.'COTE NULLE'.OR.
+     &   CDTINI(1:14).EQ.'ZERO ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
-      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE') THEN
+      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE'.OR.
+     &       CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
-      ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE') THEN
+      ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE'.OR.
+     &       CDTINI(1:10).EQ.'ZERO DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
-      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES') THEN
+      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
+     &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
+     &       CDTINI(1:07).EQ.'SPECIAL') THEN
       DO IPOIN=1,NPOIN
         EIKON=( (X(IPOIN)-10.05D0)**2 + (Y(IPOIN)-10.05D0)**2 ) / 4.D0
         H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) )

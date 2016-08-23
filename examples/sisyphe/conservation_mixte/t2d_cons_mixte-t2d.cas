@@ -1,31 +1,32 @@
+/
 /DEBUGGER : 1
 /
 /  CAS GOUTTEDO DE TELEMAC-2D + TRANSPORT DE SEDIMENT
 /  POUR VERIFICATION DE LA CONSERVATION DE LA MASSE
 /  AVEC LE CONVECTEUR VOLUMES FINIS DE SISYPHE
-/  ICI SOLVEUR DIRECT (SOLVEUR : 8) POUR 
+/  ICI SOLVEUR DIRECT (SOLVEUR : 8) POUR
 /  AVOIR LA PRECISION DE LA MACHINE
 /
-   SOLVEUR : 8
+SOLVER : 8
 /
-MASS-LUMPING SUR H : 1.
+MASS-LUMPING ON H : 1.
 /
 / mixte
-FICHIER DES PARAMETRES DE SISYPHE : sis_cons_mixte-t2d.cas
-COUPLAGE AVEC : 'SISYPHE'
+SISYPHE STEERING FILE : sis_cons_mixte-t2d.cas
+COUPLING WITH : 'SISYPHE'
 /
 / Version 5.9
 /
-/ Dell 2.8 GHz Linux, compilateur pgi   :  ?  s   
-/ Dell 2.8 GHz Linux, compilateur Intel :  7  s JMH 29/12/2008  
+/ Dell 2.8 GHz Linux, compilateur pgi   :  ?  s
+/ Dell 2.8 GHz Linux, compilateur Intel :  7  s JMH 29/12/2008
 / HP C3700, compilateur HP              : 16  s JMH 29/12/2008
-/ HP C3700, compilateur Nag             :  ?  s    
+/ HP C3700, compilateur Nag             :  ?  s
 /
 / Version 6.0
 /
 / Dell 2.8 GHz Linux, compilateur Intel :  5  s JMH 10/12/2009
 / HP C3700, compilateur HP              : 14  s JMH 10/12/2009
-/ HP C3700, compilateur Nag             : 27  s JMH 08/12/2009  
+/ HP C3700, compilateur Nag             : 27  s JMH 08/12/2009
 /
 / Dell 2.8 GHz Linux, compilateur Intel :  7  s  CV 06/06/2010
 /
@@ -33,45 +34,50 @@ COUPLAGE AVEC : 'SISYPHE'
 /
 / HP C3700, compilateur HP              : 15  s JMH 26/04/2011 (reference)
 / Dell 2.8 GHz Linux, compilateur Intel :  7  s  CV 22/03/2011
-/ HP C3700, compilateur Nag             : 26  s  CV 13/04/2011  
-/ HP Z600 Linux, compilateur Intel	:  6  s	 MS 21/07/2011 
+/ HP C3700, compilateur Nag             : 26  s  CV 13/04/2011
+/ HP Z600 Linux, compilateur Intel	:  6  s	 MS 21/07/2011
 /
-FICHIER FORTRAN                    : t2d_cons_mixte-t2d.f 
-FICHIER DES CONDITIONS AUX LIMITES : geo_cons_mixte-t2d.cli   
-FICHIER DE GEOMETRIE               : geo_cons_mixte-t2d.slf
-FICHIER DES RESULTATS              : r2d_cons_mixte-t2d.slf
+FORTRAN FILE                    : t2d_cons_mixte-t2d.f
+BOUNDARY CONDITIONS FILE : geo_cons_mixte-t2d.cli
+GEOMETRY FILE               : geo_cons_mixte-t2d.slf
+RESULTS FILE              : r2d_cons_mixte-t2d.slf
 /
-/----------------------------------------------------------------------/ 
-/                     OPTIONS GENERALES                                  
-/----------------------------------------------------------------------/ 
-TITRE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'              
-SUITE DE CALCUL : NON                                                    
-VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T'                        
-VARIABLES A IMPRIMER : ''                                                
-PAS DE TEMPS = 0.04    NOMBRE DE PAS DE TEMPS = 1000                     
-PERIODE POUR LES SORTIES GRAPHIQUES : 100   
-PERIODE POUR LES SORTIES LISTING =100
+/----------------------------------------------------------------------/
+/                     OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'
+COMPUTATION CONTINUED : NO
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,T'
+VARIABLES TO BE PRINTED : ''
+TIME STEP = 0.04
+NUMBER OF TIME STEPS = 1000
+GRAPHIC PRINTOUT PERIOD : 100
+LISTING FOR PRINTOUT PERIOD =100
 /
-/NOMBRE DE PAS DE TEMPS = 2                     
-/PERIODE POUR LES SORTIES GRAPHIQUES : 1   
-/PERIODE POUR LES SORTIES LISTING =1
-
+/NUMBER OF TIME STEPS = 2
+/GRAPHIC PRINTOUT PERIOD : 1
 /
-LOI DE FROTTEMENT SUR LE FOND : 3    COEFFICIENT DE FROTTEMENT = 40.     
-/----------------------------------------------------------------------/ 
-/     PROPAGATION                                                        
-/----------------------------------------------------------------------/ 
-MODELE DE TURBULENCE : 1 COEFFICIENT DE DIFFUSION DES VITESSES = 0.D0                                    
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4 
-IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6  
-PRECONDITIONNEMENT : 2             
-/---------------------------------------------------------------/
-BILAN DE MASSE : OUI    
-CONDITIONS INITIALES : PARTICULIERES     
-STOCKAGE DES MATRICES : 3        
-/ POUR EQUATION D'ONDE : 
-TRAITEMENT DU SYSTEME LINEAIRE : 2 
-FORME DE LA CONVECTION:1;5 
-OPTION DE SUPG       : 2;0   
-/----------------------------------------------------------------------/ 
- 
+LISTING FOR PRINTOUT PERIOD =1
+/
+/
+LAW OF BOTTOM FRICTION : 3
+FRICTION COEFFICIENT = 40.
+/----------------------------------------------------------------------/
+/     PROPAGATION
+/----------------------------------------------------------------------/
+TURBULENCE MODEL : 1
+VELOCITY DIFFUSIVITY = 0.D0
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER : 100
+SOLVER ACCURACY = 1.E-4
+IMPLICITATION FOR DEPTH = 0.6
+IMPLICITATION FOR VELOCITY = 0.6
+PRECONDITIONING : 2
+/---------------------------------------------------------------
+MASS-BALANCE : YES
+INITIAL CONDITIONS : PARTICULAR
+MATRIX STORAGE : 3
+/ POUR EQUATION D'ONDE :
+TREATMENT OF THE LINEAR SYSTEM : 2
+TYPE OF ADVECTION:1;5
+SUPG OPTION      : 2;0
+/----------------------------------------------------------------------/

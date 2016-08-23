@@ -1,60 +1,60 @@
-/********************************************************************/
-/             FICHIER DES PARAMETRES DE TOMAWAC                      /
-/********************************************************************/
-/--------------------------------------------------------------------/
+/********************************************************************
+/             FICHIER DES PARAMETRES DE TOMAWAC
+/********************************************************************
+/--------------------------------------------------------------------
 /     FICHIERS
-/--------------------------------------------------------------------/
-FICHIER DE GEOMETRIE = 'BJ15_geom_T.r2d'
-FICHIER DES CONDITIONS AUX LIMITES = 'canal.dynam'
-FICHIER DES RESULTATS 2D = 'deferl4.r2d'
-FICHIER DES RESULTATS PONCTUELS = 'deferl4.spe'
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+GEOMETRY FILE = 'BJ15_geom_T.r2d'
+BOUNDARY CONDITIONS FILE = 'canal.dynam'
+2D RESULTS FILE = 'deferl4.r2d'
+PUNCTUAL RESULTS FILE = 'deferl4.spe'
+/--------------------------------------------------------------------
 / CONDITIONS AUX LIMITES
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
-FACTEUR DE PIC AUX LIMITES = 3.3
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 0.202
-FREQUENCE DE PIC AUX LIMITES = 0.530
-DIRECTION PRINCIPALE 1 AUX LIMITES = 270.
-ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 32
-DIRECTION PRINCIPALE 2 AUX LIMITES = 270.
-ETALEMENT DIRECTIONNEL 2 AUX LIMITES = 32
-FACTEUR DE PONDERATION POUR FRA AUX LIMITES = 1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
+BOUNDARY PEAK FACTOR = 3.3
+BOUNDARY SIGNIFICANT WAVE HEIGHT = 0.202
+BOUNDARY PEAK FREQUENCY = 0.530
+BOUNDARY MAIN DIRECTION 1 = 270.
+BOUNDARY DIRECTIONAL SPREAD 1 = 32
+BOUNDARY MAIN DIRECTION 2 = 270.
+BOUNDARY DIRECTIONAL SPREAD 2 = 32
+BOUNDARY WEIGHTING FACTOR FOR ADF = 1
+/--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
-/--------------------------------------------------------------------/
-TITRE = 'IZUMIYA AND HORIKAWA MODEL DE DEFERLEMENT'
-PERIODE POUR LES SORTIES GRAPHIQUES = 10
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FM01,ZF,FX,FY
-PERIODE POUR LES SORTIES LISTING = 10
+/--------------------------------------------------------------------
+TITLE = 'IZUMIYA AND HORIKAWA MODEL DE DEFERLEMENT'
+PERIOD FOR GRAPHIC PRINTOUTS = 10
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,DMOY,FM01,ZF,FX,FY
+PERIOD FOR LISTING PRINTOUTS = 10
 /ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.;5.;10.;15.;20.;25.
 /ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 9.;9.;9.;9.;9.;9.
-/ Pour Parallélisme 
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.;4.99956512451172;10.;
+/ Pour Parallélisme
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS = 0.;4.99956512451172;10.;
 15.;20.0004501342773;25.
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 9.;8.99944782257080;9.;
+ORDINATES OF SPECTRUM PRINTOUT POINTS = 9.;8.99944782257080;9.;
 9.;9.00055217742920;9.
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 / DISCRETISATION
-/--------------------------------------------------------------------/
-NOMBRE DE PAS DE TEMPS = 100
-PAS DE TEMPS = 0.35
-NOMBRE DE DIRECTIONS = 24
-NOMBRE DE FREQUENCES = 25
-FREQUENCE MINIMALE = 0.168874
-RAISON FREQUENTIELLE = 1.1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+NUMBER OF TIME STEP = 100
+TIME STEP = 0.35
+NUMBER OF DIRECTIONS = 24
+NUMBER OF FREQUENCIES = 25
+MINIMAL FREQUENCY = 0.168874
+FREQUENTIAL RATIO = 1.1
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-PROFONDEUR INFINIE = NON
-PROFONDEUR D'EAU MINIMALE = 0.01
-PRISE EN COMPTE DE LA PROPAGATION = OUI
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
-PRISE EN COMPTE DU VENT = NON
-APPORTS DUS AU VENT = 0
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 0
-DISSIPATION PAR DEFERLEMENT = 4
-DEFERLEMENT 4 (IH) CHOIX FREQUENCE CARACTERISTIQUE = 1 /jusqua 6
-DEFERLEMENT 4 (IH) CONSTANTE BETA0 = 1.81
-DEFERLEMENT 4 (IH) CONSTANTE M2STAR = 0.0091
+/--------------------------------------------------------------------
+INFINITE DEPTH = NO
+MINIMUM WATER DEPTH = 0.01
+CONSIDERATION OF PROPAGATION = YES
+CONSIDERATION OF SOURCE TERMS = YES
+CONSIDERATION OF A STATIONARY CURRENT = NO
+CONSIDERATION OF A WIND = NO
+WIND GENERATION = 0
+BOTTOM FRICTION DISSIPATION = 0
+DEPTH-INDUCED BREAKING DISSIPATION = 4
+DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY = 1/jusqua 6
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0 = 1.81
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR = 0.0091

@@ -536,7 +536,7 @@
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
-      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES') THEN
+      ELSEIF(CDTINI(1:10).EQ.'PARTICULAR') THEN
       DO IPOIN=1,NPOIN
         EIKON=( (X(IPOIN)-10.05D0)**2 + (Y(IPOIN)-10.05D0)**2 ) / 4.D0
         H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) )

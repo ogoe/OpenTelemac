@@ -496,8 +496,8 @@ def setKeyValue(key,cas,frgb,value):
 def format72(value):
 
    val72 = ''
-   for i in range(len(value)/72+1):
-      val72 = val72 + ( value+72*' ' )[72*i:72*i+72] + '\n'
+   for i in range(len(value)/71+1):
+      val72 = val72 + ( value+71*' ' )[71*i:71*i+71] + '\n'
 
    return val72.rstrip()
 

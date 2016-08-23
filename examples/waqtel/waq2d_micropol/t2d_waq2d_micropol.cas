@@ -8,9 +8,9 @@
 /  HP Z600 Nag compiler      8 proc : 24 s      version 7.2 26/10/2016
 /  HP Z600 Intel compiler    1 proc : 4min48s   version 7.2 26/10/2016
 /  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.2 26/10/2016
-/ 
-
-
+/
+/
+/
 /****************************************************
 TITLE = 'Water Quality- micropol  process for Channel'
 /****************************************************
@@ -48,7 +48,7 @@ INFORMATION ABOUT SOLVER         = YES
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED           = NO 
+COMPUTATION CONTINUED           = NO
 INITIAL CONDITIONS              = PARTICULAR
 /
 /----------------------------------------------
@@ -65,13 +65,13 @@ INITIAL CONDITIONS              = PARTICULAR
 /
 LAW OF BOTTOM FRICTION           = 0
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TIDAL FLATS                       = NO
 CONTINUITY CORRECTION             = YES
 /************************************
-/ TRACER 
+/ TRACER
 /************************************
 /NUMBER OF TRACERS = 1
 / initial values of         SS,SF,C,CSS,CFF
@@ -82,6 +82,6 @@ INITIAL VALUES OF TRACERS = 1.1;0.2;4.9;5.5;0.7
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'micropol_steer.cas'
 WATER QUALITY PROCESS = 4
-
+/
 &FIN
-
+/

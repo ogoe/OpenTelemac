@@ -1,75 +1,74 @@
 /
-/--------------------------------------------------------------------- 
-/ TELEMAC2D Version v6p2 14 juin 2012 
-/ TELEMAC 2D : TEST DECROISSANCE TRACEURS 
-/--------------------------------------------------------------------- 
-/ 
-/--------------------------------------------------------------------- 
-/ ENTREES-SORTIES, FICHIERS 
-/--------------------------------------------------------------------- 
-/ 
-NOMS DES TRACEURS                  ='Traceur 1';'Traceur 2'  
-FICHIER DES PARAMETRES             ='t2d_trdec.cas' 
-FICHIER DES RESULTATS              ='r2d_trdec.slf'  
-FICHIER DES CONDITIONS AUX LIMITES ='geo_trdec.cli'  
-FICHIER DE GEOMETRIE               ='geo_trdec.slf'  
-/ 
-/--------------------------------------------------------------------- 
-/ ENTREES-SORTIES, GENERALITES 
-/--------------------------------------------------------------------- 
-/ 
-/------------------------------------------------------------------- 
-/                     OPTIONS GENERALES                                
-/------------------------------------------------------------------- 
-/ 
-TITRE      ='TELEMAC 2D : TEST DECROISSANCE TRACEURS' 
-/ 
-/--------------------------------------------------------------------- 
-/ ENTREES-SORTIES, GRAPHIQUES ET LISTING 
-/--------------------------------------------------------------------- 
-/ 
-PERIODE DE SORTIE LISTING             =240 
-VARIABLES POUR LES SORTIES GRAPHIQUES =H,S,B,T1,T2 
-PERIODE POUR LES SORTIES GRAPHIQUES   =60 
-BILAN DE MASSE                        =VRAI 
-INFORMATIONS SUR LE SOLVEUR           =VRAI 
-/ 
-/--------------------------------------------------------------------- 
-/ EQUATIONS 
-/--------------------------------------------------------------------- 
-/ 
-LOI DE FROTTEMENT SUR LE FOND : 0 
-CONVECTION                                          =NON 
-DIFFUSION DES VITESSES                              =NON 
-LOI DE DEGRADATION DES TRACEURS                     =0;1 
-VALEURS INITIALES DES TRACEURS                      =100.;200. 
-COEFFICIENT 1 DE LA LOI DE DEGRADATION DES TRACEURS =0.0;6.0 
-COEFFICIENT D'IMPLICITATION DES TRACEURS            =1. 
-PRECISION POUR LA DIFFUSION DES TRACEURS            =1.E-10 
-/ 
-/--------------------------------------------------------------------- 
-/ EQUATIONS, CONDITIONS INITIALES 
-/--------------------------------------------------------------------- 
-/ 
-CONDITIONS INITIALES ='COTE CONSTANTE'  
-COTE INITIALE        =2.  
-/ 
-/--------------------------------------------------------------------- 
-/ EQUATIONS, TRACEUR 
-/--------------------------------------------------------------------- 
-/ 
-NOMBRE DE TRACEURS =2 
-/ 
-/--------------------------------------------------------------------- 
-/ PARAMETRES NUMERIQUES 
-/--------------------------------------------------------------------- 
-/ 
-NOMBRE DE PAS DE TEMPS =8640  
-PAS DE TEMPS           =10.0 
-/ 
-/--------------------------------------------------------------------- 
-/ PARAMETRES NUMERIQUES, SOLVEUR 
-/--------------------------------------------------------------------- 
-/ 
-SOLVEUR POUR LA DIFFUSION DES TRACEURS =1 
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p2 14 juin 2012
+/ TELEMAC 2D : TEST DECROISSANCE TRACEURS
+/---------------------------------------------------------------------
 /
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, FICHIERS
+/---------------------------------------------------------------------
+/
+NAMES OF TRACERS                  ='Traceur 1';'Traceur 2'
+STEERING FILE             ='t2d_trdec.cas'
+RESULTS FILE              ='r2d_trdec.slf'
+BOUNDARY CONDITIONS FILE ='geo_trdec.cli'
+GEOMETRY FILE               ='geo_trdec.slf'
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GENERALITES
+/---------------------------------------------------------------------
+/
+/-------------------------------------------------------------------
+/                     OPTIONS GENERALES
+/-------------------------------------------------------------------
+/
+TITLE      ='TELEMAC 2D : TEST DECROISSANCE TRACEURS'
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+/
+LISTING PRINTOUT PERIOD             =240
+VARIABLES FOR GRAPHIC PRINTOUTS =H,S,B,T1,T2
+GRAPHIC PRINTOUT PERIOD   =60
+MASS-BALANCE                        =VRAI
+INFORMATION ABOUT SOLVER           =VRAI
+/
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+/
+LAW OF BOTTOM FRICTION : 0
+ADVECTION                                          =NO
+DIFFUSION OF VELOCITY                              =NO
+LAW OF TRACERS DEGRADATION                     =0;1
+INITIAL VALUES OF TRACERS                      =100.;200.
+COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION =0.0;6.0
+IMPLICITATION COEFFICIENT OF TRACERS            =1.
+ACCURACY FOR DIFFUSION OF TRACERS            =1.E-10
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+/
+INITIAL CONDITIONS ='COTE CONSTANTE'
+INITIAL ELEVATION        =2.
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, TRACEUR
+/---------------------------------------------------------------------
+/
+NUMBER OF TRACERS =2
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+/
+NUMBER OF TIME STEPS =8640
+TIME STEP           =10.0
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+/
+SOLVER FOR DIFFUSION OF TRACERS =1

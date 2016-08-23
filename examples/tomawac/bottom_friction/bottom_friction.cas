@@ -1,62 +1,62 @@
 /DEBUGGER : 1
-/--------------------------------------------------------------------/
-/             FICHIER DES PARAMETRES DE TOMAWAC                      /
-/--------------------------------------------------------------------/
-/MODE TROISIEME GENERATION = OUI
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+/             FICHIER DES PARAMETRES DE TOMAWAC
+/--------------------------------------------------------------------
+/MODE TROISIEME GENERATION = YES
+/--------------------------------------------------------------------
 /     FICHIERS
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 /FICHIER FORTRAN = 'tom_frot.f'
 /FICHIER DE GEOMETRIE = 'geo_frot.slf'
-FICHIER DE GEOMETRIE = 'geom.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'geo_frot.cli'
+GEOMETRY FILE = 'geom.slf'
+BOUNDARY CONDITIONS FILE = 'geo_frot.cli'
 /
-FICHIER DES RESULTATS 2D = 'tom_frot_T_d5-f0.1-h1.slf'
-FICHIER DES RESULTATS PONCTUELS = 'tom_frot_T_d5-f0.1-h1.spe'
-/--------------------------------------------------------------------/
+2D RESULTS FILE = 'tom_frot_T_d5-f0.1-h1.slf'
+PUNCTUAL RESULTS FILE = 'tom_frot_T_d5-f0.1-h1.spe'
+/--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
-/--------------------------------------------------------------------/
-TITRE = 'TEST FROTTEMENT AU FOND SUR FOND PLAT'
-PERIODE POUR LES SORTIES GRAPHIQUES = 25
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,DMOY,FMOY,FM01
-PERIODE POUR LES SORTIES LISTING = 20
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 0.
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TITLE = 'TEST FROTTEMENT AU FOND SUR FOND PLAT'
+PERIOD FOR GRAPHIC PRINTOUTS = 25
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,DMOY,FMOY,FM01
+PERIOD FOR LISTING PRINTOUTS = 20
+ORDINATES OF SPECTRUM PRINTOUT POINTS = 0.
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS = 0.
+/--------------------------------------------------------------------
 / DISCRETISATION
-/--------------------------------------------------------------------/
-PAS DE TEMPS = 100.
-NOMBRE DE PAS DE TEMPS = 300
-NOMBRE DE DIRECTIONS = 24
-FREQUENCE MINIMALE = 0.056447393
-RAISON FREQUENTIELLE = 1.1
-NOMBRE DE FREQUENCES = 25
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TIME STEP = 100.
+NUMBER OF TIME STEP = 300
+NUMBER OF DIRECTIONS = 24
+MINIMAL FREQUENCY = 0.056447393
+FREQUENTIAL RATIO = 1.1
+NUMBER OF FREQUENCIES = 25
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-PROFONDEUR INFINIE = NON
-COORDONNEES SPHERIQUES = NON
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
-PRISE EN COMPTE DU VENT = NON
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+INFINITE DEPTH = NO
+SPHERICAL COORDINATES = NO
+CONSIDERATION OF SOURCE TERMS = YES
+BOTTOM FRICTION DISSIPATION = 1
+CONSIDERATION OF A STATIONARY CURRENT = NO
+CONSIDERATION OF A WIND = NO
+/--------------------------------------------------------------------
 / CONDITIONS INITIALES
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 6
-HAUTEUR SIGNIFICATIVE INITIALE = 1.
-FREQUENCE DE PIC INITIALE = 0.1
-FACTEUR DE PIC INITIAL = 1.
-ETALEMENT DIRECTIONNEL 1 INITIAL = 6.
-DIRECTION PRINCIPALE 1 INITIALE = 0.
-FACTEUR DE PONDERATION POUR FRA INITIALE = 1.
-FACTEUR DE QUEUE DU SPECTRE = 0
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
+TYPE OF INITIAL DIRECTIONAL SPECTRUM = 6
+INITIAL SIGNIFICANT WAVE HEIGHT = 1.
+INITIAL PEAK FREQUENCY = 0.1
+INITIAL PEAK FACTOR = 1.
+INITIAL DIRECTIONAL SPREAD 1 = 6.
+INITIAL MAIN DIRECTION 1 = 0.
+INITIAL WEIGHTING FACTOR FOR ADF = 1.
+SPECTRUM TAIL FACTOR = 0
+/--------------------------------------------------------------------
 / CONDITIONS AUX LIMITES
-/--------------------------------------------------------------------/
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 1.
-FREQUENCE DE PIC AUX LIMITES = 0.1
-FACTEUR DE PIC AUX LIMITES = 1.
-ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 6.
-DIRECTION PRINCIPALE 1 AUX LIMITES = 0.
+/--------------------------------------------------------------------
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
+BOUNDARY SIGNIFICANT WAVE HEIGHT = 1.
+BOUNDARY PEAK FREQUENCY = 0.1
+BOUNDARY PEAK FACTOR = 1.
+BOUNDARY DIRECTIONAL SPREAD 1 = 6.
+BOUNDARY MAIN DIRECTION 1 = 0.

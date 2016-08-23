@@ -27,48 +27,48 @@ INITIAL CONDITIONS = 'CONSTANT DEPTH'
 /---------------------------------------------------------------------
 / INPUT-OUTPUT, FILES
 /---------------------------------------------------------------------
-
+/
 BOUNDARY CONDITIONS FILE = geo_seccurrents.cli
 RESULTS FILE             = t2d_seccurrents.res
 /FORTRAN FILE             = princi.f
 GEOMETRY FILE            = geo_seccurrents.slf
-
+/
 COMPUTATION CONTINUED     = YES
 PREVIOUS COMPUTATION FILE = restart
 INITIAL TIME SET TO ZERO  = YES
 CONTINUITY CORRECTION     = YES
-
+/
 /////////////////////////////SECCURRENTS///////////////////////////////
 SECONDARY CURRENTS = YES
 PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS = 7.071
 DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS = 0.5
 ///////////////////////////////////////////////////////////////////////
-
+/
 /---------------------------------------------------------------------
 / INPUT-OUTPUT, GRAPHICS AND LISTING
 /---------------------------------------------------------------------
 MASS-BALANCE            = YES
 VARIABLES FOR GRAPHIC PRINTOUTS =
 'U,V,H,B,US,S,M,K,E,F,L,OMEGA,TAU_S,1/R'
-
+/
 /---------------------------------------------------------------------
 / NUMERICAL PARAMETERS
 /---------------------------------------------------------------------
-
+/
 SOLVER ACCURACY                 = 1.E-6
 SOLVER                          = 1
-
+/
 NUMBER OF TIME STEPS = 3000
 TIME STEP = 0.1
 GRAPHIC PRINTOUT PERIOD = 3000
 LISTING PRINTOUT PERIOD = 300
-
-
+/
+/
 /DIFFUSIONS SPOILS A LITTLE MASS CONSERVATION OF TRACERS
 /TO CHECK WITHOUT DIFFUSION :
 /TURBULENCE MODEL = 1  COEFFICIENT FOR DIFFUSION OF TRACERS = 1.D0
-
-
+/
+/
 TREATMENT OF THE LINEAR SYSTEM : 2 SOLVER : 1
 TIDAL FLATS : YES
 TREATMENT OF NEGATIVE DEPTHS : 2
@@ -83,4 +83,4 @@ SUPG OPTION :       0;0
 FREE SURFACE GRADIENT COMPATIBILITY : 0.
 TREATMENT OF FLUXES AT THE BOUNDARIES = 2
 &FIN
-
+/

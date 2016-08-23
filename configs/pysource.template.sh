@@ -21,7 +21,7 @@ export PYTHONUNBUFFERED='true'
 ###
 ### COMPILERS -----------------------------------------------------------
 ###
-export SYSTEL=/projets/projets.002/systel.002
+export SYSTEL=/data/projets/projets.002/systel.002
 # Here are a few exemple for external libraries
 
 ### MPI -----------------------------------------------------------

@@ -1,13 +1,13 @@
 /----------------------------------------------------------------------/
 FORTRAN FILE                : 't2d_break.f'
-BOUNDARY CONDITIONS FILE    : 'geo_break.cli'  
+BOUNDARY CONDITIONS FILE    : 'geo_break.cli'
 GEOMETRY FILE               : 'geo_break.slf'
 RESULTS FILE                : 'r2d_break.slf'
 /Version 6.1
-/----------------------------------------------------------------------/ 
+/----------------------------------------------------------------------/
 TITLE = '10. Breakwater. As 9, but output max after 1 hr 45 min.'
-COMPUTATION CONTINUED : NO                                               
-VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,MAXZ'                        
+COMPUTATION CONTINUED : NO
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,MAXZ'
 TIME STEP = 5.0
 NUMBER OF TIME STEPS = 1620
 GRAPHIC PRINTOUT PERIOD = 800

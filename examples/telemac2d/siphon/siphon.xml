@@ -62,30 +62,30 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="(10;8)" >
-      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
    <plot2d xref="tracor1_tf" size="(10;8)" >
-      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="tracer 1:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
    <plot2d xref="tracor1_t1" size="(10;8)" >
-      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[1]" />
+      <layer vars="tracer 1:map" target="1:T2DRES" config="oneofall" time="[1]" />
    </plot2d>
    <plot2d xref="tracor1_t10" size="(10;8)" >
-      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[10]" />
+      <layer vars="tracer 1:map" target="1:T2DRES" config="oneofall" time="[10]" />
    </plot2d>
    <plot2d xref="tracor1_t20" size="(10;8)" >
-      <layer vars="traceur 1:map" target="1:T2DRES" config="oneofall" time="[20]" />
+      <layer vars="tracer 1:map" target="1:T2DRES" config="oneofall" time="[20]" />
    </plot2d>
    <plot2d xref="tracor2_tf" size="(10;8)" >
-      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="tracer 2:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
    <plot2d xref="tracor2_t1" size="(10;8)" >
-      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[1]" />
+      <layer vars="tracer 2:map" target="1:T2DRES" config="oneofall" time="[1]" />
    </plot2d>
    <plot2d xref="tracor2_t10" size="(10;8)" >
-      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[10]" />
+      <layer vars="tracer 2:map" target="1:T2DRES" config="oneofall" time="[10]" />
    </plot2d>
    <plot2d xref="tracor2_t20" size="(10;8)" >
-      <layer vars="traceur 2:map" target="1:T2DRES" config="oneofall" time="[20]" />
+      <layer vars="tracer 2:map" target="1:T2DRES" config="oneofall" time="[20]" />
    </plot2d>
 </validation>

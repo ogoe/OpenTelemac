@@ -75,14 +75,14 @@ TREATMENT OF FLUXES AT THE BOUNDARIES           : 1;1
 /
 ACCURACY FOR DIFFUSION OF VELOCITIES            : 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES : 500
-PRECONDITIONING FOR DIFFUSION OF VELOCITIES     : 34 
+PRECONDITIONING FOR DIFFUSION OF VELOCITIES     : 34
 /
 /---------------------------------------------------------------------/
 /     PROPAGATION                                                     /
 /---------------------------------------------------------------------/
 /
 ACCURACY FOR PROPAGATION                            : 1.E-6
-MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION        : 500 
+MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION        : 500
 PRECONDITIONING FOR PROPAGATION                     : 2
 SOLVER FOR PROPAGATION                              : 2
 INITIAL GUESS FOR DEPTH                             : 1

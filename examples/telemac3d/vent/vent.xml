@@ -67,7 +67,7 @@
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="cote z:mesh" target="1:T3DRES" />
+      <layer vars="elevation z:mesh" target="1:T3DRES" />
    </plot2d>
    <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="Z:mesh" extract="(0;50)(500;50)" target="1:T3DRES"  />
@@ -79,9 +79,9 @@
       <layer vars="Z:map" extract="(0;50)(500;50)" target="1:T3DRES"  />
    </plot2d>
    <plot2d xref="velocityU_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="vitesse U:map" extract="(450;0)(450;100)" target="1:T3DRES"  />
+      <layer vars="velocity U:map" extract="(450;0)(450;100)" target="1:T3DRES"  />
    </plot2d>
    <plot2d xref="velocityV_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="vitesse V:map" extract="(450;0)(450;100)" target="1:T3DRES"  />
+      <layer vars="velocity V:map" extract="(450;0)(450;100)" target="1:T3DRES"  />
    </plot2d>
 </validation>

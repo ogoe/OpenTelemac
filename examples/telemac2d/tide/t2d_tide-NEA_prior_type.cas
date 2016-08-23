@@ -69,7 +69,7 @@ CORIOLIS COEFFICIENT                            : 1.10E-4
 /DIFFUSION OF VELOCITY                          : YES
 /VELOCITY DIFFUSIVITY                           : 1.E-6
 /
-DISCRETIZATIONS IN SPACE                        : 11 ; 11 
+DISCRETIZATIONS IN SPACE                        : 11 ; 11
 MATRIX STORAGE                                  : 3
 FREE SURFACE GRADIENT COMPATIBILITY             : 0.5
 /
@@ -92,7 +92,7 @@ OPTION FOR THE TREATMENT OF TIDAL FLATS         : 1
 / TO HAVE POSITIVE DEPTHS EVERYWHERE
 /
 MASS-LUMPING ON H                               : 1.
-CONTINUITY CORRECTION                           : OUI
+CONTINUITY CORRECTION                           : YES
 TREATMENT OF NEGATIVE DEPTHS                    : 2
 /
 &FIN

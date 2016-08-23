@@ -26,14 +26,14 @@ LISTING PRINTOUT PERIOD                      =  360
 NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS   = 0 /2
 MASS-BALANCE                                 = YES
 TIME STEP                                    = 10
-NUMBER OF TIME STEPS                         = 259200 / 6307200 864000 3153600  
+NUMBER OF TIME STEPS                         = 259200 / 6307200 864000 3153600
 INFORMATION ABOUT SOLVER                     = YES
 /
 /----------------------------------------------
 /  INITIAL CONDITIONS
 /----------------------------------------------
 /
-COMPUTATION CONTINUED                        = NO 
+COMPUTATION CONTINUED                        = NO
 INITIAL CONDITIONS                           = 'CONSTANT ELEVATION'
 INITIAL ELEVATION                            = 4.
 /
@@ -82,22 +82,22 @@ TURBULENCE MODEL                             = 2
 VELOCITY DIFFUSIVITY                         = 5.
 NON-DIMENSIONAL DISPERSION COEFFICIENTS      = 6.;0.6
 //----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
 TYPE OF ADVECTION                            = 2;5
 SUPG OPTION                                  = 1;2
 DISCRETIZATIONS IN SPACE                     = 11; 11; 11; 11
-SOLVER ACCURACY                              = 1.E-4 
+SOLVER ACCURACY                              = 1.E-4
 IMPLICITATION FOR DEPTH                      = 0.6
-IMPLICITATION FOR VELOCITY                   = 0.6 
+IMPLICITATION FOR VELOCITY                   = 0.6
 SOLVER                                       = 7
-SOLVER OPTION                                = 6  
-MATRIX STORAGE                               = 1  
+SOLVER OPTION                                = 6
+MATRIX STORAGE                               = 1
 TIDAL FLATS                                  = YES
 /MASS-LUMPING ON H                            = 1.
-/H CLIPPING                                   = NO         
+/H CLIPPING                                   = NO
 /
-/  END OF STEERING FILE 
+/  END OF STEERING FILE
 /
 &FIN

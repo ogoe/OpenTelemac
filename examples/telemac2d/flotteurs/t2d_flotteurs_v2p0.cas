@@ -7,7 +7,7 @@
 /
 /  Temps calcul sur HP C3700 compilateur HP  : 13 s  5.8 13/11/2007
 /  Temps calcul sur HP C3700 compilateur Nag : 34 s  5.8 20/12/2007
-/  Temps calcul sur Linux compilateur pgi 6.2: 11 s  5.8 19/12/2007 
+/  Temps calcul sur Linux compilateur pgi 6.2: 11 s  5.8 19/12/2007
 /
 /  Temps calcul sur HP C3700 compilateur HP  : 14 s  5.9 15/10/2008
 /  Temps calcul sur HP C3700 compilateur Nag : 35 s  5.9 16/10/2008
@@ -34,59 +34,59 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FICHIER FORTRAN                     : t2d_flotteurs_v2p0.f
-FICHIER DES CONDITIONS AUX LIMITES  : geo_flotteurs.cli
-FICHIER DE GEOMETRIE                : geo_flotteurs.slf
-FICHIER DES RESULTATS               : r2d_flotteurs_v2p0.slf
-FICHIER DU CALCUL PRECEDENT         : pre_flotteurs_v1p0.slf
-FICHIER DES FLOTTEURS               : flo.dat
+FORTRAN FILE              : t2d_flotteurs_v2p0.f
+BOUNDARY CONDITIONS FILE  : geo_flotteurs.cli
+GEOMETRY FILE             : geo_flotteurs.slf
+RESULTS FILE              : r2d_flotteurs_v2p0.slf
+PREVIOUS COMPUTATION FILE : pre_flotteurs_v1p0.slf
+DROGUES FILE              : flo.dat
 /
 /----------------------------------------------------------------------
 /                        OPTIONS GENERALES
 /----------------------------------------------------------------------
 /
-TITRE : 'TELEMAC-2D - Initiation - Calcul numero 2'
+TITLE : 'TELEMAC-2D - Initiation - Calcul numero 2'
 /
-VARIABLES POUR LES SORTIES GRAPHIQUES             : 'U,V,S,B,H,Q,M,F,L'
-VARIABLES A IMPRIMER                              : ''
-PAS DE TEMPS                                      : 5.
-NOMBRE DE PAS DE TEMPS                            : 1440
-PERIODE POUR LES SORTIES GRAPHIQUES               : 72
-PERIODE DE SORTIE LISTING                         : 72
-SUITE DE CALCUL                                   : OUI
+VARIABLES FOR GRAPHIC PRINTOUTS  : 'U,V,S,B,H,Q,M,F,L'
+VARIABLES TO BE PRINTED          : ''
+TIME STEP                        : 5.
+NUMBER OF TIME STEPS             : 1440
+GRAPHIC PRINTOUT PERIOD          : 72
+LISTING PRINTOUT PERIOD          : 72
+COMPUTATION CONTINUED            : YES
 /
 /----------------------------------------------------------------------
 /                    CONDITIONS AUX LIMITES
 /----------------------------------------------------------------------
 /
-LOI DE FROTTEMENT SUR LE FOND                     :    3    
-COEFFICIENT DE FROTTEMENT                         :   55. 
-COTES IMPOSEES                                    :  265.;0.
-DEBITS IMPOSES                                    :  0.;700.
-/    
+LAW OF BOTTOM FRICTION           :    3
+FRICTION COEFFICIENT             :   55.
+PRESCRIBED ELEVATIONS            :  265.;0.
+PRESCRIBED FLOWRATES             :  0.;700.
+/
 /----------------------------------------------------------------------
 /                       OPTIONS NUMERIQUES
 /----------------------------------------------------------------------
 /
-BANCS DECOUVRANTS                                 : NON
-MODELE DE TURBULENCE                              : 1                    
-BILAN DE MASSE                                    : OUI
-NOMBRE DE SOUS-ITERATIONS POUR LES NON-LINEARITES : 1
-PRECISION DU SOLVEUR                              : 1.E-4 
-FORME DE LA CONVECTION                            : 1;5
-COEFFICIENT DE DIFFUSION DES VITESSES             : 1.E-2
-SOLVEUR                                           : 7
-OPTION DU SOLVEUR                                 : 3
-MASS-LUMPING SUR H                                : 1.
-MASS-LUMPING SUR LA VITESSE                       : 1.
-STOCKAGE DES MATRICES                             : 3
-TRAITEMENT DU SYSTEME LINEAIRE                    : 2
+TIDAL FLATS                                  : NO
+TURBULENCE MODEL                             : 1
+MASS-BALANCE                                 : YES
+NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES : 1
+SOLVER ACCURACY                              : 1.E-4
+TYPE OF ADVECTION                            : 1;5
+VELOCITY DIFFUSIVITY                         : 1.E-2
+SOLVER                                       : 7
+SOLVER OPTION                                : 3
+MASS-LUMPING ON H                            : 1.
+MASS-LUMPING ON VELOCITY                     : 1.
+MATRIX STORAGE                               : 3
+TREATMENT OF THE LINEAR SYSTEM               : 2
 /
 /----------------------------------------------------------------------
 / FLOTTEURS ET SECTIONS DE CONTROLE
 /----------------------------------------------------------------------
-SECTIONS DE CONTROLE                              : 56;211;286;43
-NOMBRE DE FLOTTEURS                               : 100
-PERIODE POUR LES SORTIES DE FLOTTEURS             : 60
+CONTROL SECTIONS                             : 56;211;286;43
+NUMBER OF DROGUES                            : 100
+PRINTOUT PERIOD FOR DROGUES                  : 60
 /DEBUGGER : 1
-&FIN                                                              
+&FIN

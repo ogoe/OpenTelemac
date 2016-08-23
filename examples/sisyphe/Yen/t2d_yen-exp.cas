@@ -74,7 +74,7 @@ PRESCRIBED FLOWRATES                        : 0.02; 0.02
 /
 INITIAL CONDITIONS                          :'CONSTANT DEPTH'
 INITIAL DEPTH                               : 0.0544
-INITIAL TIME SET TO ZERO                    : TRUE
+INITIAL TIME SET TO ZERO                    : YES
 /
 /----------------------------------------------------------------------
 /                       NUMERICAL OPTIONS
@@ -105,7 +105,7 @@ OPTION FOR THE DIFFUSION OF VELOCITIES      : 1
 /......................................................................
 /
 &FIN
-
-
-
-
+/
+/
+/
+/

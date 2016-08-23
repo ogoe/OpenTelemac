@@ -1,78 +1,62 @@
-/DEBUGGER : 1
 /
-STOCKAGE DES MATRICES : 3
+MATRIX STORAGE : 3
 /
-/ sur HP C3700   96 s  5.5  JMH le 15/12/2004
-/ sur HP C3700   77 s  5.6  JMH le 24/08/2005
-/ sur HP C3700   73 s  5.7  JMH le 13/02/2007 (Nag:163 s,Dell:52 s)
-/ sur HP C3700   77 s  5.8  JMH le 19/12/2007 (Nag:183 s,Dell:54 s)
-/ sur HP C3700   71 s  5.9  JMH le 17/10/2008 (Nag:165 s,Dell:44 s)
-/ sur HP C3700   64 s  6.0  JMH le 04/12/2009 (Nag:132 s,Dell:23 s)
+BOUNDARY CONDITIONS FILE : geo_source.cli
+GEOMETRY FILE               : geo_source.slf
+3D RESULT FILE           : r3d_source.slf
+2D RESULT FILE           : r2d_source.slf
+SOURCES FILE                : src_source.txt
 /
-/ avec schema de convection 13 sur les traceurs, et DT = 1.1
+NUMBER OF HORIZONTAL LEVELS : 5
 /
-/ sur HP C3700   50 s  6.0  JMH le 21/05/2010 (Nag:126 s,Intel:24 s)
-/ sur HP C3700   43 s  6.1  JMH le 19/01/2011 (Nag:111 s,Intel:?? s)
-/ sur HP C3700   46 s  6.2  JMH le 25/05/2012 
-/
-FICHIER DES CONDITIONS AUX LIMITES : geo_source.cli
-FICHIER DE GEOMETRIE               : geo_source.slf
-FICHIER DES RESULTATS 3D           : r3d_source.slf
-FICHIER DES RESULTATS 2D           : r2d_source.slf
-FICHIER DES SOURCES                : src_source.txt 
-/
-NOMBRE DE PLANS HORIZONTAUX : 5 
-/        
-/----------------------------------------------------------------------/ 
-/                     OPTIONS GENERALES                                  
-/----------------------------------------------------------------------/ 
-TITRE = 'TELEMAC 3D : TEST POUR SOURCE'              
-SUITE DE CALCUL : NON                                                    
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H,S,B,TA*'
-VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W,TA*'  
-PAS DE TEMPS = 1.1  
-NOMBRE DE PAS DE TEMPS = 1000
-PERIODE POUR LES SORTIES GRAPHIQUES : 100
-PERIODE POUR LES SORTIES LISTING    : 100
-
-CONDITIONS INITIALES              = 'COTE NULLE'
-COTES IMPOSEES	: 0;0
-DEBITS IMPOSES	: 0;40
-/----------------------------------------------------------------------/ 
-/     SOURCES                                                        
 /----------------------------------------------------------------------/
+/                     OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 3D : TEST POUR SOURCE'
+COMPUTATION CONTINUED : NO
+VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H,S,B,TA*'
+VARIABLES FOR 3D GRAPHIC PRINTOUTS : 'Z,U,V,W,TA*'
+TIME STEP = 1.1
+NUMBER OF TIME STEPS = 1000
+GRAPHIC PRINTOUT PERIOD : 100
+LISTING PRINTOUT PERIOD    : 100
 /
-ABSCISSES DES SOURCES : -21.6234302520752; -0.77898901700974
-ORDONNEES DES SOURCES :   5.29613780975342; -9.99086666107178
-COTES DES SOURCES     :  -0.5; -0.5
-DEBITS DES SOURCES    :   1.0;  1.0
-VITESSE DES SOURCES SELON X  :  0.0; 0.5
-VITESSE DES SOURCES SELON Y  :  0.0; 2.0 
+INITIAL CONDITIONS              = 'ZERO ELEVATION'
+PRESCRIBED ELEVATIONS	: 0;0
+PRESCRIBED FLOWRATES	: 0;40
+/----------------------------------------------------------------------/
+/     SOURCES
+/----------------------------------------------------------------------
+/
+ABSCISSAE OF SOURCES : -21.6234302520752; -0.77898901700974
+ORDINATES OF SOURCES :   5.29613780975342; -9.99086666107178
+ELEVATIONS OF SOURCES     :  -0.5; -0.5
+WATER DISCHARGE OF SOURCES    :   1.0;  1.0
+VELOCITIES OF THE SOURCES ALONG X  :  0.0; 0.5
+VELOCITIES OF THE SOURCES ALONG Y  :  0.0; 2.0
 /                                  S1_T1;S2_T1;S1_T2;S2_T2;S1_T3;S2_T3
-VALEURS DES TRACEURS DES SOURCES  : 10.0; 10.0;  0.0;  0.0; 10.0; 10.0
-/----------------------------------------------------------------------/ 
-/     PROPAGATION                                                        
-/----------------------------------------------------------------------/ 
-SCHEMA POUR LA DIFFUSION DES VITESSES = 1
-PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES : 2
-MODELE DE TURBULENCE VERTICAL : 1
-SOLVEUR POUR LA PROPAGATION : 1
-MAXIMUM D'ITERATIONS POUR LA PROPAGATION : 100 
-PRECISION POUR LA PROPAGATION = 1.E-6  
-IMPLICITATION POUR LA HAUTEUR   = 0.6 
-IMPLICITATION POUR LES VITESSES = 0.6  
-PRECONDITIONNEMENT POUR LA PROPAGATION : 2    
-ORDRE DU TIR INITIAL POUR LA HAUTEUR : 1                
+VALUE OF THE TRACERS AT THE SOURCES  : 10.0; 10.0;  0.0;  0.0; 10.0; 10.0
 /----------------------------------------------------------------------/
-BILAN DE MASSE : OUI
-INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING : OUI
-SCHEMA POUR LA CONVECTION DES TRACEURS = 13;13;13
-/----------------------------------------------------------------------/ 
-/     TRACEUR                                                            
-/----------------------------------------------------------------------/ 
-BANCS DECOUVRANTS : NON                                              
-NOMBRE DE TRACEURS = 3
-VALEURS INITIALES DES TRACEURS : 0.;0.;0.
-PRECISION POUR LA DIFFUSION DES TRACEURS = 1.E-7
-&FIN
- 
+/     PROPAGATION
+/----------------------------------------------------------------------/
+SCHEME FOR DIFFUSION OF VELOCITIES = 1
+PRECONDITIONING FOR DIFFUSION OF VELOCITIES : 2
+VERTICAL TURBULENCE MODEL : 1
+SOLVER FOR PROPAGATION : 1
+MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION : 100
+ACCURACY FOR PROPAGATION = 1.E-6
+IMPLICITATION FOR DEPTH   = 0.6
+IMPLICITATION FOR VELOCITIES = 0.6
+PRECONDITIONING FOR PROPAGATION : 2
+INITIAL GUESS FOR DEPTH : 1
+/----------------------------------------------------------------------
+MASS-BALANCE : YES
+INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : YES
+SCHEME FOR ADVECTION OF TRACERS = 13;13;13
+/----------------------------------------------------------------------/
+/     TRACEUR
+/----------------------------------------------------------------------/
+TIDAL FLATS : NO
+NUMBER OF TRACERS = 3
+INITIAL VALUES OF TRACERS : 0.;0.;0.
+ACCURACY FOR DIFFUSION OF TRACERS = 1.E-7

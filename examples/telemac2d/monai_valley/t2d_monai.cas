@@ -57,10 +57,10 @@ PRESCRIBED ELEVATIONS           = 0.0
 OPTION FOR LIQUID BOUNDARIES    = 2
 /
 /----------------------------------------------
-/  NUMERICAL PARAMETERS 
+/  NUMERICAL PARAMETERS
 /----------------------------------------------
 /
-PROPAGATION                     = YES      
+PROPAGATION                     = YES
 ADVECTION                       = NO
 INFORMATION ABOUT SOLVER        = YES
 SOLVER                          = 7
@@ -69,5 +69,5 @@ SOLVER ACCURACY                         = 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 200
 INITIAL GUESS FOR H             = 1
 MATRIX STORAGE                  = 3
-/ 
+/
 &FIN
