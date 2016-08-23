@@ -24,13 +24,15 @@ AIDE1 = 'Determines the printing period,
 in number of time step
 of the VARIABLES FOR 2D GRAPHIC PRINTOUTS in the 2D
 RESULTS FILE and the PUNCTUAL RESULTS FILE.
-**Related keywords :**
-VARIABLES FOR 2D GRAPHIC PRINTOUTS
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-ORDINATES OF SPECTRUM PRINTOUT POINTS
-2D RESULTS FILE
-PUNCTUAL RESULTS FILE
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS'
+\\
+ \begin{CommentBlock}{Related keywords}
+VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+2D RESULTS FILE\\
+PUNCTUAL RESULTS FILE\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
+\end{CommentBlock}'
 
 NOM = 'PERIODE POUR LES SORTIES LISTING'
 NOM1 = 'PERIOD FOR LISTING PRINTOUTS'
@@ -66,8 +68,10 @@ l''execution du code.
 **Mots-cles associes :**
 PAS DE TEMPS'
 AIDE1 = 'Define the number of time step.
-**Related keywords :**
-TIME STEP'
+\\
+ \begin{CommentBlock}{Related keywords}
+TIME STEP
+\end{CommentBlock}'
 
 NOM = 'NOMBRE DE DIRECTIONS'
 NOM1 = 'NUMBER OF DIRECTIONS'
@@ -108,9 +112,11 @@ AIDE1 = 'Defines the number of wave propagation frequencies. The
 propagation frequencies are geometrically distributed as a fonction
 of the MINIMAL FREQUENCY OF THE COMPUTATION and the FREQUENTIAL
 REASON
-**Related keywords :**
-FREQUENTIAL RATIO
-SPECTRUM TAIL FACTOR'
+\\
+ \begin{CommentBlock}{Related keywords}
+FREQUENTIAL RATIO\\
+SPECTRUM TAIL FACTOR
+\end{CommentBlock}'
 
 NOM = 'NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
 NOM1 = 'NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS'
@@ -137,13 +143,15 @@ FICHIER DES RESULTATS PONCTUELS'
 AIDE1 = 'Determines the number of iterations over mean angular
 frequency from which the results are first written into the 2D RESULTS
 FILE and the PUNCTUAL RESULTS FILE.
-**Related keywords :**
-PERIOD FOR GRAPHIC PRINTOUTS
-VARIABLES FOR 2D GRAPHIC PRINTOUTS
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-ORDINATES OF SPECTRUM PRINTOUT POINTS
-2D RESULTS FILE
-PUNCTUAL RESULTS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+PERIOD FOR GRAPHIC PRINTOUTS\\
+VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+2D RESULTS FILE\\
+PUNCTUAL RESULTS FILE
+\end{CommentBlock}'
 
 NOM = 'LISSAGES DU FOND'
 NOM1 = 'BOTTOM SMOOTHINGS'
@@ -216,22 +224,24 @@ its value is 1, it is integrated in accordance with the WAM cycle 4
 formula; if its value is 2, it is integrated in accordance with the
 WAM cycle 3 formula; if its value is 3, it is integrated in accordance
 with the Yan (1987) expression.
-**Related keywords :**
-CONSIDERATION OF A WIND
-WINDS FILE
-AIR DENSITY
-WATER DENSITY
-WIND GENERATION COEFFICIENT
-VON KARMAN CONSTANT
-CHARNOCK CONSTANT
-SHIFT GROWING CURVE DUE TO WIND
-WIND MEASUREMENTS LEVEL
-WIND DRAG COEFFICIENT
-WIND GENERATION COEFFICIENT A
-WIND GENERATION COEFFICIENT B
-WIND GENERATION COEFFICIENT C
-WIND GENERATION COEFFICIENT D
-WIND GENERATION COEFFICIENT TM'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND\\
+WINDS FILE\\
+AIR DENSITY\\
+WATER DENSITY\\
+WIND GENERATION COEFFICIENT\\
+VON KARMAN CONSTANT\\
+CHARNOCK CONSTANT\\
+SHIFT GROWING CURVE DUE TO WIND\\
+WIND MEASUREMENTS LEVEL\\
+WIND DRAG COEFFICIENT\\
+WIND GENERATION COEFFICIENT A\\
+WIND GENERATION COEFFICIENT B\\
+WIND GENERATION COEFFICIENT C\\
+WIND GENERATION COEFFICIENT D\\
+WIND GENERATION COEFFICIENT TM\\
+\end{CommentBlock}'
 
 NOM = 'DISSIPATION PAR MOUTONNEMENT'
 NOM1 = 'WHITE CAPPING DISSIPATION'
@@ -269,13 +279,15 @@ term. If its value is 0, the white capping dissipation is ignored;
 if its value is 1, it is integrated in accordance with a formula that
 is similar to that of WAM cycle 4; if its value is 2, it is integrated
 in accordance with the formula of van der Westhuysen (2007).
-**Related keywords:**
-WHITE CAPPING DISSIPATION COEFFICIENT
-WHITE CAPPING WEIGHTING COEFFICIENT
-WESTHUYSEN DISSIPATION COEFFICIENT
-SATURATION THRESHOLD FOR THE DISSIPATION
-WESTHUYSEN WHITE CAPPING DISSIPATION
-WESTHUYSEN WEIGHTING COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION COEFFICIENT\\
+WHITE CAPPING WEIGHTING COEFFICIENT\\
+WESTHUYSEN DISSIPATION COEFFICIENT\\
+SATURATION THRESHOLD FOR THE DISSIPATION\\
+WESTHUYSEN WHITE CAPPING DISSIPATION\\
+WESTHUYSEN WEIGHTING COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'DISSIPATION PAR FROTTEMENT SUR LE FOND'
 NOM1 = 'BOTTOM FRICTION DISSIPATION'
@@ -304,9 +316,11 @@ AIDE1 = 'Selection of the modelling type of the bottom friction source
 term. If its value is 0, the bottom friction dissipation is ignored;
 if its value is 1, it is integrated in accordance with a formula that
 is similar to that of WAM cycle 4.
-**Related keywords :**
-INFINITE DEPTH
-BOTTOM FRICTION COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+INFINITE DEPTH\\
+BOTTOM FRICTION COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 NOM1 = 'NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
@@ -353,14 +367,16 @@ of WAM cycle 4 (DIA method), if its value is 2, the MDIA
 (Multiple DIA) method is used to calculate the non linear transfer
 term, if its value is 3, the non linear transfer term is calculated
 with the exact GQM method.
-**Related keywords :**
-STANDARD CONFIGURATION PARAMETER
-SETTING FOR INTEGRATION ON OMEGA1
-SETTING FOR INTEGRATION ON THETA1
-SETTING FOR INTEGRATION ON OMEGA2
-THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
-THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
-THRESHOLD2 FOR CONFIGURATIONS ELIMINATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+STANDARD CONFIGURATION PARAMETER\\
+SETTING FOR INTEGRATION ON OMEGA1\\
+SETTING FOR INTEGRATION ON THETA1\\
+SETTING FOR INTEGRATION ON OMEGA2\\
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION\\
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION\\
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES COURANTS'
 NOM1 = 'CURRENTS FILE FORMAT'
@@ -379,19 +395,24 @@ RUBRIQUE = 'COURANT'
 RUBRIQUE1 = 'CURRENT'
 NIVEAU = 1
 AIDE = 'Choix du type de format du fichier des courants :
-3 = selafin du type TELEMAC
-4 = format utilisateur (Modifier alors  la procedure couuti.f)
+\begin{itemize}
+\item 3 = selafin du type TELEMAC
+\item 4 = format utilisateur (Modifier alors  la procedure couuti.f)
+\end{itemize}
 **Mots-cles associes :**
 FICHIER DES COURANTS BINAIRE
 FICHIER DES COURANTS FORMATE
 BINAIRE DU FICHIER DES COURANTS'
 AIDE1 = 'Selection of the type of currents file format :
-3 = selafin, TELEMAC type
-4 = user format (the couuti.f procedure should then be amended)
-**Related keywords :**
-CURRENTS BINARY FILE
-CURRENTS FORMATTED FILE
-CURRENTS FILE BINARY'
+\begin{itemize}
+\item 3 = selafin, TELEMAC type
+\item 4 = user format (the couuti.f procedure should then be amended)
+\end{itemize}
+\begin{CommentBlock}{Related keywords}
+CURRENTS BINARY FILE\\
+CURRENTS FORMATTED FILE\\
+CURRENTS FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES VENTS'
 NOM1 = 'WINDS FILE FORMAT'
@@ -418,12 +439,15 @@ FICHIER DES VENTS BINAIRE
 FICHIER DES VENTS FORMATE
 BINAIRE DU FICHIER DES VENTS'
 AIDE1 = 'Selection of winds file format type :
-3 = selafin, TELEMAC type
-4 = user format (the venuti.f procedure should then be amended)
-**Related keywords :**
-WINDS FILE TYPE
-WINDS FILE
-WINDS FILE BINARY'
+\begin{itemize}
+\item 3 = selafin, TELEMAC type
+\item 4 = user format (the venuti.f procedure should then be amended)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+WINDS FILE TYPE\\
+WINDS FILE\\
+WINDS FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES'
 NOM1 = 'NUMBER OF ITERATIONS FOR THE SOURCE TERMS'
@@ -448,8 +472,10 @@ Number of sub-iterations for the computation of the source terms.
 The time step considered in the integration of the source terms
 is the ratio between the TIME STEP and the NUMBER OF SUB-ITERATIONS
 FOR THE SOURCE TERMS
-**Related keyword :**
-TIME STEP'
+\\
+ \begin{CommentBlock}{Related keywords}
+TIME STEP
+\end{CommentBlock}'
 
 NOM = 'TYPE DE SPECTRE DIRECTIONNEL INITIAL'
 NOM1 = 'TYPE OF INITIAL DIRECTIONAL SPECTRUM'
@@ -504,20 +530,22 @@ fied at the inlet boundaries of the domain. If it ranges from 1 to 7, a
 JONSWAP (or TMA)-typed spectrum is specified at these points as a
 function of the initial wind field and/or of the values of the
 following keywords
-**Related keywords :**
-INITIAL SIGNIFICANT HEIGHT
-INITIAL PEAK FREQUENCY
-INITIAL PEAK FACTOR
-INITIAL VALUE OF SIGMA-A FOR SPECTRUM
-INITIAL VALUE OF SIGMA-B FOR SPECTRUM
-INITIAL PHILLIPS CONSTANT
-INITIAL MEAN FETCH VALUE
-INITIAL MAXIMUM PEAK FREQUENCY
-INITIAL MAIN DIRECTION 1
-INITIAL DIRECTIONAL SPREAD 1
-INITIAL MAIN DIRECTION 2
-INITIAL DIRECTIONAL SPREAD 2
-INITIAL WEIGHTING FACTOR FOR ADF'
+\\
+ \begin{CommentBlock}{Related keywords}
+INITIAL SIGNIFICANT HEIGHT\\
+INITIAL PEAK FREQUENCY\\
+INITIAL PEAK FACTOR\\
+INITIAL VALUE OF SIGMA-A FOR SPECTRUM\\
+INITIAL VALUE OF SIGMA-B FOR SPECTRUM\\
+INITIAL PHILLIPS CONSTANT\\
+INITIAL MEAN FETCH VALUE\\
+INITIAL MAXIMUM PEAK FREQUENCY\\
+INITIAL MAIN DIRECTION 1\\
+INITIAL DIRECTIONAL SPREAD 1\\
+INITIAL MAIN DIRECTION 2\\
+INITIAL DIRECTIONAL SPREAD 2\\
+INITIAL WEIGHTING FACTOR FOR ADF
+\end{CommentBlock}'
 
 NOM = 'NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC'
 NOM1 = 'TIME INCREMENT NUMBER IN TELEMAC FILE'
@@ -540,9 +568,11 @@ RECUPERATION DE DONNEES TELEMAC'
 AIDE1 = 'Indicates the number of the time increment in the TELEMAC
 results file (currents file) corresponding to the desired time for data
 recovery.
-**Related keywords :**
-RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
-RECOVERY OF TELEMAC DATA ITEM'
+\\
+ \begin{CommentBlock}{Related keywords}
+RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED\\
+RECOVERY OF TELEMAC DATA ITEM
+\end{CommentBlock}'
 
 NOM = 'LONGUEUR DU VECTEUR'
 NOM1 = 'VECTOR LENGTH'
@@ -612,32 +642,35 @@ DEFERLEMENT 4 (IH) CONSTANTE BETA0
 DEFERLEMENT 4 (IH) CONSTANTE M2STAR'
 AIDE1 = 'Selection of the modelling type of the bathymetric-induced
 breaking dissipation source term :
-0 : Breaking is ignored.
-1 : Battjes and Janssen model (1978).
-2 : Thornton and Guza model (1983).
-3 : Roelvink model (1993).
-4 : Izumiya and Horikawa model (1984).
-**Related keywords :**
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD
-DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD
-DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
-DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
-DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR'
+\begin{itemize}
+\item 0 : Breaking is ignored.
+\item 1 : Battjes and Janssen model (1978).
+\item 2 : Thornton and Guza model (1983).
+\item 3 : Roelvink model (1993).
+\item 4 : Izumiya and Horikawa model (1984).
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD\\
+DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD\\
+DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2\\
+DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2\\
+DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB'
 NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD'
@@ -662,13 +695,15 @@ DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 AIDE1 = 'Selection of the method for the resolution of the implicit
 equation for QB.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD
-DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD\\
+DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM'
 NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD'
@@ -697,11 +732,13 @@ DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 AIDE1 = 'Selection of the depth-induced breaking criterium
 giving the breaking wave height (1 : Hm = GAMMA*D ; 2 : Hm given
 the Miche criterium).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2\\
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE'
 NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY'
@@ -745,21 +782,24 @@ DEFERLEMENT 1 (BJ) CONSTANTE ALPHA
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 AIDE1 = 'Selection of the characteristic frequency of the wave spectrum
-1 : Frequency Fmoy
-2 : Frequency F01 (defined by the moments of order 0 and 1 of the
+\begin{itemize}
+\item 1 : Frequency Fmoy
+\item 2 : Frequency F01 (defined by the moments of order 0 and 1 of the
 spectrum)
-3 : Frequency F02 (defined by the moments of order 0 and 2 of the
+\item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
-4 : Frequency Fpic (sampling frequency corresponding to the max)
-5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD
-DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1
-DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2'
+\item 4 : Frequency Fpic (sampling frequency corresponding to the max)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD\\
+DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1\\
+DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 2 (TG) FONCTION DE PONDERATION'
 NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION'
@@ -783,11 +823,13 @@ DEFERLEMENT 2 (TG) CONSTANTE B
 DEFERLEMENT 2 (TG) CONSTANTE GAMMA'
 AIDE1 = 'Selection of the expression for the weighting function
 based on a probability distribution of the wave heights.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 2 (TG) CHOIX FREQUENCE CARACTERISTIQUE'
 NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY'
@@ -817,31 +859,36 @@ RUBRIQUE1 = 'BREAKING'
 NIVEAU = 2
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
-1 : Frequence Fmoy
-2 : Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)
-3 : Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)
-4 : Frequence Fpic (frequence d echantillonage correspondant au max)
-5 : Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)
-6 : Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)
+\begin{itemize}
+\item 1 : Frequence Fmoy
+\item 2 : Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)
+\item 3 : Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)
+\item 4 : Frequence Fpic (frequence d echantillonage correspondant au max)
+\item 5 : Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)
+\item 6 : Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)
+\end{itemize}
 **Mots-cles associes :**
 DISSIPATION PAR DEFERLEMENT
 DEFERLEMENT 2 (TG) FONCTION DE PONDERATION
 DEFERLEMENT 2 (TG) CONSTANTE B
 DEFERLEMENT 2 (TG) CONSTANTE GAMMA'
 AIDE1 = 'Selection of the characteristic frequency of the wave spectrum
-1 : Frequency Fmoy
-2 : Frequency F01 (defined by the moments of order 0 and 1 of the
+\begin{itemize}
+\item 1 : Frequency Fmoy
+\item 2 : Frequency F01 (defined by the moments of order 0 and 1 of the
 spectrum)
-3 : Frequency F02 (defined by the moments of order 0 and 2 of the
+\item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
-4 : Frequency Fpic (sampling frequency corresponding to the max)
-5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
-**Related keywords :**
+\item 4 : Frequency Fpic (sampling frequency corresponding to the max)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
 DEPTH-INDUCED BREAKING DISSIPATION
 DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
 DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA'
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 3 (RO) DISTRIBUTION DES HAUTEURS DE HOULE'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION'
@@ -875,13 +922,15 @@ AIDE1 = 'Selection of the wave height distribution for the
 Roelvink breaking model :
    1...Weibull,
    2...Rayleigh.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 3 (RO) EXPOSANT FONCTION DE PONDERATION'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION'
@@ -906,13 +955,15 @@ DEFERLEMENT 3 (RO) CONSTANTE GAMMA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA2'
 AIDE1 = 'n exponent of the weighting function used in the Roelvink
 breaking model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 3 (RO) CHOIX FREQUENCE CARACTERISTIQUE'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY'
@@ -956,21 +1007,24 @@ DEFERLEMENT 3 (RO) CONSTANTE ALPHA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA2'
 AIDE1 = 'Selection of the characteristic frequency of the wave spectrum
-1 : Frequency Fmoy
-2 : Frequency F01 (defined by the moments of order 0 and 1 of the
+\begin{itemize}
+\item 1 : Frequency Fmoy
+\item 2 : Frequency F01 (defined by the moments of order 0 and 1 of the
 spectrum)
-3 : Frequency F02 (defined by the moments of order 0 and 2 of the
+\item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
-4 : Frequency Fpic (sampling frequency corresponding to the max)
-5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
+\item 4 : Frequency Fpic (sampling frequency corresponding to the max)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM = 'DEFERLEMENT 4 (IH) CHOIX FREQUENCE CARACTERISTIQUE'
 NOM1 = 'DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY'
@@ -1011,18 +1065,21 @@ DISSIPATION PAR DEFERLEMENT
 DEFERLEMENT 4 (IH) CONSTANTE BETA0
 DEFERLEMENT 4 (IH) CONSTANTE M2STAR'
 AIDE1 = 'Selection of the characteristic frequency of the wave spectrum
-1 : Frequency Fmoy
-2 : Frequency F01 (defined by the moments of order 0 and 1 of the
+\begin{itemize}
+\item 1 : Frequency Fmoy
+\item 2 : Frequency F01 (defined by the moments of order 0 and 1 of the
 spectrum)
-3 : Frequency F02 (defined by the moments of order 0 and 2 of the
+\item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
-4 : Frequency Fpic (sampling frequency corresponding to the max)
-5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR'
+\item 4 : Frequency Fpic (sampling frequency corresponding to the max)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
+\end{CommentBlock}'
 
 NOM = 'NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT'
 NOM1 = 'NUMBER OF BREAKING TIME STEPS'
@@ -1044,9 +1101,11 @@ DISSIPATION PAR DEFERLEMENT
 COEFFICIENT POUR LES SOUS-PAS DE TEMPS POUR LE DEFERLEMENT'
 AIDE1 = 'Number of time steps for the breaking source term.
 These time steps are in a geometric progression
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-COEFFICIENT FOR THE BREAKING TIME STEPS'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+COEFFICIENT FOR THE BREAKING TIME STEPS
+\end{CommentBlock}'
 
 NOM = 'LIMITEUR DE CROISSANCE'
 NOM1 = 'WAVE GROWTH LIMITER'
@@ -1076,12 +1135,15 @@ Si la valeur est 3, limiteur de BAJ Laugel.
 **Mots-cles associes :**
 PRISE EN COMPTE DES TERMES SOURCES'
 AIDE1 = 'Choice of the wave growth limiter.
-If LIMIT=0, no wave growth limiter.
-If LIMIT=1, WAM 4 original limiter.
-If LIMIT=2, Hersbach et Janssen (1999) limiter.
-If LIMIT=3, Laugel BAJ limiter.
-**Related keywords :**
-CONSIDERATION OF SOURCE TERMS'
+\begin{itemize}
+\item If LIMIT=0, no wave growth limiter.
+\item If LIMIT=1, WAM 4 original limiter.
+\item If LIMIT=2, Hersbach et Janssen (1999) limiter.
+\item If LIMIT=3, Laugel BAJ limiter.
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF SOURCE TERMS
+\end{CommentBlock}'
 
 NOM = 'CROISSANCE LINEAIRE DES VAGUES'
 NOM1 = 'LINEAR WAVE GROWTH'
@@ -1113,9 +1175,11 @@ to the wind generation source term.
 If its value is 0, the linear wave growth is ignored;
 if its value is 1, it is added to the source term,
 as in the formula of Cavaleri and Malanotte-Rizzoli (1981).
-**Related keywords :**
-CONSIDERATION OF A WIND
-WINDS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND\\
+WINDS FILE
+\end{CommentBlock}'
 
 NOM = 'TRANSFERTS ENTRE TRIPLETS DE FREQUENCES'
 NOM1 = 'TRIAD INTERACTIONS'
@@ -1148,15 +1212,18 @@ TRIADS 2 (SPB) CONSTANTE K
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE INFERIEURE
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE SUPERIEURE'
 AIDE1 = 'Selection of the triad interaction model:
-0 : no triad interactions
-1 : LTA model (Eldeberky, 1996)
-2 : SPB model (Becq, 1998)
-**Related keywords :**
-TRIADS 1 (LTA) COEFFICIENT ALPHA
-TRIADS 1 (LTA) COEFFICIENT RFMLTA
-TRIADS 2 (SPB) COEFFICIENT K
-TRIADS 2 (SPB) LOWER DIRECTIONAL BOUND
-TRIADS 2 (SPB) UPPER DIRECTIONAL BOUND'
+\begin{itemize}
+\item 0 : no triad interactions
+\item 1 : LTA model (Eldeberky, 1996)
+\item 2 : SPB model (Becq, 1998)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+TRIADS 1 (LTA) COEFFICIENT ALPHA\\
+TRIADS 1 (LTA) COEFFICIENT RFMLTA\\
+TRIADS 2 (SPB) COEFFICIENT K\\
+TRIADS 2 (SPB) LOWER DIRECTIONAL BOUND\\
+TRIADS 2 (SPB) UPPER DIRECTIONAL BOUND\\
+\end{CommentBlock}'
 
 NOM = 'TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 NOM1 = 'TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
@@ -1211,20 +1278,22 @@ fied at the inlet boundaries of the domain. If it ranges from 1 to 7, a
 JONSWAP (or TMA) -typed spectrum is specified at these very points as a
 function of the initial wind field and/or of the values of the following
 keywords
-**Related keywords :**
-BOUNDARY SIGNIFICANT HEIGHT
-BOUNDARY PEAK FREQUENCY
-BOUNDARY PEAK FACTOR
-BOUNDARY VALUE OF SIGMA-A FOR SPECTRUM
-BOUNDARY VALUE OF SIGMA-B FOR SPECTRUM
-BOUNDARY PHILLIPS CONSTANT
-BOUNDARY MEAN FETCH VALUE
-BOUNDARY MAXIMUM PEAK FREQUENCY
-BOUNDARY MAIN DIRECTION 1
-BOUNDARY DIRECTIONAL SPREAD 1
-BOUNDARY MAIN DIRECTION 2
-BOUNDARY DIRECTIONAL SPREAD 2
-BOUNDARY WEIGHTING FACTOR FOR ADF'
+\\
+ \begin{CommentBlock}{Related keywords}
+BOUNDARY SIGNIFICANT HEIGHT\\
+BOUNDARY PEAK FREQUENCY\\
+BOUNDARY PEAK FACTOR\\
+BOUNDARY VALUE OF SIGMA-A FOR SPECTRUM\\
+BOUNDARY VALUE OF SIGMA-B FOR SPECTRUM\\
+BOUNDARY PHILLIPS CONSTANT\\
+BOUNDARY MEAN FETCH VALUE\\
+BOUNDARY MAXIMUM PEAK FREQUENCY\\
+BOUNDARY MAIN DIRECTION 1\\
+BOUNDARY DIRECTIONAL SPREAD 1\\
+BOUNDARY MAIN DIRECTION 2\\
+BOUNDARY DIRECTIONAL SPREAD 2\\
+BOUNDARY WEIGHTING FACTOR FOR ADF\\
+\end{CommentBlock}'
 
 NOM = 'PERIODE D''ACTUALISATION DE LA MAREE'
 NOM1 = 'TIDE REFRESHING PERIOD'
@@ -1247,12 +1316,14 @@ BINAIRE DU FICHIER DU NIVEAU DE LA MAREE
 FORMAT DU FICHIER DU NIVEAU DE LA MAREE'
 AIDE1 = 'Determines the period in number of iterations to
 update the tidal currents and the water depth.
-**Related keywords :**
-CONSIDERATION OF TIDE
-BINARY TIDAL WATER LEVEL FILE
-FORMATTED TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE BINARY
-FORMAT DU FICHIER DU NIVEAU DE LA MAREE'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+BINARY TIDAL WATER LEVEL FILE\\
+FORMATTED TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE BINARY\\
+FORMAT DU FICHIER DU NIVEAU DE LA MAREE\\
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DU NIVEAU DE LA MAREE'
 NOM1 = 'TIDAL WATER LEVEL FILE FORMAT'
@@ -1280,14 +1351,17 @@ FICHIER DU NIVEAU DE LA MAREE FORMATE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE
 PERIODE D ACTUALISATION DE LA MAREE'
 AIDE1 = 'Selection of the type of tidal water level file format :
-3 = selafin, TELEMAC type
-4 = user format (the maruti.f procedure should then be amended)
-**Related keywords :**
-CONSIDERATION OF TIDE
-BINARY TIDAL WATER LEVEL FILE
-FORMATTED TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE BINARY
-TIDE REFRESHING PERIOD'
+\begin{itemize}
+\item 3 = selafin, TELEMAC type
+\item 4 = user format (the maruti.f procedure should then be amended)
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+BINARY TIDAL WATER LEVEL FILE\\
+FORMATTED TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE BINARY\\
+TIDE REFRESHING PERIOD
+\end{CommentBlock}'
 
 NOM = 'RANG DU NIVEAU DE LA MAREE DANS LE FICHIER TELEMAC'
 NOM1 = 'RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE'
@@ -1309,12 +1383,14 @@ FICHIER DU NIVEAU DE LA MAREE FORMATE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE
 PERIODE D ACTUALISATION DE LA MAREE'
 AIDE1 = 'Rank of the water level data in the TELEMAC file
-**Related keywords :**
-CONSIDERATION OF TIDE
-BINARY TIDAL WATER LEVEL FILE
-FORMATTED TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE BINARY
-TIDE REFRESHING PERIOD'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+BINARY TIDAL WATER LEVEL FILE\\
+FORMATTED TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE BINARY\\
+TIDE REFRESHING PERIOD
+\end{CommentBlock}'
 
 NOM = 'NOMBRE DE TABLEAUX PRIVES'
 NOM1 = 'NUMBER OF PRIVATE ARRAYS'
@@ -1361,11 +1437,17 @@ TYPE DE SPECTRE DIRECTIONNEL INITIAL'
 AIDE1 = 'Is part of the set of constants used for computing the
 initial directional spectrum. Allow the computation of the
 angular distribution function
-1 : modele en $cos{^2s}(T-T0)$ ; T dans [T0-pi/2;T0+pi/2]
-2 : modele en $exp(-0.5((T-T0)/s)^2)$ ; T dans [T0-pi/2;T0+pi/2]
-3 : modele en $cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\begin{itemize}
+\item 1 : $cos^{2s}(T-T0)$ ; with T in [T0-pi/2;T0+pi/2]
+\item 2 : $exp(-0.5((T-T0)/s)^2)$ ; with T in [T0-pi/2;T0+pi/2]
+\item 3 : $cos^{2s}((T-T0)/2)$ (of type Mitsuyasu)
+\end{itemize}
+where $s$ is the boundary directionnal spread (\telkey{SPRED1} 
+or \telkey{SPRED2})
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FONCTION DE REPARTITION ANGULAIRE AUX LIMITES'
 NOM1 = 'BOUNDARY ANGULAR DISTRIBUTION FUNCTION'
@@ -1397,11 +1479,17 @@ TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum. Allow the computation of the
 angular distribution function
-1 : modele en $cos{^2s}(T-T0)$ ; T dans [T0-pi/2;T0+pi/2]
-2 : modele en $exp(-0.5((T-T0)/s)^2)$ ; T dans [T0-pi/2;T0+pi/2]
-3 : modele en $cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\begin{itemize}
+\item 1 : $cos^{2s}(T-T0)$ ; with T in [T0-pi/2;T0+pi/2]
+\item 2 : $exp(-0.5((T-T0)/s)^2)$ ; with T in [T0-pi/2;T0+pi/2]
+\item 3 : $cos^{2s}((T-T0)/2)$ (of type Mitsuyasu)
+\end{itemize}
+where $s$ is the boundary directionnal spread (\telkey{SPRE1L} 
+or \telkey{SPRE2L})
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'COORDONNEES DE L''ORIGINE'
 NOM1 = 'ORIGIN COORDINATES'
@@ -1490,10 +1578,10 @@ CHOIX1 = '6="rough"';
 RUBRIQUE = 'TRANSFERTS'
 RUBRIQUE1 = 'TRANSFERS'
 NIVEAU = 1
-AIDE = ' Nombre de point d integration sur omega 2 lorsque le terme de
+AIDE = ' Nombre de point d integration sur omega2 lorsque le terme de
 transfert non lineaire est calcule de maniere exacte (methode GQM):
 grossier 6 ; moyen 8 ; fin 12'
-AIDE1 = 'Number of integration points on omega 2 when the non linear
+AIDE1 = 'Number of integration points on omega2 when the non linear
 transfer term is calculated with the exact GQM method:
 rough 6 ; medium 8 ; fine 12'
 
@@ -1525,16 +1613,20 @@ par Holthuijsen (2003)
 PAS DE TEMPS DEBUT DIFFRACTION
 SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION
 FILTRE POUR DIFFRACTION'
-AIDE1 = 'Selection of the model used to represent the diffraction :
- 0 : Diffraction is not taken into account
- 1 : Mild Slope Equation model (Berkhoff - 1972)
- 2 : Revised Mild Slope Equation model (Porter - 2003)
+AIDE1 = 'Caution : We do not guarantee the modele of diffraction. Selection of the model used to represent the diffraction :
+\begin{itemize}
+\item 0 : Diffraction is not taken into account
+\item  1 : Mild Slope Equation model (Berkhoff - 1972)
+\item  2 : Revised Mild Slope Equation model (Porter - 2003)
+\end{itemize}
 The phase-decoupled approach proposed by Holthuijsen (2003) is
 used to simulate diffraction in TOMAWAC
-**Related keywords :**
-STARTING TIME STEP FOR DIFFRACTION
-VARIANCE THRESHOLD FOR DIFFRACTION
-DIFFRACTION FILTER'
+\\
+ \begin{CommentBlock}{Related keywords}
+STARTING TIME STEP FOR DIFFRACTION\\
+VARIANCE THRESHOLD FOR DIFFRACTION\\
+DIFFRACTION FILTER
+\end{CommentBlock}'
 
 NOM = 'PAS DE TEMPS DEBUT DIFFRACTION'
 NOM1 = 'STARTING TIME STEP FOR DIFFFRACTION'
@@ -1555,10 +1647,12 @@ SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION
 FILTRE POUR DIFFRACTION'
 AIDE1 = 'Number of the time step from which the diffraction
 is taken into account until the end of the simulation.
-**Related keywords :**
-DIFFRACTION
-VARIANCE THRESHOLD FOR DIFFRACTION
-DIFFRACTION FILTER'
+\\
+ \begin{CommentBlock}{Related keywords}
+DIFFRACTION\\
+VARIANCE THRESHOLD FOR DIFFRACTION\\
+DIFFRACTION FILTER
+\end{CommentBlock}'
 
 NOM = 'PROCESSEURS PARALLELES'
 NOM1 = 'PARALLEL PROCESSORS'
@@ -1601,11 +1695,12 @@ AIDE = 'CHOIX DU PARTITIONNEUR
 4 : PTSCOTCH
 etc... '
 AIDE1 = 'PARTITIONING TOOL SELECTION
-1 : METIS
-2 : SCOTCH
-3 : PARMETIS
-4 : PTSCOTCH
-etc... '
+\begin{itemize}
+\item 1 : METIS
+\item 2 : SCOTCH
+\item 3 : PARMETIS
+\item 4 : PTSCOTCH
+\end{itemize} '
 
 
 NOM = 'PAS DE TEMPS'
@@ -1623,8 +1718,10 @@ AIDE = 'Definit le pas de temps en secondes.
 **Mots-cles associes :**
 NOMBRE DE PAS DE TEMPS'
 AIDE1 = 'Define the time step in seconds.
-**Related keywords :**
-NUMBER OF TIME STEPS'
+\\
+ \begin{CommentBlock}{Related keywords}
+NUMBER OF TIME STEPS
+\end{CommentBlock}'
 
 NOM = 'FREQUENCE MINIMALE'
 NOM1 = 'MINIMAL FREQUENCY'
@@ -1646,11 +1743,13 @@ NOMBRE DE FREQUENCES
 FACTEUR DE QUEUE DU SPECTRE'
 AIDE1 = 'Define the minimal frequency in Hz. The discretised frequencies
 are computed from the FREQUENTIAL RATIO r and the NUMBER OF FREQUENCIES
-NF by the relation $f=f0*r^{k-1}$ k=1,NF.
-**Related keywords :**
-FREQUENTIAL RATIO
-NUMBER OF FREQUENCIES
-SPECTRUM TAIL FACTOR'
+NF by the relation $f=f_0*r^{k-1}$ k=1,NF.
+\\
+ \begin{CommentBlock}{Related keywords}
+FREQUENTIAL RATIO\\
+NUMBER OF FREQUENCIES\\
+SPECTRUM TAIL FACTOR
+\end{CommentBlock}'
 
 NOM = 'RAISON FREQUENTIELLE'
 NOM1 = 'FREQUENTIAL RATIO'
@@ -1672,10 +1771,12 @@ NOMBRE DE FREQUENCES
 FACTEUR DE QUEUE DU SPECTRE'
 AIDE1 = 'Define the ratio between 2 successive discretised
 frequencies
-**Related keywords :**
-MINIMAL FREQUENCY
-NUMBER OF FREQUENCIES
-SPECTRUM TAIL FACTOR'
+\\
+ \begin{CommentBlock}{Related keywords}
+MINIMAL FREQUENCY\\
+NUMBER OF FREQUENCIES\\
+SPECTRUM TAIL FACTOR
+\end{CommentBlock}'
 
 NOM = 'ABSCISSES DES POINTS DE SORTIE DU SPECTRE'
 NOM1 = 'ABSCISSAE OF SPECTRUM PRINTOUT POINTS'
@@ -1695,9 +1796,11 @@ FICHIER DES RESULTATS PONCTUELS'
 AIDE1 = 'Array providing the abscissae of the Seraphin spectrum printout
 points with a maximum dimension of 99. The chosen spectrum points are
 the closest 2D points to the specified co-ordinates.
-**Related keywords :**
-ORDINATES OF SPECTRUM PRINTOUT POINTS
-PUNCTUAL RESULTS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+PUNCTUAL RESULTS FILE
+\end{CommentBlock}'
 
 NOM = 'ORDONNEES DES POINTS DE SORTIE DU SPECTRE'
 NOM1 = 'ORDINATES OF SPECTRUM PRINTOUT POINTS'
@@ -1717,9 +1820,11 @@ FICHIER DES RESULTATS PONCTUELS'
 AIDE1 = 'Array providing the ordinates of the Seraphin spectrum printout
 points with a maximum dimension of 99. The spectrum printout points are
 the closest 2D points to the specified co-ordinates
-**Related keywords:**
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-PUNCTUAL RESULT FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+PUNCTUAL RESULT FILE
+\end{CommentBlock}'
 
 NOM = 'DATE DE DEBUT DU CALCUL'
 NOM1 = 'DATE OF COMPUTATION BEGINNING'
@@ -1745,11 +1850,13 @@ is yyyymmddhhmm,
 as an exemple 199310241524 means the 24 october 93
 at 15h24. This date gives a reference for reading the
 wind file.
-**Related keywords:**
-BINARY WIND FILE
-FORMATTED WIND FILE
-WIND FILE BINARY
-WIND FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY WIND FILE\\
+FORMATTED WIND FILE\\
+WIND FILE BINARY\\
+WIND FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE FROTTEMENT SUR LE FOND'
 NOM1 = 'BOTTOM FRICTION COEFFICIENT'
@@ -1768,9 +1875,11 @@ AIDE = 'Coefficient de frottement sur le fond.
 PROFONDEUR INFINIE
 DISSIPATION PAR FROTTEMENT SUR LE FOND'
 AIDE1 = 'Bottom friction coefficient.
-**Related keywords:**
-INFINITE DEPTH
-BOTTOM FRICTION-INDUCED DISSIPATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+INFINITE DEPTH\\
+BOTTOM FRICTION-INDUCED DISSIPATION
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE DISSIPATION PAR MOUTONNEMENT'
 NOM1 = 'WHITE CAPPING DISSIPATION COEFFICIENT'
@@ -1789,9 +1898,11 @@ AIDE = 'Coefficient de dissipation par moutonnement.
 DISSIPATION PAR MOUTONNEMENT
 COEFFICIENT DE PONDERATION POUR LE MOUTONNEMENT'
 AIDE1 = 'White capping dissipation coefficient .
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-WHITE CAPPING WEIGHTING COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+WHITE CAPPING WEIGHTING COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE PONDERATION POUR LE MOUTONNEMENT'
 NOM1 = 'WHITE CAPPING WEIGHTING COEFFICIENT'
@@ -1811,9 +1922,11 @@ AIDE = ' Coefficient de ponderation pour le moutonnement.
 DISSIPATION PAR MOUTONNEMENT
 COEFFICIENT DE DISSIPATION PAR MOUTONNEMENT'
 AIDE1 = 'White capping weighting coefficient.
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-WHITE CAPPING DISSIPATION COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+WHITE CAPPING DISSIPATION COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'DENSITE DE L''AIR'
 NOM1 = 'AIR DENSITY'
@@ -1834,9 +1947,11 @@ APPORTS DUS AU VENT
 DENSITE DE L''EAU'
 AIDE1 = 'The ratio ROAIR/ROEAU is used in the wind generation
 source term.
-**Related keywords:**
-WIND GENERATION
-WATER DENSITY'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+WATER DENSITY
+\end{CommentBlock}'
 
 NOM = 'DENSITE DE L''EAU'
 NOM1 = 'WATER DENSITY'
@@ -1857,9 +1972,11 @@ APPORTS DUS AU VENT
 DENSITE DE L''AIR'
 AIDE1 = 'The ratio ROAIR/ROEAU is used in the wind generation
 source term.
-**Related keywords:**
-WIND GENERATION
-AIR DENSITY'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+AIR DENSITY
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE GENERATION PAR LE VENT'
 NOM1 = 'WIND GENERATION COEFFICIENT'
@@ -1878,8 +1995,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'CONSTANTE DE VON KARMAN'
 NOM1 = 'VON KARMAN CONSTANT'
@@ -1898,8 +2017,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'CONSTANTE DE CHARNOCK'
 NOM1 = 'CHARNOCK CONSTANT'
@@ -1918,8 +2039,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'DECALAGE COURBE DE CROISSANCE DUE AU VENT'
 NOM1 = 'SHIFT GROWING CURVE DUE TO WIND'
@@ -1938,8 +2061,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'COTE DE MESURE DES VENTS'
 NOM1 = 'WIND MEASUREMENTS LEVEL'
@@ -1958,8 +2083,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE TRAINEE DE VENT'
 NOM1 = 'WIND DRAG COEFFICIENT'
@@ -1978,8 +2105,10 @@ le terme source de generation par le vent.
 **Mots-cles associes :**
 APPORTS DUS AU VENT'
 AIDE1 = 'Constant used in the wind source term.
-**Related keywords:**
-WIND GENERATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION
+\end{CommentBlock}'
 
 NOM = 'HAUTEUR SIGNIFICATIVE INITIALE'
 NOM1 = 'INITIAL SIGNIFICANT WAVE HEIGHT'
@@ -1999,8 +2128,10 @@ de vent initial.
 TYPE DE SPECTRE DIRECTIONNEL INITIAL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FREQUENCE DE PIC INITIALE'
 NOM1 = 'INITIAL PEAK FREQUENCY'
@@ -2020,8 +2151,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FACTEUR DE PIC INITIAL'
 NOM1 = 'INITIAL PEAK FACTOR'
@@ -2041,8 +2174,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR INITIALE DE SIGMA-A POUR SPECTRE'
 NOM1 = 'INITIAL VALUE OF SIGMA-A FOR SPECTRUM'
@@ -2062,8 +2197,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR INITIALE DE SIGMA-B POUR SPECTRE'
 NOM1 = 'INITIAL VALUE OF SIGMA-B FOR SPECTRUM'
@@ -2083,8 +2220,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'CONSTANTE DE PHILLIPS INITIALE'
 NOM1 = 'INITIAL PHILLIPS CONSTANT'
@@ -2104,8 +2243,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR MOYENNE DU FETCH INITIAL'
 NOM1 = 'INITIAL MEAN FETCH VALUE'
@@ -2125,8 +2266,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FREQUENCE DE PIC MAXIMALE INITIALE'
 NOM1 = 'INITIAL MAXIMUM PEAK FREQUENCY'
@@ -2146,8 +2289,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'DIRECTION PRINCIPALE 1 INITIALE'
 NOM1 = 'INITIAL MAIN DIRECTION 1'
@@ -2167,8 +2312,10 @@ de vent initial. Exprimee en degres
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'ETALEMENT DIRECTIONNEL 1 INITIAL'
 NOM1 = 'INITIAL DIRECTIONAL SPREAD 1'
@@ -2188,8 +2335,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'DIRECTION PRINCIPALE 2 INITIALE'
 NOM1 = 'INITIAL MAIN DIRECTION 2'
@@ -2209,8 +2358,10 @@ de vent initial. Exprimee en degres.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'ETALEMENT DIRECTIONNEL 2 INITIAL'
 NOM1 = 'INITIAL DIRECTIONAL SPREAD 2'
@@ -2230,8 +2381,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FACTEUR DE PONDERATION POUR FRA INITIALE'
 NOM1 = 'INITIAL WEIGHTING FACTOR FOR ADF'
@@ -2251,8 +2404,10 @@ de vent initial.
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF INITIAL DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF INITIAL DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FACTEUR DE QUEUE DU SPECTRE'
 NOM1 = 'SPECTRUM TAIL FACTOR'
@@ -2273,9 +2428,11 @@ FREQUENCE MINIMALE
 RAISON FREQUENTIELLE'
 AIDE1 = 'Used to consider in the computations the contribution
 of the non discretised high frequencies
-**Related keywords :**
-NUMBER OF FREQUENCIES
-FREQUENTIAL RATIO'
+\\
+ \begin{CommentBlock}{Related keywords}
+NUMBER OF FREQUENCIES\\
+FREQUENTIAL RATIO
+\end{CommentBlock}'
 
 NOM = 'SEUIL D''ENERGIE CONSIDERE POUR LE SPECTRE'
 NOM1 = 'SPECTRUM ENERGY THRESHOLD '
@@ -2317,14 +2474,16 @@ DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 AIDE1 = 'ALPHA constant for the Battjes and Janssen model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM
-DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM\\
+DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE\\
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1\\
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1'
 NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1'
@@ -2348,14 +2507,16 @@ DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 1 (BJ) CONSTANTE ALPHA
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 AIDE1 = 'GAMMA1 constant of the Battjes and Janssen model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM
-DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
-DEFERLEMENT 1 (BJ) CONSTANTE ALPHA
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM\\
+DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE\\
+DEFERLEMENT 1 (BJ) CONSTANTE ALPHA\\
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2'
 NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2'
@@ -2379,14 +2540,16 @@ DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 1 (BJ) CONSTANTE ALPHA
 DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1'
 AIDE1 = 'GAMMA1 constant of the Battjes and Janssen model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM
-DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE
-DEFERLEMENT 1 (BJ) CONSTANTE ALPHA
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB\\
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM\\
+DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE\\
+DEFERLEMENT 1 (BJ) CONSTANTE ALPHA\\
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 2 (TG) CONSTANTE B'
 NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B'
@@ -2408,12 +2571,14 @@ DEFERLEMENT 2 (TG) FONCTION DE PONDERATION
 DEFERLEMENT 2 (TG) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 2 (TG) CONSTANTE GAMMA'
 AIDE1 = 'Coefficient B of the Thornton and Guza model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 2 (TG) CONSTANTE GAMMA'
 NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA'
@@ -2435,12 +2600,14 @@ DEFERLEMENT 2 (TG) FONCTION DE PONDERATION
 DEFERLEMENT 2 (TG) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 2 (TG) CONSTANTE B'
 AIDE1 = 'Coefficient GAMMA of the Thornton and Guza model.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 3 (RO) CONSTANTE ALPHA'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA'
@@ -2464,14 +2631,16 @@ DEFERLEMENT 3 (RO) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA2'
 AIDE1 = 'Coefficient ALPHA of the Roelvink model (1993).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 3 (RO) CONSTANTE GAMMA'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA'
@@ -2495,14 +2664,16 @@ DEFERLEMENT 3 (RO) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 3 (RO) CONSTANTE ALPHA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA2'
 AIDE1 = 'Coefficient GAMMA of the Roelvink model (1993).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 3 (RO) CONSTANTE GAMMA2'
 NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
@@ -2527,14 +2698,16 @@ DEFERLEMENT 3 (RO) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 3 (RO) CONSTANTE ALPHA
 DEFERLEMENT 3 (RO) CONSTANTE GAMMA'
 AIDE1 = 'Coefficient GAMMA2 of the Roelvink model (1993).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA
-DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION\\
+DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION\\
+DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA\\
+DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 4 (IH) CONSTANTE BETA0'
 NOM1 = 'DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0'
@@ -2557,11 +2730,13 @@ DEFERLEMENT 4 (IH) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 4 (IH) CONSTANTE M2STAR'
 AIDE1 = 'coefficient BETA0 of the Izumiya and Horikawa
 model (1984).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
+\end{CommentBlock}'
 
 NOM='DEFERLEMENT 4 (IH) CONSTANTE M2STAR'
 NOM1 = 'DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR'
@@ -2584,11 +2759,13 @@ DEFERLEMENT 4 (IH) CHOIX FREQUENCE CARACTERISTIQUE
 DEFERLEMENT 4 (IH) CONSTANTE BETA0'
 AIDE1 = 'coefficient M2STAR of the Izumiya and Horikawa
 model (1984).
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS
-DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY
-DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS\\
+DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY\\
+DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
+\end{CommentBlock}'
 
 NOM = 'VALEUR MAXIMALE DU RAPPORT HM0 SUR D'
 NOM1 = 'MAXIMUM VALUE OF THE RATIO HM0 ON D'
@@ -2607,9 +2784,11 @@ de houle est ecretee de facon a satisfaire le critere specifie.
 DISSIPATION PAR DEFERLEMENT'
 AIDE1 = 'At the beginning of the integration of the source terms,
 the wave height is lopped in order to satisfy the specified
-ctiterium.
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION'
+criterium.
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT POUR LES SOUS-PAS DE TEMPS POUR LE DEFERLEMENT'
 NOM1 = 'COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING'
@@ -2629,9 +2808,11 @@ DISSIPATION PAR DEFERLEMENT
 NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT'
 AIDE1 = 'Geometrical ratio of the time sub-increments for the
 depth-induced breaking
-**Related keywords :**
-DEPTH-INDUCED BREAKING DISSIPATION
-NUMBER OF BREAKING TIME STEPS'
+\\
+ \begin{CommentBlock}{Related keywords}
+DEPTH-INDUCED BREAKING DISSIPATION\\
+NUMBER OF BREAKING TIME STEPS
+\end{CommentBlock}'
 
 NOM = 'PARAMETRE DE LA CONFIGURATION STANDARD'
 NOM1 = 'STANDARD CONFIGURATION PARAMETER'
@@ -2650,8 +2831,10 @@ standard pour les quadruplets dans la methode DIA.
 TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 AIDE1 = 'Parameter defining the standard configuration for
 the quadruplet interactions in the DIA method.
-**Related keywords :**
-NON-LINEAR TRANSFERS'
+\\
+ \begin{CommentBlock}{Related keywords}
+NON-LINEAR TRANSFERS
+\end{CommentBlock}'
 
 NOM = 'COTE INITIALE DU PLAN D''EAU AU REPOS'
 NOM1 = 'INITIAL STILL WATER LEVEL'
@@ -2689,9 +2872,11 @@ TRIADS 1 (LTA) CONSTANTE RFMLTA'
 AIDE1 = 'Coefficient alpha of the LTA model proposed by Eldeberky(1996).
 If alpha=0, no energy transfers. The energy transfers increase
 with alpha.
-**Related keywords :**
-TRIAD INTERACTIONS
-TRIADS 1 (LTA) COEFFICIENT RFMLTA'
+\\
+ \begin{CommentBlock}{Related keywords}
+TRIAD INTERACTIONS\\
+TRIADS 1 (LTA) COEFFICIENT RFMLTA
+\end{CommentBlock}'
 
 NOM = 'TRIADS 1 (LTA) CONSTANTE RFMLTA'
 NOM1 = 'TRIADS 1 (LTA) COEFFICIENT RFMLTA'
@@ -2715,9 +2900,11 @@ TRIADS 1 (LTA) CONSTANTE ALPHA'
 AIDE1 = 'RFMLTA determines the upper frequency on which the energy
 transfers may occur. The maximal frequency is calculated as the
 product of the constant RFMLTA by the peak frequency of the spectrum.
-**Related keywords :**
-TRIAD INTERACTIONS
-TRIADS 1 (LTA) COEFFICIENT ALPHA'
+\\
+ \begin{CommentBlock}{Related keywords}
+TRIAD INTERACTIONS\\
+TRIADS 1 (LTA) COEFFICIENT ALPHA
+\end{CommentBlock}'
 
 NOM = 'TRIADS 2 (SPB) CONSTANTE K'
 NOM1 = 'TRIADS 2 (SPB) COEFFICIENT K'
@@ -2737,10 +2924,12 @@ TRANSFERTS ENTRE TRIPLETS DE FREQUENCES
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE INFERIEURE
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE SUPERIEURE'
 AIDE1 = 'coefficient K of the SPB model
-**Related keywords :**
-TRIAD INTERACTIONS
-TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY
-TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+TRIAD INTERACTIONS\\
+TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY\\
+TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
+\end{CommentBlock}'
 
 NOM = 'TRIADS 2 (SPB) BORNE DIRECTIONNELLE INFERIEURE'
 NOM1 = 'TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY'
@@ -2760,10 +2949,12 @@ TRANSFERTS ENTRE TRIPLETS DE FREQUENCES
 TRIADS 2 (SPB) CONSTANTE K
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE SUPERIEURE'
 AIDE1 = 'Lower directional boundary of the SPB model
-**Related keywords :**
-TRIAD INTERACTIONS
-TRIADS 2 (SPB) COEFFICIENT K
-TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+TRIAD INTERACTIONS\\
+TRIADS 2 (SPB) COEFFICIENT K\\
+TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
+\end{CommentBlock}'
 
 NOM = 'TRIADS 2 (SPB) BORNE DIRECTIONNELLE SUPERIEURE'
 NOM1 = 'TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY'
@@ -2783,10 +2974,12 @@ TRANSFERTS ENTRE TRIPLETS DE FREQUENCES
 TRIADS 2 (SPB) CONSTANTE K
 TRIADS 2 (SPB) BORNE DIRECTIONNELLE INFERIEURE'
 AIDE1 = 'Upper directional boundary of the SPB model
-**Related keywords :**
-TRIAD INTERACTIONS
-TRIADS 2 (SPB) COEFFICIENT K
-TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+TRIAD INTERACTIONS\\
+TRIADS 2 (SPB) COEFFICIENT K\\
+TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY
+\end{CommentBlock}'
 
 NOM = 'HAUTEUR SIGNIFICATIVE AUX LIMITES'
 NOM1 = 'BOUNDARY SIGNIFICANT WAVE HEIGHT'
@@ -2806,8 +2999,10 @@ de vent.
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FREQUENCE DE PIC AUX LIMITES'
 NOM1 = 'BOUNDARY PEAK FREQUENCY'
@@ -2827,8 +3022,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR AUX LIMITES DE SIGMA-A POUR SPECTRE'
 NOM1 = 'BOUNDARY SPECTRUM VALUE OF SIGMA-A'
@@ -2848,8 +3045,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR AUX LIMITES DE SIGMA-B POUR SPECTRE'
 NOM1 = 'BOUNDARY SPECTRUM VALUE OF SIGMA-B'
@@ -2869,8 +3068,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'CONSTANTE DE PHILLIPS AUX LIMITES'
 NOM1 = 'BOUNDARY PHILLIPS CONSTANT'
@@ -2890,8 +3091,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'VALEUR MOYENNE DU FETCH AUX LIMITES'
 NOM1 = 'BOUNDARY MEAN FETCH VALUE'
@@ -2911,8 +3114,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FREQUENCE DE PIC MAXIMALE AUX LIMITES'
 NOM1 = 'BOUNDARY MAXIMUM PEAK FREQUENCY'
@@ -2932,8 +3137,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'DIRECTION PRINCIPALE 1 AUX LIMITES'
 NOM1 = 'BOUNDARY MAIN DIRECTION 1'
@@ -2953,8 +3160,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'ETALEMENT DIRECTIONNEL 1 AUX LIMITES'
 NOM1 = 'BOUNDARY DIRECTIONAL SPREAD 1'
@@ -2974,8 +3183,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'DIRECTION PRINCIPALE 2 AUX LIMITES'
 NOM1 = 'BOUNDARY MAIN DIRECTION 2'
@@ -2995,8 +3206,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'ETALEMENT DIRECTIONNEL 2 AUX LIMITES'
 NOM1 = 'BOUNDARY DIRECTIONAL SPREAD 2'
@@ -3016,8 +3229,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FACTEUR DE PONDERATION POUR FRA AUX LIMITES'
 NOM1 = 'BOUNDARY WEIGHTING FACTOR FOR ADF'
@@ -3037,8 +3252,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keywords :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FACTEUR DE PIC AUX LIMITES'
 NOM1 = 'BOUNDARY PEAK FACTOR'
@@ -3058,8 +3275,10 @@ de vent .
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
 AIDE1 = 'Is part of the set of constants used for computing the
 boundary directional spectrum as a function of the wind field.
-**Related keyword :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'PROFONDEUR D''EAU MINIMALE'
 NOM1 = 'MINIMUM WATER DEPTH'
@@ -3093,8 +3312,10 @@ AIDE = 'Vitesse du vent suivant X, constante et homogene (en m/s)
 **Mots-cles associes :**
 PRISE EN COMPTE DU VENT'
 AIDE1 = 'Wind velocity along X axis, constant and homogeneous (m/s)
-**Related keyword :**
-CONSIDERATION OF A WIND'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND
+\end{CommentBlock}'
 
 NOM = 'VITESSE DU VENT SUIVANT Y'
 NOM1 = 'WIND VELOCITY ALONG Y'
@@ -3112,8 +3333,10 @@ AIDE = 'Vitesse du vent suivant Y, constante et homogene (en m/s)
 **Mots-cles associes :**
 PRISE EN COMPTE DU VENT'
 AIDE1 = 'Wind velocity along Y axis, constant and homogeneous (m/s)
-**Related keyword :**
-CONSIDERATION OF A WIND'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT IMPLICITATION POUR TERMES SOURCES'
 NOM1 = 'IMPLICITATION COEFFICIENT FOR SOURCE TERMS'
@@ -3135,11 +3358,14 @@ CIMPLI=1.  : implicite.
 PRISE EN COMPTE DES TERMES SOURCES'
 AIDE1 = 'Implicitation coefficient for the source terms integration,
 included between 0 et 1.
-CIMPLI=0.  : explicit
-CIMPLI=0.5 : semi-implicit
-CIMPLI=1.  : implicit.
-**Related keyword :**
-CONSIDERATION OF SOURCE TERMS'
+\begin{itemize}
+\item CIMPLI=0.  : explicit
+\item CIMPLI=0.5 : semi-implicit
+\item CIMPLI=1.  : implicit.
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF SOURCE TERMS
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE GENERATION DE YAN D'
 NOM1 = 'YAN GENERATION COEFFICIENT D'
@@ -3160,11 +3386,13 @@ COEFFICIENT DE GENERATION DE YAN E
 COEFFICIENT DE GENERATION DE YAN F
 COEFFICIENT DE GENERATION DE YAN H'
 AIDE1 = 'Constant used in the wind source term of Yan (1987).
-**Related keywords:**
-WIND GENERATION
-YAN GENERATION COEFFICIENT E
-YAN GENERATION COEFFICIENT F
-YAN GENERATION COEFFICIENT H'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+YAN GENERATION COEFFICIENT E\\
+YAN GENERATION COEFFICIENT F\\
+YAN GENERATION COEFFICIENT H
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE GENERATION DE YAN E'
 NOM1 = 'YAN GENERATION COEFFICIENT E'
@@ -3185,11 +3413,13 @@ COEFFICIENT DE GENERATION DE YAN D
 COEFFICIENT DE GENERATION DE YAN F
 COEFFICIENT DE GENERATION DE YAN H'
 AIDE1 = 'Constant used in the wind source term of Yan (1987).
-**Related keywords:**
-WIND GENERATION
-YAN GENERATION COEFFICIENT D
-YAN GENERATION COEFFICIENT F
-YAN GENERATION COEFFICIENT H'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+YAN GENERATION COEFFICIENT D\\
+YAN GENERATION COEFFICIENT F\\
+YAN GENERATION COEFFICIENT H
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE GENERATION DE YAN F'
 NOM1 = 'YAN GENERATION COEFFICIENT F'
@@ -3210,11 +3440,13 @@ COEFFICIENT DE GENERATION DE YAN D
 COEFFICIENT DE GENERATION DE YAN E
 COEFFICIENT DE GENERATION DE YAN H'
 AIDE1 = 'Constant used in the wind source term of Yan (1987).
-**Related keywords:**
-WIND GENERATION
-YAN GENERATION COEFFICIENT D
-YAN GENERATION COEFFICIENT E
-YAN GENERATION COEFFICIENT H'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+YAN GENERATION COEFFICIENT D\\
+YAN GENERATION COEFFICIENT E\\
+YAN GENERATION COEFFICIENT H
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE GENERATION DE YAN H'
 NOM1 = 'YAN GENERATION COEFFICIENT H'
@@ -3235,11 +3467,13 @@ COEFFICIENT DE GENERATION DE YAN D
 COEFFICIENT DE GENERATION DE YAN E
 COEFFICIENT DE GENERATION DE YAN F'
 AIDE1 = 'Constant used in the wind source term of Yan (1987).
-**Related keywords:**
-WIND GENERATION
-YAN GENERATION COEFFICIENT D
-YAN GENERATION COEFFICIENT E
-YAN GENERATION COEFFICIENT F'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+YAN GENERATION COEFFICIENT D\\
+YAN GENERATION COEFFICIENT E\\
+YAN GENERATION COEFFICIENT F
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE DISSIPATION DE WESTHUYSEN'
 NOM1 = 'WESTHUYSEN DISSIPATION COEFFICIENT'
@@ -3261,11 +3495,13 @@ DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN
 COEFFICIENT DE PONDERATION DE WESTHUYSEN'
 AIDE1 = 'White capping dissipation coefficient of
 van der Westhuysen (2007): Cdis,break.
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-SATURATION THRESHOLD FOR THE DISSIPATION
-WESTHUYSEN WHITE CAPPING DISSIPATION
-WESTHUYSEN WEIGHTING COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+SATURATION THRESHOLD FOR THE DISSIPATION\\
+WESTHUYSEN WHITE CAPPING DISSIPATION\\
+WESTHUYSEN WEIGHTING COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'SEUIL DE SATURATION POUR LA DISSIPATION'
 NOM1 = 'SATURATION THRESHOLD FOR THE DISSIPATION'
@@ -3287,11 +3523,13 @@ DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN
 COEFFICIENT DE PONDERATION DE WESTHUYSEN'
 AIDE1 = 'White capping dissipation coefficient of
 van der Westhuysen (2007): Br (saturation threshold).
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-WESTHUYSEN DISSIPATION COEFFICIENT
-WESTHUYSEN WHITE CAPPING DISSIPATION
-WESTHUYSEN WEIGHTING COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+WESTHUYSEN DISSIPATION COEFFICIENT\\
+WESTHUYSEN WHITE CAPPING DISSIPATION\\
+WESTHUYSEN WEIGHTING COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN'
 NOM1 = 'WESTHUYSEN WHITE CAPPING DISSIPATION'
@@ -3313,11 +3551,13 @@ SEUIL DE SATURATION POUR LA DISSIPATION
 COEFFICIENT DE PONDERATION DE WESTHUYSEN'
 AIDE1 = 'White capping dissipation coefficient of
 van der Westhuysen (2007): Cdis,non-break.
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-WESTHUYSEN DISSIPATION COEFFICIENT
-SATURATION THRESHOLD FOR THE DISSIPATION
-WESTHUYSEN WEIGHTING COEFFICIENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+WESTHUYSEN DISSIPATION COEFFICIENT\\
+SATURATION THRESHOLD FOR THE DISSIPATION\\
+WESTHUYSEN WEIGHTING COEFFICIENT
+\end{CommentBlock}'
 
 NOM = 'COEFFICIENT DE PONDERATION DE WESTHUYSEN'
 NOM1 = 'WESTHUYSEN WEIGHTING COEFFICIENT'
@@ -3339,11 +3579,13 @@ SEUIL DE SATURATION POUR LA DISSIPATION
 DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN'
 AIDE1 = 'White capping dissipation coefficient of
 van der Westhuysen (2007): delta.
-**Related keywords:**
-WHITE CAPPING DISSIPATION
-WESTHUYSEN DISSIPATION COEFFICIENT
-SATURATION THRESHOLD FOR THE DISSIPATION
-WESTHUYSEN WHITE CAPPING DISSIPATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WHITE CAPPING DISSIPATION\\
+WESTHUYSEN DISSIPATION COEFFICIENT\\
+SATURATION THRESHOLD FOR THE DISSIPATION\\
+WESTHUYSEN WHITE CAPPING DISSIPATION
+\end{CommentBlock}'
 
 NOM = 'SEUIL0 ELIMINATION DE CONFIGURATIONS'
 NOM1 = 'THRESHOLD0 FOR CONFIGURATIONS ELIMINATION'
@@ -3365,10 +3607,12 @@ SEUIL2 ELIMINATION DE CONFIGURATIONS
 TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 AIDE1 = 'Choice of threshold for configurations elimination when the
 non linear transfer term is calculated with the exact GQM method
-**Related keywords:**
-THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
-THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+\\
+ \begin{CommentBlock}{Related keywords}
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION\\
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION\\
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
+\end{CommentBlock}'
 
 NOM = 'SEUIL1 ELIMINATION DE CONFIGURATIONS'
 NOM1 = 'THRESHOLD1 FOR CONFIGURATIONS ELIMINATION'
@@ -3390,10 +3634,12 @@ SEUIL2 ELIMINATION DE CONFIGURATIONS
 TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 AIDE1 = 'Choice of threshold1 for configurations elimination when the
 non linear transfer term is calculated with the exact GQM method
-**Related keywords:**
-THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
-THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+\\
+ \begin{CommentBlock}{Related keywords}
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION\\
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION\\
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
+\end{CommentBlock}'
 
 NOM = 'SEUIL2 ELIMINATION DE CONFIGURATIONS'
 NOM1 = 'THRESHOLD2 FOR CONFIGURATIONS ELIMINATION'
@@ -3416,10 +3662,12 @@ TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 AIDE1 = 'Choice of threshold2 for configurations elimination when the
 non linear transfer term is calculated with the exact GQM method:
 rough 0.15 ; medium 0.01 ; fine 0.001
-**Related keywords:**
-THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
-THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+\\
+ \begin{CommentBlock}{Related keywords}
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION\\
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION\\
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
+\end{CommentBlock}'
 
 NOM = 'SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION'
 NOM1 = 'VARIANCE THRESHOLD FOR DIFFRACTION'
@@ -3440,10 +3688,12 @@ PAS DE TEMPS DEBUT DIFFRACTION
 FILTRE POUR DIFFRACTION'
 AIDE1 = 'Minimum spectral variance threshold taken into account
 when diffraction is considered
-**Related keywords:**
-DIFFRACTION
-STARTING TIME STEP FOR DIFFRACTION
-DIFFRACTION FILTER'
+\\
+ \begin{CommentBlock}{Related keywords}
+DIFFRACTION\\
+STARTING TIME STEP FOR DIFFRACTION\\
+DIFFRACTION FILTER
+\end{CommentBlock}'
 
 NOM = 'TITRE'
 NOM1 = 'TITLE'
@@ -3586,45 +3836,48 @@ NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES
 PERIODE POUR LES SORTIES GRAPHIQUES'
 AIDE1 = 'Codes of the variables the user wants to write into the 2D
 RESULTS FILE. The available variables are as follows
-M0   : Total variance
-HM0  : Spectral significant wave height
-DMOY : Mean wave direction
-SPD  : Mean directional spreading
-ZF   : Sea bottom level
-WD   : Water depth
-UX   : Current along X
-UY   : Current along Y
-VX   : Wind along X
-VY   : Wind along Y
-FX   : Driving force along X
-FY   : Driving force along Y
-SXX  : Radiation stress along xx
-SYY  : Radiation stress along yy
-SXY  : Radiation stress along xy
-UWB  : Bottom celerity
-POW  : Wave power (per meter along wave crest)
-FMOY : Mean frequency FMOY
-FM01 : Mean frequency FM01
-FM02 : Mean frequency FM02
-FPD  : Discrete peak frequency
-FPR5 : Peak frequency by Read method of order 5
-FPR8 : Peak frequency by Read method of order 8
-US   : Surface friction velocity u*
-CD   : Surface drag coefficient CD
-Z0   : Surface roughness length Z0
-WS   : Surface wave stress
-TMOY : Mean period Tmoy
-TM01 : Mean period Tm01
-TM02 : Mean period Tm02
-TPD  : Discrete peak period
-TPR5 : Peak period by Read method of order 5
-TPR8 : Peak period by Read method of order 8
-PRI  : Private table
-BETA : Breaking waves coefficient
-**Related keywords :**
-2D RESULTS FILE
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
-PERIOD FOR GRAPHIC PRINTOUTS'
+\begin{itemize}
+\item M0   : Total variance
+\item HM0  : Spectral significant wave height
+\item DMOY : Mean wave direction
+\item SPD  : Mean directional spreading
+\item ZF   : Sea bottom level
+\item WD   : Water depth
+\item UX   : Current along X
+\item UY   : Current along Y
+\item VX   : Wind along X
+\item VY   : Wind along Y
+\item FX   : Driving force along X
+\item FY   : Driving force along Y
+\item SXX  : Radiation stress along xx
+\item SYY  : Radiation stress along yy
+\item SXY  : Radiation stress along xy
+\item UWB  : Bottom celerity
+\item POW  : Wave power (per meter along wave crest)
+\item FMOY : Mean frequency FMOY
+\item FM01 : Mean frequency FM01
+\item FM02 : Mean frequency FM02
+\item FPD  : Discrete peak frequency
+\item FPR5 : Peak frequency by Read method of order 5
+\item FPR8 : Peak frequency by Read method of order 8
+\item US   : Surface friction velocity u*
+\item CD   : Surface drag coefficient CD
+\item Z0   : Surface roughness length Z0
+\item WS   : Surface wave stress
+\item TMOY : Mean period Tmoy
+\item TM01 : Mean period Tm01
+\item TM02 : Mean period Tm02
+\item TPD  : Discrete peak period
+\item TPR5 : Peak period by Read method of order 5
+\item TPR8 : Peak period by Read method of order 8
+\item PRI  : Private table
+\item BETA : Breaking waves coefficient
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+2D RESULTS FILE\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
+PERIOD FOR GRAPHIC PRINTOUTS
+\end{CommentBlock}'
 
 NOM = 'DICTIONNAIRE'
 NOM1 = 'DICTIONARY'
@@ -3657,8 +3910,10 @@ AIDE = 'Nom du fichier contenant le maillage du calcul a realiser.
 BINAIRE DU FICHIER DE GEOMETRIE'
 AIDE1 = 'Name of the file containing the grid of the computation to be
 made.
-**Related keyword :**
-GEOMETRY FILE BINARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+GEOMETRY FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE FORMAT'
@@ -3679,9 +3934,12 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Geometry file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
 
 NOM = 'FICHIER FORTRAN'
 NOM1 = 'FORTRAN FILE'
@@ -3776,11 +4034,13 @@ PERIODE OUR LES SORTIES GRAPHIQUES
 NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
 AIDE1 = 'Name of the file into which the results of the two-dimensional
 computation will be written.
-**Related keywords :**
-2D RESULTS FILE BINARY
-VARIABLES FOR 2D GRAPHIC PRINTOUTS
-PERIOD FOR GRAPHIC PRINTOUTS
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS'
+\\
+ \begin{CommentBlock}{Related keywords}
+2D RESULTS FILE BINARY\\
+VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
+PERIOD FOR GRAPHIC PRINTOUTS\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES RESULTATS 2D'
 NOM1 = '2D RESULTS FILE FORMAT'
@@ -3801,9 +4061,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Geometry file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DES RESULTATS PONCTUELS'
 NOM1 = 'PUNCTUAL RESULTS FILE'
@@ -3811,7 +4073,7 @@ TYPE = CARACTERE
 INDEX = 9
 MNEMO = 'Variable WAC\_FILES(WACLEO)%NAME'
 TAILLE= 0
-SUBMIT = 'WACLEO-WRITE-33;WACLEO;FACUL;BIN;ECR;SCAL'
+SUBMIT = 'WACLEO-WRITE-33;WACLEO;OBLIG;BIN;ECR;SCAL'
 DEFAUT = 'spect'
 DEFAUT1 = 'spect'
 RUBRIQUE = 'RESULTATS'
@@ -3827,12 +4089,14 @@ PERIODE POUR LES SORTIES GRAPHIQUES
 NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
 AIDE1 = 'Name of the file into which the punctual spectra will be
 written.
-**Related keywords :**
-PUNCTUAL RESULTS FILE BINARY
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-ORDINATES OF SPECTRUM PRINTOUT POINTS
-PERIOD FOR GRAPHIC PRINTOUTS
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS'
+\\
+ \begin{CommentBlock}{Related keywords}
+PUNCTUAL RESULTS FILE BINARY\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+PERIOD FOR GRAPHIC PRINTOUTS\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
+\end{CommentBlock}'
 
 NOM = 'FICHIER DU CALCUL PRECEDENT'
 NOM1 = 'PREVIOUS COMPUTATION FILE'
@@ -3854,8 +4118,10 @@ BINAIRE DU FICHIER DU CALCUL PRECEDENT'
 AIDE1 = 'Name of the file containing the global results of a previous
 computation realised with the same mesh. This file gives the initial
 conditions for a next computation.
-**Related keywords :**
-BINARY OF THE PREVIOUS COMPUTATION FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY OF THE PREVIOUS COMPUTATION FILE
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT'
 NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT'
@@ -3870,15 +4136,17 @@ NIVEAU = 1
 RUBRIQUE = 'FICHIERS DE DONNEES'
 RUBRIQUE1 = 'DATA FILE'
 AIDE = 'Format du fichier de resultats du calcul precedent.
-Les valeurs possibles sont provisoirement seulement:
+Les valeurs possibles sont seulement:
 - SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
-Possible values are provisionnally only:
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
+Possible values are only:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DES RESULTATS GLOBAUX'
 NOM1 = 'GLOBAL RESULT FILE'
@@ -3899,8 +4167,10 @@ BINAIRE DU FICHIER DES RESULTATS GLOBAUX'
 AIDE1 = 'Name of the file in which the table F (density spectrum)
 is written at the end of the computation in order to realise a next
 computation.
-**Related keywords :**
-BINARY OF THE GLOBAL RESULT FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY OF THE GLOBAL RESULT FILE
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES RESULTATS GLOBAUX'
 NOM1 = 'GLOBAL RESULT FILE FORMAT'
@@ -3921,9 +4191,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DES COURANTS BINAIRE'
 NOM1 = 'BINARY CURRENTS FILE'
@@ -3944,11 +4216,13 @@ PRISE EN COMPTE DE LA MAREE
 FICHIER DES COURANTS FORMATE
 FORMAT DU FICHIER DES COURANTS'
 AIDE1 = 'Name of the current data file (if binary).
-**Related keywords : **
-CONSIDERATION OF A STATIONARY CURRENT
-CONSIDERATION OF TIDE
-FORMATTED CURRENTS FILE
-CURRENTS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A STATIONARY CURRENT\\
+CONSIDERATION OF TIDE\\
+FORMATTED CURRENTS FILE\\
+CURRENTS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES COURANTS BINAIRE'
 NOM1 = 'BINARY CURRENTS FILE FORMAT'
@@ -3969,9 +4243,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Currents binary file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DES COURANTS FORMATE'
 NOM1 = 'FORMATTED CURRENTS FILE'
@@ -3992,11 +4268,13 @@ PRISE EN COMPTE DE LA MAREE
 FICHIER DES COURANTS BINAIRE
 FORMAT DU FICHIER DES COURANTS'
 AIDE1 = 'Name of the current data file (if formatted).
-**Related keywords : **
-CONSIDERATION OF A STATIONARY CURRENT
-CONSIDERATION OF TIDE
-BINARY CURRENTS FILE
-CURRENTS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A STATIONARY CURRENT\\
+CONSIDERATION OF TIDE\\
+BINARY CURRENTS FILE\\
+CURRENTS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'FICHIER BINAIRE 1'
 NOM1 = 'BINARY FILE 1'
@@ -4058,9 +4336,10 @@ possible values are as follows :
 - IBM; for a file created in an IBM machine;
 - I3E; for a file created in a HP machine;
 - STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-GEOMETRY FILE'
-
+\\
+ \begin{CommentBlock}{Related keywords}
+GEOMETRY FILE
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER DES RESULTATS PONCTUELS'
 NOM1 = 'PUNCTUAL RESULTS FILE BINARY'
@@ -4085,11 +4364,14 @@ FICHIER DES RESULTATS PONCTUELS'
 AIDE1 = 'Type of the binary used for writing the puntual results file.
 That type depends on the machine in which the file was generated. The
 possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-PUNCTUAL RESULTS FILE'
+\begin{itemize}
+\item IBM; for a file created in an IBM machine;
+\item I3E; for a file created in a HP machine;
+\item STD; normal READ and WRITE instructions are then generated.
+\end{itemize}
+\begin{CommentBlock}{Related keywords}
+PUNCTUAL RESULTS FILE
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER DES COURANTS'
 NOM1 = 'CURRENTS FILE BINARY'
@@ -4120,10 +4402,12 @@ possible values are as follows :
 - IBM; for a file created in an IBM machine;
 - I3E; for a file created in a HP machine;
 - STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-BINARY CURRENTS FILE
-FORMATTED CURRENTS FILE
-CURRENTS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY CURRENTS FILE\\
+FORMATTED CURRENTS FILE\\
+CURRENTS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER DES RESULTATS GLOBAUX'
 NOM1 = 'GLOBAL RESULT FILE BINARY'
@@ -4148,11 +4432,14 @@ FICHIER DES RESULTATS GLOBAUX'
 AIDE1 = 'Type of the binary used for writing the global result file.
 That type depends on the machine in which the file was generated.
 The possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-GLOBAL RESULT FILE'
+\begin{itemize}
+\item IBM; for a file created in an IBM machine;
+\item I3E; for a file created in a HP machine;
+\item STD; normal READ and WRITE instructions are then generated.
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+GLOBAL RESULT FILE
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER DU CALCUL PRECEDENT'
 NOM1 = 'PREVIOUS COMPUTATION FILE BINARY'
@@ -4177,11 +4464,14 @@ FICHIER DU CALCUL PRECEDENT'
 AIDE1 = 'Type of the binary used for reading the previous computation
 file. That type depends on the machine in which the file was generated.
 The possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-PREVIOUS COMPUTATION FILE'
+\begin{itemize}
+\item IBM; for a file created in an IBM machine;
+\item I3E; for a file created in a HP machine;
+\item STD; normal READ and WRITE instructions are then generated.
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+PREVIOUS COMPUTATION FILE
+\end{CommentBlock}'
 
 NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'
@@ -4224,9 +4514,11 @@ depends on the machine in which the file was generated. The possible
 values are the same as for the geometry file.
 WARNING! This file is a binary one is
 the keyword WINDS FILE FORMAT is higher than or equal to 3.
-**Related keywords :**
-BINARY WINDS FILE
-WINDS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY WINDS FILE\\
+WINDS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER BINAIRE 1'
 NOM1 = 'BINARY FILE 1 BINARY'
@@ -4251,8 +4543,10 @@ FICHIER BINAIRE 1'
 AIDE1 = 'Type of the binary used for writing the binary file1. This
 type depends on the machine in which the file was generated. The
 possible values are the same as for the geometry file.
-**Related keyword :**
-BINARY FILE 1'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY FILE 1
+\end{CommentBlock}'
 
 NOM = 'FICHIER DES VENTS BINAIRE'
 NOM1 = 'BINARY WINDS FILE'
@@ -4272,10 +4566,12 @@ PRISE EN COMPTE DU VENT
 FICHIER DES VENTS FORMATE
 FORMAT DU FICHIER DES VENTS'
 AIDE1 = 'Name of wind data file (if binary).
-**Related keywords :**
-CONSIDERATION OF WIND
-FORMATTED WINDS FILE
-WINDS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF WIND\\
+FORMATTED WINDS FILE\\
+WINDS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES VENTS BINAIRE'
 NOM1 = 'BINARY WINDS FILE FORMAT'
@@ -4294,12 +4590,13 @@ Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
 - MED     : format MED base sur HDF5'
-AIDE1 = 'wind data binary file format
+AIDE1 = 'wind data binary file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
-
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DES VENTS FORMATE'
 NOM1 = 'FORMATTED WINDS FILE'
@@ -4318,10 +4615,12 @@ PRISE EN COMPTE DU VENT
 FICHIER DES VENTS BINAIRE
 FORMAT DU FICHIER DES VENTS'
 AIDE1 = 'Name of wind data file (if formatted).
-**Related keywords :**
-CONSIDERATION OF WIND
-BINARY WINDS FILE
-WINDS FILE FORMAT'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF WIND\\
+BINARY WINDS FILE\\
+WINDS FILE FORMAT
+\end{CommentBlock}'
 
 NOM = 'FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE'
@@ -4340,8 +4639,10 @@ AIDE = 'Nom du fichier de reference en cas de validation.
 **Mots-cles associes :**
 VALIDATION'
 AIDE1 = 'Name of validation data file
-**Related keywords :**
-VALIDATION'
+\\
+ \begin{CommentBlock}{Related keywords}
+VALIDATION
+\end{CommentBlock}'
 
 NOM = 'FICHIER DU NIVEAU DE LA MAREE BINAIRE'
 NOM1 = 'BINARY TIDAL WATER LEVEL FILE'
@@ -4363,12 +4664,14 @@ FORMAT DU FICHIER DU NIVEAU DE LA MAREE
 PERIODE D ACTUALISATION DE LA MAREE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
 AIDE1 = 'Name of the water level data file (if binary).
-**Related keywords : **
-CONSIDERATION OF TIDE
-FORMATTED TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE FORMAT
-TIDE REFRESHING PERIOD
-TIDAL WATER LEVEL FILE BINARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+FORMATTED TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE FORMAT\\
+TIDE REFRESHING PERIOD\\
+TIDAL WATER LEVEL FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DE LA MAREE BINAIRE'
 NOM1 = 'BINARY TIDAL WATER FILE FORMAT'
@@ -4389,9 +4692,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'binary tidal water file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FICHIER DU NIVEAU DE LA MAREE FORMATE'
 NOM1 = 'FORMATTED TIDAL WATER LEVEL FILE'
@@ -4414,12 +4719,14 @@ FORMAT DU FICHIER DES COURANTS
 PERIODE D ACTUALISATION DE LA MAREE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
 AIDE1 = 'Name of the current data file (if formatted).
-**Related keywords : **
-CONSIDERATION OF TIDE
-BINARY TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE FORMAT
-TIDE REFRESHING PERIOD
-TIDAL WATER LEVEL FILE BINARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+BINARY TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE FORMAT\\
+TIDE REFRESHING PERIOD\\
+TIDAL WATER LEVEL FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
 NOM1 = 'TIDAL WATER LEVEL FILE BINARY'
@@ -4451,15 +4758,18 @@ PERIODE D ACTUALISATION DE LA MAREE'
 AIDE1 = 'Type of the binary used for writing the currents file. That
 type depends on the machine in which the file was generated. The
 possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-**Related keyword :**
-CONSIDERATION OF TIDE
-BINARY TIDAL WATER LEVEL FILE
-FORMATTED TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE FORMAT
-TIDE REFRESHING PERIOD'
+\begin{itemize}
+\item IBM; for a file created in an IBM machine;
+\item I3E; for a file created in a HP machine;
+\item STD; normal READ and WRITE instructions are then generated.
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF TIDE\\
+BINARY TIDAL WATER LEVEL FILE\\
+FORMATTED TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE FORMAT\\
+TIDE REFRESHING PERIOD
+\end{CommentBlock}'
 
 NOM = 'PRISE EN COMPTE DES TERMES SOURCES'
 NOM1 = 'CONSIDERATION OF SOURCE TERMS'
@@ -4484,14 +4794,16 @@ TRANSFERTS NON LINEAIRES INTER-FREQUENCES
 TRANSFERTS ENTRE TRIPLETS DE FREQUENCES'
 AIDE1 = 'Indicates whether the source terms are taken into
 account or not.
-**Related keywords :**
-WIND GENERATION
-BOTTOM FRICTION DISSIPATION
-WHITE CAPPING DISSIPATION
-DEPTH-INDUCED BREAKING DISSIPATION
-WAVE BLOCKING DISSIPATION
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
-TRIAD INTERACTION'
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+BOTTOM FRICTION DISSIPATION\\
+WHITE CAPPING DISSIPATION\\
+DEPTH-INDUCED BREAKING DISSIPATION\\
+WAVE BLOCKING DISSIPATION\\
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\\
+TRIAD INTERACTION
+\end{CommentBlock}'
 
 NOM = 'COORDONNEES SPHERIQUES'
 NOM1 = 'SPHERICAL COORDINATES'
@@ -4528,8 +4840,6 @@ degree) or cartesian (unit = meter).'
 /FICHIER DES RESULTATS GLOBAUX'
 /AIDE1 = 'Indicates whether a global output is made at the end
 /of this computation (for a next computation).
-/**Related keywords :**
-/GLOBAL RESULTS FILE'
 
 NOM = 'SUITE DE CALCUL'
 NOM1 = 'NEXT COMPUTATION'
@@ -4546,8 +4856,10 @@ AIDE = 'Indique si on fait une suite de calcul.
 **Mots-cles associes :**
 FICHIER DU CALCUL PRECEDENT'
 AIDE1 = 'Indicates whether a next compution is done.
-**Related keywords :**
-PREVIOUS RESULTS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+PREVIOUS RESULTS FILE
+\end{CommentBlock}'
 
 NOM = 'PROFONDEUR INFINIE'
 NOM1 = 'INFINITE DEPTH'
@@ -4582,8 +4894,10 @@ dans condiw.f.
 FICHIER DES COURANTS'
 AIDE1 = 'Indicates whether a stationary current is taken into account,
 either in a file or in condiw.f.
-**Related keyword :**
-CURRENTS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+CURRENTS FILE
+\end{CommentBlock}'
 
 NOM = 'PRISE EN COMPTE DU VENT'
 NOM1 = 'CONSIDERATION OF A WIND'
@@ -4602,8 +4916,10 @@ cdicow.f.
 FICHIER DES VENTS'
 AIDE1 = 'Indicates whether a wind is taken into account, either in
 a file or in cdicow.f.
-**Related keyword :**
-WINDS FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+WINDS FILE
+\end{CommentBlock}'
 
 NOM = 'RECUPERATION DE DONNEE TELEMAC'
 NOM1 = 'RECOVERY OF TELEMAC DATA ITEM'
@@ -4628,12 +4944,14 @@ NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC'
 AIDE1 = 'Indicates whether TELEMAC data are recovered in LECDON. If so,
 a proper-formatted CURRENTS FILE should be used and the rank of the
 respective variable should be entered into the TELEMAC file.
-**Related keywords :**
-BINARY CURRENTS FILE
-FORMATTED CURRENTS FILE
-CURRENTS FILE TYPE
-RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
-TIME INCREMENT NUMBER IN TELEMAC FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY CURRENTS FILE\\
+FORMATTED CURRENTS FILE\\
+CURRENTS FILE TYPE\\
+RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED\\
+TIME INCREMENT NUMBER IN TELEMAC FILE
+\end{CommentBlock}'
 
 NOM = 'PRISE EN COMPTE DE LA PROPAGATION'
 NOM1 = 'CONSIDERATION OF PROPAGATION'
@@ -4666,8 +4984,10 @@ AIDE = 'Indique si le vent evolue dans le temps et doit etre mis a jour
 PRISE EN COMPTE DU VENT'
 AIDE1 = 'Indicates whether the wind evolves temporally and requires
 to be updated
-**Related keyword :**
-CONSIDERATION OF A WIND'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND
+\end{CommentBlock}'
 
 NOM = 'VALIDATION'
 NOM1 = 'VALIDATION'
@@ -4684,8 +5004,10 @@ AIDE = 'Logique indiquant si on effectue un calcul de validation
 **Mots-cles associes :**
 FICHIER DE REFERENCE'
 AIDE1 = 'True if the computation is a validation
-**Related keyword :**
-REFERENCE FILE'
+\\
+ \begin{CommentBlock}{Related keywords}
+REFERENCE FILE
+\end{CommentBlock}'
 
 NOM = 'PRISE EN COMPTE DE LA MAREE'
 NOM1 = 'CONSIDERATION OF TIDE'
@@ -4709,12 +5031,14 @@ PERIODE D ACTUALISATION DE LA MAREE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
 AIDE1 = 'Indicates whether a current is taken into account, either in
 a file or in cdicow.f.
-**Related keyword :**
-FORMATTED TIDAL WATER LEVEL FILE
-BINARY TIDAL WATER LEVEL FILE
-TIDAL WATER LEVEL FILE FORMAT
-TIDE REFRESHING PERIOD
-TIDAL WATER LEVEL FILE BINARY'
+\\
+ \begin{CommentBlock}{Related keywords}
+FORMATTED TIDAL WATER LEVEL FILE\\
+BINARY TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE FORMAT\\
+TIDE REFRESHING PERIOD\\
+TIDAL WATER LEVEL FILE BINARY
+\end{CommentBlock}'
 
 NOM = 'CONVENTION TRIGONOMETRIQUE'
 NOM1 = 'TRIGONOMETRICAL CONVENTION'
@@ -4756,8 +5080,10 @@ AIDE1 = 'Indicates whether the user wants to modify the boundary
 spectrum. He should then retrieve the limwac.f subroutine, if the
 spectrum is frequency discretized, or the spelim.f subroutine,
 otherwise.
-**Related keyword :**
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM'
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
 
 NOM = 'FILTRE POUR DIFFRACTION'
 NOM1 = 'DIFFRACTION FILTER'
@@ -4782,12 +5108,12 @@ AIDE1 = 'If diffraction is considered, the keyword indicates
 whether the local amplitudes of the directional spectra are
 filtered to compute the diffraction parameter and the transfer
 rates.
-**Related keywords :**
-DIFFRACTION
-VARIANCE THRESHOLD FOR DIFFRACTION
-STARTING TIME STEP FOR DIFFFRACTION'
-
-/V6P0
+\\
+ \begin{CommentBlock}{Related keywords}
+DIFFRACTION\\
+VARIANCE THRESHOLD FOR DIFFRACTION\\
+STARTING TIME STEP FOR DIFFFRACTION
+\end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE FORMAT'
@@ -4808,10 +5134,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
-
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1'
 NOM1 = 'BINARY DATA FILE 1 FORMAT'
@@ -4832,9 +5159,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'binary data file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DE SPECTRE'
 NOM1 = 'SPECTRUM FILE FORMAT'
@@ -4854,9 +5183,11 @@ Les valeurs possibles sont :
 - MED     : format MED base sur HDF5'
 AIDE1 = 'Previous computation results file format.
 Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 /
 / ADDED BY JMH ON 07/06/2010
 /
@@ -4903,12 +5234,14 @@ AIDE = 'Nom des variables dans les fichiers au format SERAFIN
         4: Vitesse du vent suivant Y
         5: Profondeur'
 AIDE1= 'Names of variables in SERAFIN format files
-        1: Velocity U
-        2: Velocity V
-        3: Wind velocity along X
-        4: Wind velocity along Y
-        5: Depth'
-/
+\begin{itemize}
+       \item 1: Velocity U
+       \item 2: Velocity V
+       \item 3: Wind velocity along X
+       \item 4: Wind velocity along Y
+       \item 5: Depth
+\end{itemize} '
+
 NOM = 'UNITE DE TEMPS DU FICHIER DES COURANTS'
 NOM1 = 'TIME UNIT IN CURRENTS FILE'
 TYPE = REEL
@@ -5019,21 +5352,26 @@ RUBRIQUE1 = 'SPECTRUM'
 NIVEAU = 2
 AIDE = 'Permet de choisir la methode de correction de la
 partie diagnostique du spectre.
-0 : Pas de queue diagnostique
-1 : Une decroissance en $f^{-TAILF}$ est imposee au dessus de
+\begin{itemize}
+\item 0 : Pas de queue diagnostique
+\item 1 : Une decroissance en $f^{-TAILF}$ est imposee au dessus de
 max(4fPM;2.5fmoy)
+\end{itemize}
 **Mots-cles associes :**
 FACTEUR DE QUEUE DU SPECTRE
 NOMBRE DE FREQUENCES
 RAISON FREQUENTIELLE'
 AIDE1 = 'Option to treat the spectrum diagnotic tail.
-0 : No diagnostic tail
-1 : A decrease in $f^{-TAILF}$ is imposed beyond
+\begin{itemize}
+\item 0 : No diagnostic tail
+\item 1 : A decrease in $f^{-TAILF}$ is imposed beyond
 max(4fPM;2.5fmoy)
-**Related keywords :**
-SPECTRUM TAIL FACTOR
-NUMBER OF FREQUENCIES
-FREQUENTIAL RATIO'
+\end{itemize}
+ \begin{CommentBlock}{Related keywords}
+SPECTRUM TAIL FACTOR\\
+NUMBER OF FREQUENCIES\\
+FREQUENTIAL RATIO
+\end{CommentBlock}'
 /
 NOM = 'OPTION POUR LES DERIVEES SECONDES'
 NOM1 = 'OPTION FOR SECOND DERIVATIVES'
@@ -5071,12 +5409,14 @@ PERIODE POUR LES SORTIES GRAPHIQUES
 NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
 AIDE1 = 'Name of the file into which the frequential punctual
 spectra (integrated according to the directions) will be written.
-**Related keywords :**
-PUNCTUAL RESULTS FILE
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS
-ORDINATES OF SPECTRUM PRINTOUT POINTS
-PERIOD FOR GRAPHIC PRINTOUTS
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS'
+\\
+ \begin{CommentBlock}{Related keywords}
+PUNCTUAL RESULTS FILE\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+PERIOD FOR GRAPHIC PRINTOUTS\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
+\end{CommentBlock}'
 /
 / Version 7.0
 /
@@ -5158,8 +5498,10 @@ If its value is 1, an upper limit is imposed to the spectrum,
 using a Phillips (1977) shape.
 If its value is 2, a dissipative term is added, following
 Van der Westhuysen (2012).
-**Related keywords:**
-DISSIPATION COEFFICIENT FOR STRONG CURRENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+DISSIPATION COEFFICIENT FOR STRONG CURRENT
+\end{CommentBlock}'
 /
 / ADDED BY TF ON 19/11/2014
 /
@@ -5189,8 +5531,10 @@ PRISE EN COMPTE DES TERMES SOURCES'
 AIDE1 = 'Choice of the calculus of centrale frequency
 if its value is 0, classical choice
 if its value is 1, BAJ choice proposed by Laugel (2013).
-**Related keywords:**
-CONSIDERATION OF SOURCE TERMS'
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF SOURCE TERMS
+\end{CommentBlock}'
 /
 NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
 NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'
@@ -5211,8 +5555,10 @@ DISSIPATION PAR FORT COURANT'
 AIDE1 = 'Dissipation coefficient for waves stopped
 by a strong opposing current (wave blocking effects).
 Van der Westhuysen (2012) expression: Cds,cur.
-**Related keywords:**
-DISSIPATION BY STRONG CURRENT'
+\\
+ \begin{CommentBlock}{Related keywords}
+DISSIPATION BY STRONG CURRENT
+\end{CommentBlock}'
 /
 /  VERSION 7.1
 /
