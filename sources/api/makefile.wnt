@@ -7,7 +7,7 @@
 #                   BIEF*/.../sources.
 #
 # Modes supportes :
-#        % maktel 
+#        % maktel
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -16,7 +16,6 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V7P0
 
 
 
@@ -32,12 +31,12 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.obj:                                                                                                  
+.f.obj:
         @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
         $(F90) $(F90_PROJ) $<
         @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
         @if EXIST $(@F:.obj=.MOD) move $(@F:.obj=.MOD) $(DEST)\lib
-.F.obj:                                                                                                  
+.F.obj:
         @if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
         $(F90) $(F90_PROJ) $<
         @if EXIST $(@F:.obj=.mod) move $(@F:.obj=.mod) $(DEST)\lib
@@ -77,7 +76,7 @@ ALL: $(LIBRARY)
 	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS) 
+menage:  $(SRCS)
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
 	!@if EXIST $(**B).obj del /q  $(**B).obj
@@ -98,11 +97,11 @@ libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  MODE=d
-	nmake /f makefile.wnt install  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d"
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  MODE=p 
-	nmake /f makefile.wnt install  "MODE=p" 
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  MODE=p
+	nmake /f makefile.wnt install  "MODE=p"
