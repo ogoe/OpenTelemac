@@ -187,7 +187,7 @@
         IF(LNG.EQ.2) WRITE(LU,908)
         CHECK_ES=0
         DO I = 1,NOMBLAY
-          IF(TROUVE(5).AND.TROUVE(28+I+NSICLA*(NOMBLAY+4))) THEN
+          IF(TROUVE(5).EQ.1.AND.TROUVE(28+I+NSICLA*(NOMBLAY+4)).EQ.1) THEN
             CHECK_ES=CHECK_ES+1
           ENDIF
         ENDDO
