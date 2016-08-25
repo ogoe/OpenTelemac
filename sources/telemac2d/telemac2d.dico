@@ -4825,7 +4825,7 @@ NOM1 = 'HARMONIC CONSTANTS FILE'
 TYPE = CARACTERE
 INDEX = 83
 MNEMO = 'T2D\_FILES(T2DHAR)'
-SUBMIT = 'NHAR-READWRITE-13;T2DHAR;FACUL;ASC;ECRLIT;PARAL'
+SUBMIT = 'NHAR-READWRITE-13;T2DHAR;FACUL;ASC;LIT;PARAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
@@ -6082,7 +6082,7 @@ NIVEAU = 1
 AIDE = 'Option pour modele pluie-debit. Les options disponibles sont:
   0 : Pas d infiltration (fonction de base)
   1 : Modele CN (Curve Number du SCS)'
-AIDE1 = 'Option for the rainfall-runoff model. Available options are: 
+AIDE1 = 'Option for the rainfall-runoff model. Available options are:
   1 : No infiltration
   2 : CN runoff model (Curve Number method of the SCS)'
 
@@ -6103,8 +6103,8 @@ le modele CN du SCS. Les options disponibles sont:
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
 ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)'
-AIDE1 = 'gives the antecedent moisture conditions before a rainfall 
- event for the SCS CN runoff model. Available options are:  
+AIDE1 = 'gives the antecedent moisture conditions before a rainfall
+ event for the SCS CN runoff model. Available options are:
   1 : dry antecedent conditions
   2 : normal antecedent conditions
   3 : wet antecedent conditions
@@ -6122,7 +6122,7 @@ RUBRIQUE = 'EQUATIONS, SOURCE'
 RUBRIQUE1 = 'EQUATIONS, SOURCE'
 NIVEAU = 1
 AIDE = 'donne la duree de la pluie en heure, par defaut pluie infinie'
-AIDE1 = 'gives the duration of the rain in hour, 
+AIDE1 = 'gives the duration of the rain in hour,
 default value is infinite'
 
 /
