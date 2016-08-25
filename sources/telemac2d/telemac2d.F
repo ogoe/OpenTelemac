@@ -352,7 +352,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IOPTAN,IMAX,ITRAC,NPTFR2
+      INTEGER IOPTAN,IMAX,ITRAC,NPTFR2,NFRLIQ0
 !
 !-----------------------------------------------------------------------
 !
@@ -712,6 +712,7 @@
 !
 !  LOCATES THE BOUNDARIES
 !
+      NFRLIQ0=NFRLIQ
       IF(NCSIZE.GT.1) THEN
         NFRLIQ=0
         DO I=1,NPTFR
@@ -743,6 +744,21 @@
      &              MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
      &              IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FRONT2'
+      ENDIF
+      IF(NFRLIQ0.NE.0.AND.NFRLIQ0.NE.NFRLIQ)THEN
+        IF(LNG.EQ.1)THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'OPTION POUR LES CONDITIONS AUX LIMITES DE MAREE:'
+          WRITE(LU,*) 'DONNER AUTANT DE VALEURS QUE DE '
+          WRITE(LU,*) 'FRONTIERES LIQUIDES, I.E.:',NFRLIQ
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'OPTION FOR TIDAL BOUNDARY CONDITIONS: '
+          WRITE(LU,*) 'GIVE THE SAME NUMBER OF VALUES AS THE NUMBER  '
+          WRITE(LU,*) 'OF LIQUID BOUNDARIES, I.E.',NFRLIQ 
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !=======================================================================

@@ -22,11 +22,6 @@
 !+   (e.g. LEGOS-NEA, FES20XX, Previmer)
 !+   Default NODALCORR = 0 (not frozen, computed at each time step)
 !+
-!history  R. ATA (LNHE)
-!+        24/08/2016
-!+        V7P2
-!+   tentative fix of a bug with the use of BND_TIDE
-!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|                |-->|
@@ -252,24 +247,24 @@
         IFRLIQ=NUMLIQ%I(K)
 !       TEST ON NUMTIDE PROBABLY NO LONGER USEFUL
         IF(NUMTIDE%I(K).GT.0.AND.IFRLIQ.GT.0) THEN
-!        IF(BND_TIDE(IFRLIQ).GT.0) THEN
+          IF(BND_TIDE(IFRLIQ).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
 !         IF(AT.LT.1800.D0) THEN
 !           UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
 !           VBTIDE%R(K) = VBTIDE%R(K)*(AT/1800.D0)
 !         ENDIF
-          IF(LIUBOR%I(K).EQ.KENTU) THEN
-            UBOR%R(K) = UBTIDE%R(K)
-            VBOR%R(K) = VBTIDE%R(K)
-            U%R(MESH%NBOR%I(K)) = UBOR%R(K)
-            V%R(MESH%NBOR%I(K)) = VBOR%R(K)
-          ENDIF
-          IF(LIHBOR%I(K).EQ.KENT) THEN
-            HBOR%R(K) = HBTIDE%R(K)
-            H%R(MESH%NBOR%I(K)) = HBOR%R(K)
+            IF(LIUBOR%I(K).EQ.KENTU) THEN
+              UBOR%R(K) = UBTIDE%R(K)
+              VBOR%R(K) = VBTIDE%R(K)
+              U%R(MESH%NBOR%I(K)) = UBOR%R(K)
+              V%R(MESH%NBOR%I(K)) = VBOR%R(K)
+            ENDIF
+            IF(LIHBOR%I(K).EQ.KENT) THEN
+              HBOR%R(K) = HBTIDE%R(K)
+              H%R(MESH%NBOR%I(K)) = HBOR%R(K)
+            ENDIF
           ENDIF
         ENDIF
-!        ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------
