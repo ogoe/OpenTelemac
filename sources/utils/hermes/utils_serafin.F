@@ -399,7 +399,7 @@
           SRF_OBJ_TAB(SRF_ID)%NPLAN = IB(7)
           SRF_OBJ_TAB(SRF_ID)%NPTFR = IB(8)
           SRF_OBJ_TAB(SRF_ID)%NPTIR = IB(9)
-          IF(IB(7).GT.0) THEN
+          IF(IB(7).GT.1) THEN
             SRF_OBJ_TAB(SRF_ID)%NDIM = 3
           ELSE
             SRF_OBJ_TAB(SRF_ID)%NDIM = 2
