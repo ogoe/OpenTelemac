@@ -1,12 +1,14 @@
       FUNCTION  ThreeDigitsNumeral               !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-     &( checkStr )         
+     &( checkStr )
 
-      ! check if the first thee digits in a character String are numerals 
-      
+      ! check if the first thee digits in a character String are numerals
+
+      IMPLICIT NONE
+
       CHARACTER (3) :: checkStr
-      INTEGER       :: stat, sumStat, idummy 
+      INTEGER       :: stat, sumStat, idummy
       LOGICAL       :: ThreeDigitsNumeral
       !WRITE(6,*)'?>-------  SR ThreeDigitsNumeral -----------'
 
@@ -16,22 +18,22 @@
       sumStat = sumStat + ABS(stat)
       READ( checkStr(3:3),'(I1)',IOSTAT=stat ) idummy   ! read the 3rd string element as integer
       sumStat = sumStat + ABS(stat)
-      
+
       IF( sumStat == 0 ) THEN
         ThreeDigitsNumeral = .TRUE.
-      ELSE       
+      ELSE
         ThreeDigitsNumeral = .FALSE.
-      ENDIF  
+      ENDIF
 
-      IF(     checkStr(1:1) == " "        !> We need this check because lines above  
-     &   .OR. checkStr(2:2) == " "        !  READ(..,'(I1)',IOSTAT=stat) returns stat=0 
-     &   .OR. checkStr(3:3) == " " ) THEN !  although there was a space character 
+      IF(     checkStr(1:1) == " "        !> We need this check because lines above
+     &   .OR. checkStr(2:2) == " "        !  READ(..,'(I1)',IOSTAT=stat) returns stat=0
+     &   .OR. checkStr(3:3) == " " ) THEN !  although there was a space character
         ThreeDigitsNumeral = .FALSE.
-      ENDIF  
+      ENDIF
 
-      
+
       !WRITE(6,*)'?>-------  SR ThreeDigitsNumeral End -------'
-      RETURN                             
+      RETURN
 !***                                              ********************************************
 !***                                              ********************************************
       END FUNCTION   ThreeDigitsNumeral          !********************************************
@@ -40,8 +42,8 @@
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
- 
- 
+
+
 !*********************************************************************************************
 !*********************************************************************************************
 !***                                              ********************************************

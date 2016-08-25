@@ -1,8 +1,8 @@
       MODULE      m_Nestor                       !******       SUBROUTINE  ********************
 !**                                               *********************************************
 !**                                               *********************************************
-      USE m_TypeDefs_Nestor             
-!                                        
+      USE m_TypeDefs_Nestor
+!
 !    __________________________________________________________________
 !   /__________________________________________________________________\
 !  //                                                                  \\
@@ -10,29 +10,29 @@
 !  \\__________________________________________________________________//
 !   \__________________________________________________________________/
       LOGICAL       :: ParallelComputing = .FALSE.
-      LOGICAL       :: Restart           = .FALSE. 
+      LOGICAL       :: Restart           = .FALSE.
       INTEGER       :: npoin             = 0
       INTEGER       :: npoinGlobal       = 0
       INTEGER       :: ncsize            = 0
       INTEGER       :: ipid              = 0   ! wird nur für Tests bemötigt
       INTEGER       :: nGrainClass       = 0
       INTEGER       :: GraphicOutputPeriod = 999999999
-                                         
+
       REAL (KIND=8) :: MorpholFactor  = 0.0D0   ! morphological factor
-                                         
+
       REAL (KIND=8), PARAMETER   ::  eps = 0.0000000001D0
-                                         
-      CHARACTER(128)::Path = " "  
-                                         
+
+      CHARACTER(128)::Path = " "
+
       TYPE(t_Polygon),ALLOCATABLE,DIMENSION (:) ::  Poly
       INTEGER                                   :: nPolys
       TYPE(t_Action),ALLOCATABLE,DIMENSION  (:) ::  A
       INTEGER                                   :: nActions
       TYPE(t_Field),ALLOCATABLE,DIMENSION   (:) ::  F
       INTEGER                                   :: nFields
-                                         
-      TYPE( t_DateTime ) :: SisStart     
-                                         
+
+      TYPE( t_DateTime ) :: SisStart
+
 !***                                              ********************************************
 !***                                              ********************************************
       END MODULE  m_Nestor                       !********************************************
