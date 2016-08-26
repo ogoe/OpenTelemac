@@ -104,6 +104,11 @@
 !+        V7P2
 !+   New predictor-corrector schemes from Sara Pavan PhD.
 !
+!history  J-M HERVOUET (LNHE)
+!+        26/08/2016
+!+        V7P2
+!+   Correction in parallelism in the case of bed fluxes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
@@ -889,10 +894,11 @@
             IF(NCSIZE.GT.1) IIS=2
             IF(ISCE(IS).GT.0) THEN
               IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!                            WITH PARCOM
               IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
                 TRA03(IPOIN)=TRA03(IPOIN)
      &                      -DTJ*SOURCES%ADR(IIS)%P%R(IPOIN)
-!                                              WITHOUT PARCOM
+!                                            WITHOUT PARCOM
               ENDIF
             ENDIF
           ENDDO
@@ -907,10 +913,10 @@
         CALL OS('X=Y     ',X=T2_01,Y=BEDFLU)
         IF(NCSIZE.GT.1) CALL PARCOM(T2_01,2,MESH2D)
         DO IPOIN=1,NPOIN2
+!            WITH PARCOM
           IF(T2_01%R(IPOIN).GT.0.D0) THEN
-            TRA03(IPOIN)=TRA03(IPOIN)
-     &                  -DTJ*T2_01%R(IPOIN)
-!                                        WITHOUT PARCOM
+            TRA03(IPOIN)=TRA03(IPOIN)-DTJ*BEDFLU%R(IPOIN)
+!                                         WITHOUT PARCOM
           ENDIF
         ENDDO
       ENDIF
