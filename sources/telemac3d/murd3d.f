@@ -811,6 +811,7 @@
 !         SOURCE NOT CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             DO IPOIN=1,NPOIN3
+!                            WITH PARCOM
               IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
                 TRA03(IPOIN)=TRA03(IPOIN)
      &                      -DTJ*SOURCES%ADR(IS)%P%R(IPOIN)
@@ -818,14 +819,16 @@
               ENDIF
             ENDDO
           ENDDO
-        ELSE IF(OPTSOU.EQ.2) THEN
+        ELSEIF(OPTSOU.EQ.2) THEN
 !         SOURCE CONSIDERED AS A DIRAC
           DO IS=1,NSCE
             IF(ISCE(IS).GT.0) THEN
               IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!                            WITH PARCOM
               IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
                 TRA03(IPOIN)=TRA03(IPOIN)
      &                      -DTJ*SOURCES%ADR(1)%P%R(IPOIN)
+!                                WITH PARCOM
               ENDIF
             ENDIF
           ENDDO
@@ -878,6 +881,7 @@
 !           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
             IF(NCSIZE.GT.1) IIS=IIS+NSCE
             DO IPOIN=1,NPOIN3
+!                            WITH PARCOM
               IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
                 TRA03(IPOIN)=TRA03(IPOIN)
      &                      -DTJ*SOURCES%ADR(IIS)%P%R(IPOIN)
@@ -1033,12 +1037,15 @@
 !             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
               IF(NCSIZE.GT.1) IIS=IIS+NSCE
               DO IPOIN=1,NPOIN3
+!                              WITH PARCOM
                 IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
                   FLUX=FLUX
      &                -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                                   WITHOUT PARCOM
                 ELSE
                   FLUX=FLUX
      &                -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                                    WITHOUT PARCOM
                 ENDIF
               ENDDO
             ELSEIF(OPTSOU.EQ.2) THEN
@@ -1049,12 +1056,15 @@
               IF(NCSIZE.GT.1) IIS=2
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!                              WITH PARCOM
                 IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
                   FLUX=FLUX
      &                -DTJALFA*FSCE(IS)*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                                   WITHOUT PARCOM
                 ELSE
                   FLUX=FLUX
      &                -DTJALFA*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+!                                                    WITHOUT PARCOM
                 ENDIF
               ENDIF
             ENDIF
@@ -1108,15 +1118,17 @@
                 IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
                     FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
      &              *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+!                                    WITH PARCOM
                 ENDIF
               ENDDO
-            ELSE IF(OPTSOU.EQ.2) THEN
+            ELSEIF(OPTSOU.EQ.2) THEN
 !             THE SOURCE IS CONSIDERED AS A DIRAC
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
      &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+!                                  WITH PARCOM
                 ENDIF
               ENDIF
             ENDIF
@@ -1128,14 +1140,16 @@
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
      &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+!                                  WITH PARCOM
                 ENDIF
               ENDIF
-            ELSE IF(OPTSOU.EQ.2) THEN
+            ELSEIF(OPTSOU.EQ.2) THEN
 !             THE SOURCE IS CONSIDERED AS A DIRAC
               DO IPOIN=1,NPOIN3
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FC(IPOIN))
      &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+!                                  WITH PARCOM
                 ENDIF
               ENDDO
             ENDIF

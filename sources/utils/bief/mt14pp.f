@@ -58,7 +58,7 @@
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        11/01/2013
 !+        V6P3
-!+   ARguments X,Y,Z removed.
+!+   Arguments X,Y,Z removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA

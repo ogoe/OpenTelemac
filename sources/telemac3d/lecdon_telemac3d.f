@@ -100,6 +100,12 @@
 !+  precluded when no sediment. A section reading sediment parameters
 !+  is now executed also IF(MIXTE)...
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        27/08/2016
+!+        V7P2
+!+  Checking the number of values of the tracers at sources, and
+!+  stop if wrong.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -1069,12 +1075,30 @@
         STOP
       ENDIF
 !
-      IF(NTRAC.GT.0) THEN
+      IF(NTRAC.GT.0.AND.NPTSCE.GT.0) THEN
+        IF(DIMEN(2,84).NE.NTRAC*NPTSCE) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'MAUVAIS NOMBRE DE'
+            WRITE(LU,*) 'VALEURS DES TRACEURS DES SOURCES'
+            WRITE(LU,*) DIMEN(2,84),' DONNEES'
+            WRITE(LU,*) NTRAC*NPTSCE,' ATTENDUES'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'WRONG NUMBER OF'
+            WRITE(LU,*) 'VALUE OF THE TRACERS AT THE SOURCES'
+            WRITE(LU,*) DIMEN(2,84),' GIVEN'
+            WRITE(LU,*) NTRAC*NPTSCE,' EXPECTED'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         DO I=1,NTRAC
           DO J=1,NPTSCE
             TASCE(J,I) = MOTREA(ADRESS(2,84)+((J-1)*NTRAC)+I-1)
           ENDDO
         ENDDO
+      ENDIF
+      IF(NTRAC.GT.0) THEN
         NTRACER=DIMEN(2,85)
         IF(NTRACER.GT.0) THEN
 !         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
@@ -2885,4 +2909,3 @@
 !
       RETURN
       END
-
