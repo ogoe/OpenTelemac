@@ -159,7 +159,7 @@
 \RequirePackage{booktabs,multirow}
 \RequirePackage{lscape}
 \RequirePackage{longtable}
-\RequirePackage{slashbox}
+\RequirePackage{diagbox}
 
 % To include code
 \RequirePackage{listings}

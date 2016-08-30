@@ -358,6 +358,9 @@ def main():
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
       # Loop on all the modules
 
+      # Get version in config if it exist use trunk otherwise
+      version = cfgs[cfgname].get('version','trunk')
+
       # Initialise output message
       output_mess = '\n\n'
       # Look on all the modules for the documentation
@@ -403,7 +406,7 @@ def main():
             # Check if the file exist
             if path.exists(doc_dir + sep + code_name + "_" + doc_type + ".tex"):
                compile_doc(doc_dir, code_name+'_'+doc_type,
-                           cfgs[cfgname]['version'],
+                           version,
                            options.cleanup, options.fullcleanup)
             else:
                print "   - Error for %s %s, %s.tex not found " % \
@@ -411,7 +414,7 @@ def main():
                sys.exit(1)
             if not (options.cleanup or options.fullcleanup):
                output_mess += '   - Created %s_%s_%s.pdf\n' % \
-                          (code_name, doc_type, cfgs[cfgname]['version'])
+                          (code_name, doc_type, version)
       # List of the other documentation
       for doc in miscList:
          print '\nCompilation of the documentation for '+ doc + \
@@ -421,7 +424,7 @@ def main():
          chdir(doc_dir)
          if path.exists(doc_dir + sep + doc + ".tex"):
             compile_doc(doc_dir, doc,
-                        cfgs[cfgname]['version'],
+                        version,
                         options.cleanup, options.fullcleanup)
          else:
             print "   - Error in %s, %s.tex not found " % \
@@ -429,7 +432,7 @@ def main():
             sys.exit(1)
          if not (options.cleanup or options.fullcleanup):
             output_mess += '   - Created %s_%s.pdf\n' % \
-                       (doc, cfgs[cfgname]['version'])
+                       (doc, version)
 
    print output_mess
    print '\n\n'+'~'*72
