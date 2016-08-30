@@ -591,6 +591,9 @@ def parseConfig_ValidateTELEMAC(cfg):
    _, examples, _ = walk(val_root).next()
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
+   # Removing python27 from examples if "system" or "python27" are not in cfg
+   if not ("system" in cfg['modules'] or "python27" in cfg['modules']):
+       examples.remove("python27")
    for mod in (' '.join(examples)).split():   # /!\ other ways to copy ?
       if mod not in get and mod in cfgTELEMAC['MODULES']: examples.remove(mod)
    for mod in examples:
