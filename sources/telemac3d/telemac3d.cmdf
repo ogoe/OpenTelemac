@@ -262,6 +262,7 @@ files: bief_def.f
   matrix.f
   filter.f
   write_header.f
+  read_bin_2d.f
   osdbif.f
   diraux.f
   diri01.f
@@ -752,6 +753,8 @@ files: friction_def.f
   bilan.f
   oilspill.f
   grad_zconv.f
+  meteo_set_var_names.f
+  meteo_from_binary_file.f
   interpmeteo.f
   interpmeteo2.f
   meteo.f

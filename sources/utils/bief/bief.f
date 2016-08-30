@@ -6073,6 +6073,20 @@
       INTEGER, INTENT(IN)   :: IKLESTR(NELEB2,3)
         END SUBROUTINE
 !
+!-----------------------------------------------------------------------
+!
+        SUBROUTINE READ_BIN_2D(Q,VARNAME,AT,NFIC,FFORMAT,NPOIN,
+     &                            LISTIN,STAT )
+      IMPLICIT NONE
+      CHARACTER(LEN=16), INTENT(IN)      :: VARNAME
+      INTEGER         , INTENT(IN)       :: NFIC,NPOIN
+      DOUBLE PRECISION, INTENT(IN)       :: AT
+      DOUBLE PRECISION, INTENT(INOUT)    :: Q(NPOIN)
+      CHARACTER(LEN=8), INTENT(IN)       :: FFORMAT
+      LOGICAL         , INTENT(IN)       :: LISTIN
+      LOGICAL         , INTENT(OUT)      :: STAT
+        END SUBROUTINE
+!
       END INTERFACE
 !
 !=======================================================================

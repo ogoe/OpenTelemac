@@ -13,7 +13,7 @@ ORIGINAL HOUR OF TIME : 0;0;0
 FORTRAN FILE                   : t3d_heat_exchange.f
 BOUNDARY CONDITIONS FILE       : geo_heat_exchange.cli
 GEOMETRY FILE                  : geo_heat_exchange.slf
-FORMATTED DATA FILE 1          : meteo_data.txt
+ASCII ATMOSPHERIC DATA FILE    : meteo_data.txt
 3D RESULT FILE                 : r3d_heat_exchange.slf
 2D RESULT FILE                 : r2d_heat_exchange.slf
 /

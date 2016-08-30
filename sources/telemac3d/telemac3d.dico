@@ -2882,6 +2882,40 @@ AIDE = 'Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.'
 AIDE1 = 'Data file in binary mode available to the user.'
 
+NOM = 'FICHIER ASCII DE DONNEES ATMOSPHERIQUES'
+NOM1 = 'ASCII ATMOSPHERIC DATA FILE'
+TYPE = CARACTERE
+INDEX = 33
+MNEMO = 'T3D_FILES(T3ATMA)%NAME'
+TAILLE = 0
+SUBMIT = 'T3ATMA-READ-50;T3ATMA;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+NIVEAU = 1
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+AIDE = 'Fichier de donnees ascii contenant les informations
+atmospheriques variables en temps'
+AIDE1 = 'Ascii data file containing the atmospheric data varying in
+time'
+
+NOM = 'FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
+NOM1 = 'BINARY ATMOSPHERIC DATA FILE'
+TYPE = CARACTERE
+INDEX = 34
+MNEMO = 'T3D_FILES(T3ATMB)%NAME'
+TAILLE = 0
+SUBMIT = 'T3ATMB-READ-51;T3ATMB;FACUL;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+NIVEAU = 1
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+AIDE = 'Fichier de donnees code en binaire contenant les informations
+atmospheriques variables en temps et en espace sur le maillage'
+AIDE1 = 'Binary-coded data file containing the atmospheric data varying in
+time and space on the mesh'
+
 NOM = 'BINAIRE DU FICHIER DES RESULTATS 3D'
 NOM1 = '3D RESULT FILE BINARY'
 TYPE = CARACTERE
@@ -5687,6 +5721,30 @@ AIDE = 'Retire la force due au vent dans les petites profondeurs'
 AIDE1 = 'Wind is not taken into account for depths smaller
 than this value.'
 
+NOM = 'OPTION DU VENT'
+NOM1 = 'OPTION FOR WIND'
+TYPE = ENTIER
+INDEX = 60
+MNEMO = 'OPTWIND'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, SOURCES'
+RUBRIQUE1 = 'EQUATIONS, SOURCES'
+NIVEAU = 1
+AIDE = 'donne les options pour introduire le vent:
+   1: constant en temps et en espace (donne par le mot cle
+      VITESSE ET DIRECTION DU VENT)
+   2: variable en temps donne par fichier formate
+   3: variable en temps et en espace donne par fichier formate
+      ou un fichier binaire serafin'
+AIDE1 = 'gives option for managing the wind:
+   1: constant in time and space, given by keyword SPEED AND
+      DIRECTION OF WIND
+   2: variable in time and (constant in space), given by formated file
+   3: variable in time and space , given by formated file or by
+      a binary serafin file'
+
 NOM = 'COURANTS DE HOULE'
 NOM1 = 'WAVE DRIVEN CURRENTS'
 TYPE = LOGIQUE
@@ -5875,6 +5933,28 @@ Possible choices are:
 \item SERAFIND: classical double precision format in \tel,
 \item MED     : MED double precision format based on HDF5.
 \end{itemize}'
+
+NOM = 'FORMAT DU FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
+NOM1 = 'BINARY ATMOSPHERIC DATA FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 41
+MNEMO = 'T3D_FILES(T3ATMB)%FMT'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier binaire de données atmospheriques.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Binary atmospheric file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 
 NOM  = 'TRAITEMENT DES HAUTEURS NEGATIVES'
 NOM1 = 'TREATMENT OF NEGATIVE DEPTHS'
@@ -7703,7 +7783,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 44
+TAILLE = 46
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -7747,7 +7827,9 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'BASE BINAIRE 2 DE DONNEES DE MAREE';
           'FICHIER DES FLOTTEURS';
           'FICHIER POUR SUITE 2D';
-          'FICHIER DE DONNEES DES BUSES'
+          'FICHIER DE DONNEES DES BUSES';
+          'FICHIER ASCII DE DONNEES ATMOSPHERIQUES';
+          'FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -7791,7 +7873,9 @@ DEFAUT1 = 'STEERING FILE';
           'BINARY DATABASE 2 FOR TIDE';
           'DROGUES FILE';
           'FILE FOR 2D CONTINUATION';
-          'CULVERTS DATA FILE'
+          'CULVERTS DATA FILE';
+          'ASCII ATMOSPHERIC DATA FILE';
+          'BINARY ATMOSPHERIC DATA FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1

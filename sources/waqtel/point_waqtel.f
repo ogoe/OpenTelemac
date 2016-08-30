@@ -2,7 +2,8 @@
                      SUBROUTINE POINT_WAQTEL
 !                    ***********************
 !
-     &(WAQPROCESS,MESH2D,IELM1,VENT,WINDX,WINDY,MESH3D,IELM3)
+     &(WAQPROCESS,MESH2D,IELM1,VENT,WINDX,WINDY,ATMOS,PATMOS,
+     & MESH3D,IELM3)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0                                   21/08/2010
@@ -23,16 +24,17 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_WAQTEL,ONLY:K2,RAYEFF
+      USE DECLARATIONS_WAQTEL,ONLY:K2,RAYEFF,TAIR
       USE INTERFACE_WAQTEL, EX_POINT_WAQTEL => POINT_WAQTEL
 !
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL,         INTENT(IN   ) :: VENT
+      LOGICAL,         INTENT(IN   ) :: VENT,ATMOS
       INTEGER,         INTENT(IN   ) :: IELM1,WAQPROCESS
       TYPE(BIEF_OBJ ), INTENT(INOUT) :: WINDX,WINDY
+      TYPE(BIEF_OBJ ), INTENT(INOUT) :: PATMOS
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH2D
       TYPE(BIEF_MESH), INTENT(INOUT),OPTIONAL :: MESH3D
       INTEGER,         INTENT(IN   ),OPTIONAL :: IELM3
@@ -71,6 +73,18 @@
         CALL BIEF_ALLVEC(1,WINDX,'WINDX ',    0,1,0,MESH2D)
         CALL BIEF_ALLVEC(1,WINDY,'WINDY ',    0,1,0,MESH2D)
       ENDIF
+!
+!     ATMOSPHERIC PRESSURE GIVEN IN P1
+!
+      IF(.NOT.ATMOS) THEN
+        CALL BIEF_ALLVEC(1,PATMOS,'PATMOS',IELM1,1,1,MESH2D)
+      ELSE
+        CALL BIEF_ALLVEC(1,PATMOS,'PATMOS',    0,1,0,MESH2D)
+      ENDIF
+!
+!     AIR TEMPERATURE GIVEN IN P1
+!
+      CALL BIEF_ALLVEC(1,TAIR  ,'TAIR  ',IELM1,1,1,MESH2D)
 !
 !-----------------------------------------------------------------------
 !

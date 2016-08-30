@@ -156,6 +156,7 @@ files: bief_def.f
   dealmesh.f
   bief_close_files.f
   algae_transp.f
+  read_bin_2d.f
   flux_ef_vf.f
   clip.f
   mv0403.f
@@ -807,6 +808,8 @@ files: friction_def.f
   valro.f
   smagor.f
   steady.f
+  meteo_set_var_names.f
+  meteo_from_binary_file.f
   interpmeteo.f
   interpmeteo2.f
   meteo.f
