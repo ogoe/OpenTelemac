@@ -7,8 +7,13 @@ Release V7P2R0 (Unreleased)
 Features
 ---------------------
 
+- TELEMAC: Add possibility to prescribe space and time varying meteo
+  conditions based on a file (ASCII ATMOSPHERIC DATA FILE and
+  BINARY ATMOSPHERIC DATA FILE keywords).
 - SISYPHE: Liquid boundaries file for bed load discharge.
 - Replacing DredgeSim with Nestor.
+- TELEMAC-2D: Add a new rainfall-runoff model. An example of use is given in
+  the pluie test case.
 - Automatic detection of Little/Big Endian for Serafin File
   (needs FORTRAN Gnu extension).
 - TELEMAC-2D: Adding a deall_telemac2d subroutine that dallocates all that was
