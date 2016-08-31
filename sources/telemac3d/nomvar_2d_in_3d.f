@@ -112,6 +112,7 @@
       TEXTE (35) = 'HIGH WATER MARK M               '
       TEXTE (36) = 'HIGH WATER TIME S               '
       TEXTE (37) = 'BED EVOLUTION   M               '
+      TEXTE (38) = 'AIR TEMPERATURE DEGREE          '
 !
 ! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
@@ -155,6 +156,7 @@
       TEXTPR (35) = 'HIGH WATER MARK M               '
       TEXTPR (36) = 'HIGH WATER TIME S               '
       TEXTPR (37) = 'BED EVOLUTION   M               '
+      TEXTPR (38) = 'AIR TEMPERATURE DEGREE          '
 !
 !-----------------------------------------------------------------------
 !
@@ -199,6 +201,7 @@
       TEXTE (35) = 'COTE MAXIMUM    M               '
       TEXTE (36) = 'TEMPS COTE MAXI S               '
       TEXTE (37) = 'EVOLUTION FOND  M               '
+      TEXTE (38) = 'TEMPERATURE AIR DEGREE          '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -241,6 +244,7 @@
       TEXTPR (35) = 'COTE MAXIMUM    M               '
       TEXTPR (36) = 'TEMPS COTE MAXI S               '
       TEXTPR (37) = 'EVOLUTION FOND  M               '
+      TEXTPR (38) = 'TEMPERATURE AIR DEGREE          '
 !
 !-----------------------------------------------------------------------
 !
@@ -334,12 +338,14 @@
       MNEMO(36)   = 'TMXZ    '
 !     BED EVOLUTION
       MNEMO(37)   = 'DZF     '
+!     AIR TEMPERATURE
+      MNEMO(37)   = 'TAIR    '
 !
 !-----------------------------------------------------------------------
 !
 !     TRACERS
 !
-      NEXT = 37+1
+      NEXT = 38+1
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC

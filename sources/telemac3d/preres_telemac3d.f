@@ -266,12 +266,12 @@
       ENDIF
 !
 !=======================================================================
-! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 37+NTRAC)
+! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 38+NTRAC)
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          IF(LEO.AND.SORG2D(37+I)) THEN
+          IF(LEO.AND.SORG2D(38+I)) THEN
             CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
      &                  TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
      &                  T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,
