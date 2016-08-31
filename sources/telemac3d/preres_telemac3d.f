@@ -266,7 +266,7 @@
       ENDIF
 !
 !=======================================================================
-! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 38+NTRAC)
+! DEPTH-AVERAGED TRACERS (VARIABLES 39 TO 38+NTRAC)
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
