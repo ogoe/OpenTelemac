@@ -151,7 +151,8 @@
       CALL READ_MESH_INFO(GEOFORMAT,NGEO,TITSEL,NVAR_GEO,NPOIN_GEO,
      &                    TYP_ELEM,NELEM_GEO,NPTFR,NPTIR,NDP,NPLAN_GEO,
      &                    TYP_BND_ELEM,NELEBD)
-      WRITE(LU,*) 'MESH INFORMATIONS:'
+!
+      WRITE(LU,*) 'GEO MESH INFORMATIONS:'
       WRITE(LU,*) 'NELEM=',NELEM_GEO
       WRITE(LU,*) 'NPOIN=',NPOIN_GEO
       WRITE(LU,*) 'NDP=',NDP
@@ -165,6 +166,11 @@
       CALL READ_MESH_CONN(GEOFORMAT,NGEO,NPOIN_GEO,TYP_ELEM,NELEM_GEO,
      &                    NDP,TYP_BND_ELEM,NELEBD,IKLE_GEO, IPOBO_GEO)
 
+      IF(NPLAN_RES.LE.1) THEN
+        NDIM = 2
+      ELSE
+        NDIM = 3
+      ENDIF
       ! GET 2D COORDINATES
       ALLOCATE(X(NPOIN_GEO),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'GRETEL:X')
@@ -182,11 +188,6 @@
       !
       ! Update coordiantes with coordinates from the partitionned files
       ! as they could have been modified by corrxy
-      IF(NPLAN_RES.EQ.0) THEN
-        NDIM = 2
-      ELSE
-        NDIM = 3
-      ENDIF
       DO IPID = 0, NPROC-1
 !
         RESPAR = TRIM(RES) // EXTENS(NPROC-1,IPID)
@@ -232,7 +233,7 @@
       ! IF WE HAVE A 3D RESULT WE NEED TO TRANSFORM THE MESH IN 3D
       ! WRITES THE MESH INFORMATION TO THE MERGED FILE
       WRITE(LU,*) 'WRITING MESH'
-      IF(NPLAN_RES.EQ.0) THEN
+      IF(NDIM.EQ.2) THEN
         ! 2D
         ALLOCATE(TMP2(NELEM_GEO*NDP),STAT=IERR)
         CALL CHECK_ALLOCATE(IERR,'GRETEL:TMP0')
@@ -353,7 +354,7 @@
      &                          TEXTELU(IVAR)(1:16),TMP,
      &                          NPOIN_PAR,IERR)
             CALL CHECK_CALL(IERR,'GRETEL:GET_DATA_VALUE')
-            IF(NPLAN_RES.EQ.0) THEN
+            IF(NDIM.EQ.2) THEN
               ! 2D
               DO I=1,NPOIN_PAR
                 RESDATA(KNOLG(I),IVAR) = TMP(I)
