@@ -20,7 +20,7 @@ FORTRAN FILE                    = t2d_wind_txy.f
 BOUNDARY CONDITIONS FILE        = geo_wind_txy.cli
 RESULTS FILE                    = r2d_wind_txy.slf
 PREVIOUS COMPUTATION FILE       = ini_wind_txy.slf
-FORMATTED DATA FILE 1           = fo1_wind_txy
+ASCII ATMOSPHERIC DATA FILE     = fo1_wind_txy
 /
 /
 /----------------------------------------------

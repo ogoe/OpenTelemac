@@ -24,6 +24,16 @@
        code="telemac2d" target="t2d_wind_txy.cas"
        title="wind varying in t and x - parallel mode"
    />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_wind_txy_bin.cas"
+       title="binary wind varying in t and x - scalar mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_wind_txy_bin.cas"
+       title="binary wind varying in t and x - parallel mode"
+   />
 
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
@@ -43,6 +53,27 @@
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:T2DRES" />
       <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="3:T2DRES" />
+      <v2 vars=":map" target="f2d_wind_txy_bin.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="4:T2DRES" />
+      <v5 vars=":map" target="f2d_wind_txy_bin.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="3:T2DRES" />
+      <v8 vars=":map" target="4:T2DRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v9,[])" />

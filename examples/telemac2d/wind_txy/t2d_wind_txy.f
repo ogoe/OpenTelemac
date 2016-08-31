@@ -3,8 +3,8 @@
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN,PATMOS_VALUE,
-     & AWATER_QUALITY,PLUIE,AOPTWIND,AWIND_SPD)
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,ATMFILEA,ATMFILEB,FILES,LISTIN,
+     & PATMOS_VALUE,AWATER_QUALITY,PLUIE,AOPTWIND,AWIND_SPD)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P1
@@ -71,7 +71,6 @@
 !| AT             |-->| TIME
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
 !| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
-!| FO1            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| FUAIR          |<->| VELOCITY OF WIND ALONG X, IF CONSTANT
 !| FVAIR          |<->| VELOCITY OF WIND ALONG Y, IF CONSTANT
 !| GRAV           |-->| GRAVITY ACCELERATION
@@ -82,6 +81,7 @@
 !|                |   | STARTING FROM VERTICAL AXIS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| PATMOS         |<--| ATMOSPHERIC PRESSURE
+!| PATMOS_VALUE   |-->| VALUE OF ATMOSPHERIC PRESSURE IS CONSTANT
 !| PRIVE          |-->| USER WORKING ARRAYS (BIEF_OBJ BLOCK)
 !| ROEAU          |-->| WATER DENSITY
 !| TRA01          |-->| WORKING ARRAY
@@ -90,12 +90,14 @@
 !| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
 !| X              |-->| ABSCISSAE OF POINTS
 !| Y              |-->| ORDINATES OF POINTS
+!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
+!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_WAQTEL ,ONLY : PVAP,RAY3,NWIND,NEBU,TAIR,
-     &                                HREL,RAINFALL,ZSD,EVAPORATION,
-     &                                ATMOSEXCH
+      USE DECLARATIONS_WAQTEL,ONLY: PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                              TAIR_VALUE,HREL,RAINFALL,
+     &                              EVAPORATION,ATMOSEXCH
       USE DECLARATIONS_TELEMAC2D, ONLY : AT1_METEO,AT2_METEO,
      &                                   FUAIR1_METEO,FUAIR2_METEO,
      &                                   FVAIR1_METEO,FVAIR2_METEO
@@ -105,7 +107,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: LT,NPOIN,FO1
+      INTEGER, INTENT(IN)             :: LT,NPOIN,ATMFILEA,ATMFILEB
       LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
@@ -127,9 +129,7 @@
       DOUBLE PRECISION COEF
       DOUBLE PRECISION UAIR,VAIR,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
-      DOUBLE PRECISION PATM,WW,PI
-!
-      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
+      DOUBLE PRECISION PATM,WW,PI,TA
 !
 ! ######################################################################
 ! IDWM WIND INTERPOLATION CUSTOM VARIABLES
@@ -176,17 +176,19 @@
 !
 !-----------------------------------------------------------------------
 !
-!     AT FIRST TIMESTEP
+      IF(FILES(ATMFILEA)%NAME(1:1).NE.' ') THEN
+!       AT FIRST TIMESTEP
 !
-      IF(LT.EQ.0) THEN
+        IF(LT.EQ.0) THEN
 !
-        UL = FILES(FO1)%LU
-        PI = ACOS(-1.D0)
+          UL = FILES(ATMFILEA)%LU
+          PI = ACOS(-1.D0)
 !
-!       ATMOSPHERIC PRESSURE
+!         ATMOSPHERIC PRESSURE AND AIR TEMPERATURE
 !
         IF(ATMOS.OR.WATER_QUALITY) THEN
           CALL OV( 'X=C     ' , PATMOS,Y,Y,PATMOS_VALUE,NPOIN )
+          CALL OV( 'X=C     ' , TAIR%R,Y,Y,TAIR_VALUE,NPOIN )
         ENDIF
 !
 !       WIND :
@@ -255,6 +257,7 @@
           ENDIF
         ENDIF
       ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -264,89 +267,88 @@
 !
 !       WATER QUALITY
 !
-        IF(WATER_QUALITY.AND.FILES(FO1)%NAME(1:1).NE.' ')THEN
-          IF(ATMOSEXCH.EQ.0)THEN
-            CALL INTERPMETEO2(NWIND,UAIR,VAIR,TAIR,PATM,NEBU,RAINFALL,
-     &                        PVAP,RAY3,AT,UL)
+        IF(FILES(ATMFILEA)%NAME(1:1).NE.' ')THEN
+
+          IF(WATER_QUALITY) THEN
+!         TIME VARYING WATER QUALITY
+            IF(ATMOSEXCH.EQ.0)THEN
+              CALL INTERPMETEO2(NWIND,UAIR,VAIR,TA,PATM,NEBU,RAINFALL,
+     &                          PVAP,RAY3,AT,UL)
 !
-            CALL OV('X=C     ',WINDX,WINDX,WINDX,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,WINDY,WINDY,VAIR,NPOIN)
-            CALL OV('X=C     ',PATMOS,PATMOS,PATMOS,PATM,NPOIN)
-            IF(PRESENT(PLUIE))THEN
-              CALL OS('X=C     ',X = PLUIE, C=RAINFALL) ! MM/S
+              CALL OV('X=C     ',WINDX,WINDX,WINDX,UAIR,NPOIN)
+              CALL OV('X=C     ',WINDY,WINDY,WINDY,VAIR,NPOIN)
+              CALL OV('X=C     ',PATMOS,PATMOS,PATMOS,PATM,NPOIN)
+              CALL OV('X=C     ',TAIR%R,TAIR%R,TAIR%R,TA  ,NPOIN)
+              IF(PRESENT(PLUIE))THEN
+                CALL OS('X=C     ',X = PLUIE, C=RAINFALL) ! MM/S
+              ENDIF
+!
+!         TIME VARYING WATER QUALITY WITH HEAT EXCHANGE WITH ATMOSPHERE
+            ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
+              CALL INTERPMETEO(WW,UAIR,VAIR,TA,PATM,
+     &                         HREL,NEBU,RAINFALL,EVAPORATION,AT,UL)
+              CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+              CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
+!
+              CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
+              CALL OV('X=C     ',TAIR%R,Y,Y,TA  ,NPOIN)
             ENDIF
 !
-!           HEAT EXCHANGE WITH ATMOSPHERE
+          ELSEIF (VENT) THEN
 !
-          ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
-            CALL INTERPMETEO(WW,UAIR,VAIR,TAIR,PATM,
-     &                       HREL,NEBU,RAINFALL,EVAPORATION,AT,UL)
-            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
-!
-            CALL OV('X=C     ',PATMOS,Y,Y,PATM,NPOIN)
-          ENDIF
-!
-!      NO HEAT EXHANGE NEITHER WATER_QUALITY
-!
-        ELSE
-!
-!         WIND VARYING IN TIME CONSTANT IN SPACE
-!
-          IF(OPTWIND.EQ.2)THEN
-10          CONTINUE
-            IF(AT.GE.AT1_METEO.AND.AT.LT.AT2_METEO) THEN
-              IF(AT2_METEO-AT1_METEO.GT.1.D-6) THEN
-                COEF=(AT-AT1_METEO)/(AT2_METEO-AT1_METEO)
+!           WIND VARYING IN TIME CONSTANT IN SPACE
+            IF(OPTWIND.EQ.2)THEN
+10            CONTINUE
+              IF(AT.GE.AT1_METEO.AND.AT.LT.AT2_METEO) THEN
+                IF(AT2_METEO-AT1_METEO.GT.1.D-6) THEN
+                  COEF=(AT-AT1_METEO)/(AT2_METEO-AT1_METEO)
+                ELSE
+                  COEF=0.D0
+                ENDIF
+                UAIR=FUAIR1_METEO+COEF*(FUAIR2_METEO-FUAIR1_METEO)
+                VAIR=FVAIR1_METEO+COEF*(FVAIR2_METEO-FVAIR1_METEO)
+                IF(LISTIN) THEN
+                  IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
+     &                                     ' VAIR=',VAIR
+                  IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',
+     &                                      UAIR,' VAIR=',VAIR
+                ENDIF
               ELSE
-                COEF=0.D0
-              ENDIF
-              UAIR=FUAIR1_METEO+COEF*(FUAIR2_METEO-FUAIR1_METEO)
-              VAIR=FVAIR1_METEO+COEF*(FVAIR2_METEO-FVAIR1_METEO)
-              IF(LISTIN) THEN
-                IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
-     &                                                  ' VAIR=',VAIR
-                IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
-     &                                                   ' VAIR=',VAIR
-              ENDIF
-            ELSE
-              AT1_METEO=AT2_METEO
-              FUAIR1_METEO=FUAIR2_METEO
-              FVAIR1_METEO=FVAIR2_METEO
-              READ(UL,*,ERR=100,END=200) AT2_METEO,FUAIR2_METEO,
-     &                                   FVAIR2_METEO
-              GO TO 10
+                AT1_METEO=AT2_METEO
+                FUAIR1_METEO=FUAIR2_METEO
+                FVAIR1_METEO=FVAIR2_METEO
+                READ(UL,*,ERR=100,END=200) AT2_METEO,FUAIR2_METEO,
+     &                                     FVAIR2_METEO
+                GO TO 10
 !
 !-----------------------------------------------------------------------
 !
-100           CONTINUE
-              WRITE(LU,*) ' '
-              WRITE(LU,*) 'METEO'
-              IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
-              IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
-              CALL PLANTE(1)
-              STOP
-200           CONTINUE
-              WRITE(LU,*) ' '
-              WRITE(LU,*) 'METEO'
-              IF(LNG.EQ.1)WRITE(LU,*)'FIN PREMATUREE DU FICHIER DE VENT'
-              IF(LNG.EQ.2)WRITE(LU,*) 'WIND FILE TOO SHORT'
-              CALL PLANTE(1)
-              STOP
+100             CONTINUE
+                WRITE(LU,*) ' '
+                WRITE(LU,*) 'METEO'
+                IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE
+     &                                    VENT'
+                IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
+                CALL PLANTE(1)
+                STOP
+200             CONTINUE
+                WRITE(LU,*) ' '
+                WRITE(LU,*) 'METEO'
+                IF(LNG.EQ.1)WRITE(LU,*)'FIN PREMATUREE DU FICHIER DE
+     &                                  VENT'
+                IF(LNG.EQ.2)WRITE(LU,*) 'WIND FILE TOO SHORT'
+                CALL PLANTE(1)
+                STOP
+              ENDIF
+              CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
+              CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
 !
-!-----------------------------------------------------------------------
+              FUAIR = UAIR
+              FVAIR = VAIR
 !
-            ENDIF
+!             WIND VARYING IN TIME AND SPACE
 !
-            CALL OV('X=C     ',WINDX,Y,Y,UAIR,NPOIN)
-            CALL OV('X=C     ',WINDY,Y,Y,VAIR,NPOIN)
-!
-            FUAIR = UAIR
-            FVAIR = VAIR
-!
-!         WIND VARYING IN TIME AND SPACE
-!
-          ELSEIF(OPTWIND.EQ.3)THEN
+            ELSEIF(OPTWIND.EQ.3)THEN
 !            IF(LNG.EQ.1) THEN
 !              WRITE(LU,*) 'CETTE OPTION N EST PAS ENCORE PROGRAMMEE'
 !              WRITE(LU,*) 'VOIR CAS DE VALIDATION WIND_TXY '
@@ -417,7 +419,17 @@
             ENDDO !K
 !
 ! #######################################################################
+            ENDIF
           ENDIF
+!
+!       WIND AND/OR WATER QUALITY VARIABLES
+!       VARYING IN SPACE AND TIME
+!
+        ELSEIF(FILES(ATMFILEB)%NAME(1:1).NE.' ') THEN
+          CALL METEO_FROM_BINARY_FILE(PATMOS,WINDX,WINDY,AT,NPOIN,VENT,
+     &                                ATMOS,ATMFILEB,FILES,LISTIN,
+     &                                WATER_QUALITY,PLUIE,OPTWIND,
+     &                                WIND_SPD)
         ENDIF
       ENDIF
 !
