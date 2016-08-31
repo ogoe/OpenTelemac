@@ -246,6 +246,12 @@ def compileMascaretDependencies(cfg,cfgName):
             "compile mascaret C dependencies"
       sys.exit(1)
 
+   srcName = path.join(cfg['root'],'sources','mascaret','Deriv','adstack.c')
+   objName = path.join(cfg['root'],'builds',cfgName,'lib','mascaret','adstack.o')
+   cmd = cfg['cmd_obj_c'].replace('<srcName>',srcName)
+   cmd = cmd.replace('<objName>',objName)
+   
+   """
    cmd = cfg['cmd_obj_c'].replace('<srcName>',
                               path.join(cfg['root'],
                                        'sources',
@@ -258,7 +264,30 @@ def compileMascaretDependencies(cfg,cfgName):
                                           'lib',
                                           'mascaret',
                                           'adstack.o'))
+   """
    mes = MESSAGES(size=10)
+   try:
+      if (isNewer(srcName,objName) == 1) and rebuild < 2:
+         print '      +> There is no need to compile C object'
+      else:
+         try:
+            tail,code = mes.runCmd(cmd,False)
+         except Exception as e:
+            raise Exception([filterMessage(
+                  {'name':'compileMascaretDepencies',
+                   'msg':'something went wrong, I am not sure why.\n'
+                  },e,bypass)])
+         if code != 0:
+            raise Exception([
+                  {'name':'compileMascaretDepencies',
+                   'msg':'Could not compile your file adstack'
+                  }])
+         print '   - completed: ../sources/mascaret/Deriv/adstack.c'
+
+   except Exception as e:
+      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
+
+   """
    try:
       tail,code = mes.runCmd(cmd,False)
    except Exception as e:
@@ -272,9 +301,10 @@ def compileMascaretDependencies(cfg,cfgName):
              'msg':'Could not compile your file adstack'
             }])
 
-   print '   - completed: .../sources/mascaret/Deriv/adstack.c'
+   print '   - completed: ../sources/mascaret/Deriv/adstack.c'
+   """
    HOMERES['HOMERE_MASCARET']['add'].append(('adstack.o','mascaret'))
-
+   
 def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(path.basename(oname))
@@ -342,7 +372,10 @@ def createLibFiles(cfg,lname,lcfg,lprog,mes,tasks,bypass):
    # ~~ creation of the librairies (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe -lib /nologo /out:postel3dV5P9.lib declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj
    cmd = cfg['MODULES'][path.basename(lname)]['xlib']
-   cmd = cmd.replace('<objs>',ObjFiles)
+   if lprog == 'HOMERE_MASCARET':
+      cmd = cmd.replace('<objs>','*.o')
+   else:
+      cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<libname>',LibFile)
 
    if debug : print cmd
@@ -431,7 +464,10 @@ def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
    cmd = cmd.replace('<libs>',LibFiles)
-   cmd = cmd.replace('<objs>',ObjFiles)
+   if ename.upper() == 'HOMERE_MASCARET':
+      cmd = cmd.replace('<objs>','*.o')
+   else:
+      cmd = cmd.replace('<objs>',ObjFiles)
 
    xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
