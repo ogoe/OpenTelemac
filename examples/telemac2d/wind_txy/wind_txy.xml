@@ -58,25 +58,25 @@
          fail="checkval(v9,[])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
-      <v1 vars=":map" target="3:T2DRES" />
-      <v2 vars=":map" target="f2d_wind_txy_bin.slf" />
-      <v3 vars="mapdiff(v1,v2)" />
+      <v10 vars=":map" target="3:T2DRES" />
+      <v11 vars=":map" target="f2d_wind_txy_bin.slf" />
+      <v12 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[])" />
+         fail="checkval(v12,[])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
-      <v4 vars=":map" target="4:T2DRES" />
-      <v5 vars=":map" target="f2d_wind_txy_bin.slf" />
-      <v6 vars="mapdiff(v4,v5)" />
+      <v13 vars=":map" target="4:T2DRES" />
+      <v14 vars=":map" target="f2d_wind_txy_bin.slf" />
+      <v15 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v6,[])" />
    </cast>
-   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
-      <v7 vars=":map" target="3:T2DRES" />
-      <v8 vars=":map" target="4:T2DRES" />
-      <v9 vars="mapdiff(v7,v8)" />
+   <cast xref="cas-parall-3-4" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:T2DRES" />
+      <v17 vars=":map" target="4:T2DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[])" />
+         fail="checkval(v18,[])" />
    </cast>
 
 
