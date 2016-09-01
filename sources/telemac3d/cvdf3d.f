@@ -82,6 +82,11 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
+!history  S. PAVAN & J-M HERVOUET (EDF LAB, LNHE & LHSV)
+!+        22/08/2016
+!+        V7P2
+!+   Adding Predictor-corrector schemes and the LIPS advection scheme.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -225,7 +230,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
-      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE, ISCE,BEDBOU,BEDFLU
+      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE,ISCE,BEDBOU,BEDFLU,
+     &                                   OPT_HNEG,FLULIM
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -454,15 +460,12 @@
 !
 !       THIS IS NOW DONE IN CHARAC CALLED BY PRECON
 !
-!       CALL CARA3D(FC%R,FN%R,SHP%R,SHZ%R,ELT%I,ETA%I,IKLE2%I,
-!    &              NELEM2,NPOIN2,NPOIN3,DT,INFOR)
-!       IF(NCSIZE.GT.1) CALL PARCOM(FC,2,MESH3D)
-!
 !-----------------------------------------------------------------------
 !
 !     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N OR PSI
 !
-      ELSEIF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI) THEN
+      ELSEIF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI)
+     &       .AND.OPTADV.NE.4) THEN
 !
         CALL MURD3D(FC,FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
      &              MMURD,MMURD%D%R,MMURD%X%R,DIM1X,
@@ -480,6 +483,38 @@
      &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
      &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
      &              OPTADV,NCO_DIST,NSP_DIST)
+!
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+        S0F%TYPR='0'
+!
+!-----------------------------------------------------------------------
+!
+!     ADVECTION BY LOCALLY IMPLICIT MURD SCHEMES, OPTION N OR PSI
+!     note: they are not distinguished at the moment
+!
+      ELSEIF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI)
+     &       .AND.OPTADV.EQ.4) THEN
+!
+        CALL MURD3D_LIPS(FC,FC%R,FN%R,VOLU%R,VOLUN%R,
+     &                   MMURD,MMURD%D%R,MMURD%X%R,DIM1X,
+     &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
+     &                   IKLE3%I,MESH2D,MESH3D,NELEM3,NPOIN3,DT,INFOR,
+     &                   CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
+     &                   SOURCES,FSCE,RAIN,PLUIE%R,PARAPLUIE%R,TRAIN,
+     &                   NPOIN2,TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,OPTBAN,
+     &                   MESH3D%GLOSEG%I,MESH3D%GLOSEG%DIM1,
+     &                   MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
+     &                   NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
+     &                   TRAV3%ADR(7)%P,TRAV3%ADR(8)%P,TRAV3%ADR(9)%P%R,
+     &                   T2_01,BEDBOU,BEDFLU,VOLU2D%R,
+     &                   NCO_DIST,NSP_DIST,SLVDIF,
+     &                   MESH3D%ORISEG%I,MTRA1,TRAV3%ADR(10)%P,
+     &                   TRAV3%ADR(11)%P,TRAV3%ADR(12)%P,
+     &                   MESH3D%ELTSEG%I,TB2,TRAV3%ADR(13)%P,
+     &                   TRAV3%ADR(14)%P,TRAV3%ADR(15)%P,
+     &                   TRAV3%ADR(16)%P,TRAV3%ADR(17)%P%R,
+     &                   TRAV3%ADR(18)%P%R)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -703,7 +738,7 @@
         ENDIF
 !
 !       CHARACTERISTICS OR SUPG : FLUX DUE TO SOURCES
-!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
+!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE LOCALLY)
 !
         IF(NSCE.GT.0.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
           IF(OPTSOU.EQ.1) THEN
@@ -714,11 +749,14 @@
 !             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
               IF(NCSIZE.GT.1) IIS=IIS+NSCE
               DO IP=1,NPOIN3
+!                              WITH PARCOM
                 IF(SOURCES%ADR(IS)%P%R(IP).GT.0.D0) THEN
                   FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
+!                                                  WITHOUT PARCOM
                 ELSE
 !                             FN FOR CHARACTERISTICS ?
                   FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
+!                                                  WITHOUT PARCOM
                 ENDIF
               ENDDO
             ENDDO
@@ -731,15 +769,15 @@
             DO IS=1,NSCE
               IF(ISCE(IS).GT.0) THEN
                 IP=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!                              WITH PARCOM
                 IF(SOURCES%ADR(1)%P%R(IP).GT.0.D0) THEN
                   FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
+!                                                  WITHOUT PARCOM
+                ELSE
+!                             FN FOR CHARACTERISTICS ?
+                  FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
+!                                                  WITHOUT PARCOM
                 ENDIF
-              ENDIF
-            ENDDO
-            DO IP=1,NPOIN3
-              IF(SOURCES%ADR(1)%P%R(IP).LE.0.D0) THEN
-!                           FN FOR CHARACTERISTICS ?
-                FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
               ENDIF
             ENDDO
           ENDIF
@@ -821,4 +859,3 @@
 !
       RETURN
       END
-
