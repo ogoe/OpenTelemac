@@ -8,7 +8,7 @@
      & FLOC,FLOC_TYPE,HINDER,HIND_TYPE,CGEL,CINI)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                  21/08/2010
+! TELEMAC3D   V7P2                                  31/08/2016
 !***********************************************************************
 !
 !brief    COMPUTES THE SETTLING VELOCITY AS A FUNCTION
@@ -43,33 +43,34 @@
 !+   New developments in sediment merged on 25/02/2014.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IELM3          |-->| DISCRETISATION TYPE FOR 3D
+!| H              |-->| WATER DEPTH
+!| HN             |-->| WATER DEPTH AT TIME N
+!| HMIN           |-->| THRESHOLD FOR EROSION FLUXES ON TIDAL FLATS
+!| LISRUF         |-->| TURBULENCE MODEL FOR BOTTOM
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF POINTS IN 3D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| RUGOF          |-->| FRICTION COEFFICIENT
+!| S              |-->| VOID STRUCTURE
+!| SOULSBYWC      |-->| SWITCH FOR SOULSBY FLOCCULATION FORMULA
+!| TA             |-->| TRACER CONCENTRATION (LAST ONE, NTRAC, IS SED)
+!| TOB            |-->| BED SHEAR STRESS (INCLUDES TURBULENCE DAMPING)
+!| TRAV1          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| TRAV3          |<->| WORK ARRAY
+!| TURBA          |-->| FLOCCULATION COEFFICIENT
+!| TURBB          |-->| COEFFICIENT RELATIVE TO FLOC DESTRUCTION
+!| TURBWC         |-->| SWITCH FOR TURBULENT FLOC BREAKUP
+!| U,V,W          |-->| VELOCITY COMPONENTS
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
 !| WCHU           |<--| SEDIMENT SETTLING VELOCITY (M/S)
 !| WCHU0          |-->| CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
-!| TURBWC         |-->| SWITCH FOR TURBULENT FLOC BREAKUP
-!| SOULSBYWC      |-->| SWITCH FOR SOULSBY FLOCCULATION FORMULA
-!| U,V,W          |-->|
-!| H              |-->|
-!| RUGOF          |-->|
-!| LISRUF         |-->|
-!| TURBA          |-->|
-!| TURBB          |-->|
-!| TRAV1          |<->|
-!| TRAV2          |<->|
-!| TRAV3          |<->|
-!| S              |-->|
-!| MESH3D         |<->|
-!| IELM3          |-->|
-!| NPOIN2         |-->|
-!| NPOIN3         |-->|
-!| NPLAN          |-->|
-!| NTRAC          |-->|
-!| MSK            |-->|
-!| MASKEL         |-->|
-!| UETCAR         |-->|
-!| TA             |-->| TRACER CONCENTRATION (LAST ONE, NTRAC, IS SED)
-!| HN             |-->|
-!| HMIN           |-->|
-!| TOB            |-->| BED SHEAR STRESS (INCLUDES TURBULENCE DAMPING)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

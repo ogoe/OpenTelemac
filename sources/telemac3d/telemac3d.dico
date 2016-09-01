@@ -1068,10 +1068,8 @@ afin d''accelerer la convergence lors de sa resolution. Les choix possibles sont
 \item 0 : aucun ;
 \item 2 : diagonal ;
 \item 3 : diagonal avec matrice condensee ;
-/\item 3 : preconditionnement diagonal-bloc ;
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
-/\item 7 : preconditionnement de Crout par element.
 \item 11 : Gauss-Seidel EBE ;
 \item 13 : matrice fournie par l’utilisateur ;
 \item 14 : diagonal et Crout ;
@@ -1093,7 +1091,6 @@ Possible choices are:
 \item 3: diagonal with the condensed matrix,
 \item 5: diagonal with absolute values,
 \item 7: Crout,
-/\item 7: Crout''s preconditioning per element (not implemented).
 \item 11: Gauss-Seidel EBE,
 \item 13: matrix defined by the user,
 \item 14: diagonal and Crout,
@@ -2093,9 +2090,9 @@ RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'VISCOSITE CONSTANTE'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'CONSTANT VISCOSITY'
 NIVEAU = 1
 AIDE = 'Fixe la precision demandee pour le calcul de la diffusion
-des traceurs.'
+des sediments.'
 AIDE1 = 'Sets the accuracy needed for the computation of the
-diffusion of the sediment.'
+diffusion of sediments.'
 
 NOM = 'PRECISION POUR LA DIFFUSION DES VITESSES'
 NOM1 = 'ACCURACY FOR DIFFUSION OF VELOCITIES'
@@ -2157,9 +2154,8 @@ DEFAUT1 = 0.2
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'Pour les profondeurs inferieures a cette valeur limite, la
-viscosite sera progressivement reduite. Voir le sous-programme
-\telfile{FLUSED}.'
+AIDE = 'Pour les profondeurs inferieures a cette valeur limite, le flux
+sedimentaire sera nul. Voir le sous-programme \telfile{FLUSED}.'
 AIDE1 = 'Below this limiting depth, all sediment erosion rates are set
 to zero. See subroutine \telfile{FLUSED}.'
 
@@ -2886,7 +2882,7 @@ NOM = 'FICHIER ASCII DE DONNEES ATMOSPHERIQUES'
 NOM1 = 'ASCII ATMOSPHERIC DATA FILE'
 TYPE = CARACTERE
 INDEX = 33
-MNEMO = 'T3D_FILES(T3ATMA)%NAME'
+MNEMO = 'T3D\_FILES(T3ATMA)%NAME'
 TAILLE = 0
 SUBMIT = 'T3ATMA-READ-50;T3ATMA;FACUL;ASC;LIT;SCAL'
 DEFAUT = ' '
@@ -2894,16 +2890,16 @@ DEFAUT1 = ' '
 NIVEAU = 1
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
-AIDE = 'Fichier de donnees ascii contenant les informations
-atmospheriques variables en temps'
-AIDE1 = 'Ascii data file containing the atmospheric data varying in
-time'
+AIDE = 'Fichier de donnees ASCII contenant les informations
+atmospheriques variables en temps.'
+AIDE1 = 'ASCII data file containing the atmospheric data varying in
+time.'
 
 NOM = 'FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
 NOM1 = 'BINARY ATMOSPHERIC DATA FILE'
 TYPE = CARACTERE
 INDEX = 34
-MNEMO = 'T3D_FILES(T3ATMB)%NAME'
+MNEMO = 'T3D\_FILES(T3ATMB)%NAME'
 TAILLE = 0
 SUBMIT = 'T3ATMB-READ-51;T3ATMB;FACUL;BIN;LIT;PARAL'
 DEFAUT = ' '
@@ -2912,9 +2908,9 @@ NIVEAU = 1
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 AIDE = 'Fichier de donnees code en binaire contenant les informations
-atmospheriques variables en temps et en espace sur le maillage'
-AIDE1 = 'Binary-coded data file containing the atmospheric data varying in
-time and space on the mesh'
+atmospheriques variables en temps et en espace sur le maillage.'
+AIDE1 = 'Binary-coded data file containing the atmospheric data varying
+in time and space on the mesh.'
 
 NOM = 'BINAIRE DU FICHIER DES RESULTATS 3D'
 NOM1 = '3D RESULT FILE BINARY'
@@ -3180,7 +3176,7 @@ NIVEAU = -13
 COMPORT =
 'Foreground ("SEDIMENT")
 IS BRUT (darksalmon)'
-AIDE = 'Permet de prendre en compte un sediment.'
+AIDE = 'Permet de prendre en compte le transport sedimentaire.'
 AIDE1 = 'If YES, sediment transport is modelled.'
 
 NOM = 'BANCS DECOUVRANTS'
@@ -3501,7 +3497,12 @@ a la diffusion du sediment. Les choix possibles sont :
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
 \item 34 : diagonal et solveur direct sur la verticale.
-\end{itemize}'
+\end{itemize}
+Certains preconditionnements sont cumulables
+(les diagonaux 2 ou 3 avec les autres).
+Pour cette raison on ne retient que les nombres premiers pour
+designer les preconditionnements. Si l''on souhaite en cumuler
+plusieurs on formera le produit des options correspondantes.'
 AIDE1 = 'Choice of the preconditioning in the sediment diffusion
 system that the convergence is speeded up when it is being solved.
 Possible choices are:
@@ -3511,7 +3512,6 @@ Possible choices are:
 \item 3: diagonal with the condensed matrix,
 \item 5: diagonal with absolute values,
 \item 7: Crout,
-/\item 7: Crout''s preconditioning per element (not implemented).
 \item 11: Gauss-Seidel EBE,
 \item 13: matrix defined by the user,
 \item 14: diagonal and Crout,
@@ -3551,9 +3551,9 @@ RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'Fixe la valeur de la contrainte de cisaillement au fond
-au dessous de laquelle se produit le depot.'
+au dessous de laquelle se produit le depot des sediments cohesifs.'
 AIDE1 = 'Value of the critical bottom shear stress under which
-deposition occurs.'
+deposition of cohesive sediments occurs.'
 
 /
 / FOR NON COHESIVE SEDIMENTS USE NOW
@@ -3782,44 +3782,6 @@ The possible values are as follows:
 \item STD, binary type of the machine on which the user is working.
 \end{itemize}
 In that case, normal READ and WRITE commands are used.'
-
-NOM = 'BINAIRE DU FICHIER SEDIMENTOLOGIQUE DU CALCUL PRECEDENT'
-NOM1 = 'PREVIOUS COMPUTATION SEDIMENTOLOGICAL FILE BINARY'
-TYPE = CARACTERE
-INDEX = 54
-MNEMO = 'BISUIS'
-TAILLE = 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-        'IBM';
-        'I3E'
-CHOIX1 = 'STD';
-         'IBM';
-         'I3E'
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
-NIVEAU = 1
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier des
-resultats sedimentologiques du calcul precedent.
-Ce type depend de la machine sur laquelle le fichier a ete genere.
-Les valeurs possibles sont :
-\begin{itemize}
-\item IBM pour un fichier cree sur IBM ;
-\item I3E pour un fichier cree sur HP ;
-\item STD.
-\end{itemize}
-Il s''agit alors d''ordres READ et WRITE normaux.'
-AIDE1 = 'Binary file type used for writing the sedimentological file.
-This type depends on the machine on which the file was generated.
-The possible values are as follows:
-\begin{itemize}
-\item IBM, for a file on an IBM (from a CRAY),
-\item I3E, for a file on an HP (from a CRAY),
-\item STD, binary type of the machine on which the user is working.
-\end{itemize}
-In that case, normal READ and WRITE commands are used.'
-
 
 /----------------------------------------------------------
 / a few additions required by the f95 hydrostatic version.
@@ -4169,22 +4131,6 @@ IS BRUT (brown)'
 AIDE = 'Permet de specifier s''il y a utilisation ou non de la version
 non-hydrostatique.'
 AIDE1 = 'Specifies the use of the non-hydrostatic code version or not.'
-
-NOM = 'CONSOLIDATION INITIALE STABILISEE'
-NOM1 = 'STABILIZED INITIAL CONDITION'
-TYPE = LOGIQUE
-INDEX = 73
-MNEMO = 'CONSOL'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'EQUATIONS'
-RUBRIQUE1 = 'EQUATIONS'
-NIVEAU = 1
-AIDE = 'Initialisation de la consolidation du sediment, voir
-le sous-programme \telfile{CONDIS}.'
-AIDE1 = 'Initial stabilisation of sediment, see subroutine
-\telfile{CONDIS}.'
 
 NOM = 'SUITE 2D'
 NOM1 = '2D CONTINUATION'
@@ -4937,9 +4883,8 @@ DEFAUT1 = .01
 RUBRIQUE = 'PARAMETER FOR BED MATERIAL'
 RUBRIQUE1 = 'PARAMETER FOR BED MATERIAL'
 NIVEAU = 1
-AIDE = 'Valeur du diametre D50 pour une classe de taille particuliere.'
-AIDE1 = 'Sets the value of the diameter D50 for a particular size
-class.'
+AIDE = 'Valeur du diametre D50 pour les sediments non cohesifs.'
+AIDE1 = 'Sets the value of the diameter D50 for non cohesive sediments.'
 /
 NOM = 'SEDIMENT COHESIF'
 NOM1 = 'COHESIVE SEDIMENT'
@@ -4952,8 +4897,8 @@ DEFAUT1 = NO
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' '
+AIDE = 'Permet de dire si le sediment est cohesif ou non.'
+AIDE1 = 'Tells if the sediment is cohesive or not.'
 /
 /---------------------------------------------------------------------
 /
@@ -5732,18 +5677,24 @@ DEFAUT1 = 1
 RUBRIQUE = 'EQUATIONS, SOURCES'
 RUBRIQUE1 = 'EQUATIONS, SOURCES'
 NIVEAU = 1
-AIDE = 'donne les options pour introduire le vent:
-   1: constant en temps et en espace (donne par le mot cle
-      VITESSE ET DIRECTION DU VENT)
-   2: variable en temps donne par fichier formate
-   3: variable en temps et en espace donne par fichier formate
-      ou un fichier binaire serafin'
-AIDE1 = 'gives option for managing the wind:
-   1: constant in time and space, given by keyword SPEED AND
-      DIRECTION OF WIND
-   2: variable in time and (constant in space), given by formated file
-   3: variable in time and space , given by formated file or by
-      a binary serafin file'
+AIDE = 'Donne les options pour introduire le vent :
+\begin{itemize}
+\item 1 : constant en temps et en espace (donne par les mots cles
+\telkey{VITESSE DU VENT SUIVANT X} et \telkey{VITESSE DU VENT SUIVANT Y}
+) ;
+\item 2 : variable en temps donne par fichier formate ;
+\item 3 : variable en temps et en espace donne par fichier formate
+ou un fichier binaire.
+\end{itemize}'
+AIDE1 = 'Gives the option for managing the wind:
+\begin{itemize}
+\item 1: constant in time and space, given by the keywords
+\telkey{WIND VELOCITY ALONG X} and \telkey{WIND VELOCITY ALONG Y},
+\item 2: variable in time and constant in space, given by formatted
+file,
+\item 3: variable in time and space, given by formatted file or by
+a binary file.
+\end{itemize}'
 
 NOM = 'COURANTS DE HOULE'
 NOM1 = 'WAVE DRIVEN CURRENTS'
@@ -5938,23 +5889,27 @@ NOM = 'FORMAT DU FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
 NOM1 = 'BINARY ATMOSPHERIC DATA FILE FORMAT'
 TYPE = CARACTERE
 INDEX = 41
-MNEMO = 'T3D_FILES(T3ATMB)%FMT'
+MNEMO = 'T3D\_FILES(T3ATMB)%FMT'
 DEFAUT = 'SERAFIN '
 DEFAUT1 = 'SERAFIN '
 NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
-AIDE = 'Format du fichier binaire de données atmospheriques.
+AIDE = 'Format du \telkey{FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES}.
 Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Binary atmospheric file format.
-Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5'
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour \tel ;
+\item SERAFIND: format standard double precision pour \tel ;
+\item MED     : format MED double precision base sur HDF5.
+\end{itemize}'
+AIDE1 = 'Format of the \telkey{BINARY ATMOSPHERIC DATA FILE}.
+Possible choices are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in \tel,
+\item SERAFIND: classical double precision format in \tel,
+\item MED     : MED double precision format based on HDF5.
+\end{itemize}'
 
 NOM  = 'TRAITEMENT DES HAUTEURS NEGATIVES'
 NOM1 = 'TREATMENT OF NEGATIVE DEPTHS'
@@ -6074,13 +6029,11 @@ NIVEAU = 2
 AIDE = '
 \begin{itemize}
 \item 1 : formule de Zyserman et Fredsoe, formule d''equilibre ;
-\item 2 :
 \item 3 : formule de Van Rijn (1987).
 \end{itemize}'
 AIDE1 = '
 \begin{itemize}
 \item 1: Zyserman and Fredsoe, equilibrium formula,
-\item 2:
 \item 3: Van Rijn formula (1987).
 \end{itemize}'
 
@@ -6875,17 +6828,17 @@ DEFAUT1 = NO
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
-AIDE = 'Si OUI il y aura un sediment cohesif et un sediment non
-cohesif.'
-AIDE1 = 'If YES there will be one cohesive sediment and one non
-cohesive sediment.'
+AIDE = 'Si OUI, calcul en sediments mixtes, il y aura un sediment
+cohesif et un sediment non cohesif.'
+AIDE1 = 'If YES, calculation of mixed sediment transport, there will be
+one cohesive sediment and one non cohesive sediment.'
 /
 NOM = 'VITESSE DE CHUTE DES SABLES'
 NOM1 = 'SETTLING VELOCITY OF SANDS'
 TYPE = REEL
 INDEX = 105
 TAILLE = 0
-MNEMO = 'WCS'
+MNEMO = 'WCS0'
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'SEDIMENT'
@@ -6905,8 +6858,8 @@ DEFAUT1 = 0.
 RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 2
-AIDE = 'Pourcentage initial du sediment non cohesif.'
-AIDE1 = 'Initial percentage of non cohesive sediment.'
+AIDE = 'Pourcentage initial du sediment non cohesif (mixte).'
+AIDE1 = 'Initial percentage of non cohesive sediment (mixed sediments).'
 /
 NOM = 'TYPE DES SOURCES'
 NOM1 = 'TYPE OF SOURCES'
@@ -6989,7 +6942,7 @@ MNEMO = 'CONC\_LAYER'
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
-AIDE = 'Concentration du lit de vase en g/L (defini par couches) en
+AIDE = 'Concentration du lit de vase en g/L (definie par couches) en
 commencant par la couche du fond.'
 AIDE1 = 'Dry density of the mud-bed layers in g/L starting
 form the bottom upwards.'
