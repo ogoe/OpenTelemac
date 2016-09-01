@@ -37,7 +37,9 @@
 !+     Correction of a bug.
 !+     Sometimes SECT=0 and DBUS<>0 due to relaxation
 !
-!History S. SMOLDERS (FLANDERS HYDRAULICS RESEARCH)
+!History A. LEROY (LNHE)
+!+       M.J. TELES (ANTEA GROUP)
+!+       S. SMOLDERS (FLANDERS HYDRAULICS RESEARCH)
 !+        17/11/2015
 !+        V7P2
 !+     Adding more variables and more equations, more types of flows
@@ -117,7 +119,7 @@
 !
       INTEGER N,I1,I2,ITRAC,FTYP
 !
-      DOUBLE PRECISION L,LARG,HAUT1,HAUT2
+      DOUBLE PRECISION L,LARG,HAUT1,HAUT2,HAUT,TETA
       DOUBLE PRECISION S1,S2,CE1,CE2,CS1,CS2,Q,QMAX1,QMAX2
       DOUBLE PRECISION RD1,RD2,RD
       DOUBLE PRECISION FRIC,LONG,HAST,RAYON,TRASH,RADI1,RADI2
@@ -126,7 +128,7 @@
       DOUBLE PRECISION PI
       DOUBLE PRECISION TWOTHIRDS,FOURTHIRDS
 !
-      INTRINSIC SQRT,COS,SIN,MIN,MAX,ABS
+      INTRINSIC SQRT,COS,SIN,MIN,MAX,ABS,ACOS
 !
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN
@@ -196,6 +198,7 @@
         CORRV5=CV5(N)
         CORR5=C5(N)
         CIR=CIRC(N)
+        HAUT=MIN(HAUT1,HAUT2)
 !
 !       COMPUTES THE FLOW ACCORDING TO DELTAH
 !       IF THE LINEAR PRESSURE LOSS IS NEGLIGIBLE, COULD HAVE DIFFERENT
@@ -298,10 +301,24 @@
                   RAYON = HAST*LARG/(2.D0*HAST+LARG)
                   L = 2.D0*GRAV*LONG*FRIC**2/RAYON**FOURTHIRDS
                   IF(CIR.GT.0.D0) THEN
-                  ! FORMULA FOR SECTION OF CIRCLE; HEIGHT IS S2-RD2
-                    SECBUS(N) = RADI1**2/COS((RADI1-S1+RD1)/RADI1)
-     &                        - (RADI1-S1+RD1)
-     &                         *SQRT(2.D0*(S1-RD1)*RADI1-(S1-RD1)**2)
+                    ! FORMULA FOR SECTION OF CIRCLE; HEIGHT IS S2-RD2
+                    IF((S1-RD1).LT.RADI1) THEN
+                      TETA = 2.D0*ACOS((RADI1-(S1-RD1))/RADI1)
+                      SECBUS(N) = ACOS((RADI1-(S1-RD1))/RADI1)
+     &                          *(RADI1**2)- 0.5D0*RADI1*SIN(TETA/2)
+     &                          *(RADI1-(S1-RD1))
+                    ELSEIF((S1-RD1).EQ.RADI1) THEN
+                      SECBUS(N) = PI*(RADI1**2)*0.5D0
+                    ELSEIF((S1-RD1).GT.RADI1
+     &                .AND.(S1-RD1).LT.HAUT1) THEN
+                      TETA = 2.D0*ACOS(((S1-RD1)-RADI1)/RADI1)
+                      SECBUS(N) = (PI*(RADI1**2))-(ACOS(((S1-RD1)-RADI1)
+     &                          / RADI1)*(RADI1**2)
+     &                          - 0.5D0*RADI1*SIN(TETA/2)
+     &                          *((S1-RD1)-RADI1))
+                    ELSEIF((S1-RD1).GE.HAUT1) THEN
+                      SECBUS(N) = PI*(RADI1**2)
+                    ENDIF
                   ELSE
                     SECBUS(N) = LARG*(TWOTHIRDS*(S1-RD))
                   ENDIF
@@ -325,7 +342,7 @@
                     SECBUS(N) = LARG*HAUT1
                   ENDIF
                   Q = SECBUS(N)
-     &               *SQRT(2.D0*GRAV*(S1+RD+HAUT2)/(CE1+L+CS2+TRASH))
+     &               *SQRT(2.D0*GRAV*(S1-(RD2+HAUT))/(CE1+L+CS2+TRASH))
 !             FLOW TYPE 5
                 ELSEIF(LONG.LT.CORR56*HAUT1) THEN
                   FTYP=5
@@ -385,9 +402,22 @@
                   L = 2.D0*GRAV*LONG*FRIC**2/RAYON**FOURTHIRDS
                   IF(CIR.GT.0.D0) THEN
                     ! FORMULA FOR SECTION OF CIRCLE; HEIGHT IS S2-RD2
-                    SECBUS(N) = RADI2**2/COS((RADI2-S2+RD2)/RADI2)
-     &                         -(RADI2-S2+RD2)
-     &                         *SQRT(2.D0*(S2-RD2)*RADI2-(S2-RD2)**2)
+                    IF((S2-RD2).LT.RADI2) THEN
+                      TETA = 2.D0*ACOS((RADI2-(S2-RD2))/RADI2)
+                      SECBUS(N) = ACOS((RADI2-(S2-RD2))/RADI2)
+     &                          *(RADI2**2)- (0.5D0*RADI2*SIN(TETA/2)
+     &                          *(RADI2-(S2-RD2)))
+                    ELSEIF((S2-RD2).EQ.RADI2) THEN
+                      SECBUS(N) = PI*(RADI2**2)*0.5D0
+                    ELSEIF((S2-RD2).GT.RADI2
+     &                .AND.(S2-RD2).LT.HAUT2) THEN
+                      TETA = 2.D0*ACOS(((S2-RD2)-RADI2)/RADI2)
+                      SECBUS(N) = (PI*(RADI2**2))-(ACOS(((S2-RD2)-RADI2)
+     &                          / RADI2)*(RADI2**2)- 0.5D0*RADI2
+     &                          *SIN(TETA/2)*((S2-RD2)-RADI2))
+                    ELSEIF((S2-RD2).GE.HAUT2) THEN
+                      SECBUS(N) = PI*(RADI2**2)
+                    ENDIF
                   ELSE
                     SECBUS(N) = LARG*TWOTHIRDS*(S2-RD)
                   ENDIF
@@ -408,7 +438,7 @@
                   ELSE
                     SECBUS(N) = LARG*HAUT2
                   ENDIF
-                  Q = -SECBUS(N)*SQRT(2.D0*GRAV*(S2-(RD1+HAUT1))
+                  Q = -SECBUS(N)*SQRT(2.D0*GRAV*(S2-(RD1+HAUT))
      &                                         /(CE2+VALVE+L+CS1+TRASH))
 !                 FLOW TYPE 5
                 ELSEIF(LONG.LT.CORR56*HAUT2) THEN
