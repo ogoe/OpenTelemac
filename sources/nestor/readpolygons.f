@@ -10,6 +10,7 @@
 !
       INTEGER  :: j, n, countPt, stat, status, lineCount
       LOGICAL  :: ThreeDigitsNumeral   ! function
+      EXTERNAL :: ThreeDigitsNumeral   ! function
       CHARACTER (128) :: fileName, zeile
       !CHARACTER (128) :: Path, part2 , chtmp
 

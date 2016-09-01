@@ -19,7 +19,9 @@
 
       REAL (KIND=8)   :: sumGrainCL
       REAL (KIND=8)   :: DateStringToSeconds  ! function
+      EXTERNAL        :: DateStringToSeconds  ! function
       LOGICAL         :: ThreeDigitsNumeral   ! function
+      EXTERNAL        :: ThreeDigitsNumeral   ! function
       CHARACTER  (16) :: rCh              ! to store a real value as string
       CHARACTER (128) :: str              ! to store a string
 
