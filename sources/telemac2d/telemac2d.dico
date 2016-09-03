@@ -464,8 +464,8 @@ TYPE = ENTIER
 INDEX = 11
 MNEMO = 'SLVTRA(ITRAC)%SLV'
 TAILLE = 2
-DEFAUT = 1
-DEFAUT1 = 1
+DEFAUT = 1;1
+DEFAUT1 = 1;1
 CHOIX = '1="gradient conjuge"';
 '2="residu conjuge"';
 '3="gradient conjuge sur equation normale"';
@@ -2471,7 +2471,7 @@ NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
-AIDE = 'Format du fichier binaire de données atmospheriques.
+AIDE = 'Format du fichier binaire de donn\E9es atmospheriques.
 Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
