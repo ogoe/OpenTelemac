@@ -68,10 +68,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!     IF LIQUID BOUNDARY FILE EXISTS, ATTEMPTS TO FIND
-!     THE VALUE IN IT. IF YES, OK REMAINS TO .TRUE. FOR NEXT CALLS
-!                      IF  NO, OK IS SET  TO .FALSE.
-!
 !     RANK OF VALUE IN ARRAY TRACER OR IN LIQUID BOUNDARY FILE
 !
       IF(OKTR3(I,ITRAC).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN

@@ -5,7 +5,7 @@
      &( Q ,VARNAME,AT,NFIC,FFORMAT,NPOIN,LISTIN,STAT)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1                                       01/10/2015
+! BIEF   V7P2                                       01/09/2016
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES FROM A BINARY

@@ -2912,6 +2912,24 @@ atmospheriques variables en temps et en espace sur le maillage.'
 AIDE1 = 'Binary-coded data file containing the atmospheric data varying
 in time and space on the mesh.'
 
+NOM = 'FICHIER BINAIRE DE DONNEES DE FRONTIERE'
+NOM1 = 'BINARY BOUNDARY DATA FILE'
+TYPE = CARACTERE
+INDEX = 32
+MNEMO = 'T3D_FILES(T3DBND)%NAME'
+TAILLE = 0
+SUBMIT = 'T3DBND-READ-52;T3DBND;FACUL;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier de donnees code en binaire contenant les informations
+de conditions aux limites variables en temps et en espace
+provenant de jeux de donnees externes par exemple.'
+AIDE1 = 'Binary-coded data file containing the boundary conditions data
+varying in time and space.'
+
 NOM = 'BINAIRE DU FICHIER DES RESULTATS 3D'
 NOM1 = '3D RESULT FILE BINARY'
 TYPE = CARACTERE
@@ -5911,6 +5929,32 @@ Possible choices are:
 \item MED     : MED double precision format based on HDF5.
 \end{itemize}'
 
+NOM = 'FORMAT DU FICHIER BINAIRE DE DONNEES DE FRONTIERE'
+NOM1 = 'BINARY BOUNDARY DATA FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 23
+MNEMO = 'T3D_FILES(T3DBND)%FMT'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du \telkey{FICHIER BINAIRE DE DONNEES DE FRONTIERE}.
+Les valeurs possibles sont :
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour Telemac;
+\item SERAFIND: format standard double precision pour Telemac;
+\item MED     : format MED base sur HDF5.
+\end{itemize}'
+AIDE1 = 'Format of the \telkey{BINARY BOUNDARY DATA FILE}.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5.
+\end{itemize}'
+
 NOM  = 'TRAITEMENT DES HAUTEURS NEGATIVES'
 NOM1 = 'TREATMENT OF NEGATIVE DEPTHS'
 TYPE = INTEGER
@@ -7782,7 +7826,8 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'FICHIER POUR SUITE 2D';
           'FICHIER DE DONNEES DES BUSES';
           'FICHIER ASCII DE DONNEES ATMOSPHERIQUES';
-          'FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES'
+          'FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES';
+          'FICHIER BINAIRE DE DONNEES DE FRONTIERE'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -7828,7 +7873,8 @@ DEFAUT1 = 'STEERING FILE';
           'FILE FOR 2D CONTINUATION';
           'CULVERTS DATA FILE';
           'ASCII ATMOSPHERIC DATA FILE';
-          'BINARY ATMOSPHERIC DATA FILE'
+          'BINARY ATMOSPHERIC DATA FILE';
+          'BINARY BOUNDARY DATA FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1
