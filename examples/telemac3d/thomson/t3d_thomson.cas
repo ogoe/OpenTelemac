@@ -14,19 +14,19 @@ MATRIX STORAGE : 3
 /
 INITIAL CONDITIONS : 'PARTICULAR'
 /
-FORTRAN FILE                    : t3d_thomson.f
+FORTRAN FILE             : t3d_thomson.f
 BOUNDARY CONDITIONS FILE : geo_thomson.cli
-GEOMETRY FILE               : geo_thomson.slf
+GEOMETRY FILE            : geo_thomson.slf
 3D RESULT FILE           : r3d_thomson.slf
 2D RESULT FILE           : r2d_thomson.slf
 /
 NUMBER OF HORIZONTAL LEVELS : 3
-/LONGUEUR DU VECTEUR : 1
+/VECTOR LENGTH : 1
 /----------------------------------------------------------------------/
 /                     OPTIONS GENERALES
 /----------------------------------------------------------------------
 / provisionally not accepted by python
-/TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'
+/TITLE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'
 TITLE = 'TELEMAC 3D : GOUTTE D EAU DANS UN BASSIN$'
 COMPUTATION CONTINUED : NO
 VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H'
@@ -35,8 +35,8 @@ TIME STEP = 0.04
 NUMBER OF TIME STEPS = 100
 GRAPHIC PRINTOUT PERIOD : 10
 LISTING PRINTOUT PERIOD = 10
-/LOI DE FROTTEMENT SUR LE FOND : 3
-/COEFFICIENT DE FROTTEMENT POUR LE FOND = 100.
+/LAW OF BOTTOM FRICTION : 3
+/FRICTION COEFFICIENT FOR THE BOTTOM = 100.
 /----------------------------------------------------------------------/
 /     PROPAGATION
 /----------------------------------------------------------------------/

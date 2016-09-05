@@ -31,7 +31,7 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS : 'Z,U,V,W,TA1'
 NUMBER OF HORIZONTAL LEVELS = 11
 TIME STEP = 5.
 NUMBER OF TIME STEPS = 360
-GRAPHIC PRINTOUT PERIOD = 180/ every 15 minutes
+GRAPHIC PRINTOUT PERIOD = 180 / every 15 minutes
 LISTING PRINTOUT PERIOD = 12
 /----------------------------------------------------------------------
 /

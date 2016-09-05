@@ -31,9 +31,9 @@
 /
 TITLE = 'TELEMAC 3D : NON HYDROSTATIC HYDRAULIC JUMP'
 /
-FORTRAN FILE                    : t3d_bump.f
+FORTRAN FILE             : t3d_bump.f
 BOUNDARY CONDITIONS FILE : geo_bump.cli
-GEOMETRY FILE               : geo_bump.slf
+GEOMETRY FILE            : geo_bump.slf
 3D RESULT FILE           : r3d_bump.slf
 2D RESULT FILE           : r2d_bump.slf
 /
@@ -43,9 +43,9 @@ GEOMETRY FILE               : geo_bump.slf
 /
 MATRIX STORAGE : 3
 /
-NUMBER OF TIME STEPS              = 5000
+NUMBER OF TIME STEPS    = 5000
 GRAPHIC PRINTOUT PERIOD = 2500
-LISTING PRINTOUT PERIOD    = 100
+LISTING PRINTOUT PERIOD = 100
 TIME STEP = 0.01
 NUMBER OF HORIZONTAL LEVELS = 5
 /

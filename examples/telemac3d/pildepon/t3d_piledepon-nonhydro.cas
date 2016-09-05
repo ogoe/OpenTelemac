@@ -15,8 +15,8 @@
 /  SUR HPC3700  : version 6.2 : 205 s  30/05/12  Calibre 7 : 37 s (1 proc)
 /
 BOUNDARY CONDITIONS FILE : geo_piledepon.cli
-GEOMETRY FILE               : geo_piledepon.slf
-LIQUID BOUNDARIES FILE    : t3d_piledepon.qsl
+GEOMETRY FILE            : geo_piledepon.slf
+LIQUID BOUNDARIES FILE   : t3d_piledepon.qsl
 3D RESULT FILE           : r3d_piledepon-nonhydro.slf
 2D RESULT FILE           : r2d_piledepon-nonhydro.slf
 /----------------------------------------------------------------------/
@@ -55,7 +55,7 @@ COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES   = 1.D-6
 /
 IMPLICITATION FOR DEPTH = 0.6
 INITIAL CONDITIONS : 'ZERO ELEVATION'
-PRESCRIBED FLOWRATES : 0.;62.
+PRESCRIBED FLOWRATES  : 0.;62.
 PRESCRIBED ELEVATIONS : 0.;0.
 /
 / NON HYDROSTATIQUE

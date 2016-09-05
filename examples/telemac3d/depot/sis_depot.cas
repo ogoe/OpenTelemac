@@ -3,10 +3,10 @@
 /                            SISYPHE
 /----------------------------------------------------------------------
 /
-GEOMETRY FILE               = geo_depot.slf
-FORTRAN FILE                    = sis_depot.f
+GEOMETRY FILE            = geo_depot.slf
+FORTRAN FILE             = sis_depot.f
 BOUNDARY CONDITIONS FILE = geo_sisyphe.cli
-RESULTS FILE              = rsi_depot.slf
+RESULTS FILE             = rsi_depot.slf
 /
 TITLE = 'Cas test de depot et charriage'
 MASS-LUMPING = YES

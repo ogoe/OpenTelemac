@@ -32,20 +32,20 @@ COUPLING WITH : 'DELWAQ'
 /  HP C3700  compilateur HP        : 39 s  08/06/2012
 /
 BOUNDARY CONDITIONS FILE : geo_delwaq.cli
-GEOMETRY FILE               : geo_delwaq.slf
-LIQUID BOUNDARIES FILE    : t3d_delwaq.qsl
+GEOMETRY FILE            : geo_delwaq.slf
+LIQUID BOUNDARIES FILE   : t3d_delwaq.qsl
 3D RESULT FILE           : r3d_delwaq.slf
 2D RESULT FILE           : r2d_delwaq.slf
-FORTRAN FILE                    : t3d_delwaq.f
+FORTRAN FILE             : t3d_delwaq.f
 /
-VOLUMES DELWAQ FILE                : dwq_delwaq-volume.dwq
-EXCHANGE AREAS DELWAQ FILE       : dwq_delwaq-area.dwq
+VOLUMES DELWAQ FILE                 : dwq_delwaq-volume.dwq
+EXCHANGE AREAS DELWAQ FILE          : dwq_delwaq-area.dwq
 VERTICAL FLUXES DELWAQ FILE         : dwq_delwaq-flow.dwq
-BOTTOM SURFACES DELWAQ FILE       : dwq_delwaq-horsurf.dwq
-EXCHANGES BETWEEN NODES DELWAQ FILE  : dwq_delwaq-frmto.dwq
-NODES DISTANCES DELWAQ FILE : dwq_delwaq-length.dwq
-VELOCITY DELWAQ FILE              : dwq_delwaq-vitesse.dwq
-DIFFUSIVITY DELWAQ FILE            : dwq_delwaq-diffusion.dwq
+BOTTOM SURFACES DELWAQ FILE         : dwq_delwaq-horsurf.dwq
+EXCHANGES BETWEEN NODES DELWAQ FILE : dwq_delwaq-frmto.dwq
+NODES DISTANCES DELWAQ FILE         : dwq_delwaq-length.dwq
+VELOCITY DELWAQ FILE                : dwq_delwaq-vitesse.dwq
+DIFFUSIVITY DELWAQ FILE             : dwq_delwaq-diffusion.dwq
 DELWAQ STEERING FILE                : dwq_delwaq.hyd
 /
 /----------------------------------------------------------------------
@@ -53,11 +53,12 @@ DELWAQ STEERING FILE                : dwq_delwaq.hyd
 NUMBER OF HORIZONTAL LEVELS = 6
 /
 TITLE = 'TELEMAC 3D : RIVIERE AVEC DEUX PILES DE PONT$'
-TIME STEP = 0.1 NUMBER OF TIME STEPS = 50
+TIME STEP = 0.1
+NUMBER OF TIME STEPS = 50
 GRAPHIC PRINTOUT PERIOD = 5
 / Periode de sortie Delwaq et graphiques doivent etre la meme
-DELWAQ PRINTOUT PERIOD       = 5
-LISTING PRINTOUT PERIOD    = 5
+DELWAQ PRINTOUT PERIOD  = 5
+LISTING PRINTOUT PERIOD = 5
 VARIABLES FOR 2D GRAPHIC PRINTOUTS = 'U,V,H,B,S'
 VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W
 LAW OF BOTTOM FRICTION = 3
@@ -72,10 +73,11 @@ COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES   = 1.D-6
 IMPLICITATION FOR DEPTH = 0.6
 IMPLICITATION FOR VELOCITIES = 1.
 INITIAL CONDITIONS : 'COTE NULLE'
-PRESCRIBED FLOWRATES : 0.;62.     PRESCRIBED ELEVATIONS : 0.;0.
+PRESCRIBED FLOWRATES  : 0.;62.
+PRESCRIBED ELEVATIONS : 0.;0.
 /
 IMPLICITATION FOR DIFFUSION : 1.
-/SOLVEUR POUR LA PROPAGATION : 1
+/SOLVER FOR PROPAGATION : 1
 SOLVER FOR PROPAGATION : 8
 /
 / NON HYDROSTATIQUE
@@ -87,14 +89,15 @@ MASS-LUMPING FOR DEPTH : 1.
 /
 /  SYSTEMES LINEAIRES DE L'OPTION NON-HYDROSTATIQUE
 /
-SOLVER FOR PPE = 6  ACCURACY FOR PPE = 1.E-5
+SOLVER FOR PPE = 6
+ACCURACY FOR PPE = 1.E-5
 PRECONDITIONING FOR PPE = 2
 MAXIMUM NUMBER OF ITERATIONS FOR PPE = 100
 /
 NUMBER OF TRACERS = 1
 NAMES OF TRACERS : 'TEMPERATURE     GRAM PER LITER  '
-SALINITY DELWAQ FILE             : dwq_delwaq-salinite.dwq
-TEMPERATURE DELWAQ FILE          : dwq_delwaq-temperature.dwq
+SALINITY DELWAQ FILE                : dwq_delwaq-salinite.dwq
+TEMPERATURE DELWAQ FILE             : dwq_delwaq-temperature.dwq
 /SALINITE POUR DELWAQ : YES
 TEMPERATURE FOR DELWAQ : YES
 VELOCITY FOR DELWAQ : YES

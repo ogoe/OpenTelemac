@@ -13,9 +13,9 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FORTRAN FILE                    : t3d_vent.f
+FORTRAN FILE             : t3d_vent.f
 BOUNDARY CONDITIONS FILE : geo_vent.cli
-GEOMETRY FILE               : geo_vent.slf
+GEOMETRY FILE            : geo_vent.slf
 2D RESULT FILE           : r2d_vent.slf
 3D RESULT FILE           : r3d_vent.slf
 /
@@ -28,14 +28,14 @@ MESH TRANSFORMATION : 2
 /
 TITLE : 'TEST CANAL Soumis a un vent'
 /
-VARIABLES FOR 2D GRAPHIC PRINTOUTS              : 'U,V,H,B'
-VARIABLES FOR 3D GRAPHIC PRINTOUTS              : 'Z,U,V,W,NUZ'
-TIME STEP                                          : 10.
-NUMBER OF TIME STEPS                                : 2000
-GRAPHIC PRINTOUT PERIOD                   : 2000
-LISTING PRINTOUT PERIOD                      : 100
+VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H,B'
+VARIABLES FOR 3D GRAPHIC PRINTOUTS : 'Z,U,V,W,NUZ'
+TIME STEP : 10.
+NUMBER OF TIME STEPS : 2000
+GRAPHIC PRINTOUT PERIOD : 2000
+LISTING PRINTOUT PERIOD : 100
 /
-NUMBER OF HORIZONTAL LEVELS                           : 15
+NUMBER OF HORIZONTAL LEVELS : 15
 /
 /----------------------------------------------------------------------
 /                       OPTIONS NUMERIQUES
@@ -43,34 +43,34 @@ NUMBER OF HORIZONTAL LEVELS                           : 15
 /
 TIDAL FLATS : NO
 /
-MASS-BALANCE 						  : YES
+MASS-BALANCE  : YES
 INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : YES
 /OPTION 6 : LONGUEUR DE MELANGE 'TSANIS'
 VERTICAL TURBULENCE MODEL : 2
 MIXING LENGTH MODEL : 6
 /
-COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES          : 0.1
-COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES            : 1.E-6
-SCHEME FOR DIFFUSION OF VELOCITIES 			  : 1
+COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES : 0.1
+COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES   : 1.E-6
+SCHEME FOR DIFFUSION OF VELOCITIES : 1
 /
-SCHEME FOR ADVECTION OF VELOCITIES                    : 5
+SCHEME FOR ADVECTION OF VELOCITIES : 5
 /
-ACCURACY FOR DIFFUSION OF VELOCITIES                  : 1.E-7
-ACCURACY FOR VERTICAL VELOCITY                       : 1.E-6
-IMPLICITATION FOR DEPTH                             : 0.6
-IMPLICITATION FOR VELOCITIES                           : 0.6
-MASS-LUMPING FOR DEPTH   =1.
-MASS-LUMPING FOR VELOCITIES =1.
+ACCURACY FOR DIFFUSION OF VELOCITIES : 1.E-7
+ACCURACY FOR VERTICAL VELOCITY       : 1.E-6
+IMPLICITATION FOR DEPTH      : 0.6
+IMPLICITATION FOR VELOCITIES : 0.6
+MASS-LUMPING FOR DEPTH      = 1.
+MASS-LUMPING FOR VELOCITIES = 1.
 /
 /----------------------------------------------------------------------
 /             VENT (10 m/s  direction OUEST)
 /----------------------------------------------------------------------
 /
-WIND                                                     : YES
+WIND                          : YES
 / COEFFICIENT REFAIT DANS BORD3D
-COEFFICIENT OF WIND INFLUENCE                          : 1.625E-6
-WIND VELOCITY ALONG X                                : 10.
-WIND VELOCITY ALONG Y                                :  0.
+COEFFICIENT OF WIND INFLUENCE : 1.625E-6
+WIND VELOCITY ALONG X         : 10.
+WIND VELOCITY ALONG Y         :  0.
 /
 /----------------------------------------------------------------------
 /

@@ -2,12 +2,49 @@
 /
 /           FICHIER DE DECLARATION DES MOTS CLES DU CODE
 /                            TELEMAC-3D
+/   
+/  Profil de Rouse
+/
+/  Tourne en 1921 s sur HP 785/C3700   version 5.5  08/03/2005
+/  Tourne en 1874 s sur HP 785/C3700   avec upwind vitesse de chute
+/  Tourne en 1791 s sur HP 785/C3700   version 5.6  26/08/2005
+/  Tourne en 1187 s sur HP 785/C3700   version 5.6  29/09/2005 (segments)
+/
+/  A PARTIR DE LA, PLUS DE SUITE, VOIR CONDIM
+/  PROFILS LOGARITHMIQUES ET DE ROUSE EN ENTREE
+/  PLANS RAFFINES VERS LE FOND, 16 PLANS AU LIEU DE 31 PLANS.
+/
+/  Tourne en 560 s sur HP 785/C3700   version 5.6  18/10/2005
+/
+/  Avec profils 2;2 en entree
+/
+/  652 s sur HP 785/C3700  5.7  09/02/2007 (Nag:1616 s,Dell:393 s)
+/
+/  Avec equation d'onde + concentration 0.02 en entree
+/
+/  518 s sur HP 785/C3700  5.8  26/12/2007 (Nag:1312 s,Dell: 312 s)
+/  519 s sur HP 785/C3700  5.9  17/10/2008 (Nag:???? s,Dell: 312 s)
+/
+/  519 s sur HP 785/C3700    5.9  17/10/2008 
+/  229 s sur Dell Calibre 5  5.9  23/12/2008
+/
+/  562 s sur HP 785/C3700  6.0  04/12/2009 (Nag:1539 s,Intel: 266 s)
+/  527 s sur HP 785/C3700  6.0  21/05/2010 (Nag:1??? s,Intel: ??? s)
+/
+/  519 s sur HP 785/C3700  6.1  02/02/2011 (Nag:1??? s,Intel: ??? s)
+/
+/  Version 6.2
+/
+/  94 s sur HP Linux Calibre 7  24/05/2012  (1 processeur )
+/  18 s sur HP Linux Calibre 7  24/05/2012  (8 processeurs)
+/
+/**********************************************************************/
 /
 TITLE = 'TELEMAC 3D : CANAL'
 /
-FORTRAN FILE                    : t3d_rouse.f
+FORTRAN FILE             : t3d_rouse.f
 BOUNDARY CONDITIONS FILE : geo_rouse.cli
-GEOMETRY FILE               : geo_rouse.slf
+GEOMETRY FILE            : geo_rouse.slf
 /
 3D RESULT FILE           : r3d_rouse.slf
 2D RESULT FILE           : r2d_rouse.slf
@@ -21,7 +58,7 @@ GEOMETRY FILE               : geo_rouse.slf
 NUMBER OF TIME STEPS = 1000
 TIME STEP = 2.
 GRAPHIC PRINTOUT PERIOD = 1000
-LISTING PRINTOUT PERIOD    = 100
+LISTING PRINTOUT PERIOD = 100
 /NOMBRE DE PLANS HORIZONTAUX = 31
 NUMBER OF HORIZONTAL LEVELS = 16
 /
@@ -69,8 +106,8 @@ LAW OF BOTTOM FRICTION = 5
 MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION = 200
 MAXIMUM NUMBER OF ITERATIONS FOR VERTICAL VELOCITY = 50
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES = 200
-SOLVER FOR VERTICAL VELOCITY=7
-ACCURACY FOR DIFFUSION OF VELOCITIES =1.E-6
+SOLVER FOR VERTICAL VELOCITY = 7
+ACCURACY FOR DIFFUSION OF VELOCITIES = 1.E-6
 ACCURACY FOR VERTICAL VELOCITY = 1.E-6
 ACCURACY FOR PROPAGATION = 1.E-6
 /
