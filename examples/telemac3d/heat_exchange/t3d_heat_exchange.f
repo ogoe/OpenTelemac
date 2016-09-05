@@ -125,7 +125,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -176,6 +176,11 @@
 !+        V7P1
 !+   Imposed flowrates on the bed.
 !
+!history  J_M HERVOUET (EDF LAB, LNHE)
+!+        15/07/2016
+!+        V7P2
+!+   TRACERS VERTICAL PROFILES had an option 4 not recognised by bord3d.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
 !|                |   | CONSERVATION.
@@ -209,7 +214,8 @@
 !
       INTEGER IPOIN2,NP,IBORD,IVIT,ICOT,IDEB,IFRLIQ,IPROF,K,N
       INTEGER IPTFR,ITRAC,IPLAN,I3D
-      LOGICAL YAZMIN
+      LOGICAL READ_BIN_Z,READ_BIN_U,READ_BIN_V,READ_BIN_TR
+      LOGICAL YAZMIN,DEJA
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY
 !
       DOUBLE PRECISION P_DMIN,P_DSUM
@@ -359,11 +365,27 @@
       ICOT=0
       IVIT=0
 !
+!     READ ELEVATIONS GIVEN IN THE BINARY BOUNDARY DATA FILE IF PRESENT
+!     -----------------------------------------------------------------
+      IF(T3D_FILES(T3DBND)%NAME(1:1).NE.' ') THEN
+        ! GET H FROM THE BINARY BOUNDARY DATA FILE
+        ! IT IS NECESSARILY IN THE FILE OTHERWISE
+        ! READ_BIN_FRLIQ CALLS PLANTE
+        CALL READ_BIN_FRLIQ
+     &   (T3_01%R,'ELEVATION Z     ',
+     &    AT,T3D_FILES(T3DBND)%LU,T3D_FILES(T3DBND)%FMT,
+     &    ENTET,READ_BIN_Z)
+      ELSE
+        READ_BIN_Z = .FALSE.
+      ENDIF
+
 !     LOOP ON ALL 2D BOUNDARY POINTS
 !
+      DEJA = .FALSE.
       DO K=1,NPTFR2
 !
 !     PRESCRIBED ELEVATION GIVEN IN STEERING FILE (NCOTE<>0)
+!     OR IN BINARY BOUNDARY DATA FILE
 !     -------------------------------------------------------
 !
       IF(LIHBOR%I(K).EQ.KENT.AND.NCOTE.NE.0) THEN
@@ -379,7 +401,27 @@
         ELSEIF(NCOTE.GE.NUMLIQ%I(K)) THEN
           N=IPOIN2
           IF(NCSIZE.GT.1) N=MESH2D%KNOLG%I(N)
-          HBOR%R(K) = SL3(ICOT,AT,N,INFOGR)-ZF%R(IPOIN2)
+          IF(READ_BIN_Z) THEN
+            ! GET THE ELEVATION Z FROM THE LIQUID BOUNDARY BINARY FILE
+            IF(INFOGR.AND..NOT.DEJA) THEN
+              IF(LNG.EQ.1) WRITE(LU,*) 'COTES AUX FRONTIERES LUES DANS
+     &                     LE FICHIER BINAIRE'
+              IF(LNG.EQ.2) WRITE(LU,*) 'ELEVATION AT THE BOUNDARY READ
+     &                     IN THE BINARY FILE'
+              DEJA = .TRUE.
+            ENDIF
+            HBOR%R(K) = T3_01%R(N+(NPLAN-1)*NPOIN2)-ZF%R(IPOIN2)
+          ELSE
+            ! GET THE ELEVATION Z FROM THE ASCII FILE
+            IF(INFOGR.AND..NOT.DEJA) THEN
+              IF(LNG.EQ.1) WRITE(LU,*) 'COTES AUX FRONTIERES LUES DANS
+     &                     LE FICHIER ASCII'
+              IF(LNG.EQ.2) WRITE(LU,*) 'ELEVATION AT THE BOUNDARY READ
+     &                     IN THE ASCII FILE'
+              DEJA = .TRUE.
+            ENDIF
+            HBOR%R(K) = SL3(ICOT,AT,N,INFOGR)-ZF%R(IPOIN2)
+          ENDIF
           HBOR%R(K) = MAX(0.D0,HBOR%R(K))
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
@@ -465,12 +507,41 @@
 !
       ENDDO
 !
+!     READ VELOCITIES GIVEN IN THE BINARY BOUNDARY DATA FILE IF PRESENT
+!     WE ONLY READ THE HORIZONTAL COMPONENTS
+!     ------------------------------------------------------------------
+      IF(T3D_FILES(T3DBND)%NAME(1:1).NE.' ') THEN
+        ! GET U FROM THE BINARY BOUNDARY DATA FILE
+        CALL READ_BIN_FRLIQ
+     &   (T3_01%R,'VELOCITY U      ',
+     &    AT,T3D_FILES(T3DBND)%LU,T3D_FILES(T3DBND)%FMT,
+     &    ENTET,READ_BIN_U)
+        ! GET V FROM THE BINARY BOUNDARY DATA FILE
+        CALL READ_BIN_FRLIQ
+     &   (T3_02%R,'VELOCITY V      ',
+     &    AT,T3D_FILES(T3DBND)%LU,T3D_FILES(T3DBND)%FMT,
+     &    ENTET,READ_BIN_V)
+        IF(.NOT.READ_BIN_U.OR..NOT.READ_BIN_V) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) "BORD3D : ",
+     &                 "VITESSE U OU V MANQUANTE DANS LE",
+     &                 "FICHIER T3DBND"
+          IF(LNG.EQ.2) WRITE(LU,*) "BORD3D: ",
+     &                 "VELOCITY U OR V IS MISSING",
+     &                 "IN THE FILE T3DBND"
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ELSE
+        READ_BIN_U = .FALSE.
+        READ_BIN_V = .FALSE.
+      ENDIF
+
 !     PRESCRIBED VELOCITY GIVEN IN STEERING FILE (NVIT<>0)
+!     OR IN THE BINARY BOUNDARY DATA FILE
 !     -----------------------------------------------------
 !
+      DEJA = .FALSE.
       DO K=1,NPTFR2
-!
-!     THIS VELOCITY IS CONSIDERED NORMAL TO THE BOUNDARY
 !
       IF(LIUBOL%I(K).EQ.KENTU.AND.NVIT.NE.0) THEN
         IVIT=NUMLIQ%I(K)
@@ -482,9 +553,32 @@
             ELSE
               N=NBOR3%I(IBORD)
             ENDIF
-            UBORL%R(IBORD)=-MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
-            VBORL%R(IBORD)=-MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
-            WBORL%R(IBORD)=0.D0
+            IF(READ_BIN_U.AND.READ_BIN_V) THEN
+              ! GET U AND V FROM THE BINARY BOUNDARY DATA FILE
+              IF(INFOGR.AND..NOT.DEJA) THEN
+                IF(LNG.EQ.1) WRITE(LU,*) 'U,V AUX FRONTIERES LUES DANS
+     &                       LE FICHIER BINAIRE'
+                IF(LNG.EQ.2) WRITE(LU,*) 'U,V AT THE BOUNDARIES READ
+     &                       IN THE BINARY FILE'
+                DEJA = .TRUE.
+              ENDIF
+              UBORL%R(IBORD)=T3_01%R(N)
+              VBORL%R(IBORD)=T3_02%R(N)
+              WBORL%R(IBORD)=0.D0
+            ELSE
+              ! THE NORM OF THE VELOCITY IS SET
+              ! VELOCITY ORIENTED ALONG THE NORMAL TO THE BOUNDARY
+              IF(INFOGR.AND..NOT.DEJA) THEN
+                IF(LNG.EQ.1) WRITE(LU,*) 'U,V AUX FRONTIERES LUES DANS
+     &                       LE FICHIER ASCII'
+                IF(LNG.EQ.2) WRITE(LU,*) 'U,V AT THE BOUNDARIES READ
+     &                       IN THE ASCII FILE'
+                DEJA = .TRUE.
+              ENDIF
+              UBORL%R(IBORD)=-MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
+              VBORL%R(IBORD)=-MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
+              WBORL%R(IBORD)=0.D0
+            ENDIF
           ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
@@ -502,13 +596,34 @@
 !
       ENDDO
 !
-!     PRESCRIBED TRACER GIVEN IN STEERING FILE,
-!     BUT POSSIBLE OVERWRITING IF LIQUID BOUNDARY FILE IS GIVEN
-!     SEE FUNCTION TR3
+!     PRESCRIBED TRACER GIVEN IN BINARY BOUNDARY DATA FILE OR
+!     IN STEERING FILE, BUT THEN POSSIBLE OVERWRITING
+!     (SEE FUNCTION TR3)
 !     -------------------------------------------------------
 !
       IF(NTRAC.GT.0.AND.NTRACER.GT.0) THEN
+        DEJA = .FALSE.
         DO ITRAC=1,NTRAC
+!       READ TRACER VALUES GIVEN IN THE BINARY BOUNDARY DATA FILE
+        IF(T3D_FILES(T3DBND)%NAME(1:1).NE.' ') THEN
+          CALL READ_BIN_FRLIQ
+     &    (T3_01%R,NAMETRAC(ITRAC)(1:16),
+     &     AT,T3D_FILES(T3DBND)%LU,T3D_FILES(T3DBND)%FMT,
+     &     ENTET,READ_BIN_TR)
+           IF(.NOT.READ_BIN_TR) THEN
+             IF(LNG.EQ.1) WRITE(LU,*) "BORD3D : ",
+     &                    "VALEUR DU TRACEUR ",ITRAC,
+     &                    "MANQUANTE DANS LE FICHIER T3DBND.",
+     &                    "SA VALEUR EST PRISE DANS LE FICHIER ASCII"
+             IF(LNG.EQ.2) WRITE(LU,*) "BORD3D: ",
+     &                    "THE TRACER ", ITRAC, " IS MISSING",
+     &                    "IN THE FILE T3DBND. ITS VALUE IS TAKEN",
+     &                    "IN THE ASCII FILE."
+           ENDIF
+        ELSE
+          READ_BIN_TR = .FALSE.
+        ENDIF
+!
         DO K=1,NPTFR2
         DO NP=1,NPLAN
           IBORD = (NP-1)*NPTFR2+K
@@ -532,8 +647,33 @@
               ELSE
                 N=NBOR3%I(IBORD)
               ENDIF
-              TABORL%ADR(ITRAC)%P%R(IBORD)=
-     &                                   TR3(IFRLIQ,ITRAC,N,AT,INFOGR)
+              IF (READ_BIN_TR) THEN
+                ! GET ITRAC VALUES FROM THE BINARY BOUNDARY DATA FILE
+                IF(INFOGR.AND..NOT.DEJA) THEN
+                  IF(LNG.EQ.1) WRITE(LU,*) 'VALEUR DU TRACEUR', ITRAC,
+     &                         'AUX FRONTIERES LUES DANS LE FICHIER
+     &                          BINAIRE'
+                  IF(LNG.EQ.2) WRITE(LU,*) 'VALUE OF THE TRACER', ITRAC,
+     &                         'AT THE BOUNDARIES READ IN THE
+     &                          BINARY FILE'
+                  DEJA = .TRUE.
+                ENDIF
+                TABORL%ADR(ITRAC)%P%R(IBORD)= T3_01%R(N)
+              ELSE
+                ! GET ITRAC VALUES FROM THE STEERING FILE
+                IF(INFOGR.AND..NOT.DEJA) THEN
+                  IF(LNG.EQ.1) WRITE(LU,*) 'VALEUR DU TRACEUR', ITRAC,
+     &                         'AUX FRONTIERES LUES DANS LE FICHIER
+     &                          ASCII'
+                  IF(LNG.EQ.2) WRITE(LU,*) 'VALUE OF THE TRACER', ITRAC,
+     &                         'AT THE BOUNDARIES READ IN THE
+     &                          ASCII FILE'
+                  WRITE(LU,*) INFOGR
+                  DEJA = .TRUE.
+                ENDIF
+                TABORL%ADR(ITRAC)%P%R(IBORD)= TR3(IFRLIQ,ITRAC,
+     &                                            N,AT,INFOGR)
+              ENDIF
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
@@ -552,8 +692,8 @@
             IF(IPROF.NE.1) THEN
               PROFZ=TRA_PROF_Z(IFRLIQ,NBOR2%I(K),AT,LT,NP,
      &                         INFOGR,IPROF,ITRAC)
-              IF(IPROF.EQ.2.OR.IPROF.EQ.0) THEN
-!               Rouse concentrations profiles (IPROF=2) or values given by user (IPROF=0)
+              IF(IPROF.EQ.2.OR.IPROF.EQ.4.OR.IPROF.EQ.0) THEN
+!               Rouse concentrations profiles (IPROF=2 or 4) or given by user (IPROF=0)
                 TABORL%ADR(ITRAC)%P%R(IBORD)=PROFZ
               ELSEIF(IPROF.EQ.3) THEN
 !               Normalised concentrations profiles (IPROF=3)
@@ -859,3 +999,4 @@
 !
       RETURN
       END
+
