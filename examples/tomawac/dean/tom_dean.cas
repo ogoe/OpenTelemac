@@ -8,9 +8,7 @@
 FORTRAN FILE = tom_dean.f
 GEOMETRY FILE = geo_dean.slf
 BOUNDARY CONDITIONS FILE = geo_dean.cli
-2D RESULTS FILE = res_dean.slf
-/FICHIER DES RESULTATS PONCTUELS = 'res_veg_Tp1.spe'
-/FICHIER DES RESULTATS SPECTRES 1D  = 'res_veg_Tp1.txt'
+2D RESULTS FILE = r2d_dean.slf
 /--------------------------------------------------------------------
 / MISCELLANEOUS INPUT-OUTPUT
 /--------------------------------------------------------------------

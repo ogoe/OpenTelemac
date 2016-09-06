@@ -5,11 +5,11 @@
 /--------------------------------------------------------------------
 /     FILES
 /--------------------------------------------------------------------
-GEOMETRY FILE = 'geom.slf'
+GEOMETRY FILE = 'geo_veg.slf'
 BOUNDARY CONDITIONS FILE = 'geo_mesh_veg.cli'
-GLOBAL RESULT FILE='next_comput.glob'
+GLOBAL RESULT FILE='glob_res.slf'
 GLOBAL RESULT FILE FORMAT = 'SERAFIND'
-2D RESULTS FILE = 'res_veg_Tp1.slf'
+2D RESULTS FILE = 'r2d_veg_Tp1.slf'
 /
 /--------------------------------------------------------------------
 / MISCELLANEOUS INPUT-OUTPUT

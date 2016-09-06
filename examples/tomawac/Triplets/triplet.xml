@@ -21,22 +21,22 @@
 -->  
    <action xref="1"
        do="translate;run;cas;princi" 
-       code="tomawac" target="triplet.cas" 
+       code="tomawac" target="tom_triplet1.cas" 
        title="Triplets scalar mode" 
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4" 
-       code="tomawac" target="triplet.cas" 
+       code="tomawac" target="tom_triplet1.cas" 
        title="Triplets parallel mode" 
    />   
    <action xref="3"
        do="translate;run;cas;princi" 
-       code="tomawac" target="triplet2.cas" 
+       code="tomawac" target="tom_triplet2.cas" 
        title="Triplets scalar mode" 
    />
    <action xref="4"
        do="translate;run;cas;princi" ncsize="4" 
-       code="tomawac" target="triplet2.cas" 
+       code="tomawac" target="tom_triplet2.cas" 
        title="Triplets parallel mode" 
    />   
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

@@ -3,10 +3,7 @@
 /--------------------------------------------------------------------
 /     FICHIERS
 /--------------------------------------------------------------------
-/FICHIER FORTRAN = 'tom_fetch_lim_id.f'
 GEOMETRY FILE = 'geo_fetch_lim.slf'
-/FICHIER FORTRAN = 'tom_corfon.f'
-/FICHIER DE GEOMETRIE = 'geom.slf'
 BOUNDARY CONDITIONS FILE = 'geo_fetch_lim.cli'
 /
 2D RESULTS FILE = 'tom_fetch_lim_id.slf'

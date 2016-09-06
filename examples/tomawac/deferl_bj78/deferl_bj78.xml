@@ -21,35 +21,38 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="tomawac" target="bj15.cas"
+       code="tomawac" target="tom_bj15.cas"
        title="deferl_bj78 scalar mode"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="tomawac" target="bj15.cas"
+       code="tomawac" target="tom_bj15.cas"
        title="deferl_bj78 parallel mode"
    />   
-   <action xref="3"
+   <!-- 2 cas artificiels pour etendre la couverture
+	DEPTH-INDUCED BREAKING DISSIPATION = 3 et 4
+   -->
+      <action xref="3"
        do="translate;run;cas;princi" 
-       code="tomawac" target="deferl3.cas" 
+       code="tomawac" target="tom_deferl3.cas" 
        title="deferl3 scalar mode" 
    />
    <action xref="4"
        do="translate;run;cas;princi" 
-       code="tomawac" target="deferl4.cas" 
+       code="tomawac" target="tom_deferl4.cas" 
        title="deferl4 scalar mode" 
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:WACRES" />
-      <v2 vars=":map" target="BJ15_T_ref.slf" />
+      <v2 vars=":map" target="fom_bj15.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v3,[0.01, 1, 1e-8, 1,0.001, 1e-2])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:WACRES" />
-      <v5 vars=":map" target="BJ15_T_ref.slf" />
+      <v5 vars=":map" target="fom_bj15.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v6,[0.01, 1, 1e-8, 1,0.001, 1e-2])" />

@@ -8,7 +8,7 @@
 /FICHIER FORTRAN = 'tom_shoal.f'
 GEOMETRY FILE = 'geo_shoal.slf'
 BOUNDARY CONDITIONS FILE = 'geo_shoal.cli'
-2D RESULTS FILE = 'tom_shoal.slf'
+2D RESULTS FILE = 'r2d_shoal.slf'
 PUNCTUAL RESULTS FILE = 'tom_shoal.spe'
 /--------------------------------------------------------------------
 / MISCELLANEOUS INPUT-OUTPUT

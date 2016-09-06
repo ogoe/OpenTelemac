@@ -7,12 +7,11 @@
 /     FICHIERS
 /--------------------------------------------------------------------
 /FICHIER FORTRAN = 'tom_frot.f'
-/FICHIER DE GEOMETRIE = 'geo_frot.slf'
-GEOMETRY FILE = 'geom.slf'
+GEOMETRY FILE = 'geo_frot.slf'
 BOUNDARY CONDITIONS FILE = 'geo_frot.cli'
 /
-2D RESULTS FILE = 'tom_frot_T_d5-f0.1-h1.slf'
-PUNCTUAL RESULTS FILE = 'tom_frot_T_d5-f0.1-h1.spe'
+2D RESULTS FILE = 'r2d_frot_T_d5-f0.1-h1.slf'
+PUNCTUAL RESULTS FILE = 'frot_T_d5-f0.1-h1.spe'
 /--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------

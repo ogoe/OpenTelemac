@@ -7,12 +7,12 @@
 /     FICHIERS
 /--------------------------------------------------------------------
 FORTRAN FILE = 'tom_whirl.f'
-GEOMETRY FILE = 'geom.slf'
+GEOMETRY FILE = 'geo_whirl.slf'
 BOUNDARY CONDITIONS FILE = 'geo_whirl.cli'
 BINARY CURRENTS FILE = 'current.slf'
 CURRENTS FILE FORMAT = 3
 /
-2D RESULTS FILE = 'tom_whirl.slf'
+2D RESULTS FILE = 'r2d_whirl.slf'
 PUNCTUAL RESULTS FILE = 'tom_whirl.spe'
 /--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES

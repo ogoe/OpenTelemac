@@ -15,7 +15,7 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="tomawac" target="turning_wind.cas"
+       code="tomawac" target="tom_turning_wind.cas"
        title="turning_wind scalar mode"
    />
 
@@ -28,6 +28,15 @@
          fail="checkval(v3,[0.04, 0.7, 0.00001, 0.00001, 0.004, 0.00001])" />
    </cast>
 
+<!--    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v11 vars=":map" target="1:WACVEB" />
+      <v21 vars=":map" target="ref.slf" />
+      <v31 vars="mapdiff(v11,v21)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v31)" />
+   </cast>-->
+
+   
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml

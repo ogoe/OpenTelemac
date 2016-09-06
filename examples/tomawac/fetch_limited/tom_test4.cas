@@ -3,14 +3,11 @@
 /--------------------------------------------------------------------
 /     FICHIERS
 /--------------------------------------------------------------------
-/FICHIER FORTRAN = 'tom_fetch_lim_id.f'
 GEOMETRY FILE = 'geo_fetch_lim.slf'
-/FICHIER FORTRAN = 'tom_corfon.f'
-/FICHIER DE GEOMETRIE = 'geom.slf'
 BOUNDARY CONDITIONS FILE = 'geo_fetch_lim.cli'
 /
-2D RESULTS FILE = 'tom_fetch_lim_id.slf'
-PUNCTUAL RESULTS FILE = 'tom_fetch_lim_id.spe'
+2D RESULTS FILE = 'r2d_fetch_lim_id.slf'
+PUNCTUAL RESULTS FILE = 'fetch_lim_id.spe'
 /--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------
@@ -28,7 +25,6 @@ ORDINATES OF SPECTRUM PRINTOUT POINTS = 254698.640625; 258180.75 ;
 /--------------------------------------------------------------------
 TIME STEP = 900
 NUMBER OF TIME STEP = 192
-/NOMBRE DE PAS DE TEMPS = 1
 NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
 NUMBER OF DIRECTIONS = 36
 MINIMAL FREQUENCY = 0.04
@@ -59,13 +55,9 @@ BOUNDARY SIGNIFICANT WAVE HEIGHT = 0.
 /--------------------------------------------------------------------
 / TERMES SOURCES
 /--------------------------------------------------------------------
-/
-/test 6
+/test  4
 INFINITE DEPTH = YES
-WIND GENERATION = 1
+WIND GENERATION = 3
 LINEAR WAVE GROWTH = 1
-WHITE CAPPING DISSIPATION = 1
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES = 3
-SETTING FOR INTEGRATION ON OMEGA1 = 1
-SETTING FOR INTEGRATION ON OMEGA2 = 8
-SETTING FOR INTEGRATION ON THETA1 = 4
+WHITE CAPPING DISSIPATION = 2
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES = 1

@@ -15,12 +15,12 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="tomawac" target="bottom_friction.cas"
+       code="tomawac" target="tom_friction.cas"
        title="bottom_friction scalar mode"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="tomawac" target="bottom_friction.cas"
+       code="tomawac" target="tom_friction.cas"
        title="bottom_friction parallel mode"
    />
 

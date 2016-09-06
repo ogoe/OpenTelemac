@@ -9,9 +9,9 @@
 GEOMETRY FILE = 'geo_next.slf'
 BOUNDARY CONDITIONS FILE = 'geo_next.cli'
 /
-2D RESULTS FILE = 'next_comput.slf'
+2D RESULTS FILE = 'r2d_.slf'
 PUNCTUAL RESULTS FILE = 'next_comput.spe'
-GLOBAL RESULT FILE = 'next_computD.pre'
+GLOBAL RESULT FILE = 'glo_next.slf'
 /--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------
@@ -62,5 +62,5 @@ BOUNDARY MAIN DIRECTION 1 = 90.
 BOUNDARY ANGULAR DISTRIBUTION FUNCTION = 3
 BOUNDARY DIRECTIONAL SPREAD 1 = 64.66
 NEXT COMPUTATION : YES
-PREVIOUS COMPUTATION FILE : next_comput.pre
+PREVIOUS COMPUTATION FILE : ini_next.slf
 PREVIOUS COMPUTATION FILE FORMAT = 'SERAFIND'

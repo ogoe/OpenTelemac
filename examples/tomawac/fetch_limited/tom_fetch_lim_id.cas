@@ -3,13 +3,10 @@
 /--------------------------------------------------------------------
 /     FICHIERS
 /--------------------------------------------------------------------
-/FICHIER FORTRAN = 'tom_fetch_lim_id.f'
-GEOMETRY FILE = 'geo_fetch_lim.slf'
-/FICHIER FORTRAN = 'tom_corfon.f'
-/FICHIER DE GEOMETRIE = 'geom.slf'
+GEOMETRY FILE = 'geo_NAN.slf'
 BOUNDARY CONDITIONS FILE = 'geo_fetch_lim.cli'
 /
-2D RESULTS FILE = 'tom_fetch_lim_id.slf'
+2D RESULTS FILE = 'r2d_fetch_lim_id.slf'
 PUNCTUAL RESULTS FILE = 'tom_fetch_lim_id.spe'
 /--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES

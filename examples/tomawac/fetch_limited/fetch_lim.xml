@@ -38,20 +38,22 @@
        do="translate;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_fetch_lim_fd.cas" 
        title="fetch_lim parallel mode" 
-   />   
-   <action xref="test4"
+       />
+<!-- Cas "artificiels" pour augmenter la couverture -->
+   
+   <action xref="tom_test4"
        do="translate;run;cas;princi" 
-       code="tomawac" target="test4.cas" 
+       code="tomawac" target="tom_test4.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="test6"
+   <action xref="tom_test6"
        do="translate;run;cas;princi" 
-       code="tomawac" target="test6.cas" 
+       code="tomawac" target="tom_test6.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="test6bis"
+   <action xref="tom_test6bis"
        do="translate;run;cas;princi" 
-       code="tomawac" target="test6bis.cas" 
+       code="tomawac" target="tom_test6bis.cas" 
        title="fetch_lim scalar mode" 
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -97,18 +99,4 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v18,[1e-4])" />
    </cast>
-
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment -->
-
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
 </validation>
