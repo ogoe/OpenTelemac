@@ -83,7 +83,6 @@ TREATMENT OF FLUXES AT THE BOUNDARIES=2;2
 / tidal flats
 /
 TIDAL FLATS = NO
-STABILIZED INITIAL CONDITION     = NO
 /
 /----------------------------------------------------------------------
 / SEDIMENT

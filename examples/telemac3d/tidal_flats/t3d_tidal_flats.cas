@@ -77,7 +77,6 @@ TREATMENT OF FLUXES AT THE BOUNDARIES=2;2
 /
 TIDAL FLATS = YES
 TREATMENT OF NEGATIVE DEPTHS = 2
-STABILIZED INITIAL CONDITION     = NO
 /
 /----------------------------------------------------------------------/
 / SEDIMENT
