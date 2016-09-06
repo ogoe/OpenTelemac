@@ -13,20 +13,6 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE ACTUZF(IVIDE,EPAI,ZF,NPOIN2,NPFMAX,NPF)
-      USE DECLARATIONS_SPECIAL
-      IMPLICIT NONE
-      INTEGER, INTENT(IN)             :: NPOIN2, NPFMAX
-      DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: ZF(NPOIN2)
-      INTEGER, INTENT(IN)             :: NPF(NPOIN2)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
         SUBROUTINE AIRWIK1
      &(LIHBOR,UBORF,VBORF,LIUBOF,LIVBOF,UBORL,VBORL,LIUBOL,LIVBOL,
      & UBORS,VBORS,LIUBOS,LIVBOS,U,V,UD,VD,DELWAQ,
@@ -150,17 +136,6 @@
         END SUBROUTINE
       END INTERFACE
 !
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE BISSEL(IVIDE,TRA01,NPFMAX,IMAX,NDEB)
-          USE DECLARATIONS_SPECIAL
-          IMPLICIT NONE
-          INTEGER, INTENT(IN)             :: NPFMAX,IMAX,NDEB
-          DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX)
-          DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
-        END SUBROUTINE
-      END INTERFACE
 !-----------------------------------------------------------------------
 !
       INTERFACE
@@ -1057,24 +1032,6 @@
       TYPE(BIEF_OBJ), INTENT(IN)           :: ZF,UNSV2D,S,MASKEL
       TYPE(BIEF_MESH), INTENT(INOUT)       :: MESH2D
 !
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE GESTDP( IVIDE  , EPAI   , HDEP    ,
-     &                     NPOIN2 , NPFMAX , NPF     ,
-     &                     EPAI0  , CFDEP  , RHOS    )
-          USE DECLARATIONS_SPECIAL
-          IMPLICIT NONE
-          INTEGER, INTENT(IN) :: NPOIN2 , NPFMAX
-          DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
-          DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
-          DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2)
-          DOUBLE PRECISION, INTENT(INOUT) :: EPAI0
-          DOUBLE PRECISION, INTENT(IN)    :: CFDEP , RHOS
-          INTEGER, INTENT(INOUT) :: NPF(NPOIN2)
         END SUBROUTINE
       END INTERFACE
 !
@@ -2121,40 +2078,6 @@
           INTEGER, INTENT(IN) :: NPOIN2,NPLAN,NPTFR
           DOUBLE PRECISION, INTENT(INOUT) :: FINT(NPTFR)
           DOUBLE PRECISION, INTENT(IN)    :: F(NPTFR,NPLAN)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE TASSEC
-     &( CONC   , EPAI , TREST , TEMP , DTC , NPOIN2 , NCOUCH )
-      USE DECLARATIONS_SPECIAL
-      IMPLICIT NONE
-      INTEGER, INTENT(IN)             :: NPOIN2, NCOUCH
-      DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NCOUCH,NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TEMP(NCOUCH,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC(NCOUCH), TREST(NCOUCH)
-      DOUBLE PRECISION, INTENT(IN)    :: DTC
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE TASSEM
-     & ( IVIDE , EPAI , NPOIN2, NPFMAX, NPF  ,
-     &   GRAV  , RHOS  , DTC  , CFMAX , TRA01 , SIGMA , CHARGE)
-          USE DECLARATIONS_SPECIAL
-          IMPLICIT NONE
-          INTEGER, INTENT(IN)             :: NPOIN2,NPFMAX
-          INTEGER, INTENT(IN)             :: NPF(NPOIN2)
-          DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-          DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
-          DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
-          DOUBLE PRECISION, INTENT(INOUT) :: SIGMA(NPFMAX)
-          DOUBLE PRECISION, INTENT(INOUT) :: CHARGE(NPFMAX)
-          DOUBLE PRECISION, INTENT(IN)    :: RHOS,GRAV,DTC,CFMAX
         END SUBROUTINE
       END INTERFACE
 !
