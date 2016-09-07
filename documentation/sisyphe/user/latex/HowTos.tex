@@ -1,0 +1,108 @@
+%-------------------------------------------------------------------------------
+\chapter[How to]{How to?}
+%-------------------------------------------------------------------------------
+\pagebreak
+%-------------------------------------------------------------------------------
+\section{Compute sediment fluxes through a given section(s)}
+%-------------------------------------------------------------------------------
+Use the keywords {\ttfamily FLUXLINE} (logical type, set to {\ttfamily NON} by default) and {\ttfamily FLUXLINE INPUT FILE} (character type).
+
+\pagebreak
+%-------------------------------------------------------------------------------
+\section{Implement a new bedload transport formula}
+%-------------------------------------------------------------------------------
+To implement a new bedload transport formula, the keyword {\ttfamily BED-LOAD TRANSPORT FORMULA} must be set to {\ttfamily = 0}. The Fortran subroutine must be added into the fortran file of \textsc{Telemac-2d} or \textsc{Telemac-3d}, keyword {\ttfamily FORTRAN FILE}.
+
+The template subroutine is called \texttt{qsfrom.f} and can be found in the folder \texttt{/sources/sisyphe}
+\begin{lstlisting}[frame=trBL]
+!                    ***************** 
+                     SUBROUTINE QSFORM 
+!                    ***************** 
+     &(U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM,  
+     & DENS, GRAV, DSTAR, AC, QSC, QSS) 
+! 
+!***********************************************************************
+! SISYPHE   V6P2                                   21/07/2011 
+!***********************************************************************
+! 
+!brief    ALLOWS THE USER TO CODE THEIR OWN BEDLOAD TRANSPORT 
+!+                FORMULATION, BEST SUITED TO THEIR APPLICATION. 
+! 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+! 
+      USE INTERFACE_SISYPHE, EX_QSFORM => QSFORM 
+!     USE DECLARATIONS_SISYPHE 
+      USE BIEF 
+      IMPLICIT NONE 
+      INTEGER LNG,LU 
+      COMMON/INFO/LNG,LU 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,TOB,HN,TETAP,MU 
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC, QSS 
+      INTEGER,          INTENT(IN)    :: NPOIN 
+      DOUBLE PRECISION, INTENT(IN)    :: XMVE, DM, DENS, GRAV, DSTAR, AC
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+! 
+      INTEGER          :: I 
+      DOUBLE PRECISION :: C1, C2, T 
+      DOUBLE PRECISION, PARAMETER :: ACOEFF = 0.004D0!Sediment transport param (m^2s^-1)
+! 
+!======================================================================!
+!======================================================================!
+!                               PROGRAM                                !
+!======================================================================!
+!======================================================================!
+! 
+!     GRASS (1981) TYPE 
+!      
+      DO I = 1, NPOIN 
+ 
+        QSC%R(I) = ACOEFF * U2D%R(I) * (U2D%R(I)**2+V2D%R(I)**2) ! 1D Grass (1981)  
+        QSS%R(I) = 0.D0                                          ! Zero suspended load
+ 
+      END DO 
+! 
+! 
+!-----------------------------------------------------------------------
+! 
+      RETURN 
+      END
+\end{lstlisting}      
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Define a rigid bed}
+%-------------------------------------------------------------------------------
+%\subsection{Data from selafin file}
+%\subsection{Data coded by the user in the fortran file}
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Print a new output variable in the selafin file}
+%-------------------------------------------------------------------------------
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Introduce a new keyword}
+%-------------------------------------------------------------------------------
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Read and use a variable from a selafin file}
+%-------------------------------------------------------------------------------
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Define the soil stratigraphy (init\_compo)}
+%-------------------------------------------------------------------------------
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+%\section{Suppress bed updating}
+%-------------------------------------------------------------------------------
+%\telkey{STATIONARY MODE} (logical type, set to {\ttfamily = NO} by default)           
