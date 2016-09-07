@@ -168,6 +168,12 @@
 !+   A23%STOX and A32%STOX set to 1 to enable a call by MATVEC because
 !+   these matrices are not built by MATRIX.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        07/09/2016
+!+        V7P2
+!+   Adaptation to splitting of cvtrvf_pos into cvtrvf_nerd and
+!+   cvtrvf_eria.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -904,9 +910,9 @@
           STOP
         ENDIF
         IF(ICONVF(1).EQ.ADV_LPO_TF.OR.ICONVF(1).EQ.ADV_NSC_TF) THEN
-!         THIS IS EQUIVALENT TO TWO SUCCESSIVE CALLS TO CVTRVF_POS
+!         THIS IS EQUIVALENT TO TWO SUCCESSIVE CALLS TO CVTRVF_NERD
 !         FOR U AND V
-          CALL CVTRVF_POS_2(T1,UN,S,T2,VN,S,.FALSE.,.TRUE.,H,HN,
+          CALL CVTRVF_NERD_2(T1,UN,S,T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &        HPROP,UCONV,VCONV,S,S,
      &        1,S,S,FU,FV,S,.FALSE.,S,S,.FALSE.,UBOR,VBOR,MASK,MESH,
      &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
@@ -920,41 +926,45 @@
      &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
      &        MESH%GLOSEG%I(       1:  DIMGLO),
      &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &        MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,0.D0,
+     &        MESH%NBOR%I,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,0.D0,
      &        MAXADV)
 !                       2: HARDCODED OPTION
         ELSE
-!         SCHEME 15 HAS NOT BEEN DONE IN CVTRVF_POS_2, SO 2 CALLS...
-          CALL CVTRVF_POS(T1,UN,S,.FALSE.,.TRUE.,H,HN,
-     &        HPROP,UCONV,VCONV,S,S,1,S,S,
-     &        FU,S,.FALSE.,S,.FALSE.,UBOR,MASK,MESH,
-     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &        TB%ADR(22)%P,TB%ADR(23)%P,
-     &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
-     &        LIMPRO%I(1+DIMLIM:2*DIMLIM),
-     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
-     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,MASKPT,
-     &        MESH%GLOSEG%I(       1:  DIMGLO),
-     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV,NCO_DIST,OPTADV_VI)
-          CALL CVTRVF_POS(T2,VN,S,.FALSE.,.TRUE.,H,HN,
-     &        HPROP,UCONV,VCONV,S,S,1,S,S,
-     &        FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
-     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &        TB%ADR(22)%P,TB%ADR(23)%P,
-     &        AGGLOH,TE1,DT,INFOGR,BILMAS,1,MSK,MASKEL,S,C,1,
-     &        LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
-     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
-     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,MASKPT,
-     &        MESH%GLOSEG%I(       1:  DIMGLO),
-     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &        MESH%NBOR%I,1,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,
-     &        S,.FALSE.,MAXADV,NCO_DIST,OPTADV_VI)
+!         SCHEME 15 HAS NOT BEEN DONE FOR 2 VARIABLES, SO 2 CALLS...
+!                                FSCEXP (IF YASMH, HERE GIVEN FALSE)
+          CALL CVTRVF_ERIA(T1,UN,S,H,HN,HPROP,UCONV,VCONV,
+!                          DM1,ZCONV
+     &                     S  ,S,
+!                          SOLSYS (FORCED TO 1 BECAUSE DM1... NOT YET DONE)
+     &                     1,
+!                             SMH,YASMH,SMI,YASMI,
+     &                     FU,S, .FALSE.,S,.FALSE.,
+     &                     UBOR,MASK,MESH,
+     &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &                     TB%ADR(19)%P,TB%ADR(20)%P,
+     &                     DT,INFOGR,MSK,MASKEL,1,
+     &                     LIMPRO%I(1+DIMLIM:2*DIMLIM),
+!                                                     YAFLBOR
+     &                     KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &                     UNSV2D,IOPT,TB%ADR(11)%P,
+     &                     MESH%NBOR%I,RAIN,PLUIE,0.D0,
+     &                     MAXADV,NCO_DIST,OPTADV_VI)
+!                                FSCEXP (IF YASMH, HERE GIVEN FALSE)
+          CALL CVTRVF_ERIA(T2,VN,S,H,HN,HPROP,UCONV,VCONV,
+!                              SOLSYS (FORCED TO 1 BECAUSE DM1... NOT YET DONE)
+     &                     S,S,1,FV,S,.FALSE.,S,.FALSE.,
+     &                     VBOR,MASK,MESH,
+     &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &                     TB%ADR(19)%P,TB%ADR(20)%P,
+     &                     DT,INFOGR,MSK,MASKEL,1,
+     &                     LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
+!                                                     YAFLBOR
+     &                     KDIR,KDDL,MESH%NPTFR,FLBOR,.FALSE.,
+     &                     UNSV2D,IOPT,TB%ADR(11)%P,
+     &                     MESH%NBOR%I,RAIN,PLUIE,0.D0,
+     &                     MAXADV,NCO_DIST,OPTADV_VI)
 !  
         ENDIF
 !

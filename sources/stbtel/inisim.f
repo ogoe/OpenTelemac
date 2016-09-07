@@ -31,8 +31,6 @@
 ! |    NELEM       |<-- | NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
 ! |    NPMAX       |<-- | DIMENSION EFFECTIVE DES TABLEAUX X ET Y
 ! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-! |    NELMAX      |<-- | DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |  FICH:         |    |
 ! |    NRES        |--> | NUMERO DU CANAL DU FICHIER DE SERAFIN
 ! |    NGEO        |--> | NUMERO DU CANAL DU FICHIER MAILLEUR
@@ -46,13 +44,13 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NPMAX
       IMPLICIT NONE
 !
       INTEGER NGEO
       INTEGER NPOIN1 , IA(32) , INOP5
       INTEGER LONG , I , J , NTASD , MESHT , MESHQ
-      CHARACTER*11 TYPELE
+      CHARACTER(LEN=11) :: TYPELE
 !
 !=======================================================================
 ! INITIALISATION

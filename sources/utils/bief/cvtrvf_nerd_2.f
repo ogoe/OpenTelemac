@@ -1,6 +1,6 @@
-!                    ***********************
-                     SUBROUTINE CVTRVF_POS_2
-!                    ***********************
+!                    ************************
+                     SUBROUTINE CVTRVF_NERD_2
+!                    ************************
 !
      &(F1,F1N,F1SCEXP,F2,F2N,F2SCEXP,DIFT,CONV,H,HN,HPROP,UDEL,VDEL,DM1,
      & ZCONV,SOLSYS,VISC,VISC_S,SM1,SM2,SMH,YASMH,SMI1,SMI2,YASMI,
@@ -8,7 +8,7 @@
      & TE1,DT,ENTET,BILAN,OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
      & LIMTRA1,LIMTRA2,KDIR,KDDL,NPTFR,FLBOR,YAFLBOR,V2DPAR,UNSV2D,IOPT,
      & FLBORTRA1,FLBORTRA2,MASKPT,GLOSEG1,GLOSEG2,NBOR,
-     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN1,TRAIN2,NITMAX)
+     & FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN1,TRAIN2,NITMAX)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -111,9 +111,6 @@
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
-!| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
-!|                |   | 1: FAST BUT SENSITIVE TO SEGMENT NUMBERING
-!|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
 !| PLUIE          |-->| RAIN OR EVAPORATION IN MM/S IN A BIEF_OBJ
@@ -152,7 +149,7 @@
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
+      USE BIEF, EX_CVTRVF_NERD_2 => CVTRVF_NERD_2
       USE DECLARATIONS_TELEMAC, ONLY : DEJA_CPOS2, INDIC_CPOS2 
 !
       USE DECLARATIONS_SPECIAL
@@ -161,7 +158,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX
+      INTEGER, INTENT(IN)             :: KDDL,IOPT,NITMAX
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: LIMTRA1(NPTFR),NBOR(NPTFR)
       INTEGER, INTENT(IN)             :: LIMTRA2(NPTFR)
@@ -211,19 +208,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(OPTION.NE.2) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'OPTION INCONNUE DANS POSITIVE_DEPTHS : ',OPTION
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'UNKNOWN OPTION IN POSITIVE_DEPTHS: ',OPTION
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
       FXMAT=>MESH%MSEG%X%R(1:MESH%NSEG)
 !
 !-----------------------------------------------------------------------
@@ -236,20 +220,20 @@
       IOPT1=IOPT-10*IOPT2
       IF(IOPT1.LT.0.OR.IOPT1.GT.3) THEN
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT1 INCONNUE : ',IOPT1
+          WRITE(LU,*) 'CVTRVF_NERD_2 : OPTION IOPT1 INCONNUE : ',IOPT1
         ENDIF
         IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT1 UNKNOWN: ',IOPT1
+          WRITE(LU,*) 'CVTRVF_NERD_2: OPTION IOPT1 UNKNOWN: ',IOPT1
         ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF
       IF(IOPT2.NE.0.AND.IOPT2.NE.1) THEN
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT2 INCONNUE : ',IOPT2
+          WRITE(LU,*) 'CVTRVF_NERD_2 : OPTION IOPT2 INCONNUE : ',IOPT2
         ENDIF
         IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT2 UNKNOWN: ',IOPT2
+          WRITE(LU,*) 'CVTRVF_NERD_2: OPTION IOPT2 UNKNOWN: ',IOPT2
         ENDIF
         CALL PLANTE(1)
         STOP

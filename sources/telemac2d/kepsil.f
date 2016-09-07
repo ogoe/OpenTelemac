@@ -18,7 +18,7 @@
 !history  J-M HERVOUET (LNH)
 !+        27/11/1992
 !+        V5P5
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -38,7 +38,7 @@
 !+   Now conditional call to DIRICH (for bound checking in parallelism)
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        14/03/2016
+!+        07/09/2016
 !+        V7P2
 !+   All advection solvers now supported for k and epsilon.
 !
@@ -136,7 +136,7 @@
 !
       DOUBLE PRECISION C,SL1,CEPS,USTAR,AGGLOK,AGGLOE,TETAK,MASSK,MASSE
 !
-      INTEGER N,IOPT,OPT_PSI_TF,DIMGLO
+      INTEGER N,IOPT,DIMGLO
 !
 !-----------------------------------------------------------------------
 !
@@ -340,58 +340,74 @@
 !       FLBORTRA IS MEANT FOR THE TRACERS BUT ALWAYS EXISTS (THERE IS ONE FOR
 !       ALL TRACERS, SO IT CAN BE USED HERE).
 !
-        IF(TB%N.LT.22) THEN
-          WRITE(LU,*) 'SIZE OF TB TOO SMALL IN CVDFTR'
-          CALL PLANTE(1)
-          STOP
+        IF(ICONV.EQ.ADV_LPO_TF.OR.ICONV.EQ.ADV_NSC_TF) THEN
+!         THIS IS EQUIVALENT TO TWO SUCCESSIVE CALLS TO CVTRVF_POS
+!         FOR U AND V
+          IF(TB%N.LT.22) THEN
+            WRITE(LU,*) 'SIZE OF TB TOO SMALL IN KEPSIL'
+            WRITE(LU,*) 'FOR CALLING CVTRVF_POS_2'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL CVTRVF_NERD_2(AKTILD,AKN,SMK,EPTILD,EPN,SME,
+     &        .FALSE.,.TRUE.,
+     &        H,HN,HPROP,UCONV,VCONV,S,S,1,S,S,SMK,SME,S,
+     &        .FALSE.,S,S,.FALSE.,KBOR,EBOR,MASKTR,MESH,
+     &        TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &        TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &        TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
+     &        TB%ADR(22)%P,
+     &        AGGLOK,TE1,DT,INFOKE,.FALSE.,1,MSK,MASKEL,S,C,1,
+     &        LIMKEP(1,1),LIMKEP(1,2),
+!                                         YAFLBOR
+     &        KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &        V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
+     &        MESH%GLOSEG%I(       1:  DIMGLO),
+     &        MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+!                                              PLUIE
+     &        MESH%NBOR%I,
+     &        FLULIM%R,YAFLULIM,.FALSE.,S,0.D0,0.D0,MAXADV)
+!
+        ELSE
+!         SCHEME 15 HAS NOT BEEN DONE FOR 2 VARIABLES, SO 2 CALLS...
+!                                     FSCEXP (IF YASMH, HERE GIVEN FALSE)
+          IF(TB%N.LT.20) THEN
+            WRITE(LU,*) 'SIZE OF TB TOO SMALL IN KEPSIL'
+            WRITE(LU,*) 'FOR CALLING CVTRVF_POS_2'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          CALL CVTRVF_ERIA(AKTILD,AKN,S,H,HN,HPROP,UCONV,VCONV,
+     &                     DM1,ZCONV,SOLSYS,SMK,S,.FALSE.,S,.FALSE.,                  
+     &                     KBOR,MASKTR,MESH,
+     &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &                     TB%ADR(19)%P,TB%ADR(20)%P,
+     &                     DT,INFOKE,MSK,MASKEL,1,
+     &                     LIMKEP(1,1),
+!                                                     YAFLBOR
+     &                     KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &                     UNSV2D,IOPT,TB%ADR(11)%P,
+!                                       RAIN   PLUIE
+     &                     MESH%NBOR%I,.FALSE.,S,0.D0,
+     &                     MAXADV,NCO_DIST,OPTADV_KE)
+!                                     FSCEXP (IF YASMH, HERE GIVEN FALSE)
+          CALL CVTRVF_ERIA(EPTILD,EPN,S,H,HN,HPROP,UCONV,VCONV,
+     &                     DM1,ZCONV,SOLSYS,SME,S,.FALSE.,S,.FALSE.,
+     &                     EBOR,MASKTR,MESH,
+     &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &                     TB%ADR(19)%P,TB%ADR(20)%P,
+     &                     DT,INFOKE,MSK,MASKEL,1,
+     &                     LIMKEP(1,2),
+!                                                     YAFLBOR
+     &                     KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &                     UNSV2D,IOPT,TB%ADR(11)%P,
+     &                     MESH%NBOR%I,.FALSE.,S,0.D0,
+     &                     MAXADV,NCO_DIST,OPTADV_KE)
+!  
         ENDIF
-        OPT_PSI_TF=2
-        IF(ICONV.EQ.ADV_PSI_TF) OPT_PSI_TF=1
-!                                 FSCEXP DIFT    CONV
-        CALL CVTRVF_POS(AKTILD,AKN,SMK,.FALSE.,.TRUE.,
-     &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
-!                                                   SMI YASMI
-     &              SOLSYS,VISC,VISC_S,SMK,SMH,YASMH,S,.FALSE.,
-     &              KBOR,MASKTR,MESH,
-     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,TB%ADR(23)%P,
-!                                         BILAN
-     &              AGGLOK,TE1,DT,INFOKE,.FALSE.,
-!                   OPDTRA
-     &              1     ,MSK,MASKEL,S,MASSK,OPTSOU,
-!                                                          YAFLBOR
-     &              LIMKEP(1,1),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     &              MESH%GLOSEG%I(       1:  DIMGLO),
-     &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-!                                                              RAIN PLUIE
-     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
-!                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST,OPTADV_KE)
-        CALL CVTRVF_POS(EPTILD,EPN,SME,.FALSE.,.TRUE.,
-     &              H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,
-!                                                   SMI YASMI
-     &              SOLSYS,VISC,VISC_S,SME,SMH,YASMH,S,.FALSE.,
-     &              EBOR,MASKTR,MESH,
-     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,TB%ADR(23)%P,
-!                                         BILAN
-     &              AGGLOE,TE1,DT,INFOKE,.FALSE.,
-!                   OPDTRA
-     &              1     ,MSK,MASKEL,S,MASSK,OPTSOU,
-!                                                          YAFLBOR
-     &              LIMKEP(1,2),KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     &              MESH%GLOSEG%I(       1:  DIMGLO),
-     &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-!                                                              RAIN PLUIE
-     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,.FALSE.,S,
-!                   TRAIN
-     &               0.D0,FLODEL,SOLSYS.EQ.2,MAXADV,NCO_DIST,OPTADV_KE)
+!
         CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)
         CALL MATVEC('X=AY    ',SME,MAE,EPTILD,C,MESH)
 !
@@ -531,4 +547,3 @@
 !
       RETURN
       END
-

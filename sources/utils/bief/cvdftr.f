@@ -152,6 +152,11 @@
 !+   removed, HPROP must now be given and is not rebuilt with TETA,
 !+   which was a mistake. Adding OPTADV in cvtrvf_pos.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/09/2016
+!+        V7P2
+!+   Splitting cvtrvf_pos into cvtrvf_nerd and cvtrvf_eria + cleaning.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -311,9 +316,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION C,CFLMAX,TETATD
+      DOUBLE PRECISION C,TETATD
 !
-      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO,OPT_PSI_TF
+      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO
 !
       LOGICAL MSQ,FV_SCHEME
 !
@@ -586,38 +591,57 @@
      &         ICONVF.EQ.ADV_NSC_TF.OR.
      &         ICONVF.EQ.ADV_PSI_TF    ).AND.CONV ) THEN
 !
-! EDGE-BASED VERSIONS, FOR TIDAL FLATS
-! CONSERVATIVE EQUATION, DISTRIBUTIVE SCHEMES (LEO POSTMA, N AND PSI)
-!                        LEO POSTMA AND N-SCHEME ARE THE SAME IN 2D
+!       SCHEMES NERD OR ERIA, FOR TIDAL FLATS
+!       LEO POSTMA AND N-SCHEME ARE THE SAME IN 2D
 !
 !       OPTION TO DISTRIBUTE THE FLUXES (HERE 2 OR 3 AND 12 OR 13)
         IOPT=10*(OPTVF/10)
-        IF(ICONVF.EQ.ADV_LPO_TF) IOPT=IOPT+2
-        IF(ICONVF.EQ.ADV_NSC_TF) IOPT=IOPT+2
-        IF(ICONVF.EQ.ADV_PSI_TF) IOPT=IOPT+3
-        IF(TB%N.LT.22) THEN
+        IF(TB%N.LT.20) THEN
           WRITE(LU,*) 'SIZE OF TB TOO SMALL IN CVDFTR'
+          WRITE(LU,*) 'FOR CALLING CVTRVF_NERD AND CVTRVF_ERIA'
           CALL PLANTE(1)
           STOP
         ENDIF
-        OPT_PSI_TF=2
-        IF(ICONVF.EQ.ADV_PSI_TF) OPT_PSI_TF=1
-        CALL CVTRVF_POS(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UCONV,VCONV,
-     &              DM1,ZCONV,SOLSYS,VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,
+        IF(ICONVF.EQ.ADV_LPO_TF.OR.
+     &     ICONVF.EQ.ADV_NSC_TF) THEN
+!
+!         NERD
+          IOPT=IOPT+2
+          CALL CVTRVF_NERD(F,FN,FSCEXP,H,HN,HPROP,UCONV,VCONV,
+     &              DM1,ZCONV,SOLSYS,SM,SMH,YASMH,SMI,YASMI,
      &              FBOR,MASKTR,MESH,
      &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &              TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &              TB%ADR(22)%P,TB%ADR(23)%P,
-     &              AGGLOT,TE1,DT,ENTET,BILAN,
-     &              OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
+     &              TB%ADR(19)%P,TB%ADR(20)%P,
+     &              DT,ENTET,MSK,MASKEL,OPTSOU,
 !                                                       YAFLBOR
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
+     &              UNSV2D,IOPT,FLBORTRA,
      &              MESH%GLOSEG%I(       1:  DIMGLO),
      &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &              MESH%NBOR%I,OPT_PSI_TF,FLULIM%R,YAFLULIM,RAIN,PLUIE,
-     &              TRAIN,GIVEN_FLUX,FLUX_GIVEN,MAXADV,NCO_DIST,OPTADV)
+     &              MESH%NBOR%I,FLULIM%R,YAFLULIM,RAIN,PLUIE,
+     &              TRAIN,GIVEN_FLUX,FLUX_GIVEN,MAXADV,OPTADV)
+!
+        ELSEIF(ICONVF.EQ.ADV_PSI_TF) THEN
+!
+!         ERIA
+          IOPT=IOPT+3
+          CALL CVTRVF_ERIA(F,FN,FSCEXP,H,HN,HPROP,UCONV,VCONV,
+     &              DM1,ZCONV,SOLSYS,SM,SMH,YASMH,SMI,YASMI,
+     &              FBOR,MASKTR,MESH,
+     &              TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &              TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &              TB%ADR(19)%P,TB%ADR(20)%P,
+     &              DT,ENTET,MSK,MASKEL,OPTSOU,
+!                                                       YAFLBOR
+     &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &              UNSV2D,IOPT,FLBORTRA,
+     &              MESH%NBOR%I,RAIN,PLUIE,
+     &              TRAIN,MAXADV,NCO_DIST,OPTADV)
+!
+        ENDIF
+!
+
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN
@@ -894,4 +918,3 @@
 !
       RETURN
       END
-
