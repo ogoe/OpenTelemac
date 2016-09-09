@@ -668,7 +668,7 @@ def getFileFormat(cas,keyword):
    for k in cas[1][0]:
       # The keyword we are searching for contains both the keyword 'keyword'
       # and the word FORMAT (same word in french and english)
-      if keyword in k and 'FORMAT ' in k:
+      if keyword in k and ('FORMAT ' in k or ' FORMAT' in k):
          return cas[1][1][i][0].strip("'\"")
       else:
          i = i + 1
