@@ -14,93 +14,18 @@
 ! BIEF   V7P2
 !***********************************************************************
 !
-!brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
-!+                ADVECTOR EVEN WITH TIDAL FLATS.
-!
-!warning  AFBOR AND BFBOR MUST BE 0 FOR THE BOUNDARY ELEMENTS
-!+            WITH NO FRICTION
-!warning  DISCRETISATION OF VISC
+!brief    NERD advection scheme in 2D.
 !
 !warning  SEE BELOW FOR DEFINITION OF IOPT1 AND IOPT2, RETRIEVED FROM IOPT
 !+        IOPT2=1 NOT TREATED HERE, MASS-CONSERVATION WILL BE DOWNGRADED
 !+        IN THIS CASE (A CORRECT TREATMENT MAY RESULT IN INFINITE F)
 !+        THE PROGRAM WILL NOT STOP IF IOPT2=1
 !
-!history  J-M HERVOUET   (LNHE)
-!+        19/11/2010
-!+        V6P0
-!+   OPTIMIZATION (2 ABS SUPPRESSED)
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  J-M HERVOUET   (LNHE)
-!+        20/04/2011
-!+        V6P1
-!+   Option IOPT2=1 taken into account when there is an implicit source
-!+   term. In other cases mass-conservation is not ensured (risk of
-!+   division by 0). The implicit source must be negative, like settling
-!+   velocity in Sisyphe. It is impossible to have mass conservation and
-!+   monotonicity when the advection field does not obey the continuity
-!+   equation. The only known application so far is Sisyphe.
-!+
-!+   Limitation of fluxes now programmed (see YAFLULIM and FLULIM)
-!
-!history  J-M HERVOUET (LNHE)
-!+        24/02/2012
-!+        V6P2
-!+   Rain and evaporation added (after initiative by O. Boutron, from
-!+   Tour du Valat, and O. Bertrand, Artelia group)
-!
-!history  J-M HERVOUET   (LNHE)
-!+        17/07/2012
-!+        V6P2
-!+   T2 set to 0 to start with required in parallel
-!+   Arguments flux_given and given_flux added.
-!
-!history  J-M HERVOUET   (LNHE)
-!+        16/04/2013
-!+        V6P2
-!+   Intent of FLBOR changed and conditional building of FLBOR added
-!
-!history  J-M HERVOUET (EDF R&D, LNHE)
-!+        30/05/2013
-!+        V6P2
-!+   Argument NITMAX added.
-!
-!history  J-M HERVOUET (EDF LAB, LNHE)
-!+        13/06/2014
-!+        V7P0
-!+   LIMTRA and FBOR corrected depending on the fluxes at boundaries,
-!+   their intent modified accordingly.
-!
-!history  J-M HERVOUET (EDF LAB, LNHE)
-!+        12/06/2015
-!+        V7P1
-!+   Adaptation to the fact that MESH%FAC is now replaced by MESH%IFAC.
-!
-!history  J-M HERVOUET (EDF LAB, LNHE)
-!+        03/06/2016
-!+        V7P2
-!+   OPTION now active 1: ERIA algorithm
-!+                     2: edge-based, classic NERD
-!+   Argument NCO_DIST added. Argument OPTADV added.
-!
 !history  J-M HERVOUET (LNHE)
 !+        16/07/2016
 !+        V7P2
-!+   With ERIA scheme (HERE OPTION=1), now forbidding that two fluxes on
-!+   either side of a segment be of opposite sign. One is cancelled and
-!+   the other is reduced so that the sum remains the same.
+!+   First version. Actually the former cvtrvf_pos renamed cvtrvf_nerd.
+!+   All the part with OPTION = 1 is removed and is now in cvtrvf_eria.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIFT           |-->| LOGICAL, IF YES THERE IS DIFFUSION OF F
@@ -372,28 +297,27 @@
 !     INITIALIZING F
 !
       CALL OS('X=Y     ',X=F,Y=FN)
+      CALL OS('X=Y     ',X=HT,Y=HN)
 !
-!     BOUCLE SUR LES SEGMENTS, POUR PRENDRE EN COMPTE LES FLUX
-!     ADMISSIBLES
+!     ADDING THE POSITIVE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
 !
-!     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
           DO I=1,NPOIN
-            HT%R(I)=HN%R(I)+DT*SMH%R(I)
-            F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            IF(SMH%R(I).GT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
-            HT%R(I)=HN%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
-            F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*
-     &                      UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            IF(SMH%R(I).GT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*
+     &                        UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
           ENDDO
         ENDIF
-      ELSE
-        DO I=1,NPOIN
-          HT%R(I)=HN%R(I)
-        ENDDO
       ENDIF
 !
 !     RAIN-EVAPORATION: RAIN FIRST, EVAPORATION IN THE END
@@ -413,8 +337,8 @@
 !       ENTERING FLUXES OF TRACERS (T2<0)
 !       THE FINAL DEPTH IS TAKEN
         IF(LIMTRA(IPTFR).EQ.KDIR) THEN
-          F%R(I)=FN%R(I)-DT/MAX(HT%R(I),1.D-4)*
-     &       UNSV2D%R(I)*T2%R(I)*(FBOR%R(IPTFR)-FN%R(I))
+          F%R(I)=F%R(I)-DT/MAX(HT%R(I),1.D-4)*
+     &       UNSV2D%R(I)*T2%R(I)*(FBOR%R(IPTFR)-F%R(I))
 !       ELSEIF(LIMTRA(IPTFR).EQ.KDDL) THEN
 !         NOTHING TO DO
         ENDIF
@@ -642,6 +566,27 @@
      &             .AND.C.NE.0.D0) THEN
         CPREV=C
         IF(NITER.LT.NITMAX) GO TO 777
+      ENDIF
+!
+!     ADDING THE NEGATIVE SOURCES
+!
+      IF(YASMH) THEN
+        IF(OPTSOU.EQ.1) THEN
+          DO I=1,NPOIN
+            IF(SMH%R(I).LT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
+          ENDDO
+        ELSEIF(OPTSOU.EQ.2) THEN
+          DO I=1,NPOIN
+            IF(SMH%R(I).LT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*
+     &                        UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     RAIN-EVAPORATION: RAIN DONE ABOVE, NOW EVAPORATION

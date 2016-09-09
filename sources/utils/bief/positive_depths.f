@@ -4,8 +4,8 @@
 !
      &(T1,T2,T3,T4,H,HN,MESH,FLODEL,COMPUTE_FLODEL,FLBOR,DT,
      & UNSV2D,NPOIN,GLOSEG1,GLOSEG2,NBOR,NPTFR,
-     & SMH,YASMH,OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,FLOPOINT,
-     & NAMECODE,OPTION,NITMAX)
+     & SMH,YASMH,PLUIE,RAIN,OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,
+     & FLOPOINT,NAMECODE,OPTION,NITMAX)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -79,6 +79,13 @@
 !+   OPTION=1 (i.e. TREATMENT OF NEGATIVE DEPTHS=3) is now also possible
 !+   for the LIPS scheme.
 !
+!history  J-M HERVOUET (LNHE)
+!+        09/09/2016
+!+        V7P2
+!+   Swapping rain and boundary fluxes at the end of the algorithm. It 
+!+   caused a wrong correction of FLBOR in case of evaporation.
+!+   Adding rain (it was mixed before with sources).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
 !| DT             |-->| TIME STEP
@@ -109,6 +116,8 @@
 !|                |   | 1: FAST BUT SENSITIVE TO SEGMENT NUMBERING
 !|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
 !| OPTSOU         |-->| OPTION FOR SOURCES 1: NORMAL 2: DIRAC
+!| PLUIE          |-->| RAIN IN A BIEF_OBJ, IN M/S.
+!| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
 !| SMH            |-->| SOURCE TERMS
 !| T1             |-->| WORK ARRAY
 !| T2             |-->| WORK ARRAY
@@ -137,8 +146,8 @@
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
       DOUBLE PRECISION, INTENT(INOUT) :: FLOPOINT(MESH%NELEM,3)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,FLODEL,H,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH
-      LOGICAL, INTENT(IN)             :: YASMH,INFO
+      TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH,PLUIE
+      LOGICAL, INTENT(IN)             :: YASMH,INFO,RAIN
       LOGICAL, INTENT(IN)             :: COMPUTE_FLODEL
       CHARACTER(LEN=24)               :: NAMECODE
 !
@@ -392,9 +401,20 @@
         ENDDO
       ENDIF
 !
+      IF(RAIN) THEN
+        DO I=1,NPOIN
+          H%R(I)=H%R(I)+DT*MAX(PLUIE%R(I),0.D0)
+        ENDDO
+      ENDIF
+!
 !     BOUNDARY FLUXES : ADDING THE ENTERING (NEGATIVE) FLUXES
 !     FIRST PUTTING FLBOR (BOUNDARY) IN T2 (DOMAIN)
 !
+!     T2 WILL BE THE ASSEMBLED FLBOR, INITIALISATION HERE
+!     IS USELESS EXCEPT THAT PARCOM MAY ADD UNDEFINED
+!     NUMBERS (THAT WILL NOT BE USED BUT THAT WILL STOP
+!     A COMPILER... TOO BAD!)
+      IF(NCSIZE.GT.1) CALL OS('X=0     ',X=T2)
       CALL OSDB( 'X=Y     ' ,T2,FLBOR,FLBOR,0.D0,MESH)
 !     ASSEMBLING T2 (FLBOR IS NOT ASSEMBLED)
       IF(NCSIZE.GT.1) CALL PARCOM(T2,2,MESH)
@@ -759,8 +779,32 @@
         IF(NITER.LT.NITMAX) GO TO 777
       ENDIF
 !
+!     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
+!     NOW THE NEGATIVE SOURCES
+!
+      IF(YASMH) THEN
+        IF(OPTSOU.EQ.1) THEN
+          DO I=1,NPOIN
+            H%R(I)=H%R(I)+DT*MIN(SMH%R(I),0.D0)
+          ENDDO
+        ELSEIF(OPTSOU.EQ.2) THEN
+          DO I=1,NPOIN
+            H%R(I)=H%R(I)+DT*MIN(SMH%R(I),0.D0)*UNSV2D%R(I)
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!     RAIN OR EVAPORATION
+!
+      IF(RAIN) THEN
+        DO I=1,NPOIN
+          H%R(I)=H%R(I)+DT*MIN(PLUIE%R(I),0.D0)
+        ENDDO
+      ENDIF
+!
 !     BOUNDARY FLUXES : ADDING THE EXITING (POSITIVE) FLUXES
 !                       WITH A POSSIBLE LIMITATION
+!     IMPORTANT: MUST BE DONE AFTER ALL OTHER SOURCES
 !
       DO IPTFR=1,NPTFR
         I=NBOR(IPTFR)
@@ -793,26 +837,12 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-!         HERE WE WOULD NEED V2DPAR....
+!         HERE V2DPAR WOULD BE MORE CONVENIENT THAN UNSV2D...
           FLBOR%R(IPTFR)=FLBOR%R(IPTFR)
      &                  +(H%R(I)-HBOR(IPTFR))/(DT*UNSV2D%R(I))
           H%R(I)= HBOR(IPTFR)
         ENDIF
       ENDDO
-!
-!     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
-!     NOW THE NEGATIVE SOURCES
-      IF(YASMH) THEN
-        IF(OPTSOU.EQ.1) THEN
-          DO I=1,NPOIN
-            H%R(I)=H%R(I)+DT*MIN(SMH%R(I),0.D0)
-          ENDDO
-        ELSEIF(OPTSOU.EQ.2) THEN
-          DO I=1,NPOIN
-            H%R(I)=H%R(I)+DT*MIN(SMH%R(I),0.D0)*UNSV2D%R(I)
-          ENDDO
-        ENDIF
-      ENDIF
 !
       IF(TESTING) THEN
         C=1.D99

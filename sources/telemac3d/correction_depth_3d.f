@@ -38,6 +38,11 @@
 !+   Adapting to new treatment of negative depths = 3, necessary for
 !+   scheme ERIA=15.
 !
+!history  J.M. HERVOUET (LNHE)
+!+        09/09/2016
+!+        V7P2
+!+   Adding dummy RAIN and PLUIE to call of positive_depths.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
@@ -147,7 +152,9 @@
      &                         GLOSEG(1:DIMGLO,1),
      &                         GLOSEG(1:DIMGLO,2),
      &                         MESH2D%NBOR%I,NPTFR2,
-     &                         SMH,.TRUE.,2,
+!                                         PLUIE RAIN (RAIN INCLUDED IN SMH SO FAR...)
+!                                         SO IS SET TO FALSE HERE.
+     &                         SMH,.TRUE.,SMH, .FALSE.,2,
 !                                   YASMH OPTSOU
 !                              SMH IN PROJECTED FORM IN T3D
      &                         FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,

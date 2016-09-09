@@ -49,6 +49,11 @@
 !+   Call to flusec_t2d added at the end, for computing the discharge
 !+   control sections.
 !
+!history  J-M HERVOUET (LNHE)
+!+        09/09/2016
+!+        V7P2
+!+   Call to positive_depths changed (sources and rain now split).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
@@ -139,57 +144,22 @@
 !
       IF(OPT_HNEG.GE.2) THEN
 !
-!     LIMITS FLUXES TO HAVE POSITIVE DEPTHS
-!     BEWARE, WILL BE ONLY VALID FOR ADVECTION WITH UDEL,VDEL
-!     HENCE FOR TRACERS AND IF SOLSYS=2
-!     FLULIM WILL BE CORRECT AT THE EXIT OF POSITIVE_DEPTHS
-      YAFLULIM=.TRUE.
+!       LIMITS FLUXES TO HAVE POSITIVE DEPTHS
+!       BEWARE, WILL BE ONLY VALID FOR ADVECTION WITH UDEL,VDEL
+!       HENCE FOR TRACERS AND IF SOLSYS=2
+!       FLULIM WILL BE CORRECT AT THE EXIT OF POSITIVE_DEPTHS
+        YAFLULIM=.TRUE.
 !
-      IF(.NOT.RAIN) THEN
-!
-!     CASE ONLY SMH OR NOTHING
-!
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
-     &                     FLBOR,DT,UNSV2D,
-     &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,
-     &                     SMH,YASMH,
-     &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
-!                                            OPTION
-!                                            FOR POSITIVE DEPTH ALGORITHM
-!
-      ELSEIF(YASMH) THEN
-!
-!     CASE SMH AND RAIN
-!
-      IF(OPTSOU.EQ.1) THEN
-        CALL OS('X=Y+Z   ',X=T5,Y=SMH,Z=PLUIE)
-      ELSE
-        CALL OS('X=Y     ',X=T5,Y=SMH)
-        CALL OS('X=X+YZ  ',X=T5,Y=PLUIE,Z=V2DPAR)
-      ENDIF
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
-     &                     FLBOR,DT,UNSV2D,
-     &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,
-     &                     T5,.TRUE.,
-     &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
-!
-      ELSE
-!
-!     CASE ONLY RAIN
-!
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
-     &                     FLBOR,DT,UNSV2D,
-     &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,
-     &                     PLUIE,RAIN,
-     &                     1,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                     MESH%W%R,NAMECODE,OPTPOS,MAXADV)
-!
-      ENDIF
+        CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
+     &                       FLBOR,DT,UNSV2D,
+     &                       NPOIN,GLOSEG(1:DIMGLO,1),
+     &                       GLOSEG(1:DIMGLO,2),
+     &                       MESH%NBOR%I,MESH%NPTFR,
+     &                       SMH,YASMH,PLUIE,RAIN,
+     &                       OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
+     &                       MESH%W%R,NAMECODE,OPTPOS,MAXADV)
+!                                              OPTION
+!                                              FOR POSITIVE DEPTH ALGORITHM
 !
       ELSEIF(OPT_HNEG.EQ.1) THEN
 !

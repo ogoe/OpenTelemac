@@ -21,9 +21,9 @@
 !+        THE PROGRAM WILL NOT STOP IF IOPT2=1
 !
 !history  J-M HERVOUET   (EDF LAB, LNHE)
-!+        06/09/2016
+!+        09/09/2016
 !+        V7P2
-!+   First version
+!+   First version. Comes from the former cvtrvf_pos with option 1.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
@@ -257,9 +257,10 @@
         ENDIF
       ENDDO
 !
-!     INITIALIZING F
+!     INITIALIZING F AND INITIAL H
 !
       CALL OS('X=Y     ',X=F,Y=FN)
+      CALL OS('X=Y     ',X=HT,Y=HN)
 !
 !     FLUXES
 !
@@ -392,27 +393,25 @@
         ENDIF
       ENDDO
 !
-!     BOUCLE SUR LES SEGMENTS, POUR PRENDRE EN COMPTE LES FLUX
-!     ADMISSIBLES
+!     ADDING THE POSITIVE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
 !
-!     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
           DO I=1,NPOIN
-            HT%R(I)=HN%R(I)+DT*SMH%R(I)
-            F%R(I)=FN%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            IF(SMH%R(I).GT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
-            HT%R(I)=HN%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
-            F%R(I)=FN%R(I)+DT/MAX(HT%R(I),1.D-4)*
-     &                       UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            IF(SMH%R(I).GT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*
+     &                        UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
           ENDDO
         ENDIF
-      ELSE
-        DO I=1,NPOIN
-          HT%R(I)=HN%R(I)
-        ENDDO
       ENDIF
 !
 !     RAIN-EVAPORATION: RAIN FIRST, EVAPORATION IN THE END
@@ -420,9 +419,12 @@
       IF(RAIN) THEN
         DO I=1,NPOIN
           C=MAX(PLUIE%R(I),0.D0)
-          HT%R(I)=HT%R(I)+DT*C
-!                                                VALUE IN RAIN
-          F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN-F%R(I))
+!         HT WILL BE AT LEAST C*DT
+          HT%R(I)=HT%R(I)+C*DT
+          IF(C.NE.0.D0) THEN
+!                                           VALUE IN RAIN
+            F%R(I)=F%R(I)+((C*DT)/HT%R(I))*(TRAIN-F%R(I))
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -432,8 +434,8 @@
 !       ENTERING FLUXES OF TRACERS
 !       THE FINAL DEPTH IS TAKEN
         IF(LIMTRA(IPTFR).EQ.KDIR) THEN
-          F%R(I)=FN%R(I)-DT/MAX(HT%R(I),1.D-4)*
-     &       UNSV2D%R(I)*T2%R(I)*(FBOR%R(IPTFR)-FN%R(I))
+          F%R(I)=F%R(I)-DT/MAX(HT%R(I),1.D-4)*
+     &       UNSV2D%R(I)*T2%R(I)*(FBOR%R(IPTFR)-F%R(I))
 !       ELSEIF(LIMTRA(IPTFR).EQ.KDDL) THEN
 !         NOTHING TO DO
         ENDIF
@@ -1020,6 +1022,27 @@
         IF(NITER.LT.NITMAX) GO TO 777
       ENDIF
 !
+!     ADDING THE NEGATIVE SOURCES
+!
+      IF(YASMH) THEN
+        IF(OPTSOU.EQ.1) THEN
+          DO I=1,NPOIN
+            IF(SMH%R(I).LT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
+          ENDDO
+        ELSEIF(OPTSOU.EQ.2) THEN
+          DO I=1,NPOIN
+            IF(SMH%R(I).LT.0.D0) THEN
+              HT%R(I)=HT%R(I)+DT*SMH%R(I)*UNSV2D%R(I)
+              F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*
+     &                        UNSV2D%R(I)*SMH%R(I)*FSCEXP%R(I)
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDIF
+!
 !     RAIN-EVAPORATION: RAIN DONE ABOVE, NOW EVAPORATION
 !
       IF(RAIN) THEN
@@ -1027,9 +1050,11 @@
           C=MIN(PLUIE%R(I),0.D0)
 !         POSITIVITY NOT TESTED HERE, WOULD REQUIRE C=MAX(C,-HT%R(I)/DT)
 !         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT,
-          HT%R(I)=HT%R(I)+DT*C
-!                                                VALUE IN VAPOR
-          F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F%R(I))
+          HT%R(I)=HT%R(I)+C*DT
+!         MONOTONICITY NON OBEYED HERE OF COURSE
+!                        VALUE IN VAPOR
+!         F%R(I)=F%R(I)+(0.D0-F%R(I))*((C*DT)/MAX(HT%R(I),1.D-4))
+          F%R(I)=F%R(I)*(1.D0-((C*DT)/MAX(HT%R(I),1.D-4)))
         ENDDO
       ENDIF
 !

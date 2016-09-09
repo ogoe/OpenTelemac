@@ -92,6 +92,11 @@
 !+        V7P2
 !+  Cancelling sediment fluxes to and from dry nodes.
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        09/09/2016
+!+        V7P2
+!+  Adding fake arguments PLUIE and RAIN in the call to positive_depths.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| DT             |-->| TIME STEP
@@ -217,8 +222,8 @@
 !    &                     FLODEL, .TRUE.,FLBCLA,DT,UNSV2D,NPOIN,
      &                     FLODEL,.FALSE.,FLBCLA,DT,UNSV2D,NPOIN,
      &                     GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,NPTFR,T8,.FALSE.,
-!                                            VOID
+     &                     MESH%NBOR%I,NPTFR,T8,.FALSE.,T8,.FALSE.,
+!                                            VOID (SMH) VOID (PLUIE)
      &                     1,FLULIM,
      &                     LIMTEC%I,T8%R  ,KDIR,ENTET,MESH%W%R,
 !                                   EBOR%R
