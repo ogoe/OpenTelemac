@@ -101,7 +101,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'W="hauteur de houle"';
 'X="periode de houle"';
 'UWB="wave orbital velocity (m/s)"';
-'KS="coefficient de Rugosité totale (m)"';
+'KS="coefficient de Rugosite totale (m)"';
 'TOB="Contrainte de frottement(N/m2)"';
 'MU = "Coefficient de correction pour frottement de peau"';
 'D50 = "Diametre moyen du sediment"';
@@ -1280,7 +1280,7 @@ RUBRIQUE1 = 'PHYSICS'
 NIVEAU = 1
 AIDE = 'la concentration volumique  du lit est definie par
 CSF= (1-porosite)
-Ce paramètre est utilisé  pour les sediments non-cohesifs.'
+Ce parametre est utilise pour les sediments non-cohesifs.'
 AIDE1 = 'The bed volume concentration CSF=(1-porosity) is used to
 calculate the bed evolution of non-cohesive sand transport.'
 
@@ -1295,9 +1295,9 @@ RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
 AIDE = 'Utilise pour determiner la valeur de la contrainte critique
-d''entrainement (sédiments non-cohésifs). En multiclasse, specifier la
-valeur pour chaque classe,sinon on prend la même valeur.  Par défaut (si
-aucune valeur donnee) le code calcule lui même le parametre de Shields
+d''entrainement (sediments non-cohesifs). En multiclasse, specifier la
+valeur pour chaque classe,sinon on prend la meme valeur.  Par defaut (si
+aucune valeur donnee) le code calcule lui meme le parametre de Shields
 en fonction du diametre.'
 AIDE1 = 'Used to determine the critical bed shear stress value
 (non-cohesive sediments).
@@ -2671,7 +2671,7 @@ RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
 AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit
-       etre inferieur à 10'
+       etre inferieur a 10'
 AIDE1 = 'Vertical bed structure - The number of layers should be less
        than 10'
 /
@@ -2686,7 +2686,7 @@ DEFAUT1 = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
 RUBRIQUE = 'COHESIVE SEDIMENT'
 RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
-AIDE = 'Concentration du lit de vase en g/ l - défini par couches'
+AIDE = 'Concentration du lit de vase en g/ l - defini par couches'
 AIDE1 = 'Concentrations of the mud-bed in g per l (per layer)'
 /
 /
@@ -2721,10 +2721,10 @@ DEFAUT1 = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
-AIDE = 'Mass transfert coefficients of
-the multilayer consolidation model in s-1'
-AIDE1= 'Coefficients de transfert de masse du modele
+AIDE = 'Coefficients de transfert de masse du modele
 de tassement multicouche en s-1'
+AIDE1 = 'Mass transfert coefficients of
+the multilayer consolidation model in s-1'
 /
 /  FOR COUPLING WITH NESTOR
 /
@@ -2927,7 +2927,7 @@ AIDE1= 'formula to predict the skin bed roughness (see also KSPRATIO)
 /NIVEAU = 2
 /COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 /AIDE = 'Vitesse critique d erosion de la vase pour un lit uniforme (m/s),
-/utilisé seulement si pas de consolidation '
+/utilise seulement si pas de consolidation '
 /AIDE1 = 'Critical erosion shear velocity of the uniform mud without
 /consolidation model (m/s)'
 /
@@ -3024,7 +3024,7 @@ NIVEAU = 1
 AIDE = 'Calcul de la rugosite de Nikuradse
 - voir OPTION DU PREDICTEUR DE RUGOSITE -
 la loi de frottement est forcee a 5 et le coefficient de frottement
-ne sont pas utilisés.
+ne sont pas utilises.
 En cas de couplage, le frottement est envoye a Telemac'
 AIDE1 = 'The bed roughness is predicted according to the selected
 BED ROUGHNESS PREDICTOR OPTION. In case of coupling with Telemac2d,
