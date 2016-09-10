@@ -65,7 +65,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      PI = 3.1415926535897932384626433D0
+!> SEB @ HRW, JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI = 3.1415926535897932384626433D0
+!< SEB @ HRW, JR @ RWTH
 !
 !     COMPUTES THE AVERAGE DISTANCE BETWEEN A NODE AND ITS NEIGHBOURS
 !     -----------------------------------------------------------
