@@ -36,6 +36,12 @@
 !+   out of range due to truncation errors. True errors may be hidden
 !+   but will be seen with the mass balance.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        30/06/2016
+!+        V7P2
+!+   Relaxing the clipping for monotony in case of rain (evaporation
+!+   may break the monotony).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
 !| F              |<--| VALUES OF F AT TIME N+1 OF SUB-ITERATION
@@ -398,10 +404,17 @@
           NORMR=SQRT(P_DOTS(R,R,MESH))
 !         COPY OF NEW SOLUTION ON F, WITH CLIPPING WITH GLOBAL EXTREMA
 !         TO COPE WITH TRUNCATION ERRORS. IF CLIPPING TRUE ERRORS IT
-!         WILL DO MASS ERRORS      
-          DO I=1,NPOIN
-            F(I)=MAX(MIN(BB1%R(I),FMAX),FMIN)
-          ENDDO
+!         WILL DO MASS ERRORS 
+          IF(RAIN) THEN
+!           NO CLIPPING HERE SINCE EVAPORATION MAY BREAK MONOTONY    
+            DO I=1,NPOIN
+              F(I)=BB1%R(I)
+            ENDDO
+          ELSE
+            DO I=1,NPOIN
+              F(I)=MAX(MIN(BB1%R(I),FMAX),FMIN)
+            ENDDO
+          ENDIF
           IF(N.LT.SLVPSI%NITMAX.AND.NORMR.GT.SLVPSI%EPS*NORMB) THEN
             GO TO 100
           ENDIF
@@ -440,22 +453,6 @@
         ENDIF
       ENDIF
 !
-!
-!     CALL MINI(C,I1,F,NPOIN)
-!     PRINT*,'APRES SOLVE MIN DE F=',C
-!     IF(C.LT.0.999999D0) THEN
-!       PRINT*,'F=',C,' AU POINT ',I1
-!       CALL PLANTE(1)
-!       STOP
-!     ENDIF
-!     CALL MAXI(C,I1,F,NPOIN)
-!     PRINT*,'APRES SOLVE MAX DE F=',C
-!     IF(C.GT.2.D0) THEN
-!       PRINT*,'F=',C,' AU POINT ',I1
-!       CALL PLANTE(1)
-!       STOP
-!     ENDIF
-!
 !     ON EXITS, EXITING FLUX DEPENDS ON F AND FN AT EVERY SUB-TIME
 !     STEP, SO IT MUST BE COMPUTED AT THIS LEVEL.
 !     THE CASE KDIR IS TREATED IN CVTRVF
@@ -463,6 +460,7 @@
 !     FLUX AND ADDED MASS FOR MASS BALANCE
 !
       IF(ICOR.EQ.NCOR) THEN
+!       BOUNDARIES
         DO I=1,NPTFR
           IF(LIMTRA(I).EQ.KDIR) THEN
             FLBORTRA(I)=FLBORTRA(I)+FXBOR(I)*FBOR(I)*SURNIT
@@ -472,6 +470,7 @@
      &            +FXBOR(I)*(TETAF(N)*F(N)+(1.D0-TETAF(N))*FC(N))*SURNIT
           ENDIF
         ENDDO
+!       SOURCES
         IF(YASMH) THEN
 !         FOR MASS BALANCE
           IF(OPTSOU.EQ.1) THEN
@@ -494,6 +493,8 @@
             ENDDO
           ENDIF
         ENDIF
+!       RAIN
+!       DONE IN BILANT FOR ALL SCHEMES
       ENDIF
 !
 !-----------------------------------------------------------------------

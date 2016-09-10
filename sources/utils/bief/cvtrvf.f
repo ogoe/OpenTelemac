@@ -77,6 +77,12 @@
 !+   Stability criterion for the LIPS scheme was too restrictive
 !+   compared to theory. The real theoretical value is now taken.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/09/2016
+!+        V7P2
+!+   Predictor and corrector of LIPS grouped in the same loop.
+!+   Limitation of the predictor even for the first correction.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
 !| BILAN          |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
@@ -645,91 +651,82 @@
 !
       ELSE
 !
-!       FOR GETTING THE EXPLICIT PSI CONTRIBUTION
-!       WITHOUT THE DERIVATIVE IN TIME
-        DO I=1,HN%DIM1
-          DFDT(I)=0.D0
-        ENDDO
-        CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
-     &                    MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                    FXMATPAR,MESH%NSEG,
-!                                                      FN
-     &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
-!    &                    FI_I               HDFDT
-     &                    T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
-!                                         FN
-     &                    YAFLULIM,FLULIM,T4)
-!       NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
-!       IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
+!       LOOP WITH PREDICTOR AND ALL CORRECTIONS
 !
-!       BUILDING AND SOLVING THE LINEAR SYSTEM (NORMAL OR PREDICTOR)
+        DO ICOR=0,NCO_DIST
 !
-        CALL TVF_IMP(F%R,T4%R,FXMAT,
-     &               FXMATPAR,UNSV2D%R,DDT,
-     &               FLBOUND%R,FXBORPAR%R,HNP1MT%R,
-     &               FBOR%R,SMH%R,YASMH,FSCEXP%R,
-     &               MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
-     &               MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
-     &               MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &               OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
-     &               RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
-     &               ENTET,VOLU2D%R,V2DPAR%R,
-     &               T6,T8%R,AM2,TB2,SLVPSI,
-!                    PREDICTOR CORRECTOR
-     &               .TRUE.,   .FALSE.,0,NCO_DIST,ADMASS)
-!
-!       NUMBER OF CORRECTION STEPS
-!
-        IF(NCO_DIST.GT.0) THEN
-!
-!         CORRECTOR STEP
-!
-          DO ICOR=1,NCO_DIST
-!           THE FIRST CORRECTOR IS GUARANTEDD WITHOUT STABILITY PROBLEM
-            IF(ICOR.NE.1) THEN
-!             LIMITING THE PREDICTOR
-              DO I=1,HN%DIM1
-                FMIN%R(I)=T4%R(I)
-                FMAX%R(I)=T4%R(I)
-              ENDDO
-              DO I=1,NPTFR
-                IF(LIMTRA(I).EQ.KDIR) THEN
-                  N=MESH%NBOR%I(I)
-                  FMIN%R(N)=MIN(FMIN%R(N),FBOR%R(I))
-                  FMAX%R(N)=MAX(FMAX%R(N),FBOR%R(I))
-                ENDIF
-              ENDDO
-              DO IELEM=1,MESH%NELEM
-                I1=MESH%IKLE%I(IELEM)
-                I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
-                I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
-                LOCALMIN=MIN( F%R(I1), F%R(I2), F%R(I3),
-     &                       T4%R(I1),T4%R(I2),T4%R(I3))
-                LOCALMAX=MAX( F%R(I1), F%R(I2), F%R(I3),
-     &                       T4%R(I1),T4%R(I2),T4%R(I3))
-                FMIN%R(I1)=MIN(FMIN%R(I1),LOCALMIN)
-                FMAX%R(I1)=MAX(FMAX%R(I1),LOCALMAX)
-                FMIN%R(I2)=MIN(FMIN%R(I2),LOCALMIN)
-                FMAX%R(I2)=MAX(FMAX%R(I2),LOCALMAX)
-                FMIN%R(I3)=MIN(FMIN%R(I3),LOCALMIN)
-                FMAX%R(I3)=MAX(FMAX%R(I3),LOCALMAX)
-              ENDDO
-              IF(NCSIZE.GT.1) THEN
-                CALL PARCOM(FMIN,4,MESH)
-                CALL PARCOM(FMAX,3,MESH)
+!         UNLIKE WITH EXPLICIT SCHEMES, THE PREDICTOR IS NOT
+!         GUARANTEED WITHOUT STABILITY PROBLEM IF NOT LIMITED
+          IF(ICOR.GT.0) THEN
+!           LIMITING THE PREDICTOR
+            DO I=1,HN%DIM1
+              FMIN%R(I)=T4%R(I)
+              FMAX%R(I)=T4%R(I)
+            ENDDO
+            DO I=1,NPTFR
+              IF(LIMTRA(I).EQ.KDIR) THEN
+                N=MESH%NBOR%I(I)
+                FMIN%R(N)=MIN(FMIN%R(N),FBOR%R(I))
+                FMAX%R(N)=MAX(FMAX%R(N),FBOR%R(I))
               ENDIF
-              DO I=1,HN%DIM1
-                F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
-                F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
-              ENDDO
+            ENDDO
+            DO IELEM=1,MESH%NELEM
+              I1=MESH%IKLE%I(IELEM)
+              I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+              I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+              LOCALMIN=MIN( F%R(I1), F%R(I2), F%R(I3),
+     &                     T4%R(I1),T4%R(I2),T4%R(I3))
+              LOCALMAX=MAX( F%R(I1), F%R(I2), F%R(I3),
+     &                     T4%R(I1),T4%R(I2),T4%R(I3))
+              FMIN%R(I1)=MIN(FMIN%R(I1),LOCALMIN)
+              FMAX%R(I1)=MAX(FMAX%R(I1),LOCALMAX)
+              FMIN%R(I2)=MIN(FMIN%R(I2),LOCALMIN)
+              FMAX%R(I2)=MAX(FMAX%R(I2),LOCALMAX)
+              FMIN%R(I3)=MIN(FMIN%R(I3),LOCALMIN)
+              FMAX%R(I3)=MAX(FMAX%R(I3),LOCALMAX)
+            ENDDO
+            IF(NCSIZE.GT.1) THEN
+              CALL PARCOM(FMIN,4,MESH)
+              CALL PARCOM(FMAX,3,MESH)
             ENDIF
+            DO I=1,HN%DIM1
+              F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
+              F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
+            ENDDO
+          ENDIF
 !
+!         DERIVATIVE IN TIME
+!
+          IF(ICOR.EQ.0) THEN
+!           FOR GETTING THE EXPLICIT PSI CONTRIBUTION
+!           WITHOUT THE DERIVATIVE IN TIME
+            DO I=1,HN%DIM1
+              DFDT(I)=0.D0
+            ENDDO
+          ELSE
 !           FOR GETTING THE EXPLICIT PSI CONTRIBUTION
 !           WITH THE DERIVATIVE IN TIME
             DO I=1,HN%DIM1
 !             HERE DFDT=H*DFDT WITH SEMI IMPLICIT H
               DFDT(I)=HNP1MT%R(I)*(F%R(I)-T4%R(I))/DDT
             ENDDO
+          ENDIF
+!
+!         EXPLICIT CONTRIBUTION
+!
+          IF(ICOR.EQ.0) THEN
+!           FN GIVEN FOR FSTAR
+            CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
+     &                        MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                        FXMATPAR,MESH%NSEG,
+!                                                          FN
+     &                        MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
+!    &                        FI_I               HDFDT
+     &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
+!                                             FN FOR FSTAR
+     &                        YAFLULIM,FLULIM,T4)
+          ELSE
+!           FSTAR REALLY GIVEN
             CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
      &                        MESH%ELTSEG%I,MESH%ORISEG%I,
      &                        FXMATPAR,MESH%NSEG,
@@ -739,30 +736,33 @@
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
 !                                             FSTAR
      &                        YAFLULIM,FLULIM,F)
+          ENDIF
+!         NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
+!         IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
 !
-            CALL TVF_IMP(F%R,T4%R,FXMAT,
-     &               FXMATPAR,UNSV2D%R,DDT,
-     &               FLBOUND%R,FXBORPAR%R,HNP1MT%R,
-     &               FBOR%R,SMH%R,YASMH,FSCEXP%R,
-     &               MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
-     &               MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
-     &               MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &               OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
-     &               RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
-     &               ENTET,VOLU2D%R,V2DPAR%R,
-     &               T6,T8%R,AM2,TB2,SLVPSI,
-!                    PREDICTOR CORRECTOR
-     &               .FALSE.,  .TRUE.,ICOR,NCO_DIST,ADMASS)
+!         BUILDING AND SOLVING THE LINEAR SYSTEM (NORMAL OR PREDICTOR)
 !
-          ENDDO
+          CALL TVF_IMP(F%R,T4%R,FXMAT,
+     &                 FXMATPAR,UNSV2D%R,DDT,
+     &                 FLBOUND%R,FXBORPAR%R,HNP1MT%R,
+     &                 FBOR%R,SMH%R,YASMH,FSCEXP%R,
+     &                 MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
+     &                 MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
+     &                 MESH%NBOR%I,LIMTRA,KDIR,KDDL,
+     &                 OPTSOU,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,
+     &                 RAIN,PLUIE%R,TRAIN,TETAF_VAR%R,
+     &                 ENTET,VOLU2D%R,V2DPAR%R,
+     &                 T6,T8%R,AM2,TB2,SLVPSI,
+!                      PREDICTOR CORRECTOR
+     &                 ICOR.EQ.0,ICOR.NE.0,ICOR,NCO_DIST,ADMASS)
 !
-        ENDIF
+        ENDDO
 !
       ENDIF
 !
-!--------------------------------
+!-------------------------------------
 !  CORRECTOR STEP FOR N AND PSI SCHEME
-!--------------------------------
+!-------------------------------------
 !
       IF(PREDICOR.AND.NCO_DIST.GT.0) THEN
 !

@@ -24,7 +24,13 @@
 !history S. PAVAN (LHSV) & J-M HERVOUET (EDF LAB, LNHE)
 !+     01/09/2016
 !+     V7P2
-!+     First version.
+!+   First version.
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+     10/09/2016
+!+     V7P2
+!+   Limitation of the predictor must be done also at the first
+!+   correction.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
@@ -652,9 +658,9 @@
 !
         DO ICOR=0,NCO_DIST
 !
-!         THE PREDICTOR AND FIRST CORRECTOR ARE GUARANTEED 
-!         WITHOUT STABILITY PROBLEM
-          IF(ICOR.GT.1) THEN
+!         AT THE FIRST CORRECTION, THE PREDICTOR DOES NOT WARRANT
+!         THE STABILITY OF THE FIRST CORRECTION, UNLIKE EXPLICIT SCHEMES.
+          IF(ICOR.GT.0) THEN
 !           LIMITING THE PREDICTOR
             DO I=1,NPOIN3
               MINFC%R(I)=FNSUB(I)

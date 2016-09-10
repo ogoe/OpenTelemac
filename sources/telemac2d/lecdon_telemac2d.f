@@ -100,6 +100,11 @@
 !+        V7P2
 !+  Allocating NAMETRAC added.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        10/09/2016
+!+        V7P2
+!+  Checking the number of values of tracers in the rain.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -883,7 +888,7 @@
         STOP
       ENDIF
       NREJTR = DIMEN(2,39)
-      IF(NREJTR.GE.NTRAC*NREJET) THEN
+      IF(NREJTR.EQ.NTRAC*NREJET) THEN
         IF(NTRAC.GT.0) THEN
           DO ITRAC=1,NTRAC
           DO K=1,NREJET
@@ -963,17 +968,15 @@
         COETSUNAMI(K) = MOTREA( ADRESS(2,62) + K-1 )
       ENDDO
 !
-!     VALUES OF TRACERS IN THE RAIN
+!     IF VALUES OF TRACERS IN THE RAIN IS GIVEN,
+!     THE RIGHT NUMBER IS NECESSARY
+!     CHECKING IF THE RIGHT NUMBER IS GIVEN IS
+!     DONE AFTER GETTING RAIN.
 !
-      IF(NTRAC.GT.0) THEN
-        DO I=1,NTRAC
-          TRAIN(I) = 0.D0
+      IF(NTRAC.GT.0.AND.TROUVE(2,63).EQ.2) THEN
+        DO I=1,DIMEN(2,63)
+          TRAIN(I) = MOTREA(ADRESS(2,63)+I-1)
         ENDDO
-        IF(TROUVE(2,63).EQ.2) THEN
-          DO I=1,DIMEN(2,63)
-            TRAIN(I) = MOTREA(ADRESS(2,63)+I-1)
-          ENDDO
-        ENDIF
       ENDIF
 !     COEFFICIENT TO CALIBRATE TIDAL RANGE
       CTIDE    = MOTREA( ADRESS(2,64) )
@@ -2552,6 +2555,25 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(RAIN.AND.NTRAC.GT.0.AND.DIMEN(2,63).NE.NTRAC) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'VALEURS DES TRACEURS DES SOURCES'
+          WRITE(LU,*) 'DONNER AUTANT DE VALEURS QUE DE TRACEURS :',NTRAC
+          WRITE(LU,*) 'AU LIEU DE :',DIMEN(2,63)
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) ' '
+          WRITE(LU,*) 'VALUES OF THE TRACERS AT THE SOURCES'
+          WRITE(LU,*) 'GIVE AS MANY VALUES AS TRACERS:',NTRAC
+          WRITE(LU,*) 'INSTEAD OF:',DIMEN(2,63)
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
