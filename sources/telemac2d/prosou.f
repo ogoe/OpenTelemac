@@ -372,7 +372,10 @@
 !
       IF(CORIOL) THEN
 !
-      PI = ACOS(-1.D0)
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+        PI = 4.D0 * ATAN( 1.D0 )
+!        PI = ACOS(-1.D0) ! ACOS NOT DIFFERENTIABLE
+!< JR @ RWTH
 !
         IF(SPHERI) THEN
 !
