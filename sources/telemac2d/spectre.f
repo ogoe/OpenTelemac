@@ -90,7 +90,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      PI = ACOS(-1.D0)
+!> SEB @ HRW, JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI = ACOS(-1.D0) ! ACOS NOT DIFFERENTIABLE
+!< SEB @ HRW, JR @ RWTH
       M = AFEND-AFBGN+1
 !
       IF(LT.GE.AFBGN.AND.LT.LE.AFEND) THEN
