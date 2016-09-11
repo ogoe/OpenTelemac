@@ -5,12 +5,13 @@
      &(FC,FN,VOLU,SVOLU,VOLUN,SVOLUN,VOLU2,SVOLU2,RMASS,
      & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,MESH2,MESH3,
      & NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
+     & FLUEXTPAR,FBORL,NPTFR3,NBOR3,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,TRAIN,NPOIN2,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,
      & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3,NITMAX,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
@@ -67,10 +68,12 @@
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG
 !| DT             |-->| TIME STEP
+!| FBORL          |<->| DIRICHLET CONDITIONS ON F ON LATERAL BOUNDARIES
 !| FC             |<->| VARIABLE AFTER CONVECTION
 !| FLODEL         |-->| FLUXES BY SEGMENT
 !| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
 !| FLUEXT         |-->| OUTPUT FLUX BY NODE
+!| FLUEXTPAR      |-->| OUTPUT FLUX BY NODE ASSEMBLED IN //
 !| FLUX_REMOVED   |<->| TOTAL FLUX REMOVED OF EACH POINT
 !| FLUX           |<->| GLOBAL FLUXES TO BE CHANGED
 !| FN             |-->| VARIABLE AT TIME N
@@ -83,11 +86,13 @@
 !| MESH2          |<->| 2D MESH
 !| MESH3          |<->| 3D MESH
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR3          |-->| GLOBAL ADDRESS OF LATERAL BOUNDARY NODES
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NPTFR3         |-->| NUMBER OF LATERAL BOUNDARY POINTS
 !| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
 !| NSEG           |-->| NUMBER OF SEGMENTS
 !| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
@@ -122,8 +127,7 @@
       USE DECLARATIONS_TELEMAC3D, ONLY : DEJA_MURD3D_POS, 
      &                                   INDIC_MURD3D_POS,
      &                                   SIZEINDIC_MURD3D_POS,
-     &                                   BEDBOU,BEDFLU,T2_18,MESH2D,
-     &                                   KSCE,ISCE
+     &                                   BEDBOU,BEDFLU,T2_18,KSCE,ISCE
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -132,20 +136,22 @@
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,NPOIN2
       INTEGER, INTENT(IN)             :: NSCE,OPTBAN,NSEG,NPLAN,DIMGLO
-      INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),OPTION,IELM3
-      INTEGER, INTENT(IN)             :: NITMAX,OPTSOU
+      INTEGER, INTENT(IN)             :: OPTION,IELM3
+      INTEGER, INTENT(IN)             :: NITMAX,OPTSOU,NPTFR3
+      INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),NBOR3(NPTFR3)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
 !
       DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELEM3)
-      DOUBLE PRECISION, INTENT(IN), TARGET    :: FLUEXT(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUEXT(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: FLUEXTPAR(NPOIN3)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3), VOLU(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: VOLU2(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3),VOLU(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: VOLU2(NPOIN3),FBORL(NPTFR3)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3),FLUX
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT), TARGET :: TRA03(NPOIN3)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA03(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: DT,TRAIN,FSCE(NSCE)
 !
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: SVOLU2
@@ -207,22 +213,6 @@
       CALL CPSTVC(SVOLU2,STRA01)
       CALL CPSTVC(SVOLU2,STRA02)
       CALL CPSTVC(SVOLU2,STRA03)
-!
-!     TRA03 WILL BE THE SHARED ASSEMBLED FLUEXT IN PARALLEL
-!
-      IF(NCSIZE.GT.1) THEN
-        CALL OV('X=Y     ',TRA03,FLUEXT,FLUEXT,0.D0,NPOIN3)
-!       TRA03 WILL BE THE ASSEMBLED AND SHARED FLUEXT
-        CALL PARCOM(STRA03,2,MESH3)
-!       SHARES AFTER SUMMING (AS WILL BEEN DONE WITH VOLUMES)
-        DO IPTFR=1,NPTIR
-          I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
-          DO IPLAN=1,NPLAN
-            I3D=I2D+(IPLAN-1)*NPOIN2
-            TRA03(I3D)=TRA03(I3D)*MESH3%IFAC%I(I3D)
-          ENDDO
-        ENDDO
-      ENDIF
 !
       NSEGH=NSEG*NPLAN
       NSEGV=NPOIN2*(NPLAN-1)
@@ -304,37 +294,45 @@
 !
       CALL OS ('X=Y     ',X=SVOLU2,Y=SVOLUN)
 !
-!     TAKES INTO ACCOUNT ENTERING EXTERNAL FLUXES
-!     THIS IS DONE WITHOUT CHANGING THE TRACER
-!    (BUT THE MASS OF TRACER CHANGES)
+!     VOLU2 ASSEMBLED IN PARALLEL
 !
-      IF(NCSIZE.GT.1) THEN
-        DO I=1,NPOIN3
-!         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
-          VOLU2(I)=VOLU2(I)-MIN(TRA03(I),0.D0)*DT
-        ENDDO
-      ELSE
-        DO I=1,NPOIN3
-!         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
-          VOLU2(I)=VOLU2(I)-MIN(FLUEXT(I),0.D0)*DT
-        ENDDO
-      ENDIF
+      IF(NCSIZE.GT.1) CALL PARCOM(SVOLU2,2,MESH3)
 !
-      IF(CALFLU) THEN
-        IF(NCSIZE.GT.1) THEN
-          DO IPOIN = 1,NPOIN3
-            FLUX = FLUX + DT*FC(IPOIN)*MIN(TRA03(IPOIN),0.D0)
-          ENDDO
-        ELSE
-          DO IPOIN = 1,NPOIN3
-            FLUX = FLUX + DT*FC(IPOIN)*MIN(FLUEXT(IPOIN),0.D0)
-          ENDDO
-        ENDIF
-!       ENTERING SOURCES
-        IF(NSCE.GT.0) THEN
+!-----------------------------------------------------------------------
+!
+!     ENTERING POSITIVE SOURCES (WITH FC = FSCE)
+!     IT WILL ALWAYS GIVE POSITIVE VOLUMES
+!
+      IF(NSCE.GT.0) THEN
+        DO IS=1,NSCE
+          IF(OPTSOU.EQ.1) THEN
+!           THE SOURCES ARE NOT CONSIDERED AS A DIRAC
+            DO IPOIN=1,NPOIN3
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
+                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(IS)%P%R(IPOIN)
+                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
+     &                         *SOURCES%ADR(IS)%P%R(IPOIN)/VOLU2(IPOIN)
+              ENDIF
+            ENDDO
+          ELSEIF(OPTSOU.EQ.2) THEN
+!           THE SOURCES ARE CONSIDERED AS A DIRAC
+            IF(ISCE(IS).GT.0) THEN
+              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+              IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
+                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(1)%P%R(IPOIN)
+                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
+     &                         *SOURCES%ADR(1)%P%R(IPOIN)/VOLU2(IPOIN)
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+        IF(CALFLU) THEN
+!         CORRESPONDING FLUXES
           DO IS=1,NSCE
             IF(OPTSOU.EQ.1) THEN
-            ! THE SOURCES ARE NOT CONSIDERED AS A DIRAC
+!             THE SOURCES ARE NOT CONSIDERED AS A DIRAC
               IIS=IS
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
@@ -345,7 +343,7 @@
                 ENDIF
               ENDDO
             ELSE IF(OPTSOU.EQ.2) THEN
-            ! THE SOURCES ARE CONSIDERED AS A DIRAC
+!             THE SOURCES ARE CONSIDERED AS A DIRAC
               IIS=1
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !             ARE STORED AT ADRESS 2 (SEE SOURCES_SINKS.F)
@@ -360,40 +358,6 @@
           ENDDO
         ENDIF
       ENDIF
-!
-!
-!-----------------------------------------------------------------------
-!
-      IF(NCSIZE.GT.1) CALL PARCOM(SVOLU2,2,MESH3)
-!
-!     ENTERING SOURCES (WITH FC = FSCE)
-!     IT WILL ALWAYS GIVE POSITIVE VOLUMES
-      IF(NSCE.GT.0) THEN
-        DO IS=1,NSCE
-          IF(OPTSOU.EQ.1) THEN
-          ! THE SOURCES ARE NOT CONSIDERED AS A DIRAC
-            DO IPOIN=1,NPOIN3
-!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-              IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
-                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(IS)%P%R(IPOIN)
-                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
-     &                         *SOURCES%ADR(IS)%P%R(IPOIN)/VOLU2(IPOIN)
-              ENDIF
-            ENDDO
-          ELSEIF(OPTSOU.EQ.2) THEN
-          ! THE SOURCES ARE CONSIDERED AS A DIRAC
-            IF(ISCE(IS).GT.0) THEN
-              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
-!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-              IF(SOURCES%ADR(1)%P%R(IPOIN).GT.0.D0) THEN
-                VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(1)%P%R(IPOIN)
-                FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
-     &                         *SOURCES%ADR(1)%P%R(IPOIN)/VOLU2(IPOIN)
-              ENDIF
-            ENDIF
-          ENDIF
-        ENDDO
-      ENDIF
 !     ENTERING BEDFLUXES
       IF(BEDBOU) THEN
 !         DO IPOIN=1,NPOIN2
@@ -404,10 +368,10 @@
 !      &                     *BEDFLU%R(IPOIN)/VOLU2(IPOIN)
 !           ENDIF
 !         ENDDO
-        ! STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
+!       STORE BEDFLU IN T2_18 AS IT NEEDS TO BE ASSEMBLED
         CALL CPSTVC(BEDFLU,T2_18)
         CALL OS('X=Y     ',X=T2_18,Y=BEDFLU)
-        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2D)
+        IF(NCSIZE.GT.1) CALL PARCOM(T2_18,2,MESH2)
         DO IPOIN=1,NPOIN2
 !         HERE VERSION OF BEDFLUXES ASSEMBLED IN PARALLEL
           IF(T2_18%R(IPOIN).GT.0.D0) THEN
@@ -420,7 +384,6 @@
 !
 !     RAIN-EVAPORATION (HERE ONLY RAIN, NOT EVAPORATION, HENCE
 !                       VALUE OF TRACER IN RAIN TAKEN INTO ACCOUNT)
-!
       IF(RAIN) THEN
         DO IPOIN=1,NPOIN2
           IF(PLUIE(IPOIN).GT.0.D0) THEN
@@ -431,6 +394,45 @@
             FC(IS)=FC(IS)+DT*(TRAIN-FC(IS))*PLUIE(IPOIN)/VOLU2(IS)
           ENDIF
         ENDDO
+      ENDIF
+!
+!     BOUNDARY CONDITIONS: TAKES INTO ACCOUNT ENTERING EXTERNAL FLUXES
+!
+      IF(NCSIZE.GT.1) THEN
+        DO I=1,NPTFR3
+!         ASSEMBLED VALUE HERE
+          IPOIN=NBOR3(I)
+          IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN 
+            VOLU2(IPOIN)=VOLU2(IPOIN)-DT*FLUEXTPAR(IPOIN)
+            FC(IPOIN)=FC(IPOIN)-DT*(FBORL(I)-FC(IPOIN))
+     &                            *FLUEXTPAR(IPOIN)/VOLU2(IPOIN)
+          ENDIF
+        ENDDO
+      ELSE
+        DO I=1,NPTFR3
+!         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
+          IPOIN=NBOR3(I)
+          IF(FLUEXT(IPOIN).LT.0.D0) THEN 
+            VOLU2(IPOIN)=VOLU2(IPOIN)-DT*FLUEXT(IPOIN)
+            FC(IPOIN)=FC(IPOIN)-DT*(FBORL(I)-FC(IPOIN))
+     &                            *FLUEXT(IPOIN)/VOLU2(IPOIN)
+          ENDIF
+        ENDDO
+      ENDIF
+      IF(CALFLU) THEN
+        IF(NCSIZE.GT.1) THEN
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            IF(FLUEXTPAR(IPOIN).LT.0.D0) THEN
+              FLUX = FLUX + DT*FBORL(I)*FLUEXT(IPOIN)
+            ENDIF
+          ENDDO
+        ELSE
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            FLUX = FLUX + DT*FBORL(I)*MIN(FLUEXT(IPOIN),0.D0)
+          ENDDO
+        ENDIF
       ENDIF
 !
       NITER = 0
@@ -456,7 +458,7 @@
           T5%R(I)=FC(I)*VOLU2(I)
         ENDDO
         IF(NCSIZE.GT.1) THEN
-!         SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
+!         SHARES AFTER SUMMING
           DO IPTFR=1,NPTIR
             I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
             DO IPLAN=1,NPLAN
@@ -671,25 +673,13 @@
         GO TO 777
       ENDIF
 !
-!     TAKES INTO ACCOUNT EXITING EXTERNAL FLUXES
-!     THIS IS DONE WITHOUT CHANGING THE TRACER
-!    (BUT THE MASS OF TRACER CHANGES)
+!     TAKES INTO ACCOUNT EXITING SOURCES
 !
       IF(CALFLU) THEN
-!       EXITING FLUXES
-        IF(NCSIZE.GT.1) THEN
-          DO IPOIN = 1,NPOIN3
-            FLUX = FLUX + DT*FC(IPOIN)*MAX(TRA03(IPOIN),0.D0)
-          ENDDO
-        ELSE
-          DO IPOIN = 1,NPOIN3
-            FLUX = FLUX + DT*FC(IPOIN)*MAX(FLUEXT(IPOIN),0.D0)
-          ENDDO
-        ENDIF
 !       EXITING SOURCES
         IF(NSCE.GT.0) THEN
           IF(OPTSOU.EQ.1) THEN
-          ! SOURCE NOT CONSIDERED AS A DIRAC
+!           SOURCE NOT CONSIDERED AS A DIRAC
             DO IS=1,NSCE
               IIS=IS
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
@@ -697,13 +687,12 @@
               IF(NCSIZE.GT.1) IIS=IIS+NSCE
               DO IPOIN=1,NPOIN3
                 IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
-                  FLUX=FLUX
-     &                -DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                  FLUX=FLUX-DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
                 ENDIF
               ENDDO
             ENDDO
           ELSE IF(OPTSOU.EQ.2) THEN
-          ! SOURCE CONSIDERED AS A DIRAC
+!           SOURCE CONSIDERED AS A DIRAC
             DO IS=1,NSCE
 !             HERE IN PARALLEL SOURCES WITHOUT PARCOM
 !             ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
@@ -711,8 +700,7 @@
               IF(ISCE(IS).GT.0) THEN
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(SOURCES%ADR(1)%P%R(IPOIN).LT.0.D0) THEN
-                  FLUX=FLUX
-     &                -DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
+                  FLUX=FLUX-DT*FC(IPOIN)*SOURCES%ADR(IIS)%P%R(IPOIN)
                 ENDIF
               ENDIF
             ENDDO
@@ -722,18 +710,61 @@
         IF(BEDBOU) THEN
 !         HERE IN PARALLEL BEDFLUXES WITHOUT PARCOM
           DO IPOIN=1,NPOIN2
-              IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
-                FLUX=FLUX
-     &              -DT*FC(IPOIN)*BEDFLU%R(IPOIN)
+            IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+              FLUX=FLUX-DT*FC(IPOIN)*BEDFLU%R(IPOIN)
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!     UPDATING VOLUME (FOR CONTROLS AND EVAPORATION THAT COMES AFTER)
+!
+      IF(TESTING.OR.RAIN) THEN
+!       EXITING SOURCES (WITH FC UNCHANGED)
+        IF(NSCE.GT.0) THEN
+          IF(OPTSOU.EQ.1) THEN
+!           SOURCE NOT CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              DO IPOIN=1,NPOIN3
+!               HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+                IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
+                  VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                        DT*SOURCES%ADR(IS)%P%R(IPOIN)
+                ENDIF
+              ENDDO
+            ENDDO
+          ELSEIF(OPTSOU.EQ.2) THEN
+!           SOURCE CONSIDERED AS A DIRAC
+            DO IS=1,NSCE
+              IF(ISCE(IS).GT.0) THEN
+                IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
+!               HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+                IF(SOURCES%ADR(1)%P%R(IPOIN).LT.0.D0) THEN
+                  VOLU2(IPOIN)=VOLU2(IPOIN)+
+     &                        DT*SOURCES%ADR(1)%P%R(IPOIN)
+                ENDIF
               ENDIF
             ENDDO
+          ENDIF
+        ENDIF
+!       EXITING BEDFLUXES (WITH FC UNCHANGED)
+        IF(BEDBOU) THEN
+          DO IPOIN=1,NPOIN2
+!           HERE VERSION OF BEDFLU ASSEMBLED IN PARALLEL
+!             IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
+!               VOLU2(IPOIN)=VOLU2(IPOIN)+
+!      &                    DT*BEDFLU%R(IPOIN)
+!             ENDIF
+            IF(T2_18%R(IPOIN).LT.0.D0) THEN
+              VOLU2(IPOIN)=VOLU2(IPOIN)+DT*T2_18%R(IPOIN)
+            ENDIF
+          ENDDO
         ENDIF
       ENDIF
 !
 !     RAIN-EVAPORATION (HERE ONLY EVAPORATION, NOT RAIN, HENCE
 !                       VALUE OF TRACER IN RAIN NOT TAKEN INTO ACCOUNT
 !                       AND ASSUMED TO BE 0)
-!
       IF(RAIN) THEN
         DO IPOIN=1,NPOIN2
           IF(PLUIE(IPOIN).LT.0.D0) THEN
@@ -746,94 +777,46 @@
         ENDDO
       ENDIF
 !
+!     EXITING BOUNDARY FLUXES
+!
+      IF(CALFLU) THEN
+        IF(NCSIZE.GT.1) THEN
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            IF(FLUEXTPAR(IPOIN).GT.0.D0) THEN
+              FLUX = FLUX + DT*FC(IPOIN)*FLUEXT(IPOIN)
+            ENDIF
+          ENDDO
+        ELSE
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            FLUX = FLUX + DT*FC(IPOIN)*MAX(FLUEXT(IPOIN),0.D0)
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!     EXITING FLUXES (NO EFFECT ON THE TRACER, JUST MASS BALANCE, BUT NECESSARY
+!                     FOR CONTROLS OR FOR RAIN)
+!
       IF(TESTING) THEN
-!       EXITING SOURCES (WITH FC UNCHANGED)
-        IF(NSCE.GT.0) THEN
-          IF(OPTSOU.EQ.1) THEN
-          ! SOURCE NOT CONSIDERED AS A DIRAC
-            DO IS=1,NSCE
-              DO IPOIN=1,NPOIN3
-!               HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-                IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
-                  VOLU2(IPOIN)=VOLU2(IPOIN)+
-     &                        DT*SOURCES%ADR(IS)%P%R(IPOIN)
-                ENDIF
-              ENDDO
-            ENDDO
-          ELSE IF(OPTSOU.EQ.2) THEN
-          ! SOURCE CONSIDERED AS A DIRAC
-            IF(ISCE(IS).GT.0) THEN
-              IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
-!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
-              IF(SOURCES%ADR(1)%P%R(IPOIN).LT.0.D0) THEN
-                VOLU2(IPOIN)=VOLU2(IPOIN)+
-     &                      DT*SOURCES%ADR(1)%P%R(IPOIN)
-              ENDIF
-            ENDIF
-          ENDIF
-        ENDIF
-!       EXITING BEDFLUXES (WITH FC UNCHANGED)
-        IF(BEDBOU) THEN
-          DO IPOIN=1,NPOIN2
-!           HERE VERSION OF BEDFLU ASSEMBLED IN PARALLEL
-!             IF(BEDFLU%R(IPOIN).LT.0.D0) THEN
-!               VOLU2(IPOIN)=VOLU2(IPOIN)+
-!      &                    DT*BEDFLU%R(IPOIN)
-!             ENDIF
-            IF(T2_18%R(IPOIN).LT.0.D0) THEN
-              VOLU2(IPOIN)=VOLU2(IPOIN)+
-     &                    DT*T2_18%R(IPOIN)
-            ENDIF
-          ENDDO
-        ENDIF
-!       EXITING FLUXES
         IF(NCSIZE.GT.1) THEN
-          DO I=1,NPOIN3
-            TRA02(I)=MAX(TRA03(I),0.D0)
-!           SHARED FLUEXT IN TRA03 ERASED NOW (NOT USED AFTER)
-!           NOW VOLU IS COPIED INTO TRA03 FOR PARCOM
-            TRA03(I)=VOLU(I)
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            VOLU2(IPOIN)=VOLU2(IPOIN)-DT*MAX(FLUEXTPAR(IPOIN),0.D0)
           ENDDO
         ELSE
-          DO I=1,NPOIN3
-            TRA02(I)=MAX(FLUEXT(I),0.D0)
-            TRA03(I)=VOLU(I)
+          DO I = 1,NPTFR3
+            IPOIN=NBOR3(I)
+            VOLU2(IPOIN)=VOLU2(IPOIN)-DT*MAX(FLUEXT(IPOIN),0.D0)
           ENDDO
         ENDIF
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(STRA02,2,MESH3)
-          CALL PARCOM(STRA03,2,MESH3)
-        ENDIF
-!!!!!
-!!!!!   IMPORTANT WARNING: THIS SHOULD BE DONE EVEN WITHOUT TESTING
-!!!!!   IF WE WANT THE CORRECT VOLU2, BUT VOLU2 HERE IS NOT USED
-!!!!!   AFTER.
-!!!!!
         DO I=1,NPOIN3
-          VOLU2(I)=VOLU2(I)-TRA02(I)*DT
-          IF(VOLU2(I).LT.0.D0) THEN
-            WRITE(LU,*) 'POINT ',I,' VOLU2=',VOLU2(I)
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+          TRA03(I)=VOLU(I)
         ENDDO
-!!!!!
-!!!!!   END OF IMPORTANT NOTE
-!!!!!
+        IF(NCSIZE.GT.1) CALL PARCOM(STRA03,2,MESH3)
+        CALL OS('X=X-Y   ',X=STRA03,Y=SVOLU2)
 !       CHECKS EQUALITY OF ASSEMBLED VOLUMES
-        C=0.D0
-        IF(NCSIZE.GT.1) THEN
-          DO I=1,NPOIN3
-            C=C+ABS(VOLU2(I)-TRA03(I))*MESH3%IFAC%I(I)
-          ENDDO
-          C=P_DSUM(C)
-        ELSE
-          DO I=1,NPOIN3
-!                            VOLU
-            C=C+ABS(VOLU2(I)-TRA03(I))
-          ENDDO
-        ENDIF
-        WRITE(LU,*) 'ERROR ON VOLUMES = ',C
+        WRITE(LU,*) 'ERROR ON VOLUMES = ',P_DOTS(STRA03,STRA03,MESH3)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -847,6 +830,10 @@
           ENDIF
         ENDDO
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     IMPLICIT SOURCE TERMS ???
 !
 !-----------------------------------------------------------------------
 !

@@ -39,9 +39,10 @@
 !+   scheme ERIA=15.
 !
 !history  J.M. HERVOUET (LNHE)
-!+        09/09/2016
+!+        11/09/2016
 !+        V7P2
 !+   Adding dummy RAIN and PLUIE to call of positive_depths.
+!+   Retrieving SMH without rain in the case of rain.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -146,21 +147,48 @@
 !
           OPTPOS=2
           IF(OPT_HNEG.EQ.3) OPTPOS=1
-          CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
-     &                         MESH2D,FLODEL,.FALSE.,
-     &                         FLBOR,DT,UNSV2D,NPOIN2,
-     &                         GLOSEG(1:DIMGLO,1),
-     &                         GLOSEG(1:DIMGLO,2),
-     &                         MESH2D%NBOR%I,NPTFR2,
-!                                         PLUIE RAIN (RAIN INCLUDED IN SMH SO FAR...)
-!                                         SO IS SET TO FALSE HERE.
-     &                         SMH,.TRUE.,SMH, .FALSE.,2,
-!                                   YASMH OPTSOU
-!                              SMH IN PROJECTED FORM IN T3D
-     &                         FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
-     &                         MESH2D%W%R,NAMECODE,OPTPOS,MAXADV)
-!                                                  OPTION
-!                                                  FOR POSITIVE DEPTH ALGORITHM
+!
+!         PROVISIONAL!!!! SPLITTING SOURCES AND RAIN FOR POSITIVE DEPTHS
+!         BECAUSE POSITIVE AND NEGATIVE SOURCES ARE NOT TREATED AT THE SAME TIME
+!         ORIGINAL RAIN WITHOUT *VOLU2D OR *V2DPAR PUT INTO T2_05
+!         (EQUIVALENT OF "PLUIE" IN TELEMAC-2D)
+!
+          IF(RAIN) THEN
+            IF(NCSIZE.GT.1) THEN
+              CALL OS('X=Y-Z   ',X=T2_05,Y=SMH,Z=PARAPLUIE)
+              CALL OS('X=YZ    ',X=T2_06,Y=PARAPLUIE,Z=UNSV2D)
+            ELSE
+              CALL OS('X=Y-Z   ',X=T2_05,Y=SMH,Z=PLUIE)
+              CALL OS('X=Y/Z   ',X=T2_06,Y=PLUIE,Z=VOLU2D)
+            ENDIF
+            CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
+     &                           MESH2D,FLODEL,.FALSE.,
+     &                           FLBOR,DT,UNSV2D,NPOIN2,
+     &                           GLOSEG(1:DIMGLO,1),
+     &                           GLOSEG(1:DIMGLO,2),
+     &                           MESH2D%NBOR%I,NPTFR2,
+!                                SMH          PLUIE RAIN
+     &                           T2_05,.TRUE.,T2_06,RAIN,2,
+!                                     YASMH OPTSOU
+!                                SMH IN PROJECTED FORM IN T3D
+     &                           FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
+     &                           MESH2D%W%R,NAMECODE,OPTPOS,MAXADV)
+!                                                    OPTION FOR POSITIVE DEPTH ALGORITHM
+          ELSE
+            CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
+     &                           MESH2D,FLODEL,.FALSE.,
+     &                           FLBOR,DT,UNSV2D,NPOIN2,
+     &                           GLOSEG(1:DIMGLO,1),
+     &                           GLOSEG(1:DIMGLO,2),
+     &                           MESH2D%NBOR%I,NPTFR2,
+!                                           PLUIE (NOT INITIALISED BUT NOT USED)
+     &                           SMH,.TRUE.,T2_06,RAIN,2,
+!                                     YASMH OPTSOU
+!                                SMH IN PROJECTED FORM IN T3D
+     &                           FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
+     &                           MESH2D%W%R,NAMECODE,OPTPOS,MAXADV)
+!                                                    OPTION FOR POSITIVE DEPTH ALGORITHM
+          ENDIF
 !
         ELSEIF(OPT_HNEG.EQ.1) THEN
 !

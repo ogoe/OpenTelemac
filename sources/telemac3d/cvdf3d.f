@@ -87,6 +87,11 @@
 !+        V7P2
 !+   Adding Predictor-corrector schemes and the LIPS advection scheme.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/09/2016
+!+        V7P2
+!+   Arguments changed in the call to murd3d_pos (NERD scheme).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -360,16 +365,17 @@
 !     I.E. LIFBOL STILL KENT DESPITE ABOVE CHANGE
 !
       IF((SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI.OR.
-     &    SCHCF.EQ.ADV_LPO).AND.YADIRFLU) THEN
+     &    SCHCF.EQ.ADV_LPO.OR.SCHCF.EQ.ADV_LPO_TF.OR.
+     &    SCHCF.EQ.ADV_NSC_TF).AND.YADIRFLU) THEN
 !
         IF(NPTFR3.GT.0) THEN
 !
-        DO IP=1,NPTFR3
-          IF(DIRFLU(NUMLIQ(IP)).EQ.2.AND.LIFBOL%I(IP).EQ.KENT) THEN
-            I=NBOR3%I(IP)
-            LIFBOL%I(IP)=KSORT
-          ENDIF
-        ENDDO
+          DO IP=1,NPTFR3
+            IF(DIRFLU(NUMLIQ(IP)).EQ.2.AND.LIFBOL%I(IP).EQ.KENT) THEN
+              I=NBOR3%I(IP)
+              LIFBOL%I(IP)=KSORT
+            ENDIF
+          ENDDO
 !
         ENDIF
 !
@@ -378,11 +384,7 @@
 !     A PRIORI CORRECTION OF FN FOR REAL ENTRANCES
 !     I.E. LIFBOL STILL KENT DESPITE ABOVE CHANGE
 !
-      IF((SCHCF.EQ.ADV_SUP .OR.
-     &    SCHCF.EQ.ADV_LPO_TF.OR.SCHCF.EQ.ADV_NSC_TF)
-     &                                              .AND.YADIRFLU) THEN
-!
-        IF(NPTFR3.GT.0) THEN
+      IF(SCHCF.EQ.ADV_SUP.AND.YADIRFLU.AND.NPTFR3.GT.0) THEN
 !
         DO IP=1,NPTFR3
           IF(DIRFLU(NUMLIQ(IP)).EQ.2.AND.LIFBOL%I(IP).EQ.KENT) THEN
@@ -402,8 +404,6 @@
             LIFBOL%I(IP)=KSORT
           ENDIF
         ENDDO
-!
-        ENDIF
 !
       ENDIF
 !
@@ -473,6 +473,32 @@
      &              IKLE3%I,MESH2D,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
      &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
+     &              SOURCES,FSCE,RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
+     &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
+     &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
+     &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
+     &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
+     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
+     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
+     &              OPTADV,NCO_DIST,NSP_DIST)
+!
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+        S0F%TYPR='0'
+!
+!-----------------------------------------------------------------------
+!
+!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
+!
+      ELSEIF(SCHCF.EQ.ADV_LPO) THEN
+!
+        CALL MURD3D(FC,FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
+     &              MESH3D%M,MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
+     &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
+     &              IKLE3%I,MESH2D,MESH3D,
+     &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
+     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
      &              SOURCES,FSCE,
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
@@ -522,34 +548,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
-!
-      ELSEIF(SCHCF.EQ.ADV_LPO) THEN
-!
-        CALL MURD3D(FC,FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &              MESH3D%M,MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
-     &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &              IKLE3%I,MESH2D,MESH3D,
-     &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
-     &              SOURCES,FSCE,
-     &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
-     &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
-     &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
-     &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
-     &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
-     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
-     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
-     &              OPTADV,NCO_DIST,NSP_DIST)
-!
-!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-!       IF DIFF3D IS CALLED AFTER
-        S0F%TYPR='0'
-!
-!-----------------------------------------------------------------------
-!
-!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
+!     ADVECTION BY NERD SCHEME WITH LEO POSTMA FLUXES
 !
       ELSEIF(SCHCF.EQ.ADV_LPO_TF) THEN
 !
@@ -558,7 +557,8 @@
      &                  T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &                  MESH2D,MESH3D,
      &                  NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                  CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &                  CALFLU,FLUXF,FLUEXT%R,FLUEXTPAR%R,FBORL%R,
+     &                  NPTFR3,NBOR3%I,S0F2,NSCE,SOURCES,FSCE,
      &                  RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
      &                  FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &                  MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
@@ -572,7 +572,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
+!     ADVECTION BY NERD SCHEME WITH N FLUXES
 !
       ELSEIF(SCHCF.EQ.ADV_NSC_TF) THEN
 !
@@ -583,7 +583,8 @@
      &                  T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &                  MESH2D,MESH3D,
      &                  NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                  CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
+     &                  CALFLU,FLUXF,FLUEXT%R,FLUEXTPAR%R,FBORL%R,
+     &                  NPTFR3,NBOR3%I,S0F2,NSCE,SOURCES,FSCE,
      &                  RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
      &                  MURD_TF%X%R(1     :MESH3D%NSEG     ),
      &                  MURD_TF%X%R(1+PARA:MESH3D%NSEG+PARA),
@@ -632,14 +633,14 @@
 !     HENCE NO EFFECT WHEN YADIRFLU=.TRUE.
 !
       IF(NPTFR3.GT.0) THEN
-      DO IP=1,NPTFR3
-        IF(LIFBOL%I(IP).EQ.KENT .OR.
-     &     LIFBOL%I(IP).EQ.KENTU.OR.
-     &     LIFBOL%I(IP).EQ.KADH) THEN
-           I=NBOR3%I(IP)
-           FC%R(I) = FBORL%R(IP)
-        ENDIF
-      ENDDO
+        DO IP=1,NPTFR3
+          IF(LIFBOL%I(IP).EQ.KENT .OR.
+     &       LIFBOL%I(IP).EQ.KENTU.OR.
+     &       LIFBOL%I(IP).EQ.KADH) THEN
+             I=NBOR3%I(IP)
+             FC%R(I) = FBORL%R(IP)
+          ENDIF
+        ENDDO
       ENDIF
 !
 !     BOTTOM AND FREE SURFACE

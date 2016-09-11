@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
@@ -59,6 +59,11 @@
 !+        14/03/2016
 !+        V7P2
 !+   Sources of type Dirac were not properly treated in scalar mode.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        11/09/2016
+!+        V7P2
+!+   Section on rain slightly rearranged to avoid code duplication.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,12 +178,6 @@
 !           USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
             CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
      &                         C=RAIN_MMPD/86400000.D0)
-!           SMH MUST BE ASSEMBLED IN PARALLEL
-            CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
-          ELSE
-!           PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
-!           BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
-            CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
           ENDIF
         ELSEIF(ATMOSEXCH.EQ.2) THEN
           DO I=1,NPOIN2
@@ -209,16 +208,19 @@
               PARAPLUIE%R(I) = V2DPAR%R(I)*(RAINFALL*1.D-3-DEBEVAP)
             ENDIF
           ENDDO
-!         PLUIE MUST BE NON ASSEMBLED IN PARALLEL
-          IF(NCSIZE.GT.1) THEN
-!           SMH MUST BE ASSEMBLED IN PARALLEL
-            CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
-          ELSE
-!           PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
-!           BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
-            CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
-          ENDIF
         ENDIF
+!
+!       ADDING TO SMH
+!
+        IF(NCSIZE.GT.1) THEN
+!         SMH MUST BE ASSEMBLED IN PARALLEL
+          CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
+        ELSE
+!         PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
+!         BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
+          CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
+        ENDIF
+!
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -245,4 +247,3 @@
 !
       RETURN
       END
-
