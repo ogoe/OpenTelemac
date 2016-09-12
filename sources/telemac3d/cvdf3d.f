@@ -88,9 +88,9 @@
 !+   Adding Predictor-corrector schemes and the LIPS advection scheme.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        11/09/2016
+!+        12/09/2016
 !+        V7P2
-!+   Arguments changed in the call to murd3d_pos (NERD scheme).
+!+   Arguments changed in the call to murd3d and murd3d_pos.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -473,15 +473,14 @@
      &              IKLE3%I,MESH2D,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
      &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
-     &              SOURCES,FSCE,RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
+     &              SOURCES,FSCE,RAIN,PLUIE,PARAPLUIE,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
      &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
-     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
-     &              OPTADV,NCO_DIST,NSP_DIST)
+     &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -500,15 +499,14 @@
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
      &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,ISCE,KSCE,
      &              SOURCES,FSCE,
-     &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
+     &              RAIN,PLUIE,PARAPLUIE,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
      &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
-     &              TRAV3%ADR(12)%P%R,T2_01,BEDBOU,BEDFLU,
-     &              OPTADV,NCO_DIST,NSP_DIST)
+     &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
