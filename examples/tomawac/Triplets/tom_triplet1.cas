@@ -5,13 +5,13 @@
 /--------------------------------------------------------------------
 /     FILES
 /--------------------------------------------------------------------
-GEOMETRY FILE = geo.slf
-BOUNDARY CONDITIONS FILE = limite.cli
-2D RESULTS FILE = res2.slf
+GEOMETRY FILE = geo_triplet.slf
+BOUNDARY CONDITIONS FILE = geo_triplet.cli
+2D RESULTS FILE = r2d_triplet1.slf
 /--------------------------------------------------------------------
 / MISCELLANEOUS INPUT-OUTPUT
 /--------------------------------------------------------------------
-TITLE = 'CAS TEST TRIA2'
+TITLE = 'CAS TEST TRIA1'
 PERIOD FOR GRAPHIC PRINTOUTS = 30
 VARIABLES FOR 2D GRAPHIC PRINTOUTS =
 M0,HM0,DMOY,TMOY,VX,VY,ZF,FMOY,TPD,POW
@@ -59,4 +59,4 @@ BOUNDARY DIRECTIONAL SPREAD 1 = 64.66
 DEPTH-INDUCED BREAKING DISSIPATION = 2
 DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA = 0.6
 DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY = 3
-TRIAD INTERACTIONS = 2
+TRIAD INTERACTIONS = 1
