@@ -2780,21 +2780,6 @@ AIDE1 = 'Name of the possible file containing the bathymetric data.
 Where this keyword is used, these bathymetric data shall be used in
 the computation.'
 
-NOM = 'FICHIER POUR SCOPE'
-NOM1 = 'FILE FOR SCOPE'
-TYPE = CARACTERE
-INDEX = 17
-MNEMO = 'T3D\_FILES(T3DSCO)\%NAME'
-TAILLE = 0
-SUBMIT = 'T3DSCO-WRITE-32;T3DSCO;FACUL;ASC;ECR;PARAL'
-DEFAUT = ' '
-DEFAUT1 = ' '
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
-NIVEAU = 1
-AIDE = 'Nom du fichier eventuel pour Scope.'
-AIDE1 = 'Name of the potential file for Scope.'
-
 NOM = 'FICHIER DES RESULTATS 2D'
 NOM1 = '2D RESULT FILE'
 TYPE = CARACTERE
@@ -4116,7 +4101,7 @@ AIDE = 'Fixe la precision pour l''equation de Poisson.'
 AIDE1 = 'Sets the precision needed for the computation of the Poisson
 Pressure Equation.'
 
-NOM = 'VITESSE DES SOURCES SELON Z'
+NOM = 'VITESSES DES SOURCES SELON Z'
 NOM1 = 'VELOCITIES OF THE SOURCES ALONG Z'
 TYPE = REEL
 INDEX = 72
@@ -4489,7 +4474,7 @@ AIDE1 = 'Determines the imposed value of tracers at the first boundary,
 then at the second, and so on, with the same logic as
 \telkey{VALUE OF THE TRACERS AT THE SOURCES}.'
 
-NOM = 'VITESSE DES SOURCES SELON X'
+NOM = 'VITESSES DES SOURCES SELON X'
 NOM1 = 'VELOCITIES OF THE SOURCES ALONG X'
 TYPE = REEL
 INDEX = 86
@@ -4505,7 +4490,7 @@ AIDE1 = 'Specifies the compoment along $x$ of the velocities of the
 sources. If nothing is specified, the sources diffuse without any
 velocity in every direction (cf. validation case source).'
 
-NOM = 'VITESSE DES SOURCES SELON Y'
+NOM = 'VITESSES DES SOURCES SELON Y'
 NOM1 = 'VELOCITIES OF THE SOURCES ALONG Y'
 TYPE = REEL
 INDEX = 87
@@ -7780,7 +7765,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 46
+TAILLE = 45
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -7789,7 +7774,6 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'FICHIER DU CALCUL PRECEDENT';
           'FICHIER DES RESULTATS 3D';
           'FICHIER DES FONDS';
-          'FICHIER POUR SCOPE';
           'FICHIER DES RESULTATS 2D';
           'FICHIER DE DONNEES FORMATE 1';
           'FICHIER DE DONNEES FORMATE 2';
@@ -7836,7 +7820,6 @@ DEFAUT1 = 'STEERING FILE';
           'PREVIOUS COMPUTATION FILE';
           '3D RESULT FILE';
           'BOTTOM TOPOGRAPHY FILE';
-          'FILE FOR SCOPE';
           '2D RESULT FILE';
           'FORMATTED DATA FILE 1';
           'FORMATTED DATA FILE 2';

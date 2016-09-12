@@ -814,8 +814,6 @@ files: declarations_telemac3d.f
   bord3d.f
   t3d_trsce.f
   viscko.f
-  coupe.f
-  scope.f
   t3d_debsce.f
   viscke.f
   t3d_stress.f
