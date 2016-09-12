@@ -250,7 +250,7 @@ def compileMascaretDependencies(cfg,cfgName):
    objName = path.join(cfg['root'],'builds',cfgName,'lib','mascaret','adstack.o')
    cmd = cfg['cmd_obj_c'].replace('<srcName>',srcName)
    cmd = cmd.replace('<objName>',objName)
-   
+
    """
    cmd = cfg['cmd_obj_c'].replace('<srcName>',
                               path.join(cfg['root'],
@@ -304,7 +304,7 @@ def compileMascaretDependencies(cfg,cfgName):
    print '   - completed: ../sources/mascaret/Deriv/adstack.c'
    """
    HOMERES['HOMERE_MASCARET']['add'].append(('adstack.o','mascaret'))
-   
+
 def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(path.basename(oname))
@@ -400,7 +400,7 @@ def createExeFiles(cfg,ename,ecfg,eprog,mes,bypass):
          ExeFile = path.join(ExeDir,eprog + cfg['SYSTEM']['sfx_lib'])
          cmd = cmd.replace('<libname>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
       else:
-         raise Exception([{'name':'createExeFiles','msg':'Your execute commande does not include a <exename> or a <libname>. I do not know what to do with it.'}])
+         raise Exception([{'name':'createExeFiles','msg':'Your execute command does not include a <exename> or a <libname>. I do not know what to do with it.'}])
       ObjCmd = path.join(LibDir,eprog + '.cmdo')
       ExeCmd = path.join(LibDir,eprog + '.cmdx')
    else:
@@ -780,6 +780,12 @@ if __name__ == "__main__":
             if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
             else:
                ibar = 0; pbar = ProgressBar(maxval=len(HOMERES[item]['add'])).start()
+               # ~~> just checking
+               for mod in HOMERES[item]['deps']:
+                  if mod not in cfg['MODULES']:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> dependency checks','msg':'\n ... The compilation of '+item+' depends on '+mod+' but you seem to have removed it from the "modules" of your configuration file.'})])
+                     print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
+                     sys.exit(1)
                for obj,lib in HOMERES[item]['add'] :
                   out = createObjFiles(cfg,obj,item, \
                      {'libname':lib,'type':getPrincipalWrapNames(path.join(cmdfFiles[mod][item][lib]['path'],obj))[0][0], \
