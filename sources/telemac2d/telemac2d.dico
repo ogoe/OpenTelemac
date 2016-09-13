@@ -6160,13 +6160,40 @@ le modele CN du SCS. Les options disponibles sont:
   1 : conditions precedentes seches
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
-ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)'
+ce mot cle est uniquement utile pour le modele pluie-debit 1 (CN)'
 AIDE1 = 'gives the antecedent moisture conditions before a rainfall
  event for the SCS CN runoff model. Available options are:
   1 : dry antecedent conditions
   2 : normal antecedent conditions
   3 : wet antecedent conditions
-this keyword is only usefull for runoff model 1 (SCS CN model)'
+This keyword is only usefull for runoff model 1 (SCS CN model)'
+
+NOM = 'OPTION POUR RATIO DES PERTES INITIALES'
+NOM1 = 'OPTION FOR INITIAL ABSTRACTION RATIO'
+TYPE = ENTIER
+INDEX = 106
+MNEMO = 'IASCNOPT'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'Donne le ratio entre pertes initiales IA et la retention potentielle
+maximale S pour le modele pluie-debit SCS CN. Les options disponibles sont:
+  1 : IA/S = 0.2 (methode standard)
+  2 : IA/S = 0.05 (methode revisee, cf. Woodward, Hawkins et al. 2003. Avec 
+      cette option les coefficients CN fournis en entree sont alors 
+          automatiquement corriges, cf. manuel utilisateur). 
+Ce mot cle est uniquement utile pour le modele pluie-d�bit 1 (CN)'
+AIDE1 = 'Gives the ratio for Initial Abstraction to Maximal Potential 
+Retention S for the SCS CN runoff model. Available options are:  
+  1 : IA/S = 0.2 (standard method)
+  2 : IA/S = 0.05 (revised method, see Woodward, Hawkins et al. 2003. With  
+      this option the CN values given in input are automatically conversed, 
+          see user manual).
+This keyword is only useful for runoff model 1 (SCS CN model)'
+
 
 NOM = 'DUREE DE LA PLUIE OU EVAPORATION EN HEURES'
 NOM1 = 'DURATION OF RAIN OR EVAPORATION IN HOURS'

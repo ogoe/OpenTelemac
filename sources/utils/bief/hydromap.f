@@ -74,7 +74,7 @@
      &      ,/,1X,'ERREUR DANS LE FICHIER DES COEFFICIENTS CN'
      &      ,/,1X,'A LA LIGNE ',I7)
 19    FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'ERROR IN CURVE NUMBERS FILE'
+     &      ,/,1X,'ERROR IN THE CURVE NUMBERS FILE'
      &      ,/,1X,'AT LINE ',I7)
       CALL PLANTE(1)
       STOP
@@ -115,10 +115,10 @@
       IF(LNG.EQ.1) WRITE(LU,12) NP
       IF(LNG.EQ.2) WRITE(LU,13) NP
 12    FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'ERREUR DANS LE FICHIER DE L HUMIDITE '
-     &      ,/,1X,'PRECEDENTE, A LA LIGNE ',I7)
+     &      ,/,1X,'ERREUR DANS LE FICHIER DES '
+     &      ,/,1X,'COEFFICIENTS CN, A LA LIGNE ',I7)
 13    FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'ERROR IN THE PREVIOUS MOISTURE FILE'
+     &      ,/,1X,'ERROR IN THE CURVE NUMBERS FILE'
      &      ,/,1X,'AT LINE ',I7)
       CALL PLANTE(1)
       STOP
@@ -128,11 +128,11 @@
       IF(LNG.EQ.1) WRITE(LU,112) NP
       IF(LNG.EQ.2) WRITE(LU,113) NP
 112   FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'NOMBRE DE POINTS DANS LE FICHIER DE L HUMITIE'
-     &      ,/,1X,'PRECEDENTE : ',I7
+     &      ,/,1X,'NOMBRE DE POINTS DANS LE FICHIER DES'
+     &      ,/,1X,'COEFFICIENTS CN : ',I7
      &      ,/,1X,'INTERPOLATION EN COURS ........')
 113   FORMAT(1X,'HYDROMAP (BIEF):'
-     &      ,/,1X,'NUMBER OF POINTS IN THE PREVIOUS MOISTURE FILE:',I7
+     &      ,/,1X,'NUMBER OF POINTS IN THE CURVE NUMBERS FILE:',I7
      &      ,/,1X,'INTERPOLATING ........')
 !
 !-----------------------------------------------------------------------

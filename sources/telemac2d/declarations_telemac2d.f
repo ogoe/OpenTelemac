@@ -1235,6 +1235,10 @@
 !     ANTECEDENT MOISTURE CONDITION (FOR SCS_CN RAINFALL-RUNOFF MODEL)
 !
       INTEGER AMC
+!
+!     RATIO FOR INITIAL ABSTRACTION (FOR SCS_CN RAINFALL-RUNOFF MODEL)
+!
+      INTEGER IASCNOPT
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
