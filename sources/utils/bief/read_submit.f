@@ -56,7 +56,6 @@
 !
       INTEGER I,ICOL,I1,CANAL
 !
-!     CHARACTER(LEN=7) :: NOMCANAL
       CHARACTER(LEN=9) :: LITECR
 !
       INTEGER  PREVAL,INTLU
@@ -69,6 +68,7 @@
         FILES(I)%TELNAME='      '
         FILES(I)%NAME(1:1)=' '
       ENDDO
+      CANAL = 0
 !
 !-----------------------------------------------------------------------
 !
@@ -77,21 +77,19 @@
 !
       DO I=1,NMOT
 !
-! EXAMPLE SUBMIT STRING : 'NGEO-READ-01;T2DGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
+! EXAMPLE SUBMIT STRING : 'NGEO-READ;T2DGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
 !
         IF(     SUBMIT(4,I).NE.' '
-!       IF(     SUBMIT(4,I).NE.' '.AND.MOTCAR(I)(1:1).NE.' '
      &     .AND.SUBMIT(4,I)(1:7).NE.'INUTILE'  ) THEN
 !         SCANS FOR CHANNEL FORTRAN NAME (FOR EXAMPLE NGEO)
           ICOL=PREVAL(1,SUBMIT(4,I),'-','-','-')
-!         NOMCANAL=SUBMIT(4,I)(1:ICOL-1)
 !         SCANS FOR THE READ OR WRITE OR READWRITE STRING
 !         LOCATED BEFORE THE NEXT - SIGN
           I1=ICOL+1
-          ICOL=PREVAL(I1,SUBMIT(4,I),'-','-','-')
+          ICOL=PREVAL(I1,SUBMIT(4,I),';',';',';')
           LITECR=SUBMIT(4,I)(I1:ICOL-1)
 !         READS THE CHANNEL AFTER THE - SIGN
-          CANAL=INTLU(ICOL,SUBMIT(4,I))
+          CANAL = CANAL + 1
           IF(CANAL.GT.NFILES) THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'READ_SUBMIT : NFILES TROP PETIT : ',NFILES
@@ -107,7 +105,6 @@
           FILES(CANAL)%LU=CANAL
           FILES(CANAL)%ACTION=LITECR
 !
-          ICOL=PREVAL(ICOL,SUBMIT(4,I),';',';',';')
 !         READS THE NAME OF THE FILE TO BE COPIED TO THE TMP FOLDER
           I1=PREVAL(ICOL+1,SUBMIT(4,I),';',';',';')
           FILES(CANAL)%TELNAME=SUBMIT(4,I)(ICOL+1:I1-1)

@@ -174,6 +174,7 @@
       EXTERNAL          EXTENS
 !
       LOGICAL ALGAE
+      INTEGER ID
 !
 !-----------------------------------------------------------------------
 !
@@ -570,21 +571,22 @@
 !
 !         1) EVERY PROCESSOR WRITES ITS OWN DATA IN A FILE WITH EXTENSION
 !
+          CALL GET_FREE_ID(ID)
           IF(NFLOT.GT.0) THEN
-            OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
+            OPEN(ID,FILE=EXTENS(NCSIZE,IPID+1),
      &           FORM='FORMATTED',STATUS='NEW')
             IF(IELM.EQ.11) THEN
               DO IFLOT=1,NFLOT
-                WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),
+                WRITE(ID,300) TAGFLO(IFLOT),XFLOT(IFLOT),
      &                        YFLOT(IFLOT),1
               ENDDO
             ELSE
               DO IFLOT=1,NFLOT
-                WRITE(99,301) TAGFLO(IFLOT),XFLOT(IFLOT),
+                WRITE(ID,301) TAGFLO(IFLOT),XFLOT(IFLOT),
      &                        YFLOT(IFLOT),ZFLOT(IFLOT),1
               ENDDO
             ENDIF
-            CLOSE(99)
+            CLOSE(ID)
           ENDIF
 !
 !         2) WAITING ALL PROCESSORS
@@ -600,14 +602,14 @@
             DO IPROC=1,NCSIZE
               INQUIRE(FILE=EXTENS(NCSIZE,IPROC),EXIST=YESITIS)
               IF(YESITIS) THEN
-                OPEN(99,FILE=EXTENS(NCSIZE,IPROC),
+                OPEN(ID,FILE=EXTENS(NCSIZE,IPROC),
      &               FORM='FORMATTED',STATUS='OLD')
 22              CONTINUE
-                READ(99,100,ERR=23,END=23) LIGNE
+                READ(ID,100,ERR=23,END=23) LIGNE
                 WRITE(UL,*) LIGNE
                 GO TO 22
 23              CONTINUE
-                CLOSE(99,STATUS='DELETE')
+                CLOSE(ID,STATUS='DELETE')
               ENDIF
             ENDDO
           ENDIF

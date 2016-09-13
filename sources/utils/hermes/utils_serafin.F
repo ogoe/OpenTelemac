@@ -592,12 +592,6 @@
         CALL CHECK_CALL(IERR,'OPEN_BND_SRF:GET_SRF_OBJ')
         !
         ! Open the boundary file with a set id available
-        SRF_OBJ_TAB(SRF_ID)%NCLI = 1000 + FILE_ID
-        DO
-          INQUIRE(UNIT=SRF_OBJ_TAB(SRF_ID)%NCLI,OPENED=IS_USED)
-          IF(.NOT.IS_USED) EXIT
-          SRF_OBJ_TAB(SRF_ID)%NCLI = SRF_OBJ_TAB(SRF_ID)%NCLI + 1
-        ENDDO
         ! First we check if the file is already opened
         ! Telemac is using one boundary file for all the mesh file
         ! so it could have been opened by another mesh before hand
@@ -607,6 +601,7 @@
           INQUIRE(FILE=FILE_NAME,NUMBER=SRF_OBJ_TAB(SRF_ID)%NCLI)
         ELSE
           ! Otherwise open the file
+          CALL GET_FREE_ID(SRF_OBJ_TAB(SRF_ID)%NCLI)
           OPEN(UNIT=SRF_OBJ_TAB(SRF_ID)%NCLI,FILE=FILE_NAME,
      &         FORM='FORMATTED',ACTION=OPENMODE,IOSTAT=IERR)
         ENDIF

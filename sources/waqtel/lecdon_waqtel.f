@@ -43,7 +43,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CHARACTER*8      MNEMO(MAXWQVAR)
+      CHARACTER(LEN=8) ::      MNEMO(MAXWQVAR)
       INTEGER          K,I
 !
       CHARACTER(LEN=250) :: NOM_CAS
@@ -60,6 +60,7 @@
       CHARACTER(LEN=72)  MOTCLE(4,MAXKEYWORD,2)
       INTEGER            TROUVE(4,MAXKEYWORD)
       LOGICAL            DOC
+      INTEGER :: ID_DICO, ID_CAS
 !
 ! END OF DECLARATIONS FOR DAMOCLES CALL
 !
@@ -114,19 +115,21 @@
 !
       ENDIF
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
       CALL DAMOCLE
      &( ADRESS, DIMEN , MAXKEYWORD  , DOC    , LNG   , LU    , MOTINT,
-     &  MOTREA, MOTLOG, MOTCAR, MOTCLE , TROUVE, 2  , 3  ,
+     &  MOTREA, MOTLOG, MOTCAR, MOTCLE , TROUVE, ID_DICO, ID_CAS,
      &  .FALSE.,FILE_DESC)
 !-----------------------------------------------------------------------
 !     CLOSES DICTIONNARY AND STEERING FILES
 !-----------------------------------------------------------------------
 !
-      CLOSE(2)
-      CLOSE(3)
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECODES 'SUBMIT' CHAINS
 !
@@ -148,24 +151,6 @@
           WAQREF=I
         ELSEIF(WAQ_FILES(I)%TELNAME.EQ.'WAQRES') THEN
           WAQRES=I
-        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06)THEN
-!         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
-!         HAS RECEIVED NO NAME
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER'
-            WRITE(LU,*) 'I=',I,' NOM=',WAQ_FILES(I)%TELNAME
-            WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
-            WRITE(LU,*) 'DICTIONNAIRE'
-            WRITE(LU,*) 'OU INSTALLATION DEFECTUEUSE.'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER'
-            WRITE(LU,*) 'I=',I,' NAME=',WAQ_FILES(I)%TELNAME
-            WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
-            WRITE(LU,*) 'IN DICTIONARY'
-            WRITE(LU,*) 'OR INSTALLATION PROBLEM.'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
         ENDIF
       ENDDO
 !

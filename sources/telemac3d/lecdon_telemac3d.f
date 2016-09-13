@@ -151,6 +151,7 @@
       LOGICAL            MOTLOG(MAXKEYWORD)
       CHARACTER(LEN=72)  MOTCLE(4,MAXKEYWORD,2)
       LOGICAL DOC
+      INTEGER :: ID_DICO, ID_CAS
 !
 !-----------------------------------------------------------------------
 !
@@ -212,21 +213,23 @@
 !
       ENDIF
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
 !-----------------------------------------------------------------------
 !
       CALL DAMOCLE( ADRESS , DIMEN  , MAXKEYWORD , DOC , LNG    , LU ,
      &              MOTINT , MOTREA , MOTLOG , MOTCAR  , MOTCLE ,
-     &              TROUVE , 2      , 3      , .FALSE. , FILE_DESC )
+     &              TROUVE , ID_DICO, ID_CAS , .FALSE. , FILE_DESC )
 !
 !-----------------------------------------------------------------------
 !     CLOSES THE DICTIONARY AND STEERING FILES
 !-----------------------------------------------------------------------
 !
-      CLOSE(2)
-      CLOSE(3)
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECODES THE SUBMIT STRINGS
 !
@@ -235,11 +238,9 @@
 !-----------------------------------------------------------------------
 !
 !     RETRIEVES FILES NUMBERS IN TELEMAC-3D FORTRAN PARAMETERS
-!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
 !
       DO I=1,MAXLU_T3D
         IF(T3D_FILES(I)%TELNAME.EQ.'T3DGEO') THEN
-!         T3DGEO=T3D_FILES(I)%LU  (IS EQUIVALENT)
           T3DGEO=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DCLI') THEN
           T3DCLI=I
@@ -323,24 +324,6 @@
           T3DS2D=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DBUS') THEN
           T3DBUS=I
-        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
-     &         I.NE.15.AND.I.NE.16.AND.I.NE.17.AND.
-     &         I.NE.19.AND.I.NE.21.AND.I.NE.32.AND.I.NE.33) THEN
-!         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
-!         HAS RECEIVED NO NAME
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC3D: ERREUR POUR LE FICHIER'
-            WRITE(LU,*) 'I=',I,' NOM=',T3D_FILES(I)%TELNAME
-            WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
-            WRITE(LU,*) 'DICTIONNAIRE'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC3D: ERROR FOR FILE NUMBER'
-            WRITE(LU,*) 'I=',I,' NAME=',T3D_FILES(I)%TELNAME
-            WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
-            WRITE(LU,*) 'IN DICTIONARY'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
         ENDIF
       ENDDO
 !

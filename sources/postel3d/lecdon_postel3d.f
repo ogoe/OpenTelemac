@@ -45,7 +45,7 @@
       INTEGER            MOTINT(MAXKEYWORD)
       LOGICAL            MOTLOG(MAXKEYWORD)
 !
-      CHARACTER*72     MOTCLE(4,MAXKEYWORD,2)
+      CHARACTER(LEN=72)     MOTCLE(4,MAXKEYWORD,2)
       INTEGER          TROUVE(4,MAXKEYWORD)
       INTEGER      J,K
       LOGICAL DOC
@@ -55,6 +55,7 @@
       CHARACTER(LEN=80) TITLE
       CHARACTER(LEN=16),ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
       INTEGER FID
+      INTEGER ID_CAS, ID_DICO
 !
 !***********************************************************************
 !
@@ -90,19 +91,22 @@
 !
       NOM_DIC='POSDICO'
       NOM_CAS='POSCAS'
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+!
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
       CALL DAMOCLE( ADRESS , DIMENS , MAXKEYWORD, DOC  , LNG    , LU ,
      &              MOTINT , MOTREA , MOTLOG , MOTCAR  , MOTCLE ,
-     &              TROUVE , 2      , 3      , .FALSE. , FILE_DESC )
+     &              TROUVE , ID_DICO, ID_CAS , .FALSE. , FILE_DESC )
 !
 !-----------------------------------------------------------------------
 !     FERMETURE DES FICHIERS DICTIONNAIRE ET CAS
 !-----------------------------------------------------------------------
 !
-      CLOSE(2)
-      CLOSE(3)
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECRYPTAGE DES CHAINES SUBMIT
 !
@@ -111,11 +115,9 @@
 !-----------------------------------------------------------------------
 !
 !     RETRIEVING FILES NUMBERS IN POSTEL-3D FORTRAN PARAMETERS
-!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
 !
       DO J=1,100
         IF(POS_FILES(J)%TELNAME.EQ.'POSPRE') THEN
-!         POSPRE=POS_FILES(J)%LU  (IS EQUIVALENT)
           POSPRE=J
         ELSEIF(POS_FILES(J)%TELNAME.EQ.'POSHOR') THEN
           POSHOR=J
@@ -158,7 +160,7 @@
 ! CONSTRUIRE LES POINTEURS + COMPTAGE DU NOMBRE D'ENREGISTREMENTS
 !
       FFORMAT = POS_FILES(POSPRE)%FMT
-      FID = POS_FILES(POSPRE)%LU
+      CALL GET_FREE_ID(FID)
       CALL OPEN_MESH(FFORMAT,POS_FILES(POSPRE)%TELNAME,FID,'READ     ',
      &               ERR)
       CALL CHECK_CALL(ERR,'LECDON_POSTEL3D:OPEN_MESH')

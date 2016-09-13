@@ -40,14 +40,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*250, INTENT(IN)    :: CHAINE
+      CHARACTER(LEN=250), INTENT(IN)    :: CHAINE
       INTEGER      , INTENT(IN)    :: NCAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL YACONFIG
       INTEGER NC
-      CHARACTER*257 CONFIG
+      CHARACTER(LEN=257) CONFIG
+      INTEGER ID
 !
 !-----------------------------------------------------------------------
 !
@@ -63,13 +64,14 @@
       INQUIRE(FILE=CONFIG(1:NC),EXIST=YACONFIG)
       IF(YACONFIG) THEN
 !
-        OPEN(40,FILE=CONFIG(1:NC), FORM='FORMATTED')
-        READ(40,*) LNG
+        CALL GET_FREE_ID(ID)
+        OPEN(ID,FILE=CONFIG(1:NC), FORM='FORMATTED')
+        READ(ID,*) LNG
 !
 !       DO NOT OVERLOAD LU IN PARALLEL MODE (WINNT)
 !       (KEEP THE REDIRECTION ON CHANNEL 95 MADE BY P_INIT)
-        IF(LU.NE.95) READ(40,*) LU
-        CLOSE(40)
+        IF(LU.NE.95) READ(ID,*) LU
+        CLOSE(ID)
 !
       ELSE
 !

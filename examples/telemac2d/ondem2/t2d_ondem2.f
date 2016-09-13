@@ -343,7 +343,8 @@
 !***********************************************************************
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : BOUNDARY_COLOUR
+      USE DECLARATIONS_TELEMAC2D, ONLY : BOUNDARY_COLOUR, T2D_FILES,
+     &                                   T2DFO1
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -381,6 +382,7 @@
       DOUBLE PRECISION TE,T2,TI,PI,AN,ARG,T,W
 !
       INTEGER N,NBORL(77),NPTFRL,I,KK
+      INTEGER :: ID
 !
 !  TABLEAUX DE DONNEES TEMPORELLES
 !
@@ -398,10 +400,11 @@
 !     DO K = 1, NPTFR
 !       HBOR(K) = 0.D0
 !     ENDDO
+      ID = T2D_FILES(T2DFO1)%LU
       IF(TEMPS.EQ.150.) THEN
-        REWIND 26
+        REWIND ID
         DO K= 1 , NPTFRL
-          READ(26,*) I,HB(K),PHASEB(K),HC(K),PHASEC(K)
+          READ(ID,*) I,HB(K),PHASEB(K),HC(K),PHASEC(K)
           PHASEB(K)=PI/180.D0*PHASEB(K)
           PHASEC(K)=PI/180.D0*PHASEC(K)
           NBORL(K)=I
@@ -483,6 +486,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       LOGICAL MAS
+      INTEGER :: ID
 !
 !-----------------------------------------------------------------------
 !
@@ -500,7 +504,8 @@
 !
 !  CALCUL DU DEMI-MARNAGE EN CHAQUE POINT DU MAILLAGE
 !
-      REWIND 27
+      ID = T2D_FILES(T2DFO2)%LU
+      REWIND ID
 !
 !  LECTURE DES DEMI-MARNAGES DONNES PAR LE FICHIER
 !  INITIALISATIONS DES TABLEAUX ET DES VARIABLES
@@ -509,7 +514,7 @@
       IF(NCSIZE.GT.1) THEN
 !       NOMBRE DE POINTS DU MAILLAGE NON DECOUPE (5023 DANS FICHIER)
         DO I=1,5023
-          READ(27,*) J,ZZM(I)
+          READ(ID,*) J,ZZM(I)
           IF(I.NE.J) STOP 'PROBLEME DANS FICHIER 27'
         ENDDO
         DO I=1,NPOIN
@@ -517,7 +522,7 @@
         ENDDO
       ELSE
         DO I=1,NPOIN
-          READ (27,*) J,ZM
+          READ(ID,*) J,ZM
           ZF%R(I)=ZF%R(I)-ZM*12.D0/7.D0
         ENDDO
       ENDIF

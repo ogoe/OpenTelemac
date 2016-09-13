@@ -364,13 +364,6 @@
         CALL GET_MED_OBJ(FILE_ID,MED_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_BND_MED:GET_MED_OBJ')
 !
-        ! Open the boundary file with a set id available
-        MED_OBJ_TAB(MED_ID)%NCLI = 1000 + FILE_ID
-        DO
-          INQUIRE(UNIT=MED_OBJ_TAB(MED_ID)%NCLI,OPENED=IS_USED)
-          IF(.NOT.IS_USED) EXIT
-          MED_OBJ_TAB(MED_ID)%NCLI = MED_OBJ_TAB(MED_ID)%NCLI + 1
-        ENDDO
         ! First we check if the file is already opened
         ! Telemac is using one boundary file for all the mesh file
         ! so it could have been opened by another mesh before hand
@@ -380,6 +373,7 @@
           INQUIRE(FILE=FILE_NAME,NUMBER=MED_OBJ_TAB(MED_ID)%NCLI)
         ELSE
           ! Otherwise open the file
+          CALL GET_FREE_ID(MED_OBJ_TAB(MED_ID)%NCLI)
           OPEN(UNIT=MED_OBJ_TAB(MED_ID)%NCLI,FILE=FILE_NAME,
      &         FORM='FORMATTED',ACTION=OPEN_MODE,IOSTAT=IERR)
         ENDIF

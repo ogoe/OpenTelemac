@@ -47,8 +47,8 @@
 !
       INTEGER :: I,J,K,IERR,IDUM
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
-      CHARACTER*8 :: FFORMAT
-      CHARACTER*80 :: TITLE
+      CHARACTER(LEN=8) :: FFORMAT
+      CHARACTER(LEN=80) :: TITLE
       INTEGER :: TYP_BND_ELEM,NELEBD
 !
       WRITE(LU,*) '----------------------------------------------------'

@@ -171,7 +171,7 @@
         CALL BIEF_OPEN_FILES(CODE1,INST%T2D_FILES,
      &                       INST%MAXLU_T2D,
      &                       PATH,NCAR,
-     &                       IS_COUPLED,IFLOT,1,.TRUE.)
+     &                       1,.TRUE.)
 !
 !-----------------------------------------------------------------------
 !

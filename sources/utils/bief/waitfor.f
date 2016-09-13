@@ -52,6 +52,7 @@
 !     PARAMETER: WAIT TIME
 !
       INTEGER, PARAMETER :: LAPS = 3
+      INTEGER :: ID
 !
 !-----------------------------------------------------------------------
 !
@@ -68,9 +69,10 @@
 !
       IF(OUI) THEN
 !
-        OPEN(94,FILE=NOMFIC,
+        CALL GET_FREE_ID(ID)
+        OPEN(ID,FILE=NOMFIC,
      &          STATUS='OLD',FORM='UNFORMATTED',ERR=85,IOSTAT=ERR1)
-        CLOSE(94,STATUS='DELETE',ERR=86,IOSTAT=ERR1)
+        CLOSE(ID,STATUS='DELETE',ERR=86,IOSTAT=ERR1)
 !
         GO TO 1000
 !

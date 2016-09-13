@@ -76,7 +76,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CHARACTER*8      MNEMO(MAXVAR)
+      CHARACTER(LEN=8)      MNEMO(MAXVAR)
       INTEGER          K
 !
 !-----------------------------------------------------------------------
@@ -99,6 +99,7 @@
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       INTEGER :: I
+      INTEGER :: ID_DICO,ID_CAS
 !
 ! END OF DECLARATIONS FOR DAMOCLES CALL
 !
@@ -154,13 +155,18 @@
 !
       ENDIF
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
       CALL DAMOCLE
      &( ADRESS, DIMEN , MAXKEYWORD  , DOC    , LNG   , LU    , MOTINT,
-     &  MOTREA, MOTLOG, MOTCAR, MOTCLE , TROUVE, 2  , 3  ,
+     &  MOTREA, MOTLOG, MOTCAR, MOTCLE , TROUVE, ID_DICO, ID_CAS,
      &  .FALSE.,FILE_DESC)
+
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECODES 'SUBMIT' CHAINS
 !
@@ -169,7 +175,6 @@
 !-----------------------------------------------------------------------
 !
 !     RETRIEVES FILE NUMBERS FROM TOMAWAC FORTRAN PARAMETERS
-!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
 !
       DO I=1,MAXLU_WAC
         IF(WAC_FILES(I)%TELNAME.EQ.'WACGEO') THEN

@@ -135,6 +135,7 @@
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
+      INTEGER :: ID
 !
       INTEGER  P_IMAX
       EXTERNAL P_IMAX
@@ -282,6 +283,7 @@
 1008  FORMAT('TIME  = ',F13.5)
 !
       IF(NCSIZE.GT.1) THEN
+        CALL GET_FREE_ID(ID)
 !
 !       1) EVERY PROCESSOR WRITES ITS OWN POINTS
 !          MESH%ELTCAR IS USED AS FOR THE CHARACTERISTICS
@@ -295,10 +297,10 @@
                 AUXIL(K,JF)=F(II,K,JF)
               ENDDO
             ENDDO
-            OPEN(99,FILE=EXTENS(NLEO,ILEO),
+            OPEN(ID,FILE=EXTENS(NLEO,ILEO),
      &              FORM='UNFORMATTED',STATUS='NEW')
-            CALL ECRI2(AUXIL,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
-            CLOSE(99)
+            CALL ECRI2(AUXIL,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
+            CLOSE(ID)
           ENDIF
           ENDIF
         ENDDO
@@ -311,9 +313,9 @@
 !
         IF(IPID.EQ.0) THEN
           DO ILEO=1,NLEO
-            OPEN(99,FILE=EXTENS(NLEO,ILEO),
+            OPEN(ID,FILE=EXTENS(NLEO,ILEO),
      &              FORM='UNFORMATTED',STATUS='OLD')
-            CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
+            CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
             CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
      &                    AUXIL,NPSPE,ISTAT)
             CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
@@ -323,7 +325,7 @@
                 F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
               ENDDO
             ENDDO
-            CLOSE(99,STATUS='DELETE')
+            CLOSE(ID,STATUS='DELETE')
           ENDDO
           DO JF=1,NF
             WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),

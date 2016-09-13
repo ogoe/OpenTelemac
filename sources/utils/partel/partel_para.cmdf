@@ -35,3 +35,4 @@ files: declarations_special.f
   plante.F
   check_allocate.f
   extens.f
+  get_free_id.f

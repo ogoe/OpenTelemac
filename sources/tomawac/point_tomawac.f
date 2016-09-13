@@ -708,15 +708,6 @@
           NF1=11
         ELSEIF (IQ_OM1.EQ.4) THEN
           NF1=40
-!
-!       JMH 29/11/2012: THIS IS INTERACTIVE EXECUTION !!!!!!!
-!
-!       ELSEIF (IQ_OM1.EQ.5) THEN
-!         WRITE(LU,*) 'Progression geometrique : Donnez NF1 : '
-!         READ(5,*) NF1
-!       ELSEIF (IQ_OM1.EQ.6) THEN
-!         WRITE(LU,*) 'Progression arithmetique : Donnez NF1 : '
-!         READ(5,*) NF1
         ELSEIF (IQ_OM1.EQ.7) THEN
           NF1=20
         ELSE

@@ -68,7 +68,7 @@
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-      CHARACTER*144, INTENT(INOUT)      :: MOTCAR(MAXKEYWORD)
+      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEYWORD)
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEYWORD)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -84,9 +84,10 @@
       LOGICAL            :: MOTLOG(MAXKEYWORD)
       CHARACTER(LEN=250) :: NOM_CAS
       CHARACTER(LEN=250) :: NOM_DIC
-      CHARACTER*72       :: MOTCLE(4,MAXKEYWORD,2)
+      CHARACTER(LEN=72)  :: MOTCLE(4,MAXKEYWORD,2)
 
       CHARACTER(LEN=250) TEMPVAR
+      INTEGER :: ID_DICO, ID_CAS
 !
 !-----------------------------------------------------------------------
 !
@@ -125,16 +126,25 @@
 !
       ENDIF
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
 !-----------------------------------------------------------------------
 !     CALLS DAMOCLES
 !-----------------------------------------------------------------------
 !
       CALL DAMOCLE( ADRESS, DIMENS  ,MAXKEYWORD, DOC    , LNG , LU  ,
-     &               MOTINT, MOTREA ,MOTLOG , MOTCAR ,
-     &               MOTCLE, TROUVE ,2 , 3 ,.FALSE., FILE_DESC )
+     &              MOTINT, MOTREA ,MOTLOG , MOTCAR ,
+     &              MOTCLE, TROUVE ,ID_DICO, ID_CAS,.FALSE. ,FILE_DESC)
+!
+!-----------------------------------------------------------------------
+!     CLOSES DICTIONNARY AND STEERING FILES
+!-----------------------------------------------------------------------
+!
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECODES 'SUBMIT' CHAINS
 !

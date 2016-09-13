@@ -948,6 +948,7 @@
       CHARACTER(LEN=72) LIGNE
 !
       LOGICAL YESITIS
+      INTEGER ID
 !
       TYPE(BIEF_OBJ) :: SVOID
 !
@@ -1345,29 +1346,30 @@
 !
         NFLOTG=P_ISUM(NFLOT)
         IF(NFLOTG.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
+          CALL GET_FREE_ID(ID)
 !
 !         1) EVERY PROCESSOR WRITES ITS OWN DATA IN A FILE WITH EXTENSION
 !
           IF(NFLOT.GT.0) THEN
-            OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
+            OPEN(ID,FILE=EXTENS(NCSIZE,IPID+1),
      &           FORM='FORMATTED',STATUS='NEW')
             IF(IELM.EQ.11) THEN
               DO IFLOT=1,NFLOT
-                WRITE(99,300) PARTICULES(IFLOT)%ID,
+                WRITE(ID,300) PARTICULES(IFLOT)%ID,
      &                        PARTICULES(IFLOT)%XOIL,
      &                        PARTICULES(IFLOT)%YOIL,
      &                        PARTICULES(IFLOT)%STATE
               ENDDO
             ELSE
               DO IFLOT=1,NFLOT
-                WRITE(99,301) PARTICULES(IFLOT)%ID,
+                WRITE(ID,301) PARTICULES(IFLOT)%ID,
      &                        PARTICULES(IFLOT)%XOIL,
      &                        PARTICULES(IFLOT)%YOIL,
      &                        PARTICULES(IFLOT)%ZOIL,
      &                        PARTICULES(IFLOT)%STATE
               ENDDO
             ENDIF
-            CLOSE(99)
+            CLOSE(ID)
           ENDIF
 !
 !         2) WAITING ALL PROCESSORS
@@ -1383,14 +1385,14 @@
             DO IPROC=1,NCSIZE
               INQUIRE(FILE=EXTENS(NCSIZE,IPROC),EXIST=YESITIS)
               IF(YESITIS) THEN
-                OPEN(99,FILE=EXTENS(NCSIZE,IPROC),
+                OPEN(ID,FILE=EXTENS(NCSIZE,IPROC),
      &               FORM='FORMATTED',STATUS='OLD')
 20              CONTINUE
-                READ(99,100,ERR=21,END=21) LIGNE
+                READ(ID,100,ERR=21,END=21) LIGNE
                 WRITE(UL,*) LIGNE
                 GO TO 20
 21              CONTINUE
-                CLOSE(99,STATUS='DELETE')
+                CLOSE(ID,STATUS='DELETE')
               ENDIF
             ENDDO
           ENDIF

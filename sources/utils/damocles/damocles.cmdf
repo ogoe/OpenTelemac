@@ -28,3 +28,4 @@ files: declarations_special.f
   check_allocate.f
   write_error.f
   check_call.f
+  get_free_id.f

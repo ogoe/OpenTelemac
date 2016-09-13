@@ -33,9 +33,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*100, DEBUGFILE
+      CHARACTER(LEN=100) :: DEBUGFILE
       INTEGER  I,K,J
       DOUBLE PRECISION DEPTH, AT, MYFRA, BSUM
+      INTEGER :: ID
 !
 !----------------------------------------------------------------
 !
@@ -53,9 +54,10 @@
       END DO
 !
       IF(J > 0) THEN !0 IF NODE IS NOT ON THIS PARTITION
-      OPEN(80, FILE=DEBUGFILE , STATUS='UNKNOWN')
-        REWIND 80
-        WRITE(80,*)"J K FD50(I) AT Z AVAIL(J,K,I) X Y D50 TAU H"
+        CALL GET_FREE_ID(ID)
+        OPEN(ID, FILE=DEBUGFILE , STATUS='UNKNOWN')
+        REWIND ID
+        WRITE(ID,*)"J K FD50(I) AT Z AVAIL(J,K,I) X Y D50 TAU H"
 !
         DEPTH = ZF%R(J)
 !
@@ -68,7 +70,7 @@
           ENDDO
 !
           DO I=1,NSICLA
-            WRITE (80,'(I8,1X,I4,1X,7(G15.8,1X))')
+            WRITE (ID,'(I8,1X,I4,1X,7(G15.8,1X))')
      &      JG,(NLAYER%I(J)-K+1),FDM(I),AT,DEPTH,
      &      AVAIL(J,K,I),X(J),Y(J), BSUM, TOB%R(J), Z%R(J)
           ENDDO
@@ -85,11 +87,11 @@
       DO I=1,NSICLA
             MYFRA = 0.D0
             IF (I==1) MYFRA = 1.D0
-            WRITE (80,'(I8,1X,I4,1X,7(G15.8,1X))')
+            WRITE (ID,'(I8,1X,I4,1X,7(G15.8,1X))')
      &      JG,0,FDM(I),AT,DEPTH,MYFRA,X(J),Y(J),BSUM
       ENDDO
 !
-      CLOSE(80)
+      CLOSE(ID)
       ENDIF
 !
 !----------------------------------------------------------------

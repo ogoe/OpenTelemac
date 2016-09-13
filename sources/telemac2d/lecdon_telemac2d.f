@@ -162,6 +162,7 @@
       CHARACTER(LEN=72)    MOTCLE(4,MAXKEYWORD,2)
       INTEGER              TROUVE(4,MAXKEYWORD)
       LOGICAL DOC
+      INTEGER :: ID_DICO,ID_CAS
 !
 !     END OF DECLARATIONS FOR DAMOCLES CALL :
 !
@@ -242,29 +243,28 @@
 !
       ENDIF
       IF((CAS_FILE(1:1).NE.' ').AND.(DICO_FILE(1:1).NE.' ')) THEN
-        WRITE(LU,*) 'FIXED DICO AND STERRING FILE PRESENT'
         NOM_DIC=DICO_FILE
         NOM_CAS=CAS_FILE
-        WRITE(LU,*) 'NOM_DIC',NOM_DIC
-        WRITE(LU,*) 'NOM_CAS',NOM_CAS
       ENDIF
 
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
 !-----------------------------------------------------------------------
 !
       CALL DAMOCLE( ADRESS, DIMEN , MAXKEYWORD , DOC     , LNG    , LU ,
      &              MOTINT, MOTREA, MOTLOG , MOTCAR  , MOTCLE ,
-     &              TROUVE, 2     , 3      , .FALSE. , FILE_DESC )
+     &              TROUVE, ID_DICO, ID_CAS, .FALSE. , FILE_DESC )
 !
 !-----------------------------------------------------------------------
 !     CLOSES DICTIONNARY AND STEERING FILES
 !-----------------------------------------------------------------------
 !
-      CLOSE(2)
-      CLOSE(3)
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     SECONDARY CURRENT ALSO
       SECCURRENTS = MOTLOG(ADRESS(3,49))
@@ -276,116 +276,96 @@
 !-----------------------------------------------------------------------
 !
 !     RETRIEVES FILES NUMBERS IN TELEMAC-2D FORTRAN PARAMETERS
-!     HERE LOGICAL UNITS EQUAL TO THE FILE NUMBER
 !
       DO I=1,MAXLU_T2D
         IF(T2D_FILES(I)%TELNAME.EQ.'T2DGEO') THEN
-!         T2DGEO=T2D_FILES(I)%LU  (IS EQUIVALENT)
-          T2DGEO=I
+          T2DGEO = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DCLI') THEN
-          T2DCLI=I
+          T2DCLI = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DPRE') THEN
-          T2DPRE=I
+          T2DPRE = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DRES') THEN
-          T2DRES=I
+          T2DRES = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFON') THEN
-          T2DFON=I
+          T2DFON = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBI1') THEN
-          T2DBI1=I
+          T2DBI1 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBI2') THEN
-          T2DBI2=I
+          T2DBI2 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFO1') THEN
-          T2DFO1=I
+          T2DFO1 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFO2') THEN
-          T2DFO2=I
+          T2DFO2 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DRBI') THEN
-          T2DRBI=I
+          T2DRBI = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DRFO') THEN
-          T2DRFO=I
+          T2DRFO = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DREF') THEN
-          T2DREF=I
+          T2DREF = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DIMP') THEN
-          T2DIMP=I
+          T2DIMP = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DCOF') THEN
-          T2DCOF=I
+          T2DCOF = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL1') THEN
-          T2DDL1=I
+          T2DDL1 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL2') THEN
-          T2DDL2=I
+          T2DDL2 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL3') THEN
-          T2DDL3=I
+          T2DDL3 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL4') THEN
-          T2DDL4=I
+          T2DDL4 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL5') THEN
-          T2DDL5=I
+          T2DDL5 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL6') THEN
-          T2DDL6=I
+          T2DDL6 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL7') THEN
-          T2DDL7=I
+          T2DDL7 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL8') THEN
-          T2DDL8=I
+          T2DDL8 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DDL9') THEN
-          T2DDL9=I
+          T2DDL9 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DL10') THEN
-          T2DL10=I
+          T2DL10 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DL11') THEN
-          T2DL11=I
+          T2DL11 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DMAB') THEN
-          T2DMAB=I
+          T2DMAB = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DVEF') THEN
-          T2DVEF=I
+          T2DVEF = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEC') THEN
-          T2DSEC=I
+          T2DSEC = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEO') THEN
-          T2DSEO=I
+          T2DSEO = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DMIG') THEN
-          T2DMIG=I
+          T2DMIG = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DHAR') THEN
-          T2DHAR=I
+          T2DHAR = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DTID') THEN
-          T2DTID=I
+          T2DTID = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBDD') THEN
-          T2DBDD=I
+          T2DBDD = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBB1') THEN
-          T2DBB1=I
+          T2DBB1 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBB2') THEN
-          T2DBB2=I
+          T2DBB2 = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEU') THEN
-          T2DSEU=I
+          T2DSEU = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSIP') THEN
-          T2DSIP=I
+          T2DSIP = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBUS') THEN
-          T2DBUS=I
+          T2DBUS = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBRC') THEN
-          T2DBRC=I
+          T2DBRC = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFLO') THEN
-          T2DFLO=I
+          T2DFLO = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DZFI') THEN
-          T2DZFI=I
+          T2DZFI = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFLX') THEN
-          T2DFLX=I
+          T2DFLX = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2ATMA') THEN
-          T2ATMA=I
+          T2ATMA = I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2ATMB') THEN
-          T2ATMB=I
-        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06)THEN
-!         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
-!         HAS RECEIVED NO NAME
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERREUR POUR LE FICHIER'
-            WRITE(LU,*) 'I=',I,' NOM=',T2D_FILES(I)%TELNAME
-            WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
-            WRITE(LU,*) 'DICTIONNAIRE'
-            WRITE(LU,*) 'OU INSTALLATION DEFECTUEUSE.'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR FOR FILE NUMBER'
-            WRITE(LU,*) 'I=',I,' NAME=',T2D_FILES(I)%TELNAME
-            WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
-            WRITE(LU,*) 'IN DICTIONARY'
-            WRITE(LU,*) 'OR INSTALLATION PROBLEM.'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
+          T2ATMB = I
         ENDIF
       ENDDO
 !

@@ -64,6 +64,7 @@
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEYWORD)
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
+      INTEGER :: ID_DICO, ID_CAS
 !
 ! END OF DECLARATIONS FOR DAMOCLES CALL :
 !
@@ -105,12 +106,21 @@
 !
       ENDIF
 !
-      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
-      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_DICO)
+      OPEN(ID_DICO,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      CALL GET_FREE_ID(ID_CAS)
+      OPEN(ID_CAS,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
 !
       CALL DAMOCLE( ADRESS , DIMENS , MAXKEYWORD, DOC, LNG    , LU ,
      &              MOTINT , MOTREA , MOTLOG , MOTCAR  , MOTCLE ,
-     &              TROUVE , 2   , 3   , .FALSE. , FILE_DESC)
+     &              TROUVE , ID_DICO, ID_CAS , .FALSE. , FILE_DESC)
+!
+!-----------------------------------------------------------------------
+!     CLOSES DICTIONNARY AND STEERING FILES
+!-----------------------------------------------------------------------
+!
+      CLOSE(ID_DICO)
+      CLOSE(ID_CAS)
 !
 !     DECODES 'SUBMIT' CHAINS
 !
@@ -146,7 +156,6 @@
         ELSEIF(ART_FILES(I)%TELNAME.EQ.'ARTTC1') THEN
           ARTTC1=I
         ENDIF
-
       ENDDO
 !
 !-----------------------------------------------------------------------

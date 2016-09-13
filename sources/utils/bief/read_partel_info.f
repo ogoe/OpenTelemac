@@ -51,12 +51,7 @@
 !-----------------------------------------------------------------------
 !
 !     Look for an available unit
-      NPAR = 1000
-      DO
-        INQUIRE(UNIT=NPAR,OPENED=IS_USED)
-        IF(.NOT.IS_USED) EXIT
-        NPAR = NPAR + 1
-      ENDDO
+      CALL GET_FREE_ID(NPAR)
       OPEN(NPAR,FILE=NAMEPAR,STATUS='OLD',FORM='FORMATTED')
       REWIND(NPAR)
 !

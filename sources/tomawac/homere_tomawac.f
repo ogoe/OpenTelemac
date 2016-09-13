@@ -51,7 +51,7 @@
       IMPLICIT NONE
 !
 !
-      INTEGER TDEB(8),TFIN(8),NCAR,IFLOT
+      INTEGER TDEB(8),TFIN(8),NCAR
 !
       CHARACTER(LEN=24), PARAMETER :: CODE='TOMAWAC                '
 !
@@ -80,9 +80,8 @@
 !
 !     OPENS THE FILES
 !
-      IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .FALSE.,IFLOT,1,.FALSE.)
+     &                     1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !

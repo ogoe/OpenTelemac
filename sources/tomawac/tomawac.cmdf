@@ -496,6 +496,7 @@ files: declarations_special.f
   write_error.f
   check_call.f
   extens.f
+  get_free_id.f
 
 [tomawac]
 path: <root>|sources|tomawac

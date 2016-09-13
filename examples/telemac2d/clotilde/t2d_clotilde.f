@@ -327,6 +327,7 @@
       CHARACTER(LEN=9) FCT
       DOUBLE PRECISION CLIMIT
       EXTERNAL CLIMIT
+      INTEGER ID
 !
 !-----------------------------------------------------------------------
 !
@@ -359,19 +360,20 @@
 !     PROGRAMMABLE PART
 !     SL IS TAKEN IN THE PARAMETER FILE, BUT MAY BE CHANGED
 !
-        REWIND 26
+        ID = T2DFILES(T2FO1)%LU
+        REWIND ID
         SL = COTE(I)
         IF(I.EQ.7) THEN
           IF(AT.LE.35400.D0) THEN
             SL = 0.0005D0*AT+41.3D0
           ELSE
-            READ(26,200) Q2CR, Z2CR
+            READ(ID,200) Q2CR, Z2CR
             Q1CR = 3900.D0
             Z1CR = 58.50D0
             DO WHILE (Q2CR.LT.FLXCR)
               Q1CR = Q2CR
               Z1CR = Z2CR
-              READ(26,200) Q2CR, Z2CR
+              READ(ID,200) Q2CR, Z2CR
             ENDDO
  200        FORMAT((F10.2,F5.2))
             SL = CLIMIT(Q1CR,Q2CR,Z1CR,Z2CR)

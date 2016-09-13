@@ -51,6 +51,7 @@
       CHARACTER(LEN=5) OCSTR
       INTEGER I, K, J
       DOUBLE PRECISION AT, BSUM
+      INTEGER :: ID
 !
 !-----------------------------------------------------------------------
 !
@@ -78,9 +79,10 @@
       ENDDO
 !
       IF(J > 0) THEN
-        OPEN(81, FILE=DEBUGFILE, STATUS='UNKNOWN' )
-        REWIND 81
-        WRITE(81,*)
+        CALL GET_FREE_ID(ID)
+        OPEN(ID, FILE=DEBUGFILE, STATUS='UNKNOWN' )
+        REWIND ID
+        WRITE(ID,*)
      &       "J K FD50(I) AT PRO_D(K_I) PRO_F(K_I) X Y D50 ALT T H"
 !
         DO K=1,PRO_MAX(J)
@@ -92,14 +94,14 @@
           DO I=1,NSICLA
             IF(K.EQ.1) THEN
 ! FULL OUTPUT WITH COORDINATES ETC. ON SURFACE
-              WRITE (81,'(I8,1X,I4,1X,10(G20.12,1X))')
+              WRITE (ID,'(I8,1X,I4,1X,10(G20.12,1X))')
      &              JG,PRO_MAX(J)+1-K,FDM(I),AT,
      &              PRO_D(J,PRO_MAX(J)+1-K,I),
      &              PRO_F(J,PRO_MAX(J)+1-K,I),X(J),Y(J),
      &              BSUM,ES(J,1),TOB%R(J), Z%R(J)
             ELSE
 ! FOLLOWING SECTIONS
-              WRITE (81,'(I8,1X,I4,1X,5(G20.12,1X))')
+              WRITE (ID,'(I8,1X,I4,1X,5(G20.12,1X))')
      &              JG,PRO_MAX(J)+1-K,FDM(I),AT,
      &              PRO_D(J,PRO_MAX(J)+1-K,I),
      &              PRO_F(J,PRO_MAX(J)+1-K,I)
@@ -112,7 +114,7 @@
           BSUM = FDM(I)*PRO_F(J,1,I) + BSUM
         ENDDO
 !
-        CLOSE(81)
+        CLOSE(ID)
 !
       ENDIF
 !

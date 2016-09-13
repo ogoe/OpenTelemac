@@ -47,7 +47,7 @@
 !======================================================================
 !
       INTEGER NCAR
-      CHARACTER*250 FORTXY(50)
+      CHARACTER(LEN=250) FORTXY(50)
       CHARACTER(LEN=250) PATH
       NGEO=1
       NCLE=2

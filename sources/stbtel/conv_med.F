@@ -1275,27 +1275,28 @@
       INTEGER, ALLOCATABLE :: GRP_VALUE(:)
       CHARACTER(LEN=LNAME_SIZE), ALLOCATABLE :: GRP_NAME(:)
       CHARACTER(LEN=200) :: LINE
+      INTEGER :: ID
 !
 !-----------------------------------------------------------------------
 !
-
+      CALL GET_FREE_ID(ID)
       ! Get group <-> boundary association from grpfile
-      OPEN(666, FILE=GRPFILE, FORM='FORMATTED', IOSTAT=IERR)
+      OPEN(ID, FILE=GRPFILE, FORM='FORMATTED', IOSTAT=IERR)
       CALL FNCT_CHECK(IERR,'OPEN '//TRIM(GRPFILE))
-      READ(666, *) NGRP
+      READ(ID, *) NGRP
       ALLOCATE(GRP_VALUE(NGRP), STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE GRP_VALUE')
       ALLOCATE(GRP_NAME(NGRP), STAT=IERR)
       CALL FNCT_CHECK(IERR,'ALLOCATE GRP_NAME')
 
       DO I=1,NGRP
-        READ(666, '(A200)') LINE
+        READ(ID, '(A200)') LINE
         POS = INDEX(LINE, ':')
         GRP_NAME(I) = LINE(:POS-1)
         READ(LINE(POS+1:), *) GRP_VALUE(I)
         WRITE(LU, *) TRIM(GRP_NAME(I)), ' <-> ', GRP_VALUE(I)
       ENDDO
-      CLOSE(666)
+      CLOSE(ID)
 
 
       END SUBROUTINE

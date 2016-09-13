@@ -91,12 +91,8 @@
 !-----------------------------------------------------------------------
 ! OPENS THE FILES
 !
-      IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T3D_FILES,MAXLU_T3D,PATH,NCAR,
-     &                     INCLUS(COUPLING,'SISYPHE').OR.
-     &                     INCLUS(COUPLING,'TOMAWAC').OR.
-     &                     INCLUS(COUPLING,'WAQTEL'),
-     &                     IFLOT,1,.FALSE.)
+     &                     1,.FALSE.)
 !
 !-----------------------------------------------------------------------
 !
@@ -115,7 +111,7 @@
       CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
 !
       CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
-     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2,.FALSE.)
+     &                     2,.FALSE.)
 !
 !     RESETS TELEMAC3D CONFIGURATION
 !
@@ -137,7 +133,7 @@
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     &                     .TRUE.,IFLOT,3,.FALSE.)
+     &                     3,.FALSE.)
 !
 !     RESETS TELEMAC3D CONFIGURATION
 !
@@ -177,7 +173,7 @@
 !
       CALL LECDON_WAQTEL(FILE_DESC,PATH,NCAR,CODE4)
       CALL BIEF_OPEN_FILES(CODE4,WAQ_FILES,MAXLU_WAQ,PATH,NCAR,
-     &                     .TRUE.,IFLOT,4,.FALSE.)
+     &                     4,.FALSE.)
 !
 !     UPDATING TRACER INFORMATION OF WAQTEL
 !

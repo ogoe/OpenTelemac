@@ -85,6 +85,10 @@
       INTEGER, PARAMETER :: QUADRANGLE_BND_ELT_TYPE = 70
       INTEGER, PARAMETER :: TRIANGLE_3D_BND_ELT_TYPE = 80
 !
+!     ID Tracking
+!
+      INTEGER :: MAX_ID = 1
+!
 !-----------------------------------------------------------------------
 !
       END MODULE DECLARATIONS_SPECIAL

@@ -2,7 +2,7 @@
                      SUBROUTINE BIEF_OPEN_FILES
 !                    **************************
 !
-     &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE,FULLNAME)
+     &(CODE,FILES,NFILES,PATH,NCAR,ICODE,FULLNAME)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -50,11 +50,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILES          |-->| STRUCTURES OF CODE FILES
-!| FLOT           |-->| LOGICAL, IF YES LOGICAL UNITS DECIDED BY
-!|                |   | THIS SUBROUTINE, IF NO, TAKEN IN SUBMIT
 !| ICODE          |---| NUMERO DU CODE EN CAS DE COUPLAGE
-!| IFLOT          |-->| IF FLOT=YES, START NEW LOGICAL UNIT NUMBERS
-!|                |   | AT IFLOT+1
 !| NCAR           |-->| NUMBER OF CHARACTERS IN THE PATH
 !| NFILES         |-->| NUMBER OF FILES
 !| PATH           |-->| FULL NAME OF THE PATH WHERE THE CASE IS
@@ -74,8 +70,6 @@
       TYPE(BIEF_FILE)   , INTENT(INOUT) :: FILES(NFILES)
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       INTEGER           , INTENT(IN)    :: NCAR,ICODE
-      INTEGER           , INTENT(INOUT) :: IFLOT
-      LOGICAL           , INTENT(IN)    :: FLOT
       LOGICAL           , INTENT(IN)    :: FULLNAME
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -101,16 +95,8 @@
 !
         IF(FILES(I)%NAME(1:1).NE.' ') THEN
 !
-!         LOGICAL UNIT MODIFIED WHEN COUPLING
-!
-          IF(FLOT) THEN
-            IFLOT=IFLOT+1
-!           2 AND 3 SKIPPED (DICTIONARY AND STEERING FILES)
-            IF(IFLOT.EQ.2) IFLOT=4
-!           5 AND 6 SKIPPED (STANDARD INPUT AND OUTPUT)
-            IF(IFLOT.EQ.5) IFLOT=7
-            FILES(I)%LU=IFLOT
-          ENDIF
+!         GET LOGICAL UNIT
+          CALL GET_FREE_ID(FILES(I)%LU)
 !
           IF(FILES(I)%BINASC.EQ.'ASC') THEN
             FORME='FORMATTED  '
