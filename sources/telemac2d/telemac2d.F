@@ -283,6 +283,11 @@
 !+   FLBOR initialised before the first call to bilan.f, for the sake of
 !+   computations continued with stage-discharge curves.
 !
+!history  C.COULET (ARTELIA)
+!+        01/09/2016
+!+        V7P2
+!+   Call lecsng splitted in 2 according to typseuil
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -1014,9 +1019,21 @@
 ! READS THE GEOMETRY OF SINGULARITIES
 !
       IF(NWEIRS.GT.0) THEN
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECSNG'
-        CALL LECSNG(IOPTAN,T2D_FILES(T2DSEU)%LU)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECSNG'
+        IF(TYPSEUIL.EQ.1) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECSNG'
+          CALL LECSNG(IOPTAN,T2D_FILES(T2DSEU)%LU)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECSNG'
+        ELSEIF(TYPSEUIL.EQ.2) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECSNG2'
+          CALL LECSNG2(IOPTAN,T2D_FILES(T2DSEU)%LU)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECSNG2'
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
+          ENDIF
+        ENDIF
       ENDIF
       IF(NSIPH.GT.0) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECSIP'
@@ -1061,6 +1078,10 @@
 !
 !     PREPARES BOUNDARY CONDITIONS FOR WEIRS.
 !
+      IF (NCSIZE.GT.0) THEN
+        WRITE(LU,*) 'CCT SYNCHRONISATION AVANT'
+        CALL P_SYNC
+      ENDIF
       IF(NWEIRS.GT.0) THEN
 !
         IF(TYPSEUIL.EQ.1) THEN
@@ -1073,8 +1094,7 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CLSING'
         ELSEIF(TYPSEUIL.EQ.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CALCUL_Q_WEIR'
-          CALL CALCUL_Q_WEIR(NWEIRS,MESH%X%R,MESH%Y%R,ZF%R,H%R,CHESTR%R,
-     &                       NKFROT%I,KARMAN,IOPTAN,NTRAC,T)
+          CALL CALCUL_Q_WEIR(IOPTAN)
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CALCUL_Q_WEIR'
         ELSE
           IF(LNG.EQ.1) THEN
@@ -1084,6 +1104,10 @@
           ENDIF
         ENDIF
 !
+      ENDIF
+      IF (NCSIZE.GT.0) THEN
+        WRITE(LU,*) 'CCT SYNCHRONISATION APRES'
+        CALL P_SYNC
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1710,8 +1734,7 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CLSING'
         ELSEIF(TYPSEUIL.EQ.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CALCUL_Q_WEIR'
-          CALL CALCUL_Q_WEIR(NWEIRS,MESH%X%R,MESH%Y%R,ZF%R,H%R,
-     &                       CHESTR%R,NKFROT%I,KARMAN,IOPTAN,NTRAC,T)
+          CALL CALCUL_Q_WEIR(IOPTAN)
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CALCUL_Q_WEIR'
         ELSE
           IF(LNG.EQ.1) THEN
@@ -2089,8 +2112,8 @@
      &            BANDEC,OPTBAN,
      &            NSIPH,ENTSIP%I,SORSIP%I,DSIP%R,USIP%R,VSIP%R,
      &            NBUSE,ENTBUS%I,SORBUS%I,DBUS%R,UBUS%R,VBUS%R,
-     &            TYPSEUIL,NWEIRS,
-     &            NPSING,NDGA1,NDGB1,MESH%NBOR)
+     &            TYPSEUIL,NWEIRS,N_NGHB_W_NODES,
+     &            NDGA1,NDGB1,MESH%NBOR)
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM PROSOU'
 !
 !  PROPAGATION.
@@ -2290,7 +2313,7 @@
      &            ISCE,DSCE2,TSCE2,MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,
      &            MESH%IFAC%I,NSIPH,ENTSIP%I,SORSIP%I,DSIP%R,TSIP,
      &            NBUSE,ENTBUS%I,SORBUS%I,DBUS%R,TBUS,NWEIRS,TYPSEUIL,
-     &            NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
+     &            N_NGHB_W_NODES,NDGA1,NDGB1,TWEIRA,TWEIRB)
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DIFSOU'
 !
 !=======================================================================

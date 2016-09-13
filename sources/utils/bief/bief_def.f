@@ -597,4 +597,46 @@
 !
 !=======================================================================
 !
+!  STRUCTURE OF WEIRS : WEIRS
+!
+!=======================================================================
+!
+      TYPE WEIR_ELEMENT
+        INTEGER :: NUM_GLO
+        INTEGER :: N_1A_1, N_1A_2
+        INTEGER :: N_1B_1, N_1B_2
+        INTEGER :: N_2A_1, N_2A_2
+        INTEGER :: N_2B_1, N_2B_2
+        INTEGER :: NB_NEIGH
+        INTEGER, DIMENSION(NBMAXNSHARE) :: LIST_NEIGH
+        DOUBLE PRECISION :: Z1, Z2
+        DOUBLE PRECISION :: WIDTH
+        DOUBLE PRECISION :: Q, Q0
+      END TYPE WEIR_ELEMENT
+!
+      TYPE WEIR_ELEMENT_PROC
+        INTEGER :: NUM_NEIGH
+        INTEGER :: NB_ELEM
+        INTEGER, DIMENSION(:), ALLOCATABLE :: LIST_ELEM
+      END TYPE WEIR_ELEMENT_PROC
+!
+      TYPE WEIR_NODES
+        INTEGER :: NUM_GLO
+        INTEGER :: NB_NEIGH
+        INTEGER, DIMENSION(NBMAXNSHARE) :: LIST_NEIGH
+        INTEGER, DIMENSION(NBMAXNSHARE) :: NUM_LOC
+        DOUBLE PRECISION :: QN, ZFN, HN
+        DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: TRAC
+      END TYPE WEIR_NODES
+!
+      TYPE WEIR_NODES_PROC
+        INTEGER :: NUM_NEIGH
+        INTEGER :: NB_NODES
+        INTEGER, DIMENSION(:), ALLOCATABLE :: LIST_NODES
+        INTEGER, DIMENSION(:), ALLOCATABLE :: NUM_GLO
+        INTEGER, DIMENSION(:), ALLOCATABLE :: NUM_LOC
+      END TYPE WEIR_NODES_PROC
+!
+!=======================================================================
+!
       END MODULE BIEF_DEF

@@ -5,7 +5,7 @@
      &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJET,ISCE,DSCE,TSCE,
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC,NSIPH,ENTSIP,SORSIP,
      & DSIP,TSIP,NBUSE,ENTBUS,SORBUS,DBUS,TBUS,NWEIRS,TYPSEUIL,
-     & NPSING,NDGA1,NDGB1,TWEIRA,TWEIRB)
+     & N_NGHB_W_NODES,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P1
@@ -135,7 +135,8 @@
      &  T11,T12,MESH,MSK,
      &  IELMU,S,NPOIN,CF,H,SECCURRENTS,SEC_AS,SEC_DS,SEC_R,IND_T,LT,
      &  ICONVFT,OPTADV_TR,PATMOS,LISTIN,GRAV,ZF,DEBUG,IND_S,MASKEL,
-     &  MARDAT,MARTIM,LAMBD0,PHI0
+     &  MARDAT,MARTIM,LAMBD0,PHI0,
+     &  WNODES_PROC,WNODES
       USE DECLARATIONS_WAQTEL,ONLY: FORMRS,O2SATU,ADDTR,WAQPROCESS,
      &  WATTEMP,RSW,ABRS,RAYEFF
       USE INTERFACE_WAQTEL
@@ -147,6 +148,7 @@
 !
       INTEGER          , INTENT(IN)    :: ISCE(*),NREJET,NTRAC
       INTEGER          , INTENT(IN)    :: NSIPH,NBUSE,NWEIRS
+      INTEGER          , INTENT(IN)    :: N_NGHB_W_NODES
       INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
       INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
       INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA,TYPSEUIL
@@ -158,7 +160,7 @@
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP,TBUS
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: TWEIRA,TWEIRB
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NPSING,NDGA1,NDGB1
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NDGA1,NDGB1
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -365,63 +367,62 @@
         ENDIF
 !
         IF(NWEIRS.GT.0.AND.TYPSEUIL.EQ.2) THEN
-          DO N = 1 , NWEIRS
-            DO I = 1 , NPSING%I(N)
-              INDIC = (N-1)*MAXNPS + I
-              IR = NDGA1%ADR(N)%P%I(I)
-              H1 = 0.D0
-              TRUP = 0.D0
-              IF(IR.GT.0) THEN
-                IF(NCSIZE.GT.1) THEN
-!                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
-!                 (SEE CALL TO P_DSUM BELOW)
-                  MASSOU(ITRAC)=MASSOU(ITRAC)-DT*QWA%ADR(N)%P%R(I)*
-     &                          TWEIRA%ADR(ITRAC)%P%R(INDIC)*FAC(IR)
-                ELSE
-                  MASSOU(ITRAC)=MASSOU(ITRAC)-DT*QWA%ADR(N)%P%R(I)*
-     &                          TWEIRA%ADR(ITRAC)%P%R(INDIC)
-                ENDIF
-                TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
-     &             TWEIRA%ADR(ITRAC)%P%R(INDIC) -
-     &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
-!               RECUPERATE H FOR WAQ (O2 OR EUTRO)
-                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
-     &                                            WAQPROCESS.EQ.3))THEN
-                  H1   = HPROP%R(IR)
-                  TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
-                  IF(NCSIZE.GT.1)THEN
-                    H1   = P_DMIN(H1  )+P_DMAX(H1  )
-                    TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
-                  ENDIF
-                ENDIF
-              ENDIF
-              IR = NDGB1%ADR(N)%P%I(I)
-              H2   = 0.D0
-              TRDO = 0.D0
-              IF(IR.GT.0) THEN
-                IF(NCSIZE.GT.1) THEN
-!                 FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
-!                 (SEE CALL TO P_DSUM BELOW)
-                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*QWB%ADR(N)%P%R(I)*
-     &                          TWEIRB%ADR(ITRAC)%P%R(INDIC)*FAC(IR)
-                ELSE
-                  MASSOU(ITRAC)=MASSOU(ITRAC)+DT*QWB%ADR(N)%P%R(I)*
-     &                          TWEIRB%ADR(ITRAC)%P%R(INDIC)
-                ENDIF
-                TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
-     &             TWEIRB%ADR(ITRAC)%P%R(INDIC) -
-     &             (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
-!               RECUPERATE H FOR WAQ
-                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
-     &                                            WAQPROCESS.EQ.3))THEN
-                  H2  = HPROP%R(IR)
-                  IF(NCSIZE.GT.1)THEN
-                    H2   = P_DMIN(H2  )+P_DMAX(H2  )
-                  ENDIF
-                ENDIF
-!               CONTRIBUTION TO WAQ
+          DO N=1,N_NGHB_W_NODES
+            IF(WNODES_PROC(N)%NUM_NEIGH.EQ.IPID) GOTO 50
+          ENDDO
+50        CONTINUE
+          DO I=1, WNODES_PROC(N)%NB_NODES
+            IR = WNODES_PROC(N)%NUM_LOC(I)
+            K  = WNODES_PROC(N)%LIST_NODES(I)
+            IF(NCSIZE.GT.1) THEN
+!             FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!             (SEE CALL TO P_DSUM BELOW)
+              MASSOU(ITRAC)=MASSOU(ITRAC)+DT*WNODES(K)%QN*
+     &                      WNODES(K)%TRAC(ITRAC)*FAC(IR)
+            ELSE
+              MASSOU(ITRAC)=MASSOU(ITRAC)+DT*WNODES(K)%QN*
+     &                      WNODES(K)%TRAC(ITRAC)
+            ENDIF
+            WRITE(LU,*) 'difsou ',I,IR,K,TSCEXP%ADR(ITRAC)%P%R(IR),
+     &         WNODES(K)%TRAC(ITRAC)
+            IF(WNODES(K)%QN.GT.0.D0) THEN
+            TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &         WNODES(K)%TRAC(ITRAC) -
+     &         (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ELSE
+            TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &         WNODES(K)%TRAC(ITRAC) -
+     &         (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ENDIF
+!
+!              H1 = 0.D0
+!              TRUP = 0.D0
+!              IF(IR.GT.0) THEN
+!!               RECUPERATE H FOR WAQ (O2 OR EUTRO)
 !                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
-!    &                                             WAQPROCESS.EQ.3))THEN
+!     &                                            WAQPROCESS.EQ.3))THEN
+!                  H1   = HPROP%R(IR)
+!                  TRUP = TN%ADR(NTRAC-ADDTR+1)%P%R(IR)
+!                  IF(NCSIZE.GT.1)THEN 
+!                    H1   = P_DMIN(H1  )+P_DMAX(H1  )
+!                    TRUP = P_DMIN(TRUP)+P_DMAX(TRUP)
+!                  ENDIF
+!                ENDIF
+!              ENDIF
+!              H2   = 0.D0
+!              TRDO = 0.D0
+!              IF(IR.GT.0) THEN
+!!               RECUPERATE H FOR WAQ (O2 OR EUTRO)
+!                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
+!     &                                            WAQPROCESS.EQ.3))THEN
+!                  H2  = HPROP%R(IR)
+!                  IF(NCSIZE.GT.1)THEN 
+!                    H2   = P_DMIN(H2  )+P_DMAX(H2  )
+!                  ENDIF
+!                ENDIF
+!!               CONTRIBUTION TO WAQ
+!                IF(INCLUS(COUPLING,'WAQTEL').AND.(WAQPROCESS.EQ.1.OR.
+!    &                                             WAQPROCESS.EQ.3))THEN                  DZ= ABS(H2-H1)
 !       warning: this process is a bit strange and then difficult to
 !                implement: impose that tracer TN increases spontaneously
 !                under the effect of "nothing" (sources,boundary conditions... )
@@ -429,9 +430,9 @@
 !                  CALL REAER_WEIR (FORMRS,H1,H2,ABRS,WATTEMP,EPS,
 !     &                             O2SATU,TRUP,TN,ADDTR,WAQPROCESS,
 !     &                             IR,NTRAC)
+
 !                ENDIF
-              ENDIF
-            ENDDO
+!              ENDIF               
           ENDDO
         ENDIF
 !

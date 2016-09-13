@@ -29,6 +29,11 @@
 !+        V7P0
 !+        Adding call to partel_resonly
 !
+!history C. COULET (ARTELIA)
+!+       01/09/2016
+!+       V7P2
+!+       Modification to add the weir file management
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -44,6 +49,7 @@
       INTEGER :: PMETHOD
       CHARACTER(LEN=MAXLENHARD) :: NAMESEC
       CHARACTER(LEN=MAXLENHARD) :: NAMEZFI
+      CHARACTER(LEN=MAXLENHARD) :: NAMESEU
       CHARACTER(LEN=8) :: GEOFORMAT,INPFORMAT
 !
       LOGICAL :: RES_ONLY
@@ -202,6 +208,24 @@
         WRITE(LU,*) ' NO ZONES '
       ENDIF
 !
+! #### THE WEIRS FILE NAME
+!
+      NAMESEU = ' '
+      WRITE(LU,*) '--WEIR FILE NAME (OR RETURN) : '
+      READ(LI,'(A)') NAMESEU
+!
+      IF(NAMESEU(1:1) .NE. ' ') THEN
+        WRITE(LU,*) 'INPUT: ',TRIM(NAMESEU)
+        INQUIRE (FILE=NAMESEU,EXIST=IS)
+        IF (.NOT.IS) THEN
+          WRITE (LU,*) ' FILE DOES NOT EXIST: ', TRIM(NAMESEU)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ELSE
+        WRITE(LU,*) ' NO WEIRS '
+      ENDIF
+!
 !     Geometry file
 !
       WRITE(LU,*) '--GEOMETRY FILE NAME <INPUT_NAME>: '
@@ -295,7 +319,7 @@
         CALL PARRES(NAMEGEO, NAMEINP, NPARTS, GEOFORMAT, INPFORMAT)
       ELSE
         CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, INPFORMAT,
-     &              NAMESEC, NAMEZFI)
+     &              NAMESEC, NAMEZFI, NAMESEU)
       ENDIF
 !
       STOP 0

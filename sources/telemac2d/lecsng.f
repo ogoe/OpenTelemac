@@ -5,7 +5,7 @@
      &(IOPTAN,IFIC)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0                                   21/08/2010
+! TELEMAC2D   V7P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE DATA DEFINING SINGULARITIES
@@ -60,6 +60,11 @@
 !+        01/04/2014
 !+        V7P0
 !+   ERR= statements added in READ commands.
+!
+!history  C.COULET (ARTELIA)
+!+        01/09/2016
+!+        V7P2
+!+   Simplification of this subroutine (only called if typseuil=1)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
@@ -118,7 +123,6 @@
 !
 !     ALLOCATIONS OF BLOCKS
 !
-!     GENERAL
       IF(NWEIRS.GT.0) THEN
         CALL BIEF_ALLVEC(2,NPSING,'NPSING',NWEIRS,1,0,MESH)
       ELSE
@@ -127,27 +131,7 @@
       CALL ALLBLO(NDGA1 ,'NDGA1 ')
       CALL ALLBLO(NDGB1 ,'NDGB1 ')
       CALL ALLBLO(ZDIG  ,'ZDIG  ')
-!     SPECIFIC
-      IF(TYPSEUIL.EQ.1) THEN
-        CALL ALLBLO(PHIDIG,'PHIDIG')
-      ELSEIF(TYPSEUIL.EQ.2) THEN
-        CALL ALLBLO(WDIG  ,'WDIG  ')
-        CALL ALLBLO(NDGA2 ,'NDGA2 ')
-        CALL ALLBLO(NDGB2 ,'NDGB2 ')
-        CALL ALLBLO(QWA   ,'QWA   ')
-        CALL ALLBLO(QWB   ,'QWB   ')
-        CALL ALLBLO(UWEIRA,'UWEIRA')
-        CALL ALLBLO(UWEIRB,'UWEIRB')
-        CALL ALLBLO(VWEIRA,'VWEIRA')
-        CALL ALLBLO(VWEIRB,'VWEIRB')
-        CALL ALLBLO(QP0   ,'QP0   ')
-      ELSE
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-        ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-        ENDIF
-      ENDIF
+      CALL ALLBLO(PHIDIG,'PHIDIG')
 !
       DO N=1,NWEIRS
         READ(IFIC,*,ERR=900,END=900)
@@ -170,13 +154,13 @@
           NOM(6:6) = CHIFFRE((N-100*(N/100))-10*((N-100*(N/100))/10))
         ELSE
           IF(LNG.EQ.1) WRITE(LU,*) 'PLUS DE 999 BARRAGES DEMANDEES
-     &                              DANS LECBREACH'
+     &                              DANS LECSNG'
           IF(LNG.EQ.2) WRITE(LU,*) 'MORE THAN 999 BREACHS ASKED
-     &                              IN LECBREACH'
+     &                              IN LECSNG'
           CALL PLANTE(1)
           STOP
         ENDIF
-!       GEENRAL
+!
         NOM(1:3) = 'NA1'
         ALLOCATE(NDGA1%ADR(N)%P)
         NDGA1%N=NDGA1%N+1
@@ -193,71 +177,11 @@
         CALL BIEF_ALLVEC(1,ZDIG%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
         ZDIG%ADR(N)%P%FATHER = ZDIG%NAME
 !       SPECIFIC
-        IF(TYPSEUIL.EQ.1) THEN
-          NOM(1:3) = 'PDG'
-          PHIDIG%N=PHIDIG%N+1
-          ALLOCATE(PHIDIG%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,PHIDIG%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          PHIDIG%ADR(N)%P%FATHER = PHIDIG%NAME
-        ELSEIF(TYPSEUIL.EQ.2) THEN
-          NOM(1:3) = 'NA2'
-          NDGA2%N=NDGA2%N+1
-          ALLOCATE(NDGA2%ADR(N)%P)
-          CALL BIEF_ALLVEC(2,NDGA2%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          NDGA2%ADR(N)%P%FATHER = NDGA2%NAME
-          NOM(1:3) = 'NB2'
-          NDGB2%N=NDGB2%N+1
-          ALLOCATE(NDGB2%ADR(N)%P)
-          CALL BIEF_ALLVEC(2,NDGB2%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          NDGB2%ADR(N)%P%FATHER = NDGB2%NAME
-          NOM(1:3) = 'QWA'
-          QWA%N=QWA%N+1
-          ALLOCATE(QWA%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,QWA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          QWA%ADR(N)%P%FATHER = QWA%NAME
-          NOM(1:3) = 'QWB'
-          QWB%N=QWB%N+1
-          ALLOCATE(QWB%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,QWB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          QWB%ADR(N)%P%FATHER = QWB%NAME
-          NOM(1:3) = 'UWA'
-          UWEIRA%N=UWEIRA%N+1
-          ALLOCATE(UWEIRA%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,UWEIRA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          UWEIRA%ADR(N)%P%FATHER = UWEIRA%NAME
-          NOM(1:3) = 'UWB'
-          UWEIRB%N=UWEIRB%N+1
-          ALLOCATE(UWEIRB%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,UWEIRB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          UWEIRB%ADR(N)%P%FATHER = UWEIRB%NAME
-          NOM(1:3) = 'VWA'
-          VWEIRA%N=VWEIRA%N+1
-          ALLOCATE(VWEIRA%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,VWEIRA%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          VWEIRA%ADR(N)%P%FATHER = VWEIRA%NAME
-          NOM(1:3) = 'VWB'
-          VWEIRB%N=VWEIRB%N+1
-          ALLOCATE(VWEIRB%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,VWEIRB%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
-          VWEIRB%ADR(N)%P%FATHER = VWEIRB%NAME
-          NOM(1:3) = 'WDG'
-          WDIG%N=WDIG%N+1
-          ALLOCATE(WDIG%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,WDIG%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
-          WDIG%ADR(N)%P%FATHER = WDIG%NAME
-          NOM(1:3) = 'QP0'
-!         JMH 05/08/2013: IF NOT INCREMENTED, QP0%N WILL REMAIN 0
-          QP0%N=QP0%N+1
-          ALLOCATE(QP0%ADR(N)%P)
-          CALL BIEF_ALLVEC(1,QP0%ADR(N)%P,NOM,NPSING%I(N)-1,1,0,MESH)
-          QP0%ADR(N)%P%FATHER = QP0%NAME
-        ELSE
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-          ENDIF
-        ENDIF
+        NOM(1:3) = 'PDG'
+        PHIDIG%N=PHIDIG%N+1
+        ALLOCATE(PHIDIG%ADR(N)%P)
+        CALL BIEF_ALLVEC(1,PHIDIG%ADR(N)%P,NOM,NPSING%I(N),1,0,MESH)
+        PHIDIG%ADR(N)%P%FATHER = PHIDIG%NAME
       ELSE
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LECSNG :'
@@ -275,34 +199,14 @@
         STOP
       ENDIF
 !
-      IF(TYPSEUIL.EQ.1) THEN
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,ERR=996) (NDGA1%ADR(N)%P%I(I),I=1,NPSING%I(N))
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,ERR=994) (NDGB1%ADR(N)%P%I(I),I=1,NPSING%I(N))
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,ERR=992) (ZDIG%ADR(N)%P%R(I),I=1,NPSING%I(N))
-        READ(IFIC,*,END=900)
-        READ(IFIC,*,ERR=991) (PHIDIG%ADR(N)%P%R(I),I=1,NPSING%I(N))
-      ELSEIF(TYPSEUIL.EQ.2) THEN
-        DO I=1,NPSING%I(N)
-          READ(IFIC,*,ERR=990) XDIG2,YDIG2,ZDIG%ADR(N)%P%R(I),
-     &                         NDGA1%ADR(N)%P%I(I),NDGA2%ADR(N)%P%I(I),
-     &                         NDGB1%ADR(N)%P%I(I),NDGB2%ADR(N)%P%I(I)
-          IF(I.GT.1) THEN
-            WDIG%ADR(N)%P%R(I-1)=SQRT((XDIG2-XDIG1)**2+
-     &                                 (YDIG2-YDIG1)**2)
-          ENDIF
-          XDIG1=XDIG2
-          YDIG1=YDIG2
-        ENDDO
-      ELSE
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-        ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-        ENDIF
-      ENDIF
+      READ(IFIC,*,END=900)
+      READ(IFIC,*,ERR=996) (NDGA1%ADR(N)%P%I(I),I=1,NPSING%I(N))
+      READ(IFIC,*,END=900)
+      READ(IFIC,*,ERR=994) (NDGB1%ADR(N)%P%I(I),I=1,NPSING%I(N))
+      READ(IFIC,*,END=900)
+      READ(IFIC,*,ERR=992) (ZDIG%ADR(N)%P%R(I),I=1,NPSING%I(N))
+      READ(IFIC,*,END=900)
+      READ(IFIC,*,ERR=991) (PHIDIG%ADR(N)%P%R(I),I=1,NPSING%I(N))
       ENDDO ! N
 !
 !     RETRIEVING BOUNDARY POINTS NUMBERS
@@ -311,122 +215,46 @@
 !
 !     1) SIDES 1 AND 2
 !
-      IF(TYPSEUIL.EQ.1) THEN
-        IF(NCSIZE.GT.1) THEN
+      IF(NCSIZE.GT.1) THEN
 !
-          DO N=1,NWEIRS
-            DO I=1,NPSING%I(N)
-              DO IPTFR=1,NPTFR
-                IF(NDGA1%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
-                  NDGA1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPTFR
-                IF(NDGB1%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
-                  NDGB1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
+        DO N=1,NWEIRS
+          DO I=1,NPSING%I(N)
+            DO IPTFR=1,NPTFR
+              IF(NDGA1%ADR(N)%P%I(I).EQ.
+     &           MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
+                NDGA1%ADR(N)%P%I(I)=-IPTFR
+                EXIT
+              ENDIF
+            ENDDO
+            DO IPTFR=1,NPTFR
+              IF(NDGB1%ADR(N)%P%I(I).EQ.
+     &           MESH%KNOLG%I(MESH%NBOR%I(IPTFR))) THEN
+                NDGB1%ADR(N)%P%I(I)=-IPTFR
+                EXIT
+              ENDIF
             ENDDO
           ENDDO
+        ENDDO
 !
-        ELSE
-!
-          DO N=1,NWEIRS
-            DO I=1,NPSING%I(N)
-              DO IPTFR=1,NPTFR
-                IF(NDGA1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
-                  NDGA1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPTFR
-                IF(NDGB1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
-                  NDGB1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-            ENDDO
-          ENDDO
-!
-        ENDIF
-      ELSEIF(TYPSEUIL.EQ.2) THEN
-        IF(NCSIZE.GT.1) THEN
-!
-          DO N=1,NWEIRS
-            DO I=1,NPSING%I(N)
-              DO IPTFR=1,NPOIN
-                IF(NDGA1%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(IPTFR)) THEN
-                  NDGA1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGA2%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(IPTFR)) THEN
-                  NDGA2%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGB1%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(IPTFR)) THEN
-                  NDGB1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGB2%ADR(N)%P%I(I).EQ.
-     &             MESH%KNOLG%I(IPTFR)) THEN
-                  NDGB2%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-            ENDDO
-          ENDDO
-!
-        ELSE
-!
-          DO N=1,NWEIRS
-            DO I=1,NPSING%I(N)
-              DO IPTFR=1,NPOIN
-                IF(NDGA1%ADR(N)%P%I(I).EQ.IPTFR) THEN
-                  NDGA1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGA2%ADR(N)%P%I(I).EQ.IPTFR) THEN
-                  NDGA2%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGB1%ADR(N)%P%I(I).EQ.IPTFR) THEN
-                  NDGB1%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-              DO IPTFR=1,NPOIN
-                IF(NDGB2%ADR(N)%P%I(I).EQ.IPTFR) THEN
-                  NDGB2%ADR(N)%P%I(I)=-IPTFR
-                  EXIT
-                ENDIF
-              ENDDO
-            ENDDO
-          ENDDO
-!
-        ENDIF
       ELSE
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*)'LECSNG : TYPE DE SEUIL NON PROGRAMME '
-        ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*)'LECSNG : TYPE OF WEIRS NOT IMPLEMENTED'
-        ENDIF
+!
+        DO N=1,NWEIRS
+          DO I=1,NPSING%I(N)
+            DO IPTFR=1,NPTFR
+              IF(NDGA1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
+                NDGA1%ADR(N)%P%I(I)=-IPTFR
+                EXIT
+              ENDIF
+            ENDDO
+            DO IPTFR=1,NPTFR
+              IF(NDGB1%ADR(N)%P%I(I).EQ.MESH%NBOR%I(IPTFR)) THEN
+                NDGB1%ADR(N)%P%I(I)=-IPTFR
+                EXIT
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+!
       ENDIF
 !
 !     2) NOW PUTTING A POSITIVE NUMBER IF POINT IN DOMAIN
@@ -436,10 +264,6 @@
         DO I=1,NPSING%I(N)
           NDGA1%ADR(N)%P%I(I)=MAX(-NDGA1%ADR(N)%P%I(I),0)
           NDGB1%ADR(N)%P%I(I)=MAX(-NDGB1%ADR(N)%P%I(I),0)
-          IF(TYPSEUIL.EQ.2) THEN
-            NDGA2%ADR(N)%P%I(I)=MAX(-NDGA2%ADR(N)%P%I(I),0)
-            NDGB2%ADR(N)%P%I(I)=MAX(-NDGB2%ADR(N)%P%I(I),0)
-          ENDIF
         ENDDO
       ENDDO
 !
@@ -579,25 +403,6 @@
           WRITE(LU,*)'         NO SINGULARITY WILL BE TAKEN'
           WRITE(LU,*)'         INTO ACCOUNT'
           WRITE(LU,*)
-        ENDIF
-      ENDIF
-!
-      IF(TYPSEUIL.EQ.2) THEN
-        DO N=1, NWEIRS
-          CALL OS('X=0     ',X=QP0%ADR(N)%P)
-        ENDDO
-        CALL ALLBLO(TWEIRA,'TWEIRA')
-        CALL ALLBLO(TWEIRB,'TWEIRA')
-        IF(NTRAC.GT.0) THEN
-          CALL BIEF_ALLVEC_IN_BLOCK(TWEIRA,NTRAC,1,'TWEIRA',
-     &                              NWEIRS,MAXNPS,0,MESH)
-          CALL BIEF_ALLVEC_IN_BLOCK(TWEIRB,NTRAC,1,'TWEIRB',
-     &                              NWEIRS,MAXNPS,0,MESH)
-        ELSE
-          CALL BIEF_ALLVEC_IN_BLOCK(TWEIRA,1    ,1,'TWEIRA',
-     &                              NWEIRS,MAXNPS,0,MESH)
-          CALL BIEF_ALLVEC_IN_BLOCK(TWEIRB,1    ,1,'TWEIRB',
-     &                              NWEIRS,MAXNPS,0,MESH)
         ENDIF
       ENDIF
 !

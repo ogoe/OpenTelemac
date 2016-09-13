@@ -314,7 +314,7 @@ def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    createDirectories(ObjDir)
    chdir(ObjDir)
 
-   # ~~ Removes exisitng objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Removes existing objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if odict['type'] == 'M' :
       ModFile = path.join(ObjDir,Root + cfg['SYSTEM']['sfx_mod'])
       if path.exists(ModFile): remove(ModFile)

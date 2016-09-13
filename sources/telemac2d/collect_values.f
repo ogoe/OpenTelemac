@@ -2,84 +2,130 @@
                         SUBROUTINE COLLECT_VALUES
 !                       *************************
 !
-     &(X,Y,ZF,HN,NTRAC,T,IP,XP,YP,ZFP,HP,SLP,TRP)
-!
 !***********************************************************************
-! TELEMAC2D   V6P3                                   09/07/2013
+! TELEMAC2D   V7P2                                   23/09/2015
 !***********************************************************************
 !
-!brief    COLLECT DIFFERENT VALUES ON A NODE
+!brief    COLLECT H AND ZF VALUES ON WEIRS NODES
 !+
 !
 !+
 !history  C.COULET (ARTELIA)
-!+        09/07/2013
-!+        V6P3
+!+        01/09/2016
+!+        V7P2
 !+   Creation
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |-->| DEPTH AT TIME T(N)
-!| HP             |-->| DEPTH OF NODE IP
-!| IP             |-->| INDEX OF THE INTERESTING NODE
-!| NTRAC          |-->| NUMBER OF TRACERS
-!| SLP            |<--| FREE SURFACE LEVEL OF NODE IP
-!| T              |-->| BLOCK OF TRACERS
-!| TRP            |<--| ARRAY OF TRACERS VALUES ON NODE IP
-!| X              |-->| ABSCISSAE OF NODES
-!| XP             |<--| ABSCISSAE OF NODE IP
-!| Y              |-->| ORDINATES OF NODES
-!| YP             |<--| ORDINATES OF NODE IP
-!| ZF             |-->| BOTTOM
-!| ZFP            |<--| BOTTOM LEVEL OF NODE IP
+!|                |---| 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER, INTENT(IN)           :: NTRAC, IP
-      DOUBLE PRECISION, INTENT(IN)  :: X(*),Y(*),ZF(*),HN(*)
-      TYPE(BIEF_OBJ)  , INTENT(IN)  :: T
-      DOUBLE PRECISION, INTENT(OUT) :: XP,YP,ZFP,HP,SLP
-      DOUBLE PRECISION, INTENT(OUT) :: TRP(NTRAC)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ITRAC
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IK,IL,II,I,J,K,IP
+!
+      INTRINSIC ABS
+!
+      INTEGER SEND_REQ(100),RECV_REQ(100)
+      INTEGER, SAVE :: MSG_TAG = 5000
+!
+      SAVE SEND_REQ, RECV_REQ
 !
 !-----------------------------------------------------------------------
 !
-      IF(IP.GT.0) THEN
-        ZFP = ZF(IP)
-        HP  = HN(IP)
-        SLP = HP + ZFP
-        DO ITRAC = 1, NTRAC
-          TRP(ITRAC) = T%ADR(ITRAC)%P%R(IP)
-        ENDDO
-        XP = X(IP)
-        YP = Y(IP)
-      ELSE
-        ZFP = 0.D0
-        HP  = 0.D0
-        SLP = 0.D0
-        DO ITRAC = 1, NTRAC
-          TRP(ITRAC) = 0.D0
-        ENDDO
-        XP = 0.D0
-        YP = 0.D0
-      ENDIF
+      IF (NCSIZE.GT.0) THEN
 !
-      IF(NCSIZE.GT.1) THEN
-        ZFP=P_DMAX(MAX(ZFP,0.D0))-P_DMIN(MAX(-ZFP,0.D0))
-        HP =P_DMAX(MAX(HP ,0.D0))-P_DMIN(MAX(-HP ,0.D0))
-        SLP=P_DMAX(MAX(SLP,0.D0))-P_DMIN(MAX(-SLP,0.D0))
-        XP =P_DMAX(MAX(XP ,0.D0))-P_DMIN(MAX(-XP ,0.D0))
-        YP =P_DMAX(MAX(YP ,0.D0))-P_DMIN(MAX(-YP ,0.D0))
-        DO ITRAC = 1, NTRAC
-           TRP(ITRAC) = P_DMAX(MAX( TRP(ITRAC),0.D0))
-     &                - P_DMIN(MAX(-TRP(ITRAC),0.D0))
+        SEND_REQ(:) = 0
+        RECV_REQ(:) = 0
+!
+!       MESSAGE TAG UPDATE
+!
+        IF(MSG_TAG.LT.1000000) THEN
+          MSG_TAG = MSG_TAG + 1
+        ELSE
+          MSG_TAG = 5001
+        ENDIF
+!
+!
+!== RECEIVE STEP
+!
+        DO IL=1,N_NGHB_W_NODES
+          IP = WNODES_PROC(IL)%NUM_NEIGH
+          IK = WNODES_PROC(IL)%NB_NODES
+          CALL P_IREAD(W_BUF_RECV(1,IL),2*IK*8,
+     &                 IP,MSG_TAG,RECV_REQ(IL))
+        ENDDO
+!
+!== SEND STEP
+!
+        DO IL=1,N_NGHB_WN_SEND
+          IP = WN_SEND_PROC(IL)%NUM_NEIGH
+          IK = WN_SEND_PROC(IL)%NB_NODES
+!
+!** INITIALISES THE COMMUNICATION ARRAYS
+!
+          K = 1
+          DO I=1,IK
+            II = WN_SEND_PROC(IL)%NUM_LOC(I)
+            W_BUF_SEND(K  ,IL) = ZF%R(II)
+            W_BUF_SEND(K+1,IL) =  H%R(II)
+            K = K+2
+          ENDDO
+!
+          CALL P_IWRIT(W_BUF_SEND(1,IL),2*IK*8,
+     &                 IP,MSG_TAG,SEND_REQ(IL))
+!
+        ENDDO
+!
+!== WAIT RECEIVED MESSAGES (POSSIBILITY OF COVERING)
+!
+        CALL P_WAIT_PARACO(RECV_REQ,N_NGHB_W_NODES)
+!
+        DO IL=1,N_NGHB_W_NODES
+          IK = WNODES_PROC(IL)%NB_NODES
+          IP = WNODES_PROC(IL)%NUM_NEIGH
+!
+          K = 1
+          DO I=1,IK
+            II = WNODES_PROC(IL)%LIST_NODES(I)
+            IF (ABS(W_BUF_RECV(K  ,IL)).GT.ABS(WNODES(II)%ZFN)) THEN
+              WNODES(II)%ZFN=W_BUF_RECV(K  ,IL)
+            ENDIF
+            IF (ABS(W_BUF_RECV(K+1,IL)).GT.ABS(WNODES(II)%HN)) THEN
+              WNODES(II)%HN=W_BUF_RECV(K+1,IL)
+            ENDIF
+            K = K + 2
+          ENDDO
+!
+        ENDDO
+!
+!== WAIT SENT MESSAGES
+!
+        CALL P_WAIT_PARACO(SEND_REQ,N_NGHB_WN_SEND)
+!
+!-----------------------------------------------------------------------
+      ELSE
+        DO I = 1, N_NGHB_W_NODES
+          WNODES(I)%ZFN = 0.D0
+        ENDDO
+        DO I = 1, N_NGHB_W_NODES
+          WNODES(I)%HN = 0.D0
+        ENDDO
+        DO IL=1,N_NGHB_WN_SEND
+          IK = WN_SEND_PROC(IL)%NB_NODES
+          DO I=1,IK
+            II = WN_SEND_PROC(IL)%NUM_LOC(I)
+            WNODES(I)%ZFN = ZF%R(II)
+            WNODES(I)%HN  =  H%R(II)
+          ENDDO
         ENDDO
       ENDIF
 !

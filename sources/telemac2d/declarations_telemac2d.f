@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2                                   01/09/2016
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL TELEMAC2D VARIABLES
@@ -81,6 +81,12 @@
 !+        23/06/2016
 !+        V7P2
 !+   NAMETRAC now allocatable.
+!
+!history  C.COULET (ARTELIA)
+!+        01/09/2016
+!+        V7P2
+!+   Modification for // treatment of weirs (type=2)
+!+   Creation of a dedicated structure for weirs
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -508,15 +514,29 @@
       TYPE(BIEF_OBJ),TARGET :: OPTERO, DKAXCR, DKAYCR, PONDSB, NPONBR
       TYPE(BIEF_OBJ),TARGET :: CURBRW, FINBRW, INIBRW
 !
-!     FOR WEIR MANAGEMENT
+!     FOR WEIR MANAGEMENT (TYPE WEIR = 1)
 !
       TYPE(BIEF_OBJ),TARGET :: NPSING
-      TYPE(BIEF_OBJ),TARGET :: NDGA1, NDGA2, NDGB1, NDGB2
-      TYPE(BIEF_OBJ),TARGET :: WDIG, ZDIG, PHIDIG
+      TYPE(BIEF_OBJ),TARGET :: NDGA1, NDGB1
+      TYPE(BIEF_OBJ),TARGET :: ZDIG, PHIDIG
+!
+!     FOR WEIR MANAGEMENT (TYPE WEIR = 2)
+!
+      TYPE(BIEF_OBJ),TARGET :: WDIG
       TYPE(BIEF_OBJ),TARGET :: QWA, QWB
       TYPE(BIEF_OBJ),TARGET :: UWEIRA,UWEIRB,VWEIRA,VWEIRB
       TYPE(BIEF_OBJ),TARGET :: QP0
       TYPE(BIEF_OBJ),TARGET :: TWEIRA,TWEIRB
+!
+!      TYPE(BIEF_OBJ),TARGET :: N_1A_1, N_1A_2, N_1B_1, N_1B_2
+!      TYPE(BIEF_OBJ),TARGET :: N_2A_1, N_2A_2, N_2B_1, N_2B_2
+!      TYPE(BIEF_OBJ),TARGET :: ZDIG_1, ZDIG_2
+!      TYPE(BIEF_OBJ),TARGET :: QDIG, QDIG_0
+!      TYPE(BIEF_OBJ),TARGET :: NUM_W, W_ID_P
+!      TYPE(BIEF_OBJ),TARGET :: L_NGHB
+!      TYPE(BIEF_OBJ),TARGET :: NUM_GR, NUM_LR, N_ID_R
+!      TYPE(BIEF_OBJ),TARGET :: NUM_GS, N_ID_S
+!      TYPE(BIEF_OBJ),TARGET :: W_SL, W_ZF, W_H, W_X, W_Y
 !
 !     VARIABLES FOR SECONDARY CURRENTS (SECCURRENTS)
 !
@@ -923,10 +943,31 @@
 !
       INTEGER PRODUC
 !
-!     NUMBER OF WEIRS
+!     NUMBER OF WEIRS 
 !
       INTEGER NWEIRS
 !
+!     NUMBER OF NEIGHBOURS PROCESSORS IN CASE OF // (FOR WEIRS)
+!
+      INTEGER N_NGHB_WEIRS
+!
+!     NUMBER OF NODES USED FOR COMPUTATION, 
+!
+      INTEGER NWEIRS_NODES
+!
+!     NUMBER OF NEIGHBOURS PROCESSORS IN CASE OF // (FOR WEIRS NODES)
+!
+      INTEGER N_NGHB_W_NODES
+!
+!     NUMBER OF NODES SEND IN CASE OF //
+!
+      INTEGER N_WN_SEND
+!
+!     NUMBER OF NEIGHBOURS PROCESSORS IN CASE OF // (FOR WEIRS NODES SEND)
+!
+      INTEGER N_NGHB_WN_SEND
+!
+!     NUMBER OF CULVERTS
 !     NUMBER OF SIPHONS
 !
       INTEGER NSIPH
@@ -2106,6 +2147,29 @@
 !
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
 !
+!
+!-----------------------------------------------------------------------
+!
+!      10) WEIRS
+!
+!-----------------------------------------------------------------------
+!
+!     FOR WEIRS IF TYPE = 2
+!     ALLOCATED AND INITIALISED IN LECSNG2
+!
+      TYPE (WEIR_ELEMENT)     , ALLOCATABLE :: WEIRS(:)
+      TYPE (WEIR_ELEMENT_PROC), ALLOCATABLE :: WEIRS_PROC(:)
+      TYPE (WEIR_NODES)       , ALLOCATABLE :: WNODES(:)
+      TYPE (WEIR_NODES_PROC)  , ALLOCATABLE :: WNODES_PROC(:)
+      TYPE (WEIR_NODES)       , ALLOCATABLE :: WN_SEND(:)
+      TYPE (WEIR_NODES_PROC)  , ALLOCATABLE :: WN_SEND_PROC(:)
+!
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: W_BUF_RECV
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: W_BUF_SEND
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: WT_BUF_RECV
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: WT_BUF_SEND
+!
+      SAVE
 !
 !     SAVED VARIABLE
 !

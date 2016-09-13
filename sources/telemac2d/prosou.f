@@ -12,7 +12,7 @@
      & T2D_FILES,T2DBI1,BANDEC,OPTBAN,
      & NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP,
      & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS,
-     & TYPSEUIL,NWEIRS,NPSING,NDGA1,NDGB1,NBOR)
+     & TYPSEUIL,NWEIRS,N_NGHB_W_NODES,NDGA1,NDGB1,NBOR)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P0
@@ -155,7 +155,7 @@
 !| NBUSE          |-->| NUMBER OF TUBES
 !| NORD           |-->| DIRECTION OF NORTH WITH RESPECT TO Y AXIS
 !|                |   | (TRIGONOMETRIC SENSE) IN DEGREES.
-!| NPSING         |-->| NUMBER OF POINTS OF WEIRS
+!| N_NGHB_W_NODES |-->| NUMBER OF NEIGHBOURS PROCESSORS IN CASE OF // (FOR WEIRS NODES)
 !| NPTH           |-->| RECORD NUMBER IN THE WAVE CURRENTS FILE
 !| NREJET         |-->| NUMBER OF POINT SOURCES
 !| NREJEU         |-->| NUMBER OF POINT SOURCES WITH GIVEN VELOCITY
@@ -196,7 +196,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !     FOR SEEING OTHER VARIABLES IN DECLARATIONS_TELEMAC2D:
-      USE DECLARATIONS_TELEMAC2D, ONLY : QWA,QWB,U,V,H,RAIN_HDUR,
+      USE DECLARATIONS_TELEMAC2D, ONLY : WNODES_PROC,WNODES,U,V,H,
+     &                                   RAIN_HDUR,
      &                                   SECCURRENTS,NTRAC,SEC_R,CN,
      &                                   SEC_TAU,T2,T3,T7,ROEAU,CF,S,
      &                                   IELMU,T,ACCROF,RUNOFFOPT,AMC,
@@ -254,8 +255,8 @@
       DOUBLE PRECISION , INTENT(IN)    :: DBUS(NBUSE)
       DOUBLE PRECISION , INTENT(IN)    :: UBUS(2,NBUSE),VBUS(2,NBUSE)
 !
-      INTEGER          , INTENT(IN)    :: TYPSEUIL,NWEIRS
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NBOR,NPSING,NDGA1,NDGB1
+      INTEGER          , INTENT(IN)    :: TYPSEUIL,NWEIRS,N_NGHB_W_NODES
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: NBOR,NDGA1,NDGB1
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -629,29 +630,22 @@
 !
         YASMH = .TRUE.
 !
-        DO N=1,NWEIRS
-          DO I=1,NPSING%I(N)
-            IR=NDGA1%ADR(N)%P%I(I)
-            IF(IR.GT.0) THEN
-              SMH%R(IR)= SMH%R(IR)+QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)
+        DO N=1,N_NGHB_W_NODES
+          IF(WNODES_PROC(N)%NUM_NEIGH.EQ.IPID) GOTO 50
+        ENDDO
+50      CONTINUE
+        DO I=1, WNODES_PROC(N)%NB_NODES
+          IR = WNODES_PROC(N)%NUM_LOC(I)
+          K  = WNODES_PROC(N)%LIST_NODES(I)
+          SMH%R(IR) = SMH%R(IR) + WNODES(K)%QN * UNSV2D%R(IR)
 ! QUANTITY OF MOVEMENTS NOT TAKEN INTO ACCOUNT FOR THE MOMENT
 ! The following lines generate instability and crash
 ! Probably because we would like to impose velocities accross  solid boundaries!
 !
-!                 FU%R(IR) = FU%R(IR) + (UWEIRA%ADR(N)%P%R(I)-UN%R(IR))*
-!     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-!                 FV%R(IR) = FV%R(IR) + (VWEIRA%ADR(N)%P%R(I)-VN%R(IR))*
-!     &              QWA%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            ENDIF
-            IR=NDGB1%ADR(N)%P%I(I)
-            IF(IR.GT.0) THEN
-              SMH%R(IR)=SMH%R(IR)+QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)
-!              FU%R(IR) = FU%R(IR) + (UWEIRB%ADR(N)%P%R(I)-UN%R(IR))*
-!     &           QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-!              FV%R(IR) = FV%R(IR) + (VWEIRB%ADR(N)%P%R(I)-VN%R(IR))*
-!     &           QWB%ADR(N)%P%R(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
-            ENDIF
-          ENDDO
+!         FU%R(IR) = FU%R(IR) + (UWEIRA%ADR(N)%P%R(I)-UN%R(IR))*
+!     &      WNODES(K)%QN*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+!         FV%R(IR) = FV%R(IR) + (VWEIRA%ADR(N)%P%R(I)-VN%R(IR))*
+!     &      WNODES(K)%QN*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
         ENDDO
       ENDIF
 !
