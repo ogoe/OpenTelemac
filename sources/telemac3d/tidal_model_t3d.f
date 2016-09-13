@@ -41,7 +41,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,NP,IBORD
+      INTEGER K,NODALCORR,NP,IBORD,IFRLIQ
       DOUBLE PRECISION XSHIFT,YSHIFT,BETA0
       LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
@@ -244,22 +244,26 @@
 !-----------------------------------------------------------------------
 !
       DO K=1,NPTFR2
-        IF(NUMTIDE%I(K).GT.0) THEN
+        IFRLIQ=NUMLIQ%I(K)
+!       TEST ON NUMTIDE PROBABLY NO LONGER USEFUL
+        IF(NUMTIDE%I(K).GT.0.AND.IFRLIQ.GT.0) THEN
+          IF(BND_TIDE(IFRLIQ).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
 !         IF(AT.LT.1800.D0) THEN
 !           UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
 !           VBTIDE%R(K) = VBTIDE%R(K)*(AT/1800.D0)
 !         ENDIF
-          IF(LIUBOL%I(K).EQ.KENTU) THEN
-            DO NP=1,NPLAN
-              IBORD=(NP-1)*NPTFR2+K
-              UBORL%R(IBORD) = UBTIDE%R(K)
-              VBORL%R(IBORD) = VBTIDE%R(K)
-              WBORL%R(IBORD) = 0.D0
-            ENDDO
-          ENDIF
-          IF(LIHBOR%I(K).EQ.KENT) THEN
-            HBOR%R(K) = HBTIDE%R(K)
+            IF(LIUBOL%I(K).EQ.KENTU) THEN
+              DO NP=1,NPLAN
+                IBORD=(NP-1)*NPTFR2+K
+                UBORL%R(IBORD) = UBTIDE%R(K)
+                VBORL%R(IBORD) = VBTIDE%R(K)
+                WBORL%R(IBORD) = 0.D0
+              ENDDO
+            ENDIF
+            IF(LIHBOR%I(K).EQ.KENT) THEN
+              HBOR%R(K) = HBTIDE%R(K)
+            ENDIF
           ENDIF
         ENDIF
       ENDDO
