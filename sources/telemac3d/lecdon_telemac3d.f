@@ -947,6 +947,10 @@
             TRAIN(I) = MOTREA(ADRESS(2,32)+I-1)
           ENDDO
         ENDIF
+!       RAIN TEMPERATURE SHOULD BE AT LEAST 1 DEGREE
+        IF(IND_T.NE.0) THEN
+          TRAIN(IND_T) = MAX(TRAIN(I),1.D0)
+        ENDIF
       ENDIF
 !
       NDEBIT=DIMEN(2,33)

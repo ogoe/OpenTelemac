@@ -214,6 +214,7 @@
       USE INTERFACE_SISYPHE, ONLY: SISYPHE
       USE INTERFACE_TOMAWAC, ONLY: WAC
       USE TEL4DEL, ONLY: TEL4DELWAQ
+      USE DECLARATIONS_WAQTEL,ONLY: TAIR
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -838,6 +839,11 @@
      &             T3D_FILES,LISTIN,PATMOS_VALUE,
      &             INCLUS(COUPLING,'WAQTEL'),PLUIE,OPTWIND)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE METEO'
+!       RAIN TEMPERATURE EQUAL TO THE AIR TEMPERATURE OR 1.D0
+!       IS BETTER THAN 0.D0
+        IF(IND_T.NE.0) THEN
+          TRAIN(IND_T) = MAX(TAIR%R(1),1.D0)
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1655,6 +1661,11 @@
      &             LISTIN,PATMOS_VALUE,INCLUS(COUPLING,'WAQTEL'),PLUIE,
      &             OPTWIND)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE METEO'
+!       RAIN TEMPERATURE EQUAL TO THE AIR TEMPERATURE OR 1.D0
+!       IS BETTER THAN 0.D0
+        IF(IND_T.NE.0) THEN
+          TRAIN(IND_T) = MAX(TAIR%R(1),1.D0)
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
