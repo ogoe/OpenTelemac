@@ -73,8 +73,8 @@
       USE DECLARATIONS_TELEMAC3D
       USE DECLARATIONS_WAQTEL
       USE EXCHANGE_WITH_ATMOSPHERE
-
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -84,8 +84,7 @@
 !
       INTEGER IS,I,IP,IAD
 !     HEAT EXCHANGE WITH ATMOSPHERE
-      DOUBLE PRECISION WW
-      DOUBLE PRECISION TREEL,SAL,RO,WW2,FLUX_EVAP,FLUX_SENS,DEBEVAP
+      DOUBLE PRECISION WW,TREEL,SAL,RO,WW2,FLUX_EVAP,FLUX_SENS,DEBEVAP
 !
 !-----------------------------------------------------------------------
 !

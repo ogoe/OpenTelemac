@@ -98,6 +98,12 @@
 !+   profiler saying we spent 12% of the time in it, but this seems
 !+   wrong).
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        13/09/2016
+!+        V7P2
+!+   Checking more memory allocation, with more error messages and hints
+!+   for solving problems.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -169,7 +175,7 @@
       INTEGER, ALLOCATABLE, DIMENSION(:)::SENDCOUNTS,SDISPLS
       INTEGER, ALLOCATABLE, DIMENSION(:)::RECVCOUNTS,RDISPLS
       INTEGER, ALLOCATABLE, DIMENSION(:)::HEAPCOUNTS
-!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC) in scarat
+!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC) in scaract
       INTEGER NCHDIM
 !
 !     WORK FIELD FOR COUNTING OCCURANCES PRO RANK / SORTING SENDCHAR
@@ -517,8 +523,11 @@
           II   =IFAPAR(IFACE+3,MYII)
           NCHARA=NCHARA+1
           IF(NCHARA.GT.NCHDIM) THEN ! PROBABLY EXAGGERATED
+            WRITE (LU,*) ' '
+            WRITE (LU,*) 'MODULE STREAMLINE:'
             WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
-            WRITE (LU,*) 'COLLECT_CHAR::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE (LU,*) 'COLLECT_CHAR::NCHARA>NCHDIM, INCREASE'
+            WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE (LU,*) 'MYPID=',MYPID
             CALL PLANTE(1)
             STOP
@@ -562,8 +571,11 @@
           INTEGER I
 !
           IF(NCHARA.GT.NCHDIM) THEN ! PROBABLY EXAGGERATED
+            WRITE (LU,*) ' '
+            WRITE (LU,*) 'MODULE STREAMLINE:'
             WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
-            WRITE (LU,*) 'COLLECT_ALG::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE (LU,*) 'COLLECT_ALG::NCHARA>NCHDIM, INCREASE'
+            WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE (LU,*) 'MYPID=',MYPID
             CALL PLANTE(1)
             STOP
@@ -751,6 +763,7 @@
 !---------------------------------------------------------------------
 !
         SUBROUTINE HEAP_FOUND(NLOSTAGAIN,NARRV,NCHARA)
+          USE DECLARATIONS_SPECIAL
           IMPLICIT NONE
           INTEGER, INTENT(OUT)    :: NLOSTAGAIN
           INTEGER, INTENT(IN)     :: NARRV
@@ -762,6 +775,14 @@
           DO I=1,NARRV
             IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! A LOCALISED TRACEBACK
               NCHARA=NCHARA+1
+              IF(NCHARA.GT.NCHDIM) THEN
+                WRITE (LU,*) ' '
+                WRITE(LU,*) 'MODULE STREAMLINE:'
+                WRITE(LU,*) 'NOT ENOUGH MEMORY ALLOCATION, INCREASE'
+                WRITE(LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
+                CALL PLANTE(1)
+                STOP
+              ENDIF
               HEAPCHAR(NCHARA) = RECVCHAR(I) ! ALREADY INTERPOLATED?
               HEAPCOUNTS(HEAPCHAR(NCHARA)%MYPID+1) =
      &             HEAPCOUNTS(HEAPCHAR(NCHARA)%MYPID+1)+1
@@ -857,7 +878,7 @@
      &                        IER)
           IF(IER.NE.MPI_SUCCESS) THEN
             WRITE(LU,*)
-     &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER
+     &       'STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -871,7 +892,7 @@
      &       IER)
           IF(IER.NE.MPI_SUCCESS) THEN
             WRITE(LU,*)
-     &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALLV ERROR: ',IER
+     &       'STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALLV ERROR: ',IER
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -6959,6 +6980,7 @@
 !***********************************************************************
 !
       USE BIEF
+      USE INTERFACE_PARALLEL
 !
       IMPLICIT NONE
 !
@@ -7011,11 +7033,13 @@
 !
       TYPE(BIEF_OBJ), POINTER :: VISC
 !
+!     SECURITY COEFFICIENT FOR MEMORY ALLOCATION
+!
+      REAL, PARAMETER :: SECU=1.
+!
 !-----------------------------------------------------------------------
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN,MAXNPLOT
-      INTEGER  P_ISUM,P_IMAX
-      EXTERNAL P_ISUM,P_IMAX
 !
       ETABUF => ISUB
 !
@@ -7076,8 +7100,11 @@
 !     PARTICLES IT WILL AVOID THAT A PROCESSOR HAS NO MEMORY TO RECEIVE
 !     PARTICLES, BECAUSE IT HAD SEEN NO PARTICLE BEFORE.
 !
+!     MOREOVER WE HAVE A SECURITY COEFFICIENT FOR CASES WHERE A SUB-DOMAIN
+!     WILL RECEIVE MORE CHARACTERISTICS THAN P_IMAX(NPLOT)
+!
       IF(NCSIZE.GT.1) THEN
-        MAXNPLOT=P_IMAX(NPLOT)
+        MAXNPLOT=P_IMAX(NPLOT)*SECU
       ELSE
         MAXNPLOT=NPLOT
       ENDIF
@@ -7390,7 +7417,8 @@
             ENDIF
             ISTOP=P_ISUM(ISTOP)
             IF(ISTOP.GT.0) THEN
-              WRITE(LU,*) 'SCARACT'
+              WRITE (LU,*) ' '
+              WRITE(LU,*) 'MODULE STREAMLINE, SUBROUTINE SCARACT'
               WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP,
      &                     ' PROCESSORS'
               CALL PLANTE(1)
@@ -7399,9 +7427,16 @@
             CALL P_SYNC()
             ISTOP2=P_ISUM(ISTOP2)
             IF(ISTOP2.GT.0) THEN
-              WRITE(LU,*) 'SCARACT'
+              WRITE (LU,*) ' '
+              WRITE(LU,*) 'MODULE STREAMLINE, SUBROUTINE SCARACT'
               WRITE(LU,*) 'SIZE OF BUFFER SIZEBUF TOO SMALL IN ',
      &                    ISTOP2,' PROCESSORS'
+              WRITE(LU,*) 'POSSIBLE SOLUTIONS:'
+              WRITE(LU,*) '1) CHECK THE C.F.L. NUMBER,'
+              WRITE(LU,*) '   LOOK FOR LARGE, OR INFINITE VELOCITIES?'
+              WRITE(LU,*) '   MAYBE YOUR CASE IS GOING TO CRASH ANYWAY'
+              WRITE(LU,*) '2) REDUCE THE TIME STEP'
+              WRITE(LU,*) '3) REDUCE THE NUMBER OF PROCESSORS'
               CALL PLANTE(1)
               STOP
             ENDIF
@@ -8154,9 +8189,12 @@
           IF(ISUB(IPLOT).NE.IPID) THEN
             NCHARA=NCHARA+1
             IF(NCHARA.GT.NCHDIM.OR.NCHARA.GT.SIZEBUF) THEN
+              WRITE (LU,*) ' '
+              WRITE (LU,*) 'MODULE STREAMLINE:'
               WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
               WRITE (LU,*) 'SIZEBUF=',SIZEBUF
-              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE'
+              WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
               WRITE (LU,*) 'IPID=',IPID
               CALL PLANTE(1)
               STOP
@@ -8184,9 +8222,12 @@
           IF(ISUB(IPLOT).NE.IPID) THEN
             NCHARA=NCHARA+1
             IF(NCHARA.GT.NCHDIM.OR.NCHARA.GT.SIZEBUF) THEN
+              WRITE (LU,*) ' '
+              WRITE (LU,*) 'MODULE STREAMLINE:'
               WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
               WRITE (LU,*) 'SIZEBUF=',SIZEBUF
               WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+              WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
               WRITE (LU,*) 'IPID=',IPID
               CALL PLANTE(1)
               STOP
@@ -8503,8 +8544,11 @@
         IF(ISUB(IPLOT).NE.IPID) THEN
           NCHARA=NCHARA+1
           IF(NCHARA.GT.NCHDIM) THEN
+            WRITE (LU,*) ' '
+            WRITE(LU,*) 'MODULE STREAMLINE:'
             WRITE(LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
-            WRITE(LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE(LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE'
+            WRITE(LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE(LU,*) 'IPID=',IPID
             CALL PLANTE(1)
             STOP
@@ -9201,8 +9245,11 @@
         IF(ISUB(IPLOT).NE.IPID) THEN
           NCHARA=NCHARA+1
           IF(NCHARA.GT.NCHDIM) THEN
+            WRITE (LU,*) ' '
+            WRITE (LU,*) 'MODULE STREAMLINE:'
             WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
             WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE (LU,*) 'IPID=',IPID
             CALL PLANTE(1)
             STOP
@@ -9570,8 +9617,11 @@
         IF(ISUB(IPLOT).NE.IPID) THEN
           NCHARA=NCHARA+1
           IF(NCHARA.GT.NCHDIM) THEN
+            WRITE (LU,*) ' '
+            WRITE (LU,*) 'MODULE STREAMLINE:'
             WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
-            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE'
+            WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE (LU,*) 'IPID=',IPID
             CALL PLANTE(1)
             STOP
@@ -9793,8 +9843,11 @@
         IF(ISUB(IPLOT).NE.IPID) THEN
           NCHARA=NCHARA+1
           IF(NCHARA.GT.NCHDIM) THEN
+            WRITE (LU,*) ' '
+            WRITE (LU,*) 'MODULE STREAMLINE:'
             WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM
-            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
+            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE'
+            WRITE (LU,*) 'PARAMETER SECU IN SUBROUTINE SCARACT'
             WRITE (LU,*) 'IPID=',IPID
             CALL PLANTE(1)
             STOP
@@ -10110,4 +10163,3 @@
 !-----------------------------------------------------------------------
 !
       END MODULE STREAMLINE
-
