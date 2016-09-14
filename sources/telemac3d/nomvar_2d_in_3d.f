@@ -339,7 +339,7 @@
 !     BED EVOLUTION
       MNEMO(37)   = 'DZF     '
 !     AIR TEMPERATURE
-      MNEMO(37)   = 'TAIR    '
+      MNEMO(38)   = 'TAIR    '
 !
 !-----------------------------------------------------------------------
 !
