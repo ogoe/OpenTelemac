@@ -5052,12 +5052,17 @@ NOM1 = 'VALUES OF TRACERS IN THE RAIN'
 TYPE = REEL
 INDEX = 63
 MNEMO = 'TRAIN'
+DEFAUT = 0.
+DEFAUT1 = 0.
 TAILLE = 2
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = ''
-AIDE1 = ''
+AIDE = 'generalement ce traceur est la temperature, dans ce cas 
+cette valeur  est a modifier, sinon la valeur 0 est raisonnable'
+AIDE1 = 'most often, this tracer is temperature, in this case 
+this value should be modified, otherwise, default value of 0 seems
+reasonable'
 
 NOM = 'NOMBRE DE BUSES'
 NOM1 = 'NUMBER OF CULVERTS'
