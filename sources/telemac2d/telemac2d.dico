@@ -5388,7 +5388,7 @@ NOM1 = 'DROGUES FILE'
 TYPE = CARACTERE
 INDEX = 92
 MNEMO = 'T2D\_FILES(T2DFLO)%NAME'
-SUBMIT = 'T2DFLO-WRITE-09;T2DFLO;FACUL;ASC;ECR;SCAL'
+SUBMIT = 'T2DFLO-WRITE;T2DFLO;FACUL;ASC;ECR;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
 APPARENCE = 'LISTE IS FICHIER'
@@ -6182,15 +6182,15 @@ NIVEAU = 1
 AIDE = 'Donne le ratio entre pertes initiales IA et la retention potentielle
 maximale S pour le modele pluie-debit SCS CN. Les options disponibles sont:
   1 : IA/S = 0.2 (methode standard)
-  2 : IA/S = 0.05 (methode revisee, cf. Woodward, Hawkins et al. 2003. Avec 
-      cette option les coefficients CN fournis en entree sont alors 
-          automatiquement corriges, cf. manuel utilisateur). 
+  2 : IA/S = 0.05 (methode revisee, cf. Woodward, Hawkins et al. 2003. Avec
+      cette option les coefficients CN fournis en entree sont alors
+          automatiquement corriges, cf. manuel utilisateur).
 Ce mot cle est uniquement utile pour le modele pluie-d�bit 1 (CN)'
-AIDE1 = 'Gives the ratio for Initial Abstraction to Maximal Potential 
-Retention S for the SCS CN runoff model. Available options are:  
+AIDE1 = 'Gives the ratio for Initial Abstraction to Maximal Potential
+Retention S for the SCS CN runoff model. Available options are:
   1 : IA/S = 0.2 (standard method)
-  2 : IA/S = 0.05 (revised method, see Woodward, Hawkins et al. 2003. With  
-      this option the CN values given in input are automatically conversed, 
+  2 : IA/S = 0.05 (revised method, see Woodward, Hawkins et al. 2003. With
+      this option the CN values given in input are automatically conversed,
           see user manual).
 This keyword is only useful for runoff model 1 (SCS CN model)'
 

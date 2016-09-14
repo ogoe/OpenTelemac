@@ -132,7 +132,7 @@
       IREC = 0
       DO IC = 1,NC2DV
 !
-        CANAL = NCOU + IC -1
+        CALL GET_FREE_ID(CANAL)
 !
 !    OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !    -------------------------------------------------------------
