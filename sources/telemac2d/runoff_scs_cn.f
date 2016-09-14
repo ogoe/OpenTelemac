@@ -297,8 +297,10 @@
 !              +>  NAMES OF PRIVATE VARIABLES
 !             IN THE EXAMPLE BELOW CN IS READ FROM PRIVE%ADR(1)%P%R:
 !
-!      CALL OV('X=Y     ',CN%R,PRIVE%ADR(1)%P%R,PRIVE%ADR(1)%P%R,
-!     &                   0.D0,NPOIN)
+!      IF(LT.EQ.1) THEN
+!        CALL OV('X=Y     ',CN%R,PRIVE%ADR(1)%P%R,PRIVE%ADR(1)%P%R,
+!     &                     0.D0,NPOIN)
+!      ENDIF
 !
 !     CHECK THAT CN IS NOT GREATER THAN 100
       DO I=1,NPOIN
@@ -538,13 +540,9 @@
       IF(ENTET) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'RUNOFF_SCS_CN : PLUIE BRUTE CUMULEE :',
-     &                                                       T7%R(1),'M'
-          WRITE(LU,*) ' '
+          WRITE(LU,40)T7%R(1)
         ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*) 
-     &    'RUNOFF_SCS_CN : ACCUMULATED RAINFALL :',T7%R(1),'M'
-          WRITE(LU,*) ' '
+          WRITE(LU,50)T7%R(1)
         ENDIF
       ENDIF
 !
@@ -554,6 +552,14 @@
       CALL OV('X=Y     ',ACCROF_OLD%R,ACCROFF,ACCROFF,0.D0,NPOIN)
 !
 !-----------------------------------------------------------------------
+!
+40    FORMAT(/,80('-'),/,5X,'RUNOFF_SCS_CN : PLUIE BRUTE CUMULEE : ',
+     &        G16.7,' M'/,80('-'),/)
+50    FORMAT(/,80('-'),/,5X,'RUNOFF_SCS_CN : ACCUMULATED RAINFALL : ',
+     &        G16.7,' M'/,80('-'),/)
+!
+!-----------------------------------------------------------------------
+!
 !
       RETURN
       END

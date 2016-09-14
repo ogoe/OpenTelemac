@@ -35,7 +35,7 @@
 !|                |   |   +> 2: NORMAL ANTECEDENT MOISTURE CONDITIONS 
 !|                |   |   +> 3: WET ANTECEDENT MOISTURE CONDITIONS
 !| CN             |-->| CURVE NUMBER
-!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES
+!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES       
 !| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
 !| FO2            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| IELM           |-->| TYPE OF ELEMENT
@@ -52,9 +52,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC,   ONLY: COUPLING
       USE DECLARATIONS_TELEMAC2D, ONLY: DT,LT,AT,HN,T5,T6,T7,T8,T9,T10,
-     &                                  ENTET,T2DFO1,PRIVE
+     &                                  IASCNOPT,ENTET,T2DFO1,PRIVE
       USE INTERFACE_TELEMAC2D, EX_RUNOFF_SCS_CN => RUNOFF_SCS_CN
 !
       IMPLICIT NONE
@@ -80,7 +79,7 @@
 !********** END OF SPECIFIC TO THIS CASE
       LOGICAL STEEPSLOPECOR
 !
-      DOUBLE PRECISION RAIN_MPS_GEO,PEAK_TIME,CC
+      DOUBLE PRECISION RAIN_MPS_GEO,PEAK_TIME,CC,IA_S
       DOUBLE PRECISION, PARAMETER::EPS=1.E-6
       DOUBLE PRECISION A,B,C,R,RELT,IMMH,RFM,RF_HDUR
       DOUBLE PRECISION AT1,AT2,MM_AT2
@@ -248,7 +247,7 @@
 !
         ENDIF
 !
-!    RAINFALL DEFINITION OPTION NOT IMPLEMENTED
+!     RAINFALL DEFINITION OPTION NOT IMPLEMENTED
       ELSE
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
@@ -303,9 +302,49 @@
 !             IN THE EXAMPLE BELOW CN IS READ FROM PRIVE%ADR(1)%P%R:
 !
 !********** SPECIFIC TO THIS CASE
-      CALL OV('X=Y     ',CN%R,PRIVE%ADR(1)%P%R,PRIVE%ADR(1)%P%R,
-     &                   0.D0,NPOIN)
+      IF(LT.EQ.1) THEN
+        CALL OV('X=Y     ',CN%R,PRIVE%ADR(1)%P%R,PRIVE%ADR(1)%P%R,
+     &                     0.D0,NPOIN)
+      ENDIF
 !********** END OF SPECIFIC TO THIS CASE
+!
+!     CHECK THAT CN IS NOT GREATER THAN 100
+      DO I=1,NPOIN
+        IF((CN%R(I)-100.D0).GT.1.D-6) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'RUNOFF_SCS_CN : IL Y A AU MOINS UN NOEUD'
+            WRITE(LU,*) '                AVEC CN > 100 DANS DONNEES'
+            WRITE(LU,*) '                D''ENTREE. PAR EXEMPLE:'
+            WRITE(LU,*) '                NOEUD:',I,'WITH CN=',CN%R(I)
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
+            WRITE(LU,*) '                CN VALUE > 100 FOUND IN'
+            WRITE(LU,*) '                INPUT DATA. FOR INSTANCE:' 
+            WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+!     CHECK THAT CN IS NOT NEGATIVE
+        IF(CN%R(I).LT.0.D0) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'RUNOFF_SCS_CN : IL Y A AU MOINS UN NOEUD'
+            WRITE(LU,*) '                AVEC CN NEGATIF DANS DONNEES'
+            WRITE(LU,*) '                D''ENTREE. PAR EXEMPLE:'
+            WRITE(LU,*) '                NOEUD:',I,'WITH CN=',CN%R(I)
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
+            WRITE(LU,*) '                NEGATIVE CN VALUE FOUND IN'
+            WRITE(LU,*) ' 			   INPUT DATA. FOR INSTANCE:'
+            WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDDO
 !
 !     - OPTION FOR STEEP SLOPE CORRECTION:
 !       +> REFERENCE: Huang, Gallichand, Wang and Goulet. A modification 
@@ -315,13 +354,21 @@
 !       +> CORRECTION FOR SLOPES BETWEEN 0.14 AND 1.4 M/M DEFINED BY A 
 !          CORRECTION FACTOR CN2A/CN2 (VARIABLE TCN2A_CN2=T10%R)
 !       +> TERRAIN SLOPE (M/M) COMPUTED BY SUBROUTINE ZSLOPE
+!       +> WARNING: THE STEEP SLOPE CORRECTION IS PERFORMED AT THE
+!          *******  BEGINNING OF THE COMPUTATION ONLY - DOES NOT TAKE 
+!                   INTO ACOUNT TERRAIN EVOLUTIONS IN CASE OF COUPLING
+!                   WITH SISYPHE.
 !
 !     TO ACTIVATE OPTION FOR STEEP SLOPE CORRECTION: STEEPSLOPECOR = .TRUE.
       STEEPSLOPECOR = .FALSE. !CAN BE A KEYWORD?
 !
       IF(STEEPSLOPECOR) THEN
 !
-        IF(LT.EQ.1.OR.INCLUS(COUPLING,'SISYPHE'))THEN
+        IF(LT.EQ.1)THEN
+!        IF(LT.EQ.1.OR.INCLUS(COUPLING,'SISYPHE'))THEN 
+!        PL: CORRECTION IN CASE OF COUPLING REMOVED! IN THAT CASE 
+!            THE CORRECTION MUST BE DONE ON THE INITIAL CN VALUE, 
+!            NOT ON THE VALUE AT PREVIOUS DT
 !         COMPUTE THE BOTTOM SLOPE  
           CALL ZSLOPE(ZFSLOP,ZF,T8,T9,MSK,MASKEL,IELM,MESH)
 !         COMPUTE STEEP SLOPE CORRECTION COEFFICIENT CN2A_CN2 (STOCKED IN T10)
@@ -344,90 +391,92 @@
         CALL OS('X=C     ',X=T10,C=1.D0)
       ENDIF
 !
+!     - OPTION FOR INITIAL ABSTRACTION RATIO:
+!       +> REFERENCE: Woodward, Hawkins, Jiang, Hjelmfelt, Van Mullem
+!                     and Quan. Runoff Curve Number Method: Examination 
+!                     of the initial abstraction ratio. World Water and 
+!                     Environmental Resources Congress 2003.
+!       +> TWO OPTIONS DEFINED IN KEYWORD 'OPTION FOR INITIAL ABSTRACTION
+!          RATIO':
+!          - OPTION 1: IA/S = 0.2 (STANDARD METHOD) - DEFAULT
+!          - OPTION 2: IA/S = 0.05 (FROM ABOVE REFERENCE) WITH 
+!                      AUTOMATIC CONVERSION OF CN COEFFICIENTS (INPUT CN 
+!                      VALUES MUST BE GIVEN ACCORDING TO THE STANDARD 
+!                      METHOD) 
+!
+      IF(IASCNOPT.EQ.1) THEN
+        IA_S = 0.2D0
+      ELSEIF(IASCNOPT.EQ.2) THEN
+        IA_S = 0.05D0
+        IF(LT.EQ.1) THEN
+          DO I=1,NPOIN
+            CN%R(I) = 100.D0 / (1.879D0*
+     &                (100.D0/MAX(CN%R(I),EPS)-1.D0)**1.15D0+1.D0)
+          ENDDO
+        ENDIF
+      ELSE
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'RUNOFF_SCS_CN : OPTION POUR RATIO DES PERTES'
+          WRITE(LU,*) '                INITIALES INCORRECTE: ', IASCNOPT
+          WRITE(LU,*) '                CHOIX POSSIBLES: 1 OU 2'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'RUNOFF_SCS_CN : INVALID OPTION FOR INITIAL'
+          WRITE(LU,*) '                ABSTRACTION RATIO: ', IASCNOPT
+          WRITE(LU,*) '                AVAILABLE OPTIONS: 1 OR 2'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
 !***********************************************************************
 !
-!       CHECK THAT CN IS NOT GREATER THAN 100
+!     COMPUTE CN DEPENDING ON THE CHOSEN AMC OPTION (GIVEN BY KEYWORD)
+!     CN IS FORCED TO 100 MAXIMUM IN CASE OF STEEP SLOPE CORRECTION
+!
+      IF(LT.EQ.1) THEN
+!
+      IF(AMC.EQ.1) THEN
         DO I=1,NPOIN
-          IF((CN%R(I)-100.D0).GT.1.D-6) THEN
-            WRITE(LU,*) ' '
-              IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'RUNOFF_SCS_CN : IL Y A AU MOINS UN NOEUD'
-              WRITE(LU,*) '                AVEC CN > 100 DANS DONNEES'
-              WRITE(LU,*) '                D''ENTREE. PAR EXEMPLE:'
-              WRITE(LU,*) '                NOEUD:',I,'WITH CN=',CN%R(I)
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
-              WRITE(LU,*) '                CN VALUE > 100 FOUND IN'
-              WRITE(LU,*) '                INPUT DATA. FOR INSTANCE:' 
-              WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
-            ENDIF
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-!
-!       CHECK THAT CN IS NOT NEGATIVE
-          IF(CN%R(I).LT.0.D0) THEN
-            WRITE(LU,*) ' '
-              IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'RUNOFF_SCS_CN : IL Y A AU MOINS UN NOEUD'
-              WRITE(LU,*) '                AVEC CN NEGATIF DANS DONNEES'
-              WRITE(LU,*) '                D''ENTREE. PAR EXEMPLE:'
-              WRITE(LU,*) '                NOEUD:',I,'WITH CN=',CN%R(I)
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
-              WRITE(LU,*) '                NEGATIVE CN VALUE FOUND IN'
-              WRITE(LU,*) ' 			   INPUT DATA. FOR INSTANCE:'
-              WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
-            ENDIF
-            CALL PLANTE(1)
-            STOP
-          ENDIF
+          CN%R(I)=4.2D0*MIN(100.D0,CN%R(I)*T10%R(I))/ 
+     &           (10.D0 - 0.058D0 * 
+     &           MIN(100.D0,CN%R(I)*T10%R(I)))
         ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!       COMPUTE CN DEPENDING ON THE CHOSEN AMC OPTION (GIVEN BY KEYWORD)
-!       CN IS FORCED TO 100 MAXIMUM IN CASE OF STEEP SLOPE CORRECTION
-!
-        IF(AMC.EQ.1) THEN
-          DO I=1,NPOIN
-            CN%R(I)=4.2D0*MIN(100.D0,CN%R(I)*T10%R(I))/ 
-     &             (10.D0 - 0.058D0 * 
-     &             MIN(100.D0,CN%R(I)*T10%R(I)))
-          ENDDO
-        ELSEIF(AMC.EQ.2) THEN
-          DO I=1,NPOIN
-            CN%R(I) = MIN(100.D0,CN%R(I)*T10%R(I))
-          ENDDO
-        ELSEIF(AMC.EQ.3) THEN
-          DO I=1,NPOIN
-            CN%R(I) = 23.D0 * MIN(100.D0,CN%R(I)*T10%R(I))/ 
-     &               (10.D0 + 0.13D0* MIN(100.D0,CN%R(I)*T10%R(I)))
-          ENDDO
-        ELSE
-          WRITE(LU,*) ' '
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'RUNOFF_SCS_CN : OPTION AMC INCORRECTE: ',AMC
-            WRITE(LU,*) '                CHOIX POSSIBLES: 1, 2 OU 3'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'RUNOFF_SCS_CN : INVALID AMC OPTION: ',AMC
-            WRITE(LU,*) '                AVAILABLE OPTIONS: 1, 2 OR 3'
-          ENDIF	
-          CALL PLANTE(1)
-          STOP
+      ELSEIF(AMC.EQ.2) THEN
+        DO I=1,NPOIN
+          CN%R(I) = MIN(100.D0,CN%R(I)*T10%R(I))
+        ENDDO
+      ELSEIF(AMC.EQ.3) THEN
+        DO I=1,NPOIN
+          CN%R(I) = 23.D0 * MIN(100.D0,CN%R(I)*T10%R(I))/ 
+     &             (10.D0 + 0.13D0* MIN(100.D0,CN%R(I)*T10%R(I)))
+        ENDDO
+      ELSE
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'RUNOFF_SCS_CN : OPTION AMC INCORRECTE: ',AMC
+          WRITE(LU,*) '                CHOIX POSSIBLES: 1, 2 OU 3'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'RUNOFF_SCS_CN : INVALID AMC OPTION: ',AMC
+          WRITE(LU,*) '                AVAILABLE OPTIONS: 1, 2 OR 3'
         ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-!       POTENTIAL MAXIMAL RETENTION (POTMAXRET), M (STOCKED IN T5)
-!       INITIAL ABSTRACTION IA, M (STOCKED IN T6)
+      ENDIF
 !
-        CC=25.4D0/1000.D0
-!       
-        DO I=1,NPOIN
-!          POTMAXRET(I) = 25.4D0*(1000.D0/CN%R(I)-10.D0)/1000.D0
-!          IA(I) = POTMAXRET(I) * 0.2D0
-           T5%R(I)=CC*(1000.D0/MAX(CN%R(I),EPS)-10.D0)
-           T6%R(I)=0.2D0*T5%R(I)
-        ENDDO
+!     POTENTIAL MAXIMAL RETENTION (POTMAXRET), M (STOCKED IN T5)
+!     INITIAL ABSTRACTION IA, M (STOCKED IN T6)
+!
+      CC=25.4D0/1000.D0
+!     
+      DO I=1,NPOIN
+!        POTMAXRET(I) = 25.4D0*(1000.D0/CN%R(I)-10.D0)/1000.D0
+!        IA(I) = POTMAXRET(I) * IA_S
+         T5%R(I)=CC*(1000.D0/MAX(CN%R(I),EPS)-10.D0)
+         T6%R(I)=IA_S*T5%R(I)
+      ENDDO
 !
 !
 !-----------------------------------------------------------------------
@@ -497,13 +546,9 @@
       IF(ENTET) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'RUNOFF_SCS_CN : PLUIE BRUTE CUMULEE :',
-     &                                                       T7%R(1),'M'
-          WRITE(LU,*) ' '
+          WRITE(LU,40)T7%R(1)
         ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'RUNOFF_SCS_CN : ACCUMULATED RAINFALL :',
-     &                                                       T7%R(1),'M'
-          WRITE(LU,*) ' '
+          WRITE(LU,50)T7%R(1)
         ENDIF
       ENDIF
 !
@@ -522,6 +567,12 @@
 !     KEEP ACCROFF IN ACCROF_OLD
       CALL OV('X=Y     ',ACCROF_OLD%R,ACCROFF,ACCROFF,0.D0,NPOIN)
 !
+!-----------------------------------------------------------------------
+!
+40    FORMAT(/,80('-'),/,5X,'RUNOFF_SCS_CN : PLUIE BRUTE CUMULEE : ',
+     &        G16.7,' M'/,80('-'),/)
+50    FORMAT(/,80('-'),/,5X,'RUNOFF_SCS_CN : ACCUMULATED RAINFALL : ',
+     &        G16.7,' M'/,80('-'),/)
 !
 !-----------------------------------------------------------------------
 !

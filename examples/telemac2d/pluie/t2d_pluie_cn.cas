@@ -1,6 +1,6 @@
 /---------------------------------------------------------------------
 / TELEMAC2D Version v7p2  
-/ VALIDATION TEST FOR RAIN IN 2D:
+/ VALIDATION TEST FOR RAIN IN 2D- here option 2:
 /   1- case without infiltration
 /   2- case with CN rainfall-runoff model and CN values in formatted 
 /      data file
@@ -9,13 +9,14 @@
 /
 /  Statistics of CPU Time
 /
-/  Lenovo D30 2.8 MHz Nag compil.(1procs):1min39s version 7.2 20/XX/XX
-/  Lenovo D30 2.8 MHz Nag compil.(8procs):15s     version 7.2 20/XX/XX
+/  Lenovo D30 2.8 MHz Nag compil.(1procs): 2s   version 7.2 20/08/16
+/  Lenovo D30 2.8 MHz Nag compil.(8procs): <1s  version 7.2 20/08/16
 /
 /---------------------------------------------------------------------
 RAINFALL-RUNOFF MODEL                    = 1
 DURATION OF RAIN OR EVAPORATION IN HOURS = 6.
 ANTECEDENT MOISTURE CONDITIONS           = 2
+OPTION FOR INITIAL ABSTRACTION RATIO     = 1
 RAIN OR EVAPORATION                      = YES
 RAIN OR EVAPORATION IN MM PER DAY        = 100.0
 NUMBER OF PRIVATE ARRAYS = 3

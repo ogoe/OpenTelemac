@@ -9,13 +9,14 @@
 /
 /  Statistics of CPU Time
 /
-/  Lenovo D30 2.8 MHz Nag compil.(1procs): 54s  version 7.2 20/XX/XX
-/  Lenovo D30 2.8 MHz Nag compil.(8procs): 12s  version 7.2 20/XX/XX
+/  Lenovo D30 2.8 MHz Nag compil.(1procs): 1s   version 7.2 20/08/16
+/  Lenovo D30 2.8 MHz Nag compil.(8procs): <1s  version 7.2 20/08/16
 /
 /---------------------------------------------------------------------
 RAINFALL-RUNOFF MODEL                    = 1
 DURATION OF RAIN OR EVAPORATION IN HOURS = 6.
 ANTECEDENT MOISTURE CONDITIONS           = 2
+OPTION FOR INITIAL ABSTRACTION RATIO     = 1
 RAIN OR EVAPORATION                      = YES
 RAIN OR EVAPORATION IN MM PER DAY        = 100.0
 NUMBER OF PRIVATE ARRAYS = 4
