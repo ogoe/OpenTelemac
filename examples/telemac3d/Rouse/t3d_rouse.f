@@ -461,7 +461,7 @@
      &(LT)
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -498,6 +498,18 @@
 !+        14/03/2014
 !+        V7P0
 !+   New developments in sediment merged on 14/03/2014.
+!
+!history  J-M HERVOUET (LNHE)
+!+        10/09/2015
+!+        V7P1
+!+   With the decision to always issue the initial condition, this
+!+   subroutine must be changed.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P1
+!+   Variables for clean restart mode must be built for initial
+!+   conditions.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
@@ -540,22 +552,22 @@
 ! COMPUTES THE MAXIMUM ELEVATION AND ASSOCIATED TIME
 !=======================================================================
 !
-      IF(SORG2D(35)) THEN
-        IF(.NOT.DEJA) THEN
-          CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-          CALL OS('X=C     ',X=TMAXZ,C=AT)
-          DEJA=.TRUE.
-        ELSE
-          DO I=1,NPOIN2
-            XMAX=H%R(I)+ZF%R(I)
-!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
-            IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
-              MAXZ%R(I)=XMAX
-              IF(SORG2D(36)) TMAXZ%R(I)=AT
-            ENDIF
-          ENDDO
+        IF(SORG2D(35)) THEN
+          IF(.NOT.DEJA) THEN
+            CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+            CALL OS('X=C     ',X=TMAXZ,C=AT)
+            DEJA=.TRUE.
+          ELSE
+            DO I=1,NPOIN2
+              XMAX=H%R(I)+ZF%R(I)
+!             DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+              IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
+                MAXZ%R(I)=XMAX
+                IF(SORG2D(36)) TMAXZ%R(I)=AT
+              ENDIF
+            ENDDO
+          ENDIF
         ENDIF
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -579,7 +591,9 @@
 !
       LEO=.FALSE.
       LTT=(LT/GRAPRD)*GRAPRD
-      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.LT.GE.GRADEB) LEO=.TRUE.
+      IF((LT.EQ.LTT.OR.LT.EQ.NIT).AND.(LT.GE.GRADEB.OR.LT.EQ.0)) THEN
+        LEO=.TRUE.
+      ENDIF
 !
 !     NO PRINT OUT, NO OUTPUT TO FILE: EXITS
       IF(.NOT.LEO) GO TO 1000
@@ -774,12 +788,12 @@
       ENDIF
 !
 !=======================================================================
-! DEPTH-AVERAGED TRACERS (VARIABLES 38 TO 37+NTRAC)
+! DEPTH-AVERAGED TRACERS (VARIABLES 39 TO 38+NTRAC)
 !=======================================================================
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          IF(LEO.AND.SORG2D(37+I)) THEN
+          IF(LEO.AND.SORG2D(38+I)) THEN
             CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
      &                  TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
      &                  T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,
@@ -808,7 +822,9 @@
 ! FOR RESTARTS, STORAGE OF DH AND HN IN A 3D ARRAY
 !=======================================================================
 !
-      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.LT.EQ.NIT))) THEN
+      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.
+!        INITIAL CONDITIONS NOW ALWAYS WANTED, THOUGH NOT USED
+     &   (LT.EQ.0.OR.LT.EQ.NIT)))) THEN
         DO I=1,NPOIN2
           DHHN%R(I       )=DH%R(I)
           DHHN%R(I+NPOIN2)=HN%R(I)
@@ -1259,9 +1275,9 @@
               FLUDPT(I)  = FLUDPTC(I)+FLUDPTNC(I)
             ELSE
 !             TIDAL FLAT
-              FLUDPT   = 0.D0
-              FLUDPTC  = 0.D0
-              FLUDPTNC = 0.D0
+              FLUDPT(I)   = 0.D0
+              FLUDPTC(I)  = 0.D0
+              FLUDPTNC(I) = 0.D0
             ENDIF
           ENDDO
         ELSE

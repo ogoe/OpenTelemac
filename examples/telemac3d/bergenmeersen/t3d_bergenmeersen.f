@@ -1,3 +1,7 @@
+!
+!  CHANGES VS SOURCE FILES:
+!  IN CONDIM: DEFINITION OF PLANE FOR TRANSF_PLANE = 2
+!
 !                    *****************
                      SUBROUTINE CONDIM
 !                    *****************
@@ -78,6 +82,7 @@
       USE DECLARATIONS_TELEMAC3D
       USE TPXO
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
@@ -192,7 +197,8 @@
 !
 !     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
 !
-!     Edited by Sven 22/12/2015
+! BEGINNING OF SPECIFIC TO THIS CASE
+!     EDITED BY SVEN 22/12/2015
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=2
       ENDDO
@@ -201,7 +207,8 @@
       ZSTAR%R(3)=0.30D0
       ZSTAR%R(4)=0.60D0
       ZSTAR%R(5)=1.D0
-!      proportions according to natural logaritmic function
+!     PROPORTIONS ACCORDING TO NATURAL LOGARITMIC FUNCTION
+! END OF PART SPECIFIC TO THIS CASE
 !
 !     DO IPLAN = 1,NPLAN
 !       TRANSF_PLANE%I(IPLAN)=2
@@ -315,4 +322,3 @@
 !
       RETURN
       END
-!
