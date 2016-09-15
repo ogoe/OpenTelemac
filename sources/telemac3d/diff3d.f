@@ -15,7 +15,7 @@
      & SIGMAG,IPBOT,SETDEP,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V7P1
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
@@ -104,6 +104,12 @@
 !+        V7P1
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
+!
+!history  J.M. HERVOUET (EDF LAB, LNHE)
+!+        15/09/2016
+!+        V7P2
+!+   In case RAIN is treated here (case of advection and SUPG), clipping
+!+   of the matrix diagonal to avoid negative values.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -353,7 +359,7 @@
       IF(YASCE.AND.NSCE.GT.0) THEN
         DO IS=1,NSCE
           IF(OPTSOU.EQ.1) THEN
-          ! SOURCE NOT CONSIDERED AS A DIRAC
+!          SOURCE NOT CONSIDERED AS A DIRAC
 !          IF INTAKE FSCE=F, SO NO EXTRA TERM
             IIS=IS
 !           IN PARALLEL MODE SOURCES WITHOUT PARCOM
@@ -366,7 +372,7 @@
 !            IMPLICIT SOURCE TERM : SEE BELOW
             ENDDO
           ELSE IF(OPTSOU.EQ.2) THEN
-          ! SOURCE CONSIDERED AS A DIRAC
+!           SOURCE CONSIDERED AS A DIRAC
             IIS=1
 !           IN PARALLEL MODE SOURCES WITHOUT PARCOM
             IF(NCSIZE.GT.1) IIS=2
@@ -380,7 +386,7 @@
             ENDIF
           ENDIF
         ENDDO
-        ! BEDFLUXES
+!       BEDFLUXES
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
 !           EXPLICIT SOURCE TERM
@@ -389,23 +395,6 @@
      &                   (1.D0-TETASUPG)*FN%R(I)
           ENDDO
         ENDIF
-      ENDIF
-!
-!=======================================================================
-!
-!     RAIN (ALL TRACERS) - EXPLICIT PART
-!     VALUE OF TRACER IN RAIN TAKEN INTO ACCOUNT ONLY IF RAIN POSITIVE
-!     NOT IN CASE OF EVAPORATION, HENCE THE MAX(PLUIE,0)
-!     THERE IS NO COEFFICIENT (1-TETASUPG) ON THIS TERM BECAUSE IT HAS
-!     NO IMPLICIT PART
-!
-      IF(RAIN) THEN
-        DO I=1,NPOIN2
-          IPOIN3=NPOIN3-NPOIN2+I
-          SEM3D%R(IPOIN3)=SEM3D%R(IPOIN3)
-     &                    -PLUIE(I)*(1.D0-TETASUPG)*FN%R(IPOIN3)
-     &                    +MAX(PLUIE(I),0.D0)*TRAIN
-        ENDDO
       ENDIF
 !
 !=======================================================================
@@ -437,7 +426,7 @@
 !
       IF(YASCE.AND.NSCE.GT.0) THEN
         IF(OPTSOU.EQ.1) THEN
-        ! SOURCE NOT CONSIDERED AS A DIRAC
+!         SOURCE NOT CONSIDERED AS A DIRAC
           DO IS=1,NSCE
 !           IF INTAKE FSCE=T, SO NO EXTRA TERM
             IIS=IS
@@ -449,8 +438,8 @@
      &                     MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
             ENDDO
           ENDDO
-        ELSE IF(OPTSOU.EQ.2) THEN
-        ! SOURCE CONSIDERED AS A DIRAC
+        ELSEIF(OPTSOU.EQ.2) THEN
+!         SOURCE CONSIDERED AS A DIRAC
           IIS=1
 !         IN PARALLEL MODE SOURCES WITHOUT PARCOM
           IF(NCSIZE.GT.1) IIS=2
@@ -460,7 +449,7 @@
      &                   MAX(SOURCES%ADR(IIS)%P%R(I),0.D0)*TETASUPG
           ENDDO
         ENDIF
-
+!
         IF(BEDBOU)THEN
           DO I=1,NPOIN2
 !           IMPLICIT BEDFLUX TERM
@@ -470,14 +459,28 @@
         ENDIF
       ENDIF
 !
-!     RAIN (ALL TRACERS) - IMPLICIT PART
+!     RAIN (ALL TRACERS) - IMPLICIT AND EXPLICIT PARTS
 !
       IF(RAIN) THEN
         DO I=1,NPOIN2
           IPOIN3=NPOIN3-NPOIN2+I
-          MTRA2%D%R(IPOIN3)=MTRA2%D%R(IPOIN3)+PLUIE(I)*TETASUPG
+!         WITH CLIPPING TO AVOID TOO SMALL DIAGONAL<0 WITH EVAPORATION
+          IF(MTRA2%D%R(IPOIN3)+PLUIE(I)*TETASUPG.GT.1.D-6) THEN
+            MTRA2%D%R(IPOIN3)=MTRA2%D%R(IPOIN3)+PLUIE(I)*TETASUPG
+            SEM3D%R(IPOIN3)=SEM3D%R(IPOIN3)
+     &                     -PLUIE(I)*(1.D0-TETASUPG)*FN%R(IPOIN3)
+          ENDIF
+!         RAIN (ALL TRACERS) - EXPLICIT PART
+!         VALUE OF TRACER IN RAIN TAKEN INTO ACCOUNT ONLY IF RAIN POSITIVE
+!         NOT IN CASE OF EVAPORATION, HENCE THE MAX(PLUIE,0)
+!         THERE IS NO COEFFICIENT (1-TETASUPG) ON THIS TERM BECAUSE IT HAS
+!         NO IMPLICIT PART
+          SEM3D%R(IPOIN3)=SEM3D%R(IPOIN3)+MAX(PLUIE(I),0.D0)*TRAIN
         ENDDO
       ENDIF
+!
+!=======================================================================
+!
 !
 !=======================================================================
 !   DIFFUSION MATRIX + BOUNDARY TERMS

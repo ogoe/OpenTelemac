@@ -8,14 +8,14 @@ name: HOMERE_DAMOCLES
 path: <root>|sources|utils|damocles
 files: longlu.f
   declarations_damocles.f
-  precar.f
-  next.f
-  mycarlu.f
   preval.f
+  next.f
+  realu.f
+  precar.f
+  mycarlu.f
   intlu.f
   myaidelu.f
   prev.f
-  realu.f
   majus.f
   loglu.f
   dico_data.f

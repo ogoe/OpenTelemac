@@ -68,8 +68,6 @@ files: bief_def.f
   cmpobj.f
   ovd_2.f
   os.f
-  jultim.f
-  gregtim.f
   streamline.f
   vc13cc.f
   vc04tt.f
@@ -134,6 +132,8 @@ files: bief_def.f
   vector.f
   somme.f
   bief_sum.f
+  jultim.f
+  gregtim.f
   mult_interface_seg.f
   mv0403.f
   mv0404.f
@@ -202,7 +202,6 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -217,7 +216,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -231,7 +230,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -239,7 +238,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -252,6 +251,7 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -729,12 +729,12 @@ path: <root>|sources|utils|special
 files: declarations_special.f
   print_header.f
   plante.F
+  get_free_id.f
   get_nodes_per_element.f
   check_allocate.f
   write_error.f
   check_call.f
   extens.f
-  get_free_id.f
 
 [stbtel]
 path: <root>|sources|stbtel
@@ -744,14 +744,14 @@ files: interp.f
 path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
-  interface_telemac2d.f
-  fdnrst.f
-  wrihyd.f
-  tel4del.f
   oil_flot.f
   entete.f
   bilan.f
   oilspill.f
+  interface_telemac2d.f
+  fdnrst.f
+  wrihyd.f
+  tel4del.f
   grad_zconv.f
   meteo_set_var_names.f
   meteo_from_binary_file.f
@@ -944,10 +944,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
-  gammln.f
   foncro.f
   bornes.f
   qgauss.f
+  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f

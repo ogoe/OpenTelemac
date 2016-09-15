@@ -138,7 +138,7 @@ files: declarations_special.f
   plante.F
   check_allocate.f
   get_nodes_per_element.f
+  get_free_id.f
   write_error.f
   check_call.f
   extens.f
-  get_free_id.f

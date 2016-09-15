@@ -28,12 +28,7 @@
 ! |  GEO:          |    |
 ! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
 ! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
-! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 ! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !----------------------------------------------------------------------
@@ -42,7 +37,8 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
+      USE DECLARATIONS_STBTEL, ONLY: MESH
+!
       IMPLICIT NONE
 !
       INTEGER ILOG , IADH , IENT , IENTU , IINC , ISORT
@@ -53,8 +49,7 @@
 !
       DOUBLE PRECISION HBOR , UBOR , VBOR , AUBOR , TBOR , ATBOR ,BTBOR
 !
-      CHARACTER*9  MAILLE
-!
+      CHARACTER(LEN=9) :: MAILLE
 !
 !***********************************************************************
 !

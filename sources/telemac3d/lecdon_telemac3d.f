@@ -106,6 +106,13 @@
 !+  Checking the number of values of the tracers at sources, and
 !+  stop if wrong.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        15/09/2016
+!+        V7P2
+!+  Default values of COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!+  managed differently. The missing values are completed with the last
+!+  value given by the user, not by 1.D-6.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -875,24 +882,31 @@
           DO I=1,NTRAC
             DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
           ENDDO
-        ELSEIF(DIMEN(2,18).LE.NTRAC.AND.DIMEN(2,18).GT.0) THEN
+        ELSEIF(TROUVE(2,18).GE.1.AND.
+     &         DIMEN(2,18).LT.NTRAC.AND.DIMEN(2,18).GT.0) THEN
+!         READING WHAT HAS BEEN GIVEN
           DO I=1,DIMEN(2,18)
             DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
-          ENDDO
-!       ELSE = 1.D-6 (DEFAULT VALUE), SEE ABOVE
+          ENDDO  
+!         COMPLETING WITH THE LAST GIVEN
+          DO I=DIMEN(2,18)+1,NTRAC
+            DNUTAH(I) = MOTREA(ADRESS(2,18)+DIMEN(2,18)-1)
+          ENDDO       
         ENDIF
-      ENDIF
-!
-      IF(NTRAC.GT.0) THEN
         IF(TROUVE(2,19).GE.1.AND.DIMEN(2,19).EQ.NTRAC) THEN
           DO I=1,NTRAC
             DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
           ENDDO
-        ELSEIF(DIMEN(2,19).LE.NTRAC.AND.DIMEN(2,19).GT.0) THEN
+        ELSEIF(TROUVE(2,19).GE.1.AND.
+     &         DIMEN(2,19).LT.NTRAC.AND.DIMEN(2,19).GT.0) THEN
+!         READING WHAT HAS BEEN GIVEN
           DO I=1,DIMEN(2,19)
             DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
-          ENDDO
-!       ELSE = 1.D-6 (DEFAULT VALUE), SEE ABOVE
+          ENDDO  
+!         COMPLETING WITH THE LAST GIVEN
+          DO I=DIMEN(2,19)+1,NTRAC
+            DNUTAV(I) = MOTREA(ADRESS(2,19)+DIMEN(2,19)-1)
+          ENDDO       
         ENDIF
       ENDIF
 !
@@ -2912,3 +2926,4 @@
 !
       RETURN
       END
+

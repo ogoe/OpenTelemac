@@ -56,7 +56,7 @@ files: declarations_special.f
   plante.F
   get_nodes_per_element.f
   check_allocate.f
+  get_free_id.f
   write_error.f
   check_call.f
   extens.f
-  get_free_id.f

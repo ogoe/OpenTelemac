@@ -79,12 +79,17 @@
 !+   OPTION=1 (i.e. TREATMENT OF NEGATIVE DEPTHS=3) is now also possible
 !+   for the LIPS scheme.
 !
-!history  J-M HERVOUET (LNHE)
+!history  J-M HERVOUET (EDF LAB, LNHE)
 !+        09/09/2016
 !+        V7P2
 !+   Swapping rain and boundary fluxes at the end of the algorithm. It 
 !+   caused a wrong correction of FLBOR in case of evaporation.
 !+   Adding rain (it was mixed before with sources).
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        15/09/2016
+!+        V7P2
+!+   Limiting evaporation to avoid negative depths.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
@@ -146,7 +151,8 @@
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
       DOUBLE PRECISION, INTENT(INOUT) :: FLOPOINT(MESH%NELEM,3)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,FLODEL,H,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH,PLUIE
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: PLUIE
+      TYPE(BIEF_OBJ), INTENT(IN)      :: UNSV2D,HN,SMH
       LOGICAL, INTENT(IN)             :: YASMH,INFO,RAIN
       LOGICAL, INTENT(IN)             :: COMPUTE_FLODEL
       CHARACTER(LEN=24)               :: NAMECODE
@@ -400,6 +406,8 @@
           H%R(I)=HN%R(I)
         ENDDO
       ENDIF
+!
+!     RAIN (POSITIVE PLUIE)
 !
       IF(RAIN) THEN
         DO I=1,NPOIN
@@ -794,11 +802,16 @@
         ENDIF
       ENDIF
 !
-!     RAIN OR EVAPORATION
+!     EVAPORATION (NEGATIVE PLUIE), WITH A POSSIBLE LIMITATION
 !
       IF(RAIN) THEN
         DO I=1,NPOIN
-          H%R(I)=H%R(I)+DT*MIN(PLUIE%R(I),0.D0)
+          IF(-DT*PLUIE%R(I).LT.H%R(I)) THEN
+            H%R(I)=H%R(I)+DT*MIN(PLUIE%R(I),0.D0)
+          ELSE
+            PLUIE%R(I)=-H%R(I)/DT
+            H%R(I)=0.D0
+          ENDIF
         ENDDO
       ENDIF
 !

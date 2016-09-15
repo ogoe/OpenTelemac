@@ -61,7 +61,7 @@
 !+   Sources of type Dirac were not properly treated in scalar mode.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        11/09/2016
+!+        15/09/2016
 !+        V7P2
 !+   Section on rain slightly rearranged to avoid code duplication.
 !
@@ -172,25 +172,19 @@
       IF(RAIN) THEN
         IF(ATMOSEXCH.NE.1.AND.ATMOSEXCH.NE.2) THEN
 !         PLUIE MUST BE NON ASSEMBLED IN PARALLEL
-          CALL OS('X=CY    ',X=PLUIE,Y=VOLU2D,C=RAIN_MMPD/86400000.D0)
-          IF(NCSIZE.GT.1) THEN
-!           USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
-            CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
-     &                         C=RAIN_MMPD/86400000.D0)
-          ENDIF
+          CALL OS('X=C     ',X=PLUIE,C=RAIN_MMPD/86400000.D0)
         ELSEIF(ATMOSEXCH.EQ.1.OR.ATMOSEXCH.EQ.2) THEN
           DO I=1,NPOIN2
 !           TEMPERATURE AND SALINITY AT THE SURFACE
             TREEL = TA%ADR(IND_T)%P%R(NPOIN3-NPOIN2+I)
-            IF (IND_S.EQ.0) THEN
+            IF(IND_S.EQ.0) THEN
               SAL = 0.D0
             ELSE
               SAL = TA%ADR(IND_S)%P%R(NPOIN3-NPOIN2+I)
             ENDIF
-!
             WW = SQRT(WIND%ADR(1)%P%R(I)**2 + WIND%ADR(2)%P%R(I)**2)
 !           LOG LAW FOR WIND AT 2 METERS
-!            WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
+!           WW2 = WW * LOG(2.D0/0.0002D0)/LOG(10.D0/0.0002D0)
 !           DIRECTLY WRITTEN BELOW
             WW2 = WW * LOG(1.D4)/LOG(5.D4)
 !           ALTERNATIVE LAW FOR WIND AT 2 METERS
@@ -200,19 +194,21 @@
      &                 FLUX_EVAP,FLUX_SENS,DEBEVAP,C_ATMOS)
 !           WATER FLUXES = RAIN - EVAPORATION
 !           CONVERSION FROM MM/S TO M/S --> *1.D-3
-            PLUIE%R(I) = VOLU2D%R(I)*(RAINFALL*1.D-3-DEBEVAP)
-            IF(NCSIZE.GT.1) THEN
-!             USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
-!             CONVERSION FROM MM/S TO M/S --> *1.D-3
-              PARAPLUIE%R(I) = V2DPAR%R(I)*(RAINFALL*1.D-3-DEBEVAP)
-            ENDIF
+            PLUIE%R(I) = RAINFALL*1.D-3-DEBEVAP
           ENDDO
         ENDIF
 !
-!       ADDING TO SMH
+!       MULTIPLICATION BY VOLU2D
+!
+        CALL OS('X=XY    ',X=PLUIE,Y=VOLU2D)      
+!
+!       COMPUTING A PARALLEL ASSEMBLED FORM OF PLUIE, CALLED PARAPLUIE
+!       AND ADDING IT TO SMH
 !
         IF(NCSIZE.GT.1) THEN
 !         SMH MUST BE ASSEMBLED IN PARALLEL
+          CALL OS('X=Y     ',X=PARAPLUIE,Y=PLUIE)
+          CALL PARCOM(PARAPLUIE,2,MESH2D)
           CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
         ELSE
 !         PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D

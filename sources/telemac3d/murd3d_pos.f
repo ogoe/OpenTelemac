@@ -64,6 +64,11 @@
 !+   Add the option OPTSOU to treat sources as a dirac (OPTSOU=2) or
 !+   not (OPTSOU=1).
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        15/09/2016
+!+        V7P2
+!+   Better treatment of evaporation, with a highest possible value.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG
@@ -770,9 +775,10 @@
           IF(PLUIE(IPOIN).LT.0.D0) THEN
             IS=NPOIN3-NPOIN2+IPOIN
             VOLU2(IS)=VOLU2(IS)+DT*PLUIE(IPOIN)
-!           DIVISION BY 0 NOT CHECKED (BUT COULD BE A PROBLEM AS PLUIE<0)
 !           CONCENTRATION EFFECT FOR ALL TRACERS (WRONG FOR TEMPERATURE ??)
-            FC(IS)=FC(IS)-DT*FC(IS)*PLUIE(IPOIN)/VOLU2(IS)
+            FC(IS)=FC(IS)*(1.D0-DT*PLUIE(IPOIN)/MAX(VOLU2(IS),1.D-10))
+!           ARBITRARY CLIPPING OF HIGH VALUES
+            FC(IS)=MIN(FC(IS),1000.D0)
           ENDIF
         ENDDO
       ENDIF

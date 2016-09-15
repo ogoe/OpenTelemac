@@ -39,10 +39,11 @@
 !+   scheme ERIA=15.
 !
 !history  J.M. HERVOUET (LNHE)
-!+        11/09/2016
+!+        15/09/2016
 !+        V7P2
 !+   Adding dummy RAIN and PLUIE to call of positive_depths.
 !+   Retrieving SMH without rain in the case of rain.
+!+   Updating array PLUIE when there is a imitation of evaporation.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -155,11 +156,11 @@
 !
           IF(RAIN) THEN
             IF(NCSIZE.GT.1) THEN
-              CALL OS('X=Y-Z   ',X=T2_05,Y=SMH,Z=PARAPLUIE)
+              CALL OS('X=Y-Z   ',X=SMH,Y=SMH,Z=PARAPLUIE)
               CALL OS('X=YZ    ',X=T2_06,Y=PARAPLUIE,Z=UNSV2D)
             ELSE
-              CALL OS('X=Y-Z   ',X=T2_05,Y=SMH,Z=PLUIE)
-              CALL OS('X=Y/Z   ',X=T2_06,Y=PLUIE,Z=VOLU2D)
+              CALL OS('X=Y-Z   ',X=SMH,Y=SMH,Z=PLUIE)
+              CALL OS('X=YZ    ',X=T2_06,Y=PLUIE,Z=UNSV2D)
             ENDIF
             CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
      &                           MESH2D,FLODEL,.FALSE.,
@@ -167,13 +168,25 @@
      &                           GLOSEG(1:DIMGLO,1),
      &                           GLOSEG(1:DIMGLO,2),
      &                           MESH2D%NBOR%I,NPTFR2,
-!                                SMH          PLUIE RAIN
-     &                           T2_05,.TRUE.,T2_06,RAIN,2,
-!                                     YASMH OPTSOU
+!                                     YASMH PLUIE      OPTSOU
+     &                           SMH,.TRUE.,T2_06,RAIN,2,
 !                                SMH IN PROJECTED FORM IN T3D
      &                           FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
      &                           MESH2D%W%R,NAMECODE,OPTPOS,MAXADV)
 !                                                    OPTION FOR POSITIVE DEPTH ALGORITHM
+!
+!           UPDATING SMH AND PLUIE IN CASE EVAPORATION HAS BEEN LIMITED
+!
+            CALL OS('X=YZ    ',X=PLUIE,Y=T2_06,Z=VOLU2D)         
+            IF(NCSIZE.GT.1) THEN
+              CALL OS('X=Y     ',X=PARAPLUIE,Y=PLUIE)
+              CALL PARCOM(PARAPLUIE,2,MESH2D)
+              CALL OS('X=Y-Z   ',X=SMH,Y=SMH,Z=PARAPLUIE)
+            ELSE
+              CALL OS('X=YZ    ',X=T2_06,Y=PLUIE,Z=UNSV2D)
+              CALL OS('X=Y-Z   ',X=SMH,Y=SMH,Z=PLUIE)
+            ENDIF
+!
           ELSE
             CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
      &                           MESH2D,FLODEL,.FALSE.,

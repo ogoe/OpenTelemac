@@ -19,7 +19,12 @@
 !history S. PAVAN (LHSV) & J-M HERVOUET (EDF LAB, LNHE)
 !+     01/09/2016
 !+     V7P2
-!+     First version
+!+  First version
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+     15/09/2016
+!+     V7P2
+!+  Imposing a highest maximum value in case of evaporation.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AM2            |<->| WORKING MATRIX FOR LHS
@@ -130,6 +135,10 @@
         FMIN=P_DMIN(FMIN)
         FMAX=P_DMAX(FMAX)
       ENDIF
+!
+!     IF RISK OF EVAPORATION, ARBITRARY GLOBAL MAXIMUM
+!
+      IF(RAIN) FMAX=MAX(FMAX,1000.D0)
 !
 !-----------------------------------------------------------------------
 !
@@ -400,11 +409,10 @@
           NORMR=SQRT(P_DOTS(R,R,MESH3D))
 !         COPY OF NEW SOLUTION ON F
           DO I=1,NPOIN3
-!         COPY OF NEW SOLUTION ON F, WITH CLIPPING WITH GLOBAL EXTREMA
-!         TO COPE WITH TRUNCATION ERRORS. IF CLIPPING TRUE ERRORS IT
-!         WILL DO MASS ERRORS  
+!           COPY OF NEW SOLUTION ON F, WITH CLIPPING WITH GLOBAL EXTREMA
+!           TO COPE WITH TRUNCATION ERRORS. IF CLIPPING TRUE ERRORS IT
+!           WILL DO MASS ERRORS  
             F(I)=MAX(MIN(BB1%R(I),FMAX),FMIN)
-!           F(I)=BB1%R(I)
           ENDDO
           IF(N.LT.SLVPSI%NITMAX.AND.NORMR.GT.SLVPSI%EPS*NORMB) THEN
             GO TO 100
@@ -448,3 +456,4 @@
 !
       RETURN
       END
+

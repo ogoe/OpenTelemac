@@ -107,7 +107,6 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -122,7 +121,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -136,7 +135,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -144,7 +143,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -157,6 +156,7 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -491,12 +491,12 @@ path: <root>|sources|utils|special
 files: declarations_special.f
   print_header.f
   plante.F
+  get_free_id.f
   get_nodes_per_element.f
   check_allocate.f
   write_error.f
   check_call.f
   extens.f
-  get_free_id.f
 
 [tomawac]
 path: <root>|sources|tomawac
@@ -522,10 +522,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
-  gammln.f
   foncro.f
   bornes.f
   qgauss.f
+  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f
