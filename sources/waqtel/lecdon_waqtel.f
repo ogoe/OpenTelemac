@@ -181,6 +181,8 @@
       DEBUG     = MOTINT( ADRESS(1,  11) )
 !     RAY EXTINCTION METHOD
       MEXTINC   = MOTINT( ADRESS(1,  12) )
+!     FORMULA OF ATMOSPHERIC RADIATION (GLM)
+      IRAY_ATM  = MOTINT( ADRESS(1,  13) )
 !
 !*******************************
 !     REAL KEYWORDS            *

@@ -131,6 +131,10 @@
 !
       INTEGER MEXTINC
 !
+!     FORMULA OF ATMOSPHERIC RADIATION (GLM)
+!
+      INTEGER IRAY_ATM
+!
 !-----------------------------------------------------------------------
 !
 !       3) LOGICAL

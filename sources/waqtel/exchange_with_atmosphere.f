@@ -332,7 +332,7 @@
                      SUBROUTINE SHORTRAD
 !                    *******************
 !
-     &(TREEL,TAIR,NEBU,RAY_ATM,RAY_EAU)
+     &(TREEL,TAIR,NEBU,HREL,RAY_ATM,RAY_EAU)
 !
 !***********************************************************************
 ! TELEMAC-3D V7P0                             22/06/2012
@@ -371,12 +371,13 @@
 !| TREEL          |-->| REAL WATER TEMPERATURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_WAQTEL, ONLY: EMI_EAU,BOLTZ,EMA
+      USE DECLARATIONS_WAQTEL, ONLY: EMI_EAU,BOLTZ,EMA,IRAY_ATM
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, INTENT(IN)  :: TREEL,TAIR,NEBU
+      DOUBLE PRECISION, INTENT(IN)  :: TREEL,TAIR,NEBU,HREL
       DOUBLE PRECISION, INTENT(OUT) :: RAY_ATM,RAY_EAU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -387,6 +388,9 @@
       DOUBLE PRECISION NUA
 !  TYPE OF CLOUD
       INTEGER ICLOUDTYPE
+!  TMP TO USE THE SAME FORMULAE AS IN GLM
+      DOUBLE PRECISION EPS_STAR
+      DOUBLE PRECISION QSAT_AIR
 !
 !-----------------------------------------------------------------------
 !
@@ -410,13 +414,45 @@
         NUA = 0.24D0
       ENDIF
 !
-!  ATMOSPHERE RADIATION
-      EMI_AIR = 0.937D-5*((TAIR+273.15D0)**2)
+!  ATMOSPHERIC RADIATION
+!  BEFORE V7P1
+!      EMI_AIR = 0.937D-5*((TAIR+273.15D0)**2)
 !  THE NEBULOSITY IS GIVEN IN OCTAS
 !      RAY_ATM = 0.97D0*EMI_AIR*BOLTZ*(TAIR+273.15D0)**4
 !     &                *(1.D0+NUA*(NEBU/8.D0)**2)
-      RAY_ATM = EMA*EMI_AIR*BOLTZ*(TAIR+273.15D0)**4
-     &                *(1.D0+NUA*(NEBU/8.D0)**2)
+!      RAY_ATM = EMA*EMI_AIR*BOLTZ*(TAIR+273.15D0)**4
+!     &                *(1.D0+NUA*(NEBU/8.D0)**2)
+      IF(IRAY_ATM.EQ.1) THEN
+!       CASE 1: IDSO AND JACKSON (1969)
+        EPS_STAR = (1.D0+0.275D0*(NEBU/8.D0))
+     &            *(1.D0-0.261D0*EXP(-7.77D-8*TAIR**2))
+      ELSEIF(IRAY_ATM.EQ.2) THEN
+!       CASE 2: SWINBANK (1963)
+!       DEFAULT, LIKE VERSIONS V7P1 AND BEFORE
+        EPS_STAR = (1.D0+NUA*(NEBU/8.D0)**2)*0.937D-5*(TAIR+273.15D0)**2
+      ELSEIF(IRAY_ATM.EQ.3) THEN
+!       CASE 3: BRUTSAERT (1975)
+        QSAT_AIR = 10.D0**(9.28603523D0-(2322.37885D0/(TAIR+273.15D0)))
+        EPS_STAR = (1.D0+0.275D0*(NEBU/8.D0))*0.642D0
+     &            *((HREL/100.D0)*QSAT_AIR/(TAIR+273.15D0))**(1.D0/7.D0)
+      ELSEIF(IRAY_ATM.EQ.4) THEN
+!       CASE 4: YAJIMA TONO DAM (2014)
+        QSAT_AIR = 10.D0**(9.28603523D0-(2322.37885D0/(TAIR+273.15D0)))
+        EPS_STAR = (1.D0-(NEBU/8.D0)**2.796D0)*1.24D0
+     &            *((HREL/100.D0)*QSAT_AIR/(TAIR+273.15D0))**(1.D0/7.D0)
+     &           + 0.955D0*(NEBU/8.D0)**2.796D0
+      ELSE
+        IF(LNG.EQ.1) THEN 
+          WRITE(LU,*) 'FORMULE DU RAYONNEMENT ATMOSPHERIQUE NON PREVUE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'FORMULA OF ATMOSPHERIC RADIATION NOT POSSIBLE'
+        ENDIF
+        CALL PLANTE(1)
+      ENDIF
+!
+      RAY_ATM = EMA*EPS_STAR*BOLTZ*(TAIR+273.15D0)**4
+!
 !  WATER RADIATION
       RAY_EAU = EMI_EAU*BOLTZ*(TREEL+273.15D0)**4
 !

@@ -1313,6 +1313,32 @@ AIDE1 = 'choice of the method of calculation of the extinction of
         sun ray - the choices are :
         1- Atkins formula
         2- Moss formula'
+
+NOM = 'FORMULE DU RAYONNEMENT ATMOSPHERIQUE'
+NOM1 = 'FORMULA OF ATMOSPHERIC RADIATION'
+TYPE = ENTIER
+INDEX = 13
+MNEMO = 'IRAY_ATM'
+TAILLE = 1
+DEFAUT = 2
+DEFAUT1 = 2
+CHOIX=
+'1="IDSO AND JACKSON (1969)"';
+'2="SWINBANK (1963)"';
+'3="BRUTSAERT (1975)"';
+'4="YAJIMA TONO DAM (2014)"'
+CHOIX1=
+'1="IDSO AND JACKSON (1969)"';
+'2="SWINBANK (1963)"';
+'3="BRUTSAERT (1975)"';
+'4="YAJIMA TONO DAM (2014)"'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Formule au choix pour le calcul du rayonnement atmospherique.
+Voir GLM.'
+AIDE1 = 'Formula to be chosen to compute the atmospheric radiation.
+See GLM.'
 /
 / POUR LES LANCEURS PERL :
 /
