@@ -47,7 +47,7 @@
 !======================================================================
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_MAIN_INIT
 #endif
 !< JR @ RWTH
@@ -79,7 +79,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_TELEMAC2D
 #endif
 !< JR @ RWTH
@@ -112,7 +112,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_SISYPHE
 #endif
 !< JR @ RWTH
@@ -141,6 +141,17 @@
         CALL PRINT_HEADER(CODE3,CODE1)
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
+!
+!-----------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_TOMAWAC
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
+!
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
      &                     3,.FALSE.)
 !
@@ -228,7 +239,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_MAIN_FINALIZE
 #endif
 !< JR @ RWTH

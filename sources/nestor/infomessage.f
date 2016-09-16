@@ -123,7 +123,7 @@
       WRITE(6,672)        
       WRITE(6,670)        
       
-      CALL FLUSH(6)      ! ACHTUNG     As FLUSH() is non-standard, you may need to add 
+      CALL my_FLUSH(6)   ! ACHTUNG     As FLUSH() is non-standard, you may need to add 
                          !             a USE statement, or link with a special library 
                          
 !      IF( ParallelComputing ) CALL P_SYNC()

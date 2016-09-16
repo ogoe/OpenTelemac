@@ -102,7 +102,7 @@
       INTEGER, SAVE     :: CNT = 0
       LOGICAL           :: FINISH
 !
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
       INTEGER           :: DRV_ELMS
       DOUBLE PRECISION  :: DRV_ERR
@@ -121,7 +121,7 @@
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
       CNT = CNT + 1
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !
 ! 1.  RESET INCOMING TANGENTS TO ZERO TO AVOID DEPENDENCY OF OVERALL
@@ -245,7 +245,7 @@
       CALL OS('X=X+CY  ',X=X,Y=D,C=-RO)
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE AND STORE IT
       CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV1, 1 )
@@ -277,7 +277,7 @@
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
 !      IF(RMRM.LE.XL*CFG%EPS**2) GO TO 900
       FINISH = RMRM.LE.XL*CFG%EPS**2
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !     CHECK DIFFERENCE BETWEEN TANGENTS OF LAST TWO STEPS
 ! 1.  SET TO ZERO TO AVOID ADDTIONAL TEST
@@ -360,7 +360,7 @@
 !
 !-----------------------------------------------------------------------
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE
 !     AND STORE TANGENT OF FORMER X
@@ -408,7 +408,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
 #  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !!      WRITE(LU,*) '  CG_END CONVTEST',CNT,M,FINISH,RMRM,' :: ',
 !!     $     SQRT(DRV_ERR),(DRV_ERR.LE.CFG%EPS**2), SQRT(SUM(DRV1**2))

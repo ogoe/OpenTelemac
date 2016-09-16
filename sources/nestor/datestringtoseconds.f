@@ -39,7 +39,7 @@
       charTmp = ADJUSTL( timeString )  ! delete leading white spaces in string
       !WRITE(6,*)'?> charTmp2 =',charTmp     ! debug
 
-      READ(charTmp, '(I4,5(x,I2))',IOSTAT=stat)
+      READ(charTmp, '(I4,5(1x,I2))',IOSTAT=stat)
      &   T%year, T%month ,T%day ,T%hour, T%minutes, T%seconds
 
       IF(stat /= 0 .OR. LEN_TRIM(charTmp) /= 19 ) THEN

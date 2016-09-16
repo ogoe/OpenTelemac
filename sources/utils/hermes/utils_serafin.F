@@ -240,6 +240,12 @@
 !+        V7P2
 !+    First version.
 !
+!history  S.E. BOURBAN (HRW)
+!+        20/06/2016
+!+        V7P2
+!+        Compiler specific directive added because not all compilers
+!+        support OPEN( CONVERT= )
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        08/07/2016
 !+        V7P2
@@ -262,33 +268,58 @@
         LOGICAL :: FILE_EXIST
         INTEGER :: IERR
 !
-        ENDIAN = 'BIG_ENDIAN'
-!       If the file does not exist return BIG_ENDIAN (i.e output file)
+!> SEB @ HRW: USE OF NAG COMPILER FOR ALGORITHMIC DIFFERENTIATION
+#if defined (COMPAD)
+        ENDIAN = 'LITTLE_ENDIAN'
+#else
+        ENDIAN = 'BIG_ENDIAN   '
+#endif
+!< SEB @ HRW
+        ! IF THE FILE DOES NOT EXIST RETURN BIG OR LITTLE ENDIAN
         INQUIRE(FILE=FILE_NAME,EXIST=FILE_EXIST)
         IF(.NOT.FILE_EXIST) RETURN
 !
+#if defined( NO_CONVERT_ENDIAN )
+!       CONVERT= NOT IMPLEMENTED WITH NAGF95
+        OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
+     &       FORM='UNFORMATTED', ACCESS='STREAM', IOSTAT=IERR)
+#else
         OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
      &       IOSTAT=IERR)
-        CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:BIG')
+#endif
+        CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:'//ENDIAN)
+!
         READ(FILE_ID,POS=1,IOSTAT=IERR) I
         IF(IERR.LT.0) THEN
-!         We've reached the end of the file i.e. the file is empty do
-!         big_endian it is
+          ! WE'VE REACHED THE END OF THE FILE I.E. THE FILE IS EMPTY
           CLOSE(FILE_ID)
           RETURN
         ENDIF
-        CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:BIG')
-        CLOSE(FILE_ID)
-        IF(I.NE.80) THEN
-          ENDIAN = 'LITTLE_ENDIAN'
+        IF(I.EQ.80) THEN
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
+          CLOSE(FILE_ID)
+        ELSE
+!> SEB @ HRW: USE OF NAG COMPILER FOR ALGORITHMIC DIFFERENTIATION
+#if defined( NO_CONVERT_ENDIAN )
+!       IF YOU DO NOT HAVE THE CONVERT OPTION AND YOU WERE NOT ABLE
+!         TO OPEN THE FILE, THEN THE FILE IS NOT OF THE RIGHT FORMAT.
+          CALL CHECK_CALL(-1,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
+          CLOSE(FILE_ID)
+#else
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
+          CLOSE(FILE_ID)
+          IF( ENDIAN.EQ.'LITTLE_ENDIAN' ) ENDIAN = 'BIG_ENDIAN   '
+          IF( ENDIAN.EQ.'BIG_ENDIAN   ' ) ENDIAN = 'LITTLE_ENDIAN'
           OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
      &         FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
      &         IOSTAT=IERR)
-          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:LITTLE')
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:'//ENDIAN)
           READ(FILE_ID,POS=1,IOSTAT=IERR) I
-          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:LITTLE')
+          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
           CLOSE(FILE_ID)
+#endif
+!< SEB @ HRW
         ENDIF
       END SUBROUTINE
 
@@ -308,6 +339,12 @@
 !+        24/03/2014
 !+        V7P0
 !+
+!
+!history  S.E. BOURBAN (HRW)
+!+        20/06/2016
+!+        V7P2
+!+        Compiler specific directive added because not all compilers
+!+        support OPEN( CONVERT= )
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_NAME      |-->| NAME OF THE FILE
@@ -351,9 +388,14 @@
         ! Get the Endian for the file
         CALL IDENTIFY_ENDIAN_TYPE(FILE_NAME,OPENMODE,ENDIAN,FILE_ID)
         ! OPEN THE FILE IN STREAM MODE
+#if defined( NO_CONVERT_ENDIAN )
+        OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
+     &       FORM='UNFORMATTED', ACCESS='STREAM', IOSTAT=IERR)
+#else
         OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
      &       IOSTAT=IERR)
+#endif
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
         !
         ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
@@ -499,9 +541,9 @@
           ! COUTING THE NUMBER OF TIME STEPS
           NTIMESTEP = 0
           IERR = 0
-#ifdef NO_INQUIRE_SIZE
-          ! Need this solution for intel 10 in which inquire size is not
-          ! implemented
+#if defined( NO_INQUIRE_SIZE )
+          ! Need this solution for some compilers in which inquire size
+          ! is not implemented
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
           DO
             READ(FILE_ID,POS=MY_POS+4,IOSTAT=IERR) TIME

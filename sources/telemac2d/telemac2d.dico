@@ -1707,7 +1707,8 @@ CHOIX = 'U="vitesse suivant l''axe des x  (m/s)"';
 'TMXZ="temps de la cote maximum "';
 'MAXV="vitesse maximum "';
 'TMXV="temps de la vitesse maximum "';
-'US="vitesse de frottement "'
+'US="vitesse de frottement "';
+'G1="gradient 1, etc. "'
 CHOIX1= 'U="velocity along x axis  (m/s)"';
 'V="velocity along y axis  (m/s)"';
 'C="wave celerity  (m/s)"';
@@ -1738,7 +1739,8 @@ CHOIX1= 'U="velocity along x axis  (m/s)"';
 'TMXZ="time of maximum elevation "';
 'MAXV="maximum velocity"';
 'TMXV="time of maximum velocity"';
-'US="friction velocity  "'
+'US="friction velocity  "';
+'G1="gradient 1, etc. "'
 COMPOSE=','
 APPARENCE = 'packing IS XmPACK\_COLUMN' ;
     'numColumns IS 26';'LISTE IS EDITABLE'
@@ -1758,7 +1760,7 @@ Les possibilites offertes sont les suivantes :
    - B : cote du fond (m),
    - F : nombre de Froude,
    - Q : debit scalaire du fluide (m2/s),
-   - T : traceur,
+   - Tn: traceur, avec n le numero du traceur,
    - K : energie turbulente du modele k-epsilon (J/kg),
    - E : dissipation de l''energie turbulente (W/kg),
    - D : viscosite turbulente du modele k-epsilon (m2/s),
@@ -1771,7 +1773,9 @@ Les possibilites offertes sont les suivantes :
    - W : coefficient de frottement sur le fond,
    - A : derive en x (m),
    - G : derive en y (m),
-   - L : coefficient de frottement sur le fond.
+   - L : coefficient de frottement sur le fond,
+   - Gn: gradient differencie, avec n le numero de reference du gradient
+
 L''utilisateur dispose egalement de 4 champs libres, qu''il peut
 utiliser pour ecrire dans le fichier des resultats des variables
 qu''il cree lui-meme. Ces variables propres a l''utlisateur doivent
@@ -1807,7 +1811,7 @@ The available capabilities are as follows:
         B     :   bottom elevation (m),
         F     :   Froude number,
         Q     :   scalar flowrate of fluid (m2/s),
-        T     :   tracer
+        Tn    :   tracer, with n the tracer number
         K     :   turbulent kinetic energy in k-epsilon model (J/kg),
         E     :   dissipation of turbulent energy (W/kg),
         D     :   turbulent viscosity of k-epsilon model (m2/s),
@@ -1820,7 +1824,8 @@ The available capabilities are as follows:
         W     :   friction coefficient ,
         A     :   drift along x,
         G     :   drift along y,
-        L     :   nombre de courant.
+        L     :   nombre de courant,
+        G     :   differentiated gradient, with n the gradient reference number.
 
 four other variables are also made available to the user who may use
 them for writing into the file the results of variables he creates
@@ -1860,7 +1865,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'B="cote du fond (m)"';
 'F="nombre de Froude"';
 'Q="debit scalaire du fluide (m2/s)"';
-'T="traceur"';
+'Tn="traceur 1, etc."';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
 'E="dissipation de l''energie turbulente (W/kg)"';
 'D="viscosite turbulente du modele k-epsilon (m2/s)"';
@@ -1877,7 +1882,8 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'N="variable supplementaire N"';
 'O="variable supplementaire O"';
 'R="variable supplementaire R"';
-'Z="variable supplementaire Z"'
+'Z="variable supplementaire Z"';
+'Gn="gradient 1, etc."'
 CHOIX1 = 'U="velocity along x axis (m/s)"';
 'V="velocity along y axis (m/s)"';
 'C="wave celerity (m/s)"';
@@ -1886,7 +1892,7 @@ CHOIX1 = 'U="velocity along x axis (m/s)"';
 'B="bottom elevation (m)"';
 'F="Froude number"';
 'Q="scalar flowrate of fluid (m2/s)"';
-'T="tracer"';
+'Tn="tracer 1, etc."';
 'K="turbulent kinetic energy in k-epsilon model (J/kg)"';
 'E="dissipation of turbulent energy (W/kg)"';
 'D="turbulent viscosity of k-epsilon model (m2/s)"';
@@ -1903,7 +1909,8 @@ CHOIX1 = 'U="velocity along x axis (m/s)"';
 'N="supplementary variable N"';
 'O="supplementary variable O"';
 'R="supplementary variable R"';
-'Z="supplementary variable Z"'
+'Z="supplementary variable Z"';
+'Gn="gradient 1, etc."'
 COMPOSE=','
 APPARENCE = 'packing IS XmPACK\_COLUMN' ; 'numColumns IS 26' ;
 'LISTE IS EDITABLE'
@@ -3969,12 +3976,12 @@ TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '0="schema de Roe"';
-'1="sch\E9ma cinetique ordre 1"';
-'2="sch\E9ma cinetique ordre 2"' ;
-'3="sch\E9ma Zokagoa ordre 1"';
-'4="sch\E9ma Tchamen ordre 1"';
-'5="sch\E9ma HLLC ordre 1"';
-'6="sch\E9ma WAF ordre 2"'
+'1="schema cinetique ordre 1"';
+'2="schema cinetique ordre 2"' ;
+'3="schema Zokagoa ordre 1"';
+'4="schema Tchamen ordre 1"';
+'5="schema HLLC ordre 1"';
+'6="schema WAF ordre 2"'
 CHOIX1 = '0="Roe scheme"';
 '1="kinetic order 1"';
 '2="kinetic order 2"';
@@ -5058,9 +5065,9 @@ DEFAUT1 = 0.
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
-AIDE = 'generalement ce traceur est la temperature, dans ce cas 
+AIDE = 'generalement ce traceur est la temperature, dans ce cas
 cette valeur  est a modifier, sinon la valeur 0 est raisonnable'
-AIDE1 = 'most often, this tracer is temperature, in this case 
+AIDE1 = 'most often, this tracer is temperature, in this case
 this value should be modified, otherwise, default value of 0 seems
 reasonable'
 
@@ -5602,7 +5609,7 @@ UPSTREAM/DOWNSTREAM (Historical solution with bord)"';
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = 'M\E9thode de traitement des seuils'
+AIDE = 'Methode de traitement des seuils'
 AIDE1 = 'Method for treatment of weirs'
 /
 / VERSION 7.0
@@ -5639,7 +5646,6 @@ AIDE = 'fichier des parametres physiques pour les
 processus de qualite d eau (internes non ceux de DELWAQ)'
 AIDE1 = 'file for physical parameters of waq processes
 (local ones of Telemac-tracer not those of DELWAQ)'
-
 
 NOM = 'SCHEMA POUR LA CONVECTION DES VITESSES'
 NOM1 = 'SCHEME FOR ADVECTION OF VELOCITIES'
@@ -6215,6 +6221,36 @@ AIDE = 'donne la duree de la pluie en heure, par defaut pluie infinie'
 AIDE1 = 'gives the duration of the rain in hour,
 default value is infinite'
 
+/
+/ ADDITIONAL USER VARIABLES (ALGORITHMIC DIFFERENTIATION)
+/
+NOM = 'NOMBRE DE DIFFERENTIATEURS'
+NOM1 = 'NUMBER OF DIFFERENTIATORS'
+TYPE = ENTIER
+INDEX = 104
+MNEMO = 'NADVAR'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de differentiateurs utilisateurs.'
+AIDE1 = 'Defines the number of user differentiators'
+/
+NOM = 'NOMS DES DIFFERENTIATEURS'
+NOM1 = 'NAMES OF DIFFERENTIATORS'
+TYPE = CARACTERE
+INDEX = 13
+MNEMO = 'NAME\_ADVAR'
+TAILLE = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Noms des differentiateurs utilisateurs en 32 caracteres,
+         16 pour le nom, 16 pour l''unite'
+AIDE1 = 'Name of user differentiators in 32 characters,
+         16 for the name, 16 for the unit.'
 /
 / POUR LES LANCEURS PERL :
 /

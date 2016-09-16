@@ -856,7 +856,7 @@ a la diffusion des vitesses. Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -921,7 +921,7 @@ a la diffusion des traceurs. Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -1007,7 +1007,7 @@ a la diffusion du modele $k$-$\epsilon$. Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -1071,7 +1071,7 @@ afin d''accelerer la convergence lors de sa resolution. Les choix possibles sont
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -1146,7 +1146,7 @@ au calcul de la vitesse verticale. Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -3495,7 +3495,7 @@ a la diffusion du sediment. Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;
@@ -3888,7 +3888,7 @@ Les choix possibles sont :
 \item 5 : diagonal avec valeurs absolues ;
 \item 7 : Crout ;
 \item 11 : Gauss-Seidel EBE ;
-\item 13 : matrice fournie par l’utilisateur ;
+\item 13 : matrice fournie par l''utilisateur ;
 \item 14 : diagonal et Crout ;
 \item 17 : solveur direct sur la verticale ;
 \item 21 : diagonal condensee et Crout ;

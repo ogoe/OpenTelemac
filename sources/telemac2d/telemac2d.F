@@ -413,7 +413,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_BEGIN
 #endif
 !< JR @ RWTH
@@ -503,7 +503,7 @@
 !=======================================================================
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_INITIALISATION_BEGIN
 #endif
 !< JR @ RWTH
@@ -1229,7 +1229,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_INITIALISATION_END
 #endif
 !< JR @ RWTH
@@ -1524,7 +1524,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_TIMESTEP_BEGIN
 #endif
 !< JR @ RWTH
@@ -1980,7 +1980,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_SUBITERATION_BEGIN
 #endif
 !< JR @ RWTH
@@ -2276,7 +2276,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_SUBITERATION_END
 #endif
 !< JR @ RWTH
@@ -2801,7 +2801,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_TIMESTEP_END
 #endif
 !< JR @ RWTH
@@ -2828,7 +2828,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_TELEMAC2D_END
 #endif
 !< JR @ RWTH

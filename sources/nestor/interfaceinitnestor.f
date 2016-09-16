@@ -37,7 +37,7 @@
 !                                        
       !  assumed-shape arrays:           
       !> Uebergabe von Datenfeldern an Unterprogramme
-      !> ohne Groeßenangaben (engl. assumed-shape arrays)
+      !> ohne Groessenangaben (engl. assumed-shape arrays)
       !> Dies funktioniert nur wenn in der aufrufenden
       !> Programmeinheit der interface-Block fuer das
       !> Unterprogramm angefuehrt wird.   

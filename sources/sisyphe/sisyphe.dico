@@ -3665,6 +3665,37 @@ AIDE = 'Suppression des flux de sediment de et vers les points secs'
 AIDE1 = 'To cancel sediment fluxes to and from dry points'
 
 /
+/ ADDITIONAL USER VARIABLES (ALGORITHMIC DIFFERENTIATION)
+/
+NOM = 'NOMBRE DE DIFFERENTIATEURS'
+NOM1 = 'NUMBER OF DIFFERENTIATORS'
+TYPE = ENTIER
+INDEX = 70
+MNEMO = 'NADVAR'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de differentiateurs utilisateurs.'
+AIDE1 = 'Defines the number of user differentiators'
+/
+NOM = 'NOMS DES DIFFERENTIATEURS'
+NOM1 = 'NAMES OF DIFFERENTIATORS'
+TYPE = CARACTERE
+INDEX = 70
+MNEMO = 'NAME\_ADVAR'
+TAILLE = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Noms des differentiateurs utilisateurs en 32 caracteres,
+         16 pour le nom, 16 pour l''unite'
+AIDE1 = 'Name of user differentiators in 32 characters,
+         16 for the name, 16 for the unit.'
+
+/
 / FOR PERL OR PYTHON SCRIPTS
 /
 /

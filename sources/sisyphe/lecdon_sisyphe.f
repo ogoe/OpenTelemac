@@ -49,6 +49,11 @@
 !+        V7P2
 !+        Integrating liquid boundary file for QS
 !
+!history  S.E. BOURBAN (HRW)
+!+        20/06/2016
+!+        V7P2
+!+   Now taking into account names of differentiators given by user.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -94,6 +99,11 @@
 !
 !-----------------------------------------------------------------------
 !
+      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
+      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
+     &                     '10','11','12','13','14','15','16','17','18',
+     &                     '19','20','21','22','23','24','25','26','27',
+     &                     '28','29','30','31','32','33','34'/
 !
 !-----------------------------------------------------------------------
 !
@@ -277,6 +287,9 @@
       CHOIX         = MOTINT( ADRESS(1, 21) )
       DIRFLU        = MOTINT( ADRESS(1, 22) )
       NPRIV         = MOTINT( ADRESS(1, 23) )
+!> SEB @ HRW: ADDITIONAL DIFFERENTIATED VARIABLES
+      NADVAR    = MOTINT( ADRESS(1,70) )
+!< SEB @ HRW
 !
 !     NCSIZE        = MOTINT( ADRESS(1, 24) )
 !     NUMBER OF PROCESSORS (ALREADY GIVEN IN INIT_FILES2;
@@ -671,6 +684,24 @@
           NAMES_PRIVE(K) = MOTCAR(ADRESS(4,42)+K-1)(1:32)
         ENDDO
       ENDIF
+!
+!> SEB @ HRW: ADDITIONAL DIFFERENTIATED VARIABLES
+!     NAMES OF DIFFERENTIATED VARIABLES
+      N_NAMES_ADVAR = DIMENS(4,70)
+      NADVAR = MAX( NADVAR,N_NAMES_ADVAR ) ! WARNING HERE ?
+      IF(NADVAR.GT.0) THEN
+        DO I=1,NADVAR
+          NAMES_ADVAR(I) =  'GRADIENT '//I_IN_2_LETTERS(I)//'     '
+     &                   // '??              '
+        ENDDO
+      ENDIF
+      IF(N_NAMES_ADVAR.GT.0) THEN
+        DO K=1,N_NAMES_ADVAR
+          NAMES_ADVAR(K) = MOTCAR(ADRESS(4,70)+K-1)(1:32)
+        ENDDO
+      ENDIF
+!< SEB @ HRW
+!
 !     UHM FOR CVSP, But it's not Beautiful
       TEMPVAR  =   MOTCAR(ADRESS(4,51)   )
       CALL LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
@@ -700,8 +731,10 @@
       NOMBLAY=MAX(NOMBLAY,NCOUCH_TASS)
       NCOUCH_TASS=NOMBLAY
 !
+!> SEB @ HRW: ADDITIONAL DIFFERENTIATED VARIABLES
       CALL NOMVAR_SISYPHE(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,
-     &                    NPRIV,NOMBLAY,N_NAMES_PRIV,NAMES_PRIVE)
+     &  NPRIV,NOMBLAY,N_NAMES_PRIV,NAMES_PRIVE,NADVAR,NAMES_ADVAR)
+!< SEB @ HRW
       CALL SORTIE(SORTIS , MNEMO , MAXVAR , SORLEO )
       CALL SORTIE(VARIM  , MNEMO , MAXVAR , SORIMP )
 !

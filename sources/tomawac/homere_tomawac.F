@@ -58,6 +58,16 @@
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) FILE_DESC(4,MAXKEYWORD)
 !
+!======================================================================
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_MAIN_INIT
+#endif
+!< SEB @ HRW
+!
+!-----------------------------------------------------------------------
+!
       CALL BIEF_INIT(CODE,PATH,NCAR,.TRUE.)
 !
 !     INITIAL TIME FOR COMPUTATION DURATION
@@ -75,6 +85,14 @@
 !     READS THE STEERING FILE
 !
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE)
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_MAIN_AFTER_LECDON_TOMAWAC
+#endif
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -104,6 +122,14 @@
 !     CLOSES THE FILES
 !
       CALL BIEF_CLOSE_FILES(CODE,WAC_FILES,MAXLU_WAC,.TRUE.)
+!
+!-----------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_MAIN_FINALIZE
+#endif
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

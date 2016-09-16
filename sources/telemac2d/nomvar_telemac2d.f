@@ -3,7 +3,7 @@
 !                    ***************************
 !
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
-     & NAMES_PRIVE,SECCURRENTS)
+     & NAMES_PRIVE,SECCURRENTS,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 ! TELEMAC2D
@@ -44,6 +44,11 @@
 !+        V7P1
 !+   Now taking into account names of private arrays given by user.
 !
+!history  S.E. BOURBAN (HRW)
+!+        20/06/2016
+!+        V7P2
+!+   Now taking into account names of differentiators given by user.
+!
 !history J-M HERVOUET (EDF LAB, LNHE)
 !+        20/07/2016
 !+        V7P2
@@ -69,9 +74,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -389,6 +396,18 @@
         DO I=1,N_NAMES_PRIV
           TEXTE(22+I)  = NAMES_PRIVE(I)
           TEXTPR(22+I) = NAMES_PRIVE(I)
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     DIFFERENTIATORS
+!
+      IF(NADVAR.GT.0) THEN
+        DO I=1,NADVAR
+          TEXTE(33+NTRAC+2*NPERIAF+I)  = NAMES_ADVAR(I)
+          TEXTPR(33+NTRAC+2*NPERIAF+I) = NAMES_ADVAR(I)
+          MNEMO(33+NTRAC+2*NPERIAF+I)  = 'G'//I_IN_2_LETTERS(I)//'   '
         ENDDO
       ENDIF
 !

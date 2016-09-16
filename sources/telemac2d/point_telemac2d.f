@@ -1493,29 +1493,6 @@
         ENDDO
       ENDIF
 !
-!     OTHER POSSIBLE VARIABLES ADDED BY USER
-!
-      J=ILAST+1+NTRAC+2*NPERIAF
-900   CONTINUE
-      IPRIV = J-ILAST-NTRAC-2*NPERIAF-1
-      IF(SORLEO(J).OR.SORIMP(J)) THEN
-        IF(NPRIV.LT.IPRIV) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'POINT : AUGMENTER LE NOMBRE'
-            WRITE(LU,*) '        DE TABLEAUX PRIVES'
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'POINT : NUMBER OF PRIVATE ARRAYS'
-            WRITE(LU,*) '        TOO SMALL'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
-        ENDIF
-        CALL ADDBLO(VARSOR,PRIVE%ADR(J-ILAST-NTRAC-2*NPERIAF)%P)
-        J=J+1
-        IF(J.LE.MAXVAR) GO TO 900
-      ENDIF
-!
 !     CLANDESTINE VARIABLES
 !
       IF(VARCL%N.NE.0) THEN
@@ -1525,6 +1502,42 @@
           TEXTE(J+I-1)=VARCLA(I)
         ENDDO
       ENDIF
+!
+!###> SEB @ HRW: BLOCK OF THE DIFFERENTIABLE VARIABLES
+!     DIFFERENTIABLE ARRAYS G1, G2, ... G_NADVAR MUST EXIST BUT WILL
+!     ONLY BE INTIALISED BY THE AD USER SUBROUTINES AD_ALLVEC_TELEMAC2D
+!
+!     DIFFERENTIABLE VARIABLES
+!
+!> /!\ NOTE: PRIVE ARRAY HAVE TO BE HANDLED IN A MORE GENERIC WAY
+      J = ILAST+1+NTRAC+2*NPERIAF
+!
+      CALL ALLBLO(ADVAR ,'ADGRAD')
+      CALL BIEF_ALLVEC_IN_BLOCK(ADVAR,NADVAR,1,'G     ',IELMX,1,2,MESH)
+      IF( NADVAR.GT.0 ) THEN
+        DO I = 1,NADVAR
+          CALL AD_ALLVEC_TELEMAC2D(I,ADVAR%ADR(I)%P)
+!
+          IF( J.GT.MAXVAR ) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'POINT : TROP DE VARIABLES A IMPRIMER'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'POINT : TOO MANY VARIABLE TO PRINT OUT'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!
+          IF( SORLEO(J).OR.SORIMP(J) ) THEN
+            CALL ADDBLO(VARSOR,ADVAR%ADR(I)%P)
+            J = J + 1
+          ENDIF
+!
+        ENDDO
+      ENDIF
+!
+!###< SEB @ HRW
 !
 !=======================================================================
 !

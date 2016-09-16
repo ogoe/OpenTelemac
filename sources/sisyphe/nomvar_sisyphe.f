@@ -3,7 +3,7 @@
 !                    *************************
 !
      &(TEXTE,TEXTPR,MNEMO,NSICLA,UNITE,MAXVAR,NPRIV,NOMBLAY,
-     & N_NAMES_PRIV,NAMES_PRIVE)
+     & N_NAMES_PRIV,NAMES_PRIVE,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 ! SISYPHE   V7P1
@@ -59,6 +59,11 @@
 !+        V7P1
 !+   Adding the names of private variables.
 !
+!history  S.E. BOURBAN (HRW)
+!+        20/06/2016
+!+        V7P2
+!+   Now taking into account names of differentiators given by user.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
 !| MNEMO          |<--| SYMBOLS TO SPECIFY THE VARIABLES FOR OUTPUT
@@ -81,9 +86,11 @@
 !
       INTEGER, INTENT(IN)              :: NSICLA,MAXVAR,NPRIV,NOMBLAY
       INTEGER, INTENT(IN)              :: N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=8), INTENT(INOUT)  :: MNEMO(MAXVAR)
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMES_PRIVE(N_NAMES_PRIV)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: UNITE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -102,6 +109,12 @@
       CHARACTER(LEN=2)  CLA,LAY
       CHARACTER(LEN=32) TEXTE_CONC(NLAYMAX)
       CHARACTER(LEN=8)  MNEMO_CONC(NLAYMAX)
+!
+      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
+      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
+     &                     '10','11','12','13','14','15','16','17','18',
+     &                     '19','20','21','22','23','24','25','26','27',
+     &                     '28','29','30','31','32','33','34'/
 !
 !-----------------------------------------------------------------------
 !
@@ -422,6 +435,18 @@
           MNEMO(I) =' '
           TEXTE(I) =' '
           TEXTPR(I)=' '
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     DIFFERENTIATORS
+!
+      IF(NADVAR.GT.0) THEN
+        DO I=1,NADVAR
+          TEXTE(ADD+I)  = NAMES_ADVAR(I)
+          TEXTPR(ADD+I) = NAMES_ADVAR(I)
+          MNEMO(ADD+I)  = 'G'//I_IN_2_LETTERS(I)//'   '
         ENDDO
       ENDIF
 !

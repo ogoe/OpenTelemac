@@ -111,6 +111,15 @@
 !
 !-----------------------------------------------------------------------
 !
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_BEGIN
+      CALL AD_TOMAWAC_INITIALISATION_BEGIN
+#endif
+!< SEB @ HRW
+!
+!-----------------------------------------------------------------------
+!
 !     QINDI_WAC ALLOCATED ONLY AT FIRST CALL
 !
       IF(.NOT.DEJA_WAC) THEN
@@ -638,7 +647,7 @@
 !
         CALL DUMP2D(LT,SF%R,NPOIN3*NF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
-! 
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(WAC_FILES(WACRES)%FMT,VARSOR,
      &            NPOIN2,WAC_FILES(WACRES)%LU,'STD',AT,
@@ -727,6 +736,16 @@
 !
       ENDIF
 !
+!------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_INITIALISATION_END
+#endif
+!< SEB @ HRW
+!
+!=======================================================================
+!
 !COUPLAGE : end cycle IF(PART.LE.0) pour couplage avec TELEMAC
       ENDIF
 !
@@ -780,6 +799,16 @@
 !         quand TOMAWAC est appele par TELEMAC
 !
       DO LT_WAC=1,NIT
+!
+!------------------------------------------------------------------
+!
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_TIMESTEP_BEGIN
+#endif
+!< SEB @ HRW
+!
+!------------------------------------------------------------------
 !
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
 !
@@ -1116,6 +1145,16 @@
 !
       ENDIF
 !
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+          CALL AD_TOMAWAC_TIMESTEP_END
+#endif
+!< JR @ RWTH
+!
+!------------------------------------------------------------------
+!
       ENDDO ! LT_WAC
 !
 !Fin COUPLAGE : fin du cycle IF(PART.NE.0)
@@ -1156,7 +1195,15 @@
 !
       ENDIF
 !
-!----------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+#if defined(COMPAD)
+      CALL AD_TOMAWAC_END
+#endif
+!< JR @ RWTH
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

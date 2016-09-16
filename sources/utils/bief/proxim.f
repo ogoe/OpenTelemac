@@ -125,7 +125,7 @@
         ENDDO
 !
 !       CHECKING THAT THE POINT IS IN THE GLOBAL DOMAIN
-!       IF YES PRINTING THE COORDINATES OF THE NEAREST POINT FOUND      
+!       IF YES PRINTING THE COORDINATES OF THE NEAREST POINT FOUND
 !
         I=IP(K)
         IF(NCSIZE.GT.1) I=P_IMAX(I)
@@ -148,7 +148,7 @@
           IF(NCSIZE.GT.1) THEN
             IF(DIST2.NE.P_DMIN(DIST2)) THEN
               X1=0.D0
-              Y1=0.D0           
+              Y1=0.D0
             ENDIF
             X1=P_DMIN(X1)+P_DMAX(X1)
             Y1=P_DMIN(Y1)+P_DMAX(Y1)
@@ -158,12 +158,14 @@
             WRITE(LU,*) 'POINT SOURCE ',K
             WRITE(LU,*) 'ASSIMILE AU POINT DE COORDONNEES'
             WRITE(LU,*) X1,' ET ',Y1
-            WRITE(LU,*) 'SITUE A ',SQRT(P_DMIN(DIST2)),' METRES'
+            D2 = SQRT(P_DMIN(DIST2))
+            WRITE(LU,*) 'SITUE A ',D2,' METRES'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'SOURCE POINT ',K,'PUT ON POINT'
             WRITE(LU,*) X1,' AND ',Y1
-            WRITE(LU,*) 'LOCATED AT ',SQRT(P_DMIN(DIST2)),' METRES'
+            D2 = SQRT(P_DMIN(DIST2))
+            WRITE(LU,*) 'LOCATED AT ',D2,' METRES'
           ENDIF
 !         LINE FEED FOR THE LISTING
           IF(K.EQ.NP) WRITE(LU,*)

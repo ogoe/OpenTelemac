@@ -250,6 +250,10 @@
 !
       DOUBLE PRECISION EPS
       DATA EPS /1.D-6/
+!> SEB @ HRW, JR @ RWTH, CG @ EDF: ALGORITHMIC DIFFERENTIATION
+!
+      INTRINSIC MIN,MAX
+!< SEB @ HRW, JR @ RWTH, CG @ EDF
 !
 !-----------------------------------------------------------------------
 !

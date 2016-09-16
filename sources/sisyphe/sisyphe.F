@@ -271,7 +271,7 @@
 !======================================================================!
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_BEGIN
       CALL AD_SISYPHE_INITIALISATION_BEGIN
 #endif
@@ -961,7 +961,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_INITIALISATION_END
 #endif
 !< JR @ RWTH
@@ -1024,7 +1024,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_TIMESTEP_BEGIN
 #endif
 !< JR @ RWTH
@@ -1060,7 +1060,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_LOOPRECORDS_BEGIN
 #endif
 !< JR @ RWTH
@@ -1303,7 +1303,7 @@
 !
 !------------------------------------------------------------------
 !
-#ifdef COMPAD
+#if defined(COMPAD)
         CALL AD_SISYPHE_SUBITERATION_BEGIN
 #endif
 !
@@ -1709,7 +1709,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
         CALL AD_SISYPHE_SUBITERATION_END
 #endif
 !< JR @ RWTH
@@ -1857,7 +1857,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
           CALL AD_SISYPHE_LOOPRECORDS_END
 #endif
 !< JR @ RWTH
@@ -1880,7 +1880,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
           CALL AD_SISYPHE_TIMESTEP_END
 #endif
 !< JR @ RWTH
@@ -1899,7 +1899,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_END
 #endif
 !< JR @ RWTH

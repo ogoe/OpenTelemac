@@ -60,7 +60,7 @@
 !======================================================================
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_MAIN_INIT
 #endif
 !< JR @ RWTH
@@ -86,7 +86,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_MAIN_AFTER_LECDON_SISYPHE
 #endif
 !< JR @ RWTH
@@ -125,7 +125,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#ifdef COMPAD
+#if defined(COMPAD)
       CALL AD_SISYPHE_MAIN_FINALIZE
 #endif
 !< JR @ RWTH

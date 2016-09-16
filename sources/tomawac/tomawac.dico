@@ -2863,7 +2863,7 @@ RUBRIQUE = 'TRANSFERTS'
 RUBRIQUE1 = 'TRANSFERS'
 NIVEAU = 2
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 1'
-AIDE = 'Constante alpha du modele LTA propos� par Eldeberky (1996).
+AIDE = 'Constante alpha du modele LTA propose par Eldeberky (1996).
 Si alpha = 0, les transferts d energie entre frequences seront nuls.
 L intensite de ces transferts augmente avec la valeur de alpha.
 **Mots-cles associes :**
@@ -3719,8 +3719,8 @@ DEFAUT = 'HM0,DMOY'
 DEFAUT1 = 'HM0,DMOY'
 CHOIX = 'M0="variance totale  (m2)"';
 'HM0="Hauteur significative spectrale  (m)"';
-'DMOY="Direction moyenne de houle  (°)"';
-'SPD="Etalement directionnel moyen  (°)"';
+'DMOY="Direction moyenne de houle  (deg)"';
+'SPD="Etalement directionnel moyen  (deg)"';
 'ZF="Cote du fond  (m)"';
 'WD="Hauteur d''eau  (m)"';
 'UX="Courant suivant X  (m/s)"';
@@ -3754,8 +3754,8 @@ CHOIX = 'M0="variance totale  (m2)"';
 'BETA="coefficient de deferlement  (-)"'
 CHOIX1 = 'M0="Total variance  (m2)"';
 'HM0="Spectral significant wave height  (m)"';
-'DMOY="Mean wave direction  (°)"';
-'SPD="Mean directional spreading  (°)"';
+'DMOY="Mean wave direction  (deg)"';
+'SPD="Mean directional spreading  (deg)"';
 'ZF="Sea bottom level  (m)"';
 'WD="Water depth  (m)"';
 'UX="Current along X  (m/s)"';
@@ -5152,7 +5152,7 @@ CHOIX1 = '        ';'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'FICHIERS DE DONNEES'
 RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier des données binaires.
+AIDE = 'Format du fichier des donnees binaires.
 Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
 - SERAFIND: format standard double precision pour Telemac;
@@ -5523,7 +5523,7 @@ RUBRIQUE1 = 'SPECTRUM'
 NIVEAU = 1
 AIDE = 'Type de calcul de la frequence centrale
 Si sa valeur est 0, on prend la formulation classique
-Si sa valeur est 1 on pren la modélisation BAJ proposee
+Si sa valeur est 1 on pren la modelisation BAJ proposee
 par Laugel (2013) pour le calcul de la frequence centrale
 et le limiteur de croissance
 **Mots-cles associes :**
