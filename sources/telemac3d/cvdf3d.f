@@ -88,9 +88,10 @@
 !+   Adding Predictor-corrector schemes and the LIPS advection scheme.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        12/09/2016
+!+        16/09/2016
 !+        V7P2
-!+   Arguments changed in the call to murd3d and murd3d_pos.
+!+   Arguments changed in the call to murd3d and murd3d_pos. Work array
+!+   TRAV3%ADR(10)%P is already used for S0F2.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -235,8 +236,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
-      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE,ISCE,BEDBOU,BEDFLU,
-     &                                   OPT_HNEG,FLULIM
+      USE DECLARATIONS_TELEMAC3D, ONLY : KSCE,ISCE,BEDBOU,BEDFLU
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -479,7 +479,8 @@
      &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
-     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
+!                             10: MAY BE S0F2
+     &              TRAV3%ADR(11)%P%R,TRAV3%ADR(12)%P%R,
      &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
@@ -505,7 +506,8 @@
      &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3,OPTSOU,
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
-     &              TRAV3%ADR(10)%P%R,TRAV3%ADR(11)%P%R,
+!                             10: MAY BE S0F2
+     &              TRAV3%ADR(11)%P%R,TRAV3%ADR(12)%P%R,
      &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
