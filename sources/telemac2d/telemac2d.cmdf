@@ -561,9 +561,10 @@ files: m_typedefs_interface.f
   m_nestor.f
   my_flush.F
   errmsgandstop.f
+  infomessage.f
   calculate_planarlevel.f
-  errmsgandstop2.f
   dump_by_rate.f
+  dump_by_time.f
   dig_by_time.f
   open_file.f
   intersection.f
@@ -580,7 +581,6 @@ files: m_typedefs_interface.f
   mainnestor.f
   interfacerunnestor.f
   inside_point_2d_d.f
-  errmsgwriteheader.f
   threedigitsnumeral.f
   readpolygons.f
   isactioncompletelydefined.f

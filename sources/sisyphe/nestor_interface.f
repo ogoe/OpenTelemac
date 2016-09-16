@@ -79,7 +79,6 @@
      &                           , NSICLA
      &                           , MARDAT, MARTIM ! Sis start: date , time
      &                           , MOFAC    ! morphological factor
-     &                           , DEBU                  !                                                                
      &                           , LEOPR  ! period of graphical outputs
      &                        , MESH%X%R
      &                        , MESH%Y%R
