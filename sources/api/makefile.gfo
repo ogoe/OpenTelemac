@@ -16,8 +16,6 @@
 #--- Definitions pour SYSTEME TELEMAC
 !include <makefile.am>
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION    = V7P0
-
 
 
 DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib

@@ -9,7 +9,7 @@ if [[ $# -lt 1 ]]; then
   echo "usage: check_code.sh path_to_code"
   exit 1
 fi
-if [[ $1 = "-h" ]]; then
+if [[ $1 -eq "-h" ]]; then
   echo "Script checking some points of the coding convention "
   echo "for all the .f and .F in the folder given in parameter"
   echo "It will generate 5 files:"

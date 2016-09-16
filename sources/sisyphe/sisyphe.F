@@ -7,13 +7,19 @@
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
-     & THETAW_TEL,HW_TEL,TW_TEL,UW_TEL)
+     & THETAW_TEL,HW_TEL,TW_TEL,UW_TEL,API_ITER)
 !
 !***********************************************************************
 ! SISYPHE   V7P2
 !***********************************************************************
 !
 !brief  The real main program of Sisyphe, with the time loop.
+!
+!history  R-S MOURADI (LNHE)
+!+        24/03/2016
+!+        V7P1
+!+  Adding 2 possible values for PART, to run SISYPHE from the API without coupling
+!+  Adding an additional variable API_ITER, current iteration number for the API.
 !
 !history  C. LENORMANT; J-M HERVOUET; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
 !+        20/03/2011
@@ -171,6 +177,7 @@
 !| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !| ZF_TEL         |<->| BOTTOM ELEVATION OF THE CALLING TELEMAC
+!| API_ITER       |<->| OPTIONAL - CURRENT ITERATION NUMBER IN THE API_SISYPHE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
@@ -202,6 +209,7 @@
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UCONV_TEL,VCONV_TEL
       TYPE(BIEF_OBJ),    INTENT(IN)    :: THETAW_TEL,HW_TEL,TW_TEL
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UW_TEL
+      INTEGER, OPTIONAL, INTENT(IN)    :: API_ITER
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -233,6 +241,8 @@
 !     SAVES LOCAL VARIABLES
 !     NUMEN0 : 1ST RECORD TO READ
       INTEGER :: NUMEN0
+      INTEGER :: RECORD
+      INTEGER :: DEBUT,FIN
 !
 !     VARIABLES TO READ IF COMPUTATION IS CONTINUED
 !     --------------------------------
@@ -273,7 +283,7 @@
 !
       PERCOU = PERICOU !UHM!!!!!!!
 !
-      IF(PART==0.OR.PART==-1) THEN
+      IF(PART==0.OR.PART==-1.OR.PART==2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'INITIALIZATION'
 !
         WRITE(LU,*) 'PART 0 : INITIALISING SISYPHE'
@@ -513,7 +523,8 @@
 !                      TIMESTEP                          : DT
 !
 !
-        IF(PART.EQ.0) THEN
+        ! INITIALIZING IN CASE OF COUPLING
+        IF(PART.EQ.0.OR.(PART.EQ.2.AND.CODE(1:7).EQ.'TELEMAC')) THEN
           AT0=T_TEL
           DT = DT_TEL
           NCALCU = 1
@@ -589,7 +600,7 @@
 !  NUMEN0: 1ST RECORD TO READ FROM HYDRODYNAMIC FILE
 !  TPREC : START TIME
 !
-        IF(PART.EQ.-1) THEN
+        IF(PART.EQ.-1.OR.(PART.EQ.2.AND.CODE(1:7).NE.'TELEMAC')) THEN
           IF(.NOT.PERMA) THEN
             IF(TPREC.GE.0.D0) THEN
               NUMEN0 = NINT((TPREC-AT0)/DT)+1
@@ -699,7 +710,7 @@
 !
         ENDIF
 !
-        IF(CODE(1:7) == 'TELEMAC'.AND.PART==0) THEN
+        IF(CODE(1:7) == 'TELEMAC'.AND.(PART==0.OR.PART==2)) THEN
 !
           AT0=T_TEL
 !
@@ -959,11 +970,10 @@
 !
 !     END OF INITIALISATIONS
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_INITIALIZATION'
-      ENDIF ! IF (PART==0 OR PART = -1)
-!
+      ENDIF ! IF (PART==0 OR PART = -1 OR PART=2)!
 !=======================================================================
 !
-      IF(PART==1.OR.PART==-1) THEN
+      IF(PART==1.OR.PART==-1.OR.PART==3) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'TIME_LOOP'
 !
@@ -1010,6 +1020,7 @@
 !
         DO MN = 1, NCALCU
 !
+          IF(PART.EQ.3.AND.API_ITER.GT.1) GOTO 111
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
@@ -1036,8 +1047,15 @@
 !
 !         LOOP ON THE RECORDS (IF PERMA NIDT=1)
 !         ------------------------------
-
-          DO MT = 1, NIDT
+111       IF(PART.EQ.3.AND.CODE(1:7).NE.'TELEMAC') THEN
+             DEBUT=API_ITER
+             FIN=MIN(API_ITER,NIDT) !LIMITED BY HYDRO FILE LAST ITERATION
+          ELSE
+             DEBUT=1
+             FIN=NIDT
+          ENDIF
+          DO MT = DEBUT, FIN
+!          DO MT = 1, NIDT
 !
 !------------------------------------------------------------------
 !
@@ -1051,7 +1069,12 @@
 !
 !  ----   DETERMINES THE TIMESTEP NUMBER :
 !
-            LT = (MN-1)*NIDT +  MT
+            IF(PART.EQ.3.AND.CODE(1:7).NE.'TELEMAC') THEN
+               LT = API_ITER
+!               IF(API_ITER.EQ.NIDT) PASS=.FALSE.
+            ELSE
+               LT = (MN-1)*NIDT + MT
+            ENDIF
 !
             IF(CODE(1:7) == 'TELEMAC') THEN
               DT=DT_TEL*MOFAC
@@ -1561,7 +1584,7 @@
 !
 !  UPDATES
 !
-      IF(PART.EQ.-1) THEN
+      IF(PART.EQ.-1.OR.(PART.EQ.3.AND.CODE(1:7).NE.'TELEMAC')) THEN
 !
 ! mak:
         IF(.NOT.STAT_MODE) THEN
@@ -1874,13 +1897,6 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-!      IF(NESTOR.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
-!     &                                      .OR.PART.EQ.-1)) THEN
-!        CALL NESTOR_INTERFACE(3)
-!      ENDIF
-!
-!------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
 #ifdef COMPAD

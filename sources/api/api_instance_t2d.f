@@ -10,7 +10,7 @@
 !
       MODULE API_INSTANCE_T2D
 !
-      USE API_HANDLE_ERROR_T2D
+      USE API_HANDLE_ERROR
       USE BIEF
       USE DECLARATIONS_TELEMAC, ONLY : COUPLING
       USE DECLARATIONS_SPECIAL, ONLY : MAXKEYWORD
@@ -27,8 +27,27 @@
       PUBLIC :: CHECK_INSTANCE_T2D
       PUBLIC :: GET_INSTANCE_ERROR_T2D
       PUBLIC :: INSTANCE_T2D
-      PUBLIC :: INSTANCE_LIST
+      PUBLIC :: INSTANCE_LIST_T2D
+      PUBLIC :: CPL_INIT_T2D
 !
+
+      ! TYPE FOR API COUPLED CALL
+      TYPE SISYPHE_CPL
+        INTEGER, POINTER :: LT, LEOPRD, LISPRD, NIT
+        TYPE(BIEF_OBJ), POINTER :: U, V, H, HN, HPROP
+        TYPE(BIEF_OBJ), POINTER :: ZF, CF, CHESTR
+        TYPE(API_CPL), POINTER :: SIS_CPL
+        INTEGER, POINTER :: PERCOU
+        DOUBLE PRECISION, POINTER :: AT
+        TYPE(BIEF_OBJ), POINTER :: VISC
+        DOUBLE PRECISION, POINTER :: DT
+        TYPE(BIEF_OBJ), POINTER :: FLBOR,DM1
+        INTEGER, POINTER :: SOLSYS
+        TYPE(BIEF_OBJ), POINTER :: USIS, VSIS, ZCONV
+        TYPE(BIEF_OBJ), POINTER :: DIRMOY, HM0, TPR5, ORBVEL
+      END TYPE SISYPHE_CPL
+
+
       TYPE INSTANCE_T2D
         ! RUN POSITION
         INTEGER MYPOSITION
@@ -54,6 +73,7 @@
 !
         INTEGER,        POINTER :: NIT
         INTEGER,        POINTER :: LT
+        DOUBLE PRECISION,POINTER :: AT
 !
         TYPE(BIEF_FILE), POINTER :: T2D_FILES(:)
         INTEGER :: MAXLU_T2D
@@ -74,21 +94,18 @@
         ! LIST OF ALL THE VARIABLE FOR STATE
         INTEGER :: TRUC
 !
+
+        !VARIABLES FOR SISYPHE CALL, NECESSARY FOR THE COUPLING
+        TYPE(SISYPHE_CPL) :: SIS
+
+        !TEMPORARY FOR SISYPHE CALL
+        LOGICAL :: SUSP1, CHARR_TEL
+        LOGICAL :: CHARR_SIS, SUSP_SIS
+        INTEGER :: LEOPRD_CHARR
       END TYPE ! MODEL_T2D
-!!
-!      type state_t2d
-!        integer :: test
-!      end type ! state_t2d
-!!
-!      type instance_t2d
-!!
-!        type(model_t2d) :: model
-!        type(state_t2d) :: state
-!!
-!      end type ! instance_t2d
 !
       INTEGER, PARAMETER :: MAX_INSTANCES=10
-      TYPE(INSTANCE_T2D), POINTER :: INSTANCE_LIST(:)
+      TYPE(INSTANCE_T2D), POINTER :: INSTANCE_LIST_T2D(:)
       LOGICAL, ALLOCATABLE :: USED_INSTANCE(:)
 !
       CONTAINS
@@ -123,7 +140,7 @@
             RETURN
           ENDIF
           USED_INSTANCE = .FALSE.
-          ALLOCATE(INSTANCE_LIST(MAX_INSTANCES),STAT=IERR)
+          ALLOCATE(INSTANCE_LIST_T2D(MAX_INSTANCES),STAT=IERR)
           IF(IERR.NE.0) THEN
             ERR_MESS = 'ERROR WHILE ALLOCATING INSTANCE ARRAY'
             RETURN
@@ -145,48 +162,134 @@
           RETURN
         ENDIF
         !
-        INSTANCE_LIST(ID)%MYPOSITION = NO_POSITION
+        INSTANCE_LIST_T2D(ID)%MYPOSITION = NO_POSITION
 !       Link with telemac2d variables
-        INSTANCE_LIST(ID)%HBOR   => HBOR
-        INSTANCE_LIST(ID)%UBOR   =>  UBOR
-        INSTANCE_LIST(ID)%VBOR   =>  VBOR
-        INSTANCE_LIST(ID)%H      =>  H
-        INSTANCE_LIST(ID)%DH     =>  DH
-        INSTANCE_LIST(ID)%U      =>  U
-        INSTANCE_LIST(ID)%V      =>  V
-        INSTANCE_LIST(ID)%CHESTR =>  CHESTR
-        INSTANCE_LIST(ID)%FLUX_BOUNDARIES => FLUX_BOUNDARIES
-        INSTANCE_LIST(ID)%COTE => COTE
-        INSTANCE_LIST(ID)%DEBIT  => DEBIT
-!
-        INSTANCE_LIST(ID)%MESH   => MESH
-        INSTANCE_LIST(ID)%LIHBOR => LIHBOR
-        INSTANCE_LIST(ID)%LIUBOR => LIUBOR
-        INSTANCE_LIST(ID)%LIVBOR => LIVBOR
-        INSTANCE_LIST(ID)%NUMLIQ => NUMLIQ
-!
-        INSTANCE_LIST(ID)%NIT    => NIT
-        INSTANCE_LIST(ID)%LT     => LT
-!
-        INSTANCE_LIST(ID)%T2D_FILES => T2D_FILES
-        INSTANCE_LIST(ID)%T2DRES => T2DRES
-        INSTANCE_LIST(ID)%T2DGEO => T2DGEO
-        INSTANCE_LIST(ID)%T2DCLI => T2DCLI
-        INSTANCE_LIST(ID)%MAXLU_T2D = MAXLU_T2D
-        INSTANCE_LIST(ID)%MAXKEYWORD = MAXKEYWORD
-!
-        INSTANCE_LIST(ID)%COUPLING => COUPLING
-!
-        INSTANCE_LIST(ID)%TE5    => TE5
-        INSTANCE_LIST(ID)%ZF     => ZF
-        INSTANCE_LIST(ID)%H      => H
-!
-        INSTANCE_LIST(ID)%DEBUG  => DEBUG
-
-
+        CALL UPDATE_INSTANCE_T2D(ID,IERR)
 
       END SUBROUTINE CREATE_INSTANCE_T2D
 !
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !brief updates a telemac2d instance
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history c goeury & y audouin (edf r&d, lnhe)
+      !+       17/06/2016
+      !+       V7P1
+      !+       update the api instance
+      !
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !param id   [out]    id of the new instance
+      !param ierr [out]    0 if subroutine successfull,
+      !+                   error id otherwise
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      SUBROUTINE UPDATE_INSTANCE_T2D(ID,IERR)
+      ! initialise instance for telemac2d
+        INTEGER, INTENT(IN) :: ID
+        INTEGER, INTENT(OUT) :: IERR
+!
+        IERR = 0
+!       Link with telemac2d variables
+        INSTANCE_LIST_T2D(ID)%HBOR   => HBOR
+        INSTANCE_LIST_T2D(ID)%UBOR   =>  UBOR
+        INSTANCE_LIST_T2D(ID)%VBOR   =>  VBOR
+        INSTANCE_LIST_T2D(ID)%H      =>  H
+        INSTANCE_LIST_T2D(ID)%DH     =>  DH
+        INSTANCE_LIST_T2D(ID)%U      =>  U
+        INSTANCE_LIST_T2D(ID)%V      =>  V
+        INSTANCE_LIST_T2D(ID)%CHESTR =>  CHESTR
+        INSTANCE_LIST_T2D(ID)%FLUX_BOUNDARIES => FLUX_BOUNDARIES
+        INSTANCE_LIST_T2D(ID)%COTE => COTE
+        INSTANCE_LIST_T2D(ID)%DEBIT  => DEBIT
+!
+        INSTANCE_LIST_T2D(ID)%MESH   => MESH
+        INSTANCE_LIST_T2D(ID)%LIHBOR => LIHBOR
+        INSTANCE_LIST_T2D(ID)%LIUBOR => LIUBOR
+        INSTANCE_LIST_T2D(ID)%LIVBOR => LIVBOR
+        INSTANCE_LIST_T2D(ID)%NUMLIQ => NUMLIQ
+        INSTANCE_LIST_T2D(ID)%T2D_FILES => T2D_FILES
+        INSTANCE_LIST_T2D(ID)%T2DRES => T2DRES
+        INSTANCE_LIST_T2D(ID)%T2DGEO => T2DGEO
+        INSTANCE_LIST_T2D(ID)%T2DCLI => T2DCLI
+        INSTANCE_LIST_T2D(ID)%MAXLU_T2D = MAXLU_T2D
+        INSTANCE_LIST_T2D(ID)%MAXKEYWORD = MAXKEYWORD
+!
+        INSTANCE_LIST_T2D(ID)%NIT    => NIT
+        INSTANCE_LIST_T2D(ID)%LT     => LT
+        INSTANCE_LIST_T2D(ID)%AT     => AT
+!
+        INSTANCE_LIST_T2D(ID)%T2D_FILES => T2D_FILES
+        INSTANCE_LIST_T2D(ID)%T2DRES => T2DRES
+        INSTANCE_LIST_T2D(ID)%T2DGEO => T2DGEO
+        INSTANCE_LIST_T2D(ID)%T2DCLI => T2DCLI
+        INSTANCE_LIST_T2D(ID)%MAXLU_T2D = MAXLU_T2D
+        INSTANCE_LIST_T2D(ID)%MAXKEYWORD = MAXKEYWORD
+!
+        INSTANCE_LIST_T2D(ID)%COUPLING => COUPLING
+!
+        INSTANCE_LIST_T2D(ID)%TE5    => TE5
+        INSTANCE_LIST_T2D(ID)%ZF     => ZF
+        INSTANCE_LIST_T2D(ID)%H      => H
+!
+        INSTANCE_LIST_T2D(ID)%DEBUG  => DEBUG
+
+        ! INITIALISATIONS POUR UN CAS SANS COUPLAGE
+        INSTANCE_LIST_T2D(ID)%SIS%LT => LT
+        INSTANCE_LIST_T2D(ID)%SIS%LEOPRD => LEOPRD
+        INSTANCE_LIST_T2D(ID)%SIS%LISPRD => LISPRD
+        INSTANCE_LIST_T2D(ID)%SIS%NIT => NIT
+        INSTANCE_LIST_T2D(ID)%SIS%U => U
+        INSTANCE_LIST_T2D(ID)%SIS%V => V
+        INSTANCE_LIST_T2D(ID)%SIS%H => H
+        INSTANCE_LIST_T2D(ID)%SIS%HN => HN
+        INSTANCE_LIST_T2D(ID)%SIS%HPROP => HPROP
+        INSTANCE_LIST_T2D(ID)%SIS%ZF => ZF
+        INSTANCE_LIST_T2D(ID)%SIS%CF => CF
+        INSTANCE_LIST_T2D(ID)%SIS%CHESTR => CHESTR
+        INSTANCE_LIST_T2D(ID)%SIS%SIS_CPL => SIS_CPL
+        INSTANCE_LIST_T2D(ID)%SIS%PERCOU => PERCOU
+        INSTANCE_LIST_T2D(ID)%SIS%AT => AT
+        INSTANCE_LIST_T2D(ID)%SIS%VISC => VISC
+        INSTANCE_LIST_T2D(ID)%SIS%DT => DT
+        INSTANCE_LIST_T2D(ID)%SIS%FLBOR => FLBOR
+        INSTANCE_LIST_T2D(ID)%SIS%SOLSYS => SOLSYS
+        INSTANCE_LIST_T2D(ID)%SIS%DM1 => DM1
+        !USIS et VSIS modified of SOLSYS.EQ.2 after initialization
+        INSTANCE_LIST_T2D(ID)%SIS%USIS => UCONV
+        INSTANCE_LIST_T2D(ID)%SIS%VSIS => VCONV
+        INSTANCE_LIST_T2D(ID)%SIS%ZCONV => ZCONV
+        INSTANCE_LIST_T2D(ID)%SIS%DIRMOY => DIRMOY
+        INSTANCE_LIST_T2D(ID)%SIS%HM0 => HM0
+        INSTANCE_LIST_T2D(ID)%SIS%TPR5 => TPR5
+        INSTANCE_LIST_T2D(ID)%SIS%ORBVEL => ORBVEL
+
+      END SUBROUTINE UPDATE_INSTANCE_T2D
+!
+!
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !brief initializes variables for TELEMAC2D in case of coupling
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !history R-S MOURADI (EDF R&D, LNHE)
+      !+       15/04/2016
+      !+       V7P1
+      !+       Creation of the file
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !param ID             [IN]     ID FOR TELEMAC2D INSTANCE
+      !PARAM IERR           [OUT]    0 IF SUBROUTINE SUCCESSFULL,
+      !+                             ERROR ID OTHERWISE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      SUBROUTINE CPL_INIT_T2D(ID,IERR)
+        INTEGER, INTENT(IN) :: ID
+        INTEGER,             INTENT(OUT) :: IERR
+      !
+        IERR = 0
+        IF(INSTANCE_LIST_T2D(ID)%SIS%SOLSYS.EQ.2) THEN
+          INSTANCE_LIST_T2D(ID)%SIS%USIS => UDEL
+          INSTANCE_LIST_T2D(ID)%SIS%VSIS => VDEL
+        END IF
+
+      END SUBROUTINE CPL_INIT_T2D
+
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief deletes a telemac2d instance
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,6 +344,7 @@
           ERR_MESS = 'INSTANCE NUMBER WAS NOT CREATED'
           RETURN
         ENDIF
+        CALL UPDATE_INSTANCE_T2D(ID,IERR)
       END SUBROUTINE CHECK_INSTANCE_T2D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -260,7 +364,7 @@
         INTEGER, INTENT(IN) :: ID
         CHARACTER(LEN=200), INTENT(OUT) :: MESS
 !
-        MESS = INSTANCE_LIST(ID)%ERROR_MESSAGE
+        MESS = INSTANCE_LIST_T2D(ID)%ERROR_MESSAGE
 !
       END SUBROUTINE GET_INSTANCE_ERROR_T2D
       END MODULE API_INSTANCE_T2D

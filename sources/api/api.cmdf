@@ -2,7 +2,7 @@
 path: <root>|sources|api
 module: api
 liborder: special damocles hermes parallel bief nestor ad tomawac sisyphe stbtel waqtel gretel telemac2d partel api
-name: API_DUMMY_EXE_T2D
+name: HOMERE_API
 
 [ad]
 path: <root>|sources|utils|ad
@@ -23,21 +23,27 @@ files: ad_telemac2d_end.f
   ad_sisyphe_end.f
   ad_sisyphe_timestep_begin.f
   ad_sisyphe_subiteration_end.f
+  ad_sisyphe_begin.f
 
 [api]
 path: <root>|sources|api
-files: api_handle_error_t2d.f
+files: api_handle_error.f
+  api_instance_sis.f
+  api_handle_var_sis.f
   api_instance_t2d.f
   api_handle_var_t2d.f
   api_run_t2d.f
-  api_interface_t2d.f
-  api_dummy_exe_t2d.F
+  api_coupling.f
+  api_run_sis.f
+  api_interface.f
+  api_run_cpl.f
+  homere_api.F
 
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
-  declarations_telemac.f
   bief.f
+  declarations_telemac.f
   elapse.f
   read_config.f
   bief_init.f
@@ -156,6 +162,8 @@ files: bief_def.f
   dealmesh.f
   bief_close_files.f
   algae_transp.f
+  find_variable.f
+  read_bin_2d.f
   flux_ef_vf.f
   clip.f
   mv0403.f
@@ -385,7 +393,6 @@ files: bief_def.f
   gmres.f
   allblo_in_block.f
   solve.f
-  find_variable.f
   ludcmp.f
   lubksb.f
   invmtx.f
@@ -443,7 +450,6 @@ files: bief_def.f
   proxim.f
   read_partel_info.f
   leclim.f
-  read_bin_2d.f
   fond.f
   strche.f
   fonstr.f
@@ -501,6 +507,7 @@ files: bief_def.f
   bief_gammp.f
   bief_erf.f
   masktf.f
+  time_in_seconds.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -550,9 +557,9 @@ files: interface_hermes.f
   get_bnd_ipobo.f
   close_bnd.f
   close_mesh.f
-  get_data_time.f
   get_data_value.f
   get_data_var_list.f
+  get_data_time.f
   get_data_ntimestep.f
   set_mesh.f
   add_data.f
@@ -573,9 +580,7 @@ files: m_typedefs_interface.f
   m_nestor.f
   my_flush.F
   errmsgandstop.f
-  infomessage.f
   calculate_planarlevel.f
-  dump_by_time.f
   dump_by_rate.f
   dig_by_time.f
   open_file.f
@@ -602,6 +607,8 @@ files: m_typedefs_interface.f
   readdigactions.f
   initialisenestor.f
   interfaceinitnestor.f
+  infomessage.f
+  dump_by_time.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -640,6 +647,7 @@ path: <root>|sources|utils|partel
 files: declarations_partel.f
   partitioner.F
   partel.F
+  parres.f
 
 [sisyphe]
 path: <root>|sources|sisyphe
@@ -750,10 +758,16 @@ files: declarations_sisyphe.f
   init_zero.f
   entete_sisyphe.f
   sisyphe.F
+  lecdon_split_outputpoints.f
+  nomvar_sisyphe.f
+  lecdon_sisyphe.f
+  read_sections_sisyphe.f
+  point_sisyphe.f
 
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.f
+  print_header.f
   plante.F
   get_free_id.f
   extens.f
@@ -808,7 +822,11 @@ files: friction_def.f
   valro.f
   smagor.f
   steady.f
-  lecsng2.f
+  meteo_set_var_names.f
+  meteo_from_binary_file.f
+  interpmeteo.f
+  interpmeteo2.f
+  meteo.f
   buse.f
   rescue.f
   flusec_t2d.f
@@ -841,7 +859,6 @@ files: friction_def.f
   collect_values_trac.f
   calcul_q_weir.f
   corvis.f
-  mixlength.f
   lecsng.f
   source_telemac2d.f
   lecsip.f
@@ -873,11 +890,6 @@ files: friction_def.f
   masbas2d.f
   difsou.f
   maskob.f
-  meteo_set_var_names.f
-  meteo_from_binary_file.f
-  interpmeteo.f
-  interpmeteo2.f
-  meteo.f
   kepsin.f
   prebor.f
   initstr.f
@@ -936,6 +948,7 @@ files: friction_def.f
   kepscl.f
   read_fic_curves.f
   def_zones.f
+  mixlength.f
   siphon.f
   assignstr.f
   isitok.f
@@ -951,6 +964,7 @@ files: friction_def.f
   lecbreach.f
   breach.f
   telemac2d.F
+  lecsng2.f
 
 [tomawac]
 path: <root>|sources|tomawac

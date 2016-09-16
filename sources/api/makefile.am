@@ -1,6 +1,12 @@
 SRCS= \
-api_handle_error_t2d.f \
-api_instance_t2d.f \
-api_handle_var_t2d.f \
-api_run_t2d.f \
-api_interface_t2d.f
+api_handle_error.f\
+api_instance_sis.f\
+api_handle_var_sis.f\
+api_instance_t2d.f\
+api_handle_var_t2d.f\
+api_run_t2d.f\
+api_coupling.f\
+api_run_sis.f\
+api_interface.f\
+api_run_cpl.f\
+homere_api.F

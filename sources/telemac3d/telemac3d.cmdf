@@ -15,6 +15,7 @@ files: ad_sisyphe_looprecords_end.f
   ad_sisyphe_end.f
   ad_sisyphe_timestep_begin.f
   ad_sisyphe_subiteration_end.f
+  ad_sisyphe_begin.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -547,9 +548,7 @@ files: m_typedefs_interface.f
   m_nestor.f
   my_flush.F
   errmsgandstop.f
-  infomessage.f
   calculate_planarlevel.f
-  dump_by_time.f
   dump_by_rate.f
   dig_by_time.f
   open_file.f
@@ -576,6 +575,8 @@ files: m_typedefs_interface.f
   readdigactions.f
   initialisenestor.f
   interfaceinitnestor.f
+  infomessage.f
+  dump_by_time.f
 
 [parallel]
 path: <root>|sources|utils|parallel

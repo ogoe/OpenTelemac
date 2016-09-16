@@ -2,7 +2,7 @@
                      SUBROUTINE LECDON_SISYPHE
 !                    *************************
 !
-     &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
+     &(MOTCAR,FILE_DESC,PATH,NCAR,CODE,CAS_FILE,DICO_FILE)
 !
 !***********************************************************************
 ! SISYPHE   V7P2
@@ -68,8 +68,11 @@
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEYWORD)
+      CHARACTER(LEN=144), INTENT(INOUT)      :: MOTCAR(MAXKEYWORD)
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEYWORD)
+!     API
+      CHARACTER(LEN=144), INTENT(IN)    :: CAS_FILE
+      CHARACTER(LEN=144), INTENT(IN)    :: DICO_FILE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -124,6 +127,13 @@
         NOM_DIC='SISDICO'
         NOM_CAS='SISCAS'
 !
+      ENDIF
+      IF((CAS_FILE(1:1).NE.' ').AND.(DICO_FILE(1:1).NE.' ')) THEN
+        WRITE(LU,*) 'FIXED DICO AND STERRING FILE PRESENT'
+        NOM_DIC=DICO_FILE
+        NOM_CAS=CAS_FILE
+        WRITE(LU,*) 'NOM_DIC',NOM_DIC
+        WRITE(LU,*) 'NOM_CAS',NOM_CAS
       ENDIF
 !
       CALL GET_FREE_ID(ID_DICO)

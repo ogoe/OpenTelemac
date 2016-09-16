@@ -119,8 +119,10 @@
       ! ******************************************* !
       ! II - ALLOCATES THE MESH STRUCTURE           !
       ! ******************************************* !
-      CALL ALMESH(MESH,'MESH_S',IELMT,SPHERI,CFG,
+      IF(.NOT.(ASSOCIATED(MESH%X))) THEN
+         CALL ALMESH(MESH,'MESH_S',IELMT,SPHERI,CFG,
      &            SIS_FILES(SISGEO)%FMT,SIS_FILES(SISGEO)%LU,EQUA)
+      END IF
 
       IKLE  => MESH%IKLE
       X     => MESH%X%R

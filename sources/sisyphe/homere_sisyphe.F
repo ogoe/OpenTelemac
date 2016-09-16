@@ -52,6 +52,7 @@
 !
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEYWORD),FILE_DESC(4,MAXKEYWORD)
+      CHARACTER(LEN=144) DUMMY
 !
       INTEGER  TIME_IN_SECONDS
       EXTERNAL TIME_IN_SECONDS
@@ -78,7 +79,9 @@
 !
 ! READS THE STEERING FILE
 !
-      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
+      DUMMY = ' '
+      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,
+     &                      NCAR,CODE,DUMMY,DUMMY)
 !
 !-----------------------------------------------------------------------
 !

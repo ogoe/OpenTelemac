@@ -396,7 +396,7 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
-        SUBROUTINE CHPCON(UCONV,VCONV,U,V,UN,VN,TETAU)
+        SUBROUTINE CHPCONV(UCONV,VCONV,U,V,UN,VN,TETAU)
       USE BIEF_DEF
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN)  :: TETAU

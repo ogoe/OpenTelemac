@@ -69,6 +69,7 @@
       DEALLOCATE(YASMI)
 !
 !     Deallocating all the blocks first
+!
       CALL BIEF_DEALLOBJ(T     )
       CALL BIEF_DEALLOBJ(UNK)
       CALL BIEF_DEALLOBJ(DIRBOR)
@@ -345,7 +346,6 @@
       IF(ALLOCATED(CHAIN)) THEN
         DEALLOCATE(CHAIN)
       ENDIF
-!
 !     HANDLING OLD SAVED VARIABLES
 !
 !     MAJTRAC
@@ -585,7 +585,7 @@
       !
 
 !
-!     Weirs (lecsng) or (lecsng2)
+!     Weirs (lecsng)
 !
       IF(NWEIRS.GT.0) THEN
         CALL BIEF_DEALLOBJ(NPSING)
@@ -661,6 +661,18 @@
       DEALLOCATE(OPTADV_TR)
       DEALLOCATE(SLVTRA)
       DEALLOCATE(TRAC0)
+
+      IF(NTRAC.GT.0) THEN
+        DEALLOCATE(MASTEN)
+        DEALLOCATE(MASTOU)
+        DEALLOCATE(MASTRAIN)
+        DEALLOCATE(MASSOU)
+        DEALLOCATE(MASTR0)
+        DEALLOCATE(MASTR2)
+        DEALLOCATE(FLUTSOR)
+        DEALLOCATE(FLUTENT)
+        DEALLOCATE(YASMI)
+      ENDIF
 !
 !=======================================================================
 !

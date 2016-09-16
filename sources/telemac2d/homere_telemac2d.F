@@ -88,6 +88,7 @@
 !
 !     OPENS THE FILES FOR TELEMAC2D
 !
+      IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T2D_FILES,MAXLU_T2D,PATH,NCAR,
      &                     1,.FALSE.)
 !
@@ -105,7 +106,8 @@
 !
         CALL PRINT_HEADER(CODE2,CODE1)
 !
-      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
+      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,
+     &                    CODE1,DUMMY,DUMMY)
 !
 !-----------------------------------------------------------------------
 !

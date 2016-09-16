@@ -213,9 +213,11 @@
 !
 !     ALLOCATES THE MESH STRUCTURE
 !
-      CALL ALMESH(MESH,'MESH  ',IELMX,SPHERI,CFG,
+      IF(.NOT.(ASSOCIATED(MESH%X))) THEN
+         CALL ALMESH(MESH,'MESH  ',IELMX,SPHERI,CFG,
      &            T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
      &            EQUA,PROJECTION=PROTYP,LATI0=LAMBD0,LONGI0=PHI0)
+      END IF
 !
 !     ALIAS FOR CERTAIN COMPONENTS OF MESH
 !
@@ -268,7 +270,6 @@
       ALLOCATE(FLUTENT(NTRAC))
 !     LOGICAL
       ALLOCATE(YASMI(NTRAC))
-!
 !-----------------------------------------------------------------------
 !
 !                       ******************

@@ -10,7 +10,7 @@
 !
       MODULE API_HANDLE_VAR_T2D
 
-        USE API_HANDLE_ERROR_T2D
+        USE API_HANDLE_ERROR
         USE API_INSTANCE_T2D
         ! Size of the string containing the name of a variable
         INTEGER, PARAMETER :: T2D_VAR_LEN=40
@@ -20,7 +20,7 @@
         INTEGER, PARAMETER :: T2D_INFO_LEN=200
         ! The maximum number of variable
 !TODO: Update nb_var_t2d to real value + update all fonctions
-        INTEGER, PARAMETER :: NB_VAR_T2D=100
+        INTEGER, PARAMETER :: NB_VAR_T2D=30
 !
       CONTAINS
 !
@@ -89,6 +89,10 @@
           VALUE = INST%COTE(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           VALUE = INST%CHESTR%R(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
+          VALUE = INST%AT
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+          VALUE = INST%DEBIT(INDEX1)
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -153,6 +157,8 @@
           INST%DEBIT(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           INST%CHESTR%R(INDEX1) = VALUE
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
+          INST%AT = VALUE
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -212,10 +218,14 @@
             VALUE = INST%MESH%NPTFR
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
             VALUE = INST%NIT
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+            VALUE = INST%LT
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
             VALUE = INST%MESH%NELMAX
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
             VALUE = INST%MESH%IKLE%I(INDEX1)
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
+            VALUE = INST%SIS%PERCOU
           ELSE
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -262,6 +272,14 @@
             INST%LIVBOR%I(INDEX1) = VALUE
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
             INST%NIT = VALUE
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
+            INST%SIS%PERCOU = VALUE
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LISTIN_PERIOD') THEN
+            INST%SIS%LISPRD = VALUE
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.GRAPH_PERIOD') THEN
+            INST%SIS%LEOPRD = VALUE
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+            INST%LT = VALUE
           ELSE
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -464,6 +482,11 @@
       !+       V6P3
       !+       CREATION OF THE FILE
       !
+      !+HISTORY C. GOEURY (EDF R&D LNHE)
+      !+        04/09/2016
+      !+        V7P1
+      !++=
+      !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE
       !PARAM VARTYPE   [OUT]    TYPE OF THE VARIABLE
@@ -525,6 +548,8 @@
           DIM1 = SIZE(INST%TE5%R)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
           DIM1 = SIZE(INST%COTE)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+          DIM1 = SIZE(INST%DEBIT)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
           DIM1 = SIZE(INST%FLUX_BOUNDARIES)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
@@ -547,49 +572,62 @@
       !+       V6P3
       !+       CREATION OF THE FILE
       !
+      !HISTORY C GOEURY (EDF R&D, LNHE)
+      !+       01/09/2016
+      !+       V7P1
+      !+       IENT,JENT AND KENT ADDED FOR MPI CONTROL IN GET AND SET
+      !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARAIBLE
       !PARAM DIM1      [OUT]    SIZE OF THE FIRST DIMENSION
       !PARAM DIM2      [OUT]    SIZE OF THE SECOND DIMENSION
       !PARAM DIM3      [OUT]    SIZE OF THE THIRD DIMENSION
+      !PARAM IENT      [OUT]    1 if the numbering is on point
+      !PARAM JENT      [OUT]    1 if the numbering is on point
+      !PARAM KENT      [OUT]    1 if the numbering is on point
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_TYPE_T2D_D
-     &        (VARNAME, VARTYPE, READONLY, NDIM, IERR)
+     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,IERR)
           CHARACTER(LEN=T2D_VAR_LEN),  INTENT(IN)  :: VARNAME
           CHARACTER(LEN=T2D_TYPE_LEN), INTENT(OUT) :: VARTYPE
           INTEGER,                     INTENT(OUT) :: READONLY
           INTEGER,                     INTENT(OUT) :: NDIM
           INTEGER,                     INTENT(OUT) :: IERR
+          INTEGER,                     INTENT(OUT) :: IENT
+          INTEGER,                     INTENT(OUT) :: JENT
+          INTEGER,                     INTENT(OUT) :: KENT
 !
           IERR = 0
           VARTYPE = ''
           READONLY = 0
           NDIM = 0
+          IENT = 0
+          JENT = 0
+          KENT = 0
 !
           IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = 1
-            NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
             VARTYPE = 'INTEGER'
             READONLY = 1
             NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
             VARTYPE = 'INTEGER'
             READONLY = 1
             NDIM = 1
@@ -597,52 +635,71 @@
             VARTYPE = 'INTEGER'
             READONLY = 1
             NDIM = 1
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+            VARTYPE = 'INTEGER'
+            READONLY = 1
+            NDIM = 0
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
             VARTYPE = 'DOUBLE'
+            READONLY = 1
+            NDIM = 1
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+            VARTYPE =  'DOUBLE'
             READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
@@ -653,10 +710,16 @@
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
             NDIM = 1
+            IENT = 1
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
+            VARTYPE = 'DOUBLE'
+            READONLY = 1
+            NDIM = 0
           ELSE
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -681,8 +744,8 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_LIST_T2D_D(VARNAME, VARINFO, IERR)
 !
-        CHARACTER(LEN=T2D_VAR_LEN), INTENT(OUT) :: VARNAME(NB_VAR_T2D)
-        CHARACTER(LEN=T2D_INFO_LEN), INTENT(OUT) :: VARINFO(NB_VAR_T2D)
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(INOUT) :: VARNAME(*)
+        CHARACTER(LEN=T2D_INFO_LEN),INTENT(INOUT) :: VARINFO(*)
         INTEGER, INTENT(OUT) :: IERR
 !
         INTEGER :: I
@@ -771,404 +834,13 @@
         I = I + 1
         VARNAME(I) = 'MODEL.CHESTR'
         VARINFO(I) = 'STRIKLER ON POINT'
+        I = I + 1
+        VARNAME(I) = 'MODEL.LT'
+        VARINFO(I) = 'CURRENT TIME STEP'
+        I = I + 1
+        VARNAME(I) = 'MODEL.AT'
+        VARINFO(I) = 'CURRENT TIME'
 !
       END SUBROUTINE GET_VAR_LIST_T2D_D
-
-
-!
-!
-      ! getter and setter for the boundaries
-!
-!!!!!!! getter and setter for the variable
-!
-!        subroutine t2d_get_velocity_u_d(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = u%r(i)
-!          enddo
-!        end subroutine t2d_get_velocity_u_d
-!        subroutine t2d_set_velocity_u_d(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            u%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_velocity_u_d
-!!
-!        subroutine t2d_get_velocity_v_d(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = v%r(i)
-!          enddo
-!        end subroutine t2d_get_velocity_v_d
-!        subroutine t2d_set_velocity_v_d(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            v%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_velocity_v_d
-!!
-!        subroutine t2d_get_water_depth_d(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = h%r(i)
-!          enddo
-!        end subroutine t2d_get_water_depth_d
-!        subroutine t2d_set_water_depth_d(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            h%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_water_depth_d
-!!
-!        subroutine t2d_get_wave_celerity_d(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = fu%r(i)
-!          enddo
-!        end subroutine t2d_get_wave_celerity_d
-!        subroutine t2d_set_wave_celerity_d(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            fu%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_wave_celerity_d
-!!
-!        subroutine t2d_get_free_surface_elevation_d(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = fv%r(i)
-!          enddo
-!        end subroutine t2d_get_free_surface_elevation_d
-!        subroutine t2d_set_free_surface_elevation(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            fv%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_free_surface_elevation
-!!
-!        subroutine t2d_get_bottom_elevation(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = zf%r(i)
-!          enddo
-!        end subroutine t2d_get_bottom_elevation
-!        subroutine t2d_set_bottom_elevation(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            zf%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_bottom_elevation
-!!
-!        subroutine t2d_get_froude_number(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t2%r(i)
-!          enddo
-!        end subroutine t2d_get_froude_number
-!        subroutine t2d_set_froude_number(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t2%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_froude_number
-!!
-!        subroutine t2d_get_fluid_scalar_flowrate(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t3%r(i)
-!          enddo
-!        end subroutine t2d_get_fluid_scalar_flowrate
-!        subroutine t2d_set_fluid_scalar_flowrate(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t3%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_fluid_scalar_flowrate
-!!
-!!       subroutine t2d_get_tracer(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = t%r(i)
-!!         enddo
-!!       end subroutine t2d_get_tracer
-!!       subroutine t2d_set_tracer(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           t%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_tracer
-!!
-!!       subroutine t2d_get_kinetic_energy(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = k%r(i)
-!!         enddo
-!!       end subroutine t2d_get_kinetic_energy
-!!       subroutine t2d_set_kinetic_energy(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           k%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_kinetic_energy
-!!
-!!       subroutine t2d_get_dissipation(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = e%r(i)
-!!         enddo
-!!       end subroutine t2d_get_dissipation
-!!       subroutine t2d_set_dissipation(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           e%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_dissipation
-!!
-!!       subroutine t2d_get_viscosity(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = d%r(i)
-!!         enddo
-!!       end subroutine t2d_get_viscosity
-!!       subroutine t2d_set_viscosity(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           d%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_viscosity
-!!
-!        subroutine t2d_get_flowrate_x(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: j
-!          do j=1,mesh%npoin
-!            user_array(j) = t4%r(j)
-!          enddo
-!        end subroutine t2d_get_flowrate_x
-!        subroutine t2d_set_flowrate_x(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: j
-!          do j=1,mesh%npoin
-!            t4%r(j) = user_array(j)
-!          enddo
-!        end subroutine t2d_set_flowrate_x
-!!
-!        subroutine t2d_get_flowrate_y(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t5%r(i)
-!          enddo
-!        end subroutine t2d_get_flowrate_y
-!        subroutine t2d_set_flowrate_y(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t5%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_flowrate_y
-!!
-!        subroutine t2d_get_scalar_velocity(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t6%r(i)
-!          enddo
-!        end subroutine t2d_get_scalar_velocity
-!        subroutine t2d_set_scalar_velocity(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t6%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_scalar_velocity
-!!
-!        subroutine t2d_get_wind_x(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = windx%r(i)
-!          enddo
-!        end subroutine t2d_get_wind_x
-!        subroutine t2d_set_wind_x(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            windx%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_wind_x
-!!
-!        subroutine t2d_get_wind_y(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = windy%r(i)
-!          enddo
-!        end subroutine t2d_get_wind_y
-!        subroutine t2d_set_wind_y(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            windy%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_wind_y
-!!
-!        subroutine t2d_get_air_pressure(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = patmos%r(i)
-!          enddo
-!        end subroutine t2d_get_air_pressure
-!        subroutine t2d_set_air_pressure(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            patmos%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_air_pressure
-!!
-!        subroutine t2d_get_friction_coeff(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t7%r(i)
-!          enddo
-!        end subroutine t2d_get_friction_coeff
-!        subroutine t2d_set_friction_coeff(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t7%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_friction_coeff
-!!
-!!       subroutine t2d_get_drift_x(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = a%r(i)
-!!         enddo
-!!       end subroutine t2d_get_drift_x
-!!       subroutine t2d_set_drift_x(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           a%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_drift_x
-!!
-!!       subroutine t2d_get_drift_y(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = g%r(i)
-!!         enddo
-!!       end subroutine t2d_get_drift_y
-!!       subroutine t2d_set_drift_y(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           g%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_drift_y
-!!
-!        subroutine t2d_get_number_of_current(user_array)
-!          double precision, dimension(:), intent(out) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            user_array(i) = t9%r(i)
-!          enddo
-!        end subroutine t2d_get_number_of_current
-!        subroutine t2d_set_number_of_current(user_array)
-!          double precision, dimension(:), intent(in) :: user_array
-!          integer :: i
-!          do i=1,mesh%npoin
-!            t9%r(i) = user_array(i)
-!          enddo
-!        end subroutine t2d_set_number_of_current
-!!
-!!       subroutine t2d_get_user_var_n(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = n%r(i)
-!!         enddo
-!!       end subroutine t2d_get_user_var_n
-!!       subroutine t2d_set_user_var_n(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           n%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_user_var_n
-!!
-!!       subroutine t2d_get_user_var_o(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = o%r(i)
-!!         enddo
-!!       end subroutine t2d_get_user_var_o
-!!       subroutine t2d_set_user_var_o(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           o%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_user_var_o
-!!
-!!       subroutine t2d_get_user_var_r(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = r%r(i)
-!!         enddo
-!!       end subroutine t2d_get_user_var_r
-!!       subroutine t2d_set_user_var_r(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           r%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_user_var_r
-!!
-!!       subroutine t2d_get_user_var_z(user_array)
-!!         double precision, dimension(:), intent(out) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           user_array(i) = z%r(i)
-!!         enddo
-!!       end subroutine t2d_get_user_var_z
-!!       subroutine t2d_set_user_var_z(user_array)
-!!         double precision, dimension(:), intent(in) :: user_array
-!!         integer :: i
-!!         do i=1,mesh%npoin
-!!           z%r(i) = user_array(i)
-!!         enddo
-!!       end subroutine t2d_set_user_var_z
 !
       END MODULE API_HANDLE_VAR_T2D

@@ -370,8 +370,9 @@
 !-----------------------------------------------------------------------
 !
 !     FOR SISYPHE : GRAIN FEEDING AND CONSTANT FLOW DISCHARGE
-      INTEGER :: ISIS_CFD, NSIS_CFD
-      LOGICAL :: SISYPHE_CFD, CONSTFLOW_SIS
+!      INTEGER :: ISIS_CFD, NSIS_CFD
+!      LOGICAL :: SISYPHE_CFD, CONSTFLOW_SIS
+       INTEGER :: ISIS_CFD
 !     FRICTION DATA
       INTEGER :: KFROT_TP
 !
@@ -425,8 +426,8 @@
         TOTAL_ITER = NIT
       ENDIF
       CHARR_TEL=.FALSE.
-      CHARR=.FALSE.
-      SUSP=.FALSE.
+      SIS_CPL%CHARR=.FALSE.
+      SIS_CPL%SUSP=.FALSE.
       YAFLODEL=.FALSE.
       DISCLIN=11
       NFLOT=0
@@ -760,7 +761,7 @@
           WRITE(LU,*) ' '
           WRITE(LU,*) 'OPTION FOR TIDAL BOUNDARY CONDITIONS: '
           WRITE(LU,*) 'GIVE THE SAME NUMBER OF VALUES AS THE NUMBER  '
-          WRITE(LU,*) 'OF LIQUID BOUNDARIES, I.E.',NFRLIQ 
+          WRITE(LU,*) 'OF LIQUID BOUNDARIES, I.E.',NFRLIQ
         ENDIF
         CALL PLANTE(1)
         STOP
@@ -1446,9 +1447,9 @@
 !     INITIALISES CONSTANT FLOW DISCHARGE (SEE SISYPHE)
 !     ------------------------------------------------------------------
 !
-      SISYPHE_CFD   = .FALSE.
-      CONSTFLOW_SIS = .FALSE.
-      NSIS_CFD      = 1
+      SIS_CPL%SISYPHE_CFD   = .FALSE.
+      SIS_CPL%CONSTFLOW = .FALSE.
+      SIS_CPL%NSIS_CFD      = 1
 !
       IF(INCLUS(COUPLING,'SISYPHE')) THEN
 !
@@ -1472,8 +1473,9 @@
           CALL CONFIG_CODE(2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SISYPHE'
           CALL SISYPHE(0,LT,LEOPRD,LISPRD,NIT,U,V,H,H,H,ZF,CF,CF,CHESTR,
-     &                 CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,CODE1,PERCOU,
-     &                 U,V,AT,VISC,DT,CHARR,SUSP,
+     &                 SIS_CPL%CONSTFLOW,SIS_CPL%NSIS_CFD,
+     &                 SIS_CPL%SISYPHE_CFD,CODE1,PERCOU,
+     &                 U,V,AT,VISC,DT,SIS_CPL%CHARR,SIS_CPL%SUSP,
 !                                     CHARR,SUSP : RETURNED BY SISYPHE
 !                                                  BUT THEN GIVEN TO IT
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
@@ -1481,7 +1483,7 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SISYPHE'
           CALL CONFIG_CODE(1)
 !         AVOIDS TWO OUTPUTS WHEN SISYPHE IS CALLED TWICE
-          IF(SUSP.AND.CHARR.AND.PERCOU.NE.1) THEN
+          IF(SIS_CPL%SUSP.AND.SIS_CPL%CHARR.AND.PERCOU.NE.1) THEN
             LEOPRD_CHARR=NIT+PERCOU
           ELSE
             LEOPRD_CHARR=LEOPRD
@@ -1639,9 +1641,9 @@
 !
 ! NEW COUPLING WITH SISYPHE FOR CONSTANT FLOW DISCHARGE
 !
-      IF(SISYPHE_CFD.AND.CONSTFLOW_SIS) GOTO 999
+      IF(SIS_CPL%SISYPHE_CFD.AND.SIS_CPL%CONSTFLOW) GOTO 999
 !
-      DO ISIS_CFD=1,NSIS_CFD
+      DO ISIS_CFD=1,SIS_CPL%NSIS_CFD
 !
 !=======================================================================
 !
@@ -2580,7 +2582,7 @@
 !=============================================
 !     FOR NEW COUPLING
       ENDDO ! ISIS_CFD
-      IF (SISYPHE_CFD) CONSTFLOW_SIS = .TRUE.
+      IF (SIS_CPL%SISYPHE_CFD) SIS_CPL%CONSTFLOW = .TRUE.
 999   CONTINUE
 !
 !=======================================================================
@@ -2591,25 +2593,27 @@
 !
         CALL CONFIG_CODE(2)
 !
-        SUSP1=SUSP.AND.PERCOU.EQ.1
-        IF(SUSP1.OR.(CHARR.AND.(PERCOU*(LT/PERCOU).EQ.LT))) THEN
+        SUSP1=SIS_CPL%SUSP.AND.PERCOU.EQ.1
+        IF(SUSP1.OR.(SIS_CPL%CHARR.AND.(PERCOU*(LT/PERCOU).EQ.LT))) THEN
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SISYPHE, CHARRIAGE'
           CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,HPROP,ZF,
-     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
-     &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
+     &                 CF,CF,CHESTR,SIS_CPL%CONSTFLOW,SIS_CPL%NSIS_CFD,
+     &                 SIS_CPL%SISYPHE_CFD,CODE1,
+     &                 PERCOU,U,V,AT,VISC,DT*PERCOU,SIS_CPL%CHARR,SUSP1,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
      &                 DIRMOY,HM0,TPR5,ORBVEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
 !
         ENDIF
 !
-        IF(SUSP.AND.PERCOU.NE.1) THEN
+        IF(SIS_CPL%SUSP.AND.PERCOU.NE.1) THEN
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SISYPHE, SUSPENSION'
           CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,HPROP,ZF,
-     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
-     &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SUSP,
+     &                 CF,CF,CHESTR,SIS_CPL%CONSTFLOW,SIS_CPL%NSIS_CFD,
+     &                 SIS_CPL%SISYPHE_CFD,
+     &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SIS_CPL%SUSP,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
      &                 DIRMOY,HM0,TPR5,ORBVEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'

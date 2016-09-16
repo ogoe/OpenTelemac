@@ -56,6 +56,7 @@
       CHARACTER*80 TITSEL
       CHARACTER*32,ALLOCATABLE :: TEXTELU(:)
       CHARACTER*16,ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      CHARACTER(LEN=16) :: VARNAME
       CHARACTER*11 EXTENS
       EXTERNAL  EXTENS
       INTRINSIC REAL
@@ -350,8 +351,9 @@
 !
           ! LOOP ON ALL THE VARIABLE FOR THE TIMESTEP ITIME
           DO IVAR=1,NVAR_RES
+            VARNAME = TEXTELU(IVAR)(1:16)
             CALL GET_DATA_VALUE(RESFORMAT,NRESPAR,ITIME,
-     &                          TEXTELU(IVAR)(1:16),TMP,
+     &                          VARNAME,TMP,
      &                          NPOIN_PAR,IERR)
             CALL CHECK_CALL(IERR,'GRETEL:GET_DATA_VALUE')
             IF(NDIM.EQ.2) THEN

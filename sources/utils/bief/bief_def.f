@@ -639,4 +639,10 @@
 !
 !=======================================================================
 !
+!  STRUCTURES FOR API COUPLING
+      TYPE API_CPL
+        INTEGER::NSIS_CFD
+        LOGICAL::SISYPHE_CFD,CONSTFLOW
+        LOGICAL::CHARR,SUSP
+      END TYPE API_CPL
       END MODULE BIEF_DEF

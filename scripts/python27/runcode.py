@@ -598,28 +598,32 @@ def getHPCDepend(cfgHPC):
    else: return ''
 
 def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
+   # NB (Renaud Barate, jan 12th 2015): To fix a bug causing the default executables to
+   # fail when they are moved, this function has been modified to force the recompilation
+   # of the executable every time (even if there is no user fortran file). This is a
+   # dirty hack which should be reverted when Telemac finally gets a proper compilation
+   # system.
 
-   if path.exists(f90Name) and (not path.exists(useName) or path.isdir(useName)):
+   mes = MESSAGES(size=10)
+   if path.exists(f90Name):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       objCmd = objCmd.replace('<f95name>',f90Name)
-      mes = MESSAGES(size=10)
       try:
          tail,code = mes.runCmd(objCmd,bypass)
       except Exception as e:
          raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your compiler installation.'},e,bypass)])
       if code != 0: raise Exception([{'name':'processExecutable','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
-      exeCmd = exeCmd.replace('<objs>',objName)
-      exeCmd = exeCmd.replace('<exename>',path.basename(useName))
-      try:
-         tail,code = mes.runCmd(exeCmd,bypass)
-      except Exception as e:
-         raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
-      if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
-      print '       created: ',path.basename(useName)
-
    else:
-   # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      shutil.copy2(useName,path.basename(useName))
+      objName = ""
+
+   exeCmd = exeCmd.replace('<objs>',objName)
+   exeCmd = exeCmd.replace('<exename>',path.basename(useName))
+   try:
+      tail,code = mes.runCmd(exeCmd,bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
+   if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
+   print '    created: ',path.basename(useName)
 
    return True
 
