@@ -110,6 +110,9 @@
    'version' is not mandatroy anymore.
    It has been removed from having to be in the configuration file.
 """
+"""@history 15/09/2016 -- Sebastien E. Bourban
+   Allowing for Fortran directive to be present in the user file (extension .F)
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -323,6 +326,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
             xcpt.append({'name':'processLIT','msg':'file does not exist ( '+path.basename(cref)+' ) for key '+k})
             continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
+         if iFiles[k].split(';')[5][0:7] == 'FORTRAN': crun = path.splitext(crun)[0]+path.splitext(cref)[1]
          if path.exists(crun) and update:    # update is always True because we now copy the CAS file regardeless
             if not isNewer(crun,cref) == 1:
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
@@ -334,6 +338,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                   if found: iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
                # special case for FORTRAN and CAS files in case of update
                if iFiles[k].split(';')[5][0:7] == 'FORTRAN':
+                  if path.exists(crun): remove(crun) # ... in case the extension has changed
                   if path.isdir(cref):
                      cdir = path.join(getcwd(),cref)
                      cfor = []
@@ -1104,6 +1109,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             useFile = path.join(CASFiles[name]['dir'],
                                 path.splitext(value[0].strip("'\""))[0]\
                                 +cfg['SYSTEM']['sfx_exe'])
+            f90File = path.splitext(f90File)[0]+path.splitext(useFort)[1]
             # /!\ removing dependency over cfg['REBUILD']:
             if path.exists(useFile):
                if path.isdir(useFile):
