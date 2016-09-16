@@ -43,12 +43,22 @@
 !+       V7P0
 !+       Now crashing properly in parallel
 !
+!history  S.E.BOURBAN (HRW)
+!+        16/09/2016
+!+        V7P2
+!+   Compatible flushing depending on compiler used
+!+   (necessary for Algorithmic Differentiation)
+!+   TODO: Create a common function with NESTOR and other flushes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IVAL           |-->| INTEGER VALUE, OPTION, SEE CODE BELOW
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
+#if defined NO_STD_FLUSH || NAGFOR
+      USE F90_UNIX_IO, ONLY: FLUSH
+#endif
 #if defined(HAVE_MPI)
       INCLUDE 'mpif.h'
 #endif
@@ -80,7 +90,11 @@
 !     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
 !     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
 !     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
+#if defined(NO_STD_FLUSH)
+      CALL FLUSH(LU)
+#else
       FLUSH(LU)
+#endif
 #if defined(HAVE_MPI)
       CALL MPI_INITIALIZED(MPI_IS_INIT,ICODE)
 #endif
