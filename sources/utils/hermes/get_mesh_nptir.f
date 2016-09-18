@@ -36,10 +36,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_NPTIR_SRF(FID, NPTIR, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_MESH_NPTIR_MED(FID, NPTIR, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

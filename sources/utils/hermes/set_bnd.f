@@ -60,13 +60,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL SET_BND_SRF(FID,TYPE_BND_ELT,NELEBD,NDP,IKLE,
      &                     LIHBOR,LIUBOR,
      &                     LIVBOR,HBOR,UBOR,VBOR,CHBORD,
      &                     LITBOR,TBOR,ATBOR,BTBOR,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL SET_BND_MED(FID,TYPE_BND_ELT,NELEBD,NDP,IKLE,LIHBOR,
      &                     LIUBOR,LIVBOR,LITBOR,IERR)
         CASE DEFAULT

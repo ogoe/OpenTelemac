@@ -40,10 +40,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL SET_HEADER_SRF(FILE_ID,TITLE,NVAR,VAR_NAME,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL SET_HEADER_MED(FILE_ID,TITLE,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

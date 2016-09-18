@@ -38,10 +38,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL OPEN_BND_SRF(FILE_NAME, FILE_ID, OPENMODE, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL OPEN_BND_MED(FILE_NAME, FILE_ID, OPENMODE,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

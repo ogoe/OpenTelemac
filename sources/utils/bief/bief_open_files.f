@@ -115,8 +115,7 @@
           ! Boundary file will be opened by the hermes module
           IF(FILES(I)%TYPE.EQ.'CONLIM') CYCLE
 !
-          IF((FILES(I)%FMT.EQ.'SERAFIN ')
-     &       .OR.(FILES(I)%FMT.EQ.'SERAFIND')
+          IF((FILES(I)%FMT(1:7).EQ.'SERAFIN')
      &       .OR.(FILES(I)%FMT.EQ.'MED     ')) THEN
             ! Get the boundary confitions file
             ICLI = 0

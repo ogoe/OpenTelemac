@@ -46,11 +46,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_DATA_VALUE_SRF(FID,RECORD,VAR_NAME,
      &                                RES_VALUE,N,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_DATA_VALUE_MED(FID,RECORD,VAR_NAME,
      &      RES_VALUE,N,IERR)
         CASE DEFAULT

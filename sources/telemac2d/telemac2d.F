@@ -2632,7 +2632,7 @@
 !
         IF(T2D_FILES(T2DRBI)%NAME.NE.' '.AND.
      &     INCLU2(ESTIME,'DEBUG')) THEN
-          CALL BIEF_DESIMP('SERAFIN ',VARSORA,
+          CALL BIEF_DESIMP('SERAFIN?',VARSORA,
      &                     NPOIN,T2D_FILES(T2DRBI)%LU,
      &                     'STD',-AT,LT,LISPRD,1,
      &                     SORLEOA,SORIMPA,MAXVAR,TEXTE,PTINIG,PTINIL)

@@ -38,10 +38,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL OPEN_MESH_SRF(FILE_NAME, FILE_ID, OPENMODE,FFORMAT, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL OPEN_MESH_MED(FILE_NAME, FILE_ID, OPENMODE,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

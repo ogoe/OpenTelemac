@@ -46,10 +46,10 @@
         RETURN
       ENDIF
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_BND_IPOBO_SRF(FID, TYP_BND_ELEM,NPOIN,IPOBO, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_BND_IPOBO_MED(FID,TYP_BND_ELEM,NPOIN,NELEBD,IPOBO,
      &      IERR)
         CASE DEFAULT

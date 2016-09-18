@@ -31,7 +31,7 @@ files: partitioner_para.F
 
 [special]
 path: <root>|sources|utils|special
-files: declarations_special.f
+files: declarations_special.F
   plante.F
   check_allocate.f
   extens.f

@@ -64,7 +64,7 @@ files: declarations_partel.f
 
 [special]
 path: <root>|sources|utils|special
-files: declarations_special.f
+files: declarations_special.F
   extens.f
   plante.F
   get_nodes_per_element.f

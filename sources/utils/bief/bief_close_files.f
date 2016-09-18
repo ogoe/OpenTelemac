@@ -68,8 +68,7 @@
 !         CLOSES THE FILE
 !
           IF(FILES(I)%TYPE.EQ.'CONLIM') CYCLE
-          IF((FILES(I)%FMT.EQ.'SERAFIN ')
-     &       .OR.(FILES(I)%FMT.EQ.'SERAFIND')
+          IF((FILES(I)%FMT(1:7).EQ.'SERAFIN')
      &       .OR.(FILES(I)%FMT.EQ.'MED     ')) THEN
             IF(FILES(I)%TYPE(1:4).EQ.'SCAL') THEN
               IF(IPID.EQ.0.OR.FILES(I)%ACTION(5:9).NE.'WRITE') THEN

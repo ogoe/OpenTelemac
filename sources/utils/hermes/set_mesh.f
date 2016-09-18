@@ -71,12 +71,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL SET_MESH_SRF(FFORMAT,FILE_ID,MESH_DIM,TYPELM,NDP,NPTFR,
      &                      NPTIR,NELEM,NPOIN,IKLE,IPOBO,
      &                      KNOLG,X,Y,NPLAN,DATE,TIME,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
 !         STORE COORDINATES
           ALLOCATE(COORD(NPOIN*MESH_DIM),STAT=IERR)
           CALL CHECK_ALLOCATE(IERR,'SET_MESH:COORD')

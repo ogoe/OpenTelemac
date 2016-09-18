@@ -36,10 +36,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_TITLE_SRF(FID, TITLE, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_MESH_TITLE_MED(FID, TITLE, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

@@ -36,10 +36,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_DATE_SRF(FID, DATE, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           ! Functionality not available in med
           DATE = (/0,0,0,0,0,0/)
         CASE DEFAULT

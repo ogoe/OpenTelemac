@@ -41,11 +41,11 @@
 !
       IF((TYP_BND_ELEM.EQ.TYPE_NULL).OR.(NELEBD.EQ.0)) RETURN
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_BND_CONNECTIVITY_SRF(FID, TYP_BND_ELEM,NELEBD,NDP,
      &                          IKLE_BND,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_BND_CONNECTIVITY_MED(FID, TYP_BND_ELEM,NELEBD,NDP,
      &                          IKLE_BND,IERR)
         CASE DEFAULT

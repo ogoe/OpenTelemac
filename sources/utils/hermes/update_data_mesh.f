@@ -43,10 +43,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR=0
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           WRITE(LU,*)'NO NEED TO UPDATE MESH COORDINATES FOR SLF FORMAT'
-        CASE ('MED     ')
+        CASE ('MED    ')
 ! Do nothing for now as the option is not available in Paravis
 !          CALL UPDATE_DATA_MESH_MED (FILE_ID,TIME,RECORD,NB_DIM_MESH,
 !     &                               NPOIN,COORD,IERR)

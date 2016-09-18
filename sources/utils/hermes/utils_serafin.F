@@ -268,13 +268,6 @@
         LOGICAL :: FILE_EXIST
         INTEGER :: IERR
 !
-!> SEB @ HRW: USE OF NAG COMPILER FOR ALGORITHMIC DIFFERENTIATION
-#if defined (COMPAD)
-        ENDIAN = 'LITTLE_ENDIAN'
-#else
-        ENDIAN = 'BIG_ENDIAN   '
-#endif
-!< SEB @ HRW
         ! IF THE FILE DOES NOT EXIST RETURN BIG OR LITTLE ENDIAN
         INQUIRE(FILE=FILE_NAME,EXIST=FILE_EXIST)
         IF(.NOT.FILE_EXIST) RETURN
@@ -304,23 +297,41 @@
 #if defined( NO_CONVERT_ENDIAN )
 !       IF YOU DO NOT HAVE THE CONVERT OPTION AND YOU WERE NOT ABLE
 !         TO OPEN THE FILE, THEN THE FILE IS NOT OF THE RIGHT FORMAT.
+!          IERR = HERMES_INVALID_SERAFIN_FILE
+!          RETURN
           CALL CHECK_CALL(-1,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
           CLOSE(FILE_ID)
 #else
           CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
           CLOSE(FILE_ID)
-          IF( ENDIAN.EQ.'LITTLE_ENDIAN' ) ENDIAN = 'BIG_ENDIAN   '
-          IF( ENDIAN.EQ.'BIG_ENDIAN   ' ) ENDIAN = 'LITTLE_ENDIAN'
+          IF( ENDIAN.EQ.'LITTLE_ENDIAN' ) THEN
+            ENDIAN = 'BIG_ENDIAN   '
+          ELSE
+            ENDIAN = 'LITTLE_ENDIAN'
+          ENDIF
           OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
      &         FORM='UNFORMATTED', ACCESS='STREAM',CONVERT=ENDIAN,
      &         IOSTAT=IERR)
           CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:OPEN:'//ENDIAN)
           READ(FILE_ID,POS=1,IOSTAT=IERR) I
-          CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
-          CLOSE(FILE_ID)
+          IF(I.EQ.80) THEN
+             CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
+             CLOSE(FILE_ID)
+          ELSE
+!            IERR = HERMES_INVALID_SERAFIN_FILE
+!            RETURN
+            CALL CHECK_CALL(-1,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
+            CLOSE(FILE_ID)
+          ENDIF
 #endif
 !< SEB @ HRW
         ENDIF
+!
+        IF(LNG.EQ.1)
+     &    WRITE(LU,*) ' - FICHIER ',TRIM(FILE_NAME),' DE TYPE ',ENDIAN
+        IF(LNG.EQ.2)
+     &    WRITE(LU,*) ' - FILE    ',TRIM(FILE_NAME),' OF TYPE ',ENDIAN
+!
       END SUBROUTINE
 
 !***********************************************************************
@@ -371,7 +382,6 @@
         INTEGER(KIND=K4) :: TAG
         REAL :: TIME
         INTEGER(KIND=K8) :: I, POS, FSIZE
-        CHARACTER(LEN=13) :: ENDIAN
         !
         ! ADD A NEW FILE TO THE HASH TABLE
         CALL ADD_SRF_FILE(FILE_ID,SRF_ID,IERR)
@@ -397,14 +407,15 @@
      &       IOSTAT=IERR)
 #endif
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
-        !
+!###> SEB @ HRW: GETS SET LATER
         ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
         ! 4 OTHERWISE
-        IF(FFORMAT.EQ.'SERAFIN ') THEN
-          SRF_OBJ_TAB(SRF_ID)%RS = 4
-        ELSE
-          SRF_OBJ_TAB(SRF_ID)%RS = 8
-        ENDIF
+        !IF(FFORMAT.EQ.'SERAFIN ') THEN
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 4
+        !ELSE
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 8
+        !ENDIF
+!###< SEB @ HRW
         ! ONLY DO THE SCAN OF THE FILE IF THE FILE IS READ ONLY
         IF(OPENMODE.EQ.'READ     ') THEN
 !
@@ -488,27 +499,51 @@
           ! npoin*4 if we are in double it will be npoin*8
           !
           READ(FILE_ID,POS=SRF_OBJ_TAB(SRF_ID)%POS_COORD) TAG
-          IF(FFORMAT.EQ.'SERAFIN ') THEN
-            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
-              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
-     &                    'IT IS A SERAFIND FILE'
-              SRF_OBJ_TAB(SRF_ID)%RS = 8
-              FFORMAT = 'SERAFIND'
-            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
-              IERR = HERMES_INVALID_SERAFIN_FILE
-              RETURN
-            ENDIF
+!###> SEB @ HRW:  IT IS NOT AN ERROR TO BE WORKING WITH LITTLE ENDIAN
+          IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+            FFORMAT = 'SERAFIND'
+            SRF_OBJ_TAB(SRF_ID)%RS = 8
+            IF(LNG.EQ.1) WRITE(LU,*)
+     &        ' - FICHIER ',TRIM(FILE_NAME),' EST DOUBLE PRECISION'
+            IF(LNG.EQ.2) WRITE(LU,*)
+     &        ' - FILE    ',TRIM(FILE_NAME),' IS DOUBLE PRECISION '
+          ELSEIF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+            FFORMAT = 'SERAFIN '
+            SRF_OBJ_TAB(SRF_ID)%RS = 4
+            IF(LNG.EQ.1) WRITE(LU,*)
+     &        ' - FICHIER ',TRIM(FILE_NAME),' EST SIMPLE PRECISION'
+            IF(LNG.EQ.2) WRITE(LU,*)
+     &        ' - FILE    ',TRIM(FILE_NAME),' IS SINGLE PRECISION '
           ELSE
-            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
-              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
-     &                    'IT IS A SERAFIN FILE'
-              SRF_OBJ_TAB(SRF_ID)%RS = 4
-              FFORMAT = 'SERAFIN '
-            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
-              IERR = HERMES_INVALID_SERAFIN_FILE
-              RETURN
-            ENDIF
+            IERR = HERMES_INVALID_SERAFIN_FILE
+            RETURN
           ENDIF
+!
+!         THE FIRST FILE (THE GEO) SETS THE PACE
+          IF( SELAFMT.EQ.'SERAFIN?' ) SELAFMT = FFORMAT
+!
+!          IF(FFORMAT.EQ.'SERAFIN ') THEN
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIND FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 8
+!              FFORMAT = 'SERAFIND'
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ELSE
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIN FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 4
+!              FFORMAT = 'SERAFIN '
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ENDIF
+!###< SEB @ HRW
 !
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
@@ -591,6 +626,7 @@
           SRF_OBJ_TAB(SRF_ID)%NDIM = 0
           SRF_OBJ_TAB(SRF_ID)%TYP_ELT = 0
           SRF_OBJ_TAB(SRF_ID)%TYP_BND_ELT = 0
+          IF( FFORMAT.EQ.'SERAFIN?' ) FFORMAT = SELAFMT
         ENDIF
         !
         RETURN

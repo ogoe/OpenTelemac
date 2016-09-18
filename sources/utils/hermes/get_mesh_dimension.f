@@ -36,10 +36,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_DIMENSION_SRF(FID, NDIM, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_MESH_DIMENSION_MED(FID, NDIM, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

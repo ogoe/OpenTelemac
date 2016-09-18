@@ -133,7 +133,7 @@ files: interface_postel3d.f
 
 [special]
 path: <root>|sources|utils|special
-files: declarations_special.f
+files: declarations_special.F
   print_header.f
   plante.F
   check_allocate.f

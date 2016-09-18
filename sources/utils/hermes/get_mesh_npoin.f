@@ -38,10 +38,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_NPOIN_SRF(FID, TYP_ELEM, NPOIN, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_MESH_NPOIN_MED(FID, TYP_ELEM, NPOIN, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

@@ -20,6 +20,15 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history S.E. BOURBAN (HRW)
+!+       20/09/2016
+!+       V7P2
+!+       Unabling ENDIAN and FLOAT formats of the GEOMETRY file to be
+!+       the default of all OUTPUT FILES binaries, unless the user sets
+!+       it otherwise in the CAS file. Also:
+!+       - the DAFAULT of the DICO files are 'SERAFIN?'
+!+       - ENDIAN is also compiler dependent
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -88,6 +97,15 @@
 !     ID Tracking
 !
       INTEGER :: MAX_ID = 1
+!
+!     SHARING AND PASSING ON THE ENDIAN AND THE PRECISION FORMATS
+!
+      CHARACTER(LEN=8) :: SELAFMT = 'SERAFIN?'
+#if defined (COMPAD)
+      CHARACTER(LEN=13) :: ENDIAN = 'LITTLE_ENDIAN'
+#else
+      CHARACTER(LEN=13) :: ENDIAN = 'BIG_ENDIAN   '
+#endif
 !
 !-----------------------------------------------------------------------
 !

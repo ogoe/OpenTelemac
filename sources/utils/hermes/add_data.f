@@ -49,11 +49,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL ADD_DATA_SRF(FILE_ID,VAR_NAME,TIME,RECORD,
      &                    FIRST_VAR,VAR_VALUE,N,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL ADD_DATA_MED(FILE_ID,VAR_NAME,TIME,RECORD,VAR_VALUE,
      &                      N,IERR)
         CASE DEFAULT

@@ -698,7 +698,7 @@ files: declarations_sisyphe.f
 
 [special]
 path: <root>|sources|utils|special
-files: declarations_special.f
+files: declarations_special.F
   print_header.f
   plante.F
   get_free_id.f

@@ -69,12 +69,12 @@
 !
       IF((TYP_BND_ELEM.EQ.TYPE_NULL).OR.(NELEBD.EQ.0)) RETURN
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_BND_VALUE_SRF(FID, TYP_BND_ELEM,NPTFR,LIHBOR,LIUBOR,
      &                           LIVBOR,HBOR,UBOR,VBOR,CHBORD,TRAC,
      &                           LITBOR,TBOR,ATBOR,BTBOR, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_BND_VALUE_MED(FID,TYP_BND_ELEM,NELEBD,LIHBOR,
      &                           LIUBOR,LIVBOR,TRAC,LITBOR,
      &                           NPTFR,NBOR,IERR)

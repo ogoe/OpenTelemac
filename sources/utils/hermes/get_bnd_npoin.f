@@ -46,10 +46,10 @@
         RETURN
       ENDIF
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_BND_NPOIN_SRF(FID, TYPE_BND_ELEM, NPTFR,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_BND_NPOIN_MED(FID,TYPE_BND_ELEM,NPTFR,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

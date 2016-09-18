@@ -44,10 +44,10 @@
         RETURN
       ENDIF
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_MESH_NELEM_SRF(FID, TYP_ELEM, NELEM, IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_MESH_NELEM_MED(FID, TYP_ELEM, NELEM, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

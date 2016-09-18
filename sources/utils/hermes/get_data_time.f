@@ -38,10 +38,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_DATA_TIME_SRF(FID,RECORD,TIME,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_DATA_TIME_MED(FID,RECORD,TIME,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

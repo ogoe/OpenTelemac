@@ -80,8 +80,7 @@
      & '--GEOMETRY FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: '
       READ(LI,*) GEOFORMAT
       IF ( (GEOFORMAT .NE. 'MED     ') .AND.
-     &     (GEOFORMAT .NE. 'SERAFIN ') .AND.
-     &     (GEOFORMAT .NE. 'SERAFIND') ) THEN
+     &     (GEOFORMAT(1:7) .NE. 'SERAFIN') ) THEN
         WRITE(LU,*)
      &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)
@@ -105,8 +104,7 @@
      & '--RESULT FILE FORMAT <FFORMAT> [MED,SERAFIN,SERAFIND]: '
       READ(LI,*) RESFORMAT
       IF ( (RESFORMAT .NE. 'MED     ') .AND.
-     &     (RESFORMAT .NE. 'SERAFIN ') .AND.
-     &     (RESFORMAT .NE. 'SERAFIND') ) THEN
+     &     (RESFORMAT(1:7) .NE. 'SERAFIN') ) THEN
         WRITE(LU,*)
      &  ' FILE FORMAT MUST BE "MED" OR "SERAFIN" OR "SERAFIND" '
         CALL PLANTE(1)

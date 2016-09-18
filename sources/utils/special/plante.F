@@ -55,10 +55,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
-      IMPLICIT NONE
 #if defined NO_STD_FLUSH || NAGFOR
       USE F90_UNIX_IO, ONLY: FLUSH
 #endif
+      IMPLICIT NONE
 #if defined(HAVE_MPI)
       INCLUDE 'mpif.h'
 #endif

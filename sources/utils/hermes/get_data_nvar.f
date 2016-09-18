@@ -36,10 +36,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND')
+      SELECT CASE (FFORMAT(1:7))
+        CASE ('SERAFIN')
           CALL GET_DATA_NVAR_SRF(FID, NVAR,IERR)
-        CASE ('MED     ')
+        CASE ('MED    ')
           CALL GET_DATA_NVAR_MED(FID, NVAR,IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
