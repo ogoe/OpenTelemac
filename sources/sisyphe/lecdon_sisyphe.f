@@ -454,6 +454,10 @@
 !     INITIAL CONCENTRATIONS
 !     ++++++++++++++++++++++
 !
+      DO K=1,NSICLM
+!       DEFAULT VALUE
+        CS0(K) = 0.D0
+      ENDDO
       DO K=1,NSICLA
         CS0(K)=MOTREA( ADRESS(2,30) + K-1 )
       ENDDO
@@ -470,6 +474,19 @@
 !     +++++++++++++++++
 !
       NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
+!
+!     DEFAULT VALUES, PREVIOUSLY IN THE DICTIONARY
+!     EVEN IF THERE ARE NOT 10 LAYERS
+      CONC_VASE(1)  =  50.D0
+      CONC_VASE(2)  = 100.D0
+      CONC_VASE(3)  = 150.D0
+      CONC_VASE(4)  = 200.D0
+      CONC_VASE(5)  = 250.D0
+      CONC_VASE(6)  = 300.D0
+      CONC_VASE(7)  = 350.D0
+      CONC_VASE(8)  = 400.D0
+      CONC_VASE(9)  = 450.D0
+      CONC_VASE(10) = 500.D0
 !
       IF(DIMENS(2,32).GT.0) THEN
         DO K=1,DIMENS(2,32)
@@ -503,6 +520,20 @@
 !
 !     MULTILAYER MODEL (WALTHER, 2008)
 !     ITASS = 1
+!
+!     DEFAULT VALUES, PREVIOUSLY IN THE DICTIONARY
+!     EVEN IF THERE ARE NOT 10LAYERS
+      TRANS_MASS(1)  = 5.D-5
+      TRANS_MASS(2)  = 4.5D-5
+      TRANS_MASS(3)  = 4.D-5
+      TRANS_MASS(4)  = 3.5D-5
+      TRANS_MASS(5)  = 3.D-5
+      TRANS_MASS(6)  = 2.5D-5
+      TRANS_MASS(7)  = 2.D-5
+      TRANS_MASS(8)  = 1.5D-5
+      TRANS_MASS(9)  = 1.D-5
+      TRANS_MASS(10) = 0.D0
+!
       IF(DIMENS(2,33).GT.0) THEN
         DO K=1,DIMENS(2,33)
           TRANS_MASS(K)=MOTREA( ADRESS(2,33) + K-1 )
