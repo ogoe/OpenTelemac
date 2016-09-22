@@ -958,6 +958,9 @@
 !     DONE AFTER GETTING RAIN.
 !
       IF(NTRAC.GT.0.AND.TROUVE(2,63).EQ.2) THEN
+        DO I=1,NTRAC
+          TRAIN(I) = 0.D0
+        ENDDO
         DO I=1,DIMEN(2,63)
           TRAIN(I) = MOTREA(ADRESS(2,63)+I-1)
         ENDDO
