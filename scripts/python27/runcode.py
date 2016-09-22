@@ -113,6 +113,11 @@
 """@history 15/09/2016 -- Sebastien E. Bourban
    Allowing for Fortran directive to be present in the user file (extension .F)
 """
+"""@history 22/09/2016 -- Christophe Coulet (Artelia)
+   Adding the management of parallel treatment of Weirs file according to Type
+   Type = 1 (Original version) - duplicate
+   Type = 2 (RIG version) - argument passed to partel
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -312,7 +317,7 @@ def processTMP(casFile):
 
    return TMPDir
 
-def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
+def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
 
    xcpt = []                            # try all files for full report
    section_name = ' '
@@ -396,8 +401,16 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,use_link):
                   print '       copying: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif iFiles[k].split(';')[5][0:5] == 'WEIRS':
-               # Giving weirs name means that we have to give it to partel
-               weir_name = path.basename(crun)
+               value,defaut = getKeyWord('TYPE DES SEUILS',cas,dico,frgb)
+               # Giving weirs name and type = 2 means that we have to give it to partel
+               if value != []:
+                  type_s = value[0]
+               else:
+                  type_s = defaut[0]
+               if type_s == 2:
+                  weir_name = path.basename(crun)
+               else:
+                  iFiles[k] = iFiles[k].replace('WEIRS','PARAL')
                if use_link:
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
@@ -608,6 +621,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
    if path.exists(f90Name):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       objCmd = objCmd.replace('<f95name>',f90Name)
+
       try:
          tail,code = mes.runCmd(objCmd,bypass)
       except Exception as e:
@@ -624,6 +638,10 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
       raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
    if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
    print '    created: ',path.basename(useName)
+
+
+
+
 
    return True
 
@@ -1056,7 +1074,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          try:
             section_name,zone_name,weir_name = processLIT(CASFiles[name]['cas'],
                        MODFiles[CASFiles[name]['code']]['iFS'],
-                       CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+                       CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],
+                       MODFiles[CASFiles[name]['code']]['dico'],
+                       MODFiles[CASFiles[name]['code']]['frgb'],options.use_link)
             # Adding section name to CAS file information as the coupled module
             # might have sections and zones as well
             CASFiles[name]['section'] = section_name
@@ -1068,7 +1088,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             try:
                section_name,zone_name,weir_name = processLIT(CASFiles[name]['with'][cplage]['cas'],
                           MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS'],
-                          CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],options.use_link)
+                          CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],
+                          MODFiles[CASFiles[name]['code']]['dico'],
+                          MODFiles[CASFiles[name]['code']]['frgb'],options.use_link)
                CASFiles[name]['with'][cplage]['section'] = section_name
                CASFiles[name]['with'][cplage]['zone'] = zone_name
                CASFiles[name]['with'][cplage]['weir'] = weir_name
@@ -1078,6 +1100,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['wir'])
          # >>> Creating LNG file
          processCONFIG(lang)
+
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
