@@ -56,9 +56,9 @@ information by activating the logical keyword \telkey{DEBUGGER}.
 main program \telfile{telemac3d.f}. This technique is useful in case of
 critical computation crash to identify the responsible subroutine,
 
-\item The file for Scope, which is an additional test file available for the
-user,
-
+%\item The file for Scope, which is an additional test file available for the
+%user,
+%
 \item The restart file, allowing to perform a restart computation without
 information loss.
 \end{itemize}
@@ -91,7 +91,7 @@ internal use.
 Depending on the specified format, the binary files may be treated by different
 software. However, in the current release of TELEMAC, only the SERAFIN single
 precision format can be read by the post-processing tools like RUBENS,
-FUDAA-PREPRO or BLUE KENUE.
+FUDAA-PREPRO or Blue Kenue.
 
 The selection of the format of a file is done by the corresponding keyword.
 Thereby, the keyword \telkey{GEOMETRY FILE FORMAT} specifies the format of the
@@ -255,7 +255,7 @@ the computation does not keep running.
 
 It is the same file as that used by \telemac{2D}. It is a SERAFIN-formatted
 binary file which can then be read by RUBENS or FUDAA-PREPRO and is generated
-either by MATISSE, BLUE KENUE or JANET or by the \stbtel module (from the
+either by MATISSE, Blue Kenue or Janet or by the \stbtel module (from the
 file(s) originating from of mesh generator). The SERAFIN format structure is
 described in Appendix \ref{sec:srffmt}.
 
@@ -606,20 +606,20 @@ Generally, the file has a name which is created from the name in the steering
 file and the number of the processors used in the computation, followed by the
 suffix "\telfile{.sortie}".
 
-\section{The file for scope}
-
-\telemac{3D} the user an opportunity to retrieve computation variables
-along a 1D profile during a computation. These profiles will then be stored in
-a dedicated file the name of which is defined by the keyword \telkey{FILE FOR
-SCOPE}. For that purpose, the user should program the \telkey{SCOPE} subroutine.
-
-That subroutine is provided to define profiles of computed variables, or other
-variables, as created by a user along a segment with (X1, Y1, Z1) and (X2, Y2,
-Z2) co-ordinates. The user also decides the number of points as distributed
-along that segment. The data is automatically saved as per the SCOPE format at
-all the time steps (for a description of this format, see Appendix of RUBENS
-Version 4.0. Manuel Utilisateur, O. Quiquempoix, EDF report HE-45/95/031/B).
-
+%\section{The file for scope}
+%
+%\telemac{3D} the user an opportunity to retrieve computation variables
+%along a 1D profile during a computation. These profiles will then be stored in
+%a dedicated file the name of which is defined by the keyword \telkey{FILE FOR
+%SCOPE}. For that purpose, the user should program the \telkey{SCOPE} subroutine.
+%
+%That subroutine is provided to define profiles of computed variables, or other
+%variables, as created by a user along a segment with (X1, Y1, Z1) and (X2, Y2,
+%Z2) co-ordinates. The user also decides the number of points as distributed
+%along that segment. The data is automatically saved as per the SCOPE format at
+%all the time steps (for a description of this format, see Appendix of RUBENS
+%Version 4.0. Manuel Utilisateur, O. Quiquempoix, EDF report HE-45/95/031/B).
+%
 \section{The auxiliary files}
 
 Other files can be used by \telemac{3D}:
@@ -677,7 +677,7 @@ levels:
 \begin{itemize}
 \item Either directly in the geometry file by a topographical or bathymetric
 value associated with each mesh node. In this case, the data are processed
-while the mesh is being built using MATISSE, JANET or BLUE KENUE,MATISSE or
+while the mesh is being built using MATISSE, Janet or Blue Kenue, MATISSE or
 when the \bief module is run before \telemac{3D} is started. \bief reads
 the information in one or more bottom topography files (5 at most) and
 interpolates at each point in the domain,
