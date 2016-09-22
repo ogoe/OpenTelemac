@@ -29,8 +29,6 @@
 ! |    NDP         |<-- | NOMBRE DE NOEUDS PAR ELEMENTS
 ! |    NPOIN       |<-- | NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 ! |    NELEM       |<-- | NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-! |    NPMAX       |<-- | DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
 ! |  FICH:         |    |
 ! |    NRES        |--> | NUMERO DU CANAL DU FICHIER DE SERAFIN
 ! |    NGEO        |--> | NUMERO DU CANAL DU FICHIER MAILLEUR
@@ -44,12 +42,11 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NPMAX
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN
+!
       IMPLICIT NONE
 !
-      INTEGER NGEO
-      INTEGER NPOIN1 , IA(32) , INOP5
-      INTEGER LONG , I , J , NTASD , MESHT , MESHQ
+      INTEGER NGEO,NPOIN1,IA(32),INOP5,LONG,I,J,NTASD,MESHT,MESHQ
       CHARACTER(LEN=11) :: TYPELE
 !
 !=======================================================================

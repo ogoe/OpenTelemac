@@ -54,7 +54,6 @@
 #endif
       CASE DEFAULT
         IF(LNG.EQ.1) THEN
-        IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'ERREUR : IDENTIFIANT DIFFERENTIE INCONNU ',IVAR
           WRITE(LU,*) '  LA ROUTINE AD_ALLVEC_TOMAWAC OU LE NOMBRE DE'
           WRITE(LU,*) '  VARIABLES DIFFERENCIEES SONT A METTRE A JOUR'
@@ -68,6 +67,7 @@
           WRITE(LU,*) '  CONFIGURED.'
         ENDIF
         CALL PLANTE(1)
+        STOP
       END SELECT
 !
 !-----------------------------------------------------------------------

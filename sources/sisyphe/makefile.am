@@ -8,7 +8,7 @@ interface_sisyphe_suspension.f \
 interface_sisyphe.f            \
 nestor_interface.f            \
 homere_sisyphe.f               \
-bedload_main.f             qsform.f\
+ad_allvec_sisyphe.F        ad_sisyphe_checkpoint.f bedload_main.f        qsform.f\
 sis_arret.f                bedload_meyer.f            rescue_sisyphe.f\
 bedload_bailard.f          diricl.f     ride.f\
 bedload_bijker.f           entete_sisyphe.f\

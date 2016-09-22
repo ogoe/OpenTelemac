@@ -3,12 +3,12 @@
 
 SRCS= \
 declarations_tomawac.f interface_tomawac.f \
-anacos.f anamar.f anaven.f angles.f bornes.f \
+ad_allvec_tomawac.f  anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f tom_corfon.f \
 cormar.f couple.f couuti.f cqueue.f delfra.f diffrac.f dump2d.f \
 ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
-fsprd2.f fsprd3.f gammln.f gauleg.f homere_tomawac.F \
+fsprd2.f fsprd3.f gammln.f gauleg.f homere_tomawac.f \
 ifabtom.f impr.f  iniphy.f initab.f invert.f intang.f   \
 kerbou.f kmoyen.f kmoye2.f\
 lecdoi.f lecdon.f lecdon_tomawac.f lecsui.f limite.f limwac.f  \

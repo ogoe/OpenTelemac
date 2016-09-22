@@ -65,7 +65,7 @@ prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \
 proxim.f     ptel11.f       ptel31.f      ptel41.f  pttoel.f      puog.f \
 puog1.f      p_dot.f        p_dots.f      \
-read_config.f read_submit.f remseg.f  rem11.f \
+read_bin_2d.f read_config.f read_submit.f remseg.f  rem11.f \
 rem21.f      rem41.f        remont.f      rescjg.f \
 sd_md.f      sd_mdi.f       sd_mdm.f      sd_mdp.f      sd_mdu.f  sd_nroc.f \
 sd_odrv.f    sd_sdrv.f      sd_snf.f      sd_sns.f      sd_sro.f \

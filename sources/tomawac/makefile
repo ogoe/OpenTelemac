@@ -66,7 +66,8 @@ MAKEFILE      = makefile
 #------------------------ Liste des fichiers
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+TMP = $(SRCS:.f=.o)
+OBJS = $(TMP:.F=.o)
 
 
 PRINT	      = pr
