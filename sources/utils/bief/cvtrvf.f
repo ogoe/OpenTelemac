@@ -78,10 +78,12 @@
 !+   compared to theory. The real theoretical value is now taken.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        10/09/2016
+!+        24/09/2016
 !+        V7P2
 !+   Predictor and corrector of LIPS grouped in the same loop.
 !+   Limitation of the predictor even for the first correction.
+!+   Extrema FMIN and FMAX depend on the scheme, so their computation
+!+   is slightly changed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -783,21 +785,39 @@
               FMAX%R(N)=MAX(FMAX%R(N),FBOR%R(I))
             ENDIF
           ENDDO
-          DO IELEM=1,MESH%NELEM
-            I1=MESH%IKLE%I(IELEM)
-            I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
-            I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
-            LOCALMIN=MIN( F%R(I1), F%R(I2), F%R(I3),
-     &                   T4%R(I1),T4%R(I2),T4%R(I3))
-            LOCALMAX=MAX( F%R(I1), F%R(I2), F%R(I3),
-     &                   T4%R(I1),T4%R(I2),T4%R(I3))
-            FMIN%R(I1)=MIN(FMIN%R(I1),LOCALMIN)
-            FMAX%R(I1)=MAX(FMAX%R(I1),LOCALMAX)
-            FMIN%R(I2)=MIN(FMIN%R(I2),LOCALMIN)
-            FMAX%R(I2)=MAX(FMAX%R(I2),LOCALMAX)
-            FMIN%R(I3)=MIN(FMIN%R(I3),LOCALMIN)
-            FMAX%R(I3)=MAX(FMAX%R(I3),LOCALMAX)
-          ENDDO
+          IF(OPTADV.EQ.2) THEN
+!           ALL FSTAR(J) NOT INCLUDED
+            DO IELEM=1,MESH%NELEM
+              I1=MESH%IKLE%I(IELEM)
+              I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+              I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+              LOCALMIN=MIN(T4%R(I1),T4%R(I2),T4%R(I3))
+              LOCALMAX=MAX(T4%R(I1),T4%R(I2),T4%R(I3))
+              FMIN%R(I1)=MIN(F%R(I1),FMIN%R(I1),LOCALMIN)
+              FMAX%R(I1)=MAX(F%R(I1),FMAX%R(I1),LOCALMAX)
+              FMIN%R(I2)=MIN(F%R(I2),FMIN%R(I2),LOCALMIN)
+              FMAX%R(I2)=MAX(F%R(I2),FMAX%R(I2),LOCALMAX)
+              FMIN%R(I3)=MIN(F%R(I3),FMIN%R(I3),LOCALMIN)
+              FMAX%R(I3)=MAX(F%R(I3),FMAX%R(I3),LOCALMAX)
+            ENDDO
+          ELSEIF(OPTADV.EQ.3) THEN
+!           ALL FSTAR(J) INCLUDED
+            DO IELEM=1,MESH%NELEM
+              I1=MESH%IKLE%I(IELEM)
+              I2=MESH%IKLE%I(IELEM+  MESH%NELMAX)
+              I3=MESH%IKLE%I(IELEM+2*MESH%NELMAX)
+              LOCALMIN=MIN( F%R(I1), F%R(I2), F%R(I3),
+     &                     T4%R(I1),T4%R(I2),T4%R(I3))
+              LOCALMAX=MAX( F%R(I1), F%R(I2), F%R(I3),
+     &                     T4%R(I1),T4%R(I2),T4%R(I3))
+              FMIN%R(I1)=MIN(FMIN%R(I1),LOCALMIN)
+              FMAX%R(I1)=MAX(FMAX%R(I1),LOCALMAX)
+              FMIN%R(I2)=MIN(FMIN%R(I2),LOCALMIN)
+              FMAX%R(I2)=MAX(FMAX%R(I2),LOCALMAX)
+              FMIN%R(I3)=MIN(FMIN%R(I3),LOCALMIN)
+              FMAX%R(I3)=MAX(FMAX%R(I3),LOCALMAX)
+            ENDDO
+          ENDIF
           IF(NCSIZE.GT.1) THEN
             CALL PARCOM(FMIN,4,MESH)
             CALL PARCOM(FMAX,3,MESH)
@@ -926,4 +946,3 @@
 !
       RETURN
       END
-

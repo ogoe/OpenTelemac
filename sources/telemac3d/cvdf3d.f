@@ -480,7 +480,7 @@
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
 !                             10: MAY BE S0F2
-     &              TRAV3%ADR(11)%P%R,TRAV3%ADR(12)%P%R,
+     &              TRAV3%ADR(11)%P%R,
      &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
@@ -507,7 +507,7 @@
      &              NPTFR3,NBOR3%I,FLUEXTPAR%R,FBORL%R,ZN,
      &              TRAV3%ADR(7)%P,TRAV3%ADR(8)%P%R,TRAV3%ADR(9)%P%R,
 !                             10: MAY BE S0F2
-     &              TRAV3%ADR(11)%P%R,TRAV3%ADR(12)%P%R,
+     &              TRAV3%ADR(11)%P%R,
      &              T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT

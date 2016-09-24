@@ -9,7 +9,7 @@
      & FSCE,RAIN,PLUIE,PARAPLUIE,TRAIN,NPOIN2,MINFC,MAXFC,MASKPT,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3,OPTSOU,
      & NPTFR3,NBOR3,FLUEXTPAR,FBORL,ZN,FI_I,ZSTART,ZEND,FINSUB,
-     & TETAF_VAR,T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
+     & T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P2
@@ -110,7 +110,7 @@
 !+   Correction in parallelism in the case of bed fluxes.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        12/09/2016
+!+        24/09/2016
 !+        V7P2
 !+   Two errors corrected:
 !+   1) In formulas for boundary fluxes, sources and rain, one must not
@@ -120,6 +120,8 @@
 !+   than 1 type of source or sink was considered.
 !+   2) With sources, in the last IF(OPTSOU.EQ.1).. ELSEIF(OPTSOU.EQ.2)..
 !+   the actions were swapped.
+!+   3) The acceptable extrema in monotony proofs depend on the scheme.
+!+   Here they are different between first and second order.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
@@ -217,7 +219,6 @@
       DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN3),TRA03(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX
       DOUBLE PRECISION, INTENT(INOUT) :: FINSUB(NPOIN3)
-      DOUBLE PRECISION, INTENT(INOUT) :: TETAF_VAR(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: ZSTART(NPOIN3),ZEND(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(DIM1XB,NELEM3)
 !
@@ -239,7 +240,7 @@
       DOUBLE PRECISION M12,M13,M14,M15,M16,M23,M24,M25,M26,M34
       DOUBLE PRECISION M35,M36,M45,M46,M56,T1,T2,T3,T4,T5,T6
       DOUBLE PRECISION F1MF2,F1MF3,F1MF4,F2MF3,F2MF4,F3MF4,ALFALOC
-      DOUBLE PRECISION TDT,TETA
+      DOUBLE PRECISION TETA
 !
       INTEGER IELEM,IPOIN,NITER,IS,IGUILT,IIS,IPTFR3,ICOR
       INTEGER I1,I2,I3,I4,I5,I6,OPT,ISEG3D,NSEGH,NSEGV
@@ -1269,50 +1270,111 @@
               MINFC%R(IPOIN)=FINSUB(IPOIN)
               MAXFC%R(IPOIN)=FINSUB(IPOIN)
             ENDDO
-            DO IELEM=1,NELEM3
-              I1 = IKLE3(IELEM,1)
-              I2 = IKLE3(IELEM,2)
-              I3 = IKLE3(IELEM,3)
-              I4 = IKLE3(IELEM,4)
-              I5 = IKLE3(IELEM,5)
-              I6 = IKLE3(IELEM,6)
-              MINFC%R(I1)=MIN(MINFC%R(I1),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I1)=MAX(MAXFC%R(I1),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MINFC%R(I2)=MIN(MINFC%R(I2),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I2)=MAX(MAXFC%R(I2),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MINFC%R(I3)=MIN(MINFC%R(I3),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I3)=MAX(MAXFC%R(I3),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MINFC%R(I4)=MIN(MINFC%R(I4),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I4)=MAX(MAXFC%R(I4),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MINFC%R(I5)=MIN(MINFC%R(I5),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I5)=MAX(MAXFC%R(I5),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MINFC%R(I6)=MIN(MINFC%R(I6),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-              MAXFC%R(I6)=MAX(MAXFC%R(I6),FC(I1),FC(I2),FC(I3),FC(I4),
-     &             FC(I5),FC(I6),FINSUB(I1),FINSUB(I2),FINSUB(I3),
-     &             FINSUB(I4),FINSUB(I5),FINSUB(I6))
-            ENDDO
+            IF(OPTADV.EQ.2) THEN
+              DO IELEM=1,NELEM3
+                I1 = IKLE3(IELEM,1)
+                I2 = IKLE3(IELEM,2)
+                I3 = IKLE3(IELEM,3)
+                I4 = IKLE3(IELEM,4)
+                I5 = IKLE3(IELEM,5)
+                I6 = IKLE3(IELEM,6)
+!               NOT ALL FC TAKEN
+                MINFC%R(I1)=MIN(MINFC%R(I1),FC(I1),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I1)=MAX(MAXFC%R(I1),FC(I1),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I2)=MIN(MINFC%R(I2),FC(I2),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I2)=MAX(MAXFC%R(I2),FC(I2),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I3)=MIN(MINFC%R(I3),FC(I3),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I3)=MAX(MAXFC%R(I3),FC(I3), 
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I4)=MIN(MINFC%R(I4),FC(I4),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I4)=MAX(MAXFC%R(I4),FC(I4),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I5)=MIN(MINFC%R(I5),FC(I5),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I5)=MAX(MAXFC%R(I5),FC(I5),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I6)=MIN(MINFC%R(I6),FC(I6),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I6)=MAX(MAXFC%R(I6),FC(I6),
+     &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              ENDDO
+            ELSE
+!             ALL FC TAKEN
+              DO IELEM=1,NELEM3
+                I1 = IKLE3(IELEM,1)
+                I2 = IKLE3(IELEM,2)
+                I3 = IKLE3(IELEM,3)
+                I4 = IKLE3(IELEM,4)
+                I5 = IKLE3(IELEM,5)
+                I6 = IKLE3(IELEM,6)
+                MINFC%R(I1)=MIN(MINFC%R(I1),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I1)=MAX(MAXFC%R(I1),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I2)=MIN(MINFC%R(I2),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I2)=MAX(MAXFC%R(I2),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I3)=MIN(MINFC%R(I3),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I3)=MAX(MAXFC%R(I3),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I4)=MIN(MINFC%R(I4),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I4)=MAX(MAXFC%R(I4),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I5)=MIN(MINFC%R(I5),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I5)=MAX(MAXFC%R(I5),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MINFC%R(I6)=MIN(MINFC%R(I6),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+                MAXFC%R(I6)=MAX(MAXFC%R(I6),
+     &               FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6),
+     &               FINSUB(I1),FINSUB(I2),FINSUB(I3),
+     &               FINSUB(I4),FINSUB(I5),FINSUB(I6))
+              ENDDO
+            ENDIF
             IF(NCSIZE.GT.1) THEN
               CALL PARCOM(MINFC,4,MESH3D)
               CALL PARCOM(MAXFC,3,MESH3D)
