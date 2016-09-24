@@ -288,6 +288,12 @@
 !+        V7P2
 !+   Call lecsng splitted in 2 according to typseuil
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        243/09/2016
+!+        V7P2
+!+   MASS_RAIN set to 0.D0 before first call to BILANT. Local variables
+!+   CHARR and SUSP removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -350,8 +356,7 @@
 ! LOGICALS
 !
       LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT
-      LOGICAL CHARR,SUSP,CHARR_TEL,SUSP1,YAFLODEL,YAFLULIM
-      LOGICAL IMP,LEO
+      LOGICAL CHARR_TEL,SUSP1,YAFLODEL,YAFLULIM,IMP,LEO
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
 !
@@ -1356,6 +1361,7 @@
         MASSES = 0.D0
         FLUSOR = 0.D0
         FLUENT = 0.D0
+        MASS_RAIN=0.D0
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BILAN'
 !       INITIALISATION OF FLBOR, PRIOR TO CALLING BILAN, FLBOR
 !       IS NORMALLY DONE ON PROPAG.F
