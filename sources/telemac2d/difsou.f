@@ -8,7 +8,7 @@
      & N_NGHB_W_NODES,NDGA1,NDGB1,TWEIRA,TWEIRB)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -88,6 +88,11 @@
 !+        02/11/2015
 !+        V7P1
 !+   Updates for water quality: new subroutine for weir reaeration
+!
+!history  C. COULET (ARTELIA)
+!+        01/09/2016
+!+        V7P2
+!+   Tentative update for weirs type 2 (parallel treatment)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
