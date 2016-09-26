@@ -558,7 +558,7 @@
 !                    ***************************
 !
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
-     & NAMES_PRIVE,SECCURRENTS)
+     & NAMES_PRIVE,SECCURRENTS,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P1
@@ -617,9 +617,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32),NAMES_PRIVE(4)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -232,7 +232,7 @@
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.
           LTT=(LT/LEOPRD)*LEOPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIG) LEO=.TRUE.
-!         FOR GRAPHICAL OUTPUTS          
+!         FOR GRAPHICAL OUTPUTS
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
@@ -252,7 +252,7 @@
               LEO=.TRUE.
               COMPLEO=COMPLEO+1
             ENDIF
-            
+
           ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
@@ -374,7 +374,7 @@
 !                       ***************************
 !
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
-     & NAMES_PRIVE,SECCURRENTS)
+     & NAMES_PRIVE,SECCURRENTS,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 !  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
@@ -413,9 +413,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

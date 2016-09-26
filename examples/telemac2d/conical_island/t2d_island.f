@@ -388,7 +388,7 @@
                         SUBROUTINE NOMVAR_TELEMAC2D
 !                       ***************************
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
-     & NAMES_PRIVE,SECCURRENTS)
+     & NAMES_PRIVE,SECCURRENTS,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 !  TELEMAC 2D VERSION 5.2    17/08/94    J-M HERVOUET (LNH) 30 87 80 18
@@ -426,9 +426,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

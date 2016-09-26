@@ -11,7 +11,7 @@
 !***********************************************************************
 !
 !brief    RAINFALL-RUNOFF CALCULATION BASED ON THE SCS METHOD FOR
-!+        ABSTRACTIONS (REFERENCE: APPLIED HYDROLOGY, 
+!+        ABSTRACTIONS (REFERENCE: APPLIED HYDROLOGY,
 !+        CHOW, MAIDMENT, MAYS, McGraw-Hill Publishing 1988).
 !+        SPATIALLY VARIABLE CURVE NUMBER DEFINED IN FORMATTED DATA FILE
 !+        OR ON THE MESH.
@@ -26,16 +26,16 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACCFA          |<->| ACCUMULATED CONTINUING ABSTRACTION
-!| ACCIA          |<->| ACCUMULATED INITIAL ABSTRACTION 
+!| ACCIA          |<->| ACCUMULATED INITIAL ABSTRACTION
 !| ACCROFF        |<->| ACCUMULATED RUNOFF AT TIME AT
 !| ACCROF_OLD     |<->| ACCUMULATED RUNOFF AT LAST TIME STEP
 !| AMC            |-->| ANTECEDENT MOISTURE CONDITIONS FOR SCS CN MODEL
-!|                |   | OPTIONS FOR ANTECEDENT MOISTURE CONDITIONS: 
+!|                |   | OPTIONS FOR ANTECEDENT MOISTURE CONDITIONS:
 !|                |   |   +> 1: DRY ANTECEDENT MOISTURE CONDITIONS
-!|                |   |   +> 2: NORMAL ANTECEDENT MOISTURE CONDITIONS 
+!|                |   |   +> 2: NORMAL ANTECEDENT MOISTURE CONDITIONS
 !|                |   |   +> 3: WET ANTECEDENT MOISTURE CONDITIONS
 !| CN             |-->| CURVE NUMBER
-!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES       
+!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES
 !| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
 !| FO2            |-->| LOGICAL UNIT OF THE FORMATTED DATA FILE
 !| IELM           |-->| TYPE OF ELEMENT
@@ -87,7 +87,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
-!     INITIALIZATION 
+!     INITIALIZATION
       IF(LT.EQ.1)THEN
         CALL OV('X=C     ',T5%R,T5%R,T5%R,0.D0,NPOIN)
         CALL OV('X=C     ',T6%R,T6%R,T6%R,0.D0,NPOIN)
@@ -106,23 +106,23 @@
 !     -------------------------------
 !     +> 1: STANDARD RAINFALL (CONSTANT VALUE IN MM/DAY, KEYWORD)
 !     +> 2: RAINFALL DEFINED AS A CDS-TYPE HYETOGRAPH BY IDF PARAMETERS
-!     +> 3: RAINFALL DEFINED AS A BLOCK-TYPE HYETOGRAPH READ IN A 
+!     +> 3: RAINFALL DEFINED AS A BLOCK-TYPE HYETOGRAPH READ IN A
 !           FORMATTED DATA FILE
-!  
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     1. STANDARD RAINFALL (CONSTANT VALUE IN MM/DAY GIVEN BY KEYWORD)
 !     ================================================================
       IF(RAINDEF.EQ.1) THEN
 !       RAINFALL AT TIME AT OVER ONE TIME-STEP, M
-        RFM = RAIN_MPS * DT 
+        RFM = RAIN_MPS * DT
 !
-!     2. EXAMPLE A: CDS-TYPE HYETOGRAPH DEFINED BY IDF PARAMETERS 
+!     2. EXAMPLE A: CDS-TYPE HYETOGRAPH DEFINED BY IDF PARAMETERS
 !     ===========================================================
       ELSEIF(RAINDEF.EQ.2) THEN
 !
 !       EXAMPLE A: IDF CURVE OF TYPE I = A / (T**B + C), MM/H
-!       RAINFALL STARTS AT AT = 0.D0 SECONDS 
+!       RAINFALL STARTS AT AT = 0.D0 SECONDS
 !       RAINFALL DURATION DEFINED IN HOURS BY RAIN_HDUR (KEYWORD)
 
 !       IDF CONSTANTS, MM/H
@@ -142,7 +142,7 @@
           ENDIF
         ENDIF
 !
-!       PEAK DECENTERING PARAMETER R, 0. =< R =< 1. 
+!       PEAK DECENTERING PARAMETER R, 0. =< R =< 1.
 !       FOR SYMMETRICAL RAINFALL (PEAK AT RAIN_HDUR/2: R = 0.5)
         R = 0.5D0
         PEAK_TIME=R*RAIN_HDUR*3600.D0
@@ -157,7 +157,7 @@
 !       RAINFALL INTENSITY AT TIME AT, MM/H
 !       EQUATION BELOW VALID ONLY FOR IDF CURVE OF TYPE I = A / (T**B + C)
         IF(AT.LE.(RAIN_HDUR*3600.D0)) THEN
-          IMMH = A*((1.D0-B)*(RELT/3600.D0)**B + C ) / 
+          IMMH = A*((1.D0-B)*(RELT/3600.D0)**B + C ) /
      &           ((RELT/3600.D0)**B + C)**2
         ELSE
 !         FORCE RAINFALL = 0 FOR AT>RAIN_HDUR, IDF RELATIONSHIP NO MORE VALID
@@ -167,7 +167,7 @@
         RFM = (IMMH / 1000.D0 / 3600.D0) * DT
 !
 !
-!     3. EXAMPLE B: BLOCK-TYPE HYETOGRAPH READ IN A FORMATTED DATA FILE 
+!     3. EXAMPLE B: BLOCK-TYPE HYETOGRAPH READ IN A FORMATTED DATA FILE
 !     =================================================================
       ELSEIF(RAINDEF.EQ.3) THEN
 !
@@ -178,13 +178,13 @@
 !       #T (s) RAINFALL (mm)
 !       0. 0.
 !       3600. 10.
-!       7200. 20. 
+!       7200. 20.
 !       etc...
 !
-!       NOTE THAT THE KEYWORD 'DURATION OF RAIN OR EVAPORATION IN HOURS' 
+!       NOTE THAT THE KEYWORD 'DURATION OF RAIN OR EVAPORATION IN HOURS'
 !       IS NOT TAKEN INTO ACCOUNT IN THIS EXAMPLE.
 !
-!       THE BLOCK-TYPE DEFINITION ASSUMES THAT THE RAINFALL RATE IS 
+!       THE BLOCK-TYPE DEFINITION ASSUMES THAT THE RAINFALL RATE IS
 !       CONSTANT BETWEEN THE GIVEN TIME STEPS. FOR THE FILE EXAMPLE
 !       ABOVE, THE PROGRAM WILL THEN ASSUME THAT THERE IS A 10 MM
 !       RAINFALL BETWEEN T = 0 AND 3600 S, THEN 20 MM BETWEEN 3600 AND
@@ -273,18 +273,18 @@
           WRITE(LU,*)'RUNOFF_SCS_CN : NEGATIVE RAINFALL FOUND'
           WRITE(LU,*)'                AT TIME', AT
           WRITE(LU,*)'                EVAPORATION NOT SUPPORTED'
-        ENDIF  
+        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     CN PARAMETERS: 
+!     CN PARAMETERS:
 !     =============
 !
 !     - CN VALUE FOR NORMAL ANTECEDENT MOISTURE CONDITIONS (CN2) GIVEN
-!       IN FORMATED FILE 2, HEREAFTER AN INTERPOLATION OF THESE CN 
+!       IN FORMATED FILE 2, HEREAFTER AN INTERPOLATION OF THESE CN
 !       ON THE MESH IS ACHIEVED
 !
 !********** SPECIFIC TO THIS CASE
@@ -294,8 +294,8 @@
 !      ENDIF
 !********** END SPECIFIC TO THIS CASE
 !
-!       NOTE: CN VALUE FOR NORMAL ANTECEDENT MOISTURE CONDITIONS (CN2) 
-!       ****  CAN ALSO BE READ FROM A USER VARIABLE STORED IN THE 
+!       NOTE: CN VALUE FOR NORMAL ANTECEDENT MOISTURE CONDITIONS (CN2)
+!       ****  CAN ALSO BE READ FROM A USER VARIABLE STORED IN THE
 !             GEOMETRY FILE USING THE FOLLOWING KEYWORDS:
 !              +>  NUMBER OF PRIVATE VARIABLES
 !              +>  NAMES OF PRIVATE VARIABLES
@@ -320,7 +320,7 @@
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
             WRITE(LU,*) '                CN VALUE > 100 FOUND IN'
-            WRITE(LU,*) '                INPUT DATA. FOR INSTANCE:' 
+            WRITE(LU,*) '                INPUT DATA. FOR INSTANCE:'
             WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
           ENDIF
           CALL PLANTE(1)
@@ -347,15 +347,15 @@
       ENDDO
 !
 !     - OPTION FOR STEEP SLOPE CORRECTION:
-!       +> REFERENCE: Huang, Gallichand, Wang and Goulet. A modification 
-!                     to the Soil Conservation Service curve number 
+!       +> REFERENCE: Huang, Gallichand, Wang and Goulet. A modification
+!                     to the Soil Conservation Service curve number
 !                     method for steep slopes in the Loess Plateau of
 !                     China. Hydrological Processes 20, 579-589 (2006).
-!       +> CORRECTION FOR SLOPES BETWEEN 0.14 AND 1.4 M/M DEFINED BY A 
+!       +> CORRECTION FOR SLOPES BETWEEN 0.14 AND 1.4 M/M DEFINED BY A
 !          CORRECTION FACTOR CN2A/CN2 (VARIABLE TCN2A_CN2=T10%R)
 !       +> TERRAIN SLOPE (M/M) COMPUTED BY SUBROUTINE ZSLOPE
 !       +> WARNING: THE STEEP SLOPE CORRECTION IS PERFORMED AT THE
-!          *******  BEGINNING OF THE COMPUTATION ONLY - DOES NOT TAKE 
+!          *******  BEGINNING OF THE COMPUTATION ONLY - DOES NOT TAKE
 !                   INTO ACOUNT TERRAIN EVOLUTIONS IN CASE OF COUPLING
 !                   WITH SISYPHE.
 !
@@ -365,11 +365,11 @@
       IF(STEEPSLOPECOR) THEN
 !
         IF(LT.EQ.1)THEN
-!        IF(LT.EQ.1.OR.INCLUS(COUPLING,'SISYPHE'))THEN 
-!        PL: CORRECTION IN CASE OF COUPLING REMOVED! IN THAT CASE 
-!            THE CORRECTION MUST BE DONE ON THE INITIAL CN VALUE, 
+!        IF(LT.EQ.1.OR.INCLUS(COUPLING,'SISYPHE'))THEN
+!        PL: CORRECTION IN CASE OF COUPLING REMOVED! IN THAT CASE
+!            THE CORRECTION MUST BE DONE ON THE INITIAL CN VALUE,
 !            NOT ON THE VALUE AT PREVIOUS DT
-!         COMPUTE THE BOTTOM SLOPE  
+!         COMPUTE THE BOTTOM SLOPE
           CALL ZSLOPE(ZFSLOP,ZF,T8,T9,MSK,MASKEL,IELM,MESH)
 !         COMPUTE STEEP SLOPE CORRECTION COEFFICIENT CN2A_CN2 (STOCKED IN T10)
           CC=(322.79D0+15.63D0*1.4D0)/(1.4D0+323.52D0)
@@ -393,16 +393,16 @@
 !
 !     - OPTION FOR INITIAL ABSTRACTION RATIO:
 !       +> REFERENCE: Woodward, Hawkins, Jiang, Hjelmfelt, Van Mullem
-!                     and Quan. Runoff Curve Number Method: Examination 
-!                     of the initial abstraction ratio. World Water and 
+!                     and Quan. Runoff Curve Number Method: Examination
+!                     of the initial abstraction ratio. World Water and
 !                     Environmental Resources Congress 2003.
 !       +> TWO OPTIONS DEFINED IN KEYWORD 'OPTION FOR INITIAL ABSTRACTION
 !          RATIO':
 !          - OPTION 1: IA/S = 0.2 (STANDARD METHOD) - DEFAULT
-!          - OPTION 2: IA/S = 0.05 (FROM ABOVE REFERENCE) WITH 
-!                      AUTOMATIC CONVERSION OF CN COEFFICIENTS (INPUT CN 
-!                      VALUES MUST BE GIVEN ACCORDING TO THE STANDARD 
-!                      METHOD) 
+!          - OPTION 2: IA/S = 0.05 (FROM ABOVE REFERENCE) WITH
+!                      AUTOMATIC CONVERSION OF CN COEFFICIENTS (INPUT CN
+!                      VALUES MUST BE GIVEN ACCORDING TO THE STANDARD
+!                      METHOD)
 !
       IF(IASCNOPT.EQ.1) THEN
         IA_S = 0.2D0
@@ -438,8 +438,8 @@
 !
       IF(AMC.EQ.1) THEN
         DO I=1,NPOIN
-          CN%R(I)=4.2D0*MIN(100.D0,CN%R(I)*T10%R(I))/ 
-     &           (10.D0 - 0.058D0 * 
+          CN%R(I)=4.2D0*MIN(100.D0,CN%R(I)*T10%R(I))/
+     &           (10.D0 - 0.058D0 *
      &           MIN(100.D0,CN%R(I)*T10%R(I)))
         ENDDO
       ELSEIF(AMC.EQ.2) THEN
@@ -448,7 +448,7 @@
         ENDDO
       ELSEIF(AMC.EQ.3) THEN
         DO I=1,NPOIN
-          CN%R(I) = 23.D0 * MIN(100.D0,CN%R(I)*T10%R(I))/ 
+          CN%R(I) = 23.D0 * MIN(100.D0,CN%R(I)*T10%R(I))/
      &             (10.D0 + 0.13D0* MIN(100.D0,CN%R(I)*T10%R(I)))
         ENDDO
       ELSE
@@ -470,7 +470,7 @@
 !     INITIAL ABSTRACTION IA, M (STOCKED IN T6)
 !
       CC=25.4D0/1000.D0
-!     
+!
       DO I=1,NPOIN
 !        POTMAXRET(I) = 25.4D0*(1000.D0/CN%R(I)-10.D0)/1000.D0
 !        IA(I) = POTMAXRET(I) * IA_S
@@ -481,32 +481,32 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ABSTRACTION CALCULATION 
+!     ABSTRACTION CALCULATION
 !     =======================
 !
 !     Description of the abstraction calculation (see reference)
 !     ----------------------------------------------------------
 !
-!     In a first step, the (accumulated) rainfall volume ACCRF is 
+!     In a first step, the (accumulated) rainfall volume ACCRF is
 !     entirely stored in the "initial abstraction" reservoir IA, which
-!     is defined by the method as 20% of the total maximal retention 
+!     is defined by the method as 20% of the total maximal retention
 !     POTMAXRET (see above).
 !     While ACCRF =< IA, all the rainfall volume is stored in the ground
 !     (in ACCIA) and there is no runoff.
-!     In a second step, ie. when the accumulated rainfall ACCRF has  
+!     In a second step, ie. when the accumulated rainfall ACCRF has
 !     become larger than the initial abstraction IA, the rainfall volume
 !     is divided in two parts:
 !       1. A first part stored in the ground in a second abstraction
 !          step called continuing abstraction (FA). Its accumulated
-!          value, ACCFA, tends towards POTMAXRET when ACCRF tends to 
+!          value, ACCFA, tends towards POTMAXRET when ACCRF tends to
 !          infinity.
-!       2. The remaining volume is not infiltrated and becomes direct 
+!       2. The remaining volume is not infiltrated and becomes direct
 !          runoff (ACCROFF = ACCRF - ACCIA - ACCFA).
 !
 !
 !     ACCUMULATED RAINFALL AT TIME AT (ACCRF), M (ACCRF STOCKED IN  T7)
 !     ACCRF = ACCRF + RFM
-      CALL OV('X=X+C   ',T7%R,T7%R,T7%R,RFM,NPOIN) 
+      CALL OV('X=X+C   ',T7%R,T7%R,T7%R,RFM,NPOIN)
 !
 !     ACCUMULATED INITIAL ABSTRACTION AT TIME AT (ACCIA), M
 !
@@ -583,7 +583,7 @@
 !                    ***************************
 !
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC,N_NAMES_PRIV,
-     & NAMES_PRIVE,SECCURRENTS)
+     & NAMES_PRIVE,SECCURRENTS,NADVAR,NAMES_ADVAR)
 !
 !***********************************************************************
 ! TELEMAC2D
@@ -649,9 +649,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)              :: NPERIAF,NTRAC,N_NAMES_PRIV
+      INTEGER, INTENT(IN)              :: NADVAR
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8),  INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(*),NAMES_PRIVE(4)
+      CHARACTER(LEN=32), INTENT(IN)    :: NAMES_ADVAR(*)
       LOGICAL, INTENT(IN)              :: SECCURRENTS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
