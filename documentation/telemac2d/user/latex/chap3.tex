@@ -1,0 +1,417 @@
+
+\chapter{  INPUTS AND OUTPUTS}
+
+
+\section{ PRELIMINARY REMARKS}
+
+ A set of files is used by TELEMAC-2D as input or output. Some files are optional.
+
+ The input files are the following:
+
+\begin{enumerate}
+\item  The steering filesteering file (\textbf{mandatory}), containing the configuration of the computation,
+
+\item  The geometry filegeometry file (\textbf{mandatory}), containing the mesh,
+
+\item  The boundary conditions fileboundary conditions file (\textbf{mandatory}), containing the description of the type of each boundary,
+
+\item  The previous computation fileprevious computation file, which can give the initial state of the computation. This is an optional file,
+
+\item  The bottom topography filebottom topography file, containing the elevation of the bottom. Generally, the bottom information is already available in the geometry file and the bottom topography file is no longer useful,
+
+\item  The reference filereference file, which contains the ``reference'' results and is used in the frame of a validation procedure,
+
+\item  The liquid boundary fileliquid boundary file, containing information about the prescribed values at the open boundaries (elevation, flowrate {\dots}),
+
+\item  The FORTRAN fileFORTRAN file, containing the specific programming,
+
+\item  The friction data filefriction data file, which contains information about the configuration of the bottom friction when this configuration is complex,
+
+\item  The stage-discharge curves filestage-discharge curves file, which gives information on the open boundaries where the characteristics are prescribed according to specific elevation/flowrate laws,
+
+\item  The sources filesources file, containing information about the sources,
+
+\item  The sections input filesections input file, which contains the description of the control sections of the model (sections across which the flowrate is computed).
+
+\item  The oil spill steering file, which contains all the parameters necessary to the simulation of an oil spill event.  See section 12.3 for more details.
+
+\item  The tidal model file, which contains data used for tide simulation. See section 4.2.12 for more details.
+
+\item  The ASCII tidal database file
+
+\item  The binary tidal database 1 and 2 files
+
+\item  The weirs file which contains all needed parameters related to weirs
+
+\item  The culvert data file
+
+\item  The tubes (or bridges) data file
+
+\item  The breaches data files which contains the characteristics of the breaches initiation and growth. See section 13.4
+
+\item  The drogues file, which contains the parameters for drogues creation and release. See section 12.1
+
+\item  The zones file which contains the description of friction zones, or any other zones
+
+\item  The water quality steering file which contains the parameters used by the newly added water quality module of TELEMAC-2D. This feature is completely independent of the water quality handled by DELWAQ. See section 11
+
+\item  Water quality dictionary which contains all the key-words dedicated exclusively to the water quality module.
+\end{enumerate}
+
+
+
+ The output files are the following:
+
+\begin{enumerate}
+\item  The results fileresults file, containing the graphical results,
+
+\item  The listing printout, which is the ``log filelog file'' of the computation. If necessary, the user can get additional information in this file by activating the integer keyword \textit{DEBUGGER} in the steering file\textit{DEBUGGER}. \textit{DEBUGGER} = 1 will show the sequence of calls to subroutines in the main program telemac2d.f. This is useful in case of crash, to locate the guilty subroutine,
+
+\item  The sections output filesections output file, which contains the results of the ``control sections'' computation.
+\end{enumerate}
+
+ In addition, the user can manage additional files:
+
+\begin{enumerate}
+\item  2 binary data files,
+
+\item  2 formatted data files,
+
+\item  1 binary results file,
+
+\item  1 formatted results file.
+\end{enumerate}
+
+ Some of these files are used by TELEMAC-2D for specific applications.
+
+ Some others files are also required when coupling TELEMAC-2D with the water quality software DELWAQ. These files are described in appendix 4.
+
+
+\subsection{ Binary file formatBinary file format}
+
+ The binary files managed inside the TELEMAC system can have various formats. The most commonly used format is the Serafin format (also called Selafin), the TELEMAC system internal standard format (described in appendix 3). This Serafin format can be configured in order to store real data as single or double precision. The other possible format is the MED formatMED format which is compatible with the SALOME platform developed by EDF and CEA. The full description of the MED format is available on the SALOME website http://www.salome-platform.org.
+
+ Depending on the selected format, the binary file can be read by different tools. But in actual version, only single precision Serafin format can be read by the post-processing tool RUBENS.RUBENS FUDAA-PREPROFUDAA-PREPRO and BLUEKENUE can read also double precisionBLUEKENUE.
+
+ The selection of the appropriate format is made using the corresponding key-word. For example, the keyword \textit{GEOMETRY FILE FORMAT }manages the format of the geometry file. Each keyword can take 3 different values (8 characters string): `SERAFIN ' means the single precision Serafin format and is the default (and recommended) value (do not forget the space at the end), `SERAFIND' is the double precision Serafin format which can be used for more accurate ``computation continued'' or more accurate validation, and `MED     ' means the MED hdf5 format.
+
+
+\section{ THE FILES}
+
+
+\subsection{ The steering filesteering file}
+
+ This is a text file created by a text editor or by the FUDAA-PREPRO software (but generally, the user starts from an already existing parameter file available in the TELEMAC structure, for example in the test cases directories.
+
+ In a way, it represents the control panel of the computation. It contains a number of keywords to which values are assigned. All keywords are defined in a ``dictionary'' file which is specific to each simulation module. If a keyword is not contained in this file, TELEMAC-2D will assign it the default value defined in the dictionary file of in the appropriate Fortran subroutine (see description in section 3.2.15). If such a default value is not defined in the dictionary file, the computation will stop with an error message. For example, the command \textit{TIME STEP = 10}. enables the user to specify that the computational time step is 10 seconds.
+
+ TELEMAC-2D reads the steering file at the beginning of the computation.
+
+ The dictionary file and steering file are read by a utility called DAMOCLES, which is included in TELEMAC. Because of this, when the steering file is being created, it is necessary to comply with the rules of syntax used in DAMOCLES. They are briefly described below.
+
+ The rules of syntax are the following:
+
+\begin{enumerate}
+\item  The keywords may be of Integer, Real, Logical or Character type,
+
+\item  The order of keywords in the steering file is of no importance,
+
+\item  Each line is limited to 72 characters. However, it is possible to pass from one line to the next as often as required, provided that the name of the keyword is not split between two lines,
+
+\item  For keywords of the array type, the separator between two values is the semi-colon. It is not necessary to give a number of values equal to the size of the array. In this case, DAMOCLES returns the number of read values. For example:
+\end{enumerate}
+
+ \textit{TYPE OF ADVECTION = 1;5}
+
+ (this keyword is declared as an array of 4 values)
+
+\begin{enumerate}
+\item  The signs ":" or "=" can be used indiscriminately as separator for the name of a keyword and its value. They may be preceded or followed by any number of spaces. The value itself may appear on the next line. For example:
+\end{enumerate}
+
+ \textit{TIME STEP =   10. }
+
+or
+
+ \textit{TIME STEP: 10.}
+
+or again
+
+ \textit{TIME STEP =}
+\[10.\]
+
+\begin{enumerate}
+\item \textit{ }Characters between two "/" on a line are considered as comments. Similarly, characters between a "/" and the end of line are also considered as comments. For example:
+\end{enumerate}
+
+ \textit{TURBULENCE MODEL = 3}     / Model K-Epsilon
+
+\begin{enumerate}
+\item  A line beginning with "/" in the first column is considered to be all comment, even if there is another "/" in the line. For example:
+\end{enumerate}
+
+ / The geometry file is ./mesh/geo
+
+\begin{enumerate}
+\item  When writing integers, do not exceed the maximum size permitted by the computer (for a computer with 32-bit architecture, the extreme values are -2 147 483 647 to + 2 147 483 648. Do not leave any space between the sign (optional for the +) and number. A full stop (.) is allowed at the end of a number,
+
+\item  When writing real numbers, the full stop and comma are accepted as decimal points, as are E and D formats of FORTRAN. ( 1.E-3  0.001  0,001  1.D-3 represent the same value),
+
+\item  When writing logical values, the following are acceptable: 1 OUI  YES  .TRUE.  TRUE  VRAI and 0 NON  NO  .FALSE.  FALSE  FAUX,
+
+\item  Character strings including spaces or reserved symbols ("/",":", "=", "\&") must be placed between apostrophes ('). The value of a character keyword can contain up to 144 characters. As in FORTRAN, apostrophes in a string must be doubled. A string cannot begin or end with a space. For example:
+\end{enumerate}
+
+ \textit{TITLE = 'CASE OF GROYNE'}
+
+ \textit{}
+
+ \textit{}
+
+ In addition to keywords, a number of instructions or meta-commands interpreted during sequential reading of the steering file can also be used:
+
+\begin{enumerate}
+\item  Command \&FIN\textit{\&FIN} indicates the end of the file (even if the file is not finished). This means that certain keywords can be deactivated simply by placing them behind this command in order to reactivate them easily later on. However, the computation continues,
+
+\item  Command \&ETA \textit{\&ETA} prints the list of keywords and the value that is assigned to them when DAMOCLES encounters the command. This will be displayed at the beginning of the listing printout,
+
+\item  Command  \&LIS\textit{\&LIS} prints the list of keywords. This will be displayed at the beginning of the listing printout,
+
+\item  Command  \&IND  \textit{\&IND} prints a detailed list of keywords. This will be displayed at the beginning of the listing printout,
+
+\item  Command \&STO\textit{\&STO} stops the program and the computation is interrupted.
+\end{enumerate}
+
+
+\subsection{ The geometry filemesh file}
+
+ This is a binary file.
+
+ This file contains all the information concerning the mesh, i.e. the number of mesh points (NPOIN variable), the number of elements (NELEMNELEM variable), the number of nodes per element (NDPNDP variable), arrays XX and YY containing the coordinates of all the nodes and array IKLEIKLE containing the connectivity tabletable of connectivities.
+
+ This file can also contain bottom topographybottom topography information and/or friction coefficient at each mesh point.
+
+ TELEMAC-2D stores information on the geometry at the start of the results file. Because of this, the computation results file can be used as a geometry file if a new simulation is to be run on the same mesh.
+
+ The name of this file is given with the keyword: \textit{GEOMETRY FILE}.
+
+ The format of this file is given by the keyword \textit{GEOMETRY FILE FORMAT}
+
+
+\subsection{  The boundary conditions fileboundary conditions file}
+
+ This is a formatted file generated automatically by the mesher MATISSE, BLUE KENUE or JANET, but also by FUDAA-PREPRO or STBTEL. It can be modified with a standard text editor. Each line of the file is dedicated to one point on the mesh boundary. The numbering used for points on the boundary is that of the file lines. First of all, it describes the contour of the domain trigonometrically, starting from the bottom left-hand corner (X + Y minimum) and then the islands in a clockwise direction.
+
+ See section 4.2.3 for a fuller description of this file.
+
+ The file name is given with the keyword: \textit{BOUNDARY CONDITIONS FILE.}.
+
+
+\subsection{ The FORTRAN user fileFortran user file}
+
+ Since version 5.0 of the software (the first version to be written in FORTRAN 90), this file has become optional, as TELEMAC-2D uses a dynamic memory allocation process and it is therefore no longer necessary to set the size of the various arrays in the memory.
+
+ The FORTRAN file contains all the TELEMAC-2D subroutines modified by the user and those that have been specially developed for the computation.
+
+ This file is compiled and linked so as to generate the executable program for the simulation.
+
+ The name of this file is given with the keyword: \textit{FORTRAN FILE}.
+
+
+\subsection{ The liquid boundaries file}
+
+ This text file enables the user to specify values for time-dependent boundary conditions (tracer flow rate, depth, velocity, and tracers' concentration).
+
+ See section 4.2.3 for a complete description of this file.
+
+ The file name is specified with the keyword: \textit{LIQUID BOUNDARIES FILE}
+
+
+\subsection{  The source file}
+
+ This text file enables the user to specify values for time-dependent conditions for sources (discharge, tracers' concentration).
+
+ See section 8 for a complete description of this file.
+
+ The file name is specified with the keyword: \textit{SOURCES FILE}
+
+
+\subsection{ The friction data file}
+
+ This text file enables the user to configure the bottom friction (used law and associated friction coefficient) in the domain. These information car vary from one zone to another.
+
+ The file name is specified with the keyword: \textit{FRICTION DATA FILE} but is used only if the logical keyword \textit{FRICTION DATAFRICTION DATA} is activated.
+
+ By default, the number of friction domains is limited to 10 but can be modified using the keyword \textit{MAXIMIM NUMBER OF FRICTION DOMAINS}
+
+ See APPENDIX 5  for a complete description of this file.
+
+
+\subsection{ The stage-discharge or elevation-discharge curves file}
+
+ This text file enables the user to configure the evolution of the prescribed value on specific open boundaries. This file is used when the prescribed elevation is determined by a elevation/discharge elevation law. The descriptions of the appropriate laws are given through this file.
+
+ See section 4.2.6 for a complete description of this file.
+
+ The file name is specified with the keyword: \textit{STAGE-DISCHARGE CURVES FILE}
+
+
+\subsection{ The sections input file}
+
+ This text file enables the user to configure the control sections used during the simulation.
+
+ See section 5.2 for a complete description of this file.
+
+ The file name is specified with the keyword: \textit{SECTIONS INPUT FILE}
+
+
+\subsection{ Files dedicated to construction works}
+
+ When using specific treatment of singularity (weirs, tubes, culverts, breaches), these files are used to specify the elements necessary for the treatment concerned. The key words identifying these files are:
+
+\begin{enumerate}
+\item  \textit{WEIRS DATA FILE},
+
+\item  \textit{TUBES DATA FILE},
+
+\item  \textit{CULVERT DATA FILE},
+
+\item  \textit{BREACHES DATA FILE}.
+\end{enumerate}
+
+
+\subsection{ The reference file}
+
+ When a calculation is being validated, this file contains the reference result. At the end of the calculation, the result of the simulation is compared to the last time step stored in this file. The result of the comparison is given in the control printout in the form of a maximum difference in depth, the two velocity components and other variables such as k, $\epsilon$ and tracers.
+
+ The name of this file is given with the keyword: \textit{REFERENCE FILE} and its format is specified by \textit{REFERENCE FILE FORMAT.}
+
+
+\subsection{ The results file}
+
+ This is the file in which TELEMAC-2D stores information during the computation. It is normally in Serafin (single precision) format. It contains first of all information on the mesh geometry, then the names of the stored variables. It then contains the time for each time step and the values of the different variables for all mesh points.
+
+ Its content depends on the value of the following keywords:
+
+ \textit{NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS}: this is used to determine at what time step information is first to be stored, so as to avoid having excessively large files, especially when a period of stabilization precedes a transient simulation.
+
+ \textit{GRAPHIC PRINTOUT PERIOD}: fixes the period for outputs so as to avoid having an excessively large file. In addition, whatever the output period indicated by the user, the last time step is systematically saved.
+
+ \textit{VARIABLES FOR GRAPHIC PRINTOUTS}: this is used to specify the list of variables to be stored in the results file. Each variable is identified by a symbol (capital letter of the alphabet or mnemonic of no more than 8 characters); these are listed in the description of this keyword in the Reference Manual.
+
+ \textit{OUTPUT OF INITIAL CONDITIONS} : this is used to specify whether the initial conditions for the calculation (time step 0) should be written in the results file. The default value for this keyword is YES.
+
+ The name of this file is given with the keyword: \textit{RESULTS FILE} and its format is given with \textit{RESULTS FILE FORMAT}
+
+
+\subsection{ The listing printoutlisting printout}
+
+ This is a formatted file created by TELEMAC-2D during the computation. It contains an account of the running of TELEMAC-2D. Its contents vary in accordance with the values of the following keywords:
+
+ \textit{NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS}: this is used to indicate at what time step to begin editing information, so as to avoid having excessively large files, in particular when a stabilisation period precedes a transient simulation.
+
+ \textit{LISTING PRINTOUT PERIOD }: this fixes the period between time step editions. The value is given in numbers of time steps. For example, the following sequence:
+
+    \textit{TIME STEP = 30}.
+
+    \textit{LISTING PRINTOUT PERIOD = 2}
+
+ will produce a listing printout every minute of simulation. Moreover, irrespective of the period indicated by the user, the last time step is systematically printed.
+
+ \textit{LISTING PRINTOUT}: this cancels the listing printout if the value is NO (the listing printout then only contains the program heading and normal end indication). However, this is not advisable in any circumstances.
+
+ \textit{VARIABLES TO BE PRINTED }: this is used to specify the list of variables for which all values will be printed at each mesh point. This is a debugging option offered by TELEMAC-2D that should be handled with caution so as to avoid creating an excessively large listing printout.
+
+ \textit{MASS-BALANCE}: if this is required, the user will have information on the mass fluxes (or rather volumes) in the domain at each printed time step.
+
+ \textit{INFORMATION ABOUT SOLVER}: if this is required, at each printed time step the user will have the number of iterations necessary to achieve the accuracy required during solving of the discretized equations, or by default that reached at the end of the maximum number of iterations authorized.
+
+ \textit{INFORMATION ABOUT K-EPSILON MODEL}: if this is required, at each printed time step the user will have the number of iterations necessary to achieve the accuracy required during computation of the diffusion and source terms of the k-Epsilon transport equations, or by default that reached at the end of the maximum number of iterations authorized.
+
+ The name of this file is managed directly by the TELEMAC-2D start-up procedure. In general, it has the name of the steering file and number of the process that ran the calculation, associated with the suffix .sortie.
+
+
+\subsection{ The ancillary filesancillary files}
+
+ Other files may be used by TELEMAC-2D. using these files will most often require an implementation in Fortran. Details on their logical units in Fortran are given below
+
+
+\subparagraph{ Ancillary files}
+
+ One or two binary data files, specified by the keywords \textit{BINARY DATA FILE 1 } and  \textit{BINARY DATA FILE 2 }. These files can be used to provide data to the program, with the user of course managing reading within the FORTRAN program (logical units 24 and 25).
+
+ One or two formatted data files, specified by the keywords \textit{FORMATTED DATA FILE 1} and \textit{FORMATTED DATA FILE 2}.  These files can be used to provide data to the program, with the user of course managing reading within the FORTRAN program (logical units 26 and 27).
+
+ A binary results file specified by the keyword \textit{BINARY RESULTS FILE}. This file can be used to store additional results (for example the trajectories followed by floats when these are required). Write operations on the file are managed by the user in the FORTRAN program (logical unit 28).
+
+ A formatted results file specified by the keyword \textit{FORMATTED RESULTS FILE}. This file can be used to store additional results (for example results that can be used by a 1D simulation code when two models are linked). Write operations on the file are managed by the user in the FORTRAN program (logical unit 29).
+
+ Read and write operations on these files must be managed completely by the user. Management can be done from any point accessible to the user. For example, using a file to provide the initial conditions will mean managing it with the CONDIN subroutineCONDIN. Similarly, using a file to introduce boundary conditions can be done in the BORDBORD subroutine.
+
+ TELEMAC-2D can also use other files when using harmonic constants databases. These files are described in detail in Section 4.2.12.
+
+
+\subparagraph{ Logical units}
+
+ Logical units have been parameterized because they may change in case of code coupling (for example two coupled programs may require the logical unit 1 and this would generate a conflict). All files have a number which is parameterized and constant :
+
+\begin{enumerate}
+\item  BINARY DATA FILE 1: T2DBI1 = 24
+
+\item  BINARY DATA FILE 2: T2DBI2 = 25
+
+\item  FORMATTED DATA FILE: T2DFO1 = 26
+
+\item  FORMATTED DATA FILE: T2DFO2 = 27
+
+\item  FORMATTED RESULT FILE: T2DRFO = 29
+\end{enumerate}
+
+ All the logical units are stored in a structure called T2D\_FILES. The logical unit of BINARY DATA FILE 1, for instance, will be T2D\_FILES(T2DBI1)\%LU.
+
+ \underbar{NOTE:}
+
+ In some subroutines, it will be necessary to add
+
+  USE DECLARATIONS\_TELEMAC2D, ONLY: T2D\_FILES, T2DBI1
+
+ for example, to have access to the logical units of files.
+
+
+\subsection{ The dictionary filedictionary file}
+
+ This file contains all information on the keywords (name in French, name in English, default values, type and documentation on keywords. This file can be consulted by the user but must under no circumstances be modified.
+
+
+\subsection{ TOPOGRAPHICAL AND BATHYMETRIC DATA}
+
+ Topographical and bathymetric data may be supplied to TELEMAC-2D at three levels:
+
+\begin{enumerate}
+\item  Either directly in the geometry file by a topographical or bathymetric value associated with each mesh node. In this case, the data are processed while the mesh is being built using MATISSE or BLUEKENUE,MATISSE or when the STBTELSTBTEL module is run before TELEMAC-2D is started. STBTEL reads the information in one or more bottom topography files (5 at most) and interpolates at each point in the domain.
+
+\item  Or in the form of a cluster of points with elevations that have no relation with the mesh nodes, during the TELEMAC-2D computation. TELEMAC-2D then makes the interpolation directly with the same algorithm as STBTEL. The file name is provided by the keyword \textit{BOTTOM TOPOGRAPHY FILEBOTTOM TOPOGRAPHY FILE}. In contrast to STBTEL, TELEMAC-2D only manages one bottom topography file. This file consists of three columns X,Y,Z.
+
+\item  Or using the CORFON subroutine (see section 14.1). This is usually used for schematic test cases.
+\end{enumerate}
+
+ In all cases, TELEMAC-2D offers the possibility of smoothing the bottom topography in order to obtain a more regular geometry. The smoothing algorithm can be iterated several times depending on the degree of smoothing required. The keyword \textit{BOTTOM SMOOTHINGS} \textit{BOTTOM SMOOTHINGS} then defines the number of iterations carried out in the CORFON CORFON subroutine. The default value of this keyword is 0 (see also programming of the CORFON subroutine in section 14.1). This smoothing preserves volumes.
+
+
+\subparagraph{ Dykes modelling}
+
+ Dikes representation requires special attention from the modeler. To properly handle the flow behavior at the dikes level (including the apparition of overflow phenomena), it is necessary to provide a minimum discretization of the cross sections of these dikes. As shown in the figure below, this discretization should be based on a minimum of 5 points (generally corresponding to 5 constraints lines in the mesh generation tool). :
+
+ \includegraphics*[width=2.91in, height=1.39in, keepaspectratio=false]{./graphics/dyke.png}
+
+ 2 points representing the base of the dike, 2 points representing the ends of the upper level the dike and an extra point, slightly above the middle of the dike.
+
+
+
+ This latter point allows, when the sides of the dike are half wet, to avoid the apparition of a parasitic flow over the dike if the water level at the highest point, calculated by the tidal flat algorithms, is not strictly zero.
+
+ Despite the care taken in meshing and the quality of the algorithms developed within TELEMAC-2D, there is sometimes parasitic overflows over some dikes (the presence of water on the crest of the dike whereas the surrounding free surface is located below that level). This is sometimes due to insufficient spatial discretization around dikes, or because of the influence of inertia phenomena overvalued by the code given that the dikes slopes could be too low compared to reality (the size of the elements generally prevents to respect these slopes). To handle this type of situation, a specific treatment algorithm has been implemented in TELEMAC-2D. This allows to automatically perform a receding procedure when the water level on the crest of the dike is less than a threshold set by the user and that the slope of the free surface at the dike is too high. This threshold, typically of a few millimeters to a few centimeters is set using the keyword \textit{THRESHOLD DEPTH FOR RECEDING PROCEDURE} (expressed in meters). It is recommended to use this algorithm with  convection schemes that ensures a perfect mass conservation. It is also compatible with a correct treatment of the convection of tracers. If necessary, the user can refer to the subroutine RECEDING.f.
+
+ Note that release 7.0 of TELEMAC-2D allows taking into account the phenomena of dike failure. This function is described in detail in Section 13.4.
+
+

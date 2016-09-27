@@ -1,0 +1,501 @@
+
+
+
+
+
+
+\begin{enumerate}
+\item   Running a TELEMAC-2D computation
+\end{enumerate}
+
+
+
+ Telemac environment is managed using Perl language (old option) and Python. For the Python option, informations about running the code can be found in the website www.opentelemac.org. we present hereafter, features related to the Perl version.
+
+ A computation is started using the command telemac2d. It is also possible to start the simulation directly in FUDAA-PREPRO. This command activates the execution of a unix script which is common to all the computation modules of the TELEMAC-2D processing chain.
+
+ The syntaxes of this command are as follows:
+
+ telemac2d [-s] [-D] [-b {\textbar} -n {\textbar} -d time] [-cl] [-t] [case]
+
+ Note : some options depends on the operating system used
+
+
+
+ -s : When the computation is started in interactive mode, generates a listing on the disk (by default, the listing is only displayed on screen).
+
+ -cl : Compile and link the user executable without starting the simulation
+
+ -D : Compilation and execution using a debugger.
+
+ -b : Running in batch mode (immediate start-up).
+
+ -n : Running in deferred batch mode (start-up at 20h00).
+
+ -d : Running in deferred batch mode (start-up at the specified time).
+
+ -t : Do not delete working directory after normal run
+
+ case : Name of steering file.
+
+
+
+  telemac2d  -h $\mid$ -H  (short or long help).
+
+
+
+
+
+ If no name for the steering file is indicated, the procedure uses the name cas. By default, the procedure executes the computation in interactive mode, and displays the check list on screen.
+
+ Examples:
+
+ telemac2d starts computation immediately in interactive mode using the cas steering file.
+
+ telemac2d -b test2 starts computation immediately in batch mode using the test2 steering file.
+
+ telemac2d -d 22:00 modtot starts computation at 22:00 the same evening in batch mode using the modtot steering file.
+
+ telemac2d -n starts computation at 20:00 the same evening in batch mode using the cas steering file.
+
+
+
+ The following operations are carried out using this script:
+
+\begin{enumerate}
+\item  Creation of a temporary directory,
+
+\item  Copy of the dictionary and steering file in this directory,
+
+\item  Execution of DAMOCLES software in order to determine the name of the workfiles,
+
+\item  Creation of the script to start the computation,
+
+\item  Allocation of files,
+
+\item  Compilation of the FORTRAN file and link (if necessary),
+
+\item  Start of the computation,
+
+\item  Restitution of the results files, and destruction of the temporary directory.
+\end{enumerate}
+
+
+
+ Procedure operation differs slightly depending on the options used.
+
+ A detailed description of this procedure may be obtained by using the command telemac2d -H.
+
+ Appendix 2 - Page   TELEMAC modelling system
+
+ TELEMAC-2D / User manual
+
+
+
+ TELEMAC modelling system Appendix 2 - Page
+
+ TELEMAC-2D / User manual
+
+
+
+ Version 7.0 December 2014
+
+ Version 7.0 December 2014
+
+\begin{enumerate}
+\item   List of user subroutines
+\end{enumerate}
+
+ List of subroutines that can be included in the Fortran file and modified by user:
+
+
+
+ BIEF\_VALIDA Validation of a computation
+
+ BORD Imposition of particular boundary conditions
+
+ CONDIN Imposition of particular initial conditions
+
+ CORFON Modification of bottom elevations
+
+ CORPOR Modification of porosity
+
+ CORRXY Modification of mesh coordinates
+
+ CORSTR Space-dependent friction coefficient
+
+ CORVIS Modification of viscosities
+
+ DEBSCE Time-dependent tracer source flow rates (function)
+
+ DEF\_ZONES Definition of zones
+
+ DRAGFO Definition of vertical structures
+
+ FLOT Initial position of drogues
+
+ FLUXPR Management of control sections
+
+ LAGRAN Lagrangian drifts
+
+ LATITU Computation of variables depending on latitude
+
+ MASKOB Masking of elements
+
+ MESURES Reading of measurement data
+
+ METEO Atmospheric conditions (wind, pressure)
+
+ NOMVAR\_TELEMAC2D Definition of names of additional variables
+
+ PRERES\_TELEMAC2D Computation of additional variables
+
+ PROPIN\_TELEMAC2D Change of the type of boundary conditions
+
+ Q Imposition of a time-dependent boundary flowrate (function)
+
+ SL Imposition of a time-dependent boundary free surface elevation (function)
+
+ STRCHE Space-dependent friction coefficient
+
+ TR Imposition of a time-dependent boundary tracer value (function)
+
+ TRSCE Imposition of time-dependent tracer values at the sources (function)
+
+ VIT Imposition of a time-dependent boundary velocity (function)
+
+ VUSCE Variable velocity along X of a source (function)
+
+ VVSCE Variable velocity along Y of a source (function)
+
+ Appendix 3 - Page   TELEMAC modelling system
+
+ TELEMAC-2D / User manual
+
+
+
+ TELEMAC-2D modelling system Appendix 3 - Page
+
+ TELEMAC-2D / User manual
+
+
+
+\begin{enumerate}
+\item   Description of Serafin file standard
+\end{enumerate}
+
+
+
+ This is a binary file.
+
+ The records are listed below:
+
+\begin{enumerate}
+\item  1 record containing the title of the study (72 characters) and a 8 characters string indicating the type of format (SERAFIN or SERAFIND)
+
+\item  1 record containing the two integers NBV\eqref{GrindEQ__1_} and NBV\eqref{GrindEQ__2_} (number of linear and quadratic variables, NBV(2) with the value of 0 for Telemac, as quadratic values are not saved so far),
+
+\item  NBV\eqref{GrindEQ__1_} records containing the names and units of each variable (over 32 characters),
+
+\item  1 record containing the integers table IPARAM (10 integers, of which only the 6 are currently being used),
+
+\item  if IPARAM \eqref{GrindEQ__3_} $\neq$ 0: the value corresponds to the x-coordinate of the origin of the mesh,
+
+\item  if IPARAM \eqref{GrindEQ__4_} $\neq$ 0: the value corresponds to the y-coordinate of the origin of the mesh,
+
+\item  if IPARAM \eqref{GrindEQ__7_} $\neq$ 0: the value corresponds to the number of  planes on the vertical (3D computation),
+
+\item  if IPARAM \eqref{GrindEQ__8_} $\neq$ 0: the value corresponds to the number of boundary points (in parallel),
+
+\item  if IPARAM \eqref{GrindEQ__9_} $\neq$ 0: the value corresponds to the number of interface points (in parallel),
+
+\item  if IPARAM\eqref{GrindEQ__8_} or IPARAM\eqref{GrindEQ__9_}$\neq$0: the array IPOBO below is replaced by the array KNOLG (total initial number of points). All the other numbers are local to the sub-domain, including IKLE.
+
+\item  if IPARAM \eqref{GrindEQ__10_} = 1: a record containing the computation starting date,
+
+\item  1 record containing the integers NELEM,NPOIN,NDP,1 (number of elements, number of points, number of points per element and the value 1),
+
+\item  1 record containing table IKLE (integer array of dimension (NDP,NELEM) which is the connectivity table. N.B.: in TELEMAC-2D, the dimensions of this array are (NELEM,NDP)),
+
+\item  1 record containing table IPOBO (integer array of dimension NPOIN); the value of one element is 0 for an internal point, and gives the numbering of boundary points for the others,
+
+\item  1 record containing table X (real array of dimension NPOIN containing the abscissae of the points),
+
+\item  1 record containing table Y (real array of dimension NPOIN containing the ordinates of the points),
+\end{enumerate}
+
+ Next, for each time step, the following are found:
+
+\begin{enumerate}
+\item  1 record containing time T (real),
+
+\item  NBV\eqref{GrindEQ__1_}+NBV\eqref{GrindEQ__2_} records containing the results tables for each variable at time T.
+\end{enumerate}
+
+ Appendix 5 - Page   TELEMAC modelling system
+
+ TELEMAC-2D / User manual
+
+
+
+ TELEMAC-2D modelling system Appendix 4 - Page
+
+ TELEMAC-2D / User manual
+
+
+
+\begin{enumerate}
+\item   Generating output files for DELWAQ
+\end{enumerate}
+
+
+
+ The TELEMAC-2D software is able to generate the appropriate files necessary to run a DELWAQ simulation. This generation is managed by the following keywords:
+
+
+
+ \textit{BOTTOM SURFACES DELWAQ FILE}
+
+ \textit{DELWAQ PRINTOUT PERIOD}
+
+ \textit{DELWAQ STEERING FILE}
+
+ \textit{DIFFUSIVITY DELWAQ FILE}
+
+ \textit{DIFFUSIVITY FOR DELWAQ}
+
+ \textit{EXCHANGE AREAS DELWAQ FILE}
+
+ \textit{EXCHANGE BETWEEN NODES DELWAQ FILE}
+
+ \textit{NODES DISTANCES DELWAQ FILE}
+
+ \textit{SALINITY DELWAQ FILE}
+
+ \textit{SALINITY FOR DELWAQ}
+
+ \textit{TEMPERATURE DELWAQ FILE}
+
+ \textit{TEMPERATURE FOR DELWAQ}
+
+ \textit{VELOCITY DELWAQ FILE}
+
+ \textit{VELOCITY FOR DELWAQ}
+
+ More information about these keywords can be found in the TELEMAC-2D reference manual. For more information, please refer to the DELWAQ user documentation.
+
+
+
+
+
+
+
+
+
+
+
+ Appendix 5 TELEMAC modelling system
+
+ TELEMAC-2D / User manual
+
+
+
+ TELEMAC-2D modelling system Appendix 5 - Page
+
+ TELEMAC-2D / User manual
+
+
+
+
+
+\begin{enumerate}
+\item   Defining friction by domains
+\end{enumerate}
+
+ When a complex definition of the friction has to be used for a computation, the user can use this option, which divides the domain in sub-domains (domains of friction) where different parameters of friction can be defined and easily modified. The procedure is triggered by the key-word ``\textit{FRICTION DATA=YES}'' and the data are contained in a file ``\textit{FRICTION DATA FILE}''.
+
+ The user has to:
+
+\begin{enumerate}
+\item  define the domains of friction in the mesh,
+
+\item  define the parameters of friction for each domain of friction,
+
+\item  add the corresponding keywords in the steering file of Telemac-2d in order to use this option.
+\end{enumerate}
+
+ \textbf{I -- Friction domains}
+
+ In order to make a computation with variable coefficients of friction, the user has to describe, in the computational domain, the zones where the friction parameters will be the same. For that, a code number, which represents a friction domain, has to be given to each node. The nodes with the same code number will use the same friction parameters.
+
+ This allocation is done thanks to the user subroutine friction\_user.f. All nodes can be defined ''manually'' in this subroutine, or this subroutine can be used in order to read a file where the link between nodes and code numbers is already generated (for example with the software JANET from the SmileConsult). This file is called ZONES\_FILE and will be partitioned in case of parallelism.
+
+ \textbf{II -- Friction parameters}
+
+ The frictions parameters of each friction domain are defined in a special friction data file. In this file we find, for each code number of friction domain:
+
+\begin{enumerate}
+\item  a law for the bottom and their parameters,
+
+\item  a law for the boundary conditions and their parameters (only if the option k-epsilon is used),
+
+\item  the parameters of non-submerged vegetation (only if the option is used).
+\end{enumerate}
+
+  Example of friction data file:
+
+
+
+\begin{tabular}{|p{0.3in}|p{0.3in}|p{0.3in}|p{0.4in}|p{0.4in}|p{0.5in}|p{0.5in}|p{0.7in}|p{0.5in}|} \hline
+*Zone & Bottom &  &  & Boundary & condition &  & Non submerged & vegetation \\ \hline
+*no & TypeBo & Rbo & MdefBo & TypeBo & Rbo & MdefBo & Dp & sp \\ \hline
+From 4 to 6 & NFRO &  &  & LOGW & 0.004 &  & 0.002 & 0.12 \\ \hline
+20 & NIKU & 0.10 &  & NIKU & 0.12 &  & 0.006 & 0.14 \\ \hline
+27 & COWH & 0.13 & 0.02 & LOGW & 0.005 &  & 0.003 & 0.07 \\ \hline
+END &  &  &  &  &  &  &  &  \\ \hline
+\end{tabular}
+
+
+
+ The first column defines the code number of the friction domain. Here, there is 3 lines with the code numbers: 4 to 6, 20, 27.
+
+ The columns from 2 to 4 are used in order to define the bottom law: the name of the law used (NFRO, NIKU or COWH for this example, see below for the name of the laws), the roughness parameter used and the Manning's default value (used only with the Colebrook-White law). If the friction parameter (when there is no friction) or the Manning's default are useless, nothing has to be written in the column,
+
+ The columns from 5 to 7 are used to describe the boundary conditions laws: name of the law, roughness parameter, Manning's Default. These columns have to be set only if the boundaries are considered rough (keyword TURBULENCE MODEL FOR SOLID BOUNDARIES = 2), otherwise, nothing has to be written in these columns,
+
+ The columns 8 and 9 are used for the non-submerged vegetation: diameter of roughness element and spacing of roughness element. These columns have to be set only if the option non-submerged vegetation is used, else nothing has to be written in these columns,
+
+ The last line of the file must have only the keyword END (or FIN or ENDE),
+
+ In order to add a comment in the friction data file, the line must begin with a star ''*''.
+
+
+
+
+
+  Link between the laws implemented and their names in the friction data file :
+
+
+
+\begin{tabular}{|p{1.0in}|p{0.4in}|p{0.8in}|p{1.0in}|} \hline
+Law &  Number & Name for data file & Parameters used \\ \hline
+No Friction & 0 & NOFR & No parameter \\ \hline
+Haaland & 1 & HAAL & Roughness coefficient \\ \hline
+Ch\'{e}zy & 2 & CHEZ & Roughness coefficient \\ \hline
+Strickler & 3 & STRI & Roughness coefficient \\ \hline
+Manning & 4 & MANN & Roughness coefficient \\ \hline
+Nikuradse & 5 & NIKU & Roughness coefficient \\ \hline
+Log law of wall \eqref{GrindEQ__1_} & 6 & LOGW & Roughness coefficient \\ \hline
+Colebrook-White & 7 & COWH & Roughness coefficient\newline Manning coefficient \\ \hline
+\end{tabular}
+
+\eqref{GrindEQ__1_} : can be used only for boundaries conditions
+
+ \textbf{}
+
+ \textbf{ III -- Steering file}
+
+ In order to use a friction computation by domains, the next keyword have to be added:
+
+ For the friction data file:
+
+ \textit{FRICTION DATA = YES}
+
+ \textit{FRICTION DATA FILE = `name of the file where friction is given'}
+
+ For the non-submerged vegetation (if used) :
+
+ \textit{NON-SUBMERGED VEGETATION} = YES
+
+ By default, 10 zones are allocated, this number can be changed with the keyword:
+
+ \textit{MAXIMUM NUMBER OF FRICTION DOMAINS} = 80
+
+ Link between nodes and code numbers of friction domains is achieved with:
+
+ \textit{ZONES FILE} = `name of the file'
+
+ \textbf{IV -- Advanced options}
+
+ If some friction domains with identical parameters have to be defined, it is possible to define them only with one line thanks to the keyword: from... to... (it is also possible to use de... a... or von... bis...).
+
+ The first code number of the domains and the last code number of the domains have to be set. All domains of friction with a code number between these two values will be allocated with the same parameters, except
+
+ If a friction domain is defined in two different groups, the priority is given to the last group defined.
+
+ A single friction domain has ever the priority on a group even if a group with this domain is defined afterwards,
+
+ If a single friction domain is defined twice, the priority is given to the last definition.
+
+ \textbf{ V -- Programming}
+
+ A new module, FRICTION\_DEF, has been created in order to save the data read in the friction file. This module is built on the structure of the BIEF objects. The domain of friction ''i'' is used as follows:
+
+ TYPE(FRICTION\_DEF) :: TEST\_FRICTION
+
+ TEST\_FRICTION\%ADR(I)\%P
+
+ The components of the structure are:
+
+
+
+\begin{tabular}{|p{2.2in}|p{2.5in}|} \hline
+TEST\_FRICTION\%ADR(I)\%P\%GNUM\eqref{GrindEQ__1_} & 1${}^{st}$ code number of the friction domains \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%GNUM\eqref{GrindEQ__2_} & Last code number of the friction domains \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%RTYPE\eqref{GrindEQ__1_} & Law used for the bottom \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%RTYPE\eqref{GrindEQ__2_} & Law used for the boundaries conditions \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%RCOEF\eqref{GrindEQ__1_} & Roughness parameters for the bottom \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%RCOEF\eqref{GrindEQ__2_} & Roughness parameters for the boundaries conditions \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%NDEF\eqref{GrindEQ__1_} & Default Manning for the bottom \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%NDEF\eqref{GrindEQ__2_} & Default Manning for the boundary conditions \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%DP & Diameter of the roughness element \\ \hline
+TEST\_FRICTION\%ADR(I)\%P\%SP & Spacing of the roughness element \\ \hline
+\end{tabular}
+
+
+
+ TEST\_FRICTION\%ADR(I)\%P\%GNUM\eqref{GrindEQ__1_} and TEST\_FRICTION\%ADR(I)\%P\%GNUM\eqref{GrindEQ__2_} have the same value if a single friction domain is defined.
+
+ TEST\_FRICTION\%ADR(I)\%P\%RTYPE\eqref{GrindEQ__1_} is KFROT   when there is only one domain.
+
+ TEST\_FRICTION\%ADR(I)\%P\%RCOEF\eqref{GrindEQ__1_} is CHESTR when there is only one domain.
+
+
+
+ The link between TELEMAC2D and the computation of the friction is done with the subroutine friction\_choice.f. It is used in order to initialize the variables for the option FRICTION  DATA at the beginning of the program and/or in order to call the right friction subroutine for the computation at each iteration.
+
+ \textbf{\underbar{Initializing:}}
+
+ During the initialization, the parameters of the friction domains are saved thanks to the subroutine friction\_read.f and the code number of each nodes are saved thanks to friction\_user.f in the array KFROPT\%I. With the subroutine friction\_init.f, the code numbers for all nodes are checked and the arrays CHESTR\%R and NKFROT\%I (KFROT for each node) are built. KFROT is used in order to know if all friction parameters are null or not. This information is used during the computation.
+
+ \textbf{\underbar{Computing:}}
+
+ For the optimization, the computation of the friction coefficient is done in the subroutine friction\_calc.f for each node thanks to the loop I = N\_START, N\_END. When the option \textit{FRICTION DATA} is not used, N\_START and N\_END are initialized to 1 and NPOIN in the subroutine friction\_unif.f. Else, they take the same value and the loop on the node is done in the subroutine friction\_zone.f  (the  parameters used for each node can be different).
+
+ With this choice, the subroutine friction\_unif.f is not optimized when the option \textit{NON-SUBMERGED VEGETATION} is called (friction\_lindner.f). This option aims to correct the value of the bottom friction coefficient when there is partial submerged vegetation.
+
+ \textbf{VI -- Accuracy}
+
+ When the option \textit{FRICTION DATA} is not used, CHESTR can be read in the geometry file. The values stored in this file are in simple precision. However CHESTR is defined in double precision, then, the CHESTR value is not exactly the right value.
+
+ With the option \textit{FRICTION DATA}, CHESTR is set thanks to the friction data file where the value of each domains are stored in double precision.
+
+ Then when a comparison is done between both methods, the difference may come from the difference between single and double precision.
+
+
+
+\begin{enumerate}
+\item    INDEX
+\end{enumerate}
+
+ Note: this index does not include the appendices
+
+
+
+ \&ETA, 10\&FIN, 10\&IND, 10\&LIS, 10\&STO, 10ABSCISSAE OF SOURCES, 62Accuracy, 56ACCURACY FOR DIFFUSION OF TRACERS, 56ACCURACY OF EPSILON, 56ACCURACY OF K, 56Adding new variables, 96advection, 5ADVECTION, 50ADVECTION OF H, 50ADVECTION OF K AND EPSILON, 50ADVECTION OF TRACERS, 50ADVECTION OF U AND V, 50air pressure, 44AIR PRESSURE, 44ALGAE TRANSPORT MODEL, 81ALPHA1, 47ALPHA2, 47ALPHA3, 47ancillary files, 16ARTEMIS, 45ASTRAL POTENTIAL, 45ATBOR, 24ATMOSPHERIC PRESSURE, 43AUBOR, 24bathymetry, 102BIEF, 2BINARY DATA FILE, 20BINARY DATA FILE 1, 16, 46BINARY DATA FILE 2, 16BINARY DATABASE 1 FOR TIDE, 33BINARY DATABASE 2 FOR TIDE, 33Binary file format, 8BINARY RESULTS FILE, 16BLUEKENUE, 8BORD, 16, 22, 29, 65BOTTOM SMOOTHINGS, 17, 95bottom topography, 11bottom topography file, 6BOTTOM TOPOGRAPHY FILE, 17BOUNDARY CONDITIONS, 21boundary conditions file, 6, 12, 23BOUNDARY CONDITIONS FILE, 12BOUSSINESQ, 49BTBOR, 24CHANGING BED BETWEEN TWO COMPUTATIONS, 104Changing the type of a boundary condition, 98COEFFICIENT FOR DIFFUSION OF TRACERS, 66COEFFICIENT OF WIND INFLUENCE, 43COEFFICIENT TO CALIBRATE SEA LEVEL, 34COEFFICIENT TO CALIBRATE TIDAL RANGE, 34COEFFICIENT TO CALIBRATE TIDAL VELOCITIES, 34COMPATIBLE COMPUTATION OF FLUXES, 36COMPUTATION CONTINUED, 21CONDIN, 16, 19, 20, 64conjugate gradient, 103Constant viscosity, 41continued computation, 19Continuing a computation, 20CONTINUITY CORRECTION, 57CONTROL OF LIMITS, 36Control sections, 36CONTROL SECTIONS, 36CORFON, 17, 18, 95, 104Coriolis, 5CORIOLIS, 46CORIOLIS COEFFICIENT, 46CORPOR, 60CORRXY, 95CORSTR, 39CORVIS, 41COST FUNCTION, 48COUPLING, 98COUPLING PERIOD, 98COUPLING WITH, 98Courant number, 52Courant number management, 59C-U PRECONDITIONING, 59culvert discharge, 91Culverts, 90DAMOCLES, 9DEBSCE, 62DEBUGGER, 7DECLARATION\_TELEMAC2D, 2DEF\_ZONES, 39, 47DEFINITION OF ZONES, 39, 47DELWAQ, 8, 99DENSITY EFFECTS, 64DENSITY OF ALGAE, 81DEPTH IN FRICTION TERMS, 40DESIRED COURANT NUMBER, 59DIAMETER OF ALGAE, 81DIAMETER OF ROUGHNESS ELEMENT, 40dictionary file, 17diffusion, 5DIFFUSION OF TRACERS, 66DIFFUSION OF VELOCITY, 50DIFSOU, 63DISCRETIZATIONS IN SPACE, 49DRAGFO, 46DROGUE DISPLACEMENTS, 79DROGUES FILE, 79, 81, 83DURATION, 35Elder model, 42ELEMENTS MASKED BY USER, 31equations, 5EQUATIONS, 49, 105FILPOL, 97FINITE VOLUME SCHEME, 52FLUXPR, 37FORMATTED DATA FILE, 20FORMATTED DATA FILE 1, 16, 89, 90, 91FORMATTED DATA FILE 2, 16FORMATTED RESULTS FILE, 16Fortran 90, 2FORTRAN file, 6FORTRAN FILE, 12Fortran user file, 12FOURIER ANALYSIS  PERIODS, 99FREE SURFACE GRADIENT COMPATIBILITY, 50, 55, 103FRICTION COEFFICIENT., 39FRICTION DATA, 13friction data file, 6FRICTION DATA FILE, 13FRICTION PARAMETER DEFINITION, 39FUDAA-PREPRO, 8, 12, 23GENERAL PARAMETER DEFINITION FOR THE COMPUTATION, 35GEOGRAPHIC SYSTEM, 34geometry file, 6GEOMETRY FILE, 11GEOMETRY FILE FORMAT, 11GMRES, 56, 103GRAPHIC PRINTOUT PERIOD, 14GRAVITY ACCELERATION, 47H CLIPPING, 60, 105HARMONIC CONSTANTS FILE, 33HBOR, 24HD, 47Hervouet, 5I\_ORIG, 95IDENTIFICATION  METHOD, 48IKLE, 11IMPLICITATION COEFFICIENT OF TRACERS, 53, 66IMPLICITATION FOR DEPTH, 53IMPLICITATION FOR DIFFUSION OF VELOCITY, 53IMPLICITATION FOR VELOCITY, 53INFORMATION ABOUT K-EPSILON MODEL, 15, 42, 57INFORMATION ABOUT SOLVER, 15, 57INITIAL Conditions, 102INITIAL CONDITIONS, 19INITIAL CONDITIONS, 19INITIAL DEPTH, 19INITIAL ELEVATION, 19INITIAL GUESS FOR H, 58INITIAL GUESS FOR U, 58INITIAL TIME SET TO ZERO, 21INITIAL VALUES OF TRACERS, 21, 64ITER, 47J\_ORIG, 95K, 24Kinetic order, 52Krylov space, 56LAGRAN, 87LAGRANGIAN DRIFTS, 87LATITU, 96LATITUDE OF ORIGIN POINT, 96LAW OF BOTTOM FRICTION, 39, 42, 47LIHBOR, 22, 24LIMIT VALUES, 36LINEARIZED PROPAGATION, 50LIQUID BOUNDARIES FILE, 12, 26liquid boundary file, 6LIST OF POINTS, 99listing printout, 15LISTING PRINTOUT, 15LISTING PRINTOUT PERIOD, 15LITBOR, 22, 24, 65LIUBOR, 22, 24LIVBOR, 22, 24log file, 7LOIDEN.f, 90LOINOY.f, 90LONGITUDE OF ORIGIN POINT, 45MANNING DEFAULT VALUE FOR COLEBROOK-WHITE LAW, 39MASKEL, 31Masking, 31MASKOB, 31MASS-BALANCE, 15MASS-LUMPING ON H, 53MASS-LUMPING ON VELOCITY, 53MATISSE, 12, 17, 23, 32Matrix Storage, 60MATRIX STORAGE, 60MATRIX-VECTOR PRODUCT, 61MAXIMIM NUMBER OF FRICTION DOMAINS, 13MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS, 57MAXIMUM NUMBER OF ITERATIONS FOR IDENTIFICATION, 48MAXIMUM NUMBER OF ITERATIONS FOR K AND EPSILON, 56MAXIMUM NUMBER OF ITERATIONS FOR SOLVER, 57MEAN DEPTH FOR LINEARIZATION, 50MEAN TEMPERATURE, 64MED format, 8MESH, 102mesh file, 10MESURES, 47METEO, 43, 44Method of characteristics, 51MINIMUM VALUE OF DEPTH, 60, 105MINOR CONSTITUENTS INFERENCE, 33MODIFICATION OF BOTTOM TOPOGRAPHY, 95MODIFYING COORDINATES, 95moving forces, 46MPI, 101N, 24N distributive scheme, 51NAMES OF POINTS, 99NAMES OF THE TRACERS, 64NDP, 10NELEM, 3, 10NELMAX, 3NOMVAR\_TELEMAC2D, 97NON-DIMENSIONAL DISPERSION COEFFICIENTS, 42NON-SUBMERGED VEGETATIO FRICTION, 40NPOIN, 3, 10NPTFR, 3, 29NUMBER OF CULVERTS, 90, 91NUMBER OF DROGUES, 79, 83NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS, 14, 100NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS, 15NUMBER OF LAGRANGIAN DRIFTS, 87NUMBER OF PRIVATE ARRAYS, 96NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES, 52NUMBER OF TIME STEPS, 35NUMBER OF TRACERS, 64NUMBER OF WEIRS, 89NUMERICAL PARAMETER DEFINITION, 49NUMERICAL SCHEMES, 51Numerical specifications, 66OIL SPILL MODEL, 83OILSPILL STEERING FILE, 83OPTION FOR LIQUID BOUNDARIES, 31OPTION FOR THE DIFFUSION OF TRACERS, 66OPTION FOR THE DIFFUSION OF VELOCITIES, 41, 106OPTION FOR THE SOLVER FOR K-EPSILON MODEL, 103OPTION FOR THE TREATMENT OF TIDAL FLATS, 60OPTION FOR TIDAL BOUNDARY CONDITIONS, 32, 33ORDINATES OF SOURCES, 62ORIGIN COORDINATES, 95ORIGINAL DATE OF TIME, 33, 35, 45ORIGINAL HOUR OF TIME, 33, 35, 45OUTPUT OF INITIAL CONDITIONS, 15, 19parallel library, 101PARALLEL PROCESSORS, 101PHYSICAL PARAMETER DEFINITION, 39Preconditioning, 57PRECONDITIONING, 57PRECONDITIONING FOR DIFFUSION OF TRACERS, 57PRECONDITIONING FOR K-EPSILON MODEL, 57, 58PRERES\_TELEMAC2D, 97PRESCRIBED ELEVATIONS, 25PRESCRIBED FLOWRATES, 25, 29PRESCRIBED TRACERS VALUES, 65PRESCRIBED VELOCITIES, 25, 29previous computation file, 6PREVIOUS COMPUTATION FILE, 21PREVIOUS COMPUTATION FILE FORMAT, 21PRINTING CUMULATED FLOWRATES, 36PRINTOUT PERIOD FOR DROGUES, 79, 83PRIVE, 96propagation, 5PROPAGATION, 50PROPIN\_TELEMAC2D, 22, 23, 98PSI distributive scheme, 51Q, 22, 26, 29RAIN OR EVAPORATION, 45RAIN OR EVAPORATION IN MM PER DAY, 45RECORD NUMBER IN WAVE FILE, 46reference file, 6REFERENCE FILE, 14, 47, 97REFERENCE FILE FORMAT, 14, 98results file, 7RESULTS FILE, 15RESULTS FILE FORMAT, 15river mesh, 102Roe scheme, 52ROUGHNESS COEFFICIENT OF BOUNDARIES, 42RUBENS, 8sections input file, 6SECTIONS INPUT FILE, 13, 37sections output file, 7SECTIONS OUTPUT FILE, 37semi implicit scheme, 51Serafin, 8SISYPHE, 98SISYPHE STEERING FILE, 99SL, 22, 26Smagorinski, 41Smagorinski model, 43Solver, 55, 103SOLVER, 55SOLVER ACCURACY, 56SOLVER FOR DIFFUSION OF TRACERS, 55SOLVER FOR K-EPSILON  MODEL, 55SOLVER OPTION, 56, 103SOLVER OPTION FOR TRACERS DIFFUSION, 56source terms, 5sources file, 6SPACING OF ROUGHNESS ELEMENT, 40SPHERICAL COORDINATES, 96STAGE-DISCHARGE CURVES, 28stage-discharge curves file, 6STAGE-DISCHARGE CURVES FILE, 13, 28STBTEL, 12, 17, 23steering file, 6, 8STOCHASTIC DIFFUSION MODEL, 79STOP CRITERIA, 35STOP IF A STEADY STATE IS REACHED, 35STRCHE, 39Submerged weir, 90SUPG, 51SUPG OPTION, 54SUPG scheme, 53table of connectivities, 11TBOR, 24, 65THICKNESS OF ALGAE, 82THOMPSON, 31THRESHOLD DEPTH FOR WIND, 44THRESHOLD FOR NEGATIVE DEPTHS, 60, 105TIDAL DATA BASE, 32Tidal flats, 59TIDAL FLATS, 59TIDAL MODEL FILE, 33TIDE GENERATING FORCE, 45tide generating forces, 35TIME RANGE FOR FOURIER ANALYSIS, 100TIME STEP, 35TITLE, 35TOLERANCES FOR IDENTIFICATION, 48TOMAWAC, 45, 98TOMAWAC STEERING FILE, 99TOPOGRAPHICAL AND BATHYMETRIC DATA, 17TR, 22, 26, 65TREATMENT OF FLUXES AT THE BOUNDARIES, 65TREATMENT OF NEGATIVE DEPTHS, 60, 105TREATMENT OF THE LINEAR SYSTEM, 51, 55, 103, 106TREATMENT OF THE TIDAL FLATS, 105TRSCE, 62TT, 47TURBULENCE, 40TURBULENCE MODEL, 41, 42TURBULENCE MODEL FOR SOLID BOUNDARIES, 42Turbulent viscosity, 5TYPE OF ADVECTION, 51, 66, 103TYPE OF SOURCE, 63UBOR, 24, 29UD, 47Unsubmerged weir, 90Upwind explicit finite volume, 51VALIDA, 97VALIDATING A COMPUTATION, 97VALIDATION, 98Validation Document, 2VALUES OF THE TRACERS AT THE SOURCES, 62VALUES OF TRACERS IN THE RAIN, 45VARIABLE TIME STEPS, 59VARIABLES FOR GRAPHIC PRINTOUTS, 14, 87, 96VARIABLES TO BE PRINTED, 15, 20VBOR, 24, 29VD, 47VELOCITIES OF THE SOURCES ALONG X, 62VELOCITIES OF THE SOURCES ALONG Y, 62VELOCITY DIFFUSIVITY, 41, 42VELOCITY PROFILES, 22, 29VERTICAL Structures, 46VERTICAL STRUCTURES, 46VIT, 22, 26, 29VUSCE, 62VVSCE, 63WATER DENSITY, 47WATER DISCHARGE OF SOURCES, 62WAVE DRIVEN CURRENTS, 46wave equation, 51, 55WAVE-INDUCED CURRENTS, 45Weirs, 89WIND, 43WIND VELOCITY ALONG X, 43WIND VELOCITY ALONG Y, 43X, 11Y, 11ZONE NUMBER IN GEOGRAPHIC SYSTEM, 34
+
+
+
+
+\end{document}
+

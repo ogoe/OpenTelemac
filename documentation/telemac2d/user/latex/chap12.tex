@@ -1,0 +1,435 @@
+
+
+
+
+
+
+\chapter{ Particle transport and lagrangian drifts}
+
+
+\section{ drogue displacementsDROGUE DISPLACEMENTS}
+
+ During a hydrodynamic simulation, TELEMAC-2D offers the possibility of monitoring the tracks followed by certain particles (drogues) introduced into the fluid from outflow points. The result is produced in the form of a Tecplot format file containing the various positions of the drogues in time, see paragraph 12.1.4 for more details.
+
+ Note that using this function provides more accurate results than using the particle tracking features of the post-processing tools. Contrary to TELEMAC-2D for which monitoring floats is determined at each time step, the post-processing tools are based on the results file that is usually sampled much coarser. Since release 7.0 the management of drogues is modified to be coherent with other particle transport features of TELEMAC-2D (oil spill and algae). Hereafter, we give the implementation details.
+
+
+\subsection{ Input Files}
+
+ In addition to the mandatory files for a classical TELEMAC-2D model (steering, geometry boundary conditions), it is necessary to add a fortran file to run a particle transport case.
+
+
+\subsection{ Steering file}
+
+ The steering file has to include the following key-words to account for drogue transport (for oil spill and algae, as well):
+
+\begin{enumerate}
+\item  The number of particles released: \textit{NUMBER OF DROGUESNUMBER OF DROGUES, }this is the maximum number used to dimension various arrays.
+
+\item  The frequency of the drogues printout period: \textit{PRINTOUT PERIOD FOR DROGUES PRINTOUT PERIOD FOR DROGUES} \textit{;}
+
+\item  The name of the output file (tecplot file) containing the drogue displacement: \textit{DROGUES FILE (see section }12.1.4\textit{); DROGUES FILE} \textit{ }
+
+\item  TELEMAC-2D offers the possibility to introduce a stochastic diffusion coefficient. When setting the key-word \textit{STOCHASTIC DIFFUSION MODELSTOCHASTIC DIFFUSION MODEL} =1 (default = 0), a stochastic model will generate stochastically a diffusion coefficient which is computed using the turbulent viscosity. If no turbulence is activated, this stochastic diffusion is not considered during the particle transport.
+\end{enumerate}
+
+
+\subsection{ fortran file}
+
+ Once the number of released drogues has been defined in the steering file, subroutine FLOT is used to define their positions and time of release. This is done by using the variable LT, which is the iteration step. This variable is used to release particles at a specific time. The subroutine ADD\_PARTICLE is then used to set the initial values of variables XFLOT, YFLOT and TAGFLOT, which are the two-dimensional position components and an identifier of the particle. An example of these changes can be found in subroutine FLOT (./sources/telemac2d). See also section 12.3.
+
+ \textbf{Modifications to subroutine }FLOT\textbf{:}
+
+\begin{enumerate}
+\item \textbf{ }Use LT to define when to release particles
+
+\item  Call ADD\_PARTICLE to define XFLOT, YFLOT and TAGFLOT
+\end{enumerate}
+
+
+\subsection{ output file}
+
+ Besides the classic result file, TELEMAC-2D produces a specific output file for drogues. It is given by the key-word \textit{DROGUES FILE. }
+
+ This file is a formatted file created by TELEMAC-2D during the computation. It stores drogue positions in TECPLOT format. To visualize the drogue positions with Tecplot software, the user must:
+
+\begin{enumerate}
+\item  Use the File$>$Load Data File(s) command to load the 2D RESULT FILE
+
+\item  Use the File$>$Load Data File(s) command to load the Tecplot drogue file
+\end{enumerate}
+
+ \textbf{WARNING:}
+
+ In order to add the Tecplot DROGUE FILE to Telemac result data that was already loaded, select ``Add to current data'' set in the \textbf{Load Data File Warning dialogue} (cf. Figure 1). The Load Data File Warning dialogue will appear after you have selected the file and zones and/or variables to load.
+\begin{figure}
+\centering
+ \includegraphics*[width=2.77in, height=1.70in, keepaspectratio=false]{./graphics/warning1.png}
+\label{Load Data File Warning dialogue}
+\end{figure}
+
+
+ \textbf{                    Change the drogue output format:}
+
+ It is possible to develop a new drogue output format. This must be done in the subroutine DERIVE. A Fortran file including the subroutine DERIVE with the new format definition for the DROGUE FILE needs to be added with the input files.
+
+
+\section{ ALgae bloom modelling}
+
+ Since release 6.3, TELEMAC-2D offers the possibility to simulate algae bloom transport. Theoretical aspects about algae physics and modelization can be found in Joly (Joly, 2011)
+
+
+\subsection{ input files}
+
+ Input files for algae bloom modelling are the same than for drogues.
+
+
+\subsection{ Steering file}
+
+ The steering file has to include the following key-words to account for an algae bloom propagation model:
+
+\begin{enumerate}
+\item  The number of particle released: \textit{NUMBER OF DROGUES}
+
+\item  The frequency of the algae printout period: \textit{PRINTOUT PERIOD FOR DROGUES}
+
+\item  The name of the output file (tecplot file) containing the drogue displacement: \textit{DROGUES FILE (see section }12.1.4\textit{); DROGUES FILE} \textit{ }
+
+\item  The option setting the particles as algae: \textit{ALGAE TRANSPORT MODELALGAE TRANSPORT MODEL=YES, (}default\textit{ = NO)}
+
+\item  The type of algae particles considered \textit{ALGAE TYPE} (default 1). The different choices are
+
+\begin{enumerate}
+\item  1. Sphere,
+
+\item  2. Iridaea Flaccida,
+
+\item  3. Pelvetiopsis Limitata,
+
+\item  4. Gigartina Leptorhynchos
+\end{enumerate}
+
+\item  The physical properties of the algae (diameter, density and thickness):
+
+\begin{enumerate}
+\item  \textit{DIAMETER OF ALGAE  DIAMETER OF ALGAE} \textit{(default }= 0.1)
+
+\item  \textit{DENSITY OF ALGAE  DENSITY OF ALGAE} \textit{(}default = 1050)
+
+\item  \textit{THICKNESS OF ALGAE  THICKNESS OF ALGAE} \textit{(}default = 0.01)
+\end{enumerate}
+\end{enumerate}
+
+ \textbf{WARNING:}
+
+\begin{enumerate}
+\item  Even though some of the previous keywords make references to drogues, they are also used for algae blooms.
+
+\item  To use the algae particle transport module it is necessary to use the k-$\epsilon$ turbulence model, i.e. the option \textit{TURBULENCE MODEL = 3} needs to be set in the steering file.
+\end{enumerate}
+
+
+\subsection{ The fortran file}
+
+ Once algae transport has been defined in the steering file, the subroutine FLOT is used to define the position and time of release. This is done by defining the variable ALGAE\_START and using the variable LT to release particles. In addition the subroutine ADD\_PARTICLE is used to set the initial values of variables XFLOT, YFLOT and TAGFLOT, which are the two-dimensional position components and an identifier of the particle. An example how to use FLOT to release algae particles is put in comments within the subroutine FLOT.
+
+ \textbf{Modifications to subroutine }FLOT\textbf{ for algae transport}
+
+\begin{enumerate}
+\item \textbf{ }Add the command USE ALGAE\_TRANSP at the beginning of the routine
+
+\item  Define ALGAE\_START, which will be used as the release time of the algae (so far a simple time release is allowed)
+
+\item  Use LT to release particles
+
+\item  Call ADD\_PARTICLE to define XFLOT, YFLOT and TAGFLOT
+\end{enumerate}
+
+ \textbf{WARNINGS:}
+
+\begin{enumerate}
+\item  ALGAE\_START needs to be greater or equal to 1
+
+\item  So far, it is possible to achieve a unique release of algae. To do multiple releases (in different times), futher developments are necessary.
+\end{enumerate}
+
+
+\subsection{ Output files}
+
+ Likewise for drogues, see 12.1.4.
+
+
+\section{ Oil spill modelling}
+
+ A new feature has been added to TELEMAC-2D (and 3D) that allows the simulation of oil spill problems. These developments are based on the work of Goeury (Goeury, 2012).
+
+
+\subsection{ input files}
+
+ In addition to the minimum set of input files necessary to run a TELEMAC-2D case, an oil spill computation needs also an oil spill steering file. Furthermore, to run oil spill model a FORTRAN file including the routine OIL\_FLOT needs to be added.
+
+
+\subsection{ Steering file}
+
+ The following essential information should be specified in the TELEMAC steering file to run an oil spill propagation model:
+
+\begin{enumerate}
+\item  The use of the oil spill model must be declared: \textit{OIL SPILL MODELOIL SPILL MODEL=YES, (}default\textit{ = NO),}
+
+\item  The name of the oil spill steering file which contains the oil characteristics: \textit{OILSPILL STEERING FILEOILSPILL STEERING FILE,}
+
+\item  The number of oil particles to be released during the oil spill episode: \textit{NUMBER OF DROGUESNUMBER OF DROGUES;}
+
+\item  The frequency of the drogues printout period: \textit{PRINTOUT PERIOD FOR DROGUES PRINTOUT PERIOD FOR DROGUES} \textit{,}
+
+\item  The name of the Tecplot file containing the oil displacement: \textit{DROGUES FILE DROGUES FILE} \textit{.}
+\end{enumerate}
+
+ \textbf{WARNING:}
+
+ Even though some of the previous keywords make references to drogues, they are also used for algae blooms and oil spills.
+
+ With the oil spill module, it is possible to take into account the transport of soluble oil components in water (whose presence has no effect on the hydrodynamics). These may or may not be diffused within the flow but their characteristics have to be defined in the \textit{OILSPILL STEERING FILE.} If these components are allowed to diffuse in the flow they are then treated with the tracer transport computations of TELEMAC-2D. This implies that the logical keyword \textit{TRACER is set to YES and the NUMBER OF TRACER} must be set to the number of the oil soluble components. In addition, TRACER keywords, enunciated in the section 9 can be specified.
+
+ \textbf{IMPORTANT INFORMATION:}
+
+ If the number of oil components dissolved in water is greater than 1, the result file can contain the sum of dissolved oil concentrations. The user must only add the variable for graphic printout N:
+
+\begin{enumerate}
+\item  \textit{VARIABLES FOR GRAPHIC PRINTOUTS: '....,N'}
+\end{enumerate}
+
+ \textbf{WARNING:}
+
+ With the variable for graphic printout \textbf{\textit{N}}, be careful not to have private tables or change the table PRIVE1 in the subroutine PRERES\_TELEMAC2D.f by the table PRIVEX (where X is the number chosen by the user).
+
+
+\subsection{ Oil spill steering file}
+
+ As seen previously, the \textit{OIL SPILL STEERING FILE }name is given by the user in the TELEMAC steering file. This file contains all information on oil calculation based on the composition considered by the user:
+
+\begin{enumerate}
+\item  The number of non-soluble components in oil,
+
+\item  The parameters of these components such as the mass fraction (\%) and boiling point of each component (K),
+
+\item  The number of soluble components in oil,
+
+\item  The parameters of these components such as the mass fraction (\%), boiling point of each component (K), solubility (K${}_{g}$.m${}^{-3}$) and the mass transfer coefficient of the dissolution and volatilization phenomena (m.s${}^{-1}$)
+
+\item  The oil density,
+
+\item  The oil viscosity (m${}^{2}$.s${}^{-1}$),
+
+\item  The volume of the spilled oil (m${}^{3}$),
+
+\item  The water surface temperature (K),
+
+\item  The spreading model chosen by the user:
+
+\begin{enumerate}
+\item  Fay's model,
+
+\item  Migr'Hycar model,
+
+\item  Constant area model.
+\end{enumerate}
+\end{enumerate}
+
+ \textbf{WARNING:}
+
+\begin{enumerate}
+\item \textbf{ }The parameters of soluble (or non-soluble) components need to be informed only if the number of these components is not null
+
+\item  If the sum of all mass fraction components is not equal to 1, the run is interrupted and an error message is displayed:
+\end{enumerate}
+
+ \textbf{''WARNING::THE SUM OF EACH COMPONENT MASS FRACTION IS NOT EQUAL TO 1.''}
+
+ \textbf{``PLEASE, MODIFY THE INPUT STEERING FILE''}
+
+ An example of the oil spill steering file is given.
+
+NUMBER OF UNSOLUBLE COMPONENTS IN OIL
+\[6\]
+
+UNSOLUBLE COMPONENTS PARAMETERS (FRAC MASS, TEB)
+
+\textbf{5.1D-02}    ,\textbf{402.32D0}
+
+\textbf{9.2D-02}    ,\textbf{428.37D0}
+
+\textbf{3.16D-01}   ,\textbf{458.37D0}
+
+\textbf{3.5156D-01}    ,\textbf{503.37D0}
+
+\textbf{8.5D-02}       ,\textbf{543.37D0}
+
+\textbf{9.4D-02}       ,\textbf{628.37D0}
+
+NUMBER OF SOLUBLE COMPONENTS IN OIL
+\[4\]
+
+SOLUBLE COMPONENTS PARAMETERS (FRAC MASS, TEB, SOL, KDISS, KVOL)
+
+\textbf{1.D-02}   ,\textbf{497.05D0},  \textbf{0.018D0}   , \textbf{1.25D-05} ,\textbf{5.0D-05}
+
+\textbf{3.2D-02}  ,\textbf{551.52D0},  \textbf{0.00176D0} , \textbf{5.63D-06} ,\textbf{1.51D-05}
+
+\textbf{1.D-04}   ,\textbf{674.68D0},  \textbf{2.0D-04}   , \textbf{2.D-06}   ,\textbf{4.085D-07}
+
+\textbf{2.D-05}   ,\textbf{728.15D0},  \textbf{1.33D-06}  , \textbf{1.33D-06} ,\textbf{1.20D-07}
+
+OIL DENSITY
+
+\textbf{830.D0}
+
+OIL VISCOSITY
+
+\textbf{4.2D-06}
+
+OIL SPILL VOLUME
+
+\textbf{2.02D-05}
+
+WATER TEMPERATURE
+
+\textbf{292.05D0}
+
+SPREADING MODEL (1=FAY'S MODEL, 2=MIGR'HYCAR MODEL, 3=CONSTANT AREA)
+\[2\]
+If in the oil spill steering file, the SPREADING MODEL is set to 3, two lines must be added to the previous example:
+
+CONSTANT AREA VALUE CHOSEN BY THE USER FOR EACH OIL PARTICLE
+
+\textbf{1 (}example if the user wants area particle equal to 1 m${}^{2}$\textbf{)}
+
+
+\subsection{ THe oil\_flot subroutine}
+
+ After inserting the OIL\_FLOT subroutine in the FORTRAN file, the user must modify it in order to indicate the release time step, together with the coordinates of the release point. If the release point coordinates are outside the domain, the run is interrupted and an error message is displayed. In addition, if a particle leaves the domain during the simulation, it is of course no longer monitored but its previous track remains in the results file for consultation.
+
+ An example of modifications in the OIL\_FLOT subroutine is given.
+
+ The release time step in the first condition statement and the coordinates of the release point must be changed:
+
+...
+
+IF(\textbf{LT.EQ.10000})THEN
+
+  NUM\_GLO=0
+
+  NUM\_MAX=0
+
+  NUM\_LOC=0
+
+  COORD\_X=0.D0
+
+  COORD\_Y=0.D0
+
+  NUM\_MAX=INT(SQRT(REAL(NFLOT\_MAX)))
+
+  DO K=1,NUM\_MAX
+
+    DO J=1,NUM\_MAX
+
+      \textbf{COORD\_X}=336000.D0+REAL(J)
+
+      \textbf{COORD\_Y}=371000.D0+REAL(K)
+
+      NUM\_GLO=NUM\_GLO+1
+
+      NFLOT\_OIL=0
+
+      CALL ADD\_PARTICLE(\textbf{COORD\_X},\textbf{COORD\_Y},0.D0,NUM\_GLO,NFLOT\_OIL,
+
+\&                       1,XFLOT,YFLOT,YFLOT,TAGFLO,
+
+\&                       SHPFLO,SHPFLO,ELTFLO,ELTFLO,MESH,1,
+
+\&                       0.D0,0.D0,0.D0,0.D0,0,0)
+
+...
+
+    END DO
+
+  END DO
+
+END IF
+
+
+\subsection{ Output files}
+
+ There are no additional output files provided than for drogue transport.
+
+ \textbf{WARNING:}
+
+ If the user wants to develop a new drogue output format for oil spill, he must edit subroutine OIL\_DERIVE.f and not the subroutine DERIVE.f used for the drogue and algae transport.
+
+
+\section{ LAGRANGIAN DRIFTS}
+
+
+\subsection{ Input files}
+
+ Computing Lagrangian drifts involves computing the displacement of all mesh points between two given instants. Typically, these two instants may be two consecutive high tides.
+
+ To run such a computation, it is necessary to program the steering file and FORTRAN file.
+
+ In the steering file, the user must firstly provide the number of drifts required using the keyword \textit{NUMBER OF LAGRANGIAN DRIFTS} \textit{NUMBER OF LAGRANGIAN DRIFTS} (default value 0). This value corresponds to the number of pairs (starting and ending times) for which the Lagrangian drifts are computed. Secondly, the user must include the letters A and G in the list assigned to the keyword \textit{VARIABLES FOR GRAPHIC PRINTOUTSVARIABLES FOR GRAPHIC PRINTOUTS}. These two letters correspond to the drift displacements along X and Y.
+
+ As far as the FORTRAN file is concerned, the user must insert the LAGRANLAGRAN subroutine, in which it is necessary to define the instants at which each computation is to start and end, in the form of time step numbers.
+
+ The drift computation results are stored directly in the TELEMAC-2D results file in the form of two scalar variables entitled DRIFT\_ALONG\_X and DRIFT\_ALONG\_Y. Given the possible discretization that may occur in printing out graphical results, the rule for introduction in the results file is the following:
+
+\begin{enumerate}
+\item  If none of the drift computations is completed at the time step considered, the two variables are set to zero.
+
+\item  Otherwise, the two variables contain the results of the most recently completed drift computation.
+\end{enumerate}
+
+ This means on one hand that two drifts may not be completed at the same time step, and on the other hand that between two ends of drift computations, a record must be made in the results file (otherwise the result of the first computation is lost).
+
+ Lastly, if a drift leaves the domain, the corresponding computation is interrupted and the result reset at zero for this node.
+
+
+\subsection{ Output files}
+
+ The result is produced in the form of a Serafin format file containing the various positions of the lagrangian drifts in the form of a degenerated mesh.
+
+
+
+  The following example (steering file and FORTRAN file) carries out two drift computations. The first begins at time step 10 and finishes at time step 50. The second begins at time step 15 and finishes at time step 40.
+
+  In the steering file:
+
+   \textit{NUMBER OF LAGRANGIAN DRIFTS   = 2}
+
+\textit{   VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,A,G'}
+
+\textit{   GRAPHIC PRINTOUT PERIOD = 1}
+
+  In the LAGRAN subroutine of the FORTRAN file:
+
+   DEBLAG(1) = 10
+
+   FINLAG(1) = 50
+
+   DEBLAG(2) = 15
+
+   FINLAG(2) = 40
+
+ In this example, the variables DRIFT\_ALONG\_X and DRIFT\_ALONG\_Y of the results file will contain the following values:
+
+\begin{enumerate}
+\item  From time steps 1 to 39: 0 values (no finished drift computation).
+
+\item  From time steps 40 to 49: results of the second drift computation.
+
+\item  Time step 50: results of the first drift computation.
+\end{enumerate}
+
+
+
+ NOTE: Lagrangian drifts are not yet implemented for parallelism.
+
