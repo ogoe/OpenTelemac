@@ -4,11 +4,10 @@
 !
      &(F,FN,FSCEXP,DIFT,CONV,H,HN,HPROP,UCONV,VCONV,DM1,ZCONV,SOLSYS,
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
-     & AGGLOH,TE1,DT,ENTET,BILAN,
-     & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
-     & YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     & RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,NCO_DIST,NSP_DIST,
-     & YAFLULIM,FLULIM,SLVTRA)
+     & AGGLOH,TE1,DT,ENTET,BILAN,OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
+     & LIMTRA,KDIR,KDDL,NPTFR,FLBOR,YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,
+     & FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,
+     & NCO_DIST,NSP_DIST,YAFLULIM,FLULIM,SLVTRA)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -78,12 +77,13 @@
 !+   compared to theory. The real theoretical value is now taken.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        24/09/2016
+!+        27/09/2016
 !+        V7P2
 !+   Predictor and corrector of LIPS grouped in the same loop.
 !+   Limitation of the predictor even for the first correction.
 !+   Extrema FMIN and FMAX depend on the scheme, so their computation
-!+   is slightly changed.
+!+   is slightly changed. Coefficients COEMIN and COESOU removed in the
+!+   call to cflvf.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -201,8 +201,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,TETAFCOR,COEMIN
-      DOUBLE PRECISION COESOU,ADMASS,LOCALMIN,LOCALMAX
+      DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,TETAFCOR
+      DOUBLE PRECISION ADMASS,LOCALMIN,LOCALMAX
 !
       DOUBLE PRECISION, PARAMETER :: TWOTHIRDS=2.D0/3.D0
 !
@@ -525,21 +525,16 @@
 !--------------------------------------------
 !
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
-!     ACCORDING TO THEORY
-!
-      COESOU=0.D0
+!     ACCORDING TO THEORY OF N SCHEME, BUT POSSIBLY
+!     DIVIDED BY 2 FOR PREDICTOR-CORRECTORS
 !
       IF(PREDICOR.AND.NCO_DIST.GT.0) THEN
-        SECU=1.D0
-        COEMIN=-1.D0
+        SECU=0.5D0
       ELSEIF(LIPS) THEN
         SECU=1.D0
-        COEMIN=0.D0
       ELSE
         SECU=0.99D0
-        COEMIN=0.D0
       ENDIF
-      COESOU=COEMIN
 !
 !     HARDCODED OPTION FOR THE CFL (AND OPTION 2 ONLY FOR THE N SCHEME)
 !
@@ -554,7 +549,7 @@
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
      &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
      &           LIMTRA,KDIR,KDDL,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
-     &           T2,T6,SECU,COEMIN,COESOU,OPTCFL)
+     &           T2,T6,SECU,OPTCFL)
 !
 !     NOW RECOMPUTING THE PSI FLUXES (THE N FLUXES HAVE BEEN
 !                                     USED FOR THE STABILITY CRITERION).
@@ -946,3 +941,4 @@
 !
       RETURN
       END
+
