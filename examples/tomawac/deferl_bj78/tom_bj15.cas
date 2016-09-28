@@ -4,6 +4,7 @@
 /--------------------------------------------------------------------
 /     FICHIERS
 /--------------------------------------------------------------------
+/DEBUGGER=1
 GEOMETRY FILE = 'geo_bj15.slf'
 BOUNDARY CONDITIONS FILE = 'geo_bj15.cli'
 2D RESULTS FILE = 'r2d_deferl.slf'
@@ -25,7 +26,8 @@ BOUNDARY WEIGHTING FACTOR FOR ADF = 1
 /--------------------------------------------------------------------
 TITLE = 'CAS-TEST DE BATTJES ET JANSSEN NUMERO 15'
 PERIOD FOR GRAPHIC PRINTOUTS = 10
-VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,DMOY,FM01,ZF,FX,FY
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,DMOY,FM01,ZF,FX,FY,UX,UY
+/ UX AND UY DO NOT EXIST HERE
 PERIOD FOR LISTING PRINTOUTS = 10
 /ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 0.;5.;10.;15.;20.;25.
 /ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 9.;9.;9.;9.;9.;9.
