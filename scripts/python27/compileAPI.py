@@ -113,11 +113,11 @@ def compile_API(cfgs,cfgname,fcompiler,user_fortran):
    if path.exists(pyfFile):
       remove(pyfFile)
    # First step of call to f2py
-   print 'f2py -h %s -m _api %s skip: %s :'%(pyfFile,
-             source.replace('<apiSrc>',api_dir+sep+'src'+sep),skipSource)
+   cmd = 'f2py --quiet -h %s -m _api %s skip: %s :'%(pyfFile,
+                                             source.replace('<apiSrc>',api_dir+sep+'src'+sep),
+                                             skipSource)
    try:
-      retcode = call('f2py -h %s -m _api %s skip: %s :'%(pyfFile,
-             source.replace('<apiSrc>',api_dir+sep+'src'+sep),skipSource),shell=True)
+      retcode = call(cmd,shell=True)
       if retcode != 0:
          print 'Error during first part of f2py return code:',retcode
          sys.exit(1)
@@ -149,13 +149,12 @@ def compile_API(cfgs,cfgname,fcompiler,user_fortran):
       lib_cmd += ' ' + '-luser_fortran'
    lib_cmd += ' -ltelemac2d -lapi_telemac2d -lwaqtel -lbief -lspecial -lnestor'
    lib_cmd += ' -lsisyphe -ltomawac -lparallel -ldamocles -lhermes -lgretel -lpartel'
-   print 'f2py -c %s --fcompiler=%s -I%s %s '%(pyfFile,args.fcompiler,api_dir+sep+'include',lib_cmd)
+   cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '%(pyfFile,\
+                                               args.fcompiler,
+                                               api_dir+sep+'include',
+                                               lib_cmd)
    try:
-      retcode = call('f2py -c %s --fcompiler=%s -I%s %s '%(pyfFile,\
-                                                           args.fcompiler,
-                                                           api_dir+sep+'include',
-                                                           lib_cmd),
-                     shell=True)
+      retcode = call(cmd, shell=True)
       if retcode != 0:
          raise Exception('Error during second part of f2py return code:'+str(retcode))
    except OSError as e:

@@ -18,11 +18,121 @@
       USE API_INSTANCE_SIS
       USE API_RUN_SIS
       USE API_COUPLING
+      USE DECLARATIONS_PARTEL
 
       IMPLICIT NONE
       INTEGER, EXTERNAL :: GLOBAL_TO_LOCAL_POINT
 !
       CONTAINS
+!
+!***********************************************************************
+!     PARTEL/GRETEL
+!***********************************************************************
+!
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !BRIEF INITIALISE THE TELEMAC2D VARIABLES
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY Y AUDOUIN & C. GOEURY (EDF R&D, LNHE)
+      !+       24/08/2016
+      !+       V6P3
+      !+       PARTITIONNING TREATMENT
+      !
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
+      !+                        ERROR ID OTHERWISE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      SUBROUTINE RUN_PARTEL(ID,NAMEINP, NAMECLI, NPARTS, PMETHOD,
+     &  FFORMAT,NAMESEC, NAMEZFI,NAMESEU, IERR)
+!
+!
+        INTEGER,            INTENT(IN) :: ID
+        INTEGER,            INTENT(OUT):: IERR
+        CHARACTER(LEN=250), INTENT(IN) :: NAMEINP
+        CHARACTER(LEN=250), INTENT(IN) :: NAMECLI
+        INTEGER, INTENT(IN) :: NPARTS
+        INTEGER, INTENT(IN) :: PMETHOD
+        CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
+        CHARACTER(LEN=250), INTENT(IN) :: NAMESEC
+        CHARACTER(LEN=250), INTENT(IN) :: NAMEZFI
+        CHARACTER(LEN=250), INTENT(IN) :: NAMESEU
+!
+        INTEGER :: EXEC_POS
+!
+        CODE = 'T2D'
+           ! The partitioning is done sequentially
+            ! PARITIONING THE GEOMETRY FILE
+        CALL PARTEL(NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT,
+     &  NAMESEC, NAMEZFI, NAMESEU)
+!
+      END SUBROUTINE RUN_PARTEL
+!
+!
+!
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !BRIEF INITIALISE THE TELEMAC2D VARIABLES
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY C. GOEURY (EDF R&D, LNHE)
+      !+       31/08/2016
+      !+       V7p1
+      !+       PARTITIONNING TREATMENT
+      !
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
+      !+                        ERROR ID OTHERWISE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      SUBROUTINE RUN_PARRES(ID,NAMEGEO, NAMEINP, NPARTS, GEOFORMAT,
+     &     INPFORMAT,IERR)
+!
+        INTEGER,            INTENT(IN) :: ID
+        INTEGER,            INTENT(OUT):: IERR
+        CHARACTER(LEN=250), INTENT(IN) :: NAMEGEO
+        CHARACTER(LEN=250), INTENT(IN) :: NAMEINP
+        INTEGER, INTENT(IN) :: NPARTS
+        CHARACTER(LEN=8), INTENT(INOUT) :: GEOFORMAT
+        CHARACTER(LEN=8), INTENT(INOUT) :: INPFORMAT
+!
+        INTEGER :: EXEC_POS
+!
+        CODE = 'T2D'
+           ! The partitioning is done sequentially
+            ! PARITIONING THE GEOMETRY FILE
+        CALL PARRES(NAMEGEO, NAMEINP, NPARTS, GEOFORMAT,INPFORMAT)
+!
+      END SUBROUTINE RUN_PARRES
+!
+!
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !BRIEF INITIALISE THE TELEMAC2D VARIABLES
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !
+      !HISTORY C. GOEURY (EDF R&D, LNHE)
+      !+       24/08/2016
+      !+       V6P3
+      !+       PARTITIONNING TREATMENT
+      !
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
+      !+                        ERROR ID OTHERWISE
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      SUBROUTINE RUN_GRETEL(ID,GEO,GEOFORMAT,RES,RESFORMAT,NPROC,
+     &     NPLAN_RES)
+!
+        INTEGER,           INTENT(IN) :: ID
+        CHARACTER(LEN=250), INTENT(IN) :: GEO
+        CHARACTER(LEN=250), INTENT(IN) :: RES
+        CHARACTER(LEN=8),   INTENT(INOUT) :: GEOFORMAT,RESFORMAT
+        INTEGER,            INTENT(IN) :: NPROC
+        INTEGER,            INTENT(INOUT) :: NPLAN_RES
+!
+        INTEGER :: EXEC_POS
+!
+           ! The partitioning is done sequentially
+            ! PARITIONING THE GEOMETRY FILE
+        CALL GRETEL_AUTOP(GEO,GEOFORMAT,RES,RESFORMAT,NPROC,NPLAN_RES)
+
+      END SUBROUTINE RUN_GRETEL
 !
 !***********************************************************************
 !     TELEMAC2D
@@ -330,52 +440,57 @@
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
+        VALUE = 0
         IF(GLOBAL_NUM)THEN
 
-           CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
-     &                          NDIM,IENT,JENT,KENT,IERR)
-           IF(IENT.EQ.1)THEN
-              ID1 = GLOBAL_TO_LOCAL_POINT(INDEX1,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID1=INDEX1
-           END IF
-           IF(JENT.EQ.1)THEN
-              ID2 = GLOBAL_TO_LOCAL_POINT(INDEX2,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID2=INDEX2
-           END IF
-           IF(KENT.EQ.1)THEN
-              ID3 = GLOBAL_TO_LOCAL_POINT(INDEX3,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID3=INDEX3
-           END IF
+          CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
+     &                         NDIM,IENT,JENT,KENT,IERR)
+          IF(IENT.EQ.1)THEN
+             ID1 = GLOBAL_TO_LOCAL_POINT(INDEX1,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID1=INDEX1
+          END IF
+          IF(JENT.EQ.1)THEN
+             ID2 = GLOBAL_TO_LOCAL_POINT(INDEX2,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID2=INDEX2
+          END IF
+          IF(KENT.EQ.1)THEN
+             ID3 = GLOBAL_TO_LOCAL_POINT(INDEX3,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID3=INDEX3
+          END IF
 !
-           IF(.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0))THEN
-              CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
-     &                              VALUE,ID1,ID2, ID3, IERR)
-           END IF
-           VALUE=P_DMAX(VALUE)
+          IF((.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0)).OR.
+     &       (INDEX1.EQ.0.AND.INDEX2.EQ.0.AND.INDEX3.EQ.0)) THEN
+             write(*,*) 'CAlling get_double for ',varname
+             write(*,*) 'id ',id1,id2,id3
+             write(*,*) 'index ',index1,index2,index3
+             CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
+     &                             VALUE,ID1,ID2, ID3, IERR)
+          END IF
+          VALUE=P_DMAX(VALUE)
         ELSE
-           IF(IENT.EQ.1)THEN
-              ID1 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX1)
-           ELSE
-              ID1=INDEX1
-           END IF
-           IF(JENT.EQ.1)THEN
-              ID2 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX2)
-           ELSE
-              ID2=INDEX2
-           END IF
-           IF(KENT.EQ.1)THEN
-              ID3 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX3)
-           ELSE
-              ID3=INDEX3
-           END IF
-           CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
-     &                          ID1, ID2, ID3, IERR)
+          IF(IENT.EQ.1)THEN
+             ID1 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX1)
+          ELSE
+             ID1=INDEX1
+          END IF
+          IF(JENT.EQ.1)THEN
+             ID2 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX2)
+          ELSE
+             ID2=INDEX2
+          END IF
+          IF(KENT.EQ.1)THEN
+             ID3 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX3)
+          ELSE
+             ID3=INDEX3
+          END IF
+          CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+     &                         ID1, ID2, ID3, IERR)
         END IF
 !
       END SUBROUTINE GET_DOUBLE_T2D
@@ -411,9 +526,9 @@
         INTEGER,                    INTENT(IN)    :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)    :: VARNAME
         DOUBLE PRECISION,           INTENT(IN)    :: VALUE
-        INTEGER,                    INTENT(INOUT) :: INDEX1
-        INTEGER,                    INTENT(INOUT) :: INDEX2
-        INTEGER,                    INTENT(INOUT) :: INDEX3
+        INTEGER,                    INTENT(IN) :: INDEX1
+        INTEGER,                    INTENT(IN) :: INDEX2
+        INTEGER,                    INTENT(IN) :: INDEX3
         LOGICAL,                    INTENT(IN)    :: GLOBAL_NUM
         INTEGER,                    INTENT(OUT)   :: IERR
 !
@@ -431,49 +546,57 @@
         IF(IERR.NE.0) RETURN
 !
         IF(GLOBAL_NUM)THEN
-           CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
-     &                          NDIM,IENT,JENT,KENT,IERR)
-           IF(IENT.EQ.1)THEN
-              ID1 = GLOBAL_TO_LOCAL_POINT(INDEX1,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID1 = INDEX1
-           END IF
-           IF(JENT.EQ.1)THEN
-              ID2 = GLOBAL_TO_LOCAL_POINT(INDEX2,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID2 = INDEX2
-           END IF
-           IF(KENT.EQ.1)THEN
-              ID3 = GLOBAL_TO_LOCAL_POINT(INDEX3,
-     &                                    INSTANCE_LIST_T2D(ID)%MESH)
-           ELSE
-              ID3=INDEX3
-           END IF
+          CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
+     &                         NDIM,IENT,JENT,KENT,IERR)
+          ! TODO: Create dedcaced error message
+
+          IF ((IENT.EQ.1).AND.(ID1.LE.0).OR.
+     &        (JENT.EQ.1).AND.(ID2.LE.0).OR.
+     &        (KENT.EQ.1).AND.(ID3.LE.0)) THEN
+            IERR = -1
+          ENDIF
+          IF(IENT.EQ.1)THEN
+             ID1 = GLOBAL_TO_LOCAL_POINT(INDEX1,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID1 = INDEX1
+          END IF
+          IF(JENT.EQ.1)THEN
+             ID2 = GLOBAL_TO_LOCAL_POINT(INDEX2,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID2 = INDEX2
+          END IF
+          IF(KENT.EQ.1)THEN
+             ID3 = GLOBAL_TO_LOCAL_POINT(INDEX3,
+     &                                   INSTANCE_LIST_T2D(ID)%MESH)
+          ELSE
+             ID3=INDEX3
+          END IF
 !
-           IF(.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0))THEN
-              CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
-     &                             VALUE, ID1,ID2, ID3, IERR)
-           END IF
+          IF((.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0)).OR.
+     &       (INDEX1.EQ.0.AND.INDEX2.EQ.0.AND.INDEX3.EQ.0)) THEN
+             CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
+     &                            VALUE, ID1,ID2, ID3, IERR)
+          END IF
         ELSE
-           IF(IENT.EQ.1)THEN
-              ID1 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX1)
-           ELSE
-              ID1=INDEX1
-           END IF
-           IF(JENT.EQ.1)THEN
-              ID2 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX2)
-           ELSE
-              ID2=INDEX2
-           END IF
-           IF(KENT.EQ.1)THEN
-              ID3 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX3)
-           ELSE
-              ID3=INDEX3
-           END IF
-           CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
-     &                          ID1,ID2, ID3, IERR)
+          IF(IENT.EQ.1)THEN
+             ID1 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX1)
+          ELSE
+             ID1=INDEX1
+          END IF
+          IF(JENT.EQ.1)THEN
+             ID2 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX2)
+          ELSE
+             ID2=INDEX2
+          END IF
+          IF(KENT.EQ.1)THEN
+             ID3 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX3)
+          ELSE
+             ID3=INDEX3
+          END IF
+          CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+     &                         ID1,ID2, ID3, IERR)
         END IF
 !
       END SUBROUTINE SET_DOUBLE_T2D

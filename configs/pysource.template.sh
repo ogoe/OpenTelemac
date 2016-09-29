@@ -1,5 +1,5 @@
-# This file is a template for a Linux environement file 
-# runnning "source pysource.template.sh" will position all 
+# This file is a template for a Linux environement file
+# runnning "source pysource.template.sh" will position all
 # the necessary environement variable for telemac
 # To adapt to your installation replace word <word> by their local value
 ###
@@ -18,6 +18,10 @@ export USETELCFG=C9.gfortranHPC.debug
 ### Python
 # To force python to flush its output
 export PYTHONUNBUFFERED='true'
+### API
+export PYTHONPATH=$HOMETEL/scripts/python27:$PYTHONPATH
+export LD_LIBRARY_PATH=$HOMETEL/builds/$USETELCFG/wrap_api/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$HOMETEL/builds/$USETELCFG/wrap_api/lib:$PYTHONPATH
 ###
 ### COMPILERS -----------------------------------------------------------
 ###

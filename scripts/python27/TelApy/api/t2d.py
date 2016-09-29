@@ -3,7 +3,7 @@
 """
     Python wrapper to the Fortran APIs of Telemac 2D
 
-    Author(s): Fabrice Zaoui, Yoann Audouin, Cedric Goeury
+    Author(s): Fabrice Zaoui, Yoann Audouin, Cedric Goeury, Renaud Barate
 
     Copyright EDF 2016
 """
@@ -17,6 +17,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial.distance import cdist
 import tempfile
 from ctypes import cdll
+from TelApy.tools.polygon import is_in_polygon
 
 hometel = os.getenv("HOMETEL")
 if(hometel != None):
@@ -40,6 +41,14 @@ class Telemac2d(object):
     def __init__(self, casfile, user_fortran = None,dicofile=default_dicofile, lang=2, stdout=6,comm = None):
         """
         Initialize a Telemac 2D instance
+        :param casfile: Name of the steering file
+        :param user_fortran: Name of the user fortran if there is one (Default None)
+        :param dicofile: Name of the dictionary for Telemac2d (Default The one from the telemac environment)
+        :param lang: Language output of Telemac2d (Default English)
+        :param stdout: Standard output for Telemac2d (Default stdout i.e. terminal output)
+        :param comm: MPI Communicator (Default None)
+        :return: a new object from the class Telemac2d
+        :param casfile:
         :return: a new object from the class PiT2d
         """
         self.user_fortran_lib = None
@@ -75,61 +84,63 @@ class Telemac2d(object):
         self.casfile = casfile
         self.dicofile = dicofile
         if comm!=None:
-            self.comm = comm
+            self.comm = comm.py2f()
         else:
-            self.comm=0
+            self.comm = 0
         self._initstate = 0
         # run_set_config
         self.id, self.ierr = self.apit2d_inter.run_set_config_t2d(self.stdout,self.lang,self.comm)
         if self.ierr != 0:
             raise Exception('Error: unable to initialize Telemac2d.'
                         '\nTry to use get_error_message for more information')
+
+    def set_case(self):
+        """
+           Read the steering file and run allocation
+        """
         # run_read_case
         self.ierr = self.apit2d_inter.run_read_case_t2d(self.id, self.casfile, \
                                                 self.dicofile)
         if self.ierr != 0:
-            raise Exception('Error: unable to initialize Telemac2d.'
+            raise Exception('Error: unable to read_case for Telemac2d.'
                         '\nTry to use get_error_message for more information')
         # run_allocation
         self.ierr = self.apit2d_inter.run_allocation_t2d(self.id)
         if self.ierr != 0:
-            raise Exception('Error: unable to initialize Telemac2d.'
+            raise Exception('Error: unable to run_allocation for Telemac2d.'
                         '\nTry to use get_error_message for more information')
         self._initstate = 1
+
+        return self.ierr
 
     def init_state_default(self):
         """
         Initialize the state of the model Telemac 2D with the values of
         disharges and water levels as indicated by the steering file
-        :return: error code
         """
         if self._initstate == 0:
-            print('Error: the object is not a Telemac 2D instance')
-            self.ierr = -1
+            raise Exception('Error: the object is not a Telemac 2D instance')
         else:
             self.ierr = self.apit2d_inter.run_init_t2d(self.id)
             if self.ierr == 0:
                 self._initstate = 2
             else:
-                print('Error: unable to set the initial conditions' \
+                raise Exception('Error: unable to set the initial conditions' \
                         '\nTry to use get_error_message for more information')
-        return self.ierr
 
     def run_one_time_step(self):
         """
         Run one time step
-        :return: error code
         """
         if self._initstate != 2:
-            print('Error: the initial conditions are not set'
+            raise Exception('Error: the initial conditions are not set'
                     '\nUse init_state_default first')
             self.ierr = -1
         else:
             self.ierr = self.apit2d_inter.run_timestep_t2d(self.id)
             if self.ierr:
-                print('Error: the computation does not perform' \
+                raise Exception('Error: the computation does not perform' \
                         '\nTry to use get_error_message for more information')
-        return self.ierr
 
     def run_all_time_steps(self):
         """
@@ -140,7 +151,7 @@ class Telemac2d(object):
         for i in xrange(ntimesteps):
             ierr = self.run_one_time_step()
             if self.ierr:
-                print('Error: the computation does not perform' \
+                raise Exception('Error: the computation does not perform' \
                         '\nTry to use get_error_message for more information')
         return ntimesteps
 
@@ -165,14 +176,12 @@ class Telemac2d(object):
         """
         if hasattr(self, 'hsave') == False:
             self.ierr = -1
-            print('Error: unable to restore the hydraulic state.' \
+            raise Exception('Error: unable to restore the hydraulic state.' \
                         '\nNo saved state found')
-            return self.ierr
         for i in xrange(self.nbnodes):
             self.set_double('MODEL.WATERDEPTH', self.hsave[i], True, i+1)
             self.set_double('MODEL.VELOCITYU' , self.usave[i], True, i+1)
             self.set_double('MODEL.VELOCITYV' , self.vsave[i], True, i+1)
-        return self.ierr
 
     def get_state(self):
         """
@@ -192,6 +201,9 @@ class Telemac2d(object):
     def set_state(self, hval, uval, vval):
         """
         Set the hydraulic state: hval (m) .. uval (m/s) .. vval (m/s)
+        :param hval: Water depth value
+        :param uval: Velocity U value
+        :param vval: Velocity V value
         """
         nbnodes = self.get_integer('MODEL.NPOIN')
         for i in xrange(nbnodes):
@@ -221,6 +233,8 @@ class Telemac2d(object):
     def get_node(self, xval, yval):
         """
         Get the nearest node number for the coordinates (xval, yval)
+        :param xval: X coordinate
+        :param yval: Y coordinate
         :return: integer value from 0 to (nbnode-1)
         """
         pt = np.array([[xval, yval]])
@@ -231,6 +245,8 @@ class Telemac2d(object):
     def get_elem(self, xval, yval):
         """
         Get the triangle where the point (xval, yval) is
+        :param xval: X coordinate
+        :param yval: Y coordinate
         :return: integer value from 0 to (nbtriangle-1) (-1 if no triangle found)
         """
         x, y, tri = self.get_mesh()
@@ -262,6 +278,8 @@ class Telemac2d(object):
     def show_mesh(self, show=True, visu2d=True):
         """
         Show the 2D mesh with topography
+        :param show: Display the graph (Default True)
+        :param visu2d: 2d display (Default True)
         :return: the figure object
         """
         if hasattr(self, 'x') == False:
@@ -287,6 +305,7 @@ class Telemac2d(object):
     def show_state(self, show=True):
         """
         Show the hydraulic state with matplotlib
+        :param show: Display the graph (Default True)
         :return: the figure object
         """
         if hasattr(self, 'x') == False:
@@ -331,6 +350,8 @@ class Telemac2d(object):
     def get_integer(self, varname, *args):
         """
         Get the integer value of a variable of Telemac 2D
+        :param varname: Name of the variable
+        :param args: List of indexes By Default 0,0,0
         :return: integer variable
         """
         args = list(args) + [0] * (3 - len(args))
@@ -343,6 +364,9 @@ class Telemac2d(object):
     def get_double(self, varname, global_num=True, *args):
         """
         Get the real value of a variable of Telemac 2D
+        :param varname: Name of the variable
+        :param global_num: Are the index in Global Numbering (Default True)
+        :param args: List of indexes By Default 0,0,0
         :return: real variable
         """
         args = list(args) + [0] * (3 - len(args))
@@ -356,23 +380,64 @@ class Telemac2d(object):
     def set_double(self, varname, value, global_num = True, *args):
         """
         Set the real value of a variable of Telemac 2D
+        :param varname: Name of the variable
+        :param value: The value to set
+        :param global_num: Are the index in Global Numbering (Default True)
+        :param args: List of indexes By Default 0,0,0
         :return: error code
         """
         args = list(args) + [0] * (3 - len(args))
         self.ierr = self.apit2d_inter.set_double_t2d(self.id, varname, value, global_num, *args)
         if self.ierr:
-                print('Error: set_double does not perform' \
+            raise Exception("error in setting double :"+varname+\
+                            "\n"+self.get_error_message())
+            print('Error: set_double does not perform' \
                         '\nTry to use get_error_message for more information')
-        return
+        return self.ierr
+
+    def set_integer(self, varname, value, *args):
+        """
+        Set the integer value of a variable of Telemac 2D
+        :param varname: Name of the variable
+        :param value: The value to set
+        :param args: List of indexes By Default 0,0,0
+        :return: error code
+        """
+        args = list(args) + [0] * (3 - len(args))
+        self.ierr = self.apit2d_inter.set_integer_t2d(self.id, varname, value, *args)
+        if self.ierr:
+            raise Exception("error in setting integer "+varname+"\n"+\
+                            self.get_error_message())
+            print('Error: set_integer does not perform' \
+                        '\nTry to use get_error_message for more information')
+        return self.ierr
 
     def get_error_message(self):
         """
         Get the error message from the Fortran sources of Telemac 2D
         :return: character string of the error message
         """
-        return self.apit2d.api_handle_error_t2d.err_mess.tostring().strip()
+        return self.apit2d.api_handle_error.err_mess.tostring().strip()
 
-    def _delete(self):
+    def set_bathy(self,bathy,polygon=None):
+        """
+        Set a new bathy in the geometry file
+        :param bathy: Array containing the new bathymetry for each point
+        :param polygon: Polygon on which to modify the bathymetry
+        """
+        if polygon is None:
+            for i in xrange(len(bathy)):
+                self.set_double("MODEL.BOTTOMELEVATION",bathy[i],True,i+1)
+        else:
+            for i in xrange(len(bathy)):
+                x = self.get_double("MODEL.X",True,i)
+                y = self.get_double("MODEL.Y",True,i)
+                if is_in_polygon(x,y,polygon):
+                    self.set_double("MODEL.BOTTOMELEVATION",bathy[i],True,i+1)
+
+        return
+
+    def finalize(self):
         """
         Delete the Telemac 2D instance
         :return: error code
@@ -381,13 +446,10 @@ class Telemac2d(object):
         if ierr:
             print('Error: no deletion' \
                     '\nTry to use get_error_message for more information')
-        Telemac2d._instanciated = False
         return ierr
 
     def __del__(self):
         """
         Destructor
         """
-        self._delete()
-
-
+        Telemac2d._instanciated = False
