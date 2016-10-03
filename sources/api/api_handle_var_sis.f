@@ -521,6 +521,8 @@ c$$$            VALUE = INST%DEBUG
           INTEGER,               INTENT(IN) :: INDEX3
           INTEGER,               INTENT(OUT) :: IERR
 !
+          INTEGER DEBUG
+!
           IERR = 0
 c$$$          IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
 c$$$            INST%DEBUG = VALUE
