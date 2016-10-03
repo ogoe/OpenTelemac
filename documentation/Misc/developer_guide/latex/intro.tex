@@ -1,73 +1,95 @@
+%
+%
 \chapter{Introduction}
-Greetings fellow \telemacsystem developer and welcome into the world of a \telemacsystem
-developer. It might be hard at the beginning but with time you will unravel all
-of \telemacsystem dirty little secrets.
 %
-This Guide aims to describe all the steps you might encounter when developing
-in \telemacsystem, those steps can be found in the "\telemacsystem Software Qualtiy Plan"
-(Eureka H-P74-2014-02365-EN). They are resumed in the Fig \ref{cycle}. 
 %
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[node distance = 1cm, auto]
-  % Defining style for the task
-  \tikzstyle{task} = [draw, very thick, fill=white, rectangle]
-  \tikzstyle{bigbox} = [draw, thin, rounded corners, rectangle]
-  \tikzstyle{box} = [draw, thick, fill=white, rounded corners, rectangle]
-  % Creation of the nodes
-  \node (CUE) [task] {1. Ticket on CUE};
-  \node (CHs) [task, below of=CUE] {2. CHs}; 
-  \node (ADEPHE) [task, below of=CHs] {3. ADEPHE}; 
-  \node (IMPL) [task, below of=ADEPHE] {4. Implementation}; 
-  \node (null2) [right of=IMPL, node distance=9em] {};
-  \node (VV) [task, below of=IMPL] {5. Verification \& Validation}; 
-  \node (DOC) [task, below of=VV] {6. Documentation}; 
-  \node (INT) [task, below of=DOC] {7. Integration "ADEPHE"}; 
-  \node (null1) [right of=INT, node distance=9em] {};
-  \node (null3) [left of=INT, node distance=9em] {};
-  \node (TRUNK) [box, below of=INT, node distance=4em] {Main branch of \telemacsystem};
-  \node (VALID) [task, below of=TRUNK] {Full validation};
-  \node (TAG) [box, below of=VALID] {Release of \telemacsystem (tag)};
-  % big box
-  \node (DEV) [bigbox, fit = (CUE) (CHs) (ADEPHE) (IMPL) (null1) (null2) (null3) (VV) (DOC) (INT)] {};
-  \node at (DEV.north) [above, inner sep=3mm] {\textbf{Development}};
-  % Creation of the path between the nodes
-  \draw[->] (CUE) to node {} (CHs);
-  \draw[->] (CHs) to node {} (ADEPHE);
-  \draw[->] (ADEPHE) to node {} (IMPL);
-  \draw[->] (IMPL) to node {} (VV);
-  \draw[->] (VV) to node {} (DOC);
-  \draw[->] (DOC) to node {} (INT);
-  \draw[-] (INT) -- node [near start] {no} (null1.center);
-  \draw[-] (null1.center) -- (null2.center);
-  \draw[->] (null2.center) -- node [near start] {} (IMPL);
-  \draw[->] (INT) to node {yes} (TRUNK);
-  \draw[->] (TRUNK) to node {} (VALID);
-  \draw[->] (VALID) to node {} (TAG);
-\end{tikzpicture}
-\caption{\label{cycle}Life cycle of a \telemacsystem development}
-\end{figure}
 %
-The following sections will describes how to use the three tools you will be
-using during your development:
+\section{Why a finite element library?}
+%
+A great many finite element software programs have been developed over the last
+few years at the Laboratoire National d'Hydraulique et Environnement. These
+have been based on a single data structure, initiated by the development of
+\telemac{2D}. Algorithms used by one program, for example to process a diffusion
+operator, can also be used by another. It was therefore felt to be quite
+natural to group together all the numerical developments of the various codes
+in a single library, distinguishing them from the physical aspects.
+\\
+This finite element library (called \bief in the rest of this document. \bief
+stands for the French expression \textbf{BI}blioth\`{e}que d'\textbf{E}lements
+\textbf{F}inis, meaning Finite Element Library, but ``bief'' in French is a
+river reach in English) is designed so that it can be used as a toolbox in the
+simplest possible way. It is possible, for example, to solve a classic fluid
+mechanics equation by calling the \bief \textit{ad hoc} modules, without having
+to worry about the details of the solution. This simplifies and considerably
+speeds up the calculation code development phase. In addition, \bief continually
+includes new developments, thereby making them available to users immediately.
+\\
+The development of \bief is closely linked to that of the TELEMAC system codes,
+most of which are the subject of a Quality Control procedure. In the case of
+the software programs of the EDF's Research and Development, this procedure
+involves designing and then checking the quality of the product throughout the
+different phases in its life. In particular, a software program subjected to
+Quality Control is accompanied by a validation document which describes a
+series of test cases. This document can be used to evaluate the qualities and
+limitations of the product and identify its field of application. These test
+cases are also used for developing the software and are checked each time a
+modification is made. Consequently, the \bief algorithms also benefit from this
+strict quality control procedure.
+%
+\section{Brief description of \bief}
+
+The data structure and programming of \bief is described in detail in Part~B of
+this document. One of the important features of this structure is that matrices
+are stored either in elementary form or in an edge-by-edge storage. Compared
+with compact storage, this type of storage saves on memory space for numerous
+types of elements and also enables resolution algorithms to be obtained quickly
+and efficiently. In fact, one of the essential features of \bief is to offer
+methods with very low computing costs.
+\\
+\bief offers a whole range of subroutines. They include methods for solving
+advection equations, diffusion equations, linear system inversion methods with
+different types of preconditioning. The user is also provided with subroutines
+for calculating matrices: mass matrices, diffusion matrices, boundary matrices,
+etc. \bief can be used to carry out all the conventional operations on vectors
+(norms, dot products, etc.), on the products of one matrix by a vector or of
+two matrices. By simply calling a subroutine, the user can calculate the
+divergence of a vector, the gradient of a function, and so on. It should be
+remembered that this description is not exhaustive and that the content of \bief
+will change depending on the requirements of its users.
+\\
+The language used is FORTRAN 90 (see explanations below), and, to facilitate
+the diffusion of the TELEMAC system, portability is checked on a wide range of
+hardware, including both super-computers and workstations, Linux and Windows
+machines.
+
+\section{Fortran 90: reasons for the change}
+
+TELEMAC was written in FORTRAN 77 up to version 3.2. There are a number of
+reasons for the choice of FORTRAN 90 for \bief:
 \begin{itemize}
-\item SVN, The source controller that you will be using to handle the sources of
-your development.
-\item CUE, The ticket manager which will contain information on your
-development.
-\item CIS, The Continuous Integration Service which will compile, run, and
-validation your developments.
+\item Structured programming. Structures were prepared in version 3.2 of \bief
+  in FORTRAN 77, at the price of non-standard features, for example the use of
+  negative indices in arrays. The structures are now normal structures in
+  FORTRAN 90, and they are much easier to use.
+\item Dynamic allocation of memory.
+\item The increasing number of modules based on \bief meant that it was taking
+  longer and longer to complete each update. One of the aim of structured
+  programming is to simplify updating.
+\item The increasing number of arguments in the subroutines, and changes of
+  arguments in the user subroutines. This will is suppressed as far as possible
+  by the use of FORTRAN 90 modules.
+\end{itemize}
+The principal objectives of structured programming are therefore:
+\begin{itemize}
+\item To enable dynamic allocation of memory.
+\item To facilitate update and development of the system elements.
+\item To facilitate the future development and maintenance of \bief.
+\item To get a safer implementation, with many error checking done by the
+  compiler itself.
+\item To enable a better compatibility between subsequent versions of \bief.
 \end{itemize}
 %
-\label{mail}
-To begin you work you will need to send an email to \url{awe@hrwallingford.com}
-with the following informations in order to give you the proper access into the
-\telemacsystem developing world:
-\begin{itemize}
-\item Your Name.
-\item The name of a fish (for the SVN branch, any existing fish is okay).
-\item The \telemacsystem modules on which you will be working (See Section \ref{proj}).
-\item The demand to add your branch on CIS.
-\end{itemize}
 %
-Enjoy !!!
+
+
+

@@ -1,0 +1,4120 @@
+\chapter{Programming with \bief}
+%
+%
+%
+\section{Features of Fortran 90 used in \bief:}
+%
+We briefly explain hereafter features of FORTRAN 90 that are used in \bief. For
+more detailed explanations please refer to a real Fortran 90 book, such as
+\citet{Metcalf1990}.
+
+\subsection{Structures}
+
+FORTRAN 77 only recognises integers, real numbers, Boolean and character
+strings. FORTRAN 90 can be used to create structures. The following is an
+example of the creation of a 'point' type structure composed of two real
+numbers, and a circle structure, composed of a centre and a radius:
+
+\begin{lstlisting}[language=TelFortran]
+TYPE point
+  REAL :: x,y
+END TYPE
+!
+TYPE circle
+  TYPE(point) :: centre
+  REAL :: radius
+END TYPE
+\end{lstlisting}
+
+It can be observed that the centre is itself a structure of a type previously
+defined. Once the structure has been defined, objects of this type can be
+declared:
+\begin{lstlisting}[language=TelFortran]
+TYPE(circle) :: ROND
+\end{lstlisting}
+ROND will be a circle with its centre and radius; the latter are obtained
+thanks to the \% "component selector". Thus the radius of \telkey{ROND} will be
+the real \telkey{ROND\%radius}.
+
+\subsection{Pointers}
+
+Pointers are well known in C language, but are notably different in Fortran 90.
+Pointers in Fortran 90 may be used as pointers as in C but also as aliases.
+Unlike C, they are not mere addresses pointing to somewhere in the computer
+memory. The target must be defined precisely, for example the line:
+
+\begin{lstlisting}[language=TelFortran]
+REAL, POINTER, DIMENSION(:) :: X
+\end{lstlisting}
+will define a pointer to a one-dimensional real array, and it will be
+impossible to have it pointing to an integer nor even to a 2-dimensional array.
+This pointer X will have then to be pointed to a target by the statement:
+
+
+\begin{lstlisting}[language=TelFortran]
+X => Y
+\end{lstlisting}
+where Y is an already existing one-dimensional real array. Then X can be used as
+if it were Y, it is thus an alias.
+
+X can be also directly allocated as a normal array by the statement:
+\begin{lstlisting}[language=TelFortran]
+ALLOCATE(X(100))
+\end{lstlisting}
+to have (for example) an array of 100 values. In this case X and its target
+have the same name.
+\\
+A well known problem in Fortran 90 is the fact that arrays of pointers do not
+exist. To overcome this problem, one has to create a new structure which is
+itself a pointer, and to declare an array of this new structure. This is done
+for blocks, which are lists of pointers to \telkey{BIEF\_OBJ} structures.
+
+\subsection{Modules}
+
+Modules are like INCLUDE statements, but are more clever, so that INCLUDE
+should now always be avoided. As a matter of fact, modules can be used to
+define global variables that will be accessible to all routines. With the
+following module:
+
+\begin{lstlisting}[language=TelFortran]
+MODULE EXAMPLE
+  INTEGER EX1,EX2,EX3,EX4
+END MODULE EXAMPLE
+\end{lstlisting}
+all the subroutines beginning with the statement: \telkey{USE EXAMPLE} will
+have access to the same numbers \telkey{EX1,\ldots EX4}. With \telkey{INCLUDE}
+statements, it would be only local variables without link to
+\telkey{EX1,\ldots} declared in other subroutines.
+\\
+Modules will thus be used to define global variables that will be accessed via
+a USE statement. If only one or several objects must be accessed, the ONLY
+statement may be used, as in the example below:
+
+\begin{lstlisting}[language=TelFortran]
+USE EXAMPLE, ONLY : EX1,EX2
+\end{lstlisting}
+This will enable to avoid name conflicts and secures programming.
+\\
+Modules are also used to store interfaces that will be shared between several
+subroutines (see paragraph below)
+
+\subsection{Interfaces}
+
+Interfaces are a mean given to the compiler to check arguments of subroutines
+even if it has no access to them. For example, the following interface:
+
+\begin{lstlisting}[language=TelFortran]
+INTERFACE
+  LOGICAL FUNCTION EOF(LUNIT)
+    INTEGER, INTENT(IN) :: LUNIT
+  END FUNCTION
+END INTERFACE
+\end{lstlisting}
+says that function \telkey{EOF} has one integer argument. \telkey{INTENT(IN)}
+indicates that argument LUNIT is not changed. Interfaces of all \bief
+subroutines have been put in a single module called \bief. a \telkey{USE BIEF}
+statement at the beginning of a subroutine will prompt the compiler to check
+the arguments and also do some optimisations in view of the \telkey{INTENT}
+information (which can be \telkey{IN}, \telkey{OUT}, or \telkey{INOUT}
+depending on the use of the argument). If a function is declared in an
+interface, it must not be declared as an \telkey{EXTERNAL FUNCTION}.
+
+\subsection{Interface operator}
+
+New operations on structures could also be defined with the \telkey{INTERFACE
+OPERATOR} statement. For example a sum of two vectors as stored in \bief could
+be defined so that the line:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=Y     ',U,V,V,0.D0)
+\end{lstlisting}
+could be replaced by:
+
+\begin{lstlisting}[language=TelFortran]
+U=V
+\end{lstlisting}
+Such interface operators \textbf{have not been done} in this code , because
+operations like \telkey{U=A+B+C} would probably not be optimised and would
+trigger a number of unnecessary copies.
+
+\subsection{Optional parameters}
+
+Subroutines may now have optional parameters. Thanks to this new feature,
+subroutines OS and OSD of previous releases have been grouped in a single one.
+Hereafter is given the interface of new subroutine OS:
+
+\begin{lstlisting}[language=TelFortran]
+INTERFACE
+SUBROUTINE OS( OP, X , Y , Z , C , IOPT , INFINI , ZERO )
+ USE BIEF_DEF
+ INTEGER, INTENT(IN), OPTIONAL :: IOPT
+ DOUBLE PRECISION, INTENT(IN), OPTIONAL, INFINI, ZERO
+ TYPE(BIEF_OBJ), INTENT(INOUT), OPTIONAL :: X
+ TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL :: Y,Z
+ DOUBLE PRECISION, INTENT(IN), OPTIONAL :: C
+ CHARACTER(LEN=8), INTENT(IN) :: OP
+END SUBROUTINE
+
+END INTERFACE
+\end{lstlisting}
+
+Subroutine OS performs on structure X the operation given in OP, e.g.
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=0     ',X=TRA01)
+\end{lstlisting}
+Or:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=Y     ',X=TAB1,Y=TAB2)
+\end{lstlisting}
+Parameters Y,Z and C are used only for specific operations and otherwise are
+not necessary. When a parameter is missing and to avoid ambiguity, the
+parameters must be named, hence the \telkey{X=TRA01} in the example above.
+
+Parameters IOPT, INFINI and ZERO stem from the old subroutine OSD and are used
+only when a division is implied in the operation asked, for example if \telkey{OP =
+'X=Y/Z   '}. These 3 parameters are now optional. When they are present, it is
+better to name them as is done in the following line:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=Y/Z   ',U,V,W,0.D0,IOPT=2,INFINI=1.D0,ZERO=1.D-10)
+\end{lstlisting}
+
+The use of optional parameters will enable a better compatibility between
+different versions because it will be possible to add a new parameter as an
+optional one.
+
+%\todo{Check if barckets appear normally}
+Optional arguments will be written between brackets [ ] in argument lists in the
+rest of the document.
+%
+\section{Structures in \bief}
+%
+
+\subsection{A short description}
+
+In \bief structures will be composed of integer and real numbers, of pointers to
+other structures or to integer and real arrays. The structures defined in this
+way are, for the time being, as follows:
+\begin{itemize}
+\item BIEF\_OBJ (may be a vector, a matrix or a block)
+\item BIEF\_MESH (information on a mesh)
+\item SLVCFG (Solver Configuration)
+\item BIEF\_FILE (Description of a data file)
+\end{itemize}
+The notions of \telkey{VECTOR}, \telkey{MATRIX} and \telkey{BLOCK} that were
+pre-programmed in \bief 6.2 have been gathered in a single structure called
+\telkey{BIEF\_OBJ}. This will enable what is called "polymorphism" in Object
+Oriented Languages, i.e. the fact that arguments of subroutines may be of
+different types. As a matter of fact, many subroutines in \bief are able to
+treat in the same way vectors or blocks of vectors (see for example OS),
+matrices or blocks of matrices (see e.g. \telkey{SOLVE} and \telkey{DIRICH}).
+Polymorphism is possible in FORTRAN 90 with the use of interfaces, however it
+requires the writing of one subroutine per combination of types, and thus leads
+to a lot of duplication. The use of a single structure \telkey{BIEF\_OBJ} was
+thus more elegant, the only drawback being that the misuse of a matrix as a
+vector, for example, cannot be checked by the compiler but only by the
+subroutines dealing with such structures.
+
+
+Information on the structures can be simply retrieved by the component
+selector.
+
+
+We shall also refer to \telkey{BIEF\_OBJ} structures as \telkey{VECTOR},
+\telkey{MATRIX} or \telkey{BLOCK}, depending on their use, as is done below:
+
+\paragraph{VECTOR}
+
+This may be any vector (a simple array) or a vector defined on the mesh, with
+values for every point of the mesh. In the latter case, there is a
+corresponding discretisation type and numbering system (global or boundary
+numbering of nodes or numbering of elements). For example, a vector defined on
+all the mesh with a discretisation P0 will be implicitly given according to the
+element numbers. In certain conditions, a vector may change discretisation
+while the calculations are being carried out.
+
+A vector has a first dimension which corresponds to the number of nodes to
+which it applies. There is also a second dimension (for example, the
+off-diagonal terms of a matrix).
+
+Any vector is in fact an array with 2 dimensions which the user can process as
+he wishes.
+
+\paragraph{MATRIX}
+
+Matrices are also linked to the mesh. Different storage methods are possible.
+These matrices can be multiplied by the vectors mentioned above.
+
+\paragraph{BLOCK}
+
+A block is a set of structures. This notion has proved of particular importance for:
+\begin{itemize}
+\item Writing general solvers for linear systems, with the possibility of the
+  matrix being a block of several matrices.
+\item Using simple orders to group together and process sets of vectors or
+  matrices, for example the arrays of variables which are advected by the
+  method of characteristics.
+\item Eliminate the need for certain arrays to follow one another in the
+  memory.
+\end{itemize}
+
+\paragraph{\telkey{BIEF\_MESH} structure}
+
+This structure includes all information concerning the mesh (connectivity
+tables, boundary points, point coordinates, etc.). It replaces a large number
+of arrays used in releases of \bief prior to 3.2
+
+\paragraph{SLVCFG}
+
+It stands for "SoLVer ConFiGuration). This is a simple structure to store all
+the information needed by the subroutine SOLVE for solving linear systems
+(choice of the method, accuracy, preconditioning, etc).
+
+\subsection{Reference description of the structures}
+
+Module \telkey{BIEF\_DEF} of the library is given hereafter, with the list of
+components for every structure and a short description.
+
+\paragraph{POINTER\_TO\_BIEF\_OBJ}
+
+\begin{lstlisting}[language=TelFortran]
+!
+!====================================================================
+!
+!  STRUCTURE OF POINTER TO A BIEF_OBJ, TO HAVE ARRAYS OF POINTERS
+!  IN THE BIEF_OBJ STRUCTURE FOR BLOCKS
+!
+!  BIEF VERSION 6.0
+!
+!====================================================================
+!
+!       THIS IS NECESSARY IN FORTRAN 90 TO HAVE ARRAYS OF POINTERS
+!       LIKE THE COMPONENT ADR BELOW, WHICH ENABLES TO BUILD BLOCKS
+!       WHICH ARE ARRAYS OF POINTERS TO BIEF_OBJ STRUCTURES
+!
+        TYPE POINTER_TO_BIEF_OBJ
+          SEQUENCE
+          TYPE(BIEF_OBJ), POINTER :: P
+        END TYPE POINTER_TO_BIEF_OBJ
+\end{lstlisting}
+
+
+\paragraph{BIEF\_OBJ}
+
+\begin{lstlisting}[language=TelFortran]
+        TYPE BIEF_OBJ
+!
+!--------------------------------------------------------------------
+!
+!       HEADER COMMON TO ALL OBJECTS
+!
+!         KEY : ALWAYS 123456 TO CHECK MEMORY OVERWRITING
+          INTEGER KEY
+!
+!         TYPE: 2: VECTOR,  3: MATRIX,  4: BLOCK
+          INTEGER TYPE
+!
+!         NAME: FORTRAN NAME OF OBJECT IN 6 CHARACTERS
+          CHARACTER(LEN=6) NAME
+!
+!--------------------------------------------------------------------
+!
+!       FOR VECTORS
+!
+!         NAT: NATURE (1:DOUBLE PRECISION  2:INTEGER)
+          INTEGER NAT
+!
+!         ELM: TYPE OF ELEMENT
+          INTEGER ELM
+!
+!         DIM1: FIRST DIMENSION OF VECTOR
+          INTEGER DIM1
+!
+!         MAXDIM1: MAXIMUM SIZE PER DIMENSION
+          INTEGER MAXDIM1
+!
+!         DIM2: SECOND DIMENSION OF VECTOR
+          INTEGER DIM2
+!
+!         MAXDIM2: MAXIMUM SECOND DIMENSION OF VECTOR
+          INTEGER MAXDIM2
+!
+!         DIMDISC: TYPE OF ELEMENT IF VECTOR IS DISCONTINUOUS AT
+!                  THE BORDER BETWEEN ELEMENTS, OR 0 IF NOT
+          INTEGER DIMDISC
+!
+!         STATUS:
+!         0: ANY ARRAY
+!         1: VECTOR DEFINED ON A MESH, NO CHANGE OF DISCRETISATION
+!         2: VECTOR DEFINED ON A MESH, CHANGE
+!                         OF DISCRETISATION ALLOWED
+          INTEGER STATUS
+!
+!         TYPR: TYPE OF VECTOR OF REALS
+!         '0' : NIL   '1' : EQUAL TO 1  'Q' : NO SPECIFIC PROPERTY
+          CHARACTER*1 TYPR
+!
+!         TYPR: TYPE OF VECTOR OF REALS
+!         '0' : NIL   '1' : EQUAL TO 1  'Q' : NO SPECIFIC PROPERTY
+          CHARACTER*1 TYPI
+!
+!         POINTER TO DOUBLE PRECISION 1-DIMENSION ARRAY
+!         DATA ARE STORED HERE FOR A DOUBLE PRECISION VECTOR
+          DOUBLE PRECISION, POINTER,DIMENSION(:)::R
+!
+!         POINTER TO INTEGER 1-DIMENSION ARRAY
+!         DATA ARE STORED HERE FOR AN INTEGER VECTOR
+          INTEGER, POINTER,DIMENSION(:)::I
+!
+!--------------------------------------------------------------------
+!
+!       FOR MATRICES
+!
+!         STO: TYPE OF STORAGE 1: CLASSICAL EBE 3: EDGE-BASED STORAGE
+          INTEGER STO
+!
+!         ELMLIN: TYPE OF ELEMENT OF LINE
+          INTEGER ELMLIN
+!
+!         ELMCOL: TYPE OF ELEMENT OF COLON
+          INTEGER ELMCOL
+!
+!         TYPDIA: TYPE OF DIAGONAL
+!         '0' : NIL   'I' : IDENTITY  'Q' : NO SPECIFIC PROPERTY
+          CHARACTER*1 TYPDIA
+!
+!         TYPEXT: TYPE OF EXTRA-DIAGONAL TERMS
+!         '0' : NIL   'S' : SYMMETRY  'Q' : NO SPECIFIC PROPERTY
+          CHARACTER*1 TYPEXT
+!
+!         POINTER TO A BIEF_OBJ FOR DIAGONAL
+          TYPE(BIEF_OBJ), POINTER :: D
+!
+!         POINTER TO A BIEF_OBJ FOR EXTRA-DIAGONAL TERMS
+          TYPE(BIEF_OBJ), POINTER :: X
+!
+!         PRO: TYPE OF MATRIX-VECTOR PRODUCT
+          INTEGER PRO
+!
+!--------------------------------------------------------------------
+!
+!      FOR BLOCKS
+!
+!        BLOCKS ARE IN FACT ARRAYS OF POINTERS TO BIEF_OBJ
+!        STRUCTURES ADR(I)\%P WILL BE THE I-TH BIEF_OBJ OBJECT
+!
+!        N: NUMBER OF OBJECTS IN THE BLOCK
+         INTEGER N
+!        MAXBLOCK: MAXIMUM NUMBER OF OBJECTS IN THE BLOCK
+         INTEGER MAXBLOCK
+!        ADR: ARRAY OF POINTERS TO OBJECTS (WILL BE OF SIZE MAXBLOCK)
+         TYPE(POINTER_TO_BIEF_OBJ), POINTER, DIMENSION(:) :: ADR
+!
+!--------------------------------------------------------------------
+!
+        END TYPE BIEF_OBJ
+!
+!====================================================================
+!
+\end{lstlisting}
+
+\paragraph{BIEF\_MESH}
+
+\begin{lstlisting}[language=TelFortran]
+!
+!====================================================================
+!
+!  STRUCTURE OF MESH : BIEF_MESH
+!
+!====================================================================
+!
+      TYPE BIEF_MESH
+!
+!       1) A HEADER
+!
+!       NAME: NAME OF MESH IN 6 CHARACTERS
+        CHARACTER(LEN=6) NAME
+!
+!       2) A SERIES OF INTEGER VALUES (DECLARED AS POINTERS TO ENABLE
+!                                      ALIASES)
+!
+!       NELEM: NUMBER OF ELEMENTS IN MESH
+        INTEGER, POINTER :: NELEM
+!
+!       NELMAX: MAXIMUM NUMBER OF ELEMENTS ENVISAGED
+        INTEGER, POINTER :: NELMAX
+!
+!       NPTFR: NUMBER OF 1D BOUNDARY NODES, EVEN IN 3D
+        INTEGER, POINTER :: NPTFR
+!
+!       NPTFRX: NUMBER OF 1D BOUNDARY NODES, EVEN IN 3D
+        INTEGER, POINTER :: NPTFRX
+!
+!       NELEB: NUMBER OF BOUNDARY ELEMENTS (SEGMENTS IN 2D)
+!       IN 3D WITH PRISMS:
+!       number of LATERAL boundary elements for sigma mesh
+        INTEGER, POINTER :: NELEB
+!
+!       NELEBX: MAXIMUM NELEB
+        INTEGER, POINTER :: NELEBX
+!
+!       NSEG: NUMBER OF SEGMENTS IN THE MESH
+        INTEGER, POINTER :: NSEG
+!
+!       DIM: DIMENSION OF DOMAIN (2 OR 3)
+        INTEGER, POINTER :: DIM
+!
+!       TYPELM: TYPE OF ELEMENT (10 FOR TRIANGLES, 40 FOR PRISMS)
+        INTEGER, POINTER :: TYPELM
+!
+!       NPOIN: NUMBER OF VERTICES (OR LINEAR NODES) IN THE MESH
+        INTEGER, POINTER :: NPOIN
+!
+!       NPMAX: MAXIMUM NUMBER OF VERTICES IN THE MESH
+        INTEGER, POINTER :: NPMAX
+!
+!       MXPTVS: MAXIMUM NUMBER OF POINTS ADJACENT TO 1 POINT
+        INTEGER, POINTER :: MXPTVS
+!
+!       MXELVS: MAXIMUM NUMBER OF ELEMENTS ADJACENT TO 1 POINT
+        INTEGER, POINTER :: MXELVS
+!
+!       LV: MAXIMUM VECTOR LENGTH ALLOWED ON VECTOR COMPUTERS,
+!           DUE TO ELEMENT NUMBERING
+        INTEGER, POINTER :: LV
+!
+!
+!       3) A SERIES OF BIEF_OBJ FOR STORING INTEGER ARRAYS
+!
+!       IKLE: CONNECTIVITY TABLE IKLE(NELMAX,NDP)
+!             AND KLEI(NDP,NELMAX)
+        TYPE(BIEF_OBJ), POINTER :: IKLE,KLEI
+!
+!       IFABOR: TABLE GIVING ELEMENTS BEHIND FACES OF A TRIANGLE
+        TYPE(BIEF_OBJ), POINTER :: IFABOR
+!
+!       NELBOR: ELEMENTS OF THE BORDER
+        TYPE(BIEF_OBJ), POINTER :: NELBOR
+!
+!       NULONE: LOCAL NUMBER OF BOUNDARY POINTS FOR BORDER ELEMENTS
+        TYPE(BIEF_OBJ), POINTER :: NULONE
+!
+!       KP1BOR: POINTS FOLLOWING AND PRECEDING A BOUNDARY POINT
+        TYPE(BIEF_OBJ), POINTER :: KP1BOR
+!
+!       NBOR: GLOBAL NUMBER OF BOUNDARY POINTS
+        TYPE(BIEF_OBJ), POINTER :: NBOR
+!
+!       IKLBOR: CONNECTIVITY TABLE FOR BOUNDARY POINTS
+        TYPE(BIEF_OBJ), POINTER :: IKLBOR
+!
+!       IFANUM: FOR STORAGE 2, NUMBER OF SEGMENT IN ADJACENT ELEMENT
+!       OF A TRIANGLE
+        TYPE(BIEF_OBJ), POINTER :: IFANUM
+!
+!       IKLEM1: ADRESSES OF NEIGHBOURS OF POINTS FOR FRONTAL
+!       MATRIX-VECTOR PRODUCT
+        TYPE(BIEF_OBJ), POINTER :: IKLEM1
+!
+!       LIMVOI: FOR FRONTAL MATRIX-VECTOR PRODUCT.
+!       ADDRESSES OF POINTS WITH A GIVEN NUMBER OF NEIGHBOURS.
+        TYPE(BIEF_OBJ), POINTER :: LIMVOI
+!
+!       NUBO: FOR FINITE VOLUMES,
+!             GLOBAL NUMBERS OF VERTICES OF SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: NUBO
+!
+!       FOR SEGMENT-BASED STORAGE
+!
+!       GLOSEG: GLOBAL NUMBERS OF VERTICES OF SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: GLOSEG
+!       ELTSEG: SEGMENTS FORMING AN ELEMENT
+        TYPE(BIEF_OBJ), POINTER :: ELTSEG
+!       ORISEG: ORIENTATION OF SEGMENTS FORMING AN ELEMENT
+!               1:TRIGO 2:CLOCKWISE
+        TYPE(BIEF_OBJ), POINTER :: ORISEG
+!
+!
+!       SERIES OF ARRAYS FOR PARALLELISM
+!       HERE GLOBAL MEANS NUMBER IN THE WHOLE DOMAIN
+!            LOCAL  MEANS NUMBER IN THE SUB-DOMAIN
+!
+!       KNOLG: GIVES THE INITIAL GLOBAL NUMBER OF A LOCAL POINT
+        TYPE(BIEF_OBJ), POINTER :: KNOLG
+!       NACHB: NUMBERS OF PROCESSORS CONTAINING A GIVEN POINT
+        TYPE(BIEF_OBJ), POINTER :: NACHB
+!       ISEG: GLOBAL NUMBER OF FOLLOWING OR PRECEDING POINT
+!             IN THE BOUNDARY
+!       IF IT IS IN ANOTHER SUB-DOMAIN.
+        TYPE(BIEF_OBJ), POINTER :: ISEG
+!       KNOGL: INVERSE OF KNOLG, KNOGL(KNOLG(I))=I. LOCAL NUMBER OF A
+!       POINT WITH GIVEN GLOBAL NUMBER
+        TYPE(BIEF_OBJ), POINTER :: KNOGL
+!       ADDRESSES IN ARRAYS SENT BETWEEN PROCESSORS
+        TYPE(BIEF_OBJ), POINTER :: INDPU
+!
+!       DIMENSION NHP(NBMAXNSHARE,NPTIR).
+!       NHP(IZH,IR) IS THE GLOBAL NUMBER
+!       IN THE SUB-DOMAIN OF A POINT WHOSE NUMBER IS IR
+!       IN THE INTERFACE
+!       WITH THE IZ-TH HIGHER RANK PROCESSOR
+        TYPE(BIEF_OBJ), POINTER :: NHP
+!       NHM IS LIKE NHP, BUT WITH LOWER RANK PROCESSORS
+        TYPE(BIEF_OBJ), POINTER :: NHM
+!
+!       FOR FINITE VOLUMES AND KINETIC SCHEMES
+        TYPE(BIEF_OBJ), POINTER :: JMI
+!       ELEMENTAL HALO NEIGHBOURHOOD DESCRIPTION IN PARALLEL
+!       IFAPAR(6,NELEM2)
+!       IFAPAR(1:3,IELEM):
+!                 PROCESSOR NUMBERS BEHIND THE 3 ELEMENT EDGES
+!                 NUMBER FROM 0 TO NCSIZE-1
+!       IFAPAR(4:6,IELEM):
+                  -LOCAL- ELEMENT NUMBERS BEHIND THE 3 EDGES
+!                IN THE NUMBERING OF PARTITIONS THEY BELONG TO
+        TYPE(BIEF_OBJ), POINTER :: IFAPAR
+!
+!       4) A SERIES OF BIEF_OBJ FOR STORING REAL ARRAYS
+!
+!       XEL: COORDONNEES X PAR ELEMENTS
+        TYPE(BIEF_OBJ), POINTER :: XEL
+!
+!       YEL: COORDONNEES Y PAR ELEMENTS
+        TYPE(BIEF_OBJ), POINTER :: YEL
+!
+!       ZEL: COORDONNEES Z PAR ELEMENTS
+        TYPE(BIEF_OBJ), POINTER :: ZEL
+!
+!       SURFAC: AREAS OF ELEMENTS
+        TYPE(BIEF_OBJ), POINTER :: SURFAC
+!
+!       SURDET: 1/DET OF ISOPARAMETRIC TRANSFORMATION
+        TYPE(BIEF_OBJ), POINTER :: SURDET
+!
+!       LGSEG: LENGTH OF 2D BOUNDARY SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: LGSEG
+!
+!       XSGBOR: NORMAL X TO 1D BOUNDARY SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: XSGBOR
+!
+!       YSGBOR: NORMAL Y TO 1D BOUNDARY SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: YSGBOR
+!
+!       ZSGBOR: NORMAL Z TO 1D BOUNDARY SEGMENTS
+        TYPE(BIEF_OBJ), POINTER :: ZSGBOR
+!
+!       XNEBOR: NORMAL X TO 1D BOUNDARY POINTS
+        TYPE(BIEF_OBJ), POINTER :: XNEBOR
+!
+!       YNEBOR: NORMAL Y TO 1D BOUNDARY POINTS
+        TYPE(BIEF_OBJ), POINTER :: YNEBOR
+!
+!       ZNEBOR: NORMAL Z TO 1D BOUNDARY POINTS
+        TYPE(BIEF_OBJ), POINTER :: ZNEBOR
+!
+!       X: COORDINATES OF POINTS
+        TYPE(BIEF_OBJ), POINTER :: X
+!
+!       Y: COORDINATES OF POINTS
+        TYPE(BIEF_OBJ), POINTER :: Y
+!
+!       Z: COORDINATES OF POINTS
+        TYPE(BIEF_OBJ), POINTER :: Z
+!
+!       COSLAT: LATITUDE COSINE
+        TYPE(BIEF_OBJ), POINTER :: COSLAT
+!
+!       SINLAT: LATITUDE SINE
+        TYPE(BIEF_OBJ), POINTER :: SINLAT
+!
+!       DISBOR: DISTANCE TO 1D BOUNDARIES
+        TYPE(BIEF_OBJ), POINTER :: DISBOR
+!
+!       M: WORKING MATRIX
+        TYPE(BIEF_OBJ), POINTER :: M
+!
+!       MSEG: WORKING MATRIX FOR SEGMENT-BASED STORAGE
+        TYPE(BIEF_OBJ), POINTER :: MSEG
+!
+!       W: WORKING ARRAY FOR A NON-ASSEMBLED VECTOR
+        TYPE(BIEF_OBJ), POINTER :: W
+!
+!       T: WORKING ARRAY FOR AN ASSEMBLED VECTOR
+        TYPE(BIEF_OBJ), POINTER :: T
+!
+!       VNOIN: FOR FINITE VOLUMES
+        TYPE(BIEF_OBJ), POINTER :: VNOIN
+!
+!       XSEG: X COORDINATE OF FOLLOWING
+!             OR PRECEDING POINT IN THE BOUNDARY
+!       IF IT IS IN ANOTHER SUB-DOMAIN.
+        TYPE(BIEF_OBJ), POINTER :: XSEG
+!
+!       YSEG: Y COORDINATE OF FOLLOWING
+!             OR PRECEDING POINT IN THE BOUNDARY
+!       IF IT IS IN ANOTHER SUB-DOMAIN.
+        TYPE(BIEF_OBJ), POINTER :: YSEG
+!
+!       FAC: MULTIPLICATION FACTOR FOR POINTS IN THE BOUNDARY FOR
+!            DOT PRODUCT.
+        TYPE(BIEF_OBJ), POINTER :: FAC
+!
+!       FOR PARALLELISM AND NON BLOCKING COMMUNICATION (SEE PARINI.F)
+!
+!       NUMBER OF NEIGHBOURING PROCESSORS (SEEN BY POINTS)
+        INTEGER       , POINTER :: NB_NEIGHB
+!       FOR ANY NEIGHBOURING PROCESSOR, NUMBER OF POINTS
+!       SHARED WITH IT
+        TYPE(BIEF_OBJ), POINTER :: NB_NEIGHB_PT
+!       RANK OF PROCESSORS WITH WHICH TO COMMUNICATE FOR POINTS
+        TYPE(BIEF_OBJ), POINTER :: LIST_SEND
+!       NH_COM(DIM1NHCOM,NB_NEIGHB)
+!       WITH DIM1NHCOM IS THE MAXIMUM NUMBER OF POINTS SHARED
+!       WITH ANOTHER PROCESSOR
+!       (OR SLIGHTLY MORE FOR 16 BYTES ALIGNMENT)
+!       NH_COM(I,J) IS THE GLOBAL NUMBER IN THE SUB-DOMAIN OF I-TH
+!       POINT SHARED WITH J-TH NEIGHBOURING PROCESSOR
+        TYPE(BIEF_OBJ), POINTER :: NH_COM
+!
+!       NUMBER OF NEIGHBOURING PROCESSORS (SEEN BY EDGES)
+        INTEGER       , POINTER :: NB_NEIGHB_SEG
+!       FOR ANY NEIGHBOURING PROCESSOR, NUMBER OF EDGES
+!       SHARED WITH IT
+        TYPE(BIEF_OBJ), POINTER :: NB_NEIGHB_PT_SEG
+!       RANK OF PROCESSORS WITH WHICH TO COMMUNICATE FOR EDGES
+        TYPE(BIEF_OBJ), POINTER :: LIST_SEND_SEG
+!       LIKE NH_COM BUT FOR EDGES
+        TYPE(BIEF_OBJ), POINTER :: NH_COM_SEG
+!
+!       WILL BE USED AS BUFFER BY MPI IN PARALLEL
+!
+        TYPE(BIEF_OBJ), POINTER :: BUF_SEND
+        TYPE(BIEF_OBJ), POINTER :: BUF_RECVC
+!       FOR FINITE VOLUMES AND KINETIC SCHEMES
+!
+        TYPE(BIEF_OBJ), POINTER :: CMI,DPX,DPY
+        TYPE(BIEF_OBJ), POINTER :: DTHAUT,AIRST
+!
+      END TYPE BIEF_MESH
+!
+!====================================================================
+!
+\end{lstlisting}
+
+\paragraph{SLVCFG}
+
+\begin{lstlisting}[language=TelFortran]
+!
+!====================================================================
+!
+!  STRUCTURE OF SOLVER CONFIGURATION
+!
+!====================================================================
+!
+        TYPE SLVCFG
+!
+!         SLV: CHOICE OF SOLVER
+          INTEGER SLV
+!
+!         NITMAX: MAXIMUM NUMBER OF ITERATIONS
+          INTEGER NITMAX
+!
+!         PRECON: TYPE OF PRECONDITIONING
+          INTEGER PRECON
+!
+!         KRYLOV: DIMENSION OF KRYLOV SPACE FOR GMRES SOLVER
+          INTEGER KRYLOV
+!
+!         EPS: ACCURACY
+          DOUBLE PRECISION EPS
+!
+!         ZERO: FOR CHECKING DIVISIONS BY ZERO
+          DOUBLE PRECISION ZERO
+!
+!         OK: IF PRECISION EPS HAS BEEN REACHED
+          LOGICAL OK
+!
+!         NIT: NUMBER OF ITERATIONS IF PRECISION REACHED
+          INTEGER NIT
+!
+        END TYPE SLVCFG
+!
+!====================================================================
+!
+\end{lstlisting}
+
+\paragraph{BIEF\_FILE}
+
+\begin{lstlisting}[language=TelFortran]
+!
+!====================================================================
+!
+!  STRUCTURE OF FILE
+!
+!====================================================================
+!
+        TYPE BIEF_FILE
+!
+!         LU: LOGICAL UNIT TO OPEN THE FILE
+          INTEGER LU
+!
+!         NAME: NAME OF FILE
+          CHARACTER(LEN=144) NAME
+!
+!         TELNAME: NAME OF FILE IN TEMPORARY DIRECTORY
+          CHARACTER(LEN=6) TELNAME
+!
+!         FMT: FORMAT (SERAFIN, MED, ETC.)
+          CHARACTER(LEN=8) FMT
+!
+!         ACTION: READ, WRITE OR READWRITE
+          CHARACTER(LEN=9) ACTION
+!
+!         BINASC: ASC FOR ASCII OR BIN FOR BINARY
+          CHARACTER(LEN=3) BINASC
+!
+!         TYPE: KIND OF FILE
+          CHARACTER(LEN=12) TYPE
+!
+        END TYPE BIEF_FILE
+\end{lstlisting}
+
+\subsection{Allocation of structures}
+
+Once declared, \telkey{BIEF\_OBJ} structures must be defined and memory for
+their arrays of data must be dynamically allocated. This is done by specific
+subroutines, depending of their type, i.e. whether they are vectors, matrices
+or blocks. \telkey{BIEF\_MESH} structure must also be allocated.
+
+The allocations of structures are grouped in a subroutine called
+\telkey{POINT\_NAME} (NAME is the name of a \telemacsystem program, for example
+\artemis).
+
+\textbf{The mesh structure must be allocated first}. Vectors and matrices will
+then be allocated with respect to that mesh.
+
+\paragraph{Mesh: subroutine \telkey{ALMESH}}
+
+A mesh must be declared previously as a \telkey{BIEF\_MESH} structure
+
+\underbar{Syntax}:
+\begin{lstlisting}[language=TelFortran]
+CALL ALMESH( MESH, NOM, IELM, SPHERI,CFG,NFIC,
+             EQUA,NPLAN,NPMAX,NPTFRX,NELMAX,I3,I4)
+\end{lstlisting}
+
+\telkey{ALMESH} prepares the \telkey{BIEF\_MESH} structures and fills some of
+them, for example it will allocate the memory for storing the component
+\telkey{IKLE} and will read it in the geometry file. However not all the data
+structure is ready after exiting \telkey{ALMESH}. This task is carried out by
+the subroutine \telkey{INBIEF} which must be called later, when all the
+necessary data have been logged.
+
+\underbar{Arguments}:
+\begin{description}
+\item [MESH] The BIEF\_MESH structure to allocate.
+\item [NOM] Fortran name of this structure in 6 characters.
+\item [IELM] Element with the highest number of degrees of freedom in the mesh.
+  \begin{description}
+  \item [11] only linear interpolation in 2D
+  \item [12] quasi-bubble in 2D
+  \item [41] linear in 3D with prisms
+  \end{description}
+\item [SPHERI] Logical. If true, coordinates will be spherical, if not, Cartesian.
+\item [CFG] Configuration. So far 2 integer values:
+  \begin{description}
+    \item [CFG(1)] is the storage of matrices (1: classical EBE, 3: edge-based)
+    \item [CFG(2)] is the matrix-vector product (1: classical EBE, 2: frontal)
+  \end{description}
+   These data will be used to build specific data structures relevant to
+   every option.
+\item [NFIC] Logical unit where the geometry file has been opened.
+\item [EQUA] Equations to solve or calling programme in 20 characters. Up to
+  now is only used to allocate specific arrays for Finite volumes if
+  \telkey{EQUA='SAINT-VENANT VF'} is used to optimise memory requirements.
+\end{description}
+
+Next 6 arguments are optional:
+\begin{description}
+\item [NPLAN] Number of horizontal planes in 3D meshes of prisms.
+\item [NPMAX] Maximum number of vertices in the mesh, in case of adaptive
+  meshing (not implemented yet).
+\item [NPTFRX] Maximum number of boundary points in the mesh, in case of
+  adaptive meshing (not implemented yet).
+\item [NELMAX] Maximum number of elements in the mesh, in case of adaptive
+  meshing (not implemented yet).
+\item [I3, I4] When present, it means that the X and Y coordinates of the mesh
+  are in reality X+I3 and Y+I4, I3 and I4 (integers representing a number of
+  metres, have been removed to minimize truncation errors (see also the Selafin
+  format where these two numbers are included for a geo-referenced
+  post-processing.
+\end{description}
+
+\paragraph{Vector : \telkey{BIEF\_ALLVEC} , \telkey{BIEF\_ALLVEC\_IN\_BLOCK}}
+
+A vector must be declared previously as a \telkey{BIEF\_OBJ} structure
+
+\underbar{Syntax:}
+\begin{lstlisting}[language=TelFortran]
+CALL BIEF_ALLVEC(NAT,VEC,NOM,IELM,DIM2,STATUT,MESH)
+\end{lstlisting}
+
+\underbar{Arguments:}
+\begin{description}
+\item [NAT] Nature (1=real, 2=integer).
+\item [VEC] The BIEF\_OBJ structure to be allocated as a vector.
+\item [NOM] Fortran name of vector in 6 characters.
+\item [IELM] Vector discretisation type (\textbf{or dimension depending on
+  the status}, \textbf{see below})
+\begin{description}
+  \item [0] dimension 1, constant per element.
+  \item [1] dimension 1 linear discretisation.
+  \item [10] triangles, constant discretisation per element.
+  \item [11] triangles, linear discretisation.
+  \item [12] triangles, quasi-bubble discretisation.
+  \item [40] prism, constant discretisation per element.
+  \item [41] prism, linear discretisation.
+\end{description}
+\item [DIM2] Second dimension of vector.
+\item [STATUT]
+ \begin{description}
+   \item [0] Any array. \textbf{IELM is then its first dimension}.
+   \item [1] Vector defined on a mesh, with no possibility of changing
+     discretisation.
+   \item [2] Vector defined on a mesh, with possibility of changing
+     discretisation within   the limits of the memory space.
+\end{description}
+\item [MESH] the BIEF\_MESH structure with data on the mesh.
+\end{description}
+
+\underbar{Syntax:}
+\begin{lstlisting}[language=TelFortran]
+CALL BIEF_ALLVEC_IN_BLOCK( BLO,N,NAT,NOM,IELM,DIM2,STATUT)
+\end{lstlisting}
+
+With \telkey{BIEF\_ALLVEC\_IN\_BLOCK}, N vectors with the same characteristics
+are put directly into the block BLO. NOM is then only a generic name, for
+example if NOM is 'T     ', the names of the vectors will be T1, T2, etc. Only
+the block BLO must be declared. T2 will be in fact BLO\%ADR(2)\%P but can be
+named also T2 if T2 is declared as a \telkey{BIEF\_OBJ} pointer and pointed to
+BLO\%ADR(2)\%P:
+
+\begin{lstlisting}[language=TelFortran]
+TYPE(BIEF_OBJ), POINTER :: T2
+T2 => BLO%ADR(2)%P
+\end{lstlisting}
+
+\paragraph{Matrix: \telkey{BIEF\_ALLMAT}}
+
+A matrix must be declared previously as a \telkey{BIEF\_OBJ} structure. We only
+deal with matrices of double precision numbers.
+
+\underbar{Syntax:}
+\begin{lstlisting}[language=TelFortran]
+CALL BIEF_ALLMAT( MAT,NOM,IELM1,IELM2,
+CFG,TYPDIA,TYPEXT,MESH)
+\end{lstlisting}
+
+\underbar{Arguments:}
+\begin{description}
+\item [MAT] The BIEF\_OBJ structure to be allocated as a vector.
+\item [NOM] Fortran name of matrix in 6 characters.
+\item [IELM1] Type of discretisation for rows (same convention as for the
+  vectors).
+\item [IELM2] Type of discretisation for columns.
+\item [CFG] Configuration. So far 2 integer values:
+\begin{itemize}
+  \item CFG(1) is the storage of matrices (1: EBE, 3: edge based)
+  \item CFG(2) is the matrix-vector product (1: EBE, 2: frontal)
+\end{itemize}
+\item [TYPDIA] Diagonal type ('0' : zero, 'Q' : any, 'I' : identity)
+\item [TYPEXT] Type of the off-diagonal terms ('0': zero, 'Q': any, 'S':
+  symmetrical)
+\item [MESH]  : Bief\_mesh structure with data on the mesh.
+\end{description}
+
+\paragraph{Block : ALLBLO}
+
+A block must be declared previously as a \telkey{BIEF\_OBJ} structure.
+
+\underbar{Syntax}:
+\begin{lstlisting}[language=TelFortran]
+CALL ALLBLO(BLO,NOM)
+\end{lstlisting}
+
+\underbar{Arguments}:
+\begin{description}
+  \item [BLO] The BIEF\_OBJ structure to be allocated as a block.
+  \item [NOM] Fortran name of block in 6 characters.
+\end{description}
+In this case, we have an empty shell where we do not specify which objects have
+been placed in the block. A block structure can thus be used again. To fill the
+block, the subroutine ADDBLO must then be called (see paragraph A.I.4.4). The
+syntax will be:
+
+\begin{lstlisting}[language=TelFortran]
+CALL ADDBLO(BLOCK,OBJ)
+\end{lstlisting}
+to add a BIEF\_OBJ structure OBJ to the block called BLOCK.
+
+A block can be emptied by the simple line:
+
+\begin{lstlisting}[language=TelFortran]
+BLOCK%N = 0
+\end{lstlisting}
+
+%\todo{not true anymore need to deallocate}
+because the component N is the number of objects in the block.
+
+\paragraph{Example}
+
+We take here the example of a double precision array called SAMPLE, with one
+dimension, and quasi-bubble discretisation. This vector will be then set to a
+constant value.
+
+\begin{enumerate}
+  \item Declare the structure:
+
+\begin{lstlisting}[language=TelFortran]
+TYPE(BIEF_OBJ) :: SAMPLE
+\end{lstlisting}
+in a global declaration through a module, or locally.
+
+  \item Allocate the structure:
+
+\begin{lstlisting}[language=TelFortran]
+CALL BIEF_ALLVEC(1,SAMPLE,'SAMPLE',12,1,STATUT,MESH)
+\end{lstlisting}
+
+  \item To set the value of the vector to 5.D0 for all points of the mesh, you
+    can then do:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=C     ',X=SAMPLE,C=5.D0)
+\end{lstlisting}
+which is equivalent in this case to (but the following would require
+declaration of integer I):
+
+\begin{lstlisting}[language=TelFortran]
+DO I=1,SAMPLE%DIM1
+   SAMPLE%R(I)=5.D0
+ENDDO
+\end{lstlisting}
+\end{enumerate}
+To understand this loop, remember that R is the component storing the real data
+of vectors, and DIM1 the size of the first dimension. However it is not
+mandatory to remember this if you use the functions and subroutines designed
+for operations on structures.
+
+\subsection{Operations on structures}
+
+The functions and subroutines described below are used for manipulating
+structures without having to know how they are arranged. This paragraph will be
+limited to the functions related to the notion of structure itself. The
+traditional operations on matrices and vectors will be dealt with in Chapter
+A.III.
+%\todo{add reference}
+
+All the functions described hereafter will be naturally declared by a USE BIEF
+statement at the beginning of subroutines. Otherwise they would have to be
+declared as EXTERNAL.
+
+\paragraph{General operations on structures}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+LOGICAL FUNCTION CMPOBJ(T1,T2)
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [T1,T2]a vector or a block
+\end{description}
+
+\telkey{CMPOBJ} indicates if the two structures are identical. A check is made to see
+whether these two structures are of the same type and, if so, their
+characteristics are compared:
+\begin{itemize}
+  \item for vectors: discretisation.
+  \item for blocks: the number of structures that it contains.
+\end{itemize}
+
+Nothing has been done so far for the other structures.
+
+This function is used by subroutine OS.
+
+\paragraph{Operations on vectors}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CHGDIS(VEC,OLDELT,NEWELT,MESH)
+\end{lstlisting}
+
+CHGDIS changes the discretisation of a vector.
+
+\underbar{arguments}:
+\begin{description}
+  \item [VEC] is the vector
+  \item [MESH] the structure containing the mesh integers
+  \item [OLDELT] is the former vector discretisation
+  \item [NEWELT] is the new one
+\end{description}
+A vector can thus go from a linear discretisation to a quasi-bubble
+discretisation, or the reverse. In the first case, the missing values are found
+by linear interpolation, while in the second case the superfluous values are
+forgotten. There are certain restrictions to the use of this subroutine:
+\begin{itemize}
+  \item a vector cannot be extended if the required memory space is not
+    provided for during allocation.
+  \item Certain changes are impossible, for obvious reasons: changing a
+    triangle to a quadrilateral, etc.
+\end{itemize}
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CPSTVC(T1,T2)
+\end{lstlisting}
+
+This subroutine copies a vector structure onto another. If  T1 is a vector, T2
+then becomes a vector with the same characteristics. Nevertheless, the memory
+allocated during allocation cannot be changed. The only data copied for the
+moment are:
+\begin{itemize}
+  \item Discretisation type (component ELM)
+  \item The first dimension (component DIM1)
+  \item The second dimension (component DIM2)
+  \item The component DIMDISC in case of discontinuous vectors.
+\end{itemize}
+
+This subroutine should be used when dealing with temporary all purpose
+\telkey{BIEF\_OBJ} structures like T1, T2, etc. in \telemac{2D} and \sisyphe
+and T3\_01, T3\_02, etc. in \telemac{3D}. As a matter of fact, these structures
+may have been changed by a previous use, e.g. they may have been turned into
+boundary vectors with a smaller size than a full domain vector, hence an
+initialisation like \telkey{CALL OS(`X=0     `,X=T1)} may have a random effect
+if not secured previously by specifying what must be T1. Copying the structure
+of a known object like e.g.  the depth in structure H, will do it. \telkey{CALL
+CPSTVC(H,T1)} will give T1 the same dimension and discretisation as the depth.
+
+\paragraph{Operations on matrices}
+
+Note : all the operations on vectors may also be applied to the diagonal and
+the extradiagonal terms contained in the matrix structure (respectively
+\telkey{M\%D} and \telkey{M\%X} for a matrix M). The following subroutines only
+ apply to matrices:
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CPSTMT(M1,M2,TRANS)
+\end{lstlisting}
+
+Copies characteristics of the matrix M1 on to the matrix M2, or of transposed
+of matrix M1 to M2 (if optional argument TRANS is set to true).
+
+\telkey{CPSTMT} is similar to \telkey{CPSTVC}, it carries out the following
+operations:
+\begin{enumerate}
+  \item copies types of elements.
+  \item copies types of diagonal and off-diagonal terms (calls CPSTVC for the
+    diagonal and the off-diagonal terms).
+  \item copies characteristics of the matrix (components TYPDIA and TYPEXT).
+  \item checks that M2 has enough memory for its new characteristics : sizes of
+    diagonal and extra-diagonal terms.
+\end{enumerate}
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_DIM1_EXT(IELM1,IELM2,STO,TYPEXT,MESH)
+\end{lstlisting}
+
+The extra-diagonal terms of matrices are stored in 2-dimensional arrays.
+DIM1\_EXT returns the first dimension of this array, depending on:
+\underbar{arguments}:
+\begin{description}
+  \item [IELM1] Type of discretisation for rows (same convention as for the
+    vectors).
+  \item [IELM2] Type of discretisation for columns.
+  \item [STO]: Storage of the matrix (1: EBE, 3: edge based)
+  \item [TYPEXT] Type of the off-diagonal terms ('0': zero, 'Q': any, 'S':
+    symmetrical)
+  \item [MESH] \telkey{BIEF\_MESH} structure with data on the mesh.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_DIM2_EXT(IELM1,IELM2,STO,TYPEXT,MESH)
+\end{lstlisting}
+
+The extra-diagonal terms of matrices are stored in 2-dimensional arrays.
+\telkey{DIM2\_EXT} returns the second dimension of this array, depending on:
+\underbar{arguments}:
+\begin{description}
+  \item [IELM1] Type of discretisation for rows (same convention as for the
+    vectors).
+  \item [IELM2] Type of discretisation for columns.
+  \item [STO] Storage of the matrix (1: EBE, 3: edge based)
+  \item [TYPEXT] Type of the off-diagonal terms ('0': zero, 'Q': any, 'S':
+    symmetrical)
+  \item [MESH] \telkey{BIEF\_MESH} structure with data on the mesh.
+\end{description}
+
+\paragraph{Operations on blocks}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE ADDBLO(BLOCK,T)
+\end{lstlisting}
+Adds the structure T to the block.
+
+\underbar{arguments}:
+\begin{description}
+  \item [BLOCK] is a block
+  \item [T] a structure.
+\end{description}
+
+\paragraph{Reaching objects in blocks}
+
+If T1 is a vector stored as the second object in a block B, the address of T1
+is B\%ADR(2)\%P. As a matter of fact, ADR is an array of
+\telkey{POINTER\_TO\_BIEF\_OBJ} structures, we take the second one, and its unique
+component P (P would not be present if Fortran 90 were accepting the arrays of
+pointers).
+\\
+\telkey{B\%ADR(2)\%P} can then be treated as a \telkey{BIEF\_OBJ} structure,
+  for example the third real value of T1 is \telkey{B\%ADR(2)\%P\%R(3)}. It is
+    not recommended to deal directly with objects in blocks, this can be done
+    in a subroutine by calling it with the argument (e.g.)
+    \telkey{B\%ADR(2)\%P}. It will be then received in the subroutine as a
+      normal \telkey{BIEF\_OBJ} structure.
+\\
+Component selectors can be piled up if blocks themselves are stored in blocks
+as in the following example, where T1 as been stored as the second object into
+a block C stored as the third object in the block B. T1 is then:
+
+\begin{lstlisting}[language=TelFortran]
+B%ADR[3]%P%ADR[2]%P
+\end{lstlisting}
+The only difficulty and common error is to forget the component P which is due
+to Fortran obscure reasons.
+
+\section{Building matrices and vectors}
+
+The subroutines \telkey{MATRIX} and \telkey{VECTOR} construct matrices and
+vectors respectively, according to the instructions given in their arguments.
+
+\subsection{Construction of matrices}
+
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE MATRIX( M,OP,FORMUL,IELM1,IELM2,
+                   XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL )
+\end{lstlisting}
+The result is the matrix M, with row element IELM1 and column element IELM2,
+constructed according to the formula FORMUL and the operation OP (see below).
+XMUL, F ,G ,H ,U ,V ,W are respectively a constant and six vector structures
+(defined with \telkey{TYPE(BIEF\_OBJ)}) used in the definition of the matrix. The
+discretisation of F, G, H, U, V and W is checked and is taken into account in
+the calculations. These last six structures must not be dummy arguments, even
+if they are not used.
+
+The other arguments are:
+\begin{description}
+  \item [MESH] Mesh declared as a BIEF\_MESH structure.
+  \item [MSK] Logical. Indicates if the elements are masked.
+  \item [MASKEL] Element masking array.
+\end{description}
+
+\paragraph{Possible operations}
+
+OP is an operation coded in 8 characters, as for the subroutine OM. N is an
+internal working matrix which contains the matrix with the formula requested
+(see next paragraph). M is the matrix given by the user and which will be
+modified according to the operation indicated:
+
+\begin{itemize}
+  \item OP = 'M=N     ' : COPY OF N ON TO M
+  \item OP = 'M=TN    ' : COPY OF TRANSPOSED OF N ON TO M
+  \item OP = 'M=M+N   ' : N IS ADDED TO M
+  \item OP = 'M=M+TN  ' : TRANSPOSED OF N IS ADDED TO M
+\end{itemize}
+
+The operations with the form M=M+CN can be carried out through the multiplying
+factor XMUL which applies to N.
+
+\paragraph{Available formulae}
+
+FORMUL is a string of 16 characters describing the formula. Generally only the
+first 6 are used but extra information may be contained in characters 7 to 16.
+For example the sixteenth character is sometimes used to specify the
+derivatives and may then contain the characters X, Y or Z.
+
+\paragraph{Available elements}
+
+All the possible formulae are given below. However, all the discretisation
+combinations are not programmed. If a matrix or a given discretisation has not
+been programmed, an error message will appear to this effect.
+
+In the next part of the text,$\Psi _{i} $ is the base corresponding to the
+element IELM1 (row) and $\Psi _{j} $ the base corresponding to the element
+IELM2 (column). The example of dimension 3 is given. For the other dimensions,
+some terms would of course have to be removed. The beginning of names of the
+corresponding subroutines in \bief are given in brackets. They are complemented
+by letters indicating the elements treated. The first letter corresponds to the
+row and the second letter to the column. Letter O stands for a linear segment,
+A for a linear triangle, B for a quasi-bubble triangle, C for a quadratic
+triangle, P for a prism, T for a tetrahedron. More specifically F stands for a
+vertical linear triangle which is part of the vertical border of a mesh of
+prisms split into tetrahedrons. Example : subroutine MT01AA will compute the
+mass-matrix of a linear triangle.
+
+\underbar{FORMUL = 'MATMAS          ' }
+
+(in library \bief subroutines with names which start with \telkey{MT01})
+
+Mass-matrix.
+
+\[N(i,j)=XMUL \int _{\Omega }\Psi _{i} \Psi _{j} d\Omega  \]
+
+\underbar{FORMUL = 'MATDIF          '}
+
+(in library \bief subroutines with names which start with \telkey{MT02})
+
+Diffusion matrix with different coefficients according to the directions x, y
+and z.
+
+\textbf{In 2 dimensions:}
+\[N(i,j)=XMUL \int _{\Omega }
+(U\frac{\partial \Psi _{i} }{\partial x}
+  \frac{\partial \Psi _{j} }{\partial x}
+ +U\frac{\partial \Psi _{i} }{\partial y}
+   \frac{\partial \Psi _{j} }{\partial y} )d\Omega  \]
+
+The case of an isotropic viscosity is given above. But the viscosity may also
+be tensorial. In this case U (a\telkey{ BIEF\_OBJ} structure) must have a second
+dimension, for example 3 in 2-dimensional applications. U will has the general
+following form:
+$U=\left(\begin{array}{cc}
+    {U_{xx} } & {U_{xy} } \\
+    {U_{yx} } & {U_{yy} }
+\end{array}\right)$
+, but the tensor is symmetric and Uxy = Uyx.
+
+Elements of the tensor must be stored in U as follows:
+\begin{itemize}
+  \item $U_{xx}$ in U(*,1)
+  \item $U_{yy}$ in U(*,2)
+  \item $U_{xy}$ in U(*,3)
+\end{itemize}
+
+In a 2D non isotropic case, the diffusion matrix is of the form:
+
+\[
+  N(i,j)=XMUL \int _{\Omega }
+(U_{xx} \frac{\partial \Psi _{i} }{\partial x}
+        \frac{\partial \Psi _{j} }{\partial x}
+ +U_{yy} \frac{\partial \Psi _{i} }{\partial y}
+         \frac{\partial \Psi _{j} }{\partial y}
+ +U_{xy} \frac{\partial \Psi _{i} }{\partial x}
+         \frac{\partial \Psi _{j} }{\partial y}
+ +U_{xy} \frac{\partial \Psi _{i} }{\partial y}
+         \frac{\partial \Psi _{j} }{\partial x} )d\Omega
+\]
+
+When a transversal Kt and longitudinal Kl dispersion are used (case of Elder's
+turbulence model), the formula giving the tensor U is:
+
+\[U_{xx} =Kl \cos (\theta )^{2} +Kt \sin (\theta )^{2} \]
+
+\[U_{yy} =Kl \sin (\theta )^{2} +Kt \cos (\theta )^{2} \]
+
+\[U_{xy} =(Kl-Kt) (\sin (\theta )- \cos (\theta ))\]
+
+\textbf{In 3 dimensions (beware, F, G and H are used in this case, unlike in 2D
+where U,V and W are used):}
+
+\[
+  N(i,j)=XMUL
+\int _{\Omega }
+(F\frac{\partial \Psi _{i} }{\partial x}
+  \frac{\partial \Psi _{j} }{\partial x}
++G\frac{\partial \Psi _{i} }{\partial y}
+  \frac{\partial \Psi _{j} }{\partial y}
++H\frac{\partial \Psi _{i} }{\partial z}
+  \frac{\partial \Psi _{j} }{\partial z} )d\Omega
+\]
+
+\underbar{FORMUL = 'MATDIF2         '}
+
+In 3D only, formula MATDIF2 is like \telkey{MATDIF}, but the
+hydrostatic inconsistencies are dealt with.
+
+\underbar{FORMUL = 'MATDIF3         '}
+
+In 2D only so far, diffusion matrix with diffusion coefficients which are
+piece-wise linear or constant, but may be discontinuous between elements (this
+is used in groundwater flows).
+
+\[
+N(i,j)=XMUL\int _{\Omega }
+(U\frac{\partial \Psi _{i} }{\partial x}
+  \frac{\partial \Psi _{j} }{\partial x}
++V\frac{\partial \Psi _{i} }{\partial y}
+  \frac{\partial \Psi _{j} }{\partial y} )d\Omega
+\]
+
+Here one must have:
+\begin{lstlisting}[language=TelFortran]
+U%ELM=10, U%DIM2=3, U%DIMDISC=11
+V%ELM=10, V%DIM2=3, V%DIMDISC=11
+\end{lstlisting}
+
+\underbar{FORMUL = 'MASUPG          '}
+
+(subroutines with names which start with \telkey{MT03})
+
+Matrix used for the convection term with method SUPG option 1.
+
+\[N(i,j)=XMUL
+\int _{\Omega }
+\vec{F} . \overrightarrow{grad} (\Psi _{i} )
+\vec{U} . \overrightarrow{grad} (\Psi _{j} )
+d\Omega
+\]
+
+$\vec{F}$ here is a vector with the components F, G and H.
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'MAUGUG          '}
+
+(subroutines with names which start with \telkey{MT04})
+
+Matrix used for the convection term with method SUPG option 2.
+
+\[N(i,j)=XMUL
+\int _{\Omega }
+\vec{U} . \overrightarrow{grad} (\Psi _{i} )
+\vec{U} . \overrightarrow{grad} (\Psi _{j} )
+d\Omega
+\]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'MATVGR          '}
+
+(subroutines with names which start with \telkey{MT05})
+
+Matrix used for the convection term with centred discretisation.
+
+\[
+N(i,j)=XMUL \int _{\Omega }
+\Psi _{i} \vec{U} . \overrightarrow{grad} (\Psi _{j} )
+d\Omega
+\]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'FMATMA          '}
+
+(subroutines with names which start with \telkey{MT06})
+
+Matrix used for conservative smoothing.
+
+\[N(i,j)=XMUL \int _{\Omega }F \Psi _{i} \Psi _{j} d\Omega  \]
+
+\underbar{FORMUL = 'MSLUMP          '}
+
+(subroutines with names which start with \telkey{MT07})
+
+Mass matrix with local mass-lumping.
+
+\[N(i,j)=XMUL \int _{\Omega }(1-F) \Psi _{i} +F\Psi _{i} \Psi _{j} d\Omega  \]
+
+Here, F must be a P0 function, that is, constant for each element. If the value
+of F is locally 0, the mass-matrix will be locally lumped into a diagonal.
+
+\underbar{FORMUL = 'MATFGR         X'}
+
+(subroutines with names which start with \telkey{MT08})
+
+$N(i,j)=-XMUL \int _{\Omega }
+\Psi _{j}  F \frac{\partial \Psi _{i} }{\partial x} d\Omega$
+
+Beware the minus sign~!!!!!!
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivative will be
+obtained according to y or z.
+
+\underbar{FORMUL = 'MATQGR          '}
+
+(subroutines with names which start with \telkey{MT09})
+
+\[N(i,j)=XMUL \int _{\Omega }\Psi _{i}  F\vec{U} . \overrightarrow{grad} (\Psi _{j} )d\Omega  \]
+
+Subroutines with names which start with \telkey{MT10} are not yet programmed.
+
+\underbar{FORMUL = 'MATGRF         X'}
+
+(subroutines with names which start with \telkey{MT11})
+
+$N(i,j)=-XMUL \int _{\Omega }\Psi _{j} \frac{\partial (F \Psi _{i} )}{\partial x} d\Omega  $
+
+Beware the minus sign !!!!
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivatives will be
+obtained according to y or z.
+
+\underbar{FORMUL = 'MATUGH         X'}
+
+(subroutines with names which start with \telkey{MT12})
+
+Matrix used for the method SUPG, options 1 and 2.
+
+\[N(i,j)=XMUL \int _{\Omega }
+\Psi _{j} \frac{\partial F}{\partial x}
+\vec{U} . \overrightarrow{grad} (\Psi _{i} )d\Omega \]
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivatives will be
+obtained according to y or z.
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'MATGRA         X'}
+
+(subroutines with names which start with \telkey{MT13})
+
+Gradient matrix.
+
+\[N(i,j)=XMUL \int _{\Omega } \frac{\partial \Psi _{j} }{\partial x} \Psi _{i} d\Omega  \]
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivatives will be
+obtained according to y or z.
+
+\underbar{FORMUL = 'MAMURD       PSI'} or \underbar{FORMUL = 'MAMURD2      PSI'}
+
+(subroutines with names which start with \telkey{MT14})
+
+Distribution matrix in case of use of the Multidimensional Upwind Residual
+Distribution scheme in 3D. See reference \citet{Janin1996} for more details.
+
+If FORMUL(14:16) is equal to '   N' instead of 'PSI' the matrix will be
+assembled.
+
+\underbar{FORMUL = 'FFBT            '}
+
+(subroutines with names which start with \telkey{MT99})
+
+This is in fact a series of different matrices and the string FORMUL(8:16) is
+also used for defining the formula. For example if FORMUL(8:16)='     0XX0',
+the matrix will be:
+
+\[N(i,j)=XMUL \int _{\Omega }F\frac{\partial F}{\partial x} \frac{\partial \Psi _{j} }{\partial x} \Psi _{i} d\Omega  \]
+
+Explanation: the term in the integral is a product of 4 terms based, for the
+first 2, on the vector F, and then on the Basis function called here B and the
+test function called T.
+
+If the first character is 0, the first term will be F.
+If the first character is X, the first term will be $\frac{\partial F}{\partial x} $.
+If the first character is Y, the first term will be $\frac{\partial F}{\partial y} $.
+
+Then we proceed to second character and again function F, to third character
+and function $\Psi _{j} $, to fourth character and function $\Psi _{i} $.
+
+Up to now the combinations 0XX0, 0YY0, XX00, 0X0Y, XY00, YY00, 0Y0X are
+implemented. The formula FORMUL(8:16)='00XX+00YY' is also available. Note that
+missing combinations can be obtained because the first two characters can be
+exchanged. Moreover exchanging the last two characters gives the transposed
+matrix of the previous formula.
+
+The existing subroutines building matrices in version 6.2 are the following,
+their function can be deduced from the explanations above:
+\begin{verbatim}
+mt01aa.f     mt01bb.f      mt01cc.f      mt01oo.f     mt01pp.f
+mt01tt.f     mt02aa.f      mt02aa_2.f    mt02bb.f     mt02cc.f
+mt02pp.f     mt02pt.f      mt02tt.f      mt03aa.f     mt03bb.f
+mt03cc.f     mt04aa.f      mt04bb.f      mt04cc.f     mt04pp.f
+mt04tt.f     mt05aa.f      mt05bb.f      mt05cc.f     mt05pp.f
+mt05tt.f     mt06aa.f      mt06bb.f      mt06cc.f     mt06ff.f
+mt06ft.f     mt06ft2.f     mt06oo.f      mt06oc.f     mt06pp.f
+mt06tt.f     mt07aa.f      mt07bb.f      mt07cc.f     mt08aa.f
+mt08ab.f     mt08ac.f      mt08ba.f      mt08bb.f     mt08pp.f
+mt08tt.f     mt11aa.f      mt11ab.f      mt11ac.f     mt11ba.f
+mt11bb.f     mt12aa.f      mt12ab.f      mt12ac.f     mt12ba.f
+mt12bb.f     mt13aa.f      mt13ab.f      mt13ba.f     mt13bb.f
+mt13cc.f     mt13ca.f      mt14pp.f      mt99aa.f
+\end{verbatim}
+
+\subsection{Construction of vectors}
+
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE VECTOR( VEC,OP,FORMUL,IELM1,
+   XMUL,F,G,H,U,V,W,
+   MESH,MSK,MASKEL )
+\end{lstlisting}
+
+The principle is the same as for MATRIX. The result is the vector VEC, with
+discretisation IELM1, constructed according to FORMUL and the operation OP (see
+below).
+
+XMUL, F ,G ,H ,U ,V ,W are respectively a constant and six vector structures
+used in the definition of the new vector. The discretisation of F, G, H, U, V
+and W is checked and is taken into account for the calculations.
+
+the other arguments are the same as for MATRIX:
+
+\paragraph{Possible operations}
+
+OP may be equal to :
+\begin{itemize}
+  \item '=' : in this case the vector corresponds to the formula indicated.
+  \item '+' : the formula indicated is added to VEC.
+\end{itemize}
+
+\paragraph{Available formulae}
+
+FORMUL is a string of 16 characters the first 6 of which take the name of the
+equivalent former subroutine in \bief version 3.0 (for certain, however, the
+meaning has been changed). The sixteenth character is sometimes used to specify
+the derivatives and may then contain the characters X, Y or Z.
+
+All the possible formulae are given below. However, all the discretisation
+combinations are not programmed. If a vector has not been programmed, an error
+message will appear to this effect.
+
+In the next part of the text, $\Psi _{i} $ is the base corresponding to the
+element IELM1. The example of dimension 3 is given. For the other dimensions,
+some terms would of course have to be removed. The names of the corresponding
+subroutines in \bief 3.2 are given in brackets.
+
+\underbar{FORMUL = 'MASBAS          '}
+
+(subroutines with names which start with \telkey{VC00})
+
+Integrals of the bases, or product of a mass matrix by a vector with the value
+of 1 everywhere.
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i} d\Omega  \]
+
+\underbar{FORMUL = 'MASVEC          '}
+
+(subroutines with names which start with \telkey{VC01})
+
+Product of a mass matrix by a vector F.
+
+\[VEC(i)=XMUL \int _{\Omega }F \Psi _{i} d\Omega  \]
+
+\underbar{FORMUL = 'SUPG            '}
+
+(subroutines with names which start with \telkey{VC03})
+
+\[VEC(i)=XMUL
+\int _{\Omega }
+\vec{K} \overrightarrow{grad} ( \Psi _{i}  )
+\vec{U} \overrightarrow{grad} ( F ) d\Omega  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+$\vec{K}$ is a vector with the components G and H. (this would have to be
+modified in dimension 3).
+
+\underbar{FORMUL = 'VGRADP            '}   or  \underbar{'VGRADP2           '}
+(used in 3D only)
+
+(subroutines with names which start with \telkey{VC04})
+
+\[VEC(i)=XMUL \int _{\Omega }\vec{U}_{2D}  \overrightarrow{grad} _{2D} ( \Psi _{i}  )  d\Omega  \]
+
+$\vec{U}$ is a vector with the components U and V.
+
+VGRADP is the same formula, with corrections when the generalised sigma
+transformation is used.
+
+\underbar{FORMUL = 'FLUBOR            '}
+
+(subroutines with names which start with \telkey{VC05})
+
+\[VEC(i)=XMUL \int _{\Gamma } \Psi _{i}   \vec{U} \vec{n} d\Gamma  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+$\vec{n}$ is the normal outer vector.
+
+\underbar{FORMUL = 'FLUBOR2           '}
+
+In 3D only, FLUBOR2 is like FLUBOR, but in the case of a generalised sigma transformation.
+
+\underbar{FORMUL = 'VGRADF          '}
+
+(subroutines with names which start with \telkey{VC08})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  \vec{U} \overrightarrow{grad} ( F )  d\Omega  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'QGRADF          '}
+
+(subroutines with names which start with \telkey{VC09})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  G \vec{U} \overrightarrow{grad} ( F )  d\Omega  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'FLUBDF          '}
+
+(subroutines with names which start with \telkey{VC10})
+
+\[VEC(i)=XMUL \int _{\Gamma } \Psi _{i}   F \vec{U} \vec{n} d\Gamma  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+$\vec{n}$ is the normal vector external to the domain.
+
+\underbar{FORMUL = 'GGRADF         X'}
+
+(subroutines with names which start with \telkey{VC11})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  G  \overrightarrow{grad} ( F )  d\Omega  \]
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivative will be
+obtained according to y or z.
+
+\underbar{FORMUL = 'GRADF          X'}
+
+(subroutines with names which start with \telkey{VC13})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}    \overrightarrow{grad} ( F )  d\Omega  \]
+
+If FORMUL(16:16) is equal to 'Y' or 'Z' instead of 'X', the derivative will be
+obtained according to y or z.
+
+In 3 dimensions, variants are available:
+\begin{itemize}
+  \item GRADF(X,Y)     X and GRADF(X,Y)     Y will consider only the gradient
+    of a function which does not depend on Z.
+  \item GRADF2 will take care of hydrostatic inconsistencies.
+\end{itemize}
+
+\underbar{FORMUL = 'PRODF           '}
+
+(subroutines with names which start with \telkey{VC14})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  F   (2 (\frac{\partial U}{\partial x} )^{2} +2 (\frac{\partial V}{\partial y} )^{2} +(\frac{\partial U}{\partial y} +\frac{\partial V}{\partial x} )^{2} )    d\Omega  \]
+
+This vector is used in the calculation of the turbulent production with the
+model k-epsilon.
+
+\underbar{FORMUL = 'DIVQ            '}
+
+(subroutines with names which start with \telkey{VC15})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  div(F \vec{U})  d\Omega  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+
+\underbar{FORMUL = 'SUPGDIVU        '}
+
+(subroutines with names which start with \telkey{VC16})
+
+\[VEC(i)=XMUL \int _{\Omega }\vec{K} grad(\Psi _{i} )   div(\vec{U}) d\Omega  \]
+
+$\vec{U}$ is a vector with the components U, V and W.
+$\vec{K}$ is a vector with the components F, G and H.
+
+\underbar{FORMUL = 'FLUDIF          '}
+
+(subroutines with names which start with \telkey{VC17})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  U . \overrightarrow{grad} ( F ).\vec{n}  d\Omega  \]
+
+This is not currently used nor implemented.
+
+\underbar{FORMUL = 'VGRADF2          '}
+
+(subroutines with names which start with \telkey{VC18})
+
+\[VEC(i)=XMUL \int _{\Omega }\Psi _{i}  U . \overrightarrow{grad} ( F )  d\Omega  \]
+
+This is specifically for 3D computations with prisms, and unlike VGRADF, the
+test function $\Psi _{i} $ is here a 2-dimensional test function (no dependency
+on z). This is used by \telemac{3D} in subroutine WSTARW.
+
+\underbar{FORMUL = 'HUGRADP          '}
+
+(subroutines with names which start with \telkey{VC19})
+
+\[VEC(i)=XMUL \int _{\Omega }F \vec{U} . \overrightarrow{grad} ( \Psi _{i}  )  d\Omega  \]
+
+This is used in 2D, mostly for computing fluxes. H in HUGRADP stands for the
+depth denoted h, which can be misleading as it does not refer to the function H
+which is an argument of subroutine VC19AA. A variant HUGRADP2 exists, in this
+case the velocity is not only $\vec{U}$ of components (U,V), but $\vec{U}+G
+ \overrightarrow{grad} ( H ) $. This is a way of treating the gradient
+of the free surface elevation as a piecewise constant function, which it is in
+reality when the depth is linear.
+
+The existing subroutines building vectors in version 6.2 are the following,
+their function can be deduced from the explanations above:
+
+\begin{verbatim}
+vc00aa.f     vc00bb.f      vc00cc.f      vc00pp.f      vc00pp2.f
+vc00ft.f     vc00ff.f      vc00tt.f      vc01aa.f      vc01bb.f
+vc01ff.f     vc01ft.f      vc01oo.f      vc01pp.f      vc01tt.f
+vc01tt0.f    vc03aa.f      vc03bb.f      vc04aa.f      vc04pp.f
+vc05oo.f     vc05aa.f      vc04tt.f      vc05ff.f      vc05ft.f
+vc08aa.f     vc08bb.f      vc08cc.f      vc08pp.f      vc08tt.f
+vc09aa.f     vc10oo.f      vc11aa.f      vc11aa2.f     vc11bb.f
+vc11pp.f     vc11tt.f      vc11tt0.f     vc13aa.f      vc13bb.f
+vc13cc.f     vc13pp.f      vc13pp2.f     vc13tt.f      vc14aa.f
+vc15aa.f     vc16aa.f      vc18pp.f      vc19aa.f
+\end{verbatim}
+
+\section{Operations on matrices and vectors}
+
+Some operations described below also apply to vectors contained in blocks,
+since it is possible to place these blocks in the subroutine arguments.
+
+\subsection{Operations on vectors}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OS(OP,X,Y,Z,C,[IOPT,INFINI,ZERO])
+\end{lstlisting}
+
+\underbar{Arguments}:
+\begin{description}
+  \item [OP] is a string of 8 characters describing an operation between X,Y,Z
+  and C.
+  \item [X] is a vector or a working array which will contain the result of the
+    operation.
+  \item [Y and Z] are vector structures. Y and Z can be dummy arguments if they
+    do not appear in the operation, but they must be declared as BIEF\_OBJ
+    structures. C is a double precision real number.
+
+  \item [X,Y,Z,C,IOPT, INFINI and ZERO] are optional, the last 3 are used only
+    when a division is implied in the operation asked, for example if OP =
+    'X=Y/Z   '. When they are present, it is better to name them as is done in
+    the following line:
+\end{description}
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS('X=Y/Z   ',U,V,W,0.D0,IOPT=2,INFINI=1.D0,ZERO=1.D-10)
+\end{lstlisting}
+
+If IOPT = 1 : no check of division by 0 is made.
+
+If IOPT = 2 : the infinite terms are replaced by the constant INFINI.
+
+If IOPT = 3 : stop in the case of division by a number less than the parameter
+ZERO.
+
+If IOPT = 4 : infinite terms are truncated at the value 1.D0/ZERO or -1.D0/ZERO
+(depending on their sign).
+
+\begin{WarningBlock}{Warning:}
+The structure of X is updated according to the result. Consistency checks
+between X, Y and Z are applied. Y and Z must have the same discretisation.
+\end{WarningBlock}
+
+\underbar{Very important note:}
+
+When Y is mentioned in the operation and X and Y have different
+characteristics, the conflict is settled by copying the characteristics of Y
+onto those of X (by a call to \telkey{CPSTVC}). This is done without
+any warning message and means that vectors can be used as working arrays. Only
+vectors allocated with a status equal to 1 will trigger an error message if a
+change of their discretisation is tried.
+
+The operation OP may be :
+\begin{itemize}
+  \item OP = 'X=C     ' :  C VALUE ASSIGNED TO ALL COMPONENTS OF X
+  \item OP = 'X=0     ' :  C VALUE ASSIGNED TO ALL COMPONENTS OF X
+  \item OP = 'X=Y     ' :  Y COPIED ON TO X
+  \item OP = 'X=+Y    ' :  IDEM
+  \item OP = 'X=-Y    ' : -Y COPIED ON TO X
+  \item OP = 'X=1/Y   ' :  INVERSE OF Y COPIED ON TO X
+  \item OP = 'X=Y+Z   ' :  SUM OF Y AND Z COPIED ON TO X
+  \item OP = 'X=Y-Z   ' :  DIFFERENCE OF Y AND Z COPIED ON TO X
+  \item OP = 'X=YZ    ' :  PRODUCT Y BY Z COPIED ON TO X
+  \item OP = 'X=-YZ   ' :  PRODUCT Y BY Z COPIED ON TO X
+  \item OP = 'X=XY    ' :  PRODUCT Y BY X COPIED ON TO X
+  \item OP = 'X=X+YZ  ' :  PRODUCT Y BY Z ADDED TO X
+  \item OP = 'X=X-YZ  ' :  PRODUCT Y BY Z SUBSTRACTED FROM X
+  \item OP = 'X=CXY   ' :  PRODUCT OF C X AND Y COPIED ON TO X
+  \item OP = 'X=CYZ   ' :  PRODUCT OF C, Y AND Z COPIED ON TO X
+  \item OP = 'X=CXYZ  ' :  PRODUCT OF C, X, Y AND Z COPIED ON TO X
+  \item OP = 'X=X+CYZ ' :  PRODUCT OF C, Y AND Z ADDED TO X
+  \item OP = 'X=Y/Z   ' :  DIVISION OF Y BY Z COPIED ON TO X
+  \item OP = 'X=CY/Z  ' :  PRODUCT OF C BY Y DIVIDED BY Z ET COPIED ONTO X
+  \item OP = 'X=CXY/Z ' :  PRODUCT C X Y DIVIDED BY Z AND COPIED ON X
+  \item OP = 'X=X+CY/Z' :  PRODUCT OF C BY Y DIVIDED BY Z ADDED TO X
+  \item OP = 'X=X+Y   ' :  Y ADDED TO X
+  \item OP = 'X=X-Y   ' :  Y SUBSTRACTED FROM X
+  \item OP = 'X=CX    ' :  X MULTIPLIED BY C
+  \item OP = 'X=CY    ' :  CY COPIED ON TO X
+  \item OP = 'X=Y+CZ  ' :  CZ ADDED TO Y AND COPIED ON TO X
+  \item OP = 'X=X+CY  ' :  CY ADDED TO X
+  \item OP = 'X=SQR(Y)' :  SQUARE ROOT OF Y COPIED ON TO X
+  \item OP = 'X=ABS(Y)' :  ABSOLUTE VALUE OF Y COPIED ON TO X
+  \item OP = 'X=N(Y,Z)' :  X NORM OF THE VECTOR WITH COMPONENTS Y,Z
+  \item OP = 'X=Y+C   ' :  C ADDED TO Y COPIED ON TO X
+  \item OP = 'X=X+C   ' :  C ADDED TO X
+  \item OP = 'X=Y**C  ' :  Y AT THE POWER OF C COPIED ON TO X
+  \item OP = 'X=COS(Y)' :  COSINE OF Y COPIED ON TO X
+  \item OP = 'X=SIN(Y)' :  SINE OF Y COPIED ON TO X
+  \item OP = 'X=ATN(Y)' :  ARCTG OF Y COPIED ON TO X
+  \item OP = 'X=A(Y,Z)' :  INVERSE OF TANGENT Y/Z COPIED ON TO X
+  \item OP = 'X=+(Y,C)' :  X = MAX OF Y AND C
+  \item OP = 'X=-(Y,C)' :  X = MIN OF Y AND C
+  \item OP = 'X=+(Y,Z)' :  X = MAX OF Y AND Z
+  \item OP = 'X=-(Y,Z)' :  X = MIN OF Y AND Z
+  \item OP = 'X=YIFZ$<$C' :  FOR EACH POINT : X = Y IF Z $<$ C
+  \item OP = 'X=C(Y-Z)' :  X = C*(Y-Z)
+\end{itemize}
+
+Examples:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS(`X=0     `,X=TAB)
+\end{lstlisting}
+will set the double precision array of BIEF\_OBJ structure TAB to zero.
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS(`X=Y+Z   `,X=TRAV1,Y=U,Z=V)
+\end{lstlisting}
+will copy the sum of U and V on to TRAV1.
+
+\begin{lstlisting}[language=TelFortran]
+CALL OS(`X=Y+Z   `,TRAV1,U,V)
+\end{lstlisting}
+will have the same effect. As all the arguments are present up to Z, there is
+no ambiguity.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OV(OP,X,Y,Z,C,NPOIN)
+\end{lstlisting}
+
+OV carries out the same operations as OS (it is called by OS), but directly on
+double precision arrays and without consistency checks or structure updating.
+The argument NPOIN indicates the number of values on which the operation must
+be conducted.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OV_2(OP,X,IX,Y,IY,Z,IZ,C,NPOIN)
+\end{lstlisting}
+
+\telkey{OV\_2} carries out the same operations as OV, but it is possible to choose the
+vector dimension concerned by the operation. These dimension numbers are
+indicated by IX, IY and IZ.
+
+The instruction:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OV_2(OP,X,2,Y,5,Z,3,C,NPOIN)
+\end{lstlisting}
+thus replaces the former instruction:
+
+\begin{lstlisting}[language=TelFortran]
+CALL OV(OP,X(1,2),Y(1,5),Z(1,3),C,NPOIN)
+\end{lstlisting}
+
+where X, Y and Z were declared as two-dimensional arrays.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OVD(OP,X,Y,Z,C,IOPT,INFINI,ZERO,NPOIN)
+\end{lstlisting}
+
+\telkey{OVD} carries out the same operations as OS (it is called by OS), but directly on
+double precision arrays and without consistency checks or structure updating.
+The argument NPOIN indicates the number of values on which the operation must
+be conducted.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OVD_2(OP,X,DIMX,Y,DIMY,Z,DIMZ,C,DIM1,NPOIN,IOPT,INFINI,ZERO)
+\end{lstlisting}
+
+\telkey{OVD\_2} is comparable to OVD but acts on 2-dimensional vectors, the
+second size being DIM1. \telkey{OVD\_2} will actually call \telkey{OVD} with
+X(1,DIMX), Y(1,DIMY) and Z(1,DIMZ) as arguments instead of X, Y and Z.
+
+\begin{description}
+  \item [DIM1] is the first dimension of vectors X, Y and Z.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OSBD(OP,X,Y,Z,C,MESH)}
+\end{lstlisting}
+
+The form and the principle are the same as for OS but the array MESH (mesh
+structure) is given as a last argument. In this case we have vectors which
+would be refused by OS because of lack of consistency. For \telkey{OSBD}, X is defined
+on the boundaries and Y and Z are vectors defined on the whole domain. There is
+thus data retrieval of Y and Z, which requires the presence of MESH.
+
+The possible operations are as follows:
+\begin{itemize}
+  \item OP = 'X=Y     ':  BOUNDARY VALUES OF Y COPIED ON TO X
+  \item OP = 'X=+Y    ':  IDEM
+  \item OP = 'X=X+Y   ':  BOUNDARY VALUES OF Y ADDED TO X
+  \item OP = 'X=Y+Z   ':  BOUNDARY VALUES OF Y AND Z ADDED TO X
+  \item OP = 'X=X-Y   ':  BOUNDARY VALUES OF Y SUBSTRACTED TO X
+  \item OP = 'X=CY    ':  BOUNDARY VALUES OF CY COPIED ON TO X
+  \item OP = 'X=X+CY  ':  BOUNDARY VALUES OF CY ADDED TO X
+  \item OP = 'X=CXY   ':  BOUNDARY VALUES OF CXY COPIED ON TO X
+\end{itemize}
+
+All the arguments are mandatory.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OVBD(OP,X,Y,Z,C,NBOR,NPTFR)
+\end{lstlisting}
+
+Same role as \telkey{OSBD} but by giving the general numbering of the boundary points
+and the number of boundary points. \telkey{OVBD} does not conduct any check.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OSDB(OP,X,Y,Z,C,MESH)
+\end{lstlisting}
+
+Same principle as for \telkey{OSBD}. Here, X is defined on the entire domain and Y and Z
+are vectors defined on the boundaries. Only the X values corresponding to
+boundary points are filled.
+
+The following operations are possible:
+\begin{itemize}
+  \item OP = 'X=Y     ' : Y COPIED ON TO X
+  \item OP = 'X=+Y    ' : IDEM
+  \item OP = 'X=X+Y   ' : Y ADDED TO X
+  \item OP = 'X=X-Y   ' : Y SUBSTRACTED FROM X
+  \item OP = 'X=CY    ' : CY COPIED ON TO X
+  \item OP = 'X=Y+Z   ' : Y+Z COPIED ON TO X
+  \item OP = 'X=X-YZ  ' : YZ SUBSTRACTED FROM X
+  \item OP = 'X=X+CY  ' : CY ADDED TO X
+  \item OP = 'X=XY    ' : X MULTIPLIED BY Y
+\end{itemize}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OSDBIF(OP,X,Y,Z,C,INDIC,CRITER,MESH)
+\end{lstlisting}
+
+Same principle as for \telkey{OSDB} but a test is done. If INDIC(K)=CRITER, the
+operation OP is done on index number K of vector X.
+
+The following operations are possible:
+\begin{itemize}
+  \item OP = 'X=Y     ' : Y COPIED ON TO X
+  \item OP = 'X=+Y    ' : IDEM
+\end{itemize}
+
+\begin{description}
+\item [INDIC] is an integer array (not a structure).
+\item [CRITER] is a given integer.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OVDB(OP,X,Y,Z,C,NBOR,NPTFR)
+\end{lstlisting}
+
+Same role as \telkey{OSDB} but by giving data from MESH, the general numbering of the
+boundary points and the number of boundary points. OVDB does not conduct any
+check.
+
+\subsection{Operations on matrices}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE OM(OP,M,N,D,C,MESH)
+\end{lstlisting}
+
+\telkey{OP} is the operation to be carried out. M and N are two matrices, D a diagonal
+and C a constant. N, D and C are only used when they are part of the operation.
+MESH is the integer block of the mesh.
+
+The following operations are possible:
+\begin{itemize}
+  \item OP = 'M=N     ' : COPY OF N ON TO M
+  \item OP = 'M=TN    ' : COPY OF TRANSPOSED OF N ON TO M
+  \item OP = 'M=CN    ' : PRODUCT OF N BY THE C CONSTANT
+  \item OP = 'M=M+CN  ' : CN ADDED TO M
+  \item OP = 'M=M+CTN ' : C TIMES TRANSPOSED OF N ADDED TO M
+  \item OP = 'M=M+N   ' : N ADDED TO M
+  \item OP = 'M=M+TN  ' : TRANSPOSED OF N ADDED TO M
+  \item OP = 'M=MD    ' : RIGHT HAND PRODUCT OF M BY D
+  \item OP = 'M=DM    ' : LEFT HAND PRODUCT OF M BY D
+  \item OP = 'M=DMD   ' : LEFT AND RIGHT HAND PRODUCT OF M BY D
+  \item OP = 'M=0     ' : M COMPONENTS ARE SET TO 0
+  \item OP = 'M=X(M)  ' : CHANGE TO A NON SYMMETRICAL FORM
+  \item OP = 'M=MSK(M)' : MASKING EXTRADIAGONAL TERMS
+  \item OP = 'M=M-DN  ' : REMOVING DN FROM M
+  \item OP = 'M=M-ND  ' : REMOVING ND FROM M
+  \item OP = 'M=M+D   ' : Diagonal D added to M
+\end{itemize}
+
+When the operation only concerns M, it is advisable to repeat M instead of the
+argument N. In all cases N should be a matrix-structure, or it may generate
+inexplicable crashes.
+
+It is possible that a few of these operations are not yet programmed with all
+the matrix-storage.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE LUMP(DIAG,A,MESH,XMUL)
+\end{lstlisting}
+
+Returns a vector representing a diagonal matrix DIAG (in fact a
+\telkey{BIEF\_OBJ} structure with a vector type) containing the sum of the rows
+of the matrix A.  The other arguments are given below:
+
+\begin{description}
+  \item [MESH]esh structure.
+  \item [XMUL] Multiplying factor.
+\end{description}
+
+\subsection{Matrix x vector products}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE MATVEC(OP,X,A,Y,C,MESH,[LEGO])
+\end{lstlisting}
+
+The result is the vector X (BIEF\_OBJ structure) which, depending on the
+operation OP, contains different combinations of X, C and the product of A and
+Y:
+\begin{itemize}
+  \item OP = 'X=AY    '  : X = AY
+  \item OP = 'X=X+AY  '  : X = X + AY
+  \item OP = 'X=X-AY  '  : X = X - AY
+  \item OP = 'X=X+CAY '  : X = X + C AY
+  \item OP = 'X=TAY   '  : X = TA Y (TRANSPOSED OF A)
+  \item OP = 'X=X+TAY '  : X = X + TA Y
+  \item OP = 'X=X-TAY '  : X = X - TA Y
+  \item OP = 'X=X+CTAY'  : X = X + C TA Y
+\end{itemize}
+
+The other arguments are:
+\begin{description}
+  \item [MESH] Mesh integer structure.
+\end{description}
+
+Optional argument:
+\begin{description}
+  \item [LEGO] Logical.
+\end{description}
+
+If LEGO is equal to .FALSE., the vector X will not be assembled and part of the
+result (due to the off-diagonal terms of A) will be contained in the array W of
+structure MESH. The vector X will contain only the contribution of the
+diagonal.
+
+The aim of LEGO=.FALSE. is to save on assemblies during calculations where X is
+the sum of several matrix x vector products.
+
+Thus to calculate X = A Y + B Z, the following two calls will be made one after
+the other:
+
+\begin{lstlisting}[language=TelFortran]
+CALL MATVEC('X=AY    ',X,A,Y,C,MESH,LEGO=.FALSE.)
+CALL MATVEC('X=X+AY  ',X,B,Z,C,MESH,LEGO=.TRUE.)
+\end{lstlisting}
+
+This will save on the assembly of the product A Y.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE MATRBL(OP,X,A,Y,C,MESH)
+\end{lstlisting}
+
+The principle is the same as MATVEC but MATRBL applies to blocks.
+
+If A is a block of 4 matrices. X and Y must be blocks of 2 vectors.
+
+If A is a block of 9 matrices. X and Y must be blocks of 3 vectors.
+
+The only operations that are possible for the moment are:
+\begin{itemize}
+  \item OP = 'X=AY    '  : X = AY
+  \item OP = 'X=TAY   '  : X = TA Y (TRANSPOSED OF A)
+\end{itemize}
+
+\section{Solving linear systems}
+
+The processing of a linear system is handled entirely by the subroutine SOLVE,
+except for the Dirichlet-type boundary conditions processed by DIRICH (see also
+B.III.5).
+%\todo{change reference}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE DIRICH( F,S,SM,FBOR,LIMDIR,WORK,MESH,KDIR,MSK,MASKPT)
+\end{lstlisting}
+
+\begin{description}
+  \item [F] Initial and future solution of the system
+  \item [S] System matrix
+  \item [SM]    Right hand side of system ("Second membre" in French)
+  \item [FBOR]  Dirichlet point boundary condition
+  \item [LIMDIR] Boundary conditions type if LIMDIR(K) = KDIR the $K^{th}$
+    boundary point is a Dirichlet type point.
+  \item [WORK] Working array block.
+  \item [KDIR] Convention for Dirichlet conditions
+  \item [MESH] BIEF\_MESH structure
+  \item [MSK] if YES, presence of masked elements
+  \item [MASKPT] Masked points array
+    \begin{itemize}
+      \item =1 : Normal
+      \item =0 : Masked point
+    \end{itemize}
+\end{description}
+
+If S is a block of 4 or 9 matrices, F must be a block of 2 or 3 vectors, LIMDIR
+must be an array with 2 or 3 dimensions, and FBOR must be an array of 2 or 3
+vectors.
+
+\telkey{DIRICH} will modify the matrices and right hand sides of the system to
+take into account the prescribed values.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE SOLVE(X,A,B,TB,CFG,INFOGR,MESH,AUX)
+\end{lstlisting}
+
+\begin{description}
+  \item [X] Solution vector.
+  \item [A] System matrix.
+  \item [B] Second member of system.
+  \item [TB] Block containing working arrays.
+  \item [CFG] Solver configuration.
+  \item [INFOGR] if .TRUE., information will be printed.
+  \item [MESH] BIEF\_MESH structure.
+  \item [AUX] Matrix used for preconditioning. Not used by diagonal
+    preconditioning
+\end{description}
+
+Here is the meaning of options stored in the SLVCFG structure called above CFG:
+\begin{description}
+  \item [CFG\%SLV]
+    \begin{description}
+      \item [1] Conjugate gradient
+      \item [2] Conjuguate residual
+      \item [3] Normal equation on conjugate gradient
+      \item [4] Minimal error
+      \item [5] Conjugate gradient squared
+      \item [6] Conjugate gradient squared stabilised
+      \item [7] Gmres
+    \end{description}
+
+  \item [CFG\%KRYLOV] Only used by GMRES. The option is the dimension of
+      Krylov's space (see ref. \citet{Hervouet1991}).
+
+  \item [CFG\%PRECON] Preconditioning choice.
+    \begin{description}
+      \item [1] Nothing
+      \item [2] Diagonal preconditioning
+      \item [3] Block-diagonal preconditioning
+      \item [5] Diagonal preconditioning with absolute values of diagonal
+      \item [7] Crout preconditioning
+      \item [11] Gauss-seidel ebe preconditioning
+      \item [13] Matrix given by the user
+      \item [17] Specific to \telemac{3D}. Direct solution on verticals are
+        used as preconditioning.
+    \end{description}
+
+  \item [CFG\%EPS] Relative accuracy requested, or absolute if norm of the
+      right-hand side is less than 1..
+
+  \item [CFG\%ZERO] Epsilon for the divisions by zero.
+
+  \item [CFG\%NITMAX] Maximum number of iterations.
+\end{description}
+
+TB will be used by \telkey{SOLVE} to find \telkey{BIEF\_OBJ} structures with
+working arrays. The number of structures to be placed in TB depends on the
+method chosen. At the time being, the minimum number of arrays in TB must be:
+
+\telkey{S*MAX(7,2+2*METHOD\%KRYLOV)} where S is 1 if the system is made of 1
+  matrix, 2 for blocks of 4 matrices (2 unknowns like in ARTEMIS) and 3 for
+  blocks of 9 matrices (3 unknowns like in \telemac{2D}).
+
+\section{PARALLELISM}
+
+Parallelism consists of using simultaneously a cluster of computers, or a group
+of processors in the same computer, to solve a single problem. Using n
+processors would ideally divide by n the time necessary to solve the same
+problem with only one processor. The task would be easy if the problem could be
+broken down into sub-tasks, independent of each other. It becomes much more
+difficult when each processor needs the results from the others. We will focus
+hereafter on parallelism performed with processors having each its own memory,
+and communicating with the others via message transmission, this is the case
+with networks of work stations or PC's and is known as distributed-memory
+parallelism.
+
+Many experiments in automatic parallelism, where compilers themselves perform
+the task of optimizing the program, showed very poor improvement in CPU time.
+Furthermore, vectorization and parallelism appeared to be contradictory.
+Vectorization requires simple loops to perform sub-tasks whereas
+distributed-memory parallelism hands over complex tasks to each processor so as
+to optimize communication time and data transmission time. Efficiently
+vectorized software would be naturally poorly parallelized. As an example, the
+assembly loops resulting from an EBE matrix-vector product cannot be
+accelerated by more than a ratio of two even if we overlook the communication
+time. This is due to the fact that the results of each processor have to be
+assembled. That leads to a new cost which limits drastically the overall time
+to be gained. This is known as a granularity problem, the size of the tasks to
+be parallelized being too small. It is unlikely that progress in the algorithm
+would help in solving this theoretical bottleneck. From that, the idea emerges
+to break up the problem in another way: not by isolating small tasks but in a
+kind of geographical way, by decomposing the domain of computation. This idea
+of domain decomposition aims at assigning onto each processor one part of the
+domain over which it would solve the fluid mechanics problem. The
+implementation is quite easy in the case of explicit algorithms: each equation
+is only a function of the variables related to the nodes in the immediate
+vicinity, computed at the earlier time step. Each processor is then in charge
+of the equations related to a group of nodes, and of the data concerning the
+neighbours of these nodes, resulting from the previous time step. This is
+executed merely by a partition of the domain, with an overlap of one element,
+and data transmission at the end of each time step. In the case of our implicit
+algorithms, and especially with linear systems solved on the whole domain, the
+implementation is more complex, though possible. In fact, we can guarantee that
+the results of a parallel computation will be the same as a scalar computation,
+except for truncation errors because computations will not be performed in the
+same order. Parallelism (initially implemented on our algorithms by Reinhard
+Hinkelmann at the University of Hanover can be limited to the following
+problems:
+\begin{itemize}
+  \item Partition of the domain,
+  \item Communication between processors.
+  \item Implementation of some basic algorithms: vector assembly, dot product,
+    computation of normal vector and so on.
+\end{itemize}
+We will examine these three points hereafter.
+
+\subsection{Partition of the domain}
+
+In the case of finite element meshes and implicit algorithms, it is better to
+partition without overlapping, edge to edge. The specifications for an
+efficient domain decomposer would be the following:
+\begin{itemize}
+  \item realizing a partition of meshes of triangles (the sub-domains of
+    three-dimensional meshes of prisms will be made from sub-domains of
+    triangles).
+  \item partitioning the domain into blocks in order to ensure a balance
+    between the processors. Because the main algorithms are made of loops over
+    the elements and nodes, the partition will guarantee a balance between the
+    numbers of elements, or similarly between the number of nodes within each
+    sub-domain.
+  \item minimizing the number of nodes shared by different sub-domains and for
+    which communications between processors will be necessary.
+\end{itemize}
+
+We currently use the Metis mesh partitioner, which is available on the web
+site: \url{http://www-users.cs.umm.edu/~karypis/metis}.
+
+\subsection{Data structure specific to parallelism}
+
+We describe here some of the data structures that will be often used in
+parallelism.
+
+Each sub-domain is assigned to a processor together with the information of a
+standard domain (connectivity table IKLE, nodes coordinates and so on) but also
+with additional information, to help in assembling the results over the whole
+domain at the end of the computation. This information is as follows:
+\begin{itemize}
+  \item an array KNOLG storing the global numbers of the nodes in
+    the whole mesh. The inverse array, KNOGL, is defined within a loop:
+    \begin{lstlisting}[language=TelFortran]
+    DO I=1,NPOIN
+      KNOGL(KNOLG(I))=I
+    ENDDO
+    \end{lstlisting}
+  \item an array NACHB whose dimension is (5,NPTIR), where NPTIR
+    is the number of the interfacial nodes between the sub-domain and the
+    others.  These interfacial nodes are numbered from 1 to NPTIR. NACHB(1,IR)
+    is the global number of the interfacial node IR. This array gathers the
+    information to be transmitted to the others processors. The integers
+    NACHB(2,IR) to NACHB(5,IR) are the numbers of the other sub-domains which
+    the nodes belong to. They may have a -1 value if these sub-domains are less
+    than 4. The dimension 5 must be increased if a node belongs to more than 5
+    sub-domains.
+\end{itemize}
+Some additional information has to be defined on the actual boundary nodes of a
+2-dimensional domain:
+\begin{itemize}
+  \item ISEG, XSEG, YSEG and NUMLIQ.
+    \begin{itemize}
+      \item If ISEG $>$0: the boundary node just after belongs to another
+        sub-domain, its global number is ISEG, and its real coordinates are
+        XSEG and YSEG.
+      \item If ISEG $<$0: the boundary node just before belongs to another
+        sub-domain, its global number is -ISEG, and its real coordinates are
+        XSEG and YSEG.
+      \item If ISEG = -999999: the node verifies the two conditions above (this
+        pathological case is not considered by the software).
+    \end{itemize}
+    The latest algorithms designed in Telemac replaced the use of XSEG and YSEG
+    by parallel communications, thus these arrays could be removed in a near
+    future.
+\item the integer array NUMLIQ is a specific numbering of the liquid
+  boundaries, which allows association of boundary conditions to them, e.g. an
+  imposed discharge. A numbering is easy to define when the whole domain is
+  known. A possible convention is to start the numbering of these liquid
+  boundaries (inflow and outflow) from the extreme south-west node of the
+  domain and proceeding in the anti clock-wise way along the edge. In the case
+  of a sub-domain for which it is not possible to go over the whole contour,
+  the numbering must be specified because it cannot be simply recomputed.
+
+\item IFAPAR is used by the method of characteristics to compute the
+  paths or trajectories when they cross interfaces between sub-domains. The
+  size is IFAPAR(6,NELEM2), as only 2-dimensional data is required.
+  IFAPAR(1:3,IELEM) gives the processor numbers behind the 3 edges of a
+  triangle. IFAPAR(4:6,IELEM) gives, for the same edges, the local number in
+  its processor of the element behind the edge.
+
+\item an array INDPU, inverse of NACHB(1,*) helps storing the data
+  received from the other processors: INDPU(NACHB(1,I))=I. Given the number of
+  an interfacial node, INDPU sends back its global number within the
+  sub-domain.
+
+\item an array FAC, providing for each node, the inverse of the number
+  of sub-domains to which it belongs (see the algorithm for dot product
+  hereafter).
+\end{itemize}
+
+\subsection{Communication between processors}
+
+Programming by communicative process requires the use of a library of
+communication functions, such as PVM or MPI. We currently use MPI version 2.
+These libraries perform different operations:
+\begin{itemize}
+  \item setting up of the parallel machine, that is, organizing the
+    communication between various computers or processors,
+  \item running programs on all the processors (spawn order with PVM).  In some
+    cases, one processor has the function of a master, the others being the
+    slaves. The program is first run on the master processor, and includes a
+    start order for the slaves. A group name is given to the computation. Apart
+    from this initialization step, there is then no more hierarchy between the
+    processors.
+  \item various kinds of communication: point to point or collective.
+\end{itemize}
+
+\paragraph{Point to point communication}
+
+This is the basic communication between two processors, the receptor and the
+transmitter. The send function and the receive function can differ depending on
+the types of data (integers, real numbers, etc.). The functions arguments are:
+\begin{itemize}
+  \item identifier of receptor or transmitter,
+  \item address of the data to transmit or receive,
+  \item a message flag.
+\end{itemize}
+Transmissions can be made in two ways. Synchronous transmission occurs when
+waiting for the receptor to be ready; this avoids a copy in the buffer.
+Asynchronous transmission occurs whatever the state of the reception.
+
+\paragraph{Collective communication}
+
+Collective communications use simultaneously all the processors. Three types
+may be distinguished:
+\begin{itemize}
+  \item broadcast: a processor (generally the master) sends the same data to
+    all the slaves,
+
+  \item synchronization: refers to a barrier which all processors must reach
+    before going on the computation,
+
+  \item conditional transmission: each processor sends a data and receives in
+    return the sum, the maximum or the minimum of all the data transmitted.
+\end{itemize}
+To make the source programs independent of the choice of the communication
+functions library, it is worth writing an interface library to deal with all
+the communications between the processors. In Telemac this library is called
+"parallel". When there is no parallelism involved a fake library "paravoid" is
+used instead, which does not contain any link to a parallelism library. Only a
+few functions are necessary:
+\begin{description}
+  \item [P\_DMAX(X)] maximum of X over all the processors. X is a
+    double-precision real.
+  \item [P\_DMIN(X)] minimum of X over all the processors. X is a
+    double-precision real.
+  \item [P\_DSUM(X)] sum of all the values of X provided by all the processors.
+    X is a double-precision real.
+  \item [P\_IMAX(I)] maximum of I over all the processors. I is an integer.
+  \item [P\_IMIN(I)] minimum of I over all the processors. I is an integer.
+  \item [P\_ISUM(I)] sum of all the values of I provided by all the processors.
+    I is an integer.
+  \item [P\_MAIL(CHAINE,NCAR)] broadcasting a character string CHAINE, with a
+    length NCAR, to all the processors.
+  \item [P\_READ(BUFFER,NBYTES,SOURCE,TYPE)] reading of NBYTES bytes of data
+    whose type is TYPE, to be stored at the address BUFFER and sent by the
+    processor SOURCE.
+  \item [P\_SYNC] stops the processors till all of them call this function.
+  \item [P\_WRIT(BUFFER,NBYTES,DEST,TYPE)] writing of NBYTES bytes of data,
+    whose type is TYPE, located at the address BUFFER and intended for the
+    processor DEST.
+\end{description}
+
+\subsection{Adaptation of the algorithms}
+
+\paragraph{Dot product}
+
+The dot product of two vectors over the whole domain implies local computing
+first, then summing up over the whole sub-domains. While summing, the interface
+nodes are taken into account several times. The array FAC is then used to
+correct this error. The parallel dot product \telkey{P\_DOT} of the vectors X
+and Y is written as follows:
+
+\begin{lstlisting}[language=TelFortran]
+P_DOT = 0.D0
+DO I=1,NPOIN
+  P_DOT=P_DOT+X(I)*Y(I)*FAC(I)
+ENDDO
+P_DOT=P_DSUM(P_DOT)
+\end{lstlisting}
+
+On a vector computer, multiplying by FAC(I) does not affect the time of
+computation. On the contrary, the call to the \telkey{P\_SUM} routine causes a
+synchronization of the processors.
+
+\paragraph{Matrix x vector product}
+
+First, building the matrices and computing the product are done locally,
+independently of the other sub-domains. The result is a vector without any
+contribution from the neighbour sub-domains, on the interfacial nodes. The
+missing contributions result from the computation of the vector on the other
+sub-domains. For example, if the node I belongs to two different sub-domains,
+for which we get X(I)=3 and X(I)=5 respectively, the actual value of X(I) would
+be the sum 3+5. This can be achieved if processor 1 sends the value 3 to
+processor 2 and processor 2 sends the value 5 to processor 1. Although it
+appears simple, this operation is quite complex to achieve because it can lead
+to a fatal risk: both processors waiting endlessly for the contribution of the
+other before sending their own. We describe hereafter the series of operations
+required, known as ``blocking communication''. More recently, a non-blocking
+communication scheme has been implemented by Pascal Vezolles from IBM Europe.
+Basically this second approach consists of providing MPI with the list of
+communications to perform, and MPI internal routines will organize the work
+with their own algorithms.
+
+Communication of data after a matrix-vector product:
+
+Up to version 5.8:
+
+Generally speaking we have a number of processors which much send or receive
+information to or from the others. The main difficulty is to avoid blocked
+situations where two processors would wait to receive information from each
+other before sending their own, hence the definition of higher rank and lower
+rank processors. We have kept the explanations on this obsolete implementation
+because it really tackles the problem, while the new implementation from
+version 5.9 on only uses the capabilities of the MPI language, namely the non
+blocking communication with subroutines \telkey{MPI\_IRECV} and
+\telkey{MPI\_ISEND}.
+
+The transmission is split into 4 different tasks, depending on the rank of the processors:
+\begin{itemize}
+  \item transmission of the data to the higher rank processors.
+  \item reception by the higher rank processors.
+  \item transmission of the data to the lower rank processors.
+  \item reception by the lower rank processors.
+\end{itemize}
+
+New data are required for every processor. Each processor prepares its own
+numbering of higher rank and lower rank processors as well as a numbering of
+nodes interfacing with each of these processors. 4 new arrays IKP, NHP, IKM and
+NHM are necessary to navigate from one numbering to another:
+\begin{itemize}
+  \item IKP(NBMAXDSHARE,2): IKP(IZH,1) refers to the processor which is the
+    $IZH^{th} $ local higher rank processor. IKP(IZH,2) is the number of
+    interfacial nodes shared with this processor. NBMAXDSHARE is defined in
+    BIEF\_DEF where it is set to 80. It is the maximum number of sub-domains
+    neighbouring a given sub-domain.
+  \item IKM(NBMAXDSHARE,2): IKM(IZH,1) refers to the processor which is the
+    $IZH^{th} $ local lower rank processor. IKM(IZH,2) is the number of
+    interfacial nodes shared with this processor.
+  \item NHP(NBMAXDSHARE,NPTIR): NHP(IZH,IR) is the global number in the
+    sub-domain of a point whose number is IR in the interface with the$IZH^{th}
+    $ higher rank processor.
+  \item NHM(NBMAXDSHARE,NPTIR): NHM(IZH,IR) is the global number in the
+    sub-domain of a point whose number is IR in the interface with the$IZH^{th}
+    $ lower rank processor.
+  \item ILMAX is the maximum distance in order between the processor and its
+    neighbours. It will restrict the size of the loops over these neighbours.
+\end{itemize}
+Considering this information, the data transmission for vector V (defined over
+the whole domain) and for processor IPID, is written as follows:
+\begin{enumerate}
+  \item storage of the data to be sent in a first buffer
+  \begin{lstlisting}[language=TelFortran]
+DO I=1,NPTIR
+  BUF(I)=V(NACHB(1,I))
+ENDDO
+  \end{lstlisting}
+
+  \item transmission to higher rank processors, for example processor ILP
+  \begin{enumerate}
+    \item storage of the data relative to the processor in a second buffer
+
+    \begin{lstlisting}[language=TelFortran]
+DO I=1,IKP(ILP,2)
+  ERGBUF(I)=BUF(INDPU(NHP(ILP,I)))
+ENDDO
+    \end{lstlisting}
+
+    \item sending
+    \begin{lstlisting}[language=TelFortran]
+CALL P_WRIT(ERGBUF,8*IKP(ILP,2),IKP(ILP,1),
+            ABS(IKP(ILP,1)-IPID)
+    \end{lstlisting}
+  \end{enumerate}
+  \item reception from lower rank processors, for example processor ILM
+  \begin{enumerate}
+    \item reception
+    \begin{lstlisting}[language=TelFortran]
+CALL P_READ(ERGBUF,8*IKM(ILM,2),IKM(ILM,1),
+            ABS(IKM(ILM,1)-IPID)
+    \end{lstlisting}
+
+    \item storage in vector V
+    \begin{lstlisting}[language=TelFortran]
+DO I=1,IKM(ILM,2)
+  V(NHM(ILM,I))=V(NHM(ILM,I))+ERGBUF(I)
+ENDDO
+    \end{lstlisting}
+  \end{enumerate}
+
+  \item transmission to lower rank processors, for example processor ILM
+
+  \begin{enumerate}
+    \item storage of the data relative to the processor in a second buffer
+
+    \begin{lstlisting}[language=TelFortran]
+DO I=1,IKM(ILM,2)
+  ERGBUF(I)=BUF(INDPU(NHM(ILM,I)))
+ENDDO
+    \end{lstlisting}
+
+    \item sending
+
+    \begin{lstlisting}[language=TelFortran]
+CALL P_WRIT(ERGBUF,8*IKM(ILM,2),IKM(ILM,1),
+            ABS(IKM(ILM,1)-IPID)
+    \end{lstlisting}
+
+  \end{enumerate}
+  \item reception from upper rank processors, for example processor ILP
+  \begin{enumerate}
+    \item reception
+
+    \begin{lstlisting}[language=TelFortran]
+CALL P_READ(ERGBUF,8*IKP(ILP,2), IKP(ILP,1),
+            ABS(IKP(ILP,1)-IPID)
+    \end{lstlisting}
+
+    \item summing into vector V
+
+    \begin{lstlisting}[language=TelFortran]
+DO I=1,IKP(ILP,2)
+  V(NHP(ILP,I))=V(NHP(ILP,I))+ERGBUF(I)
+ENDDO
+    \end{lstlisting}
+  \end{enumerate}
+\end{enumerate}
+
+This algorithm can be made more complex to process several vectors at the same
+time or for tasks different from summing.
+
+From version 5.9 on:
+
+The implementation is much easier with the MPI subroutines \telkey{MPI\_IRECV}
+and \telkey{MPI\_ISEND} (see subroutine PARACO). Only lists of processors are
+necessary, regardless of any order in the communications, the rest is handled
+by MPI. To achieve this, a number of new data have been added to the
+\telkey{BIEF\_MESH} structure. They are listed below. Moreover in version 5.9
+parallel communication data linked to segments have been added, which doubles
+the necessary data.
+\begin{description}
+  \item [NB\_NEIGHB] number of neighbouring processors (seen by points).
+  \item [NB\_NEIGHB\_SEG] number of neighbouring processors (seen by segments).
+  \item [NB\_NEIGHB\_PT] number of points shared with processors (array of size
+    NB\_NEIGHB).
+  \item [NB\_NEIGHB\_PT\_SEG] number of segments shared with processor I (array
+    of size NB\_NEIGHB\_SEG).
+  \item [LIST\_SEND] list of neighbouring processors to which data must be sent
+    (seen by points).
+  \item [LIST\_SEND\_SEG] list of neighbouring processors to which data must be
+    sent (seen by segments).
+\end{description}
+There should be also accordingly a LIST\_RECEIVE, but it is actually exactly
+like LIST\_SEND, so it has not been created.
+\begin{description}
+  \item [NH\_COM] array of size (DIM1\_NHCOM,NB\_NEIGHB). DIM1\_NHCOM is at
+    least the maximum number of points that can be shared with a single
+    processor. It can be slightly more for optimisation (see subroutine
+    PARINI). NH\_COM(I,J) is the global number in the sub-domain of the
+    $I^{th}$ point shared with the $J^{th}$ neighbouring processor.
+  \item [NH\_COM\_SEG] like NH\_COM but for segments.
+  \item [BUF\_SEND] buffer of memory that will be used by MPI subroutines.
+  \item [BUF\_RECV] buffer of memory that will be used by MPI subroutines.
+\end{description}
+
+\paragraph{Specific cases}
+
+It is worth noting that just a few alterations of the scalar and matrix-vector
+products are sufficient to solve a linear equation with partial derivative in
+shared memory. Furthermore, the contributions of the interfacial terms can be
+postponed until the final solving. They would be necessary before only if real
+nodal values, dot product, matrix-vector product or final results are needed.
+For a linear equation, these operations can be confined in the resolution of
+the linear system. Once the tools have been set up to communicate between
+processors, parallelization of fluid mechanics software is quite easy. However,
+specific cases, arising mainly from non-linearity have to be considered. The
+basic idea is to get identical results on vector or parallel computers, except
+for truncation errors. Some examples follow:
+\begin{itemize}
+  \item Diagonal preconditioning: the diagonal used for preconditioning has to
+    be completed at the interfaces.
+    %todo : Check that equation
+  \item Computation of nodal values after projection onto a basis: let us
+    consider the gradient of a function$f$. A mean nodal value of
+    $\mathop{grad}^{\longleftrightarrow} (f)$  is given by:
+    \[\mathop{grad}^{\longleftrightarrow} (f)_{i} =
+      \frac{\mathop{\smallint}\nolimits_{\Omega } \mathop{grad}^{\longleftrightarrow} (f)\Psi _{i}
+d\Omega }{\mathop{\smallint }\nolimits_{\Omega } \Psi _{i}  d\Omega } \]
+issued from the mean-value theorem. In this case the computation of the general
+term  $\mathop{\smallint }\nolimits_{\Omega } \Psi _{i}  d\Omega $  has to be
+completed at the interfaces. The vector including: $\mathop{\smallint
+}\nolimits_{\Omega } \mathop{grad}^{\longleftrightarrow} (f)\Psi _{i}
+d\Omega $ is unchanged when added to the right-hand side of a linear system
+(the solver itself will complete this term). However it must be completed when
+used to compute another term such as a turbulent production.
+  \item any global concept: maximum Courant number, maximum Froude number,
+    etc., have to be transmitted between processors.
+
+  \item the method of characteristics: for high values of the Courant number, a
+    characteristic curve may leave a sub-domain and enter others. Programming
+    this situation within the parallel architecture requires a huge number of
+    random transmissions, depending on the flow. The implementation of this
+    technique in parallel has been achieved by Jacek Jankowski from
+    BundesAnstalt f\"{u}r Wasserbau in Germany.
+\end{itemize}
+
+\section{UTILITIES}
+
+A number of tools are offered in \bief, in the form of functions and subroutines.
+
+\subsection{FUNCTIONS}
+
+All the functions described below facilitate programming and avoid transmission of arguments.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION DIMENS(IELM)
+\end{lstlisting}
+
+IELM is a type of element. DIMENS returns the dimension corresponding to the
+element given. For example, DIMENS(11) = 2.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION DOTS(T1,T2)
+\end{lstlisting}
+
+T1 and T2 may be two vectors, or two blocks.
+
+For vectors, returns their scalar product. For blocks, returns the sum of the
+scalar products of the vectors they contain.
+
+\begin{WarningBlock}{Warning:}
+Only the first dimension of the vectors is taken into account for the time being.
+\end{WarningBlock}
+
+See also \telkey{P\_DOTS}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+LOGICAL FUNCTION EOF(LUNIT)
+\end{lstlisting}
+
+LUNIT is the logical function of a file. EOF says if we are at the end of this
+file or not.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION IELBOR(IELM,I)
+\end{lstlisting}
+
+Returns the type of boundary element associated with a given element. For
+example, IELBOR(11,1) = 1. I is used when there are several types of boundary
+elements. For a prism, for example, IELBOR(41,1)=11 and IELBOR(41,2)=21.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_NBFEL(IELM,MESH)
+\end{lstlisting}
+
+Returns the number of faces for the element type IELM (value initialised in
+\telkey{BIEF\_ININDS})
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_NBPEL(IELM,MESH)
+\end{lstlisting}
+
+Returns the number of points per element for the element type IELM. (value
+initialised in \telkey{BIEF\_ININDS}). Though MESH is an argument, it is not function
+of the mesh.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF\_NBMPTS(IELM,MESH)
+\end{lstlisting}
+
+Returns the maximum number of points in the domain for a given discretisation,
+in the case of an adaptive mesh. For the time being, this function is equal to
+BIEF\_NBPTS.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_NBPTS(IELM,MESH)
+\end{lstlisting}
+
+Returns the number of points in the domain for a given discretisation (value
+initialised in \telkey{BIEF\_ININDS}) and a given mesh.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_NBSEG(IELM,MESH)
+\end{lstlisting}
+
+Returns the number of segments in the domain for a given discretisation (value
+initialised in \telkey{BIEF\_ININDS}) and a given mesh.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION BIEF_NBSEGEL(IELM,MESH)
+\end{lstlisting}
+
+Returns the number of segments of an element for a given discretisation (value
+initialised in \telkey{BIEF\_ININDS}). Actually does not depend on the mesh.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION P_DOTS(T1,T2,MESH)
+\end{lstlisting}
+
+As DOTS but takes into account domain decomposition. \telkey{P\_DOTS} will thus
+communicate with other processors to get their contribution.
+
+MESH is the mesh structure.
+
+\begin{WarningBlock}{Warning:}
+Only the first dimension of the vectors is taken into account for the time being.
+\end{WarningBlock}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION BIEF_SUM(T1)
+\end{lstlisting}
+
+T1 may be a vector, or a block.
+
+For a vector, returns the sum of the vector components. For a block, returns
+the sum of all the components of the vectors it contains.
+
+\begin{WarningBlock}{Warning:}
+Only the first dimension of the vectors is taken into account for the time being.
+\end{WarningBlock}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+INTEGER FUNCTION TIME_IN_SECONDS()
+\end{lstlisting}
+
+Returns the time in seconds given by the computer clock. For computing the
+elapse time of a job. Beware, this value is sometimes reset to zero by the
+computer, generally every 24 hours.
+
+\subsection{Basic subroutines}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE BIEF\_CLOSE\_FILES(CODE,FILES,NFILES,PEXIT
+\end{lstlisting}
+
+Replaces the old \telkey{CLOSE\_FILES} or \telkey{CLOSE\_FILES2}
+
+\underbar{arguments}:
+\begin{description}
+  \item [CODE] is a 20 characters string saying which programme calls the
+    subroutine, for example 'ARTEMIS'.
+  \item [FILES] is an array of \telkey{BIEF\_FILE} structures containing a
+    description of all files used by the program.
+  \item [NFILES] is the number of files (and dimension of FILES)
+  \item [PEXIT] is a logical value. If yes, the call to the subroutine will
+    also trigger an exit from MPI.
+\end{description}
+
+All the relevant files, whose names are known through the DECLARATIONS\_TELEMAC
+module, are closed by this subroutine.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CLIP(VEC,XMIN,CLPMIN,XMAX,CLPMAX,NPOIN)
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [CLIP] clips an array of real values:
+    \begin{itemize}
+      \item Lower values limited by XMIN if the logic CLPMIN is true.
+      \item Upper values limited by XMAX if the logic CLPMAX is true.
+    \end{itemize}
+  \item [CLIP] can handle vector structures as well as conventional FORTRAN
+    arrays.
+  \item [NPOIN] For a conventional array, NPOIN is taken as a dimension of the
+    array.
+  \item [VEC] must be a BIEF\_OBJ structure of vector type:
+    \begin{itemize}
+      \item If NPOIN = 0, the dimension given by the structure is taken.
+      \item If NPOIN$<$0, the dimension -NPOIN is imposed. This must then be
+        less than or equal to the real dimension.
+    \end{itemize}
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE FILTER( VEC,BLDMAT,T1,T2,A,FORMUL,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL,N)
+\end{lstlisting}
+
+Filtering operation of the vector VEC. T1 and T2 are working BIEF\_OBJ
+structures. From XMUL, the arguments are the same as those of MATRIX. A is a
+matrix which is either given (if the logical value BLDMAT is false), or
+constructed according to the formula FORMUL (if BLDMAT is true). In the latter
+case, the arguments F, G, H, U, V, W, may be used if they appear in the formula
+FORMUL.
+
+VEC is modified \textbf{N times} by FILTER according to the following formula:
+$new VEC = XMUL*\frac{A*VEC}{A^{L}}$
+where $A^{L}$ is the diagonal matrix obtained by mass-lumping A, that is by
+totalling the terms in each row.
+
+If A is a mass matrix (FORMUL = 'MATMAS          '), a smoothed vector VEC is
+obtained, with its integral in the domain (the 'mass') preserved.
+
+If FORMUL = 'FMATMA          ', a smoothed vector VEC is obtained, with
+preservation of the integral of the function F VEC.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE BIEF_OPEN_FILES(CODE,FILES,NFILES,PATH,FLOT,IFLOT,ICODE)
+\end{lstlisting}
+
+Replaces the old \telkey{OPEN\_FILES}, to enable coupled programs to run concurrently
+even if they use the same logical units.
+
+The first three arguments are like \telkey{BIEF\_CLOSE\_FILES}.
+
+PATH is the full name of the path leading to the directory containing the files
+(or at least the parameter file).
+
+FLOT is a logical value stating if there is code coupling. In this case the
+logical units of every file are dynamically computed and will start at IFLOT+1,
+IFLOT being the argument after FLOT.
+
+IFLOT: see explanations on FLOT above.
+
+ICODE is the code number in case of coupling (the calling program will be code 1, the called program will be code 2).
+
+The basic data for opening the files is stored in the dictionary of each
+program, namely in the key-word called SUBMIT. Here is the example for the
+geometry file in \telemac{2D}:
+
+SUBMIT : 'NGEO-READ;T2DGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
+
+NGEO is no longer used.
+
+READ means that this file will be opened in only read mode.
+
+T2DGEO will be the name of the file in the temporary directory where the case
+will be run. T2DGEO is also declared in \telemac{2D} as an integer which is the
+file number. It will be 1 and will not float in case of code coupling.
+
+OBLIG means that the file is mandatory
+
+BIN means that it is a binary file
+
+LIT is a message for parallelism that the file will be read by every processor
+and must thus be copied for every of them. ECR would mean that it is a result
+that must be given back with an extension indicating the processor number.
+
+SELAFIN-GEOM indicates that the file is at the SELAFIN format and GEOM says
+that it must be taken as the geometry file for domain decomposition. Other
+possibilities are : CAS (steering file), DICO (dictionary), CONLIM (boundary
+conditions to be taken into account in domain decomposition).
+
+All the possibilities are documented in the dictionaries of parallelised
+programs.
+
+The last argument ICODE is the program number in case of coupling. So far some
+data in \bief library are concurrently used by coupled programs, hence \bief
+must now which program is running, this is done by using: \telkey{CALL
+CONFIG\_CODE(ICODE)} when shifting to another program in code coupling,
+\telkey{CONFIG\_CODE} will thus avoid conflicts between files.
+
+Note : the parameter file and the dictionary have prescribed names and are not
+opened by \telkey{BIEF\_OPEN\_FILES}. For example, in \telemac{2D} they are
+opened and closed in subroutine LECDON\_TELEMAC2D.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE PARCOM(X,ICOM,MESH)
+\end{lstlisting}
+
+PARCOM completes the matrix-vector product in parallelism, by adding to a
+vector X contributions from elements that are in other sub-domains.
+
+\underbar{Arguments}:
+\begin{description}
+  \item [X] is a BIEF\_OBJ structure of a vector or a block of vectors.
+  \item [ICOM] is an option.
+    \begin{itemize}
+      \item ICOM = 1:  the contribution with maximum absolute value is taken.
+      \item ICOM = 2:  the sum of contributions is taken (the most widely used option).
+      \item ICOM = 3: the maximum value is taken.
+      \item ICOM = 4: the minimum value is taken.
+    \end{itemize}
+  \item [MESH] is the BIEF\_MESH structure of the mesh.
+\end{description}
+
+This subroutine is able to work in 2D and 3D as well. Blocks of vectors are
+also treated. In 2D it will also cope with quadratic discretisation, which
+implies not only a communication of points, but also of segments. PARCOM calls
+a subroutine \telkey{PARCOM2} and a subroutine \telkey{PARCOM2\_SEG} which act
+directly on real vectors. The call to PARCOM may be bypassed in specific cases,
+e.g. when a parallel communication of segments is required.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE PARMOY(X,MESH)
+\end{lstlisting}
+
+\telkey{PARMOY} is used in parallelism to give the mean value of a vector X at
+the interface between 2 sub-domains. MESH is the \telkey{BIEF\_MESH} structure
+of the mesh.
+
+\subsection{Subroutines dealing with the selafin format file}
+%\todo{Update with hermes ?}
+The SELAFIN format is used in 2D and 3D for the results files and for the
+geometry files. It is given in appendix 3. Several routines are offered for
+writing or reading such files. Others remain internal routines in \bief and will
+be called directly either by ALMESH or INBIEF.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE ECRGEO(X,Y,NPOIN,NBOR,NFIC,NVAR,TEXTE,VARCLA,
+                  NVARCL,TITRE,SORLEO,NSOR,IKLE,NELEM,
+                  NPTFR,NDP,DATE,TIME,NCSIZE,NPTIR,KNOLG)
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [X,Y] are the coordinates of the mesh (equivalent to MESH\%X\%R and MESH\%Y\%R)
+  \item [NPOIN] is the number of nodes in the mesh
+  \item [NBOR] is the array MESH\%NBOR\%I giving the global numbers of boundary points.
+  \item [NFIC] is the logical unit of the file
+  \item [NVAR] is the number of variables to write in the file (at every time-step)
+  \item [TEXTE] is the 32 characters strings given the names and units of
+    variables (SORLEO, see below, will say if they must be put in the file).
+  \item [VARCLA] is another array of 32 characters strings used for the
+    so-called clandestine variables in \telemac{2D}, i.e. variables which are
+    in the geometry file and are merely transmitted to the results file.
+  \item [NVARCL] is the number of clandestine variables.
+  \item [TITRE] is the title of the file or the study (80 characters).
+  \item [SORLEO] is an array of logical values saying which variables in the
+    list TEXTE will be put in the file.
+  \item [NSOR] is the size of SORLEO
+  \item [IKLE], NELEM, NPTFR, NDP are the classical components of BIEF\_MESH
+    structures : connectivity table, number of elements, number of boundary
+    points and number of points per element.
+  \item [DATE] and TIME are two arrays of 3 integers giving the year, month,
+    day and hour, minute, second
+  \item [NCSIZE] is the number of processors.
+  \item [NPTIR] is the number of interface points with other sub-domains (if NCSIZE greater than 1).
+  \item [KNOLG] is the global number of points in the original mesh (if NCSIZE greater than 1).
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE FILPOL(F,C,XSOM,YSOM,NSOM,MESH)
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [FILPOL] fills a vector F with a constant C, but only for points of F
+    which are in a given polynomial in the computational domain.
+  \item [F] is a BIEF\_OBJ structure of a vector.
+  \item [C] is the constant.
+  \item [XSOM and YSOM] are arrays of double precision numbers giving the
+    coordinates of the apices of the polynomial.
+  \item [NSOM] is the number of apices (e.g. 3 for a triangle).
+  \item [MESH] is the BIEF\_MESH structure of the mesh.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE FIND\_IN\_SEL(RES,NAME,NFIC,W,OK)
+\end{lstlisting}
+
+FIND\_IN\_SEL will find in a SELAFIN format file a variable with a given name.
+
+\underbar{arguments}:
+\begin{description}
+  \item [RES] is a BIEF\_OBJ structure to put the result in.
+  \item [NAME] is the name of the variable (16 characters).
+  \item [NFIC] is the logical unit of the file
+  \item [W] is a working real (real, not double precision) array of size the number of points in the mesh.
+  \item [OK] is a logical value saying if the variable has been found.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE FONSTR( H,ZF,Z,CHESTR,NGEO,NFON,NOMFON,MESH,FFON,LISTIN)
+\end{lstlisting}
+
+FONSTR can find the bottom topography and the bottom friction in a geometry
+file in the SELAFIN format. In this file the bottom topography must be called
+FOND or BOTTOM, the friction must be called FROTTEMENT or BOTTOM FRICTION. If
+the bottom is not in the file, another possibility is that the bottom is
+computed as a function of the free surface and the depth. In this case they
+must be called respectively SURFACE LIBRE or FREE SURFACE and HAUTEUR D'EAU or
+WATER DEPTH. The bottom can also be given as a cluster of bathymetry points in
+a specific file. These data will then be interpolated to give nodal values. The
+format of bathymetry points is the following: every line is dedicated to 1
+point with  X Y Z  in free format. Xand Y are the coordinates and Z is the
+bottom elevation.
+
+Lines beginning with C or B are ignored. With such a standard, SINUSX files can
+be read.
+
+If the bottom friction is not in the geometry file, CHESTR is set to the value
+FFON.
+
+The arguments of FONSTR are:
+\begin{description}
+  \item [H,ZF,Z] are BIEF\_OBJ structures where the depth (if any), the bottom,
+    and the free surface (if present) will be stored.
+  \item [CHESTR] is the BIEF\_OBJ structure for the friction coefficient.
+  \item [NGEO] is the logical unit of the geometry file.
+  \item [NFON] is the logical unit of the bottom file.
+  \item [NOMFON] is the name of the bottom file.
+  \item [MESH] is the BIEF\_MESH structure of the mesh.
+  \item [FFON] is the friction coefficient if it is constant.
+  \item [LISTIN] is a logical value. If yes, information will be printed.
+\end{description}
+
+The bottom friction can then be changed with the user subroutine STRCHE.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE LITENR(VARSOR,CLAND,NPRE,STD,HIST,NHIST,NPOIN,
+                  AT, TEXTPR, TEXTLU, NVAR, VARCLA, NVARCL,
+                  TROUVE, ALIRE, W, LISTIN, MAXVAR)
+\end{lstlisting}
+
+LITENR will read a time record in a selafin file. It assumes that the heading
+with geometry data has been read, and that a number of time records may also
+have been read. Some variables of the next time record are read by LITENR. As
+in ECRGEO, the name of variables is in TEXTPR, but in this list, only the
+variables given by the logical array ALIRE will be read. The result will be put
+in a block called VARSOR. If there are clandestine variables (their number is
+NVARCL), their name is given in VARCL and they will be put into the block
+CLAND. Other arguments are:
+\begin{description}
+  \item [NPRE] logical unit of the file.
+  \item [STD] binary standard of the file (3 characters STD, IBM or I3E).
+    Obsolescent, use 'STD'.
+  \item [HIST] sometimes an array of real values may be put after the time in
+    the same record.
+  \item [NHIST] size of NHIST. So far 0 because it is not implemented in
+    RUBENS.
+  \item [NPOIN] number of points in the mesh.
+  \item [AT] time of the record read by LITENR.
+  \item [TEXTLU] is a working array of character*32 strings to store the names
+    of variables in the file.
+  \item [NVAR] is the number of normal variables
+  \item [TROUVE] is an integer array saying if the variables asked have been
+    found.
+  \item [W :]s a working real (real, not double precision) array of size the
+    number of points in the mesh.
+  \item [LISTIN] is a logical saying if information on what is read must be
+    printed.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE SKIPGEO(NFIC,TITFIC,NPOIN,NVAR,TEXTLU
+\end{lstlisting}
+
+SKIPGEO reads a SELAFIN file with logical unit NFIC up the time records. It
+returns the title of the file: TITFIC, the number of points in the mesh: NPOIN,
+the number of variables stored: NVAR, and their names and units: TEXTLU (an
+array of CHARACTER*32 strings).
+
+\subsection{Subroutines dealing with all formats}
+
+From version 6.2 on several formats are accepted for inputs and outputs and new
+subroutines have been created to deal with this new feature. For example the
+equivalent of the former \telkey{ECRGEO} with be a sequence of a call to
+\telkey{CREATE\_DATASET} and a call to \telkey{WRITE\_MESH}. Writing a record
+of results will be done with \telkey{BIEF\_DESIMP} (which also prints on the
+listing) or \telkey{WRITE\_DATA}.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE BIEF_DESIMP( FORMAT_RES, VARSOR, HIST, NHIST,
+                       N, NRES, STD, AT, LT, LISPRD, LEOPRD,
+                       SORLEO, SORIMP, MAXVAR, NOMVAR, PTINIG, PTINIL )
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [FORMAT\_RES] is the file format (`SELAFIN `, `SELAFIND' or `MED     `)
+  \item [VARSOR] is a block containing BIEF\_OBJ structures with the variables
+    to be printed in the file.
+  \item [HIST] and NHIST are used to add data in the time record of the Selafin
+    format (HIST will be the array of the values and NHIST their number)
+  \item [N] is the number of points to be printed (it may be different from the
+    number of degrees of freedom, as some values are dropped when quasi-bubble
+    or quadratic elements are used).
+  \item [NRES] is the logical unit of the file.
+  \item [STD] is a 3-character string (meant for binary variants, currently not
+    used)
+  \item [AT] is the current time.
+  \item [LT] is the iteration number.
+  \item [LISPRD] and LEOPRD are the printing periods on listing and file.
+  \item [SORLEO] and SORIMP are logical arrays stating if a variable must be
+    exited or not (same order as in the block VARSOR).
+  \item [MAXVAR] is the number of variables in the block VARSOR, and the
+    dimension of SORLEO and SORIMP.
+  \item [NOMVAR] is an array of 32-character strings containing the names (16
+    characters) and units (16 characters) of variables.
+  \item [PTINIG] and PTINIL are the time steps (respectively for file and
+    listing) at which will start the prints. These integers stem from key-words
+    such as \telkey{NUMBER OF FIRST TIME-STEP FOR GRAPHIC PRINTOUTS} in
+    \telemac{2D} and \telemac{3D}.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE BIEF_SUITE(VARSOR, CLAND, NUMDE, NPRE, STD,
+                      HIST, NHIST, NPOIN, AT, TEXTPR,
+                      VARCLA, NVARCL, TROUVE, ALIRE,
+                      LISTIN, FIN, MAXVAR, NPLAN, DT)
+\end{lstlisting}
+
+\telkey{BIEF\_SUITE} is used to start a new computation from previous results.
+The time record to start with is the last one if FIN=.TRUE., and is NUMDEB if
+FIN=.FALSE. Otherwise the principle and arguments are the same as LITENR, see
+above. For Selafin format \telkey{BIEF\_SUITE} is a combination of SKIPGEO and
+LITENR.
+
+NPLAN and DT are optional parameters.
+
+If NPLAN is present (case of \telemac{3D} with prisms) and if the number of
+planes is different, the data will be interpolated to cope with the number of
+planes asked, i.e. NPLAN.
+
+If DT is present, the time step of records in the file will be returned. This
+assumes that there are at least 2 records in the file, otherwise an error
+message will be issued.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE BIEF_VALIDA(VARREF, TEXTREF, UREF, REFFORMAT, VARRES,
+                       TEXTRES, URES, RESFORMAT, MAXTAB, NP, IT,
+                       MAXIT, ACOMPARER)
+\end{lstlisting}
+
+BIEF\_VALIDA offers an automatic way to compare two SELAFIN files to perform
+validations of modifications in a program. A reference file (logical unit UREF)
+is compared to a result file (logical unit URES).
+
+VARREF and VARRES are blocks where the variables to read will be put.
+
+TEXTREF and TEXTRES are the names of the variables and give their implicit
+numbering.
+
+UREF and URES are the logical units of reference file and result file.
+
+REFFORMAT and RESFORMAT are the formats of reference file and result file (i.e.
+'SELAFIN ','SELAFIND' or 'MED     '.
+
+MAXTAB is the maximum number of variables.
+
+NP the number of points in the mesh.
+
+IT and MAXIT are respectively the current and the maximum iteration. A
+comparison is done only when the last iteration MAXIT is reached and only the
+last time-step is checked.
+
+ACOMPARER is an integer array saying if a variable must be checked
+(1) or not (0).
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CREATE_DATASET(FORMAT,NRES,TITLE,MAXVAR,NOMVAR,OUTVAR)
+\end{lstlisting}
+
+FORMAT: a 8-character string. Possible values are 'SELAFIN ', 'SELAFIND' and
+'MED     '. SELAFIN is the classical format in the Telemac system. SELAFIND is
+the same but with real numbers saved in double precision (so far not supported
+by post processors). MED is an EDF format that is recognised by all tools of
+the Salome platform.
+
+NRES: the logical unit
+
+In \telemac{2D} for example and for the results file, these first two arguments
+will be:\\
+T2D\_FILES(T2DRES)\%FMT and T2D\_FILES(T2DRES)\%LU.
+
+TITLE is the title of the case, in 80 characters.
+
+MAXVAR is the maximum number
+
+This subroutine will only store in the file the information of the title and
+the names and units of variables.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE WRITE\_DATA(FORMAT_RES, NRES, MAXVAR, AT,
+                       LT, SORLEO, NOMVAR, VARSOR, N)
+\end{lstlisting}
+
+Mostly as BIEF\_DESIMP, but a lower level. It will not deal with periods and
+printing on listing.
+\underbar{arguments}:
+\begin{description}
+  \item [FORMAT\_RES] is the file format (`SELAFIN `, `SELAFIND' or `MED     `)
+  \item [NRES] is the logical unit of the file.
+  \item [MAXVAR] is the number of variables in the block VARSOR and NOMVAR.
+  \item [AT] is the current time, LT is the iteration number.
+  \item [SORLEO] is a logical array stating if a variable must be exited or
+    not.
+  \item [NOMVAR] is an array of 32-character strings containing the names (16
+    characters) and units (16 characters) of variables.
+  \item [VARSOR] is a block containing BIEF\_OBJ structures with the variables
+    to be printed in the file.
+  \item [N] is the number of points to be printed.
+\end{description}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE WRITE_MESH(FORMAT, NRES, MESH, NPLAN, MARDAT,
+                      MARTIM, I_ORIG, J_ORIG)
+\end{lstlisting}
+
+\underbar{arguments}:
+\begin{description}
+  \item [FORMAT and NRES] are like in subroutine \telkey{CREATE\_DATASET}
+    above.
+  \item [MESH] is the BIEF\_MESH structure of the mesh.
+  \item [NPLAN] is the number of planes in the mesh (1 in 2D).
+  \item [MARDAT and MARTIM] are two arrays of 3 integers containing the date :
+    year, month, day, and hours, minutes, seconds.
+  \item [I\_ORIG and J\_ORIG] are the numbers of metres to add to coordinates
+    to get georeferenced data.
+\end{description}
+
+\subsection{Scientific library}
+
+Some scientific functions have been included in \bief for convenience:
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION ATANC(A,B)
+\end{lstlisting}
+
+ATANC returns the Arc tangent of A.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION JULTIM(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+\end{lstlisting}
+
+JULTIM returns the time in Julian centuries since the 31 December 1899. The
+starting time of a computation is given by YEAR,MONTH,DAY,HOUR,MIN,SEC, and AT
+(current time in the computation is added).
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+DOUBLE PRECISION FUNCTION TSLOC(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+\end{lstlisting}
+
+TSLOC returns the local sidereal time.
+
+\subsection{Higher order subroutines in \bief}
+
+A number of subroutines in \bief are more dedicated to physics and can be
+directly called by programmes to solve e.g. diffusion or advection equations:
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CVDFTR
+\end{lstlisting}
+
+In 2 dimensions, solves the advection-diffusion of a tracer, including source
+terms. Starting from a tracer FN at time step n, it gives back the tracer F at
+time step n+1. Refer to source code for a full list of arguments. The advection
+may have been done previously by the method of characteristics, in which case
+the result is in \telkey{FTILD}, or is done by \telkey{CVDFTR} itself, which
+may call other subroutines such as \telkey{CVTRVF} and \telkey{CVTRVF\_POS}.
+Explicit and implicit source terms may be treated, as well as punctual sources.
+An argument \telkey{ICONVF} monitors the choice of the advection scheme.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CHARAC
+\end{lstlisting}
+
+This is the header subroutine for advection with the method of characteristics.
+It calls scalar or parallel variants of this method. The parallel version of
+the method of characteristics is included in module \telkey{STREAMLINE}.
+\telkey{CHARAC} may deal with a single.
+
+Refer to source code for a full list of arguments. FN is the variable to be
+advected and FTILD the result. They may be blocks of variables and in this case
+the argument NOMB is the number of variables that will be treated.
+
+\subsection{User subroutines in \bief}
+
+A number of subroutines are called by \bief and may be changed by the user to
+implement specific cases. These subroutines have generally no arguments and
+only global data defined in a module may thus be changed. Subroutines are
+provided with examples.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CORLAT
+\end{lstlisting}
+
+CORLAT is called by INBIEF when the coordinates are spherical. It allows
+changing of latitude and longitude of points.
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE CORRXY
+\end{lstlisting}
+
+CORRXY is called once at the beginning of INBIEF (and before CORLAT). It allows
+to change the coordinates of points. Users are free to do any change (for
+example translations or rotations) provided that it keeps the topology of the
+mesh.
+
+A translation in \telemac{2D} would be done by adding \telkey{USE
+DECLARATIONS\_TELEMAC2D} in \telkey{CORRXY}, declaring integer I, and then:
+\begin{lstlisting}[language=TelFortran]
+DO I=1,NPOIN
+  X(I) = X(I) + 100.D0
+  Y(I) = Y(I) + 200.D0
+ENDDO
+\end{lstlisting}
+
+As a matter of fact, NPOIN, X and Y are pointers defined in
+\telkey{DECLARATIONS\_TELEMAC2D}, to \telkey{MESH\%NPOIN}, \telkey{MESH\%X\%R}
+ and \telkey{MESH\%Y\%R}
+
+\underbar{syntax}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE STRCHE
+\end{lstlisting}
+
+\telkey{STRCHE} is called once after reading the bottom friction in the
+geometry file, or after setting it to a constant value. This subroutine is
+empty and can be used only with modules containing global declarations. We give
+hereafter an example that would work with \telemac{2D}:
+\begin{lstlisting}[language=TelFortran]
+SUBROUTINE STRCHE
+  USE BIEF
+  USE DECLARATIONS_TELEMAC2D
+  INTEGER I
+  DO I=1,NPOIN
+    IF(X(I).GT.5.D0) THEN
+      CHESTR%R(I) = 35.D0
+    ELSE
+      CHESTR%R(I) = 30.D0
+    ENDIF
+  ENDDO
+  RETURN
+END
+\end{lstlisting}
+
+\section{Designing a new programme}
+
+\subsection{Global data}
+
+Global data are defined by Fortran 90 modules. A number of other data are
+gathered in a \bief module called \telkey{DECLARATIONS\_TELEMAC}. It is given
+below:
+\begin{lstlisting}[language=TelFortran]
+!
+!  DECLARATIONS COMMON TO ALL PROGRAMMES      VERSION 6.1
+!
+      MODULE DECLARATIONS_TELEMAC
+!
+!----------------------------------------------------------------------
+!
+! 1./ INTEGER VALUES FOR DESCRIBING BOUNDARY CONDITIONS:
+!
+!     FOR THE BOUNDARY CONDITIONS FILE:
+!
+!     ENTRANCE: PRESCRIBED VALUES (SAVE VELOCITIES)
+      INTEGER, PARAMETER :: KENT  =  5
+!
+!     VELOCITY IMPOSED (INSTEAD OF DISCHARGE)
+      INTEGER, PARAMETER :: KENTU =  6
+!
+!     FREE OUTPUT
+      INTEGER, PARAMETER :: KSORT =  4
+!
+!     NO-SLIP CONDITION
+      INTEGER, PARAMETER :: KADH  =  0
+!
+!     WALL WITH OR WITHOUT FRICTION
+      INTEGER, PARAMETER :: KLOG  =  2
+!
+!     OPEN BOUNDARY WITH INCIDENT WAVE
+      INTEGER, PARAMETER :: KINC  =  1
+!
+!     ESTEL-2D : DRAINAGE LIBRE
+      INTEGER, PARAMETER :: KDRAIN  =  3
+!
+!     ESTEL-2D : CONDITION MIXTE
+      INTEGER, PARAMETER :: KMIX  =  4
+!
+!     DEPENDING ON ALGORITHMS AND CASES, THESE VALUES WILL BE TRANSFORMED
+!     INTO:
+!
+!     TECHNICAL BOUNDARY CONDITIONS
+!
+!     NEUMANN
+      INTEGER, PARAMETER :: KNEU  =  1
+!
+!     DIRICHLET
+      INTEGER, PARAMETER :: KDIR  =  2
+!
+!     DEGREE OF FREEDOM
+      INTEGER, PARAMETER :: KDDL  =  3
+!
+!     INCIDENT WAVE
+      INTEGER, PARAMETER :: KOND  =  4
+!
+!-----------------------------------------------------------------------
+!
+! 2./ CODE COUPLING
+!
+      CHARACTER*144 COUPLING
+!
+! 3./ NAME OF CURRENT CODE (SEE BIEF_OPEN_FILES AND CONFIG_CODE)
+!
+      CHARACTER(LEN=24) :: NNAMECODE(3)
+!
+!-----------------------------------------------------------------------
+!
+      END MODULE DECLARATIONS\_TELEMAC
+\end{lstlisting}
+
+To use these values, it is only necessary to write:
+\begin{lstlisting}[language=TelFortran]
+USE DECLARATIONS\_TELEMAC
+\end{lstlisting}
+as the first statement of every program or subroutine using them.
+
+It is recommended to do a module of global declarations of your programme,
+containing the data read in the parameter file, the BIEF\_OBJ structures, etc.
+However this module must not be used in subroutines that would be called by
+another programme in the Telemac system, which has no such declarations.
+
+\subsection{General structure of a programme based on \bief 6.1}
+
+\paragraph{Main program}
+
+We give hereafter \textit{in extenso} the example of the main program of
+\telemac{2D}, which exemplifies all complex cases: parameter estimation and
+code coupling.
+\begin{lstlisting}[language=TelFortran]
+!                       ************************
+                        PROGRAM HOMERE_TELEMAC2D
+!                       ************************
+!
+!***********************************************************************
+!  TELEMAC 2D VERSION 6.2   27/03/09  J-M HERVOUET (LNHE) 01 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTIONS:
+!     ==========
+!
+! 1)  READING ALL NECESSARY DATA
+!
+! 2)  CALLING TELEMAC2D AND IN CASE OF COUPLING SISYPHE
+!
+!     IN CASE OF PARAMETER ESTIMATION, HOMERE_ADJ_T2D IS CALLED INSTEAD
+!     TELEMAC2D
+!
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : PRINCI
+!
+! SOUS-PROGRAMMES APPELES : LECDON , POINT , TELEMAC2D
+!
+!**********************************************************************
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_SISYPHE, ONLY : SIS_FILES
+      USE INTERFACE_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER     LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER TDEB(8),TFIN(8),NCAR,IFLOT
+!
+      CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
+      CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
+!
+      CHARACTER(LEN=250) PATH
+      CHARACTER(LEN=144) MOTCAR(300),FILE_DESC(4,300)
+!
+!======================================================================
+!
+!     INITIALISING FILES (NAMES OF FILES=' ' AND LOGICAL UNITS =0)
+!     GETTING NCSIZE BY CALLING P_INIT
+!
+      CALL BIEF_INIT(CODE1,PATH,NCAR,.TRUE.)
+!
+!     INITIAL TIME FOR COMPUTATION DURATION
+!
+      CALL DATE_AND_TIME(VALUES=TDEB)
+!
+!     PRINTING BANNER ON LISTING
+!
+      IF(LNG.EQ.1) WRITE (LU,100)
+      IF(LNG.EQ.2) WRITE (LU,101)
+      WRITE (LU,102)
+100   FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
+101   FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
+102   FORMAT(/////,
+     &14X,'   TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
+     &14X,'     T    E      L      E      MM MM  A   A  C    ',/,
+     &14X,'     T    EEE    L      EEE    M M M  AAAAA  C    ',/,
+     &14X,'     T    E      L      E      M   M  A   A  C    ',/,
+     &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
+     &14X,'                                                  ',/,
+     &14X,'           2D    VERSION 6.0    FORTRAN 90        ',/,
+     &14X,'                 WITH SEVERAL TRACERS             ',/,
+     &14X,'           COUPLED WITH SISYPHE INTERNALLY        ',/,
+     &14X,/////)
+!
+!-----------------------------------------------------------------------
+!
+!     READING THE STEERING FILE
+!
+      CALL LECDON_TELEMAC2DLECDON_TELEMAC2D(MOTCAR,FILE_DESC,PATH,NCAR)
+!
+!-----------------------------------------------------------------------
+!
+!     OPENING FILES FOR TELEMAC2D
+!
+      IFLOT = 0
+      CALL BIEF_OPEN_FILESBIEF_OPEN_FILES(CODE1,T2D_FILES,44,PATH,NCAR,
+     &                     INCLUS(COUPLING,'INTER'),IFLOT,1)
+!
+!-----------------------------------------------------------------------
+!
+!     MEMORY ALLOCATION
+!
+      CALL POINT_TELEMAC2DPOINT_TELEMAC2D
+!
+!     SAVING COMMON NDS CORRESPONDING TO TELEMAC-2D MESH
+!
+      CALL SAVE_NDS(1)
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISING SISYPHE
+!
+      IF(INCLUS(COUPLING,'SISYPHE')) THEN
+!
+!                                         FALSE= P_INIT NOT CALLED
+        CALL BIEF_INIT(CODE2,PATH,NCAR,.FALSE.)
+!
+        IF(LNG.EQ.1) WRITE (LU,103)
+        IF(LNG.EQ.2) WRITE (LU,104)
+        WRITE (LU,105)
+103     FORMAT(/////,1X,'LISTING DE SISYPHE AVEC COUPLAGE',78('-'))
+104     FORMAT(/////,1X,'LISTING OF SISYPHE WITH COUPLING',78('-'))
+105     FORMAT(/////,
+     &  14X,'    SSSS I   SSSS Y   Y PPPP  H   H EEEEE' ,/,
+     &  14X,'   S     I  S      Y Y  P   P H   H E    ' ,/,
+     &  14X,'    SSS  I   SSS    Y   PPPP  HHHHH EEEE  ',/,
+     &  14X,'       S I      S   Y   P     H   H E     ',/,
+     &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
+     &  14X,'                                          ',/,
+     &  14X,'                VERSION 6.0               ',/,
+     &  14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
+     &  14X,/////)
+!
+      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
+!
+      CALL BIEF_OPEN_FILESBIEF_OPEN_FILES(CODE2,SIS_FILES,44,PATH,NCAR,
+     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2)
+      CALL POINT_SISYPHE
+!
+!     SAVING COMMON NDS CORRESPONDING TO SISYPHE MESH (SO FAR THE SAME !)
+!
+      CALL SAVE_NDS(2)
+!
+      ELSEIF(COUPLING(1:1).EQ.' ') THEN
+!
+!       NOTHING TO DO
+!
+      ELSEIF(INCLUS(COUPLING,'DELWAQ')) THEN
+!
+!       NOTHING TO DO
+!
+      ELSE
+!       ERREUR
+        IF(LNG.EQ.1) WRITE (LU,*) 'CAS DE COUPLAGE INCONNU : ',COUPLING
+        IF(LNG.EQ.2) WRITE (LU,*) 'UNEXPECTED COUPLING CASE: ',COUPLING
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!     RESETTING TELEMAC2D CONFIGURATION
+!
+      CALL CONFIG_CODE(1)
+!
+!=======================================================================
+!
+      IF(ESTIME.EQ.' ') THEN
+!
+!-----------------------------------------------------------------------
+!
+!     NORMAL MODE: ONE CALL OF TELEMAC2D
+!
+      CALL TELEMAC2D(PASS=-1,ATDEP=0.D0,NITER=0,CODE='       ')
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+!-----------------------------------------------------------------------
+!
+!       PARAMETER ESTIMATION MODE : CALLING HOMERE_ADJ_T2D
+!
+        CALL HOMERE_ADJ_T2D
+!
+      ENDIF
+!
+!=======================================================================
+!
+!     CLOSING FILES
+!
+      CALL BIEF_CLOSE_FILES(CODE1,T2D_FILES,44,.TRUE.)
+!
+      IF(INCLUS(COUPLING,'SISYPHE')) THEN
+        CALL CONFIG_CODE(2)
+        CALL BIEF_CLOSE_FILES(CODE2,SIS_FILES,44,.FALSE.)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(LNG.EQ.1) WRITE (LU,10)
+      IF(LNG.EQ.2) WRITE (LU,11)
+10    FORMAT(1X,///,1X,'FIN NORMALE DU PROGRAMME',///)
+11    FORMAT(1X,///,1X,'CORRECT END OF RUN',///)
+!
+!-----------------------------------------------------------------------
+!
+!     TIME OF END OF COMPUTATION
+!
+      CALL DATE_AND_TIME(VALUES=TFIN)
+      CALL ELAPSE(TDEB,TFIN)
+!
+!-----------------------------------------------------------------------
+!
+      STOP
+      END
+\end{lstlisting}
+
+Some explanations:
+\begin{itemize}
+  \item The statement \telkey{USE BIEF} is given first because the module
+    \telkey{DECLARATIONS\_TELEMAC2D} contains declarations of
+    \telkey{BIEF\_OBJ} structures, for example the depth H or the mesh called
+    \telkey{MESH}.
+  \item The string CODE contains the name of the programme and will be used by
+    \bief subroutines such as \telkey{BIEF\_OPEN\_FILES} to open the relevant
+    files. It implies that the \telkey{LECDON\_TELEMAC2D} subroutine uses also
+    the module \telkey{DECLARATIONS\_TELEMAC} and correctly fills the names of
+    the files.
+\end{itemize}
+
+Other calls are explained in the following paragraphs.
+
+\paragraph{Reading the parameter file}
+
+This is done by the call to \telkey{LECDON\_TELEMAC2D}. Such a subroutine must
+be written for every program in the system. LECDON\_TELEMAC2D calls the
+subroutine \telkey{DAMOCLES} which returns the parameters read in the
+dictionary file and in the user parameter file. We give hereafter parts of
+\telkey{LECDON\_TELEMAC2D} as an example:
+\begin{lstlisting}[language=TelFortran]
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER I,K,NCSIZE,ERR,NCAR
+      INTEGER NREJEX,NREJEY,NCOSUP,NREJEV,NCRITE
+!
+      CHARACTER*8 MNEMO(MAXVAR)
+      CHARACTER(LEN=250) PATH,NOM_CAS,NOM_DIC
+      CHARACTER(LEN=144) FILE_DESC(4,300)
+!
+!-----------------------------------------------------------------------
+!
+!     DECLARATION OF ARRAYS FOR CALLING DAMOCLES
+!
+      INTEGER, PARAMETER :: NMAX = 300
+!
+      INTEGER              ADRESS(4,NMAX),DIMENS(4,NMAX)
+      DOUBLE PRECISION     MOTREA(NMAX)
+      INTEGER              MOTINT(NMAX)
+      LOGICAL              MOTLOG(NMAX)
+      CHARACTER(LEN=144)   MOTCAR(NMAX)
+      CHARACTER*72         MOTCLE(4,NMAX,2)
+      INTEGER              TROUVE(4,NMAX)
+      LOGICAL DOC
+!
+!
+..........
+!
+!     INITIALISATIONS FOR CALLING DAMOCLES :
+!
+      DO 10 K=1,NMAX
+        MOTCAR(K)(1:1)=' '
+        DIMENS(1,K) = 0
+        DIMENS(2,K) = 0
+        DIMENS(3,K) = 0
+        DIMENS(4,K) = 0
+10    CONTINUE
+!     IF YES WILL PRINT ALL DOCUMENTATION IN DICTIONARY
+      DOC = .FALSE.
+!
+!-----------------------------------------------------------------------
+!     OPENING PARAMETER FILE AND DICTIONARY
+!-----------------------------------------------------------------------
+!
+      IF(NCAR.GT.0) THEN
+!
+        NOM_DIC=PATH(1:NCAR)//'T2DDICO'
+        NOM_CAS=PATH(1:NCAR)//'T2DCAS'
+!
+      ELSE
+!
+        NOM_DIC='T2DDICO'
+        NOM_CAS='T2DCAS'
+!
+      ENDIF
+!
+      OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
+      OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
+!
+!-----------------------------------------------------------------------
+!
+      CALL DAMOCLE( ADRESS , DIMENS , NMAX   , DOC     , LNG    , LU ,
+     &              MOTINT , MOTREA , MOTLOG , MOTCAR  , MOTCLE ,
+     &              TROUVE , 2      , 3      , .FALSE. , FILE_DESC )
+!
+!-----------------------------------------------------------------------
+!     FERMETURE DES FICHIERS DICTIONNAIRE ET CAS
+!-----------------------------------------------------------------------
+!
+      CLOSE(2)
+      CLOSE(3)
+\end{lstlisting}
+
+Remark: the names of the steering file and the dictionary, their logical units
+are here hard-coded. As they are closed after, logical units 2 and 3 may be
+re-used.
+
+After calling \telkey{DAMOCLES}, the parameters are in the arrays MOTINT,
+MOTREA, MOTLOG and MOTCAR if they are (respectively) integers, double precision
+numbers, logical values or character strings. Their rank in the arrays is given
+by their index in the dictionary.
+
+\begin{itemize}
+  \item ADRESS(1,*) is the addresses of integers in array MOTINT.
+  \item ADRESS(2,*) is the addresses of double precision numbers in array
+    MOTREA.
+  \item ADRESS(3,*) is the addresses of logical values in array MOTLOG.
+  \item ADRESS(4,*) is the addresses of strings in array MOTCAR.
+\end{itemize}
+
+For example the turbulence model is in \telemac{2D} an integer with rank 7 in
+the dictionary. It is initialised as follows:
+\begin{lstlisting}[language=TelFortran]
+ITURB            = MOTINT( ADRESS(1, 7) )
+\end{lstlisting}
+
+The size of arrays is given by \telkey{DIMENS}, for example the array of
+prescribed free surfaces (index 31 of double precision  numbers in the
+dictionary) in \telemac{2D} is initialised by:
+\begin{lstlisting}[language=TelFortran]
+NCOTE  = DIMENS(2,31)
+IF(NCOTE.NE.0) THEN
+  DO K=1,NCOTE
+   COTE(K) = MOTREA( ADRESS(2,31) + K-1 )
+  ENDDO
+ENDIF
+\end{lstlisting}
+
+As MOTCAR is declared as an array of \telkey{CHARACTER(LEN=144)} strings, it
+may be necessary to take only a part of them, as below:
+\begin{lstlisting}[language=TelFortran]
+TITCAS    = MOTCAR( ADRESS(4, 1) )(1:72)
+\end{lstlisting}
+
+Where \telkey{TITCAS} is declared as a \telkey{CHARACTER(LEN=72)} string.
+
+Checking and modifications of key-words should be done only in \telkey{LECDON}.
+
+\paragraph{Allocating memory}
+
+This is done in the subroutine called \telkey{POINT\_NAMEOFPROGRAMME}. We give
+and comment hereafter parts of \telkey{POINT\_TELEMAC2D}:
+\begin{lstlisting}[language=TelFortran]
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D !where all BIEF_OBJ structures are declared
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+.
+.  (Declarations and printing skipped), then:
+.
+!
+!     DISCRETISATIONS TYPES
+!
+!     P0 and P1 discretisation
+!
+      IELM0 = 10*(IELMH/10)
+      IELM1 = IELM0 + 1
+!
+! P1 Discretisation of boundaries
+!
+      IELB1 = IELBOR(IELM1,1)
+!     Element with the greatest number of degrees of freedom
+      IELMX=MAX(IELMU,IELMH,IELMT,IELMK,IELME)
+!
+!     TYPE OF STORAGE AND MATRIX-VECTOR PRODUCT
+!
+      CFG(1) = OPTASS
+      CFG(2) = PRODUC
+!
+!=======================================================================
+!
+!     ALLOCATING THE MESH
+!
+      CALL ALMESH(MESH,'MESH  ',IELMX,SPHERI,CFG,T2D_FILES(T2DGEO)%LU,
+     &            EQUA,I3=I3,I4=I4)
+!     IF ORIGIN COORDINATES IN GEOMETRY FILE AND NOT IN PARAMETER FILE,
+!     VALUES OF GEOMETRY FILE ARE TAKEN
+      IF(I3.NE.0.AND.I_ORIG.EQ.0) I_ORIG=I3
+      IF(I4.NE.0.AND.J_ORIG.EQ.0) J_ORIG=I4
+!
+!     EXAMPLE OF CREATION OF ALIASES
+!
+      IKLE  => MESH%IKLE
+      X     => MESH%X%R
+      Y     => MESH%Y%R
+      NELEM => MESH%NELEM
+!
+!=======================================================================
+!
+!     EXAMPLE OF ALLOCATION OF A REAL ARRAY
+!
+      CALL BIEF_ALLVEC(1,U,'U     ',IELMU,1,1,MESH)
+!
+!     EXAMPLE OF ALLOCATION OF A BLOCK
+!
+      CALL ALLBLO(UNK,'UNK   ')
+!     ADDING BIEF_OBJ STRUCTURES IN THE BLOCK UNK
+      CALL ADDBLO(UNK,DH)
+      CALL ADDBLO(UNK, U)
+      CALL ADDBLO(UNK, V)
+
+!     EXAMPLE OF ALLOCATION OF A MATRIX
+!
+      CALL BIEF_ALLMAT(AM2,'AM2   ',IELM1,IELM1,CFG,'Q',TYP,MESH)
+!
+!     ALLOCATING A BLOCK TB WITH 3 VECTORS CALLED T1, T2 AND T3
+!
+      CALL ALLBLO(TB ,'TB    ')
+      CALL BIEF_ALLVEC_IN_BLOCK(TB,42,1,'T     ',IELMX,1,2,MESH)
+!
+!     ALIASES FOR THESE ARRAYS
+!     T1, T2 AND T3 ARE DECLARED IN DECLARATIONS_TELEMAC2D AS FOLLOWS
+!     TYPE(BIEF_OBJ), POINTER :: T1,T2,T3
+!     ALIASES FOR T1, T2 AND T3
+      T1 =>TB%ADR(1)%P
+      T2 =>TB%ADR(2)%P
+      T3 =>TB%ADR(3)%P
+\end{lstlisting}
+
+\paragraph{The real main programme}
+
+The main program \telkey{HOMERE\_...} given above calls \telkey{TELEMAC2D}.
+This is where the real specific job of your programme must be done. At the
+beginning of it, but after reading the boundary conditions file, the
+\telkey{BIEF\_MESH} structure called MESH must be fully initialised, and this
+is done by a call to \telkey{INBIEF}:
+
+\begin{lstlisting}[language=TelFortran]
+      CALL INBIEF(LIHBOR%I,KLOG,IT1,IT2,IT3,LVMAC,IELMX,
+     &            LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
+\end{lstlisting}
+
+\paragraph{Inputs and outputs: opening and closing files}
+
+The various data and results files of every Telemac programme are described in
+its dictionary. The information relevant to files will be read with the
+subroutine \telkey{READ\_SUBMIT}, which is called in subroutine
+\telkey{LECDON\_TELEMAC2D} (for example), and stored in an array of file
+structures (called, depending of the Telemac module: \telkey{T2D\_FILES},
+\telkey{T3D\_FILES}, \telkey{SIS\_FILES}, \telkey{WAC\_FILES},
+\telkey{ART\_FILES}). Hereafter is given an excerpt of \telemac{2D} dictionary
+regarding the results file:
+
+\begin{lstlisting}[language=TelemacCas]
+NOM = 'FICHIER DES RESULTATS'
+NOM1 = 'RESULTS FILE'
+TYPE = CARACTERE
+INDEX = 11
+MNEMO = `T2D\_FILES\%ADR(T2DRES)'
+SUBMIT = 'T2DRES-READWRITE;T2DRES;OBLIG;BIN;ECR;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+\end{lstlisting}
+
+The character string called SUBMIT is used both by the perl scripts and,
+through Damocles, by the Fortran programme. It is composed of 6 character
+strings.
+
+The \textbf{first string}, here T2DRES-READWRITE, is made of:
+
+\begin{enumerate}
+\item  the Fortran integer for storing the file number: T2DRES (which is
+  declared in declarations\_telemac2d.f)
+\item  the argument ACTION in the Fortran Open statement that will be used to
+  open the file. ACTION may be READ, WRITE, or READWRITE. Here it is READWRITE
+  because the results file is written, and in case of validation it is read at
+  the end of the computation. It will be stored into
+  T2D\_FILES\%ADR(T2DRES)\%ACTION
+\end{enumerate}
+
+The \textbf{second string}, here T2DRES, is the name of the file as it will
+appear in the temporary file where the computation is done.
+
+The \textbf{third string} may be OBLIG (the name of the file must always be
+given), or FACUL (this file is not mandatory).
+
+The \textbf{fourth string} (here BIN) says if it is a binary (BIN) or ASCII
+(ASC) file.
+
+The \textbf{fifth string} is just like the READWRITE statement and is used by
+the perl scripts.
+
+The \textbf{sixth string} is also used by the perl scripts and gives
+information on how the file must be treated. 'SELAFIN' means that the file is a
+Selafin format, it will have to be decomposed if parallelism is used. Other
+possibilities are:
+\begin{description}
+  \item [SELAFIN-GEOM] this is the geometry file
+  \item [FORTRAN] this is the Fortran file for user subroutines
+  \item [CAS] this is the parameter file
+  \item [CONLIM] this is the boundary conditions file
+  \item [PARAL] this file will have an extension added to its name, for
+    distinguishing between processors
+  \item [DICO] this is the dictionary
+  \item [SCAL] this file will be the same for all processors
+\end{description}
+%\todo{add the new ones}
+
+The following sequence of subroutines is used for opening, using and closing
+files:
+
+Note : subroutine INIT\_FILES2 in \bief version 5.9 has been renamed BIEF\_INIT
+from version 6.0 on and has from now on nothing to see with files.
+\begin{enumerate}
+  \item{opening files}
+
+\begin{lstlisting}[language=TelFortran]
+IFLOT=0
+CALL BIEF_OPEN_FILES(CODE,T2D_FILES,44,PATH,NCAR,COUPLAGE,IFLOT,ICODE)
+\end{lstlisting}
+\begin{description}
+  \item [CODE] name of calling program in 24 characters
+  \item [T2D\_FILES] the array of BIEF\_FILE structures
+  \item [44] the size of the previous array
+  \item [PATH] full name of the path leading to the directory the case is
+  \item [NCAR] number of characters of the string PATH
+  \item [COUPLAGE] logical stating if there is a coupling between several programs.
+  \item [IFLOT] in case of coupling, will be the last logical unit taken by a file
+  \item [ICODE] code number in a coupling. For example in a coupling between
+    \telemac{2D} and Sisyphe, \telemac{2D} will be code 1 and Sisyphe will be
+    code 2.
+\end{description}
+\item using files
+
+Most operations on files consist on reading and writing, which always uses the
+logical unit. Every file has a name in the temporary folder where the program
+is executed, e.g. T2DRES. The associated file number is an integer with the
+same name. The logical unit of this file is stored into T2D\_FILES(T2DRES)\%LU.
+The logical unit of the geometry file in Sisyphe will be
+SIS\_FILES(SISGEO)\%LU.
+
+Sometimes the real name of files in the original is also used, for example to
+know if it exists (i.e. has been given in the parameter file). This name is
+retrieved in the component NAME. For example the name of the geometry file in
+Sisyphe will be SIS\_FILES(SISGEO)\%NAME. Note that the name of the same file
+in the temporary folder is SIS\_FILES(SISGEO)\%TELNAME. We have in fact:
+
+\begin{lstlisting}[language=TelFortran]
+SIS\_FILES(SISGEO)\%TELNAME='SISGEO'.
+\end{lstlisting}
+
+\item closing files
+
+\begin{lstlisting}[language=TelFortran]
+CALL BIEF\_CLOSE\_FILES(CODE,T2D\_FILES,44,PEXIT)
+\end{lstlisting}
+\begin{description}
+  \item [CODE] name of calling program in 24 characters
+  \item [T2D\_FILES] the array of BIEF\_FILE structures
+  \item [44] the size of the previous array
+  \item [PEXIT] logical, if yes will stop parallelism (in a coupling the last
+    program calling \telkey{BIEF\_CLOSE\_FILES} will also stop parallelism).
+\end{description}
+\end{enumerate}
+

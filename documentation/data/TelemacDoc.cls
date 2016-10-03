@@ -91,7 +91,6 @@
 	\newcommand{\fg}{\guillemotright\xspace}
 }
 
-
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
 \ProcessOptions\relax
 
@@ -177,11 +176,21 @@
 \RequirePackage{xspace}
 % ** end PT
 
+% To add newline after subparagraph
+\RequirePackage{titlesec}
 
 %----------------------------------------------------------------------------------------
 %	MATHEMATICAL SHORTCUT
 %----------------------------------------------------------------------------------------
 \input{../../data/TelemacDocMathematicalShortcut}
+
+%----------------------------------------------------------------------------------------
+% SECTION LAYOUT
+%----------------------------------------------------------------------------------------
+% Definition of \subparagraph starting new line after heading
+\titleformat{\subparagraph}
+    {\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+    \titlespacing*{\subparagraph}{\parindent}{3.25ex plus 1ex minus .2ex}{.75ex plus .1ex}
 
 
 %----------------------------------------------------------------------------------------
