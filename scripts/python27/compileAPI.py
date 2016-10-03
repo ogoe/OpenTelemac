@@ -130,9 +130,15 @@ def compile_API(cfgs,cfgname,fcompiler,user_fortran):
    ld_flags = cfgs[cfgname]['libs_all'].replace('<root>',cfgs[cfgname]['root']).replace('\n',' ')
    if user_fortran != '':
       if fcompiler == 'gfortran':
-         command = "gfortran %s -shared -fconvert=big-endian -o %s %s -I%s -fPIC" % \
-                   (user_fortran,"libuser_fortran.so",ld_flags,api_dir+sep+'include')
-         print '+> Compiling User fortran with gfortran'
+         if 'mpi_cmdexec' in cfgs[cfgname]:
+            compiler = "mpif90"
+         else:
+            compiler = "gfortran"
+         command = "%s %s -shared -fconvert=big-endian -o %s %s -I%s -fPIC" % \
+                   (compiler,user_fortran,
+                    "libuser_fortran.so",ld_flags,
+                    api_dir+sep+'include')
+         print '+> Compiling User fortran with ',compiler
          print command
          ret = system(command)
          if ret != 0:
@@ -308,7 +314,7 @@ if __name__ == "__main__":
    for cfgname in cfgs:
       # still in lower case
       if not cfgs[cfgname].has_key('root'):
-         cfgs[cfgname]['root'] = HOMETEL
+         cfgs[cfgname]['root'] = args.rootDir
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
       print '\n\n'+'\n'.join(banner(cfgname))
