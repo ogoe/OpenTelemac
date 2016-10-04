@@ -9,7 +9,7 @@
 /--------------------------------------------------------------------
 GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_tom_littoral.cli'
-2D RESULTS FILE = 'tom_littoral.slf'
+2D RESULTS FILE = 'ref_tom_littoral.slf'
 FORTRAN FILE = 'tom_littoral.f'
 /--------------------------------------------------------------------
 / INPUTS - OUTPUTS
@@ -17,7 +17,7 @@ FORTRAN FILE = 'tom_littoral.f'
 TITLE = 'LITTORAL'
 PERIOD FOR GRAPHIC PRINTOUTS = 1
 VARIABLES FOR 2D GRAPHIC PRINTOUTS =
-HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY
+HM0,DMOY,TPR5,ZF,WD,FX,FY
 PERIOD FOR LISTING PRINTOUTS = 10
 /--------------------------------------------------------------------
 / DISCRETISATION
