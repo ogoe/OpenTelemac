@@ -1059,21 +1059,19 @@
 !
 !------------------------------------------------------------------
 !
-!> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
+!     ALGORITHMIC DIFFERENTIATION
 #if defined(COMPAD)
       CALL AD_SISYPHE_LOOPRECORDS_BEGIN
 #endif
-!< JR @ RWTH
 !
 !------------------------------------------------------------------
 !
 !  ----   DETERMINES THE TIMESTEP NUMBER :
 !
             IF(PART.EQ.3.AND.CODE(1:7).NE.'TELEMAC') THEN
-               LT = API_ITER
-!               IF(API_ITER.EQ.NIDT) PASS=.FALSE.
+              LT = API_ITER
             ELSE
-               LT = (MN-1)*NIDT + MT
+              LT = (MN-1)*NIDT + MT
             ENDIF
 !
             IF(CODE(1:7) == 'TELEMAC') THEN

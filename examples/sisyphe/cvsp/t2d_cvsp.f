@@ -2,7 +2,7 @@
                      SUBROUTINE DUMMY
 !                    *************
 !
-      implicit none
+      IMPLICIT NONE
 !
-      continue
+      CONTINUE
       END

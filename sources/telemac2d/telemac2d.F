@@ -375,9 +375,7 @@
 !-----------------------------------------------------------------------
 !
 !     FOR SISYPHE : GRAIN FEEDING AND CONSTANT FLOW DISCHARGE
-!      INTEGER :: ISIS_CFD, NSIS_CFD
-!      LOGICAL :: SISYPHE_CFD, CONSTFLOW_SIS
-       INTEGER :: ISIS_CFD
+      INTEGER :: ISIS_CFD
 !     FRICTION DATA
       INTEGER :: KFROT_TP
 !

@@ -46,7 +46,7 @@
       NULLIFY(LV)
 !
 
-      
+
 !     Deallocating all the blocks first
       CALL BIEF_DEALLOBJ(E)
       CALL BIEF_DEALLOBJ(ECPL)
@@ -165,11 +165,11 @@
       CALL BIEF_DEALLOBJ(TOCE_MIXTE)
       CALL BIEF_DEALLOBJ(MS_SABLE)
       CALL BIEF_DEALLOBJ(MS_VASE)
-      
+
       CALL BIEF_DEALLOBJ(MBOR)
       CALL BIEF_DEALLOBJ(AM1_S)
       CALL BIEF_DEALLOBJ(AM2_S)
-      
+
       CALL BIEF_DEALLOBJ(MASK)
       CALL BIEF_DEALLOBJ(TB)
       CALL BIEF_DEALLOBJ(TB2)
@@ -179,10 +179,10 @@
       !CALL BIEF_DEALLOBJ(VARSOR)
 
       IF(ALLOCATED(PRO_F)) THEN
-         DEALLOCATE(PRO_F)
+        DEALLOCATE(PRO_F)
       ENDIF
       IF(ALLOCATED(PRO_D)) THEN
-         DEALLOCATE(PRO_D)
+        DEALLOCATE(PRO_D)
       ENDIF
       DEALLOCATE(AVAIL)
       DEALLOCATE(ES)
@@ -211,7 +211,7 @@
       DEALLOCATE(CONC)
 
       IF(ALLOCATED(PRO_MAX)) THEN
-         DEALLOCATE(PRO_MAX)
+        DEALLOCATE(PRO_MAX)
       ENDIF
       DEALLOCATE(DEBLIQ)
       DEALLOCATE(FINLIQ)
@@ -219,7 +219,7 @@
       DEALLOCATE(FINSOL)
 
       IF(ALLOCATED(CTRLSC)) THEN
-         DEALLOCATE(CTRLSC)
+        DEALLOCATE(CTRLSC)
       ENDIF
 
       DEALLOCATE(OKCGL)
@@ -245,7 +245,7 @@
       !CALL BIEF_DEALLOBJ(IKLE)
 
       IF(ALLOCATED(CHAIN)) THEN
-         DEALLOCATE(CHAIN)
+        DEALLOCATE(CHAIN)
       END IF
 !
 !-----------------------------------------------------------------------

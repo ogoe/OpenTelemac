@@ -378,7 +378,7 @@
             STOP
           ENDIF
           CALL CVTRVF_ERIA(AKTILD,AKN,S,H,HN,HPROP,UCONV,VCONV,
-     &                     DM1,ZCONV,SOLSYS,SMK,S,.FALSE.,S,.FALSE.,                  
+     &                     DM1,ZCONV,SOLSYS,SMK,S,.FALSE.,S,.FALSE.,
      &                     KBOR,MASKTR,MESH,
      &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
@@ -405,7 +405,7 @@
      &                     UNSV2D,IOPT,TB%ADR(11)%P,
      &                     MESH%NBOR%I,.FALSE.,S,0.D0,
      &                     MAXADV,NCO_DIST,OPTADV_KE)
-!  
+!
         ENDIF
 !
         CALL MATVEC('X=AY    ',SMK,MAK,AKTILD,C,MESH)

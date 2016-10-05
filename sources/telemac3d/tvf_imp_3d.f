@@ -50,7 +50,7 @@
 !| PREDICTOR      |-->| IF YES, PREDICTOR STEP
 !| CORRECTOR      |-->| IF YES, CORRECTOR STEP
 !| SF             |<->| BIEF_OBJ STRUCTURE OF F
-!| SLVPSI         |<->| SOLVER CONFIGURATION FOR PSI 
+!| SLVPSI         |<->| SOLVER CONFIGURATION FOR PSI
 !| SM             |<->| BIEF_OBJ WORKING VARIABLE FOR SECOND MEMBER
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| TETAF          |-->| IMPLICITATION COEFFICIENT ON F
@@ -69,7 +69,7 @@
       INTEGER, INTENT(IN)             :: SIZGLO,IELEM3,OPTSOU,NSCE
       INTEGER, INTENT(IN)             :: ICOR,NCOR
       INTEGER, INTENT(IN)             :: GLOSEG(SIZGLO,2),NBOR3(NPTFR3)
-      INTEGER, INTENT(IN)             :: ISCE(NSCE),KSCE(NSCE)     
+      INTEGER, INTENT(IN)             :: ISCE(NSCE),KSCE(NSCE)
       DOUBLE PRECISION, INTENT(IN)    :: VOLUNP1MT(NPOIN3),DT,TRAIN
       DOUBLE PRECISION, INTENT(IN)    :: FLUEXT(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FLUEXTPAR(NPOIN3)
@@ -90,7 +90,7 @@
 !
       INTEGER I,N,I1,I2,IP,IIS,IS
       DOUBLE PRECISION NORMR,NORMB,FMIN,FMAX
-!  
+!
       TYPE(BIEF_OBJ), POINTER :: SURDIAG,BB1,R
 !
       INTRINSIC SQRT,MIN
@@ -118,7 +118,7 @@
         N=NBOR3(I)
         IF(FLUEXTPAR(N).LT.0.D0) THEN
           FMIN=MIN(FMIN,FBOR(I))
-          FMAX=MAX(FMAX,FBOR(I))        
+          FMAX=MAX(FMAX,FBOR(I))
         ENDIF
       ENDDO
       IF(NSCE.GT.0) THEN
@@ -267,7 +267,7 @@
 !                                        NON ASSEMBLED VALUE
      &                     +DT*TETAF(IP)*SOURCES%ADR(IIS)%P%R(IP)
                 SM%R(IP)=SM%R(IP)-DT*SOURCES%ADR(IIS)%P%R(IP)
-     &                  *((1.D0-TETAF(IP))*FC(IP)-FSCE(IS))                   
+     &                  *((1.D0-TETAF(IP))*FC(IP)-FSCE(IS))
               ENDIF
             ENDDO
           ENDDO
@@ -286,7 +286,7 @@
 !                                        NON ASSEMBLED VALUE
      &                     +DT*TETAF(IP)*SOURCES%ADR(IIS)%P%R(IP)
                 SM%R(IP)=SM%R(IP)-DT*SOURCES%ADR(IIS)%P%R(IP)
-     &                  *((1.D0-TETAF(IP))*FC(IP)-FSCE(IS))  
+     &                  *((1.D0-TETAF(IP))*FC(IP)-FSCE(IS))
               ENDIF
             ENDIF
           ENDDO
@@ -299,7 +299,7 @@
 !           AM2%D%R(IP)=AM2%D%R(IP)+DT*TETAF(IP)*BEDFLU%R(IP)
 !           SM%R(IP)=SM%R(IP)+DT*BEDFLU%R(IP)
 !                                             ????????
-!    &              *((1.D0-TETAF(IP))*FC(IP)-FBED(IP)) 
+!    &              *((1.D0-TETAF(IP))*FC(IP)-FBED(IP))
 !         ENDIF
 !       ENDDO
 !     ENDIF
@@ -411,7 +411,7 @@
           DO I=1,NPOIN3
 !           COPY OF NEW SOLUTION ON F, WITH CLIPPING WITH GLOBAL EXTREMA
 !           TO COPE WITH TRUNCATION ERRORS. IF CLIPPING TRUE ERRORS IT
-!           WILL DO MASS ERRORS  
+!           WILL DO MASS ERRORS
             F(I)=MAX(MIN(BB1%R(I),FMAX),FMIN)
           ENDDO
           IF(N.LT.SLVPSI%NITMAX.AND.NORMR.GT.SLVPSI%EPS*NORMB) THEN

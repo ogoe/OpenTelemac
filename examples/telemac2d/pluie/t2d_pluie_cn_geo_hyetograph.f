@@ -338,7 +338,7 @@
           ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*) 'RUNOFF_SCS_CN : AT LEAST ONE NODE WITH'
             WRITE(LU,*) '                NEGATIVE CN VALUE FOUND IN'
-            WRITE(LU,*) ' 			   INPUT DATA. FOR INSTANCE:'
+            WRITE(LU,*) '                INPUT DATA. FOR INSTANCE:'
             WRITE(LU,*) '                NODE:',I,'WITH CN=',CN%R(I)
           ENDIF
           CALL PLANTE(1)
@@ -472,10 +472,10 @@
       CC=25.4D0/1000.D0
 !
       DO I=1,NPOIN
-!        POTMAXRET(I) = 25.4D0*(1000.D0/CN%R(I)-10.D0)/1000.D0
-!        IA(I) = POTMAXRET(I) * IA_S
-         T5%R(I)=CC*(1000.D0/MAX(CN%R(I),EPS)-10.D0)
-         T6%R(I)=IA_S*T5%R(I)
+!       POTMAXRET(I) = 25.4D0*(1000.D0/CN%R(I)-10.D0)/1000.D0
+!       IA(I) = POTMAXRET(I) * IA_S
+        T5%R(I)=CC*(1000.D0/MAX(CN%R(I),EPS)-10.D0)
+        T6%R(I)=IA_S*T5%R(I)
       ENDDO
 !
 !

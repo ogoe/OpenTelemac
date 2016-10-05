@@ -146,12 +146,6 @@
         IERR = 0
 
 !
-c$$$        IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-c$$$          INST%H%R(INDEX1) = VALUE
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityU') THEN
-c$$$          INST%U%R(INDEX1) = VALUE
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
-c$$$          INST%V%R(INDEX1) = VALUE
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
           INST%Q%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EVOLUTION') THEN
@@ -162,13 +156,6 @@ c$$$          INST%V%R(INDEX1) = VALUE
           INST%ZF%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ZF_C') THEN
           INST%ZF_C%R(INDEX1) = VALUE
-
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-c$$$          VALUE = INST%HBOR%R(INDEX1)
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityU') THEN
-c$$$          VALUE = INST%UBOR%R(INDEX1)
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
-c$$$          VALUE = INST%VBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
           INST%QBOR%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EBOR') THEN
@@ -177,7 +164,6 @@ c$$$          VALUE = INST%VBOR%R(INDEX1)
           INST%FLBOR%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR_SIS') THEN
           INST%FLBOR_SIS%R(INDEX1) = VALUE
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
           INST%MESH%X%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
@@ -186,19 +172,12 @@ c$$$          VALUE = INST%VBOR%R(INDEX1)
           INST%MESH%XNEBOR%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
           INST%MESH%YNEBOR%R(INDEX1) = VALUE
-
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIMESTEP') THEN
           INST%DT = VALUE
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
           INST%TOB%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           INST%CHESTR%R(INDEX1) = VALUE
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-c$$$          INST%COTE%R(INDEX1) = VALUE
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-c$$$          INST%DEBIT%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.D50') THEN
           INST%D50(:) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.MPM') THEN
@@ -206,7 +185,7 @@ c$$$          INST%DEBIT%R(INDEX1) = VALUE
           INST%MPM_ARAY%R(:) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.SHIELDS') THEN
           INST%AC(:) = VALUE
-       ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
           INST%XKV = VALUE
           INST%CSF_SABLE = 1 - VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.KSPRATIO') THEN
@@ -217,7 +196,6 @@ c$$$          INST%DEBIT%R(INDEX1) = VALUE
           INST%BETA2 = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ALPHA') THEN
           INST%ALPHA = VALUE
-
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -344,7 +322,7 @@ c$$$          INST%DEBIT%R(INDEX1) = VALUE
             IERR = UNKNOWN_VAR_ERROR
             ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
           ENDIF
-         END SUBROUTINE SET_INTEGER_SIS_D
+        END SUBROUTINE SET_INTEGER_SIS_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET A STRING VARIABLE FROM SISYPHE
@@ -480,8 +458,6 @@ c$$$          INST%DEBIT%R(INDEX1) = VALUE
 !
           IERR = 0
           VALUE = 0
-c$$$          IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
-c$$$            VALUE = INST%DEBUG
           IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
             VALUE = 0
           ELSE
@@ -524,8 +500,6 @@ c$$$            VALUE = INST%DEBUG
           INTEGER DEBUG
 !
           IERR = 0
-c$$$          IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
-c$$$            INST%DEBUG = VALUE
           IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
             DEBUG = 1
           ELSE
@@ -568,12 +542,6 @@ c$$$            INST%DEBUG = VALUE
         DIM1 = 0
         DIM2 = 0
         DIM3 = 0
-c$$$        IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-c$$$          VALUE = INST%H%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityU') THEN
-c$$$          VALUE = INST%U%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
-c$$$          VALUE = INST%V%DIM1
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
           DIM1 = INST%Q%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EVOLUTION') THEN
@@ -584,13 +552,6 @@ c$$$          VALUE = INST%V%DIM1
           DIM1 = INST%ZF%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ZF_C') THEN
           DIM1 = INST%ZF_C%DIM1
-
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-c$$$          DIM1 = INST%HBOR%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
-c$$$          DIM1 = INST%UBOR%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
-c$$$          DIM1 = INST%VBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
           DIM1 = INST%QBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EBOR') THEN
@@ -599,7 +560,6 @@ c$$$          DIM1 = INST%VBOR%DIM1
           DIM1 = INST%FLBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR_SIS') THEN
           DIM1 = INST%FLBOR_SIS%DIM1
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
           DIM1 = INST%MESH%X%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
@@ -608,16 +568,10 @@ c$$$          DIM1 = INST%VBOR%DIM1
           DIM1 = INST%MESH%XNEBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
           DIM1 = INST%MESH%YNEBOR%DIM1
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
           DIM1 = INST%TOB%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           DIM1 = INST%CHESTR%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-c$$$          DIM1 = INST%COTE%DIM1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-c$$$          DIM1 = INST%DEBIT%DIM1
-
         ELSEIF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
             DIM1 = INST%LIHBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
@@ -668,18 +622,6 @@ c$$$          DIM1 = INST%DEBIT%DIM1
           READONLY = 0
           NDIM = 0
 !
-c$$$        IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-c$$$          VARTYPE = 'DOUBLE'
-c$$$          READONLY = 1
-c$$$          NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityU') THEN
-c$$$          VARTYPE = 'DOUBLE'
-c$$$          READONLY = 1
-c$$$          NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
-c$$$          VARTYPE = 'DOUBLE'
-c$$$          READONLY = 1
-c$$$          NDIM = 1
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
@@ -700,19 +642,6 @@ c$$$          NDIM = 1
           VARTYPE = 'DOUBLE'
           READONLY = 1
           NDIM = 1
-
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-          VARTYPE = 'DOUBLE'
-          READONLY = 1
-          NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityU') THEN
-          VARTYPE = 'DOUBLE'
-          READONLY = 1
-          NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
-          VARTYPE = 'DOUBLE'
-          READONLY = 1
-          NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
@@ -729,7 +658,6 @@ c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
           NDIM = 1
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
@@ -746,13 +674,10 @@ c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
           NDIM = 1
-
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIMESTEP') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
           NDIM = 1
-
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
@@ -761,15 +686,6 @@ c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.velocityV') THEN
           VARTYPE = 'DOUBLE'
           READONLY = 1
           NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-          VARTYPE = 'DOUBLE'
-          READONLY = 1
-          NDIM = 1
-c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-          VARTYPE = 'DOUBLE'
-          READONLY = 1
-          NDIM = 1
-
         ELSEIF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
           VARTYPE = 'INTEGER'
           READONLY = 1
@@ -827,15 +743,6 @@ c$$$        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
         I=0
         IERR = 0
 !
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.WATERDEPTH'
-c$$$        VARINFO(I) = 'DEPTH OF WATER'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.velocityU'
-c$$$        VARINFO(I) = 'VELOCITY ON U'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.velocityV'
-c$$$        VARINFO(I) = 'VELOCITY ON V'
         I = I + 1
         VARNAME(I) = 'MODEL.FLOWRATEQ'
         VARINFO(I) = 'SOLID TRANSPORT FLOWRATE'
@@ -851,15 +758,6 @@ c$$$        VARINFO(I) = 'VELOCITY ON V'
         I = I + 1
         VARNAME(I) = 'MODEL.ZF_C'
         VARINFO(I) = 'EVOLUTION DUE TO BEDLOAD'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.HBOR'
-c$$$        VARINFO(I) = 'BOUNDARY VALUE ON H FOR EACH BOUNDARY POINT'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.UBOR'
-c$$$        VARINFO(I) = 'BOUNDARY VALUE ON U FOR EACH BOUNDARY POINT'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.VBOR'
-c$$$        VARINFO(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
         I = I + 1
         VARNAME(I) = 'MODEL.QBOR'
         VARINFO(I) = 'BOUNDARY VALUE ON Q FOR EACH BOUNDARY POINT'
@@ -893,13 +791,6 @@ c$$$        VARINFO(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
         I = I + 1
         VARNAME(I) = 'MODEL.CHESTR'
         VARINFO(I) = 'STRIKLER ON POINT'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.COTE'
-c$$$        VARINFO(I) = ''
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.DEBIT'
-c$$$        VARINFO(I) = ''
-!
         I = I + 1
         VARNAME(I) = 'MODEL.LIHBOR'
         VARINFO(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
@@ -948,9 +839,6 @@ c$$$        VARINFO(I) = ''
         I = I + 1
         VARNAME(I) = 'MODEL.GEOMETRYFILE'
         VARINFO(I) = 'GEOMETRY FILE OF THE CASE'
-c$$$        I = I + 1
-c$$$        VARNAME(I) = 'MODEL.DEBUG'
-c$$$        VARINFO(I) = 'DEBUGGING ON/OFF PARAMETER'
 !
       END SUBROUTINE GET_VAR_LIST_SIS_D
 !

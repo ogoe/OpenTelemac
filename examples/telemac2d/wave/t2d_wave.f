@@ -193,7 +193,7 @@
         LEO=.TRUE.
         COMPLEO=0
       ELSE
-         IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
 !         FEM
           LTT=(LT/LISPRD)*LISPRD
           IF(LT.EQ.LTT.AND.LT.GE.PTINIL) IMP=.TRUE.

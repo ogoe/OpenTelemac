@@ -64,7 +64,7 @@
 !      _____________________________________________________________________
 !     /________ calculation of Node-areas for all nodes of grid ___________/
       ! calculation of Node-areas in T13      !  for parallel: here the
-      ! interface-nodes                                                                                                         !> node-area is allready reduced                                                                                    
+      ! interface-nodes                                                                                                         !> node-area is allready reduced
       CALL VECTOR(T13,'=','MASBAS          '
      &      ,IELMH_SIS,1.D0,T14,T14,T14,T14,T14,T14,MESH,MSK,MASKEL)
 !RK warum ist das hier auskommentiert?!?
@@ -74,7 +74,7 @@
       !> Close the SimuDig steering file (e.g. _DigActions.dat )
 
 
-      CALL InterFaceInitNestor(
+      CALL INTERFACEINITNESTOR(
      &                             NCSIZE, IPID, NPOIN
      &                           , NSICLA
      &                           , MARDAT, MARTIM ! Sis start: date , time
@@ -113,20 +113,20 @@
 !
 !     CALL FROM WITHIN BEDLOAD_MAIN
 !
-       IF (NESTOR.EQV..TRUE.) THEN
-         DTS = DT/NSOUS
-         CALL InterFaceRunNestor(   NPOIN      !  number of points (Nodes)
-     &                          , NSICLA     !  number of SIze CLAsses
-     &                          , LT         !  Telemac time step
-     &                          , DTS        !  duration of Sisyphe time step
-     &                          , AT0        !  time
-     &                          , ELAY0      !  active layer thickness [m]
-     &                          , ZF%R       !  bottom [m+NN]
-     &                          , ZFCL_C     !  evolution per class per time step [m]
-     &                          , AVAIL(1:NPOIN,1,1:NSICLA)    !
-     &                          , MESH%KNOLG%I    ! index list: Local to Global node index 
-     &                        )
-       ENDIF
+        IF (NESTOR.EQV..TRUE.) THEN
+          DTS = DT/NSOUS
+          CALL INTERFACERUNNESTOR(   NPOIN      !  NUMBER OF POINTS (NODES)
+     &                           , NSICLA     !  number of SIze CLAsses
+     &                           , LT         !  Telemac time step
+     &                           , DTS        !  duration of Sisyphe time step
+     &                           , AT0        !  time
+     &                           , ELAY0      !  active layer thickness [m]
+     &                           , ZF%R       !  bottom [m+NN]
+     &                           , ZFCL_C     !  evolution per class per time step [m]
+     &                           , AVAIL(1:NPOIN,1,1:NSICLA)    !
+     &                           , MESH%KNOLG%I    ! index list: Local to Global node index
+     &                         )
+        ENDIF
 
 !
 !

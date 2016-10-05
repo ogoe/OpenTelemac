@@ -30,11 +30,11 @@
 !| NSEG3          |-->| NUMBER OF SEGMENTS IN 3D
 !| NSEG2          |-->| NUMBER OF SEGMENTS IN 2D
 !| ORISEG         |-->| GIVES THE ORIENTATION OF SEGMENTS IN A TRIANGLE
-!| OPT_HNEG       |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS 
+!| OPT_HNEG       |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| SURFAC         |-->| SURFACE OF TRIANGLES
 !| TETA           |-->| LOCAL IMPLICITATION
 !| XM             |-->| NOT SYMMETRIC MURD MATRIX OPTION N
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_PARALLEL
@@ -101,7 +101,7 @@
 !
         ISEG1 = ELTSEG(IELEM,1)
         ISEG2 = ELTSEG(IELEM,2)
-        ISEG3 = ELTSEG(IELEM,3)        
+        ISEG3 = ELTSEG(IELEM,3)
         ISEG4 = ELTSEG(IELEM,4)
         ISEG5 = ELTSEG(IELEM,5)
         ISEG6 = ELTSEG(IELEM,6)
@@ -148,9 +148,9 @@
 !       L63 = XM(27,IELEM)
 !       L54 = XM(28,IELEM)
 !       L64 = XM(29,IELEM)
-!       L65 = XM(30,IELEM)  
+!       L65 = XM(30,IELEM)
 !
-!       END OF EQUIVALENT OF LIPS IN 2D  
+!       END OF EQUIVALENT OF LIPS IN 2D
 !
 !       CORRECTING THE FLUXES WHEN THEIR SIGN IS NOT THE SAME
 !       AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE
@@ -305,17 +305,17 @@
         IF(FXMATPAR(ISEG9).GT.0.D0) THEN
           L36=0.D0
           L63= FXMATPAR(ISEG9)*(H3+H6)*COEF*SUR2VOL(ISEG9)
-        ELSE 
+        ELSE
           L63=0.D0
           L36=-FXMATPAR(ISEG9)*(H3+H6)*COEF*SUR2VOL(ISEG9)
         ENDIF
 !
-!       CROSSED SEGMENTS : 
+!       CROSSED SEGMENTS :
 !       SHARED BY ONLY 2 ELEMENTS, THEY COULD BE TREATED
 !       LIKE IN 2D (COMMENTED LINES)
 !       BUT HERE SAME TREATMENT AS OTHERS
 !
-!                   
+!
 !       SEGMENT 10
 !
         IF(FXMATPAR(ISEG10).GT.0.D0) THEN
@@ -366,7 +366,7 @@
 !
 !       SEGMENT 14
 !
-         IF(FXMATPAR(ISEG14).GT.0.D0) THEN
+        IF(FXMATPAR(ISEG14).GT.0.D0) THEN
           L34=0.D0
 !         IF(L43.GT. FXMATPAR(ISEG14)) L43=FXMATPAR(ISEG14)
           L43= FXMATPAR(ISEG14)*(H3+H4)*COEF*SUR2VOL(ISEG14)

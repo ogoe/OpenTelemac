@@ -6,7 +6,7 @@
       USE DECLARATIONS_PARTEL, ONLY : CODE
         IMPLICIT NONE
 #if defined(HAVE_MPI)
-        include 'mpif.h'
+        INCLUDE 'mpif.h'
 #endif
         INTEGER ::  I,J, IERR, ID_SIS, ID_T2D, IDUM
         INTEGER :: NPOIN,NPTFR,NELEM,NELMAX,CPL_PERIOD
@@ -19,7 +19,7 @@
         CHARACTER(LEN=144) :: CAS_FILE_SIS, DICO_FILE_SIS
         CHARACTER(LEN=SIS_VAR_LEN) :: VARNAME
         INTEGER LU,LNG,NPLAN,PARALLEL,REFFILE,PREFILE,LIQUIDFILE
-        INTEGER rank,ncsize,pmethod,var_size,COMM
+        INTEGER RANK,NCSIZE,PMETHOD,VAR_SIZE,COMM
         COMM = 0
 
 !     OUTPUT FOR WRITING
@@ -87,7 +87,7 @@
            CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NCSIZE,IERR)
            COMM = MPI_COMM_WORLD
 #else
-       RANK = -1
+        RANK = -1
 #endif
 !
            CODE = 'SIS'
@@ -121,7 +121,7 @@
         ! Changing the name of the result file
         VARNAME = 'MODEL.RESULTFILE'
         CALL GET_VAR_SIZE_T2D(ID_T2D,VARNAME,VAR_SIZE,IDUM,IDUM,IERR)
-        print *, 'rank:',rank,'VAR_SIZE:',VAR_SIZE
+        PRINT *, 'rank:',RANK,'VAR_SIZE:',VAR_SIZE
         CALL SET_STRING_T2D(ID_T2D,VARNAME,RES_FILE_T2D,VAR_SIZE,IERR)
 
         CALL RUN_ALLOCATION_T2D(ID_T2D,IERR)
@@ -137,7 +137,7 @@
         ! Changing the name of the result file
         VARNAME = 'MODEL.RESULTFILE'
         CALL GET_VAR_SIZE_SIS(ID_SIS,VARNAME,VAR_SIZE,IDUM,IDUM,IERR)
-        print *, 'rank:',rank,'VAR_SIZE:',VAR_SIZE
+        PRINT *, 'rank:',RANK,'VAR_SIZE:',VAR_SIZE
         CALL SET_STRING_SIS(ID_SIS,VARNAME,RES_FILE_SIS,VAR_SIZE,IERR)
 
         CALL RUN_ALLOCATION_SIS(ID_SIS,IERR)

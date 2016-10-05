@@ -466,9 +466,6 @@
 !
           IF((.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0)).OR.
      &       (INDEX1.EQ.0.AND.INDEX2.EQ.0.AND.INDEX3.EQ.0)) THEN
-             write(*,*) 'CAlling get_double for ',varname
-             write(*,*) 'id ',id1,id2,id3
-             write(*,*) 'index ',index1,index2,index3
              CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
      &                             VALUE,ID1,ID2, ID3, IERR)
           END IF
