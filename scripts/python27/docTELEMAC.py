@@ -114,7 +114,7 @@ def compiletex(texfile, version):
 
 
 #
-def create_case_list_file(doc_dir, cfg_val, cleanup):
+def create_case_list_file(doc_dir, val_dir, cfg_val, cleanup):
    """
       brief Creates the CASELIST.tex which includes
       all the test cases tex file
@@ -123,8 +123,10 @@ def create_case_list_file(doc_dir, cfg_val, cleanup):
       param cfg_val list of path for the examples
       param cleanup If yes clean up the temporay files instead
                     of creating the CASELIST.Tex file
+      return the list of cases that where missing the .tex file
    """
    case_list_file = doc_dir + sep + 'latex' + sep + 'CASELIST.tex'
+   skipedCases = []
    if cleanup:
       if path.exists(case_list_file):
          remove(case_list_file)
@@ -133,16 +135,17 @@ def create_case_list_file(doc_dir, cfg_val, cleanup):
       if path.exists(case_list_file):
          remove(case_list_file)
       with open(case_list_file, 'w') as fobj:
-         val_dir = cfg_val['path']
          # Loop on all test cases
          for case in sorted(cfg_val):
-            # Skip the 'path' key
-            if case != 'path':
+            if not path.exists(path.join(val_dir,case,'doc',case+".tex")):
+               skipedCases.append(case)
+            else:
                txt = linesep + '\subincludefrom{' + val_dir + sep +\
                   case + sep + 'doc' +\
                   sep + '}{' + case + '}' + \
                   linesep + '\clearpage' + linesep
                fobj.write(txt)
+   return skipedCases
 
 def generate_ref_from_dict(exePath,dictionary,latexFile,lng,cleanup):
    """
@@ -261,6 +264,12 @@ def main():
                  dest="validation",
                  default=False,
                  help="Will generate the validation documentation" )
+   parser.add_option("--case-list",
+                 type="string",
+                 dest="caseList",
+                 default='',
+                 help="List of cas to include in the validation documentation"\
+                      "separated by ',' (default all of them)" )
    parser.add_option("--reference",
                  action="store_true",
                  dest="reference",
@@ -374,8 +383,17 @@ def main():
             doc_dir = root + sep + 'documentation' + sep +\
                      code_name + sep + 'validation'
             chdir(doc_dir)
-            create_case_list_file(doc_dir, cfg['VALIDATION'][code_name],\
+            if options.caseList != '':
+                listOfCase = options.caseList.split(',')
+            else:
+                listOfCase = cfg['VALIDATION'][code_name].keys()
+                listOfCase.remove('path')
+            skipedCase = create_case_list_file(doc_dir, \
+                                  cfg['VALIDATION'][code_name]['path'],\
+                                  listOfCase,\
                                   options.cleanup or options.fullcleanup)
+            for case in skipedCase:
+               output_mess += '   - /!\ Missing LaTeX file for '+case+'\n'
             todo.append('validation')
          if (options.reference or doall):
             # Path to the dictionary
