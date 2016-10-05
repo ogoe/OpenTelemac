@@ -127,6 +127,7 @@ class Telemac2d(object):
             else:
                 raise Exception('Error: unable to set the initial conditions' \
                         '\nTry to use get_error_message for more information')
+        return self.ierr
 
     def run_one_time_step(self):
         """
@@ -141,6 +142,7 @@ class Telemac2d(object):
             if self.ierr:
                 raise Exception('Error: the computation does not perform' \
                         '\nTry to use get_error_message for more information')
+        return self.ierr
 
     def run_all_time_steps(self):
         """
