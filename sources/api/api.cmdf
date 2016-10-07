@@ -876,7 +876,7 @@ files: friction_def.f
   read_fic_sources.f
   debsce.f
   cosake.f
-  chpcon.f
+  chpconv.f
   vistur.f
   hpropa.f
   wall_friction.f

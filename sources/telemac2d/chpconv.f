@@ -1,5 +1,5 @@
 !                    *****************
-                     SUBROUTINE CHPCON
+                     SUBROUTINE CHPCONV
 !                    *****************
 !
      &(UCONV,VCONV,U,V,UN,VN,TETAU)

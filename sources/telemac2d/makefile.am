@@ -10,7 +10,7 @@ lecdon_telemac2d.f                     \
 ad_allvec_telemac2d.f akepin.f assignstr.f astro.f  bilan.f  \
 bilant1.f bord.f  bord_tidal_bc.f bord_tide.f bord_tide_misc.f breach.f buse.f  \
 calcul_q_weir.f caldt.f  \
-cdl.f cdlproj.f cdlzz.f cdl_hllc.f cdl_tch.f cdl_waf.f chpcon.f clhuvt.f  \
+cdl.f cdlproj.f cdlzz.f cdl_hllc.f cdl_tch.f cdl_waf.f chpconv.f clhuvt.f  \
 clsing.f cltrac.f   coefmat.f coefro.f complim.f condin.f  condin_adj.f  \
 conv_mercator_to_degdec.f conv_lambert_to_degdec.f  \
 corfon.f corpor.f   cornor.f  correction_depth_2d.f  corstr.f  \
