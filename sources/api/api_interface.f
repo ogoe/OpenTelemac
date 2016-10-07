@@ -180,6 +180,8 @@
 !
         CALL RUN_SET_CONFIG_T2D_D(INSTANCE_LIST_T2D(ID),LU,LNG,
      &                            COMM,IERR)
+        IF(IERR.NE.0) RETURN
+        CALL SET_VAR_LIST_T2D_D(IERR)
 !
       END SUBROUTINE RUN_SET_CONFIG_T2D
 !
@@ -384,6 +386,8 @@
         CALL RUN_FINALIZE_T2D_D(INSTANCE_LIST_T2D(ID),IERR)
         IF(IERR.NE.0) RETURN
         CALL DELETE_INSTANCE_T2D(ID,IERR)
+        DEALLOCATE(VNAME_T2D)
+        DEALLOCATE(VINFO_T2D)
 !
       END SUBROUTINE RUN_FINALIZE_T2D
 !
@@ -905,17 +909,23 @@
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM VARNAME   [OUT]    LIST OF ALL THE VARIABLES
-      !PARAM DICO_FILE [OUT]    LIST OF ALL THE DESCRIPTIONS
+      !PARAM VARINFO   [OUT]    LIST OF ALL THE DESCRIPTIONS
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_LIST_T2D(VARNAME, VARINFO, IERR)
 !
-        CHARACTER(LEN=T2D_VAR_LEN), INTENT(INOUT) :: VARNAME(*)
+        CHARACTER(LEN=T2D_VAR_LEN),  INTENT(INOUT) :: VARNAME(*)
         CHARACTER(LEN=T2D_INFO_LEN), INTENT(INOUT) :: VARINFO(*)
         INTEGER, INTENT(OUT) :: IERR
 !
-        CALL GET_VAR_LIST_T2D_D(VARNAME, VARINFO, IERR)
+        INTEGER I
+
+        IERR = 0
+        DO I=1,NB_VAR_T2D
+          VARNAME(I) = VNAME_T2D(I)
+          VARINFO(I) = VINFO_T2D(I)
+        ENDDO
 !
       END SUBROUTINE
 !

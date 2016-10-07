@@ -18,6 +18,7 @@ from scipy.spatial.distance import cdist
 import tempfile
 from ctypes import cdll
 from TelApy.tools.polygon import is_in_polygon
+from array import array
 
 hometel = os.getenv("HOMETEL")
 if(hometel != None):
@@ -336,17 +337,29 @@ class Telemac2d(object):
         List the names and the meaning of available variables and parameters
         :return: two lists of strings (name and meaning)
         """
-        nbvar = self.apit2d.api_handle_var_t2d.nb_var_t2d
+        nbVar = self.apit2d.api_handle_var_t2d.nb_var_t2d
+        varLen = self.apit2d.api_handle_var_t2d.t2d_var_len
+        infoLen = self.apit2d.api_handle_var_t2d.t2d_info_len
 
         # TODO: Solve that shit charcater Fortran to character Python
-        varnames = []
-        varinfo = []
-        ierr = self.apit2d_inter.get_var_list_t2d(varnames,varinfo)
         vnames = []
         vinfo = []
-        for i in range(nbvar):
-            vnames.append(''.join(map(str, varnames[i])).strip())
-            vinfo.append(''.join(map(str, varinfo[i])).strip())
+        varnames = []
+        varinfo = []
+        # Reordering string array for variable names
+        tmp = self.apit2d.api_handle_var_t2d.vname_t2d
+        for j in range(varLen):
+             for i in range(nbVar):
+                 varnames.append(tmp[i][j])
+        # Reordering string array for variable info
+        tmp = self.apit2d.api_handle_var_t2d.vinfo_t2d
+        for j in range(infoLen):
+             for i in range(nbVar):
+                 varinfo.append(tmp[i][j])
+        # Extracting name and info into a list
+        for i in range(nbVar):
+            vnames.append(''.join(varnames[(i-1)*varLen:i*varLen]).strip())
+            vinfo.append(''.join(varinfo[(i-1)*infoLen:i*infoLen]).strip())
         return vnames, vinfo
 
     def get_integer(self, varname, *args):

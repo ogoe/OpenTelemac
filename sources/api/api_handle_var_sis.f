@@ -12,6 +12,7 @@
 
         USE API_HANDLE_ERROR
         USE API_INSTANCE_SIS
+        IMPLICIT NONE
         ! Size of the string containing the name of a variable
         INTEGER, PARAMETER :: SIS_VAR_LEN=40
         ! Size of the string containing the type of a variable

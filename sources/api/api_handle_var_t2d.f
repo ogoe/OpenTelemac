@@ -12,6 +12,7 @@
 
         USE API_HANDLE_ERROR
         USE API_INSTANCE_T2D
+        IMPLICIT NONE
         ! Size of the string containing the name of a variable
         INTEGER, PARAMETER :: T2D_VAR_LEN=40
         ! Size of the string containing the type of a variable
@@ -20,7 +21,9 @@
         INTEGER, PARAMETER :: T2D_INFO_LEN=200
         ! The maximum number of variable
 !TODO: Update nb_var_t2d to real value + update all fonctions
-        INTEGER, PARAMETER :: NB_VAR_T2D=30
+        INTEGER, PARAMETER :: NB_VAR_T2D=33
+        CHARACTER(LEN=T2D_VAR_LEN),ALLOCATABLE :: VNAME_T2D(:)
+        CHARACTER(LEN=T2D_INFO_LEN),ALLOCATABLE :: VINFO_T2D(:)
 !
       CONTAINS
 !
@@ -771,122 +774,124 @@
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !PARAM VARNAME   [OUT]    LIST OF ALL THE VARIABLES
-      !PARAM DICO_FILE [OUT]    LIST OF ALL THE DESCRIPTIONS
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_VAR_LIST_T2D_D(VARNAME, VARINFO, IERR)
+      SUBROUTINE SET_VAR_LIST_T2D_D(IERR)
 !
-        CHARACTER(LEN=T2D_VAR_LEN), INTENT(INOUT) :: VARNAME(*)
-        CHARACTER(LEN=T2D_INFO_LEN),INTENT(INOUT) :: VARINFO(*)
         INTEGER, INTENT(OUT) :: IERR
 !
         INTEGER :: I
 !
         I=0
         IERR = 0
+        IF(.NOT.ALLOCATED(VNAME_T2D)) THEN
+          ALLOCATE(VNAME_T2D(NB_VAR_T2D),STAT=IERR)
+          IF(IERR.NE.0) RETURN
+          ALLOCATE(VINFO_T2D(NB_VAR_T2D),STAT=IERR)
+          IF(IERR.NE.0) RETURN
 !
-        I = I + 1
-        VARNAME(I) = 'MODEL.NPOIN'
-        VARINFO(I) = 'NUMBER OF POINT IN THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NELEM'
-        VARINFO(I) = 'NUMBER OF ELEMENT IN THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIHBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIUBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON U FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIVBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON V FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.HBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON H FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.UBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON U FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.VBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.XNEBOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.YNEBOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.WATERDEPTH'
-        VARINFO(I) = 'DEPTH OF THE WATER'
-        I = I + 1
-        VARNAME(I) = 'MODEL.INCWATERDEPTH'
-        VARINFO(I) = 'INCREASE IN THE THE DEPTH OF THE WATER'
-        I = I + 1
-        VARNAME(I) = 'MODEL.BOTTOMELEVATION'
-        VARINFO(I) = 'LEVEL OF THE BOTTOM'
-        I = I + 1
-        VARNAME(I) = 'MODEL.VELOCITYU'
-        VARINFO(I) = 'VELOCITY ON U'
-        I = I + 1
-        VARNAME(I) = 'MODEL.VELOCITYV'
-        VARINFO(I) = 'VELOCITY ON V'
-        I = I + 1
-        VARNAME(I) = 'MODEL.X'
-        VARINFO(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.Y'
-        VARINFO(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.FLUX_BOUNDARIES'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.POROSITY'
-        VARINFO(I) = 'POROSITY'
-        I = I + 1
-        VARNAME(I) = 'MODEL.KP1BOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.NUMLIQ'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.NBOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.NPTFR'
-        VARINFO(I) = 'NUMBER OF BOUNDARY POINTS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NTIMESTEPS'
-        VARINFO(I) = 'NUMBER OF TIME STEPS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NELMAX'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.IKLE'
-        VARINFO(I) = 'CONNECTIVITY TABLE BETWEEN ELEMENT AND NODES'
-        I = I + 1
-        VARNAME(I) = 'MODEL.CHESTR'
-        VARINFO(I) = 'STRIKLER ON POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LT'
-        VARINFO(I) = 'CURRENT TIME STEP'
-        I = I + 1
-        VARNAME(I) = 'MODEL.AT'
-        VARINFO(I) = 'CURRENT TIME'
-        I = I + 1
-        VARNAME(I) = 'MODEL.BND_TIDE'
-        VARINFO(I) = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.TIDALRANGE'
-        VARINFO(I) = 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
-        I = I + 1
-        VARNAME(I) = 'MODEL.TIDALVELOCITY'
-        VARINFO(I) = 'COEFFICIENT TO CALIBRATE TIDAL VELOCITIES'
-        I = I + 1
-        VARNAME(I) = 'MODEL.SEALEVEL'
-        VARINFO(I) = 'COEFFICIENT TO CALIBRATE SEA LEVEL'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NPOIN'
+          VINFO_T2D(I) = 'NUMBER OF POINT IN THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NELEM'
+          VINFO_T2D(I) = 'NUMBER OF ELEMENT IN THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.LIHBOR'
+          VINFO_T2D(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.LIUBOR'
+          VINFO_T2D(I) = 'BOUNDARY TYPE ON U FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.LIVBOR'
+          VINFO_T2D(I) = 'BOUNDARY TYPE ON V FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.HBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON H FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.UBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON U FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.VBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.XNEBOR'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.YNEBOR'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.WATERDEPTH'
+          VINFO_T2D(I) = 'DEPTH OF THE WATER'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.INCWATERDEPTH'
+          VINFO_T2D(I) = 'INCREASE IN THE THE DEPTH OF THE WATER'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.BOTTOMELEVATION'
+          VINFO_T2D(I) = 'LEVEL OF THE BOTTOM'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.VELOCITYU'
+          VINFO_T2D(I) = 'VELOCITY ON U'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.VELOCITYV'
+          VINFO_T2D(I) = 'VELOCITY ON V'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.X'
+          VINFO_T2D(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.Y'
+          VINFO_T2D(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.FLUX_BOUNDARIES'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.POROSITY'
+          VINFO_T2D(I) = 'POROSITY'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.KP1BOR'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NUMLIQ'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NBOR'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NPTFR'
+          VINFO_T2D(I) = 'NUMBER OF BOUNDARY POINTS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NTIMESTEPS'
+          VINFO_T2D(I) = 'NUMBER OF TIME STEPS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NELMAX'
+          VINFO_T2D(I) = ''
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.IKLE'
+          VINFO_T2D(I) = 'CONNECTIVITY TABLE BETWEEN ELEMENT AND NODES'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.CHESTR'
+          VINFO_T2D(I) = 'STRIKLER ON POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.LT'
+          VINFO_T2D(I) = 'CURRENT TIME STEP'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.AT'
+          VINFO_T2D(I) = 'CURRENT TIME'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.BND_TIDE'
+          VINFO_T2D(I) = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.TIDALRANGE'
+          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.TIDALVELOCITY'
+          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE TIDAL VELOCITIES'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.SEALEVEL'
+          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE SEA LEVEL'
+        ENDIF
 !
-      END SUBROUTINE GET_VAR_LIST_T2D_D
+      END SUBROUTINE SET_VAR_LIST_T2D_D
 !
       END MODULE API_HANDLE_VAR_T2D
