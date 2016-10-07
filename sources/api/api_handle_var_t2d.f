@@ -817,10 +817,10 @@
           VINFO_T2D(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.XNEBOR'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'NORMAL X TO 1D BOUNDARY POINTS'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.YNEBOR'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'NORMAL Y TO 1D BOUNDARY POINTS'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.WATERDEPTH'
           VINFO_T2D(I) = 'DEPTH OF THE WATER'
@@ -844,19 +844,20 @@
           VINFO_T2D(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.FLUX_BOUNDARIES'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'FLUX AT BOUNDARIES'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.POROSITY'
           VINFO_T2D(I) = 'POROSITY'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.KP1BOR'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) =
+     &           'POINTS FOLLOWING AND PRECEDING A BOUNDARY POINT'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NUMLIQ'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'LIQUID BOUNDARY NUMBERS'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NBOR'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'GLOBAL NUMBER OF BOUNDARY POINTS'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NPTFR'
           VINFO_T2D(I) = 'NUMBER OF BOUNDARY POINTS'
@@ -865,7 +866,7 @@
           VINFO_T2D(I) = 'NUMBER OF TIME STEPS'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NELMAX'
-          VINFO_T2D(I) = ''
+          VINFO_T2D(I) = 'MAXIMUM NUMBER OF ELEMENTS ENVISAGED'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.IKLE'
           VINFO_T2D(I) = 'CONNECTIVITY TABLE BETWEEN ELEMENT AND NODES'
