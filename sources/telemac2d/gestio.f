@@ -2,8 +2,8 @@
                      SUBROUTINE GESTIO
 !                    *****************
 !
-     &(U,V,C,T,AK,EP,UTILD,VTILD,CTILD,TTILD,AKTILD,EPTILD,
-     & TRAC,PROPA,CONVV,ITURB,IETAPE)
+     &(U,V,C,T,AK,EP,VISCSA,UTILD,VTILD,CTILD,TTILD,AKTILD,EPTILD,
+     & NUTILD,TRAC,PROPA,CONVV,ITURB,IETAPE)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   21/08/2010
@@ -32,6 +32,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R. ATA
+!+        28/07/2016
+!+        V7P2
+!+   add SA turbulence model
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<->| TURBULENT KINETIC ENERGY
 !| AKTILD         |-->| TURBULENT KINETIC BEFORE CURRENT STEP
@@ -44,6 +49,8 @@
 !| ITURB          |-->| TURBULENCE MODEL 1: LAMINAR, CONSTANT COEFFICIENT
 !|                |   |                  2: MIXING LENGTH
 !|                |   |                  3: K-EPSILON
+!|                |   |                  6: SPALART-ALLMARAS
+!| NUTILD         |-->| NU OF SA MODEL BEFORE CURRENT STEP
 !| PROPA          |-->| IF PROPA=.FALSE. : NO PROPAGATION STEP.
 !| T              |<->| BLOCK OF TRACERS
 !| TRAC           |-->| LOGICAL, YES IF THERE ARE TRACERS
@@ -63,10 +70,10 @@
 !
       INTEGER, INTENT(IN)           :: ITURB,IETAPE
       LOGICAL, INTENT(IN)           :: TRAC,CONVV(4),PROPA
-      TYPE(BIEF_OBJ), INTENT(IN)    :: T,AK,EP
+      TYPE(BIEF_OBJ), INTENT(IN)    :: T,AK,EP,VISCSA
       TYPE(BIEF_OBJ), INTENT(INOUT) :: U,V,C
       TYPE(BIEF_OBJ), INTENT(INOUT) :: UTILD,VTILD,CTILD,TTILD
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: AKTILD,EPTILD
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: AKTILD,EPTILD,NUTILD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -91,6 +98,9 @@
         IF(ITURB.EQ.3.AND.(.NOT.CONVV(4))) THEN
           CALL OS( 'X=Y     ' , X=AKTILD , Y=AK )
           CALL OS( 'X=Y     ' , X=EPTILD , Y=EP )
+        ENDIF
+        IF(ITURB.EQ.6.AND.(.NOT.CONVV(4))) THEN
+          CALL OS( 'X=Y     ' , X=NUTILD , Y=VISCSA )
         ENDIF
 !
       ENDIF

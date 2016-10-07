@@ -422,7 +422,8 @@
           CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
      &                LIEBOR%I,LIEBOR%I,
      &                MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
-     &                IT1%I,NPOIN,NPTFR,KLOG,.TRUE.,NUMLIQ%I,MAXFRO)
+     &                IT1%I,NPOIN,NPTFR,KLOG,.TRUE.,NUMLIQ%I,MAXFRO,
+     &                .FALSE.,MESH%X%R)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRONT2'
         ENDIF
 !

@@ -15,6 +15,18 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE AKSAIN
+     &(VISCSA,NPOIN,NUMIN,PROPNU)
+      IMPLICIT NONE
+      INTEGER         ,INTENT(IN   ) :: NPOIN
+      DOUBLE PRECISION,INTENT(INOUT) :: VISCSA(NPOIN)
+      DOUBLE PRECISION,INTENT(IN   ) :: NUMIN,PROPNU
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE AKEPIN
      &(AK,EP,U,V,H,NPOIN,KFROT,CMU,C2,ESTAR,SCHMIT,KMIN,EMIN,CF)
       IMPLICIT NONE
@@ -1251,16 +1263,16 @@
 !
       INTERFACE
         SUBROUTINE GESTIO
-     &(U,V,C,T,AK,EP,UTILD,VTILD,CTILD,TTILD,AKTILD,EPTILD,
-     & TRAC,PROPA,CONVV,ITURB,IETAPE)
+     &(U,V,C,T,AK,EP,VISCSA,UTILD,VTILD,CTILD,TTILD,AKTILD,EPTILD,
+     & NUTILD,TRAC,PROPA,CONVV,ITURB,IETAPE)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT(IN)           :: ITURB,IETAPE
       LOGICAL, INTENT(IN)           :: TRAC,CONVV(4),PROPA
-      TYPE(BIEF_OBJ), INTENT(IN)    :: T,AK,EP
+      TYPE(BIEF_OBJ), INTENT(IN)    :: T,AK,EP,VISCSA
       TYPE(BIEF_OBJ), INTENT(INOUT) :: U,V,C
       TYPE(BIEF_OBJ), INTENT(INOUT) :: UTILD,VTILD,CTILD,TTILD
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: AKTILD,EPTILD
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: AKTILD,EPTILD,NUTILD
         END SUBROUTINE
       END INTERFACE
 !
@@ -2595,6 +2607,63 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE SPALALLCL
+     &(NUBOR, LIMSA, LIUBOR, NPTFR,NUMIN,PROPNU,
+     & KNEU, KDIR, KENT, KENTU, KADH, KLOG,KSORT)
+      USE BIEF_DEF
+      INTEGER, INTENT(IN)      :: NPTFR
+      INTEGER, INTENT(IN)      :: KNEU, KDIR,KENT,KADH, KLOG,KENTU,KSORT
+      INTEGER, INTENT(IN)      :: LIMSA(NPTFR), LIUBOR(NPTFR)
+      DOUBLE PRECISION, INTENT(INOUT) :: NUBOR(*)
+      DOUBLE PRECISION, INTENT(IN) :: NUMIN,PROPNU
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE SPALALLIN
+     &(LIMSA, LIUBOR, NPTFR, KENT, KENTU, KSORT, 
+     & KADH, KLOG, KINC, KNEU, KDIR)
+      USE BIEF_DEF
+      INTEGER, INTENT(IN) :: NPTFR, KENT, KSORT, KADH, KLOG
+      INTEGER, INTENT(IN) :: KINC, KNEU, KDIR, KENTU
+      INTEGER, INTENT(INOUT) :: LIMSA(NPTFR)
+      INTEGER, INTENT(IN) :: LIUBOR(NPTFR)
+        END SUBROUTINE
+      END INTERFACE
+!
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE SPALART_ALLMARAS
+     &(U,V,VISCSA,DT,NUN,NUTILD,PROPNU,VISC,IELMNU,SLVNU,DISBOR,
+     & INFONU, MSK, MASKEL, MASKPT, NPTFR, LIMSA, NUBOR, S, UCONV,
+     & VCONV, ICONV,MAS,DIF,SM,CM2,T3,T1,T2,MESH,TB,T4,
+     & T5,WDIST,NUMIN,NUMAX,YAFLULIM,TE1,TE2,YASMH)
+      USE BIEF_DEF
+      INTEGER, INTENT(IN)          :: IELMNU, NPTFR
+      INTEGER, INTENT(IN)          :: ICONV
+      INTEGER         , INTENT(INOUT) :: LIMSA(NPTFR)
+      LOGICAL, INTENT(IN)          :: INFONU, MSK,YAFLULIM,YASMH
+      TYPE(SLVCFG), INTENT(INOUT)  :: SLVNU
+      TYPE(BIEF_OBJ), INTENT(IN)   :: U, V, NUN, DISBOR
+      TYPE(BIEF_OBJ), INTENT(IN)   :: MASKEL, MASKPT,S
+      TYPE(BIEF_OBJ), INTENT(IN)   :: UCONV, VCONV,VISC,WDIST
+      TYPE(BIEF_OBJ), INTENT(INOUT):: VISCSA,T4,T5,NUTILD, NUBOR
+      DOUBLE PRECISION, INTENT(IN) :: DT, PROPNU,NUMIN,NUMAX
+      TYPE(BIEF_OBJ), INTENT(INOUT):: MAS,DIF,CM2
+      TYPE(BIEF_OBJ), INTENT(INOUT):: SM,T3,T1,T2
+      TYPE(BIEF_OBJ) , INTENT(INOUT)  :: TB,TE1,TE2
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
+!
+       END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         DOUBLE PRECISION FUNCTION STA_DIS_CUR
      &(IFRLIQ,FLUX,PTS,QZ,NFRLIQ,ZN)
       IMPLICIT NONE
@@ -2762,6 +2831,19 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE VISTURSA(VISC, VISCSA,NPOIN,PROPNU)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER         , INTENT(IN)    :: NPOIN
+      DOUBLE PRECISION, INTENT(IN)    :: PROPNU
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: VISCSA
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: VISC
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         DOUBLE PRECISION FUNCTION VIT( I , N )
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: I,N
@@ -2879,6 +2961,20 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE WALLDIST
+     &(MESH, WDIST,LIUBOR,KADH,KLOG,NPTFR)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER        , INTENT(IN)    :: KADH,KLOG,NPTFR
+      INTEGER        , INTENT(IN)    :: LIUBOR(*)
+      TYPE(BIEF_OBJ) , INTENT(INOUT) :: WDIST
+      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE WRIHYD
      &(TITRE , ITSTRT , ITSTOP , ITSTEP , NPOIN2 , MBND   ,
      & NSEG  , NOLAY  , NOMGEO , NOMLIM ,
@@ -2918,18 +3014,6 @@
       INTEGER, INTENT(INOUT)          :: NIT
       DOUBLE PRECISION, INTENT(IN)    :: X0,A2,CA1
       DOUBLE PRECISION, INTENT(INOUT) :: X
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE ZOKA_SMALL(HI,HJ,ETAI,ETAJ,UI,UJ,VI,VJ,G,FLX)
-      USE BIEF_DEF
-      IMPLICIT NONE
-      DOUBLE PRECISION, INTENT(IN)    :: G,HI,HJ,ETAI,ETAJ,UI,UJ
-      DOUBLE PRECISION, INTENT(IN)    :: VI,VJ
-      DOUBLE PRECISION, INTENT(INOUT) :: FLX(3)
         END SUBROUTINE
       END INTERFACE
 !

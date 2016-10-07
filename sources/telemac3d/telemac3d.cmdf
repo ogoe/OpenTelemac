@@ -6,13 +6,7 @@ name: HOMERE_TELEMAC3D
 
 [ad]
 path: <root>|sources|utils|ad
-files: ad_tomawac_end.f
-  ad_tomawac_initialisation_begin.f
-  ad_tomawac_initialisation_end.f
-  ad_tomawac_timestep_end.f
-  ad_tomawac_begin.f
-  ad_tomawac_timestep_begin.f
-  ad_sisyphe_looprecords_end.f
+files: ad_sisyphe_looprecords_end.f
   ad_sisyphe_initialisation_begin.f
   ad_sisyphe_subiteration_begin.f
   ad_sisyphe_looprecords_begin.f
@@ -106,6 +100,7 @@ files: bief_def.f
   vc08tt.f
   vc11pp.f
   vc01ff.f
+  vc11bb.f
   vc10oo.f
   vc01ft2.f
   vc13bb.f
@@ -119,9 +114,10 @@ files: bief_def.f
   vc18pp.f
   vc00ft.f
   vc02pp_star.f
-  vc11bb.f
+  vc17aa.f
   vc19aa.f
   vc16aa.f
+  vc18aa.f
   vc08bb.f
   vc00aa.f
   vc13pp.f
@@ -767,8 +763,8 @@ files: friction_def.f
   interpmeteo2.f
   meteo.f
   buse.f
-  sta_dis_cur.f
   read_fic_frliq.f
+  sta_dis_cur.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -811,10 +807,10 @@ files: declarations_telemac3d.f
   utimp.f
   source.f
   check.f
+  q3.f
   read_bin_frliq.f
   vel_prof_z.f
   debimp_3d.f
-  q3.f
   tra_prof_z.f
   sl3.f
   tidal_model_t3d.f
@@ -981,6 +977,7 @@ files: declarations_tomawac.f
   qwindl.f
   semimp.f
   tom_corfon.f
+  radiat.f
   iniphy.f
   impr.f
   filt_sa.f
@@ -1013,7 +1010,6 @@ files: declarations_tomawac.f
   angles.f
   prenl1.f
   dir_spread.f
-  radiat.f
   wpower.f
   dump2d.f
   prenl2.f
@@ -1027,7 +1023,7 @@ files: declarations_tomawac.f
   lecdoi.f
   anacos.f
   condiw.f
-  wac.F
+  wac.f
 
 [waqtel]
 path: <root>|sources|waqtel

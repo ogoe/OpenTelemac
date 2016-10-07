@@ -134,6 +134,7 @@ files: bief_def.f
   vc08tt.f
   vc11pp.f
   vc01ff.f
+  vc11bb.f
   vc10oo.f
   vc01ft2.f
   vc13bb.f
@@ -147,9 +148,10 @@ files: bief_def.f
   vc18pp.f
   vc00ft.f
   vc02pp_star.f
-  vc11bb.f
+  vc17aa.f
   vc19aa.f
   vc16aa.f
+  vc18aa.f
   vc08bb.f
   vc00aa.f
   vc13pp.f

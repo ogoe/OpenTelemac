@@ -294,6 +294,11 @@
 !+   MASS_RAIN set to 0.D0 before first call to BILANT. Local variables
 !+   CHARR and SUSP removed.
 !
+!history R. ATA (LNHE)
+!+       27/09/2016
+!+       V7P2
+!+   add new turbulence model of Spalart-Allmaras
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -355,7 +360,7 @@
 !
 ! LOGICALS
 !
-      LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT
+      LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT,SA
       LOGICAL CHARR_TEL,SUSP1,YAFLODEL,YAFLULIM,IMP,LEO
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
@@ -368,9 +373,9 @@
 !
 ! ADDED FOR KINETIC SCHEMES
 !
-      DOUBLE PRECISION DTN,FLUSORTN,FLUENTN,TMAX,DTT
+      DOUBLE PRECISION DTN,FLUSORTN,FLUENTN,TMAX,DTT,BID
 !
-      INTEGER LTT
+      INTEGER LTT,IERR
 !
 !-----------------------------------------------------------------------
 !
@@ -437,7 +442,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION OF CONSTANTS FOR K-EPSILON, + KARMAN
+!     INITIALISATION OF CONSTANTS FOR K-EPSILON, + KARMAN+ SA
 !
       CALL COSAKE(KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,
      &            ESTAR,SCHMIT,KMIN,KMAX,EMIN,EMAX)
@@ -445,9 +450,14 @@
       IF(ITURB.EQ.3) THEN
 !       WILL HAVE TO INITIALISE K AND EPSILON
         AKEP = .TRUE.
+      ELSEIF(ITURB.EQ.6) THEN
+!       WILL HAVE TO INTIALISE SPALART-ALLMARAS
+        SA=.TRUE.
+        CALL COSASA(SIGMANU,NUMIN,NUMAX)
       ELSE
-!       SHOULD NOT INITIALISE K AND EPSILON
+!       SHOULD NOT INITIALISE K NOR EPSILON NEITHER SA
         AKEP = .FALSE.
+        SA   = .FALSE.
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -746,12 +756,34 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+!       IF SPALART ALLMARAS RECUPERATE WDIST FROM GEOMETRY FILE
+!       WDIST WAS COMPUTED IN PARTEL
+        IF(ITURB.EQ.6)THEN
+          CALL FIND_VARIABLE(T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
+     &                      'WALLDIST        ',WDIST%R, MESH%NPOIN,
+     &                      IERR,RECORD=0,TIME_RECORD=BID)  
+
+          IF(IERR.NE.0)THEN
+            IF(LNG.EQ.1)THEN
+              WRITE(LU,*) 'TELEMAC2D: PROBLEME AVEC LA VARIABLE WDIST  '
+              WRITE(LU,*) '           QUI EST UTILISEE PAR LE MODELE   '
+              WRITE(LU,*) '           DE TURBULENCE DE SPALART ALLMARAS'
+            ELSEIF(LNG.EQ.2)THEN
+              WRITE(LU,*) 'TELEMAC2D: PROBLEM WITH VARIABLE WDIST '
+              WRITE(LU,*) '           WHICH IS USED WITH SPALART  '
+              WRITE(LU,*) '           ALLMARAS TURBULENCE MODEL   '
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FRONT2'
         CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
      &              LIHBOR%I,LIUBOR%I,
      &              MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
-     &              IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
+     &              IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO,
+     &              ITURB.EQ.6,WDIST%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FRONT2'
       ENDIF
       IF(NFRLIQ0.NE.0.AND.NFRLIQ0.NE.NFRLIQ)THEN
@@ -1078,12 +1110,20 @@
 !
       ENDIF
 !
+!     INITIAL CODNITIONS FOR SA MODEL
+!
+      IF(SA) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SPALART INITIALIZATION' 
+        CALL FRICTION_CHOICE(1) 
+        CALL AKSAIN(VISCSA%R,NPOIN,NUMIN,PROPNU)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SPALART INITIALIZATION' 
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     PREPARES BOUNDARY CONDITIONS FOR WEIRS.
 !
       IF (NCSIZE.GT.0) THEN
-        WRITE(LU,*) 'CCT SYNCHRONISATION AVANT'
         CALL P_SYNC
       ENDIF
       IF(NWEIRS.GT.0) THEN
@@ -1110,7 +1150,6 @@
 !
       ENDIF
       IF (NCSIZE.GT.0) THEN
-        WRITE(LU,*) 'CCT SYNCHRONISATION APRES'
         CALL P_SYNC
       ENDIF
 !
@@ -1184,6 +1223,10 @@
         CALL MIXLENGTH(VISC,CF,U,V,H,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU,
      &                 UNSV2D,IELMU,NPTFR)
 !
+      ELSEIF(ITURB.EQ.6) THEN
+!
+        CALL VISTURSA(VISC, VISCSA, NPOIN, PROPNU)
+!
       ELSE
         IF(LISTIN) THEN
           IF(LNG.EQ.1) WRITE(LU,15) ITURB
@@ -1242,7 +1285,7 @@
 !=======================================================================
 !
 ! INITIALISES ADVECTION
-! FTILD COMPRISES UTILD,VTILD,HTILD,(TTILD),(AKTILD AND EPTILD)
+! FTILD COMPRISES UTILD,VTILD,HTILD,(TTILD),(AKTILD AND EPTILD),(NUTILD)
 !
       CALL OS( 'X=0     ' , X=FTILD )
 !
@@ -1762,6 +1805,12 @@
      &                           KENT,KENTU,KSORT,KADH,KLOG,
      &                           KINC,KNEU,KDIR)
 !
+! TYPES OF CONDITIONS FOR THE SPALART-ALLMARAS MODEL
+!
+      IF(ITURB.EQ.6) CALL SPALALLIN(LIMSA%I, LIUBOR%I, NPTFR,
+     &                              KENT, KENTU, KSORT, KADH, KLOG,
+     &                              KINC, KNEU, KDIR)
+!
 ! TYPES OF CONDITIONS FOR THE DIFFUSION OF THE TRACER:
 !
       IF(NTRAC.GT.0) THEN
@@ -1842,6 +1891,10 @@
 !
         CALL MIXLENGTH(VISC,CF,U,V,H,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU,
      &                 UNSV2D,IELMU,NPTFR)
+!
+      ELSEIF(ITURB.EQ.6) THEN
+!
+        CALL VISTURSA(VISC,VISCSA,NPOIN,PROPNU)
 !
       ELSE
 !
@@ -1946,6 +1999,13 @@
      &              KENT,KENTU,KADH,KLOG,UETUTA%R)
       ENDIF
 !
+! SA BOUNDARY CONDITIONS : NUBOR
+!
+      IF(ITURB.EQ.6) THEN
+        CALL SPALALLCL(NUBOR%R, LIMSA%I, LIUBOR%I,NPTFR,NUMIN,PROPNU,
+     &                 KNEU,KDIR,KENT,KENTU, KADH, KLOG,KSORT)
+      ENDIF
+!
 ! CALLS THE SYSTEM OF RESOLUTION FOR BOUNDARIES BY THE CHARACTERISTICS
 ! METHOD (THOMPSON)
 !
@@ -2043,8 +2103,8 @@
 !
 ! MANAGEMENT OF THE ARRAYS.
 !
-      CALL GESTIO(UN   ,VN   ,HN   ,TN   ,AKN   ,EPN   ,
-     &            UTILD,VTILD,HTILD,TTILD,AKTILD,EPTILD,
+      CALL GESTIO(UN   ,VN   ,HN   ,TN   ,AKN   ,EPN   ,NUN   ,
+     &            UTILD,VTILD,HTILD,TTILD,AKTILD,EPTILD,NUTILD,
      &            NTRAC.GT.0,PROPA,CONVV,ITURB,3)
 !
 !=======================================================================
@@ -2231,8 +2291,8 @@
 !
 ! MANAGEMENT OF THE ARRAYS .
 !
-        CALL GESTIO(U    ,V    ,H    ,T,AK  ,EP ,
-     &              UTILD,VTILD,HTILD,T,AK  ,EP ,
+        CALL GESTIO(U    ,V    ,H    ,T,AK  ,EP , NUN   ,
+     &              UTILD,VTILD,HTILD,T,AK  ,EP , NUTILD,
      &              NTRAC.GT.0,PROPA,CONVV,ITURB ,6)
 !
 !       SMH USED BY THE TRACER
@@ -2414,7 +2474,7 @@
 !
 !
 !=======================================================================
-!           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL
+!           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL OR SA MODELS 
 !=======================================================================
 !
       IF(ITURB.EQ.3.AND..NOT.ADJO) THEN
@@ -2433,6 +2493,20 @@
      &              MASKPT,S,SLVK,SLVEP,ICONVF(4),YASMH,YAFLULIM)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM KEPSIL'
 !
+      ELSEIF(ITURB.EQ.6.AND..NOT.ADJO) THEN
+!
+        IF (ENTET) CALL ENTETE(14,AT,LT)
+!
+        IF (DEBUG.GT.0) WRITE(LU,*) 'CALLING SPALART_ALLMARAS'
+        CALL SPALART_ALLMARAS(U, V, VISCSA, DT, NUN, NUTILD, PROPNU,
+     &                        VISC,IELMNU,SLVNU,MESH%DISBOR,
+     &                        INFONU.AND.ENTET, 
+     &                        MSK,MASKEL,MASKPT,NPTFR,LIMSA%I,
+     &                        NUBOR,S,UCONV,VCONV,ICONVF(4),
+     &                        BM1,TM1,CV1,CM2,T3,T1,T2,MESH,TB,
+     &                        T4,T5,WDIST,NUMIN,NUMAX,YAFLULIM,TE1,TE2,
+     &                        YASMH)
+        IF(DEBUG.GT.0) WRITE(LU, *) 'BACK FROM SPALART_ALLMARAS'
       ENDIF
 !
 !=======================================================================

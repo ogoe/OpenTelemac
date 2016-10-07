@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="negretti" rank="3" >
+
+<!-- Decos and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Sub-critical flow over a bump" author="R.Ata" contact="s.bourban@hrwallingford.com" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment <look roi="(7;0.25)(13.5;1.75)" />
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_negretti.cas"
+       title="negretti scalar mode"
+   />
+    <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_negretti.cas"
+       title="negretti parallel mode"
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_negretti.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+           fail="checkval(v3,[1e-8,1e-8,1e-8,1e-8,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9])" />
+
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_negretti.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-8,1e-8,1e-8,1e-8,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-8,1e-8,1e-8,1e-8,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9,1e-9])" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Save 2 time histories into the CSV file "figure1.csv".
+      - Locations: extraction at node 703 and at point (0,1)
+      - Variables: extraction of SURFACE LIBRE
+      - Duration:  extraction from time start (0) to end of time (-1)
+      - File:      extraction from xref 1:T2DRES above
+   <save1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" />
+   </save1d>
+   -->
+   <!-- Save a profile along a line into the CSV file "figure2.csv".
+      - Locations: extraction along the line defined by the 2 points (0;0.93) and (21;1.07)
+      - Variables: extraction of SURFACE LIBRE, FOND and VITESSE
+      - Snapshots: extraction at end of time (-1)
+      - File:      extraction from xref 1:T2DRES above
+      - TODO:  deal with several variables of name VITESSE with a calculation action
+      - NOTE:  the key extract, can also be moved up a level to the tag saved1d
+   <save1d xref="figure2" type="v-section" config="oneofall" time="[-1]" >
+      <layer vars="surface libre:line;fond:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" />
+      <layer vars="vitesse:line" extract="(0;0.93):(21;1.07)" target="1:T2DRES" />
+   </save1d>
+   -->
+
+<!-- Plot from SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Plot 1 time histories into the PNG file "figure1.png".
+      - Locations: extraction at node 703 and at point (0;1)
+      - Variables: extraction of SURFACE LIBRE
+      - Duration:  extraction from time start (0) to end of time (-1)
+      - File:      extraction from xref 1:T2DRES above
+   -->
+   <plot1d xref="figure1" type="history" config="together" time="[0:-1]" deco="default" size="(12;3)" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="1:T2DRES" />
+   </plot1d>
+   <!-- Plot a profile along a line into the PNG file "figure2.png".
+      - Locations: extraction along the line defined by the 2 points (0;0.93) and (21;1.07)
+      - Variables: extraction of SURFACE LIBRE and FOND
+      - Snapshots: extraction at end of time (-1)
+      - File:      extraction from xref 1:T2DRES above
+      - NOTE:  the key extract, can also be moved up a level to the tag saved1d
+   -->
+   <plot1d xref="figure2" type="v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" size="(12;5)" >
+      <layer vars="surface libre:line" target="1:T2DRES" />
+      <layer vars="fond:line" target="1:T2DRES" />
+   </plot1d>
+
+   <!-- Plot a coloured surface into the PNG file "figure6.png".
+      - Locations: extraction for the entire mesh
+      - Sampling:  resampling into vectors within the box defined by the points (7;0.25) and (13.5;1.75) resampled 10 times along x and 4 times along y
+      - Variables: extraction of VITESSE from the 2D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file 1:T2DRES above
+   -->
+   <plot2d xref="figure6" config="oneofall" time="[-1]" size="(12;3)" >
+      <layer vars="VITESSE:map" target="1:T2DRES" />
+      <layer vars="VITESSE:angle" target="1:T2DRES"  sample="(7;0.25)(13.5;1.75){10;4}" />
+   </plot2d>
+
+   <!-- Plot a mesh into the PNG file "figure7.png".
+      - Locations: extraction for the entire mesh
+      - File:      extraction from file 1:T2DGEO above
+   -->
+   <plot2d xref="figure7" size="(12;3)" deco="default" >
+      <layer vars="FOND:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+
+   <!-- Plot a coloured surface into the PNG file "figure6.png".
+      - Locations: extraction for the entire mesh
+      - Meshing:   meshing of the box defined by the points (7;0.25) and (13.5;1.75) resampled 10 times along x and 4 times along y
+      - Variables: extraction of SURFACE LIBRE from the 2D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file 1:T2DRES above
+   -->
+   <plot2d xref="figure8" size="(20;5)" >
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+      <layer vars="surface libre:wire" sample="(7;0.25)(13.5;1.75){10;4}" target="1:T2DRES" config="oneofall" />
+   </plot2d>
+
+</validation>

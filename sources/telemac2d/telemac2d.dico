@@ -1127,9 +1127,9 @@ TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '1="VISCOSITE CONSTANTE"';'2="ELDER"';'3="MODELE K-EPSILON"'
-;'4="SMAGORINSKI"'
+;'4="SMAGORINSKI"';'5="MIXING LENGTH"';'6="SPALART-ALLMARAS"'
 CHOIX1 = '1="CONSTANT VISCOSITY"';'2="ELDER"';'3="K-EPSILON MODEL"'
-;'4="SMAGORINSKI"'
+;'4="SMAGORINSKI"';'5="MIXING LENGTH"';'6="SPALART-ALLMARAS"'
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL'
 COMPORT = 'Affichage
@@ -5858,24 +5858,6 @@ NIVEAU = 2
 AIDE = 'Coefficient de dissipation de Omega'
 AIDE1 = 'Coefficient of dissipation term of Omega'
 
-
-/ REPLACED BY COUPLING WITH
-/NOM = 'QUALITE D''EAU'
-/NOM1 = 'WATER QUALITY'
-/TYPE = LOGIQUE
-/INDEX = 48
-/MNEMO = 'WATQUA'
-/TAILLE = 0
-/DEFAUT = NON
-/DEFAUT1 = NO
-/RUBRIQUE = 'EQUATIONS';'QUALITE D EAU'
-/RUBRIQUE1 = 'EQUATIONS';'WATER QUALITY'
-/NIVEAU = 1
-/AIDE = 'Prise en compte ou non de qualite d eau'
-/AIDE1 = 'waq effects are to be taken into
-/account or not.'
-
-
 NOM = 'OPTION DU VENT'
 NOM1 = 'OPTION FOR WIND'
 TYPE = ENTIER
@@ -6249,6 +6231,39 @@ AIDE = 'Noms des differentiateurs utilisateurs en 32 caracteres,
          16 pour le nom, 16 pour l''unite'
 AIDE1 = 'Name of user differentiators in 32 characters,
          16 for the name, 16 for the unit.'
+
+NOM = 'PRECISION SUR SPALART-ALLMARAS'
+NOM1 = 'ACCURACY OF SPALART-ALLMARAS'
+TYPE = REEL
+INDEX = 77
+MNEMO = 'EPSSA'
+TAILLE = 0
+DEFAUT = 1.E-9
+DEFAUT1 = 1.E-9
+RUBRIQUE = 'PARAMETRES NUMERIQUES, MODELE K-EPSILON'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, K-EPSILON MODEL'
+NIVEAU = 2
+AIDE = 'Fixe la precision demandee sur le modele spalart-allmaras pour
+le test d''arret dans l''etape de diffusion et termes sources 
+de k et epsilon.'
+AIDE1 = 'Sets the required accuracy for the model spalart-allmaras in
+the diffusion and source-terms step of the k-epsilon model.'
+
+NOM = 'INFORMATION SUR LE MODELE SPALART-ALLMARAS'
+NOM1 = 'INFORMATION ABOUT SPALART-ALLMARAS MODEL'
+TYPE = LOGIQUE
+INDEX = 48
+MNEMO = 'INFONU'
+TAILLE = 1
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'EQUATIONS, SOURCE'
+RUBRIQUE1 = 'EQUATIONS, SOURCE'
+NIVEAU = 1
+AIDE = 'si oui les informations du solveur du modele spalart-allmaras
+sont imprimees'
+AIDE1 = 'if yes, informations about solver of spalart-allmaras model
+are printed to the listing'
 /
 / POUR LES LANCEURS PERL :
 /

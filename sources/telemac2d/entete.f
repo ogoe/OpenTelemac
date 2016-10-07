@@ -48,7 +48,7 @@
 !
       INTEGER J,H,M
 !
-      CHARACTER*32 FR(13),GB(13)
+      CHARACTER*32 FR(14),GB(14)
 !
       INTRINSIC INT
 !
@@ -66,7 +66,8 @@
      &              ' SECONDES                       ' ,
      &              'ITERATION                       ' ,
      &              '     DERIVE DE FLOTTEUR(S)      ' ,
-     &              '   DERIVE(S) LAGRANGIENNE(S)    ' /
+     &              '   DERIVE(S) LAGRANGIENNE(S)    ' ,
+     &              '   MODELE DE SPALART-ALLMARAS   ' /
       DATA GB /     '                                ' ,
      &              '                                ' ,
      &              '        ADVECTION STEP          ' ,
@@ -79,7 +80,8 @@
      &              ' SECONDS                        ' ,
      &              'ITERATION                       ' ,
      &              '       DRIFT OF DROGUE(S)       ' ,
-     &              '      LAGRANGIAN DRIFT(S)       ' /
+     &              '      LAGRANGIAN DRIFT(S)       ' ,
+     &              '  SPALART-ALLMARAS TURB. MODEL  '/
 !
 !-----------------------------------------------------------------------
 !

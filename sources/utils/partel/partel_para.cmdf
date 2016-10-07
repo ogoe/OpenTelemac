@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|partel
 module: partel
-liborder: special parallel bief partel
+liborder: special hermes parallel bief partel
 name: PARTEL_PARA
 
 [bief]
@@ -12,15 +12,22 @@ files: bief_def.f
   voisin.f
   elebd.f
 
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.F
+  add_data.f
+
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
   p_time.F
-  p_exit.F
   interface_parallel.f
   p_allgatherv_i.F
   p_sync.F
   p_isum_array.F
+  p_exit.F
   p_imax_array.F
   p_init.F
 
@@ -34,5 +41,8 @@ path: <root>|sources|utils|special
 files: declarations_special.F
   plante.F
   check_allocate.f
-  extens.f
+  get_nodes_per_element.f
   get_free_id.f
+  write_error.f
+  check_call.f
+  extens.f

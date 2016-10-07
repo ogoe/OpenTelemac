@@ -111,6 +111,11 @@
 !+   In VARSOR bief_obj T10 put instead of VISC when Elder model of
 !+   turbulence is asked.
 !
+!history R. ATA (EDF LAB, LNHE)
+!+        28/09/2016
+!+        V7P2
+!+   add SA turbulence model's tools 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -129,7 +134,7 @@
 !
       INTEGER MEMW1,NTR,NTRT,NTRKE,I,J,ITRAC,SIZ
       INTEGER IELMX,IELMC1,IELMC2,IELMUT,IELMHT,ILAST
-      INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1
+      INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1,IELBNU
       INTEGER IELBX,CFG(2),CFGBOR(2),ERR,IPRIV
 !
       LOGICAL YESWEAK,YESIMP
@@ -198,8 +203,9 @@
       IELBT = IELBOR(IELMT,1)
       IELBK = IELBOR(IELMK,1)
       IELBE = IELBOR(IELME,1)
+      IELBNU= IELBOR(IELMNU,1)
 !
-      IELMX=MAX(IELMU,IELMH,IELMT,IELMK,IELME)
+      IELMX=MAX(IELMU,IELMH,IELMT,IELMK,IELME,IELBNU)
 !
 ! TYPE OF STORAGE AND PRODUCT MATRIX X VECTOR
 !
@@ -856,6 +862,22 @@
         CALL BIEF_ALLVEC(1,EBOR   ,'EBOR  ',0,1,0,MESH)
       ENDIF
 !
+!  ARRAYS FOR SPALART ALLMARAS MODEL 
+!
+      IF(ITURB.EQ.6) THEN
+        CALL BIEF_ALLVEC(1,VISCSA ,'VISCSA',IELMNU,1,1,MESH)
+        CALL BIEF_ALLVEC(1,NUN    ,'NUN   ',IELMNU,1,1,MESH)
+        CALL BIEF_ALLVEC(1,NUTILD ,'NUTILD',IELMNU,1,1,MESH)
+        CALL BIEF_ALLVEC(1,WDIST  ,'WDIST ',IELMNU,1,1,MESH)
+        CALL BIEF_ALLVEC(1,NUBOR  ,'NUBOR ',IELBNU,1,1,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,VISCSA ,'VISCSA',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,NUN    ,'NUN   ',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,NUTILD ,'NUTILD',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,NUBOR  ,'NUBOR ',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,WDIST  ,'WDIST ',0,1,0,MESH)
+      ENDIF
+!
       CALL BIEF_ALLVEC(1,UDEL   ,'UDEL  ',    IELMU,1,1,MESH)
       CALL BIEF_ALLVEC(1,VDEL   ,'VDEL  ',    IELMU,1,1,MESH)
       CALL BIEF_ALLVEC(1,DM1    ,'DM1   ',    IELMU,1,2,MESH)
@@ -924,6 +946,10 @@
         CALL ADDBLO(F     ,AK )
         CALL ADDBLO(F     ,EP )
       ENDIF
+      IF(ITURB.EQ.6) THEN
+        CALL ADDBLO(FN    ,NUN    )
+        CALL ADDBLO(F     ,VISCSA )
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -990,7 +1016,7 @@
           ENDDO
         ENDIF
       ENDIF
-!
+!     ALL TURBULENCE MODELS HAVE THE SAME NUMERICAL OPTIONS
       IF(CONVV(4).AND.ITURB.EQ.3.AND.ICONVF(4).EQ.ADV_CAR) THEN
         IF(OPTADV_KE.EQ.1) THEN
           CALL ADDBLO(FTILD,AKTILD)
@@ -1010,6 +1036,29 @@
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_KE
             WRITE(LU,*) 'UNKNOWN OPTION OPTADV_KE'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
+!
+!     FOR SA TURBULENCE MODEL
+!
+      IF(CONVV(4).AND.ITURB.EQ.6.AND.ICONVF(4).EQ.ADV_CAR) THEN
+        IF(OPTADV_SA.EQ.1) THEN
+          CALL ADDBLO(FTILD, NUTILD)
+          CALL ADDBLO(FNCAR, NUN   )
+        ELSEIF(OPTADV_SA.EQ.2) THEN
+          CALL ADDBLO(FTILD2, NUTILD)
+          CALL ADDBLO(FNCAR2, NUN   )
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_SA
+            WRITE(LU,*) 'OPTION OPTADV_SA INCONNUE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'POINT_TELEMAC2D : ',OPTADV_SA
+            WRITE(LU,*) 'UNKNOWN OPTION OPTADV_SA'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -1226,6 +1275,11 @@
         CALL BIEF_ALLVEC(2,LIMKEP,'LIMKEP',IELB1,2,1,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,LIMKEP,'LIMKEP',    0,2,0,MESH)
+      ENDIF
+      IF(ITURB.EQ.6) THEN
+        CALL BIEF_ALLVEC(2,LIMSA,'LIMSA ',IELB1,2,1,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(2,LIMSA,'LIMSA ',    0,2,0,MESH)
       ENDIF
       CALL BIEF_ALLVEC(2,LIMPRO,'LIMPRO',MAX(IELBH,IELBU),6,1,MESH)
       CALL BIEF_ALLVEC(2,LIMTRA,'LIMTRA',IELBT,1,1,MESH)

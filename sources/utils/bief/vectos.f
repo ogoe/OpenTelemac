@@ -78,6 +78,11 @@
 !+        V7P1
 !+   Adding vc05aa.
 !
+!history  A. BOURGOIN (EDF LAB, LNHE)
+!+        01/08/2016
+!+        V7P
+!+   Adding vc17aa et vc18aa for spalart allmalas.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -1197,6 +1202,67 @@
 !
 !       ELSEIF
 !
+!-----------------------------------------------------------------------
+!       ERROR ON THE ELEMENT TYPE
+!-----------------------------------------------------------------------
+!
+        ELSE
+!
+          IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+          IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+          IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+          IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+          CALL PLANTE(1)
+          STOP
+!
+        ENDIF
+!
+!=======================================================================
+!     SPALART ALLMARAS PRODUCTION VECTOR
+!=======================================================================
+!
+      ELSEIF(FORMUL(1:16).EQ.'PRSAF           ') THEN
+!
+!-----------------------------------------------------------------------
+!
+!       ELEMENT P1 TRIANGLE
+!
+        IF(IELM1.EQ.11) THEN
+           CALL VC17AA(XMUL,SU,SV,U,V,XEL,YEL,SURFAC,
+     &                 IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
+     &                 T(1,1),T(1,2),T(1,3))
+!
+
+!-----------------------------------------------------------------------
+!       ERROR ON THE ELEMENT TYPE
+!-----------------------------------------------------------------------
+!
+        ELSE
+!
+          IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+          IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+          IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+          IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+          CALL PLANTE(1)
+          STOP
+!
+        ENDIF
+!
+!=======================================================================
+!     SPALART ALLMARAS DESTRUCTION VECTOR
+!=======================================================================
+!
+      ELSEIF(FORMUL(1:16).EQ.'TRSAF           ') THEN
+!
+!-----------------------------------------------------------------------
+!
+!       ELEMENT P1 TRIANGLE
+!
+        IF(IELM1.EQ.11) THEN
+          CALL VC18AA(XMUL,SU,SV,U,V,XEL,YEL,SURFAC,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
+     &                T(1,1),T(1,2),T(1,3))
+
 !-----------------------------------------------------------------------
 !       ERROR ON THE ELEMENT TYPE
 !-----------------------------------------------------------------------

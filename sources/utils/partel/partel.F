@@ -2,11 +2,11 @@
                      SUBROUTINE PARTEL
 !                    *****************
      & (NAMEINP, NAMECLI, NPARTS, PMETHOD, FFORMAT,
-     &  NAMESEC, NAMEZFI, NAMESEU)
+     &  NAMESEC, NAMEZFI)
 !
 !
 !***********************************************************************
-! PARALLEL   V7P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPROCESSING STEP BEFORE A PARALLEL COMPUTATION
@@ -73,11 +73,6 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
-!history C. COULET (ARTELIA)
-!+       01/09/2016
-!+       V7P2
-!+       Modification to add the weir file management
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NAMEGEO        |<--| NAME OF THE GEOMETRY FILE
 !| NAMECLI        |<--| NAME OF THE BOUNDARY CONDITIONS FILE
@@ -86,7 +81,6 @@
 !| FFORMAT        |<--| FORMAT OF THE GEOMETRY FILE
 !| NAMESEC        |<--| NAME OF THE SECTION FILE ' ' IF THERE ARE NONE
 !| NAMEZFI        |<--| NAME OF THE FRICTION ZONE FILE ' ' IF THERE ARE NONE
-!| NAMESEU        |<--| NAME OF THE WEIR FILE ' ' IF THERE ARE NONE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARTEL
@@ -106,7 +100,6 @@
       CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMESEC
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEZFI
-      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMESEU
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
@@ -153,7 +146,7 @@
 !
       INTEGER MAX_NELEM_P
       INTEGER  MAX_NPOIN_P,MAX_N_NEIGH
-      INTEGER I, J, K, L , M, N, ERR, ISO, IDUM
+      INTEGER I, J, K, L , M, N, ISO, IDUM
       INTEGER ISEG, NTIMESTEP
 !
       REAL XSEG, YSEG
@@ -171,6 +164,7 @@
       INTEGER :: NFRLIQ,NFRSOL
       INTEGER,ALLOCATABLE :: DEBLIQ(:),FINLIQ(:)
       INTEGER,ALLOCATABLE :: DEBSOL(:),FINSOL(:)
+      DOUBLE PRECISION, ALLOCATABLE :: WALLDIST(:)
 !
 ! FOR CALLING BIEF MESH SUBROUTINES (TO BE OPTIMISED SOON):
 !
@@ -191,7 +185,6 @@
       INTEGER NELEBD, NELEBD_P
       INTEGER TYP_ELEM, TYP_BND_ELEM
       LOGICAL FULLY_IN
-      INTEGER :: ID
 !
 !----------------------------------------------------------------------
 !
@@ -214,7 +207,7 @@
       INTEGER IFALOC(3)
       LOGICAL FOUND
       INTEGER NDP_2D
-      INTEGER EF,POSI
+      INTEGER EF,POS
       INTEGER, ALLOCATABLE :: NBRE_EF(:),NBRE_EF_LOC(:),EF_I(:)
       INTEGER, ALLOCATABLE :: TAB_TMP(:),EF_II(:)
       LOGICAL HALO
@@ -245,19 +238,6 @@
       CHARACTER(LEN=11) :: EXTENS
       EXTERNAL EXTENS
 !
-! #### FOR WEIRS
-!
-      INTEGER :: NSEU, NBSEU, OPSEU, JJ, PROC
-      INTEGER, ALLOCATABLE :: NUM_SEU1(:,:), NUM_SEU2(:,:)
-      INTEGER, ALLOCATABLE :: NUM_SEU1_P(:,:,:), NUM_SEU2_P(:,:,:)
-      INTEGER, ALLOCATABLE :: SEU_P(:,:), CSEU_P(:,:), P_CSEU(:,:)
-      INTEGER, ALLOCATABLE :: LRECV_P(:,:), NRECV_P(:)
-      INTEGER, ALLOCATABLE :: LSEND_PP(:,:,:), LSEND_P(:,:), NSEND_P(:)
-      INTEGER, ALLOCATABLE :: LIST_TMP(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: XSEU1(:), YSEU1(:), ZSEU1(:)
-      DOUBLE PRECISION, ALLOCATABLE :: XSEU2(:), YSEU2(:), ZSEU2(:)
-      LOGICAL :: WITH_WEIRS
-!
 !----------------------------------------------------------------------
 !
       NDP_2D=3
@@ -268,7 +248,6 @@
       IF (PARSEC==0) TIMECOUNT = .FALSE.  ! COUNT_RATE == 0 : NO CLOCK
       IF (TIMECOUNT) TDEB = TEMPS
 !
-      CALL GET_FREE_ID(NINP)
       CALL OPEN_MESH(FFORMAT, NAMEINP, NINP, 'READ     ', IERR)
       CALL CHECK_CALL(IERR, 'PARTEL:OPENMESH:INP')
 !
@@ -287,7 +266,10 @@
       CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_NAME')
       ALLOCATE(VAR_UNIT(NVAR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_UNIT')
-      ALLOCATE(VARIABLE(NVAR),STAT=IERR)
+!       ALLOCATE(VARIABLE(NVAR),STAT=IERR)
+!       CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_UNIT')
+!RA   TO TAKE INTO ACCOUNT WALLDIST 
+      ALLOCATE(VARIABLE(NVAR+1),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'PARTEL:VAR_UNIT')
 
       CALL GET_DATA_VAR_LIST(FFORMAT,NINP,NVAR,VAR_NAME,VAR_UNIT,IERR)
@@ -296,6 +278,7 @@
         VARIABLE(I)(1:16) = VAR_NAME(I)
         VARIABLE(I)(17:32) = VAR_UNIT(I)
       ENDDO
+      nvar=nvar+1
       DEALLOCATE(VAR_NAME)
       DEALLOCATE(VAR_UNIT)
 !
@@ -349,22 +332,22 @@
 !
 ! NOW LET US ALLOCATE
 !
-      ALLOCATE (IKLES(NELEM2*3),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IKLES')
+      ALLOCATE (IKLES(NELEM2*3),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IKLES')
       IF(NPLAN.GT.1) THEN
-        ALLOCATE (IKLES3D(NELEM*NDP),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'IKLES3D')
+        ALLOCATE (IKLES3D(NELEM*NDP),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR, 'IKLES3D')
       ENDIF
-      ALLOCATE (IRAND(NPOIN),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IRAND')
+      ALLOCATE (IRAND(NPOIN),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IRAND')
 !
 !     SIZE 3: FIRST TWO FUNCTIONS ARE X AND Y, 3 IS ALL OTHER
 !             VARIABLES (THEY WILL BE COPIED AND WRITTEN
 !             ONE AFTER THE OTHER...)
 !     NPOIN IS 3D HERE IN 3D
 !
-      ALLOCATE (F(NPOIN,2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'F')
+      ALLOCATE (F(NPOIN,2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'F')
 !
 ! CONNECTIVITY TABLE:
 !
@@ -444,8 +427,8 @@
       CALL CHECK_ALLOCATE(IERR,'PARTEL:ATBOR')
       ALLOCATE(BTBOR(NPTFR),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'PARTEL:BTBOR')
-      ALLOCATE (NUMLIQ(NPTFR),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NUMLIQ')
+      ALLOCATE (NUMLIQ(NPTFR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NUMLIQ')
       ! Get the connectivity table for the boundary elements
       CALL GET_BND_CONNECTIVITY(FFORMAT,NINP,TYP_BND_ELEM,NELEBD,
      &                    NDP_BND,IKLE_BND,IERR)
@@ -473,45 +456,45 @@
 ! CAN BE OPTIMISED / USES A LOT OF MEMORY
 ! THE ONLY REASON IS TO OBTAIN KP1BOR AND NUMLIQ
 !
-      ALLOCATE (DEJAVU(NPTFR),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'DEJAVU')
-      ALLOCATE (KP1BOR(NPTFR,2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'KP1BOR')
+      ALLOCATE (DEJAVU(NPTFR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'DEJAVU')
+      ALLOCATE (KP1BOR(NPTFR,2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'KP1BOR')
 !     CHANGED NELEM TO NELEM2, NDP TO 3 HUH!
 !     CAUSING ERRORS WHEN 3D RESTART/REFERENCE FILES ARE PARTITIONED
 !     AND BC FILE IS WRITTEN AGAIN (WHAT FOR, ACTUALLY???)
 !     CAUSE: CALLING VOISIN WITH NELEM2 BUT IFABOR(NELEM=NELEM3,NDP=6)
-      ALLOCATE (IFABOR(NELEM2,3),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IFABOR')
-      ALLOCATE (IFANUM(NELEM2,3),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IFANUM')
-      ALLOCATE (IKLBOR(NPTFR,2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IKLBOR')
-      ALLOCATE (NELBOR(NPTFR),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NELBOR')
-      ALLOCATE (NULONE(NPTFR,2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NULONE')
-      ALLOCATE (ISEGF(NPTFR),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ISEGF')
-      ALLOCATE (IKLE(NELEM2,3),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IKLE')
-      ALLOCATE (IT1(NPOIN),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IT1')
-      ALLOCATE (IT2(NPOIN),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IT2')
-      ALLOCATE (IT3(NPOIN),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IT3')
+      ALLOCATE (IFABOR(NELEM2,3),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IFABOR')
+      ALLOCATE (IFANUM(NELEM2,3),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IFANUM')
+      ALLOCATE (IKLBOR(NPTFR,2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IKLBOR')
+      ALLOCATE (NELBOR(NPTFR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NELBOR')
+      ALLOCATE (NULONE(NPTFR,2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NULONE')
+      ALLOCATE (ISEGF(NPTFR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'ISEGF')
+      ALLOCATE (IKLE(NELEM2,3),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IKLE')
+      ALLOCATE (IT1(NPOIN),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IT1')
+      ALLOCATE (IT2(NPOIN),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IT2')
+      ALLOCATE (IT3(NPOIN),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IT3')
       NPTIR = 1
-      ALLOCATE (NACHB(NBMAXNSHARE,NPTIR),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NACHB')
-      ALLOCATE (DEBSOL(MAXFRO),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'DEBSOL')
-      ALLOCATE (FINSOL(MAXFRO),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'FINSOL')
-      ALLOCATE (DEBLIQ(MAXFRO),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'DEBLIQ')
-      ALLOCATE (FINLIQ(MAXFRO),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'FINLIQ')
+      ALLOCATE (NACHB(NBMAXNSHARE,NPTIR),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NACHB')
+      ALLOCATE (DEBSOL(MAXFRO),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'DEBSOL')
+      ALLOCATE (FINSOL(MAXFRO),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'FINSOL')
+      ALLOCATE (DEBLIQ(MAXFRO),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'DEBLIQ')
+      ALLOCATE (FINLIQ(MAXFRO),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'FINLIQ')
 !
 ! TRANSFORM IKLES--> IKLE FOR 2D ROUTINES  (AN OLD TELEMAC DISEASE)
 !
@@ -536,20 +519,19 @@
 !                        NELEBX,NELEB (EQUAL NPTFR HERE)
 !
       IF (NAMEINP(1:3)== 'ART') THEN
-        CALL GET_FREE_ID(ID)
-        OPEN(UNIT=ID,FILE='FRONT_GLOB.DAT')
-        WRITE(ID,*) NPOIN
-        WRITE(ID,*) NPTFR
+        OPEN(UNIT=89,FILE='FRONT_GLOB.DAT')
+        WRITE(89,*) NPOIN
+        WRITE(89,*) NPTFR
         DO K=1,NPTFR
-          WRITE(ID,*) NBOR(K)
+          WRITE(89,*) NBOR(K)
         END DO
         DO K=1,NPTFR
-          WRITE(ID,*) KP1BOR(K,1)
+          WRITE(89,*) KP1BOR(K,1)
         END DO
         DO K=1,NPTFR
-          WRITE(ID,*) KP1BOR(K,2)
+          WRITE(89,*) KP1BOR(K,2)
         END DO
-        CLOSE(ID)
+        CLOSE(89)
       END IF
       NFRLIQ = 0
       NFRSOL = 0
@@ -558,11 +540,44 @@
       DEBLIQ(:) = 0
       FINLIQ(:) = 0
       IF(DIM_MESH.NE.3) THEN
+!       FIRST ALLOCATE WALLDIST
+        ALLOCATE (WALLDIST(NPOIN),STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR, 'WALLDIST')
+!       THEN CALL FRONT2
         CALL FRONT2
      &         (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
      &         LIHBOR,LIUBOR,F(:,1),F(:,2),
      &         NBOR,KP1BOR(1:NPTFR,1),DEJAVU,NPOIN2,NPTFR,
-     &         2,.TRUE.,NUMLIQ,MAXFRO)
+!                                     YAWALL 
+     &         2,.TRUE.,NUMLIQ,MAXFRO,.TRUE.,WALLDIST)
+!
+!       ADD WALLDIST AS A NEW VARIABLE IN THE GEO FILE
+!       VERIFY THE CALL
+        VARIABLE(NVAR)(1:16)  = 'WALLDIST        '
+        VARIABLE(NVAR)(17:32) = '                '
+!        CALL GET_DATA_TIME(FFORMAT,NINP,NTIMESTEP-1,TIMES,IERR)
+!!                     FFORMAT ID   VARNAME          TIME   RECORD
+!        CALL ADD_DATA(FFORMAT,NINP,VARIABLE(NVAR+1),TIMES, NTIMESTEP,
+!!                     FIRST_VAR,   VAR_VALUE, N    ,IERR)      
+!     &                NVAR.EQ.0,   WALLDIST ,NPOIN2,IERR)
+!
+!        IF(IERR.NE.0)THEN
+!          IF(LNG.EQ.1)THEN
+!            WRITE(LU,*) 'PARTEL: PROBLEME AVEC LA VARIABLE WDIST  '
+!            WRITE(LU,*) '        PAS AJOUTEE CORRECTEMENT PAR LA  '
+!            WRITE(LU,*) '        ROUTINE ADD_DATA                 '
+!          ELSEIF(LNG.EQ.2)THEN
+!            WRITE(LU,*) 'PARTEL: PROBLEM WITH VARIABLE WDIST      '
+!            WRITE(LU,*) '        NOT PROPERLY ADDED WITH          '
+!            WRITE(LU,*) '        SUBROUTINE ADD_DATA              '
+!            WRITE(LU,*) NVAR,NINP,FFORMAT,TIMES,NTIMESTEP,NPOIN2,IERR  
+!            do k=1,10
+!              WRITE(LU,*)' walldist',k,walldist(k)
+!            enddo 
+!          ENDIF
+!          CALL PLANTE(1)
+!          STOP
+!        ENDIF
       ENDIF
 !
       DEALLOCATE (DEJAVU)
@@ -590,10 +605,11 @@
 !     IF THERE WILL BE SOME MEMORY ALLOCATION PROBLEM
 !======================================================================
 !
-      ALLOCATE(EPART(NELEM2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'EPART')
-      ALLOCATE(NPART(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NPART')
+      ALLOCATE(EPART(NELEM2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'EPART')
+      ALLOCATE(NPART(NPOIN2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NPART')
+
 !
 !     PARTITIONNING METHOD
 !     1 : METIS
@@ -623,8 +639,8 @@
 !
 !     KNOGL(I) =>  GLOBAL LABEL OF THE LOCAL POINT I
 !
-      ALLOCATE (KNOGL(NPOIN2,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'KNOGL')
+      ALLOCATE (KNOGL(NPOIN2,NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'KNOGL')
       DO I=1,NPOIN2
         DO J=1,NPARTS
           KNOGL(I,J)=0
@@ -633,45 +649,45 @@
 !
 !     NBRE_EF(I) => NUMBER OF FINITE ELEMENT CONTAINING I
 !     I IS A GLOBAL LABEL
-      ALLOCATE (NBRE_EF(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NBRE_EF')
+      ALLOCATE (NBRE_EF(NPOIN2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NBRE_EF')
 !
-      ALLOCATE (PART_P(NPOIN2,0:NBMAXNSHARE),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'PART_P')
+      ALLOCATE (PART_P(NPOIN2,0:NBMAXNSHARE),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'PART_P')
       PART_P(:,:)=0
 !
-      ALLOCATE (CUT_P(NPOIN2,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'CUT_P')
+      ALLOCATE (CUT_P(NPOIN2,NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'CUT_P')
 !
-      ALLOCATE (GELEGL(NELEM2,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'GELEGL')
+      ALLOCATE (GELEGL(NELEM2,NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'GELEGL')
 
-      ALLOCATE (SORT(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'CUT_P')
+      ALLOCATE (SORT(NPOIN2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'CUT_P')
 
-      ALLOCATE (CUT(NPOIN2),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'CUT_P')
+      ALLOCATE (CUT(NPOIN2),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'CUT_P')
 
-      ALLOCATE (NELEM_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NELEM_P')
+      ALLOCATE (NELEM_P(NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NELEM_P')
 
-      ALLOCATE (NPOIN_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NPOIN_P')
+      ALLOCATE (NPOIN_P(NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NPOIN_P')
 
-      ALLOCATE (NPTFR_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NPTFR_P')
+      ALLOCATE (NPTFR_P(NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NPTFR_P')
 
-      ALLOCATE (NPTIR_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NPTIR_P')
+      ALLOCATE (NPTIR_P(NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NPTIR_P')
 
-      ALLOCATE (NHALO(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NHALO')
+      ALLOCATE (NHALO(NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NHALO')
 
-      ALLOCATE(TAB_TMP( NBMAXNSHARE),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'TAB_TMP')
+      ALLOCATE(TAB_TMP( NBMAXNSHARE),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'TAB_TMP')
 
-      ALLOCATE(IFAPAR(NPARTS,7,NBMAXHALO),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'IFAPAR')
+      ALLOCATE(IFAPAR(NPARTS,7,NBMAXHALO),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'IFAPAR')
       IFAPAR(:,:,:)=0
 !
 !======================================================================
@@ -736,30 +752,30 @@
 !
 !     ELEGL(E) => GLOBAL LABEL OF THE FINITE ELEMENT E
 !     E IS THE LOCAL LABEL ON SUBMESH I
-      ALLOCATE (ELELG(MAX_NELEM_P,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ELELG')
+      ALLOCATE (ELELG(MAX_NELEM_P,NPARTS),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'ELELG')
       ELELG(:,:)=0
 !     KNOLG(I) => GLOBAL LABEL OF THE POINT I
 !     I IS THE LOCAL LABEL ON SUBDOMAIN I
       IF(NPLAN.LE.0) THEN
-        ALLOCATE (KNOLG(MAX_NPOIN_P,NPARTS),STAT=ERR)
+        ALLOCATE (KNOLG(MAX_NPOIN_P,NPARTS),STAT=IERR)
       ELSE
-        ALLOCATE (KNOLG(MAX_NPOIN_P*NPLAN,NPARTS),STAT=ERR)
+        ALLOCATE (KNOLG(MAX_NPOIN_P*NPLAN,NPARTS),STAT=IERR)
       ENDIF
-      CALL CHECK_ALLOCATE(ERR, 'KNOLG')
+      CALL CHECK_ALLOCATE(IERR, 'KNOLG')
       KNOLG(:,:)=0
 !     NBRE_EF_LOC(I) : NUMBER OF FINITE ELEMENTS CONTAINING THE POINT I
 !                      ON SUBMESH I
 !     I IS THE LOCAL LABEL ON SUBMESH I
-      ALLOCATE (NBRE_EF_LOC(MAX_NELEM_P),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NBRE_EF_LOC')
+      ALLOCATE (NBRE_EF_LOC(MAX_NELEM_P),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'NBRE_EF_LOC')
 !
 !     EF_I(E) IS THE GLOBAL LABEL OF THE INTERFACE FINITE ELEMENT NUMBER E
-      ALLOCATE (EF_I(MAX_NELEM_P),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'EF_I')
+      ALLOCATE (EF_I(MAX_NELEM_P),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'EF_I')
 !     EF_II(E) IS THE LOCAL LABEL OF THE INTERFACE FINITE ELEMENT NUMBER E
-      ALLOCATE (EF_II(MAX_NELEM_P),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'EF_II')
+      ALLOCATE (EF_II(MAX_NELEM_P),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'EF_II')
 !
 !======================================================================
 !     STEP 5 : INITIALISATION  OF LOCAL ARRAYS
@@ -833,14 +849,14 @@
               NPTIR_P(I)=NPTIR_P(I)+1
               CUT_P(NPTIR_P(I),I)=NOEUD
               PART_P(NOEUD,0)=PART_P(NOEUD,0)+1
-              POSI=PART_P(NOEUD,0)
-              IF(POSI.GT.NBMAXNSHARE-1) THEN
+              POS=PART_P(NOEUD,0)
+              IF(POS.GT.NBMAXNSHARE-1) THEN
                 WRITE(LU,*)  'ERROR : AN INTERFACE NODE BELONGS TO
      &                MORE THAN NBMAXNSHARE-1 SUBDOMAINS'
                 CALL PLANTE(1)
                 STOP
               ENDIF
-              PART_P(NOEUD,POSI)=I
+              PART_P(NOEUD,POS)=I
               NBRE_EF_LOC(KNOGL(NOEUD,I))=-NBRE_EF_LOC(KNOGL(NOEUD,I))
             ENDIF
           ENDDO
@@ -900,14 +916,10 @@
 !-----------------------------------------------------------------------
 ! THE CORE NAMES FOR THE OUTPUT BC FILES ACCORDING TO THE NUMBER OF PARTS
 !
+
         ! Working on the parallel informations
         IF(DIM_MESH.NE.3) THEN
-        IF (CODE.NE.'  ') THEN
-          NAMECLM = CODE//'PAR'//EXTENS(NPARTS-1,I-1)
-        ELSE
-          NAMECLM = NAMECLI(1:3)//'PAR'//EXTENS(NPARTS-1,I-1)
-        ENDIF
-        CALL GET_FREE_ID(NCLM)
+        NAMECLM = NAMECLI(1:3)//'PAR'//EXTENS(NPARTS-1,I-1)
         OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
         REWIND(NCLM)
         WRITE(NCLM,*) NPTFR_P(I)
@@ -980,6 +992,7 @@
 !
             WRITE (NCLM,*) K, KNOGL(NBOR(K),I),
      &                     ISEG, XSEG, YSEG, NUMLIQ(K)
+
           ENDIF
 !
         END DO
@@ -1074,11 +1087,11 @@
       DEALLOCATE(CUT_P)
       DEALLOCATE(SORT)
 !
-      ALLOCATE(IKLES_P(MAX_NELEM_P*3),STAT=ERR)
+      ALLOCATE(IKLES_P(MAX_NELEM_P*3),STAT=IERR)
       IF(NPLAN.GT.1) THEN
-        ALLOCATE(IKLES3D_P(6,MAX_NELEM_P,NPLAN-1),STAT=ERR)
+        ALLOCATE(IKLES3D_P(6,MAX_NELEM_P,NPLAN-1),STAT=IERR)
       ENDIF
-      CALL CHECK_ALLOCATE(ERR, 'IKLES3D_P')
+      CALL CHECK_ALLOCATE(IERR, 'IKLES3D_P')
 !
       DO I=1,NPARTS
 !
@@ -1089,7 +1102,6 @@
         NAMEOUT = TRIM(NAMEINP)//EXTENS(NPARTS-1,I-1)
         NAMECLM = TRIM(NAMECLI)//EXTENS(NPARTS-1,I-1)
 !
-        CALL GET_FREE_ID(NOUT)
         CALL OPEN_MESH(FFORMAT,NAMEOUT,NOUT,'READWRITE',IERR)
         CALL CHECK_CALL(IERR,'PARTEL:OPEN_MESH:NOUT')
 !
@@ -1205,7 +1217,7 @@
           ! IF
           IF(FULLY_IN) NELEBD_P = NELEBD_P + 1
         ENDDO
-!
+
         ! Writing the boundary conditions
         CALL OPEN_BND(FFORMAT,NAMECLM,NOUT,'WRITE    ',IERR)
         CALL CHECK_CALL(IERR,'PARTEL:OPEN_BND')
@@ -1321,7 +1333,7 @@
           CALL GET_DATA_TIME(FFORMAT,NINP,ITIME-1,TIMES,IERR)
           CALL CHECK_CALL(IERR,'PARTEL:GET_DATA_TIME:NINP')
           WRITE(LU,*) ' -- WRITING TIMESTEP',ITIME-1,' AT',real(TIMES)
-          DO IVAR=1,NVAR
+          DO IVAR=1,NVAR-1
             ! READING VARIABLE VALUE FOR TIME ITIME-1 ON INPUT FILE
             CALL GET_DATA_VALUE(FFORMAT,NINP,ITIME-1,
      &                          VARIABLE(IVAR)(1:16),DATAVAL,NPOIN,IERR)
@@ -1348,12 +1360,24 @@
               CALL CHECK_CALL(IERR,'PARTEL:ADD_DATA')
             ENDIF
           ENDDO
+! START RA
+          DO J=1,NPOIN_P(I)
+            DATAVAL_P(J) = WALLDIST(KNOLG(J,I))
+          ENDDO
+          CALL ADD_DATA(FFORMAT,NOUT,VARIABLE(NVAR),TIMES,ITIME-1,
+     &                    .FALSE.,DATAVAL_P,NPOIN_P(I),IERR)
+          CALL CHECK_CALL(IERR,'PARTEL:ADD_DATA')
+
+!END RA 
         ENDDO
+       
+!
         DEALLOCATE(DATAVAL)
         DEALLOCATE(DATAVAL_P)
         CALL CLOSE_MESH(FFORMAT,NOUT,IERR)
         CALL CHECK_CALL(IERR,'PARTEL:CLOSE_MESH:NOUT')
       ENDDO
+      DEALLOCATE(WALLDIST)
       CALL CLOSE_MESH(FFORMAT,NINP,IERR)
       CALL CHECK_CALL(IERR,'PARTEL:CLOSE_MESH:NINP')
       DEALLOCATE(NBOR)
@@ -1378,7 +1402,7 @@
       IF (WITH_SECTIONS) THEN ! PRESENTLY, FOR TELEMAC2D, EV. SISYPHE
 !
       WRITE(LU,*) 'DEALING WITH SECTIONS WITH FILE ',TRIM(NAMESEC)
-      CALL GET_FREE_ID(NSCT)
+      NSCT = 8
       OPEN (NSCT,FILE=TRIM(NAMESEC),FORM='FORMATTED',STATUS='OLD')
       READ (NSCT,*) ! COMMENT LINE
       READ (NSCT,*) NSEC, IHOWSEC
@@ -1458,8 +1482,8 @@
 !     NOW FOLLOW THE FLUSEC SUBROUTINE IN BIEF TO FIND SECTIONS
 !     IN THE GLOBAL MESH -> FILL THE FIELD LISTE
 !
-      ALLOCATE(LISTE(NSEMAX,2),STAT=ERR) ! WORKHORSE
-      CALL CHECK_ALLOCATE(ERR, 'LISTE')
+      ALLOCATE(LISTE(NSEMAX,2),STAT=IERR) ! WORKHORSE
+      CALL CHECK_ALLOCATE(IERR, 'LISTE')
 !
       DO ISEC =1,NSEC
 !
@@ -1529,8 +1553,8 @@
           IF (IGBEST.NE.ARR) GOTO 1010
         ENDIF
         CHAIN(ISEC)%NSEG = ISEG
-        ALLOCATE (CHAIN(ISEC)%LISTE(CHAIN(ISEC)%NSEG,3), STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'CHAIN(ISEC)%LISTE')
+        ALLOCATE (CHAIN(ISEC)%LISTE(CHAIN(ISEC)%NSEG,3), STAT=IERR)
+        CALL CHECK_ALLOCATE(IERR, 'CHAIN(ISEC)%LISTE')
         DO ISEG=1,CHAIN(ISEC)%NSEG
           CHAIN(ISEC)%LISTE(ISEG,1)=LISTE(ISEG,1)
           CHAIN(ISEC)%LISTE(ISEG,2)=LISTE(ISEG,2)
@@ -1539,10 +1563,10 @@
       ENDDO ! OVER SECTIONS
       DEALLOCATE (LISTE)
 !
-      ALLOCATE (ANPBEG(NBMAXNSHARE), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ANPBEG')
-      ALLOCATE (ANPEND(NBMAXNSHARE), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ANPEND')
+      ALLOCATE (ANPBEG(NBMAXNSHARE), STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'ANPBEG')
+      ALLOCATE (ANPEND(NBMAXNSHARE), STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'ANPEND')
 !
       DO ISEC=1,NSEC
         DO ISEG=1,CHAIN(ISEC)%NSEG
@@ -1679,17 +1703,17 @@
 !
       WRITE(LU,*) 'DEALING WITH ZONES WITH FILE ',TRIM(NAMEZFI)
 !     Reading the friction informations
-      CALL GET_FREE_ID(NZFI)
+      NZFI=9
       OPEN(NZFI,FILE=TRIM(NAMEZFI),FORM='FORMATTED',STATUS='OLD')
-      ALLOCATE (FRICTION(NPOIN), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'FRICTION')
+      ALLOCATE (FRICTION(NPOIN), STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR, 'FRICTION')
       FRICTION(:) = 0
       DO J=1,NPOIN
         READ(NZFI,*,END=304,ERR=303) I, VAL_ZFI
         FRICTION(I) = VAL_ZFI
       ENDDO
       CLOSE(NZFI)
-!
+
       DO N=1,NPARTS
         NAMEOUT=TRIM(NAMEZFI)//EXTENS(NPARTS-1,N-1)
 
@@ -1703,523 +1727,17 @@
         CLOSE(NOUT)
       END DO
       DEALLOCATE(FRICTION)
-!
+
       WRITE(LU,*) 'FINISHED DEALING WITH ZONES'
       ENDIF ! WITH_ZONES
 !
-! !CCT #### DEAL WITH WEIRS
-!
 !----------------------------------------------------------------------
 !
-      WITH_WEIRS = NAMESEU(1:1) .NE. ' ' 
-      IF (NPLAN.NE.0) WITH_WEIRS = .FALSE.
-      IF(WITH_WEIRS) THEN
+!     NOTE BY J-M HERVOUET : DEALLOCATE CAUSES ERRORS ON HP
+!     (POSSIBLE REMAINING BUG ?)
+!     NOTE BY JAJ: DEALLOCATE(HP) ,^)
 !
-      WRITE(LU,*) 'DEALING WITH WEIRS WITH FILE ',TRIM(NAMESEU)
-!     Reading the weirs informations
-      CALL GET_FREE_ID(NSEU)
-      OPEN(NSEU,FILE=TRIM(NAMESEU),FORM='FORMATTED',STATUS='OLD')
-      READ(NSEU,*,END=304,ERR=305)
-      READ(NSEU,*,END=304,ERR=305) NBSEU, OPSEU
-      ALLOCATE (XSEU1(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'XSEU1')
-      XSEU1(:) = 0
-      ALLOCATE (YSEU1(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'YSEU1')
-      YSEU1(:) = 0
-      ALLOCATE (ZSEU1(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ZSEU1')
-      ZSEU1(:) = 0
-      ALLOCATE (XSEU2(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'XSEU2')
-      XSEU2(:) = 0
-      ALLOCATE (YSEU2(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'YSEU2')
-      YSEU2(:) = 0
-      ALLOCATE (ZSEU2(NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'ZSEU2')
-      ZSEU2(:) = 0
-      ALLOCATE (NUM_SEU1(4,NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NUM_SEU1')
-      NUM_SEU1(:,:) = 0
-      ALLOCATE (NUM_SEU2(4,NBSEU), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NUM_SEU2')
-      NUM_SEU2(:,:) = 0
-!
-      DO J=1,NBSEU
-        READ(NSEU,*,END=304,ERR=305) I, 
-     &       XSEU1(J), YSEU1(J), ZSEU1(J),
-     &       (NUM_SEU1(K,J), K = 1,4),
-     &       XSEU2(J), YSEU2(J), ZSEU2(J),
-     &       (NUM_SEU2(K,J), K = 1,4)
-      END DO
-      CLOSE(NSEU)
-!
-      ALLOCATE (PART_P(NPOIN2,0:NBMAXNSHARE),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'PART_P')
-      PART_P(:,:)=0
-!     Partition of the global domain.
-!     For each global node, PART_P gives the number and the list of SD which contains the node
-      DO N=1,NPARTS
-        DO I=1, NPOIN2
-          IF (KNOGL(I,N).GT.0) THEN
-            PART_P(I,0)=PART_P(I,0)+1
-            POSI=PART_P(I,0)
-            PART_P(I,POSI)=N
-          ENDIF
-        END DO
-      END DO
-!
-      ALLOCATE (SEU_P(NBSEU,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'SEU_P')
-      SEU_P(:,:)=0
-      ALLOCATE (CSEU_P(NBSEU,0:NBMAXNSHARE),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'CSEU_P')
-      CSEU_P(:,:)=0
-      ALLOCATE (P_CSEU(NPARTS,0:NBSEU))
-      CALL CHECK_ALLOCATE(ERR, 'P_CSEU')
-      P_CSEU(:,:)=0
-!     Partition of the element of weirs.
-!     SEU_P indicate if the element of weir is computed or not by SD
-      DO N=1,NPARTS
-        DO J=1,NBSEU
-          DO K=1,4
-            IF (KNOGL(NUM_SEU1(K,J),N).GT.0) THEN
-              SEU_P(J,N)=1
-            END IF
-            IF (KNOGL(NUM_SEU2(K,J),N).GT.0) THEN
-              SEU_P(J,N)=1
-            END IF
-          END DO
-        END DO
-      END DO
-!     Partition of the element of weirs.
-!     For each element, CSEU_P gives the number and the list of SD which compute the discharge
-      DO N=1,NPARTS
-        DO J=1,NBSEU
-          IF (SEU_P(J,N)>0) THEN
-            CSEU_P(J,0)=CSEU_P(J,0)+1
-            POSI=CSEU_P(J,0)
-            CSEU_P(J,POSI)=N
-          END IF
-        END DO
-      END DO
-!     Partition of the element of weirs.
-!     For each SD, P_CSEU gives the number and the list element of weir computed
-      DO J=1,NBSEU
-        DO L=1, CSEU_P(J,0)
-          PROC = CSEU_P(J,L)
-          P_CSEU(PROC,0) = P_CSEU(PROC,0)+1
-          POSI = P_CSEU(PROC,0)
-          P_CSEU(PROC,POSI) = J
-        END DO
-      END DO
-!
-      ALLOCATE (NRECV_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NRECV_P')
-      NRECV_P(:)=0
-      ALLOCATE (LRECV_P(8*NBSEU,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LRECV_P')
-      LRECV_P(:,:)=0
-!     Informations on the nodes involved in the element of weirs computation
-!     NRECV_P gives the numbers of nodes used in the computation for each SD
-!     LRECV_P gives the list of nodes used in the computation for each SD
-      DO N=1,NPARTS
-        DO J=1,NBSEU
-          IF (SEU_P(J,N)>0) THEN
-            DO K=1,4
-              DO L=1, NRECV_P(N)
-                IF (NUM_SEU1(K,J) == LRECV_P(L,N)) GOTO 602
-                IF (NUM_SEU1(K,J) < LRECV_P(L,N)) GOTO 601
-              END DO
- 601          CONTINUE             
-              NRECV_P(N)=NRECV_P(N)+1
-              DO I= NRECV_P(N),L+1,-1
-                LRECV_P(I,N) = LRECV_P(I-1,N)
-              END DO
-              LRECV_P(L,N)=NUM_SEU1(K,J)
- 602          CONTINUE             
-!
-              DO L=1, NRECV_P(N)
-                IF (NUM_SEU2(K,J) == LRECV_P(L,N)) GOTO 604
-                IF (NUM_SEU2(K,J) < LRECV_P(L,N)) GOTO 603
-              END DO
- 603          CONTINUE             
-              NRECV_P(N)=NRECV_P(N)+1
-              DO I= NRECV_P(N),L+1,-1
-                LRECV_P(I,N) = LRECV_P(I-1,N)
-              END DO
-              LRECV_P(L,N)=NUM_SEU2(K,J)
- 604          CONTINUE             
-            END DO
-          END IF
-        END DO
-      END DO
-!
-      ALLOCATE (NSEND_P(NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NSEND_P')
-      NSEND_P(:)=0
-      ALLOCATE (LSEND_P(8*NBSEU,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LSEND_P')
-      LSEND_P(:,:)=0
-      ALLOCATE (LSEND_PP(NBMAXNSHARE,8*NBSEU,NPARTS),STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'LSEND_PP')
-      LSEND_PP(:,:,:)=0
-!     Informations on the nodes involved in the element of weirs computation
-!     NSEND_P gives for each SD the numbers of nodes used in the computation of other SD 
-!     LSEND_P gives for each SD the list of nodes used in the computation of other SD
-!     LSEND_PP gives for each SD and for each nodes used in the computation of other SD the list of SD
-      DO J=1,NBSEU
-        DO M=1, CSEU_P(J,0)
-          N = CSEU_P(J,M)
-          DO K=1,4
-            IF(KNOGL(NUM_SEU1(K,J),N)>0) THEN
-              DO L=1, NSEND_P(N)
-                IF (NUM_SEU1(K,J) == LSEND_P(L,N)) GOTO 702
-                IF (NUM_SEU1(K,J) < LSEND_P(L,N)) GOTO 701
-              END DO
- 701          CONTINUE             
-              NSEND_P(N)=NSEND_P(N)+1
-              DO I= NSEND_P(N),L+1,-1
-                LSEND_P(I,N) = LSEND_P(I-1,N)
-                LSEND_PP(:,I,N) = LSEND_PP(:,I-1,N)
-              END DO
-              LSEND_P(L,N)=NUM_SEU1(K,J)
-              LSEND_PP(:,L,N)=0
- 702          CONTINUE
-              DO I=1, CSEU_P(J,0)
-                DO JJ = 1, NBMAXNSHARE
-                  IF (CSEU_P(J,I) == LSEND_PP(JJ,L,N)) GOTO 703
-                  IF (LSEND_PP(JJ,L,N) == 0) THEN
-                    LSEND_PP(JJ,L,N) = CSEU_P(J,I)
-                    GOTO 703
-                  END IF
-                END DO
- 703            CONTINUE
-              END DO
-            END IF
-!              
-            IF(KNOGL(NUM_SEU2(K,J),N)>0) THEN
-              DO L=1, NSEND_P(N)
-                IF (NUM_SEU2(K,J) == LSEND_P(L,N)) GOTO 705
-                IF (NUM_SEU2(K,J) < LSEND_P(L,N)) GOTO 704
-              END DO
- 704          CONTINUE             
-              NSEND_P(N)=NSEND_P(N)+1
-              DO I= NSEND_P(N),L+1,-1
-                LSEND_P(I,N) = LSEND_P(I-1,N)
-                LSEND_PP(:,I,N) = LSEND_PP(:,I-1,N)
-              END DO
-              LSEND_P(L,N)=NUM_SEU2(K,J)
-              LSEND_PP(:,L,N)=0
- 705          CONTINUE             
-              DO I=1, CSEU_P(J,0)
-                DO JJ = 1, NBMAXNSHARE
-                  IF (CSEU_P(J,I) == LSEND_PP(JJ,L,N)) GOTO 706
-                  IF (LSEND_PP(JJ,L,N) == 0) THEN
-                    LSEND_PP(JJ,L,N) = CSEU_P(J,I)
-                    GOTO 706
-                  END IF
-                END DO
- 706            CONTINUE
-              END DO
-            END IF
-          END DO
-        END DO
-      END DO
-!
-      ALLOCATE (NUM_SEU1_P(4,NBSEU,NPARTS), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NUM_SEU1_P')
-      NUM_SEU1_P(:,:,:)=0
-      ALLOCATE (NUM_SEU2_P(4,NBSEU,NPARTS), STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR, 'NUM_SEU2_P')
-      NUM_SEU2_P(:,:,:)=0
-!     Local numbering of nodes involved in element of weirs description
-      DO N=1,NPARTS
-        DO J=1,NBSEU
-          IF (SEU_P(J,N)>0) THEN
-            DO K=1,4
-              DO L=1, NRECV_P(N)
-                IF (NUM_SEU1(K,J)==LRECV_P(L,N)) THEN
-                  NUM_SEU1_P(K,J,N) = L
-                  GOTO 605
-                END IF
-              ENDDO
-              WRITE(LU,*) 'HOUSTON ON A UN PROBLEME (1)', J, K, L
- 605          CONTINUE           
-            END DO
-!
-            DO K=1,4
-              DO L=1, NRECV_P(N)
-                IF (NUM_SEU2(K,J)==LRECV_P(L,N)) THEN
-                  NUM_SEU2_P(K,J,N) = L
-                  GOTO 606
-                END IF
-              ENDDO
-              WRITE(LU,*) 'HOUSTON ON A UN PROBLEME (2)', J, K, L
- 606          CONTINUE           
-            END DO
-          END IF
-        END DO
-      END DO
-!
-! WRITE THE WEIR FILE FOR EACH SUBDOMAIN
-      DO N=1,NPARTS
-        NAMEOUT=TRIM(NAMESEU)//EXTENS(NPARTS-1,N-1)
-        WRITE(LU,*) 'WRITING: ', TRIM(NAMEOUT)
-        OPEN (NOUT,FILE=TRIM(NAMEOUT),FORM='FORMATTED',STATUS='NEW')
-        WRITE(NOUT,*) ' Nb de singularites Option Utan'
-        WRITE(NOUT,*) SUM(SEU_P(:,N)), OPSEU
-! WRITE THE DESCRIPTION OF ELEMENTS OF WEIRS
-        DO J=1,NBSEU
-          IF (SEU_P(J,N)>0) THEN
-            WRITE(NOUT,*) J, 
-     &         XSEU1(J), YSEU1(J), ZSEU1(J),
-     &         (NUM_SEU1_P(K,J,N), K = 1,4),
-     &         XSEU2(J), YSEU2(J), ZSEU2(J),
-     &         (NUM_SEU2_P(K,J,N), K = 1,4)
-          END IF
-        END DO
-! WRITE THE PARALLEL INFORMATION WHICH DESCRIBE WHICH SUBDOMAIN NEED TO COMPUTE EACH ELEMENT 
-        WRITE(NOUT,*) ' // : for each element, number and list of SD',
-     &                ' which will also compute discharge on it'
-!
-        ALLOCATE (LIST_TMP(1,NBMAXNSHARE),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-        DO J=1,NBSEU
-          IF (SEU_P(J,N)>0) THEN
-            LIST_TMP(:,:)=0
-            I = 0
-            DO K=1, NBMAXNSHARE
-              IF((CSEU_P(J,K)>0).AND.(CSEU_P(J,K)/=N)) THEN
-                I = I + 1
-                LIST_TMP(1,I) = CSEU_P(J,K)
-              END IF
-            END DO
-            WRITE(NOUT,*) J, I
-            IF (I>0) THEN
-              WRITE(NOUT,*) (LIST_TMP(1,K)-1, K=1,I)
-            END IF
-          END IF
-        END DO
-        DEALLOCATE (LIST_TMP)
-!
-        WRITE(NOUT,*) ' // : for each SD, number and list of element',
-     &                ' which will be computed'
-!       first passage to count the number of sd and write it in the file
-        PROC = 0
-        DO L=1, NPARTS
-          IF (L/=N) THEN
-            DO J=1,P_CSEU(L,0)
-              IF (SEU_P(P_CSEU(L,J),N)>0) THEN
-                PROC = PROC + 1
-                GOTO 501
-              END IF
-            END DO
-          END IF
- 501      CONTINUE
-        END DO
-        WRITE(NOUT,*) PROC
-!
-        ALLOCATE (LIST_TMP(1,NBSEU),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-        LIST_TMP(:,:)=0
-        DO L=1, NPARTS
-          IF (L/=N) THEN
-            I = 0
-            DO J=1,P_CSEU(L,0)
-              IF (SEU_P(P_CSEU(L,J),N)>0) THEN
-                I = I + 1
-                LIST_TMP(1,I) = P_CSEU(L,J)
-              END IF
-            END DO
-            IF (I>0) THEN
-              WRITE(NOUT,*) L-1, I
-              WRITE(NOUT,*) (LIST_TMP(1,K), K=1,I)
-            END IF
-          END IF
-        END DO
-        DEALLOCATE (LIST_TMP)
-! WRITE THE PARALLEL INFORMATION ABOUT THE NODES INVOLVED IN WEIR DESCRIPTION
-! THE VALUES OF THESE NODES SHOULD BE RECEIVE FROM OTHER SD
-        WRITE(NOUT,*) ' // : for each node required by the SD to',
-     &                ' compute the discharge, number, list and local',
-     &                ' numbering of nodes from all involved SD'
-        ALLOCATE (LIST_TMP(2,NBMAXNSHARE),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-        WRITE(NOUT,*) NRECV_P(N)
-        IF (NRECV_P(N)>0) THEN
-          DO I=1, NRECV_P(N)
-            LIST_TMP(:,:)=0
-            J = 0
-            DO K=1, PART_P(LRECV_P(I,N),0)
-              J = J + 1
-              LIST_TMP(1,K) = PART_P(LRECV_P(I,N),K)
-              LIST_TMP(2,K) = KNOGL(LRECV_P(I,N),PART_P(LRECV_P(I,N),K))
-            END DO
-            WRITE(NOUT,*) LRECV_P(I,N), J
-            WRITE(NOUT,*) (LIST_TMP(1,K)-1,LIST_TMP(2,K), 
-     &                    K=1,J)
-          END DO
-        END IF
-        DEALLOCATE (LIST_TMP)
-!
-        WRITE(NOUT,*) ' // : for each other SD which send values,',
-     &                ' number and list of node (with local number)'
-        IF (NRECV_P(N)>0) THEN
-          ALLOCATE (LIST_TMP(NPARTS,3*NRECV_P(N)),STAT=ERR)
-          CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-          LIST_TMP(:,:)=0
-        END IF
-        PROC = 0
-        IF (NRECV_P(N)>0) THEN
-          DO I=1, NRECV_P(N)
-            DO K=1, PART_P(LRECV_P(I,N),0)
-              DO J=1, PROC
-                IF (LIST_TMP(J,1) == PART_P(LRECV_P(I,N),K)) GOTO 522
-                IF (LIST_TMP(J,1) >  PART_P(LRECV_P(I,N),K)) GOTO 521
-              END DO
- 521          CONTINUE
-              PROC = PROC + 1
-              DO M = PROC, J+1, -1
-                LIST_TMP(M,1) = LIST_TMP(M-1,1)
-              END DO
-              LIST_TMP(J,1) = PART_P(LRECV_P(I,N),K)
- 522          CONTINUE
-            END DO
-          END DO
-        END IF
-        WRITE(NOUT,*) PROC
-!
-        DO M=1, PROC
-          POSI = 2
-          DO I=1, NRECV_P(N)
-            JJ = LRECV_P(I,N)
-            DO K=1, PART_P(JJ,0)
-              IF (PART_P(JJ,K)==LIST_TMP(M,1)) THEN
-                LIST_TMP(M,POSI  ) = I
-                LIST_TMP(M,POSI+1) = JJ
-                LIST_TMP(M,POSI+2) = KNOGL(JJ,PART_P(JJ,K))
-                POSI = POSI + 3
-              END IF
-            END DO
-          END DO
-          WRITE(NOUT,*) LIST_TMP(M,1)-1, (POSI-1)/3
-          IF (POSI > 2) THEN
-            WRITE(NOUT,*) (LIST_TMP(M,3*K-1), K=1,(POSI-1)/3)
-            WRITE(NOUT,*) (LIST_TMP(M,3*K  ), K=1,(POSI-1)/3)
-            WRITE(NOUT,*) (LIST_TMP(M,3*K+1), K=1,(POSI-1)/3)
-          END IF
-        END DO
-        IF (ALLOCATED(LIST_TMP)) DEALLOCATE(LIST_TMP)
-!
-! WRITE THE PARALLEL INFORMATION ABOUT THE NODES INVOLVED IN WEIR DESCRIPTION OF OTHER SD
-! THE VALUES OF THESE NODES SHOULD BE SEND TO OTHER SD
-        WRITE(NOUT,*) ' // : for each node inside the SD, number and',
-     &                ' list of others SD which also need the value'
-        ALLOCATE (LIST_TMP(2,NBMAXNSHARE),STAT=ERR)
-        CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-        WRITE(NOUT,*) NSEND_P(N)
-        IF (NSEND_P(N)>0) THEN
-          DO I=1, NSEND_P(N)
-            LIST_TMP(:,:)=0
-            J = 0
-            DO K=1, NBMAXNSHARE
-              IF (LSEND_PP(K,I,N)>0) THEN
-                J = J + 1
-                LIST_TMP(1,J) = LSEND_PP(K,I,N)
-              END IF
-            END DO
-            WRITE(NOUT,*) LSEND_P(I,N), J
-            WRITE(NOUT,*) (LIST_TMP(1,K)-1, K=1,J)
-          END DO
-        END IF
-        DEALLOCATE (LIST_TMP)
-!
-        WRITE(NOUT,*) ' // : for each other SD which needs node ',
-     &                'values, number and list of nodes'
-        IF (NSEND_P(N)>0) THEN
-          ALLOCATE (LIST_TMP(NPARTS,3*NSEND_P(N)),STAT=ERR)
-          CALL CHECK_ALLOCATE(ERR, 'LIST_TMP')
-          LIST_TMP(:,:)=0
-        END IF
-        PROC = 0
-        IF (NSEND_P(N)>0) THEN
-          DO I=1, NSEND_P(N)
-            DO K=1, NBMAXNSHARE
-              IF (LSEND_PP(K,I,N)>0) THEN
-                DO J=1, PROC
-                  IF (LIST_TMP(J,1) == LSEND_PP(K,I,N)) GOTO 512
-                  IF (LIST_TMP(J,1) >  LSEND_PP(K,I,N)) GOTO 511
-                END DO
- 511            CONTINUE
-                PROC = PROC + 1
-                DO M = PROC, J+1, -1
-                  LIST_TMP(M,1) = LIST_TMP(M-1,1)
-                END DO
-                LIST_TMP(J,1) = LSEND_PP(K,I,N)
- 512            CONTINUE
-              END IF
-            END DO
-          END DO
-        END IF
-!
-        WRITE(NOUT,*) PROC
-        IF (NSEND_P(N)>0) THEN
-          DO M=1, PROC
-            POSI = 2
-            DO I=1, NSEND_P(N)
-            JJ = LSEND_P(I,N)
-              DO K=1, NBMAXNSHARE
-                IF (LSEND_PP(K,I,N)==LIST_TMP(M,1)) THEN
-                  J = 1
-                  DO WHILE (LRECV_P(J,N) /= JJ)
-                    J = J + 1
-                  END DO
-                  LIST_TMP(M,POSI  ) = J
-                  LIST_TMP(M,POSI+1) = JJ
-                  J = 1
-                  DO WHILE (PART_P(JJ,J) /= N)
-                    J = J + 1
-                  END DO
-                  LIST_TMP(M,POSI+2) = KNOGL(JJ,PART_P(JJ,J))
-                  POSI = POSI + 3
-                END IF
-              END DO
-            END DO
-            WRITE(NOUT,*) LIST_TMP(M,1)-1, (POSI-1)/3
-            WRITE(NOUT,*) (LIST_TMP(M,3*K-1), K=1,(POSI-1)/3)
-            WRITE(NOUT,*) (LIST_TMP(M,3*K  ), K=1,(POSI-1)/3)
-            WRITE(NOUT,*) (LIST_TMP(M,3*K+1), K=1,(POSI-1)/3)
-          END DO
-        END IF
-        IF (ALLOCATED(LIST_TMP)) DEALLOCATE (LIST_TMP)
-!        
-        CLOSE(NOUT)
-      END DO
-!
-      DEALLOCATE(XSEU1)
-      DEALLOCATE(YSEU1)
-      DEALLOCATE(ZSEU1)
-      DEALLOCATE(XSEU2)
-      DEALLOCATE(YSEU2)
-      DEALLOCATE(ZSEU2)
-      DEALLOCATE(NUM_SEU1)
-      DEALLOCATE(NUM_SEU2)
-      DEALLOCATE(NUM_SEU1_P)
-      DEALLOCATE(NUM_SEU2_P)
-      DEALLOCATE(PART_P)
-      DEALLOCATE(SEU_P)
-      DEALLOCATE(CSEU_P)
-      DEALLOCATE(LSEND_P)
-      DEALLOCATE(LSEND_PP)
-      DEALLOCATE(NRECV_P)
-      DEALLOCATE(LRECV_P)
-!
-      WRITE(LU,*) 'FINISHED DEALING WITH WEIRS'
-      ENDIF ! WITH_WEIRS
-!
-!----------------------------------------------------------------------
+!     NOTE JMH: AS THE PROGRAM ENDS, IS DEALLOCATING USEFUL ?????
 !
       DEALLOCATE (IKLE) ! #### MOVED FROM FAR ABOVE
       DEALLOCATE(NPART)
@@ -2263,8 +1781,6 @@
  303  WRITE(LU,*) 'ERROR WITH ZONE FILE FORMAT'
       GO TO 999
  304  WRITE(LU,*) 'ABNORMAL END OF FILE'
-      GO TO 999
- 305  WRITE(LU,*) 'ERROR WITH WEIR FILE FORMAT'
       GO TO 999
 
 !
