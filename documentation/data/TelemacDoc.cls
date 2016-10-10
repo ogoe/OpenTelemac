@@ -127,7 +127,7 @@
 \RequirePackage[utf8]{inputenc} % Required for including letters with accents
 \RequirePackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 
-\RequirePackage{titlesec} % Allows customization of titles
+\RequirePackage[compact]{titlesec} % Allows customization of titles
 
 \RequirePackage{graphicx} % Required for including pictures
 %\graphicspath{{Pictures/}} % Specifies the directory where pictures are stored
@@ -788,5 +788,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
                {\if@restonecol\onecolumn\else\clearpage\fi}
 \makeatother
 
-
-
+%----------------------------------------------------------------------------------------
+% LAYOUT
+%----------------------------------------------------------------------------------------
+\setlength{\parindent}{0pt}
