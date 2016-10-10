@@ -7,6 +7,10 @@ Release V7P2R0 (Unreleased)
 Features
 ---------------------
 
+- TELEMAC-2D: Add Spalart-Allmaras turbulence model.
+- TelApy: Add the first structure for PYTHON API of TELEMAC.
+- TELEMAC-3D: Add a new advection scheme (less diffusive scheme
+  as in TELEMAC-2D).
 - TELEMAC: Add possibility to prescribe space and time varying meteo
   conditions based on a file (ASCII ATMOSPHERIC DATA FILE and
   BINARY ATMOSPHERIC DATA FILE keywords).
