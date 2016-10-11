@@ -1,3 +1,4 @@
+/PARALLEL PROCESSORS = 20
 /----------------------------------------------------------------------
 / experiment of Yen 180 bend
 /
@@ -30,7 +31,7 @@
 /----------------------------------------------------------------------
 /
 COUPLING WITH                    = 'SISYPHE'
-/COUPLING PERIOD                  = 1
+COUPLING PERIOD FOR SISYPHE      = 1
 SISYPHE STEERING FILE    = sis_yen-exp.cas
 FORTRAN FILE                     :  t2d_yen-exp.f
 BOUNDARY CONDITIONS FILE         :  geo_yen-exp.cli
@@ -47,16 +48,12 @@ TITLE : '1st try Yen-Versuch '
 /
 VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,Q,M,W'
 /VARIABLES TO BE PRINTED                     : 'U,V,S,B,H,Q,M,W'
-TIME STEP : 0.1
+TIME STEP : 0.5
 /
-/NUMBER OF TIME STEPS : 72000
-/GRAPHIC PRINTOUT PERIOD                     :  4000
-/LISTING PRINTOUT PERIOD                     : 1000
+NUMBER OF TIME STEPS : 14400
+GRAPHIC PRINTOUT PERIOD                     :  1440
+LISTING PRINTOUT PERIOD                     : 144
 //
-NUMBER OF TIME STEPS : 20000
-GRAPHIC PRINTOUT PERIOD                     : 2000
-LISTING PRINTOUT PERIOD                     : 200
-/
 COMPUTATION CONTINUED                       : YES
 /
 /----------------------------------------------------------------------
@@ -74,7 +71,7 @@ PRESCRIBED FLOWRATES                        : 0.02; 0.02
 /
 INITIAL CONDITIONS                          :'CONSTANT DEPTH'
 INITIAL DEPTH                               : 0.0544
-INITIAL TIME SET TO ZERO                    : YES
+INITIAL TIME SET TO ZERO                    : TRUE
 /
 /----------------------------------------------------------------------
 /                       NUMERICAL OPTIONS
@@ -85,14 +82,14 @@ SOLVER					    : 1
 INFORMATION ABOUT SOLVER : YES
 /
 TREATMENT OF THE LINEAR SYSTEM              : 2
-FREE SURFACE GRADIENT COMPATIBILITY         : 0.5
+FREE SURFACE GRADIENT COMPATIBILITY         : 0.9 / 0.5
 MASS-LUMPING ON H                           : 1.
 SOLVER ACCURACY                             : 1.E-6
 PRECONDITIONING			            : 2
-TYPE OF ADVECTION                           : 1;5
+TYPE OF ADVECTION                           : 4;5 / 1;5
 SUPG OPTION                                 : 1;1
 MATRIX STORAGE				    : 3
-IMPLICITATION FOR DEPTH : 0.6
+IMPLICITATION FOR DEPTH : 1.0 / 0.6
 IMPLICITATION FOR VELOCITY : 0.6
 /
 /----------------------------------------------------------------------
@@ -100,12 +97,12 @@ IMPLICITATION FOR VELOCITY : 0.6
 /----------------------------------------------------------------------
 /
 TURBULENCE MODEL                            : 2
-VELOCITY DIFFUSIVITY                        : 1.E-2
+VELOCITY DIFFUSIVITY                        : 1.E-6 / 1.E-2
 OPTION FOR THE DIFFUSION OF VELOCITIES      : 1
 /......................................................................
 /
 &FIN
-/
-/
-/
-/
+
+
+
+
