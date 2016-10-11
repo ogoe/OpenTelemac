@@ -1,0 +1,70 @@
+/======================================================================
+RESTART   =    FALSE
+ACTION
+   ActionType             =    Dig_by_time
+
+   FieldDig               =    201_Abschnitt_1_2_1000m**2
+   
+   DigVolume              =    100.00              / [ m**3 ]             
+   DigPlanar              =    FALSE
+
+
+   TimeStart              =   2000.01.01-00:00:50  /  [yyyy.mm.dd-hh:mm:ss]
+   TimeEnd                =   2000.01.01-00:02:30  /  [yyyy.mm.dd-hh:mm:ss]   
+   
+
+   FieldDump              =   202_Abschnitt_6_7_1000m**2
+   DumpRate               =    0.0005              /  [ m/s ]
+   DumpPlanar             =    FALSE
+
+ENDACTION
+/======================================================================
+ENDFILE
+/
+/
+/    /======================================================================
+/    ACTION
+/       ActionType             =    Dig_by_criterion
+/    
+/      /FieldDig               =    100_Fahrrinne_Widenings_4950m**2 
+/       FieldDig               =    110_Fahrrinne_Widenings_2475m**2 
+/       ReferezLevel           =    DSRWSP
+/    
+/    
+/       TimeStart              =   2000.01.01-00:01:00  /  [yyyy.mm.dd-hh:mm:ss]
+/       TimeEnd                =   2020.01.01-00:00:00  /  [yyyy.mm.dd-hh:mm:ss]
+/       TimeRepeat             =    16000.0             /  [ s ] 
+/      /TimeRepeat             =   166600.0             /  [ s ]
+/     
+/    
+/       DigRate                =     0.02               /  [ m/s ]
+/       DigDepth               =     1.05               /  [ m   ]
+/       CritDepth              =     1.01               /  [ m   ]
+/    
+/      /MinVolume              =     1.0                /  [ m^3 ]
+/      /MinVolumeRadius        =    71.0                /  [ m   ]
+/       MinVolume              =     0.0                /  [ m^3 ]
+/       MinVolumeRadius        =     3.5                /  [ m   ]
+/    
+/       FieldDump              =   200_VK_Feld
+/       DumpRate               =    0.02                /  [ m/s ]
+/       DumpPlanar             =    TRUE
+/    
+/    ENDACTION
+/    /======================================================================
+/    ACTION         
+/                                
+/        ActionType               =  Dump_by_time    
+/                                  
+/        ReferezLevel             = DSRWSP    
+/                                             
+/        TimeStart                =  2000.01.01-00:00:02    / [yyyy.mm.dd-hh:mm:ss]   
+/        TimeEnd                  =  2000.01.01-00:02:20    / [yyyy.mm.dd-hh:mm:ss]     
+/        FieldDump                = 953_Raute_oben
+/       /DumpRate                 =     0.002               / [ m/s ] 
+/        DumpPlanar               = TRUE    
+/       /DumpVolume               =  820.0                  / [ m**3 ]    
+/        DumpVolume               =  410.0                  / [ m**3 ]    
+                              
+
+
