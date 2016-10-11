@@ -50,13 +50,14 @@
 \definecolor{LightGreen}{RGB}{87, 151, 47}
 \definecolor{ZinnwalditeBrown}{RGB}{44, 22, 8}
 \definecolor{Peridot}{RGB}{233, 214, 0}
+\definecolor{T3D}{RGB}{165, 57, 76}
 
 %----------------------------------------------------------------------------------------
 %	DEFINE CLASS OPTIONS
 %----------------------------------------------------------------------------------------
 
 \DeclareOption{Telemac2D}{\colorlet{ColorBase1}{EdfBlue}}
-\DeclareOption{Telemac3D}{\colorlet{ColorBase1}{EdfGreen}}
+\DeclareOption{Telemac3D}{\colorlet{ColorBase1}{T3D}}
 \DeclareOption{Sisyphe}{\colorlet{ColorBase1}{Sand}}
 \DeclareOption{Tomawac}{\colorlet{ColorBase1}{OceanWaveBlue}}
 \DeclareOption{Artemis}{\colorlet{ColorBase1}{LightOceanGreen}}
