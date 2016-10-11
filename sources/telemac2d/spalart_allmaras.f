@@ -66,8 +66,10 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D, ONLY : FLULIM,H,HN,HPROP,TB2,DM1,
      &   ZCONV,SOLSYS,VISC_S,SMH,UNSV2D,V2DPAR,VOLU2D,OPTSOU,FLBOR,
-     &   FLBORTRA,MASKTR,OPTADV_SA,AM2,DEBUG,FLODEL
+     &   FLBORTRA,MASKTR,OPTADV_SA,AM2,DEBUG,FLODEL,NCO_DIST,NSP_DIST,
+     &   MAXADV
       USE INTERFACE_TELEMAC2D, EX_SPALART_ALLMARAS => SPALART_ALLMARAS
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -89,11 +91,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !   
-      INTEGER          :: I,NPOIN,DIMGLO,OPT_PSI_TF,IOPT
+      INTEGER          :: I,NPOIN,DIMGLO,OPT_PSI_TF,IOPT,N
       DOUBLE PRECISION :: CB1, CB2, KAP, CW1, CW2, CW3, CV1, FV2
       DOUBLE PRECISION :: FW, R, G, CHI, CHI3, D, SIG, C
       DOUBLE PRECISION :: AGGLOSA, SL1,FV1,BS,FT2,KAP2
       DOUBLE PRECISION :: CT3,CT4,CB22,TETASA,MASSSA
+      DOUBLE PRECISION :: CBK,CV13,CW6,PCW,UNSS
 !     WATER DINAMIC VISCOSITY
       DOUBLE PRECISION, PARAMETER :: PROPNU2=1.D-6
 !
@@ -113,11 +116,11 @@
 !
         IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-0'
 !
-! SETS THE CONSTANTS (TO BE MOVED TO COSASA.F 
+! SETS THE CONSTANTS (TO BE MOVED TO COSASA.F
         KAP=0.41D0
         SIG=1.D0/0.85D0 !1/SIG
-        CB1= 0.015D0 ! 0.105D0 
-        CB2= 0.562D0 ! 0.462D0 
+        CB1= 0.015D0 ! 0.105D0
+        CB2= 0.562D0 ! 0.462D0
         CW1=CB1/KAP**2.D0+(1.D0+CB2)*SIG
         CW2=0.1215D0
         CW3=2.D0
@@ -136,8 +139,8 @@
 !     COMPUTES THE MASS MATRIX
 !     -----------------------------
 !
-      CALL MATRIX(MAS,'M=N     ','MATMAS          ',IELMNU,IELMNU, 
-     &            SL1, S, S, S, S, S, S, MESH, MSK, MASKEL)  
+      CALL MATRIX(MAS,'M=N     ','MATMAS          ',IELMNU,IELMNU,
+     &            SL1, S, S, S, S, S, S, MESH, MSK, MASKEL)
 !
 !     MASS-LUMPING TEST
 !
@@ -166,24 +169,24 @@
 !
 !***********************************************************************
 !
-!     EXPLICIT SOURCE TERMS: T1 FOR VISCSA                      
-!                                      
-!                                  N   
-!                              VISCA             
+!     EXPLICIT SOURCE TERMS: T1 FOR VISCSA
+!
+!                                  N
+!                              VISCA
 !                              --   +    PROD + DEST + DIFFUSION
-!                              DT      
-!                        
-!                        
+!                              DT
+!
+!
 !      PROD      = Cb1(1-ft2)*S_TILDE*NU_TILDE
-!      DEST      = (Cw1*Fw-Cb1*ft2/Kappa**2)*(NU_TILDE/D)**2                    
+!      DEST      = (Cw1*Fw-Cb1*ft2/Kappa**2)*(NU_TILDE/D)**2
 !                  HERE THERE IS AN IMPLICIT PART (SEE BELOW)
-!      DIFFUSION = (1*SIGMA)*(d((NU+NU_TILDE)dNU_TILDE)) + 
+!      DIFFUSION = (1*SIGMA)*(d((NU+NU_TILDE)dNU_TILDE)) +
 !                             ----           ---------
 !                             dx_j            dx_j
 !
 !                  Cb2*dNU_TILDE * dNU_TILDE
 !                      ---------   ---------
-!                      dx_j         dX_j 
+!                      dx_j         dX_j
 !***********************************************************************
 !
 !     --------------------------------
@@ -309,7 +312,7 @@
             STOP
           ENDIF
           CALL CVTRVF_ERIA(NUTILD,NUN,S,H,HN,HPROP,UCONV,VCONV,
-     &                     DM1,ZCONV,SOLSYS,SM,S,.FALSE.,S,.FALSE.,                  
+     &                     DM1,ZCONV,SOLSYS,SM,S,.FALSE.,S,.FALSE.,
      &                     NUBOR,MASKTR,MESH,
      &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
      &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
@@ -365,7 +368,7 @@
 !    
       CALL OS('X=X+Y   ', SM, T1     , T1, C)
 !
-      CALL OS('X=YZ    ' ,T5, VISCSA ,T3 , C)     
+      CALL OS('X=YZ    ' ,T5, VISCSA ,T3 , C)
 !
 !     3- COMPUTE 2ND PRODUCTION TERM PROD2 (STOCKED IN T2)
 !
@@ -378,7 +381,7 @@
 !
       DO I=1, NPOIN
         D=WDIST%R(I)!+0.03*KS
-        CHI=VISCSA%R(I)/MAX(PROPNU2,1.D-12) !+CR1*KS/D 
+        CHI=VISCSA%R(I)/MAX(PROPNU2,1.D-12) !+CR1*KS/D
         FT2=CT3*EXP(-CT4*CHI**2)
         CHI3=CHI**3.D0
         FV1=CHI3/MAX((CHI3+CV13),1.D-12)
@@ -395,7 +398,7 @@
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-8'
 !
 !     WHILE EVERYTHING IN P2 IS ASSUMED CONSTANT, P2 WILL GIVE
-!  
+!
       CALL OS('X=XY    ',T1 ,T3 ,T3 ,C )
 !     ADD P2 TO SM
       CALL OS('X=X+Y   ',SM ,T1 ,T1 ,C )
@@ -408,7 +411,7 @@
 !
 !     4- COMPUTE DIFFUSION
 !
-!     FIRST PART OF DIFFUSION TERM IS TREATED IMPLICITLY   
+!     FIRST PART OF DIFFUSION TERM IS TREATED IMPLICITLY
 !        ==> COMBINE MASS AND DIFFUSION MATRICES 
       CALL OM('M=M+CN  ', MAS, DIF, S, SIG, MESH)
 !
@@ -450,4 +453,3 @@
 !
       RETURN
       END
-

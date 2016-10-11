@@ -33,6 +33,7 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE INTERFACE_TELEMAC2D, EX_SPALALLCL => SPALALLCL
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -86,6 +87,5 @@
 
       ENDDO
 
-     
       RETURN
       END SUBROUTINE

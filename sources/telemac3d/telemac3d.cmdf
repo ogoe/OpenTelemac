@@ -1023,7 +1023,7 @@ files: declarations_tomawac.f
   lecdoi.f
   anacos.f
   condiw.f
-  wac.f
+  wac.F
 
 [waqtel]
 path: <root>|sources|waqtel

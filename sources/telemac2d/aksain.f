@@ -23,6 +23,7 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE INTERFACE_TELEMAC2D, EX_AKSAIN => AKSAIN
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -46,7 +47,6 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
-!      
+!
       RETURN
       END
-      

@@ -25,6 +25,7 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE INTERFACE_TELEMAC2D, EX_VISTURSA => VISTURSA
+      IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -47,11 +48,10 @@
       DO I=1,NPOIN
         CHI3 = (VISCSA%R(I)/PROPNU2)**3
         FV1  = CHI3/(CHI3+CV13)
-        VISC%R(I) = PROPNU + VISCSA%R(I)*FV1 
+        VISC%R(I) = PROPNU + VISCSA%R(I)*FV1
       ENDDO
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-

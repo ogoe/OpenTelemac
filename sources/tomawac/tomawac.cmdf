@@ -605,7 +605,7 @@ files: declarations_tomawac.f
   lecdoi.f
   anacos.f
   condiw.f
-  wac.f
+  wac.F
   point_tomawac.f
   nomvar_tomawac.f
   tomawac_constants.f
