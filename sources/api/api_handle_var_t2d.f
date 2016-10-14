@@ -577,9 +577,6 @@
            DIM1 = 144
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE')THEN
            DIM1 = SIZE(INST%BND_TIDE)
-        ELSE
-          IERR = UNKNOWN_VAR_ERROR
-          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
         ENDIF
 
       END SUBROUTINE GET_VAR_SIZE_T2D_D
@@ -726,7 +723,6 @@
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             VARTYPE = 'STRING'
             READONLY = 1
-            NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1
@@ -745,6 +741,9 @@
             VARTYPE = 'INTEGER'
             READONLY = 1
             NDIM = 1
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
+            VARTYPE = 'INTEGER'
+            READONLY = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
             VARTYPE = 'DOUBLE'
             READONLY = 1

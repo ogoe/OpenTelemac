@@ -21,7 +21,9 @@
         INTEGER, PARAMETER :: SIS_INFO_LEN=200
         ! The maximum number of variable
 !TODO: Update nb_var_t2d to real value + update all fonctions
-        INTEGER, PARAMETER :: NB_VAR_SIS=100
+        INTEGER, PARAMETER :: NB_VAR_SIS=32
+        CHARACTER(LEN=SIS_VAR_LEN),ALLOCATABLE :: VNAME_SIS(:)
+        CHARACTER(LEN=SIS_INFO_LEN),ALLOCATABLE :: VINFO_SIS(:)
 !
       CONTAINS
 !
@@ -574,17 +576,17 @@
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           DIM1 = INST%CHESTR%DIM1
         ELSEIF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-            DIM1 = INST%LIHBOR%DIM1
+          DIM1 = INST%LIHBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
-            DIM1 = INST%CLU%DIM1
+          DIM1 = INST%CLU%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
-            DIM1 = INST%CLV%DIM1
+          DIM1 = INST%CLV%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
-            DIM1 = INST%LIQBOR%DIM1
+          DIM1 = INST%LIQBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
-            DIM1 = INST%LIEBOR%DIM1
+          DIM1 = INST%LIEBOR%DIM1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            DIM1 = 144
+          DIM1 = 144
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -728,15 +730,11 @@
       !+       CREATION OF THE FILE
       !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      !PARAM VARNAME   [OUT]    LIST OF ALL THE VARIABLES
-      !PARAM DICO_FILE [OUT]    LIST OF ALL THE DESCRIPTIONS
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_VAR_LIST_SIS_D(VARNAME, VARINFO, IERR)
+      SUBROUTINE SET_VAR_LIST_SIS_D(IERR)
 !
-        CHARACTER(LEN=SIS_VAR_LEN), INTENT(OUT) :: VARNAME(*)
-        CHARACTER(LEN=SIS_INFO_LEN), INTENT(OUT) :: VARINFO(*)
         INTEGER, INTENT(OUT) :: IERR
 !
         INTEGER :: I
@@ -744,103 +742,109 @@
         I=0
         IERR = 0
 !
-        I = I + 1
-        VARNAME(I) = 'MODEL.FLOWRATEQ'
-        VARINFO(I) = 'SOLID TRANSPORT FLOWRATE'
-        I = I + 1
-        VARNAME(I) = 'MODEL.EVOLUTION'
-        VARINFO(I) = 'EVOLUTION OF BED'
-        I = I + 1
-        VARNAME(I) = 'MODEL.Z'
-        VARINFO(I) = 'FREE SURFACE ELEVATION'
-        I = I + 1
-        VARNAME(I) = 'MODEL.BOTTOMELEVATION'
-        VARINFO(I) = 'LEVEL OF THE BOTTOM'
-        I = I + 1
-        VARNAME(I) = 'MODEL.ZF_C'
-        VARINFO(I) = 'EVOLUTION DUE TO BEDLOAD'
-        I = I + 1
-        VARNAME(I) = 'MODEL.QBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON Q FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.EBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON E FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.FLBOR'
-        VARINFO(I) = 'BOUNDARY VALUE ON ZF FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.FLBOR_SIS'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.X'
-        VARINFO(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.Y'
-        VARINFO(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.XNEBOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.YNEBOR'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.TIMESTEP'
-        VARINFO(I) = 'TIME STEP'
-        I = I + 1
-        VARNAME(I) = 'MODEL.TOB'
-        VARINFO(I) = 'SHEAR STRESS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.CHESTR'
-        VARINFO(I) = 'STRIKLER ON POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIHBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.CLU'
-        VARINFO(I) = 'BOUNDARY TYPE ON U FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.CLV'
-        VARINFO(I) = 'BOUNDARY TYPE ON V FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIQBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON Q FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.LIEBOR'
-        VARINFO(I) = 'BOUNDARY TYPE ON E FOR EACH BOUNDARY POINT'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NUMLIQ'
-        VARINFO(I) = 'LIQUID BOUNDARY NUMBERING'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NPOIN'
-        VARINFO(I) = 'NUMBER OF POINT IN THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NELEM'
-        VARINFO(I) = 'NUMBER OF ELEMENT IN THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NPFTR'
-        VARINFO(I) = 'NUMBER OF BOUNDARY POINTS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NELMAX'
-        VARINFO(I) = 'MAXIMUM NUMBER OF ELEMENTS IN THE MESH'
-        I = I + 1
-        VARNAME(I) = 'MODEL.IKLE'
-        VARINFO(I) = 'CONNECTIVITY TABLE OF ELEMENTS AND NODES'
-        I = I + 1
-        VARNAME(I) = 'MODEL.NTIMESTEPS'
-        VARINFO(I) = 'NUMBER OF TIME STEPS'
-        I = I + 1
-        VARNAME(I) = 'MODEL.CURRENTSTEP'
-        VARINFO(I) = ''
-        I = I + 1
-        VARNAME(I) = 'MODEL.RESULTFILE'
-        VARINFO(I) = 'RESULTS FILE OF THE CASE'
-        I = I + 1
-        VARNAME(I) = 'MODEL.BCFILE'
-        VARINFO(I) = 'BOUNDARY CONDITIONS FILE OF THE CASE'
-        I = I + 1
-        VARNAME(I) = 'MODEL.GEOMETRYFILE'
-        VARINFO(I) = 'GEOMETRY FILE OF THE CASE'
+        IF(.NOT.ALLOCATED(VNAME_SIS)) THEN
+          ALLOCATE(VNAME_SIS(NB_VAR_SIS),STAT=IERR)
+          IF(IERR.NE.0) RETURN
+          ALLOCATE(VINFO_SIS(NB_VAR_SIS),STAT=IERR)
+          IF(IERR.NE.0) RETURN
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.FLOWRATEQ'
+          VINFO_SIS(I) = 'SOLID TRANSPORT FLOWRATE'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.EVOLUTION'
+          VINFO_SIS(I) = 'EVOLUTION OF BED'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.Z'
+          VINFO_SIS(I) = 'FREE SURFACE ELEVATION'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.BOTTOMELEVATION'
+          VINFO_SIS(I) = 'LEVEL OF THE BOTTOM'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.ZF_C'
+          VINFO_SIS(I) = 'EVOLUTION DUE TO BEDLOAD'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.QBOR'
+          VINFO_SIS(I) = 'BOUNDARY VALUE ON Q FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.EBOR'
+          VINFO_SIS(I) = 'BOUNDARY VALUE ON E FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.FLBOR'
+          VINFO_SIS(I) = 'BOUNDARY VALUE ON ZF FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.FLBOR_SIS'
+          VINFO_SIS(I) = ''
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.X'
+          VINFO_SIS(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.Y'
+          VINFO_SIS(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.XNEBOR'
+          VINFO_SIS(I) = ''
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.YNEBOR'
+          VINFO_SIS(I) = ''
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.TIMESTEP'
+          VINFO_SIS(I) = 'TIME STEP'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.TOB'
+          VINFO_SIS(I) = 'SHEAR STRESS'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.CHESTR'
+          VINFO_SIS(I) = 'STRIKLER ON POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.LIHBOR'
+          VINFO_SIS(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.CLU'
+          VINFO_SIS(I) = 'BOUNDARY TYPE ON U FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.CLV'
+          VINFO_SIS(I) = 'BOUNDARY TYPE ON V FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.LIQBOR'
+          VINFO_SIS(I) = 'BOUNDARY TYPE ON Q FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.LIEBOR'
+          VINFO_SIS(I) = 'BOUNDARY TYPE ON E FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NUMLIQ'
+          VINFO_SIS(I) = 'LIQUID BOUNDARY NUMBERING'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NPOIN'
+          VINFO_SIS(I) = 'NUMBER OF POINT IN THE MESH'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NELEM'
+          VINFO_SIS(I) = 'NUMBER OF ELEMENT IN THE MESH'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NPFTR'
+          VINFO_SIS(I) = 'NUMBER OF BOUNDARY POINTS'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NELMAX'
+          VINFO_SIS(I) = 'MAXIMUM NUMBER OF ELEMENTS IN THE MESH'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.IKLE'
+          VINFO_SIS(I) = 'CONNECTIVITY TABLE OF ELEMENTS AND NODES'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.NTIMESTEPS'
+          VINFO_SIS(I) = 'NUMBER OF TIME STEPS'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.CURRENTSTEP'
+          VINFO_SIS(I) = 'CURRENT TIME STEP'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.RESULTFILE'
+          VINFO_SIS(I) = 'RESULTS FILE OF THE CASE'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.BCFILE'
+          VINFO_SIS(I) = 'BOUNDARY CONDITIONS FILE OF THE CASE'
+          I = I + 1
+          VNAME_SIS(I) = 'MODEL.GEOMETRYFILE'
+          VINFO_SIS(I) = 'GEOMETRY FILE OF THE CASE'
+        ENDIF
 !
-      END SUBROUTINE GET_VAR_LIST_SIS_D
+      END SUBROUTINE SET_VAR_LIST_SIS_D
 !
       END MODULE API_HANDLE_VAR_SIS

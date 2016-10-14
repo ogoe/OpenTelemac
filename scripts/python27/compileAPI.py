@@ -62,7 +62,7 @@ def compile_API(cfgs,cfgname,fcompiler,user_fortran):
    mycopy(path.join(lib_dir,'telemac2d','homere_api.so'),\
                    path.join(api_dir,'lib','libtelemac2d.so'))
    mycopy(path.join(lib_dir,'api','homere_api.so'),\
-                   path.join(api_dir,'lib','libapi_telemac2d.so'))
+                   path.join(api_dir,'lib','libapi.so'))
    mycopy(path.join(lib_dir,'sisyphe','homere_api.so'),\
                    path.join(api_dir,'lib','libsisyphe.so'))
    mycopy(path.join(lib_dir,'nestor','homere_api.so'),\
@@ -153,7 +153,7 @@ def compile_API(cfgs,cfgname,fcompiler,user_fortran):
    lib_cmd += ' -L'+api_dir+sep+'lib'
    if user_fortran != '':
       lib_cmd += ' ' + '-luser_fortran'
-   lib_cmd += ' -ltelemac2d -lapi_telemac2d -lwaqtel -lbief -lspecial -lnestor'
+   lib_cmd += ' -ltelemac2d -lapi -lwaqtel -lbief -lspecial -lnestor'
    lib_cmd += ' -lsisyphe -ltomawac -lparallel -ldamocles -lhermes -lgretel -lpartel'
    cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '%(pyfFile,\
                                                args.fcompiler,
@@ -203,7 +203,7 @@ def compile_exe(fortranFile,cfg,cfgName,user_fortran=''):
    libs = cfg['libs_all']+' -L'+path.join(cfg['root'],'builds',cfgName,'wrap_api','lib')+" "
    deps_t2d = ['special', 'parallel', 'damocles', 'hermes',
            'bief', 'partel', 'gretel', 'waqtel', 'sisyphe',
-           'tomawac', 'telemac2d', 'api_telemac2d']
+           'tomawac', 'telemac2d', 'api']
    for lib in deps_t2d:
       libs += "-l"+lib+" "
    cmd = cmd.replace('<libs>',libs)

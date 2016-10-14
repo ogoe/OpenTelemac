@@ -1008,6 +1008,7 @@
 !
         CALL RUN_SET_CONFIG_SIS_D(INSTANCE_LIST_SIS(ID),LU,LNG,COMM,
      &                            IERR)
+        CALL SET_VAR_LIST_SIS_D(IERR)
 !
       END SUBROUTINE RUN_SET_CONFIG_SIS
 !
@@ -1030,11 +1031,11 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RUN_READ_CASE_SIS(ID,CODE,CAS_FILE, DICO_FILE, IERR)
 !
-          INTEGER,            INTENT(IN) :: ID
-          CHARACTER(LEN=24),  INTENT(IN) :: CODE
-          CHARACTER(LEN=144), INTENT(IN) :: CAS_FILE
-          CHARACTER(LEN=144), INTENT(IN) :: DICO_FILE
-          INTEGER,            INTENT(OUT) :: IERR
+        INTEGER,            INTENT(IN) :: ID
+        CHARACTER(LEN=24),  INTENT(IN) :: CODE
+        CHARACTER(LEN=144), INTENT(IN) :: CAS_FILE
+        CHARACTER(LEN=144), INTENT(IN) :: DICO_FILE
+        INTEGER,            INTENT(OUT) :: IERR
 !
         INTEGER :: EXEC_POS
 !
@@ -1581,7 +1582,13 @@
         CHARACTER(LEN=SIS_INFO_LEN), INTENT(OUT) :: VARINFO(NB_VAR_SIS)
         INTEGER, INTENT(OUT) :: IERR
 !
-        CALL GET_VAR_LIST_SIS_D(VARNAME, VARINFO, IERR)
+        INTEGER I
+
+        IERR = 0
+        DO I=1,NB_VAR_SIS
+          VARNAME(I) = VNAME_SIS(I)
+          VARINFO(I) = VINFO_SIS(I)
+        ENDDO
 !
       END SUBROUTINE
 !
