@@ -114,6 +114,18 @@ if __name__ == "__main__":
                       dest="modules",
                       default='',
                       help="specify the list modules, default is taken from config file" )
+   parser.add_option("", "--src",
+                      action="store_true",
+                      dest="srcOnly",
+                      default=False,
+		      help="create a zip containing only the sources i.e. the "\
+                           "bare minimum to use telemac-mascaret" )
+   parser.add_option("", "--examples",
+                      action="store_true",
+                      dest="examplesOnly",
+                      default=False,
+		      help="create a zip containing only the sources i.e. the "\
+                           "bare minimum to use telemac-mascaret" )
    options, args = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -204,25 +216,70 @@ if __name__ == "__main__":
             pc = path.join(path.join(pt,options.archiveName),cfgname)
             archive = path.join(pt,options.archiveName)
 
-      dirs = ['builds'+sep+cfgname,'scripts','sources']
-      for pid in dirs:
-         pi = path.join(pt,pid)
-         po = pi.replace(pt,pc)
-         copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
-         print '    +> '+pi
+      if options.srcOnly:
+         archiveName = 'telemac-mascaret-'+cfg.get('version','DEV')+'-src'
+         pc = path.join(pt,archiveName)
+         dirs = ['optionals','scripts','sources','documentation']
+         for pid in dirs:
+            pi = path.join(pt,pid)
+            po = pi.replace(pt,pc)
+            copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
+            print '    +> '+pi
 
-      pid = path.join(pt,'configs')
-      if path.exists(pid):
+         files = ['NEWS.txt','README.txt']
+         for pid in files:
+            pi = path.join(pt,pid)
+            po = pi.replace(pt,pc)
+            copyFile(pi,po)
+            print '    +> '+pi
+       
+         pid = path.join(pt,'builds')
          po = pid.replace(pt,pc)
          createDirectories(po)
-         copyFile(options.configFile,po)
-         print '... finally copying ' + options.configFile
+         
+       
+         print '\n... now packaging ' + archiveName
+         zip(archiveName,pc,cfg['ZIPPER'])
+       
+         print '\n... now cleaning '
+         removeDirectories(pc)
 
-      print '\n... now packaging ' + cfgname
-      zip(cfgname,pc,cfg['ZIPPER'])
+      elif options.examplesOnly:
+         archiveName = 'telemac-mascaret-'+cfg.get('version','DEV')+'-examples'
+         pc = path.join(pt,archiveName)
+         dirs = ['examples']
+         for pid in dirs:
+            pi = path.join(pt,pid)
+            po = pi.replace(pt,pc)
+            copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
+            print '    +> '+pi
+       
+         print '\n... now packaging ' + archiveName
+         zip(archiveName,pc,cfg['ZIPPER'])
+       
+         print '\n... now cleaning '
+         removeDirectories(pc)
 
-      print '\n... now cleaning '
-      removeDirectories(pc)
+      else:
+         dirs = ['builds'+sep+cfgname,'scripts','sources']
+         for pid in dirs:
+            pi = path.join(pt,pid)
+            po = pi.replace(pt,pc)
+            copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
+            print '    +> '+pi
+       
+         pid = path.join(pt,'configs')
+         if path.exists(pid):
+            po = pid.replace(pt,pc)
+            createDirectories(po)
+            copyFile(options.configFile,po)
+            print '... finally copying ' + options.configFile
+       
+         print '\n... now packaging ' + cfgname
+         zip(cfgname,pc,cfg['ZIPPER'])
+       
+         print '\n... now cleaning '
+         removeDirectories(pc)
 
    if options.archiveName != '':
       print '\n... now packaging ' + cfgname + ' into ' + archive
