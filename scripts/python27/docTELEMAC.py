@@ -357,7 +357,7 @@ def main():
          moduleList = []
       else:
          # all docs
-         miscList = ['hermes','developer_guide','software_quality_plan',
+         miscList = ['developer_guide','software_quality_plan',
 	             'TelemacDocTemplate']
 	 # If a module was specified  or a specific documentation for modules
 	 # not compiling Misc documentation
