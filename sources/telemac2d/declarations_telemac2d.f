@@ -1810,9 +1810,9 @@
 ! 
 !     SOME PARAMETERS FOR SA TURBULENCE MODEL
 !
-      DOUBLE PRECISION, PARAMETER :: SIGMANU = 2.D0/3.D0
-      DOUBLE PRECISION, PARAMETER :: NUMIN = 1.D-8
-      DOUBLE PRECISION, PARAMETER :: NUMAX = 1.D10
+      DOUBLE PRECISION :: SIGMANU = 2.D0/3.D0
+      DOUBLE PRECISION :: NUMIN = 1.D-8
+      DOUBLE PRECISION :: NUMAX = 1.D10
 !
 !-----------------------------------------------------------------------
 !
