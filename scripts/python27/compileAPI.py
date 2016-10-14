@@ -202,7 +202,7 @@ def compile_exe(fortranFile,cfg,cfgName,user_fortran=''):
    cmd = cfg['cmd_exe']
    libs = cfg['libs_all']+' -L'+path.join(cfg['root'],'builds',cfgName,'wrap_api','lib')+" "
    deps_t2d = ['special', 'parallel', 'damocles', 'hermes',
-           'bief', 'partel', 'gretel', 'waqtel', 'sisyphe',
+           'bief', 'partel', 'gretel', 'waqtel', 'nestor', 'sisyphe',
            'tomawac', 'telemac2d', 'api']
    for lib in deps_t2d:
       libs += "-l"+lib+" "

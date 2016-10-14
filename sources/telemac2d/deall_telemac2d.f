@@ -661,6 +661,7 @@
       DEALLOCATE(OPTADV_TR)
       DEALLOCATE(SLVTRA)
       DEALLOCATE(TRAC0)
+      DEALLOCATE(NAMETRAC)
 
       IF(NTRAC.GT.0) THEN
         DEALLOCATE(MASTEN)
@@ -673,6 +674,28 @@
         DEALLOCATE(FLUTENT)
         DEALLOCATE(YASMI)
       ENDIF
+
+
+      ! Resetting initial values of variables
+      DEJA_MT = .FALSE.
+      DEJA_RFS = .FALSE.
+      OLD_METHOD_FPR=.FALSE.
+      INIT_FPR=.TRUE.
+      DEJA_TESTEUR = .FALSE.
+      DEJA_FC = .FALSE.
+      DEJA_RFF = .FALSE.
+      DEJA = .FALSE.
+      DEJA_TBC = .FALSE.
+      DEJA_FS = .FALSE.
+      OLD_METHOD_FS=.FALSE.
+      DEJALU_BREACH = .FALSE.
+      INIT_THOMPS = .TRUE.
+      DEJA_BT = .FALSE.
+      DEJA_IPM = .FALSE.
+      DEJA_IPM2 = .FALSE.
+      DEJA_BTM = .FALSE.
+      DEJA_BTL = .FALSE.
+      DEJA_FLUSECT2D = .FALSE.
 !
 !=======================================================================
 !

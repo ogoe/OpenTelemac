@@ -15,11 +15,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
+
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -30,7 +30,7 @@
 !
       CALL OUTBIEF(MESH)
 !     Deallocate the mesh structure
-!     CALL DEALMESH(MESH)            !SEGMENTATION FAULT
+      CALL DEALMESH(MESH)
 
       NULLIFY(IKLE)
       NULLIFY(X)
@@ -247,6 +247,14 @@
       IF(ALLOCATED(CHAIN)) THEN
         DEALLOCATE(CHAIN)
       END IF
+
+      ! Resetting variable
+      INIT_FLUXPR = .TRUE.
+      DEJA_RFC = .FALSE.
+      DEJA_FLUSEC = .FALSE.
+      OLD_METHOD_FLUSEC = .FALSE.
+      DEJA_FLUSEC2 = .FALSE.
+
 !
 !-----------------------------------------------------------------------
 !
