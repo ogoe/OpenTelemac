@@ -77,6 +77,10 @@ if __name__ == "__main__":
              dest="zoneFile",
              default='',
              help="Name of the zone file, default no zone file" )
+   parser.add_argument("--weir-name",
+             dest="weirFile",
+             default='',
+             help="Name of the weir file, default no weir file" )
    parser.add_argument("--partitioning-method",
              dest="partitionningMethod",
              default=1,
@@ -132,9 +136,10 @@ if __name__ == "__main__":
          geoFileFmt = f.readline().strip('\n')
          bndFile = f.readline().strip('\n')
          ncsize = f.readline().strip('\n')
+         partitionningMethod = f.readline().strip('\n')
          sectionFile = f.readline().strip('\n')
          zoneFile = f.readline().strip('\n')
-         partitionningMethod = f.readline().strip('\n')
+         weirFile = f.readline().strip('\n')
    else:
       geoFile = args.geoFile
       geoFileFmt = args.geoFileFmt
@@ -142,6 +147,7 @@ if __name__ == "__main__":
       ncsize = args.ncsize
       sectionFile = args.sectionFile
       zoneFile = args.zoneFile
+      weirFile = args.weirFile
       partitionningMethod = args.partitionningMethod
 
    # Getting partel command from configuration
@@ -150,7 +156,7 @@ if __name__ == "__main__":
    # Running paritionning
 
    runPARTEL(parcmd,geoFile,geoFileFmt,bndFile,ncsize,False,
-             sectionFile,zoneFile,
+             sectionFile,zoneFile,weirFile,
              geoFile,geoFileFmt,partitionningMethod)
 
    print '\n\nMy work is done\n\n'
