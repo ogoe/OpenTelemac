@@ -7,16 +7,16 @@
 !| LTL            |-->| CURRENT TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !      ________________________________________________________________
-!     |                                                                |     
+!     |                                                                |
 !     |        we assume that the sisyphe time step is constant  !     |
-!     |_______________ ________________________________________________| 
-      USE m_TypeDefs_InterFace           
-      USE m_TypeDefs_Nestor             
-      USE m_Nestor                      
-                                         
-      IMPLICIT NONE                      
-                                         
-      INTERFACE !------------------------------------------------------+                  
+!     |_______________ ________________________________________________|
+      USE m_TypeDefs_InterFace
+      USE m_TypeDefs_Nestor
+      USE m_Nestor
+
+      IMPLICIT NONE
+
+      INTERFACE !------------------------------------------------------+
         SUBROUTINE Dump_by_Time                                        !
      &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
      &      , ELAY0, time, m   )                                       !
@@ -30,21 +30,21 @@
           REAL (KIND=R8),INTENT(IN)    :: dt_ts        ! time-step-duration  [ s ]
           REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
           TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]  
+     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
           INTEGER       ,INTENT(IN)    :: m            ! number of Action
         END SUBROUTINE Dump_by_Time                                     !
-      END INTERFACE !--------------------------------------------------+              
-                                         
-      INTERFACE !------------------------------------------------------+                  
+      END INTERFACE !--------------------------------------------------+
+
+      INTERFACE !------------------------------------------------------+
         SUBROUTINE Dig_by_Time                                         !
      &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
      &      , AVAIL, ELAY0, time, KNOLG, m   )                         !
           USE m_TypeDefs_InterFace                                     !
           USE m_TypeDefs_Nestor                                        !
           USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid  !
-     &                          , npoinGlobal                          !                         
+     &                          , npoinGlobal                          !
                                                                        !
           IMPLICIT NONE                                                !
           TYPE(t_Action),INTENT(INOUT) :: A            ! Action        !
@@ -53,15 +53,15 @@
           REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
           REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! assumed-shape array
           TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]  
+     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
           INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
           INTEGER       ,INTENT(IN)    :: m            ! number of Action
         END SUBROUTINE Dig_by_Time                                     !
-      END INTERFACE !--------------------------------------------------+              
-                                         
-      INTERFACE !------------------------------------------------------+                  
+      END INTERFACE !--------------------------------------------------+
+
+      INTERFACE !------------------------------------------------------+
         SUBROUTINE Dig_by_Criterion                                    !
      &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
 !    &      , AVAIL, ELAY0, time, KNOLG, KNOGL, m   )                  !
@@ -69,7 +69,7 @@
           USE m_TypeDefs_InterFace                                     !
           USE m_TypeDefs_Nestor                                        !
           USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid  !
-     &                          , npoinGlobal                          !                         
+     &                          , npoinGlobal                          !
                                                                        !
           IMPLICIT NONE                                                !
           TYPE(t_Action),INTENT(INOUT) :: A            ! Action        !
@@ -78,123 +78,123 @@
           REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
           REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! assumed-shape array
           TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]  
+     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
           REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
           INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
 !         INTEGER       ,INTENT(IN)    :: KNOGL(:)     ! index list: Global to Local node index
           INTEGER       ,INTENT(IN)    :: m            ! number of Action
         END SUBROUTINE Dig_by_Criterion                                !
-      END INTERFACE !--------------------------------------------------+              
-                                         
-                                         
+      END INTERFACE !--------------------------------------------------+
+
+
       INTEGER      , INTENT(IN)    :: ts            !  time-step
       REAL (KIND=R8),INTENT(IN)    :: dt_ts_sis     !  time-step-duration  [ s ]
-      REAL (KIND=R8),INTENT(IN)    :: time          !  time [s]   
+      REAL (KIND=R8),INTENT(IN)    :: time          !  time [s]
       REAL (KIND=R8),INTENT(IN)    :: ELAY0         !  activLayerThickness [ m ]
       REAL (KIND=R8), INTENT(IN)    :: z_sis(:)      !  bottom [ m+NN ]  (assumed-shape array)
       REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:)  !  assumed-shape array
       INTEGER       ,INTENT(IN)    :: KNOLG(:)      ! index list: Local to Global node index
-      TYPE( t_PointerToArrayOfReals )    
-     &              ,INTENT(INOUT) :: dzCL_Sis(:)   !  bedload evolution per Class  [ m ] 
-     
-      TYPE(t_String_Length) :: SRname  ! name of current Subroutine 
-     
-                                         
-      DOUBLE PRECISION     P_DSUM        
-      EXTERNAL             P_DSUM        
-                                         
+      TYPE( t_PointerToArrayOfReals )
+     &              ,INTENT(INOUT) :: dzCL_Sis(:)   !  bedload evolution per Class  [ m ]
+
+      TYPE(t_String_Length) :: SRname  ! name of current Subroutine
+
+
+      DOUBLE PRECISION     P_DSUM
+      EXTERNAL             P_DSUM
+
       !------- local variables ---------------
       INTEGER              :: i, n, m, iMesh, iCL, status
       REAL (KIND=R8)       :: dt_ts     ! time-step-duration respecting MorpholFactor   [ s ]
-                                         
-                                         
-!                                        
+
+
+!
 663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
 !      dbug WRITE(6,*)'?>-------  SR MainNestor ------------------'
-      SRname%s = "MainNestor"         ! subroutine name  
-      SRname%i =  11                   ! length of name string     
+      SRname%s = "MainNestor"         ! subroutine name
+      SRname%i =  11                   ! length of name string
 
-        
-      !WRITE(6,*)'?> time_sis = ', time   ! debug test     
+
+      !WRITE(6,*)'?> time_sis = ', time   ! debug test
       !WRITE(6,*)'?>  z_sis(1078) = ',z_sis(1078)
- 
+
       IF( Restart ) THEN
-        CALL ReadWriteRestart( time, 'read' ) 
+        CALL ReadWriteRestart( time, 'read    ' )
         Restart = .FALSE.
       ENDIF
-      
-      
-        
-      DO m=1, nActions  
-        !WRITE(6,'(" ?>   state of Action",I3," =",I3)') m, A(m)%State   !debug 
-!                                        
-        IF( A(m)%State == 9 ) CYCLE   !> Status of Action:  0 = not yet      active 
+
+
+
+      DO m=1, nActions
+        !WRITE(6,'(" ?>   state of Action",I3," =",I3)') m, A(m)%State   !debug
+!
+        IF( A(m)%State == 9 ) CYCLE   !> Status of Action:  0 = not yet      active
                                       !                     1 = currently    active
                                       !                     2 = temporary  inactive
                                       !                     9 = for ever   inactive
-                                         
-        IF(       time >= A(m)%TimeStart )THEN
-!        IF(       time >= A(m)%TimeStart 
-!     &      .AND. time <= A(m)%TimeEnd   )THEN
-     
 
-                                         
+        IF(       time >= A(m)%TimeStart )THEN
+!        IF(       time >= A(m)%TimeStart
+!     &      .AND. time <= A(m)%TimeEnd   )THEN
+
+
+
           dt_ts = dt_ts_sis / MorpholFactor
-!                                        
-          SELECT CASE( A(m)%ActionType ) 
+!
+          SELECT CASE( A(m)%ActionType )
 !            __________________________________________________________
-!           |                                                          |     
-!           |                                                          |     
-            CASE(   1   )  ! _________Dig_by_time______________________| 
-              !WRITE(6,*)'?> CASE 1   Dig_by_time' 
-              
-              n = A(m)%FieldDigID  
-              CALL Dig_by_Time(   A(m), F(n), dt_ts, z_sis
-     &                          , dzCL_sis, AVAIL, ELAY0    
-     &                          , time, KNOLG, m          )
-                            
-!            __________________________________________________________
-!           |                                                          |     
 !           |                                                          |
-            CASE(   2   )  ! _________Dump_by_time_____________________| 
-              !WRITE(6,*)'?> CASE 2   Dump_by_time'    
-                                         
-              n = A(m)%FieldDumpID   
+!           |                                                          |
+            CASE(   1   )  ! _________Dig_by_time______________________|
+              !WRITE(6,*)'?> CASE 1   Dig_by_time'
+
+              n = A(m)%FieldDigID
+              CALL Dig_by_Time(   A(m), F(n), dt_ts, z_sis
+     &                          , dzCL_sis, AVAIL, ELAY0
+     &                          , time, KNOLG, m          )
+
+!            __________________________________________________________
+!           |                                                          |
+!           |                                                          |
+            CASE(   2   )  ! _________Dump_by_time_____________________|
+              !WRITE(6,*)'?> CASE 2   Dump_by_time'
+
+              n = A(m)%FieldDumpID
               CALL Dump_by_Time(   A(m), F(n), dt_ts, z_sis
      &                           , dzCL_sis, ELAY0, time, m     )
 
 !            __________________________________________________________
-!           |                                                          |     
-!           |                                                          |     
-            CASE(   3   )  ! _________Dig_by_criterion_________________| 
-              !WRITE(6,*)'?> CASE 3   Dig_by_criterion'     
-              n = A(m)%FieldDigID        
-                                         
-              CALL Dig_by_Criterion(   A(m), F(n), dt_ts, z_sis
-     &                               , dzCL_sis, AVAIL, ELAY0    
-     &                               , time, KNOLG, m           )
-                                         
-                                         
-              
-!            __________________________________________________________
-!           |                                                          |     
-            CASE DEFAULT  ! ___________________________________________| 
-               WRITE(6,*)'?>  CASE DEFault erreicht '
-               
-               
-          END SELECT                     
-                                         
-        ENDIF !A(m)%TimeStart <= time <= A(m)%TimeEnd
-      ENDDO !m=1, nActions               
- 
-      IF( MOD(ts,GraphicOutputPeriod) == 0 )
-     &  CALL ReadWriteRestart( time, 'write' ) 
+!           |                                                          |
+!           |                                                          |
+            CASE(   3   )  ! _________Dig_by_criterion_________________|
+              !WRITE(6,*)'?> CASE 3   Dig_by_criterion'
+              n = A(m)%FieldDigID
 
-        
-                                        
+              CALL Dig_by_Criterion(   A(m), F(n), dt_ts, z_sis
+     &                               , dzCL_sis, AVAIL, ELAY0
+     &                               , time, KNOLG, m           )
+
+
+
+!            __________________________________________________________
+!           |                                                          |
+            CASE DEFAULT  ! ___________________________________________|
+               WRITE(6,*)'?>  CASE DEFault erreicht '
+
+
+          END SELECT
+
+        ENDIF !A(m)%TimeStart <= time <= A(m)%TimeEnd
+      ENDDO !m=1, nActions
+
+      IF( MOD(ts,GraphicOutputPeriod) == 0 )
+     &  CALL ReadWriteRestart( time, 'write   ' )
+
+
+
 !      dbug WRITE(6,*)'?>-------  SR MainNestor End --------------'
-      RETURN                             
+      RETURN
 !***                                              ********************************************
 !***                                              ********************************************
       END SUBROUTINE MainNestor                  !********************************************
