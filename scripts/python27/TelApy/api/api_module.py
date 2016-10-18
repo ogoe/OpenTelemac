@@ -19,15 +19,15 @@ class Api_module(object):
     api_inter = None
     modules = None
 
-    def __init__(self, name, casfile, 
+    def __init__(self, name, casfile,
                  user_fortran,
-                 dicofile, 
+                 dicofile,
                  lang, stdout,
                  comm,
                  code=None):
 
         self.name = name
-       
+
         self.user_fortran_lib = None
         self.user_fortran_lib_path = None
         # User Fortran MUST be loaded before apit2d importation
@@ -290,10 +290,10 @@ class Api_module(object):
         :param global_num: Are the index on local/global numbering
         :return: variable value
         """
-        value = None  
+        value = None
         vartype,readonly,ndim,_,_,_,self.ierr = self.get_var_type(varname)
         dim1,dim2,dim3,ierr = self.get_var_size(self.id,varname)
-        
+
         if (ndim >= 1):
            if(not 0<i<=dim1):
                print "i=",i," is not within [",1,",",dim1,"]"
@@ -329,10 +329,10 @@ class Api_module(object):
         :param global_num: Are the index on local/global numbering
         :return: variable value
         """
-        value = None  
+        value = None
         vartype,readonly,ndim,_,_,_,self.ierr = self.get_var_type(varname)
         dim1,dim2,dim3,ierr = self.get_var_size(self.id,varname)
-        
+
         if ndim >= 1:
            if(not 0<i<=dim1):
                print "i=",i," is not within [",1,",",dim1,"]"
@@ -357,24 +357,6 @@ class Api_module(object):
         else:
             print "Unknown data type ",vartype
         return value
-
-    def get_array(self, varname):
-        """
-        Get the value of a variable of Telemac 2D
-        :param varname: Name of the variable
-        :return: variable value
-        """
-        dim1,dim2,dim3,ierr = self.get_var_size(self.id,varname)
-        vartype,readonly,ndim,_,_,_,self.ierr = self.get_var_type(varname)
-        if ((dim1,dim2,dim3) = (0,0,0)):
-            print "This variable is not an array"
-            return None
-        if "DOUBLE" in vartype:
-            res = np.array((dim1,dim2,dim3),dtype='f')
-        elif "INTEGER"in vartype:
-            res = np.array((dim1,dim2,dim3),dtype='i')
-        elif "STRING" in vartype:
-        elif "BOOLEAN" in vartype:
 
     def get_integer(self, varname, *args):
         """

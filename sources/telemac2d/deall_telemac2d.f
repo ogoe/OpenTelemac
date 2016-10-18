@@ -663,19 +663,6 @@
       DEALLOCATE(TRAC0)
       DEALLOCATE(NAMETRAC)
 
-      IF(NTRAC.GT.0) THEN
-        DEALLOCATE(MASTEN)
-        DEALLOCATE(MASTOU)
-        DEALLOCATE(MASTRAIN)
-        DEALLOCATE(MASSOU)
-        DEALLOCATE(MASTR0)
-        DEALLOCATE(MASTR2)
-        DEALLOCATE(FLUTSOR)
-        DEALLOCATE(FLUTENT)
-        DEALLOCATE(YASMI)
-      ENDIF
-
-
       ! Resetting initial values of variables
       DEJA_MT = .FALSE.
       DEJA_RFS = .FALSE.
