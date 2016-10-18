@@ -46,7 +46,7 @@
       INTEGER J,H,M
       DOUBLE PRECISION S
       INTRINSIC INT
-      CHARACTER*32 FR(15),GB(15)
+      CHARACTER(LEN=32) FR(15),GB(15)
 !
 !-----------------------------------------------------------------------
 !

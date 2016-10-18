@@ -82,7 +82,7 @@
 !
       INTEGER IELM,NPOIN,NELEM,NELMAX
 !
-      CHARACTER*1 TYPX
+      CHARACTER(LEN=1) TYPX
 !
 !-----------------------------------------------------------------------
 !

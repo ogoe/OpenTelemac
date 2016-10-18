@@ -244,11 +244,11 @@
      &( X , W , I , C , NVAL , TYPE , CANAL , STD2 , ISTAT )
       INTEGER, INTENT(IN)             :: NVAL,CANAL
       INTEGER, INTENT(INOUT)          :: ISTAT
-      CHARACTER*(*), INTENT(IN)       :: TYPE,STD2
+      CHARACTER(LEN=*), INTENT(IN)       :: TYPE,STD2
       INTEGER, INTENT(INOUT)          :: I(NVAL)
       DOUBLE PRECISION, INTENT(INOUT) :: X(NVAL)
       REAL, INTENT(INOUT)             :: W(NVAL)
-      CHARACTER*(*), INTENT(INOUT)    :: C
+      CHARACTER(LEN=*), INTENT(INOUT)    :: C
       END SUBROUTINE
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -336,7 +336,7 @@
       INTEGER, INTENT(IN) :: NVAL,CANAL
       DOUBLE PRECISION, INTENT(IN) :: X(NVAL)
       INTEGER, INTENT(IN) :: I(NVAL)
-      CHARACTER*(*), INTENT(IN) :: TYPE,STD,C
+      CHARACTER(LEN=*), INTENT(IN) :: TYPE,STD,C
       INTEGER, INTENT(OUT) :: ISTAT
       END SUBROUTINE
 !

@@ -43,12 +43,12 @@
       IMPLICIT NONE
 !
       INTEGER       ICOL
-      CHARACTER*(*) LIGNE
+      CHARACTER(LEN=*) LIGNE
 !
 !-----------------------------------------------------------------------
 !
       INTEGER       I,J
-      CHARACTER*1   TABUL
+      CHARACTER(LEN=1)   TABUL
       INTRINSIC CHAR
 !
 !***********************************************************************

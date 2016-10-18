@@ -74,7 +74,7 @@
 !
       INTEGER IELMSM,IELMFB
 !
-      CHARACTER*1 OLDDIA
+      CHARACTER(LEN=1) OLDDIA
 !
 !----------------------------------------------------------------------
 !

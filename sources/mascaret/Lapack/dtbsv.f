@@ -26,7 +26,7 @@ C
 C  Parameters
 C  ==========
 C
-C  UPLO   - CHARACTER*1.
+C  UPLO   - CHARACTER(LEN=1).
 C           On entry, UPLO specifies whether the matrix is an upper or
 C           lower triangular matrix as follows:
 C
@@ -36,7 +36,7 @@ C              UPLO = 'L' or 'l'   A is a lower triangular matrix.
 C
 C           Unchanged on exit.
 C
-C  TRANS  - CHARACTER*1.
+C  TRANS  - CHARACTER(LEN=1).
 C           On entry, TRANS specifies the equations to be solved as
 C           follows:
 C
@@ -48,7 +48,7 @@ C              TRANS = 'C' or 'c'   A'*x = b.
 C
 C           Unchanged on exit.
 C
-C  DIAG   - CHARACTER*1.
+C  DIAG   - CHARACTER(LEN=1).
 C           On entry, DIAG specifies whether or not A is unit
 C           triangular as follows:
 C
@@ -143,7 +143,7 @@ C           lines were modified.  (BKS)
 C***END PROLOGUE  DTBSV
 C     .. Scalar Arguments ..
       INTEGER            INCX, K, LDA, N
-      CHARACTER*1        DIAG, TRANS, UPLO
+      CHARACTER(LEN=1)        DIAG, TRANS, UPLO
 C     .. Array Arguments ..
       DOUBLE PRECISION   A( LDA, * ), X( * )
 C     .. Parameters ..

@@ -778,25 +778,25 @@
 !
 !brief TITLE
 ! titre de l'etude
-      CHARACTER*72 TITCAS
+      CHARACTER(LEN=72) TITCAS
 !brief
 !
-      CHARACTER*72 VARDES
+      CHARACTER(LEN=72) VARDES
 !brief VARIABLES TO BE PRINTED
 ! variables a imprimer
-      CHARACTER*72 VARIMP
+      CHARACTER(LEN=72) VARIMP
 !brief INITIAL CONDITIONS
 ! conditions initiales
-      CHARACTER*72 CDTINI
+      CHARACTER(LEN=72) CDTINI
 !brief GEOMETRY FILE BINARY
 ! binaire du fichier de geometrie
-      CHARACTER*3 BINGEO
+      CHARACTER(LEN=3) BINGEO
 !brief RESULTS FILE BINARY
 ! binaire du fichier des resultats
-      CHARACTER*3 BINRES
+      CHARACTER(LEN=3) BINRES
 !brief
 !
-      CHARACTER*20 EQUA
+      CHARACTER(LEN=20) EQUA
 !brief
 !
       CHARACTER(LEN=32) VARCLA(10)

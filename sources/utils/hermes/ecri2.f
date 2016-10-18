@@ -39,7 +39,7 @@
       INTEGER, INTENT(IN) :: NVAL,CANAL
       DOUBLE PRECISION, INTENT(IN) :: X(NVAL)
       INTEGER, INTENT(IN) :: I(NVAL)
-      CHARACTER*(*), INTENT(IN) :: TYPE,STD,C
+      CHARACTER(LEN=*), INTENT(IN) :: TYPE,STD,C
       INTEGER, INTENT(OUT) :: ISTAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

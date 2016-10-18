@@ -59,11 +59,11 @@
 *               xHSEQR or one of its subroutines,
 *               see IPARMQ for detailed explanation
 *
-*  NAME    (input) CHARACTER*(*)
+*  NAME    (input) CHARACTER(LEN=*)
 *          The name of the calling subroutine, in either upper case or
 *          lower case.
 *
-*  OPTS    (input) CHARACTER*(*)
+*  OPTS    (input) CHARACTER(LEN=*)
 *          The character options to the subroutine NAME, concatenated
 *          into a single character string.  For example, UPLO = 'U',
 *          TRANS = 'T', and DIAG = 'N' for a triangular routine would

@@ -6,7 +6,7 @@
 *
 *     .. Scalar Arguments ..
       INTEGER INFO
-      CHARACTER*6 SRNAME
+      CHARACTER(LEN=6) SRNAME
 *     ..
 *
 *  Purpose
@@ -22,7 +22,7 @@
 *  Arguments
 *  =========
 *
-*  SRNAME  (input) CHARACTER*6
+*  SRNAME  (input) CHARACTER(LEN=6)
 *          The name of the routine which called XERBLA.
 *
 *  INFO    (input) INTEGER

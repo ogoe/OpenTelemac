@@ -79,7 +79,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*9     , INTENT(IN)       :: WHAT
+      CHARACTER(LEN=9)     , INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC

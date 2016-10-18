@@ -78,9 +78,9 @@
       INTEGER          NMAX,MOTINT(*),ADRESS(4,*),DIMENS(4,*)
       INTEGER          SIZE(4,*),OFFSET(4),DEFINT(*),INDIC(4,*)
       LOGICAL          UTINDX(4,*),DEFLOG(*),MOTLOG(*),LUIGN
-      CHARACTER*72     MOTCLE(4,*)
-      CHARACTER*144    MOTCAR(*),DEFCAR(*)
-      CHARACTER*144    MOTATT(4,*),DEFATT(*)
+      CHARACTER(LEN=72)     MOTCLE(4,*)
+      CHARACTER(LEN=144)    MOTCAR(*),DEFCAR(*)
+      CHARACTER(LEN=144)    MOTATT(4,*),DEFATT(*)
       DOUBLE PRECISION MOTREA(*),DEFREA(*)
 !
 !-----------------------------------------------------------------------

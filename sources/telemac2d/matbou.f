@@ -91,7 +91,7 @@
 !
       DOUBLE PRECISION SL1,SL11,C
 !
-      CHARACTER*16 FORMUL
+      CHARACTER(LEN=16) FORMUL
 !
 !-----------------------------------------------------------------------
 !

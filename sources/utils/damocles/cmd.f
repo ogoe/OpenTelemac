@@ -86,8 +86,8 @@
       INTEGER          ICOL,NMOT2(4),ADRESS(4,*),DIMENS(4,*),TROUVE(4,*)
       INTEGER          SIZE(4,*),INDIC(4,*),MOTINT(*),NFICDA,NMAXR(4)
       LOGICAL          MOTLOG(*),DYNAM,UTINDX(4,*),VUCMD(5),EXECMD
-      CHARACTER*(*)    MOTCLE(4,*),LIGNE
-      CHARACTER*144    MOTATT(4,*),MOTCAR(*)
+      CHARACTER(LEN=*)    MOTCLE(4,*),LIGNE
+      CHARACTER(LEN=144)    MOTATT(4,*),MOTCAR(*)
       DOUBLE PRECISION MOTREA(*)
 !
       INTEGER  PREVAL,LONGLU
@@ -101,8 +101,8 @@
      &     FMT16, FMT17, FMT18, FMT19, FMT20, FMT21, FMT22, FMT23,
      &     FMT24, FMT25, FMT26, FMT27, FMT28, FMT29, FMT30, FMT31,
      &     FMT32, FMT33, FMT34, FMT35
-      CHARACTER*6      TYP(4)
-      CHARACTER*1      TABUL
+      CHARACTER(LEN=6)      TYP(4)
+      CHARACTER(LEN=1)      TABUL
 !
 !-----------------------------------------------------------------------
 !

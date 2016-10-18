@@ -53,8 +53,8 @@
       IMPLICIT NONE
 !
       INTEGER       ICOL
-      CHARACTER*1   CAR1,CAR2,CAR3
-      CHARACTER*(*) LIGNE
+      CHARACTER(LEN=1)   CAR1,CAR2,CAR3
+      CHARACTER(LEN=*) LIGNE
 !
 !-----------------------------------------------------------------------
 !

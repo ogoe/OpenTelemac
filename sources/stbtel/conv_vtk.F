@@ -39,7 +39,7 @@
       INTEGER, ALLOCATABLE :: CELL_TYPE(:), CONNECT(:)
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)
       CHARACTER(LEN=MAXLENHARD) :: FILENAME
-      CHARACTER*8 :: TIMESTR
+      CHARACTER(LEN=8) :: TIMESTR
       INTEGER :: LENGTH
 !
       WRITE(LU,*) '----------------------------------------------------'

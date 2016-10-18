@@ -415,7 +415,7 @@
 !
       LOGICAL MSKGRA
 !
-      CHARACTER*16 FORMUL
+      CHARACTER(LEN=16) FORMUL
 !
 !-----------------------------------------------------------------------
 !

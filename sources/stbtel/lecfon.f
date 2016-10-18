@@ -63,11 +63,11 @@
 !
       REAL   XSP , YSP , ZSP
 !
-      CHARACTER*1  C
+      CHARACTER(LEN=1)  C
 !
 ! Ajout PCt - 11/07/96
-      CHARACTER*9  MAILLE
-      CHARACTER*80 LIGNE
+      CHARACTER(LEN=9)  MAILLE
+      CHARACTER(LEN=80) LIGNE
 !
       LOGICAL FONTRI
 !

@@ -51,7 +51,7 @@
       INTEGER IDEB,I,II
 !
       CHARACTER(LEN=6) :: NOM
-      CHARACTER*1, PARAMETER :: CHIFFRE(0:9) =
+      CHARACTER(LEN=1), PARAMETER :: CHIFFRE(0:9) =
      &            (/'0','1','2','3','4','5','6','7','8','9'/)
 !
 !-----------------------------------------------------------------------

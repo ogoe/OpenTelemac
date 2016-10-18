@@ -55,7 +55,7 @@
 !
       LOGICAL ALEMON,ALEMUL,BALAYE
 !
-      CHARACTER*32 TEXTFR(5),TEXTGB(5)
+      CHARACTER(LEN=32) TEXTFR(5),TEXTGB(5)
 !
 !-----------------------------------------------------------------------
 !

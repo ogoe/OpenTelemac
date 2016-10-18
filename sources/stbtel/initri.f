@@ -45,8 +45,8 @@
 !
       INTEGER       NGEO
       INTEGER       NPOIN1, NFO1
-      CHARACTER*(*) TYPELE
-      CHARACTER*1   ZDUMMY
+      CHARACTER(LEN=*) TYPELE
+      CHARACTER(LEN=1)   ZDUMMY
 !
 ! COMMON
 !

@@ -51,7 +51,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8     , INTENT(IN)       :: WHAT
+      CHARACTER(LEN=8)     , INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: CGL
       INTEGER         , INTENT(IN)       :: NFIC

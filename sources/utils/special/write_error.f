@@ -1,5 +1,5 @@
 !              **********************
-      CHARACTER*(*) FUNCTION WRITE_ERROR
+      CHARACTER(LEN=*) FUNCTION WRITE_ERROR
 !              **********************
 !
      &(IERR)

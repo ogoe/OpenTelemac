@@ -42,8 +42,8 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      CHARACTER*32 TEXTE(26),TEXTPR(26)
-      CHARACTER*8  MNEMO(26)
+      CHARACTER(LEN=32) TEXTE(26),TEXTPR(26)
+      CHARACTER(LEN=8)  MNEMO(26)
 !
 !-----------------------------------------------------------------------
 !

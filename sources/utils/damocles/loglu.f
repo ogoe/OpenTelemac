@@ -48,7 +48,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,       INTENT(INOUT) :: ICOL
-      CHARACTER*(*), INTENT(INOUT) :: LIGNE
+      CHARACTER(LEN=*), INTENT(INOUT) :: LIGNE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -58,9 +58,9 @@
 !-----------------------------------------------------------------------
 !
       INTEGER       I1,I2
-      CHARACTER*1   TABUL
-      CHARACTER*7   L
-      CHARACTER*72  LIGNE2
+      CHARACTER(LEN=1)   TABUL
+      CHARACTER(LEN=7)   L
+      CHARACTER(LEN=72)  LIGNE2
       LOGICAL       LUFIC,LISUIV
 !
 !-----------------------------------------------------------------------

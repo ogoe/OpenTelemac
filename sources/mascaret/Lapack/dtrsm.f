@@ -25,7 +25,7 @@
 *  Arguments
 *  ==========
 *
-*  SIDE   - CHARACTER*1.
+*  SIDE   - CHARACTER(LEN=1).
 *           On entry, SIDE specifies whether op( A ) appears on the left
 *           or right of X as follows:
 *
@@ -35,7 +35,7 @@
 *
 *           Unchanged on exit.
 *
-*  UPLO   - CHARACTER*1.
+*  UPLO   - CHARACTER(LEN=1).
 *           On entry, UPLO specifies whether the matrix A is an upper or
 *           lower triangular matrix as follows:
 *
@@ -45,7 +45,7 @@
 *
 *           Unchanged on exit.
 *
-*  TRANSA - CHARACTER*1.
+*  TRANSA - CHARACTER(LEN=1).
 *           On entry, TRANSA specifies the form of op( A ) to be used in
 *           the matrix multiplication as follows:
 *
@@ -57,7 +57,7 @@
 *
 *           Unchanged on exit.
 *
-*  DIAG   - CHARACTER*1.
+*  DIAG   - CHARACTER(LEN=1).
 *           On entry, DIAG specifies whether or not A is unit triangular
 *           as follows:
 *

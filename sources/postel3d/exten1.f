@@ -1,5 +1,5 @@
 !                       ***************************
-                        CHARACTER*3 FUNCTION EXTEN1
+                        CHARACTER(LEN=3) FUNCTION EXTEN1
 !                       ***************************
 !
      &(N)

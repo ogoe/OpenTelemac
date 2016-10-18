@@ -109,11 +109,11 @@
 !
       LOGICAL DEBU,SUIT,ECRI,LISTIN,SORLEO(*)
 !
-      CHARACTER*1 CBID
-      CHARACTER*3 STD
-      CHARACTER*72 TITRE
-      CHARACTER*80 TITSEL
-      CHARACTER*32 TEXTE(*),TEXTLU(*),VARCLA(NVARCL)
+      CHARACTER(LEN=1) CBID
+      CHARACTER(LEN=3) STD
+      CHARACTER(LEN=72) TITRE
+      CHARACTER(LEN=80) TITSEL
+      CHARACTER(LEN=32) TEXTE(*),TEXTLU(*),VARCLA(NVARCL)
 !                        NSOR      NSOR+NVARCL
 !-----------------------------------------------------------------------
 !

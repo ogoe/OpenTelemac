@@ -21,7 +21,7 @@
 *  Arguments
 *  ==========
 *
-*  TRANS  - CHARACTER*1.
+*  TRANS  - CHARACTER(LEN=1).
 *           On entry, TRANS specifies the operation to be performed as
 *           follows:
 *

@@ -48,7 +48,7 @@
 !
       INTEGER J,H,M
 !
-      CHARACTER*32 FR(14),GB(14)
+      CHARACTER(LEN=32) FR(14),GB(14)
 !
       INTRINSIC INT
 !

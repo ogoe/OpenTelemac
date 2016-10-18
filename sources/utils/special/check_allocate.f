@@ -30,7 +30,7 @@
       IMPLICIT NONE
 
       INTEGER,       INTENT(IN) :: IERR
-      CHARACTER*(*), INTENT(IN) :: CHFILE
+      CHARACTER(LEN=*), INTENT(IN) :: CHFILE
 !
 !-----------------------------------------------------------------------
 !

@@ -77,7 +77,7 @@
 !
       DOUBLE PRECISION C,Z(1)
 !
-      CHARACTER*1 STODIA
+      CHARACTER(LEN=1) STODIA
 !
 !-----------------------------------------------------------------------
 !

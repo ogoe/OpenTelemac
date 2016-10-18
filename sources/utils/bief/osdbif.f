@@ -64,7 +64,7 @@
       INTEGER K,NPTFR,IELMX,IELMY
       INTEGER INDIC(*),CRITER
 !
-      CHARACTER*8 OP
+      CHARACTER(LEN=8) OP
 !
 !-----------------------------------------------------------------------
 !

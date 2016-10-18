@@ -55,7 +55,7 @@
 !
       INTEGER       ICOL
       LOGICAL       DOC
-      CHARACTER*(*) LIGNE
+      CHARACTER(LEN=*) LIGNE
 !
       INTEGER  NEXT,PRECAR
       EXTERNAL NEXT,PRECAR
@@ -63,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER       IDEB,IFIN,JCOL
-      CHARACTER*1   QUOTE,TABUL,PTVIRG
+      CHARACTER(LEN=1)   QUOTE,TABUL,PTVIRG
 !
 !-----------------------------------------------------------------------
 !

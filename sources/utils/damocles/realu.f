@@ -54,7 +54,7 @@
       IMPLICIT NONE
 !
       INTEGER          ICOL
-      CHARACTER*(*)    LIGNE
+      CHARACTER(LEN=*)    LIGNE
 !
       INTEGER          NEXT,PREVAL
       EXTERNAL         NEXT,PREVAL
@@ -65,9 +65,9 @@
 !
       INTEGER          I,I1,I2,ILONG,IPOINT,IFDECI,ILDECI,JD1,JD2,I3
       LOGICAL          FORMAE,LUFIC,LISUIV,VUPOIN
-      CHARACTER*1      CODE,CDEB,CDEB2,TABUL
-      CHARACTER*3      LLONG,LLDECI
-      CHARACTER*72     FORMA,LIGNE2
+      CHARACTER(LEN=1)      CODE,CDEB,CDEB2,TABUL
+      CHARACTER(LEN=3)      LLONG,LLDECI
+      CHARACTER(LEN=72)     FORMA,LIGNE2
       DOUBLE PRECISION RSIGNE , RVAL
 !
 !***********************************************************************

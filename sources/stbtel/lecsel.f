@@ -61,9 +61,9 @@
 !
       LOGICAL FUSION
 !
-      CHARACTER*72 CBID,TITRE
-      CHARACTER*32 TEXTE(26)
-      CHARACTER*3  STD
+      CHARACTER(LEN=72) CBID,TITRE
+      CHARACTER(LEN=32) TEXTE(26)
+      CHARACTER(LEN=3)  STD
 !
 !
 !=======================================================================

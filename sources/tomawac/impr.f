@@ -53,7 +53,7 @@
 !
       INTEGER LTT
       LOGICAL IMP
-      CHARACTER*45 TEXIMP(9)
+      CHARACTER(LEN=45) TEXIMP(9)
 !
       DATA TEXIMP / 'CALCUL DU CHAMP CONVECTEUR ET REMONTEE DES  ' ,
      &              '    CARACTERISTIQUES                        ' ,

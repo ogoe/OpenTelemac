@@ -316,7 +316,7 @@
 !
       DOUBLE PRECISION C,AT1,HIST(1)
 !
-      CHARACTER*16 FORMULE
+      CHARACTER(LEN=16) FORMULE
 !
 !-----------------------------------------------------------------------
 !

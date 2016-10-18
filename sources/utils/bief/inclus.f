@@ -36,7 +36,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      CHARACTER*(*) C1 , C2
+      CHARACTER(LEN=*) C1 , C2
 !
       INTEGER I,LC1,LC2
 !

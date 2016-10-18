@@ -48,8 +48,8 @@
       IMPLICIT NONE
 !
       INTEGER       NGEO
-      CHARACTER*(*) TYPELE
-      CHARACTER*80  LIGNE
+      CHARACTER(LEN=*) TYPELE
+      CHARACTER(LEN=80)  LIGNE
       INTEGER       IE,J
       INTEGER       ELMLOC(8)
 !

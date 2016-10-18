@@ -89,7 +89,7 @@
 !
       INTEGER NELMAX,IELM,NPOIN,NELEM
 !
-      CHARACTER*1 TYPDA,TYPEA
+      CHARACTER(LEN=1) TYPDA,TYPEA
 !
 !-----------------------------------------------------------------------
 !

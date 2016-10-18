@@ -105,7 +105,7 @@
 !
       DOUBLE PRECISION C
 !
-      CHARACTER*1 TYPD,TYPX
+      CHARACTER(LEN=1) TYPD,TYPX
 !
 !-----------------------------------------------------------------------
 !

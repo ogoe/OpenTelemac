@@ -33,10 +33,10 @@
 !
       INTEGER NPOIN1, NPOIN, NELEM
 !
-      CHARACTER*11 TYPELE
-      CHARACTER*80 TITRE
-      CHARACTER*9  MAILLE
-      CHARACTER*6  PRECIS
+      CHARACTER(LEN=11) TYPELE
+      CHARACTER(LEN=80) TITRE
+      CHARACTER(LEN=9)  MAILLE
+      CHARACTER(LEN=6)  PRECIS
 !
 !-----------------------------------------------------------------------
 !

@@ -51,8 +51,8 @@
 !
 !
       INTEGER, INTENT(IN)         ::      MAXVAR
-      CHARACTER*32, INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
-      CHARACTER*8 , INTENT(INOUT) :: MNEMO(MAXVAR)
+      CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
+      CHARACTER(LEN=8) , INTENT(INOUT) :: MNEMO(MAXVAR)
 !
 !-----------------------------------------------------------------------
 !

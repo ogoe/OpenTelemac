@@ -89,7 +89,7 @@
       DOUBLE PRECISION, INTENT(IN) :: XA12(*),XA21(*)
       DOUBLE PRECISION, INTENT(IN) :: C
 !
-      CHARACTER*(*), INTENT(IN) :: OP,TYPDIA,TYPEXT
+      CHARACTER(LEN=*), INTENT(IN) :: OP,TYPDIA,TYPEXT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

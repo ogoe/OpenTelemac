@@ -89,7 +89,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8     , INTENT(IN)           :: OP
+      CHARACTER(LEN=8)     , INTENT(IN)           :: OP
       TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: X
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: A,Y
       DOUBLE PRECISION, INTENT(IN)           :: C

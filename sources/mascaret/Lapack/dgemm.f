@@ -25,7 +25,7 @@
 *  Arguments
 *  ==========
 *
-*  TRANSA - CHARACTER*1.
+*  TRANSA - CHARACTER(LEN=1).
 *           On entry, TRANSA specifies the form of op( A ) to be used in
 *           the matrix multiplication as follows:
 *
@@ -37,7 +37,7 @@
 *
 *           Unchanged on exit.
 *
-*  TRANSB - CHARACTER*1.
+*  TRANSB - CHARACTER(LEN=1).
 *           On entry, TRANSB specifies the form of op( B ) to be used in
 *           the matrix multiplication as follows:
 *

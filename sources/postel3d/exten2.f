@@ -1,5 +1,5 @@
 !                       ***************************
-                        CHARACTER*7 FUNCTION EXTEN2
+                        CHARACTER(LEN=7) FUNCTION EXTEN2
 !                       ***************************
 !
      &(N,IPID)

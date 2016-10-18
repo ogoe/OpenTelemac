@@ -40,11 +40,11 @@
 !
       INTEGER, INTENT(IN)             :: NVAL,CANAL
       INTEGER, INTENT(INOUT)          :: ISTAT
-      CHARACTER*(*), INTENT(IN)       :: TYPE,STD2
+      CHARACTER(LEN=*), INTENT(IN)       :: TYPE,STD2
       INTEGER, INTENT(INOUT)          :: I(NVAL)
       DOUBLE PRECISION, INTENT(INOUT) :: X(NVAL)
       REAL, INTENT(INOUT)             :: W(NVAL)
-      CHARACTER*(*), INTENT(INOUT)    :: C
+      CHARACTER(LEN=*), INTENT(INOUT)    :: C
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

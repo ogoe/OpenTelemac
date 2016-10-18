@@ -66,7 +66,7 @@
       INTEGER ELMLOC(8)
       REAL    U,V
       DOUBLE PRECISION X(*), Y(*)
-      CHARACTER*80 LIGNE
+      CHARACTER(LEN=80) LIGNE
 !
       IPOIN=0
       IELEM=0

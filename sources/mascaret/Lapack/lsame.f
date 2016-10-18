@@ -17,8 +17,8 @@
 *  Arguments
 *  =========
 *
-*  CA      (input) CHARACTER*1
-*  CB      (input) CHARACTER*1
+*  CA      (input) CHARACTER(LEN=1)
+*  CB      (input) CHARACTER(LEN=1)
 *          CA and CB specify the single characters to be compared.
 *
 * =====================================================================

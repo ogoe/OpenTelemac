@@ -41,12 +41,12 @@
 !
       IMPLICIT NONE
 !
-      CHARACTER*(*) LIGNE
+      CHARACTER(LEN=*) LIGNE
 !
 !-----------------------------------------------------------------------
 !
       INTEGER       I,LONG
-      CHARACTER*1   TABUL
+      CHARACTER(LEN=1)   TABUL
       INTRINSIC CHAR
 !
 !***********************************************************************
