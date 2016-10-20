@@ -86,7 +86,7 @@
         READ( fu, '(A)') zeile
         write(6,*) zeile    ! debug                    
         valuePart = zeile(25:)        
-        READ(valuePart,*)       A(n)%ReferezLevel
+        READ(valuePart,*)       A(n)%ReferenceLevel
         READ( fu, '(A)') zeile
         write(6,*) zeile    ! debug                    
         valuePart = zeile(25:)        

@@ -31,7 +31,7 @@
 !             WRITE(6 ,803)" s", 11, 1, "ActionTypeStr ",  A%ActionTypeStr
 !             WRITE(6 ,803)" s", 20, 1, "FieldDig ",       A%FieldDig
 !             WRITE(6 ,801)"##",-11, 1, "intern-FieldDigID ",A%FieldDigID
-!             WRITE(6 ,803)" s", 21, 1, "ReferezLevel ",   A%ReferezLevel
+!             WRITE(6 ,803)" s", 21, 1, "ReferezLevel ",   A%ReferenceLevel
 !               :
 !             stop
      
@@ -45,7 +45,7 @@
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%FieldDigID      =',A%FieldDigID
       WRITE(6,*)'?> ============================================='
-      WRITE(6,'(" ?> A(i)%ReferezLevel    =",A)') A%ReferezLevel
+      WRITE(6,'(" ?> A(i)%ReferenceLevel  =",A)') A%ReferenceLevel
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%TimeStart       =',A%TimeStart
       WRITE(6,*)'?> ============================================='

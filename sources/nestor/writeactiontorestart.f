@@ -48,7 +48,7 @@
         WRITE(fu,'(" ActionTypeStr              ",A)')A(n)%ActionTypeStr
         WRITE(fu,'(" FieldDig                   ",A)') A(n)%FieldDig 
          WRITE(fu,*)'FieldDigID                 ', A(n)%FieldDigID
-        WRITE(fu,'(" ReferezLevel               ",A)')A(n)%ReferezLevel 
+       WRITE(fu,'(" ReferenceLevel             ",A)')A(n)%ReferenceLevel 
          WRITE(fu,*)'TimeStart                  ', A(n)%TimeStart
          WRITE(fu,*)'TimeEnd                    ', A(n)%TimeEnd
          WRITE(fu,*)'TimeRepeat                 ', A(n)%TimeRepeat
@@ -79,6 +79,7 @@
         DO i=1, nGrainClass                  
           WRITE(fu,*)'dzCL_ts                    ',A(n)%dzCL_ts(i)
         ENDDO 
+        
        ENDDO  ! n=1, nActions
        WRITE(fu,*)'A-END  ============================================'      
   

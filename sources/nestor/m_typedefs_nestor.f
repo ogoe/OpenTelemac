@@ -121,8 +121,7 @@
         CHARACTER (128) ::  ActionTypeStr  = 'aaaaaaaaaaa'
         CHARACTER (128) ::  FieldDig       = '000_aaaaaaaa'
         Integer         ::  FieldDigID     = -1
-        CHARACTER (128) ::  ReferezLevel   = '-1aaaa'
-!                                        
+        CHARACTER (128) ::  ReferenceLevel = '-1aaaa'!                                        
         REAL (KIND=R8)  ::  TimeStart      = -11.1D34    !> in practice here negative values may occure 
         REAL (KIND=R8)  ::  TimeEnd        = -11.1D34    !  thus to initialise a value far bejond probability is used
         REAL (KIND=R8)  ::  TimeRepeat     = -11.1D0

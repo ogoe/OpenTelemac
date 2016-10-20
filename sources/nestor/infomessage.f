@@ -109,8 +109,23 @@
        WRITE(6,'(" ?>        end action       : ",A)')A%ActionTypeStr
        WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
        WRITE(6,'(" ?>        action number    : ",I3)') m
-       WRITE(6,*)'?>        end time  [s]    : ',A%TimeEnd
+       WRITE(6,*)'?>                           '
+       WRITE(6,*)'?>      maitenance period    '
+       WRITE(6,*)'?>        start time  [s]  : ',A%TimeStart
        WRITE(6,*)'?>            time  [s]    : ',time
+       WRITE(6,*)'?>                           '
+       WRITE(6,*)'?>      dug volume during    '
+       WRITE(6,*)'?>      the last maitenance  '
+       WRITE(6,*)'?>      period   [m**3]    : ',A%MovedVolume
+       WRITE(6,*)'?>                           '
+       WRITE(6,*)'?>        end time  [s]    : ',A%TimeEnd
+
+      !ELSEIF ( A%State == 9 ) THEN 
+      ! WRITE(6,'(" ?>        end action       : ",A)')A%ActionTypeStr
+      ! WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
+      ! WRITE(6,'(" ?>        action number    : ",I3)') m 
+      ! WRITE(6,*)'?>        end time  [s]    : ',A%TimeEnd
+      ! WRITE(6,*)'?>            time  [s]    : ',time
 
       ENDIF
 
@@ -123,8 +138,7 @@
       WRITE(6,672)
       WRITE(6,670)
 
-      CALL my_FLUSH(6)   ! ACHTUNG     As FLUSH() is non-standard, you may need to add
-                         !             a USE statement, or link with a special library
+      CALL my_FLUSH(6)                             
 
 !      IF( ParallelComputing ) CALL P_SYNC()
 

@@ -1,7 +1,8 @@
       SUBROUTINE  inside_point_2d_d              !*******************************************
 !**                                               ********************************************
 !**                                               ********************************************
-     & ( YP, XP, NYX, YX, LRINC, LFIT )  
+!    & ( YP, XP, NYX, YX, LRINC, LFIT )  
+     & ( YP, XP, P  ,     LRINC, LFIT )  
 !                                        
 !                                        
 !     R = RUECKGABEPARAMETER, DIE NICHT ALS KONSTANTE ODER AUSDRUECKE
@@ -11,8 +12,9 @@
 !     GEN  N - ECKES  Y X  VON  N Y X  PUNKTEN LIEGT. ANFANGSINDEX IST = 1.
 !                                        
 !     ZU DEN KOORDINATEN IN FELD  Y X  GILT ------>
-!     YX(1,I) = RECHTSWERT IN EINEM BELIEBIGEN RECHTW. KOORDINATENSYSTEM
-!     YX(2,I) = HOCHWERT                 
+!     P%Pt(I)%y = HOCHWERT 
+!     P%Pt(I)%x = RECHTSWERT IN EINEM BELIEBIGEN RECHTW. KOORDINATENSYSTEM                
+
 !                                        
 !     DIE  N  ECKPUNKTE MUESSEN IN FELD  Y X  -  UMFAHRUNGSSINN BELIEBIG -
 !     IN DER STRENGEN FOLGE DER PERIPHERIE ABGELEGT SEIN.
@@ -53,14 +55,21 @@
 !     SUCHT. BEZUG IST ALSO DIE WAAGRECHTE GERADE DURCH PUNKT  YP/XP.
 !                                        
 ! 
-      USE m_TypeDefs_Nestor, ONLY : R8
+!      USE m_TypeDefs_Nestor, ONLY : R8
+      USE m_TypeDefs_Nestor
                                        
       IMPLICIT NONE                      
 !
-      INTEGER,        INTENT(IN)    :: NYX
-      LOGICAL,        INTENT(INOUT) :: LRINC, LFIT
-      REAL (KIND=R8), INTENT(INOUT) :: YX(2,NYX), XP, YP
+      !INTEGER,        INTENT(IN)    :: NYX
+      LOGICAL,        INTENT(INOUT) ::  LFIT
+      LOGICAL,        INTENT(IN)    :: LRINC
+      !REAL (KIND=R8), INTENT(IN)    :: YX(2,NYX),XP, YP
+      REAL (KIND=R8), INTENT(IN)    ::           XP, YP
+      
+      TYPE(t_Polygon), INTENT(IN)  :: P
+
 !
+      INTEGER            :: NYX
       INTEGER            :: NA,NP,NS,I,J,K,N
       LOGICAL            :: TRIN,TQXIJ,TQXI,TQYJ,TQXJ
       REAL (KIND=R8)     :: DXP, DYP, DYX1J,DYX2J,DYX1I,DYX2I,DYX1NA
@@ -83,6 +92,14 @@
 !     Debug-gl                           
 !     Debug-gl      WRITE(6,*)'  TestPunkt x  = ', XP
 !     Debug-gl      WRITE(6,*)'  TestPunkt y  = ', YP
+
+!      YX(2,I)    -->   P%Pt(I)%x    
+!      YX(2,J)    -->   P%Pt(J)%x    
+!      YX(2,NA)   -->   P%Pt(NA)%x   
+!      YX(1,I)    -->   P%Pt(I)%y    
+!      YX(1,J)    -->   P%Pt(J)%y    
+!      YX(1,NA)   -->   P%Pt(NA)%y   
+      NYX = P%nPoints
 !                                        
       DXP=XP                             
       DYP=YP                             
@@ -93,18 +110,24 @@
       NS=0                               
       IF(NYX.LT.1)GOTO 10                
       NP=NA                              
-      DYX1NA=YX(1,NA)                    
-      DYX2NA=YX(2,NA)                    
+      DYX1NA=P%Pt(NA)%y                    
+      DYX2NA=P%Pt(NA)%x                    
+
+
       IF(DYX1NA.EQ.DYP.AND.DYX2NA.EQ.DXP)GOTO 10
       !                                  
       !     GLEICHE PUNKTE AM ENDE NICHT GELTEN LASSEN
       !     ------------------------------------------
       !                                  
       DO 15 I=NYX,NA+1,-1                
-         DYX1NA=YX(1,NA)                 
-         DYX2NA=YX(2,NA)                 
-         DYX1I=YX(1,I)                   
-         DYX2I=YX(2,I)                   
+         DYX1NA=P%Pt(NA)%y                 
+         DYX2NA=P%Pt(NA)%x                 
+         DYX1I=P%Pt(I)%y                   
+         DYX2I=P%Pt(I)%x                   
+
+
+
+
          IF (DYX1I.NE.DYX1NA.OR.DYX2I.NE.DYX2NA) GOTO 20
 15    CONTINUE                           
       !                                  
@@ -127,10 +150,14 @@
          !     MIT VORGAENGER IDENTISCHE ECKPUNKTE UEBERGEHEN
          !     ----------------------------------------------
          !                               
-         DYX1I=YX(1,I)                   
-         DYX2I=YX(2,I)                   
-         DYX1J=YX(1,J)                   
-         DYX2J=YX(2,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX2I=P%Pt(I)%x                   
+         DYX1J=P%Pt(J)%y                   
+         DYX2J=P%Pt(J)%x                   
+
+
+
+
          IF(DYX1J.EQ.DYX1I.AND.DYX2J.EQ.DYX2I)GOTO 25
          !                               
          !                               
@@ -138,10 +165,14 @@
          !     ODER < XP HABEN KEINEN EINFLUSS AUF DAS ERGEBNIS
          !     ------------------------------------------------
          !                               
-         DYX1I=YX(1,I)                   
-         DYX2I=YX(2,I)                   
-         DYX1J=YX(1,J)                   
-         DYX2J=YX(2,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX2I=P%Pt(I)%x                   
+         DYX1J=P%Pt(J)%y                   
+         DYX2J=P%Pt(J)%x                   
+
+
+
+
          IF(DYX1I.LT.DYP.AND.DYX1J.LT.DYP.OR.
      &      DYX2I.LT.DXP.AND.DYX2J.LT.DXP)GOTO 35
          !                               
@@ -151,8 +182,10 @@
          !                               
          NP=J                            
          NS=0                            
-         DYX1J=YX(1,J)                   
-         DYX2J=YX(2,J)                   
+         DYX1J=P%Pt(J)%y                   
+         DYX2J=P%Pt(J)%x                   
+
+
          TQYJ=DYX1J.EQ.DYP               
          TQXJ=DYX2J.EQ.DXP               
          IF(TQYJ.AND.TQXJ)GOTO 10        
@@ -162,15 +195,20 @@
          !     HABEN  AB  HIER  KEINEN EINFLUSS MEHR AUF DAS ERGEBNIS
          !     ------------------------------------------------------
          !                               
-         DYX1I=YX(1,I)                   
-         DYX2I=YX(2,I)                   
-         DYX1J=YX(1,J)                   
-         DYX2J=YX(2,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX2I=P%Pt(I)%x                   
+         DYX1J=P%Pt(J)%y                   
+         DYX2J=P%Pt(J)%x                   
+
+
+
+
          IF(DYX2I.GE.DXP.AND.DYX2J.GT.DXP.OR.
      &      DYX2I.GT.DXP.AND.DYX2J.GE.DXP)GOTO 35
          NP=0                            
          NS=K                            
-         DYX2J=YX(2,I)                   
+         DYX2J=P%Pt(I)%x                   
+
          TQXI=DYX2I.EQ.DXP               
          TQXIJ=TQXI.AND.TQXJ             
          !                               
@@ -179,8 +217,10 @@
          !     ------------------------------------------------------
          !                               
          IF(.NOT.(TQXI.OR.TQXJ))GOTO 45  
-         DYX1I=YX(1,I)                   
-         DYX1J=YX(1,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX1J=P%Pt(J)%y                   
+
+
          IF(TQXIJ.AND.(DYX1I.LT.DYP.OR.DYX1J.LT.DYP))GOTO 10
          IF(TQXIJ)GOTO 35                
          !                               
@@ -188,8 +228,10 @@
          !     UNGERADENANZAHL VON ECKPUNKTEN AUF GERADE  XP  FESTSTELLEN
          !     ----------------------------------------------------------
          !                               
-         DYX1I=YX(1,I)                   
-         DYX1J=YX(1,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX1J=P%Pt(J)%y                   
+
+
          IF(TQXI.AND.DYX1I.GT.DYP.OR.TQXJ.AND.DYX1J.GT.DYP)GOTO 40
          GOTO 35                         
          !                               
@@ -198,14 +240,19 @@
          !     -------------------------------------------
          !                               
 45       CONTINUE                        
-         DYX1I=YX(1,I)                   
+         DYX1I=P%Pt(I)%y                   
+
          IF(DYX1I.EQ.DYP.AND.TQYJ)GOTO 10
          !                                        <--- ECKPUNKTSEITE LIEGT IN YP
          !                               
-         DYX1I=YX(1,I)                   
-         DYX2I=YX(2,I)                   
-         DYX1J=YX(1,J)                   
-         DYX2J=YX(2,J)                   
+         DYX1I=P%Pt(I)%y                   
+         DYX2I=P%Pt(I)%x                   
+         DYX1J=P%Pt(J)%y                   
+         DYX2J=P%Pt(J)%x                   
+
+
+
+
          DYS=(DYX1J*(DXP-DYX2I)+DYX1I*(DYX2J-DXP))/(DYX2J-DYX2I)
          IF(DYS.EQ.DYP)GOTO 10           
          IF(DYS.LT.DYP)GOTO 35           
@@ -232,14 +279,16 @@
          IF(NP.GT.0.AND.NS.GT.0) LFIT=.TRUE.
       ENDIF                              
 !     Debug-gl      WRITE(6,*)'END SR: inside_point_2d_d'
-      END SUBROUTINE inside_point_2d_d   
+   
+
+!***                                              ********************************************
+!***                                              ********************************************
+      END SUBROUTINE inside_point_2d_d           !********************************************
+
 !**                                         ********************************************
 !**                                         ********************************************
-                                           !********************************************
-!**                                         ********************************************
-!**                                         ********************************************
-!***************************************************************************************
-!***************************************************************************************
+!*********************************************************************************************
+!*********************************************************************************************
         
 !*********************************************************************************************
 !*********************************************************************************************

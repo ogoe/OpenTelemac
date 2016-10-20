@@ -84,9 +84,9 @@
       READ (charTmp,*) diffSeconds8   !>   to    integer kind=8
 
       diffSeconds8 =    diffSeconds8
-     &                + diffMinutes8  * 60       !  the "_8" tells the compiler
-     &                + diffHours8    * 3600     !> that he has to deal with a
-     &                + diffDays8     * 86400    !> integer kind=8 constant
+     &                + diffMinutes8  * 60       
+     &                + diffHours8    * 3600  
+     &                + diffDays8     * 86400 
 
       DateStringToSeconds = DBLE( diffSeconds8 )  ! return value of the function
 

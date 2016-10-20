@@ -186,8 +186,14 @@
      &        ,"occured in line: ", 17, lineCount, SRname, ipid       )
             ENDIF                     
             READ( valueStr,'(I3)',IOSTAT=stat) A(m)%FieldDigID   ! read the first string elements as integer
-          CASE( "ReferezLevel" )                      
-            READ(valueStr,*) A(m)%ReferezLevel
+            
+          CASE( "ReferenceLevel" )                 !> -----------------------------------
+            READ(valueStr,*) A(m)%ReferenceLevel   !   tolerate different spellings of    
+          CASE( "ReferenzLevel" )                  !   the keyword "Refere.." in the   
+            READ(valueStr,*) A(m)%ReferenceLevel   !   action file 
+          CASE( "ReferezLevel" )                   !   
+            READ(valueStr,*) A(m)%ReferenceLevel   ! ------------------------------------
+
           CASE( "TimeStart" )                      
             A(m)%TimeStart = DateStringToSeconds(valueStr,lineCount)
           CASE( "TimeEnd" )                      

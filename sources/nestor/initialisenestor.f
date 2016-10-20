@@ -132,7 +132,8 @@
       nNodesInside = 0                                             !> number of nodes inside
       DO i=1, npoin                      
         Call inside_point_2d_d ( y_sis(i)        , x_sis(i)        !> test if grid
-     &                          ,Poly(n)%nPoints , Poly(n)%Pt      !  nodes are inside
+!     &                          ,Poly(n)%nPoints , Poly(n)%Pt      !  nodes are inside
+     &                          ,Poly(n)                           !  nodes are inside
      &                          ,lrinc           , NodeInside    ) !  a polygon and
         IF(  NodeInside  ) THEN                                    !  store them in
           nNodesInside       = nNodesInside + 1                    !  array iTemp(:)

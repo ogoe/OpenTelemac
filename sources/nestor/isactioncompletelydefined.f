@@ -39,9 +39,9 @@
             GOTO 123 
           ENDIF
           IF(      A%DigPlanar                        !> only if DigPlanar = true 
-     &       .AND. A%ReferezLevel(1:1) == "-"         !  we need a ReferenzLevel file
-     &       .AND. A%ReferezLevel(2:2) == "1" )THEN   !  the default name string = "-1aaaa"
-            str = "ReferezLevel" 
+     &       .AND. A%ReferenceLevel(1:1) == "-"       !  we need a ReferenzLevel file
+     &       .AND. A%ReferenceLevel(2:2) == "1" )THEN !  the default name string = "-1aaaa"
+            str = "ReferenceLevel" 
             GOTO 123 
           ENDIF
 
@@ -51,12 +51,20 @@
               GOTO 123 
             ENDIF
             IF(      A%DigPlanar                        !> only if DigPlanar = true 
-     &         .AND. A%ReferezLevel(1:1) == "-"         !  we need a ReferenzLevel file
-     &         .AND. A%ReferezLevel(2:2) == "1" )THEN   !  the default name string = "-1aaaa"
-              str = "ReferezLevel" 
+     &         .AND. A%ReferenceLevel(1:1) == "-"       !  we need a ReferenzLevel file
+     &         .AND. A%ReferenceLevel(2:2) == "1" )THEN !  the default name string = "-1aaaa"
+              str = "ReferenceLevel" 
               GOTO 123 
             ENDIF
-          ENDIF   ! dumping is ordered
+          ENDIF   ! dumping is ordered  in this context
+          
+          IF( A%DumpPlanar ) THEN 
+            Call ErrMsgAndStop( "while read the Action file       ",33
+     &      ,"         reason: Sorry in this context NESTOR is    ",52    
+     &      ,"                 not able to do DumpPlanar = TRUE   ",52  
+     &      ,"occured in Action: ", 19, m, SRname, ipid      )
+          ENDIF
+          
           
           
 
@@ -82,9 +90,9 @@
          !  GOTO 123 
          !ENDIF
           IF(      A%DumpPlanar                       !> only if DumpPlanar = true 
-     &       .AND. A%ReferezLevel(1:1) == "-"         !  we need a ReferenzLevel file
-     &       .AND. A%ReferezLevel(2:2) == "1" )THEN   !  the default name string = "-1aaaa"
-            str = "ReferezLevel" 
+     &       .AND. A%ReferenceLevel(1:1) == "-"       !  we need a ReferenzLevel file
+     &       .AND. A%ReferenceLevel(2:2) == "1" )THEN !  the default name string = "-1aaaa"
+            str = "ReferenceLevel" 
             GOTO 123 
           ENDIF
 
@@ -121,9 +129,9 @@
             str = "MinVolumeRadius" 
             GOTO 123 
           ENDIF
-          IF(      A%ReferezLevel(1:1) == "-"         !  we need a ReferenzLevel file
-     &       .AND. A%ReferezLevel(2:2) == "1" )THEN   !  the default name string = "-1aaaa"
-            str = "ReferezLevel" 
+          IF(      A%ReferenceLevel(1:1) == "-"         !  we need a ReferenceLevel file
+     &       .AND. A%ReferenceLevel(2:2) == "1" )THEN   !  the default name string = "-1aaaa"
+            str = "ReferenceLevel" 
             GOTO 123 
           ENDIF
           IF(       A%FieldDumpID  > 0                 !> the dug material will be dumped

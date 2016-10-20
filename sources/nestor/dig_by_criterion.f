@@ -102,9 +102,9 @@
         !ALLOCATE( heapCL(   nGrainClass ), stat=status)
 
         !A%sumInput = 0.0D0  ! initialisation
-        !WRITE(6,*)'?> A%ReferezLevel = ',A%ReferezLevel  ! debug test
+        !WRITE(6,*)'?> A%ReferenceLevel = ',A%ReferenceLevel  ! debug test                
 
-        CALL Set_RefLevelByProfiles( F, A%ReferezLevel) ! the result is F%refZ(:)
+        CALL Set_RefLevelByProfiles( F, A%ReferenceLevel) ! the result is F%refZ(:) 
 
         A%tsCount = 0            ! counter of time steps while digger is working
 
@@ -226,7 +226,7 @@
           IF( -dzDig + dzEvo_sis <= -ELAY0 ) Call ErrMsgAndStop(
      &     "while Action  Dig_by_Criterion                          ",56
      &    ,"reason: Digger exceeds active layer thickness           ",56
-     &    ,"        ==> increase DigRate or reduce time step or ... ",56
+     &    ,"        ==> reduce DigRate or reduce time step or ...   ",56 
      &    ,"occured in Action: ", 19, m, SRname, ipid      )
 
           layCL(:) = layCL(:) / (dzEvo_sis + ELAY0) !> Convert thickness to fraction
@@ -282,7 +282,7 @@
 
 
       IF(       F%nNodeToDig  >  0                 !  Digging not accomplished
-     &    .AND. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished
+     &     .OR. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished  
 
         A%GrainClass(:) = heapCL(:) / A%DumpVolume
                           !......................!----- convert thickness to fraction
@@ -294,19 +294,27 @@
           STOP                                                         ! debug
         ENDIF                                                          ! debug
 
-        IF( A%FieldDumpID > 0 ) THEN               !> Only if a valid dump field
-          CALL Dump_by_Rate( A, dt_ts, dzCL_sis )  !  is linked to the action
+        IF( A%FieldDumpID > 0 ) THEN    !> Only if a dump field is linked to the action
+          IF( A%DumpVolume > 0.0D0 ) THEN          
+            CALL Dump_by_Rate( A, dt_ts, dzCL_sis )  
+          ENDIF 
         ENDIF
 
       ELSE     !> finalise action temporarily
 
         IF( time <= A%TimeEnd ) THEN
-          !WRITE(6,*)'?> finalise action temporarily '  ! debug test
+          
+          IF( A%TimeStart + A%TimeRepeat  >  A%TimeEnd )THEN
+            A%State           = 9     ! 9 = for ever inactive
+            CALL InfoMessage( A, m, time ) 
+          ELSE
           A%State           = 2     ! 2 = temporary inactive
           CALL InfoMessage( A, m, time )
           A%TimeStart       = A%TimeStart + A%TimeRepeat
           A%FirstTimeActive = .TRUE.
           A%tsCount         = 0     !  counter of time steps while digger is working
+          ENDIF   
+          
         ELSE
           A%State           = 9     ! 9 = for ever inactive
           CALL InfoMessage( A, m, time )

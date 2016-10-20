@@ -107,7 +107,7 @@
             iMesh        = F%Node(i)   !> mesh index of field node 
             F%Z(i)    = z_sis( iMesh )
           ENDDO
-          CALL Set_RefLevelByProfiles( F,A%ReferezLevel) !> the result is F%refZ(:) 
+          CALL Set_RefLevelByProfiles( F,A%ReferenceLevel) !> the result is F%refZ(:) 
                                  
           CALL Calculate_PlanarLevel( F, A%DumpVolume, 1 )    !> 1 => dump;  the result is F%dz(:) 
           A%nts = INT( (A%TimeEnd - time) / dt_ts ) !> calculate number of time 
@@ -128,7 +128,12 @@
                                  
         IF( A%tsCount <=  A%nts ) THEN
           !> Before dumping we calc. the amount of sediment that was
-          !  transported during the last time step into the field.
+          !  transported by morphodynamic during the last time step 
+          !  into the field. 
+          !  I case there is a futher action operating at the same time  
+          !  on this field and it is carried out allready (depends on the 
+          !  internal order of execution), then it will 
+          !  appear here as sumInput too.          
           DO iCL=1, nGrainClass    !  Only nodes below the planar
             DO i=1, F%nNodes       !  level are included for it.
               iMesh = F%Node(i)    !> mesh index of field node
@@ -204,8 +209,7 @@
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
-!*********************************************************************************************
-     
+!*********************************************************************************************     
      
 !*********************************************************************************************
 !*********************************************************************************************
