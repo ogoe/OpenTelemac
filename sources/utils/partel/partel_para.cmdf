@@ -14,8 +14,7 @@ files: bief_def.f
 
 [hermes]
 path: <root>|sources|utils|hermes
-files: interface_hermes.f
-  utils_med.F
+files: utils_med.F
   utils_serafin.F
   add_data.f
 

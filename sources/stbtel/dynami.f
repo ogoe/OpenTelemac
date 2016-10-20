@@ -37,7 +37,6 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: MESH
 !
       IMPLICIT NONE
 !

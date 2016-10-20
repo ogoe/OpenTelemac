@@ -34,9 +34,9 @@
 ! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |  FICH:         |    |
 ! |    NRES        | -->| NUMERO DU CANAL DU FICHIER DE SERAFIN
-! |    NGEO       | -->| NUMERO DU CANAL DU FICHIER MAILLEUR
-! |    NLIM      | -->| NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
-! |    NFO1      |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
+! |    NGEO        | -->| NUMERO DU CANAL DU FICHIER MAILLEUR
+! |    NLIM        | -->| NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
+! |    NFO1        |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
 ! |________________|____|______________________________________________
 ! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
 !----------------------------------------------------------------------
@@ -50,7 +50,8 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,NPOIN,NELMAX
+!
       IMPLICIT NONE
 !
       INTEGER NGEO, IBID

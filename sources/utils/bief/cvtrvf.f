@@ -85,6 +85,14 @@
 !+   is slightly changed. Coefficients COEMIN and COESOU removed in the
 !+   call to cflvf.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        20/10/2016
+!+        V7P2
+!+   Reduction of time-step for predictor-corrector is no longer fixed
+!+   to be 2, any value > 1 is possible, but here hardcoded at 2.D0.
+!+   So no change except for further research (values less than 2 seem
+!+   to give better results).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
 !| BILAN          |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
@@ -202,15 +210,13 @@
 !-----------------------------------------------------------------------
 !
       DOUBLE PRECISION DT_REMAIN,DDT,TDT,SECU,TETAFCOR
-      DOUBLE PRECISION ADMASS,LOCALMIN,LOCALMAX
-!
-      DOUBLE PRECISION, PARAMETER :: TWOTHIRDS=2.D0/3.D0
+      DOUBLE PRECISION ADMASS,LOCALMIN,LOCALMAX,TWOTHIRDS
 !
       CHARACTER(LEN=16) FORMUL
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR
 !
-      DOUBLE PRECISION C
+      DOUBLE PRECISION C,K,SURK,KM1,KM1SURK
       LOGICAL MASS_BAL,PREDICOR,LIPS
 !
       TYPE(SLVCFG)::SLVPSI
@@ -226,6 +232,18 @@
       TYPE(BIEF_OBJ), POINTER :: T1,T2,FLBOUND,T4,T6,FXBORPAR,T8,HNT,HT
       TYPE(BIEF_OBJ), POINTER :: HNP1MT,TETAF_VAR,FMIN,FMAX
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: DFDT
+!
+!-----------------------------------------------------------------------
+!
+!     HARDCODED PARAMETER FOR STABILITY OF PREDICTOR CORRECTOR
+!     AND NUMBERS DEPENDING OF K. K MUST BE > 1.D0
+!
+      K=2.D0
+!
+      SURK=1.D0/K
+      KM1=K-1.D0
+      KM1SURK=KM1/K
+      TWOTHIRDS=2.D0*KM1/(2.D0*K-1.D0)
 !
 !-----------------------------------------------------------------------
 !
@@ -529,7 +547,7 @@
 !     DIVIDED BY 2 FOR PREDICTOR-CORRECTORS
 !
       IF(PREDICOR.AND.NCO_DIST.GT.0) THEN
-        SECU=0.5D0
+        SECU=SURK
       ELSEIF(LIPS) THEN
         SECU=1.D0
       ELSE
@@ -582,16 +600,15 @@
 !     CASE OF ADAPTIVE IMPLICIT N OR PSI SCHEME
 !
       IF(LIPS) THEN
-        SECU=0.9999999D0
         DO I=1,HN%DIM1
 !         FOR CLASSICAL N-SCHEME
 !         TETAF_VAR(I)=MAX(0.D0,1.D0-SECU*NN*T2%R(I)/DT)
 !         FOR PREDICTOR CORRECTOR N-SCHEME
-          TETAF_VAR%R(I)=MAX(0.D0,1.D0-0.5D0*SECU*NSP_DIST*T2%R(I)/DT)
-! ESSAI !!!!!!
-!         TETAF_VAR%R(I)=MAX(0.5D0,1.D0-0.5D0*SECU*NN*T2%R(I)/DT)
+          TETAF_VAR%R(I)=MAX(0.D0,1.D0-SURK*NSP_DIST*T2%R(I)/DT)
+!         TRYING SECOND ORDER !!!!!!
+!         TETAF_VAR%R(I)=MAX(0.5D0,1.D0-SURK*NSP_DIST*T2%R(I)/DT)
         ENDDO
-        DDT=DT/NSP_DIST/SECU
+        DDT=DT/NSP_DIST/0.999999D0
       ENDIF
 !
       DDT=MIN(DDT,DT_REMAIN)
@@ -687,8 +704,8 @@
               CALL PARCOM(FMAX,3,MESH)
             ENDIF
             DO I=1,HN%DIM1
-              F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
-              F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
+              F%R(I)=MIN(F%R(I),T4%R(I)+KM1SURK*(FMAX%R(I)-T4%R(I)))
+              F%R(I)=MAX(F%R(I),T4%R(I)+KM1SURK*(FMIN%R(I)-T4%R(I)))
             ENDDO
           ENDIF
 !
@@ -767,7 +784,7 @@
 !
 !       CASES WITH A LIMITATION OF THE FIRST CORRECTOR
 !
-        IF(OPTADV.EQ.3.OR.ICOR.GT.1) THEN
+        IF(OPTADV.EQ.3.OR.ICOR.GT.1.OR.K.LT.2.D0) THEN
 !         COMPUTING THE MINIMUM AND MAXIMUM
           DO I=1,HN%DIM1
             FMIN%R(I)=T4%R(I)
@@ -823,19 +840,19 @@
 !
         IF(OPTADV.EQ.3) THEN
           DO I=1,HN%DIM1
-            F%R(I)=MIN(F%R(I),T4%R(I)+T4%R(I)-FMIN%R(I))
-            F%R(I)=MAX(F%R(I),T4%R(I)+T4%R(I)-FMAX%R(I))
+            F%R(I)=MIN(F%R(I),T4%R(I)+KM1*(T4%R(I)-FMIN%R(I)))
+            F%R(I)=MAX(F%R(I),T4%R(I)+KM1*(T4%R(I)-FMAX%R(I)))
           ENDDO
-          IF(ICOR.GT.1) THEN
+          IF(ICOR.GT.1.OR.K.LT.2.D0) THEN
             DO I=1,HN%DIM1
               F%R(I)=MIN(F%R(I),T4%R(I)+TWOTHIRDS*(FMAX%R(I)-T4%R(I)))
               F%R(I)=MAX(F%R(I),T4%R(I)+TWOTHIRDS*(FMIN%R(I)-T4%R(I)))
             ENDDO
           ENDIF
-        ELSEIF(OPTADV.EQ.2.AND.ICOR.GT.1) THEN
+        ELSEIF(OPTADV.EQ.2.AND.(ICOR.GT.1.OR.K.LT.2.D0)) THEN
           DO I=1,HN%DIM1
-            F%R(I)=MIN(F%R(I),T4%R(I)+0.5D0*(FMAX%R(I)-T4%R(I)))
-            F%R(I)=MAX(F%R(I),T4%R(I)+0.5D0*(FMIN%R(I)-T4%R(I)))
+            F%R(I)=MIN(F%R(I),T4%R(I)+KM1SURK*(FMAX%R(I)-T4%R(I)))
+            F%R(I)=MAX(F%R(I),T4%R(I)+KM1SURK*(FMIN%R(I)-T4%R(I)))
           ENDDO
         ENDIF
 !
@@ -847,7 +864,7 @@
 !                                                      FN
      &                    MESH%IKLE%I,IOPT1,MESH%NPOIN,T4,
 !    &                    FI_I,FSTAR, HN   H
-     &                    T8%R,F%R   ,T2%R,HNP1MT%R,MESH%SURFAC%R,DDT,
+     &                    T8%R,F%R   ,T2%R,HNP1MT%R,MESH%SURFAC%R,
      &                    TETAFCOR,DFDT)
         IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)
 !
