@@ -1,0 +1,34 @@
+/======================================================================
+RESTART  = FALSE
+/
+/======================================================================
+ACTION
+   ActionType             =    Dig_by_criterion
+
+   FieldDig               =    100_Fairway 
+   ReferezLevel           =    DSRWSP
+
+
+   TimeStart              =   2000.01.01-00:01:00  /  [yyyy.mm.dd-hh:mm:ss]
+   TimeEnd                =   2000.01.12-23:59:59  /  [yyyy.mm.dd-hh:mm:ss]
+   
+   TimeRepeat             =   691200.0             /  [ s ] 8,0Tage
+
+   DigRate                =     0.001              /  [ m/s ]
+   DigDepth               =    10.00               /  [ m   ]
+   CritDepth              =    10.00               /  [ m   ]
+
+   MinVolume              =     0.0                /  [ m^3 ]
+   MinVolumeRadius        =     3.5                /  [ m   ]
+
+   FieldDump              =   200_DumpArea
+  /DumpRate               =    0.0005                /  [ m/s ]
+   DumpRate               =    0.001                /  [ m/s ]
+   DumpPlanar             =    FALSE
+
+ENDACTION
+/======================================================================
+/
+/
+ENDFILE
+
