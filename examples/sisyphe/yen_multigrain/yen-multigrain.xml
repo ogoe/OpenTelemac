@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="yen-multigrain" author="P.Tassi" contact="www.opentelemac.org" />
+      <data title="yen-multigrain" author="R. Kopmann" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
       <look colour="jet.xml" />
