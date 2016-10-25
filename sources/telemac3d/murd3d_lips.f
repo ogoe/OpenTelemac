@@ -32,6 +32,12 @@
 !+   Limitation of the predictor must be done also at the first
 !+   correction.
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+     25/10/2016
+!+     V7P2
+!+   Simplification, height of prism no longer taken into account when
+!+   computing SUR2VOL. Corresponding modification in FLUX_IMP3D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
 !| BEDBOU         |-->| OPEN BOUNDARY CONDITIONS ON THE BED
@@ -183,10 +189,8 @@
       TYPE(SLVCFG)     :: SLVPSI
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT,FXMATPAR,SUR2VOL
-!> SEB @ HRW, JR @ RWTH, CG @ EDF: ALGORITHMIC DIFFERENTIATION
 !
       INTRINSIC MIN,MAX
-!< SEB @ HRW, JR @ RWTH, CG @ EDF
 !
 !-----------------------------------------------------------------------
 !
@@ -581,66 +585,38 @@
           I5 = IKLE3(IELEM,5)
           I6 = IKLE3(IELEM,6)
 !
-          H1 =      TETAF_VAR(I1) *(ZSUBN(I4)-ZSUBN(I1))
-     &       +(1.D0-TETAF_VAR(I1))*(ZSUBP(I4)-ZSUBP(I1))
-          H2 =      TETAF_VAR(I2) *(ZSUBN(I5)-ZSUBN(I2))
-     &       +(1.D0-TETAF_VAR(I2))*(ZSUBP(I5)-ZSUBP(I2))
-          H3 =      TETAF_VAR(I3) *(ZSUBN(I6)-ZSUBN(I3))
-     &       +(1.D0-TETAF_VAR(I3))*(ZSUBP(I6)-ZSUBP(I3))
-          H4 =      TETAF_VAR(I4) *(ZSUBN(I4)-ZSUBN(I1))
-     &       +(1.D0-TETAF_VAR(I4))*(ZSUBP(I4)-ZSUBP(I1))
-          H5 =      TETAF_VAR(I5) *(ZSUBN(I5)-ZSUBN(I2))
-     &       +(1.D0-TETAF_VAR(I5))*(ZSUBP(I5)-ZSUBP(I2))
-          H6 =      TETAF_VAR(I6) *(ZSUBN(I6)-ZSUBN(I3))
-     &       +(1.D0-TETAF_VAR(I6))*(ZSUBP(I6)-ZSUBP(I3))
-!
-          COEF = MESH3D%SURFAC%R(IELEM)/6.D0
+          COEF = MESH3D%SURFAC%R(IELEM)
 !
 !         SEGMENT 01
-          ISEG = ELTSEG(IELEM,1)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H1+H2)*COEF
+          SUR2VOL(ELTSEG(IELEM,1))=SUR2VOL(ELTSEG(IELEM,1))+COEF
 !         SEGMENT 02
-          ISEG = ELTSEG(IELEM,2)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H2+H3)*COEF
+          SUR2VOL(ELTSEG(IELEM,2))=SUR2VOL(ELTSEG(IELEM,2))+COEF
 !         SEGMENT 03
-          ISEG = ELTSEG(IELEM,3)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H3+H1)*COEF
+          SUR2VOL(ELTSEG(IELEM,3))=SUR2VOL(ELTSEG(IELEM,3))+COEF
 !         SEGMENT 04
-          ISEG = ELTSEG(IELEM,4)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H4+H5)*COEF
+          SUR2VOL(ELTSEG(IELEM,4))=SUR2VOL(ELTSEG(IELEM,4))+COEF
 !         SEGMENT 05
-          ISEG = ELTSEG(IELEM,5)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H5+H6)*COEF
+          SUR2VOL(ELTSEG(IELEM,5))=SUR2VOL(ELTSEG(IELEM,5))+COEF
 !         SEGMENT 06
-          ISEG = ELTSEG(IELEM,6)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H6+H4)*COEF
+          SUR2VOL(ELTSEG(IELEM,6))=SUR2VOL(ELTSEG(IELEM,6))+COEF
 !         SEGMENT 07
-          ISEG = ELTSEG(IELEM,7)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H1+H4)*COEF
+          SUR2VOL(ELTSEG(IELEM,7))=SUR2VOL(ELTSEG(IELEM,7))+COEF
 !         SEGMENT 08
-          ISEG = ELTSEG(IELEM,8)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H2+H5)*COEF
+          SUR2VOL(ELTSEG(IELEM,8))=SUR2VOL(ELTSEG(IELEM,8))+COEF
 !         SEGMENT 09
-          ISEG = ELTSEG(IELEM,9)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H3+H6)*COEF
+          SUR2VOL(ELTSEG(IELEM,9))=SUR2VOL(ELTSEG(IELEM,9))+COEF
 !         SEGMENT 10
-          ISEG = ELTSEG(IELEM,10)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H1+H5)*COEF
+          SUR2VOL(ELTSEG(IELEM,10))=SUR2VOL(ELTSEG(IELEM,10))+COEF
 !         SEGMENT 11
-          ISEG = ELTSEG(IELEM,11)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H2+H4)*COEF
+          SUR2VOL(ELTSEG(IELEM,11))=SUR2VOL(ELTSEG(IELEM,11))+COEF
 !         SEGMENT 12
-          ISEG = ELTSEG(IELEM,12)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H2+H6)*COEF
+          SUR2VOL(ELTSEG(IELEM,12))=SUR2VOL(ELTSEG(IELEM,12))+COEF
 !         SEGMENT 13
-          ISEG = ELTSEG(IELEM,13)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H3+H5)*COEF
+          SUR2VOL(ELTSEG(IELEM,13))=SUR2VOL(ELTSEG(IELEM,13))+COEF
 !         SEGMENT 14
-          ISEG = ELTSEG(IELEM,14)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H3+H4)*COEF
+          SUR2VOL(ELTSEG(IELEM,14))=SUR2VOL(ELTSEG(IELEM,14))+COEF
 !         SEGMENT 15
-          ISEG = ELTSEG(IELEM,15)
-          SUR2VOL(ISEG)=SUR2VOL(ISEG)+(H1+H6)*COEF
+          SUR2VOL(ELTSEG(IELEM,15))=SUR2VOL(ELTSEG(IELEM,15))+COEF
 !
         ENDDO
 !
@@ -839,3 +815,4 @@
 !
       RETURN
       END
+
