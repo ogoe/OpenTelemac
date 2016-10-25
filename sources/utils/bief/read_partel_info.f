@@ -56,8 +56,8 @@
       REWIND(NPAR)
 !
       READ(NPAR,*) NPTFR_BND
-!
-      WRITE(LU,*) NPTFR_BND,NPTFR
+!     removed by jmh on 25/10/2016 (trailing debugging message...)
+!     WRITE(LU,*) NPTFR_BND,NPTFR
       IF(NPTFR.NE.NPTFR_BND) THEN
         IF(LNG.EQ.1) WRITE(LU,23) NPTFR_BND,NPTFR
         IF(LNG.EQ.2) WRITE(LU,24) NPTFR_BND,NPTFR
