@@ -317,7 +317,7 @@ if __name__ == "__main__":
          # Remove the case file
          os.remove(casName)
       # In case of a conversion srf to med adding bnd elements and we have boundaries
-      if(inputFormat == 'SERAFIN' and outpuFormat == 'MED' \
+      if(inputFormat == 'SERAFIN' and outputFormat == 'MED' \
          and options.boundaryFile and ML_AVAIL):
           print "-> Adding boundary elements"
           add_bnd(outputFile)
