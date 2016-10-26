@@ -180,8 +180,8 @@ subroutine SARAP ( &
 
    ! REMPLISSAGE DU TABLEAU DES APPORTS
    ! ----------------------------------
-   if( size(Apport) > 0 ) then
-      do iinj = 1 , size(Apport)
+   if(( size(Apport) > 0 ).OR.( size(Deversoir) > 0 )) then
+!cct      do iinj = 1 , size(Apport)
          ! Calcul de QInjec, tableau dimensionne a NbSect
          ! representant les apports
          ! ----------------------------------------------
@@ -195,7 +195,7 @@ subroutine SARAP ( &
          if( Erreur%Numero /= 0 ) then
             return
          end if
-      end do
+!cct      end do
    else
       QInjec(:) = 0._DOUBLE
    end if
