@@ -2,7 +2,7 @@
                         SUBROUTINE REMAIL
 !                       *****************
 !
-     &(IKLE,NCOLOR,NEW,X,Y,EPSI)
+     &(IKLE,NCOLOR,NEW,X,Y,EPSI,NDP,NPOIN,NELEM,NELMAX)
 !
 !***********************************************************************
 !  PROGICIEL : STBTEL V5.2  17/08/89   J.M. JANIN    (LNH)
@@ -26,12 +26,9 @@
 ! |________________|____|______________________________________________
 ! | COMMON:        |    |
 ! |  GEO:          |    |
-! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
 ! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
 ! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 ! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
 ! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
 ! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |________________|____|______________________________________________|
@@ -42,10 +39,11 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
-      INTEGER I , J , NPTELI , NELELI
+      INTEGER, INTENT(IN)    ::  NDP , NELMAX
+      INTEGER, INTENT(INOUT) ::  NPOIN, NELEM
+      INTEGER I, J , NPTELI , NELELI
       INTEGER I1, I2, I3, I4, J1, J2, J3, J4
       INTEGER IKLE(NELMAX,4) , NEW(*) , NCOLOR(*)
 !

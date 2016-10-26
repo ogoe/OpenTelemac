@@ -6201,6 +6201,41 @@ AIDE = 'donne la duree de la pluie en heure, par defaut pluie infinie'
 AIDE1 = 'gives the duration of the rain in hour,
 default value is infinite'
 
+NOM = 'ETUDE DE CONVERGENCE'
+NOM1 = 'CONVERGENCE STUDY'
+TYPE = LOGIQUE
+INDEX = 53
+MNEMO = 'CONVERGENCE'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'EQUATIONS'
+RUBRIQUE1 = 'EQUATIONS'
+NIVEAU = 1
+AIDE = 'Active une etude de convergence par rapport a une
+solution analytique sur un maillage fin'
+AIDE1 = 'Activates a convergence study compared
+to an analytical solution on a fine mesh'
+
+NOM = 'NIVEAUX DE RAFFINEMENT'
+NOM1 = 'REFINEMENT LEVELS'
+TYPE = ENTIER
+INDEX = 107
+MNEMO = 'RLEVELS'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'EQUATIONS'
+RUBRIQUE1 = 'EQUATIONS'
+NIVEAU = 1
+AIDE = 'Donne le nombre de raffinements que l''utilisateur
+veut utiliser pour l''etude de convergence
+(en activant CONVERGENCE). Chaque niveau multiplie par 4 le
+nombre d''elements.'
+AIDE1 = 'Gives the number of refinement levels that the
+user wants to use in the convergence study (when activating
+CONVERGENCE). Each level multiplies the number of elements by
+4'
 /
 / ADDITIONAL USER VARIABLES (ALGORITHMIC DIFFERENTIATION)
 /

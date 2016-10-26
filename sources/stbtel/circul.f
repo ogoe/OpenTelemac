@@ -2,7 +2,7 @@
                         SUBROUTINE CIRCUL
 !                       *****************
 !
-     &(IKLE,ITEST1 ,IELEM,I1,I2,I3,X,Y)
+     &(IKLE,ITEST1 ,IELEM,I1,I2,I3,X,Y,NNELMAX)
 !
 !***********************************************************************
 !  STBTEL VERSION 5.2   16/08/89    J.C. GALLAND   (LNH)
@@ -25,14 +25,13 @@
 ! |________________|____|______________________________________________
 ! | COMMON:        |    |
 ! |  GEO:          |    |
-! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
 ! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
 ! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 ! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
 ! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
 ! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
+! |    NNELMAX     | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
+! |                |    | LES ELEMENTS (NNELMAX = NELEM + 0.2*NELEM)
 ! |________________|____|______________________________________________|
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
 !-----------------------------------------------------------------------
@@ -44,8 +43,9 @@
       USE DECLARATIONS_STBTEL
       IMPLICIT NONE
 !
-      INTEGER IELEM 
-      INTEGER IKLE(NELMAX,4) , I1 , I2 , I3 , ITEST1 , I
+      INTEGER, INTENT(IN) :: NNELMAX
+      INTEGER IELEM
+      INTEGER IKLE(NNELMAX,4) , I1 , I2 , I3 , ITEST1 , I
 !
       DOUBLE PRECISION X2 , X3 , Y2 , Y3 , X(*) , Y(*)
       DOUBLE PRECISION AIRE

@@ -1275,6 +1275,11 @@
 !     RATIO FOR INITIAL ABSTRACTION (FOR SCS_CN RAINFALL-RUNOFF MODEL)
 !
       INTEGER IASCNOPT
+!
+!     NUMBER OF REFINEMENT LEVELS FOR THE CONVERGENCE STUDY
+!
+      INTEGER RLEVELS
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -1501,6 +1506,10 @@
 !     IF YES, CROSS SECTIONS WITH FLUXLINE METHOD
 !
       LOGICAL DOFLUX
+!
+!     OPTION FOR CONVERGENCE STUDIES
+!
+      LOGICAL CONVERGENCE
 !
 !-----------------------------------------------------------------------
 !
@@ -1899,6 +1908,10 @@
 !     MESH STRUCTURE
 !
       TYPE(BIEF_MESH), TARGET :: MESH
+!
+!     FINE MESH STRUCTURE IN CASE OF CONVERGENCE STUDY
+!
+      TYPE(BIEF_MESH), TARGET :: FINEMESH
 !
 !-----------------------------------------------------------------------
 !

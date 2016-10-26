@@ -2692,7 +2692,8 @@
 !
       INTERFACE
         SUBROUTINE TELEMAC2D(PASS,ATDEP,NITER,CODE,
-     &                       DTDEP,NEWTIME,DOPRINT,NITERORI)
+     &                       DTDEP,NEWTIME,DOPRINT,NITERORI,
+     &                       CONVERGENCE_LEVEL)
         IMPLICIT NONE
         INTEGER,          INTENT(IN) :: PASS,NITER
         DOUBLE PRECISION, INTENT(IN) :: ATDEP
@@ -2700,6 +2701,7 @@
         DOUBLE PRECISION, INTENT(IN), OPTIONAL :: DTDEP
         LOGICAL,          INTENT(IN), OPTIONAL :: NEWTIME,DOPRINT
         INTEGER,          INTENT(IN), OPTIONAL :: NITERORI
+        INTEGER,          INTENT(IN), OPTIONAL :: CONVERGENCE_LEVEL
         END SUBROUTINE
       END INTERFACE
 !
@@ -3028,6 +3030,29 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,ZF
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: SLOPE,T1,T2
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE ERROR_COMPUTATION
+     &(F,MESH,FINEMESH,NELMAX,NPOIN,CORRESP,RLEVELS,NLEVEL,
+     & IKLE,FINEIKLE)
+      USE BIEF
+      USE INTERFACE_HERMES
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE
+      INTEGER         , INTENT(IN)       :: NPOIN
+      DOUBLE PRECISION, INTENT(IN)       :: F(NPOIN)
+      TYPE(BIEF_MESH) , INTENT(IN)       :: MESH
+      TYPE(BIEF_MESH) , INTENT(IN)       :: FINEMESH
+      INTEGER         , INTENT(IN)       :: NELMAX
+      INTEGER         , INTENT(IN)       :: RLEVELS
+      INTEGER         , INTENT(IN)       :: NLEVEL
+      INTEGER         , INTENT(IN)       :: CORRESP(NELMAX,RLEVELS)
+      INTEGER         , INTENT(IN)       :: IKLE(NELMAX,3)
+      INTEGER         , INTENT(IN)       :: FINEIKLE(NELMAX,3)
         END SUBROUTINE
       END INTERFACE
 !

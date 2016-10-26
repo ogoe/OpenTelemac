@@ -111,6 +111,7 @@ files: declarations_stbtel.F
   inistb.f
   inifas.f
   point_stbtel.f
+  interface_stbtel.f
   ranbo.f
   presel.f
   interp.f

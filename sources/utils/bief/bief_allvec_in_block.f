@@ -2,7 +2,7 @@
                      SUBROUTINE BIEF_ALLVEC_IN_BLOCK
 !                    *******************************
 !
-     &( BLO , N , NAT , NOMGEN , IELM , NDIM , STATUT , MESH )
+     &( BLO , N , NAT , NOMGEN , IELM , NDIM , STATUT , MESH , REFINE)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -65,6 +65,7 @@
       INTEGER         , INTENT(IN)    :: IELM,NDIM,STATUT,NAT,N
       CHARACTER(LEN=6), INTENT(IN)    :: NOMGEN
       TYPE(BIEF_MESH) , INTENT(IN)    :: MESH
+      INTEGER, INTENT(IN), OPTIONAL   :: REFINE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -117,7 +118,13 @@
 !           ALLOCATES THE VECTOR
 !
             ALLOCATE(BLO%ADR(I)%P)
-            CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,MESH)
+            IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+              CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,
+     &                         MESH,REFINE)
+            ELSE
+              CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,
+     &                         MESH)
+            ENDIF
             BLO%ADR(I)%P%FATHER = BLO%NAME
 !
           ENDDO ! I

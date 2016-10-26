@@ -66,7 +66,7 @@
       EQUA = 'NO_EQUATION_IS_GIVEN'
 !
       CALL ALMESH(MESH2D,'MESH2D',IELMX,SPHERI,CFG,'SERAFIN ',NGEO,
-     &            EQUA,NPLAN=1)
+     &            EQUA,0,NPLAN=1)
 !
 ! aliases for certain components of the 2D mesh structure
 !
@@ -98,7 +98,7 @@
       EQUA = 'NO_EQUATION_IS_GIVEN'
 !
       CALL ALMESH(MESH3D,'MESH3D',IELM3,SPHERI,CFG,'SERAFIN ',NGEO,
-     &            EQUA,NPLAN=NPLAN)
+     &            EQUA,0,NPLAN=NPLAN)
 !
 ! alias for certain components of the 3D mesh structure
 ! they are defined in declarations

@@ -1,0 +1,91 @@
+/
+/ Initial tracer set to:
+/ (1 - 2*nu/dt * (2 pi / L)^2))*sin(2 pi/L x)*sin(2 pi/L y) NON
+/ (1 + 2*nu*dt * (2 pi / L)^2))*sin(2 pi/L x)*sin(2 pi/L y) OUI
+/ Theoretical solution after one time-step:
+/ sin(2 pi/L x)*sin(2 pi/L y)
+/
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p2 14 juin 2012
+/ TELEMAC 2D : TEST DECROISSANCE TRACEURS
+/---------------------------------------------------------------------
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, FICHIERS
+/---------------------------------------------------------------------
+/
+NOMS DES TRACEURS                  ='Traceur 1';'Traceur 2'
+FICHIER DES PARAMETRES             ='t2d_convergence.cas'
+FICHIER DES RESULTATS              ='r2d_convergence.slf'
+FICHIER DES CONDITIONS AUX LIMITES ='geo_convergence.cli'
+FICHIER DE GEOMETRIE               ='geo_convergence.slf'
+FICHIER FORTRAN                    ='t2d_convergence.f'
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GENERALITES
+/---------------------------------------------------------------------
+/
+/-------------------------------------------------------------------
+/                     OPTIONS GENERALES
+/-------------------------------------------------------------------
+/
+TITRE      ='TELEMAC 2D : TEST DIFFUSION TRACEUR'
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+/
+PERIODE DE SORTIE LISTING             =1
+VARIABLES POUR LES SORTIES GRAPHIQUES =H,S,B,T1
+PERIODE POUR LES SORTIES GRAPHIQUES   =1
+BILAN DE MASSE                        =FAUX
+INFORMATIONS SUR LE SOLVEUR           =VRAI
+/
+/---------------------------------------------------------------------
+/ ETUDE DE CONVERGENCE
+/---------------------------------------------------------------------
+/
+ETUDE DE CONVERGENCE = VRAI
+NIVEAUX DE RAFFINEMENT =2
+
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+/
+LOI DE FROTTEMENT SUR LE FOND : 0
+CONVECTION = NON
+DIFFUSION DES VITESSES                              =NON
+LOI DE DEGRADATION DES TRACEURS                     =0
+VALEURS INITIALES DES TRACEURS                      =0.
+COEFFICIENT 1 DE LA LOI DE DEGRADATION DES TRACEURS =0.0
+COEFFICIENT D'IMPLICITATION DES TRACEURS            =0.
+PRECISION POUR LA DIFFUSION DES TRACEURS            =1.E-10
+COEFFICIENT DE DIFFUSION DES TRACEURS               =1.0
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+/
+CONDITIONS INITIALES ='COTE CONSTANTE'
+COTE INITIALE        =2.
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, TRACEUR
+/---------------------------------------------------------------------
+/
+NOMBRE DE TRACEURS =1
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+/
+NOMBRE DE PAS DE TEMPS =1
+PAS DE TEMPS           =1
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+/
+SOLVEUR POUR LA DIFFUSION DES TRACEURS =1
+DEBUGGER=1
+/

@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|telemac2d
 module: telemac2d
-liborder: special parallel hermes damocles bief nestor ad stbtel sisyphe tomawac waqtel telemac2d
+liborder: special parallel hermes damocles bief nestor ad sisyphe tomawac stbtel waqtel telemac2d
 name: HOMERE_TELEMAC2D
 
 [ad]
@@ -765,6 +765,16 @@ files: declarations_special.F
 [stbtel]
 path: <root>|sources|stbtel
 files: interp.f
+  declarations_stbtel.F
+  interface_stbtel.f
+  ranbo.f
+  fill_lim.f
+  renum.f
+  remail.f
+  circul.f
+  verifi.f
+  divise.f
+  refine_mesh.f
 
 [telemac2d]
 path: <root>|sources|telemac2d
@@ -963,6 +973,7 @@ files: friction_def.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
   homere_telemac2d.F
+  error_computation.f
 
 [tomawac]
 path: <root>|sources|tomawac

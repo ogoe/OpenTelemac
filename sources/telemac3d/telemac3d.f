@@ -170,15 +170,48 @@
 !+   Imposed flowrates on the bed.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        21/01/2016
-!+        V7P1
-!+   Initial conditions of results file in restart mode were forgotten
-!+   they are useless but now requested by the Hermes module...
+!+        31/07/2014
+!+        V7P0
+!+   Call to METEO moved just before the first call to FSGRAD, not just
+!+   after (atmospheric pressure gradients now systematically added
+!+   to free surface gradients).
+!
+!history  C VILLARET (HRW+EDF) & J-M HERVOUET (EDF - LNHE)
+!+        18/09/2014
+!+        V7P0
+!+   Calls to sisyphe and wac chenged.
+!
+!history  G. ANTOINE & M. JODEAU & J.M. HERVOUET (EDF - LNHE)
+!+        13/10/2014
+!+        V7P0
+!+   New developments in sediment for mixed sediment transport
+!
+!history  R. ATA (EDF LAB, LNHE)
+!+        05/11/2014
+!+        V7P0
+!+   add optional variables to meteo in a sake of harmonization
+!+   with telemac-2d
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        08/02/2016
-!+        V7P2
-!+   Adding the argument HPROP in the call to Sisyphe.
+!+        31/03/2015
+!+        V7P1
+!+   Just a few extra debugger prints, up to CALL KEPINI, where was the
+!+   last user bug I looked for.
+!
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        26/06/2015
+!+        V7P1
+!+   2D and 3D RESULT FILE can be optional. Tests for writing them added.
+!
+!history  A. JOLY (EDF LAB, LNHE)
+!+        27/08/2015
+!+        V7P1
+!+   Imposed flowrates on the bed.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        24/03/2016
@@ -535,7 +568,7 @@
           WRITE(LU,*) ' '
           WRITE(LU,*) 'OPTION FOR TIDAL BOUNDARY CONDITIONS:'
           WRITE(LU,*) 'GIVE THE SAME NUMBER OF VALUES AS THE NUMBER '
-          WRITE(LU,*) 'OF LIQUID BOUNDARIES, I.E.:',NFRLIQ 
+          WRITE(LU,*) 'OF LIQUID BOUNDARIES, I.E.:',NFRLIQ
         ENDIF
         CALL PLANTE(1)
         STOP

@@ -445,6 +445,7 @@
 !
 !  HBOR = HBOR - HN (HBOR ON THE BOUNDARY, HN IN THE DOMAIN)
 !
+      HBOR%DIM1=MESH%NPTFR
       CALL OSBD( 'X=X-Y   ' , HBOR , HN , HN , C , MESH )
 !
 !=======================================================================
@@ -965,7 +966,7 @@
      &                     UNSV2D,IOPT,TB%ADR(11)%P,
      &                     MESH%NBOR%I,RAIN,PLUIE,0.D0,
      &                     MAXADV,NCO_DIST,OPTADV_VI)
-!  
+!
         ENDIF
 !
         IF(IELMU.NE.11) THEN
@@ -1518,6 +1519,8 @@
 !
 !     MODIFIES THE VARIABLE DH
 !
+      DH%DIM1=MESH%NPOIN
+      HTILD%DIM1=MESH%NPOIN
       CALL OS('X=Y/Z   ' , X=DH , Y=DH , Z=HTILD )
 !
 !     PRECONDITIONING FOR AM1

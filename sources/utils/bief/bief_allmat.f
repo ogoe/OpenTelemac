@@ -2,7 +2,8 @@
                      SUBROUTINE BIEF_ALLMAT
 !                    **********************
 !
-     &( MAT , NOM , IELM1 , IELM2 , CFG , TYPDIA , TYPEXT , MESH )
+     &( MAT , NOM , IELM1 , IELM2 , CFG , TYPDIA , TYPEXT , MESH ,
+     &  REFINE )
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -51,6 +52,7 @@
       INTEGER         , INTENT(IN)    :: IELM1,IELM2,CFG(2)
       CHARACTER(LEN=1), INTENT(IN)    :: TYPDIA,TYPEXT
       TYPE(BIEF_MESH) , INTENT(IN)    :: MESH
+      INTEGER, INTENT(IN), OPTIONAL   :: REFINE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -103,7 +105,11 @@
       NAME = 'D' // NOM(1:5)
       IF(TYPDIA(1:1).EQ.'Q') THEN
 !       ONLY CASE WHERE THE DIAGONAL DOES EXIST
-        CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH)
+        IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+          CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH,REFINE)
+        ELSE
+          CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH)
+        ENDIF
       ELSE
         CALL BIEF_ALLVEC(1,MAT%D,NAME,0    ,1,0,MESH)
       ENDIF
@@ -117,9 +123,16 @@
 !
       NAME = 'X' // NOM(1:5)
 !
-      CALL BIEF_ALLVEC(1,MAT%X,NAME,
-     &          BIEF_DIM1_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),
-     &          BIEF_DIM2_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),0,MESH)
+      IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+        CALL BIEF_ALLVEC(1,MAT%X,NAME,
+     &         BIEF_DIM1_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH)*4**REFINE,
+     &         BIEF_DIM2_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),
+     &         0,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,MAT%X,NAME,
+     &            BIEF_DIM1_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),
+     &            BIEF_DIM2_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),0,MESH)
+      ENDIF
 !
 !     TYPE IS FORGOTTEN UNTIL INITIALISATION OF MATRIX
 !     MAT%TYPEXT = TYPEXT(1:1)

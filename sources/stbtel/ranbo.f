@@ -2,7 +2,8 @@
                         SUBROUTINE RANBO
 !                       ****************
 !
-     &(NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV1,NPTFR,X,Y,NCOLFR)
+     &(NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV1,NPTFR,X,Y,NCOLFR,
+     & NDP,NPOIN,NELEM,NELMAX,MESH)
 !
 !***********************************************************************
 !  PROGICIEL : STBTEL V5.2   10/02/93    J.M. JANIN   (LNH)
@@ -29,8 +30,6 @@
 ! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
 ! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 ! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
 ! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
 ! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |________________|____|______________________________________________|
@@ -41,19 +40,21 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
-      INTEGER IILE , NILE , I
-      INTEGER IFABOR(NELMAX,*) , IKLE(NELMAX,4) , NCOLOR(*) , NCOLFR(*)
+      INTEGER, INTENT(IN)    :: NDP, NELMAX, MESH
+      INTEGER, INTENT(IN)    :: NELEM, NPOIN
+      INTEGER, INTENT(INOUT) :: NPTFR
+
+      INTEGER  IILE , NILE , I
+      INTEGER IFABOR(NELMAX,*), IKLE(NELMAX,4), NCOLOR(*), NCOLFR(*)
       INTEGER TRAV1(NPOIN,2)
-      INTEGER ISUIV , IELEM , IFACE , NPTFR , NOEUD1 , NOEUD2
-      INTEGER SOMSUI(4) , IERROR , I1 , I2 , NBOR(*) , KP1BOR(*)
-!
+      INTEGER ISUIV, IELEM, IFACE, NOEUD1, NOEUD2
+      INTEGER SOMSUI(4), IERROR, I1, I2, NBOR(*), KP1BOR(*)
+
       DOUBLE PRECISION X(NPOIN) , Y(NPOIN) , SOM1 , SOM2 , Y2 , EPSILO
 !
       LOGICAL SWAP
-!
 !
       DATA SOMSUI / 2 , 3 , 4 , 0 /
       DATA EPSILO / 1.D-6 /

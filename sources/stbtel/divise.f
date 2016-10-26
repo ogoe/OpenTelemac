@@ -2,7 +2,8 @@
                         SUBROUTINE DIVISE
 !                       *****************
 !
-     &(X,Y,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,INDICP,INDICE)
+     &(X,Y,XEL,YEL,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,INDICP,
+     & INDICE,CORR,LEVEL)
 !
 !***********************************************************************
 ! PROGICIEL : STBTEL  V5.2                 J-M JANIN   (LNH) 30 87 72 84
@@ -31,11 +32,19 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER NPOIN , NELEM , NELMAX , NSOM2 , IELEM , IPOIN , ISOM
-      INTEGER IKLE(NELMAX,*) , NCOLOR(*) , INDICP(*) , INDICE(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*), Y(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: XEL(NELMAX,3), YEL(NELMAX,3)
+      DOUBLE PRECISION, INTENT(IN) :: SOM2(10,2)
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,*), NCOLOR(*)
+      INTEGER, INTENT(INOUT) :: INDICP(*), INDICE(*)
+      INTEGER, INTENT(INOUT) :: NPOIN, NELEM
+      INTEGER, INTENT(IN)    :: NELMAX, NSOM2
+      INTEGER, INTENT(INOUT), OPTIONAL :: CORR(NELMAX,*)
+      INTEGER, INTENT(IN), OPTIONAL :: LEVEL
+      INTEGER IELEM , IPOIN , ISOM
       INTEGER NO1 , NO2 , NO3 , NP1 , NP2 , NP3 , NE1 , NE2 , NE3
 !
-      DOUBLE PRECISION X(*) , Y(*) , SOM2(10,2) , DX , DY
+      DOUBLE PRECISION  DX , DY
 !
 !=======================================================================
 !      RECHERCHE DES ELEMENTS A DIVISER PAR 4 OU PAR 2
@@ -117,6 +126,45 @@
           IKLE(  NE3,1) = NP2
           IKLE(  NE3,2) = NP3
           IKLE(  NE3,3) = NP1
+!
+          XEL(IELEM,1) = X(NO1)
+          XEL(IELEM,2) = X(NP1)
+          XEL(IELEM,3) = X(NP3)
+!
+          XEL(  NE1,1) = X(NP1)
+          XEL(  NE1,2) = X(NO2)
+          XEL(  NE1,3) = X(NP2)
+!
+          XEL(  NE2,1) = X(NP3)
+          XEL(  NE2,2) = X(NP2)
+          XEL(  NE2,3) = X(NO3)
+!
+          XEL(  NE3,1) = X(NP2)
+          XEL(  NE3,2) = X(NP3)
+          XEL(  NE3,3) = X(NP1)
+!
+          YEL(IELEM,1) = Y(NO1)
+          YEL(IELEM,2) = Y(NP1)
+          YEL(IELEM,3) = Y(NP3)
+!
+          YEL(  NE1,1) = Y(NP1)
+          YEL(  NE1,2) = Y(NO2)
+          YEL(  NE1,3) = Y(NP2)
+!
+          YEL(  NE2,1) = Y(NP3)
+          YEL(  NE2,2) = Y(NP2)
+          YEL(  NE2,3) = Y(NO3)
+!
+          YEL(  NE3,1) = Y(NP2)
+          YEL(  NE3,2) = Y(NP3)
+          YEL(  NE3,3) = Y(NP1)
+!
+          IF(PRESENT(CORR)) THEN
+            CORR(IELEM,LEVEL) = IELEM
+            CORR(NE1  ,LEVEL) = IELEM
+            CORR(NE2  ,LEVEL) = IELEM
+            CORR(NE3  ,LEVEL) = IELEM
+          ENDIF
 !
         ELSEIF (INDICE(IELEM).EQ.3.OR.
      &          INDICE(IELEM).EQ.5.OR.

@@ -113,7 +113,7 @@
 !
       CALL ALMESH(MESH,'MESH  ',IELM,SPHERI,CFG,
      &            ART_FILES(ARTGEO)%FMT,ART_FILES(ARTGEO)%LU,
-     &            EQUA)
+     &            EQUA,0)
 !
 !
 !     ALIAS FOR CERTAIN COMPONENTS OF MESH

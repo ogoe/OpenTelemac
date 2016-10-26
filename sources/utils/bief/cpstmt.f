@@ -96,10 +96,22 @@
         IELN2 = Y%ELMCOL
         IF(LNG.EQ.1) WRITE(LU,400) X%NAME,IELM1,IELM2,Y%NAME,IELN1,IELN2
         IF(LNG.EQ.2) WRITE(LU,401) X%NAME,IELM1,IELM2,Y%NAME,IELN1,IELN2
-        IF(LNG.EQ.1) WRITE(LU,402) X%TYPDIA,X%D%DIM1,X%TYPEXT,
-     &                 X%X%DIM2*X%X%DIM1,
-     &                 Y%TYPDIA,Y%D%MAXDIM1,
-     &                 Y%TYPEXT,Y%X%MAXDIM1*Y%X%MAXDIM2
+        IF(LNG.EQ.1) WRITE(LU,402) X%TYPDIA,
+     &                 X%D%DIM1,
+     &                 X%D%MAXDIM1,
+     &                 X%TYPEXT,
+     &                 X%X%DIM1,
+     &                 X%X%DIM2,
+     &                 X%X%MAXDIM1,
+     &                 X%X%MAXDIM2,
+     &                 Y%TYPDIA,
+     &                 Y%D%DIM1,
+     &                 Y%D%MAXDIM1,
+     &                 Y%TYPEXT,
+     &                 Y%X%DIM1,
+     &                 Y%X%DIM2,
+     &                 Y%X%MAXDIM1,
+     &                 Y%X%MAXDIM2
         IF(LNG.EQ.2) WRITE(LU,403) X%TYPDIA,X%D%DIM1,X%TYPEXT,
      &                 X%X%DIM2*X%X%DIM1,
      &                 Y%TYPDIA,Y%D%MAXDIM1,
@@ -110,12 +122,20 @@
      &            'Y EST PLUS PETITE QUE X')
  402    FORMAT(1X,'X A UNE DIAGONALE DE TYPE ',A1,/,1X,
      &            'AVEC UNE TAILLE DE ',1I8,/,1X,
+     &            'AVEC UNE TAILLE MAX DE ',1I8,/,1X,
      &            'DES TERMES EXTRADIAGONAUX DE TYPE ',A1,/,1X,
-     &            'AVEC UNE TAILLE DE ',1I8,/,1X,
+     &            'AVEC UNE TAILLE  1 DE ',1I8,/,1X,
+     &            'AVEC UNE TAILLE  2 DE ',1I8,/,1X,
+     &            'UNE TAILLE MAX 1 DE ',1I8,/,1X,
+     &            'UNE TAILLE MAX 2 DE ',1I8,/,1X,
      &            'Y A UNE DIAGONALE DE TYPE ',A1,/,1X,
-     &            'ET DE TAILLE MAXIMUM ',1I8,/,1X,
+     &            'AVEC UNE TAILLE DE ',1I8,/,1X,
+     &            'ET DE TAILLE MAX ',1I8,/,1X,
      &            'DES TERMES EXTRADIAGONAUX DE TYPE ',A1,/,1X,
-     &            'ET UNE TAILLE MAXIMUM DE ',1I8)
+     &            'AVEC UNE TAILLE 1 DE ',1I8,/,1X,
+     &            'AVEC UNE TAILLE 2 DE ',1I8,/,1X,
+     &            'ET UNE TAILLE MAX 1 DE ',1I8,/,1X,
+     &            'ET UNE TAILLE MAX 2 DE ',1I8)
  401    FORMAT(1X,'CPSTMT : FORBIDDEN CASE FOR X AND Y:',/,1X,
      &            'X=',A6,/,1X,'ELEMENTS ',1I3,' AND ',1I3,/,1X,
      &            'Y=',A6,/,1X,'ELEMENTS ',1I3,' AND ',1I3,/,1X,

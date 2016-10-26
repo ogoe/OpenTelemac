@@ -85,13 +85,13 @@
 !
       CALL ALMESH(MESH,'MESH  ',IELM2,SPHE,CFG,
      &            WAC_FILES(WACGEO)%FMT,WAC_FILES(WACGEO)%LU,
-     &            EQUA)
+     &            EQUA,0)
 !
 !     ALLOCATES THE 3D MESH STRUCTURE
 !
       CALL ALMESH(MESH3D,'MESH3D',IELM3,SPHE,CFG,
      &            WAC_FILES(WACGEO)%FMT,WAC_FILES(WACGEO)%LU,
-     &            EQUA,NPLAN=NPLAN)
+     &            EQUA,0,NPLAN=NPLAN)
 !
 !     ALIAS FOR CERTAIN COMPONENTS OF MESH
 !

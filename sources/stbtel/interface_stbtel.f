@@ -1,0 +1,93 @@
+!                    **************************
+                     MODULE INTERFACE_STBTEL
+!                    **************************
+!
+!
+!***********************************************************************
+! TELEMAC2D 7.2
+!***********************************************************************
+!
+!
+!-----------------------------------------------------------------------
+!
+!     DEFINITION OF INTERFACES
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE REFINE_MESH
+     &(RLEVELS,MESHINIT,NNELMAX,NPTFRMAX,NTRAC,EXTEND_LIM,
+     & CORRESP,LIHBOR,LIUBOR,LIVBOR,LITBOR,HBOR,UBOR,VBOR,
+     & CHBORD,TBOR,ATBOR,BTBOR,ZF,H,TEXP,TTILD,TN)
+        USE BIEF
+        USE DECLARATIONS_TELEMAC
+        USE DECLARATIONS_STBTEL
+        USE DECLARATIONS_SPECIAL
+        IMPLICIT NONE
+        TYPE(BIEF_MESH), INTENT(INOUT) :: MESHINIT
+        INTEGER        , INTENT(IN)    :: RLEVELS
+        INTEGER        , INTENT(IN)    :: NNELMAX
+        INTEGER        , INTENT(IN)    :: NPTFRMAX
+        INTEGER        , INTENT(IN)    :: NTRAC
+        LOGICAL        , INTENT(IN)    :: EXTEND_LIM
+        INTEGER,INTENT(INOUT), OPTIONAL :: CORRESP(NNELMAX,RLEVELS)
+        INTEGER,INTENT(INOUT), OPTIONAL :: LIHBOR(NPTFRMAX)
+        INTEGER,INTENT(INOUT), OPTIONAL :: LIUBOR(NPTFRMAX)
+        INTEGER,INTENT(INOUT), OPTIONAL :: LIVBOR(NPTFRMAX)
+        TYPE(BIEF_OBJ),INTENT(INOUT), OPTIONAL :: LITBOR
+        DOUBLE PRECISION,INTENT(INOUT),OPTIONAL:: UBOR(NPTFRMAX,2)
+        DOUBLE PRECISION,INTENT(INOUT),OPTIONAL:: VBOR(NPTFRMAX,2)
+        DOUBLE PRECISION,INTENT(INOUT),OPTIONAL:: HBOR(NPTFRMAX)
+        DOUBLE PRECISION,INTENT(INOUT),OPTIONAL:: CHBORD(NPTFRMAX)
+        TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: ZF,H
+        TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: TBOR, ATBOR
+        TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: BTBOR
+        TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: TEXP,TTILD,TN
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE DIVISE
+     &(X,Y,XEL,YEL,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,INDICP,
+     & INDICE,CORR,LEVEL)
+!
+        USE DECLARATIONS_SPECIAL
+        IMPLICIT NONE
+        DOUBLE PRECISION, INTENT(INOUT) :: X(*), Y(*)
+        DOUBLE PRECISION, INTENT(INOUT) :: XEL(NELMAX,3), YEL(NELMAX,3)
+        DOUBLE PRECISION, INTENT(IN) :: SOM2(10,2)
+        INTEGER, INTENT(INOUT) :: IKLE(NELMAX,*), NCOLOR(*)
+        INTEGER, INTENT(INOUT) :: INDICP(*), INDICE(*)
+        INTEGER, INTENT(INOUT) :: NPOIN, NELEM
+        INTEGER, INTENT(IN)    :: NELMAX, NSOM2
+        INTEGER, INTENT(INOUT), OPTIONAL :: CORR(NELMAX,*)
+        INTEGER, INTENT(IN), OPTIONAL :: LEVEL
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE FILL_LIM
+     & (NPTFR,NPTFRX,NTRAC,LIHBOR,LIUBOR,LIVBOR,LITBOR,
+     &  HBOR,UBOR,VBOR,CHBORD,TBOR,ATBOR,BTBOR)
+!
+        USE BIEF
+        USE DECLARATIONS_SPECIAL
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)    :: NPTFR,NPTFRX,NTRAC
+        INTEGER,INTENT(INOUT) :: LIHBOR(NPTFRX),LIUBOR(NPTFRX)
+        INTEGER,INTENT(INOUT) :: LIVBOR(NPTFRX)
+        TYPE(BIEF_OBJ)  , INTENT(INOUT) :: LITBOR
+        DOUBLE PRECISION, INTENT(INOUT) :: UBOR(NPTFRX,2),VBOR(NPTFRX,2)
+        DOUBLE PRECISION, INTENT(INOUT) :: HBOR(NPTFRX)
+        DOUBLE PRECISION, INTENT(INOUT) :: CHBORD(NPTFRX)
+        TYPE(BIEF_OBJ)  , INTENT(INOUT) :: TBOR, ATBOR, BTBOR
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      END MODULE INTERFACE_STBTEL

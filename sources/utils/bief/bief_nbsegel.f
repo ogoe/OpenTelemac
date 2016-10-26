@@ -2,7 +2,7 @@
                      INTEGER FUNCTION BIEF_NBSEGEL
 !                    *****************************
 !
-     &(IELM,MESH)
+     &(IELM,MESH,REFINE)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -41,6 +41,7 @@
 !
       INTEGER, INTENT(IN)         :: IELM
       TYPE(BIEF_MESH), INTENT(IN) :: MESH
+      INTEGER,INTENT(IN),OPTIONAL :: REFINE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -52,7 +53,11 @@
         CALL PLANTE(1)
         STOP
       ELSE
-        BIEF_NBSEGEL = MESH%NDS(IELM,6)
+        IF(PRESENT(REFINE)) THEN
+          BIEF_NBSEGEL = MESH%NDS(IELM,6)*2**REFINE
+        ELSE
+          BIEF_NBSEGEL = MESH%NDS(IELM,6)
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

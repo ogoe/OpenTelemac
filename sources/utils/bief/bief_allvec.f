@@ -2,7 +2,7 @@
                      SUBROUTINE BIEF_ALLVEC
 !                    **********************
 !
-     &( NAT , VEC , NOM , IELM , DIM2 , STATUT , MESH )
+     &( NAT , VEC , NOM , IELM , DIM2 , STATUT , MESH , REFINE)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -35,6 +35,7 @@
 !| NAT            |<--| 1: DOUBLE PRECISION   2:VECTOR OF INTEGERS
 !|                |   | 3: DOUBLE PRECISION AND VECTOR OF INTEGERS
 !| NOM            |-->| FORTRAN NAME
+!| REFINE         |-->| NUMBER OF REFINEMENT LEVELS
 !| STATUT         |-->| VECTOR STATUS:
 !|                |   | 0 : FREE VECTOR, IELM IS ITS DIMENSION
 !|                |   | 1 : VECTOR DEFINED ON A MESH
@@ -55,6 +56,7 @@
       INTEGER         , INTENT(IN)    :: NAT,IELM,DIM2,STATUT
       CHARACTER(LEN=6), INTENT(IN)    :: NOM
       TYPE(BIEF_MESH) , INTENT(IN)    :: MESH
+      INTEGER, INTENT(IN), OPTIONAL   :: REFINE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -116,7 +118,11 @@
 !     FIRST DIMENSION OF VECTOR
 !
       IF(STATUT.EQ.1.OR.STATUT.EQ.2) THEN
-        VEC%DIM1 = BIEF_NBPTS(IELM,MESH)
+        IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+          VEC%DIM1 = BIEF_NBMPTS(IELM,MESH)
+        ELSE
+          VEC%DIM1 = BIEF_NBPTS(IELM,MESH)
+        ENDIF
       ELSE
         VEC%DIM1 = IELM
       ENDIF

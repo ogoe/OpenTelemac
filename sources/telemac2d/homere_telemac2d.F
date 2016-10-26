@@ -29,6 +29,7 @@
       USE DECLARATIONS_WAQTEL,  ONLY : WAQ_FILES,MAXLU_WAQ,WAQPROCESS
       USE INTERFACE_TELEMAC2D
       USE INTERFACE_WAQTEL
+      USE INTERFACE_STBTEL
       USE DECLARATIONS_SPECIAL
 !
       IMPLICIT NONE
@@ -43,6 +44,11 @@
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) MOTCAR(MAXKEYWORD),FILE_DESC(4,MAXKEYWORD)
       CHARACTER(LEN=144) DUMMY
+!
+      INTEGER IERR, ITRAC, IELMHT, IELMUT
+      INTEGER IELMC1,IELMC2,IELBX
+      INTEGER IELBU,IELBH,IELBT,IELBK,IELBE
+      INTEGER, DIMENSION(:,:), TARGET, ALLOCATABLE :: CORRESP
 !
 !======================================================================
 !
@@ -196,13 +202,62 @@
 !
 !=======================================================================
 !
-      IF(ESTIME.EQ.' ') THEN
+      IF(ESTIME.EQ.' '.AND..NOT.CONVERGENCE) THEN
 !
 !-----------------------------------------------------------------------
 !
 !     STANDARD MODE: ONE TELEMAC2D CALL
 !
       CALL TELEMAC2D(PASS=-1,ATDEP=0.D0,NITER=0,CODE='       ')
+!
+!-----------------------------------------------------------------------
+!
+      ELSE IF (ESTIME.EQ.' '.AND.CONVERGENCE) THEN
+!
+!       CONVERGENCE MODE
+!       MESH REFINEMENT WITH RLEVELS DIVISIONS
+!
+        WRITE(LU,*) "TELEMAC2D LAUNCHED IN CONVERGENCE MODE"
+        WRITE(LU,*) "--------------------------------------"
+        WRITE(LU,*) "GENERATE THE FINEST MESH"
+        WRITE(LU,*) "WITH ", FINEMESH%NELMAX, "ELEMENTS MAX"
+        WRITE(LU,*) "WITH ", FINEMESH%NELEM, "ELEMENTS AT THE BEGINNING"
+        WRITE(LU,*) "WITH ", FINEMESH%NPMAX, "POINTS MAX"
+        WRITE(LU,*) "WITH ", FINEMESH%NPOIN, "POINTS AT THE BEGINNING"
+        ALLOCATE(CORRESP(FINEMESH%NELMAX,RLEVELS+1))
+        CALL REFINE_MESH(RLEVELS+1,FINEMESH,FINEMESH%NELMAX,
+     &                   FINEMESH%NPTFRX,NTRAC,.FALSE.,CORRESP=CORRESP)
+        WRITE(LU,*) "END OF THE FINE MESH GENERATION"
+!
+!       RLEVELS TELEMAC2D CALLS WITH SUCCESSIVE REFINEMENTS
+!
+        WRITE(LU,*) "ENTERING THE LOOP OF TELEMAC2D CALLS"
+        DO IERR = 1,RLEVELS+1
+!
+          WRITE(LU,*) "CALL ", IERR, " TO TELEMAC2D"
+!          WRITE(T2D_FILES(T2DRES)%NAME, FMT='(A,I6,A)')
+!     &           'level_', IERR, '.slf'
+
+          CALL TELEMAC2D(PASS=-1,ATDEP=0.D0,NITER=0,CODE='       ',
+     &                   CONVERGENCE_LEVEL=IERR)
+!
+          DO ITRAC=1,NTRAC
+          WRITE(LU,*) "ERROR ON THE TRACER", ITRAC
+            CALL ERROR_COMPUTATION(T%ADR(ITRAC)%P%R,MESH,FINEMESH,
+     &                             FINEMESH%NELMAX,MESH%NPOIN,
+     &                             CORRESP,RLEVELS+1,IERR,MESH%IKLE%I,
+     &                             FINEMESH%IKLE%I)
+          ENDDO
+!
+          IF(IERR.EQ.RLEVELS+1) EXIT
+          CALL REFINE_MESH(1,MESH,MESH%NELMAX,MESH%NPTFRX,
+     &                     NTRAC,.TRUE.,LIHBOR=LIHBOR%I,LIUBOR=LIUBOR%I,
+     &                     LIVBOR=LIVBOR%I,LITBOR=LITBOR,HBOR=HBOR%R,
+     &                     UBOR=UBOR%R,VBOR=VBOR%R,CHBORD=CHBORD%R,
+     &                     TBOR=TBOR,ATBOR=ATBOR,BTBOR=BTBOR,ZF=ZF,
+     &                     H=H,TEXP=TEXP,TTILD=TTILD,TN=TN)
+!
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !

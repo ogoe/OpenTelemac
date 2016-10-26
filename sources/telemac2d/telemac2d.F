@@ -2,7 +2,8 @@
                      SUBROUTINE TELEMAC2D
 !                    ********************
 !
-     &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT,NITERORI)
+     &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT,NITERORI,
+     & CONVERGENCE_LEVEL)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
@@ -344,12 +345,14 @@
 !     DO WE WANT TELEMAC2D TO OUTPUT IN THE LISTING OR NOT?
       LOGICAL,          INTENT(IN), OPTIONAL :: DOPRINT
       INTEGER,          INTENT(IN), OPTIONAL :: NITERORI
+      INTEGER,          INTENT(IN), OPTIONAL :: CONVERGENCE_LEVEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 ! INTEGERS
 !
       INTEGER IELM,I,IELMX,ISOUSI,STOP2,LEOPRD_CHARR,DISCLIN
+      INTEGER REF
       INTEGER ALIRE(MAXVAR),TROUVE(MAXVAR+10)
 !
 ! REAL SCALARS
@@ -439,6 +442,14 @@
       YAFLODEL=.FALSE.
       DISCLIN=11
       NFLOT=0
+!
+!-----------------------------------------------------------------------
+!
+!     SET REF VALUE FOR CONVERGENCE STUDIES
+      REF = 0
+      IF (PRESENT(CONVERGENCE_LEVEL)) THEN
+        REF = CONVERGENCE_LEVEL
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -538,15 +549,18 @@
       ELSE
         NPTFR2=NPTFR
       ENDIF
-      IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECLIM'
-      CALL LECLIM (LIHBOR%I   , LIUBOR%I , LIVBOR%I , LITBOR%ADR(1)%P%I,
-     &             HBOR%R     , UBOR%R   , VBOR%R   , TBOR%ADR(1)%P%R ,
-     &             CHBORD%R    , ATBOR%ADR(1)%P%R   , BTBOR%ADR(1)%P%R ,
-     &             MESH%NPTFR , CCODE     ,NTRAC.GT.0,
-     &             T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
-     &             KENT       , KENTU    , KSORT ,  KADH , KLOG , KINC,
-     &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I,NPTFR2)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECLIM'
+      IF (REF.LE.1) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECLIM'
+        WRITE(LU,*) 'CALLING LECLIM'
+        CALL LECLIM(LIHBOR%I   , LIUBOR%I , LIVBOR%I, LITBOR%ADR(1)%P%I,
+     &              HBOR%R     , UBOR%R   , VBOR%R  , TBOR%ADR(1)%P%R  ,
+     &              CHBORD%R   , ATBOR%ADR(1)%P%R   , BTBOR%ADR(1)%P%R ,
+     &              MESH%NPTFR , CCODE     ,NTRAC.GT.0,
+     &              T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
+     &              KENT       , KENTU    , KSORT ,  KADH , KLOG , KINC,
+     &              NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I,NPTFR2)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECLIM'
+      ENDIF
 !
 ! DUPLICATES THE BOUNDARY CONDITIONS FOR THE TRACERS
 !
@@ -630,7 +644,8 @@
 !-----------------------------------------------------------------------
 !
       IF(     .NOT.INCLU2(ESTIME,'FROTTEMENT')
-     &   .AND..NOT.INCLU2(ESTIME,'FRICTION'  )  ) THEN
+     &   .AND..NOT.INCLU2(ESTIME,'FRICTION'  )
+     &   .AND.(REF.LE.1)) THEN
 !       NO PARAMETER ESTIMATION
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FONSTR'
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
@@ -640,7 +655,8 @@
      &              N_NAMES_PRIV,NAMES_PRIVE,PRIVE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FONSTR'
         CORBOT=.TRUE.
-      ELSEIF(NITERA.EQ.1.AND..NOT.ADJO) THEN
+      ELSEIF(NITERA.EQ.1.AND..NOT.ADJO
+     &   .AND.(REF.LE.1)) THEN
 !       WITH PARAMETER ESTIMATION (HENCE NITERA DEFINED),
 !       FONSTR CALLED ONCE TO GET
 !       THE BOTTOM TOPOGRAPHY AND THE INITIAL FRICTION (CALL TO STRCHE)
@@ -761,7 +777,7 @@
         IF(ITURB.EQ.6)THEN
           CALL FIND_VARIABLE(T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
      &                      'WALLDIST        ',WDIST%R, MESH%NPOIN,
-     &                      IERR,RECORD=0,TIME_RECORD=BID)  
+     &                      IERR,RECORD=0,TIME_RECORD=BID)
 
           IF(IERR.NE.0)THEN
             IF(LNG.EQ.1)THEN
@@ -1113,10 +1129,10 @@
 !     INITIAL CODNITIONS FOR SA MODEL
 !
       IF(SA) THEN
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SPALART INITIALIZATION' 
-        CALL FRICTION_CHOICE(1) 
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SPALART INITIALIZATION'
+        CALL FRICTION_CHOICE(1)
         CALL AKSAIN(VISCSA%R,NPOIN,NUMIN,PROPNU)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SPALART INITIALIZATION' 
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SPALART INITIALIZATION'
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -2184,6 +2200,8 @@
 !
 !  PROPAGATION.
 !
+      HN%DIM1=NPOIN
+      ZF%DIM1=NPOIN
       IF(EQUA(1:15).EQ.'SAINT-VENANT EF'.OR.
      &   EQUA(1:10).EQ.'BOUSSINESQ') THEN
 !
@@ -2410,6 +2428,8 @@
         IT1%I(I)=LIMTRA%I(I)
       ENDDO
 !
+      TTILD%ADR(ITRAC)%P%DIM1=NPOIN
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CVDFTR SOLSYS=',SOLSYS
       IF(SOLSYS.EQ.1) THEN
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
@@ -2474,7 +2494,7 @@
 !
 !
 !=======================================================================
-!           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL OR SA MODELS 
+!           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL OR SA MODELS
 !=======================================================================
 !
       IF(ITURB.EQ.3.AND..NOT.ADJO) THEN
@@ -2500,7 +2520,7 @@
         IF (DEBUG.GT.0) WRITE(LU,*) 'CALLING SPALART_ALLMARAS'
         CALL SPALART_ALLMARAS(U, V, VISCSA, DT, NUN, NUTILD, PROPNU,
      &                        VISC,IELMNU,SLVNU,MESH%DISBOR,
-     &                        INFONU.AND.ENTET, 
+     &                        INFONU.AND.ENTET,
      &                        MSK,MASKEL,MASKPT,NPTFR,LIMSA%I,
      &                        NUBOR,S,UCONV,VCONV,ICONVF(4),
      &                        BM1,TM1,CV1,CM2,T3,T1,T2,MESH,TB,

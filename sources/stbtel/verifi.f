@@ -2,7 +2,7 @@
                         SUBROUTINE VERIFI
 !                       *****************
 !
-     &( X , Y ,IKLE , NCOLOR , TRAV1 , EPSI )
+     &(X,Y,IKLE,NCOLOR,TRAV1,EPSI,MESH,NDP,NPOIN,NELEM,NELMAX)
 !
 !***********************************************************************
 ! PROGICIEL : STBTEL V5.2         09/08/89    J-C GALLAND  (LNH)
@@ -40,9 +40,9 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
+      INTEGER, INTENT(IN) ::  MESH , NDP , NPOIN , NELEM, NELMAX
       INTEGER IKLE(NELMAX,4) , NCOLOR(*)
       INTEGER ITEST , ITEST1 , IELEM
       INTEGER TRAV1(*)
@@ -56,7 +56,8 @@
 ! ON VERIFIE QUE TOUS LES POINTS SONT DISTINCTS
 !=======================================================================
 !
-      CALL REMAIL (IKLE,NCOLOR,TRAV1,X,Y,EPSI)
+      CALL REMAIL (IKLE,NCOLOR,TRAV1,X,Y,EPSI,
+     &             NDP,NPOIN,NELEM,NELMAX)
 !
 !=======================================================================
 ! ON VERIFIE QUE TOUS LES ELEMENTS SONT CORRECTEMENT ORIENTES
@@ -71,10 +72,10 @@
         DO IELEM=1,NELEM
 !
           ITEST1 = 0
-          CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y)
-          CALL CIRCUL (IKLE,ITEST1,IELEM,2,3,4,X,Y)
-          CALL CIRCUL (IKLE,ITEST1,IELEM,3,4,1,X,Y)
-          CALL CIRCUL (IKLE,ITEST1,IELEM,4,1,2,X,Y)
+          CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y,NELMAX)
+          CALL CIRCUL (IKLE,ITEST1,IELEM,2,3,4,X,Y,NELMAX)
+          CALL CIRCUL (IKLE,ITEST1,IELEM,3,4,1,X,Y,NELMAX)
+          CALL CIRCUL (IKLE,ITEST1,IELEM,4,1,2,X,Y,NELMAX)
           IF (ITEST1.GT.0) ITEST = ITEST + 1
 !
         ENDDO
@@ -86,7 +87,7 @@
         DO IELEM=1,NELEM
 !
           ITEST1 = 0
-          CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y)
+          CALL CIRCUL (IKLE,ITEST1,IELEM,1,2,3,X,Y,NELMAX)
           IF (ITEST1.GT.0) ITEST = ITEST + 1
 !
         ENDDO
