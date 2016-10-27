@@ -612,6 +612,10 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 % used to go over two lines
 \newcommand{\minitab}[2][1]{\begin{tabular}{#1}#2\end{tabular}}
 
+%----------------------------------------------------------------------------------------
+%	GRAPHICS
+%----------------------------------------------------------------------------------------
+\newcommand{\includegraphicsmaybe}[2]{\IfFileExists{#2}{\includegraphics#1{#2}}{\makebox[0pt]{File #2 is missing}\includegraphics#1{../../../../documentation/data/image_not_found.png}}}
 
 %----------------------------------------------------------------------------------------
 %	CODE DEFINITION
