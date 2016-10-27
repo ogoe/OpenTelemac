@@ -973,7 +973,7 @@ files: friction_def.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
   homere_telemac2d.F
-  error_computation.f
+  error_computation.F
 
 [tomawac]
 path: <root>|sources|tomawac
