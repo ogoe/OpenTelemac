@@ -44,7 +44,7 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
+      USE DECLARATIONS_STBTEL, ONLY: NELEM,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
       INTEGER NPOIN2 , NELEM2

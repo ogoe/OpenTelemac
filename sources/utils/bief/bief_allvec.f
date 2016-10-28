@@ -60,11 +60,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ERR
+      INTEGER ERR,IMAX,I,REF
+      DOUBLE PRECISION XMAX
+!
       INTRINSIC MAX
 !
-      INTEGER IMAX,I
-      DOUBLE PRECISION XMAX
+      IF(PRESENT(REFINE)) THEN
+        REF=REFINE
+      ELSE
+        REF=0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  HEADER COMMON TO ALL OBJECTS
@@ -118,7 +123,7 @@
 !     FIRST DIMENSION OF VECTOR
 !
       IF(STATUT.EQ.1.OR.STATUT.EQ.2) THEN
-        IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+        IF(REF.GT.0) THEN
           VEC%DIM1 = BIEF_NBMPTS(IELM,MESH)
         ELSE
           VEC%DIM1 = BIEF_NBPTS(IELM,MESH)

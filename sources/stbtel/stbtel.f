@@ -5,14 +5,26 @@
      &( NPOIN1 , TYPELE , NFOND , PRECIS , NSFOND , TITRE)
 !
 !***********************************************************************
-! PROGICIEL : STBTEL  6.0           09/08/89    J.C. GALLAND
+! PROGICIEL : STBTEL  7.2           09/08/89    J.C. GALLAND
 !                                    19/02/93    J.M. JANIN
 !                                    09/11/94    P. LANG / LHF (TRIGRID)
 !                                  07/96    P. CHAILLET / LHF (FASTTABS)
 !                                  09/98    A. CABAL / P. LANG SOGREAH
 !***********************************************************************
 !
-!     FONCTION  : PROGRAMME PRINCIPAL
+!     FONCTION  : STBTEL MAIN PROGRAM
+!
+!
+!
+!
+!
+!history  J-M HERVOUET (JUBILADO)
+!+        24/10/2016
+!+        V7P2
+!+   Optimisation in the case of splitting of all elements. Look for
+!+   the second call to VERIFI (no skipped with a test) and the only
+!+   call to INTERP (test changed). The work of VERIFI and INTERP is
+!+   done in DIVISE in the case DIV4.AND.NSOM2.EQ.0.
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -72,9 +84,9 @@
 ! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
 ! |  FICH:         |    |
 ! |    NRES        |--> | NUMERO DU CANAL DU FICHIER DE SERAFIN
-! |    NGEO       |--> | NUMERO DU CANAL DU FICHIER MAILLEUR
-! |    NLIM      |--> | NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
-! |    NFO1      |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
+! |    NGEO        |--> | NUMERO DU CANAL DU FICHIER MAILLEUR
+! |    NLIM        |--> | NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
+! |    NFO1        |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
 ! |  SECT:         |    |
 ! |    NSEC11      |--> | INDICATEUR DU SECTEUR CONTENANT LES NOEUDS
 ! |                |--> | (LECTURE EN SIMPLE PRECISION)
@@ -96,6 +108,7 @@
       USE DECLARATIONS_STBTEL
       USE DECLARATIONS_SPECIAL
       USE INTERFACE_STBTEL
+!
       IMPLICIT NONE
 !
       INTEGER NPOIN1 , IELM
@@ -114,7 +127,6 @@
 !
       REAL, DIMENSION(:), ALLOCATABLE :: W
       DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE :: WORK,X,Y,ZF
-      DOUBLE PRECISION,DIMENSION(:,:)  ,ALLOCATABLE :: XEL,YEL
       DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE :: XR,YR,ZR
       DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE :: XINIT,YINIT
       DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE :: VAINIT,VAR
@@ -151,10 +163,6 @@
       CALL CHECK_ALLOCATE(ERR,'X')
       ALLOCATE(Y(NPMAX)       ,STAT=ERR)
       CALL CHECK_ALLOCATE(ERR,'Y')
-      ALLOCATE(XEL(NELMAX,3)   ,STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR,'XEL')
-      ALLOCATE(YEL(NELMAX,3)   ,STAT=ERR)
-      CALL CHECK_ALLOCATE(ERR,'YEL')
       ALLOCATE(ZF(NPMAX)      ,STAT=ERR)
       CALL CHECK_ALLOCATE(ERR,'ZF')
       ALLOCATE(XR(NBAT)       ,STAT=ERR)
@@ -250,43 +258,42 @@
 ! EXTRACTION D'UN MAILLAGE
 !=======================================================================
 !
-      IF(MESH.EQ.3.AND.NSOM.GE.3)
-     &   CALL EXTRAC (X,Y,SOM,IKLE,TRAV1,NELEM,NELMAX,NPOIN,NSOM,PROJEX)
+      IF(MESH.EQ.3.AND.NSOM.GE.3) THEN
+        CALL EXTRAC(X,Y,SOM,IKLE,TRAV1,NELEM,NELMAX,NPOIN,NSOM,PROJEX)
+      ENDIF
 !
 !=======================================================================
 ! IMPRESSION DES DONNEES GEOMETRIQUES
 !=======================================================================
 !
-      CALL IMPRIM (NPOIN1,NPOIN,TYPELE,NELEM,TITRE,MAILLE,PRECIS)
+      CALL IMPRIM(NPOIN1,NPOIN,TYPELE,NELEM,TITRE,MAILLE,PRECIS)
 !
 !=======================================================================
 ! DIVISION PAR 4 DE TOUTE OU PARTIE DES MAILLES
 !=======================================================================
 !
       IF(MESH.EQ.3.AND.DIV4) THEN
-        CALL DIVISE (X,Y,XEL,YEL,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,
-     &               SOM2,TRAV1,TRAV2)
+        CALL DIVISE(X,Y,IKLE,NCOLOR,NPOIN,NELEM,NELMAX,NSOM2,SOM2,
+     &              TRAV1,TRAV2,SHP,ELT,NPMAX)
       ELSE
-        IF (DIV4.AND.LNG.EQ.1) WRITE(LU,901)
-        IF (DIV4.AND.LNG.EQ.2) WRITE(LU,3901)
+        IF(DIV4.AND.LNG.EQ.1) WRITE(LU,901)
+        IF(DIV4.AND.LNG.EQ.2) WRITE(LU,3901)
       ENDIF
-!
 !
 !=======================================================================
 ! OPTION ELIMINATION DES ELEMENTS SECS OU PARTIELLEMENT SECS
 !=======================================================================
 !
-      IF (ELISEC) THEN
-        IF (MESH.EQ.3) THEN
-          IF (LNG.EQ.1) WRITE(LU,3006)
-          IF (LNG.EQ.2) WRITE(LU,3007)
+      IF(ELISEC) THEN
+        IF(MESH.EQ.3) THEN
+          IF(LNG.EQ.1) WRITE(LU,3006)
+          IF(LNG.EQ.2) WRITE(LU,3007)
           CALL ELMSEC ( ELPSEC, SEUSEC, TPSFIN, X, Y, IKLE,
      &    NCOLOR, ISDRY, IHAUT, NVARIN, VAR, W , TRAV2, STD ,NGEO)
 !
 ! APRES ELIMINATION, ON RECHERCHE LES POINTS FRONTIERES POSANT PROBLEME
 !
-          CALL VERIFI (X,Y,IKLE,NCOLOR,TRAV1,EPSI,MESH,NDP,
-     &                 NPOIN,NELEM,NELMAX)
+          CALL VERIFI (X,Y,IKLE,NCOLOR,TRAV1,EPSI)
           IELM = 11
           CALL VOISIN(IFABOR,NELEM,NELMAX,IELM,IKLE,NELMAX,NPOIN,
      &                       NACHB,NBOR,NPTFR,TRAV1,TRAV2)
@@ -311,8 +318,9 @@
 ! MISE AU FORMAT TELEMAC DU MAILLAGE
 !=======================================================================
 !
-      CALL VERIFI(X,Y,IKLE,NCOLOR,TRAV1,EPSI,MESH,NDP,
-     &             NPOIN,NELEM,NELMAX)
+      IF(.NOT.(DIV4.AND.NSOM2.EQ.0)) THEN
+        CALL VERIFI(X,Y,IKLE,NCOLOR,TRAV1,EPSI)
+      ENDIF
 !
 !=======================================================================
 ! CONSTRUCTION DU TABLEAU IFABOR
@@ -330,8 +338,8 @@
 !     ET L'ORDRE INVERSE POUR LES ILES)
 !=======================================================================
 !
-      CALL RANBO (NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV1,NPTFR,X,Y,
-     &            NCOLFR,NDP,NPOIN,NELEM,NELMAX,MESH)
+      CALL RANBO(NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV1,NPTFR,X,Y,
+     &           NCOLFR,NDP,NPOIN,NELEM,NELMAX,MESH)
 !
 !=======================================================================
 ! ELIMINATION DES TRIANGLES SURCONTRAINTS
@@ -438,19 +446,18 @@
 !
 !  INTERPOLATION DES VARIABLES DU FICHIER D'ENTREE
 !
-      IF (MAILLE.EQ.'SELAFIN') CALL INTERP
-     &   (XINIT,YINIT,IKINIT,NPINIT,NEINIT,X,Y,NPOIN,NPMAX,SHP,ELT)
+      IF(MAILLE.EQ.'SELAFIN'.AND..NOT.(DIV4.AND.NSOM2.EQ.0)) THEN
+        CALL INTERP(XINIT,YINIT,IKINIT,NPINIT,NEINIT,X,Y,NPOIN,
+     &              NPMAX,SHP,ELT)
+      ENDIF
 !
-      IF (ELISEC) THEN
+      IF(ELISEC) THEN
 !       ECRITURE DES VARIABLES DE SORTIE AU FORMAT RESULTAT TELEMAC-2D
-!
         CALL ECRRES (VAINIT,IKINIT,NPINIT,NEINIT,SHP,ELT,NPOIN,NPOIN1,
      &             NPMAX,W,X,ZF,NSFOND,NCOLOR,COLOR,VAR,NVARIN,NVAROU,
      &             STD, NDP, TRAV1, STOTOT, TPSFIN,NGEO,NRES)
       ELSE
-!
 !       ECRITURE DES VARIABLES DE SORTIE AU FORMAT SELAFIN
-!
         CALL ECRSEL(VAINIT,IKINIT,NPINIT,NEINIT,SHP,ELT,NPOIN,NPOIN1,
      &             NPMAX,W,X,ZF,NSFOND,NCOLOR,COLOR,VAR,NVARIN,NVAROU,
      &             NVAR2,STD,FUSION,NRES,NGEO,NFO1,MAILLE)

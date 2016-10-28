@@ -501,9 +501,9 @@ files: bief_def.f
   mxptel31.f
   mxptel.f
   almesh.f
+  bief_close_files.f
   bief_open_files.f
   elapse.f
-  bief_close_files.f
   read_config.f
   bief_init.f
 
@@ -559,10 +559,10 @@ files: interface_hermes.f
   get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  open_mesh.f
-  open_bnd.f
   close_bnd.f
   close_mesh.f
+  open_mesh.f
+  open_bnd.f
 
 [nestor]
 path: <root>|sources|nestor
@@ -752,21 +752,21 @@ files: declarations_sisyphe.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.F
-  print_header.f
   plante.F
+  get_nodes_per_element.f
+  check_allocate.f
   get_free_id.f
   write_error.f
   check_call.f
-  get_nodes_per_element.f
-  check_allocate.f
   extens.f
+  print_header.f
   gracestop.f
 
 [stbtel]
 path: <root>|sources|stbtel
-files: interp.f
-  declarations_stbtel.F
+files: declarations_stbtel.F
   interface_stbtel.f
+  interp.f
   ranbo.f
   fill_lim.f
   renum.f
@@ -972,8 +972,8 @@ files: friction_def.f
   point_telemac2d.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
+  error_computation.f
   homere_telemac2d.F
-  error_computation.F
 
 [tomawac]
 path: <root>|sources|tomawac
@@ -1106,7 +1106,7 @@ files: interface_waqtel.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
   source_waq.f
-  nametrac_waq.f
   increase_ntrac.f
+  nametrac_waq.f
   lecdon_waqtel.f
   point_waqtel.f

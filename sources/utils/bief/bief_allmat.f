@@ -6,7 +6,7 @@
      &  REFINE )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A REAL MATRIX STRUCTURE.
@@ -56,9 +56,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELMD
+      INTEGER IELMD,REF
 !
       CHARACTER(LEN=6) :: NAME
+!
+      IF(PRESENT(REFINE)) THEN
+        REF=REFINE
+      ELSE
+        REF=0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  HEADER COMMON TO ALL OBJECTS
@@ -105,8 +111,8 @@
       NAME = 'D' // NOM(1:5)
       IF(TYPDIA(1:1).EQ.'Q') THEN
 !       ONLY CASE WHERE THE DIAGONAL DOES EXIST
-        IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
-          CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH,REFINE)
+        IF(REF.GT.0) THEN
+          CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH,REF)
         ELSE
           CALL BIEF_ALLVEC(1,MAT%D,NAME,IELMD,1,2,MESH)
         ENDIF
@@ -123,9 +129,9 @@
 !
       NAME = 'X' // NOM(1:5)
 !
-      IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+      IF(REF.GT.0) THEN
         CALL BIEF_ALLVEC(1,MAT%X,NAME,
-     &         BIEF_DIM1_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH)*4**REFINE,
+     &         BIEF_DIM1_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH)*4**REF,
      &         BIEF_DIM2_EXT(IELM1,IELM2,CFG(1),TYPEXT,MESH),
      &         0,MESH)
       ELSE

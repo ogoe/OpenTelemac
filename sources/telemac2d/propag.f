@@ -1048,7 +1048,7 @@
             IF(NCSIZE.GT.1) CALL PARCOM(T2,2,MESH)
             CALL OS('X=Y     ',X=T5,Y=HPROP)
             IF(T5%ELM.NE.IELMU) CALL CHGDIS(T5,T5%ELM,IELMU,MESH)
-            DO I=1,U%DIM1
+            DO I=1,BIEF_NBPTS(IELMU,MESH)
 !             HIDDEN PARAMETER
               IF(T5%R(I).LT.1.D-3) THEN
                 T3%R(I)=10.D0*T2%R(I)/DT
@@ -1056,7 +1056,7 @@
               ENDIF
             ENDDO
           ELSE
-            DO I=1,U%DIM1
+            DO I=1,BIEF_NBPTS(IELMU,MESH)
 !             HIDDEN PARAMETER
               IF(HPROP%R(I).LT.1.D-3) THEN
                 T3%R(I)=10.D0*V2DPAR%R(I)/DT

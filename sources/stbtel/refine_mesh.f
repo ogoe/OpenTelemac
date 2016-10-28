@@ -13,10 +13,15 @@
 !brief    Refines RLEVELS times a mesh by successive divisions of
 !         all the triangle elements by four
 !
-!history  A.LEROY (EDF)
+!history  A. LEROY (EDF)
 !+        24/03/2016
 !+        V7P2
-!+        Creation of the file
+!+        Creation of the file.
+!
+!history  J.-M. HERVOUET (JUBILADO)
+!+        27/10/2016
+!+        V7P2
+!+        Adapting to new optimised subroutine DIVISE.
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -63,17 +68,16 @@
       TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: TBOR, ATBOR, BTBOR
       TYPE(BIEF_OBJ),INTENT(INOUT),OPTIONAL:: TEXP,TTILD,TN
 !
-      INTEGER IELM,I,J,K,ITRAC
+      INTEGER IELM,I,J,K,ITRAC,I1,I2,I3,IELEM
       INTEGER NPOINMAX,ERR
       INTEGER OLD_NPTFR
 !     TABLEAU BIDON UTILISE PAR VOISIN SEULEMENT EN PARALLELISME
       INTEGER NACHB(1)
 !
-      DOUBLE PRECISION,DIMENSION(:)  ,ALLOCATABLE :: WORK
-      INTEGER, DIMENSION(:)  , ALLOCATABLE :: TRAV1,TRAV2,TRAV3
-      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLE,IFABOR,TRAV4
-      INTEGER, DIMENSION(:)  , ALLOCATABLE :: NBOR,KP1BOR
-      INTEGER, DIMENSION(:)  , ALLOCATABLE :: NCOLOR,NCOLFR
+      DOUBLE PRECISION, ALLOCATABLE :: WORK(:),SHP(:,:)
+      INTEGER, ALLOCATABLE :: TRAV1(:),TRAV2(:),TRAV3(:)
+      INTEGER, ALLOCATABLE :: IKLE(:,:),IFABOR(:,:),TRAV4(:,:)
+      INTEGER, ALLOCATABLE :: NBOR(:),KP1BOR(:),NCOLOR(:),NCOLFR(:)
 !
 !     TODO: CHECK THAT THE MESH IS COMPOSED OF TRIANGLES, OTHERWISE
 !     THIS DOES NOT WORK
@@ -97,6 +101,7 @@
       ALLOCATE(KP1BOR(NPOINMAX),STAT=ERR)
       ALLOCATE(NCOLOR(NPOINMAX),STAT=ERR)
       ALLOCATE(NCOLFR(NPOINMAX),STAT=ERR)
+      ALLOCATE(SHP(NPOINMAX,3),STAT=ERR)
 !
 !=======================================================================
 ! DIVISION BY 4 OF THE WHOLE MESH
@@ -109,15 +114,28 @@
         ENDDO
       ENDDO
       DO J= 1,MESHINIT%NPOIN
-        NCOLOR(J) = 0.D0
+        NCOLOR(J) = 0
       ENDDO
-
+!
       DO I=1,RLEVELS
         WRITE(LU,*) "CALL TO DIVISE NUMBER ", I
-        CALL DIVISE (MESHINIT%X%R,MESHINIT%Y%R,MESHINIT%XEL%R,
-     &               MESHINIT%YEL%R,IKLE,NCOLOR,MESHINIT%NPOIN,
+        CALL DIVISE (MESHINIT%X%R,MESHINIT%Y%R,
+     &               IKLE,NCOLOR,MESHINIT%NPOIN,
      &               MESHINIT%NELEM,MESHINIT%NELMAX,NSOM2,SOM2,
-     &               TRAV1,TRAV2,CORR=CORRESP,LEVEL=I)
+     &               TRAV1,TRAV2,SHP,TRAV3,NPOINMAX,
+     &               CORR=CORRESP,LEVEL=I)
+!       BUILDING XEL AND YEL OF NEW MESH
+        DO IELEM=1,MESHINIT%NELEM
+          I1=IKLE(IELEM,1)
+          I2=IKLE(IELEM,2)
+          I3=IKLE(IELEM,3)
+          MESHINIT%XEL%R(IELEM                  )=MESHINIT%X%R(I1)
+          MESHINIT%YEL%R(IELEM                  )=MESHINIT%Y%R(I1)
+          MESHINIT%XEL%R(IELEM+  MESHINIT%NELMAX)=MESHINIT%X%R(I2)
+          MESHINIT%YEL%R(IELEM+  MESHINIT%NELMAX)=MESHINIT%Y%R(I2)
+          MESHINIT%XEL%R(IELEM+2*MESHINIT%NELMAX)=MESHINIT%X%R(I3)
+          MESHINIT%YEL%R(IELEM+2*MESHINIT%NELMAX)=MESHINIT%Y%R(I3)
+        ENDDO
       ENDDO
 !
 !=======================================================================
@@ -152,9 +170,9 @@
       OLD_NPTFR = MESHINIT%NPTFR
       WRITE(LU,*) "MESHINIT%X SIZE = ", SIZE(MESHINIT%X%R)
       WRITE(LU,*) "CALL RANBO"
-      CALL RANBO (NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV4,MESHINIT%NPTFR,
-     &            MESHINIT%X%R,MESHINIT%Y%R,NCOLFR,3,MESHINIT%NPOIN,
-     &            MESHINIT%NELEM,MESHINIT%NELMAX,3)
+      CALL RANBO(NBOR,KP1BOR,IFABOR,IKLE,NCOLOR,TRAV4,MESHINIT%NPTFR,
+     &           MESHINIT%X%R,MESHINIT%Y%R,NCOLFR,3,MESHINIT%NPOIN,
+     &           MESHINIT%NELEM,MESHINIT%NELMAX,3)
       IF(EXTEND_LIM) THEN
         MESHINIT%NSEG = MESHINIT%NPOIN+MESHINIT%NELEM-1
         MESHINIT%NELEB= MESHINIT%NELEB*3
@@ -210,6 +228,7 @@
       DEALLOCATE(IKLE)
       DEALLOCATE(KP1BOR)
       DEALLOCATE(NCOLFR)
+      DEALLOCATE(SHP)
 !
 !-----------------------------------------------------------------------
 !

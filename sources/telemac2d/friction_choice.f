@@ -32,6 +32,12 @@
 !+        V7P2
 !+   Removing dummy variable KARMAN
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/10/2016
+!+        V7P2
+!+   When KFROTL=0, allowing that CHBORD be not initialised and setting
+!+   it to SB.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FRICTION_PASS  |-->| IF 0, INITIALISATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,13 +117,17 @@
               DO I = 1, NPTFR
                 CHBORD%R(I) = CHESTR%R(MESH%NBOR%I(I))
               ENDDO
-            ELSE
+            ELSEIF(KFROTL.NE.0) THEN
 !             JMH 21/12/2010
 !             BOUNDARY CONDITIONS FILE DATA IF ANY SUPERSEDE
 !             THE KEY-WORD ROUGHNESS COEFFICIENT OF BOUNDARIES
               IF(P_DOTS(CHBORD,CHBORD,MESH).EQ.0.D0) THEN
                 CALL OS('X=C     ', X=CHBORD, C=SB)
               ENDIF
+            ELSE
+!             JMH 28/10/2016
+!             IF KFROTL=0 CHBORD INITIALISED AT SB (BUT NOT USED ?)
+              CALL OS('X=C     ', X=CHBORD, C=SB)
             ENDIF
           ENDIF
           ! TYPE OF FRICTION LAW FOR EACH NODE
@@ -184,3 +194,4 @@
 !
       RETURN
       END
+

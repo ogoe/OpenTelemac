@@ -5,7 +5,7 @@
      &( BLO , N , NAT , NOMGEN , IELM , NDIM , STATUT , MESH , REFINE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V7P2
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR N VECTORS, WHICH WILL BE PART
@@ -69,11 +69,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IDEB,I,II
+      INTEGER IDEB,I,II,REF
 !
       CHARACTER(LEN=6) :: NOM
       CHARACTER(LEN=1), PARAMETER :: CHIFFRE(0:9) =
      &            (/'0','1','2','3','4','5','6','7','8','9'/)
+!
+!-----------------------------------------------------------------------
+!
+      IF(PRESENT(REFINE)) THEN
+        REF=REFINE
+      ELSE
+        REF=0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -118,9 +126,9 @@
 !           ALLOCATES THE VECTOR
 !
             ALLOCATE(BLO%ADR(I)%P)
-            IF(PRESENT(REFINE).AND.REFINE.GT.0) THEN
+            IF(REF.GT.0) THEN
               CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,
-     &                         MESH,REFINE)
+     &                         MESH,REF)
             ELSE
               CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,
      &                         MESH)
