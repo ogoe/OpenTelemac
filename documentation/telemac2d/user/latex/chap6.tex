@@ -225,9 +225,25 @@ This keyword offers the same option than the keyword \textit{LAW OF BOTTOM FRICT
 
 \subsection{ Rain and evaporation}
 
- The modelling of the influence of precipitation or evaporation is activated with the logical keyword \textit{RAIN OR EVAPORATION}. The value of the contribution or the loss of water at the surface is specified using the keyword \textit{RAIN OR EVAPORATION IN MM PER DAY} which default value is 0. (a negative value reflects an evaporation). Rain and evaporation can also vary in time and space. They can be introduced through the meteo file. See water quality, wind and rain validation test cases (in folder examples/telemac2d)
+ The modelling of the influence of precipitation or evaporation is activated with the logical keyword \textit{RAIN OR EVAPORATION}. The value of the contribution or the loss of water at the surface is specified using the keyword \textit{RAIN OR EVAPORATION IN MM PER DAY} which default value is 0. (a negative value reflects an evaporation).The duration of the rainfall or evaporation can be set with the keyword \textit{DURATION OF RAIN OR EVAPORATION IN HOURS} (units: hours, default is infinite). Rain and evaporation can also vary in time and space. They can be introduced through the meteo file. See water quality, wind and rain validation test cases (in folder examples/telemac2d)
 
  In case of calculation with consideration of tracers, it is possible to specify the contribution related to the rain with the keyword \textit{VALUES OF TRACERS IN THE RAINVALUES OF TRACERS IN THE RAIN} (default value is 0.). It is important to note that, in the case of evaporation, no tracer is taken into account in the water loss, which is incorrect if the tracer is the temperature.
+
+\subsection{RAINFALL-RUNOFF MODELLING}
+
+Rainfall-runoff can be modelled with the Curve Number runoff model developed by USA Soil Conservation Service (from 1954). Runoff potential is defined by a unique parameter called the Curve Number (CN) which is function of hydrological soil groups, land use, hydrologic surface condition of native pasture and antecedent moisture conditions. See for example Applied Hydrology (Chow, Maidment, Mays, 1988) for more details and typical CN values. 
+
+The Curve Number runoff model is activated when the keyword \textit{RAINFALL-RUNOFF MODEL} is set to 1 (default is 0, no runoff model). The keyword \textit{TIDAL FLATS} must be set to \texit{YES}. The CN values should be spatially defined. Two methods are available: coordinates of polygons with constant CN values given in a formatted data file (\textit{FORMATTED DATA FILE 2}, default) or CN values stocked directly in the geometry file as an additional variable (see validation case pluie in folder examples/telemac2d). The antecedent moisture conditions class can be defined with the keyword \textit{ANTECEDENT MOISTURE CONDITIONS} (1: dry, 2: normal [default], 3: wet). Two options regarding the definition of the initial abstraction ratio are available and can be set with the keyword \textit{OPTION FOR INITIAL ABSTRACTION RATIO} (1: original method with $\lambda$ = 0.2 [default]; 2: revised method with $\lambda$ = 0.05 and automatic conversion of CN values). CN values to be given in input must correspond to the original method (initial abstraction ratio $\lambda$ = 0.2) and to normal antecedent moisture conditions.
+
+Other options can be activated manually in subroutine RUNOFF\_SCS\_CN.f (in folder sources/telemac2d):
+\begin{itemize}
+\item[*] Correction of CN values to account for steep slopes.
+\item[*] Rainfall defined as a so-called CDS-type hyetograph (Chicago Design Storm) based on a three-parameter Intensity-Duration-Frequency equation (constant in space).
+\item[*] Rainfall defined as a block-type hyetograph giving the rainfall depth in mm between two consecutive times provided in a formatted data file (constant in space).
+\end{itemize}
+Several examples of use are provided in the validation test case pluie (in folder examples/telemac2d).
+
+Evaporation is not supported.
 
 
 \section{ ASTRAL POTENTIAL}
@@ -281,7 +297,7 @@ This keyword offers the same option than the keyword \textit{LAW OF BOTTOM FRICT
 
  In the case of very large domains such as portions of oceans, it is necessary to carry out a simulation with spherical coordinates, in which case the Coriolis coefficient is adjusted automatically at each point of the domain (see 14.3).
 
- TELEMAC-2D also offers the possibility of defining the water density (keyword \textit{WATER DENSITY} ; the default value is 1020 kg/m${}^{3}$, i.e. a value corresponding to a moderately saline sea water) and gravity acceleration (keyword \textit{GRAVITY} \textit{ACCELERATION} \textit{GRAVITY ACCELERATION} fixed by default at 9.81 m/s${}^{2}$).
+ TELEMAC-2D also offers the possibility of defining the water density (keyword \textit{WATER DENSITY} ; the default value is 1000 kg/m${}^{3}$, i.e. a value corresponding to a fresh river water) and gravity acceleration (keyword \textit{GRAVITY} \textit{ACCELERATION} \textit{GRAVITY ACCELERATION} fixed by default at 9.81 m/s${}^{2}$).
 
 
 \section{ PARAMETER ESTIMATION}
