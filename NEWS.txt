@@ -1,6 +1,8 @@
 Trunk (Unreleased)
 ===========================
 
+- TELEMAC-2D: new framework for automatic convergence studies
+
 Release V7P2R0 (Unreleased)
 ===========================
 
@@ -27,6 +29,10 @@ Features
 - Adding NEWS file that contains the major modifications in the code.
 - Integration of the MASCARET source code into the TELEMAC-MASCARET system
   (script mascaret.py to run code).
+- TELEMAC-2D and 3D: possibility to read space-time varying meteo data from a
+  binary file.
+- TELEMAC-3D: possiblity to read space-time varying open boundary conditions
+  from a binary file.
 
 Addons
 ---------------------
