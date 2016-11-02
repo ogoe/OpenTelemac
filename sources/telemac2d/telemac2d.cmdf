@@ -770,9 +770,6 @@ files: declarations_stbtel.F
   ranbo.f
   fill_lim.f
   renum.f
-  remail.f
-  circul.f
-  verifi.f
   divise.f
   refine_mesh.f
 
@@ -972,7 +969,7 @@ files: friction_def.f
   point_telemac2d.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
-  error_computation.f
+  error_computation.F
   homere_telemac2d.F
 
 [tomawac]
