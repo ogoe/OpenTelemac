@@ -60,7 +60,7 @@ LAW OF BOTTOM FRICTION         =3
 / EQUATIONS, CONDITIONS INITIALES
 /---------------------------------------------------------------------
 /
-INITIAL CONDITIONS ='COTE CONSTANTE'
+INITIAL CONDITIONS ='CONSTANT ELEVATION'
 /
 INITIAL ELEVATION        =2.0
 /

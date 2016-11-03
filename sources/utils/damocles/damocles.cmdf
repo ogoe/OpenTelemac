@@ -6,19 +6,23 @@ name: HOMERE_DAMOCLES
 
 [damocles]
 path: <root>|sources|utils|damocles
-files: longlu.f
-  declarations_damocles.f
-  preval.f
-  next.f
-  realu.f
+files: declarations_damocles.f
+  longlu.f
   precar.f
+  next.f
   mycarlu.f
-  intlu.f
   myaidelu.f
+  preval.f
+  intlu.f
   prev.f
+  realu.f
   majus.f
   loglu.f
+  cmd.f
   dico_data.f
+  shell_string.f
+  utils_latex.f
+  utils_cata.f
   homere_damocles.f
 
 [special]
@@ -28,4 +32,5 @@ files: declarations_special.F
   check_allocate.f
   write_error.f
   check_call.f
-  get_free_id.f
+  to_lower.f
+  i2str.f

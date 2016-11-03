@@ -9,7 +9,6 @@
 /---------------------------------------------------------------------
 /
 NAMES OF TRACERS                  ='Traceur 1';'Traceur 2'
-STEERING FILE             ='t2d_trdec.cas'
 RESULTS FILE              ='r2d_trdec.slf'
 BOUNDARY CONDITIONS FILE ='geo_trdec.cli'
 GEOMETRY FILE               ='geo_trdec.slf'
@@ -51,7 +50,7 @@ ACCURACY FOR DIFFUSION OF TRACERS            =1.E-10
 / EQUATIONS, CONDITIONS INITIALES
 /---------------------------------------------------------------------
 /
-INITIAL CONDITIONS ='COTE CONSTANTE'
+INITIAL CONDITIONS ='CONSTANT ELEVATION'
 INITIAL ELEVATION        =2.
 /
 /---------------------------------------------------------------------

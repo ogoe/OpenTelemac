@@ -36,7 +36,7 @@ RESULTS FILE              : r2d_porosite.slf
 /                          OPTIONS GENERALES
 /----------------------------------------------------------------------/
 /
-EQUATIONS 					: 'SAINT-VENANT EF'
+EQUATIONS 					: 'SAINT-VENANT FE'
 COMPUTATION CONTINUED 				: NO
 VARIABLES FOR GRAPHIC PRINTOUTS           : 'U,V,H,S,M,F,D,L'
 VARIABLES TO BE PRINTED  				: ''
@@ -49,7 +49,7 @@ LISTING PRINTOUT PERIOD 			: 1000
 /			CONDITIONS INITIALES
 /---------------------------------------------------------------------
 /
-INITIAL CONDITIONS : 'HAUTEUR CONSTANTE'
+INITIAL CONDITIONS : 'CONSTANT DEPTH'
 INITIAL DEPTH : 5.
 /
 /----------------------------------------------------------------------
@@ -71,7 +71,8 @@ MASS-BALANCE 					: YES
 TYPE OF ADVECTION 				: 1;5
 SUPG OPTION     				: 1;2
 VELOCITY DIFFUSIVITY 	: 0.1
-SOLVER : 7 SOLVER OPTION 		: 3
+SOLVER : 7
+SOLVER OPTION 		: 3
 SOLVER ACCURACY 				: 1.E-5
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER 	        : 100
 IMPLICITATION FOR DEPTH 		        : 1.

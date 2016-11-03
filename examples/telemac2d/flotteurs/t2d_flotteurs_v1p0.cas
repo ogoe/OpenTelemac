@@ -53,7 +53,7 @@ LISTING PRINTOUT PERIOD         : 100
 /                    CONDITIONS INITIALES
 /----------------------------------------------------------------------
 /
-INITIAL CONDITIONS              :  'COTE CONSTANTE'
+INITIAL CONDITIONS              :  'CONSTANT ELEVATION'
 INITIAL ELEVATION               :   265.
 /
 /----------------------------------------------------------------------

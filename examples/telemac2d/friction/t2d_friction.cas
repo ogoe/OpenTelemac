@@ -26,7 +26,7 @@ MASS-BALANCE                        = YES
 /----------------------------------------------------------------------
 / IN CASE OF USE OF FINITE VOLUME
 /----------------------------------------------------------------------
-EQUATIONS                         = 'SAINT-VENANT VF'
+EQUATIONS                         = 'SAINT-VENANT FV'
 FINITE VOLUME SCHEME           = 5
 VARIABLE TIME-STEP             = YES
 DESIRED COURANT NUMBER        = 0.8
@@ -34,7 +34,7 @@ DURATION                   = 55000
 /----------------------------------------------------------------------/
 /     INITIAL AND BOUNDARY CONDITIONS
 /----------------------------------------------------------------------/
-INITIAL CONDITIONS              = 'HAUTEUR CONSTANTE'
+INITIAL CONDITIONS              = 'CONSTANT DEPTH'
 INITIAL DEPTH                  = 9.
 PRESCRIBED FLOWRATES                    = 0.;6000.
 PRESCRIBED ELEVATIONS                    = 0.;0.

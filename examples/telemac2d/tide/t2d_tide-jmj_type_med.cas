@@ -84,7 +84,6 @@ SOLVER                                          : 1
 SOLVER ACCURACY                                 : 1.E-4
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER         : 500
 PRECONDITIONING                                 : 2
-SOLVER OPTION                                   : 3
 /
 /BOTTOM SMOOTHINGS                              : 0
 ZERO                                            : 1.E-10

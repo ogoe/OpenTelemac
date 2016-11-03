@@ -56,7 +56,7 @@
       IF(CDTINI(1:10).EQ.'COTE NULLE') THEN
         CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
-      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE') THEN
+      ELSEIF(CDTINI(1:18).EQ.'CONSTANT ELEVATION') THEN
         CALL OS( 'X=C     ' , H , H  , H , COTINI )
         CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
       ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE') THEN

@@ -174,6 +174,7 @@ def generate_ref_from_dict(exePath,dictionary,latexFile,lng,cleanup):
    else:
       # Creating parameter file for damocles
       with open(paramFile,'w') as f:
+         f.write('LATEX'+'\n')
          f.write(dictionary+'\n')
          f.write(latexFile+'\n')
          f.write(lng+'\n')

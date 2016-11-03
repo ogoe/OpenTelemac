@@ -161,7 +161,7 @@ def readCAS(cas,dico,frgb):
          if kw not in frgb['GB']:
             raise Exception([{'name':'readCAS','msg':'... could not find the following keyword in the selected dictionary file: '+key+'\n     ~> you may not be running the code associated to your CAS file.'}])
          kw = frgb['GB'][kw]
-      if dico[kw]['TYPE'][0] == 'LOGIQUE':
+      if dico[kw]['TYPE'][0] in ['LOGIQUE','LOGICAL']:
          vals = []
          for val in value:
             if val.upper() in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
