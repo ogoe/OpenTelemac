@@ -38,8 +38,10 @@
       USE DECLARATIONS_STBTEL
       IMPLICIT NONE
 !
-      INTEGER I , IEL1 , IEL2
-      INTEGER IKLE(NELMAX,4) , STO(4)
+      INTEGER, INTENT(IN) :: IEL1 , IEL2
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,4)
+!
+      INTEGER STO(4), I
 !
 !
 !=======================================================================

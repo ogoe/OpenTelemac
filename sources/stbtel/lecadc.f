@@ -54,11 +54,12 @@
 !
       IMPLICIT NONE
 !
-      INTEGER NGEO, IBID
-      INTEGER IKLE(NELMAX,4)
-      INTEGER I,J
+      INTEGER, INTENT(IN) :: NGEO
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,4)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*) , Y(*),ZF(*)
 !
-      DOUBLE PRECISION X(*) , Y(*),ZF(*)
+      INTEGER I,J,IBID
+!
 !
 !=======================================================================
 !   INITIALISATION

@@ -97,6 +97,7 @@ files: declarations_special.F
 [stbtel]
 path: <root>|sources|stbtel
 files: declarations_stbtel.F
+  interface_stbtel.f
   initri.f
   iniadc.f
   conv_unv.f
@@ -111,7 +112,6 @@ files: declarations_stbtel.F
   inistb.f
   inifas.f
   point_stbtel.f
-  interface_stbtel.f
   ranbo.f
   presel.f
   interp.f

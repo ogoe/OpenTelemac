@@ -32,9 +32,12 @@
       USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
-      INTEGER LGVEC, NDEPAR , IELEM , K
+      INTEGER, INTENT(IN) :: LGVEC
+      INTEGER, INTENT(INOUT) :: NDEPAR
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,4)
+!
+      INTEGER IELEM , K
       INTEGER I1 , I2 , I3 , J1 , J2 , J3 , IEL1
-      INTEGER IKLE(NELMAX,4)
 !
 !=======================================================================
 !

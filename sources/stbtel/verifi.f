@@ -40,15 +40,18 @@
 !***********************************************************************
 !
       USE DECLARATIONS_SPECIAL
+      USE INTERFACE_STBTEL, EX_VERIFI => VERIFI
       IMPLICIT NONE
 !
-      INTEGER, INTENT(IN) ::  MESH , NDP , NPOIN , NELEM, NELMAX
-      INTEGER IKLE(NELMAX,4) , NCOLOR(*)
+      INTEGER, INTENT(IN) ::  MESH , NDP , NELMAX
+      INTEGER, INTENT(INOUT) :: NPOIN, NELEM
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,4) , NCOLOR(*)
+      INTEGER, INTENT(INOUT) :: TRAV1(*)
+!
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*) , Y(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: EPSI
+!
       INTEGER ITEST , ITEST1 , IELEM
-      INTEGER TRAV1(*)
-!
-      DOUBLE PRECISION X(*) , Y(*) , EPSI
-!
 ! COMMON
 !
 !

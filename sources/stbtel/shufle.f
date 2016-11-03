@@ -36,13 +36,15 @@
 !
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_STBTEL
+      USE INTERFACE_STBTEL, EX_SHUFLE => SHUFLE
       IMPLICIT NONE
 !
-      INTEGER IKLE(NELMAX,4) , I
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,4)
+      DOUBLE PRECISION, INTENT(IN) :: X(*)
 !
-      INTEGER IELEM , I1 , I2 , I3 , I4
+      INTEGER IELEM , I1 , I2 , I3 , I4 , I
 !
-      DOUBLE PRECISION X(*) , XA
+      DOUBLE PRECISION XA
 !
 !
 !=======================================================================

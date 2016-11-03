@@ -48,13 +48,15 @@
       USE DECLARATIONS_STBTEL, ONLY: NELEM,MESH,NDP,NPOIN,NELMAX,NPMAX
       IMPLICIT NONE
 !
-      DOUBLE PRECISION X(*) , Y(*) , W(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(*) , Y(*) , W(*)
+      INTEGER, INTENT(INOUT) :: TRAV1(*) , TRAV2(*)
+      INTEGER, INTENT(INOUT) :: IKLE(NELMAX,3) , NCOLOR(*) , NBOR(*)
+      INTEGER, INTENT(INOUT) :: TAB(*)
+      LOGICAL, INTENT(IN) :: COLOR
+      INTEGER, INTENT(IN) :: NPTFR
 !
-      INTEGER NPTFR
-      INTEGER TAB(*) , IPOIN , IELEM , IPTFR , I1 , I2 , TABMAX
-      INTEGER TRAV1(*) , TRAV2(*) , IKLE(NELMAX,3) , NCOLOR(*) , NBOR(*)
+      INTEGER IPOIN , IELEM , IPTFR , I1 , I2 , TABMAX
 !
-      LOGICAL COLOR
 !
 !
 !=======================================================================

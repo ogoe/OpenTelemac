@@ -40,15 +40,18 @@
 !
       IMPLICIT NONE
 !
+      INTEGER, INTENT(IN) :: NPTFR, NLIM
+      INTEGER, INTENT(IN) :: NBOR(*) , NCOLFR(*)
+      INTEGER, INTENT(INOUT) :: LIHBOR(*) , LIUBOR(*)
+      INTEGER, INTENT(INOUT) :: LIVBOR(*) ,LITBOR(*)
+      CHARACTER(LEN=9), INTENT(IN) :: MAILLE
+!
       INTEGER ILOG , IADH , IENT , IENTU , IINC , ISORT
-      INTEGER NLIM , NPTFR
+!
       INTEGER J
-      INTEGER NBOR(*) , NCOLFR(*)
-      INTEGER LIHBOR(*) , LIUBOR(*) ,LIVBOR(*) ,LITBOR(*)
 !
       DOUBLE PRECISION HBOR , UBOR , VBOR , AUBOR , TBOR , ATBOR ,BTBOR
 !
-      CHARACTER(LEN=9) :: MAILLE
 !
 !***********************************************************************
 !
