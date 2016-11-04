@@ -1,9 +1,9 @@
       ! brief Contains function to write a list of keywords into a LaTeX
       !+ file (For the reference manual)
-      module utils_latex
-      use dico_data
-      implicit none
-      contains
+      MODULE UTILS_LATEX
+      USE DICO_DATA
+      IMPLICIT NONE
+      CONTAINS
       ! brief Write in Latex format a Rubrique
       !
       ! param nfic File descriptor
@@ -235,7 +235,7 @@
           WRITE(NFIC,'(3A)') "French keyword : & \telkey{",
      &                         TRIM(MYDICO(IKEY)%KNOM(1)),"}\\"
         ENDIF
-        write(nfic,'(a)') "\end{tabular}"
+        WRITE(NFIC,'(a)') "\end{tabular}"
         WRITE(NFIC,'(A)') "\\"
         ! The help informations
         IF(MYDICO(IKEY)%AIDE(LNG)(1:3).EQ.'  ') THEN
@@ -252,7 +252,7 @@
       !
       WRITE(NFIC,'(A,A)') '%',REPEAT('-',80)
       IF(LNG.EQ.1) THEN
-        write(nfic,'(a)') '\chapter{Liste des mots clefs par rubrique}'
+        WRITE(NFIC,'(A)') '\chapter{Liste des mots clefs par rubrique}'
       ELSE
         WRITE(NFIC,'(A)')
      &    '\chapter{List of keywords classified according to type}'
@@ -322,4 +322,4 @@
 !
       END SUBROUTINE
       !
-      end module utils_latex
+      END MODULE UTILS_LATEX

@@ -12,496 +12,496 @@
       !
       ! param ikey id of the keyword to handle
       ! param lng The language to handle
-      character(len=KEYWORD_LEN) function cata_typ(ikey, lng)
+      CHARACTER(LEN=KEYWORD_LEN) FUNCTION CATA_TYP(IKEY, LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: ikey
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: LNG
       !
-      integer i
+      INTEGER I
       !
-      cata_typ=repeat(' ',KEYWORD_LEN)
-      if(mydico(ikey)%ktype.eq.1) then
-        cata_typ = "'I'"
-      else if(mydico(ikey)%ktype.eq.2) then
-        cata_typ = "'R'"
-      else if(mydico(ikey)%ktype.eq.3) then
-        cata_typ = 'bool'
-      else if(mydico(ikey)%ktype.eq.4) then
-        cata_typ = "'TXM'"
+      CATA_TYP=REPEAT(' ',KEYWORD_LEN)
+      IF(MYDICO(IKEY)%KTYPE.EQ.1) THEN
+        CATA_TYP = "'I'"
+      ELSE IF(MYDICO(IKEY)%KTYPE.EQ.2) THEN
+        CATA_TYP = "'R'"
+      ELSE IF(MYDICO(IKEY)%KTYPE.EQ.3) THEN
+        CATA_TYP = 'bool'
+      ELSE IF(MYDICO(IKEY)%KTYPE.EQ.4) THEN
+        CATA_TYP = "'TXM'"
         ! If the keyword is a file changing type accordingly
-        IF(mydico(ikey)%submit(1:1).ne.' ') then
+        IF(MYDICO(IKEY)%SUBMIT(1:1).NE.' ') THEN
           ! Check if it is an input or output file
-          if (INDEX(mydico(ikey)%submit,'LIT').ne.0) then
-            cata_typ="('Fichier','All Files (*)')"
-          else
-            cata_typ="('Fichier','All Files (*)','Sauvegarde')"
-          endif
-        endif
-      else
-        ! Should not happen
-        write(*,*) 'Ay caramba'
-        write(*,*) ikey, mydico(ikey)%knom(lng)
-        call plante(1)
-        stop
-      endif
+          IF (INDEX(MYDICO(IKEY)%SUBMIT,'LIT').NE.0) THEN
+            CATA_TYP="('Fichier','All Files (*)')"
+          ELSE
+            CATA_TYP="('Fichier','All Files (*)','Sauvegarde')"
+          ENDIF
+        ENDIF
+      ELSE
+        ! SHOULD NOT HAPPEN
+        WRITE(*,*) 'AY CARAMBA'
+        WRITE(*,*) IKEY, MYDICO(IKEY)%KNOM(LNG)
+        CALL PLANTE(1)
+        STOP
+      ENDIF
       ! If we have a into switching to TXM
-      if(mydico(ikey)%choix(lng)(1:1).ne.' ') then
-          cata_typ = "'TXM'"
-      endif
+      IF(MYDICO(IKEY)%CHOIX(LNG)(1:1).NE.' ') THEN
+          CATA_TYP = "'TXM'"
+      ENDIF
       ! Defining size of variable
-      if(mydico(ikey)%niveau.eq.666) then
+      IF(MYDICO(IKEY)%NIVEAU.EQ.666) THEN
         ! TODO: Remove that dirty hack
-        cata_typ = trim(cata_typ)//", max='**'"
-      else
-        if(mydico(ikey)%taille.eq.0) then
+        CATA_TYP = TRIM(CATA_TYP)//", max='**'"
+      ELSE
+        IF(MYDICO(IKEY)%TAILLE.EQ.0) THEN
 
-          cata_typ = trim(cata_typ)//", min=0, max='**'"
-        else if (mydico(ikey)%taille.gt.1) then
-          write(cata_typ,'(A,I2,A,I2)') trim(cata_typ)//", min=",
-     &                      mydico(ikey)%taille,", max=",
-     &                      mydico(ikey)%taille
-        endif
-      endif
-      end function
+          CATA_TYP = TRIM(CATA_TYP)//", min=0, max='**'"
+        ELSE IF (MYDICO(IKEY)%TAILLE.GT.1) THEN
+          WRITE(CATA_TYP,'(A,I2,A,I2)') TRIM(CATA_TYP)//", min=",
+     &                      MYDICO(IKEY)%TAILLE,", max=",
+     &                      MYDICO(IKEY)%TAILLE
+        ENDIF
+      ENDIF
+      END FUNCTION
       !
       ! brief Build the Eficas catalog into string from DEFAUT in
       ! dictionary
       !
       ! param ikey id of the keyword to handle
       ! param lng The language to handle
-      character(len=DEFAUT_LEN) function cata_defaut(ikey, lng)
+      CHARACTER(LEN=DEFAUT_LEN) FUNCTION CATA_DEFAUT(IKEY, LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: ikey
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: LNG
       !
-      integer i
-      integer :: mylen,pos_word,pos_egal,idx
-      character(len=keyword_len) :: tmp
+      INTEGER I
+      INTEGER :: MYLEN,POS_WORD,POS_EGAL,IDX
+      CHARACTER(LEN=KEYWORD_LEN) :: TMP
       !
-      cata_defaut = repeat(' ',DEFAUT_LEN)
-      ! Handle default values for hash
-      if(mydico(ikey)%hash_id(1,lng)(1:1).ne.' ') then
-        if(mydico(ikey)%taille.ne.1) then
-          ! Loop on values
-          mylen = len(trim(mydico(ikey)%defaut(lng)))
-          cata_defaut = "["
-          idx = 1
-          pos_word = 1
-          do while(idx.ne.0)
-            idx = index(mydico(ikey)%defaut(lng)(pos_word:mylen),";")
-            ! Check if it is the last one
-            if(idx.eq.0) then
-              ! Need to use a tmp string otherwise the whole string is
-              ! passed
-              tmp = repeat(' ',keyword_len)
-              tmp(1:(mylen-pos_word)+1) =
-     &              mydico(ikey)%defaut(lng)(pos_word:mylen)
-              cata_defaut = trim(cata_defaut)//
-     &                    trim(get_hash_value(ikey,tmp,lng))
+      CATA_DEFAUT = REPEAT(' ',DEFAUT_LEN)
+      ! HANDLE DEFAULT VALUES FOR HASH
+      IF(MYDICO(IKEY)%HASH_ID(1,LNG)(1:1).NE.' ') THEN
+        IF(MYDICO(IKEY)%TAILLE.NE.1) THEN
+          ! LOOP ON VALUES
+          MYLEN = LEN(TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
+          CATA_DEFAUT = "["
+          IDX = 1
+          POS_WORD = 1
+          DO WHILE(IDX.NE.0)
+            IDX = INDEX(MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN),";")
+            ! CHECK IF IT IS THE LAST ONE
+            IF(IDX.EQ.0) THEN
+              ! NEED TO USE A TMP STRING OTHERWISE THE WHOLE STRING IS
+              ! PASSED
+              TMP = REPEAT(' ',KEYWORD_LEN)
+              TMP(1:(MYLEN-POS_WORD)+1) =
+     &              MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN)
+              CATA_DEFAUT = TRIM(CATA_DEFAUT)//
+     &                    TRIM(GET_HASH_VALUE(IKEY,TMP,LNG))
      &                    // "]"
-            else
-              tmp = repeat(' ',keyword_len)
-              tmp(1:(idx-1)) =
-     &              mydico(ikey)%defaut(lng)(pos_word:pos_word+idx-2)
-              cata_defaut = trim(cata_defaut) //
-     &                  trim(get_hash_value(ikey,tmp,lng))
+            ELSE
+              TMP = REPEAT(' ',KEYWORD_LEN)
+              TMP(1:(IDX-1)) =
+     &              MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:POS_WORD+IDX-2)
+              CATA_DEFAUT = TRIM(CATA_DEFAUT) //
+     &                  TRIM(GET_HASH_VALUE(IKEY,TMP,LNG))
      &                  //","
-            endif
-            pos_word = pos_word +  idx
-          enddo
-        else
-          cata_defaut = get_hash_value(ikey,
-     &                                 mydico(ikey)%defaut(lng),lng)
-        endif
-      ! Cas if we have a string
-      else if(mydico(ikey)%ktype.eq.4) then
-        cata_defaut = "'"//trim(mydico(ikey)%defaut(lng))//"'"
-      else if(mydico(ikey)%ktype.eq.3) then
-        select case (trim(mydico(ikey)%defaut(lng)))
-        case('NO','NON','FAUX','FALSE','.FALSE.','0')
-          cata_defaut = 'False'
-        case('VRAI','OUI','TRUE','YES','.TRUE.','1')
-          cata_defaut = 'True'
-        case default
-          write(*,*) 'Unknown value for boolean: ',
-     &               trim(mydico(ikey)%defaut(lng))
-          call plante(1)
-        end select
-      else
-        if(mydico(ikey)%taille.ne.1) then
-          ! loop on values
-          mylen = len(trim(mydico(ikey)%defaut(lng)))
-          cata_defaut = "["
-          idx = 1
-          pos_word = 1
-          do while(idx.ne.0)
-            idx = index(mydico(ikey)%defaut(lng)(pos_word:mylen),";")
-            ! Check if it is the last one
-            if(idx.eq.0) then
-              cata_defaut = trim(cata_defaut)//
-     &                    mydico(ikey)%defaut(lng)(pos_word:mylen)
+            ENDIF
+            POS_WORD = POS_WORD +  IDX
+          ENDDO
+        ELSE
+          CATA_DEFAUT = GET_HASH_VALUE(IKEY,
+     &                                 MYDICO(IKEY)%DEFAUT(LNG),LNG)
+        ENDIF
+      ! CAS IF WE HAVE A STRING
+      ELSE IF(MYDICO(IKEY)%KTYPE.EQ.4) THEN
+        CATA_DEFAUT = "'"//TRIM(MYDICO(IKEY)%DEFAUT(LNG))//"'"
+      ELSE IF(MYDICO(IKEY)%KTYPE.EQ.3) THEN
+        SELECT CASE (TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
+        CASE('NO','NON','FAUX','FALSE','.FALSE.','0')
+          CATA_DEFAUT = 'False'
+        CASE('VRAI','OUI','TRUE','YES','.TRUE.','1')
+          CATA_DEFAUT = 'True'
+        CASE DEFAULT
+          WRITE(*,*) 'Unknown value for boolean: ',
+     &               TRIM(MYDICO(IKEY)%DEFAUT(LNG))
+          CALL PLANTE(1)
+        END SELECT
+      ELSE
+        IF(MYDICO(IKEY)%TAILLE.NE.1) THEN
+          ! LOOP ON VALUES
+          MYLEN = LEN(TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
+          CATA_DEFAUT = "["
+          IDX = 1
+          POS_WORD = 1
+          DO WHILE(IDX.NE.0)
+            IDX = INDEX(MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN),";")
+            ! CHECK IF IT IS THE LAST ONE
+            IF(IDX.EQ.0) THEN
+              CATA_DEFAUT = TRIM(CATA_DEFAUT)//
+     &                    MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN)
      &                    // "]"
-            else
-              cata_defaut = trim(cata_defaut) //
-     &                 mydico(ikey)%defaut(lng)(pos_word:pos_word+idx-2)
+            ELSE
+              CATA_DEFAUT = TRIM(CATA_DEFAUT) //
+     &                 MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:POS_WORD+IDX-2)
      &                  //","
-            endif
-            pos_word = pos_word +  idx
-          enddo
-        else
-          cata_defaut = trim(mydico(ikey)%defaut(lng))
-        endif
-      endif
-      end function
+            ENDIF
+            POS_WORD = POS_WORD +  IDX
+          ENDDO
+        ELSE
+          CATA_DEFAUT = TRIM(MYDICO(IKEY)%DEFAUT(LNG))
+        ENDIF
+      ENDIF
+      END FUNCTION
       ! brief Build the Eficas catalog into string from CHOIX in
       ! dictionary
       !
       ! param ikey id of the keyword to handle
       ! param lng The language to handle
-      character(len=CHOIX_LEN) function cata_into(ikey, lng)
+      CHARACTER(LEN=CHOIX_LEN) FUNCTION CATA_INTO(IKEY, LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: ikey
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: LNG
       !
-      integer :: mylen,pos_word,pos_egal,idx
-      integer :: i
-      character(len=CHOIX_LEN) :: choix
+      INTEGER :: MYLEN,POS_WORD,POS_EGAL,IDX
+      INTEGER :: I
+      CHARACTER(LEN=CHOIX_LEN) :: CHOIX
       !
-      pos_word = 1
-      i = 1
-      choix = mydico(ikey)%choix(lng)
-      mylen = len(trim(choix))
+      POS_WORD = 1
+      I = 1
+      CHOIX = MYDICO(IKEY)%CHOIX(LNG)
+      MYLEN = LEN(TRIM(CHOIX))
       ! Here we have two cases:
       ! 1 - The list is of type '1=str';'2=str';...
       !     In which case we must identify the pairs
       !     And create the array of values in mydico
       ! 2 - It is a basic string list '"str"';'"str"';.??
-      pos_egal = index(choix(pos_word:mylen),"=")
-      if (pos_egal.eq.0) then
-        ! Case 2
-        cata_into = repeat(' ',CHOIX_LEN)
-        idx = 1
-        do while(idx.ne.0)
-          idx = index(choix(pos_word:mylen),";")
-          ! Check if it is the last one
-          if(idx.eq.0) then
-            cata_into = trim(cata_into) // "'" // choix(pos_word:mylen)
+      POS_EGAL = INDEX(CHOIX(POS_WORD:MYLEN),"=")
+      IF (POS_EGAL.EQ.0) THEN
+        ! CASE 2
+        CATA_INTO = REPEAT(' ',CHOIX_LEN)
+        IDX = 1
+        DO WHILE(IDX.NE.0)
+          IDX = INDEX(CHOIX(POS_WORD:MYLEN),";")
+          ! CHECK IF IT IS THE LAST ONE
+          IF(IDX.EQ.0) THEN
+            CATA_INTO = TRIM(CATA_INTO) // "'" // CHOIX(POS_WORD:MYLEN)
      &                  // "'"
-          else
-            cata_into = trim(cata_into) // "'" //
-     &                  choix(pos_word:pos_word+idx-2)//"',"
-          endif
-          pos_word = pos_word +  idx
-        enddo
-      else
-        ! Case 1
-        cata_into = repeat(' ',CHOIX_LEN)
-        do while(pos_egal.ne.0)
-          if(i.gt.maxENUM) then
-            write(*,*) 'Increase maxENUM'
-            call plante(1)
-            stop
-          endif
-          idx = index(choix(pos_egal:mylen),";")
-          mydico(ikey)%hash_id(i,lng) = choix(pos_word:(pos_egal-1))
-          pos_word = pos_egal +  idx - 1
-          pos_egal = pos_egal + 1
-          ! Check if it is the last one
-          if(idx.eq.0) then
-            mydico(ikey)%hash_val(i,lng) = choix(pos_egal:mylen)
-            cata_into = trim(cata_into) // choix(pos_egal:mylen)
-            pos_egal = 0
-          else
-            mydico(ikey)%hash_val(i,lng) = choix(pos_egal:pos_word-1)
-            cata_into = trim(cata_into) //
-     &                  choix(pos_egal:pos_word-1)//','
-            pos_word = pos_word + 1
-            pos_egal = pos_word + index(choix(pos_word:mylen),'=') -1
-          endif
-          i = i + 1
-        enddo
-      endif
-      end function
+          ELSE
+            CATA_INTO = TRIM(CATA_INTO) // "'" //
+     &                  CHOIX(POS_WORD:POS_WORD+IDX-2)//"',"
+          ENDIF
+          POS_WORD = POS_WORD +  IDX
+        ENDDO
+      ELSE
+        ! CASE 1
+        CATA_INTO = REPEAT(' ',CHOIX_LEN)
+        DO WHILE(POS_EGAL.NE.0)
+          IF(I.GT.MAXENUM) THEN
+            WRITE(*,*) 'Increase maxENUM'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IDX = INDEX(CHOIX(POS_EGAL:MYLEN),";")
+          MYDICO(IKEY)%HASH_ID(I,LNG) = CHOIX(POS_WORD:(POS_EGAL-1))
+          POS_WORD = POS_EGAL +  IDX - 1
+          POS_EGAL = POS_EGAL + 1
+          ! CHECK IF IT IS THE LAST ONE
+          IF(IDX.EQ.0) THEN
+            MYDICO(IKEY)%HASH_VAL(I,LNG) = CHOIX(POS_EGAL:MYLEN)
+            CATA_INTO = TRIM(CATA_INTO) // CHOIX(POS_EGAL:MYLEN)
+            POS_EGAL = 0
+          ELSE
+            MYDICO(IKEY)%HASH_VAL(I,LNG) = CHOIX(POS_EGAL:POS_WORD-1)
+            CATA_INTO = TRIM(CATA_INTO) //
+     &                  CHOIX(POS_EGAL:POS_WORD-1)//','
+            POS_WORD = POS_WORD + 1
+            POS_EGAL = POS_WORD + INDEX(CHOIX(POS_WORD:MYLEN),'=') -1
+          ENDIF
+          I = I + 1
+        ENDDO
+      ENDIF
+      END FUNCTION
       ! brief Return a string that replace "'" and " " by "_" from the
       ! given string
       !
       ! param string The string to modify
-      character(len=KEYWORD_LEN) function cata_name(string)
+      CHARACTER(LEN=KEYWORD_LEN) FUNCTION CATA_NAME(STRING)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      character(len=KEYWORD_LEN),intent(in) :: string
+      CHARACTER(LEN=KEYWORD_LEN),INTENT(IN) :: STRING
       !
-      integer mylen,i
-      mylen = len(trim(string))
-      cata_name = repeat(' ',KEYWORD_LEN)
-      do i=1,mylen
-        if(string(i:i).eq."'".or.
-     &     string(i:i).eq."-".or.
-     &     string(i:i).eq." ") then
-          cata_name(i:i) = "_"
-        else
-          cata_name(i:i) = string(i:i)
-        endif
-      enddo
-      return
-      end function
+      INTEGER MYLEN,I
+      MYLEN = LEN(TRIM(STRING))
+      CATA_NAME = REPEAT(' ',KEYWORD_LEN)
+      DO I=1,MYLEN
+        IF(STRING(I:I).EQ."'".OR.
+     &     STRING(I:I).EQ."-".OR.
+     &     STRING(I:I).EQ." ") THEN
+          CATA_NAME(I:I) = "_"
+        ELSE
+          CATA_NAME(I:I) = STRING(I:I)
+        ENDIF
+      ENDDO
+      RETURN
+      END FUNCTION
       ! brief Write in Python the enum for the keyword with CHOIX in
       ! form id:"str"
       !
-      subroutine write_enum()
+      SUBROUTINE WRITE_ENUM()
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer :: nfic
-      integer :: lng,ierr
-      integer :: ikey,i
-      logical isstr
-      character(len=144) :: rub1
+      INTEGER :: NFIC
+      INTEGER :: LNG,IERR
+      INTEGER :: IKEY,I
+      LOGICAL ISSTR
+      CHARACTER(LEN=144) :: RUB1
       !
-      nfic = 666
-      rub1 = repeat(' ',144)
-      rub1 = 'enum_Telemac_auto.py'
-      OPEN(NFIC,FILE=TRIM(rub1),IOSTAT=IERR)
+      NFIC = 666
+      RUB1 = REPEAT(' ',144)
+      RUB1 = 'enum_Telemac_auto.py'
+      OPEN(NFIC,FILE=TRIM(RUB1),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
       !
       ! English
       !
-      write(nfic,'(A)') '#/usr/bin/env python'
-      write(nfic,'(A)') '# -*- coding: latin-1 -*-'
-      write(nfic,'(A)') 'TelemacdicoEn = {'
-      do ikey = 1,nkey
-        ! Check if the keyword has an enum
-        if(mydico(ikey)%hash_id(1,EN)(1:1).ne.' ') then
-          write(nfic,'(A)') "'"//
-     &       trim(cata_name(mydico(ikey)%knom(2)))//"' : {"
-          i = 1
-          select case (mydico(ikey)%hash_id(i,EN)(1:1))
-            case ("-","0","1","2","3","4","5","6","7","8","9")
-              isstr = .False.
-            case default
-              isstr = .true.
-          end select
-          do while(mydico(ikey)%hash_id(i,EN)(1:1).ne.' ')
-            if(isstr) then
-              write(nfic,'(4X,A)') "'"//
-     &               trim(mydico(ikey)%hash_id(i,EN))//
-     &               "':" // trim(mydico(ikey)%hash_val(i,EN)) // ","
-            else
-              write(nfic,'(4X,A)')
-     &               trim(mydico(ikey)%hash_id(i,EN))//
-     &               ":" // trim(mydico(ikey)%hash_val(i,EN)) // ","
-            endif
-            i = i + 1
-          enddo
-          write(nfic,'(2X,A)') "},"
-        endif
-      enddo
-      write(nfic,'(A)') '}'
+      WRITE(NFIC,'(A)') '#/usr/bin/env python'
+      WRITE(NFIC,'(A)') '# -*- coding: latin-1 -*-'
+      WRITE(NFIC,'(A)') 'TelemacdicoEn = {'
+      DO IKEY = 1,NKEY
+        ! CHECK IF THE KEYWORD HAS AN ENUM
+        IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
+          WRITE(NFIC,'(A)') "'"//
+     &       TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(2)))//"' : {"
+          I = 1
+          SELECT CASE (MYDICO(IKEY)%HASH_ID(I,EN)(1:1))
+            CASE ("-","0","1","2","3","4","5","6","7","8","9")
+              ISSTR = .FALSE.
+            CASE DEFAULT
+              ISSTR = .TRUE.
+          END SELECT
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' ')
+            IF(ISSTR) THEN
+              WRITE(NFIC,'(4X,A)') "'"//
+     &               TRIM(MYDICO(IKEY)%HASH_ID(I,EN))//
+     &               "':" // TRIM(MYDICO(IKEY)%HASH_VAL(I,EN)) // ","
+            ELSE
+              WRITE(NFIC,'(4X,A)')
+     &               TRIM(MYDICO(IKEY)%HASH_ID(I,EN))//
+     &               ":" // TRIM(MYDICO(IKEY)%HASH_VAL(I,EN)) // ","
+            ENDIF
+            I = I + 1
+          ENDDO
+          WRITE(NFIC,'(2X,A)') "},"
+        ENDIF
+      ENDDO
+      WRITE(NFIC,'(A)') '}'
       !
       ! French
       !
-      write(nfic,'(A)') 'TelemacdicoFr = {'
-      do ikey = 1,nkey
-        ! Check if the keyword has an enum
-        if(mydico(ikey)%hash_id(1,FR)(1:1).ne.' ') then
-          write(nfic,'(A)') "'"//
-     &       trim(cata_name(mydico(ikey)%knom(EN)))//"' : {"
-          i = 1
-          select case (mydico(ikey)%hash_id(i,FR)(1:1))
-            case ("-","0","1","2","3","4","5","6","7","8","9")
-              isstr = .False.
-            case default
-              isstr = .true.
-          end select
-          do while(mydico(ikey)%hash_id(i,FR)(1:1).ne.' ')
-            if(isstr) then
-              write(nfic,'(4X,A)') "'"//
-     &               trim(mydico(ikey)%hash_id(i,FR))//
-     &               "':" // trim(mydico(ikey)%hash_val(i,FR)) // ","
-            else
-              write(nfic,'(4X,A)')
-     &               trim(mydico(ikey)%hash_id(i,FR))//
-     &               ":" // trim(mydico(ikey)%hash_val(i,FR)) // ","
-            endif
-            i = i + 1
-          enddo
-          write(nfic,'(2X,A)') "},"
-        endif
-      enddo
-      write(nfic,'(A)') '}'
-      write(nfic,'(A)') ''
+      WRITE(NFIC,'(A)') 'TelemacdicoFr = {'
+      DO IKEY = 1,NKEY
+        ! CHECK IF THE KEYWORD HAS AN ENUM
+        IF(MYDICO(IKEY)%HASH_ID(1,FR)(1:1).NE.' ') THEN
+          WRITE(NFIC,'(A)') "'"//
+     &       TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN)))//"' : {"
+          I = 1
+          SELECT CASE (MYDICO(IKEY)%HASH_ID(I,FR)(1:1))
+            CASE ("-","0","1","2","3","4","5","6","7","8","9")
+              ISSTR = .FALSE.
+            CASE DEFAULT
+              ISSTR = .TRUE.
+          END SELECT
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' ')
+            IF(ISSTR) THEN
+              WRITE(NFIC,'(4X,A)') "'"//
+     &               TRIM(MYDICO(IKEY)%HASH_ID(I,FR))//
+     &               "':" // TRIM(MYDICO(IKEY)%HASH_VAL(I,FR)) // ","
+            ELSE
+              WRITE(NFIC,'(4X,A)')
+     &               TRIM(MYDICO(IKEY)%HASH_ID(I,FR))//
+     &               ":" // TRIM(MYDICO(IKEY)%HASH_VAL(I,FR)) // ","
+            ENDIF
+            I = I + 1
+          ENDDO
+          WRITE(NFIC,'(2X,A)') "},"
+        ENDIF
+      ENDDO
+      WRITE(NFIC,'(A)') '}'
+      WRITE(NFIC,'(A)') ''
 
 
       ! Writing Python dictionary for correspondance name-fr -> name_cata
-      write(nfic,'(A)') 'DicoCasFrToCata = {'
-      do ikey = 1,nkey
-        write(nfic,'(2X,5A)') '"', trim(mydico(ikey)%knom(FR)),'":"',
-     &                    trim(cata_name(mydico(ikey)%knom(EN))),'",'
-      enddo
-      write(nfic,'(A)') '}'
-      write(nfic,'(A)') ''
+      WRITE(NFIC,'(A)') 'DicoCasFrToCata = {'
+      DO IKEY = 1,NKEY
+        WRITE(NFIC,'(2X,5A)') '"', TRIM(MYDICO(IKEY)%KNOM(FR)),'":"',
+     &                    TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN))),'",'
+      ENDDO
+      WRITE(NFIC,'(A)') '}'
+      WRITE(NFIC,'(A)') ''
 
       ! Writing Python dictionary for correspondance name-en -> name_cata
-      write(nfic,'(A)') 'DicoCasEnToCata = {'
-      do ikey = 1,nkey
-        write(nfic,'(2X,5A)') "'", trim(mydico(ikey)%knom(EN)),"':'",
-     &                    trim(cata_name(mydico(ikey)%knom(EN))),"',"
-      enddo
-      write(nfic,'(A)') '}'
+      WRITE(NFIC,'(A)') 'DicoCasEnToCata = {'
+      DO IKEY = 1,NKEY
+        WRITE(NFIC,'(2X,5A)') "'", TRIM(MYDICO(IKEY)%KNOM(EN)),"':'",
+     &                    TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN))),"',"
+      ENDDO
+      WRITE(NFIC,'(A)') '}'
 
 
-      close(nfic)
-      end subroutine
+      CLOSE(NFIC)
+      END SUBROUTINE
       ! brief Write the translation files
       !
-      subroutine write_ts()
+      SUBROUTINE WRITE_TS()
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer nfic, ierr, ikey, i
-      character(len=144) :: filename
-      character(len=*) :: to_lower
-      external to_lower
-      nfic = 666
-      filename = repeat(' ',144)
-      filename = 'cata_name2eng_name.ts'
+      INTEGER NFIC, IERR, IKEY, I
+      CHARACTER(LEN=144) :: FILENAME
+      CHARACTER(LEN=*) :: TO_LOWER
+      EXTERNAL TO_LOWER
+      NFIC = 666
+      FILENAME = REPEAT(' ',144)
+      FILENAME = 'cata_name2eng_name.ts'
 
-      OPEN(NFIC,FILE=TRIM(filename),IOSTAT=IERR)
+      OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
 
-      write(nfic,'(A)') '<?xml version="1.0" encoding="utf-8"?>'
-      write(nfic,'(A)') '<!DOCTYPE TS><TS version="1.1" language="en">'
-      write(nfic,'(A)') '<context>'
-      write(nfic,'(4X,A)') '<name>@defaut</name>'
+      WRITE(NFIC,'(A)') '<?xml version="1.0" encoding="utf-8"?>'
+      WRITE(NFIC,'(A)') '<!DOCTYPE TS><TS version="1.1" language="en">'
+      WRITE(NFIC,'(A)') '<context>'
+      WRITE(NFIC,'(4X,A)') '<name>@defaut</name>'
       ! Loop on keywords
-      do ikey=1,nkey
-        write(nfic,'(4X,A)') '<message>'
-        write(nfic,'(8X,A)') '<source>'//
-     &             trim(cata_name(mydico(ikey)%knom(EN)))//
+      DO IKEY=1,NKEY
+        WRITE(NFIC,'(4X,A)') '<message>'
+        WRITE(NFIC,'(8X,A)') '<source>'//
+     &             TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN)))//
      &             '</source>'
-        write(nfic,'(8X,A)') '<translation>'//
-     &          trim(mydico(ikey)%knom(EN))//'</translation>'
-        write(nfic,'(4X,A)') '</message>'
-        if(mydico(ikey)%hash_id(1,EN)(1:1).ne.' ') then
-          i = 1
-          do while(mydico(ikey)%hash_id(i,EN)(1:1).ne.' ')
-            write(nfic,'(4X,A)') '<message>'
-            write(nfic,'(8X,A)') '<source>'//
-     &             trim(cata_name(mydico(ikey)%hash_val(i,EN)))//
+        WRITE(NFIC,'(8X,A)') '<translation>'//
+     &          TRIM(MYDICO(IKEY)%KNOM(EN))//'</translation>'
+        WRITE(NFIC,'(4X,A)') '</message>'
+        IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
+          I = 1
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' ')
+            WRITE(NFIC,'(4X,A)') '<message>'
+            WRITE(NFIC,'(8X,A)') '<source>'//
+     &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN)))//
      &             '</source>'
-            write(nfic,'(8X,A)') '<translation>'//
-     &         trim(mydico(ikey)%hash_val(i,EN))//
+            WRITE(NFIC,'(8X,A)') '<translation>'//
+     &         TRIM(MYDICO(IKEY)%HASH_VAL(I,EN))//
      &                           '</translation>'
-            write(nfic,'(4X,A)') '</message>'
-            i = i + 1
-          enddo
-        endif
-      enddo
+            WRITE(NFIC,'(4X,A)') '</message>'
+            I = I + 1
+          ENDDO
+        ENDIF
+      ENDDO
       !
-      write(nfic,'(A)') '</context>'
-      write(nfic,'(A)') '</TS>'
-      close(nfic)
+      WRITE(NFIC,'(A)') '</context>'
+      WRITE(NFIC,'(A)') '</TS>'
+      CLOSE(NFIC)
 
       !
       ! French
       !
-      filename = repeat(' ',144)
-      filename = 'cata_name2fra_name.ts'
+      FILENAME = REPEAT(' ',144)
+      FILENAME = 'cata_name2fra_name.ts'
 
-      OPEN(NFIC,FILE=TRIM(filename),IOSTAT=IERR)
+      OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
 
-      write(nfic,'(A)') '<?xml version="1.0" encoding="utf-8"?>'
-      write(nfic,'(A)') '<!DOCTYPE TS><TS version="1.1" language="en">'
-      write(nfic,'(A)') '<context>'
-      write(nfic,'(4X,A)') '<name>@defaut</name>'
+      WRITE(NFIC,'(A)') '<?xml version="1.0" encoding="utf-8"?>'
+      WRITE(NFIC,'(A)') '<!DOCTYPE TS><TS version="1.1" language="en">'
+      WRITE(NFIC,'(A)') '<context>'
+      WRITE(NFIC,'(4X,A)') '<name>@defaut</name>'
       ! Loop on keywords
-      do ikey=1,nkey
-        write(nfic,'(4X,A)') '<message>'
-        write(nfic,'(8X,A)') '<source>'//
-     &             trim(cata_name(mydico(ikey)%knom(EN)))//
+      DO IKEY=1,NKEY
+        WRITE(NFIC,'(4X,A)') '<message>'
+        WRITE(NFIC,'(8X,A)') '<source>'//
+     &             TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN)))//
      &             '</source>'
-        write(nfic,'(8X,A)') '<translation>'//
-     &          trim(mydico(ikey)%knom(FR))//'</translation>'
-        write(nfic,'(4X,A)') '</message>'
-        if(mydico(ikey)%hash_id(1,FR)(1:1).ne.' ') then
-          i = 1
-          do while(mydico(ikey)%hash_id(i,FR)(1:1).ne.' ')
-            write(nfic,'(4X,A)') '<message>'
-            write(nfic,'(8X,A)') '<source>'//
-     &             trim(cata_name(mydico(ikey)%hash_val(i,EN))) //
+        WRITE(NFIC,'(8X,A)') '<translation>'//
+     &          TRIM(MYDICO(IKEY)%KNOM(FR))//'</translation>'
+        WRITE(NFIC,'(4X,A)') '</message>'
+        IF(MYDICO(IKEY)%HASH_ID(1,FR)(1:1).NE.' ') THEN
+          I = 1
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' ')
+            WRITE(NFIC,'(4X,A)') '<message>'
+            WRITE(NFIC,'(8X,A)') '<source>'//
+     &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN))) //
      &             '</source>'
-            write(nfic,'(8X,A)') '<translation>'//
-     &         trim(mydico(ikey)%hash_val(i,FR))//
+            WRITE(NFIC,'(8X,A)') '<translation>'//
+     &         TRIM(MYDICO(IKEY)%HASH_VAL(I,FR))//
      &                           '</translation>'
-            write(nfic,'(4X,A)') '</message>'
-            i = i + 1
-          enddo
-        endif
-      enddo
+            WRITE(NFIC,'(4X,A)') '</message>'
+            I = I + 1
+          ENDDO
+        ENDIF
+      ENDDO
       !
-      write(nfic,'(A)') '</context>'
-      write(nfic,'(A)') '</TS>'
-      close(nfic)
+      WRITE(NFIC,'(A)') '</context>'
+      WRITE(NFIC,'(A)') '</TS>'
+      CLOSE(NFIC)
 
-      endsubroutine
+      ENDSUBROUTINE
       ! brief Write a rubrique in a cata
       !
       ! param nfic File descriptor
       ! param rub Name of the rubrique in cata form
       ! param level Indentation level
-      subroutine write_begin_rubrique(nfic,rub,level)
+      SUBROUTINE WRITE_BEGIN_RUBRIQUE(NFIC,RUB,LEVEL)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      character(len=144), intent(in) :: rub
-      integer, intent(in) :: nfic
-      integer, intent(in) :: level
+      CHARACTER(LEN=144), INTENT(IN) :: RUB
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: LEVEL
       !
-      if(level.eq.1) then
-        write(nfic,'(a)') '# '//repeat(' ',4*(level-1))//
-     &                    repeat('-',71)
-        write(nfic,'(a)') repeat(' ',4*(level-1))//
-     &            trim(RUB)//' = PROC(nom= "'//
-     &            trim(RUB)//
+      IF(LEVEL.EQ.1) THEN
+        WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1))//
+     &                    REPEAT('-',71)
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//
+     &            TRIM(RUB)//' = PROC(nom= "'//
+     &            TRIM(RUB)//
      &            '",op = None,'
-        write(nfic,'(a)') '# '//repeat(' ',4*(level-1))//
-     &                    repeat('-',71)
-      else
-        write(nfic,'(a)') '# '//repeat(' ',4*(level-1)-2)//
-     &                    repeat('-',35)
-        write(nfic,'(a)') repeat(' ',4*(level-1))//
-     &            trim(RUB)//" = FACT(statut='f',"
-        write(nfic,'(a)') '# '//repeat(' ',4*(level-1)-2)//
-     &                    repeat('-',35)
-      endif
-      end subroutine write_begin_rubrique
+        WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1))//
+     &                    REPEAT('-',71)
+      ELSE
+        WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1)-2)//
+     &                    REPEAT('-',35)
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//
+     &            TRIM(RUB)//" = FACT(statut='f',"
+        WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(level-1)-2)//
+     &                    REPEAT('-',35)
+      ENDIF
+      END SUBROUTINE WRITE_BEGIN_RUBRIQUE
       ! brief Write a rubrique in a cata
       !
       ! param nfic File descriptor
       ! param rub Name of the rubrique in cata form
       ! param level Indentation level
-      subroutine write_end_rubrique(nfic,rub,level)
+      SUBROUTINE WRITE_END_RUBRIQUE(NFIC,RUB,LEVEL)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      character(len=144), intent(in) :: rub
-      integer, intent(in) :: nfic
-      integer, intent(in) :: level
+      CHARACTER(LEN=144), INTENT(IN) :: RUB
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: LEVEL
       !
-      if(level.eq.1) then
-        write(nfic,'(a)') repeat(' ',4*(level-1))//')'
-      else
-        write(nfic,'(a)') repeat(' ',4*(level-1))//'),'
-      endif
-      end subroutine write_end_rubrique
+      IF(LEVEL.EQ.1) THEN
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//')'
+      ELSE
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//'),'
+      ENDIF
+      END SUBROUTINE WRITE_END_RUBRIQUE
       ! brief Write a conditional bloc in a cata
       !
       ! param nfic File descriptor
@@ -509,31 +509,31 @@
       ! param icond Index of the condition
       ! param level Indentation level
       ! param lng Language of output
-      subroutine write_begin_bloc(nfic,ikey,icond,level,lng)
+      SUBROUTINE WRITE_BEGIN_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: nfic
-      integer, intent(in) :: ikey
-      integer, intent(in) :: icond
-      integer, intent(in) :: level
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: ICOND
+      INTEGER, INTENT(IN) :: LEVEL
+      INTEGER, INTENT(IN) :: LNG
       !
-      character(len=KEYWORD_LEN) mycata_name
+      CHARACTER(LEN=KEYWORD_LEN) MYCATA_NAME
       !
-      mycata_name = cata_name(mydico(ikey)%knom(lng))
+      MYCATA_NAME = CATA_NAME(MYDICO(IKEY)%KNOM(LNG))
       !
-      write(nfic,'(a)') '# '//repeat(' ',4*(level)-2)//
-     &                  repeat('-',35)
+      WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL)-2)//
+     &                  REPEAT('-',35)
       ! using max(icond,1) cause when it is an internal condition icond
       ! equal 0
-      write(nfic,'(a)') repeat(' ',4*(level))//
-     &         'b_'// trim(mycata_name)//char(icond+70)//
+      WRITE(NFIC,'(a)') REPEAT(' ',4*(level))//
+     &         'b_'// TRIM(MYCATA_NAME)//CHAR(ICOND+70)//
      &         ' = BLOC(condition="'//
-     &         trim(mydico(ikey)%cond(max(icond,1)))//'",'
-      write(nfic,'(a)') '# '//repeat(' ',4*(level)-2)//
-     &                  repeat('-',35)
-      end subroutine write_begin_bloc
+     &         TRIM(MYDICO(IKEY)%COND(MAX(ICOND,1)))//'",'
+      WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(LEVEL)-2)//
+     &                  REPEAT('-',35)
+      END SUBROUTINE WRITE_BEGIN_BLOC
       ! brief Write a conditional bloc in a cata
       !
       ! param nfic File descriptor
@@ -541,18 +541,18 @@
       ! param icond Index of the condition
       ! param level Indentation level
       ! param lng Language of output
-      subroutine write_end_bloc(nfic,ikey,icond,level,lng)
+      SUBROUTINE WRITE_END_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: nfic
-      integer, intent(in) :: ikey
-      integer, intent(in) :: icond
-      integer, intent(in) :: level
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: ICOND
+      INTEGER, INTENT(IN) :: LEVEL
+      INTEGER, INTENT(IN) :: LNG
       !
-      write(nfic,'(a)') repeat(' ',4*(level))//'),'
-      end subroutine write_end_bloc
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL))//'),'
+      END SUBROUTINE WRITE_END_BLOC
       !
       ! brief Write a keyword in a cata
       !
@@ -560,236 +560,236 @@
       ! param ikey Key word id
       ! param level Indentation level
       ! param lng Language of ouput
-      recursive subroutine write_keyword2cata(nfic,ikey,level,lng)
+      RECURSIVE SUBROUTINE WRITE_KEYWORD2CATA(NFIC,IKEY,LEVEL,LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: ikey
-      integer, intent(in) :: nfic
-      integer, intent(in) :: level
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: LEVEL
+      INTEGER, INTENT(IN) :: LNG
       !
-      character(len=KEYWORD_LEN) :: cat_name
-      character(len=3) cata_stat
-      character(len=72) cata_file
-      character(len=CHOIX_LEN) :: mycata_into
-      integer :: mylen,ierr,i
-      integer :: icond,idep
+      CHARACTER(LEN=KEYWORD_LEN) :: CAT_NAME
+      CHARACTER(LEN=3) CATA_STAT
+      CHARACTER(LEN=72) CATA_FILE
+      CHARACTER(LEN=CHOIX_LEN) :: MYCATA_INTO
+      INTEGER :: MYLEN,IERR,I
+      INTEGER :: ICOND,IDEP
       !
-      if(key_written(ikey)) then
-        return
-      else
-        key_written(ikey) = .true.
-      endif
-      cat_name = cata_name(mydico(ikey)%knom(lng))
+      IF(KEY_WRITTEN(IKEY)) THEN
+        RETURN
+      ELSE
+        KEY_WRITTEN(IKEY) = .TRUE.
+      ENDIF
+      CAT_NAME = CATA_NAME(MYDICO(IKEY)%KNOM(LNG))
       !
       ! Check if the keyword it selfs has a condition
-      if(mydico(ikey)%cond(1)(1:1).ne.' '.and.
-     &   mydico(ikey)%depen(1,1).eq.0) then
-        ! Writing the keyword inside a conditional bloc
-        call write_begin_bloc(nfic,ikey,0,level,lng)
-        call write_keyword2cata(nfic,ikey,level+1,lng)
-        call write_end_bloc(nfic,ikey,0,level,lng)
-      endif
+      IF(MYDICO(IKEY)%COND(1)(1:1).NE.' '.AND.
+     &   MYDICO(IKEY)%DEPEN(1,1).EQ.0) THEN
+        ! WRITING THE KEYWORD INSIDE A CONDITIONAL BLOC
+        CALL WRITE_BEGIN_BLOC(NFIC,IKEY,0,LEVEL,LNG)
+        CALL WRITE_KEYWORD2CATA(NFIC,IKEY,LEVEL+1,LNG)
+        CALL WRITE_END_BLOC(NFIC,IKEY,0,LEVEL,LNG)
+      ENDIF
       !
-      if(mydico(ikey)%niveau.eq.0) then
-        cata_stat="'o'"
-      else
-        cata_stat="'f'"
-      endif
+      IF(MYDICO(IKEY)%NIVEAU.EQ.0) THEN
+        CATA_STAT="'o'"
+      ELSE
+        CATA_STAT="'f'"
+      ENDIF
       !
       ! Building list of values
-      if(mydico(ikey)%choix(lng)(1:1).ne.' ') then
-        mycata_into = cata_into(ikey,3-lng)
-        mycata_into = cata_into(ikey,lng)
-      endif
+      IF(MYDICO(IKEY)%CHOIX(LNG)(1:1).NE.' ') THEN
+        MYCATA_INTO = CATA_INTO(IKEY,3-LNG)
+        MYCATA_INTO = CATA_INTO(IKEY,LNG)
+      ENDIF
 
       ! Name and status (mandatory or optional)
-      write(nfic,'(a)') '# '//repeat(' ',4*(level)-2)//
-     &                  repeat('-',35)
-      WRITE(nfic,'(a)') repeat(' ',4*level)//trim(cat_name)//
+      WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(level)-2)//
+     &                  REPEAT('-',35)
+      WRITE(NFIC,'(A)') REPEAT(' ',4*LEVEL)//TRIM(CAT_NAME)//
      &              ' = SIMP(statut ='//
-     &           cata_stat//","
-      write(nfic,'(a)') '# '//repeat(' ',4*(level)-2)//
-     &                  repeat('-',35)
+     &           CATA_STAT//","
+      WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(level)-2)//
+     &                  REPEAT('-',35)
       ! Type of the entry
-      WRITE(nfic,'(a)') repeat(' ',4*(level+1))//'typ = '//
-     &                  trim(cata_typ(ikey,lng))//","
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//'typ = '//
+     &                  TRIM(CATA_TYP(IKEY,LNG))//","
       ! List of values if there is one
-      if(mydico(ikey)%choix(lng)(1:1).ne.' ') then
-        WRITE(nfic,'(a)') repeat(' ',4*(level+1))//'into = ['//
-     &                    trim(mycata_into)//"],"
-      endif
+      IF(MYDICO(IKEY)%CHOIX(LNG)(1:1).NE.' ') THEN
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//'into = ['//
+     &                    TRIM(MYCATA_INTO)//"],"
+      ENDIF
       ! Default value
-      if(mydico(ikey)%defaut(1).ne.'OBLIGATOIRE') then
-        WRITE(nfic,'(a)') repeat(' ',4*(level+1))//"defaut = "//
-     &                    trim(cata_defaut(ikey,lng))//","
-      endif
+      IF(MYDICO(IKEY)%DEFAUT(1).NE.'OBLIGATOIRE') THEN
+        WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//"defaut = "//
+     &                    TRIM(CATA_DEFAUT(IKEY,LNG))//","
+      ENDIF
       ! Help in french
-      WRITE(nfic,'(a)') repeat(' ',4*(level+1))//'fr = """'//
-     &           trim(mydico(ikey)%aide(FR))//'""",'
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//'fr = """'//
+     &           TRIM(MYDICO(IKEY)%AIDE(FR))//'""",'
       ! Help in English
-      WRITE(nfic,'(a)') repeat(' ',4*(level+1))//'ang = """'//
-     &           trim(mydico(ikey)%aide(EN))//'""",'
-      write(nfic,'(a)') repeat(' ',4*(level))//"),"
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//'ang = """'//
+     &           TRIM(MYDICO(IKEY)%AIDE(EN))//'""",'
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL))//"),"
 
       ! Check if the keyword has dependencies
-      if(mydico(ikey)%cond(1)(1:1).ne.' '.and.
-     &   mydico(ikey)%depen(1,1).ne.0) then
-        do icond=1,MAXCOND
-          if (mydico(ikey)%cond(icond)(1:1).eq.' ') exit
-          call write_begin_bloc(nfic,ikey,icond,level,lng)
-          do idep=1,MAXDEP
-            if (mydico(ikey)%depen(icond,idep).eq.0) exit
-            call write_keyword2cata(nfic,
-     &                              mydico(ikey)%depen(icond,idep),
-     &                              level+1,lng)
-          enddo
-          call write_end_bloc(nfic,ikey,icond,level,lng)
-        enddo
-      endif
-      end subroutine
+      IF(MYDICO(IKEY)%COND(1)(1:1).NE.' '.AND.
+     &   MYDICO(IKEY)%DEPEN(1,1).NE.0) THEN
+        DO ICOND=1,MAXCOND
+          IF (MYDICO(IKEY)%COND(ICOND)(1:1).EQ.' ') EXIT
+          CALL WRITE_BEGIN_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
+          DO IDEP=1,MAXDEP
+            IF (MYDICO(IKEY)%DEPEN(ICOND,IDEP).EQ.0) EXIT
+            CALL WRITE_KEYWORD2CATA(NFIC,
+     &                              MYDICO(IKEY)%DEPEN(ICOND,IDEP),
+     &                              LEVEL+1,LNG)
+          ENDDO
+          CALL WRITE_END_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
+        ENDDO
+      ENDIF
+      END SUBROUTINE
       !
       ! brief Write an Eficas Catalog from the dictionary
       !
       ! param filename Name of the Catalog file
       SUBROUTINE WRITE2CATA(FILENAME)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      character(len=144), intent(in) :: filename
+      CHARACTER(LEN=144), INTENT(IN) :: FILENAME
       !
-      integer :: nfic,IERR
+      INTEGER :: NFIC,IERR
       INTEGER :: IRUB1
       INTEGER :: IRUB2
       INTEGER :: IRUB3
       CHARACTER(LEN=144) RUB1,RUB2,RUB3
-      integer :: ikey
+      INTEGER :: IKEY
       INTEGER LEVEL,LNG
       NFIC = 666
       LNG = EN
-      rub1 = repeat(' ',144)
-      rub1 = 'telemac2d.dico.dep'
-      allocate(key_written(nkey),stat=ierr)
-      call check_allocate(ierr,'key_written')
-      key_written = .false.
-      call read_dependencies(rub1)
+      RUB1 = REPEAT(' ',144)
+      RUB1 = 'telemac2d.dico.dep'
+      ALLOCATE(KEY_WRITTEN(NKEY),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'KEY_WRITTEN')
+      KEY_WRITTEN = .FALSE.
+      CALL READ_DEPENDENCIES(RUB1)
       WRITE(*,*) '---- EFICAS CATALOG PROCESS ----'
       WRITE(*,*) 'WRITING IN : ',TRIM(FILENAME)
       OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '# coding: utf-8'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') 'from Accas import *'
-      write(nfic,'(a)') 'class DateJJMMAAAA:'
-      write(nfic,'(a)') '  def __init__(self):'
-      write(nfic,'(a)') '    self.ntuple=3'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '  def __convert__(self,valeur):'
-      write(nfic,'(a)') '    if type(valeur) == types.StringType: '//
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '# coding: utf-8'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') 'from Accas import *'
+      WRITE(NFIC,'(a)') 'class DateJJMMAAAA:'
+      WRITE(NFIC,'(a)') '  def __init__(self):'
+      WRITE(NFIC,'(a)') '    self.ntuple=3'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '  def __convert__(self,valeur):'
+      WRITE(NFIC,'(a)') '    if type(valeur) == types.StringType: '//
      &              'return None'
-      write(nfic,'(a)') '    if len(valeur) != self.ntuple: return None'
-      write(nfic,'(a)') '    return valeur'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '  def info(self):'
-      write(nfic,'(a)') '    return "Date : jj/mm/aaaa "'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '  __repr__=info'
-      write(nfic,'(a)') '  __str__=info'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') 'class grma(GEOM):'
-      write(nfic,'(a)') '  pass'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') 'import types'
-      write(nfic,'(a)') 'class Tuple:'
-      write(nfic,'(a)') '  def __init__(self,ntuple):'
-      write(nfic,'(a)') '    self.ntuple=ntuple'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '  def __convert__(self,valeur):'
-      write(nfic,'(a)') '    if type(valeur) == types.StringType:'
-      write(nfic,'(a)') '      return None'
-      write(nfic,'(a)') '    if len(valeur) != self.ntuple:'
-      write(nfic,'(a)') '      return None'
-      write(nfic,'(a)') '    return valeur'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') '  def info(self):'
-      write(nfic,'(a)')'    return "Tuple de %s elements" % self.ntuple'
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') ''
-      write(nfic,'(a)') "JdC = JDC_CATA (code = 'TELEMAC',"
-      write(nfic,'(a)') '                execmodul = None,'
-      write(nfic,'(a)') '                )'
-      write(nfic,'(a)') '# '//repeat("=",71)
-      write(nfic,'(a)') '# Catalog entry for the MAP function : '//
+      WRITE(NFIC,'(a)') '    if len(valeur) != self.ntuple: return None'
+      WRITE(NFIC,'(a)') '    return valeur'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '  def info(self):'
+      WRITE(NFIC,'(a)') '    return "Date : jj/mm/aaaa "'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '  __repr__=info'
+      WRITE(NFIC,'(a)') '  __str__=info'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') 'class grma(GEOM):'
+      WRITE(NFIC,'(a)') '  pass'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') 'import types'
+      WRITE(NFIC,'(a)') 'class Tuple:'
+      WRITE(NFIC,'(a)') '  def __init__(self,ntuple):'
+      WRITE(NFIC,'(a)') '    self.ntuple=ntuple'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '  def __convert__(self,valeur):'
+      WRITE(NFIC,'(a)') '    if type(valeur) == types.StringType:'
+      WRITE(NFIC,'(a)') '      return None'
+      WRITE(NFIC,'(a)') '    if len(valeur) != self.ntuple:'
+      WRITE(NFIC,'(a)') '      return None'
+      WRITE(NFIC,'(a)') '    return valeur'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') '  def info(self):'
+      WRITE(NFIC,'(a)')'    return "Tuple de %s elements" % self.ntuple'
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') ''
+      WRITE(NFIC,'(a)') "JdC = JDC_CATA (code = 'TELEMAC',"
+      WRITE(NFIC,'(a)') '                execmodul = None,'
+      WRITE(NFIC,'(a)') '                )'
+      WRITE(NFIC,'(a)') '# '//REPEAT("=",71)
+      WRITE(NFIC,'(a)') '# Catalog entry for the MAP function : '//
      &              'c_pre_interfaceBody_mesh'
-      write(nfic,'(a)') '# '//repeat("=",71)
-      write(nfic,'(a)') ''
+      WRITE(NFIC,'(a)') '# '//REPEAT("=",71)
+      WRITE(NFIC,'(a)') ''
 
       ! Loop on rubriques
       DO IRUB1=1,NRUB(LNG,1)
-        RUB1 = cata_name(RUBRIQUE(LNG,IRUB1,1))
-        call write_begin_rubrique(nfic,rub1,1)
+        RUB1 = CATA_NAME(RUBRIQUE(LNG,IRUB1,1))
+        CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB1,1)
         DO IKEY=1,NKEY
-          ! Identifying keywwords that are 1 1
+          ! IDENTIFYING KEYWWORDS THAT ARE 1 1
           IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
      &       (MYDICO(IKEY)%RUBRIQUE(LNG,2)(1:1).EQ.' ')) THEN
-            call write_keyword2cata(nfic,ikey,1,lng)
+            CALL WRITE_KEYWORD2CATA(NFIC,IKEY,1,LNG)
           ENDIF
         ENDDO
         ! LEVEL 2
-        ! Loop on rubriques
-        DO Irub2=1,NRUB(LNG,2)
+        ! LOOP ON RUBRIQUES
+        DO IRUB2=1,NRUB(LNG,2)
           LEVEL = 2
-          RUB2 = cata_name(RUBRIQUE(LNG,IRUB2,2))
+          RUB2 = CATA_NAME(RUBRIQUE(LNG,IRUB2,2))
           IF(RUB1_DEP(IRUB1,IRUB2)) THEN
-            call write_begin_rubrique(nfic,rub2,2)
+            CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB2,2)
             DO IKEY=1,NKEY
-              ! Identifying keywwords that are 2 1
+              ! IDENTIFYING KEYWWORDS THAT ARE 2 1
               IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
      &           HAS_RUBRIQUE(IKEY,IRUB2,2,LNG).AND.
      &           (MYDICO(IKEY)%RUBRIQUE(LNG,3)(1:1).EQ.' ')) THEN
-                call write_keyword2cata(nfic,ikey,2,lng)
+                CALL WRITE_KEYWORD2CATA(NFIC,IKEY,2,LNG)
               ENDIF
             ENDDO
             ! LEVEL 3
-            ! Loop on rubriques
+            ! LOOP ON RUBRIQUES
             DO IRUB3=1,NRUB(LNG,3)
               LEVEL = 3
-              RUB3 = cata_name(RUBRIQUE(LNG,IRUB3,3))
+              RUB3 = CATA_NAME(RUBRIQUE(LNG,IRUB3,3))
               IF(RUB2_DEP(IRUB1,IRUB2,IRUB3)) THEN
-                call write_begin_rubrique(nfic,rub3,3)
+                CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB3,3)
                 DO IKEY=1,NKEY
-                  ! Identifying keywwords that are 3 1
+                  ! IDENTIFYING KEYWWORDS THAT ARE 3 1
                   IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
      &               HAS_RUBRIQUE(IKEY,IRUB2,2,LNG).AND.
      &               HAS_RUBRIQUE(IKEY,IRUB3,3,LNG)) THEN
-                    call write_keyword2cata(nfic,ikey,3,lng)
+                    CALL WRITE_KEYWORD2CATA(NFIC,IKEY,3,LNG)
                   ENDIF
                 ENDDO
-                call write_end_rubrique(nfic,rub3,3)
+                CALL WRITE_END_RUBRIQUE(NFIC,RUB3,3)
               ENDIF
             ENDDO ! LEVEL 3
-            call write_end_rubrique(nfic,rub2,2)
+            CALL WRITE_END_RUBRIQUE(NFIC,RUB2,2)
           ENDIF
         ENDDO ! LEVEL 2
-        call write_end_rubrique(nfic,rub1,1)
+        CALL WRITE_END_RUBRIQUE(NFIC,RUB1,1)
       ENDDO ! LEVEL 1
 
-      write(nfic,'(A)') 'Ordre_des_commandes = ('
-      DO irub1 =1,nrub(lng,1)-1
-        write(nfic,'(A)')
-     &     "'"//trim(cata_name(RUBRIQUE(lng,irub1,1)))//"',"
-      enddo
-      write(nfic,'(A)')
-     &   "'"//trim(cata_name(RUBRIQUE(lng,nrub(lng,1),1)))//"')"
-      CLOSE(nfic)
-      deallocate(key_written)
+      WRITE(NFIC,'(A)') 'Ordre_des_commandes = ('
+      DO IRUB1 =1,NRUB(LNG,1)-1
+        WRITE(NFIC,'(A)')
+     &     "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,IRUB1,1)))//"',"
+      ENDDO
+      WRITE(NFIC,'(A)')
+     &   "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,NRUB(LNG,1),1)))//"')"
+      CLOSE(NFIC)
+      DEALLOCATE(KEY_WRITTEN)
 
-      ! Writing enum.py
-      call write_enum()
-      ! Writing ts
-      call write_ts()
+      ! WRITING ENUM.PY
+      CALL WRITE_ENUM()
+      ! WRITING TS
+      CALL WRITE_TS()
       END SUBROUTINE
       END MODULE UTILS_CATA

@@ -2,8 +2,8 @@
                         PROGRAM HOMERE_DAMOCLES
 !                       ***********************
       USE DICO_DATA
-      use utils_latex
-      use utils_cata
+      USE UTILS_LATEX
+      USE UTILS_CATA
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------

@@ -2623,7 +2623,7 @@
 !
       INTERFACE
         SUBROUTINE SPALALLIN
-     &(LIMSA, LIUBOR, NPTFR, KENT, KENTU, KSORT, 
+     &(LIMSA, LIUBOR, NPTFR, KENT, KENTU, KSORT,
      & KADH, KLOG, KINC, KNEU, KDIR)
       USE BIEF_DEF
       INTEGER, INTENT(IN) :: NPTFR, KENT, KSORT, KADH, KLOG
@@ -2658,7 +2658,7 @@
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: TB,TE1,TE2
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
-       END SUBROUTINE
+        END SUBROUTINE
       END INTERFACE
 !
 !-----------------------------------------------------------------------

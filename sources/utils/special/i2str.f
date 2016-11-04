@@ -1,33 +1,33 @@
-      function i2str(i) result(str)
-      ! Original author: Y. Audouin
+      FUNCTION I2STR(I) RESULT(STR)
+      ! ORIGINAL AUTHOR: Y. AUDOUIN
 
-      implicit none
+      IMPLICIT NONE
 
-      integer, intent(in) :: i
-      character(len=10) :: str
+      INTEGER, INTENT(IN) :: I
+      CHARACTER(LEN=10) :: STR
 
-      str = repeat(' ',20)
-      if (i.lt.10) then
-        write(str,'(I1)') i
-      else if (i.lt.100) then
-        write(str,'(I2)') i
-      else if (i.lt.1000) then
-        write(str,'(I3)') i
-      else if (i.lt.10000) then
-        write(str,'(I4)') i
-      else if (i.lt.100000) then
-        write(str,'(I5)') i
-      else if (i.lt.1000000) then
-        write(str,'(I6)') i
-      else if (i.lt.10000000) then
-        write(str,'(I7)') i
-      else if (i.lt.100000000) then
-        write(str,'(I8)') i
-      else if (i.lt.1000000000) then
-        write(str,'(I9)') i
-      else
-        write(str,'(I10)') i
-      endif
+      STR = REPEAT(' ',20)
+      IF (I.LT.10) THEN
+        WRITE(STR,'(I1)') I
+      ELSE IF (I.LT.100) THEN
+        WRITE(STR,'(I2)') I
+      ELSE IF (I.LT.1000) THEN
+        WRITE(STR,'(I3)') I
+      ELSE IF (I.LT.10000) THEN
+        WRITE(STR,'(I4)') I
+      ELSE IF (I.LT.100000) THEN
+        WRITE(STR,'(I5)') I
+      ELSE IF (I.LT.1000000) THEN
+        WRITE(STR,'(I6)') I
+      ELSE IF (I.LT.10000000) THEN
+        WRITE(STR,'(I7)') I
+      ELSE IF (I.LT.100000000) THEN
+        WRITE(STR,'(I8)') I
+      ELSE IF (I.LT.1000000000) THEN
+        WRITE(STR,'(I9)') I
+      ELSE
+        WRITE(STR,'(I10)') I
+      ENDIF
 
-      end function i2str
+      END FUNCTION I2STR
 

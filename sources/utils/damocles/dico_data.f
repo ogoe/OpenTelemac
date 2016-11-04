@@ -15,11 +15,11 @@
       ! brief Size for the Keyword name
       INTEGER, PARAMETER :: KEYWORD_LEN = 72
       ! brief Maximum number of dependencies
-      INTEGER, PARAMETER :: maxDEP = 10
+      INTEGER, PARAMETER :: MAXDEP = 10
       ! brief Maximum number of conditions
-      INTEGER, PARAMETER :: maxCOND = 3
+      INTEGER, PARAMETER :: MAXCOND = 3
       ! brief Maximum number of conditions
-      INTEGER, PARAMETER :: maxENUM = 40
+      INTEGER, PARAMETER :: MAXENUM = 40
       ! brief type for a keyword
       TYPE KEYWORD
         ! param Name of the ley in French and English
@@ -40,8 +40,8 @@
         ! param List of values for the keyword
         CHARACTER(LEN=CHOIX_LEN) :: CHOIX(2)
         ! param Hash table when choix is in form 'id'='name'
-        CHARACTER(LEN=KEYWORD_LEN) :: HASH_ID(maxENUM,2)
-        CHARACTER(LEN=KEYWORD_LEN) :: HASH_VAL(maxENUM,2)
+        CHARACTER(LEN=KEYWORD_LEN) :: HASH_ID(MAXENUM,2)
+        CHARACTER(LEN=KEYWORD_LEN) :: HASH_VAL(MAXENUM,2)
         ! param Classification of the keyword
         CHARACTER(LEN=144) :: RUBRIQUE(2,3)
         ! param
@@ -333,25 +333,25 @@
       ! param ikey Id of the keyword
       ! param hash_id value in the hash_id array
       ! param lng Language to take into account
-      character(len=KEYWORD_LEN) function get_hash_value(ikey,id,lng)
+      CHARACTER(LEN=KEYWORD_LEN) FUNCTION GET_HASH_VALUE(IKEY,ID,LNG)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: ikey
-      character(len=keyword_len) :: id
-      integer, intent(in) :: lng
+      INTEGER, INTENT(IN) :: IKEY
+      CHARACTER(LEN=KEYWORD_LEN) :: ID
+      INTEGER, INTENT(IN) :: LNG
       !
-      integer i
-      get_hash_value = repeat(' ',keyword_len)
-      do i=1,maxENUM
+      INTEGER I
+      GET_HASH_VALUE = REPEAT(' ',KEYWORD_LEN)
+      DO I=1,MAXENUM
         ! If we reach an empty id it is the end of ids
-        if(mydico(ikey)%hash_id(i,lng)(1:1).eq.' ') exit
-        if (id.eq.mydico(ikey)%hash_id(i,lng)) then
-          get_hash_value = mydico(ikey)%hash_val(i,lng)
-          exit
-        endif
-      enddo
-      end function
+        IF(MYDICO(IKEY)%HASH_ID(I,LNG)(1:1).EQ.' ') EXIT
+        IF (ID.EQ.MYDICO(IKEY)%HASH_ID(I,LNG)) THEN
+          GET_HASH_VALUE = MYDICO(IKEY)%HASH_VAL(I,LNG)
+          EXIT
+        ENDIF
+      ENDDO
+      END FUNCTION
       ! brief write in canal a list of values from a keyword
       !+      as neatly as possible
       !
@@ -437,7 +437,7 @@
 !
       ! If the default values are strings we add quote
       IF(MYDICO(IKEY)%KTYPE.EQ.4) THEN
-        string = MYDICO(IKEY)%DEFAUT(LNG)
+        STRING = MYDICO(IKEY)%DEFAUT(LNG)
         LENGTH = LEN(TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
         ! If they are too many values printing each on a new line
         IF(LENGTH.GT.70) THEN
@@ -579,36 +579,36 @@
       OPEN(NFIC,FILE=FILENAME,IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'OPEN:DEPEN')
       !
-      do
-        read(NFIC,*,iostat=ierr) Ndep, ICOND
-        if(ierr.lt.0) exit
-        read(nfic,'(a)') cond
-        read(nfic,'(a)') key_name
-        IKEY =  IDENTIFY_KEYWORD(key_name,2)
-        if(ikey.eq.-1) then
-          write(*,*) 'unknown keyword:'
-          write(*,*) trim(key_name)
-          call plante(1)
-          stop
-        endif
-        if(icond.ne.0) then
-        mydico(ikey)%cond(icond) = cond
-          do i=1,ndep-1
-            read(nfic,'(a)') key_name
-            IKEY_dep =  IDENTIFY_KEYWORD(key_name,2)
-            if(ikey_dep.eq.-1) then
-              write(*,*) 'unknown keyword:'
-              write(*,*) trim(key_name)
-              call plante(1)
-              stop
-            endif
-            mydico(ikey)%depen(icond,i) = ikey_dep
-          enddo
-        else
-          mydico(ikey)%cond(1) = cond
-        endif
-      enddo
-      END SUBROUTINE READ_dependencies
+      DO
+        READ(NFIC,*,IOSTAT=IERR) NDEP, ICOND
+        IF(IERR.LT.0) EXIT
+        READ(NFIC,'(A)') COND
+        READ(NFIC,'(A)') KEY_NAME
+        IKEY =  IDENTIFY_KEYWORD(KEY_NAME,2)
+        IF(IKEY.EQ.-1) THEN
+          WRITE(*,*) 'UNKNOWN KEYWORD:'
+          WRITE(*,*) TRIM(KEY_NAME)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF(ICOND.NE.0) THEN
+        MYDICO(IKEY)%COND(ICOND) = COND
+          DO I=1,NDEP-1
+            READ(NFIC,'(A)') KEY_NAME
+            IKEY_DEP =  IDENTIFY_KEYWORD(KEY_NAME,2)
+            IF(IKEY_DEP.EQ.-1) THEN
+              WRITE(*,*) 'UNKNOWN KEYWORD:'
+              WRITE(*,*) TRIM(KEY_NAME)
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            MYDICO(IKEY)%DEPEN(ICOND,I) = IKEY_DEP
+          ENDDO
+        ELSE
+          MYDICO(IKEY)%COND(1) = COND
+        ENDIF
+      ENDDO
+      END SUBROUTINE READ_DEPENDENCIES
       ! brief Fill the myDico structure by reading the dictionary
       !
       ! param filename name of the dictionary file
@@ -626,10 +626,10 @@
       INTEGER          NIGN
       LOGICAL          DYNAM,AIDLNG,VUMOT
       LOGICAL          ARRET,EXECMD
-      CHARACTER*1      PTVIRG,QUOTE
-      CHARACTER*9      TYPE
-      CHARACTER*72     LIGNE
-      CHARACTER*144    TYPE2
+      CHARACTER(LEN=1)      PTVIRG,QUOTE
+      CHARACTER(LEN=9)      TYPE
+      CHARACTER(LEN=72)    LIGNE
+      CHARACTER(LEN=144)    TYPE2
       !
 !
       CHARACTER(LEN=144),EXTERNAL :: MYCARLU
@@ -686,9 +686,7 @@
 !
 ! LOCATES THE COMMANDS STARTING WITH &
 !
-      write(*,*) 'treating: *',ligne,"*"
       IF ( LIGNE(ICOL:ICOL).EQ.'&' ) THEN
-        WRITE(*,*) 'SKIPPING COMMAND: ',LIGNE
         ICOL = PREVAL(ICOL+1,LIGNE,' ',CHAR(9),' ')
         ICOL = NEXT(ICOL+1,LIGNE)
         GO TO 100
@@ -1086,7 +1084,7 @@
           FAIL = .TRUE.
         ENDIF
         DO I=1,MINVAL(NRUB(:,J))
-          WRITE(*,*) repeat('-',J*2),
+          WRITE(*,*) REPEAT('-',J*2),
      &          TRIM(RUBRIQUE(1,I,J))," = ",TRIM(RUBRIQUE(2,I,J))
         ENDDO
       ENDDO
@@ -1124,41 +1122,41 @@
       !
       ! param strIn Input string
       ! param strOut Output string
-      character(len=KEYWORD_LEN) function dble_quote(strIn)
+      CHARACTER(LEN=KEYWORD_LEN) FUNCTION DBLE_QUOTE(STRIN)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      character(len=KEYWORD_LEN), intent(in) :: strIn
+      CHARACTER(LEN=KEYWORD_LEN), INTENT(IN) :: STRIN
       !
-      integer i,j
+      INTEGER I,J
       !
-      j = 1
-      do i=1,len(strIn)
-         if (strIn(i:i).eq."'") then
-           dble_quote(j:j) = "'"
-           j=j+1
-         endif
-         dble_quote(j:j) = strIn(i:i)
-         j=j+1
-      enddo
+      J = 1
+      DO I=1,LEN(STRIN)
+        IF (STRIN(I:I).EQ."'") THEN
+          DBLE_QUOTE(J:J) = "'"
+          J=J+1
+        ENDIF
+        DBLE_QUOTE(J:J) = STRIN(I:I)
+        J=J+1
+      ENDDO
       !
-      end function dble_quote
+      END FUNCTION DBLE_QUOTE
       ! brief Dump a keyword structure
       !
       ! param ndic Id of the file
       ! param ikey Id of the keyword
-      subroutine dump_keyword(nfic,ikey)
+      SUBROUTINE DUMP_KEYWORD(NFIC,IKEY)
       !
-      implicit none
+      IMPLICIT NONE
       !
-      integer, intent(in) :: nfic
-      integer, intent(in) :: ikey
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: IKEY
       !
       INTEGER :: I,J
       CHARACTER(LEN=10), EXTERNAL :: I2STR
       !
       WRITE(NFIC,'(3A)') "NOM = '",
-     &                   TRIM(dble_quote(MYDICO(IKEY)%KNOM(1))),"'"
+     &                   TRIM(DBLE_QUOTE(MYDICO(IKEY)%KNOM(1))),"'"
       WRITE(NFIC,'(3A)') "NOM1 = '",TRIM(MYDICO(IKEY)%KNOM(2)),"'"
       SELECT CASE(MYDICO(IKEY)%KTYPE)
       CASE(1) ! INTEGER
@@ -1179,7 +1177,7 @@
         WRITE(NFIC,'(3A)') "SUBMIT = '",TRIM(MYDICO(IKEY)%SUBMIT),"'"
       ENDIF
       ! If default = obligatoire IKEY.e no default value
-      IF(MYDICO(IKEY)%DEFAUT(1)(1:11).ne.'OBLIGATOIRE') then
+      IF(MYDICO(IKEY)%DEFAUT(1)(1:11).NE.'OBLIGATOIRE') THEN
         CALL DUMP_LIST(NFIC,MYDICO(IKEY)%KTYPE,MYDICO(IKEY)%DEFAUT(1),
      &                 DEFAUT_LEN,'DEFAUT',6)
         CALL DUMP_LIST(NFIC,MYDICO(IKEY)%KTYPE,MYDICO(IKEY)%DEFAUT(2),
@@ -1227,7 +1225,7 @@
       WRITE(NFIC,'(3A)') "'",TRIM(MYDICO(IKEY)%AIDE(2)),"'"
       WRITE(NFIC,'(A)') "/"
       !
-      end subroutine
+      END SUBROUTINE
       ! brief Dump the myDico structure in index order
       !
       ! param filename name of the output file
@@ -1240,7 +1238,7 @@
       INTEGER :: NFIC,IERR
       INTEGER :: ITYP, IKEY
       INTEGER :: IDX(1)
-      INTEGER, ALLOCATABLE :: index_typ(:,:)
+      INTEGER, ALLOCATABLE :: INDEX_TYP(:,:)
       INTEGER :: LNG
 !
       NFIC = 666
@@ -1255,20 +1253,20 @@
       ! Loop on all the keywords
       WRITE(NFIC,'(A)') '&DYN'
       ! Loop on rubriques
-      ALLOCATE(index_typ(nkey,4),stat=ierr)
-      call check_allocate(ierr,'index_typ')
-      index_typ(:,:) = nkey*2
+      ALLOCATE(INDEX_TYP(NKEY,4),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,'INDEX_TYP')
+      INDEX_TYP(:,:) = NKEY*2
       DO IKEY=1,NKEY
-        index_typ(ikey,mydico(ikey)%ktype) = mydico(ikey)%kindex
+        INDEX_TYP(IKEY,MYDICO(IKEY)%KTYPE) = MYDICO(IKEY)%KINDEX
       ENDDO
-      do ityp=1,4
-        idx = minloc(index_typ(:,ityp))
-        do while(index_typ(idx(1),ityp).lt.nkey*2)
-          CALL DUMP_KEYWORD(NFIC,idx(1))
-          index_typ(idx(1),ityp) = nkey*2
-          idx = minloc(index_typ(:,ityp))
-        enddo
-      enddo
+      DO ITYP=1,4
+        IDX = MINLOC(INDEX_TYP(:,ITYP))
+        DO WHILE(INDEX_TYP(IDX(1),ITYP).LT.NKEY*2)
+          CALL DUMP_KEYWORD(NFIC,IDX(1))
+          INDEX_TYP(IDX(1),ITYP) = NKEY*2
+          IDX = MINLOC(INDEX_TYP(:,ITYP))
+        ENDDO
+      ENDDO
       CLOSE(NFIC)
       DEALLOCATE(INDEX_TYP)
       END SUBROUTINE
@@ -1283,7 +1281,7 @@
       CHARACTER(LEN=144), INTENT(IN) :: FILENAME
       INTEGER :: NFIC,I,J,IERR
       INTEGER :: IRUB1, IRUB2, IRUB3
-      INTEGER :: Idx_RUB2, Idx_RUB3
+      INTEGER :: IDX_RUB2, IDX_RUB3
       INTEGER :: LNG,IKEY
       CHARACTER(LEN=10), EXTERNAL :: I2STR
 !

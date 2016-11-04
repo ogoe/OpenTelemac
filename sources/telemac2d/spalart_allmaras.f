@@ -90,7 +90,7 @@
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: MAS,DIF,CM2
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!   
+!
       INTEGER          :: I,NPOIN,DIMGLO,OPT_PSI_TF,IOPT,N
       DOUBLE PRECISION :: CB1, CB2, KAP, CW1, CW2, CW3, CV1, FV2
       DOUBLE PRECISION :: FW, R, G, CHI, CHI3, D, SIG, C
@@ -201,7 +201,7 @@
 !
       ELSEIF(ICONV.EQ.ADV_SUP) THEN
 !
-       IF(DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-32'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-32'
         CALL MATVEC('X=AY    ',SM,MAS,NUN,C,MESH)
 !       CENTRED SEMI-IMPLICIT ADVECTION TERM : MATRIX
         CALL MATRIX(CM2,'M=N     ','MATVGR          ',IELMNU,IELMNU,
@@ -279,7 +279,7 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-!         SCHEME NERD_2 IS BUILT FOR 2 VARAIABLES 
+!         SCHEME NERD_2 IS BUILT FOR 2 VARAIABLES
 !         SO IT IS CALLED FOR NUTILD TWICE WHICH IS NOT OPTIMAL
 !         TO BE OPTIMIZED !
 !                                       FSCEXP DIFT    CONV
@@ -303,7 +303,7 @@
      &        FLULIM%R,YAFLULIM,.FALSE.,S,0.D0,0.D0,MAXADV)
 !
         ELSE
-!         SCHEME 15 
+!         SCHEME 15
 !                                     FSCEXP (IF YASMH, HERE GIVEN FALSE)
           IF(TB%N.LT.20) THEN
             WRITE(LU,*) 'SIZE OF TB TOO SMALL IN KEPSIL'
@@ -325,8 +325,8 @@
 !                                       RAIN   PLUIE
      &                     MESH%NBOR%I,.FALSE.,S,0.D0,
      &                     MAXADV,NCO_DIST,OPTADV_SA)
-       ENDIF
-       CALL MATVEC('X=AY    ',SM,MAS,NUTILD,C,MESH)
+        ENDIF
+        CALL MATVEC('X=AY    ',SM,MAS,NUTILD,C,MESH)
 
       ELSE
 !
@@ -341,7 +341,7 @@
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-5'
 !
 !     ------------------------------------------------
-!     COMPUTE PRODUCTION     
+!     COMPUTE PRODUCTION
 !     ------------------------------------------------
 !
 !     1- COMPUTE S=SQRT(2*VORTICITY:VORTICITY) (STOCKED IN T4)
@@ -359,13 +359,13 @@
 !
       DO I=1, NPOIN
         CHI=VISCSA%R(I)/MAX(PROPNU2,1.D-10) !+CR1*KS/D
-        FT2=CT3*EXP(-CT4*CHI**2.D0)  
+        FT2=CT3*EXP(-CT4*CHI**2.D0)
         T1%R(I)=CB1*T4%R(I)*VISCSA%R(I)*(1.D0-FT2)
       ENDDO
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-7'
 !
 !     ADD IT TO SM
-!    
+!
       CALL OS('X=X+Y   ', SM, T1     , T1, C)
 !
       CALL OS('X=YZ    ' ,T5, VISCSA ,T3 , C)
@@ -394,7 +394,7 @@
         G=R+CW2*(R**6-R)
         FW=G*PCW/(G**6+CW6)**UNSS
         T2%R(I)=(CW1*FW-CBK*FT2)*VISCSA%R(I)/(MAX(D,1.D-12))**2
-      ENDDO  
+      ENDDO
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-8'
 !
 !     WHILE EVERYTHING IN P2 IS ASSUMED CONSTANT, P2 WILL GIVE
@@ -407,18 +407,18 @@
 !     BUT IMPLICITLY ==> ADD TO THE DIAG OF MASS MATRIX
       CALL OM( 'M=M+D   ' , MAS , MAS , T2 , C , MESH )
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-9'
-!     
+!
 !
 !     4- COMPUTE DIFFUSION
 !
 !     FIRST PART OF DIFFUSION TERM IS TREATED IMPLICITLY
-!        ==> COMBINE MASS AND DIFFUSION MATRICES 
+!        ==> COMBINE MASS AND DIFFUSION MATRICES
       CALL OM('M=M+CN  ', MAS, DIF, S, SIG, MESH)
 !
 !     COMPUTE THE SECOND PART OF DIFFUSION TERMS (EXPLICIT)
 !
-       CB22=(1.D0+CB2)*SIG
-       CALL VECTOR(T4,'=','TRSAF           ',IELMNU,
+      CB22=(1.D0+CB2)*SIG
+      CALL VECTOR(T4,'=','TRSAF           ',IELMNU,
      &    CB22,S,S,S,VISCSA,VISCSA,S,MESH,MSK,MASKEL)
 !
       CALL OS('X=X+CY   ', SM, T4, T4, DT)

@@ -1,21 +1,21 @@
-      function to_lower(strIn) result(strOut)
+      FUNCTION TO_LOWER(STRIN) RESULT(STROUT)
       ! Adapted from http://www.star.le.ac.uk/~cgp/fortran.html (25 May
       ! 2012)
       ! Original author: Clive Page
 
-      implicit none
+      IMPLICIT NONE
 
-      character(len=*), intent(in) :: strIn
-      character(len=len(strIn)) :: strOut
-      integer :: i,j
+      CHARACTER(LEN=*), INTENT(IN) :: STRIN
+      CHARACTER(LEN=LEN(STRIN)) :: STROUT
+      INTEGER :: I,J
 
-      do i = 1, len(strIn)
-        j = iachar(strIn(i:i))
-        if (j>= iachar("A") .and. j<=iachar("Z") ) then
-          strOut(i:i) = achar(iachar(strIn(i:i))+32)
-        else
-          strOut(i:i) = strIn(i:i)
-        end if
-      end do
+      DO I = 1, LEN(STRIN)
+        J = IACHAR(STRIN(I:I))
+        IF (J>= IACHAR("A") .AND. J<=IACHAR("Z") ) THEN
+          STROUT(I:I) = ACHAR(IACHAR(STRIN(I:I))+32)
+        ELSE
+          STROUT(I:I) = STRIN(I:I)
+        END IF
+      END DO
 
-      end function to_lower
+      END FUNCTION TO_LOWER
