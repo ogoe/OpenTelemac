@@ -30,7 +30,7 @@ path: <root>|sources|utils|special
 files: declarations_special.F
   plante.F
   check_allocate.f
+  i2str.f
   write_error.f
   check_call.f
   to_lower.f
-  i2str.f

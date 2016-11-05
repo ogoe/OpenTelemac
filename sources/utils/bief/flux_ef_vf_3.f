@@ -3,25 +3,35 @@
 !                    ***********************
 !
      &(PHIEL,NELEM,ELTSEG,ORISEG,FXMATPAR,NSEG,IKLE,IOPT,NPOIN,
-     & FN,FI_I,SU,HDFDT,TETA,YAFLULIM,FLULIM,FSTAR)
+     & FN,FI_I,SU,HDFDT,TETA,YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE,
+     & FSTAR)
 !
 !***********************************************************************
-! BIEF   V7P1
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    Equivalent of FLUX_EF_VF, but only for PSI scheme, and the
 !+        result is given in terms of contribution per point, not fluxes
 !+        between points, and takes a derivative in time into account.
 !
+!warning  When both YAFLULIM and YAFLULIMEBE are true only the latter is
+!+        taken into account !
+!
 !history  J-M HERVOUET & SARA PAVAN (EDF LAB, LNHE)
 !+        04/08/2015
 !+        V7P1
 !+   First version. The N and PSI versions are not different here.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        05/11/2016
+!+        V7P3
+!+   Now two options of flux limitation offered.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| GIVES THE SEGMENTS IN A TRIANGLE
 !| FI_I           |<--| CONTRIBUTIONS TO POINTS
-!| FLULIM         |-->| LIMITATION OF FLUXES
+!| FLULIM         |-->| LIMITATION OF FLUXES BY SEGMENT
+!| FLULIMEBE      |-->| LIMITATION OF FLUXES BY SEGMENT BUT EBE
 !| FN             |-->| TRACER AT TIME T(N)
 !| FSTAR          |-->| PREDICTOR VALUE OF TRACER AT TIME T(N)
 !| FXMARPAR       |-->| FLUXES ASSEMBLED IN //
@@ -35,7 +45,8 @@
 !| PHIEL          |-->| PER ELEMENT, FLUXES LEAVING POINTS
 !| SU             |-->| SURFACE OF TRIANGLES
 !| TETA           |-->| LOCAL IMPLICITATION
-!| YAFLULIM       |-->| IF YES, A LIMITATION OF FLUXES IS GIVEN
+!| YAFLULIM       |-->| IF YES, A LIMITATION OF FLUXES IS GIVEN BY SEGMENT
+!| YAFLULIMEBE    |-->| IF YES, AN EBE LIMITATION OF FLUXES IS GIVEN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
@@ -49,8 +60,9 @@
       INTEGER, INTENT(IN)             :: IKLE(NELEM,3)
       INTEGER, INTENT(IN)             :: ELTSEG(NELEM,3)
       INTEGER, INTENT(IN)             :: ORISEG(NELEM,3)
-      LOGICAL, INTENT(IN)             :: YAFLULIM
+      LOGICAL, INTENT(IN)             :: YAFLULIM,YAFLULIMEBE
       DOUBLE PRECISION, INTENT(IN)    :: PHIEL(NELEM,3),TETA(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: FLULIMEBE(NELEM,3)
       DOUBLE PRECISION, INTENT(IN)    :: FXMATPAR(NSEG),FLULIM(NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: FI_I(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SU(NELEM),HDFDT(NPOIN)
@@ -76,9 +88,9 @@
         FI_I(I)=0.D0
       ENDDO
 !
-!     CHECKING THE PRESENCE OF FLULIM
+!     DEPENDING ON THE FLUX LIMITATION...
 !
-      IF(.NOT.YAFLULIM) THEN
+      IF(YAFLULIMEBE) THEN
 !
 !       AS WHEN YAFLULIM=.TRUE., BUT WITH FLULIM ASSUMED TO BE 1
 !
@@ -100,12 +112,12 @@
 !         FIJ HERE LIKE LAMBDA(I,J) IN BOOK
 !         I.E. FIJ>0 MEANS FLUX FROM J TO I !!!!!
 !
-          FP12=MAX(MIN(K1,-K2),0.D0)
-          FP23=MAX(MIN(K2,-K3),0.D0)
-          FP31=MAX(MIN(K3,-K1),0.D0)
-          FP21=MAX(MIN(K2,-K1),0.D0)
-          FP32=MAX(MIN(K3,-K2),0.D0)
-          FP13=MAX(MIN(K1,-K3),0.D0)
+          FP12=MAX(MIN(K1,-K2),0.D0)*FLULIMEBE(IELEM,1)
+          FP23=MAX(MIN(K2,-K3),0.D0)*FLULIMEBE(IELEM,2)
+          FP31=MAX(MIN(K3,-K1),0.D0)*FLULIMEBE(IELEM,3)
+          FP21=MAX(MIN(K2,-K1),0.D0)*FLULIMEBE(IELEM,1)
+          FP32=MAX(MIN(K3,-K2),0.D0)*FLULIMEBE(IELEM,2)
+          FP13=MAX(MIN(K1,-K3),0.D0)*FLULIMEBE(IELEM,3)
 !
 !         CORRECTING THE FLUXES WHEN THEIR SIGN IS NOT THE SAME
 !         AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE
@@ -240,7 +252,7 @@
 !
         ENDDO
 !
-      ELSE
+      ELSEIF(YAFLULIM) THEN
 !
 !       THE SAME BUT WITH FLUX LIMITATION GIVEN
 !
@@ -369,6 +381,168 @@
      &            +FP21*(FN2-FN1)*MIN12+FP23*(FN2-FN3)*MIN23
           FINCORR3=HDFDT(I3)*COEF
      &            +FP31*(FN3-FN1)*MIN13+FP32*(FN3-FN2)*MIN23
+!
+!         PHITCOR IS THE NEW TOTAL RESIDUAL,
+!
+          PHITCOR=FINCORR1+FINCORR2+FINCORR3
+!
+          IF(PHITCOR.GT.EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MAX(FINCORR1,0.D0)
+            BETA2=MAX(FINCORR2,0.D0)
+            BETA3=MAX(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
+          ELSEIF(PHITCOR.LT.-EPSPHI) THEN
+!           PSI REDUCTION
+            BETA1=MIN(FINCORR1,0.D0)
+            BETA2=MIN(FINCORR2,0.D0)
+            BETA3=MIN(FINCORR3,0.D0)
+            COEF=PHITCOR/(BETA1+BETA2+BETA3)
+            FI_I(I1)=FI_I(I1)+BETA1*COEF
+            FI_I(I2)=FI_I(I2)+BETA2*COEF
+            FI_I(I3)=FI_I(I3)+BETA3*COEF
+          ELSE
+!           NO REDUCTION
+            FI_I(I1)=FI_I(I1)+FINCORR1
+            FI_I(I2)=FI_I(I2)+FINCORR2
+            FI_I(I3)=FI_I(I3)+FINCORR3
+          ENDIF
+!
+        ENDDO
+!
+      ELSE
+!
+!       HERE NO FLUX LIMITATION
+!
+        DO IELEM = 1,NELEM
+!
+          K1 = -PHIEL(IELEM,1)
+          K2 = -PHIEL(IELEM,2)
+          K3 = -PHIEL(IELEM,3)
+!
+          I1=IKLE(IELEM,1)
+          I2=IKLE(IELEM,2)
+          I3=IKLE(IELEM,3)
+!
+          ISEG1=ELTSEG(IELEM,1)
+          ISEG2=ELTSEG(IELEM,2)
+          ISEG3=ELTSEG(IELEM,3)
+!
+!         STARTS WITH N-SCHEME (EQUIVALENT TO LEO POSTMA'S IMPLEMENTATION)
+!         FIJ HERE LIKE LAMBDA(I,J) IN BOOK
+!         I.E. FIJ>0 MEANS FLUX FROM J TO I !!!!!
+!
+          FP12=MAX(MIN(K1,-K2),0.D0)
+          FP23=MAX(MIN(K2,-K3),0.D0)
+          FP31=MAX(MIN(K3,-K1),0.D0)
+          FP21=MAX(MIN(K2,-K1),0.D0)
+          FP32=MAX(MIN(K3,-K2),0.D0)
+          FP13=MAX(MIN(K1,-K3),0.D0)
+!
+!         CORRECTING THE FLUXES WHEN THEIR SIGN IS NOT THE SAME
+!         AS THE ASSEMBLED VALUE, KNOWING THAT ALL THE FPIJ ARE
+!         POSITIVE BY CONSTRUCTION
+!
+!         SEGMENT 1
+!
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
+              FP12=0.D0
+              IF(FP21.GT. FXMATPAR(ISEG1)) FP21=FXMATPAR(ISEG1)
+            ELSE
+              FP21=0.D0
+              IF(FP12.GT.-FXMATPAR(ISEG1)) FP12=-FXMATPAR(ISEG1)
+            ENDIF
+          ELSE
+            IF(FXMATPAR(ISEG1).GT.0.D0) THEN
+              FP21=0.D0
+              IF(FP12.GT. FXMATPAR(ISEG1)) FP12=FXMATPAR(ISEG1)
+            ELSE
+              FP12=0.D0
+              IF(FP21.GT.-FXMATPAR(ISEG1)) FP21=-FXMATPAR(ISEG1)
+            ENDIF
+          ENDIF
+!
+!         SEGMENT 2
+!
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
+              FP23=0.D0
+              IF(FP32.GT. FXMATPAR(ISEG2)) FP32=FXMATPAR(ISEG2)
+            ELSE
+              FP32=0.D0
+              IF(FP23.GT.-FXMATPAR(ISEG2)) FP23=-FXMATPAR(ISEG2)
+            ENDIF
+          ELSE
+            IF(FXMATPAR(ISEG2).GT.0.D0) THEN
+              FP32=0.D0
+              IF(FP23.GT. FXMATPAR(ISEG2)) FP23=FXMATPAR(ISEG2)
+            ELSE
+              FP23=0.D0
+              IF(FP32.GT.-FXMATPAR(ISEG2)) FP32=-FXMATPAR(ISEG2)
+            ENDIF
+          ENDIF
+!
+!         SEGMENT 3
+!
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
+              FP31=0.D0
+              IF(FP13.GT. FXMATPAR(ISEG3)) FP13=FXMATPAR(ISEG3)
+            ELSE
+              FP13=0.D0
+              IF(FP31.GT.-FXMATPAR(ISEG3)) FP31=-FXMATPAR(ISEG3)
+            ENDIF
+          ELSE
+            IF(FXMATPAR(ISEG3).GT.0.D0) THEN
+              FP13=0.D0
+              IF(FP31.GT.FXMATPAR(ISEG3)) FP31=FXMATPAR(ISEG3)
+            ELSE
+              FP31=0.D0
+              IF(FP13.GT.-FXMATPAR(ISEG3)) FP13=-FXMATPAR(ISEG3)
+            ENDIF
+          ENDIF
+!
+!         END OF CORRECTION OF FLUXES
+!
+          FN1=FN%R(I1)
+          FN2=FN%R(I2)
+          FN3=FN%R(I3)
+!
+!         MINIMUM OF THE 1-TETA
+!
+          MT1=1.D0-TETA(I1)
+          MT2=1.D0-TETA(I2)
+          MT3=1.D0-TETA(I3)
+          MIN12=MIN(MT1,MT2)
+          MIN13=MIN(MT1,MT3)
+          MIN23=MIN(MT2,MT3)
+!
+!         PART OF CONTRIBUTIONS THAT WILL NOT BE LIMITED, IMMEDIATELY ASSEMBLED
+!
+          FI_I(I1)=FI_I(I1)+FP12*(FN1*(MT1-MIN12)-FN2*(MT2-MIN12))
+     &                     +FP13*(FN1*(MT1-MIN13)-FN3*(MT3-MIN13))
+          FI_I(I2)=FI_I(I2)+FP21*(FN2*(MT2-MIN12)-FN1*(MT1-MIN12))
+     &                     +FP23*(FN2*(MT2-MIN23)-FN3*(MT3-MIN23))
+          FI_I(I3)=FI_I(I3)+FP31*(FN3*(MT3-MIN13)-FN1*(MT1-MIN13))
+     &                     +FP32*(FN3*(MT3-MIN23)-FN2*(MT2-MIN23))
+!
+!         NOW PART OF CONTRIBUTIONS THAT WILL BE LIMITED
+!
+          COEF=SU(IELEM)*TIERS
+!
+!         AS CLASSICAL N SCHEME, BUT WITH DERIVATIVE IN TIME ADDED
+!         HDFDT MUST BE ((1.D0-TETA)*H+TETA*HN)*(FSTAR-F)/DDT
+!
+          FINCORR1=
+     &    HDFDT(I1)*COEF+FP12*(FN1-FN2)*MIN12+FP13*(FN1-FN3)*MIN13
+          FINCORR2=
+     &    HDFDT(I2)*COEF+FP21*(FN2-FN1)*MIN12+FP23*(FN2-FN3)*MIN23
+          FINCORR3=
+     &    HDFDT(I3)*COEF+FP31*(FN3-FN1)*MIN13+FP32*(FN3-FN2)*MIN23
 !
 !         PHITCOR IS THE NEW TOTAL RESIDUAL,
 !

@@ -512,16 +512,14 @@
       IF(NIT.EQ.1.OR.(IOPT1.EQ.3.AND..NOT.LIPS)) THEN
         CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                  MESH%IKLE%I,.TRUE.,2    ,T4)
+!                                          N SCHEME FORCED (HERE FOR CFL ONLY)
+     &                  MESH%IKLE%I,.TRUE.,2,
+!                       OPTIONAL LIMITATION OF FLUXES FOR LIPS
+!                       (OTHER SCHEMES DO NOT WORK WITH TIDAL FLATS)
+     &                  YAFLULIM=YAFLULIM.AND.LIPS,FLULIM=FLULIM)
+!    &                  MESH%IKLE%I,.TRUE.,2    ,FN=T4)
 !                                          IOPT1 HERE FORCED TO N SCHEME
-!
-!       POSSIBLE CORRECTION OF FLUXES, PROVIDED BY POSITIVE_DEPTHS
-!       THIS IS NOT USEFUL WITH OPTIONS THAT DO NOT WORK WITH TIDAL FLATS
-        IF(LIPS.AND.YAFLULIM) THEN
-          DO I=1,MESH%NSEG
-            FXMAT(I)=FXMAT(I)*FLULIM(I)
-          ENDDO
-        ENDIF
+!                                          NO NEED OF FN
 !
 !       CANCELS FLUXES TO AND FROM MASKED POINTS
 !
@@ -738,7 +736,7 @@
 !    &                        FI_I               HDFDT
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
 !                                             FN FOR FSTAR
-     &                        YAFLULIM,FLULIM,T4)
+     &                        YAFLULIM,FLULIM,.FALSE.,FLULIM,T4)
           ELSE
 !           FSTAR REALLY GIVEN
             CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
@@ -749,7 +747,7 @@
 !    &                        FI_I               HDFDT
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
 !                                             FSTAR
-     &                        YAFLULIM,FLULIM,F)
+     &                        YAFLULIM,FLULIM,.FALSE.,FLULIM,F)
           ENDIF
 !         NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
 !         IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)

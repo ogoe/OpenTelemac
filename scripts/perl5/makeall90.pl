@@ -24,6 +24,8 @@
         "sources|utils|gretel",
         "sources|utils|diffsel",
         "sources|utils|splitsel",
+#Stbtel
+	"sources|stbtel",
 #nestor
         "sources|nestor",
 #waqtel
@@ -42,8 +44,6 @@
 	"sources|estel3d",
 #Postel3d
 	"sources|postel3d",
-#Stbtel
-	"sources|stbtel",
 #Api
 	"sources|api",
 

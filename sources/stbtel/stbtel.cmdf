@@ -7,8 +7,8 @@ name: HOMERE_STBTEL
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
-  declarations_telemac.f
   bief.f
+  declarations_telemac.f
   corrxy.f
   read_mesh_coord.f
   read_mesh_info.f

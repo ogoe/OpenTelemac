@@ -5,10 +5,10 @@
      &(T1,T2,T3,T4,H,HN,MESH,FLODEL,COMPUTE_FLODEL,FLBOR,DT,
      & UNSV2D,NPOIN,GLOSEG1,GLOSEG2,NBOR,NPTFR,
      & SMH,YASMH,PLUIE,RAIN,OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,
-     & FLOPOINT,NAMECODE,OPTION,NITMAX)
+     & FLOPOINT,NAMECODE,OPTION,NITMAX,DOFLULIM,FLULIMEBE,DOFLULIMEBE)
 !
 !***********************************************************************
-! BIEF   V7P2
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    SUPPRESSES NEGATIVE DEPTHS BY A LIMITATION OF FLUXES.
@@ -118,8 +118,8 @@
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
-!|                |   | 1: FAST BUT SENSITIVE TO SEGMENT NUMBERING
-!|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
+!|                |   | 1: TRIANGLES, COMPATIBLE WITH ERIA
+!|                |   | 2: SEGMENTS, COMPATIBLE WITH NERD
 !| OPTSOU         |-->| OPTION FOR SOURCES 1: NORMAL 2: DIRAC
 !| PLUIE          |-->| RAIN IN A BIEF_OBJ, IN M/S.
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
@@ -156,6 +156,9 @@
       LOGICAL, INTENT(IN)             :: YASMH,INFO,RAIN
       LOGICAL, INTENT(IN)             :: COMPUTE_FLODEL
       CHARACTER(LEN=24)               :: NAMECODE
+      LOGICAL, INTENT(IN), OPTIONAL   :: DOFLULIM,DOFLULIMEBE
+      DOUBLE PRECISION, INTENT(INOUT), 
+     &                       OPTIONAL :: FLULIMEBE(MESH%NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -165,9 +168,38 @@
       DOUBLE PRECISION DTLIM1,DTLIM2,DTLIM3,FP1,FP2,FP3,DT1,DT2,DT3
       DOUBLE PRECISION SURDT,HSEG1,HSEG2,TET,HFL2,A1,A2,A3
       DOUBLE PRECISION, PARAMETER :: TIERS=1.D0/3.D0
+      LOGICAL MAKEFLULIM,MAKEFLULIMEBE
 !
       DOUBLE PRECISION, PARAMETER :: EPS_FLUX = 1.D-15
       LOGICAL, PARAMETER :: TESTING = .FALSE.
+!
+!-----------------------------------------------------------------------
+!
+      IF(PRESENT(DOFLULIM)) THEN
+        MAKEFLULIM=DOFLULIM
+      ELSE
+!       DEFAULT VALUE (FLULIM WAS ALWAYS DONE BEFORE INTRODUCING DOFLULIM)
+        MAKEFLULIM=.TRUE.
+      ENDIF
+      IF(PRESENT(DOFLULIMEBE)) THEN
+        MAKEFLULIMEBE=DOFLULIMEBE
+      ELSE
+!       DEFAULT VALUE (FLULIMEBE WAS NOT DONE BEFORE INTRODUCING DOFLULIMEBE)
+        MAKEFLULIMEBE=.FALSE.
+      ENDIF
+!
+      IF(MAKEFLULIMEBE.AND..NOT.PRESENT(FLULIMEBE)) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'POSITIVE_DEPTHS : '
+          WRITE(LU,*) 'ARGUMENT FLULIMEBE MANQUANT'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'POSITIVE_DEPTHS: '
+          WRITE(LU,*) 'MISSING ARGUMENT FLULIMEBE'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -363,6 +395,16 @@
             ENDIF
           ENDIF
         ENDDO
+!
+!       SAVING THE ORIGINAL FLOPOINT
+!
+        IF(MAKEFLULIMEBE) THEN
+          DO IELEM=1,NELEM
+            FLULIMEBE(IELEM,1)=FLOPOINT(IELEM,1)
+            FLULIMEBE(IELEM,2)=FLOPOINT(IELEM,2)
+            FLULIMEBE(IELEM,3)=FLOPOINT(IELEM,3)
+          ENDDO
+        ENDIF
 !
       ELSE
 !
@@ -893,61 +935,87 @@
 !
       IF(OPTION.EQ.1) THEN
 !
-        DO I=1,NSEG
-          FLODEL%R(I)=0.D0
-        ENDDO
-        DO I=1,NELEM
-          ISEG=MESH%ELTSEG%I(I)
-          IF(  MESH%ORISEG%I(I).EQ.1) THEN
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,1)
-          ELSE
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,1)
-          ENDIF
-          ISEG=MESH%ELTSEG%I(I+NELEM)
-          IF(  MESH%ORISEG%I(I+NELEM).EQ.1) THEN
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,2)
-          ELSE
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,2)
-          ENDIF
-          ISEG=MESH%ELTSEG%I(I+2*NELEM)
-          IF(  MESH%ORISEG%I(I+2*NELEM).EQ.1) THEN
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,3)
-          ELSE
-            FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,3)
-          ENDIF
-        ENDDO
+        IF(MAKEFLULIMEBE) THEN
+!         THE RESULT IS
+          DO I=1,NELEM
+            IF(ABS(FLULIMEBE(I,1)).GT.1.D-30) THEN
+              FLULIMEBE(I,1)=(FLULIMEBE(I,1)-FLOPOINT(I,1))
+     &                      /FLULIMEBE(I,1)
+            ELSE
+              FLULIMEBE(I,1)=0.D0
+            ENDIF
+            IF(ABS(FLULIMEBE(I,2)).GT.1.D-30) THEN
+              FLULIMEBE(I,2)=(FLULIMEBE(I,2)-FLOPOINT(I,2))
+     &                      /FLULIMEBE(I,2)
+            ELSE
+              FLULIMEBE(I,2)=0.D0
+            ENDIF
+            IF(ABS(FLULIMEBE(I,3)).GT.1.D-30) THEN
+              FLULIMEBE(I,3)=(FLULIMEBE(I,3)-FLOPOINT(I,3))
+     &                      /FLULIMEBE(I,3)
+            ELSE
+              FLULIMEBE(I,3)=0.D0
+            ENDIF
+          ENDDO
+        ENDIF
 !
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
-     &                     NSEG,1,2,1,MESH,1,11)
-!         FLULIM IS THE ORIGINAL FLODEL THAT HAS BEEN ASSEMBLED
-!         CALL PARCOM2_SEG(FLULIM,FLULIM,FLULIM,
+        IF(MAKEFLULIM) THEN
+          DO I=1,NSEG
+            FLODEL%R(I)=0.D0
+          ENDDO
+          DO I=1,NELEM
+            ISEG=MESH%ELTSEG%I(I)
+            IF(  MESH%ORISEG%I(I).EQ.1) THEN
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,1)
+            ELSE
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,1)
+            ENDIF
+            ISEG=MESH%ELTSEG%I(I+NELEM)
+            IF(  MESH%ORISEG%I(I+NELEM).EQ.1) THEN
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,2)
+            ELSE
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,2)
+            ENDIF
+            ISEG=MESH%ELTSEG%I(I+2*NELEM)
+            IF(  MESH%ORISEG%I(I+2*NELEM).EQ.1) THEN
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,3)
+            ELSE
+              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,3)
+            ENDIF
+          ENDDO
+!
+          IF(NCSIZE.GT.1) THEN
+            CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
+     &                       NSEG,1,2,1,MESH,1,11)
+!           FLULIM ALREADY ASSEMBLED (COPY OF AN ASSEMBLED FLODEL)
+!           CALL PARCOM2_SEG(FLULIM,FLULIM,FLULIM,
 !    &                     NSEG,1,2,1,MESH,1,11)
-        ENDIF
-!
-        DO I=1,NSEG
-!         ACTUAL FLUX TRANSMITTED (=ORIGINAL-REMAINING)
-          FLODEL%R(I)=FLULIM(I)-FLODEL%R(I)
-!         PERCENTAGE OF ACTUAL FLUX WITH RESPECT TO ORIGINAL FLUX
-          IF(ABS(FLULIM(I)).GT.EPS_FLUX) THEN
-            FLULIM(I)=FLODEL%R(I)/FLULIM(I)
-          ELSE
-            FLULIM(I)=0.D0
           ENDIF
-        ENDDO
 !
-        IF(NCSIZE.GT.1) THEN
-!         SHARING AGAIN FLODEL FOR FURTHER USES
-!         ON INTERFACE SEGMENTS, ONLY ONE OF THE TWO TWIN SEGMENTS
-!         WILL RECEIVE THE TOTAL FLUX, THE OTHER WILL GET 0.
-          CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
-     &                            MESH%NH_COM_SEG%DIM1,
-     &                            MESH%NB_NEIGHB_SEG,
-     &                            MESH%NB_NEIGHB_PT_SEG%I,
-     &                            MESH%LIST_SEND_SEG%I,NSEG)
+          DO I=1,NSEG
+!           ACTUAL FLUX TRANSMITTED (=ORIGINAL-REMAINING)
+            FLODEL%R(I)=FLULIM(I)-FLODEL%R(I)
+!           PERCENTAGE OF ACTUAL FLUX WITH RESPECT TO ORIGINAL FLUX
+            IF(ABS(FLULIM(I)).GT.EPS_FLUX) THEN
+              FLULIM(I)=FLODEL%R(I)/FLULIM(I)
+            ELSE
+              FLULIM(I)=0.D0
+            ENDIF
+          ENDDO
+!
+          IF(NCSIZE.GT.1) THEN
+!           SHARING AGAIN FLODEL FOR FURTHER USES
+!           ON INTERFACE SEGMENTS, ONLY ONE OF THE TWO TWIN SEGMENTS
+!           WILL RECEIVE THE TOTAL FLUX, THE OTHER WILL GET 0.
+            CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
+     &                              MESH%NH_COM_SEG%DIM1,
+     &                              MESH%NB_NEIGHB_SEG,
+     &                              MESH%NB_NEIGHB_PT_SEG%I,
+     &                              MESH%LIST_SEND_SEG%I,NSEG)
+          ENDIF
         ENDIF
 !
-      ELSEIF(OPTION.EQ.2) THEN
+      ELSEIF(OPTION.EQ.2.AND.MAKEFLULIM) THEN
 !
 !       NOW WE WANT:
 !       FLULIM TO BE THE PERCENTAGE OF FLUX THAT HAS BEEN TRANSMITTED

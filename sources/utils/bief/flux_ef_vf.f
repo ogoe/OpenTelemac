@@ -2,30 +2,20 @@
                      SUBROUTINE FLUX_EF_VF
 !                    *********************
 !
-     &(FLOW,PHIEL,NSEG,NELEM,ELTSEG,ORISEG,IKLE,INIFLO,IOPT,FN)
+     &(FLOW,PHIEL,NSEG,NELEM,ELTSEG,ORISEG,IKLE,INIFLO,IOPT,FN,
+     & YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE)
 !
 !***********************************************************************
-! BIEF   V7P0                                   21/08/2010
+! BIEF   V7P3
 !***********************************************************************
 !
-!brief    MODIFIES THE FLUXES FOR THE FINITE VOLUME SCHEME.
-!+
-!+           (LEO POSTMA'S METHOD, SAME AS IN DELWAQ).
+!brief    Computing fluxes between points within a triangle, with
+!+        options.
 !
-!history  JMH
+!history  JMH and Leo Postma
 !+        06/05/2009
-!+
-!+   Optimisation
-!
-!history  JMH
-!+        01/10/2009
-!+
-!+   Option -1 added, Argument FN added, PSI SCHEME ADDED
-!
-!history  LEO POSTMA (DELTARES)
-!+        27/10/2009
-!+        V6P0
-!+
+!+        V5P9
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -45,6 +35,11 @@
 !+   Correction of PSI scheme. Reduction of fluxes based on same
 !+   contribution than classical distributive schemes (i.e. without
 !+   integration by part).
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        05/11/2016
+!+        V7P3
+!+   Adding flux limitation with two options, EBE or per segment
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE
@@ -66,14 +61,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)                  :: NSEG,IOPT,NELEM
-      INTEGER, INTENT(IN)                  :: ELTSEG(NELEM,3)
-      INTEGER, INTENT(IN)                  :: ORISEG(NELEM,3)
-      INTEGER, INTENT(IN)                  :: IKLE(NELEM,3)
-      DOUBLE PRECISION, INTENT(INOUT)      :: FLOW(NSEG)
-      DOUBLE PRECISION, INTENT(IN)         :: PHIEL(NELEM,3)
-      LOGICAL, INTENT(IN)                  :: INIFLO
-      TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL :: FN
+      INTEGER, INTENT(IN)                    :: NSEG,IOPT,NELEM
+      INTEGER, INTENT(IN)                    :: ELTSEG(NELEM,3)
+      INTEGER, INTENT(IN)                    :: ORISEG(NELEM,3)
+      INTEGER, INTENT(IN)                    :: IKLE(NELEM,3)
+      DOUBLE PRECISION, INTENT(INOUT)        :: FLOW(NSEG)
+      DOUBLE PRECISION, INTENT(IN)           :: PHIEL(NELEM,3)
+      LOGICAL, INTENT(IN)                    :: INIFLO
+      TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL   :: FN
+      DOUBLE PRECISION, INTENT(IN), OPTIONAL :: FLULIMEBE(NELEM,3)
+      DOUBLE PRECISION, INTENT(IN), OPTIONAL :: FLULIM(NSEG)
+      LOGICAL, INTENT(IN), OPTIONAL          :: YAFLULIM,YAFLULIMEBE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -81,8 +79,61 @@
       DOUBLE PRECISION A1,A2,A3,K1,K2,K3,THIRD,CSTE,F12,F23,F31,F1,F2,F3
       DOUBLE PRECISION FN1,FN2,FN3,F21,F32,F13
       DOUBLE PRECISION BETA1FI,BETA2FI,BETA3FI,FI
+      LOGICAL TFLULIM,TFLULIMEBE
 !
       INTRINSIC ABS,MIN,MAX
+!
+!-----------------------------------------------------------------------
+!
+!     CHECKING OPTIONAL PARAMETERS
+!
+      IF(PRESENT(YAFLULIM)) THEN
+        TFLULIM=YAFLULIM
+        IF(TFLULIM.AND..NOT.PRESENT(FLULIM)) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'FLUX_EF_VF :'
+            WRITE(LU,*) 'ARGUMENT FLULIM MANQUANT'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'FLUX_EF_VF:'
+            WRITE(LU,*) 'VARIABLE FLULIM MISSING'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ELSE
+        TFLULIM=.FALSE.
+      ENDIF
+      IF(PRESENT(YAFLULIMEBE)) THEN
+        TFLULIMEBE=YAFLULIMEBE
+        IF(TFLULIMEBE.AND..NOT.PRESENT(FLULIMEBE)) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'FLUX_EF_VF :'
+            WRITE(LU,*) 'ARGUMENT FLULIMEBE MANQUANT'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'FLUX_EF_VF:'
+            WRITE(LU,*) 'VARIABLE FLULIMEBE MISSING'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ELSE
+        TFLULIMEBE=.FALSE.
+      ENDIF
+!     FOR SECURITY BUT A PRIORITY COULD BE GIVEN
+      IF(TFLULIM.AND.TFLULIMEBE) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'FLUX_EF_VF :'
+          WRITE(LU,*) 'YAFLULIM OU YAFLULIMEBE DOIT ETRE .FALSE.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'FLUX_EF_VF:'
+          WRITE(LU,*) 'YAFLULIM AND YAFLULIMEBE CANNOT BE TRUE TOGETHER'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       THIRD=1.D0/3.D0
 !
@@ -105,29 +156,57 @@
 !     FLUXES ALREADY COMPUTED BEFORE CALLING THIS SUBROUTINE
 !     THEY ARE JUST ASSEMBLED HERE
 !
-      DO IELEM = 1,NELEM
-!       SEGMENT 1
-        ISEG  = ELTSEG(IELEM,1)
-        IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,1)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,1)
-        ENDIF
-!       SEGMENT 2
-        ISEG  = ELTSEG(IELEM,2)
-        IF(ORISEG(IELEM,2).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,2)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,2)
-        ENDIF
-!       SEGMENT 3
-        ISEG  = ELTSEG(IELEM,3)
-        IF(ORISEG(IELEM,3).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,3)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,3)
-        ENDIF
-      ENDDO
+      IF(TFLULIMEBE) THEN
+!       WITH EBE FLUX LIMITATION
+        DO IELEM = 1,NELEM
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,1)*FLULIMEBE(IELEM,1)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,1)*FLULIMEBE(IELEM,1)
+         ENDIF
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,2)*FLULIMEBE(IELEM,2)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,2)*FLULIMEBE(IELEM,2)
+          ENDIF
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,3)*FLULIMEBE(IELEM,3)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,3)*FLULIMEBE(IELEM,3)
+          ENDIF
+        ENDDO
+      ELSE
+!       WITHOUT FLUX LIMITATION (OR LATER)
+        DO IELEM = 1,NELEM
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,1)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,1)
+         ENDIF
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,2)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,2)
+          ENDIF
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,3)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,3)
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -137,68 +216,63 @@
 !
 !     WITH NO CONSTANT
 !
-      DO IELEM = 1,NELEM
-        F1 = PHIEL(IELEM,1)
-        F2 = PHIEL(IELEM,2)
-        F3 = PHIEL(IELEM,3)
-!       SEGMENT 1
-        ISEG  = ELTSEG(IELEM,1)
-        IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F1-F2)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F1-F2)
-        ENDIF
-!       SEGMENT 2
-        ISEG  = ELTSEG(IELEM,2)
-        IF(ORISEG(IELEM,2).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F2-F3)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F2-F3)
-        ENDIF
-!       SEGMENT 3
-        ISEG  = ELTSEG(IELEM,3)
-        IF(ORISEG(IELEM,3).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F3-F1)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F3-F1)
-        ENDIF
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(IOPT.EQ.1) THEN
-!
-!-----------------------------------------------------------------------
-!
-!     MINIMISES MAX ( ABS(FLOW) )
-!
-      DO IELEM = 1,NELEM
-        F1 = PHIEL(IELEM,1)
-        F2 = PHIEL(IELEM,2)
-        F3 = PHIEL(IELEM,3)
-        CSTE=-0.5D0*(MIN(F1-F2,F2-F3,F3-F1)+MAX(F1-F2,F2-F3,F3-F1))
-!       SEGMENT 1
-        ISEG  = ELTSEG(IELEM,1)
-        IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F1-F2+CSTE)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F1-F2+CSTE)
-        ENDIF
-!       SEGMENT 2
-        ISEG  = ELTSEG(IELEM,2)
-        IF(ORISEG(IELEM,2).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F2-F3+CSTE)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F2-F3+CSTE)
-        ENDIF
-!       SEGMENT 3
-        ISEG  = ELTSEG(IELEM,3)
-        IF(ORISEG(IELEM,3).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + THIRD*(F3-F1+CSTE)
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - THIRD*(F3-F1+CSTE)
-        ENDIF
-      ENDDO
+      IF(TFLULIMEBE) THEN
+!       WITH EBE FLUX LIMITATION
+        DO IELEM = 1,NELEM
+          F1 = PHIEL(IELEM,1)
+          F2 = PHIEL(IELEM,2)
+          F3 = PHIEL(IELEM,3)
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F1-F2)*FLULIMEBE(IELEM,1)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F1-F2)*FLULIMEBE(IELEM,1)
+          ENDIF
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F2-F3)*FLULIMEBE(IELEM,2)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F2-F3)*FLULIMEBE(IELEM,2)
+          ENDIF
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F3-F1)*FLULIMEBE(IELEM,3)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F3-F1)*FLULIMEBE(IELEM,3)
+          ENDIF
+        ENDDO
+      ELSE
+!       WITHOUT FLUX LIMITATION
+        DO IELEM = 1,NELEM
+          F1 = PHIEL(IELEM,1)
+          F2 = PHIEL(IELEM,2)
+          F3 = PHIEL(IELEM,3)
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F1-F2)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F1-F2)
+          ENDIF
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F2-F3)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F2-F3)
+          ENDIF
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + THIRD*(F3-F1)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - THIRD*(F3-F1)
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -208,57 +282,111 @@
 !
 !     LEO POSTMA'S METHOD (EQUIVALENT TO FLUXES GIVEN BY N-SCHEME)
 !
-      DO IELEM = 1,NELEM
-        F1 = PHIEL(IELEM,1)
-        F2 = PHIEL(IELEM,2)
-        F3 = PHIEL(IELEM,3)
-        A1 = ABS(F1)
-        A2 = ABS(F2)
-        A3 = ABS(F3)
-        IF(A1.GE.A2.AND.A1.GE.A3) THEN
-!         ALL FLOW TO AND FROM NODE 1
-          ISEG  = ELTSEG(IELEM,1)
-          IF(ORISEG(IELEM,1).EQ.1) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F2
+      IF(TFLULIMEBE) THEN
+        DO IELEM = 1,NELEM
+          F1 = PHIEL(IELEM,1)
+          F2 = PHIEL(IELEM,2)
+          F3 = PHIEL(IELEM,3)
+          A1 = ABS(F1)
+          A2 = ABS(F2)
+          A3 = ABS(F3)
+          IF(A1.GE.A2.AND.A1.GE.A3) THEN
+!           ALL FLOW TO AND FROM NODE 1
+            ISEG  = ELTSEG(IELEM,1)
+            IF(ORISEG(IELEM,1).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F2*FLULIMEBE(IELEM,1)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F2*FLULIMEBE(IELEM,1)
+            ENDIF
+            ISEG = ELTSEG(IELEM,3)
+            IF(ORISEG(IELEM,3).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F3*FLULIMEBE(IELEM,3)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F3*FLULIMEBE(IELEM,3)
+            ENDIF
+          ELSEIF(A2.GE.A1.AND.A2.GE.A3) THEN
+!           ALL FLOW TO AND FROM NODE 2
+            ISEG = ELTSEG(IELEM,1)
+            IF(ORISEG(IELEM,1).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F1*FLULIMEBE(IELEM,1)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F1*FLULIMEBE(IELEM,1)
+            ENDIF
+            ISEG = ELTSEG(IELEM,2)
+            IF(ORISEG(IELEM,2).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F3*FLULIMEBE(IELEM,2)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F3*FLULIMEBE(IELEM,2)
+            ENDIF
           ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F2
+!           ALL FLOW TO AND FROM NODE 3
+            ISEG = ELTSEG(IELEM,2)
+            IF(ORISEG(IELEM,2).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F2*FLULIMEBE(IELEM,2)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F2*FLULIMEBE(IELEM,2)
+            ENDIF
+            ISEG = ELTSEG(IELEM,3)
+            IF(ORISEG(IELEM,3).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F1*FLULIMEBE(IELEM,3)
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F1*FLULIMEBE(IELEM,3)
+            ENDIF
           ENDIF
-          ISEG = ELTSEG(IELEM,3)
-          IF(ORISEG(IELEM,3).EQ.2) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F3
+        ENDDO
+      ELSE
+        DO IELEM = 1,NELEM
+          F1 = PHIEL(IELEM,1)
+          F2 = PHIEL(IELEM,2)
+          F3 = PHIEL(IELEM,3)
+          A1 = ABS(F1)
+          A2 = ABS(F2)
+          A3 = ABS(F3)
+          IF(A1.GE.A2.AND.A1.GE.A3) THEN
+!           ALL FLOW TO AND FROM NODE 1
+            ISEG  = ELTSEG(IELEM,1)
+            IF(ORISEG(IELEM,1).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F2
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F2
+            ENDIF
+            ISEG = ELTSEG(IELEM,3)
+            IF(ORISEG(IELEM,3).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F3
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F3
+            ENDIF
+          ELSEIF(A2.GE.A1.AND.A2.GE.A3) THEN
+!           ALL FLOW TO AND FROM NODE 2
+            ISEG = ELTSEG(IELEM,1)
+            IF(ORISEG(IELEM,1).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F1
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F1
+            ENDIF
+            ISEG = ELTSEG(IELEM,2)
+            IF(ORISEG(IELEM,2).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F3
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F3
+            ENDIF
           ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F3
+!           ALL FLOW TO AND FROM NODE 3
+            ISEG = ELTSEG(IELEM,2)
+            IF(ORISEG(IELEM,2).EQ.2) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F2
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F2
+            ENDIF
+            ISEG = ELTSEG(IELEM,3)
+            IF(ORISEG(IELEM,3).EQ.1) THEN
+              FLOW(ISEG) = FLOW(ISEG) - F1
+            ELSE
+              FLOW(ISEG) = FLOW(ISEG) + F1
+            ENDIF
           ENDIF
-        ELSEIF(A2.GE.A1.AND.A2.GE.A3) THEN
-!         ALL FLOW TO AND FROM NODE 2
-          ISEG = ELTSEG(IELEM,1)
-          IF(ORISEG(IELEM,1).EQ.2) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F1
-          ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F1
-          ENDIF
-          ISEG = ELTSEG(IELEM,2)
-          IF(ORISEG(IELEM,2).EQ.1) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F3
-          ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F3
-          ENDIF
-        ELSE
-!         ALL FLOW TO AND FROM NODE 3
-          ISEG = ELTSEG(IELEM,2)
-          IF(ORISEG(IELEM,2).EQ.2) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F2
-          ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F2
-          ENDIF
-          ISEG = ELTSEG(IELEM,3)
-          IF(ORISEG(IELEM,3).EQ.1) THEN
-            FLOW(ISEG) = FLOW(ISEG) - F1
-          ELSE
-            FLOW(ISEG) = FLOW(ISEG) + F1
-          ENDIF
-        ENDIF
-      ENDDO
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -268,125 +396,237 @@
 !
 !     PSI-SCHEME
 !
-      DO IELEM = 1,NELEM
+      IF(TFLULIMEBE) THEN
+        DO IELEM = 1,NELEM
 !
-        K1 = -PHIEL(IELEM,1)
-        K2 = -PHIEL(IELEM,2)
-        K3 = -PHIEL(IELEM,3)
+          K1 = -PHIEL(IELEM,1)
+          K2 = -PHIEL(IELEM,2)
+          K3 = -PHIEL(IELEM,3)
 !
-!       STARTS WITH N-SCHEME (EQUIVALENT TO LEO POSTMA'S IMPLEMENTATION)
-!       FIJ HERE LIKE LAMBDA(I,J) IN BOOK, SO FLUXES FROM J TO I.
+!         STARTS WITH N-SCHEME (EQUIVALENT TO LEO POSTMA'S IMPLEMENTATION)
+!         FIJ HERE LIKE LAMBDA(I,J) IN BOOK, SO FLUXES FROM J TO I.
 !
-        F12=MAX(MIN(K1,-K2),0.D0)
-        F23=MAX(MIN(K2,-K3),0.D0)
-        F31=MAX(MIN(K3,-K1),0.D0)
-        F21=MAX(MIN(K2,-K1),0.D0)
-        F32=MAX(MIN(K3,-K2),0.D0)
-        F13=MAX(MIN(K1,-K3),0.D0)
+          F12=MAX(MIN(K1,-K2),0.D0)
+          F23=MAX(MIN(K2,-K3),0.D0)
+          F31=MAX(MIN(K3,-K1),0.D0)
+          F21=MAX(MIN(K2,-K1),0.D0)
+          F32=MAX(MIN(K3,-K2),0.D0)
+          F13=MAX(MIN(K1,-K3),0.D0)
 !
-        I1=IKLE(IELEM,1)
-        I2=IKLE(IELEM,2)
-        I3=IKLE(IELEM,3)
-        FN1=FN%R(I1)
-        FN2=FN%R(I2)
-        FN3=FN%R(I3)
+          I1=IKLE(IELEM,1)
+          I2=IKLE(IELEM,2)
+          I3=IKLE(IELEM,3)
+          FN1=FN%R(I1)
+          FN2=FN%R(I2)
+          FN3=FN%R(I3)
 !
-        BETA1FI=F12*(FN1-FN2)+F13*(FN1-FN3)
-        BETA2FI=F21*(FN2-FN1)+F23*(FN2-FN3)
-        BETA3FI=F31*(FN3-FN1)+F32*(FN3-FN2)
+          BETA1FI=F12*(FN1-FN2)+F13*(FN1-FN3)
+          BETA2FI=F21*(FN2-FN1)+F23*(FN2-FN3)
+          BETA3FI=F31*(FN3-FN1)+F32*(FN3-FN2)
 !
-        FI=BETA1FI+BETA2FI+BETA3FI
+          FI=BETA1FI+BETA2FI+BETA3FI
 !
-!       NOW PSI-SCHEME
+!         NOW PSI-SCHEME
 !
-!       WHAT FOLLOWS IS INSPIRED FROM SUBROUTINE VC08AA
-!       WHERE FIJ IS LIJ
+!         WHAT FOLLOWS IS INSPIRED FROM SUBROUTINE VC08AA
+!         WHERE FIJ IS LIJ
 !
-!       THIS LINE CHANGES THE SCHEME INTO N-SCHEME
-!       GO TO 1000
-!
-        IF(FI.GT.0.D0) THEN
-          IF(BETA1FI.GT.FI) THEN
-            F12=F12*FI/BETA1FI
-            F13=F13*FI/BETA1FI
-          ELSEIF(BETA1FI.LT.0.D0) THEN
+          IF(FI.GT.0.D0) THEN
+            IF(BETA1FI.GT.FI) THEN
+              F12=F12*FI/BETA1FI
+              F13=F13*FI/BETA1FI
+            ELSEIF(BETA1FI.LT.0.D0) THEN
+              F12=0.D0
+              F13=0.D0
+            ENDIF
+            IF(BETA2FI.GT.FI) THEN
+              F21=F21*FI/BETA2FI
+              F23=F23*FI/BETA2FI
+            ELSEIF(BETA2FI.LT.0.D0) THEN
+              F21=0.D0
+              F23=0.D0
+            ENDIF
+            IF(BETA3FI.GT.FI) THEN
+              F31=F31*FI/BETA3FI
+              F32=F32*FI/BETA3FI
+            ELSEIF(BETA3FI.LT.0.D0) THEN
+              F31=0.D0
+              F32=0.D0
+            ENDIF
+          ELSEIF(FI.LT.0.D0) THEN
+            IF(BETA1FI.LT.FI) THEN
+              F12=F12*FI/BETA1FI
+              F13=F13*FI/BETA1FI
+            ELSEIF(BETA1FI.GT.0.D0) THEN
+              F12=0.D0
+              F13=0.D0
+            ENDIF
+            IF(BETA2FI.LT.FI) THEN
+              F21=F21*FI/BETA2FI
+              F23=F23*FI/BETA2FI
+            ELSEIF(BETA2FI.GT.0.D0) THEN
+              F21=0.D0
+              F23=0.D0
+            ENDIF
+            IF(BETA3FI.LT.FI) THEN
+              F31=F31*FI/BETA3FI
+              F32=F32*FI/BETA3FI
+            ELSEIF(BETA3FI.GT.0.D0) THEN
+              F31=0.D0
+              F32=0.D0
+            ENDIF
+          ELSE
             F12=0.D0
+            F23=0.D0
+            F31=0.D0
+            F21=0.D0
+            F32=0.D0
             F13=0.D0
           ENDIF
-          IF(BETA2FI.GT.FI) THEN
-            F21=F21*FI/BETA2FI
-            F23=F23*FI/BETA2FI
-          ELSEIF(BETA2FI.LT.0.D0) THEN
-            F21=0.D0
-            F23=0.D0
+!
+!         ASSEMBLES FLUXES
+!         A DIFFERENCE WITH STANDARD DISTRIBUTIVE SCHEMES
+!
+!         HERE BEWARE CONVENTION ON FLOW
+!
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + (+ F21 - F12)*FLULIMEBE(IELEM,1)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) + (- F21 + F12)*FLULIMEBE(IELEM,1)
           ENDIF
-          IF(BETA3FI.GT.FI) THEN
-            F31=F31*FI/BETA3FI
-            F32=F32*FI/BETA3FI
-          ELSEIF(BETA3FI.LT.0.D0) THEN
-            F31=0.D0
-            F32=0.D0
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + (+ F32 - F23)*FLULIMEBE(IELEM,2)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) + (- F32 + F23)*FLULIMEBE(IELEM,2)
           ENDIF
-        ELSEIF(FI.LT.0.D0) THEN
-          IF(BETA1FI.LT.FI) THEN
-            F12=F12*FI/BETA1FI
-            F13=F13*FI/BETA1FI
-          ELSEIF(BETA1FI.GT.0.D0) THEN
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + (+ F13 - F31)*FLULIMEBE(IELEM,3)
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) + (- F13 + F31)*FLULIMEBE(IELEM,3)
+          ENDIF
+        ENDDO
+      ELSE
+        DO IELEM = 1,NELEM
+!
+          K1 = -PHIEL(IELEM,1)
+          K2 = -PHIEL(IELEM,2)
+          K3 = -PHIEL(IELEM,3)
+!
+!         STARTS WITH N-SCHEME (EQUIVALENT TO LEO POSTMA'S IMPLEMENTATION)
+!         FIJ HERE LIKE LAMBDA(I,J) IN BOOK, SO FLUXES FROM J TO I.
+!
+          F12=MAX(MIN(K1,-K2),0.D0)
+          F23=MAX(MIN(K2,-K3),0.D0)
+          F31=MAX(MIN(K3,-K1),0.D0)
+          F21=MAX(MIN(K2,-K1),0.D0)
+          F32=MAX(MIN(K3,-K2),0.D0)
+          F13=MAX(MIN(K1,-K3),0.D0)
+!
+          I1=IKLE(IELEM,1)
+          I2=IKLE(IELEM,2)
+          I3=IKLE(IELEM,3)
+          FN1=FN%R(I1)
+          FN2=FN%R(I2)
+          FN3=FN%R(I3)
+!
+          BETA1FI=F12*(FN1-FN2)+F13*(FN1-FN3)
+          BETA2FI=F21*(FN2-FN1)+F23*(FN2-FN3)
+          BETA3FI=F31*(FN3-FN1)+F32*(FN3-FN2)
+!
+          FI=BETA1FI+BETA2FI+BETA3FI
+!
+!         NOW PSI-SCHEME
+!
+!         WHAT FOLLOWS IS INSPIRED FROM SUBROUTINE VC08AA
+!         WHERE FIJ IS LIJ
+!
+          IF(FI.GT.0.D0) THEN
+            IF(BETA1FI.GT.FI) THEN
+              F12=F12*FI/BETA1FI
+              F13=F13*FI/BETA1FI
+            ELSEIF(BETA1FI.LT.0.D0) THEN
+              F12=0.D0
+              F13=0.D0
+            ENDIF
+            IF(BETA2FI.GT.FI) THEN
+              F21=F21*FI/BETA2FI
+              F23=F23*FI/BETA2FI
+            ELSEIF(BETA2FI.LT.0.D0) THEN
+              F21=0.D0
+              F23=0.D0
+            ENDIF
+            IF(BETA3FI.GT.FI) THEN
+              F31=F31*FI/BETA3FI
+              F32=F32*FI/BETA3FI
+            ELSEIF(BETA3FI.LT.0.D0) THEN
+              F31=0.D0
+              F32=0.D0
+            ENDIF
+          ELSEIF(FI.LT.0.D0) THEN
+            IF(BETA1FI.LT.FI) THEN
+              F12=F12*FI/BETA1FI
+              F13=F13*FI/BETA1FI
+            ELSEIF(BETA1FI.GT.0.D0) THEN
+              F12=0.D0
+              F13=0.D0
+            ENDIF
+            IF(BETA2FI.LT.FI) THEN
+              F21=F21*FI/BETA2FI
+              F23=F23*FI/BETA2FI
+            ELSEIF(BETA2FI.GT.0.D0) THEN
+              F21=0.D0
+              F23=0.D0
+            ENDIF
+            IF(BETA3FI.LT.FI) THEN
+              F31=F31*FI/BETA3FI
+              F32=F32*FI/BETA3FI
+            ELSEIF(BETA3FI.GT.0.D0) THEN
+              F31=0.D0
+              F32=0.D0
+            ENDIF
+          ELSE
             F12=0.D0
+            F23=0.D0
+            F31=0.D0
+            F21=0.D0
+            F32=0.D0
             F13=0.D0
           ENDIF
-          IF(BETA2FI.LT.FI) THEN
-            F21=F21*FI/BETA2FI
-            F23=F23*FI/BETA2FI
-          ELSEIF(BETA2FI.GT.0.D0) THEN
-            F21=0.D0
-            F23=0.D0
+!
+!         ASSEMBLES FLUXES
+!         A DIFFERENCE WITH STANDARD DISTRIBUTIVE SCHEMES
+!
+!         HERE BEWARE CONVENTION ON FLOW
+!
+!         SEGMENT 1
+          ISEG  = ELTSEG(IELEM,1)
+          IF(ORISEG(IELEM,1).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + F21 - F12
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - F21 + F12
           ENDIF
-          IF(BETA3FI.LT.FI) THEN
-            F31=F31*FI/BETA3FI
-            F32=F32*FI/BETA3FI
-          ELSEIF(BETA3FI.GT.0.D0) THEN
-            F31=0.D0
-            F32=0.D0
+!         SEGMENT 2
+          ISEG  = ELTSEG(IELEM,2)
+          IF(ORISEG(IELEM,2).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + F32 - F23
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - F32 + F23
           ENDIF
-        ELSE
-          F12=0.D0
-          F23=0.D0
-          F31=0.D0
-          F21=0.D0
-          F32=0.D0
-          F13=0.D0
-        ENDIF
-!
-!1000    CONTINUE
-!
-!       ASSEMBLES FLUXES
-!       A DIFFERENCE WITH STANDARD DISTRIBUTIVE SCHEMES
-!
-!       HERE BEWARE CONVENTION ON FLOW
-!
-!       SEGMENT 1
-        ISEG  = ELTSEG(IELEM,1)
-        IF(ORISEG(IELEM,1).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F21 - F12
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F21 + F12
-        ENDIF
-!       SEGMENT 2
-        ISEG  = ELTSEG(IELEM,2)
-        IF(ORISEG(IELEM,2).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F32 - F23
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F32 + F23
-        ENDIF
-!       SEGMENT 3
-        ISEG  = ELTSEG(IELEM,3)
-        IF(ORISEG(IELEM,3).EQ.1) THEN
-          FLOW(ISEG) = FLOW(ISEG) + F13 - F31
-        ELSE
-          FLOW(ISEG) = FLOW(ISEG) - F13 + F31
-        ENDIF
-      ENDDO
+!         SEGMENT 3
+          ISEG  = ELTSEG(IELEM,3)
+          IF(ORISEG(IELEM,3).EQ.1) THEN
+            FLOW(ISEG) = FLOW(ISEG) + F13 - F31
+          ELSE
+            FLOW(ISEG) = FLOW(ISEG) - F13 + F31
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -415,5 +655,16 @@
 !
 !-----------------------------------------------------------------------
 !
+!     OPTIONAL FLUX LIMITATION BY SEGMENT
+!
+      IF(TFLULIM) THEN
+        DO ISEG=1,NSEG
+          FLOW(ISEG) = FLOW(ISEG)*FLULIM(ISEG)
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
+
