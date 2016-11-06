@@ -91,8 +91,17 @@
 !+        V7P2
 !+   Limiting evaporation to avoid negative depths.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        06/11/2016
+!+        V7P3
+!+   This subroutine can now provide a flux limitation in the form of
+!+   FLULIM(NSEG) or FLULIMEBE(NELMAX,3). This depends on OPTION
+!+   However, FLULIMEBE can be produced only with OPTION 1.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
+!| DOFLULIM       |-->| OPTIONAL, IF YES DOES ARRAY FLULIM
+!| DOFLULIMEBE    |-->| OPTIONAL, IF YES DOES ARRAY FLULIMEBE
 !| DT             |-->| TIME STEP
 !| FLBOR          |<->| BOUNDARY FLUXES
 !| FLODEL         |<->| FLUXES GIVEN BY SEGMENT
@@ -102,6 +111,8 @@
 !| FLOPOINT       |-->| FLUXES GIVEN BY POINTS (ELEMENT BY ELEMENT)
 !| FLULIM         |<--| PER SEGMENT: PERCENTAGE OF FLUX THAT HAS NOT
 !|                |   | BEEN TRANSMITTED AT THE END OF THE ALGORITHM
+!| FLULIMEBE      |<--| AS FLULIM BUT GIVEN PER ELEMENT
+!|                |   | HENCE FLULIMEBE(NELMAX,3)
 !| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
 !| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
 !| H              |<->| NEW DEPTH
@@ -309,91 +320,6 @@
             FLOPOINT(IELEM,1)=0.D0
 !           FLOPOINT(IELEM,2)= UNCHANGED!
           ENDIF
-!         REMOVING FLUXES OF OPPOSITE SIGNS ON EITHER SIDES OF A SEGMENT
-!         SEE SIMILAR ALGORITHM IN FLUX_EF_VF_3
-!         IF THIS IS NOT DONE THE PERCENTAGE OF FLUX TRANSMITTED MAY BE
-!         OUT OF THE RANGE [0,1] AFTER ASSEMBLY
-!         SEGMENT 1
-          ISEG1=MESH%ELTSEG%I(IELEM)
-          IF(MESH%ORISEG%I(IELEM).EQ.1) THEN
-            IF(FLODEL%R(ISEG1).GT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,1)=MAX(0.D0,FLOPOINT(IELEM,1))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,1)=MIN(FLODEL%R(ISEG1),FLOPOINT(IELEM,1))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,1)=MIN(0.D0,FLOPOINT(IELEM,1))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,1)=MAX(FLODEL%R(ISEG1),FLOPOINT(IELEM,1))
-            ENDIF
-          ELSE
-            IF(FLODEL%R(ISEG1).LT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,1)=MAX(0.D0,FLOPOINT(IELEM,1))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,1)=MIN(-FLODEL%R(ISEG1),FLOPOINT(IELEM,1))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,1)=MIN(0.D0,FLOPOINT(IELEM,1))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,1)=MAX(-FLODEL%R(ISEG1),FLOPOINT(IELEM,1))
-            ENDIF
-          ENDIF
-!         SEGMENT 2
-          ISEG2=MESH%ELTSEG%I(IELEM+NELEM)
-          IF(MESH%ORISEG%I(IELEM+NELEM).EQ.1) THEN
-            IF(FLODEL%R(ISEG2).GT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,2)=MAX(0.D0,FLOPOINT(IELEM,2))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,2)=MIN(FLODEL%R(ISEG2),FLOPOINT(IELEM,2))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,2)=MIN(0.D0,FLOPOINT(IELEM,2))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,2)=MAX(FLODEL%R(ISEG2),FLOPOINT(IELEM,2))
-            ENDIF
-          ELSE
-            IF(FLODEL%R(ISEG2).LT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,2)=MAX(0.D0,FLOPOINT(IELEM,2))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,2)=MIN(-FLODEL%R(ISEG2),FLOPOINT(IELEM,2))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,2)=MIN(0.D0,FLOPOINT(IELEM,2))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,2)=MAX(-FLODEL%R(ISEG2),FLOPOINT(IELEM,2))
-            ENDIF
-          ENDIF
-!         SEGMENT 3
-          ISEG3=MESH%ELTSEG%I(IELEM+2*NELEM)
-          IF(MESH%ORISEG%I(IELEM+2*NELEM).EQ.1) THEN
-            IF(FLODEL%R(ISEG3).GT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,3)=MAX(0.D0,FLOPOINT(IELEM,3))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,3)=MIN(FLODEL%R(ISEG3),FLOPOINT(IELEM,3))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,3)=MIN(0.D0,FLOPOINT(IELEM,3))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,3)=MAX(FLODEL%R(ISEG3),FLOPOINT(IELEM,3))
-            ENDIF
-          ELSE
-            IF(FLODEL%R(ISEG3).LT.0.D0) THEN
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,3)=MAX(0.D0,FLOPOINT(IELEM,3))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,3)=MIN(-FLODEL%R(ISEG3),FLOPOINT(IELEM,3))
-            ELSE
-!             WRONG SIGN, VALUE CANCELLED
-              FLOPOINT(IELEM,3)=MIN(0.D0,FLOPOINT(IELEM,3))
-!             TOO LARGE (THE OTHER SEGMENT MUST HAVE AN OPPOSITE SIGN)
-              FLOPOINT(IELEM,3)=MAX(-FLODEL%R(ISEG3),FLOPOINT(IELEM,3))
-            ENDIF
-          ENDIF
         ENDDO
 !
 !       SAVING THE ORIGINAL FLOPOINT
@@ -425,10 +351,12 @@
       CALL CPSTVC(H,T4)
       CALL CPSTVC(H,T1)
 !
-      DO I=1,NSEG
-!       SAVING INITIAL FLODEL INTO FLULIM
-        FLULIM(I)=FLODEL%R(I)
-      ENDDO
+      IF(MAKEFLULIM) THEN
+        DO I=1,NSEG
+!         SAVING INITIAL FLODEL INTO FLULIM
+          FLULIM(I)=FLODEL%R(I)
+        ENDDO
+      ENDIF
 !
 !     ADDING THE SOURCES (SMH IS NATURALLY ASSEMBLED IN //)
 !     FIRST THE POSITIVE SOURCES
@@ -499,9 +427,13 @@
 !       INITIAL SUM OF FLUXES
         DO I=1,NSEG
           CPREV=CPREV+ABS(FLODEL%R(I))
-!         SAVING INITIAL FLODEL INTO FLULIM
-          FLULIM(I)=FLODEL%R(I)
         ENDDO
+!       SAVING INITIAL FLODEL INTO FLULIM (DEJA FAIT !!)
+!       IF(MAKEFLULIM) THEN
+!         DO I=1,NSEG
+!           FLULIM(I)=FLODEL%R(I)
+!         ENDDO
+!       ENDIF
       ENDIF
       IF(NCSIZE.GT.1) CPREV=P_DSUM(CPREV)
       IF(TESTING) WRITE(LU,*) 'INITIAL SUM OF FLUXES=',CPREV
@@ -933,87 +865,29 @@
 !
 !     ASSEMBLING THE REMAINING FLUXES IN FLODEL
 !
-      IF(OPTION.EQ.1) THEN
+      IF(OPTION.EQ.1.AND.MAKEFLULIMEBE) THEN
 !
-        IF(MAKEFLULIMEBE) THEN
-!         THE RESULT IS
-          DO I=1,NELEM
-            IF(ABS(FLULIMEBE(I,1)).GT.1.D-30) THEN
-              FLULIMEBE(I,1)=(FLULIMEBE(I,1)-FLOPOINT(I,1))
-     &                      /FLULIMEBE(I,1)
-            ELSE
-              FLULIMEBE(I,1)=0.D0
-            ENDIF
-            IF(ABS(FLULIMEBE(I,2)).GT.1.D-30) THEN
-              FLULIMEBE(I,2)=(FLULIMEBE(I,2)-FLOPOINT(I,2))
-     &                      /FLULIMEBE(I,2)
-            ELSE
-              FLULIMEBE(I,2)=0.D0
-            ENDIF
-            IF(ABS(FLULIMEBE(I,3)).GT.1.D-30) THEN
-              FLULIMEBE(I,3)=(FLULIMEBE(I,3)-FLOPOINT(I,3))
-     &                      /FLULIMEBE(I,3)
-            ELSE
-              FLULIMEBE(I,3)=0.D0
-            ENDIF
-          ENDDO
-        ENDIF
-!
-        IF(MAKEFLULIM) THEN
-          DO I=1,NSEG
-            FLODEL%R(I)=0.D0
-          ENDDO
-          DO I=1,NELEM
-            ISEG=MESH%ELTSEG%I(I)
-            IF(  MESH%ORISEG%I(I).EQ.1) THEN
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,1)
-            ELSE
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,1)
-            ENDIF
-            ISEG=MESH%ELTSEG%I(I+NELEM)
-            IF(  MESH%ORISEG%I(I+NELEM).EQ.1) THEN
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,2)
-            ELSE
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,2)
-            ENDIF
-            ISEG=MESH%ELTSEG%I(I+2*NELEM)
-            IF(  MESH%ORISEG%I(I+2*NELEM).EQ.1) THEN
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)+FLOPOINT(I,3)
-            ELSE
-              FLODEL%R(ISEG)=FLODEL%R(ISEG)-FLOPOINT(I,3)
-            ENDIF
-          ENDDO
-!
-          IF(NCSIZE.GT.1) THEN
-            CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
-     &                       NSEG,1,2,1,MESH,1,11)
-!           FLULIM ALREADY ASSEMBLED (COPY OF AN ASSEMBLED FLODEL)
-!           CALL PARCOM2_SEG(FLULIM,FLULIM,FLULIM,
-!    &                     NSEG,1,2,1,MESH,1,11)
+!       THE RESULT IS
+        DO I=1,NELEM
+          IF(ABS(FLULIMEBE(I,1)).GT.1.D-30) THEN
+            FLULIMEBE(I,1)=(FLULIMEBE(I,1)-FLOPOINT(I,1))
+     &                    /FLULIMEBE(I,1)
+          ELSE
+            FLULIMEBE(I,1)=0.D0
           ENDIF
-!
-          DO I=1,NSEG
-!           ACTUAL FLUX TRANSMITTED (=ORIGINAL-REMAINING)
-            FLODEL%R(I)=FLULIM(I)-FLODEL%R(I)
-!           PERCENTAGE OF ACTUAL FLUX WITH RESPECT TO ORIGINAL FLUX
-            IF(ABS(FLULIM(I)).GT.EPS_FLUX) THEN
-              FLULIM(I)=FLODEL%R(I)/FLULIM(I)
-            ELSE
-              FLULIM(I)=0.D0
-            ENDIF
-          ENDDO
-!
-          IF(NCSIZE.GT.1) THEN
-!           SHARING AGAIN FLODEL FOR FURTHER USES
-!           ON INTERFACE SEGMENTS, ONLY ONE OF THE TWO TWIN SEGMENTS
-!           WILL RECEIVE THE TOTAL FLUX, THE OTHER WILL GET 0.
-            CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
-     &                              MESH%NH_COM_SEG%DIM1,
-     &                              MESH%NB_NEIGHB_SEG,
-     &                              MESH%NB_NEIGHB_PT_SEG%I,
-     &                              MESH%LIST_SEND_SEG%I,NSEG)
+          IF(ABS(FLULIMEBE(I,2)).GT.1.D-30) THEN
+            FLULIMEBE(I,2)=(FLULIMEBE(I,2)-FLOPOINT(I,2))
+     &                    /FLULIMEBE(I,2)
+          ELSE
+            FLULIMEBE(I,2)=0.D0
           ENDIF
-        ENDIF
+          IF(ABS(FLULIMEBE(I,3)).GT.1.D-30) THEN
+            FLULIMEBE(I,3)=(FLULIMEBE(I,3)-FLOPOINT(I,3))
+     &                    /FLULIMEBE(I,3)
+          ELSE
+            FLULIMEBE(I,3)=0.D0
+          ENDIF
+        ENDDO
 !
       ELSEIF(OPTION.EQ.2.AND.MAKEFLULIM) THEN
 !

@@ -70,8 +70,7 @@
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| OPTADV         |-->| FOR ERIA SCHEME 1: FIRST ORDER
-!|                |   |                 2: SECOND ORDER
+!| OPTADV         |-->| NOT USED
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
 !|                |   | 2: DIRAC

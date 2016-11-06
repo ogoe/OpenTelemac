@@ -5,22 +5,33 @@
      &(U,V,VISCSA,DT,NUN,NUTILD,PROPNU,VISC,IELMNU,SLVNU,DISBOR,
      & INFOSA, MSK, MASKEL, MASKPT, NPTFR, LIMSA, NUBOR, S, UCONV,
      & VCONV, ICONV,MAS,DIF,SM,CM2,T3,T1,T2,MESH,TB,T4,
-     & T5,WDIST,NUMIN,NUMAX,YAFLULIM,TE1,TE2,YASMH)
+     & T5,WDIST,NUMIN,NUMAX,YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE,
+     & TE1,TE2,YASMH)
 !
 !***********************************************************************
-! TELEMAC2D   V7P2                                        21/08/2010
+! TELEMAC2D   V7P3
 !***********************************************************************
 !
 !brief    DIFFUSION STEP FOR SOURCE TERMS (SPALART-ALLMARAS MODEL).
 !
 !history  A BOURGOIN (LNHE) & R. ATA(LNHE)
 !+        31/08/2016
-!+        V7p2
-!+
+!+        V7P2
+!+     First version.
+!
+!history  J-M HERVOUET (JUBILADO)
+!+        06/11/2016
+!+        V7P3
+!+     Calling CVTRVF_NERD instead of CVTRVF_NERD_2 for the only
+!+     variable to be advected. Dummy variables FLULIM, FLULIMEBE and 
+!+     YAFLULIMEBE added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CM2            |<->| MATRIX
 !| DIF            |<->| DIFFUSION MATRIX
 !| DT             |-->| TIME STEP
+!| FLULIM         |-->| FLUX LIMITATION, PER SEGMENT.
+!| FLULIMEBE      |-->| FLUX LIMITATION, PER SEGMENT BUT EBE.
 !| ICONV          |-->| TYPE OF ADVECTION
 !|                |   |   1 : CHARACTERISTICS
 !|                |   |   2 : SUPG, ...
@@ -58,13 +69,14 @@
 !| VISC           |-->| TURBULENT DIFFUSION
 !| VISCSA         |<--| SPALART ALL. VISCOSITY (NU_TILDE) AT TIME T(N+1)
 !| WDIST          |-->| DISTANCE TO THE SOLID BOUNDARIES
+!| YAFLULIM       |-->| IF YES TAKE FLULIM INTO ACCOUNT
+!| YAFLULIMEBE    |-->| IF YES TAKE FLULIMEBE INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!***********************************************************************
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D, ONLY : FLULIM,H,HN,HPROP,TB2,DM1,
+      USE DECLARATIONS_TELEMAC2D, ONLY : H,HN,HPROP,TB2,DM1,
      &   ZCONV,SOLSYS,VISC_S,SMH,UNSV2D,V2DPAR,VOLU2D,OPTSOU,FLBOR,
      &   FLBORTRA,MASKTR,OPTADV_SA,AM2,DEBUG,FLODEL,NCO_DIST,NSP_DIST,
      &   MAXADV
@@ -73,13 +85,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)    :: IELMNU, NPTFR
-      INTEGER         , INTENT(IN)    :: ICONV
+      INTEGER         , INTENT(IN)    :: IELMNU,NPTFR,ICONV
       INTEGER         , INTENT(INOUT) :: LIMSA(NPTFR)
       LOGICAL         , INTENT(IN)    :: INFOSA, MSK,YAFLULIM,YASMH
+      LOGICAL         , INTENT(IN)    :: YAFLULIMEBE
       DOUBLE PRECISION, INTENT(IN)    :: DT, PROPNU,NUMIN,NUMAX
       TYPE(SLVCFG)    , INTENT(INOUT) :: SLVNU
-      TYPE(BIEF_OBJ)  , INTENT(IN)    :: U, V, NUN, DISBOR
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: U,V,NUN,DISBOR,FLULIM,FLULIMEBE
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: MASKEL, MASKPT, S
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: UCONV, VCONV,VISC,WDIST
       TYPE(BIEF_OBJ)  , INTENT(INOUT) :: VISCSA,T4,T5,NUTILD,NUBOR
@@ -256,7 +268,8 @@
      &              VOLU2D,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
 !                     RAIN  PLUIE  TRAIN
      &              .FALSE.,  S ,  0.D0 ,OPTADV_SA,TB,12,AM2,TB2,
-     &              NCO_DIST,NSP_DIST,YAFLULIM,FLULIM%R,SLVNU)
+     &              NCO_DIST,NSP_DIST,
+     &              YAFLULIM,FLULIM%R,YAFLULIMEBE,FLULIMEBE%R,SLVNU)
 !
         CALL MATVEC('X=AY    ',SM,MAS,NUTILD,C,MESH)
       IF(DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-33'
@@ -274,33 +287,27 @@
 !       PROVISIONAL: SM =0 GIVEN FOR FSCEXP (NO TURBULENCE AT SOURCES...)
 !
         IF(ICONV.EQ.ADV_LPO_TF.OR.ICONV.EQ.ADV_NSC_TF) THEN
-          IF(TB%N.LT.22) THEN
+          IF(TB%N.LT.20) THEN
             WRITE(LU,*) 'SIZE OF TB TOO SMALL IN CVDFTR'
             CALL PLANTE(1)
             STOP
           ENDIF
-!         SCHEME NERD_2 IS BUILT FOR 2 VARAIABLES
-!         SO IT IS CALLED FOR NUTILD TWICE WHICH IS NOT OPTIMAL
-!         TO BE OPTIMIZED !
-!                                       FSCEXP DIFT    CONV
-          CALL CVTRVF_NERD_2(NUTILD,NUN,SM  ,NUTILD,NUN,SM,
-     &         .FALSE.,.TRUE.,
-     &         H,HN,HPROP,UCONV,VCONV,S,S,1,S,S,SM,SM,S,
-     &         .FALSE.,S,S,.FALSE.,NUBOR,NUBOR,MASKTR,MESH,
-     &         TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
-     &         TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
-     &         TB%ADR(19)%P,TB%ADR(20)%P,TB%ADR(21)%P,
-     &         TB%ADR(22)%P,
-     &         AGGLOSA,TE1,DT,INFOSA,.FALSE.,1,MSK,MASKEL,S,C,1,
-     &         LIMSA,LIMSA,
-!                                         YAFLBOR
-     &         KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &         V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
-     &         MESH%GLOSEG%I(       1:  DIMGLO),
-     &         MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
-     &         MESH%NBOR%I,
-!                                RAIN         PLUIE
-     &        FLULIM%R,YAFLULIM,.FALSE.,S,0.D0,0.D0,MAXADV)
+!
+          CALL CVTRVF_NERD(NUTILD,NUN,SM,
+     &                     H,HN,HPROP,UCONV,VCONV,S,S,1,SM,SM,
+     &                     .FALSE.,S,.FALSE.,NUBOR,MASKTR,MESH,
+     &                     TB%ADR(13)%P,TB%ADR(14)%P,TB%ADR(15)%P,
+     &                     TB%ADR(16)%P,TB%ADR(17)%P,TB%ADR(18)%P,
+     &                     TB%ADR(19)%P,TB%ADR(20)%P,
+     &                     DT,INFOSA,MSK,MASKEL,1,LIMSA,
+!                                                     YAFLBOR
+     &                     KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
+     &                     UNSV2D,IOPT,TB%ADR(11)%P,
+     &                     MESH%GLOSEG%I(       1:  DIMGLO),
+     &                     MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+     &                     MESH%NBOR%I,FLULIM%R,YAFLULIM,
+!                           RAIN PLUIE TRAIN
+     &                     .FALSE.,S  , 0.D0,S,.FALSE.,MAXADV,1)
 !
         ELSE
 !         SCHEME 15
@@ -333,12 +340,12 @@
         IF(LNG.EQ.1) WRITE(LU,100) ICONV
         IF(LNG.EQ.2) WRITE(LU,101) ICONV
 100     FORMAT(1X,'SPALART_ALLMARAS: FORME DE CONVECTION INCONNUE:',1I4)
-101     FORMAT(1X,'SPALART_ALLAMARS: UNKNOWN TYPE OF ADVECTION:',1I4)
+101     FORMAT(1X,'SPALART_ALLMARAS: UNKNOWN TYPE OF ADVECTION:',1I4)
         CALL PLANTE(1)
         STOP
 !
       ENDIF
-      IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-5'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-5'
 !
 !     ------------------------------------------------
 !     COMPUTE PRODUCTION
@@ -453,3 +460,4 @@
 !
       RETURN
       END
+

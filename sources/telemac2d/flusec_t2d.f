@@ -2,14 +2,14 @@
                      SUBROUTINE FLUSEC_T2D
 !                    *********************
 !
-     &(GLOSEG,DIMGLO,NSEG,NPOIN,DT,MESH,UNSV2D,FLODEL,FLULIM,H,DOPLOT)
+     &(GLOSEG,DIMGLO,NSEG,NPOIN,DT,MESH,UNSV2D,FLODEL,H,DOPLOT)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief  COMPUTES FLUXES OVER LINES (FLUXLINES/CONTROL SECTIONS) VIA
-!+      FLODEL/FLULIM
+!+      FLODEL
 !+
 !+      THE FLUXES OF THE SEGMENTS ARE ALLREADY COMPUTED IN THE POSITIVE
 !+      DEPTHS ROUTINE (BIEF)
@@ -35,7 +35,6 @@
 !| DT             |-->| TIME_FLUSECT2D STEP
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| FLODEL         |<--| FLUXES BETWEEN POINTS (PER SEGMENT)
-!| FLULIM         |<--| LIMITATION OF FLUXES
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
 !| MESH           |-->| MESH STRUCTURE
 !| H              |<--| NEW WATER DEPTH
@@ -64,7 +63,6 @@
       DOUBLE PRECISION, INTENT(IN) :: DT
       TYPE(BIEF_MESH)              :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN) :: FLODEL,UNSV2D,H
-      DOUBLE PRECISION, INTENT(IN) :: FLULIM(NSEG)
       LOGICAL, INTENT(IN)          :: DOPLOT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

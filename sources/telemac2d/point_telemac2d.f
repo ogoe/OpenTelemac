@@ -116,6 +116,12 @@
 !+        V7P2
 !+   add SA turbulence model's tools
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        06/11/2016
+!+        V7P3
+!+   Now FLULIM and the new FLULIMEBE are allocated depending on
+!+   OPT_HNEG.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -917,13 +923,24 @@
 !                                         PIECE-WISE LINEAR DISCONTINUOUS
       CALL BIEF_ALLVEC(1,ZCONV  ,'ZCONV ',       15,1,1,MESH,REF)
       CALL BIEF_ALLVEC(1,FLODEL ,'FLODEL',MESH%NSEG*4**REF,1,0,MESH)
-      CALL BIEF_ALLVEC(1,FLULIM ,'FLULIM',MESH%NSEG*4**REF,1,0,MESH)
+!
+      IF(OPT_HNEG.EQ.2) THEN
+        CALL BIEF_ALLVEC(1,FLULIM ,'FLULIM',MESH%NSEG*4**REF,1,0,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,FLULIM ,'FLULIM',0,1,0,MESH)
+      ENDIF
+!   
+      IF(OPT_HNEG.EQ.3) THEN
+        CALL BIEF_ALLVEC(1,FLULIMEBE,'LIMEBE',IELM0,3,1,MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,FLULIMEBE,'LIMEBE',0,3,0,MESH)
+      ENDIF
 !
 !     FOR RAIN-EVAPORATION
 !
       IF(RAIN.OR.INCLUS(COUPLING,'WAQTEL')) THEN
         CALL BIEF_ALLVEC(1,PLUIE ,'PLUIE ',IELMH,1,1,MESH,REF)
-!     RUNOFF-RAINFALL
+!       RUNOFF-RAINFALL
         CALL BIEF_ALLVEC(1,ACCROF,'ACCROF',IELMH,1,1,MESH,REF)
         CALL BIEF_ALLVEC(1,CN    ,'CN    ',IELMH,1,1,MESH,REF)
         CALL BIEF_ALLVEC(1,ZFSLOP,'ZFSLOP',IELMH,1,1,MESH,REF)
@@ -936,7 +953,6 @@
 !
 !     VARIABLES TRANSMITTED FROM TOMAWAC TO SISYPHE
 !
-! CV     IF(INCLUS(COUPLING,'SISYPHE').AND.INCLUS(COUPLING,'TOMAWAC')) THEN
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
         CALL BIEF_ALLVEC(1,DIRMOY,'DIRMOY',IELMH,1,1,MESH,REF)
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',IELMH,1,1,MESH,REF)
@@ -948,7 +964,6 @@
         CALL BIEF_ALLVEC(1,HM0   ,'HM0   ',0    ,1,0,MESH)
         CALL BIEF_ALLVEC(1,TPR5  ,'TPR5  ',0    ,1,0,MESH)
         CALL BIEF_ALLVEC(1,ORBVEL,'ORBVEL',0    ,1,0,MESH)
-! Cv added
         FRICOU = .FALSE.
       ENDIF
 !

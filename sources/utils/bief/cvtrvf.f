@@ -7,10 +7,10 @@
      & AGGLOH,TE1,DT,ENTET,BILAN,OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
      & LIMTRA,KDIR,KDDL,NPTFR,FLBOR,YAFLBOR,VOLU2D,V2DPAR,UNSV2D,IOPT,
      & FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN,OPTADV,TB,FREE,AM2,TB2,
-     & NCO_DIST,NSP_DIST,YAFLULIM,FLULIM,SLVTRA)
+     & NCO_DIST,NSP_DIST,YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE,SLVTRA)
 !
 !***********************************************************************
-! BIEF   V7P2
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    DISTRIBUTIVE EXPLICIT OR IMPLICIT ADVECTOR.
@@ -174,8 +174,8 @@
 !
       USE BIEF, EX_CVTRVF => CVTRVF
       USE INTERFACE_PARALLEL
-!
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -189,7 +189,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,RAIN
-      LOGICAL, INTENT(IN)             :: YAFLULIM
+      LOGICAL, INTENT(IN)             :: YAFLULIM,YAFLULIMEBE
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN), TARGET :: H,HN
       TYPE(BIEF_OBJ), INTENT(IN)      :: VOLU2D,V2DPAR,UNSV2D,HPROP
@@ -200,6 +200,7 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH)                 :: MESH
+      DOUBLE PRECISION, INTENT(IN)    :: FLULIMEBE(MESH%NELMAX,3)
       TYPE(BIEF_OBJ), INTENT(IN)      :: FLBOR
       TYPE(SLVCFG), INTENT(IN)        :: SLVTRA
 !
@@ -516,7 +517,9 @@
      &                  MESH%IKLE%I,.TRUE.,2,
 !                       OPTIONAL LIMITATION OF FLUXES FOR LIPS
 !                       (OTHER SCHEMES DO NOT WORK WITH TIDAL FLATS)
-     &                  YAFLULIM=YAFLULIM.AND.LIPS,FLULIM=FLULIM)
+     &                  YAFLULIM=YAFLULIM.AND.LIPS,FLULIM=FLULIM,
+     &                  YAFLULIMEBE=YAFLULIMEBE.AND.LIPS,
+     &                  FLULIMEBE=FLULIMEBE)
 !    &                  MESH%IKLE%I,.TRUE.,2    ,FN=T4)
 !                                          IOPT1 HERE FORCED TO N SCHEME
 !                                          NO NEED OF FN
@@ -736,7 +739,7 @@
 !    &                        FI_I               HDFDT
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
 !                                             FN FOR FSTAR
-     &                        YAFLULIM,FLULIM,.FALSE.,FLULIM,T4)
+     &                        YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE,T4)
           ELSE
 !           FSTAR REALLY GIVEN
             CALL FLUX_EF_VF_3(MESH%W%R,MESH%NELEM,
@@ -747,7 +750,7 @@
 !    &                        FI_I               HDFDT
      &                        T8%R,MESH%SURFAC%R,DFDT,TETAF_VAR%R,
 !                                             FSTAR
-     &                        YAFLULIM,FLULIM,.FALSE.,FLULIM,F)
+     &                        YAFLULIM,FLULIM,YAFLULIMEBE,FLULIMEBE,F)
           ENDIF
 !         NO, WILL GO INTO SM THAT IS NOT ASSEMBLED
 !         IF(NCSIZE.GT.1) CALL PARCOM(T8,2,MESH)

@@ -33,7 +33,7 @@ TIME STEP = 0.8865  NUMBER OF TIME STEPS : 2000
 GRAPHIC PRINTOUT PERIOD : 2000
 LISTING PRINTOUT PERIOD = 100
 /----------------------------------------------------------------------/
-TURBULENCE MODEL = 1/ 1:LAMINAIRE  3:K-EPSILON /
+TURBULENCE MODEL = 1  / 1:LAMINAIRE  3:K-EPSILON /
 /----------------------------------------------------------------------/
 / 0:RIEN 1:LINEAIRE 2:CHEZY 3:STRICKLER
 LAW OF BOTTOM FRICTION : 0

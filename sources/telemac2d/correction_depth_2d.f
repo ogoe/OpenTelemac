@@ -2,10 +2,10 @@
                      SUBROUTINE CORRECTION_DEPTH_2D
 !                    ******************************
 !
-     &(GLOSEG,DIMGLO,YAFLODEL,YASMH,YAFLULIM)
+     &(GLOSEG,DIMGLO,YAFLODEL,YASMH,YAFLULIM,YAFLULIMEBE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P2
+! TELEMAC2D   V7P3
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -54,6 +54,12 @@
 !+        V7P2
 !+   Call to positive_depths changed (sources and rain now split).
 !
+!history  J-M HERVOUET (LNHE)
+!+        06/11/2016
+!+        V7P3
+!+   Call to positive_depths changed (FLULIMEBE, etc.). Now, depending
+!+   on OPT_HNEG, either FLULIM or FLULIMEBE will be produced.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
@@ -78,7 +84,7 @@
       INTEGER, INTENT(IN)    :: DIMGLO
       INTEGER, INTENT(IN)    :: GLOSEG(DIMGLO,2)
       LOGICAL, INTENT(IN)    :: YASMH
-      LOGICAL, INTENT(INOUT) :: YAFLULIM,YAFLODEL
+      LOGICAL, INTENT(INOUT) :: YAFLULIM,YAFLODEL,YAFLULIMEBE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -147,8 +153,9 @@
 !       LIMITS FLUXES TO HAVE POSITIVE DEPTHS
 !       BEWARE, WILL BE ONLY VALID FOR ADVECTION WITH UDEL,VDEL
 !       HENCE FOR TRACERS AND IF SOLSYS=2
-!       FLULIM WILL BE CORRECT AT THE EXIT OF POSITIVE_DEPTHS
-        YAFLULIM=.TRUE.
+!       FLULIM OR FLULIMEBE WILL BE CORRECT AT THE EXIT OF POSITIVE_DEPTHS
+        IF(OPT_HNEG.EQ.2) YAFLULIM=.TRUE.
+        IF(OPT_HNEG.EQ.3) YAFLULIMEBE=.TRUE.
 !
         CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                       FLBOR,DT,UNSV2D,
@@ -157,7 +164,9 @@
      &                       MESH%NBOR%I,MESH%NPTFR,
      &                       SMH,YASMH,PLUIE,RAIN,
      &                       OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
-     &                       MESH%W%R,NAMECODE,OPTPOS,MAXADV)
+     &                       MESH%W%R,NAMECODE,OPTPOS,MAXADV,
+     &                       DOFLULIM=YAFLULIM,FLULIMEBE=FLULIMEBE%R,
+     &                       DOFLULIMEBE=YAFLULIMEBE)
 !                                              OPTION
 !                                              FOR POSITIVE DEPTH ALGORITHM
 !
@@ -227,11 +236,10 @@
 !
       IF(DOFLUX) THEN
         CALL FLUSEC_T2D(GLOSEG,DIMGLO,MESH%NSEG,NPOIN,DT,
-     &                  MESH,UNSV2D,FLODEL,FLULIM%R,H,ENTET)
+     &                  MESH,UNSV2D,FLODEL,H,ENTET)
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-

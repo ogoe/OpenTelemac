@@ -12,6 +12,10 @@
 !brief    Computing fluxes between points within a triangle, with
 !+        options.
 !
+!warning  If YAFLULIM and YAFLULIMEBE are both true, only FLULIMEBE
+!+        is taken into account !!!!!!!!!!!
+!
+!
 !history  JMH and Leo Postma
 !+        06/05/2009
 !+        V5P9
@@ -120,19 +124,6 @@
         ENDIF
       ELSE
         TFLULIMEBE=.FALSE.
-      ENDIF
-!     FOR SECURITY BUT A PRIORITY COULD BE GIVEN
-      IF(TFLULIM.AND.TFLULIMEBE) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'FLUX_EF_VF :'
-          WRITE(LU,*) 'YAFLULIM OU YAFLULIMEBE DOIT ETRE .FALSE.'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'FLUX_EF_VF:'
-          WRITE(LU,*) 'YAFLULIM AND YAFLULIMEBE CANNOT BE TRUE TOGETHER'
-        ENDIF
-        CALL PLANTE(1)
-        STOP
       ENDIF
 !
       THIRD=1.D0/3.D0
@@ -657,7 +648,7 @@
 !
 !     OPTIONAL FLUX LIMITATION BY SEGMENT
 !
-      IF(TFLULIM) THEN
+      IF(TFLULIM.AND..NOT.TFLULIMEBE) THEN
         DO ISEG=1,NSEG
           FLOW(ISEG) = FLOW(ISEG)*FLULIM(ISEG)
         ENDDO
