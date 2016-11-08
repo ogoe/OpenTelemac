@@ -19,7 +19,7 @@
       ! brief Maximum number of conditions
       INTEGER, PARAMETER :: MAXCOND = 3
       ! brief Maximum number of conditions
-      INTEGER, PARAMETER :: MAXENUM = 40
+      INTEGER, PARAMETER :: MAXENUM = 50
       ! brief type for a keyword
       TYPE KEYWORD
         ! param Name of the ley in French and English

@@ -367,8 +367,6 @@
       !
       INTEGER NFIC, IERR, IKEY, I
       CHARACTER(LEN=144) :: FILENAME
-      CHARACTER(LEN=*) :: TO_LOWER
-      EXTERNAL TO_LOWER
       NFIC = 666
       FILENAME = REPEAT(' ',144)
       FILENAME = 'cata_name2eng_name.ts'
@@ -478,7 +476,7 @@
         WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1)-2)//
      &                    REPEAT('-',35)
         WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//
-     &            TRIM(RUB)//" = FACT(statut='f',"
+     &            TRIM(RUB)//" = FACT(statut='o',"
         WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(level-1)-2)//
      &                    REPEAT('-',35)
       ENDIF

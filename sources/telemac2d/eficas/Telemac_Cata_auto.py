@@ -57,7 +57,7 @@ INITIALIZATION = PROC(nom= "INITIALIZATION",op = None,
 drawings.""",
     ),
 #   -----------------------------------
-    INPUT_FILES = FACT(statut='f',
+    INPUT_FILES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         GEOMETRY_FILE_FORMAT = SIMP(statut ='o',
@@ -171,7 +171,7 @@ into this file shall be written on channel 22.""",
             ),
         ),
 #       -----------------------------------
-        USER_FILES = FACT(statut='f',
+        USER_FILES = FACT(statut='o',
 #       -----------------------------------
 #           -----------------------------------
             BINARY_DATA_FILE_1_FORMAT = SIMP(statut ='f',
@@ -248,7 +248,7 @@ shall be read on channel 27.""",
         ),
     ),
 #   -----------------------------------
-    INITIAL_STATE = FACT(statut='f',
+    INITIAL_STATE = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         INITIAL_CONDITIONS = SIMP(statut ='o',
@@ -329,7 +329,7 @@ file. Old name in 6.1 version: TIDE DATA BASE""",
         ),
     ),
 #   -----------------------------------
-    RESTART = FACT(statut='f',
+    RESTART = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         COMPUTATION_CONTINUED = SIMP(statut ='o',
@@ -412,7 +412,7 @@ PREVIOUS COMPUTATION FILE""",
         ),
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='f',
+    GENERAL = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         PARALLEL_PROCESSORS = SIMP(statut ='o',
@@ -574,7 +574,7 @@ GENERAL_PARAMETERS = PROC(nom= "GENERAL_PARAMETERS",op = None,
         ang = """ If 1, calls of subroutines will be printed in the listing""",
     ),
 #   -----------------------------------
-    TIME = FACT(statut='f',
+    TIME = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         TIME_STEP = SIMP(statut ='o',
@@ -703,7 +703,7 @@ max(U) min(V) max(V) min(T) max(T)""",
         ),
     ),
 #   -----------------------------------
-    LOCATION = FACT(statut='f',
+    LOCATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ORIGIN_COORDINATES = SIMP(statut ='o',
@@ -787,7 +787,7 @@ and longitude in degrees!""",
 PHYSICAL_PARAMETERS = PROC(nom= "PHYSICAL_PARAMETERS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    FRICTION = FACT(statut='f',
+    FRICTION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_FRICTION_DOMAINS = SIMP(statut ='o',
@@ -950,7 +950,7 @@ zone""",
         ),
     ),
 #   -----------------------------------
-    METEOROLOGY = FACT(statut='f',
+    METEOROLOGY = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         WIND = SIMP(statut ='o',
@@ -1078,7 +1078,7 @@ EVAPORATION IN MM PER DAY""",
         ),
     ),
 #   -----------------------------------
-    WAVE = FACT(statut='f',
+    WAVE = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         WAVE_DRIVEN_CURRENTS = SIMP(statut ='o',
@@ -1102,7 +1102,7 @@ EVAPORATION IN MM PER DAY""",
         ),
     ),
 #   -----------------------------------
-    ESTIMATION = FACT(statut='f',
+    ESTIMATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         PARAMETER_ESTIMATION = SIMP(statut ='o',
@@ -1155,7 +1155,7 @@ adjoint""",
         ),
     ),
 #   -----------------------------------
-    SOURCES = FACT(statut='f',
+    SOURCES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ABSCISSAE_OF_SOURCES = SIMP(statut ='o',
@@ -1216,7 +1216,7 @@ sources""",
         ),
     ),
 #   -----------------------------------
-    WATER_QUALITY_INFO = FACT(statut='f',
+    WATER_QUALITY_INFO = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         WATER_QUALITY_PROCESS = SIMP(statut ='f',
@@ -1230,7 +1230,7 @@ sources""",
         ),
     ),
 #   -----------------------------------
-    CORIOLIS_EFFECT = FACT(statut='f',
+    CORIOLIS_EFFECT = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         CORIOLIS = SIMP(statut ='o',
@@ -1259,7 +1259,7 @@ latitudes are known""",
         ),
     ),
 #   -----------------------------------
-    TSUNAMI = FACT(statut='f',
+    TSUNAMI = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         OPTION_FOR_TSUNAMI_GENERATION = SIMP(statut ='o',
@@ -1280,7 +1280,7 @@ latitudes are known""",
         ),
     ),
 #   -----------------------------------
-    OTHERS_PHY = FACT(statut='f',
+    OTHERS_PHY = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         WATER_DENSITY = SIMP(statut ='o',
@@ -1421,7 +1421,7 @@ sont imprimees""",
 are printed to the listing""",
     ),
 #   -----------------------------------
-    SOLVER_INFO = FACT(statut='f',
+    SOLVER_INFO = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         SOLVER_FOR_K_EPSILON_MODEL = SIMP(statut ='o',
@@ -1465,7 +1465,7 @@ Crout''s preconditioning per element""",
         ),
     ),
 #   -----------------------------------
-    ACCURACY = FACT(statut='f',
+    ACCURACY = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ACCURACY_OF_K = SIMP(statut ='o',
@@ -1499,7 +1499,7 @@ the diffusion source-terms step of the k-epsilon model.""",
         ),
     ),
 #   -----------------------------------
-    S_TURBULENCE = FACT(statut='f',
+    S_TURBULENCE = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         TURBULENCE_REGIME_FOR_SOLID_BOUNDARIES = SIMP(statut ='f',
@@ -1608,7 +1608,7 @@ schema de Zokagoa 4 : schema de Tchamen 5 : HLLC ordre 1 6 : WAF ordre
 4 : Tchamen scheme 5 : HLLC order 1 6 : WAF order 2""",
     ),
 #   -----------------------------------
-    SOLVER_INFO = FACT(statut='f',
+    SOLVER_INFO = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         SOLVER = SIMP(statut ='o',
@@ -1713,7 +1713,7 @@ shall be made.""",
         ),
     ),
 #   -----------------------------------
-    DISCRETISATIONS_IMPLICITATION = FACT(statut='f',
+    DISCRETISATIONS_IMPLICITATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         DISCRETIZATIONS_IN_SPACE = SIMP(statut ='f',
@@ -1754,7 +1754,7 @@ an unstable condition.""",
         ),
     ),
 #   -----------------------------------
-    PROPAGATION_INFO = FACT(statut='f',
+    PROPAGATION_INFO = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         PROPAGATION = SIMP(statut ='o',
@@ -1837,7 +1837,7 @@ available.""",
         ),
     ),
 #   -----------------------------------
-    ADVECTION_INFO = FACT(statut='f',
+    ADVECTION_INFO = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ADVECTION = SIMP(statut ='o',
@@ -2050,7 +2050,7 @@ Dirichlet prescribed values are not obeyed, but the fluxes are correct""",
         ),
     ),
 #   -----------------------------------
-    DIFFUSION = FACT(statut='f',
+    DIFFUSION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         DIFFUSION_OF_VELOCITY = SIMP(statut ='o',
@@ -2089,7 +2089,7 @@ velocity""",
         ),
     ),
 #   -----------------------------------
-    OTHERS = FACT(statut='f',
+    OTHERS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         MATRIX_STORAGE = SIMP(statut ='o',
@@ -2223,7 +2223,7 @@ fully implemented.""",
 TRACERS = PROC(nom= "TRACERS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    SETTING = FACT(statut='f',
+    SETTING = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_TRACERS = SIMP(statut ='o',
@@ -2274,7 +2274,7 @@ UTILISER AVEC LE MOT-CLE "EFFETS DE DENSITE".""",
         ),
     ),
 #   -----------------------------------
-    BOUNDARY_CONDITIONS = FACT(statut='f',
+    BOUNDARY_CONDITIONS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         PRESCRIBED_TRACERS_VALUES = SIMP(statut ='f',
@@ -2287,7 +2287,7 @@ section dealing with the boundary conditions""",
         ),
     ),
 #   -----------------------------------
-    SOLVER_TRA = FACT(statut='f',
+    SOLVER_TRA = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         SOLVER_FOR_DIFFUSION_OF_TRACERS = SIMP(statut ='f',
@@ -2329,7 +2329,7 @@ preconditioning per element.""",
         ),
     ),
 #   -----------------------------------
-    ACCURACY_TRA = FACT(statut='f',
+    ACCURACY_TRA = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ACCURACY_FOR_DIFFUSION_OF_TRACERS = SIMP(statut ='o',
@@ -2351,7 +2351,7 @@ diffusion of tracer.""",
         ),
     ),
 #   -----------------------------------
-    SOURCES_TRA = FACT(statut='f',
+    SOURCES_TRA = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         VALUES_OF_THE_TRACERS_AT_THE_SOURCES = SIMP(statut ='o',
@@ -2362,7 +2362,7 @@ diffusion of tracer.""",
         ),
     ),
 #   -----------------------------------
-    METEOROLOGY_TRA = FACT(statut='f',
+    METEOROLOGY_TRA = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         VALUES_OF_TRACERS_IN_THE_RAIN = SIMP(statut ='o',
@@ -2376,7 +2376,7 @@ reasonable""",
         ),
     ),
 #   -----------------------------------
-    NUMERICAL = FACT(statut='f',
+    NUMERICAL = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ADVECTION_OF_TRACERS = SIMP(statut ='o',
@@ -2464,7 +2464,7 @@ predictor-corrector second-order in time 4= implicit""",
         ),
     ),
 #   -----------------------------------
-    DEGRADATION = FACT(statut='f',
+    DEGRADATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         LAW_OF_TRACERS_DEGRADATION = SIMP(statut ='o',
@@ -2492,7 +2492,7 @@ predictor-corrector second-order in time 4= implicit""",
 PARTICLE_TRANSPORT = PROC(nom= "PARTICLE_TRANSPORT",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    DROGUES = FACT(statut='f',
+    DROGUES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_DROGUES = SIMP(statut ='o',
@@ -2530,7 +2530,7 @@ binary file""",
         ),
     ),
 #   -----------------------------------
-    ALGAES = FACT(statut='f',
+    ALGAES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         ALGAE_TRANSPORT_MODEL = SIMP(statut ='o',
@@ -2581,7 +2581,7 @@ spheres, and for the other choices see Gaylord et al. (1994)""",
         ),
     ),
 #   -----------------------------------
-    OIL_SPILL = FACT(statut='f',
+    OIL_SPILL = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         OIL_SPILL_MODEL = SIMP(statut ='o',
@@ -2607,7 +2607,7 @@ FILE IS NEEDED""",
         ),
     ),
 #   -----------------------------------
-    BROWNIAN_MOUVEMENT = FACT(statut='f',
+    BROWNIAN_MOUVEMENT = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         STOCHASTIC_DIFFUSION_MODEL = SIMP(statut ='o',
@@ -2620,7 +2620,7 @@ FILE IS NEEDED""",
         ),
     ),
 #   -----------------------------------
-    LAGRANGIAN_DRIFTS = FACT(statut='f',
+    LAGRANGIAN_DRIFTS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_LAGRANGIAN_DRIFTS = SIMP(statut ='o',
@@ -2639,7 +2639,7 @@ PRINTOUTS key-word""",
 CONSTRUCTION_WORKS = PROC(nom= "CONSTRUCTION_WORKS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    WEIRS = FACT(statut='f',
+    WEIRS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_WEIRS = SIMP(statut ='o',
@@ -2683,7 +2683,7 @@ the weir data file (see written documentation)""",
         ),
     ),
 #   -----------------------------------
-    SIPHONS = FACT(statut='f',
+    SIPHONS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_SIPHONS = SIMP(statut ='f',
@@ -2712,7 +2712,7 @@ file (see written documentation)""",
         ),
     ),
 #   -----------------------------------
-    CULVERTS = FACT(statut='f',
+    CULVERTS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_CULVERTS = SIMP(statut ='o',
@@ -2741,7 +2741,7 @@ culverts data file (see written documentation)""",
         ),
     ),
 #   -----------------------------------
-    BREACHES = FACT(statut='f',
+    BREACHES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         BREACH = SIMP(statut ='o',
@@ -2773,7 +2773,7 @@ data file.""",
 TIDES = PROC(nom= "TIDES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    BOUNDARY_CONDITIONS = FACT(statut='f',
+    BOUNDARY_CONDITIONS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         TIDAL_DATA_BASE = SIMP(statut ='o',
@@ -2851,7 +2851,7 @@ extracted""",
         ),
     ),
 #   -----------------------------------
-    CALIBRATION = FACT(statut='f',
+    CALIBRATION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         GEOGRAPHIC_SYSTEM = SIMP(statut ='o',
@@ -2914,7 +2914,7 @@ root of COEFFICIENT TO CALIBRATE TIDAL RANGE is taken""",
         ),
     ),
 #   -----------------------------------
-    PHYSICAL_PARAMETERS = FACT(statut='f',
+    PHYSICAL_PARAMETERS = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         TIDE_GENERATING_FORCE = SIMP(statut ='o',
@@ -2995,7 +2995,7 @@ variables belong to the other code and are given back in the results
 file.""",
     ),
 #   -----------------------------------
-    DELWAQ = FACT(statut='f',
+    DELWAQ = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         COUPLING_DIRECTORY = SIMP(statut ='f',
@@ -3136,7 +3136,7 @@ for coupling""",
         ),
     ),
 #   -----------------------------------
-    SISYPHE = FACT(statut='f',
+    SISYPHE = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         SISYPHE_STEERING_FILE = SIMP(statut ='f',
@@ -3156,7 +3156,7 @@ for coupling""",
         ),
     ),
 #   -----------------------------------
-    TOMAWAC = FACT(statut='f',
+    TOMAWAC = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         TOMAWAC_STEERING_FILE = SIMP(statut ='f',
@@ -3176,7 +3176,7 @@ for coupling""",
         ),
     ),
 #   -----------------------------------
-    WAQTEL = FACT(statut='f',
+    WAQTEL = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         WAQTEL_STEERING_FILE = SIMP(statut ='f',
@@ -3194,7 +3194,7 @@ Telemac-tracer not those of DELWAQ)""",
 OUTPUT_FILES = PROC(nom= "OUTPUT_FILES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    RESULTS_FILES = FACT(statut='f',
+    RESULTS_FILES = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_FIRST_TIME_STEP_FOR_GRAPHIC_PRINTOUTS = SIMP(statut ='o',
@@ -3399,7 +3399,7 @@ be entered into this file shall be written on channel 29.""",
         ),
     ),
 #   -----------------------------------
-    CONTROL_SECTION = FACT(statut='f',
+    CONTROL_SECTION = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         CONTROL_SECTIONS = SIMP(statut ='f',
@@ -3446,7 +3446,7 @@ WEAK FORMULATION OF NO-FLUX BOUNDARY CONDITION""",
         ),
     ),
 #   -----------------------------------
-    LISTING = FACT(statut='f',
+    LISTING = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_FIRST_TIME_STEP_FOR_LISTING_PRINTOUTS = SIMP(statut ='f',
@@ -3557,7 +3557,7 @@ the solution of the linear system.""",
         ),
     ),
 #   -----------------------------------
-    FOURIER = FACT(statut='f',
+    FOURIER = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
         FOURIER_ANALYSIS_PERIODS = SIMP(statut ='o',
