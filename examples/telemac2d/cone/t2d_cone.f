@@ -25,7 +25,8 @@
      & MAT,RHS,UNK,TB,S,BD,PRECCU,SOLSYS,CFLMAX,OPDVIT,OPTSOU,
      & NFRLIQ,SLVPRO,EQUA,VERTIC,ADJO,ZFLATS,TETAZCOMP,UDEL,VDEL,DM1,
      & ZCONV,COUPLING,FLBOR,BM1S,BM2S,CV1S,VOLU2D,V2DPAR,UNSV2D,
-     & NDGA1,NDGB1,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE,
+     & NDGA1,NDGB1,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,
+     & FLULIMEBE,YAFLULIMEBE,RAIN,PLUIE,
      & MAXADV,OPTADV_VI)
 !
 !***********************************************************************
@@ -172,6 +173,18 @@
 !+   Enabling advection solver 15 (ERIA) for velocities with a double
 !+   to cvtrvf_pos. Advection sschemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        25/04/2016
+!+        V7P2
+!+   A23%STOX and A32%STOX set to 1 to enable a call by MATVEC because
+!+   these matrices are not built by MATRIX.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        07/09/2016
+!+        V7P2
+!+   Adaptation to splitting of cvtrvf_pos into cvtrvf_nerd and
+!+   cvtrvf_eria.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -266,6 +279,7 @@
 !|                |   | OF WEIR I (side2)
 !| NWEIRS         |-->| NUMBER OF SINGULARITIES
 !| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
+!| OPTADV_VI      |-->| OPTION FOR THE ADVECTION SCHEME OF VELOCITIES
 !| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS'
 !| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
 !| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
@@ -354,14 +368,14 @@
       DOUBLE PRECISION, INTENT(INOUT) :: CFLMAX,MASSES,MASS_RAIN
       LOGICAL, INTENT(IN) :: BILMAS,ATMOS,DIFVIT,INFOGR,CONVV(4),MSK
       LOGICAL, INTENT(IN) :: YASMH,ROVAR,PRECCU,VERTIC,ADJO,CORCON
-      LOGICAL, INTENT(IN) :: YAFLULIM,RAIN
+      LOGICAL, INTENT(IN) :: YAFLULIM,RAIN,YAFLULIMEBE
       TYPE(SLVCFG), INTENT(INOUT)     :: SLVPRO
       CHARACTER(LEN=20),  INTENT(IN)  :: EQUA
       CHARACTER(LEN=*) ,  INTENT(IN)  :: COUPLING
 !
 !  STRUCTURES OF VECTORS
 !
-      TYPE(BIEF_OBJ), INTENT(IN)    :: NPSING,NDGA1,NDGB1
+      TYPE(BIEF_OBJ), INTENT(IN)    :: NPSING,NDGA1,NDGB1,FLULIMEBE
       TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,SMH,UN,VN,HN
       TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU2D,V2DPAR,UNSV2D,FLULIM
       TYPE(BIEF_OBJ), INTENT(INOUT) :: RO,UDEL,VDEL,DM1,ZCONV,FLBOR
