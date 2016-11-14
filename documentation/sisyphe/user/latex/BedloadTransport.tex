@@ -5,7 +5,7 @@
 %-------------------------------------------------------------------------------
 \section{Preliminaries}
 %-------------------------------------------------------------------------------
-The term bedload describes particles in a flowing fluid (usually water) that are transported along the bed. Bedload moves by rolling, sliding, and/or saltating (hopping). An exhastive analysis of this topic can be found in~\cite{GarciaBook2006} and references therein.\\
+The term bedload describes particles in a flowing fluid (usually water) that are transported along the bed. Bedload moves by rolling, sliding, and/or saltating (hopping). An exhaustive analysis of this topic can be found in~\cite{GarciaBook2006} and references therein.\\
 
 \sisyphe{} solves the conservative law equation for sediment mass or Exner equation:
 
@@ -13,7 +13,7 @@ The term bedload describes particles in a flowing fluid (usually water) that are
 (1-\lambda)\frac{\partial z_b}{\partial t} + \nabla\cdot \mathbf Q_b = 0
 \label{eq:Exner}
 \end{align}
-with $\mathbf Q_b$ the solid volume transport vector per unit width (m$^2/$s), with components $Q_{b_x}, Q_{b_y}$ in the $x$ and $y$ direction respectively, $z_b$ is the bottom elevation and $\lambda$ the bed porosity. The bedload transport vector can be decomposed into $x-$ and $y-$direction components as:
+with $\mathbf Q_b$ the solid volume transport vector per unit width (m$^2/$s), with components $Q_{b_x}, Q_{b_y}$ in the $x$ and $y$ direction respectively, $z_b$ is the bottom elevation (m) and $\lambda$ the bed porosity. The bedload transport vector can be decomposed into $x-$ and $y-$direction components as:
 \begin{align}
 \mathbf Q_b = (Q_{b_x}, Q_{b_y}) = (Q_b \cos\alpha, Q_b \sin\alpha).
 \label{eq:bedloadtransportvector}
@@ -27,12 +27,12 @@ The deviation of the bed load direction from the flow direction is mainly influe
 %...............................................................................
 Bedload sediment transport can be set with the keyword \telkey{BED LOAD = YES} (logical type variable, set to {\ttfamily = YES} by default).
 
-The non-dimensional current-induced sediment transport rate $\Phi_b$ is expressed by:
+The dimensionless current-induced sediment transport rate $\Phi_b$ is expressed by:
 \begin{align}
 \Phi_b = \frac{Q_b}{\sqrt{g(s-1)d^3}},
 \label{eq:Phis}
 \end{align}
-with $Q_b$ the bedload sediment transport per unit width (m$^2/$s); $s=\rho_s/\rho$ the relative density ($-$); $\rho_s$ the sediment density (kg$/$m$^3$); $\rho$ the water density (kg$/$m$^3$); $d$ the sand grain diameter ($=d_{50}$ for uniform sediment distribution (m)) and $g$ the gravity acceleration constant (m$/$s$^2$).
+with $Q_b$ the bedload sediment transport per unit width (m$^2/$s); $s=\rho_s/\rho$ the sediment relative density ($-$); $\rho_s$ the sediment density (kg$/$m$^3$); $\rho$ the water density (kg$/$m$^3$); $d$ the sand grain diameter ($=d_{50}$ for uniform sediment distribution (m)) and $g$ the gravity acceleration constant (m$/$s$^2$).
 
 Different choices of $\Phi_b$ can be selected with the keyword \telkey{BED-LOAD TRANSPORT FORMULA} (integer type variable, set to {\ttfamily = 1} by default the Meyer-Peter and M\"uller formula).
 
@@ -41,12 +41,12 @@ Different choices of $\Phi_b$ can be selected with the keyword \telkey{BED-LOAD 
 %...............................................................................
 Bedload transport formulas are generally computed as function of the Shields number $\theta$:
 \begin{align}
-\theta=\frac{\mu\tau_b}{(\rho_s-\rho)gd}  
+\theta=\frac{\mu\tau_b}{(\rho_s-\rho)gd}, 
 \label{eq:shieldsp}
 \end{align}
 with $\tau_b$ the bottom shear stress and $\mu$ the correction factor for skin friction (discussed later).
 
-Available formulas in \sisyphe{} for bedload transport only are:
+Available formulas in \sisyphe{} for bedload transport are:
 \begin{lstlisting}[frame=trBL]
 1 : MEYER-PETER and MUELLER
 2 : EINSTEIN-BROWN 
@@ -54,7 +54,7 @@ Available formulas in \sisyphe{} for bedload transport only are:
 30: ENGELUND-HANSEN (total sediment transport)
 7 : VAN RIJN 
 \end{lstlisting}
-For example, the keyword \telkey{ BED-LOAD TRANSPORT FORMULA = 7} set the van Rijn formula.
+For example, the keyword \telkey{BED-LOAD TRANSPORT FORMULA = 7} sets the van Rijn formula. Please note that bedload transport formulas \telkey{3} and \telkey{30} account for the total sediment transport.
 
 %...............................................................................
 \subsection{Available bedload transport formulas}
@@ -62,18 +62,22 @@ For example, the keyword \telkey{ BED-LOAD TRANSPORT FORMULA = 7} set the van Ri
 \subsubsection{Meyer-Peter and M\"uller}
 \begin{itemize}
 \item \telkey{ BED-LOAD TRANSPORT FORMULA = 1}
-\item Classical, wide application range $d_{50} = [0.4-29]$mm, based on grain mouvement threshold concept
+\item Classical, wide application range $d_{50} = [0.4-29]$mm, based on grain mouvement threshold concept. The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b=\left\{\begin{array}{ll}
-0 & \text{if}\,\theta<\theta_c\\
+0 & \text{if}\,\theta<\theta_{cr}\\
 \alpha_{mpm}(\theta-\theta_{cr})^{3/2} & \text{otherwise}
 \end{array}
 \right.
 \end{equation*}
-with $\alpha_{mpm}$ a coefficient $\theta_{cr}$ the critical Shields parameter \telkey{ SHIELDS PARAMETERS})
+with $\alpha_{mpm}$ a coefficient and $\theta_{cr}$ the critical Shields parameter (keyword \telkey{SHIELDS PARAMETERS})
 
-\item The coefficient $\alpha_{mpm}$ can be modified in the steering file by the keyword \telkey{ MPM COEFFICIENT} (real type variable, {\ttfamily = 8} by default). 
+\item For calibration purposes, the coefficient $\alpha_{mpm}$ can be modified in the steering file by the keyword \telkey{MPM COEFFICIENT} (real type variable, {\ttfamily = 8} by default).
 
+  \begin{WarningBlock}{Note:}
+  A value of \telkey{MPM COEFFICIENT = 8} is equal to the original MPM formula~\cite{GarciaBook2006} with $\theta_{cr}=0.0470$, while \telkey{MPM COEFFICIENT = 3.97} is equivalent to the equation proposed by Wong and Parker~\cite{WongParker06}, with $\theta_{cr}=0.0495$.      
+\end{WarningBlock}
+  
 \item Fortran subroutine {\ttfamily bedload\_meyer.f}.
 
 \end{itemize}
@@ -82,7 +86,7 @@ with $\alpha_{mpm}$ a coefficient $\theta_{cr}$ the critical Shields parameter \
 \begin{itemize}
 \item \telkey{BED-LOAD TRANSPORT FORMULA = 2}
 \item Based on the energy concept (no threshold), valid for gravel and large shear
-stresses (application range $d_{50} = [0.25-32]$mm)
+stresses (application range $d_{50} = [0.25-32]$mm). The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b = F(D_*)f(\theta), 
 \end{equation*}
@@ -105,7 +109,7 @@ where the non-dimensional diameter $D_*=d[(\rho_s/\rho-1)g/\nu^2]^{1/3}$, with $
 \subsubsection{van Rijn's}
 \begin{itemize}
 \item \telkey{ BED-LOAD TRANSPORT FORMULA = 7}
-\item Valid for finer material in the range $d_{50} = [0.2-2]mm$
+\item Valid for finer material in the range $d_{50} = [0.2-2]mm$. The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b = 0.053 D_*^{-0.3} \left( \frac{\theta-\theta_{cr}}{\theta_{cr}} \right)^{2.1}.
 \end{equation*}
@@ -122,11 +126,11 @@ An exhaustive revision of some common bedload transport formulas and associated 
 Three key aspects must be considered for computing the magnitude and direction of the bed load~\cite{Abad08}:
 \begin{itemize}
 \item[(a)] The effect of the local bed slope
-\item[(b)] Secondary flow effects on the direction of the bed shear stress
+\item[(b)] Secondary flow effects on the direction of the bed shear stress, also refered as to helical flows in the literature
 \item[(c)] The bed-shear stress partitioning into components affected by skin friction and drag force from bedforms
 \end{itemize}
 \noindent
-\sisyphe{} includes methods for evaluating these aspects.
+\sisyphe{} includes methods for evaluating these three aspects.
 
 \begin{figure}[H]%
 \begin{center}
@@ -147,10 +151,10 @@ Three key aspects must be considered for computing the magnitude and direction o
 %-------------------------------------------------------------------------------
 \subsection{Correction of the direction of the sediment transport}
 %-------------------------------------------------------------------------------
-The angle $\alpha$ is the angle between the sediment transport direction and the $x-$axis direction will deviate from that of the shear stress by combined action of a transverse slope and secondary currents. In a Cartesian coordinate system:
+The angle $\alpha$ is the angle between the sediment transport direction and the $x-$axis direction will deviate from that of the shear stress by combined action of a transverse slope and secondary currents. In a Cartesian coordinate system, the relation of van Bendegon is~\cite{}:
 \begin{equation}
 \displaystyle
-\tan\alpha = \frac{\sin\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial y}}{\cos\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial x}},
+\tan\alpha = \frac{\sin\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial y}}{\cos\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial x}}.
 \end{equation}
 
 Above, the terms $\partial z_b/\partial x$ and $\partial z_b/\partial y$ represent respectively the transverse and longitudinal slopes, $z_b$ the bottom position and $\delta$ the angle between the sediment transport vector and the flow direction, modified by spiral flow. The sediment shape function $f(\theta)$ is a function weighting the influence of the transverse bed slope, expressed as a function of the dimensionless shear stress or Shields parameter $\theta$. It can be computed according to:
@@ -164,18 +168,18 @@ f(\theta) = \frac{4}{6\theta}
 \begin{equation*}
 f(\theta) = \frac{1}{\beta_2}\sqrt{\theta}
 \end{equation*}
-where $\beta_2$ is an empirical coefficient. The default value in $\beta_2=0.85$, but an optimal value of $\beta_2=1.6$ was found for the calibration of numerical experiments of dunes and bars in a laboratory channel~\cite{Mendoza15}.
+where $\beta_2$ is an empirical coefficient. The default value is $\beta_2=0.85$, but an optimal value of $\beta_2=1.6$ was found for the calibration of numerical experiments of dunes and bars in a laboratory channel~\cite{Mendoza15}.
 \end{itemize}
 
 %-------------------------------------------------------------------------------
 \subsection{Correction by secondary flow effects on the direction of the bed shear stress}
 %-------------------------------------------------------------------------------
-In curved channels, the direction of the sediment transport will not longer coincides with the direction of the bed shear stress,
+In curved channels, the direction of the sediment transport will no longer coincides with the direction of the bed shear stress,
 due to the effect of the secondary flows:
 \begin{equation}\label{eq:delta}
 \delta = \tan^{-1}\left(\frac{v}{u}\right) - \textcolor{red}{\tan^{-1}\left(\frac{A}{r_s}h\right)} = \delta^* - \textcolor{red}{\Delta\delta},
 \end{equation}
-with $h$ the water depth, $(u, v)$ the components the depth-averaged velocity field, $r_s$ the local radius of curvature and $A$ the spiral flow coefficient. Above, the term highlighted in red accounts for the effect of the spiral motion on the sediment flux. The angles $\delta^*$ and $\Delta\delta$ indicate respectively the direction of the bed shear stress (which coincides with the direction of the depth-averaged velocity) and the direction due to the effect of secondary currents.
+with $h$ the water depth, $(u,v)$ the components of the depth-averaged velocity field, $r_s$ the local radius of curvature and $A$ the spiral flow coefficient. Above, the term highlighted in red accounts for the effect of the spiral motion on the sediment flux. The angles $\delta^*$ and $\Delta\delta$ indicate respectively the direction of the bed shear stress (which coincides with the direction of the depth-averaged velocity) and the direction due to the effect of secondary currents.
 
 In sisyphe{} $A=7^*$ (Engelund's value). Nevertheless, an optimal value of $A=12$ was found for the calibration of numerical experiments of dunes and bars in a laboratory channel~\cite{Mendoza15}.
 
@@ -191,7 +195,7 @@ Q_b^* &= Q_{b}\left(1+\beta\frac{\partial z_b}{\partial s}\right) \\
 \end{equation}
 where $s$ is the flow direction and $\beta$ is an empirical factor accounting for the streamwise bed slope effect ($=1.3$ by default).
 
-The correction proposed by Soulsby~\cite{Soulsby97}, is based on the modification of the critical Shields parameter and is therefore only valid for threshold bedload formulas:
+The correction proposed by Soulsby~\cite{Soulsby97} is based on the modification of the critical Shields parameter and is therefore only valid for threshold bedload formulas:
 \begin{equation*}
 \frac{\theta_{\chi cr}}{\theta_{cr}} = \frac{\cos\psi \sin\chi + 
 \sqrt{\cos^2\chi \tan^2\phi - \sin^2\psi \sin^2\chi}}{\tan
@@ -202,22 +206,29 @@ where $\theta_{\beta cr}$ is the corrected critical Shields number for a sloping
 %-------------------------------------------------------------------------------
 \section{Keywords for the modification of the intensity and direction of bed load}
 %-------------------------------------------------------------------------------
-The keyword \telkey{SLOPE EFFECT} (logical type variable, set to {\ttfamily = YES} by default) activates the bed slope effects. If \telkey{SLOPE EFFECT = NO}, the keywords \telkey{FORMULA FOR DEVIATION} and \telkey{FORMULA FOR SLOPE EFFECT} are not taken into account
+The keyword \telkey{SLOPE EFFECT} (logical type variable, set to {\ttfamily = YES} by default) activates the bed slope effects. If \telkey{SLOPE EFFECT = NO}, the keywords \telkey{FORMULA FOR DEVIATION} and \telkey{FORMULA FOR SLOPE EFFECT} are not taken into account.
 
 %-------------------------------------------------------------------------------
 \subsubsection{Correction of the direction of bedload transport}
 %-------------------------------------------------------------------------------
-The correction of the direction of bedload transport can be done by either the Koch and Flokstra formulation \telkey{FORMULA FOR DEVIATION = 1} (integer type variable, set to {\ttfamily = 1} by default) or the Talmon et al. formulation \telkey{FORMULA FOR DEVIATION = 2}. For the latter, an associated keyword is available \telkey{BETA2} (real type variable, set to {\ttfamily = 0.85} by default).
+The correction of the direction of bedload transport can be done by either the Koch and Flokstra formulation \telkey{FORMULA FOR DEVIATION = 1} (integer type variable, set to {\ttfamily = 1} by default) or the Talmon et al. formulation \telkey{FORMULA FOR DEVIATION = 2}. For the latter, an associated keyword is available \telkey{PARAMETER FOR DEVIATION} (real type variable named \telkey{BETA2}, set to {\ttfamily = 0.85} by default).
 
 %-------------------------------------------------------------------------------
 \subsubsection{Correction of the intensity of bedload transport rate}
 %-------------------------------------------------------------------------------
-The correction of the intensity of bedload transport rate can be done by either the Koch and Flokstra formulation \telkey{FORMULA FOR SLOPE EFFECT} (integer type variable, set to {\ttfamily = 1} by default). This keyword has the associated keyword \telkey{BETA} (real type variable, set to {\ttfamily = 1.30} by default) or the Soulsby formulation \telkey{FORMULA FOR SLOPE EFFECT = 2}. This keyword has the associated keyword \telkey{FRICTION ANGLE OF THE SEDIMENT} (real type variable, set to {\ttfamily = 40.} by default).\\
+The correction of the intensity of bedload transport rate can be done by either:
+\begin{itemize}
+\item the Koch and Flokstra formulation \telkey{FORMULA FOR SLOPE EFFECT} (integer type variable, set to {\ttfamily = 1} by default). This keyword has the associated keyword \telkey{BETA} (real type variable, set to {\ttfamily = 1.30} by default)
+\item the Soulsby formulation \telkey{FORMULA FOR SLOPE EFFECT = 2}. This keyword has the associated keyword \telkey{FRICTION ANGLE OF THE SEDIMENT} (real type variable, set to {\ttfamily = 40.} by default).
+\end{itemize}
 
 The keyword \telkey{SECONDARY CURRENTS} (logical type variable, set to {\ttfamily = NO} by default) accounts for the secondary flow correction. This keyword has the associated keyword \telkey{ SECONDARY CURRENTS ALPHA COEFFICIENT} (real type variable, set to {\ttfamily = 1.} by default) that allows the modification of the coefficient $A$ in Equation~\ref{eq:delta}. This value can be chosen as: $\rightarrow 0.75~~\text{(rough bottom)} \leq \alpha_{SC} \leq 1.0~~\text{(smooth bottom)}$. For example, if $\alpha_{SC} = 1$ then $A = 7$.
 
 %-------------------------------------------------------------------------------
-\section{Skin friction correction}\label{sec:skin}
+\section{Influence of the roughness on sediment transport processes}\label{sec:roug}
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
+\subsection{Skin friction correction}\label{sec:skin}
 %-------------------------------------------------------------------------------
 The total bed shear stress is due to skin friction and bed form drag but \textbf{only the component due to skin friction acts on bedload}. The shear stress due to skin friction is expressed as:
 \begin{equation}\label{eq:taup}
@@ -227,7 +238,7 @@ where $\tau_b = 0.5 \rho C_f (U^2 + V^2)$ is the total bed shear stress and $\mu
 \begin{equation}\label{eq:mu}
 \mu=\frac{C_f'}{C_f}
 \end{equation}
-where $C_f$ is the friction coefficient due to form drag plus skin friction, and $C_f'$ is the friction coefficient due only to skin friction, which is computed as:
+where $C_f$ is the friction coefficient due to form drag plus skin friction (specified in the hydrodynamics module), and $C_f'$ is the friction coefficient due only to skin friction, which is computed as:
 \begin{equation}\label{eq:cfp}
 C_f'=2\left(\frac{\kappa}{\log(12h/k_s')}\right)^2,
 \end{equation}
@@ -239,14 +250,85 @@ where $\kappa$ is the von K\'arm\'an coefficient ($=0.40$), the roughness height
 The keyword \telkey{SKIN FRICTION CORRECTION} (integer type variable, {\ttfamily = 1} by default) activates the correction of the bed shear stress due to skin friction:
 \begin{itemize}
 \item If \telkey{SKIN FRICTION CORRECTION = 0}, then $\mu=1$ and the total bed shear stress issued from the hydrodynamics computation is used
-\item If \telkey{SKIN FRICTION CORRECTION = 1}, $\mu$ is computed according to Equation~\ref{eq:mu}. In this case, the friction coefficient $C_f$ is provided by the hydrodynamics steering file and $C_f'$ is computed by Equation~\ref{eq:cfp}. To compute $k_s'=\alpha_{k_s} d_{50}$, the coefficient $\alpha_{k_s}$ can be modified with the keyword \telkey{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER} (real type variable, {\ttfamily = 3.} by default). In the numerical experiences of Mendoza \textit{et al.}~\cite{Mendoza15}, $\alpha_{k_s}=37$ for dunes and $\alpha_{k_s}=3.6$ for bars.  
+\item If \telkey{SKIN FRICTION CORRECTION = 1}, $\mu$ is computed according to Equation~\ref{eq:mu}. In this case, the friction coefficient $C_f$ is provided by the hydrodynamics steering file and $C_f'$ is computed by Equation~\ref{eq:cfp}. To compute $k_s'=\alpha_{k_s} d_{50}$, the coefficient $\alpha_{k_s}$ can be modified with the keyword \telkey{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER} (real type variable, {\ttfamily = 3.} by default). In the numerical experiments of Mendoza \textit{et al.}~\cite{Mendoza15}, $\alpha_{k_s}=37$ for dunes and $\alpha_{k_s}=3.6$ for bars.  
 \item If \telkey{SKIN FRICTION CORRECTION = 2}, the presence of ripples is taken into account to compute $\mu$ (see subroutine \texttt{tob\_sisyphe.f}). For this option, a bedform predictor is used to calculate the bedform roughness $k_r$ in order to account for the effect of ripples. Both $k_r$
 and $k_s'$ should influence the transport rates. It is assumed that:
-\begin{equation}\label{eq:mu}
-\mu =\frac{C_d'^{0.75} C_r^{0.25}}{C_d}, 
+\begin{equation}\label{eq:mu2}
+\mu =\frac{C_f'^{0.75} C_r^{0.25}}{C_f}, 
 \end{equation}
 where the quadratic friction $C_r$ due to bedforms is calculated as a
 function of $k_r$ (see \S~\ref{sec:bedroughpredictor}). 
+\end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsection{Bed roughness predictor}\label{sec:bedroughpredictor}
+%-------------------------------------------------------------------------------
+A natural sediment bed is generally covered with bedforms, with length $\lambda_d$ (m)
+and height $\eta_d$ (m). The presence of bed forms greatly modifies the boundary
+layer flow structure, with the formation of recirculation cells and
+depressions in the lee of bedforms.\\
+
+Depending on the flow and sediment transport rates, the size of bed
+forms ranges from a few centimeters for ripples to a few tens of meter for
+mega-ripples. The dimension of dunes scales with the water depth $h$, such that $\eta_d
+\approx 0.4 h$ and  $\lambda_d\approx [6-10] h$.\\
+
+In most cases, large scale models do not resolve the small to medium
+scale bedforms (such as ripples or mega-ripples) which need therefore to be parameterized by increasing the friction coefficient. To determine bed roughness, there are two options available in \sisyphe{}:
+\begin{itemize}
+\item By imposing the friction coefficient based on friction laws: in this case the values of the friction coefficients are provided by \telemac{2D} or \telemac{3D}.
+\item By predicting the value of the bed roughness as a function of flow and sediment parameters using a bed roughness predictor. This option is discussed below.
+\end{itemize}
+Different options are programmed in \sisyphe to predict the total bed
+roughness through the associated keywords \telkey{BED ROUGHNESS PREDICTION} and \telkey{BED ROUGHNESS PREDICTOR OPTION}. It is recalled that the bed friction option of \sisyphe is not
+used in the case of internal coupling with \telemac{2D} or \telemac{3D}.
+\begin{itemize}
+\item For {\ttfamily BED ROUGHNESS PREDICTOR OPTION = 1}: the bed is assumed to be flat $k_s = k_s'= \alpha_{k_s} d_{50}$, with $\alpha_{k_s}$ a constant (assumed to be equal to $3.$), modified by the keyword \telkey{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER}. 
+\item {\ttfamily BED ROUGHNESS PREDICTOR OPTION = 2}: the bed is assumed to be covered by ripples.
+  \begin{itemize}
+    \item For currents only, the ripple bed roughness is function of the mobility number, see~\cite{vanRijn07}:
+\begin{equation*}
+k_r =\left\{\begin{array}{ll}
+d_{50}(85-65\tanh(0.015(\Psi-150))) & \text{for\,} \Psi<250\\
+20 d_{50} & \text{otherwise} 
+\end{array}
+\right.
+\end{equation*}
+with $\Psi =U^2/(s-1)gd_{50}$.
+
+    \item For waves and combined waves and currents, bedform dimensions are calculated
+as a function of wave parameters following the method of Wiberg and Harris~\cite{WibergHarris}. 
+The wave-induced bedform bed roughness $k_r$ is calculated as a function of the wave-induced bedform 
+height $\eta_r$: 
+\begin{equation}
+k_r = \max(k_s', \eta_r).
+\end{equation}
+Then $k_s=k_s'+k_r$.
+  \end{itemize}
+ 
+\item {\ttfamily IKS = 3}: for currents only, the van Rijn's total bed roughness predictor~\cite{vanRijn07, Huybrechts} has been implemented. 
+The total bed roughness can be decomposed into a grain
+roughness $k_s'$, a small-scale ripple roughness $k_r$, a mega-ripple 
+component $k_{mr}$, and a dune roughness $k_d$:
+\begin{equation}\label{eq:totalbedroughness}
+k_s = k_s' + \sqrt{k_r^2 + k_{mr}^2 + k_d^2}. 
+\end{equation}
+Both small scale ripples and grain roughness have an influence on the
+sediment transport laws, while the mega-ripples and dune roughness only
+contribute to the hydrodynamic model (total friction). In Equation~\ref{eq:totalbedroughness}, the general expression for megaripples roughness $k_{mr}$ is given by:
+\begin{equation}
+k_{mr} = 0.00002\,f_{ts}\,h\,(1-\exp^{-0.05\Psi})\,(550-\Psi),
+\end{equation}
+with
+\begin{equation*}
+f_{ts} =\left\{\begin{array}{ll}
+d_{50}/(1.5d_{sand}) & \text{for\,} d_{50}\leq 1.5d_{sand}\\
+1.0 & \text{otherwise} 
+\end{array}
+\right.
+\end{equation*}
+and the general expression for dune roughness $k_d=0.00008\,f_{ts}\,h\,(1-\exp^{-0.02\Psi})\,(600-\Psi)$.
+
 \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -312,78 +394,6 @@ When the keyword \telkey{PRESCRIBED SOLID DISCHARGES} is used, the mass balance 
 \end{WarningBlock}
 
 %-------------------------------------------------------------------------------
-\section{Bed roughness}\label{sec:bedroughpredictor}
-%-------------------------------------------------------------------------------
-\subsection{Bed roughness predictor}
-A natural sediment bed is generally covered with bedforms, with length $\lambda_d$
-and height $\eta_d$. The presence of bed forms greatly modifies the boundary
-layer flow structure, with the formation of recirculation cells and
-depressions in the lee of bedforms.\\
-
-Depending on the flow and sediment transport rates, the size of bed
-forms ranges from a few centimeters for ripples to a few tens of meter for
-mega-ripples. The dimension of dunes scales with the water depth $h$, such that $\eta_d
-\approx 0.4 h$ and  $\lambda_d\approx [6-10] h$.\\
-
-In most cases, large scale models do not resolve the small to medium
-scale bedforms (such as ripples or mega-ripples) which need therefore to be parameterized by increading the friction coefficient. To determine bed roughness, there are two options available in \sisyphe{}:
-\begin{itemize}
-\item By imposing the friction coefficient based on friction laws: in this case the values of the friction coefficients are provided by \telemac{2D} or \telemac{3D}.
-\item By predicting the value of the bed roughness as a function of flow and sediment parameters using a bed roughness predictor. This option is discussed below.
-\end{itemize}
-Different options are programmed in \sisyphe to predict the total bed
-roughness through the associated keywords \telkey{BED ROUGHNESS PREDICTION} and \telkey{BED ROUGHNESS PREDICTOR OPTION}. It is recalled that the bed friction option of \sisyphe is not
-used in the case of internal coupling with \telemac{2D} or \telemac{3D}.
-\begin{itemize}
-\item For {\ttfamily IKS = 1}: the bed is assumed to be flat $k_s = k_s'= \alpha_{k_s} d_{50}$, with $\alpha_{k_s}$ a constant (assumed to be equal to $3.$), modified by the keyword \telkey{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER}. 
-\item {\ttfamily IKS = 2}: the bed is assumed to be covered by ripples.
-  \begin{itemize}
-    \item For currents only, the ripple bed roughness is function of the mobility number, see~\cite{vanRijn07}:
-\begin{equation*}
-k_r =\left\{\begin{array}{ll}
-d_{50}(85-65\tanh(0.015(\Psi-150))) & \text{for\,} \Psi<250\\
-20 d_{50} & \text{otherwise} 
-\end{array}
-\right.
-\end{equation*}
-with $\Psi =U^2/(s-1)gd_{50}$.
-
-    \item For waves and combined waves and currents, bedform dimensions are calculated
-as a function of wave parameters following the method of Wiberg and Harris~\cite{WibergHarris}. 
-The wave-induced bedform bed roughness $k_r$ is calculated as a function of the wave-induced bedform 
-height $\eta_r$: 
-\begin{equation}
-k_r = \max(k_s', \eta_r).
-\end{equation}
-Then $k_s=k_s'+k_r$.
-  \end{itemize}
- 
-\item {\ttfamily IKS = 3}: for currents only, the van Rijn's total bed roughness predictor~\cite{vanRijn07, Huybrechts} has been implemented. 
-The total bed roughness can be decomposed into a grain
-roughness $k_s'$, a small-scale ripple roughness $k_r$, a mega-ripple 
-component $k_{mr}$, and a dune roughness $k_d$:
-\begin{equation}\label{eq:totalbedroughness}
-k_s = k_s' + \sqrt{k_r^2 + k_{mr}^2 + k_d^2}. 
-\end{equation}
-Both small scale ripples and grain roughness have an influence on the
-sediment transport laws, while the mega-ripples and dune roughness only
-contribute to the hydrodynamic model (total friction). In Equation~\ref{eq:totalbedroughness}, the general expression for megaripples roughness $k_{mr}$ is given by:
-\begin{equation}
-k_{mr} = 0.00002\,f_{ts}\,h\,(1-\exp^{-0.05\Psi})\,(550-\Psi),
-\end{equation}
-with
-\begin{equation*}
-f_{ts} =\left\{\begin{array}{ll}
-d_{50}/(1.5d_{sand}) & \text{for\,} d_{50}\leq 1.5d_{sand}\\
-1.0 & \text{otherwise} 
-\end{array}
-\right.
-\end{equation*}
-and the general expression for dune roughness $k_d=0.00008\,f_{ts}\,h\,(1-\exp^{-0.02\Psi})\,(600-\Psi)$.
-
-\end{itemize}
-
-%-------------------------------------------------------------------------------
 \section{Numerical treatments}
 %-------------------------------------------------------------------------------
 \subsection{Rigid beds}
@@ -435,4 +445,8 @@ P="bed-load discharge along y axis (m2/s)";
 E="bottom evolution (m)";
 QSBL="bed load transport rate (m2/s)";
 \end{lstlisting}
-The sediment discharge is the mass of sedimentary material, both particulate and dissolved, that passes across a given flow-transverse cross section of a given flow in unit time.
+
+\begin{WarningBlock}{Note:}
+The sediment discharge is the mass of sedimentary material, both particulate and dissolved, that passes across a given flow-transverse cross section of a given flow in unit time.  
+\end{WarningBlock}
+

@@ -5,8 +5,7 @@
 %-------------------------------------------------------------------------------
 \section{Preliminaries}
 %-------------------------------------------------------------------------------
-Natural  sediments  in  estuaries  and  coastal  areas  are  usually characterised  by  a  mixture  of water, sand, mud and organic matters. This heterogeneity can be modeled by a mixing of cohesive and  non-cohesive sediments. A sand-mud mixture can be therefore represented by two classes of bed material: mud  fraction, which represents the slower settling species and sand 
-fraction, which represents the faster settling species~\cite{Lan12}.
+Natural  sediments  in  estuaries  and  coastal  areas  are  usually characterised  by  a  mixture  of water, sand, mud and organic matters. This heterogeneity can be modeled by a mixing of cohesive and  non-cohesive sediments. A sand-mud mixture can be therefore represented by two classes of bed material: the mud fraction, which represents the slower settling species and the sand fraction, which represents the faster settling species~\cite{Lan12}.
 
 \textbf{So far it is assumed only suspended load,
 which implies that the model solves mixtures of fine sand grains and
@@ -116,7 +115,7 @@ Mixed sediment processes (sand and mud) are set in the \sisyphe{} steering file 
 \item {\ttfamily COHESIVE SEDIMENTS = NON}  
 \end{itemize}
 
-The mixed sediment distribution (sand-mud) must be set with the keyword {\ttfamily NUMBER OF SIZE-CLASSES OF BED MATERIAL = 2} (integer type variable, set to {\ttfamily = 1}). Typically, the following variables can be specified in steering file:
+The mixed sediment distribution (sand-mud) must be set with the keyword {\ttfamily NUMBER OF SIZE-CLASSES OF BED MATERIAL = 2} (integer type variable, set to {\ttfamily = 1}). Typically, the following variables can be specified in the steering file:
 
 \begin{itemize}
 \item Mean diameter {\ttfamily SEDIMENT DIAMETERS} (real type list, set to {\ttfamily = 0.01} m by default) must be set as follows:\\
@@ -143,14 +142,15 @@ where {\ttfamily f1} and {\ttfamily f2} are respectively the (initial) volume pe
 Values of initial and boundary conditions are specified as described in \S\ref{sec:SuspendedSedimentTransport}.
 
 \subsection{Bed structure: discretization by layers}
-The mixed sediment bed can be represented by a fixed number of layers ($<20$) with the keyword \texttt{NUMBER OF LAYERS OF THE CONSOLIDATION MODEL}, (integer variable, set to {\ttfamily = 1} by default. This procedure is secured by including \texttt{MUD CONSOLIDATION = NON} (logical variable, set to {\ttfamily = NON} by default) in the steering file.\\
+The mixed sediment bed can be represented by a fixed number of layers ($<20$) with the keyword \texttt{NUMBER OF LAYERS OF THE CONSOLIDATION MODEL}, (integer variable, set to {\ttfamily = 1} by default). This procedure is secured by including \texttt{MUD CONSOLIDATION = NON} (logical variable, set to {\ttfamily = NON} by default) in the steering file.\\
 
 The initial layer distribution, concentration and fraction distribution for sand and mud can be specified in the subroutine \texttt{init\_compo\_coh.f}.\\
 
-For each layer, the mud thickness \texttt{EPAI\_VASE(J), J= 1,NOMBLAY} the number of layers $\geq 2$) can be provided.
+For each layer, the mud thickness \texttt{EPAI\_VASE(J), J= 1,NOMBLAY} (being \texttt{NOMBLAY} the number of layers $\geq 2$) can be provided.
 
 The sand thickness \texttt{EPAI\_SABLE(J)} is computed as function of the initial sediment distribution of each class: if the initial distribution is constant (per layer and per node), the initial fraction of material can be specified with the keyword \texttt{INITIAL FRACTION FOR PARTICULAR SIZE CLASS} (variables $f_{1_1}$ \texttt{AVA0(1)} and $f_{2_1}$ \texttt{AVA0(2)} for sand and mud for the first layer, respectively).
-More generally, the volume percent of each class for each layer can also be specified with the variables \texttt{AVAIL(I,J,1)} ($f_{1_j}$ for sand) and \texttt{AVAIL(I,J,2)} ($f_{2_j}$ for mud) for \texttt{I=1,NPOIN} and \texttt{J= 1,NOMBLAY}. The total thickness of each layer $E_{s_j} = E_{s_j}^1 + E_{s_j}^2$ can also be specified 
+More generally, the volume percent of each class for each layer can also be specified with the variables \texttt{AVAIL(I,J,1)} ($f_{1_j}$ for sand) and \texttt{AVAIL(I,J,2)} ($f_{2_j}$ for mud) for \texttt{I=1,NPOIN} and \texttt{J= 1,NOMBLAY}. The total thickness of each layer $E_{s_j} = E_{s_j}^1 + E_{s_j}^2$ can also be specified. 
+
 The initial mass concentration by layer is provided in the variable \texttt{CONC(I,J)} for \texttt{I=1,NPOIN} and \texttt{J= 1,NOMBLAY}.
 
 

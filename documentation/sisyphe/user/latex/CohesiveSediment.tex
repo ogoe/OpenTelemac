@@ -32,7 +32,7 @@ The deposition flux for mud is computed by the expression:
 \begin{equation}
 D = w_{s} C \left[1-\left(\frac{\sqrt{\tau_b/\rho}}{u_{*mud}^{cr}}\right)^2 \right],
 \end{equation}
-with $u_{*mud}^{cr}$ is the critical shear velocity for mud deposition.\\
+where $u_{*mud}^{cr}$ is the critical shear velocity for mud deposition.\\
 
 The bed evolution is computed by:
 \begin{equation*}
@@ -44,7 +44,7 @@ with $\lambda$ the bed porosity and $z_b$ bed level.
 \section{Steering file setup for cohesive sediment transport}
 %-------------------------------------------------------------------------------
 In \sisyphe{}, the simplest case of cohesive sediments
-is characterized by an uniform grain size $D_{50}\leq 60\,\mu$m which is
+is characterized by a uniform grain size $D_{50}\leq 60\,\mu$m which is
 transported in suspension.
 
 Cohesive sediments can be activated with the keyword {\ttfamily COHESIVE SEDIMENTS = YES} (logical type, set to {\ttfamily = NO} by default). When {\ttfamily COHESIVE SEDIMENTS = YES}, the following keywords are set automatically to keep consistency with the selected type of sediment: {\ttfamily SUSPENSION = YES} and {\ttfamily BED LOAD = NO}.
@@ -87,7 +87,7 @@ M\left[\left(\frac{\tau_b}{\tau_{ce}}\right)-1\right]\quad & \text{if}\,\,\tau_b
 \end{array}
 \right. 
 \end{equation*}
-with $M$ the Krone-Partheniades erosion law constant [kg/m$^2$/s] is provided by the keyword {\ttfamily PARTHENIADES CONSTANT} (real type, set to {\ttfamily = 1.E-03} by default).
+where $M$ the Krone-Partheniades erosion law constant [kg/m$^2$/s] is provided by the keyword {\ttfamily PARTHENIADES CONSTANT} (real type, set to {\ttfamily = 1.E-03} by default).
 
 The value of $\tau_{ce}$ can be provided for the different layers with the keyword {\ttfamily CRITICAL EROSION SHEAR STRESS OF THE MUD} (real list, set to {\ttfamily = 0.01;0.02;0.03;...} by default), expressed in N/m$^2$.
 
@@ -98,9 +98,9 @@ The deposition flux for mud is computed by the expression:
 \begin{equation}
 D = w_{s} C \left[1-\left(\frac{\sqrt{\tau_b/\rho}}{u_{*mud}^{cr}}\right)^2 \right],
 \end{equation}
-$u_{*mud}^{cr}$ is the critical shear velocity for mud deposition, expressed in [m/s]) and provided by the keyword {\ttfamily CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION} (real type, set to {\ttfamily = 1000.} by default).
+where $u_{*mud}^{cr}$ is the critical shear velocity for mud deposition, expressed in [m/s] and provided by the keyword {\ttfamily CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION} (real type, set to {\ttfamily = 1000.} by default).
 
-For the evaluation of the settling velocity $w_s $, if the keyword {\ttfamily SETTLING VELOCITIES} is not included in the steering file, sisyphe{} computes the settling velocity for each sediment class by the Stokes, Zanke or van Rijn formulae depending on the grain size. For further details see the subroutine \texttt{vitchu\_sisyphe.f}.
+For the evaluation of the settling velocity $w_s $, if the keyword {\ttfamily SETTLING VELOCITIES} is not included in the steering file, \sisyphe{} computes the settling velocity for each sediment class by the Stokes, Zanke or van Rijn formulae depending on the grain size. For further details see the subroutine \texttt{vitchu\_sisyphe.f}.
 
 %-------------------------------------------------------------------------------
 \section{Consolidation processes}

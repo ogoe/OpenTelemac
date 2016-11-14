@@ -5,7 +5,7 @@
 %-------------------------------------------------------------------------------
 \section{Preliminaries}
 %-------------------------------------------------------------------------------
-The suspended load is the portion of the sediment that is carried by a fluid flow which settle slowly enough such that it almost never touches the bed. It is maintained in suspension by the turbulence in the flowing water and consists of particles generally of the fine sand, silt and clay size. An exhastive analysis of this topic can be found in~\cite{GarciaBook2006} and references therein.
+The suspended load is the portion of the sediment that is carried by a fluid flow which settle slowly enough such that it almost never touches the bed. It is maintained in suspension by the turbulence in the flowing water and consists of particles generally of the fine sand, silt and clay size. An exhaustive analysis of this topic can be found in~\cite{GarciaBook2006} and references therein.
 
 Suspended sediment transport is accounted by \sisyphe{} by solving the two-dimensional advection-diffusion equation, expressed by:
 \begin{equation}\label{eq:2DADE}
@@ -165,7 +165,7 @@ At the outflow boundary, the suspended load concentration gradient in the flow d
 5 4 4 0.0 0.0 0.0 0.0 (*@\color{PantoneRed}4@*) 0.0 0.0 0.0 565 1
 \end{lstlisting}
 
-Stability issues at inflow boundaries can be solved by activating the keyword \telkey{TREATMENT OF FLUXES AT THE BOUNDARIES} (integer type variable, {\ttfamily = 2}, default option). The choice {\ttfamily = 1} can be activated to prescribed values. The choice {\ttfamily = 2} is used when fluxes are imposed.
+Stability issues at inflow boundaries can be solved by activating the keyword \telkey{TREATMENT OF FLUXES AT THE BOUNDARIES} (integer type variable, {\ttfamily = 2}, default option). The choice {\ttfamily = 1} can be activated when prescribed values are provided. The choice {\ttfamily = 2} is used when fluxes are imposed.
 
 %...............................................................................
 \section{Mass and volume concentration}
@@ -260,7 +260,7 @@ F_{conv} =\frac{U_{conv}}{U}
 \end{equation*}
 A similar treatment is done for the depth-averaged velocity $V$ along the $y-$axis. For further details, see~\cite{Huybrechts}.
 The convection velocity should be smaller than the mean flow velocity ($F_{conv} \leq 1$) since sediment concentrations are mostly transported in the lower part of the water column where velocities are smaller. We further
-assume an exponential profile concentration profile which is a reasonable
+assume an exponential concentration profile which is a reasonable
 approximation of the Rouse profile, and a logarithmic velocity profile, in
 order to establish the following analytical expression for $F_{conv}$:
 \begin{equation*}

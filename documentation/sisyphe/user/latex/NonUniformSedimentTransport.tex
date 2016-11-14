@@ -5,17 +5,17 @@
 %-------------------------------------------------------------------------------
 \section{Preliminaries}
 %-------------------------------------------------------------------------------
-According to Wu~\cite{wu2007computational}, in the case of non-uniform sediment transport, moving sediment particles collide and interact; bed sediment particles experience the hiding and exposure effects, because fine particles are more likely to be hidden and coarse particles have more chance to be
-exposed to flow. However, if the sediment concentration is low, interactions among the
-moving sediment particles are usually negligible, so that each size class of the moving
+According to Wu~\cite{wu2007computational}, for non-uniform bedload sediment transport, moving sediment particles collide and interact; bed sediment particles experience the hiding and exposure effects, because fine particles are more likely to be hidden and coarse particles have more chance to be
+exposed to flow. For suspended sediment transport, if the sediment concentration is low, interactions among the moving sediment particles are usually negligible, so that each size class of the moving
 sediment mixture can be assumed to have the same transport behavior as uniform
 sediment.
 
-Each sediment class can be transported by suspended-load or bedload. Suspended load mass is ex-
-changed vertically between the water column and the uppermost bed layer. Bedload mass is exchanged horizontally between the top layer of the bed.
+Each sediment class can be transported by suspended-load or bedload. Suspended load mass is exchanged vertically between the water column and the uppermost bed layer. Bedload mass is exchanged horizontally between the top layer of the bed.
 
-In \sisyphe{}, bedload transport rate is computed separately for each class using
-classical sediment transport formulas, corrected for sand grading effects such as hiding and/or exposure. The Exner equation is then solved for each class of sediment and the individual bed evolution due to each class of bed material is then added to give the total evolution due to bedload. Similarly, the suspended transport equation is solved for each class of sediment and the resulting bed evolution for each class is then added to give the total evolution due to the suspended load.
+Roughly speaking, in \sisyphe{} the following steps are performed to account for non-uniform bedload sediment transport: \emph{(i)} the bedload transport rate is computed separately for each class using
+classical sediment transport formulas, corrected for sand grading effects such as hiding and/or exposure; \emph{(ii)} the Exner equation is then solved for each class of sediment and \emph{(iii)} the individual bed evolution due to each class of bed material is then added to give the total evolution due to bedload.
+
+Similarly, the suspended transport equation is solved for each class of sediment and the resulting bed evolution for each class is then added to give the total evolution due to the suspended load.
 
 \begin{figure}[H]%
 \begin{center}
@@ -24,34 +24,34 @@ classical sediment transport formulas, corrected for sand grading effects such a
 \end{figure}
 
 \noindent
-In the following, it is assumed a non-uniform sediment mixture divided into $N$ size classes. For bedload sediment transport processes, the evolution of bed topography is governed by the continuity equation, written for each grain size fraction as:
+In the following, it is assumed a non-uniform sediment mixture divided into $N$ size classes. For bedload sediment transport processes, the evolution of bed topography is governed by the continuity equation, written in Cartesian coordinates for each grain size fraction as:
 
 \begin{equation}
-(1-\lambda)\left(\frac{\partial z_b}{\partial t}\right)_k+\frac{\partial Q_{bxk}}{\partial x}+\frac{\partial Q_{byk}}{\partial y} = 0
+(1-\lambda)\left(\frac{\partial z_b}{\partial t}\right)_k+\frac{\partial Q_{bxk}}{\partial x}+\frac{\partial Q_{byk}}{\partial y} = 0,
 \end{equation}
- where $Q_{bxk}, Q_{byk}$ are the components of transport rates of the $k$th size class of bedload; $(\partial z_b/\partial t)_k$ is the rate of change in bed elevation due to size class $k$; and $\lambda$ is the bed porosity.
+ where $Q_{bxk}, Q_{byk}$ (m$^2/$s) are the components of transport rates of the $k^{th}$ size class of bedload; $(\partial z_b/\partial t)_k$ (m/s) is the rate of change in bed elevation due to size class $k$; and $\lambda$ is the bed porosity.
 
 For suspended sediment transport processes, the advection-diffusion equation is applied to determine the transport of each size class of suspended load:
 \begin{multline}
 \frac{\partial}{\partial t}\left(hC_k\right)+\frac{\partial (hUC_k)}{\partial x} + \frac{\partial (hVC_k)}{\partial y} \\
 =\frac{\partial}{\partial x}\left[h\left(\varepsilon_s\frac{\partial C_k}{\partial x}\right)\right]+
 \frac{\partial}{\partial y}\left[h\left(\varepsilon_s\frac{\partial C_k}{\partial y}\right)\right]+
-\omega_{sk}\left(C_{eq_k}-C_{z_{ref}k}\right)
+\omega_{sk}\left(C_{eq_k}-C_{z_{ref}k}\right),
 \end{multline}
-where the subscript $k$ indicates the sediment size class index; $C_{z_{ref}k}$ and $C_{eq_k}$ are the actual and near-bed equilibrium concentrations of the $k$th size class of suspended load, respectively; and $\omega_{sk}$ is settling velocity of the $k$th size class.
+where the subscript $k$ indicates the sediment size class index; $C_{z_{ref}k}$ and $C_{eq_k}$ are the actual and near-bed equilibrium concentrations of the $k^{th}$ size class of suspended load, respectively; and $\omega_{sk}$ (m/s) is the settling velocity of the $k^{th}$ size class.
 \noindent
 Bed changes due to suspended load transport for each grain size are:
 \begin{equation}
-(1-\lambda)\left(\frac{\partial z_b}{\partial t}\right)_k = \omega_{sk}\left(C_{z_{ref}k}-C_{eq_k}\right)
+(1-\lambda)\left(\frac{\partial z_b}{\partial t}\right)_k = \omega_{sk}\left(C_{z_{ref}k}-C_{eq_k}\right).
 \end{equation}
 \noindent
 For either bedload or suspended sediment transport, the total rate in bed elevation change is then determined by:
 \begin{equation}
-\frac{\partial z_b}{\partial t} = \sum_{k=1}^N\left(\frac{\partial z_b}{\partial t}\right)_k
+\frac{\partial z_b}{\partial t} = \sum_{k=1}^N\left(\frac{\partial z_b}{\partial t}\right)_k.
 \end{equation}
 \noindent
 
-The composition of the bed material may vary along the vertical direction. The bed material above a nonerodible layer is often divided into multiple layers. In \sisyphe, the transport of non-uniform sediment particles is computed using the active layer concept~\cite{ElKadiAbderrezzak201675}. The uppermost bed layer is subdivided into two layers: an \textit{active or mixing layer}~\cite{Hirano1971} in contact with the flow, and a \textit{substrate layer} located directly below. The active layer supplies material that can be transported as bedload or suspended load and receives the deposited sediment material. The substratum exchanges material with the active layer in order to keep the active layer at a given thickness.
+The composition of the bed material may strongly vary along the vertical direction. The bed material above the nonerodible layer is often divided into multiple layers. In \sisyphe{}, the transport of non-uniform sediment particles can be computed using the \emph{active layer concept}~\cite{ElKadiAbderrezzak201675}. The uppermost bed layer is subdivided into two layers: an \textit{active or mixing layer}~\cite{Hirano1971} in contact with the flow, and a \textit{substrate layer} located directly below. The active layer supplies material that can be transported as bedload or suspended load and receives the deposited sediment material. At each loop on \sisyphe{}, the substratum exchanges material with the active layer in order to keep the active layer at a given thickness.
 
 The active layer thickness depends on the flow and sediment characteristics~\cite{vanRijn87}. In \sisyphe{}, the active layer thickness is set by default to $3\times d_{50}$, being $d_{50}$ the median diameter of sediment material contained in the active layer.
 
@@ -104,9 +104,9 @@ According to Einstein~\cite{Einstein}, in a sediment mix the finer grains are hi
 \end{center}
 \end{figure}
 
-Prediction of sediment transport rates can be corrected with the \emph{hiding-exposure} factor. The classical Meyer-Peter \& M\"uller formula with \emph{hiding-exposure} correction factor $\zeta_i$ is:
+Prediction of sediment transport rates can be corrected with the \emph{hiding-exposure} factor. The Meyer-Peter \& M\"uller formula with \emph{hiding-exposure} correction factor $\zeta_i$ is:
 \begin{equation}\label{eq:MPMhiding}
-\Phi_{b_i}  = 8 p_i \zeta_i\left( \theta_i' -\theta_{cr} \right)^{3/2} 
+\Phi_{b_i}  = 8 p_i \left(\zeta_i \theta_i' -\theta_{cr} \right)^{3/2} 
 \end{equation}
 with $p_i$ the fraction of class $i$ in the active layer, $\theta_i'$ the Shields parameter (corrected by skin friction), $\theta_{cr}$ the critical Shields parameter.
 
@@ -117,9 +117,9 @@ The Egiazaroff~\cite{Egiazaroff} and Ashida \& Michiue~\cite{Ashida} formulation
 \item \texttt{= 0}: ask for keyword {\ttfamily HIDING FACTOR FOR PARTICULAR SIZE CLASS}
 \item \texttt{= 1}: formulation of Egiazaroff 
   \begin{equation*}
- \theta_{cr} = 0.047\zeta_i,\quad\text{with}\,\, \zeta_i = \left[\frac{\log (19)}{\log (19 D_i /D_m)} \right]^2 
+ \theta_{cr} = 0.047\zeta_i,\quad\text{with}\,\, \zeta_i = \left[\frac{\log (19)}{\log (19 D_i /D_m)} \right]^2 ,
 \end{equation*}
-$D_i$ the grain size of class $i$, $D_m$ the mean grain size of the surface layer.
+with $D_i$ the grain size of class $i$ and $D_m$ the mean grain size of the surface layer.
 \item \texttt{= 2}: formulation of Ashida \& Michiue, see~\cite{Ashida}
 
 \item \texttt{= 4}: formulation of Karim and Kennedy, see~\cite{Karim}

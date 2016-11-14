@@ -62,7 +62,7 @@ The internal coupling between waves-currents and sediment transport is implement
 %-------------------------------------------------------------------------------
 \subsection{Time steps and coupling period considerations}
 %-------------------------------------------------------------------------------
-We call $\Delta t_{T2D}, \Delta t_{SIS}, \Delta t_{TOM}$ are respectively the time steps for hydrodynamics (computed by \telemac{2D}), sediment transport (computed by \sisyphe{}) and waves (computed by \tomawac{}). We define $CP_{T2D-SIS}$ the coupling period for \telemac{2D} and \sisyphe{} and $CP_{T2D-TOM}$ the coupling period for \telemac{2D} and \tomawac{}. The morphological time step is $\rightarrow \Delta t_{T2D} \times CP_{T2D-SIS}$.
+We call $\Delta t_{T2D}, \Delta t_{SIS}, \Delta t_{TOM}$ respectively the time steps for hydrodynamics (computed by \telemac{2D}), sediment transport (computed by \sisyphe{}) and waves (computed by \tomawac{}). We define $CP_{T2D-SIS}$ the coupling period for \telemac{2D} and \sisyphe{} and $CP_{T2D-TOM}$ the coupling period for \telemac{2D} and \tomawac{}. The morphological time step is $\rightarrow \Delta t_{T2D} \times CP_{T2D-SIS}$.
 
 In the subroutine {\ttfamily wac.f} of \tomawac{}, the following restrictions are verified:
 \begin{itemize}
@@ -255,7 +255,7 @@ QSBL="bed load transport rate (m2/s)";
 \section{Procedure for external coupling waves-currents and sediment transport}
 %-------------------------------------------------------------------------------
 \begin{itemize}
-\item A \telemac{2D} $+$ \tomawac{} simulation (same mesh) is launched and the variables the spectral significant wave height ($H_s =$ \texttt{HM0}), the wave period ($T_p =$ \texttt{TPR5}) and the mean wave direction ($\theta_w =$ \texttt{DMOY}, relative to the $y-$axis) are recorded in the \tomawac{}'s result file (format selafin)
+\item A \telemac{2D} $+$ \tomawac{} simulation (same mesh) is launched and the spectral significant wave height ($H_s =$ \texttt{HM0}), the wave period ($T_p =$ \texttt{TPR5}) and the mean wave direction ($\theta_w =$ \texttt{DMOY}, relative to the $y-$axis) are recorded in the \tomawac{}'s result file (format selafin)
 
 \item In \telemac{2D} steering file, the keyword {\ttfamily WAVE DRIVEN CURRENTS} (logical type, set to {\ttfamily = NO} by default) allows to incorporate the influence of radiation stresses in the mean flow (wave-induced currents)
 

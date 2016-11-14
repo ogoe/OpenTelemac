@@ -17,11 +17,11 @@ In the \textsc{Telemac-Mascaret modelling system}, the 3D sediment transport mec
 
 Bed load and suspended sediment transport can be run simultaneously (\telemac{3D} coupled to \sisyphe{} with suitable keywords for both mechanisms). In this chapter, only non-cohesive sediment (uniform distribution) is considered.
 
-The bedload is simulated using equilibrium transport models (Meyer-Peter and Mueller, van Rijn, etc.). Because the bed load layer is very thin, the bed load transport equation in the 3D model has the same formulation as the horizontal 2D model~\cite{wu2007computational}. \telemac{3D} computes the shear velocity $U^*$, assuming a logarithmic profile near the bottom (subroutine \texttt{tfond.f}): 
+The bedload is simulated using equilibrium transport models (Meyer-Peter and M\"uller, van Rijn, etc.). Because the bed load layer is very thin, the bed load transport equation in the 3D model has the same formulation as the horizontal 2D model~\cite{wu2007computational}. \telemac{3D} computes the shear velocity $U^*$ (m/s), assuming a logarithmic profile near the bottom (subroutine \texttt{tfond.f}): 
 \begin{equation*}
 U^* = \frac{\kappa U_{plane 1}}{\ln \left(33.0 \Delta z / k_s\right)},
 \end{equation*}
-with $U_{plane 1}$ the velocity at the first node above the bottom, $\Delta z$ the position of this node above the bottom, $k_s$ the Nikuradse friction coefficient, $\kappa$ the von Karman constant %($=0.40$)
+with $U_{plane 1}$ (m/s) the velocity at the first node above the bottom, $\Delta z$ (m) the position of this node above the bottom, $k_s$ the Nikuradse friction coefficient, $\kappa$ the von Karman constant. %($=0.40$)
 Furthermore, the subroutine \texttt{vermoy.f} computes the depth-averaged velocity field (\texttt{U2D, V2D}) to be sent to \sisyphe{}.
 
 %-------------------------------------------------------------------------------

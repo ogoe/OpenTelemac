@@ -10,9 +10,9 @@ coastal, rivers, lakes and estuaries, for different flow states, sediment size c
 transport modes.
 
 In \sisyphe{}, sediment transport processes are grouped as bedload, suspended load or total load,
-with an extensive library of predictors for sediment carrying capacity. It is applicable to non-cohesive sediments that can be uniform (single-sized) or non-uniform
+with an extensive library of predictors for sediment transport carrying capacity. It is applicable to non-cohesive sediments that can be uniform (single-sized) or non-uniform
 (graded), cohesive sediments, as well as sand-mud
-mixtures.
+mixtures. Furthermore, vertical stratification of sediments can be considered via multi-layer model.
 
 A number of physically-based processes are incorporated into \sisyphe{}, such as the influence of
 secondary currents to precisely capture the complex flow field induced by channel curvature, the
@@ -59,12 +59,10 @@ easy to read fortran files. An overview of different applications of \sisyphe{} 
 %-------------------------------------------------------------------------------
 \subsection{Morphodynamic modelling}
 %-------------------------------------------------------------------------------
-The prediction of topography changes and sediment discharges can be performed by {\bf integrating in a mathematical model}
-several modules. It is a {\bf multi--scale problem}, with different physical mechanisms acting according to their space and time response. In summary, the relevant
-mechanisms that drives morphological changes are:
+The prediction of topography changes and sediment discharges can be performed by integrating several modules. It is a {\bf multi--scale problem}, with different physical mechanisms acting according to their space and time response. In summary, the relevant mechanisms that drives morphological changes are:
 \begin{itemize}
          \item {\bf Hydrodynamics}, with conservative laws of mass and momentum 
-         \item {\bf Sediment transport}, with predictors for sediment carrying capacity 
+         \item {\bf Sediment transport}, with predictors for sediment transport capacity 
          \item {\bf Bed evolution}, with conservative law for sediment mass 
 \end{itemize}
 \noindent
@@ -73,7 +71,7 @@ Such a modelling system is often referred to as a \emph{morphodynamic model} and
 \noindent
 From the literature, the mechanisms of transport are mainly classified as:
 \begin{itemize}
-\item \textcolor{black}{\bf bedload:} with a variety of sediment transport parameterizations
+\item \textcolor{black}{\bf bedload:} with a variety of sediment transport formulations
 \item \textcolor{black}{\bf suspended load:} with the solution of the advection-diffusion equation (ADE) plus closures for erosion and deposition fluxes, equilibrium concentration
 \item \textcolor{black}{\bf bed evolution:} with the solution of the sediment mass conservation equation or \textit{Exner equation}.
 \end{itemize}
@@ -89,7 +87,7 @@ Different types of sediment can be classified as:
 
 
 %-------------------------------------------------------------------------------
-\subsection{Two-dimensional morphodynamics modelling with Telemac Modelling System}
+\subsection{Choice of hydrodynamic modelling for morphodynamic models}
 %-------------------------------------------------------------------------------
 The choice of appropriate model equations for flow and sediment transport
 will depend upon the scales of interest. 
@@ -117,9 +115,9 @@ other problems of interest within the engineering community~\cite{Vreugdenhil:94
 \sisyphe{} can be coupled with the SWE solver \telemac{2D} and the NS solver \telemac{3D} (see \S\ref{ch:3DBedloadTransport}). 
 
 %-------------------------------------------------------------------------------
-\subsection{Morphodynamics coupling}
+\subsection{Coupling hydrodynamics to morphodynamics}
 %-------------------------------------------------------------------------------
-Morphological models can be fully coupled~\cite{cao02} and decoupled~\cite{vriend87}. In a fully coupled model, sediment
+Morphological models can be run fully coupled~\cite{cao02} and decoupled~\cite{vriend87}. In a fully coupled model, sediment
 transport and flow occur simultaneously, and thus, their respective
 equations are coupled and should be solved simultaneously. Rapid morphological evolution processes due
 to hyper-concentrated sediment--laden floods, and debris flow are typical
@@ -128,8 +126,8 @@ examples were the fully coupled approach must be employed~\cite{Frac02}.
 In contrast, decoupled models are applicable when the typical time scale for river or sea bed adjustment 
 is much longer than the typical time scale for water flow. The approach used by \sisyphe{} follows the decoupled treatment, i.e., to alternate between the simulation of flow and bed evolution. This procedure, also known as \textit{asynchronous} solution, considers that the bottom is fixed when the flow variables are computed.
 
-Hydrodynamic solution is therefore to solve the hydrodynamic continuity and momentum equations on the fast time scale. The discretization of bottom is then fixed on the fast time scale,
-and the discretized sediment equation is subsequently solved separately.
+Hydrodynamic solution is therefore to solve the hydrodynamic continuity and momentum equations on a short time scale. 
+During this hydrodynamic step the bottom is freezed and the discretized sediment equation is subsequently solved separately.
 
 
 \begin{figure}[H]%
@@ -157,7 +155,7 @@ and the discretized sediment equation is subsequently solved separately.
 \end{center}
 \caption
 [Coupling strategies]
-{Schematic coupling strategies for \sisyphe: (a) coupling morphodynamique ``classique'', (b) coupling morphodynamique including the effect of waves.}
+{Schematic coupling strategies for \sisyphe: (a) coupling morphodynamic and hydrodynamic, current only, (b) coupling morphodynamic and hydrodynamic including the effect of waves.}
 \label{fig:CouplingStrategies}
 \end{figure}
 
@@ -168,7 +166,7 @@ and the discretized sediment equation is subsequently solved separately.
 %...............................................................................
 The minimum set of files to run a morphodynamics simulation includes:
 \begin{itemize}
-\item the steering file (text/ascii file \texttt{*.cas})
+\item the steering file(s) (text/ascii file \texttt{*.cas})
 \item the geometry file (format selafin/binary \texttt{*.slf})
 \item the boundary conditions file (text/ascii file \texttt{*.cli})
 \item additional or optional input files as the fortran file (text/ascii file \texttt{*.f}), the reference file (format selafin/binary \texttt{*.slf}), etc.
@@ -368,10 +366,9 @@ The file name is provided with the keyword \telkey{PREVIOUS COMPUTATION FILE}. O
 %...............................................................................
 \subsubsection{Time step and coupling period}
 %...............................................................................
-In certain cases, the use of a coupling period $>1$ allows the bed load transport rates and resulting bed
-evolution not to be re-calculated at every time step. For suspended load, the advection-diffusion equation obeys the same Courant number criteria on the time step than the hydrodynamics, and therefore needs to be solved at each time-step.
+ For suspended load, the advection-diffusion equation obeys the same Courant number criteria on the time step than the hydrodynamics, and therefore needs to be solved at each time-step. Typically the morphodynamic scale induced by bed load is much smaller, than the hydrodynamic scale. This leads to very small bed level changes in a hydrodynamic time step. The use of a coupling period $>1$ is  very useful in this case. It allows the bed load transport rates and resulting bed evolution not to be re-calculated at every time step.
 
-In the \telemac{2D} or \telemac{3D} steering file, the keyword \telkey{COUPLING PERIOD FOR SISYPHE} can be specified (integer type, set to {\ttfamily = 1} by default, variable named \texttt{PERCOU} in the \telemacsystem{}. The morphodynamics time step is therefore $\Delta t_{\text{morph}} = \Delta t_{\text{hydr}} \times$ \texttt{PERCOU}.
+In the \telemac{2D} or \telemac{3D} steering file, the keyword \telkey{COUPLING PERIOD FOR SISYPHE} can be specified (integer type, set to {\ttfamily = 1} by default, variable named \texttt{PERCOU} in the \telemacsystem{}). The morphodynamic time step is therefore $\Delta t_{\text{morph}} = \Delta t_{\text{hydr}} \times$ \texttt{PERCOU}.
 
 \pagebreak
 
@@ -405,7 +402,8 @@ PREVIOUS COMPUTATION FILE         = 'res_bifurcation_hotstart_tel.slf'
 %...............................................................................
 \subsection{Fortran files (\texttt{*.f})}
 %...............................................................................
-Programming can be necessary for particular applications. A Fortran file (keyword \telkey{FORTRAN FILE}) can be specified in the \telemac{2D} or \telemac{3D} steering file with the required subroutine(s). Some common applications are given below:
+Programming can be necessary for particular applications. A Fortran file (keyword \telkey{FORTRAN FILE}) can be specified in the \telemac{2D} or \telemac{3D} or \sisyphe steering file with the required subroutine(s). In case of coupling all subroutines (\sisyphe subroutines also) can be incorporated in the \telemac fortran file. Is is also possible to have a \telemac and a \sisyphe fortran file. Be aware, if there is no \telemac{2D} or \telemac{3D} fortran file, the \sisyphe fortran file will not taken into account.
+Some common applications are given below:
 \begin{itemize}
 \item \textbf{Definition of rigid areas:} \texttt{noerod.f} is used for specifying the rigid areas. The position of the non-erodable areas (array \texttt{ZR}) are imposed in this subroutine 
 
