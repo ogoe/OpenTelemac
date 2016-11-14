@@ -162,6 +162,8 @@
 !
         IF(ATMOS.OR.WATER_QUALITY) THEN
           CALL OV( 'X=C     ' , PATMOS,Y,Y,PATMOS_VALUE,NPOIN )
+        ENDIF
+        IF(WATER_QUALITY) THEN
           CALL OV( 'X=C     ' , TAIR%R,Y,Y,TAIR_VALUE,NPOIN )
         ENDIF
 !
