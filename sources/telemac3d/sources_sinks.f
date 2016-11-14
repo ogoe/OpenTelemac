@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
@@ -64,6 +64,13 @@
 !+        15/09/2016
 !+        V7P2
 !+   Section on rain slightly rearranged to avoid code duplication.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/11/2016
+!+        V7P3
+!+   With OPTSOU=2 the storage of assembled and non assembled sources
+!+   was swapped compared to OPTSOU=1. It is now aloke for both options.
+!+   This triggered a mistake when a source was on an interface point.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,8 +146,10 @@
 !             IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
               IF(ISCE(IS).GT.0) THEN
                 I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
-                SOURCES%ADR(1)%P%R(I)=QSCE2(IS)*MESH3D%IFAC%I(I)
-                SOURCES%ADR(2)%P%R(I)=QSCE2(IS)
+!               ASSEMBLED FORM
+                SOURCES%ADR(1)%P%R(I)=QSCE2(IS)
+!               NON ASSEMBLED FORM
+                SOURCES%ADR(2)%P%R(I)=QSCE2(IS)*MESH3D%IFAC%I(I)
               ENDIF
             ELSE
               I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)

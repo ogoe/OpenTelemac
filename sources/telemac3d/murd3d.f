@@ -12,7 +12,7 @@
      & T2_01,BEDBOU,BEDFLU,OPTADV,NCO_DIST,NSP_DIST)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH THE DISTRIBUTIVE SCHEME
@@ -122,6 +122,11 @@
 !+   the actions were swapped.
 !+   3) The acceptable extrema in monotony proofs depend on the scheme.
 !+   Here they are different between first and second order.  
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        14/11/2016
+!+        V7P2
+!+   Other IF(OPTSOU.EQ.1).. ELSEIF(OPTSOU.EQ.2).. with actions swapped.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
@@ -1135,7 +1140,7 @@
               DO IPOIN=1,NPOIN3
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FINSUB(IPOIN))
-     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
 !                                  WITH PARCOM
                 ENDIF
               ENDDO
@@ -1145,7 +1150,7 @@
                 IPOIN=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
                 IF(TRA01(IPOIN).GT.EPS) THEN
                   FC(IPOIN)=FC(IPOIN)+DTJALFA*(FSCE(IS)-FINSUB(IPOIN))
-     &            *MAX(SOURCES%ADR(IS)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
+     &            *MAX(SOURCES%ADR(1)%P%R(IPOIN),0.D0)/TRA01(IPOIN)
 !                                  WITH PARCOM
                 ENDIF
               ENDIF
@@ -1536,4 +1541,3 @@
 !
       RETURN
       END
-
