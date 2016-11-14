@@ -6,7 +6,7 @@
      & ZFCL_MS,AVAIL,NOMBLAY,NSICLA)
 !
 !***********************************************************************
-! SISYPHE   V6P3                                   21/07/2011
+! SISYPHE   V7P2                                   14/11/2016
 !***********************************************************************
 !
 !brief    COLLAPSE OF SAND WITH A SLOPE GREATER THAN A
@@ -35,6 +35,11 @@
 !+        V6P3
 !+   Now possible with several classes of sediment.
 !
+!history  MICHIEL KNAAPEN (HRW)
+!+        10/11/2016
+!+        V7P2
+!+        Account for morphological factor
+!                     
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EVOL           |<->| WORK ARRAY, THEN EVOLUTION DUE TO SLIDE
 !| IKLE           |-->| CONNECTIVITY TABLE
@@ -50,6 +55,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SISYPHE, ONLY : MOFAC
 !
       USE INTERFACE_SISYPHE, EX_MAXSLOPE => MAXSLOPE
 !
@@ -138,9 +144,9 @@
 !         BECAUSE THE REAL EVOLUTION TAKING INTO ACCOUNT OTHER ELEMENTS
 !         WILL NEED A FACTOR (SURFAC/3)/(INTEGRAL OF BASIS)
 !
-          EVOL%R(I1)=EVOL%R(I1)+(1.D0-L)*(ZC-ZF(I1))*DEUXSURF/6.D0
-          EVOL%R(I2)=EVOL%R(I2)+(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0
-          EVOL%R(I3)=EVOL%R(I3)+(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0
+          EVOL%R(I1)=EVOL%R(I1)+(1.D0-L)*(ZC-ZF(I1))*DEUXSURF/6.D0/MOFAC
+          EVOL%R(I2)=EVOL%R(I2)+(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0/MOFAC
+          EVOL%R(I3)=EVOL%R(I3)+(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0/MOFAC
 !
         ENDDO
 !
@@ -204,9 +210,9 @@
           Q(2)=(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0
           Q(3)=(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0
 !
-          EVOL%R(I1)=EVOL%R(I1)+Q(1)
-          EVOL%R(I2)=EVOL%R(I2)+Q(2)
-          EVOL%R(I3)=EVOL%R(I3)+Q(3)
+          EVOL%R(I1)=EVOL%R(I1)+Q(1)/MOFAC
+          EVOL%R(I2)=EVOL%R(I2)+Q(2)/MOFAC
+          EVOL%R(I3)=EVOL%R(I3)+Q(3)/MOFAC
 !
 !         TAKING INTO ACCOUNT THE QUANTITIES TO UPDATE ZFCL_MS
 !         IG1 AND IG2 : POINTS THAT GIVE
