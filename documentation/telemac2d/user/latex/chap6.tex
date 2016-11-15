@@ -1,15 +1,14 @@
 
-
 \chapter{  PHYSICAL PARAMETER DEFINITION}
+\label{ch:phys:param:def}
+ A number of physical parameters may or must be specified during a simulation. If the parameter is space-dependent, it is sometimes preferable to define various zones within the mesh and then assign the parameter as a function of the zone number. To do this, it is necessary to activate the logical keyword \telkey{DEFINITION OF ZONES} and fill the subroutine DEF\_ZONES which assigns a zone number to each point. This zone number may then be used in the various subroutines for specifying a space-dependent physical parameter. Another possibility is to fill the zone file, see Appendix \ref{tel2d:app5}.
 
- A number of physical parameters may or must be specified during a simulation. If the parameter is space-dependent, it is sometimes preferable to define various zones within the mesh and then assign the parameter as a function of the zone number. To do this, it is necessary to activate the logical keyword \textit{DEFINITION OF ZONESDEFINITION OF ZONES} and fill the subroutine DEF\_ZONESDEF\_ZONES which assigns a zone number to each point. This zone number may then be used in the various subroutines for specifying a space-dependent physical parameter. Another possibility is to fill the zone file, see APPENDIX 5
-
- The spatial distribution of some parameters may be specified interactively using FUDAA-PREPRO (friction coefficient and velocity diffusivity coefficient especially)
+ The spatial distribution of some parameters may be specified interactively using FUDAA-PREPRO (friction coefficient and velocity diffusivity coefficient especially).
 
 
-\section{ FRICTION PARAMETER DEFINITION}
-
- We describe hereafter the simplest case, when the friction law is the same in all the computation domain, when it is variable in space, refer to Appendix 6 after reading this paragraph. The friction law used to model friction on the bed is defined by the keyword \textit{LAW OF BOTTOM FRICTION}. This may have the following values:
+\section{Friction parameter definition}
+\label{sec:frict:param}
+ We describe hereafter the simplest case, when the friction law is the same in all the computation domain, when it is variable in space, refer to Appendix 5 after reading this paragraph. The friction law used to model friction on the bed is defined by the keyword \telkey{LAW OF BOTTOM FRICTION}. This may have the following values:
 
 \begin{enumerate}
 \item[\nonumber]  0: No friction,
@@ -29,83 +28,76 @@
 \item [\nonumber] 7: Colebrooke-White law
 \end{enumerate}
 
- Option 6 can be used only in the friction data file (see Appendix 6)
+ Option 6 can be used only in the friction data file (see Appendix \ref{tel2d:app5}).
 
- In the case of options 1 to 5, it is necessary to specify the value of the coefficient corresponding to the law chosen by means of the keyword \textit{FRICTION COEFFICIENT}. \textit{FRICTION COEFFICIENT}. .This is of course only valid if the friction is constant in time and space.
+ In the case of options 1 to 5, it is necessary to specify the value of the coefficient corresponding to the law chosen by means of the keyword \telkey{FRICTION COEFFICIENT}. This is of course only valid if the friction is constant in time and space.
 
- In the case of option 7, the key-word \textit{MANNING DEFAULT VALUE FOR COLEBROOK-WHITE LAW} must be given.
+ In the case of option 7, the key-word \telkey{MANNING DEFAULT VALUE FOR COLEBROOK-WHITE LAW} must be given.
 
  If the friction coefficient varies in time (and possibly in space as well), it is necessary to use the STRCHE and/or CORSTR subroutines, which supply the friction coefficient at each mesh point.
 
  The following example shows how STRCHE is programmed for a domain in which the friction coefficient is 50 for the left part (X$<$10000) and 55 for the right part.
-
- C LOOP ON ALL POINTS OF DOMAIN
-
-  DO I = 1,NPOIN
-
-    IF (X(I) .LT. 10000.D0) THEN
-
-      CHESTR\%R (I) = 50.D0
-
-    ELSE
-
-      CHESTR\%R (I) = 55.D0
-
-    ENDIF
-
-       ENDDO
-
- When evaluating the friction term, it is possible to specify which depth is used for this computation through the keyword \textit{DEPTH IN FRICTION TERMS}. The two possibilities are: the classical nodal depth (value 1 which is the default), or a depth averaged on the test function area (value 2). The second one is new in release 6.0 and seems to be slightly better on dam break studies.
+\begin{lstlisting}[language=TelFortran]
+C LOOP ON ALL POINTS OF DOMAIN
+ DO I = 1,NPOIN
+   IF (X(I) .LT. 10000.D0) THEN
+     CHESTR%R (I) = 50.D0
+   ELSE
+     CHESTR%R (I) = 55.D0
+   ENDIF
+ ENDDO
+\end{lstlisting}
+ When evaluating the friction term, it is possible to specify which depth is used for this computation through the keyword \telkey{DEPTH IN FRICTION TERMS}. The two possibilities are: the classical nodal depth (value 1 which is the default), or a depth averaged on the test function area (value 2). The second one is new in release 6.0 and seems to be slightly better on dam break studies.
 
 
 \subsection{ Non-submerged vegetation}
 
- The effect of non-submerged vegetation can be added in the domain with the key-word \textit{NON-SUBMERGED VEGETATION FRICTION}
+ The effect of non-submerged vegetation can be added in the domain with the key-word \telkey{NON-SUBMERGED VEGETATION FRICTION}
 
- In this case, 2 additional data must be given: \textit{DIAMETER OF ROUGHNESS ELEMENT }and \textit{SPACING OF ROUGHNESS ELEMENT}
+ In this case, 2 additional data must be given: \telkey{DIAMETER OF ROUGHNESS ELEMENT }and \telkey{SPACING OF ROUGHNESS ELEMENT}.
 
  They will be used in the Lindner law giving the drag coefficients of the vegetation.
 
- This option will be preferably used with a definition of friction by domains, see Appendix 6.
+ This option will be preferably used with a definition of friction by domains, see Appendix \ref{tel2d:app5}.
 
 
-\subsection{ SIDEWALL FRICTION}
+\subsection{ Sidewall friction}
 
- By default, TELEMAC-2D ignores friction phenomena on the solid boundaries of the model (sidewall). This consideration may still be enabled using the keyword \textit{LAW OF FRICTION ON LATERAL BOUNDARIES}.
-This keyword offers the same option than the keyword \textit{LAW OF BOTTOM FRICTION} described above. The coefficient of friction to take into account is then provided by the keyword \textit{FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES} (default value 60!) if it is constant on all solid boundaries. If this value varies spatially, the user can fill the column AUBOR in the boundary conditions file (see Section 4.2.3). AUBOR is then considered as a quadratic coefficient whose interpretation depends on the chosen friction law.
+ By default, \telemac{2D} ignores friction phenomena on the solid boundaries of the model (sidewall). This consideration may still be enabled using the keyword \telkey{LAW OF FRICTION ON LATERAL BOUNDARIES}. 
+This keyword offers the same option than the keyword \telkey{LAW OF BOTTOM FRICTION} described above. The coefficient of friction to take into account is then provided by the keyword \telkey{FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES} (default value 60!) if it is constant on all solid boundaries. If this value varies spatially, the user can fill the column AUBOR in the boundary conditions file (see Section \ref{sub:bc:file}). AUBOR is then considered as a quadratic coefficient whose interpretation depends on the chosen friction law.
 
 
-\section{ MODELLING OF TURBULENCETURBULENCE}
-
- The modelling of turbulence is a delicate problem. TELEMAC-2D offers the user four options of different complexity.
+\section{ Modelling of turbulence}
+\label{sec:mod:turbul}
+ The modelling of turbulence is a delicate problem. \telemac{2D} offers the user four options of different complexity.
 
  The first involves using a constant viscosity coefficient. In this case, the coefficient represents the molecular viscosity, turbulent viscosity and dispersion.
 
  The second option involves an Elder model.
 
- The third option involves using a k-Epsilon model. This is a 2D model that solves the transport equations for k (turbulent energy) and Epsilon (turbulent dissipation). The model equations are solved by a fractional step method, with convection of turbulent variables being processed at the same time as the hydrodynamic variables, and the other terms relating to the diffusion and production/dissipation of turbulent values being processed in a single step. Use of the k-Epsilon model also often requires a finer mesh than the constant viscosity model and in this way increases computation time.
+ The third option involves using a k-Epsilon model. This is a 2D model that solves the transport equations for k (turbulent energy) and Epsilon (turbulent dissipation). The model equations are solved by a fractional step method, with convection of turbulent variables being processed at the same time as the hydrodynamic variables, and the other terms relating to the diffusion and production/dissipation of turbulent values being processed in a single step. Use of the k-Epsilon model also often requires a finer mesh than the constant viscosity model and in this way increases computational time.
 
  The fourth involves a Smagorinski model, generally used for maritime domains with large-scale eddy phenomena.
 
  More detailed information on the formulation of the k-Epsilon model, the Elder model and the Smagorinski model can be found in the literature.
 
- In addition, TELEMAC-2D offers two possibilities for processing the diffusion term. The option is selected by the keyword \textit{OPTION FOR THE DIFFUSION OF VELOCITIES} which can take the value 1 (default) or 2. The first value selects a computation with the form $div\left({\vartheta }_t\overrightarrow{grad}\left(U\right)\right)$, and the second one with the form $\frac{1}{h}div\left({h\vartheta }_t\overrightarrow{grad}\left(U\right)\right)$.
+ In addition, \telemac{2D} offers two possibilities for processing the diffusion term. The option is selected by the keyword \telkey{OPTION FOR THE DIFFUSION OF VELOCITIES} which can take the value 1 (default) or 2. The first value selects a computation with the form $div\left({\vartheta }_t\overrightarrow{grad}\left(U\right)\right)$, and the second one with the form $\frac{1}{h}div\left({h\vartheta }_t\overrightarrow{grad}\left(U\right)\right)$.
 
  This latter option is the only one offering good mass conservation, but difficulties may occur with tidal flats.
 
 
-\subsection{ Constant viscosityConstant viscosity}
+\subsection{ Constant viscosity}
 
- The first possibility is activated by giving the keyword  \textit{TURBULENCE MODEL} the value 1 (default value). Turbulent viscosity is then constant throughout the domain. The overall viscosity coefficient (molecular + turbulent viscosity) is provided with the keyword \textit{VELOCITY DIFFUSIVITY} \textit{VELOCITY DIFFUSIVITY}which has a default value of 10${}^{-}$${}^{6}$ (corresponding to the molecular viscosity of water).
+ The first possibility is activated by giving the keyword  \telkey{TURBULENCE MODEL} the value 1 (default value). Turbulent viscosity is then constant throughout the domain. The overall viscosity coefficient (molecular + turbulent viscosity) is provided with the keyword \telkey{VELOCITY DIFFUSIVITY}which has a default value of 10${}^{-6}$ (corresponding to the molecular viscosity of water).
 
  The value of this coefficient has a definite effect on the extent and shape of recirculation. A low value will tend to dissipate only small eddies, whereas a high value will tend to dissipate large recirculations. The user must therefore choose this value with care, depending on the case treated (in particular as a function of the size of the recirculation he or she wishes to dissipate and the mean angular velocity of the recirculation). It should also be noted that a value which results in the dissipation of eddies smaller than two meshes has virtually no effect on the computation.
 
- TELEMAC-2D offers the possibility of having a coefficient that varies in time and space. This is defined in the CORVIS subroutine. This subroutine gives information on the geometry and basic hydrodynamic variables (depth of water, velocity components) and time.
+ \telemac{2D} offers the possibility of having a coefficient that varies in time and space. This is defined in the CORVIS subroutine. This subroutine gives information on the geometry and basic hydrodynamic variables (depth of water, velocity components) and time.
 
 
-\subsection{ Elder modelElder model}
+\subsection{ Elder model}
 
- This option is used when the keyword \textit{TURBULENCE MODEL} is set to 2.
+ This option is used when the keyword \telkey{TURBULENCE MODEL} is set to 2.
 
  The Elder model offers the possibility of specifying different viscosity values along and across the current (Kl and Kt respectively). The formulae used are:
 
@@ -117,45 +109,45 @@ This keyword offers the same option than the keyword \textit{LAW OF BOTTOM FRICT
 
  al and at are the dimensionless dispersion coefficients equal to 6 and 0.6 respectively. Other values can be found in the literature.
 
- The two coefficients can be supplied by the user with the keyword \textit{NON-DIMENSIONAL DISPERSION COEFFICIENTS} (format: Kl,Kt).
+ The two coefficients can be supplied by the user with the keyword \telkey{NON-DIMENSIONAL DISPERSION COEFFICIENTS} (format: Kl,Kt).
 
 
 \subsection{ K-epsilon model}
 
- If constant viscosity is not sufficient, TELEMAC-2D offers the possibility of using a k-Epsilon model. This is activated by assigning a value of 3 to the keyword \textit{TURBULENCE MODELTURBULENCE MODEL}.
+ If constant viscosity is not sufficient, \telemac{2D} offers the possibility of using a k-Epsilon model. This is activated by assigning a value of 3 to the keyword \telkey{TURBULENCE MODEL}.
 
- In this case, the keyword \textit{VELOCITY DIFFUSIVITY} has its real physical value (10${}^{-6}$ for molecular diffusion of water), as this is used as such by the turbulence model.
+ In this case, the keyword \telkey{VELOCITY DIFFUSIVITY} has its real physical value (10${}^{-}$${}^{6}$ for molecular diffusion of water), as this is used as such by the turbulence model.
 
- In the case of a solid boundary, the user may configure the turbulence regime for the walls using the keyword \textit{TURBULENCE MODEL FOR SOLID BOUNDARIES}. If friction at the wall is not to be taken into account, the user must use the value corresponding to a smooth wall (option 1). In contrast, friction will be taken into account by using option 2 (rough wall). In this case, the friction law used for the wall is the same as the bottom friction law (keyword \textit{LAW OF BOTTOM FRICTIONLAW OF BOTTOM FRICTION}). The friction coefficient is then supplied by the keyword \textit{ROUGHNESS COEFFICIENT OF BOUNDARIES}. This numerical value must of course be in agreement with the law chosen, in appropriate units.
+ In the case of a solid boundary, the user may configure the turbulence regime for the walls using the keyword \telkey{TURBULENCE MODEL FOR SOLID BOUNDARIES}. If friction at the wall is not to be taken into account, the user must use the value corresponding to a smooth wall (option 1). In contrast, friction will be taken into account by using option 2 (rough wall). In this case, the friction law used for the wall is the same as the bottom friction law (keyword \telkey{LAW OF BOTTOM FRICTION}). The friction coefficient is then supplied by the keyword \telkey{ROUGHNESS COEFFICIENT OF BOUNDARIES}. This numerical value must of course be in agreement with the law chosen, in appropriate units.
 
- If a k-Epsilon model is used, the information concerning the solution phase must be obtained by activating the keyword \textit{INFORMATION ABOUT K-EPSILON MODEL}.
+ If a k-Epsilon model is used, the information concerning the solution phase must be obtained by activating the keyword \telkey{INFORMATION ABOUT K-EPSILON MODEL}.
 
- Parameter definition for the k-Epsilon model is described in chapter 7.
+ Parameter definition for the k-Epsilon model is described in Chapter \ref{ch:num:par:def}.
 
  A good level of expertise in turbulence is necessary to use the k-epsilon model, especially to know when it is relevant to resort to it. As a matter of fact the turbulence should be larger than the dispersion terms. We quote here W. Rodi: ``It should be emphasized that the model described here does not account for the dispersion terms appearing in the (depth-averaged) momentum equations''.
 
 
 \subsection{ Smagorinski model}
 
- The use of this model is activated by assigning a value of 4 to keyword \textit{TURBULENCE MODEL}. Same remark than the k-epsilon model, it does not take into account the dispersion terms. (see (Smagorinsky, 1963) for more details)
+ The use of this model is activated by assigning a value of 4 to keyword \telkey{TURBULENCE MODEL}. Same remark than the k-epsilon model, it does not take into account the dispersion terms (see \cite{Smagorinsky1963} for more details).
 
 
 \section{ Parameterization of meteorological phenomena}
-
+\label{sec:param:met:phen}
 
 \subsection{ Wind influence}
 
- TELEMAC-2D can be used to simulate flow under the influence of a wind blowing on the water surface. The logical keyword  \textit{WIND} is used first of all for determining whether this influence is to be taken into account. If so, the coefficient is then provided with the keyword \textit{COEFFICIENT OF WIND INFLUENCE} (see {\S} below). Since V7P0 release, wind effect is managed using a new keyword, OPTION FOR WIND (default 0): this keyword can have the following values:
+ \telemac{2D} can be used to simulate flow under the influence of a wind blowing on the water surface. The logical keyword  \telkey{WIND} is used first of all for determining whether this influence is to be taken into account. If so, the coefficient is then provided with the keyword \telkey{COEFFICIENT OF WIND INFLUENCE} (see {\S} below). Since V7P0 release, wind effect is managed using a new keyword, OPTION FOR WIND (default 0): this keyword can have the following values:
 
-\begin{enumerate}
-\item  0: this means no wind effect (this is equivalent to put keyword\textit{ WIND }to \textit{false})
+\begin{itemize}
+\item [\nonumber] 0: this means no wind effect (this is equivalent to put keyword\telkey{ WIND }to FALSE),
 
-\item 1: wind is constant in time and space, wind speed in directions X and Y are supplied with the keywords \textit{WIND VELOCITY ALONG X} and \textit{WIND VELOCITY ALONG Y}, or through keyword\textit{ SPEED AND DIRECTION OF WIND }(default 0.;0.) which gives the speed (in m/s) and the direction (in degrees from 0 to 360) of wind,
+\item [\nonumber]1: wind is constant in time and space, wind speed in directions X and Y are supplied with the keywords \telkey{WIND VELOCITY ALONG X} and \telkey{WIND VELOCITY ALONG Y}, or through keyword\telkey{ SPEED AND DIRECTION OF WIND }(default 0.;0.) which gives the speed (in m/s) and the direction (in degrees from 0 to 360) of wind,
 
-\item  2: wind variable in time, constant is space, it is given through the formatted file (\textit{FORMATTED DATA FILE 1}
+\item [\nonumber] 2: wind variable in time, constant is space, it is given through the formatted file (\telkey{FORMATTED DATA FILE 1},
 
-\item  3: wind is variable in time and space, this option is not implemented while there are multiple choices of implementation. In this case, user must program himself the subroutine \textit{METEO.f}. An example of implementation is given in validation test case ``wind\_txy'' (in folder examples/telemac2d/wind\_txy)
-\end{enumerate}
+\item [\nonumber] 3: wind is variable in time and space, this option is not implemented while there are multiple choices of implementation. In this case, user must program himself the subroutine METEO.f. An example of implementation is given in validation test case ``wind\_txy'' (in folder examples/telemac2d/wind\_txy).
+\end{itemize}
 
  The coefficient of wind influence hides complex phenomena. In fact, the influence of the wind depends on the smoothness (or, lack of it) of the free surface and the distance over which it acts (called the ``fetch''). The coefficient value can be obtained from many different formulas.
 
@@ -169,71 +161,55 @@ This keyword offers the same option than the keyword \textit{LAW OF BOTTOM FRICT
 
  if    $\left \| \vec{U}_{wind}  \right \|   > 19,22 m/s $  then     $a_{wind} = 2,513 10^{-3}$
 
- The parameter \textit{COEFFICIENT OF WIND INFLUENCE} asked for by TELEMAC-2D is: $\frac{{\rho }_{air}}{\mathrm{\rho }}$ $a_{wind}$ and not only $a_{wind}$.
+ The parameter \telkey{COEFFICIENT OF WIND INFLUENCE} asked for by \telemac{2D} is: $\frac{{\rho }_{air}}{\mathrm{\rho }}$ $a_{wind}$ and not only $a_{wind}$.
 
- $\rho_{air}$ is approximately 1.2 kg/m3 and $\rho$ is 1000 kg/m3. Thus it is necessary to divide the value of a${}_{wind}$ by 1000 to obtain the value of the TELEMAC-2D keyword.
+ $\rho_{air}$ is approximately 1.2 $kg/m^3$ and $\rho$ is $1000 kg/m^3$. Thus it is necessary to divide the value of a${}_{wind}$ by 1000 to obtain the value of the \telemac{2D} keyword.
 
- If there are tidal flats or dry zones in the domain, the wind may trigger unphysical velocities as it becomes the only driving term in the equations. To avoid this, wind is cancelled below a threshold value of depth, with the key-word \textit{THRESHOLD DEPTH FOR WIND}
+ If there are tidal flats or dry zones in the domain, the wind may trigger unphysical velocities as it becomes the only driving term in the equations. To avoid this, wind is cancelled below a threshold value of depth, with the key-word \telkey{THRESHOLD DEPTH FOR WIND}.
 
- Atmospheric pressure is taken into account by setting the keyword \textit{AIR PRESSURE} to YES (the default value is NO). Since release V7P0, the pressure value is indicated by the keyword \textit{VALUE OF ATMOSPHERIC PRESSURE} (default 10${}^{5}$ Pa). This value is initialised throughout the domain.
+ Atmospheric pressure is taken into account by setting the keyword \telkey{AIR PRESSURE} to YES (the default value is NO). Since release V7P0, the pressure value is indicated by the keyword \telkey{VALUE OF ATMOSPHERIC PRESSURE} (default 10${}^{5}$ Pa). This value is initialised throughout the domain.
 
  The METEO subroutine is called up if the wind or atmospheric pressure or water quality options are activated. By default, the subroutine is called up at the start of the computation (time value = 0) in order to fix the pressure throughout the domain and the wind velocity at the values supplied with the corresponding keywords. The user has geometrical information on the mesh, and time information for programming any study situation, in particular winds that vary in time and space (in this case a test must be programmed for time values other than 0).
 
 
 \subsection{ Atmospheric pressure}
 
- The influence of air pressure is taken into account if the keyword \textit{AIR PRESSURE} is set to YES (the default value is NO). The value of that pressure is provided by the keyword \textit{VALUE OF ATMOSPHERIC PRESSURE}. By default, the latter initializes a pressure of 10${}^{5}$Pa over the whole domain.
+ The influence of air pressure is taken into account if the keyword \telkey{AIR PRESSURE} is set to YES (the default value is NO). The value of that pressure is provided by the keyword \telkey{VALUE OF ATMOSPHERIC PRESSURE}. By default, the latter initializes a pressure of 10${}^{5}$ Pa over the whole domain.
 
  The METEO subroutine is called if the wind or atmospheric pressure or water quality options are on. The subroutine is called only at the beginning of the computation (value of zero time) to set the wanted pressure across the field, and the wind speed with the values {}{}provided by the corresponding keywords. The user has the information about the mesh, as well as time information to program any case, especially variable winds in space and time (a test for non-zero values {}{}of the time must be performed) .
 
  The following example shows a wind programmed in space and in time. For the left part of the domain (X$<$1000000) the wind in direction X is fixed at 10 m/s for the first 3600 seconds, and at 5 m/s subsequently. The X and Y wind components in the right part of the domain are nil.
 
-
-
- C INITIALISATION WIND Y AND WIND X FOR LT=0
-
-  IF (LT.EQ.0) THEN
-
-    CALL OV ('X=C     ',WINDX, Y, Z, 0.D0, NPOIN)
-
-    CALL OV ('X=C     ',WINDY, Y, Z, 0.D0, NPOIN)
-
-  ELSE
-
- C INITIALISATION WINDX LEFT PART FOR NON-ZERO TIMES
-
-    DO I=1,NPOIN
-
-      IF (X(I).LT.1000000.D0) THEN
-
-   IF (LT.LT.3600.D0) THEN
-
-     WINDX \eqref{1} = 10.D0
-
-   ELSE
-
-     WINDY \eqref{1} = 5.D0
-
-   ENDIF
-
+\begin{lstlisting}[language=TelFortran]
+C INITIALISATION WIND Y AND WIND X FOR LT=0
+ IF (LT.EQ.0) THEN
+   CALL OV ('X=C     ',WINDX, Y, Z, 0.D0, NPOIN)
+   CALL OV ('X=C     ',WINDY, Y, Z, 0.D0, NPOIN)
+ ELSE
+C INITIALISATION WINDX LEFT PART FOR NON-ZERO TIMES
+   DO I=1,NPOIN
+     IF (X(I).LT.1000000.D0) THEN
+       IF (LT.LT.3600.D0) THEN
+         WINDX (I) = 10.D0
+       ELSE
+         WINDY (I) = 5.D0
        ENDIF
-
-         ENDDO
-
-   ENDIF
-
-
+     ENDIF
+   ENDDO
+ ENDIF
+\end{lstlisting}
 \subsection{ Rain and evaporation}
 
- The modelling of the influence of precipitation or evaporation is activated with the logical keyword \textit{RAIN OR EVAPORATION}. The value of the contribution or the loss of water at the surface is specified using the keyword \textit{RAIN OR EVAPORATION IN MM PER DAY} which default value is 0. (a negative value reflects an evaporation).The duration of the rainfall or evaporation can be set with the keyword \textit{DURATION OF RAIN OR EVAPORATION IN HOURS} (units: hours, default is infinite). Rain and evaporation can also vary in time and space. They can be introduced through the meteo file. See water quality, wind and rain validation test cases (in folder examples/telemac2d)
+ The modelling of the influence of precipitation or evaporation is activated with the logical keyword \telkey{RAIN OR EVAPORATION}. The value of the contribution or the loss of water at the surface is specified using the keyword \telkey{RAIN OR EVAPORATION IN MM PER DAY} which default value is 0. (a negative value reflects an evaporation).The duration of the rainfall or evaporation can be set with the keyword \telkey{DURATION OF RAIN OR EVAPORATION IN HOURS} (units: hours, default is infinite). Rain and evaporation can also vary in time and space. They can be introduced through the meteo file. See water quality, wind and rain validation test cases (in folder examples/telemac2d).
 
- In case of calculation with consideration of tracers, it is possible to specify the contribution related to the rain with the keyword \textit{VALUES OF TRACERS IN THE RAINVALUES OF TRACERS IN THE RAIN} (default value is 0.). It is important to note that, in the case of evaporation, no tracer is taken into account in the water loss, which is incorrect if the tracer is the temperature.
+ In case of calculation with consideration of tracers, it is possible to specify the contribution related to the rain with the keyword \telkey{VALUES OF TRACERS IN THE RAIN} (default value is 0.). It is important to note that, in the case of evaporation, no tracer is taken into account in the water loss, which is incorrect if the tracer is the temperature.
 
-\subsection{RAINFALL-RUNOFF MODELLING}
+\subsection{Raifall-runoff Modelling}
 
-Rainfall-runoff can be modelled with the Curve Number runoff model developed by USA Soil Conservation Service (from 1954). Runoff potential is defined by a unique parameter called the Curve Number (CN) which is function of hydrological soil groups, land use, hydrologic surface condition of native pasture and antecedent moisture conditions. See for example Applied Hydrology (Chow, Maidment, Mays, 1988) for more details and typical CN values.
+Rainfall-runoff can be modelled with the Curve Number runoff model developed by USA Soil Conservation Service (from 1954). Runoff potential is defined by a unique parameter called the Curve Number (CN) which is function of hydrological soil groups, land use, hydrologic surface condition of native pasture and antecedent moisture conditions. See for example Applied Hydrology (Chow, Maidment, Mays, 1988) for more details and typical CN values. 
 
-The Curve Number runoff model is activated when the keyword \textit{RAINFALL-RUNOFF MODEL} is set to 1 (default is 0, no runoff model). The keyword \textit{TIDAL FLATS} must be set to \textit{YES}. The CN values should be spatially defined. Two methods are available: coordinates of polygons with constant CN values given in a formatted data file (\textit{FORMATTED DATA FILE 2}, default) or CN values stocked directly in the geometry file as an additional variable (see validation case pluie in folder examples/telemac2d). The antecedent moisture conditions class can be defined with the keyword \textit{ANTECEDENT MOISTURE CONDITIONS} (1: dry, 2: normal [default], 3: wet). Two options regarding the definition of the initial abstraction ratio are available and can be set with the keyword \textit{OPTION FOR INITIAL ABSTRACTION RATIO} (1: original method with $\lambda$ = 0.2 [default]; 2: revised method with $\lambda$ = 0.05 and automatic conversion of CN values). CN values to be given in input must correspond to the original method (initial abstraction ratio $\lambda$ = 0.2) and to normal antecedent moisture conditions.
+The Curve Number runoff model is activated when the keyword \telkey{RAINFALL-RUNOFF MODEL} is set to 1 (default is 0, no runoff model). The keyword \telkey{TIDAL FLATS} 
+must be set to YES. The CN values should be spatially defined. Two methods are available: coordinates of polygons with constant CN values given in a formatted data file (\telkey{FORMATTED DATA FILE 2}, default) or CN values stocked directly in the geometry file as an additional variable (see validation case pluie in folder examples/telemac2d). The antecedent moisture conditions class can be defined with the keyword \telkey{ANTECEDENT MOISTURE CONDITIONS} (1: dry, 2: normal [default], 3: wet). Two options regarding the definition of the initial abstraction ratio are available and can be set with the keyword \telkey{OPTION FOR INITIAL ABSTRACTION RATIO} (1: original method with $\lambda$ = 0.2 [default]; 2: revised method with $\lambda$ = 0.05 and automatic conversion of CN values). CN values to be given in input must correspond to the original method (initial abstraction ratio $\lambda$ = 0.2) and to normal antecedent moisture conditions.
 
 Other options can be activated manually in subroutine RUNOFF\_SCS\_CN.f (in folder sources/telemac2d):
 \begin{itemize}
@@ -246,81 +222,81 @@ Several examples of use are provided in the validation test case pluie (in folde
 Evaporation is not supported.
 
 
-\section{ ASTRAL POTENTIAL}
-
+\section{Astral potential}
+\label{sec:astral:pot}
  When modelling large maritime areas, it is sometimes necessary to take into account the effect of astral forces generating tide inside the area. For this, the user has several keywords at his disposal.
 
- First of all, the logical keyword \textit{TIDE GENERATING FORCE} (default value NO) allows these phenomena to be taken into account.
+ First of all, the logical keyword \telkey{TIDE GENERATING FORCE} (default value NO) allows these phenomena to be taken into account.
 
- The keyword \textit{LONGITUDE OF ORIGIN POINT}  must be positioned at the right value.
+ The keyword \telkey{LONGITUDE OF ORIGIN POINT}  must be positioned at the right value.
 
- Lastly, the two keywords \textit{ORIGINAL DATE OF TIME} (format YYYY;MM;DD) and \textit{ORIGINAL HOUR OF TIME}  (format HH;MM;SS) must be used to give the beginning time of the simulation. This information is necessary for TELEMAC-2D to compute the respective position of the moon and the sun.
+ Lastly, the two keywords \telkey{ORIGINAL DATE OF TIME} (format YYYY;MM;DD) and \telkey{ORIGINAL HOUR OF TIME}  (format HH;MM;SS) must be used to give the beginning time of the simulation. This information is necessary for \telemac{2D} to compute the respective position of the moon and the sun.
 
 
-\section{ WAVE-INDUCED CURRENTS}
+\section{Wave induced currents}
 
  We describe here the chaining procedure.  A more dynamic solution, coupling, is described in section 14.8 and should be preferred.
 
  It is possible to include wave-induced currents by recovering the information calculated by the wave propagation modules (essentially TOMAWAC but also possible with ARTEMIS). In the present state of the system, only a steady state can be taken into account. The procedure is as follows:
 
 \begin{enumerate}
-\item  Run a wave propagation calculation on the same mesh as the TELEMAC-2D calculation, asking for the moving forces moving forcesto be stored. In the case of TOMAWAC, these are the variables FX and FY.
+\item  Run a wave propagation calculation on the same mesh as the \telemac{2D} calculation, asking for the moving forces to be stored. In the case of TOMAWAC, these are the variables FX and FY.
 
-\item  Recover the wave results file and specify its name using the keyword \textit{BINARY DATA FILE 1}.
+\item  Recover the wave results file and specify its name using the keyword \telkey{BINARY DATA FILE 1}.
 
-\item  Activate the keyword \textit{WAVE DRIVEN CURRENTS} (default value NO)
+\item  Activate the keyword \telkey{WAVE DRIVEN CURRENTS} (default value NO).
 
-\item  Complete the keyword \textit{RECORD NUMBER IN WAVE FILE}. This value corresponds to the iteration number stored in the wave file that must be taken into account by TELEMAC-2D. This is usually the last iteration stored.
+\item  Complete the keyword \telkey{RECORD NUMBER IN WAVE FILE}. This value corresponds to the iteration number stored in the wave file that must be taken into account by \telemac{2D}. This is usually the last iteration stored.
 \end{enumerate}
 
  If the user wishes to take into account several results from the wave propagation module again (e.g. in order to consider changes in sea level), FORTRAN programming is necessary.
 
 
-\section{ Vertical Structures }
+\section{ Vertical structures }
 
  It may be necessary to take into account the presence of an obstacle to flow, such as bridge piers, trees or even buildings, without having to model them in the mesh, especially as, in this case, the force opposing the flow generally varies with the depth of water.
 
- To handle this problem, TELEMAC-2D can include drag forces connected with the presence of vertical structures in the model. This function is activated with the logical keyword \textit{VERTICAL STRUCTURES}.
+ To handle this problem, \telemac{2D} can include drag forces connected with the presence of vertical structures in the model. This function is activated with the logical keyword \telkey{VERTICAL STRUCTURES}.
 
  The drag forces must then be defined in the user subroutine DRAGFO. An example of programming is given in the subroutine itself.
 
 
-\section{ OTHER PHYSICAL PARAMETERS}
+\section{Other physical parameters}
 
- When modelling large areas, it is necessary to take into account the inertia effect of the Coriolis force. This is done by activating the logical keyword \textit{CORIOLIS} \textit{CORIOLIS}  (which has the default value NO). In this case, the value of the Coriolis coefficient (see Formulation Document) is supplied by the keyword \textit{CORIOLIS COEFFICIENTCORIOLIS COEFFICIENT }. This must be calculated in accordance with the latitude l by the formula:
+ When modelling large areas, it is necessary to take into account the inertia effect of the Coriolis force. This is done by activating the logical keyword \telkey{CORIOLIS}  (which has the default value NO). In this case, the value of the Coriolis coefficient (see Formulation Document) is supplied by the keyword \telkey{CORIOLIS COEFFICIENT }. This must be calculated in accordance with the latitude l by the formula:
 
- FCOR = 2 $\omega$ sin($\lambda$)          $\omega$ being the angular velocity of the Earth, equal to 7.27 x 10${}^{-5}$ rad/s.
+ FCOR = 2 $\omega$ sin($\lambda$)          $\qquad \omega$ being the angular velocity of the Earth, equal to 7.27 x 10${}^{-5}$ rad/s.
 
  The components of the Coriolis force are thus:
 
  FU = FCOR x V         et         FV = -FCOR x U
 
- In the case of very large domains such as portions of oceans, it is necessary to carry out a simulation with spherical coordinates, in which case the Coriolis coefficient is adjusted automatically at each point of the domain (see 14.3).
+ In the case of very large domains such as portions of oceans, it is necessary to carry out a simulation with spherical coordinates, in which case the Coriolis coefficient is adjusted automatically at each point of the domain (see \ref{sec:spher:coord:LATI}).
 
- TELEMAC-2D also offers the possibility of defining the water density (keyword \textit{WATER DENSITY} ; the default value is 1000 kg/m${}^{3}$, i.e. a value corresponding to a fresh river water) and gravity acceleration (keyword \textit{GRAVITY} \textit{ACCELERATION} \textit{GRAVITY ACCELERATION} fixed by default at 9.81 m/s${}^{2}$).
+ \telemac{2D} also offers the possibility of defining the water density (keyword \telkey{WATER DENSITY} ; the default value is 1000 kg/m${}^{3}$, i.e. a value corresponding to a fresh river water) and gravity acceleration (keyword \telkey{GRAVITY} \telkey{ACCELERATION} fixed by default at 9.81 m/s${}^{2}$).
 
 
-\section{ PARAMETER ESTIMATION}
+\section{Parameter estimation }
 
- TELEMAC-2D contains a function for automatically determining an unknown physical parameter. In the current version of the software, it is only possible to determine the friction coefficient when using the Strickler or Ch\'{e}zy laws (keyword \textit{LAW OF BOTTOM FRICTION} with value of 2 or 3).
+ \telemac{2D} contains a function for automatically determining an unknown physical parameter. In the current version of the software, it is only possible to determine the friction coefficient when using the Strickler or Ch\'{e}zy laws (keyword \telkey{LAW OF BOTTOM FRICTION} with value of 2 or 3).
 
- The principle for determining a parameter involves performing a series of calculations and comparing the results provided by TELEMAC-2D with the available measurements. The parameter to be determined is then adjusted in order to obtain identical values.
+ The principle for determining a parameter involves performing a series of calculations and comparing the results provided by \telemac{2D} with the available measurements. The parameter to be determined is then adjusted in order to obtain identical values.
 
- The algorithm for estimating this parameter is activated with the keyword \textit{PARAMETER ESTIMATION,} which provides the name of the parameter to be determined. The user can specify `FRICTION' or `FRICTION, STEADY'. In the second configuration, only the last time step of the simulation is checked. In the actual version of the software, it is strongly recommended to work only in permanent mode.
+ The algorithm for estimating this parameter is activated with the keyword \telkey{PARAMETER ESTIMATION,} which provides the name of the parameter to be determined. The user can specify `FRICTION' or `FRICTION, STEADY'. In the second configuration, only the last time step of the simulation is checked. In the actual version of the software, it is strongly recommended to work only in permanent mode.
 
  Measurement data are supplied via the user subroutine MESURES which contains the arguments ITER (iteration number) and TT (absolute time). The latter argument is used in processing real measurements. Each time the MESURES subroutine is called up, it must supply the measured water depth (HD), the two velocity components (UD and VD), as well as the weightings ALPHA1, ALPHA2 and ALPHA3 connected respectively with HD, UD, VD. The weighting is 1 if a measurement is available and 0 if it is not. For example, an ALPHA1 value of 1 for a given point means that a depth measurement is available for that point. Similarly, an ALPHA3 of 1 for a given point means that a velocity measurement V is available for that point. When a measurement is available, it may be advisable to replace the value 1 by a vector proportional to the local mesh size (see VECTOR(`MASBAS',{\dots}) in the MESURES subroutine).
 
- The comparison data may also be provided by a file in Serafin format, in which case the name is specified with the keyword \textit{REFERENCE FILE}. The data are read automatically in this case.
+ The comparison data may also be provided by a file in Serafin format, in which case the name is specified with the keyword \telkey{REFERENCE FILE}. The data are read automatically in this case.
 
- If the parameter is space-dependent, it is necessary to activate the logical keyword \textit{DEFINITION OF ZONES} and to complete the DEF\_ZONES subroutine, which assigns a zone number to each point. In this case, a parameter value will be estimated for each zone. This value will be constant within the zone.
+ If the parameter is space-dependent, it is necessary to activate the logical keyword \telkey{DEFINITION OF ZONES} and to complete the DEF\_ZONES subroutine, which assigns a zone number to each point. In this case, a parameter value will be estimated for each zone. This value will be constant within the zone.
 
- From the numerical point of view, the user must specify a number of parameters:
+ From the numerical point of view, the user must specify a number of parameters.
 
- The cost function used must be indicated with the integer keyword \textit{COST FUNCTION} which may have the value 1 (cost function based on the difference between depths and velocities, which is the default value) or 2 (cost function based on the difference between celerities and velocities). 2 seems to be preferable, even through the effect of this parameter is slight.
+ The cost function used must be indicated with the integer keyword \telkey{COST FUNCTION} which may have the value 1 (cost function based on the difference between depths and velocities, which is the default value) or 2 (cost function based on the difference between celerities and velocities). 2 seems to be preferable, even through the effect of this parameter is slight.
 
- The integer keyword \textit{IDENTIFICATION METHOD} is used to specify the technique used for minimizing the cost function. It may have the value 1 (gradient, which is the default value), 2 (conjugate gradient) or 3 (Lagrangian interpolation).
+ The integer keyword \telkey{IDENTIFICATION METHOD} is used to specify the technique used for minimizing the cost function. It may have the value 1 (gradient, which is the default value), 2 (conjugate gradient) or 3 (Lagrangian interpolation).
 
- As parameter estimation is based on an iterative procedure, it is necessary to specify the required level of accuracy and a maximum number of iterations. Accuracy is indicated with the keyword \textit{TOLERANCES FOR IDENTIFICATION}. This is an array of four integers corresponding respectively to the absolute accuracy for the depth, velocity u and velocity v, and the relative accuracy of the cost function (default values 1.E-3; 1.E-3; 1.E-3; 1.E-4). The iteration process is stopped when the absolute accuracy levels are reached or when the relative accuracy for the cost function is. The maximum number of iterations is specified with the keyword \textit{MAXIMUM NUMBER OF ITERATIONS FOR IDENTIFICATION} \textit{MAXIMUM NUMBER OF ITERATIONS FOR IDENTIFICATION} which has the default value 20. As each iteration corresponds to two simulations, the value of this keyword must not be too high.
+ As parameter estimation is based on an iterative procedure, it is necessary to specify the required level of accuracy and a maximum number of iterations. Accuracy is indicated with the keyword \telkey{TOLERANCES FOR IDENTIFICATION}. This is an array of four integers corresponding respectively to the absolute accuracy for the depth, velocity u and velocity v, and the relative accuracy of the cost function (default values 1.E-3; 1.E-3; 1.E-3; 1.E-4). The iteration process is stopped when the absolute accuracy levels are reached or when the relative accuracy for the cost function is. The maximum number of iterations is specified with the keyword \telkey{MAXIMUM NUMBER OF ITERATIONS FOR IDENTIFICATION} which has the default value 20. As each iteration corresponds to two simulations, the value of this keyword must not be too high.
 
  The results of estimating this parameter are provided in the results file. This is a geometry file in which the FRICTION variable has been added. The file can thus be reused as a geometry file for a new simulation.
 

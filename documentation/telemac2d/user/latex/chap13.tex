@@ -1,70 +1,46 @@
 
-\chapter{  Construction works modelling}
-
+\chapter{  CONSTRUCTION WORKS MODELLING}
+\label{ch:constr:wm}
 
 \section{ Weirs}
-
+\label{sec:weirs}
  Weirs are considered as linear singularities. Their use is possible in parallel computing (since release 6.2). The number of weirs is specified by the keyword \textit{NUMBER OF WEIRS} (default value 0). Information about weirs is given in the \textit{WEIRS DATA FILE}.
 
  A weir must be prepared in the mesh and consists of two boundary lines which are actually linked by the weir. In principle, these boundaries should be sufficiently far apart, upstream and downstream of the weir. The upstream and 
 downstream boundary points should correspond 1 to 1, and the distance between two points should be the same on both sides. The following file gives an example of two weirs (the comments are part of the file):
-
- Nb of culverts  Option for tangential velocity
-
-       2                    0
-
- ---------------------------- singularity 1
-
- Nb of points for 1 side
-
- 11
-
- Points side 1
-
- 71 72 73 74 75 76 77 78 79 80 41
-
- Points side 2
-
- 21 20 19 18 17 16 15 14 13 12 11
-
- level of the dike
-
- 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8
-
- flowrate coefficients
-
-  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4
-
- ---------------------------- singularity 2
-
- Nb of points
-
- 11
-
- Points side 1
-
- 111 112 113 114 115 116 117 118 119 120 81
-
- Points side 2
-
- 61 60 59 58 57 56 55 54 53 52 51
-
- Level of the dike
-
- 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6
-
- flowrate coefficient
-
-  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4
-
-
+\begin{lstlisting}[language=bash]
+Nb of culverts  Option for tangential velocity
+      2                    0
+---------------------------- singularity 1
+Nb of points for 1 side
+11
+Points side 1
+71 72 73 74 75 76 77 78 79 80 41
+Points side 2
+21 20 19 18 17 16 15 14 13 12 11
+level of the dike
+1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8
+flowrate coefficients
+ .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4
+---------------------------- singularity 2
+Nb of points
+11
+Points side 1
+111 112 113 114 115 116 117 118 119 120 81
+Points side 2
+61 60 59 58 57 56 55 54 53 52 51
+Level of the dike
+1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6
+flowrate coefficient
+ .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4
+\end{lstlisting}
 
  Line 2 indicates the number of weirs and then an option for the treatment of tangential velocities on the weir, with the following meaning:
 
 \begin{enumerate}
-\item  0: the velocities are null (recommended option),
+\item [\nonumber] 0: the velocities are null (recommended option),
 
-\item  1: the velocities will be calculated with the Ch\'{e}zy formula (as a function of the local free surface slope).
+\item [\nonumber] 1: the velocities will be calculated with the Ch\'{e}zy formula (as a function of the local free surface slope).
 \end{enumerate}
 
  For each weir, it is then necessary to indicate: the number of points for the first side of the weir (line 5 for the first weir) and the list of their global numbers (line 7 for the first weir). Note, that before and for release 6.1, the numbering to provide was not the global one but the local numbering of the boundary defined in the boundary conditions file. However, it is necessary to provide the weirs number in the order of the boundary points.
@@ -74,9 +50,9 @@ downstream boundary points should correspond 1 to 1, and the distance between tw
  The formulae used to calculate the discharge for each point are the following:
 
 \begin{enumerate}
-\item  Unsubmerged weir:Unsubmerged weir   $Q=\mu \sqrt{2g}\ {\left(upstream-threshold\right)}^{\frac{3}{2}}$
+\item  Unsubmerged weir: $Q=\mu \sqrt{2g}\ {\left(upstream-threshold\right)}^{\frac{3}{2}}$
 
-\item  Submerged weirSubmerged weir:
+\item  Submerged weir:
 \[Q=\ {\left(\frac{2}{3}\sqrt{\frac{1}{3}}\right)}^{-1}\mu \sqrt{2g}\left(downstream-threshold\right)\sqrt{\left(upstream-threshold\right)}\]
 
 \item  The weir is not submerged if:
@@ -84,28 +60,24 @@ downstream boundary points should correspond 1 to 1, and the distance between tw
 \end{enumerate}
 Depending on the shape and roughness of the weir, the value of ${\kern 1pt} \mu $ is between 0.4 and 0.5. However, the above formulae neglect the velocity of the upstream head in the computation. If this is not the case, the value of ${\kern 1pt} \mu $ may be higher.
 
- If the user wants to modify the different laws, it is possible to modify the appropriate subroutines (LOIDEN.f and LOINOY.f)
-
+ If the user wants to modify the different laws, it is possible to modify the appropriate subroutines (LOIDEN.f and LOINOY.f).
 
 \section{ Culverts}
+\label{sec:culverts}
+ As for weirs, the keyword \textit{NUMBER OF CULVERTS} specifies the number of culverts to be treated. Culverts are described as couples of points between which flow may occur, as a function of the respective water level at these points. Since release 6.2 of \telemac{2d}, it is no longer necessary to describe each culvert inflow and outflow as a source point.
 
- As for weirs, the keyword \textit{NUMBER OF CULVERTS} specifies the number of culverts to be treated. Culverts are described as couples of points between which flow may occur, as a function of the respective water level at these points. Since release 6.2 of TELEMAC-2D, it is no longer necessary to describe each culvert inflow and outflow as a source point.
-
- Information about culvert characteristics is stored in the \textit{CULVERT DATA FILE}
+ Information about culvert characteristics is stored in the \textit{CULVERT DATA FILE}.
 
  The following file gives an example of a culvert:
-
+\begin{lstlisting}[language=bash]
  Relaxation   Number of siphons
-
    0.2              1
-
  I1   I2  d1  d2   CE1  CE2  CS1   CS2   S12  L12  z1   z2  a1   a2
-
- 531~562  0.  90.  0.5  0.5  1.0   1.0   20.  0.2  0.3  0.1  0.  90.
-
+ 531 562  0.  90.  0.5  0.5  1.0   1.0   20.  0.2  0.3  0.1  0.  90.
+\end{lstlisting}
  The relaxation coefficient is initially used to prescribe the discharge in the culvert on a progressive basis in order to avoid the formation of an eddy. Relaxation, at T time, between result computed at time T and result computed at previous time step.. A relaxation coefficient of 0.2 means that 20\% of time T result is mixed with 80\% of the previous result. I1 and I2 are the numbers of each end of the culvert in the global point numbering system.
 
- The culvert discharge culvert discharge is given by the following formula (with flow going from 1 to 2):
+ The culvert discharge is given by the following formula (with flow going from 1 to 2):
 \[Q{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} ={\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} S_{12} {\kern 1pt} {\kern 1pt} {\kern 1pt} \left({\kern 1pt} \frac{2g{\kern 1pt} {\kern 1pt} {\kern 1pt} (upstream{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} level{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} -{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} downstream{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} level)}{CS_{2} {\kern 1pt} {\kern 1pt} +{\kern 1pt} {\kern 1pt} {\kern 1pt} CE_{1} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} +{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} L_{12} } \right)\]
 S${}_{12}$ is the cross-section of the pipe. CS${}_{1}$ and CS${}_{2}$ are the head loss coefficients of 1 and 2 when they are operating as outlets. CE${}_{1}$ and CE${}_{2}$ are the head loss coefficients of 1 and 2 when they are operating as inlets. L${}_{12}$ is the linear head loss coefficient, generally equal to $\lambda {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} \frac{L}{D} $ where L is the length of the pipe, D its diameter and l the friction coefficient.
 
@@ -116,26 +88,18 @@ S${}_{12}$ is the cross-section of the pipe. CS${}_{1}$ and CS${}_{2}$ are the h
  d${}_{1}$ and d${}_{2}$ are the angles with respect to the x axis. They are used to account for the current direction at source or sink point that or not normal to bottom.
 
 
-\section{ TUBES}
-
- Tubes allow to model construction works that are likely to switch from free surface flow to close-conduit flow during the simulation (discharge construction work under a dike, a bridge, etc.). As for weirs, the keyword \textit{NUMBER OF TUBESNUMBER OF CULVERTS} specifies the number of tubes to be treated. Tubes are described as couples of points between which flow may occur, as a function of the respective water level at these points. Contrary to culverts, the flow direction is automatically computed as a function of inflow and outflow points of the tube.
-
- Information about culvert characteristics is stored in the \textit{TUBES DATA FILE}
-
-
-
+\section{ Tubes}
+\label{sec:tubes}
+ Tubes allow to model construction works that are likely to switch from free surface flow to close-conduit flow during the simulation (discharge construction work under a dike, a bridge, etc.). As for weirs, the keyword \textit{NUMBER OF CULVERTS} specifies the number of tubes to be treated. Tubes are described as couples of points between which flow may occur, as a function of the respective water level at these points. Contrary to culverts, the flow direction is automatically computed as a function of inflow and outflow points of the tube.
+ Information about culvert characteristics is stored in the \textit{TUBES DATA FILE}.
  The following file gives an example of two tubes:
-
+\begin{lstlisting}[language=bash]
  Relaxation
-
      0.05
-
  I1   I2   Ce1  Ce2  Cs1  Cs2  Lrg  Hau  Clp  L12   z1  z2
-
  2566 2705 0.5  0.5  1.   1.   2.5  1.5  0    0.2   1.0 1.0
-
  2520 2659 0.5  0.5  1.   1.   2.5  1.5  0    0.2   1.0 1.0
-
+\end{lstlisting}
  The relaxation coefficient is used to prescribe the discharge in the tube on a progressive basis in order to avoid the formation of an eddy. I1 and I2 are the numbers of each end of the tube in the global point numbering system.
 
  CE${}_{1}$ and CE${}_{2}$ are the head loss coefficients when the considered point is operating as inlet.
@@ -164,119 +128,105 @@ S${}_{12}$ is the cross-section of the pipe. CS${}_{1}$ and CS${}_{2}$ are the h
 
 
 \section{ Dykes breaches}
-
- TELEMAC-2D allows simulating dikes breaching by suddenly or gradually lowering the altitude of some points. This feature is enabled using the logical keyword \textit{BREACH}. The description of the breaching process is provided in the file specified by the keyword \textit{BREACHES DATA FILE}.
+\label{sec:dykes}
+ \telemac{2d} allows simulating dikes breaching by suddenly or gradually lowering the altitude of some points. This feature is enabled using the logical keyword \textit{BREACH}. The description of the breaching process is provided in the file specified by the keyword \textit{BREACHES DATA FILE}.
 
  In the current release, 3 types of breaching process are available:
 
-\begin{enumerate}
+\begin{itemize}
 \item  at a given time,
 
 \item  when the water level above the dike reaches a given value,
 
 \item  when the water level at a given point reaches a certain value.
-\end{enumerate}
+\end{itemize}
 
  The breaching zone is defined by a polyline of several points associated to a bandwidth. The final situation is characterized by a bottom altitude that will be reached by all the points located in the breaching zone. If after the dike breaching, the bottom level is not constant, it is thus necessary to divide the dike into several breaching polylines.
 
  Since release 7.0, it is possible to take into account a lateral growth of the breach (dike opening by widening). Old breaching processes are not affected by this new feature. However, the breaches file is modified as follows:
 
-\begin{enumerate}
+\begin{itemize}
 \item  addition of two new lines for selecting breach opening option. These two lines -- comment line and the value for the option -- come after the breach duration. The options are selected using:
-\end{enumerate}
-
- 1 : for dike opening by bottom lowering (the old implementation)
-
- 2 : for dike opening by widening (the newly added option)
-
 \begin{enumerate}
-\item  the width of polygon defining breach is given for each breach
+\item [\nonumber] 1: for dike opening by bottom lowering (the old implementation)
+
+\item [\nonumber] 2: for dike opening by widening (the newly added option)
+
 \end{enumerate}
+\item  the width of polygon defining breach is given for each breach
+\end{itemize}
 
- A commented example of breaches data file is provided below. This example is taken from the test case TELEMAC2D `breach'.
+ A commented example of breaches data file is provided below. This example is taken from the test case telemac2d/breach.
 
-
-
- \# Number of breaches
-\[3\]
-\# Bandwidth of the polyline defining the breach
-\[15.0\]
-\# Upstream breach definition
-
- \# Width of Polygon defining the breaches
-\[25.0\]
-\# Option for the breaching process
-\[2\]
-\# Duration of the breaching process (0.0 = instant opening)
-\[0.0\]
-\# option of lateral growth(1= bottom lowering, 2=dike opening by widening)
-\[2\]
-\# Final bottom altitude of the breach
-\[5.9\]
-\# Control level of breach (breach exist if water level exceed this value)
-\[7.2\]
-\# Number of points of the polyline
-\[4\]
-\# Description of the polyline
-
- 2000.0 37.5
-
- 2041.0 37.5
-
- 2082.0 37.5
-
- 2100.0 37.5
-
- \# Central breach definition
-
- \# Width of Polygon defining the breaches
-\[20.0\]
-\# Option for the breaching process
-\[3\]
-\# Duration of the breaching process (0.0 = instant opening)
-\[300.0\]
-\# option of lateral growth(1= bottom lowering, 2=dike opening by widening)
-\[1\]
-\# Final bottom altitude of the breach
-\[5.5\]
-\# Number (global mesh) of the point controlling the breaching
-\[9406\]
-\# Water level initiating the breaching process
-\[6.0\]
-\# Number of points of the polyline
-\[4\]
-\# Description of the polyline
-
- 2450.0 37.5
-
- 2500.0 37.5
-
- 2520.0 37.5
-
- 2550.0 37.5
-
- \# Downstream breach definition
-
- \# Width of Polygon defining the breach
-\[10.0\]
-\# Option for the breaching process
-\[1\]
-\# Start time of the breaching process
-\[2000.0\]
-\# Duration of the breaching process (0.0 = instant opening)
-\[600.0\]
-\# option of lateral growth (1= bottom lowering, 2= opening by widening)
-\[1\]
-\# Final bottom altitude of the breach
-\[5.0\]
-\# Number of points on the dike axis where the breach will appear
-\[4\]
-\# Description of the polyline
-
- 2900.0 37.5
-
- 2920.0 37.5
-
- 2950.0 37.5
-
- 3000.0 37.5
+\begin{lstlisting}[language=bash]
+# Number of breaches
+3
+# Bandwidth of the polyline defining the breach
+15.0
+# Upstream breach definition
+# Width of Polygon defining the breaches
+25.0
+# Option for the breaching process
+2
+# Duration of the breaching process (0.0 = instant opening)
+0.0
+# option of lateral growth
+#(1= bottom lowering, 2=dike opening by widening)
+2
+# Final bottom altitude of the breach
+5.9
+# Control level of breach 
+#(breach exist if water level exceed this value)
+7.2
+# Number of points of the polyline
+4
+# Description of the polyline
+2000.0 37.5
+2041.0 37.5
+2082.0 37.5
+2100.0 37.5
+# Central breach definition
+# Width of Polygon defining the breaches
+20.0
+# Option for the breaching process
+3
+# Duration of the breaching process (0.0 = instant opening)
+300.0
+# Option of lateral growth
+# (1= bottom lowering, 2=dike opening by widening)
+1
+# Final bottom altitude of the breach
+5.5
+# Number (global mesh) of the point controlling the breaching
+9406
+# Water level initiating the breaching process
+6.0
+# Number of points of the polyline
+4
+# Description of the polyline
+2450.0 37.5
+2500.0 37.5
+2520.0 37.5
+2550.0 37.5
+# Downstream breach definition
+# Width of Polygon defining the breach
+10.0
+# Option for the breaching process
+1
+# Start time of the breaching process
+2000.0
+# Duration of the breaching process (0.0 = instant opening)
+600.0
+# Option of lateral growth
+# (1= bottom lowering, 2= opening by widening)
+1
+# Final bottom altitude of the breach
+5.0
+# Number of points on the dike axis where the breach will appear
+4
+# Description of the polyline
+2900.0 37.5
+2920.0 37.5
+2950.0 37.5
+3000.0 37.5
+\end{lstlisting}
