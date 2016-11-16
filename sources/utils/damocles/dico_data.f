@@ -210,6 +210,7 @@
       INTEGER :: I,J,IKEY,LNG,RKEY
       LOGICAL :: ALREADY_IN
       !
+      ! Check that a rubrique has not the same name as a keyword
       !  Loop on all languge
       DO LNG=1,2
         NRUB(LNG,:) = 0
@@ -219,10 +220,10 @@
             NRUB(LNG,I) = NRUB(LNG,I) + 1
             RUBRIQUE(LNG,NRUB(LNG,I),I) = MYDICO(1)%RUBRIQUE(LNG,I)
             RKEY = IDENTIFY_KEYWORD(
-     &               MYDICO(IKEY)%RUBRIQUE(LNG,I),LNG)
+     &               MYDICO(1)%RUBRIQUE(LNG,I),LNG)
             IF (RKEY.NE.-1) THEN
               WRITE(*,*) 'ERROR RUBRIQUE: ',
-     &                    TRIM(MYDICO(IKEY)%RUBRIQUE(LNG,I))
+     &                    TRIM(MYDICO(1)%RUBRIQUE(LNG,I))
               WRITE(*,*) 'IS ALSO A KEYWORD PLEASE RENAME RUBRIQUE'
            !  CALL PLANTE(1)
             ENDIF
@@ -257,9 +258,8 @@
             ENDIF
           ENDDO
         ENDDO
-        ! Check that a rubrique has not the same name as a keyword
 
-      ENDDO
+      ENDDO ! LNG
       END SUBROUTINE
       !
       ! brief Fill the array rubrique_tree that contains dependencies of

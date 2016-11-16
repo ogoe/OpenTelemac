@@ -21,7 +21,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import chdir, remove, walk, sep, environ, path, linesep
+from os import chdir, remove, walk, environ, path, linesep
 # ~~> dependencies towards the root of pytel
 from config import OptionParser, parseConfigFile, \
                    parseConfig_ValidateTELEMAC
@@ -125,7 +125,7 @@ def create_case_list_file(doc_dir, val_dir, cfg_val, cleanup):
                     of creating the CASELIST.Tex file
       return the list of cases that where missing the .tex file
    """
-   case_list_file = doc_dir + sep + 'latex' + sep + 'CASELIST.tex'
+   case_list_file = path.join(doc_dir,'latex','CASELIST.tex')
    skipedCases = []
    if cleanup:
       if path.exists(case_list_file):
@@ -140,9 +140,9 @@ def create_case_list_file(doc_dir, val_dir, cfg_val, cleanup):
             if not path.exists(path.join(val_dir,case,'doc',case+".tex")):
                skipedCases.append(case)
             else:
-               txt = linesep + '\subincludefrom{' + val_dir + sep +\
-                  case + sep + 'doc' +\
-                  sep + '}{' + case + '}' + \
+               txt = linesep + '\subincludefrom{' + val_dir + '/' +\
+                  case + '/' + 'doc' +\
+                  '/' + '}{' + case + '}' + \
                   linesep + '\clearpage' + linesep
                fobj.write(txt)
    return skipedCases
@@ -161,8 +161,8 @@ def generate_ref_from_dict(exePath,dictionary,latexFile,lng,cleanup):
                 2: English
    """
    #Building input parameter file
-   paramFile = path.dirname(latexFile)+sep+'gen_ref.par'
-   logFile = path.dirname(latexFile)+sep+'gen_ref.log'
+   paramFile = path.join(path.dirname(latexFile),'gen_ref.par')
+   logFile = path.join(path.dirname(latexFile),'gen_ref.log')
    # Cleanup
    if(cleanup):
      if path.exists(paramFile):
@@ -381,8 +381,8 @@ def main():
          todo = []
          if (options.validation or doall):
             # Building Validation LaTeX file
-            doc_dir = root + sep + 'documentation' + sep +\
-                     code_name + sep + 'validation'
+            doc_dir = path.join(root,'documentation',\
+                     code_name,'validation')
             chdir(doc_dir)
             if options.caseList != '':
                 listOfCase = options.caseList.split(',')
@@ -398,18 +398,18 @@ def main():
             todo.append('validation')
          if (options.reference or doall):
             # Path to the dictionary
-            dictionary = root + sep + 'sources' + sep + code_name +\
-                         sep + code_name + '.dico'
+            dictionary = path.join(root,'sources',code_name,\
+                         code_name+'.dico')
             # Path to latex File
-            latexFile = root + sep + 'documentation' + sep +\
-                      code_name + sep + 'reference' + sep +\
-                      'latex' + sep + 'Corpus.tex'
+            latexFile = path.join(root,'documentation',\
+                      code_name,'reference',\
+                      'latex','Corpus.tex')
             # English only for now
             lng = '2'
             # Path to bin directory
-            exePath = root + sep + 'builds' + sep + cfgname + sep +\
-                      'bin' + sep + 'damocles' +\
-                      cfg['SYSTEM']['sfx_exe']
+            exePath = path.join(root,'builds',cfgname,\
+                      'bin','damocles'+\
+                      cfg['SYSTEM']['sfx_exe'])
             generate_ref_from_dict(exePath,dictionary,latexFile,lng,\
                                    options.cleanup or options.fullcleanup)
             todo.append('reference')
@@ -419,11 +419,12 @@ def main():
          if (options.release_note or doall):
             todo.append('release_note')
          for doc_type in todo:
-            doc_dir = root + sep + 'documentation' + sep +\
-                     code_name + sep + doc_type
+            doc_dir = path.join(root,'documentation',\
+                     code_name,doc_type)
             chdir(doc_dir)
             # Check if the file exist
-            if path.exists(doc_dir + sep + code_name + "_" + doc_type + ".tex"):
+            if path.exists(path.join(doc_dir,\
+                                     code_name + "_" + doc_type + ".tex")):
                compile_doc(doc_dir, code_name+'_'+doc_type,
                            version,
                            options.cleanup, options.fullcleanup)
@@ -438,10 +439,10 @@ def main():
       for doc in miscList:
          print '\nCompilation of the documentation for '+ doc + \
                '\n'+'~'*72
-         doc_dir = root + sep + 'documentation' + sep +\
-                  'Misc' + sep + doc
+         doc_dir = path.join(root,'documentation',\
+                  'Misc',doc)
          chdir(doc_dir)
-         if path.exists(doc_dir + sep + doc + ".tex"):
+         if path.exists(path.join(doc_dir,doc + ".tex")):
             compile_doc(doc_dir, doc,
                         version,
                         options.cleanup, options.fullcleanup)
