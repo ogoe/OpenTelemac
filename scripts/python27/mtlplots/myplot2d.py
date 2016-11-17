@@ -229,11 +229,10 @@ def drawImage(myplt,decoUser,fname):
    image1 = Image.open(fname)
 
    if decoUser.has_key('extent'):
-     extent = eval(decoUser['extent'])
-     myplt.imshow(image1.transpose(1),extent=extent)
+      extent = eval(decoUser['extent'])
+      myplt.imshow(image1.transpose(1),extent=extent)
    else:
-     print 'Specify extent in deco'
-     myplt.imshow(image1.transpose(1))
+      myplt.imshow(image1.transpose(1))
 
    return
 
@@ -273,29 +272,25 @@ def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
    if decoUser.has_key('fmt'): fmt = decoUser['fmt']
 
    # ~~> Colour maps
-   cmap = cm.jet       #/!\ do find and set a default
-
-   if decoUser.has_key('cmap'): 
-     cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
-     decoUser['cmap'] = cmap
+   if decoUser.has_key('cmap')and decoUser['cmap'].split('.')[-1] == 'xml':
+      cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
+      decoUser['cmap'] = cmap
 
    # ~~> Colour maps
-#   myplt.tricontourf(x,y,ikle, z, cmap=cmap)
-
    for key in decoUser:
-     try:
-       decoUser[key] = eval(decoUser[key])
-     except:
-       pass
+      try:
+         decoUser[key] = eval(decoUser[key])
+      except:
+         pass
 
    if decoUser.has_key('levels'): decoUser['levels'] = sorted(decoUser['levels'])
 
    cs = myplt.tricontourf(x,y,ikle, z, **decoUser)
 
    if (decoUser.has_key('colourbar')):
-     if (decoUser['colourbar'] == "yes"):
-     # make a colour bar
-       cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+      if (decoUser['colourbar'] == "yes"):
+         # make a colour bar
+         cb = myplt.colorbar(cs, shrink=1.0, extend='both')
 
    # ~~> Iso-contours and Labels
 #   zmin = np.min(z); zmax = np.max(z)
@@ -390,13 +385,12 @@ def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
 
 def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
+   # ~~> Colour maps
+   if decoUser.has_key('cmap')and decoUser['cmap'].split('.')[-1] == 'xml':
+      cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
+      decoUser['cmap'] = cmap
+
    # ~~> Plot data
-   colourmap = cm.jet
-
-   #if geometry.has_key('cmapPlot'):
-   #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
-   # get vector magnitude, i.e norm-2
-
    for key in decoUser:
      if ((key == 'units') or (key == 'angles') or (key == 'scale_units')):
        pass
@@ -406,9 +400,9 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
        except:
          pass
 
-   vector_keys = {'units', 'angles', 'scale', 'scale_units', 'width', \
-                  'headwidth', 'headlength', 'headaxislength', 'minshaft', \
-                  'minlength', 'pivot', 'color'}
+   vector_keys = [ 'units', 'angles', 'scale', 'scale_units', 'width', \
+      'headwidth', 'headlength', 'headaxislength', 'minshaft', 'minlength', \
+      'pivot', 'color', 'cmap' ]
    decoVector = {}
 
    for key in decoUser:
@@ -418,10 +412,9 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
    z = np.sqrt(np.sum(np.power(np.dstack(uv[0:2])[0],2),axis=1))
    zmin = np.min(z); zmax = np.max(z)
    if not normalised :
-#     cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
      cs = myplt.quiver(x,y,uv[0],uv[1], **decoVector )
    else:
-     cs = myplt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=myplt.Normalize(zmin,zmax))
+     cs = myplt.quiver(x,y,uv[0],uv[1], norm=myplt.Normalize(zmin,zmax), **decoVector )
 
 #   print 'units', cs.units
 #   print 'pivot', cs.pivot
@@ -430,9 +423,9 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
    cs.set_array(z)
 
    if (decoUser.has_key('colourbar')):
-     if (decoUser['colourbar'] == "yes"):
-     # make a colour bar
-       cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+      if (decoUser['colourbar'] == "yes"):
+      # make a colour bar
+         cb = myplt.colorbar(cs, shrink=1.0, extend='both')
 
    key_x = 0.8
    key_y = 0.05
@@ -440,18 +433,18 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
    key_label = ''
 
    if (decoUser.has_key('key_x')):
-     key_x = float(decoUser['key_x'])
+      key_x = float(decoUser['key_x'])
    if (decoUser.has_key('key_y')):
-     key_y = float(decoUser['key_y'])
+      key_y = float(decoUser['key_y'])
    if (decoUser.has_key('key_length')):
-     key_length = float(decoUser['key_length'])
+      key_length = float(decoUser['key_length'])
    if (decoUser.has_key('key_label')):
-     key_label = decoUser['key_label']
+      key_label = decoUser['key_label']
 
    if (decoUser.has_key('key')):
-     if (decoUser['key'] == "yes"):
-     # make a key
-       cb = myplt.quiverkey(cs,key_x,key_y,key_length,key_label)
+      if (decoUser['key'] == "yes"):
+      # make a key
+         cb = myplt.quiverkey(cs,key_x,key_y,key_length,key_label)
 
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
    # adds numbers along the iso-contours
