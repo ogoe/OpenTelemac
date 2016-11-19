@@ -450,6 +450,8 @@ files: bief_def.f
   front2.f
   masktf.f
   maskto.f
+  positive_depths_nerd.f
+  positive_depths_eria.f
   positive_depths.f
   bief_valida.f
   global_to_local_point.f

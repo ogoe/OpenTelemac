@@ -33,4 +33,3 @@ files: declarations_special.F
   i2str.f
   write_error.f
   check_call.f
-  to_lower.f

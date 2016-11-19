@@ -461,6 +461,8 @@ files: bief_def.f
   maskbd.f
   maskto.f
   config_code.f
+  positive_depths_nerd.f
+  positive_depths_eria.f
   positive_depths.f
   front2.f
   anti_dirac.f
