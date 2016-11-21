@@ -59,6 +59,7 @@
 !
         INTEGER :: EXEC_POS
 !
+        IERR = 0
         CODE = 'T2D'
            ! The partitioning is done sequentially
             ! PARITIONING THE GEOMETRY FILE

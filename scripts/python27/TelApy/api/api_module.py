@@ -45,7 +45,7 @@ class Api_module(object):
                 raise Exception("Cannot recompile API")
         try:
             import _api
-        except Exception:
+        except Exception as e:
             if sys.platform.startswith('linux'):
                  ext = 'so'
             elif sys.platform.startswith('win'):
@@ -53,7 +53,7 @@ class Api_module(object):
             else:
                  raise Exception('Error: unsupported Operating System!')
             raise Exception('Error: unable to load the dynamic library _api.'+ext+\
-                        '\nYou can check the environment variable PYTHONPATH')
+                        '\nYou can check the environment variable PYTHONPATH'+'\n'+str(e))
         self.api = sys.modules['_api']
         self.api_inter = self.api.api_interface
 
