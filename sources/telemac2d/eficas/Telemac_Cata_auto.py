@@ -3696,7 +3696,7 @@ Telemac""",
 #   -----------------------------------
         typ = 'TXM',
         into = ["No infiltration","CN runoff model"],
-        defaut = ,
+        defaut = "No infiltration",
         fr = """Option pour modele pluie-debit. Les options disponibles sont:
   0 : Pas d infiltration (fonction de base)
   1 : Modele CN (Curve Number du SCS)""",
