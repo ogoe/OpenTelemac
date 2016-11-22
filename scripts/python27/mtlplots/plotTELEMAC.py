@@ -55,7 +55,7 @@ decoLayer = {
    'look':{ '1d-line-colours':[], '1d-line-symbols':[], 'contour.levels' : '12',
       'contour.major.style' : 'solid', 'contour.minor.style' : 'dashed', 'contour.major.color' : 'black', 'contour.minor.color' : 'gray' }
    }
-hrwd = { 
+hrwd = {
 'plot_config_version' : 'R1r13',
 'hrw_logo' : 'hr_wallingford.png',
 'x_margin' : '0.02',
@@ -108,7 +108,7 @@ hrwd = {
 'anno.label1.enabled' : 'True',
 'anno.label1.font.family' : 'helvetica',
 'anno.label1.rotation' : '0',
-'anno.label1.rect' : '0.000000,0.900000,1.000000,0.100000,center,bottom', 
+'anno.label1.rect' : '0.000000,0.900000,1.000000,0.100000,center,bottom',
 'anno.label1.font.style' : 'normal',
 'anno.label1.option' : 'headlineString ',
 'anno.label1.font.weight' : 'bold',
@@ -148,7 +148,7 @@ def getColourMap(fileName):
 
    return { 'blue': blue, 'red': red, 'green': green }
 #   return { 'blue': tuple(reversed(blue)), 'red': tuple(reversed(red)), 'green': tuple(reversed(green)) }
-   
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
@@ -270,7 +270,7 @@ def plot2dMeshSLF(geometry):
       mp.axis('equal')         # sets both axis scale to be equal
       #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
       plt.show()
-      figout = '.'.join([path.splitext(geometry['fileName'])[0],"mesh",geometry['outFormat']])
+      figout = '.'.join([path.splitext(geometry['fileName'])[0],"mesh",geometry['saveas']])
       plt.savefig(figout)      # saves output plot to .png file
 
    # ~~ Plot the content of GEO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -304,7 +304,7 @@ def plot2dMeshSLF(geometry):
          #if 'cmapPlot' in geometry: fig.colorbar(colection)     # sets up colourbar
          #if 'cmapPlot' in geometry: fig.colorbar(colormap)     # sets up colourbar
          plt.show()
-         figout = '.'.join([path.splitext(geometry['fileName'])[0],"bathy",geometry['outFormat']])
+         figout = '.'.join([path.splitext(geometry['fileName'])[0],"bathy",geometry['saveas']])
          plt.savefig(figout)      # saves output plot to .png file
 
    f.close()

@@ -914,7 +914,7 @@ class groupPLOT(GROUPS):
 
    availkeys = deepcopy(GROUPS.availkeys)
    availkeys.update({ 'path':'','safe':'','cfg':'',
-         "time": '[-1]', "extract": '', "vars": '', 'outFormat': 'png',
+         "time": '[-1]', "extract": '', "vars": '', 'saveas': 'png',
          "sample": '', "target": '', "do": '', "rank":'',
          "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
@@ -956,7 +956,7 @@ class groupGET(GROUPS):
    availkeys = deepcopy(GROUPS.availkeys)
    availkeys.update({ 'path':'','safe':'','cfg':'',
          "time": '[-1]', "extract": '', "sample": '', "vars": '',
-         'outFormat': '', "target": '', "do": '', "rank":'',
+         'saveas': '', "target": '', "do": '', "rank":'',
          "deprefs":'', "outrefs":'', "where":'',
          "type":'', "config": 'distinct' })
    groupkeys = deepcopy(GROUPS.groupkeys)
@@ -1390,7 +1390,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
             for did in save.dids:
                if xref in save.dids[did].keys(): xdid = did
             if xdid != '':     # saved files can be reopened as target to do something else
-               target = xref + '.' + save.dids[xdid][xref]['outFormat'] # TODO: 'outFormat' may not be correct
+               target = xref + '.' + save.dids[xdid][xref]['saveas'] # TODO: 'saveas' may not be correct
                if save.dids[xdid][xref]["where"] != '':
                   if path.exists(path.join(save.dids[xdid][xref]["where"],target)):
                      findlayer = {}
@@ -1578,10 +1578,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          rankdo = save.dids[typeSave][save.active['xref']]['rank']
 
          # ~~> Default output formats
-         if save.dids[typeSave][save.active['xref']]['outFormat'] == '':
-            if typeSave[4:6] == "1d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'csv'
-            if typeSave[4:6] == "2d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'slf'
-            if typeSave[4:6] == "3d": save.dids[typeSave][save.active['xref']]['outFormat'] = 'slf'
+         if save.dids[typeSave][save.active['xref']]['saveas'] == '':
+            if typeSave[4:6] == "1d": save.dids[typeSave][save.active['xref']]['saveas'] = 'csv'
+            if typeSave[4:6] == "2d": save.dids[typeSave][save.active['xref']]['saveas'] = 'slf'
+            if typeSave[4:6] == "3d": save.dids[typeSave][save.active['xref']]['saveas'] = 'slf'
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in extracting.findall("layer"):
@@ -1720,10 +1720,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          for cfglist in alayers:
             # ~~> Figure name
             if len(alayers) == 1:
-               extractName = '.'.join([xref.replace(' ','_'),task['outFormat']])
+               extractName = '.'.join([xref.replace(' ','_'),task['saveas']])
             else:
                nbFile += 1
-               extractName = '.'.join([xref.replace(' ','_'),str(nbFile),task['outFormat']])
+               extractName = '.'.join([xref.replace(' ','_'),str(nbFile),task['saveas']])
             print '       ~> saved as: ',extractName
             extractName = path.join(path.dirname(xmlFile),extractName)
             # ~~> Create Figure
@@ -1953,10 +1953,10 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          for cfglist in alayers:
             # ~~> Figure name
             if len(alayers) == 1:
-               figureName = '.'.join([xref.replace(' ','_'),draw['outFormat']])
+               figureName = '.'.join([xref.replace(' ','_'),draw['saveas']])
             else:
                nbFile += 1
-               figureName = '.'.join([xref.replace(' ','_'),str(nbFile),draw['outFormat']])
+               figureName = '.'.join([xref.replace(' ','_'),str(nbFile),draw['saveas']])
             print '       ~> saved as: ',figureName
             figureName = path.join(path.dirname(xmlFile),figureName)
             # ~~> Create Figure

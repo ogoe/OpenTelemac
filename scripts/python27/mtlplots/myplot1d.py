@@ -38,7 +38,7 @@ from parsers.parserStrings import parseArrayFrame, parseArrayPaires
 #
 
 decoDefault = {
-   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'', "set":'',
    ### LINES
    # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
    # information on line properties.
@@ -158,7 +158,7 @@ def mapDecoDefault(decoUser,default):
          else:
             if type(mpl.rcParams[key]) == type([]):
                if type(mpl.rcParams[key][0]) == type(1) or type(mpl.rcParams[key][0]) == type(1.0):
-                  mpar[key] =  parseArrayPaires(upar[key])[0]
+                  mpar[key] =  parseArrayFrame(upar[key])
                   del upar[key]
                elif type(mpl.rcParams[key][0]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
                   print upar[key].strip('[]')
@@ -166,7 +166,7 @@ def mapDecoDefault(decoUser,default):
                   del upar[key]
                else:
                   print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
-                  sys.exit()
+                  sys.exit(1)
             elif type(mpl.rcParams[key]) == type(True):
                mpar[key] = ( upar[key].lower() == 'true' )
                del upar[key]
@@ -181,7 +181,7 @@ def mapDecoDefault(decoUser,default):
                del upar[key]
             else:
                print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
-               sys.exit()
+               sys.exit(1)
       elif key == "dpi":
          if upar[key] != '':
             mpar.update({ 'savefig.dpi': int(upar[key]) })
@@ -191,6 +191,14 @@ def mapDecoDefault(decoUser,default):
          if upar[key] != '':
             mpar.update({ 'figure.figsize': parseArrayPaires(upar[key])[0]})
          del upar[key]
+      elif key == "roi":
+         if upar[key] != '':
+            pairs = parseArrayPaires(upar[key])
+            if len(pairs) == 2: pairs.extend([(0.,0.),(0.,0.)])
+            elif len(pairs) != 4:
+               print '... could not interprete roi ('+upar[key]+'): ' + pairs
+               sys.exit(1)
+            upar[key] = pairs
 
    return mpar,upar
 
@@ -282,42 +290,34 @@ def drawPolylineLines(myplt,decoUser,x,ys):
 # ____/ Primary Method:Deco /______________________________________/
 #
 
-def deco(myplt,upar,x0,y0):
+def deco(myplt,upar,dpar):
+
+   # ~~ General keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if upar['set'] != '':
+      for set in upar['set'].split(';'):
+         if set[-1] != ')': set += '()'
+         eval("myplt."+set)
 
    # ~~ Axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # TODO: Replace white margins with user parameter
    if upar["roi"] != '':
-      roi,mar = upar["roi"]
-      (xmin,ymin),(xmax,ymax) = roi
+      (xmin,ymin),(xmax,ymax),(emar,nmar),(wmar,smar) = upar["roi"]
+      xgap = xmax - xmin
+      xmin -= wmar*xgap
+      xmax += emar*xgap
+      ygap = ymax - ymin
+      ymin -= smar*ygap
+      ymax += nmar*ygap
+      myplt.axis([xmin,xmax,ymin,ymax])
+   elif dpar["roi"] != '':
+      roi,mar = dpar["roi"]
+      xmin,ymin,xmax,ymax = roi
       emar,nmar,wmar,smar = mar
       xgap = xmax - xmin
-      xmin -= emar*xgap; xmax += wmar*xgap
+      xmin -= wmar*xgap
+      xmax += emar*xgap
       ygap = ymax - ymin
-      ymin -= smar*ygap; ymax += nmar*ygap
-      myplt.axis([xmin,xmax,ymin,ymax])
-   else:
-      xmin = np.min(x0); xmax = np.max(x0)
-      ymin = np.min(y0); ymax = np.max(y0)
-      if upar.has_key("setroi"):
-         xmin = min(upar["setroi"][0][0][0],xmin)
-         ymin = min(upar["setroi"][0][0][1],ymin)
-         xmax = max(upar["setroi"][0][1][0],xmax)
-         ymax = max(upar["setroi"][0][1][1],ymax)
-         upar["setroi"] = [ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ]
-         xgap = xmax - xmin
-         xmin -= upar["setroi"][1][2]*xgap
-         xmax += upar["setroi"][1][0]*xgap
-         ygap = ymax - ymin
-         ymin -= upar["setroi"][1][3]*ygap
-         ymax += upar["setroi"][1][1]*ygap
-      else:
-         upar.update({ "setroi":[ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ] })
-         xgap = xmax - xmin
-         xmin -= upar["setroi"][1][2]*xgap
-         xmax += upar["setroi"][1][0]*xgap
-         ygap = ymax - ymin
-         ymin -= upar["setroi"][1][3]*ygap
-         ymax += upar["setroi"][1][1]*ygap
+      ymin -= smar*ygap
+      ymax += nmar*ygap
       myplt.axis([xmin,xmax,ymin,ymax])
 
    return
@@ -330,7 +330,7 @@ class Dumper1D(Caster):
 
    def __init__(self,caster,dump):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
-      self.obtype = dump['outFormat']
+      self.obtype = dump['saveas']
       self.oudata = None
 
    def add(self,typl,what):
@@ -383,14 +383,27 @@ class Figure1D(Caster):
    def __init__(self,caster,plot):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
-      # ~~~ special case for size ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if 'size' in plot.keys():
+      # ~~~ special keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      for key in ['size','roi']:
+         if key in plot.keys():
+            plot['deco'].update({ key:plot[key] })
+            del plot[key]
+
+      # ~~~ special case for set ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if 'set' in plot.keys():
          if 'look' in plot['deco'].keys():
             for l in plot['deco']['look']:
-               l.update({'size':plot['size']})
-         else: plot['deco'].update({'look':[{'size':plot['size']}]})
-         del plot['size']
+               if 'set' in l:
+                  if plot['set'] not in l['set'].split(';'):
+                     l['set'] = plot['set']+';'+l['set']
+               else:
+                  l.update({ 'set':plot['set'] })
+         else:
+            plot['deco'].update({ 'look' : [{'set':plot['set']}] })
+         del  plot['set']
+
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      self.dpar = {}
       self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
       mpl.rcParams.update(self.mpar)
       # ~~> by default, there is no grid in 1D
@@ -418,8 +431,8 @@ class Figure1D(Caster):
          else:
             fig.add_subplot(aspect='equal')
       else: fig.add_subplot(aspect='equal')
-      # ~~> region of interes and defaault margins
-      if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
+      # ~~> default region of interes and default margins
+      self.dpar.update({ "roi":[[],[0.02,0.02,0.02,0.02]] })
 
       self.plt = plt
       self.fig = fig
@@ -436,7 +449,8 @@ class Figure1D(Caster):
          cast = self.get(typl,what)
          #try: # if instance unit exist
          x0,y0 = drawHistoryLines(self.plt,what['deco'],( cast.unit,cast.support ),( cast.function,cast.values ))
-         deco(self.plt,self.upar,x0,y0)
+         if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+         else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
          #except:
          #   x0,y0 = drawHistoryLines(self.plt,( 'unit',cast.support ),( ('history','function'),cast.values ))
          #   deco(self.plt,self.upar,x0,y0)
@@ -446,7 +460,8 @@ class Figure1D(Caster):
          cast = self.get(typl,what)
          try: # if instance unit exist
             x0,y0 = drawPolylineLines(self.plt,what['deco'],( cast.unit,cast.support ),( cast.function,cast.values ))
-            #deco(self.plt,self.upar,x0,y0)
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
          except:
             dim = len(cast.values.shape)
             fct = ['v-section']
@@ -454,7 +469,8 @@ class Figure1D(Caster):
             if dim > 2: fct.append([ str(itim) for itim in range(cast.values.shape[1]) ])
             if dim > 3: fct.append([ str(ilay) for ilay in range(cast.values.shape[2]) ])
             x0,y0 = drawPolylineLines(self.plt,what['deco'],( 'unit',cast.support ),( fct,cast.values ))
-            #deco(self.plt,self.upar,x0,y0)
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
 
       # ~~> unkonwn
       else: # TODO: raise exception
@@ -462,10 +478,12 @@ class Figure1D(Caster):
          sys.exit(1)
 
    def show(self):
+      deco(self.plt,self.upar,self.dpar)
       self.plt.show()
       self.plt.close()
 
    def save(self,fileName):
+      deco(self.plt,self.upar,self.dpar)
       self.plt.savefig(fileName)
       self.plt.close()
 

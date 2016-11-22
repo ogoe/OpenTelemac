@@ -328,7 +328,7 @@ class Dumper3D(Caster):
 
    def __init__(self,caster,dump):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
-      self.obtype = dump['outFormat']    # the type of file, 'slf' most probably
+      self.obtype = dump['saveas']    # the type of file, 'slf' most probably
       self.oudata = None          # the loaded SELAFIN object itself, most probably
 
    def add(self,typl,what):

@@ -43,7 +43,7 @@ from parsers.parserStrings import parseArrayFrame, parseArrayPaires
 #
 
 decoDefault = {
-   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'',
+   "size":'(10;10)', "aspect":'1', "dpi":'', "ratio2d": '', "title": '', "roi": '', "type":'', "set":'',
    "background":'(1.0,0.90196,0.6)',
    ### LINES
    # See http://matplotlib.org/api/artist_api.html#module-matplotlib.lines for more
@@ -148,7 +148,7 @@ def mapDecoDefault(decoUser,default):
 
    # ~~~ melting the pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpar = {}                    # mpar, contains the matplotlib parameters (defaults)
-   upar = deepcopy(default) # upar, contains the user parameters (from the XML)
+   upar = deepcopy(default)     # upar, contains the user parameters (from the XML)
    for name in decoUser:
       if name not in ['look','data']: upar.update( { name:decoUser[name] } )
    for name in decoUser:
@@ -172,7 +172,7 @@ def mapDecoDefault(decoUser,default):
                   del upar[key]
                else:
                   print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
-                  sys.exit()
+                  sys.exit(1)
             elif type(mpl.rcParams[key]) == type(True):
                mpar[key] = ( upar[key].lower() == 'true' )
                del upar[key]
@@ -187,7 +187,7 @@ def mapDecoDefault(decoUser,default):
                del upar[key]
             else:
                print '... I did not know ',type(mpl.rcParams[key]),' for key:',key,'. Could be an acceptable type'
-               sys.exit()
+               sys.exit(1)
       elif key == "dpi":
          if upar[key] != '':
             mpar.update({ 'savefig.dpi': int(upar[key]) })
@@ -197,6 +197,14 @@ def mapDecoDefault(decoUser,default):
          if upar[key] != '':
             mpar.update({ 'figure.figsize': parseArrayPaires(upar[key])[0]})
          del upar[key]
+      elif key == "roi":
+         if upar[key] != '':
+            pairs = parseArrayPaires(upar[key])
+            if len(pairs) == 2: pairs.extend([(0.,0.),(0.,0.)])
+            elif len(pairs) != 4:
+               print '... could not interprete roi ('+upar[key]+'): ' + pairs
+               sys.exit(1)
+            upar[key] = pairs
 
    return mpar,upar
 
@@ -272,7 +280,7 @@ def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
    if decoUser.has_key('fmt'): fmt = decoUser['fmt']
 
    # ~~> Colour maps
-   if decoUser.has_key('cmap')and decoUser['cmap'].split('.')[-1] == 'xml':
+   if decoUser.has_key('cmap') and decoUser['cmap'].split('.')[-1] == 'xml':
       cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
       decoUser['cmap'] = cmap
 
@@ -287,10 +295,10 @@ def drawColouredTriMaps(myplt,decoUser,(x,y,ikle,z)):
 
    cs = myplt.tricontourf(x,y,ikle, z, **decoUser)
 
-   if (decoUser.has_key('colourbar')):
-      if (decoUser['colourbar'] == "yes"):
-         # make a colour bar
-         cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+#   if (decoUser.has_key('colourbar')):
+#      if (decoUser['colourbar'] == "yes"):
+#         # make a colour bar
+#         cb = eval("myplt."+"colorbar"+"()")
 
    # ~~> Iso-contours and Labels
 #   zmin = np.min(z); zmax = np.max(z)
@@ -386,7 +394,7 @@ def drawLabeledTriContours(myplt,decoUser,(x,y,ikle,z)):
 def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
    # ~~> Colour maps
-   if decoUser.has_key('cmap')and decoUser['cmap'].split('.')[-1] == 'xml':
+   if decoUser.has_key('cmap') and decoUser['cmap'].split('.')[-1] == 'xml':
       cmap = mpl.colors.LinearSegmentedColormap('user',getColourMap(decoUser['cmap']))
       decoUser['cmap'] = cmap
 
@@ -422,10 +430,10 @@ def drawColouredTriVects(myplt,decoUser,(x,y,uv,normalised)):
 
    cs.set_array(z)
 
-   if (decoUser.has_key('colourbar')):
-      if (decoUser['colourbar'] == "yes"):
-      # make a colour bar
-         cb = myplt.colorbar(cs, shrink=1.0, extend='both')
+#   if (decoUser.has_key('colourbar')):
+#      if (decoUser['colourbar'] == "yes"):
+#      # make a colour bar
+#         cb = myplt.colorbar(cs, shrink=1.0, extend='both')
 
    key_x = 0.8
    key_y = 0.05
@@ -470,47 +478,39 @@ class dumpSELAFIN(SELAFINS):
 # ____/ Primary Method:Deco /______________________________________/
 #
 
-def deco(myplt,upar,x0,y0):
+def deco(myplt,upar,dpar):
 
    # ~~ Ratio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #crax.axis('equal')         # sets both axis scale to be equal
    #crax = myplt.gca()
    #crax.set_aspect('equal')
 
+   # ~~ General keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if upar['set'] != '':
+      for set in upar['set'].split(';'):
+         if set[-1] != ')': set += '()'
+         eval("myplt."+set)
+
    # ~~ Axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # TODO: Replace white margins with user parameter
    if upar["roi"] != '':
-      roi,mar = upar["roi"]
-      (xmin,ymin),(xmax,ymax) = roi
+      (xmin,ymin),(xmax,ymax),(emar,nmar),(wmar,smar) = upar["roi"]
+      xgap = xmax - xmin
+      xmin -= wmar*xgap
+      xmax += emar*xgap
+      ygap = ymax - ymin
+      ymin -= smar*ygap
+      ymax += nmar*ygap
+      myplt.axis([xmin,xmax,ymin,ymax])
+   elif dpar["roi"] != '':
+      roi,mar = dpar["roi"]
+      xmin,ymin,xmax,ymax = roi
       emar,nmar,wmar,smar = mar
       xgap = xmax - xmin
-      xmin -= emar*xgap; xmax += wmar*xgap
+      xmin -= wmar*xgap
+      xmax += emar*xgap
       ygap = ymax - ymin
-      ymin -= smar*ygap; ymax += nmar*ygap
-      myplt.axis([xmin,xmax,ymin,ymax])
-   else:
-      xmin = np.min(x0); xmax = np.max(x0)
-      ymin = np.min(y0); ymax = np.max(y0)
-      if upar.has_key("setroi"):
-         xmin = min(upar["setroi"][0][0][0],xmin)
-         ymin = min(upar["setroi"][0][0][1],ymin)
-         xmax = max(upar["setroi"][0][1][0],xmax)
-         ymax = max(upar["setroi"][0][1][1],ymax)
-         upar["setroi"] = [ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ]
-         xgap = xmax - xmin
-         xmin -= upar["setroi"][1][2]*xgap
-         xmax += upar["setroi"][1][0]*xgap
-         ygap = ymax - ymin
-         ymin -= upar["setroi"][1][3]*ygap
-         ymax += upar["setroi"][1][1]*ygap
-      else:
-         upar.update({ "setroi":[ [[xmin,ymin],[xmax,ymax]],[0.02,0.02,0.02,0.02] ] })
-         xgap = xmax - xmin
-         xmin -= upar["setroi"][1][2]*xgap
-         xmax += upar["setroi"][1][0]*xgap
-         ygap = ymax - ymin
-         ymin -= upar["setroi"][1][3]*ygap
-         ymax += upar["setroi"][1][1]*ygap
+      ymin -= smar*ygap
+      ymax += nmar*ygap
       myplt.axis([xmin,xmax,ymin,ymax])
 
    #curax.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
@@ -528,7 +528,7 @@ class Dumper2D(Caster):
 
    def __init__(self,caster,dump):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
-      self.obtype = dump['outFormat']    # the type of file, 'slf' most probably
+      self.obtype = dump['saveas']    # the type of file, 'slf' most probably
       self.oudata = None          # the loaded SELAFIN object itself, most probably
       #self.obdump = dumpSELAFIN()
 
@@ -614,15 +614,29 @@ class Figure2D(Caster):
    def __init__(self,caster,plot):
       Caster.__init__(self,{'object':caster.object,'obdata':caster.obdata})
 
-      # ~~~ special case for size ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if 'size' in plot.keys():
-         if 'look' in plot['deco'].keys():
-            for l in plot['deco']['look']:
-               l.update({'size':plot['size']})
-         else: plot['deco'].update({'look':[{'size':plot['size']}]})
-         del plot['size']
+      myplt = deepcopy(plot)
+      # ~~~ special keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      for key in ['size','roi']:
+         if key in myplt.keys():
+            myplt['deco'].update({ key:plot[key] })
+            del myplt[key]
+
+      # ~~~ special case for set ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if 'set' in myplt.keys():
+         if 'look' in myplt['deco'].keys():
+            for l in myplt['deco']['look']:
+               if 'set' in l:
+                  if myplt['set'] not in l['set'].split(';'):
+                     l['set'] = myplt['set']+';'+l['set']
+               else:
+                  l.update({ 'set':myplt['set'] })
+         else:
+            myplt['deco'].update({ 'look' : [{'set':myplt['set']}] })
+         del  myplt['set']
+
       # ~~~ figure decoration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      self.mpar,self.upar = mapDecoDefault( plot['deco'],decoDefault )
+      self.dpar = {}
+      self.mpar,self.upar = mapDecoDefault( myplt['deco'],decoDefault )
       mpl.rcParams.update(self.mpar)
       # ~~> by default, there is no grid in 1D
       #self.mpar.update({ 'grid.alpha':1.0 })
@@ -658,7 +672,7 @@ class Figure2D(Caster):
             ax1.set_aspect(self.upar['aspect'])
       else: ax1.set_aspect(self.upar['aspect'])
       # ~~> region of interes and defaault margins
-      if self.upar["roi"] != '': self.upar["roi"] = [ parseArrayPaires(self.upar["roi"]), [0,0,0,0] ]
+      self.dpar.update({ "roi":[[],[0.02,0.02,0.02,0.02]] })
 
       self.plt = plt
       self.fig = fig
@@ -691,7 +705,9 @@ class Figure2D(Caster):
          if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
             # ~~> Draw/Dump (works with triangles and quads)
             drawMesh2DElements(self.plt,what['deco'],elements)
-            deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+            x0 = np.ravel(elements.T[0]); y0 = np.ravel(elements.T[1])
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
             # TODO: colour the mesh according to cast.values
 
          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -705,7 +721,9 @@ class Figure2D(Caster):
             if "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
             if "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,False))
             if "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,True))
-            deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHZ[IKLE3]))
+            x0 = np.ravel(MESHX[IKLE3]); y0 = np.ravel(MESHZ[IKLE3])
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
 
 
       elif what['type'].split(':')[1] == 'p-section':
@@ -720,7 +738,9 @@ class Figure2D(Caster):
          if "mesh" in vtype or "wire" in vtype or "grid" in vtype:
             # ~~> Draw/Dump (works with triangles and quads)
             drawMesh2DElements(self.plt,what['deco'],elements)
-            deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+            x0 = np.ravel(elements.T[0]); y0 = np.ravel(elements.T[1])
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
             # TODO: colour the mesh according to cast.values
 
          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -736,7 +756,9 @@ class Figure2D(Caster):
             elif "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,False))
             elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,True))
             else: print '... do not know how to draw this SELAFIN type: ' + vtype
-            deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))
+            x0 = np.ravel(MESHX[IKLE3]); y0 = np.ravel(MESHY[IKLE3])
+            if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+            else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
 
          """# /!\ WACLEO: Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
       if 'WACLEO' in typl.upper() or \
@@ -755,7 +777,9 @@ class Figure2D(Caster):
                   elements = cast.support
                   # ~~> Draw/Dump (works with triangles and quads)
                   drawMesh2DElements(self.plt,what['deco'],elements)
-                  deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+                  x0 = np.ravel(elements.T[0]); y0 = np.ravel(elements.T[1])
+                  if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+                  else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                else:
                   cast = self.get(typl,what)
@@ -769,7 +793,9 @@ class Figure2D(Caster):
                   if "label" in vtype: drawLabeledTriContours(self.plt,what['deco'],(MESHX,MESHZ,IKLE3,VARSORS[0]))
                   if "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,False))
                   if "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHZ,VARSORS,True))
-                  deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHZ[IKLE3]))
+                  x0 = np.ravel(MESHX[IKLE3]); y0 = np.ravel(MESHZ[IKLE3])
+                  if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+                  else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
 
          elif what['type'].split(':')[1] == 'p-section':
 
@@ -784,7 +810,9 @@ class Figure2D(Caster):
                   elements = cast.support
                   # ~~> Draw/Dump (works with triangles and quads)
                   drawMesh2DElements(self.plt,what['deco'],elements)
-                  deco(self.plt,self.upar,np.ravel(elements.T[0]),np.ravel(elements.T[1]))
+                  x0 = np.ravel(elements.T[0]); y0 = np.ravel(elements.T[1])
+                  if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+                  else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
 
                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                # ~~> Extract variable data for only one time frame and one plane
@@ -801,7 +829,10 @@ class Figure2D(Caster):
                   elif "arrow" in vtype or "vector" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,False))
                   elif "angle" in vtype: drawColouredTriVects(self.plt,what['deco'],(MESHX,MESHY,VARSORS,True))
                   else: print '... do not know how to draw this SELAFIN type: ' + vtype
-                  deco(self.plt,self.upar,np.ravel(MESHX[IKLE3]),np.ravel(MESHY[IKLE3]))"""
+                  x0 = np.ravel(MESHX[IKLE3]); y0 = np.ravel(MESHY[IKLE3])
+                  if self.dpar["roi"][0] == []: self.dpar["roi"][0] = [ np.min(x0),np.min(y0),np.max(x0),np.max(y0) ]
+                  else: self.dpar["roi"][0] = [ min(self.dpar["roi"][0][0],np.min(x0)),min(self.dpar["roi"][0][1],np.min(y0)),max(self.dpar["roi"][0][2],np.max(x0)),max(self.dpar["roi"][0][3],np.max(y0)) ]
+         """
 
       # ~~> unkonwn
       else: # TODO: raise exception
@@ -811,11 +842,16 @@ class Figure2D(Caster):
       #else: # TODO: raise exception
       #   print '... do not know how to draw from this format: ' + typl
 
+      #if (what['deco'].has_key('set')):
+      #   cb = eval("self.plt."+what['deco']['set']+"()")
+
    def show(self):
+      deco(self.plt,self.upar,self.dpar)
       self.plt.show()
       self.plt.close()
 
    def save(self,fileName):
+      deco(self.plt,self.upar,self.dpar)
       self.plt.savefig(fileName)
       self.plt.close()
 
