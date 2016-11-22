@@ -7,7 +7,7 @@
      & BOUNDARY_COLOUR,MAXFRO,NFO2,NBI2,NRFO,XSHIFT,YSHIFT,BETA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   18/11/2010
+! TELEMAC2D   V7P2                                   22/11/2016
 !***********************************************************************
 !
 !brief    GENERATES HARMONIC CONSTANTS FOR BOUNDARY CONDITIONS WITH TIDES
@@ -17,6 +17,11 @@
 !+        18/11/2010
 !+        V6P1
 !+
+!
+!history  C-T PHAM (LNHE)
+!+        22/11/2016
+!+        V7P2
+!+   Fix bugs with overbound arrays (LIHBOR, LIUBOR,IKLESA)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETA           |<->| ANGLE (IN DEGREES) BETWEEN LAMBERT AND
@@ -68,6 +73,7 @@
 !
       INTEGER K,I,J,NNBTIDE,NELEM,ECKEN,NDUM,NBV1,NBV2,PARAM(10),NPOIN2
       INTEGER N1,N2,N3,IELEP
+!     INTEGER ID_57
       INTEGER, PARAMETER :: NPOINJMJ=15350
       INTEGER CJMJ(NPOINJMJ,24)
       INTEGER, ALLOCATABLE :: IPOBO(:),NBTIDE(:),IKLESA(:,:)
@@ -127,7 +133,8 @@
 !
 !-----------------------------------------------------------------------
 !
-!     OPEN (57,FILE='../coord_liquid_nodes_Mercator_JMJ.txt')
+!     CALL GET_FREE_ID(ID_57)
+!     OPEN (ID_57,FILE='../coord_liquid_nodes_Mercator_JMJ.txt')
 !
       ALLOCATE(XBTIDE(NPTFR))
       ALLOCATE(YBTIDE(NPTFR))
@@ -159,14 +166,17 @@
           YBTIDE(I) = MESH%Y%R(NBOR(K))
 !
 !$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
-          IF(    K.EQ.1
-     &       .OR.(LIHBOR(K-1).NE.KENT.AND.LIUBOR(K-1).NE.KENTU)) THEN
+          IF(K.EQ.1) THEN
+            J = J + 1
+            FIRSTTIDE(J) = K
+          ELSEIF(LIHBOR(K-1).NE.KENT.AND.LIUBOR(K-1).NE.KENTU) THEN
             J = J + 1
             FIRSTTIDE(J) = K
           ENDIF
 !
-          IF(    K.EQ.NPTFR
-     &       .OR.(LIHBOR(K+1).NE.KENT.AND.LIUBOR(K+1).NE.KENTU)) THEN
+          IF(K.EQ.NPTFR) THEN
+            LASTTIDE(J)  = K
+          ELSEIF(LIHBOR(K+1).NE.KENT.AND.LIUBOR(K+1).NE.KENTU) THEN
             LASTTIDE(J)  = K
           ENDIF
         ENDIF
@@ -351,7 +361,7 @@
         XM=XM+XSHIFT
         YM=YM+YSHIFT
 !
-!       WRITE(57,'(F15.2,F16.2)') XM,YM
+!       WRITE(ID_57,'(F15.2,F16.2)') XM,YM
 !
 !  INTERPOLATION (FINITE ELEMENTS)
 !  MAY BE CHANGED IN THE FUTURE WITH A MORE EFFICIENT INTERPOLATION ALGORITHM
@@ -379,9 +389,15 @@
           ENDIF
 !
           J=J+1
-          N1=IKLESA(1,J)
-          N2=IKLESA(2,J)
-          N3=IKLESA(3,J)
+          IF(J.NE.NELEM+1) THEN
+            N1=IKLESA(1,J)
+            N2=IKLESA(2,J)
+            N3=IKLESA(3,J)
+          ELSE
+            N1=IKLESA(1,IELEP)
+            N2=IKLESA(2,IELEP)
+            N3=IKLESA(3,IELEP)
+          ENDIF
 !
           A1 =         XM*YTIDE(N2) - XTIDE(N2)*YM + XTIDE(N2)*YTIDE(N3)
      &        - XTIDE(N3)*YTIDE(N2) + XTIDE(N3)*YM -        XM*YTIDE(N3)
@@ -462,7 +478,7 @@
         ENDIF
       ENDDO
 !
-!     CLOSE (57)
+!     CLOSE (ID_57)
 !
       DEJA_TBC = .TRUE.
 !
