@@ -69,7 +69,7 @@
    <plot2d xref="WaveHeight" size="(12;2)" >
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="Breaking" roi="[33;0][43;1]" size="(12;2)" >
+   <plot2d xref="Breaking" roi="[(33;0)(43;1)]" size="(12;2)" >
       <layer vars="qb:map" target="1:ARTRES" config="oneofall" />
    </plot2d>
 
