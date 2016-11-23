@@ -19,6 +19,14 @@
 !+        V7P3
 !+   First version, taken out of previous positive_depths
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        23/11/2016
+!+        V7P3
+!+   Adding an option (hardcoded so far) for sharing volumes of points
+!+   between elements (see variable OPTPRE, OPTPRE=1 old strategy,
+!+   OPTPRE=2, new and simpler strategy). Tests do not show much
+!+   difference, kept here to be tested in other cases.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
 !| MAKEFLULIMEBE  |-->| OPTIONAL, IF YES DOES ARRAY FLULIMEBE
@@ -87,7 +95,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,I1,I2,I3,IPTFR,REMAIN,NEWREMAIN,IR,NITER
-      INTEGER NELEM,NSEG,IELEM
+      INTEGER NELEM,NSEG,IELEM,OPTPRE
       DOUBLE PRECISION C,CPREV,CINIT,VOL1,VOL2,VOL3,HFL1,F1,F2,F3
       DOUBLE PRECISION DTLIM1,DTLIM2,DTLIM3,FP1,FP2,FP3,DT1,DT2,DT3
       DOUBLE PRECISION SURDT,HSEG1,HSEG2,TET,HFL2,A1,A2,A3
@@ -95,6 +103,13 @@
 !
       DOUBLE PRECISION, PARAMETER :: EPS_FLUX = 1.D-15
       LOGICAL, PARAMETER :: TESTING = .FALSE.
+!
+!-----------------------------------------------------------------------
+!
+!     VARIANTS
+!     
+!     OPTPRE MUST BE EQUAL TO ITS VALUE IN CVTRVF_ERIA !!!!!!!!!!
+      OPTPRE=1
 !
 !-----------------------------------------------------------------------
 !
@@ -282,6 +297,7 @@
 !
         CALL OS('X=0     ',X=T1)
         CALL OS('X=0     ',X=T3)
+        IF(OPTPRE.EQ.1) THEN
         DO IR=1,REMAIN
           I=INDIC_PDEPT(IR)
           I1=MESH%IKLE%I(I        )
@@ -312,6 +328,29 @@
             T3%R(I3)=T3%R(I3)+MIN(VOL3,VOL3-F3*DT)
           ENDIF
         ENDDO
+        ELSEIF(OPTPRE.EQ.2) THEN
+        DO IR=1,REMAIN
+          I=INDIC_PDEPT(IR)
+          I1=MESH%IKLE%I(I        )
+          I2=MESH%IKLE%I(I  +NELEM)
+          I3=MESH%IKLE%I(I+2*NELEM)
+!         A PRIORI AVAILABLE VOLUMES
+          VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
+          VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
+          VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
+!         FLUXES FROM POINTS
+          F1= FLOPOINT(I,1)-FLOPOINT(I,3)
+          F2=-FLOPOINT(I,1)+FLOPOINT(I,2)
+          F3=-FLOPOINT(I,2)+FLOPOINT(I,3)
+!         DEMAND AND OFFER
+          IF(F1.GT.0.D0) T1%R(I1)=T1%R(I1)+F1
+          IF(F2.GT.0.D0) T1%R(I2)=T1%R(I2)+F2
+          IF(F3.GT.0.D0) T1%R(I3)=T1%R(I3)+F3
+          T3%R(I1)=T3%R(I1)+VOL1
+          T3%R(I2)=T3%R(I2)+VOL2
+          T3%R(I3)=T3%R(I3)+VOL3
+        ENDDO
+        ENDIF
         IF(NCSIZE.GT.1) THEN
           CALL PARCOM(T1,2,MESH)
           CALL PARCOM(T3,2,MESH)
@@ -339,6 +378,7 @@
 !
 !         DISTRIBUTION OF VOLUMES ACCORDING TO DEMAND AND OFFER
 !
+          IF(OPTPRE.EQ.1) THEN
           IF(F1*DT.GT.VOL1) THEN
             IF(T1%R(I1).GT.T3%R(I1)) THEN
               VOL1=VOL1+(F1*DT-VOL1)*(T3%R(I1)/T1%R(I1))
@@ -377,6 +417,24 @@
             ELSE
               VOL3=MAX(F3,0.D0)*DT
             ENDIF
+          ENDIF
+          ELSEIF(OPTPRE.EQ.2) THEN
+          IF(T1%R(I1).GT.1.D-30) THEN
+!                         ( THIS IS IMPORTANT
+            VOL1=T3%R(I1)*(MAX(F1,0.D0)/T1%R(I1))
+          ELSE
+            VOL1=MESH%SURFAC%R(I)*H%R(I1)*TIERS
+          ENDIF
+          IF(T1%R(I2).GT.1.D-30) THEN
+            VOL2=T3%R(I2)*(MAX(F2,0.D0)/T1%R(I2))
+          ELSE
+            VOL2=MESH%SURFAC%R(I)*H%R(I2)*TIERS
+          ENDIF
+          IF(T1%R(I3).GT.1.D-30) THEN
+            VOL3=T3%R(I3)*(MAX(F3,0.D0)/T1%R(I3))
+          ELSE
+            VOL3=MESH%SURFAC%R(I)*H%R(I3)*TIERS
+          ENDIF
           ENDIF
 !
 !         NOW LIMITATION OF FLUXES
@@ -628,4 +686,3 @@
 !
       RETURN
       END
-
