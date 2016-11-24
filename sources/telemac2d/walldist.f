@@ -2,72 +2,150 @@
 !                    *******************
                      SUBROUTINE WALLDIST
 !                    *******************
-     &(MESH, WDIST,LIUBOR,KADH,KLOG,NPTFR)
+     &(W_DIST)
 
 !***********************************************************************
-! TELEMAC2D   V7P0                                  31/08/2015
+! TELEMAC2D   V7P3                                             11/2016
 !***********************************************************************
 !
 !brief    COMPUTES THE DISTANCE TO THE CLOSEST WALL FOR
 !                      SPALART ALLMARAS MODEL.
 !
-!history  A BOURGOIN (LNHE)
-!+        31/08/2015
-!+        V7p0
-!+
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
-!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
-!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
-!| MESH           |-->| MESH STRUCTURE
-!| NPTFR          |-->| NUMBER OF POINTS IN THE MESH
 !| WDIST          |<--| DISTANCE FROM THE CLOSEST WALL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !***********************************************************************
       USE BIEF
       USE DECLARATIONS_SPECIAL
+      USE DECLARATIONS_PARALLEL
+      USE INTERFACE_PARALLEL
+      USE DECLARATIONS_TELEMAC, ONLY: KADH,KLOG,KNEU,KDIR
+      USE DECLARATIONS_TELEMAC2D, ONLY: T11,T12,T13,T14,T15,TB,S,NPTFR,
+     &                                  AM1,AM2,LIUBOR,T2D_FILES,T2DRES,
+     &                                  NUBOR,IELMNU,DEBUG,MESH
       USE INTERFACE_TELEMAC2D, EX_WALLDIST => WALLDIST
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER        , INTENT(IN)    :: KADH,KLOG,NPTFR
-      INTEGER        , INTENT(IN)    :: LIUBOR(*)
-      TYPE(BIEF_OBJ) , INTENT(INOUT) :: WDIST
-      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER :: I,J,K
-      DOUBLE PRECISION :: DIST,DISTNOTNIL
-      DOUBLE PRECISION, PARAMETER :: EPSS=1.D-6
-!
-!-----------------------------------------------------------------------
-!
-!
+      IMPLICIT NONE
       INTRINSIC SQRT
 !
-      CALL OS('X=C     ',X=WDIST,C=1.D10)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DO I=1, MESH%NPOIN
-        DISTNOTNIL = 1.D10
-        IF(NPTFR.GT.0)THEN
-          DO J=1,NPTFR
-            IF(LIUBOR(J).EQ.KLOG.OR.LIUBOR(J).EQ.KADH) THEN
-              K=MESH%NBOR%I(J)
-              DIST=SQRT((MESH%X%R(I)-MESH%X%R(K))**2+
-     &                  (MESH%Y%R(I)-MESH%Y%R(K))**2)
-              IF(DIST.LT.DISTNOTNIL) THEN
-                DISTNOTNIL=DIST
-              ENDIF
-            ENDIF
-          ENDDO
-        ENDIF
-        DISTNOTNIL=MAX(DISTNOTNIL,EPSS)
-      ENDDO
+      TYPE(BIEF_OBJ) , INTENT(INOUT) :: W_DIST
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      LOGICAL :: SOLVER_INFO
+      INTEGER :: IPTFR,IP,IELWD,IERR
+      DOUBLE PRECISION  :: GRAD_D
+      INTEGER, ALLOCATABLE :: LIMDIST(:)
+      TYPE(SLVCFG) :: SLVDIST
 !
 !-----------------------------------------------------------------------
+      ALLOCATE(LIMDIST(NPTFR))
+      IERR = 0
+!     SETUP LINEAR SOLVER CONFIGURATION STRUCTURE
+      SLVDIST%SLV = 1
+      SLVDIST%PRECON = 2
+      SLVDIST%KRYLOV = 0
+      SLVDIST%NITMAX = 1000
+      SLVDIST%EPS = 1.D-8
+      IF(DEBUG.GT.0) THEN
+        SOLVER_INFO = .TRUE.
+      ELSE
+        SOLVER_INFO = .FALSE.
+      ENDIF
 !
+      IELWD = IELMNU ! ELEMENTS USED FOR S-A
+!
+      DO IP=1,W_DIST%DIM1
+        T11%R(IP) = 1.D0 ! VISC
+        T12%R(IP) = 1.D0 ! RHS SOURCE TERM
+        T13%R(IP) = 0.D0 ! WALL DIST
+        T14%R(IP) = 0.D0 ! WORK
+        T15%R(IP) = 0.D0 ! BCS
+      ENDDO
+!
+      DO IPTFR=1,NPTFR
+!
+        IF(LIUBOR%I(IPTFR).EQ.KLOG.OR.LIUBOR%I(IPTFR).EQ.KADH) THEN
+          LIMDIST(IPTFR) = KDIR
+          NUBOR%R(IPTFR) = 0.D0 ! NUBOR IS USED AS WORK ARRAY...
+        ELSE
+          LIMDIST(IPTFR) = KNEU
+        ENDIF
+!
+      ENDDO
+!
+!     CREATES THE MASS MATRIX (AM1)
+!
+      CALL MATRIX(AM1,'M=N     ','MATMAS          ',IELWD,IELWD,
+     &            1.D0,S,S,S,S,S,S,MESH,.FALSE.,S)
+!
+!     CREATES THE DIFFUSION MATRIX (AM2)
+!
+      CALL MATRIX(AM2,'M=N     ','MATDIF          ',IELWD,IELWD,
+     &            1.D0,S,S,S,T11,T11,T11,MESH,.FALSE.,S)
+!
+!     PREPARES RHS
+      CALL MATVEC('X=AY    ',T13,AM1,T12,1.D0,MESH)
+!
+!     IMPOSES DIRICHLET CONDITIONS
+!
+!     BE AWARE: T1 AND T2 ARE ERASED BY DIRICH VIA TB
+      IF(NPTFR.GT.0) THEN
+        CALL DIRICH(T14,AM2,T13,NUBOR,LIMDIST,
+     &              TB,MESH,KDIR,.FALSE.,S)
+      ENDIF
+!
+!     SOLVES THE LINEAR SYSTEM
+!
+!     BE AWARE: T1 -> T7 ARE ERASED BY SOLVE VIA TB
+      IF (DEBUG.GT.0) WRITE(LU,*) 'SOLVING WALL DISTANCE'
+      CALL SOLVE(T14,AM2,T13,TB,SLVDIST,SOLVER_INFO,MESH,AM2)
+!
+!     COMPUTES VERTEX GRADIENT
+      CALL VECTOR(T11,'=','GRADF          X',IELWD,
+     &            1.D0,T14,S,S,S,S,S,MESH,.FALSE.,S)
+      CALL VECTOR(T12,'=','GRADF          Y',IELWD,
+     &            1.D0,T14,S,S,S,S,S,MESH,.FALSE.,S)
+      CALL VECTOR(T15 , '=' , 'MASBAS          ' , IELWD ,
+     &            1.D0,S,S,S,S,S,S,
+     &            MESH,.FALSE.,S)
+!     NORMALIZES GRADIENT
+      CALL OS( 'X=Y/Z   ' , T11    , T11    , T15 , 1.D0 )
+      CALL OS( 'X=Y/Z   ' , T12    , T12    , T15 , 1.D0 )
+!
+!     CALCULATES THE WALL DISTANCE
+!
+      DO IP=1,W_DIST%DIM1
+        GRAD_D = T11%R(IP)**2.D0 + T12%R(IP)**2.D0
+        IF(GRAD_D + 2.D0*T14%R(IP).GT.0.D0.AND.GRAD_D.GT.0) THEN
+          W_DIST%R(IP) = -SQRT(GRAD_D) + SQRT(GRAD_D + 2.D0*T14%R(IP))
+        ELSE
+          W_DIST%R(IP) = 0.D0
+          IERR = IERR + 1
+        ENDIF
+      ENDDO
+      IF(NCSIZE.GT.0)THEN
+        IERR = P_ISUM(IERR)
+      ENDIF
+!
+      IF(IERR.NE.0)THEN
+        IF(LNG.EQ.1)THEN
+          WRITE(LU,*) 'TELEMAC2D: ATTENTION AVEC LE CALCUL DE  '
+          WRITE(LU,*) '           LA DISTANCE A LA PAROI. DETERMINANT '
+          WRITE(LU,*) '           NEGATIF SUR ', IERR, 'NOEUDS'
+          WRITE(LU,*) '           (PROBABLEMENT NOEUDS SURCONTRAINTS)'
+        ELSEIF(LNG.EQ.2)THEN
+          WRITE(LU,*) 'TELEMAC2D: WARNING WITH THE WALL DISTANCE '
+          WRITE(LU,*) '           COMPUTATION. NEGATIVE DETERMINANT '
+          WRITE(LU,*) '           ON ', IERR, 'NODES'
+          WRITE(LU,*) '           (PROBABLY OVER CONSTRAINT NODES)'
+        ENDIF
+      ENDIF
+      DEALLOCATE(LIMDIST)
+!
+!-----------------------------------------------------------------------
 !
       END SUBROUTINE

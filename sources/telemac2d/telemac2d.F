@@ -772,34 +772,12 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-!       IF SPALART ALLMARAS RECUPERATE WDIST FROM GEOMETRY FILE
-!       WDIST WAS COMPUTED IN PARTEL
-        IF(ITURB.EQ.6)THEN
-          CALL FIND_VARIABLE(T2D_FILES(T2DGEO)%FMT,T2D_FILES(T2DGEO)%LU,
-     &                      'WALLDIST        ',WDIST%R, MESH%NPOIN,
-     &                      IERR,RECORD=0,TIME_RECORD=BID)
-
-          IF(IERR.NE.0)THEN
-            IF(LNG.EQ.1)THEN
-              WRITE(LU,*) 'TELEMAC2D: PROBLEME AVEC LA VARIABLE WDIST  '
-              WRITE(LU,*) '           QUI EST UTILISEE PAR LE MODELE   '
-              WRITE(LU,*) '           DE TURBULENCE DE SPALART ALLMARAS'
-            ELSEIF(LNG.EQ.2)THEN
-              WRITE(LU,*) 'TELEMAC2D: PROBLEM WITH VARIABLE WDIST '
-              WRITE(LU,*) '           WHICH IS USED WITH SPALART  '
-              WRITE(LU,*) '           ALLMARAS TURBULENCE MODEL   '
-            ENDIF
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-        ENDIF
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FRONT2'
         CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
      &              LIHBOR%I,LIUBOR%I,
      &              MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
-     &              IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO,
-     &              ITURB.EQ.6,WDIST%R)
+     &              IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FRONT2'
       ENDIF
       IF(NFRLIQ0.NE.0.AND.NFRLIQ0.NE.NFRLIQ)THEN
@@ -817,6 +795,9 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!     COMPUTE WALL DISTANCE IF S-A TURBULENCE MODEL IS USED
+      IF (ITURB.EQ.6) CALL WALLDIST(WDIST)
 !
 !=======================================================================
 !

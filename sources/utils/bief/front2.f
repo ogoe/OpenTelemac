@@ -3,8 +3,7 @@
 !                    *****************
 !
      &(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,LIHBOR,LIUBOR,
-     & X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,MAXFRO,
-     & YAWALL,WALLDIST)
+     & X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,MAXFRO)
 !
 !***********************************************************************
 ! BIEF   V7P1
@@ -38,7 +37,7 @@
 !history  R. ATA
 !+        19/04/2016
 !+        v7p2
-!+   Bug correction:LIQF and SOLF were not changed for cases where     
+!+   Bug correction:LIQF and SOLF were not changed for cases where
 !+   the 3 nodes (prevK, K,kp1bor(k)) are all liquid
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,8 +58,6 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMLIQ         |-->| BOUNDARY NUMBER OF BOUNDARY POINTS
-!| WALLDIST       |<--| DISTANCE OF ANY POINT TO THE THE WALL
-!| YAWALL         |-->| IF YES COMPUTE WALLDIST
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
@@ -74,10 +71,9 @@
       INTEGER, INTENT(OUT) :: DEBSOL(MAXFRO),FINSOL(MAXFRO)
       INTEGER , INTENT(IN) :: LIHBOR(NPTFR),LIUBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN) , Y(NPOIN)
-      DOUBLE PRECISION, INTENT(OUT):: WALLDIST(NPOIN)
       INTEGER, INTENT(IN) :: NBOR(NPTFR),KP1BOR(NPTFR)
       INTEGER, INTENT(OUT) :: DEJAVU(NPTFR)
-      LOGICAL, INTENT(IN) :: LISTIN,YAWALL
+      LOGICAL, INTENT(IN) :: LISTIN
       INTEGER, INTENT(OUT) :: NUMLIQ(NPTFR)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -218,7 +214,7 @@
         SOLF = .TRUE.
       ELSEIF(L1.NE.KLOG.AND.L2.NE.KLOG.AND.L3.NE.KLOG) THEN
         LIQF = .TRUE.
-        SOLF = .FALSE. 
+        SOLF = .FALSE.
 !     LIQUID-LIQUID TRANSITIONS AT POINT K
         IF(L2.NE.L3.OR.LIUBOR(K).NE.LIUBOR(KP1BOR(K))) THEN
           FINLIQ(NFRLIQ) = K
@@ -310,32 +306,6 @@
       ENDDO ! K
 !
 !-----------------------------------------------------------------------
-!     COMPUTE WALLDIST: THE DISTANCE OF EACH INTERNAL POINT TO THE WALL 
-      IF(YAWALL)THEN
-!       1- INITIALISE
-        DO K=1,NPOIN
-          WALLDIST(K)=1.D10
-        ENDDO
-!       2-COMPUTE WALLDIST
-        DO K=1,NPOIN
-          MINNS=1.D10
-          IF(NPTFR.GT.0)THEN
-            DO L2=1,NPTFR
-              IF(LIUBOR(L2).EQ.KLOG) THEN
-                L1=NBOR(L2)
-                DIST=SQRT((X(K)-X(L1))**2+(Y(K)-Y(L1))**2)
-                IF(DIST.LT.MINNS) THEN
-                  MINNS=DIST
-                ENDIF
-              ENDIF
-            ENDDO
-          ENDIF
-          WALLDIST(K)=MAX(MINNS,EPSS)
-        ENDDO
-      ENDIF ! YAWALL
-!
-!-----------------------------------------------------------------------
-!
 !
 !  PRINTS OUT THE RESULTS AND COMPUTES NUMLIQ
 !

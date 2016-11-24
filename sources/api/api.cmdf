@@ -983,6 +983,7 @@ files: friction_def.f
   lecbreach.f
   breach.f
   telemac2d.F
+  walldist.f
 
 [tomawac]
 path: <root>|sources|tomawac

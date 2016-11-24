@@ -1,6 +1,9 @@
 Trunk (Unreleased)
 ===========================
 
+- TELEMAC-2D: change computation of wall distance (used in
+  Spalart-Allmaras turbulence model). The wall distance (WDIST) is now
+  computed in parallel with a laplacian operator.
 - TELEMAC-2D: new framework for automatic convergence studies
 
 Release V7P2R0 (Unreleased)

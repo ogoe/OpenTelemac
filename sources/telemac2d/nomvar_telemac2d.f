@@ -88,7 +88,7 @@
      &                     '10','11','12','13','14','15','16','17','18',
      &                     '19','20','21','22','23','24','25','26','27',
      &                     '28','29','30','31','32','33','34'/
-      INTEGER I
+      INTEGER I,ILAST,INEXT
 !
 !-----------------------------------------------------------------------
 !
@@ -133,6 +133,7 @@
       TEXTE (31) = 'FRICTION VEL.   M/S             '
       TEXTE (32) = 'TAU_S           NA              '
       TEXTE (33) = '1/R             1/M             '
+      TEXTE (34) = 'WALLDIST        M               '
 !
 ! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
@@ -176,6 +177,7 @@
       TEXTPR (31) = 'FRICTION VEL.   M/S             '
       TEXTPR (32) = 'TAU_S           NA              '
       TEXTPR (33) = '1/R             1/M             '
+      TEXTPR (34) = 'WALLDIST        M               '
 !
 !-----------------------------------------------------------------------
 !
@@ -220,6 +222,7 @@
       TEXTE (31) = 'VITESSE DE FROT.M/S             '
       TEXTE (32) = 'TAU_S           NA              '
       TEXTE (33) = '1/R             1/M             '
+      TEXTE (34) = 'DIST PAROI      M               '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -262,6 +265,7 @@
       TEXTPR (31) = 'VITESSE DE FROT.M/S             '
       TEXTPR (32) = 'TAU_S           NA              '
       TEXTPR (33) = '1/R             1/M             '
+      TEXTPR (34) = 'DIST PAROI      M               '
 !
       ENDIF
 !
@@ -336,6 +340,13 @@
       MNEMO(32)   = 'TAU_S   '
 !
       MNEMO(33)   = '1/R     '
+!     WALL DISTANCE
+      MNEMO(34)   = 'WDIST   '
+!
+!     THE LAST RANK 34
+!
+      ILAST = 34
+      INEXT = ILAST+1
 !
 !-----------------------------------------------------------------------
 !
@@ -344,34 +355,34 @@
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
           IF(LNG.EQ.1) THEN
-            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+            TEXTE(INEXT+NTRAC+2*(I-1))    =  'AMPLI PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+            TEXTE(INEXT+1+NTRAC+2*(I-1))  =  'PHASE PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
-            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIODE '
+            TEXTPR(INEXT+NTRAC+2*(I-1))   =  'AMPLI PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIODE '
+            TEXTPR(INEXT+1+NTRAC+2*(I-1)) =  'PHASE PERIODE '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
           ELSE
-            TEXTE(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+            TEXTE(INEXT+NTRAC+2*(I-1))    =  'AMPLI PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTE(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+            TEXTE(INEXT+1+NTRAC+2*(I-1))  =  'PHASE PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
-            TEXTPR(34+NTRAC+2*(I-1)) =  'AMPLI PERIOD  '
+            TEXTPR(INEXT+NTRAC+2*(I-1))   =  'AMPLI PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'M               '
-            TEXTPR(35+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
+            TEXTPR(INEXT+1+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
      &                         //I_IN_2_LETTERS(I)
      &                         //'DEGRES          '
           ENDIF
-          MNEMO(34+NTRAC+2*(I-1)) = 'AMPL'//I_IN_2_LETTERS(I)//'  '
-          MNEMO(35+NTRAC+2*(I-1)) = 'PHAS'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(INEXT+NTRAC+2*(I-1))  = 'AMPL'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(INEXT+1+NTRAC+2*(I-1))= 'PHAS'//I_IN_2_LETTERS(I)//'  '
         ENDDO
       ENDIF
 !
@@ -381,15 +392,15 @@
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-          TEXTE(33+I)  = NAMETRAC(I)
-          TEXTPR(33+I) = NAMETRAC(I)
-          MNEMO(33+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+          TEXTE(ILAST+I)  = NAMETRAC(I)
+          TEXTPR(ILAST+I) = NAMETRAC(I)
+          MNEMO(ILAST+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
         ENDDO
 !       OMEGA FOR SECONDARY CURRENTS
         IF(SECCURRENTS) THEN
-          TEXTE(33+IND_SEC) = NAMETRAC(IND_SEC)
-          TEXTPR(33+IND_SEC)= NAMETRAC(IND_SEC)
-          MNEMO(33+IND_SEC) = 'OMEGA   '
+          TEXTE(ILAST+IND_SEC) = NAMETRAC(IND_SEC)
+          TEXTPR(ILAST+IND_SEC)= NAMETRAC(IND_SEC)
+          MNEMO(ILAST+IND_SEC) = 'OMEGA   '
         ENDIF
       ENDIF
       IF(N_NAMES_PRIV.GT.0) THEN
@@ -405,9 +416,9 @@
 !
       IF(NADVAR.GT.0) THEN
         DO I=1,NADVAR
-          TEXTE(33+NTRAC+2*NPERIAF+I)  = NAMES_ADVAR(I)
-          TEXTPR(33+NTRAC+2*NPERIAF+I) = NAMES_ADVAR(I)
-          MNEMO(33+NTRAC+2*NPERIAF+I)  = 'G'//I_IN_2_LETTERS(I)//'   '
+          TEXTE(ILAST+NTRAC+2*NPERIAF+I) = NAMES_ADVAR(I)
+          TEXTPR(ILAST+NTRAC+2*NPERIAF+I)= NAMES_ADVAR(I)
+          MNEMO(ILAST+NTRAC+2*NPERIAF+I) ='G'//I_IN_2_LETTERS(I)//'   '
         ENDDO
       ENDIF
 !

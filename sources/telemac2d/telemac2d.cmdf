@@ -865,6 +865,7 @@ files: friction_def.f
   vistur.f
   hpropa.f
   wall_friction.f
+  walldist.f
   thomps.f
   lagran.f
   vvsce.f
