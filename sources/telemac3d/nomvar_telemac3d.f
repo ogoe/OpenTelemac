@@ -63,11 +63,7 @@
 !
       INTEGER I,NEXT
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(32)
-      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
-     &                     '10','11','12','13','14','15','16','17','18',
-     &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32'/
+      CHARACTER(LEN=2) CHAR2
 !
 !-----------------------------------------------------------------------
 !
@@ -223,18 +219,20 @@
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
           TEXT3(NEXT+I-1) = NAMETRAC(I)
-          MNEMO(NEXT+I-1) = 'TA'//I_IN_2_LETTERS(I)//'    '
+          WRITE(CHAR2,'(I2)') I
+          MNEMO(NEXT+I-1) = 'TA'//ADJUSTL(CHAR2)//'    '
         ENDDO
         DO I=1,NTRAC
+          WRITE(CHAR2,'(I2)') I
           TEXT3(NEXT+NTRAC+3*(I-1)  ) = 'NUX '//NAMETRAC(I)(1:12)//
      &                                'M2/S            '
-          MNEMO(NEXT+NTRAC+3*(I-1)  ) = 'NAX'//I_IN_2_LETTERS(I)//'   '
+          MNEMO(NEXT+NTRAC+3*(I-1)  ) = 'NAX'//ADJUSTL(CHAR2)//'   '
           TEXT3(NEXT+NTRAC+3*(I-1)+1) = 'NUY '//NAMETRAC(I)(1:12)//
      &                                'M2/S            '
-          MNEMO(NEXT+NTRAC+3*(I-1)+1) = 'NAY'//I_IN_2_LETTERS(I)//'   '
+          MNEMO(NEXT+NTRAC+3*(I-1)+1) = 'NAY'//ADJUSTL(CHAR2)//'   '
           TEXT3(NEXT+NTRAC+3*(I-1)+2) = 'NUZ '//NAMETRAC(I)(1:12)//
      &                                'M2/S            '
-          MNEMO(NEXT+NTRAC+3*(I-1)+2) = 'NAZ'//I_IN_2_LETTERS(I)//'   '
+          MNEMO(NEXT+NTRAC+3*(I-1)+2) = 'NAZ'//ADJUSTL(CHAR2)//'   '
         ENDDO
       ENDIF
 !

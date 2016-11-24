@@ -166,11 +166,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(32)
-      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
-     &                     '10','11','12','13','14','15','16','17','18',
-     &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32'/
+      CHARACTER(LEN=2) CHAR2
 !
 !-----------------------------------------------------------------------
 !
@@ -887,11 +883,11 @@
 !         READING WHAT HAS BEEN GIVEN
           DO I=1,DIMEN(2,18)
             DNUTAH(I) = MOTREA(ADRESS(2,18)+I-1)
-          ENDDO  
+          ENDDO
 !         COMPLETING WITH THE LAST GIVEN
           DO I=DIMEN(2,18)+1,NTRAC
             DNUTAH(I) = MOTREA(ADRESS(2,18)+DIMEN(2,18)-1)
-          ENDDO       
+          ENDDO
         ENDIF
         IF(TROUVE(2,19).GE.1.AND.DIMEN(2,19).EQ.NTRAC) THEN
           DO I=1,NTRAC
@@ -902,11 +898,11 @@
 !         READING WHAT HAS BEEN GIVEN
           DO I=1,DIMEN(2,19)
             DNUTAV(I) = MOTREA(ADRESS(2,19)+I-1)
-          ENDDO  
+          ENDDO
 !         COMPLETING WITH THE LAST GIVEN
           DO I=DIMEN(2,19)+1,NTRAC
             DNUTAV(I) = MOTREA(ADRESS(2,19)+DIMEN(2,19)-1)
-          ENDDO       
+          ENDDO
         ENDIF
       ENDIF
 !
@@ -1379,11 +1375,12 @@
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
+          WRITE(CHAR2,'(I2)') I
           IF(LNG.EQ.1) THEN
-           NAMETRAC(I) =  'TRACEUR '//I_IN_2_LETTERS(I)//'      '
+           NAMETRAC(I) =  'TRACEUR '//ADJUSTL(CHAR2)//'      '
      &                   // '??              '
           ELSEIF(LNG.EQ.2) THEN
-           NAMETRAC(I) =  'TRACER '//I_IN_2_LETTERS(I)//'       '
+           NAMETRAC(I) =  'TRACER '//ADJUSTL(CHAR2)//'       '
      &                   // '??              '
           ENDIF
         ENDDO

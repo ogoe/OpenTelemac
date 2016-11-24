@@ -83,11 +83,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
-      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
-     &                     '10','11','12','13','14','15','16','17','18',
-     &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32','33','34'/
+      CHARACTER(LEN=2) CHAR2
       INTEGER I,ILAST,INEXT
 !
 !-----------------------------------------------------------------------
@@ -354,35 +350,36 @@
 !
       IF(NPERIAF.GT.0) THEN
         DO I=1,NPERIAF
+          WRITE(CHAR2,'(I2)') I
           IF(LNG.EQ.1) THEN
             TEXTE(INEXT+NTRAC+2*(I-1))    =  'AMPLI PERIODE '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'M               '
             TEXTE(INEXT+1+NTRAC+2*(I-1))  =  'PHASE PERIODE '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'DEGRES          '
             TEXTPR(INEXT+NTRAC+2*(I-1))   =  'AMPLI PERIODE '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'M               '
             TEXTPR(INEXT+1+NTRAC+2*(I-1)) =  'PHASE PERIODE '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'DEGRES          '
           ELSE
             TEXTE(INEXT+NTRAC+2*(I-1))    =  'AMPLI PERIOD  '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'M               '
             TEXTE(INEXT+1+NTRAC+2*(I-1))  =  'PHASE PERIOD  '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'DEGRES          '
             TEXTPR(INEXT+NTRAC+2*(I-1))   =  'AMPLI PERIOD  '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'M               '
             TEXTPR(INEXT+1+NTRAC+2*(I-1)) =  'PHASE PERIOD  '
-     &                         //I_IN_2_LETTERS(I)
+     &                         //ADJUSTL(CHAR2)
      &                         //'DEGRES          '
           ENDIF
-          MNEMO(INEXT+NTRAC+2*(I-1))  = 'AMPL'//I_IN_2_LETTERS(I)//'  '
-          MNEMO(INEXT+1+NTRAC+2*(I-1))= 'PHAS'//I_IN_2_LETTERS(I)//'  '
+          MNEMO(INEXT+NTRAC+2*(I-1))   = 'AMPL'//ADJUSTL(CHAR2)//'  '
+          MNEMO(INEXT+1+NTRAC+2*(I-1)) = 'PHAS'//ADJUSTL(CHAR2)//'  '
         ENDDO
       ENDIF
 !
@@ -394,7 +391,8 @@
         DO I=1,NTRAC
           TEXTE(ILAST+I)  = NAMETRAC(I)
           TEXTPR(ILAST+I) = NAMETRAC(I)
-          MNEMO(ILAST+I)  = 'T'//I_IN_2_LETTERS(I)//'   '
+          WRITE(CHAR2,'(I2)') I
+          MNEMO(ILAST+I)  = 'T'//ADJUSTL(CHAR2)//'   '
         ENDDO
 !       OMEGA FOR SECONDARY CURRENTS
         IF(SECCURRENTS) THEN
@@ -418,7 +416,8 @@
         DO I=1,NADVAR
           TEXTE(ILAST+NTRAC+2*NPERIAF+I) = NAMES_ADVAR(I)
           TEXTPR(ILAST+NTRAC+2*NPERIAF+I)= NAMES_ADVAR(I)
-          MNEMO(ILAST+NTRAC+2*NPERIAF+I) ='G'//I_IN_2_LETTERS(I)//'   '
+          WRITE(CHAR2,'(I2)') I
+          MNEMO(ILAST+NTRAC+2*NPERIAF+I) = 'G'//ADJUSTL(CHAR2)//'   '
         ENDDO
       ENDIF
 !

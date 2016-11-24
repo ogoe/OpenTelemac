@@ -143,11 +143,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CHARACTER(LEN=2) I_IN_2_LETTERS(34)
-      DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
-     &                     '10','11','12','13','14','15','16','17','18',
-     &                     '19','20','21','22','23','24','25','26','27',
-     &                     '28','29','30','31','32','33','34'/
+      CHARACTER(LEN=2) CHAR2
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
 !
@@ -1205,11 +1201,12 @@
 !     INITIALISES AND READS THE NAMES OF TRACERS
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
+          WRITE(CHAR2,'(I2)') I
           IF(LNG.EQ.1) THEN
-           NAMETRAC(I) =  'TRACEUR '//I_IN_2_LETTERS(I)//'      '
+           NAMETRAC(I) =  'TRACEUR '//ADJUSTL(CHAR2)//'      '
      &                   // '??              '
           ELSEIF(LNG.EQ.2) THEN
-           NAMETRAC(I) =  'TRACER '//I_IN_2_LETTERS(I)//'       '
+           NAMETRAC(I) =  'TRACER '//ADJUSTL(CHAR2)//'       '
      &                   // '??              '
           ENDIF
         ENDDO
@@ -1282,7 +1279,8 @@
       NADVAR = MAX( NADVAR,N_NAMES_ADVAR ) ! WARNING HERE ?
       IF(NADVAR.GT.0) THEN
         DO I=1,NADVAR
-          NAMES_ADVAR(I) =  'GRADIENT '//I_IN_2_LETTERS(I)//'     '
+          WRITE(CHAR2,'(I2)') I
+          NAMES_ADVAR(I) =  'GRADIENT '//ADJUSTL(CHAR2)//'     '
      &                   // '??              '
         ENDDO
       ENDIF
@@ -2515,7 +2513,7 @@
         IF(ICONVF(4).EQ.1.AND.OPTADV_KE.EQ.2) OPTCHA=2
       ENDIF
 !
-!     SA TURBULENCE MODEL 
+!     SA TURBULENCE MODEL
 !
       OPTADV_SA=OPTADV_KE
 !
