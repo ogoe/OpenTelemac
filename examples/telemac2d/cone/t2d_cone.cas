@@ -76,16 +76,16 @@ ACCURACY FOR DIFFUSION OF TRACERS : 1.D-12
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS : 100
 /
 NAMES OF TRACERS : 'CHARACT_STRONG  TRACER 1        ';
-                   'CHARACT_WEAK    TRACER 2        ';
-                   'ERIA SCHEME     TRACER 3        ';
-                   'N_SCHEME        TRACER 4        ';
-                   'N_SCHEME  IMP   TRACER 5        ';
-                   'PSI_SCHEME      TRACER 6        ';
-                   'PSI_SCHEME COR1 TRACER 7        ';
-                   'PSI_SCHEME COR2 TRACER 8        ';
-                   'N_SCHEME   COR1 TRACER 9        ';
-                   'N_SCHEME   COR2 TRACER 10       ';
-                   'LIPS SCHEME     TRACER 11       '
+                  'CHARACT_WEAK    TRACER 2        ';
+                  'ERIA SCHEME     TRACER 3        ';
+                  'N_SCHEME        TRACER 4        ';
+                  'LIMP N_SCHEME   TRACER 5        ';
+                  'PSI_SCHEME      TRACER 6        ';
+                  'PSI_SCHEME COR1 TRACER 7        ';
+                  'PSI_SCHEME COR2 TRACER 8        ';
+                  'N_SCHEME   COR1 TRACER 9        ';
+                  'N_SCHEME   COR2 TRACER 10       ';
+                  'LIPS_SCHEME     TRACER 11       '
 TREATMENT OF NEGATIVE DEPTHS : 3
 MASS-LUMPING ON H : 1.
 CONTINUITY CORRECTION : YES
