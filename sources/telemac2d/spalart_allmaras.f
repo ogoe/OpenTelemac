@@ -23,7 +23,7 @@
 !+        06/11/2016
 !+        V7P3
 !+     Calling CVTRVF_NERD instead of CVTRVF_NERD_2 for the only
-!+     variable to be advected. Dummy variables FLULIM, FLULIMEBE and 
+!+     variable to be advected. Dummy variables FLULIM, FLULIMEBE and
 !+     YAFLULIMEBE added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -387,7 +387,7 @@
       CBK  = CB1/KAP2
 !
       DO I=1, NPOIN
-        D=WDIST%R(I)!+0.03*KS
+        D=MAX(WDIST%R(I),1.D-12)!+0.03*KS
         CHI=VISCSA%R(I)/MAX(PROPNU2,1.D-12) !+CR1*KS/D
         FT2=CT3*EXP(-CT4*CHI**2)
         CHI3=CHI**3.D0
@@ -400,7 +400,7 @@
         R=MIN(VISCSA%R(I)/(BS*KAP2*D**2),10.D0)
         G=R+CW2*(R**6-R)
         FW=G*PCW/(G**6+CW6)**UNSS
-        T2%R(I)=(CW1*FW-CBK*FT2)*VISCSA%R(I)/(MAX(D,1.D-12))**2
+        T2%R(I)=(CW1*FW-CBK*FT2)*VISCSA%R(I)/D**2
       ENDDO
       IF (DEBUG.GT.0) WRITE(LU,*) 'IM IN SPALART_ALLMARAS-8'
 !
