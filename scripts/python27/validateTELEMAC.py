@@ -94,7 +94,7 @@
 import sys
 import re
 import time
-from os import path,walk,environ,remove
+from os import path,walk,environ,remove,putenv
 from copy import deepcopy
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
@@ -339,6 +339,7 @@ if __name__ == "__main__":
    # path to the root
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    if options.rootDir != '': PWD = options.rootDir
+   environ['HOMETEL'] = PWD
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
