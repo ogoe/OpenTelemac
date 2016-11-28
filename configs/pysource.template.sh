@@ -43,3 +43,10 @@ export PYTHONPATH=$HOMETEL/builds/$USETELCFG/wrap_api/lib:$PYTHONPATH
 #export MEDHOME=$SYSTEL/LIBRARY/med-3.2.0/arch/C9
 #export LD_LIBRARY_PATH=$MEDHOME/lib:$LD_LIBRARY_PATH
 #export PATH=$MEDHOME/bin:$PATH
+### MUMPS -------------------------------------------------------------
+#export MUMPSHOME=$SYSTEL/LIBRARY/mumps/gnu
+#export SCALAPACKHOME=$SYSTEL/LIBRARY/scalapack/gnu
+#export BLACSHOME=$SYSTEL/LIBRARY/blacs/gnu
+### METIS -------------------------------------------------------------
+#export METISHOME=$SYSTEL/LIBRARY/metis-5.1.0/arch/C9
+#export LD_LIBRARY_PATH=$METISHOME/lib:$LD_LIBRARY_PATH
