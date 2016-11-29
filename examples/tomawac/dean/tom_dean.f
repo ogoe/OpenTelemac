@@ -204,7 +204,7 @@
                      SUBROUTINE DUMP2D
 !                    *****************
 !
-     &( LT , XF1 , NP1 )
+     &( XF1 , NP1 )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   15/06/2011
@@ -250,7 +250,6 @@
 !+   Use of work arrays optimised.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NP1            |-->| NPOIN2.NPLAN.NF
 !| XF1            |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -263,7 +262,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: LT,NP1
+      INTEGER, INTENT(IN)          :: NP1
       DOUBLE PRECISION, INTENT(IN) :: XF1(NP1)
 !VB_modif
       DOUBLE PRECISION AUX1(NPOIN2),AUX2(NPOIN2)
@@ -446,7 +445,7 @@
 !     ------------------------------- POWER PER UNIT LENGTH
 !
       IF(SORLEO(34)) THEN
-        CALL WPOWER(STRA60%R,XF1,SFR%R,SDFR%R,SCG%R,TAILF,NF,
+        CALL WPOWER(STRA60%R,XF1, SDFR%R,SCG%R,TAILF,NF,
      &              NPLAN,NPOIN2,ROEAU)
       ENDIF
 !     ------------------------------- KMOYEN AND QMOUT1
@@ -472,7 +471,7 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, DEUPI ,
+     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT,
      & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 !
 !***********************************************************************
@@ -563,6 +562,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
@@ -581,7 +581,7 @@
       DOUBLE PRECISION, INTENT(IN)   :: GAMMAL,FPICL, SIGMBL
       DOUBLE PRECISION, INTENT(IN)   :: HM0L  , APHILL,TETA1L,SPRE1L
       DOUBLE PRECISION, INTENT(IN)   :: SPRE2L,XLAMDL,TETA2L
-      DOUBLE PRECISION, INTENT(IN)   :: GRAVIT,DEUPI
+      DOUBLE PRECISION, INTENT(IN)   :: GRAVIT
       LOGICAL,          INTENT(IN)   :: SPEULI, VENT, VENSTA
       CHARACTER(LEN=8), INTENT(IN)   :: BINBI1
       DOUBLE PRECISION, INTENT(INOUT):: F(NPOIN2,NPLAN,NF), FRA(NPLAN)

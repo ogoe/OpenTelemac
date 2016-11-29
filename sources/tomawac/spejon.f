@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
-     &  DEUPI , GRAVIT, E2FMIN, FPMIN )
+     &  DEUPI, GRAVIT, E2FMIN, FPMIN )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   28/06/2011
@@ -36,7 +36,6 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AL             |-->| PHILLIPS CONSTANT (ALPHA)
-!| DEUPI          |-->| 2.PI
 !| E2FMIN         |-->| SPECTRUM ENERGY THRESHOLD
 !| FP             |-->| JONSWAP SPECTRUM PEAK FREQUENCY
 !| FPMIN          |-->| MINIMUM PEAK FREQUENCY VALUE

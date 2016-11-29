@@ -4,7 +4,7 @@
 !
      &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
      &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
-     &  NBD   , INDI  , TSTOT , TSDER )
+     &  NBD   , INDI  , TSTOT )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   27/06/2011
@@ -54,7 +54,6 @@
 !| RAISF          |-->| RAISON FREQUENTIELLE POUR DISCRETISATION
 !| SINTET         |-->| SINE OF TETA ANGLE
 !| TETA           |-->| DISCRETIZED DIRECTIONS
-!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +76,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: TETA(NPLAN), SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN)
-      DOUBLE PRECISION, INTENT(IN)    :: TSDER(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
 !
 !.....LOCAL VARIABLES

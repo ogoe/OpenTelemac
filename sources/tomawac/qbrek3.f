@@ -2,7 +2,7 @@
                      SUBROUTINE QBREK3
 !                    *****************
 !
-     &( TSTOT , TSDER , F     , FCAR  , VARIAN, DEPTH , ALFARO, GAMARO,
+     &( TSTOT , F     , FCAR  , VARIAN, DEPTH , ALFARO, GAMARO,
      &  GAM2RO, IEXPRO, IDISRO, NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
@@ -54,7 +54,6 @@
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
-!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +67,6 @@
       INTEGER, INTENT(IN)   ::  IEXPRO, IDISRO, NF    , NPLAN , NPOIN2
       DOUBLE PRECISION, INTENT(IN)   :: ALFARO, GAMARO, GAM2RO
       DOUBLE PRECISION, INTENT(IN)   :: DEPTH(NPOIN2), FCAR(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)   :: TSDER(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)   :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)   :: VARIAN(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT):: BETA(NPOIN2)

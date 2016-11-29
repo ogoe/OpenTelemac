@@ -58,14 +58,13 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           IPL
-      DOUBLE PRECISION  AP2 , EPS , DTETA
+      DOUBLE PRECISION  AP2 , DTETA
 !
       INTEGER           NBPL , NBPU, NB1
 !
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
       DTETA = TETA(2)-TETA(1)
-      EPS  = 1.D-5
       IF(BDSSPB.GE.BDISPB) THEN
         AP2  = (BDISPB-TETA(1))/DTETA
         NBPL = NINT(AP2) + 1

@@ -1,7 +1,7 @@
 !                       *****************
                         SUBROUTINE LIMITE
 !                       *****************
-     &( F     , DEPTH , FREQ  , NPOIN2, NPLAN , NF    )
+     &( F     , FREQ  , NPOIN2, NPLAN , NF    )
 !
 !***********************************************************************
 ! TOMAWAC   V7P0                                 30/07/2014
@@ -17,7 +17,6 @@
 !+        NEW SUBROUTINE CREATED / IMPLEMENTED
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!
-!| DEPTH          |-->| WATER DEPTH
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
 !| NF             |-->| NUMBER OF FREQUENCIES
@@ -36,7 +35,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
-      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

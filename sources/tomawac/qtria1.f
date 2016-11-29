@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
-     &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , FTOT  , FMOY  )
+     &  NF    , NPLAN , NPOIN2, TSTOT , FTOT  , FMOY  )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   27/06/2011
@@ -47,7 +47,6 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| RAISF          |-->| FREQUENTIAL RATIO
 !| RFMLTA         |-->| COEFFICIENT OF LTA TRIAD INTERACTION MODEL
-!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +63,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF), DEPTH(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: TSDER(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: FTOT(NPOIN2) , FMOY(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
 !
@@ -80,7 +78,6 @@
 !.....FUNCTION / FORMULATION
 !     """"""""""""""""
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-      DOUBLE PRECISION  RPP
 !      DOUBLE PRECISION  RPP   , DD    , O2P   , CP    , KP    , K2P
 !      RPP(KP,CP,K2P,O2P,DD) = KP**2*(GRAVIT*DD+2.D0*CP**2)/(K2P*DD)/
 !     &   (GRAVIT*DD+(2.D0/15.D0)*GRAVIT*DD**3*K2P**2-0.4D0*(O2P*DD)**2)

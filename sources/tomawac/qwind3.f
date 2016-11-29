@@ -3,7 +3,7 @@
 !                       *****************
 !
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
-     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
+     &  TWNEW , TETA  , NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
      &  COEFWE, COEFWF, COEFWH, BETAN , BETAO , DIRN  , DIRO  )
 !
 !**********************************************************************
@@ -45,7 +45,6 @@
 !| DIRO           |<--| WORK TABLE
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -71,7 +70,7 @@
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER, INTENT(IN)   ::    NF  , NPLAN        , NPOIN2
-      DOUBLE PRECISION, INTENT(IN)   :: GRAVIT       , CIMPLI
+      DOUBLE PRECISION, INTENT(IN)   :: CIMPLI
       DOUBLE PRECISION, INTENT(IN)   :: FREQ(NF)     , TETA(NPLAN)
       DOUBLE PRECISION, INTENT(IN)   :: TWOLD(NPOIN2), TWNEW(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)   :: USOLD(NPOIN2), USNEW(NPOIN2)

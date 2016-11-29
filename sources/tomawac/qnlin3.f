@@ -2,9 +2,9 @@
                         SUBROUTINE QNLIN3
 !                       *****************
 !
-     &( TSTOT , TSDER , F     , NB_NOD, FREQ  , TETA  , NT    , NF    ,
-     &  RAISF , TAILF , SEUIL , FSEUIL, LBUF  , DIMBUF, F_POIN, F_COEF,
-     &  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
+     &( TSTOT , TSDER , F     , NB_NOD, NT    , NF    ,
+     &  RAISF , SEUIL , FSEUIL, LBUF  , DIMBUF, F_POIN, F_COEF,
+     &  F_PROJ, T_POIN, TB_SCA, NQ_OM2, NF1   , NT1   , 
      &  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
      &  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
      &  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
@@ -41,12 +41,10 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMBUF         |-->| VARIABLE FOR SPECTRUM INTERPOLATION
-!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| F_COEF         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
 !| F_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
 !| F_PROJ         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
-!| FREQ           |-->| DISCRETIZED FREQUENCIES
 !| FSEUIL         |-->| WORK TABLE
 !| K_IF1          |-->| WORK TABLE
 !| K_IF2          |-->| WORK TABLE
@@ -69,13 +67,11 @@
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NF1            |-->| NUMBER OF INTEGRATION POINT ON OMEGA1
 !| NQ_OM2         |-->| NUMBER OF INTEGRATION POINT ON OMEGA2
-!| NQ_TE1         |-->| SETTING FOR INTEGRATION ON THETA1
 !| NT             |-->| NUMBER OF DIRECTIONS
 !| NT1            |-->| NUMBER OF INTEGRATION POINT ON TETA1
 !| RAISF          |-->| FREQUENTIAL RATIO
 !| SEUIL          |-->| THRESHOLD0 FOR CONFIGURATIONS ELIMINATION (GQM)
 !| T_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
-!| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !| TB_FAC         |-->| WORK TABLE
 !| TB_SCA         |-->| SCALE COEFFICIENT
 !| TB_TMP         |-->| WORK TABLE
@@ -83,7 +79,6 @@
 !| TB_V14         |-->| WORK TABLE
 !| TB_V24         |-->| WORK TABLE
 !| TB_V34         |-->| WORK TABLE
-!| TETA           |-->| DISCRETIZED DIRECTIONS
 !| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,8 +89,7 @@
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER, INTENT(IN)    :: NF    , NT    , NB_NOD
-      DOUBLE PRECISION, INTENT(IN)    :: TAILF , RAISF , SEUIL
-      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF), DFREQ(NF), TETA(NT)
+      DOUBLE PRECISION, INTENT(IN)    :: RAISF , SEUIL
       DOUBLE PRECISION, INTENT(INOUT) :: FSEUIL(NB_NOD)
       DOUBLE PRECISION, INTENT(IN)    :: F(NB_NOD,NT,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NB_NOD,NT,NF)
@@ -106,7 +100,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: F_COEF(DIMBUF), F_PROJ(DIMBUF)
       DOUBLE PRECISION, INTENT(IN)    :: TB_SCA(DIMBUF)
 !.....Transmitted variables for computing QNL4.
-      INTEGER, INTENT(IN)    :: NQ_TE1, NQ_OM2, NF1   , NT1
+      INTEGER, INTENT(IN)    :: NQ_OM2, NF1   , NT1
       INTEGER, INTENT(IN)    :: K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
       INTEGER, INTENT(IN)    :: K_IF2 (NQ_OM2,NT1,NF1)
       INTEGER, INTENT(IN)    :: K_IF3 (NQ_OM2,NT1,NF1)

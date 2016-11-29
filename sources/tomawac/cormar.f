@@ -2,7 +2,7 @@
                      SUBROUTINE CORMAR
 !                    *****************
 !
-     &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
+     &( AT    , LT    , TC1   , TC2   , TM1   , TM2   ,
      &  NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
 !
 !***********************************************************************
@@ -59,8 +59,6 @@
 !| TC2            |<--| TIME T2 IN THE CURRENT FILE
 !| TM1            |<--| TIME T1 IN THE WATER LEVEL FILE
 !| TM2            |<--| TIME T2 IN THE WATER LEVEL FILE
-!| TV1            |<--| TIME T1 IN THE WIND FILE
-!| TV2            |<--| TIME T2 IN THE WIND FILE
 !| U_TEL          |-->| X-AXIS TELEMAC CURRENT SPEED
 !| V_TEL          |-->| Y-AXIS TELEMAC CURRENT SPEED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +78,7 @@
       INTEGER, INTENT(INOUT)             :: NVHMA
       INTEGER, INTENT(INOUT)          :: NVCOU
       DOUBLE PRECISION, INTENT(IN)    :: AT
-      DOUBLE PRECISION, INTENT(INOUT) :: TC1,TC2,TV1,TV2,TM1,TM2
+      DOUBLE PRECISION, INTENT(INOUT) :: TC1,TC2,TM1,TM2
       INTEGER, INTENT(IN)        :: PART
       TYPE(BIEF_OBJ), INTENT(IN) :: U_TEL,V_TEL,H_TEL
 !

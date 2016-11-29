@@ -2,14 +2,14 @@
                      SUBROUTINE PREPRO
 !                    *****************
 !
-     &( CX    , CY    , CT    , CF    , DT    , X     , Y     ,
-     &  TETA  , COSTET, SINTET, FREQ  , IKLE2 , IFABOR, ETAP1 , TRA01 ,
+     &( CX    , CY    , CT    , CF    , DT    , 
+     &  TETA  , COSTET, SINTET, FREQ  , IKLE2 , IFABOR, TRA01 ,
      &  SHP   , SHZ   , SHF   , ELT   , ETA   , FRE   ,
      &  DEPTH , DZHDT , DZX   , DZY   , U     , V     , DUX   , DUY   ,
      &  DVX   , DVY   , XK    , CG    , COSF  , TGF   , ITR01 , NPOIN3,
-     &  NPOIN2, NELEM2, NPLAN , NF    , SURDET, COURAN, SPHE  ,
-     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA,
-     &  MAREE , ISUB)
+     &  NPOIN2, NELEM2, NPLAN , NF    , COURAN, SPHE  ,
+     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3,
+     &  ISUB)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   25/06/2012
@@ -57,7 +57,6 @@
 !| CY             |<->| ADVECTION FIELD ALONG Y(OR LAMBDA)
 !| CT             |<->| ADVECTION FIELD ALONG TETA
 !| DEPTH          |-->| WATER DEPTH
-!| DIFFRA         |-->| 0: NO DIFFRACTION  1: DIFFRACTION
 !| DT             |-->| TIME STEP
 !| DUX            |-->| DERIVATIVE OF CURRENT SPEED DU/DX
 !| DUY            |-->| DERIVATIVE OF CURRENT SPEED DU/DY
@@ -70,7 +69,6 @@
 !|                |   | POINTS TO BE ADVECTED
 !| ETA            |<->| NUMBERS OF THE LAYERS OF THE
 !|                |   | POINTS TO BE ADVECTED
-!| ETAP1          |<->| HIGHER LAYERS TABLE
 !| FRE            |<->| NUMBER OF THE FREQUENCIES OF THE
 !|                |   | POINTS TO BE ADVECTED
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
@@ -100,15 +98,12 @@
 !| SIKLE2         |-->| IKLE2 IN A BIEF_OBJ STRUCTURE
 !| SINTET         |-->| SINE OF TETA ANGLE
 !| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
-!| SURDET         |-->| 1/DET. OF ELEMENTS 2D FOR ISOPARAM. TRANSF.
 !| TETA           |-->| DISCRETIZED DIRECTIONS
 !| TGF            |-->| TANGENT OF THE LATITUDES OF THE POINTS 2D
 !| TRA01          |<->| WORK TABLE
 !| U              |-->| CURRENT SPEED ALONG X
 !| V              |-->| CURRENT SPEED ALONG Y
-!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| XK             |-->| DISCRETIZED WAVE NUMBER
-!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -120,11 +115,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NPOIN3,NPOIN2,NELEM2,NPLAN,NF,DIFFRA
+      INTEGER, INTENT(IN)    :: NPOIN3,NPOIN2,NELEM2,NPLAN,NF
       INTEGER, INTENT(INOUT) :: IELM3
       DOUBLE PRECISION, INTENT(IN) :: DT,PROMIN
       DOUBLE PRECISION, INTENT(IN) :: DZHDT(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: XK(NPOIN2,NF),CG(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(IN) :: SINTET(NPLAN),COSTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN) :: COSF(NPOIN2),TGF(NPOIN2)
@@ -132,15 +126,13 @@
       DOUBLE PRECISION, INTENT(IN) :: DZX(NPOIN2),DZY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2),DUX(NPOIN2),DUY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: V(NPOIN2),DVX(NPOIN2),DVY(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN) :: SURDET(NELEM2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3,6)
       INTEGER, INTENT(INOUT) :: ELT(NPOIN3,NF),ETA(NPOIN3,NF)
       INTEGER, INTENT(INOUT) :: ISUB(NPOIN3,NF)
       INTEGER, INTENT(INOUT) :: FRE(NPOIN3,NF)
       INTEGER, INTENT(IN)    :: IKLE2(NELEM2,3)
-      INTEGER, INTENT(IN)    :: ETAP1(NPLAN)
       INTEGER, INTENT(INOUT) :: ITR01(NPOIN3,3),IFABOR(NELEM2,7)
-      LOGICAL, INTENT(IN)    :: COURAN,SPHE,PROINF,MAREE
+      LOGICAL, INTENT(IN)    :: COURAN,SPHE,PROINF
       TYPE(BIEF_OBJ), INTENT(INOUT) :: SHP,SHZ,SHF,CX,CY,CT,CF,TB
       TYPE(BIEF_OBJ), INTENT(IN)    :: SIKLE2,TETA,FREQ
       TYPE(BIEF_MESH), INTENT(INOUT):: MESH,MESH3D
@@ -215,7 +207,7 @@
           CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
      &                U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &                DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
-     &                JF,NF,PROINF,SPHE,MAREE,TRA01)
+     &                JF,NF,PROINF,SPHE,TRA01)
 !
         ENDDO
 !

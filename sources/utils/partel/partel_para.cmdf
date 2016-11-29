@@ -1,7 +1,7 @@
 [general]
 path: <root>|sources|utils|partel
 module: partel
-liborder: special hermes parallel bief partel
+liborder: special parallel bief partel
 name: PARTEL_PARA
 
 [bief]
@@ -11,12 +11,6 @@ files: bief_def.f
   front2.f
   voisin.f
   elebd.f
-
-[hermes]
-path: <root>|sources|utils|hermes
-files: utils_med.F
-  utils_serafin.F
-  add_data.f
 
 [parallel]
 path: <root>|sources|utils|parallel

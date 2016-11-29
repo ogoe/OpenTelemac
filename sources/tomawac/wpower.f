@@ -2,7 +2,7 @@
                      SUBROUTINE WPOWER
 !                    *****************
 !
-     &( POWER , F     , FREQ  , DFREQ , CG    , TAILF , NF    , NPLAN ,
+     &( POWER , F     , DFREQ , CG    , TAILF , NF    , NPLAN ,
      &  NPOIN2, ROEAU )
 !
 !***********************************************************************
@@ -67,7 +67,7 @@
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER, INTENT(IN)    ::          NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION, INTENT(IN)    :: TAILF , FREQ(NF)
+      DOUBLE PRECISION, INTENT(IN)    :: TAILF 
       DOUBLE PRECISION, INTENT(IN)    :: DFREQ(NF)
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF)

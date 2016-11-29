@@ -398,8 +398,7 @@
 !
       IF(SUIT) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSUI'
-        CALL LECSUI(SF%R  ,NPLAN ,NF    ,STETA%R, SFR%R  ,
-     &              NELEM2,NPOIN2,AT    ,SUC%R  , SVC%R  ,
+        CALL LECSUI(SF%R  ,NPLAN ,NF    ,NPOIN2,AT    ,SUC%R  , SVC%R  ,
      &              SUC1%R,SVC1%R,SUC2%R,SVC2%R , SUV%R  ,
      &              SVV%R ,SUV1%R,SVV1%R,SUV2%R , SVV2%R ,
      &              VENT  ,TV1   ,TV2   ,COUSTA.OR.PART.EQ.0 ,
@@ -587,7 +586,7 @@
      & MESH%Y%R, KENT    , KSORT    , WAC_FILES(WACFO1)%LU  ,
      & WAC_FILES(WACBI1)%LU         , WAC_FILES(WACBI1)%FMT ,
      & SUV%R   , SVV%R   , SPEULI   , VENT  , VENSTA, GRAVIT ,
-     & DEUPI   , SPRIVE%R, NPRIV    , STRA31%R , STRA32%R,
+     & SPRIVE%R, NPRIV    , STRA31%R , STRA32%R,
      & DEPTH   , FRABL   , BOUNDARY_COLOUR%I)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
@@ -645,7 +644,7 @@
 !       DONE IN SPEINI, THERE IS NO CALL TRANSF BEFORE BECAUSE
 !       CURRENTS ARE NOT TAKEN INTO ACCOUNT IN SPEINI
 !
-        CALL DUMP2D(LT,SF%R,NPOIN3*NF)
+        CALL DUMP2D(SF%R,NPOIN3*NF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
@@ -719,18 +718,18 @@
         CALL PREPRO
 !        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
      & ( STSDER    , STSTOT   , SCT      , SCF     , DT  ,
-     &   MESH%X%R , MESH%Y%R  , STETA    ,
+     &   STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
+     &   SIBOR%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
      &   SDZHDT%R , SDZX%R    , SDZY%R   , SUC%R   ,
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
      &   SDVY%R   , SXK%R     , SCG%R    , SCOSF%R ,
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-     &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.0,
+     &   NPLAN    , NF        , COURAN.OR.PART.EQ.0,
      &   SPHE     , PROINF   , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
-     &   IELM3    , DIFFRA   , MAREE.OR.PART.EQ.0 ,ISUB)
+     &   IELM3    , ISUB)
 !Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 1'
 !
@@ -832,7 +831,7 @@
      & MESH%Y%R   , KENT       , KSORT , WAC_FILES(WACFO1)%LU ,
      & WAC_FILES(WACBI1)%LU    , WAC_FILES(WACBI1)%FMT,
      & SUV%R   , SVV%R   , SPEULI      , VENT  , VENSTA, GRAVIT ,
-     & DEUPI      , SPRIVE%R, NPRIV      , STRA31%R , STRA32%R,
+     & SPRIVE%R, NPRIV      , STRA31%R , STRA32%R,
      & DEPTH      , FRABL   ,BOUNDARY_COLOUR%I)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
@@ -864,7 +863,7 @@
       IF(MAREE.AND.LT.EQ.LT1.OR.
      &   (PART.EQ.1.AND.LT_WAC.EQ.1)) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'
-        CALL CORMAR(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2,
+        CALL CORMAR(AT,LT,TC1,TC2,TM1,TM2,
      &              NVHMA,NVCOU,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORMAR'
         DO IP=1,NPOIN2
@@ -887,18 +886,18 @@
           CALL PREPRO
 !        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
      & ( STSDER    , STSTOT     , SCT      , SCF     , DT  ,
-     &   MESH%X%R , MESH%Y%R  , STETA    ,
+     &   STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
+     &   SIBOR%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
      &   SDZHDT%R , SDZX%R    , SDZY%R   , SUC%R   ,
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
      &   SDVY%R   , SXK%R     , SCG%R    , SCOSF%R ,
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-     &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
+     &   NPLAN    , NF        , COURAN.OR.PART.EQ.1,
      &   SPHE     , PROINF    , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
-     &   IELM3    , DIFFRA    , MAREE.OR.PART.EQ.1 ,ISUB )
+     &   IELM3    , ISUB )
 !Fin COUPLAGE
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
         ENDIF
@@ -916,19 +915,18 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
           CALL PREDIF
 !        EX-SCX%R     EX-SCY%R (MEMORY OPTIMISATION)
-     & ( STSDER   , STSTOT    , SCT    , DT    ,
-     &   MESH%X%R  , MESH%Y%R , STETA ,
+     & ( STSDER   , STSTOT    , SCT    , DT    ,STETA ,
      &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    ,
+     &   SIBOR%I  , STRA01%R , SSHP1 , SSHZ    ,
      &   SELT%I   , SETA%I    , SDEPTH%R,
      &   SDZX%R    , SDZY%R   ,
      &   SXK%R     , SCG%R    ,
      &   SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-     &   NPLAN    , NF        , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
+     &   NPLAN    , NF        , COURAN.OR.PART.EQ.1,
      &   SPHE     , PROINF    , SA%R     , SDFR%R  ,
      &   SF%R,SCCG%R,SDIV%R   , SDELTA%R , SDDX%R  ,
      &   SDDY%R   , F2DIFM    , NBOR     , NPTFR   ,
-     &   SXKONPT%R , SRK%R    , SRX%R    ,
+     &   SXKONPT%R , SRX%R    ,
      &   SRY%R    , SRXX%R    , SRYY%R   , SNEIGB%I,
      &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF  ,
      &   MESH3D,MESH,IELM3,TB,ISUB,MESH%IKLE)
@@ -957,7 +955,7 @@
       IF(SDSCU.EQ.1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMITE'
         CALL LIMITE
-     & (SF%R,SDEPTH%R,SFR%R,NPOIN2,NPLAN,NF)
+     & (SF%R,SFR%R,NPOIN2,NPLAN,NF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMITE'
       ELSEIF(SDSCU.GT.2) THEN
         IF(LNG.EQ.1) THEN
@@ -1018,7 +1016,7 @@
      &  STRA41%R,STRA42%R,STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,
      &  STNEW%R,STRA31%R,STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,
      &  STRA37%R,STRA38%R,STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,SBETA%R,
-     &  NQ_TE1,NQ_OM2,NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,
+     &  NQ_OM2,NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,
      &  F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,
      &  K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,
      &  TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,TB_FAC,MDIA,IANMDI,COEMDI,
@@ -1053,9 +1051,9 @@
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
         IF(COURAN.OR.PART.EQ.1) THEN
-          CALL DUMP2D(LT,STSTOT%R,NPOIN3*NF)
+          CALL DUMP2D(STSTOT%R,NPOIN3*NF)
         ELSE
-          CALL DUMP2D(LT,SF%R,NPOIN3*NF)
+          CALL DUMP2D(SF%R,NPOIN3*NF)
         ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
@@ -1174,8 +1172,7 @@
         IF(GLOB) THEN
           CALL IMPR(LISPRD,NIT,AT,NIT,6)
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOR3D'
-          CALL SOR3D(SF%R,NPLAN,NF,STETA%R,SFR%R,
-     &               NELEM2,NPOIN2,AT,SUC%R,SVC%R,
+          CALL SOR3D(SF%R,NPLAN,NF,NPOIN2,AT,SUC%R,SVC%R,
      &               SUV%R,SVV%R,SDEPTH%R,VENT,
      &               COURAN.OR.PART.EQ.1,
      &               MAREE.OR.PART.EQ.1,TITCAS,WAC_FILES(WACRBI)%LU,

@@ -2,7 +2,7 @@
                      SUBROUTINE DUMP2D
 !                    *****************
 !
-     &( LT , XF1 , NP1 )
+     &(  XF1 , NP1 )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   15/06/2011
@@ -48,7 +48,6 @@
 !+   Use of work arrays optimised.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NP1            |-->| NPOIN2.NPLAN.NF
 !| XF1            |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,7 +59,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: LT,NP1
+      INTEGER, INTENT(IN)          :: NP1
       DOUBLE PRECISION, INTENT(IN) :: XF1(NP1)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -238,7 +237,7 @@
 !     ------------------------------- POWER PER UNIT LENGTH
 !
       IF(SORLEO(34)) THEN
-        CALL WPOWER(STRA60%R,XF1,SFR%R,SDFR%R,SCG%R,TAILF,NF,
+        CALL WPOWER(STRA60%R,XF1,SDFR%R,SCG%R,TAILF,NF,
      &              NPLAN,NPOIN2,ROEAU)
       ENDIF
 !

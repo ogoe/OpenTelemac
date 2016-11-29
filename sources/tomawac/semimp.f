@@ -17,7 +17,7 @@
      & USOLD ,TWOLD ,
      & Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
      & Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
-     & BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
+     & BETA  ,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
      & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
@@ -199,7 +199,6 @@
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NQ_TE1         |-->| SETTING FOR INTEGRATION ON THETA1 (GQM)
 !| NQ_OM2         |-->| NUMBER OF INTEGRATION POINT ON OMEGA2
 !| NSITS          |-->| NUMBER OF ITERATIONS FOR THE SOURCE TERMS
 !| NT1            |-->| NUMBER OF INTEGRATION POINT ON TETA1
@@ -339,8 +338,8 @@
       INTEGER, INTENT(IN) :: MDIA, IANMDI(NPLAN,16,MDIA)
       DOUBLE PRECISION, INTENT(IN) ::  COEMDI(32,MDIA)
 !....GQM method declarations
-      INTEGER, INTENT(IN) :: NQ_TE1, NQ_OM2, NF1, NF2 , NT1
-      INTEGER, INTENT(IN) ::  NCONF , NCONFM
+      INTEGER, INTENT(IN) :: NQ_OM2, NF1, NF2 , NT1
+      INTEGER, INTENT(IN) :: NCONF , NCONFM
       DOUBLE PRECISION, INTENT(IN) ::  SEUIL
       INTEGER, INTENT(IN) :: LBUF  , DIMBUF
       INTEGER, INTENT(IN) :: F_POIN(DIMBUF), T_POIN(DIMBUF)
@@ -590,7 +589,7 @@
           ELSEIF(SVENT.EQ.3) THEN
             CALL QWIND3
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
-     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
+     &  TWNEW , TETA  , NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
      &  COEFWE, COEFWF, COEFWH, TAUX1 , TAUX2 , TAUX3 , TAUX4 )
 !
           ENDIF
@@ -673,9 +672,9 @@
 !....calls GQM method
         ELSEIF (STRIF.EQ.3) THEN
           CALL QNLIN3
-     &( TSTOT , TSDER , F     , NPOIN2, FREQ  , TETA  , NPLAN , NF    ,
-     &  RAISF , TAILF , SEUIL , TAUX1 , LBUF  , DIMBUF, F_POIN, F_COEF,
-     &  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
+     &( TSTOT , TSDER , F     , NPOIN2, NPLAN , NF    ,
+     &  RAISF , SEUIL , TAUX1 , LBUF  , DIMBUF, F_POIN, F_COEF,
+     &  F_PROJ, T_POIN, TB_SCA, NQ_OM2, NF1   , NT1   ,
      &  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
      &  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
      &  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
@@ -970,7 +969,7 @@
           IF(SBREK.EQ.1) THEN
 !
           CALL QBREK1
-     &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , ALFABJ, GAMBJ1,
+     &( TSTOT , F     , TAUX3 , VARIAN, DEPTH , ALFABJ, GAMBJ1,
      &  GAMBJ2, IQBBJ , IHMBJ , NF    , NPLAN , NPOIN2, BETA )
 !
 !
@@ -980,7 +979,7 @@
           ELSEIF(SBREK.EQ.2) THEN
 !
           CALL QBREK2
-     &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , BORETG, GAMATG,
+     &( TSTOT , F     , TAUX3 , VARIAN, DEPTH , BORETG, GAMATG,
      &  IWHTG , NF    , NPLAN , NPOIN2, BETA )
 !
 !
@@ -990,7 +989,7 @@
           ELSEIF(SBREK.EQ.3) THEN
 !
           CALL QBREK3
-     &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , ALFARO, GAMARO,
+     &( TSTOT , F     , TAUX3 , VARIAN, DEPTH , ALFARO, GAMARO,
      &  GAM2RO, IEXPRO, IDISRO, NF    , NPLAN , NPOIN2, BETA )
 !
 !
@@ -1000,7 +999,7 @@
           ELSEIF(SBREK.EQ.4) THEN
 !
           CALL QBREK4
-     &( TSTOT , TSDER , F     ,TAUX3,VARIAN,DEPTH,BETAIH,EM2SIH,
+     &( TSTOT , F     ,TAUX3,VARIAN,DEPTH,BETAIH,EM2SIH,
      &  GRAVIT, NF    , NPLAN , NPOIN2, BETA )
 !
           ELSEIF(SBREK.NE.0) THEN
@@ -1022,24 +1021,7 @@
      &  TAUX1 , TAUX2 )
             CALL QTRIA1
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
-     &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , VARIAN, FMOY  )
-!
-          ELSEIF(STRIA.EQ.2) THEN
-            CALL QTRIA2
-     &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
-     &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
-     &  NBD   , QINDI , TSTOT , TSDER )
-          ENDIF
-!
-!
-!         7.6 WAVE BLOCKING DISSIPATION
-!         -----------------------------
-          IF(SDSCU.EQ.2) THEN
-            CALL QDSCUR
-     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW ,
-     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI,
-     &  TAUX2 ,T3_01%R,T3_02%R)
-          ENDIF
+     &  NF    , NPLAN , NPOIN2, TSTOT , VAR
 !
 !======================================================================
 !         7.7 VEGETATION

@@ -4,7 +4,7 @@
 !
      &(CX,CY,CT,CF,U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      & DUY,DUX,FREQ,COSTET,SINTET,NPOIN2,NPLAN,JF,NF,PROINF,SPHE,
-     & MAREE,TRA01)
+     & TRA01)
 !
 !***********************************************************************
 ! TOMAWAC   V7P1
@@ -113,7 +113,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2)
-      LOGICAL, INTENT(IN)             :: PROINF,SPHE,MAREE
+      LOGICAL, INTENT(IN)             :: PROINF,SPHE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

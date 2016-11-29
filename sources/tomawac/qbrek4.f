@@ -2,7 +2,7 @@
                      SUBROUTINE QBREK4
 !                    *****************
 !
-     &( TSTOT , TSDER , F     , FCAR  , VARIAN, DEPTH , BETAIH, EM2SIH,
+     &( TSTOT , F     , FCAR  , VARIAN, DEPTH , BETAIH, EM2SIH,
      &  GRAVIT, NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
@@ -52,7 +52,6 @@
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
-!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +64,6 @@
       INTEGER, INTENT(IN)   ::          NF    , NPLAN , NPOIN2
       DOUBLE PRECISION, INTENT(IN)   :: BETAIH, EM2SIH, GRAVIT
       DOUBLE PRECISION, INTENT(IN)   :: DEPTH(NPOIN2),FCAR(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)   :: TSDER(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)   :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)   :: VARIAN(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT):: BETA(NPOIN2)
@@ -103,7 +101,6 @@
         DO JP = 1,NPLAN
           DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-!            TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF)+BETA(IP)
           ENDDO ! IP
         ENDDO ! JP
       ENDDO ! IFF

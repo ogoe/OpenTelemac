@@ -2,10 +2,10 @@
                         SUBROUTINE DIFFRAC
 !                       ******************
 !
-     &( CX    , CY    , CT    , XK    , CG    , DEPTH , DZX   , DZY   ,
+     &( CX    , CY    , CT    , XK    , CG    , 
      &  FREQ  , COSTET, SINTET, NPOIN2, NPLAN , IFF   , NF    , PROINF,
      &  SPHE  , A     , DFREQ , F     , CCG   , DIV   , DELTA , DDX   ,
-     &  DDY   , EPS   , NBOR  , NPTFR , XKONPT, RK    , RX    , RY    ,
+     &  DDY   , EPS   , NBOR  , NPTFR , XKONPT, RX    , RY    ,
      &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF,OPTDER)
 !
 !***********************************************************************
@@ -55,14 +55,11 @@
 !| DDX            |<--| X-DERIVATIVE OF A VARIABLE
 !| DDY            |<--| Y-DERIVATIVE OF A VARIABLE
 !| DELTA          |<--| DIFFRACTION PARAMETER
-!| DEPTH          |-->| WATER DEPTH
 !| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
 !| DIFFRA         |-->| IF >0 DIFFRACTION IS CONSIDERED
 !|                      IF = 1 MSE FORMULATION
 !|                      IF = 2 RMSE FORMULATION
 !| DIV            |<--| DIVERGENCE OF FUNCTION USED FOR DELTA COMPUT.
-!| DZX            |-->| BOTTOM SLOPE ALONG X
-!| DZY            |-->| BOTTOM SLOPE ALONG Y
 !| EPS            |-->| VARIANCE THRESHOLD FOR DIFFRACTION
 !| F              |<->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
 !| FLTDIF         |-->| IF TRUE, LOCAL AMPLITUDES ARE FILTERED
@@ -77,7 +74,6 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
-!| RK             |-->| ARRAY USED IN THE MESHFREE TECHNIQUE
 !| RX             |-->| ARRAY USED IN THE MESHFREE TECHNIQUE
 !| RXX            |-->| ARRAY USED IN THE MESHFREE TECHNIQUE
 !| RY             |-->| ARRAY USED IN THE MESHFREE TECHNIQUE
@@ -109,8 +105,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: CT(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF),XK(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: DZX(NPOIN2),DZY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: A(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: DFREQ(NF)
@@ -119,7 +113,6 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DELTA(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: DDX(NPOIN2), DDY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: EPS
-      DOUBLE PRECISION, INTENT(IN)    :: RK(MAXNSP,NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: RX(MAXNSP,NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: RY(MAXNSP,NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: RXX(MAXNSP,NPOIN2)
@@ -278,7 +271,7 @@
 !           note JMH: pour first il y a .FALSE.  !!!
 !                     et seul SCDA(IPOIN,3) est utilisé
             CALL RPI_INTR(NEIGB,NB_CLOSE,
-     &                    RK(1,IPOIN),RX(1,IPOIN),RY(1,IPOIN),
+     &                    RX(1,IPOIN),RY(1,IPOIN),
      &                    RXX(1,IPOIN),RYY(1,IPOIN),
      &                    NPOIN2,IPOIN,MAXNSP,A,
      &                    FRDA(IPOIN,1),FRDA(IPOIN,2),

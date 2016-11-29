@@ -2,7 +2,7 @@
                      SUBROUTINE SOR3D
 !                    ****************
 !
-     &(F,NPLAN,NF,TETA,FREQ,NELEM2,NPOIN2,AT,U,V,UV,VV,DEPTH,VENT,
+     &(F,NPLAN,NF,NPOIN2,AT,U,V,UV,VV,DEPTH,VENT,
      & COURAN,MAREE,TITRE,NR3D,BINR3D,TRA01,MESH3D)
 !
 !***********************************************************************
@@ -50,15 +50,12 @@
 !| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
 !| DEPTH          |-->| WATER DEPTH
 !| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
-!| FREQ           |-->| DISCRETIZED FREQUENCIES
 !| MAREE          |-->| LOGICAL INDICATING CONSIDERATION OF TIDE
 !| MESH3D         |-->| MESH STRUCTURE IN 3D (I.E. INCLUDING DIRECTIONS)
-!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NR3D           |-->| LOGICAL UNIT NUMBER OF GLOBAL RESULT FILE
-!| TETA           |-->| DISCRETIZED DIRECTIONS
 !| TITRE          |-->| TITLE
 !| TRA01          |-->| DOUBLE PRECISION WORK TABLE OF SIZE NPOIN2*NPLAN
 !| U              |-->| CURRENT SPEED ALONG X
@@ -76,9 +73,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NR3D,NF,NPLAN,NELEM2,NPOIN2
+      INTEGER, INTENT(IN)             :: NR3D,NF,NPLAN,NPOIN2
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF),AT
-      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),TETA(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2),V(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: UV(NPOIN2),VV(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
@@ -90,9 +86,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ISTAT,IB(2),I,IIF,J
-      DOUBLE PRECISION ATT(1)
-      CHARACTER(LEN=3) CAR
+      INTEGER ISTAT,I,IIF
 !
       INTEGER, PARAMETER :: NFMAX = 200
       LOGICAL SORLEO(NFMAX+2)
