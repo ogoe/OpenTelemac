@@ -12,16 +12,16 @@ of two fluids with different densities.
 %
 \section{Description}
 %
-We consider a tank 30~m long and 1.2~m wide with a constant water depth
-of 4~m.
+A 30~m long and 1.2~m wide tank with a constant water depth of 4~m is
+considered.
 This tank contains two fluids at rest with different densities because
 of their salinity:
 1~g/L in the left half part and 0~g/L on the right part.
-The flow is governed by density effect.
+The flow is governed by density effects.
 The heavy fluid sinks below the lighter one by forming a saline wedge
-which, according to the observations, make an angle of about $\pi/3$
+which, according to the observations, makes an angle of about $\pi/3$
 with the bottom [2].\\
-The simulation is done with and without hydrostatic hypothesis.
+The simulation is done with and without the hydrostatic hypothesis.
 %
 % - Reference:
 %     This part gives the reference solution we are comparing to and
@@ -50,6 +50,8 @@ Journal of Fluid Mechanics, 31(2), 209-248. 1968.
 %
 \subsection{Geometry and Mesh}
 %
+See Figure \ref{t3d:lock-exchange:mesh_CI}
+%
 \subsubsection{Bathymetry}
 %
 Flat bottom ($z$ = -4~m)
@@ -65,6 +67,13 @@ Channel width = 1.2~m
 1,060 nodes\\
 12 planes regularly spaced
 %
+\begin{figure} [H]
+\centering
+\includegraphics[scale=0.8]{../img/lock_exchange_mesh.pdf}
+ \caption{Lock exchange test: Mesh and initial conditions for salinity}
+ \label{t3d:lock-exchange:mesh_CI}
+\end{figure}
+%
 % - Physical parameters:
 %     This part specifies the physical parameters
 %
@@ -75,7 +84,7 @@ Diffusion: no\\
 Density law depending on salinity:
 \begin{equation}
 \rho = \rho_{ref} (1 + 750.10^{-6} . sal ),
-\rm{with} \rho_{ref} = 999.972~\rm{kg/m}^3
+\rm{with } \rho_{ref} = 999.972~\rm{kg/m}^3
 \end{equation}
 Coriolis: no\\
 Wind: no
@@ -99,13 +108,14 @@ Wind: no
 %
 Constant water depth = 4~m\\
 No velocity\\
-Initial salinity: 1~g/L on the half left part and 0~g/L in the other
-part
+Initial salinity: 1~g/L on the left half part and 0~g/L in the other
+part (defined in the subroutine \telfile{CONDIM} and the keyword
+\telkey{INITIAL VALUES OF TRACERS})
 %
 \subsubsection{Boundary conditions}
 %
-Closed boundaries.\\
-No bottom friction (hydrostatic case: default i.e. Chézy 60 m$^{1/2}/s$)
+Closed boundaries\\
+No bottom friction
 %
 \subsection{General parameters}
 %
@@ -119,10 +129,8 @@ Simulation duration: 100~s
 %
 \subsection{Numerical parameters}
 %
-Hydrostatic version for simulation 1 and non-hydrostatic version for
-simulation 2\\
-Advection of velocities: Characteristics (with hydrostatic computation),
-N-type MURD scheme (with non-hydrostatic computation)\\
+Hydrostatic and non-hydrostatic versions are run\\
+Advection of velocities: N-type MURD scheme\\
 Advection of tracers: PSI-type MURD scheme
 %
 \subsection{Comments}
@@ -134,29 +142,46 @@ Advection of tracers: PSI-type MURD scheme
 %
 \section{Results}
 %
-Figure 3.12.3 presents the results obtained with the non-hydrostatic
-version.
-We can observe that the angle of $\pi/3$ between the front and the
-bottom is correctly represented.\\
-If we consider that the whole potential energy of the initial conditions
-is transformed into kinetic energy, we can show that the front velocity
-is equal to 5.5 $\alpha$ where:
+Figure \ref{t3d:lock-exchange:NH_res} presents the results obtained with
+the non-hydrostatic version.
+
+\begin{figure} [H]
+\centering
+\includegraphics[scale=0.8]{../img/lock_exchange_NH_res.pdf}
+ \caption{Lock exchange test: results from the non hydrostatic version}
+ \label{t3d:lock-exchange:NH_res}
+\end{figure}
+
+The angle of $\pi/3$ between the front and the bottom is correctly
+represented.\\
+Considering that the whole potential energy of the initial conditions is
+transformed into kinetic energy, it can be shown that the front velocity
+is equal to 0.5 $\alpha$ where:
 \begin{equation}
-\alpha = \sqrt{g \frac{\rho_2-\rho_1}{\rho_2}h^2}
+\alpha = \sqrt{g \frac{\rho_2-\rho_1}{\rho_2}h}
 \end{equation}
 The respective densities are $\rho_2$ = 1000.722~kg/m$^3$
 and $\rho_1$ = 999.972~kg/m$^3$.
 Then the theoretical velocity of the front is equal to 0.086~m/s.
 The velocity computed by \telemac{3d} is approximately 0.07~m/s
-(see figure 3.12.3 where $\Delta x$ = 7~m at $t$ = 100~s).
-This underestimated result was predictable because we start from a
-non-established situation with zero velocity which makes the calculation
-incorrect.\\
-The results of the hydrostatic computation presented on figure 3.12.2
-show an average velocity of approximately 0.065~m/s and an angle close
-to 90$^\circ$.
-This shows clearly that the hydrostatic hypothesis is not valid for
-this type of computation.
+(see figure \ref{t3d:lock-exchange:NH_res} where $\Delta x$ = 7~m
+at $t$ = 100~s).
+This underestimated result was predictable because the calculation is
+started from a non-established situation with no velocity which makes
+the calculation incorrect.\\
+The results of the hydrostatic computation presented on figure
+\ref{t3d:lock-exchange:hydro_res} show an average velocity of
+approximately 0.065~m/s and an angle close to 90$^\circ$.
+
+\begin{figure} [h]
+\centering
+\includegraphics[scale=0.8]{../img/lock_exchange_hydro_res.pdf}
+ \caption{Lock exchange test: results with the hydrostatic hypothesis}
+ \label{t3d:lock-exchange:hydro_res}
+\end{figure}
+
+This shows that the hydrostatic hypothesis is not valid for this type of
+computation.
 %
 \section{Conclusion}
 %
