@@ -16,6 +16,7 @@ of multiple tracers.
 %
 We consider a basin at rest.
 Sources are specified at some points of the mesh.
+3 tracers are used, one is the sum of the 2 others.
 %
 % - Reference:
 %     This part gives the reference solution we are comparing to and
@@ -38,12 +39,12 @@ Sources are specified at some points of the mesh.
 \subsubsection{Bathymetry}
 %
 Flat bottom ($z$ = -1~m)\\
-Constant water depth = 1.0~m
+Constant water depth = 1~m
 %
 \subsubsection{Geometry}
 %
 Basin length = 100~m\\
-Basin width = 40~m (figure 3.7.1)
+Basin width = 40~m (figure \ref{t3d:source:mesh_vel})
 %
 \subsubsection{Mesh}
 %
@@ -100,19 +101,25 @@ Simulation duration: 1,100~s
 \subsection{Numerical parameters}
 %
 Hydrostatic simulation\\
-Advection of velocities: Characteristic\\
+Advection of velocities: characteristics\\
 Advection of tracers: edge by edge explicit finite volume Leo Postma
 scheme for tidal flats
 %
 \subsection{Definition of sources}
 %
-position source 1: $x \approx$ -21.6~m, $y \approx$ 5.3~m, $z$ = -0.5~m\\
-position source 2: $x \approx$ -0.8~m, $y \approx$ -10.~m, $z$ = -0.5~m\\
-constant discharge of 1.0~m3/s at both sources\\
-tracer concentration at sources: 10.~g/L (or kg/m$^3$)\\
-source 1 discharges tracer 1 and 2\\
-source 2 discharges tracer 2 and 3\\
-source 2 has an initial velocity: $U$ = 0.5~m/s $V$ = 2.0~m/s
+Position source 1: $x \approx$ -21.6~m, $y \approx$ 5.3~m, $z$ = -0.5~m\\
+Position source 2: $x \approx$ -0.8~m, $y \approx$ -10.~m, $z$ = -0.5~m\\
+Constant discharge of 1~m$^3$/s at both sources\\
+Tracer concentration at sources: 10~g/L (or kg/m$^3$)\\
+Source 1 discharges tracer 1 and 2\\
+Source 2 discharges tracer 2 and 3\\
+Source 2 has an initial velocity: $U$ = 0.5~m/s, $V$ = 2~m/s\\
+%
+The definition of the discharges and tracer concentrations at sources
+has been done in the \telkey{SOURCES FILE}.
+As this last file is present in the examples directory, the keyword
+\telkey{VALUES OF THE TRACERS AT THE SOURCES} is ignored but is given
+as an example coherent with what is done in the \telkey{SOURCES FILE}.
 %
 \subsection{Comments}
 %
@@ -123,53 +130,162 @@ source 2 has an initial velocity: $U$ = 0.5~m/s $V$ = 2.0~m/s
 %
 \section{Results}
 %
-Figure 3.7.1 shows the horizontal mesh and sources positions in the
-upper panel.
-The lower panel highlights the influence of source 2 initial velocity
-on the horizontal velocity field at mid depth at 550~s.
+Figure \ref{t3d:source:mesh_vel} shows the horizontal mesh and sources
+positions in the upper panel.
+
+\begin{figure} [H]
+\centering
+\includegraphics[scale=1.]{../img/source_mesh_vit.pdf}
+ \caption{Source test: Mesh and horizontal velocity field}
+ \label{t3d:source:mesh_vel}
+\end{figure}
+
+The lower panel highlights the influence of the initial velocity of
+source 2 on the horizontal velocity field at mid depth at 550~s.
 Additionally, the lower panel shows tracer 2 spreads in every direction
 at source 1, unlike at source 2 where tracer 2 diffuses in the initial
 velocity direction.
-The horizontal and vertical plumes of each tracer at 1,100~s, on
-figures 3.7.2 and 3.7.3 respectively, allows verifying that tracer 2
-plume is the combination of tracer 1 and 3 plumes.
-Moreover, the following mass balance of the \telemac{3d} simulation
-shows that the amount of water injected by the sources is correct
-(2,200~m$^3$ = 2 sources $\times$ 1~m$^3$/s $\times$ 1,100~s
-with an error of 6 $\times$ 10$^{-4}$).
-The mass balance also shows the conservation and the amount of
-discharged tracer 1, 2 and 3 is correct.
-(e.g. for tracer 2: 10~kg/m$^3 \times$ 2 sources $\times$ 1,100~s
-$\times$ 1~m$^3$/s = 22,000~kg with an error of 5. 10$^{-2}$).
 
+The horizontal and vertical plumes of each tracer at 1,100~s, on
+figures \ref{t3d:source:hor_shape} and \ref{t3d:source:ver_shape}
+respectively, allows verifying that the plume of tracer 2 is the
+combination of the plumes of tracer 1 and 3.
+
+\begin{figure} [H]
+\centering
+\includegraphics[scale=1.]{../img/source_hor_shape.pdf}
+ \caption{Source test: Horizontal shape of the plumes}
+ \label{t3d:source:hor_shape}
+\end{figure}
+
+\begin{figure} [H]
+\centering
+\includegraphics[scale=1.]{../img/source_ver_shape.pdf}
+ \caption{Source test: Vertical shape of the plumes}
+ \label{t3d:source:ver_shape}
+\end{figure}
+
+Moreover, the following mass balance of the \telemac{3d} simulation
+shows that the amount of water injected by the sources is very good
+(2,200~m$^3$ = 2 sources $\times$ 1~m$^3$/s $\times$ 1,100~s
+with an error lower than 10$^{-6}~\rm{m}^3$, thus a relative error
+lower than 10$^{-9}$).
+If the keywords for accuracy for propagation and diffusion of tracers
+are equal to 10$^{-14}$, the error becomes lower than
+$10^{-12}~\rm{m}^3$, thus a relative error lower than the machine
+accuracy 10$^{-15}$).
+The mass balance also shows the conservation and the amount of
+discharged tracer 1, 2 and 3 is good
+(e.g. for tracer 2: 10~kg/m$^3 \times$ 2 sources $\times$ 1,100~s
+$\times$ 1~m$^3$/s = 22,000~kg with an error lower than 10$^{-5}$~kg,
+so a relative error lower than 10$^{-9}$).
+To get an error lower than 2.10$^{-8}$~kg, so a relative error lower
+than 2.10$^{-12}$, an accuracy of 10$^{-14}$ is required for the
+diffusion of tracers and propagation.
+Otherwise, the mass balances may be worse but sufficient enough,
+depending on the accuracy the user wishes.
+
+Balance for \telkey{ACCURACY FOR PROPAGATION} $= 10^{-8}$ and
+\telkey{ACCURACY FOR DIFFUSION OF TRACERS} $= 10^{-9}$ in serial:
+%
 \begin{lstlisting}[language=TelFortran]
-        BILAN DE MASSE FINAL      T=     1100.0000
-        --- EAU ---
-        MASSE INITIALE (DEBUT DE CE CALCUL) :            4000.000
-        MASSE FINALE                              :      6200.001
-        MASSE SORTIE DU DOMAINE(OU SOURCE) :            -2200.000
-        MASSE PERDUE                              :     -0.6358517E-03
-        --- TRACEUR 1 ---
-        MASSE INITIALE (DEBUT DE CE CALCUL)        :     0.000000
-        MASSE FINALE                               :      10999.98
-        MASSE SORTIE (FRONTIERES OU SOURCE) :            -11000.00
-        MASSE PERDUE                                :    0.1617723E-01
-        --- TRACEUR 2 ---
-        MASSE INITIALE (DEBUT DE CE CALCUL)          :     0.000000
-        MASSE FINALE                                 :     21999.95
-        MASSE SORTIE (FRONTIERES OU SOURCE) :            -22000.00
-        MASSE PERDUE                                :     0.4578111E-01
-        --- TRACEUR 3 ---
-        MASSE INITIALE (DEBUT DE CE CALCUL)          :     0.000000
-        MASSE FINALE                                 :     10999.97
-        MASSE SORTIE (FRONTIERES OU SOURCE) :             -11000.00
-        MASSE PERDUE                                  :   0.3159172E-01
+                        FINAL MASS BALANCE
+        T =        1100.0000
+
+        --- WATER ---
+        INITIAL MASS                        :     4000.000
+        FINAL MASS                          :     6200.000
+        MASS LEAVING THE DOMAIN (OR SOURCE) :    -2200.000
+        MASS LOSS                           :    0.2391803E-06
+
+        --- TRACER 1: TRACER 1        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :    0.5897147E-05
+
+        --- TRACER 2: TRACER 2        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     22000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -22000.00
+        MASS LOSS                           :    0.2584195E-05
+
+        --- TRACER 3: TRACER 3        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :   -0.3261903E-05
+\end{lstlisting}
+
+Balance for \telkey{ACCURACY FOR PROPAGATION} $= 10^{-8}$ and
+\telkey{ACCURACY FOR DIFFUSION OF TRACERS} $= 10^{-9}$ in parallel
+(4 processors):
+%
+\begin{lstlisting}[language=TelFortran]
+                        FINAL MASS BALANCE
+        T =        1100.0000
+
+        --- WATER ---
+        INITIAL MASS                        :     4000.000
+        FINAL MASS                          :     6200.000
+        MASS LEAVING THE DOMAIN (OR SOURCE) :    -2200.000
+        MASS LOSS                           :    0.2392089E-06
+
+        --- TRACER 1: TRACER 1        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :    0.5897227E-05
+
+        --- TRACER 2: TRACER 2        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     22000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -22000.00
+        MASS LOSS                           :    0.2584398E-05
+
+        --- TRACER 3: TRACER 3        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :   -0.3261772E-05
+\end{lstlisting}
+
+Balance for \telkey{ACCURACY FOR PROPAGATION} $= 10^{-14}$ and
+\telkey{ACCURACY FOR DIFFUSION OF TRACERS} $= 10^{-14}$ in serial:
+%
+\begin{lstlisting}[language=TelFortran]
+                        FINAL MASS BALANCE
+        T =        1100.0000
+
+        --- WATER ---
+        INITIAL MASS                        :     4000.000
+        FINAL MASS                          :     6200.000
+        MASS LEAVING THE DOMAIN (OR SOURCE) :    -2200.000
+        MASS LOSS                           :    0.4547474E-12
+
+        --- TRACER 1: TRACER 1        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :   -0.1768058E-07
+
+        --- TRACER 2: TRACER 2        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     22000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -22000.00
+        MASS LOSS                           :   -0.1020817E-07
+
+        --- TRACER 3: TRACER 3        , UNIT : ??              * M3)
+        INITIAL MASS                        :     0.000000
+        FINAL MASS                          :     11000.00
+        MASS EXITING (BOUNDARIES OR SOURCE) :    -11000.00
+        MASS LOSS                           :    0.7525159E-08
 \end{lstlisting}
 %
 \section{Conclusion}
 %
-\telemac{3d} is able to compute the evolution and conservation of a
-tracer discharged by a source.
+\telemac{3d} is able to compute the evolution and conservation of
+tracers discharged by sources.
 %
 % Here is an example of how to include the graph generated by validateTELEMAC.py
 % They should be in test_case/img
