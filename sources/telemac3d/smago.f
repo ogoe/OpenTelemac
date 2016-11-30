@@ -40,6 +40,11 @@
 !+        V7P1
 !+   Adding a missing coefficient unsv3d**(1/3) in the formula.
 !
+!!history  R. ATA (EDF LAB, LNHE)
+!+        30/11/2016
+!+        V7P2
+!+   Adding missing parcom for parallel case.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM3          |-->| TYPE OF ELEMENT
 !| MASKEL         |-->| MASKING OF ELEMENTS
@@ -101,6 +106,15 @@
       CALL VECTOR(T4,'=','GRADF          Y',IELM3,
      &            1.D0,V,V,V,V,V,V,MESH3,MSK,MASKEL)
 !
+!     FOR PARALLEL CASES
+! 
+      IF(NCSIZE.GT.1)THEN
+        CALL PARCOM(T1,2,MESH3)
+        CALL PARCOM(T2,2,MESH3)
+        CALL PARCOM(T3,2,MESH3)
+        CALL PARCOM(T4,2,MESH3)
+      ENDIF
+!   
       DO I=1,NUSMAG%DIM1
         NUSMAG%R(I)=CS2*
      &  SQRT(2.D0*(T1%R(I)**2+T4%R(I)**2)+(T2%R(I)+T3%R(I))**2)
