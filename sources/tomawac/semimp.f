@@ -1021,7 +1021,24 @@
      &  TAUX1 , TAUX2 )
             CALL QTRIA1
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
-     &  NF    , NPLAN , NPOIN2, TSTOT , VAR
+     &  NF    , NPLAN , NPOIN2, TSTOT , VARIAN, FMOY  )
+!
+          ELSEIF(STRIA.EQ.2) THEN
+            CALL QTRIA2
+     &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
+     &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
+     &  NBD   , QINDI , TSTOT )
+          ENDIF
+!
+!
+!         7.6 WAVE BLOCKING DISSIPATION
+!         -----------------------------
+          IF(SDSCU.EQ.2) THEN
+            CALL QDSCUR
+     &( TSTOT , TSDER , F     , CF    , XK    , FREQ  , USOLD , USNEW ,
+     &  DEPTH , PROINF, CDSCUR, CMOUT4, NF    , NPLAN , NPOIN2, CIMPLI,
+     &  TAUX2 ,T3_01%R,T3_02%R)
+          ENDIF
 !
 !======================================================================
 !         7.7 VEGETATION
