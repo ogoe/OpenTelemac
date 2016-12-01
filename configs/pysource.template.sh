@@ -1,6 +1,6 @@
-# This file is a template for a Linux environement file
-# runnning "source pysource.template.sh" will position all
-# the necessary environement variable for telemac
+# This file is a template for a Linux environment file
+# running "source pysource.template.sh" will position all
+# the necessary environment variables for telemac
 # To adapt to your installation replace word <word> by their local value
 ###
 ### TELEMAC settings -----------------------------------------------------------
@@ -25,7 +25,7 @@ export PYTHONPATH=$HOMETEL/builds/$USETELCFG/wrap_api/lib:$PYTHONPATH
 ###
 ### COMPILERS -----------------------------------------------------------
 ###
-# Here are a few exemple for external libraries
+# Here are a few examples for external libraries
 #export SYSTEL=/data/projets/projets.002/systel.002
 
 ### MPI -----------------------------------------------------------
