@@ -410,11 +410,11 @@ files: bief_def.f
   cflpsi.f
   config_code.f
   maskbd.f
-  bief_valida.f
   front2.f
   global_to_local_point.f
   diffcl.f
   write_mesh.f
+  bief_valida.f
   write_data.f
   impvec.f
   bief_desimp.f
@@ -871,6 +871,7 @@ files: friction_def.f
   aksain.f
   corvis.f
   lecsng.f
+  walldist.f
   source_telemac2d.f
   lecsip.f
   flot.f
@@ -983,7 +984,6 @@ files: friction_def.f
   lecbreach.f
   breach.f
   telemac2d.F
-  walldist.f
 
 [tomawac]
 path: <root>|sources|tomawac

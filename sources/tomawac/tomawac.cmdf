@@ -15,12 +15,6 @@ files: ad_tomawac_end.f
   ad_tomawac_main_finalize.f
   ad_tomawac_main_after_lecdon_tomawac.f
   ad_tomawac_main_init.f
-  ad_tomawac_end.f
-  ad_tomawac_initialisation_begin.f
-  ad_tomawac_initialisation_end.f
-  ad_tomawac_timestep_end.f
-  ad_tomawac_begin.f
-  ad_tomawac_timestep_begin.f
 
 [bief]
 path: <root>|sources|utils|bief
@@ -417,8 +411,6 @@ files: bief_def.f
   almesh.f
   read_submit.f
   sortie.f
-  vc17aa.f
-  vc18aa.f
 
 [damocles]
 path: <root>|sources|utils|damocles
