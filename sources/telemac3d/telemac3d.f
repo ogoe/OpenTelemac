@@ -170,6 +170,17 @@
 !+   Imposed flowrates on the bed.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
+!+        21/01/2016
+!+        V7P1
+!+   Initial conditions of results file in restart mode were forgotten
+!+   they are useless but now requested by the Hermes module...
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        08/02/2016
+!+        V7P2
+!+   Adding the argument HPROP in the call to Sisyphe.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
 !+        24/03/2016
 !+        V7P2
 !+   Adapting to new CVDF3D, saving Z at time T(n) in ZN.
