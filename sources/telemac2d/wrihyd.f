@@ -218,9 +218,9 @@
 !     &    "conversion-timestep      '00000000",IHOUR,IMIN,ISEC,"'"
       WRITE ( NHYD, '(A,I14,A)' )
      &    "conversion-timestep      '",NSTEPA,"'"
-      WRITE ( NHYD, '(A,I6)'  )
+      WRITE ( NHYD, '(A,I7)'  )
      &    "grid-cells-first-direction ",NPOIN2
-      WRITE ( NHYD, '(A,I6,A)')
+      WRITE ( NHYD, '(A,I7,A)')
      &    "grid-cells-second-direction",NSEG+MBND," # nr of exchanges!"
       WRITE ( NHYD, '(A,I6)' )
      &    "number-hydrodynamic-layers ",NOLAY

@@ -771,8 +771,8 @@ files: friction_def.f
   interpmeteo2.f
   meteo.f
   buse.f
-  sta_dis_cur.f
   read_fic_frliq.f
+  sta_dis_cur.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -815,10 +815,10 @@ files: declarations_telemac3d.f
   utimp.f
   source.f
   check.f
+  q3.f
   read_bin_frliq.f
   vel_prof_z.f
   debimp_3d.f
-  q3.f
   tra_prof_z.f
   sl3.f
   tidal_model_t3d.f

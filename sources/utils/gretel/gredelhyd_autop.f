@@ -336,10 +336,10 @@
      &                                 IHOUR,IMIN  ,ISEC, "'"
       WRITE(3, '(A,I14,A)' )
      &    "conversion-timestep      '",NSTEPA,"'"
-      WRITE(3, '(A,I6)'  )
+      WRITE(3, '(A,I7)'  )
      &    "grid-cells-first-direction ",NPOIN2
-      WRITE(3, '(A,I6,A)')
-     &    "grid-cells-second-direction",NSEG2+MBND," # nr of exchanges!"
+      WRITE(3, '(A,I7,A)')
+     &   "grid-cells-second-direction ",NSEG2+MBND," # nr of exchanges!"
       WRITE(3, '(A,I6)' )
      &    "number-hydrodynamic-layers ",NPLAN
       WRITE(3, '(A,I6)' )
