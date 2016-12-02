@@ -698,7 +698,8 @@ class actionRUN(ACTION):
                   print '        +> found:'
                   for oFile in oFiles: print '           - ',oFile
                # ~~> Save temporarily for subsequent difference
-               oriFile = path.splitext(princiFile)[0]+'.original'+path.splitext(princiFile)[1]
+               princiName,princiExt = path.splitext(path.basename(princiFile))
+               oriFile = path.join(oneup,princiName+'.original'+princiExt)
                putFileContent(oriFile,[])
                for pType,p in pFiles:
                   if p in oFiles: addFileContent(oriFile,getFileContent(oFiles[p]))
