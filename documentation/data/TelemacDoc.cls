@@ -170,7 +170,6 @@
 
 % For hyper links
 \RequirePackage{hyperref}
-\RequirePackage{hypernat}
 
 % ** start PT
 % Avoid ignoring all spaces after any macro, user defined or not
