@@ -24,8 +24,8 @@
         "sources|utils|gretel",
         "sources|utils|diffsel",
         "sources|utils|splitsel",
-#dredgesim
-        "sources|dredgesim",
+#nestor
+        "sources|nestor",
 #waqtel
         "sources|waqtel",
 #Sisyphe
