@@ -21,7 +21,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import chdir, remove, walk, environ, path, linesep
+from os import chdir, remove, walk, environ, path, linesep, sep
 # ~~> dependencies towards the root of pytel
 from config import OptionParser, parseConfigFile, \
                    parseConfig_ValidateTELEMAC
@@ -140,7 +140,7 @@ def create_case_list_file(doc_dir, val_dir, cfg_val, cleanup):
             if not path.exists(path.join(val_dir,case,'doc',case+".tex")):
                skipedCases.append(case)
             else:
-               txt = linesep + '\subincludefrom{' + val_dir + '/' +\
+               txt = linesep + '\subincludefrom{' + val_dir.replace(sep,'/') + '/' +\
                   case + '/' + 'doc' +\
                   '/' + '}{' + case + '}' + \
                   linesep + '\clearpage' + linesep
