@@ -17,6 +17,13 @@
 !+        V7P1
 !+        First version
 !
+!history  R.ATA (LNHE)
+!+        13/12/2016
+!+        V7P2
+!+        add an additional condition before getting variable values
+!+        in the call of GET_DATA_VALUE
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FORMAT OF THE FILE
 !| FID            |-->| LOGICAL UNIT OF FILE
@@ -67,6 +74,7 @@
       CHARACTER(LEN=16), ALLOCATABLE :: VARNAME(:),VARUNIT(:)
       CHARACTER(LEN=80) :: TITLE
       INTEGER :: NVAR,IVAR
+      INTRINSIC SIZE
 !
 !-----------------------------------------------------------------------
 !
@@ -148,54 +156,60 @@
 !
       DO L=1,MIN(MAXVAR,VARSOR%N)
 !
-        IF((ALIRE(L).EQ.1).AND.(ASSOCIATED(VARSOR%ADR(L)%P))
-     &      .AND.(VAR_LIST(L)(1:1).NE.' ')) THEN
-!         Interpolate the results if necessary
-          IF(INTERPOLATE) THEN
-            CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
-     &                          WD,NPOIN_PREV,IERR)
-            ! If the variable is not in the file
-            IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-              TROUVE(L) = 0
-              CONTINUE
-            ELSE
-              CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
-              TROUVE(L) = 1
-            ENDIF
-!           COPIES BOTTOM AND FREE SURFACE
-            CALL OV('X=Y     ',VARSOR%ADR(L)%P%R,WD,WD,0.D0,NPOIN2)
-            CALL OV('X=Y     ',VARSOR%ADR(L)%P%R(NPOIN-NPOIN2+1:NPOIN),
-     &                         WD(NPOIN_PREV-NPOIN2+1:NPOIN_PREV),
-     &                         WD,0.D0,NPOIN2)
-!           INTERPOLATES OTHER PLANES
-            IF(NPLAN.GT.2) THEN
-              DO IPLAN=2,NPLAN-1
-                ARG=(NPLAN_PREV-1)*FLOAT(IPLAN-1)/FLOAT(NPLAN-1)
-                TETA=ARG-INT(ARG)
-!               IP1 : LOWER PLANE NUMBER - 1
-                IP1=INT(ARG)
-!               IP2 : UPPER PLANE NUMBER - 1
-                IP2=IP1+1
-                DO I=1,NPOIN2
-                  VARSOR%ADR(L)%P%R(I+NPOIN2*(IPLAN-1))=
-     &            TETA *WD(I+NPOIN2*IP2)+(1.D0-TETA)*WD(I+NPOIN2*IP1)
+        IF((ALIRE(L).EQ.1)               .AND.
+     &     (ASSOCIATED(VARSOR%ADR(L)%P)) .AND.
+     &     (VAR_LIST(L)(1:1).NE.' ')    ) THEN
+!  
+!         To avoid cases where dim1=0
+          IF(VARSOR%ADR(L)%P%DIM1.GE.NPOIN_PREV) THEN 
+!           Interpolate the results if necessary
+            IF(INTERPOLATE) THEN
+              CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
+     &                            WD,NPOIN_PREV,IERR)
+!             If the variable is not in the file
+              IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
+                TROUVE(L) = 0
+                CONTINUE
+              ELSE
+                CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
+                TROUVE(L) = 1
+              ENDIF
+!             COPIES BOTTOM AND FREE SURFACE
+             CALL OV('X=Y     ',VARSOR%ADR(L)%P%R,WD,WD,0.D0,NPOIN2)
+             CALL OV('X=Y     ',VARSOR%ADR(L)%P%R(NPOIN-NPOIN2+1:NPOIN),
+     &                          WD(NPOIN_PREV-NPOIN2+1:NPOIN_PREV),
+     &                          WD,0.D0,NPOIN2)
+!             INTERPOLATES OTHER PLANES
+              IF(NPLAN.GT.2) THEN
+                DO IPLAN=2,NPLAN-1
+                  ARG=(NPLAN_PREV-1)*FLOAT(IPLAN-1)/FLOAT(NPLAN-1)
+                  TETA=ARG-INT(ARG)
+!                 IP1 : LOWER PLANE NUMBER - 1
+                  IP1=INT(ARG)
+!                 IP2 : UPPER PLANE NUMBER - 1
+                  IP2=IP1+1
+                  DO I=1,NPOIN2
+                    VARSOR%ADR(L)%P%R(I+NPOIN2*(IPLAN-1))=
+     &              TETA *WD(I+NPOIN2*IP2)+(1.D0-TETA)*WD(I+NPOIN2*IP1)
+                  ENDDO
                 ENDDO
-              ENDDO
-            ENDIF
-          ELSE
-
-            CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
-     &                          VARSOR%ADR(L)%P%R,NPOIN_PREV,IERR)
-
-            ! If the variable is not in the file
-            IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-              TROUVE(L) = 0
+              ENDIF
+!           NO INTERPOLATION
             ELSE
-              CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
-              TROUVE(L) = 1
+!
+              CALL GET_DATA_VALUE(FFORMAT,FID,IREC,VAR_LIST(L)(1:16),
+     &                            VARSOR%ADR(L)%P%R,NPOIN_PREV,IERR)
+!
+!             If the variable is not in the file
+              IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
+                TROUVE(L) = 0
+              ELSE
+                CALL CHECK_CALL(IERR,'READ_DATASET:GET_DATA_VALUE')
+                TROUVE(L) = 1
+              ENDIF
             ENDIF
           ENDIF
-
+!
         ELSE
           ! if the record is not in the file
           TROUVE(L) = 0
