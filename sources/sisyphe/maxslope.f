@@ -36,9 +36,11 @@
 !+   Now possible with several classes of sediment.
 !
 !history  MICHIEL KNAAPEN (HRW)
-!+        10/11/2016
+!+        08/12/2016
 !+        V7P2
-!+        Account for morphological factor
+!+        Improvements of the implementation of the morphological factor
+!+        in the subroutine. Solution of stability issues. For futher
+!+        details see the documentation.
 !                     
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EVOL           |<->| WORK ARRAY, THEN EVOLUTION DUE TO SLIDE
@@ -144,9 +146,9 @@
 !         BECAUSE THE REAL EVOLUTION TAKING INTO ACCOUNT OTHER ELEMENTS
 !         WILL NEED A FACTOR (SURFAC/3)/(INTEGRAL OF BASIS)
 !
-          EVOL%R(I1)=EVOL%R(I1)+(1.D0-L)*(ZC-ZF(I1))*DEUXSURF/6.D0/MOFAC
-          EVOL%R(I2)=EVOL%R(I2)+(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0/MOFAC
-          EVOL%R(I3)=EVOL%R(I3)+(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0/MOFAC
+          EVOL%R(I1)=EVOL%R(I1)+(1.D0-L)*(ZC-ZF(I1))*DEUXSURF/6.D0
+          EVOL%R(I2)=EVOL%R(I2)+(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0
+          EVOL%R(I3)=EVOL%R(I3)+(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0
 !
         ENDDO
 !
@@ -210,9 +212,9 @@
           Q(2)=(1.D0-L)*(ZC-ZF(I2))*DEUXSURF/6.D0
           Q(3)=(1.D0-L)*(ZC-ZF(I3))*DEUXSURF/6.D0
 !
-          EVOL%R(I1)=EVOL%R(I1)+Q(1)/MOFAC
-          EVOL%R(I2)=EVOL%R(I2)+Q(2)/MOFAC
-          EVOL%R(I3)=EVOL%R(I3)+Q(3)/MOFAC
+          EVOL%R(I1)=EVOL%R(I1)+Q(1)
+          EVOL%R(I2)=EVOL%R(I2)+Q(2)
+          EVOL%R(I3)=EVOL%R(I3)+Q(3)
 !
 !         TAKING INTO ACCOUNT THE QUANTITIES TO UPDATE ZFCL_MS
 !         IG1 AND IG2 : POINTS THAT GIVE
@@ -330,7 +332,8 @@
 !
         DO I=1,NSICLA
           DO J=1,NPOIN
-            ZFCL_MS%ADR(I)%P%R(J)=ZFCL_MS%ADR(I)%P%R(J)*UNSV2D%R(J)
+            ZFCL_MS%ADR(I)%P%R(J)=ZFCL_MS%ADR(I)%P%R(J)*
+     &                UNSV2D%R(J)/MOFAC/10.D0
           ENDDO
         ENDDO
 !
@@ -348,7 +351,7 @@
 !     ELEVATIONS
 !
       DO I=1,NPOIN
-        EVOL%R(I)=EVOL%R(I)*UNSV2D%R(I)
+        EVOL%R(I)=EVOL%R(I)*UNSV2D%R(I)/MOFAC/10.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
