@@ -1,23 +1,12 @@
-/
-/  TEMPS D'EXECUTION SUR LES DIFFERENTES MACHINES :
-/
-/  AVEC DT=4 s : VERSION 6.0 : 168 s 11/05/2009
-/                              169 s 04/08/2009
-/                              160 s 21/05/2010 (Nag : 408 s    Intel : 69 s)
-/  AVEC DT=4 s : VERSION 6.2 : 207 s 22/05/2012
-/
-/  AVEC DT=4 s : VERSION 6.3 : 34 s 30/05/2013 (Nag 1 proc.)
-/                               7 s 30/05/2013 (Nag 8 proc.)
-/
-/  Version 7.2
-/  Change of the advection scheme for velocities (NERD 14 rather than
-/  characteristics 1)
+/ Same options as the test case t2d_malpasset-small_pos.cas
+/ except the advection scheme for velocities (ERIA = 15)
+/ and TREATMENT OF NEGATIVE DEPTHS = 3
 /
 GEOMETRY FILE            = geo_malpasset-small.slf
 FORTRAN FILE             = t2d_malpasset.f
 BOUNDARY CONDITIONS FILE = geo_malpasset-small.cli
-RESULTS FILE             = r2d_malpasset-small_pos.slf
-FORMATTED RESULTS FILE   = rfo_malpasset-small_pos.txt
+RESULTS FILE             = r2d_malpasset-small_ERIA.slf
+FORMATTED RESULTS FILE   = rfo_malpasset-small_ERIA.txt
 TITLE = 'Le barrage de MALPASSET'
 COMPUTATION CONTINUED = NO
 VARIABLES FOR GRAPHIC PRINTOUTS = U,V,H,S,B
@@ -26,7 +15,7 @@ NUMBER OF TIME STEPS = 1000
 TIME STEP = 4.
 GRAPHIC PRINTOUT PERIOD = 50
 LISTING PRINTOUT PERIOD = 100
-TYPE OF ADVECTION = 14;5
+TYPE OF ADVECTION = 15;5
 SUPG OPTION = 0;0
 MATRIX STORAGE : 3
 MATRIX-VECTOR PRODUCT : 1
@@ -45,7 +34,7 @@ SOLVER : 1
 PRECONDITIONING : 2
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 200
 SOLVER ACCURACY = 0.0001
-TREATMENT OF NEGATIVE DEPTHS : 2
+TREATMENT OF NEGATIVE DEPTHS : 3
 CONTINUITY CORRECTION : YES
 DEPTH IN FRICTION TERMS : 2
 &FIN

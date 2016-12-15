@@ -21,60 +21,75 @@
 -->
    <action xref="1"
        do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_malpasset-small.cas"
+       code="telemac2d" target="t2d_malpasset-small_pos.cas"
        title="malpasset scalar mode"
    />
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_malpasset-small.cas"
+       code="telemac2d" target="t2d_malpasset-small_pos.cas"
        title="malpasset parallel mode"
    />
    <action xref="3"
        do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_malpasset-large.cas"
+       code="telemac2d" target="t2d_malpasset-small_ERIA.cas"
        title="malpasset scalar mode"
    />
    <action xref="4"
        do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_malpasset-large.cas"
+       code="telemac2d" target="t2d_malpasset-small_ERIA.cas"
        title="malpasset parallel mode"
    />
    <action xref="5"
        do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_malpasset-small_pos.cas"
+       code="telemac2d" target="t2d_malpasset-small_charac.cas"
        title="malpasset scalar mode"
    />
    <action xref="6"
        do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_malpasset-small_pos.cas"
+       code="telemac2d" target="t2d_malpasset-small_charac.cas"
        title="malpasset parallel mode"
    />
    <action xref="7"
        do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_malpasset-small_prim.cas"
+       code="telemac2d" target="t2d_malpasset-large.cas"
        title="malpasset scalar mode"
    />
    <action xref="8"
        do="translate;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_malpasset-small_prim.cas"
+       code="telemac2d" target="t2d_malpasset-large.cas"
        title="malpasset parallel mode"
    />
    <action xref="9"
        do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_malpasset-small_prim.cas"
+       title="malpasset scalar mode"
+   />
+   <action xref="10"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_malpasset-small_prim.cas"
+       title="malpasset parallel mode"
+   />
+   <action xref="11"
+       do="translate;run;cas;princi"
        code="telemac2d" target="t2d_malpasset-small_cin.cas"
        title="malpasset scalar mode"
+   />
+   <action xref="12"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_malpasset-small_cin.cas"
+       title="malpasset parallel mode"
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:T2DRES" />
-      <v2 vars=":map" target="f2d_malpasset-small.slf" />
+      <v2 vars=":map" target="f2d_malpasset-small_pos.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v3,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:T2DRES" />
-      <v5 vars=":map" target="f2d_malpasset-small.slf" />
+      <v5 vars=":map" target="f2d_malpasset-small_pos.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v6,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
@@ -88,14 +103,14 @@
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:T2DRES" />
-      <v11 vars=":map" target="f2d_malpasset-large.slf" />
+      <v11 vars=":map" target="f2d_malpasset-small_ERIA.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v12,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
       <v13 vars=":map" target="4:T2DRES" />
-      <v14 vars=":map" target="f2d_malpasset-large.slf" />
+      <v14 vars=":map" target="f2d_malpasset-small_ERIA.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v15,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
@@ -109,14 +124,14 @@
    </cast>
    <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
       <v19 vars=":map" target="5:T2DRES" />
-      <v20 vars=":map" target="f2d_malpasset-small_pos.slf" />
+      <v20 vars=":map" target="f2d_malpasset-small.slf" />
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v21,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-6" config="oneofall" time="[-1]" type="2d:">
       <v22 vars=":map" target="6:T2DRES" />
-      <v23 vars=":map" target="f2d_malpasset-small_pos.slf" />
+      <v23 vars=":map" target="f2d_malpasset-small.slf" />
       <v24 vars="mapdiff(v22,v23)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v24,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
@@ -130,14 +145,14 @@
    </cast>
    <cast xref="ref-7" config="oneofall" time="[-1]" type="2d:">
       <v28 vars=":map" target="7:T2DRES" />
-      <v29 vars=":map" target="f2d_malpasset-small_prim.slf" />
+      <v29 vars=":map" target="f2d_malpasset-large.slf" />
       <v30 vars="mapdiff(v28,v29)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v30,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
    <cast xref="ref-8" config="oneofall" time="[-1]" type="2d:">
       <v31 vars=":map" target="8:T2DRES" />
-      <v32 vars=":map" target="f2d_malpasset-small_prim.slf" />
+      <v32 vars=":map" target="f2d_malpasset-large.slf" />
       <v33 vars="mapdiff(v31,v32)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v33,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
@@ -151,10 +166,45 @@
    </cast>
    <cast xref="ref-9" config="oneofall" time="[-1]" type="2d:">
       <v37 vars=":map" target="9:T2DRES" />
-      <v38 vars=":map" target="f2d_malpasset-small_cin.slf" />
+      <v38 vars=":map" target="f2d_malpasset-small_prim.slf" />
       <v39 vars="mapdiff(v37,v38)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v39,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-10" config="oneofall" time="[-1]" type="2d:">
+      <v40 vars=":map" target="10:T2DRES" />
+      <v41 vars=":map" target="f2d_malpasset-small_prim.slf" />
+      <v42 vars="mapdiff(v40,v41)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v42,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="cas-parall910" config="oneofall" time="[-1]" type="2d:">
+      <v43 vars=":map" target="9:T2DRES" />
+      <v44 vars=":map" target="10:T2DRES" />
+      <v45 vars="mapdiff(v43,v44)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v45,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-11" config="oneofall" time="[-1]" type="2d:">
+      <v46 vars=":map" target="11:T2DRES" />
+      <v47 vars=":map" target="f2d_malpasset-small_cin.slf" />
+      <v48 vars="mapdiff(v46,v47)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v48,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-12" config="oneofall" time="[-1]" type="2d:">
+      <v49 vars=":map" target="12:T2DRES" />
+      <v50 vars=":map" target="f2d_malpasset-small_cin.slf" />
+      <v51 vars="mapdiff(v49,v50)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v51,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="cas-parall1112" config="oneofall" time="[-1]" type="2d:">
+      <v52 vars=":map" target="11:T2DRES" />
+      <v53 vars=":map" target="12:T2DRES" />
+      <v54 vars="mapdiff(v52,v53)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v54,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
    </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
