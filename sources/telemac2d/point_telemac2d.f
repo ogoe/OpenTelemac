@@ -1650,7 +1650,8 @@
 !
       IF( NADVAR.GT.0 ) THEN
         CALL ALLBLO(ADVAR ,'ADGRAD')
-        CALL BIEF_ALLVEC_IN_BLOCK(ADVAR,NADVAR,1,'G     ',IELMX,1,2,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(ADVAR,NADVAR,1,'G     ',IELMX,
+     &                            1,2,MESH)
         DO I = 1,NADVAR
           CALL AD_ALLVEC_TELEMAC2D(I,ADVAR%ADR(I)%P)
 !

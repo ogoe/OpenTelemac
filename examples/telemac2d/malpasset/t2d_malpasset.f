@@ -442,19 +442,23 @@
         ENDDO
       ENDIF
 !
-      IF(LT.EQ.NIT) THEN
-        NRFO = T2D_FILES(T2DRFO)%LU
-        WRITE(NRFO,*) 'MAXIMUM WATER DEPTHS'
-        DO J=6,14
-          WRITE(NRFO,1001) 'MEASUREMENT POINT',J,' = ',HAUT(J),' M'
-        ENDDO
+      IF(IPID.EQ.0) THEN
+        IF(LT.EQ.NIT) THEN
+          NRFO = T2D_FILES(T2DRFO)%LU
+          WRITE(LU,*) 'T2DRFO:',T2DRFO
+          WRITE(LU,*) 'NRFO:',NRFO
+          WRITE(NRFO,*) 'MAXIMUM WATER DEPTHS'
+          DO J=6,14
+            WRITE(NRFO,1001) 'MEASUREMENT POINT',J,' = ',HAUT(J),' M'
+          ENDDO
 !
-        WRITE(NRFO,*)
-        WRITE(NRFO,1002)'ARRIVAL TIME AT A :',ARR_TIME(1),' S'
-        WRITE(NRFO,1002)'TIME FROM A TO B  :',ARR_TIME(2)-ARR_TIME(1),
-     &                  ' S'
-        WRITE(NRFO,1002)'TIME FROM A TO C  :',ARR_TIME(3)-ARR_TIME(1),
-     &                  ' S'
+          WRITE(NRFO,*)
+          WRITE(NRFO,1002)'ARRIVAL TIME AT A :',ARR_TIME(1),' S'
+          WRITE(NRFO,1002)'TIME FROM A TO B  :',ARR_TIME(2)-ARR_TIME(1),
+     &                    ' S'
+          WRITE(NRFO,1002)'TIME FROM A TO C  :',ARR_TIME(3)-ARR_TIME(1),
+     &                    ' S'
+        ENDIF
       ENDIF
 !
  1001 FORMAT((A,I3,A,F6.2,A))
