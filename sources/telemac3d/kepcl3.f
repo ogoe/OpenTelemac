@@ -226,6 +226,15 @@
 !
         ENDIF
 !
+!       DIRICHLET ON K
+!       --------------
+!       NOTE: THIS IS NOT THE DEFAULT BC, HOMOGENEOUS DIRICHLET
+!       FOR K AT FREE SURFACE IS PROBABLY WRONG
+!
+        IF(LIKBOS(IPOIN2).EQ.KENT) THEN
+          KBORS(IPOIN2) = MAX(0.D0,KMIN)
+        ENDIF
+!
       ENDDO
 !
 !=======================================================================
