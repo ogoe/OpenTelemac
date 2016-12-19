@@ -426,9 +426,11 @@ this approach reduces the computational effort without significant loss of model
 %-------------------------------------------------------------------------------
 \subsection{Sediment Slide}
 %-------------------------------------------------------------------------------
-An iterative algorithm prevents the bed slope to become greater than the maximum friction angle ($\theta_s \approx 32^\circ-40^\circ$). A rotation of each element is then performed in order to insure: \textit{(i)} mass continuity and \textit{(ii)} bed slope $<$ friction angle: $|\Grad(z_b)| < \tan(\theta_s)$.\\
+An iterative algorithm prevents the bed slope to become greater than the maximum friction angle ($\theta_s \approx 32^\circ-40^\circ$). A rotation of each element is then performed in order to insure: \textit{(i)} mass continuity and \textit{(ii)} bed slope $<$ friction angle: $|\Grad(z_b)| < \tan(\theta_s)$. The subroutine \texttt{maxslope.f} was recently modified to avoid stability issues by controlling the amount of sediment that slides. This quantity was set at 10\% of the quantity needed to achieve the required slopes, therefore slowing down the slope correction.\\
 
 This option is activated by the keyword \texttt{SEDIMENT SLIDE = YES} (logical type variable, set to {\ttfamily = NO} by default). The friction angle can be modified with the keyword {\ttfamily FRICTION ANGLE OF SEDIMENT} (real type variable, {\ttfamily = 40.} by default). Further details can be found in~\cite{ElKadiAbderrezzak201675}.
+
+
 
 \pagebreak
 

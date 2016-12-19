@@ -76,10 +76,11 @@ The template subroutine is called \texttt{qsfrom.f} and can be found in the fold
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-\section{Define a rigid bed}
+%\section{Define a rigid bed}
 %-------------------------------------------------------------------------------
-\subsection{Data from selafin file}
-\subsection{Data coded by the user in the fortran file}
+%TODO
+%\subsection{Data from selafin file}
+%\subsection{Data coded by the user in the fortran file}
 
 %\pagebreak
 %-------------------------------------------------------------------------------
@@ -130,10 +131,9 @@ Case of spatially distributed sediment zones
   \begin{lstlisting}[frame=trBL]
 NUMBER OF PRIVATE ARRAYS = 1
 NAMES OF PRIVATE VARIABLES= 'ZONE                            '
-NAMES OF PRIVATE VARIABLES= 'ZONE____________________________'
 \end{lstlisting}
-(32 characters)\textvisiblespace\textvisiblespace\textvisiblespace
-\item add
+(32 characters)%\textvisiblespace\textvisiblespace\textvisiblespace
+\item Modify the subroutine \texttt{init\_compo.f}, for example:
 \begin{lstlisting}[frame=trBL]
       DO J=1,NPOIN
       NCOUCHES(J)=1
@@ -154,8 +154,9 @@ NAMES OF PRIVATE VARIABLES= 'ZONE____________________________'
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-\section{Define the soil stratigraphy (init\_compo)}
+%\section{Define the soil stratigraphy (init\_compo)}
 %-------------------------------------------------------------------------------
+%TODO
 
 %\pagebreak
 %-------------------------------------------------------------------------------
