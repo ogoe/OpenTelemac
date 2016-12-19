@@ -195,6 +195,13 @@ Example for 3 sediment classes and 3 layers:
 \end{lstlisting}
 Above, \texttt{AVA0} is the list with the initial fractions provided with {\ttfamily INITIAL FRACTION FOR PARTICULAR SIZE CLASS}.
 
+\begin{WarningBlock}{Note:}
+In the \sisyphe steering file, the keywords \telkey{COMPUTATION CONTINUED = YES} and \telkey{PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE = [name file]} must be provided
+to ensure that the information contained in the layers from the previous computation are accounted in the current simulation.
+\end{WarningBlock}
+  
+
+
 %-------------------------------------------------------------------------------
 \subsection{Useful graphical printouts}
 %-------------------------------------------------------------------------------

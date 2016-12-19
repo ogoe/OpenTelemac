@@ -7,7 +7,7 @@
 %-------------------------------------------------------------------------------
 Use the keywords {\ttfamily FLUXLINE} (logical type, set to {\ttfamily NON} by default) and {\ttfamily FLUXLINE INPUT FILE} (character type).
 
-\pagebreak
+%\pagebreak
 %-------------------------------------------------------------------------------
 \section{Implement a new bedload transport formula}
 %-------------------------------------------------------------------------------
@@ -76,33 +76,105 @@ The template subroutine is called \texttt{qsfrom.f} and can be found in the fold
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-%\section{Define a rigid bed}
+\section{Define a rigid bed}
 %-------------------------------------------------------------------------------
-%\subsection{Data from selafin file}
-%\subsection{Data coded by the user in the fortran file}
+\subsection{Data from selafin file}
+\subsection{Data coded by the user in the fortran file}
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-%\section{Print a new output variable in the selafin file}
+\section{Print a new output variable in the selafin file}
+%-------------------------------------------------------------------------------
+\begin{itemize}
+\item Declare the {\ttfamily PRIVE} variable, for example as:
+  
+{\ttfamily USE DECLARATIONS\_SISYPHE, ONLY : PRIVE}
+
+\item Use the following expression to include the variable you want to visualize:
+
+{\ttfamily PRIVE\%ADR(N)\%P\%R(K) = [Here the variable you want to visualize]}, where {\ttfamily N} is the number of variables that you want to visualize and {\ttfamily K} is the number of nodes.  
+
+\item In the \sisyphe's steering file you can use the flags {\ttfamily'A'} or {\ttfamily'G'} to visualize the {\ttfamily PRIVE} variable, for example as:
+  
+{\ttfamily VARIABLES FOR GRAPHIC PRINTOUTS='U,V,S,H,B,Q,M,E,QSBL,TOB,MU,A'}
+\end{itemize}
+
+The default name {\ttfamily PRIVE 1} (for {\ttfamily N=1}) can be modified in the subroutine {\ttfamily nomvar\_sisyphe.f}.
+
+\begin{lstlisting}[frame=trBL]
+DO K=1, NPOIN
+  PRIVE%ADR(1)%P%R(K) = [variable to visualize]
+ENDDO  
+\end{lstlisting}  
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+\section{Introduce a new keyword}
+%-------------------------------------------------------------------------------
+\begin{itemize}
+\item In {\ttfamily declarations\_sisyphe.f} declare the variable to be called from a keyword e.g. {\ttfamily HMIN\_BEDLOAD}
+\item In {\ttfamily lecdon\_sisyphe.f} declare .... {\ttfamily HMIN\_BEDLOAD=MOTREA(ADRESS(2,52))}
+\item Declaration in the modified subroutine through {\ttfamily USE DECLARATIONS\_SISYPHE, ONLY : HMIN\_BEDLOAD}
+\end{itemize}
+
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+\section{Read and use a variable from a selafin file}
+%-------------------------------------------------------------------------------
+Case of spatially distributed sediment zones
+
+\begin{itemize}
+\item Create the different zones with, e.g. BlueKenue
+\item Add in your steering file:
+  \begin{lstlisting}[frame=trBL]
+NUMBER OF PRIVATE ARRAYS = 1
+NAMES OF PRIVATE VARIABLES= 'ZONE                            '
+NAMES OF PRIVATE VARIABLES= 'ZONE____________________________'
+\end{lstlisting}
+(32 characters)\textvisiblespace\textvisiblespace\textvisiblespace
+\item add
+\begin{lstlisting}[frame=trBL]
+      DO J=1,NPOIN
+      NCOUCHES(J)=1
+	  IF(PRIVE%ADR(1)%P%R(J).EQ.1.D0) THEN
+	  AVAIL(J,1,1)=1.D0
+	  AVAIL(J,1,2)=0.D0
+	  ELSEIF(PRIVE%ADR(1)%P%R(J).EQ.2.D0) THEN
+	  AVAIL(J,1,1)=0.D0
+	  AVAIL(J,1,2)=1.D0	 
+	  ELSE 
+	  AVAIL(J,1,1)=0.5D0
+	  AVAIL(J,1,2)=0.5D0
+	  ENDIF
+      ENDDO
+\end{lstlisting}
+\end{itemize}
+
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+\section{Define the soil stratigraphy (init\_compo)}
 %-------------------------------------------------------------------------------
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-%\section{Introduce a new keyword}
+\section{Suppress bed updating}
 %-------------------------------------------------------------------------------
+Set \telkey{STATIONARY MODE = YES} (logical type, set to {\ttfamily = NO} by default)           
+
 
 %\pagebreak
 %-------------------------------------------------------------------------------
-%\section{Read and use a variable from a selafin file}
+\section{Using a non-declared variable in a Sisyphe's subroutine}
 %-------------------------------------------------------------------------------
+If you want to use, for example, parameter \texttt{NPTFR} and the table \texttt{NBOR(NPTFR)} in the subroutine NOEROD,
+declare:
 
-%\pagebreak
-%-------------------------------------------------------------------------------
-%\section{Define the soil stratigraphy (init\_compo)}
-%-------------------------------------------------------------------------------
+\texttt{USE DECLARATIONS\_SISYPHE, ONLY : NPTFR, MESH}
 
-%\pagebreak
-%-------------------------------------------------------------------------------
-%\section{Suppress bed updating}
-%-------------------------------------------------------------------------------
-%\telkey{STATIONARY MODE} (logical type, set to {\ttfamily = NO} by default)           
+\texttt{INTEGER, POINTER :: NBOR(:)}
+
+Then the following alias can be declared:
+
+\texttt{NBOR=>MESH\%NBOR\%I}

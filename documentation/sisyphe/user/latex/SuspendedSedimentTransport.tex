@@ -215,7 +215,15 @@ The choice for the scheme for the treatment of the advection terms can be done w
 13="EDGE-BASED N-SCHEME"
 14="EDGE-BASED N-SCHEME"
 \end{lstlisting}
-It is recommended to use the schemes {\ttfamily 4} or {\ttfamily 14} for a good compromise between accuracy and computational time (specially if tidal flats are present). A brief description of the numerical schemes implemented in \sisyphe{} is given below:
+
+\begin{WarningBlock}{Note:}
+  It is recommended to use the schemes {\ttfamily 4} or {\ttfamily 14} for a good compromise between accuracy and computational time (specially if tidal flats are present). It is also suggested to active
+  the keyword \texttt{CONTINUITY CORRECTION = YES}.
+\end{WarningBlock}
+
+
+
+A brief description of the numerical schemes implemented in \sisyphe{} is given below:
 \begin{itemize}
 \item \textbf{Method of characteristics} (\texttt{1}) 
 \begin{itemize}
