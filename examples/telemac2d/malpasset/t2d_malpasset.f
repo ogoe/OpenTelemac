@@ -445,8 +445,6 @@
       IF(IPID.EQ.0) THEN
         IF(LT.EQ.NIT) THEN
           NRFO = T2D_FILES(T2DRFO)%LU
-          WRITE(LU,*) 'T2DRFO:',T2DRFO
-          WRITE(LU,*) 'NRFO:',NRFO
           WRITE(NRFO,*) 'MAXIMUM WATER DEPTHS'
           DO J=6,14
             WRITE(NRFO,1001) 'MEASUREMENT POINT',J,' = ',HAUT(J),' M'
