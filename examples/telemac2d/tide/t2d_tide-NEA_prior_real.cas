@@ -1,8 +1,3 @@
-/DEBUGGER : 1
-/----------------------------------------------------------------------/
-/
-/
-/
 /----------------------------------------------------------------------/
 /                       INFORMATIC ENVIRONMENT
 /----------------------------------------------------------------------/
@@ -17,9 +12,7 @@ RESULTS FILE                       : t2d_tide-NEA_prior_real.slf
 /                       GENERAL OPTIONS
 /----------------------------------------------------------------------/
 /
-/COMPUTATION CONTINUED                           : NO
 VARIABLES FOR GRAPHIC PRINTOUTS                 : 'U,V,H,S,M'
-/VARIABLES TO BE PRINTED                        : ''
 TIME STEP                                       : 60.
 NUMBER OF TIME STEPS                            : 750
 GRAPHIC PRINTOUT PERIOD                         : 15
@@ -66,10 +59,6 @@ CORIOLIS COEFFICIENT                            : 1.10E-4
 /----------------------------------------------------------------------/
 /                       NUMERICAL OPTIONS
 /----------------------------------------------------------------------/
-/
-/TURBULENCE MODEL                               : 3
-/DIFFUSION OF VELOCITY                          : YES
-/VELOCITY DIFFUSIVITY                           : 1.E-6
 /
 DISCRETIZATIONS IN SPACE                        : 11 ; 11
 MATRIX STORAGE                                  : 3
