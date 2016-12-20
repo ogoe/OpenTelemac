@@ -77,7 +77,7 @@
       DOUBLE PRECISION RESTE, GPRDTIME
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_DMIN
-      INTRINSIC MIN,FLOOR,CEILING
+      INTRINSIC MIN,CEILING
 !
 !-----------------------------------------------------------------------
 !
@@ -142,7 +142,7 @@
         IF(TMAX.LT.DT)DT=TMAX !REALLY CRAZY CASES
         DTT=TMAX-AT
         IF(CFL.GE.1.D0) DT=0.9D0*DT/CFL
-        IF(DTT.LE.DT.AND.DTT.GT.0.D0) DT=DTT !LAST TIME STEP
+        IF(DTT.LE.DT.AND.DTT.GT.0.D0)  DT=DTT !LAST TIME STEP
         IF(AT.GT.TMAX) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'CALDT: MAUVAIS CHOIX DE PARAMETRES DE TEMPS '
@@ -175,7 +175,7 @@
 !*************************************************************************
         GPRDTIME=LEOPRD*DTINI
         IF(GPRDTIME.LT.1.E-12)THEN
-          WRITE(LU,*) 'CALDT: PROBLEM WITH THESE PARAMETERS: ',
+          WRITE(LU,*) 'CALDT: PROBLEM WITH PARAMETERS: DTINI,LEOPRD',
      &                 DTINI,LEOPRD
           CALL PLANTE(1)
           STOP

@@ -16,10 +16,11 @@
      &  DSZ,AIRST,HSTOK,HCSTOK,FLUXT,FLUHBOR,FLBOR,
      &  LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,
      &  HC,TMAX,DTT,T1,T2,T3,T4,T5,
-     &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,HROPT,MESH)
+     &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,HROPT,MESH,
+     &  RAIN,PLUIE,MASS_RAIN,BILMAS)
 !
 !***********************************************************************
-! TELEMAC2D   V7P0
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A
@@ -100,11 +101,18 @@
 !+    correction for parallelization
 !+    parcom_bord removed and parcom placed
 !+    after cdl of each scheme
+!
+!history  R. ATA
+!+        25/12/2016
+!+        V7P2
+!+    include rain and evaporation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
 !| AIRST          |-->| AREA OF SUB-TRIANGLES (SECOND ORDER)
 !| AT,DT,LT       |-->| TIME, TIME STEP AND NUMBER OF THE STEP
+!| BILMAS         |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
 !| CF             |-->| FRICTION COEFFICIENT
 !| CFLWTD         |-->| WANTED CFL NUMBER
 !| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
@@ -168,12 +176,15 @@
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| MVMAX          |-->| MAX NUMBER OF NEIGHBOR FOR A NODE
+!| MASS_RAIN      |-->| MASS ADDED BY RAIN OR EVAPORATION
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
-!|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC
+!|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC,5:WAF
+!| PLUIE          |-->| RAIN
 !| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
+!| RAIN           |-->| IF YES TAKE RAIN INTO ACCOUNT
 !| SMTR           |---| SOURCE TERMS FOR TRACEUR
 !| T              |<--| TRACER UPDATED
 !| T1,T2,T3,T4,T5 |---| WORKING TABLES
@@ -197,7 +208,7 @@
       USE BIEF_DEF
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_RESOLU => RESOLU
-!     USE DECLARATIONS_TELEMAC2D, ONLY:DEBUG ! IF NEEDED DECOMMENT
+      USE DECLARATIONS_TELEMAC2D, ONLY:MSK,MASKEL,T6
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -215,18 +226,18 @@
       INTEGER, INTENT(IN)    :: ELTSEG(NELEM,3)
       INTEGER,  INTENT(IN)   :: IFABOR(NELEM,*)
 !
-      LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT
+      LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT,RAIN,BILMAS
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(INOUT) :: DT
+      DOUBLE PRECISION, INTENT(INOUT) :: DT,MASS_RAIN
       DOUBLE PRECISION, INTENT(IN)    :: AT,VNOIN(3,*),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: TSCE2(MAXSCE,MAXTRA)
       DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUSORTN,FLUENTN
       DOUBLE PRECISION, INTENT(IN)    :: AIRE(NPOIN),DTHAUT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR),HN(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN),ZF(NPOIN),CF(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN),CF(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),SMH(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DPX(3,NELMAX),DPY(3,NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) :: WINF(3,*)
@@ -247,7 +258,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: HC(2,NSEG),DTN
 !
-      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN
+      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,PLUIE
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HTN,SMTR,FLUHBOR,FLUHBTEMP
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
@@ -373,13 +384,23 @@
 !
 ! VOLUME ADDEED BY SOURCES
 !
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
         IF(YASMH) THEN
-          MASSES=0.D0
-          DO I=1,NPOIN
+          DO  I=1,NPOIN
             MASSES = MASSES + SMH(I)
           ENDDO
-          MASSES = DT * MASSES
         ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
+      ENDIF
 !
         DO  I=1,NPOIN
           H(I)  = W(1,I)
@@ -544,7 +565,7 @@
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
 !
 !-----------------------------------------------------------------------
 !
@@ -568,12 +589,22 @@
 !
 ! VOLUME ADDEED BY SOURCES
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-        DO  I=1,NPOIN
-          MASSES = MASSES + SMH(I)
-        ENDDO
-        MASSES = DT * MASSES
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+        IF(YASMH) THEN
+          DO  I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+        ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
       ENDIF
 !
       DO I=1,NPOIN
@@ -747,17 +778,27 @@
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &          HN,QU,QV,LT,GAMMA,
-     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
 !-----------------------------------------------------------------------
 
 ! VOLUME ADDED BY SOURCE TERMS
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-      DO  I=1,NPOIN
-        MASSES = MASSES + SMH(I)
-      ENDDO
-        MASSES = DT * MASSES
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+        IF(YASMH) THEN
+          DO  I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+        ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
       ENDIF
 !
       DO I=1,NPOIN
@@ -853,19 +894,29 @@
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
 !
 !
 !-----------------------------------------------------------------------
 !
 !VOLUME ADDED BY SOURCES
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-      DO  I=1,NPOIN
-        MASSES = MASSES + SMH(I)
-      ENDDO
-        MASSES = DT * MASSES
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+        IF(YASMH) THEN
+          DO  I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+        ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
       ENDIF
 !
       DO I=1,NPOIN
@@ -960,18 +1011,28 @@
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
 !
 !-----------------------------------------------------------------------
 !
 !  COMPUTES VOLUME ADDED BY SOURCES
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-      DO  I=1,NPOIN
-        MASSES = MASSES + SMH(I)
-      ENDDO
-        MASSES = DT * MASSES
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+        IF(YASMH) THEN
+          DO  I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+        ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
       ENDIF
 !
       DO I=1,NPOIN
@@ -1070,18 +1131,28 @@
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
 !
 !-----------------------------------------------------------------------
 !
 !  COMPUTES VOLUME ADDED BY SOURCES
 !
-      IF(YASMH) THEN
-        MASSES=0.D0
-      DO  I=1,NPOIN
-        MASSES = MASSES + SMH(I)
-      ENDDO
-        MASSES = DT * MASSES
+      IF(BILMAS)THEN
+        MASSES   = 0.D0
+        MASS_RAIN= 0.D0
+!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+        IF(YASMH) THEN
+          DO  I=1,NPOIN
+            MASSES = MASSES + SMH(I)
+          ENDDO
+        ENDIF
+!       RAIN AND EVAPORATION
+        IF(RAIN)THEN
+           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+           MASS_RAIN =BIEF_SUM(T6)
+        ENDIF
+        MASSES = DT*(MASSES + MASS_RAIN)
       ENDIF
 !
       DO I=1,NPOIN

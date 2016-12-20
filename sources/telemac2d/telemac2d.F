@@ -376,9 +376,9 @@
 !
 ! ADDED FOR KINETIC SCHEMES
 !
-      DOUBLE PRECISION DTN,FLUSORTN,FLUENTN,TMAX,DTT,BID
+      DOUBLE PRECISION DTN,FLUSORTN,FLUENTN,TMAX,DTT
 !
-      INTEGER LTT,IERR
+      INTEGER LTT
 !
 !-----------------------------------------------------------------------
 !
@@ -972,7 +972,7 @@
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'DUREE DE SIMULATION DEMANDEE :',DUREE
             ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'SIMULATION DURATION:',DUREE
+              WRITE(LU,*) 'DESIRED SIMULATION DURATION:',DUREE
             ENDIF
           ELSE
             IF(LNG.EQ.1) THEN
@@ -2258,7 +2258,7 @@
      &       FLBOR,DTN,FLUSORTN,FLUENTN,
      &       LTT,FLUXTEMP,FLUHBTEMP,HC%R,SMTR,MESH%AIRST%R,
      &       TMAX,DTT,GAMMA,FLUX_OLD,MXPTVS,NEISEG%I,V2DPAR,
-     &       UDEL,VDEL,HROPT)
+     &       UDEL,VDEL,HROPT,RAIN,PLUIE,MASS_RAIN,BILMAS)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM VOLFIN'
 !
         AT = AT + DT
@@ -2274,6 +2274,7 @@
            NIT = LT
            ENTET = .TRUE.
            CALL ENTETE(1,AT,LT)
+           TOTAL_ITER=LT
         ENDIF
 !
       ELSE

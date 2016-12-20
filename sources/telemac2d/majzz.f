@@ -4,10 +4,10 @@
 !
      &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      & HN,QU,QV,LT,GAMMA,
-     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
+     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P3                                         01/07/2013
+! TELEMAC2D   V7P2                                         
 !***********************************************************************
 !
 !brief      TIME INTEGRATION WITH NEWMARK SCHEME:
@@ -36,6 +36,11 @@
 !+    warning: its impact on mass balance is not taken into account
 !+             to be considered for next release
 !
+!history  R. ATA
+!+        25/12/2016
+!+        V7P2
+!+    include rain and evaporation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  AIRS          |-->|  CELL AREAS
 !|  CF            |-->|  FRICTION COEFFICIENTS
@@ -52,6 +57,8 @@
 !|  NBOR          |-->|  GLOBAL INDEX OF BOUNDARY NODES
 !|  NPOIN         |-->|  TOTAL NUMBER OF NODES
 !|  NPTFR         |-->|  TOTAL NUMNER OF BOUNDARY NODES
+!|  PLUIE         |-->|  RAIN
+!|  RAIN          |-->|  IF YES TAKE RAIN INTO ACCOUNT
 !|  SMH           |-->|  MASS SOURCE
 !|  XNEBOR,YNEBOR |-->|  X AND Y COMPONENT OF THE OUTWARD UNIT NORMAL
 !|  W             |<--|  (H,HU,HV)
@@ -66,14 +73,16 @@
 !
       INTEGER, INTENT(IN)             :: NPOIN,KFROT,LT,NPTFR,KNEU
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
+      LOGICAL, INTENT(IN)             :: RAIN
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN),FLUX(NPOIN,3)
       DOUBLE PRECISION, INTENT(IN)    :: DT
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),QU(NPOIN),QV(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: G
+      DOUBLE PRECISION, INTENT(IN)    :: G,PLUIE(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: SMH(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -109,6 +118,11 @@
         ENDIF
       ENDDO
 !
+!     ADD RAIN TO SOURCE TERM
+!
+!      IF(RAIN)THEN
+!       CALL OV ('X=X+YZ  ',SMH,PLUIE,AIRS,FACT,NPOIN)
+!      ENDIF
 !
 !++++++++++++++++++++++++++++++++++++
 ! TIME INTEGRATION
@@ -122,7 +136,7 @@
 !
         DO I=1,NPOIN
           FACT=DT/AIRS(I)
-          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
+          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))+DT*PLUIE(I)
           W(2,I) = QU(I) + FACT* FLUX(I,2)
           W(3,I) = QV(I) + FACT* FLUX(I,3)
         ENDDO
@@ -174,7 +188,7 @@
       CALL CDLPROJ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,W)
 !
       DO I =1,NPOIN
-        IF(W(1,I).LE.1.D-12) W(1,I)=0.D0
+!        IF(W(1,I).LE.1.D-12) W(1,I)=0.D0
         IF(ABS(W(2,I)).LE.1.D-12) W(2,I)=0.D0
         IF(ABS(W(3,I)).LE.1.D-12) W(3,I)=0.D0
       ENDDO
