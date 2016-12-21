@@ -142,6 +142,7 @@
 \definecolor{link}{RGB}{150, 81, 0}
 \usepackage{minibox}
 
+
 \RequirePackage{eso-pic} % Required for specifying an image background in the title page
 
 \RequirePackage{amsmath,amsfonts,amssymb,amsthm,bm} % For math equations, theorems, symbols, etc
@@ -615,7 +616,7 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 %----------------------------------------------------------------------------------------
 %	GRAPHICS
 %----------------------------------------------------------------------------------------
-  \newcommand{\includegraphicsmaybe}[2] {\IfFileExists{#2} {\includegraphics#1{#2}} {\includegraphics#1{../../../../documentation/data/image_not_found.png}} \\\path{#2} is missing}
+  \newcommand{\includegraphicsmaybe}[2] {\IfFileExists{#2} {\includegraphics#1{#2}} {\includegraphics#1{../../../../documentation/data/image_not_found.png} \\\path{#2} is missing}}
 
 %----------------------------------------------------------------------------------------
 %	CODE DEFINITION
