@@ -7,7 +7,7 @@
      & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE)
 !
 !***********************************************************************
-! TELEMAC2D   V7P2                                         
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief      TIME INTEGRATION WITH NEWMARK SCHEME:
@@ -134,12 +134,21 @@
 !---- EULER EXPLICIT SCHEME
 !==========================
 !
-        DO I=1,NPOIN
-          FACT=DT/AIRS(I)
-          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))+DT*PLUIE(I)
-          W(2,I) = QU(I) + FACT* FLUX(I,2)
-          W(3,I) = QV(I) + FACT* FLUX(I,3)
-        ENDDO
+        IF(RAIN) THEN
+          DO I=1,NPOIN
+            FACT=DT/AIRS(I)
+            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))+DT*PLUIE(I)
+            W(2,I) = QU(I) + FACT* FLUX(I,2)
+            W(3,I) = QV(I) + FACT* FLUX(I,3)
+          ENDDO
+        ELSE
+          DO I=1,NPOIN
+            FACT=DT/AIRS(I)
+            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
+            W(2,I) = QU(I) + FACT* FLUX(I,2)
+            W(3,I) = QV(I) + FACT* FLUX(I,3)
+          ENDDO
+        ENDIF
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
 !
