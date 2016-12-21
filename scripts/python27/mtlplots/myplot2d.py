@@ -852,7 +852,7 @@ class Figure2D(Caster):
 
    def save(self,fileName):
       deco(self.plt,self.upar,self.dpar)
-      self.plt.savefig(fileName)
+      self.plt.savefig(fileName, bbox_inches='tight')
       self.plt.close()
 
 # _____               ______________________________________________

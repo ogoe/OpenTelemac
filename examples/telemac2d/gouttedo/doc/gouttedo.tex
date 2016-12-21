@@ -1,15 +1,5 @@
 \chapter{Gouttedo: Gaussian water surface centred in a square domain - Solid boundaries}
 %
-\begin{tabular}{|p{1.5in}|p{2.5in}|} \hline
-\textbf{Title} & Evolution of a Gaussian water surface centred in a square domain with solid boundaries \\ \hline
-\textbf{Author} & J.-M. Hervouet \\ \hline
-\textbf{Reference name} & 01-gouttedo \\ \hline
-\textbf{Date of study} & April 1992 \\ \hline
-\textbf{Last summary} & July 2015 \\ \hline
-\textbf{Version} & TELEMAC-2D 7.0 \\ \hline
-\end{tabular}
-
-
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
@@ -32,20 +22,23 @@ are obtained by dividing rectagular elements on their diagonals. The mean size
 of obntained triangles is about 0.3~m (see figure \ref{fig:gouttedo_mesh}).
 \begin{figure}[h]
 \begin{center}
-  \includegraphicsmaybe{[scale=0.5]}{../graphics/guass-mesh.png}
+  %\includegraphicsmaybe{[scale=0.5]}{../graphics/guass-mesh.png}
+  \includegraphicsmaybe{[scale=0.5]}{../img/Mesh.png}
 \end{center}
 \caption{Gouttedo case: used mesh}
 \label{fig:gouttedo_mesh}
+
 \end{figure}
 
 \subsection{Initial conditions}
 The fluid is initially at rest with a Gaussian free surface in the centre of a
 square domain (see Figure \ref{fig:gouttedo_init}). Water depth is given by
-${\rm H= 2.4\; exp}\frac{{\rm -}\left[{\rm (x-10)}+({\rm y-10)}\right]}{{\rm 4}} $
+${\rm H= 2.4\; exp}\dfrac{{\rm -}\left[{\rm (x-10)}+({\rm y-10)}\right]}{{\rm 4}} $
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{center}
-  \includegraphicsmaybe{[scale=0.5]}{../graphics/guass-init.png}
+  %\includegraphicsmaybe{[scale=0.5]}{../graphics/guass-init.png}
+  \includegraphicsmaybe{[scale=0.5]}{../img/InitialElevation.png}
 \end{center}
 \caption{Gouttedo case: initial elevation}
 \label{fig:gouttedo_init}
@@ -109,28 +102,92 @@ The wave spreads circularly around the initial water surface peak elevation
 occurs. Interaction between reflected waves issuing from the four walls can be
 observed after time 1.8~sec (Figures \ref{fig:gouttedo_evol2}).
 
-At the end of simulation time the water depth is given if Figure
-\ref{fig:gouttedo_end}. The final volume in the domain is equal to the initial
-volume.
-\begin{figure}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-h.png}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-u.png}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-uu.png}
-\caption{Gaussion water hill: Initial conditions, results at t=0.6s, t=1.2s} \label{fig:gouttedo_evol}
+% At the end of simulation time the water depth is given if Figure
+% \ref{fig:gouttedo_end}. The final volume in the domain is equal to the initial
+% volume.
+
+\begin{figure}[H]
+\mbox{
+\subfloat[][t=0.0s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time0_name2_pers3d.png}
+}
+\subfloat[][t=0.6s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time3_name2_pers3d.png}
+}
+\subfloat[][t=1.2s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time6_name2_pers3d.png}
+}
+}
+\caption{Gaussion water hill: Initial conditions and circular spreading} \label{fig:gouttedo_evol}
 \end{figure}
 
-\begin{figure}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol.png}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol2.png}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol3.png}
-\caption{Gaussion water hill:  results at t=0.6s, t=1.2s and t=1.8s} \label{fig:gouttedo_evol2}
+
+\begin{figure}[H]
+\mbox{
+\subfloat[][t=1.8s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time9_name2_pers3d.png}
+}
+\subfloat[][t=2.4s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time12_name2_pers3d.png}
+}
+\subfloat[][t=3.0s]{
+\includegraphicsmaybe{*[width=5cm, keepaspectratio=true]}{../img/imggouttedo_time15_name2_pers3d.png}
+}
+}
+\caption{Gaussion water hill : reflexions} \label{fig:gouttedo_evol2}
 \end{figure}
 
-
-\begin{figure}
-  \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-hfin.png}
-\caption{Gaussion water hill: water depth at the end of simulation} \label{fig:gouttedo_end}
+\begin{figure}[H]
+\centering
+\mbox{
+\subfloat[][t=0.0s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time0_name2_pers2d.png}
+}
+\subfloat[][t=0.6s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time3_name2_pers2d.png}
+}}
+\mbox{
+\subfloat[][t=1.2s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time6_name2_pers2d.png}
+}
+\subfloat[][t=1.8s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time9_name2_pers2d.png}
+}}
+\caption{Evolution of the water depth from 0.0 sec. to 1.8 sec} \label{fig:gouttedo_all1}
 \end{figure}
+\begin{figure}[H]
+\centering
+\mbox{
+\subfloat[][t=2.4s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time12_name2_pers2d.png}
+}
+\subfloat[][t=3.0s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time15_name2_pers2d.png}
+}}
+\mbox{
+\subfloat[][t=3.6s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time18_name2_pers2d.png}
+}
+\subfloat[][t=4.0s]{
+\includegraphicsmaybe{*[width=5.5cm, keepaspectratio=true]}{../img/t2d_gouttedo_qua_time20_name2_pers2d.png}
+}
+}
+\caption{Evolution of the water depth from 2.4 sec. to 4.0 sec} \label{fig:gouttedo_all2}
+\end{figure}
+
+% \begin{figure}
+%   \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol.png}
+%   \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol2.png}
+%   \includegraphicsmaybe{*[width=3.54in, height=4.43in, keepaspectratio=false]}{../graphics/guass-evol3.png}
+% \caption{Gaussion water hill:  results at t=0.6s, t=1.2s and t=1.8s} \label{fig:gouttedo_evol2}
+% \end{figure}
+
+
+% \begin{figure}
+%   \centering
+%   \includegraphicsmaybe{*[width=10cm, keepaspectratio=true]}{../img/imggouttedo_time6_name2_pers3d.png}
+% \caption{Gaussion water hill: water depth at the end of simulation} \label{fig:gouttedo_end}
+% \end{figure}
 
 % - Reference:
 %     This part gives the reference solution we are comparing to and

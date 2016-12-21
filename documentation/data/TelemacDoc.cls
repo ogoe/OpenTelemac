@@ -142,7 +142,6 @@
 \definecolor{link}{RGB}{150, 81, 0}
 \usepackage{minibox}
 
-
 \RequirePackage{eso-pic} % Required for specifying an image background in the title page
 
 \RequirePackage{amsmath,amsfonts,amssymb,amsthm,bm} % For math equations, theorems, symbols, etc
@@ -178,6 +177,8 @@
 
 % To add newline after subparagraph
 \RequirePackage{titlesec}
+
+\RequirePackage{pbox}
 
 %----------------------------------------------------------------------------------------
 %	MATHEMATICAL SHORTCUT
