@@ -1,26 +1,3 @@
-%\documentclass[10pt]{article}
-%\usepackage[scale=0.80]{geometry}
-%%\usepackage{graphicx}  % Required for including pictures
-%\usepackage[pdftex]{graphicx}
-%\usepackage{float} % Allows putting an [H] in \begin{figure} to specify the exact location of the figure
-%\usepackage{wrapfig} % Allows in-line images
-%\usepackage[british,UKenglish,USenglish,english,american]{babel}
-%%\usepackage[utf8]{inputenc} %T1 ou utf8 latin1
-%\usepackage{ragged2e}
-%\usepackage{amsmath}
-%\usepackage{array}
-%\usepackage{multirow}
-%\usepackage{color}
-%\usepackage{float}
-%\definecolor{gray}{gray}{0.20} %pourcentage de gris
-%\definecolor{red2}{cmyk}{0,1,0.99,0.04}	% cyan, magenta, jaune et noir
-
-%\title{\begin{Large}
-%\textbf{Benchmark test : Fetch-limited growth}\\
-%\end{Large}}
-%\author{Marine Le Gal - Elodie Gagnaire Renou - Michel Benoit}
-%\begin{document}
-%\maketitle
 
 \section{Fetch Limited }
 
@@ -229,5 +206,18 @@ Generally, TOMAWAC gives correct results if you adapt the good model at the appl
 \subsection{Conclusion}
 \paragraph{Infinite Depth}
 This benchmark allows to verify that TOMAWAC results for simultaneous processing of different source terms are correct. A comparison with empirical formulas validates this simulation with generally matching results. The use of the exact GQM quadruplet transfers model allows the visualization of overshoots, but,CPU time are increased, so it is not advisable to use this model for big industrial cases.
+\begin{figure}[h!]
+\label{resultinfinite}
+  \centering
+    \includegraphics[width=0.4\textwidth]{../resultsinfinite.png}
+      \caption{wave heigth for infinite depth}
+\end{figure}
+
 \paragraph*{Finite depth}
 Even if a 1000 km fetch with only 5 m depth is hard to study in reality, TOMAWAC results get close to the empirical formula. Bottom friction effect seems to be well represented.
+\begin{figure}[h!]
+\label{finite}
+  \centering
+    \includegraphics[width=0.4\textwidth]{../resultsfinite.png}
+      \caption{wave heigth for finite depth}
+\end{figure}

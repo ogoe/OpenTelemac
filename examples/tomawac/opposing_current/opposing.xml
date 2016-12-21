@@ -88,11 +88,21 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
+   <plot1d xref="section1d" type="v-section" config="together" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0:line" extract="(0;1)(8;1)" target="1:WACRES" />
+      <layer vars="WAVE HEIGHT HM0:line" extract="(0;1)(8;1)" target="3:WACRES"/>
+   </plot1d>
+   <plot1d xref="section1d2" type="v-section" config="together"  size="(6;3)" >
+      <layer vars="BOTTOM:line" extract="(0;1)(8;1)" target="1:WACGEO" time="[0:-1]"/>
+   </plot1d>
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="BOTTOM:mesh" target="1:WACGEO" />
+   </plot2d>
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 

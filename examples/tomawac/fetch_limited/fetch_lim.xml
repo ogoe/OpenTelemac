@@ -19,84 +19,103 @@
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment
 -->
-   <action xref="infinitedepthscalar"
+   <action xref="1"
        do="translate;run;cas;princi"
        code="tomawac" target="tom_fetch_lim_id.cas"
        title="fetch_lim scalar mode"
    />
-   <action xref="infinitedepthparallel"
+   <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
        code="tomawac" target="tom_fetch_lim_id.cas"
        title="fetch_lim parallel mode"
    />
-   <action xref="finitedepthscalar"
+   <action xref="3"
        do="translate;run;cas;princi"
        code="tomawac" target="tom_fetch_lim_fd.cas"
        title="fetch_lim scalar mode"
    />
-   <action xref="finitedepthparallel"
+   <action xref="4"
        do="translate;run;cas;princi" ncsize="4" 
        code="tomawac" target="tom_fetch_lim_fd.cas" 
        title="fetch_lim parallel mode" 
        />
 <!-- Cas "artificiels" pour augmenter la couverture -->
    
-   <action xref="tom_test4"
+   <action xref="5"
        do="translate;run;cas;princi" 
        code="tomawac" target="tom_test4.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="tom_test6"
+   <action xref="6"
        do="translate;run;cas;princi" 
        code="tomawac" target="tom_test6.cas" 
        title="fetch_lim scalar mode" 
    />
-   <action xref="tom_test6bis"
+   <action xref="7"
        do="translate;run;cas;princi" 
        code="tomawac" target="tom_test6bis.cas" 
        title="fetch_lim scalar mode" 
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
-      <v1 vars=":map" target="infinitedepthscalar:WACRES" />
+      <v1 vars=":map" target="1:WACRES" />
       <v2 vars=":map" target="fom_fetch_lim_id.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v3,[1e-4])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
-      <v4 vars=":map" target="infinitedepthparallel:WACRES" />
+      <v4 vars=":map" target="2:WACRES" />
       <v5 vars=":map" target="fom_fetch_lim_id.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v6,[1e-4])" />
    </cast>
    <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
-      <v7 vars=":map" target="infinitedepthscalar:WACRES" />
-      <v8 vars=":map" target="infinitedepthparallel:WACRES" />
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v9,[1e-4])" />
    </cast>
    <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
-      <v10 vars=":map" target="finitedepthscalar:WACRES" />
+      <v10 vars=":map" target="3:WACRES" />
       <v11 vars=":map" target="fom_fetch_lim_fd.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v12,[0.08, 0.9, 1.2,1e-8,1e-8,1e-8,0.07,0.11,0.04,1e-8,0.2,0.3])" />
    </cast>
    <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
-      <v13 vars=":map" target="finitedepthparallel:WACRES" />
+      <v13 vars=":map" target="4:WACRES" />
       <v14 vars=":map" target="fom_fetch_lim_fd.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v15,[0.08, 0.9, 1.2,1e-8,1e-8,1e-8,0.07,0.11,0.04,1e-8,0.2,0.3])" />
    </cast>
    <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
-      <v16 vars=":map" target="finitedepthscalar:WACRES" />
-      <v17 vars=":map" target="finitedepthparallel:WACRES" />
+      <v16 vars=":map" target="3:WACRES" />
+      <v17 vars=":map" target="4:WACRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v18,[1e-4])" />
    </cast>
+      <plot2d xref="mesh" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="BOTTOM:mesh" target="3:WACGEO" />
+   </plot2d>
+   <plot2d xref="resultsinfinite" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
+   </plot2d>
+   <plot2d xref="resultsfinite" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
+   </plot2d>
+   <plot2d xref="resultstest4" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="5:WACRES" />
+   </plot2d>
+   <plot2d xref="resultstest6" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="6:WACRES" />
+   </plot2d>
+   <plot2d xref="resultstest6b" config="oneofall" time="[-1]" size="(6;3)" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="7:WACRES" />
+   </plot2d>
+
 </validation>
