@@ -1,6 +1,4 @@
-/DEBUGGER : 1
 /
-MATRIX STORAGE : 3
 /  ON THIS CASE DIFFERENCES BETWEEN COMPILERS ARE DUE TO TRUNCATIONS ERRORS
 /  BECAUSE OF VON KARMAN EDDIES
 /
@@ -15,39 +13,55 @@ MATRIX STORAGE : 3
 /  SUR Calibre 7      :  31 s compilateur Intel  6.2  20/06/2012 (1 proc)
 /  SUR Calibre 7      :   5 s compilateur Intel  6.2  20/06/2012 (8 proc)
 /
-BOUNDARY CONDITIONS FILE : geo_pildepon.cli
-GEOMETRY FILE               : geo_pildepon.slf
-LIQUID BOUNDARIES FILE    : t2d_pildepon.lqd
-RESULTS FILE              : r2d_pildepon_qua.slf
+/-------------------------------------------------------------------/
+/   INPUT OUTPUT
+/-------------------------------------------------------------------/
+BOUNDARY CONDITIONS FILE = geo_pildepon.cli
+GEOMETRY FILE            = geo_pildepon.slf
+LIQUID BOUNDARIES FILE   = t2d_pildepon.lqd
+FORTRAN FILE             = t2d_pildepon.f
+RESULTS FILE             = r2d_pildepon_qua.slf
+FORMATTED RESULTS FILE   = force.txt
 /
-/----------------------------------------------------------------------
-/
+/-------------------------------------------------------------------/
+/   GENERAL CONFIGURATION
+/-------------------------------------------------------------------/
 TITLE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'
-COMPUTATION CONTINUED = NO
-TIME STEP = 0.1 NUMBER OF TIME STEPS = 800
-/PAS DE TEMPS = 0.2 NOMBRE DE PAS DE TEMPS = 400
-/PAS DE TEMPS = 0.4 NOMBRE DE PAS DE TEMPS = 200
-/PAS DE TEMPS = 0.8 NOMBRE DE PAS DE TEMPS = 100
-GRAPHIC PRINTOUT PERIOD = 800
-LISTING PRINTOUT PERIOD           = 100
-VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,H,B,L'
-DISCRETIZATIONS IN SPACE : 13 ; 11
-TYPE OF ADVECTION : 1;5        TURBULENCE MODEL = 1
-SUPG OPTION     : 1;2
-LAW OF BOTTOM FRICTION = 3     FRICTION COEFFICIENT = 40.
-PROPAGATION = YES      VELOCITY DIFFUSIVITY = 0.005
-IMPLICITATION FOR DEPTH = 0.6 IMPLICITATION FOR VELOCITY = 0.6
-INFORMATION ABOUT SOLVER : YES        MASS-BALANCE : YES
-SOLVER : 1   PRECONDITIONING : 2   INITIAL GUESS FOR H : 1
-SOLVER ACCURACY = 1.E-5
-SOLVER OPTION : 1       INITIAL CONDITIONS : 'COTE NULLE'
-/DEBITS IMPOSES : 0.;62.     COTES IMPOSEES : 0.;0.
+COMPUTATION CONTINUED   = NO
+TIME STEP               = 0.1
+NUMBER OF TIME STEPS    = 12000
+GRAPHIC PRINTOUT PERIOD = 50
+LISTING PRINTOUT PERIOD = 100
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,S,H,B'
+INFORMATION ABOUT SOLVER = YES
+MASS-BALANCE             = YES
+/--------------------------------------------------------------------/
+/   PHYSICAL OPTIONS
+/--------------------------------------------------------------------/
+LAW OF BOTTOM FRICTION = 3
+FRICTION COEFFICIENT   = 40.
+TURBULENCE MODEL       = 1
+VELOCITY DIFFUSIVITY   = 0.021
+INITIAL CONDITIONS     = 'COTE NULLE'
+/--------------------------------------------------------------------/
+/   NUMERICAL OPTIONS
+/--------------------------------------------------------------------/
+DISCRETIZATIONS IN SPACE           = 13;11
+SCHEME FOR ADVECTION OF VELOCITIES = 1
+SUPG OPTION                        = 1;2
+IMPLICITATION FOR DEPTH            = 0.6
+IMPLICITATION FOR VELOCITY         = 0.6
 /
-VELOCITY PROFILES : 3;1
+MASS-LUMPING ON VELOCITY           = 1.
+MASS-LUMPING ON H                  = 1.
 /
-/ AJOUTE POUR EQUATION D'ONDE GENERALISEE
-MASS-LUMPING ON VELOCITY : 1.      MASS-LUMPING ON H : 1.
+TREATMENT OF THE LINEAR SYSTEM     = 1
+SOLVER                             = 7
+INITIAL GUESS FOR H                = 1
+SOLVER ACCURACY                    = 1.E-5
+SOLVER OPTION                      = 1
+PRECONDITIONING                    = 2
 /
-TREATMENT OF THE LINEAR SYSTEM : 1 SOLVER : 7 PRECONDITIONING : 2
-/
-CONTINUITY CORRECTION : YES
+CONTINUITY CORRECTION              = YES
+&FIN
+

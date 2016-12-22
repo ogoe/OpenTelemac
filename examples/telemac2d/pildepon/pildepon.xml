@@ -14,11 +14,20 @@
    </deco>
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ do="cas;princi" are being ignored at the moment
--->
+   /!\ do="cas;princi" are being ignored at the moment -->
    <action xref="1"
        do="translate;run;cas;princi"
        code="telemac2d" target="t2d_pildepon.cas"
+       title="pildepon scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon_qua.cas"
+       title="pildepon scalar mode"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pildepon_cin.cas"
        title="pildepon scalar mode"
    />
    <action xref="4"
@@ -26,23 +35,18 @@
        code="telemac2d" target="t2d_pildepon.cas"
        title="pildepon parallel mode"
    />
-   <action xref="3"
-       do="translate;run;cas;princi"
-       code="telemac2d" target="t2d_pildepon_qua.cas"
-       title="pildepon scalar mode"
-   />
    <action xref="5"
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_pildepon_qua.cas"
        title="pildepon parallel mode"
    />
-   <action xref="2"
-       do="translate;run;cas;princi"
+   <action xref="6"
+       do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_pildepon_cin.cas"
-       title="pildepon scalar mode"
+       title="pildepon parallel mode"
    />
-
-<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:T2DRES" />
       <v2 vars=":map" target="f2d_pildepon.slf" />
@@ -64,8 +68,8 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v9,[])" />
    </cast>
-   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
-      <v10 vars=":map" target="3:T2DRES" />
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="2:T2DRES" />
       <v11 vars=":map" target="f2d_pildepon_qua.slf" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison with the last time frame of the reference file."
@@ -78,37 +82,235 @@
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v15,[])" />
    </cast>
-   <cast xref="cas-parall35" config="oneofall" time="[-1]" type="2d:">
-      <v16 vars=":map" target="3:T2DRES" />
+   <cast xref="cas-parall25" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="2:T2DRES" />
       <v17 vars=":map" target="5:T2DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v18,[])" />
    </cast>
-   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
-      <v19 vars=":map" target="2:T2DRES" />
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="3:T2DRES" />
       <v20 vars=":map" target="f2d_pildepon_cin.slf" />
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v21,[])" />
    </cast>
+   <cast xref="ref-6" config="oneofall" time="[-1]" type="2d:">
+      <v22 vars=":map" target="6:T2DRES" />
+      <v23 vars=":map" target="f2d_pildepon_cin.slf" />
+      <v24 vars="mapdiff(v22,v23)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v24,[])" />
+   </cast>
+   <cast xref="cas-parall36" config="oneofall" time="[-1]" type="2d:">
+      <v25 vars=":map" target="3:T2DRES" />
+      <v26 vars=":map" target="6:T2DRES" />
+      <v27 vars="mapdiff(v25,v26)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v27,[])" />
+   </cast>
+<!-- FFT
+-->
+   <cast xref="fft" config="oneofall" type="1d:" time="[-1]" >
+      <python>
+def copy_file():
+   from os import path, remove, environ
+   from shutil import copyfile
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','1',environ['USETELCFG'],'massb_A.txt')
+   if path.exists(filePath):
+      copyfile(filePath, path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','massb_A.txt'))
+   return [],[],[],[]
 
+def check_file():
+   from os import path, remove, environ
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','table.txt')
+   if path.exists(filePath):
+      remove(filePath)
+   return [],[],[],[]
+
+def force():
+   from os import environ, path
+   import matplotlib.pyplot as plt
+   force_lin = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','1',environ['USETELCFG'],'force.txt')
+   force_quad = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','2',environ['USETELCFG'],'force.txt')
+   force_vf = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','3',environ['USETELCFG'],'force.txt')
+   infileF_lin = open(force_lin, "r")
+   infileF_quad = open(force_quad, "r")
+   infileF_vf = open(force_vf, "r")
+   f1_l=[]
+   f2_l=[]
+   f1_q=[]
+   f2_q=[]
+   f1_vf=[]
+   f2_vf=[]
+   for line in infileF_lin:
+       data=line.split()
+       f1_l.append(float(data[0]))
+       f2_l.append(float(data[1]))
+   for line in infileF_quad:
+       data=line.split()
+       f1_q.append(float(data[0]))
+       f2_q.append(float(data[1]))
+   for line in infileF_vf:
+       data=line.split()
+       f1_vf.append(float(data[0]))
+       f2_vf.append(float(data[1]))
+   t0=600
+   t1=1200
+# dt=0.8 for P1
+   dt_l=0.8
+# dt=0.1 for P2
+   dt_q=0.1
+   tl=np.linspace(t0,t1,(t1-t0)/dt_l+1)
+   tq=np.linspace(t0,t1,(t1-t0)/dt_q+1)
+# useful for debug
+#   print "tl",tl.size,tq.size
+#   print "f1",len(f1_l),len(f1_q),len(f1_vf)
+#   print "f2",len(f2_l),len(f2_q),len(f2_vf)
+   figl=plt.figure(figsize=(8,6))
+   sub1=figl.add_subplot(211) #instead of plt.subplot(2,1,1)
+   sub1.set_title('Force - P1')
+   sub1.plot(tl,f1_l,tl,f2_l)
+   fourier1 = np.fft.fft(f1_l)/len(f1_l)
+   fourier2 = np.fft.fft(f2_l)/len(f2_l)
+   nl = len(f1_l)
+   freq1 = np.fft.fftfreq(nl, d=dt_l)
+   freq2 = np.fft.fftfreq(nl, d=dt_l)
+   positive_frequencies1 = freq1[np.where(freq1 > 0)]
+   magnitudes1 = abs(fourier1[np.where(freq1 > 0)])  # magnitude spectrum
+   positive_frequencies2 = freq2[np.where(freq2 > 0)]
+   magnitudes2 = abs(fourier2[np.where(freq2 > 0)])  # magnitude spectrum
+# plot FFT
+   sub2=figl.add_subplot(212)
+   sub2.set_title('FFT')
+   sub2.plot(positive_frequencies1, magnitudes1,positive_frequencies2, magnitudes2)
+   peak1 = np.argmax(magnitudes1)
+   print "peak1 for force is", positive_frequencies1[peak1]
+   str1=positive_frequencies1[peak1]*4*0.947
+   print "strouhal 1", str1
+   peak2 = np.argmax(magnitudes2)
+   print "peak2 for force is", positive_frequencies2[peak2]
+   str2=positive_frequencies2[peak2]*4*0.947
+   print "strouhal 2", str2
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','table.txt')
+   with open(filePath,'a') as outfile:
+        outfile.write('%5.3f' % str1 )
+        outfile.write('&amp; %5.3f \\\\ \n' % str2  )
+#
+   figq=plt.figure(figsize=(8,6))
+   sub3=figq.add_subplot(211) #instead of plt.subplot(2,1,1)
+   sub3.set_title('Force - P2')
+   sub3.plot(tq,f1_q,tq,f2_q)
+   fourier1 = np.fft.fft(f1_q)/len(f1_q)
+   fourier2 = np.fft.fft(f2_q)/len(f2_q)
+   nq = len(f1_q)
+   freq1 = np.fft.fftfreq(nq, d=dt_q)
+   freq2 = np.fft.fftfreq(nq, d=dt_q)
+   positive_frequencies1 = freq1[np.where(freq1 > 0)]
+   magnitudes1 = abs(fourier1[np.where(freq1 > 0)])  # magnitude spectrum
+   positive_frequencies2 = freq2[np.where(freq2 > 0)]
+   magnitudes2 = abs(fourier2[np.where(freq2 > 0)])  # magnitude spectrum
+# plot FFT
+   sub4=figq.add_subplot(212)
+   sub4.set_title('FFT')
+   sub4.plot(positive_frequencies1, magnitudes1,positive_frequencies2, magnitudes2)
+   axes = plt.gca()
+   axes.set_xlim([0,0.7])
+   peak1 = np.argmax(magnitudes1)
+   print "peak1 for force is", positive_frequencies1[peak1]
+   str1= positive_frequencies1[peak1]*4*0.947
+   print "strouhal 1", str1
+   peak2 = np.argmax(magnitudes2)
+   print "peak2 for force is", positive_frequencies2[peak2]
+   str2=positive_frequencies2[peak2]*4*0.947
+   print "strouhal 2", str2
+   with open(filePath,'a') as outfile:
+        outfile.write('%5.3f' % str1 )
+        outfile.write('&amp; %5.3f \\\\ \n' % str2 )
+#
+   figvf=plt.figure(figsize=(8,6))
+   sub1=figvf.add_subplot(211) #instead of plt.subplot(2,1,1)
+   sub1.set_title('Force - VF')
+   sub1.plot(tq,f1_vf,tq,f2_vf)
+   fourier1 = np.fft.fft(f1_vf)/len(f1_vf)
+   fourier2 = np.fft.fft(f2_vf)/len(f2_vf)
+   nq = len(f1_vf)
+   freq1 = np.fft.fftfreq(nq, d=dt_q)
+   freq2 = np.fft.fftfreq(nq, d=dt_q)
+   positive_frequencies1 = freq1[np.where(freq1 > 0)]
+   magnitudes1 = abs(fourier1[np.where(freq1 > 0)])  # magnitude spectrum
+   positive_frequencies2 = freq2[np.where(freq2 > 0)]
+   magnitudes2 = abs(fourier2[np.where(freq2 > 0)])  # magnitude spectrum
+# plot FFT
+   sub2=figvf.add_subplot(212)
+   sub2.set_title('FFT')
+   sub2.plot(positive_frequencies1, magnitudes1,positive_frequencies2, magnitudes2)
+   axes = plt.gca()
+   axes.set_xlim([0,0.7])
+   peak1 = np.argmax(magnitudes1)
+   print "peak1 for force is", positive_frequencies1[peak1]
+   str1= positive_frequencies1[peak1]*4*0.947
+   print "strouhal 1", str1
+   peak2 = np.argmax(magnitudes2)
+   print "peak2 for force is", positive_frequencies2[peak2]
+   str2=positive_frequencies2[peak2]*4*0.947
+   print "strouhal 2", str2
+   with open(filePath,'a') as outfile:
+        outfile.write('%5.3f' % str1 )
+        outfile.write('&amp; %5.3f' % str2 )
+#
+   infileF_lin.close()
+   infileF_quad.close()
+   infileF_vf.close()
+   fPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_P1.png')
+   gPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_P2.png')
+   vPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_vf.png')
+   figl.savefig(fPath)
+   figq.savefig(gPath)
+   figvf.savefig(vPath)
+   return[],[],[],[]
+      </python>
+      <r0 vars="copy_file()"/>
+      <r1 vars="check_file()"/>
+      <r2 vars="force()" />
+   </cast>
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="(10;8)" >
+   <deco xref="vel">
+      <look cmap="Blues.xml" levels="np.arange(0,2.4,0.2)" extend="'max'"/>
+   </deco>
+   <deco xref="vel_ar">
+      <look cmap="Blues.xml" extend="'max'"/>
+   </deco>
+   <deco xref="Mesh">
+      <look set="xlabel('x (m)');ylabel('y (m)')"/>
+   </deco>
+   <plot2d xref="img/Mesh" size="(10;8)" deco="Mesh">
       <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="Bathy" size="(10;8)" >
+   <plot2d xref="img/Bathy" size="(10;8)" >
       <layer vars="bottom:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="Velocity_t1" size="(10;8)" >
-      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-2]" />
+   <plot2d xref="img/Velocity_tf" size="(10;8)" set="colorbar;title('velocity')">
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" deco="vel"/>
    </plot2d>
-   <plot2d xref="Velocity_tf" size="(10;8)" >
-      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" />
-   </plot2d>
-   <plot2d xref="Velocity arrows" size="(10;8)" >
+   <plot2d xref="img/Velocity arrows" size="(10;8)" set="colorbar" >
       <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[20;20]" />
    </plot2d>
-
+<!--plot1d~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <deco xref="bathy1d">
+      <look set="ylabel('Bottom (m)')" />
+   </deco>
+   <deco xref="bathy">
+      <look color="MediumBlue"/>
+   </deco>
+   <plot1d xref="img/figure_U" type="history" config="together" time="[0:-1]" deco="default" size="(12;3)" >
+      <layer vars="velocity U:line" extract="1594;(9.99;3.98)" target="1:T2DRES" />
+      <layer vars="velocity V:line" extract="1594;(9.99;3.98)" target="1:T2DRES" />
+   </plot1d>
+   <plot1d xref="img/bathy" type="1d:v-section" extract="(-10;10):(-10;-10)" config="together" time="[0]" size="(10;10)" deco="bathy1d" >
+      <layer vars="bottom:line" target="1:T2DRES" deco="bathy"/>
+   </plot1d>
 </validation>
