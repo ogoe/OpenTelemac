@@ -118,12 +118,6 @@
         ENDIF
       ENDDO
 !
-!     ADD RAIN TO SOURCE TERM
-!
-!      IF(RAIN)THEN
-!       CALL OV ('X=X+YZ  ',SMH,PLUIE,AIRS,FACT,NPOIN)
-!      ENDIF
-!
 !++++++++++++++++++++++++++++++++++++
 ! TIME INTEGRATION
 !++++++++++++++++++++++++++++++++++++
@@ -134,21 +128,13 @@
 !---- EULER EXPLICIT SCHEME
 !==========================
 !
-        IF(RAIN) THEN
-          DO I=1,NPOIN
-            FACT=DT/AIRS(I)
-            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))+DT*PLUIE(I)
-            W(2,I) = QU(I) + FACT* FLUX(I,2)
-            W(3,I) = QV(I) + FACT* FLUX(I,3)
-          ENDDO
-        ELSE
-          DO I=1,NPOIN
-            FACT=DT/AIRS(I)
-            W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
-            W(2,I) = QU(I) + FACT* FLUX(I,2)
-            W(3,I) = QV(I) + FACT* FLUX(I,3)
-          ENDDO
-        ENDIF
+        DO I=1,NPOIN
+          FACT=DT/AIRS(I)
+          W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
+          IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
+          W(2,I) = QU(I) + FACT* FLUX(I,2)
+          W(3,I) = QV(I) + FACT* FLUX(I,3)
+        ENDDO
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
 !
@@ -167,11 +153,13 @@
           !--- FIRST TIME STEP
           IF(LT.EQ.1)THEN
             W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) )
+            IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
             W(2,I) = QU(I) + FACT* FLUX(I,2)
             W(3,I) = QV(I) + FACT* FLUX(I,3)
           ELSE
             W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) +
      &                             GAMMA*FLUX(I,1)+SMH(I))
+            IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
             W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) +
      &                             GAMMA*FLUX(I,2))
             W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) +
