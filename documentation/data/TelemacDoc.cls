@@ -66,6 +66,7 @@
 \DeclareOption{Waqtel}{\colorlet{ColorBase1}{ZinnwalditeBrown}}
 \DeclareOption{Misc}{\colorlet{ColorBase1}{Peridot}}
 
+\newcommand{\degree}{$^\circ$}
 \DeclareOption{french}{
 	% changer titre de la table des matière
 	\renewcommand{\contentsname}{Table des mati\`{e}res}
@@ -90,6 +91,7 @@
 	\usepackage[T1]{fontenc}
 	\newcommand{\og}{\guillemotleft}
 	\newcommand{\fg}{\guillemotright\xspace}
+	
 }
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}

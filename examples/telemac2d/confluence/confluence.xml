@@ -59,16 +59,19 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="Mesh" size="(20;5)" >
+   <plot2d xref="img/mesh" size="(20;5)" >
       <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" />
    </plot2d>
-   <plot2d xref="Bathy" size="(20;5)" >
+   <plot2d xref="img/mesh2" size="(20;5)" roi="(-6.5;-0.2)(-4.0;1.1)"  >
+       <layer vars="fond:mesh" target="1:T2DGEO"    config="oneofall" />
+   </plot2d>   
+   <plot2d xref="img/bathy" size="(20;5)" >
       <layer vars="bottom:map" target="1:T2DRES" config="oneofall" />
    </plot2d>
-   <plot2d xref="Water depth" size="(20;5)" >
+   <plot2d xref="img/waterDepth" size="(20;5)" >
       <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
-   <plot2d xref="Velocity" size="(20;5)" >
+   <plot2d xref="img/velocity"  size="(20;5)" >
       <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" />
    </plot2d>
 
