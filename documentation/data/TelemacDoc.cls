@@ -616,7 +616,9 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 %----------------------------------------------------------------------------------------
 %	GRAPHICS
 %----------------------------------------------------------------------------------------
-  \newcommand{\includegraphicsmaybe}[2] {\IfFileExists{#2} {\includegraphics#1{#2}} {\includegraphics#1{../../../../documentation/data/image_not_found.png} \\\path{#2} is missing}}
+  \newcommand{\includegraphicsmaybe}[2] {\IfFileExists{#2} {\includegraphics#1{#2}}%
+  { \includegraphics#1{../../../../documentation/data/image_not_found.pdf}%
+    \newline \small{\path{#2} is missing} }}
 
 %----------------------------------------------------------------------------------------
 %	CODE DEFINITION
