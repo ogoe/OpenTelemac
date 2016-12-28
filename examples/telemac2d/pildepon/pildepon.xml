@@ -119,12 +119,12 @@ def copy_file():
    from shutil import copyfile
    filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','1',environ['USETELCFG'],'massb_A.txt')
    if path.exists(filePath):
-      copyfile(filePath, path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','massb_A.txt'))
+      copyfile(filePath, path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','massb_A.txt'))
    return [],[],[],[]
 
 def check_file():
    from os import path, remove, environ
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','table.txt')
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','table.txt')
    if path.exists(filePath):
       remove(filePath)
    return [],[],[],[]
@@ -193,7 +193,7 @@ def force():
    print "peak2 for force is", positive_frequencies2[peak2]
    str2=positive_frequencies2[peak2]*4*0.947
    print "strouhal 2", str2
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','table.txt')
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','table.txt')
    with open(filePath,'a') as outfile:
         outfile.write('%5.3f' % str1 )
         outfile.write('&amp; %5.3f \\\\ \n' % str2  )
