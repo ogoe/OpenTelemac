@@ -59,7 +59,7 @@
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
-   <plot2d xref="results" config="oneofall" time="[-1]" size="(12;7)" >
+   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
    </plot2d>
 

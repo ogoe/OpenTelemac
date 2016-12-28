@@ -57,7 +57,7 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <plot1d xref="section1d" type="v-section" config="together" size="(12;7)" >
+   <plot1d xref="img/section1d" type="v-section" config="together" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :line" extract="(0;6)(300;6)" target="1:WACRES" />
    </plot1d>
 
@@ -66,7 +66,7 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
+   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="BOTTOM :map" target="1:WACRES" />
 <!--      <layer vars="BOTTOM :mesh" target="1:WACRES" />   -->
    </plot2d>
