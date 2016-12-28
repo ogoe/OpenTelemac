@@ -1,5 +1,5 @@
 &DYN
-/---SYSTEME-TELEMAC-V7P0-----------------------WAQTEL------------------------
+/---SYSTEME-TELEMAC-----------------------WAQTEL------------------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -33,7 +33,7 @@
 /     Sections input file, to be treated in parallel by partel in
 /     a similar way as CONLIM   !jaj ####
 /
-/---SYSTEME-TELEMAC-V7P0------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC------------------------DeltaCAD-/-Septembre-2003----
 /
 
 
@@ -181,8 +181,8 @@ NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'
 TYPE = CARACTERE
 INDEX = 9
-DEFAUT = 'V7P0'
-DEFAUT1 = 'V7P0'
+DEFAUT = 'TRUNK'
+DEFAUT1 = 'TRUNK'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 3

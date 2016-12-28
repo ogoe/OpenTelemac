@@ -1,5 +1,3 @@
-/ 26/02/2010
-/
 / CV: ICQ et ICR reprise des memes mots cles pour SISYPHE que pour TELEMAC3D
 / Seule la valeur par defaut de ICR est differente
 / SISYPHE : ICR=1: KSP=KSPRATIO *D50
@@ -10,7 +8,7 @@
 /
 &DYN
 /
-/---SYSTEME-TELEMAC-V7P1------------------------------TELEMAC-3D-------------
+/---SYSTEME-TELEMAC------------------------------TELEMAC-3D-------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -40,7 +38,7 @@
 /     Cette valeur designe le fichier des "conditions aux limites"
 /     (utilise par le decoupeur "partel").
 /
-/---SYSTEME-TELEMAC-V7P1------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'NOMBRE DE PAS DE TEMPS'
 NOM1 = 'NUMBER OF TIME STEPS'
@@ -2750,8 +2748,8 @@ TYPE = CARACTERE
 INDEX = 12
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V7P1'
-DEFAUT1 = 'V7P1'
+DEFAUT = 'TRUNK'
+DEFAUT1 = 'TRUNK'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
