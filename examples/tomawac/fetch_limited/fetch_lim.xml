@@ -99,22 +99,22 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v18,[1e-4])" />
    </cast>
-      <plot2d xref="mesh" config="oneofall" time="[-1]" size="(6;3)" >
+      <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="BOTTOM:mesh" target="3:WACGEO" />
    </plot2d>
-   <plot2d xref="resultsinfinite" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultsinfinite" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
    </plot2d>
-   <plot2d xref="resultsfinite" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultsfinite" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
    </plot2d>
-   <plot2d xref="resultstest4" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultstest4" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="5:WACRES" />
    </plot2d>
-   <plot2d xref="resultstest6" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultstest6" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="6:WACRES" />
    </plot2d>
-   <plot2d xref="resultstest6b" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultstest6b" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="7:WACRES" />
    </plot2d>
 

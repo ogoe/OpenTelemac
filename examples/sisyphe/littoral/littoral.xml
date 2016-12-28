@@ -106,13 +106,13 @@
    <plot2d xref="mesh" config="oneofall" time="[-1]" size="(9;4)" >
       <layer vars="FOND :mesh" target="1:T2DGEO" />
    </plot2d>
-   <plot2d xref="resultsT2D" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultsT2D" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="VELOCITY U :map" target="1:T2DRES" />
    </plot2d>
-   <plot2d xref="resultsSIS" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultsSIS" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="BED SHEAR STRESS:map" target="1:SISRES" />
    </plot2d>
-   <plot2d xref="resultsTOM" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="resultsTOM" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
    </plot2d>
 

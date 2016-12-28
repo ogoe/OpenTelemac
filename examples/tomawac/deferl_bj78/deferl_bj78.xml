@@ -70,22 +70,22 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="section1d" type="v-section" config="together" size="(6;3)" >
+   <plot1d xref="section1d" type="v-section" config="together" size="(12;7)" >
       <layer vars="FOND            :line" extract="(0;6)(25;6)" target="1:WACGEO" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="FOND            :mesh" target="1:WACGEO" />
    </plot2d>
-   <plot2d xref="results" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="results" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
    </plot2d>
-   <plot2d xref="results3" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="results3" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
    </plot2d>
-   <plot2d xref="results4" config="oneofall" time="[-1]" size="(6;3)" >
+   <plot2d xref="results4" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :map" target="4:WACRES" />
    </plot2d>
 

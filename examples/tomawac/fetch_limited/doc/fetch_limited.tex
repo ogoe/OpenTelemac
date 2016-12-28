@@ -74,7 +74,7 @@ Depth constant along the domain:
 Several meshes have been tested. The important point highlighted by the analysis is that at the begining of the fetch the mesh must be sufficiently fine. At the end, the "free" mesh has been kept because it is the most used in industry and maritime applications (can be adapted to coast).
 \begin{figure}[H]
 \centering
-\includegraphics[scale = 0.35]{freemesh.png}
+\includegraphics[width=0.85\textwidth]{freemesh.png}
 \caption{Free and refined mesh $\Delta x_{bigger} \approx 25 000 m$ - $\Delta x_{medium} \approx 20 000 m$ - $\Delta x_{smaller} \approx 10 000 m$}
 \label{meshfet}
 \end{figure}
@@ -90,7 +90,7 @@ Jonswap spectrum has been set as initial condition.\\
 The domain is a part of a sea. A constant and homogeneous wind blows perpendicular to a long and straight coastline. The boundary conditions are shown in Figure \ref{boundaryfet}:
 \begin{figure}
 \centering
-\includegraphics[scale=0.5]{boundarycond.jpg}
+\includegraphics[width=0.85\textwidth]{boundarycond.jpg}
 \caption{Boundary conditions}
 \label{boundaryfet}
 \end{figure}
@@ -197,8 +197,8 @@ On Figure 6, we can see that for a 20 m/s wind, TOMAWAC curves are really matchi
 For a 10m/s wind, except for $d = 5~m $ and $d = 15 m$, the results are less close to the CERC curves. At small fetches, TOMAWAC results are overvalued, and at large fetches, they are undervalued. In CERC publication (1984), it is adviced to use an infinite model for depth over 90m. So the CERC infinite depth model (1977) is added to the graphs and we can see that the results are closer to it for a 10 m/s wind and $d \geq 30m$.For a 20 m/s wind,at $d = 180m$ and at large fetches, TOMAWAC results tends to the infinite depth limit.
 \begin{figure}
 \centering
-\includegraphics[scale=0.4]{m0_test7v10.pdf}\\
-\includegraphics[scale=0.4]{m0_test7v20.pdf}\\
+\includegraphics[width=0.85\textwidth]{m0_test7v10.pdf}\\
+\includegraphics[width=0.85\textwidth]{m0_test7v20.pdf}\\
 \caption{Comparaison of normalized Variance M0* for U10 = 10m/s (high) and 20m/s (bottom) for different depths : 5, 15, 30, 60, 180 m}
 \label{variancem0}
 \end{figure}
@@ -209,7 +209,7 @@ This benchmark allows to verify that TOMAWAC results for simultaneous processing
 \begin{figure}[h!]
 \label{resultinfinite}
   \centering
-  \includegraphicsmaybe{[width=0.4\textwidth]}{../resultsinfinite.png}
+  \includegraphicsmaybe{[width=0.85\textwidth]}{../resultsinfinite.png}
       \caption{wave heigth for infinite depth}
 \end{figure}
 
@@ -218,6 +218,6 @@ Even if a 1000 km fetch with only 5 m depth is hard to study in reality, TOMAWAC
 \begin{figure}[h!]
 \label{finite}
   \centering
-  \includegraphicsmaybe{[width=0.4\textwidth]}{../resultsfinite.png}
+  \includegraphicsmaybe{[width=0.85\textwidth]}{../resultsfinite.png}
       \caption{wave heigth for finite depth}
 \end{figure}

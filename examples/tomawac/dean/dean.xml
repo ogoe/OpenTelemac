@@ -57,7 +57,7 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <plot1d xref="section1d" type="v-section" config="together" size="(6;3)" >
+   <plot1d xref="section1d" type="v-section" config="together" size="(12;7)" >
       <layer vars="WAVE HEIGHT HM0 :line" extract="(0;6)(300;6)" target="1:WACRES" />
    </plot1d>
 
