@@ -103,17 +103,28 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(9;4)" >
+
+   <deco xref="hiver">
+      <look cmap="winter.xml" extend="'max'"/>
+   </deco>
+   <deco xref="sepia">
+      <look cmap="Sepia.xml" extend="'max'"/>
+   </deco>
+   <deco xref="chili">
+      <look cmap="RedHot.xml" extend="'max'"/>
+   </deco>
+
+      <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(9;4)" >
       <layer vars="FOND :mesh" target="1:T2DGEO" />
    </plot2d>
-   <plot2d xref="img/resultsT2D" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="VELOCITY U :map" target="1:T2DRES" />
+   <plot2d xref="img/resultsT2D" config="oneofall" time="[-1]" size="(12;7)"  set="colorbar;title('Velocity')" >
+      <layer vars="VELOCITY U :map" target="1:T2DRES" deco="chili"/>
    </plot2d>
-   <plot2d xref="img/resultsSIS" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="BED SHEAR STRESS:map" target="1:SISRES" />
+   <plot2d xref="img/resultsSIS" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Bed shear stress')" >
+      <layer vars="BED SHEAR STRESS:map" target="1:SISRES" deco="sepia" />
    </plot2d>
-   <plot2d xref="img/resultsTOM" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
+   <plot2d xref="img/resultsTOM" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave heigth')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="hiver" />
    </plot2d>
 
 </validation>
