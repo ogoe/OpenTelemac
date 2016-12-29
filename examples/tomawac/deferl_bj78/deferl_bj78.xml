@@ -70,23 +70,27 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-   <plot1d xref="img/section1d" type="v-section" config="together" size="(12;7)" >
+   <plot1d xref="img/section1d" type="v-section" config="together" size="(12;7)" set="title('bathymetry profile')">
       <layer vars="FOND            :line" extract="(0;6)(25;6)" target="1:WACGEO" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
+   <deco xref="pastel">
+     <look cmap="Pastel1.xml" levels="np.arange(0.025,0.225,0.025)" extend="'max'"/>
+
+   </deco>
+   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" > 
       <layer vars="FOND            :mesh" target="1:WACGEO" />
    </plot2d>
-   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
+   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Heigth for Battjes and Janssen breaking-induced dissipation')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="pastel"/>
    </plot2d>
-   <plot2d xref="img/results3" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
+   <plot2d xref="img/results3" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Heigth for Roelvink breaking-induced dissipation')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" deco="pastel" />
    </plot2d>
-   <plot2d xref="img/results4" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="4:WACRES" />
+   <plot2d xref="img/results4" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Heigth for Izumiya and Horikawa breaking-induced dissipation')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="4:WACRES" deco="pastel"/>
    </plot2d>
 
 

@@ -57,15 +57,17 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
+   <deco xref="blust">
+      <look cmap="BluSteel.xml" levels="np.arange(0,0.12,0.01)" extend="'max'"/>
+   </deco>
+
+   <deco xref="trottoir">
+      <look cmap="Blues.xml" levels="np.arange(0,0.12,0.01)" extend="'max'"/>
+   </deco>
+      <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('WAVE HEIGHT')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="trottoir"/>
    </plot2d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
 </validation>

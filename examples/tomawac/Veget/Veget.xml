@@ -62,7 +62,7 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(9;5)" >
+   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(9;5)" set="colorbar;title('Wave Heigth')">
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
    </plot2d>
 

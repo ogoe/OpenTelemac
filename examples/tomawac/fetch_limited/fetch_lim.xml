@@ -99,23 +99,29 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v18,[1e-4])" />
    </cast>
+    <deco xref="rose">
+      <look cmap="Purples.xml" extend="'max'"/>
+   </deco>  
       <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
       <layer vars="BOTTOM:mesh" target="3:WACGEO" />
    </plot2d>
-   <plot2d xref="img/resultsinfinite" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" />
+   <plot2d xref="img/resultsinfinite" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for infinite depth')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="rose" />
    </plot2d>
-   <plot2d xref="img/resultsfinite" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
+   <plot2d xref="img/resultsfinite" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for finite depth')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" deco="rose" />
    </plot2d>
-   <plot2d xref="img/resultstest4" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="5:WACRES" />
+   <deco xref="blust">
+      <look cmap="BluSteel.xml" levels="np.arange(0,9,1)" extend="'max'"/>
+   </deco>
+   <plot2d xref="img/resultstest4" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test4')"> >
+      <layer vars="WAVE HEIGHT HM0 :map" target="5:WACRES" deco="blust" />
    </plot2d>
-   <plot2d xref="img/resultstest6" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="6:WACRES" />
+   <plot2d xref="img/resultstest6" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test6')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="6:WACRES" deco="blust" />
    </plot2d>
-   <plot2d xref="img/resultstest6b" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="WAVE HEIGHT HM0 :map" target="7:WACRES" />
+   <plot2d xref="img/resultstest6b" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test6b')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="7:WACRES" deco="blust" />
    </plot2d>
 
 </validation>
