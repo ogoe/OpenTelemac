@@ -1,16 +1,16 @@
-\subsection{bottom\_bc}%
+\chapter{bottom\_bc}%
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsubsection{Purpose}
+\section{Purpose}
 %
 This test case is used to validate the boundary conditions on the bed fo
 Telemac-3D simulations
 %
-\subsubsection{Description of the problem}
+\section{Description of the problem}
 %
 In this test case two simulations will be run. In \texttt{t3d\_bottom\_inlet.f}
 a flow rate will be imposed using the boundary conditions on the bed, whereas
@@ -39,7 +39,7 @@ on the bed as a source term.
 %     This part describes the mesh used in the computation
 %
 %
-\subsubsection{Geometry and Mesh}
+\subsection{Geometry and Mesh}
 %
 The configuration of this test case is simple, it is a square box of sides
 $4000$ m. The depth is constant, and initially set to $500$ m. The geometry of
@@ -69,7 +69,7 @@ decreases towards the free-surface.
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsubsection{Initial and Boundary Conditions}
+\subsection{Initial and Boundary Conditions}
 %
 A discharge $Q$ of $10\,000$ m\textsuperscript{3}s\textsuperscript{-1} will be
 imposed inside a circle with diameter $D$ of $100$ meters placed at the centre
@@ -82,7 +82,7 @@ of the bed. All vertical boundaries will be defined as walls, see figure
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsubsection{Numerical parameters}
+\subsection{Numerical parameters}
 %
 The key numerical parameters for \texttt{t3d\_bottom\_inlet.f} are:
 
@@ -107,7 +107,7 @@ The key numerical parameters for \texttt{t3d\_bottom\_source.cas} are:
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsubsection{Results}
+\section{Results}
 %
 At the moment, no post processing is done, however it would be good to have a
 comparison of the water depth profiles at $y=2000$ m and the vertical velocity
