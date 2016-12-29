@@ -33,6 +33,11 @@
 !+   OPTPRE=2, new and simpler strategy). Tests do not show much
 !+   difference, kept here to be tested in other cases.
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        29/12/2016
+!+        V7P3
+!+   Second order in time added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
@@ -133,11 +138,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION C,CPREV,CINIT,HFL1,TET
+      DOUBLE PRECISION C,CPREV,CINIT,HFL1,TET,LOCALMIN,LOCALMAX
       DOUBLE PRECISION F1,F2,F3,COEF,FI1,FI2,FI3,VOL1,VOL2,VOL3
-      DOUBLE PRECISION DT1,DT2,DT3,FMIN,FMAX
+      DOUBLE PRECISION DT1,DT2,DT3,FMIN,FMAX,VOLD1,VOLD2,VOLD3
       DOUBLE PRECISION SURDT,FITOT,BETA1,BETA2,BETA3,A1,A2,A3
-      DOUBLE PRECISION FP1,FP2,FP3,FIP1,FIP2,FIP3
+      DOUBLE PRECISION FP1,FP2,FP3,FIP1,FIP2,FIP3,FS1,FS2,FS3
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: FXMAT
       DOUBLE PRECISION, PARAMETER :: TIERS=1.D0/3.D0
@@ -388,15 +393,8 @@
 777   CONTINUE
       NITER = NITER + 1
 !
-!     T4 IS THE EVOLUTION OF VOLUME OF WATER, HERE INITIALISED TO 0
-!     T5 IS THE EVOLUTION OF MASSES OF TRACER, HERE INITIALISED TO 0
-!     T6 IS THE INITIAL TRACER*DEPTH
-      CALL OS('X=0     ',X=T4)
-      CALL OS('X=0     ',X=T5)
-      DO I=1,F%DIM1
-        T6%R(I)=F%R(I)*HT%R(I)
-      ENDDO
 !     COMPUTING DEMAND (T7) AND OFFER (T1)
+!
       CALL OS('X=0     ',X=T7)
       CALL OS('X=0     ',X=T1)
       IF(OPTPRE.EQ.1) THEN
@@ -461,32 +459,7 @@
         CALL PARCOM(T1,2,MESH)
       ENDIF
 !
-!     PREDICTEUR
-!
-!     INITIALISING T3, FUTURE VALUE OF F BECAUSE POINTS THAT DO NOT RECEIVE
-!     WATER WILL NOT BE TREATED
-!
-      DO I=1,F%DIM1
-        T3%R(I)=F%R(I)
-      ENDDO
-!
-!     COMPUTING MIN AND MAX FOR FINAL CLIPPING, THIS WILL ENSURE A GLOBAL
-!     MONOTONICITY, THAT COULD OTHERWISE BE VIOLATED BY TRUNCATION ERRORS
-!     THIS COULD BE DONE LOCALLY, BUT IT WOULD BE MORE EXPENSIVE
-!     FOR LOCAL MIN AND MAX SEE CVTRVF.F
-!
-      FMIN=F%R(1)
-      FMAX=F%R(1)
-      DO I=2,F%DIM1
-        FMIN=MIN(FMIN,F%R(I))
-        FMAX=MAX(FMAX,F%R(I))
-      ENDDO
-      IF(NCSIZE.GT.1) THEN
-        FMIN=P_DMIN(FMIN)
-        FMAX=P_DMAX(FMAX)
-      ENDIF
-!
-!     NOW THE LOOP ON REMAINING ELEMENTS
+!     PREPARING VOLUMES AND LIMITATION FOR PREDICTOR
 !
       DO IR=1,REMAIN
 !
@@ -497,10 +470,6 @@
         I3=MESH%IKLE%I(I+2*NELEM)
 !
 !       A PRIORI AVAILABLE VOLUMES FOR THIS ELEMENT
-!
-!       VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS
-!       VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
-!       VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
 !
         F1= FLOP1(I)-FLOP3(I)
         F2=-FLOP1(I)+FLOP2(I)
@@ -581,7 +550,8 @@
         ENDIF
         ENDIF
 !
-!       SAVING VOLUMES FOR CORRECTOR
+!       SAVING VOLUMES FOR CORRECTOR (ACTUALLY NOT USED BY PREDICTOR, THOUGH
+!                                     DONE FOR IT, BUT IT GIVES THE LIMITATIONS...)
 !
         SVOL1(I)=VOL1
         SVOL2(I)=VOL2
@@ -589,21 +559,21 @@
 !
 !       LIMITATION OF FLUXES, FIRST IN TERMS OF LIMITED TIME-STEP
 !
-        IF(F1*DT.GT.VOL1) THEN
-          DT1=DT*(VOL1/(F1*DT))
-        ELSE
-          DT1=DT
-        ENDIF
-        IF(F2*DT.GT.VOL2) THEN
-          DT2=DT*(VOL2/(F2*DT))
-        ELSE
-          DT2=DT
-        ENDIF
-        IF(F3*DT.GT.VOL3) THEN
-          DT3=DT*(VOL3/(F3*DT))
-        ELSE
-          DT3=DT
-        ENDIF
+          IF(F1*DT.GT.VOL1) THEN
+            DT1=DT*(VOL1/(F1*DT))
+          ELSE
+            DT1=DT
+          ENDIF
+          IF(F2*DT.GT.VOL2) THEN
+            DT2=DT*(VOL2/(F2*DT))
+          ELSE
+            DT2=DT
+          ENDIF
+          IF(F3*DT.GT.VOL3) THEN
+            DT3=DT*(VOL3/(F3*DT))
+          ELSE
+            DT3=DT
+          ENDIF
 !
 !       NOW LIMITED VOLUMES TRANSITING BETWEEN POINTS (1/DT MISSING)
 !       A SEGMENT GETS THE STRONGEST LIMITATION OF ITS TWO POINTS
@@ -616,6 +586,52 @@
         DTLIM2(I)=MIN(DT2,DT3)
         DTLIM3(I)=MIN(DT3,DT1)
 !
+      ENDDO
+!
+!
+!     NOW SEQUENCE PREDICTOR-CORRECTOR
+!
+!
+!     INITIALISING T3, FUTURE VALUE OF F BECAUSE POINTS THAT DO NOT RECEIVE
+!                      WATER WILL NOT BE TREATED
+!     T4 IS THE EVOLUTION OF VOLUME OF WATER, HERE INITIALISED TO 0
+!     T5 IS THE EVOLUTION OF MASSES OF TRACER, HERE INITIALISED TO 0
+!     T6 IS THE INITIAL TRACER*DEPTH
+      CALL OS('X=0     ',X=T4)
+      CALL OS('X=0     ',X=T5)
+      DO I=1,F%DIM1
+        T6%R(I)=F%R(I)*HT%R(I)
+      ENDDO
+      DO I=1,F%DIM1
+        T3%R(I)=F%R(I)
+      ENDDO
+!
+!     COMPUTING MIN AND MAX FOR FINAL CLIPPING, THIS WILL ENSURE A GLOBAL
+!     MONOTONICITY, THAT COULD OTHERWISE BE VIOLATED BY TRUNCATION ERRORS
+!     THIS COULD BE DONE LOCALLY, BUT IT WOULD BE MORE EXPENSIVE
+!     FOR LOCAL MIN AND MAX SEE CVTRVF.F
+!
+      FMIN=F%R(1)
+      FMAX=F%R(1)
+      DO I=2,F%DIM1
+        FMIN=MIN(FMIN,F%R(I))
+        FMAX=MAX(FMAX,F%R(I))
+      ENDDO
+      IF(NCSIZE.GT.1) THEN
+        FMIN=P_DMIN(FMIN)
+        FMAX=P_DMAX(FMAX)
+      ENDIF
+!
+!     PREDICTOR
+!
+      DO IR=1,REMAIN
+!
+        I=INDIC_CPOS(IR)
+!
+        I1=MESH%IKLE%I(I        )
+        I2=MESH%IKLE%I(I  +NELEM)
+        I3=MESH%IKLE%I(I+2*NELEM)
+!
         FP1=FLOP1(I)*DTLIM1(I)
         FP2=FLOP2(I)*DTLIM2(I)
         FP3=FLOP3(I)*DTLIM3(I)
@@ -626,38 +642,18 @@
         T4%R(I2)=T4%R(I2)-(-FP1+FP2)
         T4%R(I3)=T4%R(I3)-(-FP2+FP3)
 !
-!       VARIATIONS OF MASSES OF TRACER DURING DT
-!       IT SHOULD BE DELTA(HC) BUT IT IS DECOMPOSED INTO 2 PARTS
-!       (HERE WE GO FROM CONSERVATIVE TO NON CONSERVATIVE APPROACH)
-!
-!       FIRST C * DELTA(H)
+!       VARIATIONS OF MASSES ADDED AND REMOVED IN REDUCED FORM
 !
         T5%R(I1)=T5%R(I1)-( FP1-FP3)*F%R(I1)
         T5%R(I2)=T5%R(I2)-(-FP1+FP2)*F%R(I2)
         T5%R(I3)=T5%R(I3)-(-FP2+FP3)*F%R(I3)
 !
-!       THEN H * DELTA(C)  (OR CORRECTION OF THE UPWIND
-!                           MISTAKE DONE ABOVE, WE ARE NOW BACK TO THE CLASSICAL
-!                           PART OF THE DISTRIBUTIVE SCHEMES)
-!
-        FI1=0.D0
-        FI2=0.D0
-        FI3=0.D0
-        IF(FLOP1(I).LT.0.D0) THEN
-          FI1=FI1-FP1*(F%R(I2)-F%R(I1))
-        ELSE
-          FI2=FI2+FP1*(F%R(I1)-F%R(I2))
-        ENDIF
-        IF(FLOP2(I).LT.0.D0) THEN
-          FI2=FI2-FP2*(F%R(I3)-F%R(I2))
-        ELSE
-          FI3=FI3+FP2*(F%R(I2)-F%R(I3))
-        ENDIF
-        IF(FLOP3(I).LT.0.D0) THEN
-          FI3=FI3-FP3*(F%R(I1)-F%R(I3))
-        ELSE
-          FI1=FI1+FP3*(F%R(I3)-F%R(I1))
-        ENDIF
+        FI1=-MIN(FP1,0.D0)*(F%R(I2)-F%R(I1))
+     &      +MAX(FP3,0.D0)*(F%R(I3)-F%R(I1))
+        FI2=+MAX(FP1,0.D0)*(F%R(I1)-F%R(I2))
+     &      -MIN(FP2,0.D0)*(F%R(I3)-F%R(I2))
+        FI3=+MAX(FP2,0.D0)*(F%R(I2)-F%R(I3))
+     &      -MIN(FP3,0.D0)*(F%R(I1)-F%R(I3))
 !
 !       PSI LIMITATION
 !
@@ -701,11 +697,17 @@
       ENDIF
       CALL OS('X=XY    ',X=T4,Y=UNSV2D)
       CALL OS('X=XY    ',X=T5,Y=UNSV2D)
-!     NEW VALUE OF DEPTH AND PREDICTOR VALUE OF TRACER F IN T3
+!     UPDATING DEPOTH AND TRACER
       DO I=1,F%DIM1
+!       ADDING INITIAL QUANTITY T6 AND VARIATION T5
+        T6%R(I)=T6%R(I)+T5%R(I)
+!       NOW T5 USED TO STORE OLD DEPTH
+        T5%R(I)=HT%R(I)
+!       NEW DEPTH
         HT%R(I)=HT%R(I)+T4%R(I)
         IF(HT%R(I).GT.1.D-15) THEN
-          T3%R(I)=(T6%R(I)+T5%R(I))/HT%R(I)
+!         NEW VALUE OF TRACER
+          T3%R(I)=T6%R(I)/HT%R(I)
         ENDIF
 !       TO COPE WITH TRUNCATION ERRORS AND AVOID NEGATIVE VALUES
 !       IF HT NEGATIVE FOR OTHER REASONS IT WILL MAKE MASS ERRORS
@@ -718,295 +720,439 @@
 !
       IF(NCO_DIST.GT.0) THEN
 !
-      DO I=1,F%DIM1
-        T7%R(I)=0.D0
-        T1%R(I)=0.D0
-      ENDDO
+        DO I=1,F%DIM1
+          T7%R(I)=0.D0
+          T1%R(I)=0.D0
+        ENDDO
 !
-!     EVALUATING OFFER (T1) AND DEMAND (T7)
+!       EVALUATING OFFER (T1) AND DEMAND (T7)
 !
-      DO IR=1,REMAIN
-        I=INDIC_CPOS(IR)
+        DO IR=1,REMAIN
+          I=INDIC_CPOS(IR)
 !
-        I1=MESH%IKLE%I(I        )
-        I2=MESH%IKLE%I(I  +NELEM)
-        I3=MESH%IKLE%I(I+2*NELEM)
-!       LIMITED VOLUMES BETWEEN POINTS
-        FP1=FLOP1(I)*DTLIM1(I)
-        FP2=FLOP2(I)*DTLIM2(I)
-        FP3=FLOP3(I)*DTLIM3(I)
-!       VOLUMES OF BASIC SOLUTION AT T(N+1)
-        VOL1=SVOL1(I)-( FP1-FP3)
-        VOL2=SVOL2(I)-(-FP1+FP2)
-        VOL3=SVOL3(I)-(-FP2+FP3)
-        IF(VOL1.LT.MESH%SURFAC%R(I)*HT%R(I1)*TIERS) THEN
-          T7%R(I1)=T7%R(I1)+MESH%SURFAC%R(I)*HT%R(I1)*TIERS-VOL1
-        ELSE
-          T1%R(I1)=T1%R(I1)+VOL1+MIN( FP1,0.D0)+MIN(-FP3,0.D0)
+          I1=MESH%IKLE%I(I        )
+          I2=MESH%IKLE%I(I  +NELEM)
+          I3=MESH%IKLE%I(I+2*NELEM)
+!         LIMITED VOLUMES TRAVELLING BETWEEN POINTS
+          FP1=FLOP1(I)*DTLIM1(I)
+          FP2=FLOP2(I)*DTLIM2(I)
+          FP3=FLOP3(I)*DTLIM3(I)
+!         VOLUMES OF BASIC SOLUTION AT T(N+1)
+          VOL1=SVOL1(I)-( FP1-FP3)
+          VOL2=SVOL2(I)-(-FP1+FP2)
+          VOL3=SVOL3(I)-(-FP2+FP3)
+          IF(VOL1.LT.MESH%SURFAC%R(I)*HT%R(I1)*TIERS) THEN
+            T7%R(I1)=T7%R(I1)+MESH%SURFAC%R(I)*HT%R(I1)*TIERS-VOL1
+          ELSE
+            T1%R(I1)=T1%R(I1)+VOL1+MIN( FP1,0.D0)+MIN(-FP3,0.D0)
+          ENDIF
+          IF(VOL2.LT.MESH%SURFAC%R(I)*HT%R(I2)*TIERS) THEN
+            T7%R(I2)=T7%R(I2)+MESH%SURFAC%R(I)*HT%R(I2)*TIERS-VOL2
+          ELSE
+            T1%R(I2)=T1%R(I2)+VOL2+MIN(-FP1,0.D0)+MIN( FP2,0.D0)
+          ENDIF
+          IF(VOL3.LT.MESH%SURFAC%R(I)*HT%R(I3)*TIERS) THEN
+            T7%R(I3)=T7%R(I3)+MESH%SURFAC%R(I)*HT%R(I3)*TIERS-VOL3
+          ELSE
+            T1%R(I3)=T1%R(I3)+VOL3+MIN(-FP2,0.D0)+MIN( FP3,0.D0)
+          ENDIF
+        ENDDO
+!
+        IF(NCSIZE.GT.1) THEN
+!         GLOBAL OFFER (T1) AND DEMAND (T7)
+          CALL PARCOM(T1,2,MESH)
+          CALL PARCOM(T7,2,MESH)
         ENDIF
-        IF(VOL2.LT.MESH%SURFAC%R(I)*HT%R(I2)*TIERS) THEN
-          T7%R(I2)=T7%R(I2)+MESH%SURFAC%R(I)*HT%R(I2)*TIERS-VOL2
-        ELSE
-          T1%R(I2)=T1%R(I2)+VOL2+MIN(-FP1,0.D0)+MIN( FP2,0.D0)
-        ENDIF
-        IF(VOL3.LT.MESH%SURFAC%R(I)*HT%R(I3)*TIERS) THEN
-          T7%R(I3)=T7%R(I3)+MESH%SURFAC%R(I)*HT%R(I3)*TIERS-VOL3
-        ELSE
-          T1%R(I3)=T1%R(I3)+VOL3+MIN(-FP2,0.D0)+MIN( FP3,0.D0)
-        ENDIF
-      ENDDO
-      IF(NCSIZE.GT.1) THEN
-!       GLOBAL OFFER AND DEMAND
-        CALL PARCOM(T1,2,MESH)
-        CALL PARCOM(T7,2,MESH)
+!
+!       VOLUMES THAT WILL BE USED FOR THE DERIVATIVE IN TIME
+!
+        DO IR=1,REMAIN
+!
+          I=INDIC_CPOS(IR)
+!
+          I1=MESH%IKLE%I(I        )
+          I2=MESH%IKLE%I(I  +NELEM)
+          I3=MESH%IKLE%I(I+2*NELEM)
+!
+!         LIMITED VOLUMES BETWEEN POINTS
+!
+          FP1=FLOP1(I)*DTLIM1(I)
+          FP2=FLOP2(I)*DTLIM2(I)
+          FP3=FLOP3(I)*DTLIM3(I)
+!         LOCAL VOLUMES AFTER PREDICTOR
+          VOL1=SVOL1(I)-( FP1-FP3)
+          VOL2=SVOL2(I)-(-FP1+FP2)
+          VOL3=SVOL3(I)-(-FP2+FP3)
+!         VOLUME1
+          IF(VOL1.LT.MESH%SURFAC%R(I)*HT%R(I1)*TIERS) THEN
+            IF(T7%R(I1).GT.T1%R(I1)) THEN
+!             MORE DEMAND THAN OFFER, VOL1 GETS ONLY A SHARE
+              VOL1=VOL1+(MESH%SURFAC%R(I)*HT%R(I1)*TIERS-VOL1)
+     &                 *(T1%R(I1)/T7%R(I1))
+            ELSE
+!             VOL1 GETS ALL
+              VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS
+            ENDIF
+          ELSE
+            IF(T1%R(I1).GT.T7%R(I1)) THEN
+!             MORE OFFER THAN DEMAND, VOL1 GIVES A SHARE ONLY
+              VOL1=VOL1-(VOL1+(MIN( FP1,0.D0)+MIN(-FP3,0.D0)))
+     &                 *(T7%R(I1)/T1%R(I1))
+            ELSE
+!             MORE DEMAND THAN OFFER, VOL1 GIVES ALL IT CAN
+              VOL1=-(MIN( FP1,0.D0)+MIN(-FP3,0.D0))
+            ENDIF
+          ENDIF
+!         VOLUME 2
+          IF(VOL2.LT.MESH%SURFAC%R(I)*HT%R(I2)*TIERS) THEN
+            IF(T7%R(I2).GT.T1%R(I2)) THEN
+!             MORE DEMAND THAN OFFER, VOL2 GETS ONLY A SHARE
+              VOL2=VOL2+(MESH%SURFAC%R(I)*HT%R(I2)*TIERS-VOL2)
+     &                 *(T1%R(I2)/T7%R(I2))
+            ELSE
+!             VOL2 GETS ALL
+              VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
+            ENDIF
+          ELSE
+            IF(T1%R(I2).GT.T7%R(I2)) THEN
+!             MORE OFFER THAN DEMAND, VOL2 GIVES A SHARE ONLY
+              VOL2=VOL2-(VOL2+(MIN(-FP1,0.D0)+MIN( FP2,0.D0)))
+     &                 *(T7%R(I2)/T1%R(I2))
+            ELSE
+!             MORE DEMAND THAN OFFER, VOL1 GIVES ALL IT CAN
+              VOL2=-(MIN(-FP1,0.D0)+MIN( FP2,0.D0))
+            ENDIF
+          ENDIF
+!         VOLUME 3
+          IF(VOL3.LT.MESH%SURFAC%R(I)*HT%R(I3)*TIERS) THEN
+            IF(T7%R(I3).GT.T1%R(I3)) THEN
+!             MORE DEMAND THAN OFFER, VOL1 GETS ONLY A SHARE
+              VOL3=VOL3+(MESH%SURFAC%R(I)*HT%R(I3)*TIERS-VOL3)
+     &                 *(T1%R(I3)/T7%R(I3))
+            ELSE
+!             VOL3 GETS ALL
+              VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
+            ENDIF
+          ELSE
+            IF(T1%R(I3).GT.T7%R(I3)) THEN
+!             MORE OFFER THAN DEMAND, VOL3 GIVES A SHARE ONLY
+              VOL3=VOL3-(VOL3+(MIN(-FP2,0.D0)+MIN( FP3,0.D0)))
+     &                 *(T7%R(I3)/T1%R(I3))
+            ELSE
+!             MORE DEMAND THAN OFFER, VOL3 GIVES ALL IT CAN
+              VOL3=-(MIN(-FP2,0.D0)+MIN( FP3,0.D0))
+            ENDIF
+          ENDIF
+          SVOL1(I)=VOL1
+          SVOL2(I)=VOL2
+          SVOL3(I)=VOL3
+        ENDDO
+!
+        DO N=1,NCO_DIST
+!
+          DO I=1,F%DIM1
+!           INITIAL QUANTITY
+            T6%R(I)=F%R(I)*HT%R(I)
+          ENDDO
+!
+          IF(OPTADV.EQ.2) THEN
+!           FOR SECOND ORDER, COMPUTING POSSIBLE MIN AND MAX
+!           MIN IN T1 AND MAX IN T7
+            DO I=1,F%DIM1
+              T1%R(I)=F%R(I)
+              T7%R(I)=F%R(I)
+            ENDDO
+            DO IR=1,REMAIN
+              I=INDIC_CPOS(IR)
+              I1=MESH%IKLE%I(I        )
+              I2=MESH%IKLE%I(I  +NELEM)
+              I3=MESH%IKLE%I(I+2*NELEM)
+              LOCALMIN=MIN( F%R(I1), F%R(I2), F%R(I3),
+     &                     T3%R(I1),T3%R(I2),T3%R(I3))
+              LOCALMAX=MAX( F%R(I1), F%R(I2), F%R(I3),
+     &                     T3%R(I1),T3%R(I2),T3%R(I3))
+              T1%R(I1)=MIN(T1%R(I1),LOCALMIN)
+              T1%R(I2)=MIN(T1%R(I2),LOCALMIN)
+              T1%R(I3)=MIN(T1%R(I3),LOCALMIN)
+              T7%R(I1)=MAX(T7%R(I1),LOCALMAX)
+              T7%R(I2)=MAX(T7%R(I2),LOCALMAX)
+              T7%R(I3)=MAX(T7%R(I3),LOCALMAX)
+            ENDDO
+            IF(NCSIZE.GT.1) THEN
+!                            4:MIN
+              CALL PARCOM(T1,4,MESH)
+!                            3:MAX
+              CALL PARCOM(T7,3,MESH)
+            ENDIF
+          ENDIF
+!
+          CALL OS('X=0     ',X=T5)
+!
+!         NOW THE REAL CORRECTOR
+!
+          IF(OPTADV.EQ.1) THEN
+!
+!           FIRST ORDER IN TIME
+!
+            DO IR=1,REMAIN
+!
+              I=INDIC_CPOS(IR)
+              I1=MESH%IKLE%I(I        )
+              I2=MESH%IKLE%I(I  +NELEM)
+              I3=MESH%IKLE%I(I+2*NELEM)
+!
+!             LIMITED VOLUMES BETWEEN POINTS
+!
+              FP1=FLOP1(I)*DTLIM1(I)
+              FP2=FLOP2(I)*DTLIM2(I)
+              FP3=FLOP3(I)*DTLIM3(I)
+!
+              FI1=(T3%R(I1)-F%R(I1))*SVOL1(I)
+              FI2=(T3%R(I2)-F%R(I2))*SVOL2(I)
+              FI3=(T3%R(I3)-F%R(I3))*SVOL3(I)
+!
+!             ADDING THE DERIVATIVE THAT WILL BE REMOVED IN UPWIND FORM
+!             THIS IS DONE ONLY FOR REMAINING ELEMENTS.
+!
+              T5%R(I1)=T5%R(I1)+FI1
+              T5%R(I2)=T5%R(I2)+FI2
+              T5%R(I3)=T5%R(I3)+FI3
+!
+!             THEN FLUXES
+!
+              FIP1=-MIN(FP1,0.D0)*(F%R(I2)-F%R(I1))
+     &             +MAX(FP3,0.D0)*(F%R(I3)-F%R(I1))
+              FIP2=+MAX(FP1,0.D0)*(F%R(I1)-F%R(I2))
+     &             -MIN(FP2,0.D0)*(F%R(I3)-F%R(I2))
+              FIP3=+MAX(FP2,0.D0)*(F%R(I2)-F%R(I3))
+     &             -MIN(FP3,0.D0)*(F%R(I1)-F%R(I3))
+!
+!             GO TO 1000
+!             THIS EXTRA PSI REDUCTION IS NOT NECESSARY
+!             BUT GIVES SLIGHTLY BETTER RESULTS
+              FITOT=FIP1+FIP2+FIP3
+              IF(FITOT.GT.EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MAX(FIP1,0.D0)
+                BETA2=MAX(FIP2,0.D0)
+                BETA3=MAX(FIP3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FIP1=BETA1*COEF
+                FIP2=BETA2*COEF
+                FIP3=BETA3*COEF
+              ELSEIF(FITOT.LT.-EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MIN(FIP1,0.D0)
+                BETA2=MIN(FIP2,0.D0)
+                BETA3=MIN(FIP3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FIP1=BETA1*COEF
+                FIP2=BETA2*COEF
+                FIP3=BETA3*COEF
+              ELSE
+!               NO REDUCTION
+              ENDIF
+1000          CONTINUE
+!
+!             ADDING TO FINAL CONTRIBUTIONS THAT WILL BE REDUCED AGAIN
+!
+              FI1=-FI1+FIP1
+              FI2=-FI2+FIP2
+              FI3=-FI3+FIP3
+!
+!             PSI LIMITATION
+!
+              FITOT=FI1+FI2+FI3
+!
+              IF(FITOT.GT.EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MAX(FI1,0.D0)
+                BETA2=MAX(FI2,0.D0)
+                BETA3=MAX(FI3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FI1=BETA1*COEF
+                FI2=BETA2*COEF
+                FI3=BETA3*COEF
+              ELSEIF(FITOT.LT.-EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MIN(FI1,0.D0)
+                BETA2=MIN(FI2,0.D0)
+                BETA3=MIN(FI3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FI1=BETA1*COEF
+                FI2=BETA2*COEF
+                FI3=BETA3*COEF
+              ELSE
+!               NO REDUCTION
+              ENDIF
+!
+              T5%R(I1)=T5%R(I1)+FI1
+              T5%R(I2)=T5%R(I2)+FI2
+              T5%R(I3)=T5%R(I3)+FI3
+!
+            ENDDO
+!
+          ELSEIF(OPTADV.EQ.2) THEN
+!
+!           SECOND ORDER IN TIME
+!
+            DO IR=1,REMAIN
+!
+              I=INDIC_CPOS(IR)
+              I1=MESH%IKLE%I(I        )
+              I2=MESH%IKLE%I(I  +NELEM)
+              I3=MESH%IKLE%I(I+2*NELEM)
+!
+!             LIMITED VOLUMES BETWEEN POINTS
+!
+              FP1=FLOP1(I)*DTLIM1(I)
+              FP2=FLOP2(I)*DTLIM2(I)
+              FP3=FLOP3(I)*DTLIM3(I)
+!
+              FI1=(F%R(I1)-T3%R(I1))*SVOL1(I)
+              FI2=(F%R(I2)-T3%R(I2))*SVOL2(I)
+              FI3=(F%R(I3)-T3%R(I3))*SVOL3(I)
+!
+!             ADDING THE DERIVATIVE THAT WILL BE REMOVED IN UPWIND FORM
+!
+              T5%R(I1)=T5%R(I1)-FI1
+              T5%R(I2)=T5%R(I2)-FI2
+              T5%R(I3)=T5%R(I3)-FI3
+!
+!             THEN FLUXES
+!
+              FIP1=-MIN(FP1,0.D0)*(F%R(I2)-F%R(I1))
+     &             +MAX(FP3,0.D0)*(F%R(I3)-F%R(I1))
+              FIP2=+MAX(FP1,0.D0)*(F%R(I1)-F%R(I2))
+     &             -MIN(FP2,0.D0)*(F%R(I3)-F%R(I2))
+              FIP3=+MAX(FP2,0.D0)*(F%R(I2)-F%R(I3))
+     &             -MIN(FP3,0.D0)*(F%R(I1)-F%R(I3))
+!
+!             SECOND ORDER CONTRIBUTION
+!
+              VOLD1=MAX(0.D0,SVOL1(I)+MIN(FP1,0.D0)-MAX(FP3,0.D0))
+              VOLD2=MAX(0.D0,SVOL2(I)-MAX(FP1,0.D0)+MIN(FP2,0.D0))
+              VOLD3=MAX(0.D0,SVOL3(I)-MAX(FP2,0.D0)+MIN(FP3,0.D0))
+              A1=2.D0*VOLD1/MAX(1.D-30, MAX(FP1,0.D0)-MIN(FP3,0.D0))
+              A2=2.D0*VOLD2/MAX(1.D-30,-MIN(FP1,0.D0)+MAX(FP2,0.D0))
+              A3=2.D0*VOLD3/MAX(1.D-30,-MIN(FP2,0.D0)+MAX(FP3,0.D0))
+              FS1=MIN(T3%R(I1),F%R(I1)+A1*(F%R(I1)-T1%R(I1)))
+              FS1=MAX(FS1     ,F%R(I1)+A1*(F%R(I1)-T7%R(I1)))
+              FS2=MIN(T3%R(I2),F%R(I2)+A2*(F%R(I2)-T1%R(I2)))
+              FS2=MAX(FS2     ,F%R(I2)+A2*(F%R(I2)-T7%R(I2)))
+              FS3=MIN(T3%R(I3),F%R(I3)+A3*(F%R(I3)-T1%R(I3)))
+              FS3=MAX(FS3     ,F%R(I3)+A3*(F%R(I3)-T7%R(I3)))
+!  
+              FIP1=FIP1+0.5D0*(-MAX(FP1,0.D0)*(FS1-F%R(I1))
+     &                         +MIN(FP3,0.D0)*(FS1-F%R(I1))
+     &                         -MIN(FP1,0.D0)*(FS2-F%R(I2))
+     &                         +MAX(FP3,0.D0)*(FS3-F%R(I3)))
+              FIP2=FIP2+0.5D0*(+MIN(FP1,0.D0)*(FS2-F%R(I2))
+     &                         -MAX(FP2,0.D0)*(FS2-F%R(I2))
+     &                         +MAX(FP1,0.D0)*(FS1-F%R(I1))
+     &                         -MIN(FP2,0.D0)*(FS3-F%R(I3)))
+              FIP3=FIP3+0.5D0*(+MIN(FP2,0.D0)*(FS3-F%R(I3))
+     &                         -MAX(FP3,0.D0)*(FS3-F%R(I3))
+     &                         +MAX(FP2,0.D0)*(FS2-F%R(I2))
+     &                         -MIN(FP3,0.D0)*(FS1-F%R(I1)))
+!
+!             GO TO 2000
+!             THIS EXTRA PSI REDUCTION IS NOT NECESSARY
+!             BUT GIVES SLIGHTLY BETTER RESULTS
+              FITOT=FIP1+FIP2+FIP3
+              IF(FITOT.GT.EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MAX(FIP1,0.D0)
+                BETA2=MAX(FIP2,0.D0)
+                BETA3=MAX(FIP3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FIP1=BETA1*COEF
+                FIP2=BETA2*COEF
+                FIP3=BETA3*COEF
+              ELSEIF(FITOT.LT.-EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MIN(FIP1,0.D0)
+                BETA2=MIN(FIP2,0.D0)
+                BETA3=MIN(FIP3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FIP1=BETA1*COEF
+                FIP2=BETA2*COEF
+                FIP3=BETA3*COEF
+              ELSE
+!               NO REDUCTION
+              ENDIF
+!2000          CONTINUE
+!
+!             ADDING TO FINAL CONTRIBUTIONS THAT WILL BE REDUCED AGAIN
+!
+              FI1=FI1+FIP1
+              FI2=FI2+FIP2
+              FI3=FI3+FIP3
+!
+!             PSI LIMITATION
+!
+              FITOT=FI1+FI2+FI3
+!
+              IF(FITOT.GT.EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MAX(FI1,0.D0)
+                BETA2=MAX(FI2,0.D0)
+                BETA3=MAX(FI3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FI1=BETA1*COEF
+                FI2=BETA2*COEF
+                FI3=BETA3*COEF
+              ELSEIF(FITOT.LT.-EPS_FLUX) THEN
+!               PSI REDUCTION
+                BETA1=MIN(FI1,0.D0)
+                BETA2=MIN(FI2,0.D0)
+                BETA3=MIN(FI3,0.D0)
+                COEF=FITOT/(BETA1+BETA2+BETA3)
+                FI1=BETA1*COEF
+                FI2=BETA2*COEF
+                FI3=BETA3*COEF
+              ELSE
+!               NO REDUCTION
+              ENDIF
+!
+              T5%R(I1)=T5%R(I1)+FI1
+              T5%R(I2)=T5%R(I2)+FI2
+              T5%R(I3)=T5%R(I3)+FI3
+!
+            ENDDO
+!
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'OPTION INCONNUE DANS CVTRVF_ERIA: ',OPTADV
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'UNKNOWN OPTION IN CVTRVF_ERIA: ',OPTADV
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!
+!         ADDING THE EVOLUTIONS TO THE TRACERS
+!         AFTER ASSEMBLY AT INTERFACES AND AFTER
+!         CHANGING VOLUMES INTO DEPTHS.
+!
+          IF(NCSIZE.GT.1) CALL PARCOM(T5,2,MESH)
+          CALL OS('X=XY    ',X=T5,Y=UNSV2D)
+!         NEW AVERAGE VALUE OF TRACER
+          DO I=1,F%DIM1
+            IF(HT%R(I).GT.1.D-15) THEN
+              T3%R(I)=(T6%R(I)+T5%R(I))/HT%R(I)
+!             ENSURING A GLOBAL MONOTONICITY
+              T3%R(I)=MIN(FMAX,MAX(FMIN,T3%R(I)))
+            ENDIF
+          ENDDO
+!
+!         END OF THE LOOP OF CORRECTIONS
+!
+        ENDDO
       ENDIF
 !
-!     VOLUMES THAT WILL BE USED FOR THE DERIVATIVE IN TIME
-!
-      DO IR=1,REMAIN
-!
-        I=INDIC_CPOS(IR)
-!
-        I1=MESH%IKLE%I(I        )
-        I2=MESH%IKLE%I(I  +NELEM)
-        I3=MESH%IKLE%I(I+2*NELEM)
-!
-!       LIMITED VOLUMES BETWEEN POINTS
-!
-        FP1=FLOP1(I)*DTLIM1(I)
-        FP2=FLOP2(I)*DTLIM2(I)
-        FP3=FLOP3(I)*DTLIM3(I)
-!       LOCAL VOLUMES AFTER PREDICTOR
-        VOL1=SVOL1(I)-( FP1-FP3)
-        VOL2=SVOL2(I)-(-FP1+FP2)
-        VOL3=SVOL3(I)-(-FP2+FP3)
-!       VOLUME1
-        IF(VOL1.LT.MESH%SURFAC%R(I)*HT%R(I1)*TIERS) THEN
-          IF(T7%R(I1).GT.T1%R(I1)) THEN
-!           MORE DEMAND THAN OFFER, VOL1 GETS ONLY A SHARE
-            VOL1=VOL1+(MESH%SURFAC%R(I)*HT%R(I1)*TIERS-VOL1)
-     &               *(T1%R(I1)/T7%R(I1))
-          ELSE
-!           VOL1 GETS ALL
-            VOL1=MESH%SURFAC%R(I)*HT%R(I1)*TIERS
-          ENDIF
-        ELSE
-          IF(T1%R(I1).GT.T7%R(I1)) THEN
-!           MORE OFFER THAN DEMAND, VOL1 GIVES A SHARE ONLY
-            VOL1=VOL1-(VOL1+(MIN( FP1,0.D0)+MIN(-FP3,0.D0)))
-     &               *(T7%R(I1)/T1%R(I1))
-          ELSE
-!           MORE DEMAND THAN OFFER, VOL1 GIVES ALL IT CAN
-            VOL1=-(MIN( FP1,0.D0)+MIN(-FP3,0.D0))
-          ENDIF
-        ENDIF
-!       VOLUME 2
-        IF(VOL2.LT.MESH%SURFAC%R(I)*HT%R(I2)*TIERS) THEN
-          IF(T7%R(I2).GT.T1%R(I2)) THEN
-!           MORE DEMAND THAN OFFER, VOL2 GETS ONLY A SHARE
-            VOL2=VOL2+(MESH%SURFAC%R(I)*HT%R(I2)*TIERS-VOL2)
-     &               *(T1%R(I2)/T7%R(I2))
-          ELSE
-!           VOL2 GETS ALL
-            VOL2=MESH%SURFAC%R(I)*HT%R(I2)*TIERS
-          ENDIF
-        ELSE
-          IF(T1%R(I2).GT.T7%R(I2)) THEN
-!           MORE OFFER THAN DEMAND, VOL2 GIVES A SHARE ONLY
-            VOL2=VOL2-(VOL2+(MIN(-FP1,0.D0)+MIN( FP2,0.D0)))
-     &               *(T7%R(I2)/T1%R(I2))
-          ELSE
-!           MORE DEMAND THAN OFFER, VOL1 GIVES ALL IT CAN
-            VOL2=-(MIN(-FP1,0.D0)+MIN( FP2,0.D0))
-          ENDIF
-        ENDIF
-!       VOLUME 3
-        IF(VOL3.LT.MESH%SURFAC%R(I)*HT%R(I3)*TIERS) THEN
-          IF(T7%R(I3).GT.T1%R(I3)) THEN
-!           MORE DEMAND THAN OFFER, VOL1 GETS ONLY A SHARE
-            VOL3=VOL3+(MESH%SURFAC%R(I)*HT%R(I3)*TIERS-VOL3)
-     &               *(T1%R(I3)/T7%R(I3))
-          ELSE
-!           VOL3 GETS ALL
-            VOL3=MESH%SURFAC%R(I)*HT%R(I3)*TIERS
-          ENDIF
-        ELSE
-          IF(T1%R(I3).GT.T7%R(I3)) THEN
-!           MORE OFFER THAN DEMAND, VOL3 GIVES A SHARE ONLY
-            VOL3=VOL3-(VOL3+(MIN(-FP2,0.D0)+MIN( FP3,0.D0)))
-     &               *(T7%R(I3)/T1%R(I3))
-          ELSE
-!           MORE DEMAND THAN OFFER, VOL3 GIVES ALL IT CAN
-            VOL3=-(MIN(-FP2,0.D0)+MIN( FP3,0.D0))
-          ENDIF
-        ENDIF
-        SVOL1(I)=VOL1
-        SVOL2(I)=VOL2
-        SVOL3(I)=VOL3
-      ENDDO
-!
-      DO N=1,NCO_DIST
-!
-      CALL OS('X=0     ',X=T5)
-!
-      DO I=1,F%DIM1
-!       THIS ALLOWS TO CANCEL THE PART "FIRST C * DELTA(H)" BELOW
-        T6%R(I)=F%R(I)*HT%R(I)
-      ENDDO
-!
-!     NOW THE REAL CORRECTOR
-!
-      DO IR=1,REMAIN
-!
-        I=INDIC_CPOS(IR)
-!
-        I1=MESH%IKLE%I(I        )
-        I2=MESH%IKLE%I(I  +NELEM)
-        I3=MESH%IKLE%I(I+2*NELEM)
-!
-!       LIMITED VOLUMES BETWEEN POINTS
-!
-        FP1=FLOP1(I)*DTLIM1(I)
-        FP2=FLOP2(I)*DTLIM2(I)
-        FP3=FLOP3(I)*DTLIM3(I)
-!
-        VOL1=SVOL1(I)
-        VOL2=SVOL2(I)
-        VOL3=SVOL3(I)
-!
-        FI1=(F%R(I1)-T3%R(I1))*VOL1
-        FI2=(F%R(I2)-T3%R(I2))*VOL2
-        FI3=(F%R(I3)-T3%R(I3))*VOL3
-!
-!       ADDING THE DERIVATIVE THAT WILL BE REMOVED IN UPWIND FORM
-!
-        T5%R(I1)=T5%R(I1)-FI1
-        T5%R(I2)=T5%R(I2)-FI2
-        T5%R(I3)=T5%R(I3)-FI3
-
-        A1=VOL1
-        A2=VOL2
-        A3=VOL3
-!
-!       FIRST C * DELTA(H)
-!
-!       T5%R(I1)=T5%R(I1)-( FP1-FP3)*F%R(I1)
-!       T5%R(I2)=T5%R(I2)-(-FP1+FP2)*F%R(I2)
-!       T5%R(I3)=T5%R(I3)-(-FP2+FP3)*F%R(I3)
-!
-!       THEN H * DELTA(C)  (OR CORRECTION OF THE UPWIND
-!                           MISTAKE DONE ABOVE)
-        FIP1=0.D0
-        FIP2=0.D0
-        FIP3=0.D0
-        IF(FP1.LT.0.D0) THEN
-          FIP1=FIP1-FP1*(F%R(I2)-F%R(I1))
-          A1=A1+FP1
-        ELSE
-          FIP2=FIP2+FP1*(F%R(I1)-F%R(I2))
-          A2=A2-FP1
-        ENDIF
-        IF(FP2.LT.0.D0) THEN
-          FIP2=FIP2-FP2*(F%R(I3)-F%R(I2))
-          A2=A2+FP2
-        ELSE
-          FIP3=FIP3+FP2*(F%R(I2)-F%R(I3))
-          A3=A3-FP2
-        ENDIF
-        IF(FP3.LT.0.D0) THEN
-          FIP3=FIP3-FP3*(F%R(I1)-F%R(I3))
-          A3=A3+FP3
-        ELSE
-          FIP1=FIP1+FP3*(F%R(I3)-F%R(I1))
-          A1=A1-FP3
-        ENDIF
-!
-!       GO TO 1000
-!       THIS EXTRA PSI REDUCTION IS NOT NECESSARY
-!       BUT GIVES SLIGHTLY BETTER RESULTS
-        FITOT=FIP1+FIP2+FIP3
-        IF(FITOT.GT.EPS_FLUX) THEN
-!         PSI REDUCTION
-          BETA1=MAX(FIP1,0.D0)
-          BETA2=MAX(FIP2,0.D0)
-          BETA3=MAX(FIP3,0.D0)
-          COEF=FITOT/(BETA1+BETA2+BETA3)
-          FIP1=BETA1*COEF
-          FIP2=BETA2*COEF
-          FIP3=BETA3*COEF
-        ELSEIF(FITOT.LT.-EPS_FLUX) THEN
-!         PSI REDUCTION
-          BETA1=MIN(FIP1,0.D0)
-          BETA2=MIN(FIP2,0.D0)
-          BETA3=MIN(FIP3,0.D0)
-          COEF=FITOT/(BETA1+BETA2+BETA3)
-          FIP1=BETA1*COEF
-          FIP2=BETA2*COEF
-          FIP3=BETA3*COEF
-        ELSE
-!         NO REDUCTION
-        ENDIF
-!1000    CONTINUE
-!
-!       ADDING TO FINAL CONTRIBUTIONS THAT WILL BE REDUCED AGAIN
-!
-        FI1=FI1+FIP1
-        FI2=FI2+FIP2
-        FI3=FI3+FIP3
-!
-!       PSI LIMITATION
-!
-        FITOT=FI1+FI2+FI3
-!
-        IF(FITOT.GT.EPS_FLUX) THEN
-!         PSI REDUCTION
-          BETA1=MAX(FI1,0.D0)
-          BETA2=MAX(FI2,0.D0)
-          BETA3=MAX(FI3,0.D0)
-          COEF=FITOT/(BETA1+BETA2+BETA3)
-          FI1=BETA1*COEF
-          FI2=BETA2*COEF
-          FI3=BETA3*COEF
-        ELSEIF(FITOT.LT.-EPS_FLUX) THEN
-!         PSI REDUCTION
-          BETA1=MIN(FI1,0.D0)
-          BETA2=MIN(FI2,0.D0)
-          BETA3=MIN(FI3,0.D0)
-          COEF=FITOT/(BETA1+BETA2+BETA3)
-          FI1=BETA1*COEF
-          FI2=BETA2*COEF
-          FI3=BETA3*COEF
-        ELSE
-!         NO REDUCTION
-        ENDIF
-!
-        T5%R(I1)=T5%R(I1)+FI1
-        T5%R(I2)=T5%R(I2)+FI2
-        T5%R(I3)=T5%R(I3)+FI3
-!
-      ENDDO
-!
-!     ADDING THE EVOLUTIONS TO THE TRACERS
-!     AFTER ASSEMBLY AT INTERFACES AND AFTER
-!     CHANGING VOLUMES INTO DEPTHS.
-!
-      IF(NCSIZE.GT.1) CALL PARCOM(T5,2,MESH)
-      CALL OS('X=XY    ',X=T5,Y=UNSV2D)
-!     NEW AVERAGE VALUE OF TRACER
-      DO I=1,F%DIM1
-        IF(HT%R(I).GT.1.D-15) THEN
-          T3%R(I)=(T6%R(I)+T5%R(I))/HT%R(I)
-!         ENSURING A GLOBAL MONOTONICITY
-          T3%R(I)=MIN(FMAX,MAX(FMIN,T3%R(I)))
-        ENDIF
-      ENDDO
-!
-!     END OF CORRECTOR
-!
-      ENDDO
-      ENDIF
-!
-!     SETTING THE FINAL VALUE OF DEPTH AND THE TRACER FOR THIS SUB-ITERATION
+!     SETTING THE FINAL VALUE OF THE TRACER FOR THIS SUB-ITERATION
       DO I=1,F%DIM1
         F%R(I)=T3%R(I)
       ENDDO
@@ -1175,4 +1321,3 @@
 !
       RETURN
       END
-

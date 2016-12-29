@@ -902,8 +902,7 @@ files: friction_def.f
   flucin.f
   gradnod.f
   fluhyd.f
-  flux_hllc.f
-  hyd_hllc.f
+  caldt.f
   flutrac.f
   flu_tchamen.f
   flux_tch.f
@@ -912,13 +911,14 @@ files: friction_def.f
   cdlproj.f
   friction.f
   majzz.f
+  flux_hllc.f
   limiter.f
   flux_waf.f
   hyd_waf.f
   fluxe.f
   flusrc.f
   fluroe.f
-  caldt.f
+  hyd_hllc.f
   smtrac.f
   gradnodt.f
   majtrac.f
@@ -999,10 +999,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
+  gammln.f
   foncro.f
   bornes.f
   qgauss.f
-  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f

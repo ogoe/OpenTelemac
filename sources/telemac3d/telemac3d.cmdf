@@ -471,7 +471,6 @@ files: bief_def.f
   cvtrvf_nerd.f
   kspg11.f
   ksupg.f
-  cvtrvf_eria.f
   flux_mask.f
   flux_ef_vf_3.f
   flux_ef_vf_2.f
@@ -482,6 +481,7 @@ files: bief_def.f
   tvf_2.f
   cflvf.f
   cvtrvf.f
+  cvtrvf_eria.f
   cvdftr.f
   diffin.f
   cflp12.f
@@ -956,10 +956,10 @@ files: declarations_tomawac.f
   qbbj78.f
   qbrek1.f
   qveg.f
+  gammln.f
   foncro.f
   bornes.f
   qgauss.f
-  gammln.f
   qbrek3.f
   qbrek2.f
   qwind3.f
