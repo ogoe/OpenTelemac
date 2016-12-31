@@ -1,0 +1,53 @@
+/
+/  HP C3700                     : 27 s   5.5  24/11/2004
+/
+/  HP C3700 compilateur HP      : 23 s   5.7  17/04/2007
+/  HP C3700 compilateur Nag     : 55 s   5.7  17/04/2007
+/  Dell 2.8 MHz compilateur pgi : 16 s   5.7  19/04/2007
+/
+/  HP C3700 compilateur HP      : 21 s   5.8  13/11/2007
+/  HP C3700 compilateur Nag     : 56 s   5.8  20/12/2007
+/  Dell 2.8 MHz compilateur pgi : 16 s   5.8  19/12/2007
+/
+/  HP C3700 compilateur HP      : 12 s   5.9  15/10/2008  (4 procs OK)
+/  HP C3700 compilateur Nag     : 38 s   5.9  16/10/2008
+/  Dell 2.8 MHz compilateur pgi :  9 s   5.9  15/10/2008
+/
+/  HP C3700 compilateur HP        : 11 s   6.0  23/11/2009
+/  HP C3700 compilateur Nag       : 30 s   6.0  25/11/2009
+/  Dell 2.8 MHz compilateur Intel : 06 s   6.0  24/11/2009
+/
+/  Version 6.2
+/
+/  HP C3700 compilateur HP        : 11 s   6.2  04/05/2012
+/  HP Z600 compilateur HP         :  3 s   6.2  27/07/2012 (test python)
+/
+FORTRAN FILE                   : t2d_bumpflu.f
+BOUNDARY CONDITIONS FILE: geo_bumpflu.cli
+GEOMETRY FILE              : geo_bumpflu.slf
+RESULTS FILE             : r2d_bumpflu.slf
+/
+/----------------------------------------------------------------------/
+/                       OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D : ECOULEMENT FLUVIAL SUR UN OBSTACLE$'
+COMPUTATION CONTINUED = NO
+TIME STEP = 0.01        NUMBER OF TIME STEPS = 1000
+GRAPHIC PRINTOUT PERIOD =1000 LISTING PRINTOUT PERIOD = 50
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,B,Q,F,H,N,O,R,Z'
+LAW OF BOTTOM FRICTION = 0    FRICTION COEFFICIENT = 80.
+VELOCITY DIFFUSIVITY = 0.
+SOLVER ACCURACY = 1.E-5  SOLVER : 7 SOLVER OPTION :3
+IMPLICITATION FOR DEPTH = 0.6 IMPLICITATION FOR VELOCITY = 0.6
+MASS-BALANCE : YES   INFORMATION ABOUT SOLVER : YES
+INITIAL CONDITIONS : PARTICULIERES
+PRESCRIBED FLOWRATES : 0.;8.858893836   PRESCRIBED ELEVATIONS : 1.8;0.
+NUMBER OF PRIVATE ARRAYS : 4
+/----------------------------------------------------------------------/
+TYPE OF ADVECTION : 4;5
+SUPG OPTION : 1;2
+/DISCRETISATIONS EN ESPACE : 12 ; 11
+FREE SURFACE GRADIENT COMPATIBILITY : 0.9
+TREATMENT OF THE LINEAR SYSTEM : 2
+SOLVER : 1
+TIDAL FLATS : NO

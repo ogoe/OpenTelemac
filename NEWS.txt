@@ -1,0 +1,38 @@
+Release V7P2R0 (31 Dec 2016)
+===========================
+
+Features
+---------------------
+
+- TelApy: Add the first structure for PYTHON API of TELEMAC.
+- TELEMAC-3D: Add a new advection scheme (less diffusive scheme
+  as in TELEMAC-2D).
+- TELEMAC: Add possibility to prescribe space and time varying meteo
+  conditions based on a file (ASCII ATMOSPHERIC DATA FILE and
+  BINARY ATMOSPHERIC DATA FILE keywords).
+- SISYPHE: Liquid boundaries file for bed load discharge.
+- Replacing DredgeSim with Nestor.
+- TELEMAC-2D: Add a new rainfall-runoff model. An example of use is given in
+  the pluie test case.
+- Automatic detection of Little/Big Endian for Serafin File
+  (needs FORTRAN Gnu extension).
+- TELEMAC-2D: Adding a deall_telemac2d subroutine that dallocates all that was
+  allocated by point_telemac2d. Same thing for bief_all* and do on. This is
+  mainly for API as in normal run the Fortran is cleaning on its own.
+- TELEMAC-3D: culvert modeling.
+- Adding NEWS file that contains the major modifications in the code.
+- Integration of the MASCARET source code into the TELEMAC-MASCARET system
+  (script mascaret.py to run code).
+
+Addons
+---------------------
+
+- New version of ParaView plugin (SerafinReader) which allows to read Serafin
+  file in Paraview.
+
+Documentation
+---------------------
+
+- New developer guide in documentation/Misc/developer_guide.
+- LaTeX documentation in folder documentation.
+

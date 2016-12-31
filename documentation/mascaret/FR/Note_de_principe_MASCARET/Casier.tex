@@ -1,0 +1,747 @@
+\section{Le code \texttt{CASIER}}
+
+\label{SectionCASIER}
+
+\subsection{Introduction}
+
+Ce chapitre présente le principe de résolution d'un ensemble de casiers dans le système \texttt{MASCARET}.
+
+\vspace{0.5cm}
+
+\texttt{MASCARET} permet en effet de modéliser les champs d'inondation situés le long d'une rivière par des \textit{casiers} ou \textit{bassines}, à  cote constante et vitesse nulle. Ces casiers sont reliés entre eux et à  la rivière par différentes lois d'échange, fonction de la typologie de la liaison, ce qui permet de modéliser les champs d'inondation qui ne participent pas de manière active à  l'écoulement dans le lit majeur. Il s'agit donc d'une amélioration de la modélisation 1D classique, qui ne remplace toutefois pas la précision d'une modélisation 2D.
+
+\vspace{0.5cm}
+
+Ce chapitre présente le principe d'une telle modélisation, les équations régissant les différents débits d'échanges au travers des liaisons casier --- casier et rivière --- casier, le couplage numérique entre le module \texttt{CASIER} et le noyau fluvial non permanent, la résolution du système des casiers et enfin le planimétrage de la loi cote / volume du casier.
+
+\vspace{0.5cm}
+
+\subsection{Principe général}
+
+Le système à  résoudre peut se schématiser ainsi :
+
+\begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.6,angle=270]{CasierRiv.eps}\hspace{2cm}
+     \vspace{0.5cm}
+     \caption{Principe Casier -- Rivière}
+    \end{center}
+\end{figure}
+
+L'écoulement dans la rivière est déterminé par la résolution des équations de Saint-Venant en une dimension. Dans le système \texttt{MASCARET}, trois noyaux de calcul peuvent être utilisés pour cette résolution : un noyau fluvial permanent, un noyau fluvial non permanent et un noyau torrentiel non permanent. On s'intéresse ici uniquement au couplage entre le système des casiers et le noyau fluvial non permanent. La méthode de résolution utilisée pour les écoulements fluviaux non permanents est une méthode aux différences finies, schéma implicite : les détails de cette résolution sont donnés à  la section \ref{CplNyFlv}.
+
+\vspace{0.5cm}
+
+En ce qui concerne le système des casiers, nous avons fait les hypothèses suivantes :
+\begin{itemize}
+ \item la cote de la surface libre dans les casiers est \underline{horizontale};
+ \item la vitesse d'écoulement dans les casiers est \underline{nulle};
+ \item le débit des liaisons d'échange ne dépend que de la cote de la surface libre dans les casiers et dans la rivière.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Ainsi, chaque casier est modélisé par une équation de continuité s'écrivant à  chaque pas de temps $t$ :
+
+\begin{equation}
+ \label{EqCas}
+ \frac{dV_{i}(Z_i)}{dt} = \sum_j Q_{ij} (Z_i,Z_j) + \sum_k Q_{ik} (Z_i,Z_k) + Q_{apport,i}
+\end{equation}
+
+o\`{u} :
+
+\begin{itemize}
+ \item $i$ et $j$ sont des indices de casier;
+ \item $k$ est un indice de section de calcul dans un bief;
+ \item $V_i$ est le volume du casier $i$;
+ \item $Z_i$ est la cote de la surface libre dans le casier $i$, inconnue;
+ \item $Z_j$ est la cote de la surface libre dans le casier $j$, connue au pas de temps précédent;
+ \item $Z_k$ est la cote de la rivière dans la section de calcul $k$, calculée par le noyau fluvial;
+ \item $Q_{ij}$ est le débit s'écoulant du casier $j$ vers le casier $i$, inconnu;
+ \item $Q_{ik}$ est le débit s'écoulant de la section de calcul $k$ dans la rivière vers le casier $i$, inconnu;
+ \item $Q_{apport,i}$ est le débit résultant d'éventuels apports (de pluie par exemple) dans le casier $i$, donnée utilisateur.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La cote dans le casier $i$ est donc fonction des débits d'échange et d'éventuels débits d'apport.
+
+\vspace{0.5cm}
+
+Les débits d'échange $Q_{ij}$ et $Q_{ik}$ sont déterminés par la résolution des équations définissant les liaisons d'échange (voir la section \ref{DebEch}).
+
+\vspace{0.5cm}
+
+La cote $Z_k$ dans la rivière est calculée par le noyau fluvial. Le couplage entre le système des casiers et le noyau fluvial est décrit à  la section \ref{CplNyFlv}.
+
+\subsection{Détermination des débits d'échange}
+
+\label{DebEch}
+
+Les débits d'échange à  travers les liaisons rivière - casier $Q_{ik}$ ou casier à casier $Q_{ij}$ dépendent du type de liaison. Le code accepte quatre types de liaisons : la liaison seuil, la liaison chenal, la liaison siphon et la liaison orifice.
+
+\subsubsection{Liaison seuil déversant}
+
+Le débit est calculé à  partir de la formule des déversoirs :
+
+\begin{equation}
+ Q = C m l \sqrt{2 g} h^{\frac{3}{2}}
+\end{equation}
+
+avec :
+\begin{itemize}
+ \item $Q$ le débit de la liaison;
+ \item $C$ le coefficient d'écoulement (distinction de l'état noyé ou dénoyé);
+ \item $m$ le coefficient de débit;
+ \item $l$ la largeur du seuil;
+ \item $h = Z_{amont} - Z_{seuil}$ la hauteur d'écoulement au-dessus du seuil ($Z_{amont}$ désigne la cote à  l'amont du seuil, dans la rivière ou dans le casier, et $Z_{seuil}$ désigne la cote de la crête du seuil). La cote à  l'amont du seuil $Z_{amont}$ est déterminée par le code.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Ainsi, pour traiter ce type de liaison, il est nécessaire de connaître la largeur du seuil, sa cote (hauteur moyenne représentative) et son coefficient de débit.
+
+\vspace{0.5cm}
+
+On essaiera de ne faire porter le calage que sur l'estimation du coefficient de débit, les autres grandeurs étant égales aux valeurs physiques réelles associées.
+
+\vspace{0.5cm}
+
+\underline{Remarque} : le coefficient d'écoulement $C$ permet de représenter la physique de l'écoulement en tenant compte du régime noyé ou dénoyé mais il permet également de stabiliser le calcul numérique lorsque le dénivelé entre les casiers tend vers $0$. C'est pourquoi il est aussi appelé coefficient correcteur.
+
+\subsubsection{Liaison chenal}
+
+Le débit est calculé à  partir de la formule de Strickler, caractéristique des écoulements à  surface libre, avec vérification de la hauteur d'eau réelle à  l'amont de la liaison.
+
+\vspace{0.5cm}
+
+On distingue deux cas :
+
+\begin{itemize}
+ \item \textbf{Cas no. 1} : cas où la cote moyenne du fond du chenal est au dessus des deux cotes de fond des casiers ou de la rivière (cas d'un chenal horizontal par exemple);
+   \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.5,angle=270]{Lchenal1.eps}\hspace{1cm}
+    \end{center}
+   \end{figure}
+   \vspace{0.5cm}
+ \item \textbf{Cas no. 2} : cas où la cote moyenne du fond du chenal est inférieure à  l'une des cotes de fond des casiers (cas du  chenal avec pente uniforme).
+   \begin{figure}[h]
+    \begin{center}
+     \includegraphics[scale=0.5,angle=270]{Lchenal2.eps}\hspace{1cm}
+    \end{center}
+   \end{figure}
+\end{itemize}
+
+\vspace{0.5cm}
+
+o\`{u} :
+\begin{itemize}
+ \item $Z_1$ et $Z_2$ sont les cotes de la surface libre dans les casiers ou dans la rivière;
+ \item $Z_{f1}$ et $Z_{f2}$ sont les cotes de fond des casiers ou de la rivière;
+ \item $Z_c$ est la cote moyenne du fond du chenal;
+ \item $h_1$ et $h_2$ correspondent aux hauteurs d'eau relative à  la cote moyenne du fond du chenal ($h_1 = Z_1 - Z_c$ et $h_2 = Z_2 - Z_c$). Elles permettent de déterminer le sens de l'écoulement et de distinguer l'amont de l'aval (sur nos schémas, l'amont est à  l'indice 2 car : $h_2 > h_1$);
+ \item $h_{am}$ et $h_{av}$ correspondent aux tirants d'eau réels à  l'amont et à  l'aval physique de la liaison. Dans le cas 1, elles sont calculées par rapport à  la cote moyenne du fond du chenal et sont donc égales aux valeurs $h_1$ et $h_2$. Dans le cas 2, elles sont calculées par rapport aux cotes de fond des casiers ou de la rivière ($h_{am} = Z_2 - Z_{f2}$ et $h_{av} = Z_1 - Z_{f1}$). La détermination de ces valeurs est nécessaire pour tester la présence d'eau à  l'amont de la liaison. Ainsi, si $h_{am} = 0$ (alors que $h_2 > 0$), le débit d'échange sera nul.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le débit d'échange est ensuite calculé en fonction de $\Delta Z = |h_1 - h_2|$ à  partir de la formule de Strickler, caractéristique des écoulements à  surface libre :
+
+\begin{equation}
+ Q = K S R_{h}^{\frac{2}{3}} \sqrt{\frac{\Delta Z}{L}}
+\end{equation}
+avec :
+\begin{itemize}
+ \item $Q$ le débit de la liaison;
+ \item $S$ la section mouillée de la liaison;
+ \item $R_h$ le rayon hydraulique de la liaison;
+ \item $L$ la longueur de la liaison;
+ \item $K$ le coefficient de Strickler de la liaison ($m^{1/3}.s^{-1}$);
+ \item $\Delta Z$ le dénivelé entre les deux casiers ou dénivelé entre le casier et la rivière.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La hauteur d'eau sur le chenal $h$ est la moyenne de $h_{am}$ et $h_{av}$. On suppose que la hauteur d'eau $h$ est très inférieure à  la largeur $l$ de la liaison et que le rayon hydraulique $R_h$ peut être approché par la hauteur d'eau, autrement dit : $h \ll l$ et $R_h \simeq h$.
+
+\vspace{0.5cm}
+
+Sous ces hypothèses, l'équation précédente devient :
+
+\begin{equation}
+ Q = K l h^{\frac{5}{3}} \sqrt{\frac{\Delta Z}{L}}
+\end{equation}
+
+\vspace{0.5cm}
+
+D'autre part, lorsque le dénivelé $\Delta Z$ tend vers $0$, cette formulation présente des difficultés (la dérivée du débit par rapport au dénivelé tend vers l'infini). Numériquement, ce problème a été résolu en introduisant un coefficient correcteur $C$. Ce coefficient est calculé automatiquement par le code. Le débit devient alors :
+
+\begin{equation}
+ Q = C K l h^{\frac{5}{3}} \sqrt{\frac{\Delta Z}{L}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Pour traiter ce type de liaison, il est donc nécessaire de connaître la cote moyenne du fond du chenal, sa largeur, sa longueur ainsi que son coefficient de rugosité. Ces paramètres sont renseignés dans le fichier \textit{cas} des paramètres du calcul.
+
+\vspace{0.5cm}
+
+On essaiera de ne faire porter le calage que sur l'estimation du coefficient de rugosité, les autres grandeurs étant égales aux valeurs physiques réelles associées.
+
+\subsubsection{Liaison siphon}
+
+Le débit est calculé à  partir de la formule universelle de perte de charge, caractéristique des écoulements en charge :
+
+\begin{equation}
+ Q = \sqrt{\frac{2 g}{\lambda L}\Delta Z} \times S^{\frac{5}{4}}
+\end{equation}
+avec :
+\begin{itemize}
+ \item $Q$ le débit de la liaison;
+ \item $S$ la section du siphon;
+ \item $L$ la longueur du siphon;
+ \item $\Delta Z$ le dénivelé entre les deux casiers ou dénivelé entre le casier et la rivière, calculé par le code;
+ \item $\lambda$ le coefficient de perte de charge relatif aux parois du tunnel (abaque de Moody).
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le siphon est considéré comme étant en charge dès l'instant où l'une de ses extrémités est recouverte d'eau. Dans le cas où le siphon n'est pas en charge (écoulement à  surface libre), la liaison siphon est traitée comme une liaison chenal, avec comme largeur, la racine carrée de la section et comme coefficient de Strickler le coefficient suivant :
+
+\begin{equation}
+ K = \sqrt{\frac{2 g}{\lambda} S^{\frac{1}{6}}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Lorsque le dénivelé $\Delta Z$ tend vers $0$, la formulation du débit d'échange devient instable \cite{RISSOAN02}. Comme dans le cas de la liaison chenal, il a été nécessaire d'introduire un coefficient correcteur $C$. La formulation du débit devient alors :
+
+\begin{equation}
+ Q = C \sqrt{\frac{2 g}{\lambda L}\Delta Z} \times S^{\frac{5}{4}}
+\end{equation}
+
+\vspace{0.5cm}
+
+Ainsi, pour traiter les liaisons de type siphon, il est nécessaire de connaître la cote moyenne du fond du siphon, sa longueur et sa section ainsi que le coefficient de perte de charge $\lambda$. Ces coefficients sont renseignés dans le fichier cas du calcul.
+
+\vspace{0.5cm}
+
+On essaiera de ne faire porter le calage que sur l'estimation du coefficient $\lambda$, les autres grandeurs étant égales aux valeurs physiques réelles associées.
+
+\subsubsection{Liaison orifice}
+
+La figure ci-dessous présente le schéma de principe de ce type de liaison :
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Lorifice.eps}\hspace{1cm}
+ \end{center}
+\end{figure}
+
+o\`{u} :
+\begin{itemize}
+ \item $Z_c$ est la cote du radier;
+ \item $Z_p$ la cote du fond;
+ \item $a=Z_p - Z_c$ la hauteur de l'orifice;
+ \item $Z_{am}$ la cote à  l'amont de la liaison avec $h_{am}$ la hauteur d'eau associée : $h_{am} = Z_{am}-Z_c$;
+ \item $Z_{av}$ la cote à  l'aval de la liaison et  $h_{av}$ la hauteur d'eau associée : $h_{av} = Z_{av}-Z_c$;
+ \item $\epsilon$ le coefficient de contraction verticale.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La liaison est aussi définie par :
+\begin{itemize}
+ \item $B$ la largeur de l'orifice;
+ \item $S$ la section de l'orifice : $S = a B$;
+ \item $m$ le coefficient de débit;
+ \item un type particulier de clapet :
+   \begin{itemize}
+     \item \underline{type 1} : correspond à  un débit possible dans les 2 sens;
+     \item \underline{type 2} : correspond à  un clapet avec débit possible uniquement dans le sens casier origine --> casier fin (soit casier amont --> casier aval ou casier --> rivière);
+     \item \underline{type 3} : correspond à  un clapet avec débit possible dans le sens casier fin --> casier origine (soit casier aval --> casier amont ou rivière --> casier).
+   \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Les valeurs $Z_c$, $B$, $S$ et $m$ ainsi que le type de clapet sont renseignés par l'utilisateur dans le fichier \textit{cas}. Les paramètres $a$ et $Z_p$ sont calculés par le code : $a = \frac{S}{B}$ et $Z_p = Z_c + a$.
+
+\vspace{0.5cm}
+
+Le coefficient de contraction verticale $\epsilon$ est calculé par le code en fonction de la hauteur de l'orifice et de la charge ($h_{am}$) :
+
+\begin{itemize}
+ \item[*] si $0 \leq \frac{a}{h_{am}} < 0.55$ : $\epsilon = 0.65$;
+ \item[*] si $0.55 \leq \frac{a}{h_{am}} < 0.9$ : $\epsilon = 0.5 + 0.268 \frac{a}{h_{am}}$;
+ \item[*] si $0.9 \leq \frac{a}{h_{am}} \leq 1$ : $\epsilon = 0.745 + 0.255 \left ( \frac{a}{h_{am}} -0.9 \right )$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le calcul du débit d'échange dépend alors du type d'écoulement :
+
+\begin{itemize}
+ \item \textbf{écoulement à  surface libre} : $Z_{am} < Z_p$ \\
+    L'orifice se comporte comme un seuil. On utilise alors la formule de la liaison seuil en imposant le coefficient d'activation $\alpha$ à  0,2 (voir la section \ref{CoefAct}). La cote de crête du seuil est prise égale à  $Z_c$, sa largeur à  $B$. Son coefficient de débit est lu dans le fichier \textit{cas}. L'utilisateur doit donc renseigner deux valeurs de coefficient de débit : le coefficient de débit pour une loi de seuil et le coefficient de débit pour une loi d'orifice;
+ \item \textbf{écoulement submergé (en charge) noyé} : $Z_{am} > Z_p$ et $h_{av} > \frac{a}{2}$ \\
+    Le débit est calculé par la formule suivante :
+    \begin{equation}
+      Q = m \epsilon S \sqrt{2 g (h_{am}-h_{av})}
+    \end{equation}
+ \item \textbf{écoulement submergé (en charge) dénoyé} : $Z_{am} > Z_p$ et $h_{av} < \frac{a}{2}$ \\
+    Le débit est calculé par la formule suivante :
+    \begin{equation}
+      Q = m \epsilon S \sqrt{2 g (h_{am}-\frac{a}{2})}
+    \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Enfin, le calcul de la vitesse d'échange distingue le cas où l'orifice est submergé et libre :
+
+\begin{itemize}
+ \item \textbf{dans le cas submergé} :
+   \begin{equation}
+     V_{ech} = \frac{Q_{ech}}{S}
+   \end{equation}
+ \item \textbf{dans le cas où l'orifice n'est pas en charge} :
+   \begin{equation}
+     V_{ech} = \frac{Q_{ech}}{S_m}
+   \end{equation}
+   o\`{u} $S_m = B . (Z_{moy}-Z_c)$ est la surface mouillée moyenne au-dessus de la liaison. Le calcul du niveau d'eau moyen $Z_{moy}$ est donné par les formules suivantes :
+   \begin{itemize}
+     \item si $Z_{av} < Z_c$ alors $Z_{moy} = \frac{Z_{am}+Z_c}{2}$;
+     \item si $Z_{av} > Z_c$ alors $Z_{moy} = \frac{Z_{am}+Z_{av}}{2}$.
+   \end{itemize}
+\end{itemize}
+
+\subsubsection{Coefficient d'ennoiement ou coefficient de correction}
+
+\label{CoefAct}
+
+\paragraph{Nécessité d'un coefficient correcteur\\}
+
+\hspace*{1cm}
+
+Dans le cas de la liaison seuil, lorsque le régime devient noyé, il est nécessaire de faire intervenir la cote aval dans l'expression du débit. Cette cote aval est introduite par l'intermédiaire du coefficient d'ennoiement $C$.
+
+\vspace{0.5cm}
+
+La validation du code \cite{RISSOAN02} a montré que, lorsque le dénivelé entre les casiers ou entre un casier et la rivière tend vers $0$, des instabilités numériques se produisent quelque soit le type de liaison. Le coefficient d'ennoiement est donc également utilisé pour stabiliser le calcul. C'est pourquoi on l'appelle également coefficient correcteur.
+
+\vspace{0.5cm}
+
+Ainsi, dans le cas des liaisons seuil, le coefficient d'ennoiement sert également de coefficient correcteur. Par contre, dans le cas des liaisons chenal et siphon, comme il n'y a pas lieu de faire intervenir de coefficient d'ennoiement, seul le coefficient correcteur est appliqué et sa définition est conforme à  celle retenue pour la liaison seuil.
+
+\paragraph{Définition de la fonction $C$\\}
+
+\hspace*{1cm}
+
+Dans le noyau de calcul fluvial non permanent, les seuils noyés sont traités à  l'aide d'un coefficient d'ennoiement $C$ fonction de la variable $R$ :
+
+\begin{equation}
+  R = \frac{Z_{aval}-Z_{seuil}}{Z_{amont}-Z_{seuil}}
+\end{equation}
+
+\vspace{0.5cm}
+
+avec $Z_{seuil}$ la cote de crête du seuil. L'allure de la fonction $C$ est parabolique. La dérivée de cette fonction n'est pas continue en $1$. Or, dans la résolution du système des casiers la dérivée du débit intervient explicitement dans les calculs \cite{GOUTAL_RISSOAN02}. Il est donc nécessaire que la fonction $C$ ainsi que sa dérivée soit continue.
+
+\vspace{0.5cm}
+
+D'autre part, la fonction $C$ dépend d'un paramètre $\alpha$ appelé coefficient d'activation qui définit la période d'activation de la fonction $C$. Ainsi $C$ n'est défini que pour : $R > \alpha$. Dans le cas d'une liaison seuil noyée, le coefficient $\alpha$ correspond au critère d'ennoiement.
+
+Finalement, le choix standard retenu est que la fonction polynomiale $C(R,\alpha)$ satisfasse les conditions suivantes :
+
+\begin{eqnarray}
+  C(R=\alpha)=1 & \mbox{et} & C(R=1)=0 \nonumber \\
+  \frac{dC}{dR}(R=\alpha)=0 & \mbox{et} & \frac{dC}{dR}(R=1)=0 \nonumber \\
+  \frac{d^2 C}{dR^2}(R=\frac{1+\alpha}{2})=0
+\end{eqnarray}
+
+On obtient alors une fonction du troisième degré au lieu de la fonction parabolique retenue pour les vrais seuils en rivière dans le noyau fluvial. Outre la continuité des dérivées, cette formulation entraîne une décroissance plus rapide du débit lorsque les niveaux des deux casiers ainsi connectés se rejoignent.
+
+\vspace{0.5cm}
+
+La fonction retenue est définie ainsi :
+\begin{itemize}
+ \item en régime dénoyé et sans correction : $R<\alpha$ et $C=1$;
+ \item en régime noyé et/ou avec correction : $R>=\alpha$ ($R<1$ dans tous les cas) et :
+   \begin{equation}
+     C = -2 \left ( \frac{1-R}{1-\alpha} \right )^3 + 3 \left ( \frac{1-R}{1-\alpha} \right )^2
+   \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le paramètre $\alpha$ a été fixé à  0.95 pour les liaisons chenal et siphon et varie entre 0.2 et 0.8 pour les liaisons seuil. Il est fixé par l'utilisateur en fonction du type de seuil.
+
+\vspace{0.5cm}
+
+La variable $R$ est calculée par rapport à  la cote $Z_{seuil}$ qui désigne la cote de crête du seuil ou la cote moyenne du fond du chenal ou du siphon.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.5,angle=270]{CR.eps}
+    \caption{fonction $C=f(R)$}
+  \end{center}
+\end{figure}
+
+\subsubsection{Apport de pluie}
+
+Les débits d'apport de pluie sont fournis par l'utilisateur à  travers la définition d'un hydrogramme $Q(t)$. Le débit au temps $t$ est une valeur moyenne du débit à  l'instant $t$ et du débit à  l'instant $t - dt$. L'interpolation des débits à  partir de l'hydrogramme est linéaire.
+
+\subsection{Couplage avec le noyau fluvial}
+
+\label{CplNyFlv}
+
+Les casiers sont couplés directement avec la rivière de manière implicite dans la matrice du système de transition d'état \ref{eq1}. Deux nouvelles équations sont introduites afin de tenir compte :
+\vspace{0.5cm}
+
+\begin{itemize}
+ \item du débit d'échange dans les liaisons;
+   \begin{equation}
+     A_{liaison}\Delta Q_{liaison}+B_{liaison}\Delta Z_{amont} + C_{liaison}\Delta Z_{aval} = D_{liaison}
+   \end{equation}
+   \vspace{0.5cm}
+ \item et de la variation de cote dans les casiers;
+    \begin{equation}
+     S_{casier}\frac{\Delta Z_{casier}}{\Delta t} = \Sigma Q_{liaison}
+   \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+avec $S_{casier}$ la surface d'un casier et :
+
+\begin{equation*}
+ A_{liaison} = -1 \mbox{ ; } B_{liaison} = \frac{\partial Q}{\partial Z_{amont}} \mbox{ ; }  C_{liaison} = \frac{\partial Q}{\partial Z_{aval}} \mbox{ ; } D_{liaison} = 0
+\end{equation*}
+
+
+\vspace{0.5cm}
+
+
+Pour chaque casier et chaque liaison, la taille du système à  résoudre \ref{eq1} est augmenté d'une variable et d'une équation. Dans le cas d'une liaison rivière-casier, les équations de Saint-Venant discrétisées sur les deux sections du lit mineur encadrant la liaison sont remplacées.
+L'équation de continuité est réduite à  l'égalité des débits et l'équation de la dynamique à  l'égalité des cotes.
+
+\vspace{0.5cm}
+
+Dans le cas simple d'un bief discrétisé avec 7 sections de calcul, le système initial de Saint-Venant s'écrit :
+
+\begin{equation}
+    \left(
+         \begin{array}{cccccccccccc}
+          \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & & & & & & \\
+           \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & & & & & & & \\
+              & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & & & & \\
+              & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & &  & & & \\
+              & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & & \\
+              & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & & & \\
+              & & & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & \\
+              & & & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & \\
+              & & & & & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & \\
+              & & & & & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & \\
+              & & & & & & & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G \\
+              & & & & & & & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L \\
+         \end{array}
+    \right)
+    \left(
+            \begin{array}{c}
+               \scriptscriptstyle \Delta Z_1\\
+               \scriptscriptstyle \Delta Q_2\\
+               \scriptscriptstyle \Delta Z_2\\
+               \scriptscriptstyle \Delta Q_3\\
+               \scriptscriptstyle \Delta Z_3\\
+               \scriptscriptstyle \Delta Q_4\\
+               \scriptscriptstyle \Delta Z_4\\
+               \scriptscriptstyle \Delta Q_5\\
+               \scriptscriptstyle \Delta Z_5\\
+               \scriptscriptstyle \Delta Q_6\\
+               \scriptscriptstyle \Delta Z_6\\
+               \scriptscriptstyle \Delta Q_7
+            \end{array}
+    \right)
+     =
+    \left(
+            \begin{array}{c}
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P
+            \end{array}
+    \right)
+\end{equation}
+
+\vspace{0.5cm}
+
+L'insertion d'un casier avec une liaison rivière-casier comprise entre les sections $4$ et $5$ au système modifié suivant:
+
+\begin{equation}
+    \left(
+         \begin{array}{cccccccccccccc}
+          \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & & & & & & & &\\
+           \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & & & & & & &  & &\\
+              & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & & & &  & &\\
+              & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & &  & & &  & &\\
+              & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H & & & & &  & &\\
+              & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M & & & & &  & &\\
+              & & & & & \scriptscriptstyle 1 & & \scriptscriptstyle -1 & & & &  & &\\
+              & & & & & & \scriptscriptstyle 1 & & \scriptscriptstyle -1 & & &  & &\\
+              & & & & & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G & \scriptscriptstyle H &  & &\\
+              & & & & & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L & \scriptscriptstyle M &  & &\\
+              & & & & & & & & & \scriptscriptstyle -I & \scriptscriptstyle -J & \scriptscriptstyle G  & &\\
+              & & & & & & & & & \scriptscriptstyle -N & \scriptscriptstyle -O & \scriptscriptstyle L  & &\\
+              & & & & & & \scriptscriptstyle B & & \scriptscriptstyle C & & & & \scriptscriptstyle A &\\
+              & & & & & & & & & & & &  \scriptscriptstyle -1 & \scriptscriptstyle \frac{S}{\Delta t}\\
+         \end{array}
+    \right)
+    \left(
+            \begin{array}{c}
+               \scriptscriptstyle \Delta Z_1\\
+               \scriptscriptstyle \Delta Q_2\\
+               \scriptscriptstyle \Delta Z_2\\
+               \scriptscriptstyle \Delta Q_3\\
+               \scriptscriptstyle \Delta Z_3\\
+               \scriptscriptstyle \Delta Q_4\\
+               \scriptscriptstyle \Delta Z_4\\
+               \scriptscriptstyle \Delta Q_5\\
+               \scriptscriptstyle \Delta Z_5\\
+               \scriptscriptstyle \Delta Q_6\\
+               \scriptscriptstyle \Delta Z_6\\
+               \scriptscriptstyle \Delta Q_7 \\
+               \scriptscriptstyle \Delta Q_l \\
+               \scriptscriptstyle \Delta Z_c
+            \end{array}
+    \right)
+     =
+    \left(
+            \begin{array}{c}
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle \Sigma Q\\
+               \scriptscriptstyle \Sigma Z\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P\\
+               \scriptscriptstyle K\\
+               \scriptscriptstyle P \\
+               \scriptscriptstyle D \\
+               \scriptscriptstyle Q_l
+            \end{array}
+    \right)
+\end{equation}
+
+\vspace{0.5cm}
+
+\subsection{Pré-traitement des données}
+
+Le noyau de calcul du système des casiers nécessite de connaître, pour chaque cote $Z$ de la surface libre dans un casier, la surface au miroir $S(Z)$ et le volume $V(Z)$ correspondant. Pour cela, il est nécessaire de définir des lois $S(Z)$ et $V(Z)$ qui associent à  une cote donnée la surface et le volume correspondant. Ces lois doivent être discrétisées; ce ne sont donc pas des fonctions continues. Elles ont un nombre de couples $(S,Z)$ et $(V,Z)$ bien défini et l'écart entre les cotes est constant. Cette opération de discrétisation s'appelle le planimétrage. L'écart entre les cotes est appelé pas de discrétisation ou encore pas de planimétrage.
+
+\vspace{0.5cm}
+
+L'utilisateur a la possibilité de renseigner ces lois $S(Z)$ et $V(Z)$ discrétisées \textit{à  la main}, c'est-à -dire directement dans le fichier de géométrie des casiers. Cependant, ces lois sont souvent difficiles à  déterminer et l'utilisateur peut alors les faire calculer automatiquement par le code, après avoir défini les points frontières et les points intérieurs caractéristiques du casier.
+
+\vspace{0.5cm}
+
+Le principe du planimétrage automatique est le suivant.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textbf{Calcul des cotes}
+
+\vspace{0.5cm}
+
+Les cotes des points intérieurs sont rangées dans l'ordre croissant dans un tableau que l'on nommera ZINT.
+
+\vspace{0.5cm}
+
+Ainsi, le tableau ZINT est tel que :
+
+$Z_{INT}(i-1) <= Z_{INT}(i)$ pour $i=2..$nombre de points intérieurs.
+
+\vspace{0.5cm}
+
+Le tableau des cotes de planimétrage est le tableau $Z$.
+
+\vspace{0.5cm}
+
+La première cote de planimétrage est la plus petite cote des points intérieurs : \\
+$Z(1) = Min(Z(i),\mbox{ }i=1..\mbox{nombre de points intérieurs}) = Z_{INT}(1)$.
+
+\vspace{0.5cm}
+
+Les cotes sont ensuite rangées par ordre croissant avec : \\
+$Z(i+1)-Z(i) = $ pas de planimétrage.
+
+\vspace{0.5cm}
+
+Le nombre de cotes est égal au nombre de pas de planimétrage $N_{planim}$ souhaité.
+
+\vspace{0.5cm}
+
+La dernière cote est définie de la façon suivante :
+ \begin{eqnarray}
+ Z(N_{planim}) & = & Z(1) \nonumber \\
+                & + & (N_{planim}-1) \nonumber \\
+                & \times & \mbox{pas de planimétrage} \nonumber
+ \end{eqnarray}
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textbf{Calcul des surfaces}
+
+\vspace{0.5cm}
+
+Les points frontière permettent de définir la surface maximale du casier ($S_{max}$) : cette surface est calculée à  partir de la définition de l'aire d'un polygone. Dans le cas où l'utilisateur a choisi l'option de calcul permettant de définir une surface indépendante de la cote, la surface du casier est égale à  $S_{max}$ quelque soit la cote dans le casier.
+
+\vspace{0.5cm}
+
+Dans l'autre cas, la première surface est calculée de la façon suivante :
+
+\vspace{0.5cm}
+
+$S(1) = S_{max} \times$ (nombre de points intérieurs ayant pour cote de référence $Z(1)$) / (nombre de points intérieurs)
+
+\vspace{0.5cm}
+
+Nous appellerons $Z_{max}$ la plus grande cote des points intérieurs :
+
+\begin{eqnarray}
+Z_{max} & = & Max(Z(i),\mbox{ }i = 1..\mbox{nombre de points intérieurs}) \nonumber \\
+        & = & Z_{INT}(\mbox{nombre de points intérieurs}) \nonumber
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Tant que cette cote n'est pas atteinte, le calcul de $S(i)$ est le suivant :
+
+\vspace{0.5cm}
+
+soit $k$ tel que : $Z_{int}(k-1) \leq Z(i) < Z_{INT}(k)$
+
+\begin{equation}
+  S_1 = \frac{k-1}{\mbox{size}(Z_{INT})}S_{max}
+\end{equation}
+
+o\`{u} $\mbox{size}(Z_{INT})$ désigne la taille du tableau $Z_{INT}$.
+
+\begin{equation}
+  S_2 = \frac{k}{\mbox{size}(Z_{INT})}S_{max}
+\end{equation}
+
+\begin{equation}
+  \alpha = \frac{Z(i)-Z_{INT}(k-1)}{Z_{INT}(k)-Z_{INT}(k-1)}
+\end{equation}
+
+\begin{equation}
+  S(i) = (1-\alpha) \times S_1 + \alpha \times S_2
+\end{equation}
+
+\vspace{0.5cm}
+
+Enfin, une fois que la cote $Z_{max}$ est dépassée ou égalée, la surface est égale à  la surface maximale du casier : $S(i) = S_{max}$.
+
+\vspace{0.5cm}
+
+$\Longrightarrow$ \textbf{Calcul des volumes}
+
+\vspace{0.5cm}
+
+En ce qui concerne les volumes, le premier volume est nul : $V(1) = 0$. En effet, il correspond à  la cote du fond du casier, donc à  un casier vide.
+Les autres sont définis par la relation :
+
+\vspace{0.5cm}
+
+$V(i) = V(i-1) + [(S(i-1) + S(i)) / 2] \times$ pas de planimétrage
+
+\vspace{0.5cm}
+
+\begin{table}
+\centering  
+\caption{Tableau récapitulatif des lois S(Z) et V(Z)}
+\vspace{0.25cm}
+\begin{tabular}{c|c|c}
+  \textbf{Cote Z} &\textbf{Surface S} & \textbf{Volume V} \\
+  \hline
+  \multirow{5}{*}{$Z(1) = Z_{INT}(1)$} & $S(1) = S_{max} \times$ & \multirow{5}{*}{$V(1)=0$} \\
+                                       & \footnotesize{(nombre de points} & \\
+                                       & \footnotesize{intérieurs ayant pour } & \\
+                                       & \footnotesize{cote de référence} $Z(1)$) / & \\
+                                       & \footnotesize{(nombre de points intérieurs)} & \\
+  \hline
+  $Z(i)=Z(i-1)+$ & $S(i)=S(i-1)+\Delta S$ & $V(i)=V(i-1)+$  \\
+  \footnotesize{pas de planimétrage}   & $\Delta S = (1-\alpha)S_1 + \alpha S_2$ & $(S(i-1)+S(i))/2 \times$ \\
+                                       &                                         & \footnotesize{pas de planimétrage} \\
+  \hline
+  $Z(i)\geq Z_{INT}$ \footnotesize{(nombre de} & \multirow{3}{*}{$S(i) = S_{max}$} & $V(i)=V(i-1)+$  \\
+  \footnotesize{points intérieurs)}            &                  &  $(S(i-1)+S(i))/2 \times$ \\
+                                               &                  & \footnotesize{pas de planimétrage} \\
+  \hline
+  $Z$ \footnotesize{(nombre de pas} & $S$ \footnotesize{(nombre de pas} & $V(i)=V(i-1)+$  \\
+  \footnotesize{de planimétrage)} $=Z(1)$ & \footnotesize{de planimétrage)} $=S_{max}$ & $(S(i-1)+S(i))/2 \times$ \\
+  $+$ \footnotesize{(nombre de pas de} &                   & \footnotesize{pas de planimétrage} \\
+  \footnotesize{planimétrage  }$-1$\footnotesize{)} $\times$ & & \\
+  \footnotesize{pas de planimétrage} & & \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\vspace{0.5cm}
+
+\textsc{\textbf{exemple}} :
+
+\vspace{0.25cm}
+
+Dans cet exemple (figure \ref{PlanimCasier}), on présente une vue de dessus d'un casier avec la position des points intérieurs cotés. Les positions sont repérées par leurs coordonnées $(X,Y)$.
+
+\begin{figure}
+    \begin{center}
+     \includegraphics[scale=0.4,angle=270]{PlanimCasier.eps}
+     \vspace{1.cm}
+     \caption{Exemple de planimétrage d'un casier}
+     \label{PlanimCasier}
+    \end{center}
+\end{figure}
+
+Le pas de planimétrage est 1 m, le nombre de pas de planimétrage est 10.
+
+\vspace{0.5cm}
+
+Dans cet exemple, le code détermine les lois $S(Z)$ et $V(Z)$ indiquées sur le tableau \ref{ExPlan}.
+
+\begin{table}
+  \centering  
+  \caption{Exemple de résultat d'un planimétrage}
+  \label{ExPlan}
+  \vspace{0.25cm}
+  \begin{tabular}{c|c|c}
+  \textbf{Cote Z $(m)$} &\textbf{Surface S $(m^2)$} & \textbf{Volume V $(m^3)$} \\
+ \hline
+  2 & 22.5 & 0 \\
+  3 & 33.8 & 28.1 \\
+  4 & 67.5 & 78.8 \\
+  5 & 78.8 & 151.9 \\
+  6 & 90 & 236.3 \\
+  7 & 90 & 326.3 \\
+  8 & 90 & 416.3 \\
+  9 & 90 & 506.3 \\
+ 10 & 90 & 596.3 \\
+ 11 & 90 & 686.3 \\
+  \hline
+  \end{tabular}
+\end{table}
+

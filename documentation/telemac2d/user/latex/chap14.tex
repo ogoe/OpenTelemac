@@ -1,0 +1,145 @@
+
+\chapter{  OTHER CONFIGURATIONS}
+\label{ch:oth:conf}
+
+\section{ Modification of bottom topography (CORFON)}
+\label{sec:mod:bott:topo}
+ Bottom topography may be introduced at various levels, as was stated in section \ref{subs:topo:bathy:data}.
+
+\telemac{2d} offers the possibility of modifying the bottom topography at the start of a computation using the CORFON subroutine. This is called up once at the start of the computation and enables the value of variable ZF to be modified at each point of the mesh. To do this, a number of variables such as the point coordinates, the element surface value, connectivity table, etc. are made available to the user.
+
+ By default, the CORFON subroutine carries out a number of bottom smoothings equal to FILTER, i.e. equal to the number specified by the keyword \textit{BOTTOM SMOOTHINGS}.
+
+ The CORFON subroutine is not called up if a computation is being continued. This avoids having to carry out several bottom smoothings or modify the bottom topography during the computation.
+
+
+\section{ Modifying coordinates (CORRXY)}
+
+ \telemac{2d} also offers the possibility of modifying the mesh point coordinates at the start of a computation. This means, for example, that it is possible to change the scale (from that of a reduced-scale model to that of the real object), rotate or shift the object.
+
+ The modification is made in the CORRXY subroutine (BIEF library), which is called up at the start of the computation. This subroutine is empty by default and gives an example of programming concerning a change of scale and origin, in the form of commented statements.
+
+ It is also possible to specify the coordinates of the origin point of the mesh. This is done using the keyword \textit{ORIGIN COORDINATES} which specify 2 integers. These 2 integers will be transmitted to the results file in the Serafin format, for a use by post-processors for superimposition of results with digital maps (coordinates in meshes may be reduced to avoid large real numbers). These 2 integers may also be used in subroutines under the names I\_ORIG and J\_ORIG. Otherwise they are not yet used.
+
+
+\section{ Spherical coordinates (LATITU) }
+\label{sec:spher:coord:LATI}
+ If a simulation is being performed over a large domain, \telemac{2d} offers the possibility of running the computation with spherical coordinates.
+
+ This option is activated when the keyword \textit{SPHERICAL COORDINATES} is positioned at YES (default value NO). In this case, \telemac{2d} calls a subroutine named LATITULATITU at the beginning of the computation. This calculates a set of tables depending on the latitude of each point. To do this, it uses the Cartesian coordinates of each point provided in the geometry file, and the latitude of the point of origin of the mesh provided by the user in the steering file with the keyword \textit{LATITUDE OF ORIGIN POINT}.
+
+ By default, \telemac{2d} assumes that the mesh coordinates are given Cartesian coordinates. User can change this choice by using the keyword SPATIAL PROJECTION TYPE (default 1 which corresponds to Cartesian coordinates). Indeed, when choosing the value 2, the coordinates are considered in accordance with Mercator's projection. The value 3, the mesh has to be in longitude-latitude (in degrees!). It is important to notice here that, if option SPHERICAL COORDINATES=YES, SPATIAL PROJECTION TYPE has to be 2 or 3.
+
+ The LATITU subroutine (BIEF library) may be modified by the user to introduce any other latitude-dependent computation.
+
+
+\section{ Adding new variables (NOMVAR\_TELEMAC2D and PRERES\_TELEMAC2D)}
+
+ A standard feature of \telemac{2d} is the storage of certain computed variables. In certain cases, the user may wish to compute other variables and insert them in the results file (the number of variables is currently limited to four).
+
+ \telemac{2d} has a numbering system in which, for example, the array containing the Froude number has the number 7. The new variables created by the user may have the numbers 23, 24, 25 and 26.
+
+ In the same way, each variable is identified by a letter in the keyword \textit{VARIABLES FOR GRAPHIC PRINTOUTS}. The new variables are identified by the letters N, O, R and Z, which correspond respectively to the numbers 23, 24, 25 and 26.
+
+ At the end of NOMVAR\_TELEMAC2D, it is possible to change the abbreviations (mnemonics) used for the keywords \textit{VARIABLES FOR GRAPHIC PRINTOUTS} and \textit{VARIABLES FOR LISTING PRINTOUTS}. Sequences of 8 letters may be used. Consequently, the variables must be separated by spaces, commas or semi-colons in the keywords, e.g.:
+
+ \textit{VARIABLES FOR GRAPHIC PRINTOUTS:'U,V,H;B'}
+
+ In the software data structure, these four variables correspond to the tables PRIVE\%ADR(1)\%P\%R(X), PRIVE\%ADR(2)\%P\%R(X), PRIVE\%ADR(3)\%P\%R(X) and PRIVE\%ADR(4)\%P\%R(X) PRIVE (in which X is the number of points in the mesh). These may be used in several places in the programming, like all TELEMAC variables. For example, they may be used in the subroutines CORRXY, CORSTR, BORD, etc. If a PRIVE table is used for programming a case, it is essential to check the value of the keyword \textit{NUMBER OF PRIVATE ARRAYS}. This value fixes the number of tables used (0, 1, 2, 3 or more) and then determines the amount of memory space required. The user can also access the tables via the aliases PRIVE1, PRIVE2, PRIVE3 and PRIVE4.
+
+ An example of programming using the second PRIVE table is given below. It is being initialized with the value 10.
+\begin{lstlisting}[language=TelFortran]
+ DO I=1,NPOIN   
+   PRIVE%ADR(2)\%P\%R(I) = 10.D0
+ ENDDO
+\end{lstlisting}
+ New variables are programmed in two stages:
+
+\begin{enumerate}
+\item  Firstly, it is necessary to define the name of these new variables by filling in the NOMVAR\_TELEMAC2D subroutine. This consists of two equivalent structures, one for English and the other for French. Each structure defines the name of the variables in the results file that is to be generated and then the name of the variables to be read from the previous computation if this is a continuation. This subroutine may also be modified when, for example, a file generated with the English version of \telemac{2d}  is to be continued with the French version. In this case, the TEXTPR table of the French part of the subroutine must contain the English names of the variables.
+
+\item  Secondly, it is necessary to modify the PRERES\_TELEMAC2D subroutine in order to introduce the computation of the new variable(s). The variables LEO, SORLEO, IMP, SORIMP are also used to determine whether the variable is to be printed in the printout file or in the results file at the time step in question.
+\end{enumerate}
+
+
+\section{ Array modification or initialization}
+
+ When programming \telemac{2d} subroutines, it is sometimes necessary to initialize a table or memory space to a particular value. To do that, the BIEF library furnishes a subroutine called FILPOL that lets the user modify or initialize tables in particular mesh areas.
+
+ A call of the type CALL FILPOL (F,C, XSOM, YSOM, NSOM, MESH) fills table F with the C value in the convex polygon defined by NSOM nodes (coordinates XSOM, YSOM). The variable MESH is needed for the FILPOL subroutine but have no meaning for the user.
+
+
+\section{ Validating a computation (VALIDA) }
+
+ The structure of the \telemac{2d} software offers a point of entry for validating a computation, in the form of a subroutine named VALIDA, which has to be filled by the user in accordance with each particular case. Validation may be carried out either with respect to a reference file (which is therefore a file of results from the same computation that is taken as reference, the name of which is supplied by the keyword \textit{REFERENCE FILE}), or with respect to an analytical solution that must then be programmed entirely by the user.
+
+ When using a reference file, the keyword \textit{REFERENCE FILE FORMAT} specifies the format of this binary file (SERAFIN by default).
+
+ The VALIDA subroutine is called at each time step when the keyword \textit{VALIDATION} has the value YES, enabling a comparison to be made with the analytical solution at each time step. By default, the VALIDA subroutine only makes a comparison with the last time step. The results of this comparison are given in the control listing.
+
+
+\section{ Changing the type of a boundary condition (PROPIN\_TELEMAC2D)}
+\label{sec:chang:type:bc:propin}
+ During a simulation, the type of boundary condition is generally fixed and, in the case of \telemac{2d}, is provided by the boundary conditions file. However, in certain cases, it may be necessary to change the type of boundary conditions during the computation (section of a river subject to tidal effects where the current alternates, for instance).
+
+ This change in boundary condition type must be made in the PROPIN\_TELEMAC2D subroutine.
+
+ N.B: modifying PROPIN\_TELEMAC2D is a difficult operation and must be done with great care!
+
+
+\section{ Coupling}
+
+ The principle of coupling two (or more) simulation modules involves running the two calculations simultaneously and exchanging the various results at each time step. For example, the following principle is used to link a hydrodynamic module and a sediment transport module:
+
+\begin{itemize}
+\item  The two codes perform the calculation at the initial instant with the same information (in particular the mesh and bottom topography).
+
+\item  The hydrodynamic code runs a time step and calculates the depth of water and velocity components. It provides this information to the sediment transport code.
+
+\item  The sediment transport code uses this information to run the solid transport calculation over a time step and thus calculates a change in the bottom.
+
+\item  The new bottom value is then taken into account by the hydrodynamic module at the next time step, and so on.
+\end{itemize}
+
+ Two modules can be coupled in the current version of the code: the sedimentary transport module SISYPHE and the sea state computational module TOMAWAC. The time step used for the two calculations is not necessarily the same and is managed automatically by the coupling algorithms and the keyword \textit{COUPLING PERIOD FOR SISYPHE} and \textit{COUPLING PERIOD FOR TOMAWAC} which default values are 1 (coupling at every iteration).
+
+ This function requires two keywords. The keyword \textit{COUPLING WITH} indicates which simulation code is to be coupled with \telemac{2d}. The value of this keyword can be:
+
+\begin{enumerate}
+\item  \textit{COUPLING WITH}= `SISYPHE' for coupling with the SISYPHE module,
+
+\item  \textit{COUPLING WITH}= `WAQTEL' for coupling with the WAQTEL module,
+
+\item  \textit{COUPLING WITH}= `TOMAWAC' for coupling with the TOMAWAC module,
+
+\item  \textit{COUPLING WITH}= `SISYPHE, TOMAWAC' for coupling with both.
+\end{enumerate}
+
+ Depending on the module(s) used, the keywords \textit{SISYPHE STEERING FILE }and\textit{ TOMAWAC STEERING FILE} indicate the names of the steering files of coupled computations.
+
+ The Fortran files of the different modules can be used and are compiled independently (check that the Fortran files of SISYPHE and TOMAWAC do not contain a main program).
+
+ The keyword \textit{COUPLING WITH} is also used if the computation has to generate the appropriate files necessary to make a water quality simulation with DELWAQ. In that case, it is necessary to specify \textit{COUPLING WITH= }`DELWAQ'. Please refer to Appendix \ref{tel2d:app4} for all information concerning the communication with DELWAQ.
+
+ In the case of coupling \telemac{2d} and \sisyphe, the bed roughness can be determined directly by SISYPHE if the keyword \textit{BED ROUGHNESS PREDICTION }is enabled in the settings file sediment transport model. If this option is used, the friction law on the bottom used in the hydrodynamic calculation of \telemac{2d} must necessarily be the law of Nikuradse (option 5 keyword \textit{LAW OF BOTTOM FRICTION})
+
+
+\section{ Assigning a name to a point}
+
+ During certain types of processing, for example a Fourier series analysis (see 14.10), it may be useful to assign a name to a point. This is easy to do by using the two keywords \textit{LIST OF POINTS} and \textit{NAMES OF POINTS}. The former provides a list of node numbers (100 max) in the general numbering system, and the second provides the corresponding names (string of 32 characters max).
+
+ For example, in the case of a model of the Channel, point 3489 corresponds to the port of Saint-Malo and point 56229 to the port of Cherbourg. In this case, the names will be assigned as follows:
+\begin{lstlisting}[language=bash]
+ LIST OF POINTS: 3489; 56229
+ NAMES OF POINTS: `SAINT MALO';'CHERBOURG'
+\end{lstlisting}
+
+\section{ Fourier analysis}
+
+ \telemac{2d} allows the user to analyze free surface variations in order to determine the phase and amplitude of one or more waves. This can only be done if the mean level is zero. Amplitudes and phases are supplied for each point and for each period.
+
+ This function is activated by the keyword \textit{FOURIER ANALYSIS PERIODS}  and provides a list of the analysis periods (e.g. the periods of tide-induced waves that are to be studied). The results are supplied directly at the last time step in the results file with the names AMPLITUDE1, AMPLITUDE2, etc. for the amplitudes and PHASE1, PHASE2, etc. for the phases. The user estimates the minimum duration of the simulation. The keyword \textit{NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS} can be used to reduce the size of the results file.
+
+ It is also necessary to specify the time range using the keyword \textit{TIME RANGE FOR FOURIER ANALYSIS} associated with 2 real values: the starting time in seconds and the ending time in seconds separated by a semicolon. If this keyword is left with its default values (0;0) the computation will stop with an error message.
+
+

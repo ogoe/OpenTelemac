@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="5" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="pluie" author="r.ata" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie.cas"
+       title="pluie scalar mode"
+   />
+  <action xref="2" ncsize="8"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie.cas"
+       title="pluie parallel mode"
+   />   
+   <action xref="3" 
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn.cas"
+       title="rain with runoff model scalar mode"
+   />   
+   <action xref="4" ncsize="8"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn.cas"
+       title="rain with runoff model parallel mode"
+   />
+   <action xref="5" 
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn_geo_hyetograph.cas"
+       title="rain with hyetopgraph model scalar mode"
+   />   
+   <action xref="6" ncsize="8"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_pluie_cn_geo_hyetograph.cas"
+       title="rain with hyetopgraph model parallel mode"
+   />
+<!-- No parallel run because of the use of a direct solver
+   -->
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_rain_uniform.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.E-15])" />
+   </cast>
+
+<!-- Check solution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <cast xref="momentum" config="oneofall" >
+      <v2 vars="VELOCITY U:map" extract="[]#[-1]" target="1:T2DRES" type="3d:" time="[-1]"  />
+      <return title="Correct absence of current velocities"
+         fail="max(np.ravel(v2.values)) > 1.e-6"
+         warn="max(np.ravel(v2.values)) > 1.e-12"
+         value="max(np.ravel(v2.values))" />
+   </cast>
+
+
+</validation>

@@ -1,0 +1,123 @@
+\chapter{Introduction}
+
+The \telemac{3D} code solves such three-dimensional equations as the free
+surface flow equations (with or without the hydrostatic pressure hypothesis)
+and the transport-diffusion equations of intrinsic quantities (temperature,
+salinity, concentration). Its main results, at each point in the resolution
+mesh in 3D, are the velocity in all three directions and the concentrations of
+transported quantities. Water depth is the major result as regards the 2D
+surface mesh. The \telemac{3D}'s prominent applications can be found in free
+surface flow, in both seas and rivers; the software can take the following
+processes into account:
+
+\begin{itemize}
+\item Influence of temperature and/or salinity on density,
+\item Bottom friction,
+\item Influence of the Coriolis force,
+\item Influence of weather elements: air pressure, rain or evaporation and
+wind,
+\item Consideration of the thermal exchanges with the atmosphere,
+\item Sources and sinks for fluid moment within the flow domain,
+\item Simple or complex turbulence models ($k$-$\epsilon$) taking the
+effects of the Archimedean force (buoyancy) into account,
+\item Dry areas in the computational domain: tidal flats,
+\item Current drift and diffusion of a tracer, with generation or
+disappearance terms,
+\item Oil spill modelling.
+\end{itemize}
+
+The code is applicable to many fields. The main ones are related to the marine
+environment through the investigations of currents being induced either by
+tides or density gradients, with or without the influence of such an external
+force as the wind or the air pressure. It can be applied either to large extent
+areas (on a sea scale) or to smaller domains (coasts and estuaries) for the
+impact of sewer effluents, the study of thermal plumes or even sedimentary
+transport. As regards the continental waters, the study of thermal plumes in
+rivers, the hydrodynamic behaviour or natural or man-made lakes can be
+mentioned as well.
+
+\telemac{3D} is developed by the LNHE (Laboratoire National d'Hydraulique et
+Environnement) of the Research and Development Division of EDF (EDF-R\&D). As
+for previous versions, the 7.1 release of the code complies with the Quality
+Assurance procedures of scientific and technical softwares of EDF-R\&D. It is a
+process of construction and verification of the product quality in the
+different phases of his life. In particular, a software following the Quality
+Assurance procedures comes with a Validation Folder that describes the intended
+use of the software and a set of test cases. This document allows you to judge
+the performance and limitations of the software, situating the field of
+application. These tests are also used in development of the software and are
+checked at every new release.
+
+\section{Position of the \telemac{3d} code within the telemac modelling system}
+
+The \telemac{3D} software is part of the TELEMAC modelling system developed by
+the LNHE of EDF R\&D. TELEMAC is a set of modelling tools allowing to treat
+every aspects of natural free surface hydraulics: currents, waves, transport of
+tracers and sedimentology.
+
+The pre-processing and post-processing of simulations can be done either
+directly within the TELEMAC system or with different software that present an
+interface of communication with the system. We can particularly mention the
+following tools:
+
+\begin{itemize}
+\item The FUDAA-PREPRO software, developed from the FUDAA platform
+by the CEREMA's Recherche, Informatique et Modélisation Department, covers all
+the pre-processing tasks involved by the achievement of a numerical hydraulic
+study, as well as a graphical post-processing tool,
+\item The BLUE KENUE software, developed the Hydraulic Canadian
+Center, proposes a powerful mesh generation tool and a user-friendly
+post-processing tool,
+\item The JANET software, developed by Smile Consult GmbH, which offers among
+others, a mesh generation tool,
+\item The PARAVIEW software, developed by Sandia National Laboratories, Los
+Alamos National Laboratory and Kitware, which enables to visualise 3D results,
+big data in particular and is open source,
+\item The QGIS software, which is an open source Geographic Information System.
+\end{itemize}
+
+
+\section{Software environment}
+
+All the simulation modules are written in FORTRAN 90, with no use of the
+specific language extensions in a given machine. They can be run on all the PCs
+(or PC "clusters") under Windows and Linux operating systems as well as on the
+workstations under the Unix operating system.
+
+\section{User programming}
+
+When using a simulation module from the TELEMAC system, the user may have to
+program specific subroutines which are not in the code's standard release. In
+particular, that is made through a number of so-called «~user~» subroutines.
+These subroutines are written so that they can be modified, provided that the
+user has a basic knowledge in FORTRAN language, with the help of the «~Guide
+for programming in the Telemac system~» \cite{HervouetProg2009}.
+
+The procedure to be carried out in that case comprises the steps of:
+
+\begin{itemize}
+\item Recovering the standard version of the user subroutine(s) as supplied in
+the distribution and copying it into the current directory,
+\item Amending the subroutine(s) according to the model to be constructed,
+\item Concatenating the whole set of subroutines into a single FORTRAN file
+which will be compiled during the \telemac{3D} launching process.
+\end{itemize}
+
+During that programming stage, the user can gain access to the various
+variables of the software through the FORTRAN 90 structures.
+
+All the data structures are gathered within FORTRAN files, which are known as
+modules. For \telemac{3D}, the file name is \telfile{DECLARATION\_TELEMAC3D}. To gain
+access to the \telemac{3D} data, just insert the command \telfile{USE
+DECLARATIONS\_TELEMAC3D} into the beginning of the subroutine. Adding the
+command \telfile{USE BIEF} may also be necessary in order to reach the structure in the
+\bief library.
+
+Nearly all the arrays which are used by \telemac{3D} are declared in the form of
+a structure. For example, the access to the water depth array will be in the
+form \telfile{H\%R}, \telfile{\%R} meaning it is a real-typed pointer.
+In case of an integer-typed pointer, the \telfile{\%R} is replaced by a \telfile{\%I}.
+However, in order to avoid having to handle too many \telfile{\%R} and \telfile{\%I},
+a number of aliases are defined, such as, the \telfile{NPOIN3}, \telfile{NELEM3} and
+\telfile{NPTFR2} variables. For further details, the user can refer to
+the programming guide in TELEMAC \cite{HervouetProg2009}.

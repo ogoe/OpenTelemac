@@ -1,0 +1,75 @@
+\chapter{Description of the serafin format}
+\label{sec:srffmt}
+It is a binary file.
+
+The list of records is as follows:
+
+\begin{itemize}
+\item 1 record containing the title of the study (72 characters) and 8
+characters indicating the format (SERAFIN or SERAFIND),
+
+\item 1 record containing the couple of integer values \telfile{NBV(1)}
+and \telfile{NBV(2)} (number of linear and quadratic discretization
+variables, \telfile{NBV(2)} being 0),
+
+\item \telfile{NBV(1)} records containing both name and unit of each
+variable (over 32 characters -- normally 16 for the variable's name and 16 for
+the unit),
+
+\item a record containing the \telfile{IPARAM} array consisting of 10 integers,
+
+\begin{itemize}
+
+\item If \telfile{IPARAM(3)} $\neq$ 0: the value corresponds to the
+x-coordinate of the origin of the mesh,
+
+\item If \telfile{IPARAM(4)} $\neq$ 0: the value corresponds to the
+y-coordinate of the origin of the mesh,
+
+\item If \telfile{IPARAM(7)} $\neq$ 0: the value corresponds to the
+number of planes on the vertical (3D computation),
+
+\item If \telfile{IPARAM(8)} $\neq$ 0: the value corresponds to the
+number of boundary points (in parallel),
+
+\item If \telfile{IPARAM(9)} $\neq$ 0: the value corresponds to the
+number of interface points (in parallel),
+
+\item If \telfile{IPARAM(8)} or \telfile{IPARAM(9)} $\neq$ 0: the
+array IPOBO below is replaced by the array KNOLG (total initial number of
+points). All the other numbers are local to the sub-domain, including IKLE,
+
+\item If \telfile{IPARAM(10)} = 1: the file contains the record of both date and time of
+the computation start (6 integers) which take the values of the keywords
+\telkey{ORIGINAL DATE OF TIME} and \telkey{ORIGINAL HOUR OF TIME} from the
+steering file.
+\end{itemize}
+
+\item A record containing the integers \telfile{NELEM3, NPOIN3, NDP}, 1
+(number of elements, number of points, number of points per element and the
+value 1),
+
+\item A record containing the \telfile{IKLE3} integer array ((\telfile{NDP,
+NELEM3}-dimensioned array), the connectivity table,
+
+\item A record containing the \telfile{IPOBO} integer array (\telfile{NPOIN3}
+-dimensioned array).
+The value of an element is 0 for an inner point and yields the edge
+point numbers for the others),
+
+\item A record containing the X real array (\telfile{NPOIN3}-dimensioned array of
+the node abscissae),
+
+\item A record containing the Y real array (\telfile{NPOIN3}-dimensioned array of
+node ordinates),
+\end{itemize}
+
+Afterwards, the following record can be found for each time step:
+
+\begin{itemize}
+\item A record containing the \telfile{AT} time (real),
+
+\item \telfile{NBV(1)+NBV(2)} records containing the
+result arrays for each variable at the \telfile{AT} time.
+\end{itemize}
+

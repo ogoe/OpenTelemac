@@ -1,0 +1,55 @@
+/V6P1
+/DEBUGGER = 1
+/
+/
+/                   COUPLAGE SISYPHE-TELEMAC2D
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE
+/
+/
+/                            SISYPHE
+/
+/
+/---------------------------------------------------------------
+/---------------------------------------------------------------
+/                         FICHIERS
+/---------------------------------------------------------------
+GEOMETRY FILE = geo_bump2d-t2d.slf
+BOUNDARY CONDITIONS FILE = geo_bump2d-t2d.cli
+RESULTS FILE = sis_bump2d-t2d.slf
+/
+/---------------------------------------------------------------
+/                       SORTIES GRAPHIQUES
+/ --------------------------------------------------------------
+TITLE = 'CAS6- BOSSE 2D DANS UN CANAL LARGE'
+VARIABLES FOR GRAPHIC PRINTOUTS = U,V,B,S,E,H,P,I,J,Q,M
+MASS-BALANCE = YES
+/
+/---------------------------------------------------------------
+/                     CONSTANTES PHYSIQUES
+/ --------------------------------------------------------------
+/MASSE VOLUMIQUE DE L'EAU = 1000
+/VISCOSITE CINEMATIQUE EAU =10-6
+/
+/---------------------------------------------------------------
+/                       TRANSPORT SOLIDE
+/ --------------------------------------------------------------
+/
+/LOI DE FROTTEMENT SUR LE FOND = 3
+/COEFFICIENT DE FROTTEMENT = 30
+/Meyer-Peter
+BED-LOAD TRANSPORT FORMULA = 1
+BED LOAD = YES
+SUSPENSION = NO
+NON COHESIVE BED POROSITY = 0.4
+/ 1mm
+SEDIMENT DIAMETERS = 0.001
+SEDIMENT DENSITY = 2650
+/
+/--------------------------------------------------------------
+/                SHEMA NUMERIQUE ET SOLVEUR
+/--------------------------------------------------------------
+TIDAL FLATS = YES
+SOLVER : 1
+SOLVER OPTION :3
+SOLVER ACCURACY = 1.E-10

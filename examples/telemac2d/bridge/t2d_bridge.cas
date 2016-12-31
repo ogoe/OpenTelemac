@@ -1,0 +1,108 @@
+/
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p2 13 juin 2012
+/ TELEMAC 2D : TEST PONT
+/---------------------------------------------------------------------
+/
+/ Version 6.3: new parameters
+/
+/ HP Z600 Linux compilateur Intel :  340 s  30/05/2013 (8 processors)
+/
+/---------------------------------------------------------------------
+/
+RESULTS FILE              ='r2d_bridge.slf'
+BOUNDARY CONDITIONS FILE ='geo_bridge.cli'
+LIQUID BOUNDARIES FILE    ='t2d_bridge.liq'
+GEOMETRY FILE               ='geo_bridge.slf'
+/
+/ BUSES
+/
+CULVERTS DATA FILE       ='fo1_bridge.txt'
+NUMBER OF CULVERTS                   =  2
+TYPE OF SOURCES : 1
+/
+/-------------------------------------------------------------------
+/                     OPTIONS GENERALES
+/-------------------------------------------------------------------
+/
+TITLE ='TELEMAC 2D : TEST PONT'
+/
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+/
+TIME STEP                          = 0.2
+NUMBER OF TIME STEPS                =36000
+VARIABLES FOR GRAPHIC PRINTOUTS =U,V,S,B,T1
+GRAPHIC PRINTOUT PERIOD   =36000
+LISTING PRINTOUT PERIOD             =1000
+MASS-BALANCE                        =VRAI
+/
+NAMES OF TRACERS  =    'Traceur1'
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+/
+IMPLICITATION COEFFICIENT OF TRACERS =1.
+FRICTION COEFFICIENT                =20.
+COEFFICIENT FOR DIFFUSION OF TRACERS    =0.
+INITIAL VALUES OF TRACERS           =0
+VELOCITY DIFFUSIVITY    =1.0
+LAW OF BOTTOM FRICTION            =3
+ACCURACY FOR DIFFUSION OF TRACERS =1.E-10
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+/
+INITIAL CONDITIONS ='COTE CONSTANTE'
+INITIAL ELEVATION        =7.
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS LIMITES
+/---------------------------------------------------------------------
+/
+PRESCRIBED FLOWRATES                      =0;0
+VELOCITY PROFILES                  =1;4
+PRESCRIBED ELEVATIONS                      =7.;7.
+OPTION FOR LIQUID BOUNDARIES =1;1
+PRESCRIBED TRACERS VALUES       =0.0;250.0
+/
+/---------------------------------------------------------------------
+/ EQUATIONS, TRACEUR
+/---------------------------------------------------------------------
+/
+NUMBER OF TRACERS =1
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+/
+TREATMENT OF NEGATIVE DEPTHS =2
+/
+CONTINUITY CORRECTION          =YES
+TREATMENT OF FLUXES AT THE BOUNDARIES : 2;2
+/
+TYPE OF ADVECTION            =14;5;14;1
+SUPG OPTION                    = 2;0; 2;2
+TIDAL FLATS : YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS : 1
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+/
+SOLVER FOR DIFFUSION OF TRACERS =1
+SOLVER OPTION                      =5
+TREATMENT OF THE LINEAR SYSTEM : 2    SOLVER : 1
+/SOLVEUR =7
+SOLVER ACCURACY                   =1.E-8
+/
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR
+/---------------------------------------------------------------------
+/
+IMPLICITATION FOR DEPTH =1.
+MASS-LUMPING ON H            =1.
+IMPLICITATION FOR VELOCITY =1.
+/

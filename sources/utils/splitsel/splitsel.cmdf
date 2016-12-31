@@ -1,0 +1,62 @@
+[general]
+path: <root>|sources|utils|splitsel
+module: splitsel
+liborder: special hermes bief splitsel
+name: SPLITSEL
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  find_variable.f
+  corrxy.f
+  read_mesh_coord.f
+  read_mesh_info.f
+  read_mesh_conn.f
+
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.F
+  get_bnd_numbering.f
+  get_data_value.f
+  get_data_var_list.f
+  get_data_time.f
+  get_data_ntimestep.f
+  get_data_nvar.f
+  set_header.f
+  set_mesh.f
+  add_data.f
+  open_mesh.f
+  close_mesh.f
+  get_mesh_coord.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_bnd_nelem.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_bnd_npoin.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  close_bnd.f
+  get_bnd_value.f
+  get_mesh_connectivity.f
+  get_bnd_ipobo.f
+  open_bnd.f
+
+[special]
+path: <root>|sources|utils|special
+files: declarations_special.f
+  plante.F
+  get_nodes_per_element.f
+  check_allocate.f
+  get_free_id.f
+  write_error.f
+  check_call.f
+
+[splitsel]
+path: <root>|sources|utils|splitsel
+files: pair.f
+  splitsel.f

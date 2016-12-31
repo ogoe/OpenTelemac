@@ -1,0 +1,1292 @@
+\subsection{Méthodes de résolution} \label{MR}
+
+\subsubsection{Ecoulement permanent dans un bief}
+
+Nous nous plaçons dans le cas usuel d'un lit composé.
+
+\vspace{0.5cm}
+
+Des zones de stockage peuvent être définies, mais elles n'interviennent pas dans le calcul, nous l'avons souligné précédemment. On se place ici dans le cas d'un bief unique, le traitement des réseaux ramifiés est possible pour le noyau fluvial permanent et est traité à  la section \ref{NdPERM}.
+
+\paragraph{Simplification des équations\\}
+
+\hspace*{1cm}
+
+L'équation de continuité se réduit à  : $\frac{\partial Q}{\partial x}=q_l$, le débit est constant le long de la rivière, aux apports près.
+
+\vspace{0.5cm}
+
+L'équation dynamique, appelée équation de la ligne d'eau, prend la forme :
+
+\begin{equation}
+  \frac{\partial \beta Q V}{\partial x} + g S \left ( \frac{\partial Z}{\partial x} +J + J_s \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Elle s'écrit également :
+
+\begin{equation}
+  \frac{\beta}{g} \frac{V}{S} \frac{\partial Q}{\partial x} + \frac{V^2}{2 g} \left ( \frac{\partial \beta}{\partial x} \right ) + \frac{\partial}{\partial x} \left ( \beta \frac{V^2}{2 g} + Z \right ) + J + J_s = 0
+\end{equation}
+
+\vspace{0.5cm}
+
+ou encore en utilisant l'équation de continuité :
+
+\begin{equation}
+\frac{\beta}{g} \frac{V}{S} q_l + \frac{V^2}{2 g} \left ( \frac{\partial \beta}{\partial x} \right ) + \frac{\partial}{\partial x} \left ( \beta \frac{V^2}{2 g} + Z \right ) + J + J_s = 0
+\end{equation}
+
+\vspace{0.5cm}
+
+Cette équation est discrétisée le long de l'axe d'écoulement : le pas de discrétisation $\Delta	x$ (séparant donc deux sections de calcul consécutives) est variable. Son ordre de grandeur est la largeur de la rivière, mais il sera bien évidemment lié à  la variabilité de la géométrie des sections.
+
+\paragraph{Principe de résolution\\}
+
+\hspace*{1cm}
+
+Dans un premier temps, l'équation de continuité est résolue de l'amont (où le débit est imposé par la condition limite) vers l'aval, en ajoutant ou retranchant les apports et soutirages. Puis le calcul des cotes se fait pas à  pas, en allant cette fois de l'aval vers l'amont. Pour le calcul d'un pas, nous disposons du débit amont $Q_1$ et de la cote aval $Z_2$, et nous cherchons la valeur de la cote amont $Z_1$ (voir figure \ref{PRP}).
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.8,angle=270]{Principe_Res_Perm.eps}
+  \vspace{1.5cm}
+  \caption{Principe de résolution en permanent}
+  \label{PRP}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+L'équation de la ligne d'eau est discrétisée entre les sections 1 et 2 sous la forme suivante :
+
+\begin{eqnarray}
+  \frac{q_l}{2 g} \left ( \beta_1 \frac{V_1}{S_1} + \beta_2 \frac{V_2}{S_2} \right ) + \frac{V_{1}^2+V_{2}^2}{4 g} \frac{\beta_2 - \beta_1}{\Delta x} + \frac{Z_2-Z_1}{\Delta x} + \nonumber \\ 
+  \frac{1}{\Delta x} \left ( \beta_2 \frac{V_{2}^2}{2 g} - \beta_1 \frac{V_{1}^2}{2 g}  \right ) + \frac{2}{\displaystyle \frac{1}{J_1}+\frac{1}{J_2}} + \nonumber \\ 
+  \frac{\zeta_1}{\Delta x} \frac{\left ( \beta_1 V_1 - \beta_2 V_2 \right ) ^2 }{2 g} + \frac{\zeta_2}{\Delta x} \beta_1 \frac{V_{1}^2}{2 g} = 0
+  \label{Dyn5}
+\end{eqnarray}
+
+\vspace{0.5cm}
+
+Elle s'écrit encore :
+
+\begin{equation}
+  Z_1 = Z_2 + JDX + JSDX + DXBETA + DXQ + DXV
+\end{equation}
+avec :
+\begin{equation}
+  JDX = \frac{2}{\displaystyle \frac{1}{J_1} + \frac{1}{J_2}} \Delta x
+\end{equation}
+
+\begin{equation}
+  JSDX = \frac{1}{2 g} \left ( \zeta_1 \left ( B_1 V_1 - B_2 V_2 \right )^2 + \zeta_2 B_1 V_{1}^2 \right )
+\end{equation}
+
+\begin{equation}
+  DXBETA = \frac{1}{2 g}(\beta_2 - \beta_1) \left ( \frac{V_{1}^2 + V_{2}^2}{2} \right )
+\end{equation}
+
+\begin{equation}
+  DXQ = \frac{1}{2 g}(Q_2 - Q_1) \left ( \frac{\beta_1 V_1}{S_1} + \frac{\beta_2 V_2}{S_2} \right )
+\end{equation}
+
+et :
+
+\begin{equation}
+  DXV = \frac{1}{2 g} ( \beta_2 V_{2}^2 - \beta_1 V_{1}^2 )
+\end{equation}
+
+soit :
+
+\begin{equation}
+  \label{ptfix}
+  Z_1 = f(Z_1)
+\end{equation}
+
+\vspace{0.5cm}
+
+Il faut donc résoudre l'équation (\ref{ptfix}) d'inconnue $Z_1$ admettant, a priori, plusieurs solutions ; nous recherchons la solution fluviale.
+
+\vspace{0.5cm}
+
+La méthode consiste à  déterminer les zéros de la fonction : $\varepsilon = Z_1 - f(Z_1)$.
+
+\vspace{0.5cm}
+
+On part de la solution approchée : $Z_1(0) = Z_2 + J_2 \Delta x$.
+
+\vspace{0.5cm}
+
+On calcule deux autres solutions approchées à  l'aide de (\ref{ptfix}) : \\
+$Z_1(1) = f(Z_2(0))$ d'o\`{u} : $\varepsilon_0 = Z_1(0) - Z_1(1)$ \\
+$Z_1(2) = f(Z_1(1))$ d'o\`{u} : $\varepsilon_1 = Z_1(1) - Z_1(2)$
+
+\vspace{0.5cm}
+
+On connaît ainsi deux point $A$ et $B$ du graphe $\varepsilon$ (voir figure \ref{calsolapproc}) :
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.8,angle=270]{Princ_Cal_Sol_Apr.eps}
+  \vspace{1.5cm}
+  \caption{Principe de calcul de la solution approchée}
+  \label{calsolapproc}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+A l'aide de ces deux points, on calcule une autre solution approchée $X_i$ par la \textit{méthode de la sécante}. L'expérience a montré qu'il n'était pas souhaitable d'utiliser cette valeur, mais plutôt la demi-somme des solutions les plus proches de l'axe des $Z_1$, soit sur la figure \ref{calsolapproc} : $Z_{1}(3) = \frac{X_i + Z_{1}(1)}{2}$.
+
+\vspace{0.5cm}
+
+On calcule ensuite $\varepsilon(Z_{1}(3))$, ce qui permet de connaître un autre point du graphe $\varepsilon(Z_1)$, le point $C$. Le processus reprend à  partir des deux points les plus proches de l'axe des $Z_1$ (dans notre cas : $B$ et $C$).
+
+\vspace{0.5cm}
+
+On procède ainsi de façon itérative.
+
+\vspace{0.5cm}
+
+Dans le cas où $\varepsilon(Z_1)$ garde toujours le même signe, on arrête le calcul quand le critère : $\varepsilon(Z) \leq \Delta$ est satisfait avec : $\Delta = 10^{-6}$.
+
+\vspace{0.5cm}
+
+Dans le cas où $\varepsilon(Z)$ change de signe, on élimine, dans un premier temps, parmi les deux points qui sont du même côté de l'axe des $Z_1$, celui qui en est le plus éloigné, puis, dans un second temps, on détermine une nouvelle approximation en prenant la demi-somme des points conservés.
+
+\vspace{0.5cm}
+
+On recommence le calcul jusqu'à  ce que le critère d'arrêt soit satisfait.
+
+\vspace{0.5cm}
+
+Remarque quant à  la solution obtenue :
+\begin{itemize}
+ \item en général, le calcul converge en moins de 10 itérations;
+ \item la solution obtenue est généralement fluviale; dans le cas inverse le paragraphe suivant présente la procédure adoptée.
+\end{itemize}
+
+% \paragraph{Passage local en régime critique\\}
+% 
+% \hspace*{1cm}
+% 
+% Bien que le domaine d'application du noyau permanent soit l'écoulement en régime fluvial, il serait dommageable de ne pas pouvoir tolérer le moindre passage en torrentiel, même localisé au voisinage d'un obstacle particulier. Un traitement particulier a donc été implanté pour de tels cas de figure.
+% 
+% \vspace{0.5cm}
+% 
+% Soit le cas suivant, correspondant à  un passage local en régime torrentiel entre les points $C_1$ et $C_2$ (figure \ref{PLT}).
+% 
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.6,angle=270]{Pass_Loc_Tor.eps} \hspace{2cm}
+  \vspace{1.5cm}
+  \caption{Schéma d'un passage local en torrentiel}
+  \label{PLT}
+ \end{center}
+\end{figure}
+% 
+% La méthode simple proposée vise à  retrouver la bonne cote à  l'amont de ce passage singulier (point $A$) de faà§on à  poursuivre sans erreur le calcul sur la partie amont.
+% 
+% \vspace{0.5cm}
+% 
+% En constatant que la méthode exposée dans le paragraphe précédent s'applique à  tout le domaine fluvial jusqu'au régime critique compris, il suffit de s'assurer que la ligne d'eau calculée passera par $C_1$.
+% 
+% \vspace{0.5cm}
+% 
+% Pour cela deux conditions sont suffisantes :
+% \begin{itemize}
+%  \item si le calcul détecte un changement de régime (fluvial à  torrentiel) lors du passage à  la section de calcul amont, il imposera en ce point la solution critique, et ce jusqu'à  retrouver une solution amont du type fluvial;
+%  \item le maillage doit être suffisamment fin dans cette zone pour tomber effectivement sur le point $C_1$ (ou en tout cas sur un point voisin).
+% \end{itemize}
+% 
+% \vspace{0.5cm}
+% 
+% Alors la ligne d'eau calculée sera celle de la figure \ref{SLT} :
+% 
+% \begin{figure}
+%  \begin{center}
+%   \includegraphics[scale=0.6,angle=270]{Sol_Loc_Tor.eps} \hspace{2cm}
+%   \vspace{1.5cm}
+%   \caption{Solution locale d'un passage en torrentiel}
+%   \label{SLT}
+%  \end{center}
+% \end{figure}
+% 
+% Lors de ce premier passage pour détecter les zones fluviales, on a localisé les zones torrentielles. 
+
+\paragraph{Résolution des zones torrentielles\\}
+
+\hspace*{1cm}
+
+Lors du balayage aval-amont pour calculer les zones fluviales, les zones torrentielles ont été détectées (figure \ref{PLT}). Le domaine va être balayé d'amont vers l'aval dans ce cas et pour chaque zone torrentielle, on va appliquer un schéma sur la discrétisation différences finies.
+
+\vspace{0.5cm}
+
+L'équation de continuité a déjà  été résolue lors du balayage aval-amont. Le débit est connu en tout point de la discrétisation.
+L'équation de la ligne d'eau discrétisée entre les sections 1 et 2 est similaire à  l'équation (\ref{Dyn5}). Contrairement au traitement des zones fluviales, $Z_1$ est connu et on recherche $Z_2$. 
+
+\vspace{0.5cm}
+
+Elle s'écrit encore :
+
+\begin{equation}
+  Z_2 = Z_1 - JDX - JSDX - DXBETA - DXQ - DXV
+\end{equation}
+% avec :
+% \begin{equation}
+%   JDX = \frac{2}{\displaystyle \frac{1}{J_1} + \frac{1}{J_2}} \Delta x
+% \end{equation}
+% 
+% \begin{equation}
+%   JSDX = \frac{1}{2 g} \left ( \zeta_1 \left ( B_1 V_1 - B_2 V_2 \right )^2 + \zeta_2 B_1 V_{1}^2 \right )
+% \end{equation}
+% 
+% \begin{equation}
+%   DXBETA = \frac{1}{2 g}(\beta_2 - \beta_1) \left ( \frac{V_{1}^2 + V_{2}^2}{2} \right )
+% \end{equation}
+% 
+% \begin{equation}
+%   DXQ = \frac{1}{2 g}(Q_2 - Q_1) \left ( \frac{\beta_1 V_1}{S_1} + \frac{\beta_2 V_2}{S_2} \right )
+% \end{equation}
+% 
+% et :
+% 
+% \begin{equation}
+%   DXV = \frac{1}{2 g} ( \beta_2 V_{2}^2 - \beta_1 V_{1}^2 )
+% \end{equation}
+\vspace{0.5cm}
+
+Comme précédemment, on est ramené à  résoudre l'équation :
+\begin{equation}
+  \label{ptfix1}
+  Z_2 = G(Z_2)
+\end{equation}
+
+\vspace{0.5cm}
+
+Il faut donc résoudre l'équation (\ref{ptfix1}) d'inconnue $Z_2$ admettant, a priori, plusieurs solutions ; nous recherchons la solution torrentielle.
+
+\vspace{0.5cm}
+
+La méthode consiste à  déterminer les zéros de la fonction : $\varepsilon = Z_2 - f(Z_2)$.
+Pour déterminer les zéros de la fonction précédente, nous n'utiliserons pas la méthode de la tangente car la convergence vers la solution torrentielle n'est pas assurée. La méthode retenue est une méthode de dichotomie à  partir de la cote critique calculée en chaque point lors du calcul des zones fluviales. Le pas de la dichotomie est le minimum entre :
+\begin{itemize}
+ \item le centième de l'écart entre la cote du fond et la cote critique;
+ \item et $0.01 m$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La solution est par construction torrentielle.
+
+\paragraph{Validité du ressaut à  l'aide des fonctions impulsion\\}
+
+\hspace*{1cm}
+
+Une fois la zone torrentielle parcourue, on s'assure que le ressaut est possible d'un point de vue énergétique en considérant le sens de l'accroissement de la fonction impulsion au droit du ressaut. 
+En effet, les fonctions impulsion se conservent au passage du ressaut.
+
+\begin{equation}
+F_{imp} = \frac{Q^2}{S}+gSh_G \quad \mbox{avec : }h_G=\frac{1}{S}\int_0^h(h-y)dy
+\end{equation}
+
+\vspace{0.5cm}
+
+Si la fonction impulsion à  l'amont du ressaut est supérieure à  la fonction impulsion à  l'aval du ressaut, le ressaut est repoussé et l'écoulement reste torrentiel. 
+\subsubsection{Ecoulement non permanent dans un bief}
+
+\paragraph{Principe\\}
+
+\hspace*{1cm}
+
+Nous nous plaçons dans le cas le plus général d'un lit composé : lit mineur, lit majeur et zones de stockage. Dans un premier temps on traite de la résolution non-permanente pour un bief unique; le cas des réseaux ramifiés et maillés, possible dans le noyau fluvial non permanent est traité à  la section \ref{NDRezo}.
+
+\vspace{0.5cm}
+
+Rappelons les équations régissant la ligne d'eau :
+\begin{itemize}
+ \item Equation de continuité :
+   \begin{equation}
+     \frac{\partial Q}{\partial x} + L_t \frac{\partial Z}{\partial t} = q_l
+   \end{equation}
+   o\`{u} $L_t$ est la largeur totale au miroir de l'écoulement, incluant les largeurs des lits mineur et majeur et des zones de stockage.
+  \item Equation dynamique :
+    \begin{equation}
+      \label{qmv2}
+      \frac{\partial Q}{\partial t} + \frac{\partial \beta Q V}{\partial x} + g S \left( \frac{\partial Z}{\partial x} + J + J_s\right) = 0
+    \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Cette équation (\ref{qmv2}) s'écrit aussi en faisant intervenir la débitance $D$ :
+
+\begin{equation}
+  Q |Q| + D^2 \left ( \frac{\partial Z}{\partial x} +J_s + \frac{1}{S g} \left ( \frac{\partial Q}{\partial t} + \frac{\partial \beta Q V}{\partial x}\right ) \right ) = 0
+\end{equation}
+
+\vspace{0.5cm}
+
+Ces équations sont résolues par une méthode de différences finies (voir figure \ref{DF}), utilisant un schéma implicite. La discrétisation est de type Preissmann \cite{PREISSMANN61}, $\theta$ est le coefficient d'implicitation. Le schéma est stable, en régime fluvial, lorsque : $\theta > 0.5$ (voir \cite{CUNGE64}).
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.5,angle=270]{Disc_DF.eps} \hspace{2cm}
+  \vspace{1cm}
+  \caption{Discrétisation en différences finies}
+  \label{DF}
+ \end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+Rappelons que la convention : $i = j + 1$, et précisons que $\Delta x$ devrait  en toute rigueur être noté $\Delta x_j$, le pas d'espace variant a priori dans le bief considéré.
+
+\vspace{0.5cm}
+
+Les dérivées en $x$ et $t$ sont calculées au premier ordre de la façon suivante :
+
+\begin{equation}
+  \frac{\partial f}{\partial x} = \theta \frac{f_{i}^{n+1}-f_{j}^{n+1}}{\Delta x} + (1-\theta) \frac{f_{i}^n - f_{j}^n}{\Delta x}
+\end{equation}
+
+\begin{equation}
+  \frac{\partial f}{\partial t} = \frac{1}{2} \left ( \frac{f_{i}^{n+1} - f_{i}^n}{\Delta t} + \frac{f_{j}^{n+1} - f_{j}^n}{\Delta t} \right )
+\end{equation}
+
+\vspace{0.5cm}
+
+Les fonctions qui interviennent sans dérivée sont évaluées par :
+
+\begin{equation}
+  f = \theta \frac{f_{i}^{n+1} + f_{j}^{n+1}}{2} + (1 - \theta) \frac{f_{i}^n + f_{j}^n}{2}
+\end{equation}
+
+\paragraph{Equations discrétisées\\}
+
+\hspace*{1cm}
+
+Les équations discrétisées s'écrivent tout d'abord ainsi :
+
+\begin{itemize}
+  \item Equation de continuité :
+  \begin{eqnarray}
+    (1 - \theta) \frac{Q_{i}^n - Q_{j}^n}{\Delta x} + \theta \frac{Q_{i}^{n+1} - Q_{j}^{n+1}}{\Delta x} + \frac{1}{2} \left ( L_{t_i}^n + L_{t_j}^n \right ) \nonumber \\
+    \times \frac{1}{2} \left ( \frac{Z_{i}^{n+1} - Z_{i}^n}{\Delta t} + \frac{Z_{j}^{n+1} - Z_{j}^n}{\Delta t} \right ) = q_{l_j}^{n+1}
+  \end{eqnarray}
+
+  \item Equation dynamique :
+  \begin{eqnarray}
+    \left ( \frac{1 - \theta }{2} \right ) \left ( Q_{j}^{n^2} + Q_{i}^{n^2} \right ) + \frac{\theta}{2} \left ( Q_{j}^{n+1^2} + Q_{i}^{n+1^2} \right ) \nonumber \\
+    + \left ( \frac{1 - \theta}{2} \left ( D_{i}^{n^2} + D_{j}^{n^2} \right ) + \frac{\theta}{2} \left ( D_{i}^{n^2} + D_{j}^{n+1^2} \right ) \right ) \nonumber \\
+    \times \Bigg \{ (1 - \theta) \frac{Z_{i}^n - Z_{j}^n}{\Delta x} + \theta \frac{Z_{i}^{n+1} - Z_{j}^{n+1}}{\Delta x} + J_{s}(i) + J_{s}(j) \nonumber \\
+    + \left ( \frac{1 - \theta}{2 g} \left ( \left ( \frac{1}{S} \right )_{i}^n + \left ( \frac{1}{S} \right )_{j}^n \right ) + \frac{\theta}{2 g} \left ( \left ( \frac{1}{S} \right )_{i}^{n+1} + \left ( \frac{1}{S} \right )_{j}^{n+1} \right ) \right ) \nonumber \\
+    \times \Bigg [ \frac{1}{2 \Delta t}(Q_{i}^{n+1}-Q_{i}^n+Q_{j}^{n+1}-Q_{j}^n) + \frac{\theta}{\Delta x} \left ( \beta_{i}^n \frac{Q_{i}^{n+1^2}}{S_{i}^{n+1}}-\beta_{j}^n \frac{Q_{j}^{n+1^2}}{S_{j}^{n+1}} \right ) \nonumber \\
+    + \frac{1-\theta}{\Delta x} \left ( \beta_{i}^n \frac{Q_{i}^{n^2}}{S_{i}^{n}}-\beta_{j}^n \frac{Q_{j}^{n^2}}{S_{j}^{n}} \right ) \Bigg ] \Bigg \} = 0
+  \end{eqnarray}
+
+\vspace{0.5cm}
+
+En posant :
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \Delta Q_j = Q_{j}^{n+1} - Q_{j}^n \\
+    \Delta Q_i = Q_{i}^{n+1} - Q_{i}^n \\
+    \Delta Z_j = Z_{j}^{n+1} - Z_{j}^n \\
+    \Delta Z_i = Z_{i}^{n+1} - Z_{i}^n
+  \end{array}
+ \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+on obtient, après linéarisation, c'est à  dire en ne conservant que les termes du premier ordre en $\Delta Z$ et $\Delta Q$ :
+
+\begin{itemize}
+ \item pour l'équation de continuité :
+  \begin{equation}
+   \label{CONT}
+   \boxed{
+     G \Delta Q_i + H \Delta Z_i = I \Delta Q_j + J \Delta Z_j + K
+   }
+  \end{equation}
+  avec :
+  \begin{equation}
+   \label{CONT1}
+   G = \theta
+  \end{equation}
+  \begin{equation}
+    \label{CONT2}
+   I = G
+  \end{equation}
+  \begin{equation}
+    \label{CONT3}
+   H = \frac{\Delta x}{4 \Delta t} ( L_{t_j}^n + L_{t_i}^n )
+  \end{equation}
+  \begin{equation}
+    \label{CONT4}
+   J = -H
+  \end{equation}
+   \begin{equation}
+   \label{CONT5}
+   K = Q_{j}^n - Q_{i}^n + q_{l_i}^{n+1}
+  \end{equation}
+
+ \item et pour l'équation dynamique :
+  \begin{equation}
+   \label{DYN}
+   \boxed{
+     L \Delta Q_i + M \Delta Z_i = N \Delta Q_j + O \Delta Z_j + P
+   }
+  \end{equation}
+  avec :
+  \begin{equation}
+    \label{DYN1}
+   L = B_2 + C_1 H_1 ( E_2 + F_2 )
+  \end{equation}
+  \begin{equation}
+    \label{DYN2}
+   M = C_1 ( D_4 + H_1 F_4 + H_4 F_1 ) + C_4 ( D_1 + H_1 F_1 )
+  \end{equation}
+   \begin{equation}
+    \label{DYN3}
+   N = -B_3 - C_1 H_1 ( E_3 + F_3 )
+  \end{equation}
+  \begin{equation}
+     \label{DYN4}
+   O = -C_1 ( D_5 + H_1 F_5 + H_5 F_1 ) - C_5 ( D_1 + H_1 F_1 )
+  \end{equation}
+  \begin{equation}
+   \label{DYN5}
+   P = -B_1 - C_1 ( D_1 + H_1 F_1 )
+  \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+sachant que les divers termes de l'équation dynamique ont été linéarisés de la façon suivante (les variables non indicées correspondent au pas de temps $n$) :
+
+\begin{equation}
+ Q |Q| = B_1 + B_2 \Delta Q_i + B_3 \Delta Q_j
+\end{equation}
+
+\begin{equation}
+ B_1 = \frac{1}{2} ( Q_{i}^2 sign(Q_i) + Q_{j}^2 sign(Q_j) )
+\end{equation}
+
+\begin{equation}
+ B_2 = \theta |Q_i|
+\end{equation}
+
+\begin{equation}
+ B_3 = \theta |Q_j|
+\end{equation}
+
+\begin{itemize}
+ \item[*]
+  \begin{equation}
+   D^2 = C_1 + C_4 \Delta Z_i + C_5 \Delta Z_j
+  \end{equation}
+  \begin{equation}
+   C_1 = \frac{1}{2} ( D_{i}^2 + D_{j}^2 )
+  \end{equation}
+  \begin{equation}
+   C_4 = \theta D_i ( \alpha_{m_i} + \alpha_{M_i} )
+  \end{equation}
+  \begin{equation}
+   C_5 = \theta D_j ( \alpha_{m_j} + \alpha_{M_j} )
+  \end{equation}
+  \begin{equation}
+   \alpha_{m_i} = \frac{K_m R_{m}^{2/3}}{3} \left ( 5 L_m -2 R_m \frac{\partial P_m}{\partial z} \right )_i
+  \end{equation}
+   \begin{equation}
+   \alpha_{m_j} = \frac{K_m R_{m}^{2/3}}{3} \left ( 5 L_m -2 R_m \frac{\partial P_m}{\partial z} \right )_j
+  \end{equation}
+  \begin{equation}
+    \alpha_{M_i} = \frac{K_M R_{M}^{2/3}}{3} \left ( 5 L_M -2 R_M \frac{\partial P_M}{\partial z} \right )_i
+  \end{equation}
+  \begin{equation}
+    \alpha_{M_j} = \frac{K_M R_{M}^{2/3}}{3} \left ( 5 L_M -2 R_M \frac{\partial P_M}{\partial z} \right )_j
+  \end{equation}
+  \begin{equation}
+    K_{m}' = A K_m 
+  \end{equation}
+  \begin{equation}
+    K_{M}' = \sqrt{1 + \frac{S_m}{S_M} (1-A^2)} K_M
+  \end{equation}
+ \item[*]
+  \begin{equation}
+    \frac{\partial Z}{\partial x} + J_{s}(i) + J_{s}(j) = D_1 + D_4 \Delta Z_i + D_5 \Delta Z_j
+  \end{equation}
+  \begin{equation}
+     D_1 = \frac{Z_i - Z_j}{\Delta x} + J_{s}(i) + J_{s}(j)
+  \end{equation}
+  \begin{equation}
+    D_4 = \frac{\theta}{\Delta x}
+  \end{equation}
+    \begin{equation}
+    D_5 = \frac{\theta}{\Delta x}
+  \end{equation}
+ \item[*]
+   \begin{equation}
+     \frac{\partial Q}{\partial t} = E_2 \Delta Q_i + E_3 \Delta Q_j
+   \end{equation}
+   \begin{equation}
+     E_2 = \frac{1}{2 \Delta t}
+   \end{equation}
+   \begin{equation}
+     E_3 = \frac{1}{2 \Delta t}
+   \end{equation}
+ \item[*]
+   \begin{equation}
+    \frac{\partial}{\partial x} \left ( \beta \frac{Q^2}{S} \right ) = F_1 + F_2 \Delta Q_i + F_3 \Delta Q_j + F_4 \Delta Z_i + F_5 \Delta Z_j 
+   \end{equation}
+   \begin{equation}
+     F_1 = \frac{1}{\Delta x} ( \beta_i V_i Q_i - \beta_j V_j Q_j )
+   \end{equation}
+   \begin{equation}
+     F_2 = \frac{2 \theta}{\Delta x} \beta_i V_i
+   \end{equation}
+   \begin{equation}
+     F_3 = -\frac{2 \theta}{\Delta x} \beta_j V_j
+   \end{equation}
+   \begin{equation}
+     F_4 = - \frac{\theta}{\Delta x} \beta_i V_{i}^2 L_{t_i}
+   \end{equation}
+   \begin{equation}
+     F_5 = \frac{\theta}{\Delta x} \beta_j V_{j^2} L_{t_j}
+   \end{equation}
+ \item[*]
+   \begin{equation}
+    \frac{1}{S g} = H_1 + H_4 \Delta Z_i + H_5 \Delta Z_j
+   \end{equation}
+   \begin{equation}
+     H_1 = \frac{1}{2 g} \left ( \frac{1}{S_i} + \frac{1}{S_j} \right )
+   \end{equation}
+   \begin{equation}
+     H_4 = - \frac{\theta}{2 g} \frac{L_{t_i}}{S_{i}^2}
+   \end{equation}
+   \begin{equation}
+     H_5 = - \frac{\theta}{2 g} \frac{L_{t_j}}{S_{j}^2}
+   \end{equation}
+\end{itemize}
+
+\end{itemize}
+
+
+\paragraph{Résolution des équations discrétisées\\}
+
+\hspace*{1cm}
+
+Les équations (\ref{CONT}) et (\ref{DYN}) conduisent naturellement à  la constitution d'un système matriciel :
+
+\begin{equation}
+ \label{systm}
+ \left(
+    \begin{array}{cc}
+       G & H \\
+       L & M
+    \end{array}
+ \right)
+ \left( 
+    \begin{array}{c}
+       \Delta Q_i \\
+       \Delta Z_i
+    \end{array}
+ \right)
+ =
+  \left(
+    \begin{array}{cc}
+       I & J \\
+       N & O
+    \end{array}
+ \right)
+ \left(
+    \begin{array}{c}
+       \Delta Q_j \\
+       \Delta Z_j
+    \end{array}
+ \right)
+ +
+ \left(
+    \begin{array}{c}
+       K \\
+       P
+    \end{array}
+ \right)
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`{u} $G$,$H$,$I$,$J$,$K$,$L$,$M$,$N$,$O$ et $P$ sont des macro-coefficients dont l'expression dépend des variables de contrôle, des variables d'état et des paramètres du modèle (\ref{CONT1}-\ref{CONT5}) (\ref{DYN1}-\ref{DYN5}).
+
+\vspace{0.5cm}
+
+Dans le cas d'étude d'un seul bief, les conditions aux limites sur l'amont et l'aval font que $\Delta Q_1$ et $\Delta Z_n$ ne sont plus des inconnues, $n$ étant le nombre de sections de calcul. Cela correspond à  un débit connu à  l'amont et à  une cote imposée à  l'aval. Le système (\ref{systm}) comporte alors $2n-2$ équations et inconnues. Il se met sous la forme générale :
+
+\begin{equation}
+ \label{eq1}
+ A.x = b
+\end{equation}
+o\`{u} :
+\begin{itemize}
+ \item le vecteur $x$ des inconnues est la solution des variations de cote et de d\'{e}bit en chacune des $n$ sections de calcul du r\'{e}seau de biefs :
+   \begin{equation}
+      x = \left(
+            \begin{array}{c}
+               \Delta Z_1\\
+               \Delta Q_2\\
+               \Delta Z_2\\
+               \Delta Q_3\\
+               \Delta Z_3\\
+               \vdots\\
+               \Delta Z_{n-1}\\
+               \Delta Q_{n}
+            \end{array}
+          \right)
+   \end{equation}
+ \item dans le cas simple d'un seul bief, la matrice $A$ est bande et non-symm\'{e}trique :
+   \begin{equation}
+     \label{eq3}
+     A = \left(
+         \begin{array}{cccccccccccc}
+          -J & G & H & & & & & & & & & \\
+          -O & L & M & & & & & & & & & \\
+             & -I & -J & G & H & & & & & & & \\
+             & -N & -O & L & M & & & &  & 0 & & \\
+             & & & -I & -J & G & H & & & & & \\
+             & & & -N & -O & L & M & & & & & \\
+             & & & & & & & .... & & & & \\
+             & & & & & & & & .... & & & \\
+             & 0 & & & & & & & & .... & & \\
+             & & & & & & & & & & .... & \\
+             & & & & & & & & & -I & -J & G \\
+             & & & & & & & & & -N & -O & L \\
+         \end{array}
+         \right)
+   \end{equation}
+ \item $b$ est le vecteur de second membre :
+   \begin{equation}
+      \label{eq2}
+      b = \left(
+            \begin{array}{c}
+               K\\
+               P\\
+               K\\
+               P\\
+               \vdots\\
+               K\\
+               P
+            \end{array}
+          \right)
+   \end{equation}
+\end{itemize}
+
+\vspace{0.5cm}
+
+Les divers macro-coefficients $G, H, I, J, K, L, M, N, O\ et\ P$ sont calculés à  chaque pas de temps.
+
+\vspace{0.5cm}
+
+La matrice $A$ présente deux caractéristiques importantes : elle est bande diagonale dominante et elle présente un creux important. Il est alors possible d'utiliser un solveur spécialisé pour résoudre (\ref{eq1}).
+
+\vspace{0.5cm}
+
+Deux solveurs matriciels sont implémentés pour le code \texttt{REZO}:
+
+\begin{itemize}
+ \item le premier est le solveur bande \texttt{DGBSV} de la bibliothéque logicielle \texttt{LAPACK}\footnote{http://www.netlib.org/lapack/}. Ce solveur est utilisé par défaut quand le problème ne contient qu'un seul bief et qu'aucun casier n'est présent;
+ \item le second est un solveur creux basé sur la bibliothèque écrite en \textit{Fortran 77} \texttt{Y12M}\footnote{http://www.netlib.org/y12m/}. Ce programme a été développé au début des années 1980 \cite{ZLATEV81}. Il bénéficie d'une robustesse et d'une performance établies pour les tailles de problèmes que le code \texttt{REZO} rencontre fréquemment.
+        \texttt{Y12M} est un solveur direct avec pivotage numérique pour préserver la stabilité du calcul et le creux de la matrice factorisée en un produit $L.U$. L'emploi de ce solveur est particulièrement simple et léger du fait :
+        \begin{itemize}
+           \item de l'appel à  une seule routine et d'un nombre de sources réduit;
+           \item de la gestion de la renumérotation en interne pour préserver le creux (choix du pivot avec un critère de minimisation du remplissage);
+           \item que le chaînage de la matrice est renseignée au format de coordonnées $(i,j)$ pour chaque élément non nul présent en ligne $i$ et colonne $j$.
+        \end{itemize}
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+La résolution d'un problème fluvial et non-permanent par le code \texttt{REZO} suit les étapes algorithmiques décrites sur la figure \ref{Etap}.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.6,angle=270]{AlgoRezo.eps}\hspace{2cm}
+  \vspace{1cm}
+  \caption{Algorithme de \texttt{REZO}}
+  \label{Etap}
+ \end{center}
+\end{figure}
+
+Avant de rentrer dans la simulation temporelle il faut déterminer le chaînage de la matrice à  partir du graphe de réseau de biefs. Ce calcul est réalisé une seule fois car la connectivité du réseau ne change pas dans le temps.
+
+\vspace{0.5cm}
+
+La boucle en temps comporte trois phases :
+\begin{itemize}
+ \item un calcul des macro-coefficients $G, H, I, J, K, L, M, N, O\ et\ P$ et leur assemblage dans la matrice $A$ et le second membre $b$;
+ \item un appel au solveur direct \texttt{Y12M} ou au solveur bande \texttt{DGBSV} pour résoudre le système (\ref{eq1}) et déterminer les solutions de variations de cote et de débit $(\Delta Z_i,\Delta Q_i)$ en chaque section $i$;
+ \item une mise à  jour de la ligne d'eau pour le temps courant $t_k$ :
+  \begin{equation}
+   \forall i \in 1..n
+   \left \lbrace
+  \begin{array}{l}
+    Q_{i}^k = Q_{i}^{k-1} + \Delta Q_i \\
+    \\
+    Z_{i}^k = Z_{i}^{k-1} + \Delta Z_i
+  \end{array}
+ \right.
+  \end{equation}
+\end{itemize}
+
+\subsubsection{Traitement des n\oe uds en régime fluvial permanent} \label{NdPERM}
+
+\paragraph{Rappel\\}
+
+\hspace*{1cm}
+
+Les équations résolues aux n\oe uds sont :
+\begin{itemize}
+ \item la continuité des débits;
+ \item l'identité des cotes dans chaque branche (voir la justification à  la section \ref{TrNd}).
+\end{itemize}
+
+\vspace{0.5cm}
+
+Un n\oe ud n'ajoute donc pas d'inconnue supplémentaire : les inconnues à  calculer sont les inconnues $(Z,Q)$ des sections de calcul consistant ce n\oe ud. Ainsi, dans l'exemple ci-dessous (figure \ref{SchNd}):
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.6,angle=270]{Schema_noeud.eps}\hspace{1cm}
+  \vspace{1cm}
+  \caption{Exemple d'un n\oe ud à  trois branches}
+  \label{SchNd}
+ \end{center}
+\end{figure}
+
+Les inconnues sont $(Z_1,Q_1)$, $(Z_2,Q_2)$ et $(Z_3,Q_3)$ et les équations du n\oe ud sont :
+\begin{itemize}
+ \item la répartition des débits : $Q_1 + Q_2 + Q_3 = 0$;
+ \item l'égalité des cotes : $Z_1 = Z_2 = Z_3$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Nous pouvons vérifier simplement que ces relations sont suffisantes pour déterminer les valeurs de $(Z,Q)$ dans tout le réseau étudié.
+
+\vspace{0.5cm}
+
+Soient :
+\begin{itemize}
+ \item le nombre total de sections de calcul à  traiter (somme des sections de calcul de toutes les branches) : $im$;
+ \item le nombre de biefs : $nbbief$;
+ \item le nombre d'extrémités libres : $nblimi$.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Pour tout le réseau on peut écrire $(im-nbbief)$ équations de continuité et autant d'équations dynamiques discrètes de Saint-Venant.
+
+\vspace{0.5cm}
+
+Les inconnues sont les $(\Delta Q,\Delta Z)$ aux sections de calcul, soient $2 im$ inconnues.
+
+\vspace{0.5cm}
+
+Aux extrémités libres on connaît les conditions limites qui nous donnent $nblimi$ relations supplémentaires.
+
+\vspace{0.5cm}
+
+Pour l'ensemble des n\oe uds on peut écrire :
+\begin{itemize}
+ \item[*] $nbnoeu$ équations de conservation de débit;
+ \item[*] $(2nbbief-nblimi) - nbnoeu$ équations d'égalité de cote.
+\end{itemize}
+
+\vspace{0.5cm}
+
+En effet $(2nbbief - nblimi)$ représente le nombre d'extrémités de branches arrivant à  un n\oe ud (chaque bief doit être comptabilisé deux fois sauf ceux qui ont une limite libre). A chaque n\oe ud, s'il arrive $k$ branches, on n'a que $k-1$ équations d'égalité de cote. Il faut donc au total enlever $nbnoeu$ à  $2nbbief - nblimi$.
+
+\vspace{0.5cm}
+
+Finalement, nous disposons donc de : \\
+$2 (im - nbbief) + nblimi + nbnoeu + (2 nbbief - nblimi) - nbnoeu$
+$= 2 im$ équations pour $2 im$ inconnues.
+
+\paragraph{Principe\\}
+
+\hspace*{1cm}
+
+L'algorithme présenté ici est valable quelque soit le réseau (ramifié ou maillé) à  condition de respecter les deux conditions suivantes :
+\begin{itemize}
+ \item le sens de l'écoulement est connu a priori dans chaque bief;
+ \item pour toutes les limites libres, la condition limite est : 
+   \begin{itemize}
+     \item le débit s'il s'agit d'une extrémité amont;
+     \item la cote s'il s'agit d'une extrémité aval.
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+En pratique, cet algorithme risque cependant d'être très coûteux en temps calcul dès que le réseau est complexe (défluents imbriqués, voir ci-après). Il vaudrait mieux dans ce cas, recourir au noyau fluvial non permanent (voir la section suivante), en partant d'une ligne d'eau initiale simple, et en choisissant les conditions limites de manière à  converger vers un état stationnaire correspondant à  la ligne d'eau permanente recherchée.
+
+\vspace{0.5cm}
+
+Avant de présenter l'algorithme, il est utile de faire l'observation suivante. Le problème est très simple si le réseau ne comporte que des confluents, car en descendant depuis les limites amont, on calcule le débit en tout point du domaine, et il suffit alors de calculer les cotes des lignes d'eau en remontant de proche en proche suivant le chemin inverse, et selon le même procédé que pour un bief. Au passage de chaque n\oe ud, l'égalité des cotes peut être imposée sans difficultés.
+
+\vspace{0.5cm}
+
+Le problème essentiel est donc de calculer la répartition de débit à  un défluent. La solution retenue ici est une méthode itérative que nous allons expliciter dans le paragraphe suivant. Ce caractère itératif a comme conséquence que l'algorithme général est lui-même itératif, les itérations étant imbriquées de la même manière que les défluents (voir les figures \ref{AlgSP} et \ref{ExSP}). Précisons de plus que :
+\begin{itemize}
+ \item \textit{descendre un bief} signifie calculer le débit à  chaque section de calcul successivement, dans le sens amont/aval;
+ \item \textit{remonter le bief} signifie calculer la cote à  chaque section de calcul successivement, dans le sens aval/amont.
+\end{itemize}
+
+\vspace{0.5cm}
+
+La figure \ref{AlgSP} expose l'algorithme de résolution, tandis que la figure \ref{ExSP} l'illustre sur le cas d'un réseau maillé comprenant deux défluents imbriqués. Cet exemple peut être considéré comme représentatif des cas les plus complexes pouvant être traités dans un temps raisonnable grà¢ce à  cet algorithme. Au delà , comme nous l'avons signalé, il est recommandé d'utiliser l'algorithme de résolution d'un réseau en non permanent du code \texttt{REZO}.
+
+\vspace{0.5cm}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.25,angle=0]{Algorithme_SARAP.eps}
+  \caption{Algorithme de résolution d'un réseau en permanent}
+  \label{AlgSP}
+ \end{center}
+\end{figure}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[scale=0.8,angle=0]{Ex_Res_SARAP.eps}
+  \caption{Exemple d'un réseau pour un calcul permanent}
+  \label{ExSP}
+ \end{center}
+\end{figure}
+
+\newpage
+
+\textsc{\textbf{algorithme} (voir figure \ref{ExSP}) :}
+\begin{itemize}
+ \item[*] Descendre Bief 1
+ \item[*] Descendre Bief 4
+ \item[*] $n = 1$
+ \item[*] \textbf{(1)} Répartir le débit au n\oe ud 1 (itération $n$)
+ \begin{itemize}
+  \item Descendre Bief 2
+  \item Descendre Bief 3
+  \item Descendre Bief 7
+  \item $p = 1$
+  \item \textbf{(2)} Répartir le débit au n\oe ud 2 (itération $n.p$)
+  \begin{itemize}
+   \item Descendre Bief 5
+   \item Descendre Bief 6
+   \item Descendre Bief 8
+  \end{itemize}
+  -----------------------------
+  \begin{itemize}
+   \item Remonter Bief 8
+   \item Remonter Bief 6
+   \item Remonter Bief 5
+   \item Egalité des cotes aval au n\oe ud 2?
+   \begin{itemize}
+    \item si non : $p = p + 1$, revenir à  l'étape \textbf{(2)}
+    \item si oui : poursuivre
+   \end{itemize}
+  \end{itemize}
+  \item Remonter Bief 7
+  \item Remonter Bief 3
+  \item Remonter Bief 2
+  \item Egalite des cotes aval au n\oe ud 1?
+  \begin{itemize}
+    \item si non : $n = n + 1$, revenir à  l'étape \textbf{(1)}
+    \item si oui : poursuivre
+   \end{itemize}
+  \end{itemize}
+ \item Remonter Bief 4
+ \item Remonter Bief 1
+\end{itemize}
+
+\newpage
+
+\paragraph{Répartition du débit à  un défluent\\}
+
+\hspace*{1cm}
+
+\textbf{Première itération}
+
+Nous avons à  choisir une répartition de débit vérifiant :
+
+\begin{equation}
+  Q_{amont} + \sum_{i=1}^{n_{aval}} Q_i
+\end{equation}
+o\`{u} $n_{aval}$ est le nombre de branches à  l'aval.
+
+\begin{equation}
+  Q_i = D_i J_{i}^{1/2}
+\end{equation}
+
+\vspace{0.5cm}
+
+La solution retenue est l'égalité des pentes des lignes de charges :
+
+\begin{equation}
+  J_i = J = \left ( \frac{Q_i}{D_i}^2 \right )
+\end{equation}
+
+ou encore :
+
+\begin{equation}
+  \frac{Q_i}{D_i} = \frac{Q_j}{D_j} = cte = J^{1/2}
+\end{equation}
+
+\vspace{0.5cm}
+
+En reportant dans l'équation de continuité, nous obtenons :
+
+\begin{equation}
+ \frac{Q_{amont}}{J^{1/2}} = \sum_{i=1}^{n_{aval}} D_i
+\end{equation}
+
+\vspace{0.5cm}
+
+Cette somme des débitances ne dépend que de la géométrie et de la rugosité des biefs aval et est une fonction de la cote qui dans le cas général monotone croissante.
+
+\vspace{0.5cm}
+
+Pour une valeur de $J$ donnée, il est possible de calculer une cote satisfaisant cette relation, puis pour cette cote, calculer les $D_j$ puis les $Q_j$.
+
+\vspace{0.5cm}
+
+Dans la version actuelle, la solution adoptée pour ce premier itéré est de prendre pour $J$ la moyenne des pentes des fonds des branches aval.
+
+\vspace{0.5cm}
+
+\textbf{Itérations suivantes}
+
+Le problème à  résoudre est de déterminer les meilleures corrections de débit à  apporter, par rapport à  la répartition choisie à  l'itération précédente, pour s'approcher le plus possible de l'égalité des cotes aux sections origine des biefs aval.
+
+\vspace{0.5cm}
+
+L'idée est de déterminer la correction de débit en considérant comme données les pentes des lignes d'énergie $J$ (égales à  celles de la précédente itération), pour tendre vers l'égalité des cotes en continuant à  respecter strictement la continuité des débits.
+
+\vspace{0.5cm}
+
+Pour chacune des sections origines des branches aval, on peut écrire (pour une cote donnée) :
+
+\begin{equation}
+ Q_{i}^2 = J_i D_{i}^2
+\end{equation}
+où :
+\begin{equation}
+ Q_{i} = J_{i}^{1/2} D_{i}
+\end{equation}
+l'indice $i$ correspondant au numéro de la branche aval.
+
+\vspace{0.5cm}
+
+En différenciant entre les itérations $n$ et $n+1$ et en expliquant le terme $J_{i}^{1/2}$, il vient :
+
+\begin{equation}
+ \label{i1}
+ \delta Q_i = ( J_{i}^{1/2} )_n \left ( \frac{\partial D_i}{\partial Z_i} \right )_n \delta Z_i 
+\end{equation}
+$n$ désignant le numéro de l'itération,
+
+\vspace{0.5cm}
+
+avec :
+
+\begin{equation}
+ ( J_{i}^{1/2} )_n = \left ( \frac{Q_i}{D_i} \right )_n
+\end{equation}
+
+o\`{u} : $\delta Q_i = Q_{i}^{n+1} - Q_{i}^{n}$
+\hspace{1cm} et : $\delta Z_i = Z_{i}^{n+1} - Z_{i}^{n}$
+
+\vspace{0.5cm}
+
+La relation de continuité des débits s'écrit, si $n_{aval}$ est le nombre de branches aval :
+\begin{equation}
+  Q_{amont} = \sum_{i=1}^{n_{aval}} Q_i
+\end{equation}
+o\`{u} :
+
+\begin{equation}
+ \label{i2}
+ \sum_{i=1}^{n_{aval}} \delta Q_i = 0
+\end{equation}
+
+
+\vspace{0.5cm}
+
+La correction de débit se fait de faà§on à  tendre vers l'égalité des cotes au n\oe ud, on veut donc :
+
+\begin{equation}
+ Z_{i}^{n+1} = cte = Z
+\end{equation}
+ce qui donne :
+
+\begin{equation}
+ \label{i3}
+  \delta Z_i = Z - Z_{i}^n
+\end{equation}
+les $Z_{i}^n$ étant les résultats de l'itération précédente.
+
+\vspace{0.5cm}
+
+On a donc :
+\begin{itemize}
+ \item $n_{aval}$ relations (\ref{i1});
+ \item 1 relation (\ref{i2});
+ \item $n_{aval}$ relations (\ref{i3}).
+\end{itemize}
+soient $2n_{aval}+1$ relations pour $2n_{aval}+1$ inconnues ($\delta Q_i$,$\delta Z_i$ et $Z$).
+
+\begin{equation}
+ \left \lbrace
+  \begin{array}{l}
+    \delta Z_i = Z - Z_{i}^n \\
+    \sum_{i=1}^{n_{aval}} \delta Q_i = 0 \\
+    \delta Q_i = \left ( \frac{Q_i}{D_i} \right )_n \left ( \frac{\partial D_i}{\partial Z_i} \right )_n \delta Z_i
+  \end{array}
+ \right.
+\end{equation}
+
+d'o\`{u} l'on tire :
+
+\begin{equation}
+  Z = \frac{\displaystyle \sum_{i=1}^{n_{aval}} \left ( \frac{Q_i}{D_i} \right )_n \left ( \frac{\partial D_i}{\partial Z_i} \right )_n Z_i}{\displaystyle \sum_{i=1}^{n_{aval}} \left ( \frac{Q_i}{D_i} \right )_n \left ( \frac{\partial D_i}{\partial Z_i} \right )_n}
+\end{equation}
+puis :
+\begin{equation}
+  \delta Z_i = Z - Z_{i}^n
+\end{equation}
+et finalement :
+\begin{equation}
+  \delta Q_i = \sum_{i=1}^{n_{aval}} \left ( \frac{Q_i}{D_i} \right )_n \left ( \frac{\partial D_i}{\partial Z_i} \right )_n \delta Z_i
+\end{equation}
+
+\subsubsection{Traitement des n\oe uds en fluvial non-permanent} \label{NDRezo}
+
+La matrice $A$ (\ref{eq3}) décrit une solution apportée aux équations de Saint-Venant 1D dans le cas d'étude d'un seul bief. Si plusieurs biefs existent, la représentation des confluents ou défluents nécessite des équations supplémentaires. Il n'y a pas d'équations dynamique (\ref{qmv}) ou de continuité (\ref{masse}) entre les sections appartenants à  un même n\oe ud \ref{SchemConf}. Pour chaque du réseau fluvial, il faut prendre en compte les deux contraintes suivantes :
+
+\begin{itemize}
+ \item \underline{égalité des cotes} de chaque section de l'extrémité des biefs connectés au même n\oe ud. Dans le cas d'un n\oe ud à  trois branches \ref{SchemConf}, il faut rajouter deux équations impliquant l'égalité des cotes d'un pas de temps sur l'autre :
+  \begin{equation}
+    \left \lbrace
+     \begin{array}{l}
+       Z_1 + \Delta Z_1 = Z_2 + \Delta Z_2 \\
+       Z_1 + \Delta Z_1 = Z_3 + \Delta Z_3
+     \end{array}
+    \right.
+  \end{equation}
+  soit :
+  \begin{equation}
+    \left \lbrace
+     \begin{array}{l}
+       \Delta Z_1 - \Delta Z_2 = Z_2 - Z_1\\
+       \Delta Z_1 - \Delta Z_3 = Z_3 - Z_1
+     \end{array}
+    \right.
+  \end{equation}
+  Il faut donc rajouter à  la matrice $A$ (\ref{eq3}) deux lignes de coefficients $+1$ et $-1$ sur les variations de cote. Le vecteur de second membre $b$ (\ref{eq2}) est enrichi de deux différences de cote.
+  \item \underline{conservation des débits}, le volume d'eau total arrivant en un n\oe ud étant égal à  l'ensemble des volumes d'eau quittant le n\oe ud :
+   \begin{equation}
+     Q_1 + \Delta Q_1 + Q_2 + \Delta Q_2 = Q_3 + \Delta Q_3
+   \end{equation}
+   soit :
+   \begin{equation}
+     \Delta Q_1 + \Delta Q_2 - \Delta Q_3 = Q_3 -Q_2 - Q_1
+   \end{equation}
+   De la même manière que précédemment, la matrice $A$ est enrichie d'une ligne de coefficients $+1$ et $-1$. On ajoute au second membre une somme algébrique des débits des sections rattachées.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Le parcours de graphe pour la solution des équations discrétisées n'est plus de mise. La complexité de la résolution est laissée au solveur de système linéaire employé, ici \texttt{Y12M} \cite{ZLATEV81} ou \texttt{LAPACK-DGBSV}.
+
+\subsubsection{Traitement des singularités} \label{TS}
+
+Nous avons défini dans la section \ref{singu} le principe de la modélisation des singularités : elles sont supposées se situer entre deux sections de calcul $j$ et $i = j + 1$. L'équation de continuité est remplacée par l'égalité des débits pour ces sections, et l'équation dynamique est remplacée par la loi de la singularité, de la forme suivante une fois discrétisée :
+
+\begin{equation}
+  A_{sing} \Delta Q + B_{sing} \Delta Z_{amont} + C_{sing} \Delta Z_{aval} = D_{sing}
+\end{equation}
+
+avec :
+\begin{equation}
+ \mbox{si} \quad Q > 0 \quad \left \lbrace
+     \begin{array}{l}
+      Z_{amont} = Z_j\\
+      Z_{aval} = Z_i
+     \end{array}
+    \right.
+\end{equation}
+et :
+\begin{equation}
+ \mbox{si} \quad Q < 0 \quad \left \lbrace
+     \begin{array}{l}
+      Z_{amont} = Z_i\\
+      Z_{aval} = Z_j
+     \end{array}
+    \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+Notons que $A_{sing}$ peut être nul, mais que $B_{sing}$ et $C_{sing}$ ne peuvent l'être simultanément sans quoi le système est indéterminé.
+
+\vspace{0.5cm}
+
+\textbf{Exemples :}
+\begin{itemize}
+ \item Seuil de loi générale : $Q = f(Z_{amont},Z_{aval})$;
+ $$ A_{sing} = -1 \quad;\quad B_{sing} = + \frac{\partial f}{\partial Z_{amont}} \quad;$$
+ $$ C_{sing} = + \frac{\partial f}{\partial Z_{aval}} \quad;\quad D_{sing} = 0 $$
+ \vspace{0.25cm}
+ \quad Si ce seuil est dénoyé, alors : $C_{sing} = 0$
+ \vspace{0.25cm}
+ \item Barrage dont la loi de la retenue : $Z_{amont} = f(t)$ est connue a priori;
+ $$ A_{sing} = 0 \quad;\quad B_{sing} = 1 \quad;$$
+ $$ C_{sing} = 0 \quad;\quad D_{sing} = f(t+\Delta t)-f(t)$$
+\end{itemize}
+
+\paragraph{Résolution en permanent\\}
+
+\hspace*{1cm}
+
+Nous devons déterminer la cote à  l'amont de la singularité, connaissant le débit et la cote à  l'aval. La résolution est de ce fait toujours très simple. Dans plusieurs cas (loi de seuil générale, régulation, section de contrôle), la discrétisation de la loi de la singularité donne directement le résultat. Sinon, la seule difficulté réside dans le coefficient noyé/dénoyé, dont la valeur suppose déjà  connue la cote amont objet du calcul. Dans ce dernier cas, la cote amont est d'abord calculée en supposant le régime dénoyé, puis, si ce n'est pas le cas avec la solution ainsi obtenue, la cote amont est progressivement augmentée jusqu'à  ce que la loi du régime dénoyé soit bien vérifiée. Notons que, pour un seuil, la charge est assimilée à  la hauteur au-dessus du seuil pour la section amont.
+
+\paragraph{Résolution en non-permanent\\}
+
+\hspace*{1cm}
+
+L'équation de continuité (\ref{CONT}) est réduite à  l'égalité des débits en amont et en aval de la singularité, ce qui implique :
+\begin{equation}
+  \left \lbrace
+     \begin{array}{l}
+      H = 0\\
+      J = 0\\
+      G = 1\\
+      I = 1
+     \end{array}
+    \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+L'équation dynamique (\ref{DYN}) est spécifique à  chaque type de singularité. Néanmoins, cette équation est modifiée de la sorte :
+
+\begin{equation}
+  \left \lbrace
+     \begin{array}{l}
+      L = 0\\
+      N = -A_{sing}\\
+      O = -B_{sing}\\
+      M = C_{sing}\\
+      P = D_{sing}
+     \end{array}
+    \right.
+\end{equation}
+
+\vspace{0.5cm}
+
+o\`{u} les coefficients $A_{sing}$, $B_{sing}$, $C_{sing}$ et $D_{sing}$ dépendent principalement de la nature du seuil et de l'état de son régime noyé ou dénoyé. Ils sont calculés a priori pour chaque pas de temps par des fonctions externes et servent à  la constitution de la matrice des coefficients $A$ (\ref{eq3}). Les débits calculés sur les seuils par la solution de l'équation (\ref{eq1}) sont corrigés a posteriori par ces mêmes fonctions.
+
+\subsubsection{Empêchement du régime torrentiel en non-permanent}
+
+\paragraph{Introduction\\}
+
+\hspace*{1cm}
+
+Jusqu'à  la version $7.1.3$, l'apparition d'un régime super-critique en fluvial non-permanent avait pour conséquence l'arrêt du calcul avant la fin de la simulation car le code ne pouvait traiter le problème du point sonique et, a fortiori, d'un choc.
+
+\vspace{0.5cm}
+
+Les modifications apportées par la version $7.1.4$ visent à  permettre la poursuite du calcul même en présence de tels phénomènes sans prétendre les représenter. Elles se basent sur une atténuation graduelle des termes d'accélération convective
+au fur et à  mesure que le régime d'écoulement s'approche de la criticité.
+
+\vspace{0.5cm}
+
+Ces modifications existent déjà  dans des codes $1D$ renommés internationalement. Elles améliorent la robustesse du code et donc le confort de l'utilisateur sans dégrader de manière notoire les résultats en régime fluvial.
+
+\vspace{0.5cm}
+
+Cependant elles ne permettent pas la représentation des phénomènes torrentiels et l'utilisateur doit garder en conséquence un \oe il critique sur les résultats si de tels régimes ont toutes les raisons d'apparaître naturellement.
+
+\vspace{0.5cm}
+
+L'empêchement du régime torrentiel reste une option de calcul qui n'est pas activée par défaut dans la version $7.1.4$ du code.
+
+\paragraph{Modélisation fluviale\\}
+
+\hspace*{1cm}
+
+A l'origine, le schéma numérique de Preissmann ne peut résoudre le problème des équations de Saint-Venant en cas d'évènements critiques car il devient intrinsèquement mal posé \cite{MESELHE97}.
+
+\vspace{0.5cm}
+
+Au point sonique (passage en torrentiel), le système est localement sous-déterminé car il n'y a qu'une seule caractéristique entrante sur la section concernée. En revanche, à  l'endroit du choc (passage en fluvial),
+le système est sur-déterminé en raison de trois caractéristiques entrantes au lieu de deux.
+
+\vspace{0.5cm}
+
+Divers auteurs ont proposé une modification du schéma afin de pouvoir modéliser plus ou moins fidèlement les écoulements torrentiels à  faible valeur du nombre de Froude \cite{KUTIJA02}\cite{JOHNSON02}. 
+Ces modifications locales font appara\^{i}tre une complexité algorithmique supplémentaire qui peine à  se justifier en comparaison d'autres schémas plus modernes et performant pour la modélisation des régimes fortement torrentiels \cite{TORO01}. 
+
+\paragraph{Modification des équations\\}
+
+\hspace*{1cm}
+
+Le but des modifications apportées au code \texttt{REZO} est d'emp\^{e}cher toute apparition du régime transcritique en modifiant les équations de Saint-Venant quand l'écoulement accélère trop.
+
+\vspace{0.5cm}
+
+Ainsi ce n'est plus exactement l'équation (\ref{qmv}) qui est résolue par une discrétisation consistante mais une forme altérée o\`{u} les termes de convection  sont atténués par un coefficient $\alpha$.
+
+\begin{equation}
+ \frac{\partial}{\partial x}\left( {\beta \frac{Q^2}{S}} \right) \rightarrow \alpha \times \frac{\partial}{\partial x}\left( {\beta \frac{Q^2}{S}} \right)
+\end{equation}
+
+avec : $\alpha \in \lbrack 0,1 \rbrack$
+
+\vspace{0.5cm}
+
+Le choix de la valeur du coefficient $\alpha$ est une heuristique qui va dépendre du nombre de Froude calculé localement. Pour des valeurs faibles de ce nombre, $\alpha$ doit \^{e}tre proche de $1$ afin de résoudre fidèlement l'équation dynamique.
+
+\vspace{0.5cm}
+
+A contrario, pour un nombre de Froude se rapprochant de la criticité, $\alpha$ doit tendre vers $0$ afin supprimer progressivement toute accélération spatiale.
+
+\vspace{0.5cm}
+
+La formule choisie pour ce coefficient est une fonction régulière \cite{GUINOT10} :
+
+\begin{equation}
+   \alpha = max(0,1-F_{r}^{2})
+\end{equation}
+ 
+\vspace{0.5cm}
+
+L'atténuation des termes de convection commence très t\^{o}t avec cette formule.
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[scale=0.4,angle=270]{Atten_Alpha.eps}
+  \caption{Evolution du coefficient $\alpha$ en fonction du nombre de Froude}
+ \end{center}
+\end{figure} 
+
+Avec cette modification, le code \texttt{REZO} est maintenue dans son champ d'application : celui du régime fluvial.
+Cela robustifie l'usage du code dans diverses situations. En contrepartie, les phénomènes rapides ne sont pas représentés. Ils sont remplacés par le calcul d'une ligne d'eau fictive qui n'a pas de réalité physique.
+Par conséquent, l'utilisateur doit garder à  l'esprit l'erreur commise par le code dans les zones d'écoulement naturellement torrentielles.
+

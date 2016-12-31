@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="selafin_rw" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="selafin_rw" author="S.E.Bourban" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions based on python scripts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <action xref="1"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_DoublePrecision_BigEndian.slf --core" code="exec"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_DoublePrecision_BigEndian.slf"
+      title="Scanning double precision big-endian file"
+   />
+   <action xref="2"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_DoublePrecision_LittleEndian.slf --core" code="exec"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_DoublePrecision_LittleEndian.slf"
+      title="Scanning double precision little endian file"
+   />
+   <action xref="3"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_SinglePrecision_BigEndian.slf --core" code="exec"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_SinglePrecision_BigEndian.slf"
+      title="Scanning single precision big endian file"
+   />
+   <action xref="4"
+      do="runSELAFIN.py scan r2d_bowl_vf_gb_SinglePrecision_LittleEndian.slf --core" code="exec"
+	   target="runSELAFIN.py" deprefs="r2d_bowl_vf_gb_SinglePrecision_LittleEndian.slf"
+      title="Scanning single precision little endian file"
+   />
+
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+ </validation>

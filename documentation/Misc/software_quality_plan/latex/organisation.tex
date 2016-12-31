@@ -1,0 +1,351 @@
+\chapter{Organisation of the \telemacsystem activity}
+
+\section{Structure of the \telemacsystem activity}
+
+\subsection{General Organisation}
+
+The \telemacsystem is managed by a Consortium composed of two main instances:
+\begin{itemize}
+\item The Steering Committee,
+\item The Technical and Scientific Committee.
+\end{itemize}
+
+The main functions of the Steering Committee are as follows:
+\begin{itemize}
+\item To seek advice from the Technical and Scientific Committee and so to
+decide on the main strategic technical, technological and scientific focuses of
+the Consortium for the medium-to-long term,
+\item To seek advice from the Technical and Scientific Committee and so to
+decide, choose and prioritise action items to be included in the Development
+Plan, whether the action items are proposed by the Members of the Consortium or
+by third Parties,
+\item To define modes of implementation of the Development Plan and modes of
+integration in the SOFTWARE of the deliverables of the Development Plan calling
+on resources either within the Members of the Consortium or on the Experts in
+Confidence,
+\item To make sure that the deliverables of the Development Plan are of desired
+quality, including but not limited to compatible source code, documentation,
+cases for benchmarking and technical approval,
+\item To identify, define and validate the strategy for extracting added value
+from the Prior Knowledge and promote the inclusion of Prior Knowledge in the
+SOFTWARE whether it resides within the Consortium or not,
+\item To ensure that the present Membership Agreement is performed properly
+and, if necessary, propose endorsements aimed at improving operation of the
+Membership Agreement,
+\item To grant/revoke voting rights to Member Representatives,
+\item To include/exclude a Member to/from the Consortium subject to the
+Duration and termination of a Member's membership.
+\end{itemize}
+
+The main functions of the Chairperson of the Steering Committee are as follows:
+\begin{itemize}
+\item To gather action items, feature wish lists and developments provided by
+Member Representatives and third Parties and to seek development ideas from
+other open source software communities,
+\item To convene and preside over the meetings of the Steering Committee,
+\item To formalise and report minutes of the meetings of the Steering
+Committee,
+\item To formalise and report the Development Plan.
+\end{itemize}
+
+The main functions of the Technical and Scientific Committee are as follows:
+\begin{itemize}
+\item To advise the Steering Committee in its scientific and technical focuses,
+\item To diagnose for the Steering Committee the admissibility of the
+developments supplied to the Steering Committee by the Members of the
+Consortium or by third Parties,
+\item To enlighten the Steering Committee on the prioritisation to be done and
+the benchmarking and technical approval plans to be implemented.
+\end{itemize}
+
+The main functions of the Chairperson of the Technical and Scientific Committee are as follows:
+\begin{itemize}
+\item To convene and preside over the meetings of the Representative Members of
+the Technical and Scientific Committee,
+\item To formalise and report minutes of the meetings of the Representative
+Members of the Technical and Scientific Committee and gather appropriate
+references, technical notes or scientific evidences supporting its conclusions,
+\item To synthesise answers to requests submitted via the Chairperson of the
+Steering Committee.
+\end{itemize}
+
+\section{Step in \telemacsystem activities}
+
+The \telemacsystem activity is divided in three main categories directing the life of a
+version of the software, from its creation to its exploitation and finally to
+its archiving (See Development Plan in Appendix \ref{devplan} for definition of those
+notions):
+\begin{itemize}
+\item \textbf{Development activity}: concerns any modification on the code, its
+documentation and the associated tools, either it is an evolution, a
+correction, a reorganisation.
+\item \textbf{Verification and validation activity}: every development must be
+verified by the verification and validation tests. A major version or
+production version (See Appendix \ref{devplan}) must run all the cases.
+\item \textbf{Exploitation activity}: concern the distribution, formation,
+support, maintenance of the different version and the removal of exploitation
+as well as the archiving.
+\end{itemize}
+
+\subsection{Responsibilities}
+
+The affectation for the different responsibilities are given in the document
+"Nominative list of the people of \telemacsystem" in Appendix \ref{peopleoftelma}.
+
+\section{Development activity}
+
+A development represent any intervention on the source code of \telemacsystem, its
+documentation or its tools (i.e. any element under the configuration, see the
+development plan in Appendix \ref{devplan}). The development on the code can be
+subdivided into different categories: 
+\begin{itemize}
+\item \textbf{Evolution maintenance}: The evolution maintenance changes the
+software to break some of the limitation he had (performance, strength,
+precision, adaptation to demands \ldots) or to add new functionalities to the
+software to answer new demands or requests.
+\item \textbf{Corrective maintenance}: The corrective maintenance removes a bug
+in the code or the documentation.
+\item \textbf{Adaptive maintenance}: The adaptive maintenance adapts the
+software when its environment changes (Operating system, compilers, new type of
+clusters\ldots) to insure the software is still running on that environment.
+\end{itemize}
+
+Those three categories imply an integration process in the development version
+of \telemacsystem.
+
+The main actors are:
+\begin{itemize}
+\item The development team from each member of the consortium.
+\item The developer from outside firms.
+\item The Open-source community, academic and industrial partners.
+\end{itemize}
+The process attached to those activities are described in the development plan
+in Appendix \ref{devplan}
+
+\subsection{Processes, tools and rules}
+
+The processes to follow for each development activities are described in the
+development plan in Appendix \ref{devplan}. Following those processes ensure
+traceability, non-regression, portability, verification, validation and
+re-usability of the functions developed and integrated in \telemacsystem.
+
+Those rules are based on the following principles:
+\begin{itemize}
+\item Keep the programming coherent with the existing one.
+\item Always base yourself on the latest version of the code (the development
+version) when creating new files.
+\item Communicate with the developer community on the evolution of the code structure.
+\end{itemize}
+
+Every new development must have a ticket on the \telemacsystem project manager CUE
+(\url{http://cue.opentelemac.org}) may it be a evolution, corrective or
+adaptive maintenance in order to organize and prioritize development made in
+\telemacsystem.
+
+All those development must be validated by the associated CH and the PM.
+
+\subsection{Evolution maintenance}
+
+The developments realised for any maintenance are under the responsibility of
+the developer who was given this assignment by the CHs.  They are handled by
+following the processes described in the development plan in Appendix
+\ref{devplan}.
+
+The final integration of the development of a maintenance is in
+charge of the associated CH and must follow the process described in the
+development plan in Appendix \ref{devplan}
+
+\section{Verification and validation activity}
+\label{vv}
+The verification and validation activity aims to verify the implementation on
+an algorithmic level or on the complete model using verification and validation
+test cases (even if a small part of the code was impacted as it can be for the
+corrective and adaptive maintenance). It is complementary (even a bit
+redundant) with the test realised during the implementation (See the
+development plan in Appendix \ref{devplan}). We distinguish them as follow:
+\begin{itemize}
+\item \textbf{Verification}: The verification aims to establish that the code
+solves efficiently the mathematical problem he is supposed to resolve (and that
+is described in the specification of the concern algorithm). The verification
+focuses on the quality of the implementation from a computer science and
+theoretical point of view. The answer to the verification process is a binary
+one: the code does or does not respond to the demands. To do that the
+verification is using an analytical solution of the model or a solution based
+on measurements with the possible addition of source terms to the equation. The
+process is then most of the time to compare the numerical solution with a
+reference solution on meshes with increasing mesh refinement. This verifies
+that the algorithm converges in mesh and gives the level of precision
+associated.
+\item \textbf{Validation}: The validation aims to see to what level the code is
+able to answer to a physical problem in an given application domain.  The
+validation focuses on the ability of the code to predict event from a physical
+point of view. The answer to this process is not binary. The evaluation is made
+through a comparison between a numerical solution and an experimental solution.
+We distinguish the validation with separated effects, which focuses on an
+isolated physical phenomenon and the full validation which focuses on an
+industrial problem (which can be simplify to get access to experimental
+measurements) composed of multiple physical phenomenon.
+\item \textbf{Qualification}: The qualification aims to establish the perimeter
+of action of the code by using heavily validated complexed cases. This action
+is not done by the developers, it is in charge of main users. The creation of a
+methodology note is part of the qualification process. The qualification can
+keep track of the performance of the code as well as the non-regression of the
+test cases.
+\end{itemize}
+
+\section{Release and distribution activity}
+
+\subsection{Release, reception, removal}
+
+Between the different versions of \telemacsystem, we distinguish the release of a major
+version or production version from the other versions (minor, development
+release).
+
+The different types of version are given in the development plan in Appendix
+\ref{devplan}
+
+The release of a new major version of \telemacsystem is decided by the chief of
+department hosting the \telemacsystem project. The list of what is concerned by this
+new version is written by the CHs in the version note. This note describes:
+\begin{itemize}
+\item The code elements that compose the software,
+\item The documentation,
+\item The code environment,
+\item The major modifications since version $n-1$.
+\end{itemize}
+
+This version note formalises the quality insurance of the major version.
+
+For the minor version release of \telemacsystem the creation of this version note is
+not necessary instead the information about the modifications in the code are
+written in the release note. Even though the minor version still has to follow
+the quality processes followed by a major version.
+
+The development version of \telemacsystem is not formally released. Never the less it
+is compiled and a few test cases are run nightly. The last development version
+is available on the \telemacsystem svn
+(\url{http://svn.opentelemac.org/svn/opentelemac/trunk}).
+
+The process for the removal of older stable version is described in the
+development plan in Appendix \ref{devplan}.
+
+\subsection{Distribution}
+
+\textbf{Distribution in EDF R\&D}
+
+The major and minor versions of \telemacsystem are installed on the NOE server on an
+area dedicated to the project. The DSPIT handles the backup of those data.
+
+The test cases are available (at least in reading) on the NOE server. The
+validation and verification is made on an external server based in
+H.R.Wallingford (UK). The environments on which the code was verified and
+validated are listed in the version note.
+
+\textbf{Distribution in EDF}
+
+The distribution outside of the R\&D is under the responsibility of the \telemacsystem
+Chain Handler. The environment guide written by the Chain Handl. which
+contains an help for the installation of the code.
+
+\textbf{Open source distribution}
+
+All the stable version of \telemacsystem, the development version and the tools are
+under open source license (GPL for \telemacsystem modules except for the \bief which is
+under LGPL) and are available on the website \url{http://www.opentelemac.org}
+which is the main access for all information about \telemacsystem.
+
+The open source version are tested with on Windows 7 and on the following Linux
+Dristribution: Opensuse, Fedora, Ubuntu, Debian. It is also tested using the
+NAG Compiler, the intel Compiler and the gnu compiler.
+
+\textbf{Protection}
+
+The software is protected by the label \tel since 05/02/96 with the number
+INPI 96/623 748.
+
+\subsection{Relation with the \telemacsystem users}
+
+The services handled by the \telemacsystem project and available to users are:
+\begin{itemize}
+\item A technical assistance: Forum, bug tracker, guides, documentation.
+\item Meeting with users: internally in EDF or externally (User Conference)
+\end{itemize}
+
+All those services are available on the \telemacsystem website
+(\url{http://www.opentelemac.org}). 
+The developers responding to the forum are not bound to respond to the forum,
+they do that on their available time.
+
+\textbf{Technical assistance}
+
+The organisation of the technical assistance is divided into two levels:
+\begin{itemize}
+\item \textbf{First level assistance}\\
+This assistance can concern either the installation or the usage of the
+software. This assistance can lead to a demand for an evolution of the code or
+the discovery of a bug. A ticket must then be created on the development
+project manager CUE (\url{http://cue.opentelemac.org}). The formalisation of
+those demands allows:
+\begin{itemize}
+\item A better repartition of resources by the project.
+\item The follow up by the user of the demand and allows him to interact with
+the developer handling the demand.
+\end{itemize}
+\item \textbf{Second level assistance}\\
+This assistance is made by the development team of the project \telemacsystem. It is an
+anticipated action aimed to create documentation and didactic software (user
+and developer documentation, online documentation, tutorials, FAQs...).
+\end{itemize}
+
+The assistance activity can lead to a ticket on the CUE that must follow the
+development rules established in the development plan in Appendix
+\ref{devplan}, if the problem is deemed worth it.
+
+The actors of this activity are:
+\begin{itemize}
+\item The users: They are telling us their needs, helping in the specification and
+the validation of the code. They can also respond to some questions on the
+forum.
+\item The people allowed to submit development demands more specifically the
+development team (See the development plan in Appendix \ref{devplan}): They answer to
+the forum, the CUE. They subcontract some of the work then they handle the
+dialog with the subcontract.
+\item The Kernel Handler: handles the CUE, its maintenance and its good use.
+\end{itemize}
+
+\textbf{Meeting with users}
+
+The meeting with user orbits around the following element:
+\begin{itemize}
+\item \textbf{Organisation of the \telemacsystem User Conference}: The organisation of
+the conference is explained in Appendix \ref{tuc1} and in the document
+describing the organisation of the \telemacsystem activity in Appendix
+\ref{fullorga}.
+\end{itemize}
+
+\subsection{Relation with partners}
+
+The partners (like for example the members of the \telemacsystem consortium) must
+follow the same rules for the development as described in the development plan
+in Appendix \ref{devplan}.
+
+\section{Control of sub-contract}
+
+Any developer from the development team can sub-contract some of his
+development like:
+\begin{itemize}
+\item The corrective, adaptive, evolution maintenance.
+\item Action on the documentation.
+\item Action of verification and validation.
+\end{itemize}
+
+In this case the process and the rules to follow are the same as an internal
+development described in the development plan in Appendix \ref{devplan}. The
+developer ordering this sub-contract is in charge of the follow-up of the work
+and its future maintenance.
+
+Other actions can be sub-contracted:
+\begin{itemize}
+\item Action on the website.
+\item Action of support.
+\end{itemize}

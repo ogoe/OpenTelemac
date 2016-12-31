@@ -1,0 +1,16 @@
+#
+#  TIME-DEPENDENT DISCHARGES AND TRACERS AT SOURCES 1 AND 2
+#
+#  T IS TIME
+#
+#  Q(1) IS DISCHARGE AT SOURCE 1
+#  Q(2) IS DISCHARGE AT SOURCE 2
+#
+#  TR(I,J) IS TRACER J AT SOURCE I
+#
+T       Q(1)  TR(1,1)  TR(1,2)  TR(1,3)  Q(2)  TR(2,1)  TR(2,2)  TR(2,3)
+s       m3/s  °C       °C       °C       m3/s  °C       °C       °C
+0.      1.    10.      10.      0.       1.    0.       10.      10.
+500.    1.    10.      10.      0.       1.    0.       10.      10.
+1200.   1.    10.      10.      0.       1.    0.       10.      10.
+

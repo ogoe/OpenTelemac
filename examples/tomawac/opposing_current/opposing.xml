@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="13" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="opposing" author="T.Fouquet" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_opposing.cas"
+       title="opposing scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="tomawac" target="tom_opposing.cas"
+       title="opposing scalar mode"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_opposing_opt1.cas"
+       title="opposing opt1 parallel mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="tomawac" target="tom_opposing_opt1.cas"
+       title="opposing opt1 parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="fom_opposing_cur.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-4])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="fom_opposing_cur.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-4])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-4])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:WACRES" />
+      <v11 vars=":map" target="fom_opposing_cur_opt1.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[1e-4])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="4:WACRES" />
+      <v14 vars=":map" target="fom_opposing_cur_opt1.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[1e-4])" />
+   </cast>
+   <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:WACRES" />
+      <v17 vars=":map" target="4:WACRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[1e-4])" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+   <deco xref="figure1d">
+      <look set="legend(loc='best'); title('WAVE HEIGHT 1D PROFILES')" />
+   </deco>
+   <deco xref="LIMIT" >
+      <look color="Aqua" label="Limit Method"/>
+   </deco>
+   <deco xref="WB">
+      <look color="red" label="WB Method"/>
+   </deco>
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="img/section1d" type="v-section" config="together" time="[-1]" size="(12;7)"  deco="figure1d">
+      <layer vars="WAVE HEIGHT HM0:line" extract="(0;1)(8;1)" target="1:WACRES" deco="LIMIT"/>
+      <layer vars="WAVE HEIGHT HM0:line" extract="(0;1)(8;1)" target="3:WACRES" deco="WB"/>
+   </plot1d>
+   <plot1d xref="img/section1d2" type="v-section" config="together"  size="(12;7)" >
+      <layer vars="BOTTOM:line" extract="(0;1)(8;1)" target="1:WACGEO" time="[0:-1]"/>
+   </plot1d>
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="BOTTOM:mesh" target="1:WACGEO" />
+   </plot2d>
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+</validation>

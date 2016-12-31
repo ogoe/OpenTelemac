@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="pluie" author="C-T.Pham" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="t3d_pluie.cas"
+       title="pluie parallel mode"
+   />
+<!-- No parallel run because of the use of a direct solver
+   -->
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="f3d_pluie.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.E-15])" />
+   </cast>
+
+<!-- Check solution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <cast xref="volume" config="oneofall" >
+      <v1 vars="Z:line" extract="(0;0)#[-1]" type="1d:history" time="[0:-1]" target="1:T3DRES" />
+      <python>
+def volume(a1):
+   # <!-- initial water depth: 10m | rain of 864000mm per day -->
+   return [],[],a1.support, 10.0 + a1.support*864000.0*1.e-3/86400.0
+      </python>
+      <v0 vars="volume(v1)" />
+      <return title="Correct increase in volume due to rain"
+         fail="max(np.ravel(v1.values)-np.ravel(v0.values)) > 1.e-6"
+         warn="max(np.ravel(v1.values)-np.ravel(v0.values)) > 1.e-12"
+         value="max(np.ravel(v1.values)-np.ravel(v0.values))" />
+   </cast>
+
+   <cast xref="momentum" config="oneofall" >
+      <v2 vars="velocity U:map" extract="[]#[-1]" target="1:T3DRES" type="3d:" time="[-1]"  />
+      <return title="Correct absence of current velocities"
+         fail="max(np.ravel(v2.values)) > 1.e-6"
+         warn="max(np.ravel(v2.values)) > 1.e-12"
+         value="max(np.ravel(v2.values))" />
+   </cast>
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      <layer vars="v0:line" target="volume:v0" deco="dots"/>
+   -->
+   <deco xref="dots">
+      <look color="red" marker='o' linestyle='None' />
+   </deco>
+   <plot1d xref="timeseries" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(0;0)#[-1]" target="1:T3DRES" />
+   </plot1d>
+   <plot1d xref="timeseries_all_layers" type="history" config="together" time="[0:-1]" size="(12;7)" >
+      <layer vars="Z:line" extract="(0;0)" target="1:T3DRES" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="elevation Z:mesh" target="1:T3DRES" />
+   </plot2d>
+   <plot2d xref="mesh_section" type="v-section" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="Z:wire" extract="(-4;0)(4;0)" target="1:T3DRES"  />
+   </plot2d>
+   <plot2d xref="velocity" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="velocity U:map" extract="[]#[-1]" target="1:T3DRES"  />
+   </plot2d>
+
+</validation>

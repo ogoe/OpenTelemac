@@ -1,0 +1,150 @@
+%-------------------------------------------------------------------------------
+\chapter{Including Code}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\section{Typing code in line}
+%-------------------------------------------------------------------------------
+
+When typying code in line you can either use the command \verb'\verb+...+' or
+the command \texttt{\textbackslash{}texttt\{...\}}. Note that in the first
+case, the ``+'' symbols can be replaced by other special symbols, eg. `` ' ''.
+Furthermore, in the second case you will need to use the latex commands for all
+the special symbols. Whenever more complicated code needs to be used, the
+\texttt{lstlistings} (or {\ttfamily lstlistings}) environment should be used.
+There are different languages that have been defined.
+
+%-------------------------------------------------------------------------------
+\section{Typing bash code}
+%-------------------------------------------------------------------------------
+
+It is possible to type bash code.
+
+\lstset{language=bash,
+        basicstyle=\scriptsize\ttfamily}
+
+\begin{lstlisting}[frame=trBL,escapechar=|]
+[bash:] cp /gpfs/home/HCT00020/dxp60/shared/Tutorials/04_TELEMAC_V7P0.pdf .
+\end{lstlisting}
+
+%-------------------------------------------------------------------------------
+\section{Typing steering file code}
+%-------------------------------------------------------------------------------
+
+For the Telemac-Mascaret System steering file a special language has been
+defined:
+
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------/
+/        OPTION FOR BED FLUXES
+/--------------------------------------------------/
+OPEN BOUNDARY CONDITIONS ON THE BED = YES
+PRESCRIBED FLOWRATES ON THE BED = <Enter Flowrates>
+\end{lstlisting}
+
+It is also possible to escape the listings command and add latex typsets:
+
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------/
+/        OPTION FOR BED FLUXES
+/--------------------------------------------------/
+OPEN BOUNDARY CONDITIONS ON THE BED = (*@\color{PantoneRed}YES@*)
+PRESCRIBED FLOWRATES ON THE BED = (*@\color{PantoneRed}<Enter Flowrates>@*)
+\end{lstlisting}
+
+
+And to reference to a keyword outside a listing use the following command
+\telkey{MY KEYWORD}.
+
+And to reference to a file use the following command \telfile{file.f}.
+
+%-------------------------------------------------------------------------------
+\section{Typing Fortran code}
+%-------------------------------------------------------------------------------
+
+The language for the Fortran code has also been defined:
+
+\lstset{language=Fortran,
+        basicstyle=\scriptsize\ttfamily}
+
+\begin{lstlisting}[frame=trBL]
+...
+!     BOUNDARY CONDITIONS ON VELOCITIES
+!     *********************************
+!
+!     BOTTOM
+!     ======
+!
+!     DEFAULT: IMPERMEABILITY AND LOG LAW
+!
+      IF(BC_BOTTOM.EQ.1) THEN
+!
+        DO IPOIN2 = 1,NPOIN2
+          LIUBOF%I(IPOIN2) = KLOG
+          LIVBOF%I(IPOIN2) = KLOG
+          LIWBOF%I(IPOIN2) = KLOG
+!         USEFUL ? SHOULD NOT BE USED ANYWAY
+          UBORF%R(IPOIN2)  = 0.D0
+          VBORF%R(IPOIN2)  = 0.D0
+          WBORF%R(IPOIN2)  = 0.D0
+          (*@\color{PantoneRed}<Add a condition to set LIQBED\%I(IPOIN2)>@*)
+        ENDDO
+!
+...
+\end{lstlisting}
+
+%-------------------------------------------------------------------------------
+\section{Typing Python code}
+%-------------------------------------------------------------------------------
+
+At the moment the python code environment has not been defined.
+
+%-------------------------------------------------------------------------------
+\section{Adding Blocks}
+%-------------------------------------------------------------------------------
+
+It is also possible to use blocks to emphasize certain aspects, for example:
+
+\begin{CommentBlock}{Comment:}
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+\end{CommentBlock}
+
+These blocks can be used to emphasize key words:
+
+\begin{CommentBlock}{Keywords:}
+Here are the new Keywords:
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------/
+/        OPTION FOR BED FLUXES
+/--------------------------------------------------/
+OPEN BOUNDARY CONDITIONS ON THE BED = (*@\color{PantoneRed}YES@*)
+PRESCRIBED FLOWRATES ON THE BED = (*@\color{PantoneRed}<Enter Flowrates>@*)
+\end{lstlisting}
+\end{CommentBlock}
+
+
+They can also be used to issue warnings:
+
+
+\begin{WarningBlock}{Warning:}
+Do not forget to add the Keywords:
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------/
+/        OPTION FOR BED FLUXES
+/--------------------------------------------------/
+OPEN BOUNDARY CONDITIONS ON THE BED = (*@\color{PantoneRed}YES@*)
+PRESCRIBED FLOWRATES ON THE BED = (*@\color{PantoneRed}<Enter Flowrates>@*)
+\end{lstlisting}
+\end{WarningBlock}

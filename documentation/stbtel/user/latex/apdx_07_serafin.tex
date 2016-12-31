@@ -1,0 +1,40 @@
+\chapter{Description of the Serafin file format}
+This is a binary file.
+The records are listed below:
+\begin{itemize}
+\item 1 record containing the title of the study (80 characters),
+\item 1 record containing the two integers NBV(1) and NBV(2) (number of
+linearly and quadratically discretized variables, NBV(2) with the value of 0),
+\item NBV(1)+NBV(2) records containing the names and units of each variable
+(over 32 characters),
+\item 1 record containing the integers table IPARAM (10 integers, of which only
+the first and last are currently being used),
+\item if IPARAM (10) = 1: a record containing the computation starting date,
+\item if IPARAM (8) = 0: the value corresponds to the number of boundary points (in parallel),
+\item if IPARAM (9) = 0: the value corresponds to the number of interface points (in parallel),
+\item if IPARAM (8) or IPARAM (9) = 0 :the table IPOBO below is replacing by
+the table KNOLG (initial global number of the points). All the others numbering
+are local at the sub-domain, IKLE also.
+\item 1 record containing the integers NELEM,NPOIN,NDP,1 (number of elements,
+number of points, number of points per element and the value 1),
+\item 1 record containing table IKLE (integer array of dimension (NDP,NELEM)
+which is the connectivity table. Attention: in TELEMAC-2D, the dimensions of
+this array are (NELEM,NDP)),
+\item 1 record containing table IPOBO (integer array of dimension NPOIN); the
+value of one element is 0 for an internal point, and gives the numbering of
+boundary points for the others,
+\item 1 record containing table X (real array of dimension NPOIN containing the
+abscissae of the points),
+\item 1 record containing table Y (real array of dimension NPOIN containing the
+ordinates of the points),
+\item Next, for each time step, the following are found:
+\begin{itemize}
+\item 1 record containing time T (real),
+\item NBV(1)+NBV(2) records containing the results tables for each variable at
+time T.
+\end{itemize}
+\end{itemize}
+
+
+
+

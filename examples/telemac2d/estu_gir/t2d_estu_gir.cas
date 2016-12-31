@@ -1,0 +1,117 @@
+/
+/  GIRONDE ESTUARY
+/
+/  Version 6.3
+/
+/  HP Linux Calibre 7 compilateur Nag 8 processeurs : 28 min 7 s  22/05/2012
+/
+/----------------------------------------------------------------------
+/                      FILE DEFINITION
+/----------------------------------------------------------------------
+/
+BOUNDARY CONDITIONS FILE                     : geo_estu_gir.cli
+GEOMETRY FILE                                : geo_estu_gir.slf
+FORTRAN FILE                                 : t2d_estu_gir.f
+RESULTS FILE                                 : t2d_estu_gir.res
+LIQUID BOUNDARIES FILE                       : qsl_ME.txt
+FORMATTED DATA FILE 1                        : maree.cli
+/
+/----------------------------------------------------------------------
+/                        GENERAL OPTIONS
+/----------------------------------------------------------------------
+/
+TITLE : 'GIRONDE ESTUARY'
+/
+VARIABLES FOR GRAPHIC PRINTOUTS             : 'H,U,V,B,T*,N'
+VARIABLES TO BE PRINTED                     : ''
+/
+TIME STEP                                   : 5
+NUMBER OF TIME STEPS                        : 30000
+GRAPHIC PRINTOUT PERIOD                     : 20
+LISTING PRINTOUT PERIOD                     : 60
+/
+/----------------------------------------------------------------------
+/                    BOUNDARY CONDITIONS
+/----------------------------------------------------------------------
+/
+PRESCRIBED FLOWRATES                        : 0.;500.;200.
+/
+/----------------------------------------------------------------------
+/                      INITIAL CONDITIONS
+/----------------------------------------------------------------------
+/
+INITIAL CONDITIONS                          :'CONSTANT ELEVATION'
+INITIAL ELEVATION                           : 1.9D0
+/
+/----------------------------------------------------------------------
+/                       NUMERICAL OPTIONS
+/----------------------------------------------------------------------
+/
+TIDAL FLATS                                 : YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS     : 1
+MASS-BALANCE                                : YES
+SOLVER					    : 1
+SOLVER OPTION				    : 5
+SOLVER ACCURACY                             : 1.E-12
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER     : 5000
+PRECONDITIONING			            : 2
+TYPE OF ADVECTION                           : 13;5;14
+SUPG OPTION                                 : 2;0;2;2
+DISCRETIZATIONS IN SPACE                    : 11; 11
+MATRIX STORAGE				    : 3
+IMPLICITATION FOR DEPTH                     : 0.6
+IMPLICITATION FOR VELOCITY                  : 0.6
+VELOCITY PROFILES                           : 4;4;4;4
+MASS-LUMPING ON H                           : 1
+MASS-LUMPING ON VELOCITY                    : 1
+TREATMENT OF THE LINEAR SYSTEM              : 2
+CONTINUITY CORRECTION                       : YES
+TREATMENT OF NEGATIVE DEPTHS                : 2
+FREE SURFACE GRADIENT COMPATIBILITY         : 0.
+TREATMENT OF FLUXES AT THE BOUNDARIES       : 1;1;1
+COMPATIBLE COMPUTATION OF FLUXES            : YES
+/
+/----------------------------------------------------------------------
+/                       TURBULENCE MODEL
+/----------------------------------------------------------------------
+/
+TURBULENCE MODEL                            : 1
+VELOCITY DIFFUSIVITY                        : 1.D0
+/
+/--------------------------------------------------------/
+/   FRICTION PARAMETERS                                  /
+/--------------------------------------------------------/
+LAW OF BOTTOM FRICTION                      : 3
+FRICTION COEFFICIENT                        : 60.
+/----------------------------------------------------------------------
+/                            OIL SPILL
+/----------------------------------------------------------------------
+OIL SPILL MODEL                             : YES
+OIL SPILL STEERING FILE                     : oilspill.txt
+NUMBER OF DROGUES                           : 961
+PRINTOUT PERIOD FOR DROGUES                 : 20
+DROGUES FILE                                : oil_displacement.dat
+/----------------------------------------------------------------------
+/                             TRACEUR
+/----------------------------------------------------------------------
+/
+NUMBER OF TRACERS                           : 4
+INITIAL VALUES OF TRACERS                   : 0.;0.;0.;0.
+COEFFICIENT FOR DIFFUSION OF TRACERS        : 0.000001
+SOLVER FOR DIFFUSION OF TRACERS             : 4
+MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS : 60000
+ACCURACY FOR DIFFUSION OF TRACERS           : 1.E-20
+IMPLICITATION COEFFICIENT OF TRACERS        : 1
+OPTION FOR THE DIFFUSION OF TRACERS         : 2
+MASS-LUMPING ON TRACERS                     : 1
+/
+/-----------------------------------------------------------------------
+/                               WIND
+/-----------------------------------------------------------------------
+/
+WIND                                         = YES
+OPTION FOR WIND                              = 1
+WIND VELOCITY ALONG X                        = -1.0D0
+WIND VELOCITY ALONG Y                        = 0.3D0
+/
+&FIN

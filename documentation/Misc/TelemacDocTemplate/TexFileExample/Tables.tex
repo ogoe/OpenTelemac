@@ -1,0 +1,233 @@
+%-------------------------------------------------------------------------------
+\chapter{Building tables}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\section{Building tables}
+%-------------------------------------------------------------------------------
+
+You should build tables following the same method as table
+\ref{tab:TableExample}. This means 2 lines on top, and two lines on the bottom,
+one line in between. You can then use bold fonts or italics within the table.
+
+\begin{table}[H]
+\begin{center}
+%
+\caption{Table with contents ranging over several cells horizontally and vertically.}%
+\label{tab:TableExample}
+%
+\begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}cccccc}
+\toprule
+\toprule
+%
+ & & \multicolumn{2}{c}{\textbf{First name ranging}}	&  \multicolumn{2}{c}{\textbf{Second name }}			\\
+ & & \multicolumn{2}{c}{\textbf{over 2 cells}}			&  \multicolumn{2}{c}{\textbf{ranging over 2 cells}}	\\
+ & & \textbf{A} & \textbf{B}							& \textbf{C} & \textbf{D}								\\
+\midrule
+%
+\multirow{3}{*}{\minitab[c]{2 Lines ranging \\ over 3 cells}}
+& O1	& 0.0	& 1.0	& 2.0	& 3.0	\\
+& O2	& 1.0	& 2.0	& 3.0	& 4.0	\\
+& O3	& 2.0	& 3.0	& 4.0	& 5.0	\\
+\midrule
+%
+\multirow{3}{*}{\minitab[c]{Other long \\ option}}
+& O1	& 0.0	& 1.0	& 2.0	& 3.0	\\
+& O2	& 1.0	& 2.0	& 3.0	& 4.0	\\
+& O3	& 2.0	& 3.0	& 4.0	& 5.0	\\
+%
+\bottomrule
+\bottomrule
+\end{tabular*}
+%
+\end{center}
+\end{table}
+
+Another example of tables an be found in \ref{tab:Example2}.
+
+\begin{table}[H]
+\begin{center}
+%
+\caption{Second example for tables.}
+\label{tab:Example2}
+%
+\begin{tabular*}{0.4\textwidth}{@{\extracolsep{\fill}}ccc}
+%
+\toprule
+\toprule
+%
+\textbf{AAAA} & \textbf{BBBB} & \textbf{CCCCC} \\
+%
+\midrule
+\multicolumn{3}{c}{\textit{Configuration 1}}\\
+\midrule
+e & 0 & 1 \\
+f & 2 & 3 \\
+g & 4 & 5 \\
+%
+\midrule
+\multicolumn{3}{c}{\textit{Configuration 2}}\\
+\midrule
+e & 6 & 7 \\
+f & 8 & 9 \\
+g & 10 & 11 \\
+%
+\bottomrule
+\bottomrule
+%
+\end{tabular*}
+%
+\end{center}
+\end{table}
+
+%-----------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Long tables}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Here is how you can create a long table that will be placed vertically (see
+table \ref{tab:LongTable}).
+
+\begin{landscape}
+%
+\begin{table}[H]
+\begin{center}
+%
+\caption{Example of a long table}
+\label{tab:LongTable}
+%
+\begin{tabular*}{0.9\linewidth}{@{\extracolsep{\fill}}cccccccc}
+
+%
+\toprule
+\toprule
+%
+ & \textbf{AAAA} & \textbf{BBBB} & \textbf{CCCC} & \textbf{DDDD} & \textbf{EEEE} & \textbf{FFFF} & \textbf{GGGG} \\
+%
+\midrule
+%
+AAAA & 1 & 0 & 0 & 1 & 0 & 0 & 1 \\
+BBBB & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+CCCC & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+DDDD & 1 & 1 & 0 & 0 & 1 & 1 & 0 \\
+EEEE & 0 & 0 & 1 & 1 & 0 & 0 & 1 \\
+FFFF & 1 & 0 & 0 & 1 & 0 & 1 & 0 \\
+GGGG & 0 & 1 & 0 & 1 & 0 & 0 & 1 \\
+%
+\bottomrule
+\bottomrule
+%
+\end{tabular*}
+%
+\end{center}
+\end{table}
+%
+\end{landscape}
+
+It is also possible to have a table ranging over several pages, see table
+\ref{tab:SeveralPgs}.
+
+\begin{longtable}{@{\extracolsep{\fill}}cccc}
+%%%%%%%%%%%%%%
+% First Header
+%%%%%%%%%%%%%%
+\caption{Table ranging over several pages}
+\label{tab:SeveralPgs}
+\\
+%
+\toprule
+\toprule
+%
+\multicolumn{4}{c}{\textbf{This part appears at the top of the table}}\\
+ & \textbf{AAAA} & \textbf{BBBB} & \textbf{CCCC} \\
+%
+\midrule
+%
+\endfirsthead
+%%%%%%%%%%%%%%
+% Other Headers
+%%%%%%%%%%%%%%
+\caption{(continued)}\\
+%
+\toprule
+\toprule
+%
+\multicolumn{4}{c}{\textbf{This part appears at the top of the table}}\\
+ & \textbf{AAAA} & \textbf{BBBB} & \textbf{CCCC} \\
+%
+\midrule
+%
+\endhead
+%%%%%%%%%%%%%%
+% Foot
+%%%%%%%%%%%%%%
+\bottomrule
+\bottomrule
+%
+\endfoot
+%%%%%%%%%%%%%%
+% Main table
+%%%%%%%%%%%%%%
+%
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+Lots of lines & 0 & 0 & 0 \\
+%
+\end{longtable}
+
+It is also possible to used the \verb+longtable+ environment with the
+\verb+lscape+ environment to have a vertical table range over several pages.

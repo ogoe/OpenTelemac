@@ -1,0 +1,82 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Telemac Documentation
+%  Example of the TelemacDoc class
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[Tomawac]{../../data/TelemacDoc} % Default font size and left-justified equations
+%\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+\include{header}
+ 
+\begin{document}
+
+\let\cleardoublepage\clearpage
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\title{Tomawac}
+\subtitle{User Manual}
+\version{7.2}
+\author{Thomas Awk}
+\date{\today}
+\maketitle
+\clearpage
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+\thispagestyle{empty}
+
+\TelemacCopyright{}
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+
+\pagestyle{empty} % No headers
+
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 1: Introduction
+%----------------------------------------------------------------------------------------
+
+\input{latex/introduction}
+\input{latex/representingwaves}
+\input{latex/hypotheses}
+\input{latex/mathmodelling}
+\input{latex/discretisation}
+\input{latex/numerical}
+\input{latex/io}
+\input{latex/controlling}
+%---------------------------------------------------------------------------
+% Bibliography
+%---------------------------------------------------------------------------
+\bibliographystyle{plainnat}
+
+\bibliography{biblio}
+\newpage 
+\appendix
+\chapter{appendix}
+\input{latex/outputvariable}
+\input{latex/usefulsub}
+\input{latex/desformat}
+\input{latex/filestrust}
+\input{latex/parall}
+
+
+\end{document}

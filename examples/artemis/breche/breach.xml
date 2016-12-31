@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="breach" author="HR Wallingford" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="line">
+      <look color="green" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       set='SOLVEUR=8'
+       code="artemis" target="art_breach.cas"
+       title="breach scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       set='SOLVEUR=9|PARALLEL PROCESSORS=4'
+       code="artemis" target="art_breach.cas"
+       title="breach scalar mode"
+   />
+
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:ARTRES" />
+      <v2 vars=":map" target="f2d_breach.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.e-12])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:ARTRES" />
+      <v5 vars=":map" target="f2d_breach.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.e-12])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:ARTRES" />
+      <v8 vars=":map" target="2:ARTRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.e-12])" />
+   </cast>
+   <cast xref="Experiment" type="1d" config="oneofall" size="(10;7)"  >
+      <j1 vars="H" target="experiment.csv" />
+   </cast>
+
+   <cast xref="Interpolation" config="oneofall" type="1d:v-section" >
+      <python>
+def interp(x1,y1,x2):
+    from scipy.interpolate import interp1d
+    f = interp1d (x1,y1,kind=3)
+    ExpInterp = f(x2[10:])
+    return [],[],x2[10:], ExpInterp
+      </python>
+	  <j2 vars="wave height:line" extract="(0;915)(1800;915)" target="1:ARTRES"  time="[0]" />
+	  <j3 vars="interp(j1.support,j1.values,j2.support)"/>
+   </cast>
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <deco xref="dots">
+      <look color="red" marker='o' linestyle='None' />
+   </deco>
+   <plot1d xref="Section" type="1d:v-section" config="oneofall" size="(10;7)" >
+	     <layer vars="j1:line" target="Experiment:j1" deco="dots"/>
+	     <layer vars="j3:line" target="Interpolation:j3" deco="line"/>
+      <layer vars="wave height:line" extract="(0;915)(1800;915)" target="1:ARTRES"  time="[0]" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="(10;10)">
+      <layer vars="bottom:mesh" target="1:ARTRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="WaveHeight" size="(10;10)">
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Free Surface" size="(10;10)">
+      <layer vars="free surface:map" target="1:ARTRES" config="oneofall" />
+   </plot2d>
+
+
+<!-- Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <cast xref="Validation" config="oneofall" type="1d:v-section" >
+      <return title="Artemis Breach cross section"
+         fail="max(np.ravel(j2.values)[10:]-np.ravel(j3.values)) > 0.4"
+         warn="max(np.ravel(j2.values)[10:]-np.ravel(j3.values)) > 0.04"
+         value="max(np.ravel(j2.values)[10:]-np.ravel(j3.values))" />
+   </cast>
+</validation>

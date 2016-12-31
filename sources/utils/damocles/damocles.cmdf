@@ -1,0 +1,31 @@
+[general]
+path: <root>|sources|utils|damocles
+module: damocles
+liborder: special damocles
+name: HOMERE_DAMOCLES
+
+[damocles]
+path: <root>|sources|utils|damocles
+files: longlu.f
+  declarations_damocles.f
+  preval.f
+  next.f
+  realu.f
+  precar.f
+  mycarlu.f
+  intlu.f
+  myaidelu.f
+  prev.f
+  majus.f
+  loglu.f
+  dico_data.f
+  homere_damocles.f
+
+[special]
+path: <root>|sources|utils|special
+files: declarations_special.f
+  plante.F
+  check_allocate.f
+  write_error.f
+  check_call.f
+  get_free_id.f

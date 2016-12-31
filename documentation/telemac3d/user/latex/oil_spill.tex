@@ -1,0 +1,248 @@
+\chapter{Oil spill modelling}
+
+During a hydrodynamic simulation, \telemac{3D} offers an opportunity to follow
+the paths of an oil spill which is released into the fluid from a discharge
+point.
+
+The oil spill model introduced here combines an Eulerian and a Lagrangian
+approach. The Lagrangian model simulates the transport of an oil spill near the
+surface. The oil slick is represented by a large set of hydrocarbon particles.
+Each particle is considered as a mixture of discrete non-interacting
+hydrocarbon components. Particles are therefore represented by component
+categories (soluble and unsoluble components), and the fate of each component
+is tracked separately. Each particle has associated to it, amongst other
+properties, an area, a mass, its barycentric coordinates within the element it
+is located in, and the physico-chemical properties of each of its components.
+The model accounts for the main processes that act on the spilled oil:
+advection, effect of wind, diffusion, evaporation and dissolution. Though
+generally considered to be a minor process, dissolution is important from the
+point of view of toxicity. To simulate soluble oil component dissolution in
+water, an Eulerian advection-diffusion model is used. The fraction of each
+dissolved component is represented by a tracer whose mass directly depends on
+the dissolved mass of oil particles. The hydrodynamic data required for either
+Lagrangian and Eulerian transport approach are provided by the \telemac{3D}
+hydrodynamic model. The oil spill theoretical background is explained in
+\cite{JolyGoeury2013}.
+
+The result of the oil spill modelling is provided in the form of a TECPLOT
+formatted file which contains the various positions of the oil particles and a
+\telemac{3D} result file (SERAFIN format) storing the oil dissolved components in
+water column during the computation.
+
+
+\section{Input files}
+
+In addition to the minimum set of input files necessary to run a \telemac{3D}
+case, an oil spill computation also needs an oil spill steering file.
+Furthermore, to run an oil spill model the subroutine \telfile{OIL\_FLOT} needs
+to be modified in the FORTRAN file.
+
+
+\section{Steering file}
+
+In addition to the necessary information for running the \telemac{3D}
+hydrodynamic model the following essential information must be specified in the
+\telemac{3D} steering file to run an oil spill propagation model:
+
+\begin{itemize}
+\item The use of the oil spill model must be declared: \telkey{OIL SPILL MODEL}
+(= YES, default = NO),
+
+\item The name of the oil spill steering file which contains the oil
+characteristics: \telkey{OIL SPILL STEERING FILE} (\telkey{= name chosen by the
+user}),
+
+\item The number of oil releases during oil spill: \telkey{NUMBER OF
+DROGUES} (= number chosen by the user),
+
+\item The frequency of the drogues printout period: \telkey{PRINTOUT PERIOD FOR
+DROGUES} (= number chosen by the user),
+
+\item The name of the tecplot oil file containing the oil displacement:
+\telkey{DROGUES FILE} (= name chosen by the user, default = 1).
+\end{itemize}
+
+With the oil spill module, it is possible to take into account the transport of
+soluble oil components in water (whose presence has no effect on the
+hydrodynamics). These may or may not be diffused within the flow but their
+characteristics have to be defined in the \telkey{OIL SPILL STEERING FILE}. If
+these components are allowed to diffuse in the flow, they are then treated with
+the tracer transport computations of \telemac{3D}. This implies that the
+\telkey{NUMBER OF TRACERS} must be set to the number of the oil soluble
+components. In addition the TRACER keywords, described in chapter 7, can be
+specified.
+
+
+\section{Oil spill steering file}
+
+As seen previously, the \telkey{OIL SPILL STEERING FILE} name is given by the
+user in the TELEMAC steering file. This file contains all the informations for
+an oil spill calculations based on the composition considered by the user,
+i.e.:
+
+\begin{itemize}
+\item The number of unsoluble components in oil,
+
+\item The parameters of these components such as the mass fraction (\%) and
+boiling point of each component (K),
+
+\item The number of soluble components in oil,
+
+\item The parameters of these components such as the mass fraction (\%),
+boiling point of each component (K), solubility (kg.m${}^{-3}$) and the mass
+transfer coefficient of the dissolution and volatilization phenomena
+(m.s${}^{-1}$)
+
+\item The oil density,
+
+\item The oil viscosity (m${}^{2}$.s${}^{-1}$),
+
+\item The volume of the spilled oil (m${}^{3}$),
+
+\item The water surface temperature (K),
+
+\item The spreading model chosen by the user:
+
+\begin{itemize}
+\item Fay's model,
+
+\item Migr'Hycar model,
+
+\item Constant area model.
+\end{itemize}
+\end{itemize}
+
+\textbf{WARNING:}
+
+\begin{WarningBlock}{Warning:}
+\begin{itemize}
+\item The parameters of soluble (or unsoluble) components need to be informed
+only if the number of these components is not null
+
+\item If the sum of all mass fraction components is not equal to 1, the run is
+interrupted and the following error message is displayed:
+\end{itemize}
+
+\begin{lstlisting}[language=TelemacCas]
+WARNING::THE SUM OF EACH COMPONENT MASS FRACTION IS NOT EQUAL TO 1.
+PLEASE, MODIFY THE INPUT STEERING FILE
+\end{lstlisting}
+\end{WarningBlock}
+
+An example of the oil spill steering file is given.
+
+\begin{lstlisting}[language=bash]
+NUMBER OF UNSOLUBLE COMPONENTS IN OIL
+6
+UNSOLUBLE COMPONENTS PARAMETERS (FRAC MASS, TEB)
+5.1D-02       ,402.32D0
+9.2D-02       ,428.37D0
+3.16D-01      ,458.37D0
+3.5156D-01    ,503.37D0
+8.5D-02       ,543.37D0
+9.4D-02       ,628.37D0
+NUMBER OF SOLUBLE COMPONENTS IN OIL
+4
+SOLUBLE COMPONENTS PARAMETERS (FRAC MASS, TEB, SOL, KDISS, KVOL)
+1.D-02   ,497.05D0,  0.018D0   , 1.25D-05 ,5.0D-05
+3.2D-02  ,551.52D0,  0.00176D0 , 5.63D-06 ,1.51D-05
+1.D-04   ,674.68D0,  2.0D-04   , 2.D-06   ,4.085D-07
+2.D-05   ,728.15D0,  1.33D-06  , 1.33D-06 ,1.20D-07
+OIL DENSITY
+830.D0
+OIL VISCOSITY
+4.2D-06
+OIL SPILL VOLUME
+2.02D-05
+WATER TEMPERATURE
+292.05D0
+SPREADING MODEL (1=FAY'S MODEL, 2=MIGR'HYCAR MODEL, 3=CONSTANT AREA)
+2
+\end{lstlisting}
+
+If in the oil spill steering file, the SPREADING MODEL is set to 3, two lines
+must be added to the previous example:
+
+\begin{lstlisting}[language=bash]
+CONSTANT AREA VALUE CHOSEN BY THE USER FOR EACH OIL PARTICLE
+1 (example if the user wants area particle equal to 1 m2)
+\end{lstlisting}
+
+
+\section{The OIL\_FLOT subroutine}
+
+After inserting the \telfile{OIL\_FLOT} subroutine in the FORTRAN file, it must
+be modified it in order to indicate the release time step, together with the
+coordinates of the release point. If the release point coordinates are outside
+the domain, the run is interrupted and an error message is displayed. In
+addition, if a particle leaves the domain during the simulation, it is of
+course no longer monitored but its previous track remains in the results file
+for consultation.
+
+An example of modifications in the \telfile{OIL\_FLOT} subroutine is given.
+
+The release time step in the first condition statement and the coordinates of
+the release point must be changed:
+
+\begin{lstlisting}[language=TelFortran]
+...
+IF(LT.EQ.10000)THEN
+  NUM_GLO=0
+  NUM_MAX=0
+  NUM_LOC=0
+  COORD_X=0.D0
+  COORD_Y=0.D0
+  NUM_MAX=INT(SQRT(REAL(NFLOT_MAX)))
+  DO K=1,NUM_MAX
+    DO J=1,NUM_MAX
+      COORD_X=336000.D0+REAL(J)
+      COORD_Y=371000.D0+REAL(K)
+      NUM_GLO=NUM_GLO+1
+      NFLOT_OIL=0
+      CALL ADD_PARTICLEADD_PARTICLE(COORD_X,COORD_Y,0.D0,NUM_GLO,NFLOT_OIL,
+&                       1,XFLOTXFLOT,YFLOTYFLOT,YFLOT,TAGFLOTAGFLO,
+&                       SHPFLO,SHPFLO,ELTFLO,ELTFLO,MESH,1,
+&                       0.D0,0.D0,0.D0,0.D0,0,0)
+...
+    END DO
+  END DO
+END IF
+\end{lstlisting}
+
+
+\section{Output files}
+
+During an oil spill computation, the \telemac{3D} software produces at least two
+output files:
+
+\begin{itemize}
+\item The \telkey{3D RESULT FILE},
+
+\item The output \telkey{DROGUES FILE}.
+\end{itemize}
+
+
+\subsection{The 3d result file}
+
+This is the file in which \telemac{3D} stores information during the computation.
+It is normally in SERAFIN format. First of all, it contains information on the
+mesh geometry, then the names of the stored variables. It then contains the
+time for each time step and the values of the different variables for all mesh
+points. For complementary information on the \telkey{3D RESULT FILE}, the
+reader may refer to \ref{sec:3dres}.
+
+
+\subsection{The output drogues file}
+
+This is an ASCII file created by \telemac{3D} during the computation. It
+stores drogue positions in TECPLOT format. To visualize the drogue positions
+with Tecplot software, the user must:
+
+\begin{itemize}
+\item Use the File$>$Load Data File(s) command to load the \telkey{3D RESULT
+FILE}
+
+\item Use the File$>$Load Data File(s) command to load the Tecplot drogue file
+\end{itemize}
+
+See section \ref{sec:drogues} for more information as it is the same file as for drogues.

@@ -1,0 +1,185 @@
+!                    **********************************
+                     SUBROUTINE METEO_FROM_BINARY_FILE
+!                    **********************************
+     &(PATMOS,WINDX,WINDY,AT,NPOIN,VENT,ATMOS,
+     & ATMFILE,FILES,LISTIN,WATER_QUALITY,PLUIE,OPTWIND,WIND_SPD)
+!
+!
+!***********************************************************************
+! TELEMAC2D   V7P2
+!***********************************************************************
+!
+!brief    READS ATMOSPHERIC DATA FROM A BINARY FILE
+!
+!warning  IF AN ASCII ATMOSPHERIC DATA FILE IS ALSO GIVEN,
+!         THE VARIABLES PRESENT IN THE BINARY FILE WILL
+!         OVERWRITE THOSE OF THE ASCII FILE
+!         THIS ROUTINE CAN BE ADAPTED BY THE USERS TO ADD MORE VARIABLES
+!
+!history  A. LEROY (LNHE)
+!+        01/07/2016
+!+        V7P2
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| TIME
+!| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
+!| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
+!| LISTIN         |-->| IF YES, PRINTS INFORMATION
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| PATMOS         |<--| ATMOSPHERIC PRESSURE
+!| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
+!| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
+!| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
+!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
+!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_WAQTEL,ONLY: PVAP,RAY3,NWIND,NEBU,TAIR,
+     &                              HREL,RAINFALL,
+     &                              EVAPORATION,ATMOSEXCH
+!
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: NPOIN,ATMFILE
+      LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
+      DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AT
+      TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
+      LOGICAL, INTENT(IN)             :: WATER_QUALITY
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: PLUIE
+      INTEGER, INTENT(IN)             :: OPTWIND
+      DOUBLE PRECISION, INTENT(IN)    :: WIND_SPD(2)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=16) U_NAME,V_NAME,P_NAME,T_NAME
+      LOGICAL READ_BIN_WU,READ_BIN_WV,READ_BIN_AIRT, READ_BIN_AIRP
+!
+!-----------------------------------------------------------------------
+!
+!     SET THE METEO VARIABLES' NAMES - TO BE MODIFIED BY THE USER
+!     IF NECESSARY
+!
+      CALL METEO_SET_VAR_NAMES(U_NAME,V_NAME,P_NAME,T_NAME)
+!
+!-----------------------------------------------------------------------
+!
+!     SET THE WIND VELOCITY ALONG X AND Y
+!
+      IF (OPTWIND.EQ.1) THEN
+!       SET THE WIND VELOCITY FROM THE CAS FILE
+        CALL OV( 'X=C     ' ,WINDX,WINDX,WINDX, WIND_SPD(1), NPOIN )
+        CALL OV( 'X=C     ' ,WINDY,WINDY,WINDY, WIND_SPD(2), NPOIN )
+        IF(LNG.EQ.1.AND.LISTIN) THEN
+          WRITE(LU,*) "METEO : OPTION 1 POUR LE VENT, VITESSE DU"
+          WRITE(LU,*) "VENT CONSTANTE FIXEE DANS LE FICHIER CAS"
+        ENDIF
+        IF(LNG.EQ.2.AND.LISTIN) THEN
+          WRITE(LU,*) "METEO: OPTION 1 FOR THE WIND, CONSTANT"
+          WRITE(LU,*) "WIND VELOCITY SET IN THE CAS FILE"
+        ENDIF
+      ELSE IF(OPTWIND.EQ.2) THEN
+!       SET THE WIND VELOCITY FROM THE ASCII FILE
+        IF(LNG.EQ.1.AND.LISTIN) THEN
+          WRITE(LU,*) "METEO : OPTION 2 POUR LE VENT, LA VITESSE"
+          WRITE(LU,*) "DU VENT DOIT ETRE DONNE DANS UN FICHIER"
+          WRITE(LU,*) "ATMOSPHERIQUE AU FORMAT ASCII"
+        ENDIF
+        IF(LNG.EQ.2.AND.LISTIN) THEN
+          WRITE(LU,*) "METEO: OPTION 2 FOR THE WIND, THE WIND VELOCITY"
+          WRITE(LU,*) "MUST BE GIVEN IN AN ASCII ATMOSPHERIC"
+          WRITE(LU,*) "DATA FILE"
+        ENDIF
+      ELSEIF(OPTWIND.EQ.3) THEN
+!       SET THE WIND VELOCITY FROM THE ATMOSPHERIC BINARY FILE
+        CALL READ_BIN_2D
+     &     (WINDX,U_NAME,AT,FILES(ATMFILE)%LU,
+     &      FILES(ATMFILE)%FMT,NPOIN,LISTIN,READ_BIN_WU)
+        CALL READ_BIN_2D
+     &     (WINDY,V_NAME,AT,FILES(ATMFILE)%LU,
+     &      FILES(ATMFILE)%FMT,NPOIN,LISTIN,READ_BIN_WV)
+        IF(.NOT.READ_BIN_WU.OR..NOT.READ_BIN_WV) THEN
+          IF(LNG.EQ.1.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO : OPTION 3 POUR LE VENT,"
+            WRITE(LU,*) "VITESSE DU VENT U OU V MANQUANTE DANS LE"
+            WRITE(LU,*) "FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES"
+            WRITE(LU,*) "LE NOM DE LA VARIABLE N''EST PEUT ETRE"
+            WRITE(LU,*) "PAS RECONNU. IL PEUT ETRE MODIFIE DANS"
+            WRITE(LU,*) "LA SUBROUTINE METEO_SET_VAR_NAMES DE"
+            WRITE(LU,*) "TELEMAC2D"
+          ENDIF
+          IF(LNG.EQ.2.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO: OPTION 3 FOR THE WIND,"
+            WRITE(LU,*) "WIND VELOCITY U OR V IS MISSING"
+            WRITE(LU,*) "IN THE BINARY ATMOSPHERIC DATA FILE"
+            WRITE(LU,*) "THE VARIABLE NAME MAY NOT BE RECOGNIZED"
+            WRITE(LU,*) "IT CAN BE SET IN THE SUBROUTINE"
+            WRITE(LU,*) "METEO_SET_VAR_NAMES OF TELEMAC2D"
+          ENDIF
+        ENDIF
+      ENDIF
+      IF(ATMOS.OR.ATMOSEXCH.GT.0) THEN
+        ! GET THE ATMOSPHERIC PRESSURE FROM THE
+        ! BINARY ATMOSPHERIC FILE
+        CALL READ_BIN_2D
+     &  (PATMOS,P_NAME,AT,FILES(ATMFILE)%LU,
+     &   FILES(ATMFILE)%FMT,NPOIN,LISTIN,READ_BIN_AIRP)
+        IF(.NOT.READ_BIN_AIRP) THEN
+          IF(LNG.EQ.1.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO : "
+            WRITE(LU,*) "PRESSION DE L AIR MANQUANTE"
+            WRITE(LU,*) "DANS LE FICHIER DE DONNEES"
+            WRITE(LU,*) "ATMOSPHERIQUES"
+            WRITE(LU,*) "LE NOM DE LA VARIABLE N''EST PEUT ETRE"
+            WRITE(LU,*) "PAS RECONNU. IL PEUT ETRE MODIFIE DANS"
+            WRITE(LU,*) "LA SUBROUTINE METEO_SET_VAR_NAMES DE"
+            WRITE(LU,*) "TELEMAC2D"
+          ENDIF
+          IF(LNG.EQ.2.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO: "
+            WRITE(LU,*) "AIR PRESSURE IS MISSING"
+            WRITE(LU,*) "IN THE BINARY ATMOSPHERIC DATA FILE"
+            WRITE(LU,*) "THE VARIABLE NAME MAY NOT BE RECOGNIZED"
+            WRITE(LU,*) "IT CAN BE SET IN THE SUBROUTINE"
+            WRITE(LU,*) "METEO_SET_VAR_NAMES OF TELEMAC2D"
+          ENDIF
+        ENDIF
+      ENDIF
+      IF(ATMOSEXCH.GT.0) THEN
+        ! GET THE AIR TEMPERATURE FROM THE
+        ! BINARY ATMOSPHERIC FILE
+        CALL READ_BIN_2D
+     &  (TAIR%R,T_NAME,AT,FILES(ATMFILE)%LU,
+     &   FILES(ATMFILE)%FMT,NPOIN,LISTIN,READ_BIN_AIRT)
+        IF(.NOT.READ_BIN_AIRT) THEN
+          IF(LNG.EQ.1.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO : "
+            WRITE(LU,*) "TEMPERATURE DE L AIR MANQUANTE"
+            WRITE(LU,*) "DANS LE FICHIER DE DONNEES"
+            WRITE(LU,*) "ATMOSPHERIQUES"
+            WRITE(LU,*) "LE NOM DE LA VARIABLE N''EST PEUT ETRE"
+            WRITE(LU,*) "PAS RECONNU. IL PEUT ETRE MODIFIE DANS"
+            WRITE(LU,*) "LA SUBROUTINE METEO_SET_VAR_NAMES DE"
+            WRITE(LU,*) "TELEMAC2D"
+          ENDIF
+          IF(LNG.EQ.2.AND.LISTIN) THEN
+            WRITE(LU,*) "METEO: "
+            WRITE(LU,*) "AIR TEMPERATURE IS MISSING"
+            WRITE(LU,*) "IN THE BINARY ATMOSPHERIC DATA FILE"
+            WRITE(LU,*) "THE VARIABLE NAME MAY NOT BE RECOGNIZED"
+            WRITE(LU,*) "IT CAN BE SET IN THE SUBROUTINE"
+            WRITE(LU,*) "METEO_SET_VAR_NAMES OF TELEMAC2D"
+          ENDIF
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END

@@ -1,0 +1,32 @@
+
+
+\chapter{ PARALLELISM}
+\label{ch:paral}
+ \telemac{2d} is generally run on single-processor computers of the workstation type. When simulations call for high-capacity computers and in the absence of a super-computer, it may be useful to run the computations on multi-processor (or multi-core) computers or clusters of workstations. A parallel version of \telemac{2d} is available for use with this type of computer architecture.
+
+ The parallel version of \telemac{2d} uses the MPI library, which must therefore be installed beforehand. The interface between \telemac{2d} and the MPI library is the parallel library common to all modules of the TELEMAC system (in folder /sources/utils/parallel).
+
+ Informations on the use of the parallel version is given in the system installation documents.
+
+ Initially, the user must specify the number of processors used by means of the keyword \textit{PARALLEL PROCESSORS}. The keyword may have the following values:
+
+\begin{enumerate}
+\item [\nonumber] 0: Use of the classical version of \telemac{2d}
+
+\item [\nonumber] 1: Use of the parallel version of \telemac{2d} with one processor
+
+\item [\nonumber] N: Use of the parallel version of \telemac{2d} with the specified number of processors, here N (it can work also just for testing on a single processor!).
+\end{enumerate}
+
+ Domain decomposition and results file combination operations are now automatic and handled completely by the start-up procedure.
+
+ Parallel machines are eventually configured by a single file (see system installation document).
+
+ Note that for python version of TELEMAC, number of processors is given as an argument for the launching command and not as a hard-coded keyword in the steering file (e.g. telemac2d.py --ncsize=4 cas.txt will run \telemac{2d} on 4 processors).
+
+
+
+
+
+
+

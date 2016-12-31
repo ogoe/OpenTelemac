@@ -1,0 +1,180 @@
+% case name
+\chapter{V}
+%
+% - Purpose & Description:
+%     These first two parts give reader short details about the test case,
+%     the physical phenomena involved, the geometry and specify how the numerical solution will be validated
+%
+\section{Purpose}
+%
+The purpose of this test is to verify the validity of the diffusion step
+and the proper treatment of the buoyancy terms.
+Moreover, this test demonstrates the ability of \telemac{3d} to model
+a vertical stratification induced by an active tracer distribution
+on a non-horizontal topography.
+A closed rectangular channel is initialised with such vertical tracer
+distribution without motion.
+This stratification is stable and the distribution of the tracer should
+not evolve in time neither generate any flow.
+The test case is treated with both prism and tetrahedron elements.
+%
+\section{Description}
+%
+The considered domain is a horizontal V-shaped channel.
+The horizontal mesh is composed of triangular cells nearly homogenous in
+size.
+The test case is first solved using a vertical mesh of prismatic cells
+fitting the topography, and in a second time using tetrahedron elements.
+The horizontal and vertical meshes are presented on figure 3.2.1.
+The active tracer is the temperature with a corresponding value of the
+thermal expansion coefficient $\beta = 2.10^{-4}$ K$^{-1}$
+(see the User's Manual).
+%
+% - Reference:
+%     This part gives the reference solution we are comparing to and
+%     explicits the analytical solution when available;
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+%
+\subsection{Reference}
+%
+
+%
+% - Geometry and Mesh:
+%     This part describes the mesh used in the computation
+%
+%
+\subsection{Geometry and Mesh}
+%
+\subsubsection{Bathymetry}
+%
+Bottom at -13~m in the centre of the channel\\
+Bottom at 0~m on the side of the channel banks\\
+Linearly interpolated depth between the centre and the banks\\
+The bathymetry can be observed on figure 3.2.1
+(with an expansion factor on the vertical equal to 10)
+%
+\subsubsection{Geometry}
+%
+Channel length = 500~m\\
+Channel width = 100~m
+%
+\subsubsection{Mesh}
+%
+648 triangular elements\\
+373 nodes\\
+11 planes regularly spaced in the vertical direction\\
+Prism or tetrahedron elements
+%
+% - Physical parameters:
+%     This part specifies the physical parameters
+%
+%
+\subsection{Physical parameters}
+%
+Constant horizontal viscosity 1~m$^2$/s, and tracer diffusion 1~m$^2$/s\\
+Temperature density law specifying an expansion coefficient
+$\beta = 2.10^{-4}$~K$^{-1}$\\
+No vertical viscosity\\
+Coriolis: no\\
+Wind: no
+%
+% Experimental results (if needed)
+%\subsection{Experimental results}
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+% Section for computational options
+%\section{Computational options}
+%
+% - Initial and boundary conditions:
+%     This part details both initial and boundary conditions used to simulate the case
+%
+%
+\subsection{Initial and Boundary Conditions}
+%
+\subsubsection{Initial conditions}
+%
+No velocity\\
+Constant initial water level at $z = 0.1$~m\\
+Tracer initialised as $T = 10 + z/1.3~^\circ$C
+%
+\subsubsection{Boundary conditions}
+%
+Channel banks: slip solid boundary\\
+Bottom: slip solid boundary\\
+Tracer: no flux through the bottom and the free surface
+%
+\subsection{General parameters}
+%
+Time step: 0.1~s\\
+Simulation duration: 1~s
+%
+% - Numerical parameters:
+%     This part is used to specify the numerical parameters used
+%     (adaptive time step, mass-lumping when necessary...)
+%
+%
+\subsection{Numerical parameters}
+%
+Non-hydrostatic computation\\
+Advection for velocities: Explicit Leo Postma scheme\\
+Advection for tracer: Explicit Leo Postma scheme
+%
+\subsection{Comments}
+%
+% - Results:
+%     We comment in this part the numerical results against the reference ones,
+%     giving understanding keys and making assumptions when necessary.
+%
+%
+\section{Results}
+%
+During the simulation, the vertical profile of tracer concentration is
+stable for both computations (see figure 3.2.2 and 3.2.4).
+However, at the end of the computation with prism elements,
+some negligible differences on the temperature field (maximum value
+for example, up to 0.01 \%) are observed.
+Figure 3.2.3 shows disturbance of velocity field negligible
+(of the order of 10$^{-7}$) for the prism elements computation.
+This velocity field is connected to the difficulty to build the
+diffusion matrix using prismatic elements.
+The computation with tetrahedron elements (see figure 3.2.5)
+shows some very negligible (of the order of 10$^{-16}$) disturbance
+of the velocity field.
+In any case, the situation can be considered as globally stable.
+The test is done essentially to verify the horizontal diffusion terms,
+which are estimated in the transformed $\sigma$-mesh (buoyancy terms).
+In this case, the tracer does not induce any flow.
+The final mass balance of computation using prism elements exposes a
+very good mass conservation (the total mass loss is less than
+0.5 10$^{-6}$).
+For the computation using tetrahedron elements, the conservation of
+mass and temperature is perfect.
+%
+\section{Conclusion}
+%
+The diffusion equation of tracers is properly solved by \telemac{3d}.
+The buoyancy terms are properly taken into account for a linear vertical
+ tracer distribution.
+Unlike tetrahedron elements computation, using prism elements generates
+a small disturbance of the velocity field and some negligible
+differences on the temperature field.
+Nevertheless, the generated disturbance is small with respect to the
+vertical gradient of the tracer and is principally due to machine
+precision and diffusion matrix treatment.
+The tracer is still stable at the end of the simulation.
+%
+% Here is an example of how to include the graph generated by validateTELEMAC.py
+% They should be in test_case/img
+%\begin{figure} [!h]
+%\centering
+%\includegraphics[scale=0.3]{../img/mygraph.png}
+% \caption{mycaption}\label{mylabel}
+%\end{figure}
+%
+% bibliography
+%\section{Reference}

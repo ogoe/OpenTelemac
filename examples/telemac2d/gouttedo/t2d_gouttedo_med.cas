@@ -1,0 +1,77 @@
+/
+/ HP C3700 : 11 s compilateur HP  5.5 18/04/2007
+/
+/ HP C3700 compilateur HP      :  8 s  5.8 13/11/2007
+/ HP C3700 compilateur Nag     : 20 s  5.8 20/12/2007
+/ Dell Linux compilateur pgi   :  5 s  5.8 19/12/2007
+/ Dell Linux compilateur Intel :  9 s  5.8 18/01/2008
+/
+/ HP C3700 compilateur HP      :  8 s  5.9 15/10/2008
+/ HP C3700 compilateur Nag     : 19 s  5.9 16/10/2008
+/ Dell Linux compilateur pgi   :  5 s  5.9 15/10/2008
+/
+/ HP C3700 compilateur HP      :  9 s  6.0 24/11/2009
+/ HP C3700 compilateur Nag     : 19 s  6.0 26/11/2009
+/ Dell Linux compilateur Intel :  4 s  6.0 26/11/2009
+/
+/ Version 6.2
+/
+/ HP C3700 compilateur HP                         :  8 s  04/05/2012
+/ HP Z600 Linux Calibre 7  compilateur NAG 5.3    :  2 s  30/07/2012 (1 processeur)
+/ HP Z600 Linux Calibre 7  compilateur NAG 5.3    :  1 s  30/07/2012 (8 processeurs)
+/
+EQUATIONS : 'SAINT-VENANT EF'
+/DUREE DU CALCUL : 4.  PAS DE TEMPS VARIABLE : YES
+/NOMBRE DE COURANT SOUHAITE : 0.5
+/PAS DE TEMPS = 1.
+/
+/
+FORTRAN FILE                       : t2d_gouttedo.f
+BOUNDARY CONDITIONS FILE           : geo_gouttedo_med.cli
+GEOMETRY FILE                      : geo_gouttedo.med
+FORMAT DU FICHIER DE GEOMETRIE     : MED
+RESULTS FILE                       : r2d_gouttedo_med.slf
+RESULTS FILE FORMAT                : SERAFIN
+/
+DEBUGGER                           : 0
+/
+/----------------------------------------------------------------------/
+/                     OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITRE = 'TELEMAC 2D                : GOUTTE D''EAU DANS UN BASSIN$'
+COMPUTATION CONTINUED              : NO
+VARIABLES FOR GRAPHIC PRINTOUTS    : 'U,V,H,T'
+VARIABLES TO BE PRINTED            : ''
+TIME-STEP = 0.04
+NUMBER TIME-STEP = 100
+GRAPHIC PRINTOUT PERIOD            : 5
+LISTING PRINTOUT PERIOD            = 10
+LAW OF BOTTOM FRICTION             : 3
+FRICTION COEFFICIENT = 40.
+/----------------------------------------------------------------------/
+/     PROPAGATION
+/----------------------------------------------------------------------/
+TURBULENCE MODEL : 1
+VELOCITY DIFFUSIVITY = 0.D0
+SOLVER : 7
+SOLVER OPTIONS : 3
+MAXIMUM NUMBER OF ITERATIONS FOR THE SOLVER : 100
+SOLVER ACCURACY = 1.E-4
+IMPLICITATION FOR DEPTH = 0.6
+IMPLICITATION FOR VELOCITY = 0.6
+PRECONDITIONING : 2
+INITIAL GUESS FOR H : 1
+/---------------------------------------------------------------/
+MASS-BALANCE : YES
+INITIALS CONDITIONS : 'PARTICULAR'
+TYPE OF ADVECTION   : 2;5
+SUPG OPTIONS          : 2;2
+DISCRETIZATIONS IN SPACE: 11;11
+MATRIX STORAGE : 3
+MATRIX-VECTOR PRODUCT : 1
+/ POUR EQUATION D'ONDE :
+/ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1
+/ FORME DE LA CONVECTION:1;5
+/----------------------------------------------------------------------/
+ORIGINAL DATE OF TIME  : 1997; 2;21
+ORIGINAL HOUR OF TIME :   10;21;30

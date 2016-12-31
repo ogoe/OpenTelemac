@@ -1,0 +1,84 @@
+\chapter{Running a telemac{2d} computation}
+\label{tel2d:app1}
+
+
+ Telemac environment is managed using Perl language (old option) and Python. For the Python option, informations about running the code can be found in the website www.opentelemac.org. we present hereafter, features related to the Perl version.
+
+ A computation is started using the command telemac2d. It is also possible to start the simulation directly in FUDAA-PREPRO. This command activates the execution of a unix script which is common to all the computation modules of the \telemac{2d} processing chain.
+
+ The syntaxes of this command are as follows:
+
+ telemac2d [-s] [-D] [-b {\textbar} -n {\textbar} -d time] [-cl] [-t] [case]
+
+ Note : some options depends on the operating system used
+
+
+
+ -s : When the computation is started in interactive mode, generates a listing on the disk (by default, the listing is only displayed on screen).
+
+ -cl : Compile and link the user executable without starting the simulation
+
+ -D : Compilation and execution using a debugger.
+
+ -b : Running in batch mode (immediate start-up).
+
+ -n : Running in deferred batch mode (start-up at 20h00).
+
+ -d : Running in deferred batch mode (start-up at the specified time).
+
+ -t : Do not delete working directory after normal run
+
+ case : Name of steering file.
+
+
+
+  telemac2d  -h $\mid$ -H  (short or long help).
+
+
+
+
+
+ If no name for the steering file is indicated, the procedure uses the name cas. By default, the procedure executes the computation in interactive mode, and displays the check list on screen.
+
+ Examples:
+
+ telemac2d starts computation immediately in interactive mode using the cas steering file.
+
+ telemac2d -b test2 starts computation immediately in batch mode using the test2 steering file.
+
+ telemac2d -d 22:00 modtot starts computation at 22:00 the same evening in batch mode using the modtot steering file.
+
+ telemac2d -n starts computation at 20:00 the same evening in batch mode using the cas steering file.
+
+
+
+ The following operations are carried out using this script:
+
+\begin{enumerate}
+\item  Creation of a temporary directory,
+
+\item  Copy of the dictionary and steering file in this directory,
+
+\item  Execution of DAMOCLES software in order to determine the name of the workfiles,
+
+\item  Creation of the script to start the computation,
+
+\item  Allocation of files,
+
+\item  Compilation of the FORTRAN file and link (if necessary),
+
+\item  Start of the computation,
+
+\item  Restitution of the results files, and destruction of the temporary directory.
+\end{enumerate}
+
+
+
+ Procedure operation differs slightly depending on the options used.
+
+ A detailed description of this procedure may be obtained by using the command telemac2d -H.
+
+
+
+
+ 

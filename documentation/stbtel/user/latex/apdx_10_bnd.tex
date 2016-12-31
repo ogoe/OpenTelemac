@@ -1,0 +1,42 @@
+\chapter{Correspondence between the colour codes and types of boundary conditions}
+
+This appendix is for users that do not have MATISSE software. The following
+table makes the link between the colour codes of the mesh software and the
+scheme of boundary conditions traduced in \stbtel.\\
+
+\begin{table}[H]
+\begin{center}
+%
+\begin{tabular*}{\textwidth}{ccccccl}
+%
+\toprule
+\toprule
+%
+TRIGRID & STB & LIHBOR & LIUBOR & LIVBOR & LITBOR & BOUNDARY CONDITION\\
+\midrule
+1  & 11 & 2 & 2 & 2 & 2 & Solid boundary.\\
+2  & 4  & 5 & 4 & 0 & 4 & Prescribed H, free U, zero V, free T.\\
+3  & 5  & 1 & 1 & 1 & 4 & Incident wave, free T.\\
+4  & 7  & 5 & 0 & 4 & 4 & Prescribed H , zero U, free V, free T.\\
+5  & 8  & 4 & 5 & 5 & 5 & Free H, prescribed Q, prescribed T.\\
+6  & 9  & 4 & 6 & 6 & 5 & Free H, prescribed velocities, prescribed T.\\
+7  & 1  & 5 & 4 & 4 & 4 & Prescribed H, free velocities, free T.\\
+8  & 12 & 4 & 5 & 0 & 5 & Free H, prescribed Q with zero V, prescribed T.\\
+9  & 15 & 4 & 0 & 5 & 5 & Free H, prescribed Q with zero U, prescribed T.\\
+10 & 2  & 5 & 5 & 5 & 5 & Prescribed H and Q, prescribed T.\\
+11 & 3  & 5 & 6 & 6 & 5 & Prescibed H and velocities, prescribed T.\\
+12 & 14 & 2 & 0 & 2 & 2 & Solid boundary with zero U.\\
+13 & 13 & 2 & 2 & 0 & 2 & Solid boundary with zero V.\\
+\bottomrule
+\end{tabular*}
+%
+\end{center}
+\end{table}
+Note : Boundary conditions on the tracer are managed by SISYPHE and SUBIEF as
+sedimentological boundary conditions in the following way :
+\begin{itemize}
+\item Code 5: Concentration (SUBIEF) or changes in bottom topography
+(SISYPHE) prescribed on an open boundary.
+\item Code 4: Free value at an open boundary.
+\item Code 2: Solid boundary with no flux condition.
+\end{itemize}

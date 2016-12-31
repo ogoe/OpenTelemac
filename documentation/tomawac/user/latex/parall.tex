@@ -1,0 +1,68 @@
+
+\section{ Parallel computing in TOMAWAC}
+
+
+
+ This document presents some basic concepts about the parallelism in TOMAWAC. It does not describe the parallel algorithm.
+
+ The parallelism in TOMAWAC is based on the message passing paradigm in order to run on a distributed memory architecture. The MPI library is used to manage the communication between parallel processors. Each MPI processor performs operations on its local memory independently from the other ones. The synchronisation and the data transfer between MPI processors are realized by sending or receiving messages.
+
+ Suppose that the parallel computing is performed on \textit{n} MPI processus. The user has to add the following statement in the steering file:
+
+ PARALLEL PROCESSORS = n
+
+ The domain (the finite element mesh) is split into \textit{n} nonoverlapping subdomains. Each subdomain is assigned to a single MPI processor; in other words there is only one subdomain per MPI processor. The mesh partitioning is ensured by the PARTEL program included in the TELEMAC system. It generates the \textit{n} local geometries and the boundary condition files required by the \textit{n} MPI processus.
+
+ Let's consider a finite element mesh having 8 finite elements and 9 nodes
+
+\includegraphics*{graphics/partition}
+
+
+ and suppose that the PARTEL program produces this following mesh partitionning (partition into 4 subdomains SD1 to SD4):
+
+ \includegraphics*[width=3.78in]{graphics/meshpart}
+
+ One could remark that a node does not have necessarily the same number in the global finite element mesh and in each subdomain. The node number in the global mesh is called global number whereas the node number in a subdomain is called local number.
+
+ There used to be two arrays (knogl and knolg) to link the global numbering and the local numbering, but since knogl could be huge if the number of processors was increasing, in version V7P1 we replaced the array knogl by a function global\_to\_local\_point.
+
+ j=global\_to\_local\_point(k,mesh) indicates that the local number of the node having global number k is j ("gl" means global numbering to local numbering, j=0 indicates that the node having global number k does not belong to the subdomain);
+
+ knolg(j)=k indicates that the global number of the node having local number j is k in the global mesh ("lg" means global numbering to local numbering) .
+
+
+
+ It is important to understand that the global numbering does not exist in parallel: the user files \textbf{need to be modified} if global node numbering is used. Suppose that in the user file there is the following instruction:
+
+
+
+ \textit{c The D-value  is set to 0.0 for  the node number 200}
+
+ D(200)=0.0
+
+
+
+ This instruction needs to be rewritten as follows to be used both in sequential or in parallel:
+
+
+
+ IF (NCSIZE.GE.1) THEN
+
+ \textit{c NCSIZE is the number of MPI processus, so if NCSIZE $>$ 1, the c code runs in parallel}
+
+ IF (global\_to\_local\_point(100,mesh) .NE. 0) THEN
+
+ \textit{c the node having global number 100 belongs to the subdomain}
+
+  D(global\_to\_local\_point(100,mesh))=0.0
+
+  END IF
+
+ ELSE
+
+ \textit{c here the code runs in sequential }
+
+ D(100)=0.0
+
+ END IF
+

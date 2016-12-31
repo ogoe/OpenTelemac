@@ -1,0 +1,66 @@
+\chapter{Launching the computation}
+
+A computation is launched through the \telfile{telemac3d.py} command. That command
+activates the execution of a script which is common to all the computation
+modules in the TELEMAC system. Depending on the platform, some options may be
+unavailable.
+
+The syntaxes in that command are as follows:
+
+\begin{lstlisting}[language=bash]
+telemac3d.py [cas]   [--options]
+\end{lstlisting}
+
+\begin{itemize}
+\item cas: name of the steering file,
+
+\item --ncsize=NCSIZE: specifies the number of processors forced in parallel
+mode, default = the number defined in the steering file,
+
+\item -c CONFIGNAME or --configname=CONFIGNAME: specifies the configuration
+name, default is randomly found in the configuration file,
+
+\item -f CONFIGFILE, --configfile=CONFIGFILE: specifies the configuration
+file, default = systel.cfg,
+
+\item -s, --sortiefile: specifies whether there is a sortie file, default is
+no,
+
+\item -t or --tmpdirectory: the temporary work directory is not destroyed on
+completion of computation.
+\end{itemize}
+
+By default, the procedure runs the computation in an interactive mode and
+displays the control listing on the monitor.
+
+The operations performed by that script are as follows:
+
+\begin{itemize}
+\item Creation of a temporary directory
+(\telfile{name\_cas\_YYYY-MM-DD\_HHhMMminSSs}),
+
+\item Duplication of the dictionary and the input files into that directory,
+
+\item Execution of the DAMOCLES software in order to determine the work file names,
+
+\item Creation of the computation launching script,
+
+\item Allocation of the files,
+
+\item Compilation of the FORTRAN file and link editing (as required),
+
+\item Launching of the computation,
+
+\item Retrieval of the results files and destruction of the temporary directory.
+\end{itemize}
+
+The procedure takes place with slight differences according to the selected
+options.
+
+The detailed description of that procedure can be obtained through the help
+command:
+
+\begin{lstlisting}[language=bash]
+telemac3d.py --help
+telemac3d.py -h
+\end{lstlisting}

@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Telemac Documentation
+%  Example of the TelemacDoc class
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[Misc]{../../data/TelemacDoc} % Default font size and left-justified equations
+%\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+
+\begin{document}
+
+\let\cleardoublepage\clearpage
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\title{\telemacsystem}
+\subtitle{Developer Guide}
+\version{7.2}
+\author{Yoann Audouin}
+\date{\today}
+\maketitle
+\clearpage
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+\thispagestyle{empty}
+
+\TelemacCopyright{}
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+
+\pagestyle{empty} % No headers
+
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+\input{latex/foreword}
+%----------------------------------------------------------------------------------------
+%     Intro
+%----------------------------------------------------------------------------------------
+\input{latex/intro}
+
+\input{latex/S1-programming_bief}
+\input{latex/S2-internal_bief}
+\input{latex/S3-dev_life}
+
+\input{latex/A1-matrix_storage}
+\input{latex/A2-selafin_format}
+\input{../software_quality_plan/latex/coding-convention}
+\input{latex/hermes}
+%----------------------------------------------------------------------------------------
+%     CUE
+%----------------------------------------------------------------------------------------
+\input{latex/cue}
+%
+%----------------------------------------------------------------------------------------
+%     SVN
+%----------------------------------------------------------------------------------------
+\input{latex/svn}
+%
+%----------------------------------------------------------------------------------------
+%     CIS
+%----------------------------------------------------------------------------------------
+\input{latex/cis}
+%
+%----------------------------------------------------------------------------------------
+%     Code coverage
+%----------------------------------------------------------------------------------------
+\input{latex/code_coverage}
+%
+%----------------------------------------------------------------------------------------
+%     Documentation on documentation docuception
+%----------------------------------------------------------------------------------------
+\input{latex/doc}
+%
+%----------------------------------------------------------------------------------------
+%     Miscallenous
+%----------------------------------------------------------------------------------------
+\input{latex/misc}
+%
+%----------------------------------------------------------------------------------------
+%     It's the end of the world as we know it...
+%----------------------------------------------------------------------------------------
+\input{latex/end}
+
+\bibliographystyle{plainnat}
+\nocite{*}
+\bibliography{../../data/biblio}
+
+\end{document}

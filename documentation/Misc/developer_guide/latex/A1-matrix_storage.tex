@@ -1,0 +1,257 @@
+\chapter{Matrix storage conventions}
+
+The off-diagonal terms of a matrix A are placed in a two-dimensional array, the
+first dimension being NELMAX, the maximum number of elements (the second
+dimension depends on the type of matrix and storage). The following conventions
+are written in the form of rows, such that:
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+\end{lstlisting}
+
+This row means the following:
+
+The contribution of element IELEM to the coefficient of point 2 in the equation
+for point 1 is placed in XA(IELEM,01). 1 and 2 refer to the local numbering of
+element IELEM, and so the general number of point 1 is IKLE(IELEM,1).
+
+The location is also given in the form of a matrix whose elements give the
+second dimension of XA in which the corresponding term is placed. These
+matrices are indeed used in \bief, in which they are given in the form of DATA
+tables. In view of FORTRAN placing notation for two-dimensional arrays, the
+matrices appear in transposed form. For this reason, the transposed form of the
+matrices is also given here.
+
+\section{Triangle P1-P1 EBE}
+
+$\left(\begin{array}{ccc}
+    {-} & {1} & {2} \\
+    {4} & {-} & {3} \\
+    {5} & {6} & {-}
+\end{array}\right)$
+transposed form:
+$\left(\begin{array}{ccc}
+    {-} & {4} & {5} \\
+    {1} & {-} & {6} \\
+    {2} & {3} & {-}
+\end{array}\right)$
+
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,1) = XA12
+XA(IELEM,2) = XA13
+XA(IELEM,3) = XA23
+\end{lstlisting}
+
+If A is asymmetrical:
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,04) = XA21
+XA(IELEM,05) = XA31
+XA(IELEM,06) = XA32
+\end{lstlisting}
+
+\section{Triangle P1-Quasi-bubble EBE}
+
+$\left(\begin{array}{cccc}
+    {-} & {1} & {2} & {3} \\
+    {4} & {-} & {5} & {6} \\
+    {7} & {8} & {-} & {9}
+\end{array}\right)$
+transposed form:
+$\left(\begin{array}{ccc}
+    {-} & {4} & {7} \\
+    {1} & {-} & {8} \\
+    {2} & {5} & {-} \\
+    {3} & {6} & {9} \\
+\end{array}\right)$
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA14
+XA(IELEM,04) = XA21
+XA(IELEM,05) = XA23
+XA(IELEM,06) = XA24
+XA(IELEM,07) = XA31
+XA(IELEM,08) = XA32
+XA(IELEM,09) = XA34
+\end{lstlisting}
+
+\section{Triangle Quasi-bubble-P1 EBE}
+
+$\left(\begin{array}{ccc}
+    {-} & {1} & {2} \\
+    {3} & {-} & {4} \\
+    {5} & {6} & {-} \\
+    {7} & {8} & {9} \\
+\end{array}\right)$
+transposed form:
+$\left(\begin{array}{cccc}
+    {-} & {3} & {5} & {7} \\
+    {1} & {-} & {6} & {8} \\
+    {2} & {4} & {-} & {9}
+\end{array}\right)$
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA21
+XA(IELEM,04) = XA23
+XA(IELEM,05) = XA31
+XA(IELEM,06) = XA32
+XA(IELEM,07) = XA41
+XA(IELEM,08) = XA42
+XA(IELEM,09) = XA43
+\end{lstlisting}
+
+\section{Triangle Quasi-bubble Quasi-bubble or Quadrilateral Q1-Q1 EBE}
+
+$\left(\begin{array}{cccc}
+    {-} & {1} & {2} & {3} \\
+    {7} & {-} & {4} & {5} \\
+    {8} & {10} & {-} & {6} \\
+    {9} & {11} & {12} & {-}
+\end{array}\right)$
+transposed form~:
+$\left(\begin{array}{cccc}
+    {-} & {7} & {8} & {9} \\
+    {1} & {-} & {10} & {11} \\
+    {2} & {4} & {-} & {12} \\
+    {3} & {5} & {6} & {-}
+\end{array}\right)$
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA14
+XA(IELEM,04) = XA23
+XA(IELEM,05) = XA24
+XA(IELEM,06) = XA34
+\end{lstlisting}
+
+If A is asymmetrical:
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,07) = XA21
+XA(IELEM,08) = XA31
+XA(IELEM,09) = XA41
+XA(IELEM,10) = XA32
+XA(IELEM,11) = XA42
+XA(IELEM,12) = XA43
+\end{lstlisting}
+
+
+\section{Triangle P1 EBE - Quadratic triangle EBE}
+
+\[\left(\begin{array}{cccccc}
+      {-} & {1} & {2} & {3} & {4} & {5} \\
+      {6} & {-} & {7} & {8} & {9} & {10} \\
+      {11} & {12} & {-} & {13} & {14} & {15}
+\end{array}\right) \]
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA14
+XA(IELEM,04) = XA15
+XA(IELEM,05) = XA16
+XA(IELEM,06) = XA21
+XA(IELEM,07) = XA23
+XA(IELEM,08) = XA24
+XA(IELEM,09) = XA25
+XA(IELEM,10) = XA26
+XA(IELEM,11) = XA31
+XA(IELEM,12) = XA32
+XA(IELEM,13) = XA34
+XA(IELEM,14) = XA35
+XA(IELEM,15) = XA36
+\end{lstlisting}
+
+\section{Quadratic triangle EBE - Triangle P1 EBE}
+
+\[\left(\begin{array}{ccc}
+      {-} & {1} & {2} \\
+      {3} & {-} & {4} \\
+      {5} & {6} & {-} \\
+      {7} & {8} & {9} \\
+      {10} & {11} & {12} \\
+      {13} & {14} & {15}
+\end{array}\right) \]
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA21
+XA(IELEM,04) = XA23
+XA(IELEM,05) = XA31
+XA(IELEM,06) = XA32
+XA(IELEM,07) = XA41
+XA(IELEM,08) = XA42
+XA(IELEM,09) = XA43
+XA(IELEM,10) = XA51
+XA(IELEM,11) = XA52
+XA(IELEM,12) = XA53
+XA(IELEM,13) = XA61
+XA(IELEM,14) = XA62
+XA(IELEM,15) = XA63
+\end{lstlisting}
+
+\section{Prism P1-P1 EBE or Quadratic triangle EBE}
+
+\[\left(\begin{array}{cccccc}
+      {-}  & {1} & {2} & {3} & {4} & {5} \\
+      {16} & {-} & {6} & {7} & {8} & {9} \\
+      {17} & {21} & {-} & {10} & {11} & {12} \\
+      {18} & {22} & {25} & {-} & {13} & {14} \\
+      {19} & {23} & {26} & {28} & {-} & {15} \\
+      {20} & {24} & {27} & {29} & {30} & {-} \\
+\end{array}\right) \]
+
+transposed form:
+
+\[\left(\begin{array}{cccccc}
+      {-}  & {16} & {17} & {18} & {19} & {20} \\
+      {1} & {-} & {21} & {22} & {23} & {24} \\
+      {2} & {6} & {-} & {25} & {26} & {27} \\
+      {3} & {7} & {10} & {-} & {28} & {29} \\
+      {4} & {8} & {11} & {13} & {-} & {30} \\
+      {5} & {9} & {12} & {14} & {15} & {-} \\
+\end{array}\right) \]
+
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,01) = XA12
+XA(IELEM,02) = XA13
+XA(IELEM,03) = XA14
+XA(IELEM,04) = XA15
+XA(IELEM,05) = XA16
+XA(IELEM,06) = XA23
+XA(IELEM,07) = XA24
+XA(IELEM,08) = XA25
+XA(IELEM,09) = XA26
+XA(IELEM,10) = XA34
+XA(IELEM,11) = XA35
+XA(IELEM,12) = XA36
+XA(IELEM,13) = XA45
+XA(IELEM,14) = XA46
+XA(IELEM,15) = XA56
+\end{lstlisting}
+
+If A is asymmetrical:
+\begin{lstlisting}[language=TelFortran]
+XA(IELEM,16) = XA21
+XA(IELEM,17) = XA31
+XA(IELEM,18) = XA41
+XA(IELEM,19) = XA51
+XA(IELEM,20) = XA61
+XA(IELEM,21) = XA32
+XA(IELEM,22) = XA42
+XA(IELEM,23) = XA52
+XA(IELEM,24) = XA62
+XA(IELEM,25) = XA43
+XA(IELEM,26) = XA53
+XA(IELEM,27) = XA63
+XA(IELEM,28) = XA54
+XA(IELEM,29) = XA64
+XA(IELEM,30) = XA65
+\end{lstlisting}

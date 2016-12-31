@@ -1,0 +1,1925 @@
+\documentclass[a4paper,10pt]{article}
+
+%\usepackage[utf8]{inputenc} % pour les accents
+\usepackage[T1]{fontenc} % caracteres francais
+\usepackage{geometry} %les marges
+\usepackage[french]{babel} %langue principale
+\usepackage[dvips]{graphicx}
+\geometry{ hmargin=2cm, vmargin=2cm }
+\usepackage{lscape}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+%
+% Debut du document
+%
+\begin{document}
+
+\begin{titlepage}
+
+\begin{center}
+
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[scale=0.4]{./EDF_Logo}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[scale=1.]{./CEREMA_Logo}
+%ministÃ¨re
+\end{flushright}
+\end{minipage}
+% Upper part of the page
+\textsc{ }\\[7cm]
+\textsc{\Huge MASCARET v8.1}\\[1cm]
+{ \huge \bfseries Module de simulation de qualité d'eau TRACER}\\[1cm]
+\textsc{\Large NOTE DE PRINCIPE}\\
+\vfill
+
+% Bottom of the page
+{\Large Copyright {\copyright} 2015 EDF - CEREMA}\\[0.5cm]
+{EDF - SA au capital de 924.433.331 euros - R.C.S. Paris B 552 081 317}\\
+{CEREMA - Centre d'Etudes et d'Expertise sur les Risques, l'Environnement, la Mobilité et l'Aménagement}
+
+\end{center}
+
+\end{titlepage}
+
+\newpage
+
+\begin{center} Sommaire/Summary\end{center}\
+
+
+\tableofcontents
+
+\newpage
+
+\titlepage{
+\begin{LARGE}
+\begin{center}
+Résumé
+ \end{center}
+ \end{LARGE}}
+ 
+ TRACER est le module de transport du Système MASCARET, ensemble de codes de calcul d'hydraulique à surface libre monodimensionnels (trois modules : permanent, fluvial non permanent et transcritique). Il permet de simuler l'évolution de plusieurs traceurs (c'est-à-dire qui n'ont pas de rétroaction sur l'hydraulique) couplés et offre une structure permettant la programmation de modèles de qualité d'eau.\\
+TRACER calcule les concentrations des traceurs présents en fonction des conditions hydrauliques, des conditions aux limites, des sources externes et des relations d'interactions biochimiques entre les traceurs.\\
+Les "entrées" du système sont : les variables hydrauliques (fournies par l'un des noyaux de calcul hydraulique du Système MASCARET), les concentrations initiales, les conditions aux limites amont, les termes sources qui peuvent représenter notamment les apports dus à d'éventuels affluents.
+
+\begin{itemize}
+\item Les modules de qualité d'eau nécessitent en plus un fichier des paramètres physiques propres au modèle de qualité d'eau et éventuellement un fichier de données météorologiques (pour certains des modules de qualité d'eau disponibles en bibliothèque).
+\item Les "sorties" du système sont : l'évolution des concentrations en rivière au cours du temps et les masses de traceurs présentes dans le domaine.
+\end{itemize}
+\vspace{0.3cm}
+Les simulations sont possibles pour des réseaux de biefs, avec néanmoins \textbf{une limitation aux réseaux ne comportant que des confluences (les diffluences ne sont pas traités)} ; de plus, \textbf{le modèle ne distingue pas lit mineur et lit majeur et ne tient pas compte des îles}.\\
+Cette note contient une explication de la méthode de résolution de l'équation de convection-dispersion en une dimension, puis son application à la modélisation de la qualité d'eau. Ensuite, une description des modules de qualité d'eau disponibles dans la bibliothèque de TRACER, à savoir les modules $O_{2}$ (oxygène dissous, charges organique et ammoniacale), BIOMASS (biomasse phytoplanctonique et nutriments), EUTRO (oxygène dissous, biomasse phytoplanctonique, nutriments, charges organique et ammoniacale), MICROPOL (micropolluants et matières en suspension) et THERMIC (température de l'eau) est réalisée.
+ 
+ 
+\newpage
+
+
+\section{PRINCIPE DE L'OUTIL TRACER}
+
+\subsection{Equation de base}
+
+TRACER est le module de transport du Système MASCARET ensemble de codes de calcul d'hydraulique à surface libre monodimensionnels. Il permet de simuler l'évolution d'un ou plusieurs traceurs (qui n'ont pas de rétroaction sur l'hydraulique mais qui peuvent être réactifs), éventuellement couplés, dans une rivière ou un réseau de rivières. La simulation du transport d'un traceur s'appuie sur l'équation de convection-diffusion sous forme conservatrice suivante: 
+
+\begin{equation}
+\displaystyle \frac{\partial{AC}}{\partial{t}}+\frac{\partial{QC}}{\partial{x}}=\displaystyle\frac{\partial{}}{\partial{x}}\left(Ak\frac{\partial{C}}{\partial{c}}\right)+AS=\displaystyle\frac{\partial{}}{\partial{x}}\left(Ak\frac{\partial{C}}{\partial{c}}\right)+AS_{v}+A\frac{q_{s}-q_{f}}{h}
+\end{equation}
+
+$C$= concentration du traceur, $Q$= débit d'écoulement, $k$= coefficient de diffusion longitudinal, $A$= section mouillée, $h$= hauteur d'eau, $S$= termes sources, $S_{v}$= source volumique de traceur, $q_{s}$, $q_{v}$ =source surfacique sur la surface ou sur le fond ($>0$ orienté vers le bas). 
+On se donne la possibilité d'avoir des termes sources $S$ dépendant linéairement de la concentration $C$. Les termes sources seront donc scindés en deux parties pour distinguer les termes qui dépendent linéairement de $C$, notés $S_{c}$, et ceux qui n'en dépendent pas linéairement ou qui n'en dépendent pas du tout, notés $S$. \\
+On définit le terme de source surfacique :  
+
+
+\begin{equation}
+S_{s}=\pm|q_{s}-q_{f}|
+\end{equation}
+
+L'équation 1 s'écrit alors
+
+\begin{equation}
+\displaystyle \frac{\partial{AC}}{\partial{t}}+\frac{\partial{QC}}{\partial{x}}=\displaystyle\frac{\partial{}}{\partial{x}}\left(Ak\frac{\partial{C}}{\partial{c}}\right)+AS=\displaystyle\frac{\partial{}}{\partial{x}}\left(Ak\frac{\partial{C}}{\partial{c}}\right)+A\left( S_{v}+S_{v}^{c}+\frac{S_{s}^{c}}{h}+\frac{S_{s}}{h}\right)
+\end{equation}
+
+\subsection{Discrétisation et résolution numérique sur un bief}
+
+TRACER propose cinq schémas numériques pour la résolution de la partie convection de l'équation précédente:
+
+\begin{itemize}
+\item Deux schémas numériques aux caractéristiques, respectivement conservatif (noté $HYP1FAfc$) et non conservatif ($HYP1FAfnc$).
+\item Deux schémas numériques aux volumes finis d'ordre $1$ et $2$. Le second ordre peut être associé ou pas avec une limitation de pente.
+
+\end{itemize}
+
+\vspace{0.3cm}
+
+Les schémas numériques sont détaillés en Annexe A.
+
+\subsection{Choix du coefficient de diffusion longitudinale}
+
+D'une manière générale, le coefficient de diffusion $k$ dépend des caractéristiques physiques du fluide (la température par exemple), des conditions hydrauliques et sédimentaires (présence de M.E.S ou pas) ainsi que de la géométrie du cours d'eau. Le coefficient de diffusion est un paramètre très délicat à estimer puisqu'il nécessite des mesures in situ et est lié au phénomène de turbulence.\\
+Dans TRACER, le coefficient $k$ est soit supposé constant dans le réseau (i.e même valeur dans le réseau, calé sur des mesures in situ), soit calculé par des formules empiriques en fonction de paramètres hydrauliques. Sont résumés dans le tableau ci-dessous un éventail de formules empiriques (ou théoriques) implémentées dans TRACER.
+
+
+\begin{landscape}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline Référence & Formule & Commentaires/Conditions de calage et de vérification \\ 
+\hline  &  & Ecoulement uniforme dans un canal infiniment long  \\ 
+           Elder ($1959$)~\cite{[1]} & $k=5,93hU*$ & Vitesse : distribution logarithmique sur la verticale
+         
+ \\ 
+  &  &  \\ 
+  \hline  &  & Validation avec des données issues de mesures dans \\ 
+ Fisher ($1975$)~\cite{[2]} & $k=\displaystyle 0,011\left(\frac{U}{U*}\right)^{2}\left(\frac{B}{h}\right)^{2}hU*$ & des canaux prismatiques de différentes formes de section en travers.  \\ 
+  &  &  \\ 
+  \hline  &  & Développé en utilisant l'analogie entre l'équation 1-D de convection-dispersion et  \\ 
+ McQuivey et &  & de convection-dispersion et l'équation 1-D de l'écoulement à surface libre  \\ 
+ Keefer ($1974$)~\cite{[3]} &  $k=0,058\displaystyle \frac{hU}{J}$ & Calage avec des mesures de terrain \\ 
+ &  & Valable pour un régime d'écoulement fluvial avec un nombre de Froude inférieur à 0,5 \\ 
+\hline  &  &  Le terme $0,18(U/U*)^{2}$ reflète l'effet de la forme de la section en travers et la distribution \\
+Liu ($1977$)~\cite{[4]} & $k=\displaystyle 0,18\left(\frac{U}{U*}\right)^{0,5}\left(\frac{B}{h}\right)^{2}hU*$  & de la vitesse transversale. \\ 
+  &  &  \\ 
+
+\hline  &  &  \\ 
+ Iwasa et Aya ($1991$)~\cite{[5]} & $k=\displaystyle 2\left(\frac{B}{h}\right)^{1,5}hU*$ & Calage avec des mesures dans des canaux de laboratoire à petite échelle \\ 
+  &  &  \\ 
+\hline  Magazine et al. &  &  Formule développée en utilisant l'analyse dimensionnelle et calée par des mesures en \\ 
+($1988$)~\cite{[6]} & $k=\displaystyle 75,86\left(\frac{U}{U*}\right)^{-1,632}R_{h}U$ & laboratoire \\ 
+   &  &  \\ 
+\hline Koussis et Rodriguez- &  & La formule s'appuie sur la théorie et l'équation de Fisher et la loi de von Karman \\ 
+ Mirasol ($1998$)~\cite{[7]} &  $k=\displaystyle 0,6hU*\left(\frac{B}{h}\right)^{2}$ &  La valeur de $0,6$ est estimée par régression sur $16$ données de terrain.\\ 
+  &  &  \\ 
+\hline Seo et &  & Formule développée en utilisant l'analyse dimensionnelle et la méthode de Huber,  \\ 
+ Cheong ($1998$)~\cite{[8]} & $k=\displaystyle 5,92\left(\frac{U}{U*}\right)^{1,43}\left(\frac{B}{h}\right)^{0,62}hU*$ & calée et validée par 59 données provenant de 26 cours d'eau américains \\ 
+  &  &  \\ 
+
+\hline 
+\end{tabular} 
+
+\end{center}
+\end{table}
+
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|l|}
+
+
+
+\hline  &  & Cette équation est une version modifiée de l'équation de Fisher. Elle intègre une \\ 
+ &  $k=\displaystyle \frac{0,15}{8\varepsilon _{t}}\left(\frac{U}{U*}\right)^{2}\left(\frac{B}{h}\right)^{1,67}hU*$ & nouvelle expression de la distribution du coefficient de mixage transversal \\ 
+ Deng et al. ($2001$)~\cite{[9]} &  &  \\ 
+  & $\varepsilon _{t}=0,145+(U/U*)(B/h)^{1,38}/3520$ & Valable pour $B/h>10$ \\  
+  &  &  \\ 
+\hline  &  &  \\ 
+  Kashefipur et Falconer  &  $k=\displaystyle 10,612\left(\frac{U}{U*}\right)hU$ pour $B/h>50$ & Formule développée en utilisant l'analyse dimensionnelle, calée et validée par 81 \\ 
+ ($2002$)~\cite{[10]} &  & données provenant de 30 cours d'eau américains \\ 
+ &  $k=\left[\displaystyle 7,428+1,775\left(\frac{U*}{U}\right)^{0,572}\left(\frac{B}{h}\right)^{0,62}hU* \right] \left(\frac{U}{U*}\right)hU$ &  \\ 
+ & pour $B/h<50$  &  \\ 
+
+\hline
+
+\end{tabular} 
+\end{center}
+Notations : $U$ = vitesse d'écoulement, $ U* $ = vitesse de frottement= $\sqrt{\tau / \rho}$  avec $\tau$  contrainte de cisaillement et $\rho$ masse volumique de l'eau, $B$ = largeur au miroir, $J$ = pente d'énergie (ou de charge), $R_{h}$  = rayon hydraulique
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{landscape}
+
+
+
+\subsection{Mise en oeuvre dans l'outil TRACER}
+
+\subsubsection*{Définition des variables hydrauliques utilisées}
+
+
+La définition des grandeurs hydrauliques utilisées dans TRACER et apparaissant dans l'équation de transport-diffusion est la suivante :
+
+\begin{itemize}
+\item le débit $Q$.
+\item la section mouillée $A$.
+\item la hauteur d'eau $h$ est obtenue par la relation : $h = A/B$.
+\item la vitesse $U$ est donnée par la relation : $U = Q/A$.
+\end{itemize}
+
+\subsubsection*{Extension à un réseau hydrographique}
+
+
+TRACER a une utilisation limitée aux cas de confluences (Figure~\ref{fig3}); les défluents ne sont pas, pour l'instant, traités par l'outil. La résolution de l'équation de convection-diffusion dans le cas d'un réseau de biefs s'effectue bief par bief, de l'amont vers l'aval. \textbf{Pour chacun des biefs, on suppose qu'on a une condition de Dirichlet à l'amont et une condition de Neumann à l'aval}. Afin de pouvoir résoudre l'équation de convection-diffusion sur chacun des biefs du réseau considéré, on doit donc connaître la concentration à l'amont de chacun des biefs.\\
+La section amont d'un bief est soit une extrémité libre, soit un n{\oe}ud du réseau :
+\begin{itemize}
+\item Pour une extrémité libre, la concentration est donnée directement par les conditions aux limites.
+\item Pour un n{\oe}ud du réseau (= confluent), la concentration à l'amont du bief aval (unique puisqu'on ne traite pas le cas des défluents) est obtenue par les relations suivantes
+\begin{itemize}
+\item[$\circ$] l'hydraulique donne la relation sur les débits
+\begin{equation}
+Q_{aval}(t)=\sum _{i=1}^{N}Q_{i}(t)
+\end{equation}
+où $N$ est le nombre de biefs "arrivant" au niveau de la confluence (nombre de biefs amont au n{\oe}ud j considéré).
+\item[$\circ$] la concentration s'obtient par raisonnement sur les flux (algébriques) de traceur au niveau du n{\oe}ud $j$ considéré (flux venant des $N$ biefs amont + flux partant dans le bief aval supposé unique = 0)
+\begin{equation}
+\sum _{i=1}^{N}Q_{i}(t)C_{i}(t)-C_{aval}(t)Q_{aval}(t)=0
+\end{equation}
+où $C_{i}$= concentration en traceur à l'aval des biefs amonts ($i=1$,$N$), $C_{aval}$ = concentration à la limite amont du bief aval. 
+\end{itemize}
+\end{itemize}
+
+
+On obtient ainsi la relation donnant la concentration à la limite amont du bief aval $C_{aval}$ :
+
+\begin{equation}
+C_{aval}(t)=\displaystyle \frac{\sum _{i=1}^{N}Q_{i}(t)C_{i}(t)}{Q_{aval}(t)}=\displaystyle \frac{\sum _{i=1}^{N}Q_{i}(t)C_{i}(t)}{\sum _{i=1}^{N}Q_{i}(t)}
+\end{equation}
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=1]{figure3.eps}
+  \caption{Schéma d'une confluence}
+  \label{fig3}
+ \end{center}
+\end{figure}
+
+
+\section{APPLICATION DE TRACER A LA QUALITE D'EAU}
+
+Pour simplifier les équations on définit l'opérateur $F(C)$ comme suit, où $C(x,t)$ est la concentration d'un traceur :
+
+\begin{equation}
+F(C)=\frac{\partial{C}}{\partial{t}}+U\frac{\partial{C}}{\partial{x}}-\frac{1}{A}\frac{\partial{ }}{\partial{x}}\left\lbrace Ak\left[ \frac{\partial{C}}{\partial{x}}\right] \right\rbrace
+\end{equation}
+
+
+\subsection{Les modèles de qualité d'eau}
+
+Dans un modèle de qualité d'eau, les substances étudiées sont transportées et dispersées dans la masse d'eau. Leur dispersion dans le milieu aquatique est liée d'une part au transport dû à l'écoulement et d'autre part à la dispersion turbulente de l'eau.
+
+\vspace{0.3cm}
+
+La concentration en rivière d'une substance (polluant, oxygène,...) est également influencée par :
+
+\begin{itemize}
+\item les apports ponctuels, occasionnés par des rejets (usines, stations d'épuration,...) dans la rivière, qui sont qualifiés de sources externes ;
+\item la présence d'autres substances dans la masse d'eau, avec lesquelles le traceur est susceptible de réagir par le biais de transformations biochimiques, ou l'existence de forçages liés à sa propre concentration (par exemple, pour l'oxygène, phénomène de ré-aération). Ces termes sources pour un traceur sont qualifiés de sources internes (car internes à la masse d'eau) et elles caractérisent le module de qualité de l'eau (description des interactions entre les traceurs).
+\end{itemize}
+
+\subsection{Leur mise en équation}
+
+La résolution d'un problème de qualité d'eau revient ainsi à résoudre un système de $N$ équations de convection-dispersion (une équation par traceur), dans chacune desquelles sont présentes, outre les sources externes éventuelles (rejets, etc.) les sources internes, provoquées par les réactions biochimiques.
+
+\vspace{0.3cm}
+
+Les N équations relatives aux N traceurs considérés peuvent donc se mettre sous la forme :
+
+$ \displaystyle \left\lbrace \frac{\Delta C_{i}}{\Delta t}=S_{i}\mbox{ };\mbox{ } i=1,N \right\rbrace $, où le terme $S_{i}$ représente les sources internes et externes du traceur $i$.
+
+Dans la mesure où TRACER est capable de simuler le transport de plusieurs traceurs avec la prise en compte de termes sources, il permet la résolution de telles équations et donc la conception de modèles de qualité d'eau.\\
+Un module de qualité d'eau est ainsi caractérisé dans TRACER par le traitement couplé des différents traceurs étudiés et la description des termes sources internes.
+
+\vspace{0.3cm}
+
+On écrit le terme source interne du traceur i sous la forme suivante :
+
+\begin{equation}
+S_{int \mbox{ } ernes_i}=\displaystyle \sum _{j=0}^{N}\lambda_{i}^{j}C_{j}+\frac{\sum_{j=0}^{N}\mu_{i}^{j}C_{j} }{h}
+\end{equation}
+
+$\lambda^{0}_{i}$ et $\mu^{0}_{i}$  sont les termes qui ne dépendent pas d'un traceur ; on pose : $C_{0} = 1$)
+
+Dans l'égalité ci-dessus, le premier terme représente les sources internes volumiques (réactions chimiques,...), tandis que le second terme représente le terme sources internes surfaciques (dépôt, remise en suspension, évaporation,...).\\
+Selon le module de qualité d'eau, les matrices $[\lambda]$ et $[\mu]$ contenant les coefficients $\lambda^{j}_{i}$ et $\mu^{j}_{i}$ s'écriront différemment. Dans le cas de traceurs conservatifs (utilisation de l'outil TRACER en transport pur), TRACER fait appel à un module dans lequel les sources internes sont simplement mises à zéro.\\
+Ces termes sources internes relatifs aux processus de qualité d'eau sont traités de manière explicite dans l'équation de transport-diffusion, dans la mesure où ils dépendent de la concentration des autres traceurs étudiés, inconnue au pas $n+1$.
+
+\subsection{Leur intégration dans le système MASCARET}
+
+
+\subsubsection{L'organisation au sein du système}
+
+TRACER utilise les résultats issus du calcul hydraulique pour simuler le transport (convection - diffusion - prise en compte des sources externes et internes) de traceurs. \\
+Dans le cas de l'existence d'interactions entre ces traceurs ou de lois d'évolution propre des traceurs, on utilise un modèle de qualité d'eau, afin de déterminer les sources internes de traceurs intervenant dans l'équation de transport.\\
+Les sources internes de traceurs sont calculées dans les modules de qualité d'eau du Système MASCARET, à chaque pas de temps de calcul, en fonction de paramètres physiques et des concentrations des différents traceurs. Ensuite, elles sont fournies à l'outil TRACER, qui calcule le devenir des traceurs en rivière (par convection et diffusion) en tenant compte de ces termes sources.\\
+Le schéma organisation globale du système MASCARET pour les études de qualité d'eau est présenté sur la figure~\ref{fig4}.
+
+
+
+
+
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.40]{figure4.eps}
+  \caption{Organigramme de fonctionnement du Système MASCARET pour une étude de qualité d'eau}
+  \label{fig4}
+ \end{center}
+\end{figure}
+
+
+
+
+
+\subsubsection{Modules de qualité d'eau}
+
+Plusieurs modules de qualité d'eau sont disponibles en bibliothèque dans le système MASCARET et sont utilisables via TRACER :
+\begin{itemize}
+\item Module $O_{2}$ : modèle simplifié d'oxygène dissous
+\item Module BIOMASS : modèle de biomasse phytoplanctonique
+\item Module EUTRO : modèle d'eutrophisation en rivière (oxygène dissous et biomasse algale)
+\item Module MICROPOL : modèle d'évolution des métaux lourds ou radioéléments, avec prise en compte de leur interaction avec les sédiments fins (matières en suspension)
+\item Module THERMIC : modèle d'évolution de la température de l'eau sous l'influence des flux atmosphériques.
+\end{itemize}
+
+
+\vspace{0.3cm}
+
+Les modules et leurs fonctionnalités sont présentés dans les parties suivantes, dans lesquelles sont également détaillés les termes sources internes relatifs à chacun des modules.
+A noter que la structure adoptée dans le Système MASCARET pour l'étude du devenir des traceurs en rivière (figure~\ref{fig4}) permet un ajout aisé de nouveaux modules de qualité d'eau, par simple programmation des termes relatifs aux sources internes considérées.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{MODULE $O_{2}$}
+
+
+
+Le module $O_{2}$ est un modèle simple d'évolution de l'oxygène, intermédiaire entre un modèle du type Streeter-Phelpsé~\cite{[11]}, qui se restreint à la modélisation de la ré-aération et de la charge oxydable globale, et un modèle plus complet, simulant plusieurs processus d'oxydation et représentant explicitement l'évolution phytoplanctonique et son influence sur l'oxygène (tel que le fait le module EUTRO). Le module présente comme avantage sa simplicité (huit paramètres à caler, en excluant le paramétrage des seuils). Certains paramètres importants étant pris constants (respiration végétale, demande benthique par exemple), son utilisation est par conséquent limitée à des phénomènes de période courte (de l'ordre de quelques jours, type vidange de retenue). Il met en jeu trois traceurs :
+
+\begin{itemize}
+\item l'oxygène dissous $O_{2}$ ($mgO_{2}.l^{-1}$)
+\item la charge organique $L$ ($mgO_{2}.l^{-1}$)
+\item la charge ammoniacale $NH_{4}$ ($mgO_{2}.l^{-1}$)
+\end{itemize}
+
+\vspace{0.3cm}
+
+Ces variables sont transportées et dispersées dans la masse d'eau et leur évolution dans la rivière obéit donc à l'équation de convection-dispersion, avec l'intervention de sources externes et internes. Six facteurs influençant la concentration d'oxygène dissous sont considérés :
+
+\vspace{0.3cm}
+
+\begin{itemize}
+\item quatre facteurs qui consomment de l'oxygène : la charge organique, la charge ammoniacale, la demande benthique et la respiration végétale
+\item deux processus qui créent de l'oxygène : la photosynthèse et la ré-aération
+\end{itemize}
+
+
+Les termes relatifs aux sources internes de chacun des traceurs considérés sont explicités dans les paragraphes suivants.
+
+
+\subsection{Oygène dissous}
+
+\subsubsection*{La demande benthique}
+
+La demande benthique $BEN$ est donnée par l'utilisateur. Elle s'exprime en $gO_{2}.m^{-2}.j^{-1}$. Elle est corrigée en fonction de la température $T$ suivant la relation :
+
+\begin{equation}
+BEN_{T}=BEN_{20^{\circ}C}\times 1,065^{T-20}
+\end{equation}
+
+Le tableau suivant donne quelques valeurs typiques de la demande benthique.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline Type de fond & Valeur typique de $BEN$ ($gO_{2}.m^{-2}.j^{-1}$) à $20^{\circ}C$ \\ 
+\hline Bactéries filamenteuses ($10\mbox{ }gO_{2}.m^{-2}$) & 7 \\ 
+\hline Boues de rejets d'eaux usées, proche du rejet & 4 \\ 
+\hline Boues de rejets d'eaux usées, loin du rejet & 1,5 \\ 
+\hline Vase estuarienne & 1,5 \\ 
+\hline Fond sableux & 0,05 \\ 
+\hline Sol minéral & 0,007 \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+
+\subsubsection*{La respiration végétale}
+
+La respiration végétale $R$ (en $mgO_{2}.l^{-1}.j^{-1}$) est donnée par l'utilisateur.
+
+\subsubsection*{La photosynthèse}
+
+La photosynthèse $P$ (en $mgO_{2}.l^{-1}.j^{-1}$) dépend des algues, de la profondeur d'eau et de la lumière. Son ordre de grandeur est compris entre $0.3\mbox{ } mgO_{2}.l^{-1}.j^{-1}$ et $9\mbox{ }mgO_{2}.l^{-1}.j^{-1}$ selon la nature du cours d'eau~\cite{[12]}. Dans le modèle $O_{2}$, elle est donnée par l'utilisateur.
+
+\subsubsection*{La ré-aération}
+
+\subsubsection*{a) La ré-aération naturelle}
+
+La ré-aération est un apport d'oxygène au travers de la surface libre. A l'échelle macroscopique, elle peut être modélisée comme un terme proportionnel à ($C_{s}$ - [$O_{2}$]), où $C_{s}$ est la concentration de saturation en oxygène dans l'eau (en $mgO_{2}.l^{-1}$) (Rappel : $C_{s} = 9\mbox{ }mg.l^{-1}$ à $20^{\circ}C$). On a donc :
+
+\begin{equation}
+\mbox{Réaération}=k_{2}\left( C_{s}-\lbrack O_{2} \rbrack \right)
+\end{equation}
+
+Le coefficient $k_{2}$ ($j^{-1}$) est un paramètre du modèle. Ses ordres de grandeur sont indiqués dans le tableau ci-dessous (d'après~\cite{[12]}).
+
+\vspace{0.3cm}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline Type de cours d'eau & Intervalle de $k_{2}$ ($j^{-1}$) à $20^{\circ}C$ \\ 
+\hline Small ponds ad backwaters & $ 0,10-0,23 $ \\ 
+\hline Sluggish streams and large lakes & $ 0,23-0,35 $ \\ 
+\hline Large streams of low velocity & $0,35-0,46$ \\ 
+\hline Large streams of normal velocity & $ 0,46-0,69 $ \\ 
+\hline Swift streams & $ 0,69-1,15 $ \\ 
+\hline Rapids and water falls & $ >1,15 $ \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+
+Un grand nombre de formules existent pour calculer $k_{2}$, ce qui dénote la faible connaissance de ce processus. On peut distinguer des formules conceptuelles, qui ne sont valables que dans les conditions permises par les hypothèses, et des formules semi-empiriques et empiriques, valables là où les conditions ne s'éloignent pas trop des conditions de calibration. Toutes les formules sont en réalité peu différentes lorsque la hauteur d'eau est comprise entre $0,3$ et $3\mbox{ }m$. Le modèle $O_{2}$ permet d'utiliser quatre formules~\cite{[13]}) :
+
+\begin{equation}
+k_{2}=5,23Uh^{-1,67}\mbox{	(Tenessee Valley Authority)}
+\end{equation}
+
+\begin{equation}
+k_{2}=5,33U^{0,67}h^{-1.85}\mbox{	(Owens et al.)}
+\end{equation}
+
+\begin{equation}
+k_{2}=0,746U^{2,695}h^{-3,085}J^{-0,823}\mbox{	(Churchill et al.)}
+\end{equation}
+
+\begin{equation}
+k_{2}=3,9U^{0,5}h^{-1,5}\mbox{	(O'Connor et Dobbins)}
+\end{equation}
+
+La formule d'O'Connor et Dobbins semble fournir les meilleurs résultats pour les rivières peu profondes. Pour les rivières profondes et rapides, on préférera celle de Churchill et al. Le diagramme suivant montre les domaines d'utilisation de chacune des trois formules~\cite{[13]}
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.80]{figure1.eps}
+  \caption{Domaines de validité des formules d'Owens et al., Churchill et al. et d'O'Connor et Dobbins~\cite{[13]}}
+  \label{fig1}
+ \end{center}
+\end{figure}
+
+Une option permet dans le modèle d'utiliser une valeur fixe de $k_{2}$, choisie par l'utilisateur, ou l'une des quatre formules décrites ci-dessus, ou encore de laisser le code choisir automatiquement l'une des trois dernières formules suivant les conditions hydrauliques locales et le schéma précédent (figure~\ref{fig1}). La valeur de $k_{2}$, valable à $20^{\circ}C$, est corrigée en fonction de la température suivant la formule :
+
+\begin{equation}
+k_{2}=\left(k_{2}\right)_{20^{\circ}C}1,0241^{T-20}
+\end{equation}
+
+La concentration d'oxygène à saturation $C_{s}$ peut être déterminée à partir de la température de l'eau (à $20^{\circ}C$, $C_{s} =9 \mbox{ }mg.l^{-1}$). Celle-ci devient donc un paramètre qu'il faut connaître et pourrait être elle aussi calculée si un modèle de température comme THERMIC lui était associé. Pour calculer $C_{s}$, Elmore et Hayes (cité dans~\cite{[13]}) donnent la formule suivante (avec $T$ en $^{\circ}C$) :
+
+
+\begin{equation}
+C_{s}=14,652-0,41022T+0,00799T^{2}-7,7774.10^{-5}T^{3}
+\end{equation}
+
+Des modèles plus récents incluent une correction pour la pression atmosphérique et, dans les estuaires, pour la salinité. Cependant, nous considèrerons que nous sommes loin des conditions estuariennes et que les variations de pressions impliquent des variations de la concentration en oxygène dissous négligeables par rapport à celles dont nous avons besoin. L'équation suivante de Montgomery et al.(cité dans~\cite{[13]}) ne s'éloigne des formules standards que de $\pm \mbox{ }0.02\mbox{ } mg.l^{-1}$ entre $0$ et $50^{\circ}C$ lorsque la salinité est négligeable.
+
+
+\begin{equation}
+C_{s}=\frac{468}{31,6+T}
+\end{equation}
+
+
+Le modèle permet de choisir pour $C_{s}$ une valeur fixe donnée par l'utilisateur ou l'une des $2$ formules décrites ci-dessus.
+
+\subsubsection*{b) La ré-aération due aux seuils}
+
+Un seuil peut apporter de $1$ à $3 mg.l^{-1}$ d'oxygène dissous~\cite{[13]}. On définit $r$ comme le rapport $\displaystyle \frac{\left(C_{s}-C_{u}\right)}{\left(C_{s}-C_{d}\right)}$.\\
+Avec $C_{u}$ = concentration à l'amont du seuil, $C_{d}$ = concentration à l'aval du seuil. La connaissance de  $C_{u}$ et de $r$ permet de calculer $C_{d}$. Dans le modèle, on impose directement $C_{d}$ à partir de cette formule. Ce terme n'est donc pas traité comme une source. Le rapport $r$ peut être déterminé à l'aide de formules de la littérature~\cite{[13]}. Parmi lesquelles, on peut citer :
+
+\begin{equation}
+r=1+0,5ab\Delta h
+\end{equation}
+
+\begin{equation}
+r=0,11ab\left(1+0,46T\right)\Delta h
+\end{equation}
+
+\begin{equation}
+r=1+0,69\Delta h\left(1-0.11\Delta \right)\left(1+0,46T\right)
+\end{equation}
+
+
+\begin{equation}
+r=1+0,38ab\Delta h\left(1-0.11\Delta \right)\left(1+0,46T\right)
+\end{equation}
+
+avec $a$ = mesure de qualité de l'eau ($= 0,65$ pour eau très polluée, $= 1,8$ pour eau claire), $b$= paramètre caractéristique du type du seuil, $\Delta h$ = différence de hauteur d'eau entre l'amont et l'aval. Le tableau suivant donne des valeurs de $b$ pour différents types de seuil (d'après~\cite{[13]}) :
+
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline Type de seuil & $b$ \\ 
+\hline flat broad-crested regular step & $0,7$ \\ 
+\hline flat broad-crested irregular step & $0,8$ \\ 
+\hline flat broad-crested vertical face & $0,8$ \\ 
+\hline flat broad-crested straight slope face & $0,9$ \\ 
+\hline flat broad-crested curved face & $ 0,75 $ \\ 
+\hline round broad-crested curved face & $ 0,6 $ \\ 
+\hline sharp-crested straight slope face & $ 1,05 $ \\ 
+\hline sharp-crested vertical slope face & $0,8$ \\ 
+\hline sluice gate with submerged discharge & $0,05$ \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+
+
+Le modèle permet de choisir pour $r$ une valeur fixe donnée par l'utilisateur ou l'une des quatre formules décrites précédemment.
+
+\subsection{Charge organique}
+
+La charge organique $L$ (en $mgO_{2}.l^{-1}$) est une variable évoluant au cours du temps à partir de sa condition initiale selon une loi qu'on suppose être du $1^{\mbox{er}}$ ordre :
+
+\begin{equation}
+F\left(\left[L\right]\right)=-k_{1}\left[L\right]
+\end{equation}
+
+$k_{1}$ est la constante de la cinétique de dégradation de la charge organique ($j^{-1}$). C'est un paramètre du modèle. Dans le modèle $O_{2}$, la charge organique est considérée comme une variable indépendante.
+
+\subsection{Charge ammoniacale}
+
+Consommant également de l'oxygène, la variable charge ammoniacale $NH_{4}$ (en $mgO_{2}.l^{-1}$) suit aussi une loi de décroissance du $1^{\mbox{er}}$ ordre
+
+\begin{equation}
+F\left(\left[NH_{4}\right]\right)=-k_{4}\left[NH_{4}\right]
+\end{equation}
+
+$k_{4}$ est la constante de cinétique de nitrification ($j^{-1}$), un paramètre du modèle. Dans le modèle $O_{2}$, la charge ammoniacale est considérée comme une variable indépendante.
+
+\subsection{Equation résolue}
+
+La concentration d'oxygène dissous $\left[O_{2}\right]$ (en $mgO_{2}.l^{-1}$) évolue sous l'action de sources qui s'écrivent :
+
+\begin{equation}
+F\left(\left[O_{2}\right]\right)=k_{2}\left(C_{s}-\left[O_{2}\right]\right)-k_{1}\left[L\right]-k_{4}\left[NH_{4}\right]+P-R- \displaystyle \frac{BEN_{T}}{h}
+\end{equation}
+
+Ainsi, en utilisant la terminologie et les notations de la partie $C-$ et en fixant $C_{1} = \left[O_{2}\right]$, $C_{2} = \left[L\right]$ et $C_{3} = \left[NH_{4}\right]$, les matrices $\left[\lambda\right]$ et$ \left[\mu\right]$ contenant les coefficients $\lambda _i^j$ et $\mu _i^j$ s'écrivent :
+
+\vspace{0.3cm} 
+\begin{center}
+$\left[\lambda\right]=\displaystyle \frac{1}{86400} \left(\begin{array}{c|c|c}
+-k_{2} & -k_{1} & k_{4} \\ 
+0 & -k_{1} & 0 \\ 
+0 & 0 & k_{4}
+\end{array} 
+\right) $ ;                         $\left[\mu\right]=\left(\begin{array}{ccc}
+0 & 0 & 0 \\ 
+0 & 0 & 0 \\ 
+0 & 0 & 0
+\end{array} 
+\right) $
+\end{center}
+
+\vspace{0.3cm}
+
+(\textit{Remarque} : Les divisions par $86400$ sont effectuées pour ramener l'échelle de temps à la seconde)
+Les seuls termes $\lambda^{0}_{1}$ et $\mu^{0}_{1}$ non nuls sont
+
+\vspace{0.3cm}
+\begin{center}
+$\lambda^{0}_{1}= \displaystyle \frac{\left(k_{2}C_{s}+P-R\right)}{86400}$ ; $\mu^{0}_{1}= \displaystyle \frac{-BET_{T}}{86400}$
+\end{center}
+
+\section{MODULE BIOMASS}
+
+Le modèle BIOMASS est un modèle de qualité d'eau permettant le calcul de la biomasse algale. Il estime l'ampleur de la colonisation végétale en fonction de divers paramètres : ensoleillement, température de l'eau, degré de fertilisation, taux de renouvellement des eaux, turbidité et toxicité de l'eau~\cite{[14]}. Il prend en compte cinq traceurs :
+
+\begin{itemize}
+\item la biomasse phytoplanctonique $PHY$
+\item les principaux nutriments qui influencent sa production (phosphore, azote) ainsi que les formes minérales associées, à savoir :
+\begin{itemize}
+\item[$\circ$] le phosphore minéral dissous assimilable par le phytoplancton $PO_{4}$
+\item[$\circ$] phosphore dégradable non assimilable par le phytoplancton $POR$
+\item[$\circ$] l'azote minéral dissous assimilable par le phytoplancton $NO_{3}$
+\item[$\circ$] l'azote dégradable non assimilable par le phytoplancton NOR.
+\end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+
+Ces variables s'expriment toutes en $mg.l^{-1}$ sauf la biomasse qui s'exprime en $\mu g$(chlorophylle a)$.l^{-1}$.
+Par hypothèse, ces substances sont considérées se comporter comme des traceurs, c'est-à-dire qu'elles sont transportées et dispersées dans la masse d'eau. De plus, elles réagissent les unes avec les autres par le biais de transformations bio-chimiques. \\
+\\
+Les paragraphes suivants explicitent les termes sources internes relatifs à chacun des cinq traceurs représentés.
+
+\subsection{Phytoplancton}
+
+\subsubsection*{La croissance algale}
+
+Le taux de croissance algal $CP$ ($j^{-1}$) est donné par l'équation :
+
+\begin{equation}
+CP=C_{max}RAYg_{1}LNUT\alpha_{1}
+\end{equation}
+
+avec $C_{max}$ = taux de croissance algale maximale à $20^{\circ}C$ ; on peut prendre  $C_{max} = 2$. $RAY$ représente l'effet de l'ensoleillement sur la croissance algale ; ce paramètre adimensionnel appartient à l'intervalle $[0;1]$, $g_{1}$ représente l'effet de la température sur la croissance algale ; $g_{1} = T/20$, où $T$ est la température de l'eau ($^{\circ}C$) (valable pour $5^{\circ}C < T < 25^{\circ}C$). $LNUT$ représente l'effet des nutriments phosphorés et azotés sur la croissance algale $\alpha_{1}$ = coefficient de toxicité de l'eau pour les algues ($\alpha_{1} = 1$ en l'absence de toxicité).\\
+\\
+$RAY$ est calculé par la formule de Smith intégrée sur la profondeur :
+
+\begin{equation}
+RAY=\displaystyle \frac{1}{k_{e}h}\ln \left( \frac{I_{0}+\sqrt{IK^{2}+I_{0}^{2}}}{I_{h}+\sqrt{IK^{2}+I_{h}^{2}}}\right)
+\end{equation}
+
+$k_{e}$ désigne le coefficient d'extinction du rayonnement solaire dans l'eau ($m^{-1}$). Il est calculé soit à partir de la profondeur de Secchi $Ps$ par la formule d'Atkins : $k_{e} = 1,7/Ps$, soit, si $Ps$ est inconnu, par la relation de Moss : $k_{e} = k_{pe}+\beta [PHY]$, où $k_{pe}$ est le coefficient de turbidité végétale sans phytoplancton ($m^{-1}$) et $\beta$ le coefficient de la relation de Moss ($\beta$ vaut $0,015$ environ). $IK$ est un paramètre de calage de la formule de Smith ($W.m^{-2}$), d'ordre de grandeur $100$. $I_{0}$ est densité de flux du rayonnement solaire à la surface ($W.m^{-2}$) et $I_{h}$ est densité de flux du rayonnement solaire au fond ($W.m^{-2}$) calculée par la formule suivante 
+
+
+\begin{equation}
+I_{h}=I_{0}\exp \left( -k_{e}h\right)
+\end{equation}
+
+$LNUT$ est calculé par la formule :
+
+\begin{equation}
+LNUT=min\left( \displaystyle \frac{\left[PO_{4}\right]}{KP+\left[PO_{4}\right]}, \frac{\left[NO_{3}\right]}{KN+\left[NO_{3}\right]}\right)
+\end{equation}
+
+
+avec  $KP$ = constante de demi-saturation en phosphate ($mg.l^{-1}$) (environ $0,005\mbox{ } mgP.l^{-1}$), $KN$ = constante de demi-saturation en nitrates ($mg.l^{-1}$) (environ $0,03\mbox{ }mgN.l^{-1}$).\\
+\\
+\textit{Remarque} : L'influence des nutriments sur la croissance du phytoplancton $PHY$ n'intervient que par L'intermédiaire du facteur limitant $LNUT$. Lorsque $PO_{4}$ et $NO_{3}$ sont suffisamment grands, $LNUT$ est proche de $1$ et l'évolution du phytoplancton ne dépend plus des nutriments. Dans ce cas, il n'est plus utile de modéliser les cycles du phosphore et de l'azote pour simuler l'évolution du phytoplancton.
+
+\subsubsection*{La disparition algale}
+
+Le taux de disparition algal $DP$ ($j^{-1}$) est donné par l'équation :
+
+\begin{equation}
+DP=(RP+MP)g_{2}
+\end{equation}
+
+avec $RP$ = taux de respiration de la biomasse algale à $20^{\circ}C$ ($j^{-1}$), $MP$= taux de disparition de la biomasse algale à $20^{\circ}C$ ($j^{-1}$). $g_{2}$ représente l'effet de la température sur la disparition algale. $g_{2}= T/20$ (valable pour $5^{\circ}C < T < 25^{\circ}C$). $MP$ est donné par la relation suivante :
+
+\begin{equation}
+MP=M_{1}+M_{2}[PHY]+\alpha_{2}
+\end{equation}
+
+avec $M_{1}$ et $M_{2}$ = coefficients de mortalité algale à $20^{\circ}C$, $\alpha_{2}$ = coefficient de toxicité de l'eau pour les algues.
+
+\subsection{Nutriments azotés et phosphorés}
+
+On utilise les paramètres physiques et biochimiques suivants pour décrire les processus influençant l'évolution des nutriments azotés et phosphorés :
+
+\begin{itemize}
+\item $fp$ : proportion moyenne de phosphore dans les cellules du phytoplancton vivant ($mgP.\mu gChla^{-1}$)
+\item $dtp$ : proportion de phosphore directement assimilable dans le phytoplancton mort ($\%$)
+\item $k_{1}$ : taux de transformation du $POR$ en $PO_{4}$ par le biais de la minéralisation bactérienne ($j^{-1}$)
+\item $k_{2}$: taux de transformation du $NOR$ en $NO_{3}$ par le biais de la minéralisation bactérienne hétérotrophe et autotrophe ($j^{-1}$)
+\item $fn$ :proportion moyenne d'azote dans les cellules du phytoplancton vivant ($mgN.\mu gChla^{-1}$)
+\item $dtn$ : proportion d'azote directement assimilable dans le phytoplancton mort ($\%$)
+\item $F_{POR}$ flux de dépôt du phosphore organique non algal ($g.m^{-2}s$). $F_{POR}=W_{POR}[POR]$ , $W_{POR}$ est la vitesse de sédimentation du phosphore organique non algal ($m.s^{-1}$)
+\item $F_{NOR}$ flux de dépôt de l'azote organique non algal ($g.m^{-2}s$). $F_{NOR}=W_{NOR}[NOR]$ , $W_{NOR}$ est la vitesse de sédimentation de l'azote organique non algal ($m.s^{-1}$)
+\end{itemize}
+
+\vspace{0.3cm}
+
+A noter que le fond et les processus qui s'y déroulent ne sont pas modélisés dans le modèle BIOMASS. En effet, le dépôt n'est représenté que par le biais d'un flux de dépôt et, une fois les formes organiques déposées, elles n'apparaissent plus dans les équations et ne peuvent plus être remises en suspension. Ces flux de dépôt correspondent donc à une perte de masse définitive.
+
+\subsection{Equations résolues}
+
+Les équations du modèle BIOMASS sont décrites ci-dessous, en détaillant les termes sources internes $S_{internes_i}$
+
+\vspace{0.3cm}
+
+traceur n$^{\circ}1$ : la biomasse phytoplanctonique
+
+\begin{equation}
+F\left(\left[PHY\right]\right)=\left(CP-DP\right)\left[PHY \right]
+\end{equation}
+
+traceur n$^{\circ}2$ : le phosphore minéral assimilable
+
+\begin{equation}
+F\left(\left[PO_{4}\right]\right)=fp\left(dtpDP-CP\right)\left[PHY \right]+k_{1}g_{2}[POR]
+\end{equation}
+
+traceur n$^{\circ}3$ : le phosphore non assimilable
+
+\begin{equation}
+F\left(\left[POR\right]\right)=fp\left(1-dtp\right)DP\left[PHY \right]-k_{1}g_{2}[POR]-\displaystyle \frac{F_{POR}}{h}
+\end{equation}
+
+traceur n$^{\circ}4$ : l'azote minéral assimilable
+
+\begin{equation}
+F\left(\left[NO_{3}\right]\right)=fn\left(dtDP-CP\right)\left[PHY \right]+k_{2}g_{2}[NOR]
+\end{equation}
+
+traceur n$^{\circ}5$ : l'azote non assimilable
+
+\begin{equation}
+F\left(\left[NOR\right]\right)=fn\left(1-dtn\right)DP\left[PHY \right]-k_{2}g_{2}[NOR]-\displaystyle \frac{F_{NOR}}{h}
+\end{equation}
+
+
+Ainsi, en utilisant la terminologie et les notations de la partie $C-$ et en fixant $C_{1} = \left[PHY\right]$, $C_{2} = \left[PO_{4}\right]$, $C_{3} = \left[POR\right]$, $C_{3} = \left[NO_{3}\right]$, $C_{5} = \left[NOR\right]$, les matrices ($5\times5$) $[\lambda]$ et $[\mu]$ contenant les coefficients $\lambda_{i}^{j}$ et $\mu _{i}^{j}$  s'écrivent (seuls les termes non nuls sont mentionnés) :
+
+\vspace{0.3cm} 
+\begin{center}
+$\lambda ^{j}_{i}=\displaystyle \frac{1}{86400} \left(\begin{array}{ccccc}
+CP-DP &  &  &  &  \\ 
+fp\left(dtpDP-CP\right) & k_{1}g_{2} &  &  &  \\ 
+fp\left(1-dtp\right)DP & -k_{1}g_{2} &  &  &  \\ 
+fn\left(dtnDP-CP\right) &  &  & k_{2}g &  \\ 
+fn\left(1-dtn\right)DP &  &  & -k_{2}g & 
+\end{array} 
+\right)$ ;                         $\mu^{j}_{i}=\left(\begin{array}{ccccc}
+ &  &  &  &  \\ 
+ &  &  &  &  \\ 
+ &  & -W_{POR} &  &  \\ 
+ &  &  &  &  \\ 
+ &  &  &  & W_{POR}
+\end{array}  
+\right) $
+\end{center}
+
+\vspace{0.3cm}
+
+Les termes $\lambda^{0}_{i}$ et $\mu^{0}_{i}$ sont nuls pour tout $i$.\\
+Les divisions par $86400$ sont effectuées pour ramener l'échelle de temps à la seconde
+
+\section{MODULE EUTRO}
+
+Le module EUTRO est un modèle décrivant l'oxygénation d'une rivière. Il ne se restreint pas à la modélisation de la réaération et de la charge oxydable globale, mais prend en compte l'effet de la photosynthèse végétale planctonique, en modélisant par ailleurs les nutriments azotés et phosphorés et leur effet sur le phytoplancton (\cite{[15]} et \cite{[16]}). \\
+Ce module se présente comme la réunion des modules $O_{2}$ et BIOMASS, avec un traitement de certains paramètres de manière plus précise (prise en compte de la charge ammoniacale dans les échanges entre azote et phytoplancton, prise en compte du phytoplancton dans le calcul de la photosynthèse). Plus sophistiqué que le module $O_{2}$, EUTRO nécessite de fixer les valeurs de $28$ paramètres (en excluant le paramétrage des seuils).
+
+\vspace{0.3cm}
+
+Il met en jeu huit traceurs :
+\begin{itemize}
+\item l'oxygène dissous $O_2$,
+\item la biomasse phytoplanctonique (qui consomme de l'oxygène par photosynthèse) $PHY$,
+\item les principaux éléments qui influencent leur production (phosphore, azote, charge ammoniacale, charge organique) ainsi que les formes minérales associées du phosphore et de l'azote :
+\begin{itemize}
+\item[$\circ$] le phosphore minéral dissous assimilable par le phytoplancton $PO_4$,
+\item[$\circ$] phosphore dégradable non assimilable par le phytoplancton $POR$,
+\item[$\circ$] l'azote minéral dissous assimilable par le phytoplancton $NO_3$,
+\item[$\circ$] l'azote dégradable non assimilable par le phytoplancton $NOR$,
+\item[$\circ$] la charge organique (consommant de l'oxygène) $L$.
+\end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+
+Ces variables s'expriment en $mg.l^{-1}$, sauf la biomasse qui s'exprime en $\mu g (Chlorophylle a).l^{-1}$.\\
+Par hypothèse, ces substances sont considérées se comporter comme des traceurs, c'est à dire qu'elles sont transportées et dispersées dans la masse d'eau. De plus, elles réagissent les unes avec les autres par le biais de transformations bio-chimiques.
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.35]{figure2.eps}
+  \caption{Représentation schématique de l'écosystème modélisé par le module EUTRO~\cite{[15]}}
+  \label{fig2}
+ \end{center}
+\end{figure}
+
+\subsection{Les processus représentés}
+
+Le figure~\ref{fig2} présente succinctement les phénomènes modélisés par le module EUTRO.\\
+Les parties suivantes exposent les paramètres utilisés et détaillent les termes sources internes pour chacun des huit traceurs étudiés.\\
+Comme pour le modèle BIOMASS, le fond et les processus qui s'y déroulent ne sont pas modélisés dans le modèle EUTRO (seul un flux de dépôt est pris en compte et les quantités déposées n'apparaissent plus dans les équations).
+
+\subsection{Phytoplancton}
+
+\subsubsection*{La croissance algale}
+
+Le taux de croissance algal $CP$ ($j^{-1}$) est donné par l'équation :
+
+\begin{equation}
+CP=C_{max}RAYg_{1}LNUT\alpha_{1}
+\end{equation}
+
+Les paramètres $C_{max}$, $RAY$, $g_{1}$ et $\alpha_{1}$ sont définis de la même manière que dans le module BIOMASS.\\
+Par contre, le paramètre représentant l'effet des nutriments phosphorés et azotés sur la croissance algale $LNUT$ prend maintenant en compte la charge ammoniacale assimilable par le phytoplancton $NH_{4}$ et est ainsi défini par :
+
+
+\begin{equation}
+LNUT=min\left( \displaystyle \frac{\left[PO_{4}\right]}{KP+\left[PO_{4}\right]}, \frac{\left[NO_{3}\right]+\left[NH_{4}\right]}{KN+\left[NO_{3}\right]+\left[NH_{4}\right]}\right)
+\end{equation}
+
+avec $KP$  la constante de demi-saturation en phosphate ($mg.l^{-1}$) (environ $0,005\mbox{ }mgP.l^{-1}$), et $KN$ la constante de demi-saturation en nitrates ($mg.l^{-1}$) (environ $0,03\mbox{ }mgN.l^{-1}$)\\
+\textit{Remarque} : L'influence des nutriments sur la croissance du phytoplancton PHY n'intervient que par l'intermédiaire du facteur limitant $LNUT$. Lorsque $PO_{4}$ et $NO_{3}$ sont suffisamment grands, $LNUT$ est proche de $1$ et l'évolution du phytoplancton ne dépend plus des nutriments. Dans ce cas, il n'est plus utile de modéliser les cycles du phosphore de l'azote pour simuler l'évolution du phytoplancton.
+
+\subsubsection*{La disparition algale}
+
+Le taux de disparition algal $DP$ ($j^{-1}$) est donné par l'équation :
+
+
+\begin{equation}
+DP=(RP+MP)g_{2}
+\end{equation}
+
+où $RP$ et $MP$ sont définis comme dans le module BIOMASS. Par contre, l'effet de la température sur la disparition algale est maintenant représenté par la fonction $g_{2}$ telle que : $g_{2} = (1,050)^{T-20}$, où $T$ est la température de l'eau ($^{\circ}C$) (formule valable pour $5^{\circ}C < T < 25^{\circ}C$)
+
+\subsection{Nutriments azotés et phosphorés}
+
+
+On utilise les paramètres physiques et biochimiques suivants pour décrire les processus influençant l'évolution des nutriments azotés et phosphorés :
+
+\begin{itemize}
+\item $fp$: proportion moyenne de phosphore dans les cellules du phytoplancton vivant ($mgP.\mu gChla^{-1}$)
+\item $dtp$ : proportion de phosphore directement assimilable dans le phytoplancton mort ($\%$)
+\item $k_{320}$	taux de transformation du $POR$ en $PO_{4}$ par le biais de la minéralisation bactérienne à $20^{\circ}C$ ($j^{-1}$)
+\item $k_{620}$ :taux de transformation du $NOR$ en $NO_{3}$ par le biais de la minéralisation bactérienne hétérotrophe et autotrophe à $20^{\circ}C$ ($j^{-1}$)
+\item $fn$ : proportion moyenne d'azote dans les cellules du phytoplancton vivant ($mgN.\mu gChla^{-1}$)
+\item $dtn$ : proportion d'azote directement assimilable dans le phytoplancton mort ($\%$)
+\item $n$ : quantité d'oxygène consommée par nitrification ($mgO_{2}.mgNH_{4}^{-1}$)
+\item $k_{520}$ : cinétique de nitrification à $20^{\circ}C$ ($j^{-1}$)
+\item $F_{POR}$ flux de dépôt du phosphore organique non algal ($g.m^{-2}s$) $=W_{POR}[POR]$ , $W_{POR}$ est la vitesse de sédimentation du phosphore organique non algal ($m.s^{-1}$)
+\item $F_{NOR}$ flux de dépôt de l'azote organique non algal ($g.m^{-2}s$) $=W_{NOR}[NOR]$ , $W_{NOR}$ est la vitesse de sédimentation de l'azote organique non algal ($m.s^{-1}$)
+\item $Rn$ : proportion d'azote assimilée sous forme de $NH_{4} = \displaystyle \frac{\left[NH_{4}\right]}{\left[NO_{3}\right]+\left[NH_{4}\right]}$
+\end{itemize}
+
+\subsection{Charge organique}
+
+On utilise les paramètres physiques et biochimiques suivants pour caractériser les processus influençant l'évolution de la charge organique ($L$) :
+
+\begin{itemize}
+\item $k_{120}$ : constante de cinétique de dégradation de la charge organique à $20^{\circ}C$ ($j^{-1}$)
+\item $g_{3}$ : effet de la température sur la dégradation de la charge organique $= (1,047)^{T-20}$, où $T$ est la température de l'eau ($^{\circ}C$) (formule valable pour $5^{\circ}C < T < 25^{\circ}C$)
+\item $F_{LOR}$ flux de dépôt du phosphore organique non algal ($g.m^{-2}s^{-1}$) $=W_{LOR}[LOR]$ , $W_{LOR}$ est la vitesse de sédimentation de la charge organique ($m.s^{-1}$)
+\end{itemize}
+
+\subsection{Oxygène dissous}
+
+On utilise les paramètres physiques et biochimiques suivants pour caractériser les processus influençant le bilan en oxygène dissous ($O_{2}$) :
+
+\begin{itemize}
+\item $f$ : quantité d'oxygène produite par photosynthèse ($mgO_{2}.mgNH_{4}^{-1}$)
+\item $BEN$ : demande benthique en oxygène ($gO_{2}.m^{-2}.j^{-1}$) (cf. Module $O_{2}$)
+\item $k_{2}$ : coefficient d'échange gazeux eau-atmosphère, aussi appelé coefficient de ré-aération, à $20^{\circ}C$ ($j^{-1}$). Il peut-être donné par l'utilisateur ou calculé à partir de formules de la littérature (cf. Module $O_{2}$). 
+\item $g_{4}$ : effet de la température sur la réaération naturelle $= (1,025)^{T-20}$, où $T$ est la température de l'eau ($^{\circ}C$) (formule valable pour $5^{\circ}C < T < 25^{\circ}C$)
+\item $Cs$ : concentration de saturation en oxygène de l'eau ($mg.l^{-1}$). Elle peut être déterminée à partir de la température de l'eau (cf. Module $O_{2}$).
+\item $r$ : rapport définissant l'influence des seuils sur la concentration en oxygène (cf. Module $O_{2}$)
+\end{itemize}
+
+\subsection{Equations résolues}
+
+Les équations du modèle EUTRO sont décrites ci-dessous :
+
+
+\vspace{0.3cm}
+
+\textbf{traceur n$^{\circ}1$} : la biomasse phytoplanctonique
+
+\begin{equation}
+F\left(\left[PHY\right]\right)=\left(CP-DP\right)\left[PHY \right]
+\end{equation}
+
+\textbf{traceur n$^{\circ}2$} : le phosphore minéral assimilable
+
+\begin{equation}
+F\left(\left[PO_{4}\right]\right)=fp\left(dtpDP-CP\right)\left[PHY \right]+k_{320}g_{2}[POR]
+\end{equation}
+
+\textbf{traceur n$^{\circ}3$} : le phosphore non assimilable
+
+\begin{equation}
+F\left(\left[POR\right]\right)=fp\left(1-dtp\right)DP\left[PHY \right]-k_{320}g_{2}[POR]-\displaystyle \frac{F_{POR}}{h}
+\end{equation}
+
+\textbf{traceur n$^{\circ}4$} : l'azote minéral assimilable
+
+\begin{equation}
+F\left(\left[NO_{3}\right]\right)=-fn\left(1-Rn\right)CP\left[PHY \right]+k_{520}g_{2}[NH_{4}]
+\end{equation}
+
+\textbf{traceur n$^{\circ}5$} : l'azote non assimilable
+
+\begin{equation}
+F\left(\left[NOR\right]\right)=fn\left(1-dtn\right)DP\left[PHY \right]-k_{620}g_{2}[NOR]-\displaystyle \frac{F_{NOR}}{h}
+\end{equation}
+
+\textbf{traceur n$^{\circ}6$} : la charge ammoniacale
+
+\begin{equation}
+F\left(\left[NH_{4}\right]\right)=fn\left(dtn.DP-Rn.CP\right)\left[PHY \right]-k_{620}g_{2}[NOR]-k_{520}g_{2}[NH_{4}]
+\end{equation}
+
+\textbf{traceur n$^{\circ}7$} : la charge organique
+
+\begin{equation}
+F\left(\left[L\right]\right)=fMP[PHY]-k_{120}g_{3}[L]-\displaystyle \frac{F_{LOR}}{h}
+\end{equation}
+
+
+\textbf{traceur n$^{\circ}8$} : l'oxygène dissous
+
+\begin{equation}
+F\left(\left[O_{2}\right]\right)=f\left(CP-RP\right)\left[PHY \right]-nk_{520}g_{2}[NH_{4}]-k_{120}g_{3}[L]-k_{2}g_{4}\left(CS-[0_{2}]\right)-\displaystyle \frac{BEN}{h}g_{2}
+\end{equation}
+
+
+\subsection{Modélisation en traceurs}
+
+
+Ainsi, en utilisant la terminologie et les notations de la partie C- et en fixant : $C_{1} = \left[PHY\right]$, $C_{2} = \left[PO_{4}\right]$, $C_{3} = \left[POR\right]$, $C_{3} = \left[NO_{3}\right]$, $C_{5} = \left[NOR\right]$, $C_{6} = \left[NH_{4}\right]$, $C_{7} = \left[L\right]$, et $C_{8} = \left[O_{2}\right]$, les matrices ($8\times 8$) [$\lambda$] et [$\mu$] contenant les coefficients $\lambda_{i}^{j}$ et $\mu _{i}^{j}$ s'écrivent (seuls les termes non nuls sont mentionnés) :
+
+
+\vspace{0.3cm} 
+\begin{center}
+$\lambda ^{j}_{i}=\displaystyle \frac{1}{86400} \left(\begin{array}{cccccccc}
+CP-DP &  &  &  &  &  &  &  \\ 
+fp\left(dtpDP-CP\right) & k_{320}g_{2} &  &  &  &  &  &  \\ 
+fp\left(1-dtp\right)DP & -k_{320}g_{2} &  &  &  &  &  & \\ 
+-fn\left(1-Rn\right)CP &  &  &  & k_{520}g_{2} &  &  &  \\ 
+fn\left(1-dtn\right)DP &  &  & -k_{620}g_{2} &  &  &   &  \\
+fn(dtnDP-RnCP) &  &  & k_{620}g_{2} & k_{520}g_{2} &  &  & \\
+fMP &  &  &  &  &  & -k_{120}g_{3} &  \\
+f\left( CP-RPg_{1}\right) &  &  &  &  & -nk_{520}g_{2} & -k_{120}g_{3} & -k_{2}g_{4}
+\end{array}\right)
+$ ;                         $\mu^{j}_{i}=\left(\begin{array}{cccccccc}
+ &  &  &  &  &  &  &  \\ 
+ &  &  &  &  &  &  &  \\ 
+ &  & -W_{POR} &  &  &  &  &  \\ 
+ &  &  &  &  &  &  &  \\ 
+ &  &  &  & -W_{NOR} &  &  &  \\ 
+ &  &  &  &  &  &  &  \\ 
+ &  &  &  &  &  & -W_{LOR} &  \\ 
+ &  &  &  &  &  &  & 
+\end{array} 
+\right) $
+\end{center}
+
+\vspace{0.3cm}
+
+
+
+Les seuls termes $\lambda^{0}_{i}$ et $\mu^{0}_{i}$ non nuls sont :\\
+\begin{center}
+ $\lambda^{0}_{8} =(k_{2}g_{4}C_{s})/86400$  ;	$\mu^{0}_{8} =-BENg_{2}/86400$
+ \end{center}
+
+Les divisions par $86400$ sont effectuées pour ramener l'échelle de temps à la seconde.
+
+\section{MODULE MICROPOL}
+
+
+Le module MICROPOL simule le devenir d'un micropolluant (radioélément ou métal lourd) dans les trois compartiments considérés comme majeurs dans un écosystème fluvial : l'eau, les  matières en suspension (M.E.S.) et les sédiments de fond. Chacun de ces compartiments représente une classe homogène : les M.E.S. et sédiments pris en compte représentent la classe granulométrique des argiles et limons fins (sédiments fins de type cohésifs, de diamètre $< 20-25\mbox{ }\mu m$ environ), susceptibles de fixer majoritairement les micropolluants.\\
+Les matières en suspension (M.E.S.) constituent, par leur capacité d'adsorption et de désorption des micropolluants, l'un des premiers maillons de la chaîne de contamination. Elles sont transportées et dispersées dans la masse d'eau comme un traceur et subissent en plus les lois de la physique sédimentaire : elles se déposent dans les zones d'eau calme en donnant naissance à des sédiments de fond, et peuvent être remises en suspension sous l'action d'un fort débit. Les dépôts ne pouvant se déplacer, ils sont considérés comme des traceurs qui ne sont ni convectés ni dispersés par la masse d'eau, mais susceptibles d'être remis en suspension. 
+
+\vspace{0.3cm}
+
+Le modèle considère cinq traceurs :
+
+\begin{itemize}
+\item les matières en suspension (SS)
+\item les sédiments de fond (SF), ni convectés, ni dispersés
+\item l'espèce de micropolluant sous forme dissoute
+\item la fraction adsorbée sur les matières en suspension
+\item la fraction adsorbée sur les sédiments de fond, ni convectée, ni dispersée.
+\end{itemize}
+
+\subsubsection*{Remarques et limitations du module MICROPOL}
+
+
+\begin{itemize}
+\item Qu'elles soient en suspension ou déposées sur le fond, les matières sont considérées comme des traceurs passifs, c'est-à-dire n'influençant pas l'écoulement (pas de rétroaction). Cette hypothèse entraîne que la hauteur des dépôts doit être négligeable par rapport à la hauteur d'eau (le lit de la rivière est supposé non modifié).
+\item Il n'y a pas d'adsorption/désorption directe des micropolluants dissous sur les matières déposées, mais seulement sur les matières en suspension (le modèle suppose la prépondérance des échanges eau - M.E.S sur les échanges directs eau - sédiments de fond). Les sédiments de fond ne deviennent radioactifs que par l'intermédiaire du phénomène de dépôt des M.E.S. contaminées.
+
+\end{itemize}
+
+\subsection{Les matières en suspension}
+
+\subsubsection*{Description des phénomènes}
+
+Le modèle décrivant l'évolution des M.E.S. et des sédiments de fond intervenant dans MICROPOL est une représentation classique des lois de dépôt et de remise en suspension des M.E.S. de types cohésives, à savoir les lois de Krone~\cite{[17]} et Parthéniades~\cite{[18]}.
+
+\vspace{0.3cm}
+
+Chacun des deux processus nécessite la connaissance de deux constantes caractéristiques : 
+
+
+\begin{itemize}
+\item le dépôt se produit lorsque la tension de cisaillement sur le fond $\tau _{b}$ variable en fonction du débit, devient inférieure à une valeur seuil $\tau_{s}$, appelée tension de cisaillement critique de sédimentation. On suppose alors que les M.E.S. sédimentent à une vitesse constante $w$ (appelée vitesse de chute ou de sédimentation).
+\item la remise en suspension se produit lors du dépassement d'un nouveau seuil $\tau _{r}$, appelé tension de cisaillement critique de remise en suspension. Son importance est pondérée par une constante $e$, taux d'érosion caractéristique des M.E.S. déposées (encore appelé constante de Parthéniadès).
+\end{itemize}
+
+
+\subsubsection*{Mise en équations}
+
+Ces phénomènes se traduisent par les expressions suivantes des flux de dépôt ($SED$) et d'érosion ($RS$), en $kg.m^{-2}.s^{-1}$ :
+
+\begin{equation}
+SED(x,t)=\left\lbrace \begin{array}{ccc}
+wSS\left(1-\displaystyle \frac{\tau _{b}}{\tau_{s}}\right) & si & \tau _{b}<\tau _{s} \\ 
+0 & si & \tau _{b} \ge \tau _{s}
+
+\end{array} 
+\right.
+\end{equation}
+
+
+
+\begin{equation}
+RS(x,t)=\left\lbrace \begin{array}{ccc}
+e\left(\displaystyle \frac{\tau _{b}}{\tau_{s}}-1\right)\varepsilon(SF) & si & \tau _{b}>\tau _{s} \\ 
+0 & si & \tau _{b} \le \tau _{s}
+
+\end{array} 
+\right.
+\end{equation}
+
+
+
+où $\epsilon(x)$ est une fonction telle que $\varepsilon(x) = 0$ si $x = 0$ et $\varepsilon(x) = 1$ sinon.\\
+La contrainte de cisaillement sur le fond $\tau _{b}$ (en $Pa$) est donnée par 
+
+
+
+
+
+\begin{equation}
+\tau _{b}=\rho g R_{h}J
+\end{equation}
+
+
+avec $g$ = accélération de la pesanteur,$J$=$\displaystyle \frac{Q^{2}}{K^{2}A^{2}R_{h}^{4/3}}$  , où $K$ est le coefficient de Strickler.\\
+Les équations d'évolution des traceurs M.E.S. (variable $SS$) et sédiments de fond (variable $SF$) sont alors les suivantes :
+
+\vspace{0.3cm}
+
+\textbf{traceur n$^{\circ}1$} : matières en suspension
+\begin{equation}
+F(SS)=\displaystyle \frac{ RS-SED}{h}
+\end{equation}
+
+\textbf{traceur n$^{\circ}2$} : sédiments de fond (traceur ni convecté, ni diffusé)
+
+\begin{equation}
+\displaystyle \frac{\partial{SF}}{\partial{t}}=SED-RS
+\end{equation}
+
+Le modèle relatif aux M.E.S. compte donc quatre paramètres : la vitesse de sédimentation $w$, le taux d'érosion $e$, la contrainte critique de dépôt $\tau_{s}$ et la contrainte critique d'érosion $\tau_{r}$.
+
+\subsection{Les micropolluants}
+
+\subsubsection*{Description des phénomènes}
+
+Le modèle représentant l'évolution des micropolluants suppose que les transferts de micropolluant (radioélément, métal) entre les phases dissoute et particulaire correspondent à une adsorption directe ou à des échanges ioniques modélisés par une réaction réversible, de cinétique d'ordre 1~\cite{[19]}. Dans le cas de l'adsorption directe, la réaction peut être représentée sous la forme suivante :
+
+\begin{center}$
+\begin{array}{rcl}
+ & k_{1} &  \\ 
+R^{*}+ \-S & \rightleftharpoons & R-S^{\huge*} \\
+ & k_{-1} &  
+\end{array} $
+\end{center}
+
+avec $R^{*}$= micropolluant sous forme dissoute, $-S $= site de surface associé aux M.E.S, $R-S^{\huge*}$= micropolluant adsorbé.\\
+Il s'agit d'une réaction réversible, contrôlée par une vitesse d'adsorption ($k_{1}$ en $l.g^{-1}.s^{-1}$) et une vitesse de désorption ($k_{-1}$ en $s^{-1}$). Elle conduit à un équilibre ; on arrive alors à une répartition du micropolluant entre phase dissoute et particulaire caractérisée par le coefficient de distribution $K_{d}$ (en $l.g^{-1}$) :
+
+
+\begin{equation}
+K_{d}=\displaystyle \frac{\lbrack R-S^{\huge*}\rbrack}{\lbrack R^{*}\rbrack}=\displaystyle \frac{k_{1}}{k_{-1}}
+\end{equation}
+
+où $\lbrack R^{*}\rbrack$ est l'activité (ou concentration du micropolluant) en phase dissoute (en $Bq.m^{-3}$ ou $kg.m^{-3}$), $\lbrack R-S^{\huge*}\rbrack$ est l'activité (ou concentration du micropolluant) associée au M.E.S (en $Bq.kg^{-1}$ ou $kg.kg^{-1}$).\\
+Une fois adsorbés, les micropolluants fixés se comportent comme des M.E.S. (dépôt, remise en suspension) et peuvent ainsi donner naissance à des zones de sédiments contaminés.\\
+Le modèle inclut une loi de décroissance exponentielle (type décroissance radioactive) des concentrations en micropolluant dans chaque compartiment de l'écosystème modélisé, par le biais d'une constante notée L (exprimée en $s^{-1}$).
+
+\subsubsection*{Mise en équations}
+
+Le système comprend une équation pour chacune des phases du micropolluant, soit $3$ traceurs : 
+
+\begin{itemize}
+\item $C$ : concentration des micropolluants dans l'eau ($Bq.m^{-3}$)
+\item $C_{s}$ : concentration des micropolluants adsorbés sur les M.E.S. ($Bq.kg^{-1}$) (poids sec)
+\item $C_{f}$ : concentration des micropolluants adsorbés sur les sédiments de fond ($Bq.kg^{-1}$).
+\end{itemize}
+
+\textit{Remarque} : On a choisi de prendre comme unité de concentration pour la démonstration les $Bq.m^{-3}$, mais on pourrait également raisonner en $Bq.kg^{-1}$ (dans le cas d'un métal par exemple).\\
+Les sources internes de chacun de ces traceurs correspondent aux phénomènes d'adsorption/désorption, de dépôt/remise en suspension et de décroissance exponentielle. La prise en compte de ces phénomènes conduit à l'établissement des équations suivantes dans chacun des trois compartiments Eau, M.E.S. et Sédiments de fond (avec les notations de la partie C) :
+
+\begin{itemize}
+
+\item Phase dissoute
+
+\begin{equation}
+F(C)=-k_{-1}SS(K_{d}C-C_{s})-LC
+\end{equation}
+
+\item Phase adsorbée sur les matières en suspension
+
+\begin{equation}
+F(SSC_{s})=k_{-1}SS(K_{d}C-C_{s})+\displaystyle \frac{RSC_{f}-SEDC_{s}}{h}-LSSC_{s}
+\end{equation}
+
+\item Phase adsorbée sur les sédiments de fond (traceur ni convecté, ni diffusé)
+
+\begin{equation}
+ \frac{\partial{(SFC_{f})}}{\partial{t}}= SEDC_{s}-RSC_{f}-LSFC_{f}
+\end{equation}
+\end{itemize}
+
+En posant les nouvelles variables : $C_{ss} = (SSC_{s})$, en $Bq.m^{-3}$ d'eau, $C_{ff} = (SFC_{f})$, en $Bq.m^{-2}$ de sédiments de fond, et $SEDP=\displaystyle \frac{SED}{SS} =w\left(1-\displaystyle \frac{\tau _{b}}{\tau_{s}}\right)$ si $\tau_{b} < \tau_{s}$ ou $0$ sinon, les équations deviennent alors :
+
+\vspace{0.3cm}
+
+\textbf{traceur n$^{\circ}3$} : : phase dissoute
+
+\begin{equation}
+F(C)=-k_{-1}SSK_{d}C+k_{-1}C_{ss}-LC
+\end{equation}
+
+\textbf{traceur n$^{\circ}4$} : l'azote minéral assimilable
+
+\begin{equation}
+F(C_{s})=k_{-1}SSK_{d}C-k_{-1}C_{s}+\displaystyle \frac{\displaystyle\frac{RS}{SF}C_{ff}-SEDPC_{ss}}{h}-LC_{ss}
+\end{equation}
+
+\textbf{traceur n$^{\circ}5$} : phase adsorbée sur les sédiments de fond
+
+\begin{equation}
+\frac{\partial{(C_{ff})}}{\partial{t}}= SEDPC_{ss}-\frac{RS}{SF}C_{ff}-LC_{ff}
+\end{equation}
+
+Les termes comprenant $SF$ au dénominateur s'annulent lorsque $SF$ est égal à $0$.
+Les paramètres du modèle de micropolluant sont donc au nombre de trois : le coefficient de distribution à l'équilibre $K_{d}$, la constante cinétique de désorption $k_{-1}$ et la constante de décroissance exponentielle $L$ (décroissance radioactive, par exemple). Au total, le modèle MICROPOL comprend donc 7 paramètres physiques.
+
+\subsection{Equations résolues}
+
+Ainsi, en notant $C_{1} = SS$, $C_{2} = SF$,$C_{3} = C$, $C_{4} = C_{ss}$, $C_{5} = C_{ff}$,
+es matrices ($8\times 8$) [$\lambda$] et [$\mu$] contenant les coefficients $\lambda_{i}^{j}$ et $\mu _{i}^{j}$ s'écrivent :
+
+
+\vspace{0.3cm} 
+\begin{center}
+$\lambda =\displaystyle  \left(\begin{array}{ccccc}
+0 & 0 & 0 & 0 & 0 \\ 
+SEDP & 0 & 0 & 0 & 0 \\ 
+0 & 0 & -L-k_{-1}SSK_{d} & k_{-1} & 0 \\ 
+0 & 0 & k_{-1}SSK_{d} & -k_{-1}-L &  0 \\ 
+0 & 0 & 0 & SEDP & -\displaystyle \frac{RS}{SF} -L
+\end{array} 
+\right)$ ;                         $\mu=\left(\begin{array}{ccccc}
+-SEDP & 0 & 0 & 0 & 0 \\ 
+0 & 0 & 0 & 0 & 0 \\ 
+0 & 0 & 0 & 0 & 0 \\ 
+0 & 0 & 0 & -SEDP & \displaystyle \frac{RS}{SF} \\ 
+0 & 0 & 0 & 0 & 0
+\end{array}  
+\right) $
+\end{center}
+
+A noter que dans le cas où $SF = 0$ : $C_{ff} = 0$, $\lambda_{5}^{5} = 0$ et $\mu _{4}^{5} = 0$. Les seuls termes  $\lambda_{i}^{0}$ et $\mu _{i}^{0}$ non nuls sont$\lambda_{2}^{0} = - RS$ et $\mu_{2}^{0} = RS$
+
+\section{MODULE THERMIC}
+
+Le module THERMIC calcule la température d'une masse d'eau en effectuant le bilan des flux de chaleurs appliqués à celle-ci. Seuls les échanges atmosphériques au travers de la surface libre sont pris en compte ici, les autres (échanges de chaleur avec les berges ou le fond) étant supposés négligeables.
+
+
+\subsection{Origine de la formulation en traceur : l'équation de conservation de l'énergie}
+
+L'équation de conservation de l'énergie intégrée sur les dimensions transversale et verticale s'écrit :
+
+\begin{equation}
+\frac{\partial{(E)}}{\partial{t}}+U\frac{\partial{(E)}}{\partial{x}}-\frac{1}{A}\frac{\partial{ }}{\partial{x}}\left\lbrace A\lambda.\left[ \frac{\partial{(T)}}{\partial{x}}\right] \right\rbrace =S_{vol}+\frac{S_{surf}}{h}
+\end{equation}
+
+avec $E$= énergie interne ($J$), $\lambda$= conductivité thermique ($W.m^{-1}.^{\circ}C^{-1}$), $U$ = vitesse du fluide ($m.s^{-1}$), $h$= profondeur d'eau ($m$) et $A$= section mouillée ($m^{2}$). \\
+Deux types de sources existent : d'une part les sources volumiques $S_{vol}$ (apports liés à des rejets, apports par effet Joule,...), implémentées par l'utilisateur en tant que sources ; d'autre part les sources surfaciques $S_{surf}$ qui sont ici les flux d'échange par la surface libre et font l'objet des calculs du modèle THERMIC.
+L'équation ci-dessus est transformée pour s'exprimer en fonction de la température T. En effet, l'énergie interne $E$ s'écrit :
+
+\begin{equation}
+E=\rho C_{p}T
+\end{equation}
+
+où $\rho$ est la masse volumique de l'eau ($kg.m^{3}$) et $C_{p}$ sa chaleur spécifique ($J.kg^{-1}.^{\circ}C^{-1}$). L'équation devient alors (en omettant $S_{vol}$) :
+
+\begin{equation}
+\frac{\partial{(T)}}{\partial{t}}+U\frac{\partial{(T)}}{\partial{x}}-\frac{1}{A}\frac{\partial{ }}{\partial{x}}\left\lbrace A\alpha\left[ \frac{\partial{(T)}}{\partial{x}}\right] \right\rbrace =\frac{S_{surf}}{\rho Cph}
+\end{equation}
+
+où $\alpha =\frac{\lambda}{\rho C_{p}}$ , est le coefficient de diffusivité thermique ($m^{2}.s^{-1}$).
+
+\vspace{0.3cm}
+
+Si la turbulence est prise en compte, le coefficient de diffusion turbulente (ou dispersion) $k$ s'ajoute au coefficient de diffusivité. Mais, ce dernier étant très inférieur à lui, il est négligé dans les équations. L'équation finale est donc :
+
+\begin{equation}
+F(T)=\frac{\partial{(T)}}{\partial{t}}+U\frac{\partial{(T)}}{\partial{x}}-\frac{1}{A}\frac{\partial{ }}{\partial{x}}\left\lbrace Ak\left[ \frac{\partial{(T)}}{\partial{x}}\right] \right\rbrace =\frac{S_{surf}}{\rho Cp.h}
+\end{equation}
+
+Elle montre que le calcul de l'évolution de la température $T$ s'effectue de la même manière que pour tout autre traceur, et revient à déterminer la partie droite de l'égalité, c'est à dire les termes sources qui sont ici surfaciques.
+
+\subsection{Les flux de chaleur intervenant dans le bilan d'énergie}
+
+Les sources surfaciques sont des flux au travers de la surface libre.
+
+\vspace{0.3cm}
+
+On distingue $5$ flux, exprimés en $W.m^{-2}$, qui sont :
+
+\begin{itemize}
+\item le flux de rayonnement solaire $RS$
+\item le flux de rayonnement atmosphérique $RA$
+\item le flux de rayonnement du plan d'eau $RE$
+\item le flux de chaleur dû à la convection $CV$
+\item le flux de chaleur dû à l'évaporation $CE$.
+\end{itemize}
+
+\vspace{0.3cm}
+L'expression de chacun de ces flux est donné par~\cite{[20]} auquel on se reportera pour plus de précisions. Le bilan donne :
+
+\begin{equation}
+S_{surf} = RS + RA - RE - CV - CE
+\end{equation}
+
+\subsubsection*{Le rayonnement solaire $RS$}
+
+Le rayonnement solaire $RS$ est fourni au modèle THERMIC dans le fichier de données météorologiques. En l'absence de mesures, on peut calculer le rayonnement solaire global parvenant au plan d'eau par la méthode de Perrin de Brichambaut, en fonction de la nébulosité du ciel, de la date et de l'heure de la journée~\cite{[21]}.
+
+
+\subsubsection*{Le rayonnement atmosphérique RA}
+
+Le rayonnement atmosphérique $RA$ est estimé à partir des données météorologiques collectées au niveau du sol. Un certain nombre de processus d'échange d'énergie (échanges de chaleur avec le fond, échanges d'eau avec la nappe, réactions de biodégradations, petits rejets industriels ou urbains) sont inconnus ou mal connus. Ils dépendent sensiblement de la température. Dans le présent calcul, ils ont été regroupés avec le rayonnement atmosphérique par le biais du coefficient de calage eair. La formule est :
+
+
+
+\begin{equation}
+RA=e_{air}\sigma\left(T_{air}+273,15\right)^{4}\left(1+k\left(\frac{c}{8}\right)^{2}\right)
+\end{equation}
+
+
+avec $e_{air}$ = coefficient de calage du rayonnement atmosphérique (1er paramètre du modèle), $\sigma$= constante de Stefan-Boltzman,  $\sigma= 5,67.10^{-8} W.m^{-2}.K^{-4}$, $ T_{air} $ = température de l'air ($ ^{\circ}C$), $c$= nébulosité (octa), donnée dans le fichier de données météorologiques et $k$= coefficient représentatif du type de nuage, qui dépend du type de nuages et de leur hauteur(Tableau 1). Pour simplifier les calculs, on prend généralement une valeur moyenne $k = 0,2$.
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline \textbf{Type de nuage} & \textbf{k} \\ 
+\hline Cirrus & 0,04 \\ 
+\hline Cirro-Stratus & 0,08 \\ 
+\hline Altocumulus & 0,17 \\ 
+\hline Altostratus & 0,2 \\ 
+\hline Cumulus & 0,2 \\ 
+\hline Stratus & 0,24 \\ 
+\hline 
+\end{tabular} 
+\end{center}
+\end{table}
+
+\subsubsection*{Le rayonnement émis par le plan d'eau RE}
+
+On peut admettre, avec une bonne approximation, qu'un plan d'eau se comporte comme un corps gris. L'expression du rayonnement émis par le plan d'eau $RE$ est alors :
+
+\begin{equation}
+RA=e_{eau}\sigma\left(T_{eau}+273,15\right)^{4}
+\end{equation}
+
+avec $T_{eau}$= température de l'eau ($ ^{\circ}C$), $e_{eau}$= coefficient de calage du rayonnement du plan d'eau, qui dépend du site et des obstacles entourant le plan d 'eau. Pour une rivière étroite bordée d'arbres, eeau serait voisin de $0,97$ et pour un terrain largement découvert, eeau serait voisin de $0,92$.
+
+\subsubsection*{Le flux de chaleur de convection CV}
+
+Ce flux est estimé par la formule empirique suivante :
+
+\begin{equation}
+CV=\rho_{air}Cp_{air}\left(a+bV\right)\left(T_{eau}-T_{air}\right)
+\end{equation}
+
+avec $\rho_{air}$= masse volumique de l'air ($kg.m^{-3}$), donnée par $\rho_{air}=\displaystyle\frac{100P_{atm}}{287(T_{air}+273,15)}$ , où $P_{atm}$ est la pression atmosphérique ($hPa$). $Cp_{air}$= capacité thermique de l'air ($J.kg^{\circ}C$), $V$ = vitesse du vent ($m.s^{-1}$) et $a$, $b$= coefficients empiriques à caler. Leurs valeurs très proches valent environ $0,0025$.
+
+
+\subsubsection*{Le flux de chaleur d'évaporation CE}
+
+Il est donné par la formule empirique :
+
+\begin{equation}
+CE=\rho_{air}L\left(a+bV\right)\left(H_{sat}-H\right)
+\end{equation}
+
+avec $L = 2500900-2365T_{eau}$= chaleur latente de vaporisation ($J.kg^{-1}$), $V$ = vitesse du vent ($m.s^{-1}$),\\
+$H_{sat}=\displaystyle \frac{0,622P_{vap}^{sat}}{P_{atm}-0,378P_{vap}^{sat}}  $= humidité spécifique de l'air à saturation ($kg.kg^{-1}$), \\
+ $H=\displaystyle \frac{0,622P_{vap}}{P_{atm}-0,378P_{vap}}  $ = humidité spécifique de l'air ($kg.kg^{-1}$) où $P_{atm}$ est la pression atmosphérique ($hPa$),  $P_{vap}$ la pression partielle de vapeur d'eau de l'air ($hPa$) fournie dans le fichier des données météorologiques et $P_{vap}^{sat}$ la pression partielle de vapeur d'eau à saturation ($hPa$) calculée au moyen de la formule suivante :
+
+
+
+
+\begin{equation}
+P_{vap}^{sat}=6,11\exp \left(\frac{17,27T_{eau}}{T_{eau}+237,3}\right)
+\end{equation}
+
+\textit{Remarque} : Lorsque $H_{sat}<H$, le rayonnement atmosphérique $RA$ est corrigé en multipliant par $1,8$ l'expression donnée précédemment.
+
+\subsection{Equation résolue}
+
+Lorsque chacun des flux est remplacé par son expression, la source surfacique globale $S_{surf} = RS + RA - RE - CV - CE$ s'écrit comme une combinaison de termes de degré compris entre $0$ à $4$ en $T$.\\
+La formulation réalisée généralement dans TRACER, consistant à écrire les termes sources comme des combinaisons linéaires des concentrations des traceurs en présence (cf. Partie C-), ne peut donc être réalisée ici.\\
+Aussi, lors des calculs, la source surfacique globale $S_{surf}$ est traitée explicitement et les ($\lambda_{i}^{j}$, $\mu_{i}^{j }$) sont tous nuls. On résout explicitement l'équation :
+
+
+\begin{equation}
+F(T)=\frac{S_{surf}}{\rho Cph}
+\end{equation}
+
+
+\section{CONCLUSIONS}
+
+TRACER permet de simuler le devenir en rivière de plusieurs traceurs (par résolution de l'équation de convection-diffusion) éventuellement couplés (via les termes sources de l'équation), et offre ainsi une structure permettant la programmation de modèles de qualité d'eau.\\
+Ce rapport a tout d'abord exposé la méthode de résolution de l'équation de convection-dispersion en monodimensionnel (sur un bief et un réseau de biefs) et son application à la modélisation de la qualité d'eau.\\
+Puis, il a présenté les modules de qualité d'eau disponibles dans la bibliothèque de l'outil TRACER en version $5.0$, à savoir les modules :
+
+\begin{itemize}
+\item $O_{2}$, modèle simplifié d'oxygène dissous,
+\item BIOMASS, modèle de biomasse phytoplanctonique,
+\item EUTRO, modèle d'eutrophisation en rivière (oxygène dissous et biomasse algale),
+\item MICROPOL, modèle d'évolution des métaux lourds ou radioéléments, avec prise en compte de leur interaction avec les sédiments fins (matières en suspension),
+\item THERMIC, modèle d'évolution de la température de l'eau sous l'influence des flux 
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+\begin{thebibliography}{1}
+
+\bibitem{[1]} Goutal N., Rissoan C., $2002$. \emph{Manuel d'utilisation du système MASCARET version 5.1}. Rapport EDF-LNHE $HP-76/02/013/A*$
+
+\bibitem{[2]} Mandelkern S., Van Haren L., $1994$. \emph{Note de principe, descriptif informatique et éléments de validation du module de traçage de Lido}. Rapport EDF-LNH $HE-43/94/024$
+
+\bibitem{[3]} Yanenko M.N., $1968$.\emph{ Méthodes à pas fractionnaires, résolution de problèmes polydimensionnels de physique mathématique}. Intersciences, Armand Colin
+
+\bibitem{[4]} Hervouet J.M., $1984$. \emph{Application de la méthode des caractéristiques en formulation faible à la résolution des équations d'advection bidimensionnelle sur maillage grille}. Rapport EDF-LNH $HE-41/84-11$
+
+\bibitem{[5]} Luck M., $2002$. \emph{Analyse des outils existant au LNHE pour l'évaluation des impacts des ouvrages de production d'électricité sur le milieu aquatique}. Rapport EDF-LNHE $HP-75/02/102/A$
+
+\bibitem{[6]} Mandelkern S., Lehmann E., $1998$. \emph{Intégration du modèle O2 dans LIDO}. Rapport EDF-LNH $HE-43/98/017/B$
+
+\bibitem{[7]} Gailhard J., Mandelkern S., $1998$. \emph{Intégration du modèle BIOMASS dans LIDO}. Rapport EDF-LNH $HE-43/97/018/A$
+
+\bibitem{[8]} Mandelkern S., Lehmann E., $1998$. \emph{Intégration du modèle d'eutrophisation EUTRO dans LIDO}. Rapport EDF-LNH $HE-43/98/059/A$
+
+\bibitem{[9]} Mandelkern S., $1998$. \emph{Intégration du modèle MICROPOL dans LIDO}. Rapport EDF/LNH $HE-43/98/010/A$
+
+\bibitem{[10]} Mandelkern S., Belus P., $1995$. \emph{Intégration du modèle THERMIC dans LIDO}. Rapport EDF-LNH $HE-43/95/062/A$
+
+\bibitem{[11]} Streeter H.W., Phelps E.B., $1925$. \emph{A study of pollution and natural purification of the Ohio River, III : Factors concerned in the phenomenon of oxidation and reaeration}. US Public Health Service, Washington DC, Bulletin $N^{\circ}146$
+
+\bibitem{[12]} Tchobanoglous, Schroeder, $1985$. \emph{Water Quality}. University of California at Davis, Addison-Wesley Publishing Company
+
+\bibitem{[13]} Mc Cutchon, $1989$.\emph{ Water Quality Modelling - Vol. 1: Transport and Surface Exchange in Rivers}. Series Editor Richard H. French, CRC Press, Inc. Boca Raton, Florida
+
+\bibitem{[14]} Gosse P., $1983$. \emph{Développement de phytoplancton dans un écosystème aquatique, modèle Biomass}. Rapport EDF-ENV $HE-31/83/30$
+
+\bibitem{[15]} Gosse P., $1989$. \emph{Monitoring the quality of water in the Doubs river (France)}. Hydroécol. Appl. $1/2$, pp. $85-116$
+
+\bibitem{[16]} Gosse P., $1983$. \emph{De la qualité des eaux du Doubs entre le Lougre et Dôle, de mai à octobre 1981}. Rapports EDF-ENV $HE-31/83/21$ et $HE-31/83/55$
+
+\bibitem{[17]} Krone R.B., $1962$. \emph{Flume studies of the transport of sediment in estuarial shoaling processes : final report}. Hydr. Engr. and San. Engr., Res. Lab., Univ. Calif. Berkeley
+
+\bibitem{[18]} Parthéniades E., $1965$. \emph{Erosion and deposition of cohesive soils. Journal of Hydraulics Division}, ASCE, vol.$9$1, HY $1$, January $1965$, pp.$105-138$
+
+\bibitem{[19]} Ciffroy P., $1995$. \emph{Les échanges de radioéléments à l'interface Eau-Matières en suspension}. Principe théorique et équations d'un modèle descriptif. Bilan des expérimentations in situ.
+
+\bibitem{[20]} Gilbert A., Gras R., Roult D., $1986$. \emph{Numerical computation of natural river temperature. International Conference on Water Quality Modelling in The Inland Natural Environment}, Bournemouth, England, $10-13$ June $1986$
+
+\bibitem{[21]} Klein P., Momal D..\emph{ Méthode d'estimation du rayonnement solaire}, sa mise en ½uvre numérique.
+
+\bibitem{[22]} Yanenko, M.N. $1968$.\emph{ Méthodes à pas fractionnaires, résolution de problèmes polydimensionnels de physique mathématique}. Intersciences, Armand Colin.
+
+\bibitem{[23]} Hervouet J.M. $1984$.\emph{ Application de la méthode des caractéristiques en formulation faible à la résolution des équations d'advection bidimensionnelle sur maillage grille}. Rapport EDF-LNH $HE-41/84-11$.
+
+\bibitem{[24]} Godunov, S.K. $1959$.\emph{ A Finite Difference Method for the computation of Discontinuous Solutions of Fluid Dynamics}. Mat. Sb., $47$, $357-393$
+
+\bibitem{[25]} Van Leer, B. $1985$.\emph{ On teh Relation Between the Upwind-Differencing Schemes of Godunov, Enquist and Roe}. SIAM J. Sci Stat. Comput., $5(1)$, $1-20$
+
+\bibitem{[26]} Harten, A. $1983$.\emph{ High Resolution Schemes for Hyperbolic Conservation Laws}. J. Comput. Phys., $49$, $357-393$.
+
+\bibitem{[27]} Toro, E.F. $1997$.\emph{ Riemann Solvers and Numerical Methods for Fluid Dynamics:a pratical introduction}. Springer
+
+
+
+
+
+\end{thebibliography}
+
+\begin{center}
+\section{ANNEXE A}
+\end{center}
+
+\begin{center}
+\begin{LARGE}
+SCHEMAS NUMERIQUES DE RESOLUTION DE L'EQUATION 1-D DE CONVECTION-DIFFUSION
+\end{LARGE}
+\end{center}
+
+\vspace{0.3cm}
+
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+
+L'équation de départ est l'équation de convection-diffusion en formulation \underline{conservative}, qui peut se mettre sous la forme :
+
+
+\begin{equation}
+\frac{\partial{(AC)}}{\partial{t}}+\frac{\partial{(UAC)}}{\partial{x}}=\frac{\partial{ }}{\partial x}\left( Ak \frac{\partial{(C)}}{\partial{x}} \right) +AS
+\label{eq1}
+\end{equation}
+
+\begin{equation}
+A\frac{\partial C}{\partial t}+C\frac{\partial{A}}{\partial{t}}+UA\frac{\partial{C}}{\partial{x}}+C\frac{\partial{(UA)}}{\partial{x}}=\frac{\partial{ }}{\partial x}\left( Ak\ \frac{\partial{(C)}}{\partial{x}}\right) +AS
+\end{equation}
+
+L'équation de continuité de l'hydraulique nous donne
+
+
+\begin{equation}
+\frac{\partial{A}}{\partial{t}}+\frac{\partial{(UA)}}{\partial{x}}=-q_{a}
+\end{equation}
+
+où le terme $ q_{a} $ représente les débits d'apports.\\
+On aboutit ainsi à la formulation \underline{non conservative} de l'équation de transport :
+
+\begin{equation}
+\frac{\partial{C}}{\partial{t}}+U\frac{\partial{C}}{\partial{x}}=\frac{1}{A}\frac{\partial{ }}{\partial x}\left( Ak\frac{\partial{(C)}}{\partial{x}} \right) +S+ C\frac{q_{a}}{A}
+\label{eq4}
+\end{equation}
+
+
+Pour alléger les développements, on suppose que les débits d'apports sont nuls ($q_{a} = 0$).
+
+\subsubsection*{Résolution de l'équation en formulation conservative}
+
+L'équation de convection-diffusion en forme conservative est donnée par (\ref{eq1}) Pour résoudre cette équation, on utilise une méthode de pas fractionnaires~\cite{[22]} : connaissant ($AC$) au pas $n$, on veut le calculer au pas $n+1$.\\
+Après discrétisation en temps, l'équation de départ est transformée en deux étapes :
+
+
+\begin{equation}
+\left\lbrace \begin{array}{c}
+\displaystyle \frac{(AC)-(AC)^{n}}{\Delta t}+\nabla(QC)^{n}=0\\
+\\
+\displaystyle \frac{(AC)^{n+1}-(AC)}{\Delta t}-\frac{1}{A}\nabla\left(kA\nabla C^{n+1}\right)=AS\\
+\end{array} 
+\right.
+\label{eq5}
+\end{equation}
+
+La première équation est une équation de convection. La seconde est une équation de diffusion.\\
+On commence par résoudre la première équation : connaissant $(AC)^{n}$, elle donne ($AC$). Puis, ($AC$) est
+injecté dans la seconde équation ; on obtient alors $(AC)^{n+1}$, la solution au pas $n+1$.
+
+
+\subsubsection*{Résolutionde l'équation en formulation non-conservative}
+
+L'équation de convection-diffusion en forme non-conservative est donnée par (\ref{eq4}) (avec $q_{a}$= également $0$) Pour résoudre cette équation, on utilise une méthode de pas fractionnaires~\cite{[22]}. Après discrétisation en temps, l'équation de départ est transformée en deux étapes :
+
+\vspace{0.3cm}
+
+Après discrétisation en temps, l'équation de départ est transformée en deux étapes :
+
+\begin{equation}
+\left\lbrace \begin{array}{c}
+\displaystyle \frac{\tilde C-C^{n}}{\Delta t}+\nabla C^{n}=0\\
+\displaystyle \frac{C^{n+1}-C}{\Delta t}-\frac{1}{A}\nabla\left(kA\nabla C^{n+1}\right)=S\\
+\end{array} 
+\right.
+\label{eq6}
+\end{equation}
+
+La première équation est une équation de convection. La seconde est une équation de diffusion.\\
+On commence par résoudre la première équation : connaissant $C^{n}$, elle donne $\tilde{C}$. Puis, $\tilde{C}$ est injecté dans la seconde équation. On obtient alors $C^{n+1}$, la solution au pas $n+$1.\\
+\textit{Remarque} : Pour aboutir à la forme non conservative, on utilise explicitement l'équation de continuité. Ceci est correct sur le problème continu, mais peut ne pas être totalement vérifié sur le problème discret si le schéma pour résoudre l'hydraulique n'est pas conservatif.
+
+\section*{A. RESOLUTION NUMERIQUE DE LA CONVECTION}
+
+TRACER propose quatre schémas numériques pour la résolution de la partie convection de l'équation de base :
+
+\begin{itemize}
+\item Deux schémas numériques aux caractéristiques, respectivement non-conservatif (noté HYP1FAfnc) et conservatif (HYP1FAfc).
+\item Deux schémas numériques aux volumes finis d'ordre 1 et 2, respectivement. Le schéma d'ordre 2 peut être utilisé avec ou sans limiteur de pente.
+\end{itemize}
+
+
+
+
+\subsection*{A.1 Schéma aux caractéristiques HYP1FAFC et HYP1FAFNC}
+
+
+La résolution de la convection est la partie la plus délicate. Les schémas convectifs apportent en général une diffusion numérique qui s'ajoute à la diffusion "naturelle". En revanche, les schémas peu diffusifs sont généralement moins stables numériquement. Mais, les instationnarités pourront être atténuées ultérieurement par la diffusion "naturelle". Le schéma idéal n'existe donc pas.\\
+Deux schémas aux caractéristiques en convection faible (HYP1FAFC et HYP1FAFNC) (on se reportera au rapport présentant cette méthode en dimension 2~\cite{[23]}) peuvent être utilisés pour résoudre l'équation de convection. L'un des avantages de la méthode des caractéristiques est qu'on n'est pas limité par le nombre de Courant, ce qui apporte une grande liberté. En effet, nous utiliserons la discrétisation spatiale de l'étape préalable de résolution hydraulique et nous voudrions être libres de choisir un pas de temps grand, adapté à la durée du traçage qui peut aller jusqu'à plusieurs mois. Par contre, le pas de temps sera tout de même limité, en particulier dans des configurations complexes.
+
+\subsection*{A.2 Schéma aux Volumes Finis }
+
+Le coeur de ce type de schéma réside dans l'évaluation des flux entrant et sortant dans chaque maille, ce qui correspond très bien aux méthodes conservatives. Pour les mêmes raisons, les temps de calcul sont ainsi diminués.\\
+De part cette construction, la compréhension du problème physique est plus directe. La montée en ordre étant conditionnée par les flux, la vision globale du schéma ne change pas. La structure générale reste très " perceptible ", ce qui facilite entre autres la prévention et la compréhension " à priori " des problèmes qui peuvent survenir.\\
+L'équation du traceur est résolue en formulation conservative (première équation du système(\ref{eq5})). Connaissant (AC) au pas de temps n, on veut le calculer au pas de temps n+1.\\
+Un schéma Volumes Finis simple de convection (à l'ordre 1) sert de base aux autres d'ordres plus élevés (ordre 2 par exemple).\\
+L'étape de convection est discrétisée sous la forme suivante (Figure~\ref{fig5})
+
+\begin{equation}
+\displaystyle (AC)^{n+1}_{i}=(AC)^{n}_{i}+\frac{\Delta t}{\Delta x}\left[ \displaystyle f_{i-\frac{1}{2}}-f_{i+\frac{1}{2}}\right]
+\label{eq7}
+\end{equation}
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.35]{figure5.eps}
+  \caption{Discrétisation spatiale du domaine}
+  \label{fig5}
+ \end{center}
+\end{figure}
+
+
+\subsubsection*{A.2.1 Schéma aux volumes finis d'ordre 1}
+
+C'est un schéma décentré amont d'ordre 1, appelé couramment Godunov's First-Order Upwind Method~\cite{[24]}. Un principe basique de la méthode est qu'au temps n, on suppose que les données sont constantes par maille, qui se traduit par (Figure~\ref{fig6}):
+
+
+\begin{equation}
+(AC)^{n}_{i}=\displaystyle \frac{1}{\Delta x_{i}}\int\limits^{x^{i+\frac{1}{2}}}_{x_{i-\frac{1}{2}}}(AC)(x,t^{n})dx
+\end{equation}
+
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.50]{figure6.eps}
+  \caption{Distribution constante par maille à l'ordre 1}
+  \label{fig6}
+ \end{center}
+\end{figure}
+
+
+
+Les flux numériques aux interfaces, $f_{i-1/2}$ et $f_{i+1/2}$, sont déterminés par les solutions des problèmes de Riemann locaux, consistant à choisir à chaque frontière l'un ou l'autre de ces états en fonction de la taille de la maille, du pas de temps et de la vitesse de propagation. Par exemple, si on s'intéresse à la frontière $x_{i+1/2}$, les deux états sont $\left((AC)_{i}^{n},(AC)_{i+1}^{n}\right)$ et le flux :
+
+
+\begin{equation}
+\displaystyle f_{i+\frac{1}{2}}=f\left((AC)_{i+\frac{1}{2}}\right)=U_{i+\frac{1}{2}}(AC)_{i+\frac{1}{2}}
+\end{equation}
+
+
+\begin{equation}
+\displaystyle U_{i+\frac{1}{2}}(AC)_{i+\frac{1}{2}}=U_{i+\frac{1}{2}}\left(x_{i+\frac{1}{2}},t\right)(AC)_{i+\frac{1}{2}}\left(x_{i+\frac{1}{2}},t\right)=
+\left\lbrace \begin{array}{c}
+\displaystyle U_{i}(AC)_{i}^{n}\mbox{ }si\mbox{ }U_{i}\ge 0\\
+\displaystyle U_{i+1}(AC)_{i+1}^{n}\mbox{ }si\mbox{ }U_{i}\le 0\\
+\end{array} 
+\right.
+\label{eq10}
+\end{equation}
+
+Avec $U$ = vitesse d'écoulement
+
+\vspace{0.3cm}
+
+Une fois les flux calculés, il suffit de les remplacer dans l'équation(\ref{eq7}) pour obtenir la solution $(AC)_{i}^{n+1}$. \\
+Cette méthode de résolution est explicite, comme celle d'ordre supérieur qui vont suivre, ce qui implique une condition de Courant-Friedrichs-Lewy (CFL) :
+
+
+\begin{equation}
+U_{i} \displaystyle \frac{\Delta t}{\Delta x_{i}}\le 0
+\end{equation}
+
+\subsubsection*{A.2.2 Schéma aux volumes finis d'ordre 2}
+
+La montée en ordre des schémas Volumes Finis est faite à partir de la structure du schéma présenté au paragraphe précédent, avec comme méthode générale " the Monotone Upstream-centred Scheme for Conservation Laws " (MUSCL)~\cite{[25]}.La résolution se décompose en trois étapes distinctes pour construire un schéma du second ordre :
+
+\begin{itemize}
+\item[1] La première étape consiste à ré-évaluer les valeurs aux interfaces pour chaque maille, sans modifier la moyenne intégrale, seulement sa représentation. Pour ce faire, il faut introduire la notion de pente $ \Delta _{i} $, qui dans notre cas, dépend des mailles $i-1$, $i$ et $i+1$.
+
+\begin{equation}
+ \Delta _{i}=\displaystyle \frac{1}{2}(1+\omega)\Delta _{i-\frac{1}{2}}+\frac{1}{2}(1-\omega)\Delta _{i+\frac{1}{2}}
+\end{equation}
+
+Où $\Delta _{i-\frac{1}{2}}= \displaystyle \frac{(AC)_{i}^{n}-(AC)_{i-1}^{n}}{x_{i}-x_{i-1}}$, $\Delta _{i+\frac{1}{2}}= \displaystyle \frac{(AC)_{i+1}^{n}-(AC)_{i}^{n}}{x_{i+1}-x_{i}}$ et $\omega \in [-1,1]$ un paramètre.
+
+\vspace{0.3cm}
+
+C'est à partir de cette pente que vont être recalculées les valeurs aux interfaces, en introduisant la fonction sur une maille : $(AC)_{i}(x)= (AC)_{i}^{n}+(x-x_{i})\Delta _{i}$
+
+\vspace{0.3cm}
+
+On obtient ainsi
+
+\begin{equation}
+\left\lbrace \begin{array}{c}
+\displaystyle (AC)_{i}^{L}=(AC)_{i}\left(x_{i-\frac{1}{2}}\right)\\
+\displaystyle(AC)_{i}^{R}=(AC)_{i}\left(x_{i+\frac{1}{2}}\right)\\
+\end{array} 
+\right.
+\end{equation}
+
+La figure~\ref{fig7}. illustre schématiquement cette première étape de reconstruction des valeurs aux interfaces, dans le cas où $\omega =0$.
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.55]{figure7.eps}
+  \caption{Première étape de reconstruction des valeurs aux interfaces  ($\omega =0$) }
+  \label{fig7}
+ \end{center}
+\end{figure}
+
+\item[2] La deuxième étape comprend l'évolution de ces données aux bords au cours d'un semi pas de temps $\Delta t/2$( figure~\ref{fig8}): 
+
+
+\begin{equation}
+\left\lbrace \begin{array}{c}
+\displaystyle (\overline{AC})_{i}^{L}=(AC)_{i}^{L}+\frac{1}{2}\frac{\Delta t}{\Delta x}\left[f\left((AC)_{i}^{L}\right)-f\left((AC)_{i}^{R}\right)\right]\\
+\\
+\displaystyle (\overline{AC})_{i}^{R}=(AC)_{i}^{R}+\frac{1}{2}\frac{\Delta t}{\Delta x}\left[f\left((AC)_{i}^{L}\right)-f\left((AC)_{i}^{R}\right)\right]\\
+\end{array} 
+\right.
+\end{equation}
+
+
+\begin{figure}[h]
+ \begin{center}
+  \includegraphics[angle=0,scale=0.55]{figure8.eps}
+  \caption{Seconde étape de reconstruction des valeurs aux interfaces    ($\omega =0$) }
+  \label{fig8}
+ \end{center}
+\end{figure}
+
+Vient ensuite la résolution du problème de Riemann à chaque interface, avec les deux nouveaux états $\left((\overline{AC})_{i}^{R},(\overline{AC})_{i}^{L}\right)$ afin d'obtenir les flux $\bar{f}_{i-1/2}$ et $\bar{f}_{i+1/2}$.
+
+\item[3] La troisième et dernière étape reprend l'équation avec les nouveaux flux :
+
+\begin{equation}
+(AC)_{i}^{n+1}=(AC)_{i}^{n}+\frac{1}{2}\frac{\Delta t}{\Delta x}\left[\displaystyle \bar{f}_{i-\frac{1}{2}}-\bar{f}_{i+\frac{1}{2}}\right]
+\end{equation}
+
+
+La structure de ce schéma d'ordre 2 étant la même que celle du schéma à l'ordre 1, nous sommes confrontés aux mêmes restrictions : la méthode étant de fait explicite, la condition CFL reste très contraignante.
+
+\end{itemize}
+
+\subsubsection*{Mise en oeuvre de limiteurs de pentes pour l'ordres 2}
+
+Avec l'ordre élevé apparaissent des oscillations qui ne transcrivent pas la réalité lors de trop forts gradients (quelquefois appelés " phénomène de Gibbs "). Ces oscillations numériques sont liées à l'ordre des schémas (plus il est élevé, plus elles sont abondantes), mais également aux schémas eux-mêmes. Elles se situent avant ou après les forts gradients, en fonction du type de schéma. \\
+Il existe des méthodes numériques pour éviter ces oscillations, sans pour autant sacrifier la précision. Le choix s'est porté sur des méthodes de type limiteur de pente (Slope Limiter Method), bien adaptées au problème du fait de l'importance - en termes numériques - de celle-ci dans l'évaluation du flux. Parmi elles, celle qui présentait les meilleurs résultats pour le transport d'un signal en créneau a été sélectionnée.\\
+La méthode de limiteur de pente s'appuie sur un principe intuitif : contrôler, ou du moins limiter la variation totale, soit pour une fonction réelle $f=f(x)$:
+
+\begin{equation}
+\displaystyle TV(f)=\limsup_{\delta \to 0} \frac{1}{\delta} \int\limits_{-\infty}^{+\infty} |f(x+\delta)-f(x)|dx
+\end{equation}
+
+
+Ce qui se traduit en terme de discrétisation à l'instant $n$ par : $TV(f^{n})=\displaystyle \sum _{-\infty}^{+\infty}\left| f^{n}_{i+1}-f^{n}_{i}\right|$
+
+Le schéma doit vérifier certaines propriétés sur la variation totale, notamment celle de ne pas augmenter  dans  le  temps.  Ces  méthodes  sont  communément dénommées  " Total  Variation Diminishing  Methods " (TVD)~\cite{[26]}).\\
+Pour obtenir les propriétés des méthodes TVD avec le schéma MUSCL-Hancock, les pentes $\Delta _{i}$ sont contrôlées dans leur étape de construction par un limiteur de pente $\xi _{i}$. Celui-ci est analogue (non équivalent) au limiteur de flux Superbee\cite{[27]}.\\
+La nouvelle pente a ainsi la forme $\overline{\Delta _{i}}=\xi _{i}\Delta _{i}$, avec le limiteur de \textbf{pente Superbee} suivant :
+
+
+
+
+\begin{equation}
+\xi (r)=
+\left\lbrace \begin{array}{ccl}
+0 & si & r\le 0\\
+ & & \\
+2r & si & 0\le r\le 1/2\\
+ & & \\
+1 & si & 1/2\le r \le 1\\
+ & & \\
+\min \lbrace r,\xi_{R},2\rbrace & si & r\ge 1\\
+\end{array} 
+\right.
+\end{equation}
+
+Où : $r=\displaystyle\frac{\Delta_{i-1/2}}{\Delta_{i+1/2}}$, $ \displaystyle \xi _{R}=\frac{2\beta_{i+1/2}}{1-\omega+(1+\omega)r}$ avec $\displaystyle \beta_{i+1/2}=\frac{2}{1-\frac{u_{i}\Delta t}{\Delta x}}$
+
+\vspace{0.3cm}
+
+$\xi$  délimite ainsi une région TVD dépendant des données de deux mailles amonts et de celle considérée : $\xi_{i}=\xi \left( (AC)_{i-2},(AC)_{i-1},(AC)_{i}\right)$.\\
+ 
+Dans les cas où le dénominateur de $r$ est nul (pente aval nulle), on lui impose une valeur qui va dépendre de son numérateur ($0$ si la pente amont est également nulle, $1,1$ sinon). La mise en ½uvre des limiteurs de pente ne permet pas seulement de réduire  les oscillations inhérentes à la montée en ordre : la tenue du signal initial et de la quantité transportée est bien meilleure, ce qui se voit nettement sur des cas simples où il existe une solution analytique.
+
+
+\section*{B. RESOLUTION NUMERIQUE DE LA DIFFUSION}
+
+
+La résolution de la partie diffusion est effectuée par un schéma totalement implicite ($\theta $-schéma où $\theta = 1$) qui est inconditionnellement stable. On aboutit à un système linéaire $ \overline{\overline{M}}.\overrightarrow{C}=\overrightarrow{S}$ , où la matrice M est tri-diagonale. Ce système est résolu par une méthode "à double balayage", ce qui donne la solution $\overrightarrow{C}$.\\
+La résolution en formulation non-conservative (deuxième équation de (\ref{eq6}) reste analogue à celle mise en oeuvre en formulation conservative (deuxième équation de(\ref{eq5})). Nous présentons ici la résolution en formulation conservative.
+
+\vspace{0.3cm}
+
+On pose $S^{c}_{v}=\mu.C$ et $S^{c}_{s}=v.C$ , puisque les termes $S^{c}$ sont linéaires en $C$. On obtient
+
+\begin{equation}
+\displaystyle \frac{(AC)^{n+1}_{i}}{\Delta t}-\frac{\partial{ }}{\partial{x}}\left( A^{n+1}_{i}k^{n+1}_{i}\frac{\partial{C^{n+1}_{i}}}{\partial{x}}\right)=A^{n+1}_{i}\left[(S_{v})^{n+1}_{i}+(S_{v}^{c})^{n+1}_{i}+\frac{(S_{s})^{n+1}_{i}}{h_{i}}+\frac{(S_{s}^{v})^{n+1}_{i}}{h_{i}}\right]+\frac{(AC)_{i}}{\Delta t}
+\end{equation}
+
+qui devient après développement :
+
+\begin{equation}
+\begin{split}
+\displaystyle \frac{(AC)^{n+1}_{i}}{\Delta t}-A^{n+1}_{i}k^{n+1}_{i}\frac{\partial{^{2}C^{n+1}_{i}}}{\partial{x^{2}}}-A^{n+1}_{i}\frac{\partial{C^{n+1}_{i}}}{\partial x} \frac{\partial{k^{n+1}_{i}}}{\partial x}-k^{n+1}_{i}\frac{\partial{C^{n+1}_{i}}}{\partial x} \frac{\partial{A^{n+1}_{i}}}{\partial x}=\\
+A^{n+1}_{i}(S_{v})^{n+1}_{i}+\mu A^{n+1}_{i}C^{n+1}_{i}+A^{n+1}_{i}\frac{(S_{s})^{n+1}_{i}}{h_{i}}+A^{n+1}_{i}\frac{v C^{n+1}_{i}}{h_{i}}+\frac{(AC)_{i}}{\Delta t}\mbox{ }\mbox{ }\mbox{ }\mbox{ }\mbox{ }\mbox{ }
+\end{split}
+\end{equation}
+
+indice $i$ : pas d'espace indice $n$ : pas de temps
+
+\subsubsection*{Discrétisation}
+
+Posons $X_{i}=x_{i}-x_{i-1}$; $XX_{i}=X_{i}+X_{i+1}=x_{i+1}+x_{i-1}$\\
+On utilise pour la dérivée première une discrétisation décentrée amont.\\
+$\displaystyle \frac{\partial {A_{i}}}{\partial{x}}=AP_{i}=\frac{A_{i}-A_{i-1}}{X_{i}}$; $\displaystyle \frac{\partial {k_{i}}}{\partial{x}}=kP_{i}=\frac{k_{i}-k_{i-1}}{X_{i}}$; $\displaystyle \frac{\partial {C_{i}}}{\partial{x}}=\frac{C_{i}-C_{i-1}}{X_{i}}$\\
+La dérivée seconde de $C$ s'écrit
+\begin{equation}
+\frac{\partial{^{2}C_{i}}}{\partial{x^{2}}}=CST1_{i}C_{i+1}+CST2_{i}C_{i-1}+CST3_{i}C_{i}
+\end{equation}
+
+avec $\displaystyle CST1_{i}=\frac{2}{X_{i+1}XX_{i}}$; $\displaystyle CST2_{i}=\frac{2}{X_{i}XX_{i}}$;  $\displaystyle CST3_{i}=\frac{2}{X_{i}XX_{i+1}}$\\
+
+L'équation devient donc
+
+\begin{equation}
+\begin{split}
+\displaystyle \alpha A^{n+1}_{i}C^{n+1}_{i}-A^{n+1}_{i}k^{n+1}_{i}\left( CST1_{i}^{n+1}C_{i+1}^{n+1}+CST2_{i}^{n+1}C_{i-1}^{n+1}+CST3_{i}^{n+1}C_{i}^{n+1}\right)-A^{n+1}_{i}kP^{n+1}_{i}\frac{C_{i}^{n+1}-C_{i-1}^{n+1}}{X_{i}^{n+1}}\\
+-k^{n+1}_{i}AP^{n+1}_{i}\frac{C_{i}^{n+1}-C_{i-1}^{n+1}}{X_{i}^{n+1}}=
+A^{n+1}_{i}(S_{v})^{n+1}_{i}+\mu A^{n+1}_{i}C^{n+1}_{i}+A^{n+1}_{i}\frac{(S_{s})^{n+1}_{i}}{h_{i}}+A^{n+1}_{i}\frac{v C^{n+1}_{i}}{h_{i}}+\alpha (AC)_{i}\mbox{ }\mbox{ }\mbox{ }\mbox{ }\mbox{ }\mbox{ }
+\end{split}
+\end{equation}
+
+
+avec $\alpha=1/\Delta t$.\\
+
+Si on regroupe les termes pour faire apparaître les $C_{j}$ en facteur, Ce qui revient à écrire le système :
+
+\begin{equation}
+V^{n+1}_{i}C^{n+1}_{i-1}+W^{n+1}_{i}C^{n+1}_{i}+Y^{n+1}_{i}C^{n+1}_{i+1}=A^{n+1}_{i}(S_{v})^{n+1}_{i}+A^{n+1}_{i}\frac{(S_{s})^{n+1}_{i}}{h_{i}}+\alpha (AC)_{i}
+\end{equation}
+
+avec :
+
+\begin{eqnarray*}
+\begin{split}
+\begin{array}{l}
+\displaystyle V^{n+1}_{i}=-A^{n+1}_{i}k^{n+1}_{i}CST2_{i}^{n+1}+\frac{A^{n+1}_{i}kP^{n+1}}{X_{i}^{n+1}}+\frac{k^{n+1}_{i}AP^{n+1}}{X_{i}^{n+1}}\\
+\displaystyle W^{n+1}_{i}=\alpha A^{n+1}_{i}-A^{n+1}_{i}k^{n+1}_{i}CST3_{i}^{n+1}-\frac{A^{n+1}_{i}kP^{n+1}}{X_{i}^{n+1}}-\frac{k^{n+1}_{i}AP^{n+1}}{X_{i}^{n+1}}-\mu A^{n+1}_{i}-A^{n+1}_{i}\frac{v ^{n+1}_{i}}{h_{i}}\\
+\displaystyle V^{n+1}_{i}=-A^{n+1}_{i}k^{n+1}_{i}CST1_{i}^{n+1}\\
+\end{array}
+\end{split}
+\end{eqnarray*}
+
+On remarque qu'on a bien la somme des coefficients qui est égale à zéro sur chaque ligne de la matrice (si on ignore les termes $ \alpha $,$ \mu _{i}$ et $v_{i}$  ).
+
+\begin{center}
+
+$V^{n+1}_{i}+W^{n+1}_{i}+Y^{n+1}_{i}= CST1_{i}^{n+1}+CST2_{i}^{n+1}+CST3_{i}^{n+1}$=0
+
+\end{center}
+
+En effet, sans terme source, si la concentration est spatialement uniforme, le système est vérifié. En supposant qu'on a IM points de discrétisation d'espace, on a $IM$ inconnues $C_{1} \cdots C_{IM}$. De même, on a une équation pour chaque $C_{j}$, $2 \le i \le IM-1$. La matrice $M$ s'écrit :
+
+
+
+\begin{equation*}
+\begin{split}
+\begin{array}{ccccccc}
+C^{n+1}_{1} & C^{n+1}_{2}\mbox{ } & C^{n+1}_{3} & \mbox{ } \mbox{ } \mbox{ }\mbox{ } \mbox{ } \mbox{ }\mbox{ } \mbox{ } &\mbox{ } \mbox{ } \mbox{ } \mbox{ } \mbox{ } \mbox{ } \mbox{ } \mbox{ } \mbox{ }\mbox{ } \mbox{ } \mbox{ } \mbox{ } & \mbox{ }\mbox{ }\mbox{ } \mbox{ } \mbox{ } \mbox{ } & C^{n+1}_{IM}\mbox{ } \mbox{ } \mbox{ }\mbox{ }  \\ 
+\end{array} \\
+M =
+\left(\begin{array}{ccccccc}
+V^{n+1}_{2} & W^{n+1}_{2} & Y^{n+1}_{2} &  &  &  &  \\ 
+ & V^{n+1}_{3} &  W^{n+1}_{3} & Y^{n+1}_{3} &  &  &  \\ 
+ &  & - & - & - &  &  \\ 
+ &  &  & - & - & - &  \\ 
+ &  &  &  &  V^{n+1}_{IM-1} & W^{n+1}_{IM-1} & Y^{n+1}_{IM-1}\\
+\end{array} 
+\right)
+\end{split}
+\end{equation*}
+
+
+$M$ est de dimension ($IM-2 \times IM$).
+
+\subsubsection*{Conditions aux limites}
+
+On suppose qu'on a une condition de Dirichlet à l'amont et une condition de Neumann à l'aval.
+\begin{itemize}
+\item[] Condition de Dirichlet : $ C^{n+1}_{1} $ est donné. 
+\item[] Condition de Neumann : $ C^{n+1}_{IM}=C^{n+1}_{IM-1} $
+\end{itemize}
+		 
+Le vecteur inconnu est donc $ ( C^{n+1}_{2}\mbox{ }, C^{n+1}_{3}, \cdots , C^{n+1}_{IM} $. La matrice $M$ devient :
+
+
+
+\begin{equation*}
+M =
+\left( \begin{array}{ccccc}
+W^{n+1}_{2} & Y^{n+1}_{2} &  &  &  \\ 
+V^{n+1}_{3} &  W^{n+1}_{3} & Y^{n+1}_{3} &  &  \\ 
+  & - & - & - &  \\ 
+  &  & - & - & - \\ 
+  &  &  &  V^{n+1}_{IM-1} & (W^{n+1}_{IM-1}+ Y^{n+1}_{IM-1})\\
+\end{array} 
+\right)
+\end{equation*}
+
+En posant :
+
+ \vspace{0.3cm}
+\begin{flushleft}
+$ \alpha _{i} =V_{i+1}$ pour $2 \le i \le IM-2$ et $ \alpha _{1} =0$\\
+$ \beta _{i} =W_{i+1}$ pour $2 \le i \le IM-2$ et $ \beta _{IM-2} =W^{n+1}_{IM-1}+ Y^{n+1}_{IM-1}$\\
+$ \gamma _{i} =Y_{i+1}$ pour $2 \le i \le IM-2$ et $ \beta _{IM-2} =0$\\
+\end{flushleft}
+
+
+On obtient: \begin{center} $ M =
+\left( \begin{array}{ccccc}
+\beta^{n+1}_{1} & \gamma^{n+1}_{1} &  &  &  \\ 
+\alpha^{n+1}_{2} &  \beta^{n+1}_{2} & \gamma^{n+1}_{2} &  &  \\ 
+  & - & - & - &  \\ 
+  &  & - & - & - \\ 
+  &  &  &  \alpha^{n+1}_{IM-2} & \beta^{n+1}_{IM-2}\\
+\end{array} 
+\right) $
+\end{center}
+
+
+\vspace{0.3cm}
+
+Les composantes du vecteur second membre s'écrivent :
+
+$\displaystyle A^{n+1}_{i}(S_{v})^{n+1}_{i}+A^{n+1}_{i}\frac{(S_{s})^{n+1}_{i}}{h_{i}}+\alpha (AC)_{i}$, sauf pour la première à cause de la condition de Dirichlet. Elle correspond à $ i=2 $. Cette composante s'écrit :  $\displaystyle A^{n+1}_{2}(S_{v})^{n+1}_{2}+A^{n+1}_{2}\frac{(S_{s})^{n+1}_{2}}{h_{2}^{n+1}}+\alpha (AC)_{2}-(AC)_{1}V_{2}$
+On aboutit ainsi à un système linéaire $ \overline{\overline{M}}.\overrightarrow{C}=\overrightarrow{S}$ , où la matrice $M$ est tridiagonale.
+
+
+
+
+
+
+%
+% fin du document
+%
+\end{document}     

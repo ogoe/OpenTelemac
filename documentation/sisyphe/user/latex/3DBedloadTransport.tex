@@ -1,0 +1,34 @@
+%-------------------------------------------------------------------------------
+\chapter[3D bedload sediment transport]{3D bedload sediment transport}\label{ch:3DBedloadTransport}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\section{Preliminaries}
+%-------------------------------------------------------------------------------
+In the \textsc{Telemac-Mascaret modelling system}, the 3D sediment transport mechanisms are computed as follows:
+
+\begin{itemize}
+
+\item Bedload transport: hydrodynamics solved by \textsc{Telemac-3d} and sediment transport/bed evolution internally coupled and solved by \textsc{Sisyphe} 
+
+\item Suspended transport: hydrodynamics, sediment transport (advection-diffusion equation) and bed evolution solved within \textsc{Telemac-3d} (\textit{aka} \textsc{Sedi-3d}, see companion document) 
+
+\end{itemize}
+
+Bed load and suspended sediment transport can be run simultaneously (\telemac{3D} coupled to \sisyphe{} with suitable keywords for both mechanisms). In this chapter, only non-cohesive sediment (uniform distribution) is considered.
+
+The bedload is simulated using equilibrium transport models (Meyer-Peter and M\"uller, van Rijn, etc.). Because the bed load layer is very thin, the bed load transport equation in the 3D model has the same formulation as the horizontal 2D model~\cite{wu2007computational}. \telemac{3D} computes the shear velocity $U^*$ (m/s), assuming a logarithmic profile near the bottom (subroutine \texttt{tfond.f}): 
+\begin{equation*}
+U^* = \frac{\kappa U_{plane 1}}{\ln \left(33.0 \Delta z / k_s\right)},
+\end{equation*}
+with $U_{plane 1}$ (m/s) the velocity at the first node above the bottom, $\Delta z$ (m) the position of this node above the bottom, $k_s$ the Nikuradse friction coefficient, $\kappa$ the von Karman constant. %($=0.40$)
+Furthermore, the subroutine \texttt{vermoy.f} computes the depth-averaged velocity field (\texttt{U2D, V2D}) to be sent to \sisyphe{}.
+
+%-------------------------------------------------------------------------------
+\section{Steering file setup for 3D bedload transport}
+%-------------------------------------------------------------------------------
+As for \telemac{2D}, in \telemac{3D} the module \sisyphe{} is called with the keyword {\ttfamily COUPLING WITH = 'SISYPHE'}. The \sisyphe{} steering file is provided with the (obligatory) keyword {\ttfamily SISYPHE STEERING FILE}.
+
+The coupling period between the hydrodynamics and sediment transport and bed evolution can be set with the keyword {\ttfamily COUPLING PERIOD FOR SISYPHE} (integer type, set to {\ttfamily = 1} by default).
+
+

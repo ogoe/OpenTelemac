@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="okada" rank="3" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Testing of the Okada Tsunami model" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_okada.cas"
+       title="okada scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_okada.cas"
+       title="okada parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_okada.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_okada.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="FS_section" type="v-section" size="(12;5)" config="oneofall" >
+      <layer vars="free surface:line" target="1:T2DRES" extract="(-1600000;-1400000)(-1000000;-2000000)" time="[0;1;2;3]" />
+   </plot1d>
+
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+    <plot2d xref="Mesh" size="(8;8)" >
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+   <plot2d xref="FreeSurfacet0" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[0]" />
+   </plot2d>
+   <plot2d xref="FreeSurfacet3" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[3]" />
+   </plot2d>
+   <plot2d xref="FreeSurfacetf" size="(8;8)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+</validation>

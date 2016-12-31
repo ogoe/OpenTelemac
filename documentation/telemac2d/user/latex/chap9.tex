@@ -1,0 +1,82 @@
+
+
+\chapter{ TRACER TRANSPORT}
+\label{ch:tra:trans}
+
+\section{Available possibilities}
+
+ With \telemac{2D} it is possible to take into account the transport of a number of non-buoyant tracers (i.e. one whose presence has no effect on the hydrodynamics), which may or may not be diffused.
+
+ The tracer transport computation is activated with the keyword \telkey{NUMBER OF TRACERS} (default value 0) which gives the number of tracers taken into account during the simulation. In addition, it is possible to give the name and the unit of each tracer. This information is given by the keyword \telkey{NAMES OF THE TRACERS}. The names are given in 32 characters (16 for the name itself and 16 for the unit). For example, for 2 tracers (the character - means for a blank):\telkey{NAMES OF TRACERS = `SALINITY--------KG/M3-----------',`NITRATE---------MG/L------------`}.
+
+ The name of the tracers will appear in the result files.
+
+ Obviously, it is necessary to add the appropriate specifications in the keyword \telkey{VARIABLES FOR GRAPHIC PRINTOUTS}. The name of the variables is a letter T followed by the number of tracer. For example `T1,T3' stand for first and third tracer. It is possible to use the character * as wildcards (replace any character). T* stand for T1 to T9, and T** stand for T10 to T99.
+
+ N.B.: \telemac{2D} offers the possibility of taking into account density effects when the tracer used is the salinity expressed in kg/m3. In this case it is necessary to position the keyword \telkey{DENSITY EFFECTS} at YES (default value NO) and indicate the mean temperature of the water in degrees Celsius using the keyword \telkey{MEAN TEMPERATURE }, which has a default value of 20. In that case, the first tracer must be the salinity.
+
+
+\section{Prescribing initial conditions }
+
+ If the initial value of the tracers is constant throughout the domain (for example no tracer), it is simply a question of placing the keyword \telkey{INITIAL VALUES OF TRACERS} with the required value in the steering file. The number of supplied values must be equal to the number of declared tracers.
+
+ In more complex cases, it is necessary to work directly in the CONDIN subroutine, in a similar manner to that described in the section dealing with the initial hydrodynamic conditions.
+
+ If a computation is being continued, the initial state of the tracers corresponds to that of the last time step stored in the continuation file (if the continuation file does not contain any information concerning a particular tracer, \telemac{2D} then uses the value assigned to the keyword \telkey{INITIAL VALUES OF TRACERS}).
+
+
+\section{Prescribing boundary conditions }
+\label{sec:tr:prescr:bc}
+ Boundary conditions are prescribed in the same way as hydrodynamic conditions.
+
+ The type of boundary condition will be given by the value of LITBOR in the boundary conditions file (see sections \ref{subs:desc:bc} and \ref{sub:bc:file}).
+
+ In the case of an inflowing open boundary with prescribed tracer (LITBOR = 5), the value of the tracer may be given in various ways:
+
+\begin{itemize}
+\item  If the value is constant along the boundary and in time, it is provided in the steering file by the keyword \telkey{PRESCRIBED TRACERS VALUES}. This is a table of real numbers for managing several boundaries and several tracers (100 at most, this number can be changed by changing the variable MAXTRA). The numbering principle is the same as that used for the hydrodynamic boundary conditions. The values specified by the keyword cancel the values read from the boundary conditions file. The order of this table is: first tracer at the first open boundary, second tracer at the first open boundary,..., first tracer at the second open boundary, second tracer at second open boundary, etc.,
+
+\item  If the value is constant in time but varies along the boundary, it will be given directly by the variable TBOR from the boundary conditions file.
+
+\item  If the value is constant along the boundary but varies in time, the user must specify this with the function TR or open boundaries file. Programming is done in the same way as for the functions VIT, Q and SL (see \ref{subs:val:funct:bf}).
+
+\item  If the variable is time- and space-dependent, the user must specify this directly in the BORD subroutine, in the part concerning the tracer (see \ref{subs:pres:compl:val}).
+\end{itemize}
+
+ The keyword \telkey{TREATMENT OF FLUXES AT THE BOUNDARIES} enables, during the convection step (with the SUPG, PSI and N schemes), to set a priority among the tracer flux across the boundary and tracer value at that wall. Option 2 ("Priority to fluxes") will then induce a change in the tracer prescribed value, so that the flux is correct. On the other hand, option 1 ("Priority to prescribed values", default value) sets the tracer value without checking the fluxes. Contrary to what is offered in \telemac{3D}, the \telemac{2D} keyword has only one value, which is then applied to all liquid boundaries.
+
+
+\section{Managing tracer sources}
+
+ \telemac{2D} offers the possibility of placing tracer sources (with or without tracer discharge) at any point of the domain. The management of these sources is identical the one of all other type of sources. See chapter \ref{ch:manag:ws} for more details.
+
+
+\section{ Numerical specifications}
+\label{sec:num:spec}
+ The way of treating advection od tracers is specified in the third value of the keyword \telkey{TYPE OF ADVECTION}. The possibilities are the same as for velocity.
+
+ The user can also use the real keyword \telkey{IMPLICITATION COEFFICIENT OF TRACERS} (default value 0.6) in order to configure the implicitation values in the cases of semi-implicit schemes.
+
+ When solving the tracer transport equations, the user can choose whether or not to take into account diffusion phenomena, using the logical word \telkey{DIFFUSION OF TRACERSDIFFUSION OF TRACERS} (default value YES).
+
+ Furthermore, the tracers' diffusion coefficient should be specified using the real keyword \telkey{COEFFICIENT FOR DIFFUSION OF TRACERS} (default value 10${}^{-6}$). This parameter is the same for all tracers. This parameter has a very important influence on tracer diffusion in time. As for velocity diffusion, a time- or space-variable tracer diffusion coefficient should be programmed directly in the CORVIS subroutine.
+
+ As for velocity diffusion (see \ref{sec:mod:turbul}), the user can configure the type of solution he requires for the diffusion term. To do this, he should use the real keyword \telkey{OPTION FOR THE DIFFUSION OF TRACERS} with the following values:
+
+\begin{enumerate}
+\item[\nonumber]  1: treatment of the term of type: $div\left(\vartheta \overrightarrow{grad}\left(T\right)\right)$ (default value)
+
+\item[\nonumber]  2: treatment of the term of type: $\frac{1}{h}div\left(\overrightarrow{grad}\left(T\right)\right)$ (good tracer mass conservation but critical in the case of tidal flats).
+\end{enumerate}
+
+
+\section{ Law of tracer degradation}
+
+ By default, \telemac{2D} tracers are considered as mass-conservative.
+
+ However, it is possible to specify a degradation law. In the current release, only the exponential degradation law is available.
+
+ The activation of the degradation law is done with the keyword \telkey{LAW OF TRACERS DEGRADATION} providing a series of integer corresponding to each tracer. The value of this integer can be set to 0 (mass-conservative tracer) or 1 (exponential degradation tracer). In the second case, the value of the T90 (the time to degrade 90\% of the tracer) to take into account for each tracer is provided with the keyword \telkey{COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION.}
+
+ It is also possible to program additional degradation law by adding, if necessary, complementary keywords (e.g. \telkey{COEFFICIENT 2 FOR LAW OF TRACERS DEGRADATION}).
+

@@ -1,0 +1,1087 @@
+%--------------------------------------------------------------------------------
+\chapter{API}
+\label{ch:API}
+%--------------------------------------------------------------------------------
+
+%--------------------------------------------------------------------------------
+\section{Description}
+%--------------------------------------------------------------------------------
+%
+An API (Application Programming Interface) is a library allowing to control the
+execution of a program, here \telemac{2D}. Here is part of the definition from
+Wikipedia:\\
+"In computer programming, an application programming interface (API) specifies
+a software component in terms of its operations, their inputs and outputs and
+underlying types. Its main purpose is to define a set of functionalities that
+are independent of their respective implementation, allowing both definition
+and implementation to vary without compromising each other.
+
+In addition to accessing databases or computer hardware, such as hard disk
+drives or video cards, an API can be used to ease the work of programming
+graphical user interface components, to allow integration of new features into
+existing applications (a so-called "plug-in API"), or to share data between
+otherwise distinct applications. In practice, many times an API comes in the
+form of a library that includes specifications for routines, data structures,
+object classes, and variables." 
+
+Here the API is written in Fortran.
+
+The API works with instances when your run a simulation using the API you
+create an instance for that simulation that will contains all the information
+of that simulation.
+
+
+%
+%--------------------------------------------------------------------------------
+\section{User Manual}
+%--------------------------------------------------------------------------------
+%
+This section will describe how to use the API from a user point of view. The
+first section will give a description of all the functions available to the
+user as the second one will give a few examples of how to use the API.
+%
+\subsection{Execution Functions}
+%
+These functions control the execution of a run of \telemac{2D} which is divided in 6
+steps that must be called in the proper order:
+%
+\subsubsection{RUN\_SET\_CONFIG\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_set_config_t2d(id,lu,lng,ierr)    
+!
+  integer, intent(out) :: id
+  integer, intent(in)  :: lu, lng
+  integer, intent(out) :: ierr
+!
+end subroutine run_set_config_t2d
+\end{lstlisting}
+This function initialises the instance and the output. The instance,
+characterised by the $ID$ integer parameter, represents a run of telemac2d. In
+further version, the API will be able to have multiple instances running at
+the same time. In the current version you can only have one instance at a time.
+\begin{itemize}
+\item \textbf{id}: Contains the id of the instance.
+\item \textbf{lu}: Defines the output canal for \telemac{2D} (6 will be the standard
+output).
+\item \textbf{lng}: Defines the output language of \telemac{2D} (1 For French, 2 for
+English).
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{RUN\_READ\_CASE\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_read_case_t2d(id,cas_file, dico_file, ierr)
+!
+  integer,            intent(in)  :: id
+  character(len=144), intent(in)  :: cas_file
+  character(len=144), intent(in)  :: dico_file
+  integer,            intent(out) :: ierr
+!
+end subroutine run_read_case_t2d
+\end{lstlisting}
+This function reads the case file and set the variable of the \telemac{2D} steering
+file accordingly. With the API we are not using the temporary folder (this
+folder was created by the Python/Perl environment and all the file declared in
+the steering file where copied and renamed inside that folder) which means that
+the name and path given in the steering file will be used.
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{cas\_file}: Path to the steering file.
+\item \textbf{dico\_file}: Path to the \telemac{2D} dictionary.
+\item \textbf{ierr}: 0 if everything went smoothly, an error index otherwise.
+\end{itemize}
+%
+\subsubsection{RUN\_ALLOCATION\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_allocation_t2d(id,ierr)
+!
+  integer, intent(in)  :: id
+  integer, intent(out) :: ierr
+!
+end subroutine run_allocation_t2d
+\end{lstlisting}
+This function run the allocation of all the data needed in \telemac{2D}. Any
+modifications to quantities of \telemac{2D} should be done before the call to that
+function.
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{ierr}: 0 if everything went smoothly, an error index otherwise.
+\end{itemize}
+%
+\subsubsection{RUN\_INIT\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_init_t2d(id,ierr)
+!
+  integer, intent(in)  :: id
+  integer, intent(out) :: ierr
+!
+end subroutine run_run_init_t2d
+\end{lstlisting}
+This function will do the setting of the initial conditions of \telemac{2D} It
+corresponds to the time-step 0 of a \telemac{2D} run.
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{RUN\_TIMESTEP\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_timestep_t2d(id,ierr)    
+!
+  integer, intent(in)  :: id
+  integer, intent(out) :: ierr
+!
+end subroutine run_timestep_t2d
+\end{lstlisting}
+This function runs one time-step of \telemac{2D}. You will need to loop on that
+function to run all the time-steps you need.
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{ierr}: 0 if everything went smoothly, an error index otherwise.
+\end{itemize}
+%
+\subsubsection{RUN\_FINALIZE\_T2D}
+%
+\begin{lstlisting}[language=Fortran]
+subroutine run_finalize_t2d(id,ierr)    
+!
+  integer, intent(in)  :: id
+  integer, intent(out) :: ierr
+!
+end subroutine run_finalize_t2d
+\end{lstlisting}
+This function concludes the run of \telemac{2D} and will delete the instance. To
+start a new execution of \telemac{2D} the function RUN\_SET\_CONFIG must be run again.
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsection{How to access variables}
+%
+To get information on the variables you can find a set of functions to:
+\begin{itemize}
+\item get the list of variables reachable with the API.
+\item get the type of a variable.
+\item get the size of a variable.
+\item get/set the value of a variable for a given index.
+\end{itemize}
+%
+Several parameters are declared in the module:
+\begin{itemize}
+\item \verb!nb_var_t2d! the number of variables that you can modify through the
+API.
+\item \verb!t2d_var_len! the length of the variable name string.
+\item \verb!t2d_type_len! the length of the variable type string.
+\item \verb!t2d_info_len! the length of the variable info string.
+\item \verb!t2d_error_mess_len! the length of the error message string.
+\end{itemize}
+%
+\subsubsection{Get the list of available variables}
+%
+\begin{lstlisting}
+subroutine get_var_list_t2d(varname, varinfo, ierr)
+!
+  character(len=t2d_var_len), intent(out) :: varname(nb_var_t2d)
+  character(len=t2d_info_len), intent(out) :: varinfo(nb_var_t2d)
+  integer, intent(out) :: ierr
+!
+end subroutine 
+\end{lstlisting}
+%
+\begin{itemize}
+\item \textbf{varname}: An array, of \verb!nb_var_t2d! \verb!t2d_var_len! long
+strings, which contains the list of the variable names.
+\item \textbf{varinfo}: An array, of \verb!nb_var_t2d! \verb!t2d_var_len! long
+strings, which contains a short description for each variable.
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{Get the type of a variable}
+%
+\begin{lstlisting}
+subroutine get_var_type_t2d(varname, vartype, readonly, ndim, ierr)
+!
+  character(len=t2d_var_len),  intent(in)  :: varname
+  character(len=t2d_type_len), intent(out) :: vartype
+  integer,                     intent(out) :: readonly
+  integer,                     intent(out) :: ndim
+  integer,                     intent(out) :: ierr
+!
+end subroutine get_var_type_t2d
+\end{lstlisting}
+%
+\begin{itemize}
+\item \textbf{varname}: The name of the variable.
+\item \textbf{vartype}: The type of the variable (DOUBLE, INTEGER, STRING,
+BOOLEAN).
+\item \textbf{readonly}: 0 if you can only read the variable, 1 if you write it
+as well.
+\item \textbf{ndim}: Number of dimensions of the variable (max is 3 and for a
+scalar the number of dimension is 0)
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{Get the type of a variable}
+%
+\begin{lstlisting}
+subroutine get_var_size_t2d(id, varname, dim1, dim2, dim3, ierr)
+!
+  integer,               intent(in) :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  integer,               intent(out) :: dim1
+  integer,               intent(out) :: dim2
+  integer,               intent(out) :: dim3
+  integer,               intent(out) :: ierr
+!
+end subroutine get_var_size_t2d
+\end{lstlisting}
+%
+\begin{itemize}
+\item \textbf{varname}: The name of the variable.
+\item \textbf{dim1}: Size of the first dimension.
+\item \textbf{dim2}: Size of the second dimension.
+\item \textbf{dim3}: Size of the third dimension.
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+dim1,dim2,dim3 are equal to zero if the variable has no respectively first,
+second or third dimension. A scalar is considered to have no dimensions.
+%
+\subsubsection{Getter/Setter for a real variable}
+%
+\begin{lstlisting}
+subroutine get_double_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  double precision,  intent(out) :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine get_double_t2d
+\end{lstlisting}
+
+\begin{lstlisting}
+subroutine set_double_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  double precision,  intent(in)  :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine set_double_t2d
+\end{lstlisting}
+
+\begin{itemize}
+\item \textbf{id}: the id of the instance.
+\item \textbf{varname}: The name of the variable.
+\item \textbf{value}: Contains the value to be read/written.
+\item \textbf{index1}: Index of the first dimension (For array of at least one
+dimension, not used otherwise).
+\item \textbf{index2}: Index of the second dimension (For array of at least two
+dimension, not used otherwise).
+\item \textbf{index3}: Index of the third dimension (For array of at least
+three dimension, not used otherwise).
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{Getter/Setter for an integer variable}
+%
+\begin{lstlisting}
+subroutine get_integer_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  integer,           intent(out) :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine get_integer_t2d
+\end{lstlisting}
+
+\begin{lstlisting}
+subroutine set_integer_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  integer,           intent(in)  :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine set_integer_t2d
+\end{lstlisting}
+
+\begin{itemize}
+\item \textbf{id}: the id of the instance.
+\item \textbf{varname}: The name of the variable.
+\item \textbf{value}: Contains the value to be read/written.
+\item \textbf{index1}: Index of the first dimension (For array of at least one
+dimension, not used otherwise).
+\item \textbf{index2}: Index of the second dimension (For array of at least two
+dimension, not used otherwise).
+\item \textbf{index3}: Index of the third dimension (For array of at least
+three dimension, not used otherwise).
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+%
+\subsubsection{Getter/Setter for a character variable}
+%
+\begin{lstlisting}
+subroutine get_string_t2d(id, varname, value, 
+                          valuelen, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  integer,           intent(in)  :: valuelen
+  character,         intent(out) :: value(valuelen)
+  integer,           intent(out) :: ierr
+!
+end subroutine get_string_t2d
+\end{lstlisting}
+
+\begin{lstlisting}
+subroutine set_string_t2d(id, varname, value, 
+                          valuelen, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  integer,           intent(in)  :: valuelen
+  character,         intent(in)  :: value(valuelen)
+  integer,           intent(out) :: ierr
+!
+end subroutine set_string_t2d
+\end{lstlisting}
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{varname}: The name of the variable.
+\item \textbf{valuelen}: Length of value.
+\item \textbf{value}: An array of characters of size $valuelen$.
+\item \textbf{index1}: Index of the first dimension (for array of at least one
+dimension, not used otherwise).
+\item \textbf{index2}: Index of the second dimension (for array of at least two
+dimension, not used otherwise).
+\item \textbf{index3}: Index of the third dimension (for array of at least
+three dimension, not used otherwise).
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+
+%
+\subsubsection{Getter/Setter for a boolean variable}
+%
+\begin{lstlisting}
+subroutine get_boolean_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  logical,           intent(out) :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine get_boolean_t2d
+\end{lstlisting}
+\begin{lstlisting}
+subroutine set_boolean_t2d
+  (id, varname, value, index1, index2, index3, ierr)
+!
+  integer,           intent(in)  :: id
+  character(len=t2d_var_len), intent(in)  :: varname
+  logical,           intent(in)  :: value
+  integer,           intent(in)  :: index1
+  integer,           intent(in)  :: index2
+  integer,           intent(in)  :: index3
+  integer,           intent(out) :: ierr
+!        
+end subroutine set_boolean_t2d
+\end{lstlisting}
+
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{varname}: The name of the variable.
+\item \textbf{value}: Contains the value to be read/written.
+\item \textbf{index1}: Index of the first dimension (For array of at least one
+dimension, not used otherwise).
+\item \textbf{index2}: Index of the second dimension (For array of at least two
+dimension, not used otherwise).
+\item \textbf{index3}: Index of the third dimension (For array of at least
+three dimension, not used otherwise).
+\item \textbf{ierr}: 0 if everything went smoothly an error index otherwise.
+\end{itemize}
+
+\subsubsection{Error Handling functions}
+All API subroutines return an integer that contains the type of error that
+could have occurred during the execution of the API. If the value of that
+integer is different than zero this means that there was an. You can
+obtain the message associated with that error by using the function below.
+An error is associated with an instance.
+\begin{lstlisting}
+subroutine get_error_message_t2d(id,ierr,mess) 
+  integer, intent(in) :: id
+  integer, intent(in) :: ierr
+  character(len=t2d_error_mess_len), intent(out) :: mess
+END SUBROUTINE GET_ERROR_MESSAGE_T2D
+\end{lstlisting}
+\begin{itemize}
+\item \textbf{id}: The id of the instance.
+\item \textbf{ierr}: The error code.
+\item \textbf{mess}: The error message.
+\end{itemize}
+
+\subsection{Example}
+
+The code below is an example of a run of the test case "confluence" using the
+API. We just get a few information: The number of points, the number of
+boundary points, the number of elements, the number of time-steps written in the
+cas file.
+\begin{lstlisting}
+program homere_telemac2d
+    use api_t2d
+    implicit none
+    integer ::  i, k, ierr, id
+    integer :: npoin,nptfr,nelem,ntime_steps,nelmax
+    character(len=144) :: cas_file, dico_file, res_file
+    character(len=t2d_var_len) :: varname
+    integer lu,lng
+!   parameter for telemac2d/mascaret coupling
+    ! type for mascaret boundary condition
+   
+    ! output for writing
+    lu=6
+    ! 1 for french 2 for english
+    lng=2
+    id = 0
+    cas_file = 't2d_confluence.cas'
+    dico_file = '/home/b61570/opentelemac/'
+ &     //'branches/weirdfish/sources/telemac2d/'
+ &     //'telemac2d.dico'
+    res_file='toto.srf'
+
+    print *, 'id',id
+    call run_set_config_t2d(id,lu,lng,ierr)
+    print *, 'ierr',ierr
+    print *, 'id',id
+
+    call run_read_case_t2d(id,cas_file,dico_file,ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.RESULTFILE'
+    call set_string_t2d(id,varname,res_file,144,ierr)
+    print *, 'ierr',ierr
+    
+    call run_allocation_t2d(id,ierr)
+    print *, 'ierr',ierr
+ 
+    call run_init_t2d(id,ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.NPOIN'
+    call get_integer_t2d(id, varname, npoin, 0, 0, 0, ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.NPTFR'
+    call get_integer_t2d(id, varname, nptfr, 0, 0, 0, ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.NELEM'
+    call get_integer_t2d(id, varname, nelem, 0, 0, 0, ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.NELMAX'
+    call get_integer_t2d(id, varname, nelmax, 0, 0, 0, ierr)
+    print *, 'ierr',ierr
+
+    varname = 'MODEL.NTIMESTEPS'
+    call get_integer_t2d(id, varname, ntime_steps, 
+ &                       0, 0, 0, ierr)
+    print *, 'ierr',ierr
+
+    print *, npoin, nptfr, nelem, ntime_steps
+!
+    do i=1,ntime_steps
+      call run_timestep_t2d(id,ierr)
+    enddo
+!
+    call run_finalize_t2d(id,ierr)
+
+end program
+\end{lstlisting}
+
+The example below is running in parallel multiple sequential execution of
+\telemac{2D}. Each processor will set a different flowrate on the boundaries.
+\begin{lstlisting}
+      program homere_telemac2d
+        use api_t2d
+        implicit none
+        include 'mpif.h'
+        logical init
+        data init /.false./
+        integer :: nbproc,monrang,code,ierr 
+        integer :: ierror,errorcode
+        integer lu,lng
+        double precision sortie,debit1,debit2,debit3
+        double precision hauteur
+        double precision,dimension(:),allocatable::lec_debit
+        integer ::  i, id,numnoeud,j
+        integer :: ntime_steps
+        character(len=144) :: cas_file, dico_file, res_file
+        character(len=40) :: varname,str1,str2,formatstr,str3
+!       =======================================================
+!                initialisation parametres
+!       =======================================================
+!       initialising mpi
+        ierror = 0
+        call mpi_init(code)
+        call mpi_comm_size(mpi_comm_world,nbproc,ierror)
+        allocate(lec_debit(nbproc))
+        call mpi_comm_rank(mpi_comm_world,monrang,ierror)
+!       reading the flowrate and setting the node number
+        numnoeud = 38854
+        open(1012 ,file = "debit.txt" ,status='old')      
+        do i = 1,nbproc+1
+          read(1012,*) lec_debit(i)
+        end do
+        close(1012)
+!       parameter for telemac2d/mascaret coupling
+        ! type for mascaret boundary condition      
+        ! output for writing
+        lu=6
+        ! 1 for french 2 for english
+        lng=2
+        id = 0
+        cas_file = 'test_4900_2cl.cas'
+        dico_file = '/home/h23973/telemac/'
+     &  //'weirdfish/sources/telemac2d/'
+     &  //'telemac2d.dico'
+!       Changing input format
+!       works for 99999 file/process max
+        if(monrang.gt.9999)then
+          formatstr = "(i5)"
+        else
+          if(monrang.gt.999)then
+            formatstr = "(i4)"
+          else
+            if(monrang.gt.99)then
+              formatstr = "(i3)"
+            else
+              if(monrang.gt.9)then
+                formatstr = "(i2)"
+              else
+                formatstr = "(i1)"
+              end if
+            end if
+          end if
+        end if
+!       Name of the result file
+        write(str1, formatstr) monrang
+        write(str2,"(i4)") int(lec_debit(monrang + 1))
+        res_file=trim(str1)//'_q'
+     &  //trim(str2)//'_athos10.srf'
+!       =======================================================
+!                 initialising Telemac run
+!       =======================================================
+        call run_set_config_t2d(id,lu+monrang+1000,lng,ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!
+        call run_read_case_t2d(id,cas_file,dico_file,ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!
+!       changement du nom de fichier resultat
+        varname = 'model.resultfile'
+        call set_string_t2d(id,varname,res_file,144,ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!       
+        call run_allocation_t2d(id,ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!
+        call run_init_t2d(id,ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!
+        varname = 'model.ntimesteps'
+        call get_integer_t2d(id, varname, ntime_steps, 
+     &                       0, 0, 0, ierr)
+        if(ierr.ne.0) call mpi_abort(mpi_comm_world,errorcode,ierror)
+!       Computing new flowrate values
+        debit1 = lec_debit(monrang + 1)/24.5d0
+        debit2 = lec_debit(monrang + 1) 
+     &  - (lec_debit(monrang + 1)/24.5d0)
+        debit3 = 0.d0
+        varname = 'model.debit'
+        call set_double_t2d(id, varname, debit1, 1, 0, 0, ierr)
+        call set_double_t2d(id, varname, debit2, 2, 0, 0, ierr)
+        call set_double_t2d(id, varname, debit3, 3, 0, 0, ierr)
+!
+!==============================================================
+!                  calcul telemac
+!==============================================================
+!
+        varname = 'model.waterdepth'
+        do i=1,ntime_steps
+          call run_timestep_t2d(id,ierr)
+        enddo 
+!       recuperation de la derniere hauteur d'eau
+        call get_double_t2d
+     &  (id, varname,hauteur ,numnoeud, 0, 0, ierr)
+!
+        call run_finalize_t2d(id,ierr)
+        write(4000 + monrang,*)hauteur
+!       Closing Mpi
+!
+!
+        call mpi_barrier(mpi_comm_world,ierror)
+        if (monrang.eq.0)then
+          open(3999,file = "sortie.txt",
+     &    status='unknown',position="append")
+          open(3998,file = "hauteur.txt",
+     &    status='unknown',position="append")
+          do i=0,nbproc-1
+          rewind(4000 + i)
+            read(4000 + i,*) hauteur
+            write(3999,*)lec_debit(i+1),hauteur
+            write(3998,*)hauteur
+          enddo
+        end if
+        close(3999)
+        call mpi_finalize(ierror)
+        end program
+\end{lstlisting}
+
+You can still use User Fortran you will just nee to add the user subroutine to
+you Fortran file.
+
+%
+\subsection{Parallel execution}
+%
+With the API, there is no temporary folder and no python to prepare for a
+parallel run, this means that the partitioning step and the merging step should
+be done in the code by the user respectively before and after the call to the
+API execution functions. The code below shows an example of a parallel run of
+the test case \verb!gouttedo!. It contains the code for the main program and
+the user subroutines needed for the run.
+
+\begin{lstlisting}
+      PROGRAM T2D_GOUTTEDO_API
+        USE API_T2D
+        IMPLICIT NONE
+        INCLUDE 'MPIF.H'
+        INTEGER ::  I, K, IERR, ID, IDUM
+        INTEGER :: NPOIN,NPTFR,NELEM,NTIME_STEPS,NELMAX
+        CHARACTER(LEN=144) :: CAS_FILE, DICO_FILE, RES_FILE
+        CHARACTER(LEN=250) :: GEO_FILE, CLI_FILE, RES_FILE2
+        CHARACTER(LEN=T2D_VAR_LEN) :: VARNAME
+        INTEGER LU,LNG
+        INTEGER RANK,NCSIZE,PMETHOD,VAR_SIZE
+!       PARAMETER FOR TELEMAC2D/MASCARET COUPLING
+        ! TYPE FOR MASCARET BOUNDARY CONDITION
+       
+        ! OUTPUT FOR WRITING
+        LU=6
+        ! 1 FOR FRENCH 2 FOR ENGLISH
+        LNG=2
+        ID = 0
+        CAS_FILE = 'T2D_GOUTTEDO.CAS'
+        DICO_FILE = '/HOME/B61570/OPENTELEMAC/'
+     &     //'BRANCHES/WEIRDFISH/SOURCES/TELEMAC2D/'
+     &     //'TELEMAC2D.DICO'
+        RES_FILE='TOTO.SRF'
+        RES_FILE2='TOTO.SRF'
+        GEO_FILE='GEO_GOUTTEDO.SLF'
+        CLI_FILE='GEO_GOUTTEDO.CLI'
+        ! PARTITIONING METHOD TO USE 1: METIS
+        PMETHOD=1
+!
+        ! INITIALISING MPI
+        CALL MPI_INIT(IERR)
+        ! GETTING RANK
+        CALL MPI_COMM_RANK(MPI_COMM_WORLD,RANK,IERR)
+        ! GETTING THE NUMBER OF PROCESS
+        CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NCSIZE,IERR)
+!
+        ! THE PARTITIONING IS DONE SEQUENTIALLY
+        IF(RANK.EQ.0) THEN
+          ! PARITIONING THE GEOMETRY FILE
+          CALL PARTEL(GEO_FILE,CLI_FILE,NCSIZE,PMETHOD,
+     &                .FALSE.,' ',.FALSE.,' ')
+        ENDIF
+!        
+        ! Initialising telemac2d run
+        CALL RUN_SET_CONFIG_T2D(ID,LU,LNG,IERR)
+        PRINT *, 'IERR',IERR
+        PRINT *, 'ID',ID
+
+        ! Reading cas file information
+        CALL RUN_READ_CASE_T2D(ID,CAS_FILE,DICO_FILE,IERR)
+        PRINT *, 'IERR',IERR
+
+        ! CHANGING THE NAME OF THE RESULT FILE
+        VARNAME = 'MODEL.RESULTFILE'
+        CALL GET_VAR_SIZE_T2D(ID,VARNAME,VAR_SIZE,IDUM,IDUM,IERR)
+        CALL SET_STRING_T2D(ID,VARNAME,RES_FILE,VAR_SIZE,IERR)
+        PRINT *, 'IERR',IERR
+        
+        ! Running allocation step
+        CALL RUN_ALLOCATION_T2D(ID,IERR)
+        PRINT *, 'IERR',IERR
+ 
+        ! Reading intial conditions
+        CALL RUN_INIT_T2D(ID,IERR)
+        PRINT *, 'IERR',IERR
+
+        ! Getting the number of points in the mesh
+        VARNAME = 'MODEL.NPOIN'
+        CALL GET_INTEGER_T2D(ID, VARNAME, NPOIN, 0, 0, 0, IERR)
+        PRINT *, 'IERR',IERR
+
+        ! Getting the number of boundary points in the mesh
+        VARNAME = 'MODEL.NPTFR'
+        CALL GET_INTEGER_T2D(ID, VARNAME, NPTFR, 0, 0, 0, IERR)
+        PRINT *, 'IERR',IERR
+
+        ! Getting the number of elements in the mesh
+        VARNAME = 'MODEL.NELEM'
+        CALL GET_INTEGER_T2D(ID, VARNAME, NELEM, 0, 0, 0, IERR)
+        PRINT *, 'IERR',IERR
+
+        ! Getting the max number of elements in the mesh
+        VARNAME = 'MODEL.NELMAX'
+        CALL GET_INTEGER_T2D(ID, VARNAME, NELMAX, 0, 0, 0, IERR)
+        PRINT *, 'IERR',IERR
+
+        ! Getting the max number of time-steps
+        VARNAME = 'MODEL.NTIMESTEPS'
+        CALL GET_INTEGER_T2D(ID, VARNAME, NTIME_STEPS, 
+     &                       0, 0, 0, IERR)
+        PRINT *, 'IERR',IERR
+
+        PRINT *, NPOIN, NPTFR, NELEM, NTIME_STEPS
+!
+        ! Running each time-step
+        DO I=1,NTIME_STEPS
+          CALL RUN_TIMESTEP_T2D(ID,IERR)
+        ENDDO
+!
+        ! Ending run of telemac2d and mpi as well
+        CALL RUN_FINALIZE_T2D(ID,IERR)
+        ! MERGIN STEP
+        ! 
+        IF(RANK.EQ.0) THEN
+          CALL GRETEL_AUTOP(GEO_FILE,RES_FILE2,NCSIZE)
+        ENDIF
+!
+        END PROGRAM
+
+!                       *****************
+                        SUBROUTINE CONDIN
+!                       *****************
+!
+!***********************************************************************
+! TELEMAC-2D VERSION 5.9         19/08/98  J-M HERVOUET TEL: 30 87 80 18
+!
+!***********************************************************************
+!
+!     FONCTION  : INITIALISATION DES GRANDEURS PHYSIQUES H, U, V ETC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |                | -- |  
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!***********************************************************************
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!  
+      INTEGER IPOIN,ITRAC
+!
+      DOUBLE PRECISION EIKON
+!
+      INTRINSIC EXP
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TEMPS
+!
+      AT = 0.D0
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DES VITESSES : VITESSES NULLES
+!
+      CALL OS( 'X=0     ' , X=U )
+      CALL OS( 'X=0     ' , X=V )
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DE H , LA HAUTEUR D'EAU
+!
+      IF(CDTINI(1:10).EQ.'COTE NULLE') THEN
+        CALL OS( 'X=C     ' , H , H  , H , 0.D0 )
+        CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0 )
+      ELSEIF(CDTINI(1:14).EQ.'COTE CONSTANTE') THEN
+        CALL OS( 'X=C     ' , H , H  , H , COTINI )
+        CALL OS( 'X=X-Y   ' , H , ZF , H , 0.D0   )
+      ELSEIF(CDTINI(1:13).EQ.'HAUTEUR NULLE') THEN
+        CALL OS( 'X=C     ' , H , H  , H , 0.D0  )
+      ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES') THEN
+      DO IPOIN=1,NPOIN
+        EIKON=( (X(IPOIN)-10.05D0)**2 + (Y(IPOIN)-10.05D0)**2 ) / 4.D0
+        H%R(IPOIN) = 2.4D0 * ( 1.D0 + EXP(-EIKON) ) 
+      ENDDO
+      ELSE
+        WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISATION DU TRACEUR 1
+!
+      IF(NTRAC.GT.0) THEN
+        CALL OS( 'X=0     ' , X=T%ADR(1)%P )
+        DO IPOIN=1,NPOIN
+         IF((X(IPOIN)-10.05D0)**2+(Y(IPOIN)-10.05D0)**2.LT.4.D0**2) THEN
+           T%ADR(1)%P%R(IPOIN) = 1.D0
+         ENDIF
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISATION DE LA VISCOSITE
+!
+      CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END             
+!                       ***************
+                        SUBROUTINE HREF
+!                       ***************
+!
+!***********************************************************************
+! PROGICIEL : BIEF 5.0         01/03/90    J-M HERVOUET
+!***********************************************************************
+!
+!  FONCTION  : CALCUL DE LA HAUTEUR DE REFERENCE POUR LES EQUATIONS
+!              DE BOUSSINESQ
+!
+!              PAR DEFAUT ON PREND LA HAUTEUR INITIALE
+!     
+!              CE SOUS-PROGRAMME PEUT ETRE MODIFIE
+!
+!              ON PEUT METTRE PAR EXEMPLE LA HAUTEUR DE LINEARISATION
+!
+!              SI ON VEUT RETOMBER SUR SAINT-VENANT, ON PEUT METTRE
+!              H0 = 0
+!
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|_______________________________________________
+! |      H0        |<-- | HAUTEUR DE REFERENCE
+! |      H         | -->| HAUTEUR INITIALE
+! |      X,Y,(Z)   | -->| COORDONNEES DU MAILLAGE (Z N'EST PAS EMPLOYE).
+! |      ZF        | -->| FOND A MODIFIER.
+! |      HAULIN    | -->| PROFONDEUR DE LINEARISATION
+! |      COTINI    | -->| COTE INITIALE
+! |      MESH      | -->| MAILLAGE
+! |      PRIVE     | -->| TABLEAU PRIVE POUR L'UTILISATEUR.
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! PROGRAMME APPELANT :
+! PROGRAMMES APPELES : RIEN EN STANDARD
+!
+!***********************************************************************
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU                                                 
+      COMMON/INFO/LNG,LU        
+!
+!-----------------------------------------------------------------------
+!
+!     CALL OS( 'X=Y     ' , H0 , H , H , C )
+!     
+      CALL OS( 'X=C     ' , H0 , H , H , 2.4D0 )
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+       
+
+\end{lstlisting}
+
+%
+%--------------------------------------------------------------------------------
+\section{Developer Manual}
+%--------------------------------------------------------------------------------
+%
+This section will describe how the API is implemented. The first section will
+describe the instance type used in the API. The second section will give a
+description of the internal functions of the API. The third section will
+describe how to add access to a new variable from \telemac{2D} to the API.
+%
+\subsection{Instance}
+%
+In order to control the data used by \telemac{2D} we use a Fortran Structure that you
+see below that contains all the global variable of \telemac{2D}. This way we can have
+multiple runs of \telemac{2D} running at the same time. In order to handle that
+structure we developed a few functions that will be described below. All the
+instance functions are in the module \verb!m_instance_t2d!.
+
+\begin{lstlisting}[language=Fortran]
+type instance_t2d
+   ! run position
+   integer myposition
+   ! list of all the variable for model
+   type(bief_obj), pointer :: hbor
+   type(bief_obj), pointer :: ubor
+   type(bief_obj), pointer :: vbor
+   type(bief_obj), pointer :: u
+   type(bief_obj), pointer :: v
+   type(bief_obj), pointer :: chestr
+   double precision, pointer :: flux_boundaries(:)
+   double precision, pointer :: cote(:)
+   double precision, pointer :: debit(:)
+!
+   type(bief_mesh), pointer :: mesh
+!
+   type(bief_obj), pointer :: lihbor
+   type(bief_obj), pointer :: liubor
+   type(bief_obj), pointer :: livbor
+   type(bief_obj), pointer :: numliq
+!
+   integer,        pointer :: nit
+   integer,        pointer :: lt
+!
+   type(bief_file), pointer :: t2d_files(:)
+   integer :: maxlu_t2d
+   integer :: maxkey 
+   integer, pointer :: t2dres
+   integer, pointer :: t2dgeo
+   integer, pointer :: t2dcli
+!
+   character(len=144), pointer :: coupling
+!
+ 
+   type(bief_obj), pointer :: te5
+   type(bief_obj), pointer :: zf
+   type(bief_obj), pointer :: h
+   type(bief_obj), pointer :: dh
+!
+   integer, pointer :: debug
+   ! list of all the variable for state
+   integer :: truc
+!
+end type ! model_t2d
+\end{lstlisting}
+
+To keep track of the instances we use two arrays:
+\begin{lstlisting}
+INTEGER, PARAMETER :: MAX_INSTANCES=10
+TYPE(INSTANCE_T2D), POINTER, SAVE :: INSTANCE_LIST(:) 
+LOGICAL, ALLOCATABLE, SAVE :: USED_INSTANCE(:)
+\end{lstlisting}
+
+\verb!INSTANCE_LIST! will contain all the instances used and
+\verb!USED_INSTANCE! tells you if the id is used.
+%
+\subsubsection{CHECK\_INSTANCE\_T2D}
+%
+This function just checks that the id number is a valid one (Between 1 and
+max\_instances).
+%
+\subsubsection{CREATE\_INSTANCE\_T2D}
+%
+This function creates new instance and returns the id of that instance.
+%
+\subsubsection{DELETE\_INSTANCE\_T2D}
+%
+This function delete the instance and make the id available.
+%
+\subsection{Internal functions}
+%
+The execution subroutine are the subroutine \verb!homere_telemac2d! divided in 5
+part with an added layer to handle the instance.
+
+For the API to properly control the execution the time-step in the subroutine
+\verb!telemac2d! was changed so that it now runs one time-step at a time.
+
+An option when opening the files was added in order to open files using the
+proper name of the file and not the one in the temporary folder because the
+temporay folder does not exist with the API (i.e. \verb!geo_gouttedo.slf!
+instead of \verb!T2DGEO!)
+
+When reading the steering file the subroutine \verb!lecdon_telemac2d! usually
+opens the dictionary and the steering file using directly the "temporary folder
+name" so an option was added to take those name as parameters hence the input in
+the subroutine \verb!run_read_case_t2d!.
+
+%
+\subsection{How to add access to a new variable}
+%
+In order to add access to a new variable via the API you will need to do the following thing:
+\begin{enumerate}
+\item Get the name of the variable in \verb!declarations_telemac2d!.
+\item Add that variable in the instance structure (file \verb!m_instance_t2d.f!).
+\item Add the initialisation in \verb!create_instance_t2d!.
+\item Add the variable in the get/set function that befits it.
+\item Add the size of the variable in \verb!get_var_size_t2d_d!.
+\item Add the type of the variable in \verb!get_var_type_t2d_d!.
+\item Add the variable in \verb!GET_VAR_LIST_T2D_D!.
+\item Increase the value of \verb!t2d_nb_var! in \verb!m_handle_var.f!.
+\end{enumerate}
+%
+%--------------------------------------------------------------------------------
+\section{Work in progress}
+%--------------------------------------------------------------------------------
+%
+This section will point out the remaining work to obtain a full API.
+\begin{itemize}
+\item Switch the instance use, Normally \telemac{2D} should be pointing on the
+instance and not the other way around. This will allow multiple instances of
+\telemac{2D} to run at the same time.
+\item Add more variables (the one from the steering file for example)
+\item Remove all uses of save and common in the code they can induce memory
+leaks.
+\end{itemize}

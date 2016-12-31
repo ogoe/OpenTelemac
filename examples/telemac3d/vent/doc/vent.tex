@@ -1,0 +1,208 @@
+% case name
+\chapter{vent}
+%
+% - Purpose & Description:
+%     These first two parts give reader short details about the test case,
+%     the physical phenomena involved, the geometry and specify how the numerical solution will be validated
+%
+\section{Purpose}
+%
+This test demonstrates the availability of \telemac{3d} to represent
+the currents induced by wind blowing at the surface of a closed channel.
+More precisely, this case allows verifying that a linear decrease of
+the mixing length model at the bottom and at the surface is able to
+reproduce such circulation.
+Moreover, this test allows verifying the proper implementation of the
+sources terms and external forces as the wind.
+%
+\section{Description}
+%
+At the initial state, the channel is submitted to a constant 10~m/s
+wind.
+The wind generates a slope of the free surface and a vertical
+two-dimensional circulation.
+Tsanis [1] has made an inventory of existing laboratory or in-situ
+measurements and has plotted these values on a non-dimensional graph.
+He deduced a characteristic vertical velocity profile, which will be
+compared to the numerical results of this test case.
+The turbulent viscosity has the following expression:
+\begin{equation}
+\nu_{\rm{t}} = l^2 \sqrt{\frac{1}{2}\left[ \frac{\partial u_i}{\partial x_j}
+ + \frac{\partial u_j}{\partial x_i} \right]^2}
+\end{equation}
+
+$l$ = mixing length\\
+$K$ = 0.40 Karman constant\\
+
+The channel is a rectangle of 500~m by 100~m with horizontal bed at
+depth $z$ = -10~m.\\
+With:
+\begin{equation}
+\vec w = 10~\rm{m/s~Velocity~of~wind}
+\end{equation}
+\begin{equation}
+K_{\rm{F}} = (-0.12 + 0.137 \| \vec w \| )/1000
+\end{equation}
+%
+% - Reference:
+%     This part gives the reference solution we are comparing to and
+%     explicits the analytical solution when available;
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+%
+\subsection{Reference}
+%
+[1] TSANIS I., Simulation of wind-induced water currents,
+Journal of Hydraulic Engineering, Vol.115, n 8, 1989, pp 1113-1134.\\
+
+[2] WU J., Prediction of near-surface drift currents from wind velocity,
+Journal of Hydraulic Division, 99, 1973, pp 1291-1302.
+%
+% - Geometry and Mesh:
+%     This part describes the mesh used in the computation
+%
+%
+\subsection{Geometry and Mesh}
+%
+\subsubsection{Bathymetry}
+%
+Constant equal to –10~m
+%
+\subsubsection{Geometry}
+%
+Channel length = 500~m\\
+Channel width = 100~m
+%
+\subsubsection{Mesh}
+%
+543 triangular elements\\
+315 nodes\\
+15 planes irregularly spaced on the vertical (see figure 3.4.1
+generated with a vertical expansion factor equal to 20)
+%
+% - Physical parameters:
+%     This part specifies the physical parameters
+%
+%
+\subsection{Physical parameters}
+%
+Vertical turbulence model: Tsanis mixing length turbulence model\\
+Horizontal viscosity for velocity: 0.1 m$^2$/s\\
+Coriolis: no\\
+Wind: 10 m/s in $x$ direction
+%
+% Experimental results (if needed)
+%\subsection{Experimental results}
+%
+% bibliography can be here or at the end
+%\subsection{Reference}
+%
+% Section for computational options
+%\section{Computational options}
+%
+% - Initial and boundary conditions:
+%     This part details both initial and boundary conditions used to simulate the case
+%
+%
+\subsection{Initial and Boundary Conditions}
+%
+\subsubsection{Initial conditions}
+%
+No velocity, initial water level equal to zero
+%
+\subsubsection{Boundary conditions}
+%
+Channel banks: solid slip boundary\\
+Bottom: solid boundaries with friction stress due to mixing length\\
+Surface: shear stress wind
+%
+\subsection{General parameters}
+%
+Time step: 10~s\\
+Simulation duration: 20,000~s (5~h 33~min 20~s)
+%
+% - Numerical parameters:
+%     This part is used to specify the numerical parameters used
+%     (adaptive time step, mass-lumping when necessary...)
+%
+%
+\subsection{Numerical parameters}
+%
+Hydrostatic computation\\
+Advection for velocities: PSI-type MURD scheme\\
+Diagonal preconditioning for propagation
+%
+\subsection{Comments}
+%
+% - Results:
+%     We comment in this part the numerical results against the reference ones,
+%     giving understanding keys and making assumptions when necessary.
+%
+%
+\section{Results}
+%
+The mass balance is the following:
+
+\begin{lstlisting}[language=TelFortran]
+   MASSE INITIALE (DEBUT DE CE CALCUL) : 500000.0
+   MASSE FINALE                      : 500000.0
+   MASSE SORTIE DU DOMAINE (OU SOURCE) : 0.000000
+   MASSE PERDUE                       : -0.5280007E-03
+\end{lstlisting}
+
+Thus, the mass balance is consistent with the accuracy asked
+(from 10$^{-8}$ to 10$^{-6}$ depending on the system to solve,
+for the diffusion of velocities, propagation or vertical velocity).
+Figure 3.4.2 shows the vertical circulation induced by the wind.
+The velocity at the surface is 18 cm/s and the return current reaches
+a maximum value of 5.7 cm/s.
+However, it must be pointed out that the velocity at the surface depends
+on the refinement near the surface because the velocity gradient is
+very high in this area.
+A distance between the two first vertical points of 0.50~m instead of
+0.10~m induced a velocity at the surface of 12~cm/s, but the velocity
+field below 1~m under the surface was only slightly modified.
+J. Wu [2] proposed for the velocity us at the surface the expression:
+\begin{equation}
+u_s = 0.55 (\tau/\rho_{air})^{1/2}
+\end{equation}.
+This gives $u_s$ = 19~cm/s.
+Then, the velocity computed with a mesh of 0.10~m is very close to
+this theoretical value.
+Figure 3.4.2 shows the non-dimensional plot of the vertical velocity
+profile.
+The numerical results fit the measurements reasonably well.
+The upper part of the profile, where the velocities have the same
+orientation as the wind, is close to measured profiles, but the lower
+part is smoothed.
+This could mean that the level of turbulence is stronger in nature.
+The slope of the free surface presented in figure 3.4.3 is equal to
+1.576 10$^{-6}$.
+The computation of the slope, assuming that the flow is homogeneous on
+the vertical, gives a slope equals to 1.66 10$^{-6}$.
+This value is in agreement with the value given by \telemac{3d}.
+%
+\section{Conclusion}
+%
+The velocity field produced by \telemac{3d} using the standard mixing
+length is correct.
+Near the surface, the quality of the results depends on the vertical
+resolution near the surface.
+The second points of the vertical mesh should be 10~cm below the surface
+for a good result.
+In the deeper part, the profile is a little bit more smoothed.
+Taking into account the effect of the wind directly into the turbulence
+model may ameliorate this result.
+%
+% Here is an example of how to include the graph generated by validateTELEMAC.py
+% They should be in test_case/img
+%\begin{figure} [!h]
+%\centering
+%\includegraphics[scale=0.3]{../img/mygraph.png}
+% \caption{mycaption}\label{mylabel}
+%\end{figure}
+%
+% bibliography
+%\section{Reference}

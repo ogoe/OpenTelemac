@@ -1,0 +1,171 @@
+\section{ Description of the formats being used}
+\label{se:desformat}
+ \textbf{\underbar{SERAFIN-}}\underbar{formatted file}
+ It is a binary file. This format is used for the \textit{2D RESULTS FILE2D RESULTS FILE}, the \textit{CURRENTS FILE FORMAT} (format 3) and the \textit{WINDS FILE FORMAT}(format 3).
+
+ The list of records is as follows:
+
+\begin{itemize}
+\item  a record including the study title (80 digits),
+\item  a record including the pair of integers NBV(1) and NBV(2) (number of variables of linear and quadratic discretisations, NBV(2) being 0),
+\item  NBV(1) + NBV(2) records including (in 32 digits) each variable's name and unit,
+\item  a record including the integers 1,0,0,0,0,0,0,0,0 (10 integers, only the first of which is presently used),
+\item  a record including the integers NELEM,NPOIN,NDP,1 (number of elements, number of points, number of points per element and the value 1),
+\item  a record including the integer array IKLE ((NDP,NELEM)-dimensioned array), the connectivity table. WARNING: the dimensions of this array are (NELEM,NDP) in TOMAWAC),
+\item  a record including the integer array IPOBO (NPOIN-dimensioned array). An item value is 0 for an inner point, and provides the edge point numbers for the others),
+\item  a record including the X real array (NPOIN-dimensioned array of point abscissae),
+\item  a record including the Y real array (NPOIN -dimensioned array of point ordinates),
+\end{itemize}
+
+ The following can then be found for each time step:
+
+\begin{itemize}
+\item  a record including time T (real),
+\item  NBV(1)+NBV(2) records including the results arrays for each variable at time T.
+\end{itemize}
+
+ \textbf{\underbar{TOMAWAC}}\underbar{-formatted file}
+
+It is a binary file. That format is used for the \textit{PREVIOUS COMPUTATION FILE} and the \textit{GLOBAL RESULT FILE}
+
+ The list of records is as follows:
+
+\begin{itemize}
+\item  a record including the study title (80 digits).
+\item  a record including the pair of integers NPLAN and NF corresponding respectively to the number of propagation directions and the number of frequencies.
+\item  a record including the pair of integers NELEM2 and NPOIN2 corresponding respectively to the numbers of elements and 2D points.
+\item  a record including end-of-computation time t (real).
+\item  a record including the NPLAN-dimensioned real array TETA (directions of propagation, as expressed in radians).
+
+\item  a record including the NF-dimensioned real array FREQ (propagation frequencies, as expressed in Hz).
+
+\item  a record including the NPOIN*NPLAN*NF --dimensioned real area F (directional spectrum of wave action) at time t.
+\end{itemize}
+
+ When a current is taken into account, then one can find:
+
+\begin{itemize}
+\item  a record including the NPOIN--dimensioned real array UC (component of current along X) upon time t.
+
+\item  a record including the NPOIN--dimensioned real array VC (component of current along Y) at time t.
+\end{itemize}
+
+ When a wind is taken into account, then one can find:
+
+\begin{itemize}
+\item  a record including the NPOIN--dimensioned real array UV (component of wind along X) at time t.
+\item  a record including the NPOIN--dimensioned real array VV (component of wind along Y) at time t.
+\end{itemize}
+
+ When the tide is taken into account, then one can find:
+
+\begin{itemize}
+\item  a record including the NPOIN--dimensioned real array DEPTH at time t.
+\end{itemize}
+
+\underbar{ }\textbf{\underbar{VENTS-WAM-Cycle 4-}}\underbar{formatted file}
+
+ It is a formatted file. This format is used for the \textit{WINDS FILE} when \textit{WINDS FILE FORMAT} is set to 1.
+
+ The list of records is as follows:
+
+ \textbf{- 1- Winds grid input dimensions:}
+
+ KCOL, KROW, RLATS, RLATN, RLONL, RLONR, ICOORD, IWPER
+
+  Read with the format (2I4,4F9.3,2I2)
+
+  KCOL: Number of longitudes in the winds grid
+
+  KROW: Number of latitudes in the winds grid
+
+  RLATS: Latitude of southern grid boundary (degrees)
+
+  RLATN: Latitude of northern grid boundary (degrees)
+
+  RLONL: Longitude of western grid boundary (degrees)
+
+  RLONR: Longitude of eastern grid boundary (degrees)
+
+  ICOORD: Code of coordinates (ICOORD=1 \textbf{mandatory})
+
+  IWPER: Code of periodicity (IWPER=0 \textbf{mandatory})
+
+ The latitude and longitude increments are respectively computed by:
+
+ DPHI = (RLATN-RLATS)/(KROW-1)
+
+ DLAM = (RLONR-RLONL)/(KCOL-1)
+
+\textbf{ Subsequently, for each wind field date:}
+
+ \textbf{- 2- Wind field date:}
+
+ IDTWIR read with format (I10)
+
+  WAM-formatted wind field date WAM (yymmddhhmm)
+
+ \textbf{ 3- Horizontal (W-E) wind components at the grid points:}
+
+ ICODE read with format (I2)
+
+  Input field type flag
+
+   1: friction velocities
+
+   2: surface stresses
+
+   3: wind velocities at 10 m
+
+ (UWND(ILON,ILAT), (ILON=1,KCOL), ILAT=1,KROW)
+
+  read with format (10F6.2)
+
+  Horizontal (W-E) component value
+
+ \textbf{- 4- Vertical (S-N) wind components at the grid points:}
+
+ KCODE read with format (I2)
+
+  Input field type flag
+
+  KCODE should be equal to ICODE.
+
+ (VWND(ILON,ILAT), (ILON=1,KCOL), ILAT=1,KROW)
+
+  read with format (10F6.2)
+
+  Vertical (S-N) component value
+
+ The longitudes are scanned from the West eastwards and the latitudes from the South northwards
+
+ \underbar{ }\textbf{\underbar{"finite differences" type}}\underbar{- formatted file }
+
+
+
+ It is a formatted file. That file is possibly used for the \textit{FORMATTED CURRENTS FILE}, the \textit{FORMATTED WINDS FILE} or the \textit{FORMATTED TIDAL WATER LEVEL FILE} when the option 1 is chosen for the format.
+
+ The list of records is as follows:
+
+\begin{itemize}
+\item  a record including eight integers NCOL, NLIG, YMIN, YMAX, XMIN, XMAX, BID1 and BID. These variables respectively correspond to the number of columns, the lines of the mesh, the minimum and maximum ordinates, the minimum and maximum abscissae of the mesh, followed by 2 variables that are left unused by TOMAWAC.
+
+\item  an empty record
+
+\item  a record including the first component of the variable to be retrieved (for example Ux)
+
+\item  a record including, if any, the second component of the variable to be retrieved (for example Uy)
+\end{itemize}
+
+\underbar{}
+
+\textbf{\underbar{SINUSX}}\underbar{ -formatted file }
+
+
+
+ This format is used for the \textit{BOTTOM TOPOGRAPHY FILE }and possibly for the \textit{CURRENTS FILE }when \textit{CURRENTS FILE FORMAT} is set to 2\textit{.}
+
+ It is a quite simple format, consisting in successive records of the X, Y, ZF type for the bottom topography file and of the X, Y, UC, VC type for the currents file.
+
+
+

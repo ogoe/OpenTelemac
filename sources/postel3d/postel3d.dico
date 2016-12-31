@@ -1,0 +1,822 @@
+/======================================================================/
+/        FICHIER DE DECLARATION DES MOTS CLES DU CODE POSTEL3D
+/                             VERSION 7.1
+/======================================================================/
+
+&DYN
+
+/----------------------------------------------------------------------/
+/  1) MOTS-CLES DE TYPE "ENTIER"
+/----------------------------------------------------------------------/
+
+NOM = 'NOMBRE DE COUPES HORIZONTALES'
+NOM1 = 'NUMBER OF HORIZONTAL CROSS SECTIONS'
+TYPE = ENTIER
+INDEX = 1
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 1
+COMPORT =
+'Foreground ("ENTREES-SORTIES, GRAPHIQUES ET LISTING")
+IS VALEUR (red)'
+AIDE = 'Permet de definir simultanement plusieurs coupes horizontales.
+La valeur maximale autorisee est 9.'
+AIDE1 = 'Allow multiple horizontal sections. The maximum value is 9'
+
+NOM = 'NOMBRE DE COUPES VERTICALES'
+NOM1 = 'NUMBER OF VERTICAL CROSS SECTIONS'
+TYPE = ENTIER
+INDEX = 2
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 1
+AIDE = 'Permet de definir simultanement plusieurs coupes verticales.
+La valeur maximale autorisee est 9.'
+AIDE1 = 'Allow multiple vertical sections. The maximum value is 9'
+
+NOM = 'NUMERO DU PREMIER ENREGISTREMENT POUR LES COUPES'
+NOM1 = 'NUMBER OF FIRST RECORD FOR CROSS SECTIONS'
+TYPE = ENTIER
+INDEX = 3
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 2
+AIDE = 'Seuls les enregistrements au-dela de ce numero seront traites
+pour les coupes.'
+AIDE1 = 'Only records after that time will be in the cross sections'
+
+NOM = 'PERIODE DE SORTIE DES COUPES'
+NOM1 = 'PRINTOUT PERIOD FOR CROSS SECTIONS'
+TYPE = ENTIER
+INDEX = 4
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 2
+AIDE = 'Periode en nombre d''enregistrements entre 2 coupes.'
+AIDE1 = 'Period in number of records between two cross sections'
+
+NOM = 'PLAN DE REFERENCE POUR CHAQUE COUPE HORIZONTALE'
+NOM1 = 'REFERENCE LEVEL FOR EACH HORIZONTAL CROSS SECTION'
+TYPE = ENTIER
+INDEX = 5
+MNEMO = ''
+TAILLE = 9
+DEFAUT = 0;1;2;3;4;5;6;7;8
+DEFAUT1 = 0;1;2;3;4;5;6;7;8
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 1
+AIDE = 'Chaque coupe horizontale sera parallele a son plan de reference.
+Ainsi il est possible de faire des coupes par exemple :
+\begin{itemize}
+\item a telle distance au-dessus du fond,
+\item a telle distance sous la surface,
+\item suivant un plan intermediaire \ldots
+\end{itemize}
+Le plan 0 correspond au plan parfaitement horizontal a la cote 0.'
+AIDE1 = 'Each horizontal cross section will be parallel to its reference
+plane. It is then possible to make cross section which are:
+\begin{itemize}
+\item at a chosen distance above the bottom,
+\item at a chosen distance below the surface,
+\item referenced to an inbetween plane \ldots
+\end{itemize}
+Plane 0 correspond to the plane perfecly horizontal to the heigh 0.'
+
+NOM = 'NOMBRE DE POINTS DE DISCRETISATION POUR LES COUPES VERTICALES'
+NOM1 = 'NUMBER OF NODES FOR VERTICAL CROSS SECTION DISCRETIZATION'
+TYPE = ENTIER
+INDEX = 6
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 120
+DEFAUT1 = 120
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 2
+AIDE = 'Il s''agit du nombre de points suivant l''horizontale.'
+AIDE1 = 'It is the number of points along the horizontal'
+
+/----------------------------------------------------------------------/
+/  2) MOTS-CLES DE TYPE "REEL"
+/----------------------------------------------------------------------/
+
+NOM = 'HAUTEUR PAR RAPPORT AU PLAN DE REFERENCE'
+NOM1 = 'ELEVATION FROM REFERENCE LEVEL'
+TYPE = REEL
+INDEX = 1
+MNEMO = ''
+TAILLE = 9
+DEFAUT = 0.;0.;0.;0.;0.;0.;0.;0.;0.
+DEFAUT1 = 0.;0.;0.;0.;0.;0.;0.;0.;0.
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+COMPORT =
+'Foreground ("GRAPHIQUE")
+IS VALEUR (blue)'
+AIDE = 'Decalage entre la coupe et son plan de reference, ceci pour
+chaque coupe horizontale.'
+AIDE1 = 'Gap between the cross sections and its reference plane, this
+must be defined for cross section'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 1'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 1'
+TYPE = REEL
+INDEX = 2
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 1'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 1'
+TYPE = REEL
+INDEX = 3
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 2'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 2'
+TYPE = REEL
+INDEX = 4
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 2'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 2'
+TYPE = REEL
+INDEX = 5
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 3'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 3'
+TYPE = REEL
+INDEX = 6
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 3'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 3'
+TYPE = REEL
+INDEX = 7
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 4'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 4'
+TYPE = REEL
+INDEX = 8
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 4'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 4'
+TYPE = REEL
+INDEX = 9
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 5'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 5'
+TYPE = REEL
+INDEX = 10
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 5'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 5'
+TYPE = REEL
+INDEX = 11
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 6'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 6'
+TYPE = REEL
+INDEX = 12
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 6'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 6'
+TYPE = REEL
+INDEX = 13
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 7'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 7'
+TYPE = REEL
+INDEX = 14
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 7'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 7'
+TYPE = REEL
+INDEX = 15
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 8'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 8'
+TYPE = REEL
+INDEX = 16
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 8'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 8'
+TYPE = REEL
+INDEX = 17
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ABSCISSES DES SOMMETS DE LA COUPE VERTICALE 9'
+NOM1 = 'ABSCISSAE OF THE VERTICES OF VERTICAL CROSS SECTION 9'
+TYPE = REEL
+INDEX = 18
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'ORDONNEES DES SOMMETS DE LA COUPE VERTICALE 9'
+NOM1 = 'ORDINATES OF THE VERTICES OF VERTICAL CROSS SECTION 9'
+TYPE = REEL
+INDEX = 19
+MNEMO = ''
+TAILLE = 10
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'DISTORSION ENTRE VERTICALE ET HORIZONTALE'
+NOM1 = 'DISTORSION BETWEEN VERTICAL AND HORIZONTAL'
+TYPE = REEL
+INDEX = 20
+MNEMO = ''
+TAILLE = 9
+DEFAUT = 1.;1.;1.;1.;1.;1.;1.;1.;1.
+DEFAUT1 = 1.;1.;1.;1.;1.;1.;1.;1.;1.
+RUBRIQUE = 'GRAPHIQUE'
+RUBRIQUE1 = 'GRAPHIC'
+NIVEAU = 1
+AIDE = 'Rapport entre echelles verticale et horizontale pour chaque
+coupe verticale.'
+AIDE1 = 'Ratio between vertical and horizontal scale for each vertical
+cross section'
+
+/----------------------------------------------------------------------/
+/  3) MOTS-CLES DE TYPE "LOGIQUE"
+/----------------------------------------------------------------------/
+
+/----------------------------------------------------------------------/
+/  4) MOTS-CLES DE TYPE "CHAINE DE CARACTERE"
+/----------------------------------------------------------------------/
+
+NOM = 'FICHIER FORTRAN'
+NOM1 = 'FORTRAN FILE'
+TYPE = CARACTERE
+INDEX = 1
+MNEMO = ''
+TAILLE = 0
+SUBMIT = 'INUTILE;source.f;FACUL;ASC;LIT;FORTRAN'
+DEFAUT = 'DEFAUT'
+DEFAUT1 = 'DEFAUT'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 2
+COMPORT =
+'Foreground ("ENTREES-SORTIES, FICHIERS*NOMS")
+IS VALEUR (red)'
+AIDE = 'Nom du fichier FORTRAN a soumettre.\\
+Il ne sert a priori qu''a dimensionner les tableaux utilises par
+\postel3d, mais peut contenir des sous-programmes modifies ou propres
+a l''utilisateur.'
+AIDE1 = 'Name of FORTRAN file to be submitted.\\
+It is supposed to be used only to dimension the array used by \postel3d
+but can also contain subroutines modified by the user.'
+
+NOM = 'FICHIER DES PARAMETRES'
+NOM1 = 'STEERING FILE'
+TYPE = CARACTERE
+INDEX = 2
+MNEMO = ''
+TAILLE = 0
+SUBMIT='INUTILE;POSCAS;OBLIG;ASC;LIT;CAS'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les references des fichiers et
+les options du calcul a realiser.'
+AIDE1 = 'Name of the file containing the parameters of the computation
+Written by the user.'
+
+NOM = 'FICHIER DES RESULTATS 3D'
+NOM1 = '3D RESULT FILE'
+TYPE = CARACTERE
+INDEX = 3
+MNEMO = ''
+TAILLE = 0
+SUBMIT='POSPRE-READ;POSPRE;OBLIG;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier des resultats 3D obtenu par un calcul avec
+\telemac{3D}.'
+AIDE1 = 'Name of the 3d result file generated by a \telemac{3D} run.'
+
+NOM = 'FORMAT DU FICHIER DES RESULTATS 3D'
+NOM1 = '3D RESULT FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 19
+MNEMO = ''
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour Telemac;
+\item SERAFIND: format standard double precision pour Telemac;
+\item MED     : format MED base sur HDF5
+\end{itemize}'
+AIDE1 = 'Results file format. Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
+NOM = 'FICHIER DES COUPES HORIZONTALES'
+NOM1 = 'HORIZONTAL CROSS SECTION FILE'
+TYPE = CARACTERE
+INDEX = 4
+MNEMO = ''
+TAILLE = 0
+SUBMIT='POSHOR-WRITE;POSHOR;OBLIG;BIN;ECR;MULTI'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom generique des fichiers des coupes horizontales.
+Le fichier contenant la coupe i aura pour nom ce nom generique suivi
+de l''extension ''.i''.'
+AIDE1 = 'Generic name for the horizontal cross sections file.
+The file containing the cross section i name will be the generic
+followed by the extension''.i''.'
+
+NOM = 'FORMAT DU FICHIER DES COUPES HORIZONTALES'
+NOM1 = 'HORIZONTAL CROSS SECTION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 20
+MNEMO = ''
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour Telemac;
+\item SERAFIND: format standard double precision pour Telemac;
+\item MED     : format MED base sur HDF5
+\end{itemize}'
+AIDE1 = 'Results file format. Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
+NOM = 'FICHIER DES COUPES VERTICALES'
+NOM1 = 'VERTICAL CROSS SECTION FILE'
+TYPE = CARACTERE
+INDEX = 5
+MNEMO = ''
+TAILLE = 0
+SUBMIT='POSVER-WRITE;POSVER;OBLIG;BIN;ECR;MULTI'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom generique des fichiers des coupes verticales.
+Le fichier contenant la coupe i au j ieme pas de temps enregistre aura
+pour nom ce nom generique suivi de l''extension ''.i.j''.'
+AIDE1 = 'Generic name for the vertical cross sections file.  The file
+containing the cross section i for the j time step name will be the
+generic followed by the extension''.i.j''.'
+
+NOM = 'FORMAT DU FICHIER DES COUPES VERTICALES'
+NOM1 = 'VERTICAL CROSS SECTION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 21
+MNEMO = ''
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour Telemac;
+\item SERAFIND: format standard double precision pour Telemac;
+\item MED     : format MED base sur HDF5
+\end{itemize}'
+AIDE1 = 'Results file format. Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
+NOM = 'NUMERO DE VERSION'
+NOM1 = 'RELEASE'
+TYPE = CARACTERE
+INDEX = 12
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 'V7P2'
+DEFAUT1 = 'V7P2'
+COMPORT =
+'Foreground ("ENTREES-SORTIES, GENERALITES*CALCUL")
+IS VALEUR (red)'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE = 'Tout est dans le titre'
+AIDE1 = 'It is all said in the title'
+
+NOM = 'BINAIRE DU FICHIER DES RESULTATS 3D'
+NOM1 = '3D RESULT FILE BINARY'
+TYPE = CARACTERE
+INDEX = 14
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+CHOIX = 'STD';
+        'IBM';
+        'I3E'
+CHOIX1 = 'STD';
+         'IBM';
+         'I3E'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
+NIVEAU = 2
+AIDE = 'Type du binaire utilise pour l''ecriture du fichier des
+resultats 3d.\\
+Ce type depend de la machine sur laquelle le fichier a ete genere.
+Les valeurs possibles sont :
+\begin{itemize}
+\item IBM: pour un fichier crEE sur IBM;
+\item I3E: pour un fichier crEE sur HP;
+\item STD: il s''agit alors d''ordres READ et WRITE normaux.
+\end{itemize}'
+AIDE1 = 'Binary file type used for writing the results file.
+This type depends on the machine on which the file was generated.
+The possible values are as follows:
+\begin{itemize}
+\item IBM: for a file on an IBM (from a CRAY)
+\item I3E: for a file on an HP (from a CRAY)
+\item STD: binary type of the machine on which the user is working. In
+that case, normal READ and WRITE commands are used
+\end{itemize}'
+
+NOM = 'BINAIRE DES FICHIERS DES COUPES'
+NOM1 = 'CROSS SECTION FILE BINARY'
+TYPE = CARACTERE
+INDEX = 15
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+CHOIX = 'STD';
+        'I3E'
+CHOIX1 = 'STD';
+         'I3E'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
+NIVEAU = 2
+COMPORT =
+'Foreground ("ENTREES-SORTIES, FICHIERS*TYPE DU BINAIRE")
+IS VALEUR (red)'
+AIDE = 'Type du binaire utilise pour l''ecriture des fichiers des
+coupes.\\
+Ce type depend de la machine sur laquelle le fichier a ete genere.
+Les valeurs possibles sont les memes que pour le fichier des
+resultats 3D.'
+AIDE1 = 'Binary file type used for writing the cross section files.
+This type depends on the machine on which the file was generated.
+The possible values are as follows:
+\begin{itemize}
+\item I3E, for a file on an HP (from a CRAY)
+\item STD, binary type of the machine on which the user is working. In
+that case, normal READ and WRITE commands are used.
+\end{itemize}'
+
+NOM = 'FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE'
+TYPE = CARACTERE
+INDEX = 16
+MNEMO = ''
+TAILLE = 0
+SUBMIT='POSGEO-READ;POSGEO;OBLIG;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier de geometrie'
+AIDE1 = 'Name of the geometry file'
+
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 18
+MNEMO = ''
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de geometrie.
+Les valeurs possibles sont :
+\begin{itemize}
+\item SERAFIN : format standard simple precision pour Telemac;
+\item SERAFIND: format standard double precision pour Telemac;
+\item MED     : format MED base sur HDF5
+\end{itemize}'
+AIDE1 = 'Geometry file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
+NOM = 'BINAIRE DU FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE BINARY'
+TYPE = CARACTERE
+INDEX = 17
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+CHOIX = 'STD';
+        'I3E'
+CHOIX1 = 'STD';
+         'I3E'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'TYPE DU BINAIRE'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'TYPE OF BINARY'
+NIVEAU = 2
+COMPORT =
+'Foreground ("ENTREES-SORTIES, FICHIERS*TYPE DU BINAIRE")
+IS VALEUR (red)'
+AIDE = 'Type du binaire utilise pour l''ecriture des fichiers des
+coupes.\\
+Ce type depend de la machine sur laquelle le fichier a ete genere.
+Les valeurs possibles sont les memes que pour le fichier des
+resultats 3D.'
+AIDE1 = 'Binary file type used for writing the cross section files.
+This type depends on the machine on which the file was generated.
+The possible values are as follows:
+\begin{itemize}
+\item I3E, for a file on an HP (from a CRAY)
+\item STD, binary type of the machine on which the user is working. In
+    that case, normal READ and WRITE commands are used.
+\end{itemize}'
+
+NOM = 'DICTIONNAIRE'
+NOM1 = 'DICTIONARY'
+TYPE = CARACTERE
+INDEX = 100
+MNEMO = ''
+SUBMIT = 'INUTILE;POSDICO;OBLIG;ASC;LIT;DICO'
+DEFAUT = 'postel3d.dico'
+DEFAUT1 = 'postel3d.dico'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
+NIVEAU = -3
+AIDE ='Dictionnaire des mots cles.'
+AIDE1 ='Key word dictionary.'
+
+
+NOM = 'LISTE DES FICHIERS'
+NOM1 = 'LIST OF FILES'
+TYPE = CARACTERE
+INDEX = 99
+MNEMO = ''
+TAILLE = 8
+DEFAUT = 'FICHIER DES PARAMETRES';
+         'DICTIONNAIRE';
+         'FICHIER FORTRAN';
+         'FICHIER DE GEOMETRIE';
+         'FICHIER DES PARAMETRES';
+         'FICHIER DES RESULTATS 3D';
+         'FICHIER DES COUPES HORIZONTALES';
+         'FICHIER DES COUPES VERTICALES'
+DEFAUT1 ='STEERING FILE';
+         'DICTIONARY';
+         'FORTRAN FILE';
+         'GEOMETRY FILE';
+         'STEERING FILE';
+         '3D RESULT FILE';
+         'HORIZONTAL CROSS SECTION FILE';
+         'VERTICAL CROSS SECTION FILE'
+RUBRIQUE  = 'FICHIERS'
+RUBRIQUE1 = 'FILES'
+NIVEAU = 1
+AIDE = 'Noms des fichiers exploites par le code'
+AIDE1= 'File names of the used files'
+
+
+//----Librairies du code-------------------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//   LLL = extension d'une librairie ("a" ou "lib")
+//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "postel3d|postel3d_VVV|PPP|postel3dMMMVVV.LLL"
+
+NOM = 'DESCRIPTION DES LIBRAIRIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
+TYPE = CARACTERE
+INDEX = 55
+MNEMO = 'LINKLIBS'
+TAILLE = 6
+DEFAUT = 'builds|PPP|lib|postel3dMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|postel3dMMMVVV.LLL';
+'builds|PPP|lib|biefMMMVVV.LLL';
+'builds|PPP|lib|hermesMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL';
+'builds|PPP|lib|parallelMMMVVV.LLL';
+'builds|PPP|lib|specialMMMVVV.LLL'
+
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Description des librairies de \postel3d'
+AIDE1 = '\postel3d libraries description'
+
+//----Executable par defaut du code---------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "postel3d|postel3d_VVV|PPP|postel3dMMMVVV.LLL"
+
+NOM = 'EXECUTABLE PAR DEFAUT'
+NOM1 = 'DEFAULT EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 56
+MNEMO = 'EXEDEF'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|postel3dMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|postel3dMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de \postel3d'
+AIDE1 = 'Default executable for \postel3d'
+
+NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
+NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 57
+MNEMO = 'EXEDEFPARA'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|postel3dMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|postel3dMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable parallele par defaut de \postel3d'
+AIDE1 = 'Default parallel executable for \postel3d'

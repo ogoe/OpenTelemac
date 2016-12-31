@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="summer.xml" />
+      <data title="cone" author="R.Ata" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_cone.cas"
+       title="rotating cone in 2D"
+   />
+    <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_cone.cas"
+       title="rotating cone parallel mode"
+   />
+
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_cone.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_cone.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+<!-- Store variables for error computation
+-->
+   <cast xref="save:v" config="oneofall" time="[-1]" type="2d:">
+      <a1 vars="CHARACT_STRONG:map" target="1:T2DRES" />
+      <a2 vars="CHARACT_WEAK:map" target="1:T2DRES" />
+      <a3 vars="ERIA SCHEME     :map" target="1:T2DRES" />
+      <a4 vars="N_SCHEME        :map" target="1:T2DRES" />
+      <a5 vars="LIMP N_SCHEME   :map" target="1:T2DRES" />
+      <a6 vars="PSI_SCHEME      :map" target="1:T2DRES" />
+      <a7 vars="PSI_SCHEME COR1 :map" target="1:T2DRES" />
+      <a8 vars="PSI_SCHEME COR2 :map" target="1:T2DRES" />
+      <a9 vars="N_SCHEME   COR1 :map" target="1:T2DRES" />
+      <a10 vars="N_SCHEME   COR2 :map" target="1:T2DRES" />
+      <a11 vars="LIPS_SCHEME     :map" target="1:T2DRES" />
+   </cast>
+<!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+    <cast xref="sol_ex" config="oneofall" type="2d:" time="[-1]" >
+      <python>
+def check_file():
+   from os import path, remove, environ
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','cone','table.txt')
+   if path.exists(filePath):
+      remove(filePath)
+   return [],[],[],[]
+
+def gauss_cone(a0):
+   from os import environ, path
+   # Number of points in the mesh
+   npoints = len(a0.support[0])
+   # Recuperate x and y
+   x0 = a0.support[0]
+   y0 = a0.support[1]
+   ex = np.zeros(npoints,dtype=np.float)
+   errl1=0.
+   errl2=0.
+   errlinf=-100.
+   mintr=100.
+   maxtr=100.
+   for ix in range(npoints):
+      ex[ix] = np.exp(-((x0[ix]-15.0)**2+(y0[ix]-10.2)**2)/2)
+      errl1+= np.abs(ex[ix]-a0.values[0][0][ix])
+      errl2+= (ex[ix]-a0.values[0][0][ix])**2
+   errl1 = 1./npoints*errl1
+   errl2 = np.sqrt(1./npoints*errl2)
+   errlinf=np.max(np.abs(ex.ravel()-a0.values.ravel()))
+   maxtr=np.max(a0.values.ravel())
+   mintr=np.min(a0.values.ravel())
+   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','cone','table.txt')
+   with open(filePath,'a') as outfile:
+      outfile.write('%10.3e' % errl1)
+      outfile.write('&amp; %10.3e' % errl2)
+      outfile.write('&amp; %10.3e' % errlinf)
+      outfile.write('&amp; %7.4f' % mintr)
+# !!!
+# if last variable then no backslashes in the last line
+      if(a0.names==['LIPS_SCHEME     ']):
+        outfile.write('&amp; %5.3f' % maxtr)
+      else:
+        outfile.write('&amp; %5.3f \\\\ \n' % maxtr)
+   return [],[],[],[]
+      </python>
+      <r0 vars="check_file()" />
+      <r1 vars="gauss_cone(a1)" />
+      <r2 vars="gauss_cone(a2)" />
+      <r3 vars="gauss_cone(a3)" />
+      <r4 vars="gauss_cone(a4)" />
+      <r5 vars="gauss_cone(a5)" />
+      <r6 vars="gauss_cone(a6)" />
+      <r7 vars="gauss_cone(a7)" />
+      <r8 vars="gauss_cone(a8)" />
+      <r9 vars="gauss_cone(a9)" />
+      <r10 vars="gauss_cone(a10)" />
+      <r11 vars="gauss_cone(a11)" />
+   </cast>
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   <deco xref="figure1d">
+      <look set="legend(loc='best'); ylabel('concentration (g/l)'); xlabel('abscissae (m)'); title('1D PROFILES')" />
+   </deco>
+   <deco xref="ex1d">
+      <look color="k" label="EXACT SOLUTION"/>
+   </deco>
+   <deco xref="strong">
+      <look color="Aqua" label="STRONG CHARACTERISTICS"/>
+   </deco>
+   <deco xref="weak">
+      <look color="Magenta" label="WEAK CHARACTERISTICS"/>
+   </deco>
+   <deco xref="eria">
+      <look color="SeaGreen" label="ERIA"/>
+   </deco>
+   <deco xref="n">
+      <look color="LightBlue" label="N"/>
+   </deco>
+   <deco xref="nlips">
+      <look color="Gold" marker="o" label="N LIPS"/>
+   </deco>
+   <deco xref="psi">
+      <look color="red" label="PSI"/>
+   </deco>
+   <deco xref="psicor1">
+      <look color="DarkViolet" label="PSI PC1"/>
+   </deco>
+   <deco xref="psicor2">
+      <look color="LightPink" label="PSI PC2"/>
+   </deco>
+   <deco xref="ncor1">
+      <look color="Green" marker="2" label="N PC1"/>
+   </deco>
+   <deco xref="ncor2">
+      <look color="OrangeRed" marker="*" label="N PC2"/>
+   </deco>
+   <deco xref="psilips">
+      <look color="MediumBlue" label="PSI LIPS"/>
+   </deco>
+
+   <plot1d xref="img/figure_1d" type="1d:v-section" extract="(5;10.2):(21;10.2)" config="oneofall" time="[-1]" size="(10;10)"  deco="figure1d" saveas="pdf">
+      <layer vars="CHARACT_STRONG  :line" target="1:T2DRES" time="[0]" deco="ex1d"/>
+      <layer vars="CHARACT_WEAK    :line" target="1:T2DRES" deco="weak"/>
+      <layer vars="LIMP N_SCHEME   :line" target="1:T2DRES" deco="nlips"/>
+      <layer vars="LIPS_SCHEME     :line" target="1:T2DRES" deco="psilips"/>
+      <layer vars="ERIA SCHEME     :line" target="1:T2DRES" deco="eria"/>
+      <layer vars="N_SCHEME   COR1 :line" target="1:T2DRES" deco="ncor1"/>
+      <layer vars="PSI_SCHEME COR1 :line" target="1:T2DRES" deco="psicor1"/>
+      <layer vars="CHARACT_STRONG  :line" target="1:T2DRES" deco="strong"/>
+      <layer vars="N_SCHEME   COR2 :line" target="1:T2DRES" deco="ncor2"/>
+      <layer vars="PSI_SCHEME COR2 :line" target="1:T2DRES" deco="psicor2"/>
+      <layer vars="PSI_SCHEME      :line" target="1:T2DRES" deco="psi" />
+      <layer vars="N_SCHEME        :line" target="1:T2DRES" deco="n"/>
+   </plot1d>
+-->
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <deco xref="EXACT" >
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="STRCHAR">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="WEAKCHAR">
+      <look cmap="Greens.xml" levels="np.arange(-0.1,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="ERIA">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="N">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="LIN">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="PSI">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="PC_PSI1">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="PC_PSI2">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="PC_N1">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="PC_N2">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+   <deco xref="LIPS">
+      <look cmap="Greens.xml" levels="np.arange(0,1,0.1)" extend="'max'"/>
+   </deco>
+<!--Initial condition for velocity
+   <plot2d xref="figure2" config="oneofall" size="(8;8)" >
+      <layer vars="velocity:map" target="1:T2DRES" time="[-1]" />
+      <layer vars="velocity:angle" sample="(10.05;7.05)(20.1;13.05){10;4}" target="1:T2DRES" time="[-1]" />
+   </plot2d>
+-->
+<!--plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <plot2d xref="img/figure_EX" config="oneofall" size="(10;10)"  set="colorbar;title('EXACT SOLUTION')" >
+      <layer vars="CHARACT_STRONG:map" target="1:T2DRES" time="[0]" deco="EXACT" />
+   </plot2d>
+   <plot2d xref="img/figure_SC" config="oneofall" size="(10;10)" set="colorbar;title('STRONG CHARACTERISTICS')">
+      <layer vars="CHARACT_STRONG:map" target="1:T2DRES" time="[-1]" deco="STRCHAR"/>
+   </plot2d>
+   <plot2d xref="img/figure_WC" config="oneofall" size="(10;10)" set="colorbar;title('WEAK CHARACTERISTICS')">
+      <layer vars="CHARACT_WEAK:map" target="1:T2DRES" time="[-1]" deco="WEAKCHAR"/>
+   </plot2d>
+   <plot2d xref="img/figure_ERIA" config="oneofall" size="(10;10)" set="colorbar;title('ERIA')">
+      <layer vars="ERIA SCHEME     :map" target="1:T2DRES" time="[-1]" deco="ERIA"/>
+   </plot2d>
+   <plot2d xref="img/figure_N" config="oneofall" size="(10;10)" set="colorbar;title('N')">
+      <layer vars="N_SCHEME        :map" target="1:T2DRES" time="[-1]" deco="N"/>
+   </plot2d>
+   <plot2d xref="img/figure_LIN" config="oneofall" size="(10;10)" set="colorbar;title('N LIPS')">
+      <layer vars="LIMP N_SCHEME   :map" target="1:T2DRES" time="[-1]" deco="LIN"/>
+   </plot2d>
+   <plot2d xref="img/figure_PSI" config="oneofall" size="(10;10)" set="colorbar;title('PSI')">
+      <layer vars="PSI_SCHEME      :map" target="1:T2DRES" time="[-1]" deco="PSI" />
+   </plot2d>
+   <plot2d xref="img/figure_PC_PSI1" config="oneofall" size="(10;10)" set="colorbar;title('PSI PC1')">
+      <layer vars="PSI_SCHEME COR1 :map" target="1:T2DRES" time="[-1]" deco="PC_PSI1"/>
+   </plot2d>
+   <plot2d xref="img/figure_PC_PSI2" config="oneofall" size="(10;10)" set="colorbar;title('PSI PC2')">
+      <layer vars="PSI_SCHEME COR2 :map" target="1:T2DRES" time="[-1]" deco="PC_PSI2"/>
+   </plot2d>
+   <plot2d xref="img/figure_PC_N1" config="oneofall" size="(10;10)" set="colorbar;title('N PC1')">
+      <layer vars="N_SCHEME   COR1 :map" target="1:T2DRES" time="[-1]" deco="PC_N1" />
+   </plot2d>
+   <plot2d xref="img/figure_PC_N2" config="oneofall" size="(10;10)" set="colorbar;title('N PC2')">
+      <layer vars="N_SCHEME   COR2 :map" target="1:T2DRES" time="[-1]" deco="PC_N2" />
+   </plot2d>
+   <plot2d xref="img/figure_LIPS" config="oneofall" size="(10;10)" set="colorbar;title('PSI LIPS')">
+      <layer vars="LIPS_SCHEME     :map" target="1:T2DRES" time="[-1]" deco="LIPS"/>
+   </plot2d>
+</validation>

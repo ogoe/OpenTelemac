@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="save2d" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+   <deco xref="vect">
+      <look cmap="Blue.xml" linewidths="1.0" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+   <deco xref="size1">
+      <look size="(12,3)" />
+   </deco>
+   <deco xref="size2">
+      <look size="(12,5)" />
+   </deco>
+
+<!-- Plot from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Plot a vertical cross section re-sampled onto a grid into the PNG file "figure1.png".
+      - Locations: extraction along the line defined by the 2 points (0;1) and (21;1)
+      - Sampling:  resampling within the box defined by the points (10;0) and (15;0.5) resampled 10 times along x and 4 times along y
+      - Variables: extraction of Z from the 3D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file "f3d_bump.slf"
+   -->
+   <deco xref="figure1">
+      <look format="png" colourbar="jet.xml" size="(12,5)" />
+      <data title="Sub-critical flow over a bump" />
+   </deco>
+   <plot2d xref="figure1" type="v-section" config="oneofall" time="[-1]" deco="figure1;size1" >
+      <layer vars="Z:grid" extract="(0;1)(21;1)" target="f3d_bump.slf" sample="(10;0)(15;0.5){10;4}" />
+   </plot2d>
+   <!-- Plot the vertical grid into the PNG file "figure2.png".
+      - Same as figure1 but no re-sampling
+   -->
+   <plot2d xref="figure2" type="v-section" config="oneofall" time="[-1]" >
+      <layer vars="Z:grid" extract="(0;1)(21;1)" target="f3d_bump.slf" />
+   </plot2d>
+   <!-- Plot a coloured surface into the PNG file "figure3.png".
+      - Locations: extraction of the surface plan #[-1] for the entire mesh "[]#[-1]"
+      - Variables: extraction of Z from the 3D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file "f3d_bump.slf"
+   -->
+   <deco xref="figure3">
+      <look format="png" colourbar="jet.xml" size="(12,3)" />
+      <data title="Sub-critical flow over a bump" />
+   </deco>
+   <plot2d xref="figure3" type="p-section" config="oneofall" time="[-1]" >
+      <layer vars="Z:map" extract="[]#[-1]" target="f3d_bump.slf" />
+   </plot2d>
+   <!-- Plot a coloured vertical cross section and a few vectors into the PNG file "figure4.png".
+      - Locations: extraction along the line defined by the 2 points (0;1) and (21;1)
+      - Sampling:  resampling into vectors within the box defined by the points (10;0) and (15;0.5) resampled 10 times along x and 4 times along y
+      - Variables: extraction of vitesse from the 3D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file "f3d_bump.slf"
+      - TODO:  deal with several variables of name VITESSE with a calculation action
+   -->
+
+   <plot2d xref="figure4" type="v-section" extract="(0;1)(21;1)" time="[-1]" config="oneofall" deco="size2" >
+      <layer vars="vitesse:arrow" target="f3d_bump.slf" sample="(10;0)(15;0.5){10;4}" />
+   </plot2d>
+   <!--
+   <plot2d xref="figure4" type="v-section" extract="(0;1)(21;1)" time="[-1]" config="oneofall" deco="size2" >
+      <layer vars="vitesse:map" target="f3d_bump.slf" deco="vect"  />
+      <layer vars="vitesse:arrow" target="f3d_bump.slf" sample="(10;0)(15;0.5){10;4}" />
+   </plot2d>
+   -->
+   <!-- Plot a coloured vertical cross section and a few vectors into the PNG file "figure5.png".
+      - Same as figure4 but no re-sampling, just a colour map of dynamic pressure
+   -->
+   <plot2d xref="figure5" type="v-section" time="[-1]" deco="size2" >
+      <layer vars="pression:map" target="f3d_bump.slf" config="oneofall" extract="(0;1);(21;1)" />
+   </plot2d>
+   <!-- Plot a coloured surface into the PNG file "figure6.png".
+      - Locations: extraction for the entire mesh
+      - Sampling:  resampling into vectors within the box defined by the points (190000;145000) and (200000;155000) resampled 10 times along x and 10 times along y
+      - Variables: extraction of VELOCITY from the 2D results
+      - Duration:  extraction at the end of time (-1)
+      - File:      extraction from file "r2d_tide-jmj_real_gen.slf"
+   -->
+   <plot2d xref="figure6" type="p-section" config="oneofall" time="[-1]" deco="default">
+      <layer vars="VELOCITY:map" target="r2d_tide-jmj_real_gen.slf" />
+      <layer vars="VELOCITY:angle" target="r2d_tide-jmj_real_gen.slf"  sample="(190000;145000)(200000;155000){10;10}" />
+   </plot2d>
+
+<!-- Extract from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   <cast xref="exit"><python>sys.exit('\n\nsave the rest for later\n\n')</python></cast>
+   -->
+   <!-- Save to file
+   <save xref="figure6" type="2d:p-section" config="oneofall" time="[0:-1]" >
+      <layer vars="surface libre:map" extract="[]" target="f2d_bumpflu.slf" />
+   </save>
+   <save xref="figure1" type="1d:history" config="oneofall" time="[0:-1]" >
+      <layer vars="cote:line" extract="703;(0;1)" target="f3d_bump.slf" />
+   </save>
+   <save2d xref="figure3" type="p-section" config="oneofall" time="[-1]" >
+      <layer vars="Z:map" extract="[]#[-1]" target="f3d_bump.slf" />
+   </save2d>
+   -->
+
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+</validation>

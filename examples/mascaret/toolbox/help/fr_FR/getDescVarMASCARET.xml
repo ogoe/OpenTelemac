@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getDescVar" xml:lang="fr">
+    <refnamediv>
+        <refname>MASCARET_getDescVar</refname>
+        <refpurpose>Récupère la liste des variables de MASCARET accompagnée d'une description</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Séquence d'appel</title>
+        <synopsis>[erreur,TabVar,TabDesc]=MASCARET_getDescVar(id)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>erreur</term>
+                <listitem>
+                    <para>Argument de sortie indiquant la présence d'erreur si différent de zero</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>TabVar</term>
+                <listitem>
+                    <para>Tableau des noms de variable du modèle ou de l'état</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>TabDesc</term>
+                <listitem>
+                    <para>Tableau des descriptions de variable du modèle ou de l'état</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Récupère la liste complète des variables de MASCARET accompagnée d'une description</para>
+    </refsection>
+    <refsection>
+        <title>Exemple</title>
+        <programlisting role="example">
+// creation of the MASCARET model
+[err, id] = MASCARET_create();
+assert_checktrue(id>0);
+
+// get the description
+[err,TabVar,TabDesc]=MASCARET_getDescVar(id);
+assert_checkequal(err,0);
+disp(TabVar+" : "+TabDesc);
+
+// model deletion
+err = MASCARET_delete(id);
+assert_checkequal(err,0);
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>Voir aussi</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="MASCARET_getTypeVar">MASCARET_getTypeVar</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

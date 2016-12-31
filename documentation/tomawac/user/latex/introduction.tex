@@ -1,0 +1,48 @@
+
+\chapter{\tomawac: an overview}
+
+
+\section{Introduction Generals}
+
+\tomawac is a scientific software which models the changes, both in the time and in the spatial domain, of the power spectrum of wind-driven waves and wave agitation for applications in the oceanic domain, in the intracontinental seas as well as in the coastal zone. The model uses the finite elements formalism for discretizing the sea domain; it is part of the TELEMAC system as developed by the EDF R\&D's Laboratoire National d'Hydraulique et Environnement (LNHE).
+
+The acronym \tomawac being adopted for naming the software was derived from the following English denomination:
+
+ \textbf{\textit{TELEMAC-based Operational Model Addressing Wave Action Computation}}
+(in French: \textit{Mod\`ele op\'erationnel bas\'e sur le syst\`eme TELEMAC concernant le calcul de l'action d'onde pour les vagues})
+
+ \tomawac is one of the models making up the TELEMAC system \cite{Hervouet2007}, which addresses the various issues that are related to both free surface (either river- or sea-typed) and underground flows, as well as the associated physical processes: bed-load transport, water quality, etc. 
+
+\section{Implementing \tomawac}
+
+ \tomawac models the sea states by solving the balance equation of the action density directional spectrum. To serve that purpose, the model should reproduce the evolution of the action density directional spectrum at each node of a spatial computational grid.
+
+ In \tomawac the wave directional spectrum is split into a finite number of propagation frequencies $f_{i}$ and directions $\theta_{i}$. The balance equation of wave action density is solved for each component$\left(f_{i} ,\theta _{i} \right)$. The model is said to be a third generation model (e.g. like the WAM model \cite{Wamdi1988} \cite{Komen1994}), since it does not require any parameterization on the spectral or directional distribution of power (or action density). Each component of the action density spectrum changes in time under the effects of the software-modelled processes.
+
+
+\section{ \tomawac general purposes}
+
+ \tomawac can be used for three types of applications:
+
+ \begin{enumerate}
+\item \textbf{Wave climate forecasting} a few days ahead, from wind field forecasts. This real time type of application is rather directed to weather-forecasting institutes such as Météo-France, whose one mission consists of predicting continuously the weather developments and, as the case may be, publishing storm warnings.
+
+ \item \textbf{Hindcasting }of exceptional events having severely damaged maritime structures and for which field records are either incomplete or unavailable.
+
+ \item \textbf{Study of wave climatology and maritime or coastal site features, }through the application of various, medium or extreme, weather conditions in order to obtain the conditions necessary to carry out projects and studies (harbour constructions, morphodynamic coastal evolutions, ...).
+\end{enumerate}
+
+During the development of the \tomawac model, the LNHE laboratory has been interested mainly on the last two types of applications. It considered also the possibility to carry out research activities focused on the following topics:
+
+ \begin{itemize}
+ \item wave-currents and wave-storm surge interactions, especially in those places where tide plays a significant role,
+
+ \item coastal morphodynamics,
+
+ \item probability of floods in coastal zone,
+
+ \item coastal structure stability and coast protection,
+
+ \item assimilation of wind or wave satellite data during computation...
+\end{itemize}
+

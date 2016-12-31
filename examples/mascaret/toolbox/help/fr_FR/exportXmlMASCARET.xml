@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_exportXml" xml:lang="fr">
+    <refnamediv>
+        <refname>MASCARET_exportXml</refname>
+        <refpurpose>Fonction d'exportation d'un modèle ou d'un état MASCARET au format XML</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Séquence d'appel</title>
+        <synopsis>[erreur] = MASCARET_exportXml(id,nomFichier,AvecDesc,exportModele)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>erreur</term>
+                <listitem>
+                    <para>Argument de sortie indiquant la présence d'une erreur si différent de zéro</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identifiant de l'instance MASCARET retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>nomFichier</term>
+                <listitem>
+                    <para>Nom du fichier XML contenant le modèle ou l'état MASCARET. La taille de cette chaîne de doit pas dépasser 255 caractères.</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>AvecDesc</term>
+                <listitem>
+                    <para>Si vrai (valeur 1), ajout de la description de chaque variable, sinon aucune description de variable n'est écrite.</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>exportModele</term>
+                <listitem>
+                    <para>Si vrai (valeur 1), exportation du modèle, sinon exportation de l'état.</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Fonction d'exportation d'un modèle ou d'un état MASCARET dans un fichier au format XML.</para>
+        <para>Cette fonction permet d'exporter dans un fichier XML le modèle ou l'état d'une instance de MASCARET. Ce fichier pourra être lu par la fonction <link linkend="MASCARET_importXml">MASCARET_importXml</link></para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir le modèle ou l'état que l'on souhaite exporter, c'est-à-dire d'avoir fait appel à l'une des fonctions <link linkend="MASCARET_importModel">MASCARET_importModel</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> avec le dernier paramètre à 1.
+		Si l'on souhaite exporter l'état, il faut l'avoir initialisé, c'est-à-dire avoir fait appel à une des fonctions <link linkend="MASCARET_initState">MASCARET_initState</link> ou <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>  ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> avec le dernier paramètre à 0.</para>
+    </refsection>
+    <refsection>
+        <title>Exemple</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();        
+    
+// creation of the MASCARET model
+[err, id] = MASCARET_create();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);
+        
+// initialisation
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+assert_checkequal(err,0);
+
+// exporting the model in XML format
+err = MASCARET_exportXml(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_Model.xml",1,1);
+assert_checkequal(err,0);
+
+// exporting the state in XML format
+err = MASCARET_exportXml(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_State.xml",1,0);
+assert_checkequal(err,0);
+
+// model deletion
+err = MASCARET_delete(id);
+assert_checkequal(err,0);
+
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>Voir aussi</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="MASCARET_importXml">MASCARET_importXml</link>
+            </member> 
+            <member>
+                <link linkend="MASCARET_importModel">MASCARET_importModel</link>
+            </member>    
+            <member>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
+            </member>    
+            <member>
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

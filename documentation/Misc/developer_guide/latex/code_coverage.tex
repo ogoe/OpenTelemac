@@ -1,0 +1,50 @@
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Code coverage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+This chapter will explain how to run the code coverage of the code using gcov and lcov.
+%
+%
+\section{What is Code Coverage}
+%
+%
+Dixit Wikipedia:"In computer science, code coverage is a measure used to
+describe the degree to which the source code of a program is tested by a
+particular test suite. A program with high code coverage, measured as a
+percentage, has had more of its source code executed during testing which
+suggests it has a lower chance of containing undetected software bugs compared
+to a program with low code coverage.Many different metrics can be used to
+calculate code coverage; some of the most basic are the percent of program
+subroutines and the percent of program statements called during execution of
+the test suite."
+%
+%
+\section{What to do}
+%
+%
+You can find all the information for the configuration in systel.edf.cfg with
+the configuration gcov.
+
+Then run the following script:
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+# First run to set counter to zero
+lcov --directory $HOMETEL/builds/$USETELCFG/lib --capture \
+--initial --output-file $HOMETEL/app.info
+# Running test cases
+validateTELEMAC.py -k2 --clean --bypass
+# Gathering data
+lcov --directory $HOMETEL/builds/$USETELCFG/lib --capture \
+--output-file $HOMETEL/app.info
+# Generating html output
+genhtml --legend --highlight \
+--output-directory $HOMETEL/documentation/code_coverage \
+-t "Telemac-Mascaret V&V code coverage" $HOMETEL/app.info
+\end{lstlisting}
+
+This will build the html display under
+\verb!<root>/documentation/code_coverage!. That display will contains for each
+folder of the sources directory the percentage of code/functions used and if
+you follow through you can even see the file and exactly what line was used.
+

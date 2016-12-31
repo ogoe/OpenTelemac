@@ -1,0 +1,168 @@
+#!/bin/bash
+#First version of this script by JPRenaud, Bristol U
+
+# A simple error function
+function error_exit
+{
+        echo "$1" 1>&2
+        exit 1
+}
+
+function usage
+{
+
+echo "Usage: build_systel -v version [-c -p -h]"
+echo "-v version: where version should be the version to build: v5p6, v5p7 or v5p8"
+echo "-c        : to delete the objects before recompiling"
+echo "-p        : build the parallel library (MPI support)"
+echo "-h        : print this message"
+}
+
+# Backup initial location
+WHEREWASI=`pwd`
+
+echo "build_systel"
+echo "A simple script to compile the TELEMAC system..."
+echo
+
+echo "Disclaimer:"
+echo "This bash script is *not* a silver bullet!"
+echo "The TELEMAC system need to be properly configured before calling this script."
+echo "In particular, metis and MPI must be installed/compiled for parallel support"
+echo "and Tecplot needs to be installed if required for ESTEL-3D."
+echo "You've been warned..."
+echo
+
+# Treatement of script arguments
+
+doMenage=0
+doParallel=0
+
+while getopts "v:chp" OPTION
+do
+	case $OPTION in
+		v  ) version=$OPTARG;;
+		c  ) doMenage=1;;
+		p  ) doParallel=1;;
+		h  ) usage
+		     exit 0;;
+		\? ) usage
+		     exit 1;;
+	esac
+done
+
+if [ "$version" = "" ] ; then
+	error_exit "Problem with version to build. Try build_systel -h. Aborting."
+fi
+echo "Version of the TELEMAC system to build: $version"
+
+PROJECT=`getproject`
+echo "Location of the TREE tree: $PROJECT"
+
+if [ "$doParallel" = "1" ] ; then
+	echo "Build parallel support: Yes"
+else
+	echo "Build parallel support: No"
+fi
+
+if [ "$doMenage" = "1" ] ; then
+	echo "Clean before compiling: Yes"
+else
+	echo "Clean before compiling: No"
+fi
+
+if [ ! -d "$PROJECT/damocles/damo_$version/sources/" ] ; then
+	error_exit "$PROJECT/damocles/damo_$version/sources/ is not a directory. Aborting."
+fi
+if [ ! -d "$PROJECT/paravoid/paravoid_$version/sources/" ] ; then
+	error_exit "$PROJECT/paravoid/paravoid_$version/sources/ is not a directory. Aborting."
+fi
+if [[ ! -d "$PROJECT/parallel/parallel_$version/sources/"  && "$doParallel" = "1" ]] ; then
+	error_exit "$PROJECT/parallel/parallel_$version/sources/ is not a directory. Aborting."
+fi
+if [ ! -d "$PROJECT/bief/bief_$version/sources/" ] ; then
+	error_exit "$PROJECT/bief/bief_$version/sources/ is not a directory. Aborting."
+fi
+if [ ! -d "$PROJECT/special/special_$version/sources/" ] ; then
+	error_exit "$PROJECT/special/special_$version/sources/ is not a directory. Aborting."
+fi
+
+# Damocles
+echo
+echo "Compiling Damocles"
+echo "------------------"
+echo
+cd $PROJECT/damocles/damo_$version/sources/
+if [ $doMenage != "0" ] ; then
+	maktel Menage
+fi
+maktel install
+
+#maktel libdebug
+
+# Paravoid
+echo
+echo "Compiling Paravoid"
+echo "------------------"
+echo
+cd $PROJECT/paravoid/paravoid_$version/sources/
+if [ $doMenage != "0" ] ; then
+	maktel Menage
+fi
+maktel install all
+
+#maktel libdebug
+
+
+# Parallel
+if [ "$doParallel" = "1" ] ; then
+	echo
+	echo "Compiling Parallel"
+	echo "------------------"
+	echo
+	cd $PROJECT/parallel/parallel_$version/sources/
+	if [ $doMenage != "0" ] ; then
+		maktel Menage
+	fi
+	maktel install all
+
+#	maktel libdebug
+
+fi
+
+# Bief
+echo
+echo "Compiling Bief"
+echo "--------------"
+echo
+
+cd $PROJECT/bief/bief_$version/sources/
+if [ $doMenage != "0" ] ; then
+	maktel Menage
+fi
+maktel install all
+#maktel libdebug
+
+# Special
+echo
+echo "Compiling Special"
+echo "-----------------"
+echo
+
+cd $PROJECT/special/special_$version/sources/
+if [ $doMenage != "0" ] ; then
+	maktel Menage
+fi
+maktel install all
+#maktel libdebug
+
+echo
+echo "All done!"
+echo "It looks like it has worked, fingers crossed... Xx ..."
+echo "Now get back to work!"
+echo
+
+# Go back to where we were...
+ cd $WHEREWASI
+
+# That's all folks...

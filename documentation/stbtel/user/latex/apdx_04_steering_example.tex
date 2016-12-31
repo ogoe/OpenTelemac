@@ -1,0 +1,37 @@
+\chapter{Example of steering file}
+
+\begin{lstlisting}[language=TelemacCas]
+/**********************************************************************/
+/                         STEERING FILE FOR                            /
+/                            STBTEL V4.1                               /
+/                 EXAMPLE OF TRIGRID  FILE TREATMENT                   /
+/             GLOBAL MESH - BATHYMETRY IN TRIGRID FILE                 /
+/                  MESH EXTRACTION WITH PROJECTION                     /
+/  SOGREAH                                                02/16/1999   /
+/**********************************************************************/
+/
+/
+FORTRAN FILE                            : './stb.f'
+STEERING FILE                           : './cas1'
+UNIVERSAL FILE                          : './grille.dat'
+GEOMETRY FILE FOR TELEMAC               : './geo1'
+BOUNDARY CONDITIONS FILE                : './conlim1'
+MESH ADDITIONAL DATA FILE               : './trian.dat'
+RELEASE                                 : 'V4P1,V4P0,V4P0,V4P0'
+/
+MESH GENERATOR                          : TRIGRID
+BOTTOM CORRECTION OF TRIGRID            : 270.
+BATHYMETRY IN THE UNIVERSAL FILE        : YES
+/
+ELIMINATION OF BACKWARD DEPENDENCIES    : NO
+OVERSTRESSED TRIANGLES CUTTING          : YES
+MINIMUM DISTANCE BETWEEN TWO POINTS     : 0.
+/
+NUMBER OF VERTICES OF THE POLYGON TO EXTRACT THE MESH : 5
+ABSCISSAE OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH :
+  1140.;1170.;1060.;955.;1000.
+ORDINATES OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH :
+  365.;460.;555.;455.;375.
+PROJECTION AFTER EXTRACTION : YES
+&FIN
+\end{lstlisting}

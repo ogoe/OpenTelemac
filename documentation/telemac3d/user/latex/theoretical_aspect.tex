@@ -1,0 +1,411 @@
+\chapter{Theoretical aspects}
+
+
+\section{Notations}
+
+\telemac{3D} is a three-dimensional computational code describing the 3D
+velocity field ($U$, $V$, $W$) and the water depth
+$h$ (and, from the bottom depth, the free surface $S$) at each
+time step. Besides, it solves the transport of several tracers which can be
+grouped into two categories, namely the so-called ``active'' tracers (primarily
+temperature and salinity\footnote{ Sediment transport with \telemac{3D} is not
+described in this manual.}), which change the water density and act on flow
+through gravity), and the so-called ``passive'' tracers which do not affect the
+flow and are merely transported.
+
+\section{Equations}
+
+The reader will refer to the J.-M. Hervouet's book \cite{Hervouet2007} for a
+detailed statement of the theoretical aspects which \telemac{3D} is based on.
+
+\subsection{Equation with the hydrostatic pressure hypothesis}
+
+In its basic release, the code solves the three-dimensional hydrodynamic
+equations with the following assumptions:
+
+\begin{itemize}
+\item Three-dimensional Navier-Stokes equations with a free surface changing
+in time,
+\item Negligible variation of density in the conservation of mass equation
+(incompressible fluid),
+\item Hydrostatic pressure hypothesis (that hypothesis results in that the
+pressure at a given depth is the sum of the air pressure at the fluid surface
+plus the weight of the overlying water body),
+\item Boussinesq approximation for the momentum (the density variations are
+only taken into account as buoyant forces).
+\end{itemize}
+
+Due to these assumptions, the three-dimensional equations being solved are:
+
+\begin{subequations}
+\label{eq:equa1}
+\begin{align}
+\frac{\partial U}{\partial x} +\frac{\partial V}{\partial y} +\frac{\partial
+W}{\partial z} =0
+\\
+\frac{\partial U}{\partial t} +U\frac{\partial
+U}{\partial x} +V\frac{\partial U}{\partial y} +W\frac{\partial U}{\partial z}
+=-g\frac{\partial Z_{S} }{\partial x} +\upsilon \; \Delta \left(U\right)+F_{x}
+\\
+\frac{\partial V}{\partial t} +U\frac{\partial V}{\partial
+x} +V\frac{\partial V}{\partial y} +W\frac{\partial V}{\partial z}
+=-g\frac{\partial Z_{S} }{\partial y} +\upsilon \; \Delta \left(V\right)+F_{y}
+\\
+p=p_{atm} +\rho _{0} g\left(Z_{s} -z\right)+\rho _{0} g\int _{z}^{Z_{S}
+}\frac{\Delta \rho }{\rho _{0} } dz'
+\\
+\frac{\partial T}{\partial t}
++U\frac{\partial T}{\partial x} +V\frac{\partial T}{\partial y}
++W\frac{\partial T}{\partial z} =
+\Div \left( \upsilon \; \Grad \left(T\right)\right) + Q
+\end{align}
+\end{subequations}
+
+wherein:
+\begin{itemize}
+\item $h$ (m) water depth,
+
+\item $Z_{S}$ (m) free surface elevation,
+
+\item $U$, $V$, $W$ (m/s) three-dimensional components of
+velocity,
+
+\item $T$ (${}^\circ$C, g/L\dots ) passive or active (acting on density)
+tracer,
+
+\item $p$ (X) pressure,
+
+\item $p_{atm}$ (X) atmospheric pressure,
+
+\item $g$ (m/s$^2$) acceleration due to gravity,
+
+\item $\upsilon$ (m$^2$/s) cinematic viscosity and tracer diffusion coefficients,
+
+\item $Z_f$ (m) bottom depth,
+
+\item $r_0$ (X) reference density,
+
+\item $\Delta \rho$ (X) variation of density around the reference density,
+
+\item $t$ (s) time,
+
+\item $x$, $y$ (m) horizontal space components,
+
+\item $z$ (m) vertical space component,
+
+\item $F_{x}$, $F_{y}$ (m/s$^2$) source terms,
+
+\item $Q$ (tracer unit) tracer source of sink.
+
+\item $h$, $U$, $V$, $W$ and $T$ are the unknown
+quantities, also known as computational variables.
+
+\item $F_{x}$ and $F_{y}$ are source terms denoting the wind,
+the Coriolis force and the bottom friction (or any other process being modelled
+by similar formulas). Several tracers can be taken into account simultaneously.
+They can be of two different kinds, either active, i.e. influencing the flow by
+changing the density, or passive, without any effect on density and then on
+flow.
+\end{itemize}
+
+The \telemac{3D} basic algorithm can be split up in three computational steps
+(three fractional steps).
+
+The first step consists in finding out the advected velocity components by
+only solving the advection terms in the momentum equations.
+
+The second step computes, from the advected velocities, the new velocity
+components taking into account the diffusion terms and the source terms in the
+momentum equations. These two solutions enable to obtain an intermediate
+velocity field.
+
+The third step is provided for computing the water depth from the vertical
+integration of the continuity equation and the momentum equations only
+including the pressure-continuity terms (all the other terms have already been
+taken into account in the earlier two steps). The resulting two-dimensional
+equations (analogous to the Saint-Venant equations without diffusion, advection
+and source terms) are written as:
+
+\begin{subequations}
+\begin{align}
+\frac{\partial h}{\partial t} +\frac{\partial \left(uh\right)}{\partial x}
++\frac{\partial \left(vh\right)}{\partial y} =0
+\\
+\frac{\partial u}{\partial t} =-g\frac{\partial Z_{S} }{\partial x}
+\\
+\frac{\partial v}{\partial t} =-g\frac{\partial Z_{S} }{\partial y}
+\end{align}
+\end{subequations}
+
+The $u$ and $v$ in lower case denote the two-dimensional
+variables of the vertically integrated velocity.
+
+These two-dimensional equations are solved by the libraries in the \telemac{2D}
+code and enable to obtain the vertically averaged velocity and the water depth.
+
+The water depth makes it possible to recompute the elevations of the various
+mesh points and then those of the free surface.
+
+Lastly, the computation of the $U$ and $V$ velocities is simply achieved
+through a combination of the equations linking the velocities. Finally, the
+vertical velocity $W$ is computed from the continuity equation.
+
+\subsection{Non-hydrostatic navier-stokes equations}
+
+The following system (with an equation for $W$ which is similar to those
+for $U$ and $V$ is then to be solved:
+
+\begin{subequations}
+\begin{align}
+\frac{\partial U}{\partial x} +\frac{\partial V}{\partial
+y} +\frac{\partial W}{\partial z} = 0
+\\
+\frac{\partial U}{\partial t}
++U\frac{\partial U}{\partial x} +V\frac{\partial U}{\partial y}
++W\frac{\partial U}{\partial z} =-\frac{1}{\rho } \frac{\partial p}{\partial x}
++\upsilon \; \Delta \left(U\right)+F_{x}
+\\
+\frac{\partial V}{\partial t}
++U\frac{\partial V}{\partial x} +V\frac{\partial V}{\partial y}
++W\frac{\partial V}{\partial z} =-\frac{1}{\rho } \frac{\partial p}{\partial y}
++\upsilon \; \Delta \left(V\right)+F_{y}
+\\
+\frac{\partial W}{\partial t}
++U\frac{\partial W}{\partial x} +V\frac{\partial W}{\partial y}
++W\frac{\partial W}{\partial z} =-\frac{1}{\rho } \frac{\partial p}{\partial z}
+-g+\upsilon \; \Delta \left(W\right)+F_{z}
+\end{align}
+\end{subequations}
+
+In order to share a common core as much as possible with the solution of the
+equations with the hydrostatic pressure hypothesis, the pressure is split up
+into a hydrostatic pressure and a "dynamic" pressure term.
+\begin{align}
+p=p_{atm} +\rho _{0} g\left(Z_{S} -z\right)+\rho _{0} g\int _{z}^{Z_{S}
+}\frac{\Delta \rho }{\rho _{0} } dz +p_{d}
+\end{align}
+The \telemac{3D} algorithm solves a hydrostatic step which is the same as in the
+previous subsection, the only differences lying in the continuity step
+("projection" step in which the dynamic pressure gradient changes the velocity
+field in order to provide the required zero divergence of velocity) and the
+computation of the free surface.
+
+\subsection{The law of state}
+
+Two laws of state can be used by default through \telemac{3D}.
+
+In most of the simulations, salinity and temperature make it possible to
+compute the variations of density. The first law expresses the variation of
+density from only these two parameters. The second law is more general and
+enables to construct all the variations of density with the active tracers
+being taken into account in the computation.
+
+The \textbf{first law} is written as:
+
+\begin{align}
+\rho =\rho _{ref} \left[1-\left(T\left(T-T_{ref} \right)^{2} -750S\right)10^{-6} \right]
+\end{align}
+With $T_{ref} $ as a reference temperature of 4${}^\circ$C and $\rho _{ref} $
+as a reference density at that temperature when the salinity $S$ is
+zero, then $\rho _{ref} $ = 999.972~kg/m${}^{3}$. That law remains valid for
+$0^{\circ} \rm{C} < T < 40^{\circ} \rm{C}$ and $0~\rm{g/L} < S < 42~\rm{g/L}$.
+
+The \textbf{second law} is written as:
+
+\begin{align}
+\rho =\rho _{ref} \left[1-\sum _{i}\beta _{i} \left(T_{i} -T_{i}^{0} \right)_{i}  \right]
+\end{align}
+$\rho _{ref}$,
+the reference density can be modified by the user together with the volumetric
+expansion coefficients $\beta _{i}$ related to the tracers $T_{i}$.
+
+\subsection{$k$-$\epsilon$ model}
+
+The turbulent viscosity can be given by the user, as determined either from a
+mixing length model or from a $k$-$\epsilon$ model the equations of which are:
+
+%TODO: See hox to handle that equation (too long and conisdered as two equations)
+\begin{subequations}
+\begin{align}
+\frac{\partial k}{\partial t}
+ + U\frac{\partial k}{\partial x} + V\frac{\partial k}{\partial y}
+ + W\frac{\partial k}{\partial z} =&
+\frac{\partial }{\partial x}
+\left(\frac{\nu _{t} }{\sigma _{k} } \frac{\partial k}{\partial x} \right)
+ + \frac{\partial }{\partial y}
+\left(\frac{\nu _{t} }{\sigma _{k} } \frac{\partial k}{\partial y} \right)
+ + \frac{\partial }{\partial z}
+\left(\frac{\nu _{t} }{\sigma _{k} } \frac{\partial k}{\partial z} \right)
+ + P -G - \varepsilon
+\\
+\frac{\partial \varepsilon }{\partial t}
+ + U\frac{\partial \varepsilon}{\partial x}
+ + V\frac{\partial \varepsilon}{\partial y}
+ + W\frac{\partial \varepsilon }{\partial z}
+ =& \frac{\partial }{\partial x}
+\left(\frac{\nu _{t} }{\sigma _{\varepsilon } } \frac{\partial \varepsilon }{\partial x} \right )
++ \frac{\partial }{\partial y}
+\left(\frac{\nu _{t} }{\sigma _{\varepsilon } } \frac{\partial \varepsilon }{\partial y} \right)
+ + \frac{\partial }{\partial z}
+\left(\frac{\nu _{t} }{\sigma _{\varepsilon } } \frac{\partial \varepsilon }{\partial z} \right)
+\\
+ &+ C_{l\varepsilon } \frac{\varepsilon }{k}
+\left[P+\left(1-C_{3\varepsilon } \right)G\right]
+- C_{2\varepsilon } \frac{\varepsilon^{2} }{k}
+\end{align}
+\end{subequations}
+
+wherein:
+\begin{itemize}
+\item $k=\frac{1}{2} \overline{u_{i}^{'} u_{i}^{'} }$ denotes the turbulent
+kinetic energy of the fluid,
+
+\item $u_{i}^{'} =U_{i} -\overline{u_{i} }$ denotes the ${i}^{\rm{th}}$ component
+of the fluctuation of the velocity $\vec{U} (U,V,W)$,
+
+\item $\varepsilon =\upsilon \overline{\frac{\partial u_{i}^{'} }{\partial
+x_{j} } \frac{\partial u_{i}^{'} }{\partial x_{j} } }$ is the dissipation of
+turbulent kinetic energy,
+
+\item $P$ is a turbulent energy production term,
+
+\item $G$ is a source term due to the gravitational forces,
+%TODO: See how to separate the two equations but on a same line
+\begin{align}
+P=\nu _{t} \left(\frac{\partial \overline{U_{i}
+}}{\partial x_{j} } +\frac{\partial \overline{U_{j} }}{\partial x_{i} }
+\right)\frac{\partial \overline{U_{i} }}{\partial x_{j} } ; G = -
+\frac{\nu _{t} }{\Pr _{t} } \frac{g}{\rho } \frac{\partial \rho
+}{\partial z}
+\end{align}
+and $\nu _{t} $ verifies the equality: $\nu _{t} =C_{\mu }
+\frac{k^{2} }{\varepsilon } $,
+
+\item $C_{\mu }$, $\Pr _{t}$, $C_{1\varepsilon }$, $C_{2\varepsilon }$,
+$C_{3\varepsilon }$,  $\sigma _{k}$, $\sigma _{\varepsilon }$ are constants in
+the $k$-$\epsilon$ model.
+\end{itemize}
+
+\subsection{Equations of tracers}
+
+The tracer can be either active (it affects hydrodynamics) or passive in
+\telemac{3D}. Temperature, salinity and in some cases a sediment are active
+tracers. The tracer evolution equation is formulated as:
+
+\begin{align}
+\frac{\partial T}{\partial t} +U\frac{\partial T}{\partial x}
++V\frac{\partial T}{\partial y} +W\frac{\partial T}{\partial z}
+=\frac{\partial }{\partial x}
+\left(\nu _{T} \frac{\partial T}{\partial x} \right)
++\frac{\partial }{\partial y}
+\left(\nu _{T} \frac{\partial T}{\partial y} \right)
++\frac{\partial }{\partial z}
+\left(\nu _{T} \frac{\partial T}{\partial z} \right)+Q
+\end{align}
+
+with:
+
+\begin{itemize}
+\item $T$ (tracer unit) tracer either passive or affecting the density,
+
+\item $n_{T}$  (m${}^{2}$/s) tracer diffusion coefficients,
+
+\item $t$  (s) time,
+
+\item $x$, $y$, $z$ (m) space components,
+
+\item $Q$ (tracer(s) unit) tracer source or sink.
+\end{itemize}
+
+
+\section{Mesh}
+
+
+\subsection{The discretization}
+
+The \telemac{3D} mesh structure is made of prisms (possibly split in
+tetrahedrons). In order to prepare that mesh of the 3D flow domain, a
+two-dimensional mesh comprising triangles which covers the computational domain
+(the bottom) in a plane is first constructed, as for \telemac{2D}. The second
+step consists in duplicating that mesh along the vertical direction in a number
+of curved surfaces known as "planes". Between two such planes, the links
+between the meshed triangles make up prisms.
+
+The computational variables are defined at each point of the three-dimensional
+mesh, inclusive of bottom and surface. Thus, they are "three-dimensional
+variables" except, however, for the water depth and the bottom depth which are
+obviously defined only once along a vertical. Thus, they are "two-dimensional
+variables". Some \telemac{3D} actions are then shared with \telemac{2D} and use the
+same libraries, such as the water depth computation library. Therefore, it is
+well understood that \telemac{3D} should manage a couple of mesh structures: the
+first one is two-dimensional and is the same as that used by \telemac{2D}, and
+the second one is three-dimensional. That implies managing two different
+numberings a detailed account of which is given below.
+
+
+\subsection{The two-dimensional mesh}
+\label{sec:2dmesh}
+
+The two-dimensional mesh, which is made of triangles, can be prepared using a
+mesh generator software compatible with the TELEMAC system (MATISSE,
+BLUE KENUE, JANET\dots).
+
+Using a mesh generator that does not belong to the TELEMAC chain involves
+converting the resulting file, through the \stbtel interface for instance, to
+the serafin format, which can be read by TELEMAC as well as by the RUBENS, BLUE
+KENUE or FUDAA-PREPRO post-processors. In addition, \stbtel checks such
+things as the proper orientation of the local numbering of the mesh elements.
+
+The two-dimensional mesh (included in the \telkey{GEOMETRY FILE}) consists of
+\telfile{NELEM2} elements and \telfile{NPOIN2} vertices of elements which are
+known through their $X$, $Y$, and $Z_{f}$ co-ordinates (the BOTTOM
+variable). Each element is identified by a code known as \telfile{IELM2} and
+includes \telfile{NDP} nodes (3 for a triangle with a linear interpolation).
+The nodes on an element are identified by a local number ranging from 1 to
+\telfile{NDP}. The link between that element-wise numbering (local numbering)
+and the mesh node numbering ranging from 1 to \telfile{NPOIN2} (global numbering)
+is made through the connectivity table \telfile{IKLE2}.
+The global number of the IDPIDP local-number node in the \telfile{IELEM2} element
+is \telfile{IKLE2(IELEM2,IDP)}.
+
+
+\subsection{The three-dimensional mesh}
+
+The three-dimensional mesh, which is made of prisms, is automatically
+constructed by \telemac{3D} from the previous mesh. The data in the
+three-dimensional mesh of finite elements are as follows:
+
+%TODO: Weird spaces
+\begin{itemize}
+\item \telfile{NPOIN3}: the number of points in the mesh (NPOIN3 = NPOIN2 $\times$
+NPLAN),
+\item \telfile{NELEM3}: the number of elements in the mesh,
+\item \telfile{NPLAN}: the number of planes in the mesh,
+\item \telfile{X, Y, Z: NPOIN3} dimensional arrays. \telfile{X} and \telfile{Y}
+are obtained by merely duplicating the above-described arrays of the two-dimensional
+mesh. Dimension Z obviously depends on the mesh construction being selected
+(keyword \telkey{MESH TRANSFORMATION}),
+\item \telkey{IKLE3}: dimensional arrays (\telkey{NELEM3,6}).
+\telkey{IKLE3(IELEM3,IDP)} provides with the global number of the \telkey{IDP} point
+in the \telkey{IELEM3} element. \telkey{IKLE3} defines a numbering
+of the 3D elements and a local numbering of the points in each element, it
+provides for the transition from that local numbering to the global numbering.
+\end{itemize}
+
+From these data, \telemac{3D} constructs other arrays, such as the edge point
+global address array.
+
+Figure \ref{fig:3dmesh} herein below illustrates a \telemac{3D} three-dimensional mesh.
+
+\begin{figure}[H]%
+\begin{center}
+%
+  \includegraphics*[width=.7\textwidth]{./graphics/3dmesh}
+%
+\end{center}
+\caption
+[A three-dimensional mesh]
+{A three-dimensional mesh.}
+\label{fig:3dmesh}
+\
+\end{figure}

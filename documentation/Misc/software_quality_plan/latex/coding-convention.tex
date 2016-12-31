@@ -1,0 +1,332 @@
+\chapter{\telemacsystem Coding Convention}
+\label{codingconv}
+
+\section{Main rules}
+
+We give hereafter a number of safety rules that will avoid most common
+disasters. It is however highly recommended to THINK before implementing. The
+structure of your code and the choice of the algorithms will deeply influence:
+the manpower requested, the number of lines to write, the memory requested, the
+computer time. For a given task, differences of a factor 10 for these 4 items
+are common and have been documented (see e.g. “the mythical man-month, essays
+on software engineering” by Frederick Brooks). These differences will
+eventually result in “success” or “failure”. So let the power be with you and
+just follow Yoda’s advice: “when you look at the dark side, careful you must
+be”.
+
+\section{Subroutine header}
+
+\begin{lstlisting}
+!                    ****************
+                     SUBROUTINE METEO
+!                    ****************
+!
+     &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE)
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   27/07/2012
+!***********************************************************************
+!
+!brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
+!+               (IN GENERAL FROM INPUT DATA FILES).
+!
+!warning  MUST BE ADAPTED BY USER
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/01/2004
+!+        V5P4
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT,LT          |-->| TIME, ITERATION NUMBER
+!| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
+!| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
+!| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HN             |-->| DEPTH
+!| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
+!|                |   | STARTING FROM VERTICAL AXIS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| PATMOS         |<--| ATMOSPHERIC PRESSURE
+!| PRIVE          |-->| USER WORKING ARRAYS (BIEF_OBJ BLOCK)
+!| ROEAU          |-->| WATER DENSITY
+!| TRA01          |-->| WORKING ARRAY
+!| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
+!| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
+!| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: LT,NPOIN
+      LOGICAL, INTENT(IN)             :: ATMOS,VENT
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: FUAIR,FVAIR,AT,GRAV,ROEAU,NORD
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     LOCAL DECLARATIONS
+!
+      DOUBLE PRECISION P0,Z(1)
+!
+\end{lstlisting}
+
+\section{The coding convention}
+
+\begin{itemize}
+\item The code must pass Fortran 2003 Standard,
+\item A file must contain only one program/module/subroutine/function and must
+have the same name as that program/module/subroutine/function,
+\item All subroutines and functions must conform to the subroutine header given
+in the previous paragraph,
+\item All subroutines and functions must be protected by an IMPLICIT NONE
+statement. Their arguments types must be given with their INTENT,
+\item The order in declarations is free except than some compilers will not
+accept that an array has a dimension that has not been declared before, hence:
+\begin{lstlisting}
+INTEGER, INTENT(IN) :: N
+DOUBLE PRECISION, INTENT(INOUT) :: DEPTH(N)
+\end{lstlisting}
+is correct and:
+\begin{lstlisting}
+DOUBLE PRECISION, INTENT(INOUT) :: DEPTH(N)
+INTEGER, INTENT(IN) :: N
+\end{lstlisting}
+is not correct.
+\item Error messages: they must be given in French and English, using logical
+unit LU taken in COMMON block INFO. LNG = 1 is French, LNG = 2 is English.
+Parameterizing the listing logical unit is necessary because it is not always 6
+in parallel, as the listing of slave processors does not appear on the screen
+but is redirected to files.
+\item Lines must be limited to a size of 72 characters, and only in UPPERCASE.
+Spaces must be only one blank, for example between a CALL and the name of a
+subroutine. This is to facilitate research of character string in source code,
+\item Indents in IF statements and nested loops are of 2 blanks,
+\item Tabs for indenting are forbidden. The reason is that depending on
+compilers they represent a random number of blanks (6, 8, etc.) and that it is
+not standard Fortran,
+\item Blank lines are better started by a “!”.
+\item Comments line should begin with a "!".
+\item Names of variables: a name of variable should not be that of an intrinsic
+function, e.g. do not choose names like MIN, MAX, MOD, etc., though possible in
+theory this may create conflicts in some compilers, for example the future
+Automatic Differentiation Nag compiler.
+\item Functions: intrinsic functions must be declared as such. Use only the
+generic form of intrinsic functions, e.g. MAX(1.D0,2.D0) and not
+DMAX(1.D0,2.D0). It is actually the generic function MAX that will call the
+function DMAX in view of your arguments, you are not supposed to do the job of
+the compiler.
+\end{itemize}
+
+\section{Defensive programming}
+
+When programming, one has always to keep in mind that wrong information may
+have been given by the user, or that some memory fault has corrupted the data.
+Hence when an integer OPT may only have 2 values, say 1 and 2 for option 1 and
+option 2, always organise the tests as follows:\\
+\begin{lstlisting}
+IF(OPT.EQ.1) THEN
+  ! here option 1 is applied
+ELSEIF(OPT.EQ.2) THEN
+  ! here option 2 is applied
+ELSE
+  ! here something wrong happened, it is dangerous to go further, we stop.
+  IF(LNG.EQ.1) THEN
+    WRITE(LU,*) 'OPT=',OPT,' OPTION INCONNUE DANS LE SOUS-PROGRAMME...'
+  ENDIF
+  IF(LNG.EQ.2) THEN
+    WRITE(LU,*) 'OPT=',OPT,' IS AN UNKNOWN OPTION IN SUBROUTINE...'
+  ENDIF
+  CALL PLANTE(1)
+  STOP
+ENDIF
+\end{lstlisting}
+
+\section{Over-use of modules}
+
+Modules are very useful but used in excess, they may become very tricky to
+handle without recompiling the whole libraries. For example the declaration
+modules containing all the global data of a program cannot be changed without
+recompiling all subroutines that use it.
+
+A common way of developing software in the \telemacsystem system is to add modified
+subroutines in the user FORTRAN FILE. This will sometimes be precluded for
+modules as some conflicts with already compiled modules in libraries will
+appear.
+
+A moderate use of modules is thus prescribed (though a number of inner
+subroutines in BIEF would deserve inclusion in modules).
+
+\section{Allocating memory}
+
+
+For optimisation no important array should be allocated at every time step, it
+is better to use the work arrays allocated once for all in \telemacsystem programs,
+like $T1$, $T2$, etc., in \telemac{2D} (note that they are $BIEF_OBJ$ structures, which
+brings some protection against misuses).  If it cannot be avoided, an array
+allocated locally should be clearly visible and:\\
+\begin{itemize}
+\item Either allocated once and declared with a command SAVE,
+\item Or if used once only, deallocated at the end of the subroutine.
+\end{itemize}
+
+Automatic arrays are strictly forbidden. For example the array X in the
+following line:
+\begin{lstlisting}
+DOUBLE PRECISION X(NPOIN)
+\end{lstlisting}
+
+If it is not in the subroutine arguments, while $NPOIN$ is. In this case it is a
+hidden allocation of size $NPOIN$, which may change from one call to the other.
+It is not standard Fortran, in worst cases it will cause a compiler to crash
+after a number of calls..
+
+\section{Test on small numbers}
+
+Always think that computers do truncation errors. Tests like: $IF(X.EQ.0.D0)
+THEN…$ are very risky if $X$ is the result of a computation. Allow some tolerance,
+like: $IF(ABS(X).LT.1.D-10) THEN…$, especially if divisions are involved.
+
+\section{Optimisation}
+
+Optimisation is a key point, a badly written subroutine may spoil the
+efficiency of the whole program. Optimisation is a science and even an art, but
+it can be interesting to have a few ideas or tricks in mind. Here are a few
+examples:
+
+\textbf{Example 1: powers}
+
+The following loop:
+\begin{lstlisting}
+DO I=1,NPOIN
+  X(I)=Y(I)**2.D0
+ENDDO
+\end{lstlisting}
+
+is a stupid thing to do and should be replaced by:
+
+\begin{lstlisting}
+DO I=1,NPOIN
+  X(I)=Y(I)**2
+ENDDO
+\end{lstlisting}
+
+As a matter of fact, $Y(I)**2$ is a single multiplication, $Y(I)**2.D0$ is an
+exponential ($exp(2.D0*Log (Y))$), it costs a lot, and moreover will crash if
+$Y(I)$ negative.
+
+\textbf{Example 2: intensive loops with useless tests}
+
+\textit{Case 1: the following loop}
+
+\begin{lstlisting}
+DO I=1,NPOIN
+  IF(OPTION.EQ.1) THEN
+    X(I)=Y(I)+2.D0
+  ELSE
+   X(I)=Y(I)+Z(I)
+  ENDIF
+ENDDO
+\end{lstlisting}
+
+Should be replaced by:
+
+\begin{lstlisting}
+IF(OPTION.EQ.1) THEN
+  DO I=1,NPOIN
+    X(I)=Y(I)+2.D0
+  ENDDO
+ELSE
+DO I=1,NPOIN
+    X(I)=Y(I)+Z(I)
+  ENDDO
+ENDIF
+\end{lstlisting}
+
+In the first case the test on $OPTION$ is done $NPOIN$ times, in the latter it is
+done once.
+
+\textit{Case 2: the following loop}
+\begin{lstlisting}
+DO I=1,NPOIN
+    IF(Z(I).NE.0.D0) X(I)=X(I)+Z(I)
+ENDDO
+\end{lstlisting}
+seems a good idea to avoid doing useless additions, but forces a lot of tests
+and actually spoils computer time, prefer:
+\begin{lstlisting}
+DO I=1,NPOIN
+    X(I)=X(I)+Z(I)
+ENDDO
+\end{lstlisting}
+
+\textbf{Example 3: strides}
+
+Declaring an array as $XM(NELEM,30)$ or $XM(30,NELEM)$ for storing 30 values per
+element is not innocent with respect to optimisation. The principle in Fortran
+is that in memory the first index varies first. If you want to sum values
+number 15 of all elements, the first declaration is more appropriate. If you
+want to sum the 30 values of element 1200 the second declaration is more
+appropriate. The principle is that the values that are summed should be side by
+side in the memory.
+
+A lot remains to be done in \telemacsystem on strides. Sometimes it brings an
+impressive optimisation (case of murd3d.f in library \telemac{3D}, with $XM$
+declared as $XM(30,NELEM)$ unlike the usual habit), sometimes it makes no change,
+e.g. the matrix-vector product in segments seems to be insensitive to the
+declaration of $GLOSEG$ as $(NSEG,2)$ or $(2,NSEG)$. This can be compiler dependent.
+
+Example 4: the use and abuse of subroutine OS
+
+Using subroutine $OS$ is meant for simple operations like $X(I)=Y(I)+Z(I)$. Do
+not combine long lists of successive calls of $OS$ to compute a complex formula,
+do it in a simple loop.
+
+Thus the following sequence taken from bedload\_seccurrent.f in \sisyphe:
+\begin{lstlisting}
+CALL OS( 'X=YZ    ' , T2 , QU      , QU   , C   ) ! QU**2
+CALL OS( 'X=Y/Z   ' , T2 , T2      , HN   , C   ) ! QU**2/HN
+CALL OS( 'X=Y/Z   ' , T2 , T2      , HN   , C   ) ! QU**2/HN**2
+CALL OS( 'X=YZ    ' , T3 , QV      , QV   , C   ) ! QV**2
+CALL OS( 'X=Y/Z   ' , T3 , T3      , HN   , C   ) ! QV**2/HN
+CALL OS( 'X=Y/Z   ' , T3 , T3      , HN   , C   ) ! QV**2/HN**2
+CALL OS( 'X=X+Y   ' , T2 , T3      , T3   , C   ) ! QU**2+QV**2/HN**2
+\end{lstlisting}
+should be better written (once the discretization of $T2$ is secured, for example
+by $CALL~~CPSTVC(QU, T2)$):
+\begin{lstlisting}
+DO I=1,NPOIN
+  T2%R(I)=(QU%R(I)**2+QV%R(I)**2)/HN%R(I)**2
+ENDDO
+\end{lstlisting}
+
+\section{Parallelism and tidal flats}
+
+Parallelism and tidal flats are VERY demanding for algorithms. For example
+parallelism often doubles the time of development. It is also the case of tidal
+flats that bring many opportunities of divisions by zero and a number of extra
+problems. New algorithms must then be duly tested against parallelism and tidal
+flats or, in 3D, cases where elements are crushed.
+%

@@ -1,0 +1,150 @@
+/
+/
+/
+GEOMETRY FILE             = geo_cvsp.slf
+BOUNDARY CONDITIONS FILE  = geo_cvsp_sis.cli
+FORTRAN FILE             = sis_cvsp.f
+RESULTS FILE             = sis_cvsp.res
+/
+/----------------------------------------------
+/  GENERAL AND OUTPUT
+/----------------------------------------------
+/
+TITLE : 'BLOM_CVSP'
+VARIABLES FOR GRAPHIC PRINTOUTS             =
+'S,F,E,H,QS*,*A*,*ES,U,V,TOB,R,M,N,P,B,KS,U,V'
+/ TIME STEP    = 0.1
+/
+/----------------------------------------------
+/ SISYPHE NUMERICAL ALGORITHMS
+/----------------------------------------------
+STEADY CASE                              = NO
+MASS-BALANCE                             = YES
+/
+TIDAL FLATS                              = NO
+OPTION FOR THE TREATMENT OF TIDAL FLATS  = 1
+ZERO                                     = 1e-12
+TETA                                     = 0.5
+SOLVER ACCURACY                          = 1.E-8
+MASS-LUMPING                             = YES
+MINIMAL VALUE OF THE WATER HEIGHT        = 0.01
+/
+/----------------------------------------------
+/ PHYSICAL PARAMETERS - HYDRODYNAMICS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION                        = 5
+FRICTION COEFFICIENT                          = 0.06
+RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER = 3
+/ sollte das gleiche sein, wie in T2D 0 nur fuer glatten Boden verwenden
+/0: glatter Boden 3*d50;
+/1: wellenbeeinflusster Boden
+/2: Chezy;
+/3: Stickler;
+/4: Manning;
+/5: Nikuradse/
+/----------------------------------------------
+/ PHYSICAL PARAMETERS - BED LOAD
+/----------------------------------------------
+BED-LOAD TRANSPORT FORMULA                       = 1
+/1 : Meyer-Peter Mueller
+/2 : EINSTEIN-BROWN (bed load)
+/3 : ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)
+/30: ENGELUND-HANSEN (total)
+/4 : BIJKER (bed load + suspension)
+/5 : SOULSBY - VAN RIJN (bed load + suspension)
+/6 : HUNZIKER (uniquement granulometrie etendue)
+/7 : VAN RIJN (bed load)
+/8 : BAILARD (bed load + suspension)
+/9 : DIBAJNIA ET WATANABE (total)
+/
+CRITICAL EVOLUTION RATIO                         = 1000.0
+/COEFFICIENT FUNCTION OF THE POROSITY             = 1.6    /1.25
+SEDIMENT DENSITY                                 = 2650.
+OPTION FOR THE TREATMENT OF NON ERODABLE BEDS    = 3
+/NONEQUILIBRIUM BED LOAD                          = NO
+SLOPE EFFECT                                     = YES
+FORMULA FOR DEVIATION                           = 2
+PARAMETER FOR DEVIATION                         = 1.5
+BETA                                            = 1.3
+FORMULA FOR SLOPE EFFECT                        = 2
+FRICTION ANGLE OF THE SEDIMENT                  = 30.D0
+HIDING FACTOR FORMULA                            = 4
+/1: Egiazaroff
+/2: Ashida & Michiue
+/3: Hunziker mit Bed-load transport formula = 6
+/4: Karim, Holly & Jang
+/Actung hiding factor gleich fuer alle fractionen
+/1. wert wird gelesen init_constant.f
+/1: Egiazaroff
+NUMBER OF SIZE-CLASSES OF BED MATERIAL           = 3
+NUMBER OF BED LOAD MODEL LAYERS                  = 9
+HIDING FACTOR FOR PARTICULAR SIZE CLASS          =
+0.85;0.85;0.85
+/0.85;0.85;0.85;0.85;0.85
+/0.25;0.25;0.25;0.25;0.25
+/D90                                              =
+/1.8063D-3;7.4D-3;29.15D-3;57.15D-3
+/1.8D-3;5.5D-3;8.5D-3;15.D-3;50.D-3
+/1.8D-3;5.5D-3;9.D-3;19.D-3;50.D-3
+MEAN DIAMETER OF THE SEDIMENT                    =
+0.68D-3;2.1D-3;5.7D-3 / 0;0
+/0.68D-3;2.1D-3;5.7D-3
+/1.3D-3;4.D-3;7.D-3;10.D-3;32.D-3
+/1.3D-3;4.D-3;8.D-3;15.D-3;32.D-3
+INITIAL FRACTION FOR PARTICULAR SIZE CLASS       =
+0.33;0.33;0.34
+/0.2;0.075;0.075;0.35;0.3
+/0.2179;0.1807;0.4466;0.1548
+FINITE VOLUMES                                   = NO
+/
+/CONSTANT FLOW DISCHARGE                          = YES
+/NUMBER OF ITERATIONS FOR TELEMAC                 = 100
+/ default ist 500
+/CRITERION TO UPDATE THE FLOW                     = 0.1
+/ bottom height > crit_cfd*H
+CONSTANT ACTIVE LAYER THICKNESS                  = YES  /YES
+ACTIVE LAYER THICKNESS                           = 0.03 / 0.0285
+/ GRAIN-FEEDING                                    = NO
+SECONDARY CURRENTS       = NO
+/----------------------------------------------
+MPM COEFFICIENT = 5.0D0
+/ACTIVE LAYER THICKNESS = 0.01D0
+/
+/************************************************************************
+/ New keywords for the Continous VERTICAL SORTING MODEL by Uwe Merkel
+/************************************************************************
+/
+VERTICAL GRAIN SORTING MODEL  = 1
+/         0 = Layer = HR-VSM (HIRANO + RIBBERINK)
+/         1 = C-VSM
+C-VSM MAXIMUM SECTIONS        = 200
+/         Should be at least 4 + 4x Number of fractions, better > 250
+C-VSM FULL PRINTOUT PERIOD    = 0
+/         0 => GRAPHIC PRINTOUT PERIOD
+/         Anything greater 0 => Sets a own printou period for the CVSP
+/         useful to save disk space!!!
+C-VSM PRINTOUT SELECTION = 0
+/ this is an extra function yet to be implemented (work in progress)
+/ |251|3514|1118|1750|2104|3316|1212|1280|2186|3187|1356|3027|1535|485
+/        Add any 2D Mesh Point numbers for .CSV-Ascii output of the CVSP
+/        Add 0 for full CVSP out as Selafin files(called VSPRES + VSPHYD)
+/        These files are deleted with the *.tmp folder, to keep them
+/        use the telemac2d -t ... option.
+C-VSM DYNAMIC ALT MODEL       = 5
+/        'MODEL FOR DYNMIC ACTIVE LAYER THICKNESS
+/         0 = ELAY0 (Keyword: ACTIVE LAYER THICKNESS)
+/         1 = Hunziker & Guenther
+/         2 = Fredsoe & Deigaard (1992)
+/         3 = van RIJN (1993)
+/         4 = Wong (2006)
+/         5 = Malcharek (2003)
+/         6 = 3*d50 within last time steps ALT'
+/
+/
+/************************************************************************
+/
+/************************************************************************
+/
+&FIN
+/

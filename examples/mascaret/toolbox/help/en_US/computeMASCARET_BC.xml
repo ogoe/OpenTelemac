@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_compute_BC" xml:lang="en">
+    <refnamediv>
+        <refname>MASCARET_compute_BC</refname>
+        <refpurpose>Computing function for one or more time steps with the boundary conditions.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>[error]=MASCARET_compute_BC(id,InitTime,FinalTime,TimeStep,TimeCl,Cl1,Cl2,print)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para> Error code value : zero indicates that no errors occurred (output argument).</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>MASCARET instance number returned by the function <link linkend="MASCARET_create">MASCARET_create</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>InitTime</term>
+                <listitem>
+                    <para>Initial time of the simulation (s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>FinalTime</term>
+                <listitem>
+                    <para>Final time of the simulation (s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TimeStep</term>
+                <listitem>
+                    <para>Computational time step in second(s)</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TimeCl</term>
+                <listitem>
+                    <para>The time vector for all the new boundary conditions, size as the number of rows in Cl1 or Cl2.</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Cl1</term>
+                <listitem>
+                    <para>Component #1 for the boundary condition, it is a matrix for the time evolution of values for the boundary conditions</para>
+                    <para>The matrix size is : the number of rows in the TimeCl vector * the number of boundary conditions (number of columns)</para>
+                    <para>Depending on the type of the boundary condition : Type 1 or 3 --> Discharge ; Type 2 --> level ; Type 7 --> min. livel</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Cl2</term>
+                <listitem>
+                    <para>Component #2 for the boundary condition, it is a matrix for the time evolution of values for the boundary conditions</para>
+                    <para>The matrix size is : the number of rows in the TimeCl vector * the number of boundary conditions (as for Cl1)</para>
+                    <para>Depending on the type of the boundary condition  : Type 1 or 2 --> not used ; Type 3 --> level ; Type 7 --> max. level</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>print</term>
+                <listitem>
+                    <para>Flag for writing on listing files (1-> write 0-> no write)</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Function for the simulation of one or more time steps specifying new values for the boundary conditions. Compute a new hydraulic state with the help of the previous state and of the current model.</para>
+        <para>Another API function can also do the same job but with less arguments, it is  <link linkend="MASCARET_compute">MASCARET_compute</link></para>
+        <para>Before using this function, it is necessary to initialise the MASCARET state, calling one of the following functions  <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>, <link linkend="MASCARET_initState">MASCARET_initState</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> with the last parameter set to 0 (zero).</para>
+    </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = MASCARET_create();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);        
+        
+// get Boundary Conditions info        
+[err,pasTpsCalcul]=MASCARET_getDouble(id,"Model.DT",0,0,0);
+assert_checkequal(err,0);  
+[err,nbCl]=MASCARET_getNbBoundCond(id);
+assert_checkequal(err,0);  
+for i = 1:nbCl
+    [err,nomCL,numLoi]=MASCARET_getNameBndCond(id,i);
+    assert_checkequal(err,0);
+    printf("Name of the Boundary Condition # %d is : %s corresponding to the graph # %d\n", i, nomCL, numLoi);
+end
+
+// initialisation
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+assert_checkequal(err,0);
+
+// computation
+tailleTpsCL = 3;
+cl2 = zeros(tailleTpsCL,nbCl); // not used
+cl1 = zeros(tailleTpsCL,nbCl);
+cl1(:,2) = 2.;
+tpsCalcul0   =      0.0;
+deltaT       =    600.0;
+tpsCalcul1   =   deltaT; 
+tpsCl = (tpsCalcul0:deltaT/2:tpsCalcul1).';
+cl1(:,1) = 150./3600.* tpsCl;
+err = MASCARET_compute_BC(id,tpsCalcul0, tpsCalcul1, pasTpsCalcul, tpsCl, cl1, cl2, impression);
+assert_checkequal(err,0);
+
+// model deletion
+err = MASCARET_delete(id);
+assert_checkequal(err,0);
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See also</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="MASCARET_compute">MASCARET_compute</link>
+            </member>
+            <member>
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>
+            </member>
+            <member>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

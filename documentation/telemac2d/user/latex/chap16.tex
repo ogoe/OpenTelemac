@@ -1,0 +1,126 @@
+\chapter{  RECCOMANDATIONS}
+\label{ch:reccom}
+ The purpose of this chapter is to provide the user with advice on using the software.
+\section{ Mesh}
+
+ Certain precautions need to be taken when constructing the mesh. The following list should help, but it is not of course exhaustive.
+
+\begin{itemize}
+\item  A liquid boundary should consist of at least 5 points, with 10 being preferable,
+
+\item  In the case of a river mesh, and in particular for simulations of low-flow periods, it is essential to refine the elements in the low-water bed so as to ensure at least 3-4 points for conveying the flow. If this rule is not followed, the results will be of poor quality. In this case, it is possible to build the mesh of the low-water bed using regular gridding available in most of mesh generators,
+
+\item  In domains with steep gradients in the topography or bathymetrybathymetry, the slope mesh must be refined if the current is not tangential to it,
+
+\item  It is preferable for triangles to be as nearly equilateral as possible, as this type of element gives the best results. However, in the case of river meshes, it is sometimes interesting to elongate the grid cells in the direction of the current, in order to reduce the number of computation points and hence the simulation time.
+\end{itemize}
+
+
+\section{ Initial Conditions}
+
+ The technique most commonly used for maritime domains subject to tidal effects is to initialize the free surface with a value corresponding to high tide and the velocities with zero, and then gradually empty the domain.
+
+ In the case of river domains, two techniques are often used. If the domain is relatively small (i.e. the bed level does not vary much between upstream and downstream), the computation can be initialized with constant elevations, by setting the value that will be prescribed downstream of the computation domain as initial elevation. Inflow is then gradually introduced from upstream. This technique cannot be used if the model domain is very large, as the initial elevation generally means that there will be a dry area upstream of the model.  In this case, it is relatively easy, in the CONDIN subroutine, to initialize an elevation with a tilted plane (the value of the elevation is proportional to the X or Y values) and to introduce the nominal inflow progressively. Another possibility is to use the free surface initialization implemented in FUDAA-PREPRO. This function offers the possibility to specify, in a very easy way, a free surface slope defined by a longitudinal profile prescribed as a set of points.
+
+
+\section{ Numerical parameter definition}
+
+
+\subsection{ Type of advection}
+
+ Taking into account the recent improvement of \telemac{2d} in this domain, the following configuration can practically be considered as a ``quasi universal'' configuration (even in parallel mode):
+\begin{lstlisting}[language=bash]
+TYPE OF ADVECTION :  1 ; 5
+\end{lstlisting}
+ Models with steep bottom topography gradients and tidal flats very often pose serious difficulties (oscillations of the free surface, long computation times, etc.). In the light of experience, the configuration that appears to be best in such cases is as follows:
+\begin{lstlisting}[language=bash]
+TREATMENT OF THE LINEAR SYSTEM = 2
+FREE SURFACE GRADIENT COMPATIBILITY = 0.9
+\end{lstlisting}
+
+\subsection{ Solver}
+
+ When using primitive equations (which is no longer recommended), the solver giving the best results in terms of computation time is GMRES (keyword value 7). In this case, it is sometimes useful to configure the dimension of the Krylov space in order to optimize computation time. The larger the dimension, the more time is required to run an iteration, but the faster the system converges. The user is therefore strongly advised to run simulations over a few time steps by varying the keyword \textit{SOLVER OPTION} (and \textit{OPTION FOR THE SOLVER}) so as to reach the best compromise between computation time for one iteration and the number of iterations, remembering that the more points there are in the mesh the higher the optimum value. This optimum value generally varies from 2 (small meshes) to 4 or 5 (large meshes). When using this solver, the optimum value for the time step (in terms of computational time) is generally reached when the convergence occurs with 10 to 20 iterations.
+
+ When using the wave equation, the recommended solver is the conjugate gradient (value 1). In that case, the optimum value for the time step is generally reached when the convergence occurs with 30 to 50 iterations.
+
+
+\section{ Special types of programming}
+
+
+\subsection{ Changing bottom topography between two computations}
+
+ The CORFON subroutine is used to change the bottom topography read from the geometry file. Everything is programmed so that this change is made only once. The list of operations is as follows:
+\begin{itemize}
+\item Reading of geometry;
+
+\item Bottom correction with CORFON.
+\end{itemize}
+
+If a computation is being continued, the bottom from the previous computation results file is used, if there is one.
+Any change of CORFON for a continued computation will therefore be inoperative if the bottom topography is saved in the results file, even if CORFON is actually called.
+
+The procedure for changing bottom topography between two successive computations is as follows:
+\begin{itemize}
+\item Run an initial computation without saving the bottom topography or water depth, but saving the free surface.
+
+\item Modify CORFON.
+
+\item Continue the computation. \telemac{2d} will then use the new bottom topography and as it only finds the free surface in the results of the previous computation, it will recalculate the new depth of water as being the old free surface minus the new bottom topography.
+
+\end{itemize}
+
+
+\section{  Tidal flats}
+
+ The following explanations concern the Finite Element option. In finite volume options (see key-word \textit{EQUATIONS}), mass-conservation is ensured on tidal flats and the depth remains positive. However, e.g. in the case of the Malpasset dam break test-case, these explicit techniques will be much more time-consuming (factor around 10).
+
+ The treatment of tidal flats is a very strategic issue in flood and dam-break flood wave computations. Over the years a number of specific procedures have been developed in \telemac{2d} to cope with this difficulty. Historically, the basic option \textit{TREATMENT OF THE TIDAL FLATS} : 2 consisted in removing from the computation the dry elements. This option cannot be used in parallel computations. With this option, the key-word \textit{MINIMUM VALUE OF DEPTH} is used to decide whether an element is dry or not. This option is not generally recommended, but proved to be more stable with quasi-steady flows in rivers.
+
+ The preferred option is obtained with \textit{TREATMENT OF THE TIDAL FLATS}: 1. In this case, all the finite elements are kept in the computation, which implies a specific treatment of dry points, especially when divisions by the depth occur in the equations. For example the friction terms as they appear in the non-conservative momentum equations would be infinite on dry land, and are limited in the computation. Mass-conservation is guaranteed with this option, but it is never imposed that the depth should remain positive, and slightly negative depths may appear (any correction with the key-word \textit{H CLIPPING} would spoil the mass-conservation).
+
+ The option \textit{TREATMENT OF THE TIDAL FLATS} : 3 is basically the same as option 1, but on partially dry elements a porosity coefficient is applied to take into account the fact that in reality the finite element has a size limited to its wet part. This option has been designed mainly for dam break studies, though users report a good behavior in quasi-steady flows. Unless specific reasons and waiting for more convincing tests, option 1 is recommended rather than 3.
+
+ When using option 1 or 3, it is possible to use a specific treatment concerning the negative depths by selecting the appropriate value for the keyword \textit{TREATMENT OF NEGATIVE DEPTHS}. The possibilities are:
+
+\begin{enumerate}
+\item [\nonumber] 0: no treatment. The negative depths are left unchanged,
+
+\item [\nonumber] 1: smoothing of negative depth (default value),
+
+\item [\nonumber] 2: ``Flux control''. This treatment means that some fluxes between points may be limited to avoid negative depths.
+\end{enumerate}
+
+ When using option 1, it is possible to fix the limit value for the smoothing using the keyword \textit{THRESHOLD FOR NEGATIVE DEPTHS} which default value is 0.
+
+ Hereafter are general recommendations when there are tidal flats in your domain:
+
+\begin{itemize}
+\item  of course use the key-word \textit{TIDAL FLATS : YES}
+
+\item  avoid tidal flats every time it is possible, e.g. very steep banks can sometimes be replaced by a vertical wall.
+
+\item  refine the mesh on dykes or other features that will be submerged and that have a critical effect on flooding. Preferably use the wave equation.
+\end{itemize}
+
+ Here are the main options chosen for a quasi-steady flow (Wesel-Xanten case originally provided by BAW):
+\begin{lstlisting}[language=bash]
+VELOCITY PROFILES                       = 4;0
+TURBULENCE MODEL                        = 1
+VELOCITY DIFFUSIVITY                    = 2.
+TIDAL FLATS                             = YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS = 1
+TREATMENT OF NEGATIVE DEPTHS            = 2
+FREE SURFACE GRADIENT COMPATIBILITY     = 0.9
+H CLIPPING                              = NO
+TYPE OF ADVECTION                       = 1;5
+SUPG OPTION                             = 0;0
+TREATMENT OF THE LINEAR SYSTEM          = 2
+SOLVER:2 PRECONDITIONING                = 2
+SOLVER ACCURACY                         = 1.E-5
+CONTINUITY CORRECTION                   = YES
+\end{lstlisting}
+The wave equation (\textit{TREATMENT OF THE LINEAR SYSTEM: 2}) proved here to be more stable than primitive equations.
+These options are also convenient for the Malpasset dam-break computation, and can thus be taken as a starting point for a new case.
+
+The key-word \textit{OPTION FOR THE DIFFUSION OF VELOCITIES} should normally be set to 2, as it is the correct theoretical formula, however the simplified form corresponding to option 1 is preferred, because it avoids the problem of division by 0 on dry zones. So far no clear test-case proved the superiority of option 2.

@@ -1,0 +1,86 @@
+/
+/
+/ This case validates the EUTRO process
+/  of  WAQTEL module
+/
+/  Version V7P2
+/  HP Z600 Nag compiler      1 proc : 1min13s   version 7.0 26/10/2014
+/  HP Z600 Nag compiler      8 proc : 24 s      version 7.0 26/10/2014
+/  HP Z600 Intel compiler    1 proc : 4min48s   version 7.0 26/10/2014
+/  HP Z600 Intel compiler    8 proc : 1min 8s   version 7.0 26/10/2014
+/
+/
+/
+/****************************************************
+TITLE = 'Water Quality- EUTRO  process for Channel'
+/****************************************************
+/
+/----------------------------------------------------
+/  COMPUTER INFORMATIONS
+/---------------------------------------------------
+/
+GEOMETRY FILE             = 'geo_waq2d_eutro.slf'
+BOUNDARY CONDITIONS FILE  = 'geo_waq2d_eutro.cli'
+RESULTS FILE              = 'r2d_waq2d_eutro.slf'
+FORTRAN FILE              = 't2d_waq2d_eutro.f'
+/REFERENCE FILE            = 'f2d_waq2d_eutro.slf'
+/VALIDATION                = YES
+/DEBUGGER   : 1
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,H,S,Q,T*'
+/
+/ Put a smaller period to have a more
+/ accurate time series
+/
+GRAPHIC PRINTOUT PERIOD          = 500
+LISTING PRINTOUT PERIOD          = 1000
+MASS-BALANCE                     = YES
+TIME STEP                        = 3600.
+NUMBER OF TIME STEPS             = 8760
+INFORMATION ABOUT SOLVER         = YES
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO
+INITIAL CONDITIONS              = PARTICULAR
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/
+/----------------------------------------------
+/  CONTROL SECTIONS
+/----------------------------------------------
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION           = 0
+/----------------------------------------------
+/  NUMERICAL PARAMETERS
+/----------------------------------------------
+/
+TIDAL FLATS                       = NO
+CONTINUITY CORRECTION             = YES
+/************************************
+/ TRACER
+/************************************
+/NUMBER OF TRACERS = 1
+/ initial values of         PHY,PO4,POR,NO3,NOR,NH4,L, O2
+INITIAL VALUES OF TRACERS = 0.5;3.; 1.1;0.2;4.9;5.5;0.7;1.
+/************************************
+/  WATER QUALITY
+/************************************
+COUPLING WITH         = 'WAQTEL'
+WAQTEL STEERING FILE  = 'eutro_steer.cas'
+WATER QUALITY PROCESS = 3
+/
+&FIN
+/

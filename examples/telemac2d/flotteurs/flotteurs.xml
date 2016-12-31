@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="flotteurs" rank="3" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="flotteurs" author="R.Ata" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_flotteurs_v1p0.cas"
+       title="flotteurs scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_flotteurs_v1p0.cas"
+       title="flotteurs parallel mode"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_flotteurs_v2p0.cas"
+       title="flotteurs scalar mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_flotteurs_v2p0.cas"
+       title="flotteurs parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_flotteurs_v1p0.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:T2DRES" />
+      <v5 vars=":map" target="f2d_flotteurs_v1p0.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="2:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T2DRES" />
+      <v11 vars=":map" target="f2d_flotteurs_v2p0.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="4:T2DRES" />
+      <v14 vars=":map" target="f2d_flotteurs_v2p0.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2,1e-2])" />
+   </cast>
+   <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="1:T2DRES" />
+      <v17 vars=":map" target="2:T2DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[1e-3,1e-3,1e-4,1e-4,1e-9,1e-3,1e-2,1e-2])" />
+   </cast>
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0:-1]" size="(12;5)" >
+      <layer vars="free surface:line" extract="(270;500)(1030;460)" target="1:T2DRES" />
+   </plot1d>
+   <plot1d xref="FreeSurfaceProfiles" type="v-section" config="together" size="(12;5)" >
+      <layer vars="free surface:line" extract="(0;500)(1000;500)" target="1:T2DRES" time="[0:-1:10]" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="(15;7)" >
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" />
+   </plot2d>
+    <plot2d xref="FreeSurfacetf" size="(15;7)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="FreeSurfacet1" size="(15;7)" >
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[1]" />
+   </plot2d>
+
+</validation>

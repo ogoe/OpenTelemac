@@ -1,0 +1,37 @@
+\chapter{Parallelism}
+
+For simulations requiring a high computational power, it can be advisable to
+run the computations in multi-processor machines, or in clusters of
+workstations. \telemac{3D} is available in a parallel version in order to take
+advantage of that kind of computational architecture.
+
+The \telemac{3D} parallel version uses the MPI library which has to be installed
+beforehand to be implementable. The interface between \telemac{3D} and that MPI
+library is achieved through the \telfile{parallel} library which is common to all
+the TELEMAC system modules.
+
+Lots of pieces of information concerning the implementation of the parallel
+version can be found in the system's installation literature.
+
+The user shall initially specify the number of processors used by means of the
+keyword \telkey{PARALLEL PROCESSORS}. That integer type keyword can take the
+following values:
+
+\begin{itemize}
+\item  0: Use of the conventional \telemac{3D} version (default),
+
+\item  1: Use of the parallel \telemac{3D} version on one processor,
+
+\item  2 ...: Use of the parallel \telemac{3D} version using the
+specified number of processors.
+\end{itemize}
+
+Different partitioning tools may be used if installed.
+They can be selected by the keyword \telkey{PARTITIONING TOOL} (default value
+is METIS). The possible choices are:
+\begin{itemize}
+\item METIS,
+\item SCOTCH,
+\item PARMETIS,
+\item PTSCOTCH \ldots
+\end{itemize}

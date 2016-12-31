@@ -1,0 +1,2 @@
+Extraction of 4 months of ECMWF data.
+> convertECMWF.py --from 2011-02-15 --stop 2011-06-15 --bl 34,140 --tr 41,147 ecmwf-4m.slf

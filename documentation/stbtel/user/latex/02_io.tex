@@ -1,0 +1,249 @@
+%--------------------------------------------------------------------------------
+\chapter{Inputs and outputs}
+%--------------------------------------------------------------------------------
+%--------------------------------------------------------------------------------
+\section{Preliminary remarks}
+%--------------------------------------------------------------------------------
+During a computation, the \stbtel software uses a number of input and output
+files. Some of them are optional.\\
+The input files are the following:
+\begin{itemize}
+\item The steering file,
+\item The file containing the mesh to be treated (universal file),
+\item One or many bottom topography files,
+\item The Fortran file,
+\item The optional data file.
+The output files are the following:
+\end{itemize}
+\begin{itemize}
+\item The geometry file according to the TELEMAC standard (Selafin)
+\item The listing printout,
+\item The boundary conditions file.
+\end{itemize}
+
+%--------------------------------------------------------------------------------
+\section{The files}
+%--------------------------------------------------------------------------------
+%--------------------------------------------------------------------------------
+\subsection{The steering file}
+%--------------------------------------------------------------------------------
+This is a text file created by the EDAMOX module or directly by the text
+editor. In a way, it represents the control panel of the computation. It
+contains a number of keywords to which values are assigned. If a keyword is not
+contained in this file, \stbtel will assign it the default value defined in the
+dictionary file (see description in section 2.2.9). If such a default value is
+not defined in the dictionary file, the computation will stop with an error
+message. For example, the command MESH = TRIGRID. enables the user to specify
+that the computed file comes from the TRIGRID software.\\
+\stbtel reads the steering file at the beginning of the computation.\\
+The dictionary file and steering file are read by a utility called \damo,
+which is included in \stbtel. Because of this, when the steering file is being
+created, it is necessary to comply with the rules of syntax used in \damo
+(this is done automatically if the file is created with EDAMOX). They are
+briefly described below and an example is given in Appendix 4.\\
+
+The rules of syntax are the following:
+\begin{itemize}
+\item The keywords may be of Integer, Real, Logical or Character type.
+\item The order of keywords in the steering file is of no importance.
+\item Each line is limited to 72 characters. However, it is possible to pass
+from one line to the next as often as required, provided that the name of the
+keyword is not split between two lines.
+\item For keywords of the array type (only one-dimensional arrays are
+available), the separator between two values is the semi-colon. It is not
+necessary to give a number of values equal to the size of the array. In this
+case, \damo returns the number of read values. For example:
+\begin{lstlisting}[language=TelemacCas]
+ABSCISSAE OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH  = 100.5; 500.6
+\end{lstlisting}
+  (This keyword is declared as an array of 9 values)
+\item The signs ":" or "=" can be used indiscriminately as separator for the
+name of a keyword and its value. They may be preceded or followed by any number
+of spaces. The value itself may appear on the next line. For example:
+\begin{lstlisting}[language=TelemacCas]
+BOTTOM CORRECTION OF TRIGRID = 10.
+\end{lstlisting}
+or
+\begin{lstlisting}[language=TelemacCas]
+BOTTOM CORRECTION OF TRIGRID : 10.
+\end{lstlisting}
+or again
+\begin{lstlisting}[language=TelemacCas]
+BOTTOM CORRECTION OF TRIGRID  = 10.
+\end{lstlisting}
+\item Characters between two "/" on a line are considered as comments.
+Similarly, characters between a "/" and the end of line are also considered as
+comments. For example:
+\begin{lstlisting}[language=TelemacCas]
+BOTTOM CORRECTION OF TRIGRID = 280     / Bathy 1
+\end{lstlisting}
+\item A line beginning with "/" is considered to be all comment, even if there
+is another "/" in the line. For example:
+\begin{lstlisting}[language=TelemacCas]
+      / The geometry file is ./mesh/geo
+\end{lstlisting}
+\item When writing integers, do not exceed the maximum size permitted by the
+computer (for a computer with 32-bit architecture, the extreme values are -2
+147 483 647 to + 2 147 483 648. Do not leave any space between the sign
+(optional for the +) and number. A full stop is allowed at the end of a number.
+\item When writing real numbers, the full stop and comma are accepted as
+decimal points, as are E and D formats of FORTAN. ( 1.E-3  0.001  0,001  1.D-3
+represent the same value).
+\item When writing logical values, the following are acceptable: 1 OUI  YES
+.TRUE.  TRUE  VRAI and 0 NON  NO  .FALSE.  FALSE  FAUX.
+\end{itemize}
+In addition to keywords, a number of instructions or meta-commands interpreted
+during sequential reading of the steering file can also be used:
+\begin{itemize}
+\item Command \telkey{\&FIN} indicates the end of the file (even if the file is not
+finished). This means that certain keywords can be deactivated simply by
+placing them behind this command in order to reactivate them easily later on.
+However, the computation continues.
+\item Command \telkey{\&ETA} prints the list of keywords and the value that is assigned
+to them when \damo encounters the command. This will be displayed at the
+beginning of the listing printout (see section 2.2.7).
+\item Command \telkey{\&LIS} prints the list of keywords. This will be displayed at the
+beginning of the listing printout (see section 2.2.7).
+\item Command \telkey{\&IND} prints a detailed list of keywords. This will be displayed
+at the beginning of the listing printout (see section 2.2.7).
+\item Command \telkey{\&STO} stops the program and the computation is interrupted.
+\end{itemize}
+The name of this file is given by using the keyword: \telkey{STEERING FILE}.
+
+%--------------------------------------------------------------------------------
+\subsection{The universal file}
+%--------------------------------------------------------------------------------
+This file holds the mesh to be treated. The software choosen for its creation
+will change the format. Sometimes, it could be a file already fomated on the
+\telemacsystem standard (Selafin) on which specials computations could be
+treated.
+In some case, this file could hold bathymetric informations.
+The name of the file is given with the keyword: \telkey{UNIVERSAL FILE}
+
+%--------------------------------------------------------------------------------
+\subsection{The bottom topography files}
+%--------------------------------------------------------------------------------
+One of the goals of \stbtel is to interpolate a bathymetry point on the mesh
+generator.  So, the bathymetric information must be given in one or in more
+SINUSX format data files, or in X, Y Z files.
+\stbtel can manage as many as 5 bottom topography files. In this case, it’s
+important to take heed of the possible covering up of the zones in each file.
+The names of this or these file(s) are given with the keyword: \telkey{BOTTOM
+TOPOGRAPHY FILES}.
+%--------------------------------------------------------------------------------
+\subsection{The fortran user file}
+%--------------------------------------------------------------------------------
+As every TELEMAC simulation modules, \stbtel uses a Fortan user file.  With
+\stbtel, It contains the main program. The role of this main program is simply
+to determine the language used for writing the messages (English or French) and
+to define the memory space by giving the size values for tables A (real) and IA
+(integer).
+If the size indicated by the user is too small, the \stbtel run is interrupted
+and the software prints the minimum value to be put in the main program on the
+listing printout. In the opposite case, the user recovers the exact size used
+by the program, so that he can define the memory spaces as accurately as
+possible, thus saving CPU memory.
+This file is compiled and linked so as to generate the executable program for
+the simulation.
+The name of this file is given with the keyword: \telkey{FORTRAN FILE}.
+An example of a FORTRAN file is given in appendix 5.
+%--------------------------------------------------------------------------------
+\subsection{The additional file of the mesh generator}
+%--------------------------------------------------------------------------------
+If there is an interface with the TRIGRID software, the file contains the
+connectivity table necessary for the use of \stbtel.
+If there is an interface with the FASTTBABS software, this file (which is
+therefore optional) holds information about the type of the boundary
+conditions.
+The name of this file is given with the keyword: \telkey{MESH ADDITIONAL DATA
+FILE}.
+%--------------------------------------------------------------------------------
+\subsection{The geometry file}
+%--------------------------------------------------------------------------------
+This geometry file is created by \stbtel from the universal file. This file is
+done on the TELEMAC standard format (Selafin). It holds the information about
+the geometry of the mesh, and possibly bathymetry information.
+It’s a binary file that can be used with the RUBENS.
+The name of this file is given with the keyword: \telkey{GEOMETRY FILE FOR TELEMAC}.
+
+%--------------------------------------------------------------------------------
+\subsection{The listing printout}
+%--------------------------------------------------------------------------------
+This is an \stbtel running report in which the user can find information about
+operations performed by \stbtel.
+The name of this file is managed directly by the \stbtel start-up procedure. In
+general, it has the name of the steering file associated with the suffix
+.sortie. A short example of a listing printout is given in appendix 6.
+%--------------------------------------------------------------------------------
+\subsection{The boundary conditions file}
+%--------------------------------------------------------------------------------
+This is a file generated by \stbtel. It can be modified using a text editor.
+Each line of this file is dedicated at one point of the boundary. The numbering
+of the boundary points is the same as the lines of the file.  It describes
+first of all, the contour of the domain in a trigonometric direction from the
+bottom left side point (minimum X +Y), then the islands on the clock wise.
+For complete description of this file, see the \telemac{2} user manual.
+If a mesh is being read with the Selafin format, the boundary conditions file
+is not accurately completed by \stbtel (all the points are identified as walls
+with slippery conditions).
+The name of this file is given with the keyword: \telkey{BOUNDARY CONDITIONS
+FILE}.
+%--------------------------------------------------------------------------------
+\subsection{The dictionary file}
+%--------------------------------------------------------------------------------
+This file contains all information on the keywords (name in French, name in
+English, default values, type, documentation on keywords, information required
+by EDAMOX). This file can be consulted by the user but must under no
+circumstances be modified.
+%--------------------------------------------------------------------------------
+\subsection{The libraries}
+%--------------------------------------------------------------------------------
+When a computation is initiated, the main program written by the user is
+compiled and then linked in order to generate the executable that is then run.
+During the link edition phase, the following libraries are used:
+\begin{itemize}
+\item \stbtel: this library contains the subroutines that are specific to the
+\stbtel code.
+\item util: this library contains a number of utility subroutines, such as, for
+example, the file read and writes routines.
+\item damo: this library contains all subroutines that manage the reading of
+keywords.
+\item hp: this library contains the subroutines that manage the writing of the
+various binaries (see section 2.3).
+\end{itemize}
+Usually, the user does not use other libraries than the standard ones. However,
+the keyword LIBRARY is implemented to identify the used libraries on the
+program generated. (see references manual for more details).
+Moreover, the use of the last version installed on the computer is planned on
+the software outline. The keyword RELEASE helps to identify the used library
+version (for example to initiate a computation using a previous software
+version). This keyword is described on the reference manual.
+%--------------------------------------------------------------------------------
+\section{File binaries}
+%--------------------------------------------------------------------------------
+The binary of a file is the method used by the computer for storing the
+information physically on the disk (in contrast to storage in ASCII form, which
+is used by the formatted files). \stbtel recognises three types of binary: the
+standard binary of the computer on which the user is working, the IBM binary
+enabling a file created on an IBM computer to be re-read, and the IEEE binary
+that can be used, for example, to generate a file on a Cray OR IBM computer
+that can be read by a workstation (provided that the appropriate subroutines
+are included when \stbtel is installed on the computer).
+The keyword used to fix the binary of the geometry file generated by \stbtel
+is: \telkey{BINARY STANDARD}.
+The default value specified on the dictionary file is “STD” (default binary of
+the computer that is being used)
+
+%--------------------------------------------------------------------------------
+\section{Computer environment}
+%--------------------------------------------------------------------------------
+When using \stbtel on the main computer, the following keywords help to check
+on the software computations. (These keywords are defined on the reference
+manual).
+\begin{itemize}
+\item \telkey{KEYWORD}
+\item \telkey{ACCOUNT}
+\item \telkey{MEMORY SPACE}
+\item \telkey{CPU TIME}
+\item \telkey{USER}
+\end{itemize}

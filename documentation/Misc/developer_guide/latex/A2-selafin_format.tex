@@ -1,0 +1,73 @@
+\chapter{The SELAFIN format}
+
+Note: for unclear historical reasons this format is also sometimes called SERAFIN
+
+This is a binary file.
+
+The records are listed below. Records are given in the FORTRAN sense. It means
+that every record corresponds to a FORTRAN WRITE:
+
+1 record containing the title of the study (80 characters), the last 8
+characters are reserved for stating the format. This format can be `SERAFIN `,
+for single precision storage, or `SERAFIND' for double precision storage.
+Double precision storage can be used for cleaner restarts, but may not be
+understood by all post-processors.
+
+1 record containing the two integers NBV(1) and
+NBV(2) (NBV(1) the number of variables, NBV(2)
+with the value of 0),
+
+NBV(1) records containing the names and units of each variable (over 32
+characters),
+
+1 record containing the integers table IPARAM (10 integers, of which only 4 are
+currently being used).
+
+If IPARAM (3) is not 0: the value corresponds to the x-coordinate of the origin
+in the mesh
+
+If IPARAM (4) is not 0: the value corresponds to the y-coordinate of the origin
+in the mesh
+
+These coordinates in metres may be used by post-processors to retrieve
+geo-referenced coordinates, while the coordinates of the mesh are relative to
+keep more digits.
+
+If IPARAM (7) is not 0: the value corresponds to the number of planes on the
+vertical (in prisms.)
+
+If IPARAM (8) is not 0: the value corresponds to the number of boundary points
+(in parallel).
+
+If IPARAM (9) is not 0: the value corresponds to the number of interface points
+(in parallel).
+
+if IPARAM (10) = 1: a record containing the computation starting date in 6
+integers : year, month, day, hour, minute, second
+
+1 record containing the integers NELEM,NPOIN,NDP,1 (number of elements, number
+of points, number of points per element and the value 1),
+
+1 record containing table IKLE (integer array of dimension (NDP,NELEM) which is
+the connectivity table. beware: in \telemac{2D}, the dimensions of this array
+are (NELEM,NDP)),
+
+1 record containing table IPOBO (integer array of dimension NPOIN); the value
+is 0 for an internal point, and gives the numbering of boundary points for the
+others. This array is never used (its data can be retrieved by another way). In
+parallel the table KNOLG is given instead, keeping track of the global numbers
+of points in the original mesh.
+
+1 record containing table X (real array of dimension NPOIN containing the
+abscissas of the points),
+
+1 record containing table Y (real array of dimension NPOIN containing the
+ordinates of the points),
+
+Next, for each time step, the following are found:
+\begin{itemize}
+  \item 1 record containing time T (real),
+  \item NBV(1)+NBV(2) records containing the results arrays for each variable
+    at time T.
+\end{itemize}
+

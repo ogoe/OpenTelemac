@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="save1d" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+
+<!-- Extract from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Save 2 time histories into the CSV file "figure1.csv".
+      - Locations: extraction at node 703 and at point (0;1)
+      - Variables: extraction of SURFACE LIBRE
+      - Duration:  extraction from time start (0) to end of time (-1)
+      - File:      extraction from target file "f2d_bumpflu.slf"
+   -->
+   <save xref="figure1" type="1d:history" config="oneofall" time="[0:-1]" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="f2d_bumpflu.slf" />
+   </save>
+   <!-- Save a profile along a line into the CSV file "figure2.csv".
+      - Locations: extraction along the line defined by the 2 points (0;0.93) and (21;1.07)
+      - Variables: extraction of SURFACE LIBRE, FOND and VITESSE
+      - Snapshots: extraction at end of time (-1)
+      - File:      extraction from file "f2d_bumpflu.slf"
+      - NOTE:  the key extract, can also be moved up a level to the tag saved1d
+   -->
+   <save xref="figure2" type="1d:v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" >
+      <layer vars="surface libre:line" target="f2d_bumpflu.slf" />
+      <layer vars="fond:line" target="f2d_bumpflu.slf" />
+      <layer vars="vitesse:line" target="f2d_bumpflu.slf" />
+   </save>
+
+<!-- Plot from SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Plot 2 time histories into the PNG file "figure1.png".
+      - Same as figure1 above
+      - The deco of the same name as the plot will be use by default
+      - example of direct use of matplotlib feature: xtick.major.size="-8"
+   -->
+   <deco xref="figure1">
+      <look format="png" colourbar="jet.xml" xtick.major.size="-8"  size="(12;5)"  />
+      <data title="Sub-critical flow over a bump" />
+   </deco>
+   <plot xref="figure1" type="1d:history" config="oneofall" time="[0:-1]" >
+      <layer vars="surface libre:line" extract="703;(0;1)" target="f2d_bumpflu.slf" />
+   </plot>
+   <!-- Plot a profile along a line into the PNG file "figure2.png".
+      - Same as figure2 above, except for velocity
+      - No deco is used here
+   -->
+   <plot xref="figure2" type="1d:v-section" extract="(0;0.93):(21;1.07)" config="oneofall" time="[-1]" >
+      <layer vars="surface libre:line" target="f2d_bumpflu.slf" />
+   </plot>
+   <!-- Plot multiple profile along a line into the PNG file "figure3.png".
+      - Same as figure2 above, except that multiple time frame are plotted
+        for free surface and one for bottom
+      - No deco is used here
+   -->
+   <plot xref="figure5" type="1d:v-section" extract="(0;0.93):(21;1.07)" config="oneofall" >
+      <layer vars="fond:line" target="f2d_bumpflu.slf" time="[-1]" />
+      <layer vars="surface libre:line" target="f2d_bumpflu.slf" time="[0:-1]" />
+   </plot>
+
+<!-- Extract from CSV files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- Copy time history including "703" into the CSV file "figure3.csv".
+      - File:      extraction from file "figure1.csv"
+      - TODO:  deal with subset of time range
+   -->
+   <save xref="figure3" type="1d:history" config="oneofall" deco="default" >
+      <layer vars="703:line" target="figure1.csv" />
+   </save>
+   <plot xref="figure3" type="1d:history" config="oneofall" deco="default" >
+      <layer vars="703:line" target="figure1.csv" />
+   </plot>
+
+   <!-- Copy v-section including "LIBRE" into the CSV file "figure4.csv".
+      - File:      extraction from file "figure2.csv"
+      - TODO:  deal with subset of time range
+   -->
+   <save xref="figure4" type="1d:v-section" config="oneofall" deco="default" >
+      <layer vars="LIBRE:line" target="figure2.csv" />
+   </save>
+   <plot xref="figure4" type="1d:v-section" config="oneofall" deco="default" >
+      <layer vars="LIBRE:line" target="figure2.csv" />
+   </plot>
+
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+</validation>

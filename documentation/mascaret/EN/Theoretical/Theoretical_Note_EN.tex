@@ -1,0 +1,245 @@
+\documentclass[a4paper,12pt]{article}
+
+%\usepackage[utf8]{inputenc} % pour les accents
+\usepackage[T1]{fontenc} % caracteres francais
+\usepackage[english]{babel} %langue principale
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[dvips]{graphicx}
+\usepackage{lscape}
+%\usepackage{draftcopy}
+\hypersetup{
+    pdftitle={Theoretical Note Mascaret v8.0},    % title
+    pdfauthor={Nicole GOUTAL (EDF) - Fabrice ZAOUI (EDF)},     % author
+    pdfsubject={Description of the methods in the MASCARET system},   % subject of the document
+    pdfcreator={Latex},   % creator of the document
+    pdfproducer={dvips + ps2pdf}, % producer of the document
+    pdfkeywords={SARAP, } {REZO, } {CASIER, } {CASTOR, } {MASCARET} % list of keywords
+}
+
+%
+% Title of 1st Page
+%
+\setcounter{secnumdepth}{4} % pour les sous-sous-sous section avec \paragraph
+
+\everymath{\displaystyle}
+
+%filigrane
+%\draftcopyName{BROUILLON}{120}
+
+
+%
+% Start of document
+%
+
+\begin{document}
+
+\begin{titlepage}
+
+\begin{center}
+
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\includegraphics[scale=0.4]{Figures/EDF_Logo}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[scale=1.]{Figures/CEREMA_Logo}
+\end{flushright}
+\end{minipage}
+
+% Upper part of the page
+\textsc{ }\\[7cm]
+\textsc{\Huge MASCARET v8.0}\\[1cm]
+{ \huge \bfseries Theoretical Note}
+
+\vfill
+
+% Bottom of the page
+{\Large Copyright {\copyright} 2014 EDF - CEREMA}\\[0.5cm]
+%{EDF - SA au capital de 924.433.331 euros - R.C.S. Paris B 552 081 317}\\
+%{CETMEF - service du MEEDDM a Compiegne}
+%\\[0.5cm]
+{\Large Translation by HR Wallingford}\\[0.5cm]
+
+\end{center}
+
+\end{titlepage}
+
+%
+% Summary
+%
+\newpage
+\begin{abstract}
+
+Developed for more than 20 years by Electricité De France (EDF) and the Centre d'Etudes et d'Expertise sur les Risques, l'Environnement, la Mobilité et l'Aménagement (CEREMA), \texttt{MASCARET} is a hydraulic modelling software dedicated to one-dimensional free-surface flow, based on the Saint-Venant equations.
+\texttt{MASCARET} includes three computational engines, all of which can be coupled to the \texttt{CASIER} module in order to represent quasi-2D floodplain storage. The three engines can respectively represent the following flows:
+\vspace{0.5cm}
+\begin{itemize}
+ \item Subcritical and Transcritical steady;
+ \item Subcritical unsteady;
+ \item Transcritical unsteady.
+\end{itemize}
+\vspace{0.5cm}
+
+The \texttt{CASIER} module represents water storage and movement on the floodplain with storage areas that can be connected to the river channel and connected to each other. Various relations can be used to represent these connections: weir, channel, siphon, orifice.
+\texttt{MASCARET} is suited for the following types of project:
+%\vspace{0.5cm}
+\begin{itemize}
+ \item River and floodplain inundation modelling;
+ \item Floodwave propagation after a hydraulic structure failure;
+ \item Discharge regulation in rivers and canals;
+ \item Wave propagation in canals (intumescence, lockage water, priming).
+\end{itemize}
+\vspace{0.5cm}
+
+The \texttt{MASCARET} executable files and source code can be freely obtained\footnote{www.openmascaret.org}. With the graphical interface \texttt{FUDAA-MASCARET}, \linebreak \texttt{MASCARET} is a software that allows setting up and running hydraulic models, as well as visualisation of the simulation results, in an integrated manner.
+
+This report is the theoretical note for the software \texttt{MASCARET} and its algorithms. The principles of the mathematical modelling of one-dimensional free-surface flow used by the computational engines of \texttt{MASCARET} are presented here, as well as the numerical methods used to solve the equations for subcritical and transcritical flow. The principles of the storage areas module \texttt{CASIER} and the methods for coupling it with \texttt{MASCARET} are also described, as well as the principles of the automatic calibration module.
+
+\end{abstract}
+
+\newpage
+
+%
+% Table of contents
+%
+\tableofcontents
+
+%
+% 1st section
+%
+\newpage
+\include{1_Introduction}
+
+
+
+%
+% 2nd section
+%
+\newpage
+%\include{noyauxDF}
+\include{2_Engines_FD}
+
+%
+% 3rd section
+%
+\newpage
+%\include{noyauTRSC}
+\include{3_Engine_FV}
+
+%
+% 4th section
+%
+\newpage
+%\include{Casier}
+\include{4_StorageAreas}
+
+%
+% 5th section
+%
+\newpage
+%\include{Calage}
+\include{5_Calibration}
+
+%
+% Bibliography
+%
+\newpage
+\begin{thebibliography}{1}
+
+\bibitem{HERVOUET07} J.-M. HERVOUET, \emph{hydrodynamics of Free Surface Flows modelling with the finite element method}, Ed. Wiley, 2007
+
+\bibitem{UAN75} M. UAN, \emph{Etablissement des équations régissant les écoulements non permanents à surface libre avec champ d'inondation}, Rapport EDF-LNH C43-75-66, 1975
+
+\bibitem{NICOLLET79} G. NICOLLET et M. UAN, \emph{Ecoulements permanents à surface libre en lits composés}, La Houille Blanche, no. 1, pp. 21-30, janvier 1979
+
+\bibitem{CUNGE64} J. A. CUNGE et M. WEGNER, \emph{Intégration numérique des équations d'écoulement de barré de Saint-Venant par un schéma implicite de différences finies}, La Houille Blanche, no. 1, pp. 33-39, Janvier 1964
+
+\bibitem{ZAOUI10} F. ZAOUI, \emph{Implantation d'une méthode de résolution matricielle dans \texttt{MASCARET} (noyau fuvial non-permanent)}, Rapport EDF H-P73-2010-02037-FR, 2010 
+
+\bibitem{ZLATEV81} Z. ZLATEV, J. WASNIEWSKI and K. SCHAUMBURG, \emph{Y12M Solution of large and sparse systems of linear algebraic equations: documentation of subroutines}, Springer-Verlag Berlin and Heidelberg Gmbh \& Co. Kg, october 1981
+
+\bibitem{GOUTAL91} N. GOUTAL, \emph{Note de principe du code \texttt{RUPTUR}}, Rapport EDF HE-43/91/038
+
+\bibitem{AFIF86} M. AFIF, \emph{Analyse de quelques problèmes hyperboliques issus de la modélisation des crues de rivières}, Thèse de l'Université de Saint-Etienne, Juin 1986
+
+\bibitem{GODLEWSKI91} E. GODLEWSKI and P.A. RAVIART, \emph{Hyperbolic systems of conservation laws}, Mathématiques et applications, Ellipses, 1991
+
+\bibitem{SMOLLER83} J. SMOLLER, \emph{Shock waves and reaction-diffusion equations}, Springler-Verlag, Berlin, 1983
+
+\bibitem{LAX72} P.D. LAX, \emph{Hyperbolic systems of conservation laws and the mathematical theory of stock wales}, SIAM, Regional Conference Series, Lectures in applied MAth., Philadelphia, 1972
+
+\bibitem{PAQUIER95} A. PAQUIER, \emph{Modélisation et simulation de la progression de l'onde de rupture de barrage}, Thèse de l'Université Jean Monnet, Octobre 1995
+
+\bibitem{VAZQUEZ94} M.E. VAZQUEZ CENDON, \emph{Estudio de esquemas descentrados para su aplicaci\'on a las leyes de conservaci\'on hiperb\'olicas con t\'erminos fuente}, Tesis doctoral, Universidad Santiago de Compostella, Spain, 1994
+
+\bibitem{AMBROSI95} D. AMBROSI, \emph{Approximate of shallow water equations by Roe's Riemann solver}, International Journal for Numerical Methods in FLuids, Vol. 20, pp. 157-168, 1995
+
+\bibitem{MONTHE97} L.A. MONTHE, \emph{Etude des Equations aux Dérivées Partielles Hyperboliques Raides. Application aux équations de Saint-Venant}, Thèse de l'Université de Rouen, Juillet 1997
+
+\bibitem{ROE81} P.L. ROE, \emph{Approximate Riemann solvers, parameters vectors, and difference schemes}, Journal of Computational Physics, Volume 43, Issue 2, October 1981, Pages 357-372
+
+\bibitem{BUFFARD93} T. BUFFARD, \emph{Analyse de quelques méthodes de volumes finis non structurés pour la résolution des équations d'Euler}, Thèse de l'Université Paris VI, décembre 1993
+
+\bibitem{LEVEQUE90} R. J. LEVEQUE, \emph{Numerical methods for conservation laws}, Lecture in Mathematics ETH, Zurich, 1990
+
+\bibitem{GOUTAL02} N. GOUTAL, \emph{Implicitation du noyau transcritique de \texttt{MASCARET}}, Rapport EDF H-P76/2002/008/B, 2002
+
+\bibitem{GOUTAL96} N. GOUTAL et F. MAUREL, \emph{Note de principe de la version 4.1 du code \texttt{MASCARET}}, Rapport EDF HE-43/96/075/B, 1996
+
+\bibitem{GOUTAL97} N. GOUTAL et F. MAUREL, \emph{Proceedings of the $2^{nd}$ workshop on the dam-break wave simulation}, Rapport EDF HE-43/97/016/A, 1997
+
+\bibitem{LECOZ96} O. LE COZ, \emph{Un schéma équilibre pour les écoulements à surface libre instationnaires avec bathymétrie}, Thèse de l'Université Bordeaux I, Talence, 1996
+
+\bibitem{BON97} C. BON, \emph{Modélisation et simulation numérique d'écoulements hydrau\-liques et de ruissellement en topographie quelconque}, Thèse de l'Université Bordeaux I, Talence, 1997
+
+\bibitem{MAUREL96} F. MAUREL, \emph{Traitement des confluents dans le  logiciel \texttt{MASCARET} 4.0 - Principes de la méthode et éléments de validation}, Rapport EDF HE-43/96/067/A,1996
+
+\bibitem{BENSLAMA95} E. BEN SLAMA, \emph{Code \texttt{EROSIF} - Note de principe, note d'utilisation et éléments de validation}, Rapport EDF HE-43/95/073/A, 1995
+
+\bibitem{GOUTAL03} N. GOUTAL, \emph{Système \texttt{MASCARET} v5p2 : ajout de nouvelles singularités}, Rapport EDF HP-76/03/020/A, 2003
+
+\bibitem{CARLIER87} M. CARLIER, \emph{Hydraulique générale et appliquée}, Collection de la Direction des Etudes et Recherches d'Electricité de France, Eyrolles, 1987
+
+\bibitem{RISSOAN02} C. RISSOAN et E. MONIER, \emph{Système \texttt{MASCARET}: validation du couplage d'un système de casiers avec le noyau fluvial non permanent}, Rapport EDF HP-76/02/043, 2002
+
+\bibitem{GOUTAL_RISSOAN02} N. GOUTAL et C. RISSOAN, \emph{\texttt{MASCARET} 5.1 Note d'utilisation}, Rapport EDF HP-76/02/013, 2002
+
+\bibitem{GOUTAL05} N. GOUTAL, \emph{Calage automatique du coefficient de Strickler en régime permanent sur un bief unique}, Rapport EDF HP-75/05/021/A, 2005
+
+\bibitem{LEBOSSE89_1} A. LEBOSSE, \emph{Code \texttt{CASTOR} -- \texttt{CA}lage du coefficient de \texttt{ST}rickler \texttt{O}ptimisé en \texttt{R}ivière -- Note de principe}, Rapport EDF HE-43/89/40
+
+\bibitem{LEBOSSE89_2} A. LEBOSSE, \emph{Code \texttt{CASTOR} -- \texttt{CA}lage du coefficient de \texttt{ST}rickler \texttt{O}ptimisé en \texttt{R}ivière -- Note de validation}, Rapport EDF HE-43/89/57
+
+\bibitem{LEBOSSE89_3} A. LEBOSSE, \emph{Estimation of the Manning-Strickler-Roughness coefficient in St-Venant equations}, Rapport EDF HE-43/89/58
+
+\bibitem{BRISTEAU11} M.-O. BRISTEAU, N. GOUTAL and J. SAINTE-MARIE \emph{Numerical simulations of a non-hydrostatic shallow water model}, Computers and Fluids 47 (2011) 51-64
+
+\bibitem{GOUTAL08_06} N. GOUTAL, \emph{Note de principe et validation des équations de Saint-Venant permanentes en régime transcritique}, Rapport EDF HP-73-2008-3786
+
+\bibitem{PREISSMANN61} A. PREISSMANN, \emph{Propagation des intumescences dans les canaux et rivières}, $1^{er}$ congrès de l'Association Fran{\c c}aise de Calcul, Grenoble, $1961$
+
+\bibitem{MESELHE97} E. A. MESELHE and F. M. HOLLY Jr., \emph{Invalidity of the Preissmann scheme for transcritical flow}, Journal of Hydraulic Engineering, July $1997$, pp. $652-655$
+
+\bibitem{KUTIJA02} V. KUTIJA and C. J. M. HEWETT, \emph{Modelling of supercritical flow conditions revisited; NewC Scheme}, Journal of Hydraulic Research, Vol. $40$, No. $2$, $2002$
+
+\bibitem{JOHNSON02} T. C. JOHNSON, M. J. BAINES and P. K. SWEBY, \emph{A box scheme for transcritical flow}, International Journal for Numerical Methods in Engineering, Vol. $55$, pp. $895-912$, $2002$
+
+\bibitem{TORO01} E. F. TORO, \emph{Shock-capturing methods for free-surface shallow flows}, Ed. Wiley and Sons, $2001$
+
+\bibitem{GUINOT10} V. GUINOT, \emph{Uncertainty in modelling from an engineering perspective}, SimHydro $2010$ : Hydraulic modeling and uncertainty, $2-4$ June $2010$, Sophia Antipolis
+
+
+\end{thebibliography}
+
+%
+% end of document
+%
+\end{document}
+

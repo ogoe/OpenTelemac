@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="5" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="fetch_lim" author="T.Fouquet" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_fetch_lim_id.cas"
+       title="fetch_lim scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="tomawac" target="tom_fetch_lim_id.cas"
+       title="fetch_lim parallel mode"
+   />
+   <action xref="3"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_fetch_lim_fd.cas"
+       title="fetch_lim scalar mode"
+   />
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4" 
+       code="tomawac" target="tom_fetch_lim_fd.cas" 
+       title="fetch_lim parallel mode" 
+       />
+<!-- Cas "artificiels" pour augmenter la couverture -->
+   
+   <action xref="5"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="tom_test4.cas" 
+       title="fetch_lim scalar mode" 
+   />
+   <action xref="6"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="tom_test6.cas" 
+       title="fetch_lim scalar mode" 
+   />
+   <action xref="7"
+       do="translate;run;cas;princi" 
+       code="tomawac" target="tom_test6bis.cas" 
+       title="fetch_lim scalar mode" 
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="fom_fetch_lim_id.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-4])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="fom_fetch_lim_id.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-4])" />
+   </cast>
+   <cast xref="cas-parall12" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-4])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:WACRES" />
+      <v11 vars=":map" target="fom_fetch_lim_fd.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[0.08, 0.9, 1.2,1e-8,1e-8,1e-8,0.07,0.11,0.04,1e-8,0.2,0.3])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="4:WACRES" />
+      <v14 vars=":map" target="fom_fetch_lim_fd.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[0.08, 0.9, 1.2,1e-8,1e-8,1e-8,0.07,0.11,0.04,1e-8,0.2,0.3])" />
+   </cast>
+   <cast xref="cas-parall34" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:WACRES" />
+      <v17 vars=":map" target="4:WACRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[1e-4])" />
+   </cast>
+    <deco xref="rose">
+      <look cmap="Purples.xml" extend="'max'"/>
+   </deco>  
+      <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="BOTTOM:mesh" target="3:WACGEO" />
+   </plot2d>
+   <plot2d xref="img/resultsinfinite" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for infinite depth')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="rose" />
+   </plot2d>
+   <plot2d xref="img/resultsfinite" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for finite depth')" >
+      <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" deco="rose" />
+   </plot2d>
+   <deco xref="blust">
+      <look cmap="BluSteel.xml" levels="np.arange(0,9,1)" extend="'max'"/>
+   </deco>
+   <plot2d xref="img/resultstest4" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test4')"> >
+      <layer vars="WAVE HEIGHT HM0 :map" target="5:WACRES" deco="blust" />
+   </plot2d>
+   <plot2d xref="img/resultstest6" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test6')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="6:WACRES" deco="blust" />
+   </plot2d>
+   <plot2d xref="img/resultstest6b" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for Test6b')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="7:WACRES" deco="blust" />
+   </plot2d>
+
+</validation>

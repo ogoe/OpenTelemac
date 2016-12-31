@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+<!--Begin Entities-->
+<!ENTITY a40322234fab4e063251afb7d5d9d90fc SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/computeMASCARET.xml">
+<!ENTITY ab449cf647a93b114cd1ef23232ceb018 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/computeMASCARET_BC.xml">
+<!ENTITY aa19c2d4385f71e31ee60ba1702278fe4 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/createMASCARET.xml">
+<!ENTITY a56837474c8ece673ba95b4a5ca31cd99 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/deleteMASCARET .xml">
+<!ENTITY a9055ab7bc29b38bcc023074115fbb489 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/exportXmlMASCARET.xml">
+<!ENTITY ad4eb7e067d15c8b3c662b41d873272d2 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getBoolMASCARET.xml">
+<!ENTITY ab18db17a6a95b27dc766c53a70a57988 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getDescVarMASCARET.xml">
+<!ENTITY ab606a9da90afae054df2d329fe9d8f1f SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getDoubleMASCARET.xml">
+<!ENTITY a280c31cc2b4c00ec37b27ca8d2911d73 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getErrorMASCARET.xml">
+<!ENTITY a456376f9650ef51e2f0fd6241229df02 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getIntMASCARET.xml">
+<!ENTITY aa6a607089332dbc2b77e0bffb29fce8b SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getSizeVarMASCARET.xml">
+<!ENTITY affb0edc77a5a041f0349fec756a1bad3 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getStringMASCARET.xml">
+<!ENTITY abf76b9eaba4e0658b33fee8fcae6370b SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getTypeVarMASCARET.xml">
+<!ENTITY a511af39f68636f620992641c9458c382 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/getVersionMASCARET.xml">
+<!ENTITY aada6934b2bfb5fe6eba2f838b781cfb0 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/importModelMASCARET.xml">
+<!ENTITY ab6a726b06b29fdc53ff924d8e9aa3de0 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/importXmlMASCARET.xml">
+<!ENTITY a16c288ead8375e1ce1f51192a83d805e SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/initStateMASCARET.xml">
+<!ENTITY a07468481f5f889e24352d850103a7b68 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/initStateNameMASCARET.xml">
+<!ENTITY ae3f7c8cf596a4f54354eee516f8ae388 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/setBoolMASCARET.xml">
+<!ENTITY ae51d29940485c9f5682d319085c9e760 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/setDoubleMASCARET.xml">
+<!ENTITY a070808adfa4bee8d27eb53adf277ee97 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/setIntMASCARET.xml">
+<!ENTITY a31945ef39797217ea50c77a06933d940 SYSTEM "file:///E:/Mascaret/toolbox/help/en_US/setStringMASCARET.xml">
+<!--End Entities-->
+]>
+<book version="5.0-subset Scilab" xml:lang="en_US"
+      xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info xml:id='toolbox_mascaret_manual'>
+    <title>Toolbox Mascaret</title>
+  </info>
+
+<part xml:id='section_fc1a5f615a9597d48d09304f2898012d'>
+<title>Toolbox Mascaret</title>
+&a40322234fab4e063251afb7d5d9d90fc;
+&ab449cf647a93b114cd1ef23232ceb018;
+&aa19c2d4385f71e31ee60ba1702278fe4;
+&a56837474c8ece673ba95b4a5ca31cd99;
+&a9055ab7bc29b38bcc023074115fbb489;
+&ad4eb7e067d15c8b3c662b41d873272d2;
+&ab18db17a6a95b27dc766c53a70a57988;
+&ab606a9da90afae054df2d329fe9d8f1f;
+&a280c31cc2b4c00ec37b27ca8d2911d73;
+&a456376f9650ef51e2f0fd6241229df02;
+&aa6a607089332dbc2b77e0bffb29fce8b;
+&affb0edc77a5a041f0349fec756a1bad3;
+&abf76b9eaba4e0658b33fee8fcae6370b;
+&a511af39f68636f620992641c9458c382;
+&aada6934b2bfb5fe6eba2f838b781cfb0;
+&ab6a726b06b29fdc53ff924d8e9aa3de0;
+&a16c288ead8375e1ce1f51192a83d805e;
+&a07468481f5f889e24352d850103a7b68;
+&ae3f7c8cf596a4f54354eee516f8ae388;
+&ae51d29940485c9f5682d319085c9e760;
+&a070808adfa4bee8d27eb53adf277ee97;
+&a31945ef39797217ea50c77a06933d940;
+</part>
+</book>

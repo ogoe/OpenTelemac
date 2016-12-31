@@ -1,0 +1,76 @@
+
+
+\chapter{ Discretizations used in \tomawac}
+
+ The main aspects concerning the numerical discretization in \tomawac are presented and discussed herein for the two spatial variables (paragraph \ref{se:spatialdis}), for the two spectro-angular variables (paragraph \ref{se:spectroangdis}) and for the time domain (paragraph \ref{se:tempordis}
+).
+
+
+\section{ Spatial discretization}
+\label{se:spatialdis}
+ The spatial coordinate system, whether it is Cartesian or spherical, is a planar two-dimensional domain that is meshed by means of triangular finite elements. Only the maritime portion of the computational domain is meshed, so that all the computational points of the spatial grid are provided with a water depth that is strictly above zero. Through this discretization technique, the mesh size may naturally be variable over the spatial domain, particularly enabling to get a fine grid in the areas of specific interest, featured either by complex geometries (straits, intracontinental seas, bays\dots ) or by high bathymetric gradients. Furthermore, that spatial grid may include one or more islands.
+
+ The number of discretization points is only limited by the RAM capacities of the computing machine. The equation solved by \tomawac does not prescribe \textit{a priori }any conditions about the number of grid points per wave length. The density of spatial discretization points is left at the user's will. It should match, however, both spatial and temporal scales of variation of the physical characteristics of the domain being studied, in particular bathymetry and wind field.
+
+ In the general case, this spatial grid is realised on a workstation using one of the mesh generators associated to the TELEMAC system (refer to the 7.2.2 for further details about the preparation of the grid). Two examples of spatial grids developed for \tomawac for simulated storms in the North Atlantic Ocean, the Channel and the North Sea are illustrated in Figure \ref{fig:mailocean}.
+\begin{figure}[htbp]%
+\begin{center}
+\includegraphics*[width=5.5in ]{graphics/mailocean.jpg}
+\caption{Examples of spatial grids in the Atlantic Ocean, the Channel and the North Sea}
+\label{fig:mailocean}
+\end{center}
+\end{figure}
+\section{ Spectro-angular discretization}
+\label{se:spectroangdis}
+
+\subsection{ Frequency discretization}
+
+ In \tomawac, the frequency domain is discretized considering a series of NF frequencies in a geometric progression:
+
+   $f_n = f_1.q^{n-1}$  with n ranging from 1 to $NF$
+
+ The minimum frequency is then $f_1$ and the maximum frequency is $f1.q^{NF-1}.$
+
+In order to define the frequency discretization, the user should specify as an input into the steering file:
+
+\begin{itemize}
+\item  the frequency number: $NF$ (corresponding to the keyword \textit{NUMBER OF FREQUENCIES} in the steering file)
+\item  the minimum frequency: $f_1$ (in Hertz) (corresponding to the keyword \textit{MINIMAL FREQUENCY} in the steering file)
+\item  the frequential ratio: q (corresponding to the keyword \textit{FREQUENTIAL RATIO} in the steering file)
+\end{itemize}
+
+\subsection{  Directional discretization:}
+
+ The interval of propagation direction $[0, 360^\circ$] is discretized into ND evenly distributed directions, so that these directions are:
+
+$ \theta_m = (m-1).360/ND $  with m ranging from 1 to $ND$
+
+ In order to define the directional discretization, the user should specify as an input into the steering file:
+
+\begin{itemize}
+\item  the direction number: $ND$ (corresponding to the keyword \textit{NUMBER OF DIRECTIONS} in the steering file).
+\item  The direction convention selected for the input/output directional variables: either nautical or counterclockwise (corresponding to the keyword \textit{TRIGONOMETRICAL CONVENTION} in the steering file, the default value of which is NO). The nautical convention sets the wave propagation directions (towards which the waves are propagating) in relation to the true North or the vertical axis and opposite to the counterclockwise direction. The counterclockwise convention sets the wave propagation directions in relation to the horizontal axis.
+\item  Note that the convention selected for computing the directions within the FORTRAN model always defines the propagation directions in the clockwise direction from the true North, even though the keyword \textit{TRIGONOMETRICAL CONVENTION}=YES!
+\end{itemize}
+
+
+\subsection{ Spectro-angular grid:}
+
+ A two-dimensional grid for spectro-angular discretization is achieved by combining the above defined frequency and directional discretizations. That grid has NF.ND points.
+
+ A polar representation is used in \tomawac, where the wave frequencies are measured radially and where the propagation direction corresponds to the value of the angle in relation to the axis selected by the user as (vertical or horizontal) origin. An example of a spectro-angular grid having 25 frequencies and 12 directions is illustrated in Figure \ref{fig:spectroangular}
+\begin{figure}[htbp]%
+\begin{center}
+\includegraphics*[width=4.in]{graphics/spectroangular}
+\caption{Example of a spectro-angular grid as used by \tomawac (25 frequencies and 12 directions in this case)}
+\label{fig:spectroangular}
+\end{center}
+\end{figure}
+
+\section{ Temporal discretization}
+\label{se:tempordis}
+
+ In \tomawac, each computation begins at the internal date 0, to which an actual date being defined by the keyword \textit{DATE OF COMPUTATION BEGINNING} in the steering file can be associated. That date is specified as per the yymmddhhmm format which corresponds to the moment dd/mm/yy at hh:mm (for example, 9505120345 corresponds to May 12, 1995 at 3.45).
+
+ The evolution equation of the directional spectrum of wave action density is integrated with a constant time step which is expressed in seconds through the keyword \textit{TIME STEP} in the steering file. Sub-iterations of that time step can also be made for computing the source terms (refer to paragraph 6.3). That number of sub-time steps per time step is defined in the steering file through the keyword \textit{NUMBER OF ITERATIONS FOR THE SOURCE TERMS}.
+

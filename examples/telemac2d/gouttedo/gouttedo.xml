@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="gouttedo" rank="5" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" bbox_inches='tight'/>
+      <data title="gouttedo" author="R.Ata" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+   
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment TODO true ? AT
+-->
+   
+   <!-- ******************************************************************** --> 
+   <!-- scalar mode --> 
+   
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac2d" target="t2d_gouttedo.cas"
+       title="gouttedo scalar mode ()"
+   />
+   <action xref="2"
+           do="translate;run;cas;princi"
+           code="telemac2d" target="t2d_gouttedo_cin.cas"
+           title="gouttedo scalar mode (cin)"
+   />
+   
+   <action xref="3"
+           do="translate;run;cas;princi"
+           code="telemac2d" target="t2d_gouttedo_qua.cas"
+           title="gouttedo scalar mode (qua)"
+   />   
+   <!-- end scalar mode --> 
+   <!-- ******************************************************************** --> 
+   <!-- parallel mode --> 
+   <action xref="4"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_gouttedo.cas"
+       title="gouttedo parallel mode ()"
+   />
+   <action xref="5"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_gouttedo_qua.cas"
+       title="gouttedo parallel mode (qua)"
+   />
+   <!-- end parallel mode --> 
+   <!-- ******************************************************************** --> 
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T2DRES" />
+      <v2 vars=":map" target="f2d_gouttedo.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="ref-4" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="4:T2DRES" />
+      <v5 vars=":map" target="f2d_gouttedo.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="cas-parall14" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:T2DRES" />
+      <v8 vars=":map" target="4:T2DRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="ref-3" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="3:T2DRES" />
+      <v11 vars=":map" target="f2d_gouttedo_qua.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v12,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="ref-5" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="5:T2DRES" />
+      <v14 vars=":map" target="f2d_gouttedo_qua.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="cas-parall35" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="3:T2DRES" />
+      <v17 vars=":map" target="5:T2DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[1e-3,1e-3,1e-4])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="2:T2DRES" />
+      <v20 vars=":map" target="f2d_gouttedo_cin.slf" />
+      <v21 vars="mapdiff(v19,v20)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v21,[1e-3,1e-3,1e-4,1e-5])" />
+   </cast>
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+
+<!--   <plot1d xref="img/WaterDepthProfile" type="v-section" size="(12;5)" config="together">
+      <layer vars="water depth:line" extract="(0;10)(20;10)" target="3:T2DRES" time="[0:-1]" />
+   </plot1d>-->
+   <plot1d xref="img/InitialElevation" type="v-section" size="(12;5)" config="together">
+       <layer vars="water depth:line" extract="(0;10)(20;10)" target="3:T2DRES" time="[0:0]" />
+   </plot1d>
+   
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="img/Mesh" size="(7;7)" >
+      <layer vars="maillage:mesh" target="3:T2DGEO" config="oneofall" />
+   </plot2d>
+   
+   <plot2d xref="img/t2d_gouttedo_qua_time0_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[0]" />
+   </plot2d>
+   
+   <plot2d xref="img/t2d_gouttedo_qua_time3_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[3]" />
+   </plot2d>
+   
+   <plot2d xref="img/t2d_gouttedo_qua_time6_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[6]" />
+   </plot2d>
+
+   <plot2d xref="img/t2d_gouttedo_qua_time9_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[9]" />
+   </plot2d>
+
+   <plot2d xref="img/t2d_gouttedo_qua_time12_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[12]" />
+   </plot2d>
+
+   <plot2d xref="img/t2d_gouttedo_qua_time15_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[15]" />
+   </plot2d>
+
+   <plot2d xref="img/t2d_gouttedo_qua_time18_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[18]" />
+   </plot2d>
+   
+   <plot2d xref="img/t2d_gouttedo_qua_time20_name2_pers2d" size="(7;7)" >
+       <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[20]" />
+   </plot2d>
+   
+   <cast xref="myPlot" config="oneofall" type="2d:" time="[0:-1]" >
+       <a1 vars=":map" target="3:T2DRES" />       
+       <python>           
+def plot( data  ) :
+    import mtlplots.myPlot2dPerspective3d
+    from mtlplots.myPlot2dPerspective3d import myPlot2dPerspective3d   
+    zlimits=[0.0, 4.0] 
+    # timeIndex -> 0s 0.6s 1.2s  nameIndex -> "'WATER DEPTH     '"  
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[0], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits )     
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[3], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )        
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[6], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )        
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[9], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )        
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[12], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[15], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )
+    
+    # timeIndex -> 1.8s 2.4s 3.0s nameIndex -> "'WATER DEPTH     '"  
+    myPlot2dPerspective3d( data,"telemac2d", "gouttedo", timeIndexs=[-1], nameIndex=2, colorMapFileName='jet.xml', zlimits=zlimits  )
+    return [],[],[],[]           
+       </python>    
+       <myInfo vars="plot( a1 )" />
+   </cast>
+      
+<!--   <plot2d xref="img/WaterDepth_t1_cin" size="(7;7)" >
+      <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[1]" />
+   </plot2d>
+   <plot2d xref="img/WaterDepth_tf_cin" size="(7;7)" >
+      <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>
+   <plot2d xref="img/WaterDepth_t1_qua" size="(7;7)" >
+      <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[1]" />
+   </plot2d>
+   <plot2d xref="img/WaterDepth_tf_qua" size="(7;7)" >
+    <layer vars="water depth:map" target="3:T2DRES" config="oneofall" time="[-1]" />
+   </plot2d>-->
+
+
+</validation>

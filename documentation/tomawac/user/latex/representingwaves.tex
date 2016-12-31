@@ -1,0 +1,168 @@
+\chapter{  Representing waves in \tomawac }
+
+\section{ General definition of waves}
+
+ As stated in paragraph 1.1, the purpose of the \tomawac software consists of modelling the generation and the spatiotemporal evolution of waves at the surface of the seas or of the oceans. Then, the main physical process of interest is \textbf{the wave }or \textbf{the sea states}, these two terms being used interchangeably in this document.
+
+ The word waves, generally means all the wind driven free surface waves propagating at the surface of the ocean and the period of which (denoted as T) typically ranges from 2.5 to 25 s, or even, equivalently, whose frequency f=1/T ranges from 0.04 to 0.4 Hz.
+
+ The sea state may take various forms, depending on whether the sea is still and quiet or, on the contrary, in a stormy phase, whether the waves are being formed (the so-called wind sea) or, on the contrary, are coming from the ocean after travelling several hundreds or thousand kilometres (the so-called ``swell'').
+
+\section{ Plane monochromatic waves}
+
+ The most commonly used way to introduce wave modelling consists of considering simple sinusoidal waves (they are often called regular waves). It is a monochromatic (one period or frequency) and plane (one propagation direction) wave. The free surface elevation, which is denoted as h, depends on the position (x, y) of the point being considered in space, as well as on time t. It is written as:
+\bequ
+\label{eqmonochro}
+\eta(x, y, t) = a \cos \left( k(x.\sin \theta + y.\cos \theta) - \omega.t + \phi \right) 
+\eequ
+ wherein:
+
+ $a$ is the wave amplitude (in meters) and corresponds to the distance from the wave crest and the mean level at rest. The wave height, being measured from the crest to the trough of the wave, is used as well: $H=2$a.
+
+ $\omega$ is the wave frequency (in rad/s). The period (in seconds) $T=2\pi/\omega$ or the frequency $f$ (in hertz) $= 1/T = \omega/(2\pi)$ is used as well.
+
+ $k$ is the wave number (in rad/m). The wavelength (in meters): $L = 2\pi/k$ is used as well. The wave number k is yielded by the free surface wave linear dispersion relation, according to frequency $\omega$  and depth $d$:
+
+\bequ
+\label{reldisp}
+ \omega^2 = g.k.tanh(k.d) 
+\eequ
+
+ $\theta$ is the wave propagation direction (in radians). Conventionally, this direction is measured herein clockwise with respect to $Y$ axis.
+
+ $\phi$  is the wave phase (in radians).
+
+ The energy per unit area of these progressive waves (which consists of kinetic energy and potential energy in halves) amounts to:
+\bequ
+\label{defenergy}
+E = 1/2 \rho g a^2 = 1/8 \rho g H^2 
+\eequ
+
+ wherein:
+
+ $g$ is the gravity acceleration ($g = 9.81 m/s^{2}$)
+
+ $\rho$ is the water density (in $kg/m^{3}$) ($\rho = 1025 kg/ m^{3}$ for seawater).
+
+
+\section{ Random multidirectional waves}
+
+ A first representation of waves at the surface of the ocean is possible through the sinusoidal expression being used in the preceding paragraph. When watching an actual sea state, however, not all the waves have the same features, whether it is in terms of height, period or propagation direction. As a matter of fact, the free surface wave energy is distributed over a range of frequencies (waves are then said to be irregular or random) and over a range of propagation directions (waves are then called multidirectional). Mathematically, that irregularity is expressed by writing that a real sea state results from the superposition of an infinite (or large) number of elementary sinusoidal components (i.e. monochromatic and uni-directional components).
+
+Thus, a random multidirectional wave field can be modelled through a superposition method, considering M plane monochromatic components:
+\begin{equation} \label{GrindEQ__2_4_}
+\eta (x,y,t)=\sum _{m=1}^{M}\eta _{m}^{}  (x,y,t)=\sum _{m=1}^{M}a_{m}^{} \cos _{}^{}  [km(x.\sin \theta _{m} +y.\cos \theta _{m} )-\omega _{m} t+\varphi _{m} ]
+\end{equation}
+A major point in the above expression concerns the phase distribution jm of elementary wave components. The approach used in the \tomawac model assumes that these phases are randomly distributed over the $[0;2\pi]$ range with a uniform probability density. The various wave components are then independent, i.e. a linear or phase averaged representation is used.
+
+ With the linear representation featuring \tomawac and using the random phase hypothesis, the energy per unit area of random multidirectional waves can then be expressed as:
+\begin{equation} \label{GrindEQ__2_5_}
+E=\sum _{m=1}^{M}\frac{1}{2} \rho ga_{m}^{2}
+\end{equation}
+It is noteworthy, however, that the distortions of shallow water wave profiles cannot be modelled with such a representation. This is because, as the water depth decreases, the non-linear processes linked to wave propagation and wave interactions with the sea bottom get some importance. The waves become steeper and dissymmetrical: they depart from a sinusoidal profile. A fine modelling of these non-linear effects involves non-linear wave theories (3rd- or 5th-order Stokes waves, cnoidal waves, \dots ) and/or so-called phase resolving propagation models modelling the evolution of each wave from a train, with a spatial discretization of 20-50 points per wavelength (Boussinesq, Serre equations, ...).
+
+ \tomawac is a phase averaged model: it is therefore \textit{a priori} hardly suitable for modelling these non-linear effects when the wave profile can no longer be considered as the superposition of a number of independent sinusoidal components. In chapter \ref{chapter4}, however, it will be explained how the non-linear effects can be processed and represented through source terms.
+
+
+\section{ Sea state directional power spectrum}
+ Real waves were introduced in the previous chapter as a discrete sum of elementary components. Actually, the power spectrum over both frequencies and propagation directions is a continuous function. The relevant variable for describing that sea state power spectrum is the \textbf{directional spectrum of wave energy} which is also known as wave \textbf{directional spectrum of energy} and will henceforth be denoted as $E(f,q)$.
+
+ It is a function (in $Joule.Hz^{-1}.rad{-1}$) that depends on:
+
+ \begin{enumerate}
+\item wave frequency $f$ (in Hertz), conventionally only positive (ranging from 0 to +8)
+ \item propagation direction $\theta$, ranging within a $2\pi$ length interval.
+\end{enumerate}
+
+ Correspondence with the discrete case of the previous section is set considering the following equivalence:
+\begin{equation} \label{GrindEQ__2_6_}
+\sum _{f}^{f+df} \sum _{\theta }^{\theta +d\theta }\frac{1}{2} \rho ga_{m}^{2}  =E(f,\theta )_{}^{} df_{}^{} d\theta
+\end{equation}
+In case of a wave propagation in a zero-current medium, a balance equation of the wave energy directional spectrum can be written taking into account some source and sink terms for energy generation or energy dissipation.
+
+\section{ Directional spectrum of sea state variance}
+
+ The preferred variable for sea state representation and modelling is rather the variance density \textbf{directional spectrum}.
+
+ This function, noted as $F(f,q)$ and expressed in $m^2.Hz.rad^{-1}$ is simply derived from the directional spectrum of wave energy by the relation:
+
+\bequ
+\label{GrindEQ__2_7_}
+F(f,\theta) = E(f,\theta)/(\rho g)  
+\eequ
+
+Then, in particular, we have: 
+\bequ
+\label{GrindEQ__2_8_}\sum _{f}^{f+df} \sum _{\theta }^{\theta +d\theta } \frac{1}{2} \rho ga_{m}^{2} =E(f,\theta )dfd\theta 
+\eequ 
+
+ The relation linking the variance density directional spectrum and the free surface elevation is then written in the following pseudo-integral form:
+\begin{equation} \label{GrindEQ__2_9_}
+\eta (x,y,t)=\int _{f=0}^{\infty }\int _{\theta =0}^{2\pi } \sqrt{2F(f,\theta )dfd\theta }  \cos \left[k\left(x.\cos \theta +y.\sin \theta \right)-\omega t+\varphi \right]
+\end{equation}
+It should be reminded that the phases are randomly distributed in that expression over the range $[0;2\pi]$ with a uniform probability density. As regards the amplitude of each elementary component, it is related to the variance density directional spectrum by:
+\begin{equation} \label{GrindEQ__2_10_}
+a_{m} =\sqrt{2F(f,\theta )dfd\theta }
+\end{equation}
+The n-order (n = 0, 1, 2,...) moments mn of the variance density directional spectrum are defined as:
+\begin{equation} \label{GrindEQ__2_11_}
+m_{n} =\int _{f=0}^{\infty }\int _{\theta =0}^{2\pi }  f^{n} F(f,\theta )dfd\theta
+\end{equation}
+Among these moments, the 0-order moment is equal to the variance of the free surface elevation:
+\begin{equation} \label{GrindEQ__2_12_}
+<\eta ^{2} >=\begin{array}{c} {\lim } \\ {t_{o} \to \infty } \end{array}\frac{1}{t_{o} } \int _{0}^{t_{o} }\eta ^{2} (t)dt =m_{0} =\int _{f=0}^{\infty }\int _{\theta =0}^{2\pi }  F(f,\theta )dfd\theta
+\end{equation}
+In particular, that moment $m_0$ affects the determination of the significant spectral wave height $H_{mo}$ (equal to the significant height $H_{1/3}$ assuming that the wave heights are distributed according to a Rayleigh's law) by the relation:
+\begin{equation} \label{GrindEQ__2_13_}
+H_{mo} =4\sqrt{m_{o} }
+\end{equation}
+The average frequencies $f_{01} $ and $f_{02} $ and f${}_{-10}$=f${}_{e}$ are also used and computed as follows:
+\begin{equation} \label{GrindEQ__2_14_}
+f_{01} =\frac{m_{1} }{m_{0} } \mbox{ }  f_{02} =\sqrt{\frac{m_{2} }{m_{0} } } \mbox{ and }  f_{e} =\frac{m_{0} }{m_{-1} }
+\end{equation}
+Further derived parameters can be computed from the variance density directional spectrum (see e.g. in \cite{Airh1986}.
+
+
+\section{ Sea state directional spectrum of wave action}
+\label{se:seastate}
+ In the general case of wave propagation in an unsteady medium (sea currents and/or levels varying in time and space), the directional spectrum of the variance density is no longer kept and a new quantity should be introduced, namely the \textbf{directional spectrum of wave action}.
+
+ That quantity, noted as N(f,q), will remain constant (without considering the source and sink terms) even though the propagation medium is neither homogeneous nor steady \cite{Komen1994} \cite{Willebrand1975} \cite{Phillips1977} \cite{Bretherton1969}.
+
+ That action density spectrum is related to the directional spectrum of variance density by the relation:
+\bequ
+ \label{GrindEQ__2_15_}
+N = F/s
+\eequ
+ wherein s denotes the relative or intrinsic angular frequency, i.e. the angular frequency being observed in a coordinate system moving at the velocity of current. Such a frequency is different from the absolute angular frequency w observed in a fixed system of coordinates. The two frequencies are linked by the Doppler effect relation in the presence of a current $\vec{U}$:
+\begin{equation} \label{GrindEQ__2_16_}
+\Omega (\vec{k},\vec{x},t)=\omega =\sigma +\vec{k}.\vec{U}
+\end{equation}
+
+
+\section{ Selecting the directional spectrum discretization variables}
+\label{se:selecting}
+ The directional spectra of wave energy, variance or action shall generally be considered as functions depending on five variables:
+\begin{itemize}
+ \item time t,
+
+ \item the pair of coordinates proving the spatial position of the point being considered. In \tomawac, these coordinates can be expressed either in a Cartesian coordinate system (x, y) or in a spherical coordinate system (latitude, longitude) according to the dimension of the computational domain.
+
+ \item the pair of variables applied for directional spectrum discretization, for which several solutions are theoretically possible:
+\begin{itemize}
+
+    \item$(f_a,\theta)$ = (absolute frequency; propagation direction)
+
+    \item$(f_r,\theta)$ = (relative frequency; propagation direction)
+
+    \item$(k,\theta)$ = (wave number; propagation direction)
+
+    \item$(k_x,k_y) = (k.\sin \theta ; k.\cos \theta) =$ (wave number vector)
+\end{itemize}
+\end{itemize}
+
+ \begin{itemize}
+\item For the numerical resolution of equations, the model \tomawac uses the pair $(f_r,\theta)$ = (relative frequency; propagation direction)
+\end{itemize}
+ The directional spectra output by \tomawac, however, are always expressed in $(f_a,\theta)$. The equations solved by \tomawac are thoroughly reviewed in section 4.
+

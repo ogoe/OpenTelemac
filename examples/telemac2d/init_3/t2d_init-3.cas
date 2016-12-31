@@ -1,0 +1,95 @@
+/
+/ HP C3700                         : 102 s   5.5 22/11/2004
+/ HP C3700 compilateur HP          :  79 s   5.7 18/04/2007
+/ HP C3700 compilateur Nag         : 192 s   5.7 18/04/2007
+/ Dell 2.8 MHz compilateur pgi 6.2 :  56 s   5.7 19/04/2007
+/
+/ HP C3700 compilateur HP          :  73 s   5.8 20/11/2007
+/ HP C3700 compilateur Nag         : 224 s   5.8 20/12/2007
+/ Dell 2.8 MHz compilateur pgi 6.2 :  57 s   5.8 19/12/2007
+/
+/ HP C3700 compilateur HP          :  75 s   5.9 16/10/2008
+/ HP C3700 compilateur Nag         : 214 s   5.9 16/10/2008
+/ Dell 2.8 MHz compilateur pgi 6.2 :  55 s   5.9 16/10/2008
+/
+/ HP C3700 compilateur HP          :  72 s   6.0 24/11/2009
+/ HP C3700 compilateur Nag         : 211 s   6.0 26/11/2009
+/ Dell 2.8 MHz compilateur Intel   :  41 s   6.0 26/11/2009
+/
+/ Version 7.1, with new options for a perfect mass balance
+/
+/ HP Z600 compilateur Nag         :  37 s   30/07/2015
+/
+/----------------------------------------------------------------------
+/             Exemple d'initiation - Calcul numero 3
+/             Calcul avec reprise et sans turbulence
+/             Introduction intermittente d'un traceur
+/----------------------------------------------------------------------
+/                      ENVIRONNEMENT INFORMATIQUE
+/----------------------------------------------------------------------
+/
+FORTRAN FILE                               : t2d_init-3.f
+BOUNDARY CONDITIONS FILE            : geo_init-3.cli
+GEOMETRY FILE                          : geo_init-3.slf
+RESULTS FILE                         : r2d_init-3.slf
+PREVIOUS COMPUTATION FILE                   : ini_init-3.slf
+/
+/----------------------------------------------------------------------
+/                        OPTIONS GENERALES
+/----------------------------------------------------------------------
+/
+TITLE : 'TELEMAC-2D - Initiation - Calcul numero 3'
+/
+VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,T1,Q'
+VARIABLES TO BE PRINTED                              : ''
+TIME STEP                                      : 2.5
+/DUREE DU CALCUL                                   : 10800.
+NUMBER OF TIME STEPS : 4320
+GRAPHIC PRINTOUT PERIOD               : 1080
+LISTING PRINTOUT PERIOD                         : 108
+COMPUTATION CONTINUED                                   : YES
+INITIAL TIME SET TO ZERO                            : YES
+/
+/----------------------------------------------------------------------
+/                    CONDITIONS AUX LIMITES
+/----------------------------------------------------------------------
+/
+LAW OF BOTTOM FRICTION                     :    3
+FRICTION COEFFICIENT                         :   55.
+PRESCRIBED ELEVATIONS                                    :  265.;0.
+PRESCRIBED FLOWRATES                                    : 0.;700.
+/
+/----------------------------------------------------------------------
+/                       OPTIONS NUMERIQUES
+/----------------------------------------------------------------------
+/
+TIDAL FLATS                                 : NO
+TURBULENCE MODEL                              : 1
+MASS-BALANCE                                    : YES
+SOLVER ACCURACY                              : 1.E-8
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER              : 100
+TYPE OF ADVECTION                            : 1;5;5
+SOLVER                                           : 7
+SOLVER FOR DIFFUSION OF TRACERS            : 7
+VELOCITY DIFFUSIVITY             : 1.E-2
+COEFFICIENT FOR DIFFUSION OF TRACERS             : 0.
+TREATMENT OF THE LINEAR SYSTEM                    : 2
+/ FOR A PERFECT MASS BALANCE
+CONTINUITY CORRECTION                          : YES
+TREATMENT OF NEGATIVE DEPTHS                 : 2
+/
+/----------------------------------------------------------------------
+/                       TRACEUR
+/----------------------------------------------------------------------
+/
+NUMBER OF TRACERS : 1
+ABSCISSAE OF SOURCES              : 247.360992431641
+ORDINATES OF SOURCES              : 559.887023925781
+VALUES OF THE TRACERS AT THE SOURCES   : 100.
+WATER DISCHARGE OF SOURCES                 : 10.
+MASS-LUMPING ON TRACERS      : 1.
+MASS-LUMPING ON H                 : 1.
+MASS-LUMPING ON VELOCITY        : 1.
+IMPLICITATION FOR DEPTH      : 1.
+/
+&FIN

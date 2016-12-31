@@ -1,0 +1,20 @@
+
+
+
+\chapter{ SECONDARY CURRENTS}
+\label{ch:sec:curr}
+ In a curved channel, the flow experiences a radial acceleration and centrifugal forces act in proportion to the mean velocity.  
+In turn, the surface of the water is tilted radially on the outer bank to produce a super-elevation sufficient to create a pressure gradient 
+to balance the average centrifugal force.  At shallower depths, the centrifugal force exceeds the pressure force, whence the resultant force 
+drives the fluid outwards.
+
+\telemac{2D} allows to take into account the effect of these secondary currents. To activate this, key-word \telkey{SECONDARY CURRENTS} must be set to \telkey{TRUE} 
+(default \telkey{FALSE}). User can also manage some coefficients used in the resolved equation (see release note 7.0 for theoretical aspects and 
+for more details). For instance, the production term in the advection-diffusion equation depends linearly on a coefficient $A_s$ which can be 
+calibrated using key-word\telkey{ PRODUCTION COEFFICIENT FOR SECONDARY CURRENTS} (default 7.071).  In the same way, 
+the dissipation part can be modified by varying the coefficient $A_{ds}$ using key-word \telkey{ DISSIPATION COEFFICIENT FOR SECONDARY CURRENTS} 
+(default 0.5).
+
+ An example of use of the secondary currents is given in the validation case SECCURRENTS (in folder /examples/telemac2d). 
+This example is described and well documented in the validation manual of \telemac{2D}.
+

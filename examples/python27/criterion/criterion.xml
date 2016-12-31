@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="analytics" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" size="(10,6)" />
+      <data title="Checks results against an analytical solution" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" />
+   </deco>
+   <deco xref="red">
+      <look color="red" />
+   </deco>
+   <deco xref="green">
+      <look color="green" />
+   </deco>
+
+
+<!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Example of checks by Jenkins based on a difference with the reference file
+      - NOTE:  the type defines the object as 2d, but as is (no resampling/extraction)
+   -->
+    <cast xref="valida" config="oneofall" time="[0:-1]" type="2d:">
+      <v1 vars="free surface:map" target="r2d_tide-jmj_real_gen.slf" />
+      <v2 vars="free surface:map" target="r2d_tide-jmj_type_gen.slf" />
+      <v3 vars="mapdiff(v2,v1)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[2.7])" />
+   </cast>
+   <!-- Plotting a 2D map of the diffeence calculated above at the last frame
+      - Variables extracted:
+         + "v3" as the diffeence calculated above
+      <layer vars="free surface:map" target="r2d_tide-jmj_real_gen.slf" />
+      <layer vars="v2:map" target="valida:v2" />
+      <layer vars="v3:map" target="valida:v3" />
+   -->
+   <plot xref="figure1" type="2d:p-section" time="[-1]" config="oneofall">
+      <layer vars="v3:map" target="valida:v3" />
+   </plot>
+
+<!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Example of new variables being created:
+      Cast variable DEPTH as FREE-SURFACE - BOTTOM on various supports
+   -->
+   <!-- Casting along a 1D vertical section
+      - Locations: extraction along the line defined by the 2 points (0;10) and (21;10)
+      - Variables extracted:
+         + "s" as SURFACE LIBRE extraction at end of time (-1)
+         + "b" as FOND extraction at end of time (-1)
+      - Variables caluclated:
+         + "d" as diff(s-b) based on the support of "s"
+      - File:      extraction from file "f2d_dambreak.slf" all time frame and from f2d_dambreak.slf
+      - Return: No return key, hence no test will be reported to Jenkins / on screen.
+      - NOTE:  the key extract, can also be moved up a level to the tag cast
+   -->
+   <cast xref="depth" config="oneofall">
+      <python>
+def diff(a1,a2):
+   # <!-- only one variable index to deal with in this case, but possible more than one time frame -->
+   nbtime = len(a1.values[0])
+   # <!-- sum of all differences, point by point (represents one variable, one time frame, one plan) -->
+   d = np.zeros((1,nbtime,1,len(a1.support)),dtype=np.float)
+   for itime in range(nbtime):
+      d[0][itime] = d[0][itime] + a1.values[0][itime]-a2.values[0][0]
+   return [],[],a1.support,d/nbtime
+      </python>
+      <s0 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" />
+      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[20]" target="f2d_dambreak.slf" />
+      <b0 vars="bottom:line" type="1d:v-section" extract="(0;10):(21;10)" time="[-1]" target="geo_dambreak.slf" />
+      <d0 vars="diff(s0,b0)" />
+   </cast>
+   <!-- Plotting along a 1D vertical section
+      - Locations: extraction along the line defined by the 2 points (0;10) and (21;10)
+      - Variables extracted:
+         + "d0" as the diff( FREE SURFACE, BOTTOM )
+         + BOTTOM extraction at end of time (-1)
+      - File:      extraction from file "geo_dambreak.slf"
+      - Return: No return key, hence no test will be reported to Jenkins / on screen.
+      - NOTE:  the key extract, can also be moved up a level to the tag cast
+      <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" />
+   -->
+   <plot xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" >
+      <layer vars="d0:line" target="depth:d0" />
+      <layer vars="bottom:line" time="[-1]" target="geo_dambreak.slf" />
+   </plot>
+   <!-- Saving the content of plot "depth-sect.png" above
+      - Variables extracted:
+         + "d0" as the diff( FREE SURFACE, BOTTOM ) from "depth"
+      - Other possibilities:
+         + <layer vars="s0:line" target="depth:s0" />
+         + <layer vars="free surface:line" time="[0:-1:10]" target="f2d_dambreak.slf" />
+   -->
+   <save xref="depth-sect" type="1d:v-section" extract="(0;10):(21;10)" config="oneofall" >
+      <layer vars="d0:line" target="depth:d0" />
+   </save>
+
+<!-- Casting from SELAFIN files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Example of checks by Jenkins based on the computation of an analtical solution
+      Cast of analytical solution of a dam break on dry bed.
+      <s1 vars="free surface:line" type="1d:v-section" extract="(0;10):(21;10)" time="[0:-1:10]" target="f2d_dambreak.slf" />
+   -->
+   <cast xref="analytical" config="oneofall" type="1d:v-section" time="[-1]" >
+      <python>
+def analytics(a0):
+   x0 = a0.support
+   attime = a0.function[-2]
+   nbtime = len( a0.values[0] )
+   h0 = 4.0
+   g = 9.81
+   hn = np.zeros( (1,nbtime,1,len(a0.support)),dtype=np.float )
+   for isup in range( len(x0) ):
+      if 10.5 > x0[isup]: hn[0][0][0][isup] = h0
+   for itime in range( nbtime )[0:]:
+      for isup in range( len(x0) ):
+         arg1 = math.sqrt( h0*g ) - ( x0[isup]-10.5 )/( 2.0*attime[2] )
+         hn[0][itime][0][isup] = max( 0.0,arg1 )
+         hn[0][itime][0][isup] = h0 * ( hn[0][itime][0][isup] )**2 / g / 9.0
+         hn[0][itime][0][isup] = min( hn[0][itime][0][isup], h0 )
+   return [],[],x0,hn
+      </python>
+      <a1 vars="analytics(s0)" />
+   </cast>
+   <!-- Plotting along a 1D vertical section
+      - Locations: extraction along the line defined by the 2 points (0;10) and (21;10)
+      - Variables extracted:
+         + "a0" as the analytical solution
+   -->
+   <plot xref="comparison" type="1d:v-section" config="oneofall" size="(10,6)" >
+      <layer vars="a1:line" target="analytical:a1" deco="red" />
+      <layer vars="s1:line" target="depth:s1" deco="green" />
+   </plot>
+
+<!-- Casting the end of the XML file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   <cast xref="exit"><python>sys.exit('\n\nsave the rest for later\n\n')</python></cast>
+   -->
+
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+</validation>

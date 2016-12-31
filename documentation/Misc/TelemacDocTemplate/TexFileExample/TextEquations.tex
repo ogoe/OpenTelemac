@@ -1,0 +1,228 @@
+%-------------------------------------------------------------------------------
+\chapter[Text and equations example]{Text and equations example and extra text
+to make this a very long chapter title that we would not want to appear in
+whole in the header}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\section{First standard section}
+%-------------------------------------------------------------------------------
+
+%...............................................................................
+\subsection{Title of your first subsection}
+%...............................................................................
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+%...............................................................................
+\subsection{Title of your second subsection}
+%...............................................................................
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+%...............................................................................
+\subsubsection{Title of your first subsubsection}
+%...............................................................................
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+%...............................................................................
+\subsubsection{Title of your second subsubsection}
+%...............................................................................
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+%-------------------------------------------------------------------------------
+\section[Short section title]{This is a very long section title that we would
+not want to appear in whole in the header}
+%-------------------------------------------------------------------------------
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+%-------------------------------------------------------------------------------
+\section{Example of equations}
+%-------------------------------------------------------------------------------
+
+%...............................................................................
+\subsection{One line equation}
+%...............................................................................
+
+Here is how you should write your equations:
+
+\begin{align}
+A=B+C
+\label{eq:FirstEquation}
+\end{align}
+
+Here is how you should refer to the equation; i.e. see
+equation~\ref{eq:FirstEquation}. However if you want you can also refer to them
+as eqn.~\eqref{eq:FirstEquation}, just be consistent.
+
+Always compile twice to have the links appear in the PDF.
+
+%...............................................................................
+\subsection{Multiple line equation}
+%...............................................................................
+
+Here is how you should write very long equations:
+
+\begin{align}
+First Long Argument &=	 One long variable
+\notag \\
+					&\quad + Another long variable
+% or
+%	 				&\phantom{{}={}} + Another long variable
+\label{eqn:LongEquation}
+\end{align}
+
+Here is how you should write connected equations:
+
+\begin{subequations}
+\label{eq:MultipleEquations}
+\begin{align}
+a &= b+c
+\\
+d &= e+f+g
+\end{align}
+\end{subequations}
+
+Or if you want to give them labels:
+
+\begin{subequations}
+\label{eq:LabeledMultipleEquations}
+\begin{align}
+\text{first equation:}&&
+a &= b+c
+&&
+\\
+\text{second equation:}&&
+d &= e+f+g
+&&
+\label{eq:LabeledMultipleEquations2}
+\end{align}
+\end{subequations}
+
+To reference them it is easier to refer to them as: see
+equations~\ref{eq:MultipleEquations} or see
+eqn.~\eqref{eq:LabeledMultipleEquations2}.
+
+%...............................................................................
+\subsection{Equations using the \texorpdfstring{\telemacsystem{}}{Telemac}
+format}
+%...............................................................................
+
+The vectors need to be defined using \verb+\vec{}+, which gives:
+
+\begin{align}
+\vec{A} &= \vec{B}
+\end{align}
+
+For the operators, the appropriate commands need to be used as well (eg:
+\verb+\Grad+, \verb+\Div+ or \verb+\Lap+):
+
+\begin{align}
+\Grad(A_b) &= \text{Gradient}
+\\
+\Div(A_b) &= \text{Divergence}
+\\
+\Lap(A_b) &= \text{Laplacian}
+\end{align}
+
+
+%-------------------------------------------------------------------------------
+\section{Formatting the \texorpdfstring{\texttt{*.tex}}{tex} file}
+%-------------------------------------------------------------------------------
+
+It is recommended to have a \texttt{*.tex} file per chapter, and to keep them
+in a seperate folder. In the \texttt{*.tex} file, it is recommended to put
+commented lines to above and below section and subscetion names, i.e.:
+
+\begin{scriptsize}
+\begin{verbatim}
+%-------------------------------------------------------------------------------
+\chapter{Text and equations example}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\section{First standard section}
+%-------------------------------------------------------------------------------
+
+%...............................................................................
+\subsection{Title of your first subsection}
+%...............................................................................
+\end{verbatim}
+\end{scriptsize}
+
+Also the text in the file should be justified to 80 characters.
+
+%...............................................................................
+\subsection{Naming Convention}
+%...............................................................................
+
+Names of files, or variables should be written in CamelCase; i.e. without
+spaces, underscore or dash, and a capital at the start of each word.
+
+%...............................................................................
+\subsection{Referenced pointers}
+%...............................................................................
+
+When referencing pointers the label should have the type of object referenced
+in the name, and the following naming convention is suggested:
+
+\begin{itemize}
+\item Chapters: \verb+\label{ch:ChapterLabel}+
+\item Sections or subsections: \verb+\label{se:SectionLabel}+
+\item Equations: \verb+\label{eq:EquationLabel}+
+\item Figures: \verb+\label{fig:EquationLabel}+
+\item Tables: \verb+\label{tab:EquationLabel}+
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\section{\texorpdfstring{\telemacsystem{}}{Telemac} specific commands}
+%-------------------------------------------------------------------------------
+
+Shortcuts are given for all the modules, i.e. \telemacsystem{}, \artemis{},
+\bief{}, \sisyphe{}, \telemac{2D}, \telemac{3D} and \tomawac{}. As a reminder,
+when using the commands, brackets should be used afterwards to ensure that the
+spacing is correrctly defined; i.e. \verb+\telemacsystem{}+.
+

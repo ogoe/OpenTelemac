@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet href="drillstyle.css" type="text/css"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="29.7cm"
+   height="20.8cm"
+   id="svg2">
+<svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 1000 1000">
+
+  <defs id="defs4" >
+    
+  <g id="LEGEND" transform="scale(2) translate(-250 -250)">  
+ 
+  <g id="ALL" transform="matrix(1,0,0,-1,123.66111,-5655.4136)">
+    <g id="layer0">
+
+	
+      <rect
+         width="200"
+         height="270"
+         x="-20"
+         y="-6150"
+         id="background"
+         class="background"
+         />
+	
+      <rect
+         width="13.636524"
+         height="54.000004"
+         x="60"
+         y="-6042.9258"
+         id="rect1001"
+         class="FRA1"
+         />
+      <rect
+         width="12.920203"
+         height="54.000004"
+         x="73.636528"
+         y="-6042.9258"
+         id="rect1002"
+         class="FRA2" />
+      <rect
+         width="13.443273"
+         height="54.000004"
+         x="86.556725"
+         y="-6042.9258"
+         id="rect1003"
+         class="FRA3"
+          />
+      <rect
+         width="18.787497"
+         height="19.352383"
+         x="60"
+         y="-6062.2778"
+         id="rect2001"
+         class="FRA1"
+         />
+      <rect
+         width="10.753022"
+         height="19.352383"
+         x="78.787491"
+         y="-6062.2778"
+         id="rect2002"
+         class="FRA2" />
+      <rect
+         width="10.459483"
+         height="19.352383"
+         x="89.54052"
+         y="-6062.2778"
+         id="rect2003"
+         class="FRA3"
+         />
+      <rect
+         width="15.243553"
+         height="18"
+         x="60"
+         y="-6080.2778"
+         id="rect3001"
+         class="FRA1"
+         />
+      <rect
+         width="16.703234"
+         height="18"
+         x="75.243546"
+         y="-6080.2778"
+         id="rect3002"
+         class="FRA2"		 
+         />
+      <rect
+         width="9.2209597"
+         height="18"
+         x="90.779045"
+         y="-6080.2778"
+         id="rect3003"
+         class="FRA3"
+         />
+      <rect
+         width="13.200001"
+         height="18"
+         x="60"
+         y="-6098.2778"
+         id="rect4001"
+         class="FRA1"
+         />
+      <rect
+         width="13.200001"
+         height="18"
+         x="73.199997"
+         y="-6098.2778"
+         id="rect4002"
+         class="FRA2" 
+		 />
+      <rect
+         width="13.6"
+         height="18"
+         x="86.400002"
+         y="-6098.2778"
+         id="rect4003"
+         class="FRA3"
+         />
+      <rect
+         width="0"
+         height="0"
+         x="60"
+         y="-6098.2778"
+         id="rect5001"
+         class="FRA1" 
+		 />
+      <rect
+         width="0"
+         height="0"
+         x="60"
+         y="-6098.2778"
+         id="rect5002"
+         class="FRA2" 
+		 />
+      <rect
+         width="0"
+         height="0"
+         x="60"
+         y="-6098.2778"
+         id="rect5003"
+         class="FRA3" />
+</g>
+    <g id="layerlines">
+      <path
+         class="Layerlines"
+         d="m 60,-6042.9256 40,0"
+         id="pathLLin_2-1" />
+    </g>
+  </g>
+
+ 
+    <g id="LLABELS">
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text4001"
+       y="194.2009"
+       x="-330.12347"
+       class="LEGLAB"
+         >Fraction 1 - fine</text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       x="-330.12347"
+       y="220.69972"
+       id="text4005"
+       class="LEGLAB"
+         >Fraction N - coarse</text>
+	<text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text4009"
+       y="207.10648"
+       x="-330.12347"
+       class="LEGLAB"	   
+         >Fraction 2 </text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text4001-2"
+       y="187.58401"
+       x="-466.57977"
+       class="LEGLAB"	   
+         >0%</text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       id="text4050"
+       y="226.83795"
+       x="-477.75403"
+       class="LEGLAB"	   
+         >100%</text>
+    <text
+       id="text4001-2-8"
+       y="336.7392"
+       x="115"
+       class="LEGLAB"	   
+         >Bed level [m]</text>
+
+	<text
+       id="text4001-2-8"
+       y="445"
+       x="115"
+       class="LEGLAB"	   
+         >Rigid Bed [m]</text>
+    <text
+       x="230"
+       y="363.02008"
+       class="LEGLAB"	   
+         >Active Layer</text>
+    <text
+       x="230"
+       y="400"
+       class="LEGLAB"	   
+         >Layer 2</text>
+    <text
+       id="text4162"
+       y="438"
+       x="230"
+       class="LEGLAB"	   
+         >Layer n</text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       x="-418.12607"
+       y="246.5744"
+       class="LEGLAB"	   
+         >...</text>
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       x="-422.75412"
+       y="174.27939"
+       class="LEGLAB"	   
+         >Elevation Z [m]</text>
+  </g>
+
+    <g id="SSCALLEINES">
+
+    <path
+       d="m 223.85974,448.83331 0,-5.79661 -40.30027,0.0 0,5.41578"
+       title="P: 1"	   
+       class="SCALElines" />
+    <path
+       d="m 210.05828,443.58876 0,4.5"
+       title="P: 2"	   
+       class="SCALElines" />
+    <path
+       class="SCALElines"
+       title="P: 3"	   	   
+       d="m 196.84817,443.66174 0,4.5" />
+    <path
+       d="m 178.4133,442.96354 5,0 0,-109.02444 -5,0"
+       title="P: 4"	   	   
+       class="SCALElines" />
+    <path
+       d="m 183.2942,405.78158 -4.5,0"
+       title="P: 5"	   	   
+       class="SCALElines" />
+    <path
+       class="SCALElines" 
+       title="P: 6"	   	   
+       d="m 183.3566,387.42545 -4.5,0" />
+    <path
+       d="m 183.3566,425.01259 -4.5,0"
+       title="P: 7"	   	   
+       class="SCALElines" />
+  </g>
+  </g>
+
+
+  </defs>
+
+    <use x = "100" y = "100" xlink:href = "#LEGEND"/>
+  
+</svg>
+</svg>
+

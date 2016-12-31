@@ -1,0 +1,276 @@
+\chapter{confluence}
+%
+
+% - Purpose & Problem description:
+%     These first two parts give reader short details about the test case,
+%     the physical phenomena involved and specify how the numerical solution will be validated
+%
+\section{Purpose}
+%
+To demonstrate that \telemac{2d} can model the flow that occurs at a river
+confluence.
+%
+\section{Description of the problem}
+%
+The model represents the junction between two rectilinear laboratory channels
+with rectangular cross-sections and constant slope.
+%
+% - Reference:
+%     This part gives the reference solution we are comparing to and
+%     explicits the analytical solution when available;
+%
+%
+%\subsection{Reference}
+%
+
+% - Physical parameters:
+%     This part specifies the geometry, details all the physical parameters
+%     used to describe both porous media (soil model in particularly) and
+%     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
+%
+%
+\section{Physical parameters}
+%
+The main channel is $0.8~m$
+broad whereas its influent is $0.5~m$ broad. Both have a slope of $10^{-3}~m/m$.
+The two channels join with an angle of $55$~\degree{}C.
+%
+% - Geometry and Mesh:
+%     This part describes the mesh used in the computation
+%
+%
+\section{Geometry and Mesh}
+%
+\begin{enumerate}
+  \item[] Geometry:
+  \begin{enumerate}
+      \item[\textendash] Size of the model :
+      \begin{enumerate}
+          \item[\textbullet] main channel: $10.8~m \times 0.8~m$
+          \item[\textbullet] influent: $3.2~m \times 0.5~m$
+      \end{enumerate}
+  \item[\textendash] Free surface at rest: $0.2852~m$
+  \end{enumerate}
+\end{enumerate}
+%
+\begin{enumerate}
+  \item[] Mesh:
+  \begin{enumerate}
+      \item[\textendash] $6168$ triangular elements
+      \item[\textendash] $3303$ nodes
+      \item[\textendash] Maximum size range: from $0.03$ to $0.1~m$
+  \end{enumerate}
+\end{enumerate}
+The mesh is refined near the confluence as shown on Figure \ref{t2d:confluence:mesh}
+%
+\begin{figure}[H]
+  \centering
+  \includegraphicsmaybe{[width=0.8\textwidth]}{../img/mesh.png}\\
+  \includegraphicsmaybe{[width=0.5\textwidth]}{../img/mesh2.png}
+  \caption{Mesh}\label{t2d:confluence:mesh}
+\end{figure}
+%
+% - Initial and boundary conditions:
+%     This part details both initial and boundary conditions used to simulate the case
+%
+%
+\section{Initial and Boundary Conditions}
+%
+\begin{enumerate}
+    \item[] Boundaries:
+    \begin{enumerate}
+        \item[\textendash] main channel:
+        \begin{enumerate}
+            \item[\textbullet] channel entrance: $Q = 0.07~m^3/s$
+            \item[\textbullet] channel outlet: $H = 0.2852~m$
+        \end{enumerate}
+        \item[\textendash] Influent:
+        \begin{enumerate}
+            \item[\textbullet] channel entrance: $Q = 0.035~m^3/s$
+        \end{enumerate}
+    \item[\textendash] Lateral boundaries: solid walls with slip condition in
+    the channel
+    \end{enumerate}
+\end{enumerate}
+%
+\begin{enumerate}
+  \item[] Bottom:
+  \begin{enumerate}
+      \item[\textendash] Strickler formula with friction $coefficient = 62$
+  \end{enumerate}
+\end{enumerate}
+The mesh is shown on Figure  \ref{t2d:confluence:mesh} and the topography on
+Figure  \ref{t2d:confluence:results}.
+%
+\begin{figure}[H]
+  \centering
+  \subfloat[][bottom level]{
+  \includegraphicsmaybe{[width=0.8\textwidth]}{../img/bathy.png}}\\
+  \subfloat[][free surface]{
+  \includegraphicsmaybe{[width=0.8\textwidth]}{../img/waterDepth.png}}\\
+  \subfloat[][velocity]{
+  \includegraphicsmaybe{[width=0.8\textwidth]}{../img/velocity.png}}
+  \caption{Results}\label{t2d:confluence:results}
+\end{figure}
+%
+\begin{enumerate}
+  \item[] Turbulence:
+  \begin{enumerate}
+      \item[\textendash] Constant viscosity equal to $10^{-3}~m^2/s$
+  \end{enumerate}
+\end{enumerate}
+%
+% - Numerical parameters:
+%     This part is used to specify the numerical parameters used
+%     (adaptive time step, mass-lumping when necessary...)
+%
+%
+\section{Numerical parameters}
+%
+\begin{enumerate}
+  \item[] Algorithm:
+  \begin{enumerate}
+      \item[\textendash] Type of advection:
+      \begin{enumerate}
+          \item[\textbullet] Characteristics on velocities (scheme n$^{\circ}1$)
+          \item[\textbullet] Conservative + modified SUPG on depth (mandatory scheme)
+      \end{enumerate}
+      \item[\textendash] Type of element:
+
+      \begin{enumerate}
+          \item[\textbullet] Linear triangle (P1) for h and for velocities
+      \end{enumerate}
+      \item[\textendash] Solver : Conjugate gradient
+      \item[\textendash] Solver accuracy: $10^{-4}$
+      \item[\textendash] Implicitation for depth and for velocity: $1.0$
+  \end{enumerate}
+\end{enumerate}
+%
+\begin{enumerate}
+  \item[] Time data:
+  \begin{enumerate}
+      \item[\textendash] Time step: $0.1~s$
+      \item[\textendash] Simulation duration: $100~s$
+  \end{enumerate}
+\end{enumerate}
+%
+% - Results:
+%     We comment in this part the numerical results against the reference ones,
+%     giving understanding keys and making assumptions when necessary.
+%
+%
+\section{Results}
+%
+Initially the water level is horizontal.
+In the main channel and in the lateral channel, the free surface increases with
+time.
+
+At the end of the calculation the water surface profile is constant in time
+downstream and upstream from the confluence which shows that the computation has
+converged.
+
+The water depths in both channels (upstream and downstream) tend to be uniform.
+The water level upstream from the confluence is $0.30~m$ higher than the water
+level downstream.
+
+Close to the confluence, the water surface is rapidly varying.
+The velocity field is regular in the whole domain (see Figure
+\ref{t2d:confluence:results}).
+
+No back eddy is computed at the junction of the two rivers with the turbulence
+model used in this test case despite mesh refinement in this area; such back
+eddy has been observed on physical model experiments (see ref.
+\cite{KumarGurram1997}).
+%
+\section{Conclusions}
+\telemac{2d} reproduces appropriately free surface variations at a river
+confluence. However, in order to simulate in detail the flow pattern in such
+conditions, more sophisticated turbulence model should be used (see e.g; test
+case named ``cavity'').
+%
+\section{Steering file}
+\begin{lstlisting}[language=TelemacCas]
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v7p0
+/ Validation test case 15
+/---------------------------------------------------------------------
+/---------------------------------------------------------------------
+/ INPUT-OUTPUT, FILES
+/---------------------------------------------------------------------
+
+GEOMETRY FILE                   = geo_confluence.slf
+FORTRAN FILE                    = t2d_confluence.f
+BOUNDARY CONDITIONS FILE        = geo_confluence.cli
+RESULTS FILE                    = r2d_confluence.slf
+REFERENCE FILE                  = f2d_confluence.slf
+
+/---------------------------------------------------------------------
+/ INPUT-OUTPUT, GRAPHICS AND LISTING
+/---------------------------------------------------------------------
+
+LISTING PRINTOUT PERIOD         = 100
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B'
+MASS-BALANCE                    = YES
+GRAPHIC PRINTOUT PERIOD         = 1000
+
+/---------------------------------------------------------------------
+/ PARAMETERS
+/---------------------------------------------------------------------
+
+FRICTION COEFFICIENT   = 62.
+LAW OF BOTTOM FRICTION = 3
+TURBULENCE MODEL       = 1
+VELOCITY DIFFUSIVITY   = 1.E-3
+
+/---------------------------------------------------------------------
+/ EQUATIONS, BOUNDARY CONDITIONS
+/---------------------------------------------------------------------
+
+VELOCITY PROFILES     = 2;2;2
+PRESCRIBED FLOWRATES  = 0.;0.035;0.070
+PRESCRIBED ELEVATIONS = 0.2852;0.;0.
+
+/---------------------------------------------------------------------
+/ EQUATIONS, INITIAL CONDITIONS
+/---------------------------------------------------------------------
+
+INITIAL ELEVATION  = 0.2852
+INITIAL CONDITIONS = 'CONSTANT ELEVATION'
+
+/---------------------------------------------------------------------
+/ INPUT-OUTPUT, INFORMATION
+/---------------------------------------------------------------------
+
+VALIDATION =YES
+TITLE      ='Validation test case 15'
+/---------------------------------------------------------------------
+/ NUMERICAL PARAMETERS
+/---------------------------------------------------------------------
+
+TIME STEP                       = 0.1
+NUMBER OF TIME STEPS            = 1000
+TREATMENT OF THE LINEAR SYSTEM  = 2
+TYPE OF ADVECTION               = 1;5
+SUPG OPTION                     = 2;2
+H CLIPPING                      = NO
+
+/---------------------------------------------------------------------
+/ NUMERICAL PARAMETERS, SOLVER
+/---------------------------------------------------------------------
+INFORMATION ABOUT SOLVER         = YES
+SOLVER                           = 1
+SOLVER OPTION                    = 3
+MASS-LUMPING ON H                = 1.
+IMPLICITATION FOR DEPTH          = 1.
+IMPLICITATION FOR VELOCITY       = 1.
+\end{lstlisting}
+
+% Here is an example of how to include the graph generated by validateTELEMAC.py
+% They should be in test_case/img
+%\begin{figure} [!h]
+%\centering
+%\includegraphics[scale=0.3]{../img/mygraph.png}
+% \caption{mycaption}\label{mylabel}
+%\end{figure}
+
+

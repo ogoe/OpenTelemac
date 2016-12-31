@@ -1,0 +1,74 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: special hermes parallel bief partel
+name: HOMERE_PARTEL
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  elebd.f
+  front2.f
+  voisin.f
+  read_mesh_info.f
+
+[hermes]
+path: <root>|sources|utils|hermes
+files: interface_hermes.f
+  utils_med.F
+  utils_serafin.F
+  get_bnd_numbering.f
+  set_mesh.f
+  get_data_var_list.f
+  get_data_time.f
+  open_mesh.f
+  close_mesh.f
+  get_data_ntimestep.f
+  set_bnd.f
+  open_bnd.f
+  set_header.f
+  get_data_value.f
+  get_mesh_coord.f
+  get_bnd_ipobo.f
+  get_bnd_npoin.f
+  get_mesh_date.f
+  add_data.f
+  get_bnd_connectivity.f
+  get_bnd_nelem.f
+  close_bnd.f
+  get_mesh_nelem.f
+  get_mesh_npoin_per_element.f
+  get_mesh_nplan.f
+  get_mesh_nptir.f
+  get_mesh_title.f
+  get_data_nvar.f
+  get_mesh_dimension.f
+  get_mesh_npoin.f
+  get_bnd_value.f
+  get_mesh_connectivity.f
+  get_mesh_l2g_numbering.f
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  interface_parallel.f
+
+[partel]
+path: <root>|sources|utils|partel
+files: declarations_partel.f
+  partitioner.F
+  partel.F
+  parres.f
+  homere_partel.f
+
+[special]
+path: <root>|sources|utils|special
+files: declarations_special.f
+  extens.f
+  plante.F
+  get_nodes_per_element.f
+  check_allocate.f
+  get_free_id.f
+  write_error.f
+  check_call.f

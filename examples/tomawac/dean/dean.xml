@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="5" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="dean" author="T.Fouquet" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_dean.cas"
+       title="dean scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="tomawac" target="tom_dean.cas"
+       title="dean parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="fom_dean.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[0.0001,0.0001,0.0001,0.0001,4,4,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="fom_dean.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[0.0001,0.0001,0.0001,0.0001,4,4,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001,0.0001 ])" />
+   </cast>
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-4])" />
+   </cast>
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <plot1d xref="img/section1d" type="v-section" config="together" size="(12;7)" set="title('Profile from 0 to 300 at the middle of the canal')" >
+      <layer vars="WAVE HEIGHT HM0 :line" extract="(0;6)(300;6)" target="1:WACRES" />
+   </plot1d>
+
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+   <deco xref="noyau">
+      <look cmap="Greens.xml" />
+   </deco>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="BOTTOM :map" target="1:WACRES" />
+<!--      <layer vars="BOTTOM :mesh" target="1:WACRES" />   -->
+   </plot2d>
+   <plot2d xref="img/kmoyen" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Average Wave number')" >
+      <layer vars="PRIVATE 1  :map" target="1:WACRES" deco="noyau"/>
+<!--      <layer vars="BOTTOM :mesh" target="1:WACRES" />   -->
+   </plot2d>
+
+</validation>

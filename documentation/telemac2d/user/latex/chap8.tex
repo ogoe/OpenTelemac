@@ -1,0 +1,42 @@
+
+
+
+\chapter{MANAGING WATER SOURCES}
+\label{ch:manag:ws}
+ \telemac{2D} offers the possibility of placing water sources (with or without tracer discharge) at any point of the domain.
+
+ The user places the various sources with the keywords \telkey{ABSCISSAE OF SOURCES} and \telkey{ORDINATES OF SOURCES}. These are tables of real numbers, giving the source coordinates in meters. In fact, \telemac{2D} will position a source at the closest mesh point to that specified by these keywords. The program itself will determine the number of sources as a function of the number of values given to each keyword. In parallel mode, the sources must coincide exactly with one point of the mesh, so this is recommended in all cases.
+
+ At each source, the user must indicate the discharge (and the values of the tracers, if there are tracers). The discharge is specified in m${}^{3}$/s using the keyword \telkey{WATER DISCHARGE OF SOURCES} (and the value of the tracer by the keyword \telkey{VALUES OF THE TRACERS AT THE SOURCES}). However, if these two variables are time-dependent, the user can then program the two functions DEBSCE (source discharge) and TRSCE (value of tracer at source). It is also possible to use a specific file to define the time evolution of the sources: the source file (keyword \telkey{SOURCES FILE}). This file has exactly the same structure as the one of the liquid boundary file. An example is presented here with 2 sources and 2 tracers. Between 2 given times, the values are obtained by linear interpolation.
+\begin{lstlisting}[language=bash]
+#
+# TIME-DEPENDENT DISCHARGES AND TRACERS AT SOURCES 1 AND 2
+#
+#  T IS TIME
+#
+#  Q(1) IS DISCHARGE AT SOURCE 1
+#  Q(2) IS DISCHARGE AT SOURCE 2
+#
+#  TR(1,1) IS TRACER 1 AT SOURCE 1
+#  TR(1,2) IS TRACER 2 AT SOURCE 1
+#  TR(2,1) IS TRACER 1 AT SOURCE 2
+#  TR(2,1) IS TRACER 2 AT SOURCE 2
+#
+#
+T     Q(1)   TR(1,1)    TR(1,2)   Q(2)   TR(2,1)   TR(2,2)
+s     m3/s    C          C         m3/s     C        C
+0.     0.     99.        20.        0.      30.      40.
+2.     1.     50.        20.        2.      30.      20.
+4.     2.     25.        80.        4.      30.      20.
+\end{lstlisting}
+ With \telemac{2D} it is also possible to take into account a momentum flux from the sources. By default, the value used is that computed at the source point with no added momentum. The user may prescribe a particular velocity. If this is constant throughout the simulation, the value may be given with the keywords \telkey{VELOCITIES OF THE SOURCES ALONG X} and \telkey{VELOCITIES OF THE SOURCES ALONG Y.} If not, the user must program the two functions VUSCE (for the velocity along X) and VVSCE (for the velocity along Y). In both functions, the time, source number and depth of water are available to the user.
+
+ Although it is possible, in a practical point of view, it is not recommended to use source point at the boundaries of the domain. In these cases, the velocity field could not be as expected by the user even though VUSCE and VVSCE functions are used. The imposition of hydrodynamics boundary conditions could modify the prescribed components of the velocity of the source.
+
+ If source terms are to be taken into account for the creation or decay of the tracer, these must be introduced in the DIFSOU subroutine.
+
+ From a theoretical point of view, complete mass conservation can only be ensured if the source is treated as a Dirac function and not as a linear function. The type of treatment is indicated by the user with the keyword \telkey{TYPE OF SOURCE}, which may have a value of 1 (linear function, default value) or 2 (Dirac function). It should be noted that in the second case, the solutions are of course less smoothed.
+
+ It is possible to manage sources without simulating tracer transport.
+
+

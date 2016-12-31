@@ -1,0 +1,96 @@
+\chapter{Hypotheses and application domain of \tomawac}
+
+
+\section{Application domain of the model \tomawac}
+
+ \tomawac is designed to be applied from the ocean domain up to the coastal zone. The limits of the application range can be determined by the value of the relative depth d/L, wherein d denotes the water height (in metres) and L denotes the wave length (in metres) corresponding to the peak spectral frequency for irregular waves.
+
+ The application domain of \tomawac includes:
+
+ \begin{itemize}
+\item \textbf{the oceanic domain}, characterized by large water depths, i.e. by relative water depths of over 0.5 The dominant physical processes are: wind driven waves, whitecapping dissipation and non-linear quadruplet interactions.
+
+ \item \textbf{the continental seas and the medium depths}, characterized by a relative water depth ranging from 0.05 to 0.5. In addition to the above processes, the bottom friction, the shoaling (wave growth due to a bottom rise) and the effects of refraction due to the bathymetry and/or to the currents are to be taken into account.
+
+ \item \textbf{The coastal domain, }including shoals or near-shore areas (relative water depth lower than 0.05). For these shallow water areas, such physical processes as bottom friction, bathymetric breaking, non-linear triad interactions between waves should be included. Furthermore, it could be useful to take into account the effects related to unsteady sea level and currents due to the tide and/or to the weather-dependent surges.
+\end{itemize}
+
+ Through a so-called finite element spatial discretization, one computational grid may include mesh cells among which the ratio of the largest sizes to the smallest ones may reach or even exceed 100. That is why \tomawac can be applied to a sea domain that is featured by highly variable relative water depths; in particular, the coastal areas can be finely represented.
+
+ The application domain of \tomawac does not include the harbour areas and, more generally, all those cases in which the effects of reflection on structures and/or diffraction may not be ignored.
+
+ A first version of a diffraction model is available in \tomawac and is able to represent some diffraction effects. The model presents still some limits. It is highly recommended to use phase-resolving models when a detailed simulation of diffraction effects is required (e.g. harbour agitation).
+
+
+\section{ Wave interactions with other physical factors}
+
+ Several factors are involved in the wave physics and interact to various extents with the waves changing their characteristics. The following main factors should be mentioned:
+
+ \begin{itemize}
+\item bathymetry and sea bottom geometry (bottom friction, refraction, surf-breaking, non-linear effects of interactions with the bottom, sand rippling...)
+
+ \item atmospheric circulation (wind and pressure effects)
+
+ \item tide pattern (variation of currents and water heights),
+
+ \item three-dimensional oceanic circulation currents,
+
+ \item over/underelevations caused by exceptional weather events, resulting in sea levels variations up to several meters (storm, surges).
+\end{itemize}
+
+ The fine modelling of the interactions between these various physical factors and the waves is generally rather complex and several research projects are currently focused on it. Within the application domain as defined in the previous paragraph, \tomawac models the following interactions:
+
+ \begin{itemize}
+\item \textbf{wave-bathymetry interaction:} the submarine relief data input into \tomawac are constant in time, but the sea level can change in time. In addition to the effects of the sea level variations in time, \tomawac allows to take into account refraction, shoaling, bottom friction and bathymetric breaking. \tomawac simulations can take into account some diffraction effects.
+
+ \item \textbf{wave-atmosphere interaction:} this interaction is the driving phenomenon in the wave generation, takes part in energy dissipation processes (whitecapping, wave propagation against the wind\dots ) and is involved in the energy transfer. To represent the unsteady behaviour of this interaction, \tomawac requires 10 m wind fields (specification of the couple of horizontal velocity components) with a time step matched to the weather conditions being modelled. These wind fields can be provided either by a meteorological model or from satellite measurements.
+
+ \item \textbf{wave-current interaction:} the sea currents (as generated either by the tide or by oceanic circulations) may significantly affect the waves according to their intensity. They modify the refractive wave propagation direction, they reduce or increase the wave height according to their propagation direction in relation to the waves and may influence the wave periods if exhibiting a marked unsteady behaviour. In \tomawac, the current field is provided by the couple of horizontal components of its average (or depth-integrated) velocity at the nodes of the computational grid. \tomawac allows to model the frequency changes caused either by the Doppler effect or by the unsteady currents, as well as by a non-homogeneous current field.
+\end{itemize}
+
+
+\section{ The physical processes modelled in \tomawac}
+\label{se:physicalprocesse}
+ Those interactions being taken into account by \tomawac have been reviewed and a number of physical events or processes have been mentioned in the previous paragraph. These processes modify the total wave energy as well as the directional spectrum distribution of that energy (i.e. the shape of the directional spectrum of energy). So far, the numerical modelling of these various processes, although some of them are now very well known, is not yet mature and keep on providing many investigation subjects. Considering the brief review of physical interactions given in the previous paragraph, the following physical processes are taken into account and digitally modelled in \tomawac:
+
+ \textbf{\textit{---$>$ Energy source/dissipation processes:}}
+\begin{itemize}
+\item \underbar{wind driven} interactions with atmosphere. Those interactions imply the modelling of the wind energy input into the waves. It is the prevailing source term for the wave energy directional spectrum. The way that spectrum evolves primarily depends on wind velocity, direction, time of action and fetch (distance over which the wind is active). It must be pointed out that the energy which is dissipated when the wind attenuates the waves is not taken into account in \tomawac.
+
+\item  \underbar{whitecapping dissipation} or wave breaking, due to an excessive wave steepness during wave generation and propagation.
+
+\item  \underbar{bottom friction}-induced dissipation, mainly occurring in shallow water (bottom grain size distribution, ripples, percolation...)
+
+\item  \underbar{dissipation through bathymetric breaking}. As the waves come near the coast, they swell due to shoaling until they break when they become to steep.
+
+\item  dissipation through \underbar{wave blocking} due to strong opposing currents.
+\end{itemize}
+
+ \textbf{\textit{---$>$ Non-linear energy transfer conservative processes:}}
+\begin{itemize}
+
+ \item \underbar{non-linear resonant quadruplet interactions}, which is the exchange process prevailing at great depths.
+
+\item  \underbar{non-linear triad interactions}, which become the prevailing process at small depths.
+\end{itemize}
+
+ \textbf{\textit{----$>$ Wave propagation-related processes:}}
+\begin{itemize}
+
+ \item   wave \underbar{propagation} due to the wave group velocity and, in case, to the velocity of the medium in which it propagates (sea currents).
+
+ \item  \underbar{depth-induced refraction} which, at small depths, modifies the directions of the wave-ray and then implies an energy transfer over the propagation directions.
+
+ \item  \underbar{shoaling}: wave height variation process as the water depth decreases, due to the reduced wavelength and variation of energy propagation velocity.
+
+ \item  current-induced refraction which also causes a deviation of the wave-ray and an energy transfer over the propagation directions.
+
+ \item  interactions with unsteady\underbar{ currents}, inducing frequency transfers (e.g. as regards tidal seas).
+
+ \item  \underbar{diffraction} by a coastal structure (breakwater, pier, etc\dots ) or a shoal, resulting in an energy transfer towards the shadow areas beyond the obstacles blocking the wave propagation. The current version of the diffraction model implemented in \tomawac is able to represent qualitatively some diffraction effects.
+\end{itemize}
+
+ These various processes are numerically modelled as presented in Part 4.
+
+ It should be remembered that, due to the hypothesis adopted in paragraph 3.1 about the \tomawac application domain, the \underbar{reflection }(partial or total) from a structure or a pronounced depth irregularity is not addressed by the model.
+

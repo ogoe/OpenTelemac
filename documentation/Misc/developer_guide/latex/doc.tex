@@ -1,0 +1,85 @@
+%----------------------------------------------------------------------------------------------------
+\chapter{Documentation}
+%----------------------------------------------------------------------------------------------------
+
+This chapter will describe how the documentation is handled in \telemacsystem.
+All the documentation files are written in \LaTeX and are using the same Style.
+
+%----------------------------------------------------------------------------------------------------
+\section{The structure}
+%----------------------------------------------------------------------------------------------------
+All the documentation files can be found in the "documentation" folder at the
+root of the \telemacsystem sources. The first level as a folder for each module
+plus a Misc Folder which contains all the documentation that are either generic
+to the while system or not link to a module.
+
+Then for each module we have the following folders:
+\begin{itemize}
+\item reference
+\item release\_note
+\item user
+\item validation
+\end{itemize}
+
+Each documentation folder contains those files/folder:
+\begin{verbatim}
+main.tex
+graphics
+-- image.png
+latex
+-- file.tex
+\end{verbatim}
+
+Where :
+\begin{itemize}
+\item main.tex The main \LaTeX file.
+\item graphics Folder contains all the figures associated with the
+  documentation.
+\item latex Contains all the files that create the documentation.
+\end{itemize}
+
+In \telfile{Misc/TelemacTemplateDoc} you can find a template that describes how
+to write a \telemacsystem documentation.
+
+\begin{WarningBlock}{Warning:}
+The reference documentation is automatically generated from the dictionary of
+the module so all the modification must be made in the dictionary file.
+\end{WarningBlock}
+
+\begin{WarningBlock}{Warning:}
+The validation manual merge all the latex contains in the \telfile{doc} folder
+of the test cases.
+\end{WarningBlock}
+
+%----------------------------------------------------------------------------------------------------
+\section{How to compile}
+%----------------------------------------------------------------------------------------------------
+
+Everything is done using the python script docTELEMAC.py. By default it will
+compile all the documentation. By adding "-m module" it will compile only the
+documentation for that specific module, by adding "-M miscdoc" it will only
+compile the documentation "miscdoc" from the \telfile{Misc} folder. And the
+options "--reference,--user..." compile only the reference,user...
+documentation.
+
+%----------------------------------------------------------------------------------------------------
+\section{How to convert a Word documentation into LaTeX using GrindEQ}
+%----------------------------------------------------------------------------------------------------
+
+The main conversion word is made using the software GrindEQ.
+
+Before running the conversion it is strongly suggested to remove the index.
+
+After the conversion is ran all that is left is some search and replace to
+comply with the template.
+
+Here are a couple of things you will encounter:
+\begin{itemize}
+\item All lot of figure will be created as for a weird reason some letter are
+represented with pictures. To have the \LaTeX file compile I suggest using a
+dummy picture and copy it to the according name (it should be
+image1,image2\ldots).
+\item  Remove all the \verb!\!
+\item All the equations should compile directly but you should reorganise them
+in the \LaTeX so they are more readable.
+\end{itemize}

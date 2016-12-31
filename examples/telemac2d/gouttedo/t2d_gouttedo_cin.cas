@@ -1,0 +1,82 @@
+/
+/ HP C3700 : 102 s                  5.5   22/11/2004
+/ HP C3700 :  45 s                  5.7   18/04/2007
+/
+/ HP C3700 compilateur HP  :  37 s  5.8   13/11/2007
+/ HP C3700 compilateur Nag : 115 s  5.8   20/12/2007
+/ Dell LInux               :  16 s  5.8   19/12/2007
+/
+/ HP C3700 compilateur HP  :  38 s  5.9   15/10/2008
+/ HP C3700 compilateur Nag : 113 s  5.9   16/10/2008
+/ Dell Linux               :  15 s  5.9   15/10/2008
+/
+/ HP C3700 compilateur HP  :  37 s  6.0   24/11/2009
+/ HP C3700 compilateur Nag : 105 s  6.0   26/11/2009
+/ Dell Linux               :  11 s  6.0   26/11/2009
+/
+/ Version 6.2
+/
+/ HP C3700 compilateur HP  :  50 s  6.2   04/05/2012
+/
+EQUATIONS : 'SAINT-VENANT VF'
+/ 0:ROE 1:CINETIQUE ORDRE 1  2:CINETIQUE ORDRE 2
+FINITE VOLUME SCHEME : 2
+VARIABLE TIME-STEP : YES
+DURATION : 4.
+TIME STEP = 0.04
+/
+FORTRAN FILE                    : t2d_gouttedo.f
+BOUNDARY CONDITIONS FILE : geo_gouttedo.cli
+GEOMETRY FILE               : geo_gouttedo.slf
+RESULTS FILE              : r2d_gouttedo_cin.slf
+/
+/----------------------------------------------------------------------/
+/                     OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D : GOUTTE D EAU DANS UN BASSIN$'
+COMPUTATION CONTINUED : NO
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,T1'
+VARIABLES TO BE PRINTED : ' '
+
+/GRAPHIC PRINTOUT PERIOD:100
+/LISTING PRINTOUT PERIOD = 10
+/LAW OF BOTTOM FRICTION : 3
+/FRICTION COEFFICIENT = 40.
+
+/ in order to obtain 5*0.04*3 = 0.6s
+TIME STEP = 0.04
+NUMBER OF TIME STEPS = 100
+GRAPHIC PRINTOUT PERIOD : 5
+LISTING FOR PRINTOUT PERIOD =10
+LAW OF BOTTOM FRICTION : 3
+FRICTION COEFFICIENT = 40.
+
+/----------------------------------------------------------------------/
+/     PROPAGATION
+/----------------------------------------------------------------------/
+TURBULENCE MODEL : 1
+VELOCITY DIFFUSIVITY = 0.D0
+SOLVER : 7
+SOLVER OPTION : 3
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER : 100
+SOLVER ACCURACY = 1.E-4
+IMPLICITATION FOR DEPTH = 0.6
+IMPLICITATION FOR VELOCITY = 0.6
+PRECONDITIONING : 2
+INITIAL GUESS FOR H : 1
+/---------------------------------------------------------------
+MASS-BALANCE : YES
+INITIAL CONDITIONS : 'PARTICULAR'
+TYPE OF ADVECTION   : 2;5
+SUPG OPTION           : 2;2
+DISCRETIZATIONS IN SPACE: 11;11
+MATRIX STORAGE : 3
+MATRIX-VECTOR PRODUCT : 1
+/ POUR EQUATION D'ONDE :
+/ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1
+/ FORME DE LA CONVECTION:1;5
+/----------------------------------------------------------------------/
+ORIGINAL DATE OF TIME  : 1997; 2;21
+ORIGINAL HOUR OF TIME :   10;21;30
+/
+NUMBER OF TRACERS : 1

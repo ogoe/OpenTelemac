@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of python scripts
+-->
+<validation xref="translate" rank="2" >
+
+<!-- Processing CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <!-- CAS file for TELEMAC-2D in French
+      - Translation in English (and French)
+   -->
+   <action xref="1" do="translate"
+       code="telemac2d" target="t2d_fr_confluence.cas"
+   />
+   <!-- CAS file for TELEMAC-3D in English
+      - Translation in French (and English)
+   -->
+   <action xref="2" do="translate"
+       code="telemac3d" target="t3d_gb_tide-jmj_real_gen.cas"
+   />
+
+<!-- End of Validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+</validation>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_getDouble" xml:lang="en">
+    <refnamediv>
+        <refname>MASCARET_getDouble</refname>
+        <refpurpose>Accessor for retrieving a real value</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Calling sequence</title>
+        <synopsis>[error,value]=MASCARET_getDouble(id,nameVar,index1,index2,index3)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>error</term>
+                <listitem>
+                    <para>(Output argument) Error code value : zero indicates that no errors occurred</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>value</term>
+                <listitem>
+                    <para>Real value of a variable with the specific indices</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identification number of the MASCARET instance returned by <link linkend="MASCARET_create">MASCARET_create</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>nameVar</term>
+                <listitem>
+                    <para>Name of the variable (dot notation), the list of all the possible variables is returned by <link linkend="MASCARET_getDescVar">MASCARET_getDescVar</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index1</term>
+                <listitem>
+                    <para>value of the 1st index</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index2</term>
+                <listitem>
+                    <para>value of the 2nd index</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>index3</term>
+                <listitem>
+                    <para>value of the 3rd index</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Accessor for retrieving a real value of the model or of the state</para>
+   </refsection>
+    <refsection>
+        <title>Example</title>
+        <programlisting role="example">[erreur, id] = MASCARET_create();
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = MASCARET_create();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);
+        
+// initialisation
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+assert_checkequal(err,0);      
+        
+// get the initial state on the cross-section #10 (water level)        
+[err,Z] = MASCARET_getDouble(id,"State.Z",10,0,0);
+assert_checkequal(err,0);  
+// get the initial state on the cross-section #10 (water discharge)        
+[err,Q] = MASCARET_getDouble(id,"State.Q",10,0,0);
+assert_checkequal(err,0);  
+
+printf("\tState on the cross-section #10 before the simulation :%f (m) and %f (m^3/s)\n",Z,Q);
+
+// model deletion
+err = MASCARET_delete(id);
+assert_checkequal(err,0);
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>See alsos</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="MASCARET_setDouble">MASCARET_setDouble</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

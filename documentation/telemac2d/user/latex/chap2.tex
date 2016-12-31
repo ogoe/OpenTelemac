@@ -1,0 +1,59 @@
+
+\chapter{  THEORETICAL ASPECTS}
+\label{ch:theo:asp}
+ The \telemac{2D} code solves the following four hydrodynamic equations simultaneously:
+
+
+ $\dfrac{\partial \, h}{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(h)+h\, div(\vec{u})=S_{h} \qquad$    continuity
+
+
+
+ $\dfrac{\partial \, u}{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(u)=-g\dfrac{\partial \, Z}{\partial \, x} +S_{x} +\dfrac{1}{h} div(h\, \nu _{t} \vec{\nabla }u)\qquad$  momentum along x
+
+
+ $\dfrac{\partial \, v}{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(v)=-g\dfrac{\partial \, Z}{\partial \, y} +S_{y} +\dfrac{1}{h} div(h\, \nu _{t} \vec{\nabla }v)\qquad$  momentum along y
+
+
+ $\dfrac{\partial \, T}{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(T)=S_{T} +\dfrac{1}{h} div(h\, \nu _{T} \vec{\nabla }T)\qquad$   tracer conservation
+
+ 
+in which:
+
+\begin{itemize}
+       \item   h (m)  depth of water
+       \item  u,v (m/s)  velocity components
+       \item  T (g/l or ${}^\circ$C) passive (non-buoyant) tracer
+       \item  g (m/s$^2$)  gravity acceleration
+       \item  $\nu_t$,$\nu_T$ (m$^2$/s)  momentum and tracer diffusion coefficients
+       \item  Z (m)  free surface elevation
+       \item  t (s)  time
+       \item  x,y (m)  horizontal space coordinates
+       \item  S${}_{h}$ (m/s)  source or sink of fluid
+       \item  S${}_{T}$ (g/l/s)  source or sink of tracer
+       \item   h, u, v and T are the unknowns.
+\end{itemize}
+
+ The equations are given here in Cartesian coordinates. They can also be processed using spherical coordinates.
+
+  S$_x$ and S$_y$ (m/s$^2$) are source terms representing the wind, Coriolis force, bottom friction, a source or a sink of momentum within the domain. The different terms of these equations are processed in one or more steps (in the case of advection by the method of characteristics):
+
+\begin{enumerate}
+\item  advection of h, u, v and T,
+
+\item  propagation, diffusion and source terms of the dynamic equations,
+
+\item  diffusion and source terms of the tracer transport equation.
+\end{enumerate}
+
+ Any of these steps can be skipped, and in this case different equations are solved. In addition, each of the variables h, u, v and T may be advected separately. In this way it is possible, for example, to solve a tracer advection and diffusion equation using a fixed advecting velocity field.
+
+ Turbulent viscosity may be given by the user or determined by a model simulating the transport of turbulent quantities k (turbulent kinetic energy) and Epsilon (turbulent dissipation), for which the equations are the following:
+\[\frac{\partial \, k}{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(k)=\frac{1}{h} div(h\frac{\nu _{t} }{\sigma _{k} } \vec{\nabla }k)+P-\varepsilon +P_{kv} \]
+\[\frac{\partial \, \varepsilon }{\partial \, t} +\vec{u}\, \cdot \, \vec{\nabla }(\varepsilon )=\frac{1}{h} div(h\frac{\nu _{t} }{\sigma _{\varepsilon } } \vec{\nabla }\varepsilon )+\frac{\varepsilon }{k} (c_{1\varepsilon } P-c_{2\varepsilon } \varepsilon )+P_{\varepsilon v} \]
+
+
+ The right-hand side terms of these equations represent the production and destruction of turbulent quantities (energy and dissipation).
+
+ When non hydrostatic effects are not negligible, Saint Venant equations can be improved by adding extra terms. Several trials can be found in the literature (Serre, Boussinesq, Korteweg and De Vries). To use Boussinesq assumptions, the following terms are added to the right-hand side of Saint Venant equations (thus called Boussinesq equations):
+\[-\frac{H^2_0}{6}\overrightarrow{grad}\left[div\left(\frac{\partial \overrightarrow{u}}{\partial t}\right)\right]+\ \frac{H_0}{2}\overrightarrow{grad}\left[div\left(H_0\frac{\partial \overrightarrow{u}}{\partial t}\right)\right]\]
+ A complete description of the theory is given in the following book ``Hydrodynamics of free surface flows'', by Jean-Michel Hervouet \cite{Hervouet2007}.

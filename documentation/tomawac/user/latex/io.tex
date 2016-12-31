@@ -1,0 +1,399 @@
+\chapter{ Inputs-outputs}
+
+\section{ Preliminary remark}
+
+ During a computation, the \tomawac software uses a number of files, some of which are optional, as inputs and outputs.
+
+ The input files are:
+
+\begin{itemize}
+\item  The steering or CAS file (mandatory),
+
+\item  The mesh or geometry file (mandatory),
+
+\item  The boundary conditions or CONLIM file (mandatory),
+
+\item  The seabed, bottom or bathymetry file (optional),
+
+\item  The FORTRAN or PRINCI file (optional),
+
+\item  The currents file (optional),
+
+\item  The winds file (optional),
+
+\item  The previous computation file (optional),
+
+\item  The binary user file (optional),
+
+\item  The formatted user file (optional).
+\end{itemize}
+
+The output files are:
+
+\begin{itemize}
+\item  The 2D results or grid file (mandatory),
+\item  The punctual results or spectra file (mandatory),
+\item  The next computation file (optional),
+\item  The listing printout (either on the display screen or in the file, see in \ref{se:usefulsub}),
+\item  The binary user file (optional),
+\item  The formatted user file (optional).
+\end{itemize}
+
+\section{ The files}
+
+\subsection{ The steering (or CAS) file}
+\label{se:steeringfile}
+ The steering file name is specified in the steering file through the keyword: \textit{STEERING FILE.}
+
+ It is a text file created by means of a text editor. In a way, it serves as the computation control panel. It includes a set of keywords to which values are assigned. If a keyword does not appear in this file, then \tomawac will assign to it the default value as defined in the dictionary file (refer to the reference manual). If such a default value is not defined in the dictionary, then the computation will come to a halt and display an error message. For instance, the command \textit{NUMBER OF DIRECTIONS} = 12 is for specifying that the direction spectrum of wave action or its moments will be discretised over 12 propagation directions.
+
+ \tomawac reads the steering file at the beginning of the computation.
+
+ Both dictionary file and steering file are read by the so-called DAMOCLES utility which is included in \tomawac. The syntactic rules of DAMOCLES should then be observed upon the creation of the steering file These rules are described here below.
+
+ The write rules are as follows:
+
+\begin{itemize}
+\item  The keywords can be of the Integer, Real, Logical or Character format type.
+
+\item  The keyword sequence order in the steering file is of no importance.
+
+\item  Each line has a maximum of 72 characters. However, as many linefeeds as one wants are allowed provided that the keyword name does not run from one line to the next.
+
+\item  For the table-like keywords, the successive values are separated by a semi-colon. A number of values equal to the table dimension should not necessarily be given; in such a case, DAMOCLES returns the number of values being read. For example:
+\end{itemize}
+
+\textit{ABSCISSAE OF SPECTRUM PRINTOUT POINTS }= 1.2;3.4   (that keyword is declared as a 19-valued table)
+
+\begin{itemize}
+\item  The symbols ":" or "=" are indiscriminately used to separate a keyword from its value. They can be either preceded or followed with any number of blanks. The value itself may appear on the next line. For example:    
+
+\textit{NUMBER OF DIRECTIONS} = 12\\
+    or \\   \textit{NUMBER OF DIRECTIONS}: 12 \\  or else \\  \textit{NUMBER OF DIRECTIONS} =\\   12
+
+\item  The characters occurring between a pair of "/" on one line are regarded as comments. Likewise, the characters occurring between a "/" and a the end of a line are regarded as comments. For example:  \textit{TYPE OF BOUNDARY DIRECTIONAL SPECTRUM }= 1 / Jonswap spectrum
+
+\item  A whole line beginning with a "/" in the first column is regarded as a comment, even though another / occurs on the line. For example:  / The geometry file is ./maillage/geo
+
+\item  Integer writing: Do not exceed the maximum size being allowed by the machine (in a machine with 32 bit architecture, the values range from -2 147 483 647 to + 2 147 483 648. Do not enter a blank between the sign (optional for the + sign) and the number. A dot at the end of the number is tolerated.
+
+\item  Real writing: A dot or a comma is allowed as a decimal point, as well as the FORTRAN E and D formats (1.E-3 0.001 0,001 1.D-3 denote the same value).
+
+\item  Logical value writing: The values 1, YES, OUI, .TRUE., TRUE, VRAI on the one hand, and 0, NON, NO, .FALSE., FALSE, FAUX on the other hand are allowed.
+
+\item  Character string writing: Those strings including blanks or reserved symbols ("/",":", "=", "\&") should be put in single quotes ('). The value of a character keyword may include up to 144 characters. As in FORTRAN, the quotes occurring within a string should be doubled. A string may neither begin nor end with a blank. For example:   \\
+\textit{TITLE} = 'HOULE D''OUEST'
+\end{itemize}
+
+ In addition to the keywords, a number of directives or metacommands that are interpreted during the sequential readout of the steering file may be used as well:
+
+\begin{itemize}
+\item  The \textit{\&FIN} command indicates the end of file (even though the file is not completed). Thus, some keywords can be disabled simply by placing them behind that command for easily making it possible to enable them again subsequently.
+
+\item  The \textit{\&ETA} command prints the list of keywords and the relevant values at the time when DAMOCLES meets that command. This display will occur at the beginning of listing printout.
+
+\item  The \textit{\&LIS} command prints the list of keywords. This display will occur at the beginning of listing printout.
+
+\item  The \textit{\&IND} command prints the detailed list of keywords. This display will occur at the beginning of listing printout.
+
+\item  The \textit{\&STO} command causes the interruption of the program, the computation does not go on.
+\end{itemize}
+
+
+\subsection{ The geometry file}
+
+ The geometry file name is specified in the steering file through the keyword: \textit{GEOMETRY FILE}.
+
+ It is a SERAFIN-formatted binary file: it can be read by FUDAA PRE-PRO or RUBENS and it can be created by the STBTEL module from the file(s) as produced by the mesh generator. The SERAFIN format structure is described in \ref{se:filestruct}
+
+ This file includes the complete information about the horizontal mesh, i.e. the number of mesh points (variable NPOIN2), the number of elements (variable NELEM2), the X and Y vectors containing the co-ordinates of all the points and, lastly, the IKLE2 vector containing the connectivity table.
+
+ Furthermore, this file may also include bathymetry information in each point of the mesh, provided that the interpolation of the bathymetry was carried out during the execution of the STBTEL module or during the generation of the mesh.
+
+ \tomawac reproduces the information regarding the geometry at the beginning of the 2D results. Any computation results file can then be used as a geometry file when one wants to perform a further simulation on the same mesh.
+
+
+\subsection{ The boundary conditions file. }
+
+ The boundary conditions file name is specified in the steering file through the keyword: 
+
+\textit{BOUNDARY CONDITIONS FILE.}
+
+ It is a formatted file that can be created automatically by STBTEL and can be modified by means of a text editor. Each line in this file is assigned to one point of the boundary and listed in sequential order in terms of the boundary node numbers. The numbering of the boundary points first delineates the domain contour in the counterclockwise direction, then the islands in the clockwise direction. This file is described in detail in \ref{se:BCfile}
+
+\subsection{ The currents file}
+\label{se:currentfile}
+ According to its type -- binary or formatted- the currents file name is specified in the steering file through the keywords: \textit{BINARY CURRENTS FILE} and\textit{ FORMATTED CURRENTS FILE.}
+
+ It is the file from which \tomawac reads the current field components. The current field may be either stationary or non-stationary. The current field will be non-stationary when the keyword \textit{CONSIDERATION OF TIDE }is set to TRUE. When the current field is stationary, the keyword \textit{CONSIDERATION OF A STATIONARY CURRENT} should be set to TRUE. By default, both keywords will be set to FALSE. When both are set to TRUE, the keywords will be inconsistent, and the program will halt.
+
+ Several commonly used formats can be read. This selection is made through the integer keyword \textit{CURRENTS FILE FORMAT}. It can\textit{ }be set to a value from 3 to 4
+
+\begin{itemize}
+\item  The format is 3: it is a TELEMAC result file of the SERAFIN standard. It is a binary file the name and its name be assigned to the keyword: \textit{BINARY CURRENTS FILE}. If the current is assumed to be stationary, then the additional keyword \textit{TIME INCREMENT NUMBER IN TELEMAC FILE }should be used in order to find the time step number related to the desired record. TELEMAC data other than the current components e.g. water levels, can also be read by means of this format (refer to \ref{se:telemacdata}).
+
+\item  The format is 4: data written in a different format can be read provided that the user supplies the relevant subroutine in the relevant FORTRAN file (see \ref{se:current} and \ref{se:tide}).
+\end{itemize}
+
+
+\subsection{ The tidal water level file}
+\label{se:tidalfile}
+ According to its type -- binary or formatted- the tidal water level file name is specified in the steering file through the keywords: \textit{BINARY TIDAL WATER LEVEL FILE }or\textit{ FORMATTED TIDAL WATER LEVEL FILE.}
+
+ This is the file from which \tomawac reads the tidal water level being referred to the \textit{INITIAL STILL WATER LEVEL}. Several commonly used formats can be read. This selection is made by means of the integer keyword \textit{TIDAL WATER LEVEL FILE FORMAT}. It can be set to a value from 3 to 4.
+
+\begin{itemize}
+\item  The format is 3: it is a TELEMACTELEMAC result file of the SERAFINSERAFIN standard. It is a binary file and its name should be assigned to the keyword: \textit{BINARY TIDAL WATER LEVEL FILE.}
+
+\item  The format is 4: data written in a different format can be read provided that the user supplies the relevant subroutine in the relevant FORTRAN file (see in \ref{se:tide}).
+\end{itemize}
+
+
+\subsection{ The winds file}
+\label{se:windfile}
+
+ According to its type -- binary or formatted- the wind file name is specified in the steering file through the keywords: \textit{BINARY WINDS FILE }or\textit{ FORMATTED WINDS FILE.}
+
+ This is the file from which \tomawac reads the information about the wind fields. As in the case of the current, several read formats are allowed. The integer keyword \textit{WINDS FILE FORMAT} can be set to values from 1 to 4.
+
+\begin{itemize}
+\item  The format is 1: it is a WAM-cycle 4 format type(as described in \ref{se:desformat}). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
+\item  The format is 2: it is a point pattern-type SINUSX format (as described in  \ref{se:desformat}). The file is formatted and the file name should be assigned to the keyword: \textit{FORMATTED WINDS FILE}.
+\item  The format is 3: it is a TELEMAC result file of the SERAFIN standard. It is a binary file and its name should be assigned to the keyword: \textit{BINARY WINDS FILE}. If the wind is assumed to be stationary, then the additional keyword \textit{TIME STEPTIME STEP NUMBER IN TELEMAC FILE }should be used in order to find the time step number related to the desired record.
+\item  The format is 4: data written in a different format can be read provided that the user supplies the relevant subroutine in the relevant FORTRAN file (see in \ref{se:wind}).
+\end{itemize}
+
+\subsection{ The previous computation file}
+
+ This previous computation file name is specified in the steering file through the character keyword: \textit{PREVIOUS COMPUTATION FILE.}
+
+ If a \textit{NEXT COMPUTATION} is done\textit{, }\tomawac fetches this file in order to initialize the directional spectrum of wave action at every point. This file's format, which is specific to \tomawac, is described in \ref{se:desformat}. It is a binary file.
+
+\subsection{ The global results file}
+
+ The global results file name is specified in the steering file through the keyword: \textit{GLOBAL RESULTS FILE.}
+
+ This file is created when a \textit{GLOBAL OUTPUT AT THE END} is requested. It saves the wave action density directional spectrum at every point in the last time step. This file format is described in \ref{se:desformat}.
+
+
+\subsection{ The 2D results file }
+
+ The 2D results file name is specified in the steering file through the character keyword: \textit{2D RESULTS FILE2D RESULTS FILE.}
+
+ This is the file into which \tomawac writes the results of the 2-dimensional variables during the computation. It is a binary file of the SERAFINSERAFIN standard. The data contained in it are in the following order:
+
+\begin{itemize}
+\item  all the data about the mesh geometry;
+\item  the names of the variables being stored;
+\item  for each time step, the time and the values of the variables are given for each point of the 2D mesh.
+\end{itemize}
+
+ Its content varies according to the values of the following keywords:
+
+\begin{itemize}
+\item  \textit{NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS:} provided for determining from which time step will the data storage desirably begin, so that the file size will not be too large.
+\item  \textit{PERIOD FOR GRAPHICS PRINTOUTS}: sets the period, as a number of propagation time increments, of printouts so that the file size will not be too large.
+\item  \textit{VARIABLES FOR 2D GRAPHICS PRINTOUTS}: provided for specifying the list of variables to be stored into the 2D results file. Each variable is identified by 2, 3 or 4 letters (refer to \ref{tab:resultvar} that lists the available variables).
+\end{itemize}
+
+\begin{table}
+\begin{tabular}{|p{1.4in}|p{2.1in}|} \hline
+M0 &  Total variance \\ \hline
+HM0  &  Spectral significant wave height  \\ \hline
+DMOY  &  Mean wave direction  \\ \hline
+SPD  &  Mean directional spreading  \\ \hline
+ZF &  Sea bottom level  \\ \hline
+WD &  Water depth  \\ \hline
+UX &  Current along X  \\ \hline
+UY &  Current along Y  \\ \hline
+VX &  Wind along X  \\ \hline
+VY &  Wind along Y  \\ \hline
+FX &  Driving force along X  \\ \hline
+FY &  Driving force along Y  \\ \hline
+SXX  &  Radiation stress along xx  \\ \hline
+SYY  &  Radiation stress along yy  \\ \hline
+SXY  &  Radiation stress along xy  \\ \hline
+UWB  &  Bottom celerity  \\ \hline
+POW  &  Wave power (per meter along wave crest)  \\ \hline
+FMOY  &  Mean frequency FMOY  \\ \hline
+FM01  &  Mean frequency FM01  \\ \hline
+FM02  &  Mean frequency FM02  \\ \hline
+FPD  &  Discrete peak frequency  \\ \hline
+FPR5  &  Peak frequency by Read method of order 5  \\ \hline
+FPR8  &  Peak frequency by Read method of order 8  \\ \hline
+US &  Surface friction velocity u*  \\ \hline
+CD &  Surface drag coefficient CD  \\ \hline
+Z0 &  Surface roughness length Z0  \\ \hline
+WS &  Surface wave stress  \\ \hline
+TMOY  &  Mean period Tmoy  \\ \hline
+TM01  &  Mean period Tm01  \\ \hline
+TM02  &  Mean period Tm02  \\ \hline
+TPD  &  Discrete peak period  \\ \hline
+TPR5  &  Peak period by Read method of order 5  \\ \hline
+TPR8  &  Peak period by Read method of order 8  \\ \hline
+PRI  &  Private table  \\ \hline
+BETA &  Breaking waves coefficient \\ \hline
+\end{tabular}
+\caption{\label{tab:resultvar}List of 2D results variables}
+\end{table}
+
+ For instance, if the significant wave heights, the water depths and the average wave propagation directions are desired,
+
+ \textit{VARIABLES FOR 2D GRAPHICS PRINTOUTS }= HM0,WD,DMOY
+
+ must be entered in the steering file.
+
+
+\subsection{ The punctual or spectrum results file}
+
+ This file's name is specified in the steering file through the character keyword: \textit{PUNCTUAL RESULTS FILE.}
+
+ This is the file into which the directional spectra of wave action at some previously specified points are stored by \tomawac during the computation. These points are selected by means of the following keywords:
+
+\begin{itemize}
+\item  \textit{ABSCISSAE OF SPECTRUM PRINTOUT POINTS} and \textit{ORDINATES OF SPECTRUM PRINTOUT POINTS}: they are chart keywords. The maximum number of points is 19, i.e. a maximum of 19 printout points. The spectrum will be recorded at the closest point to the specified position, no spatial interpolation is made.
+
+\item  This file is a SERAFIN formatted file. It first includes all the data about the spectral mesh geometry, then the names-codes of displayed points. This name-code is of the type: \textit{Fa\_PT2Db}, where \textit{a }denotes the point's sequence order number within the list written in the steering file and \textit{b} denotes the number of the closest 2D point to the specified position. Subsequently, for each graphic printout, it contains the time and the value of the directional spectrum of wave action for each pair (direction, frequency) in the spectral mesh.
+\end{itemize}
+
+ The keywords \textit{PERIOD FOR GRAPHICS PRINTOUTS }and \textit{NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS} are shared by the two results files; thus, the printouts are synchronous for either file.
+
+
+\subsection{ The printout listing}
+
+ This file contains all the messages as generated by \tomawac during the computation. It is the main report of a \tomawac run. Its content depends on the value of the following keyword:
+
+\begin{itemize}
+\item  \textit{PERIOD FOR LISTING PRINTOUTS}: this sets the time between two time steps of message transmission. This value is given in terms of the number of iterations. For example, the following sequence:
+\end{itemize}
+
+\textit{TIME INCREMENT} = 30.    
+
+\textit{PERIOD FOR LISTING PRINTOUTS}= 2 
+
+will result in a print in the output listing every 60 seconds of simulation.
+
+\subsection{ The User FORTRAN file}
+
+ This User FORTRAN file name is specified in the steering file through the character keyword: \textit{FORTRAN FILE}.\textit{}
+
+ The FORTRAN contains all the user-modified \tomawac subroutines as well as the specifically developed routines for that computation.
+
+ This file is compiled and linked during run time in order to generate the executable being used for the simulation.
+
+
+\subsection{ The auxiliary files}
+
+ Other input/output files may be used by \tomawac.
+
+\begin{itemize}
+\item  A binary data or results file: its name is specified through the character keyword \textit{BINARY FILE 1} (Channel unit No. 24).
+\item  A formatted data or results file: its name is specified through the character keyword \textit{FORMATTED FILE 1} (Channel unit No. 26).
+\end{itemize}
+
+ These files can be used either for supplying data to the program or for allowing data to be processed that are not available in the standard results files; obviously, the user must manage the read and write operations of these files within the FORTRAN program.
+
+
+\subsection{ The dictionary file}
+
+ This dictionary file contains all the information about the keywords (French/English name, default values, type). This file can be viewed in a text editor by the user, but it must not be modified in any way.
+
+
+\subsection{ The libraries}
+
+ At the beginning of a computation, the main user-written FORTRAN routine is compiled, then linked in order to generate the executable program that is subsequently run.
+
+ The following libraries are used during the link editing operation:
+
+\begin{itemize}
+\item  \tomawac library: contains the specific subroutines of the \tomawac computation model.
+
+\item  telemac libraries: contains the specific subroutines of the TELEMAC-2D or TELEMAC-3D computation model.
+
+\item  utils library: contains a number of utility subroutines, such as the partitioning and parallel library.
+
+\item  damocles library: contains the subroutines handling the steering file reading.
+
+\item  hermes library: contains the subroutines that permits to read and write data according to the file format chosen.
+
+\item  sisyphe library: contains the subroutines that permits to simulate sediment transport
+
+\item  api library : contains the subroutines that permits to the modulus to communicate
+
+\item  BIEF library: contains the computation modules related to the finite element-typed operations (operations on both matrixes and vectors). This library is shared by all the simulation models as developed by the LNHE within the TELEMAC structure (BIEF means "BIbliothèque d'Eléments Finis", i.e. Finite Element Library).
+\end{itemize}
+
+
+\section{ Binary files }
+
+ Binary files are an efficient way to store data on disk. However, binary files written on different computers may differ. \tomawac recognizes three types of binary files, namely:
+
+\begin{itemize}
+\item  the native binary of the computer,
+
+\item  IBM binary (so that a file that has been generated on an IBM computer can be read), and
+
+\item  IEEE binary, so that these files can be read on a workstation (provided that the suitable subroutines are set up when installing \tomawac on the computer).
+\end{itemize}
+
+ The following keywords can be used:
+
+\begin{itemize}
+\item  \textit{GEOMETRY FILE BINARY}, for the geometry file,
+
+\item  \textit{2D RESULTS FILE BINARY}, for the 2D results file.
+
+\item  \textit{PUNCTUAL RESULTS FILE BINARY}, for the punctual results file.
+
+\item  \textit{GLOBAL RESULTS FILE BINARY}, for the global results file,
+
+\item  \textit{PREVIOUS COMPUTATION FILE BINARY}, for the previous computation file,
+
+\item  \textit{CURRENTS FILE BINARY}, for the currents and/or TELEMACTELEMAC results file.
+
+\item  \textit{TIDAL WATER LEVEL FILE BINARY}, for the tidal water level file,
+
+\item  \textit{WINDS FILE BINARY}, for the winds file.
+
+\item  \textit{BINARY 1 FILE BINARY }for binary file.
+\end{itemize}
+
+ In all the cases, the default value as specified in the dictionary file is 'STD' (default value of the machine being used). The other possible values are 'IBM' and 'I3E'.
+
+
+\section{ Files standard}
+
+ Almost all files that were in Serafin format in previous versions of \tomawac, have been given a key-word for the file format.
+
+ If the name of the file is: ``GEOMETRY FILE'' (``FICHIER DE GEOMETRIE''), the new keyword will be: ``GEOMETRY FILE FORMAT'' (``FORMAT DU FICHIER DE GEOMETRIE'').
+
+ This format is given in 8 characters. Three choices are possible so far:
+
+\begin{itemize}
+\item  `SERAFIN `(do not forget the space at the end): it is the default standard within the TELEMAC processing chain. The format is recognized by the FUDAA PRE-PRO graphics post-processor. The RUBENS graphics post-processor reads the SERAFIN format as well, but it won't be developed anymore and it is bound to disappear. The SERAFIN file format is described in detail in \ref{se:desformat}.
+
+\item  `SERAFIND': Serafin format, but with double precision. Can be used for a more accurate ``computation continued'' or for more accurate validations. Neither FUDAA PRE-PRO nor Rubens can read this format.
+
+\item  `MED  `: this is an EDF-CEA format used in the Salomé platform, that enables to use the post-processors of this platform. It is based on hdf5. This new format is not activated if you use the default subroutine med.f provided, which is mostly void. If you take instead the file med.edf and rename it med.f, med formats will be available, but two additional libraries are necessary to use this format and have to be specified in the systel.ini file. Full instructions will be given in further releases, this is so far for internal use at EDF.
+\end{itemize}
+
+ A new file structure has been added to library BIEF for simplifying the opening/closing and reading/writing operations with these file formats, as well as for simplifying the coupling between programmes,. The description of this file structure and of the operations on those files are given in \ref{se:filestruct}
+
+ As specified in section7.2.7, a fourth binary format exists, which is specific to \tomawac and is used only for saving the results when they are used to initialize a next computation. This binary file format cannot be read by the RUBENS post-processor, or by FUDAA PRE-PRO graphics post-processor.
+
+
+\section{ Bathymetry data }
+\label{se:bathydata}
+ The bathymetry information can be supplied to \tomawac at two levels:
+
+\begin{itemize}
+\item  Directly in the geometry/mesh file by a bathymetry value being assigned to each node in the mesh. In this case the bathymetry data have been processed previously, running the STBTEL module or mesh generator. For example, STBTEL reads the information from one or more bottom topography files (up to 5 files) and performs an interpolation at every point within the domain;
+
+\item  In the form of an irregular pattern of spot heights without any necessary relation to the mesh nodes, during the \tomawac computation. The interpolation is then performed directly by \tomawac with the same algorithm as used by STBTEL. The bathymetry file name is given by the character keyword \textit{BOTTOM TOPOGRAPHY FILE. }Unlike STBTEL, \tomawac only handles one bottom topography file. The file can be in SINUSX format or can consist of three columns X,Y,Z.
+\end{itemize}
+
+ \tomawac also provides an opportunity to carry out a smoothing of the bathymetry in order to get a more consistent geometry. The smoothing algorithm can be iterated several times in order to achieve more or less extensive smoothing. The number of iterations is set using the keyword \textit{BOTTOM SMOOTHINGS} and is carried out within the CORFON subroutine. This keyword's default value is 0. (also refer to the programming of the CORFON user subroutine in \ref{se:corfon}).
+
+ NOTE: the bathymetry data should preferably be supplied to \tomawac in the form of water depth and not of water height. If necessary, a conversion can be performed in the CORFON subroutine.
+
+

@@ -1,0 +1,95 @@
+%
+%
+\chapter{Introduction}
+%
+%
+%
+\section{Why a finite element library?}
+%
+A great many finite element software programs have been developed over the last
+few years at the Laboratoire National d'Hydraulique et Environnement. These
+have been based on a single data structure, initiated by the development of
+\telemac{2D}. Algorithms used by one program, for example to process a diffusion
+operator, can also be used by another. It was therefore felt to be quite
+natural to group together all the numerical developments of the various codes
+in a single library, distinguishing them from the physical aspects.
+\\
+This finite element library (called \bief in the rest of this document. \bief
+stands for the French expression \textbf{BI}blioth\`{e}que d'\textbf{E}lements
+\textbf{F}inis, meaning Finite Element Library, but ``bief'' in French is a
+river reach in English) is designed so that it can be used as a toolbox in the
+simplest possible way. It is possible, for example, to solve a classic fluid
+mechanics equation by calling the \bief \textit{ad hoc} modules, without having
+to worry about the details of the solution. This simplifies and considerably
+speeds up the calculation code development phase. In addition, \bief continually
+includes new developments, thereby making them available to users immediately.
+\\
+The development of \bief is closely linked to that of the TELEMAC system codes,
+most of which are the subject of a Quality Control procedure. In the case of
+the software programs of the EDF's Research and Development, this procedure
+involves designing and then checking the quality of the product throughout the
+different phases in its life. In particular, a software program subjected to
+Quality Control is accompanied by a validation document which describes a
+series of test cases. This document can be used to evaluate the qualities and
+limitations of the product and identify its field of application. These test
+cases are also used for developing the software and are checked each time a
+modification is made. Consequently, the \bief algorithms also benefit from this
+strict quality control procedure.
+%
+\section{Brief description of \bief}
+
+The data structure and programming of \bief is described in detail in Part~B of
+this document. One of the important features of this structure is that matrices
+are stored either in elementary form or in an edge-by-edge storage. Compared
+with compact storage, this type of storage saves on memory space for numerous
+types of elements and also enables resolution algorithms to be obtained quickly
+and efficiently. In fact, one of the essential features of \bief is to offer
+methods with very low computing costs.
+\\
+\bief offers a whole range of subroutines. They include methods for solving
+advection equations, diffusion equations, linear system inversion methods with
+different types of preconditioning. The user is also provided with subroutines
+for calculating matrices: mass matrices, diffusion matrices, boundary matrices,
+etc. \bief can be used to carry out all the conventional operations on vectors
+(norms, dot products, etc.), on the products of one matrix by a vector or of
+two matrices. By simply calling a subroutine, the user can calculate the
+divergence of a vector, the gradient of a function, and so on. It should be
+remembered that this description is not exhaustive and that the content of \bief
+will change depending on the requirements of its users.
+\\
+The language used is FORTRAN 90 (see explanations below), and, to facilitate
+the diffusion of the TELEMAC system, portability is checked on a wide range of
+hardware, including both super-computers and workstations, Linux and Windows
+machines.
+
+\section{Fortran 90: reasons for the change}
+
+TELEMAC was written in FORTRAN 77 up to version 3.2. There are a number of
+reasons for the choice of FORTRAN 90 for \bief:
+\begin{itemize}
+\item Structured programming. Structures were prepared in version 3.2 of \bief
+  in FORTRAN 77, at the price of non-standard features, for example the use of
+  negative indices in arrays. The structures are now normal structures in
+  FORTRAN 90, and they are much easier to use.
+\item Dynamic allocation of memory.
+\item The increasing number of modules based on \bief meant that it was taking
+  longer and longer to complete each update. One of the aim of structured
+  programming is to simplify updating.
+\item The increasing number of arguments in the subroutines, and changes of
+  arguments in the user subroutines. This will is suppressed as far as possible
+  by the use of FORTRAN 90 modules.
+\end{itemize}
+The principal objectives of structured programming are therefore:
+\begin{itemize}
+\item To enable dynamic allocation of memory.
+\item To facilitate update and development of the system elements.
+\item To facilitate the future development and maintenance of \bief.
+\item To get a safer implementation, with many error checking done by the
+  compiler itself.
+\item To enable a better compatibility between subsequent versions of \bief.
+\end{itemize}
+%
+%
+
+
+

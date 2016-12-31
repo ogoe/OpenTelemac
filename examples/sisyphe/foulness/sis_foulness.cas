@@ -1,0 +1,92 @@
+/----------------------------------------------------------------------/
+/  UNCOUPLED TELEMAC2D AND SISYPHE                                     /
+/----------------------------------------------------------------------/
+/
+TITLE = 'Foulness Test'
+/
+/----------------------------------------------
+/ DATA
+/----------------------------------------------
+/
+GEOMETRY FILE                        = geo_foulness.slf
+BOUNDARY CONDITIONS FILE             = geo_foulness.cli
+RESULTS FILE                         = sis_foulness.slf
+HYDRODYNAMIC FILE                    = geo_foulness.slf
+/
+STARTING TIME OF THE HYDROGRAM       = 0.0
+/
+/------------------------------------------------------ /
+/ NUMERICAL INFO                                        /
+/------------------------------------------------------ /
+STEADY CASE                     = NO
+TIDE PERIOD                     = 45000.0
+NUMBER OF TIDES OR FLOODS       = 1
+COMPUTATION CONTINUED = NO
+MASS CONCENTRATION = YES
+/
+TIME STEP = 1800.0
+NUMBER OF TIME STEPS     = 26
+NUMBER OF SUB-ITERATIONS = 90
+GRAPHIC PRINTOUT PERIOD  = 1
+LISTING PRINTOUT PERIOD  =  1
+/
+/----------------------------------------------
+/ OUTPUTS
+/----------------------------------------------
+/
+NUMBER OF PRIVATE ARRAYS        = 1
+VARIABLES FOR GRAPHIC PRINTOUTS =
+'H,U,V,CS1,CS2,CS3,CS4,QSBL,QSSUSP'
+/
+MASS-BALANCE = YES
+/
+TIDAL FLATS                               = NO
+OPTION FOR THE TREATMENT OF TIDAL FLATS   = 1
+/-------------------------------------------------
+/ NUMERICAL STUFF
+/------------------------------------------------
+FINITE VOLUMES                      = NO
+TYPE OF ADVECTION                   = 13
+TETA SUSPENSION                     = 0.55
+/
+MASS-LUMPING             : NO
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+BED LOAD                                   = YES
+BED-LOAD TRANSPORT FORMULA                 = 5
+/WAVE EFFECTS                               = NO
+CRITICAL EVOLUTION RATIO                   = 1.0
+SLOPE EFFECT                               = NO
+/
+SUSPENSION                                 = YES
+EQUILIBRIUM INFLOW CONCENTRATION           = YES
+REFERENCE CONCENTRATION FORMULA            = 4
+FORMULATION FOR DEPOSITION AND EROSION     = 3
+DIFFUSION                                  = YES
+STATIONARY MODE                            = YES
+SETTLING LAG                               = YES
+WATER DENSITY                              = 1025
+SEDIMENT DENSITY                           = 2650.0
+WATER VISCOSITY                            = 0.001
+NUMBER OF SIZE-CLASSES OF BED MATERIAL     = 6
+/ INITIAL FRACTION FOR PARTICULAR SIZE CLASS = 0.33;0.33;0.29;0.05
+INITIAL FRACTION FOR PARTICULAR SIZE CLASS =
+0.05;0.20;0.37;0.34;0.03;0.01
+COHESIVE SEDIMENTS                         = NO
+/SEDIMENT DIAMETERS = 0.000075;0.000125;0.00015;0.00020
+/CONCENTRATION PER CLASS AT BOUNDARIES =
+/    0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.001
+/ MEAN DIAMETER OF THE SEDIMENT    = 0.000075;0.000125;0.00015;0.00020
+MEAN DIAMETER OF THE SEDIMENT =
+0.00005;0.0001;0.00012;0.00015;0.00020;0.0003
+/D90=0.000234
+/
+ZERO  = 1E-12
+LAW OF BOTTOM FRICTION   : 5
+FRICTION COEFFICIENT     = 0.015
+CORRECTION ON CONVECTION VELOCITY = NO
+/
+/

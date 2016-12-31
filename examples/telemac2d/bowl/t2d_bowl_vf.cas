@@ -1,0 +1,53 @@
+/
+/  PARABOLIC BOWL WITH FINITE VOLUMES
+/
+/  Version 6.2
+/
+/  HP C3700 compilateur HP         : 13 s  23/05/2012
+/
+FORTRAN FILE                   : t2d_bowl.f
+BOUNDARY CONDITIONS FILE       : geo_bowl.cli
+GEOMETRY FILE                  : geo_bowl.slf
+RESULTS FILE                   : r2d_bowl_vf_gb.slf
+/
+EQUATIONS : 'SAINT-VENANT VF'
+FINITE VOLUME SCHEME : 1
+/
+/----------------------------------------------------------------------/
+/                     GENERAL OPTIONS
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D: PARABOLIC BOWL TEST-CASE'
+/
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,S,B'
+VARIABLES TO BE PRINTED : ''
+TIME STEP = 0.1
+DURATION : 1773.
+GRAPHIC PRINTOUT PERIOD :1000
+LISTING PRINTOUT PERIOD : 100
+VARIABLE TIME-STEP : YES
+DESIRED COURANT NUMBER : 0.8
+/----------------------------------------------------------------------/
+TURBULENCE MODEL : 1    / 1:LAMINAIRE  3:K-EPSILON /
+/----------------------------------------------------------------------/
+/ 0:NO FRICTION 1:MANNING 2:CHEZY 3:STRICKLER
+LAW OF BOTTOM FRICTION : 0
+/----------------------------------------------------------------------/
+/     PROPAGATION
+/----------------------------------------------------------------------/
+VELOCITY DIFFUSIVITY = 0.
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER : 100
+SOLVER ACCURACY : 1.E-4
+SOLVER : 7
+PRECONDITIONING : 2
+INITIAL GUESS FOR H :1
+SOLVER OPTION : 3
+IMPLICITATION FOR DEPTH : 0.6
+IMPLICITATION FOR VELOCITY : 0.6
+MASS-BALANCE : YES
+INITIAL CONDITIONS : PARTICULAR
+TYPE OF ADVECTION : 1;1
+SUPG OPTION : 2;2
+H CLIPPING : NO
+TIDAL FLATS : YES
+/----------------------------------------------------------------------/
+/TRACER : YES

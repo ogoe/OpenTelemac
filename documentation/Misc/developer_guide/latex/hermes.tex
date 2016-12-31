@@ -1,0 +1,1052 @@
+%--------------------------------------------------------------------------------
+\chapter{Description}
+%--------------------------------------------------------------------------------
+%
+The aim of this module is to produce generic functions to read/write meshes,
+data and boundary conditions in \telemacsystem regardless of the file format. For that
+purpose a new module, called Hermes, was created.
+%
+%--------------------------------------------------------------------------------
+\chapter{User Manual}
+%--------------------------------------------------------------------------------
+%
+Three formats are now available in \telemacsystem:
+\begin{itemize}
+\item SERAFIN, \telemacsystem own format, a binary containing the mesh and the results
+information, all the real are in single precision.
+\item SERAFIND, same as above but the real are in double precision.
+\item MED, a binary format based on hdf5, format used by the Salome platform.
+This format requires to install additional libraries and add specific option
+to the \telemacsystem installation therefore it not installed by default.
+\end{itemize}
+
+In order to set the file format, a keyword is defined for every file, for
+example the keyword for "geometry file" is "geometry file format".
+
+All the files used for a simulation must be in the same format, this is due to
+the fact that the same boundary file is used for all the files and the boundary
+file is format-dependant. Only SERAFIN an SERAFIND can coexist as they are
+using the same format for their boundary file.
+%--------------------------------------------------------------------------------
+\section{List of functions}
+%--------------------------------------------------------------------------------
+\label{listfunc}
+\subsection{Mesh functions}
+\begin{lstlisting}
+subroutine open_mesh(fformat,file_name,file_id,openmode,ierr)
+!
+!brief    opens a mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_name      |-->| name of the file
+!| file_id        |-->| file descriptor
+!| openmode       |-->| one of the following value 'read','write','readwrite'
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=8),  intent(in)    :: fformat
+  character(len=*), intent(in)   :: file_name
+  integer,            intent(in)   :: file_id
+  character(len=9), intent(in)     :: openmode
+  integer, intent(out)             :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine close_mesh (fformat,file_id,ierr)
+!
+!brief    closes a mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=8),  intent(in)    :: fformat
+  integer,            intent(in)   :: file_id
+  integer, intent(out)             :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_title (fformat,fid,title,ierr)
+!
+!brief    returns the title from a mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| title          |<->| title of the mesh file
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8),  intent(in)  :: fformat
+  integer,           intent(in)  :: fid
+  character(len=80), intent(inout) :: title
+  integer,           intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_date (fformat,fid,date,ierr)
+!
+!brief    returns the date of the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| date           |<->| the date
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: date(6)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_nelem (fformat,fid,typ_elem,nelem,ierr)
+!
+!brief    returns the number of elements of type typ_elem in the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_elem       |-->| type of the element
+!| nelem          |<->| the number of elements
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: typ_elem
+  integer,          intent(inout) :: nelem
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_ndp (fformat,fid,typ_elem,ndp,ierr)
+!
+!brief    returns the number of point per element of type typ_elem
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_elem       |-->| type of the element
+!| ndp            |<->| the number of point per element
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: typ_elem
+  integer,          intent(inout) :: ndp
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_ikle (fformat,fid,typ_elem,ikle,nelem,ndp,ierr)
+!
+!brief    returns the connectivity table for 
+!+        the element of type typ_elem in the mesh
+!+        will do nothing if there are no element of typ_elem in the mesh
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_elem       |-->| type of the element
+!| ikle           |<->| the connectivity table
+!| nelem          |-->| number of elements
+!| ndp            |-->| number of points per element
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: typ_elem
+  integer,          intent(in)  :: nelem
+  integer,          intent(in)  :: ndp
+  integer,          intent(inout) :: ikle(nelem*ndp)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_npoin (fformat,fid,typ_elem,npoin,ierr)
+!
+!brief    returns the number of point for the given element type in the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_elem       |-->| type of the element
+!| npoin          |<->| the number of points
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: typ_elem
+  integer,          intent(inout) :: npoin
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_nplan (fformat,fid,nplan,ierr)
+!
+!brief    returns the number of layers
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| nplan          |<->| the number of layers
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: nplan
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_dimension (fformat,fid,ndim,ierr)
+!
+!brief    returns the number of dimensions of the space
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| ndim           |<->| number of dimension
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: ndim
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_coord (fformat,fid,jdim,ndim,npoin,coord,ierr)
+!
+!brief    returns the coordinates for the given dimension
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| jdim           |-->| dimension number
+!| ndim           |-->| number of dimension of the mesh
+!| npoin          |-->| total number of nodes
+!| coord          |<->| local to global numbering array
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid, jdim, ndim, npoin
+  double precision, intent(inout) :: coord(npoin)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_knolg (fformat,fid,knolg,npoin,ierr)
+!
+!brief    returns the local to global numbering array
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| knolg          |<->| local to global numbering array
+!| npoin          |-->| number of nodes
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: npoin
+  integer,          intent(inout) :: knolg(npoin)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_mesh_nptir (fformat,fid,nptir,ierr)
+!
+!brief    returns the number of interface point
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| nptir          |<->| number of interface point
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: nptir
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\subsection{Boundary functions}
+%
+\begin{lstlisting}
+subroutine open_bnd(fformat,file_name,file_id,openmode,ierr)
+!
+!brief    opens a boundary file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_name      |-->| name of the file
+!| file_id        |-->| file descriptor of the "mesh" file
+!| openmode       |-->| one of the following value 'read','write','readwrite'
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=8),  intent(in)    :: fformat
+  character(len=*), intent(in)   :: file_name
+  integer,            intent(in)   :: file_id
+  character(len=9), intent(in)     :: openmode
+  integer, intent(out)             :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine close_bnd (fformat,file_id,ierr)
+!
+!brief    closes a boundary file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor of the "mesh" file
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=8),  intent(in)    :: fformat
+  integer,            intent(in)   :: file_id
+  integer, intent(out)             :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_ipobo (fformat,fid,npoin,nelebd,typ_bnd_elem,ipobo,ierr)
+!
+!brief    returns an array containing 
+!+        1 if a point is a boundary point 0 otherwise
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| npoin          |-->| total number of nodes
+!| nelebd         |-->| total number of boundary elements
+!| typ_bnd_elem   |-->| type of the boundary element
+!| ipobo          |<->| an array containing
+!|                |   | 1 if a point is a boundary point 0 otherwise
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid, npoin, nelebd, typ_bnd_elem
+  integer,          intent(inout) :: ipobo(npoin)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_nbor (fformat,fid,typ_bnd_elem,nptfr,nbor,ierr)
+!
+!brief    returns an array containing 
+!+        the association of boundary numbering to mesh numbering
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_bnd_elem   |-->| type of the boundary element
+!| nptfr          |-->| number of boundary points
+!| nbor           |<->| an array containing the numbering in the mesh 
+!|                |   | of all boundary points
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid, nptfr, typ_bnd_elem
+  integer,          intent(inout) :: nbor(nptfr)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_ikle (fformat,fid,typ_bnd_elem,nelebd,ndp,ikle_bnd,ierr)
+!
+!brief    reads the connectivity of the boundary elements
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_bnd_elem   |-->| type of the boundary elements
+!| nelebd         |-->| number of boundary elements
+!| ndp            |-->| number of points per element
+!| ikle_bnd       |<->| the connectivity of the boundary elements
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in) :: fformat
+  integer, intent(in) :: fid,typ_bnd_elem,nelebd,ndp
+  integer, intent(inout) :: ikle_bnd(ndp*nelebd)
+  integer, intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_npoin (fformat,fid,type_bnd_elem,nptfr,ierr)
+!
+!brief    returns the number of boundary points
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| type_bnd_elem  |-->| type of the boundary elements
+!| nptfr          |<->| number of boundary points
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: type_bnd_elem
+  integer,          intent(inout) :: nptfr
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_nelem (fformat,fid,type_bnd_elem,nelem,ierr)
+!
+!brief    reads the number of boundary elements
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| type_bnd_elem  |-->| type of the boundary elements
+!| nelem          |<->| number of boundary elements
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: type_bnd_elem
+  integer,          intent(inout) :: nelem
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_bnd_value (fformat,fid,typ_bnd_elem,nelebd,value,nptfr,nbor,ierr)
+!
+!brief    returns an array containing the boundary type for each boundary point
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| typ_bnd_elem   |-->| type of the boundary elements
+!| nelebd         |-->| number of boundary elements
+!| value          |<->| type of boundary for each point
+!| nptfr          |-->| number of boundary points
+!| nbor           |-->| boundary to global numbering array
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: typ_bnd_elem
+  integer,          intent(in)  :: nelebd
+  integer,          intent(in)  :: nptfr
+  integer,          intent(inout) :: value(nptfr)
+  integer,          intent(in) :: nbor(nptfr)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\subsection{Data functions}
+%
+\begin{lstlisting}
+subroutine get_data_nvar (fformat,fid,nvar,ierr)
+!
+!brief    returns the number of variables in the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| nvar           |<->| number of variable
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: nvar
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_data_var_list (fformat,fid,nvar,varlist,unitlist,ierr)
+!
+!brief    returns a list of all the name of the variables in the mesh file
+!+        and a list of their units
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| varlist        |<->| list of variable name
+!| untilist       |<->| list of variable unit
+!| ierr           |<--| 0 if no error during the execution
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8),  intent(in)  :: fformat
+  integer,           intent(in)  :: fid
+  integer,           intent(in)  :: nvar
+  character(len=16), intent(inout) :: varlist(nvar)
+  character(len=16), intent(inout) :: unitlist(nvar)
+  integer,           intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_data_ntimestep (fformat,fid,ntimestep,ierr)
+!
+!brief    returns the number of time step in the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| ntimestep      |<->| the number of time steps
+!| ierr           |<--| 0 if no error during the execution
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(inout) :: ntimestep
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_data_time (fformat,fid,record,time,ierr)
+!
+!brief    returns the time value of a given time step
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| record         |-->| number of the time step
+!| time           |<->| time in second of the time step
+!| ierr           |<--| 0 if no error during the execution
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: record
+  double precision, intent(inout) :: time
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine get_data_value (fformat,fid,record,var_name,res_value,n,ierr)
+!
+!brief    returns the value for each point of a given variable 
+!+        for a given time step
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor
+!| record         |-->| time step to read in the file
+!| var_name       |-->| variable for which we need the value
+!| res_value      |<->| value for each point at time step record 
+!|                |   | for the variable var_name
+!| n              |-->| size of res_value
+!| ierr           |<--| 0 if no error during the execution
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8),  intent(in)    :: fformat
+  integer,           intent(in)    :: fid
+  integer,           intent(in)    :: record
+  character(len=16), intent(in)    :: var_name
+  integer,           intent(in)    :: n
+  double precision,  intent(inout) :: res_value(n)
+  integer,           intent(out)   :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\subsection{Writing functions}
+%
+\begin{lstlisting}
+subroutine set_header (fformat,file_id,title,nvar,var_name,ierr)
+!
+!brief    writes the title and the name and units of the variables
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor
+!| title          |-->| title of the mesh
+!| nvar           |-->| number of variables
+!| var_name       |-->| name and units of the variables
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8),  intent(in)  :: fformat
+  integer,           intent(in)  :: file_id
+  character(len=80), intent(in)  :: title
+  integer,           intent(in)  :: nvar
+  character(len=32), intent(in)  :: var_name(nvar)
+  integer,           intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine set_mesh
+     (fformat,file_id,mesh_dim,typelm,ndp,nptfr,
+      nptir,nelem,npoin,ikle,ipobo,
+      knolg,x,y,nplan,date,time,ierr,z)
+!
+!brief    writes the mesh geometry in the file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor
+!| mesh_dim       |-->| dimension of the mesh
+!| typelm         |-->| type of the mesh elements
+!| ndp            |-->| number of points per element
+!| nptfr          |-->| number of boundary point
+!| nptir          |-->| number of interface point
+!| nelem          |-->| number of element in the mesh
+!| npoin          |-->| number of points in the mesh
+!| ikle           |-->| connectivity array for the main element
+!| ipobo          |-->| is a boundary point ? array
+!| knolg          |-->| local to global numbering array
+!| x              |-->| x coordinates of the mesh points
+!| y              |-->| y coordinates of the mesh points
+!| nplan          |-->| number of planes
+!| date           |-->| date of the creation of the mesh
+!| time           |-->| time of the creation of the mesh
+!| ierr           |<--| 0 if no error during the opening
+!| z  (optional)  |-->| z coordinates of the mesh points
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: file_id,nplan
+  integer,          intent(in)  :: date(3)
+  integer,          intent(in)  :: time(3)
+  integer,          intent(in)  :: mesh_dim
+  integer,          intent(in)  :: typelm
+  integer,          intent(in)  :: ndp
+  integer,          intent(in)  :: nptfr
+  integer,          intent(in)  :: nptir
+  integer,          intent(in)  :: nelem
+  integer,          intent(in)  :: npoin
+  integer,          intent(in)  :: ikle(nelem*ndp)
+  integer,          intent(in)  :: ipobo(npoin)
+  integer,          intent(in)  :: knolg(npoin)
+  double precision, intent(in)  :: x(npoin),y(npoin)
+  integer,          intent(out) :: ierr
+  double precision, intent(in), optional :: z(npoin)
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine set_bnd (fformat,fid,type_bnd_elt,nelebd,ndp,ikle,value,ierr)
+!
+!brief    writes the boundary information into the mesh file
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| fid            |-->| file descriptor
+!| type_bnd_elt   |-->| type of the boundary elements
+!| nelebd         |-->| number of boundary elements
+!| ndp            |-->| number of points per boundary element
+!| ikle           |-->| connectivity array for the boundary elements
+!| value          |-->| value for each boundary element
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+  character(len=8), intent(in)  :: fformat
+  integer,          intent(in)  :: fid
+  integer,          intent(in)  :: type_bnd_elt
+  integer,          intent(in)  :: nelebd
+  integer,          intent(in)  :: ndp
+  integer,          intent(in)  :: ikle(nelebd*ndp)
+  integer,          intent(in)  :: value(nelebd)
+  integer,          intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+%
+\begin{lstlisting}
+subroutine add_data
+     (fformat,file_id,var_name,time,record,
+      first_var,var_value,n,ierr)
+!
+!brief    add data information for a given variable and a given time on 
+!+        all points of the mesh
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| fformat        |-->| format of the file
+!| file_id        |-->| file descriptor
+!| var_name       |-->| name of the variable
+!| time           |-->| time of the data
+!| record         |-->| time step of the data
+!| first_var      |-->| true if it is the first variable of the dataset
+!| var_value      |-->| the value for each point of the mesh
+!| n              |-->| size of var_value
+!| ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      character(len=8),  intent(in)  :: fformat
+      integer,           intent(in)  :: file_id,n
+      character(len=32), intent(in)  :: var_name
+      double precision,  intent(in)  :: time
+      integer,           intent(in)  :: record
+      logical,           intent(in)  :: first_var
+      double precision,  intent(in)  :: var_value(n)
+      integer,           intent(out) :: ierr
+!
+end subroutine
+\end{lstlisting}
+
+%
+%--------------------------------------------------------------------------------
+\chapter{Developer Manual}
+%--------------------------------------------------------------------------------
+%
+
+%
+%--------------------------------------------------------------------------------
+\section{Structure of the module}
+%--------------------------------------------------------------------------------
+%
+The module is divided into three parts:
+\begin{itemize}
+\item The file \verb!interface_hermes.f! which contains the list of the
+reading/writing functions.
+\item A file for each of the function listed in \verb!interface_hermes.f!.
+\item A module for each format handled in \telemacsystem.
+\end{itemize}
+%
+All the files of the second part look more or less like this:
+\begin{lstlisting}
+!                    ********************
+                     SUBROUTINE OPEN_MESH
+!                    ********************
+!
+     &(FFORMAT,FILE_NAME,FILE_ID,OPENMODE,IERR)
+!
+!***********************************************************************
+! HERMES   V7P0                                               01/05/2014
+!***********************************************************************
+!
+!brief    OPENS A MESH FILE
+!
+!history  Y AUDOUIN (LNHE)
+!+        24/03/2014
+!+        V7P0
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FFORMAT        |-->| FORMAT OF THE FILE
+!| FILE_NAME      |-->| Name of the file
+!| FILE_ID        |-->| File descriptor
+!| OPENMODE       |-->| ONE OF THE FOLLOWING VALUE 'READ','WRITE','READWRITE'
+!| Ierr           |<--| 0 if no error during the opening
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE UTILS_SERAFIN
+      USE UTILS_MED
+      IMPLICIT NONE
+      INTEGER     LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=8),  INTENT(IN)    :: FFORMAT
+      CHARACTER(LEN=*), INTENT(IN)   :: FILE_NAME
+      INTEGER,            INTENT(IN)   :: FILE_ID
+      CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE
+      INTEGER, INTENT(OUT)             :: IERR
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      SELECT CASE (FFORMAT)
+        CASE ('SERAFIN ','SERAFIND')
+          CALL OPEN_MESH_SRF(FILE_NAME, FILE_ID, OPENMODE,FFORMAT, IERR)
+        CASE ('MED     ')
+          CALL OPEN_MESH_MED(FILE_NAME, FILE_ID, OPENMODE,IERR)
+        CASE DEFAULT
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'OPEN_MESH : MAUVAIS FORMAT : ',FFORMAT
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'OPEN_MESH: BAD FILE FORMAT: ',FFORMAT
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+      END SELECT
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
+\end{lstlisting}
+%
+Their goal is just to test the format value and redirect to the
+format-specified implementation of the function.\\
+%
+The modules of the third part contain the implementation of those format
+specific functions.\\
+%
+Each file is associated to an id which is associated to a Fortran custom-type
+object defined in the format module. This object contains any information
+necessary to running Hermes with the format (for example: the number of nodes,
+elements\ldots).
+
+
+
+%
+%--------------------------------------------------------------------------------
+\section{Serafin Format}
+%--------------------------------------------------------------------------------
+%
+
+%
+\subsection{Format description}
+%
+The SERAFIN format is a Format Binary file (Each record is written in-between
+two tags, 4-bytes-integers, containing the size of the record) composed of
+the list of following records:
+\begin{itemize}
+\item TITLE: title of the mesh (80 characters long)
+\item NBV1,NBV2: Number of variables: with a linear discretisation, with a
+quadratic discretisation, NBV2 is now obsolete its value is 0.
+\item NBV1+NBV2 records:
+\begin{itemize}
+\item NAME AND UNIT OF A VARIABLE (32 characters long)
+\end{itemize}
+\item 1,0,0,0,0,0,NPLAN,NPTFR,NPTIR,HAS\_DATE: NPLAN is the number of planes
+this is only in a 3D mesh, NPTFR and NPTIR are only present in a partitioned
+file they are respectively the number of boundary points and the number of
+interface points
+\item If HAS\_DATE is not equal to 0 then the following record is in the
+file:\\ YEAR,MONTH,DAY,HOUR,MINUTE,SECOND: date of the creation of the file
+\item NELEM, NPOIN, NDP, 1: Number of elements, Number of points, number of
+points per element
+\item IKLE: connectivity table: array of dimension (NDP,NELEM) whereas in
+\telemacsystem the dimensions are (NELEM,NDP)
+\item IPOBO/KNOLG: array of integer dimension NPOIN, IPOBO contains 0 for the
+internal points and it provides a numbering of the boundary points for the
+others. If the file is partitioned (i.e. parallel run of the code) instead it
+is called KNOLG and it contains the local to global numbering of the mesh
+points
+\item X array of real dimension NPOIN, contains the X coordinates of the mesh
+points
+\item Y array of real dimension NPOIN, contains the Y coordinates of the mesh
+points
+\item The following are then found for each time step:
+\begin{itemize}
+\item TIME: a real, time value for the time step
+\item Values for variable 1 at time TIME, dimension NPOIN
+\item \ldots
+\item Values for variable NBV1+NBV2 at time TIME, dimension NPOIN
+\end{itemize}
+\end{itemize}
+
+%
+\subsection{New functionalities in Hermes}
+%
+To allow the Hermes functions to be generic, the way to read/write SERAFIN
+format was modified. Before Hermes, a normal read/write structure was used,
+because of that there was a lot of calls to the "rewind" functions and
+constraints on how to read/write. Especially when reading the data informations
+as the file was read sequentially (i.e. always starting for the begin of the
+file and having to skip things to get to the data you wanted).\\
+%
+To change that the "stream" access was used instead, it allows to read the file
+as a C binary file (i.e. it treats the file as a continuous sequence of bytes,
+addressable by a positive integer starting from 1). By building a map when
+opening the file we can have "direct" access to the data needed.\\
+%
+Here below is the object used for the SERAFIN format the first part is the map
+of the file and the second one some value from the file that are frequently
+needed so that the file is not reread for those.\\
+%
+A couple of fixed values are also set such as the size of single/double
+precision for integer and real as well as the size of string (title, variable
+name and unit...).
+%
+\begin{lstlisting} 
+integer, parameter :: is = 4 ! integer size
+integer, parameter :: i4 = selected_int_kind(5) ! integer size
+integer, parameter :: i8 = selected_int_kind(15) ! integer on 8 bytes size
+integer, parameter :: r4 = selected_real_kind(5) ! single precision size
+integer, parameter :: r8 = selected_real_kind(15) ! double precision size
+integer, parameter :: var_size = 32 ! size of a variable text
+integer, parameter :: title_size = 80 ! size of a title
+!
+type srf_info
+  ! size of elements
+  integer :: rs ! real size (4 or 8)
+  ! position in file
+  integer :: pos_title 
+  integer :: pos_nvar != pos_title + 4 + title_size + 4
+  integer :: pos_varinfo != pos_nvar + 4 + 2*is + 4
+  integer :: pos_ib != pos_varinfo + 4 + nvar*var_size + 4
+  integer :: pos_date != pos_ib + 4 + 10*is + 4
+  integer :: pos_num != pos_date + (ib(10).ne.0)*(4 + 6*is + 4)
+  integer :: pos_ikle != pos_num + 4 + 4*is + 4 
+  integer :: pos_ipobo != pos_ikle + 4 + nelem*ndp*is + 4
+  integer :: pos_coord != pos_ipobo + 4 + npoin*is + 4
+  integer :: pos_data != pos_coord + (4 + npoin*rs + 4)*ndim
+  ! computed informations
+  integer :: size_data != 4 + npoin*rs + 4
+  integer :: size_data_set != 4 + rs + 4 + nvar*(4 + npoin*rs + 4)
+  ! stocked quantities and small variables
+  integer :: ntimestep
+  integer :: npoin
+  integer :: nvar
+  integer :: nelem
+  integer :: ndp
+  integer :: nplan
+  integer :: nptir
+  integer :: ndim
+  integer :: typ_elt
+  character(len=var_size),allocatable :: var_list(:) 
+  ! boundary informations
+  integer :: typ_bnd_elt
+  integer :: nptfr
+  integer :: ncli
+end type srf_info
+\end{lstlisting}
+%
+The \verb!RS! sets the size of the real value (4 for single precision SERAFIN
+format, 8 for double precision SERAFIND format).
+%
+%--------------------------------------------------------------------------------
+\section{MED format}
+%--------------------------------------------------------------------------------
+%
+\subsection{Format description}
+%
+The goal of the MED format (EDF and CEA, L-GPL licence) is to standardize
+exchange of data between scientific computational codes. For instance, this
+format is used by the SALOME platform (\url{http://www.salome-platform.org})
+to manage transfer between the different modules. The MED format is a compact
+binary storage of meshes, results and computational data based on the HDF5
+library. The generic storage structure of the MED format offers to store
+several meshes, fields, profiles, groups at different times in the same file.
+The mesh can be structured or not, based on different elements and can change
+in time. For HPC aspects, reading and writing can be executed in parallel in
+the single file. More information can be found in the MED documentation
+(\url{http://www.code-aster.org/outils/med/html/index.html}).
+%
+\subsection{New functionalities in Hermes}
+%
+To adapt to \telemacsystem a structure was defined for the boundary file to work with
+MED. The group structure (which allows to define a list of points/elements as a
+group) available in MED was used. The MED boundary file follows this structure:
+\begin{itemize}
+\item NGROUP: Number of groups
+\item LIHBOR,LIUBOR,LIVBOR,LITBOR,GROUP: (Type of boundary on h,u,v,tracer and
+the name of the group)
+\end{itemize}
+%
+Here is a simple example:
+\begin{verbatim}
+3
+2 2 2 2 BOUNDARY1
+5 4 4 4 BOUNDARY2
+4 5 5 5 BOUNDARY3
+\end{verbatim}
+
+% 
+%--------------------------------------------------------------------------------
+\section{How to add a new format}
+%--------------------------------------------------------------------------------
+%
+To add a new format (named \textit{format}) the following steps must be fulfilled:
+\begin{itemize}
+\item Create the file "utils\_\textit{format}.f" and implement all the functions
+described in \ref{listfunc}
+\item Update all the functions generic file to add a new branch to the "if"
+statement for \textit{format}
+\item Same thing in \verb!bief\_open\_files.f! and \verb!bief_close_files.f!
+\item Add in all the dictionary the option to choose \textit{format} for the
+"FORMAT" keywords 
+\end{itemize}
+
+%
+%--------------------------------------------------------------------------------
+\section{Error Handling}
+%--------------------------------------------------------------------------------
+%
+A few error values where created in \verb!declarations_special.f!:
+\begin{itemize}
+\item \verb!HERMES_RECORD_UNKNOWN_ERR!
+\item \verb!HERMES_VAR_UNKNOWN_ERR!
+\item \verb!HERMES_FILE_ID_ALREADY_IN_USE_ERR!
+\item \verb!HERMES_FILE_NOT_OPENED_ERR!
+\item \verb!HERMES_MAX_FILE_ERR!
+\item \verb!HERMES_WRONG_ARRAY_SIZE_ERR!
+\item \verb!HERMES_MED_NOT_LOADED_ERR!
+\item \verb!HERMES_UNKNOWN_ELEMENT_TYPE_ERR!
+\item \verb!HERMES_WRONG_ELEMENT_TYPE_ERR!
+\item \verb!HERMES_UNKNOWN_GROUP_ERR!
+\item \verb!HERMES_WRONG_HDF_FORMAT_ERR!
+\item \verb!HERMES_WRONG_MED_FORMAT_ERR!
+\item \verb!HERMES_WRONG_MED_VERSION_ERR!
+\item \verb!HERMES_WRONG_AXE_ERR!
+\end{itemize}
+
+
+%
+%--------------------------------------------------------------------------------
+\section{Future work}
+%--------------------------------------------------------------------------------
+%
+Here is a list of modifications that could be interesting in the future:
+\begin{itemize}
+\item Switch to boundary on elements in Hermes and in \telemacsystem
+\item Add 3D mesh evolving with time (MED only), pending development in
+ParaVis to handle that
+\item Use MED possibility to have multiple meshes for coupling
+\end{itemize}

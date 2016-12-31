@@ -1,0 +1,82 @@
+/----------------------------------------------------------------------/
+/  TOMAWAC                                                             /
+/----------------------------------------------------------------------/
+/
+/----------------------------------------------------------------------/
+/  COMPUTER INFORMATIONS                                               /
+/----------------------------------------------------------------------/
+/
+/FORTRAN FILE                                     =
+GEOMETRY FILE                                     = trenchScale10.sel
+BOUNDARY CONDITIONS FILE                          = trenchWave.cli
+2D RESULTS FILE                                   = tomScale10.res
+/
+/----------------------------------------------------------------------/
+/  GENERAL INFORMATIONS - OUTPUTS                                      /
+/----------------------------------------------------------------------/
+/
+TITLE = 'SANDPIT benchmark 2: Waves crests normal to a trench'
+/
+INITIAL STILL WATER LEVEL = 2.55
+VARIABLES FOR 2D GRAPHIC PRINTOUTS =
+'HM0,DMOY,FM01,TMOY,FX,FY,TPR5,FMOY,UWB'
+PERIOD FOR LISTING PRINTOUTS                      = 5
+PERIOD FOR GRAPHIC PRINTOUTS                      = 5
+/
+/----------------------------------------------------------------------/
+/  DISCRETISATION                                                      /
+/----------------------------------------------------------------------/
+/
+TIME STEP                                         = 1.0
+NUMBER OF TIME STEP                               = 120
+NUMBER OF DIRECTIONS                              = 10
+MINIMAL FREQUENCY                                 = 0.01
+FREQUENTIAL RATIO                                 = 1.1
+NUMBER OF FREQUENCIES                             = 50
+/
+/----------------------------------------------------------------------/
+/  INITIAL CONDITIONS                                                  /
+/----------------------------------------------------------------------/
+/
+TYPE OF INITIAL DIRECTIONAL SPECTRUM              = 6
+INITIAL SIGNIFICANT WAVE HEIGHT                   = 0.8
+INITIAL PEAK FREQUENCY                            = 0.21
+INITIAL MAIN DIRECTION 1                          = 90.0
+INITIAL DIRECTIONAL SPREAD 1                      = 0.1
+INITIAL PEAK FACTOR                               = 3.3
+/
+/----------------------------------------------------------------------/
+/  BOUNDARY CONDITIONS                                                 /
+/----------------------------------------------------------------------/
+/
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM             = 6
+BOUNDARY SIGNIFICANT WAVE HEIGHT                  = 0.8
+BOUNDARY PEAK FREQUENCY                           = 0.21
+BOUNDARY MAIN DIRECTION 1                         = 90.0
+BOUNDARY DIRECTIONAL SPREAD 1                     = 0.1
+BOUNDARY PEAK FACTOR                              = 3.3
+/
+/----------------------------------------------------------------------/
+/  COMPUTATION OPTIONS                                                 /
+/----------------------------------------------------------------------/
+/
+INFINITE DEPTH                                    = NO
+/MINIMUM WATER DEPTH                               = 0.1
+/CONSIDERATION OF SOURCE TERMS                     = YES
+CONSIDERATION OF A STATIONARY CURRENT             = YES
+/CONSIDERATION OF TIDE                             = YES
+/
+/----------------------------------------------------------------------/
+/  TERMES SOURCES                                                      /
+/----------------------------------------------------------------------/
+/
+IMPLICITATION COEFFICIENT FOR SOURCE TERMS        = 0
+NUMBER OF ITERATIONS FOR THE SOURCE TERMS         = 100
+CONSIDERATION OF A WIND                           = NO
+/WIND GENERATION                                   = 1
+/WHITE CAPPING DISSIPATION                         = 1
+BOTTOM FRICTION DISSIPATION                       = 1
+/NON-LINEAR TRANSFERS BETWEEN FREQUENCIES         = 1
+/DEPTH-INDUCED BREAKING DISSIPATION                = 1
+/
+/----------------------------------------------------------------------/

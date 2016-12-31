@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Telemac Documentation
+%  Example of the TelemacDoc class
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[Stbtel]{../../data/TelemacDoc} % Default font size and left-justified equations
+%\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+
+\begin{document}
+
+\let\cleardoublepage\clearpage
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\title{Stbtel}
+\subtitle{User Manual}
+\version{7.2}
+\author{Otto Mattic}
+\date{\today}
+\maketitle
+\clearpage
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+\thispagestyle{empty}
+
+\TelemacCopyright{}
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+
+\pagestyle{empty} % No headers
+
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+
+%----------------------------------------------------------------------------------------
+%	The whole thing
+%----------------------------------------------------------------------------------------
+\input{./latex/01_introduction.tex}
+\input{./latex/02_io.tex}
+\input{./latex/03_mesh_treatment.tex}
+\input{./latex/04_bathy.tex}
+\input{./latex/05_dry_element.tex}
+\input{./latex/06_converter.tex}
+\input{./latex/apdx_04_steering_example.tex}
+\input{./latex/apdx_07_serafin.tex}
+\input{./latex/apdx_10_bnd.tex}
+
+\bibliographystyle{plainnat}
+\nocite{*}
+\bibliography{../../data/biblio}
+
+\end{document}

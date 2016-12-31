@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * 
+ * This file is released under the 3-clause BSD license. See COPYING-BSD.
+ *
+ -->
+<refentry xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:db="http://docbook.org/ns/docbook" version="5.0-subset Scilab" xml:id="MASCARET_compute_BC" xml:lang="fr">
+    <refnamediv>
+        <refname>MASCARET_compute_BC</refname>
+        <refpurpose>Fonction de simulation d'un ou plusieurs pas de temps avec conditions limites.</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <title>Séquence d'appel</title>
+        <synopsis>[erreur]=MASCARET_compute_BC(id,TpsInitial, TpsFinal, PasTps, TpsCl, Cl1, Cl2, impression)</synopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Arguments</title>
+        <variablelist>
+            <varlistentry>
+                <term>erreur</term>
+                <listitem>
+                    <para>Argument de sortie indiquant la présence d'erreur si différent de zero</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>id</term>
+                <listitem>
+                    <para>Identifiant de l'instance Mascaret retourné par <link linkend="MASCARET_create">MASCARET_create</link></para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TpsInitial</term>
+                <listitem>
+                    <para>Temps initial du calcul</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TpsFinal</term>
+                <listitem>
+                    <para>Temps final du calcul</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>PasTps</term>
+                <listitem>
+                    <para>Pas de temps interne du calcul</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>TpsCl</term>
+                <listitem>
+                    <para>Le vecteur temps commun à toutes les nouvelles conditions limites, dimensionné comme le nombre de lignes de Cl1 et Cl2.</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Cl1</term>
+                <listitem>
+                    <para>Composante 1 de la condition limite, c'est une matrice décrivant l'évolution des nouvelles conditions limites</para>
+                    <para>Cette matrice est dimensionnée en ligne comme le vecteur TpsCl et en colonne par le nombre condition limite</para>
+                    <para>Suivant le type de la condition limite, on a  : Type 1 ou 3 --> débit ; Type 2 --> cote ; Type 7 --> cote inf</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Cl2</term>
+                <listitem>
+                    <para>Composante 2 de la condition limite, c'est une matrice décrivant l'évolution des nouvelles conditions limites</para>
+                    <para>Cette matrice est dimensionnée en ligne comme le vecteur TpsCl et en colonne par le nombre condition limite (comme Cl1)</para>
+                    <para>Suivant le type de la condition limite, on a  : Type 1 ou 2 --> pas utilisé ; Type 3 --> cote ; Type 7 --> cote sup</para>
+                </listitem>
+            </varlistentry>
+            <varlistentry>
+                <term>impression</term>
+                <listitem>
+                    <para>Impression (écriture) sur les fichiers listing (1-> Vrai 0-> Faux)</para>
+                </listitem>
+            </varlistentry>
+        </variablelist>
+    </refsection>
+    <refsection>
+        <title>Description</title>
+        <para>Fonction qui permet d'effectuer une simulation d'un ou plusieurs pas de temps en spécifiant de nouvelles conditions limites. C'est notamment cette fonction qui va calculer un nouvel état courant à partir du modèle courant et de l'état précédent</para>
+        <para>Une autre fonction de l'API permet également de faire la même chose avec des paramètres différents, il s'agit de <link linkend="MASCARET_compute">MASCARET_compute</link></para>
+        <para>Avant d'utiliser cette fonction, il est nécessaire d'avoir initialiser l'état Mascaret, c'est à dire d'avoir fait appel à une des fonctions <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>, <link linkend="MASCARET_initState">MASCARET_initState</link> ou <link linkend="MASCARET_importXml">MASCARET_importXml</link> avec le dernier paramètre à 0.</para>
+    </refsection>
+    <refsection>
+        <title>Exemple</title>
+        <programlisting role="example">
+toolbox_dir=getenv("toolbox_dir");
+c = filesep();
+
+// creation of the MASCARET model
+[err, id] = MASCARET_create();
+assert_checktrue(id>0);
+
+// read data from files
+path_xml = "file://"+toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.xcas";
+TabNomFichier = [strsubst(path_xml,'\','/'), ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.geo", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_0.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1_1.loi", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lis", ..
+                 toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.opt"];
+ 
+TypeNomFichier = ["xcas","geo","loi","loi","listing","res"];
+impression = 0;
+err = MASCARET_importModel(id,TabNomFichier,TypeNomFichier,impression);
+assert_checkequal(err,0);        
+        
+// get Boundary Conditions info        
+[err,pasTpsCalcul]=MASCARET_getDouble(id,"Model.DT",0,0,0);
+assert_checkequal(err,0);  
+[err,nbCl]=MASCARET_getNbBoundCond(id);
+assert_checkequal(err,0);  
+for i = 1:nbCl
+    [err,nomCL,numLoi]=MASCARET_getNameBndCond(id,i);
+    assert_checkequal(err,0);
+    printf("Name of the Boundary Condition # %d is : %s corresponding to the graph # %d\n", i, nomCL, numLoi);
+end
+
+// initialisation
+err = MASCARET_initStateName(id,toolbox_dir+c+"demos"+c+"Help"+c+"demo1"+c+"demo1.lig",impression);
+assert_checkequal(err,0);
+
+// computation
+tailleTpsCL = 3;
+cl2 = zeros(tailleTpsCL,nbCl); // not used
+cl1 = zeros(tailleTpsCL,nbCl);
+cl1(:,2) = 2.;
+tpsCalcul0   =      0.0;
+deltaT       =    600.0;
+tpsCalcul1   =   deltaT; 
+tpsCl = (tpsCalcul0:deltaT/2:tpsCalcul1).';
+cl1(:,1) = 150./3600.* tpsCl;
+err = MASCARET_compute_BC(id,tpsCalcul0, tpsCalcul1, pasTpsCalcul, tpsCl, cl1, cl2, impression);
+assert_checkequal(err,0);
+
+// model deletion
+err = MASCARET_delete(id);
+assert_checkequal(err,0);
+		</programlisting>
+    </refsection>
+    <refsection role="see also">
+        <title>Voir aussi</title>
+        <simplelist type="inline">
+            <member>
+                <link linkend="MASCARET_compute">MASCARET_compute</link>
+            </member>
+            <member>
+                <link linkend="MASCARET_initStateName">MASCARET_initStateName</link>
+            </member>
+            <member>
+                <link linkend="MASCARET_initState">MASCARET_initState</link>
+            </member>
+        </simplelist>
+    </refsection>
+</refentry>

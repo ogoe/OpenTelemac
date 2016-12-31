@@ -1,0 +1,24 @@
+/
+/**********************************************************************/
+/                                                                      /
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE               /
+/                          STBTEL  V5.5                                /
+/                                                                      /
+/                  Traitement d'un maillage Selafin                    /
+/                 Avec elimination des elements secs                   /
+/  SOGREAH                                                26/01/1999   /
+/**********************************************************************/
+/
+/
+FICHIER UNIVERSEL                           : './hydro'
+FICHIER DE GEOMETRIE POUR TELEMAC           : './geo.slf'
+FICHIER DES CONDITIONS AUX LIMITES          : './geo.cli'
+/
+MAILLEUR                                    : SELAFIN
+/
+ELIMINATION DES DEPENDANCES ARRIERES        : YES
+DECOUPAGE DES TRIANGLES SURCONTRAINTS       : NO
+DISTANCE MINIMALE ENTRE DEUX POINTS         : 0.01
+/
+DECOUPAGE DES TRIANGLES EN QUATRE : YES
+&FIN

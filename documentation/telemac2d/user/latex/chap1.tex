@@ -1,0 +1,56 @@
+\chapter{INTRODUCTION}
+\label{ch:intro}
+
+
+\section{Presentation of \telemac{2D} software}
+
+ The \telemac{2D} code solves depth-averaged free surface flow equations as derived first by Barr\'{e} de Saint-Venant in 1871. The main results at each node of the computational mesh are the depth of water and the depth-averaged velocity components. The main application of \telemac{2D} is in free-surface maritime or river hydraulics and the program is able to take into account the following phenomena:
+
+\begin{enumerate}
+\item  Propagation of long waves, including non-linear effects,
+\item  Friction on the bed,
+\item  The effect of the Coriolis force,
+\item  The effects of meteorological phenomena such as atmospheric pressure, rain or evaporation and wind,
+\item  Turbulence,
+\item  Supercritical and subcritical flows,
+\item  Influence of horizontal temperature and salinity gradients on density,
+\item  Cartesian or spherical coordinates for large domains,
+\item  Dry areas in the computational field: tidal flats and flood-plains,
+\item  Entrainment and diffusion of a tracer by currents, including creation and decay terms,
+\item  Particle tracking and computation of Lagrangian drifts,
+\item  Treatment of singularities: weirs, dikes, culverts, etc.,
+\item  Dyke breaching,
+\item  Drag forces created by vertical structures,
+\item  Porosity phenomena,
+\item  Wave-induced currents (by coupling or chaining with the ARTEMIS and TOMAWAC modules),
+\item  Coupling with sediment transport,
+\item  Coupling with water quality tools.
+\end{enumerate}
+
+ The software has many fields of application. In the maritime sphere, particular mention may be made of the sizing of port structures, the study of the effects of building submersible dikes or dredging, the impact of waste discharged from a coastal outfall or the study of thermal plumes. In river applications, mention may also be made of studies relating to the impact of construction works (bridges, weirs, tubes), dam breaks, flooding or the transport of decaying or non-decaying tracers. \telemac{2D} has also been used for a number of special applications, such as the bursting of industrial reservoirs, avalanches falling into a reservoir, etc.
+
+ \telemac{2D} was developed initially by the National Hydraulics and Environment Laboratory (Laboratoire National d'Hydraulique et Environnement - LNHE) of the Research and Development Directorate of the French Electricity Board (EDF-R\&D), and is now managed by a consortium of other consultants and research institutes, more informations can be found in the website www.opentelemac.org. Like previous versions of the program, version 7.0 complies with EDF-R\&D's Quality Assurance procedures for scientific and technical programs. This sets out rules for developing and checking product quality at all stages. In particular, a program covered by Quality Assurance procedures is accompanied by a validation document  that describes the field of use of the software and a set of test cases. This document can be used to determine the performance and limitations of the software and define its field of application. The test cases are also used for developing the software and are checked each time new versions are produced.
+
+
+\section{Programming by the user}
+
+ Users may wish to program particular functions of a simulation module that are not provided for in the standard version of the TELEMAC system. This can be done in particular by modifying specific subroutines called user subroutines. These subroutines offer an implementation that can be modified (provided that the user has a minimum knowledge of Fortran and with the help of the guide for programming in the TELEMAC system).
+
+ The following procedure should be followed:
+
+\begin{enumerate}
+\item  Recover the standard version of the subroutines provided with the system, and copy them into a file that will be the specific FORTRAN FILE of the given case, see section \ref{subs:FORT:user:file} for more details,
+
+\item  Modify the subroutines according to the model you wish to build,
+
+\item  Link up the set of subroutines into a single FORTRAN file that will be compiled during the \telemac{2D} start procedure.
+\end{enumerate}
+
+ During this programming phase, users must access the various software variables. By using the structures of Fortran 90 gathered into a "module" type component, access is possible from any subroutine.
+
+ The set of data structures is gathered in FORTRAN files referred to as modules. In the case of \telemac{2D}, the file is called DECLARATION\_TELEMAC2D and is provided with the software. To access \telemac{2D} data, simply insert the command USE DECLARATIONS\_TELEMAC2D at the beginning of the subroutine. It is also necessary to add the command USE BIEF.  
+
+
+
+ Almost all the arrays used by \telemac{2D} are declared in the form of a structure with pointers. For example, access to the water depth variable is in the form H\%R where the \%R indicates that a pointer of real type is being used. If the pointer is of integer type, the \%R is replaced by a \%I. However, to avoid having to handle too many \%R and \%I, a number of aliases have been defined, such as for example the variables NPOIN, NELEM, NELMAX and NPTFR.
+

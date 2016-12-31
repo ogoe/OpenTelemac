@@ -1,0 +1,48 @@
+ \chapter {Description of Serafin file standard}
+\label{tel2d:app3}
+ This is a binary file.
+
+ The records are listed below:
+
+\begin{itemize}
+\item  A record containing the title of the study (72 characters) and a 8 characters string indicating the type of format (SERAFIN or SERAFIND)
+
+\item  A record containing the two integers NBV(1) and NBV(2) (number of linear and quadratic variables, NBV(2) with the value of 0 for Telemac, as quadratic values are not saved so far),
+
+\item  NBV(1) records containing the names and units of each variable (over 32 characters),
+
+\item  A record containing the integers table IPARAM (10 integers, of which only the 6 are currently being used),
+\begin{itemize}
+\item  if IPARAM (3) $\neq$ 0: the value corresponds to the x-coordinate of the origin of the mesh,
+
+\item  if IPARAM (4) $\neq$ 0: the value corresponds to the y-coordinate of the origin of the mesh,
+
+\item  if IPARAM (7) $\neq$ 0: the value corresponds to the number of  planes on the vertical (3D computation),
+
+\item  if IPARAM (8) $\neq$ 0: the value corresponds to the number of boundary points (in parallel),
+
+\item  if IPARAM (9) $\neq$ 0: the value corresponds to the number of interface points (in parallel),
+
+\item  if IPARAM (8) or IPARAM(9)$\neq$0: the array IPOBO below is replaced by the array KNOLG (total initial number of points). All the other numbers are local to the sub-domain, including IKLE.
+
+\item  if IPARAM (10) = 1: a record containing the computation starting date,
+\end{itemize}
+\item  A record containing the integers NELEM,NPOIN,NDP,1 (number of elements, number of points, number of points per element and the value 1),
+
+\item  A record containing table IKLE (integer array of dimension (NDP,NELEM) which is the connectivity table. N.B.: in \telemac{2d}, the dimensions of this array are (NELEM,NDP)),
+
+\item  A record containing table IPOBO (integer array of dimension NPOIN); the value of one element is 0 for an internal point, and gives the numbering of boundary points for the others,
+
+\item  A record containing table X (real array of dimension NPOIN containing the abscissae of the points),
+
+\item  A record containing table Y (real array of dimension NPOIN containing the ordinates of the points),
+\end{itemize}
+
+ Next, for each time step, the following are found:
+
+\begin{itemize}
+\item  A record containing time T (real),
+
+\item  NBV(1)+NBV(2) records containing the results tables for each variable at time T.
+\end{itemize}
+

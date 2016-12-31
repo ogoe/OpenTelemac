@@ -1,0 +1,107 @@
+
+
+\chapter{  GENERAL PARAMETER DEFINITION FOR THE COMPUTATION}
+\label{ch:gen:par:def:comp}
+ General parameter definition for the computation is done only in the steering file.
+
+ Time information is supplied by the three keywords \telkey{TIME STEP} (real), \telkey{NUMBER OF TIME STEPS }(integer) and \telkey{DURATION}. The first defines the time separating two consecutive instants of the computation (but not necessarily two withdrawals from the results file). The total duration of the computation may be supplied by means of a number of time steps (keyword \telkey{NUMBER OF TIME STEPS}) or in the form of a total simulation period expressed in seconds (keyword \telkey{DURATION}). In the former case, the total duration is obviously equal to the time step value multiplied by the number of time steps.
+
+ If a steering file contains the keywords \telkey{DURATION} and \telkey{NUMBER OF TIME STEPS}, \telemac{2D} uses the one that produces the longer simulation. In addition, if the keyword \telkey{DURATION} is used and does not correspond to a whole number of time steps, \telemac{2D} will take the integer immediately higher.
+
+ The date and hour corresponding to the initial state of the computation are supplied by the keywords \telkey{ORIGINAL DATE OF TIME} (YYYY~;MM~;DD) and \telkey{ORIGINAL HOUR OF TIME} (HH;MM;SS). This is particularly important if the tide generating forces are taken into account (see \ref{sec:astral:pot}) and are generally necessary when using tidal harmonic constituents databases.
+
+ The title of the computation is specified by the keyword \telkey{TITLE}.
+
+
+\section{Criteria for stopping a computation}
+
+ Independently of normal time indications (number of time steps and time step value), \telemac{2D} offers two possibilities for conditionally stopping the computation:
+
+\begin{itemize}
+\item  \underbar{Stopping when reaching a steady state}: With this function, it is possible to start a computation, simulate a transient flow and stop the computation when a steady state is reached. The last time step in the results file created in this way can be used as an initial state for other computations (e.g. tracer transport). The test is triggered by indicating YES for the logical keyword \telkey{STOP IF A STEADY STATE IS REACHED} . It is then possible to define the permissible area of tolerance using the keyword \telkey{STOP CRITERIA}. This keyword is a table of three real numbers, representing the tolerance assigned to the velocity, depth and tracer. The computation is stopped when the absolute increment values of these variables between two time steps at all nodes are below the limits indicated. Assessing the right criterion depends on the case under study. It should be stressed, however, that this function is inoperative in the case of fundamentally non-stationary flows such as Karman eddies behind bridge piers.
+
+\item  \underbar{Stopping in cases of divergence}: This function is used to interrupt a computation if there is divergence. The principle is the same as in the previous case. The option is activated with the keyword \telkey{CONTROL OF LIMITS}. The extreme values are indicated with the keyword \telkey{LIMIT VALUES}. This is a table of 8 real numbers corresponding successively to:
+\begin{itemize}
+\item  The minimum depth value H (by default -1000),
+
+\item  The maximum depth value H (by default +9000),
+
+\item  The minimum velocity value U (by default -1000),
+
+\item  The maximum velocity value U (by default +1000),
+
+\item  The minimum velocity value V (by default -1000),
+
+\item  The maximum velocity value V (by default +1000),
+
+\item  The minimum tracer value (by default -1000),
+
+\item  The maximum tracer value (by default +1000).
+\end{itemize}
+\end{itemize}
+
+\section{ Control sections}
+\label{sec:contr:sect}
+ A control section offers the possibility of obtaining the instantaneous and cumulated flow rates through a specific segment of the domain.
+
+ The weak formulation of the no-flux boundary condition through solid boundaries raises a theoretical problem for computing the flow rates. Either they are compatible with the results file, or they are compatible with the weak formulation. To be compatible with the weak formulation, use the key-word \telkey{COMPATIBLE COMPUTATION OF FLUXES}. The difference may reach a few percents.
+
+ It is also possible to obtain the cumulated flow rates for each control section by activating the logical keyword \telkey{PRINTING CUMULATED FLOWRATES}. In that case, to improve the quality of results, the treatment of the control section is done at each time step and not only at each time step concerned by a printing on output listing.
+
+ The control sections can be managed using 2 different procedures. The first one uses only a keyword and is not valid when running in parallel mode. The second one (available since release 6.0) is based on an external configuration file and is compatible with the parallel mode. It is strongly recommended to use the new procedure. The old procedure will be probably removed in a future release.
+
+
+\subsection{ Configuration with keywords only}
+
+ The section is defined using the keyword \telkey{CONTROL SECTIONS}, which is an array of pairs of integers separated by semi-colons, containing the numbers of the beginning and the ending point of the section.
+
+ For example, the values: 611;54 ; 651;5210 define 2 control sections. The first one is defined between points 611 and 54, the second one between points 651 and 5210.
+
+ The results concerning the flow rates are written by \telemac{2D} on the output control listing. This information is the value of the instantaneous flow rate and the cumulated positive and negative flow rates (volume going through the section calculated from the beginning of the simulation). The sign is determined with the following rule: going from the beginning to the ending point of the section, the flow is positive when going from right to left.
+
+ The user may also use the subroutine FLUXPR (Bief library) to exploit information connected with the control sections.
+
+
+\subsection{ Configuration with external file}
+
+ The user must supply the name of the sections configuration file using the keyword \telkey{SECTIONS INPUT FILE}.
+
+ In parallel mode, this file will be modified by the mesh partitioner so that it corresponds locally to every sub-domain.
+
+ The file format is the following:
+
+\begin{itemize}
+\item  one comment line (free but must be here),
+
+\item  two integers: number of sections, steering integer (if negative: node numbers are given, if positive coordinates are given),
+
+\item  two lines per section:
+
+\begin{itemize}
+
+\item  24 characters for a section name, followed by:
+
+\item  begin and end node number or begin and end coordinates.
+
+\end{itemize}
+\end{itemize}
+
+ Example:
+\begin{lstlisting}[language=bash]
+# Control sections definition 5--1
+Wesxan_outflow
+46 70
+Wesxan_Middle
+639 263
+Wesxan_Inflow
+480 414
+Wesxan_crazy
+142 147
+Wesxan_even_worse
+144 7864
+\end{lstlisting}
+ Headers and printouts on control sections may be modified in subroutine fluxpr\_telemac2d (\telemac{2D} library).
+
+ The printouts will be in the file named by \telkey{SECTIONS OUTPUT FILE}.
+
+

@@ -1,0 +1,133 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Telemac Documentation
+%  Example of the TelemacDoc class
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[Sisyphe]{../../data/TelemacDoc} % Default font size and left-justified equations
+%\documentclass[Telemac2D,french]{TelemacDoc} % Default font size and left-justified equations in french
+
+\begin{document}
+
+\let\cleardoublepage\clearpage
+
+%noindent for the whole document 
+\setlength\parindent{0pt}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\title{Sisyphe}
+\subtitle{User Manual}
+\version{7.2}
+\author{Pablo Tassi}
+\date{\today}
+\maketitle
+\clearpage
+
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+\thispagestyle{empty}
+
+\TelemacCopyright{}
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+
+\pagestyle{empty} % No headers
+
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again  
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 0: Contributors
+%----------------------------------------------------------------------------------------
+\pagebreak
+This manual was possible thanks to the contribution of <Max Louyot, Florian Cordier, Rebekka Kopmann, Magali Jodeau, add your name here>
+\pagebreak
+%----------------------------------------------------------------------------------------
+%	CHAPTER 1: Introduction
+%----------------------------------------------------------------------------------------
+
+\input{./latex/IntroductionSisyphe}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 2: Bedload transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/BedloadTransport}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 3: Suspended sediment transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/SuspendedSedimentTransport}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 4: Non uniform sediment transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/NonUniformSedimentTransport.tex}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 5: Waves
+%----------------------------------------------------------------------------------------
+
+\input{./latex/InfluenceWaves}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 6: Cohesive sediment transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/CohesiveSediment}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 7: Mixed sediment transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/MixedSediment}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 8: 3D bedload transport
+%----------------------------------------------------------------------------------------
+
+\input{./latex/3DBedloadTransport.tex}
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 9: How To?
+%----------------------------------------------------------------------------------------
+
+\input{./latex/HowTos}
+
+%\input{./latex/Citations}
+
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 10: Documents using Sisyphe
+%----------------------------------------------------------------------------------------
+\input{./latex/WorksUsingSisyphe.tex}
+
+%---------------------------------------------------------------------------
+% Bibliography
+%---------------------------------------------------------------------------
+\chapter{Bibliography}
+
+\bibliographystyle{plainnat}
+\nocite{*}
+\bibliography{../../data/biblio_sisyphe}
+
+\end{document}

@@ -1,0 +1,89 @@
+/ no influence
+NON COHESIVE BED POROSITY= 0.4
+/CORRECTION FROTTEMENT DE PEAU = 1
+/DEBUGGER : 1
+/
+/ Version 5.7
+/ Dell 2.8 GHz Linux, compilateur pgi : 0.43 s JMH 24/04/2007
+/ HP C3700, compilateur HP            : 0.8  s CV  07/05/2007
+/ HP C3700, compilateur Nag           : 3    s JMH 30/04/2007
+/
+/
+/ A PARTIR DE VERSION 5.8 : EFFET DE PENTE, REFERENCE REFAITE.
+/
+SLOPE EFFECT : YES
+FORMULA FOR DEVIATION   : 1
+FORMULA FOR SLOPE EFFECT : 1
+BETA =0
+/
+/ Version 5.8
+/
+/ Dell 2.8 GHz Linux, compilateur pgi   :  1  s 15/01/2008
+/ Dell 2.8 GHz Linux, compilateur Intel :  2  s 15/01/2008
+/ HP C3700, compilateur HP              :  2  s 09/01/2008
+/ HP C3700, compilateur Nag             :  3  s 15/01/2008
+/
+/ Version 5.9
+/
+/ Dell 2.8 GHz Linux, compilateur pgi   :  0  s   JMH 26/12/2008
+/ Dell 2.8 GHz Linux, compilateur Intel :  0  s   JMH 26/12/2008
+/ HP C3700, compilateur HP              :  1  s   JMH 03/02/2009
+/ HP C3700, compilateur Nag             :  3  s   JMH 24/12/2008 (Xmas)
+/
+/ Version 6.0
+/
+/ Dell 2.8 GHz Linux, compilateur Intel :  0  s JMH 10/12/2009
+/ HP C3700, compilateur HP              :  1  s JMH 10/12/2009
+/ HP C3700, compilateur Nag             :  3  s JMH 08/12/2009
+/
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++
+/ evolution d'une bosse - transport par charriage (formule N°30)
+/ +++++++++++++++++++++++++++++++++++++++++++++++++++++
+/
+/ NOMS FICHIERS
+/ +++++++++++++
+/
+GEOMETRY FILE FORMAT = 'SERAFIN '
+GEOMETRY FILE = geo_bosse.slf
+FORTRAN FILE      = sis_bosse.f
+/
+BOUNDARY CONDITIONS FILE = geo_bosse.cli
+RESULTS FILE = sis_bosse.slf
+/
+/ CONDITIONS DE CALCUL
+/ +++++++++++++++++++++
+TITLE = bosse
+STEADY CASE = VRAI
+/
+MASS-LUMPING = YES
+/
+/ ENTREES-SORTIES
+/ +++++++++++++++
+NUMBER OF PRIVATE ARRAYS = 1
+VARIABLES FOR GRAPHIC PRINTOUTS =
+U,V,S,H,B,E,M,TOB,QSBL,A
+MASS-BALANCE = VRAI
+/
+/PARAMETRES NUMERIQUES
+/ ++++++++++++++++++++
+/
+ZERO = 1e-12
+TETA = 0.5
+MINIMAL VALUE OF THE WATER HEIGHT = 0.1
+/
+/DUREE DU CALCUL
+/ ++++++++++++++
+NUMBER OF TIME STEPS = 1000
+GRAPHIC PRINTOUT PERIOD = 100
+LISTING PRINTOUT PERIOD = 10
+TIME STEP = 10.
+/
+/FROTTEMENT ET TRANSPORT SOLIDE
+/ +++++++++++++++++++++++++++++
+LAW OF BOTTOM FRICTION= 2
+FRICTION COEFFICIENT = 45.57
+/
+BED-LOAD TRANSPORT FORMULA = 30
+CRITICAL EVOLUTION RATIO = 0.5
+MEAN DIAMETER OF THE SEDIMENT = 0.000150
+/

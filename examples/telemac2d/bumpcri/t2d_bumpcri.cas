@@ -1,0 +1,58 @@
+ORIGIN COORDINATES : 12000;350000
+/
+/  HP C3700 MHz                   : 17 s 5.5  22/11/2004
+/  DELL LINUX 2.8 GHz   pgi 5.2   : 11 s 5.6  27/12/2005
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.7  17/04/2007
+/  HP C3700 MHz  compilateur Nag  : 34 s 5.7  17/04/2007
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 10 s 5.7  19/04/2007
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.8  13/11/2007
+/  HP C3700 MHz  compilateur Nag  : 33 s 5.8  20/12/2007
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 12 s 5.8  22/11/2007
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.9  15/10/2008 (16 procs OK)
+/  HP C3700 MHz  compilateur Nag  : 35 s 5.9  16/10/2008
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 10 s 5.9  15/10/2008
+/
+/  PARAMETERS CHANGED
+/
+/  HP C3700 MHz  compilateur HP   : 07 s 6.0  23/11/2009 (16 procs OK)
+/  HP C3700 MHz  compilateur Nag  : 19 s 6.0  25/11/2009
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 04 s 6.0  24/11/2009 (16 procs OK)
+/
+/  VERSION 6.2
+/
+/  HP C3700 MHz  compilateur HP   : 08 s 04/05/2012
+/
+FORTRAN FILE                   : t2d_bumpcri.f
+BOUNDARY CONDITIONS FILE: geo_bumpcri.cli
+GEOMETRY FILE              : geo_bumpcri.slf
+RESULTS FILE             : r2d_bumpcri.slf
+/----------------------------------------------------------------------/
+/                       OPTIONS GENERALES
+/----------------------------------------------------------------------/
+TITLE = 'TELEMAC 2D : ECOULEMENT TRANSCRITIQUE SUR UN OBSTACLE$'
+COMPUTATION CONTINUED = NO
+TIME STEP = 0.03
+NUMBER OF TIME STEPS = 1000
+GRAPHIC PRINTOUT PERIOD=100
+LISTING PRINTOUT PERIOD=200
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,S,B,Q,F,H,N,O,R,Z'
+LAW OF BOTTOM FRICTION = 0
+FRICTION COEFFICIENT = 80.
+VELOCITY DIFFUSIVITY = 0.
+IMPLICITATION FOR DEPTH = 1.
+IMPLICITATION FOR VELOCITY = 1.
+MASS-BALANCE : YES
+INFORMATION ABOUT SOLVER : YES
+INITIAL CONDITIONS : PARTICULIERES
+PRESCRIBED FLOWRATES : 0.;0.6
+NUMBER OF PRIVATE ARRAYS : 4
+/----------------------------------------------------------------------/
+TYPE OF ADVECTION : 1;5
+SUPG OPTION : 1;2
+DISCRETIZATIONS IN SPACE : 11 ; 11
+TREATMENT OF THE LINEAR SYSTEM : 2
+SOLVER ACCURACY = 1.E-5  SOLVER : 1
+CONTINUITY CORRECTION : YES

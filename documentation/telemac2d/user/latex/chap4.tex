@@ -1,0 +1,516 @@
+
+
+\chapter{  HYDRODYNAMIC SIMULATION}
+\label{ch:hydrod:sim}
+
+\section{Prescribing initial conditions}
+
+ The purpose of the initial conditions is to describe the state of the model at the start of the simulation.
+
+ In the case of a continued computation, this state is provided by the last time step of the results file of the previous computation. The tables of variables that are essential for continuing the computation must therefore be stored in a file used for this purpose. This case is described in section \ref{subs:cont:comput}.
+
+ In other cases, the initial state must be defined by the user. In simple cases, this can be done using keywords, or by programming in more complex ones. It is also possible to define the initial state using FUDAA-PREPRO.
+
+ If the user wants to store the initial state in the results file, the keyword \telkey{OUTPUT OF INITIAL CONDITIONS} must be activated (default value).
+
+
+\subsection{ Prescribing using keywords}
+
+ In all cases, the nature of the initial conditions is fixed with the keyword \telkey{INITIAL CONDITIONS}, except if it has been defined using FUDAA-PREPRO INITIAL CONDITIONS. The keyword \telkey{INITIAL CONDITIONS} may have any of the following five values:
+
+\begin{enumerate}
+\item  `ZERO ELEVATION': This initializes the free surface elevation at 0. The initial depths of water are therefore calculated from the bottom elevation,
+
+\item  `CONSTANT ELEVATION': This initializes the free surface elevation at the value supplied by the keyword \telkey{INITIAL ELEVATION}. The initial depths of water are then calculated by subtracting the bottom elevation from the free surface elevation. In areas where the bottom elevation is higher than the initial elevation, the initial depth of water is nil,
+
+\item  `ZERO DEPTH': All water depths are initialized with a zero value (free surface same as bottom). In other words, the entire domain is dry at the start of the computation,
+
+\item  'CONSTANT DEPTH': This initializes the water depths at the value supplied by the keyword \telkey{INITIAL DEPTH},
+
+\item  `PARTICULAR': The initial conditions are defined in the CONDIN subroutine (see section \ref{subs:presc:CONDIN}). This solution must be used whenever the initial conditions of the model do not correspond to one of the four cases above.
+\end{enumerate}
+
+
+\subsection{ Prescribing with the CONDIN subroutine}
+\label{subs:presc:CONDIN}
+
+ The CONDIN subroutine must be programmed whenever the keyword \telkey{INITIAL CONDITIONS} has the value `PARTICULAR'.
+
+ The CONDIN subroutine initializes successively the velocities, the water depth, the tracer and the viscosity. The part of the subroutine concerning the initialization of the water depth is divided into two zones. The first corresponds to the processing of simple initial conditions (defined by keyword) and the second regards the processing of particular initial conditions.
+
+ By default, the standard version of the CONDIN subroutine stops the computation if the keyword \telkey{INITIAL CONDITIONS} is positioned at `PARTICULAR' without the subroutine being actually modified.
+
+ The user is entirely free to fill this subroutine. For example, he can re-read information in a formatted or binary file using the keywords \telkey{FORMATTED DATA FILE} or \telkey{BINARY DATA FILE} offered by \telemac{2D}.
+
+ When the CONDIN subroutine is being used, it may be interesting to check that the variables are correctly initialised. To do this, it is simply a question of assigning the name of the variables to be checked to the keyword \telkey{VARIABLES TO BE PRINTED} , and starting the computation with a zero number of time steps. The user then obtains the value of the variables required at each point of the mesh in the listing printout.
+
+
+\subsection{ Continuing a computation}
+\label{subs:cont:comput}
+ \telemac{2D} enables the user to carry out a computation taking a time step of a previous computation on the same mesh as initial state. It is thus possible to modify the computation data, such as, for example, the time step, certain boundary conditions or the turbulence model, or to start the computation once a steady regime has been reached.
+
+ By default, \telemac{2D} reads the last time step of the previous computation result file. Using the keyword \telkey{RECORD NUMBER FOR RESTART} allows specifying the number of the iteration to be read.
+
+ Note that FUDAA-PREPRO is using this possibility: when defining the initial conditions, information is actually written in a pseudo continuation file.
+
+ In this case, it is essential that the continuation file contains all the information required by \telemac{2D}, i.e. the velocities U and V, the water depth and the bottom elevations. However, in certain cases, the software is capable of recomputing certain variables from others provided (for example the depth of water from the free surface and the bottom elevation).
+
+ If certain variables are missing from the continuation file, they are then fixed automatically at zero. However, it is possible, in this case, to provide initial values in a standard way (e.g. using a keyword). A frequent application is to use the result of a hydrodynamic computation to compute the transport of a tracer. The continuation file does not normally contain any result for the tracer. However, it is possible to provide the initial value for this by using the keyword \telkey{INITIAL VALUES OF TRACERS}.
+
+ In order to use the continuation file, it is necessary to enter two keywords in the steering file:
+
+\begin{enumerate}
+\item  The keyword \telkey{COMPUTATION CONTINUED} must have the value YES,
+
+\item  The keyword \telkey{PREVIOUS COMPUTATION FILE} must provide the name of the file that will supply the initial state.
+\end{enumerate}
+
+ N.B.: the mesh for which the results are computed must be exactly the same as the one to be used in continuing the computation.
+
+ If necessary, the keyword \telkey{PREVIOUS COMPUTATION FILE FORMAT} can be used to select a specific format. For example, in order to increase the accuracy of the initial state, it is possible to use double precision Serafin format. Obviously, this configuration is possible only if the previous computation was correctly configured in terms of results file format.
+
+ When continuing a computation, it is necessary to specify the value of the start time of the second computation. By default, the initial time of the second computation is equal to the value of the time step in the previous computation file used for continuation. This can be modified using the keyword \telkey{INITIAL TIME SET TO ZERO} if the user wants to reset the time value (possibly with respect to a basic value set in the preceding calculation. See Chapter \ref{ch:gen:par:def:comp}).
+
+ At the beginning of a simulation, the launcher creates a temporary directory where all input files are copied. This is also the case for the previous computation file which can be quite huge. In this situation and to avoid copying too large a file, it is recommended to extract the time step used for the continuation (the only one used by \telemac{2D}).
+
+
+\section{ Prescribing boundary conditions}
+\label{sec:presc:bc}
+
+\subsection{ Possible choices}
+
+ Boundary conditions are given for each of the boundary points. They concern the main variables of \telemac{2D} or the values deduced from them: water depth, the two components of velocity (or flowrate) and the tracer. The boundary conditions of functions k and Epsilon in the turbulence model are determined by \telemac{2D} and are thus not required from the user. Turbulence specialists may want to change the boundary conditions of k and epsilon in subroutine kepscl.f
+
+ The various types of boundary conditions may be combined to prescribe boundary conditions of any type (inflow or outflow of liquid in a supercritical or subcritical regime, open sea, wall, etc.). However, certain combinations are not physical.
+
+ Certain boundary conditions apply to segments, such as friction at the walls, no flux condition or incident wave conditions. However, wall definition is ambiguous if boundary conditions are to be defined by points. The following convention is used in such cases to determine the nature of a segment situated between two points of different type. A liquid segment is one between two points of liquid type. In a similar way, when a condition is being prescribed for a segment, the point must be configured at the start of the segment.
+
+ The way in which a boundary condition is prescribed depends on the spatial and temporal variations in the condition. Five types of condition may be distinguished:
+
+\begin{enumerate}
+\item  The condition is constant at the boundary and constant in time. The simplest solution is then to prescribe the condition by means of a keyword in the steering file,
+
+\item  The condition is constant at the boundary and variable in time. It will then be prescribed by programming the functions Q, SL and VIT (and TR if a tracer is used) or by the open boundaries file,
+
+\item  The condition is variable in space and constant in time. It will then be prescribed via the boundary conditions file. In certain cases, the velocity profile can be specified using the keyword \telkey{VELOCITY PROFILES} (see section \ref{subs:presc:vel:prof}),
+
+\item  The condition is variable in time and space. Direct programming via the BORD subroutine is then necessary,
+
+\item  The boundary condition type is variable in time. Direct programming in the PROPIN\_TELEMAC2D subroutine is then necessary (see \ref{sec:chang:type:bc:propin}).
+\end{enumerate}
+
+ The type of boundary condition, if constant in time, is read from the boundary conditions file. In contrast, the prescribed value (if one exists) may be given at four different levels, namely (in the order in which they are processed during the computation) the boundary conditions file (not frequently used), the steering file, the open boundaries file and the FORTRAN file (programming of functions Q, SL, VIT, TR or BORD).
+
+ Boundary types may be connected in any way along a contour. However, two liquid boundaries must be separated by at least a solid segment (for example, there cannot be an open boundary with a prescribed depth directly followed by an open boundary with a prescribed velocity). Moreover, another limitation is that a boundary must consist of at least two points (a minimum of four points is strongly advised).
+
+
+\subsection{ Description of various types of boundary conditions}
+\label{subs:desc:bc}
+ The type of boundary condition at a given point is provided in the boundary conditions file in the form of four integers named LIHBOR, LIUBOR, LIVBOR and LITBOR, which may have any value from 0 to 6.
+
+ The possible choices are as follows:
+
+\begin{itemize}
+\item  Depth conditions:
+
+\begin{itemize}
+
+ \item Open boundary with prescribed depth: LIHBOR=5
+
+ \item Open boundary with free depth: LIHBOR=4
+
+ \item Closed boundary (wall): LIHBOR=2
+\end{itemize}
+
+\item  Flowrate or velocity condition:
+
+\begin{itemize}
+
+\item Open boundary with prescribed flowrate: LIUBOR/LIVBOR=5
+
+\item Open boundary with prescribed velocity: LIUBOR/LIVBOR=6
+
+\item Open boundary with free velocity: LIUBOR/LIVBOR=4
+
+\item Closed boundary with slip or friction: LIUBOR/LIVBOR=2
+
+\item Closed boundary with one or two null velocity components: LIUBOR and/or LIVBOR=0
+\end{itemize}
+
+\item  Tracer conditions:
+
+\begin{itemize}
+
+\item Open boundary with prescribed tracer: LITBOR=5
+
+\item Open boundary with free tracer: LITBOR=4
+
+\item Closed boundary (wall): LITBOR=2
+\end{itemize}
+
+\end{itemize}
+ \underbar{Remarks:}
+
+\begin{itemize}
+\item It is possible to change the type of boundary condition within an open boundary. In that case, a new open boundary will be detected in the output control listing.
+
+\item  The type of boundary condition during the simulation may be modified with the PROPIN\_TELEMAC2D subroutine (see \ref{sec:chang:type:bc:propin}).
+\end{itemize}
+
+
+\subsection{ The boundary conditions file}
+\label{sub:bc:file}
+ The file is normally supplied by FUDAA-PREPRO, BLUEKENUE or STBTEL, but may be created and modified using a text editor. Each line of this file is dedicated to one point of the mesh boundary. The numbering of the boundary points is the same as that of the lines of the file. It describes first of all the contour of the domain in a trigonometric direction, and then the islands in the opposite direction.
+
+ This file specifies a numbering of the boundaries. This numbering is very important because it is used when prescribing values.
+
+ The following values are given for each point (see also the section dedicated to parallel processing for certain specific aspects):
+
+ LIHBOR, LIUBOR, LIVBOR, HBOR, UBOR, VBOR, AUBOR, LITBOR, TBOR, ATBOR, BTBOR, N, K.
+
+ LIHBOR, LIUBOR, LIVBOR, and LITBOR are the boundary type codes for each of the variables. They are described in section \ref{subs:desc:bc}.
+
+ HBOR (real) represents the prescribed depth if LIHBOR = 5.
+
+ UBOR (real) represents the prescribed velocity U if LIUBOR = 6.
+
+ VBOR (real) represents the prescribed velocity V if LIVBOR = 6.
+
+ AUBOR  represents the friction coefficient at the boundary if LIUBOR or LIVBOR = 2. The friction law is then written as follows:
+\[\nu _{t} \frac{dU}{dn} {\kern 1pt} {\kern 1pt} {\kern 1pt} ={\kern 1pt} {\kern 1pt} {\kern 1pt} AUBOR{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} *{\kern 1pt} {\kern 1pt} U{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} and/or{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} \nu _{t} {\kern 1pt} {\kern 1pt} \frac{dV}{dn} {\kern 1pt} {\kern 1pt} {\kern 1pt} ={\kern 1pt} {\kern 1pt} {\kern 1pt} AUBOR{\kern 1pt} {\kern 1pt} {\kern 1pt} *{\kern 1pt} {\kern 1pt} {\kern 1pt} V\]
+The coefficient AUBOR applies to the segment included between the boundary point considered and the following point (in a trigonometric direction for the outer contour and in the opposite direction for the islands). The default value is AUBOR = 0. Friction corresponds to a negative value. With the k-Epsilon model, the value of AUBOR is computed by \telemac{2D} and the indications in the boundary conditions file are then ignored.
+
+ TBOR (real) represents the prescribed value of the tracer when LITBOR = 5.
+
+ ATBOR and BTBOR represent the coefficients of the flow relation, written:
+\[\nu _{t} \frac{dT}{dn} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} ={\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} ATBOR{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} *{\kern 1pt} {\kern 1pt} T{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} +{\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} {\kern 1pt} BTBOR\]
+The coefficients ATBOR and BTBOR apply to the segment between the boundary point considered and the next point (in a trigonometric direction for the outer contour and in the opposite direction for the islands).
+
+ N represents the global number of boundary points.
+
+ K represents initially the point number in the boundary point numbering. But this number can also represent a node colour modified manually by the user (it can be any integer). This number, called BOUNDARY\_COLOUR, can be used in parallelism to simplify implementation of specific cases. Without any manual modification, this variable represents the global boundary node number. For example a test like :
+
+ IF (I.EQ.144) THEN {\dots} can be replaced by IF(BOUNDARY\_COLOUR\%I(I).EQ.144) THEN which is compatible with parallel mode.
+
+
+\subsection{ Prescribing values using keywords}
+\label{subs:val:key}
+ In most simple cases, boundary conditions are prescribed using keywords. However, if the values to be prescribed vary in time, it is necessary to program the appropriate functions or use the open boundaries file (see \ref{subs:val:funct:bf}).
+
+ The keywords used for prescribing boundary conditions are the following:
+
+\begin{enumerate}
+\item  \telkey{PRESCRIBED ELEVATIONS}: This is used to define the elevation of an open boundary with prescribed elevation (free surface). It is a table that contains up to MAXFRO (set to 300 and can be changed by user) real numbers for managing up to MAXFRO boundaries of this type. The values provided with this keyword cancel the depth values read from the boundary conditions file.
+\end{enumerate}
+
+ N.B.: the value given here is the level of the free surface, whereas the value given in the boundary conditions file is the water depth.
+
+\begin{enumerate}
+\item  \telkey{PRESCRIBED FLOWRATES}: This is used to fix the flowrate value of an open boundary with prescribed flowrate. It is a table that contains up to MAXFRO real numbers for managing up to MAXFRO boundaries of this type. A positive value corresponds to an inflow into the domain, whereas a negative value corresponds to an outflow. The values provided with this keyword cancel the flowrate values read from the boundary conditions file. In this case, the technique used by \telemac{2D} to compute the velocity profile is that described in section \ref{subs:presc:vel:prof}.
+
+\item  \telkey{PRESCRIBED VELOCITIES}: This is used to fix the velocity value of an open boundary with prescribed velocity. The scalar value provided is the intensity of the velocity perpendicular to the wall. A positive value corresponds to an inflow into the domain. It is a table that contains up to MAXFRO real numbers for managing up to MAXFRO boundaries of this type. The values provided with this keyword cancel the values read from the boundary conditions file.
+\end{enumerate}
+
+ Some simple rules must also be complied with:
+
+\begin{enumerate}
+\item  There must of course be agreement between the type of boundary specified in the boundary conditions file and the keywords of the steering file (do not use the keyword \telkey{PRESCRIBED FLOWRATES} if there are no boundary points with the LIUBOR and LIVBOR values set at 5).
+
+\item  If a boundary type is defined in the boundary condition file, the corresponding keyword must be defined in the steering file.
+
+\item  The keywords \telkey{PRESCRIBED {\dots}}, if present, supersede the data read in the boundary condition file
+
+\item  For each keyword, the number of specified values must be equal to the total number of open boundaries. If a boundary does not correspond to the specified keyword, the value will be ignored (for example, the user can specify 0.0 in all cases). In the examples in the introductory manual, the first boundary (downstream) is with prescribed elevation, and the second one (upstream) is with prescribed flowrate. It is therefore necessary to specify in the steering file:
+\end{enumerate}
+\begin{lstlisting}[language=bash]
+   PRESCRIBED ELEVATIONS = 265.0 ; 0.0
+   PRESCRIBED FLOWRATES = 0.0 ; 500.0
+\end{lstlisting}
+
+\subsection{ Prescribing values by programming functions or using the open boundaries file}
+\label{subs:val:funct:bf}
+ Values that vary in time but are constant along the open boundary in question are prescribed by using the open boundaries file or by programming a particular function, which may be:
+
+\begin{itemize}
+\item  Function VIT to prescribe a velocity,
+
+\item  Function  Q to prescribe a flowrate,
+
+\item  Function  SL to prescribe an elevation,
+
+\item  Function TR to prescribe a tracer concentration (see Chapter \ref{ch:tra:trans})
+\end{itemize}
+
+ Functions Q, VIT and SL are programmed in the same way. In each case, the user has the time, the boundary rank (for determining, for example, whether the first or second boundary with a prescribed flowrate is being processed), the global number of the boundary point (useful in case of parallel computing) and in the case of Q, information on the depth of water at the previous time step. By default the functions prescribe the value read from the boundary conditions file or supplied by keywords.
+
+ For example, the body of function Q for prescribing a flowrate ramp lasting 1000 seconds and reaching a value of 400 m${}^{3}$/s could take a form similar to:
+\begin{lstlisting}[language=TelFortran]
+ IF (AT.LT.1000.D0) THEN
+    Q = 400.D0 * AT/1000.D0
+ ELSE
+    Q = 400.D0
+ ENDIF
+\end{lstlisting}
+ Using the liquid boundaries file is an alternative to programming the functions mentioned above. This is a text file edited by the user, the name of which is given with the keyword \telkey{LIQUID BOUNDARIES FILE}. This file has the following format:
+
+\begin{enumerate}
+\item  A line beginning with the sign \# is a line of comments.
+
+\item  It must contain a line beginning with T (T meaning time) to identify the value provided in this file. Identification is by a mnemonic identical to the name of the variables: Q for flow rate, SL for water level, U and V for velocities and TR for tracer. An integer between brackets specifies the rank of the boundary in question. In the case of tracers, the identification, uses a 2-index mnemonic TR(b,t) with b providing the rank of the boundary and t the number of the tracer. This line is followed by another indicating the unit of the variables.
+
+\item  The values to be prescribed are provided by a succession of lines that must have a format consistent with the identification line. The time value must increase, and the last time value provided must be the same as or greater than the corresponding value at the last time step of the simulation. If not, the calculation will stop.
+\end{enumerate}
+
+ When \telemac{2D} reads this file, it makes a linear interpolation in order to calculate the value to be prescribed at a particular time step. The value actually prescribed by the code is printed in the control printout.
+
+ An example of an open boundaries file is given below:
+\begin{lstlisting}[language=bash]
+# Example of open boundaries file
+# 2 boundaries managed
+#
+T  Q(1) SL(2)
+s  m3/s m
+0.  0. 135.0
+25. 15. 135.2
+100. 20. 136.
+500. 20. 136.
+\end{lstlisting}
+ \begin{WarningBlock}{Note :}
+ Up to version 7.0, it is necessary to have the corresponding keywords \telkey{PRESCRIBED {\dots}} to trigger the use of the liquid boundary file.
+\end{WarningBlock}
+
+\subsection{  Stage-discharge curve}
+\label{subs:stage:dis:curve}
+ It is possible to manage a boundary where the prescribed value of the elevation is a function of the local discharge. This is particularly useful for river application. In the model, these boundaries must be defined as prescribed elevation boundaries.
+
+ First, it is necessary to define which boundary will use this type of condition using the keyword \telkey{STAGE-DISCHARGE CURVES} which supply one integer per liquid boundary. This integer can be:
+
+\begin{enumerate}
+\item [\nonumber] 0: no stage-discharge curve (default value),
+
+\item [\nonumber] 1: elevation as function of discharge.
+
+\item [\nonumber] 2: discharge as function elevation.
+\end{enumerate}
+
+ The keyword \telkey{STAGE-DISCHARGE CURVES FILE} supplies the name of the text file containing the curves. One example is presented hereafter:
+\begin{lstlisting}[language=bash]
+#
+#  STAGE-DISCHARGE CURVE BOUNDARY 1
+#
+Q(1)     Z(1)
+m3/s      m
+61.       0.
+62.       0.1
+63.       0.2
+#
+#  STAGE-DISCHARGE CURVE BOUNDARY 2
+#
+Z(2)     Q(2)
+m      m3/s
+10.       1.
+20.       2.
+30.       3.
+40.       4.
+50.       5.
+\end{lstlisting} 
+Order of curves is not important. Order of columns may be swapped like in the example for boundary 2. Lines beginning with \# are comments. Lines with units are mandatory but units are not checked so far. The number of points given is free and is not necessarily the same for different curves.
+
+ N.B.: at initial conditions the discharge at exits may be null. The initial elevation must correspond to what is in the stage-discharge curve; otherwise a sudden variation will be imposed. To avoid extreme situations the curve may be limited to a range of discharges. In the example above for boundary 1; discharges below 61 m${}^{3}$/s will all give an elevation of 0. m, discharges above 63 m${}^{3}$/s will give an elevation of 0.2 m.
+
+
+\subsection{ Prescribing complex values}
+\label{subs:pres:compl:val}
+ If the values to be prescribed vary in both time and space, it is necessary to program the BORD subroutine as this enables values to be prescribed on a node-by-node basis.
+
+ This subroutine describes all the open boundaries (loop on NPTFR). For each boundary point, it determines the type of boundary in order to prescribe the appropriate value (velocity, elevation or flowrate). However, there is little sense in programming BORD to prescribe a flowrate, as this value is usually known for the entire boundary and not for each segment of it.
+
+ In the case of a prescribed flowrate boundary located between two solid boundaries with no velocities, the velocities on the angle points are cancelled.
+
+ N.B.: The BORD subroutine also enables the tracer limit values to be prescribed (see \ref{sec:tr:prescr:bc}).
+
+
+\subsection{ Prescribing velocity profiles}
+\label{subs:presc:vel:prof}
+ In the case of a flowrate or velocity conditions, the user can specify the velocity profile computed by \telemac{2D}, using the keyword \telkey{VELOCITY PROFILES}. The user must supply one value for each open boundary. The following options are available:
+
+\begin{itemize}
+\item [\nonumber] 1: The velocity vector is normal to the boundary. In the case of a prescribed flowrate, the value of the vector is set to 1 and then multiplied by a constant in order to obtain the desired flowrate (given by the keyword \telkey{PRESCRIBED FLOWRATES} or by the function Q). In the case of a prescribed velocity, the value used for the velocity norm is provided by the keyword \telkey{PRESCRIBED VELOCITIES} or by the function VIT. In any case, the velocity profile is constant along the boundary. It is the default configuration,
+
+\item [\nonumber] 2: The values U and V are read from the boundary conditions file (UBOR and VBOR values). In the case of a prescribed flowrate, these values are multiplied by a constant in order to reach the prescribed flowrate,
+
+\item [\nonumber] 3: The velocity vector is imposed normal to the boundary. Its value is read from the boundary conditions file (UBOR value). In the case of a prescribed flowrate this value is then multiplied by a constant in order to obtain the appropriate flowrate,
+
+\item [\nonumber] 4: The velocity vector is normal to the boundary and its norm is proportional to the square root of the water depth. This option is valid only for prescribed flowrate.
+
+\item [\nonumber] 5: The velocity vector is normal to the boundary and its norm is proportional to the square root of the virtual water depth computed from the lower point of the free surface at the boundary.
+\end{itemize}
+
+ In the case of a flow normal to a closed boundary, it is not recommended to have velocities perpendicular to the solid segments (as shown in the Figure \ref{bad:prescr:vel:prof}),
+\begin{figure}
+\includegraphics*[width=5.24in, height=2.04in, keepaspectratio=false]{./graphics/bad_profile.png}
+\caption{Bad prescription of velocity profile.}
+\label{bad:prescr:vel:prof}
+\end{figure} 
+
+ because the finite element interpolation will generate a non-zero flow though a solid segment. In this case, it is better to cancel the velocities on the first and last points of the boundary, as shown on Figure \ref{good:presc:vel:prof}.
+
+\begin{figure}
+\includegraphics*[width=5.24in, height=2.04in, keepaspectratio=false]{./graphics/good_profile.png}
+\caption{Good prescription of velocity profile.}
+\label{good:presc:vel:prof}
+\end{figure} 
+
+
+\subsection{  Thompson boundary conditions}
+
+ In some cases, not all the necessary information concerning the boundary conditions is available. This is usual for coastal domains where only the values of the sea level on several points are known. This kind of model is referred to as an ``under-constrained'' model.
+
+ To solve this problem, the Thompson method uses the theory of characteristics to calculate the missing values. For example, \telemac{2D} will compute the velocity at the boundary in the case of a prescribed elevation.
+
+ This method can also be used for ``over-constrained'' models. In this case, the user specifies too much information at the boundary. If the velocity information and the level information are not consistent, the Thompson technique computes new values that will comply with the theory of characteristics.
+
+ For this, the user can use the keyword \telkey{OPTION FOR LIQUID BOUNDARIES}, which offers two values (the user must specify one value for each open boundary):
+
+\begin{itemize}
+\item [\nonumber] 1: strong setting,
+
+\item [\nonumber] 2: Thompson method.
+\end{itemize}
+
+ Taking a simplified view, it may be said that, in the case of the first option, the values are ``imposed'', in the case of the second option, the values are ``suggested''.
+
+\begin{WarningBlock}{Note:}
+This option will trigger the computation of characteristics' trajectories in order to get informations from inside the domain.
+\end{WarningBlock}
+
+\subsection{ Elements Masking}
+
+ \telemac{2D} offers the possibility of masking certain elements. This means, for example, that islands can be created in an existing mesh. The boundaries created in this way are processed as solid walls with a slip condition.
+
+ This option is activated with the logical keyword \telkey{ELEMENTS MASKED BY USER} (default value: NO). In this case, the user must indicate the number of elements masked by programming the MASKOB subroutine. This manages an array of real values MASKEL, the size of which is equal to the number of points and in which each value can be 0.D0 for a masked element and 1.D0 a normal one.
+
+ N.B.: This option is not compatible with perfectly conservative advection schemes.
+
+
+\subsection{ Definition of types of boundary condition when preparing the mesh}
+
+ When using BLUEKENUE, the boundary condition type is prescribed during the last step of mesh generation.
+
+ When using the other mesh generators, it is generally possible to define the type of boundary condition during the mesh generation session, by prescribing a colour code. Each colour code corresponds to a particular type of boundary (wall, open boundary with prescribed velocity, etc.). The table showing colour codes of some meshers and corresponding types of boundary is given in Appendix \ref{tel2d:app5}.
+
+
+\subsection{ Tidal harmonic constituents databases}
+\label{subs:tidal:harm:datab}
+
+\subparagraph{ GENERAL PARAMETERS}
+
+ To prescribe the boundary conditions of a coastal boundary subject to tidal evolution, it is generally necessary to have the information characterizing this phenomenon (harmonic constants). One of the most common cases is to use the information provided by large scale models.
+
+ 4 databases of harmonic constants are interfaced with \telemac{2D}:
+
+\begin{enumerate}
+\item  the JMJ database resulting from the LNHE Atlantic coast TELEMAC model by Jean-Marc JANIN,
+
+\item  the global TPXO database and its regional and local variants from the OSU (Oregon State University),
+
+\item  the regional North-East Atlantic atlas (NEA) and the global atlas FES (e.g. FES2004 or FES2012) coming from the works of LEGOS (Laboratoire d'Etudes en G\'{e}ophysique et Oc\'{e}anographie Spatiales).
+
+\item  The PREVIMER atlases
+\end{enumerate}
+
+ However it is important to note that, in the current version of the code, the latter 2 databases are not completely interfaced with \telemac{2D} and their use is recommended only for advanced users.
+
+ The keyword \telkey{OPTION FOR TIDAL BOUNDARY CONDITIONS} activates the use of one of the available database when set to value 1 (default value is 0, meaning that this function is not activated). User should give the same number of options as the number of liquid boundaries in his model. When this keyword is activated, every boundary is treated using the prescribed algorithms except the boundaries with prescribed flowrate.
+
+ The database used is specified using the keyword \telkey{TIDAL DATA BASE }which can take the values:
+
+\begin{itemize}
+\item [\nonumber] 1: JMJ,
+
+\item [\nonumber] 2: TPXO,
+
+\item [\nonumber] 3: Miscellaneous (LEGOS-NEA, FES20XX, PREVIMER,...)
+\end{itemize}
+
+  Depending on the database used, some keywords have to be specified:
+
+\begin{itemize}
+\item  if using the JMJ database, the name of the database (typically bdd\_jmj) is given by the keyword \telkey{ASCII DATABASE FOR TIDE} et the corresponding mesh file is specified using the keyword \telkey{TIDAL MODEL FILETIDAL MODEL FILE},
+
+\item  if using TPXO database, the name of the water level database is given by the keyword \telkey{BINARY DATABASE 1 FOR TIDE} (for example h\_tpxo7.2) and the name of the velocity database is given by the keyword \telkey{BINARY DATABASE 2 FOR TIDE} (for example u\_tpxo7.2). Moreover, it is possible to activate an interpolation algorithm of minor constituents from data read in the database using the logical keyword \telkey{MINOR CONSTITUENTS INFERENCE}, activation not done by default.
+\end{itemize}
+
+ The keyword \telkey{OPTION FOR TIDAL BOUNDARY CONDITIONS }allows specifying the type of tide to prescribe. Default value 0 means no prescribed tide or that the tide is not treated by standard algorithms. Value 1 corresponds to prescribing a real tide considering the time calibration given by the keywords \telkey{ORIGINAL DATE OF TIME} (YYYY~; MM~; DD format) and \telkey{ORIGINAL HOUR OF TIME} (HH~; MM~; SS format). Other options, only available in case of using the JMJ database, are the following:
+
+\begin{itemize}
+\item [\nonumber] 2: exceptional spring tide (French tidal coefficient approximately equal 110),
+
+\item [\nonumber] 3: mean spring tide (French tidal coefficient approximately equal 95),
+
+\item [\nonumber] 4: mean tide (French tidal coefficient approximately equal 70),
+
+\item [\nonumber] 5: mean neap tide (French tidal coefficient approximately equal to 45),
+
+\item [\nonumber] 6: exceptional neap tide (French tidal coefficient approximately equal to 30),
+
+\item [\nonumber] 7: real tide (before 2010 methodology).
+\end{itemize}
+
+ In the case of options 2 to 6, the boundary conditions are imposed so that the reference tide is approximately respected. However, it is usually necessary to wait for the second or third modelled tide in order to overcome the transitional phase of start-up of the model. It is also necessary to warn the user that the French tidal coefficients shown are approximate.
+
+ During a simulation, data contained in the tidal database are interpolated on boundary points. When using the JMJ database, this spatial interpolation can be time consuming if the number of boundary points is important, and is not yet available in case of parallel computing. It is therefore possible to generate a file containing harmonic constituents specific to the model treated. The principle is at a first step, to perform a calculation on a single time step whose only goal is to extract the necessary information and to generate a file containing for each boundary point of the model, the harmonic decomposition of the tidal signal. Subsequent calculations directly use that specific file rather than directly addressing to the global database. The harmonic constants specific file is specified using the keyword \telkey{HARMONIC CONSTANTS FILE}, this file is an output file in the first calculation, and an input file in subsequent calculations.
+
+
+\subparagraph{ HORIZONTAL SPATIAL CALIBRATION}
+
+ In order to perform the spatial interpolation of the tidal data, it is imperative to provide to \telemac{2D} information on the spatial positioning of the mesh model relative to the grid of the tidal database. To do this, the user has two keywords:
+
+ The first keyword specifies the geographic system used to establish the coordinates of the 2D mesh of \telemac{2D}. This keyword \telkey{GEOGRAPHIC SYSTEM}, which has no default value, may take the following values:
+
+\begin{enumerate}
+\item [\nonumber] 0: User Defined,
+
+\item [\nonumber] 1: WGS84 longitude/latitude in real degrees,
+
+\item [\nonumber] 2: WGS84 UTM North,
+
+\item [\nonumber] 3: WGS84 UTM South,
+
+\item [\nonumber] 4: Lambert,
+
+\item [\nonumber] 5: Mercator projection.
+\end{enumerate}
+
+ The second keyword is used to specify the area of the geographic system used to establish the coordinates of the 2D mesh of \telemac{2D}. This keyword \telkey{ZONE NUMBER IN GEOGRAPHIC SYSTEM} which has no default value, may take the following values:
+
+\begin{enumerate}
+\item [\nonumber] 1: Lambert 1 North,
+
+\item [\nonumber] 2: Lambert 2 Center,
+
+\item [\nonumber] 3: Lambert 3 South,
+
+\item [\nonumber] 4: Lambert 4 Corsica,
+
+\item [\nonumber] 22: Lambert 2 extended,
+
+\item [\nonumber] \telkey{X}: UTM zone value of the WGS84 (\telkey{X} is the number of the zone).
+\end{enumerate}
+
+
+\subparagraph{ CALIBRATION OF THE INFORMATION}
+
+ The transfer of information between a large scale model and the boundaries of a more local model generally requires calibration.
+
+ To do this, the user has three keywords:
+
+\begin{enumerate}
+\item  the keyword \telkey{COEFFICIENT TO CALIBRATE SEA LEVEL} (default real value 0.0) allows to calibrate the mean tide level (the harmonic decomposition of information provided by the various databases are used to generate the tidal signal oscillating around mean tide level). The calibration of the mean tide level must obviously be made depending on the altimetric reference used in the model,
+
+\item  the keyword \telkey{COEFFICIENT TO CALIBRATE TIDAL RANGE} (default real value 1.0) allows to specify a calibration coefficient applied on the amplitude of the tidal wave. This coefficient is applied to the amplitude of the overall signal, and not on the amplitude of each of the elementary waves,
+
+\item  the keyword \telkey{COEFFICIENT TO CALIBRATE TIDAL VELOCITIES} (default real value 999,999.0) allows to specify the coefficient applied on velocities. The default value (999, 999.0) means that the square root of the value specified by the keyword \telkey{COEFFICIENT TO CALIBRATE TIDAL RANGE} tidal is used.
+\end{enumerate}
+
+ For more information, the reader may refer to the methodological guide for tide simulation with version 6.2 (see \cite{Pham2012}).
