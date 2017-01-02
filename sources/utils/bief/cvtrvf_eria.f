@@ -34,7 +34,7 @@
 !+   difference, kept here to be tested in other cases.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
-!+        29/12/2016
+!+        02/01/2017
 !+        V7P3
 !+   Second order in time added.
 !
@@ -1021,15 +1021,6 @@
 !
 !             THEN FLUXES
 !
-              FIP1=-MIN(FP1,0.D0)*(F%R(I2)-F%R(I1))
-     &             +MAX(FP3,0.D0)*(F%R(I3)-F%R(I1))
-              FIP2=+MAX(FP1,0.D0)*(F%R(I1)-F%R(I2))
-     &             -MIN(FP2,0.D0)*(F%R(I3)-F%R(I2))
-              FIP3=+MAX(FP2,0.D0)*(F%R(I2)-F%R(I3))
-     &             -MIN(FP3,0.D0)*(F%R(I1)-F%R(I3))
-!
-!             SECOND ORDER CONTRIBUTION
-!
               VOLD1=MAX(0.D0,SVOL1(I)+MIN(FP1,0.D0)-MAX(FP3,0.D0))
               VOLD2=MAX(0.D0,SVOL2(I)-MAX(FP1,0.D0)+MIN(FP2,0.D0))
               VOLD3=MAX(0.D0,SVOL3(I)-MAX(FP2,0.D0)+MIN(FP3,0.D0))
@@ -1042,19 +1033,19 @@
               FS2=MAX(FS2     ,F%R(I2)+A2*(F%R(I2)-T7%R(I2)))
               FS3=MIN(T3%R(I3),F%R(I3)+A3*(F%R(I3)-T1%R(I3)))
               FS3=MAX(FS3     ,F%R(I3)+A3*(F%R(I3)-T7%R(I3)))
-!  
-              FIP1=FIP1+0.5D0*(-MAX(FP1,0.D0)*(FS1-F%R(I1))
-     &                         +MIN(FP3,0.D0)*(FS1-F%R(I1))
-     &                         -MIN(FP1,0.D0)*(FS2-F%R(I2))
-     &                         +MAX(FP3,0.D0)*(FS3-F%R(I3)))
-              FIP2=FIP2+0.5D0*(+MIN(FP1,0.D0)*(FS2-F%R(I2))
-     &                         -MAX(FP2,0.D0)*(FS2-F%R(I2))
-     &                         +MAX(FP1,0.D0)*(FS1-F%R(I1))
-     &                         -MIN(FP2,0.D0)*(FS3-F%R(I3)))
-              FIP3=FIP3+0.5D0*(+MIN(FP2,0.D0)*(FS3-F%R(I3))
-     &                         -MAX(FP3,0.D0)*(FS3-F%R(I3))
-     &                         +MAX(FP2,0.D0)*(FS2-F%R(I2))
-     &                         -MIN(FP3,0.D0)*(FS1-F%R(I1)))
+! 
+              FIP1=0.5D0*(-MIN(FP1,0.D0)*(FS2-F%R(I1)+F%R(I2)-F%R(I1))
+     &                    +MAX(FP3,0.D0)*(FS3-F%R(I1)+F%R(I3)-F%R(I1))
+     &                    -MAX(FP1,0.D0)*(FS1-F%R(I1))
+     &                    +MIN(FP3,0.D0)*(FS1-F%R(I1)))
+              FIP2=0.5D0*(+MAX(FP1,0.D0)*(FS1-F%R(I2)+F%R(I1)-F%R(I2))
+     &                    -MIN(FP2,0.D0)*(FS3-F%R(I2)+F%R(I3)-F%R(I2))
+     &                    +MIN(FP1,0.D0)*(FS2-F%R(I2))
+     &                    -MAX(FP2,0.D0)*(FS2-F%R(I2)))
+              FIP3=0.5D0*(+MAX(FP2,0.D0)*(FS2-F%R(I3)+F%R(I2)-F%R(I3))
+     &                    -MIN(FP3,0.D0)*(FS1-F%R(I3)+F%R(I1)-F%R(I3))
+     &                    +MIN(FP2,0.D0)*(FS3-F%R(I3))
+     &                    -MAX(FP3,0.D0)*(FS3-F%R(I3)))
 !
 !             GO TO 2000
 !             THIS EXTRA PSI REDUCTION IS NOT NECESSARY
