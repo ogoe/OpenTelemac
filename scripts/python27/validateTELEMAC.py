@@ -343,8 +343,10 @@ if __name__ == "__main__":
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   if options.configName == '': options.configName = USETELCFG
-   environ['USETELCFG'] = options.configName
+   if options.configName == '':
+      options.configName = USETELCFG
+   else
+      environ['USETELCFG'] = options.configName
    # user configuration file
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
@@ -403,6 +405,10 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
+   # If USETELCFG is not defined in the environment setting USETELCFG to the
+   # first config
+   if 'USETELCFG' not in environ:
+      environ['USETELCFG'] = cfgs[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
@@ -455,6 +461,7 @@ if __name__ == "__main__":
             break
          r = []
          if xmlFile.replace(PWD,'') in report: r = report[xmlFile.replace(PWD,'')]['casts']
+         environ['USETELCFG'] = cfgname
          try:
             tic = time.time()
             r = runXML(path.realpath(xmlFile),xmls[xmlFile],r,options.bypass,options.runOnly)
