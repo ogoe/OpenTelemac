@@ -345,7 +345,7 @@ if __name__ == "__main__":
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
    if options.configName == '':
       options.configName = USETELCFG
-   else
+   else:
       environ['USETELCFG'] = options.configName
    # user configuration file
    SYSTELCFG = path.join(PWD,'configs')
