@@ -1,5 +1,5 @@
-Relaxation, Nombre de buses
+Relaxation, Number of culverts
     0.05  2
-I1   I2   CE1  CE2  CS1  CS2   LRGbus Haut1 CLP  LBUS  z1    z2    CV   C56 CV5 C5 Ctrash Haut2 Fric length circ
-2566 2705 0.5  0.5   1.   1.   2.5   1.5    0    0.2   1.0   1.0  0 0 0 0 0 0 0 0 0
-2520 2659 0.5  0.5   1.   1.   2.5   1.5    0    0.2   1.0   1.0  0 0 0 0 0 0 0 0 0
+I1   I2   CE1  CE2  CS1  CS2   LRG HAUT1 CLP  LBUS  Z1    Z2    CV   C56 CV5 C5 CT HAUT2 FRIC LENGTH CIRC
+2566 2705 0.5  0.5   1.   1.   2.5   1.5    0    0   1.0   1.0  0 0 0 0 0 1.5 0 0.2 0
+2520 2659 0.5  0.5   1.   1.   2.5   1.5    0    0   1.0   1.0  0 0 0 0 0 1.5 0 0.2 0
