@@ -2,7 +2,7 @@
                      SUBROUTINE ENTETE
 !                    *****************
 !
-     &(IETAPE,AT,LT)
+     &(IETAPE,AT,LT,SCHEME,ORDRE)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   21/08/2010
@@ -35,12 +35,14 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
+      USE INTERFACE_TELEMAC2D, EX_ENTETE => ENTETE
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN) :: AT
       INTEGER, INTENT(IN)          :: LT,IETAPE
+      INTEGER, INTENT(IN),OPTIONAL :: SCHEME,ORDRE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -49,6 +51,8 @@
       INTEGER J,H,M
 !
       CHARACTER(LEN=32) FR(14),GB(14)
+      CHARACTER(LEN=32) SCHEMEFR(8),SCHEMEGB(8)
+      CHARACTER(LEN=32) ORDERFR(6),ORDERGB(6)
 !
       INTRINSIC INT
 !
@@ -81,47 +85,85 @@
      &              'ITERATION                       ' ,
      &              '       DRIFT OF DROGUE(S)       ' ,
      &              '      LAGRANGIAN DRIFT(S)       ' ,
-     &              '  SPALART-ALLMARAS TURB. MODEL  '/
+     &              '  SPALART-ALLMARAS TURB. MODEL  ' /
+!
+      DATA SCHEMEFR / '*                              *' ,
+     &                '*                              *' ,
+     &                '*        SCHEMA DE ROE         *' ,
+     &                '*       SCHEMA CINETIQUE       *' ,
+     &                '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
+     &                '*        SCHEMA HLLC           *' ,
+     &                '*        SCHEMA WAF            *' ,
+     &                '********************************' /
+      DATA SCHEMEGB / '*                              *' ,
+     &                '*                              *' ,
+     &                '*         ROE SCHEME           *' ,
+     &                '*       KINETIC SCHEME         *' ,
+     &                '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
+     &                '*        HLLC SCHEME           *' ,
+     &                '*         WAF SCHEME           *' ,
+     &                '********************************' /
+      DATA ORDERFR /  '*                              *' ,
+     &                '*                              *' ,
+     &                '*   PREMIER ORDRE EN ESPACE    *' ,
+     &                '*   DEUXIEME ORRE EN ESPACE    *' ,
+     &                '*   TROISIEME ORDRE EN ESPACE  *' ,
+     &                '********************************' /
+      DATA ORDERGB /  '*                              *' ,
+     &                '*                              *' ,
+     &                '*     FIRST ORDRE IN SPACE     *' ,
+     &                '*     SECOND ORDRE IN SPACE    *' ,
+     &                '*     THIRD PRDRE IN SPACE     *' ,
+     &                '********************************' /
 !
 !-----------------------------------------------------------------------
 !
-!  DECOMPOSITION OF TIME IN DAYS, HOURS, MINUTES AND SECONDS
+      IF(.NOT.PRESENT(SCHEME))THEN
 !
-      S = AT
-      J = INT(AT/86400.D0)
-      S = S - 86400.D0 * J
-      H = INT(S/3600.D0)
-      S = S - 3600.D0 * H
-      M = INT(S/60.D0)
-      S = S - 60.D0 * M
+!       DECOMPOSITION OF TIME IN DAYS, HOURS, MINUTES AND SECONDS
+!
+        S = AT
+        J = INT(AT/86400.D0)
+        S = S - 86400.D0 * J
+        H = INT(S/3600.D0)
+        S = S - 3600.D0 * H
+        M = INT(S/60.D0)
+        S = S - 60.D0 * M
 !
 !-----------------------------------------------------------------------
 !
-!   PRINTS TIME AND ITERATIONS
+!       PRINTS TIME AND ITERATIONS
 !
-      IF (IETAPE.EQ.1.OR.IETAPE.EQ.2) THEN
+        IF (IETAPE.EQ.1.OR.IETAPE.EQ.2) THEN
 !
-        IF(J.NE.0) THEN
-          IF(LNG.EQ.1) WRITE(LU,10) FR(11),LT,FR(9),J,H,M,S,AT
-          IF(LNG.EQ.2) WRITE(LU,11) GB(11),LT,GB(9),J,H,M,S,AT
-        ELSEIF(H.NE.0) THEN
-          IF(LNG.EQ.1) WRITE(LU,20) FR(11),LT,FR(9),H,M,S,AT
-          IF(LNG.EQ.2) WRITE(LU,20) GB(11),LT,GB(9),H,M,S,AT
-        ELSEIF(M.NE.0) THEN
-          IF(LNG.EQ.1) WRITE(LU,30) FR(11),LT,FR(9),M,S,AT
-          IF(LNG.EQ.2) WRITE(LU,30) GB(11),LT,GB(9),M,S,AT
+          IF(J.NE.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,10) FR(11),LT,FR(9),J,H,M,S,AT
+            IF(LNG.EQ.2) WRITE(LU,11) GB(11),LT,GB(9),J,H,M,S,AT
+          ELSEIF(H.NE.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,20) FR(11),LT,FR(9),H,M,S,AT
+            IF(LNG.EQ.2) WRITE(LU,20) GB(11),LT,GB(9),H,M,S,AT
+          ELSEIF(M.NE.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,30) FR(11),LT,FR(9),M,S,AT
+            IF(LNG.EQ.2) WRITE(LU,30) GB(11),LT,GB(9),M,S,AT
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,40) FR(11),LT,FR(9),S
+            IF(LNG.EQ.2) WRITE(LU,40) GB(11),LT,GB(9),S
+          ENDIF
+!
+!       PRINTS TITLES FOR EACH STAGES
+!
         ELSE
-          IF(LNG.EQ.1) WRITE(LU,40) FR(11),LT,FR(9),S
-          IF(LNG.EQ.2) WRITE(LU,40) GB(11),LT,GB(9),S
+!
+          IF(LNG.EQ.1) WRITE(LU,200) FR(IETAPE)
+          IF(LNG.EQ.2) WRITE(LU,200) GB(IETAPE)
+!
         ENDIF
 !
-!   PRINTS TITLES FOR EACH STAGES
-!
       ELSE
-!
-        IF(LNG.EQ.1) WRITE(LU,200) FR(IETAPE)
-        IF(LNG.EQ.2) WRITE(LU,200) GB(IETAPE)
-!
+        IF(LNG.EQ.1)WRITE(LU,400)SCHEMEFR(1),SCHEMEFR(SCHEME+3),
+     &                           ORDERFR (ORDRE +2),SCHEMEFR(1)
+        IF(LNG.EQ.2)WRITE(LU,400)SCHEMEGB(1),SCHEMEGB(SCHEME+3),
+     &                           ORDERGB(ORDRE+2),SCHEMEGB(1)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -136,6 +178,8 @@
      &                                               3X,'(',F14.4,' S)')
 40     FORMAT(/,80('='),/,1X,A10,I8,A10,F8.4,' S')
 200    FORMAT(80('-'),/,18X,A32)
+400    FORMAT(/,18X,32('*'),/,18X,A32,/,18X,A32,/,18X,A32,/,18X,A32,/,
+     &          18X,32('*'))
 !
 !-----------------------------------------------------------------------
 !

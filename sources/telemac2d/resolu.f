@@ -315,40 +315,35 @@
 !          WINF(3,K) =  H(NBOR(K))*VBOR(K)
 !        ENDIF
 !       ENDDO
-! ================================
-! VALUES COMPUTED BY BORD ARE GOOD
-!=================================
+!     ==================================================================
+!     VALUES COMPUTED BY BORD ARE GOOD
+!     ==================================================================
       DO K=1,NPTFR
         WINF(1,K) =  H(NBOR(K))
         WINF(2,K) =  H(NBOR(K))*U(NBOR(K))
         WINF(3,K) =  H(NBOR(K))*V(NBOR(K))
       ENDDO
+!     ==================================================================
+!     INITIALIZE QU AND QV AND FLUX_OLD
+!     ==================================================================
       IF(LT.EQ.1) THEN
-!       INITIALIZE QU AND QV
         CALL OV('X=YZ    ',QU,HN,U,1.D0,NPOIN)
         CALL OV('X=YZ    ',QV,HN,V,1.D0,NPOIN)
+        DO I=1,NPOIN
+          FLUX_OLD(I,1) = 0.0D0
+          FLUX_OLD(I,2) = 0.0D0
+          FLUX_OLD(I,3) = 0.0D0
+        ENDDO
       ENDIF
-
+!     ==================================================================
+!     LISTING OF 1ST TIME STEP 
+!     ==================================================================
+      IF(LT.EQ.1) CALL ENTETE(1,AT,LT,SCHEME=ICIN,ORDRE=NORDRE)
+!      
       IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
 !        ROE SCHEME
 !-----------------------------------------------------------------------
-!
-        IF(LT.EQ.1) THEN
-          WRITE(LU,*) ' '
-          WRITE(LU,*) '          ***************** '
-          WRITE(LU,*) '          *   ROE SCHEME  * '
-          WRITE(LU,*) '          ***************** '
-          WRITE(LU,*) ' '
-
-!INITIALIZATION OF FLUX_OLD
-          DO I=1,NPOIN
-            FLUX_OLD(I,1) = 0.0D0
-            FLUX_OLD(I,2) = 0.0D0
-            FLUX_OLD(I,3) = 0.0D0
-          ENDDO
-        ENDIF
-
 !
 !      COPY  VARIABLES INTO W
 !
@@ -447,26 +442,6 @@
 !
         IF(LT.EQ.1) THEN
 !
-!             INITIALIZATIONS FOR THE 1ST TIME STEP
-!             *************************************
-!
-          WRITE(LU,*) ' '
-          WRITE(LU,*) '          **************************'
-          WRITE(LU,*) '          *     KINETIC SCHEME     *'
-          IF(NORDRE.EQ.1)THEN
-            WRITE(LU,*) '          *  FIRST ORDER IN SPACE  * '
-          ELSE
-            WRITE(LU,*)'          *  SECOND ORDER IN SPACE * '
-          ENDIF
-          WRITE(LU,*) '          **************************'
-          WRITE(LU,*) ' '
-!      INITIALIZATION OF FLUX_OLD
-          DO I=1,NPOIN
-            FLUX_OLD(I,1) = 0.0D0
-            FLUX_OLD(I,2) = 0.0D0
-            FLUX_OLD(I,3) = 0.0D0
-          ENDDO
-!
 !     COMPUTE GRADIENT OF ZF FOR ORDRE2
 !
           IF(NORDRE.EQ.2) THEN
@@ -477,7 +452,6 @@
 !
 !    INITIALIZATION FOR TRACER
 !
-
           IF(NTRAC.GT.0) THEN
             DO ITRAC=1,NTRAC
               MASSOU(ITRAC) = 0.D0
@@ -719,28 +693,6 @@
 !            ZOKAGOA SCHEME
 !-----------------------------------------------------------------------
 !
-!
-      IF(LT.EQ.1) THEN
-!
-!            INITIALIZATIONS FOR THE FIRST TIME STEP
-!            ***********************************
-!
-        WRITE(LU,*) ' '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *   ZOKAGOA SCHEME    * '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) ' '
-!INITIALIZATION OF FLUX_OLD
-        DO I=1,NPOIN
-          FLUX_OLD(I,1) = 0.0D0
-          FLUX_OLD(I,2) = 0.0D0
-          FLUX_OLD(I,3) = 0.0D0
-        ENDDO
-
-      ENDIF
-
-!-----------------------------------------------------------------------
-!
 !    COPY VARIABLES INTO W
 !
       DO I=1,NPOIN
@@ -829,28 +781,6 @@
 !
 !-----------------------------------------------------------------------
 !             TCHAMEN SCHEME
-!-----------------------------------------------------------------------
-!
-!
-      IF(LT.EQ.1) THEN
-!
-!            INITIALIZATIONS FOR THE 1ST TIME STEP
-!            ***********************************
-!
-        WRITE(LU,*) ' '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *   TCHAMEN SCHEME    * '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) ' '
-!INITIALIZATION OF FLUX_OLD
-        DO I=1,NPOIN
-          FLUX_OLD(I,1) = 0.0D0
-          FLUX_OLD(I,2) = 0.0D0
-          FLUX_OLD(I,3) = 0.0D0
-        ENDDO
-
-      ENDIF
-
 !-----------------------------------------------------------------------
 !
 !   CPY VARIABLES INTO W
@@ -946,27 +876,6 @@
 !             HLLC SCHEME
 !-----------------------------------------------------------------------
 !
-!
-      IF(LT.EQ.1) THEN
-!
-!             INITIALIZATION FOR THE 1ST TIME STEP
-!             *************************************
-!
-        WRITE(LU,*) ' '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *     HLLC  SCHEME    * '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) ' '
-! INITIALIZATION OF FLUX_OLD
-        DO I=1,NPOIN
-          FLUX_OLD(I,1) = 0.0D0
-          FLUX_OLD(I,2) = 0.0D0
-          FLUX_OLD(I,3) = 0.0D0
-        ENDDO
-
-      ENDIF
-
-!-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !
       DO I=1,NPOIN
@@ -1066,20 +975,6 @@
 !
       IF(LT.EQ.1) THEN
 !
-!             INITIALIZATION FOR THE 1ST TIME STEP
-!             *************************************
-!
-        WRITE(LU,*) ' '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) '          *     WAF  SCHEME    * '
-        WRITE(LU,*) '          *********************** '
-        WRITE(LU,*) ' '
-! INITIALIZATION OF FLUX_OLD
-        DO I=1,NPOIN
-          FLUX_OLD(I,1) = 0.0D0
-          FLUX_OLD(I,2) = 0.0D0
-          FLUX_OLD(I,3) = 0.0D0
-        ENDDO
 ! INITIALIZATION OF NEISEG
         DO I=1,NSEG
           NEISEG(1,I) = 0

@@ -2,7 +2,7 @@
                      SUBROUTINE BILAN
 !                    ****************
 !
-     &(MESH,H,WORK,MASK,AT,DT,LT,NIT,INFO,MASSES,MSK,MASKEL,EQUA,POROS,
+     &(MESH,H,WORK,MASK,AT,DT,LT,NIT,INFO,MASSES,MSK,MASKEL,EQUA,POROSS,
      & OPTBAN,NPTFR,FLBOR,FLUX_BOUNDARIES,NUMLIQ,NFRLIQ,GAMMA)
 !
 !***********************************************************************
@@ -65,12 +65,13 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
-!| POROS          |-->| POROSITY, PER ELEMENT.
+!| POROSS         |-->| POROSITY, PER ELEMENT.
 !| WORK           |-->| WORK ARRAY
 !| GAMMA          |-->| NEWMARK COEFFICIENT FOR TIME INTEGRATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC2D, EX_BILAN => BILAN
       USE DECLARATIONS_TELEMAC2D, ONLY : FLUX1_OLD,MASSE0,MASSE1,
      &                                   MASSE2,MASENT,MASSET
 !
@@ -88,7 +89,7 @@
       LOGICAL, INTENT(IN)            :: INFO,MSK
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: WORK,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)     :: H,MASKEL,POROS,MASK
+      TYPE(BIEF_OBJ), INTENT(IN)     :: H,MASKEL,POROSS,MASK
       DOUBLE PRECISION, INTENT(IN)   :: AT,DT,GAMMA
       DOUBLE PRECISION, INTENT(INOUT):: MASSES,FLUX_BOUNDARIES(*)
 !
@@ -116,7 +117,7 @@
         CALL OS( 'X=XY    ' , X=WORK , Y=H )
       ELSEIF(OPTBAN.EQ.3) THEN
         CALL VECTOR(WORK,'=','MASVEC          ',H%ELM,
-     &              1.D0,H,H,H,H,H,H,MESH,.TRUE.,POROS)
+     &              1.D0,H,H,H,H,H,H,MESH,.TRUE.,POROSS)
       ELSE
         CALL VECTOR(WORK,'=','MASVEC          ',H%ELM,
      &              1.D0,H,H,H,H,H,H,MESH,MSK,MASKEL)
