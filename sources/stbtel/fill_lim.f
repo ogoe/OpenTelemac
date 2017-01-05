@@ -43,7 +43,7 @@
 !
       INTEGER I
 !
-      DO I=1,NPTFR
+      DO I=NPTFR,1,-1
 !
         LIHBOR(2*I-1)=LIHBOR(I)
         LIUBOR(2*I-1)=LIUBOR(I)
@@ -74,7 +74,6 @@
         ENDIF
 !
       ENDDO
-      WRITE(LU,*) 'PASSING THROW HERE5'
 !
       DO I=1,NPTFR-1
 !
@@ -121,36 +120,53 @@
         ENDIF
 !
       ENDDO
-      WRITE(LU,*) 'PASSING THROW HERE4'
 !
+      ! Checking for Last segment
       I=NPTFR
-      LIHBOR(2*I)=2
-      LIUBOR(2*I)=2
-      LIVBOR(2*I)=2
+      IF (LIHBOR(2*I-1).EQ.5.AND.LIHBOR(1).EQ.5) THEN
+!
+        IF ((LIUBOR(2*I-1).EQ.4.AND.LIUBOR(1).EQ.4).AND.
+     &      (LIVBOR(2*I-1).EQ.4.AND.LIVBOR(1).EQ.4)) THEN
+!
+          LIHBOR(2*I)=5
+          LIUBOR(2*I)=4
+          LIVBOR(2*I)=4
+!
+          IF(NTRAC.GT.0) THEN
+            LITBOR%ADR(1)%P%I(2*I)=4
+          ENDIF
+!
+        ENDIF
+!
+      ELSEIF (LIHBOR(2*I-1).EQ.4.AND.LIHBOR(1).EQ.4) THEN
+!
+        IF ((LIUBOR(2*I-1).EQ.5.AND.LIUBOR(1).EQ.5).AND.
+     &      (LIVBOR(2*I-1).EQ.5.AND.LIVBOR(1).EQ.5)) THEN
+!
+          LIHBOR(2*I)=4
+          LIUBOR(2*I)=5
+          LIVBOR(2*I)=5
+!
+          IF(NTRAC.GT.0) THEN
+            LITBOR%ADR(1)%P%I(2*I)=4
+          ENDIF
+!
+        ENDIF
+!
+      ELSE
+!
+        LIHBOR(2*I)=2
+        LIUBOR(2*I)=2
+        LIVBOR(2*I)=2
+!
+        IF(NTRAC.GT.0) THEN
+          LITBOR%ADR(1)%P%I(2*I)=2
+        ENDIF
+!
+      ENDIF
 !
       IF(NTRAC.GT.0) THEN
         LITBOR%ADR(1)%P%I(2*I)=2
       ENDIF
 !
-      WRITE(LU,*) 'PASSING THROW HERE3'
-!      DO K=1,NPOIN_BOR
-!!
-!        CHECK(K)=K
-!!
-!        WRITE(NCLI,4000) LIHBOR(K),LIUBOR(K),
-!     &                LIVBOR(K),
-!     &                HBOR(K),UBOR(K),VBOR(K),
-!     &                AUBOR(K),LITBOR(K),
-!     &                TBOR(K),ATBOR(K),BTBOR(K),
-!     &                NBORINED_X(K),CHECK(K)
-!!
-!      ENDDO
-!      WRITE(LU,*) 'PASSING THROW HERE2'
-!!
-! 4000       FORMAT (1X,I2,1X,2(I1,1X),3(F12.6,1X),1X,
-!     &           F12.6,3X,I1,1X,3(F12.6,1X),1I15,1X,1I15)
-!!CCCC     &           1X,I7,1X,2(F27.15,1X),I6)
-!!
-!      CLOSE(UNIT=NCLI)
-!      WRITE(LU,*) 'PASSING THROW HERE1'
       END SUBROUTINE

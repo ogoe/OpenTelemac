@@ -1,24 +1,16 @@
 /
-/**********************************************************************/
-/                                                                      /
-/           FICHIER DE DECLARATION DES MOTS CLES DU CODE               /
-/                          STBTEL  V5.5                                /
-/                                                                      /
-/                  Traitement d'un maillage Selafin                    /
-/                 Avec elimination des elements secs                   /
-/  SOGREAH                                                26/01/1999   /
-/**********************************************************************/
+/ REFINEMENT OF MESH FILE USING STBTEL
 /
 /
-FICHIER UNIVERSEL                           : './hydro'
-FICHIER DE GEOMETRIE POUR TELEMAC           : './geo.slf'
-FICHIER DES CONDITIONS AUX LIMITES          : './geo.cli'
+/ INPUT FILE INFORMATION
 /
-MAILLEUR                                    : SELAFIN
+UNIVERSAL FILE : 'geo_estimation.slf'
+BOUNDARY UNIVERSAL FILE : 'geo_estimation.cli'
 /
-ELIMINATION DES DEPENDANCES ARRIERES        : YES
-DECOUPAGE DES TRIANGLES SURCONTRAINTS       : NO
-DISTANCE MINIMALE ENTRE DEUX POINTS         : 0.01
+MESH GENERATOR : 'SELAFIN'
+CUTTING ELEMENTS IN FOUR : YES
 /
-DECOUPAGE DES TRIANGLES EN QUATRE : YES
-&FIN
+/ OUTPUT FILE INFORMATION
+/
+GEOMETRY FILE FOR TELEMAC : 'geox4.slf'
+BOUNDARY CONDITIONS FILE : 'geox4.cli'

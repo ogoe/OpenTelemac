@@ -67,6 +67,7 @@
       NLOG=31
       NOBND=32
       NOLOG=33
+      NBND2=34
       NOMGEO=' '
       NOMFO1=' '
       NOMFO2=' '
@@ -84,25 +85,27 @@
       LOGFILE=' '
       OUTBNDFILE=' '
       OUTLOGFILE=' '
+      NOMBND2 = ' '
       CALL P_INIT(PATH,NCAR,IPID,NCSIZE)
       CALL READ_CONFIG(PATH,NCAR)
-      FORTXY(NGEO) ='FORT.1'
+      FORTXY(NGEO) ='STBGEO'
       FORTXY(NCLE) ='STBDICO'
       FORTXY(NCAS) ='STBCAS'
-      FORTXY(NLIM) ='FORT.7'
-      FORTXY(NRES) ='FORT.8'
-      FORTXY(NSOU) ='FORT.11'
-      FORTXY(NIMP) ='FORT.12'
-      FORTXY(NFRC) ='FORT.20'
-      FORTXY(NFON) ='FORT.23'
-      FORTXY(NFO1) ='FORT.26'
-      FORTXY(NFO2) ='FORT.27'
+      FORTXY(NLIM) ='STBLIM'
+      FORTXY(NRES) ='STBRES'
+      FORTXY(NSOU) ='STBSOU'
+      FORTXY(NIMP) ='STBIMP'
+      FORTXY(NFRC) ='STBFRC'
+      FORTXY(NFON) ='STBFON'
+      FORTXY(NFO1) ='STBFO1'
+      FORTXY(NFO2) ='STBFO2'
       FORTXY(NINP) ='STBINP'
       FORTXY(NOUT) ='STBOUT'
       FORTXY(NBND) ='STBBND'
       FORTXY(NLOG) ='STBLOG'
       FORTXY(NOBND) ='STBOBD'
       FORTXY(NOLOG) ='STBOLG'
+      FORTXY(NBND2) ='STBND2'
 !
       TDEB = TIME_IN_SECONDS()
 !
@@ -132,9 +135,9 @@
 !     LE FICHIER UNIVERSEL EST DE TYPE BINAIRE OU FORMATE
 !
       IF(MAILLE.EQ.'SIMAIL'.OR.MAILLE.EQ.'SELAFIN') THEN
-        OPEN(NGEO,FILE='FORT.1' , FORM='UNFORMATTED')
+        OPEN(NGEO,FILE=FORTXY(NGEO), FORM='UNFORMATTED')
       ELSE
-        OPEN(NGEO,FILE='FORT.1' , FORM='FORMATTED')
+        OPEN(NGEO,FILE=FORTXY(NGEO), FORM='FORMATTED')
       ENDIF
 !
 !=======================================================================
@@ -143,6 +146,10 @@
 !
       IF(NOMLIM(1:1).NE.' ') THEN
         OPEN(NLIM , FILE=FORTXY(NLIM),FORM='FORMATTED',ACTION='WRITE')
+      ENDIF
+!
+      IF(NOMBND2(1:1).NE.' ') THEN
+        OPEN(NBND2 , FILE=FORTXY(NBND2),FORM='FORMATTED',ACTION='READ')
       ENDIF
 !
       IF(NOMRES(1:1).NE.' ') THEN
@@ -265,6 +272,7 @@
       CALL P_EXIT()
 !
 !-----------------------------------------------------------------------
+!
 !
       STOP 0
       END

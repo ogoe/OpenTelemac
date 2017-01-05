@@ -21,6 +21,7 @@ files: bief_def.f
   mxptel31.f
   mxptel.f
   read_config.f
+  allblo.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -147,3 +148,6 @@ files: declarations_stbtel.F
   lecdon_stbtel.f
   inisim.f
   homere_stbtel.f
+  lecsellim.f
+  fill_lim.f
+  writesellim.f

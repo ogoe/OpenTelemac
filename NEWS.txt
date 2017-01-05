@@ -1,6 +1,8 @@
 Trunk (Unreleased)
 ===========================
 
+- STBTEL: Now refining the boundary conditions as well as the mesh
+  Available through the script convertert.py as well
 - Addons: Adding vim-syntax for .cas and .dico files
 - TELEMAC-2D: change computation of wall distance (used in
   Spalart-Allmaras turbulence model). The wall distance (WDIST) is now
