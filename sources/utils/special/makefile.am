@@ -3,6 +3,8 @@
 #
 SRCS= \
 declarations_special.f \
+i2str.f \
+to_lower.f to_upper.f \
 gracestop.f get_nodes_per_element.f \
 special_plante.f extens.f get_free_id.f \
 print_header.f \

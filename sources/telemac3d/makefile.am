@@ -26,4 +26,16 @@ tfond.f            tidal_model_t3d.f     transf_zchar.f trid1d.f tridw2.f  tridw
 utimp.f            tvf_imp_3d.f vel_prof_z.f  velres.f   \
 vermoy.f           viscke.f   viscko.f   visclip.f visclm.f \
 viscos.f           vissma.f   vitchu.f   vit3.f \
-wave_equation.f    wchind.f   wcturb.f   wstarw.f   wstar.f  
+wave_equation.f    wchind.f   wcturb.f   wstarw.f   wstar.f
+
+LIBS=\
+		 $(DEST)/lib/libtelemac2d.a \
+		 $(DEST)/lib/libtomawac.a \
+		 $(DEST)/lib/libsisyphe.a \
+		 $(DEST)/lib/libnestor.a \
+		 $(DEST)/lib/libwaqtel.a \
+		 $(DEST)/lib/libbief.a \
+		 $(DEST)/lib/libhermes.a \
+		 $(DEST)/lib/libparallel.a \
+		 $(DEST)/lib/libdamocles.a \
+		 $(DEST)/lib/libspecial.a \

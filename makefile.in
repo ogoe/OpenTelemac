@@ -1,0 +1,66 @@
+# Informations neccessary for compilation
+# Utils
+MAKE=make
+MESSAGE=echo
+#
+#Compilation informations
+#
+# Fortran Compiler
+FC=mpif90
+# Option fo compiler
+FCFLAGS=-fconvert=big-endian -frecord-marker=4 -DHAVE_MPI -DHAVE_MED -DHAVE_VTK -I${MEDHOME}/include
+
+# Exe generator
+LD=mpif90
+# Option for exe
+LDFLAGS=-fconvert=big-endian -frecord-marker=4 -lpthread -lm -L${MEDHOME}/lib -L${HDF5HOME}/lib -lhdf5 -lmed
+
+# Library generator command
+LIB_NAM=ar cru
+#LIB_NAM="mpif90 -shared -fconvert=big-endian -frecord-marker=4 -lpthread -lm -L${MEDHOME}/lib -L${HDF5HOME}/lib -lhdf5 -lmed -o "
+
+#
+# Installation directory
+#
+DEST=${HOMETEL}/builds/${USETELCFG}
+
+########################################################################
+#                           WARNING                                    #
+#               Do not edit the following lines                        #
+#                                                                      #
+########################################################################
+
+#------- Regles de compilation des sources FORTRAN
+.SUFFIXES: .F90 .f90 .f .F .o .mod .MOD
+
+.F90.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) -c $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/include/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/include/.; /bin/rm *.MOD; fi;
+
+.f90.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) -c $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/include/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/include/.; /bin/rm *.MOD; fi;
+
+.F.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) -c $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/include/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/include/.; /bin/rm *.MOD; fi;
+
+.f.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) -c $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/include/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/include/.; /bin/rm *.MOD; fi;

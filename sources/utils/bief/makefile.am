@@ -89,3 +89,8 @@ veclen.f     vector.f       vectos.f      vgfpsi.f  \
 voisin.f     voisin31.f     waitfor.f     write_header.f  write_data.f  write_mesh.f \
 solve_mumps_par.F pre4_mumps.F solve_mumps.F \
 read_dataset.f read_mesh_conn.f read_mesh_coord.f read_mesh_info.f read_partel_info.f
+
+LIBS= \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libspecial.a

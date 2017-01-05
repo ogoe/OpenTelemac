@@ -49,7 +49,7 @@ sax_lib_check: $(BUILD_TARGETS) common_lib utils_lib
 	    touch sax_lib_check.out ; \
 	fi
 #
-wxml_lib: objsdir common_lib fsys_lib 
+wxml_lib: objsdir common_lib fsys_lib
 	(cd wxml; $(MAKE) VPATH=$(VPATH)/wxml)
 wxml_lib_clean:
 	if test -d wxml; then (cd wxml; $(MAKE) VPATH=$(VPATH)/wxml clean) fi
@@ -65,7 +65,7 @@ wxml_lib_check: $(BUILD_TARGETS) common_lib utils_lib
 #
 wcml_lib: objsdir utils_lib wxml_lib
 	(cd wcml; $(MAKE) VPATH=$(VPATH)/wcml)
-wcml_lib_clean: 
+wcml_lib_clean:
 	if test -d wcml; then (cd wcml; $(MAKE) VPATH=$(VPATH)/wcml clean) fi
 wcml_lib_check: $(BUILD_TARGETS) common_lib utils_lib
 	if test -d examples && ! grep DUMMYLIB arch.make > /dev/null ; \

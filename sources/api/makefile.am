@@ -10,3 +10,18 @@ api_run_sis.f\
 api_interface.f\
 api_run_cpl.f\
 homere_api.F
+
+LIBS= \
+$(DEST)/lib/libtelemac3d.a \
+$(DEST)/lib/libtelemac2d.a \
+$(DEST)/lib/libtomawac.a \
+$(DEST)/lib/libsisyphe.a \
+$(DEST)/lib/libwaqtel.a \
+$(DEST)/lib/libnestor.a \
+$(DEST)/lib/libpartel.a \
+$(DEST)/lib/libgretel.a \
+$(DEST)/lib/libbief.a \
+$(DEST)/lib/libhermes.a \
+$(DEST)/lib/libparallel.a \
+$(DEST)/lib/libdamocles.a \
+$(DEST)/lib/libspecial.a

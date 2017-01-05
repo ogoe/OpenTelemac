@@ -1,8 +1,16 @@
 #
 #------- Sources Fortran
-
+#
 SRCS= \
-declarations_damocles.f aidelu.f carlu.f classe.f cmd.f damoc.f damocle.f damocles.f \
-dico.f    influ.f intlu.f  loglu.f longlu.f majus.f    \
-minus.f   next.f  precar.f prev.f  preval.f realu.f
+declarations_damocles.f \
+shell_string.f dico_data.f\
+utils_cata.f utils_latex.f \
+homere_damocles.f \
+aidelu.f carlu.f classe.f \
+cmd.f damoc.f damocle.f damocles.f \
+dico.f    influ.f intlu.f  loglu.f longlu.f majus.f \
+minus.f   next.f  precar.f prev.f  preval.f realu.f \
+myaidelu.f mycarlu.f
 
+LIBS= \
+$(DEST)/lib/libspecial.a

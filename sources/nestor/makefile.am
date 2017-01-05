@@ -11,3 +11,6 @@ mainnestor.f         my_flush.f         open_file.f         parsesteerline.f    
 readactiontorestart.f          readdigactions.f          readfieldtorestart.f         readpolygons.f \
 readwriterestart.f set_reflevelbyprofiles.F threedigitsnumeral.f                  \
 writeactiontorestart.f         writedigaction.f         writefield.f          writefieldtorestart.f
+
+LIBS= \
+$(DEST)/lib/libspecial.a

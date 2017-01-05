@@ -1,1 +1,6 @@
 SRCS=pair.f splitsel.f
+
+LIBS= \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libspecial.a \

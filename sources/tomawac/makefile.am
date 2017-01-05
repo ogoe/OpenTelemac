@@ -22,3 +22,10 @@ radiat.f rpi_intr.f rpi_invr.f \
 semimp.f sor3d.f  speini.f spejon.f spetma.f dir_spread.f stress.f \
 tautot.f tetmoy.f totnrj.f tomawac_constants.f transf.f \
 ustar1.f ustar2.f venuti.f vitfon.f wac.F wnscou.f wpower.f
+
+LIBS= \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libdamocles.a \
+			$(DEST)/lib/libspecial.a \

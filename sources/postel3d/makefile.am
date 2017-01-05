@@ -9,3 +9,10 @@ lecdon_postel3d.f        postel3d.f                     \
 coupev.f           lecr3d.f           pre2dh.f          \
 pre2dv.f           ecrdeb.f           nomtra.f          \
 homere_postel3d.f  point_postel3d.f
+
+LIBS= \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libdamocles.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libspecial.a \

@@ -5,7 +5,7 @@ include $(HOMETEL)/makefile.in
 # Get SRCS and LIBS
 include makefile.am
 #
-LIBRARY=libparallel.a
+LIBRARY=libad.a
 EXE=
 
 # Get list of files
@@ -29,7 +29,7 @@ $(LIBRARY):	$(OBJS)
 
 $(EXE):	$(OBJS)
 		@$(MESSAGE) "Link executable $@ ..."
-		@$(LD) $(LDFLAGS) -o $@ $^ $(LKLIB)
+		@$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LKLIB)
 
 clean:
 	  @$(MESSAGE) "Efface les objets, librairies, executables et core-file."

@@ -35,3 +35,6 @@ SRCS= \
  set_header.f\
  set_mesh.f\
  update_data_mesh.f
+
+LIBS= \
+$(DEST)/lib/libspecial.a

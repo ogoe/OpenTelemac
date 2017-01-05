@@ -27,6 +27,8 @@ inisim.f             \
 inistb.f             \
 initri.f             \
 interp.f             \
+lecsellim.f           \
+writesellim.f         \
 lecadc.f             \
 lecdon_stbtel.f      \
 lecfas.f             \
@@ -54,4 +56,11 @@ conv_serafin.f       \
 conv_vtk.F           \
 conv_cgns.F          \
 conv_unv.f           \
-converter.f          
+converter.f
+
+LIBS= \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libdamocles.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libspecial.a \

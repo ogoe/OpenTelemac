@@ -1,7 +1,7 @@
 #
 #------- Sources Fortran
 SRCS	      = declarations_parallel.F \
-                interface_parallel.f \
+    interface_parallel.f \
 		errpvm.F \
 		org_charac_type1.F \
 		oil_org_charac_type.F \
@@ -14,8 +14,8 @@ SRCS	      = declarations_parallel.F \
 		p_imin.F \
 		p_init.F \
 		p_isum.F \
-                p_isum_array.F \
-                p_imax_array.F \
+    p_isum_array.F \
+    p_imax_array.F \
 		p_lsum.F \
 		p_mail.F \
 		p_mpi_address.F \
@@ -41,3 +41,6 @@ SRCS	      = declarations_parallel.F \
 		p_iwrit.F \
 		p_iwriti8.F \
 		p_iwriti.F
+
+LIBS = \
+	  $(DEST)/lib/libspecial.a

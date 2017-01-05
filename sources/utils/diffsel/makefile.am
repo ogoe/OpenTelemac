@@ -1,1 +1,3 @@
 SRCS=diffsel.f
+
+LIBS= $(DEST)/lib/libspecial.a

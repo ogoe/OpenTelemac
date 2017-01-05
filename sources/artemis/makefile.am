@@ -13,4 +13,11 @@ fcte1.f          fcte2.f          fwspec.f         homere_artemis.f \
 lecdon_artemis.f masque_artemis.f nomvar_artemis.f                  \
 pentco.f         perale.f         phbor.f          point_artemis.f \
 radia1.f         radia2.f         spd.f            spe.f            \
-utimp.f          solvelambda.f    caltetap.f      
+utimp.f          solvelambda.f    caltetap.f
+
+LIBS= \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libdamocles.a \
+			$(DEST)/lib/libspecial.a \

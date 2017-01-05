@@ -40,5 +40,18 @@ receding.f reinit.f rescue.f resolu.f  read_fic_frliq.f \
 rotne0.f runoff_scs_cn.f seg_neighbors.f siphon.f sl.f smagor.f smoothing_flux.f smtrac.f \
 source_telemac2d.f spalallin.f spalallcl.f spalart_allmaras.f spectre.f sta_dis_cur.f steady.f tel4del.f telemac2d.f  testeur.f \
 thomps.f tidal_model_t2d.f tr.f trsce.f  utimp_telemac2d.f \
-valro.f  vistur.f vistursa.f vit.f     \
+valro.f  vistur.f vit.f     \
+aksain.f cosasa.f spalallcl.f spalallin.f spalart_allmaras.f vistursa.f walldist.f \
 volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f  zslope.f
+
+LIBS=\
+		 $(DEST)/lib/libsisyphe.a \
+		 $(DEST)/lib/libnestor.a \
+		 $(DEST)/lib/libtomawac.a \
+		 $(DEST)/lib/libwaqtel.a \
+		 $(DEST)/lib/libstbtel.a \
+		 $(DEST)/lib/libbief.a \
+		 $(DEST)/lib/libhermes.a \
+		 $(DEST)/lib/libdamocles.a \
+		 $(DEST)/lib/libparallel.a \
+		 $(DEST)/lib/libspecial.a \

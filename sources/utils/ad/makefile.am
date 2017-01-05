@@ -1,0 +1,51 @@
+#
+#------- Sources Fortran
+#
+SRCS= \
+ad_sisyphe_begin.f \
+ad_sisyphe_end.f \
+ad_sisyphe_initialisation_begin.f \
+ad_sisyphe_initialisation_end.f \
+ad_sisyphe_looprecords_begin.f \
+ad_sisyphe_looprecords_end.f \
+ad_sisyphe_main_after_lecdon_sisyphe.f \
+ad_sisyphe_main_finalize.f \
+ad_sisyphe_main_init.f \
+ad_sisyphe_subiteration_begin.f \
+ad_sisyphe_subiteration_end.f \
+ad_sisyphe_timestep_begin.f \
+ad_sisyphe_timestep_end.f \
+ad_telemac2d_begin.f \
+ad_telemac2d_end.f \
+ad_telemac2d_initialisation_begin.f \
+ad_telemac2d_initialisation_end.f \
+ad_telemac2d_main_after_lecdon_sisyphe.f \
+ad_telemac2d_main_after_lecdon_telemac2d.f \
+ad_telemac2d_main_after_lecdon_tomawac.f \
+ad_telemac2d_main_finalize.f \
+ad_telemac2d_main_init.f \
+ad_telemac2d_subiteration_begin.f \
+ad_telemac2d_subiteration_end.f \
+ad_telemac2d_timestep_begin.f \
+ad_telemac2d_timestep_end.f \
+ad_telemac3d_begin.f \
+ad_telemac3d_end.f \
+ad_telemac3d_initialisation_begin.f \
+ad_telemac3d_initialisation_end.f \
+ad_telemac3d_main_after_lecdon_sisyphe.f \
+ad_telemac3d_main_after_lecdon_telemac3d.f \
+ad_telemac3d_main_finalize.f \
+ad_telemac3d_main_init.f \
+ad_telemac3d_subiteration_begin.f \
+ad_telemac3d_subiteration_end.f \
+ad_telemac3d_timestep_begin.f \
+ad_telemac3d_timestep_end.f \
+ad_tomawac_begin.f \
+ad_tomawac_end.f \
+ad_tomawac_initialisation_begin.f \
+ad_tomawac_initialisation_end.f \
+ad_tomawac_main_after_lecdon_tomawac.f \
+ad_tomawac_main_finalize.f \
+ad_tomawac_main_init.f \
+ad_tomawac_timestep_begin.f \
+ad_tomawac_timestep_end.f

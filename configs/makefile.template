@@ -5,7 +5,7 @@ include $(HOMETEL)/makefile.in
 # Get SRCS and LIBS
 include makefile.am
 #
-LIBRARY=libparallel.a
+LIBRARY=
 EXE=
 
 # Get list of files
@@ -13,7 +13,7 @@ TMP=$(SRCS:.f=.o)
 OBJS=$(TMP:.F=.o)
 
 LKLIB=$(LIBS) $(FC_LIBS)
-FFLAGS=$(FCFLAGS) -I$(DEST)/include
+FFLAGS=$(FCFLAGS) -I$(DEST)/lib
 
 LIBRARIES=$(LIBRARY)
 EXES=$(EXE)
@@ -44,3 +44,21 @@ install:	$(LIBRARIES) $(EXES)
 		  rm -f $(DEST)/bin/$${exe};\
 	    cp -v $${exe} $(DEST)/bin;\
 	  done;
+
+#------- Regles de compilation des sources FORTRAN
+
+.F.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/lib/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/lib/.; /bin/rm *.MOD; fi;
+
+.f.o:
+	@$(MESSAGE) "=> Compilation de $< :"
+	@$(FC) $(FFLAGS) $<
+	@if [ -r *.mod ]; then \
+	 cp -v *.mod $(DEST)/lib/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 cp -v *.MOD $(DEST)/lib/.; /bin/rm *.MOD; fi;

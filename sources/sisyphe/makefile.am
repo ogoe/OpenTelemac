@@ -51,3 +51,11 @@ cvsp_init_from_layers.f 	cvsp_integrate_volume.f cvsp_main.f\
 cvsp_make_actlay.f cvsp_outputfiles.f cvsp_p.f\
 cvsp_rm_fraction.f cvsp_write_profile.f layers_p.f\
 cvsp_output_init.f lecdon_split_outputpoints.f
+
+LIBS= \
+			$(DEST)/lib/libnestor.a \
+			$(DEST)/lib/libbief.a \
+			$(DEST)/lib/libhermes.a \
+			$(DEST)/lib/libparallel.a \
+			$(DEST)/lib/libdamocles.a \
+			$(DEST)/lib/libspecial.a
