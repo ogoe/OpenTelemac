@@ -1,4 +1,5 @@
 \chapter{Internal structure of \bief}
+\label{ref:internalbief}
 
 \section{\bief data structure}
 
@@ -616,9 +617,8 @@ though it is possible to take a few short cuts. This is why we prefer the
 formal calculation software programme MAPLE V, which can give in FORTRAN
 the exact result of an integral calculation.
 
-%\todo{reference}
 An example is given below of a matrix calculation as it can be carried out with
-MAPLE V. The full description is given in the reference [06].
+MAPLE V. The full description is given in the reference \citet{HervouetMaple}.
 
 \subsection{Example of a mass-matrix calculation}
 
@@ -773,11 +773,10 @@ Elementary matrices of this type have 16 terms. These terms are calculated
 easily on the basis of the calculation of the terms P1 thanks to the dividing
 up of the triangle T into three sub-triangles. In fact, what we have is:
 
-%\todo{reorganize to have I1.. under the element}
 \[
 \begin{array}{ccccccc}
 M(i,j) & = & \int _{T1}f(\Psi _{j}^{T1} ,\varphi _{i}^{T1} ,F,...)d\Omega & + & \int _{T2}f(\Psi _{j}^{T2} ,\varphi _{i}^{T2} ,F,...)d\Omega & + & \int _{T3}f(\Psi _{j}^{T3} ,\varphi _{i}^{T3} ,F,...)d\Omega \\
-       &   &   I1                                                         &   &    I2                                                        &   &   I3
+       &   &   \mathrm{I1}                                                         &   &    \mathrm{I2}                                                        &   &   \mathrm{I3}
 \end{array}
 \]
 
@@ -899,12 +898,11 @@ functions in the reference triangle:
 \label{fig:reftriangle}
 \end{figure}
 
-%\todo{check array}
 \begin{tabular}{lccc}
 function P & P(1) & P(2) &  P(3) \\
   $P_{1}(\xi,\eta) = 1 - \xi - \frac{2}{3} \eta$ & 1 & 0 & $\frac{1}{3}$ \\
-  $P_{1}(\xi,\eta) = \xi + \frac{1}{3} \eta$ & 1 & 0 & $\frac{1}{3}$ \\
-  $P_{1}(\xi,\eta) = \frac{1}{3} \eta$ & 1 & 0 & $\frac{1}{3}$
+  $P_{2}(\xi,\eta) = \xi + \frac{1}{3} \eta$ & 1 & 0 & $\frac{1}{3}$ \\
+  $P_{3}(\xi,\eta) = \frac{1}{3} \eta$ & 1 & 0 & $\frac{1}{3}$
 \end{tabular}
 
 The isoparametric transformation retains the value of the functions at the
@@ -1284,6 +1282,7 @@ transposition are simply questions of how information is written for
 non-assembled storage.
 
 \subsection{Dirichlet-type boundary conditions}
+\label{ref:dirichletbnd}
 
 The following discussion concentrates on the case in which Dirichlet-type
 points are not eliminated from the equations. This is the only case that poses
@@ -2244,8 +2243,7 @@ After solving this system, $X$ is obtained by the formula $X = U^{-1} X'$
 When $M$ is symmetrical, it is preferable to choose an $LU$ breakdown in which
 $L$ and $U$ are each transposed from the other. In the case of $LU = L^{t}L$
 iterative methods such as that of the conjugate gradient (see
-%\todo{label}
-B.IV.1) may be adapted to produce only one inversion by
+Solvers may be adapted to produce only one inversion by
 $(L^{t}L)^{-1}$ . See \citet{Hervouet1911} on this subject.
 
 \subsection{CROUT preconditioning}

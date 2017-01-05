@@ -13,7 +13,6 @@ RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES'
 COMPORT =
  'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'geo'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU = 1
 AIDE = '
@@ -33,7 +32,8 @@ RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'TYPE DU BINAIRE'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'TYPE OF BINARY'
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*TYPE DU BINAIRE")
 IS VALEUR (Blue)'
-CHOIX = '"IBM"';'"I3E"';'"STD"'
+CHOIX = 'IBM';'I3E';'STD'
+CHOIX1 = 'IBM';'I3E';'STD'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU = 2
 AIDE = '
@@ -304,17 +304,17 @@ COMPORT = 'Foreground ("PARAMETRES NUMERIQUES,SOLVEUR")
  IS VALEUR (Blue)'
 NIVEAU = 2
 CHOIX =
-'0= "pas de preconditionnement"';
-'2= "preconditionnement diagonal"';
-'3= "preconditionnement bloc-diagonal"';
-'5= "preconditionnement diagonal en valeur absolue"';
-'7= "preconditionnement de Crout par element"'
+'0="pas de preconditionnement"';
+'2="preconditionnement diagonal"';
+'3="preconditionnement bloc-diagonal"';
+'5="preconditionnement diagonal en valeur absolue"';
+'7="preconditionnement de Crout par element"'
 CHOIX1 =
-'0= "no preconditioning"';
-'2= "diagonal preconditioning"';
-'3= "block-diagonal preconditioning"';
-'5= "absolute value diagonal preconditioning"';
-'7= "Crout preconditioning"'
+'0="no preconditioning"';
+'2="diagonal preconditioning"';
+'3="block-diagonal preconditioning"';
+'5="absolute value diagonal preconditioning"';
+'7="Crout preconditioning"'
 AIDE = '
 Permet de preconditionner le systeme de l''etape de propagation afin
 d''accelerer la convergence lors de sa resolution.
@@ -355,23 +355,23 @@ COMPORT = 'Foreground ("PARAMETRES NUMERIQUES,SOLVEUR")
 IS VALEUR (Blue)'
 NIVEAU = 2
 CHOIX =
-'1 = "gradient conjugue"';
-'2 = "residu conjugue"';
-'3 = "gradient conjugue sur equation normale"';
-'4 = "erreur minimale"';
-'5 = "gradient conjugue carre (non programme)"';
-'6 = "CGSTAB"';
-'7 = "GMRES"';
-'8 = "direct"'
+'1="gradient conjugue"';
+'2="residu conjugue"';
+'3="gradient conjugue sur equation normale"';
+'4="erreur minimale"';
+'5="gradient conjugue carre (non programme)"';
+'6="CGSTAB"';
+'7="GMRES"';
+'8="direct"'
 CHOIX1 =
-'1 = "conjugate gradient"';
-'2 = "conjugate residual"';
-'3 = "conjugate gradient on a normal equation"';
-'4 = "minimum error"';
-'5 = "squared conjugate gradient"';
-'6 = "CGSTAB"';
-'7 = "GMRES"';
-'8 = "direct"'
+'1="conjugate gradient"';
+'2="conjugate residual"';
+'3="conjugate gradient on a normal equation"';
+'4="minimum error"';
+'5="squared conjugate gradient"';
+'6="CGSTAB"';
+'7="GMRES"';
+'8="direct"'
 AIDE = '
 Permet de choisir le solveur utilise pour la resolution de l''etape de
 propagation. Toutes les methodes proposees actuellement s''apparentent
@@ -430,13 +430,13 @@ COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*STANDARD")
 IS VALEUR (Red)'
 NIVEAU= 2
 CHOIX=
-'1 =LEONARD';
-'2 =RUBENS';
-'3 =SELAFIN'
+'1="LEONARD"';
+'2="RUBENS"';
+'3="SELAFIN"'
 CHOIX1=
-'1 =LEONARD';
-'2 =RUBENS';
-'3 =SELAFIN'
+'1="LEONARD"';
+'2="RUBENS"';
+'3="SELAFIN"'
 APPARENCE = 'LISTE IS EDITABLE'
 AIDE = '
 Adapte la lecture du FICHIER DE GEOMETRIE au standard choisi pour
@@ -464,13 +464,13 @@ COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*STANDARD")
 IS VALEUR (Red)'
 NIVEAU= 2
 CHOIX=
-'1 =LEONARD';
-'2 =RUBENS';
-'3 =SELAFIN'
+'1="LEONARD"';
+'2="RUBENS"';
+'3="SELAFIN"'
 CHOIX1=
-'1 =LEONARD';
-'2 =RUBENS';
-'3 =SELAFIN'
+'1="LEONARD"';
+'2="RUBENS"';
+'3="SELAFIN"'
 APPARENCE = 'LISTE IS EDITABLE'
 AIDE = '
 Standard du fichier des resultats :
@@ -523,13 +523,13 @@ COMPORT = 'Foreground ("PARAMETRES PHYSIQUES*HOULE ALEATOIRE")
 IS VALEUR (Blue)'
 NIVEAU= 1
 CHOIX =
-  '1.0 = " spectre de Pierson-Moskowitz"';
-  '3.3 = " spectre de JONSWAP moyen"';
-  '0.0 = " spectre au choix"'
+  '1.0=" spectre de Pierson-Moskowitz"';
+  '3.3=" spectre de JONSWAP moyen"';
+  '0.0=" spectre au choix"'
 CHOIX1 =
-  '1.0 = "Pierson-Moskowitz"';
-  '3.3 = "JONSWAP moyen"';
-  '0.0 = "any spectre"'
+  '1.0="Pierson-Moskowitz"';
+  '3.3="JONSWAP moyen"';
+  '0.0="any spectre"'
 AIDE = '
 Valeur utilisee avec l''option :
   HOULE ALEATOIRE MONODIRECTIONNELLE = OUI
@@ -731,17 +731,17 @@ COMPORT = 'Foreground ("EQUATIONS CONDITIONS INITIALES")
 IS VALEUR (Brown)'
 NIVEAU = 1
 CHOIX =
-'"COTE NULLE"';
-'"COTE CONSTANTE"';
-'"HAUTEUR NULLE"';
-'"HAUTEUR CONSTANTE"';
-'"PARTICULIERES"'
+'COTE NULLE';
+'COTE CONSTANTE';
+'HAUTEUR NULLE';
+'HAUTEUR CONSTANTE';
+'PARTICULIERES'
 CHOIX1 =
-'"ZERO ELEVATION"';
-'"CONSTANT ELEVATION"';
-'"ZERO DEPTH"';
-'"CONSTANT DEPTH "';
-'"SPECIAL"'
+'ZERO ELEVATION';
+'CONSTANT ELEVATION';
+'ZERO DEPTH';
+'CONSTANT DEPTH ';
+'SPECIAL'
 /APPARENCE = 'LISTE  IS EDITABLE'
 AIDE = '
 Permet de definir les conditions initiales sur les hauteurs d''eau.
@@ -1141,19 +1141,19 @@ CHOIX =
 'V0="vitesse v en surface a t=0"';
 'ZS="cote de la surface libre"';
 'ZF="fond"';
-'HW="hauteur d''eau au repos"';
+'HW="hauteur d eau au repos"';
 'C="vitesse de phase"';
 'CG="vitesse de groupe"';
-'K="nombre d''onde"';
+'K="nombre d onde"';
 'PHIR="potentiel reel"';
 'PHII="potentiel imaginaire"';
 'D="prive(1,1)"';
 'E="prive(1,2)"';
 'F="prive(1,3)"';
 'G="prive(1,4)"';
-'T01="premi�re p�riode moyenne spectrale"';
-'T02="deuxi�me p�riode moyenne spectrale"';
-'TM="troisi�me p�riode moyenne spectrale"';
+'T01="premiere periode moyenne spectrale"';
+'T02="deuxieme periode moyenne spectrale"';
+'TM="troisieme periode moyenne spectrale"';
 'FX="force en X"';
 'FY="force en Y"';
 'INC="incidence de la houle"';
@@ -1295,19 +1295,19 @@ CHOIX =
 'V0="vitesse v en surface a t=0"';
 'ZS="cote de la surface libre"';
 'ZF="fond"';
-'HW="hauteur d''eau au repos"';
+'HW="hauteur d eau au repos"';
 'C="vitesse de phase"';
 'CG="vitesse de groupe"';
-'K="nombre d''onde"';
+'K="nombre d onde"';
 'PHIR="potentiel reel"';
 'PHII="potentiel imaginaire"';
 'D="prive(1,1)"';
 'E="prive(1,2)"';
 'F="prive(1,3)"';
 'G="prive(1,4)"';
-'T01="premi�re p�riode moyenne spectrale"';
-'T02="deuxi�me p�riode moyenne spectrale"';
-'TM="troisi�me p�riode moyenne spectrale"';
+'T01="premiere periode moyenne spectrale"';
+'T02="deuxieme periode moyenne spectrale"';
+'TM="troisieme periode moyenne spectrale"';
 'FX="force en X"';
 'FY="force en Y"';
 'INC="incidence de la houle"';
@@ -1388,7 +1388,6 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'cas'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU= 1
 AIDE = '
@@ -1408,7 +1407,6 @@ SUBMIT = 'NLIM-READ;ARTCLI;OBLIG;ASC;LIT;CONLIM'
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'conlim'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU= 1
 AIDE = '
@@ -1432,7 +1430,6 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'resu'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU= 1
 AIDE = '
@@ -1560,7 +1557,6 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'fond'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU= 1
 AIDE = '
@@ -1585,7 +1581,6 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
-CHOIX = 'binaire1'
 APPARENCE = 'LISTE IS EDITABLE'
 NIVEAU= 1
 AIDE = '
@@ -1781,7 +1776,8 @@ RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'TYPE OF BINARY'
 COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*TYPE DU BINAIRE")
 IS VALEUR (Red)'
 NIVEAU= 2
-CHOIX = '"IBM"';'"I3E"';'"STD"'
+CHOIX = 'IBM';'I3E';'STD'
+CHOIX1 = 'IBM';'I3E';'STD'
 APPARENCE = 'LISTE IS EDITABLE'
 AIDE = '
 Type du binaire utilise pour l''ecriture du fichier de geometrie.
@@ -2036,11 +2032,11 @@ COMPORT = 'Foreground
 IS VALEUR (Blue)'
 NIVEAU= 1
 CHOIX=
-'1 = "BATTJES \& JANSSEN"';
-'2 = "DALLY"'
+'1="BATTJES \& JANSSEN"';
+'2="DALLY"'
 CHOIX1=
-'1 = "BATTJES \& JANSSEN"';
-'2 = "DALLY"'
+'1="BATTJES \& JANSSEN"';
+'2="DALLY"'
 AIDE = '
 Specifie la formulation choisie pour le coefficient de dissipation
 par deferlement. N''est effectif qu''en Houle reguliere.
@@ -2338,20 +2334,27 @@ COMPORT = 'Foreground
 ("DISSIPATION*FROTTEMENT*GENERALITES")
 IS VALEUR (Blue)'
 NIVEAU= 1
-CHOIX=
-'1.793E-6 = " 1.793E-6 : Pour une temperature de 0 C."';
-'1.567E-6 = " 1.567E-6 : Pour une temperature de 4 C."';
-'1.237E-6 = " 1.237E-6 : Pour une temperature de 12 C."';
-'1.112E-6 = " 1.112E-6 : Pour une temperature de 16 C."';
-'1.011E-6 = " 1.011E-6 : Pour une temperature de 20 C."';
-'0.802E-6 = " 0.802E-6 : Pour une temperature de 30 C."';
-'0.661E-6 = " 0.661E-6 : Pour une temperature de 40 C."';
-'1.0E-6   = " 1.0E-6   : Valeur par defaut"'
 APPARENCE = 'LISTE IS SELECT'
 AIDE = '
-viscosite cinematique du fluide (eau) en m2/s.'
+viscosite cinematique du fluide (eau) en m2/s.
+1.793E-6 : Pour une temperature de 0 C.
+1.567E-6 : Pour une temperature de 4 C.
+1.237E-6 : Pour une temperature de 12 C.
+1.112E-6 : Pour une temperature de 16 C.
+1.011E-6 : Pour une temperature de 20 C.
+0.802E-6 : Pour une temperature de 30 C.
+0.661E-6 : Pour une temperature de 40 C.
+1.0E-6   : Valeur par defaut'
 AIDE1 = '
-Kinematic viscosity of the fluid (water) in m2/s.'
+Kinematic viscosity of the fluid (water) in m2/s.
+1.793E-6 : Pour une temperature de 0 C.
+1.567E-6 : Pour une temperature de 4 C.
+1.237E-6 : Pour une temperature de 12 C.
+1.112E-6 : Pour une temperature de 16 C.
+1.011E-6 : Pour une temperature de 20 C.
+0.802E-6 : Pour une temperature de 30 C.
+0.661E-6 : Pour une temperature de 40 C.
+1.0E-6   : Valeur par defaut'
 
 NOM = 'DIAMETRE90'
 NOM1 = 'DIAMETER90'
@@ -2367,20 +2370,25 @@ COMPORT = 'Foreground
 ("DISSIPATION*FROTTEMENT*GENERALITES")
 IS VALEUR (Blue)'
 NIVEAU= 1
-CHOIX=
-'1.0E-3 = " 1.0E-3     : Pour des sables tres grossiers"';
-'0.5E-3 = " 0.5E-3     : Pour des sables grossiers"';
-'0.25E-3 = " 0.25E-3   : Pour des sables moyens"';
-'0.125E-3 = " 0.125E-3 : Pour des sables fins"';
-'0.062E-3 = " 0.062E-3 : Pour des sables tres fins"';
-'0.15E-3 = " 0.15E-3   : Valeur par defaut"'
 APPARENCE = 'LISTE IS SELECT'
 AIDE = '
 DIAM90 represente le diametre maximum, en m, de 90% en poids des
-sediments.'
+sediments.
+1.0E-3   : Pour des sables tres grossiers
+0.5E-3   : Pour des sables grossiers
+0.25E-3  : Pour des sables moyens
+0.125E-3 : Pour des sables fins
+0.062E-3 : Pour des sables tres fins
+0.15E-3  : Valeur par defaut'
 AIDE1 = '
 DIAM90 is the maximum grain diameter, in m, which defines 90% of
-the total weight of sediment.'
+the total weight of sediment.
+1.0E-3   : Pour des sables tres grossiers
+0.5E-3   : Pour des sables grossiers
+0.25E-3  : Pour des sables moyens
+0.125E-3 : Pour des sables fins
+0.062E-3 : Pour des sables tres fins
+0.15E-3  : Valeur par defaut'
 
 
 NOM = 'DIAMETRE50'
@@ -2397,22 +2405,27 @@ COMPORT = 'Foreground
 ("DISSIPATION*FROTTEMENT*GENERALITES")
 IS VALEUR (Blue)'
 NIVEAU= 1
-CHOIX=
-'0.660E-3 = " 0.66E-3     : Pour des sables tres grossiers"';
-'0.33E-3 = " 0.33E-3     : Pour des sables grossiers"';
-'0.17E-3 = " 0.17E-3   : Pour des sables moyens"';
-'0.083E-3 = " 0.083E-3 : Pour des sables fins"';
-'0.040E-3 = " 0.040E-3 : Pour des sables tres fins"';
-'0.10E-3 = " 0.10E-3   : Valeur par defaut"'
 APPARENCE = 'LISTE IS SELECT'
 AIDE = '
 DIAM50 represente le diametre maximum de 50% en poids des
 sediments. En general, on a DIAM90 = 1.5 * DIAM50
-DIAM50 est plus souvent donne dans des tables'
+DIAM50 est plus souvent donne dans des tables
+0.66E-3  : Pour des sables tres grossiers
+0.33E-3  : Pour des sables grossiers
+0.17E-3  : Pour des sables moyens
+0.083E-3 : Pour des sables fins
+0.040E-3 : Pour des sables tres fins
+0.10E-3  : Valeur par defaut'
 AIDE1 = '
 DIAM50 is the maximum grain diameter, in m, which defines 50% of
 the total weight of sediment. Usually, we have
-DIAM90 = 1.5 * DIAM50. DIAM50 is a more common value used.'
+DIAM90 = 1.5 * DIAM50. DIAM50 is a more common value used.
+0.66E-3  : Pour des sables tres grossiers
+0.33E-3  : Pour des sables grossiers
+0.17E-3  : Pour des sables moyens
+0.083E-3 : Pour des sables fins
+0.040E-3 : Pour des sables tres fins
+0.10E-3  : Valeur par defaut'
 
 NOM = 'MASSE VOLUMIQUE DU SEDIMENT'
 NOM1 = 'SEDIMENT SPECIFIC WEIGHT'
@@ -2563,10 +2576,15 @@ COMPORT = 'Foreground
 IS VALEUR (BLUE)'
 NIVEAU= 1
 CHOIX=
-' 1 = " 1: Pour le regime laminaire"';
-' 2 = " 2: Pour le regime turbulent lisse"';
-' 3 = " 3: Pour le regime turbulent rugueux"';
-' 4 = " 4: Pour le regime transitoire"'
+'1="regime laminaire"';
+'2="regime turbulent lisse"';
+'3="regime turbulent rugueux"';
+'4="regime transitoire"'
+CHOIX1=
+'1="regime laminaire"';
+'2="regime turbulent lisse"';
+'3="regime turbulent rugueux"';
+'4="regime transitoire"'
 APPARENCE= 'LISTE IS SELECT'
 AIDE = '
 Utilise si le mot-cle REGIME HYDRAULIQUE IMPOSE = OUI.
@@ -2591,8 +2609,11 @@ COMPORT = 'Foreground
 IS VALEUR (BLUE)'
 NIVEAU= 1
 CHOIX=
-' 1 = " 1: Formulation de Kostense integrant le calcul de Ue (1986)"';
-' 2 = " 2: Formulation de Putnam \& Johnson (1949)"'
+'1=Formulation de Kostense integrant le calcul de Ue (1986)"';
+'2=Formulation de Putnam \& Johnson (1949)"'
+CHOIX1=
+'1=Formulation de Kostense integrant le calcul de Ue (1986)"';
+'2=Formulation de Putnam \& Johnson (1949)"'
 APPARENCE= 'LISTE IS SELECT'
 AIDE = '
 Utilise avec l''option FROTTEMENT = OUI.
@@ -2690,17 +2711,18 @@ RUBRIQUE1 = 'DISSIPATION';'BOTTOM FRICTION';'INFORMATION'
 COMPORT = 'Foreground
 ("DISSIPATION*FROTTEMENT*GENERALITES")
 IS VALEUR (BLUE)'
-CHOIX=
-'1.0 = " 1.0     : Pour des rides seules"';
-'0.7 = " 0.7     : Pour des rides superposees a des vagues de sable"'
 APPARENCE = 'LISTE IS SELECT'
 NIVEAU= 3
 AIDE = '
 Specifie le coefficient de rides utilise dans la formule de
-Van Rijn pour calculer le facteur de frottement.'
+Van Rijn pour calculer le facteur de frottement.
+1.0 : Pour des rides seules
+0.7 : Pour des rides superposees a des vagues de sable'
 AIDE1 = '
 Fixes the ripples coefficient used in the formulae of Van Rijn
-to calculate the friction factor.'
+to calculate the friction factor.
+1.0 : Pour des rides seules
+0.7 : Pour des rides superposees a des vagues de sable'
 
 NOM = 'NUMERO DE COMPTE'
 NOM1 = 'ACCOUNT NUMBER'
@@ -2904,6 +2926,7 @@ DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du fichier de geometrie.
@@ -2925,6 +2948,7 @@ MNEMO = '?????'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -2947,6 +2971,7 @@ MNEMO = '?????'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -2971,6 +2996,7 @@ MNEMO = 'ART\_FILES(ARTTC1)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -2995,6 +3021,7 @@ MNEMO = 'ART\_FILES(ARTBI1)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -3017,6 +3044,7 @@ MNEMO = 'ART\_FILES(ARTBI2)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -3048,15 +3076,15 @@ COMPORT = 'Foreground
 IS VALEUR (Blue)'
 NIVEAU = 1
 CHOIX =
-   ' 0="0=> BERKHOFF SIMPLE                                "';
-   ' 1="1=> PRISE EN COMPTE TERME DE PENTE                 "';
-   ' 2="2=> PRISE EN COMPTE TERME DE COURBURE              "';
-   ' 3="3=> PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"'
+   '0="BERKHOFF SIMPLE"';
+   '1="PRISE EN COMPTE TERME DE PENTE"';
+   '2="PRISE EN COMPTE TERME DE COURBURE"';
+   '3="PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"'
 CHOIX1 =
-   ' 0="0=> BERKHOFF SIMPLE                                "';
-   ' 1="1=> PRISE EN COMPTE TERME DE PENTE                 "';
-   ' 2="2=> PRISE EN COMPTE TERME DE COURBURE              "';
-   ' 3="3=> PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"'
+   '0="BERKHOFF SIMPLE"';
+   '1="PRISE EN COMPTE TERME DE PENTE"';
+   '2="PRISE EN COMPTE TERME DE COURBURE"';
+   '3="PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"'
 AIDE =
  'PRISE EN COMPTE DES FORTES PENTES ET COURBURES DANS BERKHOFF
    0=> BERKHOFF SIMPLE

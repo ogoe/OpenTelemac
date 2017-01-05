@@ -9,7 +9,10 @@
 !-----------------------------------------------------------------------
 !
       CHARACTER(LEN=144) :: DICTIONARY
+      CHARACTER(LEN=144) :: DEPENDENCIES
       CHARACTER(LEN=144) :: LATEX_FILE
+      CHARACTER(LEN=144) :: ENUM_FILE
+      CHARACTER(LEN=144) :: TS_PATH
       CHARACTER(LEN=5) :: TODO
       INTEGER LNG
       LOGICAL :: FILE_EXIST
@@ -45,9 +48,18 @@
         WRITE(6,*) 'ENTER DICTIONARY FILE: '
         READ(5,'(A)') DICTIONARY
         WRITE(6,*) 'DICTIONARY: ',TRIM(DICTIONARY)
+        WRITE(6,*) 'ENTER DEPENDENCIES FILE: '
+        READ(5,'(A)') DEPENDENCIES
+        WRITE(6,*) 'DEPENDENCIES: ',TRIM(DEPENDENCIES)
         WRITE(6,*) 'ENTER CATA FILE: '
         READ(5,'(A)') LATEX_FILE
         WRITE(6,*) 'CATA: ',TRIM(LATEX_FILE)
+        WRITE(6,*) 'ENTER ENUM FILE: '
+        READ(5,'(A)') ENUM_FILE
+        WRITE(6,*) 'ENUM: ',TRIM(ENUM_FILE)
+        WRITE(6,*) 'ENTER TS PATH FILE: '
+        READ(5,'(A)') TS_PATH
+        WRITE(6,*) 'TS PATH: ',TRIM(TS_PATH)
         ! Checking that the two file exist and that lng is 1 or 2
         INQUIRE(FILE=DICTIONARY,EXIST=FILE_EXIST)
         IF(.NOT.FILE_EXIST) THEN
@@ -57,8 +69,14 @@
         ENDIF
         ! Reading dictionary
         CALL READ_DICTIONARY(DICTIONARY)
+        ! Reading dependencies
+        CALL READ_DEPENDENCIES(DEPENDENCIES)
         ! Writing Latex file
         CALL WRITE2CATA(LATEX_FILE)
+        ! WRITING Enumerate for CHOIX and keywords
+        CALL WRITE_ENUM(ENUM_FILE)
+        ! WRITING TS
+        CALL WRITE_TS(TS_PATH)
       ELSE IF(TODO(1:5).EQ.'DUMP2') THEN
         WRITE(6,*) 'ENTER DICTIONARY FILE: '
         READ(5,'(A)') DICTIONARY

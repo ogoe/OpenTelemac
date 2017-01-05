@@ -16,9 +16,12 @@ Usage: check_code.sh source_path
 Script checking some points of the coding convention
 for all the .f and .F in the folder given in parameter
 It will generate 4 files:
--- indent.log : contains the line where the indentation is not a 6 + x*2
--- comments.log : checks that the character used for comments is '!'
--- continuation.log : checks that the character for continuation is '&'
+-- indent.log : contains the line where the indentation is
+                not a 6 + x*2
+-- comments.log : checks that the character used for comments
+                  is '!'
+-- continuation.log : checks that the character for
+                      continuation is '&'
 -- lowercase.log : checks that there are no lowercase code
 \end{lstlisting}
 
@@ -45,12 +48,12 @@ extension "cas".
 \begin{center}
 %
 \caption{Table with contents ranging over several cells horizontally and vertically.}%
-\label{tab:TableExample}
+\label{tab:namingconv}
 %
 \begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}cccccc}
 \toprule
 \toprule
-            & geometry, boundary files & reference file & result files & continuation file & steering file and other \\
+            & geometry, boundary & reference & results & restart & steering and others \\
 \midrule
 \telemac{2} & geo & f2d & r2d & i2d & t2d \\
 \telemac{3} & geo & f3d & r3d & i3d & t3d \\

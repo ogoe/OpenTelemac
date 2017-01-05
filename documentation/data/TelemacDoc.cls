@@ -116,6 +116,7 @@
 \newcommand{\waqtel}{{\scshape Waqtel}\xspace}
 \newcommand{\tel}{{\scshape Telemac}\xspace}
 \newcommand{\estel}{{\scshape Estel-3D}\xspace}
+\newcommand{\damocles}{{\scshape Damocles}\xspace}
 
 %----------------------------------------------------------------------------------------
 %	VARIOUS REQUIRED PACKAGES

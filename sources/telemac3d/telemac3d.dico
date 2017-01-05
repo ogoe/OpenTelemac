@@ -354,12 +354,12 @@ MNEMO = 'LISRUF'
 TAILLE = 0
 DEFAUT = 2
 DEFAUT1 = 2
-CHOIX = '1= lisse ';
-        '2= rugueux';
-        '3= rugueux compatible avec anciennes versions'
-CHOIX1 = '1= smooth';
-         '2= rough';
-         '3= rough compatibility with old versions'
+CHOIX = '1="lisse"';
+        '2="rugueux"';
+        '3="rugueux compatible avec anciennes versions"'
+CHOIX1 = '1="smooth"';
+         '2="rough"';
+         '3="rough compatibility with old versions"'
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'MODELE K-EPSILON'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'K-EPSILON MODEL'
 NIVEAU = 1
@@ -415,12 +415,12 @@ MNEMO = 'IORDRH'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
-CHOIX = '0=zero';
-        '1=precedent';
-        '2=extrapolation'
-CHOIX1 = '0=zero';
-         '1=previous';
-         '2=extrapolation'
+CHOIX = '0="zero"';
+        '1="precedent"';
+        '2="extrapolation"'
+CHOIX1 = '0="zero"';
+         '1="previous"';
+         '2="extrapolation"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'VITESSE-CELERITE-HAUTEUR'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'VELOCITY-CELERITY-DEPTH'
 NIVEAU = 1
@@ -1061,7 +1061,8 @@ RUBRIQUE = 'EQUATIONS';'PROPAGATION'
 RUBRIQUE1 = 'EQUATIONS';'PROPAGATION'
 NIVEAU = 1
 AIDE = 'Permet de preconditionner le systeme de l''etape de propagation
-afin d''accelerer la convergence lors de sa resolution. Les choix possibles sont :
+afin d''accelerer la convergence lors de sa resolution. Les choix
+possibles sont :
 \begin{itemize}
 \item 0 : aucun ;
 \item 2 : diagonal ;
@@ -1589,8 +1590,8 @@ TYPE = CARACTERE
 INDEX = 101
 DEFAUT  = 'METIS'
 DEFAUT1 = 'METIS'
-CHOIX  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
-CHOIX1  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
+CHOIX  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
+CHOIX1  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
 NIVEAU = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
@@ -2351,9 +2352,9 @@ INDEX = 2
 MNEMO = 'SORT3D'
 DEFAUT = 'Z,U,V,W'
 DEFAUT1 = 'Z,U,V,W'
-CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
-'V="vitesse suivant l''axe des y (m/s)"';
-'W="vitesse suivant l''axe des z (m/s)"';
+CHOIX = 'U="vitesse suivant l axe des x (m/s)"';
+'V="vitesse suivant l axe des y (m/s)"';
+'W="vitesse suivant l axe des z (m/s)"';
 'Z="cote z (m)"';
 'TA1="concentration du traceur 1"';
 'TA2="concentration du traceur 2"';
@@ -2366,15 +2367,15 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'TA9="concentration du traceur 9"';
 'TA*="concentrations des traceurs de 1 a 9"';
 'TA**="concentrations des traceurs de 10 a 99"';
-'NUX="viscosite pour U et V suivant l''axe des x (m2/s)"';
-'NUY="viscosite pour U et V suivant l''axe des y (m2/s)"';
-'NUZ="viscosite pour U et V suivant l''axe des z (m2/s)"';
-'NAX="viscosites pour les tr. suivant l''axe des x (m2/s)"';
-'NAY="viscosites pour les tr. suivant l''axe des y (m2/s)"';
-'NAZ="viscosites pour les tr. suivant l''axe des z (m2/s)"';
+'NUX="viscosite pour U et V suivant l axe des x (m2/s)"';
+'NUY="viscosite pour U et V suivant l axe des y (m2/s)"';
+'NUZ="viscosite pour U et V suivant l axe des z (m2/s)"';
+'NAX="viscosites pour les tr. suivant l axe des x (m2/s)"';
+'NAY="viscosites pour les tr. suivant l axe des y (m2/s)"';
+'NAZ="viscosites pour les tr. suivant l axe des z (m2/s)"';
 'RI="nombre de Richardson en cas de modele de longueur de melange"';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
-'EPS="dissipation de l''energie turbulente (W/kg)"';
+'EPS="dissipation de l energie turbulente (W/kg)"';
 'DP="pression dynamique (multipliee par DT/RHO)"';
 'PH="pression hydrostatique (en Pascals)"';
 'RHO="densite relative"';
@@ -2483,10 +2484,10 @@ INDEX = 3
 MNEMO = 'SORT2D'
 DEFAUT = 'U,V,H,B'
 DEFAUT1 = 'U,V,H,B'
-CHOIX = 'U="vitesse moyenne suivant l''axe des x (m/s)"';
-        'V="vitesse moyenne suivant l''axe des y (m/s)"';
+CHOIX = 'U="vitesse moyenne suivant l axe des x (m/s)"';
+        'V="vitesse moyenne suivant l axe des y (m/s)"';
         'C="celerite (m/s)"';
-        'H="hauteur d''eau (m)"';
+        'H="hauteur d eau (m)"';
         'S="cote de surface libre (m)"';
         'B="cote du fond (m)"';
 'TA1="TAx concentrations des traceurs, x numero du traceur"';
@@ -2495,8 +2496,8 @@ CHOIX = 'U="vitesse moyenne suivant l''axe des x (m/s)"';
         'I="debit suivant x (m2/s)"';
         'J="debit suivant y (m2/s)"';
         'M="norme de la vitesse (m/s)"';
-        'X="vent suivant l''axe des x (m/s)"';
-        'Y="vent suivant l''axe des y (m/s)"';
+        'X="vent suivant l axe des x (m/s)"';
+        'Y="vent suivant l axe des y (m/s)"';
         'P="pression atmospherique (Pa)"';
         'W="coefficient de frottement"';
         'RB="cote des fonds non erodables (m)"';
@@ -2650,8 +2651,8 @@ DEFAUT1 = 'DEFAUT'
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Nom du fichier FORTRAN a soumettre, contenant les sous-programmes
-specifiques au modele.'
+AIDE = 'Nom du fichier FORTRAN a soumettre, contenant les
+sous-programmes specifiques au modele.'
 AIDE1 = 'Name of the FORTRAN file to be submitted, including specific
 subroutines of the model.'
 
@@ -3004,8 +3005,8 @@ AIDE = 'Determine si le calcul en cours est independant de tout autre
 resultat ou est une reprise effectuee a partir du resultat d''un calcul
 precedent.
 \begin{itemize}
-\item NON : Il s''agit du premier passage pour ce calcul et il est necessaire
-de definir un jeu complet de conditions initiales
+\item NON : Il s''agit du premier passage pour ce calcul et il est
+necessaire de definir un jeu complet de conditions initiales
 \item OUI : Il s''agit d''une reprise de calcul :
 les conditions initiales sont constituees par le dernier pas de
 temps du \telkey{FICHIER DU CALCUL PRECEDENT} du fichier des parametres
@@ -4310,8 +4311,9 @@ Possible choices are:
 \item 2: Mercator,
 \item 3: latitude/longitude (in degrees).
 \end{itemize}
-Option 2 or 3 mandatory for spherical coordinates. Option 3: latitude and
-longitude in degrees! When using option 3, the coordinates are automatically
+Option 2 or 3 mandatory for spherical coordinates. Option 3: latitude
+and longitude in degrees! When using option 3, the coordinates are
+automatically
 treated by \telemac{3d} using Mercator projection.'
 
 NOM = 'LATITUDE DU POINT ORIGINE'
@@ -4465,8 +4467,8 @@ TAILLE = 2
 RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
-AIDE = 'Determine la valeur imposee des traceurs a la premiere frontiere,
-puis a la deuxieme etc. suivant la meme logique que pour les
+AIDE = 'Determine la valeur imposee des traceurs a la premiere
+frontiere, puis a la deuxieme etc. suivant la meme logique que pour les
 \telkey{VALEURS DES TRACEURS DES SOURCES}.'
 AIDE1 = 'Determines the imposed value of tracers at the first boundary,
 then at the second, and so on, with the same logic as
@@ -4602,14 +4604,14 @@ MNEMO = 'CDTINI'
 DEFAUT = 'COTE NULLE'
 DEFAUT1 = 'ZERO ELEVATION'
 NIVEAU = 1
-CHOIX = '"COTE NULLE"'; '"COTE CONSTANTE"';
-'"HAUTEUR NULLE"'; '"HAUTEUR CONSTANTE"'; '"PARTICULIERES"';
-'"SPECIAL"';
-'"ALTIMETRIE SATELLITE TPXO"'
-CHOIX1 = '"ZERO ELEVATION"'; '"CONSTANT ELEVATION"';
-'"ZERO DEPTH"'; '"CONSTANT DEPTH"'; '"SPECIAL"';
-'"PARTICULAR"';
-'"TPXO SATELLITE ALTIMETRY"'
+CHOIX = 'COTE NULLE'; 'COTE CONSTANTE';
+'HAUTEUR NULLE'; 'HAUTEUR CONSTANTE'; 'PARTICULIERES';
+'SPECIAL';
+'ALTIMETRIE SATELLITE TPXO'
+CHOIX1 = 'ZERO ELEVATION'; 'CONSTANT ELEVATION';
+'ZERO DEPTH'; 'CONSTANT DEPTH'; 'SPECIAL';
+'PARTICULAR';
+'TPXO SATELLITE ALTIMETRY'
 RUBRIQUE = 'EQUATIONS, CONDITIONS INITIALES'
 RUBRIQUE1 = 'EQUATIONS, INITIAL CONDITIONS'
 AIDE = 'Permet de definir les conditions initiales sur
@@ -5741,6 +5743,7 @@ DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du \telkey{FICHIER DE GEOMETRIE}.
@@ -5766,6 +5769,7 @@ MNEMO = 'T3D\_FILES(T3DHYD)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -5791,6 +5795,7 @@ MNEMO = 'T3D\_FILES(T3DRES)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -5816,6 +5821,7 @@ MNEMO = 'T3D\_FILES(T3DPRE)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -5842,6 +5848,7 @@ MNEMO = 'T3D\_FILES(T3DREF)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -5868,6 +5875,7 @@ MNEMO = 'T3D\_FILES(T3DBI1)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -5895,6 +5903,7 @@ DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du \telkey{FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES}.
@@ -5921,6 +5930,7 @@ DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 NIVEAU = 2
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
 AIDE = 'Format du \telkey{FICHIER BINAIRE DE DONNEES DE FRONTIERE}.
@@ -6213,6 +6223,7 @@ MNEMO = 'T3D\_FILES(T3DRST)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
@@ -6474,13 +6485,12 @@ TAILLE = 0
 DEFAUT = -1
 DEFAUT1 = -1
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LA BASE PARMI LES CHOIX
-POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT"';
 '1="JMJ"';
 '2="TPXO"';
 '3="DIVERS (LEGOS-NEA, FES20XX, PREVIMER...)"'
 CHOIX1=
-'-1="NO DEFAULT VALUE. CHOOSE THE BASE AMONG THE POSSIBLE CHOICES"';
+'-1="NO DEFAULT VALUE"';
 '1="JMJ"';
 '2="TPXO"';
 '3="MISCELLANEOUS (LEGOS-NEA, FES20XX, PREVIMER...)"'
@@ -6521,8 +6531,7 @@ TAILLE = 0
 DEFAUT = -1
 DEFAUT1 = -1
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE SYSTEME PARMI LES CHOIX
-POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT"';
 '0="DEFINI PAR L''UTILISATEUR"';
 '1="WGS84 LONGITUDE/LATITUDE EN DEGRES REELS"';
 '2="WGS84 NORD UTM"';
@@ -6530,7 +6539,7 @@ POSSIBLES"';
 '4="LAMBERT"';
 '5="MERCATOR PROJECTION"'
 CHOIX1=
-'-1="NO DEFAULT VALUE. CHOOSE THE SYSTEM AMONG THE POSSIBLE CHOICES"';
+'-1="NO DEFAULT VALUE"';
 '0="DEFINED BY USER"';
 '1="WGS84 LONGITUDE/LATITUDE IN REAL DEGREES"';
 '2="WGS84 NORTHERN UTM"';
@@ -6543,8 +6552,8 @@ NIVEAU = 1
 AIDE = 'Systeme de coordonnees geographiques dans lequel est construit
 le modele numerique.
 Indiquer la zone correspondante avec le mot-cle.
-Indique le systeme de coordonnees geographiques dans lequel est construit
-le modele numerique. Les choix possibles sont :
+Indique le systeme de coordonnees geographiques dans lequel est
+construit le modele numerique. Les choix possibles sont :
 \begin{itemize}
 \item 0 : defini par l''utilisateur ;
 \item 1 : WGS84 longitude/latitude en degres reels ;
@@ -6574,8 +6583,7 @@ TAILLE = 0
 DEFAUT = -1
 DEFAUT1 = -1
 CHOIX=
-'-1="PAS DE VALEUR PAR DEFAUT. CHOISIR LE NUMERO PARMI LES CHOIX
-POSSIBLES"';
+'-1="PAS DE VALEUR PAR DEFAUT"';
 '1="LAMBERT 1 NORD"';
 '2="LAMBERT 2 CENTRE"';
 '3="LAMBERT 3 SUD"';
@@ -6583,7 +6591,7 @@ POSSIBLES"';
 '22="LAMBERT 2 ETENDU"';
 '30="ZONE UTM, PAR EXEMPLE"'
 CHOIX1=
-'-1="NO DEFAULT VALUE. CHOOSE THE NUMBER AMONG THE POSSIBLE CHOICES"';
+'-1="NO DEFAULT VALUE"';
 '1="LAMBERT 1 NORTH"';
 '2="LAMBERT 2 CENTER"';
 '3="LAMBERT 3 SOUTH"';
@@ -6678,6 +6686,7 @@ MNEMO = 'T3D\_FILES(T3DS2D)\%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES'

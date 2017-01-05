@@ -184,7 +184,7 @@ TAILLE= 0
 CONTROLE = 0;3
 DEFAUT = 0
 DEFAUT1 = 0
-CHOIX = '0="Pas d''apport par le vent"';
+CHOIX = '0="Pas d apport par le vent"';
 '1="Apport dus au vent selon WAM cycle 4"';
 '2="Apport dus au vent selon WAM cycle 3"';
 '3="Apport dus au vent selon expression de Yan (1987)"'
@@ -333,13 +333,11 @@ CONTROLE = 0;3
 DEFAUT = 0
 DEFAUT1 = 0
 CHOIX = '0="Pas de transfert non lineaire inter-frequences"';
-'1="Transfert non lineaire inter-frequences selon WAM cycle 4
-(Methode DIA)"';
-'2="Transfert non lineaire inter-frequences selon Methode MDIA"';
-'3="Transfert non lineaire inter-frequences exact Methode GQM"'
+'1="Transfert non lineaire selon WAM cycle 4 (Methode DIA)"';
+'2="Transfert non lineaire selon Methode MDIA"';
+'3="Transfert non lineaire exact Methode GQM"'
 CHOIX1 = '0="No non-linear transfers term"';
-'1="Non-linear transfers term in accordance with WAM cycle 4
-(DIA Method)"';
+'1="Non-linear transfers term with WAM cycle 4 (DIA Method)"';
 '2="Non-linear transfers term in accordance with MDIA Method"';
 '3="Non-linear transfers term calculated with exact GQM Method"'
 RUBRIQUE = 'TRANSFERTS'
@@ -751,19 +749,17 @@ CONTROLE = 1;6
 DEFAUT = 2
 DEFAUT1 = 2
 CHOIX = '1="Frequence Fmoy"';
-'2="Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)"';
-'3="Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)"';
-'4="Frequence Fpic (frequence d echantillonage correspondant au max)"';
-'5="Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)"';
-'6="Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)"'
+'2="Frequence F01"';
+'3="Frequence F02"';
+'4="Frequence Fpic"';
+'5="Frequence Fread ordre 5"';
+'6="Frequence Fread ordre 8"'
 CHOIX1 = '1="Frequency Fmoy"';
-'2="Frequency F01 (defined by the moments of order 0 and 1 of the
-spectrum)"';
-'3="Frequency F02 (defined by the moments of order 0 and 2 of the
-spectrum)"';
-'4="Frequency Fpic (sampling frequency corresponding to the max)"';
-'5="Frequency Fread ordre 5 (peak frequency, 5th order Read method)"';
-'6="Frequency Fread ordre 8 (peak frequency, 8th order Read method)"'
+'2="Frequency F01"';
+'3="Frequency F02"';
+'4="Frequency Fpic"';
+'5="Frequency Fread ordre 5"';
+'6="Frequency Fread ordre 8"'
 RUBRIQUE = 'DEFERLEMENT'
 RUBRIQUE1 = 'BREAKING'
 NIVEAU = 2
@@ -790,8 +786,10 @@ spectrum)
 \item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
 \item 4 : Frequency Fpic (sampling frequency corresponding to the max)
-\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read
+method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read
+method)
 \end{itemize}
  \begin{CommentBlock}{Related keywords}
 DEPTH-INDUCED BREAKING DISSIPATION\\
@@ -842,19 +840,17 @@ CONTROLE = 1;6
 DEFAUT = 5
 DEFAUT1 = 5
 CHOIX = '1="Frequence Fmoy"';
-'2="Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)"';
-'3="Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)"';
-'4="Frequence Fpic (frequence d echantillonage correspondant au max)"';
-'5="Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)"';
-'6="Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)"'
+'2="Frequence F01"';
+'3="Frequence F02"';
+'4="Frequence Fpic"';
+'5="Frequence Fread ordre 5"';
+'6="Frequence Fread ordre 8"'
 CHOIX1 = '1="Frequency Fmoy"';
-'2="Frequency F01 (defined by the moments of order 0 and 1 of the
-spectrum)"';
-'3="Frequency F02 (defined by the moments of order 0 and 2 of the
-spectrum)"';
-'4="Frequency Fpic (sampling frequency corresponding to the max)"';
-'5="Frequency Fread ordre 5 (peak frequency, 5th order Read method)"';
-'6="Frequency Fread ordre 8 (peak frequency, 8th order Read method)"'
+'2="Frequency F01"';
+'3="Frequency F02"';
+'4="Frequency Fpic"';
+'5="Frequency Fread ordre 5"';
+'6="Frequency Fread ordre 8"'
 RUBRIQUE = 'DEFERLEMENT'
 RUBRIQUE1 = 'BREAKING'
 NIVEAU = 2
@@ -862,11 +858,16 @@ COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
 \begin{itemize}
 \item 1 : Frequence Fmoy
-\item 2 : Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)
-\item 3 : Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)
-\item 4 : Frequence Fpic (frequence d echantillonage correspondant au max)
-\item 5 : Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)
-\item 6 : Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)
+\item 2 : Frequence F01 (definie par les moments d ordre 0 et 1 du
+spectre)
+\item 3 : Frequence F02 (definie par les moments d ordre 0 et 2 du
+spectre)
+\item 4 : Frequence Fpic (frequence d echantillonage correspondant au
+max)
+\item 5 : Frequence Fread ordre 5 (frequence de pic methode Read ordre
+5)
+\item 6 : Frequence Fread ordre 8 (frequence de pic methode Read ordre
+8)
 \end{itemize}
 **Mots-cles associes :**
 DISSIPATION PAR DEFERLEMENT
@@ -881,8 +882,10 @@ spectrum)
 \item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
 \item 4 : Frequency Fpic (sampling frequency corresponding to the max)
-\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read
+method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read
+method)
 \end{itemize}
  \begin{CommentBlock}{Related keywords}
 DEPTH-INDUCED BREAKING DISSIPATION
@@ -976,19 +979,17 @@ CONTROLE = 1;6
 DEFAUT = 5
 DEFAUT1 = 5
 CHOIX = '1="Frequence Fmoy"';
-'2="Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)"';
-'3="Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)"';
-'4="Frequence Fpic (frequence d echantillonage correspondant au max)"';
-'5="Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)"';
-'6="Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)"'
+'2="Frequence F01"';
+'3="Frequence F02"';
+'4="Frequence Fpic"';
+'5="Frequence Fread ordre 5"';
+'6="Frequence Fread ordre 8"'
 CHOIX1 = '1="Frequency Fmoy"';
-'2="Frequency F01 (defined by the moments of order 0 and 1 of the
-spectrum)"';
-'3="Frequency F02 (defined by the moments of order 0 and 2 of the
-spectrum)"';
-'4="Frequency Fpic (sampling frequency corresponding to the max)"';
-'5="Frequency Fread ordre 5 (peak frequency, 5th order Read method)"';
-'6="Frequency Fread ordre 8 (peak frequency, 8th order Read method)"'
+'2="Frequency F01"';
+'3="Frequency F02"';
+'4="Frequency Fpic"';
+'5="Frequency Fread ordre 5"';
+'6="Frequency Fread ordre 8"'
 RUBRIQUE = 'DEFERLEMENT'
 RUBRIQUE1 = 'BREAKING'
 NIVEAU = 2
@@ -1015,8 +1016,10 @@ spectrum)
 \item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
 \item 4 : Frequency Fpic (sampling frequency corresponding to the max)
-\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read
+method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read
+method)
 \end{itemize}
  \begin{CommentBlock}{Related keywords}
 DEPTH-INDUCED BREAKING DISSIPATION\\
@@ -1037,19 +1040,17 @@ CONTROLE = 1;6
 DEFAUT = 5
 DEFAUT1 = 5
 CHOIX = '1="Frequence Fmoy"';
-'2="Frequence F01 (definie par les moments d ordre 0 et 1 du spectre)"';
-'3="Frequence F02 (definie par les moments d ordre 0 et 2 du spectre)"';
-'4="Frequence Fpic (frequence d echantillonage correspondant au max)"';
-'5="Frequence Fread ordre 5 (frequence de pic methode Read ordre 5)"';
-'6="Frequence Fread ordre 8 (frequence de pic methode Read ordre 8)"'
+'2="Frequence F01"';
+'3="Frequence F02"';
+'4="Frequence Fpic"';
+'5="Frequence Fread ordre 5"';
+'6="Frequence Fread ordre 8"'
 CHOIX1 = '1="Frequency Fmoy"';
-'2="Frequency F01 (defined by the moments of order 0 and 1 of the
-spectrum)"';
-'3="Frequency F02 (defined by the moments of order 0 and 2 of the
-spectrum)"';
-'4="Frequency Fpic (sampling frequency corresponding to the max)"';
-'5="Frequency Fread ordre 5 (peak frequency, 5th order Read method)"';
-'6="Frequency Fread ordre 8 (peak frequency, 8th order Read method)"'
+'2="Frequency F01"';
+'3="Frequency F02"';
+'4="Frequency Fpic"';
+'5="Frequency Fread ordre 5"';
+'6="Frequency Fread ordre 8"'
 RUBRIQUE = 'DEFERLEMENT'
 RUBRIQUE1 = 'BREAKING'
 NIVEAU = 2
@@ -1073,8 +1074,10 @@ spectrum)
 \item 3 : Frequency F02 (defined by the moments of order 0 and 2 of the
 spectrum)
 \item 4 : Frequency Fpic (sampling frequency corresponding to the max)
-\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read method)
-\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read method)
+\item 5 : Frequency Fread ordre 5 (peak frequency, 5th order Read
+method)
+\item 6 : Frequency Fread ordre 8 (peak frequency, 8th order Read
+method)
 \end{itemize}
  \begin{CommentBlock}{Related keywords}
 DEPTH-INDUCED BREAKING DISSIPATION\\
@@ -1614,7 +1617,8 @@ par Holthuijsen (2003)
 PAS DE TEMPS DEBUT DIFFRACTION
 SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION
 FILTRE POUR DIFFRACTION'
-AIDE1 = 'Caution : We do not guarantee the modele of diffraction. Selection of the model used to represent the diffraction :
+AIDE1 = 'Caution : We do not guarantee the modele of diffraction.
+Selection of the model used to represent the diffraction :
 \begin{itemize}
 \item 0 : Diffraction is not taken into account
 \item  1 : Mild Slope Equation model (Berkhoff - 1972)
@@ -1684,8 +1688,8 @@ TYPE = CARACTERE
 INDEX = 101
 DEFAUT  = 'METIS'
 DEFAUT1 = 'METIS'
-CHOIX  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
-CHOIX1  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
+CHOIX  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
+CHOIX1  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
 NIVEAU = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
@@ -3723,7 +3727,7 @@ CHOIX = 'M0="variance totale  (m2)"';
 'DMOY="Direction moyenne de houle  (deg)"';
 'SPD="Etalement directionnel moyen  (deg)"';
 'ZF="Cote du fond  (m)"';
-'WD="Hauteur d''eau  (m)"';
+'WD="Hauteur d eau  (m)"';
 'UX="Courant suivant X  (m/s)"';
 'UY="Courant suivant Y  (m/s)"';
 'VX="Vent suivant X  (m/s)"';
@@ -4320,6 +4324,9 @@ DEFAUT1 = 'STD'
 CHOIX = 'STD';
 'IBM';
 'I3E'
+CHOIX1 = 'STD';
+'IBM';
+'I3E'
 RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'
 NIVEAU = 0
@@ -4353,6 +4360,9 @@ DEFAUT1 = 'STD'
 CHOIX = 'STD';
 'IBM';
 'I3E'
+CHOIX1 = 'STD';
+'IBM';
+'I3E'
 RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'
 NIVEAU = 0
@@ -4383,6 +4393,9 @@ TAILLE= 0
 DEFAUT = 'STD'
 DEFAUT1 = 'STD'
 CHOIX = 'STD';
+'IBM';
+'I3E'
+CHOIX1 = 'STD';
 'IBM';
 'I3E'
 RUBRIQUE = 'INUTILE'
@@ -4421,6 +4434,9 @@ DEFAUT1 = 'STD'
 CHOIX = 'STD';
 'IBM';
 'I3E'
+CHOIX1 = 'STD';
+'IBM';
+'I3E'
 RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'
 NIVEAU = 0
@@ -4451,6 +4467,9 @@ TAILLE= 0
 DEFAUT = 'STD'
 DEFAUT1 = 'STD'
 CHOIX = 'STD';
+'IBM';
+'I3E'
+CHOIX1 = 'STD';
 'IBM';
 'I3E'
 RUBRIQUE = 'INUTILE'
@@ -4499,6 +4518,9 @@ DEFAUT1 = 'STD'
 CHOIX = 'STD';
 'IBM';
 'I3E'
+CHOIX1 = 'STD';
+'IBM';
+'I3E'
 RUBRIQUE = 'INUTILE'
 RUBRIQUE1 = 'USELESS'
 NIVEAU = 0
@@ -4530,6 +4552,9 @@ TAILLE= 0
 DEFAUT = 'STD'
 DEFAUT1 = 'STD'
 CHOIX = 'STD';
+'IBM';
+'I3E'
+CHOIX1 = 'STD';
 'IBM';
 'I3E'
 RUBRIQUE = 'INUTILE'
@@ -4738,6 +4763,9 @@ TAILLE= 0
 DEFAUT = 'STD'
 DEFAUT1 = 'STD'
 CHOIX = 'STD';
+'IBM';
+'I3E'
+CHOIX1 = 'STD';
 'IBM';
 'I3E'
 RUBRIQUE = 'INUTILE'
@@ -5106,6 +5134,7 @@ MNEMO = 'WAC\_FILES(WACREF)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
 RUBRIQUE = 'FICHIERS DE DONNEES'
 RUBRIQUE1 = 'DATA FILE'
@@ -5156,6 +5185,7 @@ MNEMO = 'WAC\_FILES(WACLEO)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
 RUBRIQUE = 'FICHIERS DE DONNEES'
 RUBRIQUE1 = 'DATA FILE'

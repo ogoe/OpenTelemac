@@ -1,4 +1,5 @@
 \chapter{Programming with \bief}
+\label{ref:programmingbief}
 %
 %
 %
@@ -185,7 +186,6 @@ The use of optional parameters will enable a better compatibility between
 different versions because it will be possible to add a new parameter as an
 optional one.
 
-%\todo{Check if barckets appear normally}
 Optional arguments will be written between brackets [ ] in argument lists in the
 rest of the document.
 %
@@ -959,14 +959,11 @@ CALL ADDBLO(BLOCK,OBJ)
 \end{lstlisting}
 to add a BIEF\_OBJ structure OBJ to the block called BLOCK.
 
-A block can be emptied by the simple line:
+A block can be emptied by calling a simple function:
 
 \begin{lstlisting}[language=TelFortran]
-BLOCK%N = 0
+CALL DEALLBLO(BLOCK)
 \end{lstlisting}
-
-%\todo{not true anymore need to deallocate}
-because the component N is the number of objects in the block.
 
 \paragraph{Example}
 
@@ -1014,8 +1011,7 @@ The functions and subroutines described below are used for manipulating
 structures without having to know how they are arranged. This paragraph will be
 limited to the functions related to the notion of structure itself. The
 traditional operations on matrices and vectors will be dealt with in Chapter
-A.III.
-%\todo{add reference}
+\ref{ref:matvec}.
 
 All the functions described hereafter will be naturally declared by a USE BIEF
 statement at the beginning of subroutines. Otherwise they would have to be
@@ -1198,6 +1194,7 @@ The only difficulty and common error is to forget the component P which is due
 to Fortran obscure reasons.
 
 \section{Building matrices and vectors}
+\label{ref:matvec}
 
 The subroutines \telkey{MATRIX} and \telkey{VECTOR} construct matrices and
 vectors respectively, according to the instructions given in their arguments.
@@ -2148,8 +2145,7 @@ The only operations that are possible for the moment are:
 
 The processing of a linear system is handled entirely by the subroutine SOLVE,
 except for the Dirichlet-type boundary conditions processed by DIRICH (see also
-B.III.5).
-%\todo{change reference}
+\ref{ref:dirichletbnd}).
 
 \underbar{syntax}:
 \begin{lstlisting}[language=TelFortran]
@@ -2243,7 +2239,7 @@ method chosen. At the time being, the minimum number of arrays in TB must be:
   matrix, 2 for blocks of 4 matrices (2 unknowns like in ARTEMIS) and 3 for
   blocks of 9 matrices (3 unknowns like in \telemac{2D}).
 
-\section{PARALLELISM}
+\section{Parallelism}
 
 Parallelism consists of using simultaneously a cluster of computers, or a group
 of processors in the same computer, to solve a single problem. Using n
@@ -2678,17 +2674,16 @@ for truncation errors. Some examples follow:
 \begin{itemize}
   \item Diagonal preconditioning: the diagonal used for preconditioning has to
     be completed at the interfaces.
-    %todo : Check that equation
   \item Computation of nodal values after projection onto a basis: let us
-    consider the gradient of a function$f$. A mean nodal value of
-    $\mathop{grad}^{\longleftrightarrow} (f)$  is given by:
-    \[\mathop{grad}^{\longleftrightarrow} (f)_{i} =
-      \frac{\mathop{\smallint}\nolimits_{\Omega } \mathop{grad}^{\longleftrightarrow} (f)\Psi _{i}
+    consider the gradient of a function $f$. A mean nodal value of
+    $\overrightarrow{grad} (f)$  is given by:
+    \[\overrightarrow{grad} (f)_{i} =
+      \frac{\mathop{\smallint}\nolimits_{\Omega } \overrightarrow{grad} (f)\Psi _{i}
 d\Omega }{\mathop{\smallint }\nolimits_{\Omega } \Psi _{i}  d\Omega } \]
 issued from the mean-value theorem. In this case the computation of the general
 term  $\mathop{\smallint }\nolimits_{\Omega } \Psi _{i}  d\Omega $  has to be
 completed at the interfaces. The vector including: $\mathop{\smallint
-}\nolimits_{\Omega } \mathop{grad}^{\longleftrightarrow} (f)\Psi _{i}
+}\nolimits_{\Omega } \overrightarrow{grad} (f)\Psi _{i}
 d\Omega $ is unchanged when added to the right-hand side of a linear system
 (the solver itself will complete this term). However it must be completed when
 used to compute another term such as a turbulent production.
@@ -2703,11 +2698,11 @@ used to compute another term such as a turbulent production.
     BundesAnstalt f\"{u}r Wasserbau in Germany.
 \end{itemize}
 
-\section{UTILITIES}
+\section{Utilities}
 
 A number of tools are offered in \bief, in the form of functions and subroutines.
 
-\subsection{FUNCTIONS}
+\subsection{Functions}
 
 All the functions described below facilitate programming and avoid transmission of arguments.
 
@@ -3008,7 +3003,10 @@ the interface between 2 sub-domains. MESH is the \telkey{BIEF\_MESH} structure
 of the mesh.
 
 \subsection{Subroutines dealing with the selafin format file}
-%\todo{Update with hermes ?}
+\begin{WarningBlock}
+  This section is obsolete since v7p1 due to the introduction of hermes See
+  Chapter \ref{ref:hermes} for information on Hermes.
+\end{WarningBlock}
 The SELAFIN format is used in 2D and 3D for the results files and for the
 geometry files. It is given in appendix 3. Several routines are offered for
 writing or reading such files. Others remain internal routines in \bief and will
@@ -4059,7 +4057,8 @@ possibilities are:
   \item [DICO] this is the dictionary
   \item [SCAL] this file will be the same for all processors
 \end{description}
-%\todo{add the new ones}
+See Section \ref{ref:descDico} for a more detailed description of the SUBMIT
+strings.
 
 The following sequence of subroutines is used for opening, using and closing
 files:

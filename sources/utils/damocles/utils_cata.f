@@ -20,12 +20,15 @@
       INTEGER, INTENT(IN) :: LNG
       !
       INTEGER I
+      CHARACTER(LEN=1) :: TYP
       !
       CATA_TYP=REPEAT(' ',KEYWORD_LEN)
       IF(MYDICO(IKEY)%KTYPE.EQ.1) THEN
         CATA_TYP = "'I'"
+        TYP = 'I'
       ELSE IF(MYDICO(IKEY)%KTYPE.EQ.2) THEN
         CATA_TYP = "'R'"
+        TYP = 'R'
       ELSE IF(MYDICO(IKEY)%KTYPE.EQ.3) THEN
         CATA_TYP = 'bool'
       ELSE IF(MYDICO(IKEY)%KTYPE.EQ.4) THEN
@@ -50,20 +53,44 @@
       IF(MYDICO(IKEY)%CHOIX(LNG)(1:1).NE.' ') THEN
           CATA_TYP = "'TXM'"
       ENDIF
-      ! Defining size of variable
-      IF(MYDICO(IKEY)%NIVEAU.EQ.666) THEN
-        ! TODO: Remove that dirty hack
+      ! Defining size of variables
+      IF(MYDICO(IKEY)%APPARENCE(1:4).EQ.'LIST') THEN
         CATA_TYP = TRIM(CATA_TYP)//", max='**'"
+      ELSE IF (MYDICO(IKEY)%APPARENCE(1:5).EQ.'TUPLE') THEN
+        CATA_TYP = "Tuple(2), min= 2, max='**' ,"//
+     &             "validators = VerifTypeTuple(('"//
+     &              TYP//"','"//TYP//"'))"
+      ELSE IF (MYDICO(IKEY)%APPARENCE(1:7).EQ.'DYNLIST') THEN
+        CATA_TYP = TRIM(CATA_TYP)//", min=0, max='**'"
       ELSE
-        IF(MYDICO(IKEY)%TAILLE.EQ.0) THEN
-
-          CATA_TYP = TRIM(CATA_TYP)//", min=0, max='**'"
-        ELSE IF (MYDICO(IKEY)%TAILLE.GT.1) THEN
+        IF (MYDICO(IKEY)%TAILLE.GT.1) THEN
           WRITE(CATA_TYP,'(A,I2,A,I2)') TRIM(CATA_TYP)//", min=",
      &                      MYDICO(IKEY)%TAILLE,", max=",
      &                      MYDICO(IKEY)%TAILLE
         ENDIF
       ENDIF
+      END FUNCTION
+      !
+      ! brief Returns a Python Boola associated to a logical in dico
+      !
+      ! param ikey id of the keyword to handle
+      ! param lng The language to handle
+      CHARACTER(LEN=5) FUNCTION LOGI2BOOL(STRING)
+      !
+      IMPLICIT NONE
+      !
+      CHARACTER(LEN=*), INTENT(IN) :: STRING
+      !
+      SELECT CASE (TRIM(STRING))
+      CASE('NO','NON','FAUX','FALSE','.FALSE.','0')
+        LOGI2BOOL = 'False'
+      CASE('VRAI','OUI','TRUE','YES','.TRUE.','1')
+        LOGI2BOOL = 'True '
+      CASE DEFAULT
+        WRITE(*,*) 'Unknown value for boolean: ',
+     &             TRIM(STRING)
+        CALL PLANTE(1)
+      END SELECT
       END FUNCTION
       !
       ! brief Build the Eficas catalog into string from DEFAUT in
@@ -121,16 +148,29 @@
       ELSE IF(MYDICO(IKEY)%KTYPE.EQ.4) THEN
         CATA_DEFAUT = "'"//TRIM(MYDICO(IKEY)%DEFAUT(LNG))//"'"
       ELSE IF(MYDICO(IKEY)%KTYPE.EQ.3) THEN
-        SELECT CASE (TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
-        CASE('NO','NON','FAUX','FALSE','.FALSE.','0')
-          CATA_DEFAUT = 'False'
-        CASE('VRAI','OUI','TRUE','YES','.TRUE.','1')
-          CATA_DEFAUT = 'True'
-        CASE DEFAULT
-          WRITE(*,*) 'Unknown value for boolean: ',
-     &               TRIM(MYDICO(IKEY)%DEFAUT(LNG))
-          CALL PLANTE(1)
-        END SELECT
+        IF(MYDICO(IKEY)%TAILLE.NE.1) THEN
+          ! LOOP ON VALUES
+          MYLEN = LEN(TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
+          CATA_DEFAUT = "["
+          IDX = 1
+          POS_WORD = 1
+          DO WHILE(IDX.NE.0)
+            IDX = INDEX(MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN),";")
+            ! CHECK IF IT IS THE LAST ONE
+            IF(IDX.EQ.0) THEN
+              CATA_DEFAUT = TRIM(CATA_DEFAUT)//
+     & LOGI2BOOL(MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:MYLEN))
+     &                    // "]"
+            ELSE
+              CATA_DEFAUT = TRIM(CATA_DEFAUT) //
+     & LOGI2BOOL(MYDICO(IKEY)%DEFAUT(LNG)(POS_WORD:POS_WORD+IDX-2))
+     &                  //","
+            ENDIF
+            POS_WORD = POS_WORD +  IDX
+          ENDDO
+        ELSE
+          CATA_DEFAUT = LOGI2BOOL(MYDICO(IKEY)%DEFAUT(LNG))
+        ENDIF
       ELSE
         IF(MYDICO(IKEY)%TAILLE.NE.1) THEN
           ! LOOP ON VALUES
@@ -172,6 +212,7 @@
       INTEGER :: MYLEN,POS_WORD,POS_EGAL,IDX
       INTEGER :: I
       CHARACTER(LEN=CHOIX_LEN) :: CHOIX
+      integer j
       !
       POS_WORD = 1
       I = 1
@@ -255,20 +296,19 @@
       ! brief Write in Python the enum for the keyword with CHOIX in
       ! form id:"str"
       !
-      SUBROUTINE WRITE_ENUM()
+      SUBROUTINE WRITE_ENUM(FILENAME)
       !
       IMPLICIT NONE
+      !
+      CHARACTER(LEN=144),INTENT(IN) :: FILENAME
       !
       INTEGER :: NFIC
       INTEGER :: LNG,IERR
       INTEGER :: IKEY,I
       LOGICAL ISSTR
-      CHARACTER(LEN=144) :: RUB1
       !
       NFIC = 666
-      RUB1 = REPEAT(' ',144)
-      RUB1 = 'enum_Telemac_auto.py'
-      OPEN(NFIC,FILE=TRIM(RUB1),IOSTAT=IERR)
+      OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
       !
       ! English
@@ -361,15 +401,16 @@
       END SUBROUTINE
       ! brief Write the translation files
       !
-      SUBROUTINE WRITE_TS()
+      SUBROUTINE WRITE_TS(PATH)
       !
       IMPLICIT NONE
       !
+      CHARACTER(LEN=144),INTENT(IN) :: PATH
       INTEGER NFIC, IERR, IKEY, I
       CHARACTER(LEN=144) :: FILENAME
       NFIC = 666
       FILENAME = REPEAT(' ',144)
-      FILENAME = 'cata_name2eng_name.ts'
+      FILENAME = TRIM(PATH)//'cata_name2eng_name.ts'
 
       OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
@@ -389,7 +430,8 @@
         WRITE(NFIC,'(4X,A)') '</message>'
         IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
           I = 1
-          DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' ')
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' '
+     &             .AND.I.LE.MAXENUM)
             WRITE(NFIC,'(4X,A)') '<message>'
             WRITE(NFIC,'(8X,A)') '<source>'//
      &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN)))//
@@ -411,7 +453,7 @@
       ! French
       !
       FILENAME = REPEAT(' ',144)
-      FILENAME = 'cata_name2fra_name.ts'
+      FILENAME = TRIM(PATH)//'cata_name2fra_name.ts'
 
       OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
       CALL CHECK_CALL(IERR,'CATA_DICTIONARY')
@@ -431,7 +473,8 @@
         WRITE(NFIC,'(4X,A)') '</message>'
         IF(MYDICO(IKEY)%HASH_ID(1,FR)(1:1).NE.' ') THEN
           I = 1
-          DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' ')
+          DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' '
+     &             .AND.I.LE.MAXENUM)
             WRITE(NFIC,'(4X,A)') '<message>'
             WRITE(NFIC,'(8X,A)') '<source>'//
      &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN))) //
@@ -453,15 +496,23 @@
       ! brief Write a rubrique in a cata
       !
       ! param nfic File descriptor
-      ! param rub Name of the rubrique in cata form
+      ! param irub Idx of the rubrique
       ! param level Indentation level
-      SUBROUTINE WRITE_BEGIN_RUBRIQUE(NFIC,RUB,LEVEL)
+      SUBROUTINE WRITE_BEGIN_RUBRIQUE(NFIC,IRUB,LEVEL)
       !
       IMPLICIT NONE
       !
-      CHARACTER(LEN=144), INTENT(IN) :: RUB
+      INTEGER, INTENT(IN) :: IRUB
       INTEGER, INTENT(IN) :: NFIC
       INTEGER, INTENT(IN) :: LEVEL
+      !
+      CHARACTER(LEN=STRING_LEN) :: RUB
+      LOGICAL :: MANDATORY_RUB
+      CHARACTER(LEN=1) :: RUB_STATUS
+      !
+      RUB = CATA_NAME(RUBRIQUE(EN,IRUB,LEVEL))
+      ! Defining if rubrique is mandatory or optional
+      MANDATORY_RUB = (RUBRIQUE_INFO(IRUB,LEVEL) == 'o')
       !
       IF(LEVEL.EQ.1) THEN
         WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1))//
@@ -472,11 +523,19 @@
      &            '",op = None,'
         WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1))//
      &                    REPEAT('-',71)
+        IF(MANDATORY_RUB) THEN
+          WRITE(NFIC,'(A)') '    UIinfo = {"groupes": ("CACHE")},'
+        ENDIF
       ELSE
+        IF(MANDATORY_RUB) THEN
+          RUB_STATUS = 'o'
+        ELSE
+          RUB_STATUS = 'f'
+        ENDIF
         WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL-1)-2)//
      &                    REPEAT('-',35)
         WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL-1))//
-     &            TRIM(RUB)//" = FACT(statut='o',"
+     &            TRIM(RUB)//" = FACT(statut='"//RUB_STATUS//"',"
         WRITE(NFIC,'(a)') '# '//REPEAT(' ',4*(level-1)-2)//
      &                    REPEAT('-',35)
       ENDIF
@@ -484,13 +543,13 @@
       ! brief Write a rubrique in a cata
       !
       ! param nfic File descriptor
-      ! param rub Name of the rubrique in cata form
+      ! param irub Index of the rubrique
       ! param level Indentation level
-      SUBROUTINE WRITE_END_RUBRIQUE(NFIC,RUB,LEVEL)
+      SUBROUTINE WRITE_END_RUBRIQUE(NFIC,IRUB,LEVEL)
       !
       IMPLICIT NONE
       !
-      CHARACTER(LEN=144), INTENT(IN) :: RUB
+      INTEGER, INTENT(IN) :: IRUB
       INTEGER, INTENT(IN) :: NFIC
       INTEGER, INTENT(IN) :: LEVEL
       !
@@ -551,6 +610,36 @@
       !
       WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL))//'),'
       END SUBROUTINE WRITE_END_BLOC
+      ! brief Write a consigne in a cata
+      !
+      ! param nfic File descriptor
+      ! param ikey Index of the keyword associated with the consigne
+      ! param icond Index of the condition
+      ! param level Indentation level
+      ! param lng Language of output
+      SUBROUTINE WRITE_CONSIGNE(NFIC,IKEY,ICOND,LEVEL,LNG)
+      !
+      IMPLICIT NONE
+      !
+      INTEGER, INTENT(IN) :: NFIC
+      INTEGER, INTENT(IN) :: IKEY
+      INTEGER, INTENT(IN) :: ICOND
+      INTEGER, INTENT(IN) :: LEVEL
+      INTEGER, INTENT(IN) :: LNG
+      !
+      CHARACTER(LEN=KEYWORD_LEN) MYCATA_NAME
+      !
+      MYCATA_NAME = CATA_NAME(MYDICO(IKEY)%KNOM(LNG))
+      !
+      WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL)-2)//
+     &                  REPEAT('-',35)
+      WRITE(NFIC,'(A)') REPEAT(' ',4*LEVEL)//
+     &   'Consigne = SIMP(statut ="o", homo="information", typ="TXM",'
+      WRITE(NFIC,'(A)') '# '//REPEAT(' ',4*(LEVEL)-2)//
+     &                  REPEAT('-',35)
+      WRITE(NFIC,'(A)') REPEAT(' ',4*(LEVEL+1))//'defaut = "'//
+     &                  TRIM(MYDICO(IKEY)%CONSIGNE(ICOND,LNG))//'"),'
+      END SUBROUTINE WRITE_CONSIGNE
       !
       ! brief Write a keyword in a cata
       !
@@ -638,10 +727,17 @@
           IF (MYDICO(IKEY)%COND(ICOND)(1:1).EQ.' ') EXIT
           CALL WRITE_BEGIN_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
           DO IDEP=1,MAXDEP
-            IF (MYDICO(IKEY)%DEPEN(ICOND,IDEP).EQ.0) EXIT
-            CALL WRITE_KEYWORD2CATA(NFIC,
+            ! We have a consigne
+            IF (MYDICO(IKEY)%DEPEN(ICOND,IDEP).LT.0) THEN
+              CALL WRITE_CONSIGNE(NFIC,IKEY,
+     &                     ICOND,LEVEL+1,LNG)
+            ELSE IF (MYDICO(IKEY)%DEPEN(ICOND,IDEP).EQ.0) THEN
+              EXIT
+            ELSE
+              CALL WRITE_KEYWORD2CATA(NFIC,
      &                              MYDICO(IKEY)%DEPEN(ICOND,IDEP),
      &                              LEVEL+1,LNG)
+            ENDIF
           ENDDO
           CALL WRITE_END_BLOC(NFIC,IKEY,ICOND,LEVEL,LNG)
         ENDDO
@@ -661,17 +757,13 @@
       INTEGER :: IRUB1
       INTEGER :: IRUB2
       INTEGER :: IRUB3
-      CHARACTER(LEN=144) RUB1,RUB2,RUB3
       INTEGER :: IKEY
       INTEGER LEVEL,LNG
       NFIC = 666
       LNG = EN
-      RUB1 = REPEAT(' ',144)
-      RUB1 = 'telemac2d.dico.dep'
       ALLOCATE(KEY_WRITTEN(NKEY),STAT=IERR)
       CALL CHECK_ALLOCATE(IERR,'KEY_WRITTEN')
-      KEY_WRITTEN = .FALSE.
-      CALL READ_DEPENDENCIES(RUB1)
+      KEY_WRITTEN(:) = .FALSE.
       WRITE(*,*) '---- EFICAS CATALOG PROCESS ----'
       WRITE(*,*) 'WRITING IN : ',TRIM(FILENAME)
       OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
@@ -727,8 +819,7 @@
 
       ! Loop on rubriques
       DO IRUB1=1,NRUB(LNG,1)
-        RUB1 = CATA_NAME(RUBRIQUE(LNG,IRUB1,1))
-        CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB1,1)
+        CALL WRITE_BEGIN_RUBRIQUE(NFIC,IRUB1,1)
         DO IKEY=1,NKEY
           ! IDENTIFYING KEYWWORDS THAT ARE 1 1
           IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
@@ -740,9 +831,8 @@
         ! LOOP ON RUBRIQUES
         DO IRUB2=1,NRUB(LNG,2)
           LEVEL = 2
-          RUB2 = CATA_NAME(RUBRIQUE(LNG,IRUB2,2))
           IF(RUB1_DEP(IRUB1,IRUB2)) THEN
-            CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB2,2)
+            CALL WRITE_BEGIN_RUBRIQUE(NFIC,IRUB2,2)
             DO IKEY=1,NKEY
               ! IDENTIFYING KEYWWORDS THAT ARE 2 1
               IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
@@ -755,9 +845,8 @@
             ! LOOP ON RUBRIQUES
             DO IRUB3=1,NRUB(LNG,3)
               LEVEL = 3
-              RUB3 = CATA_NAME(RUBRIQUE(LNG,IRUB3,3))
               IF(RUB2_DEP(IRUB1,IRUB2,IRUB3)) THEN
-                CALL WRITE_BEGIN_RUBRIQUE(NFIC,RUB3,3)
+                CALL WRITE_BEGIN_RUBRIQUE(NFIC,IRUB3,3)
                 DO IKEY=1,NKEY
                   ! IDENTIFYING KEYWWORDS THAT ARE 3 1
                   IF(HAS_RUBRIQUE(IKEY,IRUB1,1,LNG).AND.
@@ -766,16 +855,23 @@
                     CALL WRITE_KEYWORD2CATA(NFIC,IKEY,3,LNG)
                   ENDIF
                 ENDDO
-                CALL WRITE_END_RUBRIQUE(NFIC,RUB3,3)
+                CALL WRITE_END_RUBRIQUE(NFIC,IRUB3,3)
               ENDIF
             ENDDO ! LEVEL 3
-            CALL WRITE_END_RUBRIQUE(NFIC,RUB2,2)
+            CALL WRITE_END_RUBRIQUE(NFIC,IRUB2,2)
           ENDIF
         ENDDO ! LEVEL 2
-        CALL WRITE_END_RUBRIQUE(NFIC,RUB1,1)
+        CALL WRITE_END_RUBRIQUE(NFIC,IRUB1,1)
       ENDDO ! LEVEL 1
 
-      WRITE(NFIC,'(A)') 'Ordre_des_commandes = ('
+      WRITE(NFIC,'(A)') 'Ordre_Des_Commandes = ('
+      DO IRUB1 =1,NRUB(LNG,1)-1
+        WRITE(NFIC,'(A)')
+     &     "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,IRUB1,1)))//"',"
+      ENDDO
+      WRITE(NFIC,'(A)')
+     &   "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,NRUB(LNG,1),1)))//"')"
+      WRITE(NFIC,'(A)') 'Classement_Commandes_Ds_Arbre = ('
       DO IRUB1 =1,NRUB(LNG,1)-1
         WRITE(NFIC,'(A)')
      &     "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,IRUB1,1)))//"',"
@@ -784,10 +880,5 @@
      &   "'"//TRIM(CATA_NAME(RUBRIQUE(LNG,NRUB(LNG,1),1)))//"')"
       CLOSE(NFIC)
       DEALLOCATE(KEY_WRITTEN)
-
-      ! WRITING ENUM.PY
-      CALL WRITE_ENUM()
-      ! WRITING TS
-      CALL WRITE_TS()
       END SUBROUTINE
       END MODULE UTILS_CATA

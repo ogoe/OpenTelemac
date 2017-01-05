@@ -5,19 +5,23 @@
       INTEGER, PARAMETER :: FR=1
       INTEGER, PARAMETER :: EN=2
       ! brief Max size of aide
-      INTEGER, PARAMETER :: MAXAIDELEN = 2400
+      INTEGER, PARAMETER :: AIDE_LEN = 2400
       ! brief Size for the CHOIX string
-      INTEGER, PARAMETER :: CHOIX_LEN = 1000
+      INTEGER, PARAMETER :: CHOIX_LEN = 2000
       ! brief Size for the DEFAUT string
       INTEGER, PARAMETER :: DEFAUT_LEN = 1400
       ! brief Size for the Condition string
       INTEGER, PARAMETER :: COND_LEN = 500
+      ! brief Size for the Consigne string
+      INTEGER, PARAMETER :: CONSIGNE_LEN = 500
+      ! brief Size for the Mnemo string
+      INTEGER, PARAMETER :: STRING_LEN = 144
       ! brief Size for the Keyword name
       INTEGER, PARAMETER :: KEYWORD_LEN = 72
       ! brief Maximum number of dependencies
-      INTEGER, PARAMETER :: MAXDEP = 10
+      INTEGER, PARAMETER :: MAXDEP = 18
       ! brief Maximum number of conditions
-      INTEGER, PARAMETER :: MAXCOND = 3
+      INTEGER, PARAMETER :: MAXCOND = 9
       ! brief Maximum number of conditions
       INTEGER, PARAMETER :: MAXENUM = 50
       ! brief type for a keyword
@@ -29,12 +33,12 @@
         ! param Index of the keyword
         INTEGER         :: KINDEX
         ! param Name of the variable containing the keyword in the Fortran code
-        CHARACTER(LEN=144) :: MNEMO
+        CHARACTER(LEN=STRING_LEN) :: MNEMO
         ! To Be defined
         ! param Size of the keyword 0: 1: 2:
         INTEGER         :: TAILLE
         ! param String containing information on file keyword
-        CHARACTER(LEN=144) :: SUBMIT
+        CHARACTER(LEN=STRING_LEN) :: SUBMIT
         ! param Default value in frecnh and in english
         CHARACTER(LEN=DEFAUT_LEN) :: DEFAUT(2)
         ! param List of values for the keyword
@@ -43,39 +47,47 @@
         CHARACTER(LEN=KEYWORD_LEN) :: HASH_ID(MAXENUM,2)
         CHARACTER(LEN=KEYWORD_LEN) :: HASH_VAL(MAXENUM,2)
         ! param Classification of the keyword
-        CHARACTER(LEN=144) :: RUBRIQUE(2,3)
+        CHARACTER(LEN=STRING_LEN) :: RUBRIQUE(2,3)
         ! param
-        CHARACTER(LEN=144) :: COMPOSE
+        CHARACTER(LEN=STRING_LEN) :: COMPOSE
         ! param
-        CHARACTER(LEN=144) :: COMPORT
+        CHARACTER(LEN=STRING_LEN) :: COMPORT
         ! param
-        CHARACTER(LEN=144) :: CONTROLE
+        CHARACTER(LEN=STRING_LEN) :: CONTROLE
         ! param
-        CHARACTER(LEN=144) :: APPARENCE
+        CHARACTER(LEN=STRING_LEN) :: APPARENCE
         ! param Level of the keyword
         INTEGER :: NIVEAU
         ! param help on the keyword in french and in english
-        CHARACTER(LEN=MAXAIDELEN) :: AIDE(2)
+        CHARACTER(LEN=AIDE_LEN) :: AIDE(2)
         ! param list of ikey that depend on cond(i)
         INTEGER DEPEN(MAXCOND,MAXDEP)
         ! param string conition for displaying of keyword
         CHARACTER(LEN=COND_LEN) COND(MAXCOND)
+        ! param string conition for displaying of keyword
+        CHARACTER(LEN=CONSIGNE_LEN) CONSIGNE(MAXCOND,2)
         ! param Hash table for lists
       END TYPE KEYWORD
 !
       ! brief Max number of keyword per type
-      INTEGER, PARAMETER :: NMAX=110
+      INTEGER, PARAMETER :: NMAX=121
       ! brief Max number of rubrique
       INTEGER, PARAMETER :: RMAX=50
-!     brief Listing canal
+      ! brief Listing canal
       INTEGER, PARAMETER :: LU=6
 !
+      ! brief array of keyword contains the dictionary info once read
       TYPE(KEYWORD) :: MYDICO(NMAX*4)
+      ! brief Number of keywords in mydico
       INTEGER :: NKEY=0
 !
-      CHARACTER(LEN=144) :: RUBRIQUE(2,RMAX,3)
+      ! Contains the name of each rubriques for each level and each
+      ! language
+      CHARACTER(LEN=STRING_LEN) :: RUBRIQUE(2,RMAX,3)
+      ! brief Dependancies between rubriques
       LOGICAL, ALLOCATABLE :: RUB1_DEP(:,:),RUB2_DEP(:,:,:)
       INTEGER :: NRUB(2,3)
+      CHARACTER(LEN=1) :: RUBRIQUE_INFO(RMAX,3)
 !
       CONTAINS
       !
@@ -225,7 +237,7 @@
               WRITE(*,*) 'ERROR RUBRIQUE: ',
      &                    TRIM(MYDICO(1)%RUBRIQUE(LNG,I))
               WRITE(*,*) 'IS ALSO A KEYWORD PLEASE RENAME RUBRIQUE'
-           !  CALL PLANTE(1)
+              CALL PLANTE(1)
             ENDIF
           ENDIF
         ENDDO
@@ -325,6 +337,36 @@
               WRITE(*,*) REPEAT('--',3),TRIM(RUBRIQUE(LNG,IRUB3,3))
             ENDIF
           ENDDO
+        ENDDO
+      ENDDO
+      END SUBROUTINE
+      !
+      ! brief Identify the index and level of a rubrique
+      !
+      ! param rub Name of the rubrique
+      ! param idx index of the rubrique
+      ! param level Level of the rubrique
+      !
+      SUBROUTINE IDENTIFY_RUBRIQUE_IDX(RUB,IDX,LEVEL)
+      IMPLICIT NONE
+      !
+      CHARACTER(LEN=STRING_LEN) :: RUB
+      INTEGER, INTENT(OUT) :: IDX
+      INTEGER, INTENT(OUT) :: LEVEL
+      !
+      INTEGER :: I,ILEVEL
+      !
+      ! Check that a rubrique has not the same name as a keyword
+      !  Loop on all languge
+      IDX = -1
+      LEVEL = -1
+      DO ILEVEL=1,3
+        DO I=1,NRUB(EN,ILEVEL)
+          IF(RUBRIQUE(EN,I,ILEVEL).EQ.RUB) THEN
+            IDX = I
+            LEVEL = ILEVEL
+            RETURN
+          ENDIF
         ENDDO
       ENDDO
       END SUBROUTINE
@@ -572,6 +614,9 @@
       INTEGER NFIC, NDEP, IKEY, IKEY_DEP, I, ICOND, IERR
       CHARACTER(LEN=KEYWORD_LEN) KEY_NAME
       CHARACTER(LEN=COND_LEN) COND
+      CHARACTER(LEN=CONSIGNE_LEN) CONSIGNE
+      CHARACTER(LEN=STRING_LEN) RUB
+      INTEGER LEVEL
       !
       NFIC = 667
       WRITE(*,*) '---- READING DEPENDENCIES ----'
@@ -582,6 +627,7 @@
       DO
         READ(NFIC,*,IOSTAT=IERR) NDEP, ICOND
         IF(IERR.LT.0) EXIT
+        IF(NDEP.EQ.666) EXIT
         READ(NFIC,'(A)') COND
         READ(NFIC,'(A)') KEY_NAME
         IKEY =  IDENTIFY_KEYWORD(KEY_NAME,2)
@@ -591,8 +637,17 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        IF(ICOND.NE.0) THEN
-        MYDICO(IKEY)%COND(ICOND) = COND
+        ! If condition number is negative its a consigne
+        IF(ICOND.LT.0) THEN
+          READ(NFIC,'(A)') CONSIGNE
+          MYDICO(IKEY)%COND(-ICOND) = COND
+          MYDICO(IKEY)%CONSIGNE(-ICOND,FR) = CONSIGNE
+          READ(NFIC,'(A)') CONSIGNE
+          MYDICO(IKEY)%CONSIGNE(-ICOND,EN) = CONSIGNE
+          MYDICO(IKEY)%DEPEN(-ICOND,1) = -1
+        ! If it is positive its a dependencies
+        ELSE IF(ICOND.NE.0) THEN
+          MYDICO(IKEY)%COND(ICOND) = COND
           DO I=1,NDEP-1
             READ(NFIC,'(A)') KEY_NAME
             IKEY_DEP =  IDENTIFY_KEYWORD(KEY_NAME,2)
@@ -604,10 +659,26 @@
             ENDIF
             MYDICO(IKEY)%DEPEN(ICOND,I) = IKEY_DEP
           ENDDO
+        ! If it is zero it is an internal dependancies
         ELSE
           MYDICO(IKEY)%COND(1) = COND
         ENDIF
       ENDDO
+      ! Reading RUBRIQUE status information
+      IF(NDEP.EQ.666) THEN
+        RUBRIQUE_INFO(:,:) = 'o'
+        DO
+          READ(NFIC,'(A)',IOSTAT=IERR) RUB
+          IF(IERR.LT.0) EXIT
+          CALL IDENTIFY_RUBRIQUE_IDX(RUB,I,LEVEL)
+          IF(I.EQ.-1) THEN
+            WRITE(LU,*) 'RUBRIQUE UNKNOWN IN DEPENDANCIES FILE: ',
+     &                  TRIM(RUB)
+            CALL PLANTE(1)
+          ENDIF
+          READ(NFIC,'(A)') RUBRIQUE_INFO(I,LEVEL)
+        ENDDO
+      ENDIF
       END SUBROUTINE READ_DEPENDENCIES
       ! brief Fill the myDico structure by reading the dictionary
       !
@@ -617,7 +688,7 @@
       IMPLICIT NONE
       !
       CHARACTER(LEN=144), INTENT(IN) :: FILENAME
-      CHARACTER(LEN=MAXAIDELEN) :: TMP
+      CHARACTER(LEN=AIDE_LEN) :: TMP
       INTEGER :: IKEY,IERR,LNG,I,J
       !
       INTEGER          LCAR,ICOL,JCOL,ILONG,NUMERO,I2
@@ -633,7 +704,7 @@
       !
 !
       CHARACTER(LEN=144),EXTERNAL :: MYCARLU
-      CHARACTER(LEN=MAXAIDELEN), EXTERNAL :: MYAIDELU
+      CHARACTER(LEN=AIDE_LEN), EXTERNAL :: MYAIDELU
       INTEGER, EXTERNAL :: INTLU
       LOGICAL, EXTERNAL :: LOGLU
       DOUBLE PRECISION, EXTERNAL  :: REALU
@@ -679,6 +750,7 @@
 !
 100   CONTINUE
       ! New keyword
+      write(*,*) "LIGNE: ",LIGNE
 !
 ! IF REACHED THE END OF FILE :
 !
@@ -711,44 +783,42 @@
       IF((NUMERO.EQ.1).AND.(LNG.EQ.1)) THEN
         IKEY = IKEY + 1
         ! Initialising the keyword structure
-        MYDICO(IKEY)%KNOM(1) = REPEAT(' ',LEN(MYDICO(IKEY)%KNOM(1)))
-        MYDICO(IKEY)%KNOM(2) = REPEAT(' ',LEN(MYDICO(IKEY)%KNOM(2)))
+        MYDICO(IKEY)%KNOM(1) = REPEAT(' ',KEYWORD_LEN)
+        MYDICO(IKEY)%KNOM(2) = REPEAT(' ',KEYWORD_LEN)
         MYDICO(IKEY)%KTYPE = 0
         MYDICO(IKEY)%KINDEX = -1
-        MYDICO(IKEY)%MNEMO = REPEAT(' ',LEN(MYDICO(IKEY)%MNEMO))
+        MYDICO(IKEY)%MNEMO = REPEAT(' ',STRING_LEN)
         MYDICO(IKEY)%TAILLE = 1
-        MYDICO(IKEY)%SUBMIT = REPEAT(' ',LEN(MYDICO(IKEY)%SUBMIT))
+        MYDICO(IKEY)%SUBMIT = REPEAT(' ',STRING_LEN)
+        MYDICO(IKEY)%DEFAUT(1) = REPEAT(' ',DEFAUT_LEN)
+        MYDICO(IKEY)%DEFAUT(2) = REPEAT(' ',DEFAUT_LEN)
         MYDICO(IKEY)%DEFAUT(1) = 'OBLIGATOIRE'
         MYDICO(IKEY)%DEFAUT(2) = 'MANDATORY'
-        MYDICO(IKEY)%CHOIX(1) = REPEAT(' ',LEN(MYDICO(IKEY)%CHOIX(1)))
-        MYDICO(IKEY)%CHOIX(2) = REPEAT(' ',LEN(MYDICO(IKEY)%CHOIX(2)))
+        MYDICO(IKEY)%CHOIX(1) = REPEAT(' ',CHOIX_LEN)
+        MYDICO(IKEY)%CHOIX(2) = REPEAT(' ',CHOIX_LEN)
         DO I=1,MAXENUM
-          MYDICO(IKEY)%HASH_ID(I,1) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%HASH_ID(I,1)))
-          MYDICO(IKEY)%HASH_VAL(I,1) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%HASH_VAL(I,1)))
-          MYDICO(IKEY)%HASH_ID(I,2) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%HASH_ID(I,2)))
-          MYDICO(IKEY)%HASH_VAL(I,2) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%HASH_VAL(I,2)))
+          MYDICO(IKEY)%HASH_ID(I,1) = REPEAT(' ',KEYWORD_LEN)
+          MYDICO(IKEY)%HASH_VAL(I,1) = REPEAT(' ',KEYWORD_LEN)
+          MYDICO(IKEY)%HASH_ID(I,2) = REPEAT(' ',KEYWORD_LEN)
+          MYDICO(IKEY)%HASH_VAL(I,2) = REPEAT(' ',KEYWORD_LEN)
         ENDDO
-        MYDICO(IKEY)%CHOIX(2) = REPEAT(' ',LEN(MYDICO(IKEY)%CHOIX(2)))
         DO I=1,3
-          MYDICO(IKEY)%RUBRIQUE(1,I) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%RUBRIQUE(1,I)))
-          MYDICO(IKEY)%RUBRIQUE(2,I) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%RUBRIQUE(2,I)))
-          MYDICO(IKEY)%COND(I) =
-     &            REPEAT(' ',LEN(MYDICO(IKEY)%COND(I)))
+          MYDICO(IKEY)%RUBRIQUE(1,I) = REPEAT(' ',STRING_LEN)
+          MYDICO(IKEY)%RUBRIQUE(2,I) = REPEAT(' ',STRING_LEN)
         ENDDO
-        MYDICO(IKEY)%SUBMIT = REPEAT(' ',LEN(MYDICO(IKEY)%SUBMIT))
-        MYDICO(IKEY)%COMPOSE = REPEAT(' ',LEN(MYDICO(IKEY)%COMPOSE))
-        MYDICO(IKEY)%COMPORT = REPEAT(' ',LEN(MYDICO(IKEY)%COMPORT))
-        MYDICO(IKEY)%CONTROLE = REPEAT(' ',LEN(MYDICO(IKEY)%CONTROLE))
-        MYDICO(IKEY)%APPARENCE = REPEAT(' ',LEN(MYDICO(IKEY)%APPARENCE))
+        DO I=1,MAXCOND
+          MYDICO(IKEY)%COND(I) = REPEAT(' ',COND_LEN)
+          MYDICO(IKEY)%CONSIGNE(I,1) = REPEAT(' ',CONSIGNE_LEN)
+          MYDICO(IKEY)%CONSIGNE(I,2) = REPEAT(' ',CONSIGNE_LEN)
+        ENDDO
+        MYDICO(IKEY)%SUBMIT = REPEAT(' ',STRING_LEN)
+        MYDICO(IKEY)%COMPOSE = REPEAT(' ',STRING_LEN)
+        MYDICO(IKEY)%COMPORT = REPEAT(' ',STRING_LEN)
+        MYDICO(IKEY)%CONTROLE = REPEAT(' ',STRING_LEN)
+        MYDICO(IKEY)%APPARENCE = REPEAT(' ',STRING_LEN)
         MYDICO(IKEY)%NIVEAU = 0
-        MYDICO(IKEY)%AIDE(1) = REPEAT(' ',LEN(MYDICO(IKEY)%AIDE(1)))
-        MYDICO(IKEY)%AIDE(2) = REPEAT(' ',LEN(MYDICO(IKEY)%AIDE(2)))
+        MYDICO(IKEY)%AIDE(1) = REPEAT(' ',AIDE_LEN)
+        MYDICO(IKEY)%AIDE(2) = REPEAT(' ',AIDE_LEN)
         MYDICO(IKEY)%DEPEN(:,:) = 0
       ENDIF
 !
@@ -987,8 +1057,28 @@
 !
           ELSE IF(NUMERO.EQ.13) THEN
 !
-            MYDICO(IKEY)%CONTROLE =
-     &               MYAIDELU(ICOL,LIGNE)
+            MYDICO(IKEY)%CONTROLE = MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
+     &                     LEN(MYDICO(IKEY)%CONTROLE))
+
+!
+            ICOL = NEXT(ICOL+1,LIGNE)
+
+            ! Reading second value
+            DO
+              IF(ICOL.GT.LONGLI) THEN
+                ICOL = LONGLI
+              ELSE
+                IF(LIGNE(ICOL:ICOL).NE.PTVIRG) THEN
+                  EXIT
+                ENDIF
+              ENDIF
+              MYDICO(IKEY)%CONTROLE = TRIM(MYDICO(IKEY)%CONTROLE)
+     &            //PTVIRG//   MYCARLU(LCAR,ICOL,LIGNE,QUOTE,
+     &                       LEN(MYDICO(IKEY)%CONTROLE))
+            ENDDO
+
+!
+            ICOL = NEXT(ICOL+1,LIGNE)
 !
           ELSE IF(NUMERO.EQ.14) THEN
 !
@@ -1121,7 +1211,7 @@
       ! brief transform single quote into double quotes
       !
       ! param strIn Input string
-      ! param strOut Output string
+      ! return String with quotes instead of double quotes
       CHARACTER(LEN=KEYWORD_LEN) FUNCTION DBLE_QUOTE(STRIN)
       !
       IMPLICIT NONE
@@ -1131,7 +1221,8 @@
       INTEGER I,J
       !
       J = 1
-      DO I=1,LEN(STRIN)
+      DBLE_QUOTE = REPEAT(' ',KEYWORD_LEN)
+      DO I=1,LEN(TRIM(STRIN))
         IF (STRIN(I:I).EQ."'") THEN
           DBLE_QUOTE(J:J) = "'"
           J=J+1
@@ -1204,10 +1295,12 @@
         WRITE(NFIC,'(A)') "APPARENCE ="
         WRITE(NFIC,'(3A)') "'",TRIM(MYDICO(IKEY)%APPARENCE),"'"
       ENDIF
-      WRITE(NFIC,'(A,2(3A),3A)') "RUBRIQUE = ",
+      WRITE(NFIC,'(A)') "RUBRIQUE ="
+      WRITE(NFIC,'(2(3A),3A)')
      &           ("'",TRIM(MYDICO(IKEY)%RUBRIQUE(1,J)),"';",J=1,2),
      &           "'",TRIM(MYDICO(IKEY)%RUBRIQUE(1,3)),"'"
-      WRITE(NFIC,'(A,2(3A),3A)') "RUBRIQUE1 = ",
+      WRITE(NFIC,'(A)') "RUBRIQUE1 ="
+      WRITE(NFIC,'(2(3A),3A)')
      &           ("'",TRIM(MYDICO(IKEY)%RUBRIQUE(2,J)),"';",J=1,2),
      &           "'",TRIM(MYDICO(IKEY)%RUBRIQUE(2,3)),"'"
       IF(MYDICO(IKEY)%COMPOSE(1:1).NE." ") THEN
@@ -1296,6 +1389,33 @@
       WRITE(*,*) ''
       ! Loop on all the keywords
       WRITE(NFIC,'(A)') '&DYN'
+      WRITE(NFIC,'(A)') "/ Description of a keyword"
+      WRITE(NFIC,'(A)') "/ NOM : French name"
+      WRITE(NFIC,'(A)') "/ NOM1 : English name"
+      WRITE(NFIC,'(A)') "/ TYPE : STRING, INTEGER, REAL, LOGICAL"
+      WRITE(NFIC,'(A)') "/ INDEX : Index of the keyword"
+      WRITE(NFIC,'(A)') "/ TAILLE : Number of values "//
+     &                  "(0 means between 1 and n)"
+      WRITE(NFIC,'(A)') "/ (opt) SUBMIT : Chain for files"
+      WRITE(NFIC,'(A)') "/ DEFAUT : Defaut value in French"
+      WRITE(NFIC,'(A)') "/ DEFAUT1 : Defaut value in English"
+      WRITE(NFIC,'(A)') "/ MNEMO : Name of the variable in the code"
+      WRITE(NFIC,'(A)') "/ (opt) CONTROLE : min;max for the "//
+     &                  "keyword value"
+      WRITE(NFIC,'(A)') "/ (opt) CHOIX : List of possible values"
+      WRITE(NFIC,'(A)') "/ (opt) CHOIX1 : CHOIX in french"
+      WRITE(NFIC,'(A)') "/ (opt) APPARENCE : Defined how the keyword "//
+     &                  "is filled"
+      WRITE(NFIC,'(A)') "/   LIST, DYNLIST, TUPLE"
+      WRITE(NFIC,'(A)') "/ RUBRIQUE : Classification of the "//
+     &                  "keyword 3 level max"
+      WRITE(NFIC,'(A)') "/ RUBRIQUE1 : RUBRIQUE but in English"
+      WRITE(NFIC,'(A)') "/ (opt) COMPOSE : Used for fudaa"
+      WRITE(NFIC,'(A)') "/ (opt) COMPORT : Used for fudaa"
+      WRITE(NFIC,'(A)') "/ NIVEAU : Level of the keyword "//
+     &                  "(Level 0 is a mandatory keyword)"
+      WRITE(NFIC,'(A)') "/ AIDE : Help in French (LaTeX syntax)"
+      WRITE(NFIC,'(A)') "/ AIDE1 : Help in English (LaTeX syntax)"
       ! Loop on rubriques
       DO IRUB1=1,NRUB(LNG,1)
         IDX_RUB2 = 0

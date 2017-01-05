@@ -1,0 +1,221 @@
+%----------------------------------------------------------------------------------------------------
+\chapter{Dictionary}
+%----------------------------------------------------------------------------------------------------
+
+This chapter will describe how the dictionary is used in \telemacsystem. The
+dictionary is the input parameter for the reference documentation, the eficas
+interface and the steering file. The module handling the dictionary is called
+\damocles and can be found under \path{sources/utils/damocles}.
+
+%----------------------------------------------------------------------------------------------------
+\section{Description of the dictionary}
+\label{ref:descDico}
+%----------------------------------------------------------------------------------------------------
+The dictionary is an ASCII file containing a list of keywords for each keyword
+a number of parameters can be defined. Every line starting with a "/" is
+considered a comment.\\
+\begin{WarningBlock}{Warning}
+No line of the dictionary should be longer that 72 characters.
+\end{WarningBlock}
+
+The first line of a dictionary must always be '\&DYN'
+
+Here is a list of those parameters and theirs constraint. Every parameter
+containing "(opt)" are optional the others are mandatory. The parameters must
+be added in that order.
+
+\begin{description}
+\item[NOM] It is the name of the keyword in French. It should be max 72
+  characters long and between "'". If the name contains an apostrophe it should
+  be doubled.
+\item[NOM1] It is the name of the keyword in English. It should be max 72
+  characters long and between "'".
+\item[TYPE] This is the type of the keyword the \telemacsystem handles 4 kind of types:
+  \begin{description}
+    \item[STRING] For text.
+    \item[INTEGER] For integer values.
+    \item[REAL] For real values.
+    \item[LOGICAL] For boolean values.
+  \end{description}
+\item[INDEX] This is the index to access that keyword for each type it must be
+  unique. Running \damocles can give you what indexes are available.
+\item[TAILLE] Number of values expected for the keyword. If the keyword can
+  have a dynamic number of values set TAILLE to 2 and add DYNLIST in APPARENCE.
+\item[(opt) SUBMIT] This text is only for keywords referring to a file. It is a
+  6 part chain separated by ";". Here is an example
+  'T2DBI1-READ;T2DBI1;FACUL;BIN;LIT;SELAFIN'. Each part gives the following
+  information:
+  \begin{itemize}
+    \item Name of the file in the temporary folder (6 letters long) - opening
+      access (READ for read only, WRITE for write only, READWRITE for both).
+    \item Name of the file in the temporary folder (6 letters long).
+    \item Status of the file (FACUL if the file is optional, OBLIG if it is mandatory).
+    \item Type of the file (BIN for binary, ASC for ASCII file).
+    \item Opening access (LIT for read only, ECR, for write only, ECRLIT for both)
+    \item Special treatment to apply for parallelism:
+      \begin{itemize}
+        \item SELAFIN-GEOM: geometry file will go through partel.
+        \item SELAFIN: mesh file will go through but only the result field will
+          be partitioned it will use the mesh from the SELAFIN-GEOM file.
+        \item CONLIM: boundary condition file.
+        \item PARAL: file will be copied for each processor.
+        \item SCAL: no copy only the main processor will be able to access it.
+        \item WEIRS, ZONES, SECTIONS: file added to partel with SELAFIN-GEOM.
+        \item CAS: keyword for the steering file.
+        \item DICO: keyword for the dictionary.
+        \item FORTRAN: user fortran.
+        \item DELWAQHYD, DELWAQSEG ...: files for coupling with Delwaq.
+      \end{itemize}
+  \end{itemize}
+\item[DEFAUT] French default value of the keyword. It should contains TAILLE
+  values.
+\item[DEFAUT1] English default value of the keyword. It should contains TAILLE
+  values.
+\item[MNEMO] Name of the variable in the code containing the value of the keyword.
+\item[(opt) CONTROLE] Two integer that define the min and max of the value of
+  the keyword (This is not used yet).
+\item[(opt) CHOIX] List of values available for the keyword (in French). If the
+  keyword is a STRING just put the list of values in the following from
+  'text1';'text2';...  You can also use CHOIX to build a association between
+  the actual value and a string by following this syntax:
+  'val1:"text1"';'val2:"text2"';... You can have a look at the keywords
+  \telkey{SOLVER} and \telkey{VARIABLES FOR GRAPHIC PRINTOUTS} for examples.
+  Note that the limitation to those choices is not made by \damocles when you
+  are running a case, it is only done by the interface. Text for the value are
+  not allowed to contain apostrophes.
+\item[(opt) CHOIX1] Same as CHOIX but in English.
+\item[(opt) APPARENCE] This is used to give information for the interface on
+  how to enter the values for the keyword the possible values are:
+  \begin{itemize}
+    \item LIST: To display it in the form of an array.
+    \item TUPLE: To display a couple of values.
+    \item DYNLIST: To display a dynamic list.
+  \end{itemize}
+\item[RUBRIQUE] This is used to categorized the keywords. It should contain
+  three values that are the name of the categories in French.\\
+  \begin{WarningBlock}{Warning}
+    The RUBRIQUE cannot have the same name as a keyword.
+  \end{WarningBlock}
+\item[RUBRIQUE1] Same RUBRIQUE but in English.
+\item[(opt) COMPOSE] Not used yet.
+\item[(opt) COMPORT] Not used yet.
+\item[NIVEAU] This is the status of the keyword if 0 the keyword will be
+  considered mandatory in the interface. Later it will also be used to group
+  keywords for specific studies.
+\item[AIDE] Text in French describing what the keyword is used for. This text
+  can use LaTeX format. It will be used to generate the reference
+  documentation.
+\item[AIDE1] Same as AIDE but in English.
+\end{description}
+
+%----------------------------------------------------------------------------------------------------
+\section{Description of the dictionary additional file}
+\label{ref:descDicoAdd}
+%----------------------------------------------------------------------------------------------------
+This file is only for eficas it is not read during a basic run of
+\telemacsystem. The file is build in two parts:
+\begin{itemize}
+  \item The dependencies between keywords (i.e keywords that should appear only
+    if a keyword has a certain value) and "consigne" text that is to be
+    displayed if the keyword as a certain value
+  \item The status of RUBRIQUES.
+\end{itemize}
+
+The first part is a list of blocks for each keyword as they are linked to a keyword.
+The block for a dependence must follow that syntax:
+\begin{verbatim}
+n number_of_the_dependence
+condition
+keyword_on_which_is_the_condition
+keyword_1
+keyword_2
+...
+keyword_n
+\end{verbatim}
+The \verb!number_of_dependence! will be increased as we add blocks for that
+keyword.
+The condition must follow a couple rules:
+\begin{itemize}
+  \item It must be in Python syntax.
+  \item It must use the "eficas form of the keyword" (i.e. Replace " " "'" "-"
+    by "\_").
+  \item If the keyword has a CHOIX it must use the text and not the value.
+\end{itemize}
+
+If the condition is on more than one keyword and affect only one keyword set
+\verb!number_of_the_dependencie! to 0 and \verb!n! to 1.
+
+The block for a "consigne" must follow that syntax:
+\begin{verbatim}
+1 number_of_the_dependence
+condition
+keyword_on_which_is_the_condition
+Text_in_French
+Text_in_English
+\end{verbatim}
+The \verb!number_of_dependence! must be negative but still follow the increase
+(i.e. if its the third dependence it will be -3). Both the text in French and
+the one in English must be written on one line.
+
+Here is an example for the keyword \telkey{INITIAL CONDITIONS} which has 3
+dependencies and one "consigne".
+\begin{verbatim}
+2 1
+INITIAL_CONDITIONS == 'CONSTANT ELEVATION'
+INITIAL CONDITIONS
+INITIAL ELEVATION
+2 2
+INITIAL_CONDITIONS == 'CONSTANT DEPTH'
+INITIAL CONDITIONS
+INITIAL DEPTH
+2 3
+INITIAL_CONDITIONS == 'TPXO SATELLITE ALTIMETRY'
+INITIAL CONDITIONS
+ASCII DATABASE FOR TIDE
+1 -4
+INITIAL_CONDITIONS == 'SPECIAL'
+INITIAL CONDITIONS
+Les conditions initiales sur la hauteur d''eau doivent etre precisees dans le sous-programme CONDIN.
+The initial conditions with the water depth should be stated in the CONDIN subroutine.
+\end{verbatim}
+
+The second part that is at the end of the file begins with the line:
+\begin{verbatim}
+666 666
+\end{verbatim}
+
+Then it is a list of two lines:
+\begin{verbatim}
+NAME_OF_RUBRIQUE
+STATUS
+\end{verbatim}
+
+By default all RUBRIQUE are mandatory here you can change that by setting
+\verb!STATUS! to \verb!f!. \verb!NAME_OF_RUBRIQUE! must have the same name as
+in the dictionary.
+
+%----------------------------------------------------------------------------------------------------
+\section{What \damocles can do for you}
+%----------------------------------------------------------------------------------------------------
+
+\damocles can be used via the script \verb!damocles.py! and has option for
+three things:
+\begin{itemize}
+\item --dump, Read a dictionary and dump it back reordered and reorganize.
+\item --eficas, Generate the Catalogue for eficas to build the interface.
+\item --latex, Generate a LaTeX file for the reference documentation.
+\end{itemize}
+All those options are to be combine with the option \verb!-m! to specify on
+which module to run the script by default it is run for all of them except
+\mascaret.
+The first one can also be used to get information on the dictionary such as the
+index used, the RUBRIQUE in French and English to check that we have the same
+number of each the reordered dictionary will be next to the original with a 2
+added to the name. It also checks that the dictionary is following the rules
+described before.
+
+The eficas option is generating all the files needed to run the GUI. All the
+files are added in the folder eficas in the source folder of the module.
+
+The latex option is used by \verb!docTELEMAC.py! to compile the reference
+manual for that module.

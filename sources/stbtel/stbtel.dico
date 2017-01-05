@@ -6,7 +6,7 @@ INDEX = 1
 DEFAUT = 20000
 DEFAUT1 = 20000
 MNEMO = 'NBAT'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 COMPORT =
@@ -14,7 +14,8 @@ COMPORT =
 NIVEAU = 1
 AIDE =
 'Permet de dimensionner le tableau utilise pour la lecture, dans les
-\telkey{FICHIERS DES FONDS}, des points releves a la table a digitaliser.'
+\telkey{FICHIERS DES FONDS}, des points releves a la table a
+digitaliser.'
 AIDE1 =
 'Designed for dimensioning the array that is used for reading, in the
 \telkey{BOTTOM TOPOGRAPHY FILES}, the points recorded at the digitizing
@@ -28,7 +29,7 @@ INDEX = 2
 DEFAUT = 1
 DEFAUT1 = 1
 MNEMO = 'LGVEC'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -45,25 +46,24 @@ INDEX = 3
 DEFAUT = 0
 DEFAUT1 = 0
 MNEMO = 'NSOM'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
 AIDE =
-'Lorsque l''on souhaite extraire une partie du maillage, permet de definir le
-nombre de sommets du polygone a l''interieur duquel le maillage sera
-effectivement extrait.\\
+'Lorsque l''on souhaite extraire une partie du maillage, permet de
+definir le nombre de sommets du polygone a l''interieur duquel le
+maillage sera effectivement extrait.\\
 \begin{WarningBlock}{Attention :}
 Ce polygone doit etre convexe et les coordonnees des sommets donnes dans
-l''ordre trigonometrique.
-\end{WarningBlock}'
+l''ordre trigonometrique.  \end{WarningBlock}'
 AIDE1 =
 'When you want to extract a piece of the mesh, this key-word fixes
 the number of vertices of a polygon inside of which the mesh will be
 finally extracted.\\
 \begin{WarningBlock}{Warning:}
-This polygon should have a convex shape and the coordinates of the vertices be
-given with an anti clock wise order.
+This polygon should have a convex shape and the coordinates of the
+vertices be given with an anti clock wise order.
 \end{WarningBlock}'
 /
 NOM = 'NOMBRE DE SOMMETS DU POLYGONE DE RAFFINEMENT'
@@ -73,7 +73,7 @@ INDEX = 4
 DEFAUT = 0
 DEFAUT1 = 0
 MNEMO = 'NSOM2'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -126,7 +126,7 @@ INDEX = 1
 DEFAUT = 1.E-5
 DEFAUT1 = 1.E-5
 MNEMO = 'EPSI'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -150,7 +150,7 @@ INDEX = 2
 DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = ''
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -190,7 +190,7 @@ INDEX = 3
 DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = 'CORTRI'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -209,7 +209,7 @@ TAILLE = 9
 DEFAUT = 0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0
 MNEMO = 'SOM'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -239,7 +239,7 @@ TAILLE = 9
 DEFAUT = 0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0
 MNEMO = 'SOM'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -268,7 +268,7 @@ TAILLE = 9
 DEFAUT = 0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0
 MNEMO = 'SOM2'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -298,7 +298,7 @@ TAILLE = 9
 DEFAUT = 0;0;0;0;0;0;0;0;0
 DEFAUT1 = 0;0;0;0;0;0;0;0;0
 MNEMO = 'SOM2'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -545,13 +545,20 @@ INDEX = 14
 DEFAUT = 'MASTER2'
 DEFAUT1 = 'MASTER2'
 MNEMO = ''
-CHOIX = SUPERTAB4;
-SUPERTAB6;
-MASTER2;
-SIMAIL;
-SELAFIN;
-TRIGRID;
-FASTTABS
+CHOIX = 'SUPERTAB4';
+'SUPERTAB6';
+'MASTER2';
+'SIMAIL';
+'SELAFIN';
+'TRIGRID';
+'FASTTABS'
+CHOIX1 = 'SUPERTAB4';
+'SUPERTAB6';
+'MASTER2';
+'SIMAIL';
+'SELAFIN';
+'TRIGRID';
+'FASTTABS'
 RUBRIQUE = 'MAILLEUR'
 RUBRIQUE1 = 'MESH GENERATOR'
 COMPORT =
@@ -623,6 +630,7 @@ DEFAUT = 'STD'
 DEFAUT1 = 'STD'
 MNEMO = ''
 CHOIX = 'STD';'IBM';'I3E'
+CHOIX1 = 'STD';'IBM';'I3E'
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'STANDARD'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'STANDARD I/O'
 COMPORT =
@@ -749,7 +757,8 @@ AIDE =
 'Nom du fichier additionnel. Ce fichier a une signification
 differente en fonction du mailleur choisi.
 \begin{itemize}
-\item Trigrid : Fichier contenant la table de connectivites (obligatoire).
+\item Trigrid : Fichier contenant la table de connectivites
+(obligatoire).
 \item Fasttabs : Fichier contenant les conditions limites (optionnel).
 \end{itemize}'
 AIDE1 =
@@ -796,7 +805,7 @@ INDEX = 8
 DEFAUT = 0.1
 DEFAUT1 = 0.1
 MNEMO = 'SEUSEC'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'GENERALITES'
 RUBRIQUE1 = 'GENERALITIES'
 NIVEAU = 1
@@ -923,6 +932,11 @@ CHOIX = 'SERAFIN';
 'MED';
 'UNV';
 'CGNS'
+CHOIX1 = 'SERAFIN';
+'SERAFIND';
+'MED';
+'UNV';
+'CGNS'
 RUBRIQUE = 'CONVERTISSEUR INFO'
 RUBRIQUE1 = 'CONVERTER INFO'
 NIVEAU = 1
@@ -937,6 +951,13 @@ DEFAUT = 'SERAFIN'
 DEFAUT1 = 'SERAFIN'
 MNEMO = 'OUTFMT'
 CHOIX = 'SERAFIN';
+'SERAFIND';
+'MED';
+'UNV';
+'CGNS';
+'VTK';
+'CGNS'
+CHOIX1 = 'SERAFIN';
 'SERAFIND';
 'MED';
 'UNV';
@@ -1072,7 +1093,7 @@ INDEX = 9
 DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = 'DX'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'CONVERTISSEUR INFO';'TRANSLATION INFO'
 RUBRIQUE1 = 'CONVERTER INFO';'TRANSLATION INFO'
 NIVEAU = 1
@@ -1088,7 +1109,7 @@ INDEX = 10
 DEFAUT = 0.
 DEFAUT1 = 0.
 MNEMO = 'DY'
-CONTROLE = 0
+CONTROLE = 0;Inf
 RUBRIQUE = 'CONVERTISSEUR INFO';'TRANSLATION INFO'
 RUBRIQUE1 = 'CONVERTER INFO';'TRANSLATION INFO'
 NIVEAU = 1

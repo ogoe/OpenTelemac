@@ -1,5 +1,7 @@
+\chapter{Hermes}
+\label{ref:hermes}
 %--------------------------------------------------------------------------------
-\chapter{Description}
+\section{Description}
 %--------------------------------------------------------------------------------
 %
 The aim of this module is to produce generic functions to read/write meshes,
@@ -7,7 +9,7 @@ data and boundary conditions in \telemacsystem regardless of the file format. Fo
 purpose a new module, called Hermes, was created.
 %
 %--------------------------------------------------------------------------------
-\chapter{User Manual}
+\section{User Manual}
 %--------------------------------------------------------------------------------
 %
 Three formats are now available in \telemacsystem:
@@ -28,10 +30,10 @@ the fact that the same boundary file is used for all the files and the boundary
 file is format-dependant. Only SERAFIN an SERAFIND can coexist as they are
 using the same format for their boundary file.
 %--------------------------------------------------------------------------------
-\section{List of functions}
+\subsection{List of functions}
 %--------------------------------------------------------------------------------
 \label{listfunc}
-\subsection{Mesh functions}
+\subsubsection{Mesh functions}
 \begin{lstlisting}
 subroutine open_mesh(fformat,file_name,file_id,openmode,ierr)
 !
@@ -157,7 +159,7 @@ end subroutine
 \begin{lstlisting}
 subroutine get_mesh_ikle (fformat,fid,typ_elem,ikle,nelem,ndp,ierr)
 !
-!brief    returns the connectivity table for 
+!brief    returns the connectivity table for
 !+        the element of type typ_elem in the mesh
 !+        will do nothing if there are no element of typ_elem in the mesh
 !
@@ -309,7 +311,7 @@ subroutine get_mesh_nptir (fformat,fid,nptir,ierr)
 end subroutine
 \end{lstlisting}
 %
-\subsection{Boundary functions}
+\subsubsection{Boundary functions}
 %
 \begin{lstlisting}
 subroutine open_bnd(fformat,file_name,file_id,openmode,ierr)
@@ -352,7 +354,7 @@ end subroutine
 \begin{lstlisting}
 subroutine get_bnd_ipobo (fformat,fid,npoin,nelebd,typ_bnd_elem,ipobo,ierr)
 !
-!brief    returns an array containing 
+!brief    returns an array containing
 !+        1 if a point is a boundary point 0 otherwise
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -377,7 +379,7 @@ end subroutine
 \begin{lstlisting}
 subroutine get_bnd_nbor (fformat,fid,typ_bnd_elem,nptfr,nbor,ierr)
 !
-!brief    returns an array containing 
+!brief    returns an array containing
 !+        the association of boundary numbering to mesh numbering
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -385,7 +387,7 @@ subroutine get_bnd_nbor (fformat,fid,typ_bnd_elem,nptfr,nbor,ierr)
 !| fid            |-->| file descriptor
 !| typ_bnd_elem   |-->| type of the boundary element
 !| nptfr          |-->| number of boundary points
-!| nbor           |<->| an array containing the numbering in the mesh 
+!| nbor           |<->| an array containing the numbering in the mesh
 !|                |   | of all boundary points
 !| ierr           |<--| 0 if no error during the opening
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -493,7 +495,7 @@ subroutine get_bnd_value (fformat,fid,typ_bnd_elem,nelebd,value,nptfr,nbor,ierr)
 end subroutine
 \end{lstlisting}
 %
-\subsection{Data functions}
+\subsubsection{Data functions}
 %
 \begin{lstlisting}
 subroutine get_data_nvar (fformat,fid,nvar,ierr)
@@ -584,7 +586,7 @@ end subroutine
 \begin{lstlisting}
 subroutine get_data_value (fformat,fid,record,var_name,res_value,n,ierr)
 !
-!brief    returns the value for each point of a given variable 
+!brief    returns the value for each point of a given variable
 !+        for a given time step
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -592,7 +594,7 @@ subroutine get_data_value (fformat,fid,record,var_name,res_value,n,ierr)
 !| file_id        |-->| file descriptor
 !| record         |-->| time step to read in the file
 !| var_name       |-->| variable for which we need the value
-!| res_value      |<->| value for each point at time step record 
+!| res_value      |<->| value for each point at time step record
 !|                |   | for the variable var_name
 !| n              |-->| size of res_value
 !| ierr           |<--| 0 if no error during the execution
@@ -609,7 +611,7 @@ subroutine get_data_value (fformat,fid,record,var_name,res_value,n,ierr)
 end subroutine
 \end{lstlisting}
 %
-\subsection{Writing functions}
+\subsubsection{Writing functions}
 %
 \begin{lstlisting}
 subroutine set_header (fformat,file_id,title,nvar,var_name,ierr)
@@ -719,7 +721,7 @@ subroutine add_data
      (fformat,file_id,var_name,time,record,
       first_var,var_value,n,ierr)
 !
-!brief    add data information for a given variable and a given time on 
+!brief    add data information for a given variable and a given time on
 !+        all points of the mesh
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -748,13 +750,13 @@ end subroutine
 
 %
 %--------------------------------------------------------------------------------
-\chapter{Developer Manual}
+\section{Developer Manual}
 %--------------------------------------------------------------------------------
 %
 
 %
 %--------------------------------------------------------------------------------
-\section{Structure of the module}
+\subsection{Structure of the module}
 %--------------------------------------------------------------------------------
 %
 The module is divided into three parts:
@@ -845,12 +847,12 @@ elements\ldots).
 
 %
 %--------------------------------------------------------------------------------
-\section{Serafin Format}
+\subsection{Serafin Format}
 %--------------------------------------------------------------------------------
 %
 
 %
-\subsection{Format description}
+\subsubsection{Format description}
 %
 The SERAFIN format is a Format Binary file (Each record is written in-between
 two tags, 4-bytes-integers, containing the size of the record) composed of
@@ -892,7 +894,7 @@ points
 \end{itemize}
 
 %
-\subsection{New functionalities in Hermes}
+\subsubsection{New functionalities in Hermes}
 %
 To allow the Hermes functions to be generic, the way to read/write SERAFIN
 format was modified. Before Hermes, a normal read/write structure was used,
@@ -914,7 +916,7 @@ A couple of fixed values are also set such as the size of single/double
 precision for integer and real as well as the size of string (title, variable
 name and unit...).
 %
-\begin{lstlisting} 
+\begin{lstlisting}
 integer, parameter :: is = 4 ! integer size
 integer, parameter :: i4 = selected_int_kind(5) ! integer size
 integer, parameter :: i8 = selected_int_kind(15) ! integer on 8 bytes size
@@ -927,13 +929,13 @@ type srf_info
   ! size of elements
   integer :: rs ! real size (4 or 8)
   ! position in file
-  integer :: pos_title 
+  integer :: pos_title
   integer :: pos_nvar != pos_title + 4 + title_size + 4
   integer :: pos_varinfo != pos_nvar + 4 + 2*is + 4
   integer :: pos_ib != pos_varinfo + 4 + nvar*var_size + 4
   integer :: pos_date != pos_ib + 4 + 10*is + 4
   integer :: pos_num != pos_date + (ib(10).ne.0)*(4 + 6*is + 4)
-  integer :: pos_ikle != pos_num + 4 + 4*is + 4 
+  integer :: pos_ikle != pos_num + 4 + 4*is + 4
   integer :: pos_ipobo != pos_ikle + 4 + nelem*ndp*is + 4
   integer :: pos_coord != pos_ipobo + 4 + npoin*is + 4
   integer :: pos_data != pos_coord + (4 + npoin*rs + 4)*ndim
@@ -950,7 +952,7 @@ type srf_info
   integer :: nptir
   integer :: ndim
   integer :: typ_elt
-  character(len=var_size),allocatable :: var_list(:) 
+  character(len=var_size),allocatable :: var_list(:)
   ! boundary informations
   integer :: typ_bnd_elt
   integer :: nptfr
@@ -962,10 +964,10 @@ The \verb!RS! sets the size of the real value (4 for single precision SERAFIN
 format, 8 for double precision SERAFIND format).
 %
 %--------------------------------------------------------------------------------
-\section{MED format}
+\subsection{MED format}
 %--------------------------------------------------------------------------------
 %
-\subsection{Format description}
+\subsubsection{Format description}
 %
 The goal of the MED format (EDF and CEA, L-GPL licence) is to standardize
 exchange of data between scientific computational codes. For instance, this
@@ -979,7 +981,7 @@ in time. For HPC aspects, reading and writing can be executed in parallel in
 the single file. More information can be found in the MED documentation
 (\url{http://www.code-aster.org/outils/med/html/index.html}).
 %
-\subsection{New functionalities in Hermes}
+\subsubsection{New functionalities in Hermes}
 %
 To adapt to \telemacsystem a structure was defined for the boundary file to work with
 MED. The group structure (which allows to define a list of points/elements as a
@@ -998,9 +1000,9 @@ Here is a simple example:
 4 5 5 5 BOUNDARY3
 \end{verbatim}
 
-% 
+%
 %--------------------------------------------------------------------------------
-\section{How to add a new format}
+\subsection{How to add a new format}
 %--------------------------------------------------------------------------------
 %
 To add a new format (named \textit{format}) the following steps must be fulfilled:
@@ -1011,12 +1013,12 @@ described in \ref{listfunc}
 statement for \textit{format}
 \item Same thing in \verb!bief\_open\_files.f! and \verb!bief_close_files.f!
 \item Add in all the dictionary the option to choose \textit{format} for the
-"FORMAT" keywords 
+"FORMAT" keywords
 \end{itemize}
 
 %
 %--------------------------------------------------------------------------------
-\section{Error Handling}
+\subsection{Error Handling}
 %--------------------------------------------------------------------------------
 %
 A few error values where created in \verb!declarations_special.f!:
@@ -1040,7 +1042,7 @@ A few error values where created in \verb!declarations_special.f!:
 
 %
 %--------------------------------------------------------------------------------
-\section{Future work}
+\subsection{Future work}
 %--------------------------------------------------------------------------------
 %
 Here is a list of modifications that could be interesting in the future:
