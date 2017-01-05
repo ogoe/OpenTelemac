@@ -756,11 +756,11 @@ files: interp.f
 path: <root>|sources|telemac2d
 files: friction_def.f
   declarations_telemac2d.f
+  interface_telemac2d.f
   oil_flot.f
   entete.f
   bilan.f
   oilspill.f
-  interface_telemac2d.f
   fdnrst.f
   wrihyd.f
   tel4del.f
