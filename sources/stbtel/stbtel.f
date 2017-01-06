@@ -237,7 +237,7 @@
       CALL CHECK_ALLOCATE(ERR,'UBOR')
       ALLOCATE(VBOR(NPMAX,2)    ,STAT=ERR)
       CALL CHECK_ALLOCATE(ERR,'VBOR')
-      CALL ALLBLO(DUMMY,'DUMMY')
+      CALL ALLBLO(DUMMY,'DUMMY ')
 !
 !=======================================================================
 ! LECTURE DES COORDONNEES ET DE LA COULEUR DES POINTS , DES IKLE ET DU
