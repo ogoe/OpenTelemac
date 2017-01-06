@@ -408,7 +408,7 @@ if __name__ == "__main__":
    # If USETELCFG is not defined in the environment setting USETELCFG to the
    # first config
    if 'USETELCFG' not in environ:
-      environ['USETELCFG'] = cfgs[0]
+      environ['USETELCFG'] = cfgs.iterkeys().next()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
