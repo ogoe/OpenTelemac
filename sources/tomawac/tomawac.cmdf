@@ -268,6 +268,7 @@ files: bief_def.f
   goup1.f
   goup.f
   gmres.f
+  first_all_biefobj.f
   allblo_in_block.f
   solve.f
   char_weak.f
@@ -397,11 +398,11 @@ files: bief_def.f
   bief_allmat.f
   ielbor.f
   checkmesh.f
-  bief_nbsegel.f
   segbor.f
   bief_nbfel.f
   bief_ininds.f
   cpikle2.f
+  bief_nbsegel.f
   corrxy.f
   read_mesh_coord.f
   cpikle3.f

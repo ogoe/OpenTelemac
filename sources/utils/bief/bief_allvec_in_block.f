@@ -5,7 +5,7 @@
      &( BLO , N , NAT , NOMGEN , IELM , NDIM , STATUT , MESH , REFINE)
 !
 !***********************************************************************
-! BIEF   V7P2
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR N VECTORS, WHICH WILL BE PART
@@ -18,12 +18,7 @@
 !history  J-M HERVOUET (LNH)
 !+        11/07/1995
 !+        V5P1
-!+
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/1999
-!+
-!+
+!+   First version
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -36,6 +31,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (jubilado)
+!+        04/11/2016
+!+        V7P3
+!+   Allowing several successive allocations of the same BIEF_OBJ.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BLO            |<->| BLOCK WHERE THE VECTORS WILL BE ALLOCATED
@@ -88,7 +88,7 @@
       IDEB = 6
       DO I=5,2,-1
         IF(NOMGEN(I:I).EQ.' ') IDEB = I
-      ENDDO ! I
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -125,7 +125,11 @@
 !
 !           ALLOCATES THE VECTOR
 !
-            ALLOCATE(BLO%ADR(I)%P)
+            IF(.NOT.ASSOCIATED(BLO%ADR(I)%P)) THEN
+              ALLOCATE(BLO%ADR(I)%P)
+              NULLIFY(BLO%ADR(I)%P%R)
+              NULLIFY(BLO%ADR(I)%P%I)
+            ENDIF
             IF(REF.GT.0) THEN
               CALL BIEF_ALLVEC(NAT,BLO%ADR(I)%P,NOM,IELM,NDIM,STATUT,
      &                         MESH,REF)

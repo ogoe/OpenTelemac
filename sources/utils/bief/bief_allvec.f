@@ -5,7 +5,7 @@
      &( NAT , VEC , NOM , IELM , DIM2 , STATUT , MESH , REFINE)
 !
 !***********************************************************************
-! BIEF   V7P2
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A VECTOR STRUCTURE.
@@ -27,6 +27,11 @@
 !+        V7P2
 !+   Adding NAT = 3. With both integers and doube precision arrays
 !+   allocated
+!
+!history  J-M HERVOUET (jubilado)
+!+        04/11/2016
+!+        V7P3
+!+   Allowing several successive allocations of the same BIEF_OBJ.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM2           |-->| SECOND DIMENSION OF VECTOR
@@ -65,6 +70,7 @@
 !
       INTRINSIC MAX
 !
+      ERR = 0
       IF(PRESENT(REFINE)) THEN
         REF=REFINE
       ELSE
@@ -151,39 +157,25 @@
       VEC%TYPR = '?'
       VEC%TYPI = '?'
 !
-!     DYNAMICALLY ALLOCATES MEMORY (REAL OR INTEGER, DEPENDING OF NAT)
+!     DYNAMICALLY ALLOCATES MEMORY (REAL AND/OR INTEGER, DEPENDING OF NAT)
 !
-      IF(NAT.EQ.1) THEN
+      IF(NAT.EQ.1.OR.NAT.EQ.3) THEN
 !
-        ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
-!       JAJ NULLIFY THE INTEGER PART
-        NULLIFY(VEC%I)
-!
-!       FILLS ARRAY WITH BIG NUMBERS
-!       TO RAISE QUESTIONS IF NOT INITIALISED
-!
-        XMAX = HUGE(100.D0)
-        CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
-     &          VEC%MAXDIM1*VEC%DIM2)
-!
-      ELSEIF(NAT.EQ.2) THEN
-!
-        ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
-!       JAJ NULLIFY THE REAL PART
-        NULLIFY(VEC%R)
-!
-!       FILLS ARRAY WITH BIG NUMBERS
-!       TO RAISE QUESTIONS IF NOT INITIALISED
-!
-        IMAX = HUGE(100)
-        DO I=1,VEC%MAXDIM1*VEC%DIM2
-          VEC%I(I) = IMAX
-        ENDDO
-!
-      ELSEIF(NAT.EQ.3) THEN
-!
-        ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
-        ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        IF(.NOT.ASSOCIATED(VEC%R)) THEN
+          ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        ELSEIF(SIZE(VEC%R).LT.VEC%MAXDIM1*VEC%DIM2) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'DESALLOCATION REALLOCATION DE %R DE',VEC%NAME,
+     &                  VEC%MAXDIM1,VEC%DIM2,SIZE(VEC%R)
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'DEALLOCATING AND REALLOCATING %R OF',VEC%NAME,
+     &                  VEC%MAXDIM1,VEC%DIM2,SIZE(VEC%R)
+          ENDIF
+          DEALLOCATE(VEC%R)
+          ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        ENDIF
+        CALL CHECK_ALLOCATE(ERR,'VECTOR '//VEC%NAME//'%R')
 !
 !       FILLS ARRAY WITH BIG NUMBERS
 !       TO RAISE QUESTIONS IF NOT INITIALISED
@@ -191,30 +183,44 @@
         XMAX = HUGE(100.D0)
         CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
      &          VEC%MAXDIM1*VEC%DIM2)
-        IMAX = HUGE(100)
-        DO I=1,VEC%MAXDIM1*VEC%DIM2
-          VEC%I(I) = IMAX
-        ENDDO
 !
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,*) 'NAT INCONNU DANS ALLVEC'
-        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN NAT IN ALLVEC'
-        CALL PLANTE(1)
-        STOP
       ENDIF
 !
-!-----------------------------------------------------------------------
+      IF(NAT.EQ.2.OR.NAT.EQ.3) THEN
 !
-      IF(ERR.EQ.0) THEN
-!       IF(LNG.EQ.1) WRITE(LU,*) 'VECTEUR : ',NOM,' ALLOUE'
-!       IF(LNG.EQ.2) WRITE(LU,*) 'VECTOR: ',NOM,' ALLOCATED'
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,10) NOM,ERR
-        IF(LNG.EQ.2) WRITE(LU,20) NOM,ERR
-10      FORMAT(1X,'ERREUR A L''ALLOCATION DU VECTEUR : ',A6,/,1X,
-     &            'CODE D''ERREUR : ',1I6)
-20      FORMAT(1X,'ERROR DURING ALLOCATION OF VECTOR: ',A6,/,1X,
-     &            'ERROR CODE: ',1I6)
+        IF(.NOT.ASSOCIATED(VEC%I)) THEN
+          ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        ELSEIF(SIZE(VEC%I).LT.VEC%MAXDIM1*VEC%DIM2) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'DESALLOCATION REALLOCATION DE %I DE',VEC%NAME,
+     &                  VEC%MAXDIM1,VEC%DIM2,SIZE(VEC%I)
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'DEALLOCATING AND REALLOCATING %I OF',VEC%NAME,
+     &                  VEC%MAXDIM1,VEC%DIM2,SIZE(VEC%I)
+          ENDIF
+          DEALLOCATE(VEC%I)
+          ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+        ENDIF
+        CALL CHECK_ALLOCATE(ERR,'VECTOR '//VEC%NAME//'%I')
+!
+!       FILLS ARRAY WITH BIG NUMBERS
+!       TO RAISE QUESTIONS IF NOT INITIALISED
+!
+        IMAX = HUGE(100)
+        DO I=1,VEC%MAXDIM1*VEC%DIM2
+          VEC%I(I) = IMAX
+        ENDDO
+!
+      ENDIF
+!
+      IF(NAT.EQ.1) THEN
+        NULLIFY(VEC%I)
+      ELSEIF(NAT.EQ.2) THEN
+        NULLIFY(VEC%R)
+      ELSEIF(NAT.NE.3) THEN
+        IF(LNG.EQ.1) WRITE(LU,*) 'NAT INCONNU DANS ALLVEC : ',NAT
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN NAT IN ALLVEC:',NAT
         CALL PLANTE(1)
         STOP
       ENDIF

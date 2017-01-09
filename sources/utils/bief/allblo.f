@@ -5,7 +5,7 @@
      &( BLO , NOM )
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A BLOCK STRUCTURE.
@@ -32,6 +32,11 @@
 !+        V6P25
 !+   Maximum size BLO%MAXBLOCK increased from 128 to 256
 !+
+!history  J-M HERVOUET (jubilado)
+!+        04/11/2016
+!+        V7P3
+!+   Allowing several successive allocations of the same BIEF_OBJ.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BLO            |-->| THE BLOCK TO BE ALLOCATED
 !| NOM            |-->| FORTRAN NAME OF THIS BLOCK
@@ -82,10 +87,13 @@
 !     ALLOCATES THE POINTERS ARRAY ADR
 !
       BLO%MAXBLOCK = 256
-      ALLOCATE(BLO%ADR(BLO%MAXBLOCK),STAT=ERR)
-      DO I=1,BLO%MAXBLOCK
-        NULLIFY(BLO%ADR(I)%P)
-      ENDDO
+      ERR=0
+      IF(.NOT.ASSOCIATED(BLO%ADR)) THEN
+        ALLOCATE(BLO%ADR(BLO%MAXBLOCK),STAT=ERR)
+        DO I=1,BLO%MAXBLOCK
+          NULLIFY(BLO%ADR(I)%P)
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

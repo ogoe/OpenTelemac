@@ -6,7 +6,7 @@
      &  REFINE )
 !
 !***********************************************************************
-! BIEF   V7P2
+! BIEF   V7P3
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A REAL MATRIX STRUCTURE.
@@ -14,7 +14,7 @@
 !history  J-M HERVOUET (LNH)
 !+        01/03/95
 !+        V5P1
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (jubilado)
+!+        04/11/2016
+!+        V7P3
+!+   Allowing several successive allocations of the same BIEF_OBJ.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFG            |-->| INFORMATION ON STORAGE OF MATRIX
@@ -103,10 +108,10 @@
       MAT%ELMLIN = IELM1
       MAT%ELMCOL = IELM2
 !
-!  ALLOCATES THE DIAGONAL (UNTIL THIS PONIT MAT%D IS ONLY A POINTER)
+!     ALLOCATES THE DIAGONAL (UNTIL HERE MAT%D IS ONLY A POINTER)
 !
-!     MAT%D WILL POINT TO AN EXISTING BIEF_OBJ
-      ALLOCATE(MAT%D)
+!     MAT%D WILL POINT TO A BIEF_OBJ
+      IF(.NOT.ASSOCIATED(MAT%D)) CALL FIRST_ALL_BIEFOBJ(MAT%D)
 !
       NAME = 'D' // NOM(1:5)
       IF(TYPDIA(1:1).EQ.'Q') THEN
@@ -125,7 +130,7 @@
 !
 !     ALLOCATES OFF-DIAGONAL TERMS (AS FOR DIAGONAL)
 !
-      ALLOCATE(MAT%X)
+      IF(.NOT.ASSOCIATED(MAT%X)) CALL FIRST_ALL_BIEFOBJ(MAT%X)
 !
       NAME = 'X' // NOM(1:5)
 !
@@ -156,3 +161,4 @@
 !
       RETURN
       END
+
