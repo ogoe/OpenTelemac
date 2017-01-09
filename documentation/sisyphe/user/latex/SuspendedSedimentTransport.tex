@@ -214,14 +214,13 @@ The choice for the scheme for the treatment of the advection terms can be done w
 7="IMPLICIT NON CONSERVATIVE N SCHEME"
 13="EDGE-BASED N-SCHEME"
 14="EDGE-BASED N-SCHEME"
+15="ERIA SCHEME"
 \end{lstlisting}
 
 \begin{WarningBlock}{Note:}
   It is recommended to use the schemes {\ttfamily 4} or {\ttfamily 14} for a good compromise between accuracy and computational time (specially if tidal flats are present). It is also suggested to active
   the keyword \texttt{CONTINUITY CORRECTION = YES}.
 \end{WarningBlock}
-
-
 
 A brief description of the numerical schemes implemented in \sisyphe{} is given below:
 \begin{itemize}
@@ -252,7 +251,12 @@ A brief description of the numerical schemes implemented in \sisyphe{} is given 
 schemes \texttt{4, 14} but larger CPU time
 \item Should not be applied for tidal flats
 \end{itemize}
+\item \textbf{Eria scheme} (\texttt{15})
+\begin{itemize}
+\item Works for tidal flats
+\end{itemize}  
 \end{itemize}
+For further information about these schemes, refer to \telemac{2d} user's manual.
 
 \subsection{Correction of the convection velocity}
 As most of the sediment transport processes occur near the bed, it often exhibits an over-estimation of suspended sand transport.
