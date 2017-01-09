@@ -9,12 +9,12 @@
 export HOMETEL=<path-to-install>
 # Adding python scripts to PATH
 export PATH=$HOMETEL/scripts/python27:.:$PATH
-# Path to this file
-export SOURCEFILE=$HOMETEL/configs/pysource.template.sh
 # Configuration file
 export SYSTELCFG=$HOMETEL/configs/systel.edf.cfg
 # Name of the configuration to use
 export USETELCFG=<your-config>
+# Path to this file
+export SOURCEFILE=$HOMETEL/configs/pysource.template.sh
 ### Python
 # To force python to flush its output
 export PYTHONUNBUFFERED='true'
