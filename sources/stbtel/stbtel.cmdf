@@ -16,12 +16,12 @@ files: bief_def.f
   time_in_seconds.f
   voisin.f
   bief_eof.f
+  allblo.f
   crosfr.f
   fasp.f
   mxptel31.f
   mxptel.f
   read_config.f
-  allblo.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -114,13 +114,14 @@ files: declarations_stbtel.F
   inifas.f
   point_stbtel.f
   ranbo.f
-  presel.f
+  lecsellim.f
   interp.f
   echele.f
   cordep.f
-  shufle.f
+  elmpb.f
   verifs.f
   ecrres.f
+  fill_lim.f
   renum.f
   remail.f
   circul.f
@@ -128,26 +129,25 @@ files: declarations_stbtel.F
   lecsim.f
   divise.f
   deparr.f
+  presel.f
   lecfon.f
   projec.f
   ecrsel.f
   lecfas.f
   elmsec.f
-  extrac.f
+  lecstb.f
   lecsel.f
   fm3sel.f
-  lecstb.f
+  extrac.f
   imprim.f
   lectri.f
   decoup.f
   surcon.f
   lecadc.f
-  elmpb.f
+  shufle.f
+  writesellim.f
   dynami.f
   stbtel.f
   lecdon_stbtel.f
   inisim.f
   homere_stbtel.f
-  lecsellim.f
-  fill_lim.f
-  writesellim.f

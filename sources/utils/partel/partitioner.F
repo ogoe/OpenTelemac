@@ -29,6 +29,7 @@
       USE ISO_C_BINDING
 !
       USE DECLARATIONS_SPECIAL
+      USE C_BINDING
       IMPLICIT NONE
 #if defined (HAVE_SCOTCH)
       INCLUDE 'scotchf.h'
@@ -51,7 +52,7 @@
       INTEGER I,J,K,ERR,NUMFLAG,EDGECUT,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
 #if defined (HAVE_MPI)
-      INTEGER, POINTER :: NULLTABLE
+      TYPE(C_PTR) :: NULLTABLE
 #endif
 !
 ! SCOTCH
@@ -122,11 +123,12 @@
         NUMFLAG = 1
 !
 #if defined(HAVE_MPI)
-        CALL C_F_POINTER(C_NULL_PTR, NULLTABLE)
-        CALL METIS_PARTMESHDUAL
-     &        (NELEM, NPOIN, EPTR, EIND, NULLTABLE,
-     &         NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE,
-     &         NULLTABLE, EDGECUT, EPART, NPART)
+        CALL MYMETIS_PARTMESHDUAL
+     &        (NELEM, NPOIN, EPTR, EIND,
+     &          NCOMMONNODES, NPARTS,
+     &          EDGECUT, EPART, NPART)
+        write(lu,*) count(epart==1)
+        write(lu,*) count(epart==0)
 #else
         WRITE(LU,*) 'ERROR: TRY TO RUN PARTEL WITH A '//
      &              'SERIAL CONFIGURATION'

@@ -6,7 +6,8 @@ name: PARTEL_PRELIM
 
 [partel]
 path: <root>|sources|utils|partel
-files: partitioner.F
+files: c_binding.f
+  partitioner.F
   partel_prelim.F
 
 [special]

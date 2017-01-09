@@ -57,6 +57,7 @@ files: declarations_parallel.F
 [partel]
 path: <root>|sources|utils|partel
 files: declarations_partel.f
+  c_binding.f
   partitioner.F
   partel.F
   parres.f
