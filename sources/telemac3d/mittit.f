@@ -70,13 +70,13 @@
      &          'CONVECTION PAR METHODE DES CARACTERISTIQUES       ',
      &          'CONVECTION PAR SCHEMA SUPG                        ',
      &          'CONVECTION PAR SCHEMA N, PSI OU VOLUMES FINIS     ',
-     &          'DIFFUSION                                         ',
-     &          'ETAPE DE CONVECTION                               '/
+     &          '                DIFFUSION                         ',
+     &          '            ETAPE DE CONVECTION                   '/
 !
-      DATA FRNH/'ETAPE DE CONVECTION - DIFFUSION                   ',
-     &          'ETAPE DE PRESSION DYNAMIQUE                       ',
-     &          'ETAPE DE PROJECTION DES VITESSES                  ',
-     &          'ETAPE DE PRESSION DYNAMIQUE, PREDICTION           ',
+      DATA FRNH/'        ETAPE DE CONVECTION - DIFFUSION           ',
+     &          '         ETAPE DE PRESSION DYNAMIQUE              ',
+     &          '         ETAPE DE PROJECTION DES VITESSES         ',
+     &          '     ETAPE DE PRESSION DYNAMIQUE, PREDICTION      ',
      &          'ETAPE DE CONTINUITE 3D DANS LE DOMAINE TRANSFORME '/
 !
 !-----------------------------------------------------------------------
@@ -93,17 +93,17 @@
      &          '         MASS BALANCE                             ',
      &          '         FINAL MASS BALANCE                       ',
      &          '         DRIFT OF DROGUE(S)                       ',
-     &          'ADVECTION BY CHARACTERISTIC CURVE METHOD          ',
-     &          'ADVECTION BY SUPG METHOD                          ',
-     &          'ADVECTION BY N, PSI OR FINITE VOLUME SCHEME       ',
-     &          'DIFFUSION                                         ',
-     &          'ADVECTION STEP                                    '/
+     &          '   ADVECTION BY CHARACTERISTIC CURVE METHOD       ',
+     &          '       ADVECTION BY SUPG METHOD                   ',
+     &          '   ADVECTION BY N, PSI OR FINITE VOLUME SCHEME    ',
+     &          '             DIFFUSION                            ',
+     &          '             ADVECTION STEP                       '/
 !
-      DATA GBNH/'ADVECTION AND DIFFUSION-FORCING STEP              ',
-     &          'DYNAMIC PRESSURE STAGE                            ',
-     &          'VELOCITY PROJECTION STEP                          ',
-     &          'DYNAMIC PRESSURE STAGE, PREDICTION                ',
-     &          'STAGE OF 3D CONTINUITY IN TRANSFORMED MESH        '/
+      DATA GBNH/'     ADVECTION AND DIFFUSION-FORCING STEP         ',
+     &          '         DYNAMIC PRESSURE STAGE                   ',
+     &          '         VELOCITY PROJECTION STEP                 ',
+     &          '     DYNAMIC PRESSURE STAGE, PREDICTION           ',
+     &          '  STAGE OF 3D CONTINUITY IN TRANSFORMED MESH      '/
 !
 !***********************************************************************
 !

@@ -2789,8 +2789,13 @@
                 YP = YP - A1*DY(IPLOT)
                 ZP = ZSTAR(IET+IFA)
               ELSE
-                WRITE(LU,*) 'SORTIE EN VERTICALE PAR FRONTIERE LIQUIDE'
-                WRITE(LU,*) 'CAS NON PROGRAMME'
+                IF(LNG.EQ.1)THEN
+                  WRITE(LU,*) 'SORTIE EN VERTICALE PAR FRONTIERE '
+                  WRITE(LU,*) 'LIQUIDE -  CAS NON PROGRAMME'
+                ELSEIF(LNG.EQ.2) THEN
+                  WRITE(LU,*) 'VERTICAL GETTING OUT FROM LIQUID '
+                  WRITE(LU,*) 'BOUNDARY - NON IMPLEMENTED CASE'
+                ENDIF
                 CALL PLANTE(1)
                 STOP
               ENDIF
@@ -3197,6 +3202,7 @@
      &                 -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IEL)
         SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                 -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL)
+!        
         SHZ(IPLOT) = (ZP-ZSTAR(IET)) / (ZSTAR(IET+1)-ZSTAR(IET))
 !
         XPLOT(IPLOT) = XP

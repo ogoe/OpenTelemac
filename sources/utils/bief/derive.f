@@ -7,6 +7,7 @@
      & SHPFLO,SHZFLO,TAGFLO,ELTFLO,ETAFLO,
      & NFLOT,NFLOT_MAX,FLOPRD,MESH,UL,
      & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF,STOCHA,VISC,
+     & NPLAN,ZSTAR,TRANSF,
      & AALGAE,DALGAE,RALGAE,EALGAE,ALGTYP,AK,EP,H)
 !
 !***********************************************************************
@@ -65,6 +66,12 @@
 !+        V7P1
 !+   Hardcoded argument NRK added for SCARACT.
 !
+!history  R. ATA (EDF LAB, LNHE)
+!+        14/01/2017
+!+        V7P2
+!+  bug fix and  better preparation of the call of SCARACT for 3D.
+!+    see lines between !RA   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| DX             |<->| WORK ARRAY (DISPLACEMENTS ALONG X)
@@ -89,6 +96,7 @@
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NFLOT          |<->| NUMBER OF FLOATS.
 !| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
+!| NPLAN          |-->| NUMBER OF PLANES FOR 3D (1 FOR 2D)
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| SHPBUF         |<->| WORK ARRAY
@@ -100,6 +108,7 @@
 !| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
 !|                |   | TRANSFORMATION.
 !| TAGFLO         |-->| TAGS OF FLOATS
+!| TRANSF         |-->| 3D MESH TRANSFORMATION 
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| UL             |-->| LOGICAL UNIT OF OUTPUT FILE
 !| V              |-->| Y-COMPONENT OF VELOCITY
@@ -110,6 +119,7 @@
 !| XFLOT          |<->| ABSCISSAE OF FLOATS
 !| YFLOT          |<->| ORDINATES OF FLOATS
 !| ZFLOT          |<->| ELEVATIONS OF FLOATS
+!| NSTAR          |-->| VERTICAL DISTRIBUTION OF PLANES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERIVE => DERIVE
@@ -126,14 +136,14 @@
 !
       INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,IELMU,NDP,NELEM
       INTEGER         , INTENT(IN)    :: FLOPRD,NELMAX,UL,SIZEBUF,NPOIN2
-      INTEGER         , INTENT(IN)    :: NFLOT_MAX,STOCHA
+      INTEGER         , INTENT(IN)    :: NFLOT_MAX,STOCHA,NPLAN,TRANSF
       INTEGER         , INTENT(INOUT) :: NFLOT
       DOUBLE PRECISION, INTENT(IN)    :: DT,AT
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),W(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),Z(NPOIN)
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP)
       INTEGER         , INTENT(IN)    :: IFABOR(NELMAX,NDP)
-      DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM)
+      DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM),ZSTAR(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX),DX(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX),DY(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NFLOT_MAX),DZ(NFLOT_MAX)
@@ -156,15 +166,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,NPLAN,ELT
+      INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,ELT,ETF
       INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS,NRK
-!
-      DOUBLE PRECISION ZSTAR(1)
 !
       CHARACTER(LEN=32) TEXTE(3)
       CHARACTER(LEN=72) LIGNE
 !
-      LOGICAL YESITIS
+      LOGICAL YESITIS,SSIGMA
 !
 !
       INTEGER  P_ISUM
@@ -209,12 +217,16 @@
 !
 !     PARAMETERISING THE CALL TO SCARACT
 !
-!     NUMBER OF PLANES
-      NPLAN=NPOIN/NPOIN2
+!     NUMBER OF PLANES, NOW GOT BY ARGUMENT
+!      NPLAN=NPOIN/NPOIN2
 !     NO VARIABLE TO INTERPOLATE AT THE FOOT OF CHARACTERISTICS
       NOMB=0
 !     FORWARD TRACKING
       SENS=1
+!RA
+!     CASE OF 3D CALLS, DETECT IF SIGMA TRANSFORM
+      SSIGMA=IELM.EQ.41.AND.TRANSF.NE.0.AND.TRANSF.NE.5
+!RA
 !
       IF(IELM.NE.11.AND.IELM.NE.41) THEN
         IF(LNG.EQ.1) WRITE(LU,123) IELM
@@ -306,6 +318,16 @@
           ENDIF
         ENDIF
       ENDIF
+!RA
+!     BACK CONVERSION WHEN SIGMA TRANSFORM
+      IF(SSIGMA)THEN
+        DO IFLOT=1,NFLOT
+          ETF = ETAFLO(IFLOT)
+          ZFLOT(IFLOT)=ZSTAR(ETF)+ SHZFLO(IFLOT)*
+     &                (ZSTAR(ETF+1)-ZSTAR(ETF))
+        ENDDO
+      ENDIF
+!RA
 !
 ! -----------------
 ! IF ALGAE IS .TRUE., THEN USE ALGAE TRANSPORT
@@ -354,7 +376,7 @@
      &                 NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,
      &                 NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &                 BUFF_2D_D,BUFF_1D_D,BUFF_1D_D,FREBUF,SIZEBUF2_D,
-     &                 AALG=ALGAE,APOST=.TRUE.)
+     &                 APOST=.TRUE.,ASIGMA=SSIGMA,AALG=ALGAE)
         ELSE
           CALL SCARACT(SVOID_DERIVE,SVOID_DERIVE,U,V,W,W,X,Y,ZSTAR,
      &                 ZSTAR,
@@ -365,7 +387,7 @@
      &                 NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NRK,
      &                 NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &                 SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &                 AALG=ALGAE,APOST=.TRUE.)
+     &                 APOST=.TRUE.,ASIGMA=SSIGMA,AALG=ALGAE)
         ENDIF
       ELSE
         CALL SCARACT(SVOID_DERIVE,SVOID_DERIVE,U,V,W,W,X,Y,ZSTAR,ZSTAR,
@@ -376,8 +398,9 @@
      &               NOMB,NPOIN,NPOIN2,NDP,NRK,
      &               NPLAN,1,MESH,NFLOT,NPOIN2,SENS,
      &               SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &               APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
+     &               APOST=.TRUE.,ASIGMA=SSIGMA,ASTOCHA=STOCHA,
 !                    APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
+     1               AVISC=VISC)
       ENDIF
 !
 !-----------------------------------------------------------------------

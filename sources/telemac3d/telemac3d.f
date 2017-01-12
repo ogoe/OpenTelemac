@@ -2876,7 +2876,8 @@
      &              NFLOT,NFLOT_MAX,FLOPRD,MESH3D,T3D_FILES(T3DFLO)%LU,
      &              IT1%I,T3_01%R,T3_02%R,T3_03%R,IT2%I,
 !                                              NO STOCHASTIC DIFFUSION
-     &              MTRA1%X%R,MTRA2%X%R,NPOIN3,0,SVIDE)
+     &              MTRA1%X%R,MTRA2%X%R,NPOIN3,0,SVIDE,
+     &              NPLAN,ZCHAR%R,TRANSF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DERIVE'
 !
         IF(SPHERI) THEN
