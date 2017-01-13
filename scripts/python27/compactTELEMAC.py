@@ -205,7 +205,7 @@ if __name__ == "__main__":
       if cfg['MODULES'] == {}:
          print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
          sys.exit(1)
-      
+
       pt = cfg['root']
       pc = path.join(pt,cfgname)
       if options.archiveName != '':
@@ -219,7 +219,7 @@ if __name__ == "__main__":
       if options.srcOnly:
          archiveName = 'telemac-mascaret-'+cfg.get('version','DEV')+'-src'
          pc = path.join(pt,archiveName)
-         dirs = ['optionals','scripts','sources','documentation']
+         dirs = ['optionals','scripts','sources','documentation','configs']
          for pid in dirs:
             pi = path.join(pt,pid)
             po = pi.replace(pt,pc)
@@ -232,15 +232,20 @@ if __name__ == "__main__":
             po = pi.replace(pt,pc)
             copyFile(pi,po)
             print '    +> '+pi
-       
+
          pid = path.join(pt,'builds')
          po = pid.replace(pt,pc)
          createDirectories(po)
-         
-       
+
+         # Creating dummy file in builds because make_archive that is used to
+         # create the zipped file does not handle empty folders
+         pi = path.join(pt,'NEWS.txt')
+         po = path.join(po,'NEW.txt')
+         copyFile(pi,po)
+
          print '\n... now packaging ' + archiveName
          zip(archiveName,pc,cfg['ZIPPER'])
-       
+
          print '\n... now cleaning '
          removeDirectories(pc)
 
@@ -253,10 +258,10 @@ if __name__ == "__main__":
             po = pi.replace(pt,pc)
             copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
             print '    +> '+pi
-       
+
          print '\n... now packaging ' + archiveName
          zip(archiveName,pc,cfg['ZIPPER'])
-       
+
          print '\n... now cleaning '
          removeDirectories(pc)
 
@@ -267,17 +272,17 @@ if __name__ == "__main__":
             po = pi.replace(pt,pc)
             copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
             print '    +> '+pi
-       
+
          pid = path.join(pt,'configs')
          if path.exists(pid):
             po = pid.replace(pt,pc)
             createDirectories(po)
             copyFile(options.configFile,po)
             print '... finally copying ' + options.configFile
-       
+
          print '\n... now packaging ' + cfgname
          zip(cfgname,pc,cfg['ZIPPER'])
-       
+
          print '\n... now cleaning '
          removeDirectories(pc)
 
