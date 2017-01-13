@@ -61,7 +61,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSEGBOR,ERR,LTT
-      INTEGER I,N,ILOCAL,IFILE,ITRAC
+      INTEGER I,N,ILOCAL,IFILE,IFILEM,ITRAC
       INTEGER ISEG,GLO1,GLO2,NSON_U,NSON_D
       DOUBLE PRECISION X1,Y1,X2,Y2,HM,LONG,DENOM,RELATI
       DOUBLE PRECISION PRESS_F1,PRESS_F2,XI,YI,CIR1,CIR2
@@ -216,7 +216,7 @@
           ENDIF
         ENDIF
         IF(NCSIZE.GT.0) PRESS_F2=P_DSUM(PRESS_F2)
-        IF (AT.GE.600.D0) THEN
+        IF (AT.GE.600.D0.AND.IPID.EQ.0) THEN
           WRITE (IFILE,*) PRESS_F1, PRESS_F2
         ENDIF
 !
@@ -250,7 +250,7 @@
           ENDIF
         ENDIF
         IF(NCSIZE.GT.0) PRESS_F2=P_DSUM(PRESS_F2)
-        IF (AT.GE.600.D0) THEN
+        IF (AT.GE.600.D0.AND.IPID.EQ.0) THEN
           WRITE (IFILE,*) PRESS_F1, PRESS_F2
         ENDIF
       ELSE
@@ -265,11 +265,11 @@
 !
 ! WRITE FINAL MASS BALANCE INTO A FILE
 !
-      IF(LT.EQ.NIT) THEN
+      IF(LT.EQ.NIT.AND.IPID.EQ.0) THEN
         IF(NTRAC.GT.0) THEN
-!          IFILEM=T2D_FILES(T2DFO1)%LU
+          CALL GET_FREE_ID(IFILEM)
 ! OPEN FILE
-          OPEN(UNIT=49,FILE='../massb_A.txt',STATUS='REPLACE',
+          OPEN(UNIT=IFILEM,FILE='../massb_A.txt',STATUS='REPLACE',
      &         ACTION='WRITE',POSITION='APPEND')
           DO ITRAC=1,NTRAC
             PERDUE = MASTR0(ITRAC)+MASTEN(ITRAC)+MASTOU(ITRAC)
@@ -281,17 +281,18 @@
             ENDIF
             IF(ITRAC.NE.NTRAC) THEN
 ! WRITE IN IT
-              WRITE(UNIT=49,FMT=404) MASTR0(ITRAC),
+              WRITE(UNIT=IFILEM,FMT=404) MASTR0(ITRAC),
      &              MASTR2(ITRAC),MASTEN(ITRAC)+MASTOU(ITRAC),
      &              PERDUE,RELATI
 404           FORMAT(G16.7,'&',G16.7,'&',G16.7,'&',G16.7,'&',G16.7,'\\')
             ELSE
-              WRITE(UNIT=49,FMT=405) MASTR0(ITRAC),MASTR2(ITRAC),
+              WRITE(UNIT=IFILEM,FMT=405) MASTR0(ITRAC),MASTR2(ITRAC),
      &              MASTEN(ITRAC)+MASTOU(ITRAC),PERDUE,
      &              RELATI
 405           FORMAT(G16.7,'&',G16.7,'&',G16.7,'&',G16.7,'&',G16.7)
             ENDIF
           ENDDO
+          CLOSE(IFILEM)
         ENDIF
       ENDIF
 !
@@ -339,7 +340,7 @@
                 ENDDO
             ENDIF
             IF(NCSIZE.GT.0) PRESS_F2=P_DSUM(PRESS_F2)
-            WRITE (IFILE,*) PRESS_F1, PRESS_F2
+            IF(IPID.EQ.0) WRITE (IFILE,*) PRESS_F1, PRESS_F2
           ENDIF
         ENDIF !AT.GE.600.D0
 !
