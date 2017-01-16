@@ -1,11 +1,18 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 2.8.8)
 
-SET(ParaView_DIR /home/jfloyd/Downloads/Paraview/ParaView-v4.4.0-source/Build)
+IF (ParaView_SOURCE_DIR)
+  INCLUDE_DIRECTORIES(
+    ${PARAVIEW_INCLUDE_DIRS}
+    ${PARAVIEW_GUI_INCLUDE_DIRS}
+    ${PARAVIEW_KWSYS_INCLUDE_DIRS}
+    ${VTK_INCLUDE_DIRS}
+  )
+ELSE ()
+  FIND_PACKAGE(ParaView REQUIRED)
+  INCLUDE(${PARAVIEW_USE_FILE})
+ENDIF ()
 
-FIND_PACKAGE(ParaView REQUIRED)
-
-INCLUDE(${PARAVIEW_USE_FILE})
- ADD_PARAVIEW_PLUGIN(SerafinReader "2.0" 
-   SERVER_MANAGER_XML SerafinReader.xml
-   SERVER_MANAGER_SOURCES vtkSerafinReader.cxx 
-   REQUIRED_ON_SERVER)
+ADD_PARAVIEW_PLUGIN(SerafinReader "2.0"
+  SERVER_MANAGER_XML SerafinReader.xml
+  SERVER_MANAGER_SOURCES vtkSerafinReader.cxx
+  REQUIRED_ON_SERVER)

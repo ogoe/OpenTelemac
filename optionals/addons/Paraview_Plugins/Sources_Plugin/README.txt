@@ -17,7 +17,6 @@ c) Third party libraries as ffmpeg and Qt are disabled here. I encountered some 
 Compilation :
 -------------
 a) The TELEMAC plugin sources (SerafinTELEMAC directory) must be placed in the "Plugins" directory.
-b) Edit The CMakeList.txt and change the path to ParaView
-c) run cmake .;make
-d) Add the plugin in Paraview Tools->Manage Plugins-> Load New
+b) run cmake .;make
+c) Add the plugin in Paraview Tools->Manage Plugins-> Load New
 
