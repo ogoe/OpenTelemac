@@ -27,7 +27,7 @@
       CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
       CHARACTER(LEN=24), PARAMETER :: CODE3='TOMAWAC                 '
 !
-      CHARACTER(LEN=250) PATH
+      CHARACTER(LEN=MAXLENTMPDIR) PATH
 
 !
 ! List the public subroutines

@@ -42,6 +42,8 @@
       CHARACTER(LEN=6), PARAMETER :: VERSION = 'TRUNK '
       ! Max number of keywords
       INTEGER, PARAMETER :: MAXKEYWORD = 300
+      ! Max lenght of the path of the temporary folder
+      INTEGER, PARAMETER :: MAXLENTMPDIR = 250
 !     Integer values to allow the allocation of I4 and I8 integers.
 !
 !     The syntax will be :

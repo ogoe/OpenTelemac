@@ -68,14 +68,14 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(OUT)            :: NCAR,IPID,NCSIZE
-      CHARACTER(LEN=250), INTENT(OUT) :: CHAINE
+      CHARACTER(LEN=MAXLENTMPDIR), INTENT(OUT) :: CHAINE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 #if defined (HAVE_MPI)
       INTEGER IER,NPREAD
 !
-      CHARACTER(LEN=255) EXE
+      CHARACTER(LEN=MAXLENTMPDIR+5) EXE
 !
       LOGICAL YAPARA,INIT
       INTEGER :: ID
@@ -200,6 +200,20 @@
           WRITE (LU,*) 'PARAL NCSIZE = ',NPREAD
         ENDIF
         READ(ID,*) NCAR
+        IF(NCAR.GT.MAXLENTMPDIR) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LA LONGUEUR DE LA CHAINE DE'//
+     &        ' CARACTERE POUR LE DOSSIER TEMPORAIRE EST TROP GRANDE'
+            WRITE(LU,*) 'ELLE EST DE LONGUEUR',NCAR,
+     &                  ' ET NE DEVRAIT PASDEPASSER',MAXLENTMPDIR
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'LENGTH OF TMP DIR STRING IS TO BIG'
+            WRITE(LU,*) 'IT IS ',NCAR,' LONG AND SHOULD NOT EXCEED',
+     &                  MAXLENTMPDIR
+          ENDIF
+          CALL PLANTE(1)
+        ENDIF
         READ(ID,100) CHAINE
 100     FORMAT(A250)
         EXE(1:NCAR+5)=CHAINE(1:NCAR) // 'A.EXE'

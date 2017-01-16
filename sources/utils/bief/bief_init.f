@@ -44,7 +44,7 @@
 !
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       LOGICAL, INTENT(IN)               :: PINIT
-      CHARACTER(LEN=250), INTENT(INOUT) :: CHAINE
+      CHARACTER(LEN=MAXLENTMPDIR), INTENT(INOUT) :: CHAINE
       INTEGER, INTENT(INOUT)            :: NCAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
