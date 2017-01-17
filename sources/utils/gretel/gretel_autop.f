@@ -76,9 +76,6 @@
       LI=5
       LU=6
       LNG=2
-      NGEO = 2
-      NRES = 3
-      NRESPAR = 4
 
 !
 !|==================================================================|
@@ -90,12 +87,14 @@
 ! READS FILE NAMES AND THE NUMBER OF PROCESSORS / PARTITIONS
 !
 !
+      CALL GET_FREE_ID(NRES)
       CALL OPEN_MESH(RESFORMAT,RES,NRES,'READWRITE',IERR)
       CALL CHECK_CALL(IERR,"GRETEL:OPEN_MESH:RES")
 !
 !     Header information
 !
       RESPAR = TRIM(RES) // EXTENS(NPROC-1,0)
+      CALL GET_FREE_ID(NRESPAR)
       CALL OPEN_MESH(RESFORMAT,RESPAR,NRESPAR,'READ     ',IERR)
       CALL CHECK_CALL(IERR,"GRETEL:OPEN_MESH:RESPAR")
 !
@@ -145,6 +144,7 @@
 !
 !     Geometry information
 !
+      CALL GET_FREE_ID(NGEO)
       CALL OPEN_MESH(GEOFORMAT,GEO,NGEO,'READ     ',IERR)
       CALL CHECK_CALL(IERR,"GRETEL:OPEN_MESH:GEO")
 !
