@@ -419,11 +419,31 @@
           ENDIF
         ELSE
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FRONT2'
-          CALL FRONT2(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
+          CALL FRONT2(NFRLIQ,
      &                LIEBOR%I,LIEBOR%I,
      &                MESH%X%R,MESH%Y%R,MESH%NBOR%I,MESH%KP1BOR%I,
      &                IT1%I,NPOIN,NPTFR,KLOG,.TRUE.,NUMLIQ%I,MAXFRO)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRONT2'
+        ENDIF
+        IF(NFRLIQ.GT.MAXFRO) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'FRONT2 : DEPASSEMENT DE TABLEAUX'
+            WRITE(LU,*) '         AUGMENTER LE MOT-CLE'
+            WRITE(LU,*) '         NOMBRE MAXIMUM DE FRONTIERES'
+            WRITE(LU,*) '         DANS LE CODE APPELANT'
+            WRITE(LU,*) '         LA VALEUR ACTUELLE EST ',MAXFRO
+            WRITE(LU,*) '         IL FAUT LA VALEUR ',NFRLIQ
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'FRONT2: SIZE OF ARRAYS EXCEEDED'
+            WRITE(LU,*) '        INCREASE THE KEYWORD'
+            WRITE(LU,*) '        MAXIMUM NUMBER OF BOUNDARIES'
+            WRITE(LU,*) '        IN THE CALLING PROGRAM'
+            WRITE(LU,*) '        THE CURRENT VALUE IS ',MAXFRO
+            WRITE(LU,*) '        THE VALUE SHOULD BE ',NFRLIQ
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !
 !-----------------------------------------------------------------------

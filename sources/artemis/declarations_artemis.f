@@ -533,21 +533,6 @@
 !
       INTEGER NFRLIQ
 !brief
-!
-      INTEGER NFRSOL
-!brief
-!
-      INTEGER DEBLIQ(MAXFRO)
-!brief
-!
-      INTEGER FINLIQ(MAXFRO)
-!brief
-!
-      INTEGER DEBSOL(MAXFRO)
-!brief
-!
-      INTEGER FINSOL(MAXFRO)
-!brief
 ! prise en compte des effets de pente/courbure
       INTEGER IPENTCO
 !brief
