@@ -430,11 +430,13 @@
       CALL BORH
       IF(DEBUG.GT.0) WRITE(LU,*) '< BORH CALLED'
 !     IMPOSE THE OLD TETAP TO THE BOUNDARY EXCEPT FOR THE FIRST COMPUTATION
-      IF ((LANGAUTO).AND.(LT.GT.0)) THEN
-        DO I=1,NPTFR
-          TETAP%R(I)=TETAPM%R(I)
-        ENDDO
-      ENDIF
+!###> SEB @ HRW: RESET OF THE TETAP FOR COMPARISON PURPOSES
+!      IF ((LANGAUTO).AND.(LT.GT.0)) THEN
+!        DO I=1,NPTFR
+!          TETAP%R(I)=TETAPM%R(I)
+!        ENDDO
+!      ENDIF
+!###<
 ! ===================================================================================
 !
 ! : 3 . 1              BOUNDARY CONDITIONS FOR RANDOM SPECTRUM
