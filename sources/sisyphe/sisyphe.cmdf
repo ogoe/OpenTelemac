@@ -32,8 +32,8 @@ files: bief_def.f
   bief_open_files.f
   allblo.f
   ov.f
-  bief_nbmpts.f
   bief_nbpts.f
+  bief_nbmpts.f
   bief_allvec.f
   bief_nbfel.f
   bief_nbseg.f
@@ -57,13 +57,13 @@ files: bief_def.f
   cpikle2.f
   read_mesh_info.f
   bief_nbsegel.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   ovd.f
   cmpobj.f
@@ -499,9 +499,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   get_data_value.f
   get_data_var_list.f
   get_data_time.f

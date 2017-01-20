@@ -17,7 +17,8 @@
      &  LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,
      &  HC,TMAX,DTT,T1,T2,T3,T4,T5,
      &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,HROPT,MESH,
-     &  RAIN,PLUIE,MASS_RAIN,BILMAS)
+     &  RAIN,PLUIE,MASS_RAIN,BILMAS,FU,FV,YACORIOL,CORIOLIS,
+     &  SPHERIC,COSLAT,SINLAT)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
@@ -116,6 +117,8 @@
 !| CF             |-->| FRICTION COEFFICIENT
 !| CFLWTD         |-->| WANTED CFL NUMBER
 !| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
+!| CORIOLIS       |-->| CORIOLIS COEFFICIENT
+!| COSLAT         |-->| COSINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| DIFNU          |-->| COEFFICIENT OF DIFFUSION FOR TRACER
 !| DIFT           |-->| LOGICAL: DIFFUSION FOR TRACER OR NOT
 !| DIFVIT         |-->| LOGICAL: DIFFUSION FOR VELOCITY OR NOT
@@ -137,6 +140,7 @@
 !| FLUX           |---| FLUX
 !| FLUXT,FLUHBOR  |<->| FLUX, FLUX BORD FOR TRACER
 !| FLUXTEMP       |<->| FLUX FOR TRACER
+!| FU,FV          |-->|  SOURCE TERMS FOR MOMENTUM (ON X AND Y)
 !| G              |-->| GRAVITY
 !| H              |<--| WATER DEPTH AT TIME N+1
 !| HBOR           |-->| IMPOSED VALUE FOR H
@@ -158,6 +162,7 @@
 !| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
 !| LISTIN         |-->| IF YES, PRINT MESSAGES AT LISTING.
 !| LOGFR          |<->| REFERENCE OF BOUNDARY NODES
+!| LT             |-->| NUMBER OF TIME STEP
 !| LTT            |<->| NUMBER OF TIME STEP FOR TRACER
 !| MASSES         |<--| ADDED MASS BY SOURCE TERMS
 !| MASSOU         |<--| ADDED TRACER MASS BY SOURCE TERM
@@ -185,6 +190,8 @@
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
 !| RAIN           |-->| IF YES TAKE RAIN INTO ACCOUNT
+!| SINLAT         |-->| SINUS OF LATITUDE (SPHERICAL COORDINATES)
+!| SPHERIC        |-->| IF TRUE : SPHERICAL COORDINATES
 !| SMTR           |---| SOURCE TERMS FOR TRACEUR
 !| T              |<--| TRACER UPDATED
 !| T1,T2,T3,T4,T5 |---| WORKING TABLES
@@ -201,6 +208,7 @@
 !| WINF           |-->| BOUNDARY CONDITIONS COMPUTED BY BORD
 !| X,Y            |-->| COORDINATES FOR MESH NODES
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
+!| YACORIOL       |-->| LOGIC: IF YES CONSIDER CORIOLIS FORCE
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,6 +235,7 @@
       INTEGER,  INTENT(IN)   :: IFABOR(NELEM,*)
 !
       LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT,RAIN,BILMAS
+      LOGICAL, INTENT(IN) :: YACORIOL,SPHERIC
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: DT,MASS_RAIN
@@ -236,7 +245,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: AIRE(NPOIN),DTHAUT(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),UBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: VBOR(NPTFR),HN(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN),CF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN),CF(NPOIN),CORIOLIS
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN),SMH(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DPX(3,NELMAX),DPY(3,NELMAX)
@@ -258,13 +267,15 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,NSEG)
       DOUBLE PRECISION, INTENT(INOUT) :: HC(2,NSEG),DTN
 !
-      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,PLUIE
+      TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN,PLUIE,FU,FV
+      TYPE(BIEF_OBJ) , INTENT(IN)     :: COSLAT,SINLAT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HTN,SMTR,FLUHBOR,FLUHBTEMP
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      LOGICAL RECONSTRUCT
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
       DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
 !
@@ -273,6 +284,7 @@
 !
       DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6
 !
+      RECONSTRUCT=.FALSE.
 !
       IF(OPTVF.EQ.0) THEN
         ICIN = 0
@@ -283,6 +295,7 @@
       ELSEIF(OPTVF.EQ.2) THEN
         ICIN = 1
         NORDRE = 2
+        RECONSTRUCT=.TRUE.
       ELSEIF(OPTVF.EQ.3) THEN
         ICIN = 2
         NORDRE=1
@@ -294,7 +307,7 @@
         NORDRE = 1
       ELSEIF(OPTVF.EQ.6) THEN
         ICIN = 5
-        NORDRE = 1
+        NORDRE = 2
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'SCHEMA INCONNU : ',OPTVF
         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN SCHEME: ',OPTVF
@@ -336,7 +349,7 @@
         ENDDO
       ENDIF
 !     ==================================================================
-!     LISTING OF 1ST TIME STEP 
+!     LISTING FOR 1ST TIME STEP 
 !     ==================================================================
       IF(LT.EQ.1) CALL ENTETE(1,AT,LT,SCHEME=ICIN,ORDRE=NORDRE)
 !      
@@ -376,46 +389,6 @@
 !
         CALL INTEMP(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,
      &             SMH,HN,QU,QV,LT,GAMMA)
-!
-! VOLUME ADDEED BY SOURCES
-!
-      IF(BILMAS)THEN
-        MASSES   = 0.D0
-        MASS_RAIN= 0.D0
-!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-        IF(YASMH) THEN
-          DO  I=1,NPOIN
-            MASSES = MASSES + SMH(I)
-          ENDDO
-        ENDIF
-!       RAIN AND EVAPORATION
-        IF(RAIN)THEN
-           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-           MASS_RAIN =BIEF_SUM(T6)
-        ENDIF
-        MASSES = DT*(MASSES + MASS_RAIN)
-      ENDIF
-!
-        DO  I=1,NPOIN
-          H(I)  = W(1,I)
-          QU(I) = W(2,I)
-          QV(I) = W(3,I)
-! SAVE FLUXES FOR NEXT TIME STEP
-          FLUX_OLD(I,1) = FLUX(I,1)
-          FLUX_OLD(I,2) = FLUX(I,2)
-          FLUX_OLD(I,3) = FLUX(I,3)
-!
-!        COMPUTE U,V
-!
-          IF (H(I).GT.EPS) THEN
-            U(I)  = W(2,I) / H(I)
-            V(I)  = W(3,I) / H(I)
-          ELSE
-            U(I) = 0.D0
-            V(I) = 0.D0
-          ENDIF
-        ENDDO
 !
 !
         XNC = 0.D0
@@ -538,8 +511,8 @@
 ! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
+     &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
+     &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
 !-----------------------------------------------------------------------
 !
@@ -729,49 +702,8 @@
 ! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     &          HN,QU,QV,LT,GAMMA,
-     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
-!-----------------------------------------------------------------------
-
-! VOLUME ADDED BY SOURCE TERMS
-!
-      IF(BILMAS)THEN
-        MASSES   = 0.D0
-        MASS_RAIN= 0.D0
-!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-        IF(YASMH) THEN
-          DO  I=1,NPOIN
-            MASSES = MASSES + SMH(I)
-          ENDDO
-        ENDIF
-!       RAIN AND EVAPORATION
-        IF(RAIN)THEN
-           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-           MASS_RAIN =BIEF_SUM(T6)
-        ENDIF
-        MASSES = DT*(MASSES + MASS_RAIN)
-      ENDIF
-!
-      DO I=1,NPOIN
-        H(I)  = W(1,I)
-        QU(I) = W(2,I)
-        QV(I) = W(3,I)
-! SAVE FLUXES FOR NEXT TIME STEP
-        FLUX_OLD(I,1) = FLUX(I,1)
-        FLUX_OLD(I,2) = FLUX(I,2)
-        FLUX_OLD(I,3) = FLUX(I,3)
-!
-!      COMPUTE  U,V
-!
-        IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I)
-        ELSE
-          U(I) = 0.D0
-          V(I) = 0.D0
-        ENDIF
-      ENDDO !  I
+     &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
+     &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
 !-----------------------------------------------------------------------
 !
@@ -823,51 +755,8 @@
 ! TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
-!
-!
-!-----------------------------------------------------------------------
-!
-!VOLUME ADDED BY SOURCES
-!
-      IF(BILMAS)THEN
-        MASSES   = 0.D0
-        MASS_RAIN= 0.D0
-!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-        IF(YASMH) THEN
-          DO  I=1,NPOIN
-            MASSES = MASSES + SMH(I)
-          ENDDO
-        ENDIF
-!       RAIN AND EVAPORATION
-        IF(RAIN)THEN
-           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-           MASS_RAIN =BIEF_SUM(T6)
-        ENDIF
-        MASSES = DT*(MASSES + MASS_RAIN)
-      ENDIF
-!
-      DO I=1,NPOIN
-        H(I)  = W(1,I)
-        QU(I) = W(2,I)
-        QV(I) = W(3,I)
-! SAVE FLUXES FOR NEXT TIME STEP
-        FLUX_OLD(I,1) = FLUX(I,1)
-        FLUX_OLD(I,2) = FLUX(I,2)
-        FLUX_OLD(I,3) = FLUX(I,3)
-!
-!      COMPUTATION U,V
-!
-        IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I)
-        ELSE
-          U(I) = 0.D0
-          V(I) = 0.D0
-        ENDIF
-      ENDDO !    I
+     &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
+     &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
 !    *****************************
       ELSE IF(ICIN.EQ.4) THEN
@@ -919,51 +808,15 @@
 !  TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
+     &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
+     &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
-!-----------------------------------------------------------------------
+!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS  
 !
-!  COMPUTES VOLUME ADDED BY SOURCES
-!
-      IF(BILMAS)THEN
-        MASSES   = 0.D0
-        MASS_RAIN= 0.D0
-!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-        IF(YASMH) THEN
-          DO  I=1,NPOIN
-            MASSES = MASSES + SMH(I)
-          ENDDO
-        ENDIF
-!       RAIN AND EVAPORATION
-        IF(RAIN)THEN
-           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-           MASS_RAIN =BIEF_SUM(T6)
-        ENDIF
-        MASSES = DT*(MASSES + MASS_RAIN)
-      ENDIF
-!
-      DO I=1,NPOIN
-        H(I)  = W(1,I)
-        QU(I) = W(2,I)
-        QV(I) = W(3,I)
-!  SAVE FLUXES FOR NEXT TIME STEP
-        FLUX_OLD(I,1) = FLUX(I,1)
-        FLUX_OLD(I,2) = FLUX(I,2)
-        FLUX_OLD(I,3) = FLUX(I,3)
-!
-!       CALCUL DE U,V
-!
-        IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I)
-        ELSE
-          U(I) = 0.D0
-          V(I) = 0.D0
-        ENDIF
-!
-      ENDDO ! I
+      CALL  SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
+     &                    CF,YACORIOL,CORIOLIS,
+     &                    SPHERIC,COSLAT,SINLAT,LT)
+
 !
 !    *****************************
       ELSEIF(ICIN.EQ.5) THEN
@@ -1025,54 +878,70 @@
 !  TIME INTEGRATION
 !
       CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE%R)
+     &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
+     &           G,RAIN,PLUIE%R,FU%R,FV%R)
+!
+!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS  
+!
+      CALL SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
+     &                    CF,YACORIOL,CORIOLIS,
+     &                    SPHERIC,COSLAT,SINLAT,LT)
 !
 !-----------------------------------------------------------------------
 !
+      ENDIF ! THIS IF FOR THE CHOICE OF SCHEME
+!
+      IF(ICIN.NE.1.AND.ICIN.NE.2)THEN  ! FOR KINETIC SCHEMES IT IS ALREADY DONE 
+!
+!-----------------------------------------------------------------------
 !  COMPUTES VOLUME ADDED BY SOURCES
+!-----------------------------------------------------------------------
 !
-      IF(BILMAS)THEN
-        MASSES   = 0.D0
-        MASS_RAIN= 0.D0
-!       IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-        IF(YASMH) THEN
-          DO  I=1,NPOIN
-            MASSES = MASSES + SMH(I)
-          ENDDO
-        ENDIF
-!       RAIN AND EVAPORATION
-        IF(RAIN)THEN
-           CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                 1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-           MASS_RAIN =BIEF_SUM(T6)
-        ENDIF
-        MASSES = DT*(MASSES + MASS_RAIN)
+       IF(BILMAS)THEN
+         MASSES   = 0.D0
+         MASS_RAIN= 0.D0
+!        IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+         IF(YASMH) THEN
+           DO  I=1,NPOIN
+             MASSES = MASSES + SMH(I)
+           ENDDO
+         ENDIF
+!        RAIN AND EVAPORATION
+         IF(RAIN)THEN
+            CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                  1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+            MASS_RAIN =BIEF_SUM(T6)
+         ENDIF
+         MASSES = DT*(MASSES + MASS_RAIN)
+       ENDIF
+!
+!-----------------------------------------------------------------------
+!      PREPARE VARIABLES FOR OUTPUT AND FOR NEXT TIME STEP
+!-----------------------------------------------------------------------
+!
+       DO I=1,NPOIN
+         H(I)  = W(1,I)
+         QU(I) = W(2,I)
+         QV(I) = W(3,I)
+!        SAVE FLUXES FOR NEXT TIME STEP
+         FLUX_OLD(I,1) = FLUX(I,1)
+         FLUX_OLD(I,2) = FLUX(I,2)
+         FLUX_OLD(I,3) = FLUX(I,3)
+!
+!        COMPUTE U AND V
+!
+         IF (H(I).GT.EPS) THEN
+           U(I)  = W(2,I) / H(I)
+           V(I)  = W(3,I) / H(I)
+         ELSE
+           U(I) = 0.D0
+           V(I) = 0.D0
+         ENDIF
+       ENDDO 
       ENDIF
-!
-      DO I=1,NPOIN
-        H(I)  = W(1,I)
-        QU(I) = W(2,I)
-        QV(I) = W(3,I)
-!  SAVE FLUXES FOR NEXT TIME STEP
-        FLUX_OLD(I,1) = FLUX(I,1)
-        FLUX_OLD(I,2) = FLUX(I,2)
-        FLUX_OLD(I,3) = FLUX(I,3)
-!
-!       COMPUTE U AND V
-!
-        IF (H(I).GT.EPS) THEN
-          U(I)  = W(2,I) / H(I)
-          V(I)  = W(3,I) / H(I)
-        ELSE
-          U(I) = 0.D0
-          V(I) = 0.D0
-        ENDIF
-      ENDDO ! I
 !
 !-----------------------------------------------------------------------
 !
-      ENDIF
 !
       RETURN
       END

@@ -202,6 +202,12 @@
 !+        V7P2
 !+   Adding TB2 in the call to CVDF3D.
 !
+!history  R. ATA (EDF LAB, LNHE)
+!+        12/01/2017
+!+        V7P2
+!+   Bug fix in the call of DERIVE: now zchar, nplan, transf are well
+!    introduced
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

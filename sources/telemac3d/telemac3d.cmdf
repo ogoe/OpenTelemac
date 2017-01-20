@@ -63,13 +63,13 @@ files: bief_def.f
   cpikle2.f
   read_mesh_info.f
   bief_nbsegel.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   bief_open_files.f
   ovd.f
@@ -534,9 +534,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   open_mesh.f
   open_bnd.f
   get_data_value.f
@@ -772,8 +772,8 @@ files: friction_def.f
   interpmeteo2.f
   meteo.f
   buse.f
-  sta_dis_cur.f
   read_fic_frliq.f
+  sta_dis_cur.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -816,10 +816,10 @@ files: declarations_telemac3d.f
   utimp.f
   source.f
   check.f
+  q3.f
   read_bin_frliq.f
   vel_prof_z.f
   debimp_3d.f
-  q3.f
   tra_prof_z.f
   sl3.f
   tidal_model_t3d.f

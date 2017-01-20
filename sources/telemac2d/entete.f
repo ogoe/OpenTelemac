@@ -51,7 +51,7 @@
       INTEGER J,H,M
 !
       CHARACTER(LEN=32) FR(14),GB(14)
-      CHARACTER(LEN=32) SCHEMEFR(8),SCHEMEGB(8)
+      CHARACTER(LEN=32) SCHEMEFR(9),SCHEMEGB(9)
       CHARACTER(LEN=32) ORDERFR(6),ORDERGB(6)
 !
       INTRINSIC INT
@@ -92,6 +92,7 @@
      &                '*        SCHEMA DE ROE         *' ,
      &                '*       SCHEMA CINETIQUE       *' ,
      &                '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
+     &                '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
      &                '*        SCHEMA HLLC           *' ,
      &                '*        SCHEMA WAF            *' ,
      &                '********************************' /
@@ -99,6 +100,7 @@
      &                '*                              *' ,
      &                '*         ROE SCHEME           *' ,
      &                '*       KINETIC SCHEME         *' ,
+     &                '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
      &                '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
      &                '*        HLLC SCHEME           *' ,
      &                '*         WAF SCHEME           *' ,

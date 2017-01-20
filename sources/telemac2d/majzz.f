@@ -2,9 +2,9 @@
                         SUBROUTINE MAJZZ
 !                       ****************
 !
-     &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
-     & HN,QU,QV,LT,GAMMA,
-     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,RAIN,PLUIE)
+     &  (W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
+     &   HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G,
+     &   RAIN,PLUIE,FU,FV)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
@@ -39,7 +39,7 @@
 !history  R. ATA
 !+        25/12/2016
 !+        V7P2
-!+    include rain and evaporation
+!+    include rain and evaporation and source terms for momentum
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  AIRS          |-->|  CELL AREAS
@@ -47,6 +47,7 @@
 !|  DT            |-->|  TIME STEP
 !|  FLUX          |-->|  FLUX AT TN+1
 !|  FLUX_OLD      |-->|  FLUX AT TN
+!|  FU,FV         |-->|  SOURCE TERMS FOR MOMENTUM (ON X AND Y)
 !|  G             |-->|  GRAVITY
 !|  GAMMA         |-->|  NEWMARK PARAMETER (SEE BELOW)
 !|  HN,QU;QV      |-->|  H, HU AND HV AT TN
@@ -65,6 +66,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_MAJZZ => MAJZZ
+      USE DECLARATIONS_TELEMAC2D,ONLY:OPTVF
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
@@ -79,7 +81,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),FU(NPOIN),FV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),QU(NPOIN),QV(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: G,PLUIE(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: SMH(NPOIN)
@@ -132,8 +134,8 @@
           FACT=DT/AIRS(I)
           W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
           IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
-          W(2,I) = QU(I) + FACT* FLUX(I,2)
-          W(3,I) = QV(I) + FACT* FLUX(I,3)
+          W(2,I) = QU(I) + FACT* (FLUX(I,2) - hn(i)*FU(I))
+          W(3,I) = QV(I) + FACT* (FLUX(I,3) - hn(i)*FV(I))
         ENDDO
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
@@ -154,16 +156,19 @@
           IF(LT.EQ.1)THEN
             W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) )
             IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
-            W(2,I) = QU(I) + FACT* FLUX(I,2)
-            W(3,I) = QV(I) + FACT* FLUX(I,3)
+            W(2,I) = QU(I) + FACT* FLUX(I,2) + DT*FU(I)
+            W(3,I) = QV(I) + FACT* FLUX(I,3) + DT*FV(I)
           ELSE
             W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) +
      &                             GAMMA*FLUX(I,1)+SMH(I))
             IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
+!     WARNING: IDEALLY SMH AND FU &FV SHOULD BE HANDLED IN THE
+!              SAME WAY THAN THE FLUX (WOTH OLD_SMH AND OLD_FV)
+!              TO IMPROVE IF NOT SATISFIED BY THE TESTS
             W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) +
-     &                             GAMMA*FLUX(I,2))
+     &                       GAMMA*FLUX(I,2)) + DT*FU(I)
             W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) +
-     &                             GAMMA*FLUX(I,3))
+     &                       GAMMA*FLUX(I,3)) + DT*FV(I)
           ENDIF
         ENDDO
 !
@@ -192,8 +197,10 @@
 !
 !     SEMI IMPLICIT FRICTION INTRODUCTION
 !     ***********************************
-!
-      IF(KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
+!     NOW CHANGED IN SOURCE_MOMENT
+      IF(OPTVF.EQ.1.OR.OPTVF.EQ.2)THEN
+        IF(KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
