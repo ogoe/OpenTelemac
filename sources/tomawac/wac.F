@@ -104,7 +104,7 @@
 !     TV1 TEMPS CORRESPONDANT AU VENT 1
 !     TV2 TEMPS CORRESPONDANT AU VENT 2
 !
-      DOUBLE PRECISION LAMBD0,DTSI,AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
+      DOUBLE PRECISION LAMBD0,AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN,VITMIN
       INTEGER ADC,MDC,JDC,HDC,NVHMA,NVCOU,NVWIN,NBD,K,IPLAN,IFREQ
       LOGICAL IMPRES, DEBRES
@@ -650,7 +650,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(WAC_FILES(WACRES)%FMT,VARSOR,
      &            NPOIN2,WAC_FILES(WACRES)%LU,'STD',AT,
-     &            LT,GRAPRD,GRAPRD,
+     &            LT,LISPRD,GRAPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
@@ -1060,7 +1060,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(WAC_FILES(WACRES)%FMT,VARSOR,
      &            NPOIN2,WAC_FILES(WACRES)%LU,'STD',AT,
-     &            LT,GRAPRD,GRAPRD,
+     &            LT,LISPRD,GRAPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,GRADEB,GRADEB)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
@@ -1200,7 +1200,7 @@
 #endif
 !< JR @ RWTH
 !
-!-----------------------------------------------------------------------
+!------------------------------------------------------------------
 !
       RETURN
       END
