@@ -186,7 +186,7 @@
 !
 !       WHEN NPB=1 FBOR ONLY FILLED FOR FIRST POINT
 !
-!       SPECTRUM ON BOUNDARIES
+!     SPECTRUM ON BOUNDARIES
 !
         IF(NPB.EQ.NPTFR) THEN
           CALL SPEINI
@@ -281,7 +281,7 @@
           IF(LIFBOR(IPTFR).EQ.KENT) THEN
             DO IFF=1,NF
               DO IPLAN=1,NPLAN
-                F(NBOR(IPTFR),IPLAN,IFF)=FB_CTE(IPLAN,IFF)
+                 F(NBOR(IPTFR),IPLAN,IFF)=FB_CTE(IPLAN,IFF)
               ENDDO
             ENDDO
           ENDIF
