@@ -55,9 +55,9 @@
 !
       INTEGER, INTENT(IN) :: NTRAC,ADR_TRAC,MAXTRA
 !                        100 = MAXVAR IN DECLARATIONS_TELEMAC3D
-      CHARACTER(LEN=32), INTENT(INOUT) :: TEXT3(100),TEXTP3(100)
+      CHARACTER(LEN=32), INTENT(INOUT) :: TEXT3(*),TEXTP3(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(MAXTRA)
-      CHARACTER(LEN=8), INTENT(INOUT)  ::  MNEMO(100)
+      CHARACTER(LEN=8), INTENT(INOUT)  :: MNEMO(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
