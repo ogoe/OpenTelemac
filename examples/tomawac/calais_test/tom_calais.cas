@@ -1,0 +1,135 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/   MODELE DE TRANSFERT DES ETATS DE MER DU LARGE (OU SONT MESURES   /
+/   LES ETATS DE MER PAR LA BOUEE) VERS L'ENTREE DU PORT.            /
+/********************************************************************/
+/   Les mots-cles a modifier (eventuellement) sont les suivants :    /
+/                                                                    /
+/   (1) dans la rubrique FICHIERS :                                  /
+/   - FICHIER DES PARAMETRES qui est le nom de ce fichier.           /
+/   - FICHIER DES RESULTATS 2D qui est le fichier resultat principal /
+/   - FICHIER DES RESULTATS PONCTUELS qui contient les spectres de   /
+/                                     houle en quelques points.      /
+/                                                                    /
+/   (2) dans la rubrique CONDITIONS AUX LIMITES :                    /
+/   - HAUTEUR SIGNIFICATIVE AUX LIMITES : Hmo au large (metres)      /
+/   - FREQUENCE DE PIC AUX LIMITES : Frequence de pic au large (Hz)  /
+/   - DIRECTION PRINCIPALE 1 AUX LIMITES : direction vers ou va la   /
+/          houle du large (en degres par rapport au Nord)            /
+/          Exemple : 135 correspond a une houle qui va vers le Sud-  /
+/                    Est (c'est a dire qui vient du Nord-Ouest).     /
+/                                                                    /
+/   (3) dans la rubrique CONDITIONS INITIALES :                      /
+/   - COTE INITIALE DU PLAN D'EAU AU REPOS : niveau marin par rapport/
+/          au Zero Hydrographique (metres)                           /
+/   et éventuellement :                                              /
+/   - FREQUENCE DE PIC INITIALE : meme valeur qu'aux limites         /
+/   - DIRECTION PRINCIPALE 1 INITIALE : meme valeur qu'aux limites   /
+/                                                                    /
+/   NE PAS TOUCHER AUX AUTRES MOTS-CLES QUI SONT CORRECTS A PRIORI.  /
+/                                                                    /
+/********************************************************************/
+/NUMERO DE VERSION = V6P0
+/PROCESSEURS PARALLELES = 2
+/DEBUGGER = 1
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+/FICHIER FORTRAN = 'princi.f'
+FICHIER DES PARAMETRES = './exterieur_calais_v6p0.cas'
+FICHIER DE GEOMETRIE = './exterieur_calais.geo'
+FICHIER DES CONDITIONS AUX LIMITES = './exterieur_calais.conlim'
+VALIDATION = OUI
+FICHIER DE REFERENCE = './ref_tom_calais_v5p8.r2d'
+/
+FICHIER DES RESULTATS 2D = './exterieur_calais.r2d'
+FICHIER DES RESULTATS PONCTUELS = 'exterieur_calais.spe'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'TRAVAUX MARITIMES - MODELE D APPROCHE DU PORT'
+PERIODE POUR LES SORTIES GRAPHIQUES = 20
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,FM01,FPR5,DMOY,WD,POW
+PERIODE POUR LES SORTIES LISTING = 12
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE =
+562828.;563484.;563782.;564284.;564666.;564942.;565105.;
+562828.;563484.;563782.;564284.;564666.;564942.;565105.;
+562828.;563484.;563782.;564284.;564666.;564942.;565105.;
+562828.;563484.;563782.;564284.;564666.;564942.;565105.;
+562828.;563484.;563782.;564284.;564666.;564942.;565105.
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE =
+370989.;369092.;368262.;366749.;365362.;364449.;363925.;
+370989.;369092.;368262.;366749.;365362.;364449.;363925.;
+370989.;369092.;368262.;366749.;365362.;364449.;363925.;
+370989.;369092.;368262.;366749.;365362.;364449.;363925.;
+370989.;369092.;368262.;366749.;365362.;364449.;363925.
+/--------------------------------------------------------------------/
+/ DISCRETISATION DU SPECTRE DIRECTIONNEL
+/--------------------------------------------------------------------/
+FREQUENCE MINIMALE = 0.06
+RAISON FREQUENTIELLE = 1.09
+NOMBRE DE FREQUENCES = 23
+NOMBRE DE DIRECTIONS = 24
+/--------------------------------------------------------------------/
+/ DISCRETISATION TEMPORELLE
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 10.
+NOMBRE DE PAS DE TEMPS = 100
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = NON
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+/-------------- Caracteristiques de la houle au large (a modifier) :
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 4.0
+FREQUENCE DE PIC AUX LIMITES = 0.10
+DIRECTION PRINCIPALE 1 AUX LIMITES = 135.
+/-------------
+FACTEUR DE PIC AUX LIMITES = 3.3
+FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
+FACTEUR DE PONDERATION POUR FRA AUX LIMITES = 1.0
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 3.
+/--------------------------------------------------------------------/
+/ CONDITIONS INITIALES
+/--------------------------------------------------------------------/
+/-------------- Caracteristiques du niveau marin (a modifier) :
+COTE INITIALE DU PLAN D'EAU AU REPOS = 5.1
+/-------------
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 6
+HAUTEUR SIGNIFICATIVE INITIALE = 1.0
+FREQUENCE DE PIC INITIALE = 0.10
+FACTEUR DE PIC INITIAL = 3.3
+FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
+FACTEUR DE PONDERATION POUR FRA INITIALE = 1.0
+DIRECTION PRINCIPALE 1 INITIALE =135.
+ETALEMENT DIRECTIONNEL 1 INITIAL = 3
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+COORDONNEES SPHERIQUES = NON
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+/--------------------------------------------------------------------/
+/ TERMES SOURCES ET PUITS D ENERGIE
+/--------------------------------------------------------------------/
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+/- - - - - - - - - - - - - - - - - - - - 
+/ Terme-source de generation par le vent
+/- - - - - - - - - - - - - - - - - - - - 
+PRISE EN COMPTE DU VENT = NON
+/- - - - - - - - - - - - - - - - - - - - 
+/ Terme-puits de frottement sur le fond
+/- - - - - - - - - - - - - - - - - - - - 
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
+COEFFICIENT DE FROTTEMENT SUR LE FOND = 0.038
+/- - - - - - - - - - - - - - - - - - - - - - - - - - -
+/ Terme-puits de deferlement en faible profondeur d'eau
+/- - - - - - - - - - - - - - - - - - - - - - - - - - - 
+DISSIPATION PAR DEFERLEMENT = 1
+NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 4
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB = 2
+DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM = 2
+DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE = 2
+DEFERLEMENT 1 (BJ) CONSTANTE ALPHA = 1.
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1 = 1.2
+DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2 = 0.8
