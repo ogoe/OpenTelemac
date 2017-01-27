@@ -1,25 +1,25 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  CalcDigVolumeInRadius          !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-!    &( A, F, z_sis, KNOGL )  
      &( A, F, z_sis, KNOLG )  
         
       USE m_TypeDefs_Nestor                                
       USE m_Nestor,ONLY : ParallelComputing, npoinGlobal, ipid, npoin
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM, P_ISUM
                                                             
       IMPLICIT NONE                                         
-      TYPE(t_Action),INTENT(INOUT) :: A                            !
-      TYPE(t_Field) ,INTENT(INOUT) :: F                            !
-      REAL (KIND=R8), INTENT(IN)    :: z_sis(:)  ! z-coordinate [ m ]  (assumed-shape array)
-!     INTEGER       ,INTENT(IN)    :: KNOGL(:)  ! index list: Global to Local node index
+      TYPE(t_Action),INTENT(INOUT) :: A
+      TYPE(t_Field) ,INTENT(INOUT) :: F
+      REAL (KIND=R8),INTENT(IN)    :: z_sis(:)  ! z-coordinate [ m ]  (assumed-shape array)
       INTEGER       ,INTENT(IN)    :: KNOLG(:)  ! index list: Local to Global node index
-        
-        
-      DOUBLE PRECISION     P_DSUM         
-      INTEGER              P_ISUM   
-      EXTERNAL             P_DSUM, P_ISUM
+      
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
                                          
-      !------- local variables ---------------
       INTEGER              ::  i,ii, j, k, kk, iMesh, iField, status
       INTEGER              ::  hitNodeToDig = 0 
       REAL (KIND=R8)       ::  x, y
@@ -34,7 +34,6 @@
      &       ,DIMENSION(:) ::  DigNodeInsideRadius
       INTEGER              :: nDigNodeInsideRadius
                                         
-!663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
 !      dbug WRITE(6,*)'?>-------  SR CalcDigVolumeInRadius --------'
         
       ALLOCATE( NodeMeetsVolumeInRadiusCriterion(F%nNodes) )
@@ -115,7 +114,7 @@
                                               !  We calculate the volume that is to dig      
           iMesh = F%Node(j)                   !  inside the test radius.
           sqrdDist = (F%x(j)-x)**2  +  (F%y(j)-y)**2 !> Here it's needless to calc. the square root because
-          IF( sqrdDist <= sqrdRadius ) THEN          !  we limit to compare the arguments of the square root
+          IF( sqrdDist <= sqrdRadius ) THEN          !  it's enough to compare the arguments of the square root
             DigVolumeInRadius =   DigVolumeInRadius + F%NodeArea(j)  !  ... + area
      &                          * ( z_sis(iMesh) - F%targZ(j) )      !      * depth to dig
             k = k + 1               
@@ -198,13 +197,9 @@
       RETURN                                           
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !********************************************              
       END SUBROUTINE CalcDigVolumeInRadius       !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-                                                       
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

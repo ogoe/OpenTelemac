@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  InfoMessage                    !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -5,14 +9,22 @@
 
       USE m_TypeDefs_Nestor
       USE m_Nestor , ONLY :  nGrainClass
+      
+         
+      
+#ifndef  NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  my_FLUSH 
+#endif   NESTOR_INTERFACES                                        
 
       IMPLICIT NONE
       TYPE(t_Action),INTENT(INOUT) :: A
 
       INTEGER       ,INTENT(IN)    :: m         !> index of action
       REAL (KIND=R8),INTENT(IN)    :: time      !> time [ s ]
-
-      !------- local variables ---------------
+      
+      
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
       INTEGER :: iCL
 
 !669       FORMAT(' ?>',9(/,' ?> info: '))       ! write 9 pseudo empty lines like " ?> error:         "                                                                  !
@@ -88,6 +100,8 @@
       IF( A%State == 1 ) THEN                                           ! 1 = Action currently active)
        WRITE(6,'(" ?>        start action     : ",A)')A%ActionTypeStr
        WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
+       IF(A%FieldDumpID > 0)
+     & WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDump
        WRITE(6,'(" ?>        action number    : ",I3)') m
        WRITE(6,*)'?>        start time  [s]  : ',A%TimeStart
 
@@ -95,37 +109,38 @@
        WRITE(6,'(" ?>        finalise action    ")')
        WRITE(6,'(" ?>        temporarily      : ",A)')A%ActionTypeStr
        WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
+       IF(A%FieldDumpID > 0)
+     & WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDump
        WRITE(6,'(" ?>        action number    : ",I3)') m
        WRITE(6,*)'?>                           '
        WRITE(6,*)'?>      maitenance period    '
        WRITE(6,*)'?>        start time  [s]  : ',A%TimeStart
        WRITE(6,*)'?>              time  [s]  : ',time
        WRITE(6,*)'?>                           '
-       WRITE(6,*)'?>      dug volume during    '
-       WRITE(6,*)'?>      the last maitenance  '
-       WRITE(6,*)'?>      period   [m**3]    : ',A%MovedVolume
-
+       WRITE(6,*)'?>      during the last      '
+       WRITE(6,*)'?>      maitenance period    '
+       WRITE(6,*)'?>      dug volume  [m**3] : ',A%MovedVolume
+       IF(A%FieldDumpID > 0)
+     & WRITE(6,*)'?>      dumped volume      : ',A%MovedVolume
+     
       ELSEIF ( A%State == 9 ) THEN
        WRITE(6,'(" ?>        end action       : ",A)')A%ActionTypeStr
        WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
+       IF(A%FieldDumpID > 0)
+     & WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDump
        WRITE(6,'(" ?>        action number    : ",I3)') m
        WRITE(6,*)'?>                           '
        WRITE(6,*)'?>      maitenance period    '
        WRITE(6,*)'?>        start time  [s]  : ',A%TimeStart
        WRITE(6,*)'?>            time  [s]    : ',time
        WRITE(6,*)'?>                           '
-       WRITE(6,*)'?>      dug volume during    '
-       WRITE(6,*)'?>      the last maitenance  '
-       WRITE(6,*)'?>      period   [m**3]    : ',A%MovedVolume
+       WRITE(6,*)'?>      during the last      '
+       WRITE(6,*)'?>      maitenance period    '
+       WRITE(6,*)'?>      dug volume  [m**3] : ',A%MovedVolume
+       IF(A%FieldDumpID > 0)
+     & WRITE(6,*)'?>      dumped volume      : ',A%MovedVolume
        WRITE(6,*)'?>                           '
        WRITE(6,*)'?>        end time  [s]    : ',A%TimeEnd
-
-      !ELSEIF ( A%State == 9 ) THEN 
-      ! WRITE(6,'(" ?>        end action       : ",A)')A%ActionTypeStr
-      ! WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
-      ! WRITE(6,'(" ?>        action number    : ",I3)') m 
-      ! WRITE(6,*)'?>        end time  [s]    : ',A%TimeEnd
-      ! WRITE(6,*)'?>            time  [s]    : ',time
 
       ENDIF
 
@@ -147,6 +162,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE InfoMessage                 !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -154,7 +170,3 @@
 !*********************************************************************************************
 
 
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

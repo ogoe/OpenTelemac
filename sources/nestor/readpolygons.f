@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  ReadPolygons                   !********************************************
 !**                                               ********************************************
 !**                                               ********************************************
@@ -7,12 +11,23 @@
       USE m_TypeDefs_Nestor             
                                          
       USE m_Nestor, ONLY : Poly, nPolys, ipid, ParallelComputing, Path
-!                                        
+      
+         
+      
+!
+#ifndef NESTOR_INTERFACES                 
+      USE m_Interfaces_Nestor, ONLY :  open_File 
+     &                               , ErrMsgAndStop
+#endif NESTOR_INTERFACES     
+
+
+                                        
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
       INTEGER  :: j, n, countPt, stat, status, lineCount
       LOGICAL  :: ThreeDigitsNumeral   ! function 
       EXTERNAL :: ThreeDigitsNumeral   ! function 
-      CHARACTER (128) :: fileName, zeile 
-      !CHARACTER (128) :: Path, part2 , chtmp
+      CHARACTER (128) :: fileName, zeile, chtmp 
       
       
       
@@ -39,6 +54,7 @@
         zeile = ADJUSTL(zeile)     
         IF( zeile(1:1) == ''  ) CYCLE               ! empty line      
         IF( zeile(1:1) == '#' ) CYCLE               ! comment line
+        IF( zeile(1:1) == '/' ) CYCLE               ! comment line
         IF( zeile(1:4) == 'NAME'  ) nPolys = nPolys + 1
       ENDDO
       
@@ -57,7 +73,8 @@
         IF( zeile(1:1) == '#' ) CYCLE               ! comment line
         IF( zeile(1:4) == 'NAME' ) THEN
           n = n + 1                      
-          READ(zeile,'(5X,A)') Poly(n)%name
+          READ(zeile,'(5X,A)') chtmp 
+          Poly(n)%name = ADJUSTL(chtmp)
           
           IF( .NOT. ThreeDigitsNumeral(Poly(n)%name(1:3))) THEN       !> check if polygon name conforms
             Call ErrMsgAndStop( "while read the Polygon file    ",31  !  to the demand format
@@ -121,15 +138,9 @@
       
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE ReadPolygons                !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
- 
-
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************
-!     SUBROUTINE  ThreeDigitsNumeral             !********************************************

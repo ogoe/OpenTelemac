@@ -1,7 +1,10 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       FUNCTION  DateStringToSeconds              !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-!SR  & ( timeString, timeSec )
      & ( timeString, lineCount )
 
       !   Convert a date given in a Character string to seconds since a "time-zero-point"
@@ -12,6 +15,9 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY : SisStart, ipid     ! "time-zero-point"
 
+#ifndef NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop, Diff_Time
+#endif NESTOR_INTERFACES                                        
 
       IMPLICIT NONE
 
@@ -19,7 +25,9 @@
       INTEGER        , INTENT(IN) :: lineCount  !> current line number of DigAction file
                                                 !  used only for error message
       REAL (KIND =R8) :: DateStringToSeconds    !> seconds since a "time-zero-point" (function name)
-      !EXTERNAL        :: DateStringToSeconds
+
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
 
       INTEGER         :: stat
       INTEGER         :: diffDays ,diffMinutes ,diffHours ,diffSeconds
@@ -99,14 +107,10 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END FUNCTION   DateStringToSeconds         !********************************************
 !     END SUBROUTINE DateStringToSeconds         !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

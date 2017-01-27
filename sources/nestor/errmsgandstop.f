@@ -1,21 +1,31 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  ErrMsgAndStop                  !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
      & (  MsgA,LenA, MsgB,LenB, MsgC,LenC, MsgD,LenD
      &  , mark, SR, ipid      ) 
 
-      USE m_TypeDefs_Nestor             
-!      USE m_Nestor, ONLY :  ParallelComputing
+      USE m_TypeDefs_Nestor
+      
+         
+      
+#ifndef  NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  my_FLUSH 
+#endif   NESTOR_INTERFACES                                        
 
                                                                                                                               
       IMPLICIT NONE                                                                                                        
       INTEGER  , INTENT(IN)      :: mark                    ! position of error e.g.: number of line
       INTEGER  , INTENT(IN)      :: ipid                    ! number of parallel thread where the error occured
-      INTEGER  , INTENT(IN)      :: LenA, LenB, LenC, LenD  ! length of string
-      CHARACTER          (  128) :: MsgA, MsgB, MsgC, MsgD  ! message strings
-      TYPE(t_String_Length) :: SR     ! subroutine where the error occured 
+      INTEGER  , INTENT(IN)      :: LenA, LenB, LenC, LenD  ! length of string A, of string B, of ... 
+      CHARACTER          (len=*) :: MsgA, MsgB, MsgC, MsgD  ! message strings
+      TYPE(t_String_Length)      :: SR                      ! subroutine where the error occured 
       
-      !------- local variables ---------------
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
       INTEGER         :: LenT
       CHARACTER (256) :: StrT 
       CHARACTER   (8) :: char_ipid   ! to store the value of ipid as string
@@ -88,13 +98,9 @@
       RETURN                                                                                  
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE ErrMsgAndStop               !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

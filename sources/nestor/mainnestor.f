@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  MainNestor                     !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -13,98 +17,33 @@
       USE m_TypeDefs_InterFace
       USE m_TypeDefs_Nestor
       USE m_Nestor
+      
+      
+
+#ifndef NESTOR_INTERFACES                                          
+      USE m_Interfaces_Nestor, ONLY :  Dump_by_Time 
+     &                               , Dig_by_Time           
+     &                               , Dig_by_Criterion           
+     &                               , ReadWriteRestart           
+#endif NESTOR_INTERFACES 
 
       IMPLICIT NONE
-
-      INTERFACE !------------------------------------------------------+
-        SUBROUTINE Dump_by_Time                                        !
-     &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
-     &      , ELAY0, time, m   )                                       !
-          USE m_TypeDefs_InterFace                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid  !
-                                                                       !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A            ! Action        !
-          TYPE(t_Field) ,INTENT(INOUT) :: F            ! Field         !
-          REAL (KIND=R8),INTENT(IN)    :: dt_ts        ! time-step-duration  [ s ]
-          REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
-          TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
-          INTEGER       ,INTENT(IN)    :: m            ! number of Action
-        END SUBROUTINE Dump_by_Time                                     !
-      END INTERFACE !--------------------------------------------------+
-
-      INTERFACE !------------------------------------------------------+
-        SUBROUTINE Dig_by_Time                                         !
-     &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
-     &      , AVAIL, ELAY0, time, KNOLG, m   )                         !
-          USE m_TypeDefs_InterFace                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid  !
-     &                          , npoinGlobal                          !
-                                                                       !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A            ! Action        !
-          TYPE(t_Field) ,INTENT(INOUT) :: F            ! Field         !
-          REAL (KIND=R8),INTENT(IN)    :: dt_ts        ! time-step-duration  [ s ]
-          REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
-          REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! assumed-shape array
-          TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
-          INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
-          INTEGER       ,INTENT(IN)    :: m            ! number of Action
-        END SUBROUTINE Dig_by_Time                                     !
-      END INTERFACE !--------------------------------------------------+
-
-      INTERFACE !------------------------------------------------------+
-        SUBROUTINE Dig_by_Criterion                                    !
-     &    (   A, F, dt_ts, z_sis, dzCL_sis                             !
-!    &      , AVAIL, ELAY0, time, KNOLG, KNOGL, m   )                  !
-     &      , AVAIL, ELAY0, time, KNOLG, m          )                  !
-          USE m_TypeDefs_InterFace                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid  !
-     &                          , npoinGlobal                          !
-                                                                       !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A            ! Action        !
-          TYPE(t_Field) ,INTENT(INOUT) :: F            ! Field         !
-          REAL (KIND=R8),INTENT(IN)    :: dt_ts        ! time-step-duration  [ s ]
-          REAL (KIND=R8),INTENT(IN)    :: z_sis(:)     ! bottom [ m+NN ] assumed-shape array
-          REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! assumed-shape array
-          TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)  ! bedload evolution per Class  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: ELAY0        ! activLayerThickness  [ m ]
-          REAL (KIND=R8),INTENT(IN)    :: time         ! time [ s ]    !
-          INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
-!         INTEGER       ,INTENT(IN)    :: KNOGL(:)     ! index list: Global to Local node index
-          INTEGER       ,INTENT(IN)    :: m            ! number of Action
-        END SUBROUTINE Dig_by_Criterion                                !
-      END INTERFACE !--------------------------------------------------+
-
 
       INTEGER      , INTENT(IN)    :: ts            !  time-step
       REAL (KIND=R8),INTENT(IN)    :: dt_ts_sis     !  time-step-duration  [ s ]
       REAL (KIND=R8),INTENT(IN)    :: time          !  time [s]
       REAL (KIND=R8),INTENT(IN)    :: ELAY0         !  activLayerThickness [ m ]
-      REAL (KIND=R8), INTENT(IN)    :: z_sis(:)      !  bottom [ m+NN ]  (assumed-shape array)
+      REAL (KIND=R8),INTENT(IN)    :: z_sis(:)      !  bottom [ m+NN ]  (assumed-shape array)
       REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:)  !  assumed-shape array
       INTEGER       ,INTENT(IN)    :: KNOLG(:)      ! index list: Local to Global node index
       TYPE( t_PointerToArrayOfReals )
      &              ,INTENT(INOUT) :: dzCL_Sis(:)   !  bedload evolution per Class  [ m ]
 
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+      
       TYPE(t_String_Length) :: SRname  ! name of current Subroutine
 
-
-      DOUBLE PRECISION     P_DSUM
-      EXTERNAL             P_DSUM
-
-      !------- local variables ---------------
       INTEGER              :: i, n, m, iMesh, iCL, status
       REAL (KIND=R8)       :: dt_ts     ! time-step-duration respecting MorpholFactor   [ s ]
 
@@ -116,8 +55,13 @@
       SRname%i =  11                   ! length of name string
 
 
-      !WRITE(6,*)'?> time_sis = ', time   ! debug test
-      !WRITE(6,*)'?>  z_sis(1078) = ',z_sis(1078)
+      !WRITE(6,*)'?> time_sis      = ', time          ! debug test
+      !WRITE(6,*)'?> npoin         = ', npoin         ! debug test
+      !WRITE(6,*)'?>  z_sis(npoin) = ',z_sis(npoin)   ! debug test
+      !WRITE(6,*)'?>  z_sis(1)     = ',z_sis(1)       ! debug test
+      !WRITE(6,*)'?>  z_sis(638)   = ',z_sis(638)     ! debug test
+      !WRITE(6,*)'?>       -5.9782670102672562'       ! debug test
+      !STOP
 
       IF( Restart ) THEN
         CALL ReadWriteRestart( time, 'read    ' )
@@ -197,12 +141,9 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE MainNestor                  !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

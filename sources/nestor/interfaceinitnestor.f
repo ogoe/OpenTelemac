@@ -1,9 +1,12 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  InterFaceInitNestor            !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
      & (    NCSIZE, IPID, NPOIN, NSICLA  
      &    , SisStartDate, SisStartTime        ! date ,time 
-!     &    , SisMorpholFactor, SisRestart      ! morphological factor
      &    , SisMorpholFactor                  ! morphological factor
      &    , SisGraphicOutputPeriod
      &    , x_sis, y_sis, NodeArea_sis
@@ -13,66 +16,34 @@
 !      USE DECLARATIONS_SISYPHE, ONLY : MESH,  T13
 ! 
       USE m_TypeDefs_Nestor, ONLY : R8
+      
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX   
+      
+      
+#ifndef  NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  InitialiseNestor
+#endif   NESTOR_INTERFACES                                        
+      
                                        
       IMPLICIT NONE                      
 !                                        
-      INTEGER, INTENT(IN)       ::   NCSIZE, IPID      ! number of cpu, current cpu
-      INTEGER, INTENT(IN)       ::   NPOIN, NSICLA     ! number of: points, sediment classes
-      INTEGER, INTENT(IN)       ::   SisGraphicOutputPeriod
-      INTEGER, INTENT(IN)                              
-     &       , DIMENSION (3)    ::   SisStartDate      ! year , month  , day
-     &                             , SisStartTime      ! hours, minutes, seconds
-      REAL (KIND=R8),INTENT(IN) ::   SisMorpholFactor  ! morphological factor
-!      LOGICAL, INTENT(IN)       ::   SisRestart 
+      INTEGER, INTENT(IN)        ::   NCSIZE, IPID      ! number of cpu, current cpu
+      INTEGER, INTENT(IN)        ::   NPOIN, NSICLA     ! number of: points, sediment classes
+      INTEGER, INTENT(IN)                               
+     &       , DIMENSION (3)     ::   SisStartDate      ! year , month  , day
+     &                              , SisStartTime      ! hours, minutes, seconds
+      REAL (KIND=R8),INTENT(IN)  ::   SisMorpholFactor  ! morphological factor
+      INTEGER, INTENT(IN)        ::   SisGraphicOutputPeriod
       
-      REAL (KIND=R8), INTENT(IN) 
-     &       , DIMENSION (NPOIN)::  x_sis        
-      REAL (KIND=R8), INTENT(IN) 
-     &       , DIMENSION (NPOIN)::  y_sis        
-      REAL (KIND=R8), INTENT(IN) 
-     &       , DIMENSION (NPOIN)::  NodeArea_sis        
+      REAL (KIND=R8), INTENT(IN)
+     &        , DIMENSION (NPOIN)::   x_sis, y_sis        
+     &                              , NodeArea_sis        
+      INTEGER                    ::   maxIndex
                                          
-      INTEGER   :: i                     
-!                                        
-!                                        
-      !  assumed-shape arrays:           
-      !> Uebergabe von Datenfeldern an Unterprogramme
-      !> ohne Groessenangaben (engl. assumed-shape arrays)
-      !> Dies funktioniert nur wenn in der aufrufenden
-      !> Programmeinheit der interface-Block fuer das
-      !> Unterprogramm angefuehrt wird.   
-      INTERFACE !------------------------------------------------------+                 
-         SUBROUTINE InitialiseNestor                                   !
-     &  (     NCSIZE, IPID, NPOIN, NSICLA                              !
-     &      , NodeArea_sis, x_sis, y_sis                               !
-     &      , SisStartDate, SisStartTime, SisMorpholFactor             !
-!     &      , npoin_SisGlobal, SisRestart                              !
-     &      , npoin_SisGlobal                                          !
-     &      , SisGraphicOutputPeriod                 )                 !
-           USE m_TypeDefs_Nestor, ONLY : R8                            !
-           IMPLICIT NONE                                               !
-           INTEGER       ,INTENT(IN) ::  NCSIZE, IPID, NPOIN, NSICLA   !
-     &                                 , npoin_SisGlobal               !
-     &                                 , SisGraphicOutputPeriod        !
-           REAL (KIND=R8),INTENT(IN) :: NodeArea_sis (:)  !  assumed-shape array
-           REAL (KIND=R8),INTENT(IN) :: x_sis     (:)     !  assumed-shape array
-           REAL (KIND=R8),INTENT(IN) :: y_sis     (:)     !  assumed-shape array
-           INTEGER ,INTENT(IN)                                         !      
-     &             , DIMENSION (3)   ::   SisStartDate     ! year , month  , day
-     &                                  , SisStartTime     ! hours, minutes, seconds
-           REAL (KIND=R8),INTENT(IN) :: SisMorpholFactor   ! morphological factor
-!           LOGICAL,INTENT(IN)        :: SisRestart                     !                         
-           END SUBROUTINE InitialiseNestor                             !
-      END INTERFACE !--------------------------------------------------+ 
-        
-        
-      INTEGER    P_IMAX     
-      EXTERNAL   P_IMAX     
-        
-        
-      !------- local variables ---------------
-      INTEGER  ::  npoin_SisGlobal
-      INTEGER  ::  maxIndex
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+      INTEGER   ::  i                     
+      INTEGER   ::  npoin_SisGlobal
         
 !                                        
 !663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
@@ -95,12 +66,10 @@
       ENDIF
       
 !                                        
-      CALL InitialiseNestor(  NCSIZE, IPID, NPOIN, NSICLA
-!     &                       , T13%R, MESH%X%R, MESH%Y%R 
+      CALL InitialiseNestor(   NCSIZE, IPID, NPOIN, NSICLA
      &                       , NodeArea_sis, x_sis,  y_sis
      &                       , SisStartDate, SisStartTime
      &                       , SisMorpholFactor, npoin_SisGlobal
-!     &                       , SisRestart             
      &                       , SisGraphicOutputPeriod  )          
 !                                        
 !      dbug WRITE(6,*)'?>-------  SR InterFaceInitNestor End -----'
@@ -108,13 +77,9 @@
       RETURN                            
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE InterFaceInitNestor         !********************************************
 !**                                               ********************************************
 !**                                               ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-!                                        
-!*********************************************************************************************
-!*********************************************************************************************
-!**                                               ********************************************
-!**                                               ********************************************

@@ -1,70 +1,46 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  Dig_by_Criterion               !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-!     &(   A, F, dt_ts, z_sis, x_sis, y_sis, dzCL_sis
-!     &  , AVAIL, ELAY0, time, KNOLG, KNOGL   )
-!     &(   A, F, dt_ts, z_sis, dzCL_sis
-!     &  , AVAIL, ELAY0, time, KNOLG, KNOGL, m   )
      &(   A, F, dt_ts, z_sis, dzCL_sis
      &  , AVAIL, ELAY0, time, KNOLG, m   )
 
       USE m_TypeDefs_InterFace
       USE m_TypeDefs_Nestor
       USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid
-     &                      , npoinGlobal
+     &                     , npoinGlobal
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM, P_ISUM   
+        
+#ifndef NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY : Dump_by_Rate
+     &                               ,CalcDigVolumeInRadius
+#endif NESTOR_INTERFACES                                        
+     
       IMPLICIT NONE
 
-      INTERFACE !------------------------------------------------------+
-        SUBROUTINE Dump_by_Rate                                        !
-     &    ( A, dt_ts, dzCL_sis )                                       !
-          USE m_TypeDefs_InterFace                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor,ONLY : ParallelComputing, nGrainClass, F, ipid  !
-                                                                       !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A                            !
-          REAL (KIND=R8),INTENT(IN)    :: dt_ts       ! time-step-duration  [ s ]
-          TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)                  !
-        END SUBROUTINE Dump_by_Rate                                    !
-      END INTERFACE !--------------------------------------------------+
-
-      INTERFACE !------------------------------------------------------+
-        SUBROUTINE CalcDigVolumeInRadius                               !
-!     &    (  A, F, z_sis, KNOGL  )                                     !
-     &    (  A, F, z_sis, KNOLG  )                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor,ONLY :  ParallelComputing, npoinGlobal, ipid    !
-     &                        , npoin                                  !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A                            !
-          TYPE(t_Field) ,INTENT(INOUT) :: F                            !
-          REAL (KIND=R8), INTENT(IN)    :: z_sis(:)     ! z- coordinate [ m ]  (assumed-shape array)
-!         INTEGER       ,INTENT(IN)    :: KNOGL(:)     ! index list: Global to Local node index
-          INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
-        END SUBROUTINE CalcDigVolumeInRadius                           !
-      END INTERFACE !--------------------------------------------------+
-
-
-      TYPE(t_Action),INTENT(INOUT) :: A
-      TYPE(t_Field) ,INTENT(INOUT) :: F
-      REAL (KIND=R8), INTENT(IN)    :: dt_ts
-      REAL (KIND=R8), INTENT(IN)    :: z_sis(:)     ! bottom [m+NN] at time (assumed-shape array)
+      TYPE(t_Action),INTENT(INOUT)   :: A
+      TYPE(t_Field) ,INTENT(INOUT)   :: F
+      REAL (KIND=R8),INTENT(IN)      :: dt_ts
+      REAL (KIND=R8),INTENT(IN)      :: z_sis(:)     ! bottom [m+NN] at time (assumed-shape array)
       TYPE( t_PointerToArrayOfReals )
-     &              ,INTENT(INOUT) :: dzCL_sis(:)
-      REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! debug test!  assumed-shape array
-      REAL (KIND=R8),INTENT(IN)    :: ELAY0        !  activLayerThickness  [ m ]
-      REAL (KIND=R8),INTENT(IN)    :: time         !  time [s]
-      INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
-!     INTEGER       ,INTENT(IN)    :: KNOGL(:)     ! index list: Global to Local node index
-      INTEGER       ,INTENT(IN)    :: m            ! number of Action
-      TYPE(t_String_Length) :: SRname ! name of current Subroutine
+     &              ,INTENT(INOUT)   :: dzCL_sis(:)
+      REAL (KIND=R8),INTENT(IN)      :: AVAIL(:,:,:) ! debug test!  assumed-shape array
+      REAL (KIND=R8),INTENT(IN)      :: ELAY0        !  activLayerThickness  [ m ]
+      REAL (KIND=R8),INTENT(IN)      :: time         !  time [s]
+      INTEGER       ,INTENT(IN)      :: KNOLG(:)     ! index list: Local to Global node index
+      INTEGER       ,INTENT(IN)      :: m            ! number of Action
+      
+      
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
 
-      DOUBLE PRECISION     P_DSUM
-      INTEGER              P_ISUM
-      EXTERNAL             P_DSUM, P_ISUM
 
-      !------- local variables ---------------
+
+
+
       INTEGER            :: i, iCL, iMesh, status, nodeIndex
       INTEGER            :: nLessNodesToDig = 0
       REAL (KIND=R8)     :: dzDig_ts, dzDig
@@ -79,8 +55,10 @@
       REAL (KIND=R8),ALLOCATABLE                     !  FieldNodes during the current timestep
      &              ,SAVE ,DIMENSION   (:) :: layCL
 
-
-
+      TYPE(t_String_Length) :: SRname ! name of current Subroutine 
+      
+      
+1234  FORMAT(A, I2, A, g18.9)
 !663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
 !      dbug WRITE(6,*)'?>-------  SR Dig_by_Criterion -------------'
       SRname%s = "Dig_by_Criterion"    ! subroutine name
@@ -138,7 +116,6 @@
 
 
         IF( A%MinVolume > 0.0D0 ) THEN
-!         CALL CalcDigVolumeInRadius( A, F, z_sis, KNOGL )  !> The result is F%NodeToDig(:)
           CALL CalcDigVolumeInRadius( A, F, z_sis, KNOLG )  !> The result is F%NodeToDig(:)
         ENDIF                                               !  and F%nNodeToDig
 
@@ -244,55 +221,65 @@
 
       ENDIF  ! F%nNodeToDig > 0
 
-
-      !=================================================================
-      !Organize  the dumping ===========================================
-      !each time step we add the dug material per class to A%DumpVolume
-
+      
       IF( ParallelComputing ) THEN
         DO iCL=1, nGrainClass
           heapCL(iCL) = P_DSUM( heapCL(iCL) )
         ENDDO
         nLessNodesToDig = P_ISUM( nLessNodesToDig )
       ENDIF
-
+      
       F%nNodeToDig = F%nNodeToDig - nLessNodesToDig
       !WRITE(6,1234)' ?> DibyCr',ipid,' F%nNodeToDig  = ', F%nNodeToDig ! debug test
+      
+      
+      !=================================================================
+      !> calc. new DumpVolume and its sediment composition
+      !  each time step we add the dug material per class to A%DumpVolume
 
       heap = SUM( heapCL(:) )  ! Total volume of dug material at current time step
       !WRITE(6,1234)' ?> DibyCr',ipid,'         heap  = ', heap         ! debug test
 
 
-      IF( A%DumpVolume < 0.0D0 ) A%DumpVolume = 0.0D0  !  In case in subroutine Dump_by_Rate
-                                                       !> A%DumpVolume was set to -1.0
+      !IF( A%DumpVolume < 0.0D0 ) A%DumpVolume = 0.0D0  !  In case in subroutine Dump_by_Rate
+      !                                                 !> A%DumpVolume was set to -1.0
 
-      ! Add per class   volume of dug material and DumpVolume
+      ! Add per class   volume of dug material and old DumpVolume
       heapCL(:) = heapCL(:) + A%GrainClass(:) * A%DumpVolume
                               !............................!--- convert fraction to volume
 
-
+      ! new DumpVolume 
       A%DumpVolume  = A%DumpVolume  + heap
+      
+      ! new sediment composition of the DumpVolume 
+      IF( A%DumpVolume  > 0.0D0 ) THEN
+        A%GrainClass(:) = heapCL(:) / A%DumpVolume
+                          !......................!----- convert volume to fraction
+      ENDIF                  
+      
       A%MovedVolume = A%MovedVolume + heap
 
 
-
-1234  FORMAT(A, I2, A, g18.9)
       !WRITE(6,1234)' ?> DibyCr',ipid,' A%DumpVolume  = ',A%DumpVolume  ! debug test
       !WRITE(6,1234)' ?> DibyCr',ipid,' A%FieldDumpID = ',A%FieldDumpID ! debug test
 
+!      IF(       F%nNodeToDig  >  0                 !  Digging not accomplished
+!     &     .OR. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished  
 
-      IF(       F%nNodeToDig  >  0                 !  Digging not accomplished
-     &     .OR. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished  
 
-        A%GrainClass(:) = heapCL(:) / A%DumpVolume
-                          !......................!----- convert thickness to fraction
 
-        IF(abs(A%DumpVolume - SUM(heapCL(:))) .GE. 0.00000001D0 ) THEN ! debug
-          WRITE(*,*)'?>  SumheapCL(:)    =', SUM( heapCL(:) )          ! debug
-          WRITE(*,*)'?>  A%DumpVolume    =', A%DumpVolume              ! debug
-          WRITE(*,*)'?>  A%GrainClass(:) =', A%GrainClass(:)           ! debug
-          STOP                                                         ! debug
-        ENDIF                                                          ! debug
+      IF(     F%nNodeToDig  >  0                !> Digging not accomplished
+     &   .OR. (       A%FieldDumpID > 0         !> Duming is assigned (a dump field is linked to the action)
+     &          .AND. A%DumpVolume  > 0.0D0 )   !  and Dumping is not accomplished
+     &   ) THEN                                      
+
+
+        !IF(abs(A%DumpVolume - SUM(heapCL(:))) .GE. 0.00000001D0 ) THEN ! debug
+        !  WRITE(*,*)'?>  SumheapCL(:)    =', SUM( heapCL(:) )          ! debug
+        !  WRITE(*,*)'?>  A%DumpVolume    =', A%DumpVolume              ! debug
+        !  WRITE(*,*)'?>  A%GrainClass(:) =', A%GrainClass(:)           ! debug
+        !  STOP                                                         ! debug
+        !ENDIF                                                          ! debug
 
         IF( A%FieldDumpID > 0 ) THEN    !> Only if a dump field is linked to the action
           IF( A%DumpVolume > 0.0D0 ) THEN          
@@ -308,11 +295,11 @@
             A%State           = 9     ! 9 = for ever inactive
             CALL InfoMessage( A, m, time ) 
           ELSE
-          A%State           = 2     ! 2 = temporary inactive
-          CALL InfoMessage( A, m, time )
-          A%TimeStart       = A%TimeStart + A%TimeRepeat
-          A%FirstTimeActive = .TRUE.
-          A%tsCount         = 0     !  counter of time steps while digger is working
+            A%State           = 2     ! 2 = temporary inactive
+            CALL InfoMessage( A, m, time )
+            A%TimeStart       = A%TimeStart + A%TimeRepeat
+            A%FirstTimeActive = .TRUE.
+            A%tsCount         = 0     !  counter of time steps while digger is working
           ENDIF   
           
         ELSE
@@ -325,20 +312,16 @@
         DEALLOCATE( F%NodeToDig )
         !DEALLOCATE( layCL )
         !DEALLOCATE( heapCL )
-!        DEALLOCATE( A%GrainClass )
+        !DEALLOCATE( A%GrainClass )
       ENDIF
 
 !      dbug WRITE(6,*)'?>-------  SR Dig_by_Criterion END ---------'
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE Dig_by_Criterion            !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

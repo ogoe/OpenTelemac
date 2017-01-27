@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  Dump_by_Time                   !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -7,6 +11,8 @@
       USE m_TypeDefs_InterFace           
       USE m_TypeDefs_Nestor             
       USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM   
+      
      
                                                                        
       IMPLICIT NONE               
@@ -19,14 +25,15 @@
       REAL (KIND=R8),INTENT(IN)    :: ELAY0        !> activLayerThickness  [ m ]
       REAL (KIND=R8),INTENT(IN)    :: time         !> time [ s ]    
       INTEGER       ,INTENT(IN)    :: m            !> number of Action
-      
 
+#ifndef  NESTOR_INTERFACES                                        
+
+      !------- local variables ---------------
       TYPE(t_String_Length) :: SRname ! name of current Subroutine 
       
-      DOUBLE PRECISION     P_DSUM         
-      EXTERNAL             P_DSUM
+         
+
       
-      !------- local variables ---------------
       INTEGER            :: i, iCL, iMesh, status !, nodeIndex
       REAL (KIND=R8)     :: max_dz_dt  
       
@@ -168,16 +175,16 @@
             !mySum         = P_DSUM(mySum)                      ! debug
             A%sumInput = P_DSUM(A%sumInput)
           ENDIF                    
-          WRITE(6,663)               
-          WRITE(6,*)'?> Message to field: ',F%name
-          WRITE(6,*)'?>       time Start: ',A%TimeStart 
-          WRITE(6,*)'?>       time      : ',time 
-          WRITE(6,*)'?>   preset   dump   volume ='
-     &                 ,A%DumpVolume
-          !WRITE(6,*)'?>   de facto dumped volume =',mySum      ! debug 
-          WRITE(6,*)'?>   sediment transported into'
-          WRITE(6,*)'?>     the field while dumping:   '
-     &                 ,A%sumInput
+!            WRITE(6,663)               
+!            WRITE(6,*)'?> Message to field: ',F%name
+!            WRITE(6,*)'?>       time Start: ',A%TimeStart 
+!            WRITE(6,*)'?>       time      : ',time 
+!            WRITE(6,*)'?>   preset   dump   volume ='
+!       &                 ,A%DumpVolume
+!            !WRITE(6,*)'?>   de facto dumped volume =',mySum      ! debug 
+!            WRITE(6,*)'?>   sediment transported into'
+!            WRITE(6,*)'?>     the field while dumping:   '
+!       &                 ,A%sumInput
                                  
                                                    
 !            mySum = 0.0D0                             ! debug  
@@ -205,13 +212,9 @@
       RETURN                             
 !***                                              ********************************************
 !***                                              ********************************************
+#endif   NESTOR_INTERFACES                       !********************************************
       END SUBROUTINE Dump_by_Time                !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
-!*********************************************************************************************     
-     
 !*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

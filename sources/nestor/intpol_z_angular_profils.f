@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  Intpol_Z_angular_Profils       !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -5,37 +9,46 @@
      &   , ip, P1km, P2km, angleABCD  )             
                                          
       USE m_TypeDefs_Nestor             
-      USE m_Nestor , ONLY : ipid        
+      USE m_Nestor , ONLY : ipid       
+      
+#ifndef NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  Intersection
+     &                               , ErrMsgAndStop
+#endif NESTOR_INTERFACES                                        
+      
+      
+       
                                          
       IMPLICIT NONE 
       TYPE(t_Field) ,INTENT(INOUT) :: F
         
-      REAL (KIND=R8),INTENT(IN)::  xA,yA,zA, xB,yB,zB     ! points:  A,B  ( profile1 )
-     &                           ,xC,yC,zC, xD,yD,zD     !    "     C,D  ( profile2 )
-      REAL (KIND=R8),INTENT(IN)::  P1km, P2km             ! measure of river length: profile1, profile2  
-      REAL (KIND=R8),INTENT(IN)::  angleABCD              ! angle between profile1 and profile2  
-      INTEGER,INTENT(IN)      ::  ip                     ! index of profile1
+      REAL (KIND=R8),INTENT(IN)::  xA,yA,zA, xB,yB,zB      ! points:  A,B  ( profile1 )
+     &                            ,xC,yC,zC, xD,yD,zD      !    "     C,D  ( profile2 )
+      INTEGER,INTENT(IN)       ::  ip                      ! index of profile1
+      REAL (KIND=R8),INTENT(IN)::  P1km, P2km              ! measure of river length: profile1, profile2  
+      REAL (KIND=R8),INTENT(IN)::  angleABCD               ! angle between profile1 and profile2  
         
-      !------- local variables ---------------
-      INTEGER         :: i   !  , status
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+      INTEGER         :: i   
         
-      REAL (KIND=R8)  :: xAB,yAB , xCD,yCD                    ! vetkors: AB, CD
-      REAL (KIND=R8)  :: skaSASN                              ! skalar_produkt( SA, SN )  
-      REAL (KIND=R8)  :: xS,yS,  xN,yN                        ! points:  intersection S, field node N
-      REAL (KIND=R8)  :: xSN,ySN                              ! vetkor: SN (between intersection S and field node N)
-      REAL (KIND=R8)  :: xSA,ySA,  xSC,ySC                    ! vetkors: SA, SC
-      REAL (KIND=R8)  :: rL1,rR1,  rL2,rR2,   rN              ! distances (radii): L1,R1,L2,R2,N to S
-      REAL (KIND=R8)  :: zR1,zL1,  zL2,zR2                    ! z values ( L1,R1,... see sketch below)  
-      REAL (KIND=R8)  :: DetSASN, DetSCSN                     ! determinants of Vektors:  SA SN  and  SC SN
-      REAL (KIND=R8)  :: z1, z2                               ! interpolated z-values between zR1,zL1 and zL2,zR2       
-      REAL (KIND=R8)  :: phi                                  ! angle between SA and SN
-      REAL (KIND=R8)  :: rLphi, rRphi                         ! angle, radii as function of phi
-      REAL (KIND=R8)  :: intpolFaktRadial, intpolFaktAngle    ! interpolation factors
+      REAL (KIND=R8)  :: xAB,yAB , xCD,yCD                 ! vetkors: AB, CD
+      REAL (KIND=R8)  :: skaSASN                           ! skalar_produkt( SA, SN )  
+      REAL (KIND=R8)  :: xS,yS,  xN,yN                     ! points:  intersection S, field node N
+      REAL (KIND=R8)  :: xSN,ySN                           ! vetkor: SN (between intersection S and field node N)
+      REAL (KIND=R8)  :: xSA,ySA,  xSC,ySC                 ! vetkors: SA, SC
+      REAL (KIND=R8)  :: rL1,rR1,  rL2,rR2,   rN           ! distances (radii): L1,R1,L2,R2,N to S
+      REAL (KIND=R8)  :: zR1,zL1,  zL2,zR2                 ! z values ( L1,R1,... see sketch below)  
+      REAL (KIND=R8)  :: DetSASN, DetSCSN                  ! determinants of Vektors:  SA SN  and  SC SN
+      REAL (KIND=R8)  :: z1, z2                            ! interpolated z-values between zR1,zL1 and zL2,zR2       
+      REAL (KIND=R8)  :: phi                               ! angle between SA and SN
+      REAL (KIND=R8)  :: rLphi, rRphi                      ! angle, radii as function of phi
+      REAL (KIND=R8)  :: intpolFaktRadial, intpolFaktAngle ! interpolation factors
         
       REAL (KIND=R8), DIMENSION(4) ::    DistanceToS
-      REAL (KIND=R8)              :: maxDistanceToS, minDistanceToS
+      REAL (KIND=R8)               :: maxDistanceToS, minDistanceToS
       !REAL (KIND=R8):: r2d = 565.48667764602D0 ! = 360/2*Pi conversion factor: radian to degree ! debug only
-      TYPE(t_String_Length) :: SRname                         ! name of current Subroutine 
+      TYPE(t_String_Length) :: SRname                      ! name of current Subroutine 
 
       
       !---------------------------------------------------------------
@@ -179,19 +192,9 @@
       RETURN                             
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE Intpol_Z_angular_Profils    !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-                                                       
-        
-        
-        
-        
-        
-                                         
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

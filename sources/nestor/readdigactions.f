@@ -1,15 +1,30 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  ReadDigActions                 !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
      & ()  
 
-!       stop     
-                                         
       USE m_TypeDefs_Nestor             
                                          
       USE m_Nestor, ONLY :  A, nActions, ipid, ParallelComputing
      &                     , nGrainClass, eps, Restart
-!                                        
+
+         
+
+#ifndef NESTOR_INTERFACES                 
+      USE m_Interfaces_Nestor, ONLY :  open_File 
+     &                               , ErrMsgAndStop
+     &                               , IsActionCompletelyDefined
+     &                               , ParseSteerLine
+#endif NESTOR_INTERFACES     
+
+
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+
       IMPLICIT NONE                      
       INTEGER         :: i,j, m, lineCount, countClasses
       INTEGER         :: stat = 0        
@@ -175,7 +190,11 @@
             IF(valueStr(1:11) == 'Dig_by_time') THEN 
               A(m)%ActionType = 1
             ENDIF         
+            IF(A(m)%ActionType == -11) THEN    !>  -11 (=default value from initialisation)
+              stat = -1                        !   then throw error message
+            ENDIF         
             READ(valueStr,*) A(m)%ActionTypeStr
+            
           CASE( "FieldDig" )                      
             READ(valueStr,*) A(m)%FieldDig
             ! check if Field name conforms to the demand format
@@ -339,15 +358,9 @@
       RETURN                             
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE ReadDigActions              !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-
-
-
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

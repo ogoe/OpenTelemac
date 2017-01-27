@@ -1,49 +1,45 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  Dig_by_Time                    !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
      &(   A, F, dt_ts, z_sis, dzCL_sis
      &  , AVAIL, ELAY0, time, KNOLG, m   )
-!    &  , AVAIL, ELAY0, time, KNOLG, KNOGL, m   )
                                          
       USE m_TypeDefs_InterFace           
       USE m_TypeDefs_Nestor             
       USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid
-     &                      , npoinGlobal                                         
+     &                      , npoinGlobal 
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+     
+#ifndef  NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  Dump_by_Rate
+     &                               , InfoMessage, ErrMsgAndStop           
+#endif   NESTOR_INTERFACES                                        
+     
       IMPLICIT NONE
       
-      INTERFACE !------------------------------------------------------+                  
-        SUBROUTINE Dump_by_Rate                                        !
-     &    ( A, dt_ts, dzCL_sis )                                       !
-          USE m_TypeDefs_InterFace                                     !
-          USE m_TypeDefs_Nestor                                        !
-          USE m_Nestor,ONLY : ParallelComputing, nGrainClass, F, ipid  !
-                                                                       !
-          IMPLICIT NONE                                                !
-          TYPE(t_Action),INTENT(INOUT) :: A                            !
-          REAL (KIND=R8),INTENT(IN)    :: dt_ts       ! time-step-duration  [ s ]
-          TYPE( t_PointerToArrayOfReals )                              !
-     &                  ,INTENT(INOUT) :: dzCL_sis(:)                  !
-        END SUBROUTINE Dump_by_Rate                                    !
-      END INTERFACE !--------------------------------------------------+              
-                                         
-      TYPE(t_Action),INTENT(INOUT) :: A  
-      TYPE(t_Field) ,INTENT(INOUT) :: F  
-      REAL (KIND=R8), INTENT(IN)    :: dt_ts
-      REAL (KIND=R8), INTENT(IN)    :: z_sis(:)     ! bottom [m+NN] at time (assumed-shape array)
+      TYPE(t_Action),INTENT(INOUT)   :: A  
+      TYPE(t_Field) ,INTENT(INOUT)   :: F  
+      REAL (KIND=R8),INTENT(IN)      :: dt_ts
+      REAL (KIND=R8),INTENT(IN)      :: z_sis(:)     ! bottom [m+NN] at time (assumed-shape array)
       TYPE( t_PointerToArrayOfReals )    
-     &              ,INTENT(INOUT) :: dzCL_sis(:)    
-      REAL (KIND=R8),INTENT(IN)    :: AVAIL(:,:,:) ! debug test!  assumed-shape array
-      REAL (KIND=R8),INTENT(IN)    :: ELAY0        !  activLayerThickness  [ m ]
-      REAL (KIND=R8),INTENT(IN)    :: time         !  time [s]   
-      INTEGER       ,INTENT(IN)    :: KNOLG(:)     ! index list: Local to Global node index
-!      INTEGER       ,INTENT(IN)    :: KNOGL(:)     ! index list: Global to Local node index
-      INTEGER       ,INTENT(IN)    :: m            ! number of Action
-                                         
-      DOUBLE PRECISION     P_DSUM         
-      INTEGER              P_ISUM   
-      EXTERNAL             P_DSUM, P_ISUM
+     &              ,INTENT(INOUT)   :: dzCL_sis(:)    
+      REAL (KIND=R8),INTENT(IN)      :: AVAIL(:,:,:) ! debug test!  assumed-shape array
+      REAL (KIND=R8),INTENT(IN)      :: ELAY0        !  activLayerThickness  [ m ]
+      REAL (KIND=R8),INTENT(IN)      :: time         !  time [s]   
+      INTEGER       ,INTENT(IN)      :: KNOLG(:)     ! index list: Local to Global node index
+      INTEGER       ,INTENT(IN)      :: m            ! number of Action
+
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+      
+         
+   
+
         
-      !------- local variables ---------------
       INTEGER            :: i, iCL, iMesh, status, nodeIndex
       INTEGER            :: nLessNodesToDig = 0
       REAL (KIND=R8)     :: dzDig_ts, dzDig
@@ -275,13 +271,9 @@
       RETURN                             
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE Dig_by_Time                 !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-                                         
-!*********************************************************************************************
-!*********************************************************************************************
-!***                                              ********************************************
-!***                                              ********************************************

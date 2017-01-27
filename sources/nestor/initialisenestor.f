@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       SUBROUTINE  InitialiseNestor               !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
@@ -5,39 +9,42 @@
      & (  ncsize_Sis, ipid_Sis, npoin_Sis, nSiCla_Sis
      &  , NodeArea_sis, x_sis, y_sis 
      &  , SisStartDate, SisStartTime, SisMorpholFactor
-!     &  , npoin_SisGlobal, SisRestart, SisGraphicOutputPeriod   )                                
-     &  , npoin_SisGlobal,              SisGraphicOutputPeriod   )                                
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LTL            |-->| CURRENT TIME STEP
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     &  , npoin_SisGlobal, SisGraphicOutputPeriod      )                                
 !                                        
 !                                        
       USE m_TypeDefs_Nestor             
-      USE m_Nestor                      
+      USE m_Nestor
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM   
+      
+#ifndef  NESTOR_INTERFACES                                        
+      USE m_Interfaces_Nestor, ONLY :  ReadPolygons
+     &                               , inside_point_2d_d
+     &                               , ReadDigActions
+     &                               , ErrMsgAndStop
+#endif   NESTOR_INTERFACES                                        
+                            
  !                                       
       IMPLICIT NONE                      
 !                                        
-      INTEGER      , INTENT(IN) :: ncsize_Sis, ipid_Sis, npoin_Sis 
-      INTEGER      , INTENT(IN) :: nSiCla_Sis, npoin_SisGlobal
-      INTEGER      , INTENT(IN) :: SisGraphicOutputPeriod
-!      LOGICAL      , INTENT(IN) :: SisRestart 
+      INTEGER, INTENT(IN) :: ncsize_Sis, ipid_Sis, npoin_Sis 
+      INTEGER, INTENT(IN) :: nSiCla_Sis
 !                                        
-      REAL (KIND=R8), INTENT(IN) :: NodeArea_sis (:)   !> assumed-shape arrays:
-                                                      !  Uebergabe von Datenfeldern an Unterprogramme
-                                                      !  ohne Groessenangaben (engl. assumed-shape arrays)
-                                                      !  Dies funktioniert nur wenn in der aufrufenden
-                                                      !  Programmeinheit der interface-Block fuer das
-                                                      !  Unterprogramm angefuehrt wird.
-      REAL (KIND=R8), INTENT(IN) :: x_sis (:)     !  assumed-shape arrays:
-      REAL (KIND=R8), INTENT(IN) :: y_sis (:)     !  assumed-shape arrays:
+      REAL (KIND=R8), INTENT(IN) 
+     &              , DIMENSION (npoin_Sis) ::   NodeArea_sis    
+     &                                         , x_sis 
+     &                                         , y_sis
+     
       INTEGER , INTENT(IN)               
-     &        , DIMENSION (3)   ::   SisStartDate    ! year , month  , day
-     &                             , SisStartTime    ! hours, minutes, seconds
-      REAL (KIND=R8), INTENT(IN) :: SisMorpholFactor  ! morphological factor
+     &        , DIMENSION (3)    ::  SisStartDate     ! year , month  , day
+     &                             , SisStartTime     ! hours, minutes, seconds
+      REAL (KIND=R8), INTENT(IN) ::  SisMorpholFactor ! morphological factor
                                          
-      DOUBLE PRECISION     P_DSUM        
-      INTEGER              P_IMAX   
-      EXTERNAL             P_DSUM, P_IMAX
+      INTEGER, INTENT(IN) :: npoin_SisGlobal, SisGraphicOutputPeriod
+
+
+#ifndef NESTOR_INTERFACES 
+      !--------------------- local variables ---------------
+      
                                          
       INTEGER  :: status                 
       INTEGER  :: i, n, m, sL                
@@ -67,12 +74,12 @@
 !                                        
 !                                        
 !                                        
-      ipid          = ipid_Sis             
-      npoin         = npoin_Sis            
-      npoinGlobal   = npoin_SisGlobal            
+      ipid          = ipid_Sis           !  copy value to the global Nestor-modul variable  
+      npoin         = npoin_Sis          !  copy value to the global Nestor-modul variable  
+      npoinGlobal   = npoin_SisGlobal    !  copy value to the global Nestor-modul variable        
                     
-      nGrainClass   = nSiCla_Sis           
-      MorpholFactor = SisMorpholFactor   
+      nGrainClass   = nSiCla_Sis         !  copy value to the global Nestor-modul variable  
+      MorpholFactor = SisMorpholFactor   !  copy value to the global Nestor-modul variable
                                          
       SisStart%year    = SisStartDate(1)   !  copy date values to          
       SisStart%month   = SisStartDate(2)   !> the Nestor-modul 
@@ -92,13 +99,13 @@
                                          
                                          
 !                                        
-      !DO i=1, 10                        
-      ! WRITE(6,*)' NodeArea_sis  = ',NodeArea_sis(i)
-      ! WRITE(6,*)' x_sis      = ',x_sis(i)
-      !ENDDO                             
-      !WRITE(6,*)' NodeArea_sis npoin  = ',NodeArea_sis(npoin)
-      !                                  
-      !WRITE(6,*)' npoin =', npoin       
+      !DO i=1, 10                                               ! debug    
+      ! WRITE(6,*)' NodeArea_sis  = ',NodeArea_sis(i)           ! debug
+      ! WRITE(6,*)' x_sis = ',x_sis(i),' y_sis = ',y_sis(i)     ! debug
+      !ENDDO                                                    ! debug
+      !WRITE(6,*)' NodeArea_sis npoin  = ',NodeArea_sis(npoin)  ! debug
+      !                                                         ! debug
+      !WRITE(6,*)' npoin =', npoin                              ! debug
                                          
                                          
                                          
@@ -132,7 +139,6 @@
       nNodesInside = 0                                             !> number of nodes inside
       DO i=1, npoin                      
         Call inside_point_2d_d ( y_sis(i)        , x_sis(i)        !> test if grid
-!     &                          ,Poly(n)%nPoints , Poly(n)%Pt      !  nodes are inside
      &                          ,Poly(n)                           !  nodes are inside
      &                          ,lrinc           , NodeInside    ) !  a polygon and
         IF(  NodeInside  ) THEN                                    !  store them in
@@ -160,11 +166,9 @@
         F(n)%Area = F(n)%Area + F(n)%NodeArea(i)    !  For parallel processing we do the
       ENDDO                                         !  summation over all partitions later
       IF ( ParallelComputing ) THEN      
-        !CALL FindInterFaceNodes( idummy, iTmp )
-!        ________________________________________________________________
-!       /________   calculate Field-area for parallel processing  ______/
+
         F(n)%Area = P_DSUM(F(n)%Area) !> this is the Field-area over all
-                                      !  paritionswhich are "touched" by
+                                      !  paritions which are "touched" by
                                       !  the Field
       ENDIF ! (ParallelComputing)        
 !                                        
@@ -236,13 +240,9 @@
       RETURN                             
 !***                                              ********************************************
 !***                                              ********************************************
+#endif NESTOR_INTERFACES                         !******************************************** 
       END SUBROUTINE InitialiseNestor            !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
 !*********************************************************************************************
 !*********************************************************************************************
-!                                         
-!*********************************************************************************************
-!*********************************************************************************************
-!**                                               ********************************************
-!**                                               ********************************************

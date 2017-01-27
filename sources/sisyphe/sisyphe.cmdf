@@ -520,7 +520,8 @@ path: <root>|sources|nestor
 files: m_typedefs_interface.f
   m_typedefs_nestor.f
   m_nestor.f
-  my_flush.F
+  m_interfaces_nestor.f
+  my_flush.f
   infomessage.f
   errmsgandstop.f
   open_file.f

@@ -1,3 +1,7 @@
+!*********************************************************************************************
+!*********************************************************************************************
+!***                                              ********************************************
+!***                                              ********************************************
       MODULE      m_Nestor                       !******       SUBROUTINE  ********************
 !**                                               *********************************************
 !**                                               *********************************************
@@ -33,46 +37,6 @@
                                          
       TYPE( t_DateTime ) :: SisStart  
 
-
-
-!      contains
-!        include  './MainNestor.f'
-!        include  './Calculate_PlanarLevel.f'
-!        include  './InitialiseNestor.f'
-!        include  './ReadPolygons.f'
-!        include  './ThreeDigitsNumeral.f'
-!        include  './DateStringToSeconds.f'
-!        include  './ReadDigActions.f'
-!        include  './ParseSteerLine.f'
-!        include  './IsActionCompletelyDefined.f'
-!        include  './WriteField.f'
-!        include  './WriteDigAction.f'
-!        include  './inside_point_2d_d.f'
-!        include  './InterFaceInitNestor.f'
-!        include  './InterFaceRunNestor.f'
-!        include  './Diff_Time.f'
-!        include  './ErrMsgAndStop.f'
-!        include  './InfoMessage.f'
-!        include  './open_File.f'
-!        include  './Intersection.f'
-!        include  './Set_RefLevelByProfiles.f'
-!        include  './Intpol_Z_parallel_Profils.f'
-!        include  './Intpol_Z_angular_Profils.f'
-!        include  './Dig_by_Criterion.f'
-!        include  './Dump_by_Time.f'
-!        include  './Dig_by_Time.f'
-!        include  './Dump_by_Rate.f'
-!        include  './CalcDigVolumeInRadius.f'
-!        include  './WriteActionToRestart.f'
-!        include  './ReadActionToRestart.f'
-!        include  './WriteFieldToRestart.f'
-!        include  './ReadFieldToRestart.f'
-!        include  './ReadWriteRestart.f'
-!        include  './my_FLUSH.f'
-
-
-      
-                                         
 !***                                              ********************************************
 !***                                              ********************************************
       END MODULE  m_Nestor                       !********************************************
