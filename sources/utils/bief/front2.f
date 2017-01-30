@@ -114,6 +114,10 @@
       IDEP = 1
       NFRLIQ = 0
       NFRSOL = 0
+      DEBLIQ = 0
+      FINLIQ = 0
+      DEBSOL = 0
+      FINSOL = 0
 !
 !-----------------------------------------------------------------------
 !
@@ -329,6 +333,7 @@
             MAXFROLIQ = MAXFROLIQ*10
             DEBLIQ(NFRLIQ) = KP1BOR(K)
           ENDIF
+          DEBLIQ(NFRLIQ) = KP1BOR(K)
         ENDIF
       ELSEIF(L1.EQ.KLOG.AND.L2.NE.KLOG.AND.L3.EQ.KLOG) THEN
 !     ERROR IN THE DATA
@@ -509,9 +514,6 @@
       DEALLOCATE(FINSOL)
       DEALLOCATE(DEBLIQ)
       DEALLOCATE(FINLIQ)
-      write(lu,*) 'maxfro',maxfro
-      write(lu,*) 'maxfro',maxfroliq
-      write(lu,*) 'maxfro',maxfrosol
 !
 !-----------------------------------------------------------------------
 !
