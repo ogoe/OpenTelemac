@@ -1,0 +1,145 @@
+\subsection{Nestor example 3}
+%
+
+% - Purpose & Problem description:
+%     These first two parts give reader short details about the test case,
+%     the physical phenomena involved and specify how the numerical solution will be validated
+%
+\subsubsection{Purpose}
+%
+Third test example for Nestor performing the action:
+
+\texttt{ActionType = Dig\_by\_criterion}
+%
+\subsubsection{Description of the problem}
+%
+This example performs the maintenance of a fairway. The dredged material is transferred (dumped) to the dumping area.
+At regular time intervals Nestor tests within the fairway area for each node if the depth criterion is violated. If the criterion is violated the node will be dredged to a specified depth. 
+The depth is defined as elevation of the reference level minus elevation of the node (see Figure \ref{schema}).        
+
+\begin{figure} [!h]
+	\centering
+	\includegraphics[scale=0.12]{../img/critDig_schematicDiagram.png}
+	\caption{Schematic diagram of dredging by criterion}\label{schema}
+\end{figure}
+
+
+The fairway and the dumping area (see Figure \ref{grid}) are defined by polygons which are defined in file \texttt{\_DigPolys.dat}.
+
+
+Convention for naming polygons: The polygon name must start with an integer between 100 and 999. Any text after that is treated as a comment to  help the user. 
+Internally only the number is used to identify the polygon. 
+
+
+% - Reference:
+%     This part gives the reference solution we are comparing to and
+%     explicits the analytical solution when available;
+%
+%
+\subsubsection{Reference}
+%
+
+% - Physical parameters:
+%     This part specifies the geometry, details all the physical parameters
+%     used to describe both porous media (soil model in particularly) and
+%     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
+%
+%
+\subsubsection{Physical parameters}
+%
+The simulation is set up with 10 grain classes. 
+The bottom is discretized with three layer: A constant active layer (0.1 m), an underlying stratum (0.1 m) and a third layer up to the rigid bed (9.8m).  
+
+The Meyer-Peter Mueller (MPM) transport formula is used but the MPM parameter is set to 16 (default 8) to create more dynamics in the bottom elevation. Thus all bottom changes are a result of sediment transport processes and fairway maintenance (digging and dumping).  
+% - Geometry and Mesh:
+%     This part describes the mesh used in the computation
+%
+%
+\subsubsection{Geometry and Mesh}
+%
+A 3.3 km long flume with two 180 degree bends has been chosen as test geometry.
+The width of the flume is 200 m  (see Figure \ref{grid}). 
+
+The mesh consists of 1614 nodes and 2948 elements.
+
+\begin{figure} [!h]
+\centering
+\includegraphics[scale=0.14]{../img/critDig_grid_Polys_2D.png}
+\caption{Geometry of the test flume with two bends and the two polygons}\label{grid}
+\end{figure}
+
+
+% - Initial and boundary conditions:
+%     This part details both initial and boundary conditions used to simulate the case
+%
+%
+\subsubsection{Initial and Boundary Conditions}
+%
+Steady state boundary conditions:
+\begin{itemize}
+\item{ Discharge at the inlet = 1000 m$^3$/s}
+\item Water level at the outlet = 2.2 m
+\item Sedimentological equilibrium at the inlet (zF is constant, QS is calculated)
+\end{itemize}
+Fully developed flow and bottom from a previous simulation are used as initial conditions.
+
+The total simulation period is 777600.0000 s (9 days) with a time step of 6 s. 
+% - Numerical parameters:
+%     This part is used to specify the numerical parameters used
+%     (adaptive time step, mass-lumping when necessary...)
+%
+%
+\subsubsection{Numerical parameters}
+%
+% - Results:
+%     We comment in this part the numerical results against the reference ones,
+%     giving understanding keys and making assumptions when necessary.
+%
+%
+\subsubsection{Results}
+%
+Figure \ref{result12} shows the bottom evolution after 0h and 1h. The evolution after 0h is from a previous computation file. The evolution after 1h  is driven by the first maintenance of the fairway and sediment transport. The digging and dumping were executed between 0h and 1h. The fairway was dredged to the \texttt{DigDepth} and the dredged material was dumped to the dumping area defined by the polygon \texttt{200\_DumpArea}.
+
+
+ 
+Figure \ref{result34} and \ref{result56} shows the bottom evolution due to sediment transport processes between 1h and 192h. 
+No digging and dumping actions were defined in this time period.
+
+Figure \ref{result78} shows the bottom evolution between 192h and 216h due to sediment transport processes and the second maintenance of the fairway. The digging and dumping were executed between 192h an 193h. Again the fairway was dredged to the
+\texttt{DigDepth} and the dredged material was dumped to the dumping area, which leaded again to a higher bottom evolution.
+
+% Here is an example of how to include the graph generated by validateTELEMAC.py
+% They should be in test_case/img
+\begin{figure} [!h]
+	\centering
+	\includegraphics[scale=0.14]{../img/critDig_Poly_000h.png}
+	\includegraphics[scale=0.14]{../img/critDig_Poly_001h.png}
+	\caption{Simulated evolution over the time.}\label{result12}
+\end{figure}
+
+\begin{figure} [!h]
+	\centering
+	\includegraphics[scale=0.14]{../img/critDig_Poly_050h.png}
+	\includegraphics[scale=0.14]{../img/critDig_Poly_100h.png}
+	\caption{Simulated evolution over the time.}\label{result34}
+\end{figure}
+
+\begin{figure} [!h]
+	\centering
+	\includegraphics[scale=0.14]{../img/critDig_Poly_150h.png}
+	\includegraphics[scale=0.14]{../img/critDig_Poly_192h.png}
+	\caption{Simulated evolution over the time.}\label{result56}
+\end{figure}
+
+\begin{figure} [!h]
+	\centering
+	\includegraphics[scale=0.14]{../img/critDig_Poly_193h.png}
+	\includegraphics[scale=0.14]{../img/critDig_Poly_216h.png}
+	\caption{Simulated evolution over the time.}\label{result78}
+\end{figure}
+
+
+
+
+
+
