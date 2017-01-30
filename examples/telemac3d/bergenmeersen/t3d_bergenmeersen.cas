@@ -3,7 +3,7 @@ TITLE ='Bergenmeersen'
 /---------------------------------------------------------------------/
 /                        INPUT-OUTPUT, FILES                          /
 /---------------------------------------------------------------------/
-FORTRAN FILE                ='t3d_bergenmeersen.f'
+FORTRAN FILE                ='user_fortran'
 LIQUID BOUNDARIES FILE      ='t3d_bergenmeersen.qsl'
 GEOMETRY FILE               ='geo_bergenmeersen.slf'
 BOUNDARY CONDITIONS FILE    ='geo_bergenmeersen.cli'

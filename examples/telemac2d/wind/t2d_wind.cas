@@ -31,7 +31,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_wind.slf
-FORTRAN FILE                    = t2d_wind.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_wind.cli
 RESULTS FILE                    = r2d_wind.slf
 PREVIOUS COMPUTATION FILE       = ini_wind.slf

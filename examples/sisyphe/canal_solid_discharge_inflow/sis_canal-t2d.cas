@@ -27,7 +27,6 @@ MATRIX STORAGE : 3
 / -----------------------------------------------------
 GEOMETRY FILE = geo_canal-t2d.slf
 BOUNDARY CONDITIONS FILE = geo_canal-t2d.cli
-FORTRAN FILE = sis_canal-t2d.f
 /
 RESULTS FILE = sis_canal-t2d.slf
 /

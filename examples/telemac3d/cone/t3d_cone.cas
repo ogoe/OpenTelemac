@@ -1,5 +1,5 @@
 /
-FORTRAN FILE             : t3d_cone.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_cone.cli
 GEOMETRY FILE            : geo_cone.slf
 3D RESULT FILE           : r3d_cone.slf

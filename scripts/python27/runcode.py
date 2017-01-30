@@ -331,7 +331,6 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
             xcpt.append({'name':'processLIT','msg':'file does not exist ( '+path.basename(cref)+' ) for key '+k})
             continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
-         if iFiles[k].split(';')[5][0:7] == 'FORTRAN': crun = path.splitext(crun)[0]+path.splitext(cref)[1]
          if path.exists(crun) and update:    # update is always True because we now copy the CAS file regardeless
             if not isNewer(crun,cref) == 1:
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
@@ -342,36 +341,20 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                   # ~~> skip if all files are there
                   if found: iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
                # special case for FORTRAN and CAS files in case of update
-               if iFiles[k].split(';')[5][0:7] == 'FORTRAN':
-                  if path.exists(crun): remove(crun) # ... in case the extension has changed
-                  if path.isdir(cref):
-                     cdir = path.join(getcwd(),cref)
-                     cfor = []
-                     for file in listdir(cdir):
-                        if file == cref:
-                           continue
-                        # Skipping the executable that has the same name as the folder
-                        if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-                     print '   re-bundling: ', path.basename(cref),crun
-                     putFileContent(crun,cfor+[''])
-                  else:
-                     print '    re-copying: ', path.basename(cref),crun
-                     putFileContent(crun,getFileContent(cref)+[''])
+               elif iFiles[k].split(';')[5][0:7] == 'FORTRAN':
+                  copyPRINCI(cref,path.dirname(crun))
                elif iFiles[k].split(';')[5][0:3] == 'CAS':
-                  #print '    re-writing: ', crun
-                  #putFileContent(crun,rewriteCAS(cas))
-                  print '    re-copying: ', crun
-                  putFileContent(crun,cas[0])
+                  print '    re-copying cas: ', crun
+                  newcas = [line[1:] if line[0] == ' ' else line for line in cas[0]]
+                  putFileContent(crun,newcas)
                else:
                   print '      ignoring: ', path.basename(cref),crun
-                  #putFileContent(crun,getFileContent(cref)+[''])
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
-               #print '    re-writing: ', crun
-               #putFileContent(crun,rewriteCAS(cas))
-               print '    re-copying: ', crun
-               putFileContent(crun,cas[0])
+               print '    copying cas: ', crun
+               newcas = [line[1:] if line[0] == ' ' else line for line in cas[0]]
+               putFileContent(crun,newcas)
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
             elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
@@ -379,9 +362,8 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '       copying: ', path.basename(cref),crun
+                  print '       copying geom: ', path.basename(cref),crun
                   shutil.copyfile(path.join(getcwd(),cref), crun)
-                  #shutil.copy2(path.join(getcwd(),cref), crun)
             elif iFiles[k].split(';')[5][0:7] == 'SECTION':
                # Giving section name means that we have to give it to partel
                section_name = path.basename(crun)
@@ -389,7 +371,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '       copying: ', path.basename(cref),crun
+                  print '       copying section: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif iFiles[k].split(';')[5][0:5] == 'ZONES':
                # Giving zone name means that we have to give it to partel
@@ -398,7 +380,7 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '       copying: ', path.basename(cref),crun
+                  print '       copying zones: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
             elif iFiles[k].split(';')[5][0:5] == 'WEIRS':
                value,defaut = getKeyWord('TYPE DES SEUILS',cas,dico,frgb)
@@ -415,30 +397,23 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '       copying: ', path.basename(cref),crun
+                  print '       copying weirs: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
-            elif path.isdir(cref):
-               cdir = path.join(getcwd(),cref)
-               cfor = []
-               for file in listdir(cdir):
-                  if file == cref:
-                     continue
-                  if path.isfile(path.join(cdir,file)): cfor.extend(getFileContent(path.join(cdir,file)))
-               print '      bundling: ', path.basename(cref),crun
-               putFileContent(crun,cfor+[''])
+            elif iFiles[k].split(';')[5][0:7] == 'FORTRAN':
+               copyPRINCI(cref,path.dirname(crun))
             else:
                if use_link:
                   print '       linking: ', path.basename(cref),crun
                   symlinkFile(path.join(getcwd(),cref), crun)
                else:
-                  print '       copying: ', path.basename(cref),crun
+                  print '       copying ascii: ', path.basename(cref),crun
                   putFileContent(crun,getFileContent(cref)+[''])
          else:
             if use_link:
                print '       linking: ', path.basename(cref),crun
                symlinkFile(path.join(getcwd(),cref), crun)
             else:
-               print '       copying: ', path.basename(cref),crun
+               print '       copying bin: ', path.basename(cref),crun
                shutil.copyfile(path.join(getcwd(),cref), crun)
                #shutil.copy2(path.join(getcwd(),cref), crun)
 
@@ -610,13 +585,14 @@ def getHPCDepend(cfgHPC):
    if cfgHPC.has_key('DEPEND'): return cfgHPC['DEPEND']
    else: return ''
 
-def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
-   # NB (Renaud Barate, jan 12th 2015): To fix a bug causing the default executables to
-   # fail when they are moved, this function has been modified to force the recompilation
-   # of the executable every time (even if there is no user fortran file). This is a
-   # dirty hack which should be reverted when Telemac finally gets a proper compilation
-   # system.
+def compileObj(f90Name,objCmd,bypass):
+   """
+      Run the compilation of an object
 
+      :param: f90Name Name of the fortran File
+      :param: objCmd The command to run
+      :param: bypass If yes exception are catched at the end of the execution
+   """
    mes = MESSAGES(size=10)
    if path.exists(f90Name):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -625,52 +601,151 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,bypass):
       try:
          tail,code = mes.runCmd(objCmd,bypass)
       except Exception as e:
-         raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your compiler installation.'},e,bypass)])
-      if code != 0: raise Exception([{'name':'processExecutable','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
+         raise Exception([filterMessage({
+                 'name':'compileObj',
+                 'msg':'something went wrong for no reason. Please verify your compiler installation.'
+                 },e,bypass)])
+      if code != 0:
+         raise Exception([{
+             'name':'compileObj',
+             'msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
    else:
-      objName = ""
+      raise Exception([filterMessage({
+             'name':'compileObj',
+             'msg':'Missing file : '+f90Name
+             },e,bypass)])
+   return True
 
-   exeCmd = exeCmd.replace('<objs>',objName)
-   exeCmd = exeCmd.replace('<exename>',path.basename(useName))
+def compileExe(exeName,objNames,exeCmd,bypass):
+   """
+      Run the compilation of an executable
+
+      :param: exeName Name of the executable
+      :param: objNames List of objects to use for the executable
+      :param: exeCmd The command to run
+      :param: bypass If yes exception are catched at the end of the execution
+   """
+   mes = MESSAGES(size=10)
+   exeCmd = exeCmd.replace('<objs>',' '.join(objNames))
+   exeCmd = exeCmd.replace('<exename>',path.basename(exeName))
    try:
       tail,code = mes.runCmd(exeCmd,bypass)
    except Exception as e:
-      raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
-   if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
-   print '    created: ',path.basename(useName)
+      raise Exception([filterMessage({
+          'name':'compileExe',
+          'msg':'something went wrong for no reason. Please verify your external library installation.'
+          },e,bypass)])
+   if code != 0:
+      raise Exception([{
+          'name':'compileExe',
+          'msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
+   print '    created: ',path.basename(exeName)
 
+def copyPRINCI(princiFile,dest):
+   """
+      Handles the copy of a princi into a temporary folder
 
+      :param: princiFile File/Folder containing the user Fortran
+      :param: dest Destionation Folder (tmp dir usually)
+   """
+   destFolder = path.join(dest,'user_fortran')
+   # Check that the folder exists if not creating it
+   if not path.exists(destFolder):
+      mkdir(destFolder)
 
+   if path.isdir(princiFile):
 
-
-   return True
+      for file in listdir(princiFile):
+         shutil.copyfile(path.join(princiFile,file),
+                         path.join(destFolder,file))
+         print "    Adding to user_fortran: ",file
+   else:
+      shutil.copyfile(princiFile,path.join(destFolder,path.basename(princiFile)))
+      print "    Adding to user_fortran: ",path.basename(princiFile)
 
 def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
+   """
+      Compiling a user fortran
 
-   plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
-   #pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
-   objFile = path.join(plib,codeName+'.cmdo')
-   exeFile = path.join(plib,codeName+'.cmdx')
-   if not path.exists(objFile) or not path.exists(exeFile):
-      raise Exception([{'name':'compilePRINCI','msg':'... could not find:' + exeFile + \
+      :param: princiFile File/Folder containing the user Fortran
+      :param: codeName Name of the TELEMAC-MASCARET module
+                       this user Fortran is compiled for
+      :param: cfgName Name of the configuration it is compiled for
+      :param: cfg Configuration dictionary
+      :param: bypass If yes exception are catched at the end of the execution
+   """
+
+   plib = cfg['MODULES'][codeName]['path'].replace(
+                 path.join(cfg['root'],'sources'),
+                 path.join(cfg['root'],'builds',cfgName,'lib'))
+   # Template for compiling commands
+   objCmdTemplate = path.join(plib,codeName+'.cmdo')
+   exeCmdTemplate = path.join(plib,codeName+'.cmdx')
+   # If one of the two file is missing compilation might not have be done
+   if not path.exists(objCmdTemplate) or not path.exists(exeCmdTemplate):
+      raise Exception([{
+          'name':'compilePRINCI',
+          'msg':'... could not find:' + exeCmdTemplate + \
          '\n    ~~~> you may need to compile your system with the configuration: ' + cfgName }])
    # ~~> Make the keys portable (no full path)
-   objCmd = getFileContent(objFile)[0]
-   exeCmd = getFileContent(exeFile)[0]
+   objCmd = getFileContent(objCmdTemplate)[0]
+   exeCmd = getFileContent(exeCmdTemplate)[0]
    for k in cfg['TRACE']:
       objCmd = objCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
       exeCmd = exeCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
-   # ~~<
-   chdir(path.dirname(princiFile))
-   princiFile = path.basename(princiFile)
-   objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
-   exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
-   if path.exists(exeFile): remove(exeFile)
-   try:
-      processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,bypass)
-   except Exception as e:
-      raise Exception([filterMessage({'name':'compilePRINCI','msg':'could not compile: ' + princiFile},e,bypass)])  # only one item here
-   if path.exists(objFile): remove(objFile)
+
+   # Fortran file is a directory
+   if path.isdir(princiFile):
+      objNames = []
+      chdir(princiFile)
+      filesToCompile = []
+      listFiles = listdir(princiFile)
+      listFiles.sort()
+      # Compiling first files beginning with m[1-9]_
+      for file in listFiles:
+         if re.match("^m[0-9]+.*",file) and file.lower().endswith((".f",".f90")):
+            filesToCompile.append(file)
+      # Adding the other files
+      for file in listFiles:
+         if file not in filesToCompile and file.lower().endswith((".f",".f90")):
+            filesToCompile.append(file)
+      # Compiling files
+      for file in filesToCompile:
+         # Trying to compile file
+         try:
+            compileObj(file,objCmd,bypass)
+         except Exception as e:
+            raise Exception([filterMessage({
+                'name':'compilePRINCI',
+                'msg':'could not compile Fortran: ' + file},e,bypass)])  # only one item here
+         # Adding object file to list of objects
+         objNames.append(path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj'])
+
+      # Compiling exe
+      exeName = path.join(princiFile,path.basename(princiFile) + cfg['SYSTEM']['sfx_exe'])
+      try:
+         compileExe(exeName,objNames,exeCmd,bypass)
+      except Exception as e:
+         raise Exception([filterMessage({
+             'name':'compilePRINCI',
+             'msg':'could not compile executable: ' + exeName},e,bypass)])  # only one item here
+      exeFile = path.join('user_fortran',exeName)
+   else:
+      # ~~<
+      chdir(path.dirname(princiFile))
+      princiFile = path.basename(princiFile)
+      objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
+      exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
+      if path.exists(exeFile): remove(exeFile)
+      try:
+         compileObj(princiFile,objCmd,bypass)
+         compileExe(exeFile,[objFile],exeCmd,bypass)
+      except Exception as e:
+         raise Exception([filterMessage({
+             'name':'compilePRINCI',
+             'msg':'could not compile: ' + princiFile},e,bypass)])  # only one item here
+      if path.exists(objFile):
+         remove(objFile)
 
    return exeFile
 
@@ -1072,6 +1147,10 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
+            # Removing princi folder if it exists
+            if path.exists(path.join(CASFiles[name]['wir'],'user_fortran')):
+               for file in listdir(path.join(CASFiles[name]['wir'],'user_fortran')):
+                  remove(file)
             section_name,zone_name,weir_name = processLIT(CASFiles[name]['cas'],
                        MODFiles[CASFiles[name]['code']]['iFS'],
                        CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],
@@ -1112,67 +1191,25 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       print '\n... checking the executable'
       for name in CASFiles:
          chdir(CASFiles[name]['wir'])
-         # >>> Names for the executable set
-         #> names within wdir
-         f90File = MODFiles[CASFiles[name]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
-         #> aggregation of PRINCI files
-         for cplage in CASFiles[name]['with']:
-            f90FilePlage = MODFiles[CASFiles[name]['with'][cplage]['code']]['iFS']['FICHIER FORTRAN'].split(';')[1]
-            if path.isfile(f90FilePlage):
-               addFileContent(f90File,['']+getFileContent(f90FilePlage))
-               remove(f90FilePlage)
-         plib = cfg['MODULES'][CASFiles[name]['code']]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
-         objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
-         #> default executable name
-         exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
-         #> user defined executable name
-         useFile = exeFile
-         value,defaut = getKeyWord('FICHIER FORTRAN',CASFiles[name]['cas'],
-                                   MODFiles[CASFiles[name]['code']]['dico'],
-                                   MODFiles[CASFiles[name]['code']]['frgb'])
-         # ~~ check if compileTELEMAC.py has been called since
-         if value != []:
-            useFort = path.join(CASFiles[name]['dir'],value[0].strip("'\""))
-            useFile = path.join(CASFiles[name]['dir'],
-                                path.splitext(value[0].strip("'\""))[0]\
-                                +cfg['SYSTEM']['sfx_exe'])
-            f90File = path.splitext(f90File)[0]+path.splitext(useFort)[1]
-            # /!\ removing dependency over cfg['REBUILD']:
-            if path.exists(useFile):
-               if path.isdir(useFile):
-                  useFile = useFile + sep + path.basename(useFile)
-               if path.exists(useFile):
-                  if cfg['REBUILD'] == 1:
-                     remove(useFile)
-                  elif isNewer(useFile,exeFile) == 1:
-                     remove(useFile)
-                  elif isNewer(useFile,useFort) == 1:
-                     remove(useFile)
-            #> default command line compilation and linkage
-         if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdo')):
-            raise Exception([{'name':'runCAS','msg': \
-               '\nNot able to find your OBJECT command line: ' + path.join(plib,CASFiles[name]['code']+'.cmdo') + '\n' + \
-               '\n ... you have to compile this module at least: '+CASFiles[name]['code']}])
-         objCmd = getFileContent(path.join(plib,CASFiles[name]['code']+'.cmdo'))[0]
-         if not path.exists(path.join(plib,CASFiles[name]['code']+'.cmdx')):
-            raise Exception([{'name':'runCAS','msg': \
-               '\nNot able to find your OBJECT command line: ' + path.join(plib,CASFiles[name]['code']+'.cmdx') + '\n' + \
-               '\n ... you have to compile this module at least: '+CASFiles[name]['code']}])
-         exeCmd = getFileContent(path.join(plib,CASFiles[name]['code']+'.cmdx'))[0]
-         # ~~> Make the keys portable (no full path)
-         for k in cfg['TRACE']:
-            objCmd = objCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
-            exeCmd = exeCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
-         # >>> Compiling the executable if required
-         exename = path.join(CASFiles[name]['wir'],'out_'+path.basename(useFile))
-         CASFiles[name].update({ 'run':exename, 'exe':exename })
-         try:
-            processExecutable(useFile,objFile,f90File,objCmd,exeCmd,options.bypass)
-         except Exception as e:
-            raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
-         print '    re-copying: ',path.basename(useFile),exename
-         shutil.copy2(path.basename(useFile),path.join(CASFiles[name]['dir'],path.basename(useFile)))
-         shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
+
+         # Detect if we have a user fortran
+         if path.exists('user_fortran'):
+            print "Compiling user fortran"
+            exeFile = compilePRINCI(path.join(CASFiles[name]['wir'],'user_fortran'),
+                                    CASFiles[name]['code'],
+                                    cfgName,
+                                    cfg,
+                                    options.bypass)
+         else:
+            print "Using default exe"
+            #> default executable name
+            exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
+         # Copying Exefile in TMPDir
+         shutil.copy2(exeFile,path.join(CASFiles[name]['wir'],'out_'+path.splitext(name)[0]))
+
+         # Update of CASFile info
+         CASFiles[name].update({ 'run':exeFile, 'exe':exeFile })
+
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

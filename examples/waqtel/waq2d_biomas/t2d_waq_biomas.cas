@@ -22,7 +22,7 @@ TITLE = 'Water Quality- BIOMASS process for Channel'
 GEOMETRY FILE             = 'geo_waq_biomas.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq_biomas.cli'
 RESULTS FILE              = 'r2d_waq_biomas.slf'
-FORTRAN FILE              = 't2d_waq_biomas.f'
+FORTRAN FILE              = 'user_fortran'
 /REFERENCE FILE            = 'f2d_waq_biomas.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

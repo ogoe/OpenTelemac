@@ -1,27 +1,25 @@
 /----------------------------------------------------------------------|
 /PARALLEL PROCESSORS : 8
 /----------------------------------------------------------------------|
-/NESTOR FILE                   ==>      SISMAF 
-/NESTOR POLYGON FILE           ==>      DSIPDS 
-/NESTOR SURFACE REFERENCE FILE ==>      DSRWSP 
-/NESTOR PHYDEF FILE CFG1       ==>      DSCFG1 
-/ 
+/NESTOR FILE                   ==>      SISMAF
+/NESTOR POLYGON FILE           ==>      DSIPDS
+/NESTOR SURFACE REFERENCE FILE ==>      DSRWSP
+/NESTOR PHYDEF FILE CFG1       ==>      DSCFG1
+/
 /
  NESTOR ACTION FILE            = _DigActions.dat
  NESTOR POLYGON FILE           = _DigPolys.dat
  NESTOR SURFACE REFERENCE FILE = _DigRefLev.dat
-/NESTOR PHYDEF FILE CFG1       = _DigRestart.dat      
+/NESTOR PHYDEF FILE CFG1       = _DigRestart.dat
 /
- NESTOR = YES 
+ NESTOR = YES
  ORIGINAL DATE OF TIME            = 2000;01;01    / year , month  , day
  ORIGINAL HOUR OF TIME            = 0;0;0         / hours, minutes, seconds
 /----------------------------------------------------------------------|
 /
- MORPHOLOGICAL FACTOR = 3.0D0 
- MORPHOLOGICAL FACTOR = 1.0D0 
+ MORPHOLOGICAL FACTOR = 3.0D0
+ MORPHOLOGICAL FACTOR = 1.0D0
 /
-/
-/FORTRAN FILE               = '_princi_SIS_72.f'  wird jetzt in _tel.cas aufgerufen
 /
  GEOMETRY FILE              = 'geo_nestor3.slf'
  BOUNDARY CONDITIONS FILE   = 'geo_nestor3_sis.cli'
@@ -39,7 +37,7 @@
 /  GENERAL AND OUTPUT
 /----------------------------------------------------------------------|
 TITLE : 'DS_Test'
-VARIABLES FOR GRAPHIC PRINTOUTS             = 
+VARIABLES FOR GRAPHIC PRINTOUTS             =
 'E,H,*A**,D50,QSBL,QS*,QS10,TOB,R,B,KS,*ES,U,V,S,Z,M,N,P'
 / '*A**="fraction of sediment of all classes in all layers"';
 / 'B="bottom elevation (m)"';
@@ -60,7 +58,7 @@ VARIABLES FOR GRAPHIC PRINTOUTS             =
 / 'V="velocity along y axis (m/s)"';
 /
 /    TIME STEP =   4 / wird in v6p1 aus Telemac uebernommen
-/ Achtung time step moeglichst nach der Sedimentologischen 
+/ Achtung time step moeglichst nach der Sedimentologischen
 / Courant-Zahl waehlen. Berechnet sich aus QS/Schichtdicke
 /     VARIABLE TIME-STEP             = NO
 /----------------------------------------------
@@ -83,7 +81,7 @@ TREATMENT OF FLUXES AT THE BOUNDARIES = 1
 /----------------------------------------------------------------------|
 / PHYSICAL PARAMETERS - HYDRODYNAMICS
 /----------------------------------------------------------------------|
-/   0: glatter Boden 3*d50        3: Stickler 
+/   0: glatter Boden 3*d50        3: Stickler
 /   1: wellenbeeinflusster Boden  4: Manning
 /   2: Chezy                      5: Nikuradse
  LAW OF BOTTOM FRICTION    = 0
@@ -93,11 +91,11 @@ TREATMENT OF FLUXES AT THE BOUNDARIES = 1
 / PHYSICAL PARAMETERS - BED LOAD
 /----------------------------------------------------------------------|
 /
-/  1:Meyer-Peter Mueller                               5:SOULSBY - VAN RIJN (bed load + suspension)  
-/  2:EINSTEIN-BROWN (bed load)                         6:HUNZIKER (uniquement granulometrie etendue) 
-/  3:ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)  7:VAN RIJN (bed load)                         
-/  3:ENGELUND-HANSEN (total)                           8:BAILARD (bed load + suspension)             
-/  4:BIJKER (bed load + suspension)                    9:DIBAJNIA ET WATANABE (total)                
+/  1:Meyer-Peter Mueller                               5:SOULSBY - VAN RIJN (bed load + suspension)
+/  2:EINSTEIN-BROWN (bed load)                         6:HUNZIKER (uniquement granulometrie etendue)
+/  3:ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)  7:VAN RIJN (bed load)
+/  3:ENGELUND-HANSEN (total)                           8:BAILARD (bed load + suspension)
+/  4:BIJKER (bed load + suspension)                    9:DIBAJNIA ET WATANABE (total)
  BED-LOAD TRANSPORT FORMULA    = 1
 /MPM COEFFICIENT = 28.5D0     / Standard=8 ; 0 => Geschiebetransport =0
  MPM COEFFICIENT = 16.0D0     / Standard=8 ; 0 => Geschiebetransport =0
@@ -118,8 +116,8 @@ TREATMENT OF FLUXES AT THE BOUNDARIES = 1
 / 2 : Formel nach Soulsby
  FORMULA FOR SLOPE EFFECT                       = 2
  FRICTION ANGLE OF THE SEDIMENT                 = 35 /default 40
-/ deviation: Änderung der Richtung des Geschiebetransports 
-/ 1: Koch and Flokstra   
+/ deviation: Änderung der Richtung des Geschiebetransports
+/ 1: Koch and Flokstra
 / 2: Talmon et al. 1995
 FORMULA FOR DEVIATION         = 2
 PARAMETER FOR DEVIATION       = 1.7
@@ -134,7 +132,7 @@ BETA                          = 1.3
  NUMBER OF SIZE-CLASSES OF BED MATERIAL     = 10
  MEAN DIAMETER OF THE SEDIMENT  =  0.10D-4; 0.11D-4; 0.12D-4; 0.13D-4;         / Fluesschen
                           0.24D-4; 1.00D-4; 1.01D-4; 1.10D-4; 1.20D-4;
-                          1.60D-3         
+                          1.60D-3
 /
  INITIAL FRACTION FOR PARTICULAR SIZE CLASS  = 0.10D0; 0.10D0; 0.10D0;         / Fluesschen
                                0.10D0; 0.10D0; 0.10D0; 0.10D0; 0.10D0;
@@ -144,7 +142,7 @@ BETA                          = 1.3
 /----------------------------------------------------------------------|
  CONSTANT ACTIVE LAYER THICKNESS                   = YES
  ACTIVE LAYER THICKNESS                            = 0.10
-/SECONDARY CURRENTS                                = YES 
+/SECONDARY CURRENTS                                = YES
 /     SKIN FRICTION CORRECTION                          = 1
 /     RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER     = 3
 /

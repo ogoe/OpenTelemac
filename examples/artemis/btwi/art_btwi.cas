@@ -12,7 +12,7 @@ RESULTS FILE               ='r2d_btwi.slf'
 /
 BOUNDARY CONDITIONS FILE   ='geo_btwi.cli'
 /
-FORTRAN FILE               ='art_btwi.f'
+FORTRAN FILE               ='user_fortran'
 /
 GEOMETRY FILE              ='geo_btwi.slf'
 /

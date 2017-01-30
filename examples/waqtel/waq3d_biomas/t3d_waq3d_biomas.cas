@@ -22,7 +22,6 @@ GEOMETRY FILE             = 'geo_waq3d_biomas.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq3d_biomas.cli'
 3D RESULT FILE            = 'r3d_waq3d_biomas.slf'
 2D RESULT FILE            = 'r2d_waq3d_biomas.slf'
-/FORTRAN FILE              = 't3d_waq3d_biomas.f'
 /REFERENCE FILE            = 'f3d_waq3d_biomas.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

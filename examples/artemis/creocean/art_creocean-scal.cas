@@ -5,9 +5,9 @@
 /
 /    FILE NAMES
 /
-FORTRAN FILE                          : 'art_actu-scal.f'	
-BOUNDARY CONDITIONS FILE              : 'geo_borme_actu.cli'	
-GEOMETRY FILE                         : 'geo_borme_actu.slf'	
+FORTRAN FILE                          : 'user_fortran'
+BOUNDARY CONDITIONS FILE              : 'geo_borme_actu.cli'
+GEOMETRY FILE                         : 'geo_borme_actu.slf'
 RESULTS FILE                          : 'r2d_borme_actu-scal.res'
 /
 /    GENERAL SETTINGS

@@ -32,7 +32,7 @@ TOLERANCES FOR IDENTIFICATION : 1.E-3;1.E-3;1.E-3;1.E-5
 /CONDITIONS INITIALES : VOIR CONDIN
 /
 /
-FORTRAN FILE                    : t2d_estimation.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_estimation.cli
 GEOMETRY FILE               : geo_estimation.slf
 RESULTS FILE              : r2d_estimation.slf

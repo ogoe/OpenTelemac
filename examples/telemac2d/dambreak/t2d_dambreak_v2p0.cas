@@ -19,7 +19,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_dambreak.slf
-FORTRAN FILE                    = t2d_dambreak.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_dambreak.cli
 RESULTS FILE                    = r2d_dambreak_v2p0.slf
 /

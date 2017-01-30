@@ -34,7 +34,7 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FORTRAN FILE              : t2d_flotteurs_v2p0.f
+FORTRAN FILE              : 'user_fortran-v2p0'
 BOUNDARY CONDITIONS FILE  : geo_flotteurs.cli
 GEOMETRY FILE             : geo_flotteurs.slf
 RESULTS FILE              : r2d_flotteurs_v2p0.slf

@@ -52,7 +52,7 @@ INITIAL SUSPENSION CONCENTRATIONS = 0.001; 0.01
 /
 GEOMETRY FILE = geo_cons_mixte-t2d.slf
 /
-FORTRAN FILE      = sis_cons_mixte-t2d.f
+FORTRAN FILE      = 'user_fortran-sis'
 /
 /
 / LIT STRATIFIE

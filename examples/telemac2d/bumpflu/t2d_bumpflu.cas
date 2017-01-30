@@ -22,7 +22,7 @@
 /  HP C3700 compilateur HP        : 11 s   6.2  04/05/2012
 /  HP Z600 compilateur HP         :  3 s   6.2  27/07/2012 (test python)
 /
-FORTRAN FILE                   : t2d_bumpflu.f
+FORTRAN FILE                   : 'user_fortran'
 BOUNDARY CONDITIONS FILE: geo_bumpflu.cli
 GEOMETRY FILE              : geo_bumpflu.slf
 RESULTS FILE             : r2d_bumpflu.slf

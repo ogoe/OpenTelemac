@@ -26,7 +26,7 @@ SCHEME FOR ADVECTION OF VELOCITIES : 3
 /
 TITLE = '--> V Shapped Container'
 /
-FORTRAN FILE             : t3d_V.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_V.cli
 GEOMETRY FILE            : geo_V.slf
 /

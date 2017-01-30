@@ -10,7 +10,7 @@ TITLE = 'TELEMAC 3D : TEST OF TETRAHEDRA WITH SMASHED ELEMENTS'
 /
 ELEMENT : 'TETRAEDRE'
 /
-FORTRAN FILE             : t3d_tetra.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_tetra.cli
 LIQUID BOUNDARIES FILE   : t3d_tetra.qsl
 GEOMETRY FILE            : geo_tetra.slf

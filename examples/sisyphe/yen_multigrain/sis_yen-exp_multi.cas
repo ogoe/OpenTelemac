@@ -9,12 +9,11 @@ BOUNDARY CONDITIONS FILE                     = geo_yen-exp.cli
 PRESCRIBED SOLID DISCHARGES                  = 0.0;0.0
 GEOMETRY FILE                                = geo_yen-exp.slf
 RESULTS FILE                                 = sis_yen-exp_multi.slf
-FORTRAN FILE                                 = sis_yen-exp.f
 /----------------------------------------------
 /  GENERAL AND OUTPUT
 /----------------------------------------------
 TITLE : 'Yen-180-bend'
-VARIABLES FOR GRAPHIC PRINTOUTS = 
+VARIABLES FOR GRAPHIC PRINTOUTS =
 'U,V,S,E,H,B,KS,TOB,M,N,P,1A*,2A*,*ES'
 /
 /----------------------------------------------
@@ -31,7 +30,7 @@ MASS-LUMPING                             = YES
 /----------------------------------------------
 / PHYSICAL PARAMETERS - HYDRODYNAMICS
 /----------------------------------------------
-/ 
+/
 /FRICTION COEFFICIENT = 65.
 /LAW OF BOTTOM FRICTION = 0
 / 0: wird berechnet: ks = 3*D50
@@ -39,18 +38,18 @@ MASS-LUMPING                             = YES
 /
 /----------------------------------------------
 / PHYSICAL PARAMETERS - BED LOAD
-/---------------------------------------------- 
+/----------------------------------------------
 BED LOAD = YES
 SUSPENSION = NO
 BED-LOAD TRANSPORT FORMULA                 = 3
 SHIELDS PARAMETERS = 0.047;0.047;0.047;0.047;0.047
 CRITICAL EVOLUTION RATIO                   = 1000.
-/COEFFICIENT FUNCTION OF THE POROSITY       = 1.6 
+/COEFFICIENT FUNCTION OF THE POROSITY       = 1.6
 NON COHESIVE BED POROSITY                   = 0.37500
 NUMBER OF SIZE-CLASSES OF BED MATERIAL           = 5
 NUMBER OF BED LOAD MODEL LAYERS         = 2
 
-SEDIMENT DIAMETERS = 
+SEDIMENT DIAMETERS =
 0.00031;0.00064;0.00103;0.00169;0.00336
 INITIAL FRACTION FOR PARTICULAR SIZE CLASS       =
 0.2;0.2;0.2;0.2;0.2

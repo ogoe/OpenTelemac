@@ -22,7 +22,7 @@
 /
 TITLE = 'Non linear wave on a bar'
 /
-FORTRAN FILE             : 't3d_nonlinearwave.f'
+FORTRAN FILE             : 'user_fortran'
 GEOMETRY FILE            : 'geo_nonlinearwave.slf'
 BOUNDARY CONDITIONS FILE : 'geo_nonlinearwave.cli'
 3D RESULT FILE           : 'r3d_nonlinearwave.slf'

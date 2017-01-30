@@ -14,7 +14,7 @@
 / Lock exchange test case
 /------------------------------------
 /
-FORTRAN FILE             : t3d_lock-exchange.f
+FORTRAN FILE             : 'user_fortran'
 GEOMETRY FILE            : geo_lock-exchange.slf
 BOUNDARY CONDITIONS FILE : geo_lock-exchange.cli
 3D RESULT FILE           : r3d_lock-hydro.slf

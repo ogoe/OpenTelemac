@@ -1,5 +1,5 @@
 /----------------------------------------------------------------------/
-FORTRAN FILE                : 't2d_break.f'
+FORTRAN FILE                : 'user_fortran'
 BOUNDARY CONDITIONS FILE    : 'geo_break.cli'
 GEOMETRY FILE               : 'geo_break.slf'
 RESULTS FILE                : 'r2d_break.slf'

@@ -12,7 +12,7 @@
 GEOMETRY FILE                     : geo_FSF_02.slf
 BOUNDARY CONDITIONS FILE          : geo_FSF_02.cli
 RESULTS FILE                      : r2d_FSF_02.slf
-FORTRAN FILE                      : t2d_canal-t2d.f
+FORTRAN FILE                      : 'user_fortran'
 COMPUTATION CONTINUED             : YES
 PREVIOUS COMPUTATION FILE         : r2d_FSF_02_init.slf
 /

@@ -12,7 +12,7 @@ PARALLEL PROCESSORS : 0
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
 /
-FORTRAN FILE : t3d_erosionflume.f
+FORTRAN FILE : 'user_fortran'
 GEOMETRY FILE                   = geo_erosionflume.slf
 BOTTOM TOPOGRAPHY FILE          = semis3.xyz
 BOUNDARY CONDITIONS FILE        = geo_erosionflume.cli

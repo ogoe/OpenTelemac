@@ -15,7 +15,7 @@
 / Test case 4b Propagation over uneven seabed
 /---------------------------------------------
 /
-FORTRAN FILE          = t3d_uneven.f
+FORTRAN FILE          = 'user_fortran'
 GEOMETRY FILE     = geo_uneven.slf
 BOUNDARY CONDITIONS FILE = geo_uneven.cli
 3D RESULT FILE = r3d_uneven.slf

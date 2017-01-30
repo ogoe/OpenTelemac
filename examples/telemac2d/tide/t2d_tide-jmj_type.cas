@@ -2,7 +2,7 @@
 /                       INFORMATIC ENVIRONMENT
 /----------------------------------------------------------------------/
 /
-FORTRAN FILE                       : t2d_tide.f
+FORTRAN FILE                       : 'user_fortran'
 BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt

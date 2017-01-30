@@ -25,7 +25,7 @@
 /                          ENTREES-SORTIES
 /-----------------------------------------------------------------------
 /
-FORTRAN FILE                    : t2d_dragforce.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_dragforce.cli
 GEOMETRY FILE 		   : geo_dragforce.slf
 RESULTS FILE              : r2d_dragforce.slf

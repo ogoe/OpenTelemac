@@ -4,7 +4,7 @@
 /--------------------------------------------------------------------/
 /     FILES
 /--------------------------------------------------------------------/
-FORTRAN FILE                       : 'art_flamanville.f'
+FORTRAN FILE                       : 'user_fortran'
 STEERING FILE                      : 'art_flamanville-scal.cas'
 BOUNDARY CONDITIONS FILE           : 'geo_flamanville.cli'
 GEOMETRY FILE                      : 'geo_flamanville.slf'

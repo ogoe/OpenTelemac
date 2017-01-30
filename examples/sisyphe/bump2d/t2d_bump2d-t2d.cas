@@ -8,7 +8,7 @@
 /
 /DEBUGGER : 0
 /
-FORTRAN FILE : t2d_bump2d-t2d.f
+FORTRAN FILE : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_bump2d-t2d.cli
 GEOMETRY FILE              : geo_bump2d-t2d.slf
 RESULTS FILE             : r2d_bump2d-t2d.slf

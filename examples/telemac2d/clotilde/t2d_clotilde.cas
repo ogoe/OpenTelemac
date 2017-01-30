@@ -31,7 +31,7 @@
 /
 /--------------------------------------------------------------------
 /
-FORTRAN FILE                    : t2d_clotilde.f
+FORTRAN FILE                    : 'user_fortran'
 FORMATTED DATA FILE 1       : t2d_clotilde.hq
 BOUNDARY CONDITIONS FILE : geo_clotilde.cli
 GEOMETRY FILE               : geo_clotilde.slf

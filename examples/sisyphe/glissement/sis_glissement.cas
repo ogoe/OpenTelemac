@@ -20,7 +20,7 @@
 /Dell 2.8 GHz Linux, compilateur intel :   5 s version JMH 07/06/2010
 /
 GEOMETRY FILE = geo_glissement.slf
-FORTRAN FILE = sis_glissement.f
+FORTRAN FILE = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_glissement.cli
 RESULTS FILE = sis_glissement.slf
 /

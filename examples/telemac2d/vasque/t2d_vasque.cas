@@ -21,7 +21,7 @@
 /
 /   HP C3700 compilateur HP          : 2 s  24/05/2012
 /
-FORTRAN FILE                    : t2d_vasque.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_vasque.cli
 GEOMETRY FILE               : geo_vasque.slf
 /

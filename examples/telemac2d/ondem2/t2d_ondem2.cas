@@ -32,7 +32,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                = geo_ondem2.slf
-FORTRAN FILE                     = t2d_ondem2.f
+FORTRAN FILE                     = 'user_fortran'
 BOUNDARY CONDITIONS FILE  = geo_ondem2.cli
 RESULTS FILE               = r2d_ondem2.slf
 FORMATTED DATA FILE 1        = fo1_ondem2.txt

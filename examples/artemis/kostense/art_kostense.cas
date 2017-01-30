@@ -12,7 +12,7 @@ RESULTS FILE                       ='r2d_kostense.slf'
 /
 BOUNDARY CONDITIONS FILE           ='geo_kostense.cli'
 /
-FORTRAN FILE                       ='art_kostense.f'
+FORTRAN FILE                       ='user_fortran'
 /
 GEOMETRY FILE                      ='geo_kostense.slf'
 /

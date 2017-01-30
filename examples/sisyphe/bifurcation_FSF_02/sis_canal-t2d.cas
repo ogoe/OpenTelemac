@@ -13,7 +13,6 @@ GEOMETRY FILE                     : geo_FSF_02.slf
 /BOUNDARY CONDITIONS FILE          : geo_FSF_02.cli
 BOUNDARY CONDITIONS FILE          : sis_FSF_02.cli
 RESULTS FILE                      : sis_FSF_02.slf
-FORTRAN FILE                      : sis_canal-t2d.f
 /
 /---------------------------------------------------------------------
 /       GENERAL INFORMATIONS

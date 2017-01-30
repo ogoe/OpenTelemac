@@ -9,7 +9,7 @@
 /
 TITLE = 'TELEMAC 3D : MALPASSET EN 3D NON-HYDROSTATIQUE'
 /
-FORTRAN FILE             : t3d_malpasset.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_malpasset-large.cli
 GEOMETRY FILE            : geo_malpasset-large.slf
 3D RESULT FILE           : r3d_malpasset-large_p2.slf

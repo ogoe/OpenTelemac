@@ -23,7 +23,7 @@ GEOMETRY FILE             = 'geo_waq3d_micropol.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq3d_micropol.cli'
 3D RESULT FILE            = 'r3d_waq3d_micropol.slf'
 2D RESULT FILE            = 'r2d_waq3d_micropol.slf'
-FORTRAN FILE              = 't3d_waq3d_micropol.f'
+FORTRAN FILE              = 'user_fortran'
 /REFERENCE FILE            = 'f3d_waq3d_micropol.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

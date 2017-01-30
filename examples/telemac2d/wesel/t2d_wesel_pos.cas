@@ -22,7 +22,7 @@ MASS-LUMPING ON H : 1.
 / The Rhine River, Rhein-km 812.5 - 821.5
 /======================================================================
 /
-FORTRAN FILE                    : t2d_wesel.f
+FORTRAN FILE                    : 'user_fortran'
 GEOMETRY FILE                   : geo_wesel.slf
 BOUNDARY CONDITIONS FILE        : geo_wesel.cli
 RESULTS FILE                    : r2d_wesel_pos.slf

@@ -34,7 +34,7 @@ BOUNDARY CONDITIONS FILE        : geo_flotteurs.cli
 GEOMETRY FILE                   : geo_flotteurs.slf
 LIQUID BOUNDARIES FILE          : t2d_flotteurs.lqd
 RESULTS FILE                    : r2d_flotteurs_v1p0.slf
-FORTRAN FILE                    : t2d_flotteurs_v1p0.f
+FORTRAN FILE                    : 'user_fortran-v1p0'
 /
 /----------------------------------------------------------------------
 /                        OPTIONS GENERALES

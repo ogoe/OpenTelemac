@@ -22,7 +22,7 @@ TITLE = 'Water Quality- micropol  process for Channel'
 GEOMETRY FILE             = 'geo_waq2d_micropol.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq2d_micropol.cli'
 RESULTS FILE              = 'r2d_waq2d_micropol.slf'
-FORTRAN FILE              = 't2d_waq2d_micropol.f'
+FORTRAN FILE              = 'user_fortran'
 /REFERENCE FILE            = 'f2d_waq2d_micropol.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

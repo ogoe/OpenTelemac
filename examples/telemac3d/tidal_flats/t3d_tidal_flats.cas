@@ -8,7 +8,7 @@ ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 1
 /ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 0
 /ADVECTION-DIFFUSION SCHEME WITH SETTLING VELOCITY     = 2
 /
-FORTRAN FILE                : 't3d_tidal_flats.f'
+FORTRAN FILE                : 'user_fortran'
 3D RESULT FILE              : 'r3d_tidal_flats.slf'
 2D RESULT FILE              : 'r2d_tidal_flats.slf'
 LIQUID BOUNDARIES FILE      : 'bli_tidal_flats.dat'

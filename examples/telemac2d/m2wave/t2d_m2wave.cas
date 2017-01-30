@@ -29,7 +29,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_m2wave.slf
-FORTRAN FILE                    = t2d_m2wave.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_m2wave.cli
 RESULTS FILE                    = r2d_m2wave.slf
 FORMATTED DATA FILE 1           = fo1_m2wave.txt

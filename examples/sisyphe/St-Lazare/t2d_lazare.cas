@@ -34,7 +34,7 @@
 TITLE                                          =  'crue '
 / maillage de base DX=10 m
 /                  7000 points environ
-FORTRAN FILE : t2d_lazare.f
+FORTRAN FILE : 'user_fortran'
 GEOMETRY FILE                                  =  geo_lazare-t2d.slf
 BOUNDARY CONDITIONS FILE                       = geo_lazare-t2d.cli
 / uniform grain

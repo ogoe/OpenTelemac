@@ -12,7 +12,7 @@ RESULTS FILE              ='r2d_breaking_Dally.slf'
 /
 BOUNDARY CONDITIONS FILE  ='cli_breaking.slf'
 /
-FORTRAN FILE              ='art_breaking.f'
+FORTRAN FILE              ='user_fortran'
 /
 GEOMETRY FILE             ='geo_breaking.slf'
 /

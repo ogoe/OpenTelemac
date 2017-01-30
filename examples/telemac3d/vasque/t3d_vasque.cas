@@ -7,7 +7,7 @@
 /   63 s SUR HP C3700 6.1  21/01/2011 (Nag:??? s,Intel:?? s)
 /   60 s SUR HP C3700 6.2  30/05/2012 (Nag:??? s,Intel:?? s)
 /
-FORTRAN FILE             : t3d_vasque.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_vasque.cli
 GEOMETRY FILE            : geo_vasque.slf
 3D RESULT FILE           : r3d_vasque.slf

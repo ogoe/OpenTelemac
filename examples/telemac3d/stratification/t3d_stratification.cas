@@ -25,7 +25,7 @@
 /
 TITLE = 'TELEMAC 3D : CANAL'
 /
-FORTRAN FILE             : t3d_stratification.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_stratification.cli
 GEOMETRY FILE            : geo_stratification.slf
 3D RESULT FILE           : r3d_stratification.slf

@@ -30,7 +30,7 @@ FICHIER DE COMMANDE DELWAQ                : dwq_delwaq.hyd
 /
 /  SUR HP C3700 compilateur HP        : 17 s  21/05/2012
 /
-FICHIER FORTRAN                    : t2d_delwaq.f
+FICHIER FORTRAN                    : 'user_fortran'
 FICHIER DES CONDITIONS AUX LIMITES : geo_delwaq.cli
 FICHIER DE GEOMETRIE               : geo_delwaq.slf
 FICHIER DES FRONTIERES LIQUIDES    : t2d_delwaq.lqd

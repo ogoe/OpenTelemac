@@ -61,7 +61,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path, remove, walk, chdir
+from os import path, remove, walk, chdir, mkdir, listdir
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -235,16 +235,26 @@ def setSafe(casFile,cas,idico,odico,safe):
    iFS = []; oFS = []
    for k,v in zip(*cas[1]):
       if k in idico:
+         val = v[0].strip("'\"")
          if idico[k].split(';')[-1] == 'CAS': continue
-         if v[0].strip("'\"") == '': continue
-         copyFile(path.join(wDir,v[0].strip("'\"")),safe)
-         ifile = path.join(safe,v[0].strip("'\""))
+         if val == '': continue
+         if path.isdir(path.join(wDir,val)):
+            if not path.exists(path.join(safe,val)):
+                mkdir(path.join(safe,val))
+            for file in listdir(path.join(wDir,val)):
+               if file == val:
+                  continue
+               copyFile(path.join(wDir,val,file),path.join(safe,val))
+         else:
+            copyFile(path.join(wDir,val),safe)
+         ifile = path.join(safe,val)
          iFS.append([k,[ifile],idico[k]])
          #if not path.isfile(ifile):
          #   print '... file does not exist ',ifile
          #   sys.exit(1)
       if k in odico:
-         ofile = path.join(safe,v[0].strip("'\""))
+         val = v[0].strip("'\"")
+         ofile = path.join(safe,val)
          oFS.append([k,[ofile],odico[k]])
 
    return sortieFiles,iFS,oFS
@@ -657,8 +667,17 @@ class actionRUN(ACTION):
    #                                         PRINCI related Methods
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
    # ~~ Highligh user PRINCI differences ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def diffPRINCI(self,options,cfg,rebuild):
+      """
+         Runs the action "princi" which will create an html containing
+         the difference between a user fortran and its version in the sources
+
+         @param options ??
+         @param cfg Configuration information
+         @param rebuild ??
+      """
       updated = False
       if not "princi" in self.availacts.split(';'): return updated
       xref = self.active["xref"]; cfgname = self.active['cfg']
@@ -711,8 +730,29 @@ class actionRUN(ACTION):
                of.close()
                print '       ~> comparison successful ! created: ' + path.basename(htmlFile)
                updated = True
+         elif path.isdir(princiFile):
+            fileToDiff = {}
+            for file in listdir(princiFile):
+               if file.lower().endswith((".f",".f90")):
+                  fileToDiff[file] = ''
+            # Search for orginals
+            for mod in cfg['MODULES']:
+               dirpath, _, filenames = walk(cfg['MODULES'][mod]['path']).next()
+               for fle in filenames:
+                  # Only looking for fortran files
+                  if fle.lower().endswith((".f",".f90")):
+                     if fle in fileToDiff:
+                        fileToDiff[fle] = path.join(dirpath,fle)
+            print '        +> found:'
+            for fle,oriFile in fileToDiff.iteritems():
+               if oriFile != '':
+                  print '           - ',fle
+                  htmlFile = path.join(oneup,fle+'.html')
+                  with open(htmlFile,'wb') as of:
+                     of.writelines( diffTextFiles(oriFile,path.join(princiFile,fle),options) )
          else:
-            raise Exception([{'name':'ACTION::diffPRINCI','msg':'I could not find your PRINCI file: '+princiFile}])
+            raise Exception([{'name':'ACTION::diffPRINCI',
+                              'msg':'I could not find your PRINCI file: '+princiFile}])
       # ~~> associated PRINCI file
       # TODO: case of coupling with multiple PRINCI files
       return updated
@@ -1189,12 +1229,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                frgb = DICOS[dicoFile]['frgb']
                cas = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)
                lang = getCASLang(cas,frgb)
-               if lang == 1:
-                  cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
-                  cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
-               if lang == 2:
-                  cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
-                  cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
                # ~~> Parse user defined keywords
                if do.active['set'] != '':
                   for set in do.active['set'].split('|'):
@@ -1204,9 +1238,6 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                if do.active["ncsize"] != '': cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
                ncsize = getNCSIZE(cas,dico,frgb)
                do.updateCFG({'cas':cas})
-               # ~~> removinng the 2 lines below means that the same parallel config will test both scalar and parallel mode.
-               #if ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize == 0: continue
-               #if not ( cfg['MPI'] != {} or cfg['HPC'] != {} ) and ncsize > 0: continue
 
                idico = DICOS[dicoFile]['input']
                odico = DICOS[dicoFile]['output']

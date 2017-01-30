@@ -1,8 +1,8 @@
 /---------------------------------------------------------------------
-/ TELEMAC2D Version v7p2  
+/ TELEMAC2D Version v7p2
 / VALIDATION TEST FOR RAIN IN 2D- here option 2:
 /   1- case without infiltration
-/   2- case with CN rainfall-runoff model and CN values in formatted 
+/   2- case with CN rainfall-runoff model and CN values in formatted
 /      data file
 /   3- case with CN rainfall-runoff model and CN values in geometry
 /      file and rainfall defined as a hyetograph in formatted data file
@@ -51,9 +51,9 @@ INITIAL ELEVATION  =0.0
 BOUNDARY CONDITIONS FILE ='t2d_geo_pluie.cli'
 GEOMETRY FILE            ='t2d_geo_pluie.slf'
 RESULTS FILE             ='res_rain_CN.slf'
-FORTRAN FILE             ='t2d_pluie_cn.f' 
-/ Fortran file used to print rainfall parameters to result file 
-/ (variables N,O,R), but the case works also without 
+FORTRAN FILE             ='user_fortran-cn'
+/ Fortran file used to print rainfall parameters to result file
+/ (variables N,O,R), but the case works also without
 /---------------------------------------------------------------------
 / INPUT-OUTPUT, GRAPHICS AND LISTING
 /---------------------------------------------------------------------

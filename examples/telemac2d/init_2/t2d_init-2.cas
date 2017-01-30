@@ -25,7 +25,7 @@
 /
 /  HP C3700 compilateur HP  3 s  22/05/2012
 /
-FORTRAN FILE                    : t2d_init-2.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_init-2.cli
 GEOMETRY FILE               : geo_init-2.slf
 RESULTS FILE              : r2d_init-2.slf

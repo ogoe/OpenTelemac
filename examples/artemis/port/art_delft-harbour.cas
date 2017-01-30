@@ -1,4 +1,4 @@
-FORTRAN FILE                       : 'art_delft-harbour.f'
+FORTRAN FILE                       : 'user_fortran'
 STEERING FILE                      : 'art_delft-harbour.cas'
 BOUNDARY CONDITIONS FILE           : 'geo_delft-harbour.cli'
 GEOMETRY FILE                      : 'geo_delft-harbour.slf'

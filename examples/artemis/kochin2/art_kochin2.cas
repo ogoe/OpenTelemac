@@ -12,7 +12,7 @@ RESULTS FILE                ='r2d_kochin2.slf'
 /
 BOUNDARY CONDITIONS FILE    ='geo_kochin.cli'
 /
-FORTRAN FILE                ='art_kochin2.f'
+FORTRAN FILE                ='user_fortran'
 /
 GEOMETRY FILE               ='geo_kochin.slf'
 /

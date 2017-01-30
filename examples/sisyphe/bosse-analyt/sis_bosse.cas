@@ -45,7 +45,7 @@ BETA =0
 /
 GEOMETRY FILE FORMAT = 'SERAFIN '
 GEOMETRY FILE = geo_bosse.slf
-FORTRAN FILE      = sis_bosse.f
+FORTRAN FILE      = 'user_fortran'
 /
 BOUNDARY CONDITIONS FILE = geo_bosse.cli
 RESULTS FILE = sis_bosse.slf

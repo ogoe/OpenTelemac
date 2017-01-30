@@ -3,7 +3,6 @@
 /
 GEOMETRY FILE             = geo_cvsp.slf
 BOUNDARY CONDITIONS FILE  = geo_cvsp_sis.cli
-FORTRAN FILE             = sis_cvsp.f
 RESULTS FILE             = sis_cvsp.res
 /
 /----------------------------------------------

@@ -26,7 +26,7 @@
 /
 GEOMETRY FILE            = geo_malpasset-large.med
 GEOMETRY FILE FORMAT     = MED
-FORTRAN FILE             = t2d_malpasset.f
+FORTRAN FILE             = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_malpasset-large.clm
 RESULTS FILE             = r2d_malpasset-large.med
 RESULTS FILE FORMAT      = MED

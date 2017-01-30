@@ -2,7 +2,7 @@
 /                       INFORMATIC ENVIRONMENT
 /----------------------------------------------------------------------/
 /
-FORTRAN FILE                       : t2d_tide-jmj_gen.f
+FORTRAN FILE                       : 'user_fortran-jmj_gen'
 BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 ASCII DATABASE FOR TIDE            : bdd_tide-jmj.txt

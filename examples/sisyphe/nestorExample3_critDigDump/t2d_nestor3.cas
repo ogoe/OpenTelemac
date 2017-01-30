@@ -3,42 +3,42 @@
 /------------------------------------------------------------------------------
 /                   INPUT / OUTPUT FILES
 /------------------------------------------------------------------------------
- FORTRAN FILE               = 'sis_nestor3.f'
- GEOMETRY FILE              = 'geo_nestor3.slf'   
+ FORTRAN FILE               = 'user_fortran'
+ GEOMETRY FILE              = 'geo_nestor3.slf'
  BOUNDARY CONDITIONS FILE   = 'geo_nestor3.cli'
 /
  RESULTS FILE              = 'r2d_nestor3.slf'
 /
  COMPUTATION CONTINUED      = YES
  INITIAL TIME SET TO ZERO   = YES
- PREVIOUS COMPUTATION FILE  = t2d_init_nestor3.slf 
-/ 
+ PREVIOUS COMPUTATION FILE  = t2d_init_nestor3.slf
+/
  GEOMETRY FILE FORMAT             = SERAFIND
  RESULTS FILE FORMAT              = SERAFIND
  PREVIOUS COMPUTATION FILE FORMAT = SERAFIND
-/ 
+/
 /FORMATTED DATA FILE 1 : _ref_wsp_Test.dat
 /------------------------------------------------------------------------------
 /                           Sisyphe
 /------------------------------------------------------------------------------
  COUPLING WITH                     = 'INTER-SISYPHE'
  COUPLING PERIOD FOR SISYPHE       = 5
- SISYPHE STEERING FILE             = sis_nestor3.cas  
+ SISYPHE STEERING FILE             = sis_nestor3.cas
 /------------------------------------------------------------------------------
 /                           DURATION
 /------------------------------------------------------------------------------
  TIME STEP                         =   6.0
 /------------------------------------------------------------------------------
-/                   Gliederung der Ausgabe-Daten 
+/                   Gliederung der Ausgabe-Daten
 /------------------------------------------------------------------------------
- NUMBER OF PRIVATE ARRAYS = 1    / korrespondiert mit N folgender Zeile 
+ NUMBER OF PRIVATE ARRAYS = 1    / korrespondiert mit N folgender Zeile
  VARIABLES FOR GRAPHIC PRINTOUTS                 = U,V,B,H,S,Q,M,W,L,F
 /NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS =  100
-/ 
+/
  NUMBER OF TIME STEPS               =   129600   /1.5 * 6  Tage
  GRAPHIC PRINTOUT PERIOD            =   129600   / 600
  LISTING PRINTOUT PERIOD            =   12960   / 10
-/  
+/
  MASS-BALANCE                                    = YES
 /------------------------------------------------------------------------------
 /                   Konstanten
@@ -47,15 +47,15 @@
 /------------------------------------------------------------------------------
 /                   Anfangs- und Randbedingungen
 /------------------------------------------------------------------------------
-/ 1: Abfluss ; 2:Zufluss 
+/ 1: Abfluss ; 2:Zufluss
  VELOCITY PROFILES     =   4
- PRESCRIBED ELEVATIONS =     2.2D0;    0.0D0  
- PRESCRIBED FLOWRATES  =     0.0D0; 1000.0D0   
-/ 
+ PRESCRIBED ELEVATIONS =     2.2D0;    0.0D0
+ PRESCRIBED FLOWRATES  =     0.0D0; 1000.0D0
+/
 /INITIAL CONDITIONS            = 'SPECIAL'
 /INITIAL CONDITIONS            = 'CONSTANT ELEVATION'
 /INITIAL ELEVATION             = 1.0
- INITIAL CONDITIONS            = 'CONSTANT DEPTH' 
+ INITIAL CONDITIONS            = 'CONSTANT DEPTH'
  INITIAL DEPTH                 = 2.5
 /
  LAW OF BOTTOM FRICTION        = 5
@@ -85,7 +85,7 @@
  OPTION FOR THE TREATMENT OF TIDAL FLATS      = 1
  COMPATIBLE COMPUTATION OF FLUXES = YES
  CONTINUITY CORRECTION = YES
- TREATMENT OF NEGATIVE DEPTHS = 2 / geht nur mit tidal options 1   
+ TREATMENT OF NEGATIVE DEPTHS = 2 / geht nur mit tidal options 1
  MATRIX STORAGE                               = 3
  MATRIX-VECTOR PRODUCT                        = 1
  IMPLICITATION FOR DEPTH                      = 1.0 / 0.8

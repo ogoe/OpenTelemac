@@ -11,7 +11,7 @@
 /
 BOUNDARY CONDITIONS FILE                     : geo_estu_gir.cli
 GEOMETRY FILE                                : geo_estu_gir.slf
-FORTRAN FILE                                 : t2d_estu_gir.f
+FORTRAN FILE                                 : 'user_fortran'
 RESULTS FILE                                 : t2d_estu_gir.res
 LIQUID BOUNDARIES FILE                       : qsl_ME.txt
 FORMATTED DATA FILE 1                        : maree.cli

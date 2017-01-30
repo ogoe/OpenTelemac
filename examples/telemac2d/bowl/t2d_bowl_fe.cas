@@ -3,7 +3,7 @@
 /  PARABOLIC BOWL WITH FINITE ELEMENTS WITH NEW DRY BED ALGORITHMS
 /
 /
-FORTRAN FILE                    : t2d_bowl.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_bowl.cli
 GEOMETRY FILE               : geo_bowl.slf
 RESULTS FILE              : r2d_bowl_fe.slf

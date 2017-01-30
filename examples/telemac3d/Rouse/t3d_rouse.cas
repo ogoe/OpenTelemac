@@ -2,7 +2,7 @@
 /
 /           FICHIER DE DECLARATION DES MOTS CLES DU CODE
 /                            TELEMAC-3D
-/   
+/
 /  Profil de Rouse
 /
 /  Tourne en 1921 s sur HP 785/C3700   version 5.5  08/03/2005
@@ -25,7 +25,7 @@
 /  518 s sur HP 785/C3700  5.8  26/12/2007 (Nag:1312 s,Dell: 312 s)
 /  519 s sur HP 785/C3700  5.9  17/10/2008 (Nag:???? s,Dell: 312 s)
 /
-/  519 s sur HP 785/C3700    5.9  17/10/2008 
+/  519 s sur HP 785/C3700    5.9  17/10/2008
 /  229 s sur Dell Calibre 5  5.9  23/12/2008
 /
 /  562 s sur HP 785/C3700  6.0  04/12/2009 (Nag:1539 s,Intel: 266 s)
@@ -42,7 +42,7 @@
 /
 TITLE = 'TELEMAC 3D : CANAL'
 /
-FORTRAN FILE             : t3d_rouse.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_rouse.cli
 GEOMETRY FILE            : geo_rouse.slf
 /

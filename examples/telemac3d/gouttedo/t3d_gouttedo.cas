@@ -15,7 +15,7 @@ INITIAL CONDITIONS : PARTICULIERES
 /
 /
 /
-FORTRAN FILE             : t3d_gouttedo.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_gouttedo.cli
 GEOMETRY FILE            : geo_gouttedo.slf
 /
@@ -28,7 +28,6 @@ NUMBER OF HORIZONTAL LEVELS : 3
 /                     OPTIONS GENERALES
 /----------------------------------------------------------------------
 / provisionally not accepted by python
-/TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'
 TITLE = 'TELEMAC 3D : GOUTTE D EAU DANS UN BASSIN$'
 COMPUTATION CONTINUED : NO
 VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H'

@@ -25,7 +25,7 @@ VARIABLE TIME-STEP : YES
 DURATION : 4.
 TIME STEP = 0.04
 /
-FORTRAN FILE                    : t2d_gouttedo.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_gouttedo.cli
 GEOMETRY FILE               : geo_gouttedo.slf
 RESULTS FILE              : r2d_gouttedo_cin.slf

@@ -8,7 +8,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_seiche.slf
-FORTRAN FILE                    = t2d_seiche.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_seiche.cli
 RESULTS FILE                    = r2d_seiche.slf
 /

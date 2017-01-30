@@ -37,7 +37,7 @@ COUPLING WITH : 'SISYPHE'
 / HP C3700, compilateur Nag             : 26  s  CV 13/04/2011
 / HP Z600 Linux, compilateur Intel	:  6  s	 MS 21/07/2011
 /
-FORTRAN FILE                    : t2d_conservation.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_conservation.cli
 GEOMETRY FILE               : geo_conservation.slf
 RESULTS FILE              : r2d_conservation.slf

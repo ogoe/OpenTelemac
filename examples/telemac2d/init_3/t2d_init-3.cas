@@ -28,7 +28,7 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FORTRAN FILE                               : t2d_init-3.f
+FORTRAN FILE                               : 'user_fortran'
 BOUNDARY CONDITIONS FILE            : geo_init-3.cli
 GEOMETRY FILE                          : geo_init-3.slf
 RESULTS FILE                         : r2d_init-3.slf

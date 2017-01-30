@@ -10,7 +10,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_triangular_shelf.slf
-FORTRAN FILE                    = t2d_triangular_shelf.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_triangular_shelf.cli
 RESULTS FILE                    = r2d_triangular_shelf.slf
 NUMBER OF PRIVATE ARRAYS        = 1

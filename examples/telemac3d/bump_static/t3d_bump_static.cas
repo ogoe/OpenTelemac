@@ -4,7 +4,7 @@
 /                        SOFTWARE ENVIRONMENT
 /----------------------------------------------------------------------
 
-FORTRAN FILE             : t3d_bump_static.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_bump_static.cli
 GEOMETRY FILE            : geo_bump_static.slf
 2D RESULT FILE           : r2d_bump_static.slf

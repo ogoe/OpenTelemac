@@ -28,7 +28,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_cavity.slf
-FORTRAN FILE                    = t2d_cavity.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_cavity.cli
 RESULTS FILE                    = r2d_cavity.slf
 PREVIOUS COMPUTATION FILE       = ini_cavity.slf

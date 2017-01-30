@@ -25,7 +25,7 @@
 /  characteristics 1)
 /
 GEOMETRY FILE            = geo_malpasset-large.slf
-FORTRAN FILE             = t2d_malpasset.f
+FORTRAN FILE             = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_malpasset-large.cli
 RESULTS FILE             = r2d_malpasset-large.slf
 FORMATTED RESULTS FILE   = rfo_malpasset-large.txt

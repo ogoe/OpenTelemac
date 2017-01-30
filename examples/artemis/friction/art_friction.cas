@@ -12,7 +12,7 @@ RESULTS FILE                ='r2d_friction.slf'
 /
 BOUNDARY CONDITIONS FILE    ='geo_friction.cli'
 /
-FORTRAN FILE                ='art_friction.f'
+FORTRAN FILE                ='user_fortran'
 /
 GEOMETRY FILE               ='geo_friction.slf'
 /

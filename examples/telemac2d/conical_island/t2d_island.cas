@@ -10,7 +10,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_island.slf
-FORTRAN FILE                    = t2d_island.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_island.cli
 RESULTS FILE                    = r2d_island.slf
 NUMBER OF PRIVATE ARRAYS        = 1

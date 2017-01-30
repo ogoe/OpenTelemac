@@ -6,7 +6,7 @@
 /--------------------------------------------------------------------
 /     FICHIERS
 /--------------------------------------------------------------------
-/FICHIER FORTRAN = 'tom_frot.f'
+/FICHIER FORTRAN = 'user_fortran'
 GEOMETRY FILE = 'geo_frot.slf'
 BOUNDARY CONDITIONS FILE = 'geo_frot.cli'
 /

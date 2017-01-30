@@ -43,7 +43,7 @@ COUPLING WITH : SISYPHE
 /
 TITLE = 'TELEMAC 3D : CANAL'
 /
-FORTRAN FILE              : t3d_depot.f
+FORTRAN FILE              : 'user_fortran'
 BOUNDARY CONDITIONS FILE  : geo_depot.cli
 GEOMETRY FILE             : geo_depot.slf
 /

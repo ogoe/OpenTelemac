@@ -30,7 +30,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_confluence.slf
-FORTRAN FILE                    = t2d_confluence.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_confluence.cli
 RESULTS FILE                    = r2d_confluence.slf
 /

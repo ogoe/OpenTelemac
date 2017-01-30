@@ -9,7 +9,7 @@ TITLE = 'TELEMAC 3D : CANAL'
 ORIGINAL DATE OF TIME : 2006;10;1
 ORIGINAL HOUR OF TIME : 0;0;0
 /
-FORTRAN FILE                    : t3d_heat_exchange.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_heat_exchange.cli
 GEOMETRY FILE               : geo_heat_exchange.slf
 FORMATTED DATA FILE 1       : meteo_data.txt

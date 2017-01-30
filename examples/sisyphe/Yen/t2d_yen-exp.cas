@@ -33,7 +33,7 @@
 COUPLING WITH                    = 'SISYPHE'
 COUPLING PERIOD FOR SISYPHE      = 1
 SISYPHE STEERING FILE    = sis_yen-exp.cas
-FORTRAN FILE                     :  t2d_yen-exp.f
+FORTRAN FILE                     :  'user_fortran'
 BOUNDARY CONDITIONS FILE         :  geo_yen-exp.cli
 GEOMETRY FILE                    :  geo_yen-exp.slf
 RESULTS FILE                     :  r2d_yen-exp.slf

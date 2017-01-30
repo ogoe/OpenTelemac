@@ -3,7 +3,7 @@
 / HP Z600 : 56 s compilateur intel10 8 procs  18/01/2014
 /
 /
-FORTRAN FILE                    = t2d_friction.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_friction.cli
 GEOMETRY FILE               = geo_friction.slf
 RESULTS FILE              = r2d_friction.slf

@@ -14,7 +14,7 @@ RESULTS FILE             = 'r2d_phase.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_phase.cli'
 /
-FORTRAN FILE             = 'art_phase.f'
+FORTRAN FILE             = 'user_fortran'
 /
 GEOMETRY FILE            = 'geo_phase.slf'
 /

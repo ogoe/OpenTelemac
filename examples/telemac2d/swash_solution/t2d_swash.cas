@@ -9,7 +9,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_swash.slf
-FORTRAN FILE                    = t2d_swash.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_swash.cli
 RESULTS FILE                    = r2d_swash.slf
 /

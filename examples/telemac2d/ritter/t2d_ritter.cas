@@ -9,7 +9,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_ritter.slf
-FORTRAN FILE                    = t2d_ritter.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_ritter.cli
 RESULTS FILE                    = r2d_ritter.slf
 /

@@ -21,7 +21,7 @@
 /
 /
 /
-FORTRAN FILE			   : t2d_bosse-t2d.f
+FORTRAN FILE			   : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_bosse-t2d.cli
 GEOMETRY FILE               : geo_bosse-t2d.slf
 RESULTS FILE              : r2d_bosse-t2d.slf

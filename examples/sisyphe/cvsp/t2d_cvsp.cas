@@ -6,7 +6,7 @@
 GEOMETRY FILE             = geo_cvsp.slf
 BOUNDARY CONDITIONS FILE  = geo_cvsp_t2d.cli
 RESULTS FILE              = t2d_cvsp.res
-FORTRAN FILE		  = t2d_cvsp.f
+FORTRAN FILE		  = 'user_fortran'
 /
 /------------------------------------------------------------------------------
 /                   COMPUTATIONAL INFORMATION

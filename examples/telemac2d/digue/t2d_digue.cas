@@ -20,7 +20,7 @@
 /  HP Z600 compilateur Nag   1 proc   :  64 s  31/07/2015
 /  HP Z600 compilateur Nag   8 procs  :  12 s  31/07/2015
 /
-FORTRAN FILE                    : t2d_digue.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_digue.cli
 GEOMETRY FILE               : geo_digue.slf
 RESULTS FILE              : r2d_digue.slf

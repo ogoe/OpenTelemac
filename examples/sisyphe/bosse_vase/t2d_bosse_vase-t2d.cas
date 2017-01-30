@@ -1,5 +1,5 @@
 /
-FORTRAN FILE : t2d_bosse_vase-t2d.f
+FORTRAN FILE : 'user_fortran'
 /
 SISYPHE STEERING FILE  :  sis_bosse_vase-t2d.cas
 COUPLING WITH : 'SISYPHE' COUPLING PERIOD FOR SISYPHE = 1

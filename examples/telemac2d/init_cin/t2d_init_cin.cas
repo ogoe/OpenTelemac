@@ -19,7 +19,7 @@
 /
 /  HP C3700 compilateur HP          : 130 s   21/05/2012
 /
-FORTRAN FILE                    : t2d_init_cin.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_init_cin.cli
 GEOMETRY FILE               : geo_init_cin.slf
 RESULTS FILE              : r2d_init_cin.slf

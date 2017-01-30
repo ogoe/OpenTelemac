@@ -3,7 +3,7 @@
 / CAS DU PORT SCHEMATIQUE DE DELFT + CALCUL TETAP AUTO
 / (FYI : incidence angles plot using scilab file scilab -f post.sci)
 /---------------------------------------------------------------------
-FORTRAN FILE                       : 'art_port.f'
+FORTRAN FILE                       : 'user_fortran'
 STEERING FILE                      : 'art_port.cas'
 BOUNDARY CONDITIONS FILE           : 'geo_delft-harbour.cli'
 GEOMETRY FILE                      : 'geo_delft-harbour.slf'

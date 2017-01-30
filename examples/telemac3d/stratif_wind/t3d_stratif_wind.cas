@@ -4,7 +4,7 @@
 /                        SOFTWARE ENVIRONMENT
 /----------------------------------------------------------------------
 
-FORTRAN FILE             : t3d_stratif_wind.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_stratif_wind.cli
 GEOMETRY FILE            : geo_stratif_wind.slf
 2D RESULT FILE           : r2d_stratif_wind.slf

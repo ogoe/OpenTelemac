@@ -1,5 +1,5 @@
 /----------------------------------------------------------------------/
-FORTRAN FILE               = 't2d_kd09.f'
+FORTRAN FILE               = 'user_fortran'
 BOUNDARY CONDITIONS FILE   = 'geo_kd09.cli'
 GEOMETRY FILE              = 'geo_kd09.slf'
 SISYPHE STEERING FILE      = 'sis_kd09.cas'

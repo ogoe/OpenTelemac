@@ -41,7 +41,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE            = geo_mersey.slf
-FORTRAN FILE             = t2d_mersey.f
+FORTRAN FILE             = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_mersey.cli
 RESULTS FILE             = r2d_mersey.slf
 /

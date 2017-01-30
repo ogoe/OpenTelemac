@@ -12,7 +12,7 @@ RESULTS FILE                ='r2d_reso.slf'
 /
 BOUNDARY CONDITIONS FILE    ='geo_reso.cli'
 /
-FORTRAN FILE                ='art_reso.f'
+FORTRAN FILE                ='user_fortran'
 /
 GEOMETRY FILE               ='geo_reso.slf'
 /

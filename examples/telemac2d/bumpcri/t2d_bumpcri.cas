@@ -25,7 +25,7 @@ ORIGIN COORDINATES : 12000;350000
 /
 /  HP C3700 MHz  compilateur HP   : 08 s 04/05/2012
 /
-FORTRAN FILE                   : t2d_bumpcri.f
+FORTRAN FILE                   : 'user_fortran'
 BOUNDARY CONDITIONS FILE: geo_bumpcri.cli
 GEOMETRY FILE              : geo_bumpcri.slf
 RESULTS FILE             : r2d_bumpcri.slf

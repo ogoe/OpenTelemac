@@ -30,7 +30,7 @@
 /
 BOUNDARY CONDITIONS FILE                     : geo_donau.cli
 GEOMETRY FILE                                : geo_donau.slf
-FORTRAN FILE                                 : t2d_donau.f
+FORTRAN FILE                                 : 'user_fortran'
 RESULTS FILE                                 : r2d_donau.slf
 /
 /----------------------------------------------------------------------

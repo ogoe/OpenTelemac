@@ -12,7 +12,7 @@ RESULTS FILE               ='r2d_island.slf'
 /
 BOUNDARY CONDITIONS FILE   ='geo_island.cli'
 /
-FORTRAN FILE               ='art_island.f'
+FORTRAN FILE               ='user_fortran'
 /
 GEOMETRY FILE              ='geo_island.slf'
 /

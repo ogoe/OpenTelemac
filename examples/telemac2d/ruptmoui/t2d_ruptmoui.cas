@@ -20,7 +20,7 @@
 /
 / TEMPS SUR HP C3700 compilateur HP        : 27 s    21/05/2012
 /
-FORTRAN FILE                    : t2d_ruptmoui.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_ruptmoui.cli
 GEOMETRY FILE               : geo_ruptmoui.slf
 RESULTS FILE              : r2d_ruptmoui.slf

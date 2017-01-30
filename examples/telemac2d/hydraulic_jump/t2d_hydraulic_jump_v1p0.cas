@@ -32,7 +32,7 @@
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
 /
-FORTRAN FILE                    = t2d_hydraulic_jump.f
+FORTRAN FILE                    = 'user_fortran'
 GEOMETRY FILE                   = geo_hydraulic_jump.slf
 BOUNDARY CONDITIONS FILE        = geo_hydraulic_jump.cli
 RESULTS FILE                    = r2d_hydraulic_jump_v1p0.slf

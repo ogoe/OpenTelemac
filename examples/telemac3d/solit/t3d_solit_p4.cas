@@ -15,7 +15,7 @@ MATRIX STORAGE : 3
 /
 TITLE = 'Solitary wave in a long channel '
 /
-FORTRAN FILE             = t3d_solit.f
+FORTRAN FILE             = 'user_fortran'
 GEOMETRY FILE            = geo_solit.slf
 BOUNDARY CONDITIONS FILE = geo_solit.cli
 3D RESULT FILE           = r3d_solit_p4.slf

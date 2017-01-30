@@ -27,7 +27,7 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /-----------------------------------------------------------------------/
 /
-FORTRAN FILE                    : t2d_porosite.f
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_porosite.cli
 GEOMETRY FILE               : geo_porosite.slf
 RESULTS FILE              : r2d_porosite.slf

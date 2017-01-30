@@ -7,7 +7,7 @@
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
 /
-FORTRAN FILE               = t2d_thacker.f
+FORTRAN FILE               = 'user_fortran'
 BOUNDARY CONDITIONS FILE   = geo_thacker.cli
 GEOMETRY FILE              = geo_thacker.slf
 RESULTS FILE               = r2d_thacker.slf

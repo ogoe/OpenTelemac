@@ -11,7 +11,7 @@ RESULTS FILE              ='r2d_stive85.slf'
 /
 BOUNDARY CONDITIONS FILE  ='geo_stive85.cli'
 /
-FORTRAN FILE              ='art_stive85.f'
+FORTRAN FILE              ='user_fortran'
 /
 GEOMETRY FILE             ='geo_stive85.slf'
 /

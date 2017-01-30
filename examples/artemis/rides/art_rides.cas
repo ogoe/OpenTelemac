@@ -12,7 +12,7 @@ RESULTS FILE             = 'r2d_rides.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_rides.cli'
 /
-FORTRAN FILE             = 'art_rides.f'
+FORTRAN FILE             = 'user_fortran'
 /
 GEOMETRY FILE            = 'geo_rides.slf'
 /

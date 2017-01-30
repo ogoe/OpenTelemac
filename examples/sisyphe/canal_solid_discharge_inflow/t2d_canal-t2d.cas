@@ -7,7 +7,7 @@ COUPLING PERIOD FOR SISYPHE = 1
 /
 BOUNDARY CONDITIONS FILE :  geo_canal-t2d.cli
 GEOMETRY FILE               :  geo_canal-t2d.slf
-FORTRAN FILE                    :  t2d_canal-t2d.f
+FORTRAN FILE                    :  'user_fortran'
 RESULTS FILE              :  r2d_canal-t2d.slf
 /FICHIER DU CALCUL PRECEDENT        : tel2d_init.r2d
 /SUITE DE CALCUL  = YES

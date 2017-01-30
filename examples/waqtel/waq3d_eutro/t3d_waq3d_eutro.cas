@@ -22,7 +22,6 @@ GEOMETRY FILE             = 'geo_waq3d_eutro.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq3d_eutro.cli'
 3D RESULT FILE            = 'r3d_waq3d_eutro.slf'
 2D RESULT FILE            = 'r2d_waq3d_eutro.slf'
-/FORTRAN FILE              = 't3d_waq3d_eutro.f'
 /REFERENCE FILE            = 'f3d_waq3d_eutro.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

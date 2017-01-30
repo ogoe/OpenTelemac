@@ -3,7 +3,7 @@
 / and TREATMENT OF NEGATIVE DEPTHS = 3
 /
 GEOMETRY FILE            = geo_malpasset-small.slf
-FORTRAN FILE             = t2d_malpasset.f
+FORTRAN FILE             = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_malpasset-small.cli
 RESULTS FILE             = r2d_malpasset-small_ERIA.slf
 FORMATTED RESULTS FILE   = rfo_malpasset-small_ERIA.txt

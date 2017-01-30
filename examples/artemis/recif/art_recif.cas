@@ -12,7 +12,7 @@ RESULTS FILE             = 'r2d_recif.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_recif.cli'
 /
-FORTRAN FILE             = 'art_recif.f'
+FORTRAN FILE             = 'user_fortran'
 /
 GEOMETRY FILE            = 'geo_recif.slf'
 /

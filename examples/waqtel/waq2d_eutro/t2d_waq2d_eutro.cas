@@ -22,7 +22,7 @@ TITLE = 'Water Quality- EUTRO  process for Channel'
 GEOMETRY FILE             = 'geo_waq2d_eutro.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq2d_eutro.cli'
 RESULTS FILE              = 'r2d_waq2d_eutro.slf'
-FORTRAN FILE              = 't2d_waq2d_eutro.f'
+FORTRAN FILE              = 'user_fortran'
 /REFERENCE FILE            = 'f2d_waq2d_eutro.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

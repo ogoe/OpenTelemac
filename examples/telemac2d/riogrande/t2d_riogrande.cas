@@ -13,7 +13,7 @@ BOUNDARY CONDITIONS FILE : geo_riogrande.cli
 GEOMETRY FILE               : geo_riogrande.slf
 LIQUID BOUNDARIES FILE    : t2d_riogrande.lqd
 /
-FORTRAN FILE                    : t2d_riogrande.f
+FORTRAN FILE                    : 'user_fortran'
 RESULTS FILE              : r2d_riogrande.slf
 /
 TITLE : 'Telemac2d-Sisyphe'

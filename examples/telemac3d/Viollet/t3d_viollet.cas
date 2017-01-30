@@ -11,7 +11,7 @@
 /
 TITLE = 'TELEMAC 3D : PLV TEST CASE'
 /
-FORTRAN FILE             : t3d_viollet.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_viollet.cli
 GEOMETRY FILE            : geo_viollet.slf
 FORMATTED DATA FILE 1    : froud.txt

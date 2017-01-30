@@ -13,7 +13,7 @@
 /                      ENVIRONNEMENT INFORMATIQUE
 /----------------------------------------------------------------------
 /
-FORTRAN FILE             : t3d_vent.f
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_vent.cli
 GEOMETRY FILE            : geo_vent.slf
 2D RESULT FILE           : r2d_vent.slf

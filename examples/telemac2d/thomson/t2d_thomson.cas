@@ -30,7 +30,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_thomson.slf
-FORTRAN FILE                    = t2d_thomson.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_thomson.cli
 RESULTS FILE                    = r2d_thomson.slf
 /

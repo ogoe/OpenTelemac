@@ -58,7 +58,7 @@
 /  HP Z600 Linux compilateur Intel 8 proc :  4 s  08/08/2012
 /
 GEOMETRY FILE            = geo_malpasset-small.slf
-FORTRAN FILE             = t2d_malpasset.f
+FORTRAN FILE             = 'user_fortran'
 BOUNDARY CONDITIONS FILE = geo_malpasset-small.cli
 RESULTS FILE             = r2d_malpasset-small_charac.slf
 FORMATTED RESULTS FILE   = rfo_malpasset-small_charac.txt

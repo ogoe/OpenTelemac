@@ -22,7 +22,7 @@
 /
 / HP C3700 compilateur HP          : 13 s  04/05/2012
 /
-FORTRAN FILE                      : t2d_cinetiques.f
+FORTRAN FILE                      : 'user_fortran'
 BOUNDARY CONDITIONS FILE   : geo_cinetiques.cli
 GEOMETRY FILE                 : geo_cinetiques.slf
 RESULTS FILE                : r2d_cinetiques.slf

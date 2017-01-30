@@ -19,7 +19,7 @@
 BOUNDARY CONDITIONS FILE = geo_pildepon.cli
 GEOMETRY FILE            = geo_pildepon.slf
 LIQUID BOUNDARIES FILE   = t2d_pildepon.lqd
-FORTRAN FILE             = t2d_pildepon.f
+FORTRAN FILE             = 'user_fortran'
 RESULTS FILE             = r2d_pildepon_cin.slf
 FORMATTED RESULTS FILE   = force.txt
 /

@@ -14,7 +14,7 @@ RESULTS FILE             = 'r2d_carre.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_carre.cli'
 /
-FORTRAN FILE             = 'art_carre.f'
+FORTRAN FILE             = 'user_fortran'
 /
 GEOMETRY FILE            = 'geo_carre.slf'
 /

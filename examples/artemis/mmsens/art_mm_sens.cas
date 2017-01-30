@@ -12,7 +12,7 @@ RESULTS FILE                       ='r2d_mmsens.slf'
 /
 BOUNDARY CONDITIONS FILE           ='geo_mmsens.cli'
 /
-FORTRAN FILE                       ='art_mmsens.f'
+FORTRAN FILE                       ='user_fortran'
 /
 GEOMETRY FILE                      ='geo_mmsens.slf'
 /

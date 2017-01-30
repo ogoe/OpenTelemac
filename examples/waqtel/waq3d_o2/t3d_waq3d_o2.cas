@@ -22,7 +22,6 @@ GEOMETRY FILE             = 'geo_waq3d_o2.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_waq3d_o2.cli'
 3D RESULT FILE            = 'r3d_waq3d_o2.slf'
 2D RESULT FILE            = 'r2d_waq3d_o2.slf'
-/FORTRAN FILE              = 't3d_waq3d_o2.f'
 /REFERENCE FILE            = 'f3d_waq3d_o2.slf'
 /VALIDATION                = YES
 /DEBUGGER   : 1

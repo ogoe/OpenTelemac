@@ -10,7 +10,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_monai.slf
-FORTRAN FILE                    = t2d_monai.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_monai.cli
 RESULTS FILE                    = r2d_monai.slf
 LIQUID BOUNDARIES FILE          = initial_wave.prn

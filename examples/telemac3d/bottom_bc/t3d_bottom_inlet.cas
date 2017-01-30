@@ -6,7 +6,7 @@
 // DEBUGGER : 1
 MATRIX STORAGE : 3
 /
-FORTRAN FILE                    : 't3d_bottom_inlet.f'
+FORTRAN FILE                    : 'user_fortran-inlet'
 BOUNDARY CONDITIONS FILE        : 'geo_bottom_bc.cli'
 GEOMETRY FILE                   : 'geo_bottom_bc.slf'
 3D RESULT FILE                  : 'r3d_bottom_inlet.slf'

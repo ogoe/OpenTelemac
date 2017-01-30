@@ -20,7 +20,7 @@ TITLE = 'Water Quality- Thermic process for Channel'
 GEOMETRY FILE             = 't2d_geo_thermic.slf'
 BOUNDARY CONDITIONS FILE  = 't2d_geo_thermic.cli'
 RESULTS FILE              = 'r2d_waq_thermic.slf'
-FORTRAN FILE              = 't2d_waq2d_thermic.f'
+FORTRAN FILE              = 'user_fortran'
 FORMATTED DATA FILE 1     = 'meteo_thermic_case1.txt'
 /DEBUGGER   : 1
 /

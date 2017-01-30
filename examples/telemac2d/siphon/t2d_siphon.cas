@@ -22,7 +22,7 @@
 /  TRANSFERT D'EAU PAR UN SIPHON ENTRE DEUX DOMAINES DISJOINTS
 /  AVEC BANCS DECOUVRANTS
 /
-FORTRAN FILE                     : t2d_siphon.f
+FORTRAN FILE                     : 'user_fortran'
 BOUNDARY CONDITIONS FILE  : geo_siphon.cli
 GEOMETRY FILE                : geo_siphon.slf
 SIPHONS DATA FILE      : fo1_siphon.txt

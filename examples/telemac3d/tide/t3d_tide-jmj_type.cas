@@ -2,7 +2,7 @@ TITLE = 'TELEMAC 3D: tide'
 /--------------------------------------------------
 /     GENERAL OPTIONS
 /--------------------------------------------------
-FORTRAN FILE                       : t3d_tide-jmj.f
+FORTRAN FILE                       : 'user_fortran'
 BOUNDARY CONDITIONS FILE           : geo_tide.cli
 GEOMETRY FILE                      : geo_tide.slf
 HARMONIC CONSTANTS FILE            : har_tide-jmj.txt

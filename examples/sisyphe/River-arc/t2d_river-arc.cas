@@ -27,7 +27,7 @@ BOUNDARY CONDITIONS FILE = geo_arc6.cli
 RESULTS FILE              = r2d_river-arc.slf
 PREVIOUS COMPUTATION FILE        = ini_river-arc.slf
 LIQUID BOUNDARIES FILE    = t2d_river-arc.qsl
-FORTRAN FILE                    = t2d_river-arc.f
+FORTRAN FILE                    = 'user_fortran'
 /
 SISYPHE STEERING FILE  = sis_river-arc.cas
 /

@@ -11,7 +11,7 @@
 /
 BOUNDARY CONDITIONS FILE                      : geo_t2d_riv_art.cli
 GEOMETRY FILE                                 : geo_t2d_riv_art.slf
-FORTRAN FILE                                  : t2d_riv_art.f
+FORTRAN FILE                                  : 'user_fortran'
 RESULTS FILE                                  : t2d_riv_art.res
 /
 /----------------------------------------------------------------------

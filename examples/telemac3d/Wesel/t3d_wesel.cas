@@ -15,7 +15,7 @@
 /        Wesel-Xanten test case
 /---------------------------------------
 /
-FORTRAN FILE             : t3d_wesel.f
+FORTRAN FILE             : 'user_fortran'
 GEOMETRY FILE            : geo_wesel.slf
 BOUNDARY CONDITIONS FILE : geo_wesel.cli
 3D RESULT FILE           : r3d_wesel.slf

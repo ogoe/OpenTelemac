@@ -1,5 +1,5 @@
 /----------------------------------------------------------------------/
-FORTRAN FILE                : 't2d_shoal.f'
+FORTRAN FILE                : 'user_fortran'
 BOUNDARY CONDITIONS FILE    : 'geo_shoal.cli'
 GEOMETRY FILE               : 'geo_shoal.slf'
 RESULTS FILE                : 'r2d_shoal.slf'

@@ -9,7 +9,7 @@
 /
 RESULTS FILE              ='r2d_shoal.slf'
 BOUNDARY CONDITIONS FILE  ='geo_shoal.cli'
-FORTRAN FILE              ='art_shoal.f'
+FORTRAN FILE              ='user_fortran'
 GEOMETRY FILE             ='geo_shoal.slf'
 /
 /---------------------------------------------------------------------

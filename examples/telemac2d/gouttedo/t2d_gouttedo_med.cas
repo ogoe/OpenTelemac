@@ -26,7 +26,7 @@ EQUATIONS : 'SAINT-VENANT EF'
 /PAS DE TEMPS = 1.
 /
 /
-FORTRAN FILE                       : t2d_gouttedo.f
+FORTRAN FILE                       : 'user_fortran'
 BOUNDARY CONDITIONS FILE           : geo_gouttedo_med.cli
 GEOMETRY FILE                      : geo_gouttedo.med
 FORMAT DU FICHIER DE GEOMETRIE     : MED

@@ -19,7 +19,7 @@ FICHIER DES PARAMETRES             ='t2d_convergence.cas'
 FICHIER DES RESULTATS              ='r2d_convergence.slf'
 FICHIER DES CONDITIONS AUX LIMITES ='geo_convergence.cli'
 FICHIER DE GEOMETRIE               ='geo_convergence.slf'
-FICHIER FORTRAN                    ='t2d_convergence.f'
+FICHIER FORTRAN                    ='user_fortran'
 /
 /---------------------------------------------------------------------
 / ENTREES-SORTIES, GENERALITES

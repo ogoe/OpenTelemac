@@ -4,7 +4,7 @@
 /
 TITLE ='Schematic culvert test'
 
-FORTRAN FILE                ='t3d_culvert.f'
+FORTRAN FILE                ='user_fortran'
 GEOMETRY FILE               ='geo_culvert.slf'
 BOUNDARY CONDITIONS FILE    ='geo_culvert.cli'
 2D RESULT FILE              ='r2d_culvert.slf'

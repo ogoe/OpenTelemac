@@ -30,7 +30,7 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_wave.slf
-FORTRAN FILE                    = t2d_wave.f
+FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_wave.cli
 RESULTS FILE                    = r2d_wave.slf
 NUMBER OF PRIVATE ARRAYS        = 1
