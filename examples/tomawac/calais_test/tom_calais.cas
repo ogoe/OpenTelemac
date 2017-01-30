@@ -40,7 +40,7 @@ FICHIER DES PARAMETRES = './exterieur_calais_v6p0.cas'
 FICHIER DE GEOMETRIE = './exterieur_calais.geo'
 FICHIER DES CONDITIONS AUX LIMITES = './exterieur_calais.conlim'
 VALIDATION = OUI
-FICHIER DE REFERENCE = './ref_tom_calais_v5p8.r2d'
+FICHIER DE REFERENCE = './ref_tom_calais_v5p8.slf'
 /
 FICHIER DES RESULTATS 2D = './exterieur_calais.r2d'
 FICHIER DES RESULTATS PONCTUELS = 'exterieur_calais.spe'
