@@ -37,7 +37,7 @@ COUPLING WITH : 'SISYPHE'
 / HP C3700, compilateur Nag             : 26  s  CV 13/04/2011
 / HP Z600 Linux, compilateur Intel	:  6  s	 MS 21/07/2011
 /
-FORTRAN FILE                    : 'user_fortran-t2d'
+FORTRAN FILE                    : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_cons_mixte-t2d.cli
 GEOMETRY FILE               : geo_cons_mixte-t2d.slf
 RESULTS FILE              : r2d_cons_mixte-t2d.slf
