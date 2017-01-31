@@ -4339,6 +4339,8 @@
       IF(ALLOCATED(BOR2HW_R)) DEALLOCATE(BOR2HW_R)
       IF(ALLOCATED(BOR2HW_I)) DEALLOCATE(BOR2HW_I)
       IF(ALLOCATED(ARGHW)) DEALLOCATE(ARGHW)
+
+      DEJA = .FALSE.
 !
 !-----------------------------------------------------------------------
 !
