@@ -11,13 +11,21 @@ This case test the coupling model between Telemac2dTomawac and sisyphe.
 %
 \section{Description of the problem}
 %
-THE SOLUTION IS TEPORARELLY NULL BECAUSE GEOMETRIE IS NOT GOOD (WAITING FOR JOLY'S FIX)
+This is the classical test case of a rectilinear beach with sloping bed
+The model allows to calculate the littoral transport.
+! 
+This test case illustrates the effect of waves which is :
+\begin{itemize}
+\item to generate the current induced littoral current parallel to the beach
+\item to increase the sand transport rate using the Bijker sand transport formula.
+  \end{itemize}
+
 % - Reference:
 %     This part gives the reference solution we are comparing to and
 %     explicits the analytical solution when available;
 %
 %
-\subsection{Reference}
+%\subsection{Reference}
 %
 
 % - Physical parameters:
@@ -26,19 +34,18 @@ THE SOLUTION IS TEPORARELLY NULL BECAUSE GEOMETRIE IS NOT GOOD (WAITING FOR JOLY
 %     solute characteristics (dispersion/diffusion coefficients, soil <=> pollutant interactions...)
 %
 %
-\subsection{Physical parameters}
-%
-
-% - Geometry and Mesh:
-%     This part describes the mesh used in the computation
-%
-%
 \subsection{Geometry and Mesh}
 %
+The beach is 1000 m long, 200 m wide
+ The beach slope (Y=200m) is 5\% and defined in corfon.f
+ The water depth along the open boundary (Y=0) is h=10m
+We use a trianglular regular grid 
+
+
 The mesh is as shown on Figure \ref{littoralmesh}
 \begin{figure} [!h]
 \centering
-\includegraphicsmaybe{[width=0.85\textwidth]}{../img/mesh.png}
+\includegraphicsmaybe{[width=0.85\textwidth]}{../img/fond.png}
  \caption{mesh of the case littoral}
 \label{littoralmesh}
 \end{figure}
@@ -49,13 +56,27 @@ The mesh is as shown on Figure \ref{littoralmesh}
 %
 \subsection{Initial and Boundary Conditions}
 %
+$\Rightarrow $ Offshore (Y=0): Offshore wave imposed/no littoral current/no set up 
+Tomawac:
+The wave height is imposed on the offshore boudary (5 4 4) (Hs=1m), for a wave period (Tp=8s).
+TelemacD:
+The current and free surface are imposed to 0 along the offshore boundary (5 5 5).
 
+$\Rightarrow $ Left and right hand side of the domain (X=0, X=1000m):recirculation condition 
+
+Tomawac:
+The wave height is imposed on the offshore boudary (5 4 4), based on the model solution, calculated  at the center line of the domain.  This is done in limwac.f 
+
+Telemac :
+the model solution for the current (4 5 5) on the center line of the model domain are copied on both right and hand side. This is done in bord.f . The method we used does not work in parallel : apparemment si !!!!
+
+%
 % - Numerical parameters:
 %     This part is used to specify the numerical parameters used
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsection{Numerical parameters}
+%\subsection{Numerical parameters}
 %
 
 % - Results:
@@ -65,6 +86,13 @@ The mesh is as shown on Figure \ref{littoralmesh}
 %
 \section{Results}
 %
+Results (littoral current and transport rates) as well as wave set up/set down are in good agreement with
+expectations from theoretical classical results (Longuet Higgins).The model is able to reproduce the wave
+induced current, as well as the effect of set down/set up as the waves dissipate in the breaking zone.
+The sediment transport rate is located in the near shore breaking zone, where the longshore current is
+generated.
+Similar results for the littoral transport could be obtained by using an integrated formula (e.g. CERC formula).
+
 The results are presented Figures \ref{resultsT2D} (Velocity U) \ref{resultsTOM}(Wave heigth Hm0) and  \ref{resultsSIS} (Bed Shear stress)
 \begin{figure} [!h]
 \centering
