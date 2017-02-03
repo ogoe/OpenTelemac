@@ -353,7 +353,8 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
                print '    copying cas: ', crun
-               newcas = [line[1:] if line[0] == ' ' else line for line in cas[0]]
+               # Removing trailing space on the left
+               newcas = [line.lstrip() for line in cas[0]]
                putFileContent(crun,newcas)
                # An input mesh may be a binary or an ascii file
                # It depends on the selected format (Selafin, Ideas, Med)
