@@ -15,7 +15,7 @@
      &  FLUENTN,LTT,
      &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD,
      &  MXPTVS,NEISEG,V2DPAR,UDEL,VDEL,HROPT,RAIN,PLUIE,MASS_RAIN,
-     &  BILMAS,FU,FV,YACORIOL,CORIOLIS,SPHERIC,COSLAT,SINLAT)
+     &  BILMAS,FU,FV,YASMO,YACORIOL,CORIOLIS,SPHERIC,COSLAT,SINLAT)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   15/06/2013
@@ -190,6 +190,7 @@
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YACORIOL       |-->| LOGIC: IF YES CONSIDER CORIOLIS FORCE
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
+!| YASMO          |-->| LOGICAL: TO TAKE INTO ACCOUNT FU AND FV
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -210,6 +211,7 @@
       INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN),NEISEG(2,*)
       LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,DTVARI,YASMH
       LOGICAL, INTENT(IN)    :: RAIN,BILMAS,YACORIOL,SPHERIC
+      LOGICAL, INTENT(INOUT) :: YASMO
 
       DOUBLE PRECISION, INTENT(IN) :: PROPNU,DIFNU,GAMMA
       DOUBLE PRECISION, INTENT(INOUT) :: AT,DT,MASSES,DTT,MASS_RAIN
@@ -267,7 +269,7 @@
      &            TB%ADR(9)%P%R,TB%ADR(10)%P%R,
      &            GAMMA,FLUX_OLD%R,MXPTVS,NEISEG,
      &            MESH%ELTSEG%I,MESH%IFABOR%I,HROPT,MESH,RAIN,PLUIE,
-     &            MASS_RAIN,BILMAS,FU,FV,YACORIOL,CORIOLIS,
+     &            MASS_RAIN,BILMAS,FU,FV,YACORIOL,CORIOLIS,YASMO,
      &            SPHERIC,COSLAT,SINLAT)
 !
 !-----------------------------------------------------------------------

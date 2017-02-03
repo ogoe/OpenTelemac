@@ -3,7 +3,7 @@
 !                    ************************
 !
      &(NS,G,DT,UA,H,QU,QV,YAFRICTION,CF,YACORIOL,CORIOLIS,
-     & SPHERIC,COSLAT,SINLAT,LT)
+     & SPHERIC,COSLAT,SINLAT,LT,FU,FV,YASMO)
 !
 !***********************************************************************
 ! TELEMAC2D   V7P3
@@ -13,6 +13,7 @@
 !         VOLUMES). ARE CONSIDERED:
 !           - FRICTION TERM.
 !           - CORIOLIS FORCE
+!           - ALL OTHER TERMS ARE COMPUTED BEFORE IN PROSOU_FV
 !
 !history  R. ATA (EDF CHATOU LAB)
 !+
@@ -24,6 +25,7 @@
 !| CORIOLIS       |-->| CORIOLIS COEFFICIENT
 !| COSLAT         |-->| COSINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| DT             |-->| TIME STEP
+!|  FU,FV         |-->|  SOURCE TERMS FOR MOMENTUM (ON X AND Y)
 !| G              |-->| GRAVITY
 !| H              |-->| WATER DEPTH AT TN
 !| LT             |-->| NUMBER OF TIME STEP
@@ -35,6 +37,7 @@
 !| UA             |<->| (H,HU,HV) AT TN+1
 !| YACORIOL       |-->| LOGIC: IF YES CONSIDER CORIOLIS FORCE
 !| YAFRICTION     |-->| LOGIC: IF YES CONIDER FRICTION 
+!| YASMO          |-->| LOGIC: IF YES CONIDER REMAINING FORCES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
@@ -46,11 +49,12 @@
 !
       INTEGER, INTENT(IN)             :: NS,LT
       LOGICAL, INTENT(IN)             :: SPHERIC,YACORIOL,YAFRICTION
+      LOGICAL, INTENT(IN)             :: YASMO
       DOUBLE PRECISION, INTENT(IN)    :: G,DT,CORIOLIS
       DOUBLE PRECISION, INTENT(IN)    :: CF(NS)
       DOUBLE PRECISION, INTENT(IN)    :: H(NS),QU(NS),QV(NS)
       DOUBLE PRECISION, INTENT(INOUT) :: UA(3,NS)
-      TYPE(BIEF_OBJ)  , INTENT(IN)    :: COSLAT,SINLAT
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: COSLAT,SINLAT,FU,FV
 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -121,6 +125,15 @@
             SM1 = UA(2,IS) + A*QV(IS)
             SM2 = UA(3,IS) - A*QU(IS)
           ENDIF
+        ENDIF
+!
+!       3- REMAINNING FORCES
+!
+!       warning: not consistant with semi implicit in time
+!                to adapt if not satisfactory 
+        IF(YASMO)THEN
+          SM1 = SM1 + 0.5D0*DT*(H(IS)+UA(1,IS))*FU%R(IS)
+          SM2 = SM2 + 0.5D0*DT*(H(IS)+UA(1,IS))*FV%R(IS)
         ENDIF
 !
 !       DETERMINANT OF THE CRAMER SYSTEM

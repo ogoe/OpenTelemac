@@ -104,6 +104,7 @@
         IMP=.TRUE.
         LEO=.TRUE.
         COMPLEO=0
+        COMPLIS=0
       ELSE
         IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
 !         FEM
@@ -118,6 +119,8 @@
           GPRDTIME=LEOPRD*DTINI
           LPRDTIME=LISPRD*DTINI
           IF(GPRDTIME.LT.EPSS.OR.LPRDTIME.LT.EPSS)THEN
+            WRITE(LU,*)'PRERES_TELEMAC2D: INITIAL TIME STEP'
+            WRITE(LU,*)'                  TOO SMALL        '
             CALL PLANTE(1)
             STOP
           ENDIF
@@ -141,6 +144,7 @@
 !                                   CASE WHERE RESTE=1
      &        LT.EQ.NIT)THEN
               IMP=.TRUE.
+              COMPLIS=COMPLIS+1
             ENDIF
           ENDIF
         ENDIF

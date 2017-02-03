@@ -17,7 +17,7 @@
      &  LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,
      &  HC,TMAX,DTT,T1,T2,T3,T4,T5,
      &  GAMMA,FLUX_OLD,NVMAX,NEISEG,ELTSEG,IFABOR,HROPT,MESH,
-     &  RAIN,PLUIE,MASS_RAIN,BILMAS,FU,FV,YACORIOL,CORIOLIS,
+     &  RAIN,PLUIE,MASS_RAIN,BILMAS,FU,FV,YACORIOL,CORIOLIS,YASMO,
      &  SPHERIC,COSLAT,SINLAT)
 !
 !***********************************************************************
@@ -210,6 +210,7 @@
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YACORIOL       |-->| LOGIC: IF YES CONSIDER CORIOLIS FORCE
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
+!| YASMO          |-->| LOGICAL: TO TAKE INTO ACCOUNT FU AND FV
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -236,6 +237,7 @@
 !
       LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT,RAIN,BILMAS
       LOGICAL, INTENT(IN) :: YACORIOL,SPHERIC
+      LOGICAL, INTENT(INOUT)    :: YASMO
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: DT,MASS_RAIN
@@ -815,7 +817,7 @@
 !
       CALL  SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
      &                    CF,YACORIOL,CORIOLIS,
-     &                    SPHERIC,COSLAT,SINLAT,LT)
+     &                    SPHERIC,COSLAT,SINLAT,LT,FU,FV,YASMO)
 
 !
 !    *****************************
@@ -885,7 +887,7 @@
 !
       CALL SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
      &                    CF,YACORIOL,CORIOLIS,
-     &                    SPHERIC,COSLAT,SINLAT,LT)
+     &                    SPHERIC,COSLAT,SINLAT,LT,FU,FV,YASMO)
 !
 !-----------------------------------------------------------------------
 !

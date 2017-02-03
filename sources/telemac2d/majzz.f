@@ -39,7 +39,7 @@
 !history  R. ATA
 !+        25/12/2016
 !+        V7P2
-!+    include rain and evaporation and source terms for momentum
+!+    include rain and evaporation 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  AIRS          |-->|  CELL AREAS
@@ -134,8 +134,8 @@
           FACT=DT/AIRS(I)
           W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I))
           IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
-          W(2,I) = QU(I) + FACT* (FLUX(I,2) - hn(i)*FU(I))
-          W(3,I) = QV(I) + FACT* (FLUX(I,3) - hn(i)*FV(I))
+          W(2,I) = QU(I) + FACT*FLUX(I,2) 
+          W(3,I) = QV(I) + FACT*FLUX(I,3)
         ENDDO
 !
       ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
@@ -156,19 +156,16 @@
           IF(LT.EQ.1)THEN
             W(1,I) = HN(I) + FACT*(FLUX(I,1)+SMH(I) )
             IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
-            W(2,I) = QU(I) + FACT* FLUX(I,2) + DT*FU(I)
-            W(3,I) = QV(I) + FACT* FLUX(I,3) + DT*FV(I)
+            W(2,I) = QU(I) + FACT* FLUX(I,2) 
+            W(3,I) = QV(I) + FACT* FLUX(I,3)
           ELSE
             W(1,I) = HN(I) + FACT*(UNMGAMMA*FLUX_OLD(I,1) +
      &                             GAMMA*FLUX(I,1)+SMH(I))
             IF(RAIN)W(1,I)=W(1,I)+DT*PLUIE(I)
-!     WARNING: IDEALLY SMH AND FU &FV SHOULD BE HANDLED IN THE
-!              SAME WAY THAN THE FLUX (WOTH OLD_SMH AND OLD_FV)
-!              TO IMPROVE IF NOT SATISFIED BY THE TESTS
             W(2,I) = QU(I) + FACT*(UNMGAMMA*FLUX_OLD(I,2) +
-     &                       GAMMA*FLUX(I,2)) + DT*FU(I)
+     &                       GAMMA*FLUX(I,2)) 
             W(3,I) = QV(I) + FACT*(UNMGAMMA*FLUX_OLD(I,3) +
-     &                       GAMMA*FLUX(I,3)) + DT*FV(I)
+     &                       GAMMA*FLUX(I,3)) 
           ENDIF
         ENDDO
 !
@@ -197,7 +194,7 @@
 !
 !     SEMI IMPLICIT FRICTION INTRODUCTION
 !     ***********************************
-!     NOW CHANGED IN SOURCE_MOMENT
+!     NOW CHANGED IN SOURCE_MOMENT ==> TO CHANGE LATER: MAKE IT UNIFORM
       IF(OPTVF.EQ.1.OR.OPTVF.EQ.2)THEN
         IF(KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
       ENDIF
