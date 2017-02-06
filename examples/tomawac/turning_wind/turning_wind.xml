@@ -33,7 +33,7 @@
       <v21 vars=":map" target="ref.slf" />
       <v31 vars="mapdiff(v11,v21)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v31)" />
+         fail="checkval(v31,[1e-4])" />
    </cast>-->
 
    

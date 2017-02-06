@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment --> 
    <deco xref="default"> 
       <look format="png" colourbar="jet.xml" /> 
-      <data title="Triplets" author="tomawac" contact="www.opentelemac.org" /> 
+      <data title="Triplets" author="T. Fouquet" contact="www.opentelemac.org" /> 
    </deco> 
    <deco xref="vect"> 
       <look colour="jet.xml" /> 
@@ -55,20 +55,17 @@
          fail="checkval(v12,[1e-4])" />
    </cast>
    <cast xref="triplet1-triplet2" config="oneofall" time="[-1]" type="2d:">
+<!-- <v15 vars="mapdiff(v7,v10)" /> --> 
       <v13 vars=":map" target="1:WACRES" />
       <v14 vars=":map" target="3:WACRES" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison between sequential TRIA 1  and sequential TRIA2 ."
-         fail="checkval(v15,[1e4])" />
+         fail="checkval(v15,[1])" />
    </cast>
 
-<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-   /!\ This section is being ignored at the moment --> 
- 
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  --> 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
@@ -78,7 +75,4 @@
    <plot2d xref="img/results2" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave eigth with Non linear SPB triads transfer')" >
       <layer vars="WAVE HEIGHT HM0 :map" target="3:WACRES" />
    </plot2d>
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
- 
 </validation> 

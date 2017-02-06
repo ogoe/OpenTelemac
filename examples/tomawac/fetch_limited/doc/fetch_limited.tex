@@ -207,35 +207,39 @@ Generally, TOMAWAC gives correct results if you adapt the good model at the appl
 \paragraph{Infinite Depth}
 This benchmark allows to verify that TOMAWAC results for simultaneous processing of different source terms are correct. A comparison with empirical formulas validates this simulation with generally matching results. The use of the exact GQM quadruplet transfers model allows the visualization of overshoots, but,CPU time are increased, so it is not advisable to use this model for big industrial cases.
 \begin{figure}[h!]
-\label{resultinfinite}
   \centering
   \includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultsinfinite.png}
-      \caption{wave heigth for infinite depth}
+  \caption{wave heigth for infinite depth}
+\label{resultinfinite}
 \end{figure}
 
 \paragraph*{Finite depth}
 Even if a 1000 km fetch with only 5 m depth is hard to study in reality, TOMAWAC results get close to the empirical formula. Bottom friction effect seems to be well represented.
 \begin{figure}[h!]
-\label{finite}
   \centering
   \includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultsfinite.png}
-      \caption{wave heigth for finite depth}
+  \caption{wave heigth for finite depth}
+\label{finite}
 \end{figure}
+
+
+\paragraph*{Some Tests}
+We present Figures \ref{test4} \ref{test6} and \ref{test6b} some results of other tests. The references for the comparison are made with the version 7.2 of \tomawac.   
 \begin{figure}[h!]
-\label{test4}
   \centering
   \includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultstest4.png}
-      \caption{wave heigth for test4}
+  \caption{wave heigth for test4}
+\label{test4}
 \end{figure}
 \begin{figure}[h!]
-\label{test6}
   \centering
   \includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultstest6.png}
-      \caption{wave heigth for test6}
+  \caption{wave heigth for test6}
+\label{test6}
 \end{figure}
 \begin{figure}[h!]
-\label{test6b}
   \centering
   \includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultstest6b.png}
-      \caption{wave heigth for test6b}
+  \caption{wave heigth for test6b}
+\label{test6b}
 \end{figure}

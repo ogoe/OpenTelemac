@@ -1,0 +1,75 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES DE TOMAWAC                      /
+/********************************************************************/
+/MODE TROISIEME GENERATION = OUI
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+FICHIER FORTRAN = 'limwacv5P4.f'
+FICHIER DE GEOMETRIE = 'geospheriquemanche.slf'
+FICHIER DES CONDITIONS AUX LIMITES = 'manche.cl'
+FICHIER DES VENTS BINAIRE = 'vents.slf'
+FORMAT DU FICHIER DES VENTS = 3
+VENT STATIONNAIRE = NON
+/UNITE DE TEMPS DU FICHIER DES VENTS = 3600.
+/DEPHASAGE DU FICHIER DES VENTS = 11612
+/VENT STATIONNAIRE = FALSE
+/NOMS DES VARIABLES='VITESSE U       M/S             ';
+/          'VITESSE V       M/S             ';
+/	  'vent_x                          ';
+/	  'vent_y                          ';
+/          'HAUTEUR D''EAU   M               '
+FICHIER FORMATE 1 = 'manche.lar'
+/
+FICHIER DES RESULTATS 2D = 'manche2.slf'
+FICHIER DES RESULTATS PONCTUELS = 'manche.spe'
+/FICHIER DE REFERENCE = 'manche_V1P3.r2d'
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'CAS TEST TEMPETE EN MANCHE'
+PERIODE POUR LES SORTIES LISTING = 9
+PERIODE POUR LES SORTIES GRAPHIQUES = 36
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+HM0,DMOY,FMOY,FM01,FPD,VX,VY,ZF
+/ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 
+/-12.14;-15.;-3.; -7.; 2.50;-4.0;-5.12;-6.0;-4.75;-3.13; -2.0;-0.88;
+/1.5
+/ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 
+/ 43.13; 45.;45.;47.6;54.75;47.7;48.45; 51.;49.28;48.98;49.58; 50.1;
+/51.
+/DEBUGGER=1
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+DATE DE DEBUT DU CALCUL = 1161500
+/DATE DE DEBUT DU CALCUL = 199001160300.0
+/DATE DE DEBUT DU CALCUL = 199001161500.0
+PAS DE TEMPS = 300.
+NOMBRE DE PAS DE TEMPS = 4032
+/NOMBRE DE PAS DE TEMPS = 4
+NOMBRE DE DIRECTIONS = 12
+FREQUENCE MINIMALE = 0.04177248
+RAISON FREQUENTIELLE = 1.1
+NOMBRE DE FREQUENCES = 25
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+COORDONNEES SPHERIQUES = OUI
+SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = OUI
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+PRISE EN COMPTE DU VENT = OUI
+TYPE DE SPECTRE DIRECTIONNEL INITIAL = 1
+/VALIDATION = OUI
+/--------------------------------------------------------------------/
+/ TERMES SOURCES
+/--------------------------------------------------------------------/
+NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
+APPORTS DUS AU VENT = 1
+DISSIPATION PAR MOUTONNEMENT = 1
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
+DISSIPATION PAR DEFERLEMENT = 0
+/NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 5

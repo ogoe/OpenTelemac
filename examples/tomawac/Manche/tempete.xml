@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="7" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="tempete Manche" author="T.Fouquet" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="tomawac" target="manche.cas"
+       title="tempete geom calculee (en double)"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi"
+       code="tomawac" target="manchelim.cas"
+       title="tempete geometrie en simple"
+   />
+   <cast xref="ref1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="ref_tom_manche.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison between sequential and reference run."
+         fail="checkval(v3,[1e-4])" />
+   </cast>
+   <cast xref="ref2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="ref_tom_manche.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison between parallel and reference run."
+         fail="checkval(v6,[1e-4])" />
+   </cast>
+   <cast xref="cas" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:WACRES" />
+      <v8 vars=":map" target="2:WACRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1e-4])" />
+   </cast>
+<!--   <cast xref="refvieux" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="1:WACRES" />
+      <v11 vars=":map" target="r2d.V1P3.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Comparison between parallel and reference run."
+         fail="checkval(v12,[1e-4])" />
+   </cast> -->
+ 
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+   <deco xref="bleu">
+     <look cmap="Artic.xml" extend="'max'"/>
+   </deco>  
+<deco xref="hiver">
+      <look cmap="winter.xml" extend="'max'"/>
+   </deco>
+
+   <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
+      <layer vars="FOND          :mesh" target="1:WACGEO" />
+   </plot2d>
+   <plot2d xref="img/bathy" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Bathymetry')" >
+      <layer vars="FOND          :map" target="2:WACGEO" deco="bleu"/>
+   </plot2d>
+   <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">
+      <layer vars="HAUTEUR HM0 :map" target="1:WACRES" deco="hiver"/>
+   </plot2d>
+   <plot2d xref="img/results2" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">
+      <layer vars="HAUTEUR HM0 :map" target="2:WACRES" deco="hiver"/>
+   </plot2d>
+   <plot2d xref="img/resultsV1P3" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">
+      <layer vars="HAUTEUR_HM0 :map" target="r2d.V1P3.slf" deco="hiver"/>
+   </plot2d>
+   <plot2d xref="img/direction" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Direction')">
+      <layer vars="DIRECTION MOY :map" target="1:WACRES" deco="hiver"/>
+   </plot2d>
+   <plot2d xref="img/directionref" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Direction')">
+      <layer vars="DIRECTION MOY:map" target="ref_tom_manche.slf" deco="hiver"/>
+   </plot2d>
+
+</validation>
