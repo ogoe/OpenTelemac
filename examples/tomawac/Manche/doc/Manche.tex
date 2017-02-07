@@ -6,7 +6,7 @@
 %
 \subsection{Purpose}
 %
-This test case has been exhibited from an old version (V5P4), the reference case at this time was called . It has got mainly one interest, to compare results from old versions to the new version.  
+This test case has been exhibited from an old version (V5P4), the reference case at this time was called r2d.V1P3. It has got mainly one interest, to compare results from old versions to the new version.  
 
 %
 \subsection{Description of the problem}
@@ -37,10 +37,10 @@ As we kept the fortran user to describe boundaries conditions one will read this
 
 \subsection{Results and Comments}
 
-If one run the validation, one will see a difference of 30\% wave heigth result, it is only on a point and it doesn spread on all the result, so we guess it is a change in the postprocessing. It could be explained by the fact that may be integration over directions and frequencies used to be made in simple precision.
+If one run the validation, one will see a difference of 30\% wave heigth result, it is only on a few points and it does not spread on all the results, so we guess it is a change in the postprocessing. It can not be explained by the fact that integrations over directions and frequencies used to be made were in simple precision and in double now.
 When we observe global results, we would say that there are no difference between reference and new result (see \ref{figmanchehm0} \ref{figmanchehm02} and \ref{figmanchehm0v1P3}.
 
-As the calculation is made in spherical coordinates but the initial mesh is done in cartesian coordinates. Tomawac calculate a conversion through Fortran user. The result is a little bit different if we take the conversion from the coordinate of the old version because of simple precision in the coordinate. That is the reason of the difference between last comparison when running validation.  
+As the calculation is made in spherical coordinates but the initial mesh is done in cartesian coordinates. Tomawac calculates a conversion through Fortran user. The result is a little bit different if we take the conversion from the coordinate of the old version because of simple precision in the coordinate. That is the reason of the difference between last comparison when running validation.  
 
 \begin{figure} [!h]
 \centering
