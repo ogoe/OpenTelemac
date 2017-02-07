@@ -10,7 +10,7 @@ This test case has been exhibited from an old version (V5P4), the reference case
 
 %
 \subsection{Description of the problem}
-We simulate the storm that occured in 1990 in Manche. This test was a test described in the validation of tomawac 1.0. Because of many changes in the code it had been abandonned. It now works with the new version but not in parallel because of the fortran user that sets the boundary. 
+We simulate the storm that occured in 1990 in Manche. This test was a test described in the validation of tomawac 1.0 \cite{Benoit1996_3}. Because of many changes in the code it had been abandonned. It now works with the new version but not in parallel because of the fortran user that sets the boundary. 
 
 We discretize with 25 frequencies and 12 directions. The minimal frequency is 0.04177248 and the frequential ratio 1.1.
 The mesh is shown on picture \ref{figmanchemesh}, as we are interested in storm in the Manche the mesh is finer around the manche. 
@@ -70,5 +70,5 @@ As the calculation is made in spherical coordinates but the initial mesh is done
 \centering
 \includegraphicsmaybe{[width=0.85\textwidth]}{../img/directionref.png}
  \caption{Mean direction for reference file}
-\label{figmanchehm0}
+\label{figmanchedirectionref}
 \end{figure}
