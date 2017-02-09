@@ -37,7 +37,14 @@ As we kept the fortran user to describe boundaries conditions one will read this
 
 \subsection{Results and Comments}
 
-If one run the validation, one will see a difference of 30\% wave heigth result, it is only on a few points and it does not spread on all the results, so we guess it is a change in the postprocessing. It can not be explained by the fact that integrations over directions and frequencies used to be made were in simple precision and in double now.
+If one run the validation, one will see a difference of 30\% wave heigth result, it is only on a few points (see figure\ref{figmanchedif}) and it does not spread on all the results, so we guess it is a change in the postprocessing. It can not be explained by the fact that integrations over directions and frequencies used to be made were in simple precision and in double now.
+\begin{figure} [!h]
+\centering
+\includegraphicsmaybe{[width=0.85\textwidth]}{diff.png}
+ \caption{In colour points where diff of wave height is more than 1 meter.}
+\label{figmanchehm0}
+\end{figure}
+
 When we observe global results, we would say that there are no difference between reference and new result (see \ref{figmanchehm0} \ref{figmanchehm02} and \ref{figmanchehm0v1P3}.
 
 As the calculation is made in spherical coordinates but the initial mesh is done in cartesian coordinates. Tomawac calculates a conversion through Fortran user. The result is a little bit different if we take the conversion from the coordinate of the old version because of simple precision in the coordinate. That is the reason of the difference between last comparison when running validation.  

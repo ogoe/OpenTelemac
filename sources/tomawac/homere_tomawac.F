@@ -108,7 +108,7 @@
 !      write(*,*) 'POINT_TOMAWAC'
       CALL POINT_TOMAWAC
 !      write(*,*) 'APRES POINT_TOMAWAC'
-      !
+!
 !-----------------------------------------------------------------------
 !
 !     CALLS THE REAL MAIN PROGRAM

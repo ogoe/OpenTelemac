@@ -195,7 +195,6 @@
 !
 !
         MESHF%NAME = 'MESH'
-!        MESHF%TYPELM = TRIANGLE_ELT_TYPE !TRIANGLE 2D MESH
         MESHF%TYPELM = QUADRANGLE_ELT_TYPE !TRIANGLE 2D MESH
         MESHF%NELEM  = NELEM
         MESHF%NPOIN  = NPSPE
@@ -358,5 +357,6 @@
 !
 !-----------------------------------------------------------------------
 !
+      DEALLOCATE(F_INTF)
       RETURN
       END
