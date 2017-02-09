@@ -352,6 +352,8 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
+               #print '    re-copying: ', crun
+               #putFileContent(crun,cas[0])
                print '    copying cas: ', crun
                # Removing trailing space on the left
                newcas = [line.lstrip() for line in cas[0]]
