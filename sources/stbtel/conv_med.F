@@ -64,6 +64,7 @@
       INTEGER, ALLOCATABLE :: ELEMNUM2(:)
       LOGICAL :: MYFALSE
       INTEGER :: POS
+      INTEGER :: DT, IT
 !
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------BEGINNING READING OF MED FILE'
@@ -272,8 +273,6 @@
       MESH2%KNOLG = 0
       CALL MMHGNR(NINP,MESHNAME,MED_NO_DT,MED_NO_IT,MED_NODE,
      &            MED_NONE,MESH2%KNOLG,IERR)
-      ! CHECK IF THE NUMBERING IS AVAILABLE
-      IF(IERR.NE.0) DEALLOCATE(MESH2%KNOLG)
 !
       IF(LNG.EQ.1) WRITE(LU,*)
      &            '---INFORMATIONS SUR LES CONDITIONS LIMITES'
@@ -382,7 +381,9 @@
           DO ITIME=1,MESH2%TIMESTEP
             IF(DEBUG) WRITE(LU,*) '-BEGINNING FOR TIMESTEP',ITIME
             !GET INFORMATION ON THE TIMESTEP
-            CALL MFDCSI(NINP,FIELDNAME,ITIME,MED_NO_DT,MED_NO_IT,
+            DT = MED_NO_DT
+            IT = MED_NO_IT
+            CALL MFDCSI(NINP,FIELDNAME,ITIME,DT,IT,
      &                  MESH2%TIMES(ITIME),IERR)
             CALL FNCT_CHECK(IERR,'MFDCSI')
             IF(DEBUG.AND.(LNG.EQ.1))
@@ -453,7 +454,9 @@
       ! FILLING IB
       MESH2%IB(:)=0
       MESH2%IB(1)=1
-      IF(ALLOCATED(MESH2%KNOLG)) MESH2%IB(8)=1
+      IF(MESH2%KNOLG(1).EQ.0) THEN
+        MESH2%IB(8)=1
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
