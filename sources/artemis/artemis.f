@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V7P1
+! ARTEMIS   V7P2
 !***********************************************************************
 !
 !brief    SOLVES THE MODIFIED BERKHOFF EQUATION.
@@ -35,6 +35,13 @@
 !+       25/05/2015
 !+       V7P0
 !+       Modification to comply with the hermes module
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   cleaned up declaration / initialisation for NVARCL and ISTO (not used)
+!+   modified call to LECLIM to harvest HB, TETAP, ALFAP and RP values
+!+   from the cli file
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +75,6 @@
 !
 ! VARIABLES FOR CALLS TO TELEMAC-2D SUBROUTINES
 !
-      INTEGER NVARCL,ISTO
       DOUBLE PRECISION LAMBD0
       LOGICAL RESU,FROVAR,PROLIN,TRAC
 !
@@ -95,7 +101,6 @@
 !-----------------------------------------------------------------------
 !
       RADDEG = 180.D0/3.141592654D0
-!
 !
 !=======================================================================
 !
@@ -136,15 +141,6 @@
       PROLIN = .FALSE.
       SPHERI = .FALSE.
       TRAC   = .FALSE.
-      NVARCL = 0
-!
-! IN TELEMAC-2D, LIHBOR = KINC IS AUTOMATICALLY CHANGED TO KSORT
-! HAS TO MODIFY THE VALUE OF KINC FOR PREDA2, TO AVOID THIS AUTOMATIC CHANGE
-! IN ADDITION, IN TELEMAC-2D, LIHBOR = KADH (NOT KNOWN HERE) GENERATES
-! A MESSAGE. TO AVOID IT, ISTO IS ALSO USED IN PLACE OF KADH.
-!
-!
-      ISTO = 100
 !
 !-----------------------------------------------------------------------
 !
@@ -152,18 +148,24 @@
 !
 ! CCP : WARNING :
 !       V6P2 LECLIM_ARTEMIS IS NOT USED ANYMORE.
-!       IN LECLIM we use 0 0 0 0 0 0 values for KENT,KENTU, etc...
+!       IN LECLIM we use KENT KENTU 0 0 0 0 values for KENT,KENTU, etc...
 !       This way LECLIM ONLY READ the boundary conditions file and
-!       DO NOT CHANGE the LIHBOR values
+!       DO NOT CHANGE the LIHBOR values when LIHBOR=KINC, OR GENERATE A
+!       MESSAGE when LIHBOR=KADH
+!       AND DOES NOT RESET (TETAPS,ALFAPS) if LIUBOR=KENT or KENTU
 !
       IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING LECLIM'
-      CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
-     &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
-     &             TB1%R      , TB1%R    , TB1%R  ,
-     &             MESH%NPTFR , 'ART'    ,.FALSE. ,
+      CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I  , ITB1%I,
+     &             HBS%R      , TETAPS%R , ALFAPS%R, TB1%R ,
+     &             RP%R       , TB1%R    , TB1%R   ,
+     &             MESH%NPTFR , 'ART'    ,.FALSE.  ,
      &             ART_FILES(ARTGEO)%FMT,ART_FILES(ARTGEO)%LU,
-     &             0       , 0    , 0 ,  0 , 0 , 0,
+     &             KENT       , KENTU    , 0 ,  0 , 0 , 0  ,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
+      DO I=1,NPTFR
+        TETAP%R(I)=TETAPS%R(I)
+        ALFAP%R(I)=ALFAPS%R(I)
+      ENDDO
       IF(DEBUG.GT.0) WRITE(LU,*) '< LECLIM CALLED'
 !
 !-----------------------------------------------------------------------
@@ -379,14 +381,19 @@
       CALL OS('X=C     ', MSIN , SBID , SBID , 0.D0 )
 !
 !
-! IN MULTIDIRECTIONAL RANDOM SEA, THE DIRECTIONS OF PROPAGATION
-! (AT THE BOUNDARY) HAVE BEEN CALCULATED IN DALE.
+!-----------------------------------------------------------------------
 !
 200   IF (ALEMUL) THEN
         CALL OS('X=C     ', TETAB ,SBID,SBID, DALE%R(LDIR) )
         IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING ENTART'
         CALL ENTART(2,DALE%R(LDIR),LT,LDIR,NDALE,ALEMON,ALEMUL,BALAYE)
         IF(DEBUG.GT.0) WRITE(LU,*) '< ENTART CALLED'
+      ELSE
+!
+! TETAB = TETAH IN THE CASE OF UNIDIRECTIONAL WAVES,
+! SUCH THAT TETAB CAN BE USED CONSISTENTLY
+!
+        CALL OS('X=C     ', TETAB ,SBID,SBID, TETAH )
       ENDIF
 !
 100   CONTINUE
@@ -429,14 +436,17 @@
       IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING BORH'
       CALL BORH
       IF(DEBUG.GT.0) WRITE(LU,*) '< BORH CALLED'
-!     IMPOSE THE OLD TETAP TO THE BOUNDARY EXCEPT FOR THE FIRST COMPUTATION
-!###> SEB @ HRW: RESET OF THE TETAP FOR COMPARISON PURPOSES
+!###> SEB @ HRW
+!     REASSIGNS TETAP TO THE IMPOSED USER VALUE
 !      IF ((LANGAUTO).AND.(LT.GT.0)) THEN
-!        DO I=1,NPTFR
+      IF( LANGAUTO ) THEN
+        DO I=1,NPTFR
+          TETAP%R(I)=TETAPS%R(I)
 !          TETAP%R(I)=TETAPM%R(I)
-!        ENDDO
-!      ENDIF
+        ENDDO
+      ENDIF
 !###<
+!
 ! ===================================================================================
 !
 ! : 3 . 1              BOUNDARY CONDITIONS FOR RANDOM SPECTRUM

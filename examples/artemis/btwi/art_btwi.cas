@@ -12,8 +12,6 @@ RESULTS FILE               ='r2d_btwi.slf'
 /
 BOUNDARY CONDITIONS FILE   ='geo_btwi.cli'
 /
-FORTRAN FILE               ='user_fortran'
-/
 GEOMETRY FILE              ='geo_btwi.slf'
 /
 /---------------------------------------------------------------------
@@ -69,6 +67,9 @@ DIRECTION OF WAVE PROPAGATION  : 114.
 /
 BREAKING : YES
 /
+AUTOMATIC CALCULATION OF PHASE = YES
+REFERENCE WATER DEPTH FOR AUTOMATIC PHASE = 5.1
+/PHASE REFERENCE COORDINATES              : 0. ; 0.
 /
 /
 /

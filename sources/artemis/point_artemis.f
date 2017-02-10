@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   31/05/2011
+! ARTEMIS   V7P2                                     Nov 2016
 !***********************************************************************
 !
 !brief    ALLOCATES STRUCTURES.
@@ -55,6 +55,11 @@
 !+       25/05/2015
 !+       V7P0
 !+       Modification to comply with the hermes module
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Allocations for TETAPS, ALFAPS and HBS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,7 +204,12 @@
       CALL BIEF_ALLVEC(1,ALFAP,'ALFAP ',IELMB, 1 , 2 ,MESH)
 !     STORAGE OF TETAP FOR AUTOMATIC REFLEXION ANGLE CALCULATION
       CALL BIEF_ALLVEC(1,TETAPM,'TETAPM',IELMB, 1 , 2 ,MESH)
-      CALL BIEF_ALLVEC(1,TETAPS,'TETAPS',IELMB, 1 , 2 ,MESH)
+!     STORAGE OF TETAP AND ALFAP VALUES
+!     FOR LECLIM (SECOND DIMENSION=2 FOR THE EQUIVALENT OF UBOR)
+      CALL BIEF_ALLVEC(1,TETAPS,'TETAPS',IELMB, 2 , 2 ,MESH)
+      CALL BIEF_ALLVEC(1,ALFAPS,'ALFAPS',IELMB, 2 , 2 ,MESH)
+!     STORAGE OF HB VALUES
+      CALL BIEF_ALLVEC(1,HBS,'HBS   ',IELMB, 1 , 2 ,MESH)
 
 ! WAVE HEIGHT AND ANGLE OF WAVE ATTACK FOR OPEN BOUNDARIES
 ! (ANGLE FROM X AXIS)

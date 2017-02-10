@@ -10,7 +10,7 @@
 /
 RESULTS FILE             = 'r2d_bosse.slf'
 BOUNDARY CONDITIONS FILE = 'geo_bosse.cli'
-FORTRAN FILE             = 'user_fortran'
+FORTRAN FILE             =  f90
 GEOMETRY FILE            = 'geo_bosse.slf'
 /
 /

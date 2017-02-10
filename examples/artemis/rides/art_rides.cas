@@ -9,10 +9,9 @@
 /
 RESULTS FILE             = 'r2d_rides.slf'
 /
-/
 BOUNDARY CONDITIONS FILE = 'geo_rides.cli'
 /
-FORTRAN FILE             = 'user_fortran'
+FORTRAN FILE             =  f90
 /
 GEOMETRY FILE            = 'geo_rides.slf'
 /
@@ -64,4 +63,6 @@ RAPIDLY VARYING TOPOGRAPHY = 3
 /
 // (2*Lambda/L) = 1.
 WAVE PERIOD = 1.3
+/
+PHASE REFERENCE COORDINATES : 0.; 2.
 /

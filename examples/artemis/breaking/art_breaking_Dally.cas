@@ -12,11 +12,9 @@ RESULTS FILE              ='r2d_breaking_Dally.slf'
 /
 BOUNDARY CONDITIONS FILE  ='cli_breaking.slf'
 /
-FORTRAN FILE              ='user_fortran'
+FORTRAN FILE              = f90
 /
 GEOMETRY FILE             ='geo_breaking.slf'
-/
-STEERING FILE             ='art_breaking_Dally.cas'
 /
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
@@ -76,4 +74,5 @@ DIRECTION OF WAVE PROPAGATION = 0.
 KDALLY = 0.25
 GDALLY = 0.4
 /
+PHASE REFERENCE COORDINATES : -10.; 0.
 /

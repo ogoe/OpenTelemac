@@ -40,6 +40,11 @@
 !+   Bug correction:LIQF and SOLF were not changed for cases where
 !+   the 3 nodes (prevK, K,kp1bor(k)) are all liquid
 !
+!history  S.E.BOURBAN (HRW))
+!+        02/02/2017
+!+        v7p2
+!+   Bug correction: Allowing for circular liquid boundaries
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEJAVU         |<->| WORK ARRAY
 !| FINLIQ         |<--| END OF LIQUID BOUNDARIES
@@ -208,6 +213,8 @@
         SOL1 = NFRSOL
         SOLD = .TRUE.
         LIQD = .FALSE.
+        DEBSOL(NFRSOL) = K
+        FINSOL(NFRSOL) = K    ! IN CASE OF CIRCULAR BOUNDARY
       ELSE
 !       THE 1ST SEGMENT IS LIQUID
         NFRLIQ = NFRLIQ + 1
@@ -234,6 +241,8 @@
         LIQ1 = NFRLIQ
         LIQD = .TRUE.
         SOLD = .FALSE.
+        DEBLIQ(NFRLIQ) = K
+        FINLIQ(NFRLIQ) = K    ! IN CASE OF CIRCULAR BOUNDARY
       ENDIF
 !
       DEJAVU(K) = 1
@@ -360,8 +369,10 @@
 !       THE LAST CONTOUR BOUNDARY WAS SOLID
         IF(SOLD) THEN
 !         THE FIRST CONTOUR BOUNDARY WAS SOLID
-          DEBSOL(SOL1) = DEBSOL(NFRSOL)
-          NFRSOL = NFRSOL - 1
+          IF( SOL1.NE.NFRSOL )THEN
+            DEBSOL(SOL1) = DEBSOL(NFRSOL)
+            NFRSOL = NFRSOL - 1
+          ENDIF
         ELSEIF(LIQD) THEN
 !         THE FIRST CONTOUR BOUNDARY WAS LIQUID
           DEBLIQ(LIQ1) = IDEP
@@ -372,8 +383,10 @@
 !       THE LAST CONTOUR BOUNDARY WAS LIQUID
         IF(LIQD) THEN
 !         THE FIRST CONTOUR BOUNDARY WAS LIQUID
-          DEBLIQ(LIQ1) = DEBLIQ(NFRLIQ)
-          NFRLIQ = NFRLIQ - 1
+          IF( LIQ1.NE.NFRLIQ )THEN
+            DEBLIQ(LIQ1) = DEBLIQ(NFRLIQ)
+            NFRLIQ = NFRLIQ - 1
+          ENDIF
         ELSEIF(SOLD) THEN
 !         THE FIRST CONTOUR BOUNDARY WAS SOLID
           DEBSOL(SOL1) = IDEP

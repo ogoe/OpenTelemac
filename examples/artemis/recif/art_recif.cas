@@ -12,7 +12,7 @@ RESULTS FILE             = 'r2d_recif.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_recif.cli'
 /
-FORTRAN FILE             = 'user_fortran'
+FORTRAN FILE             =  f90
 /
 GEOMETRY FILE            = 'geo_recif.slf'
 /
@@ -64,6 +64,8 @@ BREAKING =NO
 RAPIDLY VARYING TOPOGRAPHY = 3
 /
 WAVE PERIOD =6.34
+/
+PHASE REFERENCE COORDINATES : 0.; 2.
 /
 /---------------------------------------------------------------------
 /---------------------------------------------------------------------

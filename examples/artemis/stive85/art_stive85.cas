@@ -11,7 +11,7 @@ RESULTS FILE              ='r2d_stive85.slf'
 /
 BOUNDARY CONDITIONS FILE  ='geo_stive85.cli'
 /
-FORTRAN FILE              ='user_fortran'
+FORTRAN FILE              = f90
 /
 GEOMETRY FILE             ='geo_stive85.slf'
 /
@@ -28,7 +28,7 @@ TITLE ='BREAKING OF RANDOM WAVE - STIVE 1985'
 /
 WAVE HEIGHTS SMOOTHING           = NO
 /
-VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,ZS,ZF,C,CG,QB'
+VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,ZF,C,CG,QB'
 /
 /---------------------------------------------------------------------
 / INITIAL CONDITIONS
@@ -36,7 +36,7 @@ VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,ZS,ZF,C,CG,QB'
 /
 INITIAL CONDITIONS   ='CONSTANT ELEVATION'
 /
-INITIAL WATER LEVEL  = 0.
+INITIAL WATER LEVEL  = 4.19
 /
 /
 /--------------------------------------------------------------------/
@@ -73,6 +73,5 @@ GAMMA : 3.3
 NUMBER OF PERIODS = 10
 DIRECTION OF WAVE PROPAGATION = 0.
 /
-INITIAL CONDITIONS   : 'CONSTANT ELEVATION'
-INITIAL WATER LEVEL  : 4.19
+PHASE REFERENCE COORDINATES : 0.; 2.
 /

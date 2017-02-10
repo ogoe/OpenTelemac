@@ -9,7 +9,7 @@
 /
 RESULTS FILE              ='r2d_shoal.slf'
 BOUNDARY CONDITIONS FILE  ='geo_shoal.cli'
-FORTRAN FILE              ='user_fortran'
+FORTRAN FILE              = f90
 GEOMETRY FILE             ='geo_shoal.slf'
 /
 /---------------------------------------------------------------------
@@ -40,7 +40,7 @@ MATRIX STORAGE =3
 / NUMERICAL PARAMETERS,SOLVER
 /---------------------------------------------------------------------
 /
-SOLVER = 3
+SOLVER = 8
 /
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS : n

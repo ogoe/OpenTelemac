@@ -12,8 +12,6 @@ RESULTS FILE                ='r2d_reso.slf'
 /
 BOUNDARY CONDITIONS FILE    ='geo_reso.cli'
 /
-FORTRAN FILE                ='user_fortran'
-/
 GEOMETRY FILE               ='geo_reso.slf'
 /
 /---------------------------------------------------------------------
@@ -69,4 +67,5 @@ STEP FOR PERIOD SCANNING : 5.
 /
 DIRECTION OF WAVE PROPAGATION : 0.D0
 /
+PHASE REFERENCE COORDINATES : 2000.; 4500.
 /

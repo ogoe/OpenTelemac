@@ -12,7 +12,7 @@ RESULTS FILE                       ='r2d_kostense.slf'
 /
 BOUNDARY CONDITIONS FILE           ='geo_kostense.cli'
 /
-FORTRAN FILE                       ='user_fortran'
+FORTRAN FILE                       = f90
 /
 GEOMETRY FILE                      ='geo_kostense.slf'
 /
@@ -31,7 +31,7 @@ TITLE ='KOSTENSE VORTEX CURRENT CASE'
 WAVE HEIGHTS SMOOTHING          : NO
 /
 VARIABLES FOR GRAPHIC PRINTOUTS :
-  'HS,PHAS,ZF,ZS,INC,CG,QB,C,PHIR,PHII,WR,K'
+  'HS,PHAS,ZF,ZS,INC,CG,QB,C,PHIR,PHII,K'
 /
 /---------------------------------------------------------------------
 / EQUATIONS CONDITIONS INITIALES
@@ -73,3 +73,5 @@ SUB-ITERATIONS ACCURACY FOR CURRENT=1D-2
 /
 //AUTOMATIC TETAP CALCULATION : YES
 //SUB-ITERATIONS ACCURACY FOR TETAP=1E-4
+/
+PHASE REFERENCE COORDINATES : 0.; 5000.

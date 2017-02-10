@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V7P2                                     Nov 2016
 !***********************************************************************
 !
 !brief    INITIALISES THE PHYSICAL PARAMETER ARRAYS.
@@ -36,6 +36,12 @@
 !+        V7P0
 !+   Computation of reference wave number for automatic
 !+   phase calculation
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Resets the wave height read from the cli file at line 126
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -112,6 +118,12 @@
 !  CLIPS H (VALUES LOWER THAN 1.D-2 NOT ALLOWED)
 !
       CALL CLIP(H,1.D-2,.TRUE.,1.D6,.FALSE.,NPOIN)
+!
+!-----------------------------------------------------------------------
+!
+!  RESETS WAVE HEIGHT READ FROM LECLIM
+!
+      CALL OS( 'X=Y     ' , X=HB , Y=HBS )
 !
 !-----------------------------------------------------------------------
 !

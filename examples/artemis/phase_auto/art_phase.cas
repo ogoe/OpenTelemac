@@ -14,7 +14,7 @@ RESULTS FILE             = 'r2d_phase.slf'
 /
 BOUNDARY CONDITIONS FILE = 'geo_phase.cli'
 /
-FORTRAN FILE             = 'user_fortran'
+FORTRAN FILE             =  f90
 /
 GEOMETRY FILE            = 'geo_phase.slf'
 /
@@ -70,5 +70,6 @@ BREAKING =NO
 /
 WAVE PERIOD = 8.
 /
+DIRECTION OF WAVE PROPAGATION : -45.0
 /
 /

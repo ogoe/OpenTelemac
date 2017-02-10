@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="port" author="HR Wallingford" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="artemis" target="art_port_auto.cas"
+       title="AUTOMATIC TETAP FOR SCHEMATIC DELFT HARBOUR"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="artemis" target="art_port_auto.cas"
+       title="AUTOMATIC TETAP FOR SCHEMATIC DELFT HARBOUR"
+   />
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:ARTRES" />
+      <v2 vars=":map" target="f2d_port_auto.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[1.e-6,2.e-4,1.e-5,1.e-5,1.e-5,1.e-8,1.e-5,1.e-5,0.01])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:ARTRES" />
+      <v5 vars=":map" target="f2d_port_auto.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v6,[1.e-6,2.e-4,0.03,0.03,1.e-5,1.e-8,1.e-5,1.e-5,360.0])" />
+   </cast>
+<!-- need to improve comparison methods to account for modulo 2PI in directions/phases -->
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:ARTRES" />
+      <v8 vars=":map" target="2:ARTRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.e-5,4.e-4,0.03,0.03,1.e-5,1.e-8,1.e-5,1.e-5,360.0])" />
+   </cast>
+<!-- need to improve comparison methods to account for modulo 2PI in directions/phases -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Section1" type="v-section" config="together" size="(10;7)" >
+      <layer vars="wave height:line" extract="(1;3)(9;3)" target="1:ARTRES" />
+   </plot1d>
+   <plot1d xref="Section2" type="v-section" config="together" size="(10;7)" >
+      <layer vars="wave height:line" extract="(1;4)(9;4)" target="1:ARTRES" time="[0]" />
+   </plot1d>
+   <plot1d xref="Section3" type="v-section" config="together" size="(10;7)" >
+      <layer vars="wave height:line" extract="(1;5)(8;5)" target="1:ARTRES" time="[0]" />
+   </plot1d>
+   <plot1d xref="Section4" type="v-section" config="together" size="(10;7)" >
+      <layer vars="wave height:line" extract="(1;6)(8;6)" target="1:ARTRES" time="[0]" />
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="(12;8)" >
+      <layer vars="maillage:mesh" target="1:ARTGEO" config="oneofall" />
+   </plot2d>
+   <plot2d xref="WaveHeight" size="(12;8)" >
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" />
+   </plot2d>
+   <plot2d xref="Free Surface" size="(12;8)" >
+      <layer vars="free surface:map" target="1:ARTRES" config="oneofall" />
+   </plot2d>
+
+
+</validation>

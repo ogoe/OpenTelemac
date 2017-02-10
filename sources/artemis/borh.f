@@ -4,22 +4,11 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V7P2                                     Nov 2016
 !***********************************************************************
 !
 !brief    TAKES INTO ACCOUNT USER-SPECIFIED BOUNDARY CONDITIONS.
 !+              THEY ARE GIVEN BY SEGMENT.
-!
-!warning  MUST BE CODED BY THE USER
-!code
-!+ ---------------------------------------
-!+ INITIALISES THE VARIABLES (DEFAULT)
-!+ ---------------------------------------
-!+      TETAB%R(:)=TETAH
-!+      TETAP%R(:)=0.D0
-!+      ALFAP%R(:)=0.D0
-!+      RP%R(:)=0.D0
-!+      HB%R(:)=0.D0
 !
 !history  J-M HERVOUET (LNH)
 !+
@@ -48,6 +37,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   BORH void for general use now that wave / boundary parameters
+!+   can be read from cli file, and that TETAB is assigned before
+!+   call to BORH for all cases (uni or multidirectional waves)
+!+   The subroutine can still be used for advanced definition of
+!+   boundaries or if the user chooses not to use the cli file, but
+!+   does nothing by default
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -71,23 +70,21 @@
 !
 !-----------------------------------------------------------------------
 !
-! BOUNDARY CONDITIONS
-! KLOG : 'SOLID' SEGMENT.
-! KINC : 'INCIDENT WAVE' SEGMENT.
-! KENT : 'ENTRY' SEGMENT.
-! KSORT : 'EXIT' SEGMENT.
-!
-! ALL THE ANGLES ARE IN  DEGREES
-!                         ------
+! ALL ANGLES ARE IN  DEGREES
+!                    -------
 ! ---------------------------------------
-! INITIALISES THE VARIABLES (DEFAULT)
+! EXAMPLE
 ! ---------------------------------------
 !
-      TETAB%R(:)=TETAH
-      TETAP%R(:)=0.D0
-      ALFAP%R(:)=0.D0
-      RP%R(:)=0.D0
-      HB%R(:)=0.D0
+!      DO I=1,NPTFR
+!        JB=BOUNDARY_COLOUR%I(I)
+!!       SOLID BOUNDARY
+!        IF(JB.GE.2.AND.JB.LE.139)THEN
+!          RP%R(I) = 1.D0
+!          TETAP%R(I) = 90.D0
+!          ALFAP%R(I) = 0.D0
+!        ENDIF
+!      ENDDO
 !
 !-----------------------------------------------------------------------
 !

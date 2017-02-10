@@ -12,7 +12,7 @@ RESULTS FILE              ='r2d_breach.slf'
 /
 BOUNDARY CONDITIONS FILE  ='geo_breach.cli'
 /
-FORTRAN FILE              ='user_fortran'
+FORTRAN FILE              = f90
 /
 GEOMETRY FILE             ='geo_breach.slf'
 /

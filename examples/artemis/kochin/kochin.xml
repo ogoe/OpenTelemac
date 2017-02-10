@@ -15,12 +15,12 @@
    /!\ do="cas;princi" are being ignored at the moment
 -->
    <action xref="1"
-       do="translate;run;cas;princi"
+       do="translate;run;cas"
        code="artemis" target="art_kochin.cas"
        title="Incident potential from kochin function"
    />
    <action xref="2"
-       do="translate;run;cas;princi"
+       do="translate;run;cas"
        set='SOLVEUR=9|PARALLEL PROCESSORS=4'
        code="artemis" target="art_kochin.cas"
        title="Incident potential from kochin function, parallel mode"
@@ -34,21 +34,21 @@
       <v2 vars=":map" target="f2d_kochin.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,4.0,1.e-12])" />
+         fail="checkval(v3,[1.e-8])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:ARTRES" />
       <v5 vars=":map" target="f2d_kochin.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,4.0,1.e-12])" />
+         fail="checkval(v6,[1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,4.0,1.e-8])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:ARTRES" />
       <v8 vars=":map" target="2:ARTRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,1.e-12,4.0,1.e-12])" />
+         fail="checkval(v9,[1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,1.e-8,4.0,1.e-8])" />
    </cast>
 
 

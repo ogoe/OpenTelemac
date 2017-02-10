@@ -1,5 +1,5 @@
 /
-FORTRAN FILE                      : user_fortran
+FORTRAN FILE                      : f90
 BOUNDARY CONDITIONS FILE          : geo_bj78.cli
 GEOMETRY FILE                     : geo_bj78.slf
 RESULTS FILE                      : r2d_bj78.slf
@@ -12,6 +12,7 @@ MAXIMUM SPECTRAL PERIOD    : 8.
 DIRECTION OF WAVE PROPAGATION     : 0.
 BREAKING : YES
 GAMMA : 3.3
+PHASE REFERENCE COORDINATES : -13.; -13.
 /
 NUMBER OF PRIVATE VARIABLES : 4
 /
@@ -23,4 +24,4 @@ INITIAL WATER LEVEL  : 0.
 /for parallel calculations using n processors
 /add PARALLEL PROCESSORS : n
 /replace SOLVER : 8 by SOLVER : 9
-SOLVER = 3
+SOLVER = 8

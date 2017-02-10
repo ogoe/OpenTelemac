@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V7P2                                     Nov 2016
 !***********************************************************************
 !
 !brief    TRANSLATES THE BOUNDARY CONDITIONS SPECIFIED
@@ -43,7 +43,7 @@
 !+        01/06/2012
 !+        V6P0
 !+   KSORT   : end of application to neighbours
-!+   KINC    : end of applicatin to the I+1 node
+!+   KINC    : end of application to the I+1 node
 !+   SEGMENT : If a segment links a solid node to a liquid node,
 !+             this segment is regarded as solid.
 !+   BUG correction         : Full KINC boundaries taken into account
@@ -51,10 +51,25 @@
 !+   Parallel correction    : - End of HBT,CGT,CTT,KT,XT,YT tables
 !+                              only   HB%R,CG%R, etc... are used.
 !+                            - No use of NCSIZE variable.
+!
 !history  C.PEYRARD (LNHE)
 !+        18/03/2014
 !+        V7P0
 !+   KSORT   : application to neighbours (best for automatic angles)
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Phase calculation brought back inside PHBOR  
+!+   (automatic in the sense of applicable to general case, different 
+!+    from that using KPHREF)
+!
+!history  S.BOURBAN (HRW)
+!+        23/01/2017
+!+        V7P3
+!+   Implementing a cumulative sorting of each boundary allowing for
+!+   varying bathymetry along each boundary segment.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -65,7 +80,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      INTEGER I,IG,IG0,IGP1
+      INTEGER I,I0,IZ1,IZ2,IG,IGN,IGP,N
 !
 !
       DOUBLE PRECISION GRE, GIM
@@ -74,18 +89,19 @@
 
       DOUBLE PRECISION PI,DEGRAD,PHASEOI,X0,Y0
       DOUBLE PRECISION AUXI1,AUXIC,AUXIS,RADDEG
+      DOUBLE PRECISION SDIST,MINDIST
 !     DOUBLE PRECSION AUXI2
       INTRINSIC COS,SIN
 !
+      DOUBLE PRECISION CHOUIA
+      DATA CHOUIA /1.D-9/
+
+!
 !-----------------------------------------------------------------------
 !
-!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
       PI = 4.D0 * ATAN( 1.D0 )
       DEGRAD = PI / 180.D0
-!      PARAMETER( PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0 )
       RADDEG = 180.D0 / PI
-!      PARAMETER( RADDEG = 180.D0 / PI )
-!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -122,7 +138,194 @@
         DGRY1B%R(I) = 0.D0
       ENDDO
 !
+!       -------------------------------------------------
+!             COEFFICIENTS FOR A INCIDENT WAVE
+!       -------------------------------------------------
+!
 !-----------------------------------------------------------------------
+!
+!     PROCESSING EACH BOUNDARY SEGMENT INDEPEDENTLY,
+!     STARTING WITH THE FIRST NODE HIT BY THE INCOMING WAVE
+!
+      DO N = 1,NFRLIQ
+!
+!     ***********************************************************
+!     LOOKING FOR AN APPROPRIATE STARTING POINT: I0 (AND END POINTS IZS)
+!
+        I0 = 0
+        DO I=1,NPTFR
+          IF( NUMLIQ%I(I).EQ.N ) THEN
+!     SIGNED DISTANCE BETWEEN THE CREST OF THE WAVE AND THE BOUNDARY
+!     ( TETAB%R(I) DEFINED AS WAVE PROPAGATING TOWARDS )
+            IG   = MESH%NBOR%I(I)
+            SDIST = COS(TETAB%R(I)*DEGRAD)*( X_PHREF*Y_PHREF-X(IG) )
+     &            + SIN(TETAB%R(I)*DEGRAD)*( X_PHREF*Y_PHREF-Y(IG) )
+            IF( I0.EQ.0 ) THEN
+              I0 = I
+              MINDIST = SDIST
+            ELSE
+              IF( SDIST.GT.MINDIST ) THEN
+                I0 = I
+                MINDIST = SDIST
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+!
+        IF( I0.EQ.0 ) CYCLE
+!
+        IZ1 = MESH%KP1BOR%I(I0)
+        IZ2 = MESH%KP1BOR%I(I0+NPTFR)
+        DO WHILE( NUMLIQ%I(IZ1).EQ.N .AND. NUMLIQ%I(IZ2).EQ.N )
+          IZ1 = MESH%KP1BOR%I(IZ1)
+          IZ2 = MESH%KP1BOR%I(IZ2+NPTFR)
+          IF( IZ1.EQ.IZ2 ) EXIT
+        ENDDO
+        IF( NUMLIQ%I(IZ1).NE.N ) THEN
+          DO WHILE( NUMLIQ%I(IZ2).EQ.N )
+            IZ2 = MESH%KP1BOR%I(IZ2+NPTFR)
+          ENDDO
+        ENDIF
+        IF( NUMLIQ%I(IZ2).NE.N ) THEN
+          DO WHILE( NUMLIQ%I(IZ1).EQ.N )
+            IZ1 = MESH%KP1BOR%I(IZ1)
+          ENDDO
+        ENDIF
+!
+!       CASE OF A BOUNDARY SPLIT OVER MORE THAN ONE PROCESSOR
+! /!\   THIS SHOULD NOT HAPPEN AGAIN BECAUSE ARTEMIS'S SPECIAL TREATMENT
+!        IF( NCSIZE.GT.1 ) THEN
+!          SDIST = MDIST
+!          MDIST = P_DMIN( MDIST )
+!          IG = 0
+!          IF( ABS(SDIST-MDIST).LT.CHOUIA ) IG = I0
+!          I0 = P_IMAX( I0 )
+!        ENDIF
+!
+!     ***********************************************************
+!     DUAL WAVE PROPAGATION ALONG THE BOUNDARY, STARTING FROM I0
+!
+        IF (LIHBOR%I(I0).EQ.KINC) THEN
+!
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,111) N,MESH%NBOR%I(I0),
+     &        X(MESH%NBOR%I(I0)),Y(MESH%NBOR%I(I0))
+ 111        FORMAT(/,1X,'PHBOR: FRONTIERE ',I3,
+     &        ' EST INCIDENTE - PREMIER NOEUD D''ATTAQUE ',I6,
+     &        '[',F12.4,',',F12.4,']')
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,112) N,MESH%NBOR%I(I0),
+     &        X(MESH%NBOR%I(I0)),Y(MESH%NBOR%I(I0))
+ 112        FORMAT(/,1X,'PHBOR: BOUNDARY ',I3,
+     &        ' IS INCIDENT - FIRST IMPACT NODE ',I6,
+     &        '[',F12.4,',',F12.4,']')
+          ENDIF
+!
+!     1.  FOLLOWING THE BOUNDARY NODES GOING ONE WAY (INCL. I0)
+          I  = I0
+          IG = MESH%NBOR%I(I)
+          X0 = X_PHREF
+          Y0 = Y_PHREF
+          PHASEOI = 0.D0
+          DO WHILE( NUMLIQ%I(I).EQ.N )
+!           -- LOCAL CONSTANTS
+            AUXIC = COS(TETAB%R(I)*DEGRAD)
+            AUXIS = SIN(TETAB%R(I)*DEGRAD)
+            AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0
+!           -- AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
+            IF(LPHASEAUTO) THEN
+              PHASEOI =
+     &          KPHREF*AUXIC*( X(IG)-X0 ) + KPHREF*AUXIS*( Y(IG)-Y0 )
+            ELSE
+              PHASEOI = PHASEOI +
+     &          K%R(IG)*AUXIC*( X(IG)-X0 ) + K%R(IG)*AUXIS*( Y(IG)-Y0 )
+!             -- INCREMENT WITHIN
+              X0=X(IG)
+              Y0=Y(IG)
+            ENDIF
+!           -- INCIDENT WAVE --> INCIDENT POTENTIAL (REAL, IMAGINAR)
+            GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
+            GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
+!           -- INCIDENT WAVE --> GRADIENTS          (REAL, IMAGINAR)
+            DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+            DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+            DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+            DDYGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+!           -- MATRIX AM AND BM COEFFICIENTS
+            APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
+     &                   * COS(TETAP%R(I)*DEGRAD)
+            BPHI1B%R(I) = 0.D0
+!           -- SECOND MEMBER CV1 AND CV2 COEFFICIENTS
+!           i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
+            CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
+            DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
+!           -- GRAD(Gamma) will be used in BERKHO ...
+            CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
+            CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
+            DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG)
+            DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
+!           -- WHILE INCREMENT
+            IF( I.EQ.IZ1 ) EXIT
+            I  = MESH%KP1BOR%I(I)
+            IG = MESH%NBOR%I(I)
+          ENDDO
+!
+!     2.  FOLLOWING THE BOUNDARY GOING THE OTHER WAY (INCL. I0)
+          I  = I0
+          IG = MESH%NBOR%I(I)
+          X0 = X_PHREF
+          Y0 = Y_PHREF
+          PHASEOI = 0.D0
+          DO WHILE( NUMLIQ%I(I).EQ.N )
+!           -- LOCAL CONSTANTS
+            AUXIC = COS(TETAB%R(I)*DEGRAD)
+            AUXIS = SIN(TETAB%R(I)*DEGRAD)
+            AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0
+!           -- AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
+            IF(LPHASEAUTO) THEN
+              PHASEOI =
+     &          KPHREF*AUXIC*( X(IG)-X0 ) + KPHREF*AUXIS*( Y(IG)-Y0 )
+            ELSE
+              PHASEOI = PHASEOI +
+     &          K%R(IG)*AUXIC*( X(IG)-X0 ) + K%R(IG)*AUXIS*( Y(IG)-Y0 )
+!             -- INCREMENT WITHIN
+              X0=X(IG)
+              Y0=Y(IG)
+            ENDIF
+!           -- INCIDENT WAVE --> INCIDENT POTENTIAL (REAL, IMAGINAR)
+            GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
+            GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
+!           -- INCIDENT WAVE --> GRADIENTS          (REAL, IMAGINAR)
+            DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+            DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+            DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
+            DDYGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
+!           -- MATRIX AM AND BM COEFFICIENTS
+            APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
+     &                   * COS(TETAP%R(I)*DEGRAD)
+            BPHI1B%R(I) = 0.D0
+!           -- SECOND MEMBER CV1 AND CV2 COEFFICIENTS
+!           i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
+            CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
+            DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
+!           -- GRAD(Gamma) will be used in BERKHO ...
+            CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
+            CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
+            DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG)
+            DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
+!           -- WHILE INCREMENT
+            IF( I.EQ.IZ2 ) EXIT
+            I  = MESH%KP1BOR%I(I+NPTFR)
+            IG = MESH%NBOR%I(I)
+          ENDDO
+
+        ENDIF
+!
+!     ***********************************************************
+!
+      ENDDO
+!
 !     INITIALISATION OF PHASE VARIABLES FOR AUTOMATIC CALCULATION
       X0      = X_PHREF
       Y0      = Y_PHREF
@@ -134,60 +337,28 @@
 !       GLOBAL NUMBER OF THE BOUNDARY NODE I
 !       ********************************
 !
-        IG   = MESH%NBOR%I(I)
+        IG  = MESH%NBOR%I(I)
 !
 !       ******************************************
 !       GLOBAL NUMBER OF THE BOUNDARY NODE PRECEDING I
 !       ******************************************
 !
-        IG0  = MESH%NBOR%I(MESH%KP1BOR%I(I+NPTFR))
+        IGN = MESH%NBOR%I(MESH%KP1BOR%I(I+NPTFR))
 !
 !       ****************************************
 !       GLOBAL NUMBER OF THE BOUNDARY NODE FOLLOWING I
 !       ****************************************
 !
-        IGP1 = MESH%NBOR%I(MESH%KP1BOR%I(I))
+        IGP = MESH%NBOR%I(MESH%KP1BOR%I(I))
 
 !       -------------------------------------------------
-!             COEFFICIENTS FOR A INCIDENT WAVE
+!             COEFFICIENTS FOR AN INCIDENT WAVE
 !       -------------------------------------------------
+!             ALREADY TREATED ABOVE
 !
-        IF (LIHBOR%I(I).EQ.KINC) THEN
+!        IF (LIHBOR%I(I).EQ.KINC) THEN
 !
-          AUXIC = COS(TETAB%R(I)*DEGRAD)
-          AUXIS = SIN(TETAB%R(I)*DEGRAD)
-          AUXI1 = GRAV/OMEGA * HB%R(I)/2.D0
-
-!---------AUTOMATIC PHASE CALCULATION (TETAB HAVE TO BE UNIFORM ON THE BOUNDARY)
-          IF(LPHASEAUTO) THEN
-            PHASEOI = KPHREF*AUXIC*(X(IG)-X0)+KPHREF*AUXIS*(Y(IG)-Y0)
-          ENDIF
-!---------INCIDENT WAVE --> INCIDENT POTENTIAL  (REAL, IMAGINAR)
-          GRE= AUXI1*SIN( ALFAP%R(I)*DEGRAD + PHASEOI)
-          GIM=-AUXI1*COS( ALFAP%R(I)*DEGRAD + PHASEOI)
-! --------INCIDENT WAVE --> GRADIENTS           (REAL, IMAGINAR)
-          DDXGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
-          DDYGRE= AUXI1*COS(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
-          DDXGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIC*K%R(IG)
-          DDYGIM= AUXI1*SIN(ALFAP%R(I)*DEGRAD+PHASEOI)*AUXIS*K%R(IG)
-!
-! --------- COEFFICIENTS
-! -- MATRIX AM AND BM COEFFICIENTS
-          APHI1B%R(I) = - K%R(IG) * C%R(IG) * CG%R(IG)
-     &                 * COS(TETAP%R(I)*DEGRAD)
-          BPHI1B%R(I) = 0.D0
-
-! -- SECOND MEMBER CV1 AND CV2 COEFFICIENTS
-! ----  i * K * Gamma (multiplied by "- cos THETAP" in BERKHO)
-          CPHI1B%R(I)  = ( -GIM*K%R(IG) ) *C%R(IG)*CG%R(IG)
-          DPHI1B%R(I)  = (  GRE*K%R(IG) ) *C%R(IG)*CG%R(IG)
-!
-! ---- GRAD(Gamma) will be used in BERKHO...
-          CGRX1B%R(I)=   ( DDXGRE ) *C%R(IG)*CG%R(IG)
-          CGRY1B%R(I)=   ( DDYGRE ) *C%R(IG)*CG%R(IG)
-          DGRX1B%R(I)=   ( DDXGIM ) *C%R(IG)*CG%R(IG)
-          DGRY1B%R(I)=   ( DDYGIM ) *C%R(IG)*CG%R(IG)
-        ENDIF
+!        ENDIF
 !
 !        -------------------------------------------------
 !             COEFFICIENTS FOR AN INCIDENT POTENTIAL
@@ -358,4 +529,3 @@
 !
       RETURN
       END SUBROUTINE
-

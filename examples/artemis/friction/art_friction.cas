@@ -12,7 +12,7 @@ RESULTS FILE                ='r2d_friction.slf'
 /
 BOUNDARY CONDITIONS FILE    ='geo_friction.cli'
 /
-FORTRAN FILE                ='user_fortran'
+FORTRAN FILE                = f90
 /
 GEOMETRY FILE               ='geo_friction.slf'
 /
@@ -29,7 +29,7 @@ TITLE ='FRICTION'
 WAVE HEIGHTS SMOOTHING          = NO
 /
 VARIABLES FOR GRAPHIC PRINTOUTS =
-'HS,PHAS,ZS,ZF,INC,D, FX,FY,SXX,SXY,SYY,T01,T02,TM'
+'HS,PHAS,ZS,ZF,INC,D, FX,FY,SXX,SXY,SYY'
 NUMBER OF PRIVATE VARIABLES     = 4
 /
 /---------------------------------------------------------------------
@@ -71,4 +71,5 @@ SKIN ROUGHNESS ONLY = NO
 DIAMETER90 = 0.7E-3
 DIAMETER50 = 0.22E-3
 /
+PHASE REFERENCE COORDINATES : 0.; 2.
 /

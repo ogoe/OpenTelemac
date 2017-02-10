@@ -10,7 +10,7 @@
 /
 RESULTS FILE              = 'r2d_g8m.slf'
 BOUNDARY CONDITIONS FILE  = 'geo_g8m.cli'
-FORTRAN FILE              = 'user_fortran'
+FORTRAN FILE              =  f90
 GEOMETRY FILE             = 'geo_g8m.slf'
 /
 /---------------------------------------------------------------------
@@ -25,7 +25,7 @@ TITLE ='EXEMPLE UTILISATION : AGITATION DERRIERE BRISE LAME'
 /
 WAVE HEIGHTS SMOOTHING          = NO
 /
-VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,PHAS,ZF,ZS,C,CG,QB,INC'
+VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,ZF,C,CG,QB,INC'
 /
 /---------------------------------------------------------------------
 / EQUATIONS CONDITIONS INITIALES
@@ -74,3 +74,4 @@ DIRECTION OF WAVE PROPAGATION : -90.0
 S EXPONENT = 10
 /
 PRECONDITIONING : 2
+/

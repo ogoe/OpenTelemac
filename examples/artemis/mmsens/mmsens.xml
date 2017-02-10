@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="2" >
+<validation xref="case" rank="3" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
@@ -31,21 +31,21 @@
       <v2 vars=":map" target="f2d_mmsens.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
+         fail="checkval(v3,[1.e-8])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:ARTRES" />
       <v5 vars=":map" target="f2d_mmsens.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
+         fail="checkval(v6,[1.e-4,0.001,1.e-4,1.e-8,1.e-5,1.e-5,1.e-5,1.e-4,1.e-4,0.3,1.e-8])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:ARTRES" />
       <v8 vars=":map" target="2:ARTRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,2.e-4,0.3,2.e-4])" />
+         fail="checkval(v9,[1.e-4,0.001,1.e-4,1.e-8,1.e-5,1.e-5,1.e-5,1.e-4,1.e-4,0.3,1.e-8])" />
    </cast>
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

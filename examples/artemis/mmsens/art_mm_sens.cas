@@ -12,7 +12,7 @@ RESULTS FILE                       ='r2d_mmsens.slf'
 /
 BOUNDARY CONDITIONS FILE           ='geo_mmsens.cli'
 /
-FORTRAN FILE                       ='user_fortran'
+FORTRAN FILE                       = f90
 /
 GEOMETRY FILE                      ='geo_mmsens.slf'
 /
@@ -31,7 +31,7 @@ TITLE ='CURRENT IN THE SAME DIRECTION AS WAVES'
 WAVE HEIGHTS SMOOTHING          : NO
 /
 VARIABLES FOR GRAPHIC PRINTOUTS :
-    'HS,PHAS,ZF,ZS,INC,CG,QB,C,PHIR,PHII,WR,K'
+    'HS,PHAS,ZF,ZS,INC,CG,QB,C,PHIR,PHII,K'
 /
 /---------------------------------------------------------------------
 / EQUATIONS CONDITIONS INITIALES

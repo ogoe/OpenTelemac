@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   31/05/2011
+! ARTEMIS   V7P2                                     Nov 2016
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL ARTEMIS VARIABLES
@@ -46,6 +46,13 @@
 !+        V7P0
 !+        VARIABLES FOR AUTOMATIC TETAP CALCULATION ADDED
 !+        VARIABLES FOR AUTOMATIC PHASE CALCULATION ADDED
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   New variables introduced for use in LECLIM call : ALFAPS and HBS
+!+   These and TETAPS store parameters read from the cli file (RP also
+!+   read in but does not require a temporary storage variable for it)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -219,9 +226,15 @@
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: DPHI4B
-!brief STORAGE OF ANGLE OF WAVE ATTACK (FROM NORMAL AXIS)
+!brief STORAGE OF ANGLE OF WAVE ATTACK (FROM NORMAL AXIS) FOR LECLIM
 ! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90])
       TYPE(BIEF_OBJ), TARGET :: TETAPS
+!brief STORAGE OF DEPHASING CAUSED BY THE WALLS FOR LECLIM
+! dephasage induit par la paroi entre l'onde reflechie et l'onde incidente (si alfap est positif, l'onde reflechie est en retard)
+      TYPE(BIEF_OBJ), TARGET :: ALFAPS
+!brief STORAGE OF INCIDENT WAVE HEIGHT AT THE BOUNDARY FOR LECLIM
+! hauteur de la houle aux frontieres ouvertes
+      TYPE(BIEF_OBJ), TARGET :: HBS
 !brief ANGLE OF WAVE ATTACK - IN LOOP STORAGE (FROM NORMAL AXIS)
 ! angle d'attaque de la houle sur les limites - pas seulement les parois (compte par rapport a a la normale , inclut dans [0;90])
       TYPE(BIEF_OBJ), TARGET :: TETAPM
@@ -989,5 +1002,7 @@
 !brief
 !
       TYPE(BIEF_FILE) :: ART_FILES(MAXLU_ART)
+!
+      SAVE
 !
       END MODULE DECLARATIONS_ARTEMIS
