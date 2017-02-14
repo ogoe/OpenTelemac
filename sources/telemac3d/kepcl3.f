@@ -276,7 +276,7 @@
 !               NO TURBULENCE
                 KBORL(IPTFR,IPLAN) = KMIN
               ELSEIF(OPTBCKE.EQ.2) THEN
-!               CV HANS AND BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
+!               CV HANS BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
 !               OF K
                 KBORL(IPTFR,IPLAN) = UETCAR(IPOIN2)
      &                              *(1.D0-DISTFOND/HAUT)/SQRT(CMU)
@@ -338,7 +338,7 @@
 !               NO TURBULENCE
                 EBORL(IPTFR,IPLAN) = EMIN
               ELSEIF(OPTBCKE.EQ.2) THEN
-!               CV HANS AND BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
+!               CV HANS BURCHARD FORMULA FOR THE BOUNDARY CONDITIONS
 !               OF EPSILON
                 EBORL(IPTFR,IPLAN) = SQRT(UETCAR(IPOIN2))**3
      &                              *(1.D0-DISTFOND/HAUT)

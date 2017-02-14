@@ -7517,8 +7517,8 @@ MNEMO = 'OPTBCKE'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
-CHOIX='1="pas de turbulence"';'2="Hans et Burchard"'
-CHOIX1='1="no turbulence"';'2="Hans and Burchard"'
+CHOIX='1="pas de turbulence"';'2="Hans Burchard"'
+CHOIX1='1="no turbulence"';'2="Hans Burchard"'
 RUBRIQUE = 'MODELE DE TURBULENCE';'CONDITIONS LIMITES'
 RUBRIQUE1 = 'TURBULENCE MODEL';'BOUNDARY CONDITIONS'
 NIVEAU = 2
@@ -7527,14 +7527,14 @@ $\epsilon$. Les choix possibles sont :
 \begin{itemize}
 \item 1: pas de turbulence = les valeurs minimales \telfile{KMIN}
 et \telfile{EMIN} definies dans \telfile{CSTKEP} ;
-\item 2: formule de Hans et Burchard.
+\item 2: formule de Hans Burchard.
 \end{itemize}'
 AIDE1 = 'Computation of the lateral boundary conditions of $k$
 and $\epsilon$. Possible choices are:
 \begin{itemize}
 \item 1: no turbulence = the minimum values \telfile{KMIN} and
 \telfile{EMIN} defined in \telfile{CSTKEP},
-\item 2: Hans and Burchard formula.
+\item 2: Hans Burchard formula.
 \end{itemize}'
 
 /
