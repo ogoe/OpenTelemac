@@ -44,6 +44,7 @@ FICHIER DES CONDITIONS AUX LIMITES = './exterieur_calais.conlim'
 /
 FICHIER DES RESULTATS 2D = './exterieur_calais.r2d'
 FICHIER DES RESULTATS PONCTUELS = 'exterieur_calais.spe'
+FICHIER DES RESULTATS SPECTRES 1D = 'test1D.txt'
 /--------------------------------------------------------------------/
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------/
