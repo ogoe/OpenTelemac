@@ -229,7 +229,11 @@
 !
         IF(SORLEO(2)) THEN
           DO IP=1,NPOIN2
+            IF (TRA37(IP).GE.0) THEN
             TRA38(IP)=4.D0*SQRT(TRA37(IP))
+            else 
+               TRA38(IP)=0
+               endif
           ENDDO
         ENDIF
       ENDIF
