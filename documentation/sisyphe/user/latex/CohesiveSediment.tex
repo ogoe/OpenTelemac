@@ -107,14 +107,21 @@ For the evaluation of the settling velocity $w_s $, if the keyword {\ttfamily SE
 %-------------------------------------------------------------------------------
 The keyword {\ttfamily MUD CONSOLIDATION} (logical type, set to {\ttfamily = NO} by default) activates consolidation processes in \sisyphe{}. Two different models for consolidation are available with the keyword {\ttfamily CONSOLIDATION MODEL} (logical type, set to {\ttfamily = 1} by default):
 \begin{itemize}
-\item Multilayer model ({\ttfamily = 1}): This empirical model assumes that the vertical flux of
-sediment from layer $j$ to underneath layer $j+1$ is proportional to the mass of
-sediments $M_s$ contained in the layer $j$.
-\item The Gibson/Thiebot's model ({\ttfamily = 2}): the sediment flux from one layer
-to another is computed from the Gibson theory.
-\end{itemize}
+\item Multilayer model ({\ttfamily = 1}): This model was originally developed by Villaret and Walther~\cite{} by mixing two
+approaches of iso-pycnal and first-order kinetics. In this model, the muddy bed is discretised into a fixed number of layers.
+Each layer $j$ is characterised by its mass concentration $C_j$ [kg/m$^3$], its mass per unit surface $M_s(j)$
+[kg/m$^2$], its thickness $ep_j$ [m] and a set of mass transfer coefficient $a_j$ (s$^{-1}$). This empirical model assumes that the vertical flux of
+sediment from layer $j$ to underneath layer $j+1$ is proportional to the mass of sediments $M_s(j)$ contained in the layer $j$.
 
-Further information about both models can be found in~\cite{Lan12}.
+\item The Gibson/Thiebot's model ({\ttfamily = 2}): This is a 1DV sedimentation-consolidation multi-layer model, based on an original
+technique to solve the Gibson equation, developed by Thiebot et al.~\cite{thiebot08}. The advantage of
+this representation is that the flux of sedimentation and consolidation is calculated based on
+the Gibson theory. In this model, the concentration of different layers are fixed, the associated thicknesses are directly
+linked to the amount of sediment that they contain. The scheme of this model is similar to the multilayer model.
+However, instead of using the transfer coefficients which are
+arbitrary, this model is based on the Gibson's theory for the definition of the settling velocity
+of solid grains and the determination of mass fluxes
+\end{itemize}
 
 \subsection{Associated keywords for consolidation models}
 \begin{itemize}
@@ -122,13 +129,15 @@ Further information about both models can be found in~\cite{Lan12}.
 \begin{itemize}
 \item {\ttfamily MASS TRANSFER PER LAYER} (real list, set to {\ttfamily = 5.D-05;4.5D-05;...} by default) provides the mass transfert coefficients of the multilayer consolidation model %UNITSSSS??????
 \end{itemize} 
-\item The Gibson/Thiebot's model ({\ttfamily = 2})
+\item For the Gibson/Thiebot's model ({\ttfamily = 2}), the following values are used in the closure relationship equation for the permeability:
 \begin{itemize}
 \item {\ttfamily GEL CONCENTRATION} (real type, set to {\ttfamily = 310.D0} kg/m$^3$ by default)
 \item {\ttfamily MAXIMUM CONCENTRATION} (real type, set to {\ttfamily = 364.D0} kg/m$^3$ by default)
 \item {\ttfamily PERMEABILITY COEFFICIENT} (real type, set to {\ttfamily = 8.D0} by default) %CHECK IF OK FOR MODEL 2 AND UNITS?
 \end{itemize}
-\end{itemize} 
+\end{itemize}
+
+Further information about both models can be found in~\cite{Lan12}.
 
 %-------------------------------------------------------------------------------
 \section{Useful graphical printouts}

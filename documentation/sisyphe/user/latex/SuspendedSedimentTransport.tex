@@ -35,7 +35,8 @@ where $R$ is the Rouse number defined by
 R=\frac{w_s}{\kappa u_*}, 
 \end{equation}
 with $\kappa$ the von Karman constant ($\kappa = 0.4$), $u_*$ the
-friction velocity corresponding to the total bed shear stress, and $a$ the reference elevation above the bed elevation.
+friction velocity corresponding to the total bed shear stress, and $a$ the reference elevation above the bed elevation. The distance $a$, defined variously by
+various authors, is taken to be very close to the bed.
 
 By depth-integration of the Rouse profile (\ref{eq:Rouseprofile}), the following relation
 can be established between the depth-averaged concentration and the reference concentration:
@@ -68,7 +69,7 @@ with $\lambda$ the bed porosity, and $z_b$ the bed level.
 %-------------------------------------------------------------------------------
 Suspended sediment transport can be set with the keyword \telkey{SUSPENSION = YES} (logical type variable, {\ttfamily = NO} by default). 
 
-Different choices of the equilibrium near-bed concentration formula $C_{eq}$ can be selected with the keyword \telkey{ REFERENCE CONCENTRATION FORMULA} (integer type variable, {\ttfamily = 1} by default). Available equilibrium near-bed concentration formulas in \sisyphe{}:
+Different choices of the equilibrium near-bed concentration formula $C_{eq}$ can be selected with the keyword \telkey{REFERENCE CONCENTRATION FORMULA} (integer type variable, {\ttfamily = 1} by default). Available equilibrium near-bed concentration formulas in \sisyphe{}:
 \begin{verbatim}
 1: Zyserman and Fredsoe
 2: Bijker 
@@ -81,7 +82,7 @@ Different choices of the equilibrium near-bed concentration formula $C_{eq}$ can
 %...............................................................................
 \subsubsection{Zyserman-Fredsoe}
 \begin{itemize}
-\item The Zyserman-Fredsoe formula~\cite{Zyserman} \telkey{ REFERENCE CONCENTRATION FORMULA = 1}
+\item The Zyserman-Fredsoe formula~\cite{Zyserman} \telkey{REFERENCE CONCENTRATION FORMULA = 1}
 \begin{equation*}
 C_{eq} =\frac{0.331(\theta'-\theta_{cr})^{1.75}}{1+0.72(\theta'-\theta_{cr})^{1.75}}, 
 \end{equation*}
@@ -90,9 +91,21 @@ where $\theta_{cr}$ is the critical Shields parameter and $\theta'= \mu\theta$ t
 \item Fortran subroutine {\ttfamily suspension\_fredsoe.f}.
 \end{itemize}
 
+\subsubsection{Bijker}
+\begin{itemize}
+\item Bijker formula \telkey{REFERENCE CONCENTRATION FORMULA = 2}
+\item This formula is related to the bedload sediment transport $Q_b$, therefore this option cannot be used without activating the bedload transport mechanism \telkey{ BED LOAD = YES}, with \telkey{ COUPLING PERIOD FOR SISYPHE = 1}
+\begin{equation*}
+C_{eq} =\frac{Q_b}{b\,z_{ref}\,u_*}
+\end{equation*}
+with $b$ a constant ($=6.34$) and $u_*$ the shear velocity
+\item The reference elevation $z_{ref}=k_{sr}$, with $k_{sr}$ the rippled bed roughness 
+\item Fortran subroutine {\ttfamily suspension\_bijker.f}.
+\end{itemize}
+
 \subsubsection{van Rijn}
 \begin{itemize}
-\item van Rijn formula~\cite{vanRijn84b} \telkey{ REFERENCE CONCENTRATION FORMULA = 3}
+\item van Rijn formula~\cite{vanRijn84b} \telkey{REFERENCE CONCENTRATION FORMULA = 3}
 \begin{equation*}
 C_{eq} =0.015\,d_{50}\frac{\left(\theta'/\theta_{cr}-1\right)^{3/2}}{z_{ref}D_*^{0.3}}
 \end{equation*}
@@ -101,16 +114,37 @@ with $\theta_{cr}$ the critical Shields parameter and and $\theta'= \mu\theta$ t
 \item Fortran subroutine {\ttfamily suspension\_vanrijn.f}.
 \end{itemize}
 
-\subsubsection{Bijker}
+\subsubsection{Soulsby \& van Rijn}
 \begin{itemize}
-\item Bijker formula \telkey{ REFERENCE CONCENTRATION FORMULA = 2}
-\item This formula is related to the bedload sediment transport $Q_b$, therefore this option cannot be used without activating the bedload transport mechanism \telkey{ BED LOAD = YES}, with \telkey{ COUPLING PERIOD FOR SISYPHE = 1}
-\begin{equation*}
-C_{eq} =\frac{Q_b}{b\,z_{ref}\,u_*}
+\item Soulsby and van Rijn formula~\cite{Soulsby97} \telkey{REFERENCE CONCENTRATION FORMULA = 4}
+  \begin{equation*}
+C_{eq}=\left\{\begin{array}{ll}
+A_{ss}\left(\sqrt{U_c^2+\frac{0.018}{C_D}U_w^2-U_{cr}}\right)^{2.4} & \text{if}\, \geq U_{cr}\\
+0.0 &  \text{otherwise}
+\end{array}
+\right.    
 \end{equation*}
-with $b$ a constant ($=6.34$) and $u_*$ the shear velocity
-\item The reference elevation $z_{ref}=k_{sr}$, with $k_{sr}$ the rippled bed roughness 
-\item Fortran subroutine {\ttfamily suspension\_bijker.f}.
+  with $U_c$ the norm of the depth-averaged current velocity and $U_w$ the wave orbital velocity (see Chapter~\ref{ch:sed_waves}). The threshold current velocity $U_{cr}$ is computed as:
+\begin{equation*}
+U_{cr}=\left\{\begin{array}{ll}  
+  0.19 (d_{50}^{0.1})\log_{10}\left(\frac{4.0 h}{d_{90}}\right) & \text{if}\, d_{50} < 0.0005 m\\
+  8.5 (d_{50}^{0.6})\log_{10}\left(\frac{4.0 h}{d_{90}}\right) & \text{otherwise}\\
+\end{array}
+\right.    
+\end{equation*}
+with $d_{90}$ the particle diameter representing the 90\% cummulative percentile value (90\% of the particles in the sediment sample are finer than the $d_{90}$ grain size), in meters. 
+
+If wave effects are considered, the quadratic drag coefficient $C_D$ is computed as follows:
+\begin{equation*}
+  C_D = \left(\frac{0.4}{\log(\max(h, z_{0})-1}\right)^{2},
+\end{equation*}
+with $z_{0}=0.006$m the bed roughness.
+
+The empirical suspended transport factor $A_{ss}$ is computed by:
+\begin{equation*}
+A_{ss} = \frac{0.012 h d_{50} \left(\left(\frac{g(s-1)}{\nu^2}\right)^{1/3}d_{50}\right)^{-0.6}}{\left((s-1)g d_{50}\right)^{1.2}}
+\end{equation*}
+\item Fortran subroutine {\ttfamily suspension\_sandflow.f}.
 \end{itemize}
 
 %...............................................................................
@@ -158,6 +192,9 @@ REFERENCE CONCENTRATION FORMULA = 1
 LIQUID BOUNDARIES FILE = '<file name>'
 \end{lstlisting}     
 \end{itemize}
+
+According to the hydrodynamic forcing, the use of the keyword \telkey{EQUILIBRIUM INFLOW CONCENTRATION} can be used to prevent the excessive erosion and deposition on the inflow boundary.
+
 \subsection{Outflow boundary conditions}
 At the outflow boundary, the suspended load concentration gradient in the flow direction is set to zero. For this case, the flag \texttt{LICBOR} is set \texttt{= 4} as shown in the example below:
 
