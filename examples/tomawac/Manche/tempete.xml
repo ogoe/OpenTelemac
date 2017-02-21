@@ -22,41 +22,34 @@
    <action xref="1"
        do="translate;run;cas;princi"
        code="tomawac" target="manche.cas"
-       title="tempete geom calculee (en double)"
+       title="Storm : calculted geometry (double in Fortran user)"
    />
    <action xref="2"
        do="translate;run;cas;princi"
        code="tomawac" target="manchelim.cas"
-       title="tempete geometrie en simple"
+       title="Storm : read geometry (simple in a file)"
    />
    <cast xref="ref1" config="oneofall" time="[-1]" type="2d:">
       <v1 vars=":map" target="1:WACRES" />
-      <v2 vars=":map" target="ref_tom_manche.slf" />
+      <v2 vars=":map" target="ref_tom_calc.slf" />
       <v3 vars="mapdiff(v1,v2)" />
-      <return title="Comparison between sequential and reference run."
-         fail="checkval(v3,[1e-4])" />
+      <return title="Comparison between results from calculated geometry and reference value."
+         fail="checkval(v3,[1e4])" />
    </cast>
    <cast xref="ref2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:WACRES" />
-      <v5 vars=":map" target="ref_tom_manche.slf" />
+      <v5 vars=":map" target="ref_tom_spher.slf" />
       <v6 vars="mapdiff(v4,v5)" />
-      <return title="Comparison between parallel and reference run."
-         fail="checkval(v6,[1e-4])" />
+      <return title="Comparison between results from read geometry and reference run."
+         fail="checkval(v6,[1e4])" />
    </cast>
    <cast xref="cas" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:WACRES" />
       <v8 vars=":map" target="2:WACRES" />
       <v9 vars="mapdiff(v7,v8)" />
-      <return title="Comparison between sequential and parallel run."
-         fail="checkval(v9,[1e-4])" />
+      <return title="Comparison between 2 geometries run."
+         fail="checkval(v9,[0.2,360,1e-8,1e-8,1e-8,0.015,0.015,0.015 ])" />
    </cast>
-<!--   <cast xref="refvieux" config="oneofall" time="[-1]" type="2d:">
-      <v10 vars=":map" target="1:WACRES" />
-      <v11 vars=":map" target="r2d.V1P3.slf" />
-      <v12 vars="mapdiff(v10,v11)" />
-      <return title="Comparison between parallel and reference run."
-         fail="checkval(v12,[1e-4])" />
-   </cast> -->
  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

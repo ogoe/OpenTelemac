@@ -1,13 +1,11 @@
 /********************************************************************/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /********************************************************************/
-/MODE TROISIEME GENERATION = OUI
 /--------------------------------------------------------------------/
-/     FICHIERS
+/     FILES
 /--------------------------------------------------------------------/
-FICHIER FORTRAN = 'manche_V5P4.f'
+FICHIER FORTRAN = 'manche.f'
 FICHIER DE GEOMETRIE = 'manche.geo'
-/FICHIER DE GEOMETRIE = 'geospheriquemanche.slf'
 FICHIER DES CONDITIONS AUX LIMITES = 'manche.cl'
 FICHIER DES VENTS BINAIRE = 'vents.slf'
 FORMAT DU FICHIER DES VENTS = 3
@@ -33,12 +31,12 @@ PERIODE POUR LES SORTIES LISTING = 9
 PERIODE POUR LES SORTIES GRAPHIQUES = 36
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
 HM0,DMOY,FMOY,FM01,FPD,VX,VY,ZF
-/ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 
-/-12.14;-15.;-3.; -7.; 2.50;-4.0;-5.12;-6.0;-4.75;-3.13; -2.0;-0.88;
-/1.5
-/ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 
-/ 43.13; 45.;45.;47.6;54.75;47.7;48.45; 51.;49.28;48.98;49.58; 50.1;
-/51.
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 
+-12.13;-3.; -7.; 2.50;-4.0;-5.12;-6.0;-4.75;-3.13; -2.0;-0.88;
+1.5
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 
+ 43.13;45.;47.6;54.75;47.7;48.45; 51.;49.28;48.98;49.58; 50.1;
+51.
 /DEBUGGER=1
 /--------------------------------------------------------------------/
 / DISCRETISATION
