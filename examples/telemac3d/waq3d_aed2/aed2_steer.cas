@@ -1,0 +1,35 @@
+/
+/ First attempt to generate a steering file
+/  for waq module of the Telemac system
+/     here case of coupling with AED2
+/
+/ GENERAL PARAMETERS: MOST OF THEM ARE USELESS
+/ SO FAR, THEY WILL BE USED FOR STANDALONE RUNS
+WAQ CASE TITLE                = 'WAQ AED2: VALIDATION CASE'
+/WATER QUALITY PRINTOUT PERIOD =
+/VARIABLES FOR WAQ PRINTOUTS   =
+/WAQ VARIABLES TO BE PRINTED   =
+/RESULTS FILE                  = waq_waq3d_aed2.slf
+/GEOMETRY FILE                 = geo_waq3d_aed2.slf
+/BOUNDARY CONDITIONS FILE      = geo_waq3d_aed2.cli
+/HYDRODYNAMIC FILE             =
+/MASS-BALANCE                  =
+KINEMATIC WATER VISCOSITY     = 1.E-6
+DISPERSION ALONG THE FLOW     = 1.E-2
+DISPERSION ACROSS THE FLOW    = 1.E-2
+/WATER QUALITY PROCESS         = 1
+/   OPTIONS ARE
+/       1- O2 PROCESS
+/       2- BIOMASS PROCESS
+/       3- EUTRO PROCESS
+/       4- MICROPOL PROCESS
+/       5- THERMIC PROCESS
+/       6- COUPLING WITH AED2
+/-----------------------
+/
+AED2 STEERING FILE               = 'aed2.nml'
+AED2 PHYTOPLANKTON STEERING FILE = 'aed2_phyto_pars.nml'
+/AED2 ZOOPLANKTON STEERING FILE   = 'aed2_zoop_pars.nml'
+/AED2 PATHOGEN STEERING FILE      = 'aed2_pathogen_pars.nml'
+/
+&FIN

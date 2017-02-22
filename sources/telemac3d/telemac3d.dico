@@ -7576,7 +7576,8 @@ AIDE = 'Donne le numero du processus de qualite d''eau
 \item 2 : BIOMASS ;
 \item 3 : EUTRO ;
 \item 4 : MICROPOL ;
-\item 5 : THERMIC.
+\item 5 : THERMIC ;
+\item 6 : AED2.
 \end{itemize}'
 AIDE1 = 'Gives the water quality process number (from 1 to 5):
 \begin{itemize}
@@ -7585,7 +7586,8 @@ AIDE1 = 'Gives the water quality process number (from 1 to 5):
 \item 2: BIOMASS,
 \item 3: EUTRO,
 \item 4: MICROPOL,
-\item 5: THERMIC.
+\item 5: THERMIC,
+\item 6: AED2.
 \end{itemize}'
 
 NOM = 'VALEUR DE LA PRESSION ATMOSPHERIQUE'

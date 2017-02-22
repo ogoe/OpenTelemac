@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! WAQTEL   V7P0                                     21/07/2014
+! WAQTEL   V7P3
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL WAQTEL VARIABLES
@@ -12,6 +12,10 @@
 !history  R. ATA (EDF-LNHE)
 !+
 !+
+!history  M.JODEAU (EDF-LNHE)
+!+        08/2016
+!+        V7P3
+!+        AED2 coupling
 !+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -458,6 +462,10 @@
 !
       DOUBLE PRECISION EVAPOR
 !
+!     AED2 COUPLING
+!
+      INTEGER NWQVARS,NWQBEN,NWQDIAGS
+!
 !-----------------------------------------------------------------------
 !
 !       5) STRINGS
@@ -474,7 +482,7 @@
 
 !     MAXIMUM OF LOGICAL UNITS NUMBERS
 !
-      INTEGER, PARAMETER :: MAXLU_WAQ = 9
+      INTEGER, PARAMETER :: MAXLU_WAQ = 14
 !
 !     BIEF_FILES STRUCTURES
 !

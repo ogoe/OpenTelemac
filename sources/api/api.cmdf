@@ -1095,13 +1095,17 @@ files: declarations_tomawac.f
 path: <root>|sources|waqtel
 files: declarations_waqtel.f
   interface_waqtel.f
-  increase_ntrac.f
+  increase_ntrac.F
   yasmi_waq.f
   reaer.f
   satur_o2.f
   calcs2d_o2.f
   algae_death.f
   ray_effect.f
+  fv_aed2_csv_reader.F90
+  fv_zones.F90
+  t3d_aed2.F90
+  t3d_construct_aed2.F90
   nuteff.f
   algae_growth.f
   calcs3d_eutro.f
@@ -1111,10 +1115,11 @@ files: declarations_waqtel.f
   calcs2d_micropol.f
   calcs3d_biomass.f
   calcs3d_o2.f
+  calcs3d_aed2.F
   calcs2d_thermic.f
   calcs3d_micropol.f
   calcs2d_biomass.f
   exchange_with_atmosphere.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
-  source_waq.f
+  source_waq.F

@@ -1093,6 +1093,10 @@ files: interface_waqtel.f
   satur_o2.f
   calcs2d_o2.f
   algae_death.f
+  fv_aed2_csv_reader.F90
+  fv_zones.F90
+  t3d_aed2.F90
+  t3d_construct_aed2.F90
   ray_effect.f
   nuteff.f
   algae_growth.f
@@ -1104,13 +1108,14 @@ files: interface_waqtel.f
   calcs3d_biomass.f
   calcs3d_o2.f
   calcs2d_thermic.f
+  calcs3d_aed2.F
   calcs3d_micropol.f
   calcs2d_biomass.f
   exchange_with_atmosphere.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
-  source_waq.f
-  increase_ntrac.f
-  nametrac_waq.f
+  source_waq.F
+  increase_ntrac.F
+  nametrac_waq.F
   lecdon_waqtel.f
   point_waqtel.f

@@ -804,7 +804,7 @@ files: declarations_telemac3d.f
   point_telemac3d.f
   nomvar_2d_in_3d.f
   nomvar_telemac3d.f
-  lecdon_telemac3d.f
+  lecdon_telemac3d.F
   amr_plan.f
   calcot.f
   tfond.f
@@ -927,7 +927,7 @@ files: declarations_telemac3d.f
   sed3d.f
   mass3d.f
   condis.f
-  telemac3d.f
+  telemac3d.F
   homere_telemac3d.f
 
 [tomawac]
@@ -1038,12 +1038,17 @@ files: declarations_tomawac.f
 [waqtel]
 path: <root>|sources|waqtel
 files: interface_waqtel.f
+  fv_aed2_csv_reader.F90
+  fv_zones.F90
+  t3d_aed2.F90
+  calcs3d_aed2.F
   declarations_waqtel.f
   point_waqtel.f
-  increase_ntrac.f
-  nametrac_waq.f
+  increase_ntrac.F
+  nametrac_waq.F
   exchange_with_atmosphere.f
   calcs3d_thermics.f
+  t3d_construct_aed2.F90
   reaer.f
   satur_o2.f
   calcs2d_o2.f
@@ -1063,5 +1068,5 @@ files: interface_waqtel.f
   calcs2d_biomass.f
   calcs3d_thermicv.f
   calcs2d_eutro.f
-  source_waq.f
+  source_waq.F
   lecdon_waqtel.f

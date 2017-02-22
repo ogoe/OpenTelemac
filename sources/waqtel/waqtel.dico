@@ -1340,6 +1340,88 @@ Voir GLM.'
 AIDE1 = 'Formula to be chosen to compute the atmospheric radiation.
 See GLM.'
 /
+/ AED2
+/
+NOM = 'FICHIER DES PARAMETRES AED2'
+NOM1 = 'AED2 STEERING FILE'
+TYPE = CARACTERE
+INDEX = 15
+MNEMO = 'WAQ\_FILES(WAQAED2)'
+SUBMIT = 'WAQAED2-READ;aed2.nml;FACUL;ASC;LIT;SCAL'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les parametres AED2 du calcul
+QE a realiser.'
+AIDE1 = 'Name of the file containing AED2 parameters of the WAQ
+computation.'
+/
+NOM = 'FICHIER DES PARAMETRES PHYTOPLANCTON AED2'
+NOM1 = 'AED2 PHYTOPLANKTON STEERING FILE'
+TYPE = CARACTERE
+INDEX = 16
+MNEMO = 'WAQ\_FILES(WAQAED2P)'
+SUBMIT = 'WAQAED2P-READ;aed2_phyto_pars.nml;FACUL;ASC;LIT;SCAL'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les parametres phytoplancton AED2 du calcul
+QE a realiser.'
+AIDE1 = 'Name of the file containing AED2 phytoplankton parameters of the WAQ
+computation.'
+/
+NOM = 'FICHIER DES PARAMETRES ZOOPLANCTON AED2'
+NOM1 = 'AED2 ZOOPLANKTON STEERING FILE'
+TYPE = CARACTERE
+INDEX = 17
+MNEMO = 'WAQ\_FILES(WAQAED2Z)'
+SUBMIT = 'WAQAED2Z-READ;aed2_zoop_pars.nml;FACUL;ASC;LIT;SCAL'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les parametres zooplancton AED2 du calcul
+QE a realiser.'
+AIDE1 = 'Name of the file containing AED2 zooplankton parameters of the WAQ
+computation.'
+/
+NOM = 'FICHIER DES PARAMETRES PATHOGENES AED2'
+NOM1 = 'AED2 PATHOGEN STEERING FILE'
+TYPE = CARACTERE
+INDEX = 18
+MNEMO = 'WAQ\_FILES(WAQAED2PT)'
+SUBMIT = 'WAQAED2PT-READ;aed2_pathogen_pars.nml;FACUL;ASC;LIT;SCAL'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les parametres pathogenes AED2 du calcul
+QE a realiser.'
+AIDE1 = 'Name of the file containing AED2 pathogen parameters of the WAQ
+computation.'
+/
+NOM = 'FICHIER DES PARAMETRES BIVALVES AED2'
+NOM1 = 'AED2 BIVALVE STEERING FILE'
+TYPE = CARACTERE
+INDEX = 19
+MNEMO = 'WAQ\_FILES(WAQAED2B)'
+SUBMIT = 'WAQAED2B-READ;aed2_bivalve_pars.nml;FACUL;ASC;LIT;SCAL'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les parametres bivalves AED2 du calcul
+QE a realiser.'
+AIDE1 = 'Name of the file containing AED2 bivalve parameters of the WAQ
+computation.'
+/
 / POUR LES LANCEURS PERL :
 /
 
@@ -1348,21 +1430,31 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE
 INDEX = 99
 MNEMO = ''
-TAILLE = 7
+TAILLE = 12
 DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DES RESULTATS';
          'FICHIER DE GEOMETRIE';
          'FICHIER DES CONDITIONS AUX LIMITES';
          'FICHIER HYDRODYNAMIQUE';
          'FICHIER DE REFERENCE';
-         'DICTIONNAIRE'
+         'DICTIONNAIRE';
+         'FICHIER DES PARAMETRES AED2';
+         'FICHIER DES PARAMETRES PHYTOPLANCTON AED2';
+         'FICHIER DES PARAMETRES ZOOPLANCTON AED2';
+         'FICHIER DES PARAMETRES PATHOGENES AED2';
+         'FICHIER DES PARAMETRES BIVALVES AED2'
 DEFAUT1 ='STEERING FILE';
          'RESULTS FILE';
          'GEOMETRY FILE';
          'BOUNDARY CONDITIONS FILE';
          'FICHIER HYDRODYNAMIQUE';
          'REFERENCE FILE';
-         'DICTIONARY'
+         'DICTIONARY';
+         'AED2 STEERING FILE';
+         'AED2 PHYTOPLANKTON STEERING FILE';
+         'AED2 ZOOPLANKTON STEERING FILE';
+         'AED2 PATHOGEN STEERING FILE';
+         'AED2 BIVALVE STEERING FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1

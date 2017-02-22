@@ -1,0 +1,62 @@
+/-------------------------------------------------------------------/
+/   TELEMAC-3D      -  cas test t3d_waq3d_aed2                      /
+/                          MJ aout 2016                             /
+/-------------------------------------------------------------------/
+/
+/ Version 7.3
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+GEOMETRY FILE            = geo_waq3d_aed2.slf
+BOUNDARY CONDITIONS FILE = geo_waq3d_aed2.cli
+3D RESULT FILE           = r3d_waq3d_aed2.slf
+2D RESULT FILE           = r2d_waq3d_aed2.slf
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+TITLE = 'AED2 coupling test case'
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = U,V,H,S,TA1,TA3,TA6,TA7,TA21
+VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA1,TA3,TA6,TA7,TA21
+GRAPHIC PRINTOUT PERIOD = 200
+LISTING PRINTOUT PERIOD = 200
+MASS-BALANCE = YES
+TIME STEP = 1.
+NUMBER OF TIME STEPS = 1000
+/--------------------------------------------------
+/  VERTICAL MESH
+/--------------------------------------------------
+NUMBER OF HORIZONTAL LEVELS : 10
+/--------------------------------------------------
+/  SOURCE TERMS
+/--------------------------------------------------
+LAW OF BOTTOM FRICTION : 3
+FRICTION COEFFICIENT FOR THE BOTTOM : 50.
+/--------------------------------------------------
+/  INITIAL CONDITIONS
+/--------------------------------------------------
+INITIAL CONDITIONS = 'CONSTANT ELEVATION'
+INITIAL ELEVATION  = 5.
+/--------------------------------------------------
+/  TRACERS
+/--------------------------------------------------
+MAXIMUM NUMBER OF TRACERS = 50
+NUMBER OF TRACERS = 2
+NAMES OF TRACERS : 'TEMPERATURE     DEGRE C ';'SALINITE     g/l'
+/ 22 INITIAL VALUES ARE MANDATORY, AS MANY AS THE NUMBER OF TRACERS
+/ COMPUTED IN AED2
+INITIAL VALUES OF TRACERS : 20.;30.;225.;1600.5;12.5;12.7;23.5;6.;7.;8.;
+9.;10.;2.;2.;2.;2.;2.;2.;2.;2.;2.;2.
+/ ALL SCHEMES FOR DIFFUSION OF TRACERS ARE THE SAME AS THE FIRST ONE
+SCHEME FOR DIFFUSION OF TRACERS = 1
+COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS = 1.D-4
+/ ALL SCHEMES FOR ADVECTION OF TRACERS ARE THE SAME AS THE FIRST ONE
+SCHEME FOR ADVECTION OF TRACERS = 5
+/--------------------------------------------------
+/  WATER QUALITY
+/--------------------------------------------------
+COUPLING WITH         = 'WAQTEL'
+WAQTEL STEERING FILE  = 'aed2_steer.cas'
+WATER QUALITY PROCESS = 6
+/
+&FIN

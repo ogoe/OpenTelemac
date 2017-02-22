@@ -3,7 +3,7 @@
 
 SRCS= \
 declarations_telemac3d.f   interface_telemac3d.f \
-homere_telemac3d.f lecdon_telemac3d.f \
+homere_telemac3d.f lecdon_telemac3d.F \
 point_telemac3d.f  preres_telemac3d.f \
 airwik2.f          airwik3.f  amr_plan.f bed_fluxes.f   bil3d.f \
 bord3d.f           bypass_crushed_points_seg.f    bypass_crushed_points_ebe.f  calcg.f  calcot.f  check.f \
@@ -21,7 +21,7 @@ murd3d.f           murd3d_lips.f murd3d_pos.f  nomvar_telemac3d.f  nomvar_2d_in_
 nuwave_p0.f        phstat.f   plane_bottom.f  preadv.f   prediv.f  prepare_advection.f q3.f \
 read_bin_frliq.f   rhs_pressure.f     sed3d.f    set_dif.f sed_fall.f   sl3.f      smago.f    smago3d.f \
 soukep.f           soukom.f   soulsbyfloc3d.f source.f   sources_sinks.f source_trac.f t3d_stress.f suised.f sumver.f \
-tbord.f            telemac3d.f thomps_2dto3d.f thomps_bc.f t3d_debsce.f t3d_read_fic_curves.f t3d_trsce.f \
+tbord.f            telemac3d.F thomps_2dto3d.f thomps_bc.f t3d_debsce.f t3d_read_fic_curves.f t3d_trsce.f \
 tfond.f            tidal_model_t3d.f     transf_zchar.f trid1d.f tridw2.f  tridw3.f  trisou.f  tra_prof_z.f  tr3.f upwind.f upwindebe.f upwindseg.f \
 utimp.f            tvf_imp_3d.f vel_prof_z.f  velres.f   \
 vermoy.f           viscke.f   viscko.f   visclip.f visclm.f \
