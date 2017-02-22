@@ -84,7 +84,7 @@
       <layer vars="DIRECTION MOY :map" target="1:WACRES" deco="hiver"/>
    </plot2d>
    <plot2d xref="img/directionref" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Direction')">
-      <layer vars="DIRECTION MOY:map" target="ref_tom_manche.slf" deco="hiver"/>
+     <layer vars="DIRECTION MOY:map" target="ref_tom_calc.slf" deco="hiver"/>
    </plot2d>
 
 </validation>
