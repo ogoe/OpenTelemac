@@ -8,6 +8,7 @@ Trunk (Unreleased)
   Spalart-Allmaras turbulence model). The wall distance (WDIST) is now
   computed in parallel with a laplacian operator.
 - TELEMAC-2D: new framework for automatic convergence studies
+- TELEMAC-3D: coupling with the water quality library AED2.
 
 Release V7P2R0 (31 Dec 2016)
 ===========================
