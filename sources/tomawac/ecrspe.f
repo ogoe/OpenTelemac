@@ -1,6 +1,6 @@
 !                    *****************
-      SUBROUTINE ECRSPE
-!     *****************
+                     SUBROUTINE ECRSPE
+!                    *****************
 !     
      &     ( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
      &     NPOIN2, AT    , LT, AUXIL , NOLEO , NLEO  , NSCO  ,
@@ -10,64 +10,71 @@
 !***********************************************************************
 !     TOMAWAC   V6P3                                   15/06/2011
 !***********************************************************************
-!     
+!
 !     brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
 !     +                AT SELECTED NODES.
 !     +                (SERAPHIN BINARY FORMAT).
-!     
+!
 !     history  OPTIMER
 !     +        28/08/2000
 !     +        V5P0
 !     +   CREATED
-!     
+!
 !     history
 !     +        07/06/2001
 !     +        V5P2
 !     +
-!     
+!
 !     history  M. BENOIT
 !     +        13/07/2004
 !     +        V5P5
 !     +   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED
-!     
+!
 !     history
 !     +
 !     +        V6P0
 !     +
-!     
+!
 !     history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !     +        13/07/2010
 !     +        V6P0
 !     +   Translation of French comments within the FORTRAN sources into
 !     +   English comments
-!     
+!
 !     history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !     +        21/08/2010
 !     +        V6P0
 !     +   Creation of DOXYGEN tags for automated documentation and
 !     +   cross-referencing of the FORTRAN sources
-!     
+!
 !     history  G.MATTAROLO (EDF - LNHE)
 !     +        15/06/2011
 !     +        V6P1
 !     +   Translation of French names of the variables in argument
-!     
+!
 !     history  A. LAUGEL & J-M HERVOUET (EDF - LNHE)
 !     +        22/11/2012
 !     +        V6P3
 !     +   Parallelism treated with files.
-!     
+!
 !     history  E. GAGNAIRE-RENOU (EDF - LNHE)
 !     +        12/03/2013
 !     +        V6P3
 !     +   Print out the 1D frequential spectrum at (same) selected nodes.
 !     +   Scopgene format.
-!     
+!
 !     history Y AUDOUIN (LNHE)
 !     +       25/05/2015
 !     +       V7P0
 !     +       Modification to comply with the hermes module
-!     
+!
+!     history A JOLY (LNHE)
+!     +       16/02/2017
+!     +       V7P3
+!     +   In some instances, PROXIM could find a node in only one processor
+!     +   domain (and therefore NOLEO), but MESH%ELTCAR was in another.
+!     +   This case is now taken into account.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !     | AT             |-->| COMPUTATION TIME
 !     | AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
@@ -118,28 +125,28 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       CHARACTER(LEN=144), INTENT(IN)  :: TISPEF
       INTEGER, INTENT(IN)             :: NSPE
-!     
+!
 !     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!     
-      INTEGER  ISTAT , II    , JF    , K
+!
+      INTEGER  ISTAT , II    , JF    , K    , II_ALL
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
       CHARACTER(LEN=72) C
-      CHARACTER(LEN=32) TEXTE(99)
+      CHARACTER(LEN=32) TEXTE(NLEO)
       CHARACTER(LEN=6)  NUM
       CHARACTER(LEN=2)  CC
       CHARACTER(LEN=1)  C1,C2,C3,C4,C5,C6
       TYPE(BIEF_MESH) MESHF
-      LOGICAL         SORLEO(99)
+      LOGICAL         SORLEO(NLEO)
       DOUBLE PRECISION DTETAR
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
       INTEGER :: ID
-!     
-      INTEGER  P_IMAX
-      EXTERNAL P_IMAX
-!     
+!
+      INTEGER  P_IMAX,P_ISUM
+      EXTERNAL P_IMAX,P_ISUM
+!
       DOUBLE PRECISION, ALLOCATABLE :: F_INTF(:,:)
 !     
 !-----------------------------------------------------------------------
@@ -270,89 +277,95 @@
             ENDIF
 !     
          ENDIF
+      ENDIF
 !     
 !     RECORDS THE CURRENT TIME STEP
 !     
-         IF (TISPEF(1:1).NE.' ') THEN
-            IF(IPID.EQ.0) THEN
-               IF(LNG.EQ.1) WRITE(NSPE,1007) AT
-               IF(LNG.EQ.2) WRITE(NSPE,1008) AT
-            ENDIF
- 1007       FORMAT('TEMPS = ',F13.5)
- 1008       FORMAT('TIME  = ',F13.5)
+      IF (TISPEF(1:1).NE.' ') THEN
+         IF(IPID.EQ.0) THEN
+            IF(LNG.EQ.1) WRITE(NSPE,1007) AT
+            IF(LNG.EQ.2) WRITE(NSPE,1008) AT
+         ENDIF
+      ENDIF
+1007  FORMAT('TEMPS = ',F13.5)
+1008  FORMAT('TIME  = ',F13.5)
 !     
-            IF(NCSIZE.GT.1) THEN
-               CALL GET_FREE_ID(ID)
+      IF(NCSIZE.GT.1) THEN
+         CALL GET_FREE_ID(ID)
 !     
 !     1) EVERY PROCESSOR WRITES ITS OWN POINTS
 !     MESH%ELTCAR IS USED AS FOR THE CHARACTERISTICS
 !     
-               DO ILEO=1,NLEO
-                  II=NOLEO(ILEO)
-                  IF(II.GT.0) THEN
-                     IF(MESH%ELTCAR%I(II).NE.0) THEN
-                        DO JF=1,NF
-                           DO K=1,NPLAN
-                              AUXIL(K,JF)=F(II,K,JF)
-                           ENDDO
-                        ENDDO
-                        OPEN(ID,FILE=EXTENS(NLEO,ILEO),
-     &                       FORM='UNFORMATTED',STATUS='NEW')
-                      CALL ECRI2(AUXIL,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
-                        CLOSE(ID)
-                     ENDIF
-                  ENDIF
-               ENDDO
+         DO ILEO=1,NLEO
+            II=NOLEO(ILEO)
+            II_ALL=P_ISUM(II)
+            IF(II.GT.0) THEN
+               IF((MESH%ELTCAR%I(II).NE.0).OR.
+     &             (II.EQ.II_ALL)) THEN
+                  DO JF=1,NF
+                     DO K=1,NPLAN
+                        AUXIL(K,JF)=F(II,K,JF)
+                     ENDDO
+                  ENDDO
+                  OPEN(ID,FILE=EXTENS(NLEO,ILEO),
+     &                 FORM='UNFORMATTED',STATUS='NEW')
+                  CALL ECRI2(AUXIL,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
+                  CLOSE(ID)
+               ENDIF
+            ENDIF
+         ENDDO
 !     
 !     WAITING COMPLETION OF THE WORK BY ALL PROCESSORS
 !     
-               CALL P_SYNC
+         CALL P_SYNC
 !     
 !     2) PROCESSOR 0 READS ALL FILES AND MERGES IN THE FINAL FILE
 !     
-               IF(IPID.EQ.0) THEN
-                  DO ILEO=1,NLEO
-                     OPEN(ID,FILE=EXTENS(NLEO,ILEO),
-     &                    FORM='UNFORMATTED',STATUS='OLD')
-                     CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
-                  CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
-     &                    AUXIL,NPSPE,ISTAT)
-                     CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
-                     DO JF=1,NF
-                        F_INTF(ILEO,JF)=0.D0
-                        DO K=1,NPLAN
-                      F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
-                        ENDDO
-                     ENDDO
-                     CLOSE(ID,STATUS='DELETE')
+         IF(IPID.EQ.0) THEN
+            DO ILEO=1,NLEO
+               OPEN(ID,FILE=EXTENS(NLEO,ILEO),
+     &              FORM='UNFORMATTED',STATUS='OLD')
+               CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
+               CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                       AUXIL,NPSPE,ISTAT)
+               CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
+               DO JF=1,NF
+                  F_INTF(ILEO,JF)=0.D0
+                  DO K=1,NPLAN
+                     F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
                   ENDDO
-                  DO JF=1,NF
-                     WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
-     &                    (F_INTF(ILEO,JF),ILEO=1,NLEO)
-                  ENDDO
-               ENDIF
-            ELSE
-               DO ILEO=1,NLEO
-                  II=NOLEO(ILEO)
-                  DO JF=1,NF
-                     F_INTF(ILEO,JF)=0.D0
-                     DO K=1,NPLAN
-                        AUXIL(K,JF)=F(II,K,JF)
-                      F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+F(II,K,JF)*DTETAR
-                     ENDDO
-                IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
-                  ENDDO
-                  CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
-     &                 AUXIL,NPSPE,ISTAT)
-                  CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
                ENDDO
+               CLOSE(ID,STATUS='DELETE')
+            ENDDO
+            IF (TISPEF(1:1).NE.' ') THEN
                DO JF=1,NF
                   WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
-     &                 (F_INTF(ILEO,JF),ILEO=1,NLEO)
+     &                  (F_INTF(ILEO,JF),ILEO=1,NLEO)
                ENDDO
-!
             ENDIF
          ENDIF
+      ELSE
+         DO ILEO=1,NLEO
+            II=NOLEO(ILEO)
+            DO JF=1,NF
+               F_INTF(ILEO,JF)=0.D0
+               DO K=1,NPLAN
+                  AUXIL(K,JF)=F(II,K,JF)
+                  F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+F(II,K,JF)*DTETAR
+               ENDDO
+               IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
+            ENDDO
+            CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                    AUXIL,NPSPE,ISTAT)
+            CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
+         ENDDO
+         IF (TISPEF(1:1).NE.' ') THEN
+            DO JF=1,NF
+               WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
+     &               (F_INTF(ILEO,JF),ILEO=1,NLEO)
+            ENDDO
+         ENDIF
+!
       ENDIF
 !     
 !-----------------------------------------------------------------------
