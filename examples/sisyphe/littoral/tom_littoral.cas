@@ -10,6 +10,7 @@
 GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_tom_littoral.cli'
 2D RESULTS FILE = 'tom_littoral.slf'
+/GLOBAL RESULT FILE = 'glob.slf'
 /--------------------------------------------------------------------
 / INPUTS - OUTPUTS
 /--------------------------------------------------------------------
