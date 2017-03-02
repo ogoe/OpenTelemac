@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="5" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment 
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="littoral" author="P.Tassi" contact="www.opentelemac.org" />
+   </deco>
+   <deco xref="vect">
+      <look colour="jet.xml" />
+   </deco>
+   <deco xref="line">
+      <look colour="k" />
+   </deco>-->
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="telemac3d" target="T3D_littoral.cas"
+       title="littoral3D T3D+TOM scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac3d" target="T3D_littoral.cas"
+       title="littoral3D T3D+TOM scalar mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1-t3d" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:T3DRES" />
+      <v2 vars=":map" target="ref_T3D_littoral.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v3,[])" />
+   </cast>
+   <cast xref="ref-2-t3d" config="oneofall" time="[-1]" type="2d:">
+      <v13 vars=":map" target="2:T3DRES" />
+      <v14 vars=":map" target="ref_T3D_littoral.slf" />
+      <v15 vars="mapdiff(v13,v14)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v15,[])" />
+   </cast>
+   <cast xref="cas-parall-t3d" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="1:T3DRES" />
+      <v17 vars=":map" target="2:T3DRES" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v18,[])" />
+   </cast>
+   <cast xref="ref-1-wac" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="1:WACRES" />
+      <v20 vars=":map" target="ref_tom_littoral.slf" />
+      <v21 vars="mapdiff(v19,v20)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v21,[])" />
+   </cast>
+   <cast xref="ref-2-wac" config="oneofall" time="[-1]" type="2d:">
+      <v22 vars=":map" target="2:WACRES" />
+      <v23 vars=":map" target="ref_tom_littoral.slf" />
+      <v24 vars="mapdiff(v22,v23)" />
+      <return title="Comparison with the last time frame of the reference file."
+         fail="checkval(v24,[])" />
+   </cast>
+   <cast xref="cas-parall-wac" config="oneofall" time="[-1]" type="2d:">
+      <v25 vars=":map" target="1:WACRES" />
+      <v26 vars=":map" target="2:WACRES" />
+      <v27 vars="mapdiff(v25,v26)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v27,[])" />
+   </cast>-->
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+   <deco xref="hiver">
+      <look cmap="winter.xml" extend="'max'"/>
+   </deco>
+   <deco xref="sepia">
+      <look cmap="Sepia.xml" extend="'max'"/>
+   </deco>
+   <deco xref="chili">
+      <look cmap="RedHot.xml" extend="'max'"/>
+   </deco>
+
+      <plot2d xref="img/fond" config="oneofall" time="[-1]" size="(9;4)" >
+      <layer vars="BOTTOM  :mesh" target="1:T3DGEO" />
+   </plot2d>
+   <plot2d xref="img/resultsT2D" config="oneofall" time="[-1]" size="(12;7)"  set="colorbar;title('Velocity')" >
+      <layer vars="VITESSE U :map" target="1:T3DRES" deco="chili"/>
+   </plot2d>
+    <plot2d xref="img/resultsTOM" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave heigth')">
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="hiver" />
+   </plot2d>
+
+</validation>
