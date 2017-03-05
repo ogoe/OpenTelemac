@@ -3120,6 +3120,147 @@ AIDE = 'Si oui on appelle le sous-programme checkmesh qui verifie
 la coherence du maillage, points superposes, etc.'
 AIDE1 = 'if this key word is equal to yes, a call to subroutine
 checkmesh will look for errors in the mesh, superimposed points, etc.'
+/
+/  VERSION 7.2
+/
+NOM  = 'ANIMATION DE LA SURFACE LIBRE'
+NOM1 = 'FREE SURFACE ANIMATION'
+TYPE = LOGIQUE
+INDEX = 18
+MNEMO = 'ANIMFS'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE  = 'ENTREES-SORTIES,GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT,GRAPHICS AND LISTING'
+NIVEAU = 1
+AIDE = 'Option utilisee si l on veut produire le fichier de phases
+et amplitudes qui servira a calculer la position de la surface libre
+en tout point du maillage.
+A besoin des noms de FICHIER DES PHASES ET AMPLITUDES et
+FICHIER DE SURFACE LIBRE'
+AIDE1 = 'This option informs that the phase and amplitude file is to
+be generated. This file will be used to determine the free surface
+elevation throughout the model area.
+Remember to give AMPLITUDE AND PHASE FILE and FREE SURFACE FILE'
+
+NOM = 'FICHIER DES PHASES ET AMPLITUDES'
+NOM1 = 'AMPLITUDE AND PHASE FILE'
+TYPE = CARACTERE
+INDEX = 36
+MNEMO = NOMAMP
+TAILLE = 0
+SUBMIT = 'NAMP-READWRITE;ARTAMP;FACUL;BIN;ECR;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
+COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
+CHOIX = 'resuamp'
+APPARENCE = 'LISTE IS EDITABLE'
+NIVEAU= 1
+AIDE = '
+Nom du fichier dans lequel seront ecrits les phases et amplitudes
+pour toutes les periodes et directions simulees dans le fichier des
+parametres.'
+AIDE1 = '
+Name of the results file corresponding to the computations and
+which contains the phase and amplitude at every point for all the
+periods and directions specified in the steering file.'
+
+NOM = 'FORMAT DU FICHIER DES PHASES ET AMPLITUDES'
+NOM1 = 'AMPLITUDE AND PHASE FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 37
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+
+NOM = 'FICHIER DE SURFACE LIBRE'
+NOM1 = 'FREE SURFACE FILE'
+TYPE = CARACTERE
+INDEX = 38
+MNEMO = NOMFST
+TAILLE = 0
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES '
+COMPORT = 'Foreground ("ENTREES-SORTIES,FICHIERS*NOMS") IS VALEUR (Red)'
+CHOIX = 'resufse'
+APPARENCE = 'LISTE IS EDITABLE'
+NIVEAU= 1
+AIDE = '
+Nom du fichier dans lequel sera ecrite la surface libre fonction du
+temps pour permettre une animation du fichier.'
+AIDE1 = '
+Name of the results file corresponding to the computations and
+which contains the free surface at every point as a function of time.
+This file can be animated to check free surface variations with time.'
+
+NOM = 'FORMAT DU FICHIER DE SURFACE LIBRE'
+NOM1 = 'FREE SURFACE FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 39
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+
+NOM = 'PREMIER TEMPS DANS LE FICHIER DE SURFACE LIBRE'
+NOM1 = 'FIRST TIME IN THE FREE SURFACE FILE'
+TYPE = REEL
+INDEX = 40
+MNEMO = 'TINIFS'
+TAILLE = 0
+DEFAUT = 10000.
+DEFAUT1 = 10000.
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 2
+AIDE = 'Determine le temps a partir duquel debute l ecriture
+des resultats dans le FICHIER DE SURFACE LIBRE.'
+AIDE1 = 'Determines the time from which the results are written
+in the FREE SURFACE FILE.'
+
+NOM = 'PAS DE TEMPS'
+NOM1 = 'TIME STEP'
+TYPE = REEL
+INDEX = 41
+MNEMO = 'DTFS'
+TAILLE = 0
+DEFAUT = 0.25
+DEFAUT1 = 0.25
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 1
+AIDE = 'Definit le pas de temps en secondes.'
+AIDE1 = 'Specifies the time step in seconds.'
+
+NOM = 'NOMBRE DE PAS DE TEMPS'
+NOM1 = 'NUMBER OF TIME STEPS'
+TYPE = ENTIER
+INDEX = 31
+MNEMO = 'NITFS'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+COMPORT = 'Foreground ("PARAMETRES NUMERIQUES")
+IS VALEUR (blue)'
+NIVEAU = 1
+AIDE = 'Definit le nombre de pas de  temps pour la sortie graphique
+FICHIER DE SURFACE LIBRE.'
+AIDE1 = 'Specifies the number of time steps in FREE SURFACE FILE.'
+
+//-----------------------------------------------------------------
+
 NOM = 'DICTIONNAIRE'
 NOM1 = 'DICTIONARY'
 TYPE = CARACTERE
@@ -3139,7 +3280,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE
 INDEX = 99
 MNEMO = ''
-TAILLE = 15
+TAILLE = 16
 DEFAUT = 'FICHIER DES PARAMETRES';
          'DICTIONNAIRE';
          'FICHIER FORTRAN';
@@ -3154,7 +3295,8 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE RESULTATS BINAIRE';
          'FICHIER DE RESULTATS FORMATE';
          'FICHIER DE REFERENCE';
-         'FICHIER DE DONNEES TOMAWAC 1'
+         'FICHIER DE DONNEES TOMAWAC 1';
+         'FICHIER DES PHASES ET AMPLITUDES'
 DEFAUT1 ='STEERING FILE';
          'DICTIONARY';
          'FORTRAN FILE';
@@ -3169,7 +3311,8 @@ DEFAUT1 ='STEERING FILE';
          'BINARY RESULTS FILE';
          'FORMATTED RESULTS FILE';
          'REFERENCE FILE' ;
-         'TOMAWAC DATA FILE 1'
+         'TOMAWAC DATA FILE 1';
+         'AMPLITUDE AND PHASE FILE'
 RUBRIQUE = 'ENTREES-SORTIES,FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES'
 NIVEAU = 1

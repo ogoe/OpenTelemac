@@ -5,7 +5,7 @@
      &(FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! ARTEMIS   V7P1
+! ARTEMIS   V7P2
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -24,6 +24,12 @@
 !+       25/05/2015
 !+       V7P0
 !+       Modification to comply with the hermes module
+!
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Addition of new keywords in the steering file re: animation of the 
+!+   free surface. ANIMFS and ART_FILES(ARTAMP)%NAME read from file
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING CODE
@@ -65,6 +71,8 @@
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       INTEGER :: ID_DICO, ID_CAS
+! EXTRA DECLARATIONS FOR OUTPUT OF AMPLITUDE AND PHASE FILE
+      CHARACTER*2                       :: CLT      ! PERIOD COMPONENT NUMBER
 !
 ! END OF DECLARATIONS FOR DAMOCLES CALL :
 !
@@ -155,6 +163,8 @@
           ARTRFO=I
         ELSEIF(ART_FILES(I)%TELNAME.EQ.'ARTTC1') THEN
           ARTTC1=I
+        ELSEIF(ART_FILES(I)%TELNAME.EQ.'ARTAMP') THEN
+          ARTAMP=I
         ENDIF
       ENDDO
 !
@@ -275,6 +285,7 @@
       SPHERI    = .FALSE.
       CHAINTWC  = MOTLOG( ADRESS(3, 16) )
       CHECK_MESH = MOTLOG( ADRESS(3, 17) )
+      ANIMFS    = MOTLOG( ADRESS(3, 18) )
 !
 ! STRING KEYWORDS : SOME ARE USED BY THE LAUNCHING
 !                   PROCEDURE
@@ -328,6 +339,13 @@
       CALL MAJUS(ART_FILES(ARTTC1)%FMT)
 !     TOMAWAC FILE 1
       ART_FILES(ARTTC1)%NAME=MOTCAR( ADRESS(4,35) )
+      IF(ANIMFS) THEN
+!     PHASE AND AMPLITUDE FILENAME
+        ART_FILES(ARTAMP)%NAME=MOTCAR( ADRESS(4,36) )
+!     PHASE AND AMPLITUDE FILE FORMAT
+        ART_FILES(ARTAMP)%FMT = MOTCAR( ADRESS(4,37) )(1:8)
+        CALL MAJUS(ART_FILES(ARTAMP)%FMT)
+      ENDIF
 !
       IF(LISTIN) THEN
         IF(LNG.EQ.1) WRITE(LU,101)
@@ -350,9 +368,10 @@
 !  NAME OF THE VARIABLES FOR THE RESULTS AND GEOMETRY FILES :
 !-----------------------------------------------------------------------
 !
+      CALL NOMVAR_ARTEMIS(TEXTE,TEXTPR,MNEMO)
+!
 ! LOGICAL ARRAY FOR OUTPUT
 !
-      CALL NOMVAR_ARTEMIS(TEXTE,TEXTPR,MNEMO)
       CALL SORTIE(VARDES , MNEMO , 100 , SORLEO )
       CALL SORTIE(VARIMP , MNEMO , 100 , SORIMP )
 !
@@ -431,6 +450,25 @@
 ! NDALE=1 FOR MONO-DIRECTIONAL SEAS
 !
       IF (ALEMON .AND. .NOT.ALEMUL) NDALE = 1
+!
+! NPALE=1 FOR REGULAR SEAS
+!
+      IF (.NOT.ALEMON .AND. .NOT.ALEMUL .AND. .NOT.BALAYE) NPALE = 1
+!
+! IF AMPLITUDE AND PHASE FILE IS REQUIRED, NAME OF VARIABLES IN TEXTANIM 
+! AND LOGICAL ARRAY FOR OUTPUT IN SORNIM
+!
+      IF (ANIMFS) THEN
+        DO I=1,NDALE
+          WRITE(CLT,205) I
+205       FORMAT(I2.2)
+          TEXTANIM (2*I-1) = 'WAVE HEIGHT D'//CLT//'              (M)'
+          TEXTANIM (2*I)   = 'WAVE PHASE D'//CLT//'             (RAD)'
+!
+          SORNIM (2*I-1) = .TRUE.
+          SORNIM (2*I) = .TRUE.
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

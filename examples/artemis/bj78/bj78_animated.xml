@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="2" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="bj78_animated" author="HR Wallingford" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       set='SOLVEUR=8'
+       code="artemis" target="art_bj78_animated.cas"
+       title="animated bj78 scalar mode"
+   />
+   <action xref="2"
+       do="translate;run;cas;princi" ncsize="4"
+       set='SOLVEUR=9|PARALLEL PROCESSORS=4'
+       code="artemis" target="art_bj78_animated.cas"
+       title="animated bj78 parallel mode"
+   />
+
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- Check against Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:ARTRES" />
+      <v2 vars=":map" target="f2d_bj78_20per.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Comparison with the reference file."
+         fail="checkval(v3,[1.e-8])" />
+   </cast>
+   <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:ARTRES" />
+      <v5 vars=":map" target="f2d_bj78_20per.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Comparison with the reference file."
+         fail="checkval(v6,[1.e-8,1.e-8,1.e-8,1.e-8,0.65,1.e-8])" />
+   </cast>
+
+   <cast xref="ref-1(amp1)" config="oneofall" time="[0]" type="2d:">
+      <v11 vars=":map" target="1:ARTAMP" />
+      <v12 vars=":map" target="famp_bj78_20per.slf" />
+      <v13 vars="mapdiff(v11,v12)" />
+      <return title="Comparison with the reference file (first period)."
+         fail="checkval(v13,[1.e-8])" />
+   </cast>
+   <cast xref="ref-1(amp10)" config="oneofall" time="[9]" type="2d:">
+      <v21 vars=":map" target="1:ARTAMP" />
+      <v22 vars=":map" target="famp_bj78_20per.slf" />
+      <v23 vars="mapdiff(v21,v22)" />
+      <return title="Comparison with the reference file (10th period)."
+         fail="checkval(v23,[1.e-8])" />
+   </cast>
+   <cast xref="ref-1(amp20)" config="oneofall" time="[19]" type="2d:">
+      <v31 vars=":map" target="1:ARTAMP" />
+      <v32 vars=":map" target="famp_bj78_20per.slf" />
+      <v33 vars="mapdiff(v31,v32)" />
+      <return title="Comparison with the reference file (last period)."
+         fail="checkval(v33,[1.e-8])" />
+   </cast>
+   
+   <cast xref="ref-2(amp1)" config="oneofall" time="[0]" type="2d:">
+      <v14 vars=":map" target="2:ARTAMP" />
+      <v15 vars=":map" target="famp_bj78_20per.slf" />
+      <v16 vars="mapdiff(v14,v15)" />
+      <return title="Comparison with the reference file (first period)."
+         fail="checkval(v16,[1.e-8])" />
+   </cast>
+   <cast xref="ref-2(amp10)" config="oneofall" time="[9]" type="2d:">
+      <v24 vars=":map" target="2:ARTAMP" />
+      <v25 vars=":map" target="famp_bj78_20per.slf" />
+      <v26 vars="mapdiff(v24,v25)" />
+      <return title="Comparison with the reference file (10th period)."
+         fail="checkval(v26,[1.e-8])" />
+   </cast>
+   <cast xref="ref-2(amp20)" config="oneofall" time="[19]" type="2d:">
+      <v34 vars=":map" target="2:ARTAMP" />
+      <v35 vars=":map" target="famp_bj78_20per.slf" />
+      <v36 vars="mapdiff(v34,v35)" />
+      <return title="Comparison with the reference file (last period)."
+         fail="checkval(v36,[1.e-8])" />
+   </cast>
+   
+<!-- Check parallel against scalar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="1:ARTRES" />
+      <v8 vars=":map" target="2:ARTRES" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v9,[1.e-8,1.e-8,1.e-8,1.e-8,0.65,1.e-8])" />
+   </cast>
+
+<!-- Could plot time history at one point for a short period  ~~~~~ -->
+<!-- to compare the traces from the reference and the new run ~~~~~ -->
+
+</validation>

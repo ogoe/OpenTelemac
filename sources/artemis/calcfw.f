@@ -262,7 +262,7 @@
           ELSE
 !
             DIAMAD = (((MVSED/MVEAU)-1.D0)*GRAV)/(VISCO**2.D0)
-            DIAMAD = DIAMAD**(1/3)
+            DIAMAD = DIAMAD**(1/3D0)
             DIAMAD = DIAMAD * DIAM50
 !
             TETACR = 0.14D0*(DIAMAD**(-0.64D0))

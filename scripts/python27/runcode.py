@@ -141,6 +141,7 @@ from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,a
 from utils.messages import MESSAGES,filterMessage,banner
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
+from runSELAFIN import transfSELAFIN
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -541,6 +542,50 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []: raise Exception(xcpt) # raise full report
    return sortiefiles
+
+def processARTNIM(cas,CASDir,dico,frgb):
+
+   xcpt = []                            # try all files for full report
+   # ~~> Output to the prost process
+   value,defaut = getKeyWord('FICHIER DE SURFACE LIBRE',cas,dico,frgb)
+   if value == []: return ''
+   print '    +> ',value[0].replace("'","")
+
+   fileNameWfs = path.join(CASDir,value[0].replace("'",""))
+   if path.isfile(fileNameWfs):
+      bs,es = path.splitext(fileNameWfs)
+      i = 0
+      while 1:   # this would be an infinite loop only if you have an inifite number of files
+         i = i + 1
+         if not path.isfile(bs+'_old'+str(i)+es): break
+      shutil.move(fileNameWfs,bs+'_old'+str(i)+es)
+
+   # ~~> Input to the prost process
+   value,defaut = getKeyWord('FICHIER DES PHASES ET AMPLITUDES',cas,dico,frgb)
+   if value != []: fileNameAmp = path.join(CASDir,value[0].replace("'",""))
+   if not path.isfile(fileNameAmp):
+      xcpt.append({'name':'processARTNIM','msg':'could not find the file of amplitudes and phases.'})
+      raise Exception(xcpt) # raise full report
+
+   # ~~> Parameters
+   tfrom = 2006.07
+   value,defaut = getKeyWord('PREMIER TEMPS DANS LE FICHIER DE SURFACE LIBRE',cas,dico,frgb)
+   if value != []: tfrom = float(value[0])
+   tstep = 0.34
+   value,defaut = getKeyWord('PAS DE TEMPS',cas,dico,frgb)
+   if value != []: tstep = float(value[0])
+   tstop = 2108.75
+   value,defaut = getKeyWord('NOMBRE DE PAS DE TEMPS',cas,dico,frgb)
+   if value != []: tstop = tfrom + int(value[0])*tstep
+
+   # ~~> Processing the new file
+   slf = transfSELAFIN( fileNameAmp, times = (tfrom,tstep,tstop) )
+   slf.calcFreeSurfaceFromARTEMIS()
+   slf.putContent(fileNameWfs)
+
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #if xcpt != []: raise Exception(xcpt) # raise full report
+   return fileNameWfs
 
 def processCONFIG(lang):
 
@@ -1213,7 +1258,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          # Update of CASFile info
          CASFiles[name].update({ 'run':exeFile, 'exe':exeFile })
 
-
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
@@ -1501,24 +1545,25 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    for name in CASFiles:
       print '    +> ',name
       chdir(CASFiles[name]['wir'])
+      # ~~> copying all primary result files
       files = processECR(CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['oFS'],
                          CASFiles[name]['dir'],CASFiles[name]['wir'],
                          CASFiles[name]['sortie'],ncsize,options.bypass)
       if options.sortieFile: sortiefiles.extend(files)
+      # ~~> copying all coupled result files
       for cplage in CASFiles[name]['with']:
          files = processECR(CASFiles[name]['with'][cplage]['cas'],
                             MODFiles[CASFiles[name]['with'][cplage]['code']]['oFS'],
                             CASFiles[name]['dir'],CASFiles[name]['wir'],None,
                             ncsize,options.bypass)
          if options.sortieFile: sortiefiles.extend(files)
+      # ~~> zipping sortie files if necessary
       if not options.nozip and ncsize > 1 and options.sortieFile:
          zipsortie(sortiefiles[0])
-   #except Exception as e:
-   #   raise Exception([filterMessage(
-   #                       {'name':'runCAS','msg':
-   #                        'I could not copy the output files back from\
-   #                         the temporary directory:\n      '+wdir},
-   #                         e,options.bypass)])  # only one item here
+      # ~~> post-processing the ARTEMIS animation file if necessary
+      files = processARTNIM(CASFiles[name]['cas'],CASFiles[name]['dir'],
+                            MODFiles[CASFiles[name]['code']]['dico'],
+                            MODFiles[CASFiles[name]['code']]['frgb'])
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.tmpdirectory:

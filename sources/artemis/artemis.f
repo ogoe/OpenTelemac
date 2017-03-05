@@ -64,6 +64,7 @@
       INTEGER NELBRD,NPFMAX,NELBRX
 !      INTEGER LPER,LDIR
       INTEGER ALIRE(MAXVAR)
+      INTEGER RECORD
 !
 ! VARIABLE FOR SUBROUTINE DISMOY
 !
@@ -214,7 +215,27 @@
      &                  1,             ! NUMBER OF PLANES /NA/
      &                  MARDAT,        ! START DATE
      &                  MARTIM)        ! START TIME
-      IF(DEBUG.GT.0) WRITE(LU,*) '< RESULTS FILE PREPARED'
+!
+!-----------------------------------------------------------------------
+!
+!  IF ANIMATION IS REQUIRED, PREPARES THE OUTPUT FILES
+!
+        IF (ANIMFS) THEN
+           CALL WRITE_HEADER(ART_FILES(ARTAMP)%FMT,
+     &                       ART_FILES(ARTAMP)%LU,
+     &                       TITCAS,
+     &                       MAXVAR,
+     &                       TEXTANIM,
+     &                       SORNIM)
+           CALL WRITE_MESH(ART_FILES(ARTAMP)%FMT,
+     &                     ART_FILES(ARTAMP)%LU,
+     &                     MESH,
+     &                     1,
+     &                     MARDAT,
+     &                     MARTIM)
+        ENDIF
+!
+        IF(DEBUG.GT.0) WRITE(LU,*) '< RESULTS FILE PREPARED'
 !
 !-----------------------------------------------------------------------
 !
@@ -380,8 +401,14 @@
       CALL OS('X=C     ', MCOS , SBID , SBID , 0.D0 )
       CALL OS('X=C     ', MSIN , SBID , SBID , 0.D0 )
 !
-!
 !-----------------------------------------------------------------------
+!
+! START OF DIRECTION LOOP
+!
+!     PRINT NEW VALUE OF THE DIRECTION
+!
+!     IN MULTIDIRECTIONAL RANDOM SEA, THE DIRECTIONS OF PROPAGATION
+!     (AT THE BOUNDARY) HAVE BEEN CALCULATED IN DALE.
 !
 200   IF (ALEMUL) THEN
         CALL OS('X=C     ', TETAB ,SBID,SBID, DALE%R(LDIR) )
@@ -395,6 +422,11 @@
 !
         CALL OS('X=C     ', TETAB ,SBID,SBID, TETAH )
       ENDIF
+!
+!
+!-----------------------------------------------------------------------
+!
+! START OF PERIOD LOOP
 !
 100   CONTINUE
 !
@@ -412,7 +444,7 @@
 !
 !=======================================================================
 !
-! : 2                  INITIALISES
+! : 2          INITIALISES
 !
 !=======================================================================
 !
@@ -425,7 +457,7 @@
 !
 !=======================================================================
 !
-! : 3                  BOUNDARY CONDITIONS
+! : 3          BOUNDARY CONDITIONS
 !
 !=======================================================================
 !
@@ -449,8 +481,8 @@
 !
 ! ===================================================================================
 !
-! : 3 . 1              BOUNDARY CONDITIONS FOR RANDOM SPECTRUM
-!                      ---------------------------------------
+! : 3.1        BOUNDARY CONDITIONS FOR RANDOM SPECTRUM
+!              ---------------------------------------
 ! CALCULATES THE BOUNDARY CONDITIONS ON THE POTENTIAL FROM USER INPUT.
 ! RANDOM INCIDENT WAVE for freq i : HBi = Hs/sqrt(Ndale*Npale)
 ! This way Hs**2 = (HB1**2+HB2**2+...+HBN**2)
@@ -487,7 +519,7 @@
 !
 !=======================================================================
 !
-! : 4                  SOLVES THE BERKHOFF EQUATION
+! : 4          SOLVES THE BERKHOFF EQUATION
 !
 !=======================================================================
 !
@@ -560,38 +592,34 @@
 !
 !=======================================================================
 !
-! : 7                  PRINTS OUT THE RESULTS
+! : 7          PRINTS OUT THE RESULTS NOW IF REGULAR SEAS
 !
 !=======================================================================
 !
-!
-! FOR RANDOM SEAS,
-! OUTPUTS ONLY AT THE PEAK PERIOD
 !
       IF (.NOT.ALEMON .AND. .NOT.ALEMUL) THEN
 !
-!=======================================================================
-!
-!     CONVERTS INCI INTO DEGREES
-!
-!=======================================================================
+! CONVERTS INCI INTO DEGREES
 !
         CALL OS('X=CX    ', INCI , SBID , SBID , RADDEG )
 !
 ! RUBENS FILE
 !
+! FOR REGULAR SEAS,
+! TIME IS THE WAVE PERIOD: PER
+!
         IF(DEBUG.GT.0) WRITE(LU,*) '> WRITING RESULT FILE'
+        RECORD = 0
+        IF(BALAYE) RECORD = LT
         CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
-     &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,0,
+     &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PER,RECORD,
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,0,0)
         IF(DEBUG.GT.0) WRITE(LU,*) '< RESULT FILE WRITTEN'
 !
-!=======================================================================
+!-----------------------------------------------------------------------
 !
-!              COMPARISON AGAINST A REFERENCE FILE
-!
-!=======================================================================
+!     COMPARISON AGAINST A REFERENCE FILE
 !
 !     THE VALIDA SUBROUTINE FROM THE BIEF LIBRARY IS STANDARD.
 !     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
@@ -611,16 +639,34 @@
 !
 !=======================================================================
 !
-! : 8                  GOES TO NEXT PERIOD
+! : 7.1        STARTS WRITING OUTPUT IF ANIMATION IS REQUIRED
 !
 !=======================================================================
 !
-! IF SWEEPS A RANGE OF PERIODS
+      IF (ANIMFS) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) '> WRITING AMP AND PHASE FILE'
+        CALL BIEF_ANIMP(ART_FILES(ARTAMP)%FMT,VARNIM,NPOIN,
+     &  ART_FILES(ARTAMP)%LU,'STD',PER,LT,LDIR,TEXTANIM)
+        IF(DEBUG.GT.0) WRITE(LU,*) '< WRITING AMP AND PHASE FILE'
+      ENDIF
+!
+!
+!=======================================================================
+!
+! : 8          GOES TO NEXT COMPUTATION
+!
+!=======================================================================
+!
+!=======================================================================
+!
+! IF SWEEPS A RANGE OF PERIODS, DOES THE NEXT PERIOD
+!
+!=======================================================================
 !
       IF (BALAYE) THEN
         LT   = LT  + 1
         LPER = LPER + 1
-        IF (LPER.LE.NPALE) THEN
+        IF (LPER.LE.NPERBA) THEN
           PER  = PER + PERPAS
           GOTO 100
         ENDIF
@@ -651,16 +697,18 @@
           CALL CALUEB2
           IF(DEBUG.GT.0) WRITE(LU,*) '< CALUEB2 CALLED'
 !
-!
 !         GOES TO NEXT PERIOD
+!
           LPER = LPER + 1
           IF (LPER.LE.NPALE) THEN
             PER = PALE%R(LPER)
             GOTO 100
           ENDIF
-
-!         GOES TO NEXT DIRECTION
+!
+!         WHEN ALL PERIODS HAVE BEEN RUN, GOES TO NEXT DIRECTION
+!         AND RESETS LPER TO 1
 !         UPDATE OF PALE IF SPECTRUM FROM TOMAWAC
+!
           LDIR = LDIR + 1
           IF (CHAINTWC) THEN
             DO I=1,NPALE
@@ -772,6 +820,8 @@
 !              PRIVE%ADR(4)%P%R(I) = PERPIC
 !            ENDDO
 !
+! FOR RANDOM SEAS, 
+! TIME IS THE PEAK WAVE PERIOD: PERPIC
       IF(DEBUG.GT.0) WRITE(LU,*) '> WRITES RESULTS'
           CALL BIEF_DESIMP(ART_FILES(ARTRES)%FMT,VARSOR,
      &            NPOIN,ART_FILES(ARTRES)%LU,'STD',PERPIC,0,

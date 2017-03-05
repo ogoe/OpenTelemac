@@ -63,6 +63,12 @@
          to use from the command line. Linear interpolation is used for
          new (in-between) points.
 """
+"""@history 25/12/2016 -- Noemie Durand:
+         Additional capability implemented for ARTEMIS simulations:
+         Free surface elevation animations can now be produced
+         over the model area.
+         New class transfSELAFIN(PARAFINS,alterSELAFIN) implemented
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -278,6 +284,96 @@ class calcsSELAFIN(PARAFINS,alterSELAFIN):
          self.slf.appendCoreVarsSLF(vars)
          for fct,args in self.calcs: self.slf.appendCoreVarsSLF(fct(vars,args))
          pbar.update(t)
+      pbar.finish()
+      self.slf.fole['hook'].close()
+
+class transfSELAFIN(PARAFINS,alterSELAFIN):
+
+   def __init__(self,f, times=None,vars=None,root=None, points=None):
+      PARAFINS.__init__(self,f,root)
+      self.calcs = []
+      # ~~> history has no impact on potential resampling of self.slf.tags['times']
+      if times == ( 1, 1, -1):
+         self.history = np.arange(2006.07,2108.75,0.34,dtype=float)
+      else:
+         tfrom,tstep,tstop = times
+         self.history = np.arange(tfrom,tstop,tstep,dtype=float)
+      # ~~> extraction restricted to points
+      if points != None:
+         pass
+
+   def calcFreeSurfaceFromARTEMIS(self):
+      # ~~> Dependencies
+      #     needs all the components to recreate the free surface signal
+      args = range(self.slf.NBV1)
+      # ~~> New variable name
+      calcs = { 'vars':[["WAVE SURFACE    ","M               "]]}
+      # ~~> Initial value 0
+      def init(vars,ivars,t0,ti): return [np.zeros(self.slf.NPOIN3,dtype=np.float64)]
+      calcs.update( { 'init':( init, args ) } )
+      # ~~> Computation of free surface
+      def calc(vars,ivars,ttime,ti,lastt,vari):
+         # work in double precision
+         vars64 = np.asarray(vars, dtype=np.float64)
+         for dirN in range(len(vars64)/2):
+            # dfr is an artefact to avoid phase locking
+            dfr = np.float64(0.04/ti)*np.float64(dirN+1-(len(vars64)/2+1)/2)
+            for ipoin in range(self.slf.NPOIN3):
+               vari[0][ipoin] += vars64[ivars[2*dirN]][ipoin]                                              \
+                              * np.cos(-2.0*np.pi*np.float64(1.0/ti+dfr)*np.float64(ttime)+vars64[ivars[2*dirN+1]][ipoin]) \
+                              / (2.0*np.sqrt(2.0))
+         return vari
+
+      calcs.update( { 'calc':( calc, args ) } )
+      # ~~> Conclusion step
+      def stop(t0,ti,vari): return vari
+      calcs.update( { 'stop':stop } )
+      # ~~> Store
+      self.calcs.append( calcs )
+
+   def putContent(self,fileName):
+      # ~~> Output file header
+      self.slf.fole.update({ 'hook': open(fileName,'wb') })
+      self.slf.fole['name'] = fileName
+      self.slf.NBV1 = 0; self.slf.NBV2 = 0; self.slf.VARNAMES = []; self.slf.VARUNITS = []
+      for calc in self.calcs:
+         for cname,cunit in calc['vars']:
+            self.slf.VARNAMES.append(cname)
+            self.slf.VARUNITS.append(cunit)
+            self.slf.NBV1 += 1
+      self.slf.appendHeaderSLF()
+
+      # ~~> Time stepping
+      print '\n      > Input signal based on:'
+      print '      - ',self.slf.NVAR/2,' direction(s)'
+      print '      - for the following periods:',self.slf.tags['times']
+      # ~~> Time stepping
+      print '\n      > Going through time (',len(self.history),'time steps) :'
+      pbar = ProgressBar(maxval=len(self.history)).start()
+
+      for ti in range(len(self.history)):
+         ttime = self.history[ti]
+         #pbar.write('         - '+str(ttime)+' s',ti)
+         # ~~> Initialise vari to 0 for each time step
+         vari = []
+         t0 = self.slf.tags['times'][0]
+         for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+            fct,args = calc['init']
+            vari.append(fct(vari,args,t0,t0))
+         # ~~> Sweeps through wave periods, adding up all components of free surface into "vari" for a given time
+         #     in this particular case self.slf.tags['times'] holds wave periods, not times
+         for tp in range(len(self.slf.tags['times'])):
+            vars = self.getPALUES(tp)
+            for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+               fct,args = calc['calc']
+               vari[icalc] = fct(vars,args,ttime,self.slf.tags['times'][tp],self.slf.tags['times'][len(self.slf.tags['times'])-1],vari[icalc])
+         # ~~> Print time record
+         self.slf.appendCoreTimeSLF(float(ttime))
+         for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+            fct = calc['stop']
+            self.slf.appendCoreVarsSLF(fct(t0,ttime,vari[icalc]))
+         pbar.update(ti)
+
       pbar.finish()
       self.slf.fole['hook'].close()
 
@@ -527,7 +623,17 @@ def main(action=None):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser = OptionParser("usage: %prog <action> [Options] \nuse -h for more help.\n\n\
+action:\n\
+   scan        will print information about the SELAFIN, such as variables, their vales etc.\n\
+   spec        will print information about a spectral file (also SELAFIN), such as\n\
+                  frequencies, periodes, etc.\n\
+   chop        will chop a SELAFIN given a new set of time range and step (but alter is better)\n\
+   alter       will alter a SELAFIN file, choping or modifying time, converting its\n\
+                  coordinates, extracting variables, etc.\n\
+   merge       will merge two files together, whether they are continuous simulations\n\
+                  (same variables) or putting variables together (same time definition)\n\
+   subdivide   will subdivide a mesh by one iteration (splitting all triangles in four others)")
    # valid for scan, chop and alter
    parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (','-delimited)" )
    # valid for scan and chop
@@ -560,6 +666,9 @@ def main(action=None):
    parser.add_option("--Z+?",type="string",dest="azp",default="0",help="adds to the VARIABLE" )
    parser.add_option("--Z*?",type="string",dest="azm",default="1",help="scales the VARIABLE" )
    parser.add_option("--accuracy",type="string",dest="accuracy",default="5",help="significant figures for text display" )
+   # valid for transf / TODO: make this valid for all
+   parser.add_option("--points",type="string",dest="points",default=None,help="extract data only at those locations" )
+   parser.add_option("--nodes",type="string",dest="nodes",default=None,help="extract data only at those nodes" )
    # valid for all
    parser.add_option("--parallel",action="store_true",dest="parallel",default=False,help="if option there, will assume input files have not been recollected, in which case you also need one example of the global file" )
 
@@ -843,7 +952,7 @@ def main(action=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of CALCS and CRUNCH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   elif codeName == 'calcs' or codeName == 'crunch':
+   elif codeName == 'calcs' or codeName == 'crunch' or codeName == 'transf':
       rootFile = None
       if not options.parallel:
          if len(args) < 3:
@@ -880,6 +989,17 @@ def main(action=None):
             if calc.upper() in "KINETIC ENERGY":
                print '      +> KINETIC ENERGY'
                slf.calcKineticEnergy()
+      elif codeName == 'transf':
+         slf = transfSELAFIN( slfFile, times = (float(options.tfrom),float(options.tstep),float(options.tstop)), root=rootFile )
+         print '   ~> Computing an animation for the following variable(s):'
+         for calc in calcList:
+            if calc.upper() in "WAVE SURFACE":
+               print '      +> WAVE SURFACE'
+               #if options.points != None:
+               slf.calcFreeSurfaceFromARTEMIS()
+            #if calc.upper() in "TIDE SURFACE":
+            #   print '      +> TIDE SURFACE and CURRENTS'
+            #   slf.calcFreeSurfaceFromTPXO()
       elif codeName == 'crunch':
          slf = crunchSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), root=rootFile )
          print '   ~> Assembling the following variables into the file:'

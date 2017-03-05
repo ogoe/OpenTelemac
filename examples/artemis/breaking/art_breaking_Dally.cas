@@ -10,7 +10,7 @@
 /
 RESULTS FILE              ='r2d_breaking_Dally.slf'
 /
-BOUNDARY CONDITIONS FILE  ='cli_breaking.slf'
+BOUNDARY CONDITIONS FILE  ='geo_breaking.cli'
 /
 FORTRAN FILE              = f90
 /

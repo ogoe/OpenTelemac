@@ -54,6 +54,12 @@
 !+   These and TETAPS store parameters read from the cli file (RP also
 !+   read in but does not require a temporary storage variable for it)
 !
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Addition of new keywords in the steering file re: animation of the
+!+   free surface. ANIMFS and ARTAMP declared
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -96,7 +102,7 @@
 !brief (MEAN) GROUP CELERITY
 ! vitesse de groupe
       TYPE(BIEF_OBJ), TARGET :: CG
-!brief SIGNIFICATIVE WAVE HEIGHT (REGULAR MODE)
+!brief SIGNIFICANT WAVE HEIGHT (REGULAR MODE)
 ! hauteur de la houle
       TYPE(BIEF_OBJ), TARGET :: HHO
 !brief WAVE PHASE (REGULAR MODE)
@@ -430,6 +436,9 @@
 !brief BLOCK OF VARIABLES FOR OUTPUT
 !
       TYPE(BIEF_OBJ), TARGET :: VARSOR
+!brief BLOCK OF VARIABLES FOR ANIMATION OUTPUT
+!
+      TYPE(BIEF_OBJ), TARGET :: VARNIM
 !
 !-----------------------------------------------------------------------
 !
@@ -563,9 +572,7 @@
       INTEGER NDTWC
 !brief DIRECTIONS FROM TOMAWAC
       INTEGER DTWC(2*MAXDIR+1)
-
-
-
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -617,6 +624,9 @@
 !brief
 !
       LOGICAL SORIMP(MAXVAR)
+!brief
+! a logical array holding variable output for phase and amplitude file
+      LOGICAL SORNIM(MAXVAR)
 !brief VALIDATION
 ! si oui, validation
       LOGICAL VALID
@@ -632,6 +642,10 @@
 !!brief CHAINING TOMAWAC AND ARTEMIS USING A TOMAWAC SPECTRUM ON A SINGLE POINT
 ! si oui, utilise un spectre issu de TOMAWAC (en 1 point) en entree du calcul artemis
       LOGICAL CHAINTWC
+!brief ANIMATION
+! si oui, generates the phase and amplitude file
+      LOGICAL ANIMFS
+!
 !-----------------------------------------------------------------------
 !
 !       6) REALS
@@ -804,6 +818,9 @@
 !brief
 !
       CHARACTER(LEN=32) TEXTPR(MAXVAR)
+!brief
+! name of variables in phase and amplitude file
+      CHARACTER(LEN=32) TEXTANIM(MAXVAR)
 !
 !     NAMES OF PRIVATE ARRAYS (GIVEN BY USER)
 !
@@ -954,7 +971,7 @@
 !
 !brief
 !
-      INTEGER, PARAMETER :: MAXLU_ART = 44
+      INTEGER, PARAMETER :: MAXLU_ART = 45  !44 + 1 newfilename
 !brief NAME OF THE GEOMETRY FILE
 ! nom du fichier de geometrie
       INTEGER :: ARTGEO
@@ -976,6 +993,9 @@
 !brief NAME OF THE FORMATTED RESULTS FILE
 ! nom du fichier des resultats formate
       INTEGER :: ARTRFO
+!brief NAME OF THE AMPLITUDE AND PHASE FILE
+! nom du fichier contenant phases et amplitudes
+      INTEGER :: ARTAMP
 !brief NAME OF THE REFERENCE FILE
 ! nom du fichier de reference
       INTEGER :: ARTREF

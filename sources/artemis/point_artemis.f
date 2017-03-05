@@ -61,6 +61,12 @@
 !+        V7P2
 !+   Allocations for TETAPS, ALFAPS and HBS
 !
+!history  N.DURAND (HRW)
+!+        November 2016
+!+        V7P2
+!+   Declaration of VARNIM, which holds HHO and PHAS to be written to
+!+   ART_FILES(ARTAMP)%NAME
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -521,6 +527,15 @@
       CALL ADDBLO(VARSOR,SXY)
 ! 26
       CALL ADDBLO(VARSOR,SYY)
+!
+! BUILDS THE BLOCK THAT CONNECTS A VARIABLE NAME
+! TO ITS ARRAY
+!
+      CALL ALLBLO(VARNIM,'VARNIM')
+! 01
+      CALL ADDBLO(VARNIM,HHO)
+! 02
+      CALL ADDBLO(VARNIM,PHAS)
 !
 !***********************************************************************
 !
