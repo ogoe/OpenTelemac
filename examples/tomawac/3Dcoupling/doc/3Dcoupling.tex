@@ -1,0 +1,45 @@
+\section{3D coupling}
+%
+% - Purpose & Problem description:
+%     These first two parts give reader short details about the test case,
+%     the physical phenomena involved and specify how the numerical solution will be validated
+%
+\subsection{Purpose}
+%
+This test case has been created to test the coupling between tomawac and Telemac3D.
+
+%
+\subsection{Description of the problem}
+We took the geometry from the classical test case 'littoral', a coupling case between Tomawac and Telemac2D and Sisyphe
+\subsection{Geometry and Mesh}
+%
+The beach is 1000 m long, 200 m wide
+ The beach slope (Y=200m) is 5\%.
+ The water depth along the open boundary (Y=0) is h=10m
+We use a trianglular regular grid 
+
+The mesh is as shown on Figure \ref{3Dcouplingmesh}
+\begin{figure} [!h]
+\centering
+\includegraphicsmaybe{[width=0.85\textwidth]}{../img/fond.png}
+ \caption{Maillage 2D of the domain.}
+\label{3Dcouplingmesh}
+\end{figure}
+
+\section{Results}
+The results are presented Figures \ref{figres3Dcoupl2} (Velocity U) and \ref{figres3Dcoupl}(Wave heigth Hm0)
+
+\begin{figure} [!h]
+\centering
+\includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultsTOM.png}
+ \caption{Wave Heigth calculated by Tomawac}
+\label{figres3Dcoupl}
+\end{figure}
+
+\begin{figure} [!h]
+\centering
+\includegraphicsmaybe{[width=0.85\textwidth]}{../img/resultshori.png}
+ \caption{Vitesse U on the bottom calculated by Telemac3D}
+\label{figres3Dcoupl2}
+\end{figure}
+

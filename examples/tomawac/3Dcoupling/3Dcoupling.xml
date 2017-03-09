@@ -27,7 +27,12 @@
    <action xref="2"
        do="translate;run;cas;princi" ncsize="4"
        code="telemac3d" target="T3D_littoral.cas"
-       title="littoral3D T3D+TOM scalar mode"
+       title="littoral3D T3D+TOM parallel mode"
+   />
+<!--    <action xref="post"
+       do="translate;run;cas;princi" 
+       code="postel3d3d" target="p3d_littoral.cas"
+       title="littoral3D postel" ~ -->
    />
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <cast xref="ref-1-t3d" config="oneofall" time="[-1]" type="2d:">
@@ -96,10 +101,16 @@
       <plot2d xref="img/fond" config="oneofall" time="[-1]" size="(9;4)" >
       <layer vars="BOTTOM  :mesh" target="1:T3DGEO" />
    </plot2d>
-   <plot2d xref="img/resultsT2D" config="oneofall" time="[-1]" size="(12;7)"  set="colorbar;title('Velocity')" >
-      <layer vars="VITESSE U :map" target="1:T3DRES" deco="chili"/>
+   <plot2d xref="img/resultscoupVert" type="v-section" config="oneofall" time="[-1]" size="(12;7)"  set="title('Velocity')" >
+      <layer vars="VITESSE U :map"  extract="(0;0)(500;200)" target="1:T3DRES" deco="chili"/>
    </plot2d>
-    <plot2d xref="img/resultsTOM" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave heigth')">
+   <plot2d xref="img/resultscoupVert2" type="v-section" config="oneofall" time="[-1]" size="(12;7)"  set="title('Velocity')" >
+      <layer vars="VITESSE U :map"  extract="(0;150)(1000;150)" target="1:T3DRES" deco="chili"/>
+   </plot2d>
+   <plot2d xref="img/resultshori" type="p-section" extract="[]#[-5]" config="oneofall" time="[-1]" size="(12;7)"  set="title('Velocity')" >
+      <layer vars="VITESSE U :map"  target="1:T3DRES" deco="chili"/>
+   </plot2d>
+    <plot2d xref="img/resultsTOM" config="oneofall" time="[-1]" size="(12;7)" set="title('Wave heigth')">
       <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="hiver" />
    </plot2d>
 
