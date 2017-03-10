@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -30,7 +30,7 @@
 ! PROGICIEL : MASCARET       S. MANDELKERN
 !                            D. POIZAT
 !
-! VERSION : 8.1.1                EDF-CEREMA
+! VERSION : 8.1.3                EDF-CEREMA
 ! *********************************************************************
 !  FONCTION : LECTURE DES FICHIERS DE DONNEES HYDRAULIQUE
 !  --------   ET FUSION DES TABLEAUX AVEC CEUX ENTREES EN

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -27,7 +27,7 @@ function AINTDC( &
 !***********************************************************************
 ! PROGICIEL : MASCARET        N. GOUTAL
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !
 !                     CALCUL DE L'INTEGRALE
 !                     SOMME DE 0 A S DE : 1./S * (DC/DX A S CONST) * DS

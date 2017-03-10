@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -34,7 +34,7 @@ subroutine LEC_ZONE_SECHE ( &
 ! PROGICIEL : MASCARET       S. MANDELKERN
 !                            F. ZAOUI                          
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 ! *********************************************************************
 
    !========================= Declarations ===========================

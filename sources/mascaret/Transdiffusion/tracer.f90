@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET-TRACER.
 !
@@ -57,7 +57,7 @@ subroutine TRACER (       &
 ! PROGICIEL : TRACER         S. MANDELKERN - E.LEHMANN - N.GOUTAL - M.LUCK -
 !                            F. ZAOUI
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !*****************************************************************************
 !
 !  FONCTION :

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,14 +20,14 @@ MODULE M_APIMASCARET_STATIC
 !***********************************************************************
 ! PROGICIEL : MASCARET        J.-M. LACOMBE
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
   use M_MASCARET_T
   implicit none
 
    ! Constantes
    integer,  PARAMETER :: NB_MAX_MASCARET           = 1000
-   integer,  PARAMETER :: NB_VAR_MASCARET           =  385
+   integer,  PARAMETER :: NB_VAR_MASCARET           =  387
    integer,  PARAMETER :: NB_MAX_ETAT_MASCARET_SAUV =   40
    
    real(8), dimension(6,6,5), save :: ABAQUE

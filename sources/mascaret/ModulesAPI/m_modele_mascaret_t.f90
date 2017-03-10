@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@ module M_MODELE_MASCARET_T
 !***********************************************************************
 ! PROGICIEL : MASCARET        J.-M. LACOMBE
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
 
 !=========================== Declarations ==============================
@@ -42,6 +42,7 @@ use M_SECTION_T           ! Type SECTION_PLAN_T
 use M_SECTION_PLAN_T      ! Type SECTION_T
 use M_SINGULARITE_T       ! Type SINGULARITE_T
 use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
+use M_ZONE_FROT_T         ! Type ZONE_FROT_T
 use M_SAUVE_T             ! Type SAUVE_T
 use M_CASIER_T            ! Type CASIER_T
 use M_LIAISON_T           ! Type LIAISON_T
@@ -56,6 +57,7 @@ Type MODELE_MASCARET_T
     type(PROFIL_T),      dimension(:), pointer :: Profils
     type(SECTION_PLAN_T)                       :: SectionPlan
     type(ZONE_SECHE_T),  dimension(:), pointer :: ZonesSeches
+    type(ZONE_FROT_T),   dimension(:), pointer :: ZonesFrottement
     type(LOI_T),         dimension(:), pointer :: LoisHydrau
     type(SINGULARITE_T), dimension(:), pointer :: Singularites
     type(DEVERSOIR_T),   dimension(:), pointer :: Deversoirs
@@ -163,6 +165,9 @@ contains
 
         ! --- ZONE_SECHE_T ---
         call GET_TAB_VAR_ZONE_SECHE(i, tabNomVar, tabDescriptionVar)
+
+        ! --- ZONE_FROT_T ---
+        call GET_TAB_VAR_ZONE_FROT(i, tabNomVar, tabDescriptionVar)
 
         ! --- LOI_T ---
         call GET_TAB_VAR_LOI(i, tabNomVar, tabDescriptionVar)
@@ -658,6 +663,9 @@ contains
        else if ( INDEX(NomVar,'Model.DryArea.') > 0) then
           GET_TYPE_VAR_MODELE_MASCARET = GET_TYPE_VAR_ZONE_SECHE(NomVar, TypeVar, Categorie, Modifiable, dimVar, MessageErreur)
           dimVar = dimVar + 1
+       else if ( INDEX(NomVar,'Model.FrictionZone.') > 0) then
+          GET_TYPE_VAR_MODELE_MASCARET = GET_TYPE_VAR_ZONE_FROT(NomVar, TypeVar, Categorie, Modifiable, dimVar, MessageErreur)
+          dimVar = dimVar + 1
        else if ( INDEX(NomVar,'Model.Graph.') > 0) then
           GET_TYPE_VAR_MODELE_MASCARET = GET_TYPE_VAR_LOI(NomVar, TypeVar, Categorie, Modifiable, dimVar, MessageErreur)
           dimVar = dimVar + 1
@@ -1117,6 +1125,19 @@ contains
          endif
          if (taille1 > 0) then
              GET_TAILLE_VAR_MODELE_MASCARET = GET_TAILLE_VAR_ZONE_SECHE(Instance%ZonesSeches(1),&
+                                                   NomVar, taille2, taille3, bidon1, MessageErreur)
+         else
+             taille2 = 0
+             taille3 = 0
+         end if
+      else if (INDEX(NomVar,'Model.FrictionZone.') > 0) then
+         if (ASSOCIATED(Instance%ZonesFrottement)) then
+            taille1 = size(Instance%ZonesFrottement)
+         else
+            taille1 = 0
+         endif
+         if (taille1 > 0) then
+             GET_TAILLE_VAR_MODELE_MASCARET = GET_TAILLE_VAR_ZONE_FROT(Instance%ZonesFrottement(1),&
                                                    NomVar, taille2, taille3, bidon1, MessageErreur)
          else
              taille2 = 0
@@ -1846,6 +1867,54 @@ contains
                 return
             endif
          enddo
+      else if (INDEX(NomVar,'Model.FrictionZone.') > 0) then
+         if (ASSOCIATED(Instance%ZonesFrottement)) then
+            t1 = SIZE(Instance%ZonesFrottement)
+            if (t1 /= NewT1) then
+               DO i=1, t1
+                  err = DESALLOUE_ZONE_FROT(Instance%ZonesFrottement(i), MessageErreurType)
+                  if (err /= 0) then
+                     SET_TAILLE_VAR_MODELE_MASCARET = err
+                     MessageErreur = 'Unable to deallocate MODEL_MASCARET_T.FRICTIONAREA(i)'
+                     return
+                  endif
+               enddo
+               DEALLOCATE(Instance%ZonesFrottement, STAT=err)
+               if (err /= 0) then
+                  SET_TAILLE_VAR_MODELE_MASCARET = err
+                  MessageErreur = 'Unable to deallocate MODEL_MASCARET_T.FRICTIONAREA'
+                  return
+               endif
+               ALLOCATE(Instance%ZonesFrottement(NewT1), STAT=err)
+               DO i=1, NewT1
+                  err = NULLIFIER_ZONE_FROT(Instance%ZonesFrottement(i), MessageErreurType)
+                  if (err /= 0) then
+                     SET_TAILLE_VAR_MODELE_MASCARET = err
+                     MessageErreur = 'Unable to nullify the pointers Instance%ZonesFrottement'
+                     return
+                  endif
+               enddo
+            endif
+         else  ! Instance%ZonesFrottement pas 'associated'
+            ALLOCATE(Instance%ZonesFrottement(NewT1), STAT=err)
+            DO i=1, NewT1
+              err = NULLIFIER_ZONE_FROT(Instance%ZonesFrottement(i), MessageErreurType)
+              if (err /= 0) then
+                 SET_TAILLE_VAR_MODELE_MASCARET = err
+                  MessageErreur = 'Unable to nullify the pointers Instance%ZonesFrottement'
+                  return
+              endif
+            enddo
+         endif
+         DO i=1, NewT1
+            err = SET_TAILLE_VAR_ZONE_FROT(Instance%ZonesFrottement(i), &
+                                 NomVar, NewT2, NewT3, Bidon, MessageErreurType)
+            if (err /= 0) then
+               SET_TAILLE_VAR_MODELE_MASCARET = err
+                MessageErreur = 'Unable to change the size of Instance%ZonesFrottement'
+                return
+            endif
+         enddo   
       else if (INDEX(NomVar,'Model.Graph.') > 0) then
          if (ASSOCIATED(Instance%LoisHydrau)) then
             t1 = SIZE(Instance%LoisHydrau)
@@ -2561,6 +2630,9 @@ contains
       else if (INDEX(NomVar,'Model.DryArea.') > 0) then
            GET_INT_MODELE_MASCARET = GET_INT_ZONE_SECHE(instance%ZonesSeches(index1), NomVar, index2,&
                                          index3, bidon1, valeur, MessageErreur)
+      else if (INDEX(NomVar,'Model.FrictionZone.') > 0) then
+           GET_INT_MODELE_MASCARET = GET_INT_ZONE_FROT(instance%ZonesFrottement(index1), NomVar, index2,&
+                                         index3, bidon1, valeur, MessageErreur)
       else if (INDEX(NomVar,'Model.Graph.') > 0) then
            GET_INT_MODELE_MASCARET = GET_INT_LOI(instance%LoisHydrau(index1), NomVar, index2,&
                                          index3, bidon1, valeur, MessageErreur)
@@ -2943,6 +3015,9 @@ contains
                                          index3, bidon1, valeur, MessageErreur)
       else if (INDEX(NomVar,'Model.DryArea.') > 0) then
            SET_INT_MODELE_MASCARET = SET_INT_ZONE_SECHE(instance%ZonesSeches(index1), NomVar, index2,&
+                                         index3, bidon1, valeur, MessageErreur)
+      else if (INDEX(NomVar,'Model.FrictionZone.') > 0) then
+           SET_INT_MODELE_MASCARET = SET_INT_ZONE_FROT(instance%ZonesFrottement(index1), NomVar, index2,&
                                          index3, bidon1, valeur, MessageErreur)
       else if (INDEX(NomVar,'Model.Graph.') > 0) then
            SET_INT_MODELE_MASCARET = SET_INT_LOI(instance%LoisHydrau(index1), NomVar, index2,&
@@ -3445,6 +3520,24 @@ contains
           endif
           NULLIFY(Instance%ZonesSeches)
       endif
+      if (ASSOCIATED(Instance%ZonesFrottement)) then
+          taille = SIZE(Instance%ZonesFrottement)
+          DO i=1, taille
+              err = DESALLOUE_ZONE_FROT(Instance%ZonesFrottement(i), MessageErreurType)
+              if (err /= 0) then
+                  DESALLOUE_MODELE_MASCARET = err
+                  MessageErreur = 'Unable to deallocate MODEL_MASCARET_T.FRICTIONAREA(i)'
+                  return
+              endif
+          enddo
+          DEALLOCATE(Instance%ZonesFrottement, STAT=err)
+          if (err /= 0) then
+              DESALLOUE_MODELE_MASCARET = err
+              MessageErreur = 'Unable to deallocate MODEL_MASCARET_T.FRICTIONAREA'
+              return
+          endif
+          NULLIFY(Instance%ZonesFrottement)
+      endif
       if (ASSOCIATED(Instance%LoisHydrau)) then
           taille = SIZE(Instance%LoisHydrau)
           DO i=1, taille
@@ -3723,6 +3816,7 @@ contains
           return
       endif
       NULLIFY(Instance%ZonesSeches)
+      NULLIFY(Instance%ZonesFrottement)
       NULLIFY(Instance%LoisHydrau)
       NULLIFY(Instance%Singularites)
       NULLIFY(Instance%Deversoirs)

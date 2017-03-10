@@ -164,6 +164,7 @@ files:
   Modules|m_lec_barrage_i.f90
   Modules|m_lec_confluent_i.f90
   Modules|m_lec_dever_i.f90
+  Modules|m_zone_frot_t.f90
   Modules|m_lec_frottement_i.f90
   Modules|m_lec_geom_v2p0_i.f90
   Modules|m_lec_geom_v3p0_i.f90
@@ -575,6 +576,7 @@ files:
   API|f90|calcul_mascaret.f90
   API|f90|create_mascaret.f90
   API|f90|free_all_save_etat_mascaret.f90
+  API|f90|free_save_etat_mascaret.f90
   API|f90|delete_mascaret.f90
   API|f90|export_xml.f90
   API|f90|get_condition_limite.f90

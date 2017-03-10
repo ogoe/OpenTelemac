@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA-ARTELIA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA-ARTELIA ==
 !
 !   This file is part of MASCARET.
 !
@@ -25,7 +25,7 @@ subroutine  LIAISON_ORIFICE             ( &
 ! *********************************************************************
 ! PROGICIEL : MASCARET        S. DELMAS    C. COULET
 !                             
-! VERSION : 8.1.1         EDF-CEREMA-ARTELIA
+! VERSION : 8.1.3         EDF-CEREMA-ARTELIA
 ! *********************************************************************
 !  FONCTION :
 !  --------

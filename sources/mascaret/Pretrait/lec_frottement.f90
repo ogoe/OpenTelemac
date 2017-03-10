@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,6 +20,7 @@ subroutine LEC_FROTTEMENT ( &
                           CF1 , & ! Coefficient de frottement Mineur
                           CF2 , & ! Coefficient de frottement Majeur
                             X , & ! Abscisse des sections de calcul
+                      ZoneFrot, & ! Zone de frottement 
                           XDT , &
                        Profil , & ! Profils geometriques
                   ProfDebBief , & ! Premiers profils des biefs
@@ -36,7 +37,7 @@ subroutine LEC_FROTTEMENT ( &
 ! PROGICIEL : MASCARET        S. MANDELKERN
 !                             F. ZAOUI                             
 !
-! VERSION : 8.1.1                EDF-CEREMA
+! VERSION : 8.1.3                EDF-CEREMA
 ! *********************************************************************
 
    !========================= Declarations ===========================
@@ -44,6 +45,7 @@ subroutine LEC_FROTTEMENT ( &
    use M_ERREUR_T            ! Type ERREUR_T
    use M_PARAMETRE_C
    use M_PROFIL_T            ! Type  PROFIL_T
+   use M_ZONE_FROT_T         ! Type Zone frottement 
    use M_MESSAGE_C           ! Messages d'erreur
    use M_CONSTANTES_CALCUL_C ! Constantes num, phys et info
    use M_TRAITER_ERREUR_I    ! Traitement de l'errreur
@@ -59,6 +61,7 @@ subroutine LEC_FROTTEMENT ( &
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: X
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: XDT
    type(PROFIL_T)    , dimension(:)  , intent(in   ) :: Profil
+   type(ZONE_FROT_T) , dimension(:)  , pointer       :: ZoneFrot 
    integer           , dimension(:)  , intent(in   ) :: ProfDebBief
    integer           , dimension(:)  , intent(in   ) :: ProfFinBief
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: AbscRelExtDebBief
@@ -189,7 +192,18 @@ subroutine LEC_FROTTEMENT ( &
        call TRAITER_ERREUR( Erreur , 'rtab4' )
        return
    end if
-   
+   if( nb_zone_frottement > 0 ) then
+
+      allocate( ZoneFrot(nb_zone_Frottement) , STAT = retour )
+      if( retour /= 0 ) then
+         Erreur%Numero = 5
+         Erreur%ft     = err_5
+         Erreur%ft_c   = err_5c
+         call TRAITER_ERREUR( Erreur , 'ZoneFrot' )
+         return
+      end if
+
+   endif
    if (UniteListing >0) write(UniteListing,10000) nb_zone_frottement
 
    branche_zone_frott_prec = 0
@@ -257,7 +271,7 @@ subroutine LEC_FROTTEMENT ( &
          Erreur%Numero = 367
          Erreur%ft   = err_367
          Erreur%ft_c = err_367
-         call TRAITER_ERREUR( Erreur , 'dry areas' , branche_zone_frott , izone )
+         call TRAITER_ERREUR( Erreur , 'Reach friction' , branche_zone_frott , izone )
          return
       end if
 
@@ -332,11 +346,15 @@ subroutine LEC_FROTTEMENT ( &
       if( Erreur%Numero /= 0 ) then
          return
       endif
+     ! Modif NG 
+      ZoneFrot(izone)%Sectiondeb = indice 
 
       call XINDIC_S( indice2 , abscfin_zone_frott , X , Erreur )
       if( Erreur%Numero /= 0 ) then
          return
       endif
+     ! modif NG 
+      ZoneFrot(izone)%Sectionfin= indice2
 
       do isect = indice , indice2
          CF1(isect) = valeur_coeff_min

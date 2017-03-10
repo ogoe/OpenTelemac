@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -42,6 +42,7 @@ subroutine  PRETRAIT                                       ( &
   FichierRepriseEcr, FichierRepriseLec                     , &
   FichierLigne                                             , &
   ZoneSeche                                                , &
+  ZoneFrot                                                 , &
   TitreCas                                                 , &
   ImpressionPlani, ImpressionCalcul                        , &
   PasStockage, PasImpression                               , &
@@ -72,7 +73,7 @@ subroutine  PRETRAIT                                       ( &
 ! PROGICIEL : MASCARET       S. MANDELKERN - N. GOUTAL
 !                            F. ZAOUI  
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 ! *********************************************************************
 !  FONCTION : LECTURE DU FICHIER CAS PAR APPEL DU LOGICIEL DAMOCLES.
 !----------------------------------------------------------------------
@@ -96,6 +97,7 @@ subroutine  PRETRAIT                                       ( &
    use M_PROFIL_T            ! Type  PROFIL_T
    use M_SINGULARITE_T       ! Type SINGULARITE_T
    use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
+   use M_ZONE_FROT_T         ! Type ZONE_SECHE_T
 !TAPENADE--
    use M_DONNEES_CRUES_CALAGE_T ! type pour les donnees de crues
    use M_DONNEES_CALAGE_T       ! Donnees pour le calage automatique du Strickler
@@ -222,6 +224,7 @@ subroutine  PRETRAIT                                       ( &
    type(FICHIER_T)               , intent(inout)  :: FichierLigne
    integer                                        :: format_ligne
    type(ZONE_SECHE_T), dimension(:), pointer      :: ZoneSeche
+   type(ZONE_FROT_T) , dimension(:), pointer      :: ZoneFrot
    ! Utilisation Cray
    logical                                        :: UtilisationCray
    ! Impressions - resultats
@@ -413,7 +416,7 @@ subroutine  PRETRAIT                                       ( &
    call DATE_S(chaine_date)
 
    if( VersionCode == 3 ) then
-      write(UniteListing,10000) ' 8.1.0 ', chaine_date
+      write(UniteListing,10000) ' 8.1.3 ', chaine_date
    endif
 
    if( VersionCode == 2 ) then
@@ -2426,6 +2429,7 @@ subroutine  PRETRAIT                                       ( &
       CF1                   , &
       CF2                   , &
       X                     , &
+      ZoneFrot              , &
       XDT                   , &
       Profil                , &
       ProfDebBief           , &

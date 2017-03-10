@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@ module M_PRETRAIT_I
 !***********************************************************************
 ! PROGICIEL : MASCARET        S. MANDELKERN
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
    interface
 
@@ -51,6 +51,7 @@ module M_PRETRAIT_I
       FichierRepriseEcr, FichierRepriseLec                     , &
       FichierLigne                                             , &
       ZoneSeche                                                , &
+      ZoneFrot                                                 , &
       TitreCas                                                 , &
       ImpressionPlani, ImpressionCalcul                        , &
       PasStockage, PasImpression                               , &
@@ -101,7 +102,7 @@ module M_PRETRAIT_I
    use M_PROFIL_T            ! Type  PROFIL_T
    use M_SINGULARITE_T       ! Type SINGULARITE_T
    use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
-   use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
+   use M_ZONE_FROT_T         ! Type ZONE_SECHE_T
 !TAPENADE--
    use M_DONNEES_CRUES_CALAGE_T ! type pour les donnees de crues
    use M_DONNEES_CALAGE_T       ! Donnees pour le calage automatique du Strickler
@@ -230,6 +231,7 @@ module M_PRETRAIT_I
    type(FICHIER_T)               , intent(inout)  :: FichierLigne
    integer                                        :: format_ligne
    type(ZONE_SECHE_T), dimension(:), pointer      :: ZoneSeche
+   type(ZONE_FROT_T) , dimension(:), pointer      :: ZoneFrot 
    ! Utilisation Cray
    logical                                        :: UtilisationCray
    ! Impressions - resultats

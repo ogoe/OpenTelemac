@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -23,7 +23,7 @@ SUBROUTINE REPAR_B(deb, debb, vmoy, vmoyb, beta, betab, q1, q2, s1, s1b&
 !                             P. CHERUBINI
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !   FONCTION :
@@ -350,7 +350,7 @@ SUBROUTINE PSING_B(zam, zamb, singularite, zref, zav, zavb&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !  FONCTION :
@@ -1063,7 +1063,7 @@ SUBROUTINE CRITIQ_B(zcrit, zcritb, section, zref, q, qb, cf1, cf1b, cf2&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !   FONCTION :
@@ -1360,7 +1360,7 @@ SUBROUTINE PERMAT_B(z, zb, q, qb, zinit, zinitb, x, zref, cf1, cf1b, cf2&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !   FONCTION :
 !   --------
@@ -3592,7 +3592,7 @@ SUBROUTINE CALC_PC_CONFLU_B(pcsing, pcsingb, z, zb, q, qb, x, zref, &
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !============================== Instructions ================================
 ! type DOUBLE
@@ -4412,7 +4412,7 @@ SUBROUTINE QNODE_B(q, qb, z, zb, numconfluence, numpassage, connect, &
 ! PROGICIEL : MASCARET        A. LEBOSSE
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !  FONCTION :
@@ -4581,7 +4581,7 @@ SUBROUTINE QREPAR_B(sommedebitance, sommedebitanceb, zaval, zavalb, &
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !   FONCTION :
@@ -5714,7 +5714,7 @@ SUBROUTINE PERSAR_B(z, zb, q, qb, x, zref, cf1, cf1b, cf2, cf2b, pcsing&
 !                             P.CHERUBINI
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !   FONCTION :
 !   ----------
@@ -6392,7 +6392,7 @@ SUBROUTINE CQINJ_B(qinjec, qinjecb, x, z, zb, apport, deversoir, &
 ! *********************************************************************
 ! PROGICIEL : MASCARET        C. RISSOAN      N. GOUTAL
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !   FONCTION : CALCUL DU TABLEAU QINJEC DES APPORTS (DEBITS + DEVRESOIRS)
 !   --------
@@ -6802,7 +6802,7 @@ SUBROUTINE SARAP_B(z, zb, q1, q2, p1, p1b, p2, p2b, b1, b1b, b2, b2b, bs&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 ! FONCTION :                                                          .
 ! .          CALCUL EN REGIME PERMANENT A L'AIDE DU CODE SARA         .

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@ module M_PRETRAIT_INTERFACE_I
 !***********************************************************************
 ! PROGICIEL : MASCARET        J.-M. LACOMBE
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
 
 interface
@@ -50,6 +50,7 @@ subroutine  PRETRAIT_INTERFACE                             ( &
   FichierRepriseEcr, FichierRepriseLec                     , &
   FichierLigne                                             , &
   ZoneSeche                                                , &
+  ZoneFrot                                                 , &
   TitreCas                                                 , &
   ImpressionPlani, ImpressionCalcul                        , &
   PasStockage, PasImpression                               , &
@@ -90,6 +91,7 @@ use M_LOI_T               ! Types LOI_T
 use M_PROFIL_T            ! Type  PROFIL_T
 use M_SINGULARITE_T       ! Type SINGULARITE_T
 use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
+use M_ZONE_FROT_T         ! Type Zone_Frot
 
 use M_INDEX_VARIABLE_C    ! Index des variables
 use M_CONSTANTES_CALCUL_C ! Constantes num, phys et info
@@ -234,6 +236,7 @@ use Fox_dom                 ! parser XML Fortran
   integer                                        :: format_ligne
 
   type(ZONE_SECHE_T), dimension(:), pointer      :: ZoneSeche
+  type(ZONE_FROT_T) , dimension(:), pointer      :: ZoneFrot
 
 ! Utilisation Cray
 

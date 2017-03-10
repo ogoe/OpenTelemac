@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -19,7 +19,7 @@
 ! *********************************************************************
 ! PROGICIEL : MASCARET       J.-M. LACOMBE
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 ! *********************************************************************
    !.................................................................................................................................
    ! Retourne la version courante de Mascaret
@@ -32,6 +32,6 @@
 
         Majeur = 8
         Mineur = 1
-        Micro  = 1
+        Micro  = 3
 
     end subroutine VERSION_MASCARET

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -23,7 +23,7 @@ SUBROUTINE VVPROPI( LAMDA1 , LAMDA2 , T1 , T2 , TS1 , TS2 , &
 !***********************************************************************
 ! PROGICIEL : MASCARET        F. MAUREL          N. GOUTAL
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
 !   FONCTION : CALCUL DES VALEURS PROPRES ET DES VECTEURS PROPRES 
 !                 DE LA LINEARISEE DE ROE -IMPLICITATION

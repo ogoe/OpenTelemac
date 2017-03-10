@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -25,7 +25,7 @@ program HOMERE_MASCARET
 !                             C.COULET
 !                             F. DEMANGEON
 !
-! VERSION : 8.1.1               EDF-CEREMA-ARTELIA
+! VERSION : 8.1.3               EDF-CEREMA-ARTELIA
 ! *********************************************************************
 ! Fonction : Programme Chef d'Orchestre, Execution pas a pas d'un des
 !            trois noyaux de calculs :
@@ -43,6 +43,7 @@ program HOMERE_MASCARET
    use M_SECTION_T              ! Type SECTION_PLAN_T
    use M_SECTION_PLAN_T         ! Type SECTION_T
    use M_ZONE_SECHE_T           ! Type ZONE_SECHE_T
+   use M_ZONE_FROT_T            ! Type ZONE_FROT_T 
    use M_SAUVE_T                ! Type SAUVE_T
    use M_CASIER_T               ! Type CASIER_T
    use M_LIAISON_T              ! Type LIAISON_T
@@ -230,6 +231,7 @@ program HOMERE_MASCARET
    type(FICHIER_T)                           :: message
    !
    type(ZONE_SECHE_T), dimension(:), pointer :: ZoneSeche
+   type(ZONE_FROT_T),  dimension(:), pointer :: ZoneFrot
    type(Sauve_T)                             :: Sauve
    ! Impressions - resultats
    !------------------------
@@ -416,7 +418,7 @@ program HOMERE_MASCARET
    retour        = 0
    !Erreur%arbredappel = 'MAIN'
    Print *
-   Print * ,'MASCARET v8.1.1 == Copyright (C) 2000-2016 EDF-CEREMA =='
+   Print * ,'MASCARET v8.1.3 == Copyright (C) 2000-2017 EDF-CEREMA =='
    Print *
    Print * , 'Data File : ' // TRIM(FichierMotCle%Nom)
    Print *
@@ -451,6 +453,7 @@ program HOMERE_MASCARET
      FichierRepriseEcr, FichierRepriseLec                                , &
      FichierLigne                                                        , &
      ZoneSeche                                                           , &
+     ZoneFrot                                                            , &
      TitreCas                                                            , &
      ImpressionPlani, ImpressionCalcul                                   , &
      PasStockage, PasImpression                                          , &

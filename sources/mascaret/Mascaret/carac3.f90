@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -45,7 +45,7 @@ subroutine CARAC3( &
 !***********************************************************************
 ! PROGICIEL : MASCARET        N. GOUTAL
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
 !     FONCTION : REMONTEE FAIBLE DES INVARIANTS DE RIEMANN POUR LES
 !                     CONDITIONS AUX LIMITES

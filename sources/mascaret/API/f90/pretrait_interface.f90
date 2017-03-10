@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@
 ! PROGICIEL : MASCARET       J.-M. LACOMBE
 !                            F. ZAOUI
 !
-! VERSION : 8.0.0              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 ! *********************************************************************
 subroutine  PRETRAIT_INTERFACE                             ( &
 
@@ -47,6 +47,7 @@ subroutine  PRETRAIT_INTERFACE                             ( &
   FichierRepriseEcr, FichierRepriseLec                     , &
   FichierLigne                                             , &
   ZoneSeche                                                , &
+  ZoneFrot                                                 , &
   TitreCas                                                 , &
   ImpressionPlani, ImpressionCalcul                        , &
   PasStockage, PasImpression                               , &
@@ -74,7 +75,7 @@ subroutine  PRETRAIT_INTERFACE                             ( &
 ! *********************************************************************
 ! PROGICIEL : MASCARET       J.-M. LACOMBE - S. MANDELKERN - N. GOUTAL
 !
-! VERSION : 8.0.0              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 ! *********************************************************************
 !  FONCTION : LECTURE DU FICHIER CAS PAR APPEL DU LOGICIEL DAMOCLES.
 !----------------------------------------------------------------------
@@ -99,6 +100,7 @@ use M_LOI_T               ! Types LOI_T
 use M_PROFIL_T            ! Type  PROFIL_T
 use M_SINGULARITE_T       ! Type SINGULARITE_T
 use M_ZONE_SECHE_T        ! Type ZONE_SECHE_T
+use M_ZONE_FROT_T         ! Type Zone_Frot
 
 use M_INDEX_VARIABLE_C    ! Index des variables
 use M_CONSTANTES_CALCUL_C ! Constantes num, phys et info
@@ -244,6 +246,7 @@ use Fox_dom                 ! parser XML Fortran
   integer                                        :: format_ligne
 
   type(ZONE_SECHE_T), dimension(:), pointer      :: ZoneSeche
+  type(ZONE_FROT_T) , dimension(:),pointer       :: ZoneFrot 
 
 ! Utilisation Cray
 
@@ -1580,13 +1583,14 @@ use Fox_dom                 ! parser XML Fortran
        CF1                   , &
        CF2                   , &
        X                     , &
-	   XDT                   , &
+       ZoneFrot              , & 
+       XDT                   , &
        Profil                , &
        ProfDebBief           , &
        ProfFinBief           , &
        absc_rel_ext_deb_bief , &
        absc_rel_ext_fin_bief , &
-	   InterpLinCoeffFrott   , &
+       InterpLinCoeffFrott   , &
        UniteListing          , &
        document              , &
        Erreur                  & ! Erreur
@@ -2082,7 +2086,7 @@ call LEC_DEVER             ( &
       call DATE_S(chaine_date)
 
       if(VersionCode == 3) then
-        write(UniteListing,10000) ' 8.0.0 ', chaine_date
+        write(UniteListing,10000) ' 8.1.3 ', chaine_date
       endif
 
       if(VersionCode == 2) then

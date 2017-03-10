@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -277,7 +277,7 @@ SUBROUTINE PSING_D(zam, zamd, singularite, zref, zav, zavd&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !
 !  FONCTION :
@@ -981,7 +981,7 @@ SUBROUTINE PERMAT_D(z, zd, q, qd, zinit, zinitd, x, zref, cf1, cf1d, cf2&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !   FONCTION :
 !   --------
@@ -2187,7 +2187,7 @@ SUBROUTINE CALC_PC_CONFLU_D(pcsing, pcsingd, z, zd, q, qd, x, zref, &
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 !============================== Instructions ================================
   USE M_PRECISION
@@ -3688,7 +3688,7 @@ SUBROUTINE SARAP_D(z, zd, q1, q2, p1, p1d, p2, p2d, b1, b1d, b2, b2d, bs&
 !                             S. PERON
 !                             S. MANDELKERN
 !
-! VERSION : 8.1.1               EDF-CEREMA
+! VERSION : 8.1.3               EDF-CEREMA
 ! *********************************************************************
 ! FONCTION :                                                          .
 ! .          CALCUL EN REGIME PERMANENT A L'AIDE DU CODE SARA         .

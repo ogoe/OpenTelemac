@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -35,7 +35,7 @@ subroutine CALCON( &
 !***********************************************************************
 ! PROGICIEL : MASCARET        F. MAUREL
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
 !   FONCTION: RESOLUTION DE SAINT VENANT-2D PAR UNE METHODE VOLUME FINI
 !                   (SOLVEUR DE ROE) POUR LE CALCUL DES CONFLUENTS

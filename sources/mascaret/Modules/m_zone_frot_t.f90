@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2017 EDF-CEREMA ==
+!== Copyright (C) 2000-2015 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -14,9 +14,7 @@
 !
 !   You should have received a copy of the GNU General Public License
 !   along with MASCARET.  If not, see <http://www.gnu.org/licenses/>
-!
-
-module M_BARRAGE_T
+module M_ZONE_FROT_T
 !***********************************************************************
 ! PROGICIEL : MASCARET        N. GOUTAL
 !
@@ -26,48 +24,34 @@ module M_BARRAGE_T
    !=========================== Declarations ==============================
 use M_PRECISION
 
-Type BARRAGE_T
+Type ZONE_FROT_T
   sequence
-  integer      :: NumBranche    ! Numero Branche
-  real(DOUBLE) :: AbscisseRel   ! Abscisse relative
-  integer      :: Section       ! Section de calcul
-  integer      :: TypeRupture   ! Progressive ou instantannee
-  real(DOUBLE) :: CoteCrete     ! Cote de crete
-end type BARRAGE_T
-
+  integer      :: SectionDeb   ! Numero de section debut
+  integer      :: SectionFin   ! Numero de section fin
+end type ZONE_FROT_T
 
 contains
-    ! Retourne les noms des champs du type ainsi qu'une description
-    subroutine GET_TAB_VAR_BARRAGE(i, tabNomVar, tabDescriptionVar)
-      integer , intent(inout)                                  :: i                 ! indiceTableaux
+   ! Retourne les noms des champs du type ainsi qu'une description
+    subroutine GET_TAB_VAR_ZONE_FROT(i, tabNomVar, tabDescriptionVar)
+      integer , intent(inout)                         :: i                 ! indiceTableaux
       character(len= 40), dimension(*)                :: tabNomVar         ! Tableau des noms de variable du modele
       character(len=110), dimension(*)                :: tabDescriptionVar ! Tableau des description de variable du modele
 
-        tabNomVar(i)         ="Model.Dam.ReachNum"
-        tabDescriptionVar(i) ="Reach number of the dam"
+        tabNomVar(i)         ="Model.FrictionZone.FirstNode"
+        tabDescriptionVar(i) ="Number of the first node"
         i=i+1
-        tabNomVar(i)         ="Model.Dam.RelAbscissa"
-        tabDescriptionVar(i) ="Relative abscissa of the dam"
+        tabNomVar(i)         ="Model.FrictionZone.LastNode"
+        tabDescriptionVar(i) ="Number of the last node"
         i=i+1
-        tabNomVar(i)         ="Model.Dam.Node"
-        tabDescriptionVar(i) ="Node number of the dam"
-        i=i+1
-        tabNomVar(i)         ="Model.Dam.BreakType"
-        tabDescriptionVar(i) ="Type of dam breaking"
-        i=i+1
-        tabNomVar(i)         ="Model.Dam.CrestLevel"
-        tabDescriptionVar(i) ="Crest level of the dam"
-        i=i+1
+     return
 
-      return
-
-    end subroutine GET_TAB_VAR_BARRAGE
+    end subroutine GET_TAB_VAR_ZONE_FROT
 
 	! Retourne une description du champ du type au niveau de static (independant de l'instance du modele ou de l'etat)
-    function GET_TYPE_VAR_BARRAGE(NomVar, TypeVar, Categorie, Modifiable, dimVar, MessageErreur)
+    function GET_TYPE_VAR_ZONE_FROT(NomVar, TypeVar, Categorie, Modifiable, dimVar, MessageErreur)
       implicit none
 
-      integer                          :: GET_TYPE_VAR_BARRAGE     ! different de 0 si erreur
+      integer                          :: GET_TYPE_VAR_ZONE_FROT    ! different de 0 si erreur
       character(LEN=40), intent(in)    :: NomVar                   ! Nom de la variable (notation pointe)
       character(LEN=10), intent(out)   :: TypeVar                  ! "INT" ou "DOUBLE" ou "BOOL" ou "STRING" ou "TABINT" ou "TABDOUBLE" ou "TABBOOL"
       character(LEN=10), intent(out)   :: Categorie                ! "MODEL" ou "STATE"
@@ -75,7 +59,7 @@ contains
       integer          , intent(out)   :: dimVar                   ! dimension (c'est a dire le nombre d'indexe de 0 a 3)
       character(LEN=256), intent(out)  :: MessageErreur            ! Message d'erreur
 
-      GET_TYPE_VAR_BARRAGE  = 0
+      GET_TYPE_VAR_ZONE_FROT = 0
       TypeVar               = ""
       Categorie             = "MODEL"
       Modifiable            = .FALSE.
@@ -83,92 +67,72 @@ contains
       MessageErreur         = ""
 
 
-      if ( NomVar == 'Model.Dam.ReachNum') then
+
+       if ( NomVar == 'Model.FrictionZone.FirstNode') then
           TypeVar = 'INT'
           dimVar                = 0
-       else if ( NomVar == 'Model.Dam.RelAbscissa') then
-          TypeVar = 'DOUBLE'
-          dimVar                = 0
-       else if ( NomVar == 'Model.Dam.Node') then
+       else if ( NomVar == 'Model.FrictionZone.LastNode') then
           TypeVar = 'INT'
           dimVar                = 0
-       else if ( NomVar == 'Model.Dam.BreakType') then
-          TypeVar = 'INT'
-          dimVar                = 0
-       else if ( NomVar == 'Model.Dam.CrestLevel') then
-          TypeVar = 'DOUBLE'
-          dimVar                = 0
-      else
-        GET_TYPE_VAR_BARRAGE = 1
+       else
+        GET_TYPE_VAR_ZONE_FROT = 1
         TypeVar = "?"
         Categorie             = "MODEL"
         Modifiable            = .FALSE.
         dimVar                = -1
-        MessageErreur         = "GET_TYPE_VAR_BARRAGE - Unknown variable name"
+        MessageErreur         = "GET_TYPE_VAR_ZONE_FROT - Unknown variable name"
       end if
 
 
-    end function GET_TYPE_VAR_BARRAGE
+    end function GET_TYPE_VAR_ZONE_FROT
 
 ! .................................................................................................................................
 ! Permet d'acceder a la taille des valeurs des differents champs du type 
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function GET_TAILLE_VAR_BARRAGE(Instance, NomVar, taille1, taille2, taille3, MessageErreur)
+   function GET_TAILLE_VAR_ZONE_FROT(Instance, NomVar, taille1, taille2, taille3, MessageErreur)
       implicit none
-      integer                            :: GET_TAILLE_VAR_BARRAGE         ! different de 0 si erreur
-      type(BARRAGE_T),        intent(in) :: Instance                       ! Instance du type derive dont on souhaite connaitre la taille des differents champs
+      integer                            :: GET_TAILLE_VAR_ZONE_FROT      ! different de 0 si erreur
+      type(ZONE_FROT_T),     intent(in) :: Instance                       ! Instance du type derive dont on souhaite connaitre la taille des differents champs
       character(len= 40),     intent(in) :: NomVar                         ! Nom de la variable du modele
       integer,                intent(out):: taille1                        ! valeur max du 1er indice
       integer,                intent(out):: taille2                        ! valeur max du 2e  indice
       integer,                intent(out):: taille3                        ! valeur max du 3e  indice
       character(LEN=256),     intent(out):: MessageErreur                  ! Message d'erreur
 
-      GET_TAILLE_VAR_BARRAGE = 0
+      GET_TAILLE_VAR_ZONE_FROT = 0
       taille1                = 0
       taille2                = 0
       taille3                = 0
       MessageErreur          = ""
 
-      if ( NomVar == 'Model.Dam.ReachNum') then
+      if ( NomVar == 'Model.FrictionZone.FirstNode') then
          taille1 = 0
          taille2 = 0
          taille3 = 0
-      else if ( NomVar == 'Model.Dam.RelAbscissa') then
-         taille1 = 0
-         taille2 = 0
-         taille3 = 0
-      else if ( NomVar == 'Model.Dam.Node') then
-         taille1 = 0
-         taille2 = 0
-         taille3 = 0
-      else if ( NomVar == 'Model.Dam.BreakType') then
-         taille1 = 0
-         taille2 = 0
-         taille3 = 0
-      else if ( NomVar == 'Model.Dam.CrestLevel') then
+      else if ( NomVar == 'Model.FrictionZone.LastNode') then
          taille1 = 0
          taille2 = 0
          taille3 = 0
       else
-         GET_TAILLE_VAR_BARRAGE = 1
+         GET_TAILLE_VAR_ZONE_FROT = 1
          taille1                = -1
          taille2                = -1
          taille3                = -1
-         MessageErreur         = "GET_TAILLE_VAR_BARRAGE - Unknown variable name"
+         MessageErreur         = "GET_TAILLE_VAR_ZONE_FROT - Unknown variable name"
       end if
-   end function GET_TAILLE_VAR_BARRAGE
+   end function GET_TAILLE_VAR_ZONE_FROT
 
 ! .................................................................................................................................
 ! Permet de modifier la taille les variables de type pointeurs fortran 
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function SET_TAILLE_VAR_BARRAGE(Instance, NomVar, NewT1, NewT2, NewT3, MessageErreur)
+   function SET_TAILLE_VAR_ZONE_FROT(Instance, NomVar, NewT1, NewT2, NewT3, MessageErreur)
       implicit none
-      integer                               :: SET_TAILLE_VAR_BARRAGE         ! different de 0 si erreur
-      type(BARRAGE_T),        intent(inout) :: Instance                       ! Instance du type derive dont on souhaite connaitre la taille des differents champs
+      integer                               :: SET_TAILLE_VAR_ZONE_FROT      ! different de 0 si erreur
+      type(ZONE_FROT_T),      intent(inout) :: Instance                       ! Instance du type derive dont on souhaite connaitre la taille des differents champs
       character(len= 40),     intent(in)    :: NomVar                         ! Nom de la variable du modele
       integer,                intent(in)    :: NewT1                          ! Nouvelle valeur max du 1er indice
       integer,                intent(in)    :: NewT2                          ! Nouvelle valeur max du 2e  indice
@@ -176,47 +140,20 @@ contains
       character(LEN=256),     intent(out)   :: MessageErreur                  ! Message d'erreur
 
 
-      SET_TAILLE_VAR_BARRAGE = 0
+      SET_TAILLE_VAR_ZONE_FROT = 0
       MessageErreur          = ""
 
-   end function SET_TAILLE_VAR_BARRAGE
+   end function SET_TAILLE_VAR_ZONE_FROT
 
 ! .................................................................................................................................
 ! Accesseurs permettant d'acceder aux valeurs des differents champs du type 
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function GET_DOUBLE_BARRAGE(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
+   function GET_INT_ZONE_FROT(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
       implicit none
-      integer                            :: GET_DOUBLE_BARRAGE         ! different de 0 si erreur
-      type(BARRAGE_T),        intent(in) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
-      character(len= 40),     intent(in) :: NomVar                     ! Nom de la variable du modele
-      integer,                intent(in) :: index1                     ! valeur du 1er indice
-      integer,                intent(in) :: index2                     ! valeur du 2e  indice
-      integer,                intent(in) :: index3                     ! valeur du 3e  indice
-      real(DOUBLE),           intent(out):: valeur                     ! valeur du real(DOUBLE) de l'instance pour les indexes specifies
-      character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
-
-      GET_DOUBLE_BARRAGE = 0
-      valeur                = -9999999.9999
-      MessageErreur          = ""
-
-      if ( NomVar == 'Model.Dam.RelAbscissa') then
-         valeur = Instance%AbscisseRel
-      else if ( NomVar == 'Model.Dam.CrestLevel') then
-         valeur = Instance%CoteCrete
-      else
-         GET_DOUBLE_BARRAGE = 1
-         valeur                = -9999999.9999
-         MessageErreur         = "GET_DOUBLE_BARRAGE - Unknown variable name"
-      end if
-   end function GET_DOUBLE_BARRAGE
-
-
-   function GET_INT_BARRAGE(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
-      implicit none
-      integer                            :: GET_INT_BARRAGE            ! different de 0 si erreur
-      type(BARRAGE_T),        intent(in) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
+      integer                            :: GET_INT_ZONE_FROT         ! different de 0 si erreur
+      type(ZONE_FROT_T),     intent(in) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
       character(len= 40),     intent(in) :: NomVar                     ! Nom de la variable du modele
       integer,                intent(in) :: index1                     ! valeur du 1er indice
       integer,                intent(in) :: index2                     ! valeur du 2e  indice
@@ -224,22 +161,20 @@ contains
       integer,                intent(out):: valeur                     ! valeur du integer de l'instance pour les indexes specifies
       character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
 
-      GET_INT_BARRAGE = 0
+      GET_INT_ZONE_FROT = 0
       valeur                = -9999
       MessageErreur          = ""
 
-      if ( NomVar == 'Model.Dam.ReachNum') then
-         valeur = Instance%NumBranche
-      else if ( NomVar == 'Model.Dam.Node') then
-         valeur = Instance%Section
-      else if ( NomVar == 'Model.Dam.BreakType') then
-         valeur = Instance%TypeRupture
+      if ( NomVar == 'Model.FrictionZone.FirstNode') then
+         valeur = Instance%SectionDeb
+      else if ( NomVar == 'Model.FrictionZone.LastNode') then
+         valeur = Instance%SectionFin
       else
-         GET_INT_BARRAGE = 1
+         GET_INT_ZONE_FROT = 1
          valeur                = -9999
-         MessageErreur         = "GET_INT_BARRAGE - Unknown variable name"
+         MessageErreur         = "GET_INT_ZONE_FROT - Unknown variable name"
       end if
-   end function GET_INT_BARRAGE
+   end function GET_INT_ZONE_FROT
 
 
 
@@ -248,35 +183,10 @@ contains
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function SET_DOUBLE_BARRAGE(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
+   function SET_INT_ZONE_FROT(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
       implicit none
-      integer                            :: SET_DOUBLE_BARRAGE         ! different de 0 si erreur
-      type(BARRAGE_T),        intent(inout) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
-      character(len= 40),     intent(in) :: NomVar                     ! Nom de la variable du modele
-      integer,                intent(in) :: index1                     ! valeur du 1er indice
-      integer,                intent(in) :: index2                     ! valeur du 2e  indice
-      integer,                intent(in) :: index3                     ! valeur du 3e  indice
-      real(DOUBLE),           intent(in) :: valeur                     ! valeur du real(DOUBLE) de l'instance pour les indexes specifies
-      character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
-
-      SET_DOUBLE_BARRAGE = 0
-      MessageErreur          = ""
-
-      if ( NomVar == 'Model.Dam.RelAbscissa') then
-         Instance%AbscisseRel = valeur
-      else if ( NomVar == 'Model.Dam.CrestLevel') then
-         Instance%CoteCrete = valeur
-      else
-         SET_DOUBLE_BARRAGE = 1
-         MessageErreur         = "SET_DOUBLE_BARRAGE - Unknown variable name"
-      end if
-   end function SET_DOUBLE_BARRAGE
-
-
-   function SET_INT_BARRAGE(Instance, NomVar, index1, index2, index3, valeur, MessageErreur)
-      implicit none
-      integer                            :: SET_INT_BARRAGE            ! different de 0 si erreur
-      type(BARRAGE_T),        intent(inout) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
+      integer                            :: SET_INT_ZONE_FROT         ! different de 0 si erreur
+      type(ZONE_FROT_T),     intent(inout) :: Instance                   ! Instance du type derive dont on souhaite recuperer la valeur
       character(len= 40),     intent(in) :: NomVar                     ! Nom de la variable du modele
       integer,                intent(in) :: index1                     ! valeur du 1er indice
       integer,                intent(in) :: index2                     ! valeur du 2e  indice
@@ -284,20 +194,18 @@ contains
       integer,                intent(in) :: valeur                     ! valeur du integer de l'instance pour les indexes specifies
       character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
 
-      SET_INT_BARRAGE = 0
+      SET_INT_ZONE_FROT = 0
       MessageErreur          = ""
 
-      if ( NomVar == 'Model.Dam.ReachNum') then
-         Instance%NumBranche = valeur
-      else if ( NomVar == 'Model.Dam.Node') then
-         Instance%Section = valeur
-      else if ( NomVar == 'Model.Dam.BreakType') then
-         Instance%TypeRupture = valeur
+      if ( NomVar == 'Model.FrictionZone.FirstNode') then
+         Instance%SectionDeb = valeur
+      else if ( NomVar == 'Model.FrictionZone.LastNode') then
+         Instance%SectionFin = valeur
       else
-         SET_INT_BARRAGE = 1
-         MessageErreur         = "SET_INT_BARRAGE - Unknown variable name"
+         SET_INT_ZONE_FROT = 1
+         MessageErreur         = "SET_INT_ZONE_FROT - Unknown variable name"
       end if
-   end function SET_INT_BARRAGE
+   end function SET_INT_ZONE_FROT
 
 
 
@@ -306,39 +214,41 @@ contains
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function DESALLOUE_BARRAGE(Instance, MessageErreur)
+   function DESALLOUE_ZONE_FROT(Instance, MessageErreur)
       implicit none
-      integer                            :: DESALLOUE_BARRAGE          ! different de 0 si erreur
-      type(BARRAGE_T),        intent(inout) :: Instance                   ! Instance du type derive dont on souhaite desalloue
+      integer                            :: DESALLOUE_ZONE_FROT       ! different de 0 si erreur
+      type(ZONE_FROT_T),     intent(inout) :: Instance                   ! Instance du type derive dont on souhaite desalloue
       character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
 
       integer                            :: taille
       integer                            :: err
       integer                            :: i
       character(LEN=256)                 :: MessageErreurType
-      DESALLOUE_BARRAGE = 0
+      DESALLOUE_ZONE_FROT = 0
       MessageErreur          = ""
 
-   end function DESALLOUE_BARRAGE
+   end function DESALLOUE_ZONE_FROT
 
 ! .................................................................................................................................
 ! Rend null tous les pointeurs et fait appel aux desalloues des membres
 !                     -- Generer automatiquement --
 ! .................................................................................................................................
 
-   function NULLIFIER_BARRAGE(Instance, MessageErreur)
+   function NULLIFIER_ZONE_FROT(Instance, MessageErreur)
       implicit none
-      integer                            :: NULLIFIER_BARRAGE          ! different de 0 si erreur
-      type(BARRAGE_T),        intent(inout) :: Instance                   ! Instance du type derive dont on souhaite desalloue
+      integer                            :: NULLIFIER_ZONE_FROT       ! different de 0 si erreur
+      type(ZONE_FROT_T),     intent(inout) :: Instance                   ! Instance du type derive dont on souhaite desalloue
       character(LEN=256),     intent(out):: MessageErreur              ! Message d'erreur
 
       integer                            :: taille
       integer                            :: err
       integer                            :: i
       character(LEN=256)                 :: MessageErreurType
-      NULLIFIER_BARRAGE = 0
+      NULLIFIER_ZONE_FROT = 0
       MessageErreur          = ""
 
-   end function NULLIFIER_BARRAGE
+   end function NULLIFIER_ZONE_FROT
 
-end module M_BARRAGE_T
+
+
+END MODULE m_ZONE_FROT_t

@@ -1,4 +1,4 @@
-!== Copyright (C) 2000-2016 EDF-CEREMA ==
+!== Copyright (C) 2000-2017 EDF-CEREMA ==
 !
 !   This file is part of MASCARET.
 !
@@ -20,7 +20,7 @@ module M_LEC_FROTTEMENT_I
 !***********************************************************************
 ! PROGICIEL : MASCARET       S. MANDELKERN
 !
-! VERSION : 8.1.1              EDF-CEREMA
+! VERSION : 8.1.3              EDF-CEREMA
 !***********************************************************************
    interface
 
@@ -28,6 +28,7 @@ module M_LEC_FROTTEMENT_I
                              CF1 , & ! Coefficient de frottement Mineur
                              CF2 , & ! Coefficient de frottement Majeur
                                X , & ! Abscisse des sections de calcul
+                         ZoneFrot, & ! limite des zones de frottement 
                              XDT , &
                           Profil , & ! Profils geometriques
                      ProfDebBief , & ! Premiers profils des biefs
@@ -45,6 +46,7 @@ module M_LEC_FROTTEMENT_I
    use M_ERREUR_T            ! Type ERREUR_T
    use M_PARAMETRE_C
    use M_PROFIL_T            ! Type  PROFIL_T
+   use M_ZONE_FROT_T         ! Type Zone frottement 
    use M_MESSAGE_C           ! Messages d'erreur
    use M_CONSTANTES_CALCUL_C ! Constantes num, phys et info
    use M_TRAITER_ERREUR_I    ! Traitement de l'errreur
@@ -60,6 +62,7 @@ module M_LEC_FROTTEMENT_I
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: X
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: XDT
    type(PROFIL_T)    , dimension(:)  , intent(in   ) :: Profil
+   type(Zone_Frot_T) , dimension(:)  , pointer       :: ZoneFrot
    integer           , dimension(:)  , intent(in   ) :: ProfDebBief
    integer           , dimension(:)  , intent(in   ) :: ProfFinBief
    real(DOUBLE)      , dimension(:)  , intent(in   ) :: AbscRelExtDebBief
