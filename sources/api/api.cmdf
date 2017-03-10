@@ -570,6 +570,7 @@ files: interface_hermes.f
   close_mesh.f
   get_data_value.f
   get_data_var_list.f
+  get_data_var_list2.f
   get_data_time.f
   get_data_ntimestep.f
   set_mesh.f
@@ -583,6 +584,7 @@ files: interface_hermes.f
   set_bnd.f
   get_mesh_date.f
   get_bnd_connectivity.f
+  transfer_group_info.f
 
 [nestor]
 path: <root>|sources|nestor

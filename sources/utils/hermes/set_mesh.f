@@ -83,11 +83,16 @@
           DO I=1,NPOIN
             COORD(I) = X(I)
             COORD(I+NPOIN) = Y(I)
-            IF (PRESENT(Z)) COORD(I+2*NPOIN) = Z(I)
           ENDDO
+          IF (PRESENT(Z).AND.(MESH_DIM.EQ.3)) THEN
+            DO I=1,NPOIN
+              COORD(I+2*NPOIN) = Z(I)
+            ENDDO
+          ENDIF
 !
           CALL SET_MESH_MED(FILE_ID,MESH_DIM,MESH_DIM,TYPELM,NDP,NPTFR,
-     &      NPTIR,NELEM,NPOIN,IKLE,IPOBO,KNOLG,COORD,NPLAN,IERR)
+     &      NPTIR,NELEM,NPOIN,IKLE,IPOBO,KNOLG,COORD,NPLAN,
+     &      DATE,TIME,IERR)
           DEALLOCATE(COORD)
 
         CASE DEFAULT

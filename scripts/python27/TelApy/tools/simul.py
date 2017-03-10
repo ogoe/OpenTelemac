@@ -4,7 +4,7 @@ Definition of the cost function for 'genop' optimizer
 
 Author(s) : Fabrice Zaoui
 
-Copyright EDF 2016
+Copyright EDF 2016-2017
 
 :param 'x': array of optimization variables
 :return: value of the cost function
@@ -12,36 +12,59 @@ Copyright EDF 2016
 import numpy as np
 
 # user function
-def simul():
+def sim_telemac(varx):
+    """
+    The cost function to be written by user
+    """
     return
 
 # test function
-def rosenbrock(x):
-    val = (1.-x[0])**2+100.*(x[1]-x[0]**2)**2
+def rosenbrock(varx):
+    """
+    https://en.wikipedia.org/wiki/Rosenbrock_function
+    """
+    val = (1.-varx[0])**2+100.*(varx[1]-varx[0]**2)**2
     return val
 
 # test function
-def maccormick(x):
-    val = np.sin(x[0]+x[1])+(x[0]-x[1])**2 -1.5*x[0]+2.5*x[1]+1.
+def maccormick(varx):
+    """
+    https://en.wikipedia.org/wiki/Test_functions_for_optimization
+    """
+    val = np.sin(varx[0]+varx[1])+(varx[0]-varx[1])**2 - \
+                1.5*varx[0]+2.5*varx[1]+1.
     return val
 
 # test function
-def easom(x):
-    val = -np.cos(x[0])*np.cos(x[1])*np.exp(-((x[0]-np.pi)**2+(x[1]-np.pi)**2))
+def easom(varx):
+    """
+    https://en.wikipedia.org/wiki/Test_functions_for_optimization
+    """
+    val = -np.cos(varx[0])*np.cos(varx[1])*\
+                 np.exp(-((varx[0]-np.pi)**2+(varx[1]-np.pi)**2))
     return val
 
 # test function
-def eggholder(x):
-    val = -(x[1]+47.)*np.sin(np.sqrt(np.abs(0.5*x[0]+x[1]+47.)))-x[0]*np.sin(np.sqrt(np.abs(x[0]-x[1]-47.)))
+def eggholder(varx):
+    """
+    https://en.wikipedia.org/wiki/Test_functions_for_optimization
+    """
+    val = -(varx[1]+47.)*np.sin(np.sqrt(np.abs(0.5*varx[0]+varx[1]+47.))) - \
+           varx[0]*np.sin(np.sqrt(np.abs(varx[0]-varx[1]-47.)))
     return val
 
 # test function
-def linear(x):
-    val = x[0] + x[1] - x[2]
-    return val
-    
-# test function    
-def abslinear(x):
-    val = np.abs(x[0]-2.)
+def linear(varx):
+    """
+    a simple linear function of three variables
+    """
+    val = varx[0] + varx[1] - varx[2]
     return val
 
+# test function
+def abslinear(varx):
+    """
+    a simple absolute value function
+    """
+    val = np.abs(varx[0]-2.)
+    return val

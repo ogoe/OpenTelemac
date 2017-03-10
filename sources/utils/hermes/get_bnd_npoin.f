@@ -33,15 +33,15 @@
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
       INTEGER,          INTENT(IN)  :: TYPE_BND_ELEM
-      INTEGER,          INTENT(INOUT) :: NPTFR
+      INTEGER,          INTENT(OUT) :: NPTFR
       INTEGER,          INTENT(OUT) :: IERR
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      NPTFR = 0
       IF(TYPE_BND_ELEM.EQ.TYPE_NULL) THEN
-        NPTFR = 0
         IERR = 0
         RETURN
       ENDIF

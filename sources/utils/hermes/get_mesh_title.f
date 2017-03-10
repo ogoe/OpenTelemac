@@ -31,11 +31,12 @@
 !
       CHARACTER(LEN=8),  INTENT(IN)  :: FFORMAT
       INTEGER,           INTENT(IN)  :: FID
-      CHARACTER(LEN=80), INTENT(INOUT) :: TITLE
+      CHARACTER(LEN=80), INTENT(OUT) :: TITLE
       INTEGER,           INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      TITLE = REPEAT(' ', 80)
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_MESH_TITLE_SRF(FID, TITLE, IERR)
@@ -56,5 +57,3 @@
 !
       RETURN
       END
-
-

@@ -45,7 +45,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ,INTENT(IN) :: NBVAR,CANAL
+      INTEGER ,INTENT(INOUT) :: NBVAR,CANAL
       INTEGER, INTENT(IN) :: IC,N
       LOGICAL, INTENT(IN) :: C2DH
       CHARACTER(LEN=72), INTENT(IN) :: TITCAS

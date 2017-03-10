@@ -616,102 +616,102 @@
      &        (VARNAME, VARTYPE, READONLY, NDIM, IERR)
           CHARACTER(LEN=SIS_VAR_LEN),  INTENT(IN)  :: VARNAME
           CHARACTER(LEN=SIS_TYPE_LEN), INTENT(OUT) :: VARTYPE
-          INTEGER,                     INTENT(OUT) :: READONLY
+          LOGICAL,                     INTENT(OUT) :: READONLY
           INTEGER,                     INTENT(OUT) :: NDIM
           INTEGER,                     INTENT(OUT) :: IERR
 !
           IERR = 0
           VARTYPE = ''
-          READONLY = 0
+          READONLY = .TRUE.
           NDIM = 0
 !
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EVOLUTION') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Z') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ZF_C') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EBOR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR_SIS') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIMESTEP') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           VARTYPE = 'DOUBLE'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSEIF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
           VARTYPE = 'INTEGER'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
           VARTYPE = 'INTEGER'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
           VARTYPE = 'INTEGER'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
           VARTYPE = 'INTEGER'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
           VARTYPE = 'INTEGER'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
           VARTYPE = 'STRING'
-          READONLY = 1
+          READONLY = .FALSE.
           NDIM = 1
         ELSE
           IERR = UNKNOWN_VAR_ERROR
