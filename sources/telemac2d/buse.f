@@ -7,7 +7,8 @@
      & ALTBUS,CSBUS,CEBUS,ANGBUS,LBUS,
      & NTRAC,T,TBUS,UBUS,VBUS,U,V,ENTET,
      & CV,C56,CV5,C5,CTRASH,FRICBUS,LONGBUS,
-     & CIRC,OPTBUSE,V2DPAR,DT,SECBUS)
+     & CIRC,OPTBUSE,V2DPAR,DT,SECBUS,MAXSOURCE,
+     & NPTSCE,NPOIN2,KSCE)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   23/05/2012
@@ -114,10 +115,14 @@
       DOUBLE PRECISION , INTENT(IN)    :: LONGBUS(NBUSE)
       INTEGER          , INTENT(IN)    :: OPTBUSE
       TYPE(BIEF_OBJ)   , INTENT(IN)    :: V2DPAR
+      INTEGER          , INTENT(IN)    :: MAXSOURCE
+      INTEGER, INTENT(IN), OPTIONAL    :: NPTSCE,NPOIN2
+      INTEGER, INTENT(IN), OPTIONAL    :: KSCE(MAXSOURCE)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER N,I1,I2,ITRAC,FTYP
+      INTEGER VOFFSET
 !
       DOUBLE PRECISION L,LARG,HAUT1,HAUT2,HAUT,TETA
       DOUBLE PRECISION S1,S2,CE1,CE2,CS1,CS2,Q,QMAX1,QMAX2
@@ -577,16 +582,30 @@
 !             CASE DBUS(N)=0.D0 NOT CLEAR, BUT A VALUE HAS TO BE
 !             GIVEN HERE, LEST IT IS USED AFTER
               IF(I1.GT.0) THEN
-                TBUS%ADR(ITRAC)%P%R(NBUSE+N) = T%ADR(ITRAC)%P%R(I1)
-                TBUS%ADR(ITRAC)%P%R(N)       = T%ADR(ITRAC)%P%R(I1)
+                IF (PRESENT(KSCE)) THEN
+                  VOFFSET = (KSCE(NPTSCE+N)-1)*NPOIN2
+                ELSE
+                  VOFFSET = 0
+                ENDIF
+                TBUS%ADR(ITRAC)%P%R(NBUSE+N) = T%ADR(ITRAC)%P%R(I1
+     &                                       + VOFFSET)
+                TBUS%ADR(ITRAC)%P%R(N)       = T%ADR(ITRAC)%P%R(I1
+     &                                       + VOFFSET)
               ELSE
                 TBUS%ADR(ITRAC)%P%R(NBUSE+N) = 0.D0
                 TBUS%ADR(ITRAC)%P%R(N)       = 0.D0
               ENDIF
             ELSE ! I2 --> I1
               IF(I2.GT.0) THEN
-                TBUS%ADR(ITRAC)%P%R(N)       = T%ADR(ITRAC)%P%R(I2)
-                TBUS%ADR(ITRAC)%P%R(NBUSE+N) = T%ADR(ITRAC)%P%R(I2)
+                IF (PRESENT(KSCE)) THEN
+                  VOFFSET = (KSCE(NPTSCE+NBUSE+N)-1)*NPOIN2
+                ELSE
+                  VOFFSET = 0
+                ENDIF
+                TBUS%ADR(ITRAC)%P%R(N)       = T%ADR(ITRAC)%P%R(I2
+     &                                       + VOFFSET)
+                TBUS%ADR(ITRAC)%P%R(NBUSE+N) = T%ADR(ITRAC)%P%R(I2
+     &                                       + VOFFSET)
               ELSE
                 TBUS%ADR(ITRAC)%P%R(N)       = 0.D0
                 TBUS%ADR(ITRAC)%P%R(NBUSE+N) = 0.D0

@@ -1352,7 +1352,8 @@
      &            ALTBUS%R,CSBUS%R,CEBUS%R,ANGBUS%R,LBUS%R,
      &            NTRAC,TA,TBUS,UBUS,VBUS,U%R,V%R,LISTIN,
      &            CV%R,C56%R,CV5%R,C5%R,CTRASH%R,FRICBUS%R,
-     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R)
+     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R,
+     &            MAXSCE,NPTSCE,NPOIN2,KSCE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BUSE'
         DO I=1,NBUSE
           QSCE2(NPTSCE+I)      =-DBUS%R(I)
@@ -1563,7 +1564,8 @@
      &            ALTBUS%R,CSBUS%R,CEBUS%R,ANGBUS%R,LBUS%R,
      &            NTRAC,TA,TBUS,UBUS,VBUS,U%R,V%R,LISTIN,
      &            CV%R,C56%R,CV5%R,C5%R,CTRASH%R,FRICBUS%R,
-     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R)
+     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R,
+     &            MAXSCE,NPTSCE,NPOIN2,KSCE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BUSE'
         DO I=1,NBUSE
           QSCE2(NPTSCE+I)      =-DBUS%R(I)

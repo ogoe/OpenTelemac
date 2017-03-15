@@ -2182,7 +2182,8 @@
      &            ALTBUS%R,CSBUS%R,CEBUS%R,ANGBUS%R,LBUS%R,
      &            NTRAC,T,TBUS,UBUS%R,VBUS%R,U%R,V%R,ENTET,
      &            CV%R,C56%R,CV5%R,C5%R,CTRASH%R,FRICBUS%R,
-     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R)
+     &            LONGBUS%R,CIRC%I,OPTBUSE,V2DPAR,DT,SECBUS%R,
+     &            MAXSCE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BUSE'
       ENDIF
 !
