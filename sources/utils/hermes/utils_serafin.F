@@ -368,7 +368,7 @@
 !
         IMPLICIT NONE
         !
-        INTEGER, INTENT(OUT) :: FILE_ID
+        INTEGER, INTENT(IN) :: FILE_ID
         CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE
         CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
         CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
@@ -383,7 +383,6 @@
         REAL :: TIME
         INTEGER(KIND=K8) :: I, POS, FSIZE
         !
-        CALL GET_FREE_ID(FILE_ID)
         ! ADD A NEW FILE TO THE HASH TABLE
         CALL ADD_SRF_FILE(FILE_ID,SRF_ID,IERR)
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:ADD_SRF_FILE')
@@ -408,6 +407,15 @@
      &       IOSTAT=IERR)
 #endif
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
+!###> SEB @ HRW: GETS SET LATER
+        ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
+        ! 4 OTHERWISE
+        !IF(FFORMAT.EQ.'SERAFIN ') THEN
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 4
+        !ELSE
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 8
+        !ENDIF
+!###< SEB @ HRW
         ! ONLY DO THE SCAN OF THE FILE IF THE FILE IS READ ONLY
         IF(OPENMODE.EQ.'READ     ') THEN
 !
@@ -491,6 +499,7 @@
           ! npoin*4 if we are in double it will be npoin*8
           !
           READ(FILE_ID,POS=SRF_OBJ_TAB(SRF_ID)%POS_COORD) TAG
+!###> SEB @ HRW:  IT IS NOT AN ERROR TO BE WORKING WITH LITTLE ENDIAN
           IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
             FFORMAT = 'SERAFIND'
             SRF_OBJ_TAB(SRF_ID)%RS = 8
@@ -512,6 +521,29 @@
 !
 !         THE FIRST FILE (THE GEO) SETS THE PACE
           IF( SELAFMT.EQ.'SERAFIN?' ) SELAFMT = FFORMAT
+!
+!          IF(FFORMAT.EQ.'SERAFIN ') THEN
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIND FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 8
+!              FFORMAT = 'SERAFIND'
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ELSE
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIN FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 4
+!              FFORMAT = 'SERAFIN '
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ENDIF
+!###< SEB @ HRW
 !
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
@@ -816,7 +848,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        CHARACTER(LEN=TITLE_SIZE), INTENT(OUT) :: TITLE
+        CHARACTER(LEN=TITLE_SIZE), INTENT(INOUT) :: TITLE
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER(KIND=K8) :: MY_POS
@@ -911,7 +943,7 @@
         !
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(IN) :: TYP_ELT
-        INTEGER, INTENT(OUT) :: NELEM
+        INTEGER, INTENT(INOUT) :: NELEM
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -955,7 +987,7 @@
         !
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(IN) :: TYP_ELT
-        INTEGER, INTENT(OUT) :: NDP
+        INTEGER, INTENT(INOUT) :: NDP
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1060,7 +1092,7 @@
         !
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(IN) :: TYP_ELT
-        INTEGER, INTENT(OUT) :: NPOIN
+        INTEGER, INTENT(INOUT) :: NPOIN
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1098,7 +1130,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        INTEGER, INTENT(OUT) :: NPLAN
+        INTEGER, INTENT(INOUT) :: NPLAN
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1136,7 +1168,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        INTEGER, INTENT(OUT) :: NDIM
+        INTEGER, INTENT(INOUT) :: NDIM
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1301,7 +1333,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        INTEGER, INTENT(OUT) :: NPTIR
+        INTEGER, INTENT(INOUT) :: NPTIR
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1406,10 +1438,8 @@
         INTEGER, INTENT(INOUT) :: NBOR(NPTFR)
         INTEGER, INTENT(OUT) :: IERR
         !
-        INTEGER :: TYP_ELEM
-        TYP_ELEM = 1
         CALL GET_BND_CONNECTIVITY_SRF(FILE_ID,TYP_ELEM_BND,NPTFR,
-     &                                TYP_ELEM,NBOR,IERR)
+     &                                1,NBOR,IERR)
         CALL CHECK_CALL(IERR,
      &             'GET_BND_NUMBERING_SRF:GET_BND_CONNECTIVITY_SRF')
         !
@@ -1644,7 +1674,7 @@
         !
         INTEGER, INTENT(IN) :: FILE_ID
         INTEGER, INTENT(IN) :: TYPE_BND_ELEM
-        INTEGER, INTENT(OUT) :: NPTFR
+        INTEGER, INTENT(INOUT) :: NPTFR
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1690,7 +1720,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        INTEGER, INTENT(OUT) :: NVAR
+        INTEGER, INTENT(INOUT) :: NVAR
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID
@@ -1780,7 +1810,7 @@
         IMPLICIT NONE
         !
         INTEGER, INTENT(IN) :: FILE_ID
-        INTEGER, INTENT(OUT) :: NTIMESTEP
+        INTEGER, INTENT(INOUT) :: NTIMESTEP
         INTEGER, INTENT(OUT) :: IERR
         !
         INTEGER :: SRF_ID

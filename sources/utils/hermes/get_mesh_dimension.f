@@ -31,12 +31,11 @@
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
-      INTEGER,          INTENT(OUT) :: NDIM
+      INTEGER,          INTENT(INOUT) :: NDIM
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      NDIM = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_MESH_DIMENSION_SRF(FID, NDIM, IERR)

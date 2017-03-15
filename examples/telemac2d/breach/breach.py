@@ -1,20 +1,21 @@
-#!/usr/bin/env python
+#!/bin/env python
 from TelApy.api.t2d import Telemac2d
-import numpy as np
-from mpi4py import MPI
 import sys
 
-t2d = Telemac2d("t2d_breach.cas",comm=MPI.COMM_WORLD)
+if __name__ == '__main__':
+    t2d = Telemac2d("t2d_breach.cas")
 
-t2d.set_case()
+    t2d.set_case()
 
-varnames, varinfo = t2d.list_variables()
-for name, info in zip(varnames, varinfo):
-    print name
-    print info
+    varnames,varinfo = t2d.list_variables()
+    for name,info in zip(varnames,varinfo):
+        print name
+        print info
 
-t2d.init_state_default()
+    t2d.init_state_default()
 
-t2d.run_all_time_steps()
+    t2d.run_all_time_steps()
 
-del(t2d)
+    t2d.finalize()
+
+    del(t2d)

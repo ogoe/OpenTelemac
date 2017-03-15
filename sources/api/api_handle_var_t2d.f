@@ -238,8 +238,7 @@
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
             VALUE = INST%MESH%NELMAX
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
-            VALUE = INST%MESH%IKLE%I((INDEX2-1)*INST%MESH%IKLE%DIM1
-     &                               + INDEX1)
+            VALUE = INST%MESH%IKLE%I(INDEX1)
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
              VALUE = INST%SIS%PERCOU
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
@@ -341,17 +340,17 @@
           VALUE = ""
           IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             I = INST%T2DRES
-            DO J = 1,VALUELEN
+            DO J = 1,144
               VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
             I = INST%T2DCLI
-            DO J = 1,VALUELEN
+            DO J = 1,144
               VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
             I = INST%T2DGEO
-            DO J = 1,VALUELEN
+            DO J = 1,144
               VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
             ENDDO
           ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
@@ -396,11 +395,9 @@
           IERR = 0
           IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             I = INST%T2DRES
-            write(*,*) value
             DO J=1,VALUELEN
               INST%T2D_FILES(I)%NAME(J:J) = VALUE(J)
             ENDDO
-            write(*,*) INST%T2D_FILES(I)%NAME
           ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
             IERR = 1
           ELSE
@@ -580,9 +577,6 @@
            DIM1 = 144
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE')THEN
            DIM1 = SIZE(INST%BND_TIDE)
-        ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE')THEN
-           DIM1 = INST%MESH%IKLE%DIM1
-           DIM2 = INST%MESH%IKLE%DIM2
         ENDIF
 
       END SUBROUTINE GET_VAR_SIZE_T2D_D
@@ -617,7 +611,7 @@
      &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,IERR)
           CHARACTER(LEN=T2D_VAR_LEN),  INTENT(IN)  :: VARNAME
           CHARACTER(LEN=T2D_TYPE_LEN), INTENT(OUT) :: VARTYPE
-          LOGICAL,                     INTENT(OUT) :: READONLY
+          INTEGER,                     INTENT(OUT) :: READONLY
           INTEGER,                     INTENT(OUT) :: NDIM
           INTEGER,                     INTENT(OUT) :: IERR
           INTEGER,                     INTENT(OUT) :: IENT
@@ -626,7 +620,7 @@
 !
           IERR = 0
           VARTYPE = ''
-          READONLY = .TRUE.
+          READONLY = 0
           NDIM = 0
           IENT = 0
           JENT = 0
@@ -634,144 +628,133 @@
 !
           IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 2
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 0
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
             VARTYPE =  'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             VARTYPE = 'STRING'
-            READONLY = .FALSE.
+            READONLY = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
             IENT = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 0
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
             VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 0
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALVELOCITY') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 0
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.SEALEVEL') THEN
             VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
+            READONLY = 1
             NDIM = 0
           ELSE
             IERR = UNKNOWN_VAR_ERROR

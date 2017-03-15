@@ -33,7 +33,7 @@
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
       INTEGER,          INTENT(IN)  :: TYPE_BND_ELEM
-      INTEGER,          INTENT(OUT) :: NELEM
+      INTEGER,          INTENT(INOUT) :: NELEM
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -41,8 +41,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      NELEM = 0
       IF(TYPE_BND_ELEM.EQ.TYPE_NULL) THEN
+        NELEM = 0
         RETURN
       ENDIF
 !

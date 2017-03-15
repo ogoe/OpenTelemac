@@ -216,6 +216,10 @@
 !
         IERR = 0
 !
+        IF (NIT_TO_DO.LT.0) THEN
+          IERR = OVERTIME_ERROR
+          ERR_MESS = 'INITIAL NUMBER OF TIMESTEP OVERREACHED'
+        ENDIF
         INST%NIT = INST%LT
         CALL TELEMAC2D(PASS=1,ATDEP=0.D0,NITER=INST%LT,
      &       CODE='       ',NITERORI=NIT_ORI)

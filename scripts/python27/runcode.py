@@ -353,6 +353,8 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             if iFiles[k].split(';')[5][0:3] == 'CAS':
+               #print '    re-copying: ', crun
+               #putFileContent(crun,cas[0])
                print '    copying cas: ', crun
                # Removing trailing space on the left
                newcas = [line.lstrip() for line in cas[0]]
@@ -1237,6 +1239,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       print '\n... checking the executable'
       for name in CASFiles:
          chdir(CASFiles[name]['wir'])
+
          # Detect if we have a user fortran
          if path.exists('user_fortran'):
             print "Compiling user fortran"
@@ -1251,6 +1254,7 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
             exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
          # Copying Exefile in TMPDir
          shutil.copy2(exeFile,path.join(CASFiles[name]['wir'],'out_'+path.splitext(name)[0]))
+
          # Update of CASFile info
          CASFiles[name].update({ 'run':exeFile, 'exe':exeFile })
 

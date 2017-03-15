@@ -5,7 +5,7 @@ Generate initial individuals from a uniform distribution
 
 Author(s) : Fabrice Zaoui
 
-Copyright EDF 2016-2017
+Copyright EDF 2016
 
 :param 'bounds': array of domain constraints (lower and upper bounds)
 :param 'nvar': the number of variables
@@ -17,9 +17,6 @@ import numpy as np
 
 
 def genpop(bounds, nvar, npop):
-    """
-    New population of individuals with uniform distributions
-    """
     lower = bounds[:, 0]
     xrange = bounds[:, 1] - bounds[:, 0]
     pop = np.array([]).reshape(0, nvar)

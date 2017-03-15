@@ -31,12 +31,11 @@
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
-      INTEGER,          INTENT(OUT) :: NPLAN
+      INTEGER,          INTENT(INOUT) :: NPLAN
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      NPLAN = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_MESH_NPLAN_SRF(FID, NPLAN, IERR)

@@ -407,11 +407,11 @@ def getKeyWord(key,cas,dico,frgb):
    value = []; defaut = []
    kl,vl = cas[1]
    if key in frgb['GB']:
-      defaut = dico[frgb['GB'][key]].get('DEFAUT1',"")
+      defaut = dico[frgb['GB'][key]]['DEFAUT1']
       if key in kl: value = vl[kl.index(key)]
       elif frgb['GB'][key] in kl: value = vl[kl.index(frgb['GB'][key])]
    if key in frgb['FR']:
-      defaut = dico[key].get('DEFAUT',"")
+      defaut = dico[key]['DEFAUT']
       if key in kl: value = vl[kl.index(key)]
       elif frgb['FR'][key] in kl: value = vl[kl.index(frgb['FR'][key])]
 

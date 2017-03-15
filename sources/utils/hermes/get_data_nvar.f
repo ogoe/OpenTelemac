@@ -31,12 +31,11 @@
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
-      INTEGER,          INTENT(OUT) :: NVAR
+      INTEGER,          INTENT(INOUT) :: NVAR
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      NVAR = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_DATA_NVAR_SRF(FID, NVAR,IERR)

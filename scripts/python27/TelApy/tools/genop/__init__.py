@@ -5,7 +5,7 @@ Adapted from the Scilab module 'ga_optim'
 
 Auteur : Fabrice Zaoui (EDF R&D LNHE)
 
-Copyright EDF 2016-2017
+Copyright EDF 2016
 
 """
 
@@ -29,3 +29,4 @@ import crossover
 import mutation
 import showresults
 from genop import Genop
+

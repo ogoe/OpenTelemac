@@ -33,14 +33,14 @@
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
       INTEGER,          INTENT(IN)  :: TYP_ELEM
-      INTEGER,          INTENT(OUT) :: NELEM
+      INTEGER,          INTENT(INOUT) :: NELEM
       INTEGER,          INTENT(OUT) :: IERR
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      NELEM = 0
       IF(TYP_ELEM.EQ.TYPE_NULL) THEN
+        NELEM = 0
         RETURN
       ENDIF
 !
