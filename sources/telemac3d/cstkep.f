@@ -3,7 +3,7 @@
 !                    *****************
 !
 !***********************************************************************
-! TELEMAC3D   V7P0                                   21/08/2010
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    SETS CONSTANTS OF K-EPSILON AND K-OMEGA MODELS.
@@ -45,6 +45,11 @@
 !+        V7P0
 !+   New developments in sediment merged on 25/02/2014.
 !
+!history  C.-T. PHAM (EDF, LNHE)
+!+        01/03/2017
+!+        V7P2
+!+   Allowing k-epsilon model on a direction and not on the other.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALPHA          |<->| K-OMEGA CONSTANT
 !| BETA           |<->| K-OMEGA CONSTANT
@@ -70,7 +75,7 @@
      &                                   VIRT,SCHMIT,KMIN,KMAX,
      &                                   EMIN,EMAX,ALPHA,
      &                                   BETA,BETAS,OMSTAR,ITURBV,
-     &                                   CLIPK,CLIPE,WSIK,YAP,
+     &                                   ITURBH,CLIPK,CLIPE,WSIK,YAP,
      &                                   PERNORM2,PERPROD,RIMIN,RIMAX,
      &                                   OPTPROD,LIMKF,LIMEF,LIMKS,LIMES
       USE DECLARATIONS_SPECIAL
@@ -113,10 +118,10 @@
 !
 !     K-EPSILON OR K-OMEGA MODEL
 !
-      IF(ITURBV.EQ.3) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3) THEN
         SIGMAK = 1.D0
         SIGMAE = 1.3D0
-      ELSEIF(ITURBV.EQ.7) THEN
+      ELSEIF(ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
         SIGMAK = 2.D0
         SIGMAE = 2.D0
       ENDIF
@@ -201,12 +206,12 @@
 !
 !     MINIMA AND MAXIMA FOR CLIPPING
 !
-      IF(ITURBV.EQ.3) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3) THEN
         KMIN = 1.D-10
         EMIN = 1.D-16
         KMAX = 1.D4
         EMAX = 1.D10
-      ELSEIF(ITURBV.EQ.7) THEN
+      ELSEIF(ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
         KMIN = 1.D-8
         EMIN = 1.D-3
         KMAX = 1.D-1

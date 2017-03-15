@@ -129,7 +129,8 @@
      &                                   SOURCES,SEM2D,UNSV3D,GRADZF,
      &                                   SEM3D,DSSUDT,OPTBAN,INFOGR,
      &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA,
-     &                                   U,UN,V,VN,WN,NSOUSI,OPTSOU
+     &                                   U,UN,V,VN,WN,NSOUSI,OPTSOU,
+     &                                   ITURBH
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -426,7 +427,8 @@
 !
       IF(.NOT.NONHYD) THEN
         IF(((LT/GRAPRD)*GRAPRD.EQ.LT.AND.LT.GE.GRADEB).OR.
-     &      (ITURBV.EQ.3.OR.ITURBV.EQ.7)) THEN
+     &      (ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.
+     &       ITURBV.EQ.7.OR.ITURBH.EQ.7)) THEN
           CALL WSTARW(W,WSCONV,T3_03%R,T3_04%R,T3_05%R)
         ENDIF
       ENDIF

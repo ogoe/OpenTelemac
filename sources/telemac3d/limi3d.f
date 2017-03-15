@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V7P2
 !***********************************************************************
 !
 !brief    INITIALISES TYPES OF 3D BOUNDARY CONDITIONS.
@@ -32,6 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C.-T. PHAM (EDF, LNHE)
+!+        01/03/2017
+!+        V7P2
+!+   Allowing k-epsilon model on a direction and not on the other.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -252,7 +257,7 @@
 !     SOLID BOUNDARIES FOR K AND EPSILON
 !     **********************************
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.3.OR.ITURBH.EQ.7) THEN
 !
 !     BOTTOM
 !     ======

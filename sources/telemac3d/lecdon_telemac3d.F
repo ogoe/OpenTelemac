@@ -118,6 +118,11 @@
 !+        V7P3
 !+  Water quality: AED2 coupling
 !
+!history  C.-T. PHAM (EDF, LNHE)
+!+        01/03/2017
+!+        V7P2
+!+   Allowing k-epsilon model on a direction and not on the other.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -1917,9 +1922,37 @@
 !
 !-----------------------------------------------------------------------
 !
+!     K-E IN ONE DIRECTION AND K-W IN THE OTHER ONE CANNOT BE COMBINED
+!
+      IF(    (ITURBV.EQ.3.AND.ITURBH.EQ.7)
+     &   .OR.(ITURBV.EQ.7.AND.ITURBH.EQ.3)) THEN
+        IF (LNG.EQ.1) THEN
+          WRITE(LU,*) 'LECDON :'
+          WRITE(LU,*) 'MODELES DE TURBULENCE HORIZONTAL ET VERTICAL'
+          WRITE(LU,*) 'NE PEUVENT PAS ETRE K-EPSILON DANS UNE DIRECTION'
+          WRITE(LU,*) 'ET K-OMEGA DANS L AUTRE DIRECTION'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IF (LNG.EQ.2) THEN
+          WRITE(LU,*) 'LECDON:'
+          WRITE(LU,*) 'HORIZONTAL AND VERTICAL TURBULENCE MODELS '
+          WRITE(LU,*) 'CANNOT BE K-EPSILON IN ONE DIRECTION'
+          WRITE(LU,*) 'AND K-OMEGA IN THE OTHER ONE'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
+
+!
+!-----------------------------------------------------------------------
+!
 !     IF NO K-EPSILON MODEL, CORRESPONDING ADVECTION SCHEME SET TO 0
 !
-      IF(ITURBV.NE.3.AND.ITURBV.NE.7) SCHCKE = 0
+      IF(ITURBV.NE.3.AND.ITURBH.NE.3.AND.
+     &   ITURBV.NE.7.AND.ITURBH.NE.7) THEN
+        SCHCKE = 0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -2140,7 +2173,10 @@
         SCHDKE = 0
       ENDIF
       IF(NTRAC.EQ.0) SCHDTA = 0
-      IF(ITURBV.NE.3.AND.ITURBV.NE.7) SCHDKE = 0
+      IF(ITURBV.NE.3.AND.ITURBH.NE.3.AND.
+     &   ITURBV.NE.7.AND.ITURBH.NE.7) THEN
+        SCHDKE = 0
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

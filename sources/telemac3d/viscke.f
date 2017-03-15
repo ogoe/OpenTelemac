@@ -104,7 +104,7 @@
               VISCVI%ADR(1)%P%R(I)=CMU*AK%R(I)**2/EP%R(I)
             ELSE
 !             IF EPSILON IS NEAR TO CLIP VALUE, NO TURBULENCE
-              VISCVI%ADR(3)%P%R(I)=0.D0
+              VISCVI%ADR(1)%P%R(I)=0.D0
             ENDIF
           ENDDO
         ENDIF

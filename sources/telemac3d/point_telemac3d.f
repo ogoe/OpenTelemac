@@ -76,6 +76,11 @@
 !+        V7P2
 !+   Adding TB2, a block of work arrays for the LIPS advection scheme.
 !
+!history  C.-T. PHAM (EDF, LNHE)
+!+        01/03/2017
+!+        V7P2
+!+   Allowing k-epsilon model on a direction and not on the other.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -642,7 +647,7 @@
 !=======================================================================
 ! K-EPSILON MODEL
 !
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
+      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3.OR.ITURBV.EQ.7.OR.ITURBH.EQ.7) THEN
         IELM   = IELM3
         IELH   = IELM2H
         IELV   = IELM2V
@@ -1191,8 +1196,8 @@
         ENDDO
       ENDIF
 !
-      IF (ITURBV.EQ.3) NTR = MAX(NTR,12)
-      IF (ITURBV.EQ.7) NTR = MAX(NTR,18)
+      IF (ITURBV.EQ.3.OR.ITURBH.EQ.3) NTR = MAX(NTR,12)
+      IF (ITURBV.EQ.7.OR.ITURBH.EQ.7) NTR = MAX(NTR,18)
 !     TRAV3 WILL BE USED IN BIEF_VALIDA WITH THIS SIZE
 !     SEE ALIRE3D IN TELEMAC3D.F AND VARSO3 IN POINT_TELEMAC3D.F
 !     ON 04/07/2012 ADR_TRAC=29
