@@ -427,8 +427,8 @@
             IF(OPTSOU.EQ.1) THEN
 !            LINEAR VERSION NOT COMAPTIBLE WITH FV
 !              SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
-               IF(LNG.EQ.1) WRITE(LU,222)
-               IF(LNG.EQ.2) WRITE(LU,223)
+               IF(LNG.EQ.1) WRITE(LU,322)
+               IF(LNG.EQ.2) WRITE(LU,323)
                CALL PLANTE(1)
                STOP
             ELSE
@@ -580,13 +580,13 @@
       ENDIF
 !
 322   FORMAT(1X,'PROSOU_FV: UNIQUMENT LES SOURCES DE TYPE DIRAC',/,
-     &             1X,'     SONT IMPEMENTEES AVEC LES VOLUMES FINIS',/,
+     &             1X,'     SONT IMPLEMENTEES AVEC LES VOLUMES FINIS',/,
      &             1X,'     METTRE: ',/,
-     &             1X,'     TYPE DE SOURCE=2')
+     &             1X,'     TYPE DE SOURCES = 2')
 323   FORMAT(1X,'PROSOU_FV: ONLY SOURCES WITH DIRAC OPTION ',/,
      &       1X,'           ARE IMPLEMENTED WITH FINITE VOLUMES  '  ,/,
      &       1X,'           PLEASE SET ',/,
-     &       1X,'           "TYPE OF SOURCE = 2"           ')
+     &       1X,'           "TYPE OF SOURCES = 2"           ')
 !
 !=======================================================================
 !
