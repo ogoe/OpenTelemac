@@ -5,7 +5,7 @@
      &(NBOR,AT)
 !
 !***********************************************************************
-! SISYPHE   V7P2                                   24/06/2016
+! SISYPHE   V7P3                                   17/03/2017
 !***********************************************************************
 !
 !brief    ALLOWS TO IMPOSE TIME VARYING BOUNDARY CONDITIONS
@@ -55,6 +55,11 @@
 !+        V7P2
 !+        Integrating liquid boundary file for QS
 !
+!history  M. SECHER AND P. TASSI (EDF)
+!+        17/03/2017
+!+        V7P3
+!+        Add conditional for liquid boundary file for QS
+!                     
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
 !| AT             |-->| TEMPS (s)
@@ -160,9 +165,12 @@
 !
 !         READING BOUNDARY CONDITION FILE WITH SOLID DISCHARGE
 !
+      IF(CHARR) THEN
+!     AVOID OVERRIDING WITH SUSPENDED SEDIMENT TRANSPORT             
           IF(SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
                 SOLDIS(IFRLIQ)=QGL(IFRLIQ,AT)
           ENDIF
+      ENDIF       
 
             CALL DISIMP(SOLDIS(IFRLIQ),Q2BOR,NUMLIQ%I,IFRLIQ,NSOLDIS,
      &                  T5,T1,
