@@ -5,7 +5,7 @@
      &(I,AT)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P3
 !***********************************************************************
 !
 !brief    PRESCRIBES THE SOLID DISCHARGE FOR  IMPOSED
@@ -33,6 +33,12 @@
 !+        V6P2
 !+   Modification size FCT due to modification of TRACER numbering
 !
+!history  P. TASSI (EDF)
+!+        17/03/2017
+!+        V7P3
+!+   Modification of the error message when the prescribed number
+!+   of solid discharge(s) is not enough                     
+!                     
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
@@ -87,12 +93,12 @@
 !       PROGRAMMABLE PART
 !       SL IS READ FROM THE STEERING FILE, BUT MAY BE CHANGED
         IF(LNG.EQ.1) WRITE(LU,10 0) I
-100     FORMAT(1X,/,1X,'QG : CONC IMPOSEES EN NOMBRE INSUFFISANT'
-     &           ,/,1X,'     DANS LE FICHIER DES PARAMETRES'
-     &           ,/,1X,'     IL EN FAUT AU MOINS : ',1I6)
+100     FORMAT(1X,/,1X,'QG : DEBITS SOLIDES IMPOSEES EN NOMBRE'
+     &           ,/,1X,'     INSUFFISANT DANS LE FICHIER DES '
+     &           ,/,1X,'     PARAMETRES IL EN FAUT AU MOINS : ',1I6)
         IF(LNG.EQ.2) WRITE(LU,101) I
-101     FORMAT(1X,/,1X,'QG: MORE PRESCRIBED CONCENTRATIONS ARE REQUIRED'
-     &           ,/,1X,'     IN THE PARAMETER FILE'
+101     FORMAT(1X,/,1X,'QG: MORE PRESCRIBED SOLID DISCHARGES '
+     &           ,/,1X,'     ARE REQUIRED IN THE PARAMETER FILE'
      &           ,/,1X,'     AT LEAST ',1I6,' MUST BE GIVEN')
         CALL PLANTE(1)
         STOP
