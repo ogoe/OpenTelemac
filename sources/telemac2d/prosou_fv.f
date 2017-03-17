@@ -425,8 +425,12 @@
 !         IS NOT IN THE SUB-DOMAIN
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
-!             "NORMAL" VERSION
-              SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
+!            LINEAR VERSION NOT COMAPTIBLE WITH FV
+!              SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
+               IF(LNG.EQ.1) WRITE(LU,222)
+               IF(LNG.EQ.2) WRITE(LU,223)
+               CALL PLANTE(1)
+               STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)+DSCE(I)
@@ -466,8 +470,12 @@
         IR = ENTSIP(I)
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
-!             "NORMAL" VERSION
-              SMH%R(IR)=SMH%R(IR)-DSIP(I)*UNSV2D%R(IR)
+!             LINEAR VERSION NOT COMAPTIBLE WITH FV
+!              SMH%R(IR)=SMH%R(IR)-DSIP(I)*UNSV2D%R(IR)
+               IF(LNG.EQ.1) WRITE(LU,322)
+               IF(LNG.EQ.2) WRITE(LU,323)
+               CALL PLANTE(1)
+               STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)-DSIP(I)
@@ -481,7 +489,11 @@
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
 !             "NORMAL" VERSION
-              SMH%R(IR)=SMH%R(IR)+DSIP(I)*UNSV2D%R(IR)
+!              SMH%R(IR)=SMH%R(IR)+DSIP(I)*UNSV2D%R(IR)
+              IF(LNG.EQ.1) WRITE(LU,322)
+              IF(LNG.EQ.2) WRITE(LU,323)
+              CALL PLANTE(1)
+              STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)+DSIP(I)
@@ -505,8 +517,12 @@
           IR = ENTBUS(I)
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
-!             "NORMAL" VERSION
-              SMH%R(IR)=SMH%R(IR)-DBUS(I)*UNSV2D%R(IR)
+!             LINEAR VERSION NOT COMAPTIBLE WITH FV
+!             SMH%R(IR)=SMH%R(IR)-DBUS(I)*UNSV2D%R(IR)
+              IF(LNG.EQ.1) WRITE(LU,322)
+              IF(LNG.EQ.2) WRITE(LU,323)
+              CALL PLANTE(1)
+              STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)-DBUS(I)
@@ -519,8 +535,12 @@
           IR = SORBUS(I)
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
-!             "NORMAL" VERSION
-              SMH%R(IR)=SMH%R(IR)+DBUS(I)*UNSV2D%R(IR)
+!             LINEAR VERSION NOT COMAPTIBLE WITH FV
+!             SMH%R(IR)=SMH%R(IR)-DBUS(I)*UNSV2D%R(IR)
+              IF(LNG.EQ.1) WRITE(LU,322)
+              IF(LNG.EQ.2) WRITE(LU,323)
+              CALL PLANTE(1)
+              STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)+DBUS(I)
@@ -558,6 +578,15 @@
 !     &      WNODES(K)%QN*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
         ENDDO
       ENDIF
+!
+322   FORMAT(1X,'PROSOU_FV: UNIQUMENT LES SOURCES DE TYPE DIRAC',/,
+     &             1X,'     SONT IMPEMENTEES AVEC LES VOLUMES FINIS',/,
+     &             1X,'     METTRE: ',/,
+     &             1X,'     TYPE DE SOURCE=2')
+323   FORMAT(1X,'PROSOU_FV: ONLY SOURCES WITH DIRAC OPTION ',/,
+     &       1X,'           ARE IMPLEMENTED WITH FINITE VOLUMES  '  ,/,
+     &       1X,'           PLEASE SET ',/,
+     &       1X,'           "TYPE OF SOURCE = 2"           ')
 !
 !=======================================================================
 !
