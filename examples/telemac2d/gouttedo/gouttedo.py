@@ -10,9 +10,8 @@ rank = comm.Get_rank()
 ncsize = comm.Get_size()
 # Running partel
 if ( rank == 0 and ncsize > 1):
-    ierr = t2d.api_inter.run_partel(t2d.id,'geo_gouttedo.slf','geo_gouttedo.cli',ncsize,1,'SERAFIN ',' ',' ',' ')
+    ierr = t2d.api_inter.run_partel(t2d.my_id,'geo_gouttedo.slf','geo_gouttedo.cli',ncsize,1,'SERAFIN ',' ',' ',' ')
 comm.Barrier()
-print ierr
 t2d.set_case()
 # Initalization
 t2d.init_state_default()
@@ -23,6 +22,6 @@ comm.Barrier()
 # Ending the run
 t2d.finalize()
 if ( rank == 0 and ncsize > 1):
-    t2d.api_inter.run_gretel(t2d.id,'geo_gouttedo.slf','SERAFIN ','r2d_gouttedo_v1p0.slf','SERAFIN ',ncsize,0)
+    t2d.api_inter.run_gretel(t2d.my_id,'geo_gouttedo.slf','SERAFIN ','r2d_gouttedo_v1p0.slf','SERAFIN ',ncsize,0)
 # Instance delete
 del(t2d)

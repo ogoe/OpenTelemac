@@ -33,11 +33,12 @@
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
       INTEGER,          INTENT(IN)  :: RECORD
-      DOUBLE PRECISION, INTENT(INOUT) :: TIME
+      DOUBLE PRECISION, INTENT(OUT) :: TIME
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      TIME = 0.0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_DATA_TIME_SRF(FID,RECORD,TIME,IERR)

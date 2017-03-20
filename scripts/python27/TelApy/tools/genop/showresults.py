@@ -24,7 +24,7 @@ def printinfo(i, nitermax, fvalopt, indopt, nsimul):
         print('-------------------------------')
     if nitermax != -1:
         print('      %3d       %e' % ((i+1), fvalopt))
-    if (i+1 == nitermax) | (nitermax ==-1):
+    if (i+1 == nitermax) | (nitermax == -1):
         print('-------------------------------------\n')
         print('--> Maximum number of iterations: %d' % (i+1))
         print('-------------------------------------\n')

@@ -45,14 +45,13 @@
       INTEGER IKLES(3,NELEM2) , PLINF(NPOIN2)
       INTEGER IPOBO(NPOIN2)
       INTEGER ELEM(IM,NC2DV)
-      INTEGER N,NPRE,NHOR,NVER
+      INTEGER N,NPRE
 !
 ! VARIABLES LOCALES
 !
       INTEGER I, K ,  IMSEG(49,9)
       DOUBLE PRECISION AT
       INTEGER :: IENRE
-      INTEGER :: NFILE
 !
 ! VARIABLES BIDON POUR LIT
 !
@@ -61,6 +60,8 @@
       INTEGER ERR, IERR
       CHARACTER(LEN=8) PRE_FMT, VER_FMT, HOR_FMT
       CHARACTER(LEN=16),ALLOCATABLE :: VAR_NAME(:), VAR_UNIT(:)
+      INTEGER, ALLOCATABLE :: NHOR(:)
+      INTEGER, ALLOCATABLE :: NVER(:)
 !
 !***********************************************************************
 ! allocate a (simple) REAL vector
@@ -78,11 +79,14 @@
 !
       NPRE = POS_FILES(POSPRE)%LU
       PRE_FMT = POS_FILES(POSPRE)%FMT
-      NHOR = POS_FILES(POSHOR)%LU
+      ALLOCATE(NHOR(MAX(NC2DH,1)),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,"NHOR")
+      NHOR(1) = POS_FILES(POSHOR)%LU
       HOR_FMT = POS_FILES(POSHOR)%FMT
-      NVER = POS_FILES(POSVER)%LU
+      ALLOCATE(NVER(MAX(NC2DV,1)),STAT=IERR)
+      CALL CHECK_ALLOCATE(IERR,"NVER")
+      NVER(1) = POS_FILES(POSVER)%LU
       VER_FMT = POS_FILES(POSVER)%FMT
-      NFILE = NVER
 !
 !
       CALL GET_DATA_NVAR(PRE_FMT,NPRE,NVA3,IERR)
@@ -124,11 +128,11 @@
       ! Cancelling the opening done in bief_open_file as multiple files will be reopen
 
       IF(NC2DH.GE.1) THEN
-        CALL CLOSE_MESH(HOR_FMT,NHOR,IERR)
+        CALL CLOSE_MESH(HOR_FMT,NHOR(1),IERR)
         CALL CHECK_CALL(IERR,'POSTEL3D:CLOSE_MESH')
       ENDIF
       IF(NC2DV.GE.1) THEN
-        CALL CLOSE_MESH(VER_FMT,NVER,IERR)
+        CALL CLOSE_MESH(VER_FMT,NVER(1),IERR)
         CALL CHECK_CALL(IERR,'POSTEL3D:CLOSE_MESH')
       ENDIF
 !
@@ -138,7 +142,7 @@
         DO K = 1,NPOIN2
            IPOBO(K) = 0
         ENDDO
-        CALL PRE2DH (X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NHOR,
+        CALL PRE2DH(X,Y,IKLES,IPOBO,NPOIN2,NELEM2,NC2DH,NHOR,
      &     TITCAS,HOR_FMT,NVA3,TEXTLU)
       ENDIF
 !
@@ -177,28 +181,24 @@
      &           IENRE)
             ENDDO
           ENDIF
-          NVER = NVER + NC2DV
         ENDIF
       ENDDO
 !
       IF (NC2DH.GE.2) THEN
         DO I=2,NC2DH
-          CALL CLOSE_MESH(HOR_FMT,NHOR+I-1,IERR)
+          CALL CLOSE_MESH(HOR_FMT,NHOR(I),IERR)
           CALL CHECK_CALL(IERR,'POSTEL3D:CLOSE_MESH')
         ENDDO
       ENDIF
+      POS_FILES(POSHOR)%LU = NHOR(1)
       ! Reopening the file for bief_close_mesh
-      CALL OPEN_MESH(VER_FMT,'POSVER',NFILE,'WRITE    ',IERR)
+      CALL OPEN_MESH(VER_FMT,'POSVER',POS_FILES(POSVER)%LU,
+     &               'WRITE    ',IERR)
 !
-      DEALLOCATE (VAR)
-      DEALLOCATE (SHZ)
-!
-!-----------------------------------------------------------------------
-!
-!101   FORMAT('LE NUMERO DU PREMIER ENREGISTREMENT POUR LES COUPES',/,
-!     &       'EST SUPERIEUR AU NOMBRE D''ENREGISTREMENTS')
-!102   FORMAT('THE NUMBER OF THE FIRST RECORD FOR CROSS SECTIONS',/,
-!     &       'IS HIGHER THAN THE NUMBER OF RECORDS')
+      DEALLOCATE(VAR)
+      DEALLOCATE(SHZ)
+      DEALLOCATE(NHOR)
+      DEALLOCATE(NVER)
 !
 !-----------------------------------------------------------------------
 !

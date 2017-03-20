@@ -36,7 +36,7 @@ class TestGenop(unittest.TestCase):
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(20, nproc=2)
         self.assertTrue(fcost[-1] < 1.e-2)
-        
+
     def test_maccormick(self):
         f = simul.maccormick
         n = 2
@@ -54,7 +54,7 @@ class TestGenop(unittest.TestCase):
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(20)
         self.assertTrue(fcost[-1] < -1.91)
-        
+
     def test_easom(self):
         f = simul.easom
         n = 2
@@ -72,7 +72,7 @@ class TestGenop(unittest.TestCase):
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(nbgen=100)
         self.assertTrue(np.abs(fcost[-2] - fcost[-1]) < 1.e-12)
-        
+
     def test_eggholder(self):
         f = simul.eggholder
         n = 2
@@ -89,8 +89,8 @@ class TestGenop(unittest.TestCase):
         error = mypb.initialize(f, n, bd)
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(20)
-        self.assertTrue(fcost[-1] < -900.)       
-        
+        self.assertTrue(fcost[-1] < -900.)
+
     def test_linear(self):
         f = simul.linear
         n = 3
@@ -109,8 +109,8 @@ class TestGenop(unittest.TestCase):
         error = mypb.initialize(f, n, bd)
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(200)
-        self.assertTrue(fcost[-1] < -23.1)       
-    
+        self.assertTrue(fcost[-1] < -23.1)
+
     def test_abslinear(self):
         f = simul.abslinear
         n = 1
@@ -125,7 +125,7 @@ class TestGenop(unittest.TestCase):
         error = mypb.initialize(f, n, bd)
         self.assertEqual(error, 0)
         fcost, xopt = mypb.optimize(2000)
-        self.assertTrue(np.abs(xopt[-1] - 2.) < 1.e-3)           
+        self.assertTrue(np.abs(xopt[-1] - 2.) < 1.e-3)
 
 if __name__ == '__main__':
     unittest.main()

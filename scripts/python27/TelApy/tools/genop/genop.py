@@ -38,7 +38,7 @@ class Genop(object):
         self.nsimul = 0 # number of calls to the simulation function
         self.bounds = []  # lower and upper bounds of optimization variables
         self._pop = []  # population of individuals
-        self._fvalpop = []  # cost function values of the population     
+        self._fvalpop = []  # cost function values of the population
         self.__ready = False  # intialization is done
         self.foptiter = np.array([]).reshape(0, 1)  # save the best cost functions
         self.epsconv = np.finfo(float).eps # convergence value to stop the iterations (default: machine precision)
@@ -91,7 +91,7 @@ class Genop(object):
         self.foptiter = np.array([]).reshape(0, 1)
         # nsimul must be equal to 0
         self.nsimul = 0
-        # Initialize a population from a uniform distribution 
+        # Initialize a population from a uniform distribution
         self._pop = genpop(self.bounds, self.nvar, self.popsize)
         # Compute the initial score for the population
         self._fvalpop, ncalls = cost(self._pop, self.popsize, self.nvar, self.function, nproc)

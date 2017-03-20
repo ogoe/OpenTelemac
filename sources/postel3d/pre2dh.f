@@ -55,7 +55,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) ::NPOIN2,NELEM2,NC2DH,NCOU
+      INTEGER, INTENT(IN) ::NPOIN2,NELEM2,NC2DH
+      INTEGER, INTENT(INOUT) :: NCOU(*)
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2)
       CHARACTER(LEN=72), INTENT(IN) :: TITCAS
       INTEGER , INTENT(INOUT) :: IKLES(3,NELEM2),IPOBO(NPOIN2)
@@ -66,7 +67,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !
-      INTEGER IC,I,CANAL
+      INTEGER IC,I
       INTEGER N,IELEM
 !
       INTEGER, ALLOCATABLE :: IKLE(:)
@@ -82,12 +83,11 @@
 !
       DO IC = 1,NC2DH
 !
-        CANAL = NCOU-1+IC
 !
 !     OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !     -------------------------------------------------------------
 !
-        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,.TRUE.,
+        CALL ECRDEB(NCOU(IC),FFORMAT,TITCAS,NVA3,.TRUE.,
      &               TEXTLU,IC,N)
 !
 !     ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
@@ -102,7 +102,7 @@
             IKLE((I-1)*NELEM2 + IELEM) = IKLES(I,IELEM)
           ENDDO
         ENDDO
-        CALL SET_MESH(FFORMAT,CANAL,2,TRIANGLE_ELT_TYPE,3,0,0,
+        CALL SET_MESH(FFORMAT,NCOU(IC),2,TRIANGLE_ELT_TYPE,3,0,0,
      &                NELEM2,NPOIN2,IKLE,IPOBO,IPOBO,X,Y,0,
      &                DATE,TIME,IERR)
         CALL CHECK_CALL(IERR,'PRED2H:SET_MESH')

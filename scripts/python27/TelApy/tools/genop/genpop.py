@@ -18,11 +18,11 @@ import numpy as np
 
 def genpop(bounds, nvar, npop):
     lower = bounds[:, 0]
-    xrange = bounds[:, 1] - bounds[:, 0]
+    x_range = bounds[:, 1] - bounds[:, 0]
     pop = np.array([]).reshape(0, nvar)
-    for i in range(0, npop):
+    for _ in range(0, npop):
         randval = np.random.uniform(0, 1, (nvar, 1))
         randval = randval.reshape(nvar, )
-        individual = lower + xrange*randval
+        individual = lower + x_range*randval
         pop = np.vstack([pop, individual])
     return pop

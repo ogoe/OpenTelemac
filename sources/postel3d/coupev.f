@@ -75,7 +75,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,INTENT(IN) :: NPOIN2,NELEM2,NCOU,IM,JM,NC2DV
+      INTEGER,INTENT(IN) :: NPOIN2,NELEM2,IM,JM,NC2DV
+      INTEGER, INTENT(INOUT) :: NCOU(*)
       DOUBLE PRECISION ,INTENT(IN) ::AT
       DOUBLE PRECISION , INTENT(INOUT) :: SHP(IM,3,NC2DV)
       TYPE (BIEF_OBJ), INTENT(INOUT) :: TAB
@@ -132,12 +133,10 @@
       IREC = 0
       DO IC = 1,NC2DV
 !
-        CALL GET_FREE_ID(CANAL)
-!
 !    OUVERTURE DU FICHIER + ENREGISTREMENT DES PREMIERS PARAMETRES
 !    -------------------------------------------------------------
 !
-        CALL ECRDEB(CANAL,FFORMAT,TITCAS,NVA3,.FALSE.,
+        CALL ECRDEB(NCOU(IC),FFORMAT,TITCAS,NVA3,.FALSE.,
      &              TEXTLU,IC,IENRE)
 !
 !       CALCUL DES AUTRES PARAMETRES DE L'ENTETE
@@ -210,6 +209,7 @@
 !       X AND Y COORDINATES
         DATE = (/0,0,0/)
         TIME = (/0,0,0/)
+        CANAL = NCOU(IC)
         CALL SET_MESH(FFORMAT,CANAL,2,TRIANGLE_ELT_TYPE,3,0,0,NUMELEM,
      &                IB(2),IKLE,IPOBO,IPOBO,TAB1,TAB2,0,
      &                DATE,TIME,IERR)

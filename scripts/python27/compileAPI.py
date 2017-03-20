@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-"""@author Y. Audouin
-"""
-"""@note ... this work is based on a collaborative effort between
+r"""@author Y. Audouin
+
+   @note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -10,8 +10,8 @@
   /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
-"""
-"""@brief This scripts compiles the API library and executable
+
+   @brief This scripts compiles the API library and executable
 """
 
 # _____          ___________________________________________________
@@ -19,321 +19,482 @@
 #
 import re
 import sys
-import time
 import shutil
-from subprocess import call
-from os import path, sep, walk, chdir, remove, environ, mkdir, system, symlink
+from subprocess import call, STDOUT, check_output, CalledProcessError
+from os import path, sep, walk, chdir, remove, environ, mkdir, \
+               listdir, getcwd
 import argparse
 # ~~> dependencies towards the root of pytel
-from config import parseConfigFile,parseConfig_CompileTELEMAC
+from config import parseConfigFile
 # ~~> dependencies towards other pytel/modules
-from utils.messages import MESSAGES,filterMessage,banner
-from utils.progressbar import ProgressBar
+from utils.messages import MESSAGES, filterMessage, banner
 
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Y. Audouin"
-__date__ ="$04-may-2016 14:04:00$"
+__author__ = "Y. Audouin"
+__date__ = "$04-may-2016 14:04:00$"
 
-def mycopy(src,dst):
-   """
-   Custom copy that will do a link is symlink is available a copy otherwise
+def mycopy(src, dst):
+    """
+    Custom copy that will remove the destination first if it is there
 
-   @param src The file to copy
-   @param dst The destiantion where to copy the file
-   """
-   if path.exists(dst):
-       remove(dst)
-   symlink(src,dst)
+    @param src The file to copy
+    @param dst The destiantion where to copy the file
+    """
+    if path.exists(dst):
+        remove(dst)
+    shutil.copy2(src, dst)
 
-def compile_API(cfgs,cfgname,fcompiler,user_fortran):
-   print 'Compiling the API \n'+'~'*72+'\n'
-   api_dir = path.join(cfgs[cfgname]['root'],'builds',cfgname,'wrap_api')
-   lib_dir = path.join(cfgs[cfgname]['root'],'builds',cfgname,'lib')
-   if not path.exists(api_dir):
-      mkdir(api_dir)
-      mkdir(api_dir+sep+'lib')
-      mkdir(api_dir+sep+'src')
-      mkdir(api_dir+sep+'include')
-   # Copying libraries
-   mycopy(path.join(lib_dir,'telemac2d','homere_api.so'),\
-                   path.join(api_dir,'lib','libtelemac2d.so'))
-   mycopy(path.join(lib_dir,'api','homere_api.so'),\
-                   path.join(api_dir,'lib','libapi.so'))
-   mycopy(path.join(lib_dir,'sisyphe','homere_api.so'),\
-                   path.join(api_dir,'lib','libsisyphe.so'))
-   mycopy(path.join(lib_dir,'nestor','homere_api.so'),\
-                   path.join(api_dir,'lib','libnestor.so'))
-   mycopy(path.join(lib_dir,'tomawac','homere_api.so'),\
-                   path.join(api_dir,'lib','libtomawac.so'))
-   mycopy(path.join(lib_dir,'waqtel','homere_api.so'),\
-                   path.join(api_dir,'lib','libwaqtel.so'))
-   mycopy(path.join(lib_dir,'utils','bief','homere_api.so'),\
-                   path.join(api_dir,'lib','libbief.so'))
-   mycopy(path.join(lib_dir,'utils','special','homere_api.so'),\
-                   path.join(api_dir,'lib','libspecial.so'))
-   mycopy(path.join(lib_dir,'utils','parallel','homere_api.so'),\
-                   path.join(api_dir,'lib','libparallel.so'))
-   mycopy(path.join(lib_dir,'utils','damocles','homere_api.so'),\
-                   path.join(api_dir,'lib','libdamocles.so'))
-   mycopy(path.join(lib_dir,'utils','hermes','homere_api.so'),\
-                   path.join(api_dir,'lib','libhermes.so'))
-   mycopy(path.join(lib_dir,'utils','gretel','homere_api.so'),\
-                   path.join(api_dir,'lib','libgretel.so'))
-   mycopy(path.join(lib_dir,'utils','partel','homere_api.so'),\
-                   path.join(api_dir,'lib','libpartel.so'))
-   # Copying Modules
-   for root, dirs, files in walk(lib_dir):
-      for ffile in files:
-         if ffile.endswith("mod"):
-            mycopy(path.join(root,ffile),
-                            path.join(api_dir,'include',ffile))
+def get_api_incs_flags(cfgs, cfgname):
+    """
+    Retuns the string for incs_flags for api
 
-   # Copying Sources
-   mycopy(path.join(cfgs[cfgname]['root'],'sources','api','api_handle_var_t2d.f'),\
-                   path.join(api_dir,'src','api_handle_var_t2d.f90'))
-   mycopy(path.join(cfgs[cfgname]['root'],'sources','api','api_handle_var_sis.f'),\
-                   path.join(api_dir,'src','api_handle_var_sis.f90'))
-   mycopy(path.join(cfgs[cfgname]['root'],'sources','api','api_handle_error.f'),\
-                   path.join(api_dir,'src','api_handle_error.f90'))
-   mycopy(path.join(cfgs[cfgname]['root'],'sources','api','api_interface.f'),\
-                   path.join(api_dir,'src','api_interface.f90'))
-   # Generating Py wrapper using f2py
-   chdir(api_dir+sep+'lib')
-   source = '<apiSrc>api_handle_var_t2d.f90 <apiSrc>api_handle_var_sis.f90 '
-   source += ' <apiSrc>api_handle_error.f90 <apiSrc>api_interface.f90'
-   skipSource = 'get_boolean_t2d_d get_double_t2d_d get_integer_t2d_d get_string_t2d_d '
-   skipSource += 'get_var_size_t2d_d set_boolean_t2d_d set_double_t2d_d set_integer_t2d_d set_string_t2d_d '
-   skipSource += 'get_boolean_sis_d get_double_sis_d get_integer_sis_d get_string_sis_d '
-   skipSource += 'get_var_size_sis_d set_boolean_sis_d set_double_sis_d set_integer_sis_d set_string_sis_d'
-   pyfFile = 'api.pyf'
-   if path.exists(pyfFile):
-      remove(pyfFile)
-   # First step of call to f2py
-   cmd = 'f2py --quiet -h %s -m _api %s skip: %s :'%(pyfFile,
-                                             source.replace('<apiSrc>',api_dir+sep+'src'+sep),
-                                             skipSource)
-   try:
-      retcode = call(cmd,shell=True)
-      if retcode != 0:
-         print 'Error during first part of f2py return code:',retcode
-         sys.exit(1)
-   except OSError as e:
-      print 'Error during first part of f2py'
-      sys.exit(1)
+    @param cfgs Configuration structure
+    @param cfgname Name of the configuration
 
-   # Compile user Fortran
-   # TODO: Replace .so by extension from config
-   ld_flags = cfgs[cfgname]['libs_all'].replace('<root>',cfgs[cfgname]['root']).replace('\n',' ')
-   if user_fortran != '':
-      if fcompiler == 'gfortran':
-         if 'mpi_cmdexec' in cfgs[cfgname]:
-            compiler = "mpif90"
-         else:
-            compiler = "gfortran"
-         command = "%s %s -shared -fconvert=big-endian -o %s %s -I%s -fPIC" % \
-                   (compiler,user_fortran,
-                    "libuser_fortran.so",ld_flags,
-                    api_dir+sep+'include')
-         print '+> Compiling User fortran with ',compiler
-         print command
-         ret = system(command)
-         if ret != 0:
-            raise Exception("Cannot compile user fortran file %s" % user_fortran)
-      elif fcompiler == 'intel':
-         #TODO: For Cedric Add intel compilation
-         print 'Intel compilation of user_fortran not implemented yet'
-         return
+    @returns the string
+    """
+    api_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'wrap_api')
 
-   # Second step of call to f2py
-   lib_cmd = ld_flags
-   lib_cmd += ' -L'+api_dir+sep+'lib'
-   if user_fortran != '':
-      lib_cmd += ' ' + '-luser_fortran'
-   lib_cmd += ' -ltelemac2d -lapi -lwaqtel -lbief -lspecial -lnestor'
-   lib_cmd += ' -lsisyphe -ltomawac -lparallel -ldamocles -lhermes -lgretel -lpartel'
-   cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '%(pyfFile,\
-                                               args.fcompiler,
-                                               api_dir+sep+'include',
-                                               lib_cmd)
-   try:
-      retcode = call(cmd, shell=True)
-      if retcode != 0:
-         raise Exception('Error during second part of f2py return code:'+str(retcode))
-   except OSError as e:
-      raise Exception('Error during second part of f2py',e)
+    incs_flags = cfgs[cfgname]['incs_all'].replace('<root>',
+                                                   cfgs[cfgname]['root'])\
+                                          .replace('\n', ' ')
+    incs_flags += ' -I'+api_dir+sep+'include'
 
-def compile_obj(fortranFile,cfg,cfgName):
-   """
-   Compile a fortran using configuration information
+    return incs_flags
 
-   @param fortranFile The file to be compiled
-   @param cfg The configuration object
-   @param cfgName The name of the configuration to compile the file with
-   """
-   root,suffix = path.splitext(path.basename(fortranFile))
-   cmd = cfg['cmd_obj']
-   incs = cfg['incs_all']
-   cmd = cmd.replace('<incs>',incs)
-   mods = cfg['mods_all'].replace('<config>',
-          path.join(cfg['root'], 'builds', cfgName, 'wrap_api', 'include'))
-   cmd = cmd.replace('<mods>',mods)
-   cmd = cmd.replace('<f95name>',fortranFile)
-   print cmd
-   try:
-      retcode = call(cmd,shell=True)
-      if retcode != 0:
-         raise Exception("Cannot compile fortran file %s" % fortranFile)
-   except OSError as e:
-      raise Exception("Cannot compile fortran file %s" % fortranFile)
+def get_api_ld_flags(cfgs, cfgname):
+    """
+    Retuns the string for ld_flags for api
 
-def compile_exe(fortranFile,cfg,cfgName,user_fortran=''):
-   """
-   Compile a fortran using configuration information
+    @param cfgs Configuration structure
+    @param cfgname Name of the configuration
 
-   @param fortranFile The file to be compiled
-   @param cfg The configuration object
-   @param cfgName The name of the configuration to compile the file with
-   """
-   root,suffix = path.splitext(path.basename(fortranFile))
-   cmd = cfg['cmd_exe']
-   libs = cfg['libs_all']+' -L'+path.join(cfg['root'],'builds',cfgName,'wrap_api','lib')+" "
-   deps_t2d = ['special', 'parallel', 'damocles', 'hermes',
-           'bief', 'partel', 'gretel', 'waqtel', 'nestor', 'sisyphe',
-           'tomawac', 'telemac2d', 'api']
-   for lib in deps_t2d:
-      libs += "-l"+lib+" "
-   cmd = cmd.replace('<libs>',libs)
-   objs = root+cfg['sfx_obj']
-   if user_fortran != '':
-      print 'user_fortran',user_fortran
-      root2,suffix2 = path.splitext(path.basename(user_fortran))
-      objs += ' ' +  root2+ cfg['sfx_obj']
-   cmd = cmd.replace('<objs>',objs)
-   cmd = cmd.replace('<exename>',root+cfg['sfx_exe'])
-   print cmd
-   try:
-      retcode = call(cmd,shell=True)
-      if retcode != 0:
-         raise Exception("Cannot compile fortran file %s" % fortranFile)
-   except OSError as e:
-      raise Exception("Cannot compile fortran file %s" % fortranFile)
+    @returns the string
+    """
+    api_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'wrap_api')
 
-def compile_API_exe(programFile,cfgs,cfgname,user_fortran):
-   """
-   Compile the Fortran program file with the Telemac-Mascaret libraries
-   and compile the user Fortran file if there is one
+    ld_flags = cfgs[cfgname]['libs_all'].replace('<root>',
+                                                 cfgs[cfgname]['root'])\
+                                        .replace('\n', ' ')
+    ld_flags += ' -L'+api_dir+sep+'lib'
+    ld_flags += ' -ltelemac2d -lapi -lwaqtel -lbief -lspecial -lnestor'
+    ld_flags += ' -lsisyphe -ltomawac -lparallel -ldamocles'
+    ld_flags += ' -lhermes -lgretel -lpartel'
 
-   @param programFile The program fortran
-   @param cfgs Configurations informations
-   @param cfgname Name of the configuration used here
-   @param user_fortran The user Fortran file
-   """
-   cfg = cfgs[cfgname]
-   if user_fortran != '':
-      compile_obj(user_fortran,cfg,cfgname)
-   # Compile the programfile.o
-   compile_obj(programFile,cfg,cfgname)
-   compile_exe(programFile,cfg,cfgname,user_fortran=user_fortran)
+    return ld_flags
 
-if __name__ == "__main__":
+def compile_princi_lib(princi_file, cfgname, cfgs, incs_flags, ld_flags):
+    """
+       Compiling user fortran as a library
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
-   parser = argparse.ArgumentParser(description='Compile Telemac-Mascaret API '\
-                                                'and/or executable using the API')
-   parser.add_argument("-c","--configname",
-             dest='configName',
-             default="",
-             help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_argument("-f","--configfile",
-             dest='configFile',
-             default="",
-             help="specify configuration file, default is systel.cfg" )
-   parser.add_argument("-r","--rootdir",
-             dest='rootDir',
-             default="",
-             help="specify the root, default is taken from config file" )
-   parser.add_argument("--fcompiler",
-             dest="fcompiler",
-             default='gfortran',
-             help="spectify the option to give to f2py, default is gfortran" )
-   parser.add_argument("--user-fortran",
-             dest="user_fortran",
-             default='',
-             help="give a user fortran to recompile the API with, default is None")
-   parser.add_argument("--exe",
-             dest="exeFile",
-             default="",
-             help="Compile the program exeFile")
-   args = parser.parse_args()
+       @param user_fortran Name of the user_fortran
+       @param cfgname Name of the configuration
+       @param cfgs Configuration structure
+       @param incs_flags Include flags for compilation
+       @param ld_flags Linking flags for compilation
+    """
+    if not path.exists(princi_file):
+        raise Exception([{
+            'name':'compile_princi_lib',
+            'msg':'could not find your FORTRAN: '+princi_file}])
+
+    user_fortran = []
+    # in case of a folder getting list of files
+    if path.isdir(princi_file):
+        list_files = listdir(princi_file)
+        for fle in list_files:
+            if re.match("^m[0-9]+.*", fle) and \
+               fle.lower().endswith((".f", ".f90")):
+                user_fortran.append(path.join(princi_file, fle))
+        # Adding the other files
+        for fle in list_files:
+            if fle not in user_fortran and \
+               fle.lower().endswith((".f", ".f90")):
+                user_fortran.append(path.join(princi_file, fle))
+    else:
+        user_fortran = [princi_file]
+    # Building linking commands
+    command = cfgs[cfgname]['cmd_lib'].replace('<libname>',
+                                               "libuser_fortran" + \
+                                                cfgs[cfgname]['sfx_lib'])\
+                                      .replace('<objs>', ' '.join(user_fortran))
+    command += ' ' + incs_flags + ' ' + ld_flags
+
+    mes = MESSAGES(size=10)
+    try:
+        tail, code = mes.runCmd(command, False)
+    except Exception as execpt:
+        raise Exception([filterMessage(\
+                {'name':'compile_princi_lib',
+                 'msg':'something went wrong for no reason. \
+                        Please verify your compiler installation.'
+                }, execpt, False)])
+    if code != 0:
+        raise Exception([{
+            'name':'compile_princi_lib',
+            'msg':'could not compile your FORTRAN \
+                   (runcode='+str(code)+').\n      '+tail}])
+
+def compile_api(cfgs, cfgname, fcompiler, user_fortran, silent):
+    """
+       Compiling the API for Telemac-Mascaret
+
+       @param cfgs List of configurations info
+       @param cfgname Name of the configuration for which we compile the API
+       @param fcompiler Fortran Compiler to use
+       @param user_fortran Name of the user Fortran if there is one
+    """
+    print '\033[93m[debug] ',cfgs,'\033[0m'
+    print 'Compiling the API \n'+'~'*72+'\n'
+    api_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'wrap_api')
+    lib_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'lib')
+    if not path.exists(api_dir):
+        mkdir(api_dir)
+        mkdir(api_dir+sep+'lib')
+        mkdir(api_dir+sep+'src')
+        mkdir(api_dir+sep+'include')
+    # Copying libraries
+    mycopy(path.join(lib_dir, 'telemac2d', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libtelemac2d.so'))
+    mycopy(path.join(lib_dir, 'api', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libapi.so'))
+    mycopy(path.join(lib_dir, 'sisyphe', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libsisyphe.so'))
+    mycopy(path.join(lib_dir, 'nestor', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libnestor.so'))
+    mycopy(path.join(lib_dir, 'tomawac', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libtomawac.so'))
+    mycopy(path.join(lib_dir, 'waqtel', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libwaqtel.so'))
+    mycopy(path.join(lib_dir, 'utils', 'bief', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libbief.so'))
+    mycopy(path.join(lib_dir, 'utils', 'special', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libspecial.so'))
+    mycopy(path.join(lib_dir, 'utils', 'parallel', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libparallel.so'))
+    mycopy(path.join(lib_dir, 'utils', 'damocles', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libdamocles.so'))
+    mycopy(path.join(lib_dir, 'utils', 'hermes', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libhermes.so'))
+    mycopy(path.join(lib_dir, 'utils', 'gretel', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libgretel.so'))
+    mycopy(path.join(lib_dir, 'utils', 'partel', 'homere_api.so'), \
+                     path.join(api_dir, 'lib', 'libpartel.so'))
+    # Copying Modules
+    for root, _, files in walk(lib_dir):
+        for ffile in files:
+            if ffile.endswith("mod"):
+                mycopy(path.join(root, ffile),
+                       path.join(api_dir, 'include', ffile))
+
+    # Copying Sources
+    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
+                     'api', 'api_handle_var_t2d.f'), \
+           path.join(api_dir, 'src', 'api_handle_var_t2d.f90'))
+    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
+                     'api', 'api_handle_var_sis.f'), \
+           path.join(api_dir, 'src', 'api_handle_var_sis.f90'))
+    mycopy(path.join(cfgs[cfgname]['root'], 'sources', 'api', \
+                     'api_handle_error.f'), \
+           path.join(api_dir, 'src', 'api_handle_error.f90'))
+    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
+                     'api', 'api_interface.f'), \
+           path.join(api_dir, 'src', 'api_interface.f90'))
+
+    print "    ~> Wrap_api built"
+
+    # Generating Py wrapper using f2py
+    source = '<apiSrc>api_handle_var_t2d.f90 <apiSrc>api_handle_var_sis.f90 '
+    source += ' <apiSrc>api_handle_error.f90 <apiSrc>api_interface.f90'
+    skip_source = 'get_boolean_t2d_d get_double_t2d_d '
+    skip_source += 'get_integer_t2d_d get_string_t2d_d '
+    skip_source += 'get_var_size_t2d_d set_boolean_t2d_d set_double_t2d_d '
+    skip_source += 'set_integer_t2d_d set_string_t2d_d '
+    skip_source += 'get_boolean_sis_d get_double_sis_d '
+    skip_source += 'get_integer_sis_d get_string_sis_d '
+    skip_source += 'get_var_size_sis_d set_boolean_sis_d set_double_sis_d '
+    skip_source += 'set_integer_sis_d set_string_sis_d'
+    pyf_file = path.join(api_dir, 'lib', 'api.pyf')
+    if path.exists(pyf_file):
+        remove(pyf_file)
+    # First step of call to f2py
+    cmd = 'f2py --quiet -h %s -m _api %s skip: %s :'\
+            %(pyf_file,
+              source.replace('<apiSrc>', path.join(api_dir, 'src') + sep),
+              skip_source)
+    try:
+        output = check_output(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError as execpt:
+        print 'Error during first part of f2py ', execpt.returncode
+        print execpt.output
+        sys.exit(1)
+    if not silent:
+        print output
+    print "    ~> First part of f2py passed"
+
+    # Compile user Fortran
+    ld_flags = get_api_ld_flags(cfgs, cfgname)
+
+    incs_flags = get_api_incs_flags(cfgs, cfgname)
+
+    if user_fortran != '':
+        compile_princi_lib(user_fortran, cfgname, cfgs, incs_flags, ld_flags)
+
+    pwd = getcwd()
+    chdir(path.join(api_dir, 'lib'))
+    # Second step of call to f2py
+    if user_fortran != '':
+        print path.basename(user_fortran)
+        dir_name = pwd
+        if path.isdir(user_fortran):
+            dir_name += sep + user_fortran
+
+        ld_flags = ld_flags.replace('-ltelemac2d',
+                                    ' -L'+dir_name+\
+                                     ' -luser_fortran -ltelemac2d')
+    cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '\
+              %(pyf_file, fcompiler, api_dir+sep+'include', ld_flags)
+    try:
+        output = check_output(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError as execpt:
+        print 'Error during second part of f2py ', execpt.returncode
+        print execpt.output
+        sys.exit(1)
+    if not silent:
+        print output
+    print "    ~> Second part of f2py passed"
+    chdir(pwd)
+
+def compile_obj(fortran_file, cfg, cfgname):
+    """
+       Compile a fortran using configuration information
+
+       @param fortran_file The file to be compiled
+       @param cfg The configuration object
+       @param cfgname The name of the configuration to compile the file with
+    """
+    cmd = cfg['cmd_obj']
+    incs = cfg['incs_all']
+    cmd = cmd.replace('<incs>', incs)
+    mods = cfg['mods_all'].replace('<config>',
+                                   path.join(cfg['root'],
+                                             'builds',
+                                             cfgname,
+                                             'wrap_api',
+                                             'include'))
+    cmd = cmd.replace('<mods>', mods)
+    cmd = cmd.replace('<f95name>', fortran_file)
+    print cmd
+    try:
+        retcode = call(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError:
+        raise Exception("Cannot compile fortran file %s error: %d" \
+                          % (fortran_file, retcode))
+
+def compile_exe(fortran_file, cfg, cfgname, user_fortran=''):
+    """
+    Compile a fortran using configuration information
+
+    @param fortran_file The file to be compiled
+    @param cfg The configuration object
+    @param cfgname The name of the configuration to compile the file with
+    """
+    root, _ = path.splitext(path.basename(fortran_file))
+    cmd = cfg['cmd_exe']
+    libs = cfg['libs_all'] + ' -L'+path.join(cfg['root'], 'builds',
+                                             cfgname, 'wrap_api', 'lib')\
+           + " "
+    deps_t2d = ['special', 'parallel', 'damocles', 'hermes',
+                'bief', 'partel', 'gretel', 'waqtel', 'nestor', 'sisyphe',
+                'tomawac', 'telemac2d', 'api']
+    for lib in deps_t2d:
+        libs += "-l"+lib+" "
+    cmd = cmd.replace('<libs>', libs)
+    objs = root + cfg['sfx_obj']
+    if user_fortran != '':
+        root2, _ = path.splitext(path.basename(user_fortran))
+        objs += ' ' +  root2 + cfg['sfx_obj']
+    cmd = cmd.replace('<objs>', objs)
+    cmd = cmd.replace('<exename>', root+cfg['sfx_exe'])
+    print cmd
+    try:
+        retcode = call(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError:
+        raise Exception("Cannot compile exe fortran file %s error: %d" \
+                          % (fortran_file, retcode))
+
+def compile_api_exe(program_file, cfgs, cfgname, user_fortran):
+    """
+    Compile the Fortran program file with the Telemac-Mascaret libraries
+    and compile the user Fortran file if there is one
+
+    @param program_file The program fortran
+    @param cfgs Configurations informations
+    @param cfgname Name of the configuration used here
+    @param user_fortran The user Fortran file
+    """
+    cfg = cfgs[cfgname]
+    if user_fortran != '':
+        compile_obj(user_fortran, cfg, cfgname)
+    # Compile the program_file.o
+    compile_obj(program_file, cfg, cfgname)
+    compile_exe(program_file, cfg, cfgname, user_fortran=user_fortran)
+
+def build_config(config_name, config_file, root_dir):
+    """
+       Builds the configuration object
+
+       @param config_name Name of the telemac configuration
+       @param config_file Name of the configuration file
+       @param root_dir Path to the root folder of telemac
+
+       @retuns The configuration object
+    """
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # path to the root
-   HOMETEL = ''
-   if 'HOMETEL' in environ: HOMETEL = environ['HOMETEL']
-   if args.rootDir == '': args.rootDir = HOMETEL
-   # user configuration name
-   USETELCFG = ''
-   if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   if args.configName == '': args.configName = USETELCFG
-   # user configuration file
-   SYSTELCFG = path.join(HOMETEL,'configs')
-   if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
-   if args.configFile != '': SYSTELCFG = args.configFile
-   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   args.configFile = SYSTELCFG
+    # path to the root
+    hometel = ''
+    if 'HOMETEL' in environ:
+        hometel = environ['HOMETEL']
+    if root_dir == '':
+        root_dir = hometel
+    # user configuration name
+    usetelcfg = ''
+    if 'USETELCFG' in environ:
+        usetelcfg = environ['USETELCFG']
+    if config_name == '':
+        config_name = usetelcfg
+    # user configuration file
+    systelcfg = path.join(hometel, 'configs')
+    if 'SYSTELCFG' in environ:
+        systelcfg = environ['SYSTELCFG']
+    if config_file != '':
+        systelcfg = config_file
+    if path.isdir(systelcfg):
+        systelcfg = path.join(systelcfg, 'systel.cfg')
+    config_file = systelcfg
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   if not path.isfile(args.configFile):
-      print '\nNot able to get to the configuration file: ' + args.configFile + '\n'
-      dircfg = path.abspath(path.dirname(args.configFile))
-      if path.isdir(dircfg) :
-         print ' ... in directory: ' + dircfg + '\n ... use instead: '
-         _, _, filenames = walk(dircfg).next()
-         for fle in filenames :
-            head,tail = path.splitext(fle)
-            if tail == '.cfg' :
-               print '    +> ',fle
-      raise Exception('Error in configuration file')
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   xcpts = MESSAGES()
+    if not path.isfile(config_file):
+        print '\nNot able to get to the configuration file: '\
+              + config_file + '\n'
+        dircfg = path.abspath(path.dirname(config_file))
+        if path.isdir(dircfg):
+            print ' ... in directory: ' + dircfg + '\n ... use instead: '
+            _, _, filenames = walk(dircfg).next()
+            for fle in filenames:
+                _, tail = path.splitext(fle)
+                if tail == '.cfg':
+                    print '    +> ', fle
+        raise Exception('Error in configuration file')
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(args.configFile,args.configName)
+    cfgs = parseConfigFile(config_file, config_name)
+    for cfgname in cfgs:
+        # still in lower case
+        if 'root' not in cfgs[cfgname]:
+            cfgs[cfgname]['root'] = root_dir
 
-   for cfgname in cfgs:
-      # still in lower case
-      if not cfgs[cfgname].has_key('root'):
-         cfgs[cfgname]['root'] = args.rootDir
-      # parsing for proper naming
-      cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
-      print '\n\n'+'\n'.join(banner(cfgname))
+    return cfgs
 
-      # Check if we are compiling a fortran or recompiling the API
-      if args.exeFile != "":
-         compile_API_exe(args.exeFile,cfgs,cfgname,args.user_fortran)
-      else:
-         compile_API(cfgs,cfgname,args.fcompiler,args.user_fortran)
+def main(config_name, config_file, root_dir, fcompiler, user_fortran,
+         exe_file, silent):
+    """
+       Main function
+
+       @param config_name Name of the telemac configuration
+       @param config_file Name of the configuration file
+       @param root_dir Path to the root folder of telemac
+       @param fcompiler Fortran compiler to use
+       @param user_fortran Name of the user_fortran
+       @param exe_file Name of the file to compile
+       @param silent Deactivates f2py listing
+    """
+
+
+    cfgs = build_config(config_name, config_file, root_dir)
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    xcptss = MESSAGES()
+
+    for cfgname in cfgs:
+        print '\n\n'+'\n'.join(banner(cfgname))
+
+        # Check if we are compiling a fortran or recompiling the API
+        if exe_file != "":
+            compile_api_exe(exe_file, cfgs, cfgname, user_fortran)
+        else:
+            compile_api(cfgs, cfgname, fcompiler, user_fortran,
+                        silent)
+    return xcptss
+
+
+if __name__ == "__main__":
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
+    PARSER = argparse.ArgumentParser(\
+                    description='Compile Telemac-Mascaret API '\
+                                 'and/or executable using the API')
+    PARSER.add_argument(\
+              "-c", "--configname",
+              dest='configName',
+              default="",
+              help="specify configuration name, default is randomly \
+                    found in the configuration file")
+    PARSER.add_argument(\
+              "-f", "--configfile",
+              dest='configFile',
+              default="",
+              help="specify configuration file, default is systel.cfg")
+    PARSER.add_argument(\
+              "-r", "--rootdir",
+              dest='rootDir',
+              default="",
+              help="specify the root, default is taken from config file")
+    PARSER.add_argument(\
+              "--fcompiler",
+              dest="fcompiler",
+              default='gfortran',
+              help="spectify the option to give to f2py, default is gfortran")
+    PARSER.add_argument(\
+              "--user-fortran",
+              dest="user_fortran",
+              default='',
+              help="give a user fortran to recompile the API with,\
+                    default is None")
+    PARSER.add_argument(\
+              "--exe",
+              dest="exeFile",
+              default="",
+              help="Compile the program exeFile")
+    PARSER.add_argument(\
+              "--silent",
+              dest='silent',
+              action='store_true',
+              help="Compile the program exeFile")
+    ARGS = PARSER.parse_args()
+
+# Running main function
+    XCPTS = main(ARGS.configName, ARGS.configFile, ARGS.rootDir,
+                 ARGS.fcompiler, ARGS.user_fortran, ARGS.exeFile, ARGS.silent)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if xcpts.notEmpty():
-      print '\n\nHummm ... I could not complete my work.\n'\
-      '~'*72+'\n'+ xcpts.exceptMessages()
-      sys.exit(1)
+    if XCPTS.notEmpty():
+        print '\n\nHummm ... I could not complete my work.\n'\
+        '~'*72+'\n'+ XCPTS.exceptMessages()
+        sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   else:
-      print '\n\nMy work is done\n\n'
-      sys.exit(0)
+    else:
+        print '\n\nMy work is done\n\n'
+        sys.exit(0)

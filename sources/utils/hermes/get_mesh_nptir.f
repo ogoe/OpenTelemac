@@ -31,11 +31,12 @@
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
-      INTEGER,          INTENT(INOUT) :: NPTIR
+      INTEGER,          INTENT(OUT) :: NPTIR
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      NPTIR = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_MESH_NPTIR_SRF(FID, NPTIR, IERR)

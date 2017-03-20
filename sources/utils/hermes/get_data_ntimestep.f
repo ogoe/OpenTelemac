@@ -31,18 +31,19 @@
 !
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
-      INTEGER,          INTENT(INOUT) :: NTIMESTEP
+      INTEGER,          INTENT(OUT) :: NTIMESTEP
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      NTIMESTEP = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_DATA_NTIMESTEP_SRF(FID, NTIMESTEP, IERR)
         CASE ('MED    ')
-          CALL GET_DATA_NTIMESTEP_MED(FID,NTIMESTEP, IERR)
+          CALL GET_DATA_NTIMESTEP_MED(FID, NTIMESTEP, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'GET_DATA_NTIMESTEP : MAUVAIS FORMAT : ',FFORMAT

@@ -33,11 +33,12 @@
       CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
       INTEGER,          INTENT(IN)  :: FID
       INTEGER,          INTENT(IN)  :: TYP_ELEM
-      INTEGER,          INTENT(INOUT) :: NPOIN
+      INTEGER,          INTENT(OUT) :: NPOIN
       INTEGER,          INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      NPOIN = 0
       SELECT CASE (FFORMAT(1:7))
         CASE ('SERAFIN')
           CALL GET_MESH_NPOIN_SRF(FID, TYP_ELEM, NPOIN, IERR)

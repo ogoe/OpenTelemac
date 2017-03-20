@@ -42,6 +42,7 @@
         CASE ('MED    ')
           ! Functionality not available in med
           DATE = (/0,0,0,0,0,0/)
+          CALL GET_MESH_DATE_MED(FID, DATE, IERR)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'GET_MESH_DATE : MAUVAIS FORMAT : ',FFORMAT

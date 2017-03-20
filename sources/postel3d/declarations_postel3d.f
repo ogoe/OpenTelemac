@@ -75,6 +75,7 @@
       INTEGER, PARAMETER :: MAXCOU = 9
 !      nombre max de points pour les coupes verticales
       INTEGER, PARAMETER :: MAXPTS = 50
+
 !
 !-----------------------------------------------------------------------
 ! (5) logical values

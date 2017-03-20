@@ -431,7 +431,7 @@
         INTEGER,                    INTENT(OUT)   :: IERR
 !
         CHARACTER(LEN=T2D_TYPE_LEN)               :: VARTYPE
-        INTEGER                                   :: READONLY
+        LOGICAL                                   :: READONLY
         INTEGER                                   :: NDIM
         INTEGER                                   :: IENT
         INTEGER                                   :: JENT
@@ -535,7 +535,7 @@
         INTEGER,                    INTENT(OUT)   :: IERR
 !
         CHARACTER(LEN=T2D_TYPE_LEN)               :: VARTYPE
-        INTEGER                                   :: READONLY
+        LOGICAL                                   :: READONLY
         INTEGER                                   :: NDIM
         INTEGER                                   :: IENT
         INTEGER                                   :: JENT
@@ -854,7 +854,7 @@
      &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT, IERR)
           CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
           CHARACTER(LEN=T2D_TYPE_LEN),     INTENT(OUT) :: VARTYPE
-          INTEGER,               INTENT(OUT) :: READONLY
+          LOGICAL,               INTENT(OUT) :: READONLY
           INTEGER,               INTENT(OUT) :: NDIM
           INTEGER,               INTENT(OUT) :: IERR
           INTEGER,               INTENT(OUT) :: IENT
@@ -1520,7 +1520,7 @@
      &        (VARNAME, VARTYPE, READONLY, NDIM, IERR)
           CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
           CHARACTER(LEN=SIS_TYPE_LEN),     INTENT(OUT) :: VARTYPE
-          INTEGER,               INTENT(OUT) :: READONLY
+          LOGICAL,               INTENT(OUT) :: READONLY
           INTEGER,               INTENT(OUT) :: NDIM
           INTEGER,               INTENT(OUT) :: IERR
 !

@@ -1239,7 +1239,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
       print '\n... checking the executable'
       for name in CASFiles:
          chdir(CASFiles[name]['wir'])
-
          # Detect if we have a user fortran
          if path.exists('user_fortran'):
             print "Compiling user fortran"
@@ -1257,7 +1256,6 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
 
          # Update of CASFile info
          CASFiles[name].update({ 'run':exeFile, 'exe':exeFile })
-
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...

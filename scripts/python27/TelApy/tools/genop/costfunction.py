@@ -78,7 +78,7 @@ def updatecost(ind1, ind2, f1, f2, todo1, todo2, fname, nproc):
         for i in range(0, nbcouples):
             if todo1[i]:
                 f1[i] = g1[k1]
-                k1 = k1 + 1    
+                k1 = k1 + 1
             if todo2[i]:
                 f2[i] = g2[k2]
                 k2 = k2 + 1

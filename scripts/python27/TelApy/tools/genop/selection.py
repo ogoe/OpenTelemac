@@ -60,5 +60,5 @@ def elitist(pop, ind1, ind2, fvalpop, f1, f2, pressure):
     fvalpop = totalfobj[0:popsize]
     # extraction and selection of the genotype
     totalpop = np.array(totalpop)[order]
-    pop   = totalpop[0:popsize]
+    pop = totalpop[0:popsize]
     return pop, fvalpop, efficiency

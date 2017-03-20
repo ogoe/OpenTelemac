@@ -75,7 +75,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NC2DH,NPOIN2,NCOU,NPLAN
+      INTEGER, INTENT(IN) :: NC2DH,NPOIN2,NPLAN
+      INTEGER, INTENT(IN) :: NCOU(*)
       INTEGER, INTENT(IN) :: IREC
       DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN) :: V(NPOIN2,NPLAN)
@@ -104,7 +105,7 @@
 !
       DO IC = 1,NC2DH
 !
-        CANAL = NCOU + IC -1
+        CANAL = NCOU(IC)
 !
         DO I = 1,NPOIN2
           VAR(I) = HREF(IC)
