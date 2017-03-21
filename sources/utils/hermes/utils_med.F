@@ -1925,16 +1925,15 @@
 !
 !           STORE VALUE OF THE GIVEN NODE
             IGRP = FAMILY(IELEM)
-            LIHBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,1),
-     &                          LIHBOR(IPTFR))
-            LIUBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,2),
-     &                          LIUBOR(IPTFR))
-            LIVBOR(IPTFR) = MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,3),
-     &                          LIVBOR(IPTFR))
-            IF (TRAC) THEN
-              LITBOR(IPTFR) =
-     &                 MAX(MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,4),
-     &                 LITBOR(IPTFR))
+            ! Taking boundary conditions with higher lihbor
+            IF (MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,1) .GT.
+     &          LIHBOR(IPTFR)) THEN
+              LIHBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,1)
+              LIUBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,2)
+              LIVBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,3)
+              IF (TRAC) THEN
+                LITBOR(IPTFR) = MED_OBJ_TAB(MED_ID)%BND_GRP_VAL(IGRP,4)
+              ENDIF
             ENDIF
 !
           ENDDO
