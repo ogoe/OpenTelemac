@@ -67,60 +67,8 @@
         <translation>PRECONDITIONING</translation>
     </message>
     <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal_preconditioning"</source>
-        <translation>"diagonal preconditioning"</translation>
-    </message>
-    <message>
-        <source>"block_diagonal_preconditioning"</source>
-        <translation>"block-diagonal preconditioning"</translation>
-    </message>
-    <message>
-        <source>"absolute_value_diagonal_preconditioning"</source>
-        <translation>"absolute value diagonal preconditioning"</translation>
-    </message>
-    <message>
-        <source>"Crout_preconditioning"</source>
-        <translation>"Crout preconditioning"</translation>
-    </message>
-    <message>
         <source>SOLVER</source>
         <translation>SOLVER</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"CGSTAB"</source>
-        <translation>"CGSTAB"</translation>
-    </message>
-    <message>
-        <source>"GMRES"</source>
-        <translation>"GMRES"</translation>
-    </message>
-    <message>
-        <source>"direct"</source>
-        <translation>"direct"</translation>
     </message>
     <message>
         <source>SOLVER_OPTION</source>
@@ -131,32 +79,8 @@
         <translation>GEOMETRY FILE STANDARD</translation>
     </message>
     <message>
-        <source>"LEONARD"</source>
-        <translation>"LEONARD"</translation>
-    </message>
-    <message>
-        <source>"RUBENS"</source>
-        <translation>"RUBENS"</translation>
-    </message>
-    <message>
-        <source>"SELAFIN"</source>
-        <translation>"SELAFIN"</translation>
-    </message>
-    <message>
         <source>RESULTS_FILE_STANDARD</source>
         <translation>RESULTS FILE STANDARD</translation>
-    </message>
-    <message>
-        <source>"LEONARD"</source>
-        <translation>"LEONARD"</translation>
-    </message>
-    <message>
-        <source>"RUBENS"</source>
-        <translation>"RUBENS"</translation>
-    </message>
-    <message>
-        <source>"SELAFIN"</source>
-        <translation>"SELAFIN"</translation>
     </message>
     <message>
         <source>PEAK_PERIOD</source>
@@ -165,18 +89,6 @@
     <message>
         <source>GAMMA</source>
         <translation>GAMMA</translation>
-    </message>
-    <message>
-        <source>"Pierson_Moskowitz"</source>
-        <translation>"Pierson-Moskowitz"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_moyen"</source>
-        <translation>"JONSWAP moyen"</translation>
-    </message>
-    <message>
-        <source>"any_spectre"</source>
-        <translation>"any spectre"</translation>
     </message>
     <message>
         <source>MONODIRECTIONAL_RANDOM_WAVE</source>
@@ -271,216 +183,8 @@
         <translation>VARIABLES FOR GRAPHIC PRINTOUTS</translation>
     </message>
     <message>
-        <source>"wave_height"</source>
-        <translation>"wave height"</translation>
-    </message>
-    <message>
-        <source>"wave_phase"</source>
-        <translation>"wave phase"</translation>
-    </message>
-    <message>
-        <source>"velocity_u_(free_surface)(t=0)"</source>
-        <translation>"velocity u (free surface)(t=0)"</translation>
-    </message>
-    <message>
-        <source>"velocity_v_(free_surface)(t=0)"</source>
-        <translation>"velocity v (free surface)(t=0)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(t=0)"</source>
-        <translation>"free surface elevation (t=0)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation"</source>
-        <translation>"bottom elevation"</translation>
-    </message>
-    <message>
-        <source>"still_water_height"</source>
-        <translation>"still water height"</translation>
-    </message>
-    <message>
-        <source>"phase_velocity"</source>
-        <translation>"phase velocity"</translation>
-    </message>
-    <message>
-        <source>"group_velocity"</source>
-        <translation>"group velocity"</translation>
-    </message>
-    <message>
-        <source>"wave_number"</source>
-        <translation>"wave number"</translation>
-    </message>
-    <message>
-        <source>"real_potential"</source>
-        <translation>"real potential"</translation>
-    </message>
-    <message>
-        <source>"imaginal_potential"</source>
-        <translation>"imaginal potential"</translation>
-    </message>
-    <message>
-        <source>"prive(1,1)"</source>
-        <translation>"prive(1,1)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,2)"</source>
-        <translation>"prive(1,2)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,3)"</source>
-        <translation>"prive(1,3)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,4)"</source>
-        <translation>"prive(1,4)"</translation>
-    </message>
-    <message>
-        <source>"first_mean_spectral_period"</source>
-        <translation>"first mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"second_mean_spectral_period"</source>
-        <translation>"second mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"third_mean_spectral_period"</source>
-        <translation>"third mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"force_along_X"</source>
-        <translation>"force along X"</translation>
-    </message>
-    <message>
-        <source>"force_along_Y"</source>
-        <translation>"force along Y"</translation>
-    </message>
-    <message>
-        <source>"wave_incidence_radian"</source>
-        <translation>"wave incidence radian"</translation>
-    </message>
-    <message>
-        <source>"breaking_rate"</source>
-        <translation>"breaking rate"</translation>
-    </message>
-    <message>
-        <source>"SXX_stress"</source>
-        <translation>"SXX stress"</translation>
-    </message>
-    <message>
-        <source>"SXY_stress"</source>
-        <translation>"SXY stress"</translation>
-    </message>
-    <message>
-        <source>"SYY_stress"</source>
-        <translation>"SYY stress"</translation>
-    </message>
-    <message>
         <source>VARIABLES_TO_BE_PRINTED</source>
         <translation>VARIABLES TO BE PRINTED</translation>
-    </message>
-    <message>
-        <source>"wave_height"</source>
-        <translation>"wave height"</translation>
-    </message>
-    <message>
-        <source>"wave_phase"</source>
-        <translation>"wave phase"</translation>
-    </message>
-    <message>
-        <source>"velocity_u_(free_surface)(t=0)"</source>
-        <translation>"velocity u (free surface)(t=0)"</translation>
-    </message>
-    <message>
-        <source>"velocity_v_(free_surface)(t=0)"</source>
-        <translation>"velocity v (free surface)(t=0)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(t=0)"</source>
-        <translation>"free surface elevation (t=0)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation"</source>
-        <translation>"bottom elevation"</translation>
-    </message>
-    <message>
-        <source>"still_water_height"</source>
-        <translation>"still water height"</translation>
-    </message>
-    <message>
-        <source>"phase_velocity"</source>
-        <translation>"phase velocity"</translation>
-    </message>
-    <message>
-        <source>"group_velocity"</source>
-        <translation>"group velocity"</translation>
-    </message>
-    <message>
-        <source>"wave_number"</source>
-        <translation>"wave number"</translation>
-    </message>
-    <message>
-        <source>"real_potential"</source>
-        <translation>"real potential"</translation>
-    </message>
-    <message>
-        <source>"imaginal_potential"</source>
-        <translation>"imaginal potential"</translation>
-    </message>
-    <message>
-        <source>"prive(1,1)"</source>
-        <translation>"prive(1,1)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,2)"</source>
-        <translation>"prive(1,2)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,3)"</source>
-        <translation>"prive(1,3)"</translation>
-    </message>
-    <message>
-        <source>"prive(1,4)"</source>
-        <translation>"prive(1,4)"</translation>
-    </message>
-    <message>
-        <source>"first_mean_spectral_period"</source>
-        <translation>"first mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"second_mean_spectral_period"</source>
-        <translation>"second mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"third_mean_spectral_period"</source>
-        <translation>"third mean spectral period"</translation>
-    </message>
-    <message>
-        <source>"force_along_X"</source>
-        <translation>"force along X"</translation>
-    </message>
-    <message>
-        <source>"force_along_Y"</source>
-        <translation>"force along Y"</translation>
-    </message>
-    <message>
-        <source>"wave_incidence_radian"</source>
-        <translation>"wave incidence radian"</translation>
-    </message>
-    <message>
-        <source>"breaking_rate"</source>
-        <translation>"breaking rate"</translation>
-    </message>
-    <message>
-        <source>"SXX_stress"</source>
-        <translation>"SXX stress"</translation>
-    </message>
-    <message>
-        <source>"SXY_stress"</source>
-        <translation>"SXY stress"</translation>
-    </message>
-    <message>
-        <source>"SYY_stress"</source>
-        <translation>"SYY stress"</translation>
     </message>
     <message>
         <source>FORTRAN_FILE</source>
@@ -607,14 +311,6 @@
         <translation>BREAKING LAW</translation>
     </message>
     <message>
-        <source>"BATTJES_\&_JANSSEN"</source>
-        <translation>"BATTJES \& JANSSEN"</translation>
-    </message>
-    <message>
-        <source>"DALLY"</source>
-        <translation>"DALLY"</translation>
-    </message>
-    <message>
         <source>MAXIMUM_OF_SUB_ITERATIONS</source>
         <translation>MAXIMUM OF SUB-ITERATIONS</translation>
     </message>
@@ -703,32 +399,8 @@
         <translation>HYDRAULIC REGIME TYPE</translation>
     </message>
     <message>
-        <source>"regime_laminaire"</source>
-        <translation>"regime laminaire"</translation>
-    </message>
-    <message>
-        <source>"regime_turbulent_lisse"</source>
-        <translation>"regime turbulent lisse"</translation>
-    </message>
-    <message>
-        <source>"regime_turbulent_rugueux"</source>
-        <translation>"regime turbulent rugueux"</translation>
-    </message>
-    <message>
-        <source>"regime_transitoire"</source>
-        <translation>"regime transitoire"</translation>
-    </message>
-    <message>
         <source>BOTTOM_FRICTION_LAW</source>
         <translation>BOTTOM FRICTION LAW</translation>
-    </message>
-    <message>
-        <source>Formulation_de_Kostense_integrant_le_calcul_de_Ue_(1986)"</source>
-        <translation>Formulation de Kostense integrant le calcul de Ue (1986)"</translation>
-    </message>
-    <message>
-        <source>Formulation_de_Putnam_\&_Johnson_(1949)"</source>
-        <translation>Formulation de Putnam \& Johnson (1949)"</translation>
     </message>
     <message>
         <source>FRICTION_FACTOR_IMPOSED</source>
@@ -813,22 +485,6 @@
     <message>
         <source>RAPIDLY_VARYING_TOPOGRAPHY</source>
         <translation>RAPIDLY VARYING TOPOGRAPHY</translation>
-    </message>
-    <message>
-        <source>"BERKHOFF_SIMPLE"</source>
-        <translation>"BERKHOFF SIMPLE"</translation>
-    </message>
-    <message>
-        <source>"PRISE_EN_COMPTE_TERME_DE_PENTE"</source>
-        <translation>"PRISE EN COMPTE TERME DE PENTE"</translation>
-    </message>
-    <message>
-        <source>"PRISE_EN_COMPTE_TERME_DE_COURBURE"</source>
-        <translation>"PRISE EN COMPTE TERME DE COURBURE"</translation>
-    </message>
-    <message>
-        <source>"PRISE_EN_COMPTE_DES_TERMES_DE_PENTE_ET_COURBURE"</source>
-        <translation>"PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"</translation>
     </message>
     <message>
         <source>CHECKING_THE_MESH</source>

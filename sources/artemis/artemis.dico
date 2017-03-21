@@ -1454,8 +1454,8 @@ NOM1 = 'RELEASE'
 TYPE = CARACTERE
 INDEX = 11
 TAILLE = 0
-DEFAUT =  V7P2
-DEFAUT1 = V7P2
+DEFAUT =  'TRUNK'
+DEFAUT1 = 'TRUNK'
 RUBRIQUE = 'ENTREES-SORTIES,GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT,INFORMATION';'COMPUTATIONAL INFORMATION'
 COMPORT = 'Foreground ("ENTREES-SORTIES,GENERALITES*CALCUL")
@@ -1850,10 +1850,10 @@ RUBRIQUE1 = 'TETAP CONVERGENCE';'INFORMATION'
 NIVEAU= 3
 AIDE = '
 Donne la precision requise pour les sous-iterations du calcul
-automatique de cos(TETAP).                                   '
+automatique de cos(TETAP).'
 AIDE1 = '
 Fixes the accuracy requested for sub-iterations necessary to
-determine value of TETAP (criterion on cos(TETAP).           '
+determine value of TETAP (criterion on cos(TETAP)).'
 
 
 NOM = 'DEFERLEMENT'
@@ -2609,11 +2609,11 @@ COMPORT = 'Foreground
 IS VALEUR (BLUE)'
 NIVEAU= 1
 CHOIX=
-'1=Formulation de Kostense integrant le calcul de Ue (1986)"';
-'2=Formulation de Putnam \& Johnson (1949)"'
+'1="Formulation de Kostense integrant le calcul de Ue (1986)"';
+'2="Formulation de Putnam \& Johnson (1949)"'
 CHOIX1=
-'1=Formulation de Kostense integrant le calcul de Ue (1986)"';
-'2=Formulation de Putnam \& Johnson (1949)"'
+'1="Formulation de Kostense integrant le calcul de Ue (1986)"';
+'2="Formulation de Putnam \& Johnson (1949)"'
 APPARENCE= 'LISTE IS SELECT'
 AIDE = '
 Utilise avec l''option FROTTEMENT = OUI.
@@ -2862,8 +2862,8 @@ TYPE = CARACTERE
 INDEX = 101
 DEFAUT  = 'METIS'
 DEFAUT1 = 'METIS'
-CHOIX  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
-CHOIX1  = '"METIS"';'"SCOTCH"';'"PARMETIS"';'"PTSCOTCH"'
+CHOIX  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
+CHOIX1  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
 NIVEAU = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'

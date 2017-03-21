@@ -99,6 +99,10 @@
         <translation>NOMBRE MAXIMUM DE TRACEURS</translation>
     </message>
     <message>
+        <source>VECTOR_LENGTH</source>
+        <translation>LONGUEUR DU VECTEUR</translation>
+    </message>
+    <message>
         <source>COMPUTATION_CONTINUED</source>
         <translation>SUITE DE CALCUL</translation>
     </message>
@@ -129,134 +133,6 @@
     <message>
         <source>VARIABLES_FOR_GRAPHIC_PRINTOUTS</source>
         <translation>VARIABLES POUR LES SORTIES GRAPHIQUES</translation>
-    </message>
-    <message>
-        <source>"velocity_along_x_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_y_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wave_celerity_(m/s)"</source>
-        <translation>"celerite des onde (m/s)"</translation>
-    </message>
-    <message>
-        <source>"water_depth_(m)"</source>
-        <translation>"hauteur d eau (m)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(m)"</source>
-        <translation>"cote de surface libre (m)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation_(m)"</source>
-        <translation>"cote du fond (m)"</translation>
-    </message>
-    <message>
-        <source>"Froude_number"</source>
-        <translation>"nombre de Froude"</translation>
-    </message>
-    <message>
-        <source>"scalar_flowrate_of_fluid_(m2/s)"</source>
-        <translation>"debit scalaire du fluide (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"tracer_1_etc."</source>
-        <translation>"traceur 1, etc."</translation>
-    </message>
-    <message>
-        <source>"turbulent_kinetic_energy_in_k_epsilon_model_(J/kg)"</source>
-        <translation>"energie turbulente du modele k-epsilon (J/kg)"</translation>
-    </message>
-    <message>
-        <source>"dissipation_of_turbulent_energy_(W/kg)"</source>
-        <translation>"dissipation de l energie turbulente (W/kg)"</translation>
-    </message>
-    <message>
-        <source>"turbulent_viscosity_(m2/s)"</source>
-        <translation>"viscosite turbulente (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_x_axis_(m2/s)"</source>
-        <translation>"debit suivant l axe des x (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_y_axis_(m2/s)"</source>
-        <translation>"debit suivant l axe des y (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"scalar_velocity_(m/s)"</source>
-        <translation>"vitesse scalaire (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_x_axis_(m/s)"</source>
-        <translation>"vent suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_y_axis_(m/s)"</source>
-        <translation>"vent suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"air_pressure_(Pa)"</source>
-        <translation>"pression atmospherique (Pa)"</translation>
-    </message>
-    <message>
-        <source>"friction_coefficient"</source>
-        <translation>"coefficient de frottement sur le fond "</translation>
-    </message>
-    <message>
-        <source>"drift_along_x_(m)"</source>
-        <translation>"derive en x (m)"</translation>
-    </message>
-    <message>
-        <source>"drift_along_y_(m)"</source>
-        <translation>"derive en y (m)"</translation>
-    </message>
-    <message>
-        <source>"Courant_number_"</source>
-        <translation>"nombre de Courant "</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_N"</source>
-        <translation>"variable supplementaire N"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_O"</source>
-        <translation>"variable supplementaire O"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_R"</source>
-        <translation>"variable supplementaire R"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_Z"</source>
-        <translation>"variable supplementaire Z"</translation>
-    </message>
-    <message>
-        <source>"maximum_elevation"</source>
-        <translation>"cote maximum"</translation>
-    </message>
-    <message>
-        <source>"time_of_maximum_elevation"</source>
-        <translation>"temps de la cote maximum"</translation>
-    </message>
-    <message>
-        <source>"maximum_velocity"</source>
-        <translation>"vitesse maximum"</translation>
-    </message>
-    <message>
-        <source>"time_of_maximum_velocity"</source>
-        <translation>"temps de la vitesse maximum"</translation>
-    </message>
-    <message>
-        <source>"friction_velocity"</source>
-        <translation>"vitesse de frottement"</translation>
-    </message>
-    <message>
-        <source>"gradient_1,_etc._"</source>
-        <translation>"gradient 1, etc. "</translation>
     </message>
     <message>
         <source>NUMBER_OF_PRIVATE_ARRAYS</source>
@@ -307,6 +183,14 @@
         <translation>FICHIER DE SORTIE DES SECTIONS DE CONTROLE</translation>
     </message>
     <message>
+        <source>FLUXLINE</source>
+        <translation>FLUXLINE</translation>
+    </message>
+    <message>
+        <source>FLUXLINE_INPUT_FILE</source>
+        <translation>FICHIER DE FLUXLINE</translation>
+    </message>
+    <message>
         <source>NUMBER_OF_FIRST_TIME_STEP_FOR_LISTING_PRINTOUTS</source>
         <translation>NUMERO DU PREMIER PAS DE TEMPS POUR LES SORTIES LISTING</translation>
     </message>
@@ -325,114 +209,6 @@
     <message>
         <source>VARIABLES_TO_BE_PRINTED</source>
         <translation>VARIABLES A IMPRIMER</translation>
-    </message>
-    <message>
-        <source>"velocity_along_x_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_y_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wave_celerity_(m/s)"</source>
-        <translation>"celerite des ondes (m/s)"</translation>
-    </message>
-    <message>
-        <source>"water_depth_(m)"</source>
-        <translation>"hauteur d eau (m)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(m)"</source>
-        <translation>"cote de surface libre (m)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation_(m)"</source>
-        <translation>"cote du fond (m)"</translation>
-    </message>
-    <message>
-        <source>"Froude_number"</source>
-        <translation>"nombre de Froude"</translation>
-    </message>
-    <message>
-        <source>"scalar_flowrate_of_fluid_(m2/s)"</source>
-        <translation>"debit scalaire du fluide (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"tracer_1,_etc."</source>
-        <translation>"traceur 1, etc."</translation>
-    </message>
-    <message>
-        <source>"turbulent_kinetic_energy_in_k_epsilon_model_(J/kg)"</source>
-        <translation>"energie turbulente du modele k-epsilon (J/kg)"</translation>
-    </message>
-    <message>
-        <source>"dissipation_of_turbulent_energy_(W/kg)"</source>
-        <translation>"dissipation de l energie turbulente (W/kg)"</translation>
-    </message>
-    <message>
-        <source>"turbulent_viscosity_of_k_epsilon_model_(m2/s)"</source>
-        <translation>"viscosite turbulente du modele k-epsilon (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_x_axis_(m2/s)"</source>
-        <translation>"debit suivant l axe des x (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_y_axis_(m2/s)"</source>
-        <translation>"debit suivant l axe des y (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"scalar_velocity_(m/s)"</source>
-        <translation>"vitesse scalaire (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_x_axis_(m/s)"</source>
-        <translation>"vent suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_y_axis_(m/s)"</source>
-        <translation>"vent suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"air_pressure_(Pa)"</source>
-        <translation>"pression atmospherique (Pa)"</translation>
-    </message>
-    <message>
-        <source>"friction_coefficient"</source>
-        <translation>"coefficient de frottement sur le fond"</translation>
-    </message>
-    <message>
-        <source>"drift_along_x_(m)"</source>
-        <translation>"derive en x (m)"</translation>
-    </message>
-    <message>
-        <source>"drift_along_y_(m)"</source>
-        <translation>"derive en y (m)"</translation>
-    </message>
-    <message>
-        <source>"nombre_de_courants_"</source>
-        <translation>"nombre de courants "</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_N"</source>
-        <translation>"variable supplementaire N"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_O"</source>
-        <translation>"variable supplementaire O"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_R"</source>
-        <translation>"variable supplementaire R"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_Z"</source>
-        <translation>"variable supplementaire Z"</translation>
-    </message>
-    <message>
-        <source>"gradient_1,_etc."</source>
-        <translation>"gradient 1, etc."</translation>
     </message>
     <message>
         <source>MASS_BALANCE</source>
@@ -475,18 +251,6 @@
         <translation>COURBES DE TARAGE</translation>
     </message>
     <message>
-        <source>"no"</source>
-        <translation>"non"</translation>
-    </message>
-    <message>
-        <source>"Z(Q)"</source>
-        <translation>"Z(Q)"</translation>
-    </message>
-    <message>
-        <source>"Q(Z)_not_programmed"</source>
-        <translation>"Q(Z) non programme"</translation>
-    </message>
-    <message>
         <source>STAGE_DISCHARGE_CURVES_FILE</source>
         <translation>FICHIER DES COURBES DE TARAGE</translation>
     </message>
@@ -495,36 +259,8 @@
         <translation>PROFILS DE VITESSE</translation>
     </message>
     <message>
-        <source>"constant_normal_profile"</source>
-        <translation>"Profil normal constant"</translation>
-    </message>
-    <message>
-        <source>"u_and_v_given_in_the_conlim_file"</source>
-        <translation>"u et v dans le fichier conlim"</translation>
-    </message>
-    <message>
-        <source>"normal_velocity_given_in_ubor_in_the_conlim_file"</source>
-        <translation>"Vitesse normale donnee dans ubor dans le fichier conlim"</translation>
-    </message>
-    <message>
-        <source>"velocity_proportional_to_square_root_of_depth"</source>
-        <translation>"vitesse en racine carree de h"</translation>
-    </message>
-    <message>
-        <source>"velocity_proportional_to_square_root_of_depth,_variant"</source>
-        <translation>"vitesse en racine carree de h, variante"</translation>
-    </message>
-    <message>
         <source>OPTION_FOR_LIQUID_BOUNDARIES</source>
         <translation>OPTION POUR LES FRONTIERES LIQUIDES</translation>
-    </message>
-    <message>
-        <source>"classical"</source>
-        <translation>"classique"</translation>
-    </message>
-    <message>
-        <source>"Thompson_method_based_on_characteristics"</source>
-        <translation>"methode de Thompson avec calcul de caracteristiques"</translation>
     </message>
     <message>
         <source>LIQUID_BOUNDARIES_FILE</source>
@@ -551,30 +287,6 @@
         <translation>LOI DE FROTTEMENT SUR LE FOND</translation>
     </message>
     <message>
-        <source>"NO_FRICTION"</source>
-        <translation>"PAS DE FROTTEMENT"</translation>
-    </message>
-    <message>
-        <source>"HAALAND"</source>
-        <translation>"HAALAND"</translation>
-    </message>
-    <message>
-        <source>"CHEZY"</source>
-        <translation>"CHEZY"</translation>
-    </message>
-    <message>
-        <source>"STRICKLER"</source>
-        <translation>"STRICKLER"</translation>
-    </message>
-    <message>
-        <source>"MANNING"</source>
-        <translation>"MANNING"</translation>
-    </message>
-    <message>
-        <source>"NIKURADSE"</source>
-        <translation>"NIKURADSE"</translation>
-    </message>
-    <message>
         <source>FRICTION_COEFFICIENT</source>
         <translation>COEFFICIENT DE FROTTEMENT</translation>
     </message>
@@ -585,14 +297,6 @@
     <message>
         <source>DEPTH_IN_FRICTION_TERMS</source>
         <translation>HAUTEUR DANS LES TERMES DE FROTTEMENT</translation>
-    </message>
-    <message>
-        <source>"nodal"</source>
-        <translation>"nodale"</translation>
-    </message>
-    <message>
-        <source>"average"</source>
-        <translation>"moyenne"</translation>
     </message>
     <message>
         <source>NON_SUBMERGED_VEGETATION_FRICTION</source>
@@ -609,38 +313,6 @@
     <message>
         <source>LAW_OF_FRICTION_ON_LATERAL_BOUNDARIES</source>
         <translation>LOI DE FROTTEMENT SUR LES PAROIS LATERALES</translation>
-    </message>
-    <message>
-        <source>"NO_FRICTION"</source>
-        <translation>"PAS DE FROTTEMENT"</translation>
-    </message>
-    <message>
-        <source>"HAALAND"</source>
-        <translation>"HAALAND"</translation>
-    </message>
-    <message>
-        <source>"CHEZY"</source>
-        <translation>"CHEZY"</translation>
-    </message>
-    <message>
-        <source>"STRICKLER"</source>
-        <translation>"STRICKLER"</translation>
-    </message>
-    <message>
-        <source>"MANNING"</source>
-        <translation>"MANNING"</translation>
-    </message>
-    <message>
-        <source>"NIKURADSE"</source>
-        <translation>"NIKURADSE"</translation>
-    </message>
-    <message>
-        <source>"LOG_LAW"</source>
-        <translation>"LOG LAW"</translation>
-    </message>
-    <message>
-        <source>"COLEBROOK_WHITE"</source>
-        <translation>"COLEBROOK-WHITE"</translation>
     </message>
     <message>
         <source>ROUGHNESS_COEFFICIENT_OF_BOUNDARIES</source>
@@ -661,18 +333,6 @@
     <message>
         <source>OPTION_FOR_WIND</source>
         <translation>OPTION DU VENT</translation>
-    </message>
-    <message>
-        <source>"constant_in_time_and_space"</source>
-        <translation>"constant en temps et en espace"</translation>
-    </message>
-    <message>
-        <source>"variable_in_time_given_by_formated_file"</source>
-        <translation>"variable en temps donne par fichier formate"</translation>
-    </message>
-    <message>
-        <source>"variable_in_time_and_space_given_by_formated_file"</source>
-        <translation>"variable en temps et en espace donne par fichier formate"</translation>
     </message>
     <message>
         <source>COEFFICIENT_OF_WIND_INFLUENCE</source>
@@ -711,12 +371,44 @@
         <translation>PLUIE OU EVAPORATION EN MM PAR JOUR</translation>
     </message>
     <message>
+        <source>RAINFALL_RUNOFF_MODEL</source>
+        <translation>MODELE PLUIE-DEBIT</translation>
+    </message>
+    <message>
+        <source>ANTECEDENT_MOISTURE_CONDITIONS</source>
+        <translation>CONDITIONS D'HUMIDITE PRECEDENTE</translation>
+    </message>
+    <message>
+        <source>DURATION_OF_RAIN_OR_EVAPORATION_IN_HOURS</source>
+        <translation>DUREE DE LA PLUIE OU EVAPORATION EN HEURES</translation>
+    </message>
+    <message>
+        <source>ASCII_ATMOSPHERIC_DATA_FILE</source>
+        <translation>FICHIER ASCII DE DONNEES ATMOSPHERIQUES</translation>
+    </message>
+    <message>
+        <source>BINARY_ATMOSPHERIC_DATA_FILE</source>
+        <translation>FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES</translation>
+    </message>
+    <message>
+        <source>BINARY_ATMOSPHERIC_DATA_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES</translation>
+    </message>
+    <message>
+        <source>OPTION_FOR_INITIAL_ABSTRACTION_RATIO</source>
+        <translation>OPTION POUR RATIO DES PERTES INITIALES</translation>
+    </message>
+    <message>
         <source>WAVE_DRIVEN_CURRENTS</source>
         <translation>COURANTS DE HOULE</translation>
     </message>
     <message>
         <source>RECORD_NUMBER_IN_WAVE_FILE</source>
         <translation>NUMERO DE L'ENREGISTREMENT DANS LE FICHIER DE HOULE</translation>
+    </message>
+    <message>
+        <source>WAVE_ENHANCED_FRICTION_FACTOR</source>
+        <translation>AUGMENTATION DU FROTTEMENT PAR LA HOULE</translation>
     </message>
     <message>
         <source>PARAMETER_ESTIMATION</source>
@@ -727,32 +419,8 @@
         <translation>FONCTION COUT</translation>
     </message>
     <message>
-        <source>"Computed_with_h,u,v"</source>
-        <translation>"Calculee sur h,u,v"</translation>
-    </message>
-    <message>
-        <source>"Computed_with_c,u,v"</source>
-        <translation>"Calculee avec c,u,v"</translation>
-    </message>
-    <message>
         <source>IDENTIFICATION_METHOD</source>
         <translation>METHODE D'IDENTIFICATION</translation>
-    </message>
-    <message>
-        <source>"list_of_tests"</source>
-        <translation>"plan d experience"</translation>
-    </message>
-    <message>
-        <source>"gradient_simple"</source>
-        <translation>"gradient simple"</translation>
-    </message>
-    <message>
-        <source>"conj_gradient"</source>
-        <translation>"gradient conj"</translation>
-    </message>
-    <message>
-        <source>"Lagrange_interp."</source>
-        <translation>"interp. de Lagrange"</translation>
     </message>
     <message>
         <source>TOLERANCES_FOR_IDENTIFICATION</source>
@@ -787,14 +455,6 @@
         <translation>TYPE DES SOURCES</translation>
     </message>
     <message>
-        <source>"Normal"</source>
-        <translation>"Normal"</translation>
-    </message>
-    <message>
-        <source>"Dirac"</source>
-        <translation>"Dirac"</translation>
-    </message>
-    <message>
         <source>SOURCES_FILE</source>
         <translation>FICHIER DES SOURCES</translation>
     </message>
@@ -823,44 +483,8 @@
         <translation>TRAITEMENT DU SYSTEME LINEAIRE</translation>
     </message>
     <message>
-        <source>"coupled"</source>
-        <translation>"traitement couple"</translation>
-    </message>
-    <message>
-        <source>"Wave_equation"</source>
-        <translation>"Equation d onde"</translation>
-    </message>
-    <message>
         <source>FINITE_VOLUME_SCHEME</source>
         <translation>SCHEMA EN VOLUMES FINIS</translation>
-    </message>
-    <message>
-        <source>"Roe_scheme"</source>
-        <translation>"schema de Roe"</translation>
-    </message>
-    <message>
-        <source>"kinetic_order_1"</source>
-        <translation>"schéma cinetique ordre 1"</translation>
-    </message>
-    <message>
-        <source>"kinetic_order_2"</source>
-        <translation>"schéma cinetique ordre 2"</translation>
-    </message>
-    <message>
-        <source>"Zokagoa_scheme_order_1"</source>
-        <translation>"schéma Zokagoa ordre 1"</translation>
-    </message>
-    <message>
-        <source>"Tchamen_scheme_order_1"</source>
-        <translation>"schéma Tchamen ordre 1"</translation>
-    </message>
-    <message>
-        <source>"HLLC_scheme_order_1"</source>
-        <translation>"schéma HLLC ordre 1"</translation>
-    </message>
-    <message>
-        <source>"WAF_scheme_order_2"</source>
-        <translation>"schéma WAF ordre 2"</translation>
     </message>
     <message>
         <source>CORIOLIS</source>
@@ -873,14 +497,6 @@
     <message>
         <source>OPTION_FOR_TSUNAMI_GENERATION</source>
         <translation>OPTION POUR LA GENERATION DE TSUNAMI</translation>
-    </message>
-    <message>
-        <source>"No_Tsunami"</source>
-        <translation>"Pas de Tsunami"</translation>
-    </message>
-    <message>
-        <source>"Tsunami_generated_on_the_basis_of_the_Okada_model_1992"</source>
-        <translation>"Generation d un Tsunami sur la base du modele de Okada 1992"</translation>
     </message>
     <message>
         <source>PHYSICAL_CHARACTERISTICS_OF_THE_TSUNAMI</source>
@@ -971,48 +587,8 @@
         <translation>TYPE DE PROJECTION SPATIALE</translation>
     </message>
     <message>
-        <source>"CARTESIAN,_NOT_GEOREFERENCED"</source>
-        <translation>"CARTESIEN, NON GEOREFERENCE"</translation>
-    </message>
-    <message>
-        <source>"MERCATOR"</source>
-        <translation>"MERCATOR"</translation>
-    </message>
-    <message>
-        <source>"LATITUDE_LONGITUDE"</source>
-        <translation>"LATITUDE LONGITUDE"</translation>
-    </message>
-    <message>
         <source>SOLVER</source>
         <translation>SOLVEUR</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"equation normale"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"gradient conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"residu conjuge"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"erreur minimale"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct"</source>
-        <translation>"direct"</translation>
     </message>
     <message>
         <source>SOLVER_OPTION</source>
@@ -1035,34 +611,6 @@
         <translation>PRECONDITIONNEMENT</translation>
     </message>
     <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"aucun"</translation>
-    </message>
-    <message>
-        <source>"block_diagonal_(4_9_matrices)"</source>
-        <translation>"bloc-diagonal (4 ou 9 matrices)"</translation>
-    </message>
-    <message>
-        <source>"absolute_value_of_diagonal"</source>
-        <translation>"valeur absolue diagonale"</translation>
-    </message>
-    <message>
-        <source>"crout"</source>
-        <translation>"crout"</translation>
-    </message>
-    <message>
-        <source>"gauss_seidel"</source>
-        <translation>"gauss-seidel"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_crout"</source>
-        <translation>"diagonal et crout"</translation>
-    </message>
-    <message>
         <source>C_U_PRECONDITIONING</source>
         <translation>PRECONDITIONNEMENT C-U</translation>
     </message>
@@ -1079,18 +627,6 @@
         <translation>DISCRETISATIONS EN ESPACE</translation>
     </message>
     <message>
-        <source>"linear"</source>
-        <translation>"lineaire"</translation>
-    </message>
-    <message>
-        <source>"quasi_bubble"</source>
-        <translation>"quasi-bulle"</translation>
-    </message>
-    <message>
-        <source>"quadratic"</source>
-        <translation>"quadratique"</translation>
-    </message>
-    <message>
         <source>PROPAGATION</source>
         <translation>PROPAGATION</translation>
     </message>
@@ -1099,36 +635,12 @@
         <translation>ORDRE DU TIR INITIAL POUR H</translation>
     </message>
     <message>
-        <source>"previous"</source>
-        <translation>"precedent"</translation>
-    </message>
-    <message>
-        <source>"zero"</source>
-        <translation>"zero"</translation>
-    </message>
-    <message>
-        <source>"extrapolation"</source>
-        <translation>"extrapolation"</translation>
-    </message>
-    <message>
         <source>LINEARIZED_PROPAGATION</source>
         <translation>PROPAGATION LINEARISEE</translation>
     </message>
     <message>
         <source>INITIAL_GUESS_FOR_U</source>
         <translation>ORDRE DU TIR INITIAL POUR U</translation>
-    </message>
-    <message>
-        <source>"zero"</source>
-        <translation>"zero"</translation>
-    </message>
-    <message>
-        <source>"previous"</source>
-        <translation>"precedent"</translation>
-    </message>
-    <message>
-        <source>"extrapolation"</source>
-        <translation>"extrapolation"</translation>
     </message>
     <message>
         <source>MEAN_DEPTH_FOR_LINEARIZATION</source>
@@ -1151,48 +663,8 @@
         <translation>FORME DE LA CONVECTION</translation>
     </message>
     <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CARACTERISTIQUES"</translation>
-    </message>
-    <message>
-        <source>"SUPG"</source>
-        <translation>"SUPG"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_N_SCHEME"</source>
-        <translation>"SCHEMA N CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_N_SCHEME"</source>
-        <translation>"SCHEMA N CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_PSI_SCHEME"</source>
-        <translation>"SCHEMA PSI CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"EDGE_BASED_N_SCHEME"</source>
-        <translation>"SCHEMA N PAR SEGMENTS"</translation>
-    </message>
-    <message>
-        <source>"EDGE_BASED_N_SCHEME"</source>
-        <translation>"SCHEMA N PAR SEGMENTS"</translation>
-    </message>
-    <message>
-        <source>"ERIA_SCHEME"</source>
-        <translation>"SCHEMA ERIA"</translation>
-    </message>
-    <message>
         <source>OPTION_FOR_CHARACTERISTICS</source>
         <translation>OPTION POUR LES CARACTERISTIQUES</translation>
-    </message>
-    <message>
-        <source>"strong"</source>
-        <translation>"fortes"</translation>
-    </message>
-    <message>
-        <source>"weak"</source>
-        <translation>"faibles"</translation>
     </message>
     <message>
         <source>SUPG_OPTION</source>
@@ -1227,42 +699,6 @@
         <translation>SCHEMA POUR LA CONVECTION DES VITESSES</translation>
     </message>
     <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"PAS DE CONVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CARACTERISTIQUES"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICITE + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICITE LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICITE + MURD SCHEMA N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICITE + MURD SCHEMA PSI"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA N POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA N POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"ERIA_SCHEME"</source>
-        <translation>"SCHEMA ERIA"</translation>
-    </message>
-    <message>
         <source>SCHEME_OPTION_FOR_ADVECTION_OF_VELOCITIES</source>
         <translation>OPTION DU SCHEMA POUR LA CONVECTION DES VITESSES</translation>
     </message>
@@ -1279,12 +715,16 @@
         <translation>TRAITEMENT DES FLUX AUX FRONTIERES</translation>
     </message>
     <message>
-        <source>"Priority_to_prescribed_values"</source>
-        <translation>"Priorite aux valeurs imposees"</translation>
+        <source>NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES</source>
+        <translation>NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS</translation>
     </message>
     <message>
-        <source>"Priority_to_fluxes"</source>
-        <translation>"Priorite aux flux"</translation>
+        <source>NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES</source>
+        <translation>NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS</translation>
+    </message>
+    <message>
+        <source>PSI_SCHEME_OPTION</source>
+        <translation>OPTION DU SCHEMA PSI</translation>
     </message>
     <message>
         <source>DIFFUSION_OF_VELOCITY</source>
@@ -1295,28 +735,20 @@
         <translation>OPTION POUR LA DIFFUSION DES VITESSES</translation>
     </message>
     <message>
-        <source>"div(_nu_grad(U)_)"</source>
-        <translation>"div( nu grad(U) )"</translation>
-    </message>
-    <message>
-        <source>"1/h_div_(_h_nu_grad(U)"</source>
-        <translation>"1/h div ( h nu grad(U)"</translation>
-    </message>
-    <message>
         <source>IMPLICITATION_FOR_DIFFUSION_OF_VELOCITY</source>
         <translation>IMPLICITATION POUR LA DIFFUSION DES VITESSES</translation>
     </message>
     <message>
+        <source>NUMBER_OF_DIFFERENTIATORS</source>
+        <translation>NOMBRE DE DIFFERENTIATEURS</translation>
+    </message>
+    <message>
+        <source>NAMES_OF_DIFFERENTIATORS</source>
+        <translation>NOMS DES DIFFERENTIATEURS</translation>
+    </message>
+    <message>
         <source>MATRIX_STORAGE</source>
         <translation>STOCKAGE DES MATRICES</translation>
-    </message>
-    <message>
-        <source>"classical_EBE"</source>
-        <translation>"EBE classique"</translation>
-    </message>
-    <message>
-        <source>"Edge_based_storage"</source>
-        <translation>"Stockage par segments"</translation>
     </message>
     <message>
         <source>MATRIX_VECTOR_PRODUCT</source>
@@ -1331,36 +763,28 @@
         <translation>ZERO</translation>
     </message>
     <message>
+        <source>PROPAGATION_OPTION</source>
+        <translation>OPTION DE PROPAGATION</translation>
+    </message>
+    <message>
+        <source>OPTION_OF_THE_HYDROSTATIC_RECONSTRUCTION</source>
+        <translation>OPTION DE LA RECONSTRUCION HYDROSTATIQUE</translation>
+    </message>
+    <message>
+        <source>CONVERGENCE_STUDY</source>
+        <translation>ETUDE DE CONVERGENCE</translation>
+    </message>
+    <message>
+        <source>REFINEMENT_LEVELS</source>
+        <translation>NIVEAUX DE RAFFINEMENT</translation>
+    </message>
+    <message>
         <source>VELOCITY_DIFFUSIVITY</source>
         <translation>COEFFICIENT DE DIFFUSION DES VITESSES</translation>
     </message>
     <message>
         <source>TURBULENCE_MODEL</source>
         <translation>MODELE DE TURBULENCE</translation>
-    </message>
-    <message>
-        <source>"CONSTANT_VISCOSITY"</source>
-        <translation>"VISCOSITE CONSTANTE"</translation>
-    </message>
-    <message>
-        <source>"ELDER"</source>
-        <translation>"ELDER"</translation>
-    </message>
-    <message>
-        <source>"K_EPSILON_MODEL"</source>
-        <translation>"MODELE K-EPSILON"</translation>
-    </message>
-    <message>
-        <source>"SMAGORINSKI"</source>
-        <translation>"SMAGORINSKI"</translation>
-    </message>
-    <message>
-        <source>"MIXING_LENGTH"</source>
-        <translation>"MIXING LENGTH"</translation>
-    </message>
-    <message>
-        <source>"SPALART_ALLMARAS"</source>
-        <translation>"SPALART-ALLMARAS"</translation>
     </message>
     <message>
         <source>ACCURACY_OF_SPALART_ALLMARAS</source>
@@ -1375,38 +799,6 @@
         <translation>SOLVEUR POUR LE MODELE K-EPSILON</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"gradient conjugue"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residuals"</source>
-        <translation>"residu conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_normal_equation"</source>
-        <translation>"gradient conjugue sur equation normal"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"erreur minimale"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_squared"</source>
-        <translation>"gradient conjugue carre"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_squared_stabilised_(cgstab)"</source>
-        <translation>"gradient conjugue carre stabilise (cgstab)"</translation>
-    </message>
-    <message>
-        <source>"gmres_(see_option_for_the_solver_for_k_epsilon_model)"</source>
-        <translation>"gmres (voir aussi option du solveur pour le modele k-epsilon"</translation>
-    </message>
-    <message>
-        <source>"direct"</source>
-        <translation>"direct"</translation>
-    </message>
-    <message>
         <source>OPTION_FOR_THE_SOLVER_FOR_K_EPSILON_MODEL</source>
         <translation>OPTION DU SOLVEUR POUR LE MODELE K-EPSILON</translation>
     </message>
@@ -1415,36 +807,12 @@
         <translation>PRECONDITIONNEMENT POUR LE MODELE K-EPSILON</translation>
     </message>
     <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"aucun"</translation>
-    </message>
-    <message>
-        <source>"crout"</source>
-        <translation>"crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_crout"</source>
-        <translation>"diagonal et crout"</translation>
-    </message>
-    <message>
         <source>NON_DIMENSIONAL_DISPERSION_COEFFICIENTS</source>
         <translation>COEFFICIENTS ADIMENSIONNELS DE DISPERSION</translation>
     </message>
     <message>
         <source>TURBULENCE_REGIME_FOR_SOLID_BOUNDARIES</source>
         <translation>REGIME DE TURBULENCE POUR LES PAROIS</translation>
-    </message>
-    <message>
-        <source>"smooth"</source>
-        <translation>"lisse"</translation>
-    </message>
-    <message>
-        <source>"rough"</source>
-        <translation>"rugueux"</translation>
     </message>
     <message>
         <source>INFORMATION_ABOUT_K_EPSILON_MODEL</source>
@@ -1457,42 +825,6 @@
     <message>
         <source>SCHEME_FOR_ADVECTION_OF_K_EPSILON</source>
         <translation>SCHEMA POUR LA CONVECTION DU K-EPSILON</translation>
-    </message>
-    <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"PAS DE CONVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CARACTERISTIQUES"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICITE + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICITE LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICITE + MURD SCHEMA N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICITE + MURD SCHEMA PSI"</translation>
-    </message>
-    <message>
-        <source>"LEO_POSTMA_FOR_TIDAL_FLATS"</source>
-        <translation>"LEO POSTMA POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA N POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"ERIA_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA ERIA POUR BANCS DECOUVRANTS"</translation>
     </message>
     <message>
         <source>SCHEME_OPTION_FOR_ADVECTION_OF_K_EPSILON</source>
@@ -1523,28 +855,8 @@
         <translation>OPTION DE TRAITEMENT DES BANCS DECOUVRANTS</translation>
     </message>
     <message>
-        <source>"EQUATIONS_SOLVED_EVERYWHERE_WITH_CORRECTION_ON_TIDAL_FLATS"</source>
-        <translation>"EQUATIONS RESOLUES PARTOUT, CORRECTION SUR LES BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"DRY_ELEMENTS_FROZEN"</source>
-        <translation>"GEL DES ELEMENTS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"LIKE_1_BUT_WITH_POROSITY_(DEFINA_METHOD)"</source>
-        <translation>"COMME 1 MAIS AVEC POROSITE (METHODE DEFINA)"</translation>
-    </message>
-    <message>
         <source>TREATMENT_OF_NEGATIVE_DEPTHS</source>
         <translation>TRAITEMENT DES HAUTEURS NEGATIVES</translation>
-    </message>
-    <message>
-        <source>"SMOOTHING"</source>
-        <translation>"LISSAGE"</translation>
-    </message>
-    <message>
-        <source>"FLUX_CONTROL"</source>
-        <translation>"LIMITATION DES FLUX"</translation>
     </message>
     <message>
         <source>THRESHOLD_FOR_NEGATIVE_DEPTHS</source>
@@ -1591,60 +903,12 @@
         <translation>SOLVEUR POUR LA DIFFUSION DES TRACEURS</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"gradient conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"residu conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"gradient conjuge sur equation normale"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"erreur minimale"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"gradient conjuge carre"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres_(see_option_for_the_solver_for_tracer_diffusion)"</source>
-        <translation>"gmres (voir ausi option du solveur)"</translation>
-    </message>
-    <message>
-        <source>"direct"</source>
-        <translation>"direct"</translation>
-    </message>
-    <message>
         <source>SOLVER_OPTION_FOR_TRACERS_DIFFUSION</source>
         <translation>OPTION DU SOLVEUR POUR LA DIFFUSION DES TRACEURS</translation>
     </message>
     <message>
         <source>PRECONDITIONING_FOR_DIFFUSION_OF_TRACERS</source>
         <translation>PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning_"</source>
-        <translation>"aucun"</translation>
-    </message>
-    <message>
-        <source>"crout"</source>
-        <translation>"crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_crout"</source>
-        <translation>"diagonal et crout"</translation>
     </message>
     <message>
         <source>ACCURACY_FOR_DIFFUSION_OF_TRACERS</source>
@@ -1683,52 +947,8 @@
         <translation>OPTION POUR LA DIFFUSION DES TRACEURS</translation>
     </message>
     <message>
-        <source>"div(_nu_grad(T)_)"</source>
-        <translation>"div( nu grad(T) )"</translation>
-    </message>
-    <message>
-        <source>"1/h_div_(_h_nu_grad(T)"</source>
-        <translation>"1/h div ( h nu grad(T)"</translation>
-    </message>
-    <message>
         <source>SCHEME_FOR_ADVECTION_OF_TRACERS</source>
         <translation>SCHEMA POUR LA CONVECTION DES TRACEURS</translation>
-    </message>
-    <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"PAS DE CONVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CARACTERISTIQUES"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICITE + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICITE LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICITE + MURD SCHEMA N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICITE + MURD SCHEMA PSI"</translation>
-    </message>
-    <message>
-        <source>"LEO_POSTMA_FOR_TIDAL_FLATS"</source>
-        <translation>"LEO POSTMA POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA N POUR BANCS DECOUVRANTS"</translation>
-    </message>
-    <message>
-        <source>"ERIA_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"SCHEMA ERIA POUR BANCS DECOUVRANTS"</translation>
     </message>
     <message>
         <source>SCHEME_OPTION_FOR_ADVECTION_OF_TRACERS</source>
@@ -1741,14 +961,6 @@
     <message>
         <source>LAW_OF_TRACERS_DEGRADATION</source>
         <translation>LOI DE DEGRADATION DES TRACEURS</translation>
-    </message>
-    <message>
-        <source>"NO_DEGRADATION"</source>
-        <translation>"PAS DE DEGRADATION"</translation>
-    </message>
-    <message>
-        <source>"F(T90)_LAW"</source>
-        <translation>"LOI EN F(T90)"</translation>
     </message>
     <message>
         <source>COEFFICIENT_1_FOR_LAW_OF_TRACERS_DEGRADATION</source>
@@ -1775,22 +987,6 @@
         <translation>TYPE DES ALGUES</translation>
     </message>
     <message>
-        <source>"SPHERE"</source>
-        <translation>"SPHERE"</translation>
-    </message>
-    <message>
-        <source>"IRIDAEA_FLACCIDA_(CLOSE_TO_ULVA)"</source>
-        <translation>"IRIDAEA FLACCIDA (PROCHE DES ULVES)"</translation>
-    </message>
-    <message>
-        <source>"PELVETIOPSIS_LIMITATA"</source>
-        <translation>"PELVETIOPSIS LIMITATA"</translation>
-    </message>
-    <message>
-        <source>"GIGARTINA_LEPTORHYNCHOS"</source>
-        <translation>"GIGARTINA LEPTORHYNCHOS"</translation>
-    </message>
-    <message>
         <source>DIAMETER_OF_ALGAE</source>
         <translation>DIAMETRE DES ALGUES</translation>
     </message>
@@ -1815,14 +1011,6 @@
         <translation>MODELE DE DIFFUSION STOCHASTIQUE</translation>
     </message>
     <message>
-        <source>"No_model"</source>
-        <translation>"Pas de modele"</translation>
-    </message>
-    <message>
-        <source>"brownian_movement"</source>
-        <translation>"mouvement brownien"</translation>
-    </message>
-    <message>
         <source>NUMBER_OF_LAGRANGIAN_DRIFTS</source>
         <translation>NOMBRE DE DERIVES LAGRANGIENNES</translation>
     </message>
@@ -1837,14 +1025,6 @@
     <message>
         <source>TYPE_OF_WEIRS</source>
         <translation>TYPE DES SEUILS</translation>
-    </message>
-    <message>
-        <source>"HORIZONTAL_WITH_SAME_NUMBER_OF_NODES_UPSTREAM/DOWNSTREAM"</source>
-        <translation>"HORIZONTAL AVEC MEME NOMBRE DE NOEUDS AMONT/AVAL"</translation>
-    </message>
-    <message>
-        <source>"GENERAL"</source>
-        <translation>"GENERALE"</translation>
     </message>
     <message>
         <source>NUMBER_OF_SIPHONS</source>
@@ -1863,6 +1043,10 @@
         <translation>FICHIER DE DONNEES DES BUSES</translation>
     </message>
     <message>
+        <source>OPTION_FOR_CULVERTS</source>
+        <translation>OPTION POUR LES BUSES</translation>
+    </message>
+    <message>
         <source>BREACH</source>
         <translation>BRECHE</translation>
     </message>
@@ -1873,22 +1057,6 @@
     <message>
         <source>TIDAL_DATA_BASE</source>
         <translation>BASE DE DONNEES DE MAREE</translation>
-    </message>
-    <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"PAS DE VALEUR PAR DEFAUT"</translation>
-    </message>
-    <message>
-        <source>"JMJ"</source>
-        <translation>"JMJ"</translation>
-    </message>
-    <message>
-        <source>"TPXO"</source>
-        <translation>"TPXO"</translation>
-    </message>
-    <message>
-        <source>"MISCELLANEOUS_(LEGOS_NEA,_FES20XX,_PREVIMER...)"</source>
-        <translation>"DIVERS (LEGOS-NEA, FES20XX, PREVIMER...)"</translation>
     </message>
     <message>
         <source>TIDAL_MODEL_FILE</source>
@@ -1923,100 +1091,12 @@
         <translation>OPTION POUR LES CONDITIONS AUX LIMITES DE MAREE</translation>
     </message>
     <message>
-        <source>"No_tide"</source>
-        <translation>"Pas de maree"</translation>
-    </message>
-    <message>
-        <source>"Real_tide_(recommended_methodology)"</source>
-        <translation>"Maree reelle (methodologie recommandee)"</translation>
-    </message>
-    <message>
-        <source>"Astronomical_tide"</source>
-        <translation>"Maree de vive-eau exceptionnelle (coef. presque 120)"</translation>
-    </message>
-    <message>
-        <source>"Mean_spring_tide"</source>
-        <translation>"Maree de vive-eau moyenne (coef. presque 95)"</translation>
-    </message>
-    <message>
-        <source>"Mean_tide"</source>
-        <translation>"Maree moyenne (coef. presque 70)"</translation>
-    </message>
-    <message>
-        <source>"Mean_neap_tide"</source>
-        <translation>"Maree de morte-eau moyenne (coef. presque 45)"</translation>
-    </message>
-    <message>
-        <source>"Astronomical_neap_tide"</source>
-        <translation>"Maree de morte-eau exceptionnelle (coef. presque 20)"</translation>
-    </message>
-    <message>
-        <source>"Real_tide_(methodology_before_2010)"</source>
-        <translation>"Maree reelle (methodologie d avant 2010)"</translation>
-    </message>
-    <message>
         <source>GEOGRAPHIC_SYSTEM</source>
         <translation>SYSTEME GEOGRAPHIQUE</translation>
     </message>
     <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"PAS DE VALEUR PAR DEFAUT"</translation>
-    </message>
-    <message>
-        <source>"DEFINED_BY_USER"</source>
-        <translation>"DEFINI PAR L UTILISATEUR"</translation>
-    </message>
-    <message>
-        <source>"WGS84_LONGITUDE/LATITUDE_IN_REAL_DEGREES"</source>
-        <translation>"WGS84 LONGITUDE/LATITUDE EN DEGRES REELS"</translation>
-    </message>
-    <message>
-        <source>"WGS84_NORTHERN_UTM"</source>
-        <translation>"WGS84 NORD UTM"</translation>
-    </message>
-    <message>
-        <source>"WGS84_SOUTHERN_UTM"</source>
-        <translation>"WGS84 SUD UTM"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT"</source>
-        <translation>"LAMBERT"</translation>
-    </message>
-    <message>
-        <source>"MERCATOR_FOR_TELEMAC"</source>
-        <translation>"MERCATOR POUR TELEMAC"</translation>
-    </message>
-    <message>
         <source>ZONE_NUMBER_IN_GEOGRAPHIC_SYSTEM</source>
         <translation>NUMERO DE FUSEAU OU PROJECTION DANS LE SYSTEME GEOGRAPHIQUE</translation>
-    </message>
-    <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"PAS DE VALEUR PAR DEFAUT"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_1_NORTH"</source>
-        <translation>"LAMBERT 1 NORD"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_2_CENTER"</source>
-        <translation>"LAMBERT 2 CENTRE"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_3_SOUTH"</source>
-        <translation>"LAMBERT 3 SUD"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_4_CORSICA"</source>
-        <translation>"LAMBERT 4 CORSE"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_2_EXTENDED"</source>
-        <translation>"LAMBERT 2 ETENDU"</translation>
-    </message>
-    <message>
-        <source>"UTM_ZONE,_E.G."</source>
-        <translation>"ZONE UTM, PAR EXEMPLE"</translation>
     </message>
     <message>
         <source>COEFFICIENT_TO_CALIBRATE_SEA_LEVEL</source>
@@ -2029,6 +1109,14 @@
     <message>
         <source>COEFFICIENT_TO_CALIBRATE_TIDAL_VELOCITIES</source>
         <translation>COEFFICIENT DE CALAGE DES VITESSES DE COURANT</translation>
+    </message>
+    <message>
+        <source>LOCAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER</source>
+        <translation>NUMERO LOCAL DU POINT POUR CALER LA PLEINE MER</translation>
+    </message>
+    <message>
+        <source>GLOBAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER</source>
+        <translation>NUMERO GLOBAL DU POINT POUR CALER LA PLEINE MER</translation>
     </message>
     <message>
         <source>COUPLING_WITH</source>
@@ -2127,128 +1215,8 @@
         <translation>FICHIER DES PARAMETRES DE WAQTEL</translation>
     </message>
     <message>
-        <source>NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES</source>
-        <translation>NOMBRE DE CORRECTIONS DES SCHEMAS DISTRIBUTIFS</translation>
-    </message>
-    <message>
-        <source>NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES</source>
-        <translation>NOMBRE DE SOUS-PAS DES SCHEMAS DISTRIBUTIFS</translation>
-    </message>
-    <message>
-        <source>WAVE_ENHANCED_FRICTION_FACTOR</source>
-        <translation>AUGMENTATION DU FROTTEMENT PAR LA HOULE</translation>
-    </message>
-    <message>
-        <source>LOCAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER</source>
-        <translation>NUMERO LOCAL DU POINT POUR CALER LA PLEINE MER</translation>
-    </message>
-    <message>
-        <source>GLOBAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER</source>
-        <translation>NUMERO GLOBAL DU POINT POUR CALER LA PLEINE MER</translation>
-    </message>
-    <message>
-        <source>PSI_SCHEME_OPTION</source>
-        <translation>OPTION DU SCHEMA PSI</translation>
-    </message>
-    <message>
-        <source>"explicit"</source>
-        <translation>"explicite"</translation>
-    </message>
-    <message>
-        <source>"predictor_corrector"</source>
-        <translation>"predicteur-correcteur"</translation>
-    </message>
-    <message>
-        <source>PROPAGATION_OPTION</source>
-        <translation>OPTION DE PROPAGATION</translation>
-    </message>
-    <message>
-        <source>FREE_INTEGER_20</source>
-        <translation>ENTIER LIBRE 20</translation>
-    </message>
-    <message>
-        <source>VECTOR_LENGTH</source>
-        <translation>LONGUEUR DU VECTEUR</translation>
-    </message>
-    <message>
         <source>LANGUAGE</source>
         <translation>LANGUE</translation>
-    </message>
-    <message>
-        <source>"FRANCAIS"</source>
-        <translation>"FRANCAIS"</translation>
-    </message>
-    <message>
-        <source>"ANGLAIS"</source>
-        <translation>"ANGLAIS"</translation>
-    </message>
-    <message>
-        <source>OPTION_FOR_CULVERTS</source>
-        <translation>OPTION POUR LES BUSES</translation>
-    </message>
-    <message>
-        <source>RAINFALL_RUNOFF_MODEL</source>
-        <translation>MODELE PLUIE-DEBIT</translation>
-    </message>
-    <message>
-        <source>"No_infiltration"</source>
-        <translation>"Pas d infiltration"</translation>
-    </message>
-    <message>
-        <source>"CN_runoff_model"</source>
-        <translation>"Modele CN"</translation>
-    </message>
-    <message>
-        <source>ANTECEDENT_MOISTURE_CONDITIONS</source>
-        <translation>CONDITIONS D'HUMIDITE PRECEDENTE</translation>
-    </message>
-    <message>
-        <source>DURATION_OF_RAIN_OR_EVAPORATION_IN_HOURS</source>
-        <translation>DUREE DE LA PLUIE OU EVAPORATION EN HEURES</translation>
-    </message>
-    <message>
-        <source>FLUXLINE</source>
-        <translation>FLUXLINE</translation>
-    </message>
-    <message>
-        <source>ASCII_ATMOSPHERIC_DATA_FILE</source>
-        <translation>FICHIER ASCII DE DONNEES ATMOSPHERIQUES</translation>
-    </message>
-    <message>
-        <source>BINARY_ATMOSPHERIC_DATA_FILE</source>
-        <translation>FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES</translation>
-    </message>
-    <message>
-        <source>BINARY_ATMOSPHERIC_DATA_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER BINAIRE DE DONNEES ATMOSPHERIQUES</translation>
-    </message>
-    <message>
-        <source>FLUXLINE_INPUT_FILE</source>
-        <translation>FICHIER DE FLUXLINE</translation>
-    </message>
-    <message>
-        <source>OPTION_OF_THE_HYDROSTATIC_RECONSTRUCTION</source>
-        <translation>OPTION DE LA RECONSTRUCION HYDROSTATIQUE</translation>
-    </message>
-    <message>
-        <source>NUMBER_OF_DIFFERENTIATORS</source>
-        <translation>NOMBRE DE DIFFERENTIATEURS</translation>
-    </message>
-    <message>
-        <source>OPTION_FOR_INITIAL_ABSTRACTION_RATIO</source>
-        <translation>OPTION POUR RATIO DES PERTES INITIALES</translation>
-    </message>
-    <message>
-        <source>NAMES_OF_DIFFERENTIATORS</source>
-        <translation>NOMS DES DIFFERENTIATEURS</translation>
-    </message>
-    <message>
-        <source>CONVERGENCE_STUDY</source>
-        <translation>ETUDE DE CONVERGENCE</translation>
-    </message>
-    <message>
-        <source>REFINEMENT_LEVELS</source>
-        <translation>NIVEAUX DE RAFFINEMENT</translation>
     </message>
     <message>
         <source>STEERING_FILE</source>

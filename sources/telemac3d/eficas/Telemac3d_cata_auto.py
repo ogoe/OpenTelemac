@@ -44,6 +44,7 @@ JdC = JDC_CATA (code = 'TELEMAC',
 # Catalog entry for the MAP function : c_pre_interfaceBody_mesh
 # =======================================================================
 
+VERSION_CATALOGUE="TRUNK"
 # -----------------------------------------------------------------------
 NUMERICAL_PARAMETERS = PROC(nom= "NUMERICAL_PARAMETERS",op = None,
 # -----------------------------------------------------------------------
@@ -57,7 +58,7 @@ NUMERICAL_PARAMETERS = PROC(nom= "NUMERICAL_PARAMETERS",op = None,
 #   -----------------------------------
     THRESHOLD_FOR_VISCOSITY_CORRECTION_ON_TIDAL_FLATS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.2],
         fr = """Pour les profondeurs inferieures, la viscosite sera
 progressivement reduite. Voir le sous-programme
@@ -68,7 +69,7 @@ cancelled. See subroutine \telfile{VISCLIP}.""",
 #   -----------------------------------
     THRESHOLD_FOR_SEDIMENT_FLUX_CORRECTION_ON_TIDAL_FLATS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.2],
         fr = """Pour les profondeurs inferieures a cette valeur limite, le flux
 sedimentaire sera nul. Voir le sous-programme \telfile{FLUSED}.""",
@@ -100,7 +101,7 @@ rate-imposed boundaries.""",
 #   -----------------------------------
     DEBUGGER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Pour imprimer la sequence des appels, mettre 1.""",
         ang = """If 1, additional writings will be printed in the listing,
@@ -109,7 +110,7 @@ in particular the calls of subroutines.""",
 #   -----------------------------------
     TREATMENT_OF_NEGATIVE_DEPTHS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Seulement avec \telkey{OPTION DE TRAITEMENT DES BANCS DECOUVRANTS}
 = 1. Les choix possibles sont :
@@ -129,7 +130,7 @@ in particular the calls of subroutines.""",
 #   -----------------------------------
     BYPASS_VOID_VOLUMES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Accelere les schemas de convection distributifs et volumes finis
 en cas de bancs decouvrants ou de transformation sigma generalisee.""",
@@ -139,7 +140,7 @@ schemes in case of tidal flats or generalised sigma transformation.""",
 #   -----------------------------------
     VELOCITY_PROJECTED_ON_SOLID_LATERAL_BOUNDARIES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """$\vec{U}.\vec{n} = 0$ sur les parois laterales solides est force
 en fin de boucle en temps.""",
@@ -149,7 +150,7 @@ by a projection at the end of time loop.""",
 #   -----------------------------------
     VELOCITY_PROJECTED_ON_BOTTOM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """$\vec{U}.\vec{n} = 0$ sur le fond est force en fin de boucle
 en temps.""",
@@ -159,7 +160,7 @@ at the end of time loop.""",
 #   -----------------------------------
     VERTICAL_VELOCITY_DERIVATIVES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Mode de calcul des derivees des vitesses suivant $z$ :
 \begin{itemize}
@@ -175,7 +176,7 @@ at the end of time loop.""",
 #   -----------------------------------
     RESTART_MODE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Declenche le remplissage du
 \telkey{FICHIER POUR SUITE}, qui permet une suite de calcul
@@ -194,7 +195,7 @@ unlike using the \telkey{3D RESULT FILE}.""",
 #   -----------------------------------
     COEFFICIENT_TO_CALIBRATE_TIDAL_RANGE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Coefficient pour ajuster le marnage de l''onde de maree
 aux frontieres maritimes.""",
@@ -204,7 +205,7 @@ at tidal open boundary conditions.""",
 #   -----------------------------------
     COEFFICIENT_TO_CALIBRATE_TIDAL_VELOCITIES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [999999.],
         fr = """Coefficient pour ajuster les composantes de vitesse
 de l''onde de maree aux frontieres maritimes.
@@ -218,7 +219,7 @@ Default value 999999. means that the square root of
 #   -----------------------------------
     COEFFICIENT_TO_CALIBRATE_SEA_LEVEL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Coefficient pour ajuster le niveau de mer.
 Ce coefficient correspond d''habitude au niveau moyen de la mer
@@ -230,7 +231,7 @@ or a close value.""",
 #   -----------------------------------
     TIDAL_DATA_BASE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["NO DEFAULT VALUE","JMJ","TPXO","MISCELLANEOUS (LEGOS-NEA, FES20XX, PREVIMER...)"],
         defaut = ["NO DEFAULT VALUE"],
         fr = """Fournit le nom de la base de donnees utilisee pour la generation
@@ -261,7 +262,7 @@ constituents on the internet.""",
 #   -----------------------------------
     GEOGRAPHIC_SYSTEM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["NO DEFAULT VALUE","DEFINED BY USER","WGS84 LONGITUDE/LATITUDE IN REAL DEGREES","WGS84 NORTHERN UTM","WGS84 SOUTHERN UTM","LAMBERT","MERCATOR PROJECTION"],
         defaut = ["NO DEFAULT VALUE"],
         fr = """Systeme de coordonnees geographiques dans lequel est construit
@@ -292,7 +293,7 @@ The possible choices are:
 #   -----------------------------------
     ZONE_NUMBER_IN_GEOGRAPHIC_SYSTEM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["NO DEFAULT VALUE","LAMBERT 1 NORTH","LAMBERT 2 CENTER","LAMBERT 3 SOUTH","LAMBERT 4 CORSICA","LAMBERT 2 EXTENDED","UTM ZONE, E.G."],
         defaut = ["NO DEFAULT VALUE"],
         fr = """Numero de zone (fuseau ou type de projection) lors de
@@ -324,7 +325,7 @@ Possible choices are:
 #   -----------------------------------
     MINOR_CONSTITUENTS_INFERENCE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Pour les solutions developpees par OSU (ex. TPXO) uniquement.
 Interpolation de composantes harmoniques mineures
@@ -339,7 +340,7 @@ and \telkey{BINARY DATABASE 2 FOR TIDE}.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_ITERATIONS_FOR_ADVECTION_SCHEMES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [10],
         fr = """Limite le nombre d''iterations pour les schemas de convection,
 seulement pour schemes 13 et 14.""",
@@ -349,7 +350,7 @@ schemes, only for schemes 13 and 14.""",
 #   -----------------------------------
     NUMBER_OF_GAUSS_POINTS_FOR_WEAK_CHARACTERISTICS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["1 point","3 points","6 points"],
         defaut = ["3 points"],
         fr = """Voir les release notes v6.3.
@@ -368,7 +369,7 @@ schemes, only for schemes 13 and 14.""",
 #   -----------------------------------
     OPEN_BOUNDARY_CONDITIONS_ON_THE_BED = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Determine s''il y a des conditions ouvertes sur le fond.""",
         ang = """Defines if there are open boundary conditions
@@ -384,12 +385,12 @@ on the bed.""",
 rate-imposed bed boundaries.""",
     ),
 #   -----------------------------------
-    DURATION = FACT(statut='o',
+    TIME = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_TIME_STEPS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Definit le nombre de pas de temps effectues lors de
 l''execution du code.""",
@@ -399,7 +400,7 @@ the code.""",
 #       -----------------------------------
         TIME_STEP = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.],
             fr = """Definit le pas de temps en secondes.
 Remarque : Pour une bonne precision, il est souhaitable de choisir
@@ -413,7 +414,7 @@ des valeurs de 50.""",
 #       -----------------------------------
         DURATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Duree de la simulation en secondes. Alternative au parametre
 \telkey{NOMBRE DE PAS DE TEMPS}.
@@ -430,7 +431,7 @@ the greater value is taken.""",
 #       -----------------------------------
         FREE_SURFACE_GRADIENT_COMPATIBILITY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.],
             fr = """Des valeurs comprises entre 0 et 1 peuvent supprimer les
 oscillations parasites.""",
@@ -438,12 +439,12 @@ oscillations parasites.""",
         ),
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_HORIZONTAL_LEVELS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [2],
             fr = """Definit le nombre de plans du maillage entre le fond et la
 surface. Vaut au moins 2.""",
@@ -453,7 +454,7 @@ be at least 2.""",
 #       -----------------------------------
         NUMBER_OF_SUB_ITERATIONS_FOR_NON_LINEARITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Permet de reactualiser, pour un meme pas de temps, les champs
 convecteur et propagateur au cours de plusieurs sous-iterations. A la
@@ -473,7 +474,7 @@ The non-linearities can be taken into account through this technique.""",
 #       -----------------------------------
         COUPLING_PERIOD_FOR_TOMAWAC = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Fixe la periode de couplage avec le module \tomawac,
 en nombre de pas de temps.
@@ -484,7 +485,7 @@ of time steps. By default, it is coupled at every time step.""",
 #       -----------------------------------
         COUPLING_PERIOD_FOR_SISYPHE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Fixe la periode de couplage avec le module \sisyphe,
 en nombre de pas de temps.
@@ -516,7 +517,7 @@ of time steps. By default, it is coupled at every time step.""",
 #       -----------------------------------
         ZERO = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.E-10],
             fr = """Non active pour l''instant.""",
             ang = """Not used so far.""",
@@ -524,7 +525,7 @@ of time steps. By default, it is coupled at every time step.""",
 #       -----------------------------------
         TIDAL_FLATS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [True ],
             fr = """Permet de supprimer les tests sur les bancs decouvrants, dans
 les cas ou l''on est certain qu''il n''y en aura pas.
@@ -536,7 +537,7 @@ tidal flats.""",
 #       -----------------------------------
         RAIN_OR_EVAPORATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Pour ajouter un apport ou une perte d''eau en surface.
 Voir le mot-cle \telkey{PLUIE OU EVAPORATION EN MM PAR JOUR}.""",
@@ -546,7 +547,7 @@ See the keyword \telkey{RAIN OR EVAPORATION IN MM PER DAY}.""",
 #       -----------------------------------
         HYDROSTATIC_INCONSISTENCY_FILTER = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Permet de filtrer les inconsistances hydrostatiques.""",
             ang = """Allows to filter hydrostatic inconsistencies.""",
@@ -554,7 +555,7 @@ See the keyword \telkey{RAIN OR EVAPORATION IN MM PER DAY}.""",
 #       -----------------------------------
         SPHERICAL_COORDINATES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Choix des coordonnees spheriques pour la realisation du calcul
 (pour les grands domaines de calcul).
@@ -572,7 +573,7 @@ ordinate $y$ = 0 in the mesh, must moreover be given.""",
 #       -----------------------------------
         NUMBER_OF_CULVERTS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Nombre de buses ou ponts traites comme des termes sources ou
 puits. Ces buses doivent etre decrites comme des sources dans le
@@ -596,7 +597,7 @@ in \tel.""",
 #       -----------------------------------
         VECTOR_LENGTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Longueur du vecteur pour les machines vectorielles.""",
             ang = """Vector length on vector machines.""",
@@ -604,7 +605,7 @@ in \tel.""",
 #       -----------------------------------
         NUMBER_OF_PRIVATE_ARRAYS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Nombre de tableaux mis a disposition de l''utilisateur.""",
             ang = """Number of arrays for own user programming.""",
@@ -612,7 +613,7 @@ in \tel.""",
 #       -----------------------------------
         RECORD_NUMBER_FOR_RESTART = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """En cas de suite de calcul, numero de l''enregistrement
 de depart dans le fichier du calcul precedent. 0 signifie
@@ -624,7 +625,7 @@ start from in the \telkey{PREVIOUS COMPUTATION FILE}.
 #       -----------------------------------
         MATRIX_STORAGE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [3],
             fr = """Permet de definir la methode de stockage des matrices.
 Les choix possibles sont :
@@ -641,7 +642,7 @@ Les choix possibles sont :
 #       -----------------------------------
         DENSITY_LAW = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Donne le type de loi de densite utilisee dans le cas de
 l''utilisation de traceurs actifs. Les choix possibles sont :
@@ -693,7 +694,7 @@ Also used when chaining with DELWAQ.""",
 #       -----------------------------------
         OPTION_FOR_THE_DIFFUSION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Fixe le type de resolution de l''etape de diffusion.
 Les choix possibles sont :
@@ -718,7 +719,7 @@ Les choix possibles sont :
 #       -----------------------------------
         MESH_TRANSFORMATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Permet que specifier la methode de repartition des plans
 verticaux du maillage. Les choix possibles sont :
@@ -781,7 +782,7 @@ These coefficients are applied respectively to:
 #       -----------------------------------
         INITIAL_TIME_SET_TO_ZERO = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Remet le temps a zero en cas de suite de calcul.""",
             ang = """Initial time set to zero in case of restart.""",
@@ -789,7 +790,7 @@ These coefficients are applied respectively to:
 #       -----------------------------------
         RAIN_OR_EVAPORATION_IN_MM_PER_DAY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Pour ajouter un apport ou une perte d''eau en surface.""",
             ang = """Specifies the amount of water to add or remove at the
@@ -808,7 +809,7 @@ skin roughness = ratio $\times$ mean diameter.""",
 #       -----------------------------------
         ELEMENTS_MASKED_BY_USER = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Si OUI, remplir le sous-programme \telfile{MASKOB}.""",
             ang = """If YES, fill in the subroutine \telfile{MASKOB}.""",
@@ -816,7 +817,7 @@ skin roughness = ratio $\times$ mean diameter.""",
 #       -----------------------------------
         WAVE_DRIVEN_CURRENTS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Active la prise en compte des courants de houle
 (voir le sous-programme \telfile{TRISOU}).""",
@@ -826,7 +827,7 @@ see subroutine \telfile{TRISOU}.""",
 #       -----------------------------------
         RECORD_NUMBER_IN_WAVE_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Numero d''enregistrement a lire par \telemac{3d} dans le
 fichier des courants de houle.""",
@@ -895,7 +896,7 @@ Possible choices are:
 #       -----------------------------------
         TIDE_GENERATING_FORCE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Active la prise en compte de la force generatrice de la maree""",
             ang = """The tide generating force is taken into account.""",
@@ -903,7 +904,7 @@ Possible choices are:
 #       -----------------------------------
         NUMBER_OF_2D_PRIVATE_ARRAYS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Nombre de tableaux 2D mis a disposition de l utilisateur
 dans le bloc PRIVE2D. Il doit etre inferieur ou egal a 4.""",
@@ -913,7 +914,7 @@ in block \telfile{PRIVE2D}. It has to be lower or equal to 4.""",
 #       -----------------------------------
         LOCAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Numero local du point entre 1 et le nombre de points
 de frontiere maritime (du FICHIER DES CONSTANTES HARMONIQUES)
@@ -934,7 +935,7 @@ this point to start the simulation with a high water
 #       -----------------------------------
         GLOBAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Numero global du point par rapport auquel
 les ondes de maree sont dephasees
@@ -950,7 +951,7 @@ Only harmonic constants databases like TPXO are concerned.""",
 #       -----------------------------------
         NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Pour les options avec predicteur-correcteur.""",
             ang = """For predictor-corrector options.""",
@@ -958,7 +959,7 @@ Only harmonic constants databases like TPXO are concerned.""",
 #       -----------------------------------
         NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Pour les options predicteur-correcteur
 avec schema localement implicite.""",
@@ -976,12 +977,12 @@ a better divergence-free field.""",
         ),
     ),
 #   -----------------------------------
-    VELOCITY_CELERITY_DEPTH = FACT(statut='o',
+    VELOCITY_CELERITY_DEPTH = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         INITIAL_GUESS_FOR_DEPTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["zero","previous","extrapolation"],
             defaut = ["previous"],
             fr = """Tir initial du solveur de l''etape de propagation.
@@ -1013,7 +1014,7 @@ in the next previous time step),
 #       -----------------------------------
         MINIMAL_VALUE_FOR_DEPTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [-1000.],
             fr = """Fixe la valeur minimale de $H$.""",
             ang = """Sets the minimum water depth value $H$.""",
@@ -1021,7 +1022,7 @@ in the next previous time step),
 #       -----------------------------------
         IMPLICITATION_FOR_DEPTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.55],
             fr = """Fixe la valeur du coefficient d''implicitation sur la hauteur
 d''eau dans l''etape de propagation (cf. Note de principe).
@@ -1033,7 +1034,7 @@ The values lower than 0.5 give an instable scheme.""",
 #       -----------------------------------
         IMPLICITATION_FOR_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.],
             fr = """Fixe la valeur du coefficient d''implicitation sur la vitesse
 dans l''etape de propagation (cf.  Note de principe).
@@ -1046,7 +1047,7 @@ The values lower than 0.5 give an instable scheme.""",
 #       -----------------------------------
         MASS_LUMPING_FOR_DEPTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """\telemac{3d} offre la possibilite d''effectuer du
 mass-lumping sur $H$ ou $U$.
@@ -1072,7 +1073,7 @@ Not recommended for use.""",
 #       -----------------------------------
         MASS_LUMPING_FOR_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Fixe le taux de mass-lumping effectue sur la vitesse.
 Utilisation deconseillee.""",
@@ -1081,12 +1082,12 @@ the velocity. Not recommended for use.""",
         ),
     ),
 #   -----------------------------------
-    K_EPSILON_MODEL = FACT(statut='o',
+    K_EPSILON_MODEL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [200],
             fr = """Fixe le nombre maximum d''iterations accepte lors de la
 resolution du systeme diffusion-termes sources du modele
@@ -1097,12 +1098,12 @@ $k$-$\epsilon$.""",
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_TRACER = PROC(nom= "EQUATIONS,_TRACER",op = None,
+EQUATIONS__TRACER = PROC(nom= "EQUATIONS__TRACER",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     NUMBER_OF_TRACERS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Definit le nombre de traceurs.""",
         ang = """Defines the number of tracers.""",
@@ -1121,16 +1122,16 @@ EQUATIONS = PROC(nom= "EQUATIONS",op = None,
 #   -----------------------------------
     NON_HYDROSTATIC_VERSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Permet de specifier s''il y a utilisation ou non de la version
 non-hydrostatique.""",
         ang = """Specifies the use of the non-hydrostatic code version or not.""",
     ),
 #   -----------------------------------
-    2D_CONTINUATION = SIMP(statut ='f',
+    ED_CONTINUATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Permet d''utiliser un \telkey{FICHIER DES RESULTATS 2D}
 stocke dans le \telkey{FICHIER POUR SUITE 2D} comme fichier de
@@ -1141,7 +1142,7 @@ conditions initiales.""",
 #   -----------------------------------
     DYNAMIC_PRESSURE_IN_WAVE_EQUATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Definit si une estimation du gradient de pression dynamique
 est prise en compte dans l''equation d''onde.""",
@@ -1151,7 +1152,7 @@ account in the wave equation.""",
 #   -----------------------------------
     DYNAMIC_BOUNDARY_CONDITION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si OUI, impose une vitesse en surface
 selon la condition a la limite dynamique.""",
@@ -1159,12 +1160,12 @@ selon la condition a la limite dynamique.""",
 velocity obeying the dynamic boundary condition.""",
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         PRECONDITIONING_FOR_VERTICAL_VELOCITY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
             defaut = ["diagonal"],
             fr = """Permet de preconditionner le systeme relatif
@@ -1201,7 +1202,7 @@ vertical velocity. Possible choices are:
 #       -----------------------------------
         SOLVER_FOR_VERTICAL_VELOCITY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
             defaut = ["conjugate gradient"],
             fr = """Permet de choisir le solveur utilise pour le calcul de
@@ -1232,7 +1233,7 @@ $W$. Possible choices are:
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_VERTICAL_VELOCITY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [100],
             fr = """Fixe le nombre maximum d''iterations accepte lors de la
 resolution du calcul de la vitesse verticale.""",
@@ -1242,7 +1243,7 @@ resolution du calcul de la vitesse verticale.""",
 #       -----------------------------------
         PARALLEL_PROCESSORS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Nombre de processeurs pour la decomposition en parallele.
 La valeur 0 correspond a un calcul scalaire.""",
@@ -1252,7 +1253,7 @@ Value 0 corresponds to a scalar computation.""",
 #       -----------------------------------
         TREATMENT_ON_TIDAL_FLATS_FOR_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["FORCED TO ZERO","VALUE BEFORE MASKED"],
             defaut = ["FORCED TO ZERO"],
             fr = """Traitement sur les bancs decouvrants a l''etape de diffusion.
@@ -1269,7 +1270,7 @@ Value 0 corresponds to a scalar computation.""",
 #       -----------------------------------
         TREATMENT_ON_TIDAL_FLATS_FOR_TRACERS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["FORCED TO ZERO","VALUE BEFORE MASKED"],
             defaut = ["FORCED TO ZERO"],
             fr = """Traitement sur les bancs decouvrants a l''etape de diffusion.
@@ -1286,7 +1287,7 @@ Value 0 corresponds to a scalar computation.""",
 #       -----------------------------------
         BOUNDARY_CONDITION_ON_THE_BOTTOM = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["LOG LAW FOR VELOCITIES ON BOTTOM","NO SLIP FOR VELOCITIES ON BOTTOM"],
             defaut = ["LOG LAW FOR VELOCITIES ON BOTTOM"],
             fr = """Specifie le type de conditions aux limites au fond.
@@ -1305,7 +1306,7 @@ a refined mesh near the bottom.
 #       -----------------------------------
         TREATMENT_ON_TIDAL_FLATS_FOR_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["FORCED TO ZERO","VALUE BEFORE MASKED"],
             defaut = ["FORCED TO ZERO"],
             fr = """Traitement sur les bancs decouvrants a l''etape de diffusion
@@ -1324,7 +1325,7 @@ $\epsilon$.
 #       -----------------------------------
         ACCURACY_FOR_VERTICAL_VELOCITY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.E-6],
             fr = """Fixe la precision demandee pour le calcul de la vitesse
 verticale.""",
@@ -1334,7 +1335,7 @@ of the vertical velocity.""",
 #       -----------------------------------
         SPATIAL_PROJECTION_TYPE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["CARTESIAN, NOT GEOREFERENCED","MERCATOR","LATITUDE LONGITUDE"],
             defaut = ["MERCATOR"],
             fr = """Permet de specifier le type de projection spatiale utilisee dans
@@ -1365,7 +1366,7 @@ treated by \telemac{3d} using Mercator projection.""",
 #       -----------------------------------
         LATITUDE_OF_ORIGIN_POINT = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Donne la valeur de la latitude du point origine du maillage
 (pour la projection de Mercator, voir le mot cle
@@ -1377,7 +1378,7 @@ mesh (for the Mercator projection, see the keyword
 #       -----------------------------------
         LONGITUDE_OF_ORIGIN_POINT = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Donne la valeur de la longitude du point origine du maillage
 (pour la projection de Mercator, voir le mot cle
@@ -1389,7 +1390,7 @@ mesh (for the Mercator projection, see the keyword
 #       -----------------------------------
         NORTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Angle que fait le nord,
 dans le sens trigonometrique, avec L, axe Oy.""",
@@ -1397,12 +1398,12 @@ dans le sens trigonometrique, avec L, axe Oy.""",
         ),
     ),
 #   -----------------------------------
-    TURBULENCE_MODEL = FACT(statut='o',
+    TURBULENCE_MODEL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MIXING_LENGTH_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Permet de specifier le modele de longueur utilise pour la
 turbulence verticale. Les choix possibles sont :
@@ -1426,8 +1427,8 @@ Possible choices are:
 #       -----------------------------------
         VERTICAL_TURBULENCE_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
-            into = ["CONSTANT VISCOSITY","MIXING LENGTH","K-EPSILON MODEL","SMAGORINSKI",,,"K-OMEGA MODEL"],
+            typ = 'TXM',
+            into = ["CONSTANT VISCOSITY","MIXING LENGTH","K-EPSILON MODEL","SMAGORINSKI","K-OMEGA MODEL"],
             defaut = ["CONSTANT VISCOSITY"],
             fr = """Permet de specifier le modele de turbulence horizontal.
 Les choix possibles sont :
@@ -1464,8 +1465,8 @@ because it is used as well in the turbulence model.""",
 #       -----------------------------------
         HORIZONTAL_TURBULENCE_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
-            into = ["CONSTANT VISCOSITY","K-EPSILON MODEL","SMAGORINSKI",,,"K-OMEGA MODEL"],
+            typ = 'TXM',
+            into = ["CONSTANT VISCOSITY","K-EPSILON MODEL","SMAGORINSKI","K-OMEGA MODEL"],
             defaut = ["CONSTANT VISCOSITY"],
             fr = """Permet de specifier le modele de turbulence horizontal.
 Les choix possibles sont :
@@ -1498,12 +1499,12 @@ value of molecular diffusivity, generally about $10^{-6}$
 because it is used as well in the turbulence model.""",
         ),
 #       -----------------------------------
-        K_EPSILON_MODEL = FACT(statut='o',
+        K_EPSILON_MODEL = FACT(statut='f',
 #       -----------------------------------
 #           -----------------------------------
             TURBULENCE_REGIME_FOR_THE_BOTTOM = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'TXM', min=0, max='**',
+                typ = 'TXM',
                 into = ["smooth","rough","rough compatibility with old versions"],
                 defaut = ["rough"],
                 fr = """Permet de definir le regime de turbulence pour le fond dans le
@@ -1524,7 +1525,7 @@ $k$-$\epsilon$ or mixing-length model:
 #           -----------------------------------
             TURBULENCE_REGIME_FOR_LATERAL_SOLID_BOUNDARIES = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'TXM', min=0, max='**',
+                typ = 'TXM',
                 into = ["smooth","rough"],
                 defaut = ["rough"],
                 fr = """Definit le regime de turbulence pour les parois laterales :
@@ -1540,12 +1541,12 @@ $k$-$\epsilon$ or mixing-length model:
             ),
         ),
 #       -----------------------------------
-        CONSTANT_VISCOSITY = FACT(statut='o',
+        CONSTANT_VISCOSITY = FACT(statut='f',
 #       -----------------------------------
 #           -----------------------------------
             COEFFICIENT_FOR_HORIZONTAL_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-6],
                 fr = """Fixe de facon uniforme pour l''ensemble du domaine;
 la valeur du coefficient de diffusion de viscosite globale (dynamique +
@@ -1560,7 +1561,7 @@ recirculation zones.""",
 #           -----------------------------------
             COEFFICIENT_FOR_VERTICAL_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-6],
                 fr = """Fixe de facon uniforme pour l''ensemble du domaine;
 la valeur du coefficient de diffusion de viscosite globale (dynamique +
@@ -1605,7 +1606,7 @@ separated by semicolons.""",
 #           -----------------------------------
             ACCURACY_FOR_DIFFUSION_OF_SEDIMENT = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-6],
                 fr = """Fixe la precision demandee pour le calcul de la diffusion
 des sediments.""",
@@ -1615,7 +1616,7 @@ diffusion of sediments.""",
 #           -----------------------------------
             ACCURACY_FOR_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-5],
                 fr = """Fixe la precision demandee pour le calcul de la diffusion
 de la vitesse.""",
@@ -1625,7 +1626,7 @@ diffusion of the velocities.""",
 #           -----------------------------------
             ACCURACY_FOR_DIFFUSION_OF_TRACERS = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-6],
                 fr = """Fixe la precision demandee pour le calcul de la diffusion
 des traceurs.""",
@@ -1635,7 +1636,7 @@ the diffusion of the tracers.""",
 #           -----------------------------------
             ACCURACY_FOR_DIFFUSION_OF_K_EPSILON = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-6],
                 fr = """Fixe la precision demandee pour le calcul de la diffusion
 du $k$-$\epsilon$.""",
@@ -1645,7 +1646,7 @@ diffusion of the $k$-$\epsilon$ model.""",
 #           -----------------------------------
             ACCURACY_FOR_PPE = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [1.E-4],
                 fr = """Fixe la precision pour l''equation de Poisson.""",
                 ang = """Sets the precision needed for the computation of the Poisson
@@ -1654,12 +1655,12 @@ Pressure Equation.""",
         ),
     ),
 #   -----------------------------------
-    SMOOTHINGS = FACT(statut='o',
+    SMOOTHINGS = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         NUMBER_OF_BOTTOM_SMOOTHINGS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Nombre de lissages effectues sur la topographie.
 Chaque lissage, effectue a l''aide d''une matrice de masse,
@@ -1673,12 +1674,12 @@ very rough results.""",
         ),
     ),
 #   -----------------------------------
-    FRICTION = FACT(statut='o',
+    FRICTION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         LAW_OF_FRICTION_ON_LATERAL_BOUNDARIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO FRICTION","COEFFICIENT TAKEN IN BOUNDARY CONDITIONS FILE","IDEM","IDEM","IDEM","NIKURADSE"],
             defaut = ["NO FRICTION"],
             fr = """Selectionne le type de formulation utilisee pour le calcul
@@ -1701,7 +1702,7 @@ Principle note):
 #       -----------------------------------
         FRICTION_COEFFICIENT_FOR_THE_BOTTOM = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [60.],
             fr = """Fixe la valeur du coefficient de frottement au fond,
 si constant.""",
@@ -1710,7 +1711,7 @@ si constant.""",
 #       -----------------------------------
         FRICTION_COEFFICIENT_FOR_LATERAL_SOLID_BOUNDARIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [60.],
             fr = """Fixe la valeur du coefficient de frottement sur les parois,
 si constant.""",
@@ -1719,7 +1720,7 @@ si constant.""",
 #       -----------------------------------
         LAW_OF_BOTTOM_FRICTION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO FRICTION","HAALAND","CHEZY","STRICKLER","MANNING","NIKURADSE"],
             defaut = ["CHEZY"],
             fr = """Selectionne le type de formulation utilisee pour le calcul
@@ -1746,12 +1747,12 @@ The possible laws are as follows (refer to the Principle note):
         ),
     ),
 #   -----------------------------------
-    PROPAGATION = FACT(statut='o',
+    PROPAGATION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         PRECONDITIONING_FOR_PROPAGATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
             defaut = ["diagonal"],
             fr = """Permet de preconditionner le systeme de l''etape de propagation
@@ -1800,7 +1801,7 @@ the product of relevant options shall be done.""",
 #       -----------------------------------
         SOLVER_FOR_PROPAGATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
             defaut = ["conjugate gradient"],
             fr = """Permet de choisir le solveur utilise pour la resolution de
@@ -1832,7 +1833,7 @@ Possible choices are:
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_PROPAGATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [200],
             fr = """Les algorithmes utilises pour la resolution de l''etape de
 propagation etant iteratifs; il est necessaire de limiter le nombre
@@ -1847,7 +1848,7 @@ reasonable.""",
 #       -----------------------------------
         ACCURACY_FOR_PROPAGATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [1.E-6],
             fr = """Fixe la precision demandee pour l''etape de propagation.""",
             ang = """Sets the accuracy needed for the computation
@@ -1856,7 +1857,7 @@ of the propagation step.""",
 #       -----------------------------------
         LINEARIZED_PROPAGATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Permet de lineariser l''etape de propagation,
 par exemple lors de la realisation de cas tests pour lesquels on dispose
@@ -1867,24 +1868,24 @@ case is available.""",
         ),
     ),
 #   -----------------------------------
-    WIND_INFO = FACT(statut='o',
+    WIND_INFO = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         WIND = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Prise en compte ou non des effets du vent.""",
             ang = """Determines whether the wind effects are to be taken into
 account or not.""",
         ),
 #       -----------------------------------
-        NUMERICS_VALUES = FACT(statut='o',
+        NUMERICS_VALUES = FACT(statut='f',
 #       -----------------------------------
 #           -----------------------------------
             COEFFICIENT_OF_WIND_INFLUENCE = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [0.],
                 fr = """Fixe la valeur du coefficient d''entrainement du vent.
 Voir le manuel utilisateur pour la valeur a donner.""",
@@ -1894,7 +1895,7 @@ See the User Manual for the value to give.""",
 #           -----------------------------------
             WIND_VELOCITY_ALONG_X = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [0.],
                 fr = """Composante de la vitesse du vent suivant
 l''axe des $x$ (m/s), si constante.""",
@@ -1903,7 +1904,7 @@ l''axe des $x$ (m/s), si constante.""",
 #           -----------------------------------
             WIND_VELOCITY_ALONG_Y = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min=0, max='**',
+                typ = 'R',
                 defaut = [0.],
                 fr = """Composante de la vitesse du vent suivant
 l''axe des $y$ (m/s), si constante.""",
@@ -1921,12 +1922,12 @@ than this value.""",
         ),
     ),
 #   -----------------------------------
-    DEPTH = FACT(statut='o',
+    DEPTH = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MEAN_DEPTH_FOR_LINEARIZATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'R', min=0, max='**',
+            typ = 'R',
             defaut = [0.],
             fr = """Fixe la hauteur d''eau autour de laquelle s''effectue la
 linearisation lorsque l''option \telkey{PROPAGATION LINEARISEE} est
@@ -1936,24 +1937,24 @@ the \telkey{LINEARIZED PROPAGATION} option is selected.""",
         ),
     ),
 #   -----------------------------------
-    CORIOLIS_INFO = FACT(statut='o',
+    CORIOLIS_INFO = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         CORIOLIS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Prise en compte ou non de la force de Coriolis.""",
             ang = """The Coriolis force is taken into account or ignored.""",
         ),
     ),
 #   -----------------------------------
-    AIR_PRESSURE_INFO = FACT(statut='o',
+    AIR_PRESSURE_INFO = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         AIR_PRESSURE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Permet de decider si l''on prend ou non en compte l''influence
 d''un champ de pression.""",
@@ -1962,7 +1963,7 @@ pressure field is taken into account or not.""",
         ),
     ),
 #   -----------------------------------
-    SOURCES = FACT(statut='o',
+    SOURCES = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         VELOCITIES_OF_THE_SOURCES_ALONG_Z = SIMP(statut ='f',
@@ -2077,12 +2078,12 @@ velocity in every direction (cf. validation case source).""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT,_GRAPHICS_AND_LISTING",op = None,
+INPUT_OUTPUT__GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT__GRAPHICS_AND_LISTING",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     NUMBER_OF_DROGUES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Permet d''effectuer un suivi de flotteurs.
 Fixe le nombre de flotteurs a traiter lors du calcul.
@@ -2099,7 +2100,7 @@ The trajectory of drogues is recorded in the
 #   -----------------------------------
     PRINTOUT_PERIOD_FOR_DROGUES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Nombre de pas de temps entre 2 sorties de positions de
 flotteurs dans le fichier des resultats binaire supplementaire
@@ -2111,7 +2112,7 @@ It does not disturb the quality of the computation of the trajectory.""",
 #   -----------------------------------
     GRAPHIC_PRINTOUT_PERIOD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Determine la periode en nombre de pas de temps d''impression des
 \telkey{VARIABLES POUR LES SORTIES GRAPHIQUES 2D ou 3D}
@@ -2123,7 +2124,7 @@ in the \telkey{2D or 3D RESULT FILE}.""",
 #   -----------------------------------
     LISTING_PRINTOUT_PERIOD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Determine la periode en nombre de pas de temps d''impression
 des ''VARIABLES A IMPRIMER''. Pour la mise au point,
@@ -2136,7 +2137,7 @@ The results are systematically printed out on the listing file.""",
 #   -----------------------------------
     NUMBER_OF_FIRST_TIME_STEP_FOR_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Determine le numero de pas de temps a partir duquel debute
 l''ecriture des resultats dans le \telkey{FICHIER DES RESULTATS 2D}
@@ -2147,7 +2148,7 @@ are first written into the \telkey{2D} or \telkey{3D RESULT FILE}.""",
 #   -----------------------------------
     NUMBER_OF_FIRST_TIME_STEP_FOR_LISTING_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Determine le numero de pas de temps a partir duquel debute
 l''ecriture des resultats dans le listing.""",
@@ -2157,9 +2158,9 @@ are first written into the listing.""",
 #   -----------------------------------
     VARIABLES_FOR_3D_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM',
+        typ = 'TXM', min= 4, max= 4,
         into = ["velocity along x axis (m/s)","velocity along y axis (m/s)","velocity along z axis (m/s)","elevation z (m)","concentration for tracer 1","concentration for tracer 2","concentration for tracer 3","concentration for tracer 4","concentration for tracer 5","concentration for tracer 6","concentration for tracer 7","concentration for tracer 8","concentration for tracer 9","concentrations for tracers from 1 to 9","concentrations for tracers from 10 to 99","viscosity for U and V along x axis (m2/s)","viscosity for U and V along y axis (m2/s)","viscosity for U and V along z axis (m2/s)","viscosity for tracers along x axis (m2/s)","viscosity for tracers along y axis (m2/s)","viscosity for tracers along z axis (m2/s)","Richardson number in case of mixing length model","turbulent energie for k-epsilon model (J/kg)","dissipation of turbulent energie (W/kg)","dynamic pressure (multiplied by DT/RHO)","hydrostatic pressure (in Pascals)","relative density","private variable 1","private variable 2","private variable 3","private variable 4"],
-        defaut = ,
+        defaut = ["elevation z (m)","velocity along x axis (m/s)","velocity along y axis (m/s)","velocity along z axis (m/s)"],
         fr = """Noms des variables que l''utilisateur veut ecrire dans
 le \telkey{FICHIER DES RESULTATS 3D}.
 Le choix des separateurs est libre.
@@ -2220,9 +2221,9 @@ melange ;
 #   -----------------------------------
     VARIABLES_FOR_2D_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM',
+        typ = 'TXM', min= 4, max= 4,
         into = ["depth averaged velocity along x axis (m/s)","depth averaged velocity along y axis (m/s)","celerity (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","TAx concentrations for tracers, x is the tracer number","Froude number","scalar discharge (m2/s)","discharge along x (m2/s)","discharge along y (m2/s)","norm of velocity (m/s)","wind along x axis (m/s)","wind along y axis (m/s)","atmospheric pressure (Pa)","friction coefficient","non erodible bottom elevation (m)","thickness of the sediment bed layer (m)","erosion rate (kg/m2/s)","deposition flux (kg/m2/s)"," evolution du lit","work array PRIVE 1","work array PRIVE 2","work array PRIVE 3","work array PRIVE 4","solid discharge (m2/s)","solid discharge along x (m2/s)","solid discharge along y (m2/s)","friction velocity (m/s)","maximum value of the free surface                                       elevation during the computation (m)","time corresponding to this maximum elevation (s)"],
-        defaut = ,
+        defaut = ["depth averaged velocity along x axis (m/s)","depth averaged velocity along y axis (m/s)","water depth (m)","bottom elevation (m)"],
         fr = """Noms des variables que l''utilisateur veut ecrire dans
 le \telkey{FICHIER DES RESULTATS 2D}.
 Chaque variable est representee par une lettre.
@@ -2294,7 +2295,7 @@ elevation during the computation (m),
 #   -----------------------------------
     MASS_BALANCE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Determine si l''on effectue ou non le bilan de masse
 sur le domaine.
@@ -2323,7 +2324,7 @@ at the end of the listing.""",
 #   -----------------------------------
     INFORMATION_ABOUT_MASS_BALANCE_FOR_EACH_LISTING_PRINTOUT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Donne a chaque sortie listing une information sur le bilan de
 masse.""",
@@ -2333,7 +2334,7 @@ at every \telkey{LISTING PRINTOUT PERIOD}.""",
 #   -----------------------------------
     LISTING_PRINTOUT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Sortie des resultats sur support papier.
 Si l''on met NON le listing ne contient que l''entete et la mention
@@ -2378,12 +2379,12 @@ In addition, the options \telkey{MASS-BALANCE} and
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_ADVECTION = PROC(nom= "EQUATIONS,_ADVECTION",op = None,
+EQUATIONS__ADVECTION = PROC(nom= "EQUATIONS__ADVECTION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     ADVECTION_STEP = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Prise en compte ou non des termes de convection.
 En cas de reponse positive,
@@ -2394,12 +2395,12 @@ If YES, some advection terms can still be ignored with the keywords
 \telkey{SCHEME FOR ADVECTION OF...}""",
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SCHEME_FOR_ADVECTION_OF_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO ADVECTION","CHARACTERISTICS","EXPLICIT + SUPG","EXPLICIT LEO POSTMA","EXPLICIT + MURD SCHEME N","EXPLICIT + MURD SCHEME PSI","LEO POSTMA FOR TIDAL FLATS","N-SCHEME FOR TIDAL FLATS"],
             defaut = ["CHARACTERISTICS"],
             fr = """Fixe le schema utilise pour la convection des vitesses.
@@ -2460,7 +2461,7 @@ Possible choices are:
 #       -----------------------------------
         SCHEME_FOR_ADVECTION_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO ADVECTION","CHARACTERISTICS","EXPLICIT + SUPG","EXPLICIT LEO POSTMA","EXPLICIT + MURD SCHEME N","EXPLICIT + MURD SCHEME PSI","LEO POSTMA FOR TIDAL FLATS","N-SCHEME FOR TIDAL FLATS"],
             defaut = ["CHARACTERISTICS"],
             fr = """Fixe le schema utilise pour la convection du modele
@@ -2491,7 +2492,7 @@ Possible choices are:
 #       -----------------------------------
         SCHEME_FOR_ADVECTION_OF_DEPTH = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["CONSERVATIVE"],
             defaut = ["CONSERVATIVE"],
             fr = """Le schema conservatif (5) est desormais impose.""",
@@ -2578,12 +2579,12 @@ If N or PSI scheme:
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_DIFFUSION = PROC(nom= "EQUATIONS,_DIFFUSION",op = None,
+EQUATIONS__DIFFUSION = PROC(nom= "EQUATIONS__DIFFUSION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     DIFFUSION_STEP = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Prise en compte ou non des termes de diffusion.
 En cas de reponse positive,
@@ -2594,12 +2595,12 @@ If YES, some diffusion terms can still be ignored with the keywords
 \telkey{SCHEME FOR DIFFUSION OF...}""",
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SCHEME_FOR_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO DIFFUSION","IMPLICIT"],
             defaut = ["IMPLICIT"],
             fr = """Permet de specifier si l''on utilise ou non la diffusion
@@ -2643,7 +2644,7 @@ Possible choices are:
 #       -----------------------------------
         SCHEME_FOR_DIFFUSION_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["NO DIFFUSION","IMPLICIT"],
             defaut = ["IMPLICIT"],
             fr = """Permet de specifier si l''on utilise ou non la diffusion
@@ -2664,7 +2665,7 @@ Possible choices are:
 #       -----------------------------------
         PRECONDITIONING_FOR_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
             defaut = ["diagonal"],
             fr = """Permet de preconditionner le systeme relatif
@@ -2737,7 +2738,7 @@ Possible choices are:
 #       -----------------------------------
         PRECONDITIONING_FOR_DIFFUSION_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
             defaut = ["diagonal"],
             fr = """Permet de preconditionner le systeme relatif
@@ -2774,7 +2775,7 @@ the $k$-$\epsilon$ model. Possible choices are:
 #       -----------------------------------
         SOLVER_FOR_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
             defaut = ["conjugate gradient"],
             fr = """Permet de choisir le solveur utilise pour la resolution
@@ -2838,7 +2839,7 @@ Possible choices are:
 #       -----------------------------------
         SOLVER_FOR_DIFFUSION_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
             defaut = ["conjugate gradient"],
             fr = """Permet de choisir le solveur utilise pour la resolution de
@@ -2870,7 +2871,7 @@ Possible choices are:
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_VELOCITIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [60],
             fr = """Limite le nombre d''iterations du solveur a chaque pas
 de temps pour le calcul de la diffusion de la vitesse.""",
@@ -2880,7 +2881,7 @@ velocities.""",
 #       -----------------------------------
         PRECONDITIONING_FOR_PPE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
             defaut = ["diagonal"],
             fr = """Preconditionnement pour l''equation de Poisson.
@@ -2917,7 +2918,7 @@ Possible choices are:
 #       -----------------------------------
         SOLVER_FOR_PPE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
             defaut = ["conjugate gradient"],
             fr = """Permet de choisir le solveur utilise pour la resolution de
@@ -2949,7 +2950,7 @@ Possible choices are:
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_PPE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [100],
             fr = """Limite le nombre d iterations pour l''equation de Poisson.""",
             ang = """Limits the number of solver iterations for the Poisson
@@ -2957,12 +2958,12 @@ Pressure Equation.""",
         ),
     ),
 #   -----------------------------------
-    TRACER = FACT(statut='o',
+    TRACER = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_SEDIMENT = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [60],
             fr = """Limite le nombre d''iterations du solveur a chaque pas
 de temps pour le calcul de la diffusion du sediment.""",
@@ -2972,7 +2973,7 @@ sediment.""",
 #       -----------------------------------
         MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_TRACERS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [60],
             fr = """Limite le nombre d''iterations du solveur a chaque pas
 de temps pour le calcul de la diffusion des traceurs.""",
@@ -2987,7 +2988,7 @@ PHYSICAL_CONSTANTS = PROC(nom= "PHYSICAL_CONSTANTS",op = None,
 #   -----------------------------------
     GRAVITY_ACCELERATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [9.81],
         fr = """Fixe la valeur de l''acceleration de la pesanteur en m/s$^2$.""",
         ang = """Sets the value of the acceleration due to gravity in m/s$^2$.""",
@@ -2995,7 +2996,7 @@ PHYSICAL_CONSTANTS = PROC(nom= "PHYSICAL_CONSTANTS",op = None,
 #   -----------------------------------
     CORIOLIS_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fixe la valeur du coefficient de la force de Coriolis.
 Celui-ci doit etre calcule en fonction de la latitude $l$
@@ -3036,7 +3037,7 @@ with respect to the tracer concentration when using
 #   -----------------------------------
     AVERAGE_WATER_DENSITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1025.],
         fr = """Valeur de la densite moyenne dans le domaine, voir
 \telfile{DRSURR}.""",
@@ -3045,15 +3046,15 @@ with respect to the tracer concentration when using
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
+INPUT_OUTPUT__INFORMATION = PROC(nom= "INPUT_OUTPUT__INFORMATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    COMPUTATIONAL_INFORMATION = FACT(statut='o',
+    COMPUTATIONAL_INFORMATION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         TITLE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             defaut = '',
             fr = """Titre du cas etudie.""",
             ang = """Title of the case being considered.""",
@@ -3061,8 +3062,8 @@ INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
 #       -----------------------------------
         RELEASE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
-            defaut = 'V7P1',
+            typ = 'TXM',
+            defaut = 'TRUNK',
             fr = """Numero de version des bibliotheques utilisees par TELEMAC.
 Si ce nom commence par D il s''agit de l''option Debug (exemple DV2P2)
 Si ce nom commence par F il s''agit de l''option Flowtrace""",
@@ -3071,7 +3072,7 @@ Si ce nom commence par F il s''agit de l''option Flowtrace""",
 #       -----------------------------------
         COMPUTATION_CONTINUED = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Determine si le calcul en cours est independant de tout autre
 resultat ou est une reprise effectuee a partir du resultat d''un calcul
@@ -3119,7 +3120,7 @@ the file from which the following computation starts
 #       -----------------------------------
         VALIDATION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Option utilisee principalement pour le dossier de validation. Le
 \telkey{FICHIER DE REFERENCE} est alors considere comme une
@@ -3160,7 +3161,7 @@ Possible choices are:
 #           -----------------------------------
             REFERENCE_FILE = SIMP(statut ='f',
 #           -----------------------------------
-                typ = ('Fichier','All Files (*)'),
+                typ = ('Fichier','All Files (*)'), max='**',
                 defaut = '',
                 fr = """Fichier de resultats de reference pour la validation.""",
                 ang = """Binary-coded result file for validation.""",
@@ -3192,12 +3193,12 @@ Possible choices are:
         ),
     ),
 #   -----------------------------------
-    CONTROL = FACT(statut='o',
+    CONTROL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DELWAQ_PRINTOUT_PERIOD = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Periode de sortie des resultats pour DELWAQ.""",
             ang = """Printout period for DELWAQ files.""",
@@ -3216,7 +3217,7 @@ added in SERAFIN format, but so far no other treatment.""",
 #       -----------------------------------
         OIL_SPILL_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Pour declencher le modele de nappes d''hydrocarbures,
 dans ce cas le
@@ -3226,7 +3227,7 @@ the \telkey{OIL SPILL STEERING FILE} is needed.""",
         ),
     ),
 #   -----------------------------------
-    COMPUTATION_ENVIRONMENT = FACT(statut='o',
+    COMPUTATION_ENVIRONMENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DICTIONARY = SIMP(statut ='f',
@@ -3239,7 +3240,7 @@ the \telkey{OIL SPILL STEERING FILE} is needed.""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_FILES = PROC(nom= "INPUT_OUTPUT,_FILES",op = None,
+INPUT_OUTPUT__FILES = PROC(nom= "INPUT_OUTPUT__FILES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     GEOMETRY_FILE_FORMAT = SIMP(statut ='f',
@@ -3263,7 +3264,7 @@ Possible choices are:
 \end{itemize}""",
     ),
 #   -----------------------------------
-    2D_RESULT_FILE_FORMAT = SIMP(statut ='f',
+    ED_RESULT_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
         into = ['SERAFIN','SERAFIND','MED'],
@@ -3283,7 +3284,7 @@ Les valeurs possibles sont :
 \end{itemize}""",
     ),
 #   -----------------------------------
-    3D_RESULT_FILE_FORMAT = SIMP(statut ='f',
+    RD_RESULT_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
         into = ['SERAFIN','SERAFIND','MED'],
@@ -3431,12 +3432,12 @@ Possible choices are:
 \end{itemize}""",
     ),
 #   -----------------------------------
-    NAMES = FACT(statut='o',
+    NAMES = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         GEOMETRY_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             fr = """Nom du fichier contenant le maillage du calcul a realiser.""",
             ang = """Name of the file containing the mesh. This file may also
 contain the topography and the friction coefficients.""",
@@ -3444,7 +3445,7 @@ contain the topography and the friction coefficients.""",
 #       -----------------------------------
         FORTRAN_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = 'DEFAUT',
             fr = """Nom du fichier FORTRAN a soumettre, contenant les
 sous-programmes specifiques au modele.""",
@@ -3454,7 +3455,7 @@ subroutines of the model.""",
 #       -----------------------------------
         STEERING_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier contenant les parametres du calcul a realiser.""",
             ang = """Name of the file containing the parameters of the computation.
@@ -3463,7 +3464,7 @@ Written by the user.""",
 #       -----------------------------------
         BOUNDARY_CONDITIONS_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             fr = """Nom du fichier contenant les types de conditions aux limites.
 Ce fichier est rempli de facon automatique par le mailleur au moyen de
 couleurs affectees aux noeuds des frontieres du domaine de calcul.""",
@@ -3474,7 +3475,7 @@ colours that are assigned to the boundary nodes.""",
 #       -----------------------------------
         PREVIOUS_COMPUTATION_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom d''un fichier contenant les resultats d''un calcul precedent
 realise sur le meme maillage et dont le dernier pas de temps enregistre
@@ -3498,9 +3499,9 @@ The \telkey{PREVIOUS COMPUTATION FILE FORMAT} and the
 or ''MED''.""",
         ),
 #       -----------------------------------
-        3D_RESULT_FILE = SIMP(statut ='f',
+        RD_RESULT_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom du fichier dans lequel seront ecrits les resultats 3D du
 calcul avec la periodicite donnee par le mot cle \telkey{PERIODE POUR
@@ -3512,7 +3513,7 @@ are written, the periodicity being given by the keyword:
 #       -----------------------------------
         BOTTOM_TOPOGRAPHY_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier eventuel contenant la bathymetrie associee au
 maillage.
@@ -3523,9 +3524,9 @@ Where this keyword is used, these bathymetric data shall be used in
 the computation.""",
         ),
 #       -----------------------------------
-        2D_RESULT_FILE = SIMP(statut ='f',
+        ED_RESULT_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom du fichier dans lequel seront ecrits les resultats 2D du
 calcul avec la periodicite donnee par le mot cle \telkey{PERIODE POUR
@@ -3537,7 +3538,7 @@ are written with a period given by the keyword
 #       -----------------------------------
         FORMATTED_DATA_FILE_1 = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees formate mis a la disposition de
 l''utilisateur.""",
@@ -3546,7 +3547,7 @@ l''utilisateur.""",
 #       -----------------------------------
         FORMATTED_DATA_FILE_2 = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees formate mis a la disposition de
 l''utilisateur.""",
@@ -3555,7 +3556,7 @@ l''utilisateur.""",
 #       -----------------------------------
         BINARY_DATA_FILE_1 = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.""",
@@ -3564,7 +3565,7 @@ de l''utilisateur.""",
 #       -----------------------------------
         BINARY_DATA_FILE_2 = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.""",
@@ -3573,7 +3574,7 @@ de l''utilisateur.""",
 #       -----------------------------------
         ASCII_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees ASCII contenant les informations
 atmospheriques variables en temps.""",
@@ -3583,7 +3584,7 @@ time.""",
 #       -----------------------------------
         BINARY_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees code en binaire contenant les informations
 atmospheriques variables en temps et en espace sur le maillage.""",
@@ -3593,7 +3594,7 @@ in time and space on the mesh.""",
 #       -----------------------------------
         BINARY_BOUNDARY_DATA_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees code en binaire contenant les informations
 de conditions aux limites variables en temps et en espace
@@ -3604,7 +3605,7 @@ varying in time and space.""",
 #       -----------------------------------
         CULVERTS_DATA_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'),
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Fichier de description des buses/ponts presents dans le modele.""",
             ang = """Description of culverts/bridges existing in the model.""",
@@ -3612,7 +3613,7 @@ varying in time and space.""",
 #       -----------------------------------
         SEDIMENTOLOGICAL_RESULT_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom du fichier dans lequel seront ecrits les variables
 decrivant le fond vaseux (epaisseurs et concentrations\ldots)
@@ -3626,7 +3627,7 @@ written, the periodicity being given by the keyword
 #       -----------------------------------
         PREVIOUS_COMPUTATION_SEDIMENTOLOGICAL_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom d''un fichier contenant les variables sedimentologiques
 decrivant le fond vaseux, resultats d''un calcul precedent realise
@@ -3649,7 +3650,7 @@ step will provide the initial conditions for the new computation.""",
 #       -----------------------------------
         LIQUID_BOUNDARIES_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'),
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Fichier de variations en temps des conditions aux limites.""",
             ang = """File containing the variations in time of boundary conditions.""",
@@ -3686,7 +3687,7 @@ interne.""",
 #       -----------------------------------
         VOLUMES_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3694,7 +3695,7 @@ interne.""",
 #       -----------------------------------
         EXCHANGE_AREAS_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3702,7 +3703,7 @@ interne.""",
 #       -----------------------------------
         VERTICAL_FLUXES_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3710,7 +3711,7 @@ interne.""",
 #       -----------------------------------
         SALINITY_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3718,7 +3719,7 @@ interne.""",
 #       -----------------------------------
         BOTTOM_SURFACES_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3726,7 +3727,7 @@ interne.""",
 #       -----------------------------------
         EXCHANGES_BETWEEN_NODES_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3734,7 +3735,7 @@ interne.""",
 #       -----------------------------------
         NODES_DISTANCES_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3742,7 +3743,7 @@ interne.""",
 #       -----------------------------------
         TEMPERATURE_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3750,7 +3751,7 @@ interne.""",
 #       -----------------------------------
         VELOCITY_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3758,7 +3759,7 @@ interne.""",
 #       -----------------------------------
         DIFFUSIVITY_DELWAQ_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats pour le couplage avec DELWAQ.""",
             ang = """Results file for coupling with DELWAQ.""",
@@ -3766,7 +3767,7 @@ interne.""",
 #       -----------------------------------
         DELWAQ_STEERING_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de commande pour le couplage avec DELWAQ.""",
             ang = """Steering file for coupling with DELWAQ.""",
@@ -3774,7 +3775,7 @@ interne.""",
 #       -----------------------------------
         STAGE_DISCHARGE_CURVES_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Nom du fichier contenant les courbes de tarage.""",
             ang = """Name of the file containing stage-discharge curves.""",
@@ -3782,7 +3783,7 @@ interne.""",
 #       -----------------------------------
         SOURCES_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Nom du fichier contenant les informations variables
 en temps des sources.""",
@@ -3792,7 +3793,7 @@ information on sources.""",
 #       -----------------------------------
         BINARY_RESULTS_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats code en binaire mis a la disposition
 de l''utilisateur.""",
@@ -3802,7 +3803,7 @@ to the user.""",
 #       -----------------------------------
         FORMATTED_RESULTS_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'),
+            typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
             defaut = '',
             fr = """Fichier de resultats formate mis a la disposition de
 l''utilisateur.""",
@@ -3829,7 +3830,7 @@ modele de nappes d''hydrocarbures.""",
 #       -----------------------------------
         RESTART_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom du fichier dans lequel seront ecrits les resultats du
 dernier calcul pour obtenir une suite de calcul parfaite.
@@ -3936,7 +3937,7 @@ in the \telkey{GEOMETRY FILE}. Maximum number of 4 names.""",
 #       -----------------------------------
         WAQTEL_STEERING_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM',
+            typ = 'TXM', max='**',
             defaut = '',
             fr = """Fichier des parametres physiques pour les
 processus de qualite d''eau (internes, pas ceux de DELWAQ).""",
@@ -3945,12 +3946,12 @@ processus de qualite d''eau (internes, pas ceux de DELWAQ).""",
         ),
     ),
 #   -----------------------------------
-    TYPE_OF_BINARY = FACT(statut='o',
+    TYPE_OF_BINARY = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
-        3D_RESULT_FILE_BINARY = SIMP(statut ='f',
+        RD_RESULT_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','IBM','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture du
@@ -3975,9 +3976,9 @@ The possible values are as follows:
 In that case, normal READ and WRITE commands are used.""",
         ),
 #       -----------------------------------
-        2D_RESULT_FILE_BINARY = SIMP(statut ='f',
+        ED_RESULT_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','IBM','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture du
@@ -4004,7 +4005,7 @@ In that case, normal READ and WRITE commands are used.""",
 #       -----------------------------------
         SEDIMENTOLOGICAL_RESULT_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','IBM','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -4030,12 +4031,12 @@ In that case, normal READ and WRITE commands are used.""",
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_PROPAGATION = PROC(nom= "EQUATIONS,_PROPAGATION",op = None,
+EQUATIONS__PROPAGATION = PROC(nom= "EQUATIONS__PROPAGATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     PROPAGATION_STEP = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Prise en compte ou non des termes de propagation.
 Cette etape doit actuellement etre effectuee.""",
@@ -4049,7 +4050,7 @@ SEDIMENT_INFO = PROC(nom= "SEDIMENT_INFO",op = None,
 #   -----------------------------------
     SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Permet de prendre en compte le transport sedimentaire.""",
         ang = """If YES, sediment transport is modelled.""",
@@ -4057,7 +4058,7 @@ SEDIMENT_INFO = PROC(nom= "SEDIMENT_INFO",op = None,
 #   -----------------------------------
     SOLVER_FOR_DIFFUSION_OF_THE_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres","direct solver"],
         defaut = ["conjugate gradient on a normal equation"],
         fr = """Permet de choisir le solveur utilise pour la resolution de
@@ -4089,7 +4090,7 @@ Possible choices are:
 #   -----------------------------------
     PRECONDITIONING_FOR_DIFFUSION_OF_THE_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["no preconditioning","diagonal","diagonal condensed","diagonal with absolute values","Crout","Gauss-Seidel EBE","Matrix defined by the user","diagonal and Crout","direct solver on the vertical","diagonal condensed and Crout","diagonal and direct solver on the vertical"],
         defaut = ["diagonal"],
         fr = """Permet de preconditionner le systeme relatif
@@ -4137,7 +4138,7 @@ the product of relevant options shall be done.""",
 #   -----------------------------------
     DENSITY_OF_THE_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2650.],
         fr = """Fixe la valeur de la masse volumique du sediment (kg/m$^3$).""",
         ang = """Value of the sediment density (kg/m$^3$).""",
@@ -4145,7 +4146,7 @@ the product of relevant options shall be done.""",
 #   -----------------------------------
     CRITICAL_SHEAR_STRESS_FOR_DEPOSITION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.2],
         fr = """Fixe la valeur de la contrainte de cisaillement au fond
 au dessous de laquelle se produit le depot des sediments cohesifs.""",
@@ -4155,7 +4156,7 @@ deposition of cohesive sediments occurs.""",
 #   -----------------------------------
     BED_LAYERS_THICKNESS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [5.E-3],
         fr = """Epaisseur de reference pour creer de nouvelles couches
 de vase. Ce parametre est utilise seulement dans le cas
@@ -4179,7 +4180,7 @@ a new mud layer is added to the mud bed.""",
 #   -----------------------------------
     TIME_STEP_FOR_CONSOLIDATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1200.],
         fr = """Valeur du pas de temps pour le modele de consolidation qui
 peut etre plus grand que le pas de temps hydrodynamique car le
@@ -4194,7 +4195,7 @@ or 2 (Gibson model (Lenormant)).""",
 #   -----------------------------------
     MAXIMUM_CONCENTRATION_OF_THE_CONSOLIDATED_MUD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [500.],
         fr = """Concentration maximale pouvant etre atteinte par une couche
 de vase lors du tassement.
@@ -4208,7 +4209,7 @@ This value is used if \telkey{CONSOLIDATION MODEL} = 2
 #   -----------------------------------
     EROSION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.E-3],
         fr = """Valeur du coefficient d''erosion utilise dans la formule
 de Partheniades en kg/m$^2$/s.""",
@@ -4218,7 +4219,7 @@ formula in kg/m$^2$/s.""",
 #   -----------------------------------
     CONSTANT_SEDIMENT_SETTLING_VELOCITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.01],
         fr = """Vitesse de chute constante en m/s (> 0 depuis v6.3).
 Valeur imposee si
@@ -4255,7 +4256,7 @@ These values are needed when \telkey{CONSOLIDATION MODEL} = 1
 #   -----------------------------------
     MIXED_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si OUI, calcul en sediments mixtes, il y aura un sediment
 cohesif et un sediment non cohesif.""",
@@ -4265,7 +4266,7 @@ one cohesive sediment and one non cohesive sediment.""",
 #   -----------------------------------
     SETTLING_VELOCITY_OF_SANDS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Vitesse de chute du sediment non cohesif.""",
         ang = """Non cohesive sediment settling velocity.""",
@@ -4273,7 +4274,7 @@ one cohesive sediment and one non cohesive sediment.""",
 #   -----------------------------------
     INITIAL_PERCENTAGE_OF_NON_COHESIVE_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Pourcentage initial du sediment non cohesif (mixte).""",
         ang = """Initial percentage of non cohesive sediment (mixed sediments).""",
@@ -4281,7 +4282,7 @@ one cohesive sediment and one non cohesive sediment.""",
 #   -----------------------------------
     ADVECTION_DIFFUSION_SCHEME_WITH_SETTLING_VELOCITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Choix de schema vertical pour la diffusion et le depot du
 sediment :
@@ -4302,7 +4303,7 @@ sediment:
 #   -----------------------------------
     HINDERED_SETTLING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Decide si la formulation entravee doit etre utilisee
 pour calculer la vitesse de chute de la vase.""",
@@ -4312,7 +4313,7 @@ compute settling velocity for mud.""",
 #   -----------------------------------
     WEAK_SOIL_CONCENTRATION_FOR_MUD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.0],
         fr = """Concentration limite en kg/m$^3$ au-dela de laquelle
 la couche de vase fluide devient solide.
@@ -4325,7 +4326,7 @@ forms a weak soil in kg/m$^3$. These values are needed when
 #   -----------------------------------
     THRESHOLD_CONCENTRATION_FOR_HINDERED_SETTLING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.0],
         fr = """Concentration de sediment a laquelle la chute entravee est
 initiee. Ces valeurs sont necessaires lorsque
@@ -4337,7 +4338,7 @@ initiated. These values are needed when
 #   -----------------------------------
     HINDERED_SETTLING_FORMULA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Type de vitesse de chute entravee :
 \begin{itemize}
@@ -4353,7 +4354,7 @@ initiated. These values are needed when
 #   -----------------------------------
     FLOCCULATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Decide si la formulation entravee doit etre utilisee
 pour calculer la vitesse de chute pour la vase.""",
@@ -4363,7 +4364,7 @@ compute settling velocity for mud.""",
 #   -----------------------------------
     FLOCCULATION_FORMULA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Formule pour floculation :
 \begin{itemize}
@@ -4379,7 +4380,7 @@ compute settling velocity for mud.""",
 #   -----------------------------------
     FLOCCULATION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.3],
         fr = """Coefficient intervenant dans la modelisation de l''influence de
 la turbulence sur la floculation, il intervient plus precisement dans
@@ -4397,7 +4398,7 @@ Value to be imposed if
 #   -----------------------------------
     COEFFICIENT_RELATIVE_TO_FLOC_DESTRUCTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.09],
         fr = """Coefficient intervenant dans la modelisation de l''influence de
 la turbulence sur la floculation, il intervient plus precisement dans
@@ -4415,7 +4416,7 @@ Value to be imposed if
 #   -----------------------------------
     CONSOLIDATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Logique pour la prise en compte du tassement des depots vaseux
 a l''aide d''un modele multicouches : les couches discretisant le fond
@@ -4446,7 +4447,7 @@ is used to calculate the bed evolution of non-cohesive sand transport.""",
 #   -----------------------------------
     READ_CRITICAL_BED_SHEAR_STRESS_PER_LAYER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Lecture de la contrainte critique d''erosion a
 partir du \telkey{FICHIER DE GEOMETRIE}.""",
@@ -4455,7 +4456,7 @@ read from \telkey{GEOMETRY FILE}.""",
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_INITIAL_CONDITIONS = PROC(nom= "EQUATIONS,_INITIAL_CONDITIONS",op = None,
+EQUATIONS__INITIAL_CONDITIONS = PROC(nom= "EQUATIONS__INITIAL_CONDITIONS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     INITIAL_CONDITIONS = SIMP(statut ='f',
@@ -4509,7 +4510,7 @@ should be stated in the \telfile{CONDIN} subroutine.
 #   -----------------------------------
     INITIAL_ELEVATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Valeur utilisee avec l''option :
 \telkey{CONDITIONS INITIALES} : ''COTE CONSTANTE''.""",
@@ -4519,7 +4520,7 @@ should be stated in the \telfile{CONDIN} subroutine.
 #   -----------------------------------
     INITIAL_DEPTH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Valeur utilisee avec l''option :
 \telkey{CONDITIONS INITIALES} : ''HAUTEUR CONSTANTE''.""",
@@ -4529,7 +4530,7 @@ should be stated in the \telfile{CONDIN} subroutine.
 #   -----------------------------------
     OPTION_FOR_THE_TREATMENT_OF_TIDAL_FLATS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Utilise si \telkey{BANCS DECOUVRANTS} est vrai.
 Les choix possibles sont :
@@ -4547,7 +4548,7 @@ decouvrants ;
 #   -----------------------------------
     IMPLICITATION_FOR_DIFFUSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Fixe la valeur du coefficient d''implication pour l''etape de
 diffusion.
@@ -4565,7 +4566,7 @@ FILES = PROC(nom= "FILES",op = None,
 #   -----------------------------------
     ELEMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         defaut = 'PRISM',
         fr = """Permet de specifier le type d''element utilise pour le calcul.
 Les choix possibles sont :
@@ -4602,7 +4603,7 @@ PARAMETER_FOR_BED_MATERIAL = PROC(nom= "PARAMETER_FOR_BED_MATERIAL",op = None,
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_BOUNDARY_CONDITIONS = PROC(nom= "EQUATIONS,_BOUNDARY_CONDITIONS",op = None,
+EQUATIONS__BOUNDARY_CONDITIONS = PROC(nom= "EQUATIONS__BOUNDARY_CONDITIONS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     VELOCITY_PROFILES = SIMP(statut ='f',
@@ -4723,7 +4724,7 @@ Possible choices are:
 SEDIMENT_TRANSPORT = PROC(nom= "SEDIMENT_TRANSPORT",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    PHYSICAL_PARAMETERS = FACT(statut='o',
+    PHYSICAL_PARAMETERS = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SHIELDS_PARAMETER = SIMP(statut ='f',
@@ -4760,7 +4761,7 @@ for a given boundary (one value per open boundary):
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_SOURCES = PROC(nom= "EQUATIONS,_SOURCES",op = None,
+EQUATIONS__SOURCES = PROC(nom= "EQUATIONS__SOURCES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     OPTION_FOR_WIND = SIMP(statut ='f',
@@ -4789,7 +4790,7 @@ a binary file.
 #   -----------------------------------
     TYPE_OF_SOURCES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Normal","Dirac"],
         defaut = ["Normal"],
         fr = """Definit comment les sources sont calculees :
@@ -4806,7 +4807,7 @@ a binary file.
 \end{itemize}""",
     ),
 #   -----------------------------------
-    TRACER = FACT(statut='o',
+    TRACER = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         WATER_QUALITY_PROCESS = SIMP(statut ='f',
@@ -4885,7 +4886,7 @@ PHYSICAL_PARAMETERS = PROC(nom= "PHYSICAL_PARAMETERS",op = None,
 #   -----------------------------------
     OPTION_FOR_CHARACTERISTICS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["strong","weak"],
         defaut = ["strong"],
         fr = """Les choix possibles sont :
@@ -4902,7 +4903,7 @@ PHYSICAL_PARAMETERS = PROC(nom= "PHYSICAL_PARAMETERS",op = None,
 #   -----------------------------------
     MASS_LUMPING_FOR_WEAK_CHARACTERISTICS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fixe le taux de mass-lumping qui est applique a la matrice de
 masse lors de l''utilisation des caracteristiques faibles.""",
@@ -4926,7 +4927,7 @@ CONSOLIDATION_INFO = PROC(nom= "CONSOLIDATION_INFO",op = None,
 #   -----------------------------------
     NUMBER_OF_SEDIMENT_BED_LAYERS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Structure verticale du lit cohesif, le nombre de couches
 doit etre inferieur a 20.""",
@@ -4988,7 +4989,7 @@ TURBULENCE = PROC(nom= "TURBULENCE",op = None,
 #   -----------------------------------
     KARMAN_CONSTANT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.4],
         fr = """Valeur de la constante de Von Karman.""",
         ang = """Value of Von Karman''s constant.""",
@@ -4996,7 +4997,7 @@ TURBULENCE = PROC(nom= "TURBULENCE",op = None,
 #   -----------------------------------
     PRANDTL_NUMBER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.0],
         fr = """Rapport entre viscosite et diffusivite turbulente.""",
         ang = """Ratio between eddy viscosity and eddy diffusivity.""",
@@ -5004,7 +5005,7 @@ TURBULENCE = PROC(nom= "TURBULENCE",op = None,
 #   -----------------------------------
     FICTITIOUS_BED_LEVEL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.0],
         fr = """Rapport entre le fond fictif et la hauteur de
 la premiere  maille utilisee par le modele de turbulence
@@ -5019,7 +5020,7 @@ GENERAL = PROC(nom= "GENERAL",op = None,
 #   -----------------------------------
     CHECKING_THE_MESH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si OUI on appelle le sous-programme \telfile{CHECKMESH}
 qui verifie la coherence du maillage, points superposes, etc.""",
@@ -5030,7 +5031,7 @@ superimposed points, etc.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_BOUNDARIES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [30],
         fr = """Nombre maximal de frontieres differentes dans le maillage.
 Sert au dimensionnement de la memoire, a augmenter si necessaire.""",
@@ -5040,7 +5041,7 @@ Used for dimensioning arrays. Can be increased if needed.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_SOURCES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [20],
         fr = """Nombre maximal de points sources dans le maillage,
 incluant les sources ponctuelles et 2 fois le nombre de buses.
@@ -5052,7 +5053,7 @@ Used for dimensioning arrays. Can be increased if needed.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_TRACERS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [20],
         fr = """Nombre maximal de traceurs.
 Sert au dimensionnement de la memoire, a augmenter si necessaire.""",
@@ -5062,7 +5063,7 @@ Used for dimensioning arrays. Can be increased if needed.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_BOUNDARIES_ON_THE_BED = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [30],
         fr = """Nombre maximal de frontieres liquides sur le fond.
 Sert au dimensionnement de la memoire, a augmenter si necessaire.""",
@@ -5074,12 +5075,12 @@ Used for dimensioning arrays. Can be increased if needed.""",
 TURBULENCE_MODEL = PROC(nom= "TURBULENCE_MODEL",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    BOUNDARY_CONDITIONS = FACT(statut='o',
+    BOUNDARY_CONDITIONS = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         OPTION_FOR_THE_BOUNDARY_CONDITIONS_OF_K_EPSILON = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["no turbulence","Hans and Burchard"],
             defaut = ["no turbulence"],
             fr = """Calcul des conditions aux limites laterales sur $k$ et
@@ -5099,26 +5100,54 @@ and $\epsilon$. Possible choices are:
         ),
     ),
 )
-Ordre_des_commandes = (
+Ordre_Des_Commandes = (
 'NUMERICAL_PARAMETERS',
-'EQUATIONS,_TRACER',
+'EQUATIONS__TRACER',
 'EQUATIONS',
-'INPUT_OUTPUT,_GRAPHICS_AND_LISTING',
-'EQUATIONS,_ADVECTION',
-'EQUATIONS,_DIFFUSION',
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
+'EQUATIONS__ADVECTION',
+'EQUATIONS__DIFFUSION',
 'PHYSICAL_CONSTANTS',
-'INPUT_OUTPUT,_INFORMATION',
-'INPUT_OUTPUT,_FILES',
-'EQUATIONS,_PROPAGATION',
+'INPUT_OUTPUT__INFORMATION',
+'INPUT_OUTPUT__FILES',
+'EQUATIONS__PROPAGATION',
 'SEDIMENT_INFO',
 'PHYSICS',
-'EQUATIONS,_INITIAL_CONDITIONS',
+'EQUATIONS__INITIAL_CONDITIONS',
 'FILES',
 'PARAMETER_FOR_BED_MATERIAL',
-'EQUATIONS,_BOUNDARY_CONDITIONS',
+'EQUATIONS__BOUNDARY_CONDITIONS',
 'SEDIMENT_TRANSPORT',
 'BOUNDARY_CONDITIONS',
-'EQUATIONS,_SOURCES',
+'EQUATIONS__SOURCES',
+'FRICTION',
+'SUSPENSION',
+'PHYSICAL_PARAMETERS',
+'CONSOLIDATION_INFO',
+'COHESIVE_SEDIMENT_INFO',
+'TURBULENCE',
+'GENERAL',
+'TURBULENCE_MODEL')
+Classement_Commandes_Ds_Arbre = (
+'NUMERICAL_PARAMETERS',
+'EQUATIONS__TRACER',
+'EQUATIONS',
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
+'EQUATIONS__ADVECTION',
+'EQUATIONS__DIFFUSION',
+'PHYSICAL_CONSTANTS',
+'INPUT_OUTPUT__INFORMATION',
+'INPUT_OUTPUT__FILES',
+'EQUATIONS__PROPAGATION',
+'SEDIMENT_INFO',
+'PHYSICS',
+'EQUATIONS__INITIAL_CONDITIONS',
+'FILES',
+'PARAMETER_FOR_BED_MATERIAL',
+'EQUATIONS__BOUNDARY_CONDITIONS',
+'SEDIMENT_TRANSPORT',
+'BOUNDARY_CONDITIONS',
+'EQUATIONS__SOURCES',
 'FRICTION',
 'SUSPENSION',
 'PHYSICAL_PARAMETERS',

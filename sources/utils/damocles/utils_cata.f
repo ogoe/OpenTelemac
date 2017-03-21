@@ -111,7 +111,8 @@
       !
       CATA_DEFAUT = REPEAT(' ',DEFAUT_LEN)
       ! HANDLE DEFAULT VALUES FOR HASH
-      IF(MYDICO(IKEY)%HASH_ID(1,LNG)(1:1).NE.' ') THEN
+      IF(MYDICO(IKEY)%HASH_ID(1,LNG)(1:1).NE.' '.AND.
+     &   MYDICO(IKEY)%DEFAUT(EN)(1:1).NE.' ') THEN
         IF(MYDICO(IKEY)%TAILLE.NE.1) THEN
           ! LOOP ON VALUES
           MYLEN = LEN(TRIM(MYDICO(IKEY)%DEFAUT(LNG)))
@@ -285,12 +286,37 @@
       DO I=1,MYLEN
         IF(STRING(I:I).EQ."'".OR.
      &     STRING(I:I).EQ."-".OR.
+     &     STRING(I:I).EQ.",".OR.
+     &     STRING(I:I).EQ."(".OR.
+     &     STRING(I:I).EQ.")".OR.
      &     STRING(I:I).EQ." ") THEN
           CATA_NAME(I:I) = "_"
         ELSE
           CATA_NAME(I:I) = STRING(I:I)
         ENDIF
       ENDDO
+      ! IF FIRST LETTER IS A NUMBER CHANGING IT
+      IF(CATA_NAME(1:1).EQ."0") THEN
+        CATA_NAME(1:1) = "A"
+      ELSE IF(CATA_NAME(1:1).EQ."1") THEN
+        CATA_NAME(1:1) = "Z"
+      ELSE IF(CATA_NAME(1:1).EQ."2") THEN
+        CATA_NAME(1:1) = "E"
+      ELSE IF(CATA_NAME(1:1).EQ."3") THEN
+        CATA_NAME(1:1) = "R"
+      ELSE IF(CATA_NAME(1:1).EQ."4") THEN
+        CATA_NAME(1:1) = "T"
+      ELSE IF(CATA_NAME(1:1).EQ."5") THEN
+        CATA_NAME(1:1) = "Y"
+      ELSE IF(CATA_NAME(1:1).EQ."6") THEN
+        CATA_NAME(1:1) = "U"
+      ELSE IF(CATA_NAME(1:1).EQ."7") THEN
+        CATA_NAME(1:1) = "1"
+      ELSE IF(CATA_NAME(1:1).EQ."8") THEN
+        CATA_NAME(1:1) = "O"
+      ELSE IF(CATA_NAME(1:1).EQ."9") THEN
+        CATA_NAME(1:1) = "P"
+      ENDIF
       RETURN
       END FUNCTION
       ! brief Write in Python the enum for the keyword with CHOIX in
@@ -306,6 +332,8 @@
       INTEGER :: LNG,IERR
       INTEGER :: IKEY,I
       LOGICAL ISSTR
+      INTEGER :: MYLEN(2),POS_WORD(2),IDX(2)
+      CHARACTER(LEN=CHOIX_LEN) :: CHOIX(2)
       !
       NFIC = 666
       OPEN(NFIC,FILE=TRIM(FILENAME),IOSTAT=IERR)
@@ -320,7 +348,7 @@
         ! CHECK IF THE KEYWORD HAS AN ENUM
         IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
           WRITE(NFIC,'(A)') "'"//
-     &       TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(2)))//"' : {"
+     &       TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN)))//"' : {"
           I = 1
           SELECT CASE (MYDICO(IKEY)%HASH_ID(I,EN)(1:1))
             CASE ("-","0","1","2","3","4","5","6","7","8","9")
@@ -396,6 +424,45 @@
       ENDDO
       WRITE(NFIC,'(A)') '}'
 
+      WRITE(NFIC, '(A)') 'DicoEnumCasFrToEnumCasEn = {'
+      DO IKEY = 1,NKEY
+        ! If we have a keyword with a choix made of string and = in the
+        ! choix
+        IF (MYDICO(IKEY)%KTYPE.EQ.4 .AND.
+     &      MYDICO(IKEY)%CHOIX(FR)(1:1).NE.' '.AND.
+     &      INDEX(MYDICO(IKEY)%CHOIX(FR),"=").EQ.0) THEN
+          WRITE(NFIC, '(A)')
+     &         "'"//TRIM(CATA_NAME(MYDICO(IKEY)%KNOM(EN)))//"':{"
+          ! Identiying each values in the CHOIX string
+          IDX(:) = 1
+          POS_WORD(:) = 1
+          CHOIX(FR) = MYDICO(IKEY)%CHOIX(FR)
+          CHOIX(EN) = MYDICO(IKEY)%CHOIX(EN)
+          MYLEN(FR) = LEN(TRIM(CHOIX(FR)))
+          MYLEN(EN) = LEN(TRIM(CHOIX(EN)))
+          DO WHILE(IDX(FR).NE.0)
+            DO I=1,2
+              IDX(I) = INDEX(CHOIX(I)(POS_WORD(I):MYLEN(I)),";")
+            ENDDO
+            IF(IDX(FR).EQ.0) THEN
+              WRITE(NFIC, '(A)') '  "'//
+     &           CHOIX(FR)(POS_WORD(FR):MYLEN(FR))//'":"'//
+     &           CHOIX(EN)(POS_WORD(EN):MYLEN(EN))//'",'
+            ELSE
+              WRITE(NFIC, '(A)') '  "'//
+     &           CHOIX(FR)(POS_WORD(FR):POS_WORD(FR)+IDX(FR)-2)//'":"'//
+     &           CHOIX(EN)(POS_WORD(EN):POS_WORD(EN)+IDX(EN)-2)//'",'
+            ENDIF
+            DO I=1,2
+              POS_WORD(I) = POS_WORD(I) + IDX(I)
+            ENDDO
+          ENDDO
+          WRITE(NFIC, '(A)') "},"
+          WRITE(NFIC, '(A)') ''
+        ENDIF
+      ENDDO
+      WRITE(NFIC, '(A)') "}"
+
 
       CLOSE(NFIC)
       END SUBROUTINE
@@ -428,21 +495,21 @@
         WRITE(NFIC,'(8X,A)') '<translation>'//
      &          TRIM(MYDICO(IKEY)%KNOM(EN))//'</translation>'
         WRITE(NFIC,'(4X,A)') '</message>'
-        IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
-          I = 1
-          DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' '
-     &             .AND.I.LE.MAXENUM)
-            WRITE(NFIC,'(4X,A)') '<message>'
-            WRITE(NFIC,'(8X,A)') '<source>'//
-     &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN)))//
-     &             '</source>'
-            WRITE(NFIC,'(8X,A)') '<translation>'//
-     &         TRIM(MYDICO(IKEY)%HASH_VAL(I,EN))//
-     &                           '</translation>'
-            WRITE(NFIC,'(4X,A)') '</message>'
-            I = I + 1
-          ENDDO
-        ENDIF
+!       IF(MYDICO(IKEY)%HASH_ID(1,EN)(1:1).NE.' ') THEN
+!         I = 1
+!         DO WHILE(MYDICO(IKEY)%HASH_ID(I,EN)(1:1).NE.' '
+!    &             .AND.I.LE.MAXENUM)
+!           WRITE(NFIC,'(4X,A)') '<message>'
+!           WRITE(NFIC,'(8X,A)') '<source>'//
+!    &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN)))//
+!    &             '</source>'
+!           WRITE(NFIC,'(8X,A)') '<translation>'//
+!    &         TRIM(MYDICO(IKEY)%HASH_VAL(I,EN))//
+!    &                           '</translation>'
+!           WRITE(NFIC,'(4X,A)') '</message>'
+!           I = I + 1
+!         ENDDO
+!       ENDIF
       ENDDO
       !
       WRITE(NFIC,'(A)') '</context>'
@@ -471,21 +538,21 @@
         WRITE(NFIC,'(8X,A)') '<translation>'//
      &          TRIM(MYDICO(IKEY)%KNOM(FR))//'</translation>'
         WRITE(NFIC,'(4X,A)') '</message>'
-        IF(MYDICO(IKEY)%HASH_ID(1,FR)(1:1).NE.' ') THEN
-          I = 1
-          DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' '
-     &             .AND.I.LE.MAXENUM)
-            WRITE(NFIC,'(4X,A)') '<message>'
-            WRITE(NFIC,'(8X,A)') '<source>'//
-     &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN))) //
-     &             '</source>'
-            WRITE(NFIC,'(8X,A)') '<translation>'//
-     &         TRIM(MYDICO(IKEY)%HASH_VAL(I,FR))//
-     &                           '</translation>'
-            WRITE(NFIC,'(4X,A)') '</message>'
-            I = I + 1
-          ENDDO
-        ENDIF
+!       IF(MYDICO(IKEY)%HASH_ID(1,FR)(1:1).NE.' ') THEN
+!         I = 1
+!         DO WHILE(MYDICO(IKEY)%HASH_ID(I,FR)(1:1).NE.' '
+!    &             .AND.I.LE.MAXENUM)
+!           WRITE(NFIC,'(4X,A)') '<message>'
+!           WRITE(NFIC,'(8X,A)') '<source>'//
+!    &             TRIM(CATA_NAME(MYDICO(IKEY)%HASH_VAL(I,EN))) //
+!    &             '</source>'
+!           WRITE(NFIC,'(8X,A)') '<translation>'//
+!    &         TRIM(MYDICO(IKEY)%HASH_VAL(I,FR))//
+!    &                           '</translation>'
+!           WRITE(NFIC,'(4X,A)') '</message>'
+!           I = I + 1
+!         ENDDO
+!       ENDIF
       ENDDO
       !
       WRITE(NFIC,'(A)') '</context>'
@@ -747,11 +814,13 @@
       ! brief Write an Eficas Catalog from the dictionary
       !
       ! param filename Name of the Catalog file
-      SUBROUTINE WRITE2CATA(FILENAME)
+      ! param code_name Name of Code for which the catalogue is written
+      SUBROUTINE WRITE2CATA(FILENAME, CODE_NAME)
       !
       IMPLICIT NONE
       !
       CHARACTER(LEN=144), INTENT(IN) :: FILENAME
+      CHARACTER(LEN=10), INTENT(IN) :: CODE_NAME
       !
       INTEGER :: NFIC,IERR
       INTEGER :: IRUB1
@@ -808,7 +877,8 @@
       WRITE(NFIC,'(a)') ''
       WRITE(NFIC,'(a)') ''
       WRITE(NFIC,'(a)') ''
-      WRITE(NFIC,'(a)') "JdC = JDC_CATA (code = 'TELEMAC',"
+      WRITE(NFIC,'(a)') "JdC = JDC_CATA (code = '"//
+     &                   TRIM(CODE_NAME)//"',"
       WRITE(NFIC,'(a)') '                execmodul = None,'
       WRITE(NFIC,'(a)') '                )'
       WRITE(NFIC,'(a)') '# '//REPEAT("=",71)
@@ -817,6 +887,12 @@
       WRITE(NFIC,'(a)') '# '//REPEAT("=",71)
       WRITE(NFIC,'(a)') ''
 
+      DO IKEY=1,NKEY
+        IF(MYDICO(IKEY)%KNOM(EN)(1:8).EQ.'RELEASE') THEN
+          WRITE(NFIC,'(a)') 'VERSION_CATALOGUE="'//
+     &                   TRIM(MYDICO(IKEY)%DEFAUT(EN))//'"'
+        ENDIF
+      ENDDO
       ! Loop on rubriques
       DO IRUB1=1,NRUB(LNG,1)
         CALL WRITE_BEGIN_RUBRIQUE(NFIC,IRUB1,1)

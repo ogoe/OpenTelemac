@@ -115,11 +115,11 @@
         <translation>FICHIER DES PARAMETRES</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE</source>
+        <source>RD_RESULT_FILE</source>
         <translation>FICHIER DES RESULTATS 3D</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_FORMAT</source>
+        <source>RD_RESULT_FILE_FORMAT</source>
         <translation>FORMAT DU FICHIER DES RESULTATS 3D</translation>
     </message>
     <message>
@@ -143,7 +143,7 @@
         <translation>NUMERO DE VERSION</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_BINARY</source>
+        <source>RD_RESULT_FILE_BINARY</source>
         <translation>BINAIRE DU FICHIER DES RESULTATS 3D</translation>
     </message>
     <message>

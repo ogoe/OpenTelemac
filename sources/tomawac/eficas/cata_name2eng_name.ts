@@ -35,92 +35,24 @@
         <translation>WIND GENERATION</translation>
     </message>
     <message>
-        <source>"No_wind_generation"</source>
-        <translation>"No wind generation"</translation>
-    </message>
-    <message>
-        <source>"Wind_generation_in_accordance_with_WAM_cycle_4"</source>
-        <translation>"Wind generation in accordance with WAM cycle 4"</translation>
-    </message>
-    <message>
-        <source>"Wind_generation_in_accordance_with_WAM_cycle_3"</source>
-        <translation>"Wind generation in accordance with WAM cycle 3"</translation>
-    </message>
-    <message>
-        <source>"Wind_generation_in_accordance_with_Yan_expression_(1987)"</source>
-        <translation>"Wind generation in accordance with Yan expression (1987)"</translation>
-    </message>
-    <message>
         <source>WHITE_CAPPING_DISSIPATION</source>
         <translation>WHITE CAPPING DISSIPATION</translation>
-    </message>
-    <message>
-        <source>"No_white_capping_dissipation"</source>
-        <translation>"No white capping dissipation"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_WAM_cycle_4"</source>
-        <translation>"Dissipation in accordance with WAM cycle 4"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Van_des_Westhuysen(2007)"</source>
-        <translation>"Dissipation in accordance with Van des Westhuysen(2007)"</translation>
     </message>
     <message>
         <source>BOTTOM_FRICTION_DISSIPATION</source>
         <translation>BOTTOM FRICTION DISSIPATION</translation>
     </message>
     <message>
-        <source>"No_bottom_friction_dissipation"</source>
-        <translation>"No bottom friction dissipation"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_WAM_cycle_4"</source>
-        <translation>"Dissipation in accordance with WAM cycle 4"</translation>
-    </message>
-    <message>
         <source>NON_LINEAR_TRANSFERS_BETWEEN_FREQUENCIES</source>
         <translation>NON-LINEAR TRANSFERS BETWEEN FREQUENCIES</translation>
-    </message>
-    <message>
-        <source>"No_non_linear_transfers_term"</source>
-        <translation>"No non-linear transfers term"</translation>
-    </message>
-    <message>
-        <source>"Non_linear_transfers_term_with_WAM_cycle_4_(DIA_Method)"</source>
-        <translation>"Non-linear transfers term with WAM cycle 4 (DIA Method)"</translation>
-    </message>
-    <message>
-        <source>"Non_linear_transfers_term_in_accordance_with_MDIA_Method"</source>
-        <translation>"Non-linear transfers term in accordance with MDIA Method"</translation>
-    </message>
-    <message>
-        <source>"Non_linear_transfers_term_calculated_with_exact_GQM_Method"</source>
-        <translation>"Non-linear transfers term calculated with exact GQM Method"</translation>
     </message>
     <message>
         <source>CURRENTS_FILE_FORMAT</source>
         <translation>CURRENTS FILE FORMAT</translation>
     </message>
     <message>
-        <source>"Selafin,_TELEMAC_type"</source>
-        <translation>"Selafin, TELEMAC type"</translation>
-    </message>
-    <message>
-        <source>"User_format_(couuti.f)"</source>
-        <translation>"User format (couuti.f)"</translation>
-    </message>
-    <message>
         <source>WINDS_FILE_FORMAT</source>
         <translation>WINDS FILE FORMAT</translation>
-    </message>
-    <message>
-        <source>"Selafin,_TELEMAC_type"</source>
-        <translation>"Selafin, TELEMAC type"</translation>
-    </message>
-    <message>
-        <source>"User_format_(venuti.f)"</source>
-        <translation>"User format (venuti.f)"</translation>
     </message>
     <message>
         <source>NUMBER_OF_ITERATIONS_FOR_THE_SOURCE_TERMS</source>
@@ -129,38 +61,6 @@
     <message>
         <source>TYPE_OF_INITIAL_DIRECTIONAL_SPECTRUM</source>
         <translation>TYPE OF INITIAL DIRECTIONAL SPECTRUM</translation>
-    </message>
-    <message>
-        <source>"non_existent_spectrum"</source>
-        <translation>"non-existent spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"TMA_spectrum"</source>
-        <translation>"TMA spectrum"</translation>
     </message>
     <message>
         <source>TIME_INCREMENT_NUMBER_IN_TELEMAC_FILE</source>
@@ -175,172 +75,40 @@
         <translation>DEPTH-INDUCED BREAKING DISSIPATION</translation>
     </message>
     <message>
-        <source>"No_breaking"</source>
-        <translation>"No breaking"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Battjes_et_Janssen_(1978)"</source>
-        <translation>"Dissipation in accordance with Battjes et Janssen (1978)"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Thornton_et_Guza__(1983)"</source>
-        <translation>"Dissipation in accordance with Thornton et Guza  (1983)"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Roelvink_(1993)"</source>
-        <translation>"Dissipation in accordance with Roelvink (1993)"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Izumiya_et_Horikawa_(1984)"</source>
-        <translation>"Dissipation in accordance with Izumiya et Horikawa (1984)"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_QB_COMPUTATION_METHOD</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__QB_COMPUTATION_METHOD</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_HM_COMPUTATION_METHOD</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__HM_COMPUTATION_METHOD</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD</translation>
     </message>
     <message>
-        <source>"Hm_=_GAMMA*D"</source>
-        <translation>"Hm = GAMMA*D"</translation>
-    </message>
-    <message>
-        <source>"Hm_given_by_the_Miche_criterium"</source>
-        <translation>"Hm given by the Miche criterium"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_CHARACTERISTIC_FREQUENCY</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__CHARACTERISTIC_FREQUENCY</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY</translation>
     </message>
     <message>
-        <source>"Frequency_Fmoy"</source>
-        <translation>"Frequency Fmoy"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F01"</source>
-        <translation>"Frequency F01"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F02"</source>
-        <translation>"Frequency F02"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fpic"</source>
-        <translation>"Frequency Fpic"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_5"</source>
-        <translation>"Frequency Fread ordre 5"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_8"</source>
-        <translation>"Frequency Fread ordre 8"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_2_(TG)_WEIGHTING_FUNCTION</source>
+        <source>DEPTH_INDUCED_BREAKING_2__TG__WEIGHTING_FUNCTION</source>
         <translation>DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_2_(TG)_CHARACTERISTIC_FREQUENCY</source>
+        <source>DEPTH_INDUCED_BREAKING_2__TG__CHARACTERISTIC_FREQUENCY</source>
         <translation>DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY</translation>
     </message>
     <message>
-        <source>"Frequency_Fmoy"</source>
-        <translation>"Frequency Fmoy"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F01"</source>
-        <translation>"Frequency F01"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F02"</source>
-        <translation>"Frequency F02"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fpic"</source>
-        <translation>"Frequency Fpic"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_5"</source>
-        <translation>"Frequency Fread ordre 5"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_8"</source>
-        <translation>"Frequency Fread ordre 8"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_WAVE_HEIGHT_DISTRIBUTION</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__WAVE_HEIGHT_DISTRIBUTION</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION</translation>
     </message>
     <message>
-        <source>"Weibull"</source>
-        <translation>"Weibull"</translation>
-    </message>
-    <message>
-        <source>"Rayleigh"</source>
-        <translation>"Rayleigh"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_EXPONENT_WEIGHTING_FUNCTION</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__EXPONENT_WEIGHTING_FUNCTION</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_CHARACTERISTIC_FREQUENCY</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__CHARACTERISTIC_FREQUENCY</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY</translation>
     </message>
     <message>
-        <source>"Frequency_Fmoy"</source>
-        <translation>"Frequency Fmoy"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F01"</source>
-        <translation>"Frequency F01"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F02"</source>
-        <translation>"Frequency F02"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fpic"</source>
-        <translation>"Frequency Fpic"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_5"</source>
-        <translation>"Frequency Fread ordre 5"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_8"</source>
-        <translation>"Frequency Fread ordre 8"</translation>
-    </message>
-    <message>
-        <source>DEPTH_INDUCED_BREAKING_4_(IH)_CHARACTERISTIC_FREQUENCY</source>
+        <source>DEPTH_INDUCED_BREAKING_4__IH__CHARACTERISTIC_FREQUENCY</source>
         <translation>DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fmoy"</source>
-        <translation>"Frequency Fmoy"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F01"</source>
-        <translation>"Frequency F01"</translation>
-    </message>
-    <message>
-        <source>"Frequency_F02"</source>
-        <translation>"Frequency F02"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fpic"</source>
-        <translation>"Frequency Fpic"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_5"</source>
-        <translation>"Frequency Fread ordre 5"</translation>
-    </message>
-    <message>
-        <source>"Frequency_Fread_ordre_8"</source>
-        <translation>"Frequency Fread ordre 8"</translation>
     </message>
     <message>
         <source>NUMBER_OF_BREAKING_TIME_STEPS</source>
@@ -351,84 +119,16 @@
         <translation>WAVE GROWTH LIMITER</translation>
     </message>
     <message>
-        <source>"no_wave_growth_limiter"</source>
-        <translation>"no wave growth limiter"</translation>
-    </message>
-    <message>
-        <source>"WAM_4_original_limiter"</source>
-        <translation>"WAM 4 original limiter"</translation>
-    </message>
-    <message>
-        <source>"Hersbach_et_Janssen_(1999)_limiter"</source>
-        <translation>"Hersbach et Janssen (1999) limiter"</translation>
-    </message>
-    <message>
-        <source>"Laugel_BAJ_limiter"</source>
-        <translation>"Laugel-BAJ limiter"</translation>
-    </message>
-    <message>
         <source>LINEAR_WAVE_GROWTH</source>
         <translation>LINEAR WAVE GROWTH</translation>
-    </message>
-    <message>
-        <source>"the_linear_wave_growth_is_ignored"</source>
-        <translation>"the linear wave growth is ignored"</translation>
-    </message>
-    <message>
-        <source>"linear_wave_growth_as_in_Cavaleri_and_Malanotte_Rizzoli_(1981)"</source>
-        <translation>"linear wave growth as in Cavaleri and Malanotte-Rizzoli (1981)"</translation>
     </message>
     <message>
         <source>TRIAD_INTERACTIONS</source>
         <translation>TRIAD INTERACTIONS</translation>
     </message>
     <message>
-        <source>"no_triad_interactions"</source>
-        <translation>"no triad interactions"</translation>
-    </message>
-    <message>
-        <source>"LTA_model_(Eldeberky,_1996)"</source>
-        <translation>"LTA model (Eldeberky, 1996)"</translation>
-    </message>
-    <message>
-        <source>"SPB_model_(Becq,_1998)"</source>
-        <translation>"SPB model (Becq, 1998)"</translation>
-    </message>
-    <message>
         <source>TYPE_OF_BOUNDARY_DIRECTIONAL_SPECTRUM</source>
         <translation>TYPE OF BOUNDARY DIRECTIONAL SPECTRUM</translation>
-    </message>
-    <message>
-        <source>"non_existent_spectrum"</source>
-        <translation>"non-existent spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"JONSWAP_spectrum"</source>
-        <translation>"JONSWAP spectrum"</translation>
-    </message>
-    <message>
-        <source>"TMA_spectrum"</source>
-        <translation>"TMA spectrum"</translation>
     </message>
     <message>
         <source>TIDE_REFRESHING_PERIOD</source>
@@ -437,14 +137,6 @@
     <message>
         <source>TIDAL_WATER_LEVEL_FILE_FORMAT</source>
         <translation>TIDAL WATER LEVEL FILE FORMAT</translation>
-    </message>
-    <message>
-        <source>"Selafin,_TELEMAC_type"</source>
-        <translation>"Selafin, TELEMAC type"</translation>
-    </message>
-    <message>
-        <source>"User_format_(maruti.f)"</source>
-        <translation>"User format (maruti.f)"</translation>
     </message>
     <message>
         <source>RANK_OF_THE_WATER_LEVEL_DATA_IN_THE_TELEMAC_FILE</source>
@@ -459,32 +151,8 @@
         <translation>INITIAL ANGULAR DISTRIBUTION FUNCTION</translation>
     </message>
     <message>
-        <source>"$cos{^2s}(T_T0)$,_T_in_[T0_pi/2,T0+pi/2]"</source>
-        <translation>"$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"</translation>
-    </message>
-    <message>
-        <source>"$exp(_0.5((T_T0)/s)^2)$,_T_in_[T0_pi/2,T0+pi/2]"</source>
-        <translation>"$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]"</translation>
-    </message>
-    <message>
-        <source>"$cos{^2s}((T_T0)/2)$_(de_type_Mitsuyasu)"</source>
-        <translation>"$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"</translation>
-    </message>
-    <message>
         <source>BOUNDARY_ANGULAR_DISTRIBUTION_FUNCTION</source>
         <translation>BOUNDARY ANGULAR DISTRIBUTION FUNCTION</translation>
-    </message>
-    <message>
-        <source>"$cos{^2s}(T_T0)$,_T_in_[T0_pi/2,T0+pi/2]"</source>
-        <translation>"$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"</translation>
-    </message>
-    <message>
-        <source>"$exp(_0.5((T_T0)/s)^2)$,_T_in_[T0_pi/2,T0+pi/2]"</source>
-        <translation>"$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]"</translation>
-    </message>
-    <message>
-        <source>"$cos{^2s}((T_T0)/2)$_(de_type_Mitsuyasu)"</source>
-        <translation>"$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"</translation>
     </message>
     <message>
         <source>ORIGIN_COORDINATES</source>
@@ -495,64 +163,16 @@
         <translation>SETTING FOR INTEGRATION ON OMEGA1</translation>
     </message>
     <message>
-        <source>"medium"</source>
-        <translation>"medium"</translation>
-    </message>
-    <message>
-        <source>"fine"</source>
-        <translation>"fine"</translation>
-    </message>
-    <message>
-        <source>"rough"</source>
-        <translation>"rough"</translation>
-    </message>
-    <message>
         <source>SETTING_FOR_INTEGRATION_ON_THETA1</source>
         <translation>SETTING FOR INTEGRATION ON THETA1</translation>
-    </message>
-    <message>
-        <source>"rough"</source>
-        <translation>"rough"</translation>
-    </message>
-    <message>
-        <source>"medium"</source>
-        <translation>"medium"</translation>
-    </message>
-    <message>
-        <source>"fine"</source>
-        <translation>"fine"</translation>
     </message>
     <message>
         <source>SETTING_FOR_INTEGRATION_ON_OMEGA2</source>
         <translation>SETTING FOR INTEGRATION ON OMEGA2</translation>
     </message>
     <message>
-        <source>"rough"</source>
-        <translation>"rough"</translation>
-    </message>
-    <message>
-        <source>"medium"</source>
-        <translation>"medium"</translation>
-    </message>
-    <message>
-        <source>"fine"</source>
-        <translation>"fine"</translation>
-    </message>
-    <message>
         <source>DIFFRACTION</source>
         <translation>DIFFRACTION</translation>
-    </message>
-    <message>
-        <source>"Diffraction_is_not_taken_into_account"</source>
-        <translation>"Diffraction is not taken into account"</translation>
-    </message>
-    <message>
-        <source>"Mild_Slope_Equation_model_(Berkhoff___1972)"</source>
-        <translation>"Mild Slope Equation model (Berkhoff - 1972)"</translation>
-    </message>
-    <message>
-        <source>"Revised_Mild_Slope_Equation_model_(Porter___2003)"</source>
-        <translation>"Revised Mild Slope Equation model (Porter - 2003)"</translation>
     </message>
     <message>
         <source>STARTING_TIME_STEP_FOR_DIFFFRACTION</source>
@@ -695,43 +315,43 @@
         <translation>SPECTRUM ENERGY THRESHOLD</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_ALPHA</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_ALPHA</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_GAMMA1</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_GAMMA1</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_GAMMA2</source>
+        <source>DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_GAMMA2</source>
         <translation>DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_2_(TG)_COEFFICIENT_B</source>
+        <source>DEPTH_INDUCED_BREAKING_2__TG__COEFFICIENT_B</source>
         <translation>DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_2_(TG)_COEFFICIENT_GAMMA</source>
+        <source>DEPTH_INDUCED_BREAKING_2__TG__COEFFICIENT_GAMMA</source>
         <translation>DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_ALPHA</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_ALPHA</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_GAMMA</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_GAMMA</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_GAMMA2</source>
+        <source>DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_GAMMA2</source>
         <translation>DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_4_(IH)_COEFFICIENT_BETA0</source>
+        <source>DEPTH_INDUCED_BREAKING_4__IH__COEFFICIENT_BETA0</source>
         <translation>DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0</translation>
     </message>
     <message>
-        <source>DEPTH_INDUCED_BREAKING_4_(IH)_COEFFICIENT_M2STAR</source>
+        <source>DEPTH_INDUCED_BREAKING_4__IH__COEFFICIENT_M2STAR</source>
         <translation>DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR</translation>
     </message>
     <message>
@@ -751,23 +371,23 @@
         <translation>INITIAL STILL WATER LEVEL</translation>
     </message>
     <message>
-        <source>TRIADS_1_(LTA)_COEFFICIENT_ALPHA</source>
+        <source>TRIADS_1__LTA__COEFFICIENT_ALPHA</source>
         <translation>TRIADS 1 (LTA) COEFFICIENT ALPHA</translation>
     </message>
     <message>
-        <source>TRIADS_1_(LTA)_COEFFICIENT_RFMLTA</source>
+        <source>TRIADS_1__LTA__COEFFICIENT_RFMLTA</source>
         <translation>TRIADS 1 (LTA) COEFFICIENT RFMLTA</translation>
     </message>
     <message>
-        <source>TRIADS_2_(SPB)_COEFFICIENT_K</source>
+        <source>TRIADS_2__SPB__COEFFICIENT_K</source>
         <translation>TRIADS 2 (SPB) COEFFICIENT K</translation>
     </message>
     <message>
-        <source>TRIADS_2_(SPB)_LOWER_DIRECTIONAL_BOUNDARY</source>
+        <source>TRIADS_2__SPB__LOWER_DIRECTIONAL_BOUNDARY</source>
         <translation>TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY</translation>
     </message>
     <message>
-        <source>TRIADS_2_(SPB)_UPPER_DIRECTIONAL_BOUNDARY</source>
+        <source>TRIADS_2__SPB__UPPER_DIRECTIONAL_BOUNDARY</source>
         <translation>TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY</translation>
     </message>
     <message>
@@ -895,146 +515,6 @@
         <translation>VARIABLES FOR 2D GRAPHIC PRINTOUTS</translation>
     </message>
     <message>
-        <source>"Total_variance__(m2)"</source>
-        <translation>"Total variance  (m2)"</translation>
-    </message>
-    <message>
-        <source>"Spectral_significant_wave_height__(m)"</source>
-        <translation>"Spectral significant wave height  (m)"</translation>
-    </message>
-    <message>
-        <source>"Mean_wave_direction__(deg)"</source>
-        <translation>"Mean wave direction  (deg)"</translation>
-    </message>
-    <message>
-        <source>"Mean_directional_spreading__(deg)"</source>
-        <translation>"Mean directional spreading  (deg)"</translation>
-    </message>
-    <message>
-        <source>"Sea_bottom_level__(m)"</source>
-        <translation>"Sea bottom level  (m)"</translation>
-    </message>
-    <message>
-        <source>"Water_depth__(m)"</source>
-        <translation>"Water depth  (m)"</translation>
-    </message>
-    <message>
-        <source>"Current_along_X__(m/s)"</source>
-        <translation>"Current along X  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Current_along_Y__(m/s)"</source>
-        <translation>"Current along Y  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Wind_along_X__(m/s)"</source>
-        <translation>"Wind along X  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Wind_along_Y__(m/s)"</source>
-        <translation>"Wind along Y  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Driving_force_along_X__(m/s2)"</source>
-        <translation>"Driving force along X  (m/s2)"</translation>
-    </message>
-    <message>
-        <source>"Driving_force_along_Y__(m/s2)"</source>
-        <translation>"Driving force along Y  (m/s2)"</translation>
-    </message>
-    <message>
-        <source>"Radiation_stress_along_xx__(m3/s2)"</source>
-        <translation>"Radiation stress along xx  (m3/s2)"</translation>
-    </message>
-    <message>
-        <source>"Radiation_stress_along_yy__(m3/s2)"</source>
-        <translation>"Radiation stress along yy  (m3/s2)"</translation>
-    </message>
-    <message>
-        <source>"Radiation_stress_along_xy__(m3/s2)"</source>
-        <translation>"Radiation stress along xy  (m3/s2)"</translation>
-    </message>
-    <message>
-        <source>"Bottom_celerity__(m/s)"</source>
-        <translation>"Bottom celerity  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Wave_power_(per_meter_along_wave_crest)__(kW/m)"</source>
-        <translation>"Wave power (per meter along wave crest)  (kW/m)"</translation>
-    </message>
-    <message>
-        <source>"Mean_frequency_FMOY__(Hz)"</source>
-        <translation>"Mean frequency FMOY  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Mean_frequency_FM01__(Hz)"</source>
-        <translation>"Mean frequency FM01  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Mean_frequency_FM02__(Hz)"</source>
-        <translation>"Mean frequency FM02  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Discrete_peak_frequency__(Hz)"</source>
-        <translation>"Discrete peak frequency  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Peak_frequency_by_Read_method_of_order_5__(Hz)"</source>
-        <translation>"Peak frequency by Read method of order 5  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Peak_frequency_by_Read_method_of_order_8__(Hz)"</source>
-        <translation>"Peak frequency by Read method of order 8  (Hz)"</translation>
-    </message>
-    <message>
-        <source>"Surface_friction_velocity_u*__(m/s)"</source>
-        <translation>"Surface friction velocity u*  (m/s)"</translation>
-    </message>
-    <message>
-        <source>"Surface_drag_coefficient_CD__(_)"</source>
-        <translation>"Surface drag coefficient CD  (-)"</translation>
-    </message>
-    <message>
-        <source>"Surface_roughness_length_Z0__(m)"</source>
-        <translation>"Surface roughness length Z0  (m)"</translation>
-    </message>
-    <message>
-        <source>"Surface_wave_stress__(kg/(m.s2))"</source>
-        <translation>"Surface wave stress  (kg/(m.s2))"</translation>
-    </message>
-    <message>
-        <source>"Mean_period_Tmoy__(s)"</source>
-        <translation>"Mean period Tmoy  (s)"</translation>
-    </message>
-    <message>
-        <source>"Mean_period_Tm01__(s)"</source>
-        <translation>"Mean period Tm01  (s)"</translation>
-    </message>
-    <message>
-        <source>"Mean_period_Tm02__(s)"</source>
-        <translation>"Mean period Tm02  (s)"</translation>
-    </message>
-    <message>
-        <source>"Discrete_peak_period__(s)"</source>
-        <translation>"Discrete peak period  (s)"</translation>
-    </message>
-    <message>
-        <source>"Peak_period_by_Read_method_of_order_5__(s)"</source>
-        <translation>"Peak period by Read method of order 5  (s)"</translation>
-    </message>
-    <message>
-        <source>"Peak_period_by_Read_method_of_order_8__(s)"</source>
-        <translation>"Peak period by Read method of order 8  (s)"</translation>
-    </message>
-    <message>
-        <source>"Private_table__(?)"</source>
-        <translation>"Private table  (?)"</translation>
-    </message>
-    <message>
-        <source>"Breaking_waves_coefficient__(_)"</source>
-        <translation>"Breaking waves coefficient  (-)"</translation>
-    </message>
-    <message>
         <source>DICTIONARY</source>
         <translation>DICTIONARY</translation>
     </message>
@@ -1063,11 +543,11 @@
         <translation>BOTTOM TOPOGRAPHY FILE</translation>
     </message>
     <message>
-        <source>2D_RESULTS_FILE</source>
+        <source>ED_RESULTS_FILE</source>
         <translation>2D RESULTS FILE</translation>
     </message>
     <message>
-        <source>2D_RESULTS_FILE_FORMAT</source>
+        <source>ED_RESULTS_FILE_FORMAT</source>
         <translation>2D RESULTS FILE FORMAT</translation>
     </message>
     <message>
@@ -1283,7 +763,7 @@
         <translation>OPTION FOR SECOND DERIVATIVES</translation>
     </message>
     <message>
-        <source>1D_SPECTRA_RESULTS_FILE</source>
+        <source>ZD_SPECTRA_RESULTS_FILE</source>
         <translation>1D SPECTRA RESULTS FILE</translation>
     </message>
     <message>
@@ -1301,18 +781,6 @@
     <message>
         <source>DISSIPATION_BY_STRONG_CURRENT</source>
         <translation>DISSIPATION BY STRONG CURRENT</translation>
-    </message>
-    <message>
-        <source>"No_wave_blocking"</source>
-        <translation>"No wave-blocking"</translation>
-    </message>
-    <message>
-        <source>"Spectrum_limitation_by_a_Phillips_shape"</source>
-        <translation>"Spectrum limitation by a Phillips shape"</translation>
-    </message>
-    <message>
-        <source>"Dissipation_in_accordance_with_Van_der_Westhuysen(2012)"</source>
-        <translation>"Dissipation in accordance with Van der Westhuysen(2012)"</translation>
     </message>
     <message>
         <source>BAJ_MODELING</source>

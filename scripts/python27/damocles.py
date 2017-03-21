@@ -82,7 +82,7 @@ def genDump(exePath,inputDict,outputDict):
    runDamocles(exePath, paramFile)
    remove(paramFile)
 
-def genCata(exePath,inputDict,inputDep,cataName,enumName,tsPath):
+def genCata(codeName,exePath,inputDict,inputDep,cataName,enumName,tsPath):
    """
       Run damocles to generate an eficas catalogue
       param exePath Path to the damocles executable
@@ -95,6 +95,7 @@ def genCata(exePath,inputDict,inputDep,cataName,enumName,tsPath):
    paramFile = path.join(path.dirname(inputDict),'damo.par')
    with open(paramFile,'w') as f:
       f.write('CATA'+'\n')
+      f.write(codeName+'\n')
       f.write(inputDict+'\n')
       f.write(inputDep+'\n')
       f.write(cataName+'\n')
@@ -249,7 +250,8 @@ def main():
                               'enum_'+fancyModule+"_auto.py")
          tsPath = path.join(modulePath,
                               'eficas')
-         genCata(exePath, inputDict, inputDep, cataName, enumName, tsPath+path.sep)
+         genCata(module.upper(), exePath, inputDict, inputDep, cataName, \
+                 enumName, tsPath+path.sep)
 
       if(options.latex):
          inputDict = path.join(modulePath, module+".dico")

@@ -115,11 +115,11 @@
         <translation>STEERING FILE</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE</source>
+        <source>RD_RESULT_FILE</source>
         <translation>3D RESULT FILE</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_FORMAT</source>
+        <source>RD_RESULT_FILE_FORMAT</source>
         <translation>3D RESULT FILE FORMAT</translation>
     </message>
     <message>
@@ -143,7 +143,7 @@
         <translation>RELEASE</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_BINARY</source>
+        <source>RD_RESULT_FILE_BINARY</source>
         <translation>3D RESULT FILE BINARY</translation>
     </message>
     <message>

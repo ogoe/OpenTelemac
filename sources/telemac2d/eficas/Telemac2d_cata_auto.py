@@ -37,13 +37,16 @@ class Tuple:
 
 
 
-JdC = JDC_CATA (code = 'TELEMAC',
+JdC = JDC_CATA (code = '
+TELEMAC
+',
                 execmodul = None,
                 )
 # =======================================================================
 # Catalog entry for the MAP function : c_pre_interfaceBody_mesh
 # =======================================================================
 
+VERSION_CATALOGUE="TRUNK"
 # -----------------------------------------------------------------------
 COMPUTATION_ENVIRONMENT = PROC(nom= "COMPUTATION_ENVIRONMENT",op = None,
 # -----------------------------------------------------------------------
@@ -405,6 +408,14 @@ augmenter si necessaire""",
                 ang = """ maximal number of tracers. Used for dimensioning arrays. Can be
 increased if needed""",
             ),
+#           -----------------------------------
+            VECTOR_LENGTH = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'I',
+                defaut = 1,
+                fr = """ LONGUEUR DU VECTEUR POUR LES MACHINES VECTORIELLES""",
+                ang = """ VECTOR LENGTH ON VECTOR MACHINES""",
+            ),
         ),
     ),
 #   -----------------------------------
@@ -520,7 +531,7 @@ VARIABLES FOR GRAPHIC PRINTOUTS in the RESULTS FILE.""",
 #           -----------------------------------
             VARIABLES_FOR_GRAPHIC_PRINTOUTS = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'TXM', min= 4, max= 4,
+                typ = 'TXM', min=0, max='**',
                 into = ["velocity along x axis (m/s)","velocity along y axis (m/s)","wave celerity (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","Froude number","scalar flowrate of fluid (m2/s)","tracer 1 etc.","turbulent kinetic energy in k-epsilon model (J/kg)","dissipation of turbulent energy (W/kg)","turbulent viscosity (m2/s)","flowrate along x axis (m2/s)","flowrate along y axis (m2/s)","scalar velocity (m/s)","wind along x axis (m/s)","wind along y axis (m/s)","air pressure (Pa)","friction coefficient","drift along x (m)","drift along y (m)","Courant number ","supplementary variable N","supplementary variable O","supplementary variable R","supplementary variable Z","maximum elevation","time of maximum elevation","maximum velocity","time of maximum velocity","friction velocity","gradient 1, etc. "],
                 defaut = ["velocity along x axis (m/s)","velocity along y axis (m/s)","water depth (m)","bottom elevation (m)"],
                 fr = """ Noms des variables que l''utilisateur veut ecrire dans le fichier des
@@ -744,6 +755,22 @@ WEAK FORMULATION OF NO-FLUX BOUNDARY CONDITION""",
                 fr = """ sections output file, written by the master""",
                 ang = """ sections output file, written by the master""",
             ),
+#           -----------------------------------
+            FLUXLINE = SIMP(statut ='f',
+#           -----------------------------------
+                typ = bool,
+                defaut = False,
+                fr = """FLUXLINE""",
+                ang = """Use Fluxline to compute flux over lines""",
+            ),
+#           -----------------------------------
+            FLUXLINE_INPUT_FILE = SIMP(statut ='f',
+#           -----------------------------------
+                typ = ('Fichier','All Files (*)'),
+                defaut = '',
+                fr = """Nom du fichier de fluxline, avec des donnees sur les sections""",
+                ang = """Name of the Fluxline file, with data on cross-sections""",
+            ),
         ),
 #       -----------------------------------
         LISTING = FACT(statut='o',
@@ -804,12 +831,13 @@ for use.""",
 #           -----------------------------------
             VARIABLES_TO_BE_PRINTED = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'TXM',
+                typ = 'TXM', min=0, max='**',
                 into = ["velocity along x axis (m/s)","velocity along y axis (m/s)","wave celerity (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","Froude number","scalar flowrate of fluid (m2/s)","tracer 1, etc.","turbulent kinetic energy in k-epsilon model (J/kg)","dissipation of turbulent energy (W/kg)","turbulent viscosity of k-epsilon model (m2/s)","flowrate along x axis (m2/s)","flowrate along y axis (m2/s)","scalar velocity (m/s)","wind along x axis (m/s)","wind along y axis (m/s)","air pressure (Pa)","friction coefficient","drift along x (m)","drift along y (m)","nombre de courants ","supplementary variable N","supplementary variable O","supplementary variable R","supplementary variable Z","gradient 1, etc."],
-                defaut = ,
-                fr = """ Nom des variables que l''utilisateur desire ecrire a l''ecran. Meme
+                defaut = '',
+                fr = """Nom des variables que l''utilisateur desire ecrire a l''ecran. Meme
 possibilites que pour les sorties graphiques.""",
-                ang = """""",
+                ang = """Name of the variables that the user wants printed on screen.
+Same values available as graphical outputs""",
             ),
 #           -----------------------------------
             MASS_BALANCE = SIMP(statut ='o',
@@ -1293,6 +1321,102 @@ EVAPORATION IN MM PER DAY""",
                     ang = """ to add or remove water at the free surface""",
                 ),
             ),
+#           -----------------------------------
+            RAINFALL_RUNOFF_MODEL = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'TXM',
+                into = ["No infiltration","CN runoff model"],
+                defaut = "No infiltration",
+                fr = """Option pour modele pluie-debit. Les options disponibles sont:
+  0 : Pas d infiltration (fonction de base)
+  1 : Modele CN (Curve Number du SCS)""",
+                ang = """Option for the rainfall-runoff model. Available options are:
+  0 : No infiltration
+  1 : CN runoff model (Curve Number method of the SCS)""",
+            ),
+#           -----------------------------------
+            ANTECEDENT_MOISTURE_CONDITIONS = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'I',
+                defaut = 2,
+                fr = """Donne les conditions d humidite precedant un episode de pluie pour
+le modele CN du SCS. Les options disponibles sont:
+  1 : conditions precedentes seches
+  2 : conditions precedentes normales
+  3 : conditions prcedentes mouillees
+ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)""",
+                ang = """Gives the antecedent moisture conditions before a rainfall
+ event for the SCS CN runoff model. Available options are:
+  1 : dry antecedent conditions
+  2 : normal antecedent conditions
+  3 : wet antecedent conditions
+this keyword is only usefull for runoff model 1 (SCS CN model)""",
+            ),
+#           -----------------------------------
+            DURATION_OF_RAIN_OR_EVAPORATION_IN_HOURS = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'R',
+                defaut = 1.E6,
+                fr = """Donne la duree de la pluie en heure, par defaut pluie infinie""",
+                ang = """Gives the duration of the rain in hour,
+default value is infinite""",
+            ),
+#           -----------------------------------
+            ASCII_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
+#           -----------------------------------
+                typ = ('Fichier','All Files (*)'),
+                defaut = '',
+                fr = """Fichier de donnees en ascii contenant les informations
+atmospheriques variables en temps""",
+                ang = """Ascii data file containing the atmospheric data varying in
+time""",
+            ),
+#           -----------------------------------
+            BINARY_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
+#           -----------------------------------
+                typ = ('Fichier','All Files (*)'),
+                defaut = '',
+                fr = """Fichier de donnees code en binaire contenant les informations
+atmospheriques variables en temps et en espace sur le maillage""",
+                ang = """Binary-coded data file containing the atmospheric data varying in
+time and space on the mesh""",
+            ),
+#           -----------------------------------
+            BINARY_ATMOSPHERIC_DATA_FILE_FORMAT = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'TXM',
+                into = ['SERAFIN?','SERAFIND','MED'],
+                defaut = 'SERAFIN?',
+                fr = """Format du fichier binaire de donn\E9es atmospheriques.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5""",
+                ang = """Binary atmospheric file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac;
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5""",
+            ),
+#           -----------------------------------
+            OPTION_FOR_INITIAL_ABSTRACTION_RATIO = SIMP(statut ='f',
+#           -----------------------------------
+                typ = 'I',
+                defaut = 1,
+                fr = """ Donne le ratio entre pertes initiales IA et la retention potenti
+maximale S pour le modele pluie-debit SCS CN. Les options disponibles so
+1 : IA/S = 0.2 (methode standard)   2 : IA/S = 0.05 (methode revisee,
+cf. Woodward, Hawkins et al. 2003. A cette option les coefficients CN
+fournis en entree sont alors automatiquement corriges, cf.  manuel
+utilisateur). Ce mot cle est uniquement utile pour le modele pluie-debit
+1 (CN)""",
+                ang = """ Gives the ratio for Initial Abstraction to Maximal Potential Retention
+S for the SCS CN runoff model. Available options are:   1 : IA/S = 0.2
+(standard method) 2 : IA/S = 0.05 (revised method, see Woodward, Hawkins
+et al. 2003. With this option the CN values given in input are
+automatically convers see user manual). This keyword is only useful for
+runoff model 1 (SCS CN model)""",
+            ),
         ),
 #       -----------------------------------
         WAVE = FACT(statut='f',
@@ -1316,6 +1440,17 @@ EVAPORATION IN MM PER DAY""",
                     fr = """ Numero d enregistrement dans le fichier des courants de houle""",
                     ang = """ Record number to read in the wave driven currents file""",
                 ),
+            ),
+#           -----------------------------------
+            WAVE_ENHANCED_FRICTION_FACTOR = SIMP(statut ='f',
+#           -----------------------------------
+                typ = bool,
+                defaut = False,
+                fr = """ Active la prise en compte des interactions non-lineaires entre la
+houle et les courant pour le calcul du courant de houle (cf OConnor and
+Yoo, 1988, Coast Eng.12.)""",
+                ang = """ Wave friction enhancement for the calculation of the wave generated
+longshore current (cf OConnor and Yoo, 1988, Coast Eng.12.)""",
             ),
         ),
 #       -----------------------------------
@@ -1377,28 +1512,28 @@ adjoint""",
 #           -----------------------------------
             ABSCISSAE_OF_SOURCES = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'R', min= 2, max= 2,
+                typ = 'R', min=0, max='**',
                 fr = """ Valeurs des abscisses des sources de debit et de traceur.""",
                 ang = """ abscissae of sources of flowrate and/or tracer""",
             ),
 #           -----------------------------------
             ORDINATES_OF_SOURCES = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'R', min= 2, max= 2,
+                typ = 'R', min=0, max='**',
                 fr = """ Valeurs des ordonnees des sources de debit et de traceur.""",
                 ang = """ ordinates of sources of flowrate and/or tracer""",
             ),
 #           -----------------------------------
             WATER_DISCHARGE_OF_SOURCES = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'R', min= 2, max= 2,
+                typ = 'R', min=0, max='**',
                 fr = """ Valeurs des debits des sources.""",
                 ang = """ values of water discharge of sources""",
             ),
 #           -----------------------------------
             VELOCITIES_OF_THE_SOURCES_ALONG_X = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min= 2, max= 2,
+                typ = 'R', min=0, max='**',
                 fr = """ Vitesses du courant a chacune des sources. Si elles ne sont pas
 donnees, on considere que la vitesse est celle du courant""",
                 ang = """ Velocities at the sources. If they are not given, the velocity of the
@@ -1407,7 +1542,7 @@ flow at this location is taken""",
 #           -----------------------------------
             VELOCITIES_OF_THE_SOURCES_ALONG_Y = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'R', min= 2, max= 2,
+                typ = 'R', min=0, max='**',
                 fr = """ Vitesses du courant a chacune des sources""",
                 ang = """ Velocities at the sources""",
             ),
@@ -2162,7 +2297,7 @@ Edge-based N-scheme Second integer must be 5""",
 #       -----------------------------------
         SUPG_OPTION = SIMP(statut ='o',
 #       -----------------------------------
-            typ = 'I', min= 4, max= 4,
+            typ = 'I', min=0, max='**',
             defaut = [2,2,2,2],
             fr = """ 0:pas de decentrement SUPG
 1:SUPG classique
@@ -2294,6 +2429,32 @@ correct""",
             ang = """ Used so far only with the SUPG, PSI and N schemes. With option 2,
 Dirichlet prescribed values are not obeyed, but the fluxes are correct""",
         ),
+#       -----------------------------------
+        NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 1,
+            fr = """ Pour les options avec predicteur-correcteur""",
+            ang = """ For predictor-corrector options""",
+        ),
+#       -----------------------------------
+        NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 1,
+            fr = """ Pour les options predicteur-correcteur avec schema localement
+implicite""",
+            ang = """ Only for implicit scheme with predictor-corrector""",
+        ),
+#       -----------------------------------
+        PSI_SCHEME_OPTION = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'TXM',
+            into = ["explicit","predictor-corrector"],
+            defaut = "explicit",
+            fr = """ 1: explicite 2: predicteur-correcteur""",
+            ang = """ 1: explicit 2: predictor-corrector""",
+        ),
     ),
 #   -----------------------------------
     DIFFUSION = FACT(statut='o',
@@ -2335,6 +2496,27 @@ velocity""",
         ),
     ),
 #   -----------------------------------
+    AUTOMATIC_DIFFERENTIATION = FACT(statut='o',
+#   -----------------------------------
+#       -----------------------------------
+        NUMBER_OF_DIFFERENTIATORS = SIMP(statut ='o',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 0,
+            fr = """ Definit le nombre de differentiateurs utilisateurs.""",
+            ang = """ Defines the number of user differentiators""",
+        ),
+#       -----------------------------------
+        NAMES_OF_DIFFERENTIATORS = SIMP(statut ='o',
+#       -----------------------------------
+            typ = 'TXM', min= 2, max= 2,
+            fr = """ Noms des differentiateurs utilisateurs en 32 caracteres, 16 pour le
+nom, 16 pour l''unite""",
+            ang = """ Name of user differentiators in 32 characters, 16 for the name, 16 for
+the unit.""",
+        ),
+    ),
+#   -----------------------------------
     ADVANCED = FACT(statut='o',
 #   -----------------------------------
 #       -----------------------------------
@@ -2371,6 +2553,49 @@ points is required""",
             defaut = 1.E-10,
             fr = """ Non active pour l''instant.""",
             ang = """ Not yet implemented""",
+        ),
+#       -----------------------------------
+        PROPAGATION_OPTION = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 3,
+            fr = """ Non active pour l''instant.""",
+            ang = """ Not yet implemented.""",
+        ),
+#       -----------------------------------
+        OPTION_OF_THE_HYDROSTATIC_RECONSTRUCTION = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 1,
+            fr = """ Donne l option de la reconstruction hydrostatique (option utile
+uniquement pour les volumes finis): 1: option d Audusse, 2: option de
+Noelle""",
+            ang = """ Gives the option for hydrostatic reconstruction (used only for finite
+volumes): 1: option of Audusse, 2: option of Noelle""",
+        ),
+#       -----------------------------------
+        CONVERGENCE_STUDY = SIMP(statut ='f',
+#       -----------------------------------
+            typ = bool,
+            defaut = False,
+            fr = """Active une etude de convergence par rapport a une
+solution analytique sur un maillage fin""",
+            ang = """Activates a convergence study compared
+to an analytical solution on a fine mesh""",
+        ),
+#       -----------------------------------
+        REFINEMENT_LEVELS = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 0,
+            fr = """Donne le nombre de raffinements que l''utilisateur
+veut utiliser pour l''etude de convergence
+(en activant CONVERGENCE). Chaque niveau multiplie par 4 le
+nombre d''elements.""",
+            ang = """Gives the number of refinement levels that the
+user wants to use in the convergence study (when activating
+CONVERGENCE). Each level multiplies the number of elements by
+4""",
         ),
     ),
 )
@@ -2726,14 +2951,14 @@ section dealing with the boundary conditions""",
 #       -----------------------------------
         NAMES_OF_TRACERS = SIMP(statut ='o',
 #       -----------------------------------
-            typ = 'TXM', max='**',
+            typ = 'TXM', min=0, max='**',
             fr = """ Noms des traceurs en 32 caracteres, 16 pour le nom 16 pour l''unite""",
             ang = """ Name of tracers in 32 characters, 16 for the name, 16 for the unit.""",
         ),
 #       -----------------------------------
         INITIAL_VALUES_OF_TRACERS = SIMP(statut ='o',
 #       -----------------------------------
-            typ = 'R', max='**',
+            typ = 'R', min=0, max='**',
             defaut = [0.,0.],
             fr = """ Fixe la valeur initiale du traceur.""",
             ang = """ Sets the initial value of the tracer.""",
@@ -2777,7 +3002,7 @@ UTILISER AVEC LE MOT-CLE "EFFETS DE DENSITE".""",
 #       -----------------------------------
         SOLVER_FOR_DIFFUSION_OF_TRACERS = SIMP(statut ='o',
 #       -----------------------------------
-            typ = 'TXM', min= 2, max= 2,
+            typ = 'TXM', min=0, max='**',
             into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","squared conjugate gradient","cgstab","gmres (see option for the solver for tracer diffusion)","direct"],
             defaut = ["conjugate gradient","conjugate gradient"],
             fr = """ 1 : gradient conjugue 2 : residu conjugue 3 : gradient conjugue sur
@@ -2841,13 +3066,13 @@ diffusion of tracer.""",
 #       -----------------------------------
         VALUES_OF_THE_TRACERS_AT_THE_SOURCES = SIMP(statut ='o',
 #       -----------------------------------
-            typ = 'R', min= 2, max= 2,
+            typ = 'R', min=0, max='**',
             fr = """ Valeurs des traceurs a chacune des sources""",
             ang = """ Values of the tracers at the sources""",
         ),
     ),
 #   -----------------------------------
-    METEOROLOGY_TRA = FACT(statut='o',
+    METEOROLOGY_TRA = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         VALUES_OF_TRACERS_IN_THE_RAIN = SIMP(statut ='o',
@@ -2877,7 +3102,7 @@ reasonable""",
 #           -----------------------------------
             SCHEME_FOR_ADVECTION_OF_TRACERS = SIMP(statut ='o',
 #           -----------------------------------
-                typ = 'TXM',
+                typ = 'TXM', min=0, max='**',
                 into = ["NO ADVECTION","CHARACTERISTICS","EXPLICIT + SUPG","EXPLICIT LEO POSTMA","EXPLICIT + MURD SCHEME N","EXPLICIT + MURD SCHEME PSI","LEO POSTMA FOR TIDAL FLATS","N-SCHEME FOR TIDAL FLATS","ERIA SCHEME FOR TIDAL FLATS"],
                 defaut = "CHARACTERISTICS",
                 fr = """ Choix du schema de convection pour les traceurs, remplace FORME DE LA
@@ -3232,6 +3457,16 @@ culverts data file (see written documentation)""",
                 ang = """ Description of tubes/bridges existing in the model""",
             ),
         ),
+#       -----------------------------------
+        OPTION_FOR_CULVERTS = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 1,
+            fr = """Option pour le traitement des buses. Il existe deux formulations
+dans Telemac""",
+            ang = """Option for the treatment of culverts. There are two options in
+Telemac""",
+        ),
     ),
 #   -----------------------------------
     BREACHES = FACT(statut='f',
@@ -3449,6 +3684,38 @@ prise""",
             ang = """ Coefficient to calibrate the tidal velocities of tidal wave at tidal
 open boundary conditions. Default value 999999. means that the square
 root of COEFFICIENT TO CALIBRATE TIDAL RANGE is taken""",
+        ),
+#       -----------------------------------
+        LOCAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 0,
+            fr = """ Numero local du point entre 1 et le nombre de points de frontiere
+maritime (du FICHIER DES CONSTANTES HARMONIQUES) ou les conditions aux
+limites de maree sont calculees avec les bases de donnees JMJ, NEA, FES,
+PREVIMER (sauf les bases de type TPXO). Les ondes de maree sont
+dephasees par rapport a ce point pour debuter le calcul par une pleine
+mer (en marees schematiques seulement).""",
+            ang = """ Local number between 1 and the number of tidal boundary points (of the
+HARMONIC CONSTANTS FILE) where the tidal boundary conditions are
+computed with JMJ, NEA, FES, PREVIMER databases (except TPXO-type
+databases). The tidal constituents have their phase shifted with respect
+to this point to start the simulation with a high water (for schematic
+tides only).""",
+        ),
+#       -----------------------------------
+        GLOBAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
+#       -----------------------------------
+            typ = 'I',
+            defaut = 0,
+            fr = """ Numero global du point par rapport auquel les ondes de maree sont
+dephasees pour debuter le calcul par une pleine mer (en marees
+schematiques seulement). Ne concerne que les bases de constantes
+harmoniques de type TPXO.""",
+            ang = """ Global number of the point with respect to which the tidal
+constituents have their phase shifted to start the calculation with a
+high water (for schematic tides only). Only harmonic constants databases
+like TPXO are concerned.""",
         ),
     ),
 )
@@ -3683,99 +3950,6 @@ Telemac-tracer not those of DELWAQ)""",
 MISC = PROC(nom= "MISC",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """ Pour les options avec predicteur-correcteur""",
-        ang = """ For predictor-corrector options""",
-    ),
-#   -----------------------------------
-    NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """ Pour les options predicteur-correcteur avec schema localement
-implicite""",
-        ang = """ Only for implicit scheme with predictor-corrector""",
-    ),
-#   -----------------------------------
-    WAVE_ENHANCED_FRICTION_FACTOR = SIMP(statut ='f',
-#   -----------------------------------
-        typ = bool,
-        defaut = False,
-        fr = """ Active la prise en compte des interactions non-lineaires entre la
-houle et les courant pour le calcul du courant de houle (cf OConnor and
-Yoo, 1988, Coast Eng.12.)""",
-        ang = """ Wave friction enhancement for the calculation of the wave generated
-longshore current (cf OConnor and Yoo, 1988, Coast Eng.12.)""",
-    ),
-#   -----------------------------------
-    LOCAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 0,
-        fr = """ Numero local du point entre 1 et le nombre de points de frontiere
-maritime (du FICHIER DES CONSTANTES HARMONIQUES) ou les conditions aux
-limites de maree sont calculees avec les bases de donnees JMJ, NEA, FES,
-PREVIMER (sauf les bases de type TPXO). Les ondes de maree sont
-dephasees par rapport a ce point pour debuter le calcul par une pleine
-mer (en marees schematiques seulement).""",
-        ang = """ Local number between 1 and the number of tidal boundary points (of the
-HARMONIC CONSTANTS FILE) where the tidal boundary conditions are
-computed with JMJ, NEA, FES, PREVIMER databases (except TPXO-type
-databases). The tidal constituents have their phase shifted with respect
-to this point to start the simulation with a high water (for schematic
-tides only).""",
-    ),
-#   -----------------------------------
-    GLOBAL_NUMBER_OF_THE_POINT_TO_CALIBRATE_HIGH_WATER = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 0,
-        fr = """ Numero global du point par rapport auquel les ondes de maree sont
-dephasees pour debuter le calcul par une pleine mer (en marees
-schematiques seulement). Ne concerne que les bases de constantes
-harmoniques de type TPXO.""",
-        ang = """ Global number of the point with respect to which the tidal
-constituents have their phase shifted to start the calculation with a
-high water (for schematic tides only). Only harmonic constants databases
-like TPXO are concerned.""",
-    ),
-#   -----------------------------------
-    PSI_SCHEME_OPTION = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'TXM',
-        into = ["explicit","predictor-corrector"],
-        defaut = "explicit",
-        fr = """ 1: explicite 2: predicteur-correcteur""",
-        ang = """ 1: explicit 2: predictor-corrector""",
-    ),
-#   -----------------------------------
-    PROPAGATION_OPTION = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 3,
-        fr = """ Non active pour l''instant.""",
-        ang = """ Not yet implemented.""",
-    ),
-#   -----------------------------------
-    FREE_INTEGER_20 = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 3,
-        fr = """""",
-        ang = """""",
-    ),
-#   -----------------------------------
-    VECTOR_LENGTH = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """ LONGUEUR DU VECTEUR POUR LES MACHINES VECTORIELLES""",
-        ang = """ VECTOR LENGTH ON VECTOR MACHINES""",
-    ),
-#   -----------------------------------
     LANGUAGE = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
@@ -3783,180 +3957,6 @@ like TPXO are concerned.""",
         defaut = "ANGLAIS",
         fr = """ 1 : FRANCAIS 2 : ANGLAIS""",
         ang = """ 1: FRENCH 2: ENGLISH""",
-    ),
-#   -----------------------------------
-    OPTION_FOR_CULVERTS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """Option pour le traitement des buses. Il existe deux formulations
-dans Telemac""",
-        ang = """Option for the treatment of culverts. There are two options in
-Telemac""",
-    ),
-#   -----------------------------------
-    RAINFALL_RUNOFF_MODEL = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'TXM',
-        into = ["No infiltration","CN runoff model"],
-        defaut = "No infiltration",
-        fr = """Option pour modele pluie-debit. Les options disponibles sont:
-  0 : Pas d infiltration (fonction de base)
-  1 : Modele CN (Curve Number du SCS)""",
-        ang = """Option for the rainfall-runoff model. Available options are:
-  0 : No infiltration
-  1 : CN runoff model (Curve Number method of the SCS)""",
-    ),
-#   -----------------------------------
-    ANTECEDENT_MOISTURE_CONDITIONS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 2,
-        fr = """Donne les conditions d humidite precedant un episode de pluie pour
-le modele CN du SCS. Les options disponibles sont:
-  1 : conditions precedentes seches
-  2 : conditions precedentes normales
-  3 : conditions prcedentes mouillees
-ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)""",
-        ang = """Gives the antecedent moisture conditions before a rainfall
- event for the SCS CN runoff model. Available options are:
-  1 : dry antecedent conditions
-  2 : normal antecedent conditions
-  3 : wet antecedent conditions
-this keyword is only usefull for runoff model 1 (SCS CN model)""",
-    ),
-#   -----------------------------------
-    DURATION_OF_RAIN_OR_EVAPORATION_IN_HOURS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'R',
-        defaut = 1.E6,
-        fr = """Donne la duree de la pluie en heure, par defaut pluie infinie""",
-        ang = """Gives the duration of the rain in hour,
-default value is infinite""",
-    ),
-#   -----------------------------------
-    FLUXLINE = SIMP(statut ='f',
-#   -----------------------------------
-        typ = bool,
-        defaut = False,
-        fr = """FLUXLINE""",
-        ang = """Use Fluxline to compute flux over lines""",
-    ),
-#   -----------------------------------
-    ASCII_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
-#   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
-        defaut = '',
-        fr = """Fichier de donnees en ascii contenant les informations
-atmospheriques variables en temps""",
-        ang = """Ascii data file containing the atmospheric data varying in
-time""",
-    ),
-#   -----------------------------------
-    BINARY_ATMOSPHERIC_DATA_FILE = SIMP(statut ='f',
-#   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
-        defaut = '',
-        fr = """Fichier de donnees code en binaire contenant les informations
-atmospheriques variables en temps et en espace sur le maillage""",
-        ang = """Binary-coded data file containing the atmospheric data varying in
-time and space on the mesh""",
-    ),
-#   -----------------------------------
-    BINARY_ATMOSPHERIC_DATA_FILE_FORMAT = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'TXM',
-        into = ['SERAFIN?','SERAFIND','MED'],
-        defaut = 'SERAFIN?',
-        fr = """Format du fichier binaire de donn\E9es atmospheriques.
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5""",
-        ang = """Binary atmospheric file format.
-Possible values are:
-- SERAFIN : classical single precision format in Telemac;
-- SERAFIND: classical double precision format in Telemac;
-- MED     : MED format based on HDF5""",
-    ),
-#   -----------------------------------
-    FLUXLINE_INPUT_FILE = SIMP(statut ='f',
-#   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
-        defaut = '',
-        fr = """Nom du fichier de fluxline, avec des donnees sur les sections""",
-        ang = """Name of the Fluxline file, with data on cross-sections""",
-    ),
-#   -----------------------------------
-    OPTION_OF_THE_HYDROSTATIC_RECONSTRUCTION = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """ Donne l option de la reconstruction hydrostatique (option utile
-uniquement pour les volumes finis): 1: option d Audusse, 2: option de
-Noelle""",
-        ang = """ Gives the option for hydrostatic reconstruction (used only for finite
-volumes): 1: option of Audusse, 2: option of Noelle""",
-    ),
-#   -----------------------------------
-    NUMBER_OF_DIFFERENTIATORS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 0,
-        fr = """ Definit le nombre de differentiateurs utilisateurs.""",
-        ang = """ Defines the number of user differentiators""",
-    ),
-#   -----------------------------------
-    OPTION_FOR_INITIAL_ABSTRACTION_RATIO = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 1,
-        fr = """ Donne le ratio entre pertes initiales IA et la retention potenti
-maximale S pour le modele pluie-debit SCS CN. Les options disponibles so
-1 : IA/S = 0.2 (methode standard)   2 : IA/S = 0.05 (methode revisee,
-cf. Woodward, Hawkins et al. 2003. A cette option les coefficients CN
-fournis en entree sont alors automatiquement corriges, cf.  manuel
-utilisateur). Ce mot cle est uniquement utile pour le modele pluie-debit
-1 (CN)""",
-        ang = """ Gives the ratio for Initial Abstraction to Maximal Potential Retention
-S for the SCS CN runoff model. Available options are:   1 : IA/S = 0.2
-(standard method) 2 : IA/S = 0.05 (revised method, see Woodward, Hawkins
-et al. 2003. With this option the CN values given in input are
-automatically convers see user manual). This keyword is only useful for
-runoff model 1 (SCS CN model)""",
-    ),
-#   -----------------------------------
-    NAMES_OF_DIFFERENTIATORS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'TXM', min= 2, max= 2,
-        fr = """ Noms des differentiateurs utilisateurs en 32 caracteres, 16 pour le
-nom, 16 pour l''unite""",
-        ang = """ Name of user differentiators in 32 characters, 16 for the name, 16 for
-the unit.""",
-    ),
-#   -----------------------------------
-    CONVERGENCE_STUDY = SIMP(statut ='f',
-#   -----------------------------------
-        typ = bool,
-        defaut = False,
-        fr = """Active une etude de convergence par rapport a une
-solution analytique sur un maillage fin""",
-        ang = """Activates a convergence study compared
-to an analytical solution on a fine mesh""",
-    ),
-#   -----------------------------------
-    REFINEMENT_LEVELS = SIMP(statut ='f',
-#   -----------------------------------
-        typ = 'I',
-        defaut = 0,
-        fr = """Donne le nombre de raffinements que l''utilisateur
-veut utiliser pour l''etude de convergence
-(en activant CONVERGENCE). Chaque niveau multiplie par 4 le
-nombre d''elements.""",
-        ang = """Gives the number of refinement levels that the
-user wants to use in the convergence study (when activating
-CONVERGENCE). Each level multiplies the number of elements by
-4""",
     ),
 )
 # -----------------------------------------------------------------------
@@ -3994,7 +3994,7 @@ PTSCOTCH etc...""",
     RELEASE = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
-        defaut = 'V7P1',
+        defaut = 'TRUNK',
         fr = """ Numero de version des bibliotheques utilisees par TELEMAC. SUR UNE
 STATION DE TRAVAIL 5 versions sont donnees correspondant a :
 TELEMAC,DAMO,UTILE,BIEF,HP""",
@@ -4035,7 +4035,21 @@ TELEMAC,DAMO,UTILE,BIEF,HP""",
         ang = """ Default parallel executable for T2D""",
     ),
 )
-Ordre_des_commandes = (
+Ordre_Des_Commandes = (
+'COMPUTATION_ENVIRONMENT',
+'HYDRO',
+'GENERAL_PARAMETERS',
+'NUMERICAL_PARAMETERS',
+'TURBULENCE',
+'TIDAL_FLATS_INFO',
+'TRACERS',
+'PARTICLE_TRANSPORT',
+'HYDRAULIC_STRUCTURES',
+'TIDES',
+'COUPLING',
+'MISC',
+'INTERNAL')
+Classement_Commandes_Ds_Arbre = (
 'COMPUTATION_ENVIRONMENT',
 'HYDRO',
 'GENERAL_PARAMETERS',

@@ -44,13 +44,14 @@ JdC = JDC_CATA (code = 'TELEMAC',
 # Catalog entry for the MAP function : c_pre_interfaceBody_mesh
 # =======================================================================
 
+VERSION_CATALOGUE="TRUNK"
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT,_GRAPHICS_AND_LISTING",op = None,
+INPUT_OUTPUT__GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT__GRAPHICS_AND_LISTING",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     NUMBER_OF_HORIZONTAL_CROSS_SECTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Permet de definir simultanement plusieurs coupes horizontales.
 La valeur maximale autorisee est 9.""",
@@ -59,7 +60,7 @@ La valeur maximale autorisee est 9.""",
 #   -----------------------------------
     NUMBER_OF_VERTICAL_CROSS_SECTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Permet de definir simultanement plusieurs coupes verticales.
 La valeur maximale autorisee est 9.""",
@@ -230,7 +231,7 @@ La valeur maximale autorisee est 9.""",
 #   -----------------------------------
     NUMBER_OF_FIRST_RECORD_FOR_CROSS_SECTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Seuls les enregistrements au-dela de ce numero seront traites
 pour les coupes.""",
@@ -239,7 +240,7 @@ pour les coupes.""",
 #   -----------------------------------
     PRINTOUT_PERIOD_FOR_CROSS_SECTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Periode en nombre d''enregistrements entre 2 coupes.""",
         ang = """Period in number of records between two cross sections""",
@@ -269,7 +270,7 @@ Plane 0 correspond to the plane perfecly horizontal to the heigh 0.""",
 #   -----------------------------------
     NUMBER_OF_NODES_FOR_VERTICAL_CROSS_SECTION_DISCRETIZATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [120],
         fr = """Il s''agit du nombre de points suivant l''horizontale.""",
         ang = """It is the number of points along the horizontal""",
@@ -300,10 +301,10 @@ cross section""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_FILES = PROC(nom= "INPUT_OUTPUT,_FILES",op = None,
+INPUT_OUTPUT__FILES = PROC(nom= "INPUT_OUTPUT__FILES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    3D_RESULT_FILE_FORMAT = SIMP(statut ='f',
+    RD_RESULT_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
         into = ['SERAFIN','SERAFIND','MED'],
@@ -384,12 +385,12 @@ Possible values are:
 \end{itemize}""",
     ),
 #   -----------------------------------
-    NAMES = FACT(statut='o',
+    NAMES = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         FORTRAN_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = 'DEFAUT',
             fr = """Nom du fichier FORTRAN a soumettre.\\
 Il ne sert a priori qu''a dimensionner les tableaux utilises par
@@ -402,7 +403,7 @@ but can also contain subroutines modified by the user.""",
 #       -----------------------------------
         STEERING_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier contenant les references des fichiers et
 les options du calcul a realiser.""",
@@ -410,9 +411,9 @@ les options du calcul a realiser.""",
 Written by the user.""",
         ),
 #       -----------------------------------
-        3D_RESULT_FILE = SIMP(statut ='f',
+        RD_RESULT_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier des resultats 3D obtenu par un calcul avec
 \telemac{3D}.""",
@@ -421,7 +422,7 @@ Written by the user.""",
 #       -----------------------------------
         HORIZONTAL_CROSS_SECTION_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom generique des fichiers des coupes horizontales.
 Le fichier contenant la coupe i aura pour nom ce nom generique suivi
@@ -433,7 +434,7 @@ followed by the extension''.i''.""",
 #       -----------------------------------
         VERTICAL_CROSS_SECTION_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+            typ = ('Fichier','All Files (*)','Sauvegarde'),
             defaut = '',
             fr = """Nom generique des fichiers des coupes verticales.
 Le fichier contenant la coupe i au j ieme pas de temps enregistre aura
@@ -445,19 +446,19 @@ generic followed by the extension''.i.j''.""",
 #       -----------------------------------
         GEOMETRY_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier de geometrie""",
             ang = """Name of the geometry file""",
         ),
     ),
 #   -----------------------------------
-    TYPE_OF_BINARY = FACT(statut='o',
+    TYPE_OF_BINARY = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
-        3D_RESULT_FILE_BINARY = SIMP(statut ='f',
+        RD_RESULT_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','IBM','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture du fichier des
@@ -482,7 +483,7 @@ that case, normal READ and WRITE commands are used
 #       -----------------------------------
         CROSS_SECTION_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture des fichiers des
@@ -502,7 +503,7 @@ that case, normal READ and WRITE commands are used.
 #       -----------------------------------
         GEOMETRY_FILE_BINARY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ['STD','I3E'],
             defaut = 'STD',
             fr = """Type du binaire utilise pour l''ecriture des fichiers des
@@ -522,16 +523,16 @@ The possible values are as follows:
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
+INPUT_OUTPUT__INFORMATION = PROC(nom= "INPUT_OUTPUT__INFORMATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    COMPUTATIONAL_INFORMATION = FACT(statut='o',
+    COMPUTATIONAL_INFORMATION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         RELEASE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
-            defaut = 'V7P1',
+            typ = 'TXM',
+            defaut = 'TRUNK',
             fr = """Tout est dans le titre""",
             ang = """It is all said in the title""",
         ),
@@ -561,7 +562,7 @@ INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
         ),
     ),
 #   -----------------------------------
-    COMPUTATION_ENVIRONMENT = FACT(statut='o',
+    COMPUTATION_ENVIRONMENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DICTIONARY = SIMP(statut ='f',
@@ -585,9 +586,15 @@ FILES = PROC(nom= "FILES",op = None,
         ang = """File names of the used files""",
     ),
 )
-Ordre_des_commandes = (
-'INPUT_OUTPUT,_GRAPHICS_AND_LISTING',
+Ordre_Des_Commandes = (
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
 'GRAPHIC',
-'INPUT_OUTPUT,_FILES',
-'INPUT_OUTPUT,_INFORMATION',
+'INPUT_OUTPUT__FILES',
+'INPUT_OUTPUT__INFORMATION',
+'FILES')
+Classement_Commandes_Ds_Arbre = (
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
+'GRAPHIC',
+'INPUT_OUTPUT__FILES',
+'INPUT_OUTPUT__INFORMATION',
 'FILES')

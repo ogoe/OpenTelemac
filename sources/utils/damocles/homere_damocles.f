@@ -14,6 +14,7 @@
       CHARACTER(LEN=144) :: ENUM_FILE
       CHARACTER(LEN=144) :: TS_PATH
       CHARACTER(LEN=5) :: TODO
+      CHARACTER(LEN=10) :: CODE_NAME
       INTEGER LNG
       LOGICAL :: FILE_EXIST
 !
@@ -45,6 +46,8 @@
         ! Writing Latex file
         CALL WRITE2LATEX(LATEX_FILE,LNG)
       ELSE IF(TODO(1:4).EQ.'CATA') THEN
+        WRITE(6,*) 'ENTER CODE NAME: '
+        READ(5,'(A)') CODE_NAME
         WRITE(6,*) 'ENTER DICTIONARY FILE: '
         READ(5,'(A)') DICTIONARY
         WRITE(6,*) 'DICTIONARY: ',TRIM(DICTIONARY)
@@ -72,7 +75,7 @@
         ! Reading dependencies
         CALL READ_DEPENDENCIES(DEPENDENCIES)
         ! Writing Latex file
-        CALL WRITE2CATA(LATEX_FILE)
+        CALL WRITE2CATA(LATEX_FILE, CODE_NAME)
         ! WRITING Enumerate for CHOIX and keywords
         CALL WRITE_ENUM(ENUM_FILE)
         ! WRITING TS

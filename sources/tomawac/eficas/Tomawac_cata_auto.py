@@ -44,13 +44,14 @@ JdC = JDC_CATA (code = 'TELEMAC',
 # Catalog entry for the MAP function : c_pre_interfaceBody_mesh
 # =======================================================================
 
+VERSION_CATALOGUE="TRUNK"
 # -----------------------------------------------------------------------
 RESULTS = PROC(nom= "RESULTS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     PERIOD_FOR_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Determine la periode d''impression,
 en nombre de pas de temps
@@ -80,7 +81,7 @@ NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
 #   -----------------------------------
     PERIOD_FOR_LISTING_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Determine la periodicite,
 en nombre de pas de temps
@@ -92,7 +93,7 @@ of the software messages in the listing file.""",
 #   -----------------------------------
     NUMBER_OF_FIRST_ITERATION_FOR_GRAPHICS_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Determine le nombre d''iterations sur le pas de temps
 ou sur la frequence moyenne a partir duquel debute
@@ -159,9 +160,9 @@ PUNCTUAL RESULT FILE
 #   -----------------------------------
     VARIABLES_FOR_2D_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM', min= 2, max= 2,
         into = ["Total variance  (m2)","Spectral significant wave height  (m)","Mean wave direction  (deg)","Mean directional spreading  (deg)","Sea bottom level  (m)","Water depth  (m)","Current along X  (m/s)","Current along Y  (m/s)","Wind along X  (m/s)","Wind along Y  (m/s)","Driving force along X  (m/s2)","Driving force along Y  (m/s2)","Radiation stress along xx  (m3/s2)","Radiation stress along yy  (m3/s2)","Radiation stress along xy  (m3/s2)","Bottom celerity  (m/s)","Wave power (per meter along wave crest)  (kW/m)","Mean frequency FMOY  (Hz)","Mean frequency FM01  (Hz)","Mean frequency FM02  (Hz)","Discrete peak frequency  (Hz)","Peak frequency by Read method of order 5  (Hz)","Peak frequency by Read method of order 8  (Hz)","Surface friction velocity u*  (m/s)","Surface drag coefficient CD  (-)","Surface roughness length Z0  (m)","Surface wave stress  (kg/(m.s2))","Mean period Tmoy  (s)","Mean period Tm01  (s)","Mean period Tm02  (s)","Discrete peak period  (s)","Peak period by Read method of order 5  (s)","Peak period by Read method of order 8  (s)","Private table  (?)","Breaking waves coefficient  (-)"],
-        defaut = [],
+        defaut = ["Spectral significant wave height  (m)","Mean wave direction  (deg)"],
         fr = """Noms des variables que l''utilisateur veut ecrire dans
 le FICHIER DES RESULTATS 2D. Les variables disponibles sont :
 M0   : variance totale
@@ -249,9 +250,9 @@ PERIOD FOR GRAPHIC PRINTOUTS
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    2D_RESULTS_FILE = SIMP(statut ='f',
+    ED_RESULTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+        typ = ('Fichier','All Files (*)','Sauvegarde'),
         defaut = 'resu2d',
         fr = """Nom du fichier dans lequel seront ecrits les resultats du calcul
 bidimensionnels.
@@ -273,7 +274,7 @@ NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
 #   -----------------------------------
     PUNCTUAL_RESULTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+        typ = ('Fichier','All Files (*)','Sauvegarde'),
         defaut = 'spect',
         fr = """Nom du fichier dans lequel seront ecrits les spectres
 ponctuels.
@@ -297,7 +298,7 @@ NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
 #   -----------------------------------
     GLOBAL_RESULT_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+        typ = ('Fichier','All Files (*)','Sauvegarde'),
         defaut = '',
         fr = """Nom du fichier dans lequel sera ecrit le tableau F (spectre
 de variance) en fin de calcul dans le but de faire une suite de calcul.
@@ -312,9 +313,9 @@ BINARY OF THE GLOBAL RESULT FILE
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    1D_SPECTRA_RESULTS_FILE = SIMP(statut ='f',
+    ZD_SPECTRA_RESULTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+        typ = ('Fichier','All Files (*)','Sauvegarde'),
         defaut = '',
         fr = """Nom du fichier dans lequel seront ecrits les spectres
 frequentiels ponctuels (integres selon les directions).
@@ -342,7 +343,7 @@ TIME = PROC(nom= "TIME",op = None,
 #   -----------------------------------
     NUMBER_OF_TIME_STEP = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Definit le nombre de pas de temps effectues lors de
 l''execution du code.
@@ -357,7 +358,7 @@ TIME STEP
 #   -----------------------------------
     NUMBER_OF_ITERATIONS_FOR_THE_SOURCE_TERMS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Nombre de sous-iterations pour le calcul des
 contributions des termes sources. Le pas de temps considere
@@ -377,7 +378,7 @@ TIME STEP
 #   -----------------------------------
     TIME_STEP = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Definit le pas de temps en secondes.
 **Mots-cles associes :**
@@ -391,7 +392,7 @@ NUMBER OF TIME STEPS
 #   -----------------------------------
     DATE_OF_COMPUTATION_BEGINNING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0],
         fr = """Donne la date du debut du calcul au format aaaammjjhhmm
 ce qui permet de se reperer par rapport au fichier des vents,
@@ -421,7 +422,7 @@ SPECTRUM = PROC(nom= "SPECTRUM",op = None,
 #   -----------------------------------
     NUMBER_OF_DIRECTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [12],
         fr = """Definit le nombre de directions de propagation de la houle.
 Les directions de propagation sont regulierement reparties entre 0
@@ -432,7 +433,7 @@ propagation directions are evenly distributed from 0 to 360 degrees.""",
 #   -----------------------------------
     NUMBER_OF_FREQUENCIES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [15],
         fr = """Definit le nombre de frequences de propagation de la houle.
 Les frequences sont reparties geometriquement en fonction de la
@@ -454,7 +455,7 @@ SPECTRUM TAIL FACTOR
 #   -----------------------------------
     MINIMAL_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1],
         fr = """Definit la frequence minimale en Hz.
 On obtient les autres frequences grace a la RAISON FREQUENTIELLE r et le
@@ -476,7 +477,7 @@ SPECTRUM TAIL FACTOR
 #   -----------------------------------
     FREQUENTIAL_RATIO = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.1],
         fr = """Definit le rapport entre 2 frequences de discretisation
 successives. On obtient les autres frequences grace a la FREQUENCE
@@ -497,7 +498,7 @@ SPECTRUM TAIL FACTOR
 #   -----------------------------------
     SPECTRUM_TAIL_FACTOR = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [5.],
         fr = """Utilise pour prendre en compte dans les calculs la
 contribution des hautes frequences non discretisees.
@@ -516,8 +517,8 @@ FREQUENTIAL RATIO
 #   -----------------------------------
     SPECTRUM_ENERGY_THRESHOLD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
-        defaut = [1.D-30],
+        typ = 'R',
+        defaut = [1.E-30],
         fr = """ En condition initiale, une energie inferieure a ce seuil
 pour un couple frequence-direction donnee est prise nulle. Utile
 surtout pour les comparaisons avec WAM cycle 4.""",
@@ -528,7 +529,7 @@ Useful for comparisons with WAM cycle 4.""",
 #   -----------------------------------
     OPTION_FOR_DIAGNOSTIC_TAIL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Permet de choisir la methode de correction de la
 partie diagnostique du spectre.
@@ -556,7 +557,7 @@ FREQUENTIAL RATIO
 #   -----------------------------------
     BAJ_MODELING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Type de calcul de la frequence centrale
 Si sa valeur est 0, on prend la formulation classique
@@ -595,7 +596,7 @@ Also refer to the CORFON subroutine.""",
 #   -----------------------------------
     TIME_INCREMENT_NUMBER_IN_TELEMAC_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Indique le numero du pas de temps du fichier de resultats
 TELEMAC (fichier des courants) correspondant a l instant desire
@@ -615,7 +616,7 @@ RECOVERY OF TELEMAC DATA ITEM
 #   -----------------------------------
     NUMBER_OF_PRIVATE_ARRAYS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Nombre de tableaux utilises en variables privees par
 l''utilisateur""",
@@ -635,7 +636,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     PARALLEL_PROCESSORS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
 0 : 1 machine, compilation sans bibliotheque de parallelisme
@@ -651,7 +652,7 @@ etc....""",
 #   -----------------------------------
     RECOVERY_OF_TELEMAC_DATA_ITEM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on recupere des donnees TELEMAC dans LECDON.f
 Si oui il faut veiller a utiliser un FICHIER DES COURANTS au bon format
@@ -681,7 +682,7 @@ WIND = PROC(nom= "WIND",op = None,
 #   -----------------------------------
     WIND_GENERATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No wind generation","Wind generation in accordance with WAM cycle 4","Wind generation in accordance with WAM cycle 3","Wind generation in accordance with Yan expression (1987)"],
         defaut = ["No wind generation"],
         fr = """Choix du type de modelisation du terme source d apport
@@ -735,7 +736,7 @@ WIND GENERATION COEFFICIENT TM\\
 #   -----------------------------------
     WINDS_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Selafin, TELEMAC type","User format (venuti.f)"],
         defaut = ["Selafin, TELEMAC type"],
         fr = """Choix du type de format du fichier des vents :
@@ -759,7 +760,7 @@ WINDS FILE BINARY
 #   -----------------------------------
     LINEAR_WAVE_GROWTH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["the linear wave growth is ignored","linear wave growth as in Cavaleri and Malanotte-Rizzoli (1981)"],
         defaut = ["the linear wave growth is ignored"],
         fr = """Possibilite d ajouter au terme source d apport
@@ -785,7 +786,7 @@ WINDS FILE
 #   -----------------------------------
     AIR_DENSITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.225],
         fr = """Le rapport Roair/Roeau est utilise dans le terme source
 de generation par le vent.
@@ -803,7 +804,7 @@ WATER DENSITY
 #   -----------------------------------
     WATER_DENSITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1000.],
         fr = """ Le rapport Roair/Roeau est utilise dans le terme source
 de generation par le vent.
@@ -821,7 +822,7 @@ AIR DENSITY
 #   -----------------------------------
     WIND_GENERATION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.2],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -836,7 +837,7 @@ WIND GENERATION
 #   -----------------------------------
     VON_KARMAN_CONSTANT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.41],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -851,7 +852,7 @@ WIND GENERATION
 #   -----------------------------------
     CHARNOCK_CONSTANT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.01],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -866,7 +867,7 @@ WIND GENERATION
 #   -----------------------------------
     SHIFT_GROWING_CURVE_DUE_TO_WIND = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.011],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -881,7 +882,7 @@ WIND GENERATION
 #   -----------------------------------
     WIND_MEASUREMENTS_LEVEL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [10.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -896,7 +897,7 @@ WIND GENERATION
 #   -----------------------------------
     WIND_DRAG_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.2875E-3],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -911,7 +912,7 @@ WIND GENERATION
 #   -----------------------------------
     YAN_GENERATION_COEFFICIENT_D = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.04],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
@@ -932,7 +933,7 @@ YAN GENERATION COEFFICIENT H
 #   -----------------------------------
     YAN_GENERATION_COEFFICIENT_E = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.00552],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
@@ -953,7 +954,7 @@ YAN GENERATION COEFFICIENT H
 #   -----------------------------------
     YAN_GENERATION_COEFFICIENT_F = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.000052],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
@@ -974,7 +975,7 @@ YAN GENERATION COEFFICIENT H
 #   -----------------------------------
     YAN_GENERATION_COEFFICIENT_H = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [-0.000302],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
@@ -995,7 +996,7 @@ YAN GENERATION COEFFICIENT F
 #   -----------------------------------
     CONSIDERATION_OF_A_WIND = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on prend en compte un vent, dans un fichier ou dans
 cdicow.f.
@@ -1011,7 +1012,7 @@ WINDS FILE
 #   -----------------------------------
     STATIONARY_WIND = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Indique si le vent evolue dans le temps et doit etre mis a jour
 **Mots-cles associes :**
@@ -1030,7 +1031,7 @@ WHITE_CAPPING = PROC(nom= "WHITE_CAPPING",op = None,
 #   -----------------------------------
     WHITE_CAPPING_DISSIPATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No white capping dissipation","Dissipation in accordance with WAM cycle 4","Dissipation in accordance with Van des Westhuysen(2007)"],
         defaut = ["No white capping dissipation"],
         fr = """Choix du type de modelisation du terme source de dissipation
@@ -1064,7 +1065,7 @@ WESTHUYSEN WEIGHTING COEFFICIENT
 #   -----------------------------------
     WHITE_CAPPING_DISSIPATION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [4.5],
         fr = """Coefficient de dissipation par moutonnement.
 **Mots-cles associes :**
@@ -1080,7 +1081,7 @@ WHITE CAPPING WEIGHTING COEFFICIENT
 #   -----------------------------------
     WHITE_CAPPING_WEIGHTING_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.5],
         fr = """ Coefficient de ponderation pour le moutonnement.
 **Mots-cles associes :**
@@ -1096,7 +1097,7 @@ WHITE CAPPING DISSIPATION COEFFICIENT
 #   -----------------------------------
     WESTHUYSEN_DISSIPATION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.00005],
         fr = """Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Cdis,break.
@@ -1118,7 +1119,7 @@ WESTHUYSEN WEIGHTING COEFFICIENT
 #   -----------------------------------
     SATURATION_THRESHOLD_FOR_THE_DISSIPATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.00175],
         fr = """Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Br (seuil de saturation).
@@ -1140,7 +1141,7 @@ WESTHUYSEN WEIGHTING COEFFICIENT
 #   -----------------------------------
     WESTHUYSEN_WHITE_CAPPING_DISSIPATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [3.29],
         fr = """Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Cdis,non-break.
@@ -1162,7 +1163,7 @@ WESTHUYSEN WEIGHTING COEFFICIENT
 #   -----------------------------------
     WESTHUYSEN_WEIGHTING_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.0],
         fr = """Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): delta.
@@ -1188,7 +1189,7 @@ BOTTOM_FRICTION = PROC(nom= "BOTTOM_FRICTION",op = None,
 #   -----------------------------------
     BOTTOM_FRICTION_DISSIPATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No bottom friction dissipation","Dissipation in accordance with WAM cycle 4"],
         defaut = ["No bottom friction dissipation"],
         fr = """Choix du type de modelisation du terme source de dissipation
@@ -1211,7 +1212,7 @@ BOTTOM FRICTION COEFFICIENT
 #   -----------------------------------
     BOTTOM_FRICTION_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.038],
         fr = """Coefficient de frottement sur le fond.
 **Mots-cles associes :**
@@ -1231,7 +1232,7 @@ TRANSFERS = PROC(nom= "TRANSFERS",op = None,
 #   -----------------------------------
     NON_LINEAR_TRANSFERS_BETWEEN_FREQUENCIES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No non-linear transfers term","Non-linear transfers term with WAM cycle 4 (DIA Method)","Non-linear transfers term in accordance with MDIA Method","Non-linear transfers term calculated with exact GQM Method"],
         defaut = ["No non-linear transfers term"],
         fr = """Choix du type de modelisation du terme de transfert non lineaire
@@ -1271,7 +1272,7 @@ THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
 #   -----------------------------------
     TRIAD_INTERACTIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["no triad interactions","LTA model (Eldeberky, 1996)","SPB model (Becq, 1998)"],
         defaut = ["no triad interactions"],
         fr = """Choix du type de modelisation du terme de transfert non
@@ -1303,7 +1304,7 @@ TRIADS 2 (SPB) UPPER DIRECTIONAL BOUND\\
 #   -----------------------------------
     SETTING_FOR_INTEGRATION_ON_OMEGA1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["medium","fine","rough"],
         defaut = ["rough"],
         fr = """ Choix du reglage donnant le nombre de point d integration sur
@@ -1316,7 +1317,7 @@ GQM method: rough 3 ; medium 1 ; fine 2""",
 #   -----------------------------------
     SETTING_FOR_INTEGRATION_ON_THETA1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["rough","medium","fine"],
         defaut = ["rough"],
         fr = """ Choix du reglage donnant le nombre de point d integration sur
@@ -1331,7 +1332,7 @@ rough 3 ; medium 4 ; fine 8""",
 #   -----------------------------------
     SETTING_FOR_INTEGRATION_ON_OMEGA2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["rough","medium","fine"],
         defaut = ["rough"],
         fr = """ Nombre de point d integration sur omega2 lorsque le terme de
@@ -1344,7 +1345,7 @@ rough 6 ; medium 8 ; fine 12""",
 #   -----------------------------------
     STANDARD_CONFIGURATION_PARAMETER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.25],
         fr = """Parametre definissant la configuration d interaction
 standard pour les quadruplets dans la methode DIA.
@@ -1358,10 +1359,10 @@ NON-LINEAR TRANSFERS
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    TRIADS_1_(LTA)_COEFFICIENT_ALPHA = SIMP(statut ='f',
+    TRIADS_1__LTA__COEFFICIENT_ALPHA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
-        defaut = [MANDATORY],
+        typ = 'R',
+        defaut = [0.5],
         fr = """Constante alpha du modele LTA propose par Eldeberky (1996).
 Si alpha = 0, les transferts d energie entre frequences seront nuls.
 L intensite de ces transferts augmente avec la valeur de alpha.
@@ -1378,9 +1379,9 @@ TRIADS 1 (LTA) COEFFICIENT RFMLTA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    TRIADS_1_(LTA)_COEFFICIENT_RFMLTA = SIMP(statut ='f',
+    TRIADS_1__LTA__COEFFICIENT_RFMLTA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.5],
         fr = """RFMLTA determine la frequence maximale vers laquelle les
 transferts d energie peuvent avoir lieu. La frequence maximale est
@@ -1399,9 +1400,9 @@ TRIADS 1 (LTA) COEFFICIENT ALPHA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    TRIADS_2_(SPB)_COEFFICIENT_K = SIMP(statut ='f',
+    TRIADS_2__SPB__COEFFICIENT_K = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.34],
         fr = """Parametre d ajustement du modele SPB
 **Mots-cles associes :**
@@ -1417,9 +1418,9 @@ TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    TRIADS_2_(SPB)_LOWER_DIRECTIONAL_BOUNDARY = SIMP(statut ='f',
+    TRIADS_2__SPB__LOWER_DIRECTIONAL_BOUNDARY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Borne directionnelle inferieure du modele SPB
 **Mots-cles associes :**
@@ -1435,9 +1436,9 @@ TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    TRIADS_2_(SPB)_UPPER_DIRECTIONAL_BOUNDARY = SIMP(statut ='f',
+    TRIADS_2__SPB__UPPER_DIRECTIONAL_BOUNDARY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [360.],
         fr = """Borne directionnelle superieure du modele SPB
 **Mots-cles associes :**
@@ -1455,7 +1456,7 @@ TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY
 #   -----------------------------------
     THRESHOLD0_FOR_CONFIGURATIONS_ELIMINATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.00],
         fr = """ Choix du seuil pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
@@ -1476,7 +1477,7 @@ NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
 #   -----------------------------------
     THRESHOLD1_FOR_CONFIGURATIONS_ELIMINATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [10000000000.0],
         fr = """ Choix du seuil1 pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
@@ -1497,7 +1498,7 @@ NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
 #   -----------------------------------
     THRESHOLD2_FOR_CONFIGURATIONS_ELIMINATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.15],
         fr = """ Choix du seuil2 pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
@@ -1523,7 +1524,7 @@ CURRENT = PROC(nom= "CURRENT",op = None,
 #   -----------------------------------
     CURRENTS_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Selafin, TELEMAC type","User format (couuti.f)"],
         defaut = ["Selafin, TELEMAC type"],
         fr = """Choix du type de format du fichier des courants :
@@ -1549,7 +1550,7 @@ CURRENTS FILE BINARY
 #   -----------------------------------
     CONSIDERATION_OF_A_STATIONARY_CURRENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on prend en compte un courant, dans un fichier ou
 dans condiw.f.
@@ -1569,7 +1570,7 @@ INITIAL_CONDITIONS = PROC(nom= "INITIAL_CONDITIONS",op = None,
 #   -----------------------------------
     TYPE_OF_INITIAL_DIRECTIONAL_SPECTRUM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["non-existent spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","TMA spectrum"],
         defaut = ["non-existent spectrum"],
         fr = """Si ce mot-cle est pris egal a 0, on specifie un spectre
@@ -1617,7 +1618,7 @@ INITIAL WEIGHTING FACTOR FOR ADF
 #   -----------------------------------
     INITIAL_ANGULAR_DISTRIBUTION_FUNCTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]","$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]","$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"],
         defaut = ["$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"],
         fr = """Fait partie de l ensemble des constantes utilisees dans
@@ -1647,7 +1648,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_SIGNIFICANT_WAVE_HEIGHT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1664,7 +1665,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_PEAK_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.067],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1681,7 +1682,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_PEAK_FACTOR = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [3.3],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1698,7 +1699,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_VALUE_OF_SIGMA_A_FOR_SPECTRUM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.07],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1715,7 +1716,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_VALUE_OF_SIGMA_B_FOR_SPECTRUM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.09],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1732,7 +1733,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_PHILLIPS_CONSTANT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.018],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1749,7 +1750,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_MEAN_FETCH_VALUE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [30000.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1766,7 +1767,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_MAXIMUM_PEAK_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.2],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1783,7 +1784,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_MAIN_DIRECTION_1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1800,7 +1801,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_DIRECTIONAL_SPREAD_1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1817,7 +1818,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_MAIN_DIRECTION_2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1834,7 +1835,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_DIRECTIONAL_SPREAD_2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1851,7 +1852,7 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_WEIGHTING_FACTOR_FOR_ADF = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
@@ -1868,8 +1869,8 @@ TYPE OF INITIAL DIRECTIONAL SPECTRUM
 #   -----------------------------------
     INITIAL_STILL_WATER_LEVEL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
-        defaut = [MANDATORY],
+        typ = 'R',
+        defaut = [0.],
         fr = """Parametre permettant de calculer la profondeur
 initiale du plan d eau (DEPTH) a partir de la cote du
 fond (ZF) : DEPTH=ZREPOS-ZF.""",
@@ -1883,7 +1884,7 @@ USELESS = PROC(nom= "USELESS",op = None,
 #   -----------------------------------
     VECTOR_LENGTH = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Indique la longueur du vecteur de la machine vectorielle
 utilisee.""",
@@ -1893,7 +1894,7 @@ being used.""",
 #   -----------------------------------
     GEOMETRY_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -1918,7 +1919,7 @@ GEOMETRY FILE
 #   -----------------------------------
     PUNCTUAL_RESULTS_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -1942,7 +1943,7 @@ PUNCTUAL RESULTS FILE
 #   -----------------------------------
     CURRENTS_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -1970,7 +1971,7 @@ CURRENTS FILE FORMAT
 #   -----------------------------------
     GLOBAL_RESULT_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -1994,7 +1995,7 @@ GLOBAL RESULT FILE
 #   -----------------------------------
     PREVIOUS_COMPUTATION_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -2018,15 +2019,15 @@ PREVIOUS COMPUTATION FILE
 #   -----------------------------------
     RELEASE = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
-        defaut = 'V7P1',
+        typ = 'TXM',
+        defaut = 'TRUNK',
         fr = """Numero de version""",
         ang = """Release number""",
     ),
 #   -----------------------------------
     WINDS_FILE_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -2051,7 +2052,7 @@ WINDS FILE FORMAT
 #   -----------------------------------
     BINARY_FILE_1_BINARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour l''ecriture du fichier
@@ -2071,7 +2072,7 @@ BINARY FILE 1
 #   -----------------------------------
     TIDAL_WATER_LEVEL_FILE_BINARY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ['STD','IBM','I3E'],
         defaut = 'STD',
         fr = """Type du binaire utilise pour la lecture du fichier binaire
@@ -2110,7 +2111,7 @@ BREAKING = PROC(nom= "BREAKING",op = None,
 #   -----------------------------------
     DEPTH_INDUCED_BREAKING_DISSIPATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No breaking","Dissipation in accordance with Battjes et Janssen (1978)","Dissipation in accordance with Thornton et Guza  (1983)","Dissipation in accordance with Roelvink (1993)","Dissipation in accordance with Izumiya et Horikawa (1984)"],
         defaut = ["No breaking"],
         fr = """Choix du type de modelisation du terme source de dissipation
@@ -2174,9 +2175,9 @@ DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_QB_COMPUTATION_METHOD = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__QB_COMPUTATION_METHOD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [2],
         fr = """Choix du mode de resolution de l equation implicite donnant Qb.
 **Mots-cles associes :**
@@ -2199,9 +2200,9 @@ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_HM_COMPUTATION_METHOD = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__HM_COMPUTATION_METHOD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Hm = GAMMA*D","Hm given by the Miche criterium"],
         defaut = ["Hm = GAMMA*D"],
         fr = """Choix du critere de deferlement donnant la hauteur de houle
@@ -2223,9 +2224,9 @@ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2\\
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Frequency Fmoy","Frequency F01","Frequency F02","Frequency Fpic","Frequency Fread ordre 5","Frequency Fread ordre 8"],
         defaut = ["Frequency F01"],
         fr = """Choix de la frequence caracteristique du spectre de houle
@@ -2265,9 +2266,9 @@ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_2_(TG)_WEIGHTING_FUNCTION = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_2__TG__WEIGHTING_FUNCTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [2],
         fr = """Choix de l expression de la fonction de ponderation basee
 sur une distribution de probabilite des hauteurs de houle.
@@ -2287,9 +2288,9 @@ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_2_(TG)_CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_2__TG__CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Frequency Fmoy","Frequency F01","Frequency F02","Frequency Fpic","Frequency Fread ordre 5","Frequency Fread ordre 8"],
         defaut = ["Frequency Fread ordre 5"],
         fr = """Choix de la frequence caracteristique du spectre de houle
@@ -2332,9 +2333,9 @@ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_WAVE_HEIGHT_DISTRIBUTION = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__WAVE_HEIGHT_DISTRIBUTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Weibull","Rayleigh"],
         defaut = ["Weibull"],
         fr = """Choix de la distribution des hauteurs de houle pour le
@@ -2363,9 +2364,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_EXPONENT_WEIGHTING_FUNCTION = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__EXPONENT_WEIGHTING_FUNCTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [10],
         fr = """Exposant n de la fonction de ponderation utilisee par
 le modele de deferlement de Roelvink.
@@ -2389,9 +2390,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Frequency Fmoy","Frequency F01","Frequency F02","Frequency Fpic","Frequency Fread ordre 5","Frequency Fread ordre 8"],
         defaut = ["Frequency Fread ordre 5"],
         fr = """Choix de la frequence caracteristique du spectre de houle
@@ -2431,9 +2432,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_4_(IH)_CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_4__IH__CHARACTERISTIC_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Frequency Fmoy","Frequency F01","Frequency F02","Frequency Fpic","Frequency Fread ordre 5","Frequency Fread ordre 8"],
         defaut = ["Frequency Fread ordre 5"],
         fr = """Choix de la frequence caracteristique du spectre de houle
@@ -2469,7 +2470,7 @@ DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
 #   -----------------------------------
     NUMBER_OF_BREAKING_TIME_STEPS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Nombre de sous-pas de temps pour la prise en compte de la
 dissipation d energie par deferlement. Ces sous-pas de temps sont
@@ -2486,9 +2487,9 @@ COEFFICIENT FOR THE BREAKING TIME STEPS
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_ALPHA = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_ALPHA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Constante ALPHA du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2512,9 +2513,9 @@ DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_GAMMA1 = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_GAMMA1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.88],
         fr = """Constante GAMMA1 du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2538,9 +2539,9 @@ DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_1_(BJ)_COEFFICIENT_GAMMA2 = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_1__BJ__COEFFICIENT_GAMMA2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.8],
         fr = """Constante GAMMA2 du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2564,9 +2565,9 @@ DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_2_(TG)_COEFFICIENT_B = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_2__TG__COEFFICIENT_B = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.0],
         fr = """Constante B du modele de deferlement de Thornton et Guza.
 **Mots-cles associes :**
@@ -2586,9 +2587,9 @@ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_2_(TG)_COEFFICIENT_GAMMA = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_2__TG__COEFFICIENT_GAMMA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.42],
         fr = """Constante GAMMA du modele de deferlement de Thornton et Guza.
 **Mots-cles associes :**
@@ -2608,9 +2609,9 @@ DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_ALPHA = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_ALPHA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Constante ALPHA du modele de deferlement de Roelvink (1993).
 **Mots-cles associes :**
@@ -2634,9 +2635,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_GAMMA = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_GAMMA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.54],
         fr = """Constante GAMMA du modele de deferlement de Roelvink (1993).
 **Mots-cles associes :**
@@ -2660,9 +2661,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_3_(RO)_COEFFICIENT_GAMMA2 = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_3__RO__COEFFICIENT_GAMMA2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.65],
         fr = """Constante GAMMA2 du modele de deferlement de Roelvink (1993).
 N est utilisee que pour la distribution de Weibull.
@@ -2687,9 +2688,9 @@ DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_4_(IH)_COEFFICIENT_BETA0 = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_4__IH__COEFFICIENT_BETA0 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.8],
         fr = """Constante BETA0 du modele de deferlement de Izumiya et
 Horikawa (1984).
@@ -2709,9 +2710,9 @@ DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR
 \end{CommentBlock}""",
     ),
 #   -----------------------------------
-    DEPTH_INDUCED_BREAKING_4_(IH)_COEFFICIENT_M2STAR = SIMP(statut ='f',
+    DEPTH_INDUCED_BREAKING_4__IH__COEFFICIENT_M2STAR = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.009],
         fr = """Constante M2STAR du modele de deferlement de Izumiya et
 Horikawa (1984).
@@ -2733,7 +2734,7 @@ DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0
 #   -----------------------------------
     MAXIMUM_VALUE_OF_THE_RATIO_HM0_ON_D = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """En debut de prise en compte des termes sources, la hauteur
 de houle est ecretee de facon a satisfaire le critere specifie.
@@ -2750,7 +2751,7 @@ DEPTH-INDUCED BREAKING DISSIPATION
 #   -----------------------------------
     COEFFICIENT_OF_THE_TIME_SUB_INCREMENTS_FOR_BREAKING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.45],
         fr = """Raison de la suite geometrique des sous-pas de temps pour
 le deferlement.
@@ -2772,7 +2773,7 @@ GENERAL = PROC(nom= "GENERAL",op = None,
 #   -----------------------------------
     WAVE_GROWTH_LIMITER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["no wave growth limiter","WAM 4 original limiter","Hersbach et Janssen (1999) limiter","Laugel-BAJ limiter"],
         defaut = ["WAM 4 original limiter"],
         fr = """Choix du type de limiteur de croissance.
@@ -2796,7 +2797,7 @@ CONSIDERATION OF SOURCE TERMS
 #   -----------------------------------
     MINIMUM_WATER_DEPTH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.1],
         fr = """Definit la profondeur d eau minimale en dessous de laquelle
 les fonds sont supposes emerges.""",
@@ -2806,7 +2807,7 @@ are regarded as dry.""",
 #   -----------------------------------
     WIND_VELOCITY_ALONG_X = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Vitesse du vent suivant X, constante et homogene (en m/s)
 **Mots-cles associes :**
@@ -2820,7 +2821,7 @@ CONSIDERATION OF A WIND
 #   -----------------------------------
     WIND_VELOCITY_ALONG_Y = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Vitesse du vent suivant Y, constante et homogene (en m/s)
 **Mots-cles associes :**
@@ -2834,7 +2835,7 @@ CONSIDERATION OF A WIND
 #   -----------------------------------
     IMPLICITATION_COEFFICIENT_FOR_SOURCE_TERMS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.5],
         fr = """Coefficient controlant l implicitation dans le schema
 d integration des termes sources, compris entre 0 et 1.
@@ -2857,7 +2858,7 @@ CONSIDERATION OF SOURCE TERMS
 #   -----------------------------------
     TITLE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         defaut = 'SET A TITLE !!!',
         fr = """Titre du cas etudie""",
         ang = """Title of the case being studied.""",
@@ -2865,7 +2866,7 @@ CONSIDERATION OF SOURCE TERMS
 #   -----------------------------------
     CONSIDERATION_OF_SOURCE_TERMS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique la prise en compte ou non de l ensemble des termes
 sources.
@@ -2893,7 +2894,7 @@ TRIAD INTERACTION
 #   -----------------------------------
     SPHERICAL_COORDINATES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on se place ou non en coordonnes spheriques.
 ATTENTION, en coordonnees cartesiennes, les coordonnees sont
@@ -2905,7 +2906,7 @@ degree) or cartesian (unit = meter).""",
 #   -----------------------------------
     NEXT_COMPUTATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on fait une suite de calcul.
 **Mots-cles associes :**
@@ -2919,7 +2920,7 @@ PREVIOUS RESULTS FILE
 #   -----------------------------------
     INFINITE_DEPTH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on se place dans l hypothese de profondeur infinie.
 Cette option inhibe les frottements sur le fond.""",
@@ -2929,7 +2930,7 @@ friction is inhibited.""",
 #   -----------------------------------
     CONSIDERATION_OF_PROPAGATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Indique si on prend en compte la propagation""",
         ang = """Indicates whether propagation is taken into account.""",
@@ -2937,7 +2938,7 @@ friction is inhibited.""",
 #   -----------------------------------
     VALIDATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Logique indiquant si on effectue un calcul de validation
 **Mots-cles associes :**
@@ -2973,7 +2974,7 @@ Possible values are:
 #       -----------------------------------
         REFERENCE_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Nom du fichier de reference en cas de validation.
 **Mots-cles associes :**
@@ -2988,7 +2989,7 @@ VALIDATION
 #   -----------------------------------
     TRIGONOMETRICAL_CONVENTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Logique indiquant si les directions de propagation
 de la houle sont definies dans le sens trigonometrique a
@@ -3001,7 +3002,7 @@ they are measured clockwise fron geographic North""",
 #   -----------------------------------
     DEBUGGER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Pour imprimer la sequence des appels, mettre 1""",
         ang = """If 1, calls of subroutines will be printed in the listing""",
@@ -3009,7 +3010,7 @@ they are measured clockwise fron geographic North""",
 #   -----------------------------------
     CHECKING_THE_MESH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si oui on appelle le sous-programme checkmesh qui verifie
 la coherence du maillage, points superposes, etc.""",
@@ -3023,7 +3024,7 @@ BOUNDARY_CONDITIONS = PROC(nom= "BOUNDARY_CONDITIONS",op = None,
 #   -----------------------------------
     TYPE_OF_BOUNDARY_DIRECTIONAL_SPECTRUM = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["non-existent spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","JONSWAP spectrum","TMA spectrum"],
         defaut = ["non-existent spectrum"],
         fr = """Si ce mot-cle est pris egal a 0, on specifie un spectre
@@ -3071,7 +3072,7 @@ BOUNDARY WEIGHTING FACTOR FOR ADF\\
 #   -----------------------------------
     BOUNDARY_ANGULAR_DISTRIBUTION_FUNCTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]","$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]","$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"],
         defaut = ["$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"],
         fr = """Fait partie de l ensemble des constantes utilisees dans
@@ -3101,7 +3102,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_SIGNIFICANT_WAVE_HEIGHT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3118,7 +3119,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_PEAK_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.067],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3135,7 +3136,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_SPECTRUM_VALUE_OF_SIGMA_A = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.07],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3152,7 +3153,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_SPECTRUM_VALUE_OF_SIGMA_B = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.09],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3169,7 +3170,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_PHILLIPS_CONSTANT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.018],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3186,7 +3187,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_MEAN_FETCH_VALUE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [30000.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3203,7 +3204,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_MAXIMUM_PEAK_FREQUENCY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.2],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3220,7 +3221,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_MAIN_DIRECTION_1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3237,7 +3238,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_DIRECTIONAL_SPREAD_1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3254,7 +3255,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_MAIN_DIRECTION_2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3271,7 +3272,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_DIRECTIONAL_SPREAD_2 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [2.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3288,7 +3289,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_WEIGHTING_FACTOR_FOR_ADF = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3305,7 +3306,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     BOUNDARY_PEAK_FACTOR = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [3.3],
         fr = """Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
@@ -3322,7 +3323,7 @@ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
 #   -----------------------------------
     LIMIT_SPECTRUM_MODIFIED_BY_USER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si l''utilisateur desire modifier le spectre
 aux limites. Il doit alors rapatrier chez lui le sous programme
@@ -3346,7 +3347,7 @@ TIDE = PROC(nom= "TIDE",op = None,
 #   -----------------------------------
     TIDE_REFRESHING_PERIOD = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Determine la periode, en nombre d''iterations,
 d''actualisation de la profondeur d''eau et des courants de maree.
@@ -3370,7 +3371,7 @@ FORMAT DU FICHIER DU NIVEAU DE LA MAREE\\
 #   -----------------------------------
     TIDAL_WATER_LEVEL_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Selafin, TELEMAC type","User format (maruti.f)"],
         defaut = ["Selafin, TELEMAC type"],
         fr = """Choix du type de format du fichier du niveau de la maree :
@@ -3398,7 +3399,7 @@ TIDE REFRESHING PERIOD
 #   -----------------------------------
     RANK_OF_THE_WATER_LEVEL_DATA_IN_THE_TELEMAC_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [4],
         fr = """Rang de la variable donnant le niveau de la maree
 dans le fichier TELEMAC
@@ -3421,7 +3422,7 @@ TIDE REFRESHING PERIOD
 #   -----------------------------------
     CONSIDERATION_OF_TIDE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Indique si on prend en compte l''influence de la maree,
 c''est-a-dire, prise en compte d''un niveau d''eau et de courants
@@ -3450,7 +3451,7 @@ DIFFRACTION = PROC(nom= "DIFFRACTION",op = None,
 #   -----------------------------------
     DIFFRACTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["Diffraction is not taken into account","Mild Slope Equation model (Berkhoff - 1972)","Revised Mild Slope Equation model (Porter - 2003)"],
         defaut = ["Diffraction is not taken into account"],
         fr = """Choix du model pour representer la diffraction :
@@ -3482,7 +3483,7 @@ DIFFRACTION FILTER
 #   -----------------------------------
     STARTING_TIME_STEP_FOR_DIFFFRACTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Numero du pas de temps a partir duquel la diffraction est
 prise en compte dans la simulation.
@@ -3502,8 +3503,8 @@ DIFFRACTION FILTER
 #   -----------------------------------
     VARIANCE_THRESHOLD_FOR_DIFFRACTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
-        defaut = [1.D-12],
+        typ = 'R',
+        defaut = [1.E-12],
         fr = """Seuil minimum de variance spectrale pris en compte
 dans la diffraction
 **Mots-cles associes :**
@@ -3522,7 +3523,7 @@ DIFFRACTION FILTER
 #   -----------------------------------
     DIFFRACTION_FILTER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si la diffraction est prise en compte, le logique
 indique si les amplitudes calculees sont filtrees
@@ -3546,7 +3547,7 @@ STARTING TIME STEP FOR DIFFFRACTION
 #   -----------------------------------
     OPTION_FOR_SECOND_DERIVATIVES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """1 : methode Freemesh 2 : deux derivees simples""",
         ang = """1: Freemesh method 2: two simple derivatives""",
@@ -3556,7 +3557,7 @@ STARTING TIME STEP FOR DIFFFRACTION
 NUMERICAL_PARAMETERS = PROC(nom= "NUMERICAL_PARAMETERS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         PARTITIONING_TOOL = SIMP(statut ='f',
@@ -3581,7 +3582,7 @@ etc...""",
 #       -----------------------------------
         INITIAL_TIME_SET_TO_ZERO = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Remet le temps a zero en cas de suite de calcul""",
             ang = """Initial time set to zero in case of restart""",
@@ -3589,7 +3590,7 @@ etc...""",
 #       -----------------------------------
         FINITE_ELEMENT_ASSEMBLY = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """1 : normal 2 : avec des entiers I8""",
             ang = """1: normal 2: with I8 integers""",
@@ -3607,10 +3608,10 @@ on vegetation that are case-specific and must thus be modified""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
+INPUT_OUTPUT__INFORMATION = PROC(nom= "INPUT_OUTPUT__INFORMATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    COMPUTATION_ENVIRONMENT = FACT(statut='o',
+    COMPUTATION_ENVIRONMENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DICTIONARY = SIMP(statut ='f',
@@ -3622,7 +3623,7 @@ INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
         ),
     ),
 #   -----------------------------------
-    COMPUTATIONAL_INFORMATION = FACT(statut='o',
+    COMPUTATIONAL_INFORMATION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DESCRIPTION_OF_LIBRARIES = SIMP(statut ='f',
@@ -3656,7 +3657,7 @@ DATA_FILE = PROC(nom= "DATA_FILE",op = None,
 #   -----------------------------------
     GEOMETRY_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier contenant le maillage du calcul a realiser.
 **Mots-cles associes :**
@@ -3690,7 +3691,7 @@ Possible values are:
 #   -----------------------------------
     FORTRAN_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = 'DEFAUT1',
         fr = """Nom du fichier FORTRAN a soumettre.""",
         ang = """Name of FORTRAN file to be submitted.""",
@@ -3698,7 +3699,7 @@ Possible values are:
 #   -----------------------------------
     STEERING_FILE = SIMP(statut ='o',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = 'cas',
         fr = """Nom du fichier contenant les parametres du calcul a realiser.""",
         ang = """Name of the file containing the parameters of the computation
@@ -3707,7 +3708,7 @@ to be made.""",
 #   -----------------------------------
     BOUNDARY_CONDITIONS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = 'dynam',
         fr = """Nom du fichier contenant les types de conditions aux limites.
 Ce fichier est rempli de facon automatique par le mailleur au moyen de
@@ -3720,7 +3721,7 @@ domain.""",
 #   -----------------------------------
     BOTTOM_TOPOGRAPHY_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier eventuel contenant la bathymetrie associee au
 maillage au format SINUSX.
@@ -3731,7 +3732,7 @@ the SINUSX-formatted grid. It this keyword is used, these bathymetric
 data shall be used for the computation.""",
     ),
 #   -----------------------------------
-    2D_RESULTS_FILE_FORMAT = SIMP(statut ='f',
+    ED_RESULTS_FILE_FORMAT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM',
         into = ['SERAFIN','SERAFIND','MED'],
@@ -3752,7 +3753,7 @@ Possible values are:
 #   -----------------------------------
     PREVIOUS_COMPUTATION_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom d''un fichier contenant les resultats d''un calcul precedent
 realise sur le meme maillage et qui va fournir les conditions
@@ -3808,7 +3809,7 @@ Possible values are:
 #   -----------------------------------
     BINARY_CURRENTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier de donnees de courant (si binaire).
 **Mots-cles associes :**
@@ -3847,7 +3848,7 @@ Possible values are:
 #   -----------------------------------
     FORMATTED_CURRENTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier de donnees de courant (si formate).
 **Mots-cles associes :**
@@ -3867,7 +3868,7 @@ CURRENTS FILE FORMAT
 #   -----------------------------------
     FORMATTED_FILE_1 = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Fichier de donnees formate mis a la disposition
 de l''utilisateur.""",
@@ -3876,7 +3877,7 @@ de l''utilisateur.""",
 #   -----------------------------------
     BINARY_WINDS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier de donnees de vent (si binaire).
 **Mots-cles associes :**
@@ -3913,7 +3914,7 @@ Possible values are:
 #   -----------------------------------
     BINARY_TIDAL_WATER_LEVEL_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier de donnees du niveau d''eau (si binaire).
 **Mots-cles associes :**
@@ -3954,7 +3955,7 @@ Possible values are:
 #   -----------------------------------
     FORMATTED_TIDAL_WATER_LEVEL_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'),
         defaut = '',
         fr = """Nom du fichier de donnees du niveau d''eau (si formate).
 **Mots-cles associes :**
@@ -4015,7 +4016,7 @@ Possible values are:
     NAMES_OF_VARIABLES = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'TXM', min= 5, max= 5,
-        defaut = 'VITESSE U       M/S;VITESSE V       M/S;VENT X          M/S;VENT Y          M/S;HAUTEUR D'EAU   M',
+        defaut = 'VITESSE U       M/S;VITESSE V       M/S;VENT X          M/S;VENT Y          M/S;HAUTEUR D EAU   M',
         fr = """Nom des variables dans les fichiers au format SERAFIN
         1: Vitesse U
         2: Vitesse V
@@ -4034,7 +4035,7 @@ Possible values are:
 #   -----------------------------------
     TIME_UNIT_IN_CURRENTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Unite donnee en secondes, par exemple 3600. si le temps
 est donne en heures""",
@@ -4044,7 +4045,7 @@ is given in hours""",
 #   -----------------------------------
     TIME_UNIT_IN_TIDAL_WATER_LEVEL_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Unite donnee en secondes, par exemple 3600. si le temps
 est donne en heures""",
@@ -4054,7 +4055,7 @@ is given in hours""",
 #   -----------------------------------
     TIME_UNIT_IN_WINDS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """Unite donnee en secondes, par exemple 3600. si le temps
 est donne en heures""",
@@ -4064,7 +4065,7 @@ is given in hours""",
 #   -----------------------------------
     TIME_SHIFT_IN_CURRENTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Sera retranche au temps lu dans le fichier.
 L''unite est celle du fichier""",
@@ -4074,7 +4075,7 @@ L''unite est celle du fichier""",
 #   -----------------------------------
     TIME_SHIFT_IN_TIDAL_WATER_LEVEL_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Sera retranche au temps lu dans le fichier.
 L''unite est celle du fichier""",
@@ -4084,7 +4085,7 @@ L''unite est celle du fichier""",
 #   -----------------------------------
     TIME_SHIFT_IN_WINDS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.],
         fr = """Sera retranche au temps lu dans le fichier.
 L''unite est celle du fichier""",
@@ -4093,15 +4094,15 @@ L''unite est celle du fichier""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_FILES = PROC(nom= "INPUT_OUTPUT,_FILES",op = None,
+INPUT_OUTPUT__FILES = PROC(nom= "INPUT_OUTPUT__FILES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    NAMES = FACT(statut='o',
+    NAMES = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         BINARY_FILE_1 = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'),
             defaut = '',
             fr = """Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.""",
@@ -4123,7 +4124,7 @@ DISSIPATION = PROC(nom= "DISSIPATION",op = None,
 #   -----------------------------------
     DISSIPATION_BY_STRONG_CURRENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["No wave-blocking","Spectrum limitation by a Phillips shape","Dissipation in accordance with Van der Westhuysen(2012)"],
         defaut = ["No wave-blocking"],
         fr = """Lorsque les effets de wave-blocking ou vagues stoppees
@@ -4148,7 +4149,7 @@ DISSIPATION COEFFICIENT FOR STRONG CURRENT
 #   -----------------------------------
     DISSIPATION_COEFFICIENT_FOR_STRONG_CURRENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [0.65],
         fr = """Coefficient de dissipation pour des vagues stoppees
 par un courant fort adverse (effets de wave-blocking).
@@ -4164,7 +4165,7 @@ DISSIPATION BY STRONG CURRENT
 \end{CommentBlock}""",
     ),
 )
-Ordre_des_commandes = (
+Ordre_Des_Commandes = (
 'RESULTS',
 'TIME',
 'SPECTRUM',
@@ -4182,7 +4183,29 @@ Ordre_des_commandes = (
 'TIDE',
 'DIFFRACTION',
 'NUMERICAL_PARAMETERS',
-'INPUT_OUTPUT,_INFORMATION',
+'INPUT_OUTPUT__INFORMATION',
 'DATA_FILE',
-'INPUT_OUTPUT,_FILES',
+'INPUT_OUTPUT__FILES',
+'DISSIPATION')
+Classement_Commandes_Ds_Arbre = (
+'RESULTS',
+'TIME',
+'SPECTRUM',
+'MISCELLANEOUS',
+'WIND',
+'WHITE_CAPPING',
+'BOTTOM_FRICTION',
+'TRANSFERS',
+'CURRENT',
+'INITIAL_CONDITIONS',
+'USELESS',
+'BREAKING',
+'GENERAL',
+'BOUNDARY_CONDITIONS',
+'TIDE',
+'DIFFRACTION',
+'NUMERICAL_PARAMETERS',
+'INPUT_OUTPUT__INFORMATION',
+'DATA_FILE',
+'INPUT_OUTPUT__FILES',
 'DISSIPATION')

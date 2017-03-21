@@ -2445,8 +2445,8 @@ TYPE = REEL
 INDEX = 32
 MNEMO = 'E2FMIN'
 TAILLE= 0
-DEFAUT = 1.D-30
-DEFAUT1 = 1.D-30
+DEFAUT = 1.E-30
+DEFAUT1 = 1.E-30
 RUBRIQUE = 'SPECTRES'
 RUBRIQUE1 = 'SPECTRUM'
 NIVEAU = 2
@@ -2848,6 +2848,7 @@ INDEX = 46
 MNEMO = 'ZREPOS'
 TAILLE= 0
 DEFAUT = 0.
+DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
 NIVEAU = 1
@@ -2864,6 +2865,7 @@ INDEX = 47
 MNEMO = 'Variable ALFLTA'
 TAILLE= 0
 DEFAUT = 0.5
+DEFAUT1 = 0.5
 RUBRIQUE = 'TRANSFERTS'
 RUBRIQUE1 = 'TRANSFERS'
 NIVEAU = 2
@@ -3680,8 +3682,8 @@ TYPE = REEL
 INDEX = 80
 MNEMO = 'F2DIFM'
 TAILLE= 0
-DEFAUT = 1.D-12
-DEFAUT1 = 1.D-12
+DEFAUT = 1.E-12
+DEFAUT1 = 1.E-12
 RUBRIQUE = 'DIFFRACTION'
 RUBRIQUE1 = 'DIFFRACTION'
 NIVEAU = 2
@@ -3719,9 +3721,9 @@ NOM1 = 'VARIABLES FOR 2D GRAPHIC PRINTOUTS'
 TYPE = CARACTERE
 INDEX = 2
 MNEMO = 'Variable SORT2D'
-TAILLE= 0
-DEFAUT = 'HM0,DMOY'
-DEFAUT1 = 'HM0,DMOY'
+TAILLE= 2
+DEFAUT = 'HM0;DMOY'
+DEFAUT1 = 'HM0;DMOY'
 CHOIX = 'M0="variance totale  (m2)"';
 'HM0="Hauteur significative spectrale  (m)"';
 'DMOY="Direction moyenne de houle  (deg)"';
@@ -5230,13 +5232,13 @@ DEFAUT = 'VITESSE U       M/S             ';
           'VITESSE V       M/S             ';
           'VENT X          M/S             ';
           'VENT Y          M/S             ';
-          'HAUTEUR D''EAU   M               '
+          'HAUTEUR D EAU   M               '
 / FRENCH IS HERE INTENTIONAL, NOT A MISTAKE
 DEFAUT1 = 'VITESSE U       M/S             ';
           'VITESSE V       M/S             ';
           'VENT X          M/S             ';
           'VENT Y          M/S             ';
-          'HAUTEUR D''EAU   M               '
+          'HAUTEUR D EAU   M               '
 NIVEAU = 2
 RUBRIQUE = 'FICHIERS DE DONNEES'
 RUBRIQUE1 = 'DATA FILE'

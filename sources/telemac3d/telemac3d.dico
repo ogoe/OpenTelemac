@@ -301,16 +301,12 @@ CHOIX = '1="VISCOSITE CONSTANTE"';
         '2="LONGUEUR DE MELANGE"';
         '3="MODELE K-EPSILON"';
         '4="SMAGORINSKI"';
-        '5= ';
-        '6= ';
         '7="MODELE K-OMEGA" '
 CHOIX1 = '1="CONSTANT VISCOSITY"';
          '2="MIXING LENGTH"';
          '3="K-EPSILON MODEL"';
          '4="SMAGORINSKI"';
-         '5= ';
-         '6= ';
-         '7="K-OMEGA MODEL" '
+         '7="K-OMEGA MODEL"'
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL'
 NIVEAU = 1
@@ -2349,9 +2345,10 @@ NOM = 'VARIABLES POUR LES SORTIES GRAPHIQUES 3D'
 NOM1 = 'VARIABLES FOR 3D GRAPHIC PRINTOUTS'
 TYPE = CARACTERE
 INDEX = 2
+TAILLE = 4
 MNEMO = 'SORT3D'
-DEFAUT = 'Z,U,V,W'
-DEFAUT1 = 'Z,U,V,W'
+DEFAUT = 'Z;U;V;W'
+DEFAUT1 = 'Z;U;V;W'
 CHOIX = 'U="vitesse suivant l axe des x (m/s)"';
 'V="vitesse suivant l axe des y (m/s)"';
 'W="vitesse suivant l axe des z (m/s)"';
@@ -2481,9 +2478,10 @@ NOM = 'VARIABLES POUR LES SORTIES GRAPHIQUES 2D'
 NOM1 = 'VARIABLES FOR 2D GRAPHIC PRINTOUTS'
 TYPE = CARACTERE
 INDEX = 3
+TAILLE = 4
 MNEMO = 'SORT2D'
-DEFAUT = 'U,V,H,B'
-DEFAUT1 = 'U,V,H,B'
+DEFAUT = 'U;V;H;B'
+DEFAUT1 = 'U;V;H;B'
 CHOIX = 'U="vitesse moyenne suivant l axe des x (m/s)"';
         'V="vitesse moyenne suivant l axe des y (m/s)"';
         'C="celerite (m/s)"';
@@ -4232,15 +4230,11 @@ DEFAUT1 = 1
 CHOIX = '1="VISCOSITE CONSTANTE"';
         '3="MODELE K-EPSILON"';
         '4= "SMAGORINSKI"';
-        '5= ';
-        '6= ';
         '7="MODELE K-OMEGA" '
 CHOIX1 = '1="CONSTANT VISCOSITY"';
          '3="K-EPSILON MODEL"';
          '4="SMAGORINSKI"';
-         '5= ';
-         '6= ';
-         '7="K-OMEGA MODEL" '
+         '7="K-OMEGA MODEL"'
 RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE'
 RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL'
 NIVEAU = 1

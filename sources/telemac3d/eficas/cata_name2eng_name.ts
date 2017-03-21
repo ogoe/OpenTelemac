@@ -55,148 +55,24 @@
         <translation>VERTICAL TURBULENCE MODEL</translation>
     </message>
     <message>
-        <source>"CONSTANT_VISCOSITY"</source>
-        <translation>"CONSTANT VISCOSITY"</translation>
-    </message>
-    <message>
-        <source>"MIXING_LENGTH"</source>
-        <translation>"MIXING LENGTH"</translation>
-    </message>
-    <message>
-        <source>"K_EPSILON_MODEL"</source>
-        <translation>"K-EPSILON MODEL"</translation>
-    </message>
-    <message>
-        <source>"SMAGORINSKI"</source>
-        <translation>"SMAGORINSKI"</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>"K_OMEGA_MODEL"</source>
-        <translation>"K-OMEGA MODEL"</translation>
-    </message>
-    <message>
         <source>TURBULENCE_REGIME_FOR_THE_BOTTOM</source>
         <translation>TURBULENCE REGIME FOR THE BOTTOM</translation>
-    </message>
-    <message>
-        <source>"smooth"</source>
-        <translation>"smooth"</translation>
-    </message>
-    <message>
-        <source>"rough"</source>
-        <translation>"rough"</translation>
-    </message>
-    <message>
-        <source>"rough_compatibility_with_old_versions"</source>
-        <translation>"rough compatibility with old versions"</translation>
     </message>
     <message>
         <source>TURBULENCE_REGIME_FOR_LATERAL_SOLID_BOUNDARIES</source>
         <translation>TURBULENCE REGIME FOR LATERAL SOLID BOUNDARIES</translation>
     </message>
     <message>
-        <source>"smooth"</source>
-        <translation>"smooth"</translation>
-    </message>
-    <message>
-        <source>"rough"</source>
-        <translation>"rough"</translation>
-    </message>
-    <message>
         <source>INITIAL_GUESS_FOR_DEPTH</source>
         <translation>INITIAL GUESS FOR DEPTH</translation>
-    </message>
-    <message>
-        <source>"zero"</source>
-        <translation>"zero"</translation>
-    </message>
-    <message>
-        <source>"previous"</source>
-        <translation>"previous"</translation>
-    </message>
-    <message>
-        <source>"extrapolation"</source>
-        <translation>"extrapolation"</translation>
     </message>
     <message>
         <source>SCHEME_FOR_ADVECTION_OF_VELOCITIES</source>
         <translation>SCHEME FOR ADVECTION OF VELOCITIES</translation>
     </message>
     <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"NO ADVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CHARACTERISTICS"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICIT + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICIT LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICIT + MURD SCHEME N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICIT + MURD SCHEME PSI"</translation>
-    </message>
-    <message>
-        <source>"LEO_POSTMA_FOR_TIDAL_FLATS"</source>
-        <translation>"LEO POSTMA FOR TIDAL FLATS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"N-SCHEME FOR TIDAL FLATS"</translation>
-    </message>
-    <message>
         <source>SCHEME_FOR_ADVECTION_OF_TRACERS</source>
         <translation>SCHEME FOR ADVECTION OF TRACERS</translation>
-    </message>
-    <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"NO ADVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CHARACTERISTICS"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICIT + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICIT LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICIT + MURD SCHEME N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICIT + MURD SCHEME PSI"</translation>
-    </message>
-    <message>
-        <source>"LEO_POSTMA_FOR_TIDAL_FLATS"</source>
-        <translation>"LEO POSTMA FOR TIDAL FLATS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"N-SCHEME FOR TIDAL FLATS"</translation>
     </message>
     <message>
         <source>DAMPING_FUNCTION</source>
@@ -207,208 +83,32 @@
         <translation>SCHEME FOR ADVECTION OF K-EPSILON</translation>
     </message>
     <message>
-        <source>"NO_ADVECTION"</source>
-        <translation>"NO ADVECTION"</translation>
-    </message>
-    <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CHARACTERISTICS"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_SUPG"</source>
-        <translation>"EXPLICIT + SUPG"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_LEO_POSTMA"</source>
-        <translation>"EXPLICIT LEO POSTMA"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_N"</source>
-        <translation>"EXPLICIT + MURD SCHEME N"</translation>
-    </message>
-    <message>
-        <source>"EXPLICIT_+_MURD_SCHEME_PSI"</source>
-        <translation>"EXPLICIT + MURD SCHEME PSI"</translation>
-    </message>
-    <message>
-        <source>"LEO_POSTMA_FOR_TIDAL_FLATS"</source>
-        <translation>"LEO POSTMA FOR TIDAL FLATS"</translation>
-    </message>
-    <message>
-        <source>"N_SCHEME_FOR_TIDAL_FLATS"</source>
-        <translation>"N-SCHEME FOR TIDAL FLATS"</translation>
-    </message>
-    <message>
         <source>SCHEME_FOR_ADVECTION_OF_DEPTH</source>
         <translation>SCHEME FOR ADVECTION OF DEPTH</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE"</source>
-        <translation>"CONSERVATIVE"</translation>
     </message>
     <message>
         <source>SCHEME_FOR_DIFFUSION_OF_VELOCITIES</source>
         <translation>SCHEME FOR DIFFUSION OF VELOCITIES</translation>
     </message>
     <message>
-        <source>"NO_DIFFUSION"</source>
-        <translation>"NO DIFFUSION"</translation>
-    </message>
-    <message>
-        <source>"IMPLICIT"</source>
-        <translation>"IMPLICIT"</translation>
-    </message>
-    <message>
         <source>SCHEME_FOR_DIFFUSION_OF_TRACERS</source>
         <translation>SCHEME FOR DIFFUSION OF TRACERS</translation>
-    </message>
-    <message>
-        <source>"NO_DIFFUSION"</source>
-        <translation>"NO DIFFUSION"</translation>
-    </message>
-    <message>
-        <source>"IMPLICIT"</source>
-        <translation>"IMPLICIT"</translation>
-    </message>
-    <message>
-        <source>"VERTICAL_DIFFUSION_ONLY"</source>
-        <translation>"VERTICAL DIFFUSION ONLY"</translation>
     </message>
     <message>
         <source>LAW_OF_FRICTION_ON_LATERAL_BOUNDARIES</source>
         <translation>LAW OF FRICTION ON LATERAL BOUNDARIES</translation>
     </message>
     <message>
-        <source>"NO_FRICTION"</source>
-        <translation>"NO FRICTION"</translation>
-    </message>
-    <message>
-        <source>"COEFFICIENT_TAKEN_IN_BOUNDARY_CONDITIONS_FILE"</source>
-        <translation>"COEFFICIENT TAKEN IN BOUNDARY CONDITIONS FILE"</translation>
-    </message>
-    <message>
-        <source>"IDEM"</source>
-        <translation>"IDEM"</translation>
-    </message>
-    <message>
-        <source>"IDEM"</source>
-        <translation>"IDEM"</translation>
-    </message>
-    <message>
-        <source>"IDEM"</source>
-        <translation>"IDEM"</translation>
-    </message>
-    <message>
-        <source>"NIKURADSE"</source>
-        <translation>"NIKURADSE"</translation>
-    </message>
-    <message>
         <source>SCHEME_FOR_DIFFUSION_OF_K_EPSILON</source>
         <translation>SCHEME FOR DIFFUSION OF K-EPSILON</translation>
-    </message>
-    <message>
-        <source>"NO_DIFFUSION"</source>
-        <translation>"NO DIFFUSION"</translation>
-    </message>
-    <message>
-        <source>"IMPLICIT"</source>
-        <translation>"IMPLICIT"</translation>
     </message>
     <message>
         <source>PRECONDITIONING_FOR_DIFFUSION_OF_VELOCITIES</source>
         <translation>PRECONDITIONING FOR DIFFUSION OF VELOCITIES</translation>
     </message>
     <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
-    </message>
-    <message>
         <source>PRECONDITIONING_FOR_DIFFUSION_OF_TRACERS</source>
         <translation>PRECONDITIONING FOR DIFFUSION OF TRACERS</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
     </message>
     <message>
         <source>MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_SEDIMENT</source>
@@ -419,216 +119,20 @@
         <translation>PRECONDITIONING FOR DIFFUSION OF K-EPSILON</translation>
     </message>
     <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
-    </message>
-    <message>
         <source>PRECONDITIONING_FOR_PROPAGATION</source>
         <translation>PRECONDITIONING FOR PROPAGATION</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
     </message>
     <message>
         <source>PRECONDITIONING_FOR_VERTICAL_VELOCITY</source>
         <translation>PRECONDITIONING FOR VERTICAL VELOCITY</translation>
     </message>
     <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_DIFFUSION_OF_VELOCITIES</source>
         <translation>SOLVER FOR DIFFUSION OF VELOCITIES</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_DIFFUSION_OF_TRACERS</source>
         <translation>SOLVER FOR DIFFUSION OF TRACERS</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
     </message>
     <message>
         <source>COUPLING_PERIOD_FOR_TOMAWAC</source>
@@ -639,108 +143,12 @@
         <translation>SOLVER FOR DIFFUSION OF K-EPSILON</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_PROPAGATION</source>
         <translation>SOLVER FOR PROPAGATION</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_VERTICAL_VELOCITY</source>
         <translation>SOLVER FOR VERTICAL VELOCITY</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
     </message>
     <message>
         <source>MAXIMUM_NUMBER_OF_ITERATIONS_FOR_DIFFUSION_OF_VELOCITIES</source>
@@ -779,48 +187,16 @@
         <translation>TREATMENT ON TIDAL FLATS FOR VELOCITIES</translation>
     </message>
     <message>
-        <source>"FORCED_TO_ZERO"</source>
-        <translation>"FORCED TO ZERO"</translation>
-    </message>
-    <message>
-        <source>"VALUE_BEFORE_MASKED"</source>
-        <translation>"VALUE BEFORE MASKED"</translation>
-    </message>
-    <message>
         <source>TREATMENT_ON_TIDAL_FLATS_FOR_TRACERS</source>
         <translation>TREATMENT ON TIDAL FLATS FOR TRACERS</translation>
-    </message>
-    <message>
-        <source>"FORCED_TO_ZERO"</source>
-        <translation>"FORCED TO ZERO"</translation>
-    </message>
-    <message>
-        <source>"VALUE_BEFORE_MASKED"</source>
-        <translation>"VALUE BEFORE MASKED"</translation>
     </message>
     <message>
         <source>BOUNDARY_CONDITION_ON_THE_BOTTOM</source>
         <translation>BOUNDARY CONDITION ON THE BOTTOM</translation>
     </message>
     <message>
-        <source>"LOG_LAW_FOR_VELOCITIES_ON_BOTTOM"</source>
-        <translation>"LOG LAW FOR VELOCITIES ON BOTTOM"</translation>
-    </message>
-    <message>
-        <source>"NO_SLIP_FOR_VELOCITIES_ON_BOTTOM"</source>
-        <translation>"NO SLIP FOR VELOCITIES ON BOTTOM"</translation>
-    </message>
-    <message>
         <source>TREATMENT_ON_TIDAL_FLATS_FOR_K_EPSILON</source>
         <translation>TREATMENT ON TIDAL FLATS FOR K-EPSILON</translation>
-    </message>
-    <message>
-        <source>"FORCED_TO_ZERO"</source>
-        <translation>"FORCED TO ZERO"</translation>
-    </message>
-    <message>
-        <source>"VALUE_BEFORE_MASKED"</source>
-        <translation>"VALUE BEFORE MASKED"</translation>
     </message>
     <message>
         <source>TIME_STEP</source>
@@ -967,256 +343,8 @@
         <translation>VARIABLES FOR 3D GRAPHIC PRINTOUTS</translation>
     </message>
     <message>
-        <source>"velocity_along_x_axis_(m/s)"</source>
-        <translation>"velocity along x axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_y_axis_(m/s)"</source>
-        <translation>"velocity along y axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_z_axis_(m/s)"</source>
-        <translation>"velocity along z axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"elevation_z_(m)"</source>
-        <translation>"elevation z (m)"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_1"</source>
-        <translation>"concentration for tracer 1"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_2"</source>
-        <translation>"concentration for tracer 2"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_3"</source>
-        <translation>"concentration for tracer 3"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_4"</source>
-        <translation>"concentration for tracer 4"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_5"</source>
-        <translation>"concentration for tracer 5"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_6"</source>
-        <translation>"concentration for tracer 6"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_7"</source>
-        <translation>"concentration for tracer 7"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_8"</source>
-        <translation>"concentration for tracer 8"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_tracer_9"</source>
-        <translation>"concentration for tracer 9"</translation>
-    </message>
-    <message>
-        <source>"concentrations_for_tracers_from_1_to_9"</source>
-        <translation>"concentrations for tracers from 1 to 9"</translation>
-    </message>
-    <message>
-        <source>"concentrations_for_tracers_from_10_to_99"</source>
-        <translation>"concentrations for tracers from 10 to 99"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_U_and_V_along_x_axis_(m2/s)"</source>
-        <translation>"viscosity for U and V along x axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_U_and_V_along_y_axis_(m2/s)"</source>
-        <translation>"viscosity for U and V along y axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_U_and_V_along_z_axis_(m2/s)"</source>
-        <translation>"viscosity for U and V along z axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_tracers_along_x_axis_(m2/s)"</source>
-        <translation>"viscosity for tracers along x axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_tracers_along_y_axis_(m2/s)"</source>
-        <translation>"viscosity for tracers along y axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"viscosity_for_tracers_along_z_axis_(m2/s)"</source>
-        <translation>"viscosity for tracers along z axis (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"Richardson_number_in_case_of_mixing_length_model"</source>
-        <translation>"Richardson number in case of mixing length model"</translation>
-    </message>
-    <message>
-        <source>"turbulent_energie_for_k_epsilon_model_(J/kg)"</source>
-        <translation>"turbulent energie for k-epsilon model (J/kg)"</translation>
-    </message>
-    <message>
-        <source>"dissipation_of_turbulent_energie_(W/kg)"</source>
-        <translation>"dissipation of turbulent energie (W/kg)"</translation>
-    </message>
-    <message>
-        <source>"dynamic_pressure_(multiplied_by_DT/RHO)"</source>
-        <translation>"dynamic pressure (multiplied by DT/RHO)"</translation>
-    </message>
-    <message>
-        <source>"hydrostatic_pressure_(in_Pascals)"</source>
-        <translation>"hydrostatic pressure (in Pascals)"</translation>
-    </message>
-    <message>
-        <source>"relative_density"</source>
-        <translation>"relative density"</translation>
-    </message>
-    <message>
-        <source>"private_variable_1"</source>
-        <translation>"private variable 1"</translation>
-    </message>
-    <message>
-        <source>"private_variable_2"</source>
-        <translation>"private variable 2"</translation>
-    </message>
-    <message>
-        <source>"private_variable_3"</source>
-        <translation>"private variable 3"</translation>
-    </message>
-    <message>
-        <source>"private_variable_4"</source>
-        <translation>"private variable 4"</translation>
-    </message>
-    <message>
         <source>VARIABLES_FOR_2D_GRAPHIC_PRINTOUTS</source>
         <translation>VARIABLES FOR 2D GRAPHIC PRINTOUTS</translation>
-    </message>
-    <message>
-        <source>"depth_averaged_velocity_along_x_axis_(m/s)"</source>
-        <translation>"depth averaged velocity along x axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"depth_averaged_velocity_along_y_axis_(m/s)"</source>
-        <translation>"depth averaged velocity along y axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"celerity_(m/s)"</source>
-        <translation>"celerity (m/s)"</translation>
-    </message>
-    <message>
-        <source>"water_depth_(m)"</source>
-        <translation>"water depth (m)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(m)"</source>
-        <translation>"free surface elevation (m)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation_(m)"</source>
-        <translation>"bottom elevation (m)"</translation>
-    </message>
-    <message>
-        <source>"TAx_concentrations_for_tracers,_x_is_the_tracer_number"</source>
-        <translation>"TAx concentrations for tracers, x is the tracer number"</translation>
-    </message>
-    <message>
-        <source>"Froude_number"</source>
-        <translation>"Froude number"</translation>
-    </message>
-    <message>
-        <source>"scalar_discharge_(m2/s)"</source>
-        <translation>"scalar discharge (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"discharge_along_x_(m2/s)"</source>
-        <translation>"discharge along x (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"discharge_along_y_(m2/s)"</source>
-        <translation>"discharge along y (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"norm_of_velocity_(m/s)"</source>
-        <translation>"norm of velocity (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_x_axis_(m/s)"</source>
-        <translation>"wind along x axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wind_along_y_axis_(m/s)"</source>
-        <translation>"wind along y axis (m/s)"</translation>
-    </message>
-    <message>
-        <source>"atmospheric_pressure_(Pa)"</source>
-        <translation>"atmospheric pressure (Pa)"</translation>
-    </message>
-    <message>
-        <source>"friction_coefficient"</source>
-        <translation>"friction coefficient"</translation>
-    </message>
-    <message>
-        <source>"non_erodible_bottom_elevation_(m)"</source>
-        <translation>"non erodible bottom elevation (m)"</translation>
-    </message>
-    <message>
-        <source>"thickness_of_the_sediment_bed_layer_(m)"</source>
-        <translation>"thickness of the sediment bed layer (m)"</translation>
-    </message>
-    <message>
-        <source>"erosion_rate_(kg/m2/s)"</source>
-        <translation>"erosion rate (kg/m2/s)"</translation>
-    </message>
-    <message>
-        <source>"deposition_flux_(kg/m2/s)"</source>
-        <translation>"deposition flux (kg/m2/s)"</translation>
-    </message>
-    <message>
-        <source>"_evolution_du_lit"</source>
-        <translation>" evolution du lit"</translation>
-    </message>
-    <message>
-        <source>"work_array_PRIVE_1"</source>
-        <translation>"work array PRIVE 1"</translation>
-    </message>
-    <message>
-        <source>"work_array_PRIVE_2"</source>
-        <translation>"work array PRIVE 2"</translation>
-    </message>
-    <message>
-        <source>"work_array_PRIVE_3"</source>
-        <translation>"work array PRIVE 3"</translation>
-    </message>
-    <message>
-        <source>"work_array_PRIVE_4"</source>
-        <translation>"work array PRIVE 4"</translation>
-    </message>
-    <message>
-        <source>"solid_discharge_(m2/s)"</source>
-        <translation>"solid discharge (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"solid_discharge_along_x_(m2/s)"</source>
-        <translation>"solid discharge along x (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"solid_discharge_along_y_(m2/s)"</source>
-        <translation>"solid discharge along y (m2/s)"</translation>
-    </message>
-    <message>
-        <source>"friction_velocity_(m/s)"</source>
-        <translation>"friction velocity (m/s)"</translation>
-    </message>
-    <message>
-        <source>"maximum_value_of_the_free_surface</source>
-        <translation>"maximum value of the free surface</translation>
-    </message>
-    <message>
-        <source>"time_corresponding_to_this_maximum_elevation_(s)"</source>
-        <translation>"time corresponding to this maximum elevation (s)"</translation>
     </message>
     <message>
         <source>GEOMETRY_FILE</source>
@@ -1239,7 +367,7 @@
         <translation>PREVIOUS COMPUTATION FILE</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE</source>
+        <source>RD_RESULT_FILE</source>
         <translation>3D RESULT FILE</translation>
     </message>
     <message>
@@ -1251,7 +379,7 @@
         <translation>BOTTOM TOPOGRAPHY FILE</translation>
     </message>
     <message>
-        <source>2D_RESULT_FILE</source>
+        <source>ED_RESULT_FILE</source>
         <translation>2D RESULT FILE</translation>
     </message>
     <message>
@@ -1283,11 +411,11 @@
         <translation>BINARY BOUNDARY DATA FILE</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_BINARY</source>
+        <source>RD_RESULT_FILE_BINARY</source>
         <translation>3D RESULT FILE BINARY</translation>
     </message>
     <message>
-        <source>2D_RESULT_FILE_BINARY</source>
+        <source>ED_RESULT_FILE_BINARY</source>
         <translation>2D RESULT FILE BINARY</translation>
     </message>
     <message>
@@ -1371,84 +499,8 @@
         <translation>SOLVER FOR DIFFUSION OF THE SEDIMENT</translation>
     </message>
     <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
-    </message>
-    <message>
         <source>PRECONDITIONING_FOR_DIFFUSION_OF_THE_SEDIMENT</source>
         <translation>PRECONDITIONING FOR DIFFUSION OF THE SEDIMENT</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
     </message>
     <message>
         <source>DENSITY_OF_THE_SEDIMENT</source>
@@ -1515,84 +567,8 @@
         <translation>PRECONDITIONING FOR PPE</translation>
     </message>
     <message>
-        <source>"no_preconditioning"</source>
-        <translation>"no preconditioning"</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed"</source>
-        <translation>"diagonal condensed"</translation>
-    </message>
-    <message>
-        <source>"diagonal_with_absolute_values"</source>
-        <translation>"diagonal with absolute values"</translation>
-    </message>
-    <message>
-        <source>"Crout"</source>
-        <translation>"Crout"</translation>
-    </message>
-    <message>
-        <source>"Gauss_Seidel_EBE"</source>
-        <translation>"Gauss-Seidel EBE"</translation>
-    </message>
-    <message>
-        <source>"Matrix_defined_by_the_user"</source>
-        <translation>"Matrix defined by the user"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_Crout"</source>
-        <translation>"diagonal and Crout"</translation>
-    </message>
-    <message>
-        <source>"direct_solver_on_the_vertical"</source>
-        <translation>"direct solver on the vertical"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed_and_Crout"</source>
-        <translation>"diagonal condensed and Crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_direct_solver_on_the_vertical"</source>
-        <translation>"diagonal and direct solver on the vertical"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_PPE</source>
         <translation>SOLVER FOR PPE</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"conjugate residual"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"conjugate gradient on a normal equation"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"minimum error"</translation>
-    </message>
-    <message>
-        <source>"squared_conjugate_gradient"</source>
-        <translation>"squared conjugate gradient"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
-        <source>"direct_solver"</source>
-        <translation>"direct solver"</translation>
     </message>
     <message>
         <source>MAXIMUM_NUMBER_OF_ITERATIONS_FOR_PPE</source>
@@ -1639,7 +615,7 @@
         <translation>NON-HYDROSTATIC VERSION</translation>
     </message>
     <message>
-        <source>2D_CONTINUATION</source>
+        <source>ED_CONTINUATION</source>
         <translation>2D CONTINUATION</translation>
     </message>
     <message>
@@ -1651,72 +627,12 @@
         <translation>LAW OF BOTTOM FRICTION</translation>
     </message>
     <message>
-        <source>"NO_FRICTION"</source>
-        <translation>"NO FRICTION"</translation>
-    </message>
-    <message>
-        <source>"HAALAND"</source>
-        <translation>"HAALAND"</translation>
-    </message>
-    <message>
-        <source>"CHEZY"</source>
-        <translation>"CHEZY"</translation>
-    </message>
-    <message>
-        <source>"STRICKLER"</source>
-        <translation>"STRICKLER"</translation>
-    </message>
-    <message>
-        <source>"MANNING"</source>
-        <translation>"MANNING"</translation>
-    </message>
-    <message>
-        <source>"NIKURADSE"</source>
-        <translation>"NIKURADSE"</translation>
-    </message>
-    <message>
         <source>HORIZONTAL_TURBULENCE_MODEL</source>
         <translation>HORIZONTAL TURBULENCE MODEL</translation>
     </message>
     <message>
-        <source>"CONSTANT_VISCOSITY"</source>
-        <translation>"CONSTANT VISCOSITY"</translation>
-    </message>
-    <message>
-        <source>"K_EPSILON_MODEL"</source>
-        <translation>"K-EPSILON MODEL"</translation>
-    </message>
-    <message>
-        <source>"SMAGORINSKI"</source>
-        <translation>"SMAGORINSKI"</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>"K_OMEGA_MODEL"</source>
-        <translation>"K-OMEGA MODEL"</translation>
-    </message>
-    <message>
         <source>SPATIAL_PROJECTION_TYPE</source>
         <translation>SPATIAL PROJECTION TYPE</translation>
-    </message>
-    <message>
-        <source>"CARTESIAN,_NOT_GEOREFERENCED"</source>
-        <translation>"CARTESIAN, NOT GEOREFERENCED"</translation>
-    </message>
-    <message>
-        <source>"MERCATOR"</source>
-        <translation>"MERCATOR"</translation>
-    </message>
-    <message>
-        <source>"LATITUDE_LONGITUDE"</source>
-        <translation>"LATITUDE LONGITUDE"</translation>
     </message>
     <message>
         <source>LATITUDE_OF_ORIGIN_POINT</source>
@@ -1839,26 +755,6 @@
         <translation>VELOCITY PROFILES</translation>
     </message>
     <message>
-        <source>"constant_normal_profile"</source>
-        <translation>"constant normal profile"</translation>
-    </message>
-    <message>
-        <source>"ubor_and_vbor_given_in_the______conlim_file"</source>
-        <translation>"ubor and vbor given in the      conlim file"</translation>
-    </message>
-    <message>
-        <source>"normal_velocity_given_in_ubor_in_the_conlim___________file"</source>
-        <translation>"normal velocity given in ubor in the conlim           file"</translation>
-    </message>
-    <message>
-        <source>"Velocity=square_root_elevation"</source>
-        <translation>"Velocity=square root elevation"</translation>
-    </message>
-    <message>
-        <source>"like_4_with_virtual_depth,_see_help"</source>
-        <translation>"like 4 with virtual depth, see help"</translation>
-    </message>
-    <message>
         <source>MESH_TRANSFORMATION</source>
         <translation>MESH TRANSFORMATION</translation>
     </message>
@@ -1867,52 +763,12 @@
         <translation>TREATMENT OF FLUXES AT THE BOUNDARIES</translation>
     </message>
     <message>
-        <source>"Priority_to_prescribed_values"</source>
-        <translation>"Priority to prescribed values"</translation>
-    </message>
-    <message>
-        <source>"Priority_to_fluxes"</source>
-        <translation>"Priority to fluxes"</translation>
-    </message>
-    <message>
         <source>VELOCITY_VERTICAL_PROFILES</source>
         <translation>VELOCITY VERTICAL PROFILES</translation>
     </message>
     <message>
-        <source>"User_defined"</source>
-        <translation>"User defined"</translation>
-    </message>
-    <message>
-        <source>"Constant"</source>
-        <translation>"Constant"</translation>
-    </message>
-    <message>
-        <source>"Logarithmic"</source>
-        <translation>"Logarithmic"</translation>
-    </message>
-    <message>
         <source>TRACERS_VERTICAL_PROFILES</source>
         <translation>TRACERS VERTICAL PROFILES</translation>
-    </message>
-    <message>
-        <source>"User_defined"</source>
-        <translation>"User defined"</translation>
-    </message>
-    <message>
-        <source>"Constant"</source>
-        <translation>"Constant"</translation>
-    </message>
-    <message>
-        <source>"Constant_or_Rouse_if_sediment"</source>
-        <translation>"Constant or Rouse if sediment"</translation>
-    </message>
-    <message>
-        <source>_"Normalized_Rouse_profile_and_imposed_conc"</source>
-        <translation> "Normalized Rouse profile and imposed conc"</translation>
-    </message>
-    <message>
-        <source>_"Modified_Rouse_profile_accounting_for_molecular_viscosity"</source>
-        <translation> "Modified Rouse profile accounting for molecular viscosity"</translation>
     </message>
     <message>
         <source>SUPG_OPTION</source>
@@ -2067,11 +923,11 @@
         <translation>GEOMETRY FILE FORMAT</translation>
     </message>
     <message>
-        <source>2D_RESULT_FILE_FORMAT</source>
+        <source>ED_RESULT_FILE_FORMAT</source>
         <translation>2D RESULT FILE FORMAT</translation>
     </message>
     <message>
-        <source>3D_RESULT_FILE_FORMAT</source>
+        <source>RD_RESULT_FILE_FORMAT</source>
         <translation>3D RESULT FILE FORMAT</translation>
     </message>
     <message>
@@ -2159,38 +1015,6 @@
         <translation>OPTION FOR TIDAL BOUNDARY CONDITIONS</translation>
     </message>
     <message>
-        <source>"No_tide"</source>
-        <translation>"No tide"</translation>
-    </message>
-    <message>
-        <source>"Real_tide_(recommended_methodology)"</source>
-        <translation>"Real tide (recommended methodology)"</translation>
-    </message>
-    <message>
-        <source>"Astronomical_tide"</source>
-        <translation>"Astronomical tide"</translation>
-    </message>
-    <message>
-        <source>"Mean_spring_tide"</source>
-        <translation>"Mean spring tide"</translation>
-    </message>
-    <message>
-        <source>"Mean_tide"</source>
-        <translation>"Mean tide"</translation>
-    </message>
-    <message>
-        <source>"Mean_neap_tide"</source>
-        <translation>"Mean neap tide"</translation>
-    </message>
-    <message>
-        <source>"Astronomical_neap_tide"</source>
-        <translation>"Astronomical neap tide"</translation>
-    </message>
-    <message>
-        <source>"Real_tide_(methodology_before_2010)"</source>
-        <translation>"Real tide (methodology before 2010)"</translation>
-    </message>
-    <message>
         <source>HARMONIC_CONSTANTS_FILE</source>
         <translation>HARMONIC CONSTANTS FILE</translation>
     </message>
@@ -2227,84 +1051,12 @@
         <translation>TIDAL DATA BASE</translation>
     </message>
     <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"NO DEFAULT VALUE"</translation>
-    </message>
-    <message>
-        <source>"JMJ"</source>
-        <translation>"JMJ"</translation>
-    </message>
-    <message>
-        <source>"TPXO"</source>
-        <translation>"TPXO"</translation>
-    </message>
-    <message>
-        <source>"MISCELLANEOUS_(LEGOS_NEA,_FES20XX,_PREVIMER...)"</source>
-        <translation>"MISCELLANEOUS (LEGOS-NEA, FES20XX, PREVIMER...)"</translation>
-    </message>
-    <message>
         <source>GEOGRAPHIC_SYSTEM</source>
         <translation>GEOGRAPHIC SYSTEM</translation>
     </message>
     <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"NO DEFAULT VALUE"</translation>
-    </message>
-    <message>
-        <source>"DEFINED_BY_USER"</source>
-        <translation>"DEFINED BY USER"</translation>
-    </message>
-    <message>
-        <source>"WGS84_LONGITUDE/LATITUDE_IN_REAL_DEGREES"</source>
-        <translation>"WGS84 LONGITUDE/LATITUDE IN REAL DEGREES"</translation>
-    </message>
-    <message>
-        <source>"WGS84_NORTHERN_UTM"</source>
-        <translation>"WGS84 NORTHERN UTM"</translation>
-    </message>
-    <message>
-        <source>"WGS84_SOUTHERN_UTM"</source>
-        <translation>"WGS84 SOUTHERN UTM"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT"</source>
-        <translation>"LAMBERT"</translation>
-    </message>
-    <message>
-        <source>"MERCATOR_PROJECTION"</source>
-        <translation>"MERCATOR PROJECTION"</translation>
-    </message>
-    <message>
         <source>ZONE_NUMBER_IN_GEOGRAPHIC_SYSTEM</source>
         <translation>ZONE NUMBER IN GEOGRAPHIC SYSTEM</translation>
-    </message>
-    <message>
-        <source>"NO_DEFAULT_VALUE"</source>
-        <translation>"NO DEFAULT VALUE"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_1_NORTH"</source>
-        <translation>"LAMBERT 1 NORTH"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_2_CENTER"</source>
-        <translation>"LAMBERT 2 CENTER"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_3_SOUTH"</source>
-        <translation>"LAMBERT 3 SOUTH"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_4_CORSICA"</source>
-        <translation>"LAMBERT 4 CORSICA"</translation>
-    </message>
-    <message>
-        <source>"LAMBERT_2_EXTENDED"</source>
-        <translation>"LAMBERT 2 EXTENDED"</translation>
-    </message>
-    <message>
-        <source>"UTM_ZONE,_E.G."</source>
-        <translation>"UTM ZONE, E.G."</translation>
     </message>
     <message>
         <source>MINOR_CONSTITUENTS_INFERENCE</source>
@@ -2331,28 +1083,8 @@
         <translation>OPTION FOR CHARACTERISTICS</translation>
     </message>
     <message>
-        <source>"strong"</source>
-        <translation>"strong"</translation>
-    </message>
-    <message>
-        <source>"weak"</source>
-        <translation>"weak"</translation>
-    </message>
-    <message>
         <source>NUMBER_OF_GAUSS_POINTS_FOR_WEAK_CHARACTERISTICS</source>
         <translation>NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS</translation>
-    </message>
-    <message>
-        <source>"1_point"</source>
-        <translation>"1 point"</translation>
-    </message>
-    <message>
-        <source>"3_points"</source>
-        <translation>"3 points"</translation>
-    </message>
-    <message>
-        <source>"6_points"</source>
-        <translation>"6 points"</translation>
     </message>
     <message>
         <source>MASS_LUMPING_FOR_WEAK_CHARACTERISTICS</source>
@@ -2377,14 +1109,6 @@
     <message>
         <source>TYPE_OF_SOURCES</source>
         <translation>TYPE OF SOURCES</translation>
-    </message>
-    <message>
-        <source>"Normal"</source>
-        <translation>"Normal"</translation>
-    </message>
-    <message>
-        <source>"Dirac"</source>
-        <translation>"Dirac"</translation>
     </message>
     <message>
         <source>ADVECTION_DIFFUSION_SCHEME_WITH_SETTLING_VELOCITY</source>
@@ -2509,14 +1233,6 @@
     <message>
         <source>OPTION_FOR_THE_BOUNDARY_CONDITIONS_OF_K_EPSILON</source>
         <translation>OPTION FOR THE BOUNDARY CONDITIONS OF K-EPSILON</translation>
-    </message>
-    <message>
-        <source>"no_turbulence"</source>
-        <translation>"no turbulence"</translation>
-    </message>
-    <message>
-        <source>"Hans_and_Burchard"</source>
-        <translation>"Hans and Burchard"</translation>
     </message>
     <message>
         <source>WAQTEL_STEERING_FILE</source>

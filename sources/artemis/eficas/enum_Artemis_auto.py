@@ -100,8 +100,8 @@ TelemacdicoEn = {
     4:"regime transitoire",
   },
 'BOTTOM_FRICTION_LAW' : {
-    1:Formulation de Kostense integrant le calcul de Ue (1986)",
-    2:Formulation de Putnam \& Johnson (1949)",
+    1:"Formulation de Kostense integrant le calcul de Ue (1986)",
+    2:"Formulation de Putnam \& Johnson (1949)",
   },
 'RAPIDLY_VARYING_TOPOGRAPHY' : {
     0:"BERKHOFF SIMPLE",
@@ -210,8 +210,8 @@ TelemacdicoFr = {
     4:"regime transitoire",
   },
 'BOTTOM_FRICTION_LAW' : {
-    1:Formulation de Kostense integrant le calcul de Ue (1986)",
-    2:Formulation de Putnam \& Johnson (1949)",
+    1:"Formulation de Kostense integrant le calcul de Ue (1986)",
+    2:"Formulation de Putnam \& Johnson (1949)",
   },
 'RAPIDLY_VARYING_TOPOGRAPHY' : {
     0:"BERKHOFF SIMPLE",
@@ -479,4 +479,69 @@ DicoCasEnToCata = {
   'DESCRIPTION DES LIBRARIES':'DESCRIPTION_DES_LIBRARIES',
   'DEFAULT EXECUTABLE':'DEFAULT_EXECUTABLE',
   'DEFAULT PARALLEL EXECUTABLE':'DEFAULT_PARALLEL_EXECUTABLE',
+}
+DicoEnumCasFrToEnumCasEn = {
+'RESULTS_FILE_BINARY':{
+  "IBM":"IBM",
+  "I3E":"I3E",
+  "STD":"STD",
+},
+
+'INITIAL_CONDITIONS':{
+  "COTE NULLE":"ZERO ELEVATION",
+  "COTE CONSTANTE":"CONSTANT ELEVATION",
+  "HAUTEUR NULLE":"ZERO DEPTH",
+  "HAUTEUR CONSTANTE":"CONSTANT DEPTH",
+  "PARTICULIERES":"SPECIAL",
+},
+
+'GEOMETRY_FILE_BINARY':{
+  "IBM":"IBM",
+  "I3E":"I3E",
+  "STD":"STD",
+},
+
+'PARTITIONING_TOOL':{
+  "METIS":"METIS",
+  "SCOTCH":"SCOTCH",
+  "PARMETIS":"PARMETIS",
+  "PTSCOTCH":"PTSCOTCH",
+},
+
+'GEOMETRY_FILE_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
+'RESULTS_FILE_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
+'REFERENCE_FILE_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
+'TOMAWAC_DATA_FILE_1_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
+'BINARY_DATA_FILE_1_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
+'BINARY_DATA_FILE_2_FORMAT':{
+  "SERAFIN":"SERAFIN",
+  "SERAFIND":"SERAFIND",
+  "MED":"MED",
+},
+
 }

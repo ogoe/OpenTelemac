@@ -15,280 +15,8 @@
         <translation>VARIABLES POUR LES SORTIES GRAPHIQUES</translation>
     </message>
     <message>
-        <source>"velocity_along_x_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_y_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wawe_celerity_(m/s)"</source>
-        <translation>"celerite"</translation>
-    </message>
-    <message>
-        <source>"water_depth_(m)"</source>
-        <translation>"hauteur d eau (m)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(m)"</source>
-        <translation>"cote de la surface libre (m)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation_(m)"</source>
-        <translation>"cote du fond (m)"</translation>
-    </message>
-    <message>
-        <source>"Froude_number"</source>
-        <translation>"nombre de Froude"</translation>
-    </message>
-    <message>
-        <source>"scalar_flowrate_of_fluid_(m2/s)"</source>
-        <translation>"debit"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_x_axis_(m2/s)"</source>
-        <translation>"composante du debit selon l axe des x"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_y_axis_(m2/s)"</source>
-        <translation>"composante du debit selon l axe des y"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_(m2/s)"</source>
-        <translation>"debit solide"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_along_x_axis_(m2/s)"</source>
-        <translation>"composante du debit solide selon l axe des x"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_along_y_axis_(m2/s)"</source>
-        <translation>"composante du debit solide selon l axe des y"</translation>
-    </message>
-    <message>
-        <source>"bottom_evolution_(m)"</source>
-        <translation>"evolution du fond"</translation>
-    </message>
-    <message>
-        <source>"non_erodable_bottom"</source>
-        <translation>"fonds non erodables"</translation>
-    </message>
-    <message>
-        <source>"total_bed_roughness_(m)"</source>
-        <translation>"hauteur de houle"</translation>
-    </message>
-    <message>
-        <source>"Bed_Shear_stress_(Totalfriction)_(N/m2)"</source>
-        <translation>"periode de houle"</translation>
-    </message>
-    <message>
-        <source>_"Skin_friction_correction_factor"</source>
-        <translation>"wave orbital velocity (m/s)"</translation>
-    </message>
-    <message>
-        <source>_"Mean_grain_diameter"</source>
-        <translation>"coefficient de Rugosite totale (m)"</translation>
-    </message>
-    <message>
-        <source>"wave_angle_with_axis_Oy_(deg)"</source>
-        <translation>"Contrainte de frottement(N/m2)"</translation>
-    </message>
-    <message>
-        <source>"suspended_load_transport_rate_(m2/s)"</source>
-        <translation> "Coefficient de correction pour frottement de peau"</translation>
-    </message>
-    <message>
-        <source>"bed_load_transport_rate_(m2/s)"</source>
-        <translation> "Diametre moyen du sediment"</translation>
-    </message>
-    <message>
-        <source>"wave_height"</source>
-        <translation>"angle entre la houle et l'axe Oy (deg)"</translation>
-    </message>
-    <message>
-        <source>"wave_period"</source>
-        <translation>"taux de transport en suspension"</translation>
-    </message>
-    <message>
-        <source>"wave_orbital_velocity_(m/s)"</source>
-        <translation>"taux de transport par charriage"</translation>
-    </message>
-    <message>
-        <source>"fraction_of_sediment_of_class_i_in_the_first_layer"</source>
-        <translation>"fraction de sediment de la classe i dans la premiere couche"</translation>
-    </message>
-    <message>
-        <source>"fraction_of_sediment_of_class_i_in_the_second_layer"</source>
-        <translation>"fraction de sediment de la classe i dans la deuxieme couche"</translation>
-    </message>
-    <message>
-        <source>"fraction_of_sediment_of_class_i_in_the_k_layer"</source>
-        <translation>"fraction of sediment of class i in the k layer"</translation>
-    </message>
-    <message>
-        <source>"thickness_of_the_k_layer"</source>
-        <translation>"thickness of the k layer"</translation>
-    </message>
-    <message>
-        <source>"concentration_of_bed_layer_k"</source>
-        <translation>"concentration of bed layer k"</translation>
-    </message>
-    <message>
-        <source>"bed_load_transport_rate_of_sediment_of_class_i"</source>
-        <translation>"debit solide pour la classe i"</translation>
-    </message>
-    <message>
-        <source>"concentration_volumic_or_mass_concentration_for_class_i"</source>
-        <translation>"concentration volumique ou g/l pour la classe i"</translation>
-    </message>
-    <message>
-        <source>"saturated_concentration_(kg/m3)"</source>
-        <translation>"concentration volumique equil ou g/l"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_A"</source>
-        <translation>"variable supplementaire A"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_G"</source>
-        <translation>"variable supplementaire G"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_L"</source>
-        <translation>"variable supplementaire L"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_O"</source>
-        <translation>"variable supplementaire O"</translation>
-    </message>
-    <message>
         <source>VARIABLES_TO_BE_PRINTED</source>
         <translation>VARIABLES A IMPRIMER</translation>
-    </message>
-    <message>
-        <source>"velocity_along_x_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des x (m/s)"</translation>
-    </message>
-    <message>
-        <source>"velocity_along_y_axis_(m/s)"</source>
-        <translation>"vitesse suivant l axe des y (m/s)"</translation>
-    </message>
-    <message>
-        <source>"wawe_celerity_(m/s)"</source>
-        <translation>"celerite"</translation>
-    </message>
-    <message>
-        <source>"water_depth_(m)"</source>
-        <translation>"hauteur d eau (m)"</translation>
-    </message>
-    <message>
-        <source>"free_surface_elevation_(m)"</source>
-        <translation>"cote de la surface libre (m)"</translation>
-    </message>
-    <message>
-        <source>"bottom_elevation_(m)"</source>
-        <translation>"cote du fond (m)"</translation>
-    </message>
-    <message>
-        <source>"Froude_number"</source>
-        <translation>"nombre de Froude"</translation>
-    </message>
-    <message>
-        <source>"scalar_flowrate_of_fluid_(m2/s)"</source>
-        <translation>"debit"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_x_axis_(m2/s)"</source>
-        <translation>"composante du debit selon l axe des x"</translation>
-    </message>
-    <message>
-        <source>"flowrate_along_y_axis_(m2/s)"</source>
-        <translation>"composante du debit selon l axe des y"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_(m2/s)"</source>
-        <translation>"debit solide"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_along_x_axis_(m2/s)"</source>
-        <translation>"composante du debit solide selon l axe des x"</translation>
-    </message>
-    <message>
-        <source>"bed_load_discharge_along_y_axis_(m2/s)"</source>
-        <translation>"composante du debit solide selon l axe des y"</translation>
-    </message>
-    <message>
-        <source>"bottom_evolution_(m)"</source>
-        <translation>"evolution du fond"</translation>
-    </message>
-    <message>
-        <source>"non_erodable_bottom"</source>
-        <translation>"fonds non erodables"</translation>
-    </message>
-    <message>
-        <source>"bed_friction_coefficient_(m_if_Nikuradse)"</source>
-        <translation>"hauteur de houle"</translation>
-    </message>
-    <message>
-        <source>"mean_bottom_friction_(N/m2)"</source>
-        <translation>"periode de houle"</translation>
-    </message>
-    <message>
-        <source>"wave_angle_with_axis_Oy_(deg)"</source>
-        <translation>"coefficient de frottement (m)"</translation>
-    </message>
-    <message>
-        <source>"wave_height"</source>
-        <translation>"frottement moyen (N/m2)"</translation>
-    </message>
-    <message>
-        <source>"wave_period"</source>
-        <translation>"angle entre la houle et l'axe Oy (deg)"</translation>
-    </message>
-    <message>
-        <source>"fraction_of_sediment_of_class_i_in_the_first_layer"</source>
-        <translation>"fraction de sediment de la classe i dans la premiere couche"</translation>
-    </message>
-    <message>
-        <source>"fraction_of_sediment_of_class_i_in_the_second_layer"</source>
-        <translation>"fraction de sediment de la classe i dans la deuxieme couche"</translation>
-    </message>
-    <message>
-        <source>"bed_load_transport_rate_of_sediment_of_class_i"</source>
-        <translation>"debit solide pour la classe i"</translation>
-    </message>
-    <message>
-        <source>_"thicknes_of_bed_layer_i"</source>
-        <translation>"concentration pour la classe i"</translation>
-    </message>
-    <message>
-        <source>_"concentration_of_bed_layer_i_"</source>
-        <translation> "thicknes of bed layer i"</translation>
-    </message>
-    <message>
-        <source>"concentration_for_class_i"</source>
-        <translation> "concentration of bed layer i "</translation>
-    </message>
-    <message>
-        <source>"saturated_concentration_(kg/m3)"</source>
-        <translation>"saturated concentration (kg/m3)"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_A"</source>
-        <translation>"variable supplementaire A"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_G"</source>
-        <translation>"variable supplementaire G"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_L"</source>
-        <translation>"variable supplementaire L"</translation>
-    </message>
-    <message>
-        <source>"supplementary_variable_O"</source>
-        <translation>"variable supplementaire O"</translation>
     </message>
     <message>
         <source>USER_CRAY</source>
@@ -451,10 +179,6 @@
         <translation>CODE DE CALCUL UTILISE POUR L'HYDRODYNAMIQUE</translation>
     </message>
     <message>
-        <source>"TELEMAC_2D"</source>
-        <translation>"TELEMAC-2D"</translation>
-    </message>
-    <message>
         <source>NUMBER_OF_SUB_ITERATIONS</source>
         <translation>NOMBRE DE SOUS-ITERATIONS</translation>
     </message>
@@ -471,60 +195,12 @@
         <translation>SOLVEUR</translation>
     </message>
     <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"equation normale"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"gradient conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"residu conjuge"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"erreur minimale"</translation>
-    </message>
-    <message>
-        <source>"cgstab"</source>
-        <translation>"cgstab"</translation>
-    </message>
-    <message>
-        <source>"gmres"</source>
-        <translation>"gmres"</translation>
-    </message>
-    <message>
         <source>SOLVER_OPTION</source>
         <translation>OPTION DU SOLVEUR</translation>
     </message>
     <message>
         <source>PRECONDITIONING</source>
         <translation>PRECONDITIONNEMENT</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"aucun"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensee"</source>
-        <translation>"diagonal condensee"</translation>
-    </message>
-    <message>
-        <source>"crout"</source>
-        <translation>"crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_and_crout"</source>
-        <translation>"diagonal et crout"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensed__and_crout"</source>
-        <translation>"diagonal condense et crout"</translation>
     </message>
     <message>
         <source>MAXIMUM_NUMBER_OF_ITERATIONS_FOR_SOLVER</source>
@@ -663,64 +339,8 @@
         <translation>FORME DE LA CONVECTION</translation>
     </message>
     <message>
-        <source>"CHARACTERISTICS"</source>
-        <translation>"CARACTERISTIQUES"</translation>
-    </message>
-    <message>
-        <source>"SUPG"</source>
-        <translation>"SUPG"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_N_SCHEME"</source>
-        <translation>"SCHEMA N CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_N_SCHEME"</source>
-        <translation>"SCHEMA N CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"CONSERVATIVE_PSI_SCHEME"</source>
-        <translation>"SCHEMA PSI CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"NON_CONSERVATIVE_PSI_SCHEME"</source>
-        <translation>"SCHEMA PSI NON CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"IMPLICIT_NON_CONSERVATIVE_N_SCHEME"</source>
-        <translation>"SCHEMA N IMPLICITE NON CONSERVATIF"</translation>
-    </message>
-    <message>
-        <source>"EDGE_BASED_N_SCHEME"</source>
-        <translation>"SCHEMA N PAR SEGMENTS"</translation>
-    </message>
-    <message>
-        <source>"EDGE_BASED_N_SCHEME"</source>
-        <translation>"SCHEMA N PAR SEGMENTS"</translation>
-    </message>
-    <message>
         <source>SOLVER_FOR_SUSPENSION</source>
         <translation>SOLVEUR POUR LA SUSPENSION</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient"</source>
-        <translation>"gradient conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_residual"</source>
-        <translation>"residu conjuge"</translation>
-    </message>
-    <message>
-        <source>"conjugate_gradient_on_a_normal_equation"</source>
-        <translation>"gradient conjuge sur equation normale"</translation>
-    </message>
-    <message>
-        <source>"minimum_error"</source>
-        <translation>"erreur minimale"</translation>
-    </message>
-    <message>
-        <source>"gmres_(see_option_for_the_solver_for_tracer_diffusion)"</source>
-        <translation>"gmres (voir ausi option du solveur)"</translation>
     </message>
     <message>
         <source>SOLVER_OPTION_FOR_SUSPENSION</source>
@@ -729,22 +349,6 @@
     <message>
         <source>PRECONDITIONING_FOR_SUSPENSION</source>
         <translation>PRECONDITIONNEMENT POUR LA SUSPENSION</translation>
-    </message>
-    <message>
-        <source>"diagonal"</source>
-        <translation>"diagonal"</translation>
-    </message>
-    <message>
-        <source>"no_preconditioning"</source>
-        <translation>"aucun"</translation>
-    </message>
-    <message>
-        <source>"diagonal_condensee"</source>
-        <translation>"diagonal condensee"</translation>
-    </message>
-    <message>
-        <source>"crout"</source>
-        <translation>"crout"</translation>
     </message>
     <message>
         <source>MAXIMUM_NUMBER_OF_ITERATIONS_FOR_SOLVER_FOR_SUSPENSION</source>
@@ -767,14 +371,6 @@
         <translation>OPTION POUR LA DIFFUSION DU TRACEUR</translation>
     </message>
     <message>
-        <source>"div(_nu_grad(T)_)"</source>
-        <translation>"div( nu grad(T) )"</translation>
-    </message>
-    <message>
-        <source>"1/h_div_(_h_nu_grad(T)"</source>
-        <translation>"1/h div ( h nu grad(T)"</translation>
-    </message>
-    <message>
         <source>OPTION_FOR_THE_DISPERSION</source>
         <translation>OPTION POUR LA DISPERSION</translation>
     </message>
@@ -783,36 +379,8 @@
         <translation>FORMULATION POUR DEPOT ET EROSION</translation>
     </message>
     <message>
-        <source>"KRONE_ET_PARTHENIADES"</source>
-        <translation>"KRONE ET PARTHENIADES"</translation>
-    </message>
-    <message>
-        <source>"FREDSOE_/_ROUSE"</source>
-        <translation>"FREDSOE / ROUSE"</translation>
-    </message>
-    <message>
         <source>LAW_OF_BOTTOM_FRICTION</source>
         <translation>LOI DE FROTTEMENT SUR LE FOND</translation>
-    </message>
-    <message>
-        <source>"_"</source>
-        <translation>" "</translation>
-    </message>
-    <message>
-        <source>"CHEZY"</source>
-        <translation>"CHEZY"</translation>
-    </message>
-    <message>
-        <source>"STRICKLER"</source>
-        <translation>"STRICKLER"</translation>
-    </message>
-    <message>
-        <source>"MANNING"</source>
-        <translation>"MANNING"</translation>
-    </message>
-    <message>
-        <source>"NIKURADSE"</source>
-        <translation>"NIKURADSE"</translation>
     </message>
     <message>
         <source>TETA_SUSPENSION</source>
@@ -1037,14 +605,6 @@
     <message>
         <source>TREATMENT_OF_FLUXES_AT_THE_BOUNDARIES</source>
         <translation>TRAITEMENT DES FLUX AUX FRONTIERES</translation>
-    </message>
-    <message>
-        <source>"Priority_to_prescribed_values"</source>
-        <translation>"Priorite aux valeurs imposees"</translation>
-    </message>
-    <message>
-        <source>"Priority_to_fluxes"</source>
-        <translation>"Priorite aux flux"</translation>
     </message>
     <message>
         <source>CONSOLIDATION_MODEL</source>

@@ -44,8 +44,9 @@ JdC = JDC_CATA (code = 'TELEMAC',
 # Catalog entry for the MAP function : c_pre_interfaceBody_mesh
 # =======================================================================
 
+VERSION_CATALOGUE="TRUNK"
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_FILES = PROC(nom= "INPUT_OUTPUT,_FILES",op = None,
+INPUT_OUTPUT__FILES = PROC(nom= "INPUT_OUTPUT__FILES",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     GEOMETRY_FILE_FORMAT = SIMP(statut ='f',
@@ -65,12 +66,12 @@ Possible values are:
 - MED     : MED format based on HDF5""",
     ),
 #   -----------------------------------
-    NAMES = FACT(statut='o',
+    NAMES = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         GEOMETRY_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'), max='**',
             fr = """Nom du fichier contenant le maillage du calcul a realiser.""",
             ang = """Name of the file containing the mesh. This file may also
 contain the topography and the friction coefficients.""",
@@ -78,7 +79,7 @@ contain the topography and the friction coefficients.""",
 #       -----------------------------------
         HYDRODYNAMIC_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'), min=0, max='**',
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Nom d''un fichier contenant les resultats d''un calcul
 precedent realise sur le meme maillage. L''hydrodynamique
@@ -110,7 +111,7 @@ of the wave data in the subroutine CONDIM.""",
 #       -----------------------------------
         LIQUID_BOUNDARIES_FILE = SIMP(statut ='f',
 #       -----------------------------------
-            typ = ('Fichier','All Files (*)'),
+            typ = ('Fichier','All Files (*)'), max='**',
             defaut = '',
             fr = """Fichier de variations en temps des conditions aux limites.
 Les donnees de ce fichier sont sur le canal SIS\_FILES(SISLIQ)%LU.""",
@@ -133,7 +134,7 @@ are read on channel SIS\_FILES(SISLIQ)%LU.""",
 #       -----------------------------------
         NUMBER_OF_DIFFERENTIATORS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """Definit le nombre de differentiateurs utilisateurs.""",
             ang = """Defines the number of user differentiators""",
@@ -158,10 +159,10 @@ are read on channel SIS\_FILES(SISLIQ)%LU.""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_INFORMATION = PROC(nom= "INPUT_OUTPUT,_INFORMATION",op = None,
+INPUT_OUTPUT__INFORMATION = PROC(nom= "INPUT_OUTPUT__INFORMATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    COMPUTATIONAL_INFORMATION = FACT(statut='o',
+    COMPUTATIONAL_INFORMATION = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         TITLE = SIMP(statut ='f',
@@ -177,7 +178,7 @@ This title shall be marked on the printouts.""",
         RELEASE = SIMP(statut ='f',
 #       -----------------------------------
             typ = 'TXM',
-            defaut = 'V7P1',
+            defaut = 'TRUNK',
             fr = """Numero de version des bibliotheques utilisees par SISYPHE.""",
             ang = """Release of the libraries used by SISYPHE.""",
         ),
@@ -207,7 +208,7 @@ This title shall be marked on the printouts.""",
         ),
     ),
 #   -----------------------------------
-    MESH_GENERATOR = FACT(statut='o',
+    MESH_GENERATOR = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MESHING = SIMP(statut ='f',
@@ -223,7 +224,7 @@ This title shall be marked on the printouts.""",
         ),
     ),
 #   -----------------------------------
-    COMPUTATION_ENVIRONMENT = FACT(statut='o',
+    COMPUTATION_ENVIRONMENT = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         DICTIONARY = SIMP(statut ='f',
@@ -236,14 +237,14 @@ This title shall be marked on the printouts.""",
     ),
 )
 # -----------------------------------------------------------------------
-INPUT_OUTPUT,_GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT,_GRAPHICS_AND_LISTING",op = None,
+INPUT_OUTPUT__GRAPHICS_AND_LISTING = PROC(nom= "INPUT_OUTPUT__GRAPHICS_AND_LISTING",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     VARIABLES_FOR_GRAPHIC_PRINTOUTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM',
+        typ = 'TXM', min=0, max='**',
         into = ["velocity along x axis (m/s)","velocity along y axis (m/s)","wawe celerity (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","Froude number","scalar flowrate of fluid (m2/s)","flowrate along x axis (m2/s)","flowrate along y axis (m2/s)","bed-load discharge (m2/s)","bed-load discharge along x axis (m2/s)","bed-load discharge along y axis (m2/s)","bottom evolution (m)","non erodable bottom","total bed roughness (m)","Bed Shear stress (Totalfriction) (N/m2)", "Skin friction correction factor", "Mean grain diameter","wave angle with axis Oy (deg)","suspended load transport rate (m2/s)","bed load transport rate (m2/s)","wave height","wave period","wave orbital velocity (m/s)","fraction of sediment of class i in the first layer","fraction of sediment of class i in the second layer","fraction of sediment of class i in the k layer","thickness of the k layer","concentration of bed layer k","bed load transport rate of sediment of class i","concentration volumic or mass concentration for class i","saturated concentration (kg/m3)","supplementary variable A","supplementary variable G","supplementary variable L","supplementary variable O"],
-        defaut = ,
+        defaut = ["velocity along x axis (m/s)","velocity along y axis (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","non erodable bottom","bottom evolution (m)"],
         fr = """Noms des variables que l''utilisateur veut ecrire dans
 le fichier des resultats.
 Chaque variable est representee par une lettre.
@@ -261,9 +262,9 @@ RESULTS = PROC(nom= "RESULTS",op = None,
 #   -----------------------------------
     VARIABLES_TO_BE_PRINTED = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM',
+        typ = 'TXM', max='**',
         into = ["velocity along x axis (m/s)","velocity along y axis (m/s)","wawe celerity (m/s)","water depth (m)","free surface elevation (m)","bottom elevation (m)","Froude number","scalar flowrate of fluid (m2/s)","flowrate along x axis (m2/s)","flowrate along y axis (m2/s)","bed-load discharge (m2/s)","bed-load discharge along x axis (m2/s)","bed-load discharge along y axis (m2/s)","bottom evolution (m)","non erodable bottom","bed friction coefficient (m if Nikuradse)","mean bottom friction (N/m2)","wave angle with axis Oy (deg)","wave height","wave period","fraction of sediment of class i in the first layer","fraction of sediment of class i in the second layer","bed load transport rate of sediment of class i", "thicknes of bed layer i", "concentration of bed layer i ","concentration for class i","saturated concentration (kg/m3)","supplementary variable A","supplementary variable G","supplementary variable L","supplementary variable O"],
-        defaut = ,
+        defaut = '',
         fr = """Nom des variables que l''utilisateur desire ecrire sur
 le lisring. Meme possibilites que pour les sorties graphiques.""",
         ang = """Names of variables the user wants to write on the listing.
@@ -273,7 +274,7 @@ it is done in the graphic results file.""",
 #   -----------------------------------
     RESULTS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)','Sauvegarde'), min=0, max='**',
+        typ = ('Fichier','All Files (*)','Sauvegarde'), max='**',
         fr = """Nom du fichier dans lequel seront ecrits les resultats avec
 une periodicite donnee par le mot cle PERIODE DE SORTIE GRAPHIQUE.""",
         ang = """Name of the file into wich the computation results shall be
@@ -361,7 +362,7 @@ USELESS = PROC(nom= "USELESS",op = None,
 #   -----------------------------------
     STEERING_FILE = SIMP(statut ='o',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier contenant les parametres du calcul
 a realiser. Il peut-etre ecrit par l''utilisateur avec EDAMOX.""",
@@ -391,7 +392,7 @@ making the computation.""",
 #   -----------------------------------
     LIBRARIES = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         defaut = 'SISYPHE,TELEMAC,UTIL,DAMO,BIEF,HP',
         fr = """Utilise par la procedure de lancement sur station de travail.""",
         ang = """Used by the start-up procedure at the workstation.""",
@@ -542,7 +543,7 @@ graphic printouts of the previous computation:
 #   -----------------------------------
     PVM1_LIBRARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         defaut = '',
         fr = """Utilise par la procedure de lancement sur station de travail""",
         ang = """Utilise par la procedure de lancement sur station de travail""",
@@ -550,7 +551,7 @@ graphic printouts of the previous computation:
 #   -----------------------------------
     PVM2_LIBRARY = SIMP(statut ='o',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         defaut = '',
         fr = """Utilise par la procedure de lancement sur station de travail""",
         ang = """Utilise par la procedure de lancement sur station de travail""",
@@ -570,7 +571,7 @@ DATA_FILES = PROC(nom= "DATA_FILES",op = None,
 #   -----------------------------------
     FORTRAN_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = 'DEFAUT',
         fr = """Nom du fichier FORTRAN a soumettre.""",
         ang = """Name of FORTRAN file to be submitted.""",
@@ -578,7 +579,7 @@ DATA_FILES = PROC(nom= "DATA_FILES",op = None,
 #   -----------------------------------
     BOUNDARY_CONDITIONS_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         fr = """Nom du fichier contenant les types de conditions aux limites.
 Ce fichier est rempli de facon automatique par le mailleur au moyen de
 couleurs affectees aux noeuds des frontieres du domaine de calcul.""",
@@ -589,7 +590,7 @@ colours that are assigned to the computation domain boundary nodes.""",
 #   -----------------------------------
     WAVE_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom d''un fichier contenant les resultats d''un calcul
 precedent TOMAWAC realise sur le meme maillage. La houle sera donnee,
@@ -617,7 +618,7 @@ This is recommended for non-steady flow simulation.""",
 #   -----------------------------------
     BOTTOM_TOPOGRAPHY_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier facultatif contenant la bathymetrie
 associee au maillage.""",
@@ -626,7 +627,7 @@ associee au maillage.""",
 #   -----------------------------------
     REFERENCE_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier servant a valider le calcul.
 Si VALIDATION = OUI, les resultats du calcul vont etre
@@ -703,7 +704,7 @@ INITIAL_CONDITIONS = PROC(nom= "INITIAL_CONDITIONS",op = None,
 #   -----------------------------------
     PREVIOUS_SEDIMENTOLOGICAL_COMPUTATION_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'), min=0, max='**',
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom d''un fichier contenant les resultats d''un
 calcul precedent sedimentologique realise sur le meme maillage
@@ -717,7 +718,7 @@ the initial conditions for the new computation.""",
 #   -----------------------------------
     COMPUTATION_CONTINUED = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Determine si le calcul en cours est independant de tout autre
 resultat ou est une reprise effectuee a partir du resultat d''un calcul
@@ -795,7 +796,7 @@ have no tidal flats""",
 #   -----------------------------------
     OPTION_FOR_THE_TREATMENT_OF_NON_ERODABLE_BEDS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Ce parametre permet de fixer la methode retenue pour traiter
 les fonds non erodables :
@@ -912,7 +913,7 @@ To use with the option constant flow discharge""",
 #   -----------------------------------
     SECONDARY_CURRENTS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Pour prendre en compte les courants secondaires""",
         ang = """using the parametrisation for secondary currents""",
@@ -920,7 +921,7 @@ To use with the option constant flow discharge""",
 #   -----------------------------------
     MASS_CONCENTRATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """par defaut, le code calcule les concentrations volumiques.
 Ce mot cle permet dimprimer et de relire des concentrations en g/l.
@@ -944,7 +945,7 @@ lesquels les debits instantanes et cumules seront donnes.""",
 #   -----------------------------------
     MIXED_SEDIMENT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Melange sable vase: 2 classes seulement""",
         ang = """Mixture of cohesive and non cohesive sediment : 2 class only""",
@@ -968,7 +969,7 @@ lesquels les debits instantanes et cumules seront donnes.""",
 #   -----------------------------------
     CHECKING_THE_MESH = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Si oui on appelle le sous-programme checkmesh qui verifie
 la coherence du maillage, points superposes, etc.""",
@@ -1047,7 +1048,7 @@ It is recommended to choose 1 since it ensures mass conservation.""",
 #   -----------------------------------
     NUMBER_OF_PRIVATE_ARRAYS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Nombre de tableaux mis a disposition de l utilisateur""",
         ang = """Number of arrays for own user programming""",
@@ -1055,7 +1056,7 @@ It is recommended to choose 1 since it ensures mass conservation.""",
 #   -----------------------------------
     PARALLEL_PROCESSORS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
 0 : 1 machine, compilation sans bibliotheque de parallelisme
@@ -1082,7 +1083,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     DEBUGGER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """Pour imprimer la sequence des appels, mettre 1""",
         ang = """If 1, calls of subroutines will be printed in the listing""",
@@ -1090,7 +1091,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     NESTOR = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Pour le couplage avec NESTOR""",
         ang = """For coupling with NESTOR""",
@@ -1098,7 +1099,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     NESTOR_ACTION_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier de commandes de nestor""",
         ang = """Name of the Nestor steering file""",
@@ -1106,7 +1107,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     NESTOR_POLYGON_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier de polygons de Nestor""",
         ang = """Name of the Nestor polygon file""",
@@ -1114,7 +1115,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     NESTOR_RESTART_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier de phydef-cf.cfg.ds de Nestor""",
         ang = """Name of the Nestor file phydef-cf.cfg.ds""",
@@ -1122,7 +1123,7 @@ added in Selafin format, but so far no other treatment""",
 #   -----------------------------------
     NESTOR_SURFACE_REFERENCE_FILE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = ('Fichier','All Files (*)'),
+        typ = ('Fichier','All Files (*)'), max='**',
         defaut = '',
         fr = """Nom du fichier de reference surface de Nestor""",
         ang = """Name of the Nestor file which contains the reference
@@ -1167,7 +1168,7 @@ scheme.""",
 #   -----------------------------------
     FINITE_VOLUMES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Methodes volumes finis ou pas""",
         ang = """Finite volumes method or not""",
@@ -1175,7 +1176,7 @@ scheme.""",
 #   -----------------------------------
     TYPE_OF_ADVECTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["CHARACTERISTICS","SUPG","CONSERVATIVE N-SCHEME","CONSERVATIVE N-SCHEME","CONSERVATIVE PSI-SCHEME","NON CONSERVATIVE PSI SCHEME","IMPLICIT NON CONSERVATIVE N SCHEME","EDGE-BASED N-SCHEME","EDGE-BASED N-SCHEME"],
         defaut = ["CHARACTERISTICS"],
         fr = """Determine le schema utilise pour la convection :
@@ -1198,7 +1199,7 @@ scheme.""",
 #   -----------------------------------
     SUPG_OPTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [2],
         fr = """""",
         ang = """""",
@@ -1206,7 +1207,7 @@ scheme.""",
 #   -----------------------------------
     MATRIX_VECTOR_PRODUCT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """""",
         ang = """""",
@@ -1214,7 +1215,7 @@ scheme.""",
 #   -----------------------------------
     MATRIX_STORAGE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """""",
         ang = """""",
@@ -1222,7 +1223,7 @@ scheme.""",
 #   -----------------------------------
     OPTION_FOR_THE_DIFFUSION_OF_TRACER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["div( nu grad(T) )","1/h div ( h nu grad(T)"],
         defaut = ["div( nu grad(T) )"],
         fr = """1: Diffusion de la forme div( nu grad(T) )
@@ -1250,7 +1251,7 @@ Depends on the LAW OF BOTTOM FRICTION.""",
 #   -----------------------------------
     LAW_OF_BOTTOM_FRICTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = [" ","CHEZY","STRICKLER","MANNING","NIKURADSE"],
         defaut = ["STRICKLER"],
         fr = """Selectionne le type de formulation utilisee pour le calcul
@@ -1364,7 +1365,7 @@ VARIABLE TIME-STEP""",
     B_VALUE_FOR_THE_BIJKER_FORMULA = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
-        defaut = 2.D0,
+        defaut = 2.E0,
         fr = """Coefficient b de la formule de Bijker""",
         ang = """b value for the Bijker formula""",
     ),
@@ -1399,7 +1400,7 @@ keyword is not used.""",
 #   -----------------------------------
     NUMBER_OF_SUB_ITERATIONS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """permet de realiser des sous iterations au sein de la
 boucle en temps (En mode non permananet).
@@ -1480,7 +1481,7 @@ computation file"(the file which contains the hydrodynamic
     TIDE_PERIOD = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
-        defaut = MANDATORY,
+        defaut = 44640.,
         fr = """Fixe la valeur de la periode de l''evenement
 (maree ou crue) en non permanent.""",
         ang = """Sets the period of the event (tide or flood)
@@ -1493,7 +1494,7 @@ SOLVER = PROC(nom= "SOLVER",op = None,
 #   -----------------------------------
     SOLVER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["conjugate gradient on a normal equation","conjugate gradient","conjugate residual","minimum error","cgstab","gmres"],
         defaut = ["conjugate gradient on a normal equation"],
         fr = """Permet de choisir le solveur utilise pour la resolution de
@@ -1522,7 +1523,7 @@ variations of the Conjugate Gradient method. They are as follows:
 #   -----------------------------------
     SOLVER_OPTION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [2],
         fr = """si le solveur est GMRES (7) le mot cle est la dimension de
 l''espace de KRILOV (valeurs conseillees entre 2 et 15). Ce parametre
@@ -1534,7 +1535,7 @@ is equal to false""",
 #   -----------------------------------
     PRECONDITIONING = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["diagonal","no preconditioning","diagonal condensee","crout","diagonal and crout","diagonal condensed  and crout"],
         defaut = ["diagonal"],
         fr = """Permet de preconditionner le systeme lineaire afin d''accelerer
@@ -1565,7 +1566,7 @@ the product of relevant options shall be made.""",
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_ITERATIONS_FOR_SOLVER = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [60],
         fr = """Les algorithmes utilises pour la resolution de l''etape de
 propagation etant iteratifs; il est necessaire de limiter le nombre
@@ -1579,7 +1580,7 @@ NOTE:Used only if the key-word MASS LUMPING is equal to false .""",
 #   -----------------------------------
     SOLVER_ACCURACY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.E-7],
         fr = """Precision demandee pour la resolution du systeme
 (ce parametre n''est utilise que si le mot cle MASS LUMPING
@@ -1590,7 +1591,7 @@ NOTE:Used only if the key-word MASS LUMPING is equal to false .""",
 #   -----------------------------------
     SOLVER_OPTION_FOR_SUSPENSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [2],
         fr = """Parametre supplementaire disponible pour le solveur.
 Dans le cas du solveur gmres, il s''agit de la dimension
@@ -1600,7 +1601,7 @@ de l''espace de Krylov.""",
 #   -----------------------------------
     PRECONDITIONING_FOR_SUSPENSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["diagonal","no preconditioning","diagonal condensee","crout"],
         defaut = ["diagonal"],
         fr = """Permet de preconditionner le systeme de l''etape de propagation
@@ -1619,7 +1620,7 @@ afin d''accelerer la convergence lors de sa resolution.
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_ITERATIONS_FOR_SOLVER_FOR_SUSPENSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [50],
         fr = """""",
         ang = """""",
@@ -1627,7 +1628,7 @@ afin d''accelerer la convergence lors de sa resolution.
 #   -----------------------------------
     SOLVER_ACCURACY_FOR_SUSPENSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.E-8],
         fr = """""",
         ang = """""",
@@ -1760,7 +1761,7 @@ Une valeur elevee provoque une faible deviation""",
 #   -----------------------------------
     SEDIMENT_SLIDE = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Prise en compte de la pente d''equilibre du sable donnee par le
 mot-cle ANGLE DE FROTTEMENT DU SEDIMENT""",
@@ -1770,7 +1771,7 @@ into account for slope stability""",
 #   -----------------------------------
     SLOPE_EFFECT = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Prise en compte de l''effet de pente :
 deviation et modification du seuil critique.
@@ -1788,13 +1789,13 @@ NUMERICAL_PARAMETERS = PROC(nom= "NUMERICAL_PARAMETERS",op = None,
 #   -----------------------------------
     MAXIMUM_NUMBER_OF_ITERATIONS_FOR_ADVECTION_SCHEMES = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [10],
         fr = """Seulement pour schemes 13 et 14""",
         ang = """Only for schemes 13 and 14""",
     ),
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         PARTITIONING_TOOL = SIMP(statut ='f',
@@ -1829,7 +1830,7 @@ etc...""",
 #       -----------------------------------
         TREATMENT_OF_FLUXES_AT_THE_BOUNDARIES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'TXM', min=0, max='**',
+            typ = 'TXM',
             into = ["Priority to prescribed values","Priority to fluxes"],
             defaut = ["Priority to fluxes"],
             fr = """Utilise pour les schemas PSI et N, avec option 2, on ne retrouve
@@ -1842,7 +1843,7 @@ but the fluxes are correct""",
 #       -----------------------------------
         NUMBER_OF_CORRECTIONS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Pour les options avec predicteur-correcteur""",
             ang = """For predictor-corrector options""",
@@ -1850,7 +1851,7 @@ but the fluxes are correct""",
 #       -----------------------------------
         NUMBER_OF_SUB_STEPS_OF_DISTRIBUTIVE_SCHEMES = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [1],
             fr = """Pour les options predicteur-correcteur
 avec schema localement implicite""",
@@ -1858,15 +1859,15 @@ avec schema localement implicite""",
         ),
     ),
 #   -----------------------------------
-    SOLVER = FACT(statut='o',
+    SOLVER = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
-        SUSPENSION = FACT(statut='o',
+        SUSPENSION = FACT(statut='f',
 #       -----------------------------------
 #           -----------------------------------
             SOLVER_FOR_SUSPENSION = SIMP(statut ='f',
 #           -----------------------------------
-                typ = 'TXM', min=0, max='**',
+                typ = 'TXM',
                 into = ["conjugate gradient","conjugate residual","conjugate gradient on a normal equation","minimum error","gmres (see option for the solver for tracer diffusion)"],
                 defaut = ["conjugate gradient on a normal equation"],
                 fr = """Permet de choisir le solveur utilise pour la resolution
@@ -1888,7 +1889,7 @@ BED_MATERIAL = PROC(nom= "BED_MATERIAL",op = None,
 #   -----------------------------------
     NUMBER_OF_SIZE_CLASSES_OF_BED_MATERIAL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Fixe la valeur du nombre de classes granulometriques
 de grains considerees dans le calcul""",
@@ -1934,7 +1935,7 @@ is the value of the mean diameter of the sediment.""",
 #   -----------------------------------
     ACTIVE_LAYER_THICKNESS = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [10000],
         fr = """Epaisseur de reference pour la stratification du lit. La
 composition de la premiere couche sert a calculer le transport
@@ -1947,7 +1948,7 @@ a stratification, use a large value""",
 #   -----------------------------------
     HIDING_FACTOR_FORMULA = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [0],
         fr = """4 formules pour le hiding factor sont programmees dans SISYPHE
      0: const => il faut donner le HIDING FACTOR PAR CLASSE GRANULO
@@ -1979,12 +1980,12 @@ a stratification, use a large value""",
         ang = """""",
     ),
 #   -----------------------------------
-    C_VSM = FACT(statut='o',
+    C_VSM = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         VERTICAL_GRAIN_SORTING_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """(-)""",
             ang = """Defines the model of the vertical grain sorting:
@@ -1994,7 +1995,7 @@ a stratification, use a large value""",
 #       -----------------------------------
         C_VSM_MAXIMUM_SECTIONS = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [200],
             fr = """(-)""",
             ang = """Defines the maximum discretisation of the
@@ -2007,7 +2008,7 @@ a stratification, use a large value""",
 #       -----------------------------------
         C_VSM_FULL_PRINTOUT_PERIOD = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [0],
             fr = """(-)""",
             ang = """Number of Timesteps to next printout
@@ -2031,7 +2032,7 @@ a stratification, use a large value""",
 #       -----------------------------------
         C_VSM_DYNAMIC_ALT_MODEL = SIMP(statut ='f',
 #       -----------------------------------
-            typ = 'I', min=0, max='**',
+            typ = 'I',
             defaut = [5],
             fr = """(-)""",
             ang = """MODEL FOR ACTIVE LAYER THICKNESS
@@ -2059,8 +2060,8 @@ SUSPENSION = PROC(nom= "SUSPENSION",op = None,
 #   -----------------------------------
     OPTION_FOR_THE_DISPERSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
-        defaut = [MANDATORY],
+        typ = 'I',
+        defaut = [1],
         fr = """ 1 les mots cles dispersion longitudinale
 et dispersion transversale permettent d affecter une valeur constante,
 2 K1=alphal u*h et K2=alphat u*h affectent les valeurs alphal et alphat
@@ -2075,7 +2076,7 @@ et dispersion transversale permettent d affecter une valeur constante,
 #   -----------------------------------
     FORMULATION_FOR_DEPOSITION_AND_EROSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'TXM', min=0, max='**',
+        typ = 'TXM',
         into = ["KRONE ET PARTHENIADES","FREDSOE / ROUSE"],
         defaut = ["FREDSOE / ROUSE"],
         fr = """""",
@@ -2084,7 +2085,7 @@ et dispersion transversale permettent d affecter une valeur constante,
 #   -----------------------------------
     TETA_SUSPENSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.],
         fr = """facteur implicitation du terme de depot et de la diffusion.
  si teta =0, tout le terme de depot est traite de maniere explicite.""",
@@ -2094,7 +2095,7 @@ et dispersion transversale permettent d affecter une valeur constante,
 #   -----------------------------------
     DISPERSION_ALONG_THE_FLOW = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.E-2],
         fr = """""",
         ang = """""",
@@ -2102,7 +2103,7 @@ et dispersion transversale permettent d affecter une valeur constante,
 #   -----------------------------------
     DISPERSION_ACROSS_THE_FLOW = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'R', min=0, max='**',
+        typ = 'R',
         defaut = [1.E-2],
         fr = """""",
         ang = """""",
@@ -2122,7 +2123,7 @@ Stockes, Zanke or Van Rijn formulae depending on the grain size""",
 #   -----------------------------------
     EQUILIBRIUM_INFLOW_CONCENTRATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """impose la concentration en entree du domaine et les
 concentrations initiales en utilisant la formule de Fredsoe pour les
@@ -2151,7 +2152,7 @@ sediments""",
 #   -----------------------------------
     CORRECTION_ON_CONVECTION_VELOCITY = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Modification du champ convecteur 2D pour prise en compte du
 gradient vertical de vitesse et concentration""",
@@ -2161,7 +2162,7 @@ velocity and concentration profiles""",
 #   -----------------------------------
     DIFFUSION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [True ],
         fr = """Prise en compte de la diffusion de la concentration de sediment
 en suspension""",
@@ -2213,7 +2214,7 @@ CONSOLIDATION = PROC(nom= "CONSOLIDATION",op = None,
 #   -----------------------------------
     MUD_CONSOLIDATION = SIMP(statut ='f',
 #   -----------------------------------
-        typ = bool, min=0, max='**',
+        typ = bool,
         defaut = [False],
         fr = """Prise en compte du tassement par un modele multi-couche""",
         ang = """consolidation of the mud or sand mud-mixture sediment bed
@@ -2222,7 +2223,7 @@ CONSOLIDATION = PROC(nom= "CONSOLIDATION",op = None,
 #   -----------------------------------
     NUMBER_OF_LAYERS_OF_THE_CONSOLIDATION_MODEL = SIMP(statut ='f',
 #   -----------------------------------
-        typ = 'I', min=0, max='**',
+        typ = 'I',
         defaut = [1],
         fr = """Structure verticale du lit cohesif- le nombre de couche doit
        etre inferieur a 10""",
@@ -2253,7 +2254,7 @@ the multilayer consolidation model in s-1""",
     GEL_CONCENTRATION = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
-        defaut = 310.D0,
+        defaut = 310.E0,
         fr = """Concentration de transition pour modele de Thiebot (Kg/m3)""",
         ang = """Gel Concentration (Kg/m3)""",
     ),
@@ -2261,7 +2262,7 @@ the multilayer consolidation model in s-1""",
     MAXIMUM_CONCENTRATION = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
-        defaut = 364.D0,
+        defaut = 364.E0,
         fr = """Concentration maximale du modele de Thiebot (Kg/m3)""",
         ang = """Maximum Concentration for Thiebot consolidation model(Kg/m3)""",
     ),
@@ -2269,7 +2270,7 @@ the multilayer consolidation model in s-1""",
     PERMEABILITY_COEFFICIENT = SIMP(statut ='f',
 #   -----------------------------------
         typ = 'R',
-        defaut = 8.D0,
+        defaut = 8.E0,
         fr = """Coefficient de permeabilite pour le modele de consolidation""",
         ang = """Coefficient of permeability for consolidation model""",
     ),
@@ -2298,12 +2299,12 @@ COHESIVE_SEDIMENT = PROC(nom= "COHESIVE_SEDIMENT",op = None,
 SEDIMENT_TRANSPORT = PROC(nom= "SEDIMENT_TRANSPORT",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    NONEQUILIBRIUM_BED_LOAD = FACT(statut='o',
+    NONEQUILIBRIUM_BED_LOAD = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         BED_ROUGHNESS_PREDICTION = SIMP(statut ='f',
 #       -----------------------------------
-            typ = bool, min=0, max='**',
+            typ = bool,
             defaut = [False],
             fr = """Calcul de la rugosite de Nikuradse
 - voir OPTION DU PREDICTEUR DE RUGOSITE -
@@ -2322,7 +2323,7 @@ used (KFROT is set to 5)""",
 SEDIMENTOLOGY = PROC(nom= "SEDIMENTOLOGY",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SECONDARY_CURRENTS_ALPHA_COEFFICIENT = SIMP(statut ='f',
@@ -2339,7 +2340,7 @@ Should be chosen between 0.75 (rough bottom) and 1 (smooth bottom)""",
 COMPUTATIONAL_INFORMATION = PROC(nom= "COMPUTATIONAL_INFORMATION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         MORPHOLOGICAL_FACTOR = SIMP(statut ='f',
@@ -2360,7 +2361,7 @@ COMPUTATIONAL_INFORMATION = PROC(nom= "COMPUTATIONAL_INFORMATION",op = None,
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_BOUNDARY_CONDITIONS = PROC(nom= "EQUATIONS,_BOUNDARY_CONDITIONS",op = None,
+EQUATIONS__BOUNDARY_CONDITIONS = PROC(nom= "EQUATIONS__BOUNDARY_CONDITIONS",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
     PRESCRIBED_SOLID_DISCHARGES = SIMP(statut ='f',
@@ -2375,10 +2376,10 @@ One value per liquid boundary""",
     ),
 )
 # -----------------------------------------------------------------------
-EQUATIONS,_ADVECTION = PROC(nom= "EQUATIONS,_ADVECTION",op = None,
+EQUATIONS__ADVECTION = PROC(nom= "EQUATIONS__ADVECTION",op = None,
 # -----------------------------------------------------------------------
 #   -----------------------------------
-    GENERAL = FACT(statut='o',
+    GENERAL = FACT(statut='f',
 #   -----------------------------------
 #       -----------------------------------
         SCHEME_OPTION_FOR_ADVECTION = SIMP(statut ='f',
@@ -2398,10 +2399,10 @@ for tracers""",
         ),
     ),
 )
-Ordre_des_commandes = (
-'INPUT_OUTPUT,_FILES',
-'INPUT_OUTPUT,_INFORMATION',
-'INPUT_OUTPUT,_GRAPHICS_AND_LISTING',
+Ordre_Des_Commandes = (
+'INPUT_OUTPUT__FILES',
+'INPUT_OUTPUT__INFORMATION',
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
 'RESULTS',
 'USELESS',
 'DATA_FILES',
@@ -2423,5 +2424,32 @@ Ordre_des_commandes = (
 'SEDIMENT_TRANSPORT',
 'SEDIMENTOLOGY',
 'COMPUTATIONAL_INFORMATION',
-'EQUATIONS,_BOUNDARY_CONDITIONS',
-'EQUATIONS,_ADVECTION')
+'EQUATIONS__BOUNDARY_CONDITIONS',
+'EQUATIONS__ADVECTION')
+Classement_Commandes_Ds_Arbre = (
+'INPUT_OUTPUT__FILES',
+'INPUT_OUTPUT__INFORMATION',
+'INPUT_OUTPUT__GRAPHICS_AND_LISTING',
+'RESULTS',
+'USELESS',
+'DATA_FILES',
+'INITIAL_CONDITIONS',
+'GENERAL',
+'MISCELLANEOUS',
+'NUMERICAL',
+'FRICTION',
+'BED_LOAD',
+'TIME',
+'SOLVER',
+'PHYSICS',
+'SLOPE_EFFECT',
+'NUMERICAL_PARAMETERS',
+'BED_MATERIAL',
+'SUSPENSION',
+'CONSOLIDATION',
+'COHESIVE_SEDIMENT',
+'SEDIMENT_TRANSPORT',
+'SEDIMENTOLOGY',
+'COMPUTATIONAL_INFORMATION',
+'EQUATIONS__BOUNDARY_CONDITIONS',
+'EQUATIONS__ADVECTION')
