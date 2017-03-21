@@ -361,13 +361,19 @@ subroutine  PAPY            ( &
          DS2G = DS2G - ( W1 - ALPHA ) * S2SousCoteDebord(1)
          DP2  = DP2 + DP2G
          DB2  = DB2 + DB2G - ( W1 - ALPHA )**2 *  DB2G
-         DSRG = DSRG + ( W1 - ALPHA ) * S2SousCoteDebord(1)
-         DBRG = DBRG + ( W1 - ALPHA )**2 * DB2G
+!> correction P. CHASSE (Pb estuaire loire)
+!         DSRG = DSRG + ( W1 - ALPHA ) * S2SousCoteDebord(1)
+!         DBRG = DBRG + ( W1 - ALPHA )**2 * DB2G
+!< fin modif
       else
          ! LE LIT MAJEUR EST SOLLICITE EN DESSOUS DES ZONES DE  DEBORDEMENT
          ! CELA N EST PAS COMPTE : TOUT EST MIS EN ZONE DE STOCKAGE
-         DSRG = DSRG + DS2G
-         DBRG = DBRG + DB2G
+!> correction P. CHASSE (Pb estuaire loire)
+!         DSRG = DSRG + DS2G
+!         DBRG = DBRG + DB2G
+         DSS = W0
+         DBS = W0
+!< fin modif
          DS2G = W0
          DS2 = DS2 + DS2G
          DB2G = W0
@@ -383,16 +389,23 @@ subroutine  PAPY            ( &
          DS2D  = DS2D - ( W1 - ALPHA ) * S2SousCoteDebord(2)
          DP2   = DP2 + DP2D
          DB2   = DB2 + DB2D - ( W1 - ALPHA )**2 * DB2D
-         DSRD  = DSRD + ( W1 - ALPHA ) * S2SousCoteDebord(2)
-         DBRD  = DBRD + ( W1 - ALPHA )**2 * DB2D
+!> correction P. CHASSE (Pb estuaire loire)
+!         DSRD  = DSRD + ( W1 - ALPHA ) * S2SousCoteDebord(2)
+!         DBRD  = DBRD + ( W1 - ALPHA )**2 * DB2D
+!< fin modif
       else
- !        DSS = DSS + DS2D
- !        DBS = DBS + DB2D
- !       correction nicole
- ! LE LIT MAJEUR EST SOLLICITE EN DESSOUS DES ZONES DE  DEBORDEMENT
- ! CELA N EST PAS COMPTE : TOUT EST MIS EN ZONE DE STOCKAGE
-         DSRD  = DSRD + DS2D
-         DBRD  = DBRD + DB2D 
+!> correction N. GOUTAL (Pb estuaire loire + symetrie RD/RG)
+!         DSS = DSS + DS2D
+!         DBS = DBS + DB2D
+!< fin modif
+         ! LE LIT MAJEUR EST SOLLICITE EN DESSOUS DES ZONES DE  DEBORDEMENT
+         ! CELA N EST PAS COMPTE : TOUT EST MIS EN ZONE DE STOCKAGE
+!> correction P. CHASSE (Pb estuaire loire)
+!         DSRD  = DSRD + DS2D
+!         DBRD  = DBRD + DB2D 
+         DSS = W0
+         DBS = W0
+!< fin modif
          DS2D = W0
          DS2 = DS2 + DS2D
          DB2D = W0
