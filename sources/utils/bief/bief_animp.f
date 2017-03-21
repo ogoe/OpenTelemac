@@ -2,7 +2,7 @@
                      SUBROUTINE BIEF_ANIMP
 !                    *********************
 
-     &(FORMAT_RES,VARNIM,N,NRES,STD,AT,LT,LDIR,TEXTANIM)
+     &(FORMAT_RES,VARNIM,N,NRES,STD,AT,LT,LDIR,TEXTANIM,NPALE)
 !
 !***********************************************************************
 ! BIEF   V7P2                                   December 2016
@@ -37,13 +37,13 @@
 !| LT             |-->| ITERATION NUMBER
 !| LDIR           |-->| DIRECTION NUMBER
 !| TEXTANIM       |-->| NAMES AND UNITS OF VARIABLES
+!| NPALE          |-->| NUMBER OF DISCRETISED PERIODS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_ANIMP => BIEF_ANIMP
       USE INTERFACE_HERMES
 !
       USE DECLARATIONS_SPECIAL
-      USE DECLARATIONS_ARTEMIS, ONLY : NPALE
 !
       IMPLICIT NONE
 !
@@ -60,6 +60,7 @@
       INTEGER,          INTENT(IN)          :: LT,LDIR
       DOUBLE PRECISION, INTENT(IN)          :: AT
       TYPE(BIEF_OBJ),   INTENT(IN)          :: VARNIM
+      INTEGER,          INTENT(IN)          :: NPALE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
