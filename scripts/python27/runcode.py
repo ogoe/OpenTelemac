@@ -704,8 +704,10 @@ def copyPRINCI(princiFile,dest):
    if path.isdir(princiFile):
 
       for file in listdir(princiFile):
-         shutil.copyfile(path.join(princiFile,file),
-                         path.join(destFolder,file))
+         # Only copying files
+         if not path.isdir(file):
+            shutil.copyfile(path.join(princiFile,file),
+                            path.join(destFolder,file))
          print "    Adding to user_fortran: ",file
    else:
       shutil.copyfile(princiFile,path.join(destFolder,path.basename(princiFile)))
