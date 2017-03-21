@@ -1678,12 +1678,8 @@
         ENDIF
       ENDIF
 !
-      IF((LISPRD*(LT/LISPRD).EQ.LT.AND.LT.GE.PTINIL).OR.LT.EQ.NIT) THEN
-        ENTET=LISTIN
-      ELSE
-        ENTET=.FALSE.
-      ENDIF
-      IF(EQUA(1:15).NE.'SAINT-VENANT VF')THEN
+      IF(.NOT.ADJO)THEN
+         CALL PRERES_TELEMAC2D(IMP,LEO)
          ENTET=IMP
          LISTIN=IMP
       ENDIF
@@ -2780,7 +2776,6 @@
           ! set to 1 by preres_telemac2d on the last time step
           OLD_LEOPRD = LEOPRD
 !
-          CALL PRERES_TELEMAC2D(IMP,LEO)
           CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
      &            NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &            LISPRD,OLD_LEOPRD,
