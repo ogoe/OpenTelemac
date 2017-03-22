@@ -1,30 +1,23 @@
-/
-/      A PARTIR DU CAS PLUIE
-/
+/      From test case pluie
+/      ex exchange with atmosphere, now called through a coupling call
+/      between TELEMAC-3D and WAQTEL with WAQ process n°5
 /----------------------------------------------------------------------
-/      POUR LE FICHIER CNTL
-/----------------------------------------------------------------------
-/
 TITLE = 'TELEMAC 3D : CANAL'
 ORIGINAL DATE OF TIME : 2006;10;1
 ORIGINAL HOUR OF TIME : 0;0;0
 /
-FORTRAN FILE                    : 'user_fortran'
+FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_heat_exchange.cli
-GEOMETRY FILE               : geo_heat_exchange.slf
-FORMATTED DATA FILE 1       : meteo_data.txt
+GEOMETRY FILE            : geo_heat_exchange.slf
+FORMATTED DATA FILE 1    : meteo_data.txt
 3D RESULT FILE           : r3d_heat_exchange_rain_wind.slf
 2D RESULT FILE           : r2d_heat_exchange_rain_wind.slf
-/
 /----------------------------------------------------------------------
-/     OPTIONS GENERALES
+/      GENERAL OPTIONS
 /----------------------------------------------------------------------
-/
-MATRIX STORAGE : 3
-/
-/ 30 j
+/ 30 DAYS
 NUMBER OF TIME STEPS = 4320
-TIME STEP = 600
+TIME STEP = 600.
 GRAPHIC PRINTOUT PERIOD = 18
 LISTING PRINTOUT PERIOD    = 144
 NUMBER OF HORIZONTAL LEVELS = 26
@@ -35,29 +28,22 @@ INITIAL DEPTH : 5.
 VARIABLES FOR 2D GRAPHIC PRINTOUTS = U,V,H,TA1
 VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA1
 MASS-BALANCE = YES
-/INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING = YES
-/
 /-------------------------
 /  CONVECTION-DIFFUSION
 /-------------------------
-/
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 0.1D0
 VERTICAL TURBULENCE MODEL = 2
 MIXING LENGTH MODEL : 3
 /
 PRECONDITIONING FOR DIFFUSION OF VELOCITIES = 14
-/
 /----------------------------
-/     TERMES SOURCES
+/     SOURCE TERMS
 /----------------------------
-/
-FRICTION COEFFICIENT FOR THE BOTTOM = 0.0162
 LAW OF BOTTOM FRICTION = 5
-/
+FRICTION COEFFICIENT FOR THE BOTTOM = 0.0162
 /----------------------------
-/          TRACEUR
+/          TRACER
 /----------------------------
-/
 NUMBER OF TRACERS : 1
 NAMES OF TRACERS : 'TEMPERATURE     DEGRE C         '
 INITIAL VALUES OF TRACERS : 20.
@@ -67,15 +53,9 @@ COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS = 1.E-4
 /
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
 /
-FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES : 1.
-/
 MASS-LUMPING FOR DEPTH : 1.
 MASS-LUMPING FOR VELOCITIES : 1.
 MASS-LUMPING FOR DIFFUSION : 1.
-/
-/----------------------------
-/ ECHANGES AVEC L ATMOSPHERE
-/----------------------------
 /************************************
 /  WATER QUALITY
 /************************************

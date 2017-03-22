@@ -11,8 +11,6 @@
 / sur HP C3700   43 s  6.1  JMH le 19/01/2011 (Nag:111 s,Intel:?? s)
 / sur HP C3700   46 s  6.2  JMH le 25/05/2012 
 /
-MATRIX STORAGE : 3
-/
 BOUNDARY CONDITIONS FILE : geo_source.cli
 GEOMETRY FILE            : geo_source.slf
 3D RESULT FILE           : r3d_source.slf
@@ -20,12 +18,10 @@ GEOMETRY FILE            : geo_source.slf
 SOURCES FILE             : src_source.txt
 /
 NUMBER OF HORIZONTAL LEVELS : 5
-/
 /----------------------------------------------------------------------/
 /                     OPTIONS GENERALES
 /----------------------------------------------------------------------/
 TITLE = 'TELEMAC 3D : TEST POUR SOURCE'
-COMPUTATION CONTINUED : NO
 VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H,S,B,TA*'
 VARIABLES FOR 3D GRAPHIC PRINTOUTS : 'Z,U,V,W,TA*'
 TIME STEP = 1.1
@@ -37,7 +33,6 @@ INITIAL CONDITIONS              = 'ZERO ELEVATION'
 /----------------------------------------------------------------------/
 /     SOURCES
 /----------------------------------------------------------------------
-/
 ABSCISSAE OF SOURCES : -21.6234302520752; -0.77898901700974
 ORDINATES OF SOURCES :   5.29613780975342; -9.99086666107178
 ELEVATIONS OF SOURCES     :  -0.5; -0.5
@@ -52,19 +47,12 @@ VALUE OF THE TRACERS AT THE SOURCES : 10.0; 10.0;  0.0;  0.0; 10.0; 10.0
 /----------------------------------------------------------------------/
 /     PROPAGATION
 /----------------------------------------------------------------------/
-SCHEME FOR DIFFUSION OF VELOCITIES = 1
-PRECONDITIONING FOR DIFFUSION OF VELOCITIES : 2
-VERTICAL TURBULENCE MODEL : 1
-SOLVER FOR PROPAGATION : 1
 MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION : 100
 ACCURACY FOR PROPAGATION = 1.E-8
 IMPLICITATION FOR DEPTH   = 0.6
 IMPLICITATION FOR VELOCITIES = 0.6
-PRECONDITIONING FOR PROPAGATION : 2
-INITIAL GUESS FOR DEPTH : 1
 /----------------------------------------------------------------------
 MASS-BALANCE : YES
-INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : YES
 SCHEME FOR ADVECTION OF TRACERS = 13;13;13
 /----------------------------------------------------------------------/
 /     TRACEUR

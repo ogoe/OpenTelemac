@@ -1,5 +1,3 @@
-MATRIX STORAGE : 3
-/
 /  Sur HP 3700 (CHP70K2) : 107 s  version 5.5  30/11/2004
 /  Sur HP 3700 (CHP70K2) :  88 s  version 5.5  04/03/2005 (nouvelle diffusion)
 /  Sur HP 3700 (CHP70K2) :  61 s  version 5.5  03/10/2005 (segments)
@@ -10,26 +8,20 @@ MATRIX STORAGE : 3
 /  Sur HP 3700 (CHP70K2) :  49 s  version 6.1  21/01/2011 (Nag:123 s,Intel :?? s)
 /  Sur HP 3700 (CHP70K2) :  48 s  version 6.2  31/05/2012 (Nag:123 s,Intel :?? s)
 /
-/
-INITIAL CONDITIONS : PARTICULIERES
-/
-/
+INITIAL CONDITIONS : PARTICULAR
 /
 FORTRAN FILE             : 'user_fortran'
 BOUNDARY CONDITIONS FILE : geo_gouttedo.cli
 GEOMETRY FILE            : geo_gouttedo.slf
-/
 3D RESULT FILE           : r3d_gouttedo.slf
 2D RESULT FILE           : r2d_gouttedo.slf
 /
 NUMBER OF HORIZONTAL LEVELS : 3
-/LONGUEUR DU VECTEUR : 1
 /----------------------------------------------------------------------
 /                     OPTIONS GENERALES
 /----------------------------------------------------------------------
 / provisionally not accepted by python
 TITLE = 'TELEMAC 3D : GOUTTE D EAU DANS UN BASSIN$'
-COMPUTATION CONTINUED : NO
 VARIABLES FOR 2D GRAPHIC PRINTOUTS : 'U,V,H'
 VARIABLES FOR 3D GRAPHIC PRINTOUTS : 'Z,U,V,W'
 TIME STEP = 0.04
@@ -40,23 +32,13 @@ LISTING PRINTOUT PERIOD = 10
 /----------------------------------------------------------------------
 /     PROPAGATION
 /----------------------------------------------------------------------
-/
-SCHEME FOR DIFFUSION OF VELOCITIES = 1
-PRECONDITIONING FOR DIFFUSION OF VELOCITIES : 2
-HORIZONTAL TURBULENCE MODEL : 1
-VERTICAL TURBULENCE MODEL : 1
 SOLVER FOR PROPAGATION : 7
 OPTION OF SOLVER FOR PROPAGATION : 4
 MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION : 100
-ACCURACY FOR PROPAGATION = 1.E-6
 IMPLICITATION FOR DEPTH = 0.6
 IMPLICITATION FOR VELOCITIES = 0.6
-PRECONDITIONING FOR PROPAGATION : 2
-INITIAL GUESS FOR DEPTH : 1
-/
 /----------------------------------------------------------------------
 MASS-BALANCE : YES
-INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : YES
 SCHEME FOR ADVECTION OF VELOCITIES = 5
 /----------------------------------------------------------------------
 /     TRACEUR
@@ -69,8 +51,6 @@ NON-HYDROSTATIC VERSION : YES
 /
 /  SYSTEMES LINEAIRES DE L'OPTION NON-HYDROSTATIQUE
 /
-SOLVER FOR PPE = 1  ACCURACY FOR PPE = 1.E-5
-PRECONDITIONING FOR PPE = 2
-MAXIMUM NUMBER OF ITERATIONS FOR PPE = 100
+ACCURACY FOR PPE = 1.E-5
 /
 &FIN

@@ -1,4 +1,3 @@
-/
 /   54 s SUR HP C3700 JMH  17/12/2004
 /   52 s SUR HP C3700 JMH  09/03/2005
 /               (nouvelle diffusion + preconditionnement)
@@ -13,7 +12,6 @@
 /------------------------------------
 / Lock exchange test case
 /------------------------------------
-/
 FORTRAN FILE             : 'user_fortran'
 GEOMETRY FILE            : geo_lock-exchange.slf
 BOUNDARY CONDITIONS FILE : geo_lock-exchange.cli
@@ -30,7 +28,6 @@ NUMBER OF TRACERS = 1
 AVERAGE WATER DENSITY = 999.972
 /
 LAW OF BOTTOM FRICTION = 0
-FRICTION COEFFICIENT FOR THE BOTTOM = 0.
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 0.0
 COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES   = 0.0
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS = 0.0
@@ -44,8 +41,6 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA1
 /
 MASS-BALANCE : YES
 /
-MATRIX STORAGE : 3
-SOLVER FOR PROPAGATION : 1
 DENSITY LAW : 2
 NAMES OF TRACERS : 'SALINITY        G/L             '
 INITIAL VALUES OF TRACERS : 0.

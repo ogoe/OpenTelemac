@@ -33,7 +33,7 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS    =Z,U,V,W,TA1
 ORIGINAL DATE OF TIME                 =2014;09;10
 ORIGINAL HOUR OF TIME                 =16;01;00
 
-MASS-BALANCE                          =true
+MASS-BALANCE                          =TRUE
 
 
 /---------------------------------------------------------------------/
@@ -46,10 +46,8 @@ LAW OF BOTTOM FRICTION                               =4
 /---------------------------------------------------------------------/
 /                 EQUATIONS, BOUNDARY CONDITIONS                      /
 /---------------------------------------------------------------------/
-VELOCITY PROFILES                      =1;1
 PRESCRIBED FLOWRATES                   =10.;0.
 PRESCRIBED ELEVATIONS                  =3.;3.
-OPTION FOR LIQUID BOUNDARIES           =1;1
 TREATMENT OF FLUXES AT THE BOUNDARIES  =2;2
 
 /---------------------------------------------------------------------/
@@ -77,35 +75,25 @@ COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES   =1.E-2
 /----------------------------------------------------------------------/
 
 SCHEME FOR ADVECTION OF VELOCITIES              =1
-SCHEME FOR ADVECTION OF DEPTH                   =5
 SCHEME FOR ADVECTION OF TRACERS                 =13
 TREATMENT OF NEGATIVE DEPTHS  =2
 MASS-LUMPING FOR DEPTH =1.
-FREE SURFACE GRADIENT COMPATIBILITY             =0.9
 /----------------------------------------------------------------------/
 /                           DIFFUSION                                  /
 /----------------------------------------------------------------------/
 
-SCHEME FOR DIFFUSION OF VELOCITIES              =1  /default implicit (0 value cancels diffusion)
-SCHEME FOR DIFFUSION OF TRACERS                 =1
-SCHEME FOR DIFFUSION OF K-EPSILON               =1
-IMPLICITATION FOR DIFFUSION                     =1. /default
-SOLVER FOR DIFFUSION OF VELOCITIES              =7 /default choice from 1-8
+SOLVER FOR DIFFUSION OF VELOCITIES              =7 /choice from 1-8
 OPTION OF SOLVER FOR DIFFUSION OF VELOCITIES    =7
 
 /---------------------------------------------------------------------/
 /                         PROPAGATION                                 /
 /---------------------------------------------------------------------/
 
-PROPAGATION STEP                                =YES     /default
 ACCURACY FOR PROPAGATION                        =1.E-5   /default E-6
 MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION    =500     /default
 SOLVER FOR PROPAGATION                          =7       /keuze uit 1-8
 FREE SURFACE GRADIENT COMPATIBILITY             =0.9     /only used with wave equation
-IMPLICITATION FOR DEPTH                         =0.55    /default
-IMPLICITATION FOR VELOCITIES                    =1.      /default (value < 0.5 makes unstable)
-INITIAL GUESS FOR DEPTH                         =1       /default (choice 0,1 or 2) speeds up computation
-OPTION OF SOLVER FOR PROPAGATION                =7       /default and only used if solver=7 GMRES
+OPTION OF SOLVER FOR PROPAGATION                =7       /only used if solver=7 GMRES
 
 /----------------------------------------------------------------------/
 /                           TRACERS                                    /
@@ -115,19 +103,11 @@ NUMBER OF TRACERS                               =1
 NAMES OF TRACERS                                ='TRACER'
 INITIAL VALUES OF TRACERS                       =0.
 PRESCRIBED TRACERS VALUES                       =0.;100.
-/SOLVER FOR DIFFUSION OF TRACERS                 =7
-/OPTION OF SOLVER FOR DIFFUSION OF TRACERS       =7
 DENSITY LAW                                     =0
-/COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS   =1.E-6
-/COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS =1.E-6
-/TREATMENT OF FLUXES AT THE BOUNDARIES
-/PRECONDITIONING FOR DIFFUSION OF TRACERS        =2
-/DAMPING FUNCTION                                =3
 /----------------------------------------------------------------------/
 /                       TIDAL FLATS                                    /
 /----------------------------------------------------------------------/
 
 TIDAL FLATS                                     =YES
-OPTION FOR THE TREATMENT OF TIDAL FLATS         =1
 
 &FIN
