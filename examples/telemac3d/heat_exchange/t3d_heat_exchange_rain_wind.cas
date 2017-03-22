@@ -6,12 +6,12 @@ TITLE = 'TELEMAC 3D : CANAL'
 ORIGINAL DATE OF TIME : 2006;10;1
 ORIGINAL HOUR OF TIME : 0;0;0
 /
-FORTRAN FILE             : 'user_fortran'
-BOUNDARY CONDITIONS FILE : geo_heat_exchange.cli
-GEOMETRY FILE            : geo_heat_exchange.slf
-FORMATTED DATA FILE 1    : meteo_data.txt
-3D RESULT FILE           : r3d_heat_exchange_rain_wind.slf
-2D RESULT FILE           : r2d_heat_exchange_rain_wind.slf
+FORTRAN FILE                : 'user_fortran'
+BOUNDARY CONDITIONS FILE    : geo_heat_exchange.cli
+GEOMETRY FILE               : geo_heat_exchange.slf
+ASCII ATMOSPHERIC DATA FILE : meteo_data.txt
+3D RESULT FILE              : r3d_heat_exchange_rain_wind.slf
+2D RESULT FILE              : r2d_heat_exchange_rain_wind.slf
 /----------------------------------------------------------------------
 /      GENERAL OPTIONS
 /----------------------------------------------------------------------
@@ -24,6 +24,8 @@ NUMBER OF HORIZONTAL LEVELS = 26
 /
 INITIAL CONDITIONS : 'CONSTANT DEPTH'
 INITIAL DEPTH : 5.
+LATITUDE OF ORIGIN POINT = 43.4458
+LONGITUDE OF ORIGIN POINT = 5.1139
 /
 VARIABLES FOR 2D GRAPHIC PRINTOUTS = U,V,H,TA1
 VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA1
