@@ -1,39 +1,33 @@
 /----------------------------------------------------------------------
-/
 /  Plateau de sable dans un canal (cas test pour SISYPHE)
-/  Loi n³5 + Ks=2.5D50 + U3D/V3D/TOB envoyes a sisyphe
-/
+/  Loi n 5 + Ks=2.5D50 + U3D/V3D/TOB envoyes a SISYPHE
 /----------------------------------------------------------------------
-/
 FREE SURFACE GRADIENT COMPATIBILITY =0.9
 /
 TITLE = 'CAS TEST DE LA DUNE'
 /
-FORTRAN FILE                     : 'user_fortran'
+FORTRAN FILE              : 'user_fortran'
 BOUNDARY CONDITIONS FILE  : geo_bosse-t3d.cli
-GEOMETRY FILE                : geo_bosse-t3d.slf
+GEOMETRY FILE             : geo_bosse-t3d.slf
 3D RESULT FILE            : r3d_bosse-t3d.slf
 2D RESULT FILE            : r2d_bosse-t3d.slf
 /
-/SUITE DE CALCUL = YES
 2D CONTINUATION = YES
-/ on utilise le fichier résultat de Telemac 2d
+/ on utilise le fichier resultat de TELEMAC-2D
 / cf 02.bosse_tel2d
 FILE FOR 2D CONTINUATION        : bosse-t2d_init.slf
 MESH TRANSFORMATION : 2
-/
 /----------------------------------------------------------------------/
 /                     OPTIONS GENERALES
 /----------------------------------------------------------------------
-/
 TIME STEP = 1.
 NUMBER OF TIME STEPS = 14000
 GRAPHIC PRINTOUT PERIOD = 1000
 LISTING PRINTOUT PERIOD = 100
 NUMBER OF HORIZONTAL LEVELS = 16
 /
-INITIAL CONDITIONS = 'CONSTANT ELEVATION'
-INITIAL ELEVATION = 0.60
+/INITIAL CONDITIONS = 'CONSTANT ELEVATION'
+/INITIAL ELEVATION = 0.60
 PRESCRIBED FLOWRATES = 0.0 ; 0.250
 PRESCRIBED ELEVATIONS = 0.60 ; 0.0
 /
@@ -43,13 +37,10 @@ VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,NUZ,TA1,NAZ1
 VELOCITY VERTICAL PROFILES = 0;2
 /
 AVERAGE WATER DENSITY = 1000.
-/
 /---------------------------
 /     CONVECTION-DIFFUSION
 /---------------------------
-/
 SCHEME FOR ADVECTION OF VELOCITIES  = 1
-SCHEME FOR ADVECTION OF DEPTH = 5
 /
 HORIZONTAL TURBULENCE MODEL = 1
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES = 0.10
@@ -58,20 +49,15 @@ COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES   = 1.E-6
 MIXING LENGTH MODEL = 3
 /
 PRECONDITIONING FOR DIFFUSION OF VELOCITIES = 7
-/
-SOLVER FOR DIFFUSION OF VELOCITIES = 1
-/
 /----------------------------
 /     TERMES SOURCES
 /----------------------------
 LAW OF BOTTOM FRICTION = 3
 FRICTION COEFFICIENT FOR THE BOTTOM = 50
 SKIN FRICTION CORRECTION = 1
-/
 /----------------------------
 /     PROPAGATION
 /----------------------------
-/
 MAXIMUM NUMBER OF ITERATIONS FOR PROPAGATION = 200
 MAXIMUM NUMBER OF ITERATIONS FOR VERTICAL VELOCITY = 200
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF VELOCITIES = 200
@@ -84,17 +70,11 @@ ACCURACY FOR PROPAGATION = 1.E-5
 /
 MASS-LUMPING FOR DEPTH : 1.
 MASS-LUMPING FOR VELOCITIES : 1.
-/
-SOLVER FOR PROPAGATION : 1
-/
 /-----------------------------------------
 / COUPLAGE AVEC SISYPHE POUR LE CHARRIAGE
 /-----------------------------------------
-/
 COUPLING WITH = SISYPHE
 SISYPHE STEERING FILE = sis_bosse-t3d.cas
-/
-/
 /----------------------------
 /          SEDI3D
 /----------------------------
@@ -109,13 +89,11 @@ MEAN DIAMETER OF THE SEDIMENT : 0.000150
 /
 /CONCENTRATION DES DEPOTS FRAIS : 1600.
 /
-/PROFILS DES TRACEURS SUR LA VERTICALE : 0;3
+/TRACERS VERTICAL PROFILES : 0;3
 TRACERS VERTICAL PROFILES : 0;2
-/PROFILS DES TRACEURS SUR LA VERTICALE : 0;1
+/TRACERS VERTICAL PROFILES : 0;1
 PRESCRIBED TRACERS VALUES : 0.01;0.01
 SOLVER FOR DIFFUSION OF THE SEDIMENT : 7
-/
-MATRIX STORAGE : 3
 /
 COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS = 1.E-4
 PRECONDITIONING FOR DIFFUSION OF TRACERS : 34

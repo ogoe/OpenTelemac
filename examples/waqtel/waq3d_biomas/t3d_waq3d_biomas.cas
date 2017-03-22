@@ -1,5 +1,3 @@
-/
-/
 / This case validates the BIOMASS process
 /  of  added WAQTEL module
 /
@@ -12,42 +10,32 @@
 /**********************************************************
 TITLE = 'Water Quality- BIOMASS  process for Channel in 3D'
 /**********************************************************
-/ ORIGINAL DATE OF TIME : 2006;10;1
-/ ORIGINAL HOUR OF TIME : 0;0;0
 /----------------------------------------------------
 /  COMPUTER INFORMATIONS
 /----------------------------------------------------
-/
-GEOMETRY FILE             = 'geo_waq3d_biomas.slf'
-BOUNDARY CONDITIONS FILE  = 'geo_waq3d_biomas.cli'
-3D RESULT FILE            = 'r3d_waq3d_biomas.slf'
-2D RESULT FILE            = 'r2d_waq3d_biomas.slf'
-/REFERENCE FILE            = 'f3d_waq3d_biomas.slf'
-/VALIDATION                = YES
-/DEBUGGER   : 1
+GEOMETRY FILE            = 'geo_waq3d_biomas.slf'
+BOUNDARY CONDITIONS FILE = 'geo_waq3d_biomas.cli'
+3D RESULT FILE           = 'r3d_waq3d_biomas.slf'
+2D RESULT FILE           = 'r2d_waq3d_biomas.slf'
 /----------------------------------------------------------------------
 /     GENERAL OPTIONS
 /----------------------------------------------------------------------
-MATRIX STORAGE                                           = 3
 /SIMULATION TIME : 1 YEAR
-NUMBER OF TIME STEPS                                     = 8760
-TIME STEP                                                = 3600
+NUMBER OF TIME STEPS               = 8760
+TIME STEP                          = 3600.
 /OUTPUT EVERY 1 MONTH
-GRAPHIC PRINTOUT PERIOD                                  = 720
-LISTING PRINTOUT PERIOD                                  = 720
-NUMBER OF HORIZONTAL LEVELS                              = 5
+GRAPHIC PRINTOUT PERIOD            = 720
+LISTING PRINTOUT PERIOD            = 720
+NUMBER OF HORIZONTAL LEVELS        = 5
 /
-VARIABLES FOR 2D GRAPHIC PRINTOUTS                       = U,V,H,T*
-VARIABLES FOR 3D GRAPHIC PRINTOUTS                       = Z,U,V,W,TA*
-MASS-BALANCE                                             = YES
-INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT = YES
-/
+VARIABLES FOR 2D GRAPHIC PRINTOUTS = U,V,H,T*
+VARIABLES FOR 3D GRAPHIC PRINTOUTS = Z,U,V,W,TA*
+MASS-BALANCE                       = YES
 /----------------------------------------------------------------------
 /  INITIAL CONDITIONS
 /----------------------------------------------------------------------
-/
-INITIAL CONDITIONS        = 'CONSTANT DEPTH'
-INITIAL DEPTH             = 2.
+INITIAL CONDITIONS = 'CONSTANT DEPTH'
+INITIAL DEPTH      = 2.
 /----------------------------------------------------------------------
 /  ADVECTION-DIFFUSION
 /----------------------------------------------------------------------
@@ -58,30 +46,23 @@ PRECONDITIONING FOR DIFFUSION OF VELOCITIES        = 14
 /----------------------------
 /     SOURCES
 /----------------------------
-/FRICTION COEFFICIENT FOR THE BOTTOM              = 0.0162
-LAW OF BOTTOM FRICTION                            = 0
-FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES = 1.
-MASS-LUMPING FOR DEPTH                            = 1.
-MASS-LUMPING FOR VELOCITIES                       = 1.
-MASS-LUMPING FOR DIFFUSION                        = 1.
+/FRICTION COEFFICIENT FOR THE BOTTOM = 0.0162
+LAW OF BOTTOM FRICTION               = 0
+MASS-LUMPING FOR DEPTH               = 1.
+MASS-LUMPING FOR VELOCITIES          = 1.
+MASS-LUMPING FOR DIFFUSION           = 1.
 /----------------------------
 /          TRACER
 /----------------------------
-INITIAL VALUES OF TRACERS                     = 50.;3.;0.01;2.9;9.0
-/DENSITY LAW : 1
+INITIAL VALUES OF TRACERS = 50.;3.;0.01;2.9;9.0
 SCHEME FOR DIFFUSION OF TRACERS                       = 1
 /COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS        = 0.
 MAXIMUM NUMBER OF ITERATIONS FOR DIFFUSION OF TRACERS = 200
-/----------------------------
-/ ECHANGES AVEC L ATMOSPHERE
-/----------------------------
-/ATMOSPHERE-WATER EXCHANGE MODEL = 2
-/ COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL = 0.0026
 /************************************
 /  WATER QUALITY
 /************************************
 COUPLING WITH         = 'WAQTEL'
 WAQTEL STEERING FILE  = 'biomass_steer.cas'
-WATER QUALITY PROCESS =2
+WATER QUALITY PROCESS = 2
 /
 &FIN
