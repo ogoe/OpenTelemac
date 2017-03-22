@@ -88,7 +88,6 @@
 -->
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<!-- Temporary disable
    <action xref="CompareResults_CrossSections"
       do="python yen.py sis_yen-exp_multi.slf sis_yen-exp_multi.slf " code="exec"
 	  target="yen.py" deprefs="yen_90profilexy-koor.dat;yen_180profilexy-koor.dat;1:SISRES"
@@ -99,7 +98,6 @@
 	  target="yen_contour.py" deprefs="PaperDataRun5.png;1:SISRES"
       title="Yen post processing"
    />
--->
 
 
 </validation>

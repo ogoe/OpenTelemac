@@ -38,7 +38,7 @@ pytelpath = path.join(pytelpath,'scripts','python27')
 sys.path.append(pytelpath)
 
 #hardcoded workarround for paths
-sys.path.append("/panfs/sw/apps/telemac/v6p3_wels/wels/scripts/python27")
+#sys.path.append("/panfs/sw/apps/telemac/v6p3_wels/wels/scripts/python27")
 
 ################################################################################
 #####    Dependencies towards other pytel/modules                     ##########
