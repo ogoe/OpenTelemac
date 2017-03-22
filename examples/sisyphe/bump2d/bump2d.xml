@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="3" >
+<validation xref="case" rank="5" >
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
    <deco xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="Evolution of a bump in 2D T2D+SIS" author="P.Tassi" contact="www.opentelemac.org" />
+      <data title="Evolution of a conical bump in 2D T2D+SIS comparing with analytical calculated spread angle" author="L.Stadler, R.Kopmann" contact="www.opentelemac.org" />
    </deco>
    <deco xref="vect">
       <look colour="jet.xml" />
@@ -76,14 +76,10 @@
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
-<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
-<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <action xref="CalculatingSpreadAngle"
+      do="python bump2d.py sis_bump2d-t2d.slf sis_bump2d-t2d" code="exec"
+          target="bump2d.py" deprefs="1:SISRES"
+      title="bump2d post processing"
+   />
 
 </validation>
