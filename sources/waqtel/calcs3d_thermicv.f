@@ -1,12 +1,12 @@
-!                    *****************************
+!                     ***************************
                       SUBROUTINE CALCS3D_THERMICV
-!                    *****************************
+!                     ***************************
+!
      & (NPOIN3,NPOIN2,NPLAN,Z,IND_T,IND_S,TA,TEXP,TIMP,LONGIT,
      &  LATIT,LISTIN,AT,MARDAT,MARTIM)
 !
-!
 !***********************************************************************
-! TELEMAC2D   V7P0                                        21/09/2014
+! WAQTEL   V7P2
 !***********************************************************************
 !
 !brief   COMPUTES SOURCE TERMS FOR  WAQ THERMIC PROCESS COUPLED WITH T3D
@@ -14,7 +14,7 @@
 !history  R. ATA
 !+        21/03/2016
 !+        V7P2
-!+       CREATION
+!+  Creation from an example in old SOURCE_TRAC (V7P0 and V7P1)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -41,8 +41,6 @@
 !| YASMI          |-->| IF YES, THERE ARE IMPLICIT SOURCE TERMS
 !| Z              |-->| Z COORDINATES FOR NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!-----------------------------------------------------------------------
-!***********************************************************************
 !
       USE BIEF_DEF
       USE DECLARATIONS_SPECIAL
@@ -53,21 +51,20 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,NPLAN
-      INTEGER, INTENT(IN)             :: IND_T,IND_S
-      INTEGER, INTENT(IN)             :: MARDAT(3),MARTIM(3)
-      DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN3),LATIT,LONGIT,AT
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TA
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TEXP,TIMP
-      LOGICAL,        INTENT(IN)      :: LISTIN
+      INTEGER, INTENT(IN)           :: NPOIN2,NPOIN3,NPLAN
+      INTEGER, INTENT(IN)           :: IND_T,IND_S
+      INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3)
+      DOUBLE PRECISION, INTENT(IN)  :: Z(NPOIN3),LATIT,LONGIT,AT
+      TYPE(BIEF_OBJ), INTENT(IN)    :: TA
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: TEXP,TIMP
+      LOGICAL,        INTENT(IN)    :: LISTIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  LOCAL VARIABLES
 !
-      INTEGER                     :: I,J,IPLAN
-      DOUBLE PRECISION, PARAMETER :: EPS=1.D-3
-      DOUBLE PRECISION            :: TREEL,SAL,RO,LAMB,RAY_SOL,KD
+      INTEGER          I,J,IPLAN
+      DOUBLE PRECISION TREEL,SAL,RO,LAMB,RAY_SOL,KD
 !
       INTRINSIC EXP
 !
@@ -120,4 +117,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE
+      END

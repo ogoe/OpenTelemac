@@ -1,21 +1,21 @@
-!                    *****************************
+!                     ***************************
                       SUBROUTINE CALCS3D_THERMICS
-!                    ****************************
+!                     ***************************
+!
      & (NPOIN2,NPOIN3,IND_T,IND_S,TA,ATABOS,BTABOS,PATMOS,ATMOSEXCH,
      &  WIND,LISTIN)
 !
-!
 !***********************************************************************
-! TELEMAC2D   V7P0                                        21/09/2014
+! WAQTEL   V7P2
 !***********************************************************************
 !
-!brief   COMPUTES BOUNDARY CONDITIONS FOR  WAQ THERMIC PROCESS
-!         COUPLED WITH T3D
+!brief   COMPUTES BOUNDARY CONDITIONS FOR WAQ THERMIC PROCESS
+!        COUPLED WITH T3D
 !
 !history  R. ATA
 !+        21/02/2016
 !+        V7P2
-!+       CREATION
+!+  Creation from old BORD3D (V7P0 and V7P1)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -40,8 +40,6 @@
 !| VOLU2D         |-->| BASES AREA (NON ASSEMBLED)
 !| YASMI          |<--| IF YES, THERE ARE IMPLICIT SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!-----------------------------------------------------------------------
-!***********************************************************************
 !
       USE BIEF
       USE DECLARATIONS_SPECIAL
@@ -52,22 +50,22 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3
-      INTEGER, INTENT(IN)             :: IND_T,IND_S,ATMOSEXCH
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TA,WIND
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: ATABOS,BTABOS
-      TYPE(BIEF_OBJ), INTENT(IN)      :: PATMOS
-      LOGICAL,        INTENT(IN)      :: LISTIN
+      INTEGER, INTENT(IN)           :: NPOIN2,NPOIN3
+      INTEGER, INTENT(IN)           :: IND_T,IND_S,ATMOSEXCH
+      TYPE(BIEF_OBJ), INTENT(IN)    :: TA,WIND
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: ATABOS,BTABOS
+      TYPE(BIEF_OBJ), INTENT(IN)    :: PATMOS
+      LOGICAL,        INTENT(IN)    :: LISTIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !  LOCAL VARIABLES
 !
-      INTEGER                     :: IPOIN2
-      DOUBLE PRECISION            :: TREEL,SAL,RO,LAMB
-      DOUBLE PRECISION            :: FACT,WW,WW2,A
-      DOUBLE PRECISION            :: RAY_ATM,RAY_EAU,FLUX_EVAP
-      DOUBLE PRECISION            :: FLUX_SENS,DEBEVAP
+      INTEGER          IPOIN2
+      DOUBLE PRECISION TREEL,SAL,RO,LAMB
+      DOUBLE PRECISION FACT,WW,WW2,A
+      DOUBLE PRECISION RAY_ATM,RAY_EAU,FLUX_EVAP
+      DOUBLE PRECISION FLUX_SENS,DEBEVAP
 !
 ! ----------------------------------------------------------------
 !
@@ -136,5 +134,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-
-      END SUBROUTINE
+      END

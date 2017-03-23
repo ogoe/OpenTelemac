@@ -7,7 +7,7 @@
      & PATMOS_VALUE,AWATER_QUALITY,PLUIE,AOPTWIND,AWIND_SPD)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -69,6 +69,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
+!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
+!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
 !| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
 !| FUAIR          |<->| VELOCITY OF WIND ALONG X, IF CONSTANT
@@ -90,8 +92,6 @@
 !| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
 !| X              |-->| ABSCISSAE OF POINTS
 !| Y              |-->| ORDINATES OF POINTS
-!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
-!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
