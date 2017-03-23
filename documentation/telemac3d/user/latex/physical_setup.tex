@@ -509,8 +509,12 @@ free surface. An example of an exchange with a constant atmosphere temperature
 and a constant sea salinity was given as standard (as comments) through a
 direct programming in the \telfile{BORD3D} subroutine.
 
-A much more elaborated model has been introduced in \telemac{3D}. This module
-calculates the complete balance of exchanged fluxes involved:
+A much more elaborated model has been introduced in \telemac{3D}.
+Since version 7.2, this model has been integrated in \waqtel and
+\telemac{3D} has to be coupled with \waqtel to activate it
+(\telkey{COUPLING WITH} = 'WAQTEL'), with
+\telkey{WATER QUALITY PROCESS} = 5 in the \waqtel steering file.
+This module calculates the complete balance of exchanged fluxes involved:
 
 \begin{itemize}
 \item  The solar radiation,
@@ -527,14 +531,17 @@ calculates the complete balance of exchanged fluxes involved:
 It takes into account the solar radiation penetration in the water column.
 
 The choice of the heat exchange model can be done with the keyword
-\telkey{ATMOSPHERE-WATER EXCHANGE MODEL} (default value = 0: no exchange
+\telkey{ATMOSPHERE-WATER EXCHANGE MODEL} in the \waqtel steering file
+(default value = 0: no exchange
 model). Value 1 will use with the linearised formula at the free surface,
 whereas value 2 will use with the model with complete balance.
 
 These calculations require additional data (wind magnitude and direction, air
 temperature, atmospheric pressure, relative humidity, nebulosity and rainfall,
-all these variables may vary in time) in a standard format, see the example
-"heat\_exchange". The format may be changed but the user has to change the
+all these variables may vary in time) in a standard format, rather defined
+in the \telkey{ASCII ATMOSPHERIC DATA FILE} of the \telemac{3D} steering file,
+see the example "heat\_exchange". 
+The format may be changed but the user has to change the
 implementation of the reading and the interpolation of the meteorological data.
 When using the complete module, evaporation is calculated by \telemac{3D}, but
 the user has to provide rainfall data with units homogeneous with length over
@@ -543,9 +550,15 @@ time.
 The main developments of this module are implemented in the module
 \telfile{EXCHANGE\_WITH\_ATMOSPHERE}.
 
-Some physical parameters have been hard-coded in the module, often imposed as
-the mean value: the type of sky related to the luminosity of the site (very
-pure sky, mean pure sky or industrial zone sky), the type of cloud (cirrus,
+Some physical parameters or formulae can be changed with the helps of some
+keywords in the \waqtel steering file (default values are the mean values): e.g.
+the type of sky related to the luminosity of the site with the \waqtel keyword
+\telkey{LIGHTNESS OF THE SKY} (1: very pure sky, 2: mean pure sky or 3:
+industrial zone sky) or the \{FORMULA OF ATMOSPHERIC RADIATION}
+(1: Idso and Jackson (1969), 2: Swinbank (1963) which is the default formula,
+3: Brutsaert (1975) or 4: Yajima Tono Dam (2014)).
+Some other physical parameters have been hard-coded in the module, often
+imposed as the mean value: e.g. the type of cloud (cirrus,
 cirro stratus, alto cumulus, alto stratus, stratus), but these values can be
 changed in the module \telfile{EXCHANGE\_WITH\_ATMOSPHERE}).
 
@@ -560,8 +573,8 @@ roughness length of ${z}_{0}~=~0.0002$~m has been chosen in the code,
 that leads to $U_{2} \approx 0.85 U_{10}$. This value
 of 0.85 (or the roughness length) may be changed by the user if needed.
 
-Examples of solar radiation penetration are given in comments in the
-\telfile{SOURCE\_TRAC} subroutines. Two laws are suggested: the first one
+Examples of solar radiation penetration are given in the
+\telfile{CALCS3D\_THERMICV} subroutine. Two laws are suggested: the first one
 uses the \emph{in situ} measurements of Secchi length and is
 recommended if available; the second one uses two exponential laws that may be
 difficult to calibrate and require an estimation of the type of water from
@@ -570,11 +583,12 @@ turbidity.
 Except for the coefficient to model the penetration of solar radiation in the
 water column, the parameter $b$ that appears in the wind function is the
 single calibration parameter of this module. Its value is given by the keyword
-\telkey{COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL}. (default
+\telkey{COEFFICIENT TO CALIBRATE THE ATMOSPHERE-WATER EXCHANGE MODEL}
+in the \waqtel steering file (default
 value = 0.0025 but recommended values are between 0.0017 and 0.0035). This
 keyword is both used for the linearised formula at the free surface and the
 model with complete balance (values 1 and 2 for the keyword
-\telkey{ATMOSPHERE-WATER EXCHANGE MODEL}).
+\telkey{ATMOSPHERE-WATER EXCHANGE MODEL} in the \waqtel steering file).
 
 
 \section{Astral potential}
