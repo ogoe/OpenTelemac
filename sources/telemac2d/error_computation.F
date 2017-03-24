@@ -42,21 +42,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,J,K,IERR,IELMX
-      INTEGER NEWDIM1
-      INTEGER IPOIN,JPOIN1,JPOIN2,JPOIN3
-      INTEGER IELEM,JELEM
+      INTEGER I,K,IERR,IPOIN,JPOIN1,JPOIN2,JPOIN3,IELEM,JELEM
 !
-      DOUBLE PRECISION PI,L,DETM
-      DOUBLE PRECISION ERRL1,ERRL2,ERRLINF
-      DOUBLE PRECISION X1,Y1,F1
-      DOUBLE PRECISION X2,Y2,F2
-      DOUBLE PRECISION X3,Y3,F3
-      DOUBLE PRECISION XM,YM,A,B,C
+      DOUBLE PRECISION PI,L,DETM,ERRL1,ERRL2,ERRLINF
+      DOUBLE PRECISION X1,Y1,F1,X2,Y2,F2,X3,Y3,F3,XM,YM,A,B,C
 !
       DOUBLE PRECISION, ALLOCATABLE :: ANALYTICAL(:)
       DOUBLE PRECISION, ALLOCATABLE :: NUMERICAL(:)
-      INTEGER CFG(2), FID
+      INTEGER FID
+!
+      INTRINSIC ABS,MAX,SQRT
+!
+!-----------------------------------------------------------------------
 !
       PI = ACOS(-1.D0)
 !
@@ -162,7 +159,7 @@
 !     WRITE THE ERRORS IN A FILE
       CALL GET_FREE_ID(FID)
 #if defined NAGFOR
-      ! Manually going to the end of the file
+!     Manually going to the end of the file
       OPEN(UNIT=FID,FILE='ERRORS.DAT',FORM='FORMATTED',
      &     STATUS='UNKNOWN')
       REWIND(FID)
@@ -189,6 +186,7 @@
       WRITE(LU,*)'LOG_10(ERRL2) =',ERRL2
       WRITE(LU,*)'LOG_10(ERRLINF) =',ERRLINF
       WRITE(LU,*)'---------------------------------------------------'
+!
 !=======================================================================
 !
       RETURN
