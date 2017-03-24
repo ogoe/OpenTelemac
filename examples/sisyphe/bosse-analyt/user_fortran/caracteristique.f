@@ -39,6 +39,7 @@
         IF(H0(II).GE.1.D0) H0(II)=0
       ENDDO
 !
+        print*,'inside cara'
 ! INITIALISATION DES VARIABLES
 !----------------------------------------------------------------
 !
