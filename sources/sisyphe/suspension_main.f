@@ -94,6 +94,12 @@
 !+   OPTSUP replaced by OPTADV in the call to suspension_computation.
 !+   (see keyword SCHME OPTION FOR ADVECTION)
 !
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        28/03/2017
+!+        V7P3
+!+   HPROP is not equal to HN in coupling, but to HN_TEL, in Sisyphe
+!+   what is called HN is in fact H in Telemac-2D or 3D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -406,7 +412,12 @@
       ! ************************************************ !
       ! VI  - COMPUTES THE CONCENTRATION AND EVOLUTION   !
       ! ************************************************ !
-      CALL OS('X=Y     ', X=HPROP, Y=HN)
+
+      IF(CODE(1:7).EQ.'TELEMAC') THEN
+        CALL OS('X=Y     ', X=HPROP, Y=HN_TEL)
+      ELSE
+        CALL OS('X=Y     ', X=HPROP, Y=HN)
+      ENDIF
       DO I = 1, NSICLA
         CALL OS('X=0     ', X=ZFCL_S%ADR(I)%P)
         IF(DEBUG > 0) WRITE(LU,*)
