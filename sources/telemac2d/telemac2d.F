@@ -453,6 +453,12 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+!     LOGICAL FOR LISTING AND GRAPHICAL OUTPUT
+      IMP=.FALSE.
+      LEO=.FALSE.
+      COMPLEO=0
+!
+!-----------------------------------------------------------------------
 !
 !     INITIALISATION OF CONSTANTS FOR K-EPSILON, + KARMAN+ SA
 !
@@ -1596,6 +1602,12 @@
 !
 !-----------------------------------------------------------------------
 !
+!     INITIALIZATION OF LEO
+      LEO=.FALSE.
+      IMP=.FALSE.
+!
+!-----------------------------------------------------------------------
+!
       IF(PASS.EQ.1) THEN
         IF(CODE(1:7).EQ.'ESTEL3D') THEN
           AT=ATDEP
@@ -1678,10 +1690,10 @@
         ENDIF
       ENDIF
 !
-      IF(.NOT.ADJO)THEN
-         CALL PRERES_TELEMAC2D(IMP,LEO)
-         ENTET=IMP
-         LISTIN=IMP
+      IF((LISPRD*(LT/LISPRD).EQ.LT.AND.LT.GE.PTINIL).OR.LT.EQ.NIT) THEN
+        ENTET=LISTIN
+      ELSE
+        ENTET=.FALSE.
       ENDIF
 !
 !     CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
@@ -2299,18 +2311,18 @@
      &       LTT,FLUXTEMP,FLUHBTEMP,HC%R,SMTR,MESH%AIRST%R,
      &       TMAX,DTT,GAMMA,FLUX_OLD,MXPTVS,NEISEG%I,V2DPAR,
      &       UDEL,VDEL,HROPT,RAIN,PLUIE,MASS_RAIN,BILMAS,
-     &       FU,FV,YASMO,CORIOL,FCOR,SPHERI,MESH%COSLAT,MESH%SINLAT)
+     &       FU,FV,YASMO,CORIOL,FCOR,SPHERI,MESH%COSLAT,MESH%SINLAT,LEO)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM VOLFIN'
 !
         AT = AT + DT
         IF (LT.GE.NIT.OR.AT.GT.TMAX.OR.
      &      ((TMAX-AT)/TMAX).LT.1E-15) THEN !LAST TIME STEP
            ! Set lt in order for the last timestep to be written
-           IF(MOD(LT,LEOPRD).EQ.0) THEN
-             LT = (LT/LEOPRD)*LEOPRD
-           ELSE
-             LT = ((LT/LEOPRD) + 1)*LEOPRD
-           ENDIF
+!           IF(MOD(LT,LEOPRD).EQ.0) THEN
+!             LT = (LT/LEOPRD)*LEOPRD
+!           ELSE
+!             LT = ((LT/LEOPRD) + 1)*LEOPRD
+!           ENDIF
            ! Set lt as the last timestep
            NIT = LT
            ENTET = .TRUE.
@@ -2929,8 +2941,6 @@
       CALL AD_TELEMAC2D_TIMESTEP_END
 #endif
 !< JR @ RWTH
-!
-!-----------------------------------------------------------------------
 !
 ! 700: TIME LOOP
 !
