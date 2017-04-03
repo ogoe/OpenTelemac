@@ -11,6 +11,9 @@ GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_tom_littoral.cli'
 2D RESULTS FILE = 'tom_littoral.slf'
 GLOBAL RESULT FILE = 'glob.slf'
+PUNCTUAL RESULTS FILE ='littoral3D.spe'
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS= 500
+ORDINATES OF SPECTRUM PRINTOUT POINTS= 100
 /--------------------------------------------------------------------
 / INPUTS - OUTPUTS
 /--------------------------------------------------------------------
@@ -19,6 +22,8 @@ PERIOD FOR GRAPHIC PRINTOUTS = 1
 VARIABLES FOR 2D GRAPHIC PRINTOUTS =
 HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY
 PERIOD FOR LISTING PRINTOUTS = 10
+
+
 /--------------------------------------------------------------------
 / DISCRETISATION
 /--------------------------------------------------------------------
