@@ -98,7 +98,6 @@
       INTEGER          DUMMY,LT_WAC, IREC
 !
       INTEGER LT,LT1
-      INTEGER NOLEO(99)
       INTEGER DATE(3),TIME(3),IP
 !
 !     TV1 TEMPS CORRESPONDANT AU VENT 1
@@ -133,6 +132,8 @@
 !COUPLAGE : verification des conditions pour le couplage
 !           TELEMAC-TOMAWAC
 !
+       IF(DEBUG.GT.0) WRITE(*,*)'ENTREE DANS TOMAWAC, evec T_TEL=',T_TEL
+     &     ,'NIT_TEL',NIT_TEL,'DONTEL',DONTEL
       IF(PART.GE.0) THEN
         IF(MAREE.OR.COUSTA.OR.DONTEL) THEN
            IF(LNG.EQ.1) THEN
@@ -418,9 +419,10 @@
           ENDDO
         ENDIF
       ENDIF
-!
+!      
       IF(RAZTIM) AT=0.D0
-!
+      IF(PART.GE.0) AT=T_TEL
+!     
       AT0=AT
 !
       IF(.NOT.PROINF) THEN
@@ -657,7 +659,7 @@
 !.....9.4 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
-        IREC = (LT - GRADEB) ! Should be 0
+        IREC = (LT - GRADEB)    ! Should be 0
         CALL ECRSPE
      &( SF%R    , STETA%R, NPLAN ,
      &  SFR%R   , NF  , NF   , NPOIN2      , AT , IREC,
@@ -1165,7 +1167,7 @@
 !COUPLAGE TELEMAC-TOMAWAC : reset de la variable NIT (nombre
 !         de pas de temps de TOMAWAC indique dans la fichier .cas)
       IF(PART.EQ.1) NIT=DUMMY
-!Fin COUPLAGE
+!     Fin COUPLAGE
 !
       IF(ABS(AT-AT0-NIT*DT).LT.1.D-6) THEN
 !
