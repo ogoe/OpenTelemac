@@ -2788,6 +2788,7 @@
           ! set to 1 by preres_telemac2d on the last time step
           OLD_LEOPRD = LEOPRD
 !
+          CALL PRERES_TELEMAC2D(IMP,LEO)
           CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
      &            NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &            LISPRD,OLD_LEOPRD,
