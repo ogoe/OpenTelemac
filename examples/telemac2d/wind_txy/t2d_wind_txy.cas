@@ -16,7 +16,8 @@
 /----------------------------------------------
 /
 GEOMETRY FILE                   = geo_wind_txy.slf
-FORTRAN FILE                    = 'user_fortran'
+FORTRAN FILE                    = 'princi.f'
+/FORTRAN FILE                    = 'user_fortran'
 BOUNDARY CONDITIONS FILE        = geo_wind_txy.cli
 RESULTS FILE                    = r2d_wind_txy.slf
 PREVIOUS COMPUTATION FILE       = ini_wind_txy.slf

@@ -1,22 +1,71 @@
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
-     &    (IMP,LEO)
 !
+     &(IMP,LEO)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
 !+                THE RESULTS FILE OR TO THE LISTING.
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  C. GOEURY (EDF R&D LNHE)
+!+        25/07/2013
+!+        V6P3
+!+   Sum of HAP in oilspills has been added.
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        02/01/2014
+!+        V7P0
+!+   Securing bound checking in parallelism.
+!
+!history  J-M HERVOUET EDF R&D, LNHE)
+!+        28/10/2014
+!+        V7P0
+!+   Initialising Lagrangian drifts for iteration 0 in case they are
+!+   in outputs.
+!
+!history  R. ATA & J-M HERVOUET (EDF LAB, LNHE)
+!+        10/06/2015
+!+        V7P1
+!+   Now all the variables asked for graphic printouts are written for
+!+   remarkable points.
+!
+!history  R. ATA (EDF LAB, LNHE)
+!+        11/01/2016
+!+        V7P2
+!+   Now preres gives instruction to bief_desimp to write graphical
+!+   results (through leo and imp)
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        20/07/2016
+!+        V7P2
+!+   When Elder model of turbulence is asked, the longitudinal
+!+   dispersion is retrieved from NUXX and NUYY, and KL+PROPNU put in
+!+   T10.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_TELEMAC2D
       USE INTERFACE_TELEMAC2D
 !
+      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -25,40 +74,37 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL DEJA1,DEJA2,DEJA3
+      INTEGER LTT,N,IMAX,CC,I
 !
-      INTEGER LTT,N,IMAX,I
-!
-      DOUBLE PRECISION HHH,XMAX,NF,PI,AMP,PHA,CC
-      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION HHH,XMAX
+      DOUBLE PRECISION, PARAMETER :: EPSS=1.E-10
       DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
-      INTRINSIC MAX,SQRT
-      DATA DEJA1/.FALSE./
-      DATA DEJA2/.FALSE./
-      DATA DEJA3/.FALSE./
-      SAVE DEJA1,DEJA2,DEJA3,NF
+      INTRINSIC MAX,SQRT,CEILING
+!
+      DOUBLE PRECISION P_DMAX,P_DMIN
+      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
 !     THE OUTPUT VARIABLES ARE BUILT ONLY IF NECESSARY, HENCE THE
 !     FOLLOWING TESTS, WHICH MUST BE THE SAME AS IN BIEF_DESIMP (BIEF LIBRARY)
 !
+      IMP=.FALSE.
+!      LEO=.FALSE.
 !     THIS WILL TRIGGER THE OUTPUT OF LAST TIMESTEP
 !     BUT NOT WITH PARAMETER ESTIMATION (LISPRD WOULD STAY AT 1
 !     FOR FURTHER COMPUTATIONS)
-      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
-        LISPRD=1
-        LEOPRD=1
-      ENDIF
-!
-      IMP=.FALSE.
-      LEO=.FALSE.
-!     Always write the intial conditions
+!      IF(LT.EQ.NIT.AND.ESTIME(1:1).EQ.' ') THEN
+!        IMP=.FALSE.
+!        LEO=.FALSE.
+!      ENDIF
+!     Always write the initial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
         LEO=.TRUE.
         COMPLEO=0
+        COMPLIS=0
       ELSE
         IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
 !         FEM
@@ -70,62 +116,39 @@
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
-          GPRDTIME=LEOPRD*DTINI
-          LPRDTIME=LISPRD*DTINI
-          IF(GPRDTIME.LT.EPSS.OR.LPRDTIME.LT.EPSS)THEN
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-          IF(LT.GE.PTINIG)THEN
-!           GRAPHIC OUTPUT
-            LTT=CEILING(AT/GPRDTIME)
-            RESTE=(LTT*GPRDTIME-AT)/GPRDTIME
-            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
-!                                   CASE WHERE RESTE=1
-     &        LT.EQ.NIT)THEN
-              LEO=.TRUE.
-              COMPLEO=COMPLEO+1
-            ENDIF
-
-          ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
+            LPRDTIME=LISPRD*DTINI
             LTT=CEILING(AT/LPRDTIME)
             RESTE=(LTT*LPRDTIME-AT)/LPRDTIME
             IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
 !                                   CASE WHERE RESTE=1
      &        LT.EQ.NIT)THEN
               IMP=.TRUE.
+              COMPLIS=COMPLIS+1
             ENDIF
           ENDIF
         ENDIF
       ENDIF
 !
-!
 !-----------------------------------------------------------------------
 !
-! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS STEP
-!     BUT ONLY AFTER FIRST TIME STEP FOR GRAPHIC PRINTOUTS
+! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS TIMESTEP
+!     BUT ONLY AFTER FIRST TIMESTEP FOR GRAPHIC PRINTOUTS
 !
 !-----------------------------------------------------------------------
-!
-      IF(NPERIAF.GT.0.AND.LT.EQ.0) THEN
-!       FOR OUTPUT OF INITIAL CONDITIONS
-        CALL OS('X=C     ',AMPL,AMPL,AMPL,0.D0)
-        CALL OS('X=C     ',PHAS,PHAS,PHAS,0.D0)
-      ENDIF
 !
       IF(LT.GE.PTINIG) THEN
 !
 !=======================================================================
-! CALCUL DE LA COTE MAXIMUM ET TEMPS ASSOCIE
+! COMPUTES THE MAXIMUM ELEVATION AND ASSOCIATED TIME
 !=======================================================================
 !
       IF(SORLEO(27).OR.SORIMP(27)) THEN
-        IF(.NOT.DEJA1) THEN
-          CALL OS('X=Y     ',MAXZ ,ZF,ZF,0.D0)
-          CALL OS('X=C     ',TMAXZ,ZF,ZF,AT  )
-          DEJA1=.TRUE.
+        IF(.NOT.DEJA1_PRERES) THEN
+          CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+          CALL OS('X=C     ',X=TMAXZ,C=AT)
+          DEJA1_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=H%R(N)+ZF%R(N)
@@ -139,14 +162,14 @@
       ENDIF
 !
 !=======================================================================
-! CALCUL DE LA VITESSE MAXIMUM ET TEMPS ASSOCIE
+! COMPUTES THE MAXIMUM SPEED AND ASSOCIATED TIME
 !=======================================================================
 !
       IF(SORLEO(29).OR.SORIMP(29)) THEN
-        IF(.NOT.DEJA2) THEN
-          CALL OS('X=C     ',MAXV ,MAXV ,MAXV ,0.D0)
-          CALL OS('X=C     ',TMAXV,TMAXV,TMAXV,  AT)
-          DEJA2=.TRUE.
+        IF(.NOT.DEJA2_PRERES) THEN
+          CALL OS('X=C     ',X=MAXV ,C=0.D0)
+          CALL OS('X=C     ',X=TMAXV,C=AT)
+          DEJA2_PRERES=.TRUE.
         ELSE
           DO N=1,NPOIN
             XMAX=SQRT(U%R(N)**2+V%R(N)**2)
@@ -159,135 +182,58 @@
         ENDIF
       ENDIF
 !
-!=======================================================================
-! IMPRESSIONS POUR LES POINTS REMARQUABLES
-!=======================================================================
+!-----------------------------------------------------------------------
 !
-      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
-        DO I=27,30
-!         CAUTION : HERE SORLEO IS USED INSTEAD OF SORIMP
-          IF(SORLEO(I)) THEN
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) TEXTE(I)(1:16)
-            WRITE(LU,*) ' '
-            DO N=1,NPTS
-              WRITE(LU,*) NAME_PTS(N),' : ',
-     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
-            ENDDO
-          ENDIF
-        ENDDO
-      ENDIF
+      ELSE
 !
-!=======================================================================
-! ANALYSES DE FOURIER DE LA COTE
-!=======================================================================
+!     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
+!     OTHERWISE THEY WOULD NOT BE INITIALISED
+        IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+        IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+        IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
-!     NF : NOMBRE DE POINTS DE LA SERIE TEMPORELLE
-!     ON CALCULE D'ABORD : SOMME (SIGNAL * EXP(-I OMEGA AT))
-!     EN METTANT LA PARTIE REELLE DANS AMPL ET L'IMAGINAIRE DANS PHAS
-      IF(NPERIAF.GT.0) THEN
-!
-        PI=ACOS(-1.D0)
-        IF(.NOT.DEJA3) THEN
-          DO I=1,NPERIAF
-            DO N=1,NPOIN
-             AMPL%ADR(I)%P%R(N)= (H%R(N)+ZF%R(N))*COS(2*PI*AT/PERIAF(I))
-             PHAS%ADR(I)%P%R(N)=-(H%R(N)+ZF%R(N))*SIN(2*PI*AT/PERIAF(I))
-            ENDDO
-          ENDDO
-          DEJA3=.TRUE.
-          NF=1.D0
-        ELSE
-          DO I=1,NPERIAF
-            DO N=1,NPOIN
-             AMPL%ADR(I)%P%R(N)=AMPL%ADR(I)%P%R(N)
-     &                          +(H%R(N)+ZF%R(N))*COS(2*PI*AT/PERIAF(I))
-             PHAS%ADR(I)%P%R(N)=PHAS%ADR(I)%P%R(N)
-     &                          -(H%R(N)+ZF%R(N))*SIN(2*PI*AT/PERIAF(I))
-            ENDDO
-          ENDDO
-          NF=NF+1.D0
-        ENDIF
-!
-!       PASSAGE FINAL A AMPLITUDE ET PHASE
-!       (APRES DIVISION PAR NF, ON A AMPL = AMPLITUDE * COS(PHASE)
-!                                 ET PHAS = AMPLITUDE * SIN(PHASE)
-        IF(LT.EQ.NIT) THEN
-          DO I=1,NPERIAF
-            DO N=1,NPOIN
-             AMPL%ADR(I)%P%R(N)=AMPL%ADR(I)%P%R(N)/NF
-             PHAS%ADR(I)%P%R(N)=PHAS%ADR(I)%P%R(N)/NF
-             AMP=SQRT(AMPL%ADR(I)%P%R(N)**2+PHAS%ADR(I)%P%R(N)**2)
-             PHA=ATAN2(PHAS%ADR(I)%P%R(N),AMPL%ADR(I)%P%R(N))
-!            PHASE ENTRE 0 ET 360 DEGRES
-             PHA=PHA*180.D0/PI+180.D0
-             AMPL%ADR(I)%P%R(N)=AMP
-             PHAS%ADR(I)%P%R(N)=PHA
-            ENDDO
-            IF(NPTS.GT.0) THEN
-              WRITE(LU,*) ' '
-              WRITE(LU,*) ' '
-              WRITE(LU,*) ' '
-              IF(LNG.EQ.1) WRITE(LU,*) 'ANALYSE DE LA PERIODE ',
-     &                                  PERIAF(I),' S :'
-              IF(LNG.EQ.2) WRITE(LU,*) 'ANALYSIS OF PERIOD ',
-     &                                  PERIAF(I),' S :'
-              WRITE(LU,*) ' '
-              DO N=1,NPTS
-                WRITE(LU,*) 'AMPLITUDE ',NAME_PTS(N),' : ',
-     &                                   AMPL%ADR(I)%P%R(LIST_PTS(N))
-                WRITE(LU,*) 'PHASE     ',NAME_PTS(N),' : ',
-     &                                   PHAS%ADR(I)%P%R(LIST_PTS(N))
-                WRITE(LU,*) ' '
-              ENDDO
-            ENDIF
-          ENDDO
-!       ENDIF DE : IF(LT.EQ.NIT)
-        ENDIF
-!
-!     ENDIF DE : IF(NPERIAF.GT.0) THEN
+!     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     ENDIF DE : IF(LT.GE.PTINIG) THEN
-      ENDIF
+! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS TIMESTEP
 !
 !-----------------------------------------------------------------------
 !
-! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS STEP
-!
-!-----------------------------------------------------------------------
-!
-!     PAS D'IMPRESSION, PAS DE SORTIE SUR FICHIER, ON RESSORT
+!     NO PRINTOUT REQUIRED (LISTING OR RESULT FILE): EXITS
       IF(.NOT.(LEO.OR.IMP)) GO TO 1000
 !
 !
 !=======================================================================
-! CALCUL DE LA CELERITE (MISE DANS FU, VOIR LE BLOC VARSOR)
+! COMPUTES CELERITY (IN FU, SEE BLOCK: VARSOR)
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(3)).OR.(IMP.AND.SORIMP(3))) THEN
+        CALL CPSTVC(ZF,FU)
         DO N=1,NPOIN
           FU%R(N) = SQRT ( GRAV * MAX(H%R(N),0.D0) )
         ENDDO
       ENDIF
 !
 !=======================================================================
-! CALCUL DE LA SURFACE LIBRE (= H + ZF, MISE DANS FV)
+! COMPUTES FREE SURFACE ELEVATION (= H + ZF, IN FV)
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(5)).OR.(IMP.AND.SORIMP(5))) THEN
-        CALL OS( 'X=Y+Z   ' , FV , H , ZF , 0.D0 )
+        CALL CPSTVC(ZF,FV)
+        DO N=1,NPOIN
+          FV%R(N) = H%R(N)+ZF%R(N)
+        ENDDO
       ENDIF
 !
 !=======================================================================
-! CALCUL DU NOMBRE DE FROUDE
+! COMPUTES FROUDE NUMBER
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(7)).OR.(IMP.AND.SORIMP(7))) THEN
+        CALL CPSTVC(ZF,T2)
         DO N=1,NPOIN
           HHH = MAX( H%R(N) , 1.D-8 )
           T2%R(N) = SQRT (( U%R(N)**2 + V%R(N)**2 ) / ( HHH*GRAV ))
@@ -295,77 +241,136 @@
       ENDIF
 !
 !=======================================================================
-! CALCUL DU DEBIT SCALAIRE
+! COMPUTES FLOWRATE
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
+        CALL CPSTVC(ZF,T3)
         DO N=1,NPOIN
           T3%R(N) = SQRT (U%R(N)**2 + V%R(N)**2) * H%R(N)
         ENDDO
       ENDIF
 !
 !=======================================================================
-! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT X
+! RETRIEVING LONGITUDINAL DISPERSION
+!=======================================================================
+!
+      IF(((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12)))
+     &   .AND.ITURB.EQ.2) THEN
+        DO N=1,NPOIN
+!         RETRIEVING KL (SEE SUBROUTINE DISPER) AND ADDING PROPNU.
+          T10%R(N) = (VISC%R(N)+VISC%R(N+NPOIN)-2*PROPNU)*ELDER(1)/
+     &              (ELDER(1)+ELDER(2)) + PROPNU
+        ENDDO
+      ENDIF
+!
+!=======================================================================
+! COMPUTES FLOWRATE ALONG X
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(13)).OR.(IMP.AND.SORIMP(13))) THEN
-        CALL CPSTVC(H,T4)
+        CALL CPSTVC(ZF,T4)
         DO N=1,NPOIN
           T4%R(N)=H%R(N)*U%R(N)
         ENDDO
       ENDIF
 !
 !=======================================================================
-! CALCUL DU DEBIT VECTORIEL , COMPOSANTE SUIVANT Y
+! COMPUTES FLOWRATE ALONG Y
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(14)).OR.(IMP.AND.SORIMP(14))) THEN
-        CALL CPSTVC(H,T5)
+        CALL CPSTVC(ZF,T5)
         DO N=1,NPOIN
           T5%R(N)=H%R(N)*V%R(N)
         ENDDO
       ENDIF
 !
 !=======================================================================
-! CALCUL DE LA VITESSE SCALAIRE
+! COMPUTES SPEED
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(15)).OR.(IMP.AND.SORIMP(15))) THEN
-        CALL OS( 'X=N(Y,Z)' , T6 , U , V , 0.D0 )
+        CALL OS( 'X=N(Y,Z)' , X=T6 , Y=U , Z=V )
       ENDIF
 !
 !=======================================================================
-! CALCUL DU NOMBRE DE COURANT
+! LAGRANGIAN DRIFTS
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(20)).OR.(IMP.AND.SORIMP(20))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T7)
+      ENDIF
+      IF((LEO.AND.SORLEO(21)).OR.(IMP.AND.SORIMP(21))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T8)
+      ENDIF
+!
+!=======================================================================
+! COMPUTES COURANT NUMBER
 !=======================================================================
 !
       IF((LEO.AND.SORLEO(22)).OR.(IMP.AND.SORIMP(22))) THEN
 !                             IELM
         CALL CFLPSI(T9,U,V,DT,11,MESH,MSK,MASKEL)
         CALL MAXI(XMAX,IMAX,T9%R,NPOIN)
-        IF (LNG.EQ.1) WRITE(LU,78) XMAX
-        IF (LNG.EQ.2) WRITE(LU,79) XMAX
+        IF(NCSIZE.GT.1) THEN
+          IF(LNG.EQ.1) WRITE(LU,78) P_DMAX(XMAX)
+          IF(LNG.EQ.2) WRITE(LU,79) P_DMAX(XMAX)
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,78) XMAX
+          IF(LNG.EQ.2) WRITE(LU,79) XMAX
+        ENDIF
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
 !
 !=======================================================================
-! CALCUL DE LA HAUTEUR EXACTE
+! COMPUTES FRICTION SPEED
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(31)).OR.(IMP.AND.SORIMP(31))) THEN
+        CALL CPSTVC(CF,T7)
+        DO N=1,NPOIN
+          T7%R(N) = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
+        ENDDO
+      ENDIF
+!
+!=======================================================================
+! COMPUTES THE SUM OF SOLUBLE COMPONENT DURING THE OIL SPILL
+!=======================================================================
+!
+      IF((SORLEO(23).OR.SORIMP(23)).AND.SPILL_MODEL.AND.NTRAC.GT.0) THEN
+        DO N=1,NPOIN
+          PRIVE1(N) = T%ADR(1)%P%R(N)
+        ENDDO
+        IF(NTRAC.GT.1) THEN
+          DO I=2,NTRAC
+            DO N=1,NPOIN
+              PRIVE1(N) = PRIVE1(N) + T%ADR(I)%P%R(N)
+            ENDDO
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!=======================================================================
+! COMPUTE THE EXACT WATER DEPTH 
 !=======================================================================
 !
       CC=SQRT(4.D0*9.81D0)
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
+      IF((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24))) THEN
         DO N=1,NPOIN
           HHH = MAX(0.D0,CC-(X(N)-10.5D0)/2.D0/MAX(AT,DT))
           HHH = 4.D0*HHH**2/9.D0/9.81D0
           PRIVE%ADR(1)%P%R(N) = MIN(4.D0,HHH)
         ENDDO
       ENDIF
+
 !
 !=======================================================================
-! CALCUL DE LA VITESSE EXACTE
+! COMPUTE THE EXACT VELOCITY
 !=======================================================================
 !
-      IF((LEO.AND.SORLEO(24)).OR.(IMP.AND.SORIMP(24))) THEN
+      IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
         DO N=1,NPOIN
           PRIVE%ADR(2)%P%R(N) = 2.D0*(CC+X(N)/MAX(AT,DT))/3.D0
         ENDDO
@@ -374,6 +379,42 @@
 !=======================================================================
 !
 1000  CONTINUE
+!
+!=======================================================================
+! HARMONIC ANALYSIS USING LEAST MEAN ERROR SQUARE METHOD
+!=======================================================================
+!
+      IF(NPERIAF.GT.0) CALL SPECTRE
+!
+!=======================================================================
+! PRINTOUTS FOR THE REMARKABLE POINTS
+!=======================================================================
+!
+      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
+        DO I=1,MAXVAR
+!         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
+          IF(SORLEO(I)) THEN
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) TEXTE(I)(1:16)
+            WRITE(LU,*) ' '
+            DO N=1,NPTS
+!             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
+              IF(NCSIZE.GT.1) THEN
+                HHH=0.D0
+                IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
+                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
+              ELSE
+                WRITE(LU,*) NAME_PTS(N),' : ',
+     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
+!
+!=======================================================================
+!
       RETURN
       END
-

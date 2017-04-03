@@ -1,20 +1,15 @@
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC2D
 !                    ***************************
-     &    (IMP,LEO)
 !
+     &(IMP,LEO)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
 !+                THE RESULTS FILE OR TO THE LISTING.
-!
-!history  J-M HERVOUET (LNHE)
-!+        24/11/2009
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -56,6 +51,13 @@
 !+   Now preres gives instruction to bief_desimp to write graphical
 !+   results (through leo and imp)
 !
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+        20/07/2016
+!+        V7P2
+!+   When Elder model of turbulence is asked, the longitudinal
+!+   dispersion is retrieved from NUXX and NUYY, and KL+PROPNU put in
+!+   T10.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -72,10 +74,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LTT,N,IMAX,I,II,JJ
+      INTEGER LTT,N,IMAX,I
 !
-      DOUBLE PRECISION HHH,XMAX,HHPLG,COEF,ARG1
-      DOUBLE PRECISION, PARAMETER:: EPSS=1.E-10
+      DOUBLE PRECISION COEF,ARG1,XMAX,HHH
+      DOUBLE PRECISION, PARAMETER :: EPSS=1.E-10
       DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
       INTRINSIC MAX,SQRT,CEILING
@@ -89,7 +91,7 @@
 !     FOLLOWING TESTS, WHICH MUST BE THE SAME AS IN BIEF_DESIMP (BIEF LIBRARY)
 !
       IMP=.FALSE.
-      LEO=.FALSE.
+!      LEO=.FALSE.
 !     THIS WILL TRIGGER THE OUTPUT OF LAST TIMESTEP
 !     BUT NOT WITH PARAMETER ESTIMATION (LISPRD WOULD STAY AT 1
 !     FOR FURTHER COMPUTATIONS)
@@ -97,11 +99,12 @@
 !        IMP=.FALSE.
 !        LEO=.FALSE.
 !      ENDIF
-!     Always write the intial conditions
+!     Always write the initial conditions
       IF(LT.EQ.0) THEN
         IMP=.TRUE.
         LEO=.TRUE.
         COMPLEO=0
+        COMPLIS=0
       ELSE
         IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
 !         FEM
@@ -113,38 +116,23 @@
           IF(LEO)COMPLEO=COMPLEO+1
         ELSE
 !         FVM
-          GPRDTIME=LEOPRD*DTINI
-          LPRDTIME=LISPRD*DTINI
-          IF(GPRDTIME.LT.EPSS.OR.LPRDTIME.LT.EPSS)THEN
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-          IF(LT.GE.PTINIG)THEN
-!           GRAPHIC OUTPUT
-            LTT=CEILING(AT/GPRDTIME)
-            RESTE=(LTT*GPRDTIME-AT)/GPRDTIME
-            IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
-!                                   CASE WHERE RESTE=1
-     &        LT.EQ.NIT)THEN
-              LEO=.TRUE.
-              COMPLEO=COMPLEO+1
-            ENDIF
-
-          ENDIF
           IF(LT.GT.PTINIL)THEN
 !           LISTING OUTPUT
+            LPRDTIME=LISPRD*DTINI
             LTT=CEILING(AT/LPRDTIME)
             RESTE=(LTT*LPRDTIME-AT)/LPRDTIME
             IF(RESTE.LT.EPSS.OR.ABS(RESTE-1.D0).LT.EPSS.OR.
 !                                   CASE WHERE RESTE=1
      &        LT.EQ.NIT)THEN
               IMP=.TRUE.
+              COMPLIS=COMPLIS+1
             ENDIF
           ENDIF
         ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
 ! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS TIMESTEP
 !     BUT ONLY AFTER FIRST TIMESTEP FOR GRAPHIC PRINTOUTS
 !
@@ -194,44 +182,16 @@
         ENDIF
       ENDIF
 !
-!=======================================================================
-! PRINTOUTS FOR THE REMARKABLE POINTS
-!=======================================================================
-!
-      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
-        DO I=27,30
-!         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
-          IF(SORLEO(I)) THEN
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) ' '
-            WRITE(LU,*) TEXTE(I)(1:16)
-            WRITE(LU,*) ' '
-            DO N=1,NPTS
-!             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
-              IF(NCSIZE.GT.1) THEN
-                WRITE(LU,*) NAME_PTS(N),' : ',
-     &                    P_DMIN(VARSOR%ADR(I)%P%R(LIST_PTS(N)))+
-     &                    P_DMAX(VARSOR%ADR(I)%P%R(LIST_PTS(N)))
-              ELSE
-                WRITE(LU,*) NAME_PTS(N),' : ',
-     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
-              ENDIF
-            ENDDO
-          ENDIF
-        ENDDO
-      ENDIF
-!
 !-----------------------------------------------------------------------
 !
       ELSE
 !
 !     CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
 !     OTHERWISE THEY WOULD NOT BE INITIALISED
-      IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
-      IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
-      IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
-      IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
+        IF(SORLEO(27).OR.SORIMP(27)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+        IF(SORLEO(28).OR.SORIMP(28)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+        IF(SORLEO(29).OR.SORIMP(29)) CALL OS('X=C     ',X=MAXV ,C=0.D0)
+        IF(SORLEO(30).OR.SORIMP(30)) CALL OS('X=C     ',X=TMAXV,C=AT)
 !
 !     ENDIF FOR : IF(LT.GE.PTINIG) THEN
       ENDIF
@@ -292,6 +252,19 @@
       ENDIF
 !
 !=======================================================================
+! RETRIEVING LONGITUDINAL DISPERSION
+!=======================================================================
+!
+      IF(((LEO.AND.SORLEO(12)).OR.(IMP.AND.SORIMP(12)))
+     &   .AND.ITURB.EQ.2) THEN
+        DO N=1,NPOIN
+!         RETRIEVING KL (SEE SUBROUTINE DISPER) AND ADDING PROPNU.
+          T10%R(N) = (VISC%R(N)+VISC%R(N+NPOIN)-2*PROPNU)*ELDER(1)/
+     &              (ELDER(1)+ELDER(2)) + PROPNU
+        ENDDO
+      ENDIF
+!
+!=======================================================================
 ! COMPUTES FLOWRATE ALONG X
 !=======================================================================
 !
@@ -322,6 +295,17 @@
       ENDIF
 !
 !=======================================================================
+! LAGRANGIAN DRIFTS
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(20)).OR.(IMP.AND.SORIMP(20))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T7)
+      ENDIF
+      IF((LEO.AND.SORLEO(21)).OR.(IMP.AND.SORIMP(21))) THEN
+        IF(LT.EQ.0) CALL OS('X=0     ',X=T8)
+      ENDIF
+!
+!=======================================================================
 ! COMPUTES COURANT NUMBER
 !=======================================================================
 !
@@ -341,21 +325,6 @@
       ENDIF
 !
 !=======================================================================
-! COMPUTES EXACT WATER DEPTH
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
-        CALL EXACTE(PRIVE%ADR(1)%P%R,X,NPOIN)
-      ENDIF
-!=======================================================================
-! COMPUTES EXACT FREE SURFACE
-!=======================================================================
-!
-      IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
-        CALL OV('X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
-     &                      PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
-      ENDIF
-!=======================================================================
 ! COMPUTES FRICTION SPEED
 !=======================================================================
 !
@@ -364,6 +333,40 @@
         DO N=1,NPOIN
           T7%R(N) = SQRT(0.5D0*CF%R(N)*(U%R(N)**2+V%R(N)**2))
         ENDDO
+      ENDIF
+!
+!=======================================================================
+! COMPUTES THE SUM OF SOLUBLE COMPONENT DURING THE OIL SPILL
+!=======================================================================
+!
+      IF((SORLEO(23).OR.SORIMP(23)).AND.SPILL_MODEL.AND.NTRAC.GT.0) THEN
+        DO N=1,NPOIN
+          PRIVE1(N) = T%ADR(1)%P%R(N)
+        ENDDO
+        IF(NTRAC.GT.1) THEN
+          DO I=2,NTRAC
+            DO N=1,NPOIN
+              PRIVE1(N) = PRIVE1(N) + T%ADR(I)%P%R(N)
+            ENDDO
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!=======================================================================
+! COMPUTE THE EXACT WATER DEPTH
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(23)).OR.(IMP.AND.SORIMP(23))) THEN
+        CALL EXACTE(PRIVE%ADR(1)%P%R,X,NPOIN)
+      ENDIF
+!
+!=======================================================================
+! COMPUTE THE EXACT FREE SURFACE
+!=======================================================================
+!
+      IF((LEO.AND.SORLEO(25)).OR.(IMP.AND.SORIMP(25))) THEN
+        CALL OV('X=Y+Z   ' ,PRIVE%ADR(3)%P%R,
+     &                      PRIVE%ADR(1)%P%R,ZF%R,0.D0,NPOIN)
       ENDIF
 !
 !=======================================================================
@@ -377,7 +380,34 @@
       IF(NPERIAF.GT.0) CALL SPECTRE
 !
 !=======================================================================
+! PRINTOUTS FOR THE REMARKABLE POINTS
+!=======================================================================
+!
+      IF(LT.EQ.NIT.AND.NPTS.GT.0) THEN
+        DO I=1,MAXVAR
+!         BEWARE : HERE SORLEO IS USED INSTEAD OF SORIMP
+          IF(SORLEO(I)) THEN
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) ' '
+            WRITE(LU,*) TEXTE(I)(1:16)
+            WRITE(LU,*) ' '
+            DO N=1,NPTS
+!             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
+              IF(NCSIZE.GT.1) THEN
+                HHH=0.D0
+                IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
+                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
+              ELSE
+                WRITE(LU,*) NAME_PTS(N),' : ',
+     &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))
+              ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
+!
+!=======================================================================
 !
       RETURN
       END
-

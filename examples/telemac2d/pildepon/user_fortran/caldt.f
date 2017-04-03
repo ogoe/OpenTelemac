@@ -2,7 +2,7 @@
                        SUBROUTINE CALDT
 !                      ****************
 !
-     &(NS,G,H,U,V,DTHAUT,DT,AT,TMAX,CFL,ICIN,DTVARI,LISTIN)
+     &(NS,G,H,U,V,DTHAUT,DT,AT,TMAX,CFL,ICIN,DTVARI,LISTIN,LEO,NORDRE)
 !
 !***********************************************************************
 !TELEMAC-2D VERSION 7.0                                 30/06/13
@@ -53,26 +53,28 @@
 !| ICIN           |-->| WHICH SCHEME (SEE LIST BELOW)
 !| DTVARI         |-->| LOGICAL: VARIABLE TIME STEP
 !| LISTIN         |-->| LOGICAL: OUTPUT LISTING
+!| NORDRE         |-->| ORDER IN SPACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY:NCSIZE
-      USE DECLARATIONS_TELEMAC2D,ONLY:DTINI,LEOPRD
+      USE DECLARATIONS_TELEMAC2D,ONLY:DTINI,LEOPRD,COMPLEO,PTINIG,LT
       USE INTERFACE_TELEMAC2D, EX_CALDT => CALDT
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NS,ICIN
+      INTEGER         , INTENT(IN)    :: NS,ICIN,NORDRE
       DOUBLE PRECISION, INTENT(INOUT) :: DT
-      DOUBLE PRECISION, INTENT(IN) :: H(NS),U(NS),V(NS),DTHAUT(NS)
-      DOUBLE PRECISION, INTENT(IN) :: G,CFL,AT,TMAX
-      LOGICAL, INTENT(IN) :: DTVARI,LISTIN
+      DOUBLE PRECISION, INTENT(IN)    :: H(NS),U(NS),V(NS),DTHAUT(NS)
+      DOUBLE PRECISION, INTENT(IN)    :: G,CFL,AT,TMAX
+      LOGICAL        ,  INTENT(IN)    :: DTVARI,LISTIN
+      LOGICAL        ,  INTENT(INOUT) :: LEO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IS
-      LOGICAL DEJA
+      LOGICAL DEJA,THEEND
       DOUBLE PRECISION RA3,EPSL,SIGMAX,UA2,UA3,UNORM,DTT
       DOUBLE PRECISION RESTE, GPRDTIME
       DOUBLE PRECISION P_DMIN
@@ -81,6 +83,7 @@
 !
 !-----------------------------------------------------------------------
 !
+      THEEND=.FALSE.
 !   +++++++++++++++++++++++++
 !     VARIABLE TIME STEP
       IF(DTVARI)THEN
@@ -137,12 +140,20 @@
       ENDIF
       ENDIF
 !
+!       FOR PARALLELISM
+!
+      IF(NCSIZE.GT.1) DT=P_DMIN(DT)
+!
       IF(DTVARI) THEN
 !
         IF(TMAX.LT.DT)DT=TMAX !REALLY CRAZY CASES
         DTT=TMAX-AT
         IF(CFL.GE.1.D0) DT=0.9D0*DT/CFL
-        IF(DTT.LE.DT.AND.DTT.GT.0.D0)  DT=DTT !LAST TIME STEP
+        IF(DTT.LE.DT.AND.DTT.GT.0.D0) THEN !LAST TIME STEP
+          DT=DTT 
+!         END OF COMUTATION WILL BE DETECTED IN RESOLU FOR ORDER 2 
+          IF(NORDRE.EQ.1)THEEND=.TRUE.
+        ENDIF
         IF(AT.GT.TMAX) THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'CALDT: MAUVAIS CHOIX DE PARAMETRES DE TEMPS '
@@ -173,7 +184,7 @@
 !*************************************************************************
 !      GRAPHIC OUTPUTS LIKE ASKED BY USER: DT ADATPATION
 !*************************************************************************
-        GPRDTIME=0.1D0
+        GPRDTIME=LEOPRD*DTINI
         IF(GPRDTIME.LT.1.E-12)THEN
           WRITE(LU,*) 'CALDT: PROBLEM WITH PARAMETERS: DTINI,LEOPRD',
      &                 DTINI,LEOPRD
@@ -190,14 +201,20 @@
             WRITE(LU,*) 'AND INCREASE CPU TIME'
           ENDIF
         ENDIF
-!       GRAPHIC OUTPUT
-        IS=CEILING(AT/GPRDTIME)
-        RESTE=IS*GPRDTIME-AT
-        IF(RESTE.GT.1.E-13)DT=MIN(RESTE,DT)
+!       ADAPT DT TO TAKE INTO ACCOUNT GRAPHIC OUTPUT 
+!       ONLY FOR ORDER 1, ORDER 2 WILL BE DONE IN RESOLU
+        IF(NORDRE.EQ.1)THEN
+          IS=CEILING(AT/GPRDTIME)
+          RESTE=IS*GPRDTIME-AT
 !
-!       FOR PARALLELISM
-!
-        IF(NCSIZE.GT.1) DT=P_DMIN(DT)
+          IF(RESTE.GT.1.E-13.AND.LT.GT.PTINIG)THEN
+            IF(RESTE.LE.DT.OR.THEEND)THEN  ! HERE THERE IS GRAPHICAL OUTPUT
+              LEO = .TRUE.
+              COMPLEO=COMPLEO+1
+            ENDIF
+            DT=MIN(RESTE,DT)
+          ENDIF
+        ENDIF
 !
 !
 !*************************************************************************
@@ -206,7 +223,7 @@
 !
 !     CASE DT <=0
 !
-      IF(DT.LE.1.E-12) THEN
+      IF(DT.LE.1.E-13) THEN
         IF(LISTIN.AND.LNG.EQ.1) THEN
           WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
           WRITE(LU,*) 'PROBABLEMENT A CAUSE D UNE HAUTEUR'
@@ -237,4 +254,3 @@
 !
       RETURN
       END
-

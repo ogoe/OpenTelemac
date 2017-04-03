@@ -73,5 +73,6 @@ INITIAL GUESS FOR H             = 1
 MATRIX STORAGE                  = 3
 IMPLICITATION FOR DEPTH         = 0.5
 IMPLICITATION FOR VELOCITY      = 0.5
+MASS-BALANCE                    = YES
 /
 &FIN

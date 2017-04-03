@@ -37,7 +37,7 @@ RESULTS FILE                    = r2d_dambreak_v1p0.slf
 /----------------------------------------------
 /
 TITLE                           = 'DAM BREAK OVER DRY BED'
-VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,F,L,N'
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,L,F,N'
 GRAPHIC PRINTOUT PERIOD         = 10
 LISTING PRINTOUT PERIOD         = 150
 TIME STEP                       = 0.01
