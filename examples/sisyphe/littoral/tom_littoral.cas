@@ -10,7 +10,10 @@
 GEOMETRY FILE = 'geo_littoral.slf'
 BOUNDARY CONDITIONS FILE = 'geo_tom_littoral.cli'
 2D RESULTS FILE = 'tom_littoral.slf'
-/GLOBAL RESULT FILE = 'glob.slf'
+GLOBAL RESULT FILE = 'glob.slf'
+PUNCTUAL RESULTS FILE ='littoral2D.spe'
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS= 500
+ORDINATES OF SPECTRUM PRINTOUT POINTS= 100
 /--------------------------------------------------------------------
 / INPUTS - OUTPUTS
 /--------------------------------------------------------------------
