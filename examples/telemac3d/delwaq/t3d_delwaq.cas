@@ -36,7 +36,6 @@ GEOMETRY FILE            : geo_delwaq.slf
 LIQUID BOUNDARIES FILE   : t3d_delwaq.qsl
 3D RESULT FILE           : r3d_delwaq.slf
 2D RESULT FILE           : r2d_delwaq.slf
-FORTRAN FILE             : 'user_fortran'
 /
 VOLUMES DELWAQ FILE                 : dwq_delwaq-volume.dwq
 EXCHANGE AREAS DELWAQ FILE          : dwq_delwaq-area.dwq
