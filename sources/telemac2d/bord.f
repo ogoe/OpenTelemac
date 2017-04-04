@@ -239,6 +239,20 @@
 !         DEDUCED FROM LOWEST FREE SURFACE OF THE BOUNDARY
           UBOR(K,1)=-XNEBOR(K)*SQRT(MAX(ZMIN(IFR)-ZF(NBOR(K)),0.D0))
           VBOR(K,1)=-YNEBOR(K)*SQRT(MAX(ZMIN(IFR)-ZF(NBOR(K)),0.D0))
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'FRONTIERE ',IFR
+            WRITE(LU,*) 'PROFIL ',PROVEL(IFR),'N''EST PAS IMPLEMENTE'
+            WRITE(LU,*) 'DONNER UNE VALEUR ENTRE 1 ET 5'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'BOUNDARY ',IFR
+            WRITE(LU,*) 'VELOCITY PROFILE ',PROVEL(IFR),
+     &                  ' NOT IMPLEMENTED YET'
+            WRITE(LU,*) 'PLEASE GIVE A VALUE BETWEEN 1 AND 5'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
 !       ONE DOES NOT SET VELOCITY IF THERE IS NO WATER.
         IF(H%R(NBOR(K)).LT.1.D-3) THEN
