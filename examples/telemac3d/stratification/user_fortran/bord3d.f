@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -73,10 +73,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
-      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
-     &                               ATMOSEXCH,WAQPROCESS
+      USE DECLARATIONS_WAQTEL, ONLY: ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
-      USE EXCHANGE_WITH_ATMOSPHERE
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -593,12 +591,6 @@
                 STOP
               ENDIF
             ENDIF
-!BEGINNING OF SPECIFIC TO THIS CASE
-!           STRATIFICATION MISE EN ENTREE
-            IF(NP.GT.18.AND.ITRAC.EQ.1) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD) = 28.D0
-            ENDIF
-!END OF SPECIFIC TO THIS CASE
           ENDIF
 !
         ENDDO
@@ -883,6 +875,9 @@
 !
 !-----------------------------------------------------------------------
 !
+      CALL USER_BORD3D
+!     
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-

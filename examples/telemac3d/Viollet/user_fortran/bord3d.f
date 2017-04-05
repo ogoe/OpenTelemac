@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -73,10 +73,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
-      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
-     &                               ATMOSEXCH,WAQPROCESS
+      USE DECLARATIONS_WAQTEL, ONLY: ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
-      USE EXCHANGE_WITH_ATMOSPHERE
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -97,13 +95,6 @@
       LOGICAL READ_BIN_Z,READ_BIN_U,READ_BIN_V,READ_BIN_TR
       LOGICAL YAZMIN,DEJA
       DOUBLE PRECISION ROEAU,ROAIR,VITV,PROFZ,WINDRELX,WINDRELY
-!
-! BEGIN OF PART SPECIFIC TO THIS CASE
-      DOUBLE PRECISION DZ,Z_MF,UET1,UET2,H_MF,S_MF1,S_MF2,XI_S,U_MF1,
-     &                 U_MF2
-      DOUBLE PRECISION FROUD,TEMP0,TEMP1
-      INTEGER NFO1
-! END OF PART SPECIFIC TO THIS CASE
 !
       DOUBLE PRECISION P_DMIN,P_DSUM
       INTEGER  P_IMAX
@@ -341,12 +332,6 @@
 !
       IF(LIUBOL%I(K).EQ.KENT.AND.NDEBIT.NE.0) THEN
 !
-!
-! BEGIN OF PART SPECIFIC TO THIS CASE
-!     INITIALISATION FOR PROFILE SPECIFICATION
-        S_MF1=0.D0
-        S_MF2=0.D0
-! END OF PART SPECIFIC TO THIS CASE
         IPOIN2 = NBOR2%I(K)
         DO NP=1,NPLAN
           IJK=(NP-1)*NPTFR2+K
@@ -382,66 +367,12 @@
             VBORL%R(IJK) = 0.D0
           ENDIF
 !         CASE OF A VERTICAL PROFILE
-! BEGIN OF PART SPECIFIC TO THIS CASE
-!     LOG PROFILE PRESCRIBED
-          VERPROVEL(IFRLIQ)=2
           IF(VERPROVEL(IFRLIQ).NE.1) THEN
-!     STEP PROFILE
-!            PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-!     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))
-            H_MF=0.1D0
-            DZ=2.D0*H_MF/DBLE(NPLAN-1.D0)
-
-            U_MF1=1.D0/30.D0
-            U_MF2=2.D0/30.D0
-
-            XI_S=0.0001D0
-
-            IF(NP.GT.(NPLAN+1)/2) THEN
-              UBORL%R(IJK) = U_MF1
-              VBORL%R(IJK) = 0.D0
-
-              Z_MF=DBLE(NP-(NPLAN+1)/2)*DZ
-              S_MF1=S_MF1+LOG(Z_MF/XI_S)+8.5D0
-            ELSE
-              UBORL%R(IJK) = U_MF2
-              VBORL%R(IJK) = 0.D0
-              Z_MF=DBLE(NP-1.D0)*DZ
-              IF(NP.NE.1.AND.NP.NE.(NPLAN+1)/2) THEN
-                S_MF2 = S_MF2+LOG(MIN(Z_MF,H_MF-Z_MF)/XI_S)+8.5D0
-              ELSE
-                UBORL%R(IJK)=0.D0
-                S_MF2 = S_MF2+LOG(DZ*0.1D0/XI_S)+8.5D0
-              ENDIF
-            ENDIF
+            PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
+     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))
+            UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
+            VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
           ENDIF
-        ENDDO
-!
-!     FIXING UET1 AND UET2
-!
-        UET1=0.41D0*DBLE((NPLAN-1)/2)*U_MF1/S_MF1
-        UET2=0.41D0*DBLE((NPLAN-1)/2)*U_MF2/S_MF2
-!
-        DO NP=1,NPLAN
-          IJK=(NP-1)*NPTFR2+K
-          IF(NP.GT.((NPLAN+1)/2)) THEN
-            Z_MF=DBLE(NP-(NPLAN+1)/2)*DZ
-            UBORL%R(IJK) = UET1/0.41D0*(LOG(Z_MF/XI_S)+8.5D0)
-!               WRITE(LU,*)'NP =',NP,'U =',UBORL%R(IJK)
-          ELSEIF(NP.NE.1.AND.NP.NE.(NPLAN+1)/2) THEN
-            Z_MF=DBLE(NP-1.D0)*DZ
-            UBORL%R(IJK) = UET2/0.41D0*(LOG(MIN(Z_MF,H_MF-Z_MF)/XI_S)
-     &                                 +8.5D0)
-          ELSE
-            UBORL%R(IJK) = UET2/0.41D0*(LOG(DZ*0.1D0/XI_S)+8.5D0)
-          ENDIF
-!
-!          IF(VERPROVEL(IFRLIQ).NE.1) THEN
-!            PROFZ=VEL_PROF_Z(IFRLIQ,NBOR2%I(K),
-!     &                       AT,LT,NP,INFOGR,VERPROVEL(IFRLIQ))
-!            UBORL%R(IJK) = UBORL%R(IJK)*PROFZ
-!            VBORL%R(IJK) = VBORL%R(IJK)*PROFZ
-! END OF PART SPECIFIC TO THIS CASE
 !         U AND V INITIALISED WITH PRESCRIBED VALUES (FOR DEBIMP3D)
 !         WILL BE CHANGED AGAIN AFTER DEBIMP3D
           U%R(I3D)=UBORL%R(IJK)
@@ -547,27 +478,6 @@
 !     IN STEERING FILE, BUT THEN POSSIBLE OVERWRITING
 !     (SEE FUNCTION TR3)
 !     -------------------------------------------------------
-!
-! BEGIN OF PART SPECIFIC TO THIS CASE
-! EGR MODIF BD MODIF TO AVOID TO ENTER IN princi.f, TEMP0 =
-! TEMPERATURE OF COFLOW DENENDS ON FROUD
-! TAKES THE VALUE DEFINED IN THE FILE FROUD.TXT
-      NFO1 = T3D_FILES(T3DFO1)%LU
-      REWIND NFO1
-      READ(NFO1,*) FROUD
-      TEMP0 = 20.D0
-      IF(ABS(FROUD-0.9D0).LT.1.D-5) THEN
-        TEMP1 = 25.3485028D0
-      ELSEIF (ABS(FROUD-1.6D0).LT.1.D-5) THEN
-        TEMP1 = 21.8663052D0
-      ELSEIF (ABS(FROUD-5.0D0).LT.1.D-5) THEN
-        TEMP1 = 20.2009931D0
-      ELSE
-        TEMP1 = 4.D0+SQRT((TEMP0-4.D0)**2
-     &                    +0.0333D0**2/(9.81D0*7.D-6*0.1D0*FROUD**2))
-      ENDIF
-! END OF PART SPECIFIC TO THIS CASE
-!
 !
       IF(NTRAC.GT.0.AND.NTRACER.GT.0) THEN
         DEJA = .FALSE.
@@ -681,12 +591,6 @@
                 STOP
               ENDIF
             ENDIF
-! BEGIN OF PART SPECIFIC TO THIS CASE
-!    LINEAR STRATIFICATION AT THE ENTRANCE
-            IF(NP.GT.(NPLAN+1)/2.AND.ITRAC.EQ.1) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD) = TEMP1
-            ENDIF
-! END OF PART SPECIFIC TO THIS CASE
           ENDIF
 !
         ENDDO
@@ -939,18 +843,6 @@
 !           +++++++++++++++++++++++++++++++++++++++++++++++
 !
 !
-! BEGIN OF PART SPECIFIC TO THIS CASE
-!     NEUMANN FOR EPS AT THE BOTTOM
-      IF(ITURBV.EQ.3.OR.ITURBH.EQ.3) THEN
-        DO IPOIN2=1,NPOIN2
-          DZ=MESH3D%Z%R(IPOIN2+NPOIN2)-MESH3D%Z%R(IPOIN2)
-          BEBORF%R(IPOIN2)=0.D0
-     &           +4.D0*UETCAR%R(IPOIN2)**1.5D0/KARMAN/DZ**2
-     &           *VISCVI%ADR(3)%P%R(IPOIN2)
-          BEBORF%TYPR='Q'
-        ENDDO
-      ENDIF
-! END OF PART SPECIFIC TO THIS CASE
 !
 !-----------------------------------------------------------------------
 !
@@ -983,6 +875,9 @@
 !
 !-----------------------------------------------------------------------
 !
+      CALL USER_BORD3D
+!     
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-

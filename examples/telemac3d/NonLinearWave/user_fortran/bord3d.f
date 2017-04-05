@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -73,10 +73,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
-      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
-     &                               ATMOSEXCH,WAQPROCESS
+      USE DECLARATIONS_WAQTEL, ONLY: ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
-      USE EXCHANGE_WITH_ATMOSPHERE
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -112,10 +110,6 @@
 !
 !     NORMALS TO THE BED
       DOUBLE PRECISION XNB,YNB,ZNB
-!
-      INTEGER I
-      DOUBLE PRECISION PI,PER,L,HEIGHT,DEPTH,KK,OMEGA,ZZ,ZSURF,TPS
-!
 !
 !     SIMPLE CASES FOR LATERAL BOUNDARIES ARE TREATED AUTOMATICALLY:
 !
@@ -881,57 +875,9 @@
 !
 !-----------------------------------------------------------------------
 !
-!     BEGIN OF PART SPECIFIC TO THIS CASE
-!
-      PI=3.1415926535897932384626433D0
-      PER=1.01D0
-      HEIGHT=0.041D0
-      DEPTH=0.43D0
-      OMEGA=2.D0*PI/PER
-      L=1.D0
-      DO I=1,100
-        L=9.81D0*PER**2/2.D0/PI*TANH(2.D0*PI*DEPTH/L)
-      ENDDO
-      KK=2.D0*PI/L
-!     TPS=AT+PER/2.D0
-      TPS=AT
-!
-      DO I=1,NPTFR2
-!
-        IF(LIHBOR%I(I).EQ.KENT.OR.LIUBOL%I(I).EQ.KENTU) THEN
-!
-          HBOR%R(I)=-ZF%R(NBOR2%I(I))
-     &             +(HEIGHT*COS(OMEGA*TPS)/2.D0
-     &    +(KK*HEIGHT**2/16.D0)*(COSH(KK*DEPTH)/SINH(KK*DEPTH)**3)
-     &    *(2.D0+COSH(2.D0*KK*DEPTH))*COS(2.D0*OMEGA*TPS))*
-!         RAMPE DE 1 S SUR LE TEMPS
-     &    MIN(1.D0,AT)
-!
-          DO  IPLAN=1, NPLAN
-            IBORD = (IPLAN-1)*NPTFR2 + I
-            ZSURF=Z(NBOR3%I((NPLAN-1)*NPTFR2 + I))
-            ZZ=Z(NBOR3%I(IBORD))-ZSURF
-            UBORL%R(IBORD)=OMEGA*COS(OMEGA*TPS)*HEIGHT/
-     &             2.D0*COSH(KK*(ZZ+DEPTH))/SINH(KK*DEPTH)
-     & +3.D0/16.D0*OMEGA*KK*HEIGHT**2*COSH(2.D0*KK*(ZZ+DEPTH))/
-     &      SINH(KK*DEPTH)**4*COS(2.D0*OMEGA*TPS)
-            VBORL%R(IBORD)=0.D0
-            PBORL%R(IBORD)=DT*9.81D0*HEIGHT*COS(OMEGA*TPS)/2.D0*
-     &                 (COSH(KK*(ZZ+DEPTH))/COSH(KK*DEPTH)-1.D0)
-!
-            UBORL%R(IBORD)=UBORL%R(IBORD)*MIN(1.D0,AT)
-            VBORL%R(IBORD)=VBORL%R(IBORD)*MIN(1.D0,AT)
-            PBORL%R(IBORD)=PBORL%R(IBORD)*MIN(1.D0,AT)
-!
-          ENDDO
-!
-        ENDIF
-      ENDDO
-!
-!     END OF PART SPECIFIC TO THIS CASE
-!
+      CALL USER_BORD3D
+!     
 !-----------------------------------------------------------------------
 !
       RETURN
       END
-

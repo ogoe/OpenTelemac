@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -73,10 +73,8 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, EX_NFRLIQ=>NFRLIQ
-      USE DECLARATIONS_WAQTEL, ONLY: TAIR,HREL,NEBU,RO0,CP_EAU,
-     &                               ATMOSEXCH,WAQPROCESS
+      USE DECLARATIONS_WAQTEL, ONLY: ATMOSEXCH,WAQPROCESS
       USE INTERFACE_TELEMAC3D, EX_BORD3D => BORD3D
-      USE EXCHANGE_WITH_ATMOSPHERE
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -554,13 +552,6 @@
                 TABORL%ADR(ITRAC)%P%R(IBORD)= TR3(IFRLIQ,ITRAC,
      &                                            N,AT,INFOGR)
               ENDIF
-! BEGINNING OF SPECIFIC TO THIS CASE
-              IF(NP.LE.4) THEN
-                TABORL%ADR(ITRAC)%P%R(IBORD)=40.D0
-              ELSE
-                TABORL%ADR(ITRAC)%P%R(IBORD)=30.D0
-              ENDIF
-! END OF SPECIFIC TO THIS CASE
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,
@@ -884,6 +875,9 @@
 !
 !-----------------------------------------------------------------------
 !
+      CALL USER_BORD3D
+!     
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-
