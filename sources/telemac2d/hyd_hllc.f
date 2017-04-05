@@ -180,19 +180,21 @@
 !
 !             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
               IF(HROPT.EQ.1)THEN 
-                DZIJ = MAX(0.D0,ZF2-ZF1)
-                HIJ  = MAX(0.D0,H1- DZIJ)
+                DZIJ = MAX(0.D0,ZF2-ZF1 )
+                HIJ  = MAX(0.D0,H1 -DZIJ)
 !             
-                DZJI = MAX(0.D0,ZF1-ZF2)
-                HJI  = MAX(0.D0,H2- DZJI)
+                DZJI = MAX(0.D0,ZF1-ZF2 )
+                HJI  = MAX(0.D0,H2 -DZJI)
               ELSEIF(HROPT.EQ.2)THEN
 !             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+                SL1   = H1+ZF1
+                SL2   = H2+ZF2
                 DZINT = MAX(ZF2,ZF1)
                 DSINT = MIN(SL2,SL1)
-                ZINT = MIN(DZINT,DSINT)
+                ZINT  = MIN(DZINT,DSINT)
 !
-                HIJ = MIN(SL1-ZINT,H1)
-                HJI = MIN(SL2-ZINT,H2)
+                HIJ   = MIN(SL1-ZINT,H1)
+                HJI   = MIN(SL2-ZINT,H2)
               ELSE
                 IF(LNG.EQ.1) THEN
                   WRITE(LU,*) 'HYD_HLLC: OPTION DE RECONSTRUCTION'

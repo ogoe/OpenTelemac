@@ -169,9 +169,11 @@
               HJI  = MAX(0.D0,H2- DZJI)
             ELSEIF(HROPT.EQ.2)THEN
 !           HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
+              SL1   = H1+ZF1
+              SL2   = H2+ZF2
               DZINT = MAX(ZF2,ZF1)
               DSINT = MIN(SL2,SL1)
-              ZINT = MIN(DZINT,DSINT)
+              ZINT  = MIN(DZINT,DSINT)
 !
               HIJ = MIN(SL1-ZINT,H1)
               HJI = MIN(SL2-ZINT,H2)
