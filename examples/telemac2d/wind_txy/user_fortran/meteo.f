@@ -3,11 +3,11 @@
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,ATMFILEA,ATMFILEB,FILES,LISTIN,
+     & HN,GRAV,ROEAU,PRIVE,ATMFILEA,ATMFILEB,FILES,LISTIN,
      & PATMOS_VALUE,AWATER_QUALITY,PLUIE,AOPTWIND,AWIND_SPD)
 !
 !***********************************************************************
-! TELEMAC2D   V7P1
+! TELEMAC2D   V7P2
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -60,6 +60,20 @@
 !+        V7P0
 !+  Adding USE WAQTEL...
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/02/2015
+!+        V7P0
+!+   Shifting the stations coordinates removed in case of wind varying
+!+   in time and space (option 99). Managing the divisions by 0 is now
+!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/02/2015
+!+        V7P0
+!+   Shifting the stations coordinates removed in case of wind varying
+!+   in time and space (option 99). Managing the divisions by 0 is now
+!+   done by subroutine IDWM_T2D, and this does not spoil parallelism.
+!
 !history A. LEROY (LNHE)
 !+        25/11/2015
 !+        V7P1
@@ -67,8 +81,17 @@
 !+  can be used by the other modules. This makes it possible to
 !+  remove subsequent calls to INTERPMETEO in TELEMAC3D
 !
+!history  P. PRODANOVIC (RIGGS ENGINEERING LTD)
+!+        15/06/2016
+!+        V7P0
+!+   Converts the wind data to cartesian form, then interpolates. This
+!+   eliminates errors when interpolating direction between 359 and 1
+!+   degrees azimuth.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
+!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
+!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
 !| FILES          |-->| BIEF_FILES STRUCTURES OF ALL FILES
 !| FUAIR          |<->| VELOCITY OF WIND ALONG X, IF CONSTANT
@@ -77,21 +100,15 @@
 !| HN             |-->| DEPTH
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| LT             |-->| ITERATION NUMBER
-!| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
-!|                |   | STARTING FROM VERTICAL AXIS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| PATMOS         |<--| ATMOSPHERIC PRESSURE
-!| PATMOS_VALUE   |-->| VALUE OF ATMOSPHERIC PRESSURE IS CONSTANT
 !| PRIVE          |-->| USER WORKING ARRAYS (BIEF_OBJ BLOCK)
 !| ROEAU          |-->| WATER DENSITY
-!| TRA01          |-->| WORKING ARRAY
 !| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
 !| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
 !| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
 !| X              |-->| ABSCISSAE OF POINTS
 !| Y              |-->| ORDINATES OF POINTS
-!| ATMFILEA       |-->| LOGICAL UNIT OF THE ASCII ATMOSPHERIC FILE
-!| ATMFILEB       |-->| LOGICAL UNIT OF THE BINARY ATMOSPHERIC FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -101,8 +118,8 @@
       USE DECLARATIONS_TELEMAC2D, ONLY : AT1_METEO,AT2_METEO,
      &                                   FUAIR1_METEO,FUAIR2_METEO,
      &                                   FVAIR1_METEO,FVAIR2_METEO
-!
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -111,8 +128,8 @@
       LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AT,GRAV,ROEAU,NORD,PATMOS_VALUE
+      DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,GRAV,ROEAU,PATMOS_VALUE
       DOUBLE PRECISION, INTENT(INOUT) :: FUAIR,FVAIR
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
       TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
@@ -129,24 +146,33 @@
       DOUBLE PRECISION COEF
       DOUBLE PRECISION UAIR,VAIR,WIND_SPD(2)
 !     EXCHANGE WITH ATMOSPHERE
-      DOUBLE PRECISION PATM,WW,PI,TA
+      DOUBLE PRECISION PATM,WW,TA
 !
-! ######################################################################
-! IDWM WIND INTERPOLATION CUSTOM VARIABLES
-! ######################################################################
+      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-3
 !
-      INTEGER I, NUMSTA, NUMPOINTS, A, B, K
-      DOUBLE PRECISION THETA_RAD
+!     ######################################################################
+!     IDWM WIND INTERPOLATION CUSTOM VARIABLES
+!     ######################################################################
+!
+      INTEGER I, NUMSTA, NUMPOINTS, A, B, J, K, JUNK
+      DOUBLE PRECISION THETA_RAD, TMPDIR, TMPSPD
 !
 !     COORDINATES OF THE STATIONS UTM
 !
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: XX, YY, AT_WIND
-      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: OUT_WSPD, OUT_WDIR
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: OUT_WSPD
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: OUT_WDIRX
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: OUT_WDIRY
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: WIND, POINTS
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_S
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_D
+      
+!     ADDED ON 2016.05.26
+!     THIS IS THE X AND Y COMPONENT OF THE WIND READ FROM FILE
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_WINDX
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INPSTA_WINDY
 !
-! ######################################################################
+!     ######################################################################
 !
 !-----------------------------------------------------------------------
 !
@@ -155,9 +181,7 @@
 !     WITHOUT THE SAVE COMMAND, ALL LOCAL DATA ARE FORGOTTEN IN THE NEXT
 !     CALL.
 !
-      SAVE NUMSTA, NUMPOINTS
-      SAVE XX, YY, AT_WIND, OUT_WSPD, OUT_WDIR, WIND, POINTS
-      SAVE INPSTA_S, INPSTA_D
+      SAVE
 !
 !-----------------------------------------------------------------------
 !
@@ -176,18 +200,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(FILES(ATMFILEA)%NAME(1:1).NE.' ') THEN
-!       AT FIRST TIMESTEP
+!     AT FIRST TIMESTEP
 !
-        IF(LT.EQ.0) THEN
+      IF(LT.EQ.0) THEN
 !
-          UL = FILES(ATMFILEA)%LU
-          PI = ACOS(-1.D0)
+        UL = FILES(ATMFILEA)%LU
 !
-!         ATMOSPHERIC PRESSURE AND AIR TEMPERATURE
+!       ATMOSPHERIC PRESSURE
 !
         IF(ATMOS.OR.WATER_QUALITY) THEN
           CALL OV( 'X=C     ' , PATMOS,Y,Y,PATMOS_VALUE,NPOIN )
+        ENDIF
+        IF(WATER_QUALITY) THEN
           CALL OV( 'X=C     ' , TAIR%R,Y,Y,TAIR_VALUE,NPOIN )
         ENDIF
 !
@@ -198,24 +222,29 @@
 !           IN THIS CASE THE WIND IS CONSTANT, VALUE GIVEN IN STEERING FILE.
             CALL OV( 'X=C     ' ,WINDX,WINDX,WINDX, FUAIR , NPOIN )
             CALL OV( 'X=C     ' ,WINDY,WINDY,WINDY, FVAIR , NPOIN )
+!
           ELSEIF(OPTWIND.EQ.2) THEN
-!           JUMPING TWO LINES OF COMMENTS
-            READ(UL,*)
-            READ(UL,*)
-!           READING THE FIRST TWO LINES OF DATA
-            READ(UL,*) AT1_METEO,FUAIR1_METEO,FVAIR1_METEO
-            IF(AT.LT.AT1_METEO) THEN
-              WRITE(LU,*) ' '
-              WRITE(LU,*) 'METEO'
-              IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE VENT'
-              IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND FILE'
-              CALL PLANTE(1)
-              STOP
+            IF(FILES(ATMFILEA)%NAME(1:1).NE.' ') THEN
+!             JUMPING TWO LINES OF COMMENTS
+              READ(UL,*)
+              READ(UL,*)
+!             READING THE FIRST TWO LINES OF DATA
+              READ(UL,*) AT1_METEO,FUAIR1_METEO,FVAIR1_METEO
+              IF(AT.LT.AT1_METEO) THEN
+                WRITE(LU,*) ' '
+                WRITE(LU,*) 'METEO'
+                IF(LNG.EQ.1) WRITE(LU,*) 'DEBUT TARDIF DU FICHIER DE
+     &                                    VENT'
+                IF(LNG.EQ.2) WRITE(LU,*) 'LATE BEGINNING OF THE WIND
+     &                                    FILE'
+                CALL PLANTE(1)
+                STOP
+              ENDIF
             ENDIF
 !
-! ######################################################################
-! IDWM WIND INTERPOLATION; THIS IS EXECUTED ONLY ONCE AT THE START
-! ######################################################################
+!         ######################################################################
+!         IDWM WIND INTERPOLATION; THIS IS EXECUTED ONLY ONCE AT THE START
+!         ######################################################################
 !
           ELSEIF(OPTWIND.EQ.3) THEN
         ! READ BLANK LINE AT BEGINING OF FILE
@@ -225,13 +254,14 @@
 
           !ALLOCATE THE ARRAYS
             ALLOCATE(XX(NUMSTA), YY(NUMSTA), AT_WIND(NUMPOINTS))
-            ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+5), POINTS(NPOIN,2))
+            ALLOCATE(WIND(NUMPOINTS,NUMSTA*2+1), POINTS(NPOIN,2))
             ALLOCATE(INPSTA_S(NUMSTA,3), INPSTA_D(NUMSTA,3))
-            ALLOCATE(OUT_WSPD(NPOIN), OUT_WDIR(NPOIN))
+            ALLOCATE(INPSTA_WINDX(NUMSTA,3), INPSTA_WINDY(NUMSTA,3))
+            ALLOCATE(OUT_WSPD(NPOIN),OUT_WDIRX(NPOIN),OUT_WDIRY(NPOIN))
 !
           ! READ STATION COORDINATES
             DO B = 1,NUMSTA
-            READ(UL,*) XX(B), YY(B)
+              READ(UL,*) XX(B), YY(B)
            !WRITE(*,*) XX(B), YY(B)
             ENDDO
 !
@@ -254,9 +284,9 @@
             ENDDO
 !
 ! #######################################################################
+!
           ENDIF
         ENDIF
-      ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -346,7 +376,7 @@
               FUAIR = UAIR
               FVAIR = VAIR
 !
-!             WIND VARYING IN TIME AND SPACE
+!         WIND VARYING IN TIME AND SPACE
 !
             ELSEIF(OPTWIND.EQ.3)THEN
 !            IF(LNG.EQ.1) THEN
@@ -365,67 +395,125 @@
 !         IDWM WIND INTERPOLATION CODE
 ! #######################################################################
 !
-            PI = ACOS(-1.D0)
 !
 !       ASSEMBLE THE ARRAYS OF X,Y,WNDSPD AND X,Y,WNDDIR FOR EACH ITERATION
             DO A = 1,NUMPOINTS
               IF(AT_WIND(A).EQ.AT) THEN
+                WRITE(LU,*) 'METEO: WIND READ AT: ', AT
                 DO B = 1,NUMSTA
-              ! ASSEMBLE THE ARRAYS FOR THIS TIME STEP
+                  ! ASSEMBLE THE ARRAYS FOR THIS TIME STEP
+                  ! DIRECTIONS FROM INPUT FILE
                   INPSTA_D(B,1) = XX(B)
                   INPSTA_D(B,2) = YY(B)
                   INPSTA_D(B,3) = WIND(A,B*2+1)
+
+                  ! SPEEDS FROM INPUT FILE
                   INPSTA_S(B,1) = XX(B)
                   INPSTA_S(B,2) = YY(B)
                   INPSTA_S(B,3) = WIND(A,B*2)
-                ENDDO
-              ENDIF
-            ENDDO
+                  
+                  ! ADDED ON 2016.06.15
+                  ! CHECK IF WIND SPEED IS +VE, AND IF WIND DIRECTION
+                  ! IS BETWEEN 0 AND 360 DEG; 
+                  IF (INPSTA_S(B,3) < 1.0E-6) THEN
+                    INPSTA_S(B,3) = 1.0E-6
+                  END IF
+                  
+                  IF (INPSTA_D(B,3) .LT. 1.0E-6) THEN
+                    INPSTA_D(B,3) = 1.0E-6
+                  END IF
+                  
+                  IF (INPSTA_D(B,3) .GT. 360.0) THEN
+                    INPSTA_D(B,3) = 360.0
+                  END IF                  
+                
+                  ! ADDED ON 2016.05.26
+                  ! RATHER THAN INTERPOLATING THE DIRECTION VARIABLE
+                  ! CONVERT INPSTA_D TO ITS X AND Y COMPONENTS,
+                  ! INTERPOLATE BOTH
+                  
+                  ! THIS IS NEEDED BECAUSE INTERPOLATING A DIRECTION 
+                  ! VARIABLE THAT TAKES ON VALUES BETWEEN 0 AND 360 HAS 
+                  ! PROBLEMS WHEN INTERPOLATING NODES LOCATED CLOSE TO 
+                  ! STATIONS WITH  DIR~0'S AND DIR~350'S
+                  
+                  ! ASSIGN X AND Y COORDINATES
+                  INPSTA_WINDX(B,1) = XX(B) 
+                  INPSTA_WINDX(B,2) = YY(B)
+                  
+                  INPSTA_WINDY(B,1) = XX(B) 
+                  INPSTA_WINDY(B,2) = YY(B) 
+
+                  ! THIS IS JUST TO KEEP VARIABLE NAMES SHORT
+                  TMPSPD = INPSTA_S(B,3)
+                  TMPDIR = INPSTA_D(B,3)
+                  
+                  ! CONVERT INP_STA_D TO INPSTA_WINDX AND INPSTA_WINDY
+                  ! THESE ARE CARTESIAN VECTORS OF THE WIND
+                  IF (TMPDIR >= 0 .AND. TMPSPD >= 0.0) THEN             
+                    IF ((TMPDIR >= 0) .AND. (TMPDIR <= 90)) THEN
+                      THETA_RAD = TMPDIR * 3.141592654 / 180.0
+                      INPSTA_WINDX(B,3) = -1.0 * SIN(THETA_RAD) * TMPSPD
+                      INPSTA_WINDY(B,3) = -1.0 * COS(THETA_RAD) * TMPSPD
+                    END IF
 !
-            CALL IDWM_T2D(INPSTA_S,POINTS,OUT_WSPD,NPOIN,NUMSTA)
-            CALL IDWM_T2D(INPSTA_D,POINTS,OUT_WDIR,NPOIN,NUMSTA)
+                    IF ((TMPDIR > 90) .AND. (TMPDIR <= 180)) THEN
+                      THETA_RAD = (180 - TMPDIR) * 3.141592654 / 180.0
+                        INPSTA_WINDX(B,3) =-1.0*SIN(THETA_RAD)*TMPSPD
+                        INPSTA_WINDY(B,3) = COS(THETA_RAD)*TMPSPD
+                    END IF
 !
-!       CONVERT OUT_WSPD AND OUT_WDIR TO WINDX AND WINDY
+                    IF ((TMPDIR > 180) .AND. (TMPDIR <= 270)) THEN
+                      THETA_RAD = (TMPDIR-180) * 3.141592654 / 180.0
+                        INPSTA_WINDX(B,3) = SIN(THETA_RAD)*TMPSPD
+                        INPSTA_WINDY(B,3) = COS(THETA_RAD)*TMPSPD
+                    END IF
+!
+                    IF ((TMPDIR > 270) .AND. (TMPDIR <= 360)) THEN
+                      THETA_RAD = (360-TMPDIR) * 3.141592654 / 180.0
+                        INPSTA_WINDX(B,3) = SIN(THETA_RAD)*TMPSPD
+                        INPSTA_WINDY(B,3) =-1.0 * COS(THETA_RAD)*TMPSPD
+                    END IF
+                  ELSE
+                    INPSTA_WINDX(B,3) = -999.D0
+                    INPSTA_WINDY(B,3) = -999.D0
+                  ENDIF
+                ENDDO ! B
+              ENDIF !IF(AT_WIND(A).EQ.AT)
+            ENDDO ! A
+            
+            CALL IDWM_T2D(INPSTA_WINDX,POINTS,OUT_WDIRX,NPOIN,NUMSTA)
+            CALL IDWM_T2D(INPSTA_WINDY,POINTS,OUT_WDIRY,NPOIN,NUMSTA)
+            
+
+!       FINAL WINDX AND WINDY OUTPUT
             DO K = 1,NPOIN
-              IF(OUT_WDIR(K).GE.0.D0.AND.OUT_WSPD(K).GE.0.D0) THEN
-                IF(OUT_WDIR(K).GE.0.D0.AND.OUT_WDIR(K).LE.90.D0) THEN
-                  THETA_RAD = OUT_WDIR(K)*PI/180.D0
-                  WINDX(K) = -SIN(THETA_RAD)*OUT_WSPD(K)
-                  WINDY(K) = -COS(THETA_RAD)*OUT_WSPD(K)
-                ENDIF
-!
-                IF(OUT_WDIR(K).GT.90.D0.AND.OUT_WDIR(K).LE.180.D0) THEN
-                  THETA_RAD = (180.D0-OUT_WDIR(K))*PI/180.D0
-                  WINDX(K) = -SIN(THETA_RAD)*OUT_WSPD(K)
-                  WINDY(K) =  COS(THETA_RAD)*OUT_WSPD(K)
-                ENDIF
-!
-                IF(OUT_WDIR(K).GT.180.D0.AND.OUT_WDIR(K).LE.270.D0) THEN
-                  THETA_RAD = (OUT_WDIR(K)-180.D0)*PI/180.D0
-                  WINDX(K) = SIN(THETA_RAD)*OUT_WSPD(K)
-                  WINDY(K) = COS(THETA_RAD)*OUT_WSPD(K)
-                ENDIF
-!
-                IF(OUT_WDIR(K).GT.270.D0.AND.OUT_WDIR(K).LE.360.D0) THEN
-                  THETA_RAD = (360.D0-OUT_WDIR(K))*PI/180.D0
-                  WINDX(K) =  SIN(THETA_RAD)*OUT_WSPD(K)
-                  WINDY(K) = -COS(THETA_RAD)*OUT_WSPD(K)
-                ENDIF
-              ELSE
-                WINDX(K) = -999.D0
-                WINDY(K) = -999.D0
-                WRITE(*,*) 'NO WIND DATA FOR TIME ', AT
-              ENDIF
-            ENDDO !K
+              WINDX(K) = OUT_WDIRX(K)
+              WINDY(K) = OUT_WDIRY(K)
+            END DO
 !
 ! #######################################################################
-            ENDIF
+!
+          ENDIF ! OPTWIND.EQ.3
           ENDIF
+        ENDIF
 !
 !       WIND AND/OR WATER QUALITY VARIABLES
-!       VARYING IN SPACE AND TIME
+!       VARYING IN SPACE AND TIME, FROM A BINARY FILE
 !
-        ELSEIF(FILES(ATMFILEB)%NAME(1:1).NE.' ') THEN
+        IF(FILES(ATMFILEB)%NAME(1:1).NE.' ') THEN
+          IF(FILES(ATMFILEA)%NAME(1:1).NE.' ')THEN
+            IF(LNG.EQ.1.AND.LISTIN) THEN
+              WRITE(LU,*) 'METEO : LES DONNEES DU FICHIER'
+              WRITE(LU,*) 'DE METEO ASCII PRESENTES DANS LE'
+              WRITE(LU,*) 'FICHIER METEO BINAIRE VONT ETRE ECRASEES'
+            ENDIF
+            IF(LNG.EQ.2.AND.LISTIN) THEN
+              WRITE(LU,*) 'METEO: THE DATA FROM THE ASCII METEO'
+              WRITE(LU,*) 'FILE WILL BE OVERWRITTEN BY THE'
+              WRITE(LU,*) 'CORRESPONDING BINARY FILE DATA'
+            ENDIF
+          ENDIF
           CALL METEO_FROM_BINARY_FILE(PATMOS,WINDX,WINDY,AT,NPOIN,VENT,
      &                                ATMOS,ATMFILEB,FILES,LISTIN,
      &                                WATER_QUALITY,PLUIE,OPTWIND,
@@ -437,4 +525,5 @@
 !
       RETURN
       END
+      
 
