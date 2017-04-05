@@ -311,7 +311,7 @@
         NORDRE = 1
       ELSEIF(OPTVF.EQ.6) THEN
         ICIN = 5
-        NORDRE = 2
+        NORDRE = 1
       ELSE
         IF(LNG.EQ.1) WRITE(LU,*) 'SCHEMA INCONNU : ',OPTVF
         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN SCHEME: ',OPTVF
@@ -882,9 +882,9 @@
 !
 ! INFLOW AND OUTFLOWS
 !
-      CALL FLUSEW
-     &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
-     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)
+!      CALL FLUSEW
+!     &   (WINF,NPOIN,EPS,G,W,XNEBOR,YNEBOR,
+!     &    NPTFR,LIMPRO,NBOR,KDIR,KDDL)
 !
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION

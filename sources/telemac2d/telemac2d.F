@@ -1642,6 +1642,8 @@
         DT = DT * MAX(MIN(CFLWTD/MAX(CFLMAX,1.D-6),2.D0),0.5D0)
 !       LIMITS DT TO THAT OF THE STEERING FILE
         DT=MIN(DT,DTCAS)
+!       for final time step
+        IF(DUREE+AT0.GT.AT)DT= MIN(DT,DUREE+AT0-AT)
         IF(NCSIZE.GT.1) DT=P_DMIN(DT)
         IF(ENTET) THEN
           IF (LNG.EQ.1) WRITE(LU,78) CFLMAX,DT
@@ -1681,19 +1683,22 @@
       ENDIF
 !
       IF(DTVARI) THEN
-        IF(AT.GT.DUREE+AT0) THEN
+        IF(ABS(AT-(DUREE+AT0)).LT.1.E-14) THEN
 !         LAST TIME STEP
-          NIT = LT
+          NIT   = LT
+          ENTET = LISTIN
+          TOTAL_ITER= NIT
         ELSE
 !         DUMMY VALUE GREATER THAN LT
           NIT = LT + 10
+          TOTAL_ITER = NIT
         ENDIF
       ENDIF
 !
       IF((LISPRD*(LT/LISPRD).EQ.LT.AND.LT.GE.PTINIL).OR.LT.EQ.NIT) THEN
         ENTET=LISTIN
       ELSE
-        ENTET=.FALSE.
+       ENTET=.FALSE.
       ENDIF
 !
 !     CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
