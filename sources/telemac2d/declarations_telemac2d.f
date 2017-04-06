@@ -2300,7 +2300,6 @@
       LOGICAL :: DEJA1_PRERES = .FALSE.
       LOGICAL :: DEJA2_PRERES = .FALSE.
       LOGICAL :: DEJA3_PRERES = .FALSE.
-      DOUBLE PRECISION :: NF_PRERES
       ! breach
       LOGICAL :: DEJALU_BREACH = .FALSE.
       ! thomps
@@ -2372,31 +2371,6 @@
       DOUBLE PRECISION, ALLOCATABLE :: LON_BTM(:,:),LAT_BTM(:,:)
       DOUBLE PRECISION, ALLOCATABLE :: UPV_BTM(:),FF_BTM(:)
       DOUBLE PRECISION, ALLOCATABLE :: OMEGA_BTM(:),PHCALHW_BTM(:)
-      ! bord_tide_legos
-      INTEGER, PARAMETER   :: LEGOS_NCMX_BTL = 47
-      CHARACTER(LEN=4) :: LEGOS_CONSTID_BTL(LEGOS_NCMX_BTL) =
-     &                  (/'2MK6','2MN6','2MS6','2N2 ','2Q1 ',
-     &                    '2SM2','2SM6','E2  ','J1  ','K1  ',
-     &                    'K2  ','KJ2 ','L2  ','La2 ','M1  ',
-     &                    'M2  ','M4  ','M6  ','Mf  ','MK3 ',
-     &                    'MK4 ','MKS2','Mm  ','MN4 ','MO3 ',
-     &                    'MP1 ','MS4 ','MSK6','MSN2','MSN6',
-     &                    'MSqm','Mtm ','Mu2 ','N2  ','Nu2 ',
-     &                    'O1  ','P1  ','Q1  ','R2  ','Ro1 ',
-     &                    'S2  ','S4  ','Sig1','SK4 ','SN4 ',
-     &                    'T2  ','Z0  '/)
-      LOGICAL :: DEJA_BTL = .FALSE.
-      INTEGER NPTFRL_BTL,NTIDE_BTL,NWAVES_BTL
-      INTEGER, ALLOCATABLE :: FIRSTTIDE_BTL(:),LASTTIDE_BTL(:)
-      INTEGER, ALLOCATABLE :: SHIFTTIDE_BTL(:)
-      INTEGER, ALLOCATABLE :: INDW_BTL(:)
-      CHARACTER(LEN=4), ALLOCATABLE :: NAMEWAVE_BTL(:)
-      DOUBLE PRECISION, ALLOCATABLE :: AH_BTL(:,:),PH_BTL(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: AU_BTL(:,:),PU_BTL(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: AV_BTL(:,:),PV_BTL(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: LON_BTL(:,:),LAT_BTL(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: UPV_BTL(:),FF_BTL(:)
-      DOUBLE PRECISION, ALLOCATABLE :: OMEGA_BTL(:),OHCALHW_BTL(:)
       ! meteo.f
       DOUBLE PRECISION :: AT1_METEO,AT2_METEO,FUAIR1_METEO,
      &                    FUAIR2_METEO,FVAIR1_METEO,FVAIR2_METEO
@@ -2412,7 +2386,5 @@
       TYPE(FLUXLINE), ALLOCATABLE :: FLUXLINEDATA_FLUSECT2D(:)
       DOUBLE PRECISION, ALLOCATABLE :: FLX_FLUSECT2D(:,:)
       DOUBLE PRECISION, ALLOCATABLE :: VOLFLUX_FLUSECT2D(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: POTFLX_FLUSECT2D(:,:)
-      DOUBLE PRECISION, ALLOCATABLE :: POTVOLFLUX_FLUSECT2D(:,:)
 !
       END MODULE DECLARATIONS_TELEMAC2D

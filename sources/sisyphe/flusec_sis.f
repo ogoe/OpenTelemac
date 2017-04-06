@@ -52,8 +52,7 @@
      &                                DEJA_FLUSEC2,VOLFLUX_FLUSEC2,
      &                                FLUX_FLUSEC2,
      &                                NUMBEROFLINES_FLUSEC2,
-     &                                TIME_FLUSEC2, POTFLUX_FLUSEC2,
-     &                                POTVOLFLUX_FLUSEC2
+     &                                TIME_FLUSEC2
 !
       IMPLICIT NONE
 !
@@ -136,10 +135,6 @@
      &                        MAXNUMBEROFCLASSES),STAT=IERR)
         ALLOCATE(VOLFLUX_FLUSEC2(NUMBEROFLINES_FLUSEC2,
      &                        MAXNUMBEROFCLASSES),STAT=IERR)
-        ALLOCATE(POTFLUX_FLUSEC2(NUMBEROFLINES_FLUSEC2,
-     &                        MAXNUMBEROFCLASSES),STAT=IERR)
-        ALLOCATE(POTVOLFLUX_FLUSEC2(NUMBEROFLINES_FLUSEC2,
-     &                        MAXNUMBEROFCLASSES),STAT=IERR)
         ALLOCATE(FLUXLINEDATA_FLUSEC2(NUMBEROFLINES_FLUSEC2),STAT=IERR)
         DO I = 1,NUMBEROFLINES_FLUSEC2
           ALLOCATE(FLUXLINEDATA_FLUSEC2(I)%SECTIONIDS(MAXEDGES),
@@ -162,7 +157,6 @@
         DO ISEC =1,NUMBEROFLINES_FLUSEC2
           DO I = 1,MAXNUMBEROFCLASSES
             VOLFLUX_FLUSEC2(ISEC,I) = 0.0D0
-            POTVOLFLUX_FLUSEC2(ISEC,I) = 0.0D0
           ENDDO
           FLUXLINEDATA_FLUSEC2(ISEC)%NOFSECTIONS = 0
         ENDDO
