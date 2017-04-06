@@ -184,6 +184,10 @@
                 CALL PLANTE(1)
                 STOP
               ENDIF
+!             FIRST TIME, THE VARIABLES 2 TO BE INITIALISED
+              AT2_METEO = AT1_METEO
+              FUAIR2_METEO = FUAIR1_METEO
+              FVAIR2_METEO = FVAIR1_METEO
             ENDIF
           ENDIF
         ENDIF

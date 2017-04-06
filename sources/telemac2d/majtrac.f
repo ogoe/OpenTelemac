@@ -383,14 +383,14 @@
             FLU11=FLUXT(NSG)
 !
             IF (FLU11.GE.0.) THEN
-              IF(NORDRE.GE.2) THEN
+              IF(NORDRE.EQ.2) THEN
                 UAS41 = UAS41  + DST_MT(1,NSG) +
      &          MIN(0.D0,CORRT_MT(NUBO1))*MAX(0.D0,DST_MT(1,NSG))+
      &          MAX(0.D0,CORRT_MT(NUBO1))*MAX(0.D0,-DST_MT(1,NSG))
               ENDIF
               FLU41 =  UAS41 * FLU11
             ELSE
-              IF(NORDRE.GE.2) THEN
+              IF(NORDRE.EQ.2) THEN
                 UAS42 = UAS42 + DST_MT(2,NSG) +
      &          MIN(0.D0,CORRT_MT(NUBO2))*MAX(0.D0,DST_MT(2,NSG))+
      &          MAX(0.D0,CORRT_MT(NUBO2))*MAX(0.D0,-DST_MT(2,NSG))

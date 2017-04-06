@@ -244,6 +244,9 @@
         TL1_RFF = TIME_RFF(1)
         TL2_RFF = TIME_RFF(2)
 !
+        LASTWHAT_RFF = '         '
+        LASTAT_RFF = 0.D0
+!
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LE FICHIER DES FRONTIERES LIQUIDES CONTIENT'
           WRITE(LU,*) NLIG_RFF,' LIGNES AVEC :'
