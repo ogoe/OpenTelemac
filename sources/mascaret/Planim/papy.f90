@@ -371,8 +371,8 @@ subroutine  PAPY            ( &
 !> correction P. CHASSE (Pb estuaire loire)
 !         DSRG = DSRG + DS2G
 !         DBRG = DBRG + DB2G
-         DSS = W0
-         DBS = W0
+         DSS = EPS8 !W0 (correction C. COULET)
+         DBS = EPS8 !W0 (correction C. COULET)
 !< fin modif
          DS2G = W0
          DS2 = DS2 + DS2G
@@ -397,15 +397,15 @@ subroutine  PAPY            ( &
 !> correction N. GOUTAL (Pb estuaire loire + symetrie RD/RG)
 !         DSS = DSS + DS2D
 !         DBS = DBS + DB2D
-!< fin modif
          ! LE LIT MAJEUR EST SOLLICITE EN DESSOUS DES ZONES DE  DEBORDEMENT
          ! CELA N EST PAS COMPTE : TOUT EST MIS EN ZONE DE STOCKAGE
 !> correction P. CHASSE (Pb estuaire loire)
 !         DSRD  = DSRD + DS2D
 !         DBRD  = DBRD + DB2D 
-         DSS = W0
-         DBS = W0
-!< fin modif
+!< fin modif N. GOUTAL
+         DSS = EPS8 !W0 (correction C. COULET)
+         DBS = EPS8 !W0 (correction C. COULET)
+!< fin modif P. CHASSE
          DS2D = W0
          DS2 = DS2 + DS2D
          DB2D = W0
