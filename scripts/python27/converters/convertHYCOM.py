@@ -54,7 +54,11 @@ from utils.progressbar import ProgressBar
 # ____/ Primary Classes /__________________________________________/
 #
 # Current Experiments
-#    91.0 (21-Aug-2013 to Present)
+#    91.2 (18-Apr-2016 to Present)
+#    => url = 'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.2'
+#    91.1 (05-Apr-2014 to 18-Apr-2016)
+#    => url = 'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.1'
+#    91.0 (21-Aug-2013 to 04-Apr-2014)
 #    => url = 'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.0'
 #    90.9 (3-Jan-2011 to 20-Aug-2013)
 #    => url = 'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_90.9'
@@ -79,26 +83,39 @@ class HYCOM():
       # ~~~~ Time records ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Extract HYCOM time records\n'
       hycomurls = [ \
+         'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.2', \
+         'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.1', \
          'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_91.0', \
          'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_90.9', \
          'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_90.8', \
-         'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_90.6' 
+         'http://tds.hycom.org/thredds/dodsC/GLBa0.08/expt_90.6'
             ]
+
       self.experiments = []
       for hycomurl in hycomurls:
-         hycomdata = open_url(hycomurl)
-         NIT = hycomdata['Date'].shape[0]
-         print '        x '+str(NIT)+' records from '+hycomurl,
-         ITs = []
-         ATs = []
-         for hycomdate,itime in zip(hycomdata['Date'][0:NIT],range(NIT)):
+         success = False
+         while not success:
+            try:
+               success = True
+               hycomdata = open_url(hycomurl)
+               NIT = hycomdata['Date'].shape[0]
+               print '        x '+str(NIT)+' records from '+hycomurl,
+               ITs = []
+               ATs = []
+               z = zip(hycomdata['Date'][0:NIT],range(NIT))
+            except:
+               success = False
+               print ' ... re-attempting '
+
+         for hycomdate,itime in z:
             d = datetime(int(str(hycomdate)[0:4]),int(str(hycomdate)[4:6]),int(str(hycomdate)[6:8]))
             if itime == 0: print ' from: ',str(d),
             if itime == NIT-1: print ' to: ',str(d)
             if self.moddates[0] <= d and d <= self.moddates[1]:
                ITs.append(itime)
                ATs.append(d)
-         if ITs != []: self.experiments.append((hycomdata,NIT,ITs,ATs))
+         if ITs != []: self.experiments.append((hycomdata,NIT,ITs,ATs,hycomurl))
+
       print '\n'
 
 
@@ -134,13 +151,20 @@ class HYCOM():
 
       # ~~~~ Grid coordinates ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      # ~~> the whole of the 2D grid sizes
-      print '     +> Extract HYCOM sizes'
-      NX1D = self.hycomdata['X'].shape[0]
-      NY1D = self.hycomdata['Y'].shape[0]
-      print '     +> Extract HYCOM mesh'
-      lonX1D = self.hycomdata['Longitude']['Longitude'].data[0,0:NX1D].ravel()%360
-      latY1D = self.hycomdata['Latitude']['Latitude'].data[0:NY1D,0].ravel()
+      success = False
+      while not success:
+         try:
+            success = True
+            # ~~> the whole of the 2D grid sizes
+            print '     +> Extract HYCOM sizes'
+            NX1D = self.hycomdata['X'].shape[0]
+            NY1D = self.hycomdata['Y'].shape[0]
+            print '     +> Extract HYCOM mesh'
+            lonX1D = self.hycomdata['Longitude']['Longitude'].data[0,0:NX1D].ravel()%360
+            latY1D = self.hycomdata['Latitude']['Latitude'].data[0:NY1D,0].ravel()
+         except:
+            success = False
+            print ' ... re-attempting '
       # ~~> lat,lon correction
       for i in range(NX1D):
          if( lonX1D[i] > 180 ): lonX1D[i] = lonX1D[i] - 360.0
@@ -156,10 +180,17 @@ class HYCOM():
       NY1D = len(y)
 
       # ~~~~ MESH sizes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print '     +> Set SELAFIN sizes'
       # ~~> 3D
-      self.slf3d.NPLAN = self.hycomdata['Depth'].shape[0]
-      self.ZPLAN = self.hycomdata['Depth'][0:self.slf3d.NPLAN][::-1] # I do not know any other way
+      success = False
+      while not success:
+         try:
+            success = True
+            print '     +> Set SELAFIN sizes'
+            self.slf3d.NPLAN = self.hycomdata['Depth'].shape[0]
+            self.ZPLAN = self.hycomdata['Depth'][0:self.slf3d.NPLAN][::-1] # I do not know any other way
+         except:
+            success = False
+            print ' ... re-attempting '
       self.slf3d.NDP2 = 3
       self.slf3d.NDP3 = 6
       self.slf3d.NPOIN2 = NX1D * NY1D
@@ -219,7 +250,7 @@ class HYCOM():
       # ~~> along the x-axis (lon)
       for i in range(NX1D):
          for k in range(1,self.slf3d.NPLAN+1):
-            ipoin = i*NY1D  + (k-1)*(2*NX1D+2*NY1D-4) 
+            ipoin = i*NY1D  + (k-1)*(2*NX1D+2*NY1D-4)
             self.slf3d.IPOB3[ipoin] = i + 1 + (k-1)*(2*NX1D+2*NY1D-4)
             ipoin = i*NY1D -1 + (k-1)*(2*NX1D+2*NY1D-4)
             self.slf3d.IPOB3[ipoin] = 2*NX1D+(NY1D-2) - i  + (k-1)*(2*NX1D+2*NY1D-4)
@@ -234,7 +265,7 @@ class HYCOM():
          pbar.update(i+NX1D)
       pbar.finish()
       self.slf2d.IPOB3 = self.slf3d.IPOB3[0:self.slf3d.NPOIN2]
-      
+
 
    def putContent(self,rootName,only2D):
 
@@ -287,47 +318,90 @@ class HYCOM():
             # ~~> HYCOM variable extraction ( 1L:times, 33L:layers, yyL:NY1D, xxL:NX1D )
 
             # ~~> ELEVATION
-            v2d = np.swapaxes( hycomdata['ssh']['ssh'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - ssh',10*ibar+1)
+                  v2d = np.swapaxes( hycomdata['ssh']['ssh'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
             if not only2D:
                var3d = - np.tile(self.ZPLAN,self.slf3d.NPOIN2).reshape(self.slf3d.NPOIN2,self.slf3d.NPLAN).T.ravel()
                var3d[self.slf3d.NPOIN3-self.slf3d.NPOIN2:] = var2d
                self.slf3d.appendCoreVarsSLF([var3d])
-            pbar.write('             - ssh',10*ibar+1)
             pbar.update(10*ibar+1)
 
             # ~~> SALINITY
-            v2d = np.swapaxes( hycomdata['surface_salinity_trend']['surface_salinity_trend'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - surface_salinity_trend',10*ibar+2)
+                  v2d = np.swapaxes( hycomdata['surface_salinity_trend']['surface_salinity_trend'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
-            pbar.write('             - surface_salinity_trend',10*ibar+2)
             pbar.update(10*ibar+2)
             if not only2D:
-               var = np.swapaxes( hycomdata['salinity']['salinity'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+               success = False
+               while not success:
+                  try:
+                     success = True
+                     pbar.write('             - salinity',10*ibar+3)
+                     var = np.swapaxes( hycomdata['salinity']['salinity'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+                  except:
+                     success = False
+                     pbar.write('    ... re-attempting because I failed ...',10*ibar)
                v3d = var[::-1].ravel()
                var3d = np.where( v3d < 10000, v3d, 0.0 )
                self.slf3d.appendCoreVarsSLF([var3d])
-               pbar.write('             - salinity',10*ibar+3)
             pbar.update(10*ibar+3)
 
             # ~~> TEMPERATURE
-            v2d = np.swapaxes( hycomdata['surface_temperature_trend']['surface_temperature_trend'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - surface_temperature_trend',10*ibar+4)
+                  v2d = np.swapaxes( hycomdata['surface_temperature_trend']['surface_temperature_trend'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
-            pbar.write('             - surface_temperature_trend',10*ibar+4)
             pbar.update(10*ibar+4)
             if not only2D:
-               var = np.swapaxes( hycomdata['temperature']['temperature'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+               success = False
+               while not success:
+                  try:
+                     success = True
+                     pbar.write('             - temperature',10*ibar+5)
+                     var = np.swapaxes( hycomdata['temperature']['temperature'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+                  except:
+                     success = False
+                     pbar.write('    ... re-attempting because I failed ...',10*ibar)
                v3d = var[::-1].ravel()
                var3d = np.where( v3d < 10000, v3d, 0.0 )
                self.slf3d.appendCoreVarsSLF([var3d])
-               pbar.write('             - temperature',10*ibar+5)
             pbar.update(10*ibar+5)
 
             # ~~> VELOCITY U
-            if only2D: var = np.swapaxes( hycomdata['u']['u'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            else: var = np.swapaxes( hycomdata['u']['u'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - u-velocity',10*ibar+6)
+                  if only2D: var = np.swapaxes( hycomdata['u']['u'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+                  else: var = np.swapaxes( hycomdata['u']['u'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             v2d = var[0].ravel()
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
@@ -335,12 +409,19 @@ class HYCOM():
                v3d = var[::-1].ravel()
                var3d = np.where( v3d < 10000, v3d, 0.0 )
                self.slf3d.appendCoreVarsSLF([var3d])
-            pbar.write('             - u-velocity',10*ibar+6)
             pbar.update(10*ibar+6)
 
             # ~~> VELOCITY V
-            if only2D: var = np.swapaxes( hycomdata['v']['v'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
-            else: var = np.swapaxes( hycomdata['v']['v'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - v-velocity',10*ibar+7)
+                  if only2D: var = np.swapaxes( hycomdata['v']['v'].data[t,0:1,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+                  else: var = np.swapaxes( hycomdata['v']['v'].data[t,0:self.slf3d.NPLAN,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 1,2)
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             v2d = var[0].ravel()
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
@@ -348,7 +429,6 @@ class HYCOM():
                v3d = var[::-1].ravel()
                var3d = np.where( v3d < 10000, v3d, 0.0 )
                self.slf3d.appendCoreVarsSLF([var3d])
-            pbar.write('             - v-velocity',10*ibar+7)
             pbar.update(10*ibar+7)
 
             # ~~> VELOCITY W
@@ -357,19 +437,33 @@ class HYCOM():
                self.slf3d.appendCoreVarsSLF([var3d])
 
             # ~~> EMP ???
-            v2d = np.swapaxes( hycomdata['emp']['emp'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - emp',10*ibar+8)
+                  v2d = np.swapaxes( hycomdata['emp']['emp'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
-            pbar.write('             - emp',10*ibar+8)
             pbar.update(10*ibar+8)
 
             # ~~> TEMPERATURE
-            v2d = np.swapaxes( hycomdata['qtot']['qtot'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+            success = False
+            while not success:
+               try:
+                  success = True
+                  pbar.write('             - qtot',10*ibar+9)
+                  v2d = np.swapaxes( hycomdata['qtot']['qtot'].data[t,ilat[0]:ilat[1],ilon[0]:ilon[1]][0], 0,1).ravel()
+               except:
+                  success = False
+                  pbar.write('    ... re-attempting because I failed ...',10*ibar)
             var2d = np.where( v2d < 10000, v2d, 0.0 )
             self.slf2d.appendCoreVarsSLF([var2d])
-            pbar.write('             - qtot',10*ibar+9)
             pbar.update(10*ibar+9)
-            
+
             ibar += 1
 
       pbar.finish()
@@ -435,7 +529,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Convert to SELAFIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
    print '\n\n'+'~'*72+'\n'
    print '\nProcessing header (mesh, connectivity, etc.)\n'
    hy2slf = HYCOM(period)
