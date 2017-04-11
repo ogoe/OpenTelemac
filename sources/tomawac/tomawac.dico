@@ -2838,7 +2838,7 @@ AIDE1 = 'Parameter defining the standard configuration for
 the quadruplet interactions in the DIA method.
 \\
  \begin{CommentBlock}{Related keywords}
-NON-LINEAR TRANSFERS
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
 \end{CommentBlock}'
 
 NOM = 'COTE INITIALE DU PLAN D''EAU AU REPOS'

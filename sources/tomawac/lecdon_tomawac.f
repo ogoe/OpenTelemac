@@ -616,6 +616,19 @@
       IF (.NOT.COURAN.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
         SORLEO(7)=.FALSE.
         SORLEO(8)=.FALSE.
+        IF (SDSCU.NE.0) THEN
+! AND NO DISSIPATION COEFFICIENT FOR STRONG CURRENT
+           IF (LNG.EQ.1) THEN
+              WRITE(LU,*) '******************************************'
+              WRITE(LU,*) ' PAS DE DISSIPATION PAR COURANT FORT'              
+              WRITE(LU,*) '******************************************'
+           ELSE
+              WRITE(LU,*) '*****************************************'
+              WRITE(LU,*) ' NO DISSIPATION FOR STRONG CURRENT'
+              WRITE(LU,*) '*****************************************'
+           ENDIF
+           SDSCU = 0
+        ENDIF
       ENDIF
 !
 !.....IF INFINITE DEPTH, THE RADIATION STRESSES ARE NOT COMPUTED
