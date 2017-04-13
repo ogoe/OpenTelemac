@@ -615,6 +615,7 @@
       DEBU         = MOTLOG( ADRESS(3, 14) )
       IMP_INFLOW_C = MOTLOG( ADRESS(3, 15) )
       SECCURRENT   = MOTLOG( ADRESS(3, 16) )
+      HAVESECFILE  = MOTLOG( ADRESS(3, 59) )
       IF(CODE(1:9).EQ.'TELEMAC3D') SECCURRENT = .FALSE.
       UNIT         = MOTLOG( ADRESS(3, 17) )
       VF           = MOTLOG( ADRESS(3,253) )

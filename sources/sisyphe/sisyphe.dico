@@ -2312,6 +2312,22 @@ AIDE = 'Pour prendre en compte les courants secondaires'
 AIDE1 = 'using the parametrisation for secondary currents'
 
 
+NOM = 'FICHIER DE COURANTS SECONDAIRES'
+NOM1 = 'SECONDARY CURRENTS FILE'
+TYPE = LOGIQUE
+INDEX = 59
+MNEMO = 'HAVESECFILE' 
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'Pour prendre en compte les courants secondaires avec FICHIER'
+AIDE1 = 'The radii needed for the parametrisation of secondary currents
+are read from SELFAIN file'
+
+
 NOM = 'CONCENTRATION MASSIQUE'
 NOM1 = 'MASS CONCENTRATION'
 TYPE = LOGIQUE

@@ -31,6 +31,11 @@
 !+        V7P2
 !+ CALFA,SALFA dependent of grain classes
 !
+!history  R KOPMANN (BAW)
+!+        14/03/2017
+!+        V7P2
+!+   Reading the bend radii from GEOMETRY FILE IF SECONDARY CURRENT FILE = YES
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELMU          |-->| TYPE OF ELEMENT FOR VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,13 +95,22 @@
       ELSE
         ALPHAL = 0.D0
       ENDIF
+! CASE OF RADII FROM FILE
+      IF(HAVESECFILE) THEN
+! ALPHA IS CALIBRATION FACTOR
+        ALPHAL = ALPHA
+! CALCULATING 
+        CALL OS('X=-Y     ' , T1 , RADSEC , RADSEC , C      ) ! -RADIUS     
+        CALL OS('X=Y/Z    ' , T8 , HN     , T1     , C      ) ! HN/-RADIUS
+!RK        CALL OS('X=CY     ' , T8 , T8     , T8     , ALPHAL ) ! 7*HN/-RADIUS
+        CALL OS('X=CY     ' , T8 , T8     , T8     , ALPHAL ) ! ALPHAL*HN/-RADIUS
+        CALL OS('X=ATN(Y) ' , T8 , T8     , T8     , C      ) ! ARCTAN(7*HN/-RADIUS)
+      ELSE
+! CALCULATING THE RADII FROM WATER LEVEL SLOPE
 !
       CALL OS( 'X=YZ    ' , T1 , T6      , U2D   , C   ) ! DZSDY*U2D
       CALL OS( 'X=YZ    ' , T2 , T5      , V2D   , C   ) ! DZSDX*V2D
-      CALL OS( 'X=-Y    ' , T2 , T2      , T3   , C   )
-      CALL OS( 'X=X+Y   ' , T1 , T2      , T3   , C   ) ! U2D*DZSDY - V2D*DZSDX
-! NOTE JMH : WHY NOT THE FOLLOWING LINE INSTEAD OF THE 2 PREVIOUS ???
-!     CALL OS( 'X=X-Y   ',X=T1,Y=T2) ! U2D*DZSDY - V2D*DZSDX
+      CALL OS( 'X=X-Y   ',X=T1,Y=T2) ! U2D*DZSDY - V2D*DZSDX
 !
       CALL OS( 'X=YZ    ' , T2 , U2D      , U2D   , C   ) ! U2D**2
       CALL OS( 'X=YZ    ' , T3 , V2D      , V2D   , C   ) ! V2D**2
@@ -128,11 +142,31 @@
 !     TAU_X_GES = TOB*EFFPNT*CALFA + TAU_X_SEK : T1
 !     TAU_Y_GES = TOB*EFFPNT*SALFA + TAU_Y_SEK : T2
 !
+      ENDIF
+
       CALL OS( 'X=YZ    ' , T1 , TOB      , COEFPN   , C   ) ! TOB*EFFPNT
       CALL OS( 'X=YZ    ' , T2 , T1      ,  SALFA   , C   ) ! TOB*EFFPNT*SALFA
       CALL OS( 'X=YZ    ' , T1 , T1      , CALFA   , C   ) ! TOB*EFFPNT*CALFA
+!
+      IF(HAVESECFILE) THEN
+!CALCULATION TAU_X_COR: TAU_X_COR=TAU_X*COS(TETA)-Y*SIN(TETA)
+          CALL OS( 'X=COS(Y)' , T3 , T8 , T8 , C   ) !COS(TETA)
+          CALL OS( 'X=SIN(Y)' , T4 , T8 , T8 , C   ) !SIN(TETA)
+          CALL OS( 'X=YZ    ' , T5 , T3 , T1 , C   ) !TAU_X*COS(TETA)
+          CALL OS( 'X=YZ    ' , T6 , T4 , T2 , C   ) !TAU_Y*SIN(TETA)
+          CALL OS( 'X=Y-Z   ' , T5 , T5 , T6 , C   ) !TAU_X_COR=TAU_X*COS(TETA)-TAU_Y*SIN(TETA)	  
+!CALCULATION TAU_Y_COR: TAU_Y_COR=TAU_Y*SIN(TETA)+TAU_Y*COS(TETA)
+          CALL OS( 'X=YZ    ' , T6 , T4 , T1 , C   ) !TAU_X*SIN(TETA)
+          CALL OS( 'X=YZ    ' , T7 , T3 , T2 , C   ) !TAU_Y*COS(TETA)
+          CALL OS( 'X=X+Y   ' , T6 , T7 , T7 , C   ) !TAU_Y_COR=TAU_Y*COS(TETA)+TAU_Y*SIN(TETA)	
+!RK
+          CALL OS( 'X=Y     ' , T1 , T5 , T1 , C   )
+          CALL OS( 'X=Y     ' , T2 , T6 , T1 , C   )  
+      ELSE
       CALL OS('X=X+Y   ' , T1 , T5    , T3,  C ) ! TAU_X_GES = TOB*CALFA+TAU_X_SEK
       CALL OS('X=X+Y   ' , T2 , T6    , T3,  C ) ! TAU_Y_GES = TOB*SALFA+TAU_Y_SEK
+!
+      ENDIF
 !
 !     TAU_GES=SQRT(TAU_X_GES**2+TAU_Y_GES**2)
 !
