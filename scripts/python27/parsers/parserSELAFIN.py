@@ -453,7 +453,7 @@ class SELAFIN:
       - needs some intensive testing
    """
 
-   DATETIME = [1972,07,13,17,24,27]  # ... needed here because optional in SLF (static)
+   DATETIME = np.asarray([1972,07,13,17,24,27])  # ... needed here because optional in SLF (static)
 
    def __init__(self,fileName):
       self.file = {}
@@ -523,7 +523,7 @@ class SELAFIN:
       d = unpack(endian+'12i',f.read(4+40+4))
       self.IPARAM = np.asarray( d[1:11] )
       # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      self.DATETIME = [1972,07,13,17,15,13]
+      self.DATETIME = np.asarray([1972,07,13,17,15,13])
       if self.IPARAM[9] == 1:
          d = unpack(endian+'8i',f.read(4+24+4))
          self.DATETIME = np.asarray( d[1:9] )
