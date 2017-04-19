@@ -1,15 +1,15 @@
-\section{Shoal : Submerged elliptical mound}
+\chapter{Shoal : Submerged elliptical mound}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsection{Purpose}
+\section{Purpose}
 The goal of this test-case is to check the behaviour of TOMAWAC in presence of refraction, shoaling and diffraction effects over a shoal.\\
 A shoal causes a concentration area of wave just behind it, what makes fail numerical models of refraction based on the radius theory. This test-case allows to verify simulations from TOMAWAC for refraction, shoaling and diffraction processes.
 
-\subsection{Reference experiments}
+\section{Reference experiments}
 The references of this test-case are the experiments of \cite{Vincent1989}. They worked on the refraction and the diffraction of irregular waves over a mound using a directional spectral wave generator and they measured the wave's height.\\
 
 \begin{figure}[h!]
@@ -21,32 +21,45 @@ The references of this test-case are the experiments of \cite{Vincent1989}. They
 \end{figure}
 
 Different irregular wave conditions were tested, varying the narrowness and the directional spread of the spectrum. They used a TMA shallow-water spectrum (Bouws et al. 1985) and a wrapped normal spreading function which can be close to a Mitsuyasu directional spreading function.\\
-\begin{table}
 
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\hline
-\hline
-Test & Case ID& Type&Period & Height & $\alpha$& $\gamma$& $\sigma _m$ \\
- number& & & (sec)&  (cm)& & & (deg)\\
-\hline
-\multicolumn{8}{|c|}{(a) Initial Series}\\
-\hline
+\begin{table}[H]
+\begin{center}
+%
+\caption{Test conditions for shoal test series, Vincent and Briggs experiments}
+\label{tab:shoal_setupVB}
+%
+\begin{tabular*}{0.9\textwidth}{@{\extracolsep{\fill}}cccccccc}
+\toprule
+\toprule
+%
+\textbf{\minitab[c]{Test \\ number}} & \textbf{Case ID} & \textbf{Type} &
+\textbf{\minitab[c]{Period \\ (sec)}} & \textbf{\minitab[c]{Height \\ (cm)}} &
+$\bm \alpha$ & $\bm \gamma$ & \minitab[c]{$\bm \sigma_{\bm m}$ \\ \textbf{(deg)}}
+\\
+\midrule
+\multicolumn{8}{c}{\textbf{(a) Initial Series}}
+\\
+\midrule
+%
 1 & M1 & Mono & 1.30 & 5.50 & -- & -- & -- \\
 2 & N1 & Spec & 1.30 & 7.75 & 0.01440 & 2 & 10\\
 3 & B1 & Spec & 1.30 & 7.75 & 0.01440 & 2 & 30\\
 4 & N2 & Spec & 1.30 & 7.75 & 0.00440 & 20 & 10\\
 5 & B2 & Spec & 1.30 & 7.75 & 0.00440 & 20 & 30\\
-\hline
-\end{tabular} \\
-\caption{Test conditions for shoal test series, Vincent and Briggs experiments}
-\label{setupVB}
+%
+\bottomrule
+\bottomrule
+\end{tabular*}
+%
+\end{center}
 \end{table}
+
 
 In this benchmark, only one type of wave condition is tested for the diffraction effects, the N1 one. But B1, B2, N1 and N2 are tested to evaluate the refraction and the shoaling.
 
-\subsection{Test-case description}
+\section{Test-case description}
 The case is about spectral wave propagation on a submerged elliptical mound. The study will compare the spectral significant wave heights given by TOMAWAC simulations with measurements from \cite{Vincent1989}'s experiments.
-\paragraph{Geometry of the domain and bathymetry}
+\subsection{Geometry of the domain and bathymetry}
 
 \begin{tabular}{ccc}
 Bassin & dimension :& 27.43 m * 18.3 m\\
@@ -68,8 +81,8 @@ $a = (\frac{x}{3.96})+(\frac{y}{3.05})$ & if $a \geq 1$, $Zf = -0.4572$\\
  & if $a < 1$, $Zf = -0.9144+0.762 \sqrt{1-0.64a}$
 \end{tabular}\\
 \end{center}
-\paragraph{Meshes}
-\subparagraph{Spatial discretization}
+\subsection{Meshes}
+\paragraph{Spatial discretization}
 Three meshes are used for the simulation :
 \begin{itemize}
 \item finer : Element size at the shoal 0.2~m \quad $\Delta x/\lambda$ = 0.09
@@ -86,14 +99,14 @@ Where $\lambda$ is the wavelength.
 \label{meshshoal}
 \end{figure}
 
-\subparagraph{Spectro-angular discretization}
+\paragraph{Spectro-angular discretization}
 \begin{itemize}
 \item 22 frequencies (0.35 - 2.85 Hz)
 \item logarithmic scale ($\Delta f/f = 0.1$)
 \item 36 directions
 \end{itemize}
 
-\paragraph{Initial and Boundary conditions}
+\subsection{Initial and Boundary conditions}
 The domain is initially at rest.
 The incident wave conditions are the following:
 \begin{itemize}
@@ -131,7 +144,7 @@ $\phi (f,d) = \left\{ \begin{array}{rl}
       \caption{The boundary conditions}
 \end{figure}
 
-\subsection{Numerical parameters}
+\section{Numerical parameters}
 \begin{itemize}
 \item time steps :
 	\begin{enumerate}
@@ -150,7 +163,7 @@ $\phi (f,d) = \left\{ \begin{array}{rl}
 \end{tabular}
 \end{itemize}
 
-\subsection{TOMAWAC Results }
+\section{TOMAWAC Results }
 At first, simulations without diffraction effects are done in order to validate the propagation and refraction of the wave over this complex bathymetry. To compare the simulation results and the measurements of \cite{Vincent1989}, the significant wave heights have been normalized by the incident significant wave height.\\
 \begin{itemize}
 \item B1 and B2 tests (wide directional spreading):\\
@@ -189,7 +202,7 @@ The diffraction coefficients obtained during the simulations (changing Cr and $\
 \begin{figure}[!h]
   \centering
     \includegraphics[width=0.85\textwidth]{Kd.jpg}
-      \caption{Comparaison between TOMAWAC results and Vincent measurements: measured and simulated values of the diffraction coefficient along the transect 4 \textit{(see Table \ref{setupVB})} of the model.}
+      \caption{Comparaison between TOMAWAC results and Vincent measurements: measured and simulated values of the diffraction coefficient along the transect 4 \textit{(see Table \ref{tab:shoal_setupVB})} of the model.}
 \label{kd4}
 \end{figure}
 
@@ -224,5 +237,5 @@ In order to improve the simulation of the diffraction effects, a spatial filter 
 \label{resultshoal}
 \end{figure}
 
-\subsection{Conclusion}
+\section{Conclusion}
 This benchmark test allows to compare simulations from TOMAWAC and experimental results. It follows that TOMAWAC provides a correct simulation of the propagation, shoaling and the refraction but the diffraction effects are limited and not really well represented. In order to improve the results, a smoothing filter can be applied on the spatial domain.\\

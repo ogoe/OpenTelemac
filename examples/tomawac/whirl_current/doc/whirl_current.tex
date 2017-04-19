@@ -1,18 +1,18 @@
-\section{Whirl current}
+\chapter{Whirl current}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsection{Purpose}
+\section{Purpose}
 %
 This test case should make it possible to check that the effects of refraction
 by the current are properly taken into account by Tomawac 7.0. The distorsion
 of a wave spectrum as it reaches a whirl current zone like those observed along
 the Norwegian coasts \cite{Mathiesen1987}
 %
-\subsection{Description of the problem}
+\section{Description of the problem}
 %
 This test case is derived from the Mathiesen's results \cite{Mathiesen1987}.
 Equivalent results can be found in \cite{Tolman1991} and \cite{Hubbert1991}. The
@@ -46,7 +46,7 @@ $r_0=10km$ and $b=0.3$.
 %     explicits the analytical solution when available;
 %
 %
-\begin{figure} [!h]
+\begin{figure} [H]
 \centering
 \includegraphics[width=0.85\textwidth]{current.png}
  \caption{whirl current}
@@ -63,7 +63,7 @@ crossings can be observed.
 \label{ray}
 \end{figure}
 
-\subsection{Initial and Boundary Conditions}
+\section{Initial and Boundary Conditions}
 
 That method of rays can be implemented  either forwards (as on Figure
 \ref{ray}), or backwards, then knowing the arrival point of an orthogonal, it
@@ -105,10 +105,10 @@ The initial spectrum is null.
 %     This part describes the mesh used in the computation
 %
 %
-\subsection{Geometry and Mesh}
+\section{Geometry and Mesh}
 %
 The mesh is made of 1876 nodes and 3590 triangles and is shown Figure \ref{mail}
-\begin{figure} [!h]
+\begin{figure} [H]
 \centering
 \includegraphics[width=0.85\textwidth]{maill.png}
  \caption{Mesh of the domain}
@@ -120,7 +120,7 @@ The mesh is made of 1876 nodes and 3590 triangles and is shown Figure \ref{mail}
 %
 %
 
-\subsection{Numerical parameters}
+\section{Numerical parameters}
 %
 Time duration is 60000\ s, time step is equal to 1200\ s, the spectro-angular mesh
 has 48 angles and 25 frequences spread on a geometric progression common ratio
@@ -130,7 +130,7 @@ has 48 angles and 25 frequences spread on a geometric progression common ratio
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsection{Results}
+\section{Results}
 %
 On figure \ref{measurepts}, we present the amplification factor of the heigth
 due to the current. We can notice two different zones at the center of the
@@ -148,7 +148,7 @@ one obtained by Tomawac on Figure \ref{repartang}. We can denote that the
 results are very closed to Mathiesen results especially on points 4 and 7.
 Notice that Mathiesen took an angular discretisation of 2.5 when our is of 7.5.
 
-\begin{figure} [!h]
+\begin{figure} [H]
 \centering
 \includegraphics[width=0.85\textwidth]{whirlcurrentpoints.png}
  \caption{significative heigth and positions of the measurement points}
@@ -156,20 +156,20 @@ Notice that Mathiesen took an angular discretisation of 2.5 when our is of 7.5.
 \end{figure}
 
 
-\begin{figure} [!h]
+\begin{figure} [H]
 \centering
 \includegraphics[width=0.85\textwidth]{repartangulaire.png}
  \caption{Comparison of the angular spread at 0.1 Hz between Tomawac and Mathiesen}
 \label{repartang}
 \end{figure}
 
-\begin{figure} [!h]
+\begin{figure} [H]
 \centering
 \includegraphicsmaybe{[width=0.85\textwidth]}{../img/results.png}
  \caption{significative heigth of the last calculation}
 \label{resultswhirl}
 \end{figure}
 
-\subsection{Conclusion}
+\section{Conclusion}
 This test case showed on a realistic case of refraction of current that Tomawac
 gives suitable results compared to fine results.

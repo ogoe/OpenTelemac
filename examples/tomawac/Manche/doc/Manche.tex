@@ -1,15 +1,15 @@
-\section{Manche}
+\chapter{Manche}
 %
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsection{Purpose}
+\section{Purpose}
 %
 This test case has been exhibited from an old version (V5P4), the reference case at this time was called r2d.V1P3. It has got mainly one interest, to compare results from old versions to the new version.  
 
 %
-\subsection{Description of the problem}
+\section{Description of the problem}
 We simulate the storm that occured in 1990 in Manche. This test was a test described in the validation of tomawac 1.0 \cite{Benoit1996_3}. Because of many changes in the code it had been abandonned. It now works with the new version but not in parallel because of the fortran user that sets the boundary. 
 
 We discretize with 25 frequencies and 12 directions. The minimal frequency is 0.04177248 and the frequential ratio 1.1.
@@ -35,7 +35,7 @@ We take into account the wind through a file that gives the wind in all point of
 Nowadays time format is given through a number \textit{YYYYMMDDHHMMNN}, and it used to be given by MDDHH. 
 As we kept the fortran user to describe boundaries conditions one will read this format in the keyword \textit{DATE DE DEBUT DU CALCUL = 1161500} for \textit{1990 01 16 15:00:00}
 
-\subsection{Results and Comments}
+\section{Results and Comments}
 
 If one run the validation with old results, one will see a difference of 30\% wave heigth result, it is only on a few points (see figure\ref{figmanchedif}) and it does not spread on all the results, it can be explained by a bug corrected in characteristic method on boundaries some years ago. 
 \begin{figure} [!h]

@@ -1,16 +1,16 @@
-\section{Opposing current}
+\chapter{Opposing current}
 %
 
 % - Purpose & Problem description:
 %     These first two parts give reader short details about the test case,
 %     the physical phenomena involved and specify how the numerical solution will be validated
 %
-\subsection{Purpose}
+\section{Purpose}
 %
 The goal of this test-case is to check the behaviour of TOMAWAC in presence of a strong opposing current. When water meets the strong adverse current, with a velocity that approaches the wave group velocity, waves are blocked. Without any option for strong current, the amplitud of waves is overestimated.
 
 %
-\subsection{Description of the problem}
+\section{Description of the problem}
 %
 We present here the simulation of the test case of Lai \cite{Lai1989}. We present two different options that prevent from overestimation.
 
@@ -21,7 +21,7 @@ Option 2 : add a dissipative term on the right-hand side of the action balance e
 For more details on formulations, one can refer to Tomawac documentation, paragraphs 4.2.3.8.1 and 4.2.3.8.2.
 
 %
-\subsection{Reference}
+\section{Reference}
 %
 The flume experiment of Lai et al \cite{Lai1989} investigates the transformation of the wave spectrum on a strong negative current gradient in a flume of 8~m length and 0.75~m depth. An opposing current flow is induced along the flume according to figure \ref{courant}
 \begin{figure} [!h]
@@ -31,7 +31,7 @@ The flume experiment of Lai et al \cite{Lai1989} investigates the transformation
 \label{courant}
 \end{figure}
 
-\subsection{Physical parameters}
+\section{Physical parameters}
  Concerning the modelling of the opposing current with the first option the Phillips’s constant in the Pierson-Moskowitz spectrum is equal to 0.0081.
 For the second option of this modelling, the dissipation coefficient is equal to 0.65, and saturation threshold value is taken to $1.75 10^{-3}$.
 
@@ -42,7 +42,7 @@ The white-capping dissipation is the model of Westhuysen 2008. Non linear transf
 %     This part describes the mesh used in the computation
 %
 %
-\subsection{Geometry and Mesh}
+\section{Geometry and Mesh}
 %
 The bathymetry is as described on figure \ref{bathyop}.
 \begin{figure} [!h]
@@ -67,7 +67,7 @@ The mesh is made of 1701 nodes and 3200 triangles  and is shown Figure \ref{mail
 %     This part details both initial and boundary conditions used to simulate the case
 %
 %
-\subsection{Initial and Boundary Conditions}
+\section{Initial and Boundary Conditions}
 %
 For both conditions, we take a Jonswap spectrum with a 1.9 cm significant wave heigth, a peak frequency of 2.2. The angular distribution function follows a $\cos^{2s} \theta$ distribution with an angular spreading of 65 and a mean direction of 90.
 % - Numerical parameters:
@@ -75,7 +75,7 @@ For both conditions, we take a Jonswap spectrum with a 1.9 cm significant wave h
 %     (adaptive time step, mass-lumping when necessary...)
 %
 %
-\subsection{Numerical parameters}
+\section{Numerical parameters}
 %
 Time duration is 400~s, time step is equal to 0.1~s, the spectro-angular mesh has 72 angles and 36 frequences spread on a geometric progression common ratio 1.1 with a minimum of 0.25.
 
@@ -86,7 +86,7 @@ The option for wave growth limiter is following the Hersbach et Janssen (1999) p
 %     giving understanding keys and making assumptions when necessary.
 %
 %
-\subsection{Results}
+\section{Results}
 %
 We show the results obtained Figure \ref{reswaveblocking}. The two options are efficient to reduce the wave heigth overestimation and lead to a solution closer to measurements. This shows the interest of including these options in the case of a strong opposing current.
 
