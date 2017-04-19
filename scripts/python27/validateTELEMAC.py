@@ -318,7 +318,33 @@ if __name__ == "__main__":
       help="will bypass execution failures and try to carry on (final report at the end)" )
 # Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
    parser.add_option("-k","--rank",type="string",dest="rank",default='0',
-      help="1 integer only (--rank 0 is the default)" )
+      help='''1 integer only (--rank 0 is the default)
+         \n
+         *** Options *** \t\t\t\t\n
+         2: will run the test cases of rank 2
+         \n
+         6: will run the test cases of rank 2 and 3 (2x3=6)
+         \n
+         30: will run the test cases of rank 2, 3 and 5 (2x3x5=30)
+         \t\t\t\n
+         210: will run the test cases of rank 2, 3, 5 and 7 (2x3x5x7=210)
+         \t\t\t\n
+         2310: will run the test cases of rank 2, 3, 5, 7 and 11 (2x3x5x7x11=2310)
+         \t\t\n
+         0: will run everything, including the test cases with issues
+         \t\t\t\t\n
+         *** Key *** \t\t\t\t\t\n
+         Rank 2: The individual test case takes less than 10sec to run
+         \t\t\t\t\n
+         Rank 3: The individual test case takes between 10sec and 1min to run
+         \t\t\n
+         Rank 5: The individual test case takes between 1min and 10min to run
+         \t\t\n
+         Rank 7: The individual test case takes between 10min and 1h to run
+         \t\t\t\n
+         Rank 11: The individual test case takes more than 1h to run
+         \t\t\t\t\n
+         Rank 13: Problematic test cases''' )
    parser.add_option("", "--valrootdir",type="string",dest="val_root",default='',
       help="specify the directory in which to search the validation cases, default is taken from config file" )
    parser.add_option("","--runOnly",action="store_true",dest="runOnly",default=False,
