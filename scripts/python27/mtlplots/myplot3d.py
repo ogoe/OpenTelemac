@@ -20,6 +20,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
+from os import path, environ, stat, mkdir
 from copy import deepcopy
 import numpy as np
 # ~~> mayavi
@@ -483,6 +484,10 @@ class Figure3D(Caster):
       if self.upar['interactive']!='':
          nothing()
 
+      try:
+         stat(path.split(fileName)[0])
+      except:
+         mkdir(path.split(fileName)[0])
       self.plt.savefig(fileName)
       self.plt.close()
 

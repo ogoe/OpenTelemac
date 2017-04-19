@@ -18,6 +18,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
+from os import path, environ, stat, mkdir
 from copy import deepcopy
 import numpy as np
 # ~~> matplotlib and pyplot
@@ -484,6 +485,10 @@ class Figure1D(Caster):
 
    def save(self,fileName):
       deco(self.plt,self.upar,self.dpar)
+      try:
+         stat(path.split(fileName)[0])
+      except:
+         mkdir(path.split(fileName)[0])
       self.plt.savefig(fileName)
       self.plt.close()
 
