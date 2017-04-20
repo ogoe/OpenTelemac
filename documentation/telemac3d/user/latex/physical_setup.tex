@@ -239,7 +239,7 @@ The constraint can be written in several forms:
 \begin{align}
 \vec{\tau } & = \mu \frac{\partial \vec{U}}{\partial n}
             = -\frac{1}{2} \rho C_{f} \sqrt{U^{2} +V^{2} } \vec{U}\\
-            & = -\rho U^{*2} 
+            & = -\rho U^{*2}
 \end{align}
 where $U^{*}$ denotes the friction, $C_{f}$ - a dimensionless friction, $U$ -
 the velocity of current recorded far enough from the wall.
@@ -540,7 +540,7 @@ These calculations require additional data (wind magnitude and direction, air
 temperature, atmospheric pressure, relative humidity, nebulosity and rainfall,
 all these variables may vary in time) in a standard format, rather defined
 in the \telkey{ASCII ATMOSPHERIC DATA FILE} of the \telemac{3D} steering file,
-see the example "heat\_exchange". 
+see the example "heat\_exchange".
 The format may be changed but the user has to change the
 implementation of the reading and the interpolation of the meteorological data.
 When using the complete module, evaporation is calculated by \telemac{3D}, but
@@ -554,7 +554,7 @@ Some physical parameters or formulae can be changed with the helps of some
 keywords in the \waqtel steering file (default values are the mean values): e.g.
 the type of sky related to the luminosity of the site with the \waqtel keyword
 \telkey{LIGHTNESS OF THE SKY} (1: very pure sky, 2: mean pure sky or 3:
-industrial zone sky) or the \{FORMULA OF ATMOSPHERIC RADIATION}
+industrial zone sky) or the \telkey{FORMULA OF ATMOSPHERIC RADIATION}
 (1: Idso and Jackson (1969), 2: Swinbank (1963) which is the default formula,
 3: Brutsaert (1975) or 4: Yajima Tono Dam (2014)).
 Some other physical parameters have been hard-coded in the module, often
