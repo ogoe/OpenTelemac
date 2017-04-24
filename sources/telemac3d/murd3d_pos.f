@@ -11,7 +11,7 @@
      & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3,NITMAX,OPTSOU)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
@@ -68,6 +68,12 @@
 !+        15/09/2016
 !+        V7P2
 !+   Better treatment of evaporation, with a highest possible value.
+!
+!history  J-M HERVOUET (EDF LAB, LNHE)
+!+        24/04/2017
+!+        V7P3
+!+   Stricter allowances, and more prints in TESTING mode. In 3D to
+!+   avoid mass losses, the NERD scheme should transmit all the fluxes.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
@@ -191,15 +197,12 @@
       DOUBLE PRECISION VOLSEG1,VOLSEG2
 !
       DOUBLE PRECISION, PARAMETER :: EPS = 1.D-6
-      DOUBLE PRECISION, PARAMETER :: ALLOW = 1.D-5
-      DOUBLE PRECISION, PARAMETER :: REDUC = 1.D-9
+      DOUBLE PRECISION, PARAMETER :: ALLOW = 1.D-6
+      DOUBLE PRECISION, PARAMETER :: REDUC = 1.D-10
       DOUBLE PRECISION, PARAMETER :: EPS_VOLUME = 1.D-8
 !
       LOGICAL, PARAMETER :: TESTING = .FALSE.
-!> SEB @ HRW, JR @ RWTH, CG @ EDF: ALGORITHMIC DIFFERENTIATION
-!
       INTRINSIC MIN,MAX
-!< SEB @ HRW, JR @ RWTH, CG @ EDF
 !
 !-----------------------------------------------------------------------
 !
@@ -293,7 +296,7 @@
       ENDDO
       IF(NCSIZE.GT.1) RFLUX_OLD=P_DSUM(RFLUX_OLD)
       RINIT=RFLUX_OLD
-      IF(TESTING) WRITE(LU,*) 'SOMME INITIALE DES ABS(FLUX)=',RINIT/DT
+      IF(TESTING) WRITE(LU,*) 'INITIAL SUM OF ABS(FLUX)=',RINIT/DT
 !
 !     INITIAL VALUE OF TRACER = FN
 !
@@ -664,6 +667,10 @@
         RFLUX=P_DSUM(RFLUX)
 !       WILL NOT SUM CORRECTLY IN PARALLEL, BUT ONLY TEST IF .EQ.0
         REMAIN_TOT=P_ISUM(REMAIN_TOT)
+        IF(TESTING) THEN
+          WRITE(LU,*) 'NITER=',NITER,' SUM OF ABS(FLUX)=',RFLUX/DT,
+     &                ' REMAINING SEGMENTS: ',REMAIN_TOT
+        ENDIF
       ENDIF
 !
 !     4 POSSIBLE REASONS FOR STOPPING:
@@ -674,10 +681,10 @@
 !     3) ALL SEGMENTS HAVE BEEN TREATED
 !     4) MAXIMUM NUMBER OF ITERATIONS IS REACHED
 !
-      IF( RFLUX.NE.0.D0                                   .AND.
-     &    ABS(RFLUX-RFLUX_OLD).GT.MIN(RINIT*REDUC,ALLOW)  .AND.
-     &               REMAIN_TOT.NE.0                      .AND.
-     &               NITER.LT.NITMAX                   ) THEN
+      IF(RFLUX.NE.0.D0                                   .AND.
+     &   ABS(RFLUX-RFLUX_OLD).GT.MIN(RINIT*REDUC,ALLOW)  .AND.
+     &              REMAIN_TOT.NE.0                      .AND.
+     &              NITER.LT.NITMAX                   ) THEN
         RFLUX_OLD=RFLUX
         GO TO 777
       ENDIF
@@ -859,4 +866,3 @@
 !
       RETURN
       END
-
