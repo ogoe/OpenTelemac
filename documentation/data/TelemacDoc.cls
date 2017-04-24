@@ -184,6 +184,10 @@
 
 \RequirePackage{pbox}
 
+% For Bibliography
+\usepackage{bibentry} %full citation
+\nobibliography* %tells bibentry to (re)use the bibliographic data from the standard BibTeX setup
+
 %----------------------------------------------------------------------------------------
 %	MATHEMATICAL SHORTCUT
 %----------------------------------------------------------------------------------------
