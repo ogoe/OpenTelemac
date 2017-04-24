@@ -7,6 +7,38 @@
 %-------------------------------------------------------------------------------
 Use the keywords {\ttfamily FLUXLINE} (logical type, set to {\ttfamily NON} by default) and {\ttfamily FLUXLINE INPUT FILE} (character type).
 
+The format of the {\ttfamily FLUXLINE INPUT FILE} includes (see Figure~\ref{fig:fluxline_example}):
+\begin{itemize}
+\item The number of fluxlines (integer)
+\item The definition of the fluxlines, given by:
+  \begin{itemize}
+  \item The specification of two points of the fluxline (\texttt{fluxline\_x1, fluxline\_y1, fluxline\_x2, fluxline\_y2}), followed by
+  \item the definition of the bounding box (\texttt{box\_x1, box\_y1, box\_x2, box\_y2})
+  \item An integer (value not used)
+  \end{itemize}
+\end{itemize}
+
+An example of the {\ttfamily FLUXLINE INPUT FILE} is given below:
+
+\begin{lstlisting}[frame=trBL]
+5
+94.0   31.2  99.0  31.2 95.0  31.0  98.0  31.6 1
+94.0   42.5  99.0  42.5 96.0  42.0  98.0  43.0 1
+101.0  42.5  107.0 42.5 104.0 42.0  106.0 43.0 1
+101.0  31.2  107.0 31.2 104.0 31.0  106.0 31.6 1
+100.0  45.0  102.0 48.0 100.0 46.0  102.0 47.5 1  
+\end{lstlisting}     
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.25,angle=0]{graphics/fluxline_example.png}
+\caption{Description of a single fluxline and edge fluxes (red).}\label{fig:fluxline_example}
+\end{center}
+\end{figure}
+
+Further details can be found in Stadler L. (2015) \textit{Calculating correct water and sediment fluxes in TELEMAC2D and SISYPHE}. Proceedings of the 22$^{th}$
+Telemac \& Mascaret User Club, STFC Daresbury Laboratory, UK, 13-16 October.
+
 %\pagebreak
 %-------------------------------------------------------------------------------
 \section{Implement a new bedload transport formula}
@@ -179,3 +211,9 @@ declare:
 Then the following alias can be declared:
 
 \texttt{NBOR=>MESH\%NBOR\%I}
+
+%\pagebreak
+%-------------------------------------------------------------------------------
+\section{Prevent erosion when water depth is smaller than a threshold value}
+%-------------------------------------------------------------------------------
+At for example intertidal wetlands with flooding and drying or tidal areas, the bottom friction could be very high when the water depth is very small, even for small velocities, leading to high and unphysical erosion rates. To prevent that, the keyword \telkey{MINIMAL VALUE OF THE WATER HEIGHT} can be used (the value by default is $1.0^{-3}$m). This keyword is activated when \telkey{TIDAL FLATS = YES}.

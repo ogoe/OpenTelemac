@@ -13,14 +13,14 @@ The term bedload describes particles in a flowing fluid (usually water) that are
 (1-\lambda)\frac{\partial z_b}{\partial t} + \nabla\cdot \mathbf Q_b = 0
 \label{eq:Exner}
 \end{align}
-with $\mathbf Q_b$ the solid volume transport vector per unit width (m$^2/$s), with components $Q_{b_x}, Q_{b_y}$ in the $x$ and $y$ direction respectively, $z_b$ is the bottom elevation (m) and $\lambda$ the bed porosity. The bedload transport vector can be decomposed into $x-$ and $y-$direction components as:
+with $\mathbf Q_b$ the vector of volumetric transport rate per unit width without pores (m$^2/$s), with components $Q_{b_x}, Q_{b_y}$ in the $x$ and $y$ direction respectively, $z_b$ is the bottom elevation (m) and $\lambda$ the bed porosity. The bedload transport vector can be decomposed into $x-$ and $y-$direction components as:
 \begin{align}
 \mathbf Q_b = (Q_{b_x}, Q_{b_y}) = (Q_b \cos\alpha, Q_b \sin\alpha).
 \label{eq:bedloadtransportvector}
 \end{align}
 Above, $Q_b$ is the bedload transport rate per unit width, computed as a function of the equilibrium sediment load closure (or sediment transport capacity) and $\alpha$ is the angle between the sediment transport vector and the downstream direction ($x-$axis).
 
-The deviation of the bed load direction from the flow direction is mainly influenced by the bed slope and the presence of secondary flows~\cite{Talmon95}.
+The deviation of the bed load direction from the flow direction is mainly influenced by the bed slope and the presence of secondary flows~\cite{Talmon95}, see Section~\ref{sec:corrections}.
 
 %...............................................................................
 \section{Steering file setup for bedload transport}
@@ -32,9 +32,9 @@ The dimensionless current-induced sediment transport rate $\Phi_b$ is expressed 
 \Phi_b = \frac{Q_b}{\sqrt{g(s-1)d^3}},
 \label{eq:Phis}
 \end{align}
-with $Q_b$ the bedload sediment transport per unit width (m$^2/$s); $s=\rho_s/\rho$ the sediment relative density ($-$); $\rho_s$ the sediment density (kg$/$m$^3$); $\rho$ the water density (kg$/$m$^3$); $d$ the sand grain diameter ($=d_{50}$ for uniform sediment distribution (m)) and $g$ the gravity acceleration constant (m$/$s$^2$).
+with $s=\rho_s/\rho$ the relative density ($-$); $\rho_s$ the sediment density (kg$/$m$^3$); $\rho$ the water density (kg$/$m$^3$); $d$ the sand grain diameter ($=d_{50}$ for uniform sediment distribution (m)) and $g$ the gravity acceleration constant (m$/$s$^2$).
 
-Different choices of $\Phi_b$ can be selected with the keyword \telkey{BED-LOAD TRANSPORT FORMULA} (integer type variable, set to {\ttfamily = 1} by default the Meyer-Peter and M\"uller formula).
+Different choices of $\Phi_b$ can be selected with the keyword \telkey{BED-LOAD TRANSPORT FORMULA} (integer type variable, set to {\ttfamily = 1} by default corresponding to the Meyer-Peter and M\"uller formula).
 
 %...............................................................................
 \section{Bedload transport formulas}
@@ -44,7 +44,7 @@ Bedload transport formulas are generally computed as function of the Shields num
 \theta=\frac{\mu\tau_b}{(\rho_s-\rho)gd}, 
 \label{eq:shieldsp}
 \end{align}
-with $\tau_b$ the bottom shear stress and $\mu$ the correction factor for skin friction (discussed later).
+with $\tau_b$ the bottom shear stress [Pa] and $\mu$ the correction factor for skin friction (discussed later in Section~\ref{sec:skin}).
 
 Available formulas in \sisyphe{} for bedload transport are:
 \begin{lstlisting}[frame=trBL]
@@ -62,7 +62,7 @@ For example, the keyword \telkey{BED-LOAD TRANSPORT FORMULA = 7} sets the van Ri
 \subsubsection{Meyer-Peter and M\"uller}
 \begin{itemize}
 \item \telkey{ BED-LOAD TRANSPORT FORMULA = 1}
-\item Classical, wide application range $d_{50} = [0.4-29]$mm, based on grain mouvement threshold concept. The dimensionless current-induced sediment transport rate is given by:
+\item Classical, wide application range $d=d_{50} = [0.4-29]$mm, based on grain mouvement threshold concept. The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b=\left\{\begin{array}{ll}
 0 & \text{if}\,\theta<\theta_{cr}\\
@@ -72,11 +72,17 @@ For example, the keyword \telkey{BED-LOAD TRANSPORT FORMULA = 7} sets the van Ri
 \end{equation*}
 with $\alpha_{mpm}$ a coefficient and $\theta_{cr}$ the critical Shields parameter (keyword \telkey{SHIELDS PARAMETERS})
 
+   \begin{WarningBlock}{Note:}
+  To be consistent with the classical Meyer-Peter and M\"uller formula, the value of the critical Shields parameter $\theta_{cr}$ must be explicitly set equal to 0.047 in the steering file (\telkey{SHIELDS PARAMETERS = 0.047}).
+\end{WarningBlock}
+
 \item For calibration purposes, the coefficient $\alpha_{mpm}$ can be modified in the steering file by the keyword \telkey{MPM COEFFICIENT} (real type variable, {\ttfamily = 8} by default).
 
   \begin{WarningBlock}{Note:}
-  A value of \telkey{MPM COEFFICIENT = 8} is equal to the original MPM formula~\cite{GarciaBook2006} with $\theta_{cr}=0.0470$, while \telkey{MPM COEFFICIENT = 3.97} is equivalent to the equation proposed by Wong and Parker~\cite{WongParker06}, with $\theta_{cr}=0.0495$.      
-\end{WarningBlock}
+  A value of \telkey{MPM COEFFICIENT = 8} was proposed for the original MPM formula~\cite{GarciaBook2006} with $\theta_{cr}=0.0470$, while \telkey{MPM COEFFICIENT = 3.97} is equivalent to the modified Meyer-Peter and M\"uller formula proposed by Wong and Parker~\cite{WongParker06}, with $\theta_{cr}=0.0495$. 
+  \end{WarningBlock}
+
+  
   
 \item Fortran subroutine {\ttfamily bedload\_meyer.f}.
 
@@ -86,7 +92,7 @@ with $\alpha_{mpm}$ a coefficient and $\theta_{cr}$ the critical Shields paramet
 \begin{itemize}
 \item \telkey{BED-LOAD TRANSPORT FORMULA = 2}
 \item Based on the energy concept (no threshold), valid for gravel and large shear
-stresses (application range $d_{50} = [0.25-32]$mm). The dimensionless current-induced sediment transport rate is given by:
+stresses (application range $d=d_{50} = [0.25-32]$mm). The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b = F(D_*)f(\theta), 
 \end{equation*}
@@ -109,7 +115,7 @@ where the non-dimensional diameter $D_*=d[(\rho_s/\rho-1)g/\nu^2]^{1/3}$, with $
 \subsubsection{van Rijn's}
 \begin{itemize}
 \item \telkey{ BED-LOAD TRANSPORT FORMULA = 7}
-\item Valid for finer material in the range $d_{50} = [0.2-2]mm$. The dimensionless current-induced sediment transport rate is given by:
+\item Valid for finer material in the range $d = d_{50} = [0.2-2]mm$. The dimensionless current-induced sediment transport rate is given by:
 \begin{equation*}
 \Phi_b = 0.053 D_*^{-0.3} \left( \frac{\theta-\theta_{cr}}{\theta_{cr}} \right)^{2.1}.
 \end{equation*}
@@ -121,13 +127,13 @@ where the non-dimensional diameter $D_*=d[(\rho_s/\rho-1)g/\nu^2]^{1/3}$, with $
 An exhaustive revision of some common bedload transport formulas and associated information presented in chronological order of development can be found in Table D-2 of~\cite{GarciaBook2006}.
 
 %...............................................................................
-\section{Modification of the magnitude and direction of bedload}
+\section{Modification of the magnitude and direction of bedload}\label{sec:corrections}
 %...............................................................................
 Three key aspects must be considered for computing the magnitude and direction of the bed load~\cite{Abad08}:
 \begin{itemize}
 \item[(a)] The effect of the local bed slope
 \item[(b)] Secondary flow effects on the direction of the bed shear stress, also refered as to helical flows in the literature
-\item[(c)] The bed-shear stress partitioning into components affected by skin friction and drag force from bedforms
+\item[(c)] The bed shear stress partitioning into components affected by skin friction and drag force from bedforms
 \end{itemize}
 \noindent
 \sisyphe{} includes methods for evaluating these three aspects.
@@ -157,7 +163,7 @@ The angle $\alpha$ is the angle between the sediment transport direction and the
 \tan\alpha = \frac{\sin\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial y}}{\cos\delta-\frac{1}{f(\theta)}\frac{\partial z_b}{\partial x}}.
 \end{equation}
 
-Above, the terms $\partial z_b/\partial x$ and $\partial z_b/\partial y$ represent respectively the transverse and longitudinal slopes, $z_b$ the bottom position and $\delta$ the angle between the sediment transport vector and the flow direction, modified by spiral flow. The sediment shape function $f(\theta)$ is a function weighting the influence of the transverse bed slope, expressed as a function of the dimensionless shear stress or Shields parameter $\theta$. It can be computed according to:
+Above, the terms $\partial z_b/\partial x$ and $\partial z_b/\partial y$ represent respectively the transverse and longitudinal slopes, $z_b$ the bottom position and $\delta$ the angle between the sediment transport vector and the flow direction, modified by spiral flow. The sediment shape function $f(\theta)$ is a function weighting the influence of the transverse bed slope, expressed as a function of the non-dimensional shear stress or Shields parameter $\theta$. It can be computed according to:
 
 \begin{itemize}
 \item Koch and Flokstra~\cite{KochFlokstra80}:
@@ -197,7 +203,7 @@ where $s$ is the flow direction and $\beta$ is an empirical factor accounting fo
 
 The correction proposed by Soulsby~\cite{Soulsby97} is based on the modification of the critical Shields parameter and is therefore only valid for threshold bedload formulas:
 \begin{equation*}
-\frac{\theta_{\chi cr}}{\theta_{cr}} = \frac{\cos\psi \sin\chi + 
+\frac{\theta_{\beta cr}}{\theta_{cr}} = \frac{\cos\psi \sin\chi + 
 \sqrt{\cos^2\chi \tan^2\phi - \sin^2\psi \sin^2\chi}}{\tan
 \phi}
 \end{equation*}
@@ -251,6 +257,11 @@ The keyword \telkey{SKIN FRICTION CORRECTION} (integer type variable, {\ttfamily
 \begin{itemize}
 \item If \telkey{SKIN FRICTION CORRECTION = 0}, then $\mu=1$ and the total bed shear stress issued from the hydrodynamics computation is used
 \item If \telkey{SKIN FRICTION CORRECTION = 1}, $\mu$ is computed according to Equation~\ref{eq:mu}. In this case, the friction coefficient $C_f$ is provided by the hydrodynamics steering file and $C_f'$ is computed by Equation~\ref{eq:cfp}. To compute $k_s'=\alpha_{k_s} d_{50}$, the coefficient $\alpha_{k_s}$ can be modified with the keyword \telkey{RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER} (real type variable, {\ttfamily = 3.} by default). In the numerical experiments of Mendoza \textit{et al.}~\cite{Mendoza15}, $\alpha_{k_s}=37$ for dunes and $\alpha_{k_s}=3.6$ for bars.  
+
+ \begin{WarningBlock}{Note:}
+  By default, the keyword \telkey{SKIN FRICTION CORRECTION = 1}. In the presence of very shallow waters, this correction can present stability issues. For this case, we suggest the user to set the keyword \telkey{SKIN FRICTION CORRECTION = 0}.
+  \end{WarningBlock}
+
 \item If \telkey{SKIN FRICTION CORRECTION = 2}, the presence of ripples is taken into account to compute $\mu$ (see subroutine \texttt{tob\_sisyphe.f}). For this option, a bedform predictor is used to calculate the bedform roughness $k_r$ in order to account for the effect of ripples. Both $k_r$
 and $k_s'$ should influence the transport rates. It is assumed that:
 \begin{equation}\label{eq:mu2}

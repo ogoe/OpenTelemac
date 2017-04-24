@@ -70,10 +70,9 @@ The initialization can also be done with the subroutine \texttt{init\_compo\_coh
 %-------------------------------------------------------------------------------
 \section{Properties of the cohesive sediments}
 %-------------------------------------------------------------------------------
-The keywords {\ttfamily NUMBER OF BED LOAD MODEL LAYERS} (for non-cohesive sediments) and {\ttfamily NUMBER OF LAYERS OF THE CONSOLIDATION MODEL} are essentially the same except that the default values are different.
-
-For cohesive sediments, it is possible to have only one uniform layer, whereas for non-cohesive sand grading we need at least two layers (the active layer and the stratum).
-
+The keywords {\ttfamily NUMBER OF BED LOAD MODEL LAYERS} (for non-cohesive sediments) and {\ttfamily NUMBER OF LAYERS OF THE CONSOLIDATION MODEL} are essentially the same except that the default values are different. For cohesive sediments, it is possible to have only one uniform layer, whereas for non-cohesive sand grading we need at least two layers (the active layer and the stratum).
+For uniform beds the following keywords need to be specified: {\ttfamily NUMBER OF BED LOAD MODEL LAYERS = 1}\\
+and {\ttfamily NUMBER OF LAYERS OF THE CONSOLIDATION MODEL = 1}.
 
 %-------------------------------------------------------------------------------
 \subsection{Erosion flux}
@@ -105,6 +104,12 @@ For the evaluation of the settling velocity $w_s $, if the keyword {\ttfamily SE
 %-------------------------------------------------------------------------------
 \section{Consolidation processes}
 %-------------------------------------------------------------------------------
+Once the sedimentation process is achieved, a sediment bed is formed. For
+non-cohesive bed, no evolution with time will be observed if no erosion or
+further sedimentation occurs. For cohesive bed, the concentration will
+increase with time as the result of self-weight consolidation or compaction.
+
+
 The keyword {\ttfamily MUD CONSOLIDATION} (logical type, set to {\ttfamily = NO} by default) activates consolidation processes in \sisyphe{}. Two different models for consolidation are available with the keyword {\ttfamily CONSOLIDATION MODEL} (logical type, set to {\ttfamily = 1} by default):
 \begin{itemize}
 \item Multilayer model ({\ttfamily = 1}): This model was originally developed by Villaret and Walther~\cite{} by mixing two
@@ -131,8 +136,8 @@ of solid grains and the determination of mass fluxes
 \end{itemize} 
 \item For the Gibson/Thiebot's model ({\ttfamily = 2}), the following values are used in the closure relationship equation for the permeability:
 \begin{itemize}
-\item {\ttfamily GEL CONCENTRATION} (real type, set to {\ttfamily = 310.D0} kg/m$^3$ by default)
-\item {\ttfamily MAXIMUM CONCENTRATION} (real type, set to {\ttfamily = 364.D0} kg/m$^3$ by default)
+\item {\ttfamily GEL CONCENTRATION} (real type, set to {\ttfamily = 310.D0} kg/m$^3$ by default) is the transition concentration between the sedimentation and consolidation schemes
+\item {\ttfamily MAXIMUM CONCENTRATION} (real type, set to {\ttfamily = 364.D0} kg/m$^3$ by default) is the maximum concentration for the Gibson/Thiebot's model
 \item {\ttfamily PERMEABILITY COEFFICIENT} (real type, set to {\ttfamily = 8.D0} by default) %CHECK IF OK FOR MODEL 2 AND UNITS?
 \end{itemize}
 \end{itemize}
