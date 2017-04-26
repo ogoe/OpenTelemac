@@ -1356,13 +1356,13 @@
                 ENDDO
               ENDIF
               DO N=1,NOMB
-                IF(VAL%ADR(N)%P%DIM1.LT.MAXDIM) THEN
+                IF(MAXDIM.GT.VAL%ADR(N)%P%DIM1) THEN
 !                 HERE LOSS OF OPTIMISATION:
 !                 IF CHARACTERISTICS COMPUTED FOR QUASI BUBBLE
 !                 OR QUADRATIC, FUNCTIONS WHICH ARE LINEAR
 !                 MUST NOT BE INTERPOLATED BEYOND THEIR SIZE.
                   DO I=1,NARRV
-                    IF(RECVCHAR(I)%IOR.LE.MAXDIM) THEN
+                    IF(RECVCHAR(I)%IOR.LE.VAL%ADR(N)%P%DIM1) THEN
                       VAL%ADR(N)%P%R(RECVCHAR(I)%IOR)=
      &                RECVCHAR(I)%BASKET(N)
                     ENDIF
