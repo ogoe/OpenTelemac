@@ -924,6 +924,12 @@ files: declarations_telemac3d.f
   ifab3dt.f
   source_trac.f
   condim.f
+  condi3dh.f
+  mesh_transf.f
+  condi3duvw.f
+  condi3dtrac.f
+  condi3dkep.f
+  condi3dp.f
   sed3d.f
   mass3d.f
   condis.f

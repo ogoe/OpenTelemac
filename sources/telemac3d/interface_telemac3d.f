@@ -317,6 +317,68 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE MESH_TRANSF
+          USE DECLARATIONS_TELEMAC3D
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CONDI3DH
+          USE BIEF
+          USE DECLARATIONS_TELEMAC
+          USE DECLARATIONS_TELEMAC3D
+          USE TPXO
+          USE DECLARATIONS_SPECIAL
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CONDI3DUVW
+          USE BIEF
+          USE DECLARATIONS_TELEMAC3D
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CONDI3DTRAC
+          USE BIEF
+          USE DECLARATIONS_TELEMAC3D
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CONDI3DKEP
+          USE DECLARATIONS_TELEMAC3D
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE CONDI3DP
+          USE BIEF
+          USE DECLARATIONS_TELEMAC3D
+          USE DECLARATIONS_SPECIAL
+          IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE CONDIS
      &(IVIDE   , EPAI  , TREST , CONC  , TEMP      , HDEP      ,
      & ZR      , ZF    , X     , Y     , NPOIN2    , NPOIN3    ,
