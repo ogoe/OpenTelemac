@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="case" rank="5"> 
+<validation xref="case" rank="3"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -40,19 +40,33 @@
        title="Triplets parallel mode" 
    />   
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-   <cast xref="cas-triplet1" config="oneofall" time="[-1]" type="2d:">
+   <cast xref="paral-triplet1" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:WACRES" />
       <v8 vars=":map" target="2:WACRES" />
       <v9 vars="mapdiff(v7,v8)" />
       <return title="Comparison between sequential TRIA 1  and parallel TRIA1 run."
-         fail="checkval(v9,[1e-4])" />
+         fail="checkval(v9,[1e-6])" />
    </cast>
-   <cast xref="cas-triplet2" config="oneofall" time="[-1]" type="2d:">
+   <cast xref="ref-triplet1" config="oneofall" time="[-1]" type="2d:">
+      <v16 vars=":map" target="1:WACRES" />
+      <v17 vars=":map" target="fom_triplet1.slf" />
+      <v18 vars="mapdiff(v16,v17)" />
+      <return title="Comparison between sequential TRIA 1  and reference."
+         fail="checkval(v18,[1e-6])" />
+   </cast>
+   <cast xref="paral-triplet2" config="oneofall" time="[-1]" type="2d:">
       <v10 vars=":map" target="3:WACRES" />
       <v11 vars=":map" target="4:WACRES" />
       <v12 vars="mapdiff(v10,v11)" />
       <return title="Comparison between sequential TRIA 2  and parallel TRIA2 run."
-         fail="checkval(v12,[1e-4])" />
+         fail="checkval(v12,[1e-6])" />
+   </cast>
+   <cast xref="ref-triplet2" config="oneofall" time="[-1]" type="2d:">
+      <v19 vars=":map" target="3:WACRES" />
+      <v20 vars=":map" target="fom_triplet2.slf" />
+      <v21 vars="mapdiff(v19,v20)" />
+      <return title="Comparison between sequential TRIA 2  and reference."
+         fail="checkval(v21,[1e-6])" />
    </cast>
    <cast xref="triplet1-triplet2" config="oneofall" time="[-1]" type="2d:">
 <!-- <v15 vars="mapdiff(v7,v10)" /> --> 

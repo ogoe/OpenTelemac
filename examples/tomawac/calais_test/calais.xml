@@ -57,9 +57,9 @@
       <look cmap="Blues.xml" extend="'max'"/>
    </deco>  
       <plot2d xref="img/mesh" config="oneofall" time="[-1]" size="(12;7)" >
-      <layer vars="FOND            :mesh" target="1:WACGEO" />
+      <layer vars="FOND            :map" target="1:WACGEO" deco="rose"/>
    </plot2d>
-   <plot2d xref="img/hm0" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for new version')" >
+   <plot2d xref="img/hm0" config="oneofall" time="[-1]" size="(12;7)" set="title('Wave height')" >
       <layer vars="HAUTEUR HM0 :map" target="1:WACRES" deco="rose" />
    </plot2d>
    <plot2d xref="img/hm0v5p8" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for V5P8')"> >

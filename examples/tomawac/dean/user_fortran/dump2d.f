@@ -55,7 +55,7 @@
       USE DECLARATIONS_TOMAWAC
       USE INTERFACE_TOMAWAC, EX_DUMP2D => DUMP2D
 !
-      USE DECLARATIONS_SPECIAL
+!      USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -87,29 +87,25 @@
       IF(.NOT.PROINF) THEN
         IF(SORLEO(11).OR.SORLEO(12).OR.SORLEO(13).OR.
      &     SORLEO(14).OR.SORLEO(15) ) CALL RADIAT
-     &( STRA51%R, STRA52%R, STRA53%R, STRA54%R, STRA55%R,
-     &  SXK%R   , XF1     , SCG%R   , SDEPTH%R,
+     &( FX, FY , SXX, SXY, SYY, XK, XF1, CG , DEPTH,
 !       WORK TABLE HERE
-     &  STSDER%R,STRA36%R, STRA37%R, STRA38%R, STRA39%R)
+     &  TSDER,STRA36%R, STRA37%R, STRA38%R, STRA39%R)
       ENDIF
 !
 !     ------------------------------- DIRECTIONAL DIR_SPREADING
 !
       IF(SORLEO(4)) THEN
         CALL DIR_SPREAD
-     &( STRA31%R,XF1,SCOSTE%R,SSINTE%R,NPLAN ,
-     &  SFR%R,SDFR%R,NF,NPOIN2,TAILF,
-     &  STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R,
-     &  STRA39%R)
+     &( STRA31%R,XF1,COSTET,SINTET,NPLAN ,
+     &        FREQ,DFREQ,NF,NPOIN2,TAILF)
       ENDIF
 !
 !     ------------------------------- MEAN DIRECTION
 !
       IF(SORLEO(3)) THEN
         CALL TETMOY
-     &( STRA32%R, XF1 , SCOSTE%R, SSINTE%R, NPLAN , FREQ ,
-     &  SDFR%R  , NF  , NPOIN2  , TAILF, STRA36%R ,
-     &  STRA37%R, STRA38%R, STRA39%R )
+     &( STRA32%R, XF1 , COSTET, SINTET, NPLAN , FREQ ,
+     &  DFREQ  , NF  , NPOIN2  , TAILF)
         IF(TRIGO) THEN
           DO IP=1,NPOIN2
             TRA32(IP)=(PISUR2-TRA32(IP))*GRADEG
@@ -125,11 +121,11 @@
 !
       IF(SORLEO(18).OR.SORLEO(28)) THEN
         CALL FREMOY
-     &( STRA33%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
-     &  NPLAN      , NPOIN2, STRA38%R, STRA39%R)
+     &( STRA33%R, XF1   , FREQ   , DFREQ  , TAILF , NF  ,
+     &  NPLAN      , NPOIN2)
         IF(SORLEO(28)) THEN
           DO IP=1,NPOIN2
-            TRA61(IP)=1.D0/MIN(MAX(TRA33(IP),FMIN),FMAX)
+            PTMOY(IP)=1.D0/MIN(MAX(TRA33(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -138,11 +134,11 @@
 !
       IF(SORLEO(19).OR.SORLEO(29)) THEN
         CALL FREM01
-     &( STRA34%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
-     &  NPLAN      , NPOIN2, STRA38%R, STRA39%R)
+     &( STRA34%R, XF1   , FREQ   , DFREQ  , TAILF , NF  ,
+     &  NPLAN      , NPOIN2)
         IF (SORLEO(29)) THEN
           DO IP=1,NPOIN2
-            TRA62(IP)=1.D0/MIN(MAX(TRA34(IP),FMIN),FMAX)
+            PTM01(IP)=1.D0/MIN(MAX(TRA34(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -151,11 +147,11 @@
 !
       IF (SORLEO(20).OR.SORLEO(30)) THEN
         CALL FREM02
-     &( STRA35%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
-     &  NPLAN      , NPOIN2, STRA38%R, STRA39%R)
+     &( STRA35%R, XF1   , FREQ   , DFREQ  , TAILF , NF  ,
+     &  NPLAN      , NPOIN2)
         IF (SORLEO(30)) THEN
           DO IP=1,NPOIN2
-            TRA63(IP)=1.D0/MIN(MAX(TRA35(IP),FMIN),FMAX)
+            PTM02(IP)=1.D0/MIN(MAX(TRA35(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -164,11 +160,10 @@
 !
       IF (SORLEO(21).OR.SORLEO(31)) THEN
         CALL FREPIC
-     &( STRA36%R, XF1   , SFR%R , NF   , NPLAN , NPOIN2,
-     &  STRA38%R, STRA39%R      )
+     &( STRA36%R, XF1   , FREQ , NF   , NPLAN , NPOIN2  )
         IF (SORLEO(31)) THEN
           DO IP=1,NPOIN2
-            TRA64(IP)=1.D0/MIN(MAX(TRA36(IP),FMIN),FMAX)
+            PPTPD(IP)=1.D0/MIN(MAX(TRA36(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -177,11 +172,11 @@
 !
       IF (SORLEO(22).OR.SORLEO(32)) THEN
         CALL FPREAD
-     &( STRA56%R, XF1   , SFR%R, SDFR%R  , NF   , NPLAN ,
-     &  NPOIN2     , 5.D0  , TAILF   , STRA38%R, STRA39%R  )
+     &( FREA5, XF1   , FREQ, DFREQ  , NF   , NPLAN ,
+     &  NPOIN2     , 5.D0  , TAILF  )
         IF (SORLEO(32)) THEN
           DO IP=1,NPOIN2
-            TRA65(IP)=1.D0/MIN(MAX(TRA56(IP),FMIN),FMAX)
+            PREA5(IP)=1.D0/MIN(MAX(FREA5(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -190,11 +185,11 @@
 !
       IF (SORLEO(23).OR.SORLEO(33)) THEN
         CALL FPREAD
-     &( STRA57%R, XF1   , SFR%R , SDFR%R  , NF   , NPLAN ,
-     &  NPOIN2     , 8.D0  , TAILF    , STRA38%R, STRA39%R  )
+     &( FREA8, XF1   , FREQ , DFREQ  , NF   , NPLAN ,
+     &  NPOIN2     , 8.D0  , TAILF    )
         IF (SORLEO(33)) THEN
           DO IP=1,NPOIN2
-            TRA66(IP)=1.D0/MIN(MAX(TRA57(IP),FMIN),FMAX)
+            PREA8(IP)=1.D0/MIN(MAX(FREA8(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
@@ -207,9 +202,9 @@
           DO IP=1,NPOIN2
             U10=UV(IP)**2+VV(IP)**2
             IF (U10.GT.1.D-6) THEN
-              TRA58(IP)=TRA42(IP)**2/U10
+              CDRA2(IP)=USOLD(IP)**2/U10
             ELSE
-              TRA58(IP)=0.D0
+              CDRA2(IP)=0.D0
             ENDIF
           ENDDO
         ENDIF
@@ -219,8 +214,8 @@
 !
       IF(.NOT.PROINF) THEN
         IF(SORLEO(16)) THEN
-          CALL VITFON(STRA59%R,XF1,SXK%R,SDEPTH%R,SDFR%R,NF,
-     &                NPOIN2,NPLAN,STRA39%R)
+          CALL VITFON(VIFOND,XF1,XK,DEPTH,DFREQ,NF,
+     &                NPOIN2,NPLAN)
         ENDIF
       ENDIF
 !
@@ -228,14 +223,18 @@
 !
       IF(SORLEO(1).OR.SORLEO(2)) THEN
         CALL TOTNRJ
-     &( STRA37%R , XF1   , SFR%R  , SDFR%R , TAILF ,
+     &( STRA37%R , XF1   , FREQ  , DFREQ , TAILF ,
      &  NF  , NPLAN , NPOIN2)
 !
 !     ------------------------------- SIGNIFICANT WAVE HEIGHT
 !
         IF(SORLEO(2)) THEN
           DO IP=1,NPOIN2
-            TRA38(IP)=4.D0*SQRT(TRA37(IP))
+            IF (TRA37(IP).GE.0) THEN
+               TRA38(IP)=4.D0*SQRT(TRA37(IP))
+            else 
+               TRA38(IP)=0
+               endif
           ENDDO
         ENDIF
       ENDIF
@@ -243,7 +242,7 @@
 !     ------------------------------- POWER PER UNIT LENGTH
 !
       IF(SORLEO(34)) THEN
-        CALL WPOWER(STRA60%R,XF1, SDFR%R,SCG%R,TAILF,NF,
+        CALL WPOWER(POWER,XF1,DFREQ,CG,TAILF,NF,
      &              NPLAN,NPOIN2,ROEAU)
       ENDIF
 !     ------------------------------- KMOYEN AND QMOUT1

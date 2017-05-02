@@ -74,7 +74,9 @@
    <plot2d xref="img/results" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">
       <layer vars="HAUTEUR HM0 :map" target="1:WACRES" deco="hiver"/>
    </plot2d>
-   <plot2d xref="img/results2" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">
+   <plot2d xref="img/results2" config="oneofall" time="[-1]" size="(12;7)" set="title('Wave Height')">
+<!--     <plot2d xref="img/results2" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">-->
+
       <layer vars="HAUTEUR HM0 :map" target="2:WACRES" deco="hiver"/>
    </plot2d>
    <plot2d xref="img/resultsV1P3" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave Height')">

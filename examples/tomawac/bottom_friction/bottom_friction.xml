@@ -30,14 +30,14 @@
       <v2 vars=":map" target="fom_frot_T_d5-f0.1-h1.slf" />
       <v3 vars="mapdiff(v1,v2)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v3,[1e-5, 0.1, 1e-4, 1e-4])" />
+         fail="checkval(v3,[1e-5, 0.1, 1e-4, 1e-4, 1e-4])" />
    </cast>
    <cast xref="ref-2" config="oneofall" time="[-1]" type="2d:">
       <v4 vars=":map" target="2:WACRES" />
       <v5 vars=":map" target="fom_frot_T_d5-f0.1-h1.slf" />
       <v6 vars="mapdiff(v4,v5)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v6,[1e-5, 0.1, 1e-4, 1e-4])" />
+         fail="checkval(v6,[1e-5, 0.1, 1e-4, 1e-4, 1e-4])" />
    </cast>
    <cast xref="cas-parall" config="oneofall" time="[-1]" type="2d:">
       <v7 vars=":map" target="1:WACRES" />

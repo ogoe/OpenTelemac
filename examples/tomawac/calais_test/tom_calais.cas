@@ -29,13 +29,11 @@
 /   NE PAS TOUCHER AUX AUTRES MOTS-CLES QUI SONT CORRECTS A PRIORI.  /
 /                                                                    /
 /********************************************************************/
-/NUMERO DE VERSION = V6P0
 /PROCESSEURS PARALLELES = 2
 /DEBUGGER = 1
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-/FICHIER FORTRAN = 'princi.f'
 FICHIER DES PARAMETRES = './exterieur_calais_v6p0.cas'
 FICHIER DE GEOMETRIE = './exterieur_calais.geo'
 FICHIER DES CONDITIONS AUX LIMITES = './exterieur_calais.conlim'
