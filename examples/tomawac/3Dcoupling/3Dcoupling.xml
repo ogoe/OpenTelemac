@@ -47,35 +47,35 @@
       <v14 vars=":map" target="ref_T3D_littoral.slf" />
       <v15 vars="mapdiff(v13,v14)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v15,[])" />
+         fail="checkval(v15,[1e-4, 1e-3, 1e-3, 1e-5])" />
    </cast>
    <cast xref="cas-parall-t3d" config="oneofall" time="[-1]" type="2d:">
       <v16 vars=":map" target="1:T3DRES" />
       <v17 vars=":map" target="2:T3DRES" />
       <v18 vars="mapdiff(v16,v17)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v18,[])" />
+         fail="checkval(v18,[1e-4, 1e-3, 1e-3, 1e-5])" />
    </cast>
    <cast xref="ref-1-wac" config="oneofall" time="[-1]" type="2d:">
       <v19 vars=":map" target="1:WACRES" />
       <v20 vars=":map" target="ref_tom_littoral.slf" />
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v21,[])" />
+         fail="checkval(v21,[1e-6,1e-6,1e-6,1e-6,1e-6,1e-6,1e-6,1e-6,1e-6])" />
    </cast>
    <cast xref="ref-2-wac" config="oneofall" time="[-1]" type="2d:">
       <v22 vars=":map" target="2:WACRES" />
       <v23 vars=":map" target="ref_tom_littoral.slf" />
       <v24 vars="mapdiff(v22,v23)" />
       <return title="Comparison with the last time frame of the reference file."
-         fail="checkval(v24,[])" />
+         fail="checkval(v24,[1e-3,1e-2,1e-6,1e-4,1e-3,1e-3,1e-5,1e-5,1e-2])" />
    </cast>
    <cast xref="cas-parall-wac" config="oneofall" time="[-1]" type="2d:">
       <v25 vars=":map" target="1:WACRES" />
       <v26 vars=":map" target="2:WACRES" />
       <v27 vars="mapdiff(v25,v26)" />
       <return title="Comparison between sequential and parallel run."
-         fail="checkval(v27,[])" />
+         fail="checkval(v27,[1e-3,1e-2,1e-6,1e-4,1e-3,1e-3,1e-5,1e-5,1e-2])" />
    </cast>-->
 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
