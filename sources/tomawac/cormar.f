@@ -104,32 +104,28 @@
           UL=WAC_FILES(WACCOF)%LU
           BINCOU=WAC_FILES(WACCOF)%FMT
         ENDIF
-        CALL NOUDON(SUC%R,NAMEU,
-     &                    'VELOCITY U      M/S             ',2,
-     &              SVC%R,NAMEV,
-     &                    'VELOCITY V      M/S             ',2,
-     &              SDEPTH%R,NAMEH,
-     &                       'WATER DEPTH     M               ',1,
-     &              MESH%X%R,MESH%Y%R,NPOIN2,
+        CALL NOUDON(UC,NAMEU, 'VELOCITY U      M/S             ',2,
+     &              VC,NAMEV, 'VELOCITY V      M/S             ',2,
+     &              DEPTH,NAMEH, 'WATER DEPTH     M               ',1,
+     &              X, Y, NPOIN2,
      &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,
-     &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIC,
+     &              UC1, UC2, VC1, VC2, ZM1, ZM2, INDIC,
      &              'COURANT',NVCOU,TEXCOB,TROUVE,UNITCOB,PHASCOB)
         IF(TROUVE(3)) THEN
-          CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
-          CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TC2-TC1),NPOIN2)
+          CALL OV('X=Y-Z   ',DZHDT, ZM2, ZM1, 0.D0, NPOIN2)
+          CALL OV('X=CX    ',DZHDT, DZHDT, DZHDT, 1.D0/(TC2-TC1),NPOIN2)
         ENDIF
 !
       ELSEIF (PART.EQ.-1) THEN
 !
-        CALL ANAMAR(SUC%R,SVC%R,SDEPTH%R,ZM1,ZM2,
-     &               SDZHDT%R,MESH%X%R,MESH%Y%R,
-     &               NPOIN2,AT,DDC,LT)
+        CALL ANAMAR(UC, VC, DEPTH, ZM1, ZM2,
+     &              DZHDT, X, Y, NPOIN2, AT, DDC, LT)
 !
       ENDIF
 !
       IF(PART.EQ.1) THEN
-        CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
-        CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
+        CALL OV('X=Y     ',UC, U_TEL%R, U_TEL%R, 0.D0, NPOIN2)
+        CALL OV('X=Y     ',VC, V_TEL%R, V_TEL%R, 0.D0, NPOIN2)
       ENDIF
 !
 !     UPDATES THE WATER DEPTH AT TIME 'AT' IF NOT FOUND IN CURRENT FILE
@@ -146,25 +142,22 @@
           BINMAR=WAC_FILES(WACMAF)%FMT
         ENDIF
 !
-        CALL NOUDON(SUC%R,NAMEU,
-     &                    'VELOCITY U      M/S             ',0,
-     &              SVC%R,NAMEV,
-     &                    'VELOCITY V      M/S             ',0,
-     &              SDEPTH%R,NAMEH,
-     &                       'WATER DEPTH     M               ',2,
-     &              MESH%X%R,MESH%Y%R,NPOIN2,
+        CALL NOUDON(UC,NAMEU, 'VELOCITY U      M/S             ',0,
+     &              VC,NAMEV, 'VELOCITY V      M/S             ',0,
+     &              DEPTH,NAMEH,  'WATER DEPTH     M               ',2,
+     &              X, Y, NPOIN2,
      &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2,
-     &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIM,
+     &              UC1, UC2, VC1, VC2, ZM1, ZM2, INDIM,
      &              'HAUTEUR',NVHMA,TEXMAB,TROUVE,UNITMAB,PHASMAB)
-        CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
+        CALL OV('X=Y-Z   ',DZHDT, ZM2, ZM1, 0.D0, NPOIN2)
         CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
 !
       ELSEIF (PART.EQ.-1) THEN
 !
         IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' '.OR.
      &     WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
-          CALL ANAMAR(SUC%R,SVC%R,SDEPTH%R,ZM1,ZM2,
-     &                SDZHDT%R,MESH%X%R,MESH%Y%R,NPOIN2,AT,DDC,LT)
+          CALL ANAMAR(UC, VC, DEPTH, ZM1, ZM2,
+     &                DZHDT, X, Y, NPOIN2, AT, DDC, LT)
         ENDIF
 !
       ENDIF
@@ -177,7 +170,7 @@
           DZHDT(IP)=(H_TEL%R(IP)-DEPTH(IP))/DT
         ENDDO
 !       water depth is updated
-        CALL OV('X=Y     ',SDEPTH%R,H_TEL%R,H_TEL%R,0.D0,NPOIN2)
+        CALL OV('X=Y     ',DEPTH,H_TEL%R,H_TEL%R,0.D0,NPOIN2)
       ENDIF
 !
 !     UPDATES THE CURRENT AND WATER DEPTH GRADIENTS AT TIME 'AT'
@@ -204,18 +197,18 @@
       CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,ST0,
      &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0,ASSPAR=.TRUE.)
 !
-      CALL OV('X=1/Y   ',ST0%R ,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=1/Y   ',T0 ,T0, T0, 0.D0, NPOIN2)
 !
 !     DIVISION BY INTEGRAL OF TEST FUNCTIONS TO GET NODAL VALUES
 !
       IF(.NOT.PROINF) THEN
-        CALL OV('X=XY    ',SDZX%R,ST0%R,ST0%R,0.D0,NPOIN2)
-        CALL OV('X=XY    ',SDZY%R,ST0%R,ST0%R,0.D0,NPOIN2)
+        CALL OV('X=XY    ',DZX, T0, T0, 0.D0, NPOIN2)
+        CALL OV('X=XY    ',DZY, T0, T0, 0.D0, NPOIN2)
       ENDIF
-      CALL OV('X=XY    ',SDUX%R,ST0%R,ST0%R,0.D0,NPOIN2)
-      CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,0.D0,NPOIN2)
-      CALL OV('X=XY    ',SDUY%R,ST0%R,ST0%R,0.D0,NPOIN2)
-      CALL OV('X=XY    ',SDVY%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',DUX, T0, T0, 0.D0, NPOIN2)
+      CALL OV('X=XY    ',DVX, T0, T0, 0.D0, NPOIN2)
+      CALL OV('X=XY    ',DUY, T0, T0, 0.D0, NPOIN2)
+      CALL OV('X=XY    ',DVY, T0, T0, 0.D0, NPOIN2)
 !
 !-----------------------------------------------------------------------
 !

@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( TETAM , F     , COSTET, SINTET, NPLAN , FREQ  , DFREQ , NF    ,
-     &  NPOIN2, TAILF , COSMOY, SINMOY, TAUXC , TAUXS )
+     &  NPOIN2, TAILF )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   28/06/2011
@@ -69,15 +69,13 @@
       DOUBLE PRECISION, INTENT(IN)    :: DFREQ(NF)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN) , SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF), FREQ(NF)
-      DOUBLE PRECISION, INTENT(INOUT) :: COSMOY(NPOIN2), SINMOY(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TAUXC(NPOIN2) , TAUXS(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TETAM(NPOIN2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER  IP    , JP    , JF
-      DOUBLE PRECISION AUXC  , AUXS  ,SEUIL , COEFT , DFDTET
-      DOUBLE PRECISION DTETAR
+      DOUBLE PRECISION AUXC  , AUXS  ,SEUIL , COEFT, DFDTET
+      DOUBLE PRECISION DTETAR, COSMOY,SINMOY, TAUXC, TAUXS
 !
 !-----------------------------------------------------------------------
 !
@@ -85,63 +83,53 @@
       SEUIL =1.D-10
 !
       DO IP=1,NPOIN2
-        COSMOY(IP)=0.D0
-        SINMOY(IP)=0.D0
-      ENDDO
+        COSMOY=0.D0
+        SINMOY=0.D0
 !
 !-----C-------------------------------------------------------C
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
 !-----C-------------------------------------------------------C
 !
-      DO JF=1,NF
+        DO JF=1,NF
 !
-        DFDTET=DFREQ(JF)*DTETAR
+           DFDTET=DFREQ(JF)*DTETAR
 !
-        DO IP=1,NPOIN2
-          TAUXC(IP)=0.D0
-          TAUXS(IP)=0.D0
-        ENDDO
+           TAUXC=0.D0
+           TAUXS=0.D0
 !
-        DO JP=1,NPLAN
-          AUXC=COSTET(JP)*DFDTET
-          AUXS=SINTET(JP)*DFDTET
-          DO IP=1,NPOIN2
-            TAUXC(IP)=TAUXC(IP)+F(IP,JP,JF)*AUXC
-            TAUXS(IP)=TAUXS(IP)+F(IP,JP,JF)*AUXS
-          ENDDO
-        ENDDO
+           DO JP=1,NPLAN
+              AUXC=COSTET(JP)*DFDTET
+              AUXS=SINTET(JP)*DFDTET
+              TAUXC=TAUXC+F(IP,JP,JF)*AUXC
+              TAUXS=TAUXS+F(IP,JP,JF)*AUXS
+           ENDDO
 !
-        DO IP=1,NPOIN2
-          COSMOY(IP)=COSMOY(IP)+TAUXC(IP)
-          SINMOY(IP)=SINMOY(IP)+TAUXS(IP)
-        ENDDO
+           COSMOY=COSMOY+TAUXC
+           SINMOY=SINMOY+TAUXS
 !
-      ENDDO ! JF
+        ENDDO                   ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C
 !-----C-------------------------------------------------------------C
 !
-      IF(TAILF.GT.1.D0) THEN
-        COEFT=FREQ(NF)/((TAILF-1.D0)*DFREQ(NF))
-        DO IP=1,NPOIN2
-          COSMOY(IP)=COSMOY(IP)+TAUXC(IP)*COEFT
-          SINMOY(IP)=SINMOY(IP)+TAUXS(IP)*COEFT
-        ENDDO
-      ENDIF
+        IF(TAILF.GT.1.D0) THEN
+           COEFT=FREQ(NF)/((TAILF-1.D0)*DFREQ(NF))
+           COSMOY=COSMOY+TAUXC*COEFT
+           SINMOY=SINMOY+TAUXS*COEFT
+        ENDIF
 !
 !-----C-------------------------------------------------------------C
 !-----C  COMPUTES THE MEAN DIRECTION                                C
 !-----C  (IN RADIANS BETWEEN 0 AND 2.PI)                            C
 !-----C-------------------------------------------------------------C
 !
-      DO IP=1,NPOIN2
-        IF(ABS(SINMOY(IP)).LT.SEUIL.AND.
-     &      ABS(COSMOY(IP)).LT.SEUIL) THEN
-          TETAM(IP) = 0.D0
+        IF(ABS(SINMOY).LT.SEUIL.AND.
+     &       ABS(COSMOY).LT.SEUIL) THEN
+           TETAM(IP) = 0.D0
         ELSE
-          TETAM(IP)=ATAN2(SINMOY(IP),COSMOY(IP))
-          IF(TETAM(IP).LT.0.D0) TETAM(IP)=TETAM(IP)+DEUPI
+           TETAM(IP)=ATAN2(SINMOY,COSMOY)
+           IF(TETAM(IP).LT.0.D0) TETAM(IP)=TETAM(IP)+DEUPI
         ENDIF
       ENDDO
 !

@@ -2,7 +2,7 @@
                      SUBROUTINE FREPIC
 !                    *****************
 !
-     &( FPIC  , F     , FREQ  , NF    , NPLAN , NPOIN2, EMAX  , E     )
+     &( FPIC  , F     , FREQ  , NF    , NPLAN , NPOIN2 )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -52,44 +52,37 @@
 !     """"""""""""""""""""
       INTEGER,INTENT(IN)             :: NF    , NPLAN , NPOIN2
       DOUBLE PRECISION,INTENT(IN)    :: F(NPOIN2,NPLAN,NF), FREQ(NF)
-      DOUBLE PRECISION,INTENT(INOUT) :: EMAX(NPOIN2),E(NPOIN2)
       DOUBLE PRECISION,INTENT(INOUT) :: FPIC(NPOIN2)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-!
+      DOUBLE PRECISION E, EMAX
 !
       DO IP = 1,NPOIN2
         FPIC(IP) = 1.D-20
-        EMAX(IP) = 0.D0
-      ENDDO ! IP
+        EMAX = 0.D0
 !
 !.....LOOP OVER DISCRETISED FREQUENCIES
 !     """""""""""""""""""""""""""""""""""""""""""""
-      DO JF = 1,NF
+        DO JF = 1,NF
 !
 !.......INTEGRATES WRT DIRECTIONS TO GET E(F)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
-        DO IP=1,NPOIN2
-          E(IP) = 0.D0
-        ENDDO ! IP
-        DO JP = 1,NPLAN
-          DO IP=1,NPOIN2
-                 E(IP) = E(IP) + F(IP,JP,JF)
-          ENDDO ! IP
-        ENDDO ! JP
+           E = 0.D0
+           DO JP = 1,NPLAN
+              E = E + F(IP,JP,JF)
+           ENDDO                ! JP
 !
 !.......KEEPS THE MAXIMUM VALUE FOR E(F) AND ASSOCIATED FREQUENCY
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO IP=1,NPOIN2
-          IF (E(IP).GT.EMAX(IP)) THEN
-            EMAX(IP) = E(IP)
-            FPIC(IP) = FREQ(JF)
-          ENDIF
-        ENDDO ! IP
+           IF (E.GT.EMAX) THEN
+              EMAX = E
+              FPIC(IP) = FREQ(JF)
+           ENDIF
+        ENDDO                   ! JF
+      ENDDO                     ! IP
 !
-      ENDDO ! JF
 !
       RETURN
       END

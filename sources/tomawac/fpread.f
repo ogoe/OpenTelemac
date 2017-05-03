@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( FREAD , F     , FREQ  , DFREQ , NF    , NPLAN , NPOIN2, EXPO  ,
-     &  TAILF , DENOM , E     )
+     &  TAILF )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -64,72 +64,62 @@
       DOUBLE PRECISION, INTENT(IN) :: EXPO  , TAILF, F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN) :: FREQ(NF), DFREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: FREAD(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: DENOM(NPOIN2), E(NPOIN2)
- !
+!
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION SEUIL , AUXI  , COEFN  , COEFD , DTETAR
+      DOUBLE PRECISION SEUIL , AUXI  , COEFN  , COEFD , DTETAR, DENOM,E 
 !
 !
       SEUIL =1.D-20
       DTETAR=DEUPI/DBLE(NPLAN)
       DO IP = 1,NPOIN2
-        FREAD(IP)=0.D0
-        DENOM(IP)=0.D0
-      ENDDO
+         FREAD(IP)=0.D0
+         DENOM=0.D0
 !
 !-----C-------------------------------------------------------C
 !-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
 !-----C-------------------------------------------------------C
-      DO JF=1,NF
+         DO JF=1,NF
 !
 !.......INTEGRATES WRT DIRECTIONS TO GET E(F)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
-        DO IP=1,NPOIN2
-          E(IP) = 0.D0
-        ENDDO ! IP
-        DO JP=1,NPLAN
-          DO IP=1,NPOIN2
-                 E(IP) = E(IP) + F(IP,JP,JF)*DTETAR
-          ENDDO ! IP
-        ENDDO ! JP
+            E = 0.D0
+            DO JP=1,NPLAN
+               E = E + F(IP,JP,JF)*DTETAR
+            ENDDO               ! JP
 !
 !.......SUMS UP THE CONTRIBUTION OF THE FREQUENCY F
 !       """""""""""""""""""""""""""""""""""""""""""
-        DO IP=1,NPOIN2
-          IF (E(IP).GT.SEUIL) THEN
-            AUXI = E(IP)**EXPO*DFREQ(JF)
-            FREAD(IP) = FREAD(IP)+AUXI*FREQ(JF)
-            DENOM(IP) = DENOM(IP)+AUXI
-          ENDIF
-        ENDDO ! IP
+            IF (E.GT.SEUIL) THEN
+               AUXI = E**EXPO*DFREQ(JF)
+               FREAD(IP) = FREAD(IP)+AUXI*FREQ(JF)
+               DENOM = DENOM+AUXI
+            ENDIF
 !
-      ENDDO ! JF
+         ENDDO                  ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
 !-----C-------------------------------------------------------------C
-      IF (TAILF.GT.1.D0) THEN
-        COEFN=FREQ(NF)**2/(TAILF*EXPO-2.D0)
-        COEFD=FREQ(NF)   /(TAILF*EXPO-1.D0)
-        DO IP=1,NPOIN2
-          AUXI=E(IP)**EXPO
-          FREAD(IP) = FREAD(IP)+AUXI*COEFN
-          DENOM(IP) = DENOM(IP)+AUXI*COEFD
-        ENDDO ! IP
-      ENDIF
+         IF (TAILF.GT.1.D0) THEN
+            COEFN=FREQ(NF)**2/(TAILF*EXPO-2.D0)
+            COEFD=FREQ(NF)   /(TAILF*EXPO-1.D0)
+            AUXI=E**EXPO
+            FREAD(IP) = FREAD(IP)+AUXI*COEFN
+            DENOM = DENOM+AUXI*COEFD
+         ENDIF
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE PEAK FREQUENCY                                 C
 !-----C-------------------------------------------------------------C
-      DO IP=1,NPOIN2
-        IF (DENOM(IP).LT.1.D-90) THEN
-          FREAD(IP) = SEUIL
-        ELSE
-          FREAD(IP) = FREAD(IP)/DENOM(IP)
-        ENDIF
-      ENDDO ! IP
+!      DO IP=1,NPOIN2
+         IF (DENOM.LT.1.D-90) THEN
+            FREAD(IP) = SEUIL
+         ELSE
+            FREAD(IP) = FREAD(IP)/DENOM
+         ENDIF
+      ENDDO                     ! IP
 !
       RETURN
       END

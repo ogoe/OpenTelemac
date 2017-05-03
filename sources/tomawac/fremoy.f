@@ -2,7 +2,7 @@
                      SUBROUTINE FREMOY
 !                    *****************
 !
-     &(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,AUX1,AUX2)
+     &(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -65,61 +65,54 @@
       DOUBLE PRECISION,INTENT(IN) :: TAILF
       DOUBLE PRECISION,INTENT(IN) :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION,INTENT(IN) :: FREQ(NF), DFREQ(NF)
-      DOUBLE PRECISION,INTENT(INOUT) :: AUX1(NPOIN2), AUX2(NPOIN2)
       DOUBLE PRECISION,INTENT(INOUT) :: FMOY(NPOIN2)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION SEUIL , DTETAR, AUX3  , AUX4
+      DOUBLE PRECISION SEUIL , DTETAR, AUX3  , AUX4, A1, A2 
 !
 !
       SEUIL = 1.D-20
       DTETAR= DEUPI/DBLE(NPLAN)
       DO IP = 1,NPOIN2
-        AUX1(IP) = 0.D0
-        AUX2(IP) = 0.D0
-      ENDDO
+         A1=0.D0
+         A2=0.D0
 !
 !-----C-------------------------------------------------------C
 !-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
 !-----C-------------------------------------------------------C
-      DO JF = 1,NF-1
-        AUX3=DTETAR*DFREQ(JF)
-        AUX4=AUX3/FREQ(JF)
-        DO JP = 1,NPLAN
-          DO IP=1,NPOIN2
-            AUX1(IP) = AUX1(IP) + F(IP,JP,JF)*AUX3
-            AUX2(IP) = AUX2(IP) + F(IP,JP,JF)*AUX4
-          ENDDO ! IP
-        ENDDO ! JP
-      ENDDO ! JF
+         DO JF = 1,NF-1
+            AUX3=DTETAR*DFREQ(JF)
+            AUX4=AUX3/FREQ(JF)
+            DO JP = 1,NPLAN
+               A1 = A1 + F(IP,JP,JF)*AUX3
+               A2 = A2 + F(IP,JP,JF)*AUX4
+            ENDDO               ! JP
+         ENDDO                  ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
 !-----C-------------------------------------------------------------C
-      IF (TAILF.GT.1.D0) THEN
-        AUX3=DTETAR*(DFREQ(NF)+FREQ(NF)/(TAILF-1.D0))
-        AUX4=DTETAR*(DFREQ(NF)/FREQ(NF)+1.D0/TAILF)
-      ELSE
-        AUX3=DTETAR*DFREQ(NF)
-        AUX4=AUX3/FREQ(NF)
-      ENDIF
-      DO JP = 1,NPLAN
-        DO IP=1,NPOIN2
-          AUX1(IP) = AUX1(IP) + F(IP,JP,NF)*AUX3
-          AUX2(IP) = AUX2(IP) + F(IP,JP,NF)*AUX4
-        ENDDO ! IP
-      ENDDO ! JP
+         IF (TAILF.GT.1.D0) THEN
+            AUX3=DTETAR*(DFREQ(NF)+FREQ(NF)/(TAILF-1.D0))
+            AUX4=DTETAR*(DFREQ(NF)/FREQ(NF)+1.D0/TAILF)
+         ELSE
+            AUX3=DTETAR*DFREQ(NF)
+            AUX4=AUX3/FREQ(NF)
+         ENDIF
+         DO JP = 1,NPLAN
+            A1 = A1 + F(IP,JP,NF)*AUX3
+            A2 = A2 + F(IP,JP,NF)*AUX4
+         ENDDO                  ! JP
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE MEAN FREQUENCY                                 C
 !-----C-------------------------------------------------------------C
-      DO IP=1,NPOIN2
-        IF (AUX1(IP).LT.SEUIL) THEN
+        IF (A2.LT.SEUIL) THEN
           FMOY(IP) = SEUIL
         ELSE
-          FMOY(IP) = AUX1(IP)/AUX2(IP)
+          FMOY(IP) = A1/A2
         ENDIF
       ENDDO ! IP
 !

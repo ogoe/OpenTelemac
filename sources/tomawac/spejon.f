@@ -36,6 +36,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AL             |-->| PHILLIPS CONSTANT (ALPHA)
+!| DEUPI          |-->| 2.PI
 !| E2FMIN         |-->| SPECTRUM ENERGY THRESHOLD
 !| FP             |-->| JONSWAP SPECTRUM PEAK FREQUENCY
 !| FPMIN          |-->| MINIMUM PEAK FREQUENCY VALUE

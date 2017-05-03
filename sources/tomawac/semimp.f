@@ -478,7 +478,7 @@
      &                        'WIND ALONG Y    M/S             ',2,
      &                  VENTY,'????????????????????????????????',
      &                        '????????????????????????????????',0,
-     &                  MESH%X%R,MESH%Y%R,NPOIN2,
+     &                  X, Y, NPOIN2,
      &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2,
      &                  U1,U2,V1,V2,V1,V2,INDIC,
      &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB,PHASVEB)
@@ -527,8 +527,7 @@
 !       3.2 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       -----------------------------------------------
 !
-             CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
-     &          TAUX1,TAUX2)
+             CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
 !       -------------------------------------------------
@@ -539,8 +538,7 @@
 !       3.2 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       -----------------------------------------------
 !
-             CALL FREM01 (FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
-     &            TAUX1,TAUX2)
+             CALL FREM01 (FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
 !       -------------------------------------------------
@@ -790,8 +788,7 @@
 !       6.1 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       ----------------------------------------------
 !
-          CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
-     &              TAUX1,TAUX2)
+          CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
           AUX1=GRAVIT/(7.D0*DEUPI*FREQ(1))
           AUX2=2.5D0/FREQ(1)
@@ -888,7 +885,7 @@
   751       CONTINUE
             IF (CBAJ.EQ.1) THEN
               CALL FREMOY(TAUX3, F, FREQ, DFREQ, TAILF, NF, NPLAN,
-     &              NPOIN2, TAUX1, TAUX2 )
+     &              NPOIN2 )
             ELSE
               DO IP=1,NPOIN2
                 TAUX3(IP)=FMOY(IP)
@@ -900,23 +897,21 @@
 !           - - - - - - - - - - -
   752       CONTINUE
             CALL FREM01
-     &( TAUX3 , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  TAUX1 , TAUX2 )
+     &( TAUX3 , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
             GOTO 759
 !
 !           MEAN FREQUENCY F02
 !           - - - - - - - - - - -
   753       CONTINUE
             CALL FREM02
-     &( TAUX3 , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  TAUX1 , TAUX2 )
+     &( TAUX3 , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
             GOTO 759
 !
 !           PEAK FREQUENCY (DISCRETE FREQUENCY WITH MAX VARIANCE)
 !           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   754       CONTINUE
             CALL FREPIC
-     &( TAUX3 , F     , FREQ  , NF    , NPLAN , NPOIN2, TAUX1 , TAUX2 )
+     &( TAUX3 , F     , FREQ  , NF    , NPLAN , NPOIN2)
             GOTO 759
 !
 !           PEAK FREQUENCY (READ WITH EXPONENT 5)
@@ -924,7 +919,7 @@
   755       CONTINUE
             CALL FPREAD
      &( TAUX3 , F     , FREQ  , DFREQ , NF    , NPLAN , NPOIN2, 5.D0  ,
-     &  TAILF , TAUX1 , TAUX2 )
+     &  TAILF )
             GOTO 759
 !
 !           PEAK FREQUENCY (READ WITH EXPONENT 8)
@@ -932,7 +927,7 @@
   756       CONTINUE
             CALL FPREAD
      &( TAUX3 , F     , FREQ  , DFREQ , NF    , NPLAN , NPOIN2, 8.D0  ,
-     &  TAILF , TAUX1 , TAUX2 )
+     &  TAILF)
 !
   759       CONTINUE
 !
@@ -1017,8 +1012,7 @@
 !       -----------------------------------------------------------
           IF(STRIA.EQ.1) THEN
             CALL FREMOY
-     &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  TAUX1 , TAUX2 )
+     &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
             CALL QTRIA1
      &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
      &  NF    , NPLAN , NPOIN2, TSTOT , VARIAN, FMOY  )

@@ -2,11 +2,11 @@
                         SUBROUTINE PREDIF
 !                       *****************
 !
-     &(CX    , CY    , CT    , DT    , TETA  , COSTET,
-     & SINTET, FREQ  , IKLE2 , IFABOR, TRA01 , SHP   ,
-     & SHZ   , ELT   , ETA   , DEPTH , DZX   , DZY   , XK    ,
-     & CG    , ITR01 , NPOIN3, NPOIN2, NELEM2, NPLAN , NF    , 
-     & COURAN, SPHE  , PROINF, A     , DFREQ , F     , CCG   , DIV   ,
+     &(CX    , CY    , CT    , DT    , TETA  , COSTET, SINTET, 
+     & FREQ  , IKLE2 , IFABOR, TRA01 , SHP   , SHZ   , ELT   ,
+     & ETA   , DEPTH , DZX   , DZY   , XK    , CG    , ITR01 ,
+     & NPOIN3, NPOIN2, NELEM2, NPLAN , NF    , COURAN,
+     & SPHE  , PROINF, A     , DFREQ , F     , CCG   , DIV   ,
      & DELTA , DDX   , DDY   , EPS   , NBOR  , NPTFR , XKONPT, 
      & RX    , RY    , RXX   , RYY   , NEIGB , NB_CLOSE,DIFFRA,MAXNSP,
      & FLTDIF, MESH3D, MESH  , IELM3 , TB    , ISUB  , SIKLE2)

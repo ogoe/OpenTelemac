@@ -85,9 +85,7 @@
       DO IPLAN = 1,NPLAN
         COSTET(IPLAN) = COS(TETA(IPLAN))
         SINTET(IPLAN) = SIN(TETA(IPLAN))
-c$$$        ETAP1(IPLAN)=IPLAN+1
       ENDDO
-c$$$      ETAP1(NPLAN)=1
 !
       AUXI=(RAISF-1.D0)/2.D0
       DFREQ(1)=AUXI*FREQ(1)

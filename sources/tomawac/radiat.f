@@ -2,8 +2,10 @@
                      SUBROUTINE RADIAT
 !                    *****************
 !
-     &( FX    , FY    , SXX   , SXY   , SYY   , XK1   , FS    , CG1   ,
-     &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY )
+     &     ( FX1    , FY1, XK1   ,FS, CG1   ,
+!                     , SXX   , SXY   , SYY   , XK1   , FS    , CG1   ,
+!     &     DEPTH1, 
+     &  CGSUC1,DSXXDX, DSXYDX, DSXYDY, DSYYDY )
 !
 !***********************************************************************
 ! TOMAWAC   V7P0
@@ -72,7 +74,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TOMAWAC
+      USE DECLARATIONS_TOMAWAC  
 !
       USE INTERFACE_TOMAWAC, EX_RADIAT => RADIAT
       IMPLICIT NONE
@@ -80,11 +82,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: FS(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION, INTENT(IN)    :: CG1(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(IN)    :: DEPTH1(NPOIN2),XK1(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(INOUT) :: SXX(NPOIN2),SXY(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: SYY(NPOIN2),CGSUC1(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(INOUT) :: FX(NPOIN2),FY(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: CG1(NPOIN2,NF),XK1(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: CGSUC1(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: FX1(NPOIN2),FY1(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: DSXXDX(NPOIN2),DSXYDX(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: DSXYDY(NPOIN2),DSYYDY(NPOIN2)
 !
@@ -159,8 +159,8 @@
      & (ST2,'=','GRADF          X',IELM2,1.D0,ST4,
      &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
-      CALL OV('X=YZ    ',DSXXDX,T1,ST0%R,C,NPOIN2)
-      CALL OV('X=YZ    ',DSXYDX,T2,ST0%R,C,NPOIN2)
+      CALL OV('X=YZ    ',DSXXDX, T1, T0, C, NPOIN2)
+      CALL OV('X=YZ    ',DSXYDX, T2, T0, C, NPOIN2)
 !
 !     DERIVATIVE IN Y
 !
@@ -174,18 +174,18 @@
      & (ST2,'=','GRADF          Y',IELM2,1.D0,ST4,
      &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3,ASSPAR=.TRUE.)
 !
-      CALL OV('X=YZ    ',DSYYDY,T1,ST0%R,C,NPOIN2)
-      CALL OV('X=YZ    ',DSXYDY,T2,ST0%R,C,NPOIN2)
+      CALL OV('X=YZ    ',DSYYDY, T1, T0, C, NPOIN2)
+      CALL OV('X=YZ    ',DSXYDY, T2, T0, C, NPOIN2)
 !
 !     COMPUTES THE DRIVING FORCES FOR WAVE-INDUCED CURRENTS
 !
       DO IP=1,NPOIN2
-        IF(DEPTH1(IP).GE.HMIN) THEN
-          FX(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH1(IP)
-          FY(IP)= - (DSXYDX(IP)+DSYYDY(IP))/DEPTH1(IP)
+        IF(DEPTH(IP).GE.HMIN) THEN
+          FX1(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH(IP)
+          FY1(IP)= - (DSXYDX(IP)+DSYYDY(IP))/DEPTH(IP)
         ELSE
-          FX(IP)=0.D0
-          FY(IP)=0.D0
+          FX1(IP)=0.D0
+          FY1(IP)=0.D0
         ENDIF
       ENDDO
 !

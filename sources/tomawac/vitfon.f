@@ -2,7 +2,7 @@
                      SUBROUTINE VITFON
 !                    *****************
 !
-     &(UWBM,F, XK , DEPTH , DFREQ , NF    , NPOIN2, NPLAN ,BETA  )
+     &(UWBM,F, XK , DEPTH , DFREQ , NF    , NPOIN2, NPLAN )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   29/06/2011
@@ -53,7 +53,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
-      DOUBLE PRECISION, INTENT(INOUT) :: UWBM(NPOIN2),BETA(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UWBM(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),DFREQ(NF)
@@ -61,7 +61,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER  IP    , JP    , JF
-      DOUBLE PRECISION DTETAR, DEUKD , COEF
+      DOUBLE PRECISION DTETAR, DEUKD , COEF , BETAA
 !
       INTRINSIC SQRT,SINH,MIN
 !
@@ -71,24 +71,18 @@
 !
       DO IP = 1,NPOIN2
         UWBM(IP) = 0.D0
-      ENDDO
 !
 !     SUMS UP THE DISCRETISED PART OF THE SPECTRUM
 !
-      DO JF = 1,NF
-        COEF=2.D0*GRAVIT*DFREQ(JF)*DTETAR
-        DO IP = 1,NPOIN2
-          DEUKD = MIN(2.D0*DEPTH(IP)*XK(IP,JF),7.D2)
-          BETA(IP) = COEF*XK(IP,JF)/SINH(DEUKD)
+        DO JF = 1,NF
+           COEF=2.D0*GRAVIT*DFREQ(JF)*DTETAR
+           DEUKD = MIN(2.D0*DEPTH(IP)*XK(IP,JF),7.D2)
+           BETAA = COEF*XK(IP,JF)/SINH(DEUKD)
+           DO JP = 1,NPLAN
+              UWBM(IP) = UWBM(IP) + F(IP,JP,JF)*BETAA
+           ENDDO
         ENDDO
-        DO JP = 1,NPLAN
-          DO IP=1,NPOIN2
-            UWBM(IP) = UWBM(IP) + F(IP,JP,JF)*BETA(IP)
-          ENDDO
-        ENDDO
-      ENDDO
 !
-      DO IP=1,NPOIN2
         UWBM(IP) = SQRT(UWBM(IP))
       ENDDO
 !
