@@ -87,9 +87,10 @@
       IF(.NOT.PROINF) THEN
         IF(SORLEO(11).OR.SORLEO(12).OR.SORLEO(13).OR.
      &     SORLEO(14).OR.SORLEO(15) ) CALL RADIAT
-     &( FX, FY , SXX, SXY, SYY, XK, XF1, CG , DEPTH,
+     &        ( FX, FY, XK, XF1, CG ,
+!         SXX, SXY, SYY, XK,  CG , DEPTH,
 !       WORK TABLE HERE
-     &  TSDER,STRA36%R, STRA37%R, STRA38%R, STRA39%R)
+     &  TSDER,TRA36, TRA37, TRA38, TRA39)
       ENDIF
 !
 !     ------------------------------- DIRECTIONAL DIR_SPREADING
