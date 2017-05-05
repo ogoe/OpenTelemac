@@ -103,6 +103,7 @@ from parsers.parserFortran import scanSources,getPrincipalWrapNames
 from utils.files import createDirectories,putFileContent,isNewer
 from utils.messages import MESSAGES,filterMessage,banner
 from utils.progressbar import ProgressBar
+from compileAPI import compile_api
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -823,6 +824,12 @@ if __name__ == "__main__":
                xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+ item.lower()},e,options.bypass)])
             if foundExe: print '      +> There is no need to create the associate executable'
       if not found: xcpts.addMessages([{'name':'compileTELEMAC::main:','msg':'Could not find any cmdf file for config ' + cfgname + '. You may have to use the --rescan option'}])
+
+      # Compiling api if asked for
+      if 'api' in cfg['options']:
+          compile_api(cfgs, cfgname, False)
+
+
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

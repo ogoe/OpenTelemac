@@ -84,30 +84,32 @@ class ApiModule(object):
         rank = 0
         if comm is not None:
             rank = comm.Get_rank()
-        if rank == 0 and recompile:
-            # Recompiling API with/without user_fortran
-            user_fortran2 = ''
+        if recompile:
+            # Compiling API with user_fortran
             if user_fortran is not None:
-                user_fortran2 = user_fortran
-                compile
+                # compile user fortran
                 cfgs = build_config('', '', '')
                 cfgname = cfgs.keys()[0]
-                incs_flags = get_api_incs_flags(cfgs, cfgname)
-                ld_flags = get_api_ld_flags(cfgs, cfgname)
-                compile_princi_lib(user_fortran, cfgname, cfgs,
-                                   incs_flags, ld_flags)
+                if rank == 0:
+                    incs_flags = get_api_incs_flags(cfgs, cfgname)
+                    ld_flags = get_api_ld_flags(cfgs, cfgname)
+                    compile_princi_lib(user_fortran, cfgname, cfgs,
+                                       incs_flags, ld_flags)
+
+                # Waiting for proc 0 to finish recompiling API
+                if comm is not None:
+                    comm.barrier()
+                        # Load user fortran
                 self.user_fortran_lib_path = 'libuser_fortran' + \
                                              cfgs[cfgname]['sfx_lib']
                 self.user_fortran_lib = cdll.LoadLibrary(self.user_fortran_lib_path)
 
-        # Waiting for proc 0 to finish recompiling API
-        if comm is not None:
-            comm.barrier()
+        # Load api
         try:
             if ApiModule._api is None:
                 import _api
             else:
-                reload(apiModule._api)
+                reload(ApiModule._api)
         except Exception as execpt:
             if sys.platform.startswith('linux'):
                 ext = 'so'
@@ -364,8 +366,8 @@ class ApiModule(object):
                 varinfo.append(tmp[i][j])
         # Extracting name and info into a list
         for i in range(nb_var):
-            vnames.append(''.join(varnames[(i-1)*var_len:i*var_len]).strip())
-            vinfo.append(''.join(varinfo[(i-1)*info_len:i*info_len]).strip())
+            vnames.append(''.join(varnames[i*var_len:(i+1)*var_len]).strip())
+            vinfo.append(''.join(varinfo[i*info_len:(i+1)*info_len]).strip())
         return vnames, vinfo
 
 
@@ -382,7 +384,7 @@ class ApiModule(object):
         @retuns variable value
         """
         value = None
-        vartype, _, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        vartype, _, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while getting variable %s type"%varname)
@@ -439,7 +441,7 @@ class ApiModule(object):
 
         @retuns variable value
         """
-        vartype, readonly, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        vartype, readonly, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while setting variable %s type"%varname)
@@ -498,7 +500,7 @@ class ApiModule(object):
 
         @returns A numpy array containing the values
         """
-        _, _, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        _, _, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while getting variable %s type"%varname)
@@ -541,7 +543,7 @@ class ApiModule(object):
         @param varname Name of the variable
         @param values Value for each index of the array
         """
-        _, _, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        _, _, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while getting variable %s type"%varname)
@@ -647,7 +649,7 @@ class ApiModule(object):
 
         @retruns A numpy array containing the values
         """
-        _, _, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        _, _, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while getting variable %s type"%varname)
@@ -722,7 +724,7 @@ class ApiModule(object):
         @param jrange Range for index j (second dimension)
         @param krange Range for index k (third dimension)
         """
-        _, _, ndim, _, _, _, self.ierr = self.get_var_type(varname)
+        _, _, ndim, _, _, _, _, _, self.ierr = self.get_var_type(varname)
         if self.ierr != 0:
             print self.get_error_message()
             raise Exception("Error while getting variable %s type"%varname)
@@ -812,3 +814,23 @@ class ApiModule(object):
             print self.get_error_message()
             raise Exception('Error: no deletion')
         return ierr
+
+    def generate_var_info(self):
+        """
+        Returns a dictionary containg specific informations for each variable
+
+        @returns the dictionary
+        """
+
+        var_info = {}
+
+        vnames, vinfo = self.list_variables()
+
+        for varname, varinfo in zip(vnames, vinfo):
+            vartype, _, _, _, _, _, get_pos, set_pos, self.ierr = self.get_var_type(varname)
+            var_info[varname.rstrip()] = {'get_pos':get_pos,
+                                          'set_pos':set_pos,
+                                          'info':varinfo.rstrip(),
+                                          'type':vartype.rstrip()}
+
+        return var_info

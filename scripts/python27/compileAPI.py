@@ -125,6 +125,7 @@ def compile_princi_lib(princi_file, cfgname, cfgs, incs_flags, ld_flags):
     command += ' ' + incs_flags + ' ' + ld_flags
 
     mes = MESSAGES(size=10)
+    print "command",command
     try:
         tail, code = mes.runCmd(command, False)
     except Exception as execpt:
@@ -139,17 +140,39 @@ def compile_princi_lib(princi_file, cfgname, cfgs, incs_flags, ld_flags):
             'msg':'could not compile your FORTRAN \
                    (runcode='+str(code)+').\n      '+tail}])
 
-def compile_api(cfgs, cfgname, fcompiler, user_fortran, silent):
+def copy_src_api(api_dir, src_list, src_dir):
     """
-       Compiling the API for Telemac-Mascaret
+    Copying sources in src_list from src_dir in api folder renaming them in .f90
+    And build a string containing list of names
 
-       @param cfgs List of configurations info
-       @param cfgname Name of the configuration for which we compile the API
-       @param fcompiler Fortran Compiler to use
-       @param user_fortran Name of the user Fortran if there is one
+    @param api_dir Path to the api directory
+    @param src_list List of files to copy
+    @param src_dir Path of the sources
+
+    @returns String containing list of new names for f2py
     """
-    print '\033[93m[debug] ',cfgs,'\033[0m'
-    print 'Compiling the API \n'+'~'*72+'\n'
+
+    source = ''
+    for src in src_list:
+        root, ext = path.splitext(src)
+        # Copying source in wrap_api folder and
+        # changin extension into .f90
+        mycopy(path.join(src_dir, src), \
+               path.join(api_dir, 'src', root+'.f90'))
+        # Building list of sources
+        source += path.join(api_dir, 'src', root+'.f90') + ' '
+
+    return source
+
+def generate_api(cfgs, cfgname):
+    """
+    Builds the structure for an Python API
+
+    @param cfgs List of configurations info
+    @param cfgname Name of the configuration for which we compile the API
+
+    @returns source list for api and for hermes
+    """
     api_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'wrap_api')
     lib_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'lib')
     if not path.exists(api_dir):
@@ -158,32 +181,15 @@ def compile_api(cfgs, cfgname, fcompiler, user_fortran, silent):
         mkdir(api_dir+sep+'src')
         mkdir(api_dir+sep+'include')
     # Copying libraries
-    mycopy(path.join(lib_dir, 'telemac2d', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libtelemac2d.so'))
-    mycopy(path.join(lib_dir, 'api', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libapi.so'))
-    mycopy(path.join(lib_dir, 'sisyphe', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libsisyphe.so'))
-    mycopy(path.join(lib_dir, 'nestor', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libnestor.so'))
-    mycopy(path.join(lib_dir, 'tomawac', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libtomawac.so'))
-    mycopy(path.join(lib_dir, 'waqtel', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libwaqtel.so'))
-    mycopy(path.join(lib_dir, 'utils', 'bief', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libbief.so'))
-    mycopy(path.join(lib_dir, 'utils', 'special', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libspecial.so'))
-    mycopy(path.join(lib_dir, 'utils', 'parallel', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libparallel.so'))
-    mycopy(path.join(lib_dir, 'utils', 'damocles', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libdamocles.so'))
-    mycopy(path.join(lib_dir, 'utils', 'hermes', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libhermes.so'))
-    mycopy(path.join(lib_dir, 'utils', 'gretel', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libgretel.so'))
-    mycopy(path.join(lib_dir, 'utils', 'partel', 'homere_api.so'), \
-                     path.join(api_dir, 'lib', 'libpartel.so'))
+    dyn_ext = cfgs[cfgname]['sfx_lib']
+    list_libs = ['telemac2d', 'api', 'sisyphe', 'nestor', 'tomawac', \
+                 'waqtel', 'utils|bief', 'utils|special', 'utils|parallel', \
+                 'utils|hermes', 'utils|gretel', 'utils|partel', 'utils|damocles']
+    for lib in list_libs:
+        lib_name = lib.split('|')[-1]
+        mycopy(path.join(lib_dir, lib.replace('|',sep), 'homere_api'+dyn_ext), \
+                         path.join(api_dir, 'lib', 'lib'+lib_name+dyn_ext))
+
     # Copying Modules
     for root, _, files in walk(lib_dir):
         for ffile in files:
@@ -191,25 +197,114 @@ def compile_api(cfgs, cfgname, fcompiler, user_fortran, silent):
                 mycopy(path.join(root, ffile),
                        path.join(api_dir, 'include', ffile))
 
-    # Copying Sources
-    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
-                     'api', 'api_handle_var_t2d.f'), \
-           path.join(api_dir, 'src', 'api_handle_var_t2d.f90'))
-    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
-                     'api', 'api_handle_var_sis.f'), \
-           path.join(api_dir, 'src', 'api_handle_var_sis.f90'))
-    mycopy(path.join(cfgs[cfgname]['root'], 'sources', 'api', \
-                     'api_handle_error.f'), \
-           path.join(api_dir, 'src', 'api_handle_error.f90'))
-    mycopy(path.join(cfgs[cfgname]['root'], 'sources',
-                     'api', 'api_interface.f'), \
-           path.join(api_dir, 'src', 'api_interface.f90'))
+    # Copying sources for t2d and sis
+    src_list = []
+    src_list.append("api_handle_var_t2d.f")
+    src_list.append("api_handle_var_sis.f")
+    src_list.append("api_handle_error.f")
+    src_list.append("api_interface.f")
+    src_dir = path.join(cfgs[cfgname]['root'], 'sources', 'api')
+    source_api = copy_src_api(api_dir, src_list, src_dir)
+    # Copying sources for hermes
+    src_list = []
+    src_list.append("close_bnd.f")
+    src_list.append("close_mesh.f")
+    src_list.append("get_bnd_connectivity.f")
+    src_list.append("get_bnd_ipobo.f")
+    src_list.append("get_bnd_nelem.f")
+    src_list.append("get_bnd_npoin.f")
+    src_list.append("get_bnd_numbering.f")
+    src_list.append("get_bnd_value.f")
+    src_list.append("get_data_ntimestep.f")
+    src_list.append("get_data_nvar.f")
+    src_list.append("get_data_time.f")
+    src_list.append("get_data_value.f")
+    src_list.append("get_data_var_list2.f")
+    src_list.append("get_mesh_connectivity.f")
+    src_list.append("get_mesh_coord.f")
+    src_list.append("get_mesh_date.f")
+    src_list.append("get_mesh_dimension.f")
+    src_list.append("get_mesh_l2g_numbering.f")
+    src_list.append("get_mesh_nelem.f")
+    src_list.append("get_mesh_nplan.f")
+    src_list.append("get_mesh_npoin.f")
+    src_list.append("get_mesh_npoin_per_element.f")
+    src_list.append("get_mesh_nptir.f")
+    src_list.append("get_mesh_title.f")
+    src_list.append("open_bnd.f")
+    src_list.append("open_mesh.f")
+    src_list.append("set_bnd.f")
+    src_list.append("set_mesh.f")
+    src_list.append("set_header.f")
+    src_list.append("add_data.f")
+    src_list.append("transfer_group_info.f")
+    src_dir = path.join(cfgs[cfgname]['root'], 'sources', 'utils', 'hermes')
+    source_hermes = copy_src_api(api_dir, src_list, src_dir)
 
-    print "    ~> Wrap_api built"
+    return source_api, source_hermes
+
+def compile_api_f2py(name, api_dir, source_list, skip_source, ld_flags, fcompiler, silent):
+    """
+    Running f2py to generate Python wrapper
+
+    @param name Name of the wrapper
+    @param api_dir Path to the api folder
+    @param source_list List of source for the api
+    @param skip_source List of function to skip
+    @param ld_flags Linking flags
+    @param fcompiler Name of the compiler
+    """
 
     # Generating Py wrapper using f2py
-    source = '<apiSrc>api_handle_var_t2d.f90 <apiSrc>api_handle_var_sis.f90 '
-    source += ' <apiSrc>api_handle_error.f90 <apiSrc>api_interface.f90'
+    pyf_file = path.join(api_dir, 'lib', name+'.pyf')
+    if path.exists(pyf_file):
+        remove(pyf_file)
+    if skip_source != '':
+        skip_source = 'skip: ' + skip_source + ' :'
+    # First step of call to f2py
+    cmd = 'f2py --quiet -h %s -m _%s %s %s'\
+            %(pyf_file,
+              name,
+              source_list,
+              skip_source)
+    try:
+        output = check_output(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError as execpt:
+        print 'Error during first part of f2py for ',name, execpt.returncode
+        print execpt.output
+        sys.exit(1)
+    if not silent:
+        print output
+    print "    ~> First part of f2py for %s passed"%name
+
+    pwd = getcwd()
+    chdir(path.join(api_dir, 'lib'))
+    # Second step of call to f2py
+    cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '\
+              %(pyf_file, fcompiler, path.join(api_dir,'include'), ld_flags)
+    try:
+        output = check_output(cmd, shell=True, stderr=STDOUT)
+    except CalledProcessError as execpt:
+        print 'Error during second part of f2py for ',name, execpt.returncode
+        print execpt.output
+        sys.exit(1)
+    if not silent:
+        print output
+    print "    ~> Second part of f2py of %s passed"%name
+    chdir(pwd)
+
+def compile_api(cfgs, cfgname, silent, fcompiler="gnu95"):
+    """
+       Compiling the APIs for Telemac-Mascaret
+
+       @param cfgs List of configurations info
+       @param cfgname Name of the configuration for which we compile the API
+    """
+    print '\nCompiling the API \n'+'~'*72+'\n'
+
+    source_api, source_hermes = generate_api(cfgs, cfgname)
+    print "    ~> Wrap_api built"
+
     skip_source = 'get_boolean_t2d_d get_double_t2d_d '
     skip_source += 'get_integer_t2d_d get_string_t2d_d '
     skip_source += 'get_var_size_t2d_d set_boolean_t2d_d set_double_t2d_d '
@@ -218,56 +313,12 @@ def compile_api(cfgs, cfgname, fcompiler, user_fortran, silent):
     skip_source += 'get_integer_sis_d get_string_sis_d '
     skip_source += 'get_var_size_sis_d set_boolean_sis_d set_double_sis_d '
     skip_source += 'set_integer_sis_d set_string_sis_d'
-    pyf_file = path.join(api_dir, 'lib', 'api.pyf')
-    if path.exists(pyf_file):
-        remove(pyf_file)
-    # First step of call to f2py
-    cmd = 'f2py --quiet -h %s -m _api %s skip: %s :'\
-            %(pyf_file,
-              source.replace('<apiSrc>', path.join(api_dir, 'src') + sep),
-              skip_source)
-    try:
-        output = check_output(cmd, shell=True, stderr=STDOUT)
-    except CalledProcessError as execpt:
-        print 'Error during first part of f2py ', execpt.returncode
-        print execpt.output
-        sys.exit(1)
-    if not silent:
-        print output
-    print "    ~> First part of f2py passed"
-
-    # Compile user Fortran
     ld_flags = get_api_ld_flags(cfgs, cfgname)
-
-    incs_flags = get_api_incs_flags(cfgs, cfgname)
-
-    if user_fortran != '':
-        compile_princi_lib(user_fortran, cfgname, cfgs, incs_flags, ld_flags)
-
-    pwd = getcwd()
-    chdir(path.join(api_dir, 'lib'))
-    # Second step of call to f2py
-    if user_fortran != '':
-        print path.basename(user_fortran)
-        dir_name = pwd
-        if path.isdir(user_fortran):
-            dir_name += sep + user_fortran
-
-        ld_flags = ld_flags.replace('-ltelemac2d',
-                                    ' -L'+dir_name+\
-                                     ' -luser_fortran -ltelemac2d')
-    cmd = 'f2py --quiet -c %s --fcompiler=%s -I%s %s '\
-              %(pyf_file, fcompiler, api_dir+sep+'include', ld_flags)
-    try:
-        output = check_output(cmd, shell=True, stderr=STDOUT)
-    except CalledProcessError as execpt:
-        print 'Error during second part of f2py ', execpt.returncode
-        print execpt.output
-        sys.exit(1)
-    if not silent:
-        print output
-    print "    ~> Second part of f2py passed"
-    chdir(pwd)
+    api_dir = path.join(cfgs[cfgname]['root'], 'builds', cfgname, 'wrap_api')
+    print "    ~> Compiling Modules api"
+    compile_api_f2py('api', api_dir, source_api, skip_source, ld_flags, fcompiler, silent)
+    print "    ~> Compiling hermes api"
+    compile_api_f2py('hermes', api_dir, source_hermes, '', ld_flags, fcompiler, silent)
 
 def compile_obj(fortran_file, cfg, cfgname):
     """
@@ -404,7 +455,7 @@ def build_config(config_name, config_file, root_dir):
 
     return cfgs
 
-def main(config_name, config_file, root_dir, fcompiler, user_fortran,
+def compileAPI(config_name, config_file, root_dir, fcompiler, user_fortran,
          exe_file, silent):
     """
        Main function
@@ -483,7 +534,7 @@ if __name__ == "__main__":
     ARGS = PARSER.parse_args()
 
 # Running main function
-    XCPTS = main(ARGS.configName, ARGS.configFile, ARGS.rootDir,
+    XCPTS = compileAPI(ARGS.configName, ARGS.configFile, ARGS.rootDir,
                  ARGS.fcompiler, ARGS.user_fortran, ARGS.exeFile, ARGS.silent)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

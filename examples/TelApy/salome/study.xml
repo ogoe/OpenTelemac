@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<proc name="Function_G">
+   <property name="DefaultStudyID" value="1"/>
+   <type name="string" kind="string"/>
+   <struct name="Engines/dataref">
+      <member name="ref" type="string"/>
+   </struct>
+   <type name="bool" kind="bool"/>
+   <sequence name="boolvec" content="bool"/>
+   <type name="double" kind="double"/>
+   <sequence name="dblevec" content="double"/>
+   <objref name="file" id="file"/>
+   <type name="int" kind="int"/>
+   <sequence name="intvec" content="int"/>
+   <struct name="stringpair">
+      <member name="name" type="string"/>
+      <member name="value" type="string"/>
+   </struct>
+   <sequence name="propvec" content="stringpair"/>
+   <objref name="pyobj" id="python:obj:1.0"/>
+   <sequence name="seqboolvec" content="boolvec"/>
+   <sequence name="seqdblevec" content="dblevec"/>
+   <sequence name="seqintvec" content="intvec"/>
+   <sequence name="seqpyobj" content="pyobj"/>
+   <sequence name="stringvec" content="string"/>
+   <sequence name="seqstringvec" content="stringvec"/>
+   <container name="DefaultContainer">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+      <property name="container_name" value="FactoryServer"/>
+      <property name="name" value="localhost"/>
+   </container>
+   <container name="container0">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <container name="container1">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <container name="container2">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <bloc name="Function_G">
+      <remote name="STUDY">
+         <function name="my_script">
+            <code><![CDATA[#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Class Telemac2d import
+from TelApy.api.t2d import Telemac2d
+from mpi4py import MPI
+
+def study_function(res_file, geo_file):
+    comm = MPI.COMM_WORLD
+    # Creation of the instance Telemac2d
+    my_module = Telemac2d('/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/t2d_gouttedo.cas', user_fortran='/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/user_fortran/condin.f', comm=comm)
+    ierr = 0
+
+    # Reading the steering file informations
+    my_module.set_case()
+    my_study.set('MODEL.RESULTFILE', res_file, i=0; j=0, k=0)
+    my_study.set('MODEL.GEOMETRYFILE', geo_file, i=0; j=0, k=0)
+
+    # Initalization
+    my_module.init_state_default()
+
+    # Run all time steps
+    my_module.run_all_time_steps()
+    h1 = my_study.get('MODEL.WATERDEPTH', i=25; j=0, k=0)
+    h2 = my_study.get('MODEL.WATERDEPTH', i=666; j=0, k=0)
+
+    # Ending the run
+    my_module.finalize()
+
+    # Instance delete
+    del(my_module)
+
+    return h1, h2
+]]></code>
+         </function>
+         <load container="container0"/>
+         <inport name="res_file" type="string"/>
+         <inport name="geo_file" type="string"/>
+         <outport name="h1" type="double"/>
+         <outport name="h2" type="double"/>
+      </remote>
+   </bloc>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>res_file</toport>
+      <value><string>r2d_gouttedo.srf</string></value>
+   </parameter>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>geo_file</toport>
+      <value><string>geo_gouttedo.srf</string></value>
+   </parameter>
+</proc>

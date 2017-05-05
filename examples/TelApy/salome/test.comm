@@ -1,0 +1,18 @@
+
+TELEMAC2D(STEERING_FILE='/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/t2d_gouttedo.cas',
+          USER_FORTRAN='/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/user_fortran/condin.f',
+          OUTPUT_VARIABLE=(_F(NAME='h0',
+                              VAR_INFO=_F(VAR_NAME='MODEL.WATERDEPTH',
+                                          ZONE_DEF=_F(INDEX=(25,0,0),),),),
+                           _F(NAME='h1',
+                              VAR_INFO=_F(VAR_NAME='MODEL.WATERDEPTH',
+                                          ZONE_DEF=_F(INDEX=(666,0,0),),),),),
+          INPUT_VARIABLE=(_F(NAME='q0',
+                             VAR_INFO=_F(VAR_NAME='MODEL.DEBIT',
+                                         DEFAULT_VALUE='10.0',
+                                         ZONE_DEF=_F(INDEX=(1,0,0),),),),
+                          _F(NAME='q1',
+                             VAR_INFO=_F(VAR_NAME='MODEL.DEBIT',
+                                         DEFAULT_VALUE='100.0',
+                                         ZONE_DEF=_F(INDEX=(2,0,0),),),),),);
+#CHECKSUM:6558bb8d450cd5fe51b846de0186287f  -:FIN CHECKSUM

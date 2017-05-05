@@ -20,8 +20,7 @@
         ! Size of the string containing the information about a variable
         INTEGER, PARAMETER :: T2D_INFO_LEN=200
         ! The maximum number of variable
-!TODO: Update nb_var_t2d to real value + update all fonctions
-        INTEGER, PARAMETER :: NB_VAR_T2D=33
+        INTEGER, PARAMETER :: NB_VAR_T2D=42
         CHARACTER(LEN=T2D_VAR_LEN),ALLOCATABLE :: VNAME_T2D(:)
         CHARACTER(LEN=T2D_INFO_LEN),ALLOCATABLE :: VINFO_T2D(:)
 !
@@ -156,7 +155,7 @@
           INST%U%R(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
           INST%V%R(INDEX1) = VALUE
-        ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUDARIES') THEN
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
           INST%FLUX_BOUNDARIES(INDEX1) = VALUE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
           INST%TE5%R(INDEX1) = VALUE
@@ -610,11 +609,14 @@
       !PARAM IENT      [OUT]    1 if the numbering is on point
       !PARAM JENT      [OUT]    1 if the numbering is on point
       !PARAM KENT      [OUT]    1 if the numbering is on point
+      !PARAM GETPOS    [OUT]    1 if the numbering is on point
+      !PARAM SETPOS    [OUT]    1 if the numbering is on point
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_TYPE_T2D_D
-     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,IERR)
+     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
+     &         GETPOS,SETPOS,IERR)
           CHARACTER(LEN=T2D_VAR_LEN),  INTENT(IN)  :: VARNAME
           CHARACTER(LEN=T2D_TYPE_LEN), INTENT(OUT) :: VARTYPE
           LOGICAL,                     INTENT(OUT) :: READONLY
@@ -623,6 +625,8 @@
           INTEGER,                     INTENT(OUT) :: IENT
           INTEGER,                     INTENT(OUT) :: JENT
           INTEGER,                     INTENT(OUT) :: KENT
+          INTEGER,                     INTENT(OUT) :: GETPOS
+          INTEGER,                     INTENT(OUT) :: SETPOS
 !
           IERR = 0
           VARTYPE = ''
@@ -631,8 +635,32 @@
           IENT = 0
           JENT = 0
           KENT = 0
+          GETPOS = -1
+          SETPOS = -1
 !
-          IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
+          IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
+            VARTYPE = 'DOUBLE'
+            READONLY = .FALSE.
+            NDIM = 0
+            GETPOS = RUN_ALLOCATION_POS
+            SETPOS = RUN_ALLOCATION_POS
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
+            VARTYPE = 'STRING'
+            READONLY = .FALSE.
+            NDIM = 0
+            GETPOS = RUN_ALLOCATION_POS
+            SETPOS = RUN_ALLOCATION_POS
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
+            VARTYPE = 'INTEGER'
+            READONLY = .FALSE.
+            NDIM = 1
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+            VARTYPE = 'DOUBLE'
+            READONLY = .FALSE.
+            NDIM = 1
+            GETPOS = RUN_FINALIZE_POS
+            SETPOS = RUN_ALLOCATION_POS
+          ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
             VARTYPE = 'DOUBLE'
             READONLY = .FALSE.
             NDIM = 1
@@ -687,6 +715,8 @@
             READONLY = .FALSE.
             NDIM = 1
             IENT = 1
+            GETPOS = RUN_FINALIZE_POS
+            SETPOS = RUN_ALLOCATION_POS
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
             VARTYPE = 'DOUBLE'
             READONLY = .FALSE.
@@ -743,14 +773,6 @@
             READONLY = .FALSE.
             NDIM = 1
             IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 1
           ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
             VARTYPE = 'INTEGER'
             READONLY = .FALSE.
@@ -808,14 +830,60 @@
           IF(IERR.NE.0) RETURN
 !
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.NPOIN'
-          VINFO_T2D(I) = 'NUMBER OF POINT IN THE MESH'
+          VNAME_T2D(I) = 'MODEL.AT'
+          VINFO_T2D(I) = 'CURRENT TIME'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.NELEM'
-          VINFO_T2D(I) = 'NUMBER OF ELEMENT IN THE MESH'
+          VNAME_T2D(I) = 'MODEL.BCFILE'
+          VINFO_T2D(I) = 'BOUNDARY CONFITION FILE NAME'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.BND_TIDE'
+          VINFO_T2D(I) = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.BOTTOMELEVATION'
+          VINFO_T2D(I) = 'LEVEL OF THE BOTTOM'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.CHESTR'
+          VINFO_T2D(I) = 'STRIKLER ON POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.COTE'
+          VINFO_T2D(I) = '???'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.CPL_PERIOD'
+          VINFO_T2D(I) = 'COUPLING PERIOD WITH SISYPHE'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.DEBIT'
+          VINFO_T2D(I) = 'DISCHARGE ON FRONTIER'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.DEBUG'
+          VINFO_T2D(I) = 'ACTIVATING DEBUG MODE'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.FLUX_BOUNDARIES'
+          VINFO_T2D(I) = 'FLUX AT BOUNDARIES'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.GEOMETRYFILE'
+          VINFO_T2D(I) = 'NAME OF THE GEOMERY FILE'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.GRAPH_PERIOD'
+          VINFO_T2D(I) = 'GRAPHICAL OUTPUT PERIOD'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.HBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON H FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.IKLE'
+          VINFO_T2D(I) = 'CONNECTIVITY TABLE BETWEEN ELEMENT AND NODES'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.INCWATERDEPTH'
+          VINFO_T2D(I) = 'INCREASE IN THE THE DEPTH OF THE WATER'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.KP1BOR'
+          VINFO_T2D(I) =
+     &           'POINTS FOLLOWING AND PRECEDING A BOUNDARY POINT'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.LIHBOR'
           VINFO_T2D(I) = 'BOUNDARY TYPE ON H FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.LISTIN_PERIOD'
+          VINFO_T2D(I) = 'LISTING OUTPUT PERIOD'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.LIUBOR'
           VINFO_T2D(I) = 'BOUNDARY TYPE ON U FOR EACH BOUNDARY POINT'
@@ -823,57 +891,20 @@
           VNAME_T2D(I) = 'MODEL.LIVBOR'
           VINFO_T2D(I) = 'BOUNDARY TYPE ON V FOR EACH BOUNDARY POINT'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.HBOR'
-          VINFO_T2D(I) = 'BOUNDARY VALUE ON H FOR EACH BOUNDARY POINT'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.UBOR'
-          VINFO_T2D(I) = 'BOUNDARY VALUE ON U FOR EACH BOUNDARY POINT'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.VBOR'
-          VINFO_T2D(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.XNEBOR'
-          VINFO_T2D(I) = 'NORMAL X TO 1D BOUNDARY POINTS'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.YNEBOR'
-          VINFO_T2D(I) = 'NORMAL Y TO 1D BOUNDARY POINTS'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.WATERDEPTH'
-          VINFO_T2D(I) = 'DEPTH OF THE WATER'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.INCWATERDEPTH'
-          VINFO_T2D(I) = 'INCREASE IN THE THE DEPTH OF THE WATER'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.BOTTOMELEVATION'
-          VINFO_T2D(I) = 'LEVEL OF THE BOTTOM'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.VELOCITYU'
-          VINFO_T2D(I) = 'VELOCITY ON U'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.VELOCITYV'
-          VINFO_T2D(I) = 'VELOCITY ON V'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.X'
-          VINFO_T2D(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.Y'
-          VINFO_T2D(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.FLUX_BOUNDARIES'
-          VINFO_T2D(I) = 'FLUX AT BOUNDARIES'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.POROSITY'
-          VINFO_T2D(I) = 'POROSITY'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.KP1BOR'
-          VINFO_T2D(I) =
-     &           'POINTS FOLLOWING AND PRECEDING A BOUNDARY POINT'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.NUMLIQ'
-          VINFO_T2D(I) = 'LIQUID BOUNDARY NUMBERS'
+          VNAME_T2D(I) = 'MODEL.LT'
+          VINFO_T2D(I) = 'CURRENT TIME STEP'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NBOR'
           VINFO_T2D(I) = 'GLOBAL NUMBER OF BOUNDARY POINTS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NELEM'
+          VINFO_T2D(I) = 'NUMBER OF ELEMENT IN THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NELMAX'
+          VINFO_T2D(I) = 'MAXIMUM NUMBER OF ELEMENTS ENVISAGED'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.NPOIN'
+          VINFO_T2D(I) = 'NUMBER OF POINT IN THE MESH'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.NPTFR'
           VINFO_T2D(I) = 'NUMBER OF BOUNDARY POINTS'
@@ -881,32 +912,47 @@
           VNAME_T2D(I) = 'MODEL.NTIMESTEPS'
           VINFO_T2D(I) = 'NUMBER OF TIME STEPS'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.NELMAX'
-          VINFO_T2D(I) = 'MAXIMUM NUMBER OF ELEMENTS ENVISAGED'
+          VNAME_T2D(I) = 'MODEL.NUMLIQ'
+          VINFO_T2D(I) = 'LIQUID BOUNDARY NUMBERS'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.IKLE'
-          VINFO_T2D(I) = 'CONNECTIVITY TABLE BETWEEN ELEMENT AND NODES'
+          VNAME_T2D(I) = 'MODEL.POROSITY'
+          VINFO_T2D(I) = 'POROSITY'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.CHESTR'
-          VINFO_T2D(I) = 'STRIKLER ON POINT'
+          VNAME_T2D(I) = 'MODEL.RESULTFILE'
+          VINFO_T2D(I) = 'NAME OF THE RESULT FILE'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.LT'
-          VINFO_T2D(I) = 'CURRENT TIME STEP'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.AT'
-          VINFO_T2D(I) = 'CURRENT TIME'
-          I = I + 1
-          VNAME_T2D(I) = 'MODEL.BND_TIDE'
-          VINFO_T2D(I) = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
+          VNAME_T2D(I) = 'MODEL.SEALEVEL'
+          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE SEA LEVEL'
           I = I + 1
           VNAME_T2D(I) = 'MODEL.TIDALRANGE'
           VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.TIDALVELOCITY'
-          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE TIDAL VELOCITIES'
+          VNAME_T2D(I) = 'MODEL.UBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON U FOR EACH BOUNDARY POINT'
           I = I + 1
-          VNAME_T2D(I) = 'MODEL.SEALEVEL'
-          VINFO_T2D(I) = 'COEFFICIENT TO CALIBRATE SEA LEVEL'
+          VNAME_T2D(I) = 'MODEL.VBOR'
+          VINFO_T2D(I) = 'BOUNDARY VALUE ON V FOR EACH BOUNDARY POINT'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.VELOCITYU'
+          VINFO_T2D(I) = 'VELOCITY ON U'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.VELOCITYV'
+          VINFO_T2D(I) = 'VELOCITY ON V'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.WATERDEPTH'
+          VINFO_T2D(I) = 'DEPTH OF THE WATER'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.X'
+          VINFO_T2D(I) = 'X COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.XNEBOR'
+          VINFO_T2D(I) = 'NORMAL X TO 1D BOUNDARY POINTS'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.Y'
+          VINFO_T2D(I) = 'Y COORDINATES FOR EACH POINT OF THE MESH'
+          I = I + 1
+          VNAME_T2D(I) = 'MODEL.YNEBOR'
+          VINFO_T2D(I) = 'NORMAL Y TO 1D BOUNDARY POINTS'
         ENDIF
 !
       END SUBROUTINE SET_VAR_LIST_T2D_D

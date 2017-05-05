@@ -439,6 +439,7 @@
         INTEGER                                   :: ID1
         INTEGER                                   :: ID2
         INTEGER                                   :: ID3
+        INTEGER :: GETPOS, SETPOS
         DOUBLE PRECISION P_DMIN,P_DMAX
         EXTERNAL P_DMIN,P_DMAX
 !
@@ -449,7 +450,7 @@
         IF(GLOBAL_NUM)THEN
 
           CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
-     &                         NDIM,IENT,JENT,KENT,IERR)
+     &                         NDIM,IENT,JENT,KENT,GETPOS,SETPOS,IERR)
           IF(IENT.EQ.1)THEN
              ID1 = GLOBAL_TO_LOCAL_POINT(INDEX1,
      &                                   INSTANCE_LIST_T2D(ID)%MESH)
@@ -543,13 +544,14 @@
         INTEGER                                   :: ID1
         INTEGER                                   :: ID2
         INTEGER                                   :: ID3
+        INTEGER :: GETPOS,SETPOS
 !
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
         IF(GLOBAL_NUM)THEN
           CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
-     &                         NDIM,IENT,JENT,KENT,IERR)
+     &                         NDIM,IENT,JENT,KENT,GETPOS,SETPOS,IERR)
           ! TODO: Create dedcaced error message
 
           IF ((IENT.EQ.1).AND.(ID1.LE.0).OR.
@@ -847,11 +849,14 @@
       !PARAM IENT      [OUT]    1 if the numbering is on point
       !PARAM JENT      [OUT]    1 if the numbering is on point
       !PARAM KENT      [OUT]    1 if the numbering is on point
+      !PARAM GETPOS    [OUT]    1 if the numbering is on point
+      !PARAM SETPOS    [OUT]    1 if the numbering is on point
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_TYPE_T2D
-     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT, IERR)
+     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
+     &         GETPOS,SETPOS,IERR)
           CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
           CHARACTER(LEN=T2D_TYPE_LEN),     INTENT(OUT) :: VARTYPE
           LOGICAL,               INTENT(OUT) :: READONLY
@@ -860,9 +865,12 @@
           INTEGER,               INTENT(OUT) :: IENT
           INTEGER,               INTENT(OUT) :: JENT
           INTEGER,               INTENT(OUT) :: KENT
+          INTEGER,                     INTENT(OUT) :: GETPOS
+          INTEGER,                     INTENT(OUT) :: SETPOS
 !
         CALL GET_VAR_TYPE_T2D_D
-     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT, IERR)
+     &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
+     &         GETPOS, SETPOS, IERR)
       END SUBROUTINE GET_VAR_TYPE_T2D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

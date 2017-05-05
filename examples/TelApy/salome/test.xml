@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<proc name="Function_G">
+   <property name="DefaultStudyID" value="1"/>
+   <type name="bool" kind="bool"/>
+   <type name="double" kind="double"/>
+   <objref name="file" id="file"/>
+   <type name="int" kind="int"/>
+   <type name="string" kind="string"/>
+   <container name="DefaultContainer">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+      <property name="container_name" value="FactoryServer"/>
+      <property name="name" value="localhost"/>
+   </container>
+   <container name="container0">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <container name="container1">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <container name="container2">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+   </container>
+   <bloc name="Function_G">
+      <remote name="STUDY">
+         <function name="my_study">
+            <code><![CDATA[#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Class Telemac2d import
+from TelApy.api.t2d import Telemac2d
+from mpi4py import MPI
+
+def study_function(q0, q1):
+    comm = MPI.COMM_WORLD
+    # Creation of the instance Telemac2d
+    my_module = Telemac2d('/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/t2d_gouttedo.cas', user_fortran='/home/B61570/opentelemac/git/branches/weirdfish/examples/telemac2d/gouttedo/user_fortran/condin.f', comm=comm)
+    ierr = 0
+
+    # Reading the steering file informations
+    my_module.set_case()
+
+    # Initalization
+    my_module.init_state_default()
+    my_study.set('MODEL.DEBIT', q0, i=1, j=0, k=0)
+    my_study.set('MODEL.DEBIT', q1, i=2, j=0, k=0)
+
+    # Run all time steps
+    my_module.run_all_time_steps()
+    h0 = my_study.get('MODEL.WATERDEPTH', i=25, j=0, k=0)
+    h1 = my_study.get('MODEL.WATERDEPTH', i=666, j=0, k=0)
+
+    # Ending the run
+    my_module.finalize()
+
+    # Instance delete
+    del(my_module)
+
+    return h0, h1
+]]></code>
+         </function>
+         <load container="container0"/>
+         <inport name="q0" type="double"/>
+         <inport name="q1" type="int"/>
+         <inport name="q2" type="string"/>
+         <inport name="q3" type="bool"/>
+         <outport name="h0" type="double"/>
+         <outport name="h1" type="double"/>
+      </remote>
+   </bloc>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>q0</toport>
+      <value><double>10</double></value>
+   </parameter>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>q1</toport>
+      <value><int>100</int></value>
+   </parameter>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>q2</toport>
+      <value><string>qsd</string></value>
+   </parameter>
+   <parameter>
+      <tonode>Function_G.STUDY</tonode><toport>q3</toport>
+      <value><boolean>0</boolean></value>
+   </parameter>
+</proc>
