@@ -13,7 +13,7 @@
      & VNP1MT,DENOM,VOLUN_SUB,VOLU_SUB,ZSUBN,ZSUBP)
 !
 !***********************************************************************
-! TELEMAC3D   V7P2
+! TELEMAC3D   V7P3
 !***********************************************************************
 !
 !brief ADVECTION OF A VARIABLE WITH THE
@@ -37,6 +37,12 @@
 !+     V7P2
 !+   Simplification, height of prism no longer taken into account when
 !+   computing SUR2VOL. Corresponding modification in FLUX_IMP3D.
+!
+!history J-M HERVOUET (EDF LAB, LNHE)
+!+     05/05/2017
+!+     V7P3
+!+   Old volumes and new volumes were not correctly set in case of
+!+   sub-steps, i.e. when NSP_DIST>1, causing a loss of tracer mass.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| MATRIX
@@ -507,10 +513,21 @@
           CALL OV('X=Y     ',FC   ,FN,FN,C,NPOIN3)
         ELSE
           CALL OV('X=Y     ',FNSUB,FC,FC,C,NPOIN3)
+!         WHY NOT ?
+!         CALL OV('X=Y     ',FC   ,FNSUB,FNSUB,C,NPOIN3)
         ENDIF
 !
 !       VOLUMES AT THE BEGINNING AND END OF THE SUB-ITERATION
 !
+        IF(ITER.EQ.1) THEN
+          DO I=1,NPOIN3
+            VOLUN_SUB%R(I)=VOLUN(I)
+          ENDDO
+        ELSE
+          DO I=1,NPOIN3
+            VOLUN_SUB%R(I)=VOLU_SUB%R(I)
+          ENDDO
+        ENDIF
         IF(ITER.EQ.NSP_DIST) THEN
           DO I=1,NPOIN3
             VOLU_SUB%R(I)=VOLU(I)
@@ -519,15 +536,6 @@
           C=ITER*SURNSP
           DO I=1,NPOIN3
             VOLU_SUB%R(I)=VOLUN(I)+C*(VOLU(I)-VOLUN(I))
-          ENDDO
-        ENDIF
-        IF(ITER.EQ.1) THEN
-          DO I=1,NPOIN3
-            VOLUN_SUB%R(I)=VOLUN(I)
-          ENDDO
-        ELSE
-          DO I=1,NPOIN3
-            VOLUN_SUB%R(I)=VOLU_SUB%R(I)
           ENDDO
         ENDIF
 !
@@ -815,4 +823,3 @@
 !
       RETURN
       END
-
