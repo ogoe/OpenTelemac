@@ -70,45 +70,45 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION SEUIL , DTETAR, AUX3  , AUX4, A1, A2 
+      DOUBLE PRECISION SEUIL , DTETAR, AUX3  , AUX4, A1, A2
 !
 !
       SEUIL = 1.D-20
       DTETAR= DEUPI/DBLE(NPLAN)
       DO IP = 1,NPOIN2
-         A1=0.D0
-         A2=0.D0
+        A1=0.D0
+        A2=0.D0
 !
-!-----C-------------------------------------------------------C
-!-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
-!-----C-------------------------------------------------------C
-         DO JF = 1,NF-1
-            AUX3=DTETAR*DFREQ(JF)
-            AUX4=AUX3/FREQ(JF)
-            DO JP = 1,NPLAN
-               A1 = A1 + F(IP,JP,JF)*AUX3
-               A2 = A2 + F(IP,JP,JF)*AUX4
-            ENDDO               ! JP
-         ENDDO                  ! JF
+!       -------------------------------------------------------C
+!        SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
+!       -------------------------------------------------------C
+        DO JF = 1,NF-1
+          AUX3=DTETAR*DFREQ(JF)
+          AUX4=AUX3/FREQ(JF)
+          DO JP = 1,NPLAN
+            A1 = A1 + F(IP,JP,JF)*AUX3
+            A2 = A2 + F(IP,JP,JF)*AUX4
+          ENDDO               ! JP
+        ENDDO                  ! JF
 !
-!-----C-------------------------------------------------------------C
-!-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
-!-----C-------------------------------------------------------------C
-         IF (TAILF.GT.1.D0) THEN
-            AUX3=DTETAR*(DFREQ(NF)+FREQ(NF)/(TAILF-1.D0))
-            AUX4=DTETAR*(DFREQ(NF)/FREQ(NF)+1.D0/TAILF)
-         ELSE
-            AUX3=DTETAR*DFREQ(NF)
-            AUX4=AUX3/FREQ(NF)
-         ENDIF
-         DO JP = 1,NPLAN
-            A1 = A1 + F(IP,JP,NF)*AUX3
-            A2 = A2 + F(IP,JP,NF)*AUX4
-         ENDDO                  ! JP
+!       -------------------------------------------------------------C
+!        (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
+!       -------------------------------------------------------------C
+        IF (TAILF.GT.1.D0) THEN
+          AUX3=DTETAR*(DFREQ(NF)+FREQ(NF)/(TAILF-1.D0))
+          AUX4=DTETAR*(DFREQ(NF)/FREQ(NF)+1.D0/TAILF)
+        ELSE
+          AUX3=DTETAR*DFREQ(NF)
+          AUX4=AUX3/FREQ(NF)
+        ENDIF
+        DO JP = 1,NPLAN
+          A1 = A1 + F(IP,JP,NF)*AUX3
+          A2 = A2 + F(IP,JP,NF)*AUX4
+        ENDDO                  ! JP
 !
-!-----C-------------------------------------------------------------C
-!-----C COMPUTES THE MEAN FREQUENCY                                 C
-!-----C-------------------------------------------------------------C
+!       -------------------------------------------------------------C
+!        COMPUTES THE MEAN FREQUENCY                                 C
+!       -------------------------------------------------------------C
         IF (A2.LT.SEUIL) THEN
           FMOY(IP) = SEUIL
         ELSE

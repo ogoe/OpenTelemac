@@ -68,57 +68,56 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION SEUIL , AUXI  , COEFN  , COEFD , DTETAR, DENOM,E 
+      DOUBLE PRECISION SEUIL , AUXI  , COEFN  , COEFD , DTETAR, DENOM,E
 !
 !
       SEUIL =1.D-20
       DTETAR=DEUPI/DBLE(NPLAN)
       DO IP = 1,NPOIN2
-         FREAD(IP)=0.D0
-         DENOM=0.D0
+        FREAD(IP)=0.D0
+        DENOM=0.D0
 !
-!-----C-------------------------------------------------------C
-!-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
-!-----C-------------------------------------------------------C
-         DO JF=1,NF
+!       ------------------------------------------------------C
+!       SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C
+!       ------------------------------------------------------C
+        DO JF=1,NF
 !
 !.......INTEGRATES WRT DIRECTIONS TO GET E(F)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
-            E = 0.D0
-            DO JP=1,NPLAN
-               E = E + F(IP,JP,JF)*DTETAR
-            ENDDO               ! JP
+          E = 0.D0
+          DO JP=1,NPLAN
+            E = E + F(IP,JP,JF)*DTETAR
+          ENDDO               ! JP
 !
 !.......SUMS UP THE CONTRIBUTION OF THE FREQUENCY F
 !       """""""""""""""""""""""""""""""""""""""""""
-            IF (E.GT.SEUIL) THEN
-               AUXI = E**EXPO*DFREQ(JF)
-               FREAD(IP) = FREAD(IP)+AUXI*FREQ(JF)
-               DENOM = DENOM+AUXI
-            ENDIF
+          IF (E.GT.SEUIL) THEN
+            AUXI = E**EXPO*DFREQ(JF)
+            FREAD(IP) = FREAD(IP)+AUXI*FREQ(JF)
+            DENOM = DENOM+AUXI
+          ENDIF
 !
-         ENDDO                  ! JF
+        ENDDO                  ! JF
 !
 !-----C-------------------------------------------------------------C
 !-----C (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART     C
 !-----C-------------------------------------------------------------C
-         IF (TAILF.GT.1.D0) THEN
-            COEFN=FREQ(NF)**2/(TAILF*EXPO-2.D0)
-            COEFD=FREQ(NF)   /(TAILF*EXPO-1.D0)
-            AUXI=E**EXPO
-            FREAD(IP) = FREAD(IP)+AUXI*COEFN
-            DENOM = DENOM+AUXI*COEFD
-         ENDIF
+        IF (TAILF.GT.1.D0) THEN
+          COEFN=FREQ(NF)**2/(TAILF*EXPO-2.D0)
+          COEFD=FREQ(NF)   /(TAILF*EXPO-1.D0)
+          AUXI=E**EXPO
+          FREAD(IP) = FREAD(IP)+AUXI*COEFN
+          DENOM = DENOM+AUXI*COEFD
+        ENDIF
 !
 !-----C-------------------------------------------------------------C
 !-----C COMPUTES THE PEAK FREQUENCY                                 C
 !-----C-------------------------------------------------------------C
-!      DO IP=1,NPOIN2
-         IF (DENOM.LT.1.D-90) THEN
-            FREAD(IP) = SEUIL
-         ELSE
-            FREAD(IP) = FREAD(IP)/DENOM
-         ENDIF
+        IF (DENOM.LT.1.D-90) THEN
+          FREAD(IP) = SEUIL
+        ELSE
+          FREAD(IP) = FREAD(IP)/DENOM
+        ENDIF
       ENDDO                     ! IP
 !
       RETURN

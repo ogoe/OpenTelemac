@@ -156,7 +156,7 @@
             FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,1)*FLULIMEBE(IELEM,1)
           ELSE
             FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,1)*FLULIMEBE(IELEM,1)
-         ENDIF
+          ENDIF
 !         SEGMENT 2
           ISEG  = ELTSEG(IELEM,2)
           IF(ORISEG(IELEM,2).EQ.1) THEN
@@ -181,7 +181,7 @@
             FLOW(ISEG) = FLOW(ISEG) + PHIEL(IELEM,1)
           ELSE
             FLOW(ISEG) = FLOW(ISEG) - PHIEL(IELEM,1)
-         ENDIF
+          ENDIF
 !         SEGMENT 2
           ISEG  = ELTSEG(IELEM,2)
           IF(ORISEG(IELEM,2).EQ.1) THEN

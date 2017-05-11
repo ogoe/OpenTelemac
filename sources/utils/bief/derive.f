@@ -70,7 +70,7 @@
 !+        14/01/2017
 !+        V7P2
 !+  bug fix and  better preparation of the call of SCARACT for 3D.
-!+    see lines between !RA   
+!+    see lines between !RA
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -108,7 +108,7 @@
 !| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
 !|                |   | TRANSFORMATION.
 !| TAGFLO         |-->| TAGS OF FLOATS
-!| TRANSF         |-->| 3D MESH TRANSFORMATION 
+!| TRANSF         |-->| 3D MESH TRANSFORMATION
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| UL             |-->| LOGICAL UNIT OF OUTPUT FILE
 !| V              |-->| Y-COMPONENT OF VELOCITY
@@ -400,7 +400,7 @@
      &               SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
      &               APOST=.TRUE.,ASIGMA=SSIGMA,ASTOCHA=STOCHA,
 !                    APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
-     1               AVISC=VISC)
+     &               AVISC=VISC)
       ENDIF
 !
 !-----------------------------------------------------------------------

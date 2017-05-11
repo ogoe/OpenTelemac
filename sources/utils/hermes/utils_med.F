@@ -2606,7 +2606,6 @@
       ENDDO
       ! For boundary elements
       IF(TYP_BND_ELEM.NE.0) THEN
-        write(*,*) 'Adding bnd group'
 !       READ THE FAMILY NUMBER FOR EACH ELEMENT
         CALL CONVERT_ELEM_TYPE(TYP_BND_ELEM, TYPE_ELEM_MED, IERR)
         CALL CHECK_CALL(IERR,'IDENTIFY_BND_ELMT:CONVERT_ELEM_TYPE')

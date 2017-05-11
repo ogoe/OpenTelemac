@@ -23,12 +23,12 @@
 !+        ARE TAKEN INTO ACCOUNT :
 !+
 !+              - SECONDARY CURRENT
-!+              
+!+
 !+              - WIND
 !+
 !+              - CORIOLIS FORCE (DONE IN SOURCE_MOMENT)
 !+
-!+              - TIDAL FORCE 
+!+              - TIDAL FORCE
 !+
 !+              - SOURCES AND SINKS
 !+
@@ -326,7 +326,7 @@
 !                FV           =  - FCOR * U
 !                  CORIOLIS
 !=======================================================================
-!    TIDAL FORCES 
+!    TIDAL FORCES
 !=======================================================================
 !
       IF(SPHERI.AND.MAREE) THEN
@@ -426,11 +426,11 @@
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
 !            LINEAR VERSION NOT COMAPTIBLE WITH FV
-!              SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
-               IF(LNG.EQ.1) WRITE(LU,322)
-               IF(LNG.EQ.2) WRITE(LU,323)
-               CALL PLANTE(1)
-               STOP
+!             SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
+              IF(LNG.EQ.1) WRITE(LU,322)
+              IF(LNG.EQ.2) WRITE(LU,323)
+              CALL PLANTE(1)
+              STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)+DSCE(I)
@@ -471,11 +471,11 @@
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
 !             LINEAR VERSION NOT COMAPTIBLE WITH FV
-!              SMH%R(IR)=SMH%R(IR)-DSIP(I)*UNSV2D%R(IR)
-               IF(LNG.EQ.1) WRITE(LU,322)
-               IF(LNG.EQ.2) WRITE(LU,323)
-               CALL PLANTE(1)
-               STOP
+!             SMH%R(IR)=SMH%R(IR)-DSIP(I)*UNSV2D%R(IR)
+              IF(LNG.EQ.1) WRITE(LU,322)
+              IF(LNG.EQ.2) WRITE(LU,323)
+              CALL PLANTE(1)
+              STOP
             ELSE
 !             "DIRAC" VERSION
               SMH%R(IR)=SMH%R(IR)-DSIP(I)

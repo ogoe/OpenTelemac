@@ -213,7 +213,6 @@
       INTEGER :: MYLEN,POS_WORD,POS_EGAL,IDX
       INTEGER :: I
       CHARACTER(LEN=CHOIX_LEN) :: CHOIX
-      integer j
       !
       POS_WORD = 1
       I = 1

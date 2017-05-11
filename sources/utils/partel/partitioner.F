@@ -127,8 +127,6 @@
      &        (NELEM, NPOIN, EPTR, EIND,
      &          NCOMMONNODES, NPARTS,
      &          EDGECUT, EPART, NPART)
-        write(lu,*) count(epart==1)
-        write(lu,*) count(epart==0)
 #else
         WRITE(LU,*) 'ERROR: TRY TO RUN PARTEL WITH A '//
      &              'SERIAL CONFIGURATION'

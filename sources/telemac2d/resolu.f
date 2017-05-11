@@ -353,10 +353,10 @@
         ENDDO
       ENDIF
 !     ==================================================================
-!     LISTING FOR 1ST TIME STEP 
+!     LISTING FOR 1ST TIME STEP
 !     ==================================================================
       IF(LT.EQ.1) CALL ENTETE(1,AT,LT,SCHEME=ICIN,ORDRE=NORDRE)
-!      
+!
       IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
 !        ROE SCHEME
@@ -504,8 +504,8 @@
 !
       DT = MIN(DTN,TMAX-AT)
 !
-!     GRAPHICAL OUTPUT FOR ORDER 2 
-!     
+!     GRAPHICAL OUTPUT FOR ORDER 2
+!
       IF(NORDRE.EQ.2)THEN
         THEEND =.FALSE.
         LEO    =.FALSE.
@@ -836,7 +836,7 @@
      &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
      &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
-!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS  
+!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS
 !
       CALL  SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
      &                    CF,YACORIOL,CORIOLIS,
@@ -906,7 +906,7 @@
      &           HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,
      &           G,RAIN,PLUIE%R,FU%R,FV%R)
 !
-!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS  
+!  SEMI-IMPLICIT MOMENTUM SOURCE TERMS
 !
       CALL SOURCE_MOMENT(NPOIN,G,DT,W,HN,QU,QV,KFROT.NE.0,
      &                    CF,YACORIOL,CORIOLIS,
@@ -916,53 +916,53 @@
 !
       ENDIF ! THIS IF FOR THE CHOICE OF SCHEME
 !
-      IF(ICIN.NE.1.AND.ICIN.NE.2)THEN  ! FOR KINETIC SCHEMES IT IS ALREADY DONE 
+      IF(ICIN.NE.1.AND.ICIN.NE.2)THEN  ! FOR KINETIC SCHEMES IT IS ALREADY DONE
 !
 !-----------------------------------------------------------------------
 !  COMPUTES VOLUME ADDED BY SOURCES
 !-----------------------------------------------------------------------
 !
-       IF(BILMAS)THEN
-         MASSES   = 0.D0
-         MASS_RAIN= 0.D0
-!        IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-         IF(YASMH) THEN
-           DO  I=1,NPOIN
-             MASSES = MASSES + SMH(I)
-           ENDDO
-         ENDIF
-!        RAIN AND EVAPORATION
-         IF(RAIN)THEN
-            CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                  1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-            MASS_RAIN =BIEF_SUM(T6)
-         ENDIF
-         MASSES = DT*(MASSES + MASS_RAIN)
-       ENDIF
+        IF(BILMAS)THEN
+          MASSES   = 0.D0
+          MASS_RAIN= 0.D0
+!         IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+          IF(YASMH) THEN
+            DO  I=1,NPOIN
+              MASSES = MASSES + SMH(I)
+            ENDDO
+          ENDIF
+!         RAIN AND EVAPORATION
+          IF(RAIN)THEN
+             CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                   1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+             MASS_RAIN =BIEF_SUM(T6)
+          ENDIF
+          MASSES = DT*(MASSES + MASS_RAIN)
+        ENDIF
 !
 !-----------------------------------------------------------------------
 !      PREPARE VARIABLES FOR OUTPUT AND FOR NEXT TIME STEP
 !-----------------------------------------------------------------------
 !
-       DO I=1,NPOIN
-         H(I)  = W(1,I)
-         QU(I) = W(2,I)
-         QV(I) = W(3,I)
-!        SAVE FLUXES FOR NEXT TIME STEP
-         FLUX_OLD(I,1) = FLUX(I,1)
-         FLUX_OLD(I,2) = FLUX(I,2)
-         FLUX_OLD(I,3) = FLUX(I,3)
+        DO I=1,NPOIN
+          H(I)  = W(1,I)
+          QU(I) = W(2,I)
+          QV(I) = W(3,I)
+!         SAVE FLUXES FOR NEXT TIME STEP
+          FLUX_OLD(I,1) = FLUX(I,1)
+          FLUX_OLD(I,2) = FLUX(I,2)
+          FLUX_OLD(I,3) = FLUX(I,3)
 !
-!        COMPUTE U AND V
+!         COMPUTE U AND V
 !
-         IF (H(I).GT.EPS) THEN
-           U(I)  = W(2,I) / H(I)
-           V(I)  = W(3,I) / H(I)
-         ELSE
-           U(I) = 0.D0
-           V(I) = 0.D0
-         ENDIF
-       ENDDO 
+          IF (H(I).GT.EPS) THEN
+            U(I)  = W(2,I) / H(I)
+            V(I)  = W(3,I) / H(I)
+          ELSE
+            U(I) = 0.D0
+            V(I) = 0.D0
+          ENDIF
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

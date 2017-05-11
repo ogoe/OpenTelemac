@@ -750,7 +750,6 @@
 !
 100   CONTINUE
       ! New keyword
-      write(*,*) "LIGNE: ",LIGNE
 !
 ! IF REACHED THE END OF FILE :
 !

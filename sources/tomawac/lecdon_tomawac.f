@@ -620,7 +620,7 @@
 ! AND NO DISSIPATION COEFFICIENT FOR STRONG CURRENT
            IF (LNG.EQ.1) THEN
               WRITE(LU,*) '******************************************'
-              WRITE(LU,*) ' PAS DE DISSIPATION PAR COURANT FORT'              
+              WRITE(LU,*) ' PAS DE DISSIPATION PAR COURANT FORT'
               WRITE(LU,*) '******************************************'
            ELSE
               WRITE(LU,*) '*****************************************'

@@ -395,11 +395,9 @@
           IERR = 0
           IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
             I = INST%T2DRES
-            write(*,*) value
             DO J=1,VALUELEN
               INST%T2D_FILES(I)%NAME(J:J) = VALUE(J)
             ENDDO
-            write(*,*) INST%T2D_FILES(I)%NAME
           ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
             IERR = 1
           ELSE
