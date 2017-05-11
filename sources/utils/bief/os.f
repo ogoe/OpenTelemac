@@ -81,6 +81,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -99,6 +103,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OS => OS
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -245,7 +250,12 @@
 !
         ELSE
 !
-          CALL OV(OP,X%R,YY%R,ZZ%R,CC,X%DIM1)
+          IF ( MODASS .EQ.1 .OR. MODASS .EQ. 2) THEN
+            CALL OV(OP,X%R,YY%R,ZZ%R,CC,X%DIM1)
+          ELSEIF (MODASS .EQ. 3 .OR. MODASS .EQ. 4) THEN
+            CALL OV_COMP(OP,X%R,YY%R,ZZ%R,CC,X%DIM1
+     &      ,X%E, YY%E , ZZ%E)
+          ENDIF
 !
         ENDIF
 !

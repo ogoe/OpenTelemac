@@ -139,7 +139,7 @@
 \RequirePackage{tikz} % Required for drawing custom shapes
 \usetikzlibrary{positioning,shapes.misc}
 \usetikzlibrary{decorations.pathmorphing}
-\usetikzlibrary{shapes,fit}
+\usetikzlibrary{shapes,fit,arrows}
 \definecolor{fbase}{gray}{0.95}
 \definecolor{cPG}{RGB}{235, 227, 150}
 \definecolor{link}{RGB}{150, 81, 0}

@@ -1,0 +1,701 @@
+\definecolor{babypink}{rgb}{0.96, 0.76, 0.76}
+\newcommand{\red}{\color{red}}
+\newcommand{\ie}{{\it i.e.}~}
+\lstset{escapeinside={(*@}{@*)}}
+\newcommand{\Hilight}{\makebox[0pt][l]{\color{babypink}\rule[-2pt]{\linewidth}{10pt}}}
+\chapter{How to implement reproducibility in openTelemac}
+\label{ref:reprod_guide}
+%
+%
+In \cite{LaND15} and \cite{LaND16}, we analyse and obtain the numerical reproducibility  
+of \textit{gouttedo} and \textit{Nice}, two test cases of the modules {{\scshape Telemac-2D}\xspace}
+and \tomawac, by using the compensation techniques. 
+To obtain a full reproducibility, \ie in all openTelemac
+modules, these techniques have 
+to be integrated in other computations that differ between the sequential
+execution and the parallel one. 
+To facilitate such a task, this chapter aims to be a useful technical 
+document.
+%
+We start describing in Section~\ref{sec:methodology} the methodology to
+track the computation of the concerned problem. This process
+aims to identify the sources which produce the non-reproducibility.
+Then, we detail the modifications introduced in the code.
+As already mentioned, openTelemac relies on its finite element library BIEF.
+This one includes many Fortran~90 subroutines  
+which provide the data structure, the building and 
+the solving phases of the simulation.
+Almost all our modifications have been restricted
+to these library subroutines.
+We describe four types of modification: data structure,
+algebraic operations, building phase and solving phase. 
+We exhibit and explain the modified parts highlighting them and commenting them in 
+the listings proposed along the chapter.\\
+%
+%
+The users choose between the original computation or a reproducible one, 
+in the test case file (where all the parameters of the simulation are defined) 
+via the keyword "FINITE ELEMENT ASSEMBLY"
+(or "ASSEMBLAGE EN ELEMENTS FINIS" in French).
+It corresponds to the Fortran variable \texttt{MODASS} 
+that takes the values 1,2 and 3 respectively for the original, 
+the integer and the compensated mode.
+%
+In this chapter we only consider the implementation of 
+the compensated computation.
+%
+\section{Methodology}
+\label{sec:methodology}
+%
+We describe how to identify the source of 
+non-reproducibility in a computation sequence. 
+The strategy is to observe the components
+of the linear system as the computation is progressing.
+For that, we introduce the subroutine \texttt{glob\_vec} 
+to observe the reproducibility of a concerned vector after each computation, 
+see Listing~\ref{lst:GlobVec}. 
+This process allows us to detect if a computation is reproducible or not.\\
+%
+In a parallel simulation, the vectors are distributed over the sub-domains where each 
+node has a local and a global number. 
+In order to compare the component values when the sub-domain number differs, 
+we need to rebuild the global vector, \ie for the whole domain. 
+For that we use the structure \texttt{KNOLG} which maps the local number of a component
+to the global one.
+This treatment is realized in
+lines from \ref{ln:begin_glob_vec} to \ref{ln:end_glob_vec}.\\
+%
+As detailed in \cite{LaND15} and \cite{LaND16}, reproducibility can be observed 
+only after the interface point assembly (and the compensation), because
+the interface points are different for one 
+decomposition to another.\\
+For that, in our observation we identify if the interface point assembly
+has been already performed in lines \ref{ln:test_IPass1} and \ref{ln:test_IPass2}
+of Listing~\ref{lst:GlobVec}. If it is not the case, we call the assembly processing \texttt{parcom}
+or \texttt{parcom\_comp}, corresponding to the computation mode.
+(we note that the test are realized on a copy of the component, line \ref{ln:test_copy}).
+In the compensated mode (\texttt{MODASS}=3), the sequential and 
+the parallel cases both benefit from the compensation, lines~\ref{ln:comp_seq} and \ref{ln:comp_par} respectively .
+
+\begin{lstlisting}[language=TelFortran, caption={The BIEF\_OBJ structure in \texttt{glob\_vec}},label={lst:GlobVec},escapechar=\$]
+!Input: X is the observed vector, if FLAG_ASS is true an
+!interface point assembly is performed
+!Copy the concerned vector to a temporary one
+CALL OS('X=Y     ',X=MESH%T,Y=X) $\label{ln:test_copy}$
+!In parallel case
+IF (NCSIZE .NE. 0) THEN 
+  IF (MODASS .EQ. 1) THEN
+    IF(FLAG_ASS) CALL PARCOM(MESH%T,2,MESH) $\label{ln:test_IPass1}$
+  ELSEIF (MODASS .EQ. 3) THEN
+    IF(FLAG_ASS)  THEN $\label{ln:test_IPass2}$
+      CALL PARCOM_COMP(MESH%T,MESH%T%E,2,MESH)   $\label{ln:begin_glob_vec}$
+      MESH%T%R=MESH%T%R+MESH%T%E $\label{ln:comp_par}$
+    ENDIF
+  ENDIF
+!Procedure to obtain the global vector 
+!which is distributed over the sub-domains
+!Each sub-domain stores its maximum local point
+  NPOIN_GLOBAL=MAXVAL(MESH%KNOLG%I) $\label{ln:begin_glob_vec}$
+!Sub-domains exchange their maximal local points to store the maximal, 
+!which represents the number of nodes in the whole domain
+  NPOIN_GLOBAL=P_IMAX(NPOIN_GLOBAL) 
+  ALLOCATE(VALUE_GLOBAL(NPOIN_GLOBAL))
+  VALUE_GLOBAL(:)=HUGE(1.D0)
+  DO I=1,NPOIN
+     VALUE_GLOBAL(MESH%KNOLG%I(I))=MESH%T%R(I)
+  END DO
+  DO I=1,NPOIN_GLOBAL
+     VALUE_GLOBAL(I)=P_DMIN(VALUE_GLOBAL(I))
+  END DO $\label{ln:end_glob_vec}$
+!Write the result by the master sub-domains in a file
+  IF (IPID .EQ. 0) THEN 
+    OPEN(UNIT=99,FILE='./'//X%NAME//'VEC_GLOBAL.TXT')
+    WRITE(99,*)  X%NAME,", NB POINTS:",NPOIN_GLOBAL
+    DO I=1,NPOIN_GLOBAL
+      WRITE(99,*) VALUE_GLOBAL(I)
+      CALL FLUSH(99)
+    END DO
+    CLOSE(99)
+  END IF
+  CALL P_SYNC
+!In sequential case, write the results in a file
+ELSE
+  IF ((MODASS .EQ.3) .AND. FLAG_ASS)THEN
+    MESH%T%R=MESH%T%R+MESH%T%E $\label{ln:comp_seq}$
+  ENDIF
+  OPEN(UNIT=99,FILE='./'//X%NAME//'VEC_GLOBAL.TXT')
+  WRITE(99,*) X%NAME,", NB POINTS:",NPOIN
+  DO I=1,NPOIN
+     WRITE(99,*) MESH%T%R(I)
+     CALL FLUSH(99)
+  END DO
+  CLOSE(99)
+END IF
+\end{lstlisting}
+%
+\section{Modifications in the data structure }
+\label{sec:imple_data}
+%
+The main data type in the BIEF library is 
+\texttt{BIEF\_OBJ} which may be a vector, a matrix or a block.
+The part of the subroutine \texttt{bief\_def} in Listing~\ref{lst:BIEF_OBJ_struct}
+illustrates some of the vector and matrix structure types.\\
+%
+We write \texttt{V\%R} the $R$ component of the vector $V$ 
+which corresponds to the data. 
+%Let $V$ be a vector, component $R$ corresponds to the data and
+%we write \texttt{V\%R} to access to it.
+In the compensated version, these $R$ values will be associated,  
+when necessary, with the accumulation of the corresponding generated rounding errors.
+These errors will be stored in a component named $E$, and
+we write \texttt{V\%E} to access to it. 
+The same notations exist for a diagonal $D$ of the matrix $M$:
+we write \texttt{M\%D\%R} for the data and \texttt{M\%D\%E} for the errors.
+The component $E$ accumulates the generated rounding errors in each computation with 
+$R$, this latter will be corrected by a compensation $R+E$.
+%
+\begin{lstlisting}[language=TelFortran,caption={The BIEF\_OBJ structure in \texttt{bief\_def}},label={lst:BIEF_OBJ_struct},escapechar=\$]
+! Structures in the object BIEF_OBJ:
+TYPE BIEF_OBJ
+  INTEGER TYPE         ! 2: vector,  3: matrix,  4: block
+  CHARACTER(LEN=6) NAME  ! Name of the object
+! For vectors 
+  INTEGER NAT            ! 1:DOUBLE PRECISION  2:INTEGER
+  INTEGER ELM            ! Type of element
+  INTEGER DIM1           ! First dimension
+  INTEGER DIM2           ! Second dimension
+! Double precision vector
+! Data are stored here
+  DOUBLE PRECISION,POINTER,DIMENSION(:)::R  
+$\Hilight$ ! Errors are stored here     
+$\Hilight$     DOUBLE PRECISION, POINTER,DIMENSION(:)::E 
+! For matrices
+! 1: EBE storage  3: EDGE-BASED storage
+  INTEGER STO            
+! Pointer to a BIEF_OBJ for the diagonal
+  TYPE(BIEF_OBJ),POINTER :: D  
+! Pointer to a BIEF_OBJ for extra-diagonal terms
+  TYPE(BIEF_OBJ),POINTER :: X  
+END TYPE BIEF_OBJ
+\end{lstlisting}
+%
+%
+\begin{description}
+\item \textbf{Note 1.} The new component \texttt{V\%E} is allocated in the 
+subroutine \texttt{bief\_allvec}.
+%
+\item \textbf{Note 2.} When the routine parameters only include \texttt{BIEF\_OBJ} type,
+our modifications are automatically available in the body of the subroutine:
+all the structure components are accessible as \texttt{V\%R} or \texttt{V\%E}. 
+Nevertheless, some subroutines work directly with double precision vectors that
+used to pass an object's component, as \texttt{V\%R}.
+In this case, we have to modify the subroutine parameter by manually
+adding a supplementary one for \texttt{V\%E}.
+\end{description}
+%
+\section{Modifications in the algebraic operations } 
+\label{sec:imple_op}
+%
+In \cite{LaND16}, we explain how the 
+rounding errors \texttt{V\%E} must be updated for each  
+algebraic operation on \texttt{V\%R}.
+Every operation on a block or a vector is called by 
+the subroutine \texttt{os}, which only verifies the structure 
+before calling the subroutine \texttt{ov}.
+This latter computes the required operation $op$ 
+on the passed vectors \texttt{X\%R}, \texttt{Y\%R}, \texttt{Z\%R},
+for instance it computes \texttt{X\%R = Y\%R + Z\%R}.\\
+%
+In the compensated mode, the new subroutine 
+\texttt{ov\_comp} is called, and the passed vectors 
+are associated with their own error vectors
+\texttt{X\%E}, \texttt{Y\%E}, \texttt{Z\%E}, to also update them.
+Listing~\ref{lst:ov_comp} illustrates the modified vector add and 
+the Hadamard product, for instance.
+%
+\begin{lstlisting}[language=TelFortran, caption={The algebraic operations in \texttt{ov\_comp} },label={lst:ov_comp},escapechar=\$]
+!X,Y and Z represent the values
+!!X_ERR,Y_ERR and Z_ERR represent the errors
+!For initialization
+CASE('0     ')
+DO I=1,NPOIN
+   X(I) = 0.D0
+$\Hilight$    X_ERR(I)=0.D0
+ENDDO
+!Copy Y to X
+CASE('Y     ')
+DO I=1,NPOIN
+  X(I) = Y(I)
+$\Hilight$   X_ERR(I) = Y_ERR(I)
+ENDDO
+!Add two vectors
+!In the original code is X(I) = Y(I) + Z(I) 
+DO I=1,NPOIN
+$\Hilight$   CALL TWOSUM(Y(I),Z(I),X(I),ERROR)
+$\Hilight$   X_ERR(I)=(Y_ERR(I)+Z_ERR(I))+ERROR
+ENDDO
+!Value by value product
+!In the original code is X(I) = Y(I) * Z(I) 
+DO I=1,NPOIN
+$\Hilight$  CALL TWOPROD(Y(I),Z(I),X(I),ERROR)
+$\Hilight$  X_ERR(I)=(Y(I) * Z_ERR(I))+(Y_ERR(I) * Z(I))
+$\Hilight$&          +(Y_ERR(I) * Z_ERR(I))
+$\Hilight$  X_ERR(I)=X_ERR(I)+ ERROR
+ENDDO
+\end{lstlisting}
+%
+All these operations are also applied to the diagonal and 
+the extra-diagonal terms of the EBE matrix structure,  
+respectively stored as vectors in \texttt{M\%D} and \texttt{M\%X}.
+The difference is in the sequence of the calls, which begin 
+by the subroutine \texttt{om} for matrix instead of \texttt{os} 
+for other structures.
+In \texttt{om}, the storage and the type of the 
+element are verified to call the subroutine \texttt{om1111}
+for triangular elements and EBE storage.
+In this subroutine, several tests are verified to then
+pass the corresponding component vector of the matrix
+to the subroutines \texttt{ov} or \texttt{ov\_comp}.
+In the compensated version, the only modification in 
+\texttt{om} and \texttt{om1111} is at the subroutine parameter 
+level to pass the error vectors.
+%
+\begin{figure} [H]
+\caption{A general scheme of the algebraic operation calls}
+\label{fig:ov_vs_ov_comp}
+\centering
+\begin{tikzpicture}[align=center]
+	\node[draw] (n1) at (0,11) {\texttt{os} \\ \tiny operations on structure};
+	\node[draw] (n2) at (5,11) {\texttt{om} \\ \tiny operations on matrix};
+	\node[draw] (n3) at (5,9) {\texttt{om1111}};
+	\node[draw] (n5) at (0.5,6) {\texttt{ov} \\ \tiny operations on vectors};
+	\node[draw] (n6) at (5.2,6) {\texttt{ov\_comp}\\ \tiny operations on vectors and their errors};
+	\draw [angle 45-]  (n3.north) -- node[sloped, below=0.1mm] {\tiny Triangular \\  \tiny + EBE} (n2.south);
+	\draw [angle 45-]  (n5.north) -- node[sloped, below=0.1mm, pos=0.75] {\tiny \red MODASS = 1} (n1.south);
+	\draw [angle 45-]  (n5.north) -- node[sloped, above=0.1mm, pos=0.75] {\tiny \red MODASS = 1}(n3.south);
+	\draw [angle 45-]  (n6.north) -- node[sloped, above=0.1mm, pos=0.8] {\tiny \red MODASS = 3}(n1.south);
+	\draw [angle 45-]  (n6.north) -- node[sloped, above=0.1mm, pos=0.6] {\tiny \red MODASS = 3}(n3.south);
+\end{tikzpicture}
+\end{figure}
+%
+\section{Modifications in the building phase }
+\label{sec:build_implement}
+%
+As detailed in \cite{LaND16}, the steps of the building 
+phase which condition the reproducibility 
+are the finite element assembly and its complement in parallel,  
+the interface node assembly.
+In the compensated mode, the generated rounding errors of an elementary 
+addition are calculated by the subroutine \texttt{2sum} 
+(Algorithm~\ref{alg:2Sum}) which is added in BIEF.
+In practice, the computation of any vector
+is realized in the subroutine \texttt{vectos}. 
+Listing~\ref{lst:call_ass_FE} is a part of this subroutine and 
+we detail it in three steps.
+%
+\begin{lstlisting}[language=TelFortran, caption={The call of the FE assembly under the two modes of the computation in \texttt{vectos}},label={lst:call_ass_FE},escapechar=\$]
+! Note: VEC is a reference to SVEC%R
+IF(MODASS.EQ.1) THEN $\label{lst:begin_FE_ass}$ 
+   CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
+&   T,INIT,LV,MSK,MASKEL,NDP)
+$\Hilight$ELSEIF(MODASS.EQ.3 ) THEN
+$\Hilight$  CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
+$\Hilight$&  T,INIT,LV,MSK,MASKEL,NDP,SVEC%E) 
+ENDIF $\label{lst:end_FE_ass}$
+! Implicit modification in PARCOM
+IF(ASSPAR) CALL PARCOM(SVEC,2,MESH) $\label{lst:call_IP_ass}$ 
+$\Hilight$IF(ASSPAR.AND.MODASS.EQ.3) THEN $\label{lst:begin_comp}$
+$\Hilight$! The compensation of all the values
+$\Hilight$  DO I = 1 , MESH%NPOIN
+$\Hilight$     VEC(I)= VEC(I)+SVEC%E(I)
+$\Hilight$  ENDDO  
+$\Hilight$ENDIF$\label{lst:end_comp}$
+\end{lstlisting}
+%
+\begin{enumerate}
+\item  \texttt{vectos} calls the subroutine \texttt{assvec} that computes
+the finite element assembly process corresponding to the computation mode,
+from line \ref{lst:begin_FE_ass} to \ref{lst:end_FE_ass}.
+In the original mode, only the vector \texttt{VEC} is passed into the \texttt{assvec} call,
+while in the compensated mode, we also pass the
+vector of errors \texttt{SVEC\%E}.
+%
+\begin{lstlisting}[language=TelFortran, caption={The FE assembly in \texttt{assvec}},label={lst:ass_FE},escapechar=\$]
+!X refers to VEC and ERRX refers to SVEC%E 
+DO IDP = 1 , NDP
+  DO IELEM = 1 , NELEM
+    IF (MODASS.EQ.1) 
+ &   X(IKLE(IELEM,IDP)=X(IKLE(IELEM,IDP)+W(IELEM,IDP)$\label{ln:ass_ori}$
+$\Hilight$    ELSEIF (MODASS.EQ.3) THEN 
+$\Hilight$      CALL 2SUM(X(IKLE(IELEM,IDP)),$\label{ln:ass_2sum1}$
+$\Hilight$    &   W(IELEM,IDP),X(IKLE(IELEM,IDP)),ERROR)$\label{ln:ass_2sum2}$
+$\Hilight$      ERRX(IKLE(IELEM,IDP))=ERRX(IKLE(IELEM,IDP))+ERROR              
+    ENDIF
+  ENDDO
+ENDDO
+\end{lstlisting}
+%
+As showed in Listing~\ref{lst:ass_FE}, 
+only the vector \texttt{VEC} is assembled in the original computation (line~\ref{ln:ass_ori}).
+In the compensated mode, \texttt{VEC} is assembled by the 
+subroutine \texttt{2sum} (lines~\ref{ln:ass_2sum1} and~\ref{ln:ass_2sum2})
+that also computes the rounding error \texttt{ERROR} 
+for each node \texttt{IKLE(IELEM,IDP)}. The vector \texttt{SVEC\%E} accumulates
+the generated errors \texttt{ERROR} of each node.
+%
+\item \label{item:2IPmodif} The second implicit modification in Listing~\ref{lst:call_ass_FE} (line \ref{lst:call_IP_ass}) 
+is the interface node assembly that is launched by the subroutine \texttt{parcom}.
+This later calls \texttt{parcom2}, which then calls \texttt{paraco} twice
+in the original mode. We recall that the first call is to assemble 
+the sub-domain contributions and the second is to recover the solution continuity
+between the sub-domains by sharing their maximum value 
+(this choice is justified by physical reasons in \cite{Hervouet2007}). \\
+%
+In the compensated mode,
+\texttt{parcom2\_comp} and \texttt{paraco\_comp} replace 
+\texttt{parcom2} and \texttt{paraco}, respectively.\\
+%
+The modification in \texttt{parcom\_comp} are the addition of the 
+error component parameter and  the suppression of the second call of  
+\texttt{paraco} which is no more need because our corrections
+recover the solution continuity between the sub-domains.
+\\
+%
+The main modifications occur in \texttt{paraco\_comp} and are presented in Listing~\ref{lst:ass_IP}.
+The Fortran subroutines \texttt{p\_iread}, \texttt{p\_iwrit} and  \texttt{p\_wait\_paraco}
+call respectively the MPI operations:
+\texttt{ mpi\_irecv}, \texttt{ mpi\_isend} and \\ \texttt{mpi\_waitall}.
+The communication corresponds to a non-blocking receive 
+with a blocking send.
+The \texttt{BIEF\_MESH} structures, \texttt{BUF\_RECV} and \texttt{BUF\_SEND}, 
+are declared in \texttt{bief\_def} to receive and send the 
+exchanged data between the sub-domains.
+The assembly of the sub-domain contributions in  
+is a simple accumulation of these received data,
+see Listing~\ref{lst:ass_IP} (line \ref{lst:ori_IP_ass}).
+
+In the compensated computation, two new structures
+\texttt{BUF\_RECV\_ERR} and  \texttt{BUF\_SEND\_ERR} are added
+to also exchange the computed errors.
+Here the assembly is realized with the \texttt{2sum} subroutine 
+that computes the rounding error \texttt{ERROR1} of the data accumulation 
+(line \ref{ln:paraco_err1}) and \texttt{ERROR2} for the error accumulation
+(line \ref{ln:paraco_err2}).
+These two values are added with the 
+error contributions in each iteration (line \ref{ln:paraco_err1_err2}).
+\begin{lstlisting}[language=TelFortran,caption={The IP assembly in \texttt{paraco\_comp}},label={lst:ass_IP},escapechar=\$]
+! Receive step
+DO IL=1,NB_NEIGHB
+  IKA = NB_NEIGHB_PT(IL)
+  IPA = LIST_SEND(IL)
+  CALL P_IREAD(BUF_RECV(1,IL),IAN*IKA*NPLAN*8,
+&              IPA,PARACO_MSG_TAG,RECV_REQ(IL))
+$\Hilight$  CALL P_IREAD(BUF_RECV_ERR(1,IL),IAN*IKA*NPLAN*8,
+$\Hilight$&              IPA,PARACO_MSG_TAG,RECV_REQ(IL))
+ENDDO
+! Send step
+DO IL=1,NB_NEIGHB
+   IKA = NB_NEIGHB_PT(IL)
+   IPA = LIST_SEND(IL)
+   ! Initializes the communication arrays
+   K = 1
+   DO J=1,NPLAN
+     DO I=1,IKA
+       II=NH_COM(I,IL)
+       BUF_SEND(K,IL)  =V1(II,J)
+$\Hilight$       BUF_SEND_ERR(K,IL)  =ERRX(II)
+       K=K+1
+     ENDDO
+   ENDDO       
+   CALL P_IWRIT(BUF_SEND(1,IL),IAN*IKA*NPLAN*8,
+&               IPA,PARACO_MSG_TAG,SEND_REQ(IL))
+$\Hilight$     CALL P_IWRIT(BUF_SEND_ERR(1,IL),IAN*IKA*NPLAN*8,
+$\Hilight$&                 IPA,PARACO_MSG_TAG,SEND_REQ(IL))
+ENDDO
+! Wait received messages
+DO IL=1,NB_NEIGHB
+   IKA = NB_NEIGHB_PT(IL)
+   IPA = LIST_SEND(IL)
+   CALL P_WAIT_PARACO(RECV_REQ(IL),1)
+   K=1
+   DO J=1,NPLAN
+     DO I=1,IKA
+       II=NH_COM(I,IL)
+! Original version: V1(II,J)=V1(II,J)+ BUF_RECV(K,IL)$\label{lst:ori_IP_ass}$ 
+$\Hilight$       CALL 2SUM(V1(II,J),BUF_RECV(K,IL)
+$\Hilight$   &       ,V1(II,J),ERROR1) $\label{ln:paraco_err1}$ 
+$\Hilight$       CALL 2SUM(ERRV(II),BUF_RECV_ERR(K,IL)
+$\Hilight$   &       ,ERRV(II),ERROR2) $\label{ln:paraco_err2}$
+$\Hilight$       ERROR=ERROR1+ERROR2 
+$\Hilight$	      ERRV(II)=ERRV(II)+ERROR  $\label{ln:paraco_err1_err2}$
+       K=K+1
+     ENDDO
+   ENDDO                        
+ENDDO   
+\end{lstlisting}
+%
+\item \label{item:3IPmodif} The latest modification in Listing~\ref{lst:call_ass_FE},
+from line \ref{lst:begin_comp} to \ref{lst:end_comp},
+is the compensation after the interface point assembly.
+As detailed in \cite{LaND16}, we have to compensate the 
+accumulated errors to the data.
+After this step this vector becomes reproducible.
+\end{enumerate}
+%
+%
+\begin{description}
+\item \textbf{Note 3.} This procedure is applied to every vector
+and EBE matrix. The diagonal \texttt{M\%D\%R} is a vector 
+and its accompanying vector error term \texttt{M\%D\%E} is calculated in a similar way.
+%
+\item \textbf{Note 4.} For the studied \textit{gouttedo} test case, the other calls of \texttt{parcom} are 
+in the subroutines \texttt{propag, masbas2d, matrbl}. In the compensation mode, 
+these subroutines apply the previously modifications
+(items \ref{item:2IPmodif} and~\ref{item:3IPmodif}).
+\end{description}
+%%
+\section{Modifications in the solving phase}
+\label{sec:imple_solve}
+%
+The resolution phase applies the conjugate gradient method
+provided by the subroutine \texttt{gracjg}.
+The modifications impact the computations of the dot product
+in function \texttt{p\_dots}, and the EBE
+matrix-vector product in subroutine \texttt{matrbl},
+which are called by \texttt{gracjg}.\\
+%
+\textbf{i) The dot product $X \cdot Y$}\\
+Subroutine \texttt{p\_dots} calls the corresponding dot product according to the computation mode, 
+as showed in Listing~\ref{lst:p_dots}.
+%
+\begin{lstlisting}[language=TelFortran, caption={The calls of the corresponding dot product in \texttt{p\_dots}},label={lst:p_dots},escapechar=\$]
+!Declaration of a pair of double precision 
+$\Hilight$ DOUBLE PRECISION PAIR(2)
+!The computation of the corresponding dot product 
+!In the original version 
+!DOT for the sequential and P_DOT for parallel executions
+IF (MODASS .EQ. 1) THEN
+  IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
+    P_DOTS=DOT(NPX,X%R,Y%R)
+  ELSE
+    P_DOTS=P_DOT(NPX,X%R,Y%R,MESH%IFAC%I)
+  ENDIF
+!In the compensated version 
+!DOT_COMP for the sequential and P_DOTPAIR for parallel executions
+$\Hilight$ELSEIF (MODASS .EQ. 3) THEN
+$\Hilight$  IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
+$\Hilight$    P_DOTS=DOT_COMP(NPX,X%R,Y%R)
+$\Hilight$  ELSE
+$\Hilight$    CALL P_DOTPAIR(NPX,X%R,Y%R,MESH%IFAC%I,PAIR)
+$\Hilight$  ENDIF
+ENDIF
+! Final sum on all the sub-domains (MPI subroutines) 
+IF (MODASS .EQ. 1) THEN
+  IF(NCSIZE.GT.1) P_DOTS = P_DSUM(P_DOTS)
+$\Hilight$ELSEIF (MODASS .EQ. 3) THEN
+$\Hilight$  IF(NCSIZE.GT.1) P_DOTS = P_DSUMERR(PAIR)
+$\Hilight$ENDIF
+\end{lstlisting}
+%
+In the sequential original mode (\texttt{NCSIZE}$<1$ and \texttt{MODASS}$=1$), 
+the dot product is computed with the function \texttt{dot} as:
+\begin{lstlisting}[language=TelFortran,numbers=none,frame=none,escapechar=\$]
+DO I = 1 , NPOIN
+   DOT= DOT + X%R(I)*Y%R(I)
+END DO
+\end{lstlisting}
+%
+In the parallel original mode, the dot product of the whole domain 
+is computed partially by each sub-domain, in function \texttt{p\_dot}, as:
+
+\begin{lstlisting}[language=TelFortran,numbers=none,frame=none,escapechar=\$]
+DO I = 1 , NPOIN
+   P_DOT = P_DOT+X%R(I)*Y%R(I)*IFAC(I)
+END DO
+\end{lstlisting}
+%
+where IFAC is the weight used to avoid to compute several times the interface nodes.
+These partial contributions are summed over all the sub-domains to compute 
+the global dot product by the MPI dynamic reduction in \texttt{p\_dsum}.\\
+%
+In the compensated mode, a twice more accurate scalar product is
+computed.
+In sequential, function \texttt{dot\_comp} computes a such
+accurate sequential dot product. 
+It accumulates both the dot product and the generated rounding 
+errors (addition and multiplication) and finally compensates them together. \\                                                        
+Note: in Fortran the name of the function is the 
+output of this function.
+\begin{lstlisting}[language=TelFortran,caption={The sequential Dot2 in the subroutine \texttt{DOT\_COMP}}
+,label={lst:dotcomp},escapechar=\$]
+CALL 2PROD(X(1),Y(1),P,EP)
+DO I = 2 , NPOIN
+  CALL 2PROD(X(I),Y(I),PP,EPP)
+  CALL 2SUM(P,PP,P,E)
+  EP=EP+(E+EPP)
+END DO
+DOT_COMP = P+EP
+\end{lstlisting}
+%
+In the parallel implementation, each sub-domain computes its
+local scalar product and the corresponding generated rounding
+errors, to return a pair [data, error] in subroutine \texttt{p\_dotpair}. 
+%
+\begin{lstlisting}[language=TelFortran,caption={The parallel Dot2 in the subroutine \texttt{p\_dotpair}}
+,label={lst:p_dotpair},escapechar=\$]
+!Input: X(NPOIN),Y(NPOIN). Output: PAIR(2) 
+CALL 2PROD(X(1),Y(1)*IFAC(1),P,EP)
+DO I = 2 , NPOIN
+  CALL 2PROD(X(I),Y(I)*IFAC(I),PP,EPP)
+  CALL 2SUM(P,PP,P,E)
+  EP=EP+(E+EPP)
+END DO
+CALL 2SUM(P,EP,PAIR(1),PAIR(2))
+\end{lstlisting}
+%
+These local pairs are exchanged between processors
+via MPI\_ALLGATHER and are accurately accumulated by \texttt{sum2}
+in every processor, see Listing~\ref{lst:p_dsumerr} in lines 
+\ref{ln:gather} and \ref{ln:sum2}.
+%
+\begin{lstlisting}[language=TelFortran,caption={The final sum on all the sub-domains}
+,label={lst:p_dsumerr},escapechar=\$]
+!In original version
+!CALL MPI_ALLREDUCE(MYPART,P_DSUM,1,MPI_DOUBLE_PRECISION,
+!                          MPI_SUM,MPI_COMM_WORLD,IER)
+!In compensated version
+CALL MPI_COMM_SIZE (MPI_COMM_WORLD, NUM_PROCS, IER)
+ALLOCATE(ALL_PARTIAL_SUM(1:2*NUM_PROCS))
+ALL_PARTIAL_SUM=0.D0
+CALL MPI_ALLGATHER (MYPART, 2, MPI_DOUBLE_PRECISION, $\label{ln:gather}$
+&                 ALL_PARTIAL_SUM,2, MPI_DOUBLE_PRECISION, 
+&                 MPI_COMM_WORLD, IER)
+CALL SUM2(2*NUM_PROCS, ALL_PARTIAL_SUM,P_DSUMERR) $\label{ln:sum2}$
+DEALLOCATE(ALL_PARTIAL_SUM)
+\end{lstlisting}
+%
+\textbf{ii) The matrix-vector product $M \times V$}\\
+%The EBE storage and the EBE matrix-vector product have been 
+%detailed in Sections~\ref{sec:EBE_storage} and \ref{sec:MV_product}.
+Matrix $M$ is stored as \texttt{M\%D} of size \texttt{NPOIN} 
+for its diagonal terms and \texttt{M\%X} for its extra-diagonal ones
+of size \texttt{NPOIN*(NPOIN-1)} 
+in each element \texttt{IELEM}.\\
+%
+The $M \times V$ product is launched by subroutine \texttt{matrbl}
+called in the conjugate gradient.
+Three subroutines are then called: \texttt{matvec}, \texttt{matvct}
+and  \texttt{mv0303}.\\
+In the compensated version, the subroutine parameters of
+the two later ones are modified 
+to pass the associated errors \texttt{M\%D\%E}, \texttt{V\%E}.
+In \texttt{mv0303}, the Hadmard product $DA \times Y$ computed 
+by \texttt{ov\_comp} is modified to update the associated errors.
+%
+\begin{lstlisting}[language=TelFortran,caption={EBE matrix-vector product: the multiplication of the extra-diagonal elementary terms and the diagonal terms of the matrix with the corresponding elements of the vector in \texttt{mv0303}.}
+,label={lst:mv0303},escapechar=\$]
+! Here Y refers to V%R, DA refers to M%D%R and XA refers to M%X  
+!Contribution of extra-diagonal terms XA * Y
+DO IELEM = 1 , NELEM $\label{ln:begin_XA_contributions}$
+  W1(IELEM) = XA12(IELEM) * Y(IKLE2(IELEM))
+&             + XA13(IELEM) * Y(IKLE3(IELEM))
+  W2(IELEM) = XA23(IELEM) * Y(IKLE3(IELEM))
+&             + XA21(IELEM) * Y(IKLE1(IELEM))
+  W3(IELEM) = XA31(IELEM) * Y(IKLE1(IELEM))
+&             + XA32(IELEM) * Y(IKLE2(IELEM))
+END DO $\label{ln:end_XA_contributions}$
+!Contribution of the diagonal DA * Y
+IF ( MODASS .EQ.1) THEN
+  CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+$\Hilight$ELSEIF (MODASS .EQ. 3) THEN
+$\Hilight$  CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN
+$\Hilight$ &             ,X_ERR, Y_ERR , DA_ERR	)
+ENDIF
+\end{lstlisting}
+%
+Listing~\ref{lst:mv0303} (from lines \ref{ln:begin_XA_contributions} to 
+\ref{ln:end_XA_contributions}) illustrates the process of the 
+elementary contribution computations. 
+These latter proceed to a finite element assembly.
+In the compensation mode, this assembly is performed as we detailed
+in subroutine \texttt{assvec} (Listing~\ref{lst:ass_FE}).
+%
+The final step assembles the matrix-vector product 
+at the interface point in \texttt{matrbl} with a \texttt{parcom} call
+and finishes with a compensation operations.
+%
+\section{Conclusion}
+%
+In this chapter we detail, with a technical point of view, 
+the modifications we introduced in openTelemac to recover 
+the reproducibility of the studied test cases.
+The first difficulty in this work was to define and 
+to apply the methodology detailed in Section~\ref{sec:methodology} 
+to such a huge code.
+The second difficulty was to identify the sources of non-reproducibility, 
+\ie where the rounding errors differ between
+the sequential and the parallel simulations, and to distinguish
+their implementations in (again) this huge code.
+%
+It was inevitable to manipulate three openTelemac components: 
+the BIEF library, the parallel library and Telemac-2D module
+which include respectively 493, 46 and 192 subroutines.
+The modifications to obtain reproducibility were restricted to 
+about 30 subroutines, mostly in BIEF. 
+We list these modified subroutines at the end of this section.
+
+The first source is the non-deterministic error propagation at the interfaces nodes. 
+We recall again that this step is implicitly present in several parts of the 
+computation (building and solving phases).
+It is sufficient to store and propagate these errors and finally to
+compensate them into the computed value after every step of interface node
+assembly.  
+These corrections are applied for both the parallel and the
+sequential simulations to yield the expected reproducibility
+between the two execution modes.      
+The second source is the dynamic reduction of the parallel
+implementation for the dot product in the conjugate gradient
+iterations. It is corrected by implementing a dot product that 
+computes in about twice the working precision. 
+Here it yields reproducible results whereas this is not true
+for very ill-conditioned ones. In this latter case, more compensated 
+steps can be applied for instance. \\
+
+We think that these details are important to the continuity of this work.
+Of course, that this chapter necessitates a little knowing of openTelemac code.
+The integration of our modifications is still in progress and
+it is expected that this will be 
+available in the next distributed version of openTelemac.
+One integration difficulty is that the code 
+was changed in the meantime of this work, which requires
+a careful merge between all these modifications.
+%
+\subsection*{List of modified subroutines}
+\begin{description}
+
+%
+\item \textbf{BIEF library.} 
+\begin{itemize}
+\item \textbf{\textit{Modified:}}
+\texttt{almesh}, \texttt{assvec}, \texttt{bief}, \texttt{bief\_allvec}, \texttt{bief\_def}, \texttt{matrbl}, \texttt{matrix},
+\texttt{matvec}, \texttt{om}, \texttt{mv\_0303}, \texttt{om\_1111}, \texttt{os}, \texttt{p\_dots}, \texttt{parini}, \texttt{precd1},
+\texttt{solve}, \texttt{vectos}.
+\item \textbf{\textit{Added:}}
+\texttt{ov\_comp}, \texttt{dot\_comp}, \texttt{p\_dot\_comp}, \texttt{parcom\_comp}, \texttt{parcom2\_comp}, 
+\texttt{paraco\_comp},\texttt{twosum}, \texttt{twoprod}.
+\end{itemize}
+%
+\item \textbf{Parallel library.}
+\begin{itemize}
+\item \textbf{\textit{Modified:}} \texttt{interface\_parallel}.
+\item \textbf{\textit{Added:}} \texttt{p\_dsum\_err}.
+\end{itemize}
+%
+\item \textbf{Telemac-2D module.}
+\begin{itemize}
+\item \textbf{\textit{Modified:}}
+\texttt{lecdon\_telemac}, \texttt{masbas2d}, \texttt{propag}, \texttt{telemac2d.dico}.
+\end{itemize}
+%
+\end{description}
+

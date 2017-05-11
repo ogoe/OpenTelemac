@@ -39,6 +39,11 @@
            code="telemac2d" target="t2d_gouttedo_qua.cas"
            title="gouttedo scalar mode (qua)"
    />   
+   <action xref="6"
+           do="translate;run;cas;princi"
+           code="telemac2d" target="t2d_gouttedo_reprod.cas"
+           title="gouttedo scalar mode (reprod)"
+   />   
    <!-- end scalar mode --> 
    <!-- ******************************************************************** --> 
    <!-- parallel mode --> 
@@ -51,6 +56,11 @@
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_gouttedo_qua.cas"
        title="gouttedo parallel mode (qua)"
+   />
+   <action xref="7"
+       do="translate;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_gouttedo_reprod.cas"
+       title="gouttedo parallel mode (reprod)"
    />
    <!-- end parallel mode --> 
    <!-- ******************************************************************** --> 
@@ -103,6 +113,13 @@
       <v21 vars="mapdiff(v19,v20)" />
       <return title="Comparison with the last time frame of the reference file."
          fail="checkval(v21,[1e-3,1e-3,1e-4,1e-5])" />
+   </cast>
+   <cast xref="cas-parall_reprod" config="oneofall" time="[-1]" type="2d:">
+      <v22 vars=":map" target="6:T2DRES" />
+      <v23 vars=":map" target="7:T2DRES" />
+      <v24 vars="mapdiff(v22,v23)" />
+      <return title="Comparison between sequential and parallel run."
+         fail="checkval(v24,[1e-3,1e-3,1e-4])" />
    </cast>
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

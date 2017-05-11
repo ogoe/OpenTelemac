@@ -78,6 +78,11 @@
 !+        V7P1
 !+   Adding vc05aa.
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS 3
+!
 !history  A. BOURGOIN (EDF LAB, LNHE)
 !+        01/08/2016
 !+        V7P
@@ -134,8 +139,8 @@
 !
       USE BIEF, EX_VECTOS => VECTOS
       USE DECLARATIONS_TELEMAC, ONLY : MODASS
-!
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1472,6 +1477,11 @@
           IF(MODASS.EQ.1) THEN
             CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
      &                  T,INIT,LV,MSK,MASKEL,NDP)
+!
+          ELSEIF(MODASS.EQ.3 ) THEN
+            CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
+     &                  T,INIT,LV,MSK,MASKEL,NDP,SVEC%E)
+!
           ELSEIF(MODASS.EQ.2) THEN
             CALL DOUBLE_TO_INTEGER(T,MESH%WI8,NDP*NELEM,QT,MESH%MXELVS)
             DO I=1,NPT
@@ -1512,6 +1522,19 @@
 !-----------------------------------------------------------------------
 !
       IF(ASSPAR.AND.MODASS.EQ.1) CALL PARCOM(SVEC,2,MESH)
+        IF(NCSIZE.GT.1) THEN
+          IF(ASSPAR .AND. MODASS.EQ.3) THEN
+            CALL PARCOM_COMP(SVEC,SVEC%E,2,MESH)
+          ENDIF
+        END IF
+!
+!!!!!!CompSum:Correct the VEC with accumuletad fperrors!!!!!!!!!!!!!!!!!!
+!
+      IF(ASSPAR.AND. MODASS .EQ. 3) THEN
+          DO I = 1 , MESH%NPOIN
+            VEC(I)= VEC(I)+SVEC%E(I)
+          ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

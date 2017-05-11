@@ -74,6 +74,11 @@
 !+        V7P0
 !+   Cases where there is no boundary element secured.
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      ADD MODASS=3
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -95,6 +100,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATRIX => MATRIX
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -116,7 +122,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NELMAX,NELEM,NPT,SS
+      INTEGER NELMAX,NELEM,NPT,SS,I
       INTEGER, DIMENSION(:), POINTER :: IKLE
       INTEGER, DIMENSION(:), POINTER :: ELTSEG,ORISEG
       DOUBLE PRECISION C
@@ -143,6 +149,11 @@
         IKLE   =>MESH%IKLE%I
         ELTSEG=>MESH%ELTSEG%I
         ORISEG=>MESH%ORISEG%I
+        IF (MODASS .EQ.3) THEN
+          DO I=1, MESH%M%D%DIM1
+            MESH%M%D%E=0.D0
+          ENDDO
+        ENDIF
       ELSE
 !       BOUNDARY MATRIX
         NELEM  = MESH%NELEB
@@ -206,10 +217,18 @@
 !
       IF(LEGO.AND.MESH%M%TYPDIA.EQ.'Q'.AND.NELEM.GT.0) THEN
 !
-        CALL ASSVEC(MESH%M%D%R,
-     &              IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
-     &              MESH%W%R,LEGO,MESH%LV,MSK,MASKEL%R,
-     &              BIEF_NBPEL(MESH%M%D%ELM,MESH))
+        IF (MODASS .EQ.3) THEN
+          CALL ASSVEC(MESH%M%D%R,
+     &                  IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
+     &                  MESH%W%R,LEGO,MESH%LV,MSK,MASKEL%R,
+     &                  BIEF_NBPEL(MESH%M%D%ELM,MESH),MESH%M%D%E)
+!
+        ELSE
+          CALL ASSVEC(MESH%M%D%R,
+     &                  IKLE,NPT,NELEM,NELMAX,MESH%M%D%ELM,
+     &                  MESH%W%R,LEGO,MESH%LV,MSK,MASKEL%R,
+     &                  BIEF_NBPEL(MESH%M%D%ELM,MESH))
+        ENDIF
 !
       ENDIF
 !

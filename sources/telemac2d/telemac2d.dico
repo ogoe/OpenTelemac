@@ -2440,7 +2440,7 @@ le modele CN du SCS. Les options disponibles sont:
   1 : conditions precedentes seches
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
-ce mot cle est uniquement utile pour le modele pluie-dÈbit 1 (CN)'
+ce mot cle est uniquement utile pour le modele pluie-d√©bit 1 (CN)'
 AIDE1 =
 'Gives the antecedent moisture conditions before a rainfall
  event for the SCS CN runoff model. Available options are:
@@ -3044,12 +3044,12 @@ DEFAUT1 = 1
 MNEMO = 'OPTVF'
 CHOIX =
 '0="schema de Roe"';
-'1="schÈma cinetique ordre 1"';
-'2="schÈma cinetique ordre 2"';
-'3="schÈma Zokagoa ordre 1"';
-'4="schÈma Tchamen ordre 1"';
-'5="schÈma HLLC ordre 1"';
-'6="schÈma WAF ordre 2"'
+'1="sch√©ma cinetique ordre 1"';
+'2="sch√©ma cinetique ordre 2"';
+'3="sch√©ma Zokagoa ordre 1"';
+'4="sch√©ma Tchamen ordre 1"';
+'5="sch√©ma HLLC ordre 1"';
+'6="sch√©ma WAF ordre 2"'
 CHOIX1 =
 '0="Roe scheme"';
 '1="kinetic order 1"';
@@ -6267,7 +6267,7 @@ RUBRIQUE1 =
 'HYDRAULIC STRUCTURES';'WEIRS';''
 NIVEAU = 0
 AIDE =
-' MÈthode de traitement des seuils. Deux Solutions:
+' M√©thode de traitement des seuils. Deux Solutions:
 - HORIZONTAL AVEC MEME NOMBRE DE NOEUDS AMONT/AVAL (Solution historique
   avec bord)
 - GENERALE (Nouvelle solution avec pts sources)'
@@ -7653,4 +7653,18 @@ AIDE =
 ' Executable parallele par defaut de T2D'
 AIDE1 =
 ' Default parallel executable for T2D'
+/
+NOM = 'ASSEMBLAGE EN ELEMENTS FINIS' 
+NOM1 = 'FINITE ELEMENT ASSEMBLY' 
+TYPE = ENTIER 
+INDEX = 108
+MNEMO = 'MODASS' 
+TAILLE= 1
+DEFAUT = 1 
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 2 
+AIDE = '1 : normal 2 : avec des entiers I8 3:compens√©' 
+AIDE1 = '1: normal 2: with I8 integers 3:compensation'  
 /

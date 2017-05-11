@@ -30,11 +30,14 @@ files: bief_def.f
   fasp.f
   fond.f
   cpstvc.f
-  ovd.f
   cmpobj.f
+  ovd.f
   ovd_2.f
   ov.f
   ov_2.f
+  twoprod.f
+  twosum.f
+  ov_comp.f
   os.f
   strche.f
   fonstr.f
@@ -222,6 +225,9 @@ files: bief_def.f
   sd_solve_1.f
   sd_solve_4.f
   preverseg.f
+  paraco_comp.f
+  parcom2_comp.f
+  parcom_comp.f
   matrbl.f
   rem11.f
   rem41.f
@@ -235,8 +241,10 @@ files: bief_def.f
   remseg.f
   dwnup1.f
   downup.f
-  dot.f
   p_dot.f
+  p_dotpair.f
+  dot.f
+  dot_comp.f
   p_dots.f
   trid3d.f
   gracjg.F
@@ -279,6 +287,7 @@ files: bief_def.f
   charac.f
   vc13cc.f
   vc04tt.f
+  vc00cc.f
   vc01tt0.f
   vc05aa.f
   vc01aa.f
@@ -327,7 +336,6 @@ files: bief_def.f
   vc00aa.f
   vc13pp.f
   vc01oo.f
-  vc00cc.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
@@ -493,6 +501,7 @@ files: declarations_parallel.F
   oil_org_charac_type.F
   p_mpi_alltoallv_alg.F
   org_charac_type_alg.F
+  p_dsumerr.F
   p_dsum.F
   p_ireadi8.F
   p_iwriti8.F
@@ -512,6 +521,7 @@ files: declarations_special.F
   write_error.f
   check_call.f
   extens.f
+  sumtwo.f
 
 [tomawac]
 path: <root>|sources|tomawac

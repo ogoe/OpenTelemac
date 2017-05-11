@@ -66,6 +66,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS=3
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        22/03/2016
 !+        V7P2
@@ -82,9 +87,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATVEC => MATVEC
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
       USE DECLARATIONS_TELEMAC, ONLY : W_IS_FULL
-!
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -285,13 +291,25 @@
 !
       ELSEIF(W_IS_FULL.OR.(X%NAME.NE.Y%NAME.AND.A%STO.EQ.3)) THEN
 !
-        CALL MATVCT( OP,X%R,A%D%R,A%TYPDIA,A%X%R,A%TYPEXT,Y%R,
+        IF (MODASS .EQ.1) THEN
+          CALL MATVCT( OP,X%R,A%D%R,A%TYPDIA,A%X%R,A%TYPEXT,Y%R,
      &               C,IKLE,NPT,NELEM,NELMAX,MESH%W%R,
      &               LEGO2,IELM1,IELM2,IELMX,MESH%LV,A%STO,A%PRO,
      &               MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
      &               NPMAX,NPOIN,NPTFR,
      &               MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
      &               BIEF_NBPEL(IELMX,MESH),MESH,A%STOX)
+        ELSEIF (MODASS .EQ.3) THEN
+          CALL MATVCT( OP,X%R,A%D%R,A%TYPDIA,A%X%R,A%TYPEXT,Y%R,
+     &               C,IKLE,NPT,NELEM,NELMAX,MESH%W%R,
+     &               LEGO2,IELM1,IELM2,IELMX,MESH%LV,A%STO,A%PRO,
+     &               MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
+     &               NPMAX,NPOIN,NPTFR,
+     &               MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
+     &               BIEF_NBPEL(IELMX,MESH),MESH,A%STOX,
+     &             X_ERR=X%E, Y_ERR=Y%E , DA_ERR=A%D%E,
+     &               XA_ERR=A%X%E)
+        ENDIF
 !
       ELSE
 !
@@ -328,13 +346,25 @@
 !
         ELSE
 !
-          CALL MATVCT( 'X=AY    ',MESH%T%R,A%D%R,A%TYPDIA,A%X%R,
+          IF (MODASS .EQ.1) THEN
+            CALL MATVCT( 'X=AY    ',MESH%T%R,A%D%R,A%TYPDIA,A%X%R,
      &                 A%TYPEXT,Y%R,C,IKLE,NPT,NELEM,NELMAX,MESH%W%R,
      &                 LEGO2,IELM1,IELM2,IELMX,MESH%LV,A%STO,A%PRO,
      &                 MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
      &                 NPMAX,NPOIN,NPTFR,
      &                 MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
      &                 BIEF_NBPEL(IELMX,MESH),MESH,A%STOX)
+          ELSEIF (MODASS .EQ.3) THEN
+            MESH%T%E=0.D0
+            CALL MATVCT( 'X=AY    ',MESH%T%R,A%D%R,A%TYPDIA,A%X%R,
+     &                 A%TYPEXT,Y%R,C,IKLE,NPT,NELEM,NELMAX,MESH%W%R,
+     &                 LEGO2,IELM1,IELM2,IELMX,MESH%LV,A%STO,A%PRO,
+     &                 MESH%IKLEM1%I,DIMIKM,MESH%LIMVOI%I,MESH%MXPTVS,
+     &                 NPMAX,NPOIN,NPTFR,
+     &                 MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,SIZXA,
+     &                 BIEF_NBPEL(IELMX,MESH),MESH,A%STOX,
+     &               X_ERR=MESH%T%E, Y_ERR=Y%E , DA_ERR=A%D%E)
+          ENDIF
 !
           IF(OP(3:8).EQ.'AY    ') THEN
             CALL OS( 'X=Y     ' , X , MESH%T , X , C )

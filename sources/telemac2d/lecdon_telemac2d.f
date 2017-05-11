@@ -95,6 +95,11 @@
 !+  This condition is somewhat relaxed for velocities and k-epsilon
 !+  Schemes ADV_PSI_NC and ADV_NSC_NC removed.
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+  ADRESSE FOR ASSEMBLY MODE
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        23/06/2016
 !+        V7P2
@@ -729,6 +734,8 @@
       IF(TROUVE(1,90).EQ.2) THEN
         ICONVF(4) = MOTINT(ADRESS(1,90))
       ENDIF
+!     PARALLEL ASSEMBLY MODE
+      MODASS = MOTINT( ADRESS(1,108) )
 !
 !     OPTION FOR WIND MANAGEMENT
       OPTWIND = MOTINT(ADRESS(1,94))

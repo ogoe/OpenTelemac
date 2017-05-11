@@ -3,7 +3,8 @@
 !                    *****************
 !
      &(OP, X , DA,TYPDIA,XA12,XA13,XA21,XA23,XA31,XA32,
-     & TYPEXT, Y,C,IKLE1,IKLE2,IKLE3,NPOIN,NELEM,W1,W2,W3)
+     & TYPEXT, Y,C,IKLE1,IKLE2,IKLE3,NPOIN,NELEM,W1,W2,W3
+     & ,X_ERR,Y_ERR,DA_ERR)
 !
 !***********************************************************************
 ! BIEF   V6P0                                   21/08/2010
@@ -49,6 +50,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -80,6 +85,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MV0303=> MV0303
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -98,6 +104,8 @@
 !
       CHARACTER(LEN=8), INTENT(IN) :: OP
       CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
+      DOUBLE PRECISION, OPTIONAL, INTENT(INOUT) :: X_ERR(*)
+      DOUBLE PRECISION, OPTIONAL, INTENT(IN) :: Y_ERR(*),DA_ERR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -139,7 +147,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
@@ -186,7 +199,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=CYZ   ', X , Y , DA , C  , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=CYZ   ', X , Y , DA , C  , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=CYZ   ', X , Y , DA , C  , NPOIN !)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=CY    ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
@@ -233,7 +251,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
@@ -274,7 +297,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN !)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
@@ -313,7 +341,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
@@ -352,7 +385,12 @@
 !   CONTRIBUTION OF THE DIAGONAL:
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X+CYZ  ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X+CYZ  ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X+CYZ  ', X , Y , DA , C , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+CY   ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
@@ -397,7 +435,12 @@
 !   CONTRIBUTION OF THE DIAGONAL
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+             CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
@@ -444,7 +487,12 @@
 !   CONTRIBUTION OF THE DIAGONAL
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).EQ.'0') THEN
@@ -485,7 +533,12 @@
 !   CONTRIBUTION OF THE DIAGONAL
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
@@ -524,7 +577,12 @@
 !   CONTRIBUTION OF THE DIAGONAL
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
@@ -563,7 +621,12 @@
 !   CONTRIBUTION OF THE DIAGONAL
 !
         IF(TYPDIA(1:1).EQ.'Q') THEN
-          CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP ('X=X+CYZ ', X , Y , DA , C , NPOIN!)
+     &       ,X_ERR, Y_ERR , DA_ERR)
+          ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )
         ELSEIF(TYPDIA(1:1).NE.'0') THEN

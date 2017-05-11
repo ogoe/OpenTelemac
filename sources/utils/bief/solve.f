@@ -108,6 +108,10 @@
 !+        9/08/2012
 !+        V6P2
 !+   Call to SD_SOLVE_4 modified.
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        COMPENSATED INTERFACE NODE ASSEMBLY (MODASS=3)
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        23/02/2015
@@ -131,9 +135,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SOLVE => SOLVE
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
       USE DECLARATIONS_TELEMAC, ONLY : TBB, BB, BX, FIRST_SOLVE
-!
       USE DECLARATIONS_SPECIAL
+!
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -527,7 +532,15 @@
 !  PARALLEL MODE: SECOND MEMBER
 !
       IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(B,2,MESH)
+        IF (MODASS .EQ. 1) THEN
+          CALL PARCOM(B,2,MESH)
+        ELSEIF (MODASS .EQ. 3) THEN
+          CALL PARCOM_COMP(B,B%E,2,MESH)
+        ENDIF
+      ENDIF
+      IF (MODASS .EQ.3)THEN
+        B%R=B%R+B%E
+        B%E=0.D0
       ENDIF
 !
 !-----------------------------------------------------------------------

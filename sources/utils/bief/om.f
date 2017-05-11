@@ -65,6 +65,11 @@
 !+        V7P0
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      ADD MODASS=3
+!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
@@ -76,6 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OM => OM
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -239,9 +245,17 @@
      &      (IELN1.EQ.61.AND.IELN2.EQ.61) .OR.
      &      (IELN1.EQ.81.AND.IELN2.EQ.81)         ) THEN
 !
-          CALL OM1111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
-     &                     IKLE,NELEM,NELMAX,NDIAGM)
+          IF (MODASS .EQ. 3) THEN
+            CALL OM1111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
+     &                  NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
+     &                  IKLE,NELEM,NELMAX,NDIAGM,
+     &                  DM_ERR=M%D%E, DN_ERR=NN%D%E,
+     &                  D_ERR=D%E)
+          ELSE
+            CALL OM1111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
+     &                  NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
+     &                  IKLE,NELEM,NELMAX,NDIAGM)
+          ENDIF
 !
         ELSEIF(IELN1.EQ.1.AND.IELN2.EQ.1) THEN
 !

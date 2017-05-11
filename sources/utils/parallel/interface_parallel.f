@@ -20,6 +20,11 @@
 !+        V7P0
 !+   Adding MPI communications by integers.
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      Adding compensation in the sum from the processors
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -68,6 +73,11 @@
         USE DECLARATIONS_SPECIAL
         IMPLICIT NONE
         DOUBLE PRECISION, INTENT(IN) :: MYPART
+      END FUNCTION
+!
+      DOUBLE PRECISION FUNCTION P_DSUMERR(PARTIAL)
+        IMPLICIT NONE
+        DOUBLE PRECISION, INTENT(IN) :: PARTIAL(2)
       END FUNCTION
 !
       INTEGER FUNCTION P_IMAX(MYPART)

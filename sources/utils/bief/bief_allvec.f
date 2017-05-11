@@ -21,6 +21,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+       ALLOCATE THE ELEMENT E IN THE VECTOR STUCTURE (BIEF_OBJ)
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        21/01/2016
@@ -51,6 +56,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_ALLVEC => BIEF_ALLVEC
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -183,6 +189,13 @@
         XMAX = HUGE(100.D0)
         CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
      &          VEC%MAXDIM1*VEC%DIM2)
+!
+        IF (MODASS .EQ.3) THEN
+          ALLOCATE(VEC%E(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
+          CALL OV('X=C     ',VEC%E,VEC%E,VEC%E,0.D0,
+     &          VEC%MAXDIM1*VEC%DIM2)
+        ENDIF
+!
 !
       ENDIF
 !

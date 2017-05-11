@@ -27,6 +27,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+   COMPENSATED THE V2DPAR VECTORS
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE OF ELEMENT (11 FOR LINEAR)
 !| MASKEL         |-->| ARRAY OF MASKS, PER ELEMENT
@@ -42,6 +47,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -65,7 +71,14 @@
 !              INTERFACES BETWEEN SUBDOMAINS
 !
       CALL OS('X=Y     ',X=V2DPAR,Y=VOLU2D)
-      IF(NCSIZE.GT.1) CALL PARCOM(V2DPAR,2,MESH)
+      IF(NCSIZE.GT.1 ) THEN
+        IF (MODASS .EQ. 1) CALL PARCOM(V2DPAR,2,MESH)
+        IF (MODASS .EQ. 3) 
+     &   CALL PARCOM_COMP(V2DPAR,V2DPAR%E,2,MESH)
+      ENDIF
+      IF (MODASS .EQ. 3) THEN
+        V2DPAR%R=V2DPAR%R+V2DPAR%E
+      END IF
 !
 !     INVERSE OF VOLUMES (DONE WITHOUT MASKING), THERE SHOULD BE
 !     NO DIVISION BY ZERO, UNLESS ELEMENT WITH NO AREA

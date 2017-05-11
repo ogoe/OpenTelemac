@@ -63,22 +63,26 @@ files: bief_def.f
   cpikle2.f
   read_mesh_info.f
   bief_nbsegel.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   almesh.f
   bief_open_files.f
-  ovd.f
   cmpobj.f
+  ovd.f
   ovd_2.f
+  twoprod.f
+  twosum.f
+  ov_comp.f
   os.f
   streamline.f
   vc13cc.f
   vc04tt.f
+  vc00cc.f
   vc01tt0.f
   vc05aa.f
   vc01aa.f
@@ -129,7 +133,9 @@ files: bief_def.f
   vc00aa.f
   vc13pp.f
   vc01oo.f
-  vc00cc.f
+  paraco_comp.f
+  parcom2_comp.f
+  parcom_comp.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
@@ -333,8 +339,10 @@ files: bief_def.f
   remseg.f
   dwnup1.f
   downup.f
-  dot.f
   p_dot.f
+  p_dotpair.f
+  dot.f
+  dot_comp.f
   p_dots.f
   trid3d.f
   gracjg.F
@@ -472,7 +480,6 @@ files: bief_def.f
   cvtrvf_nerd.f
   kspg11.f
   ksupg.f
-  cvtrvf_eria.f
   flux_mask.f
   flux_ef_vf_3.f
   flux_ef_vf_2.f
@@ -483,6 +490,7 @@ files: bief_def.f
   tvf_2.f
   cflvf.f
   cvtrvf.f
+  cvtrvf_eria.f
   cvdftr.f
   diffin.f
   cflp12.f
@@ -534,9 +542,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
-  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
+  get_mesh_coord.f
   open_mesh.f
   open_bnd.f
   get_data_value.f
@@ -554,10 +562,9 @@ files: interface_hermes.f
 
 [nestor]
 path: <root>|sources|nestor
-files: m_typedefs_interface.f
-  m_typedefs_nestor.f
+files: m_typedefs_nestor.f
+  m_typedefs_interface.f
   m_nestor.f
-  m_interfaces_nestor.f
   my_flush.f
   infomessage.f
   errmsgandstop.f
@@ -589,6 +596,7 @@ files: m_typedefs_interface.f
   readpolygons.f
   initialisenestor.f
   interfaceinitnestor.f
+  m_interfaces_nestor.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -618,6 +626,7 @@ files: declarations_parallel.F
   org_charac_type_alg.F
   p_ireadi8.F
   p_iwriti8.F
+  p_dsumerr.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
@@ -749,6 +758,7 @@ files: declarations_special.F
   write_error.f
   check_call.f
   extens.f
+  sumtwo.f
 
 [stbtel]
 path: <root>|sources|stbtel
@@ -773,8 +783,8 @@ files: friction_def.f
   interpmeteo2.f
   meteo.f
   buse.f
-  read_fic_frliq.f
   sta_dis_cur.f
+  read_fic_frliq.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -817,10 +827,10 @@ files: declarations_telemac3d.f
   utimp.f
   source.f
   check.f
-  q3.f
   read_bin_frliq.f
   vel_prof_z.f
   debimp_3d.f
+  q3.f
   tra_prof_z.f
   sl3.f
   tidal_model_t3d.f

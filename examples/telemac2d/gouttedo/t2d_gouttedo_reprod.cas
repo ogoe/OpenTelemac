@@ -1,0 +1,47 @@
+FINITE ELEMENT ASSEMBLY : 3
+
+EQUATIONS : 'SAINT-VENANT EF'
+/
+FORTRAN FILE              : 'user_fortran'
+BOUNDARY CONDITIONS FILE  : geo_gouttedo.cli
+GEOMETRY FILE             : geo_gouttedo.slf
+RESULTS FILE              : r2d_gouttedo_v1p0.slf
+/
+/----------------------------------------------------------------------
+/                     OPTIONS GENERALES
+/----------------------------------------------------------------------
+TITLE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'
+COMPUTATION CONTINUED      : NO
+VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,T'
+VARIABLES TO BE PRINTED : ''
+TIME STEP = 0.04
+NUMBER OF TIME STEPS = 100
+GRAPHIC PRINTOUT PERIOD : 5
+LISTING FOR PRINTOUT PERIOD =10
+LAW OF BOTTOM FRICTION : 3
+FRICTION COEFFICIENT = 40.
+/----------------------------------------------------------------------
+/     PROPAGATION
+/----------------------------------------------------------------------
+TURBULENCE MODEL : 1
+VELOCITY DIFFUSIVITY = 0.D0
+SOLVER : 1
+SOLVER OPTION : 3
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER : 100
+SOLVER ACCURACY = 1.E-4
+IMPLICITATION FOR DEPTH = 0.6
+IMPLICITATION FOR VELOCITY = 0.6
+PRECONDITIONING : 0
+INITIAL GUESS FOR H : 1
+/---------------------------------------------------------------
+MASS-BALANCE : YES
+INITIAL CONDITIONS  : 'PARTICULAR'
+TYPE OF ADVECTION   : 1;5
+SUPG OPTION          : 0;0
+DISCRETIZATIONS IN SPACE: 11;11
+MATRIX STORAGE : 1
+MATRIX-VECTOR PRODUCT : 1
+TREATMENT OF THE LINEAR SYSTEM : 2
+/----------------------------------------------------------------------
+ORIGINAL DATE OF TIME  : 1997; 2;21
+ORIGINAL HOUR OF TIME :   10;21;30

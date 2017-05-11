@@ -5,7 +5,8 @@
      &(OP, X , DA,TYPDIA,XA,TYPEXT, Y ,
      & C,IKLE,NPT,NELEM,NELMAX,W,LEGO,IELM1,IELM2,IELMX,LV,
      & S,P,IKLEM1,DIMIKM,LIMVOI,MXPTVS,NPMAX,NPOIN,NPTFR,
-     & GLOSEG,SIZGLO,SIZXA,NDP,MESH,STOX)
+     & GLOSEG,SIZGLO,SIZXA,NDP,MESH,STOX
+     & ,X_ERR,Y_ERR,DA_ERR,XA_ERR)
 !
 !***********************************************************************
 ! BIEF   V7P2
@@ -54,6 +55,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -99,6 +104,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATVCT => MATVCT
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -117,7 +123,10 @@
       DOUBLE PRECISION, INTENT(IN)    :: Y(*),DA(*),XA(SIZXA,*),C
       DOUBLE PRECISION, INTENT(INOUT) :: W(NELMAX,*)
       LOGICAL, INTENT(IN)             :: LEGO
-      TYPE(BIEF_MESH), INTENT(IN)     :: MESH
+      TYPE(BIEF_MESH), INTENT(INOUT)     :: MESH
+      DOUBLE PRECISION, OPTIONAL, INTENT(INOUT) :: X_ERR(*)
+      DOUBLE PRECISION, OPTIONAL, INTENT(IN) :: Y_ERR(*),DA_ERR(*)
+     &  ,XA_ERR(SIZXA,*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -250,7 +259,8 @@
 !
         IF(IELM2.EQ.11) THEN
           IF(TYPEXT(1:1).EQ.'S') THEN
-            CALL MV0303(OP, X , DA,TYPDIA,
+      IF (MODASS .EQ. 1)THEN
+              CALL MV0303(OP, X , DA,TYPDIA,
      &                  XA(1,AAS(1,2,S)),
      &                  XA(1,AAS(1,3,S)),
      &                  XA(1,AAS(2,1,S)),
@@ -261,8 +271,23 @@
      &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),
      &                  NPT,NELEM,
      &                  W(1,1),W(1,2),W(1,3))
+      ELSEIF (MODASS .EQ. 3)THEN
+              CALL MV0303(OP, X , DA,TYPDIA,
+     &                  XA(1,AAS(1,2,S)),
+     &                  XA(1,AAS(1,3,S)),
+     &                  XA(1,AAS(2,1,S)),
+     &                  XA(1,AAS(2,3,S)),
+     &                  XA(1,AAS(3,1,S)),
+     &                  XA(1,AAS(3,2,S)),
+     &                  TYPEXT,Y,C,
+     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),
+     &                  NPT,NELEM,
+     &                  W(1,1),W(1,2),W(1,3)
+     &                  ,X_ERR,Y_ERR,DA_ERR)
+      ENDIF
           ELSE
-            CALL MV0303(OP, X , DA,TYPDIA,
+            IF (MODASS .EQ. 1)THEN
+        CALL MV0303(OP, X , DA,TYPDIA,
      &                  XA(1,AAQ(1,2,S)),
      &                  XA(1,AAQ(1,3,S)),
      &                  XA(1,AAQ(2,1,S)),
@@ -273,6 +298,20 @@
      &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),
      &                  NPT,NELEM,
      &                  W(1,1),W(1,2),W(1,3))
+            ELSEIF (MODASS .EQ. 3)THEN
+        CALL MV0303(OP, X , DA,TYPDIA,
+     &                  XA(1,AAQ(1,2,S)),
+     &                  XA(1,AAQ(1,3,S)),
+     &                  XA(1,AAQ(2,1,S)),
+     &                  XA(1,AAQ(2,3,S)),
+     &                  XA(1,AAQ(3,1,S)),
+     &                  XA(1,AAQ(3,2,S)),
+     &                  TYPEXT,Y,C,
+     &                  IKLE(1,1),IKLE(1,2),IKLE(1,3),
+     &                  NPT,NELEM,
+     &                  W(1,1),W(1,2),W(1,3)
+     &                  ,X_ERR,Y_ERR,DA_ERR)
+            ENDIF
           ENDIF
 !
         ELSEIF(IELM2.EQ.12) THEN
@@ -491,8 +530,15 @@
 !
 !     SINCE INIT = FALSE HERE, MAY NOT NEED NPT
       NPT = BIEF_NBPTS(IELMX,MESH)
-      IF(LEGO) CALL ASSVEC(X,IKLE,NPT,NELEM,NELMAX,IELMX,W,
-     &                     .FALSE.,LV,.FALSE.,Z,NDP)
+      IF(LEGO) THEN
+        IF(MODASS .EQ. 3) THEN
+          CALL ASSVEC(X,IKLE,NPT,NELEM,NELMAX,IELMX,W,
+     &          .FALSE.,LV,.FALSE.,Z,NDP,ERRX=X_ERR)
+        ELSEIF (MODASS .EQ. 1) THEN
+          CALL ASSVEC(X,IKLE,NPT,NELEM,NELMAX,IELMX,W,
+     &          .FALSE.,LV,.FALSE.,Z,NDP)
+        ENDIF
+      ENDIF
 !
       ELSEIF(S.EQ.3.AND.P.EQ.2) THEN
 !

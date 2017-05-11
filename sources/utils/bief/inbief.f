@@ -63,6 +63,10 @@
 !+        V7P0
 !+   Allocation of new vectors of I8 integers MESH%WI8 and MESH%TI8
 !+   for finite element assembly with integers.
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ALLOCATE BUF_SEND_ERR AND BUD_RECV_ERR
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        30/07/2015
@@ -185,6 +189,10 @@
         CALL BIEF_ALLVEC(2,MESH%NH_COM_SEG  ,'NH_CSG',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_SEND    ,'BUSEND',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_RECV    ,'BURECV',0,1,0,MESH)
+        IF (MODASS .EQ.3) THEN
+          CALL BIEF_ALLVEC(1,MESH%BUF_SEND_ERR ,'BUSEND_ERR',0,1,0,MESH)
+          CALL BIEF_ALLVEC(1,MESH%BUF_RECV_ERR ,'BURECV_ERR',0,1,0,MESH)
+        ENDIF
 !
       ENDIF
 !

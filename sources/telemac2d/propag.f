@@ -157,6 +157,11 @@
 !+        V7P0
 !+   A copy of LIMPRO is done to be sent to cvtrvf (that may change it).
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        Compensated assembly of the interface node 
+!
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        15/03/2016
 !+        V7P2
@@ -341,6 +346,7 @@
      &                                 KDDL
       USE DECLARATIONS_TELEMAC2D, ONLY : TYPSEUIL,IT1,IT2,TB2,NCO_DIST,
      &                                   NSP_DIST
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE INTERFACE_TELEMAC2D, EX_PROPAG => PROPAG
 !
@@ -1356,10 +1362,21 @@
 !=======================================================================
 !
       IF(SOLSYS.EQ.2) THEN
-!
+!Diagonal of the matrices compensation
         IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(AM2%D,2,MESH)
-          CALL PARCOM(AM3%D,2,MESH)
+          IF (MODASS .EQ. 1) THEN
+            CALL PARCOM(AM2%D,2,MESH)
+            CALL PARCOM(AM3%D,2,MESH)
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL PARCOM_COMP(AM3%D,AM3%D%E,2,MESH)
+            CALL PARCOM_COMP(AM2%D,AM2%D%E,2,MESH)
+          ENDIF 
+        ENDIF
+        IF (MODASS .EQ.3)THEN
+            AM2%D%R=AM2%D%R+AM2%D%E
+            AM2%D%E=0.D0
+            AM3%D%R=AM3%D%R+AM3%D%E
+            AM3%D%E=0.D0
         ENDIF
 !       INVERSION OF AM2%D AND AM3%D (WILL BE USED AGAIN AT A LATER STAGE)
         CALL OS( 'X=1/Y   ' , AM2%D , AM2%D , AM2%D , C ,2,0.D0,1.D-6)
@@ -1408,10 +1425,21 @@
           CALL OS( 'X=YZ    ' , X=T2 , Y=T4 , Z=AM2%D )
           CALL OS( 'X=YZ    ' , X=T3 , Y=T5 , Z=AM3%D )
         ENDIF
-!
+!Vectors compensation
         IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(T2,2,MESH)
-          CALL PARCOM(T3,2,MESH)
+          IF (MODASS .EQ. 1) THEN
+            CALL PARCOM(T2,2,MESH)
+            CALL PARCOM(T3,2,MESH)
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL PARCOM_COMP(T2,T2%E,2,MESH)
+            CALL PARCOM_COMP(T3,T3%E,2,MESH)
+          ENDIF 
+        ENDIF
+        IF (MODASS .EQ.3)THEN
+          T2%R=T2%R+T2%E
+          T2%E=0.D0
+          T3%R=T3%R+T3%E
+          T3%E=0.D0
         ENDIF
 !
 !       TAKES THE BOUNDARY CONDITIONS INTO ACCOUNT
@@ -1641,10 +1669,22 @@
      &              -GRAV*TETAH,DH,S,S,S,S,S,MESH,MSK,MASKEL)
         CALL VECTOR(CV3,'+','GRADF          Y',IELMU,
      &              -GRAV*TETAH,DH,S,S,S,S,S,MESH,MSK,MASKEL)
+!Vectors compensation
         IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(CV2,2,MESH)
-          CALL PARCOM(CV3,2,MESH)
+          IF (MODASS .EQ. 1) THEN
+            CALL PARCOM(CV2,2,MESH)
+            CALL PARCOM(CV3,2,MESH)
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL PARCOM_COMP(CV2,CV2%E,2,MESH)
+            CALL PARCOM_COMP(CV3,CV3%E,2,MESH)
+          ENDIF 
         ENDIF
+        IF (MODASS .EQ.3)THEN
+          CV2%R=CV2%R+CV2%E
+          CV2%E=0.D0
+          CV3%R=CV3%R+CV3%E
+          CV3%E=0.D0
+        ENDIF        
 !                                      AM2%D AND AM3%D ALREADY INVERSED
         CALL OS('X=YZ    ',X=U,Y=CV2,Z=AM2%D)
         CALL OS('X=YZ    ',X=V,Y=CV3,Z=AM3%D)

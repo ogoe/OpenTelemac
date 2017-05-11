@@ -90,9 +90,12 @@ files: bief_def.f
   corrxy.f
   read_mesh_coord.f
   almesh.f
-  ovd.f
   cmpobj.f
+  ovd.f
   ovd_2.f
+  twoprod.f
+  twosum.f
+  ov_comp.f
   os.f
   read_submit.f
   sortie.f
@@ -101,6 +104,7 @@ files: bief_def.f
   streamline.f
   vc13cc.f
   vc04tt.f
+  vc00cc.f
   vc01tt0.f
   vc05aa.f
   vc01aa.f
@@ -151,7 +155,9 @@ files: bief_def.f
   vc00aa.f
   vc13pp.f
   vc01oo.f
-  vc00cc.f
+  paraco_comp.f
+  parcom2_comp.f
+  parcom_comp.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
@@ -308,8 +314,10 @@ files: bief_def.f
   matriy.f
   matrix.f
   filter.f
-  dot.f
   p_dot.f
+  p_dotpair.f
+  dot.f
+  dot_comp.f
   p_dots.f
   mult_interface_seg.f
   osdb.f
@@ -586,8 +594,8 @@ files: interface_hermes.f
 
 [nestor]
 path: <root>|sources|nestor
-files: m_typedefs_interface.f
-  m_typedefs_nestor.f
+files: m_typedefs_nestor.f
+  m_typedefs_interface.f
   m_nestor.f
   m_interfaces_nestor.f
   my_flush.f
@@ -650,6 +658,7 @@ files: declarations_parallel.F
   p_ireadi8.F
   p_iwriti8.F
   p_exit.F
+  p_dsumerr.F
   p_ireadi.F
   p_iwriti.F
   p_imin.F
@@ -790,6 +799,7 @@ files: declarations_special.F
   get_nodes_per_element.f
   check_allocate.f
   gracestop.f
+  sumtwo.f
 
 [stbtel]
 path: <root>|sources|stbtel

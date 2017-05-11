@@ -42,6 +42,12 @@
 !+        V7P1
 !+   Moving from double precisiion FAC to integer IFAC.
 !
+
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      ADD MODASS=3
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| MESH STRUCTURE
 !| X              |-->| BIEF_OBJ STRUCTURE (MAY BE A BLOCK)
@@ -49,6 +55,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_P_DOTS => P_DOTS
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -64,6 +71,9 @@
 !
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
+      DOUBLE PRECISION P_DSUMERR
+      EXTERNAL         P_DSUMERR
+      DOUBLE PRECISION PAIR(2),P_ERR
 !
 !-----------------------------------------------------------------------
 !
@@ -73,21 +83,41 @@
 !
 !  CASE WHERE THE STRUCTURES ARE BLOCKS
 !
+      PAIR=0.D0
       IF(TYPX.EQ.4) THEN
 !
         P_DOTS = 0.D0
+        P_ERR = 0.D0
 !
         IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
-          DO IBL = 1 , X%N
-            P_DOTS=P_DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
+          IF (MODASS .EQ. 1) THEN
+            DO IBL = 1 , X%N
+              P_DOTS=P_DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
      &                                          Y%ADR(IBL)%P%R)
-          ENDDO
+            ENDDO
+          ELSEIF (MODASS .EQ. 3) THEN
+            DO IBL = 1 , X%N
+              P_DOTS=P_DOTS+DOT_COMP(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
+     &                                          Y%ADR(IBL)%P%R)
+            ENDDO
+          ENDIF
+
         ELSE
-          DO IBL = 1 , X%N
-            P_DOTS=P_DOTS+P_DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
+          IF (MODASS .EQ. 1) THEN
+            DO IBL = 1 , X%N
+              P_DOTS=P_DOTS+P_DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
      &                                            Y%ADR(IBL)%P%R,
      &                                            MESH%IFAC%I)
-          ENDDO
+            ENDDO
+          ELSEIF (MODASS .EQ. 3) THEN
+            DO IBL = 1 , X%N
+              CALL P_DOTPAIR(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
+     &                                   Y%ADR(IBL)%P%R,
+     &                             MESH%IFAC%I,PAIR)
+              P_DOTS=P_DOTS+PAIR(1)
+              P_ERR=PAIR(2)
+            ENDDO
+          ENDIF
         ENDIF
 !
 !-----------------------------------------------------------------------
@@ -112,11 +142,22 @@
           STOP
         ENDIF
 !
-        IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
-          P_DOTS=DOT(NPX,X%R,Y%R)
-        ELSE
-          P_DOTS=P_DOT(NPX,X%R,Y%R,MESH%IFAC%I)
+        IF (MODASS .EQ. 1) THEN
+          IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
+            P_DOTS=DOT(NPX,X%R,Y%R)
+          ELSE
+            P_DOTS=P_DOT(NPX,X%R,Y%R,MESH%IFAC%I)
+          ENDIF
+        ELSEIF (MODASS .EQ. 3) THEN
+          IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
+            P_DOTS=DOT_COMP(NPX,X%R,Y%R)
+          ELSE
+            CALL P_DOTPAIR(NPX,X%R,Y%R,MESH%IFAC%I,PAIR)
+            P_DOTS=PAIR(1)
+            P_ERR=PAIR(2)
+          ENDIF
         ENDIF
+
 !
 !-----------------------------------------------------------------------
 !
@@ -145,7 +186,11 @@
 !
 ! FINAL SUM ON ALL THE SUB-DOMAINS
 !
-      IF(NCSIZE.GT.1) P_DOTS = P_DSUM(P_DOTS)
+      IF (MODASS .EQ. 1) THEN
+        IF(NCSIZE.GT.1) P_DOTS = P_DSUM(P_DOTS)
+      ELSEIF (MODASS .EQ. 3) THEN
+        IF(NCSIZE.GT.1) P_DOTS = P_DSUMERR(PAIR)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

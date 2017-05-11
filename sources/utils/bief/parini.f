@@ -35,6 +35,11 @@
 !+        V7P1
 !+   FAC suppressed.
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      ADD ALLOCATION BUF_SEND_ERR AND BUF_RECV_ERR
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFAPAR           |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
 !|                  |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
@@ -44,7 +49,7 @@
 !|                  |   |               IF NOT 0: ADDRESS IN THE LIST
 !|                  |   |               OF BOUNDARY POINTS.
 !| MESH             |-->| MESH STRUCTURE
-!| MODASS           |-->| ASSEMBLY MODE 1: NORMAL 2: WITH INTEGERS
+!| MODASS           |-->| ASSEMBLY MODE 1: NORMAL 2: WITH INTEGERS 3: COMPENSATION
 !| NACHB            |-->| IF 'IL' IS THE LOCAL RANK OF A NEIGHBOURING
 !|                  |   | SUB-DOMAIN AND 'IP' ONE INTERFACE POINT
 !|                  |   | NACHB(IL,IP) WILL BE THE REAL NUMBER OF THIS
@@ -276,6 +281,12 @@
         ENDIF
         CALL BIEF_ALLVEC(1,MESH%BUF_SEND,'BUSEND',IL*3,NB_NEIGHB,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_RECV,'BURECV',IL*3,NB_NEIGHB,0,MESH)
+          IF (MODASS .EQ.3) THEN
+            CALL BIEF_ALLVEC(1,MESH%BUF_SEND_ERR,'BUSEND_ERR',
+     &                       IL*3,NB_NEIGHB,0,MESH)
+            CALL BIEF_ALLVEC(1,MESH%BUF_RECV_ERR,'BURECV_ERR',
+     &                       IL*3,NB_NEIGHB,0,MESH)
+          ENDIF
 !
 !       ADDED FOR INTEGER I4 COMMUNICATIONS
 !

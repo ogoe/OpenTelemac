@@ -47,6 +47,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+        ADD MODASS=3 FOR THE INTERFACE NODE ASSEMBLY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OR BLOCK OF MATRICES
 !| C              |-->| A GIVEN CONSTANT
@@ -57,6 +61,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATRBL => MATRBL
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -228,7 +233,15 @@
 !  COMPLEMENTS THE VECTOR (PARALLEL MODE)
 !
       IF(NCSIZE.GT.1) THEN
-        CALL PARCOM(X,2,MESH)
+        IF (MODASS .EQ. 1) THEN
+          CALL PARCOM(X,2,MESH)
+        ELSEIF (MODASS .EQ. 3) THEN
+          CALL PARCOM_COMP(X,X%ADR(1)%P%E,2,MESH)
+        ENDIF 
+      ENDIF
+      IF (MODASS .EQ.3)THEN
+        X%ADR(1)%P%R=X%ADR(1)%P%R+X%ADR(1)%P%E
+        X%ADR(1)%P%E=0.D0
       ENDIF
 !
 !-----------------------------------------------------------------------

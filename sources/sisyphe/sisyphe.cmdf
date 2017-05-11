@@ -65,9 +65,12 @@ files: bief_def.f
   corrxy.f
   read_mesh_coord.f
   almesh.f
-  ovd.f
   cmpobj.f
+  ovd.f
   ovd_2.f
+  twoprod.f
+  twosum.f
+  ov_comp.f
   os.f
   time_in_seconds.f
   find_variable.f
@@ -79,6 +82,7 @@ files: bief_def.f
   read_dataset.f
   vc13cc.f
   vc04tt.f
+  vc00cc.f
   vc01tt0.f
   vc05aa.f
   vc01aa.f
@@ -129,7 +133,9 @@ files: bief_def.f
   vc00aa.f
   vc13pp.f
   vc01oo.f
-  vc00cc.f
+  paraco_comp.f
+  parcom2_comp.f
+  parcom_comp.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
@@ -175,7 +181,6 @@ files: bief_def.f
   matvct.f
   matvec.f
   lump.f
-  cvtrvf_eria.f
   solaux.f
   asmve1.f
   asmvec.f
@@ -226,6 +231,8 @@ files: bief_def.f
   dwnup1.f
   downup.f
   p_dot.f
+  p_dotpair.f
+  dot_comp.f
   p_dots.f
   trid3d.f
   gracjg.F
@@ -384,6 +391,7 @@ files: bief_def.f
   tvf_2.f
   cflvf.f
   cvtrvf.f
+  cvtrvf_eria.f
   cvdftr.f
   diffin.f
   streamline.f
@@ -517,8 +525,8 @@ files: interface_hermes.f
 
 [nestor]
 path: <root>|sources|nestor
-files: m_typedefs_interface.f
-  m_typedefs_nestor.f
+files: m_typedefs_nestor.f
+  m_typedefs_interface.f
   m_nestor.f
   m_interfaces_nestor.f
   my_flush.f
@@ -568,6 +576,7 @@ files: declarations_parallel.F
   p_ireadi8.F
   p_iwriti8.F
   p_dsum.F
+  p_dsumerr.F
   p_mpi_type_get_extent.F
   p_mpi_type_create_struct.F
   p_mpi_type_commit.F
@@ -713,3 +722,4 @@ files: declarations_special.F
   check_call.f
   get_nodes_per_element.f
   check_allocate.f
+  sumtwo.f

@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(OP ,  DM,TYPDIM,XM,TYPEXM,   DN,TYPDIN,XN,TYPEXN,   D,C,
-     & IKLE,NELEM,NELMAX,NDIAG)
+     & IKLE,NELEM,NELMAX,NDIAG,DM_ERR, DN_ERR, D_ERR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -65,6 +65,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!+      ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
@@ -97,6 +101,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OM1111 => OM1111
+      USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
@@ -110,6 +115,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DM(*),XM(NELMAX,*)
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIM,TYPEXM,TYPDIN,TYPEXN
       DOUBLE PRECISION, INTENT(IN)    :: C
+      DOUBLE PRECISION,OPTIONAL, INTENT(INOUT) :: DM_ERR(*)
+      DOUBLE PRECISION,OPTIONAL, INTENT(IN) ::DN_ERR(*),D_ERR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -122,7 +129,13 @@
       IF(OP(3:8).EQ.'N     ') THEN
 !
         IF(TYPDIN(1:1).EQ.'Q') THEN
-          CALL OV( 'X=Y     ' , DM , DN , Z , C , NDIAG )
+          IF ( MODASS .EQ.1) THEN
+            CALL OV( 'X=Y     ' , DM , DN , Z , C , NDIAG )
+          ELSEIF (MODASS .EQ. 3) THEN
+            CALL OV_COMP( 'X=Y     ' , DM , DN , Z , C , NDIAG
+     &           ,X_ERR=DM_ERR, Y_ERR=DN_ERR )
+          ENDIF
+!
         ELSEIF(TYPDIN(1:1).EQ.'I'.OR.TYPDIN(1:1).EQ.'0') THEN
 !         NOTHING TO DO, ONLY NEEDS TO COPY TYPDIN
         ELSE
@@ -286,7 +299,12 @@
       ELSEIF(OP(3:8).EQ.'M+N   '.OR.
      &      (OP(3:8).EQ.'M+TN  ').AND.TYPEXN(1:1).NE.'Q') THEN
 !
-        CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
+        IF ( MODASS .EQ.1) THEN
+          CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
+        ELSEIF (MODASS .EQ. 3) THEN
+          CALL OV_COMP( 'X=X+Y   ' , DM , DN , Z , C , NDIAG
+     &           ,X_ERR=DM_ERR, Y_ERR=DN_ERR )
+        ENDIF
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
            CALL OV( 'X=X+Y   ' , XM(1,1) , XN(1,1) , Z , C , NELEM )
@@ -543,8 +561,15 @@
 !   DIAGONAL TERMS
 !
         IF(TYPDIM(1:1).EQ.'Q') THEN
-          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
-          CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+          IF (MODASS.EQ. 1)THEN
+            CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+            CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
+          ELSEIF (MODASS.EQ. 3)THEN
+            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG
+     &                     ,X_ERR=DM_ERR, Y_ERR= D_ERR  )
+            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG
+     &                     ,X_ERR=DM_ERR, Y_ERR= D_ERR  )
+          ENDIF
         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
           CALL OV( 'X=YZ    ' , DM , D , D , C , NDIAG )
           TYPDIM(1:1)='Q'
@@ -591,7 +616,12 @@
 !
       ELSEIF(OP(3:8).EQ.'M+D   ') THEN
 !
-        CALL OV( 'X=X+Y   ' , DM , D , Z , 0.D0 , NDIAG )
+        IF ( MODASS .EQ.1) THEN
+          CALL OV( 'X=X+Y   ' , DM , D , Z , 0.D0 , NDIAG )
+        ELSEIF (MODASS .EQ. 3) THEN
+          CALL OV_COMP( 'X=X+Y   ' , DM , D , Z , 0.D0
+     &        , NDIAG,X_ERR=DM_ERR, Y_ERR= D_ERR )
+        ENDIF
 !       HERE THERE IS A DOUBT ABOUT TYPDIM
         TYPDIM(1:1)='Q'
 !

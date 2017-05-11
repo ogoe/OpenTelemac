@@ -49,6 +49,10 @@
 !+        11/03/2013
 !+        V6P3
 !+   Dimension of LIMVOI now set to (11,2).
+!history  R.NHEILI (Univerte de Perpignan, DALI)
+!+        24/02/2016
+!+        V7
+!     ALLOCATE BUFER FOR ERRORS
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
 !+        15/05/2015
@@ -463,6 +467,11 @@
 !     THEIR ALLVEC IS IN PARINI
       CALL FIRST_ALL_BIEFOBJ(MESH%BUF_SEND)
       CALL FIRST_ALL_BIEFOBJ(MESH%BUF_RECV)
+      IF (MODASS .EQ.3) THEN
+        ALLOCATE(MESH%BUF_SEND_ERR)
+        ALLOCATE(MESH%BUF_RECV_ERR)
+      ENDIF
+
 !
       IF(NCSIZE.GT.1) THEN
 !       XSEG

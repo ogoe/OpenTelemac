@@ -99,14 +99,18 @@ files: bief_def.f
   crosfr.f
   fasp.f
   fond.f
-  ovd.f
   cmpobj.f
+  ovd.f
   ovd_2.f
+  twoprod.f
+  twosum.f
+  ov_comp.f
   os.f
   strche.f
   fonstr.f
   vc13cc.f
   vc04tt.f
+  vc00cc.f
   vc01tt0.f
   vc05aa.f
   vc01aa.f
@@ -157,7 +161,9 @@ files: bief_def.f
   vc00aa.f
   vc13pp.f
   vc01oo.f
-  vc00cc.f
+  paraco_comp.f
+  parcom2_comp.f
+  parcom_comp.f
   vc01pp.f
   vc05oo.f
   vc14aa.f
@@ -345,8 +351,10 @@ files: bief_def.f
   remseg.f
   dwnup1.f
   downup.f
-  dot.f
   p_dot.f
+  p_dotpair.f
+  dot.f
+  dot_comp.f
   p_dots.f
   trid3d.f
   gracjg.F
@@ -514,6 +522,7 @@ files: declarations_parallel.F
   p_ireadi8.F
   p_iwriti8.F
   p_imin.F
+  p_dsumerr.F
   p_dsum.F
   p_ireadi.F
   p_iwriti.F
@@ -531,3 +540,4 @@ files: declarations_special.F
   get_nodes_per_element.f
   check_allocate.f
   gracestop.f
+  sumtwo.f
