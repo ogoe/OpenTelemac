@@ -16,6 +16,7 @@ GEOMETRY FILE             : geo_bosse-t3d.slf
 / on utilise le fichier resultat de TELEMAC-2D
 / cf 02.bosse_tel2d
 FILE FOR 2D CONTINUATION        : bosse-t2d_init.slf
+INITIAL TIME SET TO ZERO  : YES
 MESH TRANSFORMATION : 2
 /----------------------------------------------------------------------/
 /                     OPTIONS GENERALES
