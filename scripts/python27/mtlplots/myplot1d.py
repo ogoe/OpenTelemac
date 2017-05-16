@@ -18,7 +18,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import path, environ, stat, mkdir
+from os import path, stat, mkdir
 from copy import deepcopy
 import numpy as np
 # ~~> matplotlib and pyplot
@@ -28,7 +28,6 @@ except AttributeError: hide_default = True # output does not support isatty()
 if hide_default: mpl.use('Agg') # Use of Agg must be done before importing matplotlib.pyplot
 import matplotlib.pyplot as plt
 # ~~> dependencies towards other mtlplots
-from plotTELEMAC import getColourMap
 # ~~> dependencies towards other pytel/modules
 from samplers.mycast import Caster
 from parsers.parserCSV import CSV

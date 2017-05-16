@@ -24,7 +24,8 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ICOM           |-->| COMMUNICATION MODE
@@ -34,7 +35,7 @@
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
 !| MESH           |-->| MESH STRUCTURE
 !| X              |<->| VECTOR OR BLOCK OF VECTORS
-!| ERRX           |<->| ERROR VECTOR 
+!| ERRX           |<->| ERROR VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARCOM_COMP => PARCOM_COMP

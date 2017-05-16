@@ -34,7 +34,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !     structures MPI et MUMPS
-#if defined (HAVE_MUMPS)
+#if defined HAVE_MUMPS
       INCLUDE 'dmumps_struc.h'
 #endif
 !
@@ -50,7 +50,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MUMPS)
+#if defined HAVE_MUMPS
 !
       DOUBLE PRECISION TIME_IN_SECONDS2
       EXTERNAL         TIME_IN_SECONDS2
@@ -142,6 +142,15 @@
         END IF
         MUMPS_PAR%A_LOC(K) = DA(K)
       ENDDO
+!! COMPAD-DCO-MPICHECK  BEGIN  JR2016
+#if defined COMPAD
+      WRITE(LU,*) '(AD) COMPAD :: SOLVE_MUMPS_PAR.F: DIRECT CALL OF ',
+     &     'MPI_ALLREDUCE NOT AD-READY.'
+      WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+      CALL PLANTE(1)
+      STOP
+#endif
+!! COMPAD-DCO-MPICHECK  END  JR2016
 !     GLOBAL REDUCTION OF RHS VECTOR
       CALL MPI_ALLREDUCE(TEMP1,TEMP2,MUMPS_PAR%N,MPI_DOUBLE_PRECISION,
      &     MPI_SUM,
@@ -205,6 +214,15 @@
       END IF
       TEMP2(:)=0.0
 !
+!! COMPAD-DCO-MPICHECK  BEGIN  JR2016
+#if defined COMPAD
+      WRITE(LU,*) '(AD) COMPAD :: SOLVE_MUMPS_PAR.F: DIRECT CALL OF ',
+     &     'MPI_ALLREDUCE NOT AD-READY.'
+      WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+      CALL PLANTE(1)
+      STOP
+#endif
+!! COMPAD-DCO-MPICHECK  END  JR2016
       CALL MPI_BCAST(TEMP1,MUMPS_PAR%N,MPI_DOUBLE_PRECISION,
      &               0,COMM,IER)
       DO  K = 1,NPOIN

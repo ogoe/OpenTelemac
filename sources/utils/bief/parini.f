@@ -37,7 +37,7 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      ADD ALLOCATION BUF_SEND_ERR AND BUF_RECV_ERR
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,12 +281,12 @@
         ENDIF
         CALL BIEF_ALLVEC(1,MESH%BUF_SEND,'BUSEND',IL*3,NB_NEIGHB,0,MESH)
         CALL BIEF_ALLVEC(1,MESH%BUF_RECV,'BURECV',IL*3,NB_NEIGHB,0,MESH)
-          IF (MODASS .EQ.3) THEN
-            CALL BIEF_ALLVEC(1,MESH%BUF_SEND_ERR,'BUSEND_ERR',
-     &                       IL*3,NB_NEIGHB,0,MESH)
-            CALL BIEF_ALLVEC(1,MESH%BUF_RECV_ERR,'BURECV_ERR',
-     &                       IL*3,NB_NEIGHB,0,MESH)
-          ENDIF
+        IF (MODASS .EQ.3) THEN
+          CALL BIEF_ALLVEC(1,MESH%BUF_SEND_ERR,'BUSEND_ERR',
+     &                     IL*3,NB_NEIGHB,0,MESH)
+          CALL BIEF_ALLVEC(1,MESH%BUF_RECV_ERR,'BURECV_ERR',
+     &                     IL*3,NB_NEIGHB,0,MESH)
+        ENDIF
 !
 !       ADDED FOR INTEGER I4 COMMUNICATIONS
 !

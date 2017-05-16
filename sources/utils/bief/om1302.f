@@ -80,6 +80,11 @@
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -139,29 +144,21 @@
 !
       DOUBLE PRECISION Z(1)
 !
-      INTEGER CORNSY(6,6),CORSYM(6,3)
-!
 !-----------------------------------------------------------------------
 !     BEWARE: ONLY WORKS FOR P2
-      DATA CORNSY/ 1 , 6 , 17, 0 , 0 , 0 ,
-     &             3 , 8 , 12, 0 , 0 , 0 ,
-     &             7 , 11, 5 , 0 , 0 , 0 ,
-     &             16, 21, 2 , 0 , 0 , 0 ,
-     &             18, 23, 27, 0 , 0 , 0 ,
-     &             22, 26, 20, 0 , 0 , 0 /
-      DATA CORSYM/ 1 , 6 , 2 , 0 , 0 , 0 ,
-     &             3 , 8 , 12, 0 , 0 , 0 ,
-     &             7 , 11, 5 , 0 , 0 , 0 /
-!      DATA CORNSY/ 0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 /
-!
-!      DATA CORSYM/ 0 , 0 , 0 , 0 , 0 , 0 ,
-!     *             0 , 0 , 0, 0 , 0 , 0 ,
-!     *             0 , 0, 0 , 0 , 0 , 0 /
+      INTEGER :: CORNSY(6,6)
+      PARAMETER ( CORNSY = RESHAPE( (/
+     &          1 , 6 , 17, 0 , 0 , 0 ,
+     &          3 , 8 , 12, 0 , 0 , 0 ,
+     &          7 , 11, 5 , 0 , 0 , 0 ,
+     &          16, 21, 2 , 0 , 0 , 0 ,
+     &          18, 23, 27, 0 , 0 , 0 ,
+     &          22, 26, 20, 0 , 0 , 0 /), SHAPE=(/ 6,6 /) ) )
+      INTEGER :: CORSYM(6,3)
+      PARAMETER ( CORSYM = RESHAPE( (/
+     &          1 , 6 , 2 , 0 , 0 , 0 ,
+     &          3 , 8 , 12, 0 , 0 , 0 ,
+     &          7 , 11, 5 , 0 , 0 , 0 /), SHAPE=(/ 6,3 /) ) )
 !
 !-----------------------------------------------------------------------
 !

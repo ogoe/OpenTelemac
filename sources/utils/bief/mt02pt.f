@@ -98,7 +98,7 @@
       DOUBLE PRECISION DIAG1,DIAG2,DIAG3,DIAG4
       DOUBLE PRECISION EXTR12,EXTR13,EXTR14,EXTR23,EXTR24,EXTR34
       INTEGER IT1,IT2,IT3,IT4,I,I1,I2,I3,I4,I5,I6,NUM1,NUM2,NUM3,NUM4
-      INTEGER IGLOB(6),SENS(3),STO(6,6),IELEM
+      INTEGER :: IGLOB(6),SENS(3),STO(6,6),IELEM
 !
       DOUBLE PRECISION SUR24,HTOT,VTOT,WTOT,COEF
       DOUBLE PRECISION T1,T3,T5,T7,T9,T11,T13,T15,T17,T19,T21,T23
@@ -114,12 +114,16 @@
 !
 !     STORAGE CONVENTION FOR THE PRISM EXTRADIAGONAL TERMS
 !
-      DATA STO / 00 , 01 , 02 , 03 , 04 , 05 ,
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA STO /
+      PARAMETER ( STO = (/
+     &           00 , 01 , 02 , 03 , 04 , 05 ,
      &           01 , 00 , 06 , 07 , 08 , 09 ,
      &           02 , 06 , 00 , 10 , 11 , 12 ,
      &           03 , 07 , 10 , 00 , 13 , 14 ,
      &           04 , 08 , 11 , 13 , 00 , 15 ,
-     &           05 , 09 , 12 , 14 , 15 , 00 /
+     &           05 , 09 , 12 , 14 , 15 , 00 /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !

@@ -150,9 +150,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVTRVF_NERD_2 => CVTRVF_NERD_2
-      USE DECLARATIONS_TELEMAC, ONLY : DEJA_CPOS2, INDIC_CPOS2 
+      USE DECLARATIONS_TELEMAC, ONLY : DEJA_CPOS2, INDIC_CPOS2
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM,P_DMIN,P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -182,8 +185,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DSUM,P_DMIN,P_DMAX
-      EXTERNAL         P_DSUM,P_DMIN,P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM,P_DMIN,P_DMAX
+!      EXTERNAL         P_DSUM,P_DMIN,P_DMAX
+!##< JR @ RWTH
 !
       INTEGER I,IOPT1,IOPT2,NPOIN,IPTFR,I1,I2,NITER,REMAIN_SEG,NEWREMAIN
       INTEGER IR

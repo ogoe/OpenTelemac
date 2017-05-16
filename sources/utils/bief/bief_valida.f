@@ -67,6 +67,9 @@
       USE DECLARATIONS_TELEMAC
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -85,8 +88,10 @@
 !
       DOUBLE PRECISION TIMEREF,TIMERES,ERMAX,HIST(1),ERR
 !
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL         P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX
+!      EXTERNAL         P_DMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

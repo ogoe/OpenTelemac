@@ -31,7 +31,7 @@
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
 !
-#if defined(HAVE_CGNS)
+#if defined HAVE_CGNS
       INCLUDE 'cgnslib_f.h'
 #endif
 !
@@ -42,7 +42,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined(HAVE_CGNS)
+#if defined HAVE_CGNS
       INTEGER :: IERR
       INTEGER :: I, J, I1
       INTEGER :: ITIME, IVAR
@@ -296,7 +296,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
       ! LANGAE AND OUTPUT VALUE
-#if defined(HAVE_CGNS)
+#if defined HAVE_CGNS
       INCLUDE 'cgnslib_f.h'
 #endif
 !
@@ -306,7 +306,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_CGNS)
+#if defined HAVE_CGNS
       INTEGER :: IERR
       INTEGER :: I, J, K
       INTEGER :: ITIME, IVAR

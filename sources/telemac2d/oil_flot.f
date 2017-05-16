@@ -88,7 +88,10 @@
 !     THIS IS AN EXAMPLE !!!!!!!!!!!!!!!!!!!!
 !
       RHO_EAU=1000.D0
-      PI=ACOS(-1.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI  = ACOS (-1.D0)
+!< SEB @ HRW
 !     HARDCODED WATER MOLECULAR VISCOSITY
       NU=1.D-6
       NU2=NU**2

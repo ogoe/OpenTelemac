@@ -55,55 +55,64 @@
 !
 !-----------------------------------------------------------------------
 !
-      DATA FR / 'TEMPS :                                           ',
-     &          ' SECONDES                                         ',
-     &          'IEME  ITERATION                                   ',
-     &          'ETAPE DE CONVECTION-DIFFUSION DES VITESSES        ',
-     &          'ETAPE DE CONVECTION-DIFFUSION DES TRACEURS        ',
-     &          'PROPAGATION ET DIFFUSION AVEC EQUATION D''ONDE     ',
-     &          'ETAPE DE CONVECTION-DIFFUSION DU K-EPSILON        ',
-     &          'ETAPE DE SAINT-VENANT                             ',
-     &          'ETAPE DE CALCUL DE LA VITESSE VERTICALE           ',
-     &          '         BILAN DE MASSE                           ',
-     &          '         BILAN DE MASSE FINAL                     ',
-     &          '         DERIVE DE FLOTTEUR(S)                    ',
-     &          'CONVECTION PAR METHODE DES CARACTERISTIQUES       ',
-     &          'CONVECTION PAR SCHEMA SUPG                        ',
-     &          'CONVECTION PAR SCHEMA N, PSI OU VOLUMES FINIS     ',
-     &          '                DIFFUSION                         ',
-     &          '            ETAPE DE CONVECTION                   '/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA FR /
+      PARAMETER ( FR = (/
+     &     'TEMPS :                                           ',
+     &     ' SECONDES                                         ',
+     &     'IEME  ITERATION                                   ',
+     &     'ETAPE DE CONVECTION-DIFFUSION DES VITESSES        ',
+     &     'ETAPE DE CONVECTION-DIFFUSION DES TRACEURS        ',
+     &     'PROPAGATION ET DIFFUSION AVEC EQUATION D''ONDE     ',
+     &     'ETAPE DE CONVECTION-DIFFUSION DU K-EPSILON        ',
+     &     'ETAPE DE SAINT-VENANT                             ',
+     &     'ETAPE DE CALCUL DE LA VITESSE VERTICALE           ',
+     &     '         BILAN DE MASSE                           ',
+     &     '         BILAN DE MASSE FINAL                     ',
+     &     '         DERIVE DE FLOTTEUR(S)                    ',
+     &     'CONVECTION PAR METHODE DES CARACTERISTIQUES       ',
+     &     'CONVECTION PAR SCHEMA SUPG                        ',
+     &     'CONVECTION PAR SCHEMA N, PSI OU VOLUMES FINIS     ',
+     &     '                DIFFUSION                         ',
+     &     '            ETAPE DE CONVECTION                   ' /) )
 !
-      DATA FRNH/'        ETAPE DE CONVECTION - DIFFUSION           ',
-     &          '         ETAPE DE PRESSION DYNAMIQUE              ',
-     &          '         ETAPE DE PROJECTION DES VITESSES         ',
-     &          '     ETAPE DE PRESSION DYNAMIQUE, PREDICTION      ',
-     &          'ETAPE DE CONTINUITE 3D DANS LE DOMAINE TRANSFORME '/
+!      DATA FRNH/
+      PARAMETER ( FRNH = (/
+     &     '        ETAPE DE CONVECTION - DIFFUSION           ',
+     &     '         ETAPE DE PRESSION DYNAMIQUE              ',
+     &     '         ETAPE DE PROJECTION DES VITESSES         ',
+     &     '     ETAPE DE PRESSION DYNAMIQUE, PREDICTION      ',
+     &     'ETAPE DE CONTINUITE 3D DANS LE DOMAINE TRANSFORME ' /) )
 !
 !-----------------------------------------------------------------------
 !
-      DATA GB / ' TIME :                                           ',
-     &          ' SECONDS                                          ',
-     &          'TH  ITERATION                                     ',
-     &          'ADVECTION-DIFFUSION OF VELOCITIES STEP            ',
-     &          'ADVECTION-DIFFUSION OF TRACERS                    ',
-     &          'PROPAGATION AND DIFFUSION WITH WAVE EQUATION      ',
-     &          'ADVECTION-DIFFUSION OF K-EPSILON OR OMEGA STEP    ',
-     &          'SHALLOW WATER STEP                                ',
-     &          'CALCULATION OF VERTICAL VELOCITY STEP             ',
-     &          '         MASS BALANCE                             ',
-     &          '         FINAL MASS BALANCE                       ',
-     &          '         DRIFT OF DROGUE(S)                       ',
-     &          '   ADVECTION BY CHARACTERISTIC CURVE METHOD       ',
-     &          '       ADVECTION BY SUPG METHOD                   ',
-     &          '   ADVECTION BY N, PSI OR FINITE VOLUME SCHEME    ',
-     &          '             DIFFUSION                            ',
-     &          '             ADVECTION STEP                       '/
+!      DATA GB /
+      PARAMETER ( GB = (/
+     &     ' TIME :                                           ',
+     &     ' SECONDS                                          ',
+     &     'TH  ITERATION                                     ',
+     &     'ADVECTION-DIFFUSION OF VELOCITIES STEP            ',
+     &     'ADVECTION-DIFFUSION OF TRACERS                    ',
+     &     'PROPAGATION AND DIFFUSION WITH WAVE EQUATION      ',
+     &     'ADVECTION-DIFFUSION OF K-EPSILON OR OMEGA STEP    ',
+     &     'SHALLOW WATER STEP                                ',
+     &     'CALCULATION OF VERTICAL VELOCITY STEP             ',
+     &     '         MASS BALANCE                             ',
+     &     '         FINAL MASS BALANCE                       ',
+     &     '         DRIFT OF DROGUE(S)                       ',
+     &     '   ADVECTION BY CHARACTERISTIC CURVE METHOD       ',
+     &     '       ADVECTION BY SUPG METHOD                   ',
+     &     '   ADVECTION BY N, PSI OR FINITE VOLUME SCHEME    ',
+     &     '             DIFFUSION                            ',
+     &     '             ADVECTION STEP                       ' /) )
 !
-      DATA GBNH/'     ADVECTION AND DIFFUSION-FORCING STEP         ',
-     &          '         DYNAMIC PRESSURE STAGE                   ',
-     &          '         VELOCITY PROJECTION STEP                 ',
-     &          '     DYNAMIC PRESSURE STAGE, PREDICTION           ',
-     &          '  STAGE OF 3D CONTINUITY IN TRANSFORMED MESH      '/
+!      DATA GBNH/
+      PARAMETER ( GBNH = (/
+     &     '     ADVECTION AND DIFFUSION-FORCING STEP         ',
+     &     '         DYNAMIC PRESSURE STAGE                   ',
+     &     '         VELOCITY PROJECTION STEP                 ',
+     &     '     DYNAMIC PRESSURE STAGE, PREDICTION           ',
+     &     '  STAGE OF 3D CONTINUITY IN TRANSFORMED MESH      ' /) )
 !
 !***********************************************************************
 !

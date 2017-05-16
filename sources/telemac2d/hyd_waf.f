@@ -37,7 +37,7 @@
 ! |  ELTSEG        | -->|  SEGMENT NUMBERS PER ELEMENT                 |
 ! |  G             | -->|  GRAVITY                                     |
 ! |  HROPT         | -->|  OPTION FOR HYDROSTATIC RECONSTRUCTION:      |
-! !                |    |   1: AUDUSSE, 2: NOELLE        
+! !                |    |   1: AUDUSSE, 2: NOELLE
 ! |  NELEM         | -->|  NUMBER OF TOTAL ELEMENTS                    |
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
@@ -159,9 +159,9 @@
             H1=W(1,NUBO1)
             H2=W(1,NUBO2)
 !******************************************************
-!           HYDROSTATIC RECONSTRUCTION 
+!           HYDROSTATIC RECONSTRUCTION
 !           HYDROSTATIC RECONSTRUCTION OF AUDUSSE
-            IF(HROPT.EQ.1)THEN 
+            IF(HROPT.EQ.1)THEN
               DZIJ = MAX(0.D0,ZF2-ZF1)
               HIJ  = MAX(0.D0,H1- DZIJ)
 !
@@ -279,7 +279,7 @@
 !*********************************************************
 !
 !             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
-              IF(HROPT.EQ.1)THEN 
+              IF(HROPT.EQ.1)THEN
                 HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
                 HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
 !             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.

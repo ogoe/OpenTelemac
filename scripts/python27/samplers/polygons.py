@@ -22,10 +22,10 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import getConeAngle,isClose,getNorm2
 from utils.progressbar import SubProgressBar
@@ -351,17 +351,22 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Command line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
-   options, args = parser.parse_args()
-   if len(args) < 1:
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Testing ...
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   parser.add_argument("--sph2ll",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
+   options = parser.parse_args()
+   if len(options.args) < 1:
       print '\nAt least a code name (and its associated inputs) are required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   insFile = args[0]
+   insFile = options.args[0]
 
    p = Polygons()
    head = p.parseContent(insFile)
@@ -370,7 +375,7 @@ if __name__ == "__main__":
    p.smoothSubdivise(weigth=0.7)
    p.subsampleAngle(angle=12.0)
 
-   p.putContent(args[1],head)
+   p.putContent(options.args[1],head)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

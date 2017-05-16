@@ -83,8 +83,11 @@
       INTEGER NEL,IFA,I1,I2,J1,J2,IFACE,JFACE,IG1,IG2
       INTEGER IELEM,IELEM1,IELEM2
 !
-      INTEGER NEXT(3)
-      DATA NEXT / 2,3,1 /
+      INTEGER :: NEXT(3)
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA NEXT / 2,3,1 /
+      PARAMETER ( NEXT = (/ 2,3,1 /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

@@ -315,7 +315,7 @@
 !     EXTERNAL LEAP
 !
       INTEGER MONTH(12)
-      DATA MONTH /0,31,59,90,120,151,181,212,243,273,304,334/
+      PARAMETER ( MONTH=(/0,31,59,90,120,151,181,212,243,273,304,334/) )
 !
 !-----------------------------------------------------------------------
 !
@@ -442,7 +442,7 @@
      &            *((HREL/100.D0)*QSAT_AIR/(TAIR+273.15D0))**(1.D0/7.D0)
      &           + 0.955D0*(NEBU/8.D0)**2.796D0
       ELSE
-        IF(LNG.EQ.1) THEN 
+        IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'FORMULE DU RAYONNEMENT ATMOSPHERIQUE NON PREVUE'
         ENDIF
         IF(LNG.EQ.2) THEN

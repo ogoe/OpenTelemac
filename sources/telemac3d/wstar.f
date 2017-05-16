@@ -52,8 +52,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IAD,IPLAN
-      DOUBLE PRECISION HH,EPSH
-      DATA EPSH/1.D-2/
+      DOUBLE PRECISION :: HH
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSH/1.D-2/
+      DOUBLE PRECISION, PARAMETER :: EPSH = 1.D-2
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

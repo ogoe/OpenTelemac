@@ -37,7 +37,7 @@
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL
       USE INTERFACE_WAQTEL, EX_NAMETRAC_WAQ => NAMETRAC_WAQ
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       USE T3D_AED2
 #endif
 !
@@ -58,7 +58,7 @@
       INTEGER :: I,NTRAC1,OUTPUT_SIZE
 !
 ! AED2
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       CHARACTER(LEN=16),ALLOCATABLE :: NAMESAED2(:)
 #endif
 !
@@ -187,13 +187,13 @@
           IF(IND_T.EQ.0)THEN
             IND_T = NTRAC1+1
             NAMETRAC(NTRAC1+1) = '  TEMPERATURE   '
-     &                       //  '      °C        '
+     &                       //  '      oC        '
           ENDIF
 !
 !      AED2 COUPLING
 !
         CASE(6)
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
           CALL NAMES_VAR_AED2(ADDTR,NAMESAED2)
           DO I=1,ADDTR
             NAMETRAC(NTRAC1+I) = NAMESAED2(I)

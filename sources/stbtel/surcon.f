@@ -57,12 +57,12 @@
       INTEGER NPOIN2 , NELEM2
       INTEGER ITEST , IELEM , KELEM , ISWAP , KSWAP
       INTEGER I , J , K
-      INTEGER IP(3) , KP , ISUI(3)
+      INTEGER :: IP(3) , KP , ISUI(3)
 !
-!
-!
-!
-      DATA ISUI / 2 , 3 , 1 /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI / 2 , 3 , 1 /
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+!##< SEB @ HRW
 !
 !=======================================================================
 !

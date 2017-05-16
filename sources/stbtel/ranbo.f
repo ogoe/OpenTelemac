@@ -9,7 +9,13 @@
 !  PROGICIEL : STBTEL V5.2   10/02/93    J.M. JANIN   (LNH)
 !***********************************************************************
 !
-!    FONCTION : CONSTRUCTION DE LA TABLE DES ARETES DE BORD
+!brief  Building the table of boundary segments
+!
+
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -55,14 +61,17 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IILE,NILE,I,ISUIV,IELEM,IFACE,NOEUD1,NOEUD2
-      INTEGER SOMSUI(4),IERROR, I1, I2
+      INTEGER IERROR, I1, I2
 !
-      DOUBLE PRECISION SOM1,SOM2,Y2,EPSILO
+      DOUBLE PRECISION SOM1,SOM2,Y2
 !
       LOGICAL SWAP
 !
-      DATA SOMSUI / 2 , 3 , 4 , 0 /
-      DATA EPSILO / 1.D-6 /
+      INTEGER :: SOMSUI(4) = (/ 2 , 3 , 4 , 0 /)
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSILO / 1.D-6 /
+      DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-6
+!##< JR @ RWTH
 !
 !=======================================================================
 ! INITIALISATION

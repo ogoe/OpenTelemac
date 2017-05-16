@@ -43,6 +43,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -51,10 +54,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
+!
 !
       CALL MPI_ALLREDUCE(MYPART,P_IMAX,1,MPI_INTEGER,MPI_MAX,
      &                   COMM,IER)

@@ -94,7 +94,12 @@
       CASE (0) ! SECTION END POINTS PROVIDED BY COORDINATES
         DO N=1,NSEC
           READ (INP,*) CHAIN(N)%DESCR
-          READ (INP,*) CHAIN(N)%XYBEG(:), CHAIN(N)%XYEND(:)
+!##> JR @ RWTH: AVOID PART-REF WITH NON-ZERO RANK IN MODE T1V
+          READ (INP,*)
+     &         ( CHAIN(N)%XYBEG(I), I=1, SIZE(CHAIN(N)%XYBEG,1) ),
+     &         ( CHAIN(N)%XYEND(I), I=1, SIZE(CHAIN(N)%XYEND,1) )
+!          READ (INP,*) CHAIN(N)%XYBEG(:), CHAIN(N)%XYEND(:)
+!##< JR @ RWTH
           CHAIN(N)%NPAIR(:)=0
           CHAIN(N)%NSEG=-1
           NULLIFY(CHAIN(N)%LISTE)

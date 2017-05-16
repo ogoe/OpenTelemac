@@ -31,7 +31,7 @@
       USE DECLARATIONS_SPECIAL
       USE C_BINDING
       IMPLICIT NONE
-#if defined (HAVE_SCOTCH)
+#if defined HAVE_SCOTCH
       INCLUDE 'scotchf.h'
 #endif
 !
@@ -51,13 +51,13 @@
 !
       INTEGER I,J,K,ERR,NUMFLAG,EDGECUT,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       TYPE(C_PTR) :: NULLTABLE
 #endif
 !
 ! SCOTCH
 !
-#if defined (HAVE_SCOTCH)
+#if defined HAVE_SCOTCH
       REAL*8, DIMENSION(SCOTCH_GRAPHDIM) :: SCOTCHGRAPH
       REAL*8, DIMENSION(SCOTCH_STRATDIM) :: SCOTCHSTRAT
       TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
@@ -122,7 +122,7 @@
 !
         NUMFLAG = 1
 !
-#if defined(HAVE_MPI)
+#if defined HAVE_MPI
         CALL MYMETIS_PARTMESHDUAL
      &        (NELEM, NPOIN, EPTR, EIND,
      &          NCOMMONNODES, NPARTS,
@@ -140,7 +140,7 @@
         DEALLOCATE(EPTR)
         DEALLOCATE(EIND)
       ELSE IF(PMETHOD.EQ.2) THEN
-#if defined (HAVE_SCOTCH)
+#if defined HAVE_SCOTCH
 !
 !       SCOTCH PARTITIONER
 !

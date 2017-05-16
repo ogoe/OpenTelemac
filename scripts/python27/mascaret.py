@@ -16,13 +16,11 @@
 import re
 import sys
 import shutil
-import threading
-import numpy as np
-from time import localtime, strftime
 from subprocess import *
-from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
+from os import path,walk,sep,environ
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards other modules
-from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
+from config import parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.messages import MESSAGES,filterMessage,banner
 
@@ -75,17 +73,26 @@ def main():
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n\
+Run the mascaret executable in the current folder, given a CAS file.
+      '''))
+   parser.add_argument( "args",nargs='*' )
    # ~~> Environment
-   parser.add_option("-c", "--configname",type="string",dest="configName",default='',
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default='',
       help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default='',
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default='',
       help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
+   parser.add_argument(\
+      "-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
       help="specify whether there is a sortie file, default is no" )
-   options, args = parser.parse_args()
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,14 +146,14 @@ def main():
             if tail == '.cfg' :
                print '    +> ',fle
       sys.exit(1)
-   if len(args) < 1:
+   if len(options.args) < 1:
       print '\nThe name of the CAS file is required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cas = args[0]
+   cas = options.args[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

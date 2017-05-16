@@ -61,7 +61,7 @@
 !======================================================================
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_MAIN_INIT
 #endif
 !< SEB @ HRW
@@ -89,7 +89,7 @@
 !-----------------------------------------------------------------------
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_MAIN_AFTER_LECDON_TOMAWAC
 #endif
 !< SEB @ HRW
@@ -126,7 +126,7 @@
 !-----------------------------------------------------------------------
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_MAIN_FINALIZE
 #endif
 !< SEB @ HRW

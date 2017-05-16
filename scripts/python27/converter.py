@@ -23,7 +23,7 @@
 import sys
 import os
 import subprocess as sp
-from optparse import OptionParser
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 try:
     from MEDLoader import *
     ML_AVAIL = True
@@ -199,110 +199,93 @@ if __name__ == "__main__":
               "unv":"UNV",
               "cgns":"CGNS"}
    # Define a parser for the program options
-   parser = OptionParser("Usage: %prog input-file-name -o output-file-name [options]\n"+
-         "Example: converter.py coarse.slf -b coarse.cli -o coarse.med --debug\n"+
-         "Where coarse.slf is the mesh in SERAFIN fornat,\n"+
-         "      coarse.cli is the boundary conditions file and\n"+
-         "      coarse.med the converted mesh in MED format.\n"+
-         "Example: converter.py --refine coarse.slf -b coarse.cli -o coarsex4")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n\
+Convert between file formats (inc. SELAFIN, MED, VTK, UNV and CGNS)
+   and refine mesh if necessary.\n
+Example 1:
+> converter.py coarse.slf -b coarse.cli -o coarse.med --debug
+   where coarse.slf is the mesh in SERAFIN fornat,
+         coarse.cli is the boundary conditions file and
+         coarse.med the converted mesh in MED format.
+Example 2:
+> converter.py --refine coarse.slf -b coarse.cli -o coarsex4.slf
+      '''))
+   # input file
+   parser.add_argument(\
+      "inputFile",default="",
+      help="name of the input file also defines the input format")
+   # iutput fomrat
+   parser.add_argument(\
+      "--input-format",dest="inputFormat",default="",
+      help="name of the input format, overwrites input detected by extension")
    # output name option
-   parser.add_option("-o","--output-file",
-             type="string",
-             dest="outputFile",
-             default="output.med",
-             help="name of the output file also defines the output format")
+   parser.add_argument(\
+      "-o","--output-file",dest="outputFile",default="output.med",
+      help="name of the output file also defines the output format")
    # output fomrat
-   parser.add_option("","--input-format",
-             type="string",
-             dest="inputFormat",
-             default="",
-             help="name of the input format, overwrites input detected by extension")
-   # output fomrat
-   parser.add_option("","--output-format",
-             type="string",
-             dest="outputFormat",
-             default="",
-             help="name of the output format, overwrites output detected by extension")
+   parser.add_argument(\
+      "--output-format",dest="outputFormat",default="",
+      help="name of the output format, overwrites output detected by extension")
+   # the boundary file option.  /!\ TODO: check if this is redundant with option -b ?
+   parser.add_argument(\
+      "--output-boundary-file",dest="outBoundaryFile",default="",
+      help="name of the output boundary file")
    # the boundary file option
-   parser.add_option("", "--output-boundary-file",
-             type="string",
-             dest="outBoundaryFile",
-             default="",
-             help="name of the output boundary file")
-   # the boundary file option
-   parser.add_option("-b","--boundary-file",
-             type="string",
-             dest="boundaryFile",
-             default="",
-             help="name of the boundary file")
+   parser.add_argument(\
+      "-b","--boundary-file",dest="boundaryFile",default="",
+      help="name of the boundary file")
    # the log file option
-   parser.add_option("-l","--log-file",
-             type="string",
-             dest="logFile",
-             default="",
-             help="name of the log file")
+   parser.add_argument(\
+      "-l","--log-file",dest="logFile",default="",
+      help="name of the log file")
    # option for converting distributed mesh
-   parser.add_option("-n","--ndomains",
-             type="int",
-             dest="ndomains",
-             default=1,
-             help="number of sub-domains of the distributed mesh")
+   parser.add_argument(\
+      "-n","--ndomains",type=int,dest="ndomains",default=1,
+      help="number of sub-domains of the distributed mesh")
    # Option to tell stbtel to read the boundary conidtion from the boundary file
-   parser.add_option("","--srf-bnd",
-             action="store_true",
-             dest="srfBnd",
-             default=False,
-             help="tell stbtel to read the boundary conidtion from the boundary file")
+   parser.add_argument(\
+      "--srf-bnd",action="store_true",dest="srfBnd",default=False,
+      help="tell stbtel to read the boundary conidtion from the boundary file")
    # the silent option define if display stbtel informations
-   parser.add_option("-s","--silent",
-             action="store_true",
-             dest="silent",
-             default=False,
-             help="disable stbtel output informations")
+   parser.add_argument(\
+      "-s","--silent",action="store_true",dest="silent",default=False,
+      help="disable stbtel output informations")
    # the debug mode option
-   parser.add_option("","--debug",
-             action="store_true",
-             dest="debug",
-             default=False,
-             help="Enable debug mode which displays more informations during run time")
+   parser.add_argument(\
+      "--debug",action="store_true",dest="debug",default=False,
+      help="Enable debug mode which displays more informations during run time")
    # option for Translation on x
-   parser.add_option("","--dx",
-             type="string",
-             dest="dx",
-             default='0.D0',
-             help="Value to add to the X coordinates")
+   parser.add_argument(\
+      "--dx",type=float,dest="dx",default=0.,
+      help="Value to add to the X coordinates")
    # option for Translation on y
-   parser.add_option("","--dy",
-             type="string",
-             dest="dy",
-             default='0.D0',
-             help="Value to add to the y coordinates")
+   parser.add_argument(\
+      "--dy",type=float,dest="dy",default=0.,
+      help="Value to add to the y coordinates")
    # root directory
-   parser.add_option("-r", "--rootdir",
-                     type = "string",
-                     dest = "rootDir",
-                     default = None,
-                     help="specify the root, default is taken from config file")
+   parser.add_argument(\
+      "-r", "--rootdir",dest = "rootDir",default = None,
+      help="specify the root, default is taken from config file")
    # the debug mode option
-   parser.add_option("","--refine",
-             action="store_true",
-             dest="refine",
-             default=False,
-             help="Run a refine job instead of a conversion the refinement will "\
-                  "split each triangle in four. "\
-                  "The option -b is mandatory. "\
-                  "This only works for SERAFIN format.")
+   parser.add_argument(\
+      "--refine",action="store_true",dest="refine",default=False,
+      help="Run a refine job instead of a conversion the refinement will "\
+         "split each triangle in four. "\
+         "The option -b is mandatory. "\
+         "This only works for SERAFIN format.")
 
    # reading the options
-   options, args = parser.parse_args()
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Identifying input and output informations ~~~~~~~~~~~~~~~~~~~
-   if len(args) < 1:
-      parser.print_help()
-      parser.error("Missing input file\n")
+   #if len(args) < 1:
+   #   parser.print_help()
+   #   parser.error("Missing input file\n")
    # Getting input and output file names
-   inputFile = args[0]
+   inputFile = options.inputFile # args[0]
    outputFile = options.outputFile
    if not options.inputFormat:
       # Finding the input format by checking the extension

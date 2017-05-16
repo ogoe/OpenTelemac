@@ -27,6 +27,9 @@
       USE DECLARATIONS_ARTEMIS
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
       INTEGER I,ITERMU
@@ -34,8 +37,10 @@
 !-----------------------------------------------------------------------
 !
       INTRINSIC ABS,MIN,MAX,LOG
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX
+!      EXTERNAL P_DMAX
+!##< JR @ RWTH
 !
 !----------------------------------------------------------------------
 !

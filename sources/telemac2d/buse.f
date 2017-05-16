@@ -91,6 +91,9 @@
       USE BIEF
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -135,8 +138,10 @@
 !
       INTRINSIC SQRT,COS,SIN,MIN,MAX,ABS,ACOS
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -599,7 +604,7 @@
               IF(I2.GT.0) THEN
                 IF (PRESENT(KSCE)) THEN
                   VOFFSET = (KSCE(NPTSCE+NBUSE+N)-1)*NPOIN2
-                ELSE
+              ELSE
                   VOFFSET = 0
                 ENDIF
                 TBUS%ADR(ITRAC)%P%R(N)       = T%ADR(ITRAC)%P%R(I2

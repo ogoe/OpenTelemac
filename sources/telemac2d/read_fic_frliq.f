@@ -2,7 +2,7 @@
                      SUBROUTINE READ_FIC_FRLIQ
 !                    *************************
 !
-     &( Q , WHAT , AT , NFIC , LISTIN , STAT )
+     &( Q , WHAT , AT , NFIC , LISTIN , FOUND )
 !
 !***********************************************************************
 ! TELEMAC2D   V7P2
@@ -58,7 +58,7 @@
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
-!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
+!| FOUND          |<--| IF FALSE: VARIABLE NOT FOUND
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -77,7 +77,7 @@
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
       LOGICAL         , INTENT(IN)       :: LISTIN
-      LOGICAL         , INTENT(OUT)      :: STAT
+      LOGICAL         , INTENT(OUT)      :: FOUND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -276,7 +276,7 @@
         IF(WHAT.EQ.CHOIX_RFF(J)) IWHAT=J
       ENDDO
       IF(IWHAT.EQ.0) THEN
-        STAT=.FALSE.
+        FOUND=.FALSE.
         RETURN
       ENDIF
 !
@@ -338,7 +338,7 @@
       Q = (1.D0-TETA)*INFIC_RFF(IWHAT,IL1_RFF)
      &  +       TETA *INFIC_RFF(IWHAT,IL2_RFF)
 !
-      STAT=.TRUE.
+      FOUND=.TRUE.
 !
 !     PRINTS ONLY IF NEW TIME_RFF OR NEW VALUE IS ASKED
 !

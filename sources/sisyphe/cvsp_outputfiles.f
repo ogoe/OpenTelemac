@@ -35,6 +35,11 @@
         DOUBLE PRECISION USERTIME
         DOUBLE PRECISION USERPRINTCOUNT
 !
+!##> JR @ RWTH: MODULE VARIABLE WITH DEFAULT INITIALISATION FOR USER
+!     TYPE COMPONENTS MUST BE SAVED
+      SAVE :: USERTIME, USERPRINTCOUNT
+!##< JR @ RWTH
+!
 !-----------------------------------------------------------------------
 !
 !       1) VECTORS

@@ -32,7 +32,10 @@
 !
 !     VARIOUS CONSTANTS LINKED TO PI
 !
-      PI     = ACOS (-1.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI  = ACOS (-1.D0)
+!< SEB @ HRW
       DEUPI  = 2.D0*PI
       PISUR2 = PI/2.D0
       USDPI  = 1.D0/DEUPI

@@ -58,8 +58,9 @@
 import re
 from os import path,walk,environ
 import sys
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
+from config import parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent
 
@@ -519,25 +520,24 @@ if __name__ == "__main__":
    SYSTELCFG = 'systel.cfg'
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=USETELCFG,
-                      help="specify configuration name, default is the first found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-k","--rank",type="string",dest="rank",default='all',
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Testing ...
+      '''))
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default=USETELCFG,
+      help="specify configuration name, default is the first found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_argument(\
+      "-k","--rank",dest="rank",default='all',
       help="the suite of validation ranks (all by defult)" )
-   options, args = parser.parse_args()
+   options = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.dirname(options.configFile)

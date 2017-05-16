@@ -443,7 +443,7 @@
           TEXTE(ADD+I)  = NAMES_ADVAR(I)
           TEXTPR(ADD+I) = NAMES_ADVAR(I)
           WRITE(CHAR2,'(I2)') I
-          MNEMO(ADD+I)  = 'G'//ADJUSTL(CHAR2)//'   '
+          MNEMO(ADD+I)  = 'AD'//ADJUSTL(CHAR2)//'    '
         ENDDO
       ENDIF
 !

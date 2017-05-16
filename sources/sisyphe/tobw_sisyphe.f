@@ -62,8 +62,8 @@
 !
       INTEGER I
       DOUBLE PRECISION KS,AUX
-      DOUBLE PRECISION PI,AW,KARMAN
-      PARAMETER (KARMAN=0.4D0)
+      DOUBLE PRECISION PI,AW
+      DOUBLE PRECISION, PARAMETER :: KARMAN = 0.4D0
 !
 !-----------------------------------------------------------------------
 !

@@ -95,7 +95,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        24/06/2016
 !+        V7P2
-!+   Adding a banner when TRIDW3 is called, to understand where 
+!+   Adding a banner when TRIDW3 is called, to understand where
 !+   information on a solver comes from.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

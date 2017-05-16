@@ -39,10 +39,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ITMAX,N
-      DOUBLE PRECISION AP,SOMME,DEL,EPS
+      INTEGER :: N
+      DOUBLE PRECISION :: AP,SOMME,DEL
 !
-      PARAMETER (ITMAX=100,EPS=3.D-7)
+      INTEGER, PARAMETER :: ITMAX = 100
+      DOUBLE PRECISION   :: EPS = 3.D-7
 !
       DOUBLE PRECISION BIEF_GAMMLN
       EXTERNAL         BIEF_GAMMLN

@@ -35,15 +35,21 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,INTENT(IN) :: IBUF(*),NB
+!##> JR @ RWTH: ARGUMENT OF MPI CALL WITH WRONG INTENT
+      INTEGER,INTENT(INOUT) :: IBUF(*)
+      INTEGER,INTENT(IN)    :: NB
+!##< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
@@ -55,7 +61,13 @@
         STOP
       ENDIF
 !
+!##> JR @ RWTH: ARGUMENT OF MPI CALL WITH WRONG INTENT
+#  if defined COMPAD
+      CALL AMPI_WAITALL(NB,IBUF,WAIT_REQ_PARACO,IER)
+#  else
       CALL MPI_WAITALL(NB,IBUF,WAIT_REQ_PARACO,IER)
+#  endif
+!##< JR @ RWTH
 !
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'WAIT_PARACO:'

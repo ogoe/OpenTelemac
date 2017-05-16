@@ -2,71 +2,71 @@
                      SUBROUTINE ECRSPE
 !                    *****************
 !
-     &     ( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
-     &     NPOIN2, AT    , LT, AUXIL , NOLEO , NLEO  , NSCO  ,
-     &     BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
-     &     NSPE  , TISPEF)
+     &( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
+     &  NPOIN2, AT    , LT, AUXIL , NOLEO , NLEO  , NSCO  ,
+     &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
+     &  NSPE  , TISPEF)
 !
 !***********************************************************************
-!     TOMAWAC   V6P3                                   15/06/2011
+! TOMAWAC   V6P3                                   15/06/2011
 !***********************************************************************
 !
-!     brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
-!     +                AT SELECTED NODES.
-!     +                (SERAPHIN BINARY FORMAT).
+!brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
+!+                AT SELECTED NODES.
+!+                (SERAPHIN BINARY FORMAT).
 !
-!     history  OPTIMER
-!     +        28/08/2000
-!     +        V5P0
-!     +   CREATED
+!history  OPTIMER
+!+        28/08/2000
+!+        V5P0
+!+   CREATED
 !
-!     history
-!     +        07/06/2001
-!     +        V5P2
-!     +
+!history
+!+        07/06/2001
+!+        V5P2
+!+
 !
-!     history  M. BENOIT
-!     +        13/07/2004
-!     +        V5P5
-!     +   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED
+!history  M. BENOIT
+!+        13/07/2004
+!+        V5P5
+!+   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED
 !
-!     history
-!     +
-!     +        V6P0
-!     +
+!history
+!+
+!+        V6P0
+!+
 !
-!     history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!     +        13/07/2010
-!     +        V6P0
-!     +   Translation of French comments within the FORTRAN sources into
-!     +   English comments
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
-!     history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!     +        21/08/2010
-!     +        V6P0
-!     +   Creation of DOXYGEN tags for automated documentation and
-!     +   cross-referencing of the FORTRAN sources
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
-!     history  G.MATTAROLO (EDF - LNHE)
-!     +        15/06/2011
-!     +        V6P1
-!     +   Translation of French names of the variables in argument
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
 !
-!     history  A. LAUGEL & J-M HERVOUET (EDF - LNHE)
-!     +        22/11/2012
-!     +        V6P3
-!     +   Parallelism treated with files.
+!history  A. LAUGEL & J-M HERVOUET (EDF - LNHE)
+!+        22/11/2012
+!+        V6P3
+!+   Parallelism treated with files.
 !
-!     history  E. GAGNAIRE-RENOU (EDF - LNHE)
-!     +        12/03/2013
-!     +        V6P3
-!     +   Print out the 1D frequential spectrum at (same) selected nodes.
-!     +   Scopgene format.
+!history  E. GAGNAIRE-RENOU (EDF - LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Print out the 1D frequential spectrum at (same) selected nodes.
+!+   Scopgene format.
 !
-!     history Y AUDOUIN (LNHE)
-!     +       25/05/2015
-!     +       V7P0
-!     +       Modification to comply with the hermes module
+!history Y AUDOUIN (LNHE)
+!+       25/05/2015
+!+       V7P0
+!+       Modification to comply with the hermes module
 !
 !     history A JOLY (LNHE)
 !     +       16/02/2017
@@ -76,28 +76,28 @@
 !     +   This case is now taken into account.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!     | AT             |-->| COMPUTATION TIME
-!     | AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
-!     | BINSCO         |-->| SPECTRUM FILE FORMAT
-!     | DATE           |-->| START DATE
-!     | DEBRES         |-->| LOGICAL INDICATING THE FIRST TIME STEP TO PRINT
-!     | F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
-!     | FREQ           |-->| DISCRETIZED FREQUENCIES
-!     | INUTIL         |<->| WORK TABLE
-!     | ISLEO          |-->| ARRAY OF LOGICAL
-!     | KNOLG          |-->| ARRAY LINKING LOCAL TO GLOBAL INDEXES IN PARALL
-!     | NF             |-->| NUMBER OF FREQUENCIES
-!     | NK             |-->| DUMMY VARIABLE
-!     | NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
-!     | NOLEO          |-->| INDEX ARRAY OF SPECTRUM PRINTOUT POINTS
-!     | NPLAN          |-->| NUMBER OF DIRECTIONS
-!     | NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
-!     | NSCO           |-->| LOGICAL UNIT NUMBER OF THE PUNCTUAL RESULTS FILE
-!     | TETA           |-->| DISRETIZED DIRECTION
-!     | TIME           |-->| START TIME
-!     | TITCAS         |-->| TITLE
-!     | TISPEF         |-->| NAME OF THE 1D SPECTRA RESULTS FILE
-!     | NSPE           |-->| LOGICAL UNIT NUMBER FOR THE 1D SPECTRA FILE
+!| AT             |-->| COMPUTATION TIME
+!| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
+!| BINSCO         |-->| SPECTRUM FILE FORMAT
+!| DATE           |-->| START DATE
+!| DEBRES         |-->| LOGICAL INDICATING THE FIRST TIME STEP TO PRINT
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| INUTIL         |<->| WORK TABLE
+!| ISLEO          |-->| ARRAY OF LOGICAL
+!| KNOLG          |-->| ARRAY LINKING LOCAL TO GLOBAL INDEXES IN PARALL
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NK             |-->| DUMMY VARIABLE
+!| NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
+!| NOLEO          |-->| INDEX ARRAY OF SPECTRUM PRINTOUT POINTS
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NSCO           |-->| LOGICAL UNIT NUMBER OF THE PUNCTUAL RESULTS FILE
+!| TETA           |-->| DISRETIZED DIRECTION
+!| TIME           |-->| START TIME
+!| TITCAS         |-->| TITLE
+!| TISPEF         |-->| NAME OF THE 1D SPECTRA RESULTS FILE
+!| NSPE           |-->| LOGICAL UNIT NUMBER FOR THE 1D SPECTRA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -106,10 +106,13 @@
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX,P_ISUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !
-!     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN2,NLEO,NSCO,NF,NK,NPLAN
       INTEGER, INTENT(IN)             :: KNOLG(NPOIN2), LT
@@ -126,7 +129,7 @@
       CHARACTER(LEN=144), INTENT(IN)  :: TISPEF
       INTEGER, INTENT(IN)             :: NSPE
 !
-!     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER  ISTAT , II    , JF    , K    , II_ALL
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
@@ -144,8 +147,10 @@
       EXTERNAL          EXTENS
       INTEGER :: ID
 !
-      INTEGER  P_IMAX,P_ISUM
-      EXTERNAL P_IMAX,P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX,P_ISUM
+!      EXTERNAL P_IMAX,P_ISUM
+!##< JR @ RWTH
 !
       DOUBLE PRECISION, ALLOCATABLE :: F_INTF(:,:)
 !
@@ -183,8 +188,8 @@
       ALLOCATE(F_INTF(NLEO,NF))
       IF(DEBRES) THEN
 !
-!     CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
-!     IN FREQUENCY AND DIRECTION
+!       CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
+!       IN FREQUENCY AND DIRECTION
 !
         ALLOCATE(MESHF%TYPELM)
         ALLOCATE(MESHF%NELEM)
@@ -258,7 +263,7 @@
      &         TEXTE,         ! NAMES OF OUTPUT VARIABLES
      &         SORLEO)        ! PRINT TO FILE OR NOT
 !
-!     WRITES THE MESH IN THE OUTPUT FILE
+!         WRITES THE MESH IN THE OUTPUT FILE
 !
           CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
      &         NSCO,          ! LU FOR RESULTS FILE
@@ -268,12 +273,12 @@
      &         TIME)          ! START TIME
 !
           IF(TISPEF(1:1).NE.' ') THEN
-             WRITE(NSPE,'(A1,A72)') '/', TITCAS
-             WRITE(NSPE,'(I3)') NLEO
-             DO ILEO=1,NLEO
-                WRITE(NSPE,'(A32)') TEXTE(ILEO)
-             ENDDO
-             WRITE(NSPE,'(A19)') '0 0 0 0 0 0 0 0 0 0'
+            WRITE(NSPE,'(A1,A72)') '/', TITCAS
+            WRITE(NSPE,'(I3)') NLEO
+            DO ILEO=1,NLEO
+              WRITE(NSPE,'(A32)') TEXTE(ILEO)
+            ENDDO
+            WRITE(NSPE,'(A19)') '0 0 0 0 0 0 0 0 0 0'
           ENDIF
 !
         ENDIF
@@ -324,7 +329,7 @@
         IF(IPID.EQ.0) THEN
           DO ILEO=1,NLEO
             OPEN(ID,FILE=EXTENS(NLEO,ILEO),
-     &           FORM='UNFORMATTED',STATUS='OLD')
+     &              FORM='UNFORMATTED',STATUS='OLD')
             CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
             CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
      &                    AUXIL,NPSPE,ISTAT)
@@ -343,7 +348,7 @@
      &             (F_INTF(ILEO,JF),ILEO=1,NLEO)
             ENDDO
           ENDIF
-        ENDIF
+         ENDIF
       ELSE
         DO ILEO=1,NLEO
           II=NOLEO(ILEO)
@@ -364,7 +369,7 @@
             WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
      &            (F_INTF(ILEO,JF),ILEO=1,NLEO)
           ENDDO
-        ENDIF
+         ENDIF
 !
       ENDIF
 !

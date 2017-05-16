@@ -25,11 +25,11 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other modules
 from parsers.parserKenue import InS
 import shapefile
@@ -73,20 +73,27 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
-   options, args = parser.parse_args()
-   if len(args) < 1:
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Vaiours operations are carried out on Blue Kenue type files
+      '''))
+   parser.add_argument( "args",default='',nargs='*' )
+   parser.add_argument(\
+      "--sph2ll",dest="sph2ll",default=None,
+      help="convert from spherical to longitude-latitude" )
+   options = parser.parse_args()
+   if len(options.args) < 1:
       print '\nAt least a code name (and its associated inputs) are required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   codeName = args[0]
+   codeName = options.args[0]
 
    if codeName in ['i2s2shp'] :
-      insFiles = args[1:]
+      insFiles = options.args[1:]
       for insFile in insFiles:
 
          insFile = path.realpath(insFile)

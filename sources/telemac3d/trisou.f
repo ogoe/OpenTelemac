@@ -494,7 +494,10 @@
 !
         IF(SPHERI) THEN
 !
-          PI=ACOS(-1.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+          PI = 4.D0 * ATAN( 1.D0 )
+!          PI  = ACOS (-1.D0)
+!< SEB @ HRW
           OMEGA=2.D0*PI/86164.D0
 !
           DO IPLAN=1,NPLAN

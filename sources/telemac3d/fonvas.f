@@ -478,12 +478,12 @@
 !
 !     TOTAL DEPOSITED MASS --> MASDEP
 !
-!###>TBE - fixed bug...add up the deposition flux for all partitions (MASDEP)
+!##>TBE - fixed bug...add up the deposition flux for all partitions (MASDEP)
 !       MASDEP = MASDEP + FLUX*DT
         MASTMP = FLUX*DT
         IF(NCSIZE.GT.1) MASTMP=P_DSUM(MASTMP)
         MASDEP = MASDEP + MASTMP
-!###<TBE
+!##<TBE
 !
 !=======================================================================
 !

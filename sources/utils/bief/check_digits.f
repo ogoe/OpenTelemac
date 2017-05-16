@@ -37,6 +37,9 @@
       USE BIEF
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -49,8 +52,10 @@
 !
       INTEGER I,ISTOP
 !
-      INTEGER  P_IMAX
-      EXTERNAL P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX
+!      EXTERNAL P_IMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

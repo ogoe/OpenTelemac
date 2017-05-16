@@ -72,6 +72,9 @@
       USE DECLARATIONS_SISYPHE, ONLY :MASST,MASS0,T2
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -100,7 +103,9 @@
       INTEGER I,J,K,NK
       DOUBLE PRECISION HAUTSED
       DOUBLE PRECISION DIFF,EST
-      DOUBLE PRECISION, EXTERNAL :: P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION, EXTERNAL :: P_DSUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

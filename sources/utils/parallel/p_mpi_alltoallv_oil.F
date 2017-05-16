@@ -33,6 +33,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -41,13 +44,25 @@
       INTEGER, INTENT(IN)  :: RECV_DISPL(*),RECV_DATYP
       INTEGER, INTENT(OUT) :: IERR
       TYPE(OIL_TYPE), INTENT(IN)  :: SEND_BUFFER(*)
-      TYPE(OIL_TYPE), INTENT(OUT) :: RECV_BUFFER(*)
+!##> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      TYPE(OIL_TYPE), INTENT(INOUT) :: RECV_BUFFER(*)
+!      TYPE(OIL_TYPE), INTENT(OUT) :: RECV_BUFFER(*)
+!##< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       RECV_BUFFER(1)%MYPID = 0
       IERR = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
+!##> JR @ RWTH: TERMINATE ON MPI PARTS NOT HANDLED BY COMPAD
+!#  if defined COMPAD
+!      WRITE(LU,*) 'P_MPI_ALLTOALLV_OIL: COMPAD CRITICAL MPI OPERATION'
+!      WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+!      CALL PLANTE(1)
+!      STOP
+!#  endif
+!##< JR @ RWTH
       CALL MPI_ALLTOALLV(SEND_BUFFER,NSEND,SEND_DISPL,SEND_DATYP,
      &                   RECV_BUFFER,NRECV,RECV_DISPL,RECV_DATYP,
      &                   COMM,IERR)

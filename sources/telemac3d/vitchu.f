@@ -140,9 +140,9 @@
 !                                  It only gets limited for the floc model)
 !
       IF(HINDER) THEN
-!###>TBE - we don't limit the concentration here, otherwise hindering won't happen
+!##>TBE - we don't limit the concentration here, otherwise hindering won't happen
         !CALL OS('X=-(Y,C)',X=TRAV1,Y=TA%ADR(NTRAC)%P,C=CINI)
-!###<TBE
+!##<TBE
         ! this copy of concentration is a bit unecessary.
         ! Would be better to pass
         ! a pointer and use double array in WCHIND

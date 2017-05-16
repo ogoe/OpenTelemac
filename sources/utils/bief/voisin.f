@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IADR           |<->| WORK ARRAY
 !| IELM           |-->| 11: TRIANGLES
@@ -72,8 +77,10 @@
       INTEGER NFACE,NDP,KEL,IMAX,IFACE,IELEM,M1,M2,IV,IELEM2,IFACE2
       INTEGER I,J,ERR,IR1,IR2,IR3,IR4,I1,I2,IDIMAT
 !
-      INTEGER SOMFAC(2,4,2)
-      DATA SOMFAC / 1,2 , 2,3 , 3,1 , 0,0   ,  1,2 , 2,3 , 3,4 , 4,1 /
+      INTEGER :: SOMFAC(2,4,2)
+      PARAMETER ( SOMFAC = RESHAPE( (/
+     &      1,2 , 2,3 , 3,1 , 0,0   ,
+     &      1,2 , 2,3 , 3,4 , 4,1 /), SHAPE=(/ 2,4,2 /) ) )
 !
 !     DYNAMICALLY ALLOCATES THE WORKING ARRAYS
 !

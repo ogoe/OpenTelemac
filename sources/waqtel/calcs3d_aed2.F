@@ -25,7 +25,7 @@
 !
       USE BIEF
       USE DECLARATIONS_SPECIAL
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       USE T3D_AED2
 #endif
 !
@@ -45,7 +45,7 @@
       INTRINSIC MAX
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
 ! INITIALIZATION OF SOURCE TERMS
       DO J=1,NTRAC
         CALL OS('X=0     ',X=TEXP%ADR(J)%P)

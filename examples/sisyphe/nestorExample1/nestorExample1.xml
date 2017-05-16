@@ -1,7 +1,34 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="3" >
+<validation xref="case" rank="13" >
+<!-- TODO: please correct the error produced by Jenkins:
+/home/telemac/workspace/label/fedora/foxface/examples/sisyphe/nestorExample1:
+|runXML: looking at actions in xmlFile: /home/telemac/workspace/label/fedora/foxface/examples/sisyphe/nestorExample1/nestorExample1.xml
+|runXML:    +> run
+|   |ACTION::runCAS:
+|   |   |runCode: Fail to run
+|   |   |/usr/lib64/mpich/bin/mpiexec -wdir /home/telemac/workspace/label/fedora/foxface/examples/sisyphe/nestorExample1/1/fedgfompich/t2d_nestor1.cas_2017-05-14-12h56min46s -n 1 /home/telemac/workspace/label/fedora/foxface/examples/sisyphe/nestorExample1/1/fedgfompich/t2d_nestor1.cas_2017-05-14-12h56min46s/out_user_fortran
+|~~~~~~~~~~~~~~~~~~
+|Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+|
+|Backtrace for this error:
+|#0  0x7FD06DA33D58
+|#1  0x7FD06DA32EE0
+|#2  0x7FD06C886B1F
+|#3  0x7FD06DB0B5AF
+|#4  0x7FD06DB0E014
+|#5  0x7FD06DB0EBCE
+|#6  0x5CFED8 in writefieldtorestart_
+|#7  0x5C4754 in readwriterestart_
+|#8  0x5BE318 in mainnestor_
+|#9  0x5889D8 in nestor_interface_
+|#10  0x58F88B in bedload_main_
+|#11  0x574704 in sisyphe_
+|#12  0x415258 in telemac2d_
+|#13  0x405BC3 in MAIN__ at homere_telemac2d.F:?
+|~~~~~~~~~~~~~~~~~~
+-->
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

@@ -18,20 +18,24 @@
 !history  Y.B. TADESSE (TUHH, INSTITUTE OF RIVER AND COASTAL ENGINEERING)
 !+        14/02/2014
 !+        V6P3R2
-!+   Addition of later breach growth option      
-! 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-! 
-      USE BIEF 
-      USE DECLARATIONS_TELEMAC2D 
-! 
+!+   Addition of later breach growth option
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC2D
+!
       USE DECLARATIONS_SPECIAL
-      IMPLICIT NONE 
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-! 
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_ISUM,P_DMAX,P_DMIN,
+     &                               P_DSUM,P_IMAX,P_IMIN
+!##< JR @ RWTH
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
       INTEGER I, J, K, N, M,END1, END2,CURNBR
       INTEGER ISTAT,VECZ
       INTEGER TEMPND(NPOIN)
@@ -42,17 +46,19 @@
       DOUBLE PRECISION U1, U2, V1, V2, DELS,CURDIS,DIS,END2X,END2Y
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: XL, YL, XP, YP
 !
-      INTEGER          P_ISUM,P_IMAX,P_IMIN
-      DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
-      EXTERNAL         P_ISUM,P_DMAX,P_DMIN,P_DSUM,P_IMAX,P_IMIN
-! 
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
-! 
-      IF (.NOT.DEJALU_BREACH) THEN 
-        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECBREACH' 
-        CALL LECBREACH(T2D_FILES(T2DBRC)%LU) 
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECBREACH' 
-        DEJALU_BREACH=.TRUE. 
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER          P_ISUM,P_IMAX,P_IMIN
+!      DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
+!      EXTERNAL         P_ISUM,P_DMAX,P_DMIN,P_DSUM,P_IMAX,P_IMIN
+!##< JR @ RWTH
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      IF (.NOT.DEJALU_BREACH) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING LECBREACH'
+        CALL LECBREACH(T2D_FILES(T2DBRC)%LU)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM LECBREACH'
+        DEJALU_BREACH=.TRUE.
         IF(LNG.EQ.1) WRITE (LU,*) 'LECTURE DONNEES BRECHE = OK'
         IF(LNG.EQ.2) WRITE (LU,*) 'READING BREACH DATA = OK'
 !

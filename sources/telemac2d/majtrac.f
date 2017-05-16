@@ -306,12 +306,12 @@
      &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
               ENDIF
               IF(DST_MT(2,NSG).GE.0.D0) THEN
-                DSP_MT(NUBO2) = DSP_MT(NUBO2) + 
+                DSP_MT(NUBO2) = DSP_MT(NUBO2) +
      &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
               ELSE
-                DSM_MT(NUBO2) = DSM_MT(NUBO2) - 
+                DSM_MT(NUBO2) = DSM_MT(NUBO2) -
      &                   DEMI*AIRST(2,NSG)*HCSTOK(2,NSG)*DST_MT(2,NSG)
-              ENDIF 
+              ENDIF
             ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
               IF(DST_MT(1,NSG).GE.0.D0) THEN
                 DSP_MT(NUBO1) = DSP_MT(NUBO1) +

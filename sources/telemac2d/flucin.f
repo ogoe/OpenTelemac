@@ -81,6 +81,9 @@
      &                                    GRADIJ_FC,GRADJI_FC,DEJA_FC
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -118,8 +121,8 @@
       DOUBLE PRECISION PROD_SCAL
       LOGICAL, ALLOCATABLE ::   YESNO(:)
 !
-      DOUBLE PRECISION EXLIM,P_DMIN
-      EXTERNAL         EXLIM,P_DMIN
+      DOUBLE PRECISION EXLIM
+      EXTERNAL         EXLIM
 !
 !-----------------------------------------------------------------------
 !
@@ -272,7 +275,7 @@
               AJY = CMI(2,NSG)-Y(NUBO2) ! M: CMI(NSG)
 !
               DO IVAR=1,3
-                GRADI_FC(IVAR,NSG) = 
+                GRADI_FC(IVAR,NSG) =
      &                 AIX*DX(IVAR,NUBO1)+AIY*DY(IVAR,NUBO1)!NODE GRADIENT (PM.GRADZ)
                 GRADJ_FC(IVAR,NSG) =
      &                 AJX*DX(IVAR,NUBO2)+AJY*DY(IVAR,NUBO2)!eq 5.1 of audusse paper)
@@ -362,39 +365,39 @@
               ILIM=1
               BETA=1.D0
 !
-              DSH_FC(1,NSG) = 
+              DSH_FC(1,NSG) =
      &                EXLIM(ILIM,BETA,GRADI_FC(1,NSG),GRADIJ_FC(1,NSG))
-              DSH_FC(2,NSG) = 
+              DSH_FC(2,NSG) =
      &                EXLIM(ILIM,BETA,GRADJ_FC(1,NSG),GRADJI_FC(1,NSG))
               !   FOR PARALLELILSM
               IF(NCSIZE.GT.1.AND.IFABOR(IEL,I).EQ.-2)THEN ! THIS IS AN INTERFACE EDGE
                 IF(DSH_FC(1,NSG).GE.0.D0) THEN
-                  DSP_FC(NUBO1) = 
+                  DSP_FC(NUBO1) =
      &                DSP_FC(NUBO1)+DEMI*AIRST(1,NSG)*DSH_FC(1,NSG) ! WE CONSIDER ONLY
                 ELSE                                                  ! 0.5 AIRST
                   DSM_FC(NUBO1) = DSM_FC(NUBO1)
      &                            -DEMI*AIRST(1,NSG)*DSH_FC(1,NSG) ! PARCOM2 WILL ADD
                 ENDIF                                                 ! CONTRIBUTIONS
                 IF(DSH_FC(2,NSG).GE.0.D0) THEN
-                  DSP_FC(NUBO2) = 
+                  DSP_FC(NUBO2) =
      &                DSP_FC(NUBO2)+DEMI*AIRST(2,NSG)*DSH_FC(2,NSG)
                 ELSE
-                  DSM_FC(NUBO2) = 
+                  DSM_FC(NUBO2) =
      &                DSM_FC(NUBO2)-DEMI*AIRST(2,NSG)*DSH_FC(2,NSG)
                 ENDIF
               ELSE ! NO PARALLELILSM OR NO INTERFACE EDGE
                 IF(DSH_FC(1,NSG).GE.0.D0) THEN
-                  DSP_FC(NUBO1) = DSP_FC(NUBO1) 
+                  DSP_FC(NUBO1) = DSP_FC(NUBO1)
      &                + AIRST(1,NSG)*DSH_FC(1,NSG)
                 ELSE
-                  DSM_FC(NUBO1) = DSM_FC(NUBO1) 
+                  DSM_FC(NUBO1) = DSM_FC(NUBO1)
      &                - AIRST(1,NSG)*DSH_FC(1,NSG)
                 ENDIF
                 IF(DSH_FC(2,NSG).GE.0.D0) THEN
-                  DSP_FC(NUBO2) = DSP_FC(NUBO2) 
+                  DSP_FC(NUBO2) = DSP_FC(NUBO2)
      &                + AIRST(2,NSG)*DSH_FC(2,NSG)
                 ELSE
-                  DSM_FC(NUBO2) = DSM_FC(NUBO2) 
+                  DSM_FC(NUBO2) = DSM_FC(NUBO2)
      &                - AIRST(2,NSG)*DSH_FC(2,NSG)
                 ENDIF
               ENDIF
@@ -403,14 +406,14 @@
               BETA=0.3333D0 ! THESE ARE CHOICES OF INRIA 1/3 FOR
                             ! VELOCITIES AND 1 FOR H
 !
-              DSU_FC(1,NSG) = 
+              DSU_FC(1,NSG) =
      &                EXLIM(ILIM,BETA,GRADI_FC(2,NSG),GRADIJ_FC(2,NSG))
-              DSU_FC(2,NSG) = 
+              DSU_FC(2,NSG) =
      &                EXLIM(ILIM,BETA,GRADJ_FC(2,NSG),GRADJI_FC(2,NSG))
 !
-              DSV_FC(1,NSG) = 
+              DSV_FC(1,NSG) =
      &                EXLIM(ILIM,BETA,GRADI_FC(3,NSG),GRADIJ_FC(3,NSG))
-              DSV_FC(2,NSG) = 
+              DSV_FC(2,NSG) =
      &                EXLIM(ILIM,BETA,GRADJ_FC(3,NSG),GRADJI_FC(3,NSG))
 !
             ENDIF

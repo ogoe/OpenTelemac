@@ -37,7 +37,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3)
-      DOUBLE PRECISION, INTENT(OUT) :: UPVWAVE(*),WWAVE(*)
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: UPVWAVE(*),WWAVE(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: UPVWAVE(*),WWAVE(*)
+!< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

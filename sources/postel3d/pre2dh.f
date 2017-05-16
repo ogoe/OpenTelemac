@@ -56,7 +56,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) ::NPOIN2,NELEM2,NC2DH
-      INTEGER, INTENT(INOUT) :: NCOU(*)
+      INTEGER, INTENT(INOUT) :: NCOU(NC2DH)
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2)
       CHARACTER(LEN=72), INTENT(IN) :: TITCAS
       INTEGER , INTENT(INOUT) :: IKLES(3,NELEM2),IPOBO(NPOIN2)

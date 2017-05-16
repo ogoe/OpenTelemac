@@ -188,13 +188,13 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief initializes variables for TELEMAC2D in case of coupling
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !
       !history R-S MOURADI (EDF R&D, LNHE)
       !+       15/04/2016
       !+       V7P1
       !+       Creation of the file
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID    [IN]    ID OF THE TELEMAC2D INSTANCE
       !PARAM IERR [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                   ERROR ID OTHERWISE
@@ -411,7 +411,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -419,11 +419,14 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_DOUBLE_T2D
-     &    (ID, VARNAME, VALUE, GLOBAL_NUM, INDEX1, INDEX2, INDEX3, IERR)
+     &   (ID, VARNAME, VALEUR, GLOBAL_NUM, INDEX1, INDEX2, INDEX3, IERR)
 !
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+        USE INTERFACE_PARALLEL, ONLY : P_DMIN,P_DMAX
+!##< JR @ RWTH
         INTEGER,                    INTENT(IN)    :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)    :: VARNAME
-        DOUBLE PRECISION,           INTENT(OUT)   :: VALUE
+        DOUBLE PRECISION,           INTENT(OUT)   :: VALEUR
         INTEGER,                    INTENT(INOUT) :: INDEX1
         INTEGER,                    INTENT(INOUT) :: INDEX2
         INTEGER,                    INTENT(INOUT) :: INDEX3
@@ -440,13 +443,15 @@
         INTEGER                                   :: ID2
         INTEGER                                   :: ID3
         INTEGER :: GETPOS, SETPOS
-        DOUBLE PRECISION P_DMIN,P_DMAX
-        EXTERNAL P_DMIN,P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!        DOUBLE PRECISION P_DMIN,P_DMAX
+!        EXTERNAL P_DMIN,P_DMAX
+!##< JR @ RWTH
 !
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        VALUE = 0
+        VALEUR = 0
         IF(GLOBAL_NUM)THEN
 
           CALL GET_VAR_TYPE_T2D(VARNAME, VARTYPE, READONLY,
@@ -473,9 +478,9 @@
           IF((.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0)).OR.
      &       (INDEX1.EQ.0.AND.INDEX2.EQ.0.AND.INDEX3.EQ.0)) THEN
              CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
-     &                             VALUE,ID1,ID2, ID3, IERR)
+     &                             VALEUR,ID1,ID2, ID3, IERR)
           END IF
-          VALUE=P_DMAX(VALUE)
+          VALEUR=P_DMAX(VALEUR)
         ELSE
           IF(IENT.EQ.1)THEN
              ID1 = INSTANCE_LIST_T2D(ID)%MESH%KNOLG%I(INDEX1)
@@ -492,7 +497,7 @@
           ELSE
              ID3=INDEX3
           END IF
-          CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+          CALL GET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                         ID1, ID2, ID3, IERR)
         END IF
 !
@@ -516,7 +521,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -524,11 +529,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_DOUBLE_T2D
-     &    (ID, VARNAME, VALUE, GLOBAL_NUM, INDEX1, INDEX2, INDEX3, IERR)
+     &   (ID, VARNAME, VALEUR, GLOBAL_NUM, INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,                    INTENT(IN)    :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)    :: VARNAME
-        DOUBLE PRECISION,           INTENT(IN)    :: VALUE
+        DOUBLE PRECISION,           INTENT(IN)    :: VALEUR
         INTEGER,                    INTENT(IN) :: INDEX1
         INTEGER,                    INTENT(IN) :: INDEX2
         INTEGER,                    INTENT(IN) :: INDEX3
@@ -581,7 +586,7 @@
           IF((.NOT.(ID1.EQ.0.AND.ID2.EQ.0.AND.ID3.EQ.0)).OR.
      &       (INDEX1.EQ.0.AND.INDEX2.EQ.0.AND.INDEX3.EQ.0)) THEN
              CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME,
-     &                            VALUE, ID1,ID2, ID3, IERR)
+     &                            VALEUR, ID1,ID2, ID3, IERR)
           END IF
         ELSE
           IF(IENT.EQ.1)THEN
@@ -599,7 +604,7 @@
           ELSE
              ID3=INDEX3
           END IF
-          CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+          CALL SET_DOUBLE_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                         ID1,ID2, ID3, IERR)
         END IF
 !
@@ -617,19 +622,19 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_INTEGER_T2D(ID, VARNAME, VALUE,
+      SUBROUTINE GET_INTEGER_T2D(ID, VARNAME, VALEUR,
      &             INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-        INTEGER,               INTENT(OUT) :: VALUE
+        INTEGER,               INTENT(OUT) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -638,7 +643,7 @@
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_INTEGER_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL GET_INTEGER_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                     INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE GET_INTEGER_T2D
@@ -655,19 +660,19 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE SET_INTEGER_T2D(ID, VARNAME, VALUE,
+      SUBROUTINE SET_INTEGER_T2D(ID, VARNAME, VALEUR,
      &             INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-        INTEGER,               INTENT(IN) :: VALUE
+        INTEGER,               INTENT(IN) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -676,7 +681,7 @@
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_INTEGER_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL SET_INTEGER_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE SET_INTEGER_T2D
@@ -693,26 +698,26 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_STRING_T2D(ID, VARNAME, VALUE,
+      SUBROUTINE GET_STRING_T2D(ID, VARNAME, VALEUR,
      &             VALUELEN, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
         INTEGER,               INTENT(IN) :: VALUELEN
-        CHARACTER,             INTENT(OUT) :: VALUE(VALUELEN)
+        CHARACTER,             INTENT(OUT) :: VALEUR(VALUELEN)
         INTEGER,               INTENT(OUT) :: IERR
 !
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_STRING_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL GET_STRING_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                        VALUELEN, IERR)
 !
       END SUBROUTINE GET_STRING_T2D
@@ -729,26 +734,26 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE SET_STRING_T2D(ID, VARNAME, VALUE,
+      SUBROUTINE SET_STRING_T2D(ID, VARNAME, VALEUR,
      &             VALUELEN, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
         INTEGER,               INTENT(IN) :: VALUELEN
-        CHARACTER,             INTENT(IN) :: VALUE(VALUELEN)
+        CHARACTER,             INTENT(IN) :: VALEUR(VALUELEN)
         INTEGER,               INTENT(OUT) :: IERR
 !
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_STRING_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL SET_STRING_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                        VALUELEN, IERR)
 !
       END SUBROUTINE SET_STRING_T2D
@@ -765,7 +770,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -773,11 +778,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_BOOLEAN_T2D
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
           INTEGER,               INTENT(IN) :: ID
           CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
+          INTEGER,               INTENT(OUT) :: VALEUR
           INTEGER,               INTENT(IN) :: INDEX1
           INTEGER,               INTENT(IN) :: INDEX2
           INTEGER,               INTENT(IN) :: INDEX3
@@ -786,7 +791,7 @@
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_BOOLEAN_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL GET_BOOLEAN_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE GET_BOOLEAN_T2D
@@ -803,7 +808,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -811,11 +816,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_BOOLEAN_T2D
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
           INTEGER,               INTENT(IN) :: ID
           CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
+          INTEGER,               INTENT(IN) :: VALEUR
           INTEGER,               INTENT(IN) :: INDEX1
           INTEGER,               INTENT(IN) :: INDEX2
           INTEGER,               INTENT(IN) :: INDEX3
@@ -824,7 +829,7 @@
         CALL CHECK_INSTANCE_T2D(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_BOOLEAN_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALUE,
+        CALL SET_BOOLEAN_T2D_D(INSTANCE_LIST_T2D(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE SET_BOOLEAN_T2D
@@ -857,16 +862,16 @@
       SUBROUTINE GET_VAR_TYPE_T2D
      &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
      &         GETPOS,SETPOS,IERR)
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          CHARACTER(LEN=T2D_TYPE_LEN),     INTENT(OUT) :: VARTYPE
-          LOGICAL,               INTENT(OUT) :: READONLY
-          INTEGER,               INTENT(OUT) :: NDIM
-          INTEGER,               INTENT(OUT) :: IERR
-          INTEGER,               INTENT(OUT) :: IENT
-          INTEGER,               INTENT(OUT) :: JENT
-          INTEGER,               INTENT(OUT) :: KENT
-          INTEGER,                     INTENT(OUT) :: GETPOS
-          INTEGER,                     INTENT(OUT) :: SETPOS
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        CHARACTER(LEN=T2D_TYPE_LEN),     INTENT(OUT) :: VARTYPE
+        LOGICAL,               INTENT(OUT) :: READONLY
+        INTEGER,               INTENT(OUT) :: NDIM
+        INTEGER,               INTENT(OUT) :: IERR
+        INTEGER,               INTENT(OUT) :: IENT
+        INTEGER,               INTENT(OUT) :: JENT
+        INTEGER,               INTENT(OUT) :: KENT
+        INTEGER,               INTENT(OUT) :: GETPOS
+        INTEGER,               INTENT(OUT) :: SETPOS
 !
         CALL GET_VAR_TYPE_T2D_D
      &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
@@ -1216,7 +1221,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -1224,11 +1229,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_DOUBLE_SIS
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-        DOUBLE PRECISION,      INTENT(OUT) :: VALUE
+        DOUBLE PRECISION,      INTENT(OUT) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -1237,7 +1242,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_DOUBLE_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL GET_DOUBLE_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                        INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE GET_DOUBLE_SIS
@@ -1254,7 +1259,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -1262,11 +1267,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_DOUBLE_SIS
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-        DOUBLE PRECISION,      INTENT(IN) :: VALUE
+        DOUBLE PRECISION,      INTENT(IN) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -1275,7 +1280,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_DOUBLE_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL SET_DOUBLE_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                        INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE SET_DOUBLE_SIS
@@ -1292,19 +1297,19 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_INTEGER_SIS(ID, VARNAME, VALUE,
+      SUBROUTINE GET_INTEGER_SIS(ID, VARNAME, VALEUR,
      &             INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-        INTEGER,               INTENT(OUT) :: VALUE
+        INTEGER,               INTENT(OUT) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -1313,7 +1318,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_INTEGER_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL GET_INTEGER_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                     INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE GET_INTEGER_SIS
@@ -1330,19 +1335,19 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE SET_INTEGER_SIS(ID, VARNAME, VALUE,
+      SUBROUTINE SET_INTEGER_SIS(ID, VARNAME, VALEUR,
      &             INDEX1, INDEX2, INDEX3, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-        INTEGER,               INTENT(IN) :: VALUE
+        INTEGER,               INTENT(IN) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -1351,7 +1356,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_INTEGER_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL SET_INTEGER_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE SET_INTEGER_SIS
@@ -1368,26 +1373,26 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE GET_STRING_SIS(ID, VARNAME, VALUE,
+      SUBROUTINE GET_STRING_SIS(ID, VARNAME, VALEUR,
      &             VALUELEN, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
         INTEGER,               INTENT(IN) :: VALUELEN
-        CHARACTER,             INTENT(OUT) :: VALUE(VALUELEN)
+        CHARACTER,             INTENT(OUT) :: VALEUR(VALUELEN)
         INTEGER,               INTENT(OUT) :: IERR
 !
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_STRING_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL GET_STRING_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                        VALUELEN, IERR)
 !
       END SUBROUTINE GET_STRING_SIS
@@ -1404,26 +1409,26 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
       !PARAM IERR      [OUT]    0 IF SUBROUTINE SUCCESSFULL,
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      SUBROUTINE SET_STRING_SIS(ID, VARNAME, VALUE,
+      SUBROUTINE SET_STRING_SIS(ID, VARNAME, VALEUR,
      &             VALUELEN, IERR)
 !
         INTEGER,               INTENT(IN) :: ID
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
         INTEGER,               INTENT(IN) :: VALUELEN
-        CHARACTER,             INTENT(IN) :: VALUE(VALUELEN)
+        CHARACTER,             INTENT(IN) :: VALEUR(VALUELEN)
         INTEGER,               INTENT(OUT) :: IERR
 !
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_STRING_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL SET_STRING_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                        VALUELEN, IERR)
 !
       END SUBROUTINE SET_STRING_SIS
@@ -1440,7 +1445,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -1448,11 +1453,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_BOOLEAN_SIS
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
           INTEGER,               INTENT(IN) :: ID
           CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
+          INTEGER,               INTENT(OUT) :: VALEUR
           INTEGER,               INTENT(IN) :: INDEX1
           INTEGER,               INTENT(IN) :: INDEX2
           INTEGER,               INTENT(IN) :: INDEX3
@@ -1461,7 +1466,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL GET_BOOLEAN_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL GET_BOOLEAN_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE GET_BOOLEAN_SIS
@@ -1478,7 +1483,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID         [IN]    ID OF THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -1486,11 +1491,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_BOOLEAN_SIS
-     &     (ID, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (ID, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
           INTEGER,               INTENT(IN) :: ID
           CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
+          INTEGER,               INTENT(IN) :: VALEUR
           INTEGER,               INTENT(IN) :: INDEX1
           INTEGER,               INTENT(IN) :: INDEX2
           INTEGER,               INTENT(IN) :: INDEX3
@@ -1499,7 +1504,7 @@
         CALL CHECK_INSTANCE_SIS(ID,IERR)
         IF(IERR.NE.0) RETURN
 !
-        CALL SET_BOOLEAN_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALUE,
+        CALL SET_BOOLEAN_SIS_D(INSTANCE_LIST_SIS(ID), VARNAME, VALEUR,
      &                      INDEX1, INDEX2, INDEX3, IERR)
 !
       END SUBROUTINE SET_BOOLEAN_SIS
@@ -1641,13 +1646,13 @@
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief saves original charr and susp values after first sisyphe call
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !
       !history R-S MOURADI (EDF R&D, LNHE)
       !+       15/04/2016
       !+       V7P1
       !+       Creation of the file
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID_T2D    [IN]    ID OF THE TELEMAC2D INSTANCE
       !PARAM ID_SIS    [IN]    ID OF THE SISYPHE INSTANCE
       !PARAM IERR     [OUT]    0 IF SUBROUTINE SUCCESSFULL,
@@ -1674,13 +1679,13 @@
 
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief deals with cases : BEDLOAD OF SUSPENSION
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !
       !history R-S MOURADI (EDF R&D, LNHE)
       !+       15/04/2016
       !+       V7P1
       !+       Creation of the file
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID_T2D    [IN]    ID OF THE TELEMAC2D INSTANCE
       !PARAM ID_SIS    [IN]    ID OF THE SISYPHE INSTANCE
       !param CHARR_SUSP     [OUT]    DEFINES WHICH SISYPHE CALL
@@ -1714,13 +1719,13 @@
 
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief sets loop variables for sisyphe in case of coupling
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !
       !history R-S MOURADI (EDF R&D, LNHE)
       !+       15/04/2016
       !+       V7P1
       !+       Creation of the file
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID_T2D              [IN]    ID OF THE TELEMAC2D INSTANCE
       !PARAM ID_SIS              [IN]    ID OF THE SISYPHE INSTANCE
       !param CALL_TYPE       [IN]    DEFINES WHICH SISYPHE CALL
@@ -1750,13 +1755,13 @@
 
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !brief sends variables to telemac2d after sisyphe call
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !
       !history R-S MOURADI (EDF R&D, LNHE)
       !+       15/04/2016
       !+       V7P1
       !+       Creation of the file
-      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM ID_T2D              [IN]    ID OF THE TELEMAC2D INSTANCE
       !PARAM ID_SIS              [IN]    ID OF THE SISYPHE INSTANCE
       !PARAM IERR           [OUT]    0 IF SUBROUTINE SUCCESSFULL,

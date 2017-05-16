@@ -39,7 +39,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -47,67 +47,67 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_DOUBLE_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         TYPE(INSTANCE_SIS),         INTENT(IN) :: INST
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN) :: VARNAME
-        DOUBLE PRECISION,           INTENT(OUT):: VALUE
+        DOUBLE PRECISION,           INTENT(OUT):: VALEUR
         INTEGER,                    INTENT(IN) :: INDEX1
         INTEGER,                    INTENT(IN) :: INDEX2
         INTEGER,                    INTENT(IN) :: INDEX3
         INTEGER,                    INTENT(OUT):: IERR
 !
         IERR = 0
-        VALUE = 0.0
+        VALEUR = 0.0
 !
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
-           VALUE=INST%Q%R(INDEX1)
+           VALEUR=INST%Q%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EVOLUTION') THEN
-          VALUE = INST%E%R(INDEX1)
+          VALEUR = INST%E%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Z') THEN
-          VALUE = INST%Z%R(INDEX1)
+          VALEUR = INST%Z%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
-          VALUE = INST%ZF%R(INDEX1)
+          VALEUR = INST%ZF%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ZF_C') THEN
-          VALUE = INST%ZF_C%R(INDEX1)
+          VALEUR = INST%ZF_C%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
-          VALUE = INST%QBOR%R(INDEX1)
+          VALEUR = INST%QBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EBOR') THEN
-          VALUE = INST%EBOR%R(INDEX1)
+          VALEUR = INST%EBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR') THEN
-          VALUE = INST%FLBOR%R(INDEX1)
+          VALEUR = INST%FLBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR_SIS') THEN
-          VALUE = INST%FLBOR_SIS%R(INDEX1)
+          VALEUR = INST%FLBOR_SIS%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
-          VALUE = INST%MESH%X%R(INDEX1)
+          VALEUR = INST%MESH%X%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
-          VALUE = INST%MESH%Y%R(INDEX1)
+          VALEUR = INST%MESH%Y%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
-          VALUE = INST%MESH%XNEBOR%R(INDEX1)
+          VALEUR = INST%MESH%XNEBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
-          VALUE = INST%MESH%YNEBOR%R(INDEX1)
+          VALEUR = INST%MESH%YNEBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIMESTEP') THEN
-          VALUE = INST%DT
+          VALEUR = INST%DT
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
-          VALUE = INST%TOB%R(INDEX1)
+          VALEUR = INST%TOB%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
-          VALUE = INST%CHESTR%R(INDEX1)
+          VALEUR = INST%CHESTR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.D50') THEN
-          VALUE = INST%D50(1)
+          VALEUR = INST%D50(1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.MPM') THEN
-          VALUE = INST%MPM
+          VALEUR = INST%MPM
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.SHIELDS') THEN
-          VALUE = INST%AC(1)
+          VALEUR = INST%AC(1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-          VALUE = INST%XKV
+          VALEUR = INST%XKV
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.KSPRATIO') THEN
-          VALUE = INST%KSPRATIO
+          VALEUR = INST%KSPRATIO
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.PHISED') THEN
-          VALUE = INST%PHISED
+          VALEUR = INST%PHISED
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BETA') THEN
-          VALUE = INST%BETA2
+          VALEUR = INST%BETA2
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ALPHA') THEN
-          VALUE = INST%ALPHA
+          VALEUR = INST%ALPHA
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -128,7 +128,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -136,11 +136,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_DOUBLE_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
         CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-        DOUBLE PRECISION,      INTENT(IN) :: VALUE
+        DOUBLE PRECISION,      INTENT(IN) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -150,55 +150,55 @@
 
 !
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
-          INST%Q%R(INDEX1) = VALUE
+          INST%Q%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EVOLUTION') THEN
-          INST%E%R(INDEX1) = VALUE
+          INST%E%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Z') THEN
-          INST%Z%R(INDEX1) = VALUE
+          INST%Z%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
-          INST%ZF%R(INDEX1) = VALUE
+          INST%ZF%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ZF_C') THEN
-          INST%ZF_C%R(INDEX1) = VALUE
+          INST%ZF_C%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.QBOR') THEN
-          INST%QBOR%R(INDEX1) = VALUE
+          INST%QBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.EBOR') THEN
-          INST%EBOR%R(INDEX1) = VALUE
+          INST%EBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR') THEN
-          INST%FLBOR%R(INDEX1) = VALUE
+          INST%FLBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLBOR_SIS') THEN
-          INST%FLBOR_SIS%R(INDEX1) = VALUE
+          INST%FLBOR_SIS%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
-          INST%MESH%X%R(INDEX1) = VALUE
+          INST%MESH%X%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
-          INST%MESH%Y%R(INDEX1) = VALUE
+          INST%MESH%Y%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
-          INST%MESH%XNEBOR%R(INDEX1) = VALUE
+          INST%MESH%XNEBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
-          INST%MESH%YNEBOR%R(INDEX1) = VALUE
+          INST%MESH%YNEBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIMESTEP') THEN
-          INST%DT = VALUE
+          INST%DT = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TOB') THEN
-          INST%TOB%R(INDEX1) = VALUE
+          INST%TOB%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
-          INST%CHESTR%R(INDEX1) = VALUE
+          INST%CHESTR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.D50') THEN
-          INST%D50(:) = VALUE
+          INST%D50(:) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.MPM') THEN
-          INST%MPM = VALUE
-          INST%MPM_ARAY%R(:) = VALUE
+          INST%MPM = VALEUR
+          INST%MPM_ARAY%R(:) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.SHIELDS') THEN
-          INST%AC(:) = VALUE
+          INST%AC(:) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-          INST%XKV = VALUE
-          INST%CSF_SABLE = 1 - VALUE
+          INST%XKV = VALEUR
+          INST%CSF_SABLE = 1 - VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.KSPRATIO') THEN
-          INST%KSPRATIO = VALUE
+          INST%KSPRATIO = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.PHISED') THEN
-          INST%PHISED = VALUE
+          INST%PHISED = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BETA') THEN
-          INST%BETA2 = VALUE
+          INST%BETA2 = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.ALPHA') THEN
-          INST%ALPHA = VALUE
+          INST%ALPHA = VALEUR
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -218,7 +218,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -226,52 +226,50 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_INTEGER_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(OUT) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          VALUE = -1
-          IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-           VALUE = INST%LIHBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
-           VALUE = INST%CLU%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
-           VALUE =  INST%CLV%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
-           VALUE =  INST%LIQBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
-           VALUE =  INST%LIEBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NUMLIQ') THEN
-           VALUE =  INST%NUMLIQ%I(INDEX1)
-
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
-            VALUE = INST%MESH%NPOIN
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
-            VALUE = INST%MESH%NELEM
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPTFR') THEN
-            VALUE = INST%MESH%NPTFR
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
-            VALUE = INST%MESH%NELMAX
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
-            VALUE = INST%MESH%IKLE%I(INDEX1)
-
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            VALUE = INST%NIT
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CURRENTSTEP') THEN
-            VALUE = INST%LT
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
-            VALUE = INST%TEL%PERICOU
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        VALEUR = -1
+        IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          VALEUR = INST%LIHBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
+          VALEUR = INST%CLU%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
+          VALEUR =  INST%CLV%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
+          VALEUR =  INST%LIQBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
+          VALEUR =  INST%LIEBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NUMLIQ') THEN
+          VALEUR =  INST%NUMLIQ%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
+          VALEUR = INST%MESH%NPOIN
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
+          VALEUR = INST%MESH%NELEM
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPTFR') THEN
+          VALEUR = INST%MESH%NPTFR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
+          VALEUR = INST%MESH%NELMAX
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
+          VALEUR = INST%MESH%IKLE%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
+          VALEUR = INST%NIT
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CURRENTSTEP') THEN
+          VALEUR = INST%LT
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
+          VALEUR = INST%TEL%PERICOU
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_INTEGER_SIS_D
 
@@ -288,7 +286,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -296,36 +294,35 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_INTEGER_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-            INST%LIHBOR%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
-            INST%CLU%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
-            INST%CLV%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
-            INST%LIQBOR%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
-            INST%LIEBOR%I(INDEX1) = VALUE
-
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            INST%NIT = VALUE
-
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
-        END SUBROUTINE SET_INTEGER_SIS_D
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          INST%LIHBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLU') THEN
+          INST%CLU%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CLV') THEN
+          INST%CLV%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIQBOR') THEN
+          INST%LIQBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIEBOR') THEN
+          INST%LIEBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
+          INST%NIT = VALEUR
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
+!
+      END SUBROUTINE SET_INTEGER_SIS_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !BRIEF GET A STRING VARIABLE FROM SISYPHE
@@ -339,7 +336,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -347,39 +344,39 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_STRING_SIS_D
-     &     (INST, VARNAME, VALUE, VALUELEN, IERR)
+     &     (INST, VARNAME, VALEUR, VALUELEN, IERR)
 !
-          TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUELEN
-          CHARACTER,             INTENT(OUT) :: VALUE(VALUELEN)
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALUELEN
+        CHARACTER,             INTENT(OUT) :: VALEUR(VALUELEN)
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          INTEGER I,J
+        INTEGER I,J
 !
-          IERR = 0
-          VALUE = ""
-          IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            I = INST%SISRES
-            DO J = 1,144
-              VALUE(J:J) = INST%SIS_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
-            I = INST%SISCLI
-            DO J = 1,144
-              VALUE(J:J) = INST%SIS_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
-            I = INST%SISGEO
-            DO J = 1,144
-              VALUE(J:J) = INST%SIS_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
-            VALUE = ""
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        VALEUR = ""
+        IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
+          I = INST%SISRES
+          DO J = 1,144
+            VALEUR(J:J) = INST%SIS_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
+          I = INST%SISCLI
+          DO J = 1,144
+            VALEUR(J:J) = INST%SIS_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
+          I = INST%SISGEO
+          DO J = 1,144
+            VALEUR(J:J) = INST%SIS_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
+          VALEUR = ""
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_STRING_SIS_D
 
@@ -395,7 +392,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -403,28 +400,28 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_STRING_SIS_D
-     &     (INST, VARNAME, VALUE, VALUELEN, IERR)
+     &     (INST, VARNAME, VALEUR, VALUELEN, IERR)
 !
-          TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUELEN
-          CHARACTER,             INTENT(IN) :: VALUE(VALUELEN)
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALUELEN
+        CHARACTER,             INTENT(IN) :: VALEUR(VALUELEN)
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          INTEGER I,J
+        INTEGER I,J
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            I = INST%SISRES
-            DO J=1,VALUELEN
-              INST%SIS_FILES(I)%NAME(J:J) = VALUE(J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
-            IERR = 1
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
+          I = INST%SISRES
+          DO J=1,VALUELEN
+            INST%SIS_FILES(I)%NAME(J:J) = VALEUR(J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
+          IERR = 1
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE SET_STRING_SIS_D
 
@@ -441,7 +438,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -449,24 +446,24 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_BOOLEAN_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(IN) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(OUT) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          VALUE = 0
-          IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
-            VALUE = 0
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        VALEUR = 0
+        IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
+          VALEUR = 0
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_BOOLEAN_SIS_D
 !
@@ -482,7 +479,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -490,25 +487,25 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_BOOLEAN_SIS_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-      TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_SIS),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=SIS_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          INTEGER DEBUG
+        INTEGER DEBUG
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
-            DEBUG = 1
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
+          DEBUG = 1
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE SET_BOOLEAN_SIS_D
 
@@ -614,16 +611,17 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_TYPE_SIS_D
      &        (VARNAME, VARTYPE, READONLY, NDIM, IERR)
-          CHARACTER(LEN=SIS_VAR_LEN),  INTENT(IN)  :: VARNAME
-          CHARACTER(LEN=SIS_TYPE_LEN), INTENT(OUT) :: VARTYPE
-          LOGICAL,                     INTENT(OUT) :: READONLY
-          INTEGER,                     INTENT(OUT) :: NDIM
-          INTEGER,                     INTENT(OUT) :: IERR
 !
-          IERR = 0
-          VARTYPE = ''
+        CHARACTER(LEN=SIS_VAR_LEN),  INTENT(IN)  :: VARNAME
+        CHARACTER(LEN=SIS_TYPE_LEN), INTENT(OUT) :: VARTYPE
+          LOGICAL,                     INTENT(OUT) :: READONLY
+        INTEGER,                     INTENT(OUT) :: NDIM
+        INTEGER,                     INTENT(OUT) :: IERR
+!
+        IERR = 0
+        VARTYPE = ''
           READONLY = .TRUE.
-          NDIM = 0
+        NDIM = 0
 !
         IF(TRIM(VARNAME).EQ.'MODEL.FLOWRATEQ') THEN
           VARTYPE = 'DOUBLE'

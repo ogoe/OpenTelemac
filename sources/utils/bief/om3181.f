@@ -51,6 +51,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -109,22 +114,25 @@
 !
       DOUBLE PRECISION Z(1)
 !
-      INTEGER CONVSYM(4,4),CONVNSY(4,4)
-!
 !-----------------------------------------------------------------------
 !
 !     BEWARE: IN FORTRAN THE FIRST INDEX VARIES MOST QUICKLY
 !     123456789 SHOULD NOT BE USED
 !
-      DATA CONVNSY/ 123456789 ,     7     ,     8     ,    9      ,
-     &                  1     , 123456789 ,    10     ,   11      ,
-     &                  2     ,     4     , 123456789 ,   12      ,
-     &                  3     ,     5     ,     6     , 123456789  /
-!
-      DATA CONVSYM/ 123456789 ,     1     ,     2     ,    3      ,
-     &                  1     , 123456789 ,     4     ,    5      ,
-     &                  2     ,     4     , 123456789 ,    6      ,
-     &                  3     ,     5     ,     6     , 123456789  /
+      INTEGER :: CONVNSY(4,4)
+      PARAMETER ( CONVNSY = RESHAPE( (/
+     &      123456789,     7    ,     8    ,    9     ,
+     &          1    , 123456789,    10    ,   11     ,
+     &          2    ,     4    , 123456789,   12     ,
+     &          3    ,     5    ,     6    , 123456789 /),
+     &      SHAPE=(/ 4,4 /) ) )
+      INTEGER :: CONVSYM(4,4)
+      PARAMETER ( CONVSYM = RESHAPE( (/
+     &      123456789,     1    ,     2    ,    3     ,
+     &          1    , 123456789,     4    ,    5     ,
+     &          2    ,     4    , 123456789,    6     ,
+     &          3    ,     5    ,     6    , 123456789 /),
+     &      SHAPE=(/ 4,4 /) ) )
 !
 !***********************************************************************
 !

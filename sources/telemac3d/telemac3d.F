@@ -228,14 +228,19 @@
       USE DECLARATIONS_WAQTEL,ONLY: TAIR,WAQPROCESS
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 ! DECLARATIONS
 !-----------------------------------------------------------------------
 !
-      INTEGER  P_IMAX
-      EXTERNAL P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX
+!      EXTERNAL P_IMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 ! DECLARES LOCAL VARIABLES FOR TELEMAC3D
@@ -244,7 +249,7 @@
       INTEGER LT,DATE(3),TIME(3)
       INTEGER ITRAC,ISOUSI
       INTEGER SCHDVI_HOR,SCHDVI_VER,SCHCVI_HOR,SCHCVI_VER
-      INTEGER ALIRE2D(MAXVAR),TROUVE(MAXVAR+10),ALIRE3D(MAXVAR)
+      INTEGER TROUVE(MAXVAR+10)
       INTEGER IBID,I,K,I3D,IP,NFRLIQ0
 !
       INTEGER, POINTER, DIMENSION(:) :: KENTBUS,KSORBUS
@@ -276,26 +281,39 @@
 !  0 : DISCARD    1 : READ  (SAME NUMBERING AS IN NOMVAR)
 !
 !                  U V   H   ZF
-      DATA ALIRE2D/1,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRE2D(MAXVAR) = (/ 1,1,0,1,0,1,(0,I=7,MAXVAR) /)
+!                   U V   H   ZF
+!      DATA ALIRE2D/1,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0/
+!##< SEB @ HRW
 !
 !     IN 3D FILES
-!                                                        U V
-!                                            U V W       C C
-!                                            C C C     D O O
-!                                            O O O   D H N N
-!                                        D   N N N   M H V V U V W
-!                  Z U V W       K E     P   V V V   1 N C C D D D
-      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &             0,0,0,0,0,0,0,0,0,0/
+!                                                         U V
+!                                             U V W       C C
+!                                             C C C     D O O
+!                                             O O O   D H N N
+!                                         D   N N N   M H V V U V W
+!                   Z U V W       K E     P   V V V   1 N C C D D D
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRE3D(MAXVAR) = (/
+     &              1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,
+     &              (0,I=27,MAXVAR) /)
+!      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &             0,0,0,0,0,0,0,0,0,0/
+!##< SEB @ HRW
+!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_BEGIN
+#endif
 !
 !     READS TRACERS IN PREVIOUS FILES
 !
@@ -363,6 +381,10 @@
 !=======================================================================
 ! INITIALISATION: READS, PREPARES AND CHECKS
 !=======================================================================
+!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_INITIALISATION_BEGIN
+#endif
 !
       LT     = 0       ! INITIALISES TIMESTEP
 !     INITIALISES NUMBER OF SUB-ITERATIONS, LOOK IN PREADV
@@ -728,7 +750,7 @@
 !
       IF(SEDI) THEN
 !
-!###>TBE/CV MODIFICATION:
+!##>TBE/CV MODIFICATION:
 !    THE CALL TO CONDIS SHOULD ALWAYS BE DONE FIRST
 !    VALUES THEN MAY BE MODIFIED FROM SEDIMENTOLOGICAL 2D RESULT
 !
@@ -758,7 +780,7 @@
      &                PRIVE)
 !
         ENDIF
-!###<TBE/CV - END OF MODIFICATION
+!##<TBE/CV - END OF MODIFICATION
 !
 ! LOOK FOR CRITICAL SHEAR STRESS FOR EROSION IN GEOMETRY FILE
         IF (READ_TOCE) THEN
@@ -1407,6 +1429,10 @@
         CALL OS('X=Y     ',X=VOLUN,Y=VOLU)
       ENDIF
 !
+#if defined COMPAD
+      CALL AD_TELEMAC3D_INITIALISATION_END
+#endif
+!
 !=======================================================================
 !     COUPLING WITH SISYPHE
 !=======================================================================
@@ -1486,9 +1512,9 @@
         CALL VITCHU(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,
      &              TURBA,TURBB,T3_01,T3_02,T3_03,SVIDE,MESH3D,
      &              IELM3,NPOIN2,NPOIN3,NPLAN,NTRAC,MSK,MASKEL,
-!###>TBE: REPLACED HMIN WITH HSED
+!##>TBE: REPLACED HMIN WITH HSED
      &              UETCAR,TA,HN,HSED,FLOC, FLOC_TYPE,
-!###<TBE
+!##<TBE
      &              HINDER,HIND_TYPE,CGEL,CINI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VITCHU'
 !
@@ -1500,7 +1526,7 @@
 !=======================================================================
 !
       IF((INCLUS(COUPLING,'WAQTEL')).AND.(WAQPROCESS.EQ.6)) THEN
-#if defined(HAVE_AED2)
+#if defined HAVE_AED2
         CALL T3D_CONSTRUCT_AED2(DT,TA,RHO0,VOLU2D,NPLAN,
      &                          IND_S,IND_T,NPOIN2,NPOIN3,Z)
 #else
@@ -1518,6 +1544,10 @@
       TIMELOOP: DO LT=1,NIT
 !
       AT = AT + DT
+!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_TIMESTEP_BEGIN
+#endif
 !
 !     SAVING ORIGINAL ELEVATIONS (FOR DISTRIBUTIVE SCHEMES)
 !
@@ -1729,9 +1759,9 @@
 !
         CALL VITCHU(WCHU,WCHU0,TURBWC,U,V,W,H,RUGOF,LISRUF,
      &  TURBA,TURBB,T3_01,T3_02,T3_03,SVIDE,MESH3D,IELM3,NPOIN2,NPOIN3,
-!###>TBE: REPLACED HMIN WITH HSED
+!##>TBE: REPLACED HMIN WITH HSED
      &  NPLAN,NTRAC,MSK,MASKEL,UETCAR,TA,HN,HSED,FLOC, FLOC_TYPE,
-!###<TBE
+!##<TBE
      &  HINDER,HIND_TYPE,CGEL,CINI)
 !
 !       BOUNDARY CONDITIONS FOR THE SEDIMENTOLOGY
@@ -2006,6 +2036,10 @@
 !=======================================================================
 !
       SUBITER: DO ISOUSI = 1,NSOUSI
+!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_SUBITERATION_BEGIN
+#endif
 !
 !     RESTORES BOUNDARY VALUES FOR TIME TN
 !
@@ -2739,6 +2773,10 @@
 !
       ENDIF
 !
+#if defined COMPAD
+      CALL AD_TELEMAC3D_SUBITERATION_END
+#endif
+!
       END DO SUBITER
 !
 !-----------------------------------------------------------------------
@@ -3016,7 +3054,9 @@
 !       ENDDO
 !     ENDIF
 !
-!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_TIMESTEP_END
+#endif
 !
 ! END OF TIME LOOP
 !
@@ -3027,6 +3067,11 @@
 !=======================================================================
 !
 !-----------------------------------------------------------------------
+!
+#if defined COMPAD
+      CALL AD_TELEMAC3D_END
+#endif
+!
 !
       RETURN
       END

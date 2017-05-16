@@ -59,7 +59,7 @@
 !+        17/03/2017
 !+        V7P3
 !+        Add conditional for liquid boundary file for QS
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
 !| AT             |-->| TEMPS (s)
@@ -70,6 +70,9 @@
       USE DECLARATIONS_TELEMAC
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -82,7 +85,9 @@
       INTEGER I,K,IFRLIQ,IRANK
       INTEGER YADEB(MAXFRO)
 !
-      INTEGER, EXTERNAL          :: P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER, EXTERNAL          :: P_IMAX
+!##< JR @ RWTH
       DOUBLE PRECISION, EXTERNAL :: CGL
       DOUBLE PRECISION, EXTERNAL :: QGL
 !
@@ -166,11 +171,11 @@
 !         READING BOUNDARY CONDITION FILE WITH SOLID DISCHARGE
 !
       IF(CHARR) THEN
-!     AVOID OVERRIDING WITH SUSPENDED SEDIMENT TRANSPORT             
+!     AVOID OVERRIDING WITH SUSPENDED SEDIMENT TRANSPORT
           IF(SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
                 SOLDIS(IFRLIQ)=QGL(IFRLIQ,AT)
           ENDIF
-      ENDIF       
+      ENDIF
 
             CALL DISIMP(SOLDIS(IFRLIQ),Q2BOR,NUMLIQ%I,IFRLIQ,NSOLDIS,
      &                  T5,T1,

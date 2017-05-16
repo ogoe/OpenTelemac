@@ -38,7 +38,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -46,61 +46,61 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_DOUBLE_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         TYPE(INSTANCE_T2D),         INTENT(IN) :: INST
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN) :: VARNAME
-        DOUBLE PRECISION,           INTENT(OUT):: VALUE
+        DOUBLE PRECISION,           INTENT(OUT):: VALEUR
         INTEGER,                    INTENT(IN) :: INDEX1
         INTEGER,                    INTENT(IN) :: INDEX2
         INTEGER,                    INTENT(IN) :: INDEX3
         INTEGER,                    INTENT(OUT):: IERR
 !
         IERR = 0
-        VALUE = 0.0
+        VALEUR = 0.0
 !
         IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-          VALUE = INST%HBOR%R(INDEX1)
+          VALEUR = INST%HBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
-          VALUE = INST%UBOR%R(INDEX1)
+          VALEUR = INST%UBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
-          VALUE = INST%VBOR%R(INDEX1)
+          VALEUR = INST%VBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
-          VALUE = INST%MESH%XNEBOR%R(INDEX1)
+          VALEUR = INST%MESH%XNEBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
-          VALUE = INST%MESH%YNEBOR%R(INDEX1)
+          VALEUR = INST%MESH%YNEBOR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-          VALUE = INST%H%R(INDEX1)
+          VALEUR = INST%H%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
-          VALUE = INST%DH%R(INDEX1)
+          VALEUR = INST%DH%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
-          VALUE = INST%ZF%R(INDEX1)
+          VALEUR = INST%ZF%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
-          VALUE = INST%U%R(INDEX1)
+          VALEUR = INST%U%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
-          VALUE = INST%V%R(INDEX1)
+          VALEUR = INST%V%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
-          VALUE = INST%MESH%X%R(INDEX1)
+          VALEUR = INST%MESH%X%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
-          VALUE = INST%MESH%Y%R(INDEX1)
+          VALEUR = INST%MESH%Y%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
-          VALUE = INST%FLUX_BOUNDARIES(INDEX1)
+          VALEUR = INST%FLUX_BOUNDARIES(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-          VALUE = INST%TE5%R(INDEX1)
+          VALEUR = INST%TE5%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-          VALUE = INST%COTE(INDEX1)
+          VALEUR = INST%COTE(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
-          VALUE = INST%CHESTR%R(INDEX1)
+          VALEUR = INST%CHESTR%R(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
-          VALUE = INST%AT
+          VALEUR = INST%AT
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-          VALUE = INST%DEBIT(INDEX1)
+          VALEUR = INST%DEBIT(INDEX1)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
-          VALUE = INST%CTIDE
+          VALEUR = INST%CTIDE
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALVELOCITY') THEN
-          VALUE = INST%CTIDEV
+          VALEUR = INST%CTIDEV
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.SEALEVEL') THEN
-          VALUE = INST%MSL
+          VALEUR = INST%MSL
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -120,7 +120,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -128,11 +128,11 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_DOUBLE_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
         TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-        DOUBLE PRECISION,      INTENT(IN) :: VALUE
+        DOUBLE PRECISION,      INTENT(IN) :: VALEUR
         INTEGER,               INTENT(IN) :: INDEX1
         INTEGER,               INTENT(IN) :: INDEX2
         INTEGER,               INTENT(IN) :: INDEX3
@@ -140,39 +140,39 @@
 !
         IERR = 0
         IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-          INST%HBOR%R(INDEX1) = VALUE
+          INST%HBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
-          INST%UBOR%R(INDEX1) = VALUE
+          INST%UBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
-          INST%VBOR%R(INDEX1) = VALUE
+          INST%VBOR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-          INST%H%R(INDEX1) = VALUE
+          INST%H%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
-          INST%DH%R(INDEX1) = VALUE
+          INST%DH%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
-          INST%ZF%R(INDEX1) = VALUE
+          INST%ZF%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
-          INST%U%R(INDEX1) = VALUE
+          INST%U%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
-          INST%V%R(INDEX1) = VALUE
+          INST%V%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
-          INST%FLUX_BOUNDARIES(INDEX1) = VALUE
+          INST%FLUX_BOUNDARIES(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-          INST%TE5%R(INDEX1) = VALUE
+          INST%TE5%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-          INST%COTE(INDEX1) = VALUE
+          INST%COTE(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-          INST%DEBIT(INDEX1) = VALUE
+          INST%DEBIT(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
-          INST%CHESTR%R(INDEX1) = VALUE
+          INST%CHESTR%R(INDEX1) = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
-          INST%AT = VALUE
+          INST%AT = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
-          INST%CTIDE = VALUE
+          INST%CTIDE = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALVELOCITY') THEN
-          INST%CTIDEV = VALUE
+          INST%CTIDEV = VALEUR
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.SEALEVEL') THEN
-          INST%MSL = VALUE
+          INST%MSL = VALEUR
         ELSE
           IERR = UNKNOWN_VAR_ERROR
           ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
@@ -192,7 +192,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -200,53 +200,53 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_INTEGER_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(OUT) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          VALUE = -1
-          IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-            VALUE = INST%LIHBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
-            VALUE = INST%LIUBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
-            VALUE = INST%LIVBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.KP1BOR') THEN
-            VALUE = INST%MESH%KP1BOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NUMLIQ') THEN
-            VALUE = INST%NUMLIQ%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NBOR') THEN
-             VALUE = INST%MESH%NBOR%I(INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
-            VALUE = INST%MESH%NPOIN
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
-            VALUE = INST%MESH%NELEM
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPTFR') THEN
-            VALUE = INST%MESH%NPTFR
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            VALUE = INST%NIT
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
-            VALUE = INST%LT
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
-            VALUE = INST%MESH%NELMAX
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
-            VALUE = INST%MESH%IKLE%I((INDEX2-1)*INST%MESH%IKLE%DIM1
+        IERR = 0
+        VALEUR = -1
+        IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          VALEUR = INST%LIHBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
+          VALEUR = INST%LIUBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
+          VALEUR = INST%LIVBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.KP1BOR') THEN
+          VALEUR = INST%MESH%KP1BOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NUMLIQ') THEN
+          VALEUR = INST%NUMLIQ%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NBOR') THEN
+           VALEUR = INST%MESH%NBOR%I(INDEX1)
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
+          VALEUR = INST%MESH%NPOIN
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
+          VALEUR = INST%MESH%NELEM
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPTFR') THEN
+          VALEUR = INST%MESH%NPTFR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
+          VALEUR = INST%NIT
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+          VALEUR = INST%LT
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELMAX') THEN
+          VALEUR = INST%MESH%NELMAX
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
+          VALEUR = INST%MESH%IKLE%I((INDEX2-1)*INST%MESH%IKLE%DIM1
      &                               + INDEX1)
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
-             VALUE = INST%SIS%PERCOU
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
-             VALUE = INST%BND_TIDE(INDEX1)
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
+          VALEUR = INST%SIS%PERCOU
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
+          VALEUR = INST%BND_TIDE(INDEX1)
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_INTEGER_T2D_D
 !
@@ -262,7 +262,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -270,39 +270,39 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_INTEGER_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-            INST%LIHBOR%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
-            INST%LIUBOR%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
-            INST%LIVBOR%I(INDEX1) = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            INST%NIT = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
-            INST%SIS%PERCOU = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LISTIN_PERIOD') THEN
-            INST%SIS%LISPRD = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.GRAPH_PERIOD') THEN
-            INST%SIS%LEOPRD = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
-             INST%LT = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
-             INST%BND_TIDE(INDEX1)=VALUE
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          INST%LIHBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
+          INST%LIUBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
+          INST%LIVBOR%I(INDEX1) = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
+          INST%NIT = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CPL_PERIOD') THEN
+          INST%SIS%PERCOU = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LISTIN_PERIOD') THEN
+          INST%SIS%LISPRD = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.GRAPH_PERIOD') THEN
+          INST%SIS%LEOPRD = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+          INST%LT = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
+          INST%BND_TIDE(INDEX1)=VALEUR
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE SET_INTEGER_T2D_D
 !
@@ -318,7 +318,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -326,39 +326,39 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_STRING_T2D_D
-     &     (INST, VARNAME, VALUE, VALUELEN, IERR)
+     &     (INST, VARNAME, VALEUR, VALUELEN, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUELEN
-          CHARACTER,             INTENT(OUT) :: VALUE(VALUELEN)
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALUELEN
+        CHARACTER,             INTENT(OUT) :: VALEUR(VALUELEN)
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          INTEGER I,J
+        INTEGER I,J
 !
-          IERR = 0
-          VALUE = ""
-          IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            I = INST%T2DRES
-            DO J = 1,VALUELEN
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
-            I = INST%T2DCLI
-            DO J = 1,VALUELEN
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
-            I = INST%T2DGEO
-            DO J = 1,VALUELEN
-              VALUE(J:J) = INST%T2D_FILES(I)%NAME(J:J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
-            VALUE = ""
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        VALEUR = ""
+        IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
+          I = INST%T2DRES
+          DO J = 1,VALUELEN
+            VALEUR(J:J) = INST%T2D_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
+          I = INST%T2DCLI
+          DO J = 1,VALUELEN
+            VALEUR(J:J) = INST%T2D_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.GEOMETRYFILE') THEN
+          I = INST%T2DGEO
+          DO J = 1,VALUELEN
+            VALEUR(J:J) = INST%T2D_FILES(I)%NAME(J:J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
+          VALEUR = ""
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_STRING_T2D_D
 !
@@ -374,7 +374,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -382,28 +382,28 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_STRING_T2D_D
-     &     (INST, VARNAME, VALUE, VALUELEN, IERR)
+     &     (INST, VARNAME, VALEUR, VALUELEN, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUELEN
-          CHARACTER,             INTENT(IN) :: VALUE(VALUELEN)
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALUELEN
+        CHARACTER,             INTENT(IN) :: VALEUR(VALUELEN)
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          INTEGER I,J
+        INTEGER I,J
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            I = INST%T2DRES
-            DO J=1,VALUELEN
-              INST%T2D_FILES(I)%NAME(J:J) = VALUE(J)
-            ENDDO
-          ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
-            IERR = 1
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
+          I = INST%T2DRES
+          DO J=1,VALUELEN
+            INST%T2D_FILES(I)%NAME(J:J) = VALEUR(J)
+          ENDDO
+        ELSE IF(TRIM(VARNAME).EQ.'XXX') THEN
+          IERR = 1
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE SET_STRING_T2D_D
 !
@@ -419,7 +419,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO READ
-      !PARAM VALUE     [OUT]    CONTAINIS THE READ VALUE
+      !PARAM VALEUR    [OUT]    CONTAINIS THE READ VALUE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -427,26 +427,26 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_BOOLEAN_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(OUT) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(OUT) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          VALUE = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
-            VALUE = INST%DEBUG
-          ELSE IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
-            VALUE = 0
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        VALEUR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
+          VALEUR = INST%DEBUG
+        ELSE IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
+          VALEUR = 0
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_BOOLEAN_T2D_D
 !
@@ -462,7 +462,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       !PARAM INST   [IN,OUT]    THE INSTANCE
       !PARAM VARNAME    [IN]    NAME OF THE VARIABLE TO WRITE
-      !PARAM VALUE      [IN]    THE VALUE TO WRITE IN THE VARIABLE
+      !PARAM VALEUR     [IN]    THE VALUE TO WRITE IN THE VARIABLE
       !PARAM INDEX1     [IN]    INDEX ON THE FIRST DIMENSION
       !PARAM INDEX2     [IN]    INDEX ON THE SECOND DIMENSION
       !PARAM INDEX3     [IN]    INDEX ON THE THIRD DIMENSION
@@ -470,25 +470,25 @@
       !+                        ERROR ID OTHERWISE
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SET_BOOLEAN_T2D_D
-     &     (INST, VARNAME, VALUE, INDEX1, INDEX2, INDEX3, IERR)
+     &     (INST, VARNAME, VALEUR, INDEX1, INDEX2, INDEX3, IERR)
 !
-          TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
-          CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
-          INTEGER,               INTENT(IN) :: VALUE
-          INTEGER,               INTENT(IN) :: INDEX1
-          INTEGER,               INTENT(IN) :: INDEX2
-          INTEGER,               INTENT(IN) :: INDEX3
-          INTEGER,               INTENT(OUT) :: IERR
+        TYPE(INSTANCE_T2D),    INTENT(INOUT) :: INST
+        CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
+        INTEGER,               INTENT(IN) :: VALEUR
+        INTEGER,               INTENT(IN) :: INDEX1
+        INTEGER,               INTENT(IN) :: INDEX2
+        INTEGER,               INTENT(IN) :: INDEX3
+        INTEGER,               INTENT(OUT) :: IERR
 !
-          IERR = 0
-          IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
-            INST%DEBUG = VALUE
-          ELSE IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
-            INST%DEBUG = 1
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+        IERR = 0
+        IF(TRIM(VARNAME).EQ.'MODEL.DEBUG') THEN
+          INST%DEBUG = VALEUR
+        ELSE IF(TRIM(VARNAME).EQ.'XXXXXX') THEN
+          INST%DEBUG = 1
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE SET_BOOLEAN_T2D_D
 !
@@ -519,6 +519,7 @@
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE GET_VAR_SIZE_T2D_D
      &         (INST, VARNAME, DIM1, DIM2, DIM3, IERR)
+!
         TYPE(INSTANCE_T2D),    INTENT(IN) :: INST
         CHARACTER(LEN=T2D_VAR_LEN), INTENT(IN)  :: VARNAME
         INTEGER,               INTENT(OUT) :: DIM1
@@ -574,14 +575,14 @@
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
           DIM1 = SIZE(INST%CHESTR%R)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-           DIM1 = 144
+          DIM1 = 144
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE')THEN
-           DIM1 = SIZE(INST%BND_TIDE)
+          DIM1 = SIZE(INST%BND_TIDE)
         ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE')THEN
            DIM1 = INST%MESH%IKLE%DIM1
            DIM2 = INST%MESH%IKLE%DIM2
         ENDIF
-
+!
       END SUBROUTINE GET_VAR_SIZE_T2D_D
 !
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -615,188 +616,189 @@
       SUBROUTINE GET_VAR_TYPE_T2D_D
      &        (VARNAME, VARTYPE, READONLY, NDIM,IENT,JENT,KENT,
      &         GETPOS,SETPOS,IERR)
-          CHARACTER(LEN=T2D_VAR_LEN),  INTENT(IN)  :: VARNAME
-          CHARACTER(LEN=T2D_TYPE_LEN), INTENT(OUT) :: VARTYPE
-          LOGICAL,                     INTENT(OUT) :: READONLY
-          INTEGER,                     INTENT(OUT) :: NDIM
-          INTEGER,                     INTENT(OUT) :: IERR
-          INTEGER,                     INTENT(OUT) :: IENT
-          INTEGER,                     INTENT(OUT) :: JENT
-          INTEGER,                     INTENT(OUT) :: KENT
-          INTEGER,                     INTENT(OUT) :: GETPOS
-          INTEGER,                     INTENT(OUT) :: SETPOS
 !
-          IERR = 0
-          VARTYPE = ''
-          READONLY = .TRUE.
+        CHARACTER(LEN=T2D_VAR_LEN),  INTENT(IN)  :: VARNAME
+        CHARACTER(LEN=T2D_TYPE_LEN), INTENT(OUT) :: VARTYPE
+        LOGICAL,                     INTENT(OUT) :: READONLY
+        INTEGER,                     INTENT(OUT) :: NDIM
+        INTEGER,                     INTENT(OUT) :: IERR
+        INTEGER,                     INTENT(OUT) :: IENT
+        INTEGER,                     INTENT(OUT) :: JENT
+        INTEGER,                     INTENT(OUT) :: KENT
+        INTEGER,                     INTENT(OUT) :: GETPOS
+        INTEGER,                     INTENT(OUT) :: SETPOS
+!
+        IERR = 0
+        VARTYPE = ''
+        READONLY = .TRUE.
+        NDIM = 0
+        IENT = 0
+        JENT = 0
+        KENT = 0
+        GETPOS = -1
+        SETPOS = -1
+!
+        IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
           NDIM = 0
-          IENT = 0
-          JENT = 0
-          KENT = 0
-          GETPOS = -1
-          SETPOS = -1
-!
-          IF(TRIM(VARNAME).EQ.'MODEL.AT') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-            GETPOS = RUN_ALLOCATION_POS
-            SETPOS = RUN_ALLOCATION_POS
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
-            VARTYPE = 'STRING'
-            READONLY = .FALSE.
-            NDIM = 0
-            GETPOS = RUN_ALLOCATION_POS
-            SETPOS = RUN_ALLOCATION_POS
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            GETPOS = RUN_FINALIZE_POS
-            SETPOS = RUN_ALLOCATION_POS
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 2
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-            GETPOS = RUN_FINALIZE_POS
-            SETPOS = RUN_ALLOCATION_POS
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
-            VARTYPE =  'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
-            VARTYPE = 'STRING'
-            READONLY = .FALSE.
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 1
-            IENT = 1
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALVELOCITY') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.SEALEVEL') THEN
-            VARTYPE = 'DOUBLE'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
-            VARTYPE = 'INTEGER'
-            READONLY = .FALSE.
-            NDIM = 0
-          ELSE
-            IERR = UNKNOWN_VAR_ERROR
-            ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
-          ENDIF
+          GETPOS = RUN_ALLOCATION_POS
+          SETPOS = RUN_ALLOCATION_POS
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BCFILE') THEN
+          VARTYPE = 'STRING'
+          READONLY = .FALSE.
+          NDIM = 0
+          GETPOS = RUN_ALLOCATION_POS
+          SETPOS = RUN_ALLOCATION_POS
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BND_TIDE') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          GETPOS = RUN_FINALIZE_POS
+          SETPOS = RUN_ALLOCATION_POS
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.HBOR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.UBOR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.VBOR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIHBOR') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.IKLE') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 2
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIUBOR') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LIVBOR') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.LT') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 0
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.XNEBOR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.YNEBOR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.WATERDEPTH') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.INCWATERDEPTH') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+          GETPOS = RUN_FINALIZE_POS
+          SETPOS = RUN_ALLOCATION_POS
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.BOTTOMELEVATION') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYU') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.VELOCITYV') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.X') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.Y') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.FLUX_BOUNDARIES') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.COTE') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.DEBIT') THEN
+          VARTYPE =  'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.RESULTFILE') THEN
+          VARTYPE = 'STRING'
+          READONLY = .FALSE.
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.POROSITY') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.CHESTR') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 1
+          IENT = 1
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NPOIN') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NELEM') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALRANGE') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 0
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.TIDALVELOCITY') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 0
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.SEALEVEL') THEN
+          VARTYPE = 'DOUBLE'
+          READONLY = .FALSE.
+          NDIM = 0
+        ELSE IF(TRIM(VARNAME).EQ.'MODEL.NTIMESTEPS') THEN
+          VARTYPE = 'INTEGER'
+          READONLY = .FALSE.
+          NDIM = 0
+        ELSE
+          IERR = UNKNOWN_VAR_ERROR
+          ERR_MESS = 'UNKNOWN VARIABLE NAME : '//TRIM(VARNAME)
+        ENDIF
 !
       END SUBROUTINE GET_VAR_TYPE_T2D_D
 !

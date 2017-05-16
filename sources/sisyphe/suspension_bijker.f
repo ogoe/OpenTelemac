@@ -70,11 +70,14 @@
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: I
-      DOUBLE PRECISION            :: USTARP,CMAX
+      DOUBLE PRECISION            :: USTARP
 !
 !     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
 !
-      DATA CMAX/0.6D0/
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA CMAX/0.6D0/
+      DOUBLE PRECISION, PARAMETER :: CMAX = 0.6D0
+!##< JR @ RWTH
 !
 !======================================================================!
 !======================================================================!

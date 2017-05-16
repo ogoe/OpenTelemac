@@ -42,6 +42,18 @@
 !+        Replacement of COMPLEX numbers by their imaginary and real parts
 !+        (to be compatible with algorithmic differentiation tools)
 !
+!history  J.RIEHME (RWTH)
+!+        26/12/2016
+!+        V7P3
+!+        Replacement of DATA statements equivalent PARAMETER statements
+!+        (as no DATA statement allowed for allocatable user types)
+!
+!history  J.RIEHME (RWTH)
+!+        26/01/2017
+!+        V7P3
+!+        Removal of EQUIVALENCE statements
+!+        (not allowed for algorithmic differentiation)
+!
 !reference RODNEY'S CONSTITUENT.H, 2/23/96
 !
 !reference RICHARD RAY'S
@@ -73,8 +85,10 @@
 !+  (CURRENTLY 29)
 !
       INTEGER, PARAMETER :: TPXO_NCMX = 29
-      CHARACTER(LEN=4) TPXO_CONSTID(TPXO_NCMX)
-      DATA TPXO_CONSTID
+      CHARACTER(LEN=4) :: TPXO_CONSTID(TPXO_NCMX)
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA TPXO_CONSTID
+      PARAMETER ( TPXO_CONSTID = (
      &            /'m2  ','s2  ','k1  ','o1  ',
      &             'n2  ','p1  ','k2  ','q1  ',
      &             '2n2 ','mu2 ','nu2 ','l2  ',
@@ -82,7 +96,8 @@
      &             'rho1','mf  ','mm  ','ssa ',
      &             'm4  ','ms4 ','mn4 ','m6  ',
      &             'm8  ','mk3 ','s6  ','2sm2',
-     &             '2mk3'/
+     &             '2mk3'/) )
+!##< SEB @ HRW
 !
 !brief  FOR EACH CONSTITUENT, THE FOLLOWING PARAMETERS ARE GIVEN:
 !+  - ALPHA = CORRECTION FACTOR FOR FIRST ORDER LOAD TIDES
@@ -95,8 +110,9 @@
 !+  TIDAL PARAMETERS TAKEN FROM RODNEY'S CONSTITUENT.H, 2/23/96:
 !+     (EXCEPT FOR ISPEC).
 !
-      DOUBLE PRECISION TPXO_OMEGA_D(TPXO_NCMX)
-      DOUBLE PRECISION TPXO_PHASE_MKB(TPXO_NCMX),TPXO_BETA_SE(TPXO_NCMX)
+      DOUBLE PRECISION :: TPXO_OMEGA_D(TPXO_NCMX)
+      DOUBLE PRECISION :: TPXO_PHASE_MKB(TPXO_NCMX)
+      DOUBLE PRECISION :: TPXO_BETA_SE(TPXO_NCMX)
 !
 !     DOUBLE PRECISION TPXO_ALPHA_D(TPXO_NCMX)
 !     DATA TPXO_ALPHA_D/
@@ -135,7 +151,9 @@
 !
 !     MORE ACCURATE VALUES
 !
-      DATA TPXO_OMEGA_D/
+!> JR @ RWTH: NO DATA STATEMENT FOR ALLOCATABLE USER TYPES ALLOWED
+!      DATA TPXO_OMEGA_D/
+      PARAMETER ( TPXO_OMEGA_D = (/
      &    1.405189025757300D-4,1.454441043328608D-4,
      &    7.292115854682399D-5,6.759774402890599D-5,
      &    1.378796995659399D-4,7.252294578603680D-5,
@@ -151,6 +169,8 @@
      &    5.620756103029200D-4,2.134400611225540D-4,
      &    4.363323129985823D-4,1.503693060899916D-4,
      &    2.081166466046360D-4/
+     & ) )
+!< JR @ RWTH
 !
 !brief   ASTRONOMICAL ARGUMENTS, OBTAINED WITH RICHARD RAY'S
 !+  "ARGUMENTS" AND "ASTROL", FOR JAN 1, 1992, 00:00 GREENWICH TIME
@@ -174,7 +194,9 @@
 !     2MK3 MAY BE WRONG, IT IS DIFFERENT FROM THE ORIGINAL VALUE
 !     M8 ARE THE SAME, MODULO TWO*PI
 !
-      DATA TPXO_PHASE_MKB/
+!> JR @ RWTH: NO DATA STATEMENT FOR ALLOCATABLE USER TYPES ALLOWED
+!      DATA TPXO_PHASE_MKB/
+      PARAMETER ( TPXO_PHASE_MKB = (/
      &    1.73155754567656D0,  0.00000000000000D0,
      &    0.173003673872453D0, 1.55855387180411D0,
      &    6.05072124295143D0,  6.11018163330713D0,
@@ -190,6 +212,8 @@
      &    0.643044875526663D0, 1.90456121954902D0,
      &    0.00000000000000D0,  4.55162776150302D0,
      &    3.29011141748067D0/
+     & ) )
+!< JR @ RWTH
 !
 !note I AM PUTTING 0 FOR MS2, MN4 ETC. FOR NOW: CORRECT LATER
 !+ NOW THIS CORRECTION IS DONE USING THE SAL FILE (H_TPXO3_90-90.LOAD)
@@ -199,7 +223,9 @@
 !+ THIS WAS IN WEIGHTS.f BEFORE - PLACED HERE NOT TO MIX WITH W!
 !+ TO REMOVE SOLID EARTH TIDE MULTIPLY BY BETA:
 !
-      DATA TPXO_BETA_SE/
+!> JR @ RWTH: NO DATA STATEMENT FOR ALLOCATABLE USER TYPES ALLOWED
+!      DATA TPXO_BETA_SE/
+      PARAMETER ( TPXO_BETA_SE = (/
      &    0.9540D0,      0.9540D0,      0.9400D0,      0.9400D0,
      &    0.9540D0,      0.9400D0,      0.9540D0,      0.9400D0,
      &    0.9540D0,      0.9540D0,      0.9540D0,      0.9540D0,
@@ -209,6 +235,8 @@
      &    0.9540D0,      0.9540D0,      0.9540D0,      0.954D0,
      &    0.9540D0,      0.9540D0,      0.9540D0,      0.954D0,
      &    0.9540D0/
+     & ) )
+!< JR @ RWTH
 !      DATA BETA_SE/29*1./
 !
 !     INTEGER TPXO_ISPEC_D(TPXO_NCMX)
@@ -240,34 +268,55 @@
       INTEGER, PARAMETER :: TPXO_NCON = 17
 !
 !     DOUBLE PRECISION TPXO_BETA(TPXO_NCON)
-      DOUBLE PRECISION TPXO_W(TPXO_NCON,8)
+      DOUBLE PRECISION :: TPXO_W(TPXO_NCON,8)
 !
-      DATA TPXO_W(1,:) /1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
-      DATA TPXO_W(2,:) /0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
-      DATA TPXO_W(3,:) /0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
-      DATA TPXO_W(4,:) /0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0/
-      DATA TPXO_W(5,:) /0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0/
-      DATA TPXO_W(6,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0/
-      DATA TPXO_W(7,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0/
-      DATA TPXO_W(8,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0/
-      DATA TPXO_W(9,:) /-0.0379D0, 0.D0,0.D0,0.D0,
-     &                  0.30859D0,0.D0, 0.03289D0,0.D0/
-      DATA TPXO_W(10,:)/-0.03961D0,0.D0,0.D0,0.D0,
-     &                  0.34380D0,0.D0, 0.03436D0,0.D0/
-      DATA TPXO_W(11,:)/ 0.00696D0,0.D0,0.D0,0.D0,
-     &                   0.15719D0,0.D0,-0.00547D0,0.D0/
-      DATA TPXO_W(12,:)/ 0.02884D0,0.D0,0.D0,0.D0,
-     &                  -0.05036D0,0.D0, 0.07424D0,0.D0/
-      DATA TPXO_W(13,:)/ 0.00854D0,0.D0,0.D0,0.D0,-0.01913D0,0.D0,
-     &                   0.17685D0,0.D0/
-      DATA TPXO_W(14,:)/0.D0,0.D0,-0.00571D0,0.11234D0,0.D0,
-     &                  0.05285D0,0.D0,-0.26257D0/
-      DATA TPXO_W(15,:)/0.D0,0.D0, 0.00749D0,0.07474D0,0.D0,
-     &                  0.03904D0,0.D0,-0.12959D0/
-      DATA TPXO_W(16,:)/0.D0,0.D0,-0.03748D0,0.12419D0,0.D0,
-     &                  0.05843D0,0.D0,-0.29027D0/
-      DATA TPXO_W(17,:)/0.D0,0.D0,0.00842D0,0.01002D0,0.D0,
-     &                 -0.03064D0,0.D0,0.15028D0/
+!> JR @ RWTH: NO DATA STATEMENT FOR ALLOCATABLE USER TYPES ALLOWED
+!      DATA TPXO_W(1,:) /1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(2,:) /0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(3,:) /0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(4,:) /0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(5,:) /0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(6,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0/
+!      DATA TPXO_W(7,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0/
+!      DATA TPXO_W(8,:) /0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0/
+!      DATA TPXO_W(9,:) /-0.0379D0, 0.D0,0.D0,0.D0,
+!     &                  0.30859D0,0.D0, 0.03289D0,0.D0/
+!      DATA TPXO_W(10,:)/-0.03961D0,0.D0,0.D0,0.D0,
+!     &                  0.34380D0,0.D0, 0.03436D0,0.D0/
+!      DATA TPXO_W(11,:)/ 0.00696D0,0.D0,0.D0,0.D0,
+!     &                   0.15719D0,0.D0,-0.00547D0,0.D0/
+!      DATA TPXO_W(12,:)/ 0.02884D0,0.D0,0.D0,0.D0,
+!     &                  -0.05036D0,0.D0, 0.07424D0,0.D0/
+!      DATA TPXO_W(13,:)/ 0.00854D0,0.D0,0.D0,0.D0,-0.01913D0,0.D0,
+!     &                   0.17685D0,0.D0/
+!      DATA TPXO_W(14,:)/0.D0,0.D0,-0.00571D0,0.11234D0,0.D0,
+!     &                  0.05285D0,0.D0,-0.26257D0/
+!      DATA TPXO_W(15,:)/0.D0,0.D0, 0.00749D0,0.07474D0,0.D0,
+!     &                  0.03904D0,0.D0,-0.12959D0/
+!      DATA TPXO_W(16,:)/0.D0,0.D0,-0.03748D0,0.12419D0,0.D0,
+!     &                  0.05843D0,0.D0,-0.29027D0/
+!      DATA TPXO_W(17,:)/0.D0,0.D0,0.00842D0,0.01002D0,0.D0,
+!     &                 -0.03064D0,0.D0,0.15028D0/
+      PARAMETER  ( TPXO_W = RESHAPE( (/
+     &   1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0,
+     &   0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0,
+     &   0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0,
+     &   0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0, 0.D0,
+     &   0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0, 0.D0,
+     &   0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0, 0.D0,
+     &   0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0, 0.D0,
+     &   0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 0.D0, 1.D0,
+     &   -0.0379D0, 0.D0,0.D0,0.D0,0.30859D0,0.D0, 0.03289D0,0.D0,
+     &   -0.03961D0,0.D0,0.D0,0.D0,0.34380D0,0.D0, 0.03436D0,0.D0,
+     &    0.00696D0,0.D0,0.D0,0.D0, 0.15719D0,0.D0,-0.00547D0,0.D0,
+     &    0.02884D0,0.D0,0.D0,0.D0,-0.05036D0,0.D0, 0.07424D0,0.D0,
+     &    0.00854D0,0.D0,0.D0,0.D0,-0.01913D0,0.D0, 0.17685D0,0.D0,
+     &   0.D0,0.D0,-0.00571D0,0.11234D0,0.D0,0.05285D0,0.D0,-0.26257D0,
+     &   0.D0,0.D0, 0.00749D0,0.07474D0,0.D0,0.03904D0,0.D0,-0.12959D0,
+     &   0.D0,0.D0,-0.03748D0,0.12419D0,0.D0,0.05843D0,0.D0,-0.29027D0,
+     &   0.D0,0.D0,0.00842D0,0.01002D0,0.D0,-0.03064D0,0.D0,0.15028D0
+     &  /), SHAPE=(/ 17,8 /) ) )
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -1299,11 +1348,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)  :: DTIME,LATITUDE
-      DOUBLE PRECISION, INTENT(OUT) :: PU(*),PF(*)
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: PU(*),PF(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: PU(*),PF(*)
+!< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER INDEX(TPXO_NCMX),I
+      INTEGER :: INDEX(TPXO_NCMX),I
 !     53 CHANGED INTO 55 TO ADD M8 AND 2MK3
       DOUBLE PRECISION ARG(55),F(55),U(55)
       DOUBLE PRECISION DTR
@@ -1314,8 +1367,11 @@
 !                  MS4,MN4,M6,M8,MK3,S6,2SM2,2MK3
 !$$$      DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
 !$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
-      DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
-     &           23,14,24,11,5,3,2,45,46,44,50,54,42,51,40,55/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA INDEX/
+      PARAMETER ( INDEX = (/ 30,35,19,12,27,17,37,10,25,26,28,33,34,
+     &           23,14,24,11,5,3,2,45,46,44,50,54,42,51,40,55 /) )
+!##< SEB @ HRW
 !
       INTRINSIC ATAN
 !
@@ -1376,23 +1432,30 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)  :: TIME1
-      DOUBLE PRECISION, INTENT(OUT) :: ARG(*), F(*), U(*)
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: ARG(*), F(*), U(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: ARG(*), F(*), U(*)
+!< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION SHPN(4),S,H,P,OMEGA,PP,HOUR,T1,T2
-      DOUBLE PRECISION TMP1,TMP2,TEMP1,TEMP2
-      DOUBLE PRECISION COSN,COS2N,SINN,SIN2N,SIN3N
-      DOUBLE PRECISION ZERO,ONE,TWO,THREE,FOUR,FIVE
-      DOUBLE PRECISION NINETY,DTR,RTD
+      DOUBLE PRECISION :: SHPN(4),S,H,P,OMEGA,HOUR,T1,T2
+      DOUBLE PRECISION :: TMP1,TMP2,TEMP1,TEMP2
+      DOUBLE PRECISION :: COSN,COS2N,SINN,SIN2N,SIN3N
+      DOUBLE PRECISION :: DTR,RTD
 !
-      PARAMETER   (ZERO=0.D0, ONE=1.D0)
-      PARAMETER   (TWO=2.D0, THREE=3.D0, FOUR=4.D0, FIVE=5.D0)
-      PARAMETER   (NINETY=90.D0)
+      DOUBLE PRECISION, PARAMETER :: ZERO=0.D0, ONE=1.D0, TWO=2.D0
+      DOUBLE PRECISION, PARAMETER :: THREE=3.D0, FOUR=4.D0, FIVE=5.D0
+      DOUBLE PRECISION, PARAMETER :: NINETY=90.D0
 !     PP VALUE SLIGHTLY DIFFERENT FROM IN INFER_MINOR (=282.8.D0)
-      PARAMETER   (PP=282.94D0)        ! SOLAR PERIGEE AT EPOCH 2000.
+      DOUBLE PRECISION, PARAMETER :: PP=282.94D0
+      ! SOLAR PERIGEE AT EPOCH 2000.
 !
-      EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
+!> JR @ RWTH: ALGORITHMIC DIFERENTIATION
+!     NO EQUIVALENCE STATEMENT FOR ALLOCATABLE USER TYPES
+!     EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
+!< JR @ RWTH
 !
       INTRINSIC COS,SIN,ATAN
 !
@@ -1406,6 +1469,11 @@
 !     DETERMINES EQUILIBRIUM ARGUMENTS
 !     --------------------------------
       CALL ASTROL( TIME1, SHPN )
+!> JR @ RWTH: ALGORITHMIC DIFERENTIATION
+!     NO EQUIVALENCE STATEMENT FOR ALLOCATABLE USER TYPES
+      S = SHPN(1);  H = SHPN(2); P = SHPN(3);  OMEGA = SHPN(4)
+!< JR @ RWTH
+
       HOUR = (TIME1 - INT(TIME1))*24.D0
       T1 = 15.D0*HOUR
       T2 = 30.D0*HOUR
@@ -1911,11 +1979,17 @@
 !      COMPLEX(KIND(1.D0)) Z8(8)
       DOUBLE PRECISION Z8_R(8),Z8_I(8)
 !
-      EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
+!> JR @ RWTH: ALGORITHMIC DIFERENTIATION
+!     NO EQUIVALENCE STATEMENT FOR ALLOCATABLE USER TYPES
+!      EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
+!< JR @ RWTH
 !
       CHARACTER(LEN=4) CID8(8)      ! IN ORDER TO CORRESPOND RR COEFFICIENTS
-      DATA CID8/'q1  ','o1  ','p1  ','k1  ',
-     &          'n2  ','m2  ','s2  ','k2  '/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA CID8/
+      PARAMETER ( CID8 = (/'q1  ','o1  ','p1  ','k1  ',
+     &          'n2  ','m2  ','s2  ','k2  ' /) )
+!##< SEB @ HRW
 !
       INTRINSIC COS,SIN,SQRT,ATAN2,ATAN
 !
@@ -1989,6 +2063,10 @@
       T1 = 15.D0*HOUR
       T2 = 30.D0*HOUR
       CALL ASTROL( TIME, SHPN )
+!> JR @ RWTH: ALGORITHMIC DIFERENTIATION
+!     NO EQUIVALENCE STATEMENT FOR ALLOCATABLE USER TYPES
+      S = SHPN(1);  H = SHPN(2); P = SHPN(3);  OMEGA = SHPN(4)
+!< JR @ RWTH
 !
       ARG(1)  = T1 - 4.D0*S + H + 2.D0*P - 90.D0 ! 2Q1
       ARG(2)  = T1 - 4.D0*S + 3.D0*H - 90.D0     ! sigma1
@@ -2203,7 +2281,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER DPM(12),DAYS,I,NLEAP,K
-      DATA DPM/31,28,31,30,31,30,31,31,30,31,30,31/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA DPM/
+      PARAMETER ( DPM = (/ 31,28,31,30,31,30,31,31,30,31,30,31 /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -2478,7 +2559,11 @@
 !     READ AVAILABLE DIMENSIONS
 !
       REWIND(T2D_FILES(T2DBB1)%LU)
-      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+!> JR @ RWTH: READING AND WRITING ASSUMED ARRAYS
+!      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,
+     &     ( TH_LIM_R(I),I=1,2 ),( PH_LIM_R(I),I=1,2 ),C_ID_MOD(1:NC)
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -2785,7 +2870,7 @@
           IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
      &        PTIDE(ZCON_R,ZCON_I,C_ID,NCON,CCIND,LAT(IPOIN),
      &              STIME_MJD,INTMICON)
-!###> MST@HRW: CHECKING DRY LANDS
+!##> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
@@ -2795,7 +2880,7 @@
           ELSE
             H(IPOIN) = H(IPOIN) + MSL
           ENDIF
-!###< MST@HRW
+!##< MST@HRW
 !
         ENDDO
       ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
@@ -2866,7 +2951,7 @@
           ENDDO
           IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
      &        PTIDE_SCHEM(ZCON_R,ZCON_I,C_ID2,NCON2,CCIND2,0.D0)
-!###> MST@HRW: CHECKING DRY LANDS
+!##> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
 !         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !     CTP@LNHE: CASE WHEN BOTTOM IS REFERENCED WITH RESPECT TO CD
@@ -2876,7 +2961,7 @@
           ELSE
             H(IPOIN) = H(IPOIN) + MSL
           ENDIF
-!###< MST@HRW
+!##< MST@HRW
 !
         ENDDO
 !
@@ -3361,7 +3446,13 @@
 !     READ AVAILABLE DIMENSIONS
 !
       REWIND(T2D_FILES(T2DBB1)%LU)
-      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+!> JR @ RWTH: READING AND WRITING ASSUMED ARRAYS
+!      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,
+     $     ( TH_LIM_R(I), I=1, SIZE(TH_LIM_R,1) ),
+     $     ( PH_LIM_R(I), I=1, SIZE(PH_LIM_R,1) ),
+     $     C_ID_MOD(1:NC)
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -4126,7 +4217,13 @@
 !     READ AVAILABLE DIMENSIONS
 !
       REWIND(T2D_FILES(T2DBB1)%LU)
-      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+!> JR @ RWTH: READING AND WRITING ASSUMED ARRAYS
+!      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,
+     $     ( TH_LIM_R(I), I=1, SIZE(TH_LIM_R,1) ),
+     $     ( PH_LIM_R(I), I=1, SIZE(PH_LIM_R,1) ),
+     $     C_ID_MOD(1:NC)
+!< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

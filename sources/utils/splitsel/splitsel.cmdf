@@ -2,7 +2,7 @@
 path: <root>|sources|utils|splitsel
 module: splitsel
 liborder: special hermes bief splitsel
-name: SPLITSEL
+name: splitsel
 
 [bief]
 path: <root>|sources|utils|bief
@@ -52,9 +52,9 @@ files: declarations_special.F
   plante.F
   get_nodes_per_element.f
   check_allocate.f
-  get_free_id.f
   write_error.f
   check_call.f
+  get_free_id.f
 
 [splitsel]
 path: <root>|sources|utils|splitsel

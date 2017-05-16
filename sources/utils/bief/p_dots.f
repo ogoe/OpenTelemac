@@ -45,7 +45,7 @@
 
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,6 +58,9 @@
       USE DECLARATIONS_TELEMAC, ONLY : MODASS
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM, P_DSUMERR
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,10 +72,10 @@
 !
       INTEGER NPX,IBL,TYPX
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-      DOUBLE PRECISION P_DSUMERR
-      EXTERNAL         P_DSUMERR
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM, P_DSUMERR
+!      EXTERNAL         P_DSUM, P_DSUMERR
+!##< JR @ RWTH
       DOUBLE PRECISION PAIR(2),P_ERR
 !
 !-----------------------------------------------------------------------

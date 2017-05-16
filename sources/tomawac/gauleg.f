@@ -41,10 +41,8 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           I     , M     , J
-      DOUBLE PRECISION  EPS   , Z     , P1    , P2    , P3    ,
-     &                  PP    , Z1
-      PARAMETER        (EPS=3.D-14)
-!
+      DOUBLE PRECISION  Z     , P1    , P2    , P3    , PP    , Z1
+      DOUBLE PRECISION, PARAMETER  :: EPS = 3.D-14
 !
       M=(NPOIN+1)/2
       DO I=1,M

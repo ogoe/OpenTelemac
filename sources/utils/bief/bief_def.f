@@ -16,7 +16,7 @@
 !+   Integer I8 buffers added in the mesh structure.
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      ADD E (ROUNDING ERROR) IN THE VECTOR STRUCTURE
 !+      ADD BUF_SEND_ERR AND BUF_RECV_ERR
 !

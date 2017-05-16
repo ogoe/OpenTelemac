@@ -45,6 +45,9 @@
       USE DECLARATIONS_TELEMAC2D
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -59,8 +62,10 @@
       DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
       INTEGER, PARAMETER :: N=1
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

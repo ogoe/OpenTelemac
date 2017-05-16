@@ -21,10 +21,10 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import chdir, remove, walk, environ, path, linesep
+from os import remove, walk, environ, path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards the root of pytel
-from config import OptionParser, parseConfigFile, \
-                   parseConfig_ValidateTELEMAC
+from config import parseConfigFile,parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.messages import MESSAGES
 from utils.files import getFileContent
@@ -128,53 +128,38 @@ def main():
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.\n"\
-                    "By Default all the documentation are generated\n"\
-                    "use the options --validation/reference/user/"\
-                    "release to compile only one")
-   parser.add_option("-c", "--configname",
-                 type="string",
-                 dest="configName",
-                 default='',
-                 help="specify configuration name, default is the "\
-                     "first found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                 type="string",
-                 dest="configFile",
-                 default='',
-                 help="specify configuration file, "\
-                     "default is systel.cfg" )
-   parser.add_option("-r", "--root_dir",
-                 type="string",
-                 dest="root_dir",
-                 default='',
-                 help="specify the root, default is "\
-                     "taken from config file" )
-   parser.add_option("-m", "--modules",
-                 type="string",
-                 dest="modules",
-                 default='',
-                 help="specify the list modules, default is "\
-                     "taken from config file" )
-   parser.add_option("--dump",
-                 action="store_true",
-                 dest="dump",
-                 default=False,
-                 help="Will dump a reformated dictionary" )
-   parser.add_option("--eficas",
-                 action="store_true",
-                 dest="eficas",
-                 default=False,
-                 help="Will generate the eficas Catalogue from the dictionary" )
-   parser.add_option("--latex",
-                 action="store_true",
-                 dest="latex",
-                 default=False,
-                 help="Will generate the LaTeX file for the reference manual" )
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+By Default all the documentation are generated\n
+use the options --validation/reference/user/release to compile only one.
+      '''))
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default='',
+      help="specify configuration name, default is the "\
+         "first found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default='',
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_argument(\
+      "-r", "--root_dir",dest="root_dir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_argument(\
+      "-m", "--modules",dest="modules",default='',
+      help="specify the list modules, default is taken from config file" )
+   parser.add_argument(\
+      "--dump",action="store_true",dest="dump",default=False,
+      help="Will dump a reformated dictionary" )
+   parser.add_argument(\
+      "--eficas",action="store_true",dest="eficas",default=False,
+      help="Will generate the eficas Catalogue from the dictionary" )
+   parser.add_argument(\
+      "--latex",action="store_true",dest="latex",default=False,
+      help="Will generate the LaTeX file for the reference manual" )
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   options, _ = parser.parse_args()
+   options = parser.parse_args()
    # path to the root
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    if options.root_dir != '': PWD = options.root_dir

@@ -54,9 +54,10 @@
 import sys
 import re
 from os import path, walk, sep, chdir, environ
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import subprocess as sp
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_DoxygenTELEMAC
+from config import parseConfigFile, parseConfig_DoxygenTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserFortran import scanSources, parseDoxyWrap
 from utils.files import getFileContent, putFileContent, createDirectories
@@ -475,26 +476,38 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",type="string",dest="configName",default='',
+   print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Generate the DOXYGEN documentation of the whole TELEMAC system.
+      '''))
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default='',
       help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default='',
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default='',
       help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-d", "--doxydir",type="string",dest="doxyDir",default='',
+   parser.add_argument(\
+      "-d", "--doxydir",dest="doxyDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-m", "--modules",type="string",dest="modules",default='',
+   parser.add_argument(\
+      "-m", "--modules",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
-   options, args = parser.parse_args()
+   options = parser.parse_args()
 
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # path to the root
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   # The path to the root relates to the script launched, which implies
+   # that the user environment knows which to run
+   # (this script is stored under .../scripts/python27/)
+   #PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   PWD = path.dirname(path.dirname( path.dirname(__file__)) )
+   # if the appropriate command line option is used, then reset rootDir
    if options.rootDir != '': PWD = options.rootDir
    # user configuration name
    USETELCFG = 'doxydocs'
@@ -550,7 +563,7 @@ if __name__ == "__main__":
 
    # still in lower case
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
-   if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+   if options.rootDir != '': cfgs[cfgname]['root'] = PWD
    if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
    if options.doxyDir == '':
       cfgs[cfgname].update({'doxydocs':path.join(cfgs[cfgname]['root'],'documentation'+sep+cfgname)})
@@ -561,7 +574,7 @@ if __name__ == "__main__":
    cfg = parseConfig_DoxygenTELEMAC(cfgs[cfgname])
    print '\n\nScanning the source code for:\n'+'~'*72+'\n'
    print '    +> configuration: ' +  cfgname
-   if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
+   if 'brief' in cfgs[cfgname]: print '\n    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n')) + '\n'
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
 

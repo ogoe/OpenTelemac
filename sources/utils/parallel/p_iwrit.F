@@ -2,7 +2,9 @@
                      SUBROUTINE P_IWRIT
 !                    ******************
 !
-     &(BUFFER,NBYTES,DEST,ITAG,IREQ)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+     &(BUFFER,N,BYTES,DEST,ITAG,IREQ)
+!##< JR @ RWTH
 !
 !***********************************************************************
 ! PARALLEL   V6P1                                   21/08/2010
@@ -34,28 +36,45 @@
 !|                |   | TID OF THE DEST.  / KNOTEN-ID DES EMPFAENGERS
 !| IREQ           |-->| NUMERO DE REQUEST POUR MPI_ISEND
 !| ITAG           |-->| MESSAGE TAG
-!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
-!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!|  N             |-->| NOMBRE DE ELEMENTS A TRANSMETTRE
+!|                |   | NUMBER OF ELEMENTS / ANZAHL DER ELEMENTE
+!|  BYTES         |-->| NOMBRE DE BYTES A ELEMTENT
+!|                |   | SIZE OF ELEMENTS IN BYTES / GR"OSSE DER ELEMENTE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: NBYTES,DEST,ITAG,IREQ
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+      INTEGER, INTENT(IN)          :: N, BYTES,DEST,ITAG,IREQ
+!!      INTEGER, INTENT(IN)          :: NBYTES,DEST,ITAG,IREQ
+!##< JR @ RWTH
       DOUBLE PRECISION, INTENT(IN) :: BUFFER(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
 !
-      CALL MPI_ISEND(BUFFER,NBYTES,MPI_BYTE,DEST,ITAG,
-     &               COMM,IREQ,IER)
+
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+!      NBYTES = N * MPI_SIZEOF_COMPAD_TYPE( ier )
+#  ifdef COMPAD
+      CALL AMPI_ISEND(BUFFER,N,AMPI_TYPE,DEST,ITAG,
+     &                COMM,IREQ,IER)
+#  else
+      CALL MPI_ISEND(BUFFER,N*BYTES,MPI_BYTE,DEST,ITAG,
+     &                COMM,IREQ,IER)
+#  endif
+!##< JR @ RWTH
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_IWRIT: ERREUR IN MPI_ISEND'

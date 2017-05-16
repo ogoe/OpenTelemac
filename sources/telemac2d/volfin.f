@@ -86,7 +86,7 @@
 !+        25/12/2016
 !+        V7P2
 !+    include rain and evaporation
-!+  
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| ELEMENT AREA
 !| AIRS           |-->| CELL AREA
@@ -165,7 +165,7 @@
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
 !|                |   | 3:ZOKAGOA, 4:TCHAMEN,5:HLLC,6:WAF
-!| PLUIE          |-->| RAIN 
+!| PLUIE          |-->| RAIN
 !| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| RAIN           |-->| IF YES TAKE RAIN INTO ACCOUNT

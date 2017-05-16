@@ -52,7 +52,7 @@
 !+   cross-referencing of the FORTRAN sources
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+        ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,8 +150,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
@@ -202,8 +202,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=CYZ   ', X , Y , DA , C  , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=CYZ   ', X , Y , DA , C  , NPOIN !)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=CYZ   ', X , Y , DA , C  , NPOIN,
+     &         X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=CY    ', X , Y , Z  , C  , NPOIN )
@@ -254,8 +254,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
@@ -300,8 +300,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN !)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
@@ -344,8 +344,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
@@ -388,8 +388,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X+CYZ  ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X+CYZ  ', X , Y , DA , C , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X+CYZ  ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+CY   ', X , Y , Z  , C  , NPOIN )
@@ -438,8 +438,8 @@
           IF ( MODASS .EQ.1) THEN
              CALL OV ('X=YZ    ', X , Y , DA , C  , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=YZ    ', X , Y , DA , C  , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=Y     ', X , Y , Z  , C  , NPOIN )
@@ -490,8 +490,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=-YZ   ', X , Y , DA , C  , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=-YZ   ', X , Y , DA , C  , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=-Y    ', X , Y , Z  , C  , NPOIN )
@@ -536,8 +536,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X+YZ  ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X+YZ  ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+Y   ', X , Y , Z  , C  , NPOIN )
@@ -580,8 +580,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X-YZ  ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X-YZ  ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X-Y   ', X , Y , Z  , C  , NPOIN )
@@ -624,8 +624,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV ('X=X+CYZ ', X , Y , DA , C , NPOIN )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP ('X=X+CYZ ', X , Y , DA , C , NPOIN!)
-     &       ,X_ERR, Y_ERR , DA_ERR)
+            CALL OV_COMP ('X=X+CYZ ', X , Y , DA , C , NPOIN,
+     &        X_ERR, Y_ERR , DA_ERR)
           ENDIF
         ELSEIF(TYPDIA(1:1).EQ.'I') THEN
           CALL OV ('X=X+CY  ', X , Y , Z  , C  , NPOIN )

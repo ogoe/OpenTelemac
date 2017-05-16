@@ -1384,7 +1384,12 @@
       ELSE
         DO ISEC=1,NSEC
           READ (NSCT,*) CHAIN(ISEC)%DESCR
-          READ (NSCT,*) CHAIN(ISEC)%XYBEG(:), CHAIN(ISEC)%XYEND(:)
+!##> JR @ RWTH: AVOID PART-REF WITH NON-ZERO RANK IN MODE T1V
+          READ (NSCT,*)
+     &    ( CHAIN(ISEC)%XYBEG(I), I = 1, SIZE(CHAIN(ISEC)%XYBEG(:),1) ),
+     &    ( CHAIN(ISEC)%XYEND(I), I = 1, SIZE(CHAIN(ISEC)%XYEND(:),1) )
+!          READ (NSCT,*) CHAIN(ISEC)%XYBEG(:), CHAIN(ISEC)%XYEND(:)
+!##< JR @ RWTH
           CHAIN(ISEC)%NPAIR(:)=0
         ENDDO
       ENDIF

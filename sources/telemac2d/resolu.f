@@ -221,6 +221,9 @@
      &                                 COMPLEO,PTINIG
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !
@@ -282,8 +285,10 @@
       INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
       DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST,GPRDTIME,RESTE
 !
-      DOUBLE PRECISION P_DMIN
-      EXTERNAL P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMIN
+!      EXTERNAL P_DMIN
+!##< JR @ RWTH
 !
       DOUBLE PRECISION,PARAMETER:: EPS =  1.D-6
 !
@@ -630,12 +635,12 @@
 ! HYDRO FLUXES OF THE NEXT TIME STEP
 !
       CALL FLUHYD
-     &     (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
-     &      W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &      HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
-     &      DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     &      DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,
-     &      DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
+     &       (NPOIN,NELMAX,NSEG,NPTFR,NUBO,G,DTN,X,Y,AIRS,IKLE,AIRE,
+     &        W,ZF,VNOIN,FLUX,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     &        HBOR,UBOR,VBOR,FLUENTN,FLUSORTN,NORDRE,CMI,JMI,
+     &        DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
+     &        DPX,DPY,IVIS,PROPNU,FLUHBTEMP,BETA,
+     &        DSZ,AIRST,HC,FLUXTEMP,NTRAC,ELTSEG,IFABOR,MESH)
 !
 ! TEST OF TRACER FLUX (FOR POSITIVITY)
 !
@@ -922,46 +927,46 @@
 !  COMPUTES VOLUME ADDED BY SOURCES
 !-----------------------------------------------------------------------
 !
-        IF(BILMAS)THEN
-          MASSES   = 0.D0
-          MASS_RAIN= 0.D0
-!         IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
-          IF(YASMH) THEN
-            DO  I=1,NPOIN
-              MASSES = MASSES + SMH(I)
-            ENDDO
-          ENDIF
-!         RAIN AND EVAPORATION
-          IF(RAIN)THEN
-             CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
-     &                   1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
-             MASS_RAIN =BIEF_SUM(T6)
-          ENDIF
-          MASSES = DT*(MASSES + MASS_RAIN)
-        ENDIF
+       IF(BILMAS)THEN
+         MASSES   = 0.D0
+         MASS_RAIN= 0.D0
+!        IF SOURCE TERMS (EXCEPT RAIN AND EVAPORATION)
+         IF(YASMH) THEN
+           DO  I=1,NPOIN
+             MASSES = MASSES + SMH(I)
+           ENDDO
+         ENDIF
+!        RAIN AND EVAPORATION
+         IF(RAIN)THEN
+            CALL VECTOR(T6,'=','MASVEC          ',PLUIE%ELM,
+     &                  1.D0,PLUIE,T6,T6,T6,T6,T6,MESH,MSK,MASKEL)
+            MASS_RAIN =BIEF_SUM(T6)
+         ENDIF
+         MASSES = DT*(MASSES + MASS_RAIN)
+       ENDIF
 !
 !-----------------------------------------------------------------------
 !      PREPARE VARIABLES FOR OUTPUT AND FOR NEXT TIME STEP
 !-----------------------------------------------------------------------
 !
-        DO I=1,NPOIN
-          H(I)  = W(1,I)
-          QU(I) = W(2,I)
-          QV(I) = W(3,I)
-!         SAVE FLUXES FOR NEXT TIME STEP
-          FLUX_OLD(I,1) = FLUX(I,1)
-          FLUX_OLD(I,2) = FLUX(I,2)
-          FLUX_OLD(I,3) = FLUX(I,3)
+       DO I=1,NPOIN
+         H(I)  = W(1,I)
+         QU(I) = W(2,I)
+         QV(I) = W(3,I)
+!        SAVE FLUXES FOR NEXT TIME STEP
+         FLUX_OLD(I,1) = FLUX(I,1)
+         FLUX_OLD(I,2) = FLUX(I,2)
+         FLUX_OLD(I,3) = FLUX(I,3)
 !
-!         COMPUTE U AND V
+!        COMPUTE U AND V
 !
-          IF (H(I).GT.EPS) THEN
-            U(I)  = W(2,I) / H(I)
-            V(I)  = W(3,I) / H(I)
-          ELSE
-            U(I) = 0.D0
-            V(I) = 0.D0
-          ENDIF
+         IF (H(I).GT.EPS) THEN
+           U(I)  = W(2,I) / H(I)
+           V(I)  = W(3,I) / H(I)
+         ELSE
+           U(I) = 0.D0
+           V(I) = 0.D0
+         ENDIF
         ENDDO
       ENDIF
 !

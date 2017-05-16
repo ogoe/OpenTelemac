@@ -62,6 +62,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !
@@ -72,7 +75,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER,NPREAD
 !
       CHARACTER(LEN=MAXLENTMPDIR+5) EXE
@@ -105,7 +108,13 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'P_INIT: MPI_INIT DEJA LANCER'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_INIT: MPI_INIT ALREADY RUN'
       ELSE
+!##> JR @ RWTH:
+#  ifdef COMPAD
+        CALL AMPI_INIT(IER)
+#  else
         CALL MPI_INIT(IER)
+#  endif
+!##< JR @ RWTH
         IF(IER.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,*) 'P_INIT: ERREUR DANS MPI_INIT'
           IF(LNG.EQ.2) WRITE(LU,*) 'P_INIT: ERROR IN MPI_INIT'
@@ -175,8 +184,11 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'MASTER PROCESSOR NUMBER ',
      &                  IPID,' OF THE GROUP OF ',NCSIZE
       ELSE
+!##> JR @ RWTH: REDIRECT OUTPUT FOR NON-MASTER PROCESSES ?
+!     THIS IS NOW HANDLED VIA mpirun OPTIONS
         OPEN(UNIT=LU,FILE=MYNAM//'.LOG', FORM='FORMATTED',
      &         STATUS='UNKNOWN')
+!##< JR @ RWTH
         IF(LNG.EQ.1) WRITE(LU,*) 'ESCLAVE PROCESSEUR NUMERO ',
      &                           IPID,' IN THE GROUP OF ',NCSIZE
         IF(LNG.EQ.2) WRITE(LU,*) 'SLAVE  PROCESSOR NUMBER ',

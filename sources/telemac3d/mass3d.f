@@ -41,6 +41,9 @@
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -56,8 +59,10 @@
 !
 ! FUNCTIONS
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL P_DSUM
+!##< JR @ RWTH
 !
 !***********************************************************************
 !

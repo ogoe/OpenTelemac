@@ -84,6 +84,9 @@
       USE INTERFACE_TELEMAC2D, EX_CLSING => CLSING
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -108,8 +111,10 @@
 !
       DOUBLE PRECISION HMIN,PHI,QAB,YAA,YBB,YDEN,YS,HA,HB,ZFA,ZFB
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

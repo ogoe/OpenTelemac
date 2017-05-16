@@ -111,10 +111,10 @@
 !
 !     PRANDTL NUMBER (BETWEEN 0.8 AND 0.9 FOR TEMPERATURE)
 !
-!###>TBE - Prandtl number should be 1 by default for sediment
+!##>TBE - Prandtl number should be 1 by default for sediment
 !cc      PRANDTL = 0.71D0
 !      PRANDTL = 1.D0
-!###<TBE
+!##<TBE
 !
 !     K-EPSILON OR K-OMEGA MODEL
 !

@@ -36,18 +36,22 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT):: LOWER_BOUND,EXTENT
-      INTEGER, INTENT(IN)                       :: DATATYPE
+!      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT)
+      INTEGER(KIND=MY_ADDRESS_KIND), INTENT(INOUT) :: LOWER_BOUND,EXTENT
+      INTEGER, INTENT(IN)                          :: DATATYPE
       INTEGER, INTENT(OUT)                         :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_TYPE_GET_EXTENT(DATATYPE,LOWER_BOUND,EXTENT,IERR)
 !
       IF(IERR.NE.0) THEN

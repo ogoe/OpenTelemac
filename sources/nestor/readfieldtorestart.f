@@ -5,161 +5,173 @@
       SUBROUTINE  ReadFieldToRestart             !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-     & ( fileName )                             
-                                         
-      USE m_TypeDefs_Nestor             
+     & ( fileName )
+
+      USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY :  F, nFields, ipid, ncsize
      &                     , ParallelComputing
-         
-         
 
-#ifndef NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY :  open_File 
-#endif NESTOR_INTERFACES                                        
-     
-      IMPLICIT NONE                      
-                                         
+
+
+!#ifndef NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  open_File
+!#endif  /* NESTOR_INTERFACES */
+
+      IMPLICIT NONE
+
       CHARACTER(128),INTENT(IN)    :: fileName
-        
-#ifndef NESTOR_INTERFACES 
+
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
-      INTEGER :: n, j, fu  ! fu: file unit
+      INTEGER :: n, j, i, fu  ! fu: file unit
       INTEGER :: partition
       CHARACTER (128) :: zeile
-      REAL (KIND=R8)  ::  time          !  time [s]   
-        
+      REAL (KIND=R8)  ::  time          !  time [s]
+
 !      dbug WRITE(6,*)'?>-------  SR ReadFieldToRestart -----------'
-        
+
       WRITE(6,*)'ipid     = ', ipid
-      WRITE(6,*)'ncsize   = ', ncsize 
-      WRITE(6,*)'fileName = ', fileName 
-        
+      WRITE(6,*)'ncsize   = ', ncsize
+      WRITE(6,*)'fileName = ', fileName
+
       !fileName = "_restart_FieldData.dat"
-      fu = 459 
-      CALL open_File( fileName, fu, 'r' )     
-        
+      fu = 459
+      CALL open_File( fileName, fu, 'r' )
+
       READ( fu,*) zeile
-      DO WHILE( zeile(1:5) /= 'A-END' )  !> run over Action data to the 
+      DO WHILE( zeile(1:5) /= 'A-END' )  !> run over Action data to the
         READ( fu,*) zeile                !  position where Field data begins
-      ENDDO      
-        
-      ! 
+      ENDDO
+
+      !
       ! === Read global variables ====
-        
+
       READ( fu,'(A)') zeile
-      READ(zeile(25:),*)        time      
-      write(6,*) zeile    ! debug                    ! read line  1                  
-        
+      READ(zeile(25:),*)        time
+      write(6,*) zeile    ! debug                    ! read line  1
+
       READ( fu,'(A)') zeile
-      READ(zeile(25:),*)        nFields      
+      READ(zeile(25:),*)        nFields
       write(6,*)   nFields    ! debug                    ! read line  2
-        
+
       READ( fu,'(A)') zeile
       write(6,*) zeile    ! debug                    ! read line  2
-        
+
       READ( fu,'(A)') zeile
       write(6,*) zeile    ! debug                    ! read line  2
-        
+
       READ( fu,'(A)') zeile
       write(6,*) zeile    ! debug                    ! read line  2
-        
+
       READ( fu,'(A)') zeile
       write(6,*) zeile    ! debug                    ! read line  2
       !DO j=1, ncsize
-      DO      
+      DO
         READ( fu,'(A)', END=900 ) zeile ! ipid
-        IF(     zeile(2:5) == 'ipid' 
+        IF(     zeile(2:5) == 'ipid'
      &     .OR. zeile(1:4) == 'ipid'  ) THEN
-          write(6,*) zeile                        ! debug                   
-          READ(zeile(25:),*)  partition 
+          write(6,*) zeile                        ! debug
+          READ(zeile(25:),*)  partition
           IF( partition == ipid )THEN
-            write(6,*)'partition =', partition   ! debug  
+            write(6,*)'partition =', partition   ! debug
             EXIT
-          ENDIF !( partition == ipid )         
-        ENDIF !( zeile(2:5) == 'ipid' )            !  
-      ENDDO  
-        
-      DO j=1, nFields 
+          ENDIF !( partition == ipid )
+        ENDIF !( zeile(2:5) == 'ipid' )            !
+      ENDDO
+
+      DO j=1, nFields
         READ(fu,'(A)') zeile                        ! Field name (and ignore)
-        write(6,*) zeile                                         ! debug                    
-        READ(fu,'(A)') zeile                     
-        write(6,*) zeile                                         ! debug                   
-        READ(zeile(25:),*)  n                       ! Field index value                                               
-        write(6,*) 'n = ',n                                      ! debug                    
-        
-        READ(fu,'(A)') zeile                      
-        write(6,*) zeile                                         ! debug                   
-        READ(zeile(25:),*)  F(n)%nNodeToDig         ! Field nNodeToDig value                                               
-        write(6,*) 'F(n)%nNodeToDig = ',F(n)%nNodeToDig          ! debug                    
-        
-        
-        DO                                                  
-          READ(fu,*) zeile    ! identifier                                     
-          write(6,*) zeile    ! debug                    
-          SELECT CASE( zeile(1:5) )                                 
+        write(6,*) zeile                                         ! debug
+        READ(fu,'(A)') zeile
+        write(6,*) zeile                                         ! debug
+        READ(zeile(25:),*)  n                       ! Field index value
+        write(6,*) 'n = ',n                                      ! debug
+
+        READ(fu,'(A)') zeile
+        write(6,*) zeile                                         ! debug
+        READ(zeile(25:),*)  F(n)%nNodeToDig         ! Field nNodeToDig value
+        write(6,*) 'F(n)%nNodeToDig = ',F(n)%nNodeToDig          ! debug
+
+
+        DO
+          READ(fu,*) zeile    ! identifier
+          write(6,*) zeile    ! debug
+          SELECT CASE( zeile(1:5) )
            CASE( '____Z' ) !----------------------------------------
              write(6,*)'case:', zeile(1:5)    ! debug                    ! read line  2
-           
-             IF(.NOT. ALLOCATED( F(n)%Z) )                          
-     &                 ALLOCATE( F(n)%Z( F(n)%nNodes ))              
-             !DO i=1, F(n)%nNodes                                    
-               Read(fu,*)  F(n)%Z(:)                                
+
+             IF(.NOT. ALLOCATED( F(n)%Z) )
+     &                 ALLOCATE( F(n)%Z( F(n)%nNodes ))
+             !DO i=1, F(n)%nNodes
+!##> JR @ RWTH: AVOID PART_REF WITH NON-ZERO RANK IN MODE T1V
+               Read(fu,*)  ( F(n)%Z(i), i=1, F(n)%nNodes )
+!               Read(fu,*)  F(n)%Z(:)
+!##< JR @ RWTH
              !ENDDO
-             CYCLE                
+             CYCLE
            CASE( '___dZ' ) !----------------------------------------
              write(6,*)'case:', zeile(1:5)    ! debug                    ! read line  2
-             IF(.NOT. ALLOCATED( F(n)%dZ) )                         
-     &                 ALLOCATE( F(n)%dZ( F(n)%nNodes ))             
-             !DO i=1, F(n)%nNodes                                    
-               Read(fu,*)  F(n)%dZ(:)                               
-             !ENDDO                                                  
-             CYCLE                
+             IF(.NOT. ALLOCATED( F(n)%dZ) )
+     &                 ALLOCATE( F(n)%dZ( F(n)%nNodes ))
+             !DO i=1, F(n)%nNodes
+!##> JR @ RWTH: AVOID PART_REF WITH NON-ZERO RANK IN MODE T1V
+               Read(fu,*)  ( F(n)%dZ(i), i=1, F(n)%nNodes )
+!               Read(fu,*)  F(n)%dZ(:)
+!##< JR @ RWTH
+             !ENDDO
+             CYCLE
            CASE( '_refZ' ) !----------------------------------------
              write(6,*)'case:', zeile(1:5)    ! debug                    ! read line  2
-             IF(.NOT. ASSOCIATED( F(n)%refZ) )                       
-     &                 ALLOCATE( F(n)%refZ( F(n)%nNodes ))           
-             !DO i=1, F(n)%nNodes                                    
-               Read(fu,*)  F(n)%refZ(:)                             
+             IF(.NOT. ASSOCIATED( F(n)%refZ) )
+     &                 ALLOCATE( F(n)%refZ( F(n)%nNodes ))
+             !DO i=1, F(n)%nNodes
+!##> JR @ RWTH: AVOID PART_REF WITH NON-ZERO RANK IN MODE T1V
+               Read(fu,*)  ( F(n)%refZ(i), i=1, F(n)%nNodes )
+!               Read(fu,*)  F(n)%refZ(:)
+!##< JR @ RWTH
              !ENDDO
-             F(n)%targZ => F(n)%refZ(:)                
-             CYCLE                
+             F(n)%targZ => F(n)%refZ(:)
+             CYCLE
            CASE( '___km' ) !----------------------------------------
              write(6,*)'case:', zeile(1:5)    ! debug                    ! read line  2
-             IF(.NOT. ALLOCATED( F(n)%km) )                         
-     &                 ALLOCATE( F(n)%km( F(n)%nNodes ))             
-             !DO i=1, F(n)%nNodes                                    
-               Read(fu,*)  F(n)%km(:)                               
-             !ENDDO                                                  
-             CYCLE                
+             IF(.NOT. ALLOCATED( F(n)%km) )
+     &                 ALLOCATE( F(n)%km( F(n)%nNodes ))
+             !DO i=1, F(n)%nNodes
+!##> JR @ RWTH: AVOID PART_REF WITH NON-ZERO RANK IN MODE T1V
+               Read(fu,*)  ( F(n)%km(i), i=1, F(n)%nNodes )
+!               Read(fu,*)  F(n)%km(:)
+!##< JR @ RWTH
+             !ENDDO
+             CYCLE
            CASE( 'ToDig' ) !----------------------------------------
              write(6,*)'case:', zeile(1:5)    ! debug                    ! read line  2
-             IF(.NOT. ALLOCATED( F(n)%NodeToDig) )                   
-     &                 ALLOCATE( F(n)%NodeToDig( F(n)%nNodes ))       
-             !DO i=1, F(n)%nNodes  
-               Read(fu,*)  F(n)%NodeToDig(:)               
-             !ENDDO 
-             CYCLE                
-           CASE DEFAULT    !----------------------------------------                
-             write(6,*)'case:   DEFAULT'    ! debug              
+             IF(.NOT. ALLOCATED( F(n)%NodeToDig) )
+     &                 ALLOCATE( F(n)%NodeToDig( F(n)%nNodes ))
+             !DO i=1, F(n)%nNodes
+               Read(fu,*)  F(n)%NodeToDig(:)
+             !ENDDO
+             CYCLE
+           CASE DEFAULT    !----------------------------------------
+             write(6,*)'case:   DEFAULT'    ! debug
              EXIT
           END SELECT
         ENDDO
-         
-       ENDDO !  j=1, nFields 
+
+       ENDDO !  j=1, nFields
           !ENDIF ! partition == ipid
-        !ENDIF ! zeile(1:4) == 'ipid' 
-        
-900     CONTINUE   
-         
-      !ENDDO !j=1, ncsize 
-        
+        !ENDIF ! zeile(1:4) == 'ipid'
+
+900     CONTINUE
+
+      !ENDDO !j=1, ncsize
+
       IF( ParallelComputing ) CALL P_SYNC()
-      CLOSE(fu)  
+      CLOSE(fu)
 !      dbug WRITE(6,*)'?>-------  SR ReadFieldToRestart End -------'
-      RETURN                             
+      RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE ReadFieldToRestart          !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

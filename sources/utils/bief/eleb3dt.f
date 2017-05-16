@@ -110,11 +110,19 @@
 !
       INTEGER IELEM,IPOIN,T(3),IELEB,IELEB3,IPTFR2
       INTEGER IETAGE,IPTFR,IL1,IL2,IL3,IL4,IG(2,2,3),IL(2,2,3),IPLAN
-      INTEGER IG1,IG2,IG3,IG4,NUM1(12),NUM2(12),NUM3(12),K,L,M,N
+      INTEGER :: IG1,IG2,IG3,IG4,NUM1(12),NUM2(12),NUM3(12),K,L,M,N
 !
-      DATA NUM1 / 1 , 2 , 4 , 1 , 3 , 2 , 2 , 3 , 4 , 3 , 1 , 4 /
-      DATA NUM2 / 2 , 4 , 1 , 3 , 2 , 1 , 3 , 4 , 2 , 1 , 4 , 3 /
-      DATA NUM3 / 4 , 1 , 2 , 2 , 1 , 3 , 4 , 2 , 3 , 4 , 3 , 1 /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA NUM1 / 1 , 2 , 4 , 1 , 3 , 2 , 2 , 3 , 4 , 3 , 1 , 4 /
+!      DATA NUM2 / 2 , 4 , 1 , 3 , 2 , 1 , 3 , 4 , 2 , 1 , 4 , 3 /
+!      DATA NUM3 / 4 , 1 , 2 , 2 , 1 , 3 , 4 , 2 , 3 , 4 , 3 , 1 /
+      PARAMETER ( NUM1 = (/
+     &    1 , 2 , 4 , 1 , 3 , 2 , 2 , 3 , 4 , 3 , 1 , 4 /) )
+      PARAMETER ( NUM2 = (/
+     &    2 , 4 , 1 , 3 , 2 , 1 , 3 , 4 , 2 , 1 , 4 , 3 /) )
+      PARAMETER ( NUM3 = (/
+     &    4 , 1 , 2 , 2 , 1 , 3 , 4 , 2 , 3 , 4 , 3 , 1 /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !

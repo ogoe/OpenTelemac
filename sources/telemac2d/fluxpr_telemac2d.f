@@ -47,9 +47,12 @@
 !
       USE BIEF_DEF, ONLY: IPID
       USE DECLARATIONS_TELEMAC2D, ONLY: T2D_FILES,T2DSEO,CHAIN,TITCAS,
-     &                                  WORK_FPR, OLD_METHOD_FPR, 
+     &                                  WORK_FPR, OLD_METHOD_FPR,
      &                                  INIT_FPR, NSEO_FPR
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -64,9 +67,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN, P_DSUM
-      INTEGER                        P_IMIN
-      EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN, P_DSUM
+!      INTEGER                        P_IMIN
+!      EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##< JR @ RWTH
 !
       INTEGER ISEC,II,ERR
       CHARACTER(LEN=16), PARAMETER :: FMTZON='(4(1X,1PG21.14))'
@@ -276,7 +281,7 @@
             WORK_FPR(ISEC) = P_DSUM(FLX(ISEC))
           END DO
           IF (IPID.EQ.0)
-     &      WRITE (NSEO_FPR, FMT=FMTZON) TPS, 
+     &      WRITE (NSEO_FPR, FMT=FMTZON) TPS,
      &                     (WORK_FPR(ISEC), ISEC=1,NSEC)
         ELSE
           WRITE (NSEO_FPR, FMT=FMTZON) TPS, (FLX(ISEC), ISEC=1,NSEC)

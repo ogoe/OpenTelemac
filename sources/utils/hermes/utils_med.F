@@ -45,7 +45,7 @@
         ! Contains for each family its number and the index of the boundary group associated
         ! 0 if it is not a boundary family
         INTEGER, ALLOCATABLE :: BND_FAM(:,:)
-#if defined(HAVE_MED)
+#if defined HAVE_MED
         CHARACTER(LEN=MED_NAME_SIZE) :: MESH_NAME
         ! Contains for boundary group its name
         CHARACTER(LEN=MED_LNAME_SIZE), ALLOCATABLE :: BND_GRP_NAME(:)
@@ -456,7 +456,7 @@
         IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_FAM)) THEN
           DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_FAM)
         ENDIF
-#if defined(HAVE_MED)
+#if defined HAVE_MED
         IF(ALLOCATED(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)) THEN
           DEALLOCATE(MED_OBJ_TAB(MED_ID)%BND_GRP_NAME)
         ENDIF
@@ -1212,7 +1212,7 @@
       INTEGER, INTENT(INOUT) :: NBOR(NPTFR)
       INTEGER, INTENT(OUT) :: IERR
 !
-#if defined(HAVE_MED)
+#if defined HAVE_MED
 !
       INTEGER :: NELEBD,NDP,I
       INTEGER :: MED_ID,TYPE_ELEM_MED
@@ -2956,7 +2956,7 @@
 !
 !-----------------------------------------------------------------------
 !
-#if defined(HAVE_MED)
+#if defined HAVE_MED
 !     INITIALISATION
       IERR = 0
 !
@@ -3018,7 +3018,7 @@
 !     INITIALISATION
       IERR = 0
       NDP  = -99
-#if defined(HAVE_MED)
+#if defined HAVE_MED
 !
 !     CONVERSION FROM BIEF NUMBERING TO MED
 !
@@ -3058,7 +3058,7 @@
 !
 !-----------------------------------------------------------------------
 !
-#if defined(HAVE_MED)
+#if defined HAVE_MED
       CHARACTER(LEN=MED_NAME_SIZE) :: MNAME, TEMP_FAM
       CHARACTER(LEN=MED_LNAME_SIZE),ALLOCATABLE :: GRP_NAME(:)
       INTEGER ::  INUM,IFAM,I,MED_ID,TYPE_ELEM_MED

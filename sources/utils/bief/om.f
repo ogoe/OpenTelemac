@@ -67,7 +67,7 @@
 !+   boundary segments.
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      ADD MODASS=3
 !
 !

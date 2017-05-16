@@ -2,16 +2,16 @@
 path: <root>|sources|stbtel
 module: stbtel
 liborder: special parallel hermes damocles bief stbtel
-name: HOMERE_STBTEL
+name: stbtel
 
 [bief]
 path: <root>|sources|utils|bief
 files: bief_def.f
   bief.f
   declarations_telemac.f
+  read_mesh_info.f
   corrxy.f
   read_mesh_coord.f
-  read_mesh_info.f
   read_mesh_conn.f
   time_in_seconds.f
   voisin.f
@@ -47,29 +47,29 @@ files: declarations_damocles.f
 [hermes]
 path: <root>|sources|utils|hermes
 files: utils_med.F
+  interface_hermes.f
   utils_serafin.F
   set_mesh.f
   get_data_var_list.f
   get_data_time.f
   open_mesh.f
+  add_data.f
   close_mesh.f
   get_mesh_title.f
   get_data_ntimestep.f
-  get_data_nvar.f
-  get_mesh_l2g_numbering.f
-  set_header.f
-  get_data_value.f
-  interface_hermes.f
-  get_mesh_coord.f
-  add_data.f
   get_mesh_nelem.f
   get_mesh_npoin_per_element.f
   get_mesh_nplan.f
   get_bnd_nelem.f
   get_mesh_nptir.f
   get_bnd_npoin.f
+  get_data_nvar.f
   get_mesh_dimension.f
   get_mesh_npoin.f
+  get_mesh_l2g_numbering.f
+  set_header.f
+  get_data_value.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   lit.F
@@ -89,10 +89,9 @@ files: declarations_special.F
   plante.F
   get_nodes_per_element.f
   check_allocate.f
-  get_free_id.f
   write_error.f
   check_call.f
-  extens.f
+  get_free_id.f
   print_header.f
 
 [stbtel]

@@ -4,7 +4,7 @@
 /        KFROT=0 OR LESS : Assume flat bed KS=KSP
 / Ajout des variables KS, KSP, CHESTR pour les sorties graphiques
 / Frottement de peau (ICR =1 par defaut)
-/---SYSTEME-TELEMAC-----------------------SISYPHE-----------------------
+/---SYSTEME-TELEMAC-------------------------------SISYPHE-----------------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -38,7 +38,19 @@
 /     Sections input file, to be treated in parallel by partel in
 /     a similar way as CONLIM   !jaj ####
 /
-/---SYSTEME-TELEMAC------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC--------------------------------------SISYPHE----------------
+/
+/ INDICES IN USE SO FAR:
+/  - INTEGER (ENTIER):
+/       1-31, 33-50, 52-59, 251-253
+/  - REAL (REEL):
+/       1-39, 50-52, 253, 255, 258-262
+/  - LOGICAL (LOGIQUE):
+/       1-8, 10-32, 61, 253
+/  - CHARACTER (CARACTERE):
+/       1-25, 27, 29-42, 51, 54, 57,58, 62-69, 99-101
+/
+/-------------------------------------------------------------------------------
 /
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
@@ -3691,14 +3703,15 @@ RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
 NIVEAU = 1
 AIDE = 'Suppression des flux de sediment de et vers les points secs'
 AIDE1 = 'To cancel sediment fluxes to and from dry points'
-
 /
-/ ADDITIONAL USER VARIABLES (ALGORITHMIC DIFFERENTIATION)
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/ ALGORITHMIC DIFFERENTIATION                                         /
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
 /
-NOM = 'NOMBRE DE DIFFERENTIATEURS'
-NOM1 = 'NUMBER OF DIFFERENTIATORS'
+NOM = 'NOMBRE DE DERIVEES'
+NOM1 = 'NUMBER OF DERIVATIVES'
 TYPE = ENTIER
-INDEX = 70
+INDEX = 30
 MNEMO = 'NADVAR'
 TAILLE = 0
 DEFAUT = 0
@@ -3706,23 +3719,82 @@ DEFAUT1 = 0
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Definit le nombre de differentiateurs utilisateurs.'
-AIDE1 = 'Defines the number of user differentiators'
+AIDE = 'Definit le nombre de derivees utilisateurs, dans le cadre
+de la differentiation algorithmique.'
+AIDE1 = 'Defines the number of user derivatives, within the framework
+of the algorithmic differentiation.'
 /
-NOM = 'NOMS DES DIFFERENTIATEURS'
-NOM1 = 'NAMES OF DIFFERENTIATORS'
+NOM = 'NOMS DES DERIVEES'
+NOM1 = 'NAMES OF DERIVATIVES'
 TYPE = CARACTERE
-INDEX = 70
+INDEX = 10
 MNEMO = 'NAME\_ADVAR'
 TAILLE = 2
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Noms des differentiateurs utilisateurs en 32 caracteres,
+AIDE = 'Noms des derivees utilisateurs en 32 caracteres,
          16 pour le nom, 16 pour l''unite'
-AIDE1 = 'Name of user differentiators in 32 characters,
+AIDE1 = 'Name of user derivatives in 32 characters,
          16 for the name, 16 for the unit.'
-
+/
+/
+NOM = 'AD NOMBRE DE DIRECTIONS'
+NOM1 = 'AD NUMBER OF DIRECTIONS'
+TYPE = ENTIER
+INDEX = 59
+MNEMO = 'AD_NUMOFDIR'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de directions de differentiateurs.'
+AIDE1 = 'Defines the number of directions for the differentiators'
+/
+NOM = 'AD SOLVEUR LINEAIRE SYMBOLIQUE'
+NOM1 = 'AD SYMBOLIC LINEAR SOLVER'
+TYPE = LOGIQUE
+INDEX = 30
+MNEMO = 'AD_SYMBLINSOLV'
+TAILLE = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Enables the symbolic linear solver for AD.'
+AIDE1 = 'Enables the symbolic linear solver for AD.'
+/
+NOM = 'AD REMISE A ZERO DES DERIVEES DU SOLVEUR LINEAIRE'
+NOM1 = 'AD LINEAR SOLVER RESET DERIVATIVES'
+TYPE = LOGIQUE
+INDEX = 31
+MNEMO = 'AD_LINSOLV_RESETDERIV'
+TAILLE = 1
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Resets the derivatives for AD.'
+AIDE1 = 'Resets the derivatives for AD.'
+/
+NOM = 'AD LINEAR SOLVER DERIVATIVE CONVERGENCE'
+NOM1 = 'AD LINEAR SOLVER DERIVATIVE CONVERGENCE'
+TYPE = LOGIQUE
+INDEX = 32
+MNEMO = 'AD_LINSOLV_DERIVATIVE_CONVERGENCE'
+TAILLE = 1
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Iterative linear solvers:  derivative convergence test for AD.'
+AIDE1 = 'Iterative linear solvers:  derivative convergence test for AD.'
+/
 /
 / FOR PERL OR PYTHON SCRIPTS
 /

@@ -34,6 +34,9 @@
 !     &                                  TWEIRA,TWEIRB,MAXNPS
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -76,8 +79,10 @@
       DOUBLE PRECISION TRAC_A1(NTRAC) ,TRAC_B1(NTRAC)
       DOUBLE PRECISION TRAC_A2(NTRAC) ,TRAC_B2(NTRAC)
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN
+!##< JR @ RWTH
 !
       INTEGER, DIMENSION(:), ALLOCATABLE :: LIST_NODES
       INTEGER, DIMENSION(:), ALLOCATABLE :: LIST_PROC
@@ -90,7 +95,7 @@
 !
       HMINI = 1.D-2
       PHI = 0.4
-      RELAX = 0.5D0 ! eventuellement à rendre paramétrable dans le fichier des seuils
+      RELAX = 0.5D0 ! TODO: DEFINE AS USER SETTING
 !
 !      CALL OS('X=0     ',X=UWEIRA)
 !      CALL OS('X=0     ',X=UWEIRB)
@@ -193,8 +198,7 @@
         WEIRS(N)%Q0 = WEIRS(N)%Q
       ENDDO
 !
-! TODO: Il faut mettre ici une harmonisation des débits calculés sur le même elements entre les procs...
-!
+! TODO: STREALINE DISCHARGES COMPUTED ON IDENTICAL ELEMENTS
 !
 !       NOW WE DISTRIBUTE THE COMPUTED DISCHARGE OF EACH ELEMENTS OF WEIRS ON NODES
 !       QELEM > 0 means the flow is from side A to side B
@@ -280,16 +284,16 @@
 !   !! &         TRAC_A2(ITRAC), WNODES(I_2B_1)%QN
 !   !!        WRITE(LU,*) 'A4-', I_2B_2, WNODES(I_2B_2)%TRAC(ITRAC),
 !   !! &         TRAC_A2(ITRAC), WNODES(I_2B_2)%QN
-    !!       WNODES(I_1B_1)%TRAC(ITRAC) = WNODES(I_1B_1)%TRAC(ITRAC) + 
+    !!       WNODES(I_1B_1)%TRAC(ITRAC) = WNODES(I_1B_1)%TRAC(ITRAC) +
     !!&         TRAC_1A_1(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_A1(ITRAC) * WNODES(I_1A_1)%QN
-    !!       WNODES(I_1B_2)%TRAC(ITRAC) = WNODES(I_1B_2)%TRAC(ITRAC) + 
+    !!       WNODES(I_1B_2)%TRAC(ITRAC) = WNODES(I_1B_2)%TRAC(ITRAC) +
     !!&         TRAC_1A_2(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_A1(ITRAC) * WNODES(I_1A_2)%QN
-    !!       WNODES(I_2B_1)%TRAC(ITRAC) = WNODES(I_2B_1)%TRAC(ITRAC) + 
+    !!       WNODES(I_2B_1)%TRAC(ITRAC) = WNODES(I_2B_1)%TRAC(ITRAC) +
     !!&         TRAC_2A_1(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_A2(ITRAC) * WNODES(I_2A_1)%QN
-    !!       WNODES(I_2B_2)%TRAC(ITRAC) = WNODES(I_2B_2)%TRAC(ITRAC) + 
+    !!       WNODES(I_2B_2)%TRAC(ITRAC) = WNODES(I_2B_2)%TRAC(ITRAC) +
     !!&         TRAC_2A_2(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_A2(ITRAC) * WNODES(I_2A_2)%QN
     !!     ELSEIF(WEIRS(N)%Q.LT.0.D0) THEN ! B --> A
@@ -301,16 +305,16 @@
 !   !! &         TRAC_B2(ITRAC), WNODES(I_2A_1)%QN
 !   !!        WRITE(LU,*) 'A4-', I_2A_2, WNODES(I_2A_2)%TRAC(ITRAC),
 !   !! &         TRAC_B2(ITRAC), WNODES(I_2A_2)%QN
-    !!       WNODES(I_1A_1)%TRAC(ITRAC) = WNODES(I_1A_1)%TRAC(ITRAC) - 
+    !!       WNODES(I_1A_1)%TRAC(ITRAC) = WNODES(I_1A_1)%TRAC(ITRAC) -
     !!&         TRAC_B1(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_B1(ITRAC) * WNODES(I_1B_1)%QN
-    !!       WNODES(I_1A_2)%TRAC(ITRAC) = WNODES(I_1A_2)%TRAC(ITRAC) - 
+    !!       WNODES(I_1A_2)%TRAC(ITRAC) = WNODES(I_1A_2)%TRAC(ITRAC) -
     !!&         TRAC_B1(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_B1(ITRAC) * WNODES(I_1B_2)%QN
-    !!       WNODES(I_2A_1)%TRAC(ITRAC) = WNODES(I_2A_1)%TRAC(ITRAC) - 
+    !!       WNODES(I_2A_1)%TRAC(ITRAC) = WNODES(I_2A_1)%TRAC(ITRAC) -
     !!&         TRAC_B2(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_B2(ITRAC) * WNODES(I_2B_1)%QN
-    !!       WNODES(I_2A_2)%TRAC(ITRAC) = WNODES(I_2A_2)%TRAC(ITRAC) - 
+    !!       WNODES(I_2A_2)%TRAC(ITRAC) = WNODES(I_2A_2)%TRAC(ITRAC) -
     !!&         TRAC_B2(ITRAC) * 0.25D0 * WEIRS(N)%Q
 !   !! &         TRAC_B2(ITRAC) * WNODES(I_2B_2)%QN
     !!     ENDIF
@@ -339,8 +343,8 @@
 
 
 
-!!!        
-!!        DO I = 1 ,NPSING%I(N)-1   
+!!!
+!!        DO I = 1 ,NPSING%I(N)-1
 !!!         FIND THE NODES OF MESH AROUND THE NODE COMPOSING THE WEIR
 !!          I_1A_1 = NDGA1%ADR(N)%P%I(I)
 !!          I_1B_1 = NDGB1%ADR(N)%P%I(I)

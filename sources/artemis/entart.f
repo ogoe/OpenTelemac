@@ -55,20 +55,26 @@
 !
       LOGICAL ALEMON,ALEMUL,BALAYE
 !
-      CHARACTER(LEN=32) TEXTFR(5),TEXTGB(5)
+      CHARACTER(LEN=32) :: TEXTFR(5),TEXTGB(5)
 !
 !-----------------------------------------------------------------------
 !
-      DATA TEXTFR / 'PERIODE     ' ,
-     &              ' SECONDES   ' ,
-     &              'DIRECTION   ' ,
-     &              ' DEGRES     ' ,
-     &              '            ' /
-      DATA TEXTGB / 'PERIOD      ' ,
-     &              ' SECONDS    ' ,
-     &              'DIRECTION   ' ,
-     &              ' DEGREES    ' ,
-     &              '            ' /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA TEXTFR /
+      PARAMETER ( TEXTFR = (/
+     &    'PERIODE                         ' ,
+     &    ' SECONDES                       ' ,
+     &    'DIRECTION                       ' ,
+     &    ' DEGRES                         ' ,
+     &    '                                ' /) )
+!      DATA TEXTGB /
+      PARAMETER ( TEXTGB = (/
+     &    'PERIOD                          ' ,
+     &    ' SECONDS                        ' ,
+     &    'DIRECTION                       ' ,
+     &    ' DEGREES                        ' ,
+     &    '                                ' /) )
+!##< SEB @ HRW
 !
 ! REGULAR WAVES
 !

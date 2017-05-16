@@ -1,4 +1,19 @@
 &DYN
+/---SYSTEME-TELEMAC--------------------------------------TOMAWAC----------------
+/
+/ INDICES IN USE SO FAR:
+/  - INTEGER (ENTIER):
+/       1-52
+/  - REAL (REEL):
+/       1-87
+/  - LOGICAL (LOGIQUE):
+/       1-18
+/  - CHARACTER (CARACTERE):
+/       1-22, 29-32, 34-37, 39-47, 50-52, 96-101
+/
+/-------------------------------------------------------------------------------
+/
+
 NOM = 'PERIODE POUR LES SORTIES GRAPHIQUES'
 NOM1 = 'PERIOD FOR GRAPHIC PRINTOUTS'
 TYPE = ENTIER
@@ -5701,3 +5716,37 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Nom des fichiers exploites par le code'
 AIDE1= 'Names of the files used by the software'
+/
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/ ALGORITHMIC DIFFERENTIATION                                         /
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/
+NOM = 'NOMBRE DE DERIVEES'
+NOM1 = 'NUMBER OF DERIVATIVES'
+TYPE = ENTIER
+INDEX = 52
+MNEMO = 'NADVAR'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de derivees utilisateurs, dans le cadre
+de la differentiation algorithmique.'
+AIDE1 = 'Defines the number of user derivatives, within the framework
+of the algorithmic differentiation.'
+/
+NOM = 'NOMS DES DERIVEES'
+NOM1 = 'NAMES OF DERIVATIVES'
+TYPE = CARACTERE
+INDEX = 52
+MNEMO = 'NAME\_ADVAR'
+TAILLE = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Noms des derivees utilisateurs en 32 caracteres,
+         16 pour le nom, 16 pour l''unite'
+AIDE1 = 'Name of user derivatives in 32 characters,
+         16 for the name, 16 for the unit.'

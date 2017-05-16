@@ -62,6 +62,9 @@
 !
       USE BIEF
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -92,7 +95,9 @@
 !
       DOUBLE PRECISION PI
 !
-      DOUBLE PRECISION, EXTERNAL :: P_DMAX,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION, EXTERNAL :: P_DMAX,P_DMIN
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

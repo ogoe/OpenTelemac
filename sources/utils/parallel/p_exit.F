@@ -41,9 +41,12 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
@@ -59,7 +62,13 @@
 !
 !     EXITS
 !
+!##> JR @ RWTH:
+#  ifdef COMPAD
+      CALL AMPI_FINALIZE(IER)
+#  else
       CALL MPI_FINALIZE(IER)
+#  endif
+!##< JR @ RWTH
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_EXIT: ERREUR DANS MPI_FINALIZE'
         IF(LNG.EQ.2) WRITE(LU,*) 'P_EXIT: ERROR IN MPI_FINALIZE'

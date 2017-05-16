@@ -62,8 +62,11 @@
 !
       INTEGER IPOIN2,IPLAN
 !
-      DOUBLE PRECISION CHOUIA
-      DATA CHOUIA/1.D-4/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DOUBLE PRECISION :: CHOUIA
+!      DATA CHOUIA/1.D-4/
+      DOUBLE PRECISION, PARAMETER :: CHOUIA = 1.D-4
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

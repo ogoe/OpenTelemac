@@ -137,7 +137,7 @@
       USE DECLARATIONS_TELEMAC3D
       USE DECLARATIONS_WAQTEL, ONLY : ADDTR,WAQPROCESS,NWQVARS,NWQBEN,
      &                                NWQDIAGS
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       USE T3D_AED2
 #endif
 !
@@ -459,7 +459,7 @@
       WAQPROCESS = MOTINT( ADRESS(1,127)   )
 !
       IF((INCLUS(COUPLING,'WAQTEL')).AND.(WAQPROCESS.EQ.6)) THEN
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
 !     READING OF THE AED2 STEERING FILE
         CALL GET_FREE_ID(I)
         CALL INIT_AED2_MODELS(I,PATH,NWQVARS,NWQBEN,NWQDIAGS)
@@ -587,6 +587,10 @@
       KFROT     =     MOTINT(ADRESS(1,64))
 ! CV 2013
       NCOUCH=         MOTINT(ADRESS(1,65))
+!
+!> RK @ BAW   NUMBER OF DIRECTIONS FOR DIFFERENTIATED VARIABLES
+      AD_NUMOFDIR  = MOTINT( ADRESS(1,69) )
+!< RK @ BAW
 !
 ! NON-HYDROSTATIC
 !
@@ -1273,6 +1277,16 @@
 !      GIBSON       = MOTLOG(ADRESS(3,52))
 !      TURBWC       = MOTLOG(ADRESS(3,53))
       LISTIN       = MOTLOG(ADRESS(3,61))
+
+!> RK @ BAW   SYMBOLIC LINEAR SOLVER FOR AD
+      AD_SYMBLINSOLV  = MOTLOG( ADRESS(3,32) )
+!     RESET DERIVATIVES FOR AD
+      AD_LINSOLV_RESETDERIV  = MOTLOG( ADRESS(3,33) )
+!< RK @ BAW
+!
+!> JR @ STCE     SYMBOLIC LINEAR SOLVER FOR AD
+       AD_LINSOLV_DERIVATIVE_CONVERGENCE  = MOTLOG( ADRESS(3,34) )
+!< JR @ STCE
 !
 ! NON-HYDROSTATIC
 !
@@ -1402,10 +1416,10 @@
         DO I=1,NTRAC
           WRITE(CHAR2,'(I2)') I
           IF(LNG.EQ.1) THEN
-           NAMETRAC(I) =  'TRACEUR '//ADJUSTL(CHAR2)//'      '
+            NAMETRAC(I) =  'TRACEUR '//ADJUSTL(CHAR2)//'      '
      &                   // '??              '
           ELSEIF(LNG.EQ.2) THEN
-           NAMETRAC(I) =  'TRACER '//ADJUSTL(CHAR2)//'       '
+            NAMETRAC(I) =  'TRACER '//ADJUSTL(CHAR2)//'       '
      &                   // '??              '
           ENDIF
         ENDDO
@@ -1943,7 +1957,6 @@
           STOP
         ENDIF
       ENDIF
-
 !
 !-----------------------------------------------------------------------
 !

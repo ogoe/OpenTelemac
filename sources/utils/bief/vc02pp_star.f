@@ -94,8 +94,11 @@
       INTEGER I1,I2,I3,I4,I5,I6,IELEM
       LOGICAL INCHYD
 !
-      DOUBLE PRECISION CHOUIA
-      DATA             CHOUIA/1.D-4/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DOUBLE PRECISION CHOUIA
+!      DATA             CHOUIA/1.D-4/
+      DOUBLE PRECISION :: CHOUIA = 1.D-4
+!##< JR @ RWTH
 !
 !***********************************************************************
 !

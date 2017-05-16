@@ -84,12 +84,12 @@
       IMPLICIT NONE
 !
       INTEGER       NMOT2(4),SIZE(4,*),ITYP,NUMERO,ILONG,NBLANG,NMAXR(4)
-      INTEGER       NIGN,NFICDA,TYPIGN(100),LONIGN(100),LONPRO(15)
+      INTEGER     :: NIGN,NFICDA,TYPIGN(100),LONIGN(100),LONPRO(15)
       LOGICAL       UTINDX(4,*),LANGUE,LUIGN,AIDLNG
       CHARACTER(LEN=*) MOTCLE(4,*),MOTPRO(*),CHAINE
-      CHARACTER(LEN=1)   LNGPRO(9)
-      CHARACTER(LEN=9)   RUBPRO(5),MOTLNG
-      CHARACTER(LEN=72)  MOTIGN(100)
+      CHARACTER(LEN=1) :: LNGPRO(9)
+      CHARACTER(LEN=9) :: RUBPRO(5),MOTLNG
+      CHARACTER(LEN=72) :: MOTIGN(100)
 !
 !
 !-----------------------------------------------------------------------
@@ -100,12 +100,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      DATA LNGPRO /'1','2','3','4','5','6','7','8','9'/
-      DATA RUBPRO /'NOM','DEFAUT','AIDE','CHOIX','RUBRIQUE'/
+      PARAMETER ( LNGPRO = (/'1','2','3','4','5','6','7','8','9'/) )
+      PARAMETER ( RUBPRO =(/
+     &  'NOM      ','DEFAUT   ','AIDE     ','CHOIX    ','RUBRIQUE '/) )
 ! NUMBER OF LETTERS IN THE RUBPRO NAMES
-      DATA LGRUB  /3,6,4,5,8/
+      PARAMETER ( LGRUB = (/ 3,6,4,5,8 /) )
 ! CORRESPONDENCES BETWEEN RUBPRO AND MOTPRO
-      DATA VALNUM /1,5,6,7,8/
+      PARAMETER ( VALNUM = (/ 1,5,6,7,8 /) )
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

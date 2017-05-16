@@ -8,7 +8,7 @@
 ! BIEF   V7P2
 !***********************************************************************
 !
-!brief    Equivalent of FLUX_EF_VF, the result is given in terms of 
+!brief    Equivalent of FLUX_EF_VF, the result is given in terms of
 !+        contribution per point, and it takes a derivative in time
 !+        into account, as well of a TETA between FN and FSTAR.
 !
@@ -69,8 +69,10 @@
 !
       INTRINSIC MIN,MAX,ABS
 !
-      DOUBLE PRECISION EPSPHI
-      DATA EPSPHI/1.D-12/
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSPHI/1.D-12/
+      DOUBLE PRECISION, PARAMETER :: EPSPHI = 1.D-12
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

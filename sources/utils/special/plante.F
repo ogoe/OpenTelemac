@@ -57,10 +57,18 @@
       USE DECLARATIONS_SPECIAL
 #if defined NO_STD_FLUSH || NAGFOR
       USE F90_UNIX_IO, ONLY: FLUSH
-#endif
+#endif /* NO_STD_FLUSH || NAGFOR */
+!
+#if defined HAVE_MPI
+!##> JR @ RWTH: ALLOW THE USE OF THE MPI MODULE
+#  if defined HAVE_MPI_MOD
+      USE MPI
       IMPLICIT NONE
-#if defined(HAVE_MPI)
+#  else
+      IMPLICIT NONE
       INCLUDE 'mpif.h'
+#  endif
+!##< JR @ RWTH
 #endif
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -70,7 +78,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ICODE, IERR
-      INTEGER MPI_IS_INIT
+!##> J.R @ RIEHME: WRONG DATA TYPE
+      LOGICAL MPI_IS_INIT
+!##< J.R @ RIEHME
 !
 !-----------------------------------------------------------------------
 !
@@ -90,12 +100,12 @@
 !     HOWEVER, CODE IS NOT ALWAYS SENT TO STDERR
 !     (COMPILER DEPENDENT, NAG DOESN'T FOR INSTANCE)
 !     ICODE MIGHT BE USED IN A POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-#if defined(NO_STD_FLUSH)
+#if defined NO_STD_FLUSH
       CALL FLUSH(LU)
 #else
       FLUSH(LU)
 #endif
-#if defined(HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_INITIALIZED(MPI_IS_INIT,ICODE)
 #endif
       IF(IVAL.LT.0) THEN
@@ -107,8 +117,10 @@
       ENDIF
       WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
 !
-#if defined(HAVE_MPI)
-      IF(MPI_IS_INIT.EQ.0) CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+#if defined HAVE_MPI
+!##> J.R @ RIEHME: WRONG DATA TYPE
+      IF(MPI_IS_INIT) CALL MPI_ABORT(MPI_COMM_WORLD,ICODE,IERR)
+!##< J.R @ RIEHME
 #endif
       STOP 1   ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(1)
 !

@@ -1,5 +1,18 @@
 &DYN
-
+/---SYSTEME-TELEMAC-----------------------------------------ARTEMIS-------------
+/
+/ INDICES IN USE SO FAR:
+/  - INTEGER (ENTIER):
+/       1-32
+/  - REAL (REEL):
+/       1-33
+/  - LOGICAL (LOGIQUE):
+/       1-17
+/  - CHARACTER (CARACTERE):
+/       1-40, 55-57, 99-101
+/
+/-------------------------------------------------------------------------------
+/
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
 TYPE = CARACTERE
@@ -1212,9 +1225,9 @@ Les possibilites offertes sont les suivantes :
     - E prive(1,2) (variable 14)
     - F prive(1,3) (variable 15)
     - G prive(1,4) (variable 16)
-    - T01 premi�re p�riode moyenne spectrale
-    - T02 deuxi�me p�riode moyenne spectrale
-    - TM troisi�me p�riode moyenne spectrale
+    - T01 premiere periode moyenne spectrale
+    - T02 deuxieme periode moyenne spectrale
+    - TM troisieme periode moyenne spectrale
     - FX force en X
     - FY force en Y
     - INC incidence de la houle
@@ -3318,6 +3331,41 @@ RUBRIQUE1 = 'INPUT-OUTPUT,FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Liste des fichiers'
 AIDE1 = 'List of files'
+/
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/ ALGORITHMIC DIFFERENTIATION                                         /
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/
+NOM = 'NOMBRE DE DERIVEES'
+NOM1 = 'NUMBER OF DERIVATIVES'
+TYPE = ENTIER
+INDEX = 32
+MNEMO = 'NADVAR'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de derivees utilisateurs, dans le cadre
+de la differentiation algorithmique.'
+AIDE1 = 'Defines the number of user derivatives, within the framework
+of the algorithmic differentiation.'
+/
+NOM = 'NOMS DES DERIVEES'
+NOM1 = 'NAMES OF DERIVATIVES'
+TYPE = CARACTERE
+INDEX = 40
+MNEMO = 'NAME\_ADVAR'
+TAILLE = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Noms des derivees utilisateurs en 32 caracteres,
+         16 pour le nom, 16 pour l''unite'
+AIDE1 = 'Name of user derivatives in 32 characters,
+         16 for the name, 16 for the unit.'
+
 //----Librairies du code-------------------------------------------
 //
 //Conventions de notation :

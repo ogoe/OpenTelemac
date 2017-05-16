@@ -62,7 +62,7 @@
 !-----------------------------------------------------------------------
 !
 !
-#if defined(HAVE_MUMPS)
+#if defined HAVE_MUMPS
 #else
       IF(LNG.EQ.1) WRITE(LU,2018)
       IF(LNG.EQ.2) WRITE(LU,2019)

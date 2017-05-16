@@ -26,7 +26,7 @@
      &        (NELEM, NPOIN, EPTR, EIND, VWGT,
      &         VSIZE, NCOMMONNODES, NPARTS, TPWGTS,
      &         OPTION, EDGECUT, EPART, NPART)
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
      &        BIND(C, NAME='METIS_PartMeshDual')
 #endif
 
@@ -66,7 +66,7 @@
             INTEGER(C_INT),TARGET :: EPART(*)
             INTEGER(C_INT),TARGET :: NPART(*)
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
             CALL C_MYMETIS_PARTMESHDUAL
      &        (C_LOC(NELEM), C_LOC(NPOIN), EPTR,
      &         EIND, C_NULL_PTR,

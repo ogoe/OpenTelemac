@@ -2,7 +2,7 @@
 path: <root>|sources|utils|gretel
 module: gretel
 liborder: special gretel
-name: GREDELPTS_AUTOP
+name: gredelpts_autop
 
 [gretel]
 path: <root>|sources|utils|gretel

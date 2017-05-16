@@ -57,6 +57,11 @@
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -116,12 +121,13 @@
 !
       DOUBLE PRECISION Z(1)
 !
-      INTEGER CORNSY(3,2),CORSYM(3)
-!
 !-----------------------------------------------------------------------
 !
-      DATA CORNSY/ 1,3,5, 4,6,2 /
-      DATA CORSYM/ 1,3,2        /
+      INTEGER :: CORNSY(3,2)
+      PARAMETER ( CORNSY = RESHAPE( (/
+     &                        1,3,5, 4,6,2 /), SHAPE=(/ 3,2 /) ) )
+      INTEGER :: CORSYM(3)
+      PARAMETER ( CORSYM = (/ 1,3,2        /) )
 !
 !-----------------------------------------------------------------------
 !

@@ -42,12 +42,15 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
       P_TIME=0.D0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       P_TIME=MPI_WTIME()
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_TIME VERSION VIDE'

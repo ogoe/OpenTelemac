@@ -2,8 +2,7 @@
                      SUBROUTINE ASSVEC
 !                    *****************
 !
-     &(X, IKLE,NPOIN,NELEM,NELMAX,IELM,W,INIT,LV,MSK,MASKEL,NDP,
-     & ERRX)
+     &(X, IKLE,NPOIN,NELEM,NELMAX,IELM,W,INIT,LV,MSK,MASKEL,NDP,ERRX)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -31,7 +30,7 @@
 !+   cross-referencing of the FORTRAN sources
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      COMPENSATED ASSEMBLY (MODASS=3)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,48 +85,50 @@
 !   ASSEMBLES, CONTRIBUTION OF LOCAL POINTS 1,... TO NDP
 !-----------------------------------------------------------------------
 !
-      IF (MODASS.EQ.1)THEN !!!!!!!!!FpSum!!!!!!!!!!!!!!!!!!!
+!     FpSum
+      IF(MODASS.EQ.1) THEN
         DO IDP = 1 , NDP
-          CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
-     &    ,MASKEL)
+          CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK,
+     &      MASKEL)
         ENDDO
-      ELSEIF(MODASS.EQ.3)THEN!!!!!!!!!CompSum!!!!!!!!!!!!!!!!!!!
-        IF(PRESENT(ERRX))THEN
+!     CompSum
+      ELSEIF(MODASS.EQ.3) THEN
+        IF(PRESENT(ERRX)) THEN
           IF(MSK) THEN
             IF(LV.EQ.1) THEN
-                DO IDP = 1 , NDP
-                  DO IELEM = 1 , NELEM
-                    ERREUR=0.D0
-                    CALL TWOSUM(X(IKLE(IELEM,IDP)),
+              DO IDP = 1 , NDP
+                DO IELEM = 1 , NELEM
+                  ERREUR=0.D0
+                  CALL TWOSUM(X(IKLE(IELEM,IDP)),
      &                W(IELEM,IDP)* MASKEL(IELEM),
      &                X(IKLE(IELEM,IDP)),ERREUR)
-!                    CALL TWOSUM(ERRX(IKLE(IELEM,IDP)),ERREUR,
+!                  CALL TWOSUM(ERRX(IKLE(IELEM,IDP)),ERREUR,
 !     &                ERRX(IKLE(IELEM,IDP)),ERREUR)
-                    ERRX(IKLE(IELEM,IDP)) = ERRX(IKLE(IELEM,IDP))+ERREUR
-                  ENDDO
+                  ERRX(IKLE(IELEM,IDP)) = ERRX(IKLE(IELEM,IDP))+ERREUR
                 ENDDO
-!              DO IDP = 1 , NDP
-!                CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
+              ENDDO
+!            DO IDP = 1 , NDP
+!              CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
 !     &          ,MASKEL,NPOIN)
-!              ENDDO
+!            ENDDO
             ELSE
               DO IDP = 1 , NDP
                 CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
-     &          ,MASKEL)
+     &            ,MASKEL)
               ENDDO
             ENDIF
           ELSE
             IF(LV.EQ.1) THEN
-                DO IDP = 1 , NDP
-                  DO IELEM = 1 , NELEM
-                    ERREUR=0.D0
-                    CALL TWOSUM(X(IKLE(IELEM,IDP)),W(IELEM,IDP),
+              DO IDP = 1 , NDP
+                DO IELEM = 1 , NELEM
+                  ERREUR=0.D0
+                  CALL TWOSUM(X(IKLE(IELEM,IDP)),W(IELEM,IDP),
      &                X(IKLE(IELEM,IDP)),ERREUR)
-!                    CALL TWOSUM(ERRX(IKLE(IELEM,IDP)),ERREUR,
+!                  CALL TWOSUM(ERRX(IKLE(IELEM,IDP)),ERREUR,
 !     &                ERRX(IKLE(IELEM,IDP)),ERREUR)
-                    ERRX(IKLE(IELEM,IDP)) = ERRX(IKLE(IELEM,IDP))+ERREUR
-                  ENDDO
+                  ERRX(IKLE(IELEM,IDP)) = ERRX(IKLE(IELEM,IDP))+ERREUR
                 ENDDO
+              ENDDO
             ELSE
               DO IDP = 1 , NDP
                 CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
@@ -136,14 +137,12 @@
             ENDIF
           ENDIF
         ELSE
-            DO IDP = 1 , NDP
-              CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
+          DO IDP = 1 , NDP
+            CALL ASSVE1(X,IKLE(1,IDP),W(1,IDP),NELEM,NELMAX,LV,MSK
      &        ,MASKEL)
-            ENDDO
+          ENDDO
 !
-
         ENDIF
-
       ENDIF
 !
 !-----------------------------------------------------------------------

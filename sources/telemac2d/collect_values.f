@@ -16,7 +16,7 @@
 !+   Creation
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |---| 
+!|                |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -60,8 +60,12 @@
         DO IL=1,N_NGHB_W_NODES
           IP = WNODES_PROC(IL)%NUM_NEIGH
           IK = WNODES_PROC(IL)%NB_NODES
-          CALL P_IREAD(W_BUF_RECV(1,IL),2*IK*8,
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+          CALL P_IREAD(W_BUF_RECV(1,IL),2*IK,8,
      &                 IP,MSG_TAG,RECV_REQ(IL))
+!          CALL P_IREAD(W_BUF_RECV(1,IL),2*IK*8,
+!     &                 IP,MSG_TAG,RECV_REQ(IL))
+!##< JR @ RWTH
         ENDDO
 !
 !== SEND STEP
@@ -80,8 +84,12 @@
             K = K+2
           ENDDO
 !
-          CALL P_IWRIT(W_BUF_SEND(1,IL),2*IK*8,
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+          CALL P_IWRIT(W_BUF_SEND(1,IL),2*IK,8,
      &                 IP,MSG_TAG,SEND_REQ(IL))
+!          CALL P_IWRIT(W_BUF_SEND(1,IL),2*IK*8,
+!     &                 IP,MSG_TAG,SEND_REQ(IL))
+!##< JR @ RWTH
 !
         ENDDO
 !

@@ -5,40 +5,40 @@
       SUBROUTINE  WriteDigAction                 !********************************************
 !***                                              ********************************************
 !***                                              ********************************************
-     & ( A )                             
-                                         
-      USE m_TypeDefs_Nestor             
+     & ( A )
+
+      USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY : nActions, nGrainClass
-      
-      
-      IMPLICIT NONE                      
-                                         
+
+
+      IMPLICIT NONE
+
       !INTEGER,        INTENT(IN) :: m   ! index to define element of array A
-      TYPE(t_Action), INTENT(IN) :: A   
-      
-      
-      
-#ifndef NESTOR_INTERFACES 
+      TYPE(t_Action), INTENT(IN) :: A
+
+
+
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
-      
-      INTEGER :: i  
-      
-!                                        
+
+      INTEGER :: i
+
+!
 !663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
 !      dbug WRITE(6,*)'?>-------  SR WriteDigAction ---------------'
-      
-!       801   FORMAT(A2, 2("|",I6), "|", A40, "|",I5)          
-!       802   FORMAT(A2, 2("|",I6), "|", A40, "|",I5)          
-!       803   FORMAT(A2, 2("|",I6), "|", A40, "|",A32)          
-!          
+
+!       801   FORMAT(A2, 2("|",I6), "|", A40, "|",I5)
+!       802   FORMAT(A2, 2("|",I6), "|", A40, "|",I5)
+!       803   FORMAT(A2, 2("|",I6), "|", A40, "|",A32)
+!
 !             WRITE(6 ,'("# ", 2("+------"), "+", 40("-"), "+----")' )
 !             WRITE(6 ,'("# |1----6|1----6|1", 37("-"), "40|59:")' )
 !             WRITE(6 ,'("# |intKey|novVal|    strKey", 30(" "), "|")' )
 !             WRITE(6 ,'("# ", 2("+------"), "+", 40("-"), "+----")' )
 !             WRITE(6 ,'("ACTION", "   |      |", 40(" "), "|")')
-!             
-!             
-!             
+!
+!
+!
 !             WRITE(6 ,801)" i", 10, 1, "ActionType ",     A%ActionType
 !             WRITE(6 ,803)" s", 11, 1, "ActionTypeStr ",  A%ActionTypeStr
 !             WRITE(6 ,803)" s", 20, 1, "FieldDig ",       A%FieldDig
@@ -46,8 +46,8 @@
 !             WRITE(6 ,803)" s", 21, 1, "ReferezLevel ",   A%ReferenceLevel
 !               :
 !             stop
-     
-      
+
+
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%ActionType      =',A%ActionType
       WRITE(6,*)'?> ============================================='
@@ -89,9 +89,9 @@
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%DumpPlanar      =',A%DumpPlanar
       WRITE(6,*)'?> ============================================='
-      DO i=1, nGrainClass                
+      DO i=1, nGrainClass
         WRITE(6,*)'?> A(i)%GrainClass      =',A%GrainClass(i)
-      ENDDO                              
+      ENDDO
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%FirstTimeActive =',A%FirstTimeActive
       WRITE(6,*)'?> ============================================='
@@ -111,18 +111,18 @@
       WRITE(6,*)'?> ============================================='
       WRITE(6,*)'?> A(i)%dzTot           =',A%dzTot
       WRITE(6,*)'?> ============================================='
-      DO i=1, nGrainClass                
+      DO i=1, nGrainClass
         WRITE(6,*)'?> A(i)%dzCL_ts         =',A%dzCL_ts(i)
-      ENDDO                              
+      ENDDO
       !WRITE(6,*)'?> ============================================='
       !WRITE(6,*)'?> A(i)%     =',A%
       !WRITE(6,*)'?> ============================================='
  !      dbug WRITE(6,*)'?>-------  SR WriteDigAction End -----------'
-       
-       RETURN                             
+
+       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE WriteDigAction              !********************************************
 !**                                               ********************************************
 !**                                               ********************************************

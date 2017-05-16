@@ -14,7 +14,7 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FAC            |-->| FAC=1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)

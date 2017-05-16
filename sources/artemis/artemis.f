@@ -56,6 +56,9 @@
 !-----------------------------------------------------------------------
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX,P_IMIN,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 ! INTEGERS
@@ -63,7 +66,6 @@
       INTEGER LT,NPERBA,ITERMUR, I , LF
       INTEGER NELBRD,NPFMAX,NELBRX
 !      INTEGER LPER,LDIR
-      INTEGER ALIRE(MAXVAR)
       INTEGER RECORD
 !
 ! VARIABLE FOR SUBROUTINE DISMOY
@@ -72,7 +74,7 @@
 !
 ! REAL SCALARS
 !
-      DOUBLE PRECISION RADDEG,HIST(1)
+      DOUBLE PRECISION :: RADDEG,HIST(1)
 !
 ! VARIABLES FOR CALLS TO TELEMAC-2D SUBROUTINES
 !
@@ -83,25 +85,38 @@
 !
       DOUBLE PRECISION BID,ECRHMU,MODHMU,PONDER
 !
-      INTEGER  P_IMAX,P_IMIN
-      DOUBLE PRECISION P_DMIN
-      EXTERNAL P_IMAX,P_IMIN,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX,P_IMIN
+!      DOUBLE PRECISION P_DMIN
+!      EXTERNAL P_IMAX,P_IMIN,P_DMIN
+!##< JR @ RWTH
 !
-      DATA HIST /9999.D0/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA HIST /9999.D0/
+      PARAMETER ( HIST = (/ 9999.D0 /) )
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
 !  VARIABLES TO READ IF COMPUTATION IS CONTINUED :
 !  0 : DISCARD    1 : READ  (SEE SUBROUTINE NOMVAR)
 !
-      DATA ALIRE /1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ALIRE /1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
+      INTEGER :: ALIRE(MAXVAR) = (/ 1,(0,I=2,MAXVAR) /)
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
-      RADDEG = 180.D0/3.141592654D0
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION PI
+      PI = 4.D0 * ATAN( 1.D0 )
+      RADDEG = 180.D0 / PI
+!      RADDEG = 180.D0/3.141592654D0
+!< SEB @ HRW
 !
 !=======================================================================
 !
@@ -468,7 +483,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) '> CALLING BORH'
       CALL BORH
       IF(DEBUG.GT.0) WRITE(LU,*) '< BORH CALLED'
-!###> SEB @ HRW
+!##> SEB @ HRW
 !     REASSIGNS TETAP TO THE IMPOSED USER VALUE
 !      IF ((LANGAUTO).AND.(LT.GT.0)) THEN
       IF( LANGAUTO ) THEN
@@ -477,7 +492,7 @@
 !          TETAP%R(I)=TETAPM%R(I)
         ENDDO
       ENDIF
-!###<
+!##< SEB @ HRW
 !
 ! ===================================================================================
 !

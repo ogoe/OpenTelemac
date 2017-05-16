@@ -19,6 +19,12 @@
 !+       Correcting an old mistake on serafin files in prisms when the
 !+       computation is done with tetrahedra. See SET_MESH_SRF.
 !
+!history S.E. BOURBAN (HRW)
+!+       11/11/2016
+!+       V7P2
+!+       Replacement of K4 (which is compiler depend and therefore not
+!+       necessary equals to 4) by KS in the SRF_INFO structure.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
@@ -32,6 +38,7 @@
 !
       TYPE SRF_INFO
         ! SIZE OF ELEMENTS
+        INTEGER :: KS ! INTEGER SIZE (4 OR 8)
         INTEGER :: RS ! REAL SIZE (4 OR 8)
         ! POSITION IN FILE
         INTEGER(KIND=K8) :: POS_TITLE
@@ -251,10 +258,16 @@
 !+        V7P2
 !+    Adding FILE_ID in the list of arguments.
 !
+!history S.E. BOURBAN (HRW)
+!+       11/11/2016
+!+       V7P2
+!+       ENDIAN has now an INOUT intent to add flexibility when reading
+!+       mixed binaries from various files.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_NAME      |<--| Name of the file
 !| OPENMODE       |-->| READ, READWRITE OR WRITE
-!| ENDIAN         |-->| Encoding of integer and real in the file
+!| ENDIAN         |<->| Encoding of integer and real in the file
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         IMPLICIT NONE
@@ -262,7 +275,7 @@
         INTEGER, INTENT(IN)           :: FILE_ID
         CHARACTER(LEN=*), INTENT(IN)  :: FILE_NAME
         CHARACTER(LEN=9), INTENT(IN)  :: OPENMODE
-        CHARACTER(LEN=13),INTENT(OUT) :: ENDIAN
+        CHARACTER(LEN=13),INTENT(INOUT) :: ENDIAN
 !
         INTEGER(KIND=K4) :: I
         LOGICAL :: FILE_EXIST
@@ -272,8 +285,8 @@
         INQUIRE(FILE=FILE_NAME,EXIST=FILE_EXIST)
         IF(.NOT.FILE_EXIST) RETURN
 !
-#if defined( NO_CONVERT_ENDIAN )
-!       CONVERT= NOT IMPLEMENTED WITH NAGF95
+#if defined NO_CONVERT_ENDIAN
+!       CONVERT= NOT IMPLEMENTED WITH SOME COMPILERS
         OPEN(FILE=FILE_NAME, ACTION='READ', UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM', IOSTAT=IERR)
 #else
@@ -294,7 +307,7 @@
           CLOSE(FILE_ID)
         ELSE
 !> SEB @ HRW: USE OF NAG COMPILER FOR ALGORITHMIC DIFFERENTIATION
-#if defined( NO_CONVERT_ENDIAN )
+#if defined NO_CONVERT_ENDIAN
 !       IF YOU DO NOT HAVE THE CONVERT OPTION AND YOU WERE NOT ABLE
 !         TO OPEN THE FILE, THEN THE FILE IS NOT OF THE RIGHT FORMAT.
 !          IERR = HERMES_INVALID_SERAFIN_FILE
@@ -368,7 +381,7 @@
 !
         IMPLICIT NONE
         !
-        INTEGER, INTENT(OUT) :: FILE_ID
+        INTEGER, INTENT(INOUT) :: FILE_ID
         CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE
         CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
         CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
@@ -399,7 +412,7 @@
         ! Get the Endian for the file
         CALL IDENTIFY_ENDIAN_TYPE(FILE_NAME,OPENMODE,ENDIAN,FILE_ID)
         ! OPEN THE FILE IN STREAM MODE
-#if defined( NO_CONVERT_ENDIAN )
+#if defined NO_CONVERT_ENDIAN
         OPEN(FILE=FILE_NAME, ACTION=SRF_OPENMODE, UNIT=FILE_ID,
      &       FORM='UNFORMATTED', ACCESS='STREAM', IOSTAT=IERR)
 #else
@@ -408,6 +421,17 @@
      &       IOSTAT=IERR)
 #endif
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
+!##> SEB @ HRW: GETS SET LATER
+        ! IT DOES NOT MATTER IF SERAFIN IS DOUBLE PRECISION OR NOT
+        SRF_OBJ_TAB(SRF_ID)%KS = 4
+        ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
+        ! 4 OTHERWISE
+        !IF(FFORMAT.EQ.'SERAFIN ') THEN
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 4
+        !ELSE
+        !  SRF_OBJ_TAB(SRF_ID)%RS = 8
+        !ENDIF
+!##< SEB @ HRW
         ! ONLY DO THE SCAN OF THE FILE IF THE FILE IS READ ONLY
         IF(OPENMODE.EQ.'READ     ') THEN
 !
@@ -419,7 +443,7 @@
           SRF_OBJ_TAB(SRF_ID)%POS_NVAR = SRF_OBJ_TAB(SRF_ID)%POS_TITLE
      &                            + 4 + TITLE_SIZE + 4
           SRF_OBJ_TAB(SRF_ID)%POS_VARINFO = SRF_OBJ_TAB(SRF_ID)%POS_NVAR
-     &                                   + 4 + 2*K4 + 4
+     &                            + 4 + 2*SRF_OBJ_TAB(SRF_ID)%KS + 4
 !
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_NVAR+4
           READ(FILE_ID,POS=MY_POS,IOSTAT=IERR)
@@ -451,14 +475,14 @@
           ENDIF
 !
           SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB
-     &                               + 4 + 10*K4 + 4
+     &                          + 4 + 10*SRF_OBJ_TAB(SRF_ID)%KS + 4
 !
           ! IF IB(10).NE.0  THEN WE HAVE A DATE OF 6 INTEGER AFTER IB
           IF(IB(10).NE.0) THEN
 
             SRF_OBJ_TAB(SRF_ID)%POS_DATE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
             SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_NUM
-     &                                 + 4 + 6*K4 + 4
+     &                            + 4 + 6*SRF_OBJ_TAB(SRF_ID)%KS + 4
           ELSE
             SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0
           ENDIF
@@ -478,19 +502,21 @@
 !
 !
           SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
-     &                                + (4 + 4*K4 + 4)
+     &                            + (4 + 4*SRF_OBJ_TAB(SRF_ID)%KS + 4)
           SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE
      &        + (4 +
-     &             SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP*K4
+     &             SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP
+     &            * SRF_OBJ_TAB(SRF_ID)%KS
      &             + 4)
           SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO
-     &        + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*K4 + 4)
+     &      + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%KS + 4)
           !
           !Check if we are indeed in single or double precision
           ! If we are in single precision the tag for the coordiantes should be:
           ! npoin*4 if we are in double it will be npoin*8
           !
           READ(FILE_ID,POS=SRF_OBJ_TAB(SRF_ID)%POS_COORD) TAG
+!##> SEB @ HRW:  IT IS NOT AN ERROR TO BE WORKING WITH LITTLE ENDIAN
           IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
             FFORMAT = 'SERAFIND'
             SRF_OBJ_TAB(SRF_ID)%RS = 8
@@ -512,6 +538,29 @@
 !
 !         THE FIRST FILE (THE GEO) SETS THE PACE
           IF( SELAFMT.EQ.'SERAFIN?' ) SELAFMT = FFORMAT
+!
+!          IF(FFORMAT.EQ.'SERAFIN ') THEN
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIND FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 8
+!              FFORMAT = 'SERAFIND'
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ELSE
+!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
+!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
+!     &                    'IT IS A SERAFIN FILE'
+!              SRF_OBJ_TAB(SRF_ID)%RS = 4
+!              FFORMAT = 'SERAFIN '
+!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
+!              IERR = HERMES_INVALID_SERAFIN_FILE
+!              RETURN
+!            ENDIF
+!          ENDIF
+!##< SEB @ HRW
 !
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
@@ -544,7 +593,7 @@
           ! COUTING THE NUMBER OF TIME STEPS
           NTIMESTEP = 0
           IERR = 0
-#if defined( NO_INQUIRE_SIZE )
+#if defined NO_INQUIRE_SIZE
           ! Need this solution for some compilers in which inquire size
           ! is not implemented
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATA
@@ -875,7 +924,8 @@
         IF(SRF_OBJ_TAB(SRF_ID)%POS_DATE.NE.0) THEN
           MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_DATE + 4
           DO I=1,6
-            READ(FILE_ID,POS=MY_POS+(I-1)*K4,IOSTAT=IERR) TMP
+            READ(FILE_ID,POS=MY_POS,IOSTAT=IERR) TMP
+            MY_POS = MY_POS + SRF_OBJ_TAB(SRF_ID)%KS
             CALL CHECK_CALL(IERR,'GET_MESH_DATE_SRF:READ')
             DATE(I) = TMP
           ENDDO
@@ -2016,13 +2066,13 @@
      &                          + 4 + TITLE_SIZE + 4
         !
         ! WRINTING THE NUMBER OF VARIABLE RECORD
-        TAG = 2*K4 ! TWO INTEGERS
+        TAG = 2*SRF_OBJ_TAB(SRF_ID)%KS ! TWO INTEGERS
         TMP = NVAR
         TMP2 = 0
         WRITE(FILE_ID,IOSTAT=IERR) TAG,TMP,TMP2,TAG
         CALL CHECK_CALL(IERR,'SET_HEADER_SRF:WRITE')
         SRF_OBJ_TAB(SRF_ID)%POS_VARINFO = SRF_OBJ_TAB(SRF_ID)%POS_NVAR
-     &                               + 4 + 2*K4 + 4
+     &                          + 4 + 2*SRF_OBJ_TAB(SRF_ID)%KS + 4
         !
         ! WRITING THE NAME AND UNITS FOR EACH VARIABLE
         ! I.E. NVAR RECORD OF VAR_SIZE CHARACTERS
@@ -2163,23 +2213,24 @@
         MY_POS = SRF_OBJ_TAB(SRF_ID)%POS_IB
         ! Set position for writing
         READ(FILE_ID,POS=MY_POS-4) TAG
-        TAG = K4*10
+        TAG = 10*SRF_OBJ_TAB(SRF_ID)%KS
         WRITE(FILE_ID,IOSTAT=IERR) TAG,TMP,TAG
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
 
         ! WRITING THE DATE RECORD
         IF(TMP(10).NE.0) THEN
           SRF_OBJ_TAB(SRF_ID)%POS_DATE =
-     &           SRF_OBJ_TAB(SRF_ID)%POS_IB + 4 + 10*K4 + 4
-          TAG = K4*6
+     &           SRF_OBJ_TAB(SRF_ID)%POS_IB
+     &          + 4 + 10*SRF_OBJ_TAB(SRF_ID)%KS + 4
+          TAG = 6*SRF_OBJ_TAB(SRF_ID)%KS
           WRITE(FILE_ID,IOSTAT=IERR) TAG,DATE,TIME,TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
           SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_DATE
-     &                               + 4 + 6*K4 + 4
+     &                           + 4 + 6*SRF_OBJ_TAB(SRF_ID)%KS + 4
         ELSE
           SRF_OBJ_TAB(SRF_ID)%POS_DATE = 0
           SRF_OBJ_TAB(SRF_ID)%POS_NUM = SRF_OBJ_TAB(SRF_ID)%POS_IB
-     &                               + 4 + 10*K4 + 4
+     &                          + 4 + 10*SRF_OBJ_TAB(SRF_ID)%KS + 4
         ENDIF
         !
         ! BUILDING THE 4 INTEGER RECORD
@@ -2194,11 +2245,11 @@
         TMP(2) = SRF_OBJ_TAB(SRF_ID)%NPOIN
         TMP(3) = SRF_OBJ_TAB(SRF_ID)%NDP
         TMP(4) = 1
-        TAG = 4*K4
+        TAG = 4*SRF_OBJ_TAB(SRF_ID)%KS
         WRITE(FILE_ID,IOSTAT=IERR) TAG,TMP(1:4),TAG
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         SRF_OBJ_TAB(SRF_ID)%POS_IKLE = SRF_OBJ_TAB(SRF_ID)%POS_NUM
-     &                              + (4 + 4*K4 + 4)
+     &                          + (4 + 4*SRF_OBJ_TAB(SRF_ID)%KS + 4)
         !
         ! Writing ikle
         !
@@ -2246,20 +2297,21 @@
           ENDDO
         ENDIF
         !
-        TAG = K4*IKLES_SIZE
+        TAG = IKLES_SIZE*SRF_OBJ_TAB(SRF_ID)%KS
         WRITE(FILE_ID,IOSTAT=IERR)
      &                       TAG,IKLES(1:IKLES_SIZE),TAG
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         SRF_OBJ_TAB(SRF_ID)%POS_IPOBO = SRF_OBJ_TAB(SRF_ID)%POS_IKLE
      &      + (4 +
-     &           SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP*K4
+     &           SRF_OBJ_TAB(SRF_ID)%NELEM*SRF_OBJ_TAB(SRF_ID)%NDP
+     &          * SRF_OBJ_TAB(SRF_ID)%KS
      &           + 4)
         DEALLOCATE(IKLES)
         !
         ! Write ipobo or knolg depending if serial or parallel
         !
         ! We are in serial if both nptfr and nptir are equal to 0
-        TAG = K4*NPOIN
+        TAG = NPOIN*SRF_OBJ_TAB(SRF_ID)%KS
         IF(NPTIR.EQ.0) THEN
           WRITE(FILE_ID,IOSTAT=IERR) TAG,IPOBO(1:NPOIN),TAG
         ELSE
@@ -2267,7 +2319,7 @@
         ENDIF
         CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         SRF_OBJ_TAB(SRF_ID)%POS_COORD = SRF_OBJ_TAB(SRF_ID)%POS_IPOBO
-     &      + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*K4 + 4)
+     &      + (4 + SRF_OBJ_TAB(SRF_ID)%NPOIN*SRF_OBJ_TAB(SRF_ID)%KS + 4)
         !
         ! Writing coordinates
         !
@@ -2282,9 +2334,9 @@
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         ELSE
           ! X Y COORDINATES
-          WRITE(FILE_ID,IOSTAT=IERR) TAG,X(1:NPOIN),TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(X(I),I=1,NPOIN),TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
-          WRITE(FILE_ID,IOSTAT=IERR) TAG,Y(1:NPOIN),TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(Y(I),I=1,NPOIN),TAG
           CALL CHECK_CALL(IERR,'SET_MESH_SRF:WRITE')
         ENDIF
         SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD
@@ -2399,7 +2451,7 @@
           ! write time of the dataset if it is the first variable
           ! write the data for that variable
           TAG = SRF_OBJ_TAB(SRF_ID)%RS*N
-          WRITE(FILE_ID,IOSTAT=IERR) TAG,VAR_VALUE,TAG
+          WRITE(FILE_ID,IOSTAT=IERR) TAG,(VAR_VALUE(I),I=1,N),TAG
           CALL CHECK_CALL(IERR,'ADD_DATA_SRF:WRITE')
         ENDIF
         !

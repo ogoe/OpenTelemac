@@ -94,10 +94,11 @@
 import sys
 import re
 import time
-from os import path,walk,environ,remove,putenv
+from os import path,walk,environ,remove
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 from copy import deepcopy
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
+from config import parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
 from utils.messages import MESSAGES,filterMessage,reprMessage,banner
@@ -275,49 +276,75 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",type="string",dest="configName",default='',
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Used to validate the TELEMAC system against a benchmark of test cases.
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default='',
       help="specify configuration name, default is the first found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default='',
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default='',
       help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",type="string",dest="version",default='',
+   parser.add_argument(\
+      "-v", "--version",dest="version",default='',
       help="specify the report version number, default is an empty string" )
-   parser.add_option("-m", "--modules",type="string",dest="modules",default='',
+   parser.add_argument(\
+      "-m", "--modules",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
-   parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
+   parser.add_argument(\
+      "-s", "--screen",action="store_true",dest="display",default=False,
       help="specify whether to display on screen or save silently" )
-   parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
+   parser.add_argument(\
+      "-w", "--workdirectory",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
-   parser.add_option("--jobname",type="string",dest="jobname",default='job_unamed',
+   parser.add_argument(\
+      "--jobname",dest="jobname",default='job_unamed',
       help="specify a jobname for HPC queue tracking" )
-   parser.add_option("--queue",type="string",dest="hpc_queue",default='',
+   parser.add_argument(\
+      "--queue",dest="hpc_queue",default='',
       help="specify a queue for HPC queue tracking" )
-   parser.add_option("--walltime",type="string",dest="walltime",default='01:00:00',
+   parser.add_argument(\
+      "--walltime",dest="walltime",default='01:00:00',
       help="specify a walltime for HPC queue tracking" )
-   parser.add_option("--email",type="string",dest="email",default='s.bourban@hrwallingford.com',
+   parser.add_argument(\
+      "--email",dest="email",default='s.bourban@hrwallingford.com',
       help="specify an e-mail adress to warn when HPC job is finished" )
-   parser.add_option("--hosts",type="string",dest="hosts",default='',
+   parser.add_argument(\
+      "--hosts",dest="hosts",default='',
       help="specify the list of hosts available for parallel mode, ';' delimited" )
-   parser.add_option("--ncsize",type="string",dest="ncsize",default='',
+   parser.add_argument(\
+      "--ncsize",dest="ncsize",default='',
       help="the number of processors forced in parallel mode" )
-   parser.add_option("--nctile",type="string",dest="nctile",default='',
+   parser.add_argument(\
+      "--nctile",dest="nctile",default='',
       help="the number of core per node. ncsize/nctile is the number of compute nodes" )
-   parser.add_option("--ncnode",type="string",dest="ncnode",default='',
+   parser.add_argument(\
+      "--ncnode",dest="ncnode",default='',
       help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
-   parser.add_option("--mpi",action="store_true",dest="mpi",default=False,
+   parser.add_argument(\
+      "--mpi",action="store_true",dest="mpi",default=False,
       help="make sure the mpi command is executed, ignoring any hpc command" )
-   parser.add_option("--split",action="store_true",dest="split",default=False,
+   parser.add_argument(\
+      "--split",action="store_true",dest="split",default=False,
       help="will only do the trace (and the split in parallel) if option there" )
-   parser.add_option("--merge",action="store_true",dest="merge",default=False,
+   parser.add_argument(\
+      "--merge",action="store_true",dest="merge",default=False,
       help="will only do the output copying (and recollection in parallel) if option there" )
-   parser.add_option("--run",action="store_true",dest="run",default=False,
+   parser.add_argument(\
+      "--run",action="store_true",dest="run",default=False,
       help="will only run the simulation if option there" )
-   parser.add_option("-b","--bypass",action="store_true",dest="bypass",default=False,
+   parser.add_argument(\
+      "-b","--bypass",action="store_true",dest="bypass",default=False,
       help="will bypass execution failures and try to carry on (final report at the end)" )
 # Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
-   parser.add_option("-k","--rank",type="string",dest="rank",default='0',
+   parser.add_argument(\
+      "-k","--rank",dest="rank",default='0',
       help='''1 integer only (--rank 0 is the default)
          \n
          *** Options *** \t\t\t\t\n
@@ -345,46 +372,58 @@ if __name__ == "__main__":
          Rank 11: The individual test case takes more than 1h to run
          \t\t\t\t\n
          Rank 13: Problematic test cases''' )
-   parser.add_option("", "--valrootdir",type="string",dest="val_root",default='',
+   parser.add_argument(\
+      "--valrootdir",dest="val_root",default='',
       help="specify the directory in which to search the validation cases, default is taken from config file" )
-   parser.add_option("","--runOnly",action="store_true",dest="runOnly",default=False,
+   parser.add_argument(\
+      "--runOnly",action="store_true",dest="runOnly",default=False,
       help="Only do the action type" )
-   parser.add_option("--todos",type="string",dest="todos",default='',
+   parser.add_argument(\
+      "--todos",dest="todos",default='',
       help="filter specific actions from the XML file, and will only do these by default" )
-   parser.add_option("--report",type="string",dest="report",default='',
+   parser.add_argument(\
+      "--report",dest="report",default='',
       help="will create a report summary of with your chosen middle name" )
-   parser.add_option("--clean",action="store_true",dest="cleanup",default=False,
+   parser.add_argument(\
+      "--clean",action="store_true",dest="cleanup",default=False,
       help="will erase all object, executable, result files from subfolders on the selected configs/modules" )
    # ~~> Other
-   parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
+   parser.add_argument(\
+      "--use-link",action="store_true",dest="use_link",default=False,
       help="Will use link instead of copy in the temporary folder (Unix system only)" )
-   options, args = parser.parse_args()
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # path to the root
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   if options.rootDir != '': PWD = options.rootDir
-   environ['HOMETEL'] = PWD
+   # The path to the root relates to the script launched, which implies
+   # that the user environment knows which to run
+   # (this script is stored under .../scripts/python27/)
+   #PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   PWD = path.dirname(path.dirname( path.dirname(__file__)) )
+   # if the appropriate command line option is used, then reset rootDir
+   if options.rootDir != '': PWD = path.abspath(options.rootDir)
+   # The path to the python scripts is defined by the script launched
+   PYT = path.dirname(__file__)
+
+   # /!\ please do not reset the users environemnt
+   # environ['HOMETEL'] = PWD
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
-   if options.configName == '':
-      options.configName = USETELCFG
-   else:
-      environ['USETELCFG'] = options.configName
+   if options.configName != '': USETELCFG = options.configName
+   # /!\ please do not reset the users environemnt
+   #else: environ['USETELCFG'] = options.configName
    # user configuration file
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if options.configFile != '': SYSTELCFG = options.configFile
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    options.configFile = SYSTELCFG
-   # additional addition to make sure
-   PYTELPATH = path.dirname(sys.argv[0])
-   if options.rootDir != '': PYTELPATH = path.join(path.join(options.rootDir,'scripts'),'python27')
-   if 'PYTELPATH' not in environ:
-      environ.update({'PYTELPATH':PYTELPATH}) # do you need this ?
-      sys.path.append( PYTELPATH ) # clever you !
+   #PYTELPATH = path.dirname(sys.argv[0])
+   #if options.rootDir != '': PYTELPATH = path.join(path.join(options.rootDir,'scripts'),'python27')
+   #if 'PYTELPATH' not in environ:
+   #   environ.update({'PYTELPATH':PYTELPATH}) # do you need this ?
+   #   sys.path.append( PYTELPATH ) # clever you !
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -392,7 +431,6 @@ if __name__ == "__main__":
    VERSION = 'report'
    svnrev = ''
    svnurl = ''
-   svnban = 'unknown revision'
    try:
       key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
       tail,code = mes.runCmd('svn info '+PWD,True)
@@ -430,11 +468,11 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile,options.configName)
-   # If USETELCFG is not defined in the environment setting USETELCFG to the
-   # first config
-   if 'USETELCFG' not in environ:
-      environ['USETELCFG'] = cfgs.iterkeys().next()
+   cfgs = parseConfigFile(options.configFile,USETELCFG)
+   # /!\ yo need to validate all configuration in the config file
+   # If USETELCFG is not defined in the environment setting USETELCFG to the first config
+   # /!\ please do not reset the users environemnt
+   #if 'USETELCFG' not in environ: environ['USETELCFG'] = cfgs.iterkeys().next()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
@@ -451,7 +489,7 @@ if __name__ == "__main__":
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    reports = REPORT(options.report)
 
-   if args != []:
+   if options.args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
       print '\n\nScanning XML files and configurations\n'+'~'*72+'\n'
@@ -459,16 +497,18 @@ if __name__ == "__main__":
       for cfgname in cfgs:
          # still in lower case
          if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
-         if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+         cfgs[cfgname]['pytel'] = PYT
+         root = cfgs[cfgname]['root']
+         if options.rootDir != '': cfgs[cfgname]['root'] = PWD
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          print '    +> '+cfgname+': ' + ', '.join(cfg['VALIDATION'].keys())
-         cfg.update({ 'PWD':PWD })
+         #cfg.update({ 'PWD':PWD })
          if options.cleanup: cfg['REBUILD'] = 2
 
-         for xmlFile in args:
+         for xmlFile in options.args:
             if not path.isfile(xmlFile):
                print '\nNot able to find your XML file: ' + xmlFile
                print ' ... maybe something wrong with your command line'
@@ -481,24 +521,25 @@ if __name__ == "__main__":
       for xmlFile in xmls:
          print '\n\nFocused validation on ' + xmlFile + '\n'+'~'*72+'\n'
          try:
-            report = reports.add(options.report,PWD,VERSION)
+            report = reports.add(options.report,root,VERSION)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
             break
          r = []
-         if xmlFile.replace(PWD,'') in report: r = report[xmlFile.replace(PWD,'')]['casts']
-         environ['USETELCFG'] = cfgname
+         if xmlFile.replace(root,'') in report: r = report[xmlFile.replace(root,'')]['casts']
+         # /!\ please do not reset the users environemnt
+         #environ['USETELCFG'] = cfgname
          try:
             tic = time.time()
             r = runXML(path.realpath(xmlFile),xmls[xmlFile],r,options.bypass,options.runOnly)
             toc = time.time()
             #if r == []: r = [{ 'fail':False, 'warn':False, 'value':1, 'title':'My work is done' }]
-            report.update({ xmlFile.replace(PWD,''):
+            report.update({ xmlFile.replace(root,''):
                { 'duration':toc-tic, 'file':path.realpath(xmlFile), 'casts':r } })
          except Exception as e:
             mes = filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
             xcpts.addMessages([mes])
-            report.update({ xmlFile.replace(PWD,''):
+            report.update({ xmlFile.replace(root,''):
                { 'duration':0, 'file':path.realpath(xmlFile),
                   'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
                } })
@@ -511,6 +552,8 @@ if __name__ == "__main__":
       for cfgname in cfgs:
          # still in lower case
          if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
+         cfgs[cfgname]['pytel'] = PYT
+         root = cfgs[cfgname]['root']
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          root = cfgs[cfgname]['root']
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
@@ -520,7 +563,7 @@ if __name__ == "__main__":
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          print '    +> '+cfgname+': ' + ', '.join(cfg['VALIDATION'].keys())
-         cfg.update({ 'PWD':PWD })
+         #cfg.update({ 'PWD':PWD })
          if options.cleanup: cfg['REBUILD'] = 2
          # gathering XMLs
          for codeName in cfg['VALIDATION']:
@@ -562,12 +605,12 @@ if __name__ == "__main__":
                   report.update({ path.realpath(xmlFile).replace(root,''):
                      { 'duration':toc-tic, 'file':path.realpath(xmlFile), 'casts':r } })
                except Exception as e:
-                  mes = filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
-                  xcpts.addMessages([mes])
-                  report.update({ path.realpath(xmlFile).replace(root,''):
-                     { 'duration':0, 'file':path.realpath(xmlFile),
-                        'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
-                     } })
+                     mes = filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)
+                     xcpts.addMessages([mes])
+                     report.update({ path.realpath(xmlFile).replace(root,''):
+                        { 'duration':0, 'file':path.realpath(xmlFile),
+                           'casts':[{ 'xref':'*****', 'fail':True, 'warn':True, 'updt':True, 'rank':-1, 'value':0, 'title':reprMessage([mes]).replace('\n','') }]
+                        } })
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~

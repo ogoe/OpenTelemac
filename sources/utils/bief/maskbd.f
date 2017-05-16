@@ -79,11 +79,14 @@
 !
       INTEGER IELEM,I1,I2,I3,N
 !
-      DOUBLE PRECISION EPSILO,ZSE
+      DOUBLE PRECISION ZSE
 !
       LOGICAL FLAG
 !
-      DATA EPSILO / 1.D-6 /
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSILO / 1.D-6 /
+      DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

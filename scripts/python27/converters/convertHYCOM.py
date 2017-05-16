@@ -26,6 +26,7 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import time
 from datetime import datetime
 import numpy as np
@@ -41,7 +42,6 @@ except:
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
 
@@ -486,14 +486,36 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-r", "--root",type="string",dest="rootName",default='hycom.slf',help="root name used for the output" )
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default=None,help="specify the first date included (1972-13-07)" )
-   parser.add_option("-s", "--stop",type="string",dest="tstop",default=None,help="specify the last date included (1980-12-31)" )
-   parser.add_option("--bl",type="string",dest="blcorner",default=None,help="specify the bottom left corner (25,-117)" )
-   parser.add_option("--tr",type="string",dest="trcorner",default=None,help="specify the top right corner (27,-110)" )
-   parser.add_option("--2d",action="store_true",dest="t2d",default=False,help="if there, produces on the 2D file" )
-   options, args = parser.parse_args()
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Download HyCOM data into a SELAFIN file\n
+Example 1: Extraction of 2 months of 2D and 3D HYCOM data for ADCP comparison.
+> convertHYCOM.py --from 2013-08-01 --stop 2013-11-21 --bl 20,-119 --tr 29,-108 -r hycom-2m.slf\n
+Example 2: Extraction of 3 years of 2D HYCOM data for big picture review.
+> convertHYCOM.py --from 2010-11-21 --stop 2013-11-21 --bl 20,-119 --tr 29,-108 -r hycom-3y.slf --2d\n
+Example 3: Extraction of 3 years of 2D HYCOM data for big picture review.
+> convertHYCOM.py --from 2010-11-21 --stop 2013-11-21 --bl -55,-70 --tr -45,-50 -r hycom-3y.slf --2d
+      '''))
+   parser.add_argument(\
+      "-r", "--root",dest="rootName",default='hycom.slf',required=True,
+      help="root name used for the output" )
+   parser.add_argument(\
+      "-f", "--from",dest="tfrom",default=None,required=True,
+      help="specify the first date included (1972-13-07)" )
+   parser.add_argument(\
+      "-s", "--stop",dest="tstop",default=None,required=True,
+      help="specify the last date included (1980-12-31)" )
+   parser.add_argument(\
+      "--bl",dest="blcorner",default=None,required=True,
+      help="specify the bottom left corner (25,-117)" )
+   parser.add_argument(\
+      "--tr",dest="trcorner",default=None,required=True,
+      help="specify the top right corner (27,-110)" )
+   parser.add_argument(\
+      "--2d",action="store_true",dest="t2d",default=False,
+      help="if there, produces on the 2D file" )
+   options = parser.parse_args()
 
    # Arbitrary 6-day period
    period = [[],[]]

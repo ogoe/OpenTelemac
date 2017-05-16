@@ -116,11 +116,11 @@
       INTEGER            I,K,IVAL,LCAR,ICOL,JCOL,ILONG,ITYP,NUMERO,I2
       INTEGER            DEPLAC,ADD,J,OFFSET(4),NBMOT
       INTEGER            TYPIGN(100),LONIGN(100),NMAXR(4),ORDRE
-      INTEGER            ADSRC,ADDES,NULINT,NVAL,NIGN,L1,LONPRO(15)
+      INTEGER         ::  ADSRC,ADDES,NULINT,NVAL,NIGN,L1,LONPRO(15)
       LOGICAL            DYNAM,LANGUE,NULLOG,LUIGN,AIDLNG,VUMOT
       LOGICAL            ARRET,VUCMD(5),VUCMD0(5),EXECMD,GESTD
       CHARACTER(LEN=1)   PTVIRG,QUOTE
-      CHARACTER(LEN=9)   MOTPRO(15),TYPE
+      CHARACTER(LEN=9) :: MOTPRO(15),TYPE
       CHARACTER(LEN=72)  MOTIGN(100),LIGNE
       CHARACTER(LEN=144) NULCAR,TYPE2
       DOUBLE PRECISION   NULREA
@@ -131,11 +131,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      DATA MOTPRO /'NOM','TYPE','INDEX','TAILLE','DEFAUT','AIDE',
-     & 'CHOIX','RUBRIQUE','NIVEAU','MNEMO','COMPOSE','COMPORT',
-     & 'CONTROLE','APPARENCE','SUBMIT'/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA MOTPRO /
+      PARAMETER ( MOTPRO = (/
+     &  'NOM      ','TYPE     ','INDEX    ','TAILLE   ','DEFAUT   ',
+     &  'AIDE     ','CHOIX    ','RUBRIQUE ','NIVEAU   ','MNEMO    ',
+     &  'COMPOSE  ','COMPORT  ','CONTROLE ','APPARENCE','SUBMIT   ' /) )
 !     LENGTH OF THE PROTECTED WORDS
-      DATA LONPRO /3,4,5,6,6,4,5,8,6,5,7,7,8,9,6/
+!      DATA LONPRO /3,4,5,6,6,4,5,8,6,5,7,7,8,9,6/
+      PARAMETER ( LONPRO =(/ 3,4,5,6,6,4,5,8,6,5,7,7,8,9,6 /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

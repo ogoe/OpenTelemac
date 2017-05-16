@@ -10,17 +10,17 @@
 
       USE m_TypeDefs_Nestor
 
-#ifndef  NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY :  my_FLUSH          
-#endif   NESTOR_INTERFACES                                        
+!#ifndef  NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  my_FLUSH
+!#endif   /* NESTOR_INTERFACES */
 
 
       IMPLICIT NONE
       CHARACTER (128), INTENT(IN)  :: line
       CHARACTER (128), INTENT(OUT) :: KeyWord
       CHARACTER (128), INTENT(OUT) :: valueStr
-      
-#ifndef NESTOR_INTERFACES 
+
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
 
       INTEGER                      :: sepPos  !position of seperator "="
@@ -59,7 +59,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE ParseSteerLine              !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

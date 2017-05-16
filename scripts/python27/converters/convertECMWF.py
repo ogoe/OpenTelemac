@@ -33,10 +33,10 @@ import urllib
 import urllib2
 import httplib
 import traceback
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
 
@@ -550,15 +550,33 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default=None,help="specify the first date included (1972-13-07)" )
-   parser.add_option("-s", "--stop",type="string",dest="tstop",default=None,help="specify the last date included (1980-12-31)" )
-   parser.add_option("--bl",type="string",dest="blcorner",default=None,help="specify the bottom left corner (25,-117)" )
-   parser.add_option("--tr",type="string",dest="trcorner",default=None,help="specify the top right corner (27,-110)" )
-   parser.add_option("--dataset",type="string",dest="dataset",default='oper',help="type of dataset requested either 'oper' (atmospheric) or 'wave' (waves), etc.")
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+72*'~'+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Download ECMWF data into a SELAFIN file\n
+Examples 1:
+> convertECMWF.py --from 2011-02-15 --stop 2011-06-15 --bl 34,140 --tr 41,147 ecmwf-4m.slf
+      '''))
+   parser.add_argument(\
+      "rootName",default='',
+      help="specify the root name of the resulting SELAFIN file." )
+   parser.add_argument(\
+      "-f", "--from",dest="tfrom",default=None,required=True,
+      help="specify the first date included (1972-13-07)" )
+   parser.add_argument(\
+      "-s", "--stop",dest="tstop",default=None,required=True,
+      help="specify the last date included (1980-12-31)" )
+   parser.add_argument(\
+      "--bl",dest="blcorner",default=None,required=True,
+      help="specify the bottom left corner (25,-117)" )
+   parser.add_argument(\
+      "--tr",dest="trcorner",default=None,required=True,
+      help="specify the top right corner (27,-110)" )
+   parser.add_argument(\
+     "--dataset",dest="dataset",default='oper',
+     help="type of dataset requested either 'oper' (atmospheric) or 'wave' (waves), etc.")
+   options = parser.parse_args()
 
 
    # Arbitrary 6-day period
@@ -588,10 +606,10 @@ if __name__ == "__main__":
       sys.exit(1)
 
    # rootName
-   if len(args) != 1:
-      print '... only one file name is necessary to capture the processed dataset.\n\n'
-      sys.exit(1)
-   rootName = args[-1]
+   #if len(args) != 1:
+   #   print '... only one file name is necessary to capture the processed dataset.\n\n'
+   #   sys.exit(1)
+   rootName = options.rootName #args[-1]
    head,tail = path.splitext(rootName)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

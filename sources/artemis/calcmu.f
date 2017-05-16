@@ -25,6 +25,9 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 
       INTEGER I , ITERMU
@@ -33,8 +36,10 @@
 !-----------------------------------------------------------------------
 !
       INTRINSIC ABS,MIN,MAX,LOG,ATAN
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX
+!      EXTERNAL P_DMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

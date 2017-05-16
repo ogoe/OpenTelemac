@@ -36,6 +36,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !
@@ -43,11 +46,21 @@
 !
       DOUBLE PRECISION, INTENT(IN)            :: LOCATION
       INTEGER, INTENT(OUT)                    :: IER
-      INTEGER (MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+!      INTEGER (KIND=MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+      INTEGER (KIND=MY_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
+!##> JR @ RWTH: TERMINATE ON MPI PARTS NOT HANDLED BY COMPAD
+!#  if defined COMPAD
+!      WRITE(LU,*) 'P_MPI_ADDRESS2: COMPAD MAYBE CRITICAL',
+!     &     'MPI OPERATION'
+!      WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+!      CALL PLANTE(1)
+!      STOP
+!#  endif
+!##< JR @ RWTH
       CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
 !
       IF(IER.NE.0) THEN

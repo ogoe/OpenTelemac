@@ -54,7 +54,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LTT,I
+      INTEGER LTT,I,J
       LOGICAL IMP,LEO
 !
 !-----------------------------------------------------------------------
@@ -112,6 +112,20 @@
           CALL OS('X=0     ',X=KS)
         ENDIF
       ENDIF
+!
+!=======================================================================
+! UPDATE THE POINTERS TO THE DIFFERENTIATED VARIABLES
+!=======================================================================
+!
+!     TODO: TRY NOT USING THE HARDCODED NUMBER 28
+!
+      J = 28+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+VARCL%N
+      DO I = 1,NADVAR
+        IF((LEO.AND.SORLEO(J)).OR.(IMP.AND.SORIMP(J))) THEN
+          CALL AD_GET_SISYPHE(I,ADVAR%ADR(I)%P)
+          J = J + 1
+        ENDIF
+      ENDDO
 !
 !=======================================================================
 !

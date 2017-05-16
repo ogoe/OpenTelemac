@@ -52,7 +52,11 @@
       DOUBLE PRECISION, INTENT(IN)  :: U(*),V(*)
       DOUBLE PRECISION, INTENT(IN)  :: X(NELMAX,*),Y(NELMAX,*)
       INTEGER         , INTENT(IN)  :: IKLE(NELMAX,*)
-      DOUBLE PRECISION, INTENT(OUT) :: W1(NELMAX,*)
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: W1(NELMAX,*)
+!      DOUBLE PRECISION, INTENT(OUT) :: W1(NELMAX,*)
+!< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

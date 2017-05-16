@@ -104,11 +104,16 @@
 !+   Checking more memory allocation, with more error messages and hints
 !+   for solving problems.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_PARALLEL
-      USE INTERFACE_PARALLEL
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX,P_ISUM
       IMPLICIT NONE
       PRIVATE
 !
@@ -264,28 +269,9 @@
 !
 !     TO OPTIMISE PERIODICITY
 !
+      INTEGER :: I
       INTEGER, PARAMETER :: NPLANMAX=200
-      INTEGER ETA1(NPLANMAX)
-      DATA ETA1/002,003,004,005,006,007,008,009,010,011,
-     &          012,013,014,015,016,017,018,019,020,021,
-     &          022,023,024,025,026,027,028,029,030,031,
-     &          032,033,034,035,036,037,038,039,040,041,
-     &          042,043,044,045,046,047,048,049,050,051,
-     &          052,053,054,055,056,057,058,059,060,061,
-     &          062,063,064,065,066,067,068,069,070,071,
-     &          072,073,074,075,076,077,078,079,080,081,
-     &          082,083,084,085,086,087,088,089,090,091,
-     &          092,093,094,095,096,097,098,099,100,101,
-     &          102,103,104,105,106,107,108,109,110,111,
-     &          112,113,114,115,116,117,118,119,120,121,
-     &          122,123,124,125,126,127,128,129,130,131,
-     &          132,133,134,135,136,137,138,139,140,141,
-     &          142,143,144,145,146,147,148,149,150,151,
-     &          152,153,154,155,156,157,158,159,160,161,
-     &          162,163,164,165,166,167,168,169,170,171,
-     &          172,173,174,175,176,177,178,179,180,181,
-     &          182,183,184,185,186,187,188,189,190,191,
-     &          192,193,194,195,196,197,198,199,200,201/
+      INTEGER :: ETA1(NPLANMAX) = (/ (I+1, I = 1, NPLANMAX) /)
 !
 !     Initialisation marker for SCARACT
 !
@@ -475,7 +461,7 @@
 ! PREPARE THE MPI_TYPE FOR ALGAE INFORMATION EXCHANGE
 !---------------------------------------------------------------------
 !
-      SUBROUTINE ORGANISE_ALGS(NPARAM,NOMB)
+        SUBROUTINE ORGANISE_ALGS(NPARAM,NOMB)
           USE BIEF_DEF, ONLY: NCSIZE
           IMPLICIT NONE
           INTEGER, INTENT(IN)    :: NPARAM,NOMB
@@ -498,7 +484,7 @@
 !         COMMIT THE CHARACTERISTICS TYPE FOR COMM
           CALL ORG_CHARAC_TYPE_ALG(ALG_CHAR,NOMB)
           RETURN
-      END SUBROUTINE ORGANISE_ALGS
+        END SUBROUTINE ORGANISE_ALGS
 !
 !---------------------------------------------------------------------
 ! FOR COLLECTING CHARACTERISTICS LEAVING INITIALLY A GIVEN PARTITION
@@ -1501,16 +1487,21 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELE,ISO,ISPDONE,NSP
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
 !
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,NUM,DENOM
-      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,ZUP,ZDOWN,ZZ
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,NUM,DENOM
+      DOUBLE PRECISION DELTAZ,PAS2,ZUP,ZDOWN,ZZ
 !
       INTRINSIC ABS , INT , MAX , SQRT
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA EPSILO / -1.D-6 /
-      DATA EPSDZ  /1.D-4/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA EPSILO / -1.D-6 /
+!      DATA EPSDZ  /1.D-4/
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+      DOUBLE PRECISION, PARAMETER :: EPSDZ = 1.D-4
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -2247,19 +2238,24 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELE,ISO,ISPDONE,NSP
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
 !
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,NUM,DENOM
-      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,ZUP,ZDOWN,ZZ
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,NUM,DENOM
+      DOUBLE PRECISION DELTAZ,PAS2,ZUP,ZDOWN,ZZ
 !
       INTRINSIC ABS , INT , MAX , SQRT
 !
 !     FOR STOCHASTIC DIFFUSION
       DOUBLE PRECISION RAND1,RAND2,A,B,C,D,E,DIFF_X,DIFF_Y,DEUXPI
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA EPSILO / -1.D-6 /
-      DATA EPSDZ  /1.D-4/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA EPSILO / -1.D-6 /
+!      DATA EPSDZ  /1.D-4/
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+      DOUBLE PRECISION, PARAMETER :: EPSDZ  = 1.D-4
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -3047,16 +3043,21 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELE,ISO,ISPDONE,NSP
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
 !
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,DENOM
-      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,DENOM
+      DOUBLE PRECISION DELTAZ,PAS2
 !
       INTRINSIC ABS , INT , MAX , SQRT
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA EPSILO / -1.D-6 /
-      DATA EPSDZ  /1.D-4/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA EPSILO / -1.D-6 /
+!      DATA EPSDZ  /1.D-4/
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+      DOUBLE PRECISION, PARAMETER :: EPSDZ = 1.D-4
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -3202,7 +3203,7 @@
      &                 -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IEL)
         SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                 -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL)
-!        
+!
         SHZ(IPLOT) = (ZP-ZSTAR(IET)) / (ZSTAR(IET+1)-ZSTAR(IET))
 !
         XPLOT(IPLOT) = XP
@@ -3719,20 +3720,27 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELE,ISO,ISPDONE,NSP,NSPMAX
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
       INTEGER IETP1
 !
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,DENOM
-      DOUBLE PRECISION EPSDZ,PAS2
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,DENOM
+      DOUBLE PRECISION PAS2
 !
-      INTEGER  P_IMAX
-      EXTERNAL P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX
+!      EXTERNAL P_IMAX
+!##< JR @ RWTH
 !
       INTRINSIC ABS , INT , MAX , SQRT
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA EPSILO / -1.D-6 /
-      DATA EPSDZ  /1.D-4/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA EPSILO / -1.D-6 /
+!      DATA EPSDZ  /1.D-4/
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+      DOUBLE PRECISION, PARAMETER :: EPSDZ = 1.D-4
+!##< JR @ RWTH
 !
       NSPMAX=1
       ETA1(NPLAN)=1
@@ -4465,18 +4473,25 @@
 !
       INTEGER ISO,ISPDONE,NSP,NSPMAX
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,ISOH,ISOV,ISOF,ISOT
-      INTEGER IETP1,IFA,ISUI(3),IFR
+      INTEGER :: IETP1,IFA,ISUI(3),IFR
 !
-      DOUBLE PRECISION PAS,EPSILO,A1,A2,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,FP
+      DOUBLE PRECISION PAS,A1,A2,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,FP
       DOUBLE PRECISION PAS2,DFP,DENOM
 !
-      INTEGER  P_IMAX
-      EXTERNAL P_IMAX
+
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX
+!      EXTERNAL P_IMAX
+!##< JR @ RWTH
 !
       INTRINSIC ABS , INT , MAX , SQRT
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA EPSILO / -1.D-6 /
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA EPSILO / -1.D-6 /
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+!##< JR @ RWTH
 !
       NSPMAX=1
       ETA1(NPLAN)=1
@@ -5183,15 +5198,20 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3),ISPDONE
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3),ISPDONE
       INTEGER IPROC,ILOC,NSP
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
-!
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA ISUI2  / 3 , 1 , 2 /
-      DATA EPSILO / -1.D-6 /
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
 !
       INTRINSIC INT,MAX,MIN,SQRT
+!
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA ISUI2  / 3 , 1 , 2 /
+!      DATA EPSILO / -1.D-6 /
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      PARAMETER ( ISUI2 = (/ 3 , 1 , 2 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -5587,20 +5607,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6
-      INTEGER IEL,ISO,IFA,ISUI(3),ISUI2(3),ISPDONE
+      INTEGER :: IEL,ISO,IFA,ISUI(3),ISUI2(3),ISPDONE
       INTEGER IPROC,ILOC,NSP
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
       DOUBLE PRECISION SHP11,SHP12,SHP14
       DOUBLE PRECISION SHP22,SHP23,SHP24
       DOUBLE PRECISION SHP33,SHP31,SHP34
 !     FOR STOCHASTIC DIFFUSION
       DOUBLE PRECISION RAND1,RAND2,A,C,D,E,DIFF_X,DIFF_Y,DEUXPI
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA ISUI2  / 3 , 1 , 2 /
-      DATA EPSILO / -1.D-6 /
-!
       INTRINSIC INT,MAX,MIN,SQRT,ACOS
+!
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA ISUI2  / 3 , 1 , 2 /
+!      DATA EPSILO / -1.D-6 /
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      PARAMETER ( ISUI2 = (/ 3 , 1 , 2 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -6090,18 +6115,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3)
+      INTEGER :: IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3)
       INTEGER IPROC,ILOC,ISPDONE,NSP
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
       DOUBLE PRECISION SHP11,SHP12,SHP14
       DOUBLE PRECISION SHP22,SHP23,SHP24
       DOUBLE PRECISION SHP33,SHP31,SHP34
 !
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA ISUI2  / 3 , 1 , 2 /
-      DATA EPSILO / -1.D-6 /
-!
       INTRINSIC INT,MAX,MIN,SQRT
+!
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA ISUI2  / 3 , 1 , 2 /
+!      DATA EPSILO / -1.D-6 /
+      PARAMETER ( ISUI = (/ 2 , 3 , 1 /) )
+      PARAMETER ( ISUI2 = (/ 3 , 1 , 2 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -6557,15 +6587,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6,IEL,ISO,IFA,ISUI(3),ISUI2(3)
+      INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6,IEL,ISO,IFA
+      INTEGER :: ISUI(3),ISUI2(3)
       INTEGER IPROC,ILOC,ISPDONE,NSP
-      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
-!
-      DATA ISUI   / 2 , 3 , 1 /
-      DATA ISUI2  / 3 , 1 , 2 /
-      DATA EPSILO / -1.D-6 /
+      DOUBLE PRECISION PAS,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
 !
       INTRINSIC INT,MAX,MIN,SQRT
+!
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA ISUI   / 2 , 3 , 1 /
+!      DATA ISUI2  / 3 , 1 , 2 /
+!      DATA EPSILO / -1.D-6 /
+      PARAMETER ( ISUI =  (/ 2 , 3 , 1 /) )
+      PARAMETER ( ISUI2 = (/ 3 , 1 , 2 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = -1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !     FOR EVERY POINT
@@ -7776,8 +7812,10 @@
       DOUBLE PRECISION SHP33,SHP31,SHP34,UMSHZ,UMSHF
 !
 !     SHOULD BE SAME EPSILO THAN SCHAR11
-      DOUBLE PRECISION EPSILO
-      DATA EPSILO / 1.D-6 /
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSILO / 1.D-6 /
+      DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -8076,8 +8114,10 @@
 !-----------------------------------------------------------------------
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -8517,8 +8557,10 @@
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN
       DOUBLE PRECISION XVOID,YVOID,ZVOID
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -8758,11 +8800,15 @@
 !
       DOUBLE PRECISION DET1,DET2,DET3,ZF,ZS,X1,X2,X3,Y1,Y2,Y3,SURDET
 !
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
-      DOUBLE PRECISION EPSILO
-      DATA EPSILO/1.D-10/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPSILO/1.D-10/
+      DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-10
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -9214,8 +9260,10 @@
 !-----------------------------------------------------------------------
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -9590,8 +9638,10 @@
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN,NFLOT_OIL
       DOUBLE PRECISION XVOID,YVOID,ZVOID
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -9830,8 +9880,10 @@
 !-----------------------------------------------------------------------
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

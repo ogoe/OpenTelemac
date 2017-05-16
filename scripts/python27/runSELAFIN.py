@@ -77,8 +77,8 @@
 import sys
 from os import path
 import numpy as np
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other modules
 from parsers.parserSELAFIN import SELAFIN,SELAFINS,PARAFINS,subsetVariablesSLF
 from parsers.parserFortran import cleanQuotes
@@ -623,73 +623,144 @@ def main(action=None):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog <action> [Options] \nuse -h for more help.\n\n\
-action:\n\
-   scan        will print information about the SELAFIN, such as variables, their vales etc.\n\
-   spec        will print information about a spectral file (also SELAFIN), such as\n\
-                  frequencies, periodes, etc.\n\
-   chop        will chop a SELAFIN given a new set of time range and step (but alter is better)\n\
-   alter       will alter a SELAFIN file, choping or modifying time, converting its\n\
-                  coordinates, extracting variables, etc.\n\
-   merge       will merge two files together, whether they are continuous simulations\n\
-                  (same variables) or putting variables together (same time definition)\n\
-   subdivide   will subdivide a mesh by one iteration (splitting all triangles in four others)")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Tools for handling SELAFIN files and TELEMAC binary related in python\n
+Possible actions:\n
+   scan        will print information about the SELAFIN, such as variables, their vales etc.
+   spec        will print information about a spectral file (also SELAFIN), such as
+                  frequencies, periodes, etc.
+   chop        will chop a SELAFIN given a new set of time range and step (but alter is better)
+   alter       will alter a SELAFIN file, choping or modifying time, converting its
+                  coordinates, extracting variables, etc.
+   merge       will merge two files together, whether they are continuous simulations
+                  (same variables) or putting variables together (same time definition)
+   subdivide   will subdivide a mesh by one iteration (splitting all triangles in four others)
+      '''))
+   #parser.add_argument(
+   #   dest="action", type=str,
+   #   choices=set(("scan", "spec", "chop", "alter", "merge", "subdivide")),
+   #   help="""Choose one in the list below:
+   parser.add_argument( "args",nargs='*' )
    # valid for scan, chop and alter
-   parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (','-delimited)" )
+   parser.add_argument(\
+      "-v", "--vars",dest="xvars",default=None,
+      help="specify which variables should remain (','-delimited)" )
    # valid for scan and chop
-   parser.add_option("-c","--core",action="store_true",dest="core",default=False,help="scan: specify whether to print statistics on the core variables" )
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default="1",help="chop: specify the first frame included" )
-   parser.add_option("-s", "--stop",type="string",dest="tstop",default="-1",help="chop: specify the last frame included (negative from the end)" )
-   parser.add_option("-d", "--step",type="string",dest="tstep",default="1",help="specify the step for the extraction of frames" )
+   parser.add_argument(\
+      "-c","--core",action="store_true",dest="core",default=False,
+      help="scan: specify whether to print statistics on the core variables" )
+   parser.add_argument(\
+      "-f", "--from",dest="tfrom",default="1",
+      help="chop: specify the first frame included" )
+   parser.add_argument(\
+      "-s", "--stop",dest="tstop",default="-1",
+      help="chop: specify the last frame included (negative from the end)" )
+   parser.add_argument(\
+      "-d", "--step",dest="tstep",default="1",
+      help="specify the step for the extraction of frames" )
    # valid for chop, alter and merge
-   parser.add_option("-r", "--replace",action="store_true",dest="freplace",default=False,help="if present, the output file will eventualy replace the input file" )
+   parser.add_argument(\
+      "-r", "--replace",action="store_true",dest="freplace",default=False,
+      help="if present, the output file will eventualy replace the input file" )
    # valid for alter
-   parser.add_option("--title",type="string",dest="atitle",default=None,help="set the title of the SLF" )
-   parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset AT to zero second" )
-   parser.add_option("--date",type="string",dest="adate",default=None,help="set the start date of the SLF (dd-mm-yyyy)" )
-   parser.add_option("--time",type="string",dest="atime",default=None,help="set the start time of the SLF (hh:mm:ss)" )
-   parser.add_option("--endian",action="store_true",dest="eswitch",default=False,help="switch between endian encoddings" )
-   parser.add_option("--float",action="store_true",dest="fswitch",default=False,help="switch between DOUBLE and SINGLE precision float" )
-   parser.add_option("--switch",action="store_true",dest="aswitch",default=False,help="switch between VARIABLES and CLANDESTINES" )
-   parser.add_option("--name",type="string",dest="aname",default=None,help="change the name of a VARIABLE: 'OLD VAR=NEW VAR'" )
-   parser.add_option("--T+?",type="string",dest="atp",default="0",help="adds to the ATs" )
-   parser.add_option("--T*?",type="string",dest="atm",default="1",help="scales the ATs" )
-   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
-   parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
-   parser.add_option("--ll2utm",type="string",dest="ll2utm",default=None,help="convert from longitude-latitude to UTM" )
-   parser.add_option("--utm2ll",type="string",dest="utm2ll",default=None,help="convert from UTM to longitude-latitude" )
-   parser.add_option("--X+?",type="string",dest="axp",default="0",help="adds to the MESHX" )
-   parser.add_option("--X*?",type="string",dest="axm",default="1",help="scales the MESHX" )
-   parser.add_option("--Y+?",type="string",dest="ayp",default="0",help="adds to the MESHY" )
-   parser.add_option("--Y*?",type="string",dest="aym",default="1",help="scales the MESHY" )
-   parser.add_option("--Z?",type="string",dest="azname",default=None,help="will filter Z+ znd Z* operations on that VARIABLE name" )
-   parser.add_option("--Z+?",type="string",dest="azp",default="0",help="adds to the VARIABLE" )
-   parser.add_option("--Z*?",type="string",dest="azm",default="1",help="scales the VARIABLE" )
-   parser.add_option("--accuracy",type="string",dest="accuracy",default="5",help="significant figures for text display" )
+   parser.add_argument(\
+      "--title",dest="atitle",default=None,
+      help="set the title of the SLF" )
+   parser.add_argument(\
+      "--reset",action="store_true",dest="areset",default=False,
+      help="reset AT to zero second" )
+   parser.add_argument(\
+      "--date",dest="adate",default=None,
+      help="set the start date of the SLF (dd-mm-yyyy)" )
+   parser.add_argument(\
+      "--time",dest="atime",default=None,
+      help="set the start time of the SLF (hh:mm:ss)" )
+   parser.add_argument(\
+      "--endian",action="store_true",dest="eswitch",default=False,
+      help="switch between endian encoddings" )
+   parser.add_argument(\
+      "--float",action="store_true",dest="fswitch",default=False,
+      help="switch between DOUBLE and SINGLE precision float" )
+   parser.add_argument(\
+      "--switch",action="store_true",dest="aswitch",default=False,
+      help="switch between VARIABLES and CLANDESTINES" )
+   parser.add_argument(\
+      "--name",dest="aname",default=None,
+      help="change the name of a VARIABLE: 'OLD VAR=NEW VAR'" )
+   parser.add_argument(\
+      "--T+?",dest="atp",default="0",
+      help="adds to the ATs" )
+   parser.add_argument(\
+      "--T*?",dest="atm",default="1",
+      help="scales the ATs" )
+   parser.add_argument(\
+      "--sph2ll",dest="sph2ll",default=None,
+      help="convert from spherical to longitude-latitude" )
+   parser.add_argument(\
+      "--ll2sph",dest="ll2sph",default=None,
+      help="convert from longitude-latitude to spherical" )
+   parser.add_argument(\
+      "--ll2utm",dest="ll2utm",default=None,
+      help="convert from longitude-latitude to UTM" )
+   parser.add_argument(\
+      "--utm2ll",dest="utm2ll",default=None,
+      help="convert from UTM to longitude-latitude" )
+   parser.add_argument(\
+      "--X+?",dest="axp",default="0",
+      help="adds to the MESHX" )
+   parser.add_argument(\
+      "--X*?",dest="axm",default="1",
+      help="scales the MESHX" )
+   parser.add_argument(\
+      "--Y+?",dest="ayp",default="0",
+      help="adds to the MESHY" )
+   parser.add_argument(\
+      "--Y*?",dest="aym",default="1",
+      help="scales the MESHY" )
+   parser.add_argument(\
+      "--Z?",dest="azname",default=None,
+      help="will filter Z+ znd Z* operations on that VARIABLE name" )
+   parser.add_argument(\
+      "--Z+?",dest="azp",default="0",
+      help="adds to the VARIABLE" )
+   parser.add_argument(\
+      "--Z*?",dest="azm",default="1",
+      help="scales the VARIABLE" )
+   parser.add_argument(\
+      "--accuracy",dest="accuracy",default="5",
+      help="significant figures for text display" )
    # valid for transf / TODO: make this valid for all
-   parser.add_option("--points",type="string",dest="points",default=None,help="extract data only at those locations" )
-   parser.add_option("--nodes",type="string",dest="nodes",default=None,help="extract data only at those nodes" )
+   parser.add_argument(\
+      "--points",dest="points",default=None,
+      help="extract data only at those locations" )
+   parser.add_argument(\
+      "--nodes",dest="nodes",default=None,
+      help="extract data only at those nodes" )
    # valid for all
-   parser.add_option("--parallel",action="store_true",dest="parallel",default=False,help="if option there, will assume input files have not been recollected, in which case you also need one example of the global file" )
+   parser.add_argument(\
+      "--parallel",action="store_true",dest="parallel",default=False,
+      help="if option there, will assume input files have not been recollected, in which case you also need one example of the global file" )
 
-   options, args = parser.parse_args()
+   options = parser.parse_args()
    # Adding the action first if called from alter/scan/chop.py
    if not action is None:
-       args.insert(0,action)
-   if len(args) < 1:
+       options.args.insert(0,action)
+   if len(options.args) < 1:
       print '\nThe name of one SELAFIN file at least is required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   codeName = args[0]
+   codeName = options.args[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of SCAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName == 'scan':
 
-      slfFiles = args[1:]
+      slfFiles = options.args[1:]
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
@@ -708,7 +779,7 @@ action:\n\
 # ~~~~ Case of SPECTRAL file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    elif codeName == 'spec':
 
-      slfFiles = args[1:]
+      slfFiles = options.args[1:]
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
@@ -730,22 +801,22 @@ action:\n\
       rootFile = None
       if not options.freplace:
          if not options.parallel:
-            if len(args) != 3:
+            if len(options.args) != 3:
                print '\nThe code "chop" (without --replace) here requires 2 file names\n'
                parser.print_help()
                sys.exit(1)
-            slfFiles = [ args[1] ]
-            outFile = args[2]
+            slfFiles = [ options.args[1] ]
+            outFile = options.args[2]
          else:
-            if len(args) != 4:
+            if len(options.args) != 4:
                print '\nThe code "chop" (without --replace) here requires 2 file names and 1 file root name for the partition\n'
                parser.print_help()
                sys.exit(1)
-            slfFiles = [ args[1] ]
-            rootFile = args[2]
-            outFile = args[3]
+            slfFiles = [ options.args[1] ]
+            rootFile = options.args[2]
+            outFile = options.args[3]
       else:
-         slfFiles = args[1:]
+         slfFiles = options.args[1:]
          outFile = "chop-tmp.slf"
 
       for slfFile in slfFiles:
@@ -772,22 +843,22 @@ action:\n\
       rootFile = None
       if not options.freplace:
          if not options.parallel:
-            if len(args) != 3:
+            if len(options.args) != 3:
                print '\nThe code "alter" (without --replace) requires 2 file names\n'
                parser.print_help()
                sys.exit(1)
-            slfFiles = [ args[1] ]
-            outFile = args[2]
+            slfFiles = [ options.args[1] ]
+            outFile = options.args[2]
          else:
-            if len(args) != 4:
+            if len(options.args) != 4:
                print '\nThe code "alter" (without --replace) here requires 2 file names and 1 file root name for the partition\n'
                parser.print_help()
                sys.exit(1)
-            slfFiles = [ args[1] ]
-            rootFile = args[2]
-            outFile = args[3]
+            slfFiles = [ options.args[1] ]
+            rootFile = options.args[2]
+            outFile = options.args[3]
       else:
-         slfFiles = args[1:]
+         slfFiles = options.args[1:]
          outFile = "chop-tmp.slf"
 
       for slfFile in slfFiles:
@@ -842,12 +913,12 @@ action:\n\
 
       rootFile = None
       if not options.parallel:
-         if len(args) < 4:
+         if len(options.args) < 4:
             print '\nThe code "merge" requires at leat 2 file names, aside from the options\n'
             parser.print_help()
             sys.exit(1)
-         slfFiles = args[1:len(args)-1]
-         outFile = args[len(args)-1]
+         slfFiles = options.args[1:len(options.args)-1]
+         outFile = options.args[len(options.args)-1]
 
          slfs = SELAFINS()
          print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n'+'~'*72+'\n'
@@ -861,13 +932,13 @@ action:\n\
          slfs.putContent(outFile)
 
       else:
-         if len(args) != 4:
+         if len(options.args) != 4:
             print '\nThe code "merge" here requires 2 file names and 1 file root name for the partition\n'
             parser.print_help()
             sys.exit(1)
-         slfFile = args[1]
-         rootFile = args[2]
-         outFile = args[3]
+         slfFile = options.args[1]
+         rootFile = options.args[2]
+         outFile = options.args[3]
 
          print '\n\nMerging into ' + path.basename(outFile) + ' within ' + path.dirname(outFile) + '\n'+'~'*72+'\n'
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
@@ -896,12 +967,12 @@ action:\n\
 # ~~~~ Case of DIFF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    elif codeName == 'diff':
 
-      if len(args) < 3:
+      if len(options.args) < 3:
          print '\nThe code "diff" uses a minimum of 3 argumensts, aside from the options\n'
          parser.print_help()
          sys.exit(1)
-      slfFiles = args[1:len(args)-1]
-      outFile = args[len(args)-1]
+      slfFiles = options.args[1:len(options.args)-1]
+      outFile = options.args[len(options.args)-1]
 
       slfs = SELAFINS()
       print '\n\nDifferences into ' + path.basename(outFile) + '\n'+'~'*72+'\n'
@@ -919,24 +990,24 @@ action:\n\
    elif codeName == 'sample':
       rootFile = None
       if not options.parallel:
-         if len(args) < 4:
+         if len(options.args) < 4:
             print '\nThe code "sample" requires at least 2 file names and one series of node numbers\n'
             parser.print_help()
             sys.exit(1)
-         slfFile = args[1]
-         outFile = args[2]
+         slfFile = options.args[1]
+         outFile = options.args[2]
          nodList = []
-         for nod in args[3].split(" "): nodList.append(int(nod))
+         for nod in options.args[3].split(" "): nodList.append(int(nod))
       else:
-         if len(args) != 5:
-            print '\nThe code "merge" here requires 2 file names, 1 file root name for the partition and 1 series of node numbers\n'
+         if len(options.args) != 5:
+            print '\nThe code "sample" here requires 2 file names, 1 file root name for the partition and 1 series of node numbers\n'
             parser.print_help()
             sys.exit(1)
-         slfFile = args[1]
-         rootFile = args[2]
-         outFile = args[3]
+         slfFile = options.args[1]
+         rootFile = options.args[2]
+         outFile = options.args[3]
          nodList = []
-         for nod in args[4].split(" "): nodList.append(int(nod))
+         for nod in options.args[4].split(" "): nodList.append(int(nod))
 
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
@@ -955,20 +1026,20 @@ action:\n\
    elif codeName == 'calcs' or codeName == 'crunch' or codeName == 'transf':
       rootFile = None
       if not options.parallel:
-         if len(args) < 3:
+         if len(options.args) < 3:
             print '\nThe code "calcs" requires 2 file names\n'
             parser.print_help()
             sys.exit(1)
-         slfFile = args[1]
-         outFile = args[2]
+         slfFile = options.args[1]
+         outFile = options.args[2]
       else:
-         if len(args) != 4:
+         if len(options.args) != 4:
             print '\nThe code "calcs" requires 2 file names and 1 root file name for parallel inputs\n'
             parser.print_help()
             sys.exit(1)
-         slfFile = args[1]
-         rootFile = args[2]
-         outFile = args[3]
+         slfFile = options.args[1]
+         rootFile = options.args[2]
+         outFile = options.args[3]
 
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
@@ -1029,16 +1100,16 @@ action:\n\
    elif codeName == 'subdivide':
 
       if not options.freplace:
-         if len(args) != 3:
+         if len(options.args) != 3:
             print '\nThe code "subdivide" (without --replace) here requires 2 file names\n'
             sys.exit(1)
-         slfFile = args[1]
-         outFile = args[2]
+         slfFile = options.args[1]
+         outFile = options.args[2]
       else:
-         if len(args) != 2:
+         if len(options.args) != 2:
             print '\nThe code "subdivide" (with --replace) here requires 1 file name at a time\n'
             sys.exit(1)
-         slfFile = args[1]
+         slfFile = options.args[1]
          outFile = "subdivide-tmp.slf"
 
       slfFile = path.realpath(slfFile)
@@ -1055,16 +1126,16 @@ action:\n\
 # ~~~~ Case of TESSELLATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    elif codeName == 'tessellate':
       if not options.freplace:
-         if len(args) != 3:
+         if len(options.args) != 3:
             print '\nThe code "tessellate" here requires one i2s/i3s file and one output slf file\n'
             sys.exit(1)
-         i3sFile = args[1]
-         outFile = args[2]
+         i3sFile = options.args[1]
+         outFile = options.args[2]
       else:
-         if len(args) != 2:
+         if len(options.args) != 2:
             print '\nThe code "tessellate" here requires one i2s/i3s file\n'
             sys.exit(1)
-         i3sFile = args[1]
+         i3sFile = options.args[1]
          head,tail = path.splitext(i3sFile)
          outFile = head+'.slf'
 

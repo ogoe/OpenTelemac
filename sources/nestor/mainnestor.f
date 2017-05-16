@@ -17,15 +17,15 @@
       USE m_TypeDefs_InterFace
       USE m_TypeDefs_Nestor
       USE m_Nestor
-      
-      
 
-#ifndef NESTOR_INTERFACES                                          
-      USE m_Interfaces_Nestor, ONLY :  Dump_by_Time 
-     &                               , Dig_by_Time           
-     &                               , Dig_by_Criterion           
-     &                               , ReadWriteRestart           
-#endif NESTOR_INTERFACES 
+
+
+!#ifndef NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  Dump_by_Time
+!     &                               , Dig_by_Time
+!     &                               , Dig_by_Criterion
+!     &                               , ReadWriteRestart
+!#endif  /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 
@@ -39,9 +39,9 @@
       TYPE( t_PointerToArrayOfReals )
      &              ,INTENT(INOUT) :: dzCL_Sis(:)   !  bedload evolution per Class  [ m ]
 
-#ifndef NESTOR_INTERFACES 
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
-      
+
       TYPE(t_String_Length) :: SRname  ! name of current Subroutine
 
       INTEGER              :: i, n, m, iMesh, iCL, status
@@ -141,7 +141,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE MainNestor                  !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

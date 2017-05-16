@@ -2,7 +2,7 @@
                      SUBROUTINE READ_FIC_SOURCES
 !                    ***************************
 !
-     &( Q , WHAT , AT , NFIC , LISTIN , STAT )
+     &( Q , WHAT , AT , NFIC , LISTIN , FOUND )
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   07/10/2011
@@ -65,7 +65,7 @@
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
-!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
+!| FOUND          |<--| IF FALSE: VARIABLE NOT FOUND
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -84,7 +84,7 @@
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
       LOGICAL         , INTENT(IN)       :: LISTIN
-      LOGICAL         , INTENT(OUT)      :: STAT
+      LOGICAL         , INTENT(OUT)      :: FOUND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -100,7 +100,7 @@
 !
       DOUBLE PRECISION, PARAMETER :: TOL = 1.D-3
 !
-      
+
 !
       INTRINSIC ABS,CHAR
 !
@@ -159,11 +159,11 @@
           CHOIX_RFS(NVALUE_RFS)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 
+            WRITE(LU,*)
      &        'AUGMENTER MAXVALUE_RFS DANS DECLARATIONS_TELEMAC2D'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 
+            WRITE(LU,*)
      &        'INCREASE MAXVALUE_RFS IN DECLARATIONS_TELEMAC2D'
           ENDIF
           CALL PLANTE(1)
@@ -251,7 +251,7 @@
         IF(WHAT.EQ.CHOIX_RFS(J)) IWHAT=J
       ENDDO
       IF(IWHAT.EQ.0) THEN
-        STAT=.FALSE.
+        FOUND=.FALSE.
         RETURN
       ENDIF
 !
@@ -289,7 +289,7 @@
       Q = (1.D0-TETA)*INFIC_RFS(IWHAT,IL1_RFS)
      &  +       TETA *INFIC_RFS(IWHAT,IL2_RFS)
 !
-      STAT=.TRUE.
+      FOUND=.TRUE.
 !
 !     PRINTS ONLY IF NEW TIME_RFS OR NEW VALUE IS ASKED
 !

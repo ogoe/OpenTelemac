@@ -39,7 +39,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: NODALCORR,MARDAT(3),MARTIM(3)
-      DOUBLE PRECISION, INTENT(OUT) :: FWAVE(*)
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: FWAVE(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: FWAVE(*)
+!< JR @ RWTH
       DOUBLE PRECISION, INTENT(IN)  :: TEMPS
       LOGICAL, INTENT(IN)           :: DEJA
 !

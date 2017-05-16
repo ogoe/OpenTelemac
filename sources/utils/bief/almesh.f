@@ -51,7 +51,7 @@
 !+   Dimension of LIMVOI now set to (11,2).
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !     ALLOCATE BUFER FOR ERRORS
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
@@ -96,6 +96,9 @@
       USE INTERFACE_HERMES
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -134,7 +137,9 @@
       INTEGER, ALLOCATABLE :: IPOBO(:)
 !
       INTEGER IELB0V,IELB1V,I
-      INTEGER, EXTERNAL :: P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER, EXTERNAL :: P_IMAX
+!##< JR @ RWTH
 !
       CHARACTER(LEN=80) TITLE
 !
@@ -467,11 +472,11 @@
 !     THEIR ALLVEC IS IN PARINI
       CALL FIRST_ALL_BIEFOBJ(MESH%BUF_SEND)
       CALL FIRST_ALL_BIEFOBJ(MESH%BUF_RECV)
+!
       IF (MODASS .EQ.3) THEN
         ALLOCATE(MESH%BUF_SEND_ERR)
         ALLOCATE(MESH%BUF_RECV_ERR)
       ENDIF
-
 !
       IF(NCSIZE.GT.1) THEN
 !       XSEG

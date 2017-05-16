@@ -869,8 +869,15 @@
 !
 !   SOLVES THE LINEAR SYSTEM:
 !
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+#if defined COMPAD
+      CALL AD_SOLVE(F,AM1,SM,TB,SLVTRA,INFOGT,MESH,AM2)
+!!                                               NOT USED HERE
+#else
       CALL SOLVE(F,AM1,SM,TB,SLVTRA,INFOGT,MESH,AM2)
-!                                               NOT USED HERE
+!!                                               NOT USED HERE
+#endif
+!< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

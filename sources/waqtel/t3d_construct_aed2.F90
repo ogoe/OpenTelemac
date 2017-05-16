@@ -32,7 +32,7 @@
       USE BIEF
       USE DECLARATIONS_SPECIAL
       USE DECLARATIONS_WAQTEL, ONLY : NWQVARS,NWQBEN,NWQDIAGS
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       USE T3D_AED2
 #endif
 !
@@ -48,7 +48,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       INTEGER,PARAMETER :: REALKIND   = 8
 !DEC$ END IF
       INTEGER,PARAMETER :: DOUBLEKIND = 8

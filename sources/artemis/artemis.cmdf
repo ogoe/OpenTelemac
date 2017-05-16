@@ -2,7 +2,7 @@
 path: <root>|sources|artemis
 module: artemis
 liborder: special hermes parallel damocles bief artemis
-name: HOMERE_ARTEMIS
+name: artemis
 
 [artemis]
 path: <root>|sources|artemis
@@ -87,24 +87,24 @@ files: bief_def.f
   cpikle2.f
   read_mesh_info.f
   bief_nbsegel.f
-  mxptel31.f
-  mxptel.f
+  corrxy.f
+  read_mesh_coord.f
   cpikle3.f
   read_mesh_conn.f
   ov_2.f
-  corrxy.f
-  read_mesh_coord.f
+  mxptel31.f
+  mxptel.f
   almesh.f
   find_variable.f
   crosfr.f
   fasp.f
   fond.f
-  cmpobj.f
-  ovd.f
-  ovd_2.f
-  twoprod.f
   twosum.f
+  twoprod.f
   ov_comp.f
+  ovd.f
+  cmpobj.f
+  ovd_2.f
   os.f
   strche.f
   fonstr.f
@@ -242,6 +242,7 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
+  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -256,7 +257,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt02pp.f
+  mt04bb.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -270,7 +271,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt11ac.f
+  mt02pp.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -278,7 +279,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt12aa.f
+  mt11ac.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -291,7 +292,6 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
-  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -491,9 +491,9 @@ files: interface_hermes.f
   get_mesh_dimension.f
   get_mesh_npoin.f
   get_mesh_l2g_numbering.f
+  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
-  get_mesh_coord.f
   get_data_value.f
   get_data_var_list.f
   get_data_time.f

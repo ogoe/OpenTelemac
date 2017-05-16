@@ -43,17 +43,22 @@
       USE INTERFACE_TELEMAC2D
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMIN,P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
       DOUBLE PRECISION PI,CFX,CFY,A,B
-!
+      DOUBLE PRECISION TMP1, TMP2
 !
       INTEGER M,I,J,K,N
 !
       INTRINSIC COS,SIN,ACOS,MOD,ATAN2
 !
-      DOUBLE PRECISION P_DMIN,P_DMAX
-      EXTERNAL         P_DMIN,P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMIN,P_DMAX
+!      EXTERNAL         P_DMIN,P_DMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -170,8 +175,11 @@
                   A=AMPL%ADR(I)%P%R(LIST_PTS(J))
                   B=PHAS%ADR(I)%P%R(LIST_PTS(J))
                 ENDIF
-                WRITE(LU,100) NAME_PTS(J),P_DMIN(A)+P_DMAX(A),
-     &                                    P_DMIN(B)+P_DMAX(B)
+!##> JR @ RWTH: AVOID I/O OF ACTIVE FUNCTION RESULTS
+                TMP1 = P_DMIN(A)+P_DMAX(A)
+                TMP2 = P_DMIN(B)+P_DMAX(B)
+                WRITE(LU,100) NAME_PTS(J),TMP1, TMP2
+!##< JR @ RWTH
               ELSE
                 WRITE(LU,100) NAME_PTS(J),
      &                        AMPL%ADR(I)%P%R(LIST_PTS(J)),

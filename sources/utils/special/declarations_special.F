@@ -23,7 +23,7 @@
 !history S.E. BOURBAN (HRW)
 !+       20/09/2016
 !+       V7P2
-!+       Unabling ENDIAN and FLOAT formats of the GEOMETRY file to be
+!+       Enabling ENDIAN and FLOAT formats of the GEOMETRY file to be
 !+       the default of all OUTPUT FILES binaries, unless the user sets
 !+       it otherwise in the CAS file. Also:
 !+       - the DAFAULT of the DICO files are 'SERAFIN?'
@@ -38,7 +38,7 @@
       INTEGER :: LNG ! Language for listing outputs
       INTEGER :: LU=6 ! Output id
       INTEGER :: LI=5 ! Input id
-      ! VERSION THAT IS DISPLAYED everywher in the system
+      ! VERSION THAT IS DISPLAYED everywhere in the system
       CHARACTER(LEN=6), PARAMETER :: VERSION = 'TRUNK '
       ! Max number of keywords
       INTEGER, PARAMETER :: MAXKEYWORD = 300
@@ -103,11 +103,33 @@
 !     SHARING AND PASSING ON THE ENDIAN AND THE PRECISION FORMATS
 !
       CHARACTER(LEN=8) :: SELAFMT = 'SERAFIN?'
-#if defined (COMPAD)
+#if defined COMPAD
       CHARACTER(LEN=13) :: ENDIAN = 'LITTLE_ENDIAN'
 #else
       CHARACTER(LEN=13) :: ENDIAN = 'BIG_ENDIAN   '
 #endif
+!
+!-----------------------------------------------------------------------
+!
+!! COMPAD-DCO  BEGIN  JR2016
+!> JR @ STCE
+!
+!    SPECIAL FLAGS THAT ALTER BEHAVIOUT OF DIFFERENTIATED MODELS
+!
+!     USE OF SYMBOLIC LINEAR SOLVER FOR AD
+!
+      LOGICAL AD_SYMBLINSOLV
+!
+!     RESET DERIVATIVES FOR ITERATIVE LINEAR SOLVER FOR AD
+!
+      LOGICAL AD_LINSOLV_RESETDERIV
+!
+!     USE DERIVATIVES FOR CONVERGENCE TEST IN LINEAR SOLVER FOR AD
+!
+      LOGICAL AD_LINSOLV_DERIVATIVE_CONVERGENCE
+!< JR @ STCE
+!! COMPAD-DCO  original code
+!! COMPAD-DCO  END    JR2016
 !
 !-----------------------------------------------------------------------
 !

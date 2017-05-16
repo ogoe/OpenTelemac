@@ -2,7 +2,7 @@
                       SUBROUTINE READ_BIN_2D
 !                    *************************
 !
-     &( Q ,VARNAME,AT,NFIC,FFORMAT,NPOIN,LISTIN,STAT)
+     &( Q ,VARNAME,AT,NFIC,FFORMAT,NPOIN,LISTIN,FOUND)
 !
 !***********************************************************************
 ! BIEF   V7P2                                       01/09/2016
@@ -16,7 +16,7 @@
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| ARRAY WHERE THE VARIABLE IS STORED
-!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
+!| FOUND          |<--| IF FALSE: VARIABLE NOT FOUND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_READ_BIN_2D => READ_BIN_2D
@@ -32,7 +32,7 @@
       DOUBLE PRECISION, INTENT(INOUT)    :: Q(NPOIN)
       CHARACTER(LEN=8), INTENT(IN)       :: FFORMAT
       LOGICAL         , INTENT(IN)       :: LISTIN
-      LOGICAL         , INTENT(OUT)      :: STAT
+      LOGICAL         , INTENT(OUT)      :: FOUND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -73,9 +73,9 @@
       CALL FIND_VARIABLE(FFORMAT,NFIC,VARNAME,Q,NPOIN,IERR,
      &                 TIME=AT,EPS_TIME=1.D-6)
       IF(IERR.EQ.HERMES_VAR_UNKNOWN_ERR) THEN
-        STAT = .FALSE.
+        FOUND = .FALSE.
       ELSE
-        STAT = .TRUE.
+        FOUND = .TRUE.
       ENDIF
       CALL CHECK_CALL(IERR,"READ_BIN_2D: FIND_VARIABLE")
 

@@ -24,7 +24,7 @@
 
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+       ALLOCATE THE ELEMENT E IN THE VECTOR STUCTURE (BIEF_OBJ)
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
@@ -190,7 +190,7 @@
         CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
      &          VEC%MAXDIM1*VEC%DIM2)
 !
-        IF (MODASS .EQ.3) THEN
+        IF(MODASS .EQ.3) THEN
           ALLOCATE(VEC%E(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
           CALL OV('X=C     ',VEC%E,VEC%E,VEC%E,0.D0,
      &          VEC%MAXDIM1*VEC%DIM2)

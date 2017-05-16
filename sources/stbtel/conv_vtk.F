@@ -34,7 +34,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined(HAVE_VTK)
+#if defined HAVE_VTK
       INTEGER :: IERR,ITIME,I,J
       INTEGER, ALLOCATABLE :: CELL_TYPE(:), CONNECT(:)
       DOUBLE PRECISION, ALLOCATABLE :: TMP(:)

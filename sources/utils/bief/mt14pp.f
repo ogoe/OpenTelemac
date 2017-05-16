@@ -123,19 +123,27 @@
       DOUBLE PRECISION ALFA,ALFAJ,ALFAK,ALFA1,ALFA2,BETA,SOM0,SOM3
       DOUBLE PRECISION ALFAI0,ALFAJ0,ALFAK0,ALFAI3,ALFAJ3,ALFAK3
       DOUBLE PRECISION ALFAII,ALFAIJ,ALFAIK,ALFAJI,ALFAJJ,ALFAJK
-      DOUBLE PRECISION ALFAKI,ALFAKJ,ALFAKK,EPS
-      DATA EPS /1.D-10/
+      DOUBLE PRECISION ALFAKI,ALFAKJ,ALFAKK
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA EPS /1.D-10/
+      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-10
+!##< JR @ RWTH
 !
-      INTEGER IPLUS1(6),IPLUS3(6),INDIC(0:7)
+      INTEGER :: IPLUS1(6),IPLUS3(6),INDIC(0:7)
       INTEGER IXM,I0,J0,K0,I3,J3,K3
 !
 !-----------------------------------------------------------------------
 !
 !     DONNEES
 !
-      DATA IPLUS1 / 2 , 3 , 1 , 5 , 6 , 4 /
-      DATA IPLUS3 / 4 , 5 , 6 , 1 , 2 , 3 /
-      DATA INDIC  / 4 , 4 , 5 , 3 , 6 , 2 , 1 , 1 /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA IPLUS1 / 2 , 3 , 1 , 5 , 6 , 4 /
+!      DATA IPLUS3 / 4 , 5 , 6 , 1 , 2 , 3 /
+!      DATA INDIC  / 4 , 4 , 5 , 3 , 6 , 2 , 1 , 1 /
+      PARAMETER ( IPLUS1 = (/ 2 , 3 , 1 , 5 , 6 , 4 /) )
+      PARAMETER ( IPLUS3 = (/ 4 , 5 , 6 , 1 , 2 , 3 /) )
+      PARAMETER ( INDIC  = (/ 4 , 4 , 5 , 3 , 6 , 2 , 1 , 1 /) )
+!##< SEB @ HRW
 !
 !=======================================================================
 !

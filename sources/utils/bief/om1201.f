@@ -62,6 +62,11 @@
 !+   Now written to enable different numbering of boundary points and
 !+   boundary segments.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -121,12 +126,13 @@
 !
       DOUBLE PRECISION Z(1)
 !
-      INTEGER CORNSY(4,2),CORSYM(4)
-!
 !-----------------------------------------------------------------------
 !     BEWARE: ONLY WORKS FOR QUASI-BUBBLE
-      DATA CORNSY/ 1,4,8,0,  7,10,2,0/
-      DATA CORSYM/ 1,4,2,0      /
+      INTEGER :: CORNSY(4,2)
+      PARAMETER ( CORNSY = RESHAPE( (/
+     &                        1,4,8,0,  7,10,2,0/), SHAPE=(/ 4,2 /) ) )
+      INTEGER :: CORSYM(4)
+      PARAMETER ( CORSYM = (/ 1,4,2,0      /) )
 !
 !-----------------------------------------------------------------------
 !

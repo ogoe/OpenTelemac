@@ -35,6 +35,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !
@@ -42,11 +45,12 @@
 !
       INTEGER, INTENT(IN)                    :: LOCATION
       INTEGER, INTENT(OUT)                   :: IER
-      INTEGER(MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+!      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+      INTEGER(KIND=MY_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
 !
       IF(IER.NE.0) THEN

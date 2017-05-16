@@ -141,6 +141,9 @@
      &                                   BEDBOU,BEDFLU,T2_18,KSCE,ISCE
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM,P_ISUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -188,10 +191,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
       DOUBLE PRECISION RINIT,C,NEWVOL,RFLUX,RFLUX_OLD
       DOUBLE PRECISION VOLSEG1,VOLSEG2
@@ -200,6 +205,7 @@
       DOUBLE PRECISION, PARAMETER :: ALLOW = 1.D-6
       DOUBLE PRECISION, PARAMETER :: REDUC = 1.D-10
       DOUBLE PRECISION, PARAMETER :: EPS_VOLUME = 1.D-8
+      DOUBLE PRECISION :: TMP1
 !
       LOGICAL, PARAMETER :: TESTING = .FALSE.
       INTRINSIC MIN,MAX
@@ -833,7 +839,10 @@
         IF(NCSIZE.GT.1) CALL PARCOM(STRA03,2,MESH3)
         CALL OS('X=X-Y   ',X=STRA03,Y=SVOLU2)
 !       CHECKS EQUALITY OF ASSEMBLED VOLUMES
-        WRITE(LU,*) 'ERROR ON VOLUMES = ',P_DOTS(STRA03,STRA03,MESH3)
+!##> JR @ RWTH: AVOID I/O OF ACTIVE FUNCTION
+        TMP1 = P_DOTS(STRA03,STRA03,MESH3)
+        WRITE(LU,*) 'ERROR ON VOLUMES = ',TMP1
+!##< JR @ RWTH
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -1,20 +1,20 @@
-!                    *****************
+!                    **********************
                      SUBROUTINE PARACO_COMP
-!                    *****************
+!                    **********************
 !
      &(V1,V2,V3,ERRX,NPOIN,ICOM,IAN,NPLAN,NB_NEIGHB,NB_NEIGHB_PT,
      & LIST_SEND,NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF,
      & BUF_SEND_ERR, BUF_RECV_ERR )
 !
 !***********************************************************************
-! BIEF   V7                                  24/02/2016
+! BIEF   V7P3                                  24/02/2016
 !***********************************************************************
 !
 !brief    ASSEMBLES DATA AND THEIR COMMITED ERRORS SHARED BY SEVERAL PROCESSORS.
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

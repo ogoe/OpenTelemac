@@ -39,15 +39,15 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-      CHARACTER(LEN=26) STMAJ,STMIN
+      CHARACTER(LEN=26) :: STMAJ,STMIN
       CHARACTER(LEN=*) CHAINE
 !
       INTEGER I,IPOS
 !
       INTRINSIC LEN,INDEX
 !
-      DATA STMAJ /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA STMIN /'abcdefghijklmnopqrstuvwxyz'/
+      PARAMETER ( STMAJ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' )
+      PARAMETER ( STMIN = 'abcdefghijklmnopqrstuvwxyz' )
 !
 !----------------------------------------------------------------------
 !

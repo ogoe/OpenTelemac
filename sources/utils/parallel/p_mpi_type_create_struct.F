@@ -38,12 +38,10 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
-!
-!#if defined (HAVE_MPI)
-!      include "mpif.h"
-!#endif
-!
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -52,13 +50,14 @@
       INTEGER, INTENT(OUT)                          :: NEW_DATATYPE
       INTEGER, INTENT(IN)                           :: NELEM(NBLOCK)
       INTEGER, INTENT(IN)                           :: ELEM_TYPE(NBLOCK)
-      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: DISPL(NBLOCK)
+!      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: DISPL(NBLOCK)
+      INTEGER(KIND=MY_ADDRESS_KIND), INTENT(INOUT) :: DISPL(NBLOCK)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
       NEW_DATATYPE = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_TYPE_CREATE_STRUCT(NBLOCK,NELEM,DISPL,ELEM_TYPE,
      &                            NEW_DATATYPE,IERR)
 !

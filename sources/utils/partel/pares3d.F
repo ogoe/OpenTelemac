@@ -54,7 +54,7 @@
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       INCLUDE 'med.hf'
 #endif
 !
@@ -115,7 +115,7 @@
       CHARACTER(LEN=16), DIMENSION(MDIM) :: NAMECOOR, UNITCOOR  ! NOM ET UNITE DES COORDONNES
       CHARACTER(LEN=16)                  :: DATA_TEMP
       CHARACTER(LEN=43)                  :: TXT, TXT_OLD
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       CHARACTER(LEN=MED_NAME_SIZE),DIMENSION(:),ALLOCATABLE :: FAM
       CHARACTER(LEN=MED_NAME_SIZE)       :: MED_VERSION             ! VERSION OF THE MED FILE
       CHARACTER(LEN=MED_NAME_SIZE)       :: MESH_NAME           ! CURRENT MESH NAME
@@ -258,7 +258,7 @@
       EXTERNAL EXTENS
 !D********************************************************
       INTEGER SOMFAC(3,4)
-      DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
+      PARAMETER ( SOMFAC = (/ 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /) )
 !
 !-------------
 ! 1. PREAMBULE
@@ -274,7 +274,7 @@
 !
 !     WRITE FILE FORMAT AND TEST MED LIBRARY
       IF (FORMAT_MED) THEN
-#if defined (HAVE_MED)
+#if defined HAVE_MED
         WRITE(LU,*) 'MED FORMAT IS USED FOR THE MESH'
 #else
         WRITE(LU,*) 'ERROR: MED FORMAT IS USED FOR THE MESH BUT MED
@@ -287,7 +287,7 @@
       ENDIF
 
 !     OPEN THE MESH FILE (MED)
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       IF (FORMAT_MED) THEN
 
         ! CHECK IF THE FILE IS BOTH A MED & HDF5 FILE
@@ -372,7 +372,7 @@
 
 !     BEGIN MODIF V STOBIAC
 !     READ FAMILIES
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       IF (FORMAT_MED) THEN
         ! IGNORE NBFAMILY+1 LINES
         DO I=1,NBFAMILY+1
@@ -450,7 +450,7 @@
 
 !     BEGIN MODIF VSTOBIAC
 !     READ THE MESH FILE (MED)
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       IF (FORMAT_MED) THEN
 
         ! DEBUG MODE : FOR DEBUGGING CRASH IN MED ROUTINES
@@ -1959,7 +1959,7 @@
 
 !       BEGIN MODIF V STOBIAC
 !       READ FAMILIES
-#if defined (HAVE_MED)
+#if defined HAVE_MED
         IF (FORMAT_MED) THEN
           WRITE(NLOG2,53 ,ERR=113) NBFAMILY
           DO J=1,NBFAMILY+1

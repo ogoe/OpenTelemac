@@ -2,7 +2,9 @@
                      SUBROUTINE P_READ
 !                    *****************
 !
-     &(BUFFER,NBYTES,SOURCE,DATATYPE)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+     &(BUFFER,N,BYTES,SOURCE,DATATYPE)
+!##< JR @ RWTH
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -50,8 +52,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BUFFER         |<--| ZONE TAMPON POUR LES DONNEES
 !|                |   | BUFFER / PUFFERFELD
-!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
-!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!|  N             |-->| NOMBRE DE ELEMENTS A TRANSMETTRE
+!|                |   | NUMBER OF ELEMENTS / ANZAHL DER ELEMENTE
+!|  BYTES         |-->| NOMBRE DE BYTES A ELEMTENT
+!|                |   | SIZE OF ELEMENTS IN BYTES / GR"OSSE DER ELEMENTE
 !| SOURCE         |-->| ORIGINE DES DONNEES
 !|                |   | TID OF THE SENDER / KNOTEN-ID DES SENDER
 !| DATATYPE           |-->| TYPE DES DONNEES (MSGTAG DE PVM)
@@ -67,16 +71,25 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NBYTES,SOURCE,DATATYPE
-      DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+      INTEGER, INTENT(IN) :: N, BYTES,SOURCE,DATATYPE
+!##< JR @ RWTH
+!> SEB @ HRW: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: BUFFER(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
+!< SEB @ HRW
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER STATUS(MPI_STATUS_SIZE)
       INTEGER IER
 !
@@ -84,8 +97,16 @@
 !
 !     RECEIVES DATA
 !
-      CALL MPI_RECV(BUFFER,NBYTES,MPI_BYTE,SOURCE,4711,
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+!      NBYTES = N * MPI_SIZEOF_COMPAD_TYPE( ier )
+#  ifdef COMPAD
+      CALL AMPI_RECV(BUFFER,N,AMPI_TYPE,SOURCE,4711,
      &              COMM,STATUS,IER)
+#  else
+      CALL MPI_RECV(BUFFER,N*BYTES,MPI_BYTE,SOURCE,4711,
+     &              COMM,STATUS,IER)
+#  endif
+!##< JR @ RWTH
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_READ: ERREUR IN MPI_RECV'

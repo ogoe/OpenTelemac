@@ -4,9 +4,18 @@
       USE API_INSTANCE_T2D
       USE API_RUN_CPL
       USE DECLARATIONS_PARTEL, ONLY : CODE
+!
+#if defined HAVE_MPI
+!
+!##> JR @ RWTH: ALLOW THE USE OF THE MPI MODULE
+#  if defined HAVE_MPI_MOD
+        USE MPI
         IMPLICIT NONE
-#if defined(HAVE_MPI)
+#  else
+        IMPLICIT NONE
         INCLUDE 'mpif.h'
+#  endif
+!##< JR @ RWTH
 #endif
         INTEGER ::  I,J, IERR, ID_SIS, ID_T2D, IDUM
         INTEGER :: NPOIN,NPTFR,NELEM,NELMAX,CPL_PERIOD
@@ -78,8 +87,17 @@
         IF(PARALLEL.EQ.1) THEN
            ! Partitioning method to use 1: metis
            PMETHOD=1
-#if defined(HAVE_MPI)
+#if defined HAVE_MPI
            ! Initialising mpi
+!! COMPAD-DCO-MPICHECK  BEGIN  JR2016
+#  if defined COMPAD
+           WRITE(LU,*) '(AD) COMPAD :: HOMERE_API.F : DIRECT CALL OF ',
+     &          'MPI_INIT NOT AD-READY'
+           WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+           CALL PLANTE(1)
+           STOP
+#  endif
+!! COMPAD-DCO-MPICHECK  END  JR2016
            CALL MPI_INIT(IERR)
            ! Getting rank
            CALL MPI_COMM_RANK(MPI_COMM_WORLD,RANK,IERR)
@@ -187,7 +205,16 @@
      &                          'SERAFIN ', NCSIZE,NPLAN)
 
            ENDIF
-#if defined(HAVE_MPI)
+#if defined HAVE_MPI
+!! COMPAD-DCO-MPICHECK  BEGIN  JR2016
+#  if defined COMPAD
+           WRITE(LU,*) '(AD) COMPAD :: HOMERE_API.F : DIRECT CALL OF ',
+     &          'MPI_FINALIZE NOT AD-READY'
+           WRITE(LU,*) '  PLEASE CONTACT JR @ STCE'
+           CALL PLANTE(1)
+           STOP
+#  endif
+!! COMPAD-DCO-MPICHECK  END  JR2016
            CALL MPI_FINALIZE(IERR)
 #endif
         ENDIF

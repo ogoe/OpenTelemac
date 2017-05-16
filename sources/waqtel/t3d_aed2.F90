@@ -1,4 +1,4 @@
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
 #include "aed2.h"
 #endif
 
@@ -22,7 +22,7 @@
 !+        with the host hydrodynamic model;
 !+        done through the 4 PUBLIC functions listed below.
 !
-!history  
+!history
 !+        08/2013
 !+        Interface for FV (Finite Volume) Model to AED2 modules (libaed2)
 !+        Designed for TUFLOW-FV, released by BMT-WBM:
@@ -34,9 +34,9 @@
 !+        School of Earth & Environment
 !+        (C) The University of Western Australia
 !+        Copyright by the AED-team @ UWA under the GNU Public License
-!+        www.gnu.org       
+!+        www.gnu.org
 !
-!history  
+!history
 !+        03/2016
 !+        Add new env variables and feedback links
 !
@@ -44,7 +44,7 @@
 !+        04/2016
 !+        Modifications from fv_aed2.F90 and adaptation to TELEMAC3D
 !
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
       USE AED2_COMMON
       USE FV_ZONES
       USE DECLARATIONS_SPECIAL
@@ -363,7 +363,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BM             |-->| NUMBER OF BENTHIC NODES
-!| CC_            |-->| VALUES OF WQ VARIABLES 
+!| CC_            |-->| VALUES OF WQ VARIABLES
 !| CC_DIAG        |-->| VALUES OF WQ DIAG VARIABLES
 !| NCELLS         |-->| NUMBER OF 3d NODES
 !| NWQ            |<->| NUMBER OF WQ VARIABLES
@@ -481,7 +481,7 @@
 ! WAQTEL      V7P3
 !***********************************************************************
 !
-!brief    
+!brief
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -548,7 +548,7 @@
 ! WAQTEL      V7P3
 !***********************************************************************
 !
-!brief  Set initial values of AED2 variables from files  
+!brief  Set initial values of AED2 variables from files
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -810,7 +810,7 @@
       ENDIF
 
 !   WRITE(LU,*)'AED2 RE_INITIALIZE SKIPED STARTING ... '
-   !CALL RE_INITIALIZE() ! 
+   !CALL RE_INITIALIZE() !
 !   WRITE(LU,*)'AED2 RE_INITIALIZE SKIPED COMPLETED'
 
       CONTAINS
@@ -963,7 +963,7 @@
 ! WAQTEL      V7P3
 !***********************************************************************
 !
-!brief Set column data structure from global arrays   
+!brief Set column data structure from global arrays
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CC                |-->| WQ VARIABLES
@@ -1218,7 +1218,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NCELLS, NCOLS
-      DOUBLE PRECISION , INTENT(OUT  ) :: FLUXAED2(:,:,:)
+!> SEB @ HRW: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION , INTENT(INOUT) :: FLUXAED2(:,:,:)
+!      DOUBLE PRECISION , INTENT(OUT  ) :: FLUXAED2(:,:,:)
+!< SEB @ HRW
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1507,7 +1511,7 @@
 !| H_AED2         |-->| LAYER THICKNESS
 !| N              |-->| NUMBER OF VERTICAL LAYERS
 !| WW             |-->| VERTICAL ADVECTION SPEED
-!| Y              |<->| 
+!| Y              |<->|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -57,8 +57,13 @@
 !+   cross-referencing of the FORTRAN sources
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+        ADD MODASS=3
+!
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -132,11 +137,6 @@
 !
       INTEGER NSEG1,NSEG2,SYM,NPT2,DIM1XA
 !
-      INTEGER AAQ(3,3,2),ABQ(3,4,2),BAQ(4,3,2)
-      INTEGER ACQ(3,6,2),BBQ(4,4,2),CAQ(6,3,2)
-      INTEGER AAS(3,3,2),BBS(4,4,2)
-!      INTEGER OOS(2,2,2)
-!
       DOUBLE PRECISION Z(1)
 !
       INTRINSIC MIN
@@ -149,87 +149,106 @@
 !    *           0 ,  0 ,
 !    *           0 ,  0 /
 !
+      INTEGER :: AAS(3,3,2)
+      PARAMETER ( AAS = RESHAPE( (/
 !     SYMMETRICAL P1-P1 EBE (S=1)
-      DATA AAS/  0 ,  1 ,  2 ,
-     &           1 ,  0 ,  3 ,
-     &           2 ,  3 ,  0 ,
+     &         0 ,  1 ,  2 ,
+     &         1 ,  0 ,  3 ,
+     &         2 ,  3 ,  0 ,
 !     SYMMETRICAL P1-P1 PRE-ASSEMBLED EBE (S=2)
-     &           0 ,  1 ,  3 ,
-     &           1 ,  0 ,  2 ,
-     &           3 ,  2 ,  0 /
+     &         0 ,  1 ,  3 ,
+     &         1 ,  0 ,  2 ,
+     &         3 ,  2 ,  0 /), SHAPE=(/ 3,3,2 /) ) )
 !
+      INTEGER :: AAQ(3,3,2)
+      PARAMETER ( AAQ = RESHAPE( (/
 !     NONSYMMETRICAL P1-P1 EBE (S=1)
-      DATA AAQ/  0 ,  4 ,  5 ,
-     &           1 ,  0 ,  6 ,
-     &           2 ,  3 ,  0 ,
+     &         0 ,  4 ,  5 ,
+     &         1 ,  0 ,  6 ,
+     &         2 ,  3 ,  0 ,
 !     NONSYMMETRICAL P1-P1 PRE-ASSEMBLED EBE (S=2)
-     &           0 ,  4 ,  3 ,
-     &           1 ,  0 ,  5 ,
-     &           6 ,  2 ,  0 /
+     &         0 ,  4 ,  3 ,
+     &         1 ,  0 ,  5 ,
+     &         6 ,  2 ,  0 /), SHAPE=(/ 3,3,2 /) ) )
 !
+      INTEGER :: BBS(4,4,2)
+      PARAMETER ( BBS = RESHAPE( (/
 !     SYMMETRICAL QUASI-BUBBLE QUASI-BUBBLE EBE (S=1)
-      DATA BBS/  0 ,  1 ,  2 ,  3 ,
-     &           1 ,  0 ,  4 ,  5 ,
-     &           2 ,  4 ,  0 ,  6 ,
-     &           3 ,  5 ,  6 ,  0 ,
+     &         0 ,  1 ,  2 ,  3 ,
+     &         1 ,  0 ,  4 ,  5 ,
+     &         2 ,  4 ,  0 ,  6 ,
+     &         3 ,  5 ,  6 ,  0 ,
 !     SYMMETRICAL QUASI-BUBBLE QUASI-BUBBLE PRE-ASSEMBLED EBE (S=2)
-     &           0 ,  4 ,  6 ,  1 ,
-     &           4 ,  0 ,  5 ,  2 ,
-     &           6 ,  5 ,  0 ,  3 ,
-     &           1 ,  2 ,  3 ,  0 /
+     &         0 ,  4 ,  6 ,  1 ,
+     &         4 ,  0 ,  5 ,  2 ,
+     &         6 ,  5 ,  0 ,  3 ,
+     &         1 ,  2 ,  3 ,  0 /), SHAPE=(/ 4,4,2 /) ) )
 !
+      INTEGER :: BBQ(4,4,2)
+      PARAMETER ( BBQ = RESHAPE( (/
 !     NONSYMMETRICAL QUASI-BUBBLE QUASI-BUBBLE EBE (S=1)
-      DATA BBQ/  0 ,  7 ,  8 ,  9 ,
-     &           1 ,  0 , 10 , 11 ,
-     &           2 ,  4 ,  0 , 12 ,
-     &           3 ,  5 ,  6 ,  0 ,
+     &         0 ,  7 ,  8 ,  9 ,
+     &         1 ,  0 , 10 , 11 ,
+     &         2 ,  4 ,  0 , 12 ,
+     &         3 ,  5 ,  6 ,  0 ,
 !     NONSYMMETRICAL QUASI-BUBBLE QUASI-BUBBLE PRE-ASSEMBLED EBE (S=2)
-     &           0 , 10 ,  6 ,  7 ,
-     &           4 ,  0 , 11 ,  8 ,
-     &          12 ,  5 ,  0 ,  9 ,
-     &           1 ,  2 ,  3 ,  0 /
+     &         0 , 10 ,  6 ,  7 ,
+     &         4 ,  0 , 11 ,  8 ,
+     &        12 ,  5 ,  0 ,  9 ,
+     &         1 ,  2 ,  3 ,  0 /), SHAPE=(/ 4,4,2 /) ) )
 !
+      INTEGER :: ABQ(3,4,2)
+      PARAMETER ( ABQ = RESHAPE( (/
 !     NONSYMMETRICAL P1 QUASI-BUBBLE EBE (S=1)
-      DATA ABQ/  0 ,  4 ,  7 ,
-     &           1 ,  0 ,  8 ,
-     &           2 ,  5 ,  0 ,
-     &           3 ,  6 ,  9 ,
+     &         0 ,  4 ,  7 ,
+     &         1 ,  0 ,  8 ,
+     &         2 ,  5 ,  0 ,
+     &         3 ,  6 ,  9 ,
 !     NONSYMMETRICAL P1 QUASI-BUBBLE PRE-ASSEMBLED EBE (S=2)
-     &           0 ,  7 ,  3 ,
-     &           1 ,  0 ,  8 ,
-     &           9 ,  2 ,  0 ,
-     &           4 ,  5 ,  6 /
+     &         0 ,  7 ,  3 ,
+     &         1 ,  0 ,  8 ,
+     &         9 ,  2 ,  0 ,
+     &         4 ,  5 ,  6 /), SHAPE=(/ 3,4,2 /) ) )
+!
+      INTEGER :: ACQ(3,6,2)
+      PARAMETER ( ACQ = RESHAPE( (/
 !     NONSYMMETRICAL P1 P2 EBE (S=1)
-      DATA ACQ/   0 ,  6 ,  11,
-     &            1 ,  0 ,  12,
-     &            2 ,  7 ,  0 ,
-     &            3 ,  8 ,  13,
-     &            4 ,  9 ,  14,
-     &            5 ,  10,  15,
-! S=2 NOT IMPLEMENTED
-     &            0 ,  0 ,  0 ,
-     &            0 ,  0 ,  0 ,
-     &            0 ,  0 ,  0 ,
-     &            0 ,  0 ,  0 ,
-     &            0 ,  0 ,  0 ,
-     &            0 ,  0 ,  0 /
+     &         0 ,  6 ,  11,
+     &         1 ,  0 ,  12,
+     &         2 ,  7 ,  0 ,
+     &         3 ,  8 ,  13,
+     &         4 ,  9 ,  14,
+     &         5 ,  10,  15,
+!     S=2 NOT IMPLEMENTED
+     &         0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 /), SHAPE=(/ 3,6,2 /) ) )
+!
+      INTEGER :: BAQ(4,3,2)
+      PARAMETER ( BAQ = RESHAPE( (/
 !     NONSYMMETRICAL QUASI-BUBBLE P1 EBE (S=1)
-      DATA BAQ/  0 ,  3 ,  5 ,  7 ,
-     &           1 ,  0 ,  6 ,  8 ,
-     &           2 ,  4 ,  0 ,  9 ,
+     &         0 ,  3 ,  5 ,  7 ,
+     &         1 ,  0 ,  6 ,  8 ,
+     &         2 ,  4 ,  0 ,  9 ,
 !     NONSYMMETRICAL QUASI-BUBBLE P1 PRE-ASSEMBLED EBE (S=2)
-     &           0 ,  7 ,  3 ,  4 ,
-     &           1 ,  0 ,  8 ,  5 ,
-     &           9 ,  2 ,  0 ,  6 /
+     &         0 ,  7 ,  3 ,  4 ,
+     &         1 ,  0 ,  8 ,  5 ,
+     &         9 ,  2 ,  0 ,  6 /), SHAPE=(/ 4,3,2 /) ) )
+!
+      INTEGER :: CAQ(6,3,2)
 !     NONSYMMETRICAL P2 P1 EBE (S=1)
-      DATA CAQ/  0 ,  3 ,  5 ,  7 , 10 , 13 ,
-     &           1 ,  0 ,  6 ,  8 , 11 , 14 ,
-     &           2 ,  4 ,  0 ,  9 , 12 , 15 ,
-!     NONSYMMETRICAL P2 P1 PRE-ASSEMBLED EBE (S=2)
-!     - NOT IMPLEMENTED
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
-     &           0 ,  0 ,  0 ,  0 ,  0 ,  0 /
+      PARAMETER ( CAQ = RESHAPE( (/
+!     NONSYMMETRICAL P2 P1 EBE (S=1)
+     &         0 ,  3 ,  5 ,  7 , 10 , 13 ,
+     &         1 ,  0 ,  6 ,  8 , 11 , 14 ,
+     &         2 ,  4 ,  0 ,  9 , 12 , 15 ,
+!     NONSYMMETRICAL P2 P1 PRE-ASSEMBLED EBE (S=2) - NOT IMPLEMENTED
+     &         0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,  0 ,  0 ,  0 ,
+     &         0 ,  0 ,  0 ,  0 ,  0 ,  0 /), SHAPE=(/ 6,3,2 /) ) )
 !
 !-----------------------------------------------------------------------
 !

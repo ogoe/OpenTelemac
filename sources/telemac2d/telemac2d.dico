@@ -20,6 +20,20 @@
 / NIVEAU : Level of the keyword (Level 0 is a mandatory keyword)
 / AIDE : Help in French (LaTeX syntax)
 / AIDE1 : Help in English (LaTeX syntax)
+/---SYSTEME-TELEMAC-------------------------------------------------------------
+/
+/ INDICES IN USE SO FAR:
+/  - INTEGER (ENTIER):
+/       1-109
+/  - REAL (REEL):
+/       1-6, 14-77
+/  - LOGICAL (LOGIQUE):
+/       1-55
+/  - CHARACTER (CARACTERE):
+/       1-3, 6-13, 15-31, 33,34, 36-41, 54, 57-93, 95-102
+/
+/-------------------------------------------------------------------------------
+/
 ////////////////////////////////////////////////////////////////////////
 /// 1-COMPUTATION ENVIRONMENT
 ////////////////////////////////////////////////////////////////////////
@@ -2440,7 +2454,7 @@ le modele CN du SCS. Les options disponibles sont:
   1 : conditions precedentes seches
   2 : conditions precedentes normales
   3 : conditions prcedentes mouillees
-ce mot cle est uniquement utile pour le modele pluie-débit 1 (CN)'
+ce mot cle est uniquement utile pour le modele pluie-debit 1 (CN)'
 AIDE1 =
 'Gives the antecedent moisture conditions before a rainfall
  event for the SCS CN runoff model. Available options are:
@@ -3044,12 +3058,12 @@ DEFAUT1 = 1
 MNEMO = 'OPTVF'
 CHOIX =
 '0="schema de Roe"';
-'1="schéma cinetique ordre 1"';
-'2="schéma cinetique ordre 2"';
-'3="schéma Zokagoa ordre 1"';
-'4="schéma Tchamen ordre 1"';
-'5="schéma HLLC ordre 1"';
-'6="schéma WAF ordre 2"'
+'1="schema cinetique ordre 1"';
+'2="schema cinetique ordre 2"';
+'3="schema Zokagoa ordre 1"';
+'4="schema Tchamen ordre 1"';
+'5="schema HLLC ordre 1"';
+'6="schema WAF ordre 2"'
 CHOIX1 =
 '0="Roe scheme"';
 '1="kinetic order 1"';
@@ -4586,11 +4600,12 @@ AIDE1 =
 ' Sets the value of the implicitation coefficient for the diffusion of
 velocity'
 /
-////////////////////////////////////////////////////////////////////////
-///// 4.6-AUTOMATIC DIFFERENTIATION
-////////////////////////////////////////////////////////////////////////
-NOM = 'NOMBRE DE DIFFERENTIATEURS'
-NOM1 = 'NUMBER OF DIFFERENTIATORS'
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/   4.6 - ALGORITHMIC DIFFERENTIATION                                         /
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+/
+NOM = 'NOMBRE DE DERIVEES'
+NOM1 = 'NUMBER OF DERIVATIVES'
 TYPE = INTEGER
 INDEX = 104
 TAILLE = 1
@@ -4602,13 +4617,13 @@ RUBRIQUE =
 RUBRIQUE1 =
 'NUMERICAL PARAMETERS';'AUTOMATIC DIFFERENTIATION';''
 NIVEAU = 0
-AIDE =
-' Definit le nombre de differentiateurs utilisateurs.'
-AIDE1 =
-' Defines the number of user differentiators'
+AIDE = 'Definit le nombre de derivees utilisateurs, dans le cadre
+de la differentiation algorithmique.'
+AIDE1 = 'Defines the number of user derivatives, within the framework
+of the algorithmic differentiation.'
 /
-NOM = 'NOMS DES DIFFERENTIATEURS'
-NOM1 = 'NAMES OF DIFFERENTIATORS'
+NOM = 'NOMS DES DERIVEES'
+NOM1 = 'NAMES OF DERIVATIVES'
 TYPE = STRING
 INDEX = 13
 TAILLE = 2
@@ -4618,12 +4633,10 @@ RUBRIQUE =
 RUBRIQUE1 =
 'NUMERICAL PARAMETERS';'AUTOMATIC DIFFERENTIATION';''
 NIVEAU = 0
-AIDE =
-' Noms des differentiateurs utilisateurs en 32 caracteres, 16 pour le
-nom, 16 pour l''unite'
-AIDE1 =
-' Name of user differentiators in 32 characters, 16 for the name, 16 for
-the unit.'
+AIDE = 'Noms des derivees utilisateurs en 32 caracteres,
+         16 pour le nom, 16 pour l''unite'
+AIDE1 = 'Name of user derivatives in 32 characters,
+         16 for the name, 16 for the unit.'
 /
 ////////////////////////////////////////////////////////////////////////
 ///// 4.7-ADVANCED
@@ -6267,7 +6280,7 @@ RUBRIQUE1 =
 'HYDRAULIC STRUCTURES';'WEIRS';''
 NIVEAU = 0
 AIDE =
-' Méthode de traitement des seuils. Deux Solutions:
+' Methode de traitement des seuils. Deux Solutions:
 - HORIZONTAL AVEC MEME NOMBRE DE NOEUDS AMONT/AVAL (Solution historique
   avec bord)
 - GENERALE (Nouvelle solution avec pts sources)'
@@ -7444,6 +7457,63 @@ AIDE1 =
 ' PARTITIONING TOOL SELECTION 1 : METIS 2 : SCOTCH 3 : PARMETIS 4 :
 PTSCOTCH etc...'
 /
+NOM = 'AD NOMBRE DE DIRECTIONS'
+NOM1 = 'AD NUMBER OF DIRECTIONS'
+TYPE = ENTIER
+INDEX = 109
+MNEMO = 'AD_NUMOFDIR'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Definit le nombre de directions de differentiateurs.'
+AIDE1 = 'Defines the number of directions for the differentiators'
+/
+NOM = 'AD SOLVEUR LINEAIRE SYMBOLIQUE'
+NOM1 = 'AD SYMBOLIC LINEAR SOLVER'
+TYPE = LOGIQUE
+INDEX = 35
+MNEMO = 'AD_SYMBLINSOLV'
+TAILLE = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Enables the symbolic linear solver for AD.'
+AIDE1 = 'Enables the symbolic linear solver for AD.'
+/
+NOM = 'AD REMISE A ZERO DES DERIVEES DU SOLVEUR LINEAIRE'
+NOM1 = 'AD LINEAR SOLVER RESET DERIVATIVES'
+TYPE = LOGIQUE
+INDEX = 54
+MNEMO = 'AD_LINSOLV_RESETDERIV'
+TAILLE = 1
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Resets the derivatives for AD.'
+AIDE1 = 'Resets the derivatives for AD.'
+/
+NOM = 'AD LINEAR SOLVER DERIVATIVE CONVERGENCE'
+NOM1 = 'AD LINEAR SOLVER DERIVATIVE CONVERGENCE'
+TYPE = LOGIQUE
+INDEX = 55
+MNEMO = 'AD_LINSOLV_DERIVATIVE_CONVERGENCE'
+TAILLE = 1
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'PARAMETRES NUMERIQUES, SOLVEUR'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS, SOLVER'
+NIVEAU = 1
+AIDE = 'Iterative linear solvers:  derivative convergence test for AD.'
+AIDE1 = 'Iterative linear solvers:  derivative convergence test for AD.'
+/
+/
 NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'
 TYPE = STRING
@@ -7654,17 +7724,17 @@ AIDE =
 AIDE1 =
 ' Default parallel executable for T2D'
 /
-NOM = 'ASSEMBLAGE EN ELEMENTS FINIS' 
-NOM1 = 'FINITE ELEMENT ASSEMBLY' 
-TYPE = ENTIER 
+NOM = 'ASSEMBLAGE EN ELEMENTS FINIS'
+NOM1 = 'FINITE ELEMENT ASSEMBLY'
+TYPE = ENTIER
 INDEX = 108
-MNEMO = 'MODASS' 
+MNEMO = 'MODASS'
 TAILLE= 1
-DEFAUT = 1 
+DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = 2 
-AIDE = '1 : normal 2 : avec des entiers I8 3:compensé' 
-AIDE1 = '1: normal 2: with I8 integers 3:compensation'  
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 2
+AIDE = '1 : normal 2 : avec des entiers I8 3:compensé'
+AIDE1 = '1: normal 2: with I8 integers 3:compensation'
 /

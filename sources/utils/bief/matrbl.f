@@ -49,7 +49,7 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+        ADD MODASS=3 FOR THE INTERFACE NODE ASSEMBLY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OR BLOCK OF MATRICES
@@ -237,7 +237,7 @@
           CALL PARCOM(X,2,MESH)
         ELSEIF (MODASS .EQ. 3) THEN
           CALL PARCOM_COMP(X,X%ADR(1)%P%E,2,MESH)
-        ENDIF 
+        ENDIF
       ENDIF
       IF (MODASS .EQ.3)THEN
         X%ADR(1)%P%R=X%ADR(1)%P%R+X%ADR(1)%P%E

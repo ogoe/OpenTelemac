@@ -77,8 +77,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSEMAX,ERR
-      PARAMETER(NSEMAX=100)
+      INTEGER ERR
+      INTEGER, PARAMETER :: NSEMAX = 100
 !
       INTEGER IELEM,I1,I2,I3,ELBEST,IGBEST,ILBEST
       INTEGER ILPREC,ISEG,ISEC,NSEC,PT,DEP,ARR

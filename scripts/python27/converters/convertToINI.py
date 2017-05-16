@@ -49,20 +49,28 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Dependencies towards other modules ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   from config import OptionParser
+   from argparse import ArgumentParser,RawDescriptionHelpFormatter
    from parsers.parserSELAFIN import CONLIM,SELAFIN,subsetVariablesSLF,getValueHistorySLF
    from samplers.meshes import xysLocateMesh
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+A script to map 2D or 3D outter model results into a SELAFIN, onto the
+   one frame of contained SELAFIN file of your choosing (your MESH).
+      '''))
+   parser.add_argument( "args",default='',nargs=3 )
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf new mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   geoFile = args[0]
+   geoFile = options.args[0]
+   if not path.exists(geoFile):
+      print '... the provided geoFile does not seem to exist: '+geoFile+'\n\n'
+      sys.exit(1)
 
 # Find corresponding (x,y) in corresponding new mesh
    print '   +> getting hold of the GEO file and of its bathymetry'
@@ -72,7 +80,10 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf existing res ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   slfFile = args[1]
+   slfFile = options.args[1]
+   if not path.exists(slfFile):
+      print '... the provided geoFile does not seem to exist: '+slfFile+'\n\n'
+      sys.exit(1)
    slf = SELAFIN(slfFile)
    slf.setKDTree()
    slf.setMPLTri()
@@ -92,14 +103,14 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ writes INI header ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   iniFile = args[2]
+   iniFile = options.args[2]
    ini = SELAFIN('')
    ini.fole = {}
    ini.fole.update({ 'hook': open(iniFile,'wb') })
    ini.fole.update({ 'name': iniFile})
    ini.fole.update({ 'endian': ">" })     # big endian
    ini.fole.update({ 'float': ('f',4) })  # single precision
-   
+
    # Meta data and variable names
    ini.TITLE = ''
    ini.NBV1 = 5
@@ -113,7 +124,7 @@ if __name__ == "__main__":
                    '                ','                ' ]
    ini.NVAR = ini.NBV1
    ini.VARINDEX = range(ini.NVAR)
-   
+
    # Sizes and mesh connectivity
    ini.NPLAN = slf.NPLAN
    ini.NDP2 = 3
@@ -122,18 +133,18 @@ if __name__ == "__main__":
    ini.NPOIN3 = geo.NPOIN2*ini.NPLAN
    ini.NELEM2 = geo.NELEM2
    ini.NELEM3 = ini.NELEM2*(ini.NPLAN-1)
-   
+
    print '   +> setting connectivity'
    ini.IKLE3 = \
       np.repeat(geo.NPOIN2*np.arange(ini.NPLAN-1),geo.NELEM2*ini.NDP3).reshape((geo.NELEM2*(ini.NPLAN-1),ini.NDP3)) + \
       np.tile(np.add(np.tile(geo.IKLE2,2),np.repeat(geo.NPOIN2*np.arange(2),geo.NDP2)),(ini.NPLAN-1,1))
    ini.IPOB3 = np.ravel(np.add(np.repeat(geo.IPOB2,ini.NPLAN).reshape((geo.NPOIN2,ini.NPLAN)),geo.NPOIN2*np.arange(ini.NPLAN)).T)
    ini.IPARAM = [0,0,0,0,0,0,ini.NPLAN,0,0,0]
-   
+
    # Mesh coordinates
    ini.MESHX = geo.MESHX
    ini.MESHY = geo.MESHY
-   
+
    print '   +> writing header'
    # Write header
    ini.appendHeaderSLF()
@@ -154,7 +165,7 @@ if __name__ == "__main__":
 
    print '   +> extracting variables'
    data = getValueHistorySLF( slf.file,slf.tags,[0],support3d,slf.NVAR,slf.NPOIN3,slf.NPLAN,vars )
-   
+
    # special case for TEMPERATURE and SALINITY
    data[3] = np.maximum( data[3],zeros )
    data[4] = np.maximum( data[4],zeros )
@@ -173,8 +184,8 @@ if __name__ == "__main__":
    ini.appendCoreVarsSLF( d )
 
    # Close iniFile
-   ini.fole['hook'].close()   
-   
+   ini.fole['hook'].close()
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'

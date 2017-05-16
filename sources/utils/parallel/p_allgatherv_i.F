@@ -23,6 +23,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -40,7 +43,7 @@
 !
       IERR = 0
       RECV_BUFFER(1) = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_ALLGATHERV(SEND_BUFFER, SEND_COUNT, RECV_TYPE,
      &                   RECV_BUFFER, RECV_COUNT,
      &                   DISPLS, MPI_INTEGER, COMM, IERR)

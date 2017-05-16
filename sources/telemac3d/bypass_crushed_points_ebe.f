@@ -96,8 +96,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION EPS_VOLUME
-      DATA EPS_VOLUME /1.D-14/
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DOUBLE PRECISION :: EPS_VOLUME
+!      DATA EPS_VOLUME /1.D-14/
+      DOUBLE PRECISION, PARAMETER :: EPS_VOLUME = 1.D-14
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

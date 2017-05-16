@@ -102,12 +102,13 @@
       INTEGER, SAVE     :: CNT = 0
       LOGICAL           :: FINISH
 !
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#if defined COMPAD_DCO_T1S || COMPAD_DCO_T1V
       INTEGER           :: DRV_ELMS
       DOUBLE PRECISION  :: DRV_ERR
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE  :: DRV0, DRV1
-#  endif
+#endif
+#if defined COMPAD_DCO_T1V
+      INTEGER           :: T1V_NOD,I
 #endif
 !< JR @ RWTH
 !
@@ -121,12 +122,30 @@
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
       CNT = CNT + 1
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#if defined COMPAD_DCO_T1S || COMPAD_DCO_T1V
+      WRITE(LU,*) 'AD LINEAR SOLVER RESET DERIVATIVES :: ',
+     &     AD_LINSOLV_RESETDERIV
+      WRITE(LU,*) 'AD LINEAR SOLVER DERIVATIVE CONVERGENCE :: ',
+     &     AD_LINSOLV_DERIVATIVE_CONVERGENCE
 !
 ! 1.  RESET INCOMING TANGENTS TO ZERO TO AVOID DEPENDENCY OF OVERALL
 !     TANGENTS FROM INITIAL SOLUTIONS FOR FIRST CONJUGADE GRADIENT
-      CALL DCO_T1S_SET( X%ADR(1)%P%R, 0.D0, 1 )
+!! COMPAD-DCO  BEGIN  JR2016
+      IF (AD_LINSOLV_RESETDERIV ) THEN
+#  if defined COMPAD_DCO_T1S
+         CALL DCO_T1S_SET( X%ADR(1)%P%R, 0.D0, 1 )
+#  endif
+#  if defined COMPAD_DCO_T1V
+         T1V_NOD = DCO_T1V_GET_NOD()
+!         WRITE(LU,*) 'T1V  NOD  :: ',t1V_NOD
+         DO I=1, T1V_NOD
+            CALL DCO_T1V_SET( X%ADR(1)%P%R, 0.D0, 1, I )
+         END DO
+#  endif
+      END IF
+!! COMPAD-DCO  original code
+!!      CALL DCO_T1S_SET( X%ADR(1)%P%R, 0.D0, 1 )
+!! COMPAD-DCO  END    JR2016
 !     BY SETTING X TO A FIXED STARTING VALUE WE DISABLE THE RESTART
 !     FROM THE PREVISOU CG SOLUTION, AND SETTING TANGENTS TO ZERO TOO
 !>    X%ADR(1)%P%R = -1.1D0
@@ -136,9 +155,13 @@
       ALLOCATE( DRV0(DRV_ELMS), DRV1(DRV_ELMS))
 !
 ! 3.  STORE TANGENT OF X0
+#  if defined COMPAD_DCO_T1S
       CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV0, 1 )
-!
 #  endif
+#  if defined COMPAD_DCO_T1V
+      CALL DCO_T1V_GET( X%ADR(1)%P%R, DRV0, 1, 1 )
+#  endif
+!
 #endif
 !
 !< JR @ RWTH
@@ -245,11 +268,12 @@
       CALL OS('X=X+CY  ',X=X,Y=D,C=-RO)
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
 !     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE AND STORE IT
+#if defined COMPAD_DCO_T1S
       CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV1, 1 )
-#   endif
+#endif
+#if defined COMPAD_DCO_T1V
+      CALL DCO_T1V_GET( X%ADR(1)%P%R, DRV1, 1, 1 )
 #endif
 !< JR @ RWTH
 !
@@ -277,21 +301,25 @@
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
 !      IF(RMRM.LE.XL*CFG%EPS**2) GO TO 900
       FINISH = RMRM.LE.XL*CFG%EPS**2
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#if defined COMPAD_DCO_T1S || COMPAD_DCO_T1V
 !     CHECK DIFFERENCE BETWEEN TANGENTS OF LAST TWO STEPS
 ! 1.  SET TO ZERO TO AVOID ADDTIONAL TEST
       DRV_ERR = 0.D0
 ! 2a. ABSOLUTE CHANGE TO LAST STEP
 !     DRV_ERR  = SUM( DRV1 - DRV0 )**2
 ! 2b. RELATIVE CHANGE TO LAST STEP
-      DRV_ERR = SUM( DRV0**2 )
+      DRV_ERR = SUM( DRV0*DRV0 )
 ! 3.  TEST CONVERGENCE
       IF ( DRV_ERR .GT. 0.0 ) THEN
         DRV_ERR  = SUM( DRV1 - DRV0 )**2 / DRV_ERR
       ENDIF
-      FINISH = FINISH .AND. (DRV_ERR .LE. CFG%EPS**2 )
-#   endif
+!! COMPAD-DCO  BEGIN  JR2016
+      IF ( AD_LINSOLV_DERIVATIVE_CONVERGENCE ) THEN
+         FINISH = FINISH .AND. (DRV_ERR .LE. CFG%EPS**2 )
+      ENDIF
+!! COMPAD-DCO  original code
+!!      FINISH = FINISH .AND. (DRV_ERR .LE. CFG%EPS**2 )
+!! COMPAD-DCO  END    JR2016
 #endif
       IF ( FINISH ) GO TO 900
 !< JR @ RWTH
@@ -360,13 +388,16 @@
 !
 !-----------------------------------------------------------------------
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
+#if defined COMPAD_DCO_T1S || COMPAD_DCO_T1V
 !     TAKE TANGENT OF X1 IF WE ARE IN DCO_T1S MODE
 !     AND STORE TANGENT OF FORMER X
       DRV0 = DRV1
 !     STORE TANGENT OF NEW X
+#  if defined COMPAD_DCO_T1S
       CALL DCO_T1S_GET( X%ADR(1)%P%R, DRV1, 1 )
+#  endif
+#  if defined COMPAD_DCO_T1V
+      CALL DCO_T1V_GET( X%ADR(1)%P%R, DRV1, 1, 1 )
 #  endif
 #endif
 !< JR @ RWTH
@@ -408,11 +439,13 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
-#  if defined COMPAD_DCO_T1S || COMPAD_DCO1_T1S
-!!      WRITE(LU,*) '  CG_END CONVTEST',CNT,M,FINISH,RMRM,' :: ',
-!!     $     SQRT(DRV_ERR),(DRV_ERR.LE.CFG%EPS**2), SQRT(SUM(DRV1**2))
-#  endif
+#if defined COMPAD_DCO_T1S || COMPAD_DCO_T1V
+      IF (LNG.EQ.1) WRITE(LU,*) '  CG_FIN CONVTEST',
+     &  CNT,M,FINISH,RMRM,' :: ',
+     &  SQRT(DRV_ERR),(DRV_ERR.LE.CFG%EPS**2), SQRT(SUM(DRV1**2))
+      IF (LNG.EQ.2) WRITE(LU,*) '  CG_END CONVTEST',
+     &  CNT,M,FINISH,RMRM,' :: ',
+     &  SQRT(DRV_ERR),(DRV_ERR.LE.CFG%EPS**2), SQRT(SUM(DRV1**2))
 #endif
 !< JR @ RWTH
 !

@@ -77,7 +77,7 @@ from parserSortie import getLatestSortieFiles
 #from parserCSV import getVariableCSV,putDataCSV,addColumnCSV
 from parserFortran import getPrincipalWrapNames,filterPrincipalWrapNames
 # ~~> dependencies towards the root of pytel
-from runcode import runCAS,getNCSIZE,compilePRINCI
+from runcode import runCAS,getNCSIZE,processExecutable
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent,putFileContent,addFileContent,createDirectories,copyFile,moveFile, matchSafe,diffTextFiles
@@ -395,7 +395,7 @@ class ACTION:
          'path': self.active['path'],
          'title': self.active["title"],
          'set': self.active["set"],
-         'cmaps': path.join(cfg['PWD'],'ColourMaps')
+         'cmaps': path.join(cfg['pytel'],'ColourMaps')
          } } )
 
    def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
@@ -613,6 +613,64 @@ class actionRUN(ACTION):
       updated = False
       if not "run" in self.availacts.split(';'): return updated
 
+      # ~~> prepare dependencies
+      for oFile in self.active["deprefs"]:
+         if oFile in self.dids:
+            if self.active['cfg'] in self.dids[oFile]:
+               layer = findTargets(self.dids[oFile][self.active['cfg']],self.active["deprefs"][oFile])
+               if layer != []:
+                  if path.isfile(layer[0][0]):
+                     try:
+                        copyFile(layer[0][0],self.active['safe'])
+                     except Exception as e:
+                        raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                  else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+            else : raise Exception([{'name':'runCommand','msg':'could not find the configuration '+self.active['cfg']+'for the dependant: '+oFile}])
+         else:
+            if self.active["where"] != '':
+               if path.exists(path.join(self.active["where"],oFile)): copyFile(path.join(self.active["where"],oFile),self.active['safe'])
+            elif path.exists(path.join(self.path,oFile)): copyFile(path.join(self.path,oFile),self.active['safe'])
+            else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+oFile}])
+
+      # ~~> associated secondary inputs
+      for xref in self.active["deprefs"]:
+         if xref in self.dids.keys():
+            cfgname = self.active['cfg']
+            if cfgname in self.dids[xref]:
+               active = self.dids[xref][cfgname]
+               if self.active["deprefs"][xref].lower() == "sortie":
+                  if path.isfile(active["sortie"]): copyFile(active["sortie"],self.active['safe'])
+                  else: raise Exception([{'name':'runCommand','msg':'could not find reference to the sortie: '+active["sortie"]}])
+               elif self.active["deprefs"][xref] in active["outrefs"]:
+                  if path.exists(path.join(active['safe'],active["outrefs"][self.active["deprefs"][xref]])):
+                     try:
+                        copyFile(path.join(active['safe'],active["outrefs"][self.active["deprefs"][xref]]),self.active['safe'])
+                     except Exception as e:
+                        raise Exception([filterMessage({'name':'runCommand','msg':'I can see your file '+self.active["deprefs"][xref]+'but cannot copy it'},e,True)])
+                  else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+self.active["deprefs"][xref]}])
+               else:
+                  layer = []
+                  for oFile in active["output"]:
+                     layer = findTargets(active,self.active["deprefs"][xref])
+                     if layer != []:
+                        if path.isfile(layer[0][0]):
+                           try:
+                              copyFile(layer[0][0],self.active['safe'])
+                           except Exception as e:
+                              raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                        else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+                  for mod in active["links"]:
+                     for iFile in active["links"][mod]["oFS"]:
+                        layer = findTargets({'code':mod,'output':active["links"][mod]["oFS"]},self.active["deprefs"][xref])
+                        if layer != []:
+                           if path.isfile(layer[0][0]):
+                              try:
+                                 copyFile(layer[0][0],self.active['safe'])
+                              except Exception as e:
+                                 raise Exception([filterMessage({'name':'runCommand','msg':'I can see your input file '+layer[0][0]+'but cannot copy it'},e,True)])
+                           else: raise Exception([{'name':'runCommand','msg':'could not find reference to the dependant: '+layer[0][0]}])
+                  if layer == []: raise Exception([{'name':'runCommand','msg':'could not find reference to the linked file: '+self.active["deprefs"][xref]}])
+
       # ~~> prepare options as if run from command line
       specs = Values()
       specs.configName = options.configName
@@ -661,6 +719,7 @@ class actionRUN(ACTION):
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
+      print '\n\n... this work is done (I mean I have dealt with reference '+self.active["xref"]+')\n\n'
       return updated
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -763,54 +822,17 @@ class actionRUN(ACTION):
       if not "compile" in self.availacts.split(';'): return updated
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
-      confirmed = False
-      # ~~> principal PRINCI file
-      value,default = getKeyWord('FICHIER FORTRAN',active['cas'],
-                                 DICOS[active['dico']]['dico'],
-                                 DICOS[active['dico']]['frgb'])
-      princiFile = ''; princiSafe = ''
-      if value != []:       # you do not need to compile the default executable
-         princiFile = path.join(active['path'],value[0].strip("'\""))
-         if path.isfile(princiFile):
-            exeFile = path.join(active['safe'],path.splitext(value[0].strip("'\""))[0] + \
-                      cfg['SYSTEM']['sfx_exe'])
-            if not path.exists(exeFile) or cfg['REBUILD'] == 0:
-               print '     +> compiling princi file: ' + path.basename(princiFile)
-               copyFile(princiFile,active['safe'])
-               print '*********copying '+princiFile+' '+active['safe']
-               princiSafe = path.join(active['safe'],path.basename(princiFile))
-               confirmed = True
-         else:
-            raise Exception([{'name':'ACTION::compilePRINCI','msg':'I could not find your PRINCI file: '+princiFile}])
-      # ~~> associated PRINCI file
-      for mod in active["links"]:
-         link = active["links"][mod]
-         value,default = getKeyWord('FICHIER FORTRAN',link['cas'],DICOS[link['dico']]['dico'],DICOS[link['dico']]['frgb'])
-         princiFilePlage = ''
-         if value != []:       # you do not need to compile the default executable
-            princiFilePlage = path.join(active['path'],value[0].strip("'\""))
-            if path.isfile(princiFilePlage):
-               if princiSafe != '':
-                  print '*********adding content of '+path.basename(princiFilePlage)+' to '+princiSafe
-                  putFileContent(princiSafe,getFileContent(princiSafe)+['']+getFileContent(princiFilePlage))
-               else:
-                  print '     +> compiling princi file: ' + path.basename(princiFilePlage)
-                  exeFile = path.join(active['safe'],path.splitext(value[0].strip("'\""))[0] + cfg['SYSTEM']['sfx_exe'])
-                  princiSafe = path.join(active['safe'],path.basename(princiFilePlage))
-                  print '*********copying '+path.basename(princiFilePlage)+ ' ' + active['safe']
-                  copyFile(princiFilePlage,active['safe'])
-               confirmed = True
-            else:
-               raise Exception([{'name':'ACTION::compilePRINCI','msg':'I could not find your PRINCI file: '+princiFilePlage}])
-      if confirmed:
-         try:
-            compilePRINCI(princiSafe,active["code"],self.active['cfg'],cfg,self.bypass)
-            updated = True
-         except Exception as e:
-            raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])  # only one item here
-         #moveFile(exeFile,active['safe'])
-         print '       ~> compilation successful ! created: ' + path.basename(exeFile)
-      #else: you may wish to retrieve the executable for later analysis
+      try:
+         pbin = cfg['root']+sep+'builds'+sep+cfgname+sep+'bin'
+         plib = cfg['MODULES'][active["code"]]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
+         exeFile,updated = \
+            processExecutable(active,pbin,plib,cfg['SYSTEM'], \
+            DICOS[active['dico']]['dico'], \
+            DICOS[active['dico']]['frgb'],cfg['TRACE'],self.bypass)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])   # only one item here
+      print '       ~> compilation successful ! created: ' + path.basename(exeFile)
+
       return updated
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1082,7 +1104,7 @@ class groupCAST(GROUPS):
 # ____/ XML Parser Toolbox /_______________________________________/
 #
 """
-   Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
+   Assumes that the directory ColourMaps is in root (i.e. ~root/pytel.)
 """
 def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
 
@@ -1108,6 +1130,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
    if not dodo:
       print '    > nothing to do here at this stage'
       return reports
+   root = xmlConfig[xmlConfig.keys()[0]]['cfg']['root']
+   pytel = xmlConfig[xmlConfig.keys()[0]]['cfg']['pytel']
 
    print '... interpreting XML test specification file: ' + path.basename(xmlFile)
    # ~~ Decoration process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1133,6 +1157,16 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          look = decoing.findall("look")[0]
          try:
             dc.addLookTask(look)
+            for i in range(len(dc.tasks["look"])):
+               for c in ["cmap", "cmaps", "colourbar"]:
+                  if c in dc.tasks["look"][i].keys():
+                     fileName = dc.tasks["look"][i][c]
+                     if fileName.split('.')[-1] == 'xml':
+                        if not path.exists(fileName) and path.exists(path.join(pytel,'ColourMaps',fileName)):
+                           dc.tasks["look"][i][c] = path.join(pytel,'ColourMaps',fileName)
+                        else:
+                           print "... Could not access/read expected colour map file content: " + fileName
+                           sys.exit(1)
          except Exception as e:
             xcpt.append(filterMessage({'name':'runXML','msg':'add look to the list'},e,bypass))
             continue   # bypass the rest of the for loop
@@ -1200,9 +1234,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                #continue    # bypass rest of the loop
 
          # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~
+         #oneFound = False
          for cfgname in xmlConfig:
             cfg = xmlConfig[cfgname]['cfg']
-            do.addCFG(cfgname,cfg) #if not : continue
+            #if not do.addCFG(cfgname,cfg): continue
+            #oneFound = True
+            do.addCFG(cfgname,cfg)
 
             # ~~> Temper with rank but still gather intelligence
             #dodo = True
@@ -1338,6 +1375,8 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   except Exception as e:
                      xcpt.append(filterMessage({'name':'runXML::runCommand','msg':'   +> '+do.active["do"]},e,bypass))
 
+         #if not oneFound: raise Exception({'name':'runXML','msg':'could not find the config you are looking for ('+do.active["config"]+') for the action '+do.active['xref']+' in file:\n'+xmlFile,'tree':xcpt})
+         #
          if updated: report.update({ 'updt':updated, 'title':'My work is done' })
 
          if xcpt != []: raise Exception({'name':'runXML','msg':'looking at actions in xmlFile: '+xmlFile,'tree':xcpt})
@@ -1443,6 +1482,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                for cfgname in xmlConfig:
                   if rankdont == 1: continue
                   if gcd(rankdont,rankdo) == 1: continue
+                  if cfgname not in do.dids[xref]: continue
                   oneFound = True
                   findlayer = findTargets(do.dids[xref][cfgname],src)
                   if findlayer != []: layers.update({ cfgname:findlayer })
@@ -1652,6 +1692,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   oneFound = False
                   for cfgname in xmlConfig:
                      oneFound = True
+                     if cfgname not in do.dids[xref]: continue
                      findlayer = findTargets(do.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
@@ -1868,6 +1909,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   oneFound = False
                   for cfgname in xmlConfig:
                      oneFound = True
+                     if cfgname not in save.dids[xref]: continue
                      findlayer = findTargets(save.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:
@@ -1881,6 +1923,7 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   oneFound = False
                   for cfgname in xmlConfig:
                      oneFound = True
+                     if cfgname not in do.dids[xref]: continue
                      findlayer = findTargets(do.dids[xref][cfgname],src)
                      if findlayer != []: layers.update({ cfgname:findlayer })
                   if oneFound and layers == {}:

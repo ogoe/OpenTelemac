@@ -1,9 +1,9 @@
-!                    *************
+!                    ******************
                      SUBROUTINE OV_COMP
-!                    *************
+!                    ******************
 !
-     & ( OP , X , Y , Z , C , NPOIN
-     &  , X_ERR , Y_ERR , Z_ERR)
+     & ( OP , X , Y , Z , C , NPOIN,
+     &   X_ERR , Y_ERR , Z_ERR)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -110,7 +110,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      !print*, 'ov_comp'
       TEMP=0.D0
       ERROR=0.D0
       ERROR1=0.D0
@@ -183,7 +182,7 @@
         DO I=1,NPOIN
           CALL TWOSUM(Y(I),Z(I),X(I),ERROR)
           IF (PRESENT (X_ERR) .AND. PRESENT (Y_ERR)
-     &    .AND. PRESENT (Z_ERR)) THEN
+     &      .AND. PRESENT (Z_ERR)) THEN
             X_ERR(I)=(Y_ERR(I)+Z_ERR(I))+ERROR
           ENDIF
           !X(I) = Y(I) + Z(I)
@@ -196,7 +195,7 @@
         DO I=1,NPOIN
           CALL TWOSUM(Y(I),-Z(I),X(I),ERROR)
           IF (PRESENT (X_ERR) .AND. PRESENT (Y_ERR)
-     &    .AND. PRESENT (Z_ERR)) THEN
+     &      .AND. PRESENT (Z_ERR)) THEN
             X_ERR(I)=(Y_ERR(I)-Z_ERR(I))+ERROR
           ENDIF
           !X(I) = Y(I) - Z(I)
@@ -209,10 +208,10 @@
         DO I=1,NPOIN
           CALL TWOPROD(Y(I),Z(I),X(I),ERROR)
           IF (PRESENT (X_ERR) .AND. PRESENT (Y_ERR)
-     &    .AND. PRESENT (Z_ERR)) THEN
-        X_ERR(I)=(Y(I) * Z_ERR(I))+(Y_ERR(I) * Z(I))
-     &      +(Y_ERR(I) * Z_ERR(I))
-        X_ERR(I)=X_ERR(I)+ ERROR
+     &      .AND. PRESENT (Z_ERR)) THEN
+            X_ERR(I)=(Y(I) * Z_ERR(I))+(Y_ERR(I) * Z(I))
+     &               +(Y_ERR(I) * Z_ERR(I))
+            X_ERR(I)=X_ERR(I)+ ERROR
           ENDIF
           !X(I) = Y(I) * Z(I)
         ENDDO
@@ -224,7 +223,7 @@
         DO I=1,NPOIN
           CALL TWOPROD(-Y(I),Z(I),X(I),ERROR)
           IF (PRESENT (X_ERR) .AND. PRESENT (Y_ERR)
-     &    .AND. PRESENT (Z_ERR)) THEN
+     &      .AND. PRESENT (Z_ERR)) THEN
             X_ERR(I)=(-Y(I) * Z_ERR(I))+(-Y_ERR(I) * Z(I))
             X_ERR(I)=X_ERR(I)+ ERROR
           ENDIF
@@ -295,9 +294,9 @@
         DO I=1,NPOIN
           CALL TWOPROD(C*Y(I),Z(I),X(I),ERROR)
           IF (PRESENT (X_ERR) .AND. PRESENT (Y_ERR)
-     &    .AND. PRESENT (Z_ERR)) THEN
+     &      .AND. PRESENT (Z_ERR)) THEN
             X_ERR(I)= (C*Y(I) * Z_ERR(I))
-     &      +(C*Y_ERR(I) * Z(I))+(C*Y_ERR(I) * Z_ERR(I))
+     &               +(C*Y_ERR(I) * Z(I))+(C*Y_ERR(I) * Z_ERR(I))
             X_ERR(I)=  X_ERR(I)+ERROR
           ENDIF
           !X(I) = C* Y(I) * Z(I)

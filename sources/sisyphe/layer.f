@@ -84,6 +84,9 @@
       USE BIEF
       USE DECLARATIONS_SISYPHE , ONLY : NOMBLAY
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM,P_ISUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -102,10 +105,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -116,11 +121,13 @@
 !
 !     TO CHECK FRACTIONS IN THE RANGE [-ZERO,1+ZERO]
 !
-      DOUBLE PRECISION ZERO
 !     DATA             ZERO/1.D-10/
 !     IN CASE OF RESTART, THE FIRST TIME STEP IS A BIT HARD BECAUSE OF
 !     SINGLE PRECISION, WITHOUT RESTART 1.D-10 IS OK
-      DATA             ZERO/1.D-7/
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA             ZERO/1.D-7/
+      DOUBLE PRECISION, PARAMETER :: ZERO = 1.D-7
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

@@ -27,6 +27,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        11/11/2016
+!+        V7P2
+!+   The * symbol now only represent a number, such as T* for all
+!+   tracers (T1, T2, ... T10, T11, etc.) but not for TAU_S and others
+!+   Note that G* will not pick up G, but only G1, G2, etc.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHAINE         |<->| STRING OF VARIABLES FOR GRAPHIC OUTPUTS
 !| MNEMO          |<->| MNEMO OF VARIABLES
@@ -52,10 +59,18 @@
 !
       CHARACTER C(2)
       CHARACTER(LEN=8) MOT(100)
-      INTEGER I,J,LONG,I1,I2,NMOT,L
-      LOGICAL OK
+      CHARACTER(LEN=10) :: KS
+      INTEGER I,J,LONG,I1,I2,NMOT,L,KI
+      LOGICAL OK,FOUND
 !
       INTRINSIC LEN
+!
+!-----------------------------------------------------------------------
+!
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA KS /'0123456789'/
+      PARAMETER ( KS = '0123456789' )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -121,11 +136,19 @@
         DO J=1,NMOT
           OK=.TRUE.
           DO L=1,8
-!           A JOKER '*' IS ALLOWED
-            IF(MOT(J)(L:L).NE.MNEMO(I)(L:L).AND.MOT(J)(L:L).NE.'*') THEN
+!           A JOKER '*' IS ALLOWED BUT ONLY TO REPLACE A NUMBER
+            IF( MOT(J)(L:L).NE.MNEMO(I)(L:L) ) THEN
+              IF( MOT(J)(L:L).EQ.'*'.AND.MNEMO(I)(L:L).NE.' ' ) THEN
+                FOUND = .FALSE.
+                DO KI = 1,10
+                  IF( MNEMO(I)(L:L).EQ.KS(KI:KI) ) FOUND = .TRUE.
+                ENDDO
+                IF( FOUND ) EXIT
+              ENDIF
               OK=.FALSE.
               EXIT
             ENDIF
+            IF( MOT(J)(L:L).EQ.' '.AND.MNEMO(I)(L:L).EQ.' ') EXIT
           ENDDO
           SORLEO(I)=OK
           IF(SORLEO(I)) EXIT

@@ -19,7 +19,7 @@
 !
       IMPLICIT NONE
       PRIVATE
-#if defined(HAVE_VTK)
+#if defined HAVE_VTK
       ! FUNCTIONS FOR VTK LEGACY
       PUBLIC:: VTK_INI
       PUBLIC:: VTK_GEO

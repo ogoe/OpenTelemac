@@ -24,7 +24,7 @@
 !#                                                                             #
 !###############################################################################
 
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
 #include "aed2.h"
 !#include "aed2_common.h"
 #endif
@@ -36,7 +36,7 @@
 !###############################################################################
 MODULE fv_zones
 !-------------------------------------------------------------------------------
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
    USE aed2_common
 
    IMPLICIT NONE

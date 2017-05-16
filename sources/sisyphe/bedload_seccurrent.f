@@ -150,21 +150,21 @@
 !
       IF(HAVESECFILE) THEN
 !CALCULATION TAU_X_COR: TAU_X_COR=TAU_X*COS(TETA)-Y*SIN(TETA)
-          CALL OS( 'X=COS(Y)' , T3 , T8 , T8 , C   ) !COS(TETA)
-          CALL OS( 'X=SIN(Y)' , T4 , T8 , T8 , C   ) !SIN(TETA)
-          CALL OS( 'X=YZ    ' , T5 , T3 , T1 , C   ) !TAU_X*COS(TETA)
-          CALL OS( 'X=YZ    ' , T6 , T4 , T2 , C   ) !TAU_Y*SIN(TETA)
-          CALL OS( 'X=Y-Z   ' , T5 , T5 , T6 , C   ) ! TAU_X_COR=TAU_X*COS(TETA)-TAU_Y*SIN(TETA)
+        CALL OS( 'X=COS(Y)' , T3 , T8 , T8 , C   ) !COS(TETA)
+        CALL OS( 'X=SIN(Y)' , T4 , T8 , T8 , C   ) !SIN(TETA)
+        CALL OS( 'X=YZ    ' , T5 , T3 , T1 , C   ) !TAU_X*COS(TETA)
+        CALL OS( 'X=YZ    ' , T6 , T4 , T2 , C   ) !TAU_Y*SIN(TETA)
+        CALL OS( 'X=Y-Z   ' , T5 , T5 , T6 , C   ) ! TAU_X_COR=TAU_X*COS(TETA)-TAU_Y*SIN(TETA)
 !CALCULATION TAU_Y_COR: TAU_Y_COR=TAU_Y*SIN(TETA)+TAU_Y*COS(TETA)
-          CALL OS( 'X=YZ    ' , T6 , T4 , T1 , C   ) !TAU_X*SIN(TETA)
-          CALL OS( 'X=YZ    ' , T7 , T3 , T2 , C   ) !TAU_Y*COS(TETA)
-          CALL OS( 'X=X+Y   ' , T6 , T7 , T7 , C   ) ! TAU_Y_COR=TAU_Y*COS(TETA)+TAU_Y*SIN(TETA)
+        CALL OS( 'X=YZ    ' , T6 , T4 , T1 , C   ) !TAU_X*SIN(TETA)
+        CALL OS( 'X=YZ    ' , T7 , T3 , T2 , C   ) !TAU_Y*COS(TETA)
+        CALL OS( 'X=X+Y   ' , T6 , T7 , T7 , C   ) ! TAU_Y_COR=TAU_Y*COS(TETA)+TAU_Y*SIN(TETA)
 !RK
-          CALL OS( 'X=Y     ' , T1 , T5 , T1 , C   )
-          CALL OS( 'X=Y     ' , T2 , T6 , T1 , C   )
+        CALL OS( 'X=Y     ' , T1 , T5 , T1 , C   )
+        CALL OS( 'X=Y     ' , T2 , T6 , T1 , C   )
       ELSE
-      CALL OS('X=X+Y   ' , T1 , T5    , T3,  C ) ! TAU_X_GES = TOB*CALFA+TAU_X_SEK
-      CALL OS('X=X+Y   ' , T2 , T6    , T3,  C ) ! TAU_Y_GES = TOB*SALFA+TAU_Y_SEK
+        CALL OS('X=X+Y   ' , T1 , T5    , T3,  C ) ! TAU_X_GES = TOB*CALFA+TAU_X_SEK
+        CALL OS('X=X+Y   ' , T2 , T6    , T3,  C ) ! TAU_Y_GES = TOB*SALFA+TAU_Y_SEK
 !
       ENDIF
 !

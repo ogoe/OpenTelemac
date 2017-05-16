@@ -33,10 +33,10 @@ import sys
 import re
 import numpy as np
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 # ~~> dependencies towards other pytel/modules
-from config import OptionParser
-from utils.files import getFileContent,putFileContent
+from utils.files import getFileContent
 from parsers.parserKenue import InS
 
 # _____                   __________________________________________
@@ -151,14 +151,20 @@ if __name__ == "__main__":
    debug = False
 
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   options, args = parser.parse_args()
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Tools for handling Janet native files in python.
+   Janet and its related software (..., ) are property of Smile Consulting
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   options = parser.parse_args()
 
-   if len(args) != 1:
+   if len(options.args) != 1:
       print '\nThis program takes only one INSEL type file as a time as input.\n ... an i2s or i3s file of the same name will be created depending on the INSEL content.'
       sys.exit(1)
 
-   janFile = args[0]
+   janFile = options.args[0]
    head,tail = path.splitext(janFile)
    insel = INSEL(janFile)
 

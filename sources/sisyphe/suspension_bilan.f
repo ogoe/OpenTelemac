@@ -101,6 +101,9 @@
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN => SUSPENSION_BILAN
       USE BIEF
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
       ! 2/ GLOBAL VARIABLES
       ! -------------------
@@ -123,7 +126,9 @@
       DOUBLE PRECISION FLT_BOUND(300)
       ! 4/ EXTERNAL FUNCTION
       ! --------------------
-      DOUBLE PRECISION, EXTERNAL :: P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION, EXTERNAL :: P_DSUM
+!##< JR @ RWTH
 !
 !======================================================================!
 !======================================================================!

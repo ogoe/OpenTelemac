@@ -60,6 +60,11 @@
 !+   Checking wrong meshes where a point appears on several different
 !+   boundaries.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
 !|                |   | 11 : TRIANGLES.
@@ -113,9 +118,10 @@
       INTEGER IELEM,NFACE,NPT,KEL,IPOIN
       INTEGER K,IFACE,I1,I2,N1,N2,IPT,IEL,I,K1,K2
 !
-      INTEGER SOMFAC(2,4,2)
-!
-      DATA SOMFAC / 1,2 , 2,3 , 3,1 , 0,0   ,  1,2 , 2,3 , 3,4 , 4,1 /
+      INTEGER :: SOMFAC(2,4,2)
+      PARAMETER ( SOMFAC = RESHAPE( (/
+     &      1,2 , 2,3 , 3,1 , 0,0   ,
+     &      1,2 , 2,3 , 3,4 , 4,1 /), SHAPE=(/ 2,4,2 /) ) )
 !
 !-----------------------------------------------------------------------
 !

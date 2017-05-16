@@ -72,12 +72,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL LEO,DEJA
+      LOGICAL LEO
 !
       INTEGER LTT,I,IPLAN,I3
       DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1,XMAX
 !
-      DATA DEJA/.FALSE./
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      LOGICAL :: DEJA = .FALSE.
+!      DATA DEJA/.FALSE./
+!##< SEB @ HRW
 !
       INTRINSIC SQRT,MAX
 !

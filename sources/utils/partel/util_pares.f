@@ -83,7 +83,7 @@
       !     DIMENSION DU TABLEAU EST LE NUMERO DU TRIANGLE, LA DEUXIEME DONNE
       !     LES NUMEROS DES NOEUDS DE TETRAEDRES QUI LE DEFINISSENT.
       INTEGER :: SOMFAC(3,4)
-      DATA  SOMFAC /  1,2,3 , 4,1,2 , 2,3,4 , 3,4,1   /
+      PARAMETER ( SOMFAC = (/ 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1 /) )
 
 !-----------------------------------------------------------------------
       NFACE=4

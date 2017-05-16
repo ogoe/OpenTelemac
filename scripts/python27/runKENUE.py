@@ -27,8 +27,8 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other modules
 from parsers.parserKenue import InS
 from utils.files import moveFile
@@ -59,43 +59,66 @@ def main(action=None):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Tools for handling KENUE files and related in python
+      '''))
+   parser.add_argument( "args",nargs='*' )
    # valid for i2s / i3s
-   parser.add_option("--replace",action="store_true",dest="freplace",default=False,help="if present, the output file will eventualy replace the input file" )
-   parser.add_option("--duplicates",action="store_true",dest="fduplicates",default=False,help="if present, remove duplicate points" )
-   parser.add_option("--duplangles",action="store_true",dest="fduplangles",default=False,help="if present, remove return angles" )
-   parser.add_option("--subdivise",type="string",dest="fsubdivise",default=None,help="if present, use the subdivise method (first)" )
-   parser.add_option("--subsample",type="string",dest="fsubsample",default=None,help="if present, use the subsample method (distance=..;angle=.." )
-   parser.add_option("--clockwise",action="store_true",dest="fclock",default=False,help="if present, anticlockwise polylines will be converted clockwise" )
-   parser.add_option("--aclockwise",action="store_true",dest="faclock",default=False,help="if present, clockwise polylines will be converted anticlockwise" )
-   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
-   parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
+   parser.add_argument(\
+      "--replace",action="store_true",dest="freplace",default=False,
+      help="if present, the output file will eventualy replace the input file" )
+   parser.add_argument(\
+      "--duplicates",action="store_true",dest="fduplicates",default=False,
+      help="if present, remove duplicate points" )
+   parser.add_argument(\
+      "--duplangles",action="store_true",dest="fduplangles",default=False,
+      help="if present, remove return angles" )
+   parser.add_argument(\
+      "--subdivise",dest="fsubdivise",default=None,
+      help="if present, use the subdivise method (first)" )
+   parser.add_argument(\
+      "--subsample",dest="fsubsample",default=None,
+      help="if present, use the subsample method (distance=..;angle=.." )
+   parser.add_argument(\
+      "--clockwise",action="store_true",dest="fclock",default=False,
+      help="if present, anticlockwise polylines will be converted clockwise" )
+   parser.add_argument(\
+      "--aclockwise",action="store_true",dest="faclock",default=False,
+      help="if present, clockwise polylines will be converted anticlockwise" )
+   parser.add_argument(\
+      "--sph2ll",dest="sph2ll",default=None,
+      help="convert from spherical to longitude-latitude" )
+   parser.add_argument(\
+      "--ll2sph",dest="ll2sph",default=None,
+      help="convert from longitude-latitude to spherical" )
 
-   options, args = parser.parse_args()
+   options = parser.parse_args()
    if not action is None:
-       args.insert(0, action)
-   if len(args) < 1:
+       options.args.insert(0, action)
+   if len(options.args) < 1:
       print '\nThe name of one file at least is required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   codeName = args[0]
+   codeName = options.args[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of I2S / I3S ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName in ['i2s','i3s'] :
 
       if not options.freplace:
-         if len(args) != 3:
+         if len(options.args) != 3:
             print '\nThe code ',codeName,' (without --replace) uses a minimum of 2 argumensts, aside from the options\n'
             parser.print_help()
             sys.exit(1)
-         insFiles = [ args[1] ]
-         outFile = args[2]
+         insFiles = [ options.args[1] ]
+         outFile = options.args[2]
       else:
-         insFiles = args[1:]
+         insFiles = options.args[1:]
          outFile = "smooth-tmp.i2s"
 
       for insFile in insFiles:

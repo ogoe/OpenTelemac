@@ -95,11 +95,11 @@
       ENDIF
 !***********************************************************************
 !     WATER QUALITY COUPLING
-!*********************************************************************** 
+!***********************************************************************
       IF(INCLUS(COUPLING,'WAQTEL'))THEN
 !
 !       ACTIVATE IMPLICIT SOURCE TERMS
-!        IF(LT.EQ.1) CALL YASMI_WAQ(NTRAC,YASMI) 
+!        IF(LT.EQ.1) CALL YASMI_WAQ(NTRAC,YASMI)
 !
 !       MAIN ROUTINE FOR WATER QUALITY
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALL OF SOURCE_WAQ'

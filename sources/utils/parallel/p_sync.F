@@ -54,6 +54,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
       INTEGER IER
@@ -61,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       IER = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_BARRIER(COMM,IER)
 !
       IF(IER.NE.0) THEN

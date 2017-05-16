@@ -82,13 +82,13 @@
       INTEGER            :: I
       DOUBLE PRECISION   ::  TETAP,AUX
 !
-      DOUBLE PRECISION   :: CMAX
-!
 !     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
 !
-      DATA CMAX/0.6D0/
-      INTRINSIC MAX
-!
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA CMAX/0.6D0/
+      DOUBLE PRECISION, PARAMETER :: CMAX = 0.6D0
+!##< JR @ RWTH
+!!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !

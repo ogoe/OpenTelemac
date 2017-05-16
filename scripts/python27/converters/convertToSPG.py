@@ -39,20 +39,30 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Dependencies towards other modules ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   from config import OptionParser
+   from argparse import ArgumentParser,RawDescriptionHelpFormatter
    from parsers.parserSELAFIN import SELAFIN,subsetVariablesSLF,getValueHistorySLF
    from samplers.meshes import xysLocateMesh
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Creates a binary sponge file from a global model (SLF form)
+   by interpolating on a given GEO model domain. The time series in
+   the SPG file are extracted only at the nodes where the SPONGE mask
+   value is more than 0.5.
+      '''))
+   parser.add_argument( "args",nargs=3 )
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf new mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   geoFile = args[0]
+   geoFile = options.args[0]
+   if not path.exists(geoFile):
+      print '... the provided geoFile does not seem to exist: '+geoFile+'\n\n'
+      sys.exit(1)
 
    # Read the new GEO file and its SPONGE MASK variable
    print '   +> getting hold of the GEO file and of its SPONGE MASK'
@@ -69,7 +79,10 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf existing res ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   slfFile = args[1]
+   slfFile = options.args[1]
+   if not path.exists(geoFile):
+      print '... the provided slfFile does not seem to exist: '+slfFile+'\n\n'
+      sys.exit(1)
    slf = SELAFIN(slfFile)
    slf.setKDTree()
    slf.setMPLTri()
@@ -85,18 +98,18 @@ if __name__ == "__main__":
    pbar.finish()
    # Extract support in 3D
    support3d = zip(support2d,len(xys)*[range(slf.NPLAN)])
-   
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ writes BND header ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   bndFile = args[2]
+   bndFile = options.args[2]
    bnd = SELAFIN('')
    bnd.fole = {}
    bnd.fole.update({ 'hook': open(bndFile,'wb') })
    bnd.fole.update({ 'name': bndFile})
    bnd.fole.update({ 'endian': ">" })     # big endian
    bnd.fole.update({ 'float': ('f',4) })  # single precision
-   
+
    # Meta data and variable names
    bnd.TITLE = ''
    bnd.NBV1 = 5
@@ -110,7 +123,7 @@ if __name__ == "__main__":
                    '                ','                ' ]
    bnd.NVAR = bnd.NBV1
    bnd.VARINDEX = range(bnd.NVAR)
-   
+
    # Sizes and mesh connectivity
    bnd.NPLAN = slf.NPLAN
    bnd.NDP2 = 3
@@ -144,7 +157,7 @@ if __name__ == "__main__":
    # Mesh coordinates
    bnd.MESHX = geo.MESHX[BOR-1]
    bnd.MESHY = geo.MESHY[BOR-1]
-   
+
    print '   +> writing header'
    # Write header
    bnd.appendHeaderSLF()
@@ -183,8 +196,8 @@ if __name__ == "__main__":
    pbar.finish()
 
    # Close bndFile
-   bnd.fole['hook'].close()   
-   
+   bnd.fole['hook'].close()
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'

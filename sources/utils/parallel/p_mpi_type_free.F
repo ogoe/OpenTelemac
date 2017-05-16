@@ -34,17 +34,23 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)  :: DATATYPE
+!##> JR @ RWTH: ARGUMENT OF MPI CALL WITH WRONG INTENT
+      INTEGER, INTENT(INOUT)  :: DATATYPE
+!      INTEGER, INTENT(IN)  :: DATATYPE
+!##< JR @ RWTH
       INTEGER, INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       IERR = 0
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       CALL MPI_TYPE_FREE(DATATYPE,IERR)
 !
       IF(IERR.NE.0) THEN

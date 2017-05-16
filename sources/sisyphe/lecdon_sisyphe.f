@@ -280,8 +280,12 @@
       DIRFLU        = MOTINT( ADRESS(1, 22) )
       NPRIV         = MOTINT( ADRESS(1, 23) )
 !> SEB @ HRW: ADDITIONAL DIFFERENTIATED VARIABLES
-      NADVAR    = MOTINT( ADRESS(1,70) )
+      NADVAR    = MOTINT( ADRESS(1,30) )
 !< SEB @ HRW
+!> RK @ BAW
+!     NUMBER OF DIRECTIONS FOR DIFFERENTIATED VARIABLES
+      AD_NUMOFDIR  = MOTINT( ADRESS(1,59) )
+!< RK @ BAW
 !
 !     NCSIZE        = MOTINT( ADRESS(1, 24) )
 !     NUMBER OF PROCESSORS (ALREADY GIVEN IN INIT_FILES2;
@@ -653,6 +657,17 @@
       CHECK_MESH = MOTLOG(ADRESS(3,29) )
 !     NEW IMPLEMENTATION FOR CROSS-SECTION
       DOFLUX = MOTLOG(ADRESS(3,61) )
+!> RK @ BAW
+      IF ( CODE(1:7) .NE. 'TELEMAC' ) THEN
+!       SYMBOLIC LINEAR SOLVER FOR AD
+        AD_SYMBLINSOLV  = MOTLOG( ADRESS(3,30) )
+!       RESET DERIVATIVES FOR AD
+        AD_LINSOLV_RESETDERIV  = MOTLOG( ADRESS(3,31) )
+!> JR@STCE     SYMBOLIC LINEAR SOLVER FOR AD
+        AD_LINSOLV_DERIVATIVE_CONVERGENCE  = MOTLOG( ADRESS(3,32) )
+!< JR@STCE
+      ENDIF
+!< RK @ BAW
 !
 ! ################################### !
 ! CHARACTER STRING KEYWORDS           !
@@ -710,19 +725,19 @@
       ENDIF
 !
 !> SEB @ HRW: ADDITIONAL DIFFERENTIATED VARIABLES
-!     NAMES OF DIFFERENTIATED VARIABLES
-      N_NAMES_ADVAR = DIMENS(4,70)
+!     NAMES OF THE DIFFERENTIATED VARIABLES
+      N_NAMES_ADVAR = DIMENS(4,10)
       NADVAR = MAX( NADVAR,N_NAMES_ADVAR ) ! WARNING HERE ?
       IF(NADVAR.GT.0) THEN
         DO I=1,NADVAR
           WRITE(CHAR2,'(I2)') I
-          NAMES_ADVAR(I) =  'GRADIENT '//ADJUSTL(CHAR2)//'     '
+          NAMES_ADVAR(I) =  'DERIVATIVE '//ADJUSTL(CHAR2)//'   '
      &                   // '??              '
         ENDDO
       ENDIF
       IF(N_NAMES_ADVAR.GT.0) THEN
         DO K=1,N_NAMES_ADVAR
-          NAMES_ADVAR(K) = MOTCAR(ADRESS(4,70)+K-1)(1:32)
+          NAMES_ADVAR(K) = MOTCAR(ADRESS(4,10)+K-1)(1:32)
         ENDDO
       ENDIF
 !< SEB @ HRW
@@ -1033,14 +1048,14 @@
 ! V6P0 : COHERENCE IF CONSOLIDATION MODEL IS USED
 ! VITCE AND CSF_VASE STEM FROM THE FIRST LAYER OF THE MULTI-LAYER MODEL
 ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! Mots clés supprimés vitesse critique d'erosion et concentration du lit
-! CV : si première couche est  vide cela n'est pas correct
+! Mots cles supprimes vitesse critique d'erosion et concentration du lit
+! CV : si premiere couche est  vide cela n'est pas correct
 
 !
       IF(MIXTE) THEN
 !
 !       FILLS VOIDS WITH MUD:
-! CV: vérifier que la concentration en cohésif est non nulle
+! CV: verifier que la concentration en cohesif est non nulle
 !
         CSF_SABLE= 1.D0
 !V: verrouiller les options

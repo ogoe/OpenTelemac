@@ -25,10 +25,11 @@ from struct import unpack,pack
 import re
 import sys
 from os import path,environ,walk
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 # ~~> dependencies towards the root of pytel
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
+from config import parseConfigFile, parseConfig_CompileTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserSELAFIN import SELAFIN,CONLIM
 from utils.progressbar import ProgressBar
@@ -56,7 +57,7 @@ class DELWAQ:
       "volumes-file":'', "areas-file":'', "flows-file":'', "salinity-file":'', "temperature-file":'', \
       "vert-diffusion-file":'', "surfaces-file":'', "total-grid-file":'', "discharges-file":'', \
       "chezy-coefficients-file":'', "shear-stresses-file":'', "walking-discharges-file":'' }
-   
+
    complxkeys = { "description":[], "constant-dispersion":[], \
       "hydrodynamic-layers":[], "water-quality-layers":[], "discharges":[] }
 
@@ -105,7 +106,7 @@ class DELWAQ:
       self.tstop = self.HYDROAT
 
    def resetDWQ(self): self.HYDRO00 = self.HYDRO0T
- 
+
    def minvolDWQ(self,value): self.minvol = float(value)
 
    def sampleDWQ(self,tfrom,tstop):
@@ -158,7 +159,7 @@ class DELWAQ:
                else: dwqList.update({proc.group('key').lower():proc.group('word').strip().strip("'")})
             else:
                print '... Could not understand the following simple key: ',proc.group('key')
-         
+
       return dwqList
 
    def big2little(self):
@@ -376,15 +377,34 @@ if __name__ == "__main__":
    SYSTELCFG = 'systel.cfg'
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',help="specify the root, default is taken from config file" )
-   parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset the start time to zero" )
-   parser.add_option("--minvol",type="string",dest="minvol",default='0.001',help="make sure there is a minimum volume" )
-   parser.add_option("--from",type="string",dest="tfrom",default="1",help="specify the first frame included" )
-   parser.add_option("--stop",type="string",dest="tstop",default="-1",help="specify the last frame included (negative from the end)" )
-   options, args = parser.parse_args()
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n\
+Tools for handling DELWAQ files when created by TELEMAC
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default=USETELCFG,
+      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_argument(\
+      "--reset",action="store_true",dest="areset",default=False,
+      help="reset the start time to zero" )
+   parser.add_argument(\
+      "--minvol",dest="minvol",default='0.001',
+      help="make sure there is a minimum volume" )
+   parser.add_argument(\
+      "--from",dest="tfrom",default="1",
+      help="specify the first frame included" )
+   parser.add_argument(\
+      "--stop",dest="tstop",default="-1",
+      help="specify the last frame included (negative from the end)" )
+   options = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
@@ -402,15 +422,15 @@ if __name__ == "__main__":
    cfgname = cfgs.iterkeys().next()
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
-   cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
+   cfg = parseConfig_CompileTELEMAC(cfgs[cfgname],False,False)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if len(args) < 1:
+   if len(options.args) < 1:
       print '\nAt least one DELWAQ steering file name is required\n'
       parser.print_help()
       sys.exit(1)
-   fileNames = args
+   fileNames = options.args
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Loop over the DELWAQ files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -419,7 +439,7 @@ if __name__ == "__main__":
       # ~~> Parse DELWAQ steering file
       print '      ~> scanning your DELWAQ file: ',path.basename(fle)
       dwq = DELWAQ(fle)
-      
+
       # ~~> Possible options so far
       if options.areset: dwq.resetDWQ()
       dwq.minvolDWQ(options.minvol)

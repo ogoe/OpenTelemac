@@ -40,20 +40,28 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Dependencies towards other modules ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   from config import OptionParser
+   from argparse import ArgumentParser,RawDescriptionHelpFormatter
    from parsers.parserSELAFIN import CONLIM,SELAFIN,subsetVariablesSLF,getValueHistorySLF
    from samplers.meshes import xysLocateMesh
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+'~'*72+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+A script to map weather type data contained into a SELAFIN, onto a
+   spatially and time varying SELAFIN file of your choosing (your MESH).
+      '''))
+   parser.add_argument( "args",default='',nargs=3 )
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf new mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   geoFile = args[0]
+   geoFile = options.args[0]
+   if not path.exists(geoFile):
+      print '... the provided geoFile does not seem to exist: '+geoFile+'\n\n'
+      sys.exit(1)
 
 # Find corresponding (x,y) in corresponding new mesh
    print '   +> getting hold of the GEO file'
@@ -62,7 +70,10 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ slf existing res ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   slfFile = args[1]
+   slfFile = options.args[1]
+   if not path.exists(slfFile):
+      print '... the provided slfFile does not seem to exist: '+slfFile+'\n\n'
+      sys.exit(1)
    slf = SELAFIN(slfFile)
    slf.setKDTree()
    slf.setMPLTri()
@@ -82,14 +93,14 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ writes ATM header ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   atmFile = args[2]
+   atmFile = options.args[2]
    atm = SELAFIN('')
    atm.fole = {}
    atm.fole.update({ 'hook': open(atmFile,'wb') })
    atm.fole.update({ 'name': atmFile})
    atm.fole.update({ 'endian': ">" })     # big endian
    atm.fole.update({ 'float': ('f',4) })  # single precision
-   
+
    # Meta data and variable names
    atm.TITLE = ''
    atm.NBV1 = 4
@@ -101,7 +112,7 @@ if __name__ == "__main__":
       'DEGREES         ']
    atm.NVAR = atm.NBV1
    atm.VARINDEX = range(atm.NVAR)
-   
+
    # Sizes and mesh connectivity
    atm.NPLAN = slf.NPLAN          # it should be 2D but why the heack not ...
    atm.NDP2 = slf.NDP2
@@ -109,7 +120,7 @@ if __name__ == "__main__":
    atm.NPOIN2 = geo.NPOIN2
    atm.NPOIN3 = geo.NPOIN2*atm.NPLAN
    atm.NELEM2 = geo.NELEM2
-   
+
    print '   +> setting connectivity'
    if atm.NPLAN > 1:
       atm.NELEM3 = geo.NELEM2*(atm.NPLAN-1)
@@ -126,11 +137,11 @@ if __name__ == "__main__":
       atm.IPOB2 = geo.IPOB2
       atm.IPOB3 = geo.IPOB3
    atm.IPARAM = [0,0,0,0,0,0,atm.NPLAN,0,0,0]
-   
+
    # Mesh coordinates
    atm.MESHX = geo.MESHX
    atm.MESHY = geo.MESHY
-   
+
    print '   +> writing header'
    # Write header
    atm.appendHeaderSLF()
@@ -158,8 +169,8 @@ if __name__ == "__main__":
    pbar.finish()
 
    # Close atmFile
-   atm.fole['hook'].close()   
-   
+   atm.fole['hook'].close()
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'

@@ -53,17 +53,21 @@
 !
       INTEGER LTT
       LOGICAL IMP
-      CHARACTER(LEN=45) TEXIMP(9)
+      CHARACTER(LEN=45) :: TEXIMP(9)
 !
-      DATA TEXIMP / 'CALCUL DU CHAMP CONVECTEUR ET REMONTEE DES  ' ,
-     &              '    CARACTERISTIQUES                        ' ,
-     &              'SAUVEGARDE DE L''ETAT FINAL A T=            ' ,
-     &              'INTERPOLATION AUX PIEDS DES CARACTERISTIQUES' ,
-     &              'TEMPS :                                     ' ,
-     &              ' SECONDES                                   ' ,
-     &              'IEME  ITERATION                             ' ,
-     &              ' SOUS-ITERATION(S)                          ' ,
-     &              'PRISE EN COMPTE DES TERMES SOURCES EN       ' /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA TEXIMP /
+      PARAMETER ( TEXIMP = (/
+     &    'CALCUL DU CHAMP CONVECTEUR ET REMONTEE DES   ' ,
+     &    '    CARACTERISTIQUES                         ' ,
+     &    'SAUVEGARDE DE L''ETAT FINAL A T=              ' ,
+     &    'INTERPOLATION AUX PIEDS DES CARACTERISTIQUES ' ,
+     &    'TEMPS :                                      ' ,
+     &    ' SECONDES                                    ' ,
+     &    'IEME  ITERATION                              ' ,
+     &    ' SOUS-ITERATION(S)                           ' ,
+     &    'PRISE EN COMPTE DES TERMES SOURCES EN        '  /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

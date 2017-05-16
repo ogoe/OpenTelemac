@@ -196,5 +196,9 @@
 !-----------------------------------------------------------------------
 ! save all - important
 !
+!##> JR @ RWTH: MODULE VARIABLE WITH DEFAULT INITIALISATION FOR USER
+!     TYPE COMPONENTS MUST BE SAVED
+      SAVE :: HMIN, COTINT, HREF, DISTOR, X2DV, Y2DV
+!##< JR @ RWTH
 !
       END MODULE DECLARATIONS_POSTEL3D

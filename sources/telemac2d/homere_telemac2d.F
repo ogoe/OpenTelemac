@@ -51,7 +51,7 @@
 !======================================================================
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_MAIN_INIT
 #endif
 !< JR @ RWTH
@@ -83,7 +83,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_TELEMAC2D
 #endif
 !< JR @ RWTH
@@ -116,7 +116,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_SISYPHE
 #endif
 !< JR @ RWTH
@@ -149,7 +149,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_MAIN_AFTER_LECDON_TOMAWAC
 #endif
 !< JR @ RWTH
@@ -292,7 +292,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_MAIN_FINALIZE
 #endif
 !< JR @ RWTH

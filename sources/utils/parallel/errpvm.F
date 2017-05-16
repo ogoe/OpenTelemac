@@ -42,6 +42,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -50,9 +53,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       WRITE(LU,*) 'MPI ERROR NUMBER: ',ERROR_NUMBER
-!
 #else
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE ERRPVM VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF ERRPVM IN ITS VOID VERSION'

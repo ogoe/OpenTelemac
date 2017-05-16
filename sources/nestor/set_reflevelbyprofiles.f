@@ -10,14 +10,14 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor , ONLY : ParallelComputing, ipid
 
-         
 
-#ifndef NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY :  open_File
-     &                               , ErrMsgAndStop
-     &                               , Intpol_Z_parallel_Profils
-     &                               , Intpol_Z_angular_Profils
-#endif NESTOR_INTERFACES                                        
+
+!#ifndef NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  open_File
+!     &                               , ErrMsgAndStop
+!     &                               , Intpol_Z_parallel_Profils
+!     &                               , Intpol_Z_angular_Profils
+!#endif  /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 
@@ -25,7 +25,7 @@
       TYPE(t_Field) ,INTENT(INOUT) :: F
 
 
-#ifndef NESTOR_INTERFACES 
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
       CHARACTER (128)              :: fileName     ! file containing profiles for reference level
 
@@ -196,7 +196,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE Set_RefLevelByProfiles      !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

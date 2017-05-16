@@ -15,9 +15,9 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY : SisStart, ipid     ! "time-zero-point"
 
-#ifndef NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop, Diff_Time
-#endif NESTOR_INTERFACES                                        
+!#ifndef NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop, Diff_Time
+!#endif /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 
@@ -26,7 +26,7 @@
                                                 !  used only for error message
       REAL (KIND =R8) :: DateStringToSeconds    !> seconds since a "time-zero-point" (function name)
 
-#ifndef NESTOR_INTERFACES 
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
 
       INTEGER         :: stat
@@ -92,9 +92,9 @@
       READ (charTmp,*) diffSeconds8   !>   to    integer kind=8
 
       diffSeconds8 =    diffSeconds8
-     &                + diffMinutes8  * 60       
-     &                + diffHours8    * 3600  
-     &                + diffDays8     * 86400 
+     &                + diffMinutes8  * 60
+     &                + diffHours8    * 3600
+     &                + diffDays8     * 86400
 
       DateStringToSeconds = DBLE( diffSeconds8 )  ! return value of the function
 
@@ -107,7 +107,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END FUNCTION   DateStringToSeconds         !********************************************
 !     END SUBROUTINE DateStringToSeconds         !********************************************
 !***                                              ********************************************

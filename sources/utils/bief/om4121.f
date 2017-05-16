@@ -51,6 +51,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| DM             |<->| DIAGONAL OF M
@@ -109,13 +114,17 @@
 !
       DOUBLE PRECISION Z(1)
 !
-      INTEGER CORNSY(3,12),CORSYM(3,6)
-!
 !-----------------------------------------------------------------------
 !
-      DATA CORNSY/ 1, 6,17, 4, 9,10, 3, 8,12, 8,12, 3, 7,11, 5,28,30,14,
-     &            16,21, 2,19,24,25,18,23,27,23,27,18,22,26,20,13,15,29/
-      DATA CORSYM/ 1, 6, 2, 4, 9,10, 3, 8,12, 8,12, 3, 7,11, 5,13,15,14/
+      INTEGER :: CORNSY(3,12)
+      PARAMETER ( CORNSY = RESHAPE( (/
+     &     1, 6,17,   4, 9,10,   3, 8,12,   8,12, 3,   7,11, 5,
+     &     28,30,14,  16,21, 2,  19,24,25, 18,23,27,  23,27,18,
+     &     22,26,20,  13,15,29 /), SHAPE=(/ 3,12 /) ) )
+      INTEGER :: CORSYM(3,6)
+      PARAMETER ( CORSYM = RESHAPE( (/
+     &     1, 6, 2,   4, 9,10,   3, 8,12,   8,12, 3,   7,11, 5,
+     &     13,15,14 /), SHAPE=(/ 3,6 /) ) )
 !
 !***********************************************************************
 !

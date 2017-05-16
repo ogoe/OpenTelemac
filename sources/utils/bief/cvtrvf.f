@@ -225,8 +225,11 @@
 !     HARDCODED PARAMETER !!!!!!!!!!
 !
 !     MAXIMUM NUMBER OF ITERATIONS
-      INTEGER NITMAX
-      DATA NITMAX/200/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      INTEGER :: NITMAX
+!      DATA NITMAX/200/
+      INTEGER, PARAMETER :: NITMAX = 200
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

@@ -30,13 +30,13 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import time
 from datetime import datetime,timedelta
 import numpy as np
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
 # ~~> dependencies towards other modules
@@ -70,7 +70,7 @@ class JCOPE2():
       jcope2vars = ['el','t','s','u','v']
       jcope2date = [ 1993,1,1 ] # /!\ unknown convertion of time records into dates
       jcope2root = 'http://apdrc.soest.hawaii.edu/dods/public_data/FRA-JCOPE2'
- 
+
       # ~~~~ Time records ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Extract JCOPE2 time records\n'
       self.experiments = []
@@ -195,7 +195,7 @@ class JCOPE2():
                pbar.update(ielem)
       pbar.finish()
       self.slf2d.IKLE3 = np.compress( [ True,True,True,False,False,False ], self.slf3d.IKLE3[0:self.slf3d.NELEM2], axis=1 ) #.reshape((self.slf3d.NELEM2,self.slf3d.NDP2))
-      
+
       # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print '     +> Set SELAFIN IPOBO'
       pbar = ProgressBar(maxval=NX1D+NY1D).start()
@@ -237,7 +237,7 @@ class JCOPE2():
       self.slf2d.IKLE2 = - np.ones_like(MASK2,dtype=np.int)
       for k in range(len(MASK2)):
          self.slf2d.IKLE2[k] = [ KNOGL[MASK2[k][0]], KNOGL[MASK2[k][1]], KNOGL[MASK2[k][2]] ]
-      
+
       self.slf3d.NPOIN2 = len(KNOLG)
       self.slf3d.NPOIN3 = self.slf3d.NPOIN2 * self.slf3d.NPLAN
       self.slf2d.NPOIN2 = self.slf3d.NPOIN2
@@ -249,7 +249,7 @@ class JCOPE2():
       self.slf3d.IKLE3 = \
          np.repeat(self.slf2d.NPOIN2*np.arange(self.slf3d.NPLAN-1),self.slf2d.NELEM2*self.slf3d.NDP3).reshape((self.slf2d.NELEM2*(self.slf3d.NPLAN-1),self.slf3d.NDP3)) + \
          np.tile(np.add(np.tile(self.slf2d.IKLE2,2),np.repeat(self.slf2d.NPOIN2*np.arange(2),self.slf3d.NDP2)),(self.slf3d.NPLAN-1,1))
-      
+
       # ~~~~ Boundaries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       self.slf2d.IPOB2 = IPOB2[self.MASK2]
       self.slf2d.IPOB3 = self.slf2d.IPOB2
@@ -403,16 +403,36 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-r", "--root",type="string",dest="rootName",default='jcope2.slf',help="root name used for the output" )
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default=None,help="specify the first date included (1972-13-07)" )
-   parser.add_option("-s", "--stop",type="string",dest="tstop",default=None,help="specify the last date included (1980-12-31)" )
-   parser.add_option("--bl",type="string",dest="blcorner",default=None,help="specify the bottom left corner (30,130)" )
-   parser.add_option("--tr",type="string",dest="trcorner",default=None,help="specify the top right corner (64,170)" )
-   parser.add_option("--2d",action="store_true",dest="t2d",default=False,help="if there, produces on the 2D file" )
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+72*'~'+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Download JCOPE2 data into a SELAFIN file\n
+Example 1: Extract about 80 days of 2D results only from January 2, 1993.
+> convertJCOPE2.py --from 1993-01-02 --stop 1993-03-25 --bl 34,140 --tr 41,147 -r jcope2-80d.slf --2d\n
+Example 2: Extract 4 months from both 2D and 3D dataset
+> convertJCOPE2.py --from 1993-01-02 --stop 1993-05-02 --bl 34,140 --tr 41,147 -r jcope2-4m1993.slf
+> convertJCOPE2.py --from 1993-01-02 --stop 1993-05-02 --bl 10,108 --tr 62,180 -r visu-jcope2-4m1993.slf
+      '''))
+   parser.add_argument(\
+      "-r", "--root",dest="rootName",default='jcope2.slf',required=True,
+      help="root name used for the output" )
+   parser.add_argument(\
+      "-f", "--from",dest="tfrom",default=None,required=True,
+      help="specify the first date included (1972-13-07)" )
+   parser.add_argument(\
+      "-s", "--stop",dest="tstop",default=None,required=True,
+      help="specify the last date included (1980-12-31)" )
+   parser.add_argument(\
+      "--bl",dest="blcorner",default=None,required=True,
+      help="specify the bottom left corner (30,130)" )
+   parser.add_argument(\
+      "--tr",dest="trcorner",default=None,required=True,
+      help="specify the top right corner (64,170)" )
+   parser.add_argument(\
+      "--2d",action="store_true",dest="t2d",default=False,
+      help="if there, produces on the 2D file" )
+   options = parser.parse_args()
 
    # Arbitrary 6-day period
    period = [[],[]]
@@ -448,7 +468,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Convert to SELAFIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '\nProcessing header (mesh, connectivity, etc.)\n'

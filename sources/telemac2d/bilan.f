@@ -41,7 +41,7 @@
 !history J-M HERVOUET (EDF LAB, LNHE)
 !+        06/05/2016
 !+        V7P2
-!+    Now assuming that FLBOR is initialised if LT=0, and fluxes at 
+!+    Now assuming that FLBOR is initialised if LT=0, and fluxes at
 !+    boundaries always computed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,6 +76,9 @@
      &                                   MASSE2,MASENT,MASSET
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -97,8 +100,10 @@
 !
       INTEGER I
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!##< JR @ RWTH
 !
       DOUBLE PRECISION ERREUR,FLUX1,PERDUE,DENOM,RELATI
 !

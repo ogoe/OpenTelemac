@@ -87,14 +87,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER       NBCHP1
+      INTEGER   ::    NBCHP1
       PARAMETER (NBCHP1=12)
 !
       INTEGER       I,LCAR,ICOLA,JCOLA,CHAMP(4),LGA,II
-      INTEGER       LGMOTG(NBCHP1),GECHP1(NBCHP1)
+      INTEGER       :: LGMOTG(NBCHP1),GECHP1(NBCHP1)
       CHARACTER(LEN=1)   PTVIRG,QUOTE,GUILLT
-      CHARACTER(LEN=72)  MESERR(2*NBCHP1)
-      CHARACTER(LEN=10)  MOTCH1(NBCHP1)
+      CHARACTER(LEN=53)  :: MESERR(2*NBCHP1)
+      CHARACTER(LEN=10)  :: MOTCH1(NBCHP1)
       CHARACTER(LEN=144) NULATT,ANALYS,FIELD,FIELD0
 !
 !-----------------------------------------------------------------------
@@ -102,35 +102,42 @@
 ! ******************* DATABASE FOR THE SUBROUTINE **********************
 !
 ! DEFINITION OF FIELDS 1
-      DATA MOTCH1 /'IN','OUT','CAS','DIC','QSUB','LIB','FORTRAN',
-     &            'DIROUT','USER','ACCT','PRE','POST'/
+      PARAMETER ( MOTCH1 = (/
+     &  'IN        ','OUT       ','CAS       ','DIC       ',
+     &  'QSUB      ','LIB       ','FORTRAN   ','DIROUT    ',
+     &  'USER      ','ACCT      ','PRE       ','POST      ' /) )
 ! LENGTHS OF THE STRINGS FOR FIELDS 1 DEFINED ABOVE
-      DATA LGMOTG /2,3,3,3,4,3,7,6,4,4,3,4/
+      PARAMETER ( LGMOTG = (/ 2,3,3,3,4,3,7,6,4,4,3,4 /) )
 ! CHANGE TO 'NUL;FOR' IF GESTD=.TRUE. ? : 1-YES, 0-NO
-      DATA GECHP1 /1,1,0,0,0,0,1,1,0,0,0,0/
+      PARAMETER ( GECHP1 = (/ 1,1,0,0,0,0,1,1,0,0,0,0 /) )
 ! NUMBER OF THE FIELDS TO BE GIVEN TO THESE WORDS --> ERROR MESSAGES
 !      DATA NOCHMP /1,2,3,4,5,6,7,8,9,10,11,12/
 ! ERROR MESSAGES ASSOCIATED WITH THE FIELD NUMBERS
-      DATA MESERR /
-     & 'PAS D''ALLOCATION DE FICHIER D''ENTREE !!',
-     & 'NO ALLOCATION FOR INPUT FILE !!',
-     & 'PAS D''ALLOCATION DE FICHIER DE SORTIE !!',
-     & 'NO ALLOCATION FOR OUTPUT FILE !!',
-     & 'PAS D''ALLOCATION POUR LE FICHIER CAS !!',
-     & 'NO ALLOCATION FOR THE STEERING FILE !!',
-     & 'PAS D''ALLOCATION POUR LE DICTIONNAIRE !!',
-     & 'NO ALLOCATION FOR THE DICTIONARY !!',
-     & 'PAS DE COMMANDE CRAY !!','NO INSTRUCTION FOR CRAY !!',
-     & 'PAS DE LIBRAIRIE !!', 'NO LIBRARY !!',
-     & 'PAS DE VALEUR POUR LE REPERTOIRE FORTRAN !!',
-     & 'NO VALUE FOR THE FORTRAN DIRECTORY !!',
-     & 'PAS DE VALEUR POUR LE REPERTOIRE DE SORTIE !!',
-     & 'NO VALUE FOR THE OUTPUT DIRECTORY !!',
-     & 'PAS DE COMMANDE CRAY !!','NO INSTRUCTION FOR CRAY !!',
-     & 'PAS DE COMMANDE CRAY !!','NO INSTRUCTION FOR CRAY !!',
-     & 'PAS DE COMMANDE PRE !!','NO INSTRUCTION FOR PRE !!',
-     & 'PAS DE COMMANDE POST !!','NO INSTRUCTION FOR POST !!'
-     & /
+      PARAMETER ( MESERR = (/
+     &  'PAS D''ALLOCATION DE FICHIER D''ENTREE !!               ',
+     &  'NO ALLOCATION FOR INPUT FILE !!                       ',
+     &  'PAS D''ALLOCATION DE FICHIER DE SORTIE !!              ',
+     &  'NO ALLOCATION FOR OUTPUT FILE !!                      ',
+     &  'PAS D''ALLOCATION POUR LE FICHIER CAS !!               ',
+     &  'NO ALLOCATION FOR THE STEERING FILE !!                ',
+     &  'PAS D''ALLOCATION POUR LE DICTIONNAIRE !!              ',
+     &  'NO ALLOCATION FOR THE DICTIONARY !!                   ',
+     &  'PAS DE COMMANDE CRAY !!                               ',
+     &  'NO INSTRUCTION FOR CRAY !!                            ',
+     &  'PAS DE LIBRAIRIE !!                                   ',
+     &  'NO LIBRARY !!                                         ',
+     &  'PAS DE VALEUR POUR LE REPERTOIRE FORTRAN !!           ',
+     &  'NO VALUE FOR THE FORTRAN DIRECTORY !!                 ',
+     &  'PAS DE VALEUR POUR LE REPERTOIRE DE SORTIE !!         ',
+     &  'NO VALUE FOR THE OUTPUT DIRECTORY !!                  ',
+     &  'PAS DE COMMANDE CRAY !!                               ',
+     &  'NO INSTRUCTION FOR CRAY !!                            ',
+     &  'PAS DE COMMANDE CRAY !!                               ',
+     &  'NO INSTRUCTION FOR CRAY !!                            ',
+     &  'PAS DE COMMANDE PRE !!                                ',
+     &  'NO INSTRUCTION FOR PRE !!                             ',
+     &  'PAS DE COMMANDE POST !!                               ',
+     &  'NO INSTRUCTION FOR POST !!                            ' /) )
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

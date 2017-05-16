@@ -33,6 +33,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
 !| IFABOR         |-->| TABLEAU DES VOISINS DES FACES.
@@ -70,9 +75,10 @@
       INTEGER   :: IELEM, IELEB, J,K,IPOIN
       INTEGER   :: IPOBO(NPOIN)
 !
-      INTEGER SOMFAC(3,4)
-      DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
-!     SIDE NUMBER:    1       2       3       4
+      INTEGER :: SOMFAC(3,4)
+      PARAMETER ( SOMFAC = RESHAPE( (/
+     &           1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /), SHAPE=(/ 3,4 /) ) )
+!     SIDE NUMBER:   1       2       3       4
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

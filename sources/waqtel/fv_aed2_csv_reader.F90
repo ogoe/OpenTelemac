@@ -27,7 +27,8 @@ MODULE fv_aed2_csv_reader
 !
    PRIVATE     ! by default, make everything private
 !
-#ifdef SINGLE
+! TODO: MAKE THIS BELOW GENERIC TO ALL COMPILERS /!\
+#if defined SINGLE
 #  define AED_REAL real(4)
 #else
 #  define AED_REAL real(8)

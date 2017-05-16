@@ -65,7 +65,7 @@
 !+   for finite element assembly with integers.
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+        ALLOCATE BUF_SEND_ERR AND BUD_RECV_ERR
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)

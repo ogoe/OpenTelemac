@@ -27,10 +27,10 @@ import sys
 from os import path
 import numpy as np
 from matplotlib.tri import Triangulation
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards other pytel scripts
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
 from converters import convertUTM as utm
@@ -224,23 +224,43 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nInterpreting command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("--above",type="string",dest="abval",default=None,help="select only the values above" )
-   parser.add_option("--below",type="string",dest="beval",default=None,help="select only the values below" )
-   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
-   parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
-   parser.add_option("--ll2utm",type="string",dest="ll2utm",default=None,help="convert from longitude-latitude to UTM" )
-   parser.add_option("--utm2ll",type="string",dest="utm2ll",default=None,help="convert from UTM to longitude-latitude" )
-   parser.add_option("--X+?",type="string",dest="axp",default="0",help="adds to the MESHX" )
-   options, args = parser.parse_args()
+   print '\n\nInterpreting command line options\n'+72*'~'+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Load GEBCO data into a SELAFIN file
+      '''))
+   parser.add_argument(\
+      "rootName",default='',
+      help="specify the root name of the resulting SELAFIN file." )
+   parser.add_argument(\
+      "--above",dest="abval",default=None,
+      help="select only the values above" )
+   parser.add_argument(\
+      "--below",dest="beval",default=None,
+      help="select only the values below" )
+   parser.add_argument(\
+      "--sph2ll",dest="sph2ll",default=None,
+      help="convert from spherical to longitude-latitude" )
+   parser.add_argument(\
+      "--ll2sph",dest="ll2sph",default=None,
+      help="convert from longitude-latitude to spherical" )
+   parser.add_argument(\
+      "--ll2utm",dest="ll2utm",default=None
+      ,help="convert from longitude-latitude to UTM" )
+   parser.add_argument(\
+      "--utm2ll",dest="utm2ll",default=None,
+      help="convert from UTM to longitude-latitude" )
+   parser.add_argument(\
+      "--X+?",dest="axp",default="0",
+      help="adds to the MESHX" )
+   options = parser.parse_args()
 
    # rootName
-   if len(args) != 1:
-      print '... only one file name is necessary to capture the processed dataset.\n\n'
+   rootName = options.rootName # args[-1]
+   if not path.exists(rootName):
+      print '... the provided GEBCO file does not seem to exist: '+rootName+'\n\n'
       sys.exit(1)
-   rootName = args[-1]
    head,tail = path.splitext(rootName)
 
    print '\n\n\

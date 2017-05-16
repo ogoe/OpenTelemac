@@ -89,7 +89,7 @@
       CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT1,TYPEXT2
       CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT3,TYPEXT4
 !
-#if defined(HAVE_MUMPS)
+#if defined HAVE_MUMPS
       INTEGER NPBLK,NSEGBLK,I
 !
 !-----------------------------------------------------------------------

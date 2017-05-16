@@ -62,9 +62,10 @@
 ! PI
 ! --
 !
-!     ACOS NOT PROGRAMMED YET IN AD-NAG
-!     PI =ACOS(-1.D0)
-      PI = 4.D0*ATAN(1.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI  = ACOS (-1.D0)
+!< SEB @ HRW
 !
 !======================================================================!
 !

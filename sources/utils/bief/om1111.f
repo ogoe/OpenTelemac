@@ -67,7 +67,7 @@
 !+   cross-referencing of the FORTRAN sources
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+      ADD MODASS=3
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +116,7 @@
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIM,TYPEXM,TYPDIN,TYPEXN
       DOUBLE PRECISION, INTENT(IN)    :: C
       DOUBLE PRECISION,OPTIONAL, INTENT(INOUT) :: DM_ERR(*)
-      DOUBLE PRECISION,OPTIONAL, INTENT(IN) ::DN_ERR(*),D_ERR(*)
+      DOUBLE PRECISION,OPTIONAL, INTENT(IN) :: DN_ERR(*),D_ERR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -132,8 +132,8 @@
           IF ( MODASS .EQ.1) THEN
             CALL OV( 'X=Y     ' , DM , DN , Z , C , NDIAG )
           ELSEIF (MODASS .EQ. 3) THEN
-            CALL OV_COMP( 'X=Y     ' , DM , DN , Z , C , NDIAG
-     &           ,X_ERR=DM_ERR, Y_ERR=DN_ERR )
+            CALL OV_COMP( 'X=Y     ' , DM , DN , Z , C , NDIAG,
+     &            X_ERR=DM_ERR, Y_ERR=DN_ERR )
           ENDIF
 !
         ELSEIF(TYPDIN(1:1).EQ.'I'.OR.TYPDIN(1:1).EQ.'0') THEN
@@ -302,8 +302,8 @@
         IF ( MODASS .EQ.1) THEN
           CALL OV( 'X=X+Y   ' , DM , DN , Z , C , NDIAG )
         ELSEIF (MODASS .EQ. 3) THEN
-          CALL OV_COMP( 'X=X+Y   ' , DM , DN , Z , C , NDIAG
-     &           ,X_ERR=DM_ERR, Y_ERR=DN_ERR )
+          CALL OV_COMP( 'X=X+Y   ' , DM , DN , Z , C , NDIAG,
+     &            X_ERR=DM_ERR, Y_ERR=DN_ERR )
         ENDIF
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
@@ -565,10 +565,10 @@
             CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
             CALL OV( 'X=XY    ' , DM , D , Z , C , NDIAG )
           ELSEIF (MODASS.EQ. 3)THEN
-            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG
-     &                     ,X_ERR=DM_ERR, Y_ERR= D_ERR  )
-            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG
-     &                     ,X_ERR=DM_ERR, Y_ERR= D_ERR  )
+            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG,
+     &                     X_ERR=DM_ERR, Y_ERR= D_ERR  )
+            CALL OV_COMP( 'X=XY    ' , DM , D , Z , C , NDIAG,
+     &                     X_ERR=DM_ERR, Y_ERR= D_ERR  )
           ENDIF
         ELSEIF(TYPDIM(1:1).EQ.'I') THEN
           CALL OV( 'X=YZ    ' , DM , D , D , C , NDIAG )
@@ -619,8 +619,8 @@
         IF ( MODASS .EQ.1) THEN
           CALL OV( 'X=X+Y   ' , DM , D , Z , 0.D0 , NDIAG )
         ELSEIF (MODASS .EQ. 3) THEN
-          CALL OV_COMP( 'X=X+Y   ' , DM , D , Z , 0.D0
-     &        , NDIAG,X_ERR=DM_ERR, Y_ERR= D_ERR )
+          CALL OV_COMP( 'X=X+Y   ' , DM , D , Z , 0.D0, NDIAG,
+     &           X_ERR=DM_ERR, Y_ERR= D_ERR )
         ENDIF
 !       HERE THERE IS A DOUBT ABOUT TYPDIM
         TYPDIM(1:1)='Q'

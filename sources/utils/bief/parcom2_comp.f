@@ -1,6 +1,6 @@
-!                    ******************
+!                    ***********************
                      SUBROUTINE PARCOM2_COMP
-!                    ******************
+!                    ***********************
 !
      &( X1 , X2 , X3 ,ERRX, NPOIN , NPLAN , ICOM , IAN , MESH )
 !
@@ -24,7 +24,7 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IAN            |-->| NUMBER OF VECTORS TO BE CONDIDERED (1, 2 OR 3)
@@ -57,7 +57,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: X1(NPOIN,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: X2(NPOIN,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: X3(NPOIN,NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: ERRX(*)      
+      DOUBLE PRECISION, INTENT(INOUT) :: ERRX(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@
      &            MESH%NB_NEIGHB,MESH%NB_NEIGHB_PT%I,MESH%LIST_SEND%I,
      &            MESH%NH_COM%I,MESH%NH_COM%DIM1,MESH%BUF_SEND%R,
      &            MESH%BUF_RECV%R,MESH%BUF_SEND%DIM1,
-     &            MESH%BUF_SEND_ERR%R,MESH%BUF_RECV_ERR%R)    
+     &            MESH%BUF_SEND_ERR%R,MESH%BUF_RECV_ERR%R)
 !
 !-----------------------------------------------------------------------
 !

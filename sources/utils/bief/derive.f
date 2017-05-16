@@ -130,6 +130,9 @@
       USE ALGAE_TRANSP
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_ISUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -174,9 +177,10 @@
 !
       LOGICAL YESITIS,SSIGMA
 !
-!
-      INTEGER  P_ISUM
-      EXTERNAL P_ISUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_ISUM
+!      EXTERNAL P_ISUM
+!##< JR @ RWTH
 !
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS

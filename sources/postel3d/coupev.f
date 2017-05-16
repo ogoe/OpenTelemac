@@ -76,7 +76,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,INTENT(IN) :: NPOIN2,NELEM2,IM,JM,NC2DV
-      INTEGER, INTENT(INOUT) :: NCOU(*)
+      INTEGER, INTENT(INOUT) :: NCOU(NC2DV)
       DOUBLE PRECISION ,INTENT(IN) ::AT
       DOUBLE PRECISION , INTENT(INOUT) :: SHP(IM,3,NC2DV)
       TYPE (BIEF_OBJ), INTENT(INOUT) :: TAB

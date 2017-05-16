@@ -2,7 +2,7 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: special parallel bief partel
-name: PARTEL_PARA
+name: partel_para
 
 [bief]
 path: <root>|sources|utils|bief
@@ -15,9 +15,9 @@ files: bief_def.f
 [parallel]
 path: <root>|sources|utils|parallel
 files: declarations_parallel.F
+  interface_parallel.f
   p_time.F
   p_exit.F
-  interface_parallel.f
   p_allgatherv_i.F
   p_sync.F
   p_isum_array.F

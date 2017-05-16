@@ -35,7 +35,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import path,environ
+from os import path #,environ
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from parsers.parserStrings import parseArrayFrame,parseArrayPoint
@@ -123,9 +123,9 @@ def getColourMap(fileName):
    red = []; green = []; blue = []
    if path.exists(fileName):
       f = open(fileName,'r')
-   elif path.exists(path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))):
-      fileName = path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))
-      f = open(fileName,'r')
+   #elif path.exists(path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))):
+   #   fileName = path.join(environ['PYTELPATH'],path.join('ColourMaps',fileName))
+   #   f = open(fileName,'r')
    else:
       print "... Could not access/read expected colour map file content: " + fileName
       sys.exit(1)

@@ -2,7 +2,7 @@
                      SUBROUTINE READ_BIN_FRLIQ
 !                    *************************
 !
-     &(Q,VARNAME,AT,NFIC,FFORMAT,LISTIN,STAT)
+     &(Q,VARNAME,AT,NFIC,FFORMAT,LISTIN,FOUND)
 !
 !***********************************************************************
 ! TELEMAC3D   V7P2                                        02/09/2016
@@ -21,7 +21,7 @@
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
-!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
+!| FOUND          |<--| IF FALSE: VARIABLE NOT FOUND
 !| VARNAME        |-->| NAME OF THE VARIABLE Q
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -38,7 +38,7 @@
       INTEGER         , INTENT(IN)       :: NFIC
       CHARACTER(LEN=8), INTENT(IN)       :: FFORMAT
       LOGICAL         , INTENT(IN)       :: LISTIN
-      LOGICAL         , INTENT(OUT)      :: STAT
+      LOGICAL         , INTENT(OUT)      :: FOUND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -103,9 +103,9 @@
      &    1X,'   READ_BIN_FRLIQ: THE VARIABLE ',A16,/,
      &    1X,'   IS MISSING IN THE BINARY BOUNDARY DATA FILE.',/,
      &    1X,'   ITS VALUE IS TAKEN IN THE ASCII FILE')
-        STAT = .FALSE.
+        FOUND = .FALSE.
       ELSE
-        STAT = .TRUE.
+        FOUND = .TRUE.
       ENDIF
       CALL CHECK_CALL(IERR,"READ_BIN_FRILQ: FIND_VARIABLE")
 !

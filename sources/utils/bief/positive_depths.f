@@ -82,7 +82,7 @@
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        09/09/2016
 !+        V7P2
-!+   Swapping rain and boundary fluxes at the end of the algorithm. It 
+!+   Swapping rain and boundary fluxes at the end of the algorithm. It
 !+   caused a wrong correction of FLBOR in case of evaporation.
 !+   Adding rain (it was mixed before with sources).
 !
@@ -102,7 +102,7 @@
 !+        19/11/2016
 !+        V7P3
 !+   Subroutine split into POSITIVE_DEPTHS_ERIA and POSITIVE_DEPTHS_NERD
-!    The remaining part is just the bifurcation.
+!+   The remaining part is just the bifurcation.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE
@@ -173,7 +173,7 @@
       LOGICAL, INTENT(IN)             :: COMPUTE_FLODEL
       CHARACTER(LEN=24)               :: NAMECODE
       LOGICAL, INTENT(IN), OPTIONAL   :: DOFLULIM,DOFLULIMEBE
-      DOUBLE PRECISION, INTENT(INOUT), 
+      DOUBLE PRECISION, INTENT(INOUT),
      &                       OPTIONAL, TARGET :: FLULIMEBE(MESH%NELEM,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -188,7 +188,7 @@
       ELSE
 !       DEFAULT VALUE (FLULIM WAS ALWAYS DONE BEFORE INTRODUCING DOFLULIM)
         MAKEFLULIM=.TRUE.
-      ENDIF
+        ENDIF
       IF(PRESENT(DOFLULIMEBE)) THEN
         MAKEFLULIMEBE=DOFLULIMEBE
       ELSE
@@ -228,16 +228,16 @@
      &                            NBOR,NPTFR,SMH,YASMH,PLUIE,RAIN,
      &                            OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,
      &                            FLOPOINT,NAMECODE,NITMAX,MAKEFLULIM)
-      ELSE
-        IF(LNG.EQ.1) THEN
+        ELSE
+            IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'OPTION INCONNUE DANS POSITIVE_DEPTHS : ',OPTION
-        ENDIF
-        IF(LNG.EQ.2) THEN
+            ENDIF
+            IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'UNKNOWN OPTION IN POSITIVE_DEPTHS: ',OPTION
-        ENDIF
-        CALL PLANTE(1)
-        STOP
-      ENDIF
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !

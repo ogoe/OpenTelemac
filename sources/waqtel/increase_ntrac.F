@@ -66,7 +66,7 @@
             ADDTR = 1
             IND_T = NTRAC+1
           ENDIF
-#if defined (HAVE_AED2)
+#if defined HAVE_AED2
         CASE(6)
 #endif
         CASE DEFAULT

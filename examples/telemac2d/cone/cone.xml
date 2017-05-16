@@ -66,14 +66,14 @@
     <cast xref="sol_ex" config="oneofall" type="2d:" time="[-1]" >
       <python>
 def check_file():
-   from os import path, remove, environ
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','cone','table.txt')
+   from os import path, remove, getcwd
+   filePath = path.join(getcwd(),'table.txt')
    if path.exists(filePath):
       remove(filePath)
    return [],[],[],[]
 
 def gauss_cone(a0):
-   from os import environ, path
+   from os import path, getcwd
    # Number of points in the mesh
    npoints = len(a0.support[0])
    # Recuperate x and y
@@ -94,7 +94,7 @@ def gauss_cone(a0):
    errlinf=np.max(np.abs(ex.ravel()-a0.values.ravel()))
    maxtr=np.max(a0.values.ravel())
    mintr=np.min(a0.values.ravel())
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','cone','table.txt')
+   filePath = path.join(getcwd(),'table.txt')
    with open(filePath,'a') as outfile:
       outfile.write('%10.3e' % errl1)
       outfile.write('&amp; %10.3e' % errl2)

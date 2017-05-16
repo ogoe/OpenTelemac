@@ -41,7 +41,7 @@
 !+        Improvements of the implementation of the morphological factor
 !+        in the subroutine. Solution of stability issues. For futher
 !+        details see the documentation.
-!                     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EVOL           |<->| WORK ARRAY, THEN EVOLUTION DUE TO SLIDE
 !| IKLE           |-->| CONNECTIVITY TABLE
@@ -84,6 +84,9 @@
       INTEGER IELEM,I1,I2,I3,I,IG1,IG2,IR1,IR2,J
       DOUBLE PRECISION X2,X3,Y2,Y3,Z2,Z3,A,B,L,ZC,DEUXSURF,TANSL
       DOUBLE PRECISION Q(3),QG1,QG2,QR1,QR2
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION PI
+!< SEB @ HRW
 !
       LOGICAL CASE2
 !
@@ -91,7 +94,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      TANSL=TAN(3.141592653589D0*SLOPE/180.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      TANSL = TAN( PI*SLOPE/180.D0 )
+!      TANSL=TAN(3.141592653589D0*SLOPE/180.D0)
+!< SEB @ HRW
 !
 !     INITIALISES THE RIGHT-HAND SIDE EVOL TO ZERO
 !

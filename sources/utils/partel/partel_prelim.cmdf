@@ -2,7 +2,7 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: special partel
-name: PARTEL_PRELIM
+name: partel_prelim
 
 [partel]
 path: <root>|sources|utils|partel

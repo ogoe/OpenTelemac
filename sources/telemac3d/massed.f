@@ -77,6 +77,9 @@
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_MASSED => MASSED
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -98,8 +101,10 @@
 !
       INTEGER IPOIN,IPF
       DOUBLE PRECISION MASSE6
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!##< JR @ RWTH
 !
 !=======================================================================
 !

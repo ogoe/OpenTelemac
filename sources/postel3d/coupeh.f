@@ -76,7 +76,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NC2DH,NPOIN2,NPLAN
-      INTEGER, INTENT(IN) :: NCOU(*)
+      INTEGER, INTENT(IN) :: NCOU(NC2DH)
       INTEGER, INTENT(IN) :: IREC
       DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN) :: V(NPOIN2,NPLAN)

@@ -17,8 +17,9 @@
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from config import OptionParser,parseConfigFile, parseConfig_TranslateTELEMAC
-from os import path,walk,mkdir,remove, environ
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
+from config import parseConfigFile, parseConfig_TranslateTELEMAC
+from os import path,mkdir,remove, environ
 from utils.files import getTheseFiles,getFileContent,putFileContent
 import sys
 import re
@@ -469,18 +470,18 @@ if __name__ == "__main__":
    PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
    SYSTELCFG = path.join(PWD,'configs')
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=USETELCFG,
-                      help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   options, args = parser.parse_args()
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Testing ...
+      '''))
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default=USETELCFG,
+      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   options = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       sys.exit(1)

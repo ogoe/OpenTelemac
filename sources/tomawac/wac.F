@@ -111,7 +111,7 @@
 !-----------------------------------------------------------------------
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_BEGIN
       CALL AD_TOMAWAC_INITIALISATION_BEGIN
 #endif
@@ -132,8 +132,15 @@
 !COUPLAGE : verification des conditions pour le couplage
 !           TELEMAC-TOMAWAC
 !
-      IF(DEBUG.GT.0) WRITE(*,*)'ENTREE DANS TOMAWAC, evec T_TEL=',T_TEL
-     &     ,'NIT_TEL',NIT_TEL,'DONTEL',DONTEL
+      IF(DEBUG.GT.0) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)'ENTREE DANS TOMAWAC, AVEC T_TEL=',T_TEL,
+     &      'NIT_TEL',NIT_TEL,'DONTEL',DONTEL
+        ELSE
+          WRITE(LU,*)'ENTERING TOMAWAC, WITH T_TEL=',T_TEL,
+     &      'NIT_TEL',NIT_TEL,'DONTEL',DONTEL
+        ENDIF
+      ENDIF
       IF(PART.GE.0) THEN
         IF(MAREE.OR.COUSTA.OR.DONTEL) THEN
            IF(LNG.EQ.1) THEN
@@ -584,7 +591,7 @@
      & FPMAXL, FETCHL, SIGMAL, SIGMBL, GAMMAL, FPICL, HM0L,
      & APHILL, TETA1L, SPRE1L, TETA2L, SPRE2L, XLAMDL,X, Y,
      & KENT,   KSORT,  WAC_FILES(WACFO1)%LU, WAC_FILES(WACBI1)%LU,
-     & WAC_FILES(WACBI1)%FMT,  UV,     VV,     SPEULI,VENT, VENSTA,
+     & WAC_FILES(WACBI1)%FMT,  UV,     VV,     SPEULI,VENT, VENSTA, 
      & GRAVIT, PRIVE,  NPRIV,  SPEC,   FRA,
      & DEPTH,  FRABL,  BOUNDARY_COLOUR%I)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
@@ -617,7 +624,7 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROXIM'
       IF(NPLEO.GT.0) THEN
-        CALL PROXIM(NOLEO, XLEO, YLEO, X, Y, NPLEO, NPOIN2,
+         CALL PROXIM(NOLEO, XLEO, YLEO, X, Y, NPLEO, NPOIN2,
      &        IKLE2,NELEM2,NELEM2)
       ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROXIM'
@@ -655,8 +662,8 @@
 !.....9.4 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
-        IREC = (LT - GRADEB)    ! Should be 0
-        CALL ECRSPE(F, TETA, NPLAN , FREQ, NF  , NF, NPOIN2, AT,
+        IREC = (LT - GRADEB) ! Should be 0
+        CALL ECRSPE(F, TETA, NPLAN , FREQ, NF  , NF, NPOIN2, AT, 
      &  IREC, TSDER, NOLEO, NPLEO, WAC_FILES(WACLEO)%LU ,
      &  WAC_FILES(WACLEO)%FMT, DEBRES, TITCAS, DATE, TIME,
      &  MESH%KNOLG%I ,MESH ,WAC_FILES(WACSPE)%LU ,
@@ -727,7 +734,7 @@
 !------------------------------------------------------------------
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_INITIALISATION_END
 #endif
 !< SEB @ HRW
@@ -791,7 +798,7 @@
 !------------------------------------------------------------------
 !
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_TIMESTEP_BEGIN
 #endif
 !< SEB @ HRW
@@ -813,7 +820,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
       CALL LIMWAC
      &(F,      FBOR,   LIFBOR, NPTFR, NPLAN,  NF,     TETA, FREQ,
-     & NPOIN2, NBOR,   AT, LT, DDC,   LIMSPE, FPMAXL, FETCHL , SIGMAL,
+     & NPOIN2, NBOR,   AT, LT, DDC,   LIMSPE, FPMAXL, FETCHL , SIGMAL, 
      & SIGMBL, GAMMAL, FPICL,  HM0L,  APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X, Y,  KENT,   KSORT,
      & WAC_FILES(WACFO1)%LU, WAC_FILES(WACBI1)%LU,WAC_FILES(WACBI1)%FMT,
@@ -900,9 +907,9 @@
      &   FREQ,   IKLE2,  IBOR,   TRA01, SSHP1, SSHZ,   ELT,
      &   ETA,    DEPTH,  DZX,    DZY,   XK,    CG,     ITR01,
      &   NPOIN3, NPOIN2, NELEM2, NPLAN, NF,    COURAN.OR.PART.EQ.1,
-     &   SPHE,   PROINF, A,      DFREQ, F,     CCG,    DIV, DELTA,
+     &   SPHE,   PROINF, A,      DFREQ, F,     CCG,    DIV, DELTA, 
      &   DDX,    DDY,    F2DIFM, NBOR,  NPTFR, XKONPT, RX,
-     &   RY,     RXX,    RYY,    NEIGB, NB_CLOSE,DIFFRA,MAXNSP,
+     &   RY,     RXX,    RYY,    NEIGB, NB_CLOSE,DIFFRA,MAXNSP, 
      &   FLTDIF, MESH3D, MESH,   IELM3, TB,    ISUB,   MESH%IKLE)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
         ENDIF
@@ -976,7 +983,7 @@
      &  NBOR,   NPTFR,  DDC,    TV1,   TV2,   UV1,    VV1,    UV2,  VV2,
      &  TETA,   SINTET, COSTET, INDIV,  TAILF,RAISF,  GRAVIT, CFROT1,
      &  CMOUT1, CMOUT2, CMOUT3, CMOUT4,CMOUT5,CMOUT6, AT,     DTSI,
-     &  ROAIR,  ROEAU,  XKAPPA, BETAM, DECAL, CDRAG,  ALPHA,  ZVENT,
+     &  ROAIR,  ROEAU,  XKAPPA, BETAM, DECAL, CDRAG,  ALPHA,  ZVENT, 
      &  NF,     NPLAN,  NPOIN2, IANGNL,COEFNL,F1,     NSITS,  SMOUT,
      &  SFROT,  SVENT,  LVENT,  STRIF, VENT,  VENSTA, VX_CTE, VY_CTE,
      &  SBREK,  ALFABJ, GAMBJ1, GAMBJ2,IQBBJ, IHMBJ,  IFRBJ,  BORETG,
@@ -1041,13 +1048,13 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         IREC = (LT - GRADEB)/GRAPRD
         IF(COURAN.OR.PART.EQ.1) THEN
-          CALL ECRSPE(TSTOT, TETA,  NPLAN, FREQ, NF, NF, NPOIN2, AT,
-     &                IREC,  TSDER, NOLEO, NPLEO,
+          CALL ECRSPE(TSTOT, TETA,  NPLAN, FREQ, NF, NF, NPOIN2, AT, 
+     &                IREC,  TSDER, NOLEO, NPLEO, 
      &                WAC_FILES(WACLEO)%LU, WAC_FILES(WACLEO)%FMT,
      &                DEBRES,TITCAS,DATE,  TIME, MESH%KNOLG%I,
      &                MESH,WAC_FILES(WACSPE)%LU, WAC_FILES(WACSPE)%NAME)
         ELSE
-          CALL ECRSPE(F,     TETA,  NPLAN, FREQ, NF, NF, NPOIN2, AT,
+          CALL ECRSPE(F,     TETA,  NPLAN, FREQ, NF, NF, NPOIN2, AT, 
      &                IREC,  TSDER, NOLEO, NPLEO,
      &                WAC_FILES(WACLEO)%LU, WAC_FILES(WACLEO)%FMT,
      &                DEBRES,TITCAS,DATE,  TIME, MESH%KNOLG%I,
@@ -1067,7 +1074,7 @@
      &              NPLAN, NF,    RAISF,1,     1,      1)
         CALL RADIAT(FX_WAC%R, FY_WAC%R, XK, TSTOT, CG,
 !        SXX,   SXY,   SYY,
-!     &              XK,          CG,    DEPTH,
+!     &              XK,          CG,    DEPTH, 
      &              TSDER, TRA36,    TRA37,    TRA38, TRA39)
         IF(VENT) THEN
           CALL OV('X=Y     ',UV_WAC%R,SUV%R,SUV%R,0.D0,NPOIN2)
@@ -1112,7 +1119,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
           CALL AD_TOMAWAC_TIMESTEP_END
 #endif
 !< JR @ RWTH
@@ -1131,7 +1138,7 @@
 !COUPLAGE TELEMAC-TOMAWAC : reset de la variable NIT (nombre
 !         de pas de temps de TOMAWAC indique dans la fichier .cas)
       IF(PART.EQ.1) NIT=DUMMY
-!     Fin COUPLAGE
+!Fin COUPLAGE
 !
       IF(ABS(AT-AT0-NIT*DT).LT.1.D-6) THEN
 !
@@ -1160,7 +1167,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TOMAWAC_END
 #endif
 !< JR @ RWTH

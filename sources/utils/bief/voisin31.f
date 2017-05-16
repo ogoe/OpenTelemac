@@ -37,6 +37,11 @@
 !+   Treatment of prisms cut into tetrahedra added (IELM=51)
 !+   and simplifications.
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| 31: TETRAHEDRA
 !|                |   | 51: PRISMS CUT INTO TETRAHEDRA
@@ -126,8 +131,9 @@
 !     DEFINES THE FOUR TRIANGLES OF THE TETRAHEDRON: THE FIRST
 !     DIMENSION IS THE NUMBER OF THE TRIANGLE, THE SECOND GIVES
 !     THE NODE NUMBERS OF THE NODES OF TETRAHEDRONS WHICH DEFINE IT.
-      INTEGER SOMFAC(3,4)
-      DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1 /
+      INTEGER :: SOMFAC(3,4)
+      PARAMETER ( SOMFAC = RESHAPE( (/
+     &    1,2,3 , 4,1,2 , 2,3,4 , 3,4,1 /), SHAPE=(/ 3,4 /) ) )
 !
 !-----------------------------------------------------------------------
 ! START

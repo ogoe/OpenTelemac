@@ -1458,6 +1458,11 @@
 !
       INTEGER NSP_DIST
 !
+!> RK @ BAW
+!     NUMBER OF DIRECTIONS FOR DIFFERENTIATING in VECTOR MODES
+!
+      INTEGER AD_NUMOFDIR
+!< RK @ BAW
 !-----------------------------------------------------------------------
 ! (5) LOGICAL VALUES
 !-----------------------------------------------------------------------
@@ -1675,11 +1680,11 @@
 !
       LOGICAL BEDBOU
 !
-!###<TBE/DMK changes
+!##> TBE/DMK @ HRW: changes
 !     EXPLICIT SCHEME FOR SETTLING
       LOGICAL  READ_TOCE
       INTEGER SETDEP
-!###<TBE/DMK changes
+!##< TBE/DMK @ HRW
 !
 !     MIXED SEDIMENT, NON COHESIVE SEDIMENT
 !
@@ -1689,6 +1694,15 @@
 !
       LOGICAL CONCOR
 !
+!> RK @ BAW
+!     USE OF SYMBOLIC LINEAR SOLVER FOR AD
+!
+!      LOGICAL AD_SYMBLINSOLV       !! JR  moved to declarations_special !!
+!
+!     RESET DERIVATIVES FOR ITERATIVE LINEAR SOLVER FOR AD
+!
+!      LOGICAL AD_LINSOLV_RESETDERIV      !! JR  moved to declarations_special !!
+!< RK @ BAW
 !-----------------------------------------------------------------------
 ! (6) REALS
 !-----------------------------------------------------------------------
@@ -2406,6 +2420,24 @@
       INTEGER SIZEINDIC_MURD3D_POS
 !     TRISOU WAVE DRIVEN CURRENT
       LOGICAL :: DEJALU_TRISOU = .FALSE.
+!
+!
+!##> JR @ RWTH: MODULE VARIABLE WITH DEFAULT INITIALISATION FOR USER
+!     TYPE COMPONENTS MUST BE SAVED
+      SAVE :: FLUXTOTCUM, RIMAX, FICT, ZERO, AT, DT, DUREE, GRAV, FCOR,
+     &     FAIR, FUAIR, FVAIR, RHO0, RUGOF0, RUGOL0, HMIN, HAULIN,
+     &     DNUVIH, DNUVIV, HAUTIN, COTINI, RAIN_MMPD, TETAH, TETAU,
+     &     TETAD, TETADI, AGGLOH, AGGLOD, AGGLOU, RHOS, TOCD, CFDEP, XKV
+     &     , EPAI0, DTC, WCHU0, D50, LATIT, NORD, TETAZCOMP, KSPRATIO,
+     &     HWIND, MASINI_WATER, MASSEN_WATER, MASSE_WATER, HSED, CTIDE,
+     &     CTIDEV, MSL, WCS0, PVSNCO0, AGGLOW, PATMOS_VALUE, SLVDVI,
+     &     SLVPRO, SLVDKE, SLVW, SLVDSE, SLVPOI, PERNORM2, PERPROD,
+     &     RIMIN, KARMAN, CMU, C1, C2, SIGMAK, SIGMAE, VIRT, SCHMIT,
+     &     KMIN, KMAX, EMIN, EMAX, PRANDTL, ALPHA, BETA, BETAS, OMSTAR,
+     &     CFMAX, MPART, TURBA, CGEL, TURBB, CINI, LONGIT, CONC_LAYER,
+     &     TOCE_LAYER, ES_LAYER, MASSUSP0, MASSUSP, MASDEP, MASBED0,
+     &     MASBED, TREST, AC, HLIM
+!##< JR @ RWTH
 !
       END MODULE DECLARATIONS_TELEMAC3D
 

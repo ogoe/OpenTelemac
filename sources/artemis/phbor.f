@@ -60,8 +60,8 @@
 !history  N.DURAND (HRW)
 !+        November 2016
 !+        V7P2
-!+   Phase calculation brought back inside PHBOR  
-!+   (automatic in the sense of applicable to general case, different 
+!+   Phase calculation brought back inside PHBOR
+!+   (automatic in the sense of applicable to general case, different
 !+    from that using KPHREF)
 !
 !history  S.BOURBAN (HRW)
@@ -93,9 +93,10 @@
 !     DOUBLE PRECSION AUXI2
       INTRINSIC COS,SIN
 !
-      DOUBLE PRECISION CHOUIA
-      DATA CHOUIA /1.D-9/
-
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      DOUBLE PRECISION, PARAMETER :: CHOUIA = 1.D-9
+!      DATA CHOUIA /1.D-9/
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

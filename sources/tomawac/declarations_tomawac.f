@@ -56,31 +56,31 @@
 !
 !     DECLARES BIEF STRUCTURES
 !
-!     variables 4d a convecter
+!     4D VARIABLES TO BE ADVECTED
 !
       TYPE (BIEF_OBJ), TARGET :: SF
 !
-!     coefficient b pour convection
+!     ADVECTION COEFFICIENT B
 !
       TYPE (BIEF_OBJ), TARGET :: SB
 !
-!     tableaux des frequences de discretisation
+!     FREQUENCIES
 !
       TYPE (BIEF_OBJ), TARGET :: SFR
 !
-!     tableaux des pas de frequence
+!     FREQUENCY STEPS
 !
       TYPE (BIEF_OBJ), TARGET :: SDFR
 !
-!     tableaux de densité de spectre
+!     SPECTRAL DENSITY
 !
       TYPE (BIEF_OBJ), TARGET :: SSPEC
 !
-!     tableaux de fonction directionnel
+!     DIRECTIONAL FUNCTION
 !
       TYPE (BIEF_OBJ), TARGET :: SFRA
 !
-!     tableaux pour les interactions non lineaires
+!     NON-LINEAR INTERACTIONS
 !
       TYPE (BIEF_OBJ), TARGET :: SCOEF
 !
@@ -903,13 +903,19 @@
 !          MEAN FREQUENCY FM01        FM01      (19)
 !> @brief
 !
-      DOUBLE PRECISION HIST(1)
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      DOUBLE PRECISION :: HIST(1)
+      PARAMETER ( HIST = (/ 9999.D0 /) )
+!##< JR @ RWTH
 !
-      INTEGER ALIRE(MAXVAR)
-!
-      DATA ALIRE /0,1,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0/
-      DATA HIST /9999.D0/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRE(MAXVAR)
+!      DATA ALIRE /
+!     BE ABSOLUTLY SURE THAT ALIRE IS SIZE MAXVAR
+      PARAMETER ( ALIRE = (/
+     &    0,1,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
+     &    0,0,0,0,0,0,0,0 /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !   DECLARES POINTERS FOR ALIASES
@@ -1295,5 +1301,24 @@
       LOGICAL :: DEJA_WAC = .FALSE.
       DOUBLE PRECISION DTSI
       INTEGER NOLEO(99)
+!
+
+!##> JR @ RWTH: MODULE VARIABLE WITH DEFAULT INITIALISATION FOR USER
+!     TYPE COMPONENTS MUST BE SAVED
+      SAVE :: PI, DEUPI, GRAVIT, PISUR2, GRADEG, DEGRAD, SR, R2,
+     &     USDPI, UNITCOB, UNITMAB, UNITVEB, PHASCOB, PHASMAB, PHASVEB,
+     &     DT, F1, RAISF, DDC, CFROT1, CMOUT1, CMOUT2, ROAIR, ROEAU,
+     &     BETAM, XKAPPA, ALPHA, DECAL, ZVENT, CDRAG, ALFABJ, GAMBJ1,
+     &     GAMBJ2, BORETG, GAMATG, ALFARO, GAMARO, GAM2RO, BETAIH,
+     &     EM2SIH, COEFHS, XDTBRK, XLAMD, CIMPLI, ZREPOS, ALFLTA,
+     &     RFMLTA, KSPB, BDISPB, BDSSPB, HM0, FPIC, GAMMA, SIGMAA,
+     &     SIGMAB, ALPHIL, FETCH, FREMAX, TETA1, SPRED1, TETA2, SPRED2,
+     &     XLAMDA, TAILF, E2FMIN, HM0L, FPICL, SIGMAL, SIGMBL, APHILL,
+     &     FETCHL, FPMAXL, TETA1L, SPRE1L, TETA2L, SPRE2L, XLAMDL,
+     &     GAMMAL, ALF1, GAM1, GAM2, VX_CTE, VY_CTE, PROMIN, XLEO, YLEO,
+     &     COEFWD, COEFWE, COEFWF, COEFWH, CMOUT3, CMOUT4, CMOUT5,
+     &     CMOUT6, SEUIL, SEUIL1, SEUIL2, F2DIFM, CDSCUR, ELIM,
+     &     F_COEF, F_PROJ, TB_SCA
+!##< JR @ RWTH
 !
       END MODULE DECLARATIONS_TOMAWAC

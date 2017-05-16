@@ -55,6 +55,9 @@
       DOUBLE PRECISION PONDER,RADDEG
 !
       DOUBLE PRECISION BID
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      DOUBLE PRECISION PI
+!< SEB @ HRW
 !
       INTRINSIC SQRT, ATAN2, MOD, ABS, COS, SIN
 !
@@ -65,9 +68,13 @@
 !
 !-----------------------------------------------------------------------
 !
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+      RADDEG = 180.D0 / PI
+!      RADDEG = 180.D0/3.141592654D0
+!< SEB @ HRW
       PONDER = 1.D0
 !      PONDER = 1.D0/DBLE(NDALE*NPALE)
-      RADDEG = 180.D0/3.141592654D0
 !
 !=======================================================================
 ! COMPUTES M0 MOMENTUM AND STORES IT IN T2

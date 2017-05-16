@@ -20,7 +20,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import path, environ, stat, mkdir
+from os import path, stat, mkdir
 from copy import deepcopy
 import numpy as np
 # ~~> matplotlib and pyplot

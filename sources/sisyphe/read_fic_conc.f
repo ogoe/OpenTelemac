@@ -2,7 +2,7 @@
                      SUBROUTINE READ_FIC_CONC
 !                    ************************
 !
-     &(CGL , WHAT , AT , NFIC , LISTIN , STAT )
+     &(CGL , WHAT , AT , NFIC , LISTIN , FOUND )
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   21/08/2010
@@ -37,7 +37,7 @@
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| CGL            |<--| VARIABLE READ AND INTERPOLATED
-!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
+!| FOUND          |<--| IF FALSE: VARIABLE NOT FOUND
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 8 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -56,7 +56,7 @@
       DOUBLE PRECISION, INTENT(INOUT)    :: CGL
       INTEGER         , INTENT(IN)       :: NFIC
       LOGICAL         , INTENT(IN)       :: LISTIN
-      LOGICAL         , INTENT(OUT)      :: STAT
+      LOGICAL         , INTENT(OUT)      :: FOUND
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -241,7 +241,7 @@
         IF(WHAT.EQ.CHOIX_RFC(J)) IWHAT=J
       ENDDO
       IF(IWHAT.EQ.0) THEN
-        STAT=.FALSE.
+        FOUND=.FALSE.
         RETURN
       ENDIF
 !
@@ -274,7 +274,7 @@
           STOP
         ENDIF
         TL1_RFC=TIME_RFC(IL1_RFC)
-        TL2_RFC=TIME_RFC(IL2_RFC) 
+        TL2_RFC=TIME_RFC(IL2_RFC)
 
         GO TO 70
       ENDIF
@@ -282,7 +282,7 @@
       CGL = (1.D0-TETA)*INFIC_RFC(IWHAT,IL1_RFC)
      &  +       TETA *INFIC_RFC(IWHAT,IL2_RFC)
 !
-      STAT=.TRUE.
+      FOUND=.TRUE.
 
 
 !

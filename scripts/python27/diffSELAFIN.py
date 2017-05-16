@@ -21,9 +21,9 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other modules
 from runSELAFIN import scanSELAFIN
 from parsers.parserFortran import cleanQuotes
@@ -49,33 +49,56 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
-   parser = OptionParser("usage: %prog [options] file1.slf file2.slf\n ... use -h for more help.")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Reporting on differences between two SELAFIN files
+      '''))
+   parser.add_argument( "args",nargs='*' )
    # ~~> Uselessly set to True as default ... may change in the future
    # ~~> The real switches
-   parser.add_option("--head",action="store_true",dest="head",default=False,help="Will print a statiscal differences between two SELARING files" )
-   parser.add_option("--core",action="store_true",dest="core",default=False,help="Will print a statiscal differences between two SELARING files" )
-   #parser.add_option("--full",action="store_true",dest="full",default=False,help="Will create pictures of the difference between files" )
-   parser.add_option("--scan",action="store_true",dest="scan",default=False,help="Will print an individual summary for each file" )
-   parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should be differentiated (':'-delimited)" )
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default="1",help="specify the first frame included in the differentiation" )
-   parser.add_option("-s", "--stop",type="string",dest="tstop",default="-1",help="specify the last frame included (negative from the end) in the differentiation" )
-   parser.add_option("-d", "--step",type="string",dest="tstep",default="1",help="specify the step for the extraction of frames for the differentiation" )
-   parser.add_option("-e", "--epsilon",type="string",dest="epsilon",default="0",help="specify the threshold for which values are assumed the same" )
-   parser.add_option("-b","--bypass",action="store_true",dest="bypass",default=False,help="Will bypass certain mismatches between files" )
-   options, args = parser.parse_args()
+   parser.add_argument(\
+      "--head",action="store_true",dest="head",default=False,
+      help="Will print a statiscal differences between two SELARING files" )
+   parser.add_argument(\
+      "--core",action="store_true",dest="core",default=False,
+      help="Will print a statiscal differences between two SELARING files" )
+   #parser.add_argument("--full",action="store_true",dest="full",default=False,help="Will create pictures of the difference between files" )
+   parser.add_argument(\
+      "--scan",action="store_true",dest="scan",default=False,
+      help="Will print an individual summary for each file" )
+   parser.add_argument(\
+      "-v", "--vars",dest="xvars",default=None,
+      help="specify which variables should be differentiated (':'-delimited)" )
+   parser.add_argument(\
+      "-f", "--from",dest="tfrom",default="1",
+      help="specify the first frame included in the differentiation" )
+   parser.add_argument(\
+      "-s", "--stop",dest="tstop",default="-1",
+      help="specify the last frame included (negative from the end) in the differentiation" )
+   parser.add_argument(\
+      "-d", "--step",dest="tstep",default="1",
+      help="specify the step for the extraction of frames for the differentiation" )
+   parser.add_argument(\
+      "-e", "--epsilon",dest="epsilon",default="0",
+      help="specify the threshold for which values are assumed the same" )
+   parser.add_argument(\
+      "-b","--bypass",action="store_true",dest="bypass",default=False,
+      help="Will bypass certain mismatches between files" )
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Double checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if len(args) != 2:
+   if len(options.args) != 2:
       print '\nThe names of two SELAFIN files are required\n\n'
       parser.print_help()
       sys.exit(1)
-   slfFile1 = args[0]
+   slfFile1 = options.args[0]
    if not path.exists(slfFile1):
       print '\nCould not find the file named: ',slfFile1
       sys.exit(1)
-   slfFile2 = args[1]
+   slfFile2 = options.args[1]
    if not path.exists(slfFile2):
       print '\nCould not find the file named: ',slfFile2
       sys.exit(1)

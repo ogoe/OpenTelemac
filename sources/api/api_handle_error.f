@@ -35,12 +35,16 @@
       INTEGER, PARAMETER :: RUN_FINALIZE_POS=6
 !
       CHARACTER(LEN=32) :: POS_NAME(6)
-      DATA POS_NAME /'RUN_SET_CONFIG',
-     &               'RUN_READ_CASE',
-     &               'RUN_ALLOCATION',
-     &               'RUN_INIT',
-     &               'RUN_TIMESTEP',
-     &               'RUN_FINALIZE'/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA POS_NAME /
+      PARAMETER ( POS_NAME = (/
+     &            'RUN_SET_CONFIG                  ',
+     &            'RUN_READ_CASE                   ',
+     &            'RUN_ALLOCATION                  ',
+     &            'RUN_INIT                        ',
+     &            'RUN_TIMESTEP                    ',
+     &            'RUN_FINALIZE                    ' /) )
+!##< SEB @ HRW
       CHARACTER(LEN=ERROR_MESS_LEN) :: ERR_MESS
 !
       CONTAINS

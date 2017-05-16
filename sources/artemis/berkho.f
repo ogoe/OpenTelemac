@@ -138,6 +138,9 @@
       USE INTERFACE_ARTEMIS, EX_BERKHO => BERKHO
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
       INTEGER, INTENT(IN) :: LF
@@ -160,8 +163,10 @@
 !-----------------------------------------------------------------------
 !
       INTRINSIC ABS,MIN,MAX,LOG,COS,SIN,ATAN
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL P_DMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX
+!      EXTERNAL P_DMAX
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

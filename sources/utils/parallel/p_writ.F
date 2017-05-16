@@ -2,7 +2,9 @@
                      SUBROUTINE P_WRIT
 !                    *****************
 !
-     &(BUFFER,NBYTES,DEST,DATATYPE)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+     &(BUFFER,N,BYTES,DEST,DATATYPE)
+!##< JR @ RWTH
 !
 !***********************************************************************
 ! PARALLEL   V6P1                                   21/08/2010
@@ -52,8 +54,10 @@
 !|                |   | BUFFER / PUFFERFELD
 !| DEST           |-->| DESTINATION DES DONNEES
 !|                |   | TID OF THE DEST.  / KNOTEN-ID DES EMPFAENGERS
-!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
-!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!|  N             |-->| NOMBRE DE ELEMENTS A TRANSMETTRE
+!|                |   | NUMBER OF ELEMENTS / ANZAHL DER ELEMENTE
+!|  BYTES         |-->| NOMBRE DE BYTES A ELEMTENT
+!|                |   | SIZE OF ELEMENTS IN BYTES / GR"OSSE DER ELEMENTE
 !| DATATYPE       |-->| TYPE DES DONNEES (MSGTAG DE PVM)
 !|                |   | 0 - STRING
 !|                |   | 1 - BYTE1
@@ -67,21 +71,39 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: NBYTES,DEST,DATATYPE
-      DOUBLE PRECISION, INTENT(IN) :: BUFFER(*)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+      INTEGER, INTENT(IN)          :: N,BYTES,DEST,DATATYPE
+!##< JR @ RWTH
+
+!> JR @ RWTH: ASSUMED SIZE ARRAY (*)
+!     NO DEFAULT INITIALISATION FOR USER TYPE COMPONENTS ALLOWED
+      DOUBLE PRECISION, INTENT(INOUT) :: BUFFER(*)
+!      DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
+!< JR @ RWTH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
 !
-      CALL MPI_SEND(BUFFER,NBYTES,MPI_BYTE,DEST,4711,COMM,IER)
+!##> JR @ RWTH: DISTINGUISHING THE NUMBER OF ELEMENTS AND THEIR SIZE
+!      NBYTES = N * MPI_SIZEOF_COMPAD_TYPE( ier )
+#  ifdef COMPAD
+!      WRITE(LU,*) 'COMPAD  ::  p_writ.F (IN) :: DATATYPE', DATATYPE
+      CALL AMPI_SEND(BUFFER,N,AMPI_TYPE,DEST,4711,COMM,IER)
+#  else
+      CALL MPI_SEND(BUFFER,N*BYTES,MPI_BYTE,DEST,4711,COMM,IER)
+#  endif
+!##< JR @ RWTH
 !
       IF (IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_WRITE: ERREUR IN MPI_SEND'

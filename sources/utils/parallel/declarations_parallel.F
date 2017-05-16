@@ -1,23 +1,84 @@
-      MODULE DECLARATIONS_PARALLEL
+!                   ****************************
+                    MODULE DECLARATIONS_PARALLEL
+!                   ****************************
+!
+!***********************************************************************
+! PARALLEL VERSION V7P3
+!***********************************************************************
+!
+!brief     Creating a declaration wrapper for some of the MPI keywords
+!+   that are used in other declarations.
+!+   The variables defined in the MPI module / include are also
+!+   declared with dummy values when used in scalar mode.
+!
+!history  JAN RIEHME  (RWTH-ADAWARE)
+!+
+!+        V7P3
+!+   Allowing for a switch from the include 'mpif.h'
+!+     to the 'USE MPI' module.
+!
+!history  S.E. BOURBAN (HRW)
+!+        17/03/2017
+!+        V7P3
+!+   Further simplifying the switch with USE MPI and debugging the
+!+     use in scalar mode.
+!
+!warning  JAN RIEHME  (RWTH-ADJOINTWARE )
+!+   For a system-wide installed OpenMPI the parameter MPI_ADDRESS_KIND
+!+     has a compiler dependent value (for instance, gfortran :8).
+!+   This value might not be invalid for others, so it is no good idea
+!+     to use any sort of kind parameters exported by MPI, if a
+!+     compiler independent MPI installation should be used.
+!+   Solution: Define your own constants ... MY_ADDRESS_KIND
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+#if defined HAVE_MPI
+!
+!##> JR @ RWTH: ALLOW THE USE OF THE MPI MODULE
+#  if defined HAVE_MPI_MOD
+        USE MPI
         IMPLICIT NONE
-#if defined (HAVE_MPI)
+        INTEGER, PARAMETER :: MY_ADDRESS_KIND = MPI_ADDRESS_KIND
+#  else
+        IMPLICIT NONE
         INCLUDE 'mpif.h'
+!##> JR @ RWTH: DEFINE 4-BYTE INTEGER KIND (PORTABLE) FOR MPI ADDRESSES
+!        INTEGER, PARAMETER :: MY_ADDRESS_KIND = MPI_ADDRESS_KIND
+        INTEGER, PARAMETER :: MY_ADDRESS_KIND = SELECTED_INT_KIND(16)
+#  endif
+!##< JR @ RWTH
+!
         INTEGER WAIT_REQ_PARACO(MPI_STATUS_SIZE,100)
         INTEGER :: COMM = MPI_COMM_WORLD
-#endif
-
-#if !defined (HAVE_MPI)
-        ! Creating wrapper for some of MPI keywords that are used in variable declaration
-        ! Using boggus values they should never be used
-        ! They are include in mpi.hf
-        INTEGER, PARAMETER :: MPI_ADDRESS_KIND = 4
+#else
+        IMPLICIT NONE
+!##> SEB @ HRW: DECALRING MY_ADDRESS_KIND IS REQUIRED FOR SCALAR MODE
+        INTEGER, PARAMETER :: MY_ADDRESS_KIND = SELECTED_INT_KIND(16)
+!##< SEB @ HRW
         INTEGER, PARAMETER :: MPI_INTEGER = 0
         INTEGER, PARAMETER :: MPI_DOUBLE_PRECISION = 0
         INTEGER, PARAMETER :: MPI_UB = 0
         INTEGER, PARAMETER :: MPI_COMM_WORLD = -1
         INTEGER, PARAMETER :: MPI_SUCCESS =0
         INTEGER :: COMM=0
+!!
+!! COMPAD-DCO  BEGIN  JR2017
+!!  Define AMPI_TYPE parameter for non-MPI compilation,
+!!    only required for oil_org_charac_type.F (there is
+!!      a  #ifdef HAVE_MPI missing ...)
+#  ifdef COMPAD
+        INTEGER, PARAMETER :: AMPI_TYPE = -333
+#  endif
+!! COMPAD-DCO  original code
+!! COMPAD-DCO  END    JR2017
 #endif
+!
+!------------------------------------------------------------------------
+!
         TYPE CHARAC_TYPE
           SEQUENCE   ! BUT SEEMS USELESS (HENCE TRICK BELOW WITH VOID)
           INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
@@ -33,6 +94,8 @@
           DOUBLE PRECISION :: BASKET(10) ! VARIABLES INTERPOLATED AT THE FOOT
         END TYPE CHARAC_TYPE
 !
+!------------------------------------------------------------------------
+!
         TYPE ALG_TYPE
           SEQUENCE   ! NECESSARY TO DEFINE MPI TYPE ALG_CHAR
           INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
@@ -46,6 +109,8 @@
           DOUBLE PRECISION :: H_FLU  ! THE WATER DEPTH AT POSITION OF VELOCITY
           DOUBLE PRECISION :: PSI(3*101) ! VARIABLE PSI USED FOR THE BASSET FORCE
         END TYPE ALG_TYPE
+!
+!------------------------------------------------------------------------
 !
         TYPE OIL_TYPE
           SEQUENCE
@@ -69,5 +134,7 @@
           DOUBLE PRECISION :: SOL_HAP(10)
           DOUBLE PRECISION :: SOL_COMPO(10)
         END TYPE OIL_TYPE
+!
+!=======================================================================
 !
       END MODULE

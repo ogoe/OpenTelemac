@@ -91,11 +91,15 @@
 !    &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
 !     EBE SYMMETRIC STORAGE OF OFF-DIAGONAL TERMS FOR TETRAHEDRONS
 !     0 ARE PUT FOR DIAGONALS
-      INTEGER STO(4,4)
-      DATA STO / 0, 1, 2, 3,
+      INTEGER :: STO(4,4)
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA STO /
+      PARAMETER ( STO = RESHAPE( (/
+     &           0, 1, 2, 3,
      &           1, 0, 4, 5,
      &           2, 4, 0, 6,
-     &           3, 5, 6, 0 /
+     &           3, 5, 6, 0 /), SHAPE=(/ 4,4 /) ) )
+!##< SEB @ HRW
 !     CORRESPONDING OFF-DIAGONAL TERMS
 !     DATA STO /1-1,2-1,3-1,4-1,
 !    &          1-2,2-2,3-2,4-2,
@@ -103,7 +107,6 @@
 !    &          1-4,2-4,3-4,4-4/
 !     INTEGER ISEGT(6,2)
 !     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
-!
 !
 !-----------------------------------------------------------------------
 !

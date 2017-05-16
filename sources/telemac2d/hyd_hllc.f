@@ -179,10 +179,10 @@
             IF(IDRY.LT.2)THEN
 !
 !             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
-              IF(HROPT.EQ.1)THEN 
+              IF(HROPT.EQ.1)THEN
                 DZIJ = MAX(0.D0,ZF2-ZF1 )
                 HIJ  = MAX(0.D0,H1 -DZIJ)
-!             
+!
                 DZJI = MAX(0.D0,ZF1-ZF2 )
                 HJI  = MAX(0.D0,H2 -DZJI)
               ELSEIF(HROPT.EQ.2)THEN
@@ -215,7 +215,7 @@
 !*********************************************************
 !
 !             HYDROSTATIC RECONSTRUCTION OF AUDUSSE
-              IF(HROPT.EQ.1)THEN 
+              IF(HROPT.EQ.1)THEN
                 HGZI = 0.5D0*RNN*(HIJ+H1)*(HIJ-H1)
                 HGZJ = 0.5D0*RNN*(HJI+H2)*(HJI-H2)
 !             HYDROSTATIC RECONSTRUCTION OF NOELLE ET AL.
@@ -245,7 +245,7 @@
                   HDYZ2 = DEMI*HDYZ2
                 ENDIF
               ENDIF
-! 
+!
 !***********************************************************
 !
 !       FLUX INCREMENT

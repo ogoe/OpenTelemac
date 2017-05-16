@@ -140,7 +140,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      PI  = ACOS (-1.D0)
+!> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
+      PI = 4.D0 * ATAN( 1.D0 )
+!      PI  = ACOS (-1.D0)
+!< SEB @ HRW
       API = PI / 180.D0
       I0  = 5.145576994D0 * API
       E   = 0.05490D0

@@ -9,21 +9,21 @@
 
       USE m_TypeDefs_Nestor
       USE m_Nestor , ONLY :  nGrainClass
-      
-         
-      
-#ifndef  NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY :  my_FLUSH 
-#endif   NESTOR_INTERFACES                                        
+
+
+
+!#ifndef  NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY :  my_FLUSH
+!#endif  /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
       TYPE(t_Action),INTENT(INOUT) :: A
 
       INTEGER       ,INTENT(IN)    :: m         !> index of action
       REAL (KIND=R8),INTENT(IN)    :: time      !> time [ s ]
-      
-      
-#ifndef NESTOR_INTERFACES 
+
+
+#ifndef NESTOR_INTERFACES
       !--------------------- local variables ---------------
       INTEGER :: iCL
 
@@ -122,7 +122,7 @@
        WRITE(6,*)'?>      dug volume  [m**3] : ',A%MovedVolume
        IF(A%FieldDumpID > 0)
      & WRITE(6,*)'?>      dumped volume      : ',A%MovedVolume
-     
+
       ELSEIF ( A%State == 9 ) THEN
        WRITE(6,'(" ?>        end action       : ",A)')A%ActionTypeStr
        WRITE(6,'(" ?>        FieldDig         : ",A)')A%FieldDig
@@ -153,7 +153,7 @@
       WRITE(6,672)
       WRITE(6,670)
 
-      CALL my_FLUSH(6)                             
+      CALL my_FLUSH(6)
 
 !      IF( ParallelComputing ) CALL P_SYNC()
 
@@ -162,7 +162,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /*NESTOR_INTERFACES                       !******************************************** */
       END SUBROUTINE InfoMessage                 !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

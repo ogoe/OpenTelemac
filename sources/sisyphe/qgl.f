@@ -37,8 +37,8 @@
 !+        17/03/2017
 !+        V7P3
 !+   Modification of the error message when the prescribed number
-!+   of solid discharge(s) is not enough                     
-!                     
+!+   of solid discharge(s) is not enough
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT

@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
@@ -75,8 +80,9 @@
 !     SUB-TRIANGLES IN THE INITIAL TRIANGLE
 !     IL(NUMBER OF THE SUB-TRIANGLE,LOCAL NUMBER IN THE SUB-TRIANGLE)
 !
-      INTEGER IL(3,3)
-      DATA IL /1,2,3,2,3,1,4,4,4/
+      INTEGER :: IL(3,3)
+      PARAMETER ( IL = RESHAPE( (/
+     &          1,2,3,2,3,1,4,4,4 /), SHAPE=(/ 3,3 /) ) )
 !
 !-----------------------------------------------------------------------
 !

@@ -67,6 +67,9 @@
       USE BIEF
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -82,8 +85,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!##< JR @ RWTH
 !
       INTEGER DIR,DDL,OND,IELMT,IELMH
 !
@@ -263,15 +268,15 @@
           ENDIF
 !
           IF(LNG.EQ.1) THEN
-            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8) 
+            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8)
      &                WRITE(LU,1161) MASTEN_BT1(ITRAC)
-            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8) 
+            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8)
      &                WRITE(LU,1164) MASTOU_BT1(ITRAC)
           ENDIF
           IF(LNG.EQ.2) THEN
-            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8) 
+            IF(ABS(MASTEN_BT1(ITRAC)).GT.1.D-8)
      &                WRITE(LU,2161) MASTEN_BT1(ITRAC)
-            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8) 
+            IF(ABS(MASTOU_BT1(ITRAC)).GT.1.D-8)
      &                WRITE(LU,2164) MASTOU_BT1(ITRAC)
           ENDIF
 !

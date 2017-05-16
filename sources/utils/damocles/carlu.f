@@ -80,11 +80,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER       I,IDEB,IFIN,NCAR,ICOL2,NLIGN2,ITYP,K,LGLU,LONPRO(15)
+      INTEGER       I,IDEB,IFIN,NCAR,ICOL2,NLIGN2,ITYP,K,LGLU
+      INTEGER    :: LONPRO(15)
       INTEGER       QCAS
       LOGICAL       COTE,LISUIV,LUFIC,LUCOTE
       CHARACTER(LEN=1)   QUOTE,TABUL
-      CHARACTER(LEN=9)   MOTPRO(15)
+      CHARACTER(LEN=9)   :: MOTPRO(15)
       CHARACTER(LEN=72)  LIGNE2
       CHARACTER(LEN=144) LIGNED
 !
@@ -94,13 +95,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      DATA MOTPRO/'NOM','TYPE','INDEX','TAILLE','DEFAUT','AIDE',
-     & 'CHOIX','RUBRIQUE','NIVEAU','MNEMO','COMPOSE','COMPORT',
-     & 'CONTROLE','APPARENCE','SUBMIT'/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA MOTPRO/
+      PARAMETER ( MOTPRO = (/
+     &  'NOM      ','TYPE     ','INDEX    ','TAILLE   ','DEFAUT   ',
+     &  'AIDE     ','CHOIX    ','RUBRIQUE ','NIVEAU   ','MNEMO    ',
+     &  'COMPOSE  ','COMPORT  ','CONTROLE ','APPARENCE','SUBMIT   ' /) )
+!##< SEB @ HRW
 !
 !     LENGTH OF PROTECTED WORDS
 !
-      DATA LONPRO /3,4,5,6,6,4,5,8,6,5,7,7,8,9,6/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA LONPRO /3,4,5,6,6,4,5,8,6,5,7,7,8,9,6/
+      PARAMETER ( LONPRO = (/ 3,4,5,6,6,4,5,8,6,5,7,7,8,9,6 /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

@@ -139,6 +139,11 @@
 !+   Changing the formula for VALNIT when coupling. For some reason the
 !+   old formula is no longer valid.
 !
+!history S.E.BOURBAN (HRW))
+!+       01/01/2017
+!+       V7P2
+!+   Adding differentiated variables
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -187,6 +192,9 @@
       USE INTERFACE_HERMES
       USE DECLARATIONS_SPECIAL
 !
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN,P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -213,17 +221,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER                        P_IMAX
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN,P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER                        P_IMAX
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN,P_IMAX
+!##< JR @ RWTH
 !
       INTEGER, PARAMETER :: NHIST = 0
       INTEGER, PARAMETER :: NSOR = 100
       INTEGER            :: NLISS
-      INTEGER            :: I,J,K,MN,MT,ISOUS,IMA,IMI,IELEB,KP1
+      INTEGER            :: I,J,K,MN,MT,ISOUS,IMA,IMI,IELEB,KP1,IVAR
       INTEGER            :: IERR
       INTEGER            :: IMIN,IMAX,NUMENX,NUMDEB
-      INTEGER            :: ALIRE(MAXVAR),ALIRV(MAXVAR),ALIRH(MAXVAR)
       INTEGER            :: TROUVE(MAXVAR+10)
       DOUBLE PRECISION   :: DTS,BID,XMA,XMI
       DOUBLE PRECISION   :: XMIN,XMAX
@@ -250,19 +259,29 @@
 !     1 : READ  (SEE SUBROUTINE NOMVAR)
 !
 !     HYDRO + EVOLUTION
-      DATA ALIRE /1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRE(MAXVAR) =
+     &         (/ (1,I=1,9),(0,I=10,MAXVAR) /)
+!      DATA ALIRE /1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
 !   WAVES ONLY
-      DATA ALIRH /0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
+      INTEGER :: ALIRH(MAXVAR) =
+     &         (/ (0,I=1,11),(1,I=12,14),(0,I=15,MAXVAR) /)
+!      DATA ALIRH /0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
+!##< SEB @ HRW
 !
 !    FOR VALIDATION, EACH VARIABLE IN THE FILE IS COMPARED
 !
-      DATA ALIRV /500*1/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRV(MAXVAR) = (/ (1,I=1,MAXVAR) /)
+!      DATA ALIRV /500*1/
+!##< SEB @ HRW
+
 !
 !======================================================================!
 !======================================================================!
@@ -271,7 +290,7 @@
 !======================================================================!
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_SISYPHE_BEGIN
       CALL AD_SISYPHE_INITIALISATION_BEGIN
 #endif
@@ -341,6 +360,18 @@
           MASDEPT(I)=0.D0
         ENDDO
 !
+!> SBO @ HRW: DIFFERENTIATED VARIABLES
+!     FOR READING GRADIENTS IN SELAFIN FILES
+!
+        K = 28+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+VARCL%N
+        IF(NADVAR.GT.0) THEN
+          DO IVAR=1,NADVAR
+!           SEE NOMVAR_SISYPHE
+            ALIRE(K+IVAR) = 1
+          ENDDO
+        ENDIF
+!
+!< SEB @ HRW
 ! --------  INITIALISES (SETS TO 0) THE ARRAYS
 !
         CALL INIT_ZERO
@@ -669,11 +700,20 @@
             ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_READ_DATASET'
             IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
-           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
+            CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
      &                        ZR%R,ES,HW%R,TW%R,THETAW%R,NPOIN,NOMBLAY,
      &                        NSICLA,TROUVE,ALIRE,PASS,ICF,.TRUE.,
      &                        MAXVAR)
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE'
+!
+!       DIFFERENTIATED VARIABLES
+!
+            IF( NADVAR.GT.0 ) THEN
+              DO IVAR = 1,NADVAR
+                CALL AD_SET_SISYPHE(IVAR,ADVAR%ADR(IVAR)%P)
+              ENDDO
+            ENDIF
+!
           ENDIF
 !
         ENDIF
@@ -981,7 +1021,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_SISYPHE_INITIALISATION_END
 #endif
 !< JR @ RWTH
@@ -1044,7 +1084,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_SISYPHE_TIMESTEP_BEGIN
 #endif
 !< JR @ RWTH
@@ -1080,7 +1120,7 @@
 !------------------------------------------------------------------
 !
 !     ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_SISYPHE_LOOPRECORDS_BEGIN
 #endif
 !
@@ -1321,7 +1361,7 @@
 !
 !------------------------------------------------------------------
 !
-#if defined(COMPAD)
+#if defined COMPAD
         CALL AD_SISYPHE_SUBITERATION_BEGIN
 #endif
 !
@@ -1727,7 +1767,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
         CALL AD_SISYPHE_SUBITERATION_END
 #endif
 !< JR @ RWTH
@@ -1875,7 +1915,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
           CALL AD_SISYPHE_LOOPRECORDS_END
 #endif
 !< JR @ RWTH
@@ -1898,7 +1938,7 @@
 !------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
           CALL AD_SISYPHE_TIMESTEP_END
 #endif
 !< JR @ RWTH
@@ -1917,7 +1957,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_SISYPHE_END
 #endif
 !< JR @ RWTH

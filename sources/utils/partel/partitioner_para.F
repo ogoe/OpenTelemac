@@ -26,7 +26,7 @@
 !| MYPART         |-->| PARTITION NUMBER OF A POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-#if defined (HAVE_PTSCOTCH)
+#if defined HAVE_PTSCOTCH
       USE ISO_C_BINDING
 #endif
       USE DECLARATIONS_SPECIAL
@@ -36,7 +36,7 @@
       IMPLICIT NONE
 !
 !     PTSCOTCH'S HEADER (FORTRAN)
-#if defined (HAVE_PTSCOTCH)
+#if defined HAVE_PTSCOTCH
       INCLUDE "ptscotchf.h"
 #endif
 !
@@ -62,7 +62,7 @@
       INTEGER :: EDGECUT
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
       INTEGER, ALLOCATABLE :: NULLTABLE(:)
-#if defined (HAVE_PTSCOTCH) || defined (HAVE_PARMETIS)
+#if defined HAVE_PTSCOTCH || HAVE_PARMETIS
       INTEGER, ALLOCATABLE :: EPART_LOC(:)
       INTEGER :: NUMFLAG
       INTEGER :: NCON
@@ -77,7 +77,7 @@
       INTEGER,ALLOCATABLE :: DISPLS(:)
 #endif
 
-#if defined (HAVE_PTSCOTCH)
+#if defined HAVE_PTSCOTCH
 !
       REAL*8, DIMENSION(SCOTCH_DGRAPHDIM) :: PTSCOTCHGRAPH
       REAL*8, DIMENSION(SCOTCH_STRATDIM) :: PTSCOTCHSTRAT
@@ -88,7 +88,7 @@
 !
 #endif
         IF(PMETHOD.EQ.3) THEN
-#if defined(HAVE_PARMETIS)
+#if defined HAVE_PARMETIS
           WRITE(LU,*) 'BEGIN PARTITIONING WITH PARMETIS'
           ! Calling parmetis metis parallel partitionner
           ALLOCATE (ELMDIST(NPARTS+1),STAT=ERR)
@@ -190,7 +190,7 @@
         CALL PLANTE(1)
 #endif
         ELSE IF(PMETHOD.EQ.4) THEN
-#if defined (HAVE_PTSCOTCH)
+#if defined HAVE_PTSCOTCH
           WRITE(LU,*) 'BEGIN PARTITIONING WITH PTSCOTCH'
 !
           ALLOCATE (ELMDIST(NPARTS+1),STAT=ERR)
@@ -387,7 +387,7 @@
 !         WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
 !         IS RELEVANT HERE.
 !
-#if defined(HAVE_MPI)
+#if defined HAVE_MPI
             CALL METIS_PARTMESHDUAL
      &          (NELEM, NPOIN, EPTR, EIND, NULLTABLE,
      &           NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE,

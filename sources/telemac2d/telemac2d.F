@@ -245,7 +245,7 @@
 !+        13/05/2015
 !+        V7P1
 !+   ALIRE variable was wrong for tracers, they now begin at rank 34,
-!+   so ALIRE(33+ITRAC)=1. After a remark by Noémie Durand.
+!+   so ALIRE(33+ITRAC)=1. After a remark by Noemie Durand.
 !
 !history Y. AUDOUIN (LNHE)
 !+       25/05/2015
@@ -300,6 +300,11 @@
 !+       V7P2
 !+   add new turbulence model of Spalart-Allmaras
 !
+!history S.E.BOURBAN (HRW))
+!+       01/01/2017
+!+       V7P2
+!+   Adding differentiated variables
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !param atdep     [in] starting time when called for coupling
 !param code      [in] calling program (if coupling)
@@ -330,6 +335,9 @@
       USE ALGAE_TRANSP
 !     DELWAQ
       USE TEL4DEL, ONLY: TEL4DELWAQ
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX,P_IMIN,P_DMIN
+!##< JR @ RWTH
 !
       IMPLICIT NONE
 !
@@ -353,7 +361,7 @@
 !
       INTEGER IELM,I,IELMX,ISOUSI,STOP2,LEOPRD_CHARR,DISCLIN
       INTEGER REF
-      INTEGER ALIRE(MAXVAR),TROUVE(MAXVAR+10)
+      INTEGER TROUVE(MAXVAR+10)
 !
 ! REAL SCALARS
 !
@@ -371,7 +379,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IOPTAN,IMAX,ITRAC,NPTFR2,NFRLIQ0
+      INTEGER IOPTAN,IMAX,ITRAC,NPTFR2,NFRLIQ0,IVAR
 !
 !-----------------------------------------------------------------------
 !
@@ -388,9 +396,11 @@
 !     FRICTION DATA
       INTEGER :: KFROT_TP
 !
-      INTEGER  P_IMAX,P_IMIN
-      DOUBLE PRECISION P_DMIN
-      EXTERNAL P_IMAX,P_IMIN,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER  P_IMAX,P_IMIN
+!      DOUBLE PRECISION P_DMIN
+!      EXTERNAL P_IMAX,P_IMIN,P_DMIN
+!##< JR @ RWTH
       CHARACTER(LEN=3), PARAMETER :: CCODE = 'T2D'
 !
       INTEGER :: OLD_LEOPRD
@@ -405,10 +415,14 @@
 !  0 : DISCARD    1 : READ  (SEE SS-PG NOMVAR)
 !
 !                                 0: OLD PLACE FOR THE TRACER
-      DATA ALIRE /1,1,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: ALIRE(MAXVAR) = (/
+     &            1,1,0,1,1,1,0,0,0,1,1,1,(0,I=13,MAXVAR) /)
+!      DATA ALIRE /1,1,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!     &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !
@@ -425,7 +439,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_BEGIN
 #endif
 !< JR @ RWTH
@@ -490,8 +504,8 @@
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-!         SEE POINT_TELEMAC2D
-          ALIRE(33+ITRAC) = 1
+!         SEE NOMVAR_TELEMAC2D
+          ALIRE(34+ITRAC) = 1
         ENDDO
       ENDIF
 !
@@ -501,6 +515,17 @@
       IF(ITURB.NE.3) ALIRE(11) = 0
       IF(ITURB.EQ.1) ALIRE(12) = 0
 !
+!> SBO @ HRW: DIFFERENTIATED VARIABLES
+!     FOR READING GRADIENTS IN SELAFIN FILES
+!
+      IF(NADVAR.GT.0) THEN
+        DO IVAR=1,NADVAR
+!         SEE NOMVAR_TELEMAC2D
+          ALIRE(34+NTRAC+2*NPERIAF+IVAR) = 1
+        ENDDO
+      ENDIF
+!
+!< SEB @ HRW
 !-----------------------------------------------------------------------
 !
 !     USE DOPRINT TO LIMIT TELEMAC-2D OUTPUTS IN THE LISTING
@@ -535,7 +560,7 @@
 !=======================================================================
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_INITIALISATION_BEGIN
 #endif
 !< JR @ RWTH
@@ -967,14 +992,29 @@
           CALL PLANTE(1)
           STOP
         ENDIF
+!
+!       THE ORIGINE OF TIME
+!
         IF(RAZTIM) THEN
           AT=0.D0
           IF(LNG.EQ.1) WRITE(LU,*) 'TEMPS ECOULE REMIS A ZERO'
           IF(LNG.EQ.2) WRITE(LU,*) 'ELAPSED TIME RESET TO ZERO'
         ENDIF
         AT0=AT
+!
+!       RESCUE MISSING VARIABLES
+!
         CALL RESCUE(U%R,V%R,H%R,FV%R,ZF%R,T,TRAC0,NTRAC,
      &              ITURB,NPOIN,AKEP,TROUVE)
+!
+!       DIFFERENTIATED VARIABLES
+!
+        IF( NADVAR.GT.0 ) THEN
+          DO IVAR = 1,NADVAR
+            CALL AD_SET_TELEMAC2D(IVAR,ADVAR%ADR(IVAR)%P)
+          ENDDO
+        ENDIF
+!
 !       CASE WHERE POSITIVE DEPTHS ARE NECESSARY
         IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2) THEN
           CALL CLIP(H,0.D0,.TRUE.,1.D6,.FALSE.,-NPOIN)
@@ -1299,7 +1339,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_INITIALISATION_END
 #endif
 !< JR @ RWTH
@@ -1595,7 +1635,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_TIMESTEP_BEGIN
 #endif
 !< JR @ RWTH
@@ -2079,7 +2119,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_SUBITERATION_BEGIN
 #endif
 !< JR @ RWTH
@@ -2399,7 +2439,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_SUBITERATION_END
 #endif
 !< JR @ RWTH
@@ -2943,7 +2983,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_TIMESTEP_END
 #endif
 !< JR @ RWTH
@@ -2968,7 +3008,7 @@
 !-----------------------------------------------------------------------
 !
 !> JR @ RWTH: ALGORITHMIC DIFFERENTIATION
-#if defined(COMPAD)
+#if defined COMPAD
       CALL AD_TELEMAC2D_END
 #endif
 !< JR @ RWTH

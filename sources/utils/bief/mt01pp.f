@@ -74,8 +74,11 @@
       INTEGER IELEM
       DOUBLE PRECISION SUR360,COEF,H1,H2,H3,HT
 !
-      DOUBLE PRECISION CHOUIA
-      DATA CHOUIA/1.D-3/
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DOUBLE PRECISION :: CHOUIA
+!      DATA CHOUIA/1.D-3/
+      DOUBLE PRECISION, PARAMETER :: CHOUIA = 1.D-3
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

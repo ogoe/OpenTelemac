@@ -50,6 +50,9 @@
      &    EX_SUSPENSION_LISTING => SUSPENSION_LISTING
       USE BIEF
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN,P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
       ! 2/ GLOBAL VARIABLES
@@ -66,9 +69,11 @@
       ! ------------------
       INTEGER          :: IMAX,IMA
       DOUBLE PRECISION :: XMAX,XMA
-      INTEGER                        P_IMAX
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN,P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      INTEGER                        P_IMAX
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN,P_IMAX
+!##< JR @ RWTH
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !

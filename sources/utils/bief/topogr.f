@@ -71,16 +71,20 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IPTFR,IPOIN,I,I1,I2,I3,N1,N2,ERR,IPREV(3),IMAX
-      DOUBLE PRECISION EPSILO
+      INTEGER IELEM,IPTFR,IPOIN,I,I1,I2,I3,N1,N2,ERR,IMAX
       LOGICAL FLAG
 !
 !     DYNAMICALLY ALLOCATES INTEGERS
 !
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: ITRA01,ITRA04,IFAN
 !
-      DATA IPREV  / 3 , 1 , 2 /
-      DATA EPSILO / 1.D-6 /
+!##> JR @ RWTH: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+      INTEGER :: IPREV(3)
+!      DATA IPREV  / 3 , 1 , 2 /
+!      DATA EPSILO / 1.D-6 /
+      PARAMETER ( IPREV = (/ 3 , 1 , 2 /) )
+      DOUBLE PRECISION, PARAMETER :: EPSILO = 1.D-6
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !

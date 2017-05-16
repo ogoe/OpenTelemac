@@ -69,6 +69,9 @@
       USE DECLARATIONS_SISYPHE, ONLY: SIS_FILES,SISSEO,CHAIN,
      &                                INIT_FLUXPR,WORK,WORKB
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -85,10 +88,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
-
-      INTEGER                        P_IMIN
-      EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN,P_DSUM
+!      INTEGER                        P_IMIN
+!      EXTERNAL         P_DMAX,P_DMIN,P_DSUM,P_IMIN
+!##< JR @ RWTH
 !
       INTEGER ISEC,II,ERR,NSEO
       CHARACTER(LEN=16) :: FMTZON='(4(1X,1PG21.14))'

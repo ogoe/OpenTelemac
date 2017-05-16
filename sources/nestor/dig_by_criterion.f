@@ -12,13 +12,13 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor , ONLY :  ParallelComputing, nGrainClass, ipid
      &                     , npoinGlobal
-      USE INTERFACE_PARALLEL, ONLY : P_DSUM, P_ISUM   
-        
-#ifndef NESTOR_INTERFACES                                        
-      USE m_Interfaces_Nestor, ONLY : Dump_by_Rate
-     &                               ,CalcDigVolumeInRadius
-#endif NESTOR_INTERFACES                                        
-     
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM, P_ISUM
+
+!#ifndef NESTOR_INTERFACES
+!      USE m_Interfaces_Nestor, ONLY : Dump_by_Rate
+!     &                               ,CalcDigVolumeInRadius
+!#endif  /* NESTOR_INTERFACES */
+
       IMPLICIT NONE
 
       TYPE(t_Action),INTENT(INOUT)   :: A
@@ -32,9 +32,9 @@
       REAL (KIND=R8),INTENT(IN)      :: time         !  time [s]
       INTEGER       ,INTENT(IN)      :: KNOLG(:)     ! index list: Local to Global node index
       INTEGER       ,INTENT(IN)      :: m            ! number of Action
-      
-      
-#ifndef NESTOR_INTERFACES 
+
+
+#ifndef  NESTOR_INTERFACES
       !--------------------- local variables ---------------
 
 
@@ -55,9 +55,9 @@
       REAL (KIND=R8),ALLOCATABLE                     !  FieldNodes during the current timestep
      &              ,SAVE ,DIMENSION   (:) :: layCL
 
-      TYPE(t_String_Length) :: SRname ! name of current Subroutine 
-      
-      
+      TYPE(t_String_Length) :: SRname ! name of current Subroutine
+
+
 1234  FORMAT(A, I2, A, g18.9)
 !663   FORMAT(' ?>',2(/,' ?>'))            ! 3 lines like "?>         "
 !      dbug WRITE(6,*)'?>-------  SR Dig_by_Criterion -------------'
@@ -80,9 +80,9 @@
         !ALLOCATE( heapCL(   nGrainClass ), stat=status)
 
         !A%sumInput = 0.0D0  ! initialisation
-        !WRITE(6,*)'?> A%ReferenceLevel = ',A%ReferenceLevel  ! debug test                
+        !WRITE(6,*)'?> A%ReferenceLevel = ',A%ReferenceLevel  ! debug test
 
-        CALL Set_RefLevelByProfiles( F, A%ReferenceLevel) ! the result is F%refZ(:) 
+        CALL Set_RefLevelByProfiles( F, A%ReferenceLevel) ! the result is F%refZ(:)
 
         A%tsCount = 0            ! counter of time steps while digger is working
 
@@ -203,7 +203,7 @@
           IF( -dzDig + dzEvo_sis <= -ELAY0 ) Call ErrMsgAndStop(
      &     "while Action  Dig_by_Criterion                          ",56
      &    ,"reason: Digger exceeds active layer thickness           ",56
-     &    ,"        ==> reduce DigRate or reduce time step or ...   ",56 
+     &    ,"        ==> reduce DigRate or reduce time step or ...   ",56
      &    ,"occured in Action: ", 19, m, SRname, ipid      )
 
           layCL(:) = layCL(:) / (dzEvo_sis + ELAY0) !> Convert thickness to fraction
@@ -221,18 +221,18 @@
 
       ENDIF  ! F%nNodeToDig > 0
 
-      
+
       IF( ParallelComputing ) THEN
         DO iCL=1, nGrainClass
           heapCL(iCL) = P_DSUM( heapCL(iCL) )
         ENDDO
         nLessNodesToDig = P_ISUM( nLessNodesToDig )
       ENDIF
-      
+
       F%nNodeToDig = F%nNodeToDig - nLessNodesToDig
       !WRITE(6,1234)' ?> DibyCr',ipid,' F%nNodeToDig  = ', F%nNodeToDig ! debug test
-      
-      
+
+
       !=================================================================
       !> calc. new DumpVolume and its sediment composition
       !  each time step we add the dug material per class to A%DumpVolume
@@ -248,15 +248,15 @@
       heapCL(:) = heapCL(:) + A%GrainClass(:) * A%DumpVolume
                               !............................!--- convert fraction to volume
 
-      ! new DumpVolume 
+      ! new DumpVolume
       A%DumpVolume  = A%DumpVolume  + heap
-      
-      ! new sediment composition of the DumpVolume 
+
+      ! new sediment composition of the DumpVolume
       IF( A%DumpVolume  > 0.0D0 ) THEN
         A%GrainClass(:) = heapCL(:) / A%DumpVolume
                           !......................!----- convert volume to fraction
-      ENDIF                  
-      
+      ENDIF
+
       A%MovedVolume = A%MovedVolume + heap
 
 
@@ -264,14 +264,14 @@
       !WRITE(6,1234)' ?> DibyCr',ipid,' A%FieldDumpID = ',A%FieldDumpID ! debug test
 
 !      IF(       F%nNodeToDig  >  0                 !  Digging not accomplished
-!     &     .OR. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished  
+!     &     .OR. A%DumpVolume  >  0.0D0  ) THEN     !  Dumping not accomplished
 
 
 
       IF(     F%nNodeToDig  >  0                !> Digging not accomplished
      &   .OR. (       A%FieldDumpID > 0         !> Duming is assigned (a dump field is linked to the action)
      &          .AND. A%DumpVolume  > 0.0D0 )   !  and Dumping is not accomplished
-     &   ) THEN                                      
+     &   ) THEN
 
 
         !IF(abs(A%DumpVolume - SUM(heapCL(:))) .GE. 0.00000001D0 ) THEN ! debug
@@ -282,26 +282,26 @@
         !ENDIF                                                          ! debug
 
         IF( A%FieldDumpID > 0 ) THEN    !> Only if a dump field is linked to the action
-          IF( A%DumpVolume > 0.0D0 ) THEN          
-            CALL Dump_by_Rate( A, dt_ts, dzCL_sis )  
-          ENDIF 
+          IF( A%DumpVolume > 0.0D0 ) THEN
+            CALL Dump_by_Rate( A, dt_ts, dzCL_sis )
+          ENDIF
         ENDIF
 
       ELSE     !> finalise action temporarily
 
         IF( time <= A%TimeEnd ) THEN
-          
+
           IF( A%TimeStart + A%TimeRepeat  >  A%TimeEnd )THEN
             A%State           = 9     ! 9 = for ever inactive
-            CALL InfoMessage( A, m, time ) 
+            CALL InfoMessage( A, m, time )
           ELSE
             A%State           = 2     ! 2 = temporary inactive
             CALL InfoMessage( A, m, time )
             A%TimeStart       = A%TimeStart + A%TimeRepeat
             A%FirstTimeActive = .TRUE.
             A%tsCount         = 0     !  counter of time steps while digger is working
-          ENDIF   
-          
+          ENDIF
+
         ELSE
           A%State           = 9     ! 9 = for ever inactive
           CALL InfoMessage( A, m, time )
@@ -319,7 +319,7 @@
       RETURN
 !***                                              ********************************************
 !***                                              ********************************************
-#endif NESTOR_INTERFACES                         !******************************************** 
+#endif /* NESTOR_INTERFACES                         !***************************************** */
       END SUBROUTINE Dig_by_Criterion            !********************************************
 !***                                              ********************************************
 !***                                              ********************************************

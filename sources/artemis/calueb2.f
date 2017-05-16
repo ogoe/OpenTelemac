@@ -28,13 +28,13 @@
       INTEGER I
 !
       DOUBLE PRECISION PI,DEUKD,KD,UI
-      DOUBLE PRECISION ZERO, BID
+      DOUBLE PRECISION BID
 !
       INTRINSIC SQRT, ATAN2, MOD, ABS, COS, SIN
 !
 !-----------------------------------------------------------------------
 !
-      PARAMETER (ZERO = 1.D-10)
+      DOUBLE PRECISION, PARAMETER :: ZERO = 1.D-10
 !> SEB @ HRW: ALGORITHMIC DIFFERENTIATION
       PI = 4.D0 * ATAN( 1.D0 )
 !      PARAMETER (PI = 3.1415926535897932384626433D0)

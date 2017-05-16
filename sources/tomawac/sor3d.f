@@ -92,9 +92,13 @@
       LOGICAL SORLEO(NFMAX+2)
       CHARACTER(LEN=32) TEXTE(NFMAX+2)
 !
-      INTEGER DATE(3),TIME(3)
-      DATA DATE/0,0,0/
-      DATA TIME/0,0,0/
+      INTEGER :: DATE(3),TIME(3)
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA DATE/0,0,0/
+!      DATA TIME/0,0,0/
+      PARAMETER ( DATE = (/ 0,0,0 /) )
+      PARAMETER ( TIME = (/ 0,0,0 /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !

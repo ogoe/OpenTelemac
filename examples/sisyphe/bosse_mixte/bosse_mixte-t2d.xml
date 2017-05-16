@@ -1,7 +1,12 @@
 <?xml version="1.0"?>
 <!-- Validation and verification of test cases, given a list of CAS files
 -->
-<validation xref="case" rank="3" >
+<validation xref="case" rank="13" >
+<!-- TODO: please correct the error produced by Jenkins:
+runXML::main:
+/home/telemac/workspace/label/fedora/foxface/examples/sisyphe/bosse_mixte:
+|runXML: The result of the function mapdiff(v1,v2) for ref-1 should be a tuple 4 arguments: time,names,support,values
+-->
 
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->

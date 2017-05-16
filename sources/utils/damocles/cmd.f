@@ -101,7 +101,7 @@
      &     FMT16, FMT17, FMT18, FMT19, FMT20, FMT21, FMT22, FMT23,
      &     FMT24, FMT25, FMT26, FMT27, FMT28, FMT29, FMT30, FMT31,
      &     FMT32, FMT33, FMT34, FMT35
-      CHARACTER(LEN=6)      TYP(4)
+      CHARACTER(LEN=6)  ::  TYP(4)
       CHARACTER(LEN=1)      TABUL
 !
 !-----------------------------------------------------------------------
@@ -110,7 +110,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      DATA TYP/'MOTINT','MOTREA','MOTLOG','MOTCAR'/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA TYP/'MOTINT','MOTREA','MOTLOG','MOTCAR'/
+      PARAMETER ( TYP = (/ 'MOTINT','MOTREA','MOTLOG','MOTCAR' /) )
+!##< SEB @ HRW
 !
 !***********************************************************************
 !                                    RCS AND SCCS MARKING

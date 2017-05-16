@@ -130,16 +130,16 @@ import re
 import sys
 import shutil
 import threading
-import numpy as np
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 from time import localtime, strftime
 from subprocess import *
 from os import path,walk,mkdir,chdir,remove,sep,environ,listdir,getcwd
 # ~~> dependencies towards other modules
-from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
+from config import parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,addFileContent,removeDirectories,isNewer,zipsortie
+from utils.files import checkSymLink,symlinkFile,getFileContent,putFileContent,removeDirectories,createDirectories,isNewer,zipsortie,copyFiles,copyFile
 from utils.messages import MESSAGES,filterMessage,banner
-from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
+from parsers.parserKeywords import scanCAS,readCAS,scanDICO, getCASLang,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
 from runSELAFIN import transfSELAFIN
 
@@ -150,27 +150,22 @@ from runSELAFIN import transfSELAFIN
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
-"""
-   ncruns: allows a number of CAS files to be placed in the same
-      queue and run in parallel as a single batch.
-   ncnode: is the number of pysical ships or processors.
-   nctile: is the number of core utilised per node
-   ncsize: is the value of set in the CAS file, i.e. the total
-      number of geometrical sub-domains.
 
-   Note: ncsize = 0 is also supported.
-
-   Logic:
-      First, nctile is the one parameter we cannot modify, unless
+def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
+   """
+   @brief
+      Check the consistency between number of core / processors and domains.
+      The logic is as follows:
+    > First, nctile is the one parameter we cannot modify, unless
          ncnode and ncsize are provided.
-      If ncruns > 1, then ncsize and nctile will not be adjusted,
+    > If ncruns > 1, then ncsize and nctile will not be adjusted,
       but:
        - if ncnode is given by the user, there will be no
          adjustment, even if the resource allocated ncnode * nctile
          might be too much or too few.
        - if ncnode is not provided, the ncnode will be adjusted to
          best fit ncsize * ncruns with a constant nctile.
-      If ncruns = 1, then normal adjustment will be done,
+    > If ncruns = 1, then normal adjustment will be done,
       with:
        - if ncnode is given by the user then ...
           + if ncsize is given by the user, there will be a
@@ -178,10 +173,15 @@ from runSELAFIN import transfSELAFIN
           + if nctile is given by the user, there will be a
             re-adjustment of ncsize to accomodate
 
-"""
-
-def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
-
+   @param onctile: is the number of core utilised per node
+   @param oncnode: is the number of pysical processors.
+   @param oncsize:
+   @param ncruns: allows a number of CAS files to be placed in the same
+                  queue and run in parallel as a single batch.
+   @param ncsize: is the value of set in the CAS file, i.e. the total
+                  number of geometrical sub-domains.
+   @note: ncsize = 0 is also supported.
+   """
    # ~~ Default values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ncnode = 1
    if oncnode != '': ncnode = max( 1,int(oncnode) )
@@ -225,17 +225,16 @@ def checkParaTilling(onctile,oncnode,oncsize,ncruns,ncsize):
 
    return nctile,ncnode,ncsize
 
-   # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   return True
-
 def getGretelCmd(pbin,cfg):
    """
-   @brief Returns the command to run to execute gretel
+   @brief Returns the command to execute GRETEL and its arguments
 
-   @param pbin Path to to partel executable from root
-   @param cfg Configuration file information
+   @param pbin: Path to to partel executable from root
+   @param cfg:  Configuration file information
+
+   @return execmd: the text string that will be executed on the system
    """
+   # ~~> Temporary variable to keep pbin unchanged
    PARDir = pbin
    if cfg['PARTEL'] != {}:
       if cfg['PARTEL'].has_key('PATH'):
@@ -248,26 +247,34 @@ def getGretelCmd(pbin,cfg):
 
 def getPartelCmd(pbin,cfg,CASFile):
    """
-   @brief Returns the command to run to execute partel
+   @brief Returns the command to execute PARTEL and its arguments
 
    @param pbin Path to to partel executable from root
    @param cfg Configuration file information
    @param CASFile Steering file information
+
+   @return execmd: the text string that will be executed on the system
    """
+   # ~~> Temporary variable to keep pbin unchanged
    PARDir = pbin
    if cfg['PARTEL'] != {}:
        if 'PATH' in cfg['PARTEL']:
          PARDir = cfg['PARTEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
-   # ~~> Call to PARTEL
-   parcmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+   # ~~> Default call to PARTEL
+   execmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+   # ~~> User defined call to PARTEL
    if cfg['PARTEL'] != {}:
       if 'EXEC' in cfg['PARTEL']:
-         parcmd = cfg['PARTEL']['EXEC']
+         execmd = cfg['PARTEL']['EXEC']
+   # ~~> Replacement of known keys
    # <mpi_cmdexec> and <exename> should be known by now
    if cfg['MPI'] != {}:
-      parcmd = parcmd.replace('<mpi_cmdexec>',CASFile['mpi']).replace('<exename>','')
-   parcmd = parcmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
-   return parcmd
+      execmd = execmd.replace('<mpi_cmdexec>',CASFile['mpi']).replace('<exename>','')
+   # <root> and <config> are part of the arguments
+   execmd = execmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
+
+   return execmd
+
 
 def processCAS(casFiles,dico,frgb):
 
@@ -279,7 +286,7 @@ def processCAS(casFiles,dico,frgb):
       casFile = path.realpath(casFile)
       if not path.exists(casFile):
          raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile+ \
-            '    +> or you may have forgotten an option key in your command line'}])
+            '\n    +> or you may have forgotten an option key in your command line'}])
 
       # ~~> extract keywords
       cas = readCAS(scanCAS(getFileContent(casFile)),dico,frgb)
@@ -311,115 +318,106 @@ def processCAS(casFiles,dico,frgb):
 
    return cases,lang,ncsize
 
-def processTMP(casFile):
 
+def processTMP(casFile):
+   """
+   @brief
+      Format the current date and time into a string to make up the end part
+         of the name of the temporary directory (when running a simulation)
+   @param casFile: name of the CAS file, making up the front part of the
+         name of the temporary directory
+   @return TMPDir: The complete name of the temporary directory.
+   """
    # ~~ TMP Directory ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    TMPDir = casFile + '_' + strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime())
-
    return TMPDir
+
 
 def processLIT(cas,iFiles,TMPDir,ncsize,update,dico,frgb,use_link):
 
-   xcpt = []                            # try all files for full report
+   # ~~> exception report
+   #  xcpt will accumulate all input troubles before reporting a more
+   #    comprehensive list of possible errors
+   xcpt = []
+   #
    section_name = ' '
    zone_name    = ' '
    weir_name    = ' '
-   # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #
+   # ~~> loop over all (key,value) pairs of the CAS file
+   #   and process those that are related to input file names
+   #
+   #   /!\ the FORTRAN file and its associated exe file are not included here
+   #
    for k,v in zip(*cas[1]):
       if k in iFiles:
+         if iFiles[k].split(';')[5][0:7] == 'FORTRAN': continue
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> checking represence of input files
          cref = v[0].strip("'\"")
-         if not ( path.isfile(cref) or path.isdir(cref) ):
-            xcpt.append({'name':'processLIT','msg':'file does not exist ( '+path.basename(cref)+' ) for key '+k})
+         #  cref: is a file name, read as the value of a CAS keyword k
+         #   > if the requested input does not exist, append to the exceptions and
+         #    carry on checking the other inputs.
+         if not path.isfile(cref):
+            xcpt.append({'name':'processLIT','msg':'input file does exist ( '+path.basename(cref)+' ) for key '+k})
             continue
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> checking validity of default files
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
-         if path.exists(crun) and update:    # update is always True because we now copy the CAS file regardeless
+         #  crun: is the default input name as set in the temporary directory
+         #   > if crun does not exists then cref is copied as crun again
+         #   > if cref is newer than crun then cref is copied as crun again
+         if path.exists(crun) and not update:
             if not isNewer(crun,cref) == 1:
+               # ~~> further check are necessary depending on file type
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
-                  # ~~> check if all files are there before skipping
+                  # ~~> check if all files are there
+                  #   > while cref is one file, crun could have been split already
+                  #    into multiple parallel files
                   found = True
                   for npsize in range(ncsize):
-                     if not path.isfile(crun+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)): found = False
-                  # ~~> skip if all files are there
-                  if found: iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
-               # special case for FORTRAN and CAS files in case of update
-               elif iFiles[k].split(';')[5][0:7] == 'FORTRAN':
-                  copyPRINCI(cref,path.dirname(crun))
+                     pll = crun+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
+                     if not path.isfile(pll): found = False
+                     elif not isNewer(pll,cref) == 1: found = False
+                  if found:
+                     #   > no partioning is required and no re-copying either
+                     iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
+                     continue
                elif iFiles[k].split(';')[5][0:3] == 'CAS':
-                  print '    re-copying cas: ', crun
-                  newcas = [line[1:] if line[0] == ' ' else line for line in cas[0]]
-                  putFileContent(crun,newcas)
+                  #   > force the copying of the CAS file for some reason
+                  print '      re-copying: ', crun
+                  putFileContent(crun,cas[0])
+                  # /!\ this may not be compatible with the 72-character rule of DAMOCLES
+                  #newcas = [line[1:] if line[0] == ' ' else line for line in cas[0]]
+                  #putFileContent(crun,newcas)
+                  continue
                else:
-                  print '      ignoring: ', path.basename(cref),crun
-               continue
-         if iFiles[k].split(';')[3] == 'ASC':
-            if iFiles[k].split(';')[5][0:3] == 'CAS':
-               #print '    re-copying: ', crun
-               #putFileContent(crun,cas[0])
-               print '    copying cas: ', crun
-               # Removing trailing space on the left
-               newcas = [line.lstrip() for line in cas[0]]
-               putFileContent(crun,newcas)
-               # An input mesh may be a binary or an ascii file
-               # It depends on the selected format (Selafin, Ideas, Med)
-            elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
-               if use_link:
-                  print '       linking: ', path.basename(cref),crun
-                  symlinkFile(path.join(getcwd(),cref), crun)
-               else:
-                  print '       copying geom: ', path.basename(cref),crun
-                  shutil.copyfile(path.join(getcwd(),cref), crun)
-            elif iFiles[k].split(';')[5][0:7] == 'SECTION':
-               # Giving section name means that we have to give it to partel
-               section_name = path.basename(crun)
-               if use_link:
-                  print '       linking: ', path.basename(cref),crun
-                  symlinkFile(path.join(getcwd(),cref), crun)
-               else:
-                  print '       copying section: ', path.basename(cref),crun
-                  putFileContent(crun,getFileContent(cref)+[''])
-            elif iFiles[k].split(';')[5][0:5] == 'ZONES':
-               # Giving zone name means that we have to give it to partel
-               zone_name = path.basename(crun)
-               if use_link:
-                  print '       linking: ', path.basename(cref),crun
-                  symlinkFile(path.join(getcwd(),cref), crun)
-               else:
-                  print '       copying zones: ', path.basename(cref),crun
-                  putFileContent(crun,getFileContent(cref)+[''])
-            elif iFiles[k].split(';')[5][0:5] == 'WEIRS':
-               value,defaut = getKeyWord('TYPE DES SEUILS',cas,dico,frgb)
-               # Giving weirs name and type = 2 means that we have to give it to partel
-               if value != []:
-                  type_s = value[0]
-               else:
-                  type_s = defaut[0]
-               if type_s == 2:
-                  weir_name = path.basename(crun)
-               else:
-                  iFiles[k] = iFiles[k].replace('WEIRS','PARAL')
-               if use_link:
-                  print '       linking: ', path.basename(cref),crun
-                  symlinkFile(path.join(getcwd(),cref), crun)
-               else:
-                  print '       copying weirs: ', path.basename(cref),crun
-                  putFileContent(crun,getFileContent(cref)+[''])
-            elif iFiles[k].split(';')[5][0:7] == 'FORTRAN':
-               copyPRINCI(cref,path.dirname(crun))
-            else:
-               if use_link:
-                  print '       linking: ', path.basename(cref),crun
-                  symlinkFile(path.join(getcwd(),cref), crun)
-               else:
-                  print '       copying ascii: ', path.basename(cref),crun
-                  putFileContent(crun,getFileContent(cref)+[''])
+                  #   > you have passed all checks - you can ignore that file
+                  print '        ignoring: ', path.basename(cref),crun
+                  continue
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> files are otherwise copied (or linked)
+         if use_link:
+            print '         linking: ', path.basename(cref),crun
+            symlinkFile(path.join(getcwd(),cref), crun)
          else:
-            if use_link:
-               print '       linking: ', path.basename(cref),crun
-               symlinkFile(path.join(getcwd(),cref), crun)
-            else:
-               print '       copying bin: ', path.basename(cref),crun
-               shutil.copyfile(path.join(getcwd(),cref), crun)
-               #shutil.copy2(path.join(getcwd(),cref), crun)
+            print '         copying: ', path.basename(cref),crun
+            shutil.copyfile(path.join(getcwd(),cref), crun)
+         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         # ~~> last special treatment for some of the ASCII files
+         if iFiles[k].split(';')[3] == 'ASC':
+            #   > extra requirement for PARTEL
+            if iFiles[k].split(';')[5][0:7] == 'SECTION':
+               section_name = path.basename(crun)
+            if iFiles[k].split(';')[5][0:5] == 'ZONES':
+               zone_name = path.basename(crun)
+            if iFiles[k].split(';')[5][0:5] == 'WEIRS':
+               value,defaut = getKeyWord('TYPE DES SEUILS',cas,dico,frgb)
+               if value != []: type_s = value[0]
+               else: type_s = defaut[0]
+               if type_s == 2: weir_name = path.basename(crun)
+               # /!\ will be copied regardeless ?
+               else: iFiles[k] = iFiles[k].replace('WEIRS','PARAL')
 
    if xcpt != []: raise Exception(xcpt) # raise full report
    return section_name,zone_name,weir_name
@@ -633,171 +631,178 @@ def getHPCDepend(cfgHPC):
    if cfgHPC.has_key('DEPEND'): return cfgHPC['DEPEND']
    else: return ''
 
-def compileObj(f90Name,objCmd,bypass):
+def processExecutable(cas,pbin,plib,system,dico,frgb,trace,bypass):
    """
-      Run the compilation of an object
+   @brief Process the excecutable including:
+      - checking the presence and the validity of the current executable
+      - if necessary, copying the FORTRAN files in the temporary directory
+      - if necessary, compiling the FORTRAN into the executable
+      The background of this function sits where the CAS file is
 
-      :param: f90Name Name of the fortran File
-      :param: objCmd The command to run
-      :param: bypass If yes exception are catched at the end of the execution
+   @param cas:
+   @param exeFile: provides the name of the default executable as well as the
+      the system preference for that file extension
+   @param plib: location of the associated libs (and cmdo and cmdx files)
+   @param update: whether to force the source copying / re-compilation
+   @param dico:
+   @param frgb:
+
+   @return the name of the executable whether copied or compiled and a
+      logical whether updated (True) or not (i.e. ignored)
+
+   @note even in case of coupling, the principal executable remains
+   @note possible fortran files may or may not be associated with the
+      principal code and may be files or directories
    """
+   # ~~ exception error, if any
    mes = MESSAGES(size=10)
-   if path.exists(f90Name):
-   # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      objCmd = objCmd.replace('<f95name>',f90Name)
+   # current directory should be where the CAS is
+   curdir = getcwd()
+   # ~~ relevance of the executable
+   relevant = True
+   # ~~ reset the source file in any case
+   if cas['wrt']: relevant = False
+   # ~~ principal code name
+   codeName = cas['code']
+   # ~~ default compilation
+   exeFile = path.join(pbin,codeName+system['sfx_exe'])
 
-      try:
-         tail,code = mes.runCmd(objCmd,bypass)
-      except Exception as e:
-         raise Exception([filterMessage({
-                 'name':'compileObj',
-                 'msg':'something went wrong for no reason. Please verify your compiler installation.'
-                 },e,bypass)])
-      if code != 0:
-         raise Exception([{
-             'name':'compileObj',
-             'msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> list possible user fortran files, including coupling
+   oriFort = []
+   value,defaut = getKeyWord('FICHIER FORTRAN',cas['cas'],dico,frgb)
+   if value != []:
+      oriFile = path.join(curdir,value[0].strip("'\""))
+      if path.exists(oriFile):
+         if path.isfile(oriFile): oriFort.append( oriFile )
+         else:
+            for f in listdir(oriFile): oriFort.append( path.join(oriFile,f) )
+   for cplage in cas['with']:
+      vplage,defaut = getKeyWord('FICHIER FORTRAN',cas['with'][cplage]['cas'],dico,frgb)
+      if vplage != []:
+         oriFile = path.join(curdir,vplage[0].strip("'\""))
+         if path.exists(oriFile):
+            if path.isfile(oriFile): oriFort.append( oriFile )
+            else:
+               for f in listdir(oriFile): oriFort.append( path.join(oriFile,f) )
+
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> check relevance of the executable
+   #
+   if oriFort != []:
+   # ~~ user executable, default from dictionary is now INUTILE
+      # user_fortran will locally contain all user fortran files
+      wirFort = path.join(cas['wir'],'user_fortran')
+      # useFile is the name of the local executable regardeless
+      # TODO: check if you need the prefix "out_" for anti-virus controls
+      useFile = 'out_user_fortran'+system['sfx_exe']
+      exeFort = path.join(cas['wir'],useFile)
+      # ~~ check if compiltion is required
+      if relevant:
+         if path.exists(exeFort):
+            # ~~ is the default executable exeFile newer than the local executable ?
+            if isNewer(exeFort,exeFile) == 1: relevant = False
+            # ~~ is(are) the source file(s) newer than the local executable ?
+            for oriFile in oriFort:
+               if isNewer(exeFort,oriFile) == 1: relevant = False
+               if isNewer(path.join(wirFort,path.basename(oriFile)),oriFile) == 1: relevant = False
+            # ~~ is(are) the local source file(s) newer than the source file(s) ?
+            for wirFile in listdir(wirFort):
+               found  = False
+               for oriFile in oriFort:
+                  if path.basename(oriFile) == path.basename(wirFile): found = True
+               if not found: relevant = False
+         else: relevant = False
+
    else:
-      raise Exception([filterMessage({
-             'name':'compileObj',
-             'msg':'Missing file : '+f90Name
-             },e,bypass)])
-   return True
+   # ~~ default executable
+      useFile = 'out_' + path.basename(exeFile)
+      exeFort = path.join(cas['wir'],useFile)
+      # ~~ check if compiltion is required
+      if relevant:
+         if path.exists(exeFort):
+            # ~~ is the default executable exeFile newer than the local executable ?
+            if isNewer(exeFort,exeFile) == 1: relevant = False
+         else: relevant = False
 
-def compileExe(exeName,objNames,exeCmd,bypass):
-   """
-      Run the compilation of an executable
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> if relevant, no need to re-compile
+   if relevant:
+      print '        ignoring: ',exeFort
+      return exeFort,False
 
-      :param: exeName Name of the executable
-      :param: objNames List of objects to use for the executable
-      :param: exeCmd The command to run
-      :param: bypass If yes exception are catched at the end of the execution
-   """
-   mes = MESSAGES(size=10)
-   exeCmd = exeCmd.replace('<objs>',' '.join(objNames))
-   exeCmd = exeCmd.replace('<exename>',path.basename(exeName))
-   try:
-      tail,code = mes.runCmd(exeCmd,bypass)
-   except Exception as e:
-      raise Exception([filterMessage({
-          'name':'compileExe',
-          'msg':'something went wrong for no reason. Please verify your external library installation.'
-          },e,bypass)])
-   if code != 0:
-      raise Exception([{
-          'name':'compileExe',
-          'msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
-   print '    created: ',path.basename(exeName)
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> otherwise, copy the default executable
+   if oriFort == []:
+      if path.exists(exeFort):
+         remove(exeFort)
+         print '      re-copying: ',path.basename(exeFile),exeFort
+      else:
+         print '         copying: ',path.basename(exeFile),exeFort
+      shutil.copy2(exeFile,exeFort)
 
-def copyPRINCI(princiFile,dest):
-   """
-      Handles the copy of a princi into a temporary folder
-
-      :param: princiFile File/Folder containing the user Fortran
-      :param: dest Destionation Folder (tmp dir usually)
-   """
-   destFolder = path.join(dest,'user_fortran')
-   # Check that the folder exists if not creating it
-   if not path.exists(destFolder):
-      mkdir(destFolder)
-
-   if path.isdir(princiFile):
-
-      for file in listdir(princiFile):
-         # Only copying files
-         if not path.isdir(file):
-            shutil.copyfile(path.join(princiFile,file),
-                            path.join(destFolder,file))
-         print "    Adding to user_fortran: ",file
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> otherwise, remove user files
    else:
-      shutil.copyfile(princiFile,path.join(destFolder,path.basename(princiFile)))
-      print "    Adding to user_fortran: ",path.basename(princiFile)
+      print '  > requires re-compilation'
+      # removing source files
+      if path.exists(wirFort): removeDirectories(wirFort)
+      # removing the executable file
+      if path.exists(exeFort): remove(exeFort)
+      if path.exists(path.basename(exeFile)): remove(path.basename(exeFile))
 
-def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
-   """
-      Compiling a user fortran
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> ... and copying fortran file(s)
+      print '        creating: ', wirFort
+      createDirectories(wirFort)
+      for oriFile in oriFort:
+         print '         copying: ', path.basename(oriFile), wirFort
+         if path.isfile(oriFile): copyFile(oriFile,wirFort)
+         else: copyFiles(oriFile,wirFort)
 
-      :param: princiFile File/Folder containing the user Fortran
-      :param: codeName Name of the TELEMAC-MASCARET module
-                       this user Fortran is compiled for
-      :param: cfgName Name of the configuration it is compiled for
-      :param: cfg Configuration dictionary
-      :param: bypass If yes exception are catched at the end of the execution
-   """
-
-   plib = cfg['MODULES'][codeName]['path'].replace(
-                 path.join(cfg['root'],'sources'),
-                 path.join(cfg['root'],'builds',cfgName,'lib'))
-   # Template for compiling commands
-   objCmdTemplate = path.join(plib,codeName+'.cmdo')
-   exeCmdTemplate = path.join(plib,codeName+'.cmdx')
-   # If one of the two file is missing compilation might not have be done
-   if not path.exists(objCmdTemplate) or not path.exists(exeCmdTemplate):
-      raise Exception([{
-          'name':'compilePRINCI',
-          'msg':'... could not find:' + exeCmdTemplate + \
-         '\n    ~~~> you may need to compile your system with the configuration: ' + cfgName }])
-   # ~~> Make the keys portable (no full path)
-   objCmd = getFileContent(objCmdTemplate)[0]
-   exeCmd = getFileContent(exeCmdTemplate)[0]
-   for k in cfg['TRACE']:
-      objCmd = objCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
-      exeCmd = exeCmd.replace('['+k+']',path.normpath(cfg['TRACE'][k]))
-
-   # Fortran file is a directory
-   if path.isdir(princiFile):
-      objNames = []
-      chdir(princiFile)
-      filesToCompile = []
-      listFiles = listdir(princiFile)
-      listFiles.sort()
-      # Compiling first files beginning with m[1-9]_
-      for file in listFiles:
-         if re.match("^m[0-9]+.*",file) and file.lower().endswith((".f",".f90")):
-            filesToCompile.append(file)
-      # Adding the other files
-      for file in listFiles:
-         if file not in filesToCompile and file.lower().endswith((".f",".f90")):
-            filesToCompile.append(file)
-      # Compiling files
-      for file in filesToCompile:
-         # Trying to compile file
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> ... and compiling fortran file(s)
+      # ~~ default command line for compilation of obects
+      cmdoFile = path.join(plib,codeName+'.cmdo')
+      if not path.exists(cmdoFile): raise Exception([{'name':'processExecutable','msg': \
+         '\nNot able to find your OBJECT command line: ' + cmdoFile + '\n' + \
+         '\n ... you have to compile this module at least: '+codeName}])
+      objCmd = getFileContent(cmdoFile)[0]
+      # ~~ make the keys portable (no full path)
+      for k in trace: objCmd = objCmd.replace('['+k+']',path.normpath(trace[k]))
+      # ~~ local compilation
+      chdir(wirFort)
+      print '  compiling objs: ',
+      # ~~ compilation one file at a time
+      objs = []
+      for f90 in listdir(wirFort):
          try:
-            compileObj(file,objCmd,bypass)
+            tail,code = mes.runCmd(objCmd.replace('<f95name>',f90),bypass)
          except Exception as e:
-            raise Exception([filterMessage({
-                'name':'compilePRINCI',
-                'msg':'could not compile Fortran: ' + file},e,bypass)])  # only one item here
-         # Adding object file to list of objects
-         objNames.append(path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj'])
-
-      # Compiling exe
-      exeName = path.join(princiFile,path.basename(princiFile) + cfg['SYSTEM']['sfx_exe'])
+            raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason in executing:\n\n'+ \
+               objCmd.replace('<f95name>',f90)+'\n\nPlease verify your compiler installation.'},e,bypass)])
+         if code != 0: raise Exception([{'name':'processExecutable','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
+         print path.splitext(f90)[0]+system['sfx_obj'],
+         objs.append(path.splitext(f90)[0]+system['sfx_obj'])
+      print '\n'
+      # ~~ default command line for linkage into an executable
+      cmdxFile = path.join(plib,codeName+'.cmdx')
+      if not path.exists(cmdxFile): raise Exception([{'name':'processExecutable','msg': \
+         '\nNot able to find your EXECUTE command line: ' + cmdxFile + '\n' + \
+         '\n ... you have to compile this module at least: '+codeName}])
+      exeCmd = getFileContent(cmdxFile)[0]
+      # ~~ make the keys portable (no full path)
+      for k in trace: exeCmd = exeCmd.replace('['+k+']',path.normpath(trace[k]))
+      exeCmd = exeCmd.replace('<objs>',' '.join(objs)).replace('<exename>',exeFort)
       try:
-         compileExe(exeName,objNames,exeCmd,bypass)
+         tail,code = mes.runCmd(exeCmd,bypass)
       except Exception as e:
-         raise Exception([filterMessage({
-             'name':'compilePRINCI',
-             'msg':'could not compile executable: ' + exeName},e,bypass)])  # only one item here
-      exeFile = path.join('user_fortran',exeName)
-   else:
-      # ~~<
-      chdir(path.dirname(princiFile))
-      princiFile = path.basename(princiFile)
-      objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
-      exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
-      if path.exists(exeFile): remove(exeFile)
-      try:
-         compileObj(princiFile,objCmd,bypass)
-         compileExe(exeFile,[objFile],exeCmd,bypass)
-      except Exception as e:
-         raise Exception([filterMessage({
-             'name':'compilePRINCI',
-             'msg':'could not compile: ' + princiFile},e,bypass)])  # only one item here
-      if path.exists(objFile):
-         remove(objFile)
+         raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
+      if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
+      print '         created: ',path.basename(exeFort)
+      shutil.copy2(exeFort,curdir)
 
-   return exeFile
+   return exeFort,True
 
 def getCONLIM(cas,iFiles):
 
@@ -1055,7 +1060,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    iFS,oFS = getIOFilesSubmit(frgb,dico)
    #> MODFiles avoids duplication of dico parsing
    MODFiles = { codeName:{ 'frgb':frgb,'iFS':iFS,'oFS':oFS,'dico':dico } }
+   # ~~> structural assumptions
    pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
+   plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~~~ Acquiring all CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1098,20 +1105,24 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # Outputs ...
    #    > the full name of the sortie file without extension, in CASFiles[name]['sortie']
    #    > wdir same as above but would be reset with -w option
-   #    > CASFiles[name]['wir'] and CASFiles[name]['wrt']
+   #    > CASFiles[name]['wir'] is where the local executable will be
+   #    > CASFiles[name]['wrt'] is whether to force the update or not
    #    > CASFiles[name]['dir'] is where the CAS file is from
    print '\n... handling temporary directories'
    for name in CASFiles:
+      # ~~> default temporary directory name
       TMPDir = processTMP(CASFiles[name]['dir']+sep+name)    #/!\ includes date/time in the name
       wdir = TMPDir
-      CASFiles[name].update({ 'wir':wdir, 'wrt':True, 'sortie':TMPDir })
+      CASFiles[name].update({ 'wir':wdir, 'wrt':False, 'sortie':TMPDir })
+      # ~~> user defined directory name
       if options.wDir != '':
          if ncruns == 1: wdir = path.join(CASFiles[name]['dir'],options.wDir)
          else: wdir = path.join(CASFiles[name]['dir'],path.basename(options.wDir)+'_'+name)
          CASFiles[name]['wir'] = wdir
+      # ~~> dealing with the temporary directory
       if not path.exists(wdir):
          mkdir(wdir)
-         CASFiles[name]['wrt'] = False
+         CASFiles[name]['wrt'] = True
 
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1187,20 +1198,24 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    # You need to do this if ...
    #    - if options.split, obvisouly this is PART I of the main file pre-processing
    #    - if options.compileonly, you also need to copy the FORTRAN FILE
+   # This does not include the processing of the Fortran file(s) and associated
+   #  compilation
+   #
    section_name = ' '
    zone_name = ' '
    weir_name = ' '
    if not options.merge and not options.run and not hpcpass:
-      print '\n... first pass at copying all input files'
+      print '\n... first pass at updating all input files'
       for name in CASFiles:
          # >>> Placing yourself where the CAS File is
          chdir(CASFiles[name]['dir'])
          # >>> Copy INPUT files into wdir
          try:
+            # /!\ recompilation is not necessary and sometimes unwanted
             # Removing princi folder if it exists
-            if path.exists(path.join(CASFiles[name]['wir'],'user_fortran')):
-               for file in listdir(path.join(CASFiles[name]['wir'],'user_fortran')):
-                  remove(file)
+            #if path.exists(path.join(CASFiles[name]['wir'],'user_fortran')):
+            #   for file in listdir(path.join(CASFiles[name]['wir'],'user_fortran')):
+            #      remove(file)
             section_name,zone_name,weir_name = processLIT(CASFiles[name]['cas'],
                        MODFiles[CASFiles[name]['code']]['iFS'],
                        CASFiles[name]['wir'],ncsize,CASFiles[name]['wrt'],
@@ -1240,24 +1255,16 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
    if not options.merge and not options.split and not hpcpass:
       print '\n... checking the executable'
       for name in CASFiles:
-         chdir(CASFiles[name]['wir'])
-         # Detect if we have a user fortran
-         if path.exists('user_fortran'):
-            print "Compiling user fortran"
-            exeFile = compilePRINCI(path.join(CASFiles[name]['wir'],'user_fortran'),
-                                    CASFiles[name]['code'],
-                                    cfgName,
-                                    cfg,
-                                    options.bypass)
-         else:
-            print "Using default exe"
-            #> default executable name
-            exeFile = path.join(pbin,CASFiles[name]['code']+cfg['SYSTEM']['sfx_exe'])
-         # Copying Exefile in TMPDir
-         shutil.copy2(exeFile,path.join(CASFiles[name]['wir'],'out_'+path.splitext(name)[0]))
+         # >>> Placing yourself where the CAS is
+         chdir(CASFiles[name]['dir'])
+         try:
+            CASFiles[name]['exe'],_ = processExecutable(CASFiles[name],pbin,plib,cfg['SYSTEM'],
+                     MODFiles[CASFiles[name]['code']]['dico'],
+                     MODFiles[CASFiles[name]['code']]['frgb'],cfg['TRACE'],options.bypass)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'runCAS','msg':'failed to compile'},e,options.bypass)])  # only one item here
+         CASFiles[name]['run'] = CASFiles[name]['exe']
 
-         # Update of CASFile info
-         CASFiles[name].update({ 'run':exeFile, 'exe':exeFile })
    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    # ~~ Handling the MPI command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # You need to do this if ...
@@ -1407,9 +1414,9 @@ def runCAS(cfgName,cfg,codeName,casNames,options):
          for name in CASFiles:  # /!\ This should be done in parallel when multiple CASFiles
             chdir(CASFiles[name]['wir'])
             print '\n\n'+CASFiles[name]['run']+'\n\n'
-            # ~~> added banner
-            value,defaut = getKeyWord('RELEASE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
-            print '\n'.join(banner(CASFiles[name]['code']+' - '+defaut[0].lower()))
+            # ~~> added banner - TODO: add RELEASE to the dico
+            #value,defaut = getKeyWord('RELEASE',CASFiles[name]['cas'],MODFiles[CASFiles[name]['code']]['dico'],MODFiles[CASFiles[name]['code']]['frgb'])
+            #if defaut != []: print '\n'.join(banner(CASFiles[name]['code']+' - '+defaut[0].lower()))
             # ~~> here you go run
             if not runCode(CASFiles[name]['run'],CASFiles[name]['sortie']):
                raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
@@ -1589,68 +1596,106 @@ def main(module=None):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+runcode is the execution launcher for all TELEMAC modules.\n
+Examples:
+> runcode.py module file.cas
+where:\n
+   module     is the name of the TELEMAC module or component
+   file.cas   is the corresponding steering file.
+      '''))
+   parser.add_argument( "args",nargs='*' )
    # ~~> Environment
-   parser.add_option("-c", "--configname",type="string",dest="configName",default='',
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default='',
       help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",type="string",dest="configFile",default='',
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default='',
       help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
       help="specify the root, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
+   parser.add_argument(\
+      "-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
       help="specify whether there is a sortie file, default is no" )
-   parser.add_option("-t", "--tmpdirectory",action="store_false",dest="tmpdirectory",default=True,
+   parser.add_argument(\
+      "-t", "--tmpdirectory",action="store_false",dest="tmpdirectory",default=True,
       help="specify whether the temporary directory is removed, default is yes" )
-   parser.add_option("-x", "--compileonly",action="store_true",dest="compileonly",default=False,
+   parser.add_argument(\
+      "-x", "--compileonly",action="store_true",dest="compileonly",default=False,
       help="specify whether to only create an executable but not run, default is no" )
-   parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
+   parser.add_argument(\
+      "-w", "--workdirectory",dest="wDir",default='',
       help="specify whether to re-run within a defined subdirectory" )
-   parser.add_option("--nozip",action="store_true",dest="nozip",default=False,
+   parser.add_argument(\
+      "--nozip",action="store_true",dest="nozip",default=False,
       help="specify whether to zip the extra sortie file if simulation in parallel" )
    # ~~> HPC / parallel
    if module is None:
-      parser.add_option("--jobname",type="string",dest="jobname",default=path.basename(sys.argv[0]),
-                        help="specify a jobname for HPC queue tracking" )
+      parser.add_argument(\
+         "--jobname",dest="jobname",default=path.basename(sys.argv[0]),
+         help="specify a jobname for HPC queue tracking" )
    else:
-      parser.add_option("--jobname",type="string",dest="jobname",default=module,
-                        help="specify a jobname for HPC queue tracking" )
-   parser.add_option("--queue",type="string",dest="hpc_queue",default='',
+      parser.add_argument(\
+         "--jobname",dest="jobname",default=module,
+         help="specify a jobname for HPC queue tracking" )
+   parser.add_argument(\
+      "--queue",dest="hpc_queue",default='',
       help="specify a queue for HPC queue tracking" )
-   parser.add_option("--walltime",type="string",dest="walltime",default='01:00:00',
+   parser.add_argument(\
+      "--walltime",dest="walltime",default='01:00:00',
       help="specify a walltime for HPC queue tracking" )
-   parser.add_option("--email",type="string",dest="email",default='s.bourban@hrwallingford.com',
+   parser.add_argument(\
+      "--email",dest="email",default='s.bourban@hrwallingford.com',
       help="specify an e-mail adress to warn when HPC job is finished" )
-   parser.add_option("--hosts",type="string",dest="hosts",default='',
+   parser.add_argument(\
+      "--hosts",dest="hosts",default='',
       help="specify the list of hosts available for parallel mode, ';' delimited" )
-   parser.add_option("--ncsize",type="string",dest="ncsize",default='',
+   parser.add_argument(\
+      "--ncsize",dest="ncsize",default='',
       help="the number of processors forced in parallel mode" )
-   parser.add_option("--nctile",type="string",dest="nctile",default='0',
+   parser.add_argument(\
+      "--nctile",dest="nctile",default='0',
       help="the number of core per node. ncsize/nctile is the number of compute nodes" )
-   parser.add_option("--ncnode",type="string",dest="ncnode",default='',
+   parser.add_argument(\
+      "--ncnode",dest="ncnode",default='',
       help="the number of of nodes. ncsize = ncnode*nctile is the total number of compute nodes" )
-   parser.add_option("--sequential",action="store_true",dest="sequential",default=False,
+   parser.add_argument(\
+      "--sequential",action="store_true",dest="sequential",default=False,
       help="if present, imposes that multiple CAS files are launched one after the other" )
-   parser.add_option("--mpi",action="store_true",dest="mpi",default=False,
+   parser.add_argument(\
+      "--mpi",action="store_true",dest="mpi",default=False,
       help="make sure the mpi command is executed, ignoring any hpc command" )
-   parser.add_option("--split",action="store_true",dest="split",default=False,
+   parser.add_argument(\
+      "--split",action="store_true",dest="split",default=False,
       help="will only do the trace (and the split in parallel) if option there" )
-   parser.add_option("--merge",action="store_true",dest="merge",default=False,
+   parser.add_argument(\
+      "--merge",action="store_true",dest="merge",default=False,
       help="will only do the output copying (and recollection in parallel) if option there" )
-   parser.add_option("--run",action="store_true",dest="run",default=False,
+   parser.add_argument(\
+      "--run",action="store_true",dest="run",default=False,
       help="will only run the simulation if option there" )
    # ~~> Other
-   parser.add_option("--use-link",action="store_true",dest="use_link",default=False,
+   parser.add_argument(\
+      "--use-link",action="store_true",dest="use_link",default=False,
       help="Will use link instead of copy in the temporary folder (Unix system only)" )
-   options, args = parser.parse_args()
+   options = parser.parse_args()
    # If module is given add it as first argument
    if not module is None:
-       args.insert(0,module)
+       options.args.insert(0,module)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # path to the root
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   if options.rootDir != '': PWD = options.rootDir
+   # The path to the root relates to the script launched, which implies
+   # that the user environment knows which to run
+   # (this script is stored under .../scripts/python27/)
+   #PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   PWD = path.dirname(path.dirname( path.dirname(__file__)) )
+   # if the appropriate command line option is used, then reset rootDir
+   if options.rootDir != '': PWD = path.abspath(options.rootDir)
+
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
@@ -1697,7 +1742,7 @@ def main(module=None):
             if tail == '.cfg' :
                print '    +> ',fle
       sys.exit(1)
-   if len(args) < 2:
+   if len(options.args) < 2:
       print '\nThe name of the module to run and one CAS file at least are required\n'
       parser.print_help()
       sys.exit(1)
@@ -1708,8 +1753,8 @@ def main(module=None):
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   codeName = args[0]
-   casFiles = args[1:]
+   codeName = options.args[0]
+   casFiles = options.args[1:]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1718,7 +1763,7 @@ def main(module=None):
 
    # still in lower case
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
-   if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+   if options.rootDir != '': cfgs[cfgname]['root'] = PWD
    # recognised keys in the config
    if options.ncsize == '' and cfgs[cfgname].has_key('ncsize'):
       options.ncsize = cfgs[cfgname]['ncsize']
@@ -1747,7 +1792,7 @@ def main(module=None):
    print '\n\nRunning your CAS file for:\n'+'~'*72+'\n'
    print '    +> configuration: ' +  cfgname
    if 'brief' in cfgs[cfgname]:
-      print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
+      print '\n    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n')) + '\n'
    print '    +> root:          ' +  cfgs[cfgname]['root']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir

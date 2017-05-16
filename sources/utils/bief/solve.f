@@ -110,7 +110,7 @@
 !+   Call to SD_SOLVE_4 modified.
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !+        COMPENSATED INTERFACE NODE ASSEMBLY (MODASS=3)
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
@@ -139,6 +139,9 @@
       USE DECLARATIONS_TELEMAC, ONLY : TBB, BB, BX, FIRST_SOLVE
       USE DECLARATIONS_SPECIAL
 !
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_IMAX
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -169,8 +172,10 @@
 !
       LOGICAL DIADON,PREXSM
       INTEGER NPOIN_TOT
-      EXTERNAL P_IMAX
-      INTEGER  P_IMAX
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      EXTERNAL P_IMAX
+!      INTEGER  P_IMAX
+!##< JR @ RWTH
 !
       INTRINSIC MAX
 !

@@ -18,10 +18,9 @@
       !     to a interface block
       !  4. end the INTERFACE block:  END INTERFACE
 
-      USE m_typedefs_interface
-      USE m_typedefs_nestor
-      USE m_nestor
-
+!      USE m_typedefs_interface
+!      USE m_typedefs_nestor
+!      USE m_nestor
 
 #define NESTOR_INTERFACES
 

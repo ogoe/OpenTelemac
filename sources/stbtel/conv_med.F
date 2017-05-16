@@ -35,7 +35,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined(HAVE_MED)
+#if defined HAVE_MED
       INTEGER :: IERR,ITIME,IVAR
       INTEGER :: NMAA,MTYPE
       INTEGER :: PROFIL(1)
@@ -506,7 +506,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MED)
+#if defined HAVE_MED
       INTEGER :: IERR,ITIME,IVAR
       INTEGER :: I,J,DIMVEC,NUMVEC
       INTEGER, ALLOCATABLE :: NUFANO(:), VECVAR(:)
@@ -883,7 +883,7 @@
       END SUBROUTINE
 !
 !
-#if defined(HAVE_MED)
+#if defined HAVE_MED
 !                    ************************
                      SUBROUTINE MED_GET_NELEM
 !                    ************************

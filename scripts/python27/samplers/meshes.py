@@ -41,6 +41,7 @@
 # ~~> dependencies towards standard python
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 import math
 from scipy.spatial import cKDTree
@@ -49,7 +50,6 @@ from scipy.spatial import Delaunay
 from matplotlib.tri import Triangulation
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) )
 # ~~> dependencies towards other modules
-from config import OptionParser
 # ~~> dependencies towards other pytel/modules
 from parsers.parserSELAFIN import SELAFIN
 from utils.progressbar import ProgressBar
@@ -1063,24 +1063,43 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Command line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nInterpreting command line options\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-x","--crosses",action="store_true",dest="xpts",default=False,help="check and remove cross boundary points" )
-   parser.add_option("-4","--minnode",action="store_true",dest="mnod",default=False,help="check and merge interior nodes with less than 5 neighbours" )
-   parser.add_option("-8","--maxnode",action="store_true",dest="xnod",default=False,help="check and cleave interior nodes with more than 7 neighbours" )
-   parser.add_option("--dupnode",action="store_true",dest="dupnode",default=False,help="check and remove duplicated nodes" )
-   parser.add_option("--map",type="string",dest="map",default=None,help="name of the points for mapping (thin plate spline)" )
-   parser.add_option("-n","--cloudsize",type="string",dest="npoin",default=None,help="size of the proximity cloud (thin plate spline)" )
-   parser.add_option("-r","--smoothing",type="string",dest="alpha",default=None,help="smoothing factor (thin plate spline)" )
-   options, args = parser.parse_args()
-   if len(args) < 1:
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Tools for sampling and interpolating through triangular meshes.
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   parser.add_argument(\
+      "-x","--crosses",action="store_true",dest="xpts",default=False,
+      help="check and remove cross boundary points" )
+   parser.add_argument(\
+      "-4","--minnode",action="store_true",dest="mnod",default=False,
+      help="check and merge interior nodes with less than 5 neighbours" )
+   parser.add_argument(\
+      "-8","--maxnode",action="store_true",dest="xnod",default=False,
+      help="check and cleave interior nodes with more than 7 neighbours" )
+   parser.add_argument(\
+      "--dupnode",action="store_true",dest="dupnode",default=False,
+      help="check and remove duplicated nodes" )
+   parser.add_argument(\
+      "--map",dest="map",default=None,
+      help="name of the points for mapping (thin plate spline)" )
+   parser.add_argument(\
+      "-n","--cloudsize",dest="npoin",default=None,
+      help="size of the proximity cloud (thin plate spline)" )
+   parser.add_argument(\
+      "-r","--smoothing",dest="alpha",default=None,
+      help="smoothing factor (thin plate spline)" )
+   options = parser.parse_args()
+   if len(options.args) < 1:
       print '\nAt least a code name (and its associated inputs) are required\n'
       parser.print_help()
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   slfFile = args[0]
-   outFile = args[1]
+   slfFile = options.args[0]
+   outFile = options.args[1]
    slf = SELAFIN(slfFile)
 
    # ~~> Monitoring changes

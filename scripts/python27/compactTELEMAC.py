@@ -68,8 +68,9 @@ import re
 from os import path,walk,environ,sep
 import sys
 from shutil import copytree,ignore_patterns
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
+from config import parseConfigFile, parseConfig_CompactTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories, removeDirectories, zip, copyFile
 from utils.messages import MESSAGES,banner
@@ -86,53 +87,59 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading Options and Configurations\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default='',
-                      help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default='',
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-a", "--archiveName",
-                      type="string",
-                      dest="archiveName",
-                      default='',
-                      help="specify the archive name, default is taken as the config name" )
-   parser.add_option("-m", "--modules",
-                      type="string",
-                      dest="modules",
-                      default='',
-                      help="specify the list modules, default is taken from config file" )
-   parser.add_option("", "--src",
-                      action="store_true",
-                      dest="srcOnly",
-                      default=False,
-		      help="create a zip containing only the sources i.e. the "\
-                           "bare minimum to use telemac-mascaret" )
-   parser.add_option("", "--examples",
-                      action="store_true",
-                      dest="examplesOnly",
-                      default=False,
-		      help="create a zip containing only the sources i.e. the "\
-                           "bare minimum to use telemac-mascaret" )
-   options, args = parser.parse_args()
+   print '\n\nLoading Options and Configurations\n'+72*'~'+'\n'
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n\
+Compact the TELEMAC system files, into various archived:\n
+1. archiving sources if necessary
+2. archiving examples if necessary
+3. archiving binaries if necessary
+4. ...
+      '''))
+   parser.add_argument(\
+      "-c", "--configname",metavar="config name",
+      dest="configName",default='',
+      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",metavar="config file",
+      dest="configFile",default='',
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_argument(\
+      "-r", "--rootdir",metavar="TELEMAC root",
+      dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_argument(\
+      "-a", "--archiveName",metavar="archive name",
+      dest="archiveName",default='',
+      help="specify the archive name, default is taken as the config name" )
+   parser.add_argument(\
+      "-m", "--modules",metavar="modules",
+      dest="modules",default='',
+      help="specify the list modules, default is taken from config file" )
+   parser.add_argument(\
+      "--src",action="store_true",
+      dest="srcOnly",default=False,
+		    help="create a zip containing only the sources i.e. the "\
+         "bare minimum to use telemac-mascaret" )
+   parser.add_argument(\
+      "--examples",action="store_true",
+      dest="examplesOnly",default=False,
+		    help="create a zip containing only the sources i.e. the "\
+         "bare minimum to use telemac-mascaret" )
+   options = parser.parse_args()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # path to the root
-   PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
-   if options.rootDir != '': PWD = options.rootDir
+   # The path to the root relates to the script launched, which implies
+   # that the user environment knows which to run
+   # (this script is stored under .../scripts/python27/)
+   #PWD = path.dirname(path.dirname(path.dirname(sys.argv[0])))
+   PWD = path.dirname(path.dirname( path.dirname(__file__)) )
+   # if the appropriate command line option is used, then reset rootDir
+   if options.rootDir != '': PWD = path.abspath(options.rootDir)
+   # The path to the python scripts is defined by the script launched
+   PYT = path.dirname(__file__)
    # user configuration name
    USETELCFG = ''
    if 'USETELCFG' in environ: USETELCFG = environ['USETELCFG']
@@ -147,9 +154,9 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ banners ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mes = MESSAGES()  # compact takes its version number from the SVN revision
+   version = path.basename(PWD)
    svnrev = ''
    svnurl = ''
-   svnban = 'unknown revision'
    try:
       key_equals = re.compile(r'(?P<key>[^:]*)(?P<after>.*)',re.I)
       tail,code = mes.runCmd('svn info '+PWD,True)
@@ -165,6 +172,7 @@ if __name__ == "__main__":
    else:
       if svnurl != '': print '\n'.join(banner(svnurl.split('/')[-1]))
       if svnrev != '': print '\n'.join(banner('rev. #'+svnrev))
+      version = svnurl.split('/')[-1]+'-'+svnrev
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
@@ -181,117 +189,131 @@ if __name__ == "__main__":
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+# ~~~~ Works for only one common root and zipper ~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-
+   pt = ''
+   if options.rootDir != '':
+      pt = path.abspath(options.rootDir)
+      if not path.exists(pt):
+         print '\nNot able to find your root directory: ' + pt + '\n'
+         sys.exit(1)
+      for cfgname in cfgs: cfgs[cfgname]['root'] = pt
+   zt = ''
    for cfgname in cfgs:
-      # still in lower case
-      if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
-      if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-      if not path.exists(cfgs[cfgname]['root']):
-         print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
-         sys.exit(1)
-      if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
-      # parsing for proper naming
-      cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
-      print '\n\nScanning the source code for:\n'+'~'*72+'\n'
-      print '    +> configuration: ' +  cfgname
-      if 'brief' in cfgs[cfgname]: print '    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n'))
-      print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
+      if cfgs[cfgname].has_key('root'):
+         if pt == '': pt = cfgs[cfgname]['root']
+         elif pt != cfgs[cfgname]['root']:
+            print '\nThis script ony works with one common root for all your configurations\n'
+            sys.exit(1)
+      else: cfgs[cfgname].update({'root':PWD})
+      cfgs[cfgname]['pytel'] = PYT
+      if cfgs[cfgname].has_key('sfx_zip'):
+         if zt == '': zt = cfgs[cfgname]['sfx_zip']
+         elif zt != cfgs[cfgname]['sfx_zip']:
+            print '\nThis script ony works with one common sfx_zip for all your configurations\n'
+            sys.exit(1)
+   if pt == '': pt = PWD
+   if zt == '':
+      print '\nAt least one configuration should have a sfx_zip\n'
+      sys.exit(1)
 
-# ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-      print '\n\nConfiguration ' + cfgname + '\n'+'~'*72+'\n'
-      if cfg['MODULES'] == {}:
-         print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
-         sys.exit(1)
-
-      pt = cfg['root']
-      pc = path.join(pt,cfgname)
-      if options.archiveName != '':
-         if path.dirname(options.archiveName) != '':
-            pc = path.join(options.archiveName,cfgname)
-            archive = options.archiveName
-         else:
-            pc = path.join(path.join(pt,options.archiveName),cfgname)
-            archive = path.join(pt,options.archiveName)
-
-      if options.srcOnly:
-         archiveName = 'telemac-mascaret-'+cfg.get('version','DEV')+'-src'
-         pc = path.join(pt,archiveName)
-         dirs = ['optionals','scripts','sources','documentation','configs']
-         for pid in dirs:
-            pi = path.join(pt,pid)
-            po = pi.replace(pt,pc)
-            copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
-            print '    +> '+pi
-
-         files = ['NEWS.txt','README.txt']
-         for pid in files:
-            pi = path.join(pt,pid)
-            po = pi.replace(pt,pc)
-            copyFile(pi,po)
-            print '    +> '+pi
-
-         pid = path.join(pt,'builds')
-         po = pid.replace(pt,pc)
-         createDirectories(po)
-
-         # Creating dummy file in builds because make_archive that is used to
-         # create the zipped file does not handle empty folders
-         pi = path.join(pt,'NEWS.txt')
-         po = path.join(po,'NEW.txt')
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ srcOnlly is independent of config ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.srcOnly:
+      # ~~> create the archive directory
+      if options.archiveName != '': archiveName = options.archiveName
+      else: archiveName = 'otm_'+version+'-src'
+      print '\n\nArchive ' + archiveName + '\n'+'~'*72+'\n'
+      pc = path.join(pt,archiveName)
+      if path.exists(pc): removeDirectories(pc)
+      createDirectories(pc)
+      # ~~> copy the content of the following dirs into the archive directory
+      dirs = ['optionals','scripts','sources','documentation','configs']
+      for pid in dirs:
+         pi = path.join(pt,pid)
+         po = pi.replace(pt,pc)
+         copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
+         print '    +> '+pi
+      # ~~> copy the following files into the archive directory
+      files = ['NEWS.txt','README.txt']
+      for pid in files:
+         pi = path.join(pt,pid)
+         po = pi.replace(pt,pc)
          copyFile(pi,po)
+         print '    +> '+pi
+      # ~~> prepare an empty diretory for future builds
+      pid = path.join(pt,'builds')
+      po = pid.replace(pt,pc)
+      createDirectories(po)
+      # ~~> zipping the archive directory
+      print '\n... now packaging ' + archiveName
+      zip(archiveName,pc,zt)
+      # ~~> cleaning the archive directory
+      print '\n... now cleaning '
+      removeDirectories(pc)
 
-         print '\n... now packaging ' + archiveName
-         zip(archiveName,pc,cfg['ZIPPER'])
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ examplesOnly is independent of config ~~~~~~~~~~~~~~~~~~~~~~~
+   elif options.examplesOnly:
+      # ~~> create the archive directory
+      if options.archiveName != '': archiveName = options.archiveName
+      else: archiveName = 'otm_'+version+'-examples'
+      print '\n\nArchive ' + archiveName + '\n'+'~'*72+'\n'
+      pc = path.join(pt,archiveName)
+      if path.exists(pc): removeDirectories(pc)
+      createDirectories(pc)
+      # ~~> copy the content of the following dir into the archive directory
+      dirs = ['examples']
+      for pid in dirs:
+         pi = path.join(pt,pid)
+         po = pi.replace(pt,pc)
+         copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
+         print '    +> '+pi
+      # ~~> zipping the archive directory
+      print '\n... now packaging ' + archiveName
+      zip(archiveName,pc,zt)
+      # ~~> cleaning the archive directory
+      print '\n... now cleaning '
+      removeDirectories(pc)
 
-         print '\n... now cleaning '
-         removeDirectories(pc)
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+   else:
+      for cfgname in cfgs:
+         if options.modules != '': cfgs[cfgname]['modules'] = options.modules.replace(',',' ').replace(';',' ').replace('.',' ')
+         # parsing for proper naming
+         cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
+         print '\n\nScanning the following:\n'+'~'*72+'\n'
+         print '    +> configuration: ' +  cfgname
+         if 'brief' in cfgs[cfgname]: print '\n    +> '+'\n    |  '.join(cfgs[cfgname]['brief'].split('\n')) + '\n'
+         print '    +> root:          ' +  cfgs[cfgname]['root']
+         print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n'+'~'*72+'\n'
 
-      elif options.examplesOnly:
-         archiveName = 'telemac-mascaret-'+cfg.get('version','DEV')+'-examples'
+   # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
+         if cfg['MODULES'] == {}:
+            print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
+            sys.exit(1)
+
+         # ~~> create the archive directory
+         if options.archiveName != '': archiveName = options.archiveName
+         else: archiveName = 'otm_'+version+'-builds-'+cfgname
+         print '\n\nArchive ' + archiveName + '\n'+'~'*72+'\n'
          pc = path.join(pt,archiveName)
-         dirs = ['examples']
+         if path.exists(pc): removeDirectories(pc)
+         createDirectories(pc)
+         # ~~> copy the content of the following dir into the archive directory
+         dirs = ['builds'+sep+cfgname,'scripts','sources','configs']
          for pid in dirs:
             pi = path.join(pt,pid)
             po = pi.replace(pt,pc)
             copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
             print '    +> '+pi
-
-         print '\n... now packaging ' + archiveName
-         zip(archiveName,pc,cfg['ZIPPER'])
-
-         print '\n... now cleaning '
-         removeDirectories(pc)
-
-      else:
-         dirs = ['builds'+sep+cfgname,'scripts','sources']
-         for pid in dirs:
-            pi = path.join(pt,pid)
-            po = pi.replace(pt,pc)
-            copytree(pi,po,ignore=ignore_patterns('.svn','*.pyc'))
-            print '    +> '+pi
-
-         pid = path.join(pt,'configs')
-         if path.exists(pid):
-            po = pid.replace(pt,pc)
-            createDirectories(po)
-            copyFile(options.configFile,po)
-            print '... finally copying ' + options.configFile
-
+         # ~~> zipping the archive directory
          print '\n... now packaging ' + cfgname
          zip(cfgname,pc,cfg['ZIPPER'])
-
+         # ~~> cleaning the archive directory
          print '\n... now cleaning '
          removeDirectories(pc)
-
-   if options.archiveName != '':
-      print '\n... now packaging ' + cfgname + ' into ' + archive
-      zip(path.basename(archive),archive,cfg['ZIPPER']) # /!\ use the last cfg value
-
-      print '\n... now cleaning ' + archive
-      removeDirectories(archive)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

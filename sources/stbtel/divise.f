@@ -64,10 +64,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM,IPOIN,ISOM,NO1,NO2,NO3,NP1,NP2,NP3,NE1,NE2,NE3,I1,I2
-      INTEGER ISEG,NO(3),NP(3),NEXT(3),I
+      INTEGER :: ISEG,NO(3),NP(3),NEXT(3),I
       DOUBLE PRECISION DX,DY
       LOGICAL FOUND
-      DATA NEXT/2,3,1/
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA NEXT/2,3,1/
+      PARAMETER ( NEXT = (/ 2,3,1 /) )
+!##< SEB @ HRW
 !
       INTEGER, ALLOCATABLE :: TAB(:,:,:)
 !
@@ -122,7 +125,7 @@
             X(NP1) = 0.5D0 * ( X(NO1) + X(NO2) )
             X(NP2) = 0.5D0 * ( X(NO2) + X(NO3) )
             X(NP3) = 0.5D0 * ( X(NO3) + X(NO1) )
-! 
+!
             Y(NP1) = 0.5D0 * ( Y(NO1) + Y(NO2) )
             Y(NP2) = 0.5D0 * ( Y(NO2) + Y(NO3) )
             Y(NP3) = 0.5D0 * ( Y(NO3) + Y(NO1) )
@@ -192,8 +195,8 @@
 !=======================================================================
 !
 !       INDICP : WILL BE THE NUMBER OF SEGMENTS TO WHICH A POINT BELONGS
-!                AND IS ITS POINT OF SMALLEST RANK  
-!                SUPPOSED HERE NOT TO BE LARGER THAN 11    
+!                AND IS ITS POINT OF SMALLEST RANK
+!                SUPPOSED HERE NOT TO BE LARGER THAN 11
 !
 !       TAB(IPOIN,I,1) : SECOND POINT OF Ith SEGMENT STARTING WITH POINT
 !                        IPOIN
@@ -215,7 +218,7 @@
 !         3 NEW POINTS
           DO ISEG=1,3
             I1=MIN(NO(ISEG),NO(NEXT(ISEG)))
-            I2=MAX(NO(ISEG),NO(NEXT(ISEG)))            
+            I2=MAX(NO(ISEG),NO(NEXT(ISEG)))
             FOUND=.FALSE.
             IF(INDICP(I1).GT.0) THEN
 !             LOOKING FOR AN ALREADY EXISTING SEGMENT STARTING WITH POINT I1
@@ -236,7 +239,7 @@
 !             RANK OF MIDDLE POINT OF NEW SEGMENT
               NPOIN=NPOIN+1
               TAB(I1,INDICP(I1),2)=NPOIN
-              NP(ISEG)=NPOIN              
+              NP(ISEG)=NPOIN
             ENDIF
           ENDDO
 !         3 NEW NUMBERS OF ELEMENTS
@@ -266,7 +269,7 @@
 !         (THE GENERAL ALGORITHM IN INTERP IS AWFULLY LONG)
 !         HERE POINTS WILL BE REACHED SEVERAL TIMES BUT WELL, NEVERMIND
 !         IT IS MUCH FASTER
-          ELT(NO(1))=IELEM 
+          ELT(NO(1))=IELEM
           SHP(NO(1),1)=1.D0
           SHP(NO(1),2)=0.D0
           SHP(NO(1),3)=0.D0
@@ -277,19 +280,19 @@
           ELT(NO(3))=IELEM
           SHP(NO(3),1)=0.D0
           SHP(NO(3),2)=0.D0
-          SHP(NO(3),3)=1.D0  
-          ELT(NP(1))=IELEM 
+          SHP(NO(3),3)=1.D0
+          ELT(NP(1))=IELEM
           SHP(NP(1),1)=0.5D0
           SHP(NP(1),2)=0.5D0
           SHP(NP(1),3)=0.D0
           ELT(NP(2))=IELEM
           SHP(NP(2),1)=0.D0
           SHP(NP(2),2)=0.5D0
-          SHP(NP(2),3)=0.5D0  
-          ELT(NP(3))=IELEM 
+          SHP(NP(2),3)=0.5D0
+          ELT(NP(3))=IELEM
           SHP(NP(3),1)=0.5D0
           SHP(NP(3),2)=0.D0
-          SHP(NP(3),3)=0.5D0      
+          SHP(NP(3),3)=0.5D0
         ENDDO
 !
 !       FOR AUTOMATIC REFINEMENT PROCEDURE

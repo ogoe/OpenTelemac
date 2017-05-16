@@ -25,11 +25,11 @@ from struct import unpack
 import re
 import sys
 from os import path
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 import numpy as np
 from matplotlib.tri import Triangulation
 # ~~> dependencies towards the root of pytel
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from config import OptionParser
 # ~~> dependencies towards other pytel/modules
 from parsers.parserSELAFIN import SELAFIN
 from parsers.parserKenue import InS
@@ -290,26 +290,31 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n'+'~'*72+'\n'
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   options, args = parser.parse_args()
-   if len(args) < 1:
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n\
+Tools for handling MSH files when created by the mesh generator GMSH
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   options = parser.parse_args()
+   if len(options.args) < 1:
       print '\nThe name of and action is required, together with associated arguments\n'
       sys.exit(1)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads code name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   codeName = args[0]
+   codeName = options.args[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of MSH to SELAFIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName == 'msh2slf':
 
       # ~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if len(args) != 2:
+      if len(options.args) != 2:
          print '.. One MSH file name is required\n'
          parser.print_help()
          sys.exit(1)
-      fileName = args[1]
+      fileName = options.args[1]
       if not path.exists(fileName):
          print '... Could not file your MSH file: ',fileName
          sys.exit(1)
@@ -327,11 +332,11 @@ if __name__ == "__main__":
    elif codeName == 'ins2geo':
 
       # ~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if len(args) != 2:
+      if len(options.args) != 2:
          print '... One i2s/i3s file name is required\n'
          parser.print_help()
          sys.exit(1)
-      fileName = args[1]
+      fileName = options.args[1]
       if not path.exists(fileName):
          print '... Could not file your i2s/i3s file: ',fileName
          sys.exit(1)

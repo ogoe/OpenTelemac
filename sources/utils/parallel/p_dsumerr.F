@@ -1,11 +1,11 @@
-!                    ********************************
+!                    ***********************************
                      DOUBLE PRECISION FUNCTION P_DSUMERR
-!                    ********************************
+!                    ***********************************
 !
      &(PARTIAL)
 !
 !***********************************************************************
-! PARALLEL   V7                                  24/02/2016
+! PARALLEL   V7P3                                  24/02/2016
 !***********************************************************************
 !
 !brief    SUM AND ERROR ROUNDING OF VALUES FROM ALL THE PROCESSORS.
@@ -13,7 +13,7 @@
 !
 !history  R.NHEILI (Univerte de Perpignan, DALI)
 !+        24/02/2016
-!+        V7
+!+        V7P3
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,6 +22,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -31,17 +34,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 #if defined (HAVE_MPI)
-
       INTEGER IER,NUM_PROCS
       DOUBLE PRECISION,ALLOCATABLE, DIMENSION(:)::ALL_PARTIAL_SUM
 !
 !-----------------------------------------------------------------------
 !
+!##> TODO: JR @ RWTH
+#  ifdef COMPAD
+        IF(LNG.EQ.1) WRITE(LU,*) 'P_DSUMERR : PAS ENCORE IMPLEMENTEE'
+        IF(LNG.EQ.2) WRITE(LU,*) 'P_DSUMERR: NOT YET IMPLEMENTED'
+        CALL PLANTE(1)
+        STOP
+#  else
       CALL MPI_COMM_SIZE (MPI_COMM_WORLD, NUM_PROCS, IER)
       ALLOCATE(ALL_PARTIAL_SUM(1:2*NUM_PROCS))
       ALL_PARTIAL_SUM=0.D0
       CALL MPI_ALLGATHER (PARTIAL, 2, MPI_DOUBLE_PRECISION,
      & ALL_PARTIAL_SUM, 2, MPI_DOUBLE_PRECISION, MPI_COMM_WORLD, IER)
+#  endif
+!##< JR @ RWTH
 !
       CALL SUMTWO(2*NUM_PROCS, ALL_PARTIAL_SUM,P_DSUMERR)
       DEALLOCATE(ALL_PARTIAL_SUM)

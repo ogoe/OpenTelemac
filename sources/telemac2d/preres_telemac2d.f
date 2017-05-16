@@ -58,6 +58,13 @@
 !+   dispersion is retrieved from NUXX and NUYY, and KL+PROPNU put in
 !+   T10.
 !
+!history S.E.BOURBAN (HRW)
+!+        11/11/2016
+!+        V7P2
+!+   Adding the DIFFERENTIATORS to the list of updated variables for
+!+   for printing purposes.
+!+   Updating function calls within WRITE statements for NAG compliancy.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -66,6 +73,9 @@
       USE INTERFACE_TELEMAC2D
 !
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DMAX,P_DMIN
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -74,16 +84,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LTT,N,IMAX,I
+      INTEGER LTT,N,IMAX,I,J
 !
-      DOUBLE PRECISION HHH,XMAX
+      DOUBLE PRECISION HHH,HIH,HAH,XMAX
       DOUBLE PRECISION, PARAMETER :: EPSS=1.E-10
       DOUBLE PRECISION GPRDTIME,LPRDTIME,RESTE
 !
       INTRINSIC MAX,SQRT,CEILING
 !
-      DOUBLE PRECISION P_DMAX,P_DMIN
-      EXTERNAL         P_DMAX,P_DMIN
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DMAX,P_DMIN
+!      EXTERNAL         P_DMAX,P_DMIN
+!##< JR @ RWTH
 !
 !-----------------------------------------------------------------------
 !
@@ -314,13 +326,9 @@
 !                             IELM
         CALL CFLPSI(T9,U,V,DT,11,MESH,MSK,MASKEL)
         CALL MAXI(XMAX,IMAX,T9%R,NPOIN)
-        IF(NCSIZE.GT.1) THEN
-          IF(LNG.EQ.1) WRITE(LU,78) P_DMAX(XMAX)
-          IF(LNG.EQ.2) WRITE(LU,79) P_DMAX(XMAX)
-        ELSE
-          IF(LNG.EQ.1) WRITE(LU,78) XMAX
-          IF(LNG.EQ.2) WRITE(LU,79) XMAX
-        ENDIF
+        IF(NCSIZE.GT.1) XMAX = P_DMAX(XMAX)
+        IF(LNG.EQ.1) WRITE(LU,78) XMAX
+        IF(LNG.EQ.2) WRITE(LU,79) XMAX
 78      FORMAT(1X,'PRERES : NOMBRE DE COURANT MAXIMUM :',G16.7)
 79      FORMAT(1X,'PRERES: MAXIMUM COURANT NUMBER: ',G16.7)
       ENDIF
@@ -354,6 +362,20 @@
       ENDIF
 !
 !=======================================================================
+! UPDATE THE POINTERS TO THE DIFFERENTIATED VARIABLES
+!=======================================================================
+!
+!     TODO: TRY NOT USING THE HARDCODED NUMBER 34
+!
+      J = 34+1+NTRAC+2*NPERIAF+VARCL%N
+      DO I = 1,NADVAR
+        IF((LEO.AND.SORLEO(J)).OR.(IMP.AND.SORIMP(J))) THEN
+          CALL AD_GET_TELEMAC2D(I,ADVAR%ADR(I)%P)
+          J = J + 1
+        ENDIF
+      ENDDO
+!
+!=======================================================================
 !
 1000  CONTINUE
 !
@@ -379,9 +401,13 @@
             DO N=1,NPTS
 !             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
               IF(NCSIZE.GT.1) THEN
-                HHH=0.D0
+                HHH = 0.D0
                 IF(LIST_PTS(N).GT.0) HHH=VARSOR%ADR(I)%P%R(LIST_PTS(N))
-                WRITE(LU,*) NAME_PTS(N),' : ',P_DMIN(HHH)+P_DMAX(HHH)
+                HIH = HHH
+                HIH = P_DMIN(HIH)
+                HAH = HHH
+                HAH = P_DMAX(HAH)
+                WRITE(LU,*) NAME_PTS(N),' : ',HIH+HAH
               ELSE
                 WRITE(LU,*) NAME_PTS(N),' : ',
      &                                    VARSOR%ADR(I)%P%R(LIST_PTS(N))

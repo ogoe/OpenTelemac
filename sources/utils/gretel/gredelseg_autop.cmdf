@@ -2,7 +2,7 @@
 path: <root>|sources|utils|gretel
 module: gretel
 liborder: special bief gretel
-name: GREDELSEG_AUTOP
+name: gredelseg_autop
 
 [bief]
 path: <root>|sources|utils|bief

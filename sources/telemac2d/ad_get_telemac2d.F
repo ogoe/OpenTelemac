@@ -1,6 +1,6 @@
-!                   ******************************
-                    SUBROUTINE AD_ALLVEC_TELEMAC2D
-!                   ******************************
+!                    ***************************
+                     SUBROUTINE AD_GET_TELEMAC2D
+!                    ***************************
 !
      &(IVAR,ADOBJ)
 !
@@ -14,7 +14,7 @@
 !history  S.E.BOURBAN (HRW)
 !+        20/06/2016
 !+        V7P2
-!+   First version for gradients
+!+   First version for differentiated variables
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IVAR       |-->| ONE SPECIFIC DIFERENTIABLE VARIABLE
@@ -35,42 +35,49 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       SELECT CASE (IVAR)
-#if defined(COMPAD)
-      CASE(1)
-!?        CALL DCO_T1S_GET( H%R, ADOBJ%R, 1 )
-        ADOBJ%R => H%R
-      CASE(2)
-!?        CALL DCO_T1S_GET( H%R, ADOBJ%R, 1 )
-        ADOBJ%R => ZF%R
-      CASE(3)
-!?        CALL DCO_T1S_GET( H%R, ADOBJ%R, 1 )
-        ADOBJ%R => U%R
-      CASE(4)
-!?        CALL DCO_T1S_GET( H%R, ADOBJ%R, 1 )
-        ADOBJ%R => V%R
-      CASE(5)
-!?        CALL DCO_T1S_GET( H%R, ADOBJ%R, 1 )
-!        ADOBJ%R => H%R%val
+!##> SEB @ HRW: JUST TESTING IO OF DIFFERENTIATED VARIABLES
+!
+!   THIS IS JUST AN EXAMPLE, TO HELP USERS LINKING ADVAR WITH THEIR
+!     OWN DIRIVATIVES. HERE, ADVAR(1), (2) and (3) ARE THE
+!     DIFFERENTIATED VARIABLES OF TRACER(1), U AND V RESPECTIVELY.
+!
+#if defined COMPAD_DCO_T1S
+!      CASE(1)
+!        CALL DCO_T1S_GET( T%ADR(1)%P%R, ADOBJ%R, 1 )
+!      CASE(2)
+!        CALL DCO_T1S_GET( U%R, ADOBJ%R, 1 )
+!      CASE(3)
+!        CALL DCO_T1S_GET( V%R, ADOBJ%R, 1 )
+!
+!   JUST IN CASE T1S IS NOT AVAILABLE, HERE BELOW FOR TESTING
+!     WITHOUT DIFFERENTIATED VARIABLES.
+!
+!#else
+!      CASE(1)
+!        ADOBJ%R = T%ADR(1)%P%R
+!      CASE(2)
+!        ADOBJ%R = U%R
+!      CASE(3)
+!        ADOBJ%R = V%R
 #endif
+!##< SEB @ HRW
       CASE DEFAULT
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'ERREUR : IDENTIFIANT DIFFERENTIE INCONNU ',IVAR
-          WRITE(LU,*) '  LA ROUTINE AD_ALLVEC_TELEMAC2D OU LE NOMBRE DE'
-          WRITE(LU,*) '  VARIABLES DIFFERENCIEES SONT A METTRE A JOUR'
+          WRITE(LU,*) 'ATTENTION : IDENTIFIANT DERIVEE INCONNU ',IVAR
+          WRITE(LU,*) '  LA ROUTINE AD_GET_TELEMAC2D OU LE NOMBRE DE'
+          WRITE(LU,*) '  VARIABLES DERIVEES SONT A METTRE A JOUR'
           WRITE(LU,*) '  -- OU BIEN LA CONFIGURATION NE S''APPLIQUE PAS'
           WRITE(LU,*) '  A LA DIFFERENTIATION ALGORITHMIQUE.'
         ELSEIF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'ERROR: UNKNOWN DIFFERENTIATED VARIABLE ',IVAR
-          WRITE(LU,*) '  UPDATE EITHER SUBROUTINE AD_ALLVEC_TELEMAC2D'
+          WRITE(LU,*) 'WARNING: UNKNOWN DIFFERENTIATED VARIABLE ',IVAR
+          WRITE(LU,*) '  UPDATE EITHER SUBROUTINE AD_GET_TELEMAC2D'
           WRITE(LU,*) '  OR THE NUMBER OF DIFERENTIATED  VARIABLES'
           WRITE(LU,*) '  -- OR ALGORITHMIC DIFFERENTIATION MIGHT NOT BE'
           WRITE(LU,*) '  CONFIGURED.'
         ENDIF
-        CALL PLANTE(1)
-        STOP
       END SELECT
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE AD_ALLVEC_TELEMAC2D
+      END SUBROUTINE AD_GET_TELEMAC2D

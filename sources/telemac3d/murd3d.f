@@ -121,7 +121,7 @@
 !+   2) With sources, in the last IF(OPTSOU.EQ.1).. ELSEIF(OPTSOU.EQ.2)..
 !+   the actions were swapped.
 !+   3) The acceptable extrema in monotony proofs depend on the scheme.
-!+   Here they are different between first and second order.  
+!+   Here they are different between first and second order.
 !
 !history  J-M HERVOUET (EDF LAB, LNHE)
 !+        14/11/2016
@@ -254,12 +254,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION EPS
-      DATA EPS /1.D-6/
-!> SEB @ HRW, JR @ RWTH, CG @ EDF: ALGORITHMIC DIFFERENTIATION
+!##> JR @ RWTH:NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DOUBLE PRECISION :: EPS
+!      DATA EPS /1.D-6/
+      DOUBLE PRECISION, PARAMETER :: EPS = 1.D-6
+!##< JR @ RWTH
 !
       INTRINSIC MIN,MAX
-!< SEB @ HRW, JR @ RWTH, CG @ EDF
 !
 !-----------------------------------------------------------------------
 !
@@ -1299,7 +1300,7 @@
                 MINFC%R(I3)=MIN(MINFC%R(I3),FC(I3),
      &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
      &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
-                MAXFC%R(I3)=MAX(MAXFC%R(I3),FC(I3), 
+                MAXFC%R(I3)=MAX(MAXFC%R(I3),FC(I3),
      &                          FINSUB(I1),FINSUB(I2),FINSUB(I3),
      &                          FINSUB(I4),FINSUB(I5),FINSUB(I6))
                 MINFC%R(I4)=MIN(MINFC%R(I4),FC(I4),

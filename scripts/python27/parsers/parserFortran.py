@@ -59,9 +59,10 @@ import sys
 from optparse import Values
 from copy import copy,deepcopy
 from os import path,walk,remove, environ, sep
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
 # ~~> dependencies towards the root of pytel
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
+from config import parseConfigFile, parseConfig_CompileTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getTheseFiles,isNewer,addToList,addFileContent,getFileContent,putFileContent,diffTextFiles
 from utils.progressbar import ProgressBar
@@ -214,8 +215,6 @@ typ_args = re.compile(r'(.*?::)?\s?(?P<vars>.*?)\Z') #,re.I)
 #?typ_name = re.compile(r'\s*?(?P<type>(%s))\s*?\Z'%(f90types)) #,re.I)
 typ_name = re.compile(r'(?P<type>(%s))\Z'%(f90types)) #,re.I)
 #?typ_title = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90types)) #,re.I)
-typ_name = re.compile(r'(?P<type>(%s))\Z'%(f90types)) #,re.I)
-#?typ_title = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90types)) #,re.I)
 typ_title = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90types)) #,re.I)
 #?typ_xport = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90xport)) #,re.I)
 typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90xport)) #,re.I)
@@ -223,7 +222,7 @@ typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>.*?)\Z'%(f90xport)) #,re.I)
 #?pcl_title = re.compile(r'\s*?((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s*(?P<after>.*?)\s*?(\bRESULT\b\s*?(?P<result>\w+[\w\s]*)|)\s*\Z') #,re.I)
 pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|PURE FUNCTION|RECURSIVE FUNCTION|SUBROUTINE|RECURSIVE SUBROUTINE|MODULE|BLOCK DATA))\b\s+(?P<after>.*?)\s*(\bRESULT\b[\s\(]*(?P<result>\w+[\w\s]*)\)?|)\Z') #,re.I)
 #?pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z') #,re.I)
-pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
+pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|RECURSIVE FUNCTION|RECURSIVE SUBROUTINE|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
 
 """
   Ruled regular expression to ensure proper coding for the TELEMAC system
@@ -346,6 +345,11 @@ def cleanEmptyQuotes(istr):
 
 def cleanEmptySpaces(istr):
    return istr.replace(',,',',')
+
+def refactorName(istr,nami,namo):
+   n = re.subn(r"(\b)(%s)(\b)"%(nami),namo,istr)[1]
+   while n > 0: istr,n = re.subn(r"(\b)(%s)(\b)"%(nami),namo,istr)
+   return istr
 
 def parseAlias(lines):
    listAlias = []; count = 0
@@ -529,7 +533,7 @@ def parsePrincipalWrap(lines):
       typ = proc.group('type').strip()
       if ( typ != '' ):
          if not re.match(typ_name,typ):
-            print 'Invalid header type ' + typ + ' ' + objt + ' ' + name
+            print 'Invalid header type ' + typ + ' ' + objt + ' ' + name + ( '\n|   '.join(lines[:5]) + '\n| ...' )
             sys.exit(1) #return [],[],[],lines
       proc = re.match(argnames,name)
       if proc :
@@ -559,7 +563,7 @@ def parsePrincipalWrap(lines):
                   core.pop(count)
                   count = count - 1
             #~~> contains
-            #if ltain: ctain = ctain - 1
+            if ltain: ctain = ctain - 1
             if not ltain:
                if re.match(ctn_title,line):
                   ltain = True
@@ -575,17 +579,18 @@ def parsePrincipalWrap(lines):
                      if not re.match(typ_name,t): continue
                   block = block + 1
             if block < 0 :
+               if ltain: ctain = ctain + 1
                if proc.group('name') != name:
-                  if debug: print 'Different name at END ' + objt + ' ' + name
+                  if proc.group('name') != None: print 'Different name at END ' + objt + ' ' + name
                if proc.group('object') != objt:
-                  if debug: print 'Different type at END ' + objt
+                  if proc.group('object') != None and proc.group('object') not in objt: print 'Different type at END ' + objt
                return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+1:]
          # ~~> Acount for empty MODULE (including only INTERFACE and CONTAINS)
          if ltain and block == 0 and count+1 >= len(core)-1:
             if proc.group('name') != name:
                if debug: print 'Different name at END ' + objt + ' ' + name
             if proc.group('object') != objt:
-               if debug: print 'Different type at END ' + objt
+               if debug and proc.group('object') not in objt: print 'Different type at END ' + objt
             return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+2:]
       else:
          print 'Invalid header type for first line ' + lines[0]
@@ -799,7 +804,7 @@ def putScanContent(cfg,fileName,wcw):
          # ~~> calls
          if whoi['called'] != {}:
             xmlIndents += 3
-            xml = ' '*xmlIndents+'<called'+','.join(whoi['called'])+' />'
+            xml = ' '*xmlIndents+'<called '+','.join(whoi['called'])+' />'
             xmlSources.append(xml)
             xmlIndents -= 3
 
@@ -883,11 +888,55 @@ def putScanContent(cfg,fileName,wcw):
 
    return
 
+def refactorSources(subset,cmdf,BYPASS):
+   genmod = cmdf['general']['module']
+   name = cmdf['general']['name'].split('.')[0]
+   #print 'Refactoring tree top: ',genmod
+   # ~~> scanning main names
+   refnames = []
+   numfiles = 0
+   for mod in cmdf:
+      if mod == 'general': continue
+      numfiles += len(cmdf[mod]['files'])
+      for fle in cmdf[mod]['files']:
+         genpath = path.join(cmdf[mod]['path'],'.'+genmod)
+         refnames.append( getPrincipalWrapNames(path.join(genpath,fle))[0][1] )
+   # ~~> simplifying subset
+   sub = []
+   for s in subset: sub.append(path.basename(s[0]))
+   # ~~> replacing main names
+   ibar = 0; pbar = ProgressBar(maxval=numfiles).start()
+   for mod in cmdf:
+      if mod == 'general': continue
+      for fle in cmdf[mod]['files']:
+         ibar = ibar + 1; pbar.update(ibar)
+         if fle not in sub: continue
+         genpath = path.join(cmdf[mod]['path'],'.'+genmod)
+         # read the file
+         F = open(path.join(genpath,fle),'r')
+         srci = ''.join(list(F))
+         F.close()
+         # refactor the file
+         for refname in refnames: srci = refactorName(srci,refname,refname+'_'+name.upper())
+         # write the file
+         #print '  ... completed ',path.join(genpath,fle)
+         F = open(path.join(genpath,fle),'wb')
+         F.write(srci)
+         F.close()
+   pbar.finish()
+
 def scanSources(cfgdir,cfg,BYPASS):
-   fic = {}; mdl = {}; sbt = {}; fct = {}; prg = {}; dep = {}; wcw = {}
+   fic = {}; mdl = {}; sbt = {}; fct = {}; prg = {}; top = {}; odd = {}; wcw = {}
 
    # ~~ Looking at each file individually ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for mod in cfg['MODULES']:
+   # TODO: do this in parallel
+   for mod in cfg['MODULES'].keys():
+
+      # Dealing with only one set of files
+      #  by skipping the duplicate tagged files (active and passive)
+      if mod in cfg['ADDONES'] or mod in cfg['ODDONES']: continue
+      if 'files' not in cfg['MODULES'][mod].keys(): continue
+
       # Skipping masacaret module
       if mod == 'mascaret': continue
 
@@ -910,8 +959,8 @@ def scanSources(cfgdir,cfg,BYPASS):
       #/!\ if you need to print within this loop, you now need to use
       #    pbar.write(text,ibar) so the progress bar moves along
       for File in FileList :
-         #if path.basename(File) not in ['m_common_element.F90','pair.f'] : continue
          ibar = ibar + 1; pbar.update(ibar)
+         File = path.join(SrcDir,File)
 
          if not mod in fic: fic.update({mod:{}})
          fic[mod].update({File:[]})
@@ -950,6 +999,8 @@ def scanSources(cfgdir,cfg,BYPASS):
             # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             code,w,face,ctns,core = parsePrincipalWrap(core)
             name,whoi,rest = parsePrincipalMain(code,who,w[0],w[1],w[2],w[3])
+            if w[0] == 'P': top = addToList(top,name,whoi['libname'])
+            # others
             if w[0] == 'P': prg = addToList(prg,name,whoi['libname'])# main program
             if w[0] == 'P': found = BYPASS
             if w[0] == 'S': sbt = addToList(sbt,name,whoi['libname'])# subroutine
@@ -974,9 +1025,9 @@ def scanSources(cfgdir,cfg,BYPASS):
                # ~~> transfer global context to identify unknowns
                for k in whoc['uses']:
                   for v in whoc['uses'][k]: addToList(whoi['uses'],k,v)
-               for k in whoc['vars']:
-                  if k != 'cmn':
-                     for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
+               #for k in whoc['vars']:
+               #   if k != 'cmn':
+               #      for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
                for k in deepcopy(whoc['calls']):
                   if k in whoi['vars']['xtn']: whoc['calls'].pop(k)
                   elif k in whoi['contains'] or k in whoi['calls']: whoc['calls'].pop(k)
@@ -994,61 +1045,91 @@ def scanSources(cfgdir,cfg,BYPASS):
             whoi['vars'].update({'use':{}})
             wcw[mod].update({name:whoi})         # ~~ All ~~~~~~~~~~
 
+            # separating the top of the tree from the odd ones
+            for m in cfg['ODDONES']:
+               if path.basename(File) in cfg['ODDONES'][m]:
+                  odd = addToList(odd,name,m+'.'+name.lower())
+                  # the combination m+name is unique, and therefore allows you to specify the path
+                  if m not in cfg['ADDONES']:
+                     top = addToList(top,name,m+'.'+name.lower())
+                     wcw.update({m+'.'+name.lower():{'path':cfg['MODULES'][mod]['path'],name:whoi}})
+            # /!\ tree tops now also include some of the ODD ONES (if there not also amongst the ADD ONES)
+            for m in cfg['ADDONES']:
+               if path.basename(File) in cfg['ADDONES'][m]:
+                  top = addToList(top,name,m+'.'+name.lower())
+                  # the combination m+name is unique, and therefore allows you to specify the path
+                  wcw.update({m+'.'+name.lower():{'path':cfg['MODULES'][mod]['path'],name:whoi}})
+
       pbar.finish()
+
+   # ~~: wcw.keys()
+   #   holds the list of all primary and secondary libraries
+   #   where source files were found. For each library, the list of files
+   #   scanned is provided by cfg['MODULES'][mod]['files']
+   # ~~: wcw[mod].keys()
+   #   holds the 'path' and well as the list of names of all subroutines
+   #   / functions / programs / modules contained in that mod (uppercase names)
+   # ~~: wcw[mod][name].keys()
+   #   holds a split of the analysis of the content of 'name' with the following
+   #   fields:
+   #  ['functions', 'libname', 'name', 'vars', 'contains', 'args', 'rank',
+   #   'resu', 'uses', 'calls', 'file', 'time', 'path', 'type', 'called']
 
    # ~~ Cross-referencing CALLS together ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # For those CALLs stored in 'calls' but not part of the system:
    #   move them from 'calls' to 'function' (outsiders remain)
+   #
    for mod in wcw.keys():
-      for name in wcw[mod].keys():
-         if name != 'path':
-            who = wcw[mod][name]
-            for s in copy(who['calls'].keys()):
-               if s not in sbt:
-                  del wcw[mod][name]['calls'][s]
-                  wcw[mod][name]['functions'].append(s)
+      for name in copy(wcw[mod].keys()):
+         if name == 'path': continue
+         who = wcw[mod][name]
+         for s in copy(who['calls'].keys()):
+            # separate items in the top tree by declaring then as external
+            if s in top.keys() and s not in odd.keys():
+               del wcw[mod][name]['calls'][s]
+            # calls bot in the list of subroutines msut be functions (?)
+            elif s not in sbt:
+               del wcw[mod][name]['calls'][s]
+               wcw[mod][name]['functions'].append(s)
 
    # ~~ Cross-referencing FUNCTIONS together ~~~~~~~~~~~~~~~~~~~~~~~
    for mod in wcw.keys():
       for name in wcw[mod].keys():
-         if name != 'path':
-            who = wcw[mod][name]
-            f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
-            who['functions'] = f
-            who['vars']['use'].update(u) # because this is a dico-list, updating who updates wcw
+         if name == 'path': continue
+         who = wcw[mod][name]
+         f,u = sortFunctions(who['functions'],who['vars']['use'],wcw,mdl,who['uses'])
+         # /!\ because this is a dico-list, updating who updates wcw
+         who['functions'] = f
+         who['vars']['use'].update(u)
 
    for mod in wcw:
       for name in wcw[mod]:
-         if name != 'path':
-            who = wcw[mod][name]
-            for f in who['vars']['xtn']:
-               if f not in who['functions']:
-                  if debug: print f,' declared but not used in ',who['name']
-                  who['functions'].append(f)
-            for f in fct:
-               while f in who['functions']:
-                  who['functions'].remove(f)
-                  who['calls'].update({f:[['']]})
+         if name == 'path': continue
+         who = wcw[mod][name]
+         for f in who['vars']['xtn']:
+            if f not in who['functions']:
+               if debug: print f,' declared but not used in ',who['name']
+               who['functions'].append(f)
+         for f in fct:
+            while f in who['functions']:
+               who['functions'].remove(f)
+               if f not in top.keys() or f in odd.keys(): who['calls'].update({f:[['']]})
 
    # ~~ Sort out referencing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # Fill-in the 'called' category
    for mod in wcw.keys():
       for name in wcw[mod].keys():
-         if name != 'path':
-            for call in wcw[mod][name]['calls']:
-               if call in sbt:
-                  for u in sbt[call]:
-                     if call in wcw[u]:
-                        wcw[u][call]['called'].append(name)
-               if call in fct:
-                  for u in fct[call]:
-                     if call in wcw[u]:
-                        wcw[u][call]['called'].append(name)
+         if name == 'path': continue
+         for call in wcw[mod][name]['calls']:
+            if call in fct:
+               for u in fct[call]:
+                  if call in wcw[u]:
+                     wcw[u][call]['called'].append(name)
 
    if debug:
       putScanContent(cfg,cfg['root']+sep+'scanTELEMAC.xml',wcw)
 
-   return fic,mdl,sbt,fct,prg,dep,wcw
+   return fic,mdl,sbt,fct,prg,top,odd,wcw
 
 def sortFunctions(ifcts,iuses,list,mods,xuses):
    #found = False
@@ -1393,58 +1474,43 @@ if __name__ == "__main__":
    SYSTELCFG = 'systel.cfg'
    if 'SYSTELCFG' in environ: SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=USETELCFG,
-                      help="specify configuration name, default is randomly found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-m", "--modules",
-                      type="string",
-                      dest="modules",
-                      default='',
-                      help="specify the list modules, default is taken from config file" )
-   parser.add_option("-x","--noscan",
-                      action="store_true",
-                      dest="noscan",
-                      default=False,
-                      help="will bypass the scan of sources by checking only the cmdf files present" )
-   parser.add_option("--context",
-                       action="store_true",
-                       dest="context",
-                       default=False,
-                       help='Produce a context format diff (default)')
-   parser.add_option("--unified",
-                       action="store_true",
-                       dest="unified",
-                       default=False,
-                       help='Produce a unified format diff')
-   parser.add_option("--html",
-                       action="store_true",
-                       dest="html",
-                       default=False,
-                       help='Produce HTML side by side diff (can use -c and -l in conjunction)')
-   parser.add_option("--ndiff",
-                       action="store_true",
-                       dest="ndiff",
-                       default=False,
-                       help='Produce a ndiff format diff')
-   parser.add_option("--ablines",
-                       dest="ablines",
-                       type="int",
-                       default=3,
-                       help='Set number of before/after context lines (default 3)')
-   options, args = parser.parse_args()
+   parser = ArgumentParser(\
+      formatter_class=RawDescriptionHelpFormatter,
+      description=('''\n
+Testing ...
+      '''))
+   parser.add_argument( "args",nargs='*' )
+   parser.add_argument(\
+      "-c", "--configname",dest="configName",default=USETELCFG,
+      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_argument(\
+      "-f", "--configfile",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_argument(\
+      "-r", "--rootdir",dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_argument(\
+      "-m", "--modules",dest="modules",default='',
+      help="specify the list modules, default is taken from config file" )
+   parser.add_argument(\
+      "-x","--noscan",action="store_true",dest="noscan",default=False,
+      help="will bypass the scan of sources by checking only the cmdf files present" )
+   parser.add_argument(\
+      "--context",action="store_true",dest="context",default=False,
+      help='Produce a context format diff (default)')
+   parser.add_argument(\
+      "--unified",action="store_true",dest="unified",default=False,
+      help='Produce a unified format diff')
+   parser.add_argument(\
+      "--html",action="store_true",dest="html",default=False,
+      help='Produce HTML side by side diff (can use -c and -l in conjunction)')
+   parser.add_argument(\
+      "--ndiff",action="store_true",dest="ndiff",default=False,
+      help='Produce a ndiff format diff')
+   parser.add_argument(\
+      "--ablines",dest="ablines",type=int,default=3,
+      help='Set number of before/after context lines (default 3)')
+   options = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
@@ -1463,23 +1529,23 @@ if __name__ == "__main__":
    if not cfgs[cfgname].has_key('root'): cfgs[cfgname]['root'] = PWD
    if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
    if options.modules != '': cfgs[cfgname]['modules'] = options.modules
-   cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
+   cfg = parseConfig_CompileTELEMAC(cfgs[cfgname],False,False)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if len(args) < 2:
+   if len(options.args) < 2:
       print '\nAn action name and at least one file are required\n'
       parser.print_help()
       sys.exit(1)
-   codeName = args[0]
+   codeName = options.args[0]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Comparison with standard PRINCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName == 'princi':
       print '\n\nScanning Fortran\n'+'~'*72+'\n'
 
-      if len(args[1:]) >= 1:
-         difFile = args[1]
+      if len(options.args[1:]) >= 1:
+         difFile = options.args[1]
          # ~~> Scans the first user PRINCI file
          print '      ~> scanning your PRINCI file: ',path.basename(difFile)
          pFiles = getPrincipalWrapNames(difFile)
@@ -1491,7 +1557,7 @@ if __name__ == "__main__":
             print '        +> found:'
             for oType,oFile in pFiles: print '           - ',oFile
 
-      if len(args[1:]) == 1: # if only one PRINCI ...
+      if len(options.args[1:]) == 1: # if only one PRINCI ...
          # ~~> Get and store original version of files
          print '      ~> scanning the entire system: '
          oFiles = {}
@@ -1510,8 +1576,8 @@ if __name__ == "__main__":
             if p in oFiles:
                addFileContent(oriFile,getFileContent(oFiles[p]))
 
-      elif len(args[1:]) == 2: # case of two PRINCI files ...
-         oriFile = args[2]
+      elif len(options.args[1:]) == 2: # case of two PRINCI files ...
+         oriFile = options.args[2]
 
       # ~~> Execute diff
       print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n'+'~'*72+'\n'

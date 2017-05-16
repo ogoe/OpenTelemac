@@ -9,8 +9,13 @@
 !                                 25/02/99    P. LANG      (SOGREAH)
 !***********************************************************************
 !
-!    FONCTION : REPERAGE DES POINTS APPARTENANT A PLUS DE TROIS
+!brief    REPERAGE DES POINTS APPARTENANT A PLUS DE TROIS
 !               SEGMENTS FRONTIERES APRES ELIMINATION DES ELEMENTS SECS
+!
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
 !
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
@@ -54,11 +59,11 @@
 !
       INTEGER I, J
       INTEGER ISUIV , IELEM , IFACE
-      INTEGER SOMSUI(4) , I1 , I2
+      INTEGER I1 , I2
       LOGICAL EXIST
 !
-!
-      DATA SOMSUI / 2 , 3 , 4 , 0 /
+!      DATA SOMSUI / 2 , 3 , 4 , 0 /
+      INTEGER :: SOMSUI(4) = (/ 2 , 3 , 4 , 0 /)
 !
 !=======================================================================
 ! INITIALISATION

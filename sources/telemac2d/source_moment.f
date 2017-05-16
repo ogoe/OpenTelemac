@@ -36,7 +36,7 @@
 !| SPHERIC        |-->| IF TRUE : SPHERICAL COORDINATES
 !| UA             |<->| (H,HU,HV) AT TN+1
 !| YACORIOL       |-->| LOGIC: IF YES CONSIDER CORIOLIS FORCE
-!| YAFRICTION     |-->| LOGIC: IF YES CONIDER FRICTION 
+!| YAFRICTION     |-->| LOGIC: IF YES CONIDER FRICTION
 !| YASMO          |-->| LOGIC: IF YES CONIDER REMAINING FORCES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -67,7 +67,7 @@
 !
       SM1  = 0.D0
       SM2  = 0.D0
-      A    = 0.D0 
+      A    = 0.D0
       AKAP = 1.D0
 !
       IF(YACORIOL)THEN
@@ -89,7 +89,7 @@
      &           1X,'    CORIOLIS  PARAMETER DEPENDS ON THE LATITUDE',/,
      &           1X,'    THE KEY WORD ''CORIOLIS COEFFICIENT''',/,
      &           1X,'    IS CONSEQUENTLY IGNORED.')
- 
+
         ENDIF
       ENDIF
       A2SUR4    = 0.25D0*(A**2)
@@ -120,7 +120,7 @@
 !
         IF(YACORIOL)THEN
           IF(SPHERIC)THEN
-            SM1 = UA(2,IS) + A*SINLAT%R(IS)*QV(IS) 
+            SM1 = UA(2,IS) + A*SINLAT%R(IS)*QV(IS)
             SM2 = UA(3,IS) - A*SINLAT%R(IS)*QU(IS)
           ELSE
             SM1 = UA(2,IS) + A*QV(IS)
@@ -131,7 +131,7 @@
 !       3- REMAINNING FORCES
 !
 !       warning: not consistant with semi implicit in time
-!                to adapt if not satisfactory 
+!                to adapt if not satisfactory
         IF(YASMO)THEN
           SM1 = SM1 + 0.5D0*DT*(H(IS)+UA(1,IS))*FU%R(IS)
           SM2 = SM2 + 0.5D0*DT*(H(IS)+UA(1,IS))*FV%R(IS)
@@ -144,7 +144,7 @@
 !       FINAL VALUES OF HU AND HV
 !
         UA(2,IS)= (AKAP*SM1 + ASUR2*SM2)/DETER
-        UA(3,IS)= (AKAP*SM2 - ASUR2*SM1)/DETER 
+        UA(3,IS)= (AKAP*SM2 - ASUR2*SM1)/DETER
 !
       ENDDO
 !

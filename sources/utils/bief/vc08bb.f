@@ -37,6 +37,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  S.E.BOURBAN (HRW)
+!+        21/03/2017
+!+        V7P3
+!+   Replacement of the DATA declarations by the PARAMETER associates
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| FORMUL         |-->| STRING WITH FORMULA OF VECTOR
@@ -84,7 +89,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IELMF,IELMU,IELMV,IL(3,3)
+      INTEGER IELEM,IELMF,IELMU,IELMV
       INTEGER IG1,IG2,IG3,IT,IAD1,IAD2,IAD3
 !
       DOUBLE PRECISION K1,K2,K3
@@ -104,7 +109,9 @@
 !     IN THE INITIAL TRIANGLE
 !     IL(NUMBER OF THE SUB-TRIANGLE,LOCAL NUMBER IN THE SUB-TRIANGLE)
 !
-      DATA IL /1,2,3,2,3,1,4,4,4/
+      INTEGER :: IL(3,3)
+      PARAMETER ( IL = RESHAPE( (/
+     &          1,2,3,2,3,1,4,4,4 /), SHAPE=(/ 3,3 /) ) )
 !
 !-----------------------------------------------------------------------
 !

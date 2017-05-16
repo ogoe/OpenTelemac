@@ -43,12 +43,12 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER YEAR,MONTH,DAY,NDAY,J1,J2,HOURS,MINUTES
-      INTEGER GREG,Y,M
+      INTEGER Y,M
       DOUBLE PRECISION TD,TF,TT
 !
       INTRINSIC INT
 !
-      PARAMETER (GREG=15+31*(10+12*1582))
+      INTEGER, PARAMETER :: GREG=15+31*(10+12*1582)
 !
 !-----------------------------------------------------------------------
 !

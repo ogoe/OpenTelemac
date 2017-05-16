@@ -46,40 +46,46 @@
       INTEGER J,H,M
       DOUBLE PRECISION S
       INTRINSIC INT
-      CHARACTER(LEN=32) FR(15),GB(15)
+      CHARACTER(LEN=32) :: FR(15),GB(15)
 !
 !-----------------------------------------------------------------------
 !
-      DATA FR /     '                                ' ,
-     &              '                                ' ,
-     &              '     ETAPE DE CONVECTION        ' ,
-     &              '       MODELE K-EPSILON         ' ,
-     &              '  ETAPE DE DIFFUSION DU TRACEUR ' ,
-     &              ' ETAPE DE DIFFUSION-PROPAGATION ' ,
-     &              '      BILAN DE VOLUME D''EAU     ' ,
-     &              ' BILAN FINAL DE VOLUME D''EAU ' ,
-     &              '  TEMPS :                       ' ,
-     &              ' SECONDES                       ' ,
-     &              'ITERATION                       ' ,
-     &              '     DERIVE DE FLOTTEUR(S)      ' ,
-     &              '   DERIVE(S) LAGRANGIENNE(S)    ' ,
-     &              '     GLISSEMENT DU SEDIMENT     ' ,
-     &              '      TASSEMENT DU SEDIMENT     ' /
-      DATA GB /     '                                ' ,
-     &              '                                ' ,
-     &              '        ADVECTION STEP          ' ,
-     &              '        K-EPSILON MODEL         ' ,
-     &              '   DIFFUSION OF TRACER STEP     ' ,
-     &              '  DIFFUSION-PROPAGATION STEP    ' ,
-     &              '     BALANCE OF WATER VOLUME    ' ,
-     &              ' FINAL BALANCE OF WATER VOLUME  ' ,
-     &              '    TIME:                       ' ,
-     &              ' SECONDS                        ' ,
-     &              'ITERATION                       ' ,
-     &              '       DRIFT OF DROGUE(S)       ' ,
-     &              '      LAGRANGIAN DRIFT(S)       ' ,
-     &              '         SEDIMENT SLIDE         ' ,
-     &              '          CONSOLIDATION         ' /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA FR /
+      PARAMETER ( FR = (/
+     &     '                                ' ,
+     &     '                                ' ,
+     &     '     ETAPE DE CONVECTION        ' ,
+     &     '       MODELE K-EPSILON         ' ,
+     &     '  ETAPE DE DIFFUSION DU TRACEUR ' ,
+     &     ' ETAPE DE DIFFUSION-PROPAGATION ' ,
+     &     '      BILAN DE VOLUME D''EAU     ' ,
+     &     ' BILAN FINAL DE VOLUME D''EAU    ' ,
+     &     '  TEMPS :                       ' ,
+     &     ' SECONDES                       ' ,
+     &     'ITERATION                       ' ,
+     &     '     DERIVE DE FLOTTEUR(S)      ' ,
+     &     '   DERIVE(S) LAGRANGIENNE(S)    ' ,
+     &     '     GLISSEMENT DU SEDIMENT     ' ,
+     &     '      TASSEMENT DU SEDIMENT     '  /) )
+!      DATA GB /
+      PARAMETER ( GB = (/
+     &     '                                ' ,
+     &     '                                ' ,
+     &     '        ADVECTION STEP          ' ,
+     &     '        K-EPSILON MODEL         ' ,
+     &     '   DIFFUSION OF TRACER STEP     ' ,
+     &     '  DIFFUSION-PROPAGATION STEP    ' ,
+     &     '     BALANCE OF WATER VOLUME    ' ,
+     &     ' FINAL BALANCE OF WATER VOLUME  ' ,
+     &     '    TIME:                       ' ,
+     &     ' SECONDS                        ' ,
+     &     'ITERATION                       ' ,
+     &     '       DRIFT OF DROGUE(S)       ' ,
+     &     '      LAGRANGIAN DRIFT(S)       ' ,
+     &     '         SEDIMENT SLIDE         ' ,
+     &     '          CONSOLIDATION         '  /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

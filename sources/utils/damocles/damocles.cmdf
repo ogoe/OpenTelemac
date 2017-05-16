@@ -2,23 +2,19 @@
 path: <root>|sources|utils|damocles
 module: damocles
 liborder: special damocles
-name: HOMERE_DAMOCLES
+name: damocles
 
 [damocles]
 path: <root>|sources|utils|damocles
 files: declarations_damocles.f
-  longlu.f
   precar.f
   next.f
-  mycarlu.f
   myaidelu.f
   preval.f
   intlu.f
+  longlu.f
+  mycarlu.f
   prev.f
-  realu.f
-  majus.f
-  loglu.f
-  cmd.f
   dico_data.f
   shell_string.f
   utils_latex.f
@@ -28,8 +24,8 @@ files: declarations_damocles.f
 [special]
 path: <root>|sources|utils|special
 files: declarations_special.F
+  i2str.f
   plante.F
   check_allocate.f
-  i2str.f
   write_error.f
   check_call.f

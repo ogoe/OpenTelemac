@@ -43,6 +43,9 @@
 !
       USE DECLARATIONS_PARALLEL
       USE DECLARATIONS_SPECIAL
+!##> JR @ RWTH: USE OF MPI MODULE
+!      USE MPI
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -51,13 +54,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-#if defined (HAVE_MPI)
+#if defined HAVE_MPI
       INTEGER IER
 !
 !-----------------------------------------------------------------------
 !
+!##> JR @ RWTH:
+#  ifdef COMPAD
+      P_DSUM=0.D0
+      CALL AMPI_ALLREDUCE(MYPART,P_DSUM,1,AMPI_TYPE,
+     &                    AMPI_OP_SUM,COMM,IER)
+#  else
       CALL MPI_ALLREDUCE(MYPART,P_DSUM,1,MPI_DOUBLE_PRECISION,
      &                   MPI_SUM,COMM,IER)
+#  endif
+!##< JR @ RWTH
 !
       IF(IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'P_DSUM: ERREUR DANS MPI_ALLREDUCE'
@@ -72,6 +83,7 @@
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_DSUM IN ITS VOID VERSION'
 !
       P_DSUM=MYPART
+!
 #endif
 !
 !-----------------------------------------------------------------------

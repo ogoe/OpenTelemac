@@ -50,73 +50,87 @@
 !
       INTEGER J,H,M
 !
-      CHARACTER(LEN=32) FR(14),GB(14)
-      CHARACTER(LEN=32) SCHEMEFR(9),SCHEMEGB(9)
-      CHARACTER(LEN=32) ORDERFR(6),ORDERGB(6)
+      CHARACTER(LEN=32) :: FR(14),GB(14)
+      CHARACTER(LEN=32) :: SCHEMEFR(9),SCHEMEGB(9)
+      CHARACTER(LEN=32) :: ORDERFR(6),ORDERGB(6)
 !
       INTRINSIC INT
 !
 !-----------------------------------------------------------------------
 !
-      DATA FR /     '                                ' ,
-     &              '                                ' ,
-     &              '     ETAPE DE CONVECTION        ' ,
-     &              '       MODELE K-EPSILON         ' ,
-     &              'ETAPE DE DIFFUSION DES TRACEURS ' ,
-     &              ' ETAPE DE DIFFUSION-PROPAGATION ' ,
-     &              '      BILAN DE VOLUME D''EAU     ' ,
-     &              ' BILAN FINAL DE VOLUME D''EAU ' ,
-     &              '  TEMPS :                       ' ,
-     &              ' SECONDES                       ' ,
-     &              'ITERATION                       ' ,
-     &              '     DERIVE DE FLOTTEUR(S)      ' ,
-     &              '   DERIVE(S) LAGRANGIENNE(S)    ' ,
-     &              '   MODELE DE SPALART-ALLMARAS   ' /
-      DATA GB /     '                                ' ,
-     &              '                                ' ,
-     &              '        ADVECTION STEP          ' ,
-     &              '        K-EPSILON MODEL         ' ,
-     &              '   DIFFUSION OF TRACERS STEP    ' ,
-     &              '  DIFFUSION-PROPAGATION STEP    ' ,
-     &              '     BALANCE OF WATER VOLUME    ' ,
-     &              ' FINAL BALANCE OF WATER VOLUME  ' ,
-     &              '    TIME:                       ' ,
-     &              ' SECONDS                        ' ,
-     &              'ITERATION                       ' ,
-     &              '       DRIFT OF DROGUE(S)       ' ,
-     &              '      LAGRANGIAN DRIFT(S)       ' ,
-     &              '  SPALART-ALLMARAS TURB. MODEL  ' /
+!##> SEB @ HRW: NO DATA STATEMENT FOR TYPES WITH ALLOCATABLE COMPONENTS
+!      DATA FR /
+      PARAMETER ( FR = (/
+     &     '                                ' ,
+     &     '                                ' ,
+     &     '     ETAPE DE CONVECTION        ' ,
+     &     '       MODELE K-EPSILON         ' ,
+     &     'ETAPE DE DIFFUSION DES TRACEURS ' ,
+     &     ' ETAPE DE DIFFUSION-PROPAGATION ' ,
+     &     '      BILAN DE VOLUME D''EAU     ' ,
+     &     ' BILAN FINAL DE VOLUME D''EAU    ' ,
+     &     '  TEMPS :                       ' ,
+     &     ' SECONDES                       ' ,
+     &     'ITERATION                       ' ,
+     &     '     DERIVE DE FLOTTEUR(S)      ' ,
+     &     '   DERIVE(S) LAGRANGIENNE(S)    ' ,
+     &     '   MODELE DE SPALART-ALLMARAS   '  /) )
+!      DATA GB /
+      PARAMETER ( GB = (/
+     &     '                                ' ,
+     &     '                                ' ,
+     &     '        ADVECTION STEP          ' ,
+     &     '        K-EPSILON MODEL         ' ,
+     &     '   DIFFUSION OF TRACERS STEP    ' ,
+     &     '  DIFFUSION-PROPAGATION STEP    ' ,
+     &     '     BALANCE OF WATER VOLUME    ' ,
+     &     ' FINAL BALANCE OF WATER VOLUME  ' ,
+     &     '    TIME:                       ' ,
+     &     ' SECONDS                        ' ,
+     &     'ITERATION                       ' ,
+     &     '       DRIFT OF DROGUE(S)       ' ,
+     &     '      LAGRANGIAN DRIFT(S)       ' ,
+     &     '  SPALART-ALLMARAS TURB. MODEL  '  /) )
 !
-      DATA SCHEMEFR / '*                              *' ,
-     &                '*                              *' ,
-     &                '*        SCHEMA DE ROE         *' ,
-     &                '*       SCHEMA CINETIQUE       *' ,
-     &                '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
-     &                '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
-     &                '*        SCHEMA HLLC           *' ,
-     &                '*        SCHEMA WAF            *' ,
-     &                '********************************' /
-      DATA SCHEMEGB / '*                              *' ,
-     &                '*                              *' ,
-     &                '*         ROE SCHEME           *' ,
-     &                '*       KINETIC SCHEME         *' ,
-     &                '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
-     &                '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
-     &                '*        HLLC SCHEME           *' ,
-     &                '*         WAF SCHEME           *' ,
-     &                '********************************' /
-      DATA ORDERFR /  '*                              *' ,
-     &                '*                              *' ,
-     &                '*   PREMIER ORDRE EN ESPACE    *' ,
-     &                '*   DEUXIEME ORRE EN ESPACE    *' ,
-     &                '*   TROISIEME ORDRE EN ESPACE  *' ,
-     &                '********************************' /
-      DATA ORDERGB /  '*                              *' ,
-     &                '*                              *' ,
-     &                '*     FIRST ORDRE IN SPACE     *' ,
-     &                '*     SECOND ORDRE IN SPACE    *' ,
-     &                '*     THIRD PRDRE IN SPACE     *' ,
-     &                '********************************' /
+!      DATA SCHEMEFR /
+      PARAMETER ( SCHEMEFR = (/
+     &     '*                              *' ,
+     &     '*                              *' ,
+     &     '*        SCHEMA DE ROE         *' ,
+     &     '*       SCHEMA CINETIQUE       *' ,
+     &     '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
+     &     '*   SCHEMA DE ZOKAGOA-TCHAMEN  *' ,
+     &     '*        SCHEMA HLLC           *' ,
+     &     '*        SCHEMA WAF            *' ,
+     &     '********************************'  /) )
+!      DATA SCHEMEGB /
+      PARAMETER ( SCHEMEGB = (/
+     &     '*                              *' ,
+     &     '*                              *' ,
+     &     '*         ROE SCHEME           *' ,
+     &     '*       KINETIC SCHEME         *' ,
+     &     '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
+     &     '*   ZOKAGOA-TCHAMEN SCHEME     *' ,
+     &     '*        HLLC SCHEME           *' ,
+     &     '*         WAF SCHEME           *' ,
+     &     '********************************'  /) )
+!      DATA ORDERFR /
+      PARAMETER ( ORDERFR = (/
+     &     '*                              *' ,
+     &     '*                              *' ,
+     &     '*   PREMIER ORDRE EN ESPACE    *' ,
+     &     '*   DEUXIEME ORRE EN ESPACE    *' ,
+     &     '*   TROISIEME ORDRE EN ESPACE  *' ,
+     &     '********************************'  /) )
+!      DATA ORDERGB /
+      PARAMETER ( ORDERGB = (/
+     &     '*                              *' ,
+     &     '*                              *' ,
+     &     '*     FIRST ORDRE IN SPACE     *' ,
+     &     '*     SECOND ORDRE IN SPACE    *' ,
+     &     '*     THIRD PRDRE IN SPACE     *' ,
+     &     '********************************'  /) )
+!##< SEB @ HRW
 !
 !-----------------------------------------------------------------------
 !

@@ -54,6 +54,9 @@
      &                                NUMBEROFLINES_FLUSEC2,
      &                                TIME_FLUSEC2
 !
+!##> JR @ RWTH: ALLOW COMPILERS TO CHECK PARALLEL INTERFACE
+      USE INTERFACE_PARALLEL, ONLY : P_DSUM
+!##< JR @ RWTH
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -92,8 +95,10 @@
       DOUBLE PRECISION,ALLOCATABLE :: FLUXLINES (:,:)
 !
 !     PARALLEL DATA NOT NEEDED, USING P_DSUM
-      DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
+!##> JR @ RWTH: INTERFACE CHECKED SO NO NEED FOR EXTERNALS
+!      DOUBLE PRECISION P_DSUM
+!      EXTERNAL         P_DSUM
+!##< JR @ RWTH
 !
 !----------------------------------------------------------------------
 !
@@ -123,7 +128,7 @@
         ENDIF
 !       READ NODES INTO FLUXLINE
         DO I = 1,NUMBEROFLINES_FLUSEC2
-          READ(INP,*) FLUXLINES(I,1:9)
+          READ(INP,*) ( FLUXLINES(I,ISEC), ISEC=1,9 )
         ENDDO
 !
         WRITE(LU,*) "FLUXLINES FOUND ",NUMBEROFLINES_FLUSEC2,
