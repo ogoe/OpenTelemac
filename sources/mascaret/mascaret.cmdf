@@ -1,6 +1,6 @@
 [general]
 path: <root>|sources|mascaret
-module: stbtel
+module: mascaret
 liborder: mascaret
 name: HOMERE_MASCARET
 
