@@ -94,7 +94,7 @@ import re
 import sys
 import shutil
 from time import sleep
-from os import path, sep, walk, chdir, remove, environ
+from os import path, sep, walk, chdir, remove, environ, getcwd
 from argparse import ArgumentParser,RawDescriptionHelpFormatter
 from multiprocessing.sharedctypes import Value,Array
 # ~~> dependencies towards the root of pytel
@@ -275,7 +275,7 @@ def compileMascaretDependencies(cfg,cfgName):
 
    print '   - completed: ../sources/mascaret/Deriv/adstack.c'
    """
-   HOMERES['HOMERE_MASCARET']['add'].append(('adstack.o','mascaret'))
+   HOMERES['HOMERE_MASCARET']['add'].append((path.dirname(objName),'adstack.o','mascaret'))
 
 def createObjFiles(cfg,oname,oprog,odict,ocfg,mes,tasks,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
@@ -358,11 +358,11 @@ def createLibFiles(cfg,lname,lmdul,lcfg,lprog,mprog,mes,tasks,bypass):
 
    # ~~ Lists all objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
-   for obj,lib in HOMERES[item]['add']:
-      obj = path.splitext(obj)[0].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib').replace(LibDir,'.')+cfg['SYSTEM']['sfx_obj']
+   for pth,obj,lib in HOMERES[item]['add']:
+      obj = path.splitext(path.join(pth,obj))[0].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib').replace(LibDir,'.')+cfg['SYSTEM']['sfx_obj']
       if lib == lname: ObjFiles = ObjFiles + (obj+' ')
-   for obj,lib in HOMERES[item]['tag']:
-      obj = path.splitext(obj)[0].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib').replace(LibDir,'.')+cfg['SYSTEM']['sfx_obj']
+   for pth,obj,lib in HOMERES[item]['tag']:
+      obj = path.splitext(path.join(pth,obj))[0].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib').replace(LibDir,'.')+cfg['SYSTEM']['sfx_obj']
       if lib == lname: ObjFiles = ObjFiles + (obj+' ')
 
    # ~~ is linkage necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -431,16 +431,16 @@ def createExeFiles(cfg,ename,emdul,ecfg,eprog,mes,bypass):
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
-   for obj,lib in HOMERES[ename]['add']:
-      Root,Suffix = path.splitext(path.basename(obj))
-      if lib == emdul and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
+   for pth,obj,lib in HOMERES[ename]['add']:
+      Root,Suffix = path.splitext(path.basename(path.join(pth,obj)))
+      if lib == emdul and path.basename(obj).lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
          o = Root.lower()+cfg['SYSTEM']['sfx_obj']
          if not path.exists(o): raise Exception([{'name':'createExeFiles','msg':'Object missing:\n      '+o}])
          ObjFiles = ObjFiles + o + ' '
    # TODO: check this: if ObjFiles.strip() == '' and path.exists(ExeFile): return True
-   for obj,lib in HOMERES[ename]['tag']:
-      Root,Suffix = path.splitext(path.basename(obj))
-      if lib == emdul and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
+   for pth,obj,lib in HOMERES[ename]['tag']:
+      Root,Suffix = path.splitext(path.basename(path.join(pth,obj)))
+      if lib == emdul and path.basename(obj).lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
          o = Root.lower()+cfg['SYSTEM']['sfx_obj']
          if not path.exists(o): raise Exception([{'name':'createExeFiles','msg':'Object missing:\n      '+o}])
          ObjFiles = ObjFiles + o +' '
@@ -920,10 +920,10 @@ Work with all active configurations.
                   objName = p + sep + path.splitext(path.basename(fle))[0] + cfg['SYSTEM']['sfx_obj']
                   try:
                      if (isNewer(srcName,objName) == 1) and rebuild < 2:
-                        HOMERES[item]['tag'].append((ForDir+sep+fle,lib))
+                        HOMERES[item]['tag'].append((ForDir,fle,lib))
                      else:
                         if mod in cfg['ADDONES']: shutil.copy(srcName,ForDir+sep+fle)
-                        HOMERES[item]['add'].append((ForDir+sep+fle,lib))
+                        HOMERES[item]['add'].append((ForDir,fle,lib))
                   except Exception as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Parallel log files
@@ -945,9 +945,10 @@ Work with all active configurations.
                #      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> dependency checks','msg':'\n ... The compilation of '+item+' depends on '+mod+' but you seem to have removed it from the "modules" of your configuration file.'})])
                #      print '\n\nHummm ... I could not complete my work.\n'+'~'*72 + '\n\n' + xcpts.exceptMessages()
                #      sys.exit(1)
-               for obj,lib in HOMERES[item]['add']:
-                  out = createObjFiles(cfg,path.basename(obj),item, \
-                     {'libname':lib,'type':getPrincipalWrapNames(obj)[0],'path':path.dirname(obj)}, \
+               for pth,obj,lib in HOMERES[item]['add']:
+                  # path is where the .o and .mod will eventually be created, for each file
+                  out = createObjFiles(cfg,obj,item, \
+                     {'libname':lib,'type':getPrincipalWrapNames(pth+sep+obj)[0],'path':pth}, \
                       cfgname,mes,tasks,options.bypass)
                   for x,o,e,c,m in out:
                      if e == '': pbar.write( '   - completed: ' + m,ibar )
@@ -968,6 +969,7 @@ Work with all active configurations.
                   sys.exit(1)
             if item == 'HOMERE_MASCARET':
                compileMascaretDependencies(cfg,cfgname)
+            sleep(1)
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             foundLib = True
             for lib in HOMERES[item]['deps']:

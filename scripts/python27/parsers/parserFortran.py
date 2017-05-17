@@ -903,7 +903,7 @@ def refactorSources(subset,cmdf,BYPASS):
          refnames.append( getPrincipalWrapNames(path.join(genpath,fle))[0][1] )
    # ~~> simplifying subset
    sub = []
-   for s in subset: sub.append(path.basename(s[0]))
+   for s in subset: sub.append(path.basename(sep.join(s[0:2])))
    # ~~> replacing main names
    ibar = 0; pbar = ProgressBar(maxval=numfiles).start()
    for mod in cmdf:
