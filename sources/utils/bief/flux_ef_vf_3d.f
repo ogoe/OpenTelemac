@@ -9,8 +9,12 @@
 ! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!brief    ASSEMBLES 3D NON-ASSEMBLED FLUXES ON PLANES
-!+                THEN COMPUTES THE 2D SEGMENT FLUXES FOR EVERY PLANE.
+!brief    The 3D Element By Element fluxes leaving points are grouped
+!+        on every plane (one contribution from below, one from above).
+!+        Then every plane is considered like a 2D mesh, and the 2D
+!+        EBE fluxes are transformed into horizontal fluxes between
+!+        points (with a call to flux_ef_vf). This gives all the 3D
+!+        horizontal fluxes between points.
 !+
 !+
 !warning  For element 51 the result is summed on the vertical, and is
