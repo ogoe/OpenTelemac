@@ -34,93 +34,93 @@
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
-FICHIER DES PARAMETRES = './exterieur_calais_v6p0.cas'
-FICHIER DE GEOMETRIE = './exterieur_calais.geo'
-FICHIER DES CONDITIONS AUX LIMITES = './exterieur_calais.conlim'
+ STEERING FILE = './exterieur_calais_v6p0.cas'
+ GEOMETRY FILE = './exterieur_calais.geo'
+ BOUNDARY CONDITIONS FILE = './exterieur_calais.conlim'
 /VALIDATION = OUI
 /FICHIER DE REFERENCE = './ref_tom_calais_v5p8.slf'
 /
-FICHIER DES RESULTATS 2D = './exterieur_calais.r2d'
-FICHIER DES RESULTATS PONCTUELS = 'exterieur_calais.spe'
-FICHIER DES RESULTATS SPECTRES 1D = 'test1D.txt'
+ 2D RESULTS FILE = './exterieur_calais.r2d'
+ PUNCTUAL RESULTS FILE = 'exterieur_calais.spe'
+ 1D SPECTRA RESULTS FILE = 'test1D.txt'
 /--------------------------------------------------------------------/
 / DIVERS ENTREES-SORTIES
 /--------------------------------------------------------------------/
-TITRE = 'TRAVAUX MARITIMES - MODELE D APPROCHE DU PORT'
-PERIODE POUR LES SORTIES GRAPHIQUES = 20
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D = HM0,FM01,FPR5,DMOY,WD,POW
-PERIODE POUR LES SORTIES LISTING = 12
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE =
-562828.;563484.;563782.;564284.;564666.;564942.;565105.
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE =
-370989.;369092.;368262.;366749.;365362.;364449.;363925.
+ TITLE = 'TRAVAUX MARITIMES - MODELE D APPROCHE DU PORT'
+ PERIOD FOR GRAPHIC PRINTOUTS = 20
+ VARIABLES FOR 2D GRAPHIC PRINTOUTS = HM0,FM01,FPR5,DMOY,WD,POW
+ PERIOD FOR LISTING PRINTOUTS = 12
+ ABSCISSAE OF SPECTRUM PRINTOUT POINTS =
+ 562828.;563484.;563782.;564284.;564666.;564942.;565105.
+ ORDINATES OF SPECTRUM PRINTOUT POINTS =
+ 370989.;369092.;368262.;366749.;365362.;364449.;363925.
 /--------------------------------------------------------------------/
 / DISCRETISATION DU SPECTRE DIRECTIONNEL
 /--------------------------------------------------------------------/
-FREQUENCE MINIMALE = 0.06
-RAISON FREQUENTIELLE = 1.09
-NOMBRE DE FREQUENCES = 23
-NOMBRE DE DIRECTIONS = 24
+ MINIMAL FREQUENCY = 0.06
+ FREQUENTIAL RATIO = 1.09
+ NUMBER OF FREQUENCIES = 23
+ NUMBER OF DIRECTIONS = 24
 /--------------------------------------------------------------------/
 / DISCRETISATION TEMPORELLE
 /--------------------------------------------------------------------/
-PAS DE TEMPS = 10.
-NOMBRE DE PAS DE TEMPS = 100
+ TIME STEP = 10.
+ NUMBER OF TIME STEP = 100
 /--------------------------------------------------------------------/
 / CONDITIONS AUX LIMITES
 /--------------------------------------------------------------------/
-SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = NON
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+ LIMIT SPECTRUM MODIFIED BY USER = NO
+ TYPE OF BOUNDARY DIRECTIONAL SPECTRUM = 6
 /-------------- Caracteristiques de la houle au large (a modifier) :
-HAUTEUR SIGNIFICATIVE AUX LIMITES = 4.0
-FREQUENCE DE PIC AUX LIMITES = 0.10
-DIRECTION PRINCIPALE 1 AUX LIMITES = 135.
+ BOUNDARY SIGNIFICANT WAVE HEIGHT = 4.0
+ BOUNDARY PEAK FREQUENCY = 0.10
+ BOUNDARY MAIN DIRECTION 1 = 135.
 /-------------
-FACTEUR DE PIC AUX LIMITES = 3.3
-FONCTION DE REPARTITION ANGULAIRE AUX LIMITES = 3
-FACTEUR DE PONDERATION POUR FRA AUX LIMITES = 1.0
-ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 3.
+ BOUNDARY PEAK FACTOR = 3.3
+ BOUNDARY ANGULAR DISTRIBUTION FUNCTION = 3
+ BOUNDARY WEIGHTING FACTOR FOR ADF = 1.0
+ BOUNDARY DIRECTIONAL SPREAD 1 = 3.
 /--------------------------------------------------------------------/
 / CONDITIONS INITIALES
 /--------------------------------------------------------------------/
 /-------------- Caracteristiques du niveau marin (a modifier) :
-COTE INITIALE DU PLAN D'EAU AU REPOS = 5.1
+ INITIAL STILL WATER LEVEL = 5.1
 /-------------
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 6
-HAUTEUR SIGNIFICATIVE INITIALE = 1.0
-FREQUENCE DE PIC INITIALE = 0.10
-FACTEUR DE PIC INITIAL = 3.3
-FONCTION DE REPARTITION ANGULAIRE INITIALE = 3
-FACTEUR DE PONDERATION POUR FRA INITIALE = 1.0
-DIRECTION PRINCIPALE 1 INITIALE =135.
-ETALEMENT DIRECTIONNEL 1 INITIAL = 3
+ TYPE OF INITIAL DIRECTIONAL SPECTRUM = 6
+ INITIAL SIGNIFICANT WAVE HEIGHT = 1.0
+ INITIAL PEAK FREQUENCY = 0.10
+ INITIAL PEAK FACTOR = 3.3
+ INITIAL ANGULAR DISTRIBUTION FUNCTION = 3
+ INITIAL WEIGHTING FACTOR FOR ADF = 1.0
+ INITIAL MAIN DIRECTION 1 =135.
+ INITIAL DIRECTIONAL SPREAD 1 = 3
 /--------------------------------------------------------------------/
 / OPTIONS DU CALCUL
 /--------------------------------------------------------------------/
-PROFONDEUR INFINIE = NON
-COORDONNEES SPHERIQUES = NON
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+ INFINITE DEPTH = NO
+ SPHERICAL COORDINATES = NO
+ CONSIDERATION OF A STATIONARY CURRENT = NO
 /--------------------------------------------------------------------/
 / TERMES SOURCES ET PUITS D ENERGIE
 /--------------------------------------------------------------------/
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-/- - - - - - - - - - - - - - - - - - - - 
+ CONSIDERATION OF SOURCE TERMS = YES
+/- - - - - - - - - - - - - - - - - - - -
 / Terme-source de generation par le vent
-/- - - - - - - - - - - - - - - - - - - - 
-PRISE EN COMPTE DU VENT = NON
-/- - - - - - - - - - - - - - - - - - - - 
+/- - - - - - - - - - - - - - - - - - - -
+ CONSIDERATION OF A WIND = NO
+/- - - - - - - - - - - - - - - - - - - -
 / Terme-puits de frottement sur le fond
-/- - - - - - - - - - - - - - - - - - - - 
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
-COEFFICIENT DE FROTTEMENT SUR LE FOND = 0.038
+/- - - - - - - - - - - - - - - - - - - -
+ BOTTOM FRICTION DISSIPATION = 1
+ BOTTOM FRICTION COEFFICIENT = 0.038
 /- - - - - - - - - - - - - - - - - - - - - - - - - - -
 / Terme-puits de deferlement en faible profondeur d'eau
-/- - - - - - - - - - - - - - - - - - - - - - - - - - - 
-DISSIPATION PAR DEFERLEMENT = 1
-NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 4
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB = 2
-DEFERLEMENT 1 (BJ) MODE DE CALCUL DE HM = 2
-DEFERLEMENT 1 (BJ) CHOIX FREQUENCE CARACTERISTIQUE = 2
-DEFERLEMENT 1 (BJ) CONSTANTE ALPHA = 1.
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA1 = 1.2
-DEFERLEMENT 1 (BJ) CONSTANTE GAMMA2 = 0.8
+/- - - - - - - - - - - - - - - - - - - - - - - - - - -
+ DEPTH-INDUCED BREAKING DISSIPATION = 1
+ NUMBER OF BREAKING TIME STEPS = 4
+ DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD = 2
+ DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD = 2
+ DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY = 2
+ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA = 1.
+ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1 = 1.2
+ DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2 = 0.8
