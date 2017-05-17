@@ -1,65 +1,53 @@
 &DYN
-/---SYSTEME-TELEMAC--------------------------------------TOMAWAC----------------
+/ INTEGER INDEX USED: 1-51 OUT OF 51
+/ REAL INDEX USED: 1-87 OUT OF 87
+/ LOGICAL INDEX USED: 1-2,4-18 OUT OF 17
+/ STRING INDEX USED: 1-15,17-17,22-22,31-32,34-36,39-47,50-51,99-101 OUT OF 36
 /
-/ INDICES IN USE SO FAR:
-/  - INTEGER (ENTIER):
-/       1-52
-/  - REAL (REEL):
-/       1-87
-/  - LOGICAL (LOGIQUE):
-/       1-18
-/  - CHARACTER (CARACTERE):
-/       1-22, 29-32, 34-37, 39-47, 50-52, 96-101
+/---SYSTEME-TELEMAC------------------------------TOMAWAC-------------
 /
-/-------------------------------------------------------------------------------
+/Signification des differents mode d'acquisition/restitution
+/des fichiers vis a vis du parallelisme :
 /
-
-NOM = 'PERIODE POUR LES SORTIES GRAPHIQUES'
-NOM1 = 'PERIOD FOR GRAPHIC PRINTOUTS'
-TYPE = ENTIER
-INDEX = 1
-MNEMO = 'GRAPRD'
-TAILLE= 0
-DEFAUT = 1
-DEFAUT1 = 1
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Determine la periode d''impression,
-en nombre de pas de temps
-des VARIABLES POUR LES SORTIES GRAPHIQUES dans le FICHIER DES
-RESULTATS 2D et le FICHIER DES RESULTATS PONCTUELS.
-**Mots-cles associes :**
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE
-FICHIER DES RESULTATS 2D
-FICHIER DES RESULTATS PONCTUELS
-NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
-AIDE1 = 'Determines the printing period,
-in number of time step
-of the VARIABLES FOR 2D GRAPHIC PRINTOUTS in the 2D
-RESULTS FILE and the PUNCTUAL RESULTS FILE.
-\\
- \begin{CommentBlock}{Related keywords}
-VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
-ORDINATES OF SPECTRUM PRINTOUT POINTS\\
-2D RESULTS FILE\\
-PUNCTUAL RESULTS FILE\\
-NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
-\end{CommentBlock}'
-
+/  - "SCAL" :
+/     Meme fichier pour tous les processeurs lu par tous.
+/     Seule la version du maitre est consideree apres calcul.
+/
+/  - "SELAFIN" :
+/     Le fichier est "decompose/regroupe en sous-domaines" avec les outils
+/      "partel/gretel" (dans le mode par defaut "parallelisme automatique")
+/     Chaque processeur dispose d'un fichier prive.
+/  - "SELAFIN-GEOM" :
+/     idem SELAFIN mais pour le fichier de geometrie ='FICHIER DE GEOMETRIE'
+/      (usage par le regoupeur GRETEL en parallelisme)
+/
+/  - "PARAL" :
+/     Le fichier est duplique avant calcul ("LIT") pour chaque processeur
+/      (avec une extension numerique), sauf s'il pre-existe avec cette
+/      extension numerique : il est alors utilise (copie).
+/     En mode "non automatique" : les fichiers lus doivent pre-exister avec
+/      leur extension numerique.
+/     S'il s'agit d'un fichier resultat ("ECR"), le fichier est restitue
+/      avec son extension numerique (fichier specifique a chaque processeur).
+/
+/  - "CONLIM" :
+/     Cette valeur designe le fichier des "conditions aux limites"
+/     (utilise par le decoupeur "partel").
+/
+/---SYSTEME-TELEMAC------------------------DeltaCAD-/-Septembre-2003----
+/
 NOM = 'PERIODE POUR LES SORTIES LISTING'
 NOM1 = 'PERIOD FOR LISTING PRINTOUTS'
 TYPE = ENTIER
 INDEX = 2
 MNEMO = 'LISPRD'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'LISTING'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'LISTING'
 NIVEAU = 1
 AIDE = 'Determine la periodicite,
 en nombre de pas de temps
@@ -73,12 +61,17 @@ NOM1 = 'NUMBER OF TIME STEP'
 TYPE = ENTIER
 INDEX = 3
 MNEMO = 'NIT'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'TEMPS'
-RUBRIQUE1 = 'TIME'
-NIVEAU = 1
+RUBRIQUE =
+'PARAMETRES GENERAUX';'TEMPS';''
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'TIME';''
+NIVEAU = 0
+COMPORT =
+'Foreground ("PARAMETRES NUMERIQUES*DUREE DU CALCUL")
+IS BRUT (blue)'
 AIDE = 'Definit le nombre de pas de temps effectues lors de
 l''execution du code.
 **Mots-cles associes :**
@@ -94,12 +87,17 @@ NOM1 = 'NUMBER OF DIRECTIONS'
 TYPE = ENTIER
 INDEX = 4
 MNEMO = 'NPLAN'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 12
 DEFAUT1 = 12
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
-NIVEAU = 1
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 = 
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
+NIVEAU = 0
+COMPORT=
+'Foreground ("PARAMETRES NUMERIQUES*GENERAL")
+IS BRUT (blue)'
 AIDE = 'Definit le nombre de directions de propagation de la houle.
 Les directions de propagation sont regulierement reparties entre 0
 et 360 degres.'
@@ -111,12 +109,17 @@ NOM1 = 'NUMBER OF FREQUENCIES'
 TYPE = ENTIER
 INDEX = 5
 MNEMO = 'NF'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 15
 DEFAUT1 = 15
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
-NIVEAU = 1
+RUBRIQUE = 
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
+NIVEAU = 0
+COMPORT=
+'Foreground ("PARAMETRES NUMERIQUES*GENERAL")
+IS BRUT (blue)'
 AIDE = 'Definit le nombre de frequences de propagation de la houle.
 Les frequences sont reparties geometriquement en fonction de la
 FREQUENCE MINIMALE et RAISON FREQUENTIELLE.
@@ -133,62 +136,6 @@ REASON
 FREQUENTIAL RATIO\\
 SPECTRUM TAIL FACTOR
 \end{CommentBlock}'
-
-NOM = 'NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
-NOM1 = 'NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS'
-TYPE = ENTIER
-INDEX = 6
-MNEMO = 'GRADEB'
-TAILLE= 0
-DEFAUT = 0
-DEFAUT1 = 0
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Determine le nombre d''iterations sur le pas de temps
-ou sur la frequence moyenne a partir duquel debute
-l ecriture des resultats dans le FICHIER DES RESULTATS 2D et le
-FICHIER DES RESULTATS PONCTUELS
-**Mots-cles associes :**
-PERIODE POUR LES SORTIES GRAPHIQUES
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE
-FICHIER DES RESULTATS 2D
-FICHIER DES RESULTATS PONCTUELS'
-AIDE1 = 'Determines the number of iterations over mean angular
-frequency from which the results are first written into the 2D RESULTS
-FILE and the PUNCTUAL RESULTS FILE.
-\\
- \begin{CommentBlock}{Related keywords}
-PERIOD FOR GRAPHIC PRINTOUTS\\
-VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
-ORDINATES OF SPECTRUM PRINTOUT POINTS\\
-2D RESULTS FILE\\
-PUNCTUAL RESULTS FILE
-\end{CommentBlock}'
-
-NOM = 'LISSAGES DU FOND'
-NOM1 = 'BOTTOM SMOOTHINGS'
-TYPE = ENTIER
-INDEX = 7
-MNEMO = 'LISFON'
-TAILLE= 1
-DEFAUT = 0
-DEFAUT1 = 0
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
-NIVEAU = 2
-AIDE = 'Nombre de lissages effectues sur la topographie.
-Chaque lissage, effectue a l''aide d''une matrice de masse,
-est conservatif. A utiliser lorsque les donnees de bathymetrie
-donnent des resultats trop irreguliers apres interpolation.
-Voir aussi le sous-programme CORFON'
-AIDE1 = 'Number of smoothings made on bottom features. Each smoothing,
-being made by means of a mass matrix, is conservative. To be used when
-the bathymetric data yield too irregular data after interpolation.
-Also refer to the CORFON subroutine.'
 
 NOM = 'APPORTS DUS AU VENT'
 NOM1 = 'WIND GENERATION'
@@ -207,10 +154,12 @@ CHOIX1 = '0="No wind generation"';
 '1="Wind generation in accordance with WAM cycle 4"';
 '2="Wind generation in accordance with WAM cycle 3"';
 '3="Wind generation in accordance with Yan expression (1987)"'
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
+RUBRIQUE =
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'WIND'
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme source d apport
 par le vent. Si sa valeur est 0, on ne prend pas en compte les
 apports dus au vent, si sa valeur est 1, ils sont integres selon
@@ -274,9 +223,11 @@ CHOIX = '0="Pas dissipation par moutonnement"';
 CHOIX1 = '0="No white capping dissipation"';
 '1="Dissipation in accordance with WAM cycle 4"';
 '2="Dissipation in accordance with Van des Westhuysen(2007)"'
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme source de dissipation
 par moutonnement. Si sa valeur est 0, on ne prend pas en compte la
 dissipation par moutonnement, si sa valeur est 1, elle est integree
@@ -318,9 +269,11 @@ CHOIX = '0="Pas de dissipation par frottement au fond"';
 '1="Dissipation selon WAM cycle 4"'
 CHOIX1 = '0="No bottom friction dissipation"';
 '1="Dissipation in accordance with WAM cycle 4"'
-RUBRIQUE = 'FROTTEMENT FOND'
-RUBRIQUE1 = 'BOTTOM FRICTION'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'FROTTEMENT FOND'
+RUBRIQUE1 =
+'SOURCE TERMS';'BOTTOM FRICTION'
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme source de dissipation
 sur le fond. Si sa valeur est 0, on ne prend pas en compte la
 dissipation par frottement, si sa valeur est 1, elle est integree
@@ -355,9 +308,11 @@ CHOIX1 = '0="No non-linear transfers term"';
 '1="Non-linear transfers term with WAM cycle 4 (DIA Method)"';
 '2="Non-linear transfers term in accordance with MDIA Method"';
 '3="Non-linear transfers term calculated with exact GQM Method"'
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme de transfert non lineaire
 inter-frequences. Si sa valeur est 0, on ne prend pas en compte les
 transferts non lineaires inter-frequences, si sa valeur est 1, ils sont
@@ -405,8 +360,10 @@ CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (couuti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
 '4="User format (couuti.f)"'
-RUBRIQUE = 'COURANT'
-RUBRIQUE1 = 'CURRENT'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
 NIVEAU = 1
 AIDE = 'Choix du type de format du fichier des courants :
 \begin{itemize}
@@ -415,8 +372,7 @@ AIDE = 'Choix du type de format du fichier des courants :
 \end{itemize}
 **Mots-cles associes :**
 FICHIER DES COURANTS BINAIRE
-FICHIER DES COURANTS FORMATE
-BINAIRE DU FICHIER DES COURANTS'
+FICHIER DES COURANTS FORMATE'
 AIDE1 = 'Selection of the type of currents file format :
 \begin{itemize}
 \item 3 = selafin, TELEMAC type
@@ -425,7 +381,6 @@ AIDE1 = 'Selection of the type of currents file format :
 \begin{CommentBlock}{Related keywords}
 CURRENTS BINARY FILE\\
 CURRENTS FORMATTED FILE\\
-CURRENTS FILE BINARY
 \end{CommentBlock}'
 
 NOM = 'FORMAT DU FICHIER DES VENTS'
@@ -441,8 +396,10 @@ CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (venuti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
 '4="User format (venuti.f)"'
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
 NIVEAU = 1
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Choix du type de format du fichier des vents :
@@ -468,11 +425,13 @@ NOM1 = 'NUMBER OF ITERATIONS FOR THE SOURCE TERMS'
 TYPE = ENTIER
 INDEX = 14
 MNEMO = 'NSITS'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'TEMPS'
-RUBRIQUE1 = 'TIME'
+RUBRIQUE =
+'TERMES SOURCES';'PARAMETRES NUMERIQUES'
+RUBRIQUE1 =
+'SOURCE TERMS';'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = '
 Nombre de sous-iterations pour le calcul des
@@ -496,35 +455,36 @@ NOM1 = 'TYPE OF INITIAL DIRECTIONAL SPECTRUM'
 TYPE = ENTIER
 INDEX = 15
 MNEMO = 'INISPE'
-TAILLE= 0
+TAILLE = 0
 CONTROLE = 0;7
 DEFAUT = 0
 DEFAUT1 = 0
 CHOIX = '0="Spectre nul"';
-'1="Spectre JONSWAP"';
-'2="Spectre JONSWAP"';
-'3="Spectre JONSWAP"';
-'4="Spectre JONSWAP"';
-'5="Spectre JONSWAP"';
-'6="Spectre JONSWAP"';
+'1="Spectre JONSWAP 1"';
+'2="Spectre JONSWAP 2"';
+'3="Spectre JONSWAP 3"';
+'4="Spectre JONSWAP 4"';
+'5="Spectre JONSWAP 5"';
+'6="Spectre JONSWAP 6"';
 '7="Spectre TMA"'
 CHOIX1 = '0="non-existent spectrum"';
-'1="JONSWAP spectrum"';
-'2="JONSWAP spectrum"';
-'3="JONSWAP spectrum"';
-'4="JONSWAP spectrum"';
-'5="JONSWAP spectrum"';
-'6="JONSWAP spectrum"';
+'1="JONSWAP spectrum 1"';
+'2="JONSWAP spectrum 2"';
+'3="JONSWAP spectrum 3"';
+'4="JONSWAP spectrum 4"';
+'5="JONSWAP spectrum 5"';
+'6="JONSWAP spectrum 6"';
 '7="TMA spectrum"'
-RUBRIQUE = 'CONDITIONS INITIALES'
-RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+RUBRIQUE =
+'CONDITIONS INITIALES'
+RUBRIQUE1 =
+'INITIAL CONDITIONS'
+NIVEAU = 0
 AIDE = 'Si ce mot-cle est pris egal a 0, on specifie un spectre
-nul aux limites. Si il est pris egal entre 1 et 6
-un spectre de type JONSWAP est specifie en tout point des limites
-d entree en fonction du champ de vent initial et ou des valeurs des
-autres mots cles. Si il est pris egal a 7 un spectre de type
-TMA parametre est specifie aux limites.
+initial nul. Si il est pris egal entre 1 et 6
+un spectre de type JONSWAP est specifie du champ de vent initial
+et ou des valeurs des autres mots cles. Si il est pris egal a 7
+un spectre de type TMA parametre est specifie.
 **Mots-cles associes :**
 HAUTEUR SIGNIFICATIVE INITIALE
 FREQUENCE DE PIC INITIALE
@@ -540,8 +500,8 @@ DIRECTION PRINCIPALE 2 INITIALE
 ETALEMENT DIRECTIONNEL 2 INITIAL
 FACTEUR DE PONDERATION POUR FRA INITIALE'
 AIDE1 = 'If this keyword is set to 0, a non-existent spectrum is speci
-fied at the inlet boundaries of the domain. If it ranges from 1 to 7, a
-JONSWAP (or TMA)-typed spectrum is specified at these points as a
+fied at the initial time step. If it ranges from 1 to 7, a
+JONSWAP (or TMA)-typed spectrum is specified as a
 function of the initial wind field and/or of the values of the
 following keywords
 \\
@@ -561,16 +521,57 @@ INITIAL DIRECTIONAL SPREAD 2\\
 INITIAL WEIGHTING FACTOR FOR ADF
 \end{CommentBlock}'
 
+NOM = 'DISSIPATION PAR FORT COURANT'
+NOM1 = 'DISSIPATION BY STRONG CURRENT'
+TYPE = ENTIER
+INDEX = 16
+MNEMO = 'SDSCU'
+TAILLE= 0
+CONTROLE = 0;2
+DEFAUT = 0
+DEFAUT1 = 0
+CHOIX = '0="Pas de wave-blocking"';
+'1="Limitation du spectre par une forme de Phillips"';
+'2="Dissipation selon Van der Westhuysen(2012)"'
+CHOIX1 = '0="No wave-blocking"';
+'1="Spectrum limitation by a Phillips shape"';
+'2="Dissipation in accordance with Van der Westhuysen(2012)"'
+RUBRIQUE =
+'TERMES SOURCES';'COURANT FORT'
+RUBRIQUE1 =
+'SOURCE TERMS';'STRONG CURRENT'
+NIVEAU = 0
+AIDE = 'Lorsque les effets de wave-blocking ou vagues stoppees
+par un fort courant sont presents, deux options sont proposees.
+Si sa valeur est 1, une limitation est imposee au spectre,
+en utilisant une forme d equilibre de Phillips (1977).
+Si sa valeur est 2, on utilise le terme de dissipation propose
+par Van der Westhuysen (2012).
+**Mots-cles associes :**
+COEFFICIENT DE DISSIPATION PAR FORT COURANT'
+AIDE1 = 'When wave-blocking effects are present (wave stopped by
+a strong opposing current), two options are possible.
+If its value is 1, an upper limit is imposed to the spectrum,
+using a Phillips (1977) shape.
+If its value is 2, a dissipative term is added, following
+Van der Westhuysen (2012).
+\\
+ \begin{CommentBlock}{Related keywords}
+DISSIPATION COEFFICIENT FOR STRONG CURRENT
+\end{CommentBlock}'
+
 NOM = 'NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC'
 NOM1 = 'TIME INCREMENT NUMBER IN TELEMAC FILE'
 TYPE = ENTIER
 INDEX = 17
 MNEMO = 'NPTT'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
 NIVEAU = 3
 COMPORT = 'DISPLAY %RECUPERATION DE DONNEE TELEMAC% = OUI'
 AIDE = 'Indique le numero du pas de temps du fichier de resultats
@@ -596,8 +597,8 @@ MNEMO = 'LVMAC'
 TAILLE= 0
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
+RUBRIQUE = 'INTERNAL'
+RUBRIQUE1 = 'INTERNAL'
 NIVEAU = 0
 AIDE = 'Indique la longueur du vecteur de la machine vectorielle
 utilisee.'
@@ -615,17 +616,19 @@ DEFAUT = 0
 DEFAUT1 = 0
 CHOIX = '0="Pas de deferlement"';
 '1="Dissipation selon Battjes et Janssen (1978)"';
-'2="Dissipation selon Thornton et Guza  (1983)"';
+'2="Dissipation selon Thornton et Guza (1983)"';
 '3="Dissipation selon Roelvink (1993)"';
 '4="Dissipation selon Izumiya et Horikawa (1984)"'
 CHOIX1 = '0="No breaking"';
 '1="Dissipation in accordance with Battjes et Janssen (1978)"';
-'2="Dissipation in accordance with Thornton et Guza  (1983)"';
+'2="Dissipation in accordance with Thornton et Guza (1983)"';
 '3="Dissipation in accordance with Roelvink (1993)"';
 '4="Dissipation in accordance with Izumiya et Horikawa (1984)"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme source de dissipation
 par deferlement du a la bathymetrie :
  0 : Pas de prise en compte du deferlement.
@@ -695,9 +698,20 @@ TAILLE= 0
 CONTROLE = 0;3
 DEFAUT = 2
 DEFAUT1 = 2
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+CHOIX = '0="SOLVES BY DICHOTOMY"';
+'1="EXPLICIT INSPIRED FROM CREDIZ VERSION 1"';
+'2="EXPLICIT INSPIRED FROM CREDIZ VERSION 2"';
+'3="EXPLICIT INSPIRED FROM CREDIZ VERSION 3"'
+CHOIX1 = '0="SOLVES BY DICHOTOMY"';
+'1="EXPLICIT INSPIRED FROM CREDIZ VERSION 1"';
+'2="EXPLICIT INSPIRED FROM CREDIZ VERSION 2"';
+'3="EXPLICIT INSPIRED FROM CREDIZ VERSION 3"'
+APPARENCE ='TOMLIST'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Choix du mode de resolution de l equation implicite donnant Qb.
 **Mots-cles associes :**
@@ -732,9 +746,12 @@ CHOIX = '1="Hm = GAMMA*D"';
 '2="Hm par critere de Miche"'
 CHOIX1 = '1="Hm = GAMMA*D"';
 '2="Hm given by the Miche criterium"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+APPARENCE ='TOMLIST'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Choix du critere de deferlement donnant la hauteur de houle
 de deferlement (1 : Hm = GAMMA*D ; 2 : Hm par critere de Miche).
@@ -775,9 +792,12 @@ CHOIX1 = '1="Frequency Fmoy"';
 '4="Frequency Fpic"';
 '5="Frequency Fread ordre 5"';
 '6="Frequency Fread ordre 8"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+APPARENCE ='TOMLIST'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
 1 : Frequence Fmoy
@@ -824,9 +844,15 @@ TAILLE= 0
 CONTROLE = 1;2
 DEFAUT = 2
 DEFAUT1 = 2
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+CHOIX = '1="Weight function 1"';
+'2="Weight function 2"'
+CHOIX1 = '1="Weight function 1"';
+'2="Weight function 2"'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Choix de l expression de la fonction de ponderation basee
 sur une distribution de probabilite des hauteurs de houle.
@@ -866,9 +892,11 @@ CHOIX1 = '1="Frequency Fmoy"';
 '4="Frequency Fpic"';
 '5="Frequency Fread ordre 5"';
 '6="Frequency Fread ordre 8"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
 \begin{itemize}
@@ -922,9 +950,12 @@ CHOIX = '1="Weibull"';
 '2="Rayleigh"'
 CHOIX1 = '1="Weibull"';
 '2="Rayleigh"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+APPARENCE ='TOMLIST'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Choix de la distribution des hauteurs de houle pour le
 modele de deferlement de Roelvink :
@@ -956,12 +987,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION'
 TYPE = ENTIER
 INDEX = 26
 MNEMO = 'IEXPRO'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 10
 DEFAUT1 = 10
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Exposant n de la fonction de ponderation utilisee par
 le modele de deferlement de Roelvink.
@@ -1005,9 +1038,12 @@ CHOIX1 = '1="Frequency Fmoy"';
 '4="Frequency Fpic"';
 '5="Frequency Fread ordre 5"';
 '6="Frequency Fread ordre 8"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+APPARENCE ='TOMLIST'
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
 1 : Frequence Fmoy
@@ -1066,9 +1102,11 @@ CHOIX1 = '1="Frequency Fmoy"';
 '4="Frequency Fpic"';
 '5="Frequency Fread ordre 5"';
 '6="Frequency Fread ordre 8"'
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 4'
 AIDE = 'Choix de la frequence caracteristique du spectre de houle
 1 : Frequence Fmoy
@@ -1105,12 +1143,14 @@ NOM1 = 'NUMBER OF BREAKING TIME STEPS'
 TYPE = ENTIER
 INDEX = 29
 MNEMO = 'NDTBRK'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% # 0'
 AIDE = 'Nombre de sous-pas de temps pour la prise en compte de la
 dissipation d energie par deferlement. Ces sous-pas de temps sont
@@ -1138,14 +1178,16 @@ DEFAUT1 = 1
 CHOIX = '0="pas de limiteur"';
 '1="limiteur type WAM 4 original"';
 '2="limiteur de Hersbach et Janssen (1999)"';
-'3="Laugel limiter"'
+'3="Laugel-BAJ limiter"'
 CHOIX1 = '0="no wave growth limiter"';
 '1="WAM 4 original limiter"';
 '2="Hersbach et Janssen (1999) limiter"';
 '3="Laugel-BAJ limiter"'
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'LIMITEUR'
+RUBRIQUE1 =
+'SOURCE TERMS';'LIMITER'
+NIVEAU = 0
 AIDE = 'Choix du type de limiteur de croissance.
 Si la valeur est 0, pas de limiteur.
 Si la valeur est 1, limiteur type WAM 4 original.
@@ -1177,9 +1219,11 @@ CHOIX = '0="pas de terme de croissance lineaire"';
 '1="croissance lineaire selon Cavaleri et Malanotte-Rizzoli (1981)"'
 CHOIX1 = '0="the linear wave growth is ignored"';
 '1="linear wave growth as in Cavaleri and Malanotte-Rizzoli (1981)"'
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 AIDE = 'Possibilite d ajouter au terme source d apport
 par le vent un terme de croissance lineaire.
 Si sa valeur est 0, on ne prend pas en compte le
@@ -1215,9 +1259,11 @@ CHOIX = '0="Pas de transfert"';
 CHOIX1 = '0="no triad interactions"';
 '1="LTA model (Eldeberky, 1996)"';
 '2="SPB model (Becq, 1998)"'
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 =
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 AIDE = 'Choix du type de modelisation du terme de transfert non
 lineaire entre triplets de frequences. Si sa valeur est 0, on ne
 prend pas en compte les transferts non lineaires entre triplets
@@ -1240,8 +1286,8 @@ AIDE1 = 'Selection of the triad interaction model:
 TRIADS 1 (LTA) COEFFICIENT ALPHA\\
 TRIADS 1 (LTA) COEFFICIENT RFMLTA\\
 TRIADS 2 (SPB) COEFFICIENT K\\
-TRIADS 2 (SPB) LOWER DIRECTIONAL BOUND\\
-TRIADS 2 (SPB) UPPER DIRECTIONAL BOUND\\
+TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY\\
+TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY\\
 \end{CommentBlock}'
 
 NOM = 'TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
@@ -1254,24 +1300,26 @@ CONTROLE = 0;7
 DEFAUT = 0
 DEFAUT1 = 0
 CHOIX = '0="Spectre nul"';
-'1="Spectre JONSWAP"';
-'2="Spectre JONSWAP"';
-'3="Spectre JONSWAP"';
-'4="Spectre JONSWAP"';
-'5="Spectre JONSWAP"';
-'6="Spectre JONSWAP"';
+'1="Spectre JONSWAP 1"';
+'2="Spectre JONSWAP 2"';
+'3="Spectre JONSWAP 3"';
+'4="Spectre JONSWAP 4"';
+'5="Spectre JONSWAP 5"';
+'6="Spectre JONSWAP 6"';
 '7="Spectre TMA"'
 CHOIX1 = '0="non-existent spectrum"';
-'1="JONSWAP spectrum"';
-'2="JONSWAP spectrum"';
-'3="JONSWAP spectrum"';
-'4="JONSWAP spectrum"';
-'5="JONSWAP spectrum"';
-'6="JONSWAP spectrum"';
+'1="JONSWAP spectrum 1"';
+'2="JONSWAP spectrum 2"';
+'3="JONSWAP spectrum 3"';
+'4="JONSWAP spectrum 4"';
+'5="JONSWAP spectrum 5"';
+'6="JONSWAP spectrum 6"';
 '7="TMA spectrum"'
-RUBRIQUE = 'CONDITIONS LIMITES'
-RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+RUBRIQUE =
+'CONDITIONS LIMITES'
+RUBRIQUE1 =
+'BOUNDARY CONDITIONS'
+NIVEAU = 0
 AIDE = 'Si ce mot-cle est pris egal a 0, on specifie un spectre
 nul aux limites. Si il est pris egal entre 1 et 6
 un spectre de type JONSWAP est specifie en tout point des limites
@@ -1319,11 +1367,13 @@ NOM1 = 'TIDE REFRESHING PERIOD'
 TYPE = ENTIER
 INDEX = 34
 MNEMO = 'LAM'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'MAREE'
-RUBRIQUE1 = 'TIDE'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'METEO'
 NIVEAU = 2
 AIDE = 'Determine la periode, en nombre d''iterations,
 d''actualisation de la profondeur d''eau et des courants de maree.
@@ -1357,8 +1407,10 @@ CHOIX = '3="Selafin du type TELEMAC"';
 '4="Format utilisateur (maruti.f)"'
 CHOIX1 = '3="Selafin, TELEMAC type"';
 '4="User format (maruti.f)"'
-RUBRIQUE = 'MAREE'
-RUBRIQUE1 = 'TIDE'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
 NIVEAU = 2
 AIDE = 'Choix du type de format du fichier du niveau de la maree :
 3 = selafin du type TELEMAC
@@ -1387,11 +1439,13 @@ NOM1 = 'RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE'
 TYPE = ENTIER
 INDEX = 36
 MNEMO = 'IDHMA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 4
 DEFAUT1 = 4
-RUBRIQUE = 'MAREE'
-RUBRIQUE1 = 'TIDE'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
 NIVEAU = 2
 AIDE = 'Rang de la variable donnant le niveau de la maree
 dans le fichier TELEMAC
@@ -1411,21 +1465,6 @@ TIDAL WATER LEVEL FILE BINARY\\
 TIDE REFRESHING PERIOD
 \end{CommentBlock}'
 
-NOM = 'NOMBRE DE TABLEAUX PRIVES'
-NOM1 = 'NUMBER OF PRIVATE ARRAYS'
-TYPE = ENTIER
-INDEX = 38
-MNEMO = 'Variable NPRIV'
-TAILLE= 0
-DEFAUT = 0
-DEFAUT1 = 0
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
-NIVEAU = 3
-AIDE = 'Nombre de tableaux utilises en variables privees par
-l''utilisateur'
-AIDE1 = 'Number of private arrays used by the user'
-
 NOM = 'FONCTION DE REPARTITION ANGULAIRE INITIALE'
 NOM1 = 'INITIAL ANGULAR DISTRIBUTION FUNCTION'
 TYPE = ENTIER
@@ -1441,8 +1480,10 @@ CHOIX = '1="$cos{^2s}(T-T0)$, T dans [T0-pi/2,T0+pi/2]"';
 CHOIX1 = '1="$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"';
 '2="$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]"';
 '3="$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"'
-RUBRIQUE = 'CONDITIONS INITIALES'
-RUBRIQUE1 = 'INITIAL CONDITIONS'
+RUBRIQUE =
+'CONDITIONS INITIALES'
+RUBRIQUE1 =
+'INITIAL CONDITIONS'
 NIVEAU = 1
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel. Permet le calcul de
@@ -1468,6 +1509,23 @@ or \telkey{SPRED2})
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
 \end{CommentBlock}'
 
+NOM = 'NOMBRE DE TABLEAUX PRIVES'
+NOM1 = 'NUMBER OF PRIVATE ARRAYS'
+TYPE = ENTIER
+INDEX = 38
+MNEMO = 'Variable NPRIV'
+TAILLE= 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 3
+AIDE = 'Nombre de tableaux utilises en variables privees par
+l''utilisateur'
+AIDE1 = 'Number of private arrays used by the user'
+
 NOM = 'FONCTION DE REPARTITION ANGULAIRE AUX LIMITES'
 NOM1 = 'BOUNDARY ANGULAR DISTRIBUTION FUNCTION'
 TYPE = ENTIER
@@ -1483,8 +1541,10 @@ CHOIX = '1="$cos{^2s}(T-T0)$, T dans [T0-pi/2,T0+pi/2]"';
 CHOIX1 = '1="$cos{^2s}(T-T0)$, T in [T0-pi/2,T0+pi/2]"';
 '2="$exp(-0.5((T-T0)/s)^2)$, T in [T0-pi/2,T0+pi/2]"';
 '3="$cos{^2s}((T-T0)/2)$ (de type Mitsuyasu)"'
-RUBRIQUE = 'CONDITIONS LIMITES'
-RUBRIQUE1 = 'BOUNDARY CONDITIONS'
+RUBRIQUE =
+'CONDITIONS LIMITES'
+RUBRIQUE1 =
+'BOUNDARY CONDITIONS'
 NIVEAU = 1
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites. Permet le calcul de
@@ -1518,14 +1578,30 @@ MNEMO = 'I\_ORIG,J\_ORIG'
 TAILLE = 2
 DEFAUT = 0;0
 DEFAUT1 = 0;0
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
+RUBRIQUE = 
+'PARAMETRES GENERAUX';'AUTRES DEFINITIONS DU DOMAINE';''
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'OTHER DOMAIN DEFINITIONS';''
 NIVEAU = 2
 AIDE = 'Valeur en metres, utilise pour eviter les trop grands nombres,
 transmis dans le format Selafin mais pas d''autre traitement pour
 l''instant'
 AIDE1 = 'Value in metres, used to avoid large real numbers,
 added in Selafin format, but so far no other treatment'
+
+NOM = 'DEBUGGER'
+NOM1 = 'DEBUGGER'
+TYPE = INTEGER
+INDEX = 41
+MNEMO = 'DEBUG'
+TAILLE = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 1
+AIDE= 'Pour imprimer la sequence des appels, mettre 1'
+AIDE1 = 'If 1, calls of subroutines will be printed in the listing'
 
 NOM = 'REGLAGE POUR INTEGRATION SUR OMEGA1'
 NOM1 = 'SETTING FOR INTEGRATION ON OMEGA1'
@@ -1542,9 +1618,11 @@ CHOIX = '1="moyen"';
 CHOIX1 = '1="medium"';
 '2="fine"';
 '3="rough"'
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Choix du reglage donnant le nombre de point d integration sur
 omega1 lorsque le terme de transfert non lineaire est calcule de
 maniere exacte (methode GQM): grossier 3;moyen 1 ; fin 2'
@@ -1567,9 +1645,11 @@ CHOIX = '3="grossier"';
 CHOIX1 = '3="rough"';
 '4="medium"';
 '8="fine"'
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Choix du reglage donnant le nombre de point d integration sur
 theta1 (nombre de points d integration = 2*NQ\_TE1) lorsque le terme
 de transfert non lineaire est calcule de maniere exacte (methode GQM):
@@ -1594,9 +1674,11 @@ CHOIX = '6="grossier"';
 CHOIX1 = '6="rough"';
 '8="medium"';
 '12="fine"'
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Nombre de point d integration sur omega2 lorsque le terme de
 transfert non lineaire est calcule de maniere exacte (methode GQM):
 grossier 6 ; moyen 8 ; fin 12'
@@ -1619,8 +1701,10 @@ CHOIX = '0="Pas de prise en compte de la diffraction"';
 CHOIX1 = '0="Diffraction is not taken into account"';
 '1="Mild Slope Equation model (Berkhoff - 1972)"';
 '2="Revised Mild Slope Equation model (Porter - 2003)"'
-RUBRIQUE = 'DIFFRACTION'
-RUBRIQUE1 = 'DIFFRACTION'
+RUBRIQUE =
+'TRANSPORT';'PARAMETRES DE DIFFRACTION'
+RUBRIQUE1 =
+'TRANSPORT';'DIFFRACTION PARAMETERS'
 NIVEAU = 1
 AIDE = 'Choix du model pour representer la diffraction :
  0 : Pas de prise en compte de la diffraction
@@ -1653,11 +1737,13 @@ NOM1 = 'STARTING TIME STEP FOR DIFFFRACTION'
 TYPE = ENTIER
 INDEX = 46
 MNEMO = 'NPTDIF'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'DIFFRACTION'
-RUBRIQUE1 = 'DIFFRACTION'
+RUBRIQUE =
+'TRANSPORT';'PARAMETRES DE DIFFRACTION'
+RUBRIQUE1 =
+'TRANSPORT';'DIFFRACTION PARAMETERS'
 NIVEAU = 1
 AIDE = 'Numero du pas de temps a partir duquel la diffraction est
 prise en compte dans la simulation.
@@ -1680,11 +1766,13 @@ TYPE = ENTIER
 INDEX = 49
 MNEMO = 'NCSIZE'
 CONTROLE = 0;256
-TAILLE = 0
+TAILLE = 1
 DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'MISCELLANEOUS'
 NIVEAU = 1
 AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
 0 : 1 machine, compilation sans bibliotheque de parallelisme
@@ -1697,43 +1785,64 @@ AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING
 2 : 2 processors or machines in parallel
 etc....'
 
-NOM = 'PARTITIONNEUR'
-NOM1 = 'PARTITIONING TOOL'
-TYPE = CARACTERE
-INDEX = 101
-DEFAUT  = 'METIS'
-DEFAUT1 = 'METIS'
-CHOIX  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
-CHOIX1  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
-NIVEAU = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-AIDE = 'CHOIX DU PARTITIONNEUR
-1 : METIS
-2 : SCOTCH
-3 : PARMETIS
-4 : PTSCOTCH
-etc... '
-AIDE1 = 'PARTITIONING TOOL SELECTION
-\begin{itemize}
-\item 1 : METIS
-\item 2 : SCOTCH
-\item 3 : PARMETIS
-\item 4 : PTSCOTCH
-\end{itemize} '
+NOM = 'ASSEMBLAGE EN ELEMENTS FINIS'
+NOM1 = 'FINITE ELEMENT ASSEMBLY'
+TYPE = ENTIER
+INDEX = 50
+MNEMO = 'MODASS'
+TAILLE= 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = '1 : normal 2 : avec des entiers I8'
+AIDE1 = '1: normal 2: with I8 integers'
 
+NOM = 'MODELISATION BAJ'
+NOM1 = 'BAJ MODELING'
+TYPE = ENTIER
+INDEX = 51
+MNEMO = 'CBAJ'
+TAILLE= 0
+CONTROLE = 0;1
+DEFAUT = 0
+DEFAUT1 = 0
+CHOIX = '0="Modelisation classique"';
+'1="Modelisation BAJ"'
+CHOIX1 = '0="classical modelisation"';
+'1="BAJ Modeling"'
+RUBRIQUE = 'TERMES SOURCES'
+RUBRIQUE1 = 'SOURCE TERMS'
+NIVEAU = 0
+AIDE = 'Type de calcul de la frequence centrale
+Si sa valeur est 0, on prend la formulation classique
+Si sa valeur est 1 on pren la modelisation BAJ proposee
+par Laugel (2013) pour le calcul de la frequence centrale
+et le limiteur de croissance
+**Mots-cles associes :**
+PRISE EN COMPTE DES TERMES SOURCES'
+AIDE1 = 'Choice of the calculus of centrale frequency
+if its value is 0, classical choice
+if its value is 1, BAJ choice proposed by Laugel (2013).
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF SOURCE TERMS
+\end{CommentBlock}'
 
 NOM = 'PAS DE TEMPS'
 NOM1 = 'TIME STEP'
 TYPE = REEL
 INDEX = 1
 MNEMO = 'DT'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
-RUBRIQUE = 'TEMPS'
-RUBRIQUE1 = 'TIME'
-NIVEAU = 1
+RUBRIQUE = 
+'PARAMETRES GENERAUX';'TEMPS'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'TIME'
+NIVEAU = 0
 AIDE = 'Definit le pas de temps en secondes.
 **Mots-cles associes :**
 NOMBRE DE PAS DE TEMPS'
@@ -1748,12 +1857,14 @@ NOM1 = 'MINIMAL FREQUENCY'
 TYPE = REEL
 INDEX = 2
 MNEMO = 'F1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
-NIVEAU = 1
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 = 
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
+NIVEAU = 0
 AIDE = 'Definit la frequence minimale en Hz.
 On obtient les autres frequences grace a la RAISON FREQUENTIELLE r et le
 NOMBRE DE FREQUENCES NF par $f=f0*r^{k-1}$ k=1,NF.
@@ -1776,12 +1887,14 @@ NOM1 = 'FREQUENTIAL RATIO'
 TYPE = REEL
 INDEX = 3
 MNEMO = 'RAISF'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.1
 DEFAUT1 = 1.1
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
-NIVEAU = 1
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 = 
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
+NIVEAU = 0
 AIDE = 'Definit le rapport entre 2 frequences de discretisation
 successives. On obtient les autres frequences grace a la FREQUENCE
 MINIMALE f0 et le NOMBRE DE FREQUENCES NF par $f=f0*r^{k-1}$ k=1,NF.
@@ -1798,64 +1911,18 @@ NUMBER OF FREQUENCIES\\
 SPECTRUM TAIL FACTOR
 \end{CommentBlock}'
 
-NOM = 'ABSCISSES DES POINTS DE SORTIE DU SPECTRE'
-NOM1 = 'ABSCISSAE OF SPECTRUM PRINTOUT POINTS'
-TYPE = REEL
-INDEX = 4
-TAILLE = 2
-MNEMO = 'XLEO'
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Tableau donnant les abscisses des points de sortie Seraphin du
-spectre et de dimension maximale 99. Les points de sortie du spectre
-sont les points 2D les plus proches des coordonnees specifiees
-**Mots-cles associes :**
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE
-FICHIER DES RESULTATS PONCTUELS'
-AIDE1 = 'Array providing the abscissae of the Seraphin spectrum printout
-points with a maximum dimension of 99. The chosen spectrum points are
-the closest 2D points to the specified co-ordinates.
-\\
- \begin{CommentBlock}{Related keywords}
-ORDINATES OF SPECTRUM PRINTOUT POINTS\\
-PUNCTUAL RESULTS FILE
-\end{CommentBlock}'
-
-NOM = 'ORDONNEES DES POINTS DE SORTIE DU SPECTRE'
-NOM1 = 'ORDINATES OF SPECTRUM PRINTOUT POINTS'
-TYPE = REEL
-INDEX = 5
-MNEMO = 'YLEO'
-TAILLE = 2
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Tableau donnant les ordonnees des points de sortie Seraphin du
-spectre et de dimension max 99.Les points de sortie du spectre
-sont les points 2D les plus proches des coordonnees specifiees
-**Mots-cles associes :**
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE
-FICHIER DES RESULTATS PONCTUELS'
-AIDE1 = 'Array providing the ordinates of the Seraphin spectrum printout
-points with a maximum dimension of 99. The spectrum printout points are
-the closest 2D points to the specified co-ordinates
-\\
- \begin{CommentBlock}{Related keywords}
-ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
-PUNCTUAL RESULT FILE
-\end{CommentBlock}'
-
 NOM = 'DATE DE DEBUT DU CALCUL'
 NOM1 = 'DATE OF COMPUTATION BEGINNING'
 TYPE = REEL
 INDEX = 6
 MNEMO = 'DDC'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = 'TEMPS'
-RUBRIQUE1 = 'TIME'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'TEMPS'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'TIME'
 NIVEAU = 2
 AIDE = 'Donne la date du debut du calcul au format aaaammjjhhmm
 ce qui permet de se reperer par rapport au fichier des vents,
@@ -1883,12 +1950,14 @@ NOM1 = 'BOTTOM FRICTION COEFFICIENT'
 TYPE = REEL
 INDEX = 7
 MNEMO = 'CFROT1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.038
 DEFAUT1 = 0.038
-RUBRIQUE = 'FROTTEMENT FOND'
-RUBRIQUE1 = 'BOTTOM FRICTION'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'FROTTEMENT FOND'
+RUBRIQUE1 =
+'SOURCE TERMS';'BOTTOM FRICTION'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR FROTTEMENT SUR LE FOND% # 0'
 AIDE = 'Coefficient de frottement sur le fond.
 **Mots-cles associes :**
@@ -1906,12 +1975,14 @@ NOM1 = 'WHITE CAPPING DISSIPATION COEFFICIENT'
 TYPE = REEL
 INDEX = 8
 MNEMO = 'CMOUT1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 4.5
 DEFAUT1 = 4.5
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR MOUTONNEMENT% # 0'
 AIDE = 'Coefficient de dissipation par moutonnement.
 **Mots-cles associes :**
@@ -1929,13 +2000,13 @@ NOM1 = 'WHITE CAPPING WEIGHTING COEFFICIENT'
 TYPE = REEL
 INDEX = 9
 MNEMO = 'CMOUT2'
-TAILLE= 0
+TAILLE= 1
 CONTROLE = 0;1
 DEFAUT = 0.5
 DEFAUT1 = 0.5
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 2
+RUBRIQUE = 'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 = 'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR MOUTONNEMENT% # 0'
 AIDE = ' Coefficient de ponderation pour le moutonnement.
 **Mots-cles associes :**
@@ -1953,12 +2024,14 @@ NOM1 = 'AIR DENSITY'
 TYPE = REEL
 INDEX = 10
 MNEMO = 'ROAIR'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.225
 DEFAUT1 = 1.225
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 =
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Le rapport Roair/Roeau est utilise dans le terme source
 de generation par le vent.
@@ -1978,12 +2051,12 @@ NOM1 = 'WATER DENSITY'
 TYPE = REEL
 INDEX = 11
 MNEMO = 'ROEAU'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1000.
 DEFAUT1 = 1000.
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE = 'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = ' Le rapport Roair/Roeau est utilise dans le terme source
 de generation par le vent.
@@ -2003,12 +2076,14 @@ NOM1 = 'WIND GENERATION COEFFICIENT'
 TYPE = REEL
 INDEX = 12
 MNEMO = 'BETAM'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.2
 DEFAUT1 = 1.2
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -2025,12 +2100,14 @@ NOM1 = 'VON KARMAN CONSTANT'
 TYPE = REEL
 INDEX = 13
 MNEMO = 'XKAPPA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.41
 DEFAUT1 = 0.41
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -2047,11 +2124,13 @@ NOM1 = 'CHARNOCK CONSTANT'
 TYPE = REEL
 INDEX = 14
 MNEMO = 'ALPHA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.01
 DEFAUT1 = 0.01
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
 NIVEAU = 2
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
@@ -2069,12 +2148,14 @@ NOM1 = 'SHIFT GROWING CURVE DUE TO WIND'
 TYPE = REEL
 INDEX = 15
 MNEMO = 'DECAL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.011
 DEFAUT1 = 0.011
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -2091,11 +2172,13 @@ NOM1 = 'WIND MEASUREMENTS LEVEL'
 TYPE = REEL
 INDEX = 16
 MNEMO = 'ZVENT'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 10.
 DEFAUT1 = 10.
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
 NIVEAU = 2
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
@@ -2113,12 +2196,14 @@ NOM1 = 'WIND DRAG COEFFICIENT'
 TYPE = REEL
 INDEX = 17
 MNEMO = 'CDRAG'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.2875E-3
 DEFAUT1 = 1.2875E-3
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent.
@@ -2135,12 +2220,12 @@ NOM1 = 'INITIAL SIGNIFICANT WAVE HEIGHT'
 TYPE = REEL
 INDEX = 18
 MNEMO = 'HM0'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
@@ -2158,12 +2243,12 @@ NOM1 = 'INITIAL PEAK FREQUENCY'
 TYPE = REEL
 INDEX = 19
 MNEMO = 'FPIC'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.067
 DEFAUT1 = 0.067
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
@@ -2181,19 +2266,19 @@ NOM1 = 'INITIAL PEAK FACTOR'
 TYPE = REEL
 INDEX = 20
 MNEMO = 'GAMMA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 3.3
 DEFAUT1 = 3.3
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2204,7 +2289,7 @@ NOM1 = 'INITIAL VALUE OF SIGMA-A FOR SPECTRUM'
 TYPE = REEL
 INDEX = 21
 MNEMO = 'SIGMAA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.07
 DEFAUT1 = 0.07
 RUBRIQUE = 'CONDITIONS INITIALES'
@@ -2216,7 +2301,7 @@ de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2227,7 +2312,7 @@ NOM1 = 'INITIAL VALUE OF SIGMA-B FOR SPECTRUM'
 TYPE = REEL
 INDEX = 22
 MNEMO = 'SIGMAB'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.09
 DEFAUT1 = 0.09
 RUBRIQUE = 'CONDITIONS INITIALES'
@@ -2239,7 +2324,7 @@ de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2250,19 +2335,19 @@ NOM1 = 'INITIAL PHILLIPS CONSTANT'
 TYPE = REEL
 INDEX = 23
 MNEMO = 'ALPHIL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.018
 DEFAUT1 = 0.018
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 2
+NIVEAU = 1
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initiale directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2273,19 +2358,19 @@ NOM1 = 'INITIAL MEAN FETCH VALUE'
 TYPE = REEL
 INDEX = 24
 MNEMO = 'FETCH'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 30000.
 DEFAUT1 = 30000.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2296,19 +2381,19 @@ NOM1 = 'INITIAL MAXIMUM PEAK FREQUENCY'
 TYPE = REEL
 INDEX = 25
 MNEMO = 'FREMAX'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.2
 DEFAUT1 = 0.2
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2319,19 +2404,19 @@ NOM1 = 'INITIAL MAIN DIRECTION 1'
 TYPE = REEL
 INDEX = 26
 MNEMO = 'TETA1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial. Exprimee en degres
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2342,19 +2427,19 @@ NOM1 = 'INITIAL DIRECTIONAL SPREAD 1'
 TYPE = REEL
 INDEX = 27
 MNEMO = 'SPRED1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 2.
 DEFAUT1 = 2.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2365,19 +2450,19 @@ NOM1 = 'INITIAL MAIN DIRECTION 2'
 TYPE = REEL
 INDEX = 28
 MNEMO = 'TETA2'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial. Exprimee en degres.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2388,19 +2473,19 @@ NOM1 = 'INITIAL DIRECTIONAL SPREAD 2'
 TYPE = REEL
 INDEX = 29
 MNEMO = 'SPRED2'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 2.
 DEFAUT1 = 2.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2411,19 +2496,19 @@ NOM1 = 'INITIAL WEIGHTING FACTOR FOR ADF'
 TYPE = REEL
 INDEX = 30
 MNEMO = 'XLAMDA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 l initialisation du spectre directionnel en fonction du champ
 de vent initial.
 **Mots-cles associes :**
 INITIALISATION DU SPECTRE DIRECTIONNEL'
 AIDE1 = 'Is part of the set of constants used for computing the
-boundary directional spectrum as a function of the wind field.
+initial directional spectrum as a function of the wind field.
 \\
  \begin{CommentBlock}{Related keywords}
 TYPE OF INITIAL DIRECTIONAL SPECTRUM
@@ -2434,11 +2519,13 @@ NOM1 = 'SPECTRUM TAIL FACTOR'
 TYPE = REEL
 INDEX = 31
 MNEMO = 'TAILF'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 5.
 DEFAUT1 = 5.
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
+RUBRIQUE = 
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 =  
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
 NIVEAU = 2
 AIDE = 'Utilise pour prendre en compte dans les calculs la
 contribution des hautes frequences non discretisees.
@@ -2459,11 +2546,13 @@ NOM1 = 'SPECTRUM ENERGY THRESHOLD '
 TYPE = REEL
 INDEX = 32
 MNEMO = 'E2FMIN'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.E-30
 DEFAUT1 = 1.E-30
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE';''
+RUBRIQUE1 =  
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION';''
 NIVEAU = 2
 AIDE = ' En condition initiale, une energie inferieure a ce seuil
 pour un couple frequence-direction donnee est prise nulle. Utile
@@ -2477,12 +2566,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT ALPHA'
 TYPE = REEL
 INDEX = 33
 MNEMO = 'ALFABJ'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Constante ALPHA du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2510,12 +2601,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA1'
 TYPE = REEL
 INDEX = 34
 MNEMO = 'GAMBJ1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.88
 DEFAUT1 = 0.88
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Constante GAMMA1 du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2543,12 +2636,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 1 (BJ) COEFFICIENT GAMMA2'
 TYPE = REEL
 INDEX = 35
 MNEMO = 'GAMBJ2'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.8
 DEFAUT1 = 0.8
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 1'
 AIDE = 'Constante GAMMA2 du modele de deferlement de Battjes et Janssen.
 **Mots-cles associes :**
@@ -2576,12 +2671,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT B'
 TYPE = REEL
 INDEX = 36
 MNEMO = 'Variable BORETG'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.0
 DEFAUT1 = 1.0
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Constante B du modele de deferlement de Thornton et Guza.
 **Mots-cles associes :**
@@ -2605,12 +2702,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 2 (TG) COEFFICIENT GAMMA'
 TYPE = REEL
 INDEX = 37
 MNEMO = 'Variable GAMATG'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.42
 DEFAUT1 = 0.42
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 2'
 AIDE = 'Constante GAMMA du modele de deferlement de Thornton et Guza.
 **Mots-cles associes :**
@@ -2634,12 +2733,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT ALPHA'
 TYPE = REEL
 INDEX = 38
 MNEMO = 'Variable ALFARO'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Constante ALPHA du modele de deferlement de Roelvink (1993).
 **Mots-cles associes :**
@@ -2667,12 +2768,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA'
 TYPE = REEL
 INDEX = 39
 MNEMO = 'Variable GAMARO'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.54
 DEFAUT1 = 0.54
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Constante GAMMA du modele de deferlement de Roelvink (1993).
 **Mots-cles associes :**
@@ -2700,12 +2803,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 3 (RO) COEFFICIENT GAMMA2'
 TYPE = REEL
 INDEX = 40
 MNEMO = 'Variable GAM2RO'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.65
 DEFAUT1 = 0.65
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 3'
 AIDE = 'Constante GAMMA2 du modele de deferlement de Roelvink (1993).
 N est utilisee que pour la distribution de Weibull.
@@ -2734,12 +2839,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT BETA0'
 TYPE = REEL
 INDEX = 41
 MNEMO = 'Variable BETAIH'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.8
 DEFAUT1 = 1.8
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 4'
 AIDE = 'Constante BETA0 du modele de deferlement de Izumiya et
 Horikawa (1984).
@@ -2763,12 +2870,14 @@ NOM1 = 'DEPTH-INDUCED BREAKING 4 (IH) COEFFICIENT M2STAR'
 TYPE = REEL
 INDEX = 42
 MNEMO = 'Variable EM2SIH'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.009
 DEFAUT1 = 0.009
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 COMPORT = 'DISPLAY %DISSIPATION PAR DEFERLEMENT% = 4'
 AIDE = 'Constante M2STAR du modele de deferlement de Izumiya et
 Horikawa (1984).
@@ -2792,12 +2901,14 @@ NOM1 = 'MAXIMUM VALUE OF THE RATIO HM0 ON D'
 TYPE = REEL
 INDEX = 43
 MNEMO = 'Variable COEFHS'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
-NIVEAU = 1
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
+NIVEAU = 0
 AIDE = 'En debut de prise en compte des termes sources, la hauteur
 de houle est ecretee de facon a satisfaire le critere specifie.
 **Mots-cles associes :**
@@ -2815,11 +2926,13 @@ NOM1 = 'COEFFICIENT OF THE TIME SUB-INCREMENTS FOR BREAKING'
 TYPE = REEL
 INDEX = 44
 MNEMO = 'Variable XDTBRK'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.45
 DEFAUT1 = 1.45
-RUBRIQUE = 'DEFERLEMENT'
-RUBRIQUE1 = 'BREAKING'
+RUBRIQUE = 
+'TERMES SOURCES';'DEFERLEMENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'BREAKING'
 NIVEAU = 2
 AIDE = 'Raison de la suite geometrique des sous-pas de temps pour
 le deferlement.
@@ -2839,12 +2952,14 @@ NOM1 = 'STANDARD CONFIGURATION PARAMETER'
 TYPE = REEL
 INDEX = 45
 MNEMO = 'Variable XLAMD'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.25
 DEFAUT1 = 0.25
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 = 
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = 'Parametre definissant la configuration d interaction
 standard pour les quadruplets dans la methode DIA.
 **Mots-cles associes :**
@@ -2861,12 +2976,12 @@ NOM1 = 'INITIAL STILL WATER LEVEL'
 TYPE = REEL
 INDEX = 46
 MNEMO = 'ZREPOS'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS INITIALES'
 RUBRIQUE1 = 'INITIAL CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Parametre permettant de calculer la profondeur
 initiale du plan d eau (DEPTH) a partir de la cote du
 fond (ZF) : DEPTH=ZREPOS-ZF.'
@@ -2878,12 +2993,14 @@ NOM1 = 'TRIADS 1 (LTA) COEFFICIENT ALPHA'
 TYPE = REEL
 INDEX = 47
 MNEMO = 'Variable ALFLTA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.5
 DEFAUT1 = 0.5
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 =
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 1'
 AIDE = 'Constante alpha du modele LTA propose par Eldeberky (1996).
 Si alpha = 0, les transferts d energie entre frequences seront nuls.
@@ -2905,12 +3022,14 @@ NOM1 = 'TRIADS 1 (LTA) COEFFICIENT RFMLTA'
 TYPE = REEL
 INDEX = 48
 MNEMO = 'Variable RFMLTA'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 2.5
 DEFAUT1 = 2.5
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 =
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 1'
 AIDE = 'RFMLTA determine la frequence maximale vers laquelle les
 transferts d energie peuvent avoir lieu. La frequence maximale est
@@ -2933,12 +3052,14 @@ NOM1 = 'TRIADS 2 (SPB) COEFFICIENT K'
 TYPE = REEL
 INDEX = 49
 MNEMO = 'Variable KSPB'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.34
 DEFAUT1 = 0.34
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE =
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 =
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2'
 AIDE = 'Parametre d ajustement du modele SPB
 **Mots-cles associes :**
@@ -2958,12 +3079,14 @@ NOM1 = 'TRIADS 2 (SPB) LOWER DIRECTIONAL BOUNDARY'
 TYPE = REEL
 INDEX = 50
 MNEMO = 'Variable BDISPB'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 = 
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2'
 AIDE = 'Borne directionnelle inferieure du modele SPB
 **Mots-cles associes :**
@@ -2983,12 +3106,14 @@ NOM1 = 'TRIADS 2 (SPB) UPPER DIRECTIONAL BOUNDARY'
 TYPE = REEL
 INDEX = 51
 MNEMO = 'Variable BDSSPB'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 360.
 DEFAUT1 = 360.
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 2
+RUBRIQUE = 
+'TERMES SOURCES';'TRANSFERTS DE TRIPLET'
+RUBRIQUE1 = 
+'SOURCE TERMS';'TRIAD TRANSFERS'
+NIVEAU = 0
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2'
 AIDE = 'Borne directionnelle superieure du modele SPB
 **Mots-cles associes :**
@@ -3008,12 +3133,12 @@ NOM1 = 'BOUNDARY SIGNIFICANT WAVE HEIGHT'
 TYPE = REEL
 INDEX = 52
 MNEMO = 'Variable HM0L'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent.
@@ -3031,12 +3156,12 @@ NOM1 = 'BOUNDARY PEAK FREQUENCY'
 TYPE = REEL
 INDEX = 53
 MNEMO = 'Variable FPICL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.067
 DEFAUT1 = 0.067
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3054,7 +3179,7 @@ NOM1 = 'BOUNDARY SPECTRUM VALUE OF SIGMA-A'
 TYPE = REEL
 INDEX = 54
 MNEMO = 'Variable SIGMAL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.07
 DEFAUT1 = 0.07
 RUBRIQUE = 'CONDITIONS LIMITES'
@@ -3077,7 +3202,7 @@ NOM1 = 'BOUNDARY SPECTRUM VALUE OF SIGMA-B'
 TYPE = REEL
 INDEX = 55
 MNEMO = 'Variable SIGMBL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.09
 DEFAUT1 = 0.09
 RUBRIQUE = 'CONDITIONS LIMITES'
@@ -3100,7 +3225,7 @@ NOM1 = 'BOUNDARY PHILLIPS CONSTANT'
 TYPE = REEL
 INDEX = 56
 MNEMO = 'Variable APHILL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.018
 DEFAUT1 = 0.018
 RUBRIQUE = 'CONDITIONS LIMITES'
@@ -3123,12 +3248,12 @@ NOM1 = 'BOUNDARY MEAN FETCH VALUE'
 TYPE = REEL
 INDEX = 57
 MNEMO = 'Variable FETCHL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 30000.
 DEFAUT1 = 30000.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3146,12 +3271,12 @@ NOM1 = 'BOUNDARY MAXIMUM PEAK FREQUENCY'
 TYPE = REEL
 INDEX = 58
 MNEMO = 'Variable FPMAXL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.2
 DEFAUT1 = 0.2
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3169,12 +3294,12 @@ NOM1 = 'BOUNDARY MAIN DIRECTION 1'
 TYPE = REEL
 INDEX = 59
 MNEMO = 'Variable TETA1L'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3192,12 +3317,12 @@ NOM1 = 'BOUNDARY DIRECTIONAL SPREAD 1'
 TYPE = REEL
 INDEX = 60
 MNEMO = 'Variable SPRE1L'
-TAILLE = 0
+TAILLE = 1
 DEFAUT = 2.
 DEFAUT1 = 2.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3215,12 +3340,12 @@ NOM1 = 'BOUNDARY MAIN DIRECTION 2'
 TYPE = REEL
 INDEX = 61
 MNEMO = 'Variable TETA2L'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3238,12 +3363,12 @@ NOM1 = 'BOUNDARY DIRECTIONAL SPREAD 2'
 TYPE = REEL
 INDEX = 62
 MNEMO = 'Variable SPRE2L'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 2.
 DEFAUT1 = 2.
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3261,7 +3386,7 @@ NOM1 = 'BOUNDARY WEIGHTING FACTOR FOR ADF'
 TYPE = REEL
 INDEX = 63
 MNEMO = 'Variable XLAMDL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.
 DEFAUT1 = 1.
 RUBRIQUE = 'CONDITIONS LIMITES'
@@ -3284,12 +3409,12 @@ NOM1 = 'BOUNDARY PEAK FACTOR'
 TYPE = REEL
 INDEX = 64
 MNEMO = 'Variable GAMMAL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 3.3
 DEFAUT1 = 3.3
 RUBRIQUE = 'CONDITIONS LIMITES'
 RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le calcul du spectre directionnel aux limites en fonction du champ
 de vent .
@@ -3307,12 +3432,14 @@ NOM1 = 'MINIMUM WATER DEPTH'
 TYPE = REEL
 INDEX = 65
 MNEMO = 'Variable PROMIN'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.1
 DEFAUT1 = 0.1
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
+RUBRIQUE =
+'PARAMETRES GENERAUX';'AUTRES DEFINITIONS DU DOMAINE'
+RUBRIQUE1 = 
+'GENERAL PARAMETERS';'OTHER DOMAIN DEFINITIONS'
+NIVEAU = 0
 AIDE = 'Definit la profondeur d eau minimale en dessous de laquelle
 les fonds sont supposes emerges.'
 AIDE1 = 'Defines the minimum water depth below which bottom elevations
@@ -3323,11 +3450,11 @@ NOM1 = 'WIND VELOCITY ALONG X'
 TYPE = REEL
 INDEX = 66
 MNEMO = 'Variable VX\_CTE'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
 NIVEAU = 1
 COMPORT = 'DISPLAY %VENT STATIONNAIRE% = OUI'
 AIDE = 'Vitesse du vent suivant X, constante et homogene (en m/s)
@@ -3344,11 +3471,11 @@ NOM1 = 'WIND VELOCITY ALONG Y'
 TYPE = REEL
 INDEX = 67
 MNEMO = 'Variable VY\_CTE'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.
 DEFAUT1 = 0.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
 NIVEAU = 1
 COMPORT = 'DISPLAY %VENT STATIONNAIRE% = OUI'
 AIDE = 'Vitesse du vent suivant Y, constante et homogene (en m/s)
@@ -3365,11 +3492,13 @@ NOM1 = 'IMPLICITATION COEFFICIENT FOR SOURCE TERMS'
 TYPE = REEL
 INDEX = 68
 MNEMO = 'Variable CIMPLI'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.5
 DEFAUT1 = 0.5
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+RUBRIQUE =
+'TERMES SOURCES';'PARAMETRES NUMERIQUES'
+RUBRIQUE1 =
+'SOURCE TERMS';'NUMERICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Coefficient controlant l implicitation dans le schema
 d integration des termes sources, compris entre 0 et 1.
@@ -3394,12 +3523,14 @@ NOM1 = 'YAN GENERATION COEFFICIENT D'
 TYPE = REEL
 INDEX = 69
 MNEMO = 'Variable COEFWD'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.04
 DEFAUT1 = 0.04
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
+RUBRIQUE = 
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
 **Mots-cles associes :**
@@ -3421,12 +3552,14 @@ NOM1 = 'YAN GENERATION COEFFICIENT E'
 TYPE = REEL
 INDEX = 70
 MNEMO = 'Variable COEFWE'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.00552
 DEFAUT1 = 0.00552
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
 **Mots-cles associes :**
@@ -3448,12 +3581,14 @@ NOM1 = 'YAN GENERATION COEFFICIENT F'
 TYPE = REEL
 INDEX = 71
 MNEMO = 'Variable COEFWF'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.000052
 DEFAUT1 = 0.000052
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 = 
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
 **Mots-cles associes :**
@@ -3475,12 +3610,14 @@ NOM1 = 'YAN GENERATION COEFFICIENT H'
 TYPE = REEL
 INDEX = 72
 MNEMO = 'Variable COEFWH'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = -0.000302
 DEFAUT1 = -0.000302
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'VENT'
+RUBRIQUE1 =  
+'SOURCE TERMS';'WIND'
+NIVEAU = 0
 AIDE = 'Fait partie de l ensemble des constantes utilisees dans
 le terme source de generation par le vent de Yan (1987).
 **Mots-cles associes :**
@@ -3502,12 +3639,14 @@ NOM1 = 'WESTHUYSEN DISSIPATION COEFFICIENT'
 TYPE = REEL
 INDEX = 73
 MNEMO = 'Variable CMOUT3'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.00005
 DEFAUT1 = 0.00005
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =  
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 AIDE = 'Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Cdis,break.
 **Mots-cles associes :**
@@ -3530,12 +3669,14 @@ NOM1 = 'SATURATION THRESHOLD FOR THE DISSIPATION'
 TYPE = REEL
 INDEX = 74
 MNEMO = 'Variable CMOUT4'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.00175
 DEFAUT1 = 0.00175
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =  
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 AIDE = 'Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Br (seuil de saturation).
 **Mots-cles associes :**
@@ -3558,12 +3699,14 @@ NOM1 = 'WESTHUYSEN WHITE CAPPING DISSIPATION'
 TYPE = REEL
 INDEX = 75
 MNEMO = 'Variable CMOUT5'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 3.29
 DEFAUT1 = 3.29
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =  
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 AIDE = 'Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): Cdis,non-break.
 **Mots-cles associes :**
@@ -3586,12 +3729,14 @@ NOM1 = 'WESTHUYSEN WEIGHTING COEFFICIENT'
 TYPE = REEL
 INDEX = 76
 MNEMO = 'Variable CMOUT6'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.0
 DEFAUT1 = 0.0
-RUBRIQUE = 'MOUTONNEMENT'
-RUBRIQUE1 = 'WHITE CAPPING'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'MOUTONNEMENT'
+RUBRIQUE1 =  
+'SOURCE TERMS';'WHITE CAPPING'
+NIVEAU = 0
 AIDE = 'Coefficient de dissipation par moutonnement de l expression
 de van der Westhuysen (2007): delta.
 **Mots-cles associes :**
@@ -3614,12 +3759,14 @@ NOM1 = 'THRESHOLD0 FOR CONFIGURATIONS ELIMINATION'
 TYPE = REEL
 INDEX = 77
 MNEMO = 'Variable SEUIL'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.00
 DEFAUT1 = 0.00
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =  
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Choix du seuil pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
 (methode GQM)
@@ -3641,12 +3788,14 @@ NOM1 = 'THRESHOLD1 FOR CONFIGURATIONS ELIMINATION'
 TYPE = REEL
 INDEX = 78
 MNEMO = 'Variable SEUIL1'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 10000000000.0
 DEFAUT1 = 10000000000.0
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =  
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Choix du seuil1 pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
 (methode GQM)
@@ -3668,12 +3817,14 @@ NOM1 = 'THRESHOLD2 FOR CONFIGURATIONS ELIMINATION'
 TYPE = REEL
 INDEX = 79
 MNEMO = 'Variable SEUIL2'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 0.15
 DEFAUT1 = 0.15
-RUBRIQUE = 'TRANSFERTS'
-RUBRIQUE1 = 'TRANSFERS'
-NIVEAU = 1
+RUBRIQUE =  
+'TERMES SOURCES';'TRANSFERTS DE QUADRUPLETS'
+RUBRIQUE1 =  
+'SOURCE TERMS';'QUADRUPLET INTERACTIONS'
+NIVEAU = 0
 AIDE = ' Choix du seuil2 pour l elimination de configurations lorsque
 le terme de transfert non lineaire est calcule de maniere exacte
 (methode GQM) : grossier 0.15 ; moyen 0.01 ; fin 0.001
@@ -3696,11 +3847,13 @@ NOM1 = 'VARIANCE THRESHOLD FOR DIFFRACTION'
 TYPE = REEL
 INDEX = 80
 MNEMO = 'F2DIFM'
-TAILLE= 0
+TAILLE= 1
 DEFAUT = 1.E-12
 DEFAUT1 = 1.E-12
-RUBRIQUE = 'DIFFRACTION'
-RUBRIQUE1 = 'DIFFRACTION'
+RUBRIQUE =
+'TRANSPORT';'PARAMETRES DE DIFFRACTION'
+RUBRIQUE1 =
+'TRANSPORT';'DIFFRACTION PARAMETERS'
 NIVEAU = 2
 AIDE = 'Seuil minimum de variance spectrale pris en compte
 dans la diffraction
@@ -3717,6 +3870,140 @@ STARTING TIME STEP FOR DIFFRACTION\\
 DIFFRACTION FILTER
 \end{CommentBlock}'
 
+NOM = 'UNITE DE TEMPS DU FICHIER DES COURANTS'
+NOM1 = 'TIME UNIT IN CURRENTS FILE'
+TYPE = REEL
+INDEX = 81
+MNEMO = 'UNITCOB'
+TAILLE= 1
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
+NIVEAU = 2
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures'
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
+
+NOM = 'UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MAREE'
+NOM1 = 'TIME UNIT IN TIDAL WATER LEVEL FILE'
+TYPE = REEL
+INDEX = 82
+MNEMO = 'UNITMAB'
+TAILLE= 1
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
+NIVEAU = 2
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures'
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
+
+NOM = 'UNITE DE TEMPS DU FICHIER DES VENTS'
+NOM1 = 'TIME UNIT IN WINDS FILE'
+TYPE = REEL
+INDEX = 83
+MNEMO = 'UNITVEB'
+TAILLE= 1
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
+NIVEAU = 2
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures'
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
+
+NOM = 'DEPHASAGE DU FICHIER DES COURANTS'
+NOM1 = 'TIME SHIFT IN CURRENTS FILE'
+TYPE = REEL
+INDEX = 84
+MNEMO = 'PHASCOB'
+TAILLE= 1
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
+NIVEAU = 2
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier'
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+
+NOM = 'DEPHASAGE DU FICHIER DU NIVEAU DE LA MAREE'
+NOM1 = 'TIME SHIFT IN TIDAL WATER LEVEL FILE'
+TYPE = REEL
+INDEX = 85
+MNEMO = 'PHASMAB'
+TAILLE= 1
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
+NIVEAU = 2
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier'
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+
+NOM = 'DEPHASAGE DU FICHIER DES VENTS'
+NOM1 = 'TIME SHIFT IN WINDS FILE'
+TYPE = REEL
+INDEX = 86
+MNEMO = 'PHASVEB'
+TAILLE= 1
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
+NIVEAU = 2
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier'
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+
+NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
+NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'
+TYPE = REEL
+INDEX = 87
+MNEMO = 'CDSCUR'
+TAILLE= 1
+DEFAUT = 0.65
+DEFAUT1 = 0.65
+RUBRIQUE =
+'TERMES SOURCES';'COURANT FORT'
+RUBRIQUE1 =
+'SOURCE TERMS';'STRONG CURRENT'
+NIVEAU = 0
+AIDE = 'Coefficient de dissipation pour des vagues stoppees
+par un courant fort adverse (effets de wave-blocking).
+Expression de van der Westhuysen (2012): Cds,cur.
+**Mots-cles associes :**
+DISSIPATION PAR FORT COURANT'
+AIDE1 = 'Dissipation coefficient for waves stopped
+by a strong opposing current (wave blocking effects).
+Van der Westhuysen (2012) expression: Cds,cur.
+\\
+ \begin{CommentBlock}{Related keywords}
+DISSIPATION BY STRONG CURRENT
+\end{CommentBlock}'
+
 NOM = 'TITRE'
 NOM1 = 'TITLE'
 TYPE = CARACTERE
@@ -3725,8 +4012,8 @@ MNEMO = 'Variable TITCAS'
 TAILLE= 0
 DEFAUT = 'METTEZ UN TITRE !!!'
 DEFAUT1 = 'SET A TITLE !!!'
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
 NIVEAU = 1
 AIDE = 'Titre du cas etudie'
 AIDE1 = 'Title of the case being studied.'
@@ -3810,11 +4097,15 @@ CHOIX1 = 'M0="Total variance  (m2)"';
 'PRI="Private table  (?)"';
 'BETA="Breaking waves coefficient  (-)"'
 COMPOSE=','
-APPARENCE = 'packing IS XmPACK_COLUMN';
-    'numColumns IS 26';'LISTE IS EDITABLE'
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
+/APPARENCE = 'packing IS XmPACK_COLUMN';
+/    'numColumns IS 26';'LISTE IS EDITABLE'
+APPARENCE =
+'DYNLIST'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 0
 AIDE = 'Noms des variables que l''utilisateur veut ecrire dans
 le FICHIER DES RESULTATS 2D. Les variables disponibles sont :
 M0   : variance totale
@@ -3901,20 +4192,6 @@ NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
 PERIOD FOR GRAPHIC PRINTOUTS
 \end{CommentBlock}'
 
-NOM = 'DICTIONNAIRE'
-NOM1 = 'DICTIONARY'
-TYPE = CARACTERE
-INDEX = 100
-MNEMO = ''
-SUBMIT = 'INUTILE;WACDICO;OBLIG;ASC;LIT;DICO'
-DEFAUT = 'tomawac.dico'
-DEFAUT1 = 'tomawac.dico'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
-NIVEAU = -3
-AIDE ='Dictionnaire des mots cles.'
-AIDE1 ='Key word dictionary.'
-
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
 TYPE = CARACTERE
@@ -3922,46 +4199,22 @@ INDEX = 3
 MNEMO = 'Variable WAC\_FILES(WACGEO)%NAME'
 TAILLE= 0
 SUBMIT = 'WACGEO-READ;WACGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
-DEFAUT = ''
-DEFAUT1 = ''
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 1
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+NIVEAU = 0
 AIDE = 'Nom du fichier contenant le maillage du calcul a realiser.
 **Mots-cles associes :**
-BINAIRE DU FICHIER DE GEOMETRIE'
-AIDE1 = 'Name of the file containing the grid of the computation to be
+FORMAT DU FICHIER DE GEOMETRIE'
+AIDE1 = 'Name of the file containing the mesh of the computation to be
 made.
 \\
  \begin{CommentBlock}{Related keywords}
-GEOMETRY FILE BINARY
+GEOMETRY FILE FORMAT
 \end{CommentBlock}'
-
-NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
-NOM1 = 'GEOMETRY FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 39
-MNEMO = 'WAC\_FILES(WACGEO)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-NIVEAU = 1
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier de geometrie.
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Geometry file format.
-Possible values are:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-
 
 NOM = 'FICHIER FORTRAN'
 NOM1 = 'FORTRAN FILE'
@@ -3969,10 +4222,12 @@ TYPE = CARACTERE
 INDEX = 4
 MNEMO = 'Variable NOMFOR'
 SUBMIT = 'INUTILE;INUTILE;FACUL;ASC;LIT;FORTRAN'
-DEFAUT = 'DEFAUT'
-DEFAUT1 = 'DEFAUT1'
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 1
 APPARENCE = 'LISTE IS EDITABLE'
 AIDE = 'Nom du fichier FORTRAN a soumettre.'
@@ -3985,11 +4240,11 @@ INDEX = 5
 MNEMO = 'Variable WACCAS'
 TAILLE= 0
 SUBMIT = 'INUTILE;WACCAS;OBLIG;ASC;LIT;CAS'
-DEFAUT = 'cas'
-DEFAUT1 = 'cas'
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 0
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'INTERNAL'
+RUBRIQUE1 = 'INTERNAL'
+NIVEAU = 1
 AIDE = 'Nom du fichier contenant les parametres du calcul a realiser.'
 AIDE1 = 'Name of the file containing the parameters of the computation
 to be made.'
@@ -4001,11 +4256,13 @@ INDEX = 6
 MNEMO = 'Variable WAC\_FILES(WACCLI)%NAME'
 TAILLE= 0
 SUBMIT = 'WACCLI-READ;WACCLI;OBLIG;ASC;LIT;CONLIM'
-DEFAUT = 'dynam'
-DEFAUT1 = 'dynam'
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 1
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+NIVEAU = 0
 AIDE = 'Nom du fichier contenant les types de conditions aux limites.
 Ce fichier est rempli de facon automatique par le mailleur au moyen de
 couleurs affectees aux noeuds des frontieres du domaine de calcul.'
@@ -4024,8 +4281,10 @@ TAILLE= 0
 SUBMIT = 'WACFON-READ;WACFON;FACUL;ASC;LIT;PARAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 1
 AIDE = 'Nom du fichier eventuel contenant la bathymetrie associee au
 maillage au format SINUSX.
@@ -4035,6 +4294,110 @@ AIDE1 = 'Name of any file containing the bathymetric data associated to
 the SINUSX-formatted grid. It this keyword is used, these bathymetric
 data shall be used for the computation.'
 
+NOM = 'LISSAGES DU FOND'
+NOM1 = 'BOTTOM SMOOTHINGS'
+TYPE = ENTIER
+INDEX = 7
+MNEMO = 'LISFON'
+TAILLE= 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+NIVEAU = 2
+COMPORT =
+'Foreground ("EQUATIONS*LISSAGE")
+IS BRUT (brown)'
+AIDE = 'Nombre de lissages effectues sur la topographie.
+Chaque lissage, effectue a l''aide d''une matrice de masse,
+est conservatif. A utiliser lorsque les donnees de bathymetrie
+donnent des resultats trop irreguliers apres interpolation.
+Voir aussi le sous-programme CORFON'
+AIDE1 = 'Number of smoothings made on bottom features. Each smoothing,
+being made by means of a mass matrix, is conservative. To be used when
+the bathymetric data yield too irregular data after interpolation.
+Also refer to the CORFON subroutine.'
+
+NOM = 'PERIODE POUR LES SORTIES GRAPHIQUES'
+NOM1 = 'PERIOD FOR GRAPHIC PRINTOUTS'
+TYPE = ENTIER
+INDEX = 1
+MNEMO = 'GRAPRD'
+TAILLE= 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 0
+COMPORT =
+'Foreground ("ENTREES-SORTIES, GRAPHIQUES ET LISTING")
+IS BRUT (red)'
+AIDE = 'Determine la periode d''impression,
+en nombre de pas de temps
+des VARIABLES POUR LES SORTIES GRAPHIQUES dans le FICHIER DES
+RESULTATS 2D et le FICHIER DES RESULTATS PONCTUELS.
+**Mots-cles associes :**
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE
+FICHIER DES RESULTATS 2D
+FICHIER DES RESULTATS PONCTUELS
+NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
+AIDE1 = 'Determines the printing period,
+in number of time step
+of the VARIABLES FOR 2D GRAPHIC PRINTOUTS in the 2D
+RESULTS FILE and the PUNCTUAL RESULTS FILE.
+\\
+ \begin{CommentBlock}{Related keywords}
+VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+2D RESULTS FILE\\
+PUNCTUAL RESULTS FILE\\
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS\\
+\end{CommentBlock}'
+
+NOM = 'NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES'
+NOM1 = 'NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS'
+TYPE = ENTIER
+INDEX = 6
+MNEMO = 'GRADEB'
+TAILLE= 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 1
+AIDE = 'Determine le nombre d''iterations sur le pas de temps
+ou sur la frequence moyenne a partir duquel debute
+l ecriture des resultats dans le FICHIER DES RESULTATS 2D et le
+FICHIER DES RESULTATS PONCTUELS
+**Mots-cles associes :**
+PERIODE POUR LES SORTIES GRAPHIQUES
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE
+FICHIER DES RESULTATS 2D
+FICHIER DES RESULTATS PONCTUELS'
+AIDE1 = 'Determines the number of iterations over mean angular
+frequency from which the results are first written into the 2D RESULTS
+FILE and the PUNCTUAL RESULTS FILE.
+\\
+ \begin{CommentBlock}{Related keywords}
+PERIOD FOR GRAPHIC PRINTOUTS\\
+VARIABLES FOR 2D GRAPHIC PRINTOUTS\\
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+2D RESULTS FILE\\
+PUNCTUAL RESULTS FILE
+\end{CommentBlock}'
+
 NOM = 'FICHIER DES RESULTATS 2D'
 NOM1 = '2D RESULTS FILE'
 TYPE = CARACTERE
@@ -4042,11 +4405,13 @@ INDEX = 8
 MNEMO = 'Variable WAC\_FILES(WACRES)%NAME'
 TAILLE= 0
 SUBMIT = 'WACRES-READWRITE;WACRES;OBLIG;BIN;ECR;SELAFIN'
-DEFAUT = 'resu2d'
-DEFAUT1 = 'resu2d'
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 0
 AIDE = 'Nom du fichier dans lequel seront ecrits les resultats du calcul
 bidimensionnels.
 Mots-cles associes
@@ -4071,11 +4436,13 @@ INDEX = 17
 MNEMO = 'WAC\_FILES(WACRES)%FMT'
 DEFAUT = 'SERAFIN?'
 DEFAUT1 = 'SERAFIN?'
-NIVEAU = 1
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+NIVEAU = 0
+CHOIX = 'SERAFIN?';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN?';'SERAFIND';'MED     '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
 AIDE = 'Format du fichier de geometrie.
 Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
@@ -4096,10 +4463,12 @@ INDEX = 9
 MNEMO = 'Variable WAC\_FILES(WACLEO)%NAME'
 TAILLE= 0
 SUBMIT = 'WACLEO-WRITE;WACLEO;OBLIG;BIN;ECR;SCAL'
-DEFAUT = 'spect'
-DEFAUT1 = 'spect'
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
+DEFAUT = 'spec'
+DEFAUT1 = 'spec'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
 NIVEAU = 1
 AIDE = 'Nom du fichier dans lequel seront ecrits les spectres
 ponctuels.
@@ -4120,6 +4489,85 @@ PERIOD FOR GRAPHIC PRINTOUTS\\
 NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
 \end{CommentBlock}'
 
+NOM = 'FORMAT DU FICHIER DE SPECTRE'
+NOM1 = 'SPECTRUM FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 44
+MNEMO = 'WAC\_FILES(WACLEO)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+CHOIX = 'SERAFIN?';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN?';'SERAFIND';'MED     '
+NIVEAU = 1
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+AIDE = 'Format du fichier de spectre
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Spectrum results file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
+NOM = 'ABSCISSES DES POINTS DE SORTIE DU SPECTRE'
+NOM1 = 'ABSCISSAE OF SPECTRUM PRINTOUT POINTS'
+TYPE = REEL
+INDEX = 4
+TAILLE = 2
+MNEMO = 'XLEO'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 1
+AIDE = 'Tableau donnant les abscisses des points de sortie Seraphin du
+spectre et de dimension maximale 99. Les points de sortie du spectre
+sont les points 2D les plus proches des coordonnees specifiees
+**Mots-cles associes :**
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE
+FICHIER DES RESULTATS PONCTUELS'
+AIDE1 = 'Array providing the abscissae of the Seraphin spectrum printout
+points with a maximum dimension of 99. The chosen spectrum points are
+the closest 2D points to the specified co-ordinates.
+\\
+ \begin{CommentBlock}{Related keywords}
+ORDINATES OF SPECTRUM PRINTOUT POINTS\\
+PUNCTUAL RESULTS FILE
+\end{CommentBlock}'
+
+NOM = 'ORDONNEES DES POINTS DE SORTIE DU SPECTRE'
+NOM1 = 'ORDINATES OF SPECTRUM PRINTOUT POINTS'
+TYPE = REEL
+INDEX = 5
+MNEMO = 'YLEO'
+TAILLE = 2
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+NIVEAU = 1
+AIDE = 'Tableau donnant les ordonnees des points de sortie Seraphin du
+spectre et de dimension max 99.Les points de sortie du spectre
+sont les points 2D les plus proches des coordonnees specifiees
+**Mots-cles associes :**
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE
+FICHIER DES RESULTATS PONCTUELS'
+AIDE1 = 'Array providing the ordinates of the Seraphin spectrum printout
+points with a maximum dimension of 99. The spectrum printout points are
+the closest 2D points to the specified co-ordinates
+\\
+ \begin{CommentBlock}{Related keywords}
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS\\
+PUNCTUAL RESULT FILE
+\end{CommentBlock}'
+
 NOM = 'FICHIER DU CALCUL PRECEDENT'
 NOM1 = 'PREVIOUS COMPUTATION FILE'
 TYPE = CARACTERE
@@ -4129,8 +4577,10 @@ TAILLE= 0
 SUBMIT = 'WACPRE-READ;WACPRE;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 1
 AIDE = 'Nom d''un fichier contenant les resultats d''un calcul precedent
 realise sur le meme maillage et qui va fournir les conditions
@@ -4145,80 +4595,6 @@ conditions for a next computation.
 BINARY OF THE PREVIOUS COMPUTATION FILE
 \end{CommentBlock}'
 
-NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT'
-NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 41
-MNEMO = 'WAC\_FILES(WACPRE)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier de resultats du calcul precedent.
-Les valeurs possibles sont seulement:
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Previous computation results file format.
-Possible values are only:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-
-NOM = 'FICHIER DES RESULTATS GLOBAUX'
-NOM1 = 'GLOBAL RESULT FILE'
-TYPE = CARACTERE
-INDEX = 11
-MNEMO = 'Variable WAC\_FILES(WACRBI)%NAME'
-TAILLE= 0
-SUBMIT = 'WACRBI-READWRITE;WACRBI;FACUL;BIN;ECR;SELAFIN'
-DEFAUT = ' '
-DEFAUT1 = ' '
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
-NIVEAU = 1
-AIDE = 'Nom du fichier dans lequel sera ecrit le tableau F (spectre
-de variance) en fin de calcul dans le but de faire une suite de calcul.
-**Mots-cles associes :**
-BINAIRE DU FICHIER DES RESULTATS GLOBAUX'
-AIDE1 = 'Name of the file in which the table F (density spectrum)
-is written at the end of the computation in order to realise a next
-computation.
-\\
- \begin{CommentBlock}{Related keywords}
-BINARY OF THE GLOBAL RESULT FILE
-\end{CommentBlock}'
-
-NOM = 'FORMAT DU FICHIER DES RESULTATS GLOBAUX'
-NOM1 = 'GLOBAL RESULT FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 51
-MNEMO = 'WAC\_FILES(WACRBI)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier de resultats du calcul precedent.
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Previous computation results file format.
-Possible values are:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-
 NOM = 'FICHIER DES COURANTS BINAIRE'
 NOM1 = 'BINARY CURRENTS FILE'
 TYPE = CARACTERE
@@ -4228,8 +4604,10 @@ TAILLE= 0
 SUBMIT = 'WACCOB-READ;WACCOB;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees de courant (si binaire).
 **Mots-cles associes :**
@@ -4246,31 +4624,6 @@ FORMATTED CURRENTS FILE\\
 CURRENTS FILE FORMAT
 \end{CommentBlock}'
 
-NOM = 'FORMAT DU FICHIER DES COURANTS BINAIRE'
-NOM1 = 'BINARY CURRENTS FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 40
-MNEMO = 'WAC\_FILES(WACCOB)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier binaire des courants.
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Currents binary file format.
-Possible values are:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-
 NOM = 'FICHIER DES COURANTS FORMATE'
 NOM1 = 'FORMATTED CURRENTS FILE'
 TYPE = CARACTERE
@@ -4280,8 +4633,10 @@ TAILLE= 0
 SUBMIT = 'WACCOF-READ;WACCOF;FACUL;ASC;LIT;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees de courant (si formate).
 **Mots-cles associes :**
@@ -4307,8 +4662,10 @@ TAILLE= 0
 SUBMIT = 'WACBI1-READ;WACBI1;FACUL;BIN;LIT;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 1
 AIDE = 'Fichier de donnees code en binaire mis a la disposition
 de l''utilisateur.'
@@ -4323,192 +4680,14 @@ TAILLE= 0
 SUBMIT = 'WACFO1-READ;WACFO1;FACUL;ASC;LIT;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 2
 AIDE = 'Fichier de donnees formate mis a la disposition
 de l''utilisateur.'
 AIDE1 = 'Formatted data file made available to the user.'
-
-NOM = 'BINAIRE DU FICHIER DE GEOMETRIE'
-NOM1 = 'GEOMETRY FILE BINARY'
-TYPE = CARACTERE
-INDEX = 16
-MNEMO = 'Variable BINGEO'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-de geometrie. Ce type depend de la machine sur laquelle le fichier
-a ete genere. Les valeurs possibles sont :
-- IBM; pour un fichier cree sur IBM;
-- I3E; pour un fichier cree sur HP;
-- STD; il s agit alors d''ordres READ et WRITE normaux.
-**Mots-cles associes :**
-FICHIER DE GEOMETRIE'
-AIDE1 = 'Type of the binary used for writing the geometry file. That
-type depends on the machine in which the file was generated. The
-possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-\\
- \begin{CommentBlock}{Related keywords}
-GEOMETRY FILE
-\end{CommentBlock}'
-
-NOM = 'BINAIRE DU FICHIER DES RESULTATS PONCTUELS'
-NOM1 = 'PUNCTUAL RESULTS FILE BINARY'
-TYPE = CARACTERE
-INDEX = 18
-MNEMO = 'Variable BINLEO'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-des resultats ponctuels. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie.
-**Mots-cles associes :**
-FICHIER DES RESULTATS PONCTUELS'
-AIDE1 = 'Type of the binary used for writing the puntual results file.
-That type depends on the machine in which the file was generated. The
-possible values are as follows :
-\begin{itemize}
-\item IBM; for a file created in an IBM machine;
-\item I3E; for a file created in a HP machine;
-\item STD; normal READ and WRITE instructions are then generated.
-\end{itemize}
-\begin{CommentBlock}{Related keywords}
-PUNCTUAL RESULTS FILE
-\end{CommentBlock}'
-
-NOM = 'BINAIRE DU FICHIER DES COURANTS'
-NOM1 = 'CURRENTS FILE BINARY'
-TYPE = CARACTERE
-INDEX = 19
-MNEMO = 'Variable BINCOU'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-des courants. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie. ATTENTION, ce fichier est binaire si le mot
-cle FORMAT DU FICHIER DES COURANTS est superieur ou egal a 3.
-**Mots-cles associes :**
-FICHIER DES COURANTS FORMATE
-FICHIER DES COURANTS BINAIRE
-FORMAT DU FICHIER DES COURANTS'
-AIDE1 = 'Type of the binary used for writing the currents file. That
-type depends on the machine in which the file was generated. The
-possible values are as follows :
-- IBM; for a file created in an IBM machine;
-- I3E; for a file created in a HP machine;
-- STD; normal READ and WRITE instructions are then generated.
-\\
- \begin{CommentBlock}{Related keywords}
-BINARY CURRENTS FILE\\
-FORMATTED CURRENTS FILE\\
-CURRENTS FILE FORMAT
-\end{CommentBlock}'
-
-NOM = 'BINAIRE DU FICHIER DES RESULTATS GLOBAUX'
-NOM1 = 'GLOBAL RESULT FILE BINARY'
-TYPE = CARACTERE
-INDEX = 20
-MNEMO = 'Variable BINRBI'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-des resultats globaux. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie.
-**Mots-cles associes :**
-FICHIER DES RESULTATS GLOBAUX'
-AIDE1 = 'Type of the binary used for writing the global result file.
-That type depends on the machine in which the file was generated.
-The possible values are as follows :
-\begin{itemize}
-\item IBM; for a file created in an IBM machine;
-\item I3E; for a file created in a HP machine;
-\item STD; normal READ and WRITE instructions are then generated.
-\end{itemize}
- \begin{CommentBlock}{Related keywords}
-GLOBAL RESULT FILE
-\end{CommentBlock}'
-
-NOM = 'BINAIRE DU FICHIER DU CALCUL PRECEDENT'
-NOM1 = 'PREVIOUS COMPUTATION FILE BINARY'
-TYPE = CARACTERE
-INDEX = 21
-MNEMO = 'Variable BINPRE'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-du calcul precedent. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie.
-**Mots-cles associes :**
-FICHIER DU CALCUL PRECEDENT'
-AIDE1 = 'Type of the binary used for reading the previous computation
-file. That type depends on the machine in which the file was generated.
-The possible values are as follows :
-\begin{itemize}
-\item IBM; for a file created in an IBM machine;
-\item I3E; for a file created in a HP machine;
-\item STD; normal READ and WRITE instructions are then generated.
-\end{itemize}
- \begin{CommentBlock}{Related keywords}
-PREVIOUS COMPUTATION FILE
-\end{CommentBlock}'
 
 NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'
@@ -4518,78 +4697,11 @@ MNEMO = 'Variable VERS'
 TAILLE= 0
 DEFAUT = 'TRUNK'
 DEFAUT1 = 'TRUNK'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
+RUBRIQUE = 'INTERNAL'
+RUBRIQUE1 = 'INTERNAL'
 NIVEAU = 0
 AIDE = 'Numero de version'
 AIDE1 = 'Release number '
-
-NOM = 'BINAIRE DU FICHIER DES VENTS'
-NOM1 = 'WINDS FILE BINARY'
-TYPE = CARACTERE
-INDEX = 29
-MNEMO = 'Variable BINVEN'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-des vents. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie. ATTENTION, ce fichier est binaire si le mot
-cle FORMAT DU FICHIER DES VENTS est superieur ou egal a 3.
-**Mots-cles associes :**
-FICHIER DES VENTS BINAIRE
-FORMAT DU FICHIER DES VENTS'
-AIDE1 = 'Type of the binary used for writing the winds file. This type
-depends on the machine in which the file was generated. The possible
-values are the same as for the geometry file.
-WARNING! This file is a binary one is
-the keyword WINDS FILE FORMAT is higher than or equal to 3.
-\\
- \begin{CommentBlock}{Related keywords}
-BINARY WINDS FILE\\
-WINDS FILE FORMAT
-\end{CommentBlock}'
-
-NOM = 'BINAIRE DU FICHIER BINAIRE 1'
-NOM1 = 'BINARY FILE 1 BINARY'
-TYPE = CARACTERE
-INDEX = 30
-MNEMO = 'Variable BINBI1'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 0
-AIDE = 'Type du binaire utilise pour l''ecriture du fichier
-binaire 1. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie.
-**Mots-cles associes :**
-FICHIER BINAIRE 1'
-AIDE1 = 'Type of the binary used for writing the binary file1. This
-type depends on the machine in which the file was generated. The
-possible values are the same as for the geometry file.
-\\
- \begin{CommentBlock}{Related keywords}
-BINARY FILE 1
-\end{CommentBlock}'
 
 NOM = 'FICHIER DES VENTS BINAIRE'
 NOM1 = 'BINARY WINDS FILE'
@@ -4600,8 +4712,10 @@ TAILLE= 0
 SUBMIT = 'WACVEB-READ;WACVEB;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees de vent (si binaire).
 **Mots-cles associes :**
@@ -4616,31 +4730,6 @@ FORMATTED WINDS FILE\\
 WINDS FILE FORMAT
 \end{CommentBlock}'
 
-NOM = 'FORMAT DU FICHIER DES VENTS BINAIRE'
-NOM1 = 'BINARY WINDS FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 46
-MNEMO = 'WAC\_FILES(WACVEB)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier binaire des vents.
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'wind data binary file format.
-Possible values are:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-
 NOM = 'FICHIER DES VENTS FORMATE'
 NOM1 = 'FORMATTED WINDS FILE'
 TYPE = CARACTERE
@@ -4650,7 +4739,10 @@ TAILLE= 0
 SUBMIT = 'WACVEF-READ;WACVEF;FACUL;ASC;LIT;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees de vent (si formate).
 **Mots-cles associes :**
@@ -4664,7 +4756,6 @@ CONSIDERATION OF WIND\\
 BINARY WINDS FILE\\
 WINDS FILE FORMAT
 \end{CommentBlock}'
-
 NOM = 'FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE'
 TYPE = CARACTERE
@@ -4674,8 +4765,10 @@ TAILLE= 0
 SUBMIT = 'WACREF-READ;WACREF;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 NIVEAU = 1
 COMPORT = 'DISPLAY %VALIDATION% = OUI'
 AIDE = 'Nom du fichier de reference en cas de validation.
@@ -4696,8 +4789,10 @@ TAILLE= 0
 SUBMIT = 'WACMAB-READ;WACMAB;FACUL;BIN;LIT;SELAFIN'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees du niveau d''eau (si binaire).
 **Mots-cles associes :**
@@ -4726,8 +4821,10 @@ DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
 AIDE = 'Format du fichier de la maree binaire.
 Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
@@ -4751,8 +4848,10 @@ SUBMIT = 'WACMAF-READ;WACMAF;FACUL;ASC;LIT;SCAL'
 /SUBMIT = 'WACMAF-READ;WACMAF;FACUL;ASC;LIT;PARAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER MAREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'TIDAL FILE'
 NIVEAU = 1
 AIDE = 'Nom du fichier de donnees du niveau d''eau (si formate).
 **Mots-cles associes :**
@@ -4761,7 +4860,7 @@ FICHIER DES COURANTS BINAIRE
 FORMAT DU FICHIER DES COURANTS
 PERIODE D ACTUALISATION DE LA MAREE
 BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
-AIDE1 = 'Name of the current data file (if formatted).
+AIDE1 = 'Name of the tidal data file (if formatted).
 \\
  \begin{CommentBlock}{Related keywords}
 CONSIDERATION OF TIDE\\
@@ -4771,377 +4870,86 @@ TIDE REFRESHING PERIOD\\
 TIDAL WATER LEVEL FILE BINARY
 \end{CommentBlock}'
 
-NOM = 'BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
-NOM1 = 'TIDAL WATER LEVEL FILE BINARY'
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE FORMAT'
 TYPE = CARACTERE
-INDEX = 37
-MNEMO = 'BINMAR'
-TAILLE= 0
-DEFAUT = 'STD'
-DEFAUT1 = 'STD'
-CHOIX = 'STD';
-'IBM';
-'I3E'
-CHOIX1 = 'STD';
-'IBM';
-'I3E'
-RUBRIQUE = 'INUTILE'
-RUBRIQUE1 = 'USELESS'
-NIVEAU = 1
-AIDE = 'Type du binaire utilise pour la lecture du fichier binaire
-du niveau de la maree. Ce type depend de la machine sur laquelle le
-fichier a ete genere. Les valeurs possibles sont les memes que pour
-le fichier de geometrie. Les valeurs possibles sont :
-- IBM; pour un fichier cree sur une machine IBM;
-- I3E; pour un fichier cree sur une machine HP;
-- STD; instructions standard pour READ et WRITE.
-**Mots-cles associes :**
-PRISE EN COMPTE D UN COURANT
-FICHIER DES COURANTS BINAIRE
-FORMATTED DES COURANTS BINAIRE
-FORMAT DU FICHIER DES COURANTS
-PERIODE D ACTUALISATION DE LA MAREE'
-AIDE1 = 'Type of the binary used for writing the currents file. That
-type depends on the machine in which the file was generated. The
-possible values are as follows :
+INDEX = 39
+MNEMO = 'WAC\_FILES(WACGEO)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+NIVEAU = 0
+CHOIX = 'SERAFIN?';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN?';'SERAFIND';'MED     '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+AIDE = 'Format du fichier de geometrie.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Geometry file format.
+Possible values are:
 \begin{itemize}
-\item IBM; for a file created in an IBM machine;
-\item I3E; for a file created in a HP machine;
-\item STD; normal READ and WRITE instructions are then generated.
-\end{itemize}
- \begin{CommentBlock}{Related keywords}
-CONSIDERATION OF TIDE\\
-BINARY TIDAL WATER LEVEL FILE\\
-FORMATTED TIDAL WATER LEVEL FILE\\
-TIDAL WATER LEVEL FILE FORMAT\\
-TIDE REFRESHING PERIOD
-\end{CommentBlock}'
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
-NOM = 'PRISE EN COMPTE DES TERMES SOURCES'
-NOM1 = 'CONSIDERATION OF SOURCE TERMS'
-TYPE = LOGIQUE
-INDEX = 1
-MNEMO = 'Variable TSOU'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+NOM = 'FORMAT DU FICHIER DES COURANTS BINAIRE'
+NOM1 = 'BINARY CURRENTS FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 40
+MNEMO = 'WAC\_FILES(WACCOB)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
-AIDE = 'Indique la prise en compte ou non de l ensemble des termes
-sources.
-**Mots-cles associes :**
-APPORTS DUS AU VENT
-DISSIPATION PAR FROTTEMENT SUR LE FOND
-DISSIPATION PAR MOUTONNEMENT
-DISSIPATION PAR DEFERLEMENT
-DISSIPATION PAR WAVE BLOCKING
-TRANSFERTS NON LINEAIRES INTER-FREQUENCES
-TRANSFERTS ENTRE TRIPLETS DE FREQUENCES'
-AIDE1 = 'Indicates whether the source terms are taken into
-account or not.
-\\
- \begin{CommentBlock}{Related keywords}
-WIND GENERATION\\
-BOTTOM FRICTION DISSIPATION\\
-WHITE CAPPING DISSIPATION\\
-DEPTH-INDUCED BREAKING DISSIPATION\\
-WAVE BLOCKING DISSIPATION\\
-NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\\
-TRIAD INTERACTION
-\end{CommentBlock}'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER COURANT'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'CURRENT FILE' 
+AIDE = 'Format du fichier binaire des courants.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Currents binary file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
-NOM = 'COORDONNEES SPHERIQUES'
-NOM1 = 'SPHERICAL COORDINATES'
-TYPE = LOGIQUE
-INDEX = 2
-MNEMO = 'Variable SPHE'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 2
-AIDE = 'Indique si on se place ou non en coordonnes spheriques.
-ATTENTION, en coordonnees cartesiennes, les coordonnees sont
-exprimees em m alors que ce sont des degres en coordonnees
-spheriques.'
-AIDE1 = 'Indicates whether the coordinates are spherical (unit=
-degree) or cartesian (unit = meter).'
-
-NOM = 'SUITE DE CALCUL'
-NOM1 = 'NEXT COMPUTATION'
-TYPE = LOGIQUE
-INDEX = 4
-MNEMO = 'Variable SUIT'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
+NOM = 'FORMAT DU FICHIER DU CALCUL PRECEDENT'
+NOM1 = 'PREVIOUS COMPUTATION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 41
+MNEMO = 'WAC\_FILES(WACPRE)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
-AIDE = 'Indique si on fait une suite de calcul.
-**Mots-cles associes :**
-FICHIER DU CALCUL PRECEDENT'
-AIDE1 = 'Indicates whether a next compution is done.
-\\
- \begin{CommentBlock}{Related keywords}
-PREVIOUS RESULTS FILE
-\end{CommentBlock}'
-
-NOM = 'PROFONDEUR INFINIE'
-NOM1 = 'INFINITE DEPTH'
-TYPE = LOGIQUE
-INDEX = 5
-MNEMO = 'Variable PROINF'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
-AIDE = 'Indique si on se place dans l hypothese de profondeur infinie.
-Cette option inhibe les frottements sur le fond.'
-AIDE1 = 'Indicates whether an infinite depth is assumed. If so, bottom
-friction is inhibited.'
-
-NOM = 'PRISE EN COMPTE D''UN COURANT STATIONNAIRE'
-NOM1 = 'CONSIDERATION OF A STATIONARY CURRENT'
-TYPE = LOGIQUE
-INDEX = 6
-MNEMO = 'COUSTA'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'COURANT'
-RUBRIQUE1 = 'CURRENT'
-NIVEAU = 1
-AIDE = 'Indique si on prend en compte un courant, dans un fichier ou
-dans condiw.f.
-**Mots-cles associes :**
-FICHIER DES COURANTS'
-AIDE1 = 'Indicates whether a stationary current is taken into account,
-either in a file or in condiw.f.
-\\
- \begin{CommentBlock}{Related keywords}
-CURRENTS FILE
-\end{CommentBlock}'
-
-NOM = 'PRISE EN COMPTE DU VENT'
-NOM1 = 'CONSIDERATION OF A WIND'
-TYPE = LOGIQUE
-INDEX = 7
-MNEMO = 'Variable VENT'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
-AIDE = 'Indique si on prend en compte un vent, dans un fichier ou dans
-cdicow.f.
-**Mots-cles associes :**
-FICHIER DES VENTS'
-AIDE1 = 'Indicates whether a wind is taken into account, either in
-a file or in cdicow.f.
-\\
- \begin{CommentBlock}{Related keywords}
-WINDS FILE
-\end{CommentBlock}'
-
-NOM = 'RECUPERATION DE DONNEE TELEMAC'
-NOM1 = 'RECOVERY OF TELEMAC DATA ITEM'
-TYPE = LOGIQUE
-INDEX = 8
-MNEMO = 'Variable DONTEL'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'DIVERS'
-RUBRIQUE1 = 'MISCELLANEOUS'
-NIVEAU = 2
-AIDE = 'Indique si on recupere des donnees TELEMAC dans LECDON.f
-Si oui il faut veiller a utiliser un FICHIER DES COURANTS au bon format
-et donner le rang de la variable en question dans le fichier TELEMAC.
-**Mots-cles associes :**
-FICHIER DES COURANTS BINAIRE
-FICHIER DES COURANTS FORMATE
-FORMAT DU FICHIER DES COURANTS
-RANG DE LA DONNEE TELEMAC A RECUPERER
-NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC'
-AIDE1 = 'Indicates whether TELEMAC data are recovered in LECDON. If so,
-a proper-formatted CURRENTS FILE should be used and the rank of the
-respective variable should be entered into the TELEMAC file.
-\\
- \begin{CommentBlock}{Related keywords}
-BINARY CURRENTS FILE\\
-FORMATTED CURRENTS FILE\\
-CURRENTS FILE TYPE\\
-RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED\\
-TIME INCREMENT NUMBER IN TELEMAC FILE
-\end{CommentBlock}'
-
-NOM = 'PRISE EN COMPTE DE LA PROPAGATION'
-NOM1 = 'CONSIDERATION OF PROPAGATION'
-TYPE = LOGIQUE
-INDEX = 9
-MNEMO = 'Variable PROP'
-TAILLE= 0
-DEFAUT = .TRUE.
-DEFAUT1 = .TRUE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 3
-AIDE = 'Indique si on prend en compte la propagation'
-AIDE1 = 'Indicates whether propagation is taken into account.'
-
-NOM = 'VENT STATIONNAIRE'
-NOM1 = 'STATIONARY WIND'
-TYPE = LOGIQUE
-INDEX = 10
-MNEMO = 'Variable VENSTA'
-TAILLE= 0
-DEFAUT = .TRUE.
-DEFAUT1 = .TRUE.
-RUBRIQUE = 'VENT'
-RUBRIQUE1 = 'WIND'
-NIVEAU = 1
-COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
-AIDE = 'Indique si le vent evolue dans le temps et doit etre mis a jour
-**Mots-cles associes :**
-PRISE EN COMPTE DU VENT'
-AIDE1 = 'Indicates whether the wind evolves temporally and requires
-to be updated
-\\
- \begin{CommentBlock}{Related keywords}
-CONSIDERATION OF A WIND
-\end{CommentBlock}'
-
-NOM = 'VALIDATION'
-NOM1 = 'VALIDATION'
-TYPE = LOGIQUE
-INDEX = 11
-MNEMO = 'VALID'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 2
-AIDE = 'Logique indiquant si on effectue un calcul de validation
-**Mots-cles associes :**
-FICHIER DE REFERENCE'
-AIDE1 = 'True if the computation is a validation
-\\
- \begin{CommentBlock}{Related keywords}
-REFERENCE FILE
-\end{CommentBlock}'
-
-NOM = 'PRISE EN COMPTE DE LA MAREE'
-NOM1 = 'CONSIDERATION OF TIDE'
-TYPE = LOGIQUE
-INDEX = 12
-MNEMO = 'Variable MAREE'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'MAREE'
-RUBRIQUE1 = 'TIDE'
-NIVEAU = 1
-AIDE = 'Indique si on prend en compte l''influence de la maree,
-c''est-a-dire, prise en compte d''un niveau d''eau et de courants
-instationnaires.
-**Mots-cles associes :**
-FICHIER DU NIVEAU DE LA MAREE FORMATE
-FICHIER DU NIVEAU DE LA MAREE BINAIRE
-FORMAT DU FICHIER DU NIVEAU DE LA MAREE
-PERIODE D ACTUALISATION DE LA MAREE
-BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
-AIDE1 = 'Indicates whether a current is taken into account, either in
-a file or in cdicow.f.
-\\
- \begin{CommentBlock}{Related keywords}
-FORMATTED TIDAL WATER LEVEL FILE\\
-BINARY TIDAL WATER LEVEL FILE\\
-TIDAL WATER LEVEL FILE FORMAT\\
-TIDE REFRESHING PERIOD\\
-TIDAL WATER LEVEL FILE BINARY
-\end{CommentBlock}'
-
-NOM = 'CONVENTION TRIGONOMETRIQUE'
-NOM1 = 'TRIGONOMETRICAL CONVENTION'
-TYPE = LOGIQUE
-INDEX = 13
-MNEMO = 'TRIGO'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
-AIDE = 'Logique indiquant si les directions de propagation
-de la houle sont definies dans le sens trigonometrique a
-partir de l axe des x positifs, ou definies dans le sens
-des aiguilles d une montre a partir du nord geographique'
-AIDE1 = 'True if the wave directions are measured
-counterclockwise from the positive x-axis, false if
-they are measured clockwise fron geographic North'
-
-NOM = 'SPECTRE AUX LIMITES MODIFIE PAR L''UTILISATEUR'
-NOM1 = 'LIMIT SPECTRUM MODIFIED BY USER'
-TYPE = LOGIQUE
-INDEX = 14
-MNEMO = 'SPEULI'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'CONDITIONS LIMITES'
-RUBRIQUE1 = 'BOUNDARY CONDITIONS'
-NIVEAU = 1
-AIDE = 'Indique si l''utilisateur desire modifier le spectre
-aux limites. Il doit alors rapatrier chez lui le sous programme
-limwac.f dans le cas d une discretisation frequentielle du
-spectre et le sous programme spelim.f sinon.
-**Mots-cles associes :**
-TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
-AIDE1 = 'Indicates whether the user wants to modify the boundary
-spectrum. He should then retrieve the limwac.f subroutine, if the
-spectrum is frequency discretized, or the spelim.f subroutine,
-otherwise.
-\\
- \begin{CommentBlock}{Related keywords}
-TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
-\end{CommentBlock}'
-
-NOM = 'FILTRE POUR DIFFRACTION'
-NOM1 = 'DIFFRACTION FILTER'
-TYPE = LOGIQUE
-INDEX = 15
-MNEMO = 'Variable FLTDIF'
-TAILLE= 0
-DEFAUT = .FALSE.
-DEFAUT1 = .FALSE.
-RUBRIQUE = 'DIFFRACTION'
-RUBRIQUE1 = 'DIFFRACTION'
-NIVEAU = 1
-AIDE = 'Si la diffraction est prise en compte, le logique
-indique si les amplitudes calculees sont filtrees
-pour le calcul du parametre de diffraction et des vitesses
-de transfert.
-**Mots-cles associes :**
-DIFFRACTION
-SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION
-PAS DE TEMPS DEBUT DIFFRACTION'
-AIDE1 = 'If diffraction is considered, the keyword indicates
-whether the local amplitudes of the directional spectra are
-filtered to compute the diffraction parameter and the transfer
-rates.
-\\
- \begin{CommentBlock}{Related keywords}
-DIFFRACTION\\
-VARIANCE THRESHOLD FOR DIFFRACTION\\
-STARTING TIME STEP FOR DIFFFRACTION
-\end{CommentBlock}'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+AIDE = 'Format du fichier de resultats du calcul precedent.
+Les valeurs possibles sont seulement:
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Previous computation results file format.
+Possible values are only:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'FORMAT DU FICHIER DE REFERENCE'
 NOM1 = 'REFERENCE FILE FORMAT'
@@ -5153,8 +4961,10 @@ DEFAUT1 = 'SERAFIN?'
 CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
 CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 COMPORT = 'DISPLAY %VALIDATION% = OUI'
 AIDE = 'Format du fichier de resultats du calcul precedent.
 Les valeurs possibles sont :
@@ -5179,8 +4989,10 @@ DEFAUT1 = '        '
 CHOIX = '        ';'SERAFIN ';'SERAFIND';'MED     '
 CHOIX1 = '        ';'SERAFIN ';'SERAFIND';'MED     '
 NIVEAU = 2
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
 AIDE = 'Format du fichier des donnees binaires.
 Les valeurs possibles sont :
 - SERAFIN : format standard simple precision pour Telemac;
@@ -5193,47 +5005,6 @@ Possible values are:
 \item SERAFIND: classical double precision format in Telemac;
 \item MED     : MED format based on HDF5
 \end{itemize}'
-
-NOM = 'FORMAT DU FICHIER DE SPECTRE'
-NOM1 = 'SPECTRUM FILE FORMAT'
-TYPE = CARACTERE
-INDEX = 44
-MNEMO = 'WAC\_FILES(WACLEO)%FMT'
-DEFAUT = 'SERAFIN?'
-DEFAUT1 = 'SERAFIN?'
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
-CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
-NIVEAU = 1
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-AIDE = 'Format du fichier de spectre
-Les valeurs possibles sont :
-- SERAFIN : format standard simple precision pour Telemac;
-- SERAFIND: format standard double precision pour Telemac;
-- MED     : format MED base sur HDF5'
-AIDE1 = 'Spectrum results file format.
-Possible values are:
-\begin{itemize}
-\item SERAFIN : classical single precision format in Telemac;
-\item SERAFIND: classical double precision format in Telemac;
-\item MED     : MED format based on HDF5
-\end{itemize}'
-/
-/ ADDED BY JMH ON 07/06/2010
-/
-NOM = 'DEBUGGER'
-NOM1 = 'DEBUGGER'
-TYPE = INTEGER
-INDEX = 41
-MNEMO = 'DEBUG'
-TAILLE = 0
-DEFAUT = 0
-DEFAUT1 = 0
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
-AIDE= 'Pour imprimer la sequence des appels, mettre 1'
-AIDE1 = 'If 1, calls of subroutines will be printed in the listing'
 /
 / ADDED BY JMH ON 31/01/2013
 /
@@ -5255,8 +5026,10 @@ DEFAUT1 = 'VITESSE U       M/S             ';
           'VENT Y          M/S             ';
           'HAUTEUR D EAU   M               '
 NIVEAU = 2
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'ENTREE'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'INPUT'
 AIDE = 'Nom des variables dans les fichiers au format SERAFIN
         1: Vitesse U
         2: Vitesse V
@@ -5272,103 +5045,33 @@ AIDE1= 'Names of variables in SERAFIN format files
        \item 5: Depth
 \end{itemize} '
 
-NOM = 'UNITE DE TEMPS DU FICHIER DES COURANTS'
-NOM1 = 'TIME UNIT IN CURRENTS FILE'
-TYPE = REEL
-INDEX = 81
-MNEMO = 'UNITCOB'
-TAILLE= 0
-DEFAUT = 1.
-DEFAUT1 = 1.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
-est donne en heures'
-AIDE1 = 'Unit given in seconds, for example 3600. if time
-is given in hours'
-/
-NOM = 'UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MAREE'
-NOM1 = 'TIME UNIT IN TIDAL WATER LEVEL FILE'
-TYPE = REEL
-INDEX = 82
-MNEMO = 'UNITMAB'
-TAILLE= 0
-DEFAUT = 1.
-DEFAUT1 = 1.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
-est donne en heures'
-AIDE1 = 'Unit given in seconds, for example 3600. if time
-is given in hours'
-/
-NOM = 'UNITE DE TEMPS DU FICHIER DES VENTS'
-NOM1 = 'TIME UNIT IN WINDS FILE'
-TYPE = REEL
-INDEX = 83
-MNEMO = 'UNITVEB'
-TAILLE= 0
-DEFAUT = 1.
-DEFAUT1 = 1.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
-est donne en heures'
-AIDE1 = 'Unit given in seconds, for example 3600. if time
-is given in hours'
-/
-/
-NOM = 'DEPHASAGE DU FICHIER DES COURANTS'
-NOM1 = 'TIME SHIFT IN CURRENTS FILE'
-TYPE = REEL
-INDEX = 84
-MNEMO = 'PHASCOB'
-TAILLE= 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Sera retranche au temps lu dans le fichier.
-L''unite est celle du fichier'
-AIDE1 = 'Will be withdrawn from the time read in the file.
- The unit is that of the file'
-/
-NOM = 'DEPHASAGE DU FICHIER DU NIVEAU DE LA MAREE'
-NOM1 = 'TIME SHIFT IN TIDAL WATER LEVEL FILE'
-TYPE = REEL
-INDEX = 85
-MNEMO = 'PHASMAB'
-TAILLE= 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Sera retranche au temps lu dans le fichier.
-L''unite est celle du fichier'
-AIDE1 = 'Will be withdrawn from the time read in the file.
- The unit is that of the file'
-/
-NOM = 'DEPHASAGE DU FICHIER DES VENTS'
-NOM1 = 'TIME SHIFT IN WINDS FILE'
-TYPE = REEL
-INDEX = 86
-MNEMO = 'PHASVEB'
-TAILLE= 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = 'FICHIERS DE DONNEES'
-RUBRIQUE1 = 'DATA FILE'
-NIVEAU = 2
-AIDE = 'Sera retranche au temps lu dans le fichier.
-L''unite est celle du fichier'
-AIDE1 = 'Will be withdrawn from the time read in the file.
- The unit is that of the file'
-/
+NOM = 'FORMAT DU FICHIER DES VENTS BINAIRE'
+NOM1 = 'BINARY WINDS FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 46
+MNEMO = 'WAC\_FILES(WACVEB)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 1
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'FICHIER VENT'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'WIND FILE'
+AIDE = 'Format du fichier binaire des vents.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'wind data binary file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
+
 NOM = 'OPTION POUR LA QUEUE DIAGNOSTIQUE'
 NOM1 = 'OPTION FOR DIAGNOSTIC TAIL'
 TYPE = INTEGER
@@ -5377,8 +5080,10 @@ MNEMO = 'DIAGHF'
 TAILLE= 0
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DISCRETISATION SPECTRALE'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'SPECTRAL DISCRETISATION'
 NIVEAU = 2
 AIDE = 'Permet de choisir la methode de correction de la
 partie diagnostique du spectre.
@@ -5402,7 +5107,7 @@ SPECTRUM TAIL FACTOR\\
 NUMBER OF FREQUENCIES\\
 FREQUENTIAL RATIO
 \end{CommentBlock}'
-/
+
 NOM = 'OPTION POUR LES DERIVEES SECONDES'
 NOM1 = 'OPTION FOR SECOND DERIVATIVES'
 TYPE = ENTIER
@@ -5411,12 +5116,14 @@ MNEMO = 'OPTDER'
 TAILLE= 0
 DEFAUT = 1
 DEFAUT1 = 1
-RUBRIQUE = 'DIFFRACTION'
-RUBRIQUE1 = 'DIFFRACTION'
+RUBRIQUE =
+'TRANSPORT';'PARAMETRES DE DIFFRACTION'
+RUBRIQUE1 =
+'TRANSPORT';'DIFFRACTION PARAMETERS'
 NIVEAU = 2
 AIDE = '1 : methode Freemesh 2 : deux derivees simples'
 AIDE1 = '1: Freemesh method 2: two simple derivatives'
-/
+
 NOM = 'FICHIER DES RESULTATS SPECTRES 1D'
 NOM1 = '1D SPECTRA RESULTS FILE'
 TYPE = CARACTERE
@@ -5424,10 +5131,12 @@ INDEX = 50
 MNEMO = 'Variable WAC\_FILES(WACSPE)%NAME'
 TAILLE= 0
 SUBMIT = 'WACSPE-WRITE;WACSPE;FACUL;ASC;ECR;SCAL'
-DEFAUT = ''
-DEFAUT1 = ''
-RUBRIQUE = 'RESULTATS'
-RUBRIQUE1 = 'RESULTS'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
 NIVEAU = 1
 AIDE = 'Nom du fichier dans lequel seront ecrits les spectres
 frequentiels ponctuels (integres selon les directions).
@@ -5447,221 +5156,59 @@ ORDINATES OF SPECTRUM PRINTOUT POINTS\\
 PERIOD FOR GRAPHIC PRINTOUTS\\
 NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS
 \end{CommentBlock}'
-/
-/ Version 7.0
-/
-NOM = 'REMISE A ZERO DU TEMPS'
-NOM1 = 'INITIAL TIME SET TO ZERO'
-TYPE = LOGIQUE
-INDEX = 16
-MNEMO = 'RAZTIM'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 2
-AIDE = 'Remet le temps a zero en cas de suite de calcul'
-AIDE1 = 'Initial time set to zero in case of restart'
-/
-NOM = 'ASSEMBLAGE EN ELEMENTS FINIS'
-NOM1 = 'FINITE ELEMENT ASSEMBLY'
-TYPE = ENTIER
-INDEX = 50
-MNEMO = 'MODASS'
+
+NOM = 'FICHIER DES RESULTATS GLOBAUX'
+NOM1 = 'GLOBAL RESULT FILE'
+TYPE = CARACTERE
+INDEX = 11
+MNEMO = 'Variable WAC\_FILES(WACRBI)%NAME'
 TAILLE= 0
-DEFAUT = 1
-DEFAUT1 = 1
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 2
-AIDE = '1 : normal 2 : avec des entiers I8'
-AIDE1 = '1: normal 2: with I8 integers'
-/
-NOM = 'PRISE EN COMPTE DE LA VEGETATION'
-NOM1 = 'VEGETATION TAKEN INTO ACCOUNT'
-TYPE = LOGIQUE
-INDEX = 17
-MNEMO = 'VEGETATION'
-TAILLE = 1
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+SUBMIT = 'WACRBI-READWRITE;WACRBI;FACUL;BIN;ECR;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
 NIVEAU = 1
-AIDE = 'Si oui, on appelle le sous-programme QVEG, dans lequel des
-donnees sur la vegetation doivent etre renseignees'
-AIDE1 = 'If YES, subroutine QVEG will be called, it contains data
-on vegetation that are case-specific and must thus be modified'
-/
-/ ADDED BY EGR ON 30/07/2014
-/
-NOM = 'DISSIPATION PAR FORT COURANT'
-NOM1 = 'DISSIPATION BY STRONG CURRENT'
-TYPE = ENTIER
-INDEX = 16
-MNEMO = 'SDSCU'
-TAILLE= 0
-CONTROLE = 0;2
-DEFAUT = 0
-DEFAUT1 = 0
-CHOIX = '0="Pas de wave-blocking"';
-'1="Limitation du spectre par une forme de Phillips"';
-'2="Dissipation selon Van der Westhuysen(2012)"'
-CHOIX1 = '0="No wave-blocking"';
-'1="Spectrum limitation by a Phillips shape"';
-'2="Dissipation in accordance with Van der Westhuysen(2012)"'
-RUBRIQUE = 'DISSIPATION'
-RUBRIQUE1 = 'DISSIPATION'
-NIVEAU = 1
-AIDE = 'Lorsque les effets de wave-blocking ou vagues stoppees
-par un fort courant sont presents, deux options sont proposees.
-Si sa valeur est 1, une limitation est imposee au spectre,
-en utilisant une forme d equilibre de Phillips (1977).
-Si sa valeur est 2, on utilise le terme de dissipation propose
-par Van der Westhuysen (2012).
+AIDE = 'Nom du fichier dans lequel sera ecrit le tableau F (spectre
+de variance) en fin de calcul dans le but de faire une suite de calcul.
 **Mots-cles associes :**
-COEFFICIENT DE DISSIPATION PAR FORT COURANT'
-AIDE1 = 'When wave-blocking effects are present (wave stopped by
-a strong opposing current), two options are possible.
-If its value is 1, an upper limit is imposed to the spectrum,
-using a Phillips (1977) shape.
-If its value is 2, a dissipative term is added, following
-Van der Westhuysen (2012).
+BINAIRE DU FICHIER DES RESULTATS GLOBAUX'
+AIDE1 = 'Name of the file in which the table F (density spectrum)
+is written at the end of the computation in order to realise a next
+computation.
 \\
  \begin{CommentBlock}{Related keywords}
-DISSIPATION COEFFICIENT FOR STRONG CURRENT
+BINARY OF THE GLOBAL RESULT FILE
 \end{CommentBlock}'
-/
-/ ADDED BY TF ON 19/11/2014
-/
-NOM = 'MODELISATION BAJ'
-NOM1 = 'BAJ MODELING'
-TYPE = ENTIER
+
+NOM = 'FORMAT DU FICHIER DES RESULTATS GLOBAUX'
+NOM1 = 'GLOBAL RESULT FILE FORMAT'
+TYPE = CARACTERE
 INDEX = 51
-MNEMO = 'CBAJ'
-TAILLE= 0
-CONTROLE = 0;1
-DEFAUT = 0
-DEFAUT1 = 0
-/CHOIX = '0="Modelisation classique"';
-/'1="Modelisation BAJ"';
-/CHOIX1 = '0="classical modelisation"';
-/'1="BAJ Modeling"';
-RUBRIQUE = 'SPECTRES'
-RUBRIQUE1 = 'SPECTRUM'
+MNEMO = 'WAC\_FILES(WACRBI)%FMT'
+DEFAUT = 'SERAFIN?'
+DEFAUT1 = 'SERAFIN?'
+CHOIX = 'SERAFIN?';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN?';'SERAFIND';'MED     '
 NIVEAU = 1
-AIDE = 'Type de calcul de la frequence centrale
-Si sa valeur est 0, on prend la formulation classique
-Si sa valeur est 1 on pren la modelisation BAJ proposee
-par Laugel (2013) pour le calcul de la frequence centrale
-et le limiteur de croissance
-**Mots-cles associes :**
-PRISE EN COMPTE DES TERMES SOURCES'
-AIDE1 = 'Choice of the calculus of centrale frequency
-if its value is 0, classical choice
-if its value is 1, BAJ choice proposed by Laugel (2013).
-\\
- \begin{CommentBlock}{Related keywords}
-CONSIDERATION OF SOURCE TERMS
-\end{CommentBlock}'
-/
-NOM = 'COEFFICIENT DE DISSIPATION PAR FORT COURANT'
-NOM1 = 'DISSIPATION COEFFICIENT FOR STRONG CURRENT'
-TYPE = REEL
-INDEX = 87
-MNEMO = 'CDSCUR'
-TAILLE= 0
-DEFAUT = 0.65
-DEFAUT1 = 0.65
-RUBRIQUE = 'DISSIPATION'
-RUBRIQUE1 = 'DISSIPATION'
-NIVEAU = 1
-AIDE = 'Coefficient de dissipation pour des vagues stoppees
-par un courant fort adverse (effets de wave-blocking).
-Expression de van der Westhuysen (2012): Cds,cur.
-**Mots-cles associes :**
-DISSIPATION PAR FORT COURANT'
-AIDE1 = 'Dissipation coefficient for waves stopped
-by a strong opposing current (wave blocking effects).
-Van der Westhuysen (2012) expression: Cds,cur.
-\\
- \begin{CommentBlock}{Related keywords}
-DISSIPATION BY STRONG CURRENT
-\end{CommentBlock}'
-/
-/  VERSION 7.1
-/
-NOM = 'VERIFICATION DU MAILLAGE'
-NOM1 = 'CHECKING THE MESH'
-TYPE = LOGIQUE
-INDEX = 18
-/ in declarations_telemac
-MNEMO = 'CHECK\_MESH'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
-AIDE = 'Si oui on appelle le sous-programme checkmesh qui verifie
-la coherence du maillage, points superposes, etc.'
-AIDE1 = 'if this key word is equal to yes, a call to subroutine
-checkmesh will look for errors in the mesh, superimposed points, etc.'
-/
-/ Various keywords for scripts
-/
-NOM = 'DESCRIPTION DES LIBRAIRIES'
-NOM1 = 'DESCRIPTION OF LIBRARIES'
-TYPE = CARACTERE
-INDEX = 98
-MNEMO = 'LINKLIBS'
-TAILLE = 6
-DEFAUT = 'builds|PPP|lib|tomawacMMMVVV.LLL';
-'builds|PPP|lib|biefMMMVVV.LLL';
-'builds|PPP|lib|hermesMMMVVV.LLL';
-'builds|PPP|lib|damoMMMVVV.LLL';
-'builds|PPP|lib|parallelMMMVVV.LLL';
-'builds|PPP|lib|specialMMMVVV.LLL'
-DEFAUT1 = 'builds|PPP|lib|tomawacMMMVVV.LLL';
-'builds|PPP|lib|biefMMMVVV.LLL';
-'builds|PPP|lib|hermesMMMVVV.LLL';
-'builds|PPP|lib|damoMMMVVV.LLL';
-'builds|PPP|lib|parallelMMMVVV.LLL';
-'builds|PPP|lib|specialMMMVVV.LLL'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE = 'Description des librairies de TOMAWAC'
-AIDE1 = 'TOMAWAC LIBRARIES description'
-
-NOM = 'EXECUTABLE PAR DEFAUT'
-NOM1 = 'DEFAULT EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 97
-MNEMO = 'EXEDEF'
-TAILLE = 1
-DEFAUT = 'builds|PPP|bin|tomawacMMMVVV.exe'
-DEFAUT1 = 'builds|PPP|bin|tomawacMMMVVV.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE = 'Executable par defaut de TOMAWAC'
-AIDE1 = 'Default executable for TOMAWAC'
-
-NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
-NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 96
-MNEMO = 'EXEDEFPARA'
-TAILLE = 1
-DEFAUT = 'builds|PPP|bin|tomawacMMMVVV.exe'
-DEFAUT1 = 'builds|PPP|bin|tomawacMMMVVV.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE = 'Executable parallele par defaut de Tomawac'
-AIDE1 = 'Default parallel executable for Tomawac'
+RUBRIQUE = 
+'ENVIRONNEMENT DE CALCUL';'SORTIE';'RESULTATS'
+RUBRIQUE1 = 
+'COMPUTATION ENVIRONMENT';'OUTPUT';'RESULTS'
+AIDE = 'Format du fichier de resultats du calcul precedent.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Previous computation results file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}'
 
 NOM = 'LISTE DES FICHIERS'
 NOM1 = 'LIST OF FILES'
@@ -5711,42 +5258,426 @@ DEFAUT1 ='STEERING FILE';
          'BINARY TIDAL WATER LEVEL FILE';
          'FORMATTED TIDAL WATER LEVEL FILE';
          '1D SPECTRA RESULTS FILE'
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+RUBRIQUE = 'INTERNAL'
+RUBRIQUE1 = 'INTERNAL'
 NIVEAU = 1
 AIDE = 'Nom des fichiers exploites par le code'
 AIDE1= 'Names of the files used by the software'
-/
-/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
-/ ALGORITHMIC DIFFERENTIATION                                         /
-/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
-/
-NOM = 'NOMBRE DE DERIVEES'
-NOM1 = 'NUMBER OF DERIVATIVES'
-TYPE = ENTIER
-INDEX = 52
-MNEMO = 'NADVAR'
-TAILLE = 0
-DEFAUT = 0
-DEFAUT1 = 0
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
-NIVEAU = 1
-AIDE = 'Definit le nombre de derivees utilisateurs, dans le cadre
-de la differentiation algorithmique.'
-AIDE1 = 'Defines the number of user derivatives, within the framework
-of the algorithmic differentiation.'
-/
-NOM = 'NOMS DES DERIVEES'
-NOM1 = 'NAMES OF DERIVATIVES'
+
+NOM = 'DICTIONNAIRE'
+NOM1 = 'DICTIONARY'
 TYPE = CARACTERE
-INDEX = 52
-MNEMO = 'NAME\_ADVAR'
-TAILLE = 2
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+INDEX = 100
+MNEMO = ''
+SUBMIT = 'INUTILE;WACDICO;OBLIG;ASC;LIT;DICO'
+DEFAUT = 'tomawac.dico'
+DEFAUT1 = 'tomawac.dico'
+RUBRIQUE = 'INTERNAL'
+RUBRIQUE1 = 'INTERNAL'
+NIVEAU = -3
+AIDE ='Dictionnaire des mots cles.'
+AIDE1 ='Key word dictionary.'
+
+NOM = 'PARTITIONNEUR'
+NOM1 = 'PARTITIONING TOOL'
+TYPE = CARACTERE
+INDEX = 101
+DEFAUT  = 'METIS'
+DEFAUT1 = 'METIS'
+CHOIX  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
+CHOIX1  = 'METIS';'SCOTCH';'PARMETIS';'PTSCOTCH'
 NIVEAU = 1
-AIDE = 'Noms des derivees utilisateurs en 32 caracteres,
-         16 pour le nom, 16 pour l''unite'
-AIDE1 = 'Name of user derivatives in 32 characters,
-         16 for the name, 16 for the unit.'
+RUBRIQUE =
+'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 =
+'GENERAL PARAMETERS';'MISCELLANEOUS'
+AIDE = 'CHOIX DU PARTITIONNEUR
+1 : METIS
+2 : SCOTCH
+3 : PARMETIS
+4 : PTSCOTCH
+etc... '
+AIDE1 = 'PARTITIONING TOOL SELECTION
+\begin{itemize}
+\item 1 : METIS
+\item 2 : SCOTCH
+\item 3 : PARMETIS
+\item 4 : PTSCOTCH
+\end{itemize} '
+
+NOM = 'PRISE EN COMPTE DES TERMES SOURCES'
+NOM1 = 'CONSIDERATION OF SOURCE TERMS'
+TYPE = LOGIQUE
+INDEX = 1
+MNEMO = 'Variable TSOU'
+TAILLE= 0
+DEFAUT = .TRUE.
+DEFAUT1 = .TRUE.
+RUBRIQUE = 'TERMES SOURCES'
+RUBRIQUE1 = 'SOURCE TERMS'
+NIVEAU = 1
+AIDE = 'Indique la prise en compte ou non de l ensemble des termes
+sources.
+**Mots-cles associes :**
+APPORTS DUS AU VENT
+DISSIPATION PAR FROTTEMENT SUR LE FOND
+DISSIPATION PAR MOUTONNEMENT
+DISSIPATION PAR DEFERLEMENT
+DISSIPATION PAR WAVE BLOCKING
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES
+TRANSFERTS ENTRE TRIPLETS DE FREQUENCES'
+AIDE1 = 'Indicates whether the source terms are taken into
+account or not.
+\\
+ \begin{CommentBlock}{Related keywords}
+WIND GENERATION\\
+BOTTOM FRICTION DISSIPATION\\
+WHITE CAPPING DISSIPATION\\
+DEPTH-INDUCED BREAKING DISSIPATION\\
+WAVE BLOCKING DISSIPATION\\
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES\\
+TRIAD INTERACTION
+\end{CommentBlock}'
+
+NOM = 'COORDONNEES SPHERIQUES'
+NOM1 = 'SPHERICAL COORDINATES'
+TYPE = LOGIQUE
+INDEX = 2
+MNEMO = 'Variable SPHE'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 
+'PARAMETRES GENERAUX';'AUTRES DEFINITIONS DU DOMAINE';''
+RUBRIQUE1 = 
+'GENERAL PARAMETERS';'OTHER DOMAIN DEFINITIONS';''
+NIVEAU = 2
+AIDE = 'Indique si on se place ou non en coordonnes spheriques.
+ATTENTION, en coordonnees cartesiennes, les coordonnees sont
+exprimees em m alors que ce sont des degres en coordonnees
+spheriques.'
+AIDE1 = 'Indicates whether the coordinates are spherical (unit=
+degree) or cartesian (unit = meter).'
+
+NOM = 'SUITE DE CALCUL'
+NOM1 = 'NEXT COMPUTATION'
+TYPE = LOGIQUE
+INDEX = 4
+MNEMO = 'Variable SUIT'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE =
+'ENVIRONNEMENT DE CALCUL';'ENTREE';'DONNEES'
+RUBRIQUE1 =
+'COMPUTATION ENVIRONMENT';'INPUT';'DATA'
+NIVEAU = 1
+AIDE = 'Indique si on fait une suite de calcul.
+**Mots-cles associes :**
+FICHIER DU CALCUL PRECEDENT'
+AIDE1 = 'Indicates whether a next compution is done.
+\\
+ \begin{CommentBlock}{Related keywords}
+PREVIOUS RESULTS FILE
+\end{CommentBlock}'
+
+NOM = 'PROFONDEUR INFINIE'
+NOM1 = 'INFINITE DEPTH'
+TYPE = LOGIQUE
+INDEX = 5
+MNEMO = 'Variable PROINF'
+TAILLE= 1
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'AUTRES DEFINITIONS DU DOMAINE'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'OTHER DOMAIN DEFINITIONS'
+NIVEAU = 0
+AIDE = 'Indique si on se place dans l hypothese de profondeur infinie.
+Cette option inhibe les frottements sur le fond.'
+AIDE1 = 'Indicates whether an infinite depth is assumed. If so, bottom
+friction is inhibited.'
+
+NOM = 'PRISE EN COMPTE D''UN COURANT STATIONNAIRE'
+NOM1 = 'CONSIDERATION OF A STATIONARY CURRENT'
+TYPE = LOGIQUE
+INDEX = 6
+MNEMO = 'COUSTA'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
+NIVEAU = 1
+AIDE = 'Indique si on prend en compte un courant, dans un fichier ou
+dans condiw.f.
+**Mots-cles associes :**
+FICHIER DES COURANTS'
+AIDE1 = 'Indicates whether a stationary current is taken into account,
+either in a file or in condiw.f.
+\\
+ \begin{CommentBlock}{Related keywords}
+CURRENTS FILE
+\end{CommentBlock}'
+
+NOM = 'PRISE EN COMPTE DU VENT'
+NOM1 = 'CONSIDERATION OF A WIND'
+TYPE = LOGIQUE
+INDEX = 7
+MNEMO = 'Variable VENT'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
+NIVEAU = 1
+AIDE = 'Indique si on prend en compte un vent, dans un fichier ou dans
+venuti.f.
+**Mots-cles associes :**
+FICHIER DES VENTS'
+AIDE1 = 'Indicates whether a wind is taken into account, either in
+a file or in venuti.f
+\\
+ \begin{CommentBlock}{Related keywords}
+WINDS FILE
+\end{CommentBlock}'
+
+NOM = 'RECUPERATION DE DONNEE TELEMAC'
+NOM1 = 'RECOVERY OF TELEMAC DATA ITEM'
+TYPE = LOGIQUE
+INDEX = 8
+MNEMO = 'Variable DONTEL'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = 'Indique si on recupere des donnees TELEMAC dans LECDON.f
+Si oui il faut veiller a utiliser un FICHIER DES COURANTS au bon format
+et donner le rang de la variable en question dans le fichier TELEMAC.
+**Mots-cles associes :**
+FICHIER DES COURANTS BINAIRE
+FICHIER DES COURANTS FORMATE
+FORMAT DU FICHIER DES COURANTS
+RANG DE LA DONNEE TELEMAC A RECUPERER
+NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC'
+AIDE1 = 'Indicates whether TELEMAC data are recovered in LECDON. If so,
+a proper-formatted CURRENTS FILE should be used and the rank of the
+respective variable should be entered into the TELEMAC file.
+\\
+ \begin{CommentBlock}{Related keywords}
+BINARY CURRENTS FILE\\
+FORMATTED CURRENTS FILE\\
+CURRENTS FILE TYPE\\
+RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED\\
+TIME INCREMENT NUMBER IN TELEMAC FILE
+\end{CommentBlock}'
+
+NOM = 'PRISE EN COMPTE DE LA PROPAGATION'
+NOM1 = 'CONSIDERATION OF PROPAGATION'
+TYPE = LOGIQUE
+INDEX = 9
+MNEMO = 'Variable PROP'
+TAILLE= 0
+DEFAUT = .TRUE.
+DEFAUT1 = .TRUE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 3
+AIDE = 'Indique si on prend en compte la propagation'
+AIDE1 = 'Indicates whether propagation is taken into account.'
+
+NOM = 'VENT STATIONNAIRE'
+NOM1 = 'STATIONARY WIND'
+TYPE = LOGIQUE
+INDEX = 10
+MNEMO = 'Variable VENSTA'
+TAILLE= 0
+DEFAUT = .TRUE.
+DEFAUT1 = .TRUE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
+NIVEAU = 1
+COMPORT = 'DISPLAY %PRISE EN COMPTE DU VENT% = TRUE'
+AIDE = 'Indique si le vent evolue dans le temps et doit etre mis a jour
+**Mots-cles associes :**
+PRISE EN COMPTE DU VENT'
+AIDE1 = 'Indicates whether the wind evolves temporally and requires
+to be updated
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A WIND
+\end{CommentBlock}'
+
+NOM = 'VALIDATION'
+NOM1 = 'VALIDATION'
+TYPE = LOGIQUE
+INDEX = 11
+MNEMO = 'VALID'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = 'Logique indiquant si on effectue un calcul de validation
+**Mots-cles associes :**
+FICHIER DE REFERENCE'
+AIDE1 = 'True if the computation is a validation
+\\
+ \begin{CommentBlock}{Related keywords}
+REFERENCE FILE
+\end{CommentBlock}'
+
+NOM = 'PRISE EN COMPTE DE LA MAREE'
+NOM1 = 'CONSIDERATION OF TIDE'
+TYPE = LOGIQUE
+INDEX = 12
+MNEMO = 'Variable MAREE'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'METEO'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'METEO'
+NIVEAU = 1
+AIDE = 'Indique si on prend en compte l''influence de la maree,
+c''est-a-dire, prise en compte d''un niveau d''eau et de courants
+instationnaires.
+**Mots-cles associes :**
+FICHIER DU NIVEAU DE LA MAREE FORMATE
+FICHIER DU NIVEAU DE LA MAREE BINAIRE
+FORMAT DU FICHIER DU NIVEAU DE LA MAREE
+PERIODE D ACTUALISATION DE LA MAREE
+BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
+AIDE1 = 'Indicates whether a current is taken into account, either in
+a file or in cdicow.f.
+\\
+ \begin{CommentBlock}{Related keywords}
+FORMATTED TIDAL WATER LEVEL FILE\\
+BINARY TIDAL WATER LEVEL FILE\\
+TIDAL WATER LEVEL FILE FORMAT\\
+TIDE REFRESHING PERIOD\\
+TIDAL WATER LEVEL FILE BINARY
+\end{CommentBlock}'
+
+NOM = 'CONVENTION TRIGONOMETRIQUE'
+NOM1 = 'TRIGONOMETRICAL CONVENTION'
+TYPE = LOGIQUE
+INDEX = 13
+MNEMO = 'TRIGO'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'PARAMETRES GENERAUX';'AUTRES DEFINITIONS DU DOMAINE';''
+RUBRIQUE1 = 'GENERAL PARAMETERS';'OTHER DOMAIN DEFINITIONS'
+NIVEAU = 1
+AIDE = 'Logique indiquant si les directions de propagation
+de la houle sont definies dans le sens trigonometrique a
+partir de l axe des x positifs, ou definies dans le sens
+des aiguilles d une montre a partir du nord geographique'
+AIDE1 = 'True if the wave directions are measured
+counterclockwise from the positive x-axis, false if
+they are measured clockwise fron geographic North'
+
+NOM = 'SPECTRE AUX LIMITES MODIFIE PAR L''UTILISATEUR'
+NOM1 = 'LIMIT SPECTRUM MODIFIED BY USER'
+TYPE = LOGIQUE
+INDEX = 14
+MNEMO = 'SPEULI'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'CONDITIONS LIMITES'
+RUBRIQUE1 = 'BOUNDARY CONDITIONS'
+NIVEAU = 0
+AIDE = 'Indique si l''utilisateur desire modifier le spectre
+aux limites. Il doit alors rapatrier chez lui le sous programme
+limwac.f dans le cas d une discretisation frequentielle du
+spectre et le sous programme spelim.f sinon.
+**Mots-cles associes :**
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES'
+AIDE1 = 'Indicates whether the user wants to modify the boundary
+spectrum. He should then retrieve the limwac.f subroutine, if the
+spectrum is frequency discretized, or the spelim.f subroutine,
+otherwise.
+\\
+ \begin{CommentBlock}{Related keywords}
+TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+\end{CommentBlock}'
+
+NOM = 'FILTRE POUR DIFFRACTION'
+NOM1 = 'DIFFRACTION FILTER'
+TYPE = LOGIQUE
+INDEX = 15
+MNEMO = 'Variable FLTDIF'
+TAILLE= 0
+DEFAUT = .FALSE.
+DEFAUT1 = .FALSE.
+RUBRIQUE = 'TRANSPORT';'PARAMETRES DE DIFFRACTION'
+RUBRIQUE1 = 'TRANSPORT';'DIFFRACTION PARAMETERS'
+NIVEAU = 1
+AIDE = 'Si la diffraction est prise en compte, le logique
+indique si les amplitudes calculees sont filtrees
+pour le calcul du parametre de diffraction et des vitesses
+de transfert.
+**Mots-cles associes :**
+DIFFRACTION
+SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION
+PAS DE TEMPS DEBUT DIFFRACTION'
+AIDE1 = 'If diffraction is considered, the keyword indicates
+whether the local amplitudes of the directional spectra are
+filtered to compute the diffraction parameter and the transfer
+rates.
+\\
+ \begin{CommentBlock}{Related keywords}
+DIFFRACTION\\
+VARIANCE THRESHOLD FOR DIFFRACTION\\
+STARTING TIME STEP FOR DIFFFRACTION
+\end{CommentBlock}'
+
+NOM = 'REMISE A ZERO DU TEMPS'
+NOM1 = 'INITIAL TIME SET TO ZERO'
+TYPE = LOGIQUE
+INDEX = 16
+MNEMO = 'RAZTIM'
+TAILLE = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES GENERAUX';'TEMPS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'TIME'
+NIVEAU = 2
+AIDE = 'Remet le temps a zero en cas de suite de calcul'
+AIDE1 = 'Initial time set to zero in case of restart'
+
+NOM = 'PRISE EN COMPTE DE LA VEGETATION'
+NOM1 = 'VEGETATION TAKEN INTO ACCOUNT'
+TYPE = LOGIQUE
+INDEX = 17
+MNEMO = 'VEGETATION'
+TAILLE = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'TERMES SOURCES';'VEGETATION'
+RUBRIQUE1 = 'SOURCE TERMS';'VEGETATION'
+NIVEAU = 0
+AIDE = 'Si oui, on appelle le sous-programme QVEG, dans lequel des
+donnees sur la vegetation doivent etre renseignees'
+AIDE1 = 'If YES, subroutine QVEG will be called, it contains data
+on vegetation that are case-specific and must thus be modified'
+
+NOM = 'VERIFICATION DU MAILLAGE'
+NOM1 = 'CHECKING THE MESH'
+TYPE = LOGIQUE
+INDEX = 18
+/ in declarations_telemac
+MNEMO = 'CHECK\_MESH'
+TAILLE = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES GENERAUX';'DIVERS'
+RUBRIQUE1 = 'GENERAL PARAMETERS';'MISCELLANEOUS'
+NIVEAU = 1
+AIDE = 'Si oui on appelle le sous-programme checkmesh qui verifie
+la coherence du maillage, points superposes, etc.'
+AIDE1 = 'if this key word is equal to yes, a call to subroutine
+checkmesh will look for errors in the mesh, superimposed points, etc.'

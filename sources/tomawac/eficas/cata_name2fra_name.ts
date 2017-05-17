@@ -3,10 +3,6 @@
 <context>
     <name>@defaut</name>
     <message>
-        <source>PERIOD_FOR_GRAPHIC_PRINTOUTS</source>
-        <translation>PERIODE POUR LES SORTIES GRAPHIQUES</translation>
-    </message>
-    <message>
         <source>PERIOD_FOR_LISTING_PRINTOUTS</source>
         <translation>PERIODE POUR LES SORTIES LISTING</translation>
     </message>
@@ -21,14 +17,6 @@
     <message>
         <source>NUMBER_OF_FREQUENCIES</source>
         <translation>NOMBRE DE FREQUENCES</translation>
-    </message>
-    <message>
-        <source>NUMBER_OF_FIRST_ITERATION_FOR_GRAPHICS_PRINTOUTS</source>
-        <translation>NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES</translation>
-    </message>
-    <message>
-        <source>BOTTOM_SMOOTHINGS</source>
-        <translation>LISSAGES DU FOND</translation>
     </message>
     <message>
         <source>WIND_GENERATION</source>
@@ -61,6 +49,10 @@
     <message>
         <source>TYPE_OF_INITIAL_DIRECTIONAL_SPECTRUM</source>
         <translation>TYPE DE SPECTRE DIRECTIONNEL INITIAL</translation>
+    </message>
+    <message>
+        <source>DISSIPATION_BY_STRONG_CURRENT</source>
+        <translation>DISSIPATION PAR FORT COURANT</translation>
     </message>
     <message>
         <source>TIME_INCREMENT_NUMBER_IN_TELEMAC_FILE</source>
@@ -143,12 +135,12 @@
         <translation>RANG DU NIVEAU DE LA MAREE DANS LE FICHIER TELEMAC</translation>
     </message>
     <message>
-        <source>NUMBER_OF_PRIVATE_ARRAYS</source>
-        <translation>NOMBRE DE TABLEAUX PRIVES</translation>
-    </message>
-    <message>
         <source>INITIAL_ANGULAR_DISTRIBUTION_FUNCTION</source>
         <translation>FONCTION DE REPARTITION ANGULAIRE INITIALE</translation>
+    </message>
+    <message>
+        <source>NUMBER_OF_PRIVATE_ARRAYS</source>
+        <translation>NOMBRE DE TABLEAUX PRIVES</translation>
     </message>
     <message>
         <source>BOUNDARY_ANGULAR_DISTRIBUTION_FUNCTION</source>
@@ -157,6 +149,10 @@
     <message>
         <source>ORIGIN_COORDINATES</source>
         <translation>COORDONNEES DE L'ORIGINE</translation>
+    </message>
+    <message>
+        <source>DEBUGGER</source>
+        <translation>DEBUGGER</translation>
     </message>
     <message>
         <source>SETTING_FOR_INTEGRATION_ON_OMEGA1</source>
@@ -183,8 +179,12 @@
         <translation>PROCESSEURS PARALLELES</translation>
     </message>
     <message>
-        <source>PARTITIONING_TOOL</source>
-        <translation>PARTITIONNEUR</translation>
+        <source>FINITE_ELEMENT_ASSEMBLY</source>
+        <translation>ASSEMBLAGE EN ELEMENTS FINIS</translation>
+    </message>
+    <message>
+        <source>BAJ_MODELING</source>
+        <translation>MODELISATION BAJ</translation>
     </message>
     <message>
         <source>TIME_STEP</source>
@@ -197,14 +197,6 @@
     <message>
         <source>FREQUENTIAL_RATIO</source>
         <translation>RAISON FREQUENTIELLE</translation>
-    </message>
-    <message>
-        <source>ABSCISSAE_OF_SPECTRUM_PRINTOUT_POINTS</source>
-        <translation>ABSCISSES DES POINTS DE SORTIE DU SPECTRE</translation>
-    </message>
-    <message>
-        <source>ORDINATES_OF_SPECTRUM_PRINTOUT_POINTS</source>
-        <translation>ORDONNEES DES POINTS DE SORTIE DU SPECTRE</translation>
     </message>
     <message>
         <source>DATE_OF_COMPUTATION_BEGINNING</source>
@@ -507,6 +499,34 @@
         <translation>SEUIL DE VARIANCE CONSIDEREE POUR DIFFRACTION</translation>
     </message>
     <message>
+        <source>TIME_UNIT_IN_CURRENTS_FILE</source>
+        <translation>UNITE DE TEMPS DU FICHIER DES COURANTS</translation>
+    </message>
+    <message>
+        <source>TIME_UNIT_IN_TIDAL_WATER_LEVEL_FILE</source>
+        <translation>UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MAREE</translation>
+    </message>
+    <message>
+        <source>TIME_UNIT_IN_WINDS_FILE</source>
+        <translation>UNITE DE TEMPS DU FICHIER DES VENTS</translation>
+    </message>
+    <message>
+        <source>TIME_SHIFT_IN_CURRENTS_FILE</source>
+        <translation>DEPHASAGE DU FICHIER DES COURANTS</translation>
+    </message>
+    <message>
+        <source>TIME_SHIFT_IN_TIDAL_WATER_LEVEL_FILE</source>
+        <translation>DEPHASAGE DU FICHIER DU NIVEAU DE LA MAREE</translation>
+    </message>
+    <message>
+        <source>TIME_SHIFT_IN_WINDS_FILE</source>
+        <translation>DEPHASAGE DU FICHIER DES VENTS</translation>
+    </message>
+    <message>
+        <source>DISSIPATION_COEFFICIENT_FOR_STRONG_CURRENT</source>
+        <translation>COEFFICIENT DE DISSIPATION PAR FORT COURANT</translation>
+    </message>
+    <message>
         <source>TITLE</source>
         <translation>TITRE</translation>
     </message>
@@ -515,16 +535,8 @@
         <translation>VARIABLES POUR LES SORTIES GRAPHIQUES 2D</translation>
     </message>
     <message>
-        <source>DICTIONARY</source>
-        <translation>DICTIONNAIRE</translation>
-    </message>
-    <message>
         <source>GEOMETRY_FILE</source>
         <translation>FICHIER DE GEOMETRIE</translation>
-    </message>
-    <message>
-        <source>GEOMETRY_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DE GEOMETRIE</translation>
     </message>
     <message>
         <source>FORTRAN_FILE</source>
@@ -543,6 +555,18 @@
         <translation>FICHIER DES FONDS</translation>
     </message>
     <message>
+        <source>BOTTOM_SMOOTHINGS</source>
+        <translation>LISSAGES DU FOND</translation>
+    </message>
+    <message>
+        <source>PERIOD_FOR_GRAPHIC_PRINTOUTS</source>
+        <translation>PERIODE POUR LES SORTIES GRAPHIQUES</translation>
+    </message>
+    <message>
+        <source>NUMBER_OF_FIRST_ITERATION_FOR_GRAPHICS_PRINTOUTS</source>
+        <translation>NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES</translation>
+    </message>
+    <message>
         <source>ED_RESULTS_FILE</source>
         <translation>FICHIER DES RESULTATS 2D</translation>
     </message>
@@ -555,28 +579,24 @@
         <translation>FICHIER DES RESULTATS PONCTUELS</translation>
     </message>
     <message>
+        <source>SPECTRUM_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DE SPECTRE</translation>
+    </message>
+    <message>
+        <source>ABSCISSAE_OF_SPECTRUM_PRINTOUT_POINTS</source>
+        <translation>ABSCISSES DES POINTS DE SORTIE DU SPECTRE</translation>
+    </message>
+    <message>
+        <source>ORDINATES_OF_SPECTRUM_PRINTOUT_POINTS</source>
+        <translation>ORDONNEES DES POINTS DE SORTIE DU SPECTRE</translation>
+    </message>
+    <message>
         <source>PREVIOUS_COMPUTATION_FILE</source>
         <translation>FICHIER DU CALCUL PRECEDENT</translation>
     </message>
     <message>
-        <source>PREVIOUS_COMPUTATION_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DU CALCUL PRECEDENT</translation>
-    </message>
-    <message>
-        <source>GLOBAL_RESULT_FILE</source>
-        <translation>FICHIER DES RESULTATS GLOBAUX</translation>
-    </message>
-    <message>
-        <source>GLOBAL_RESULT_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DES RESULTATS GLOBAUX</translation>
-    </message>
-    <message>
         <source>BINARY_CURRENTS_FILE</source>
         <translation>FICHIER DES COURANTS BINAIRE</translation>
-    </message>
-    <message>
-        <source>BINARY_CURRENTS_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DES COURANTS BINAIRE</translation>
     </message>
     <message>
         <source>FORMATTED_CURRENTS_FILE</source>
@@ -591,44 +611,12 @@
         <translation>FICHIER FORMATE 1</translation>
     </message>
     <message>
-        <source>GEOMETRY_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DE GEOMETRIE</translation>
-    </message>
-    <message>
-        <source>PUNCTUAL_RESULTS_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DES RESULTATS PONCTUELS</translation>
-    </message>
-    <message>
-        <source>CURRENTS_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DES COURANTS</translation>
-    </message>
-    <message>
-        <source>GLOBAL_RESULT_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DES RESULTATS GLOBAUX</translation>
-    </message>
-    <message>
-        <source>PREVIOUS_COMPUTATION_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DU CALCUL PRECEDENT</translation>
-    </message>
-    <message>
         <source>RELEASE</source>
         <translation>NUMERO DE VERSION</translation>
     </message>
     <message>
-        <source>WINDS_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DES VENTS</translation>
-    </message>
-    <message>
-        <source>BINARY_FILE_1_BINARY</source>
-        <translation>BINAIRE DU FICHIER BINAIRE 1</translation>
-    </message>
-    <message>
         <source>BINARY_WINDS_FILE</source>
         <translation>FICHIER DES VENTS BINAIRE</translation>
-    </message>
-    <message>
-        <source>BINARY_WINDS_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DES VENTS BINAIRE</translation>
     </message>
     <message>
         <source>FORMATTED_WINDS_FILE</source>
@@ -651,8 +639,64 @@
         <translation>FICHIER DU NIVEAU DE LA MAREE FORMATE</translation>
     </message>
     <message>
-        <source>TIDAL_WATER_LEVEL_FILE_BINARY</source>
-        <translation>BINAIRE DU FICHIER DU NIVEAU DE LA MAREE</translation>
+        <source>GEOMETRY_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DE GEOMETRIE</translation>
+    </message>
+    <message>
+        <source>BINARY_CURRENTS_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DES COURANTS BINAIRE</translation>
+    </message>
+    <message>
+        <source>PREVIOUS_COMPUTATION_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DU CALCUL PRECEDENT</translation>
+    </message>
+    <message>
+        <source>REFERENCE_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DE REFERENCE</translation>
+    </message>
+    <message>
+        <source>BINARY_DATA_FILE_1_FORMAT</source>
+        <translation>FORMAT DU FICHIER DE DONNEES BINAIRE 1</translation>
+    </message>
+    <message>
+        <source>NAMES_OF_VARIABLES</source>
+        <translation>NOMS DES VARIABLES</translation>
+    </message>
+    <message>
+        <source>BINARY_WINDS_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DES VENTS BINAIRE</translation>
+    </message>
+    <message>
+        <source>OPTION_FOR_DIAGNOSTIC_TAIL</source>
+        <translation>OPTION POUR LA QUEUE DIAGNOSTIQUE</translation>
+    </message>
+    <message>
+        <source>OPTION_FOR_SECOND_DERIVATIVES</source>
+        <translation>OPTION POUR LES DERIVEES SECONDES</translation>
+    </message>
+    <message>
+        <source>ZD_SPECTRA_RESULTS_FILE</source>
+        <translation>FICHIER DES RESULTATS SPECTRES 1D</translation>
+    </message>
+    <message>
+        <source>GLOBAL_RESULT_FILE</source>
+        <translation>FICHIER DES RESULTATS GLOBAUX</translation>
+    </message>
+    <message>
+        <source>GLOBAL_RESULT_FILE_FORMAT</source>
+        <translation>FORMAT DU FICHIER DES RESULTATS GLOBAUX</translation>
+    </message>
+    <message>
+        <source>LIST_OF_FILES</source>
+        <translation>LISTE DES FICHIERS</translation>
+    </message>
+    <message>
+        <source>DICTIONARY</source>
+        <translation>DICTIONNAIRE</translation>
+    </message>
+    <message>
+        <source>PARTITIONING_TOOL</source>
+        <translation>PARTITIONNEUR</translation>
     </message>
     <message>
         <source>CONSIDERATION_OF_SOURCE_TERMS</source>
@@ -711,104 +755,16 @@
         <translation>FILTRE POUR DIFFRACTION</translation>
     </message>
     <message>
-        <source>REFERENCE_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DE REFERENCE</translation>
-    </message>
-    <message>
-        <source>BINARY_DATA_FILE_1_FORMAT</source>
-        <translation>FORMAT DU FICHIER DE DONNEES BINAIRE 1</translation>
-    </message>
-    <message>
-        <source>SPECTRUM_FILE_FORMAT</source>
-        <translation>FORMAT DU FICHIER DE SPECTRE</translation>
-    </message>
-    <message>
-        <source>DEBUGGER</source>
-        <translation>DEBUGGER</translation>
-    </message>
-    <message>
-        <source>NAMES_OF_VARIABLES</source>
-        <translation>NOMS DES VARIABLES</translation>
-    </message>
-    <message>
-        <source>TIME_UNIT_IN_CURRENTS_FILE</source>
-        <translation>UNITE DE TEMPS DU FICHIER DES COURANTS</translation>
-    </message>
-    <message>
-        <source>TIME_UNIT_IN_TIDAL_WATER_LEVEL_FILE</source>
-        <translation>UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MAREE</translation>
-    </message>
-    <message>
-        <source>TIME_UNIT_IN_WINDS_FILE</source>
-        <translation>UNITE DE TEMPS DU FICHIER DES VENTS</translation>
-    </message>
-    <message>
-        <source>TIME_SHIFT_IN_CURRENTS_FILE</source>
-        <translation>DEPHASAGE DU FICHIER DES COURANTS</translation>
-    </message>
-    <message>
-        <source>TIME_SHIFT_IN_TIDAL_WATER_LEVEL_FILE</source>
-        <translation>DEPHASAGE DU FICHIER DU NIVEAU DE LA MAREE</translation>
-    </message>
-    <message>
-        <source>TIME_SHIFT_IN_WINDS_FILE</source>
-        <translation>DEPHASAGE DU FICHIER DES VENTS</translation>
-    </message>
-    <message>
-        <source>OPTION_FOR_DIAGNOSTIC_TAIL</source>
-        <translation>OPTION POUR LA QUEUE DIAGNOSTIQUE</translation>
-    </message>
-    <message>
-        <source>OPTION_FOR_SECOND_DERIVATIVES</source>
-        <translation>OPTION POUR LES DERIVEES SECONDES</translation>
-    </message>
-    <message>
-        <source>ZD_SPECTRA_RESULTS_FILE</source>
-        <translation>FICHIER DES RESULTATS SPECTRES 1D</translation>
-    </message>
-    <message>
         <source>INITIAL_TIME_SET_TO_ZERO</source>
         <translation>REMISE A ZERO DU TEMPS</translation>
-    </message>
-    <message>
-        <source>FINITE_ELEMENT_ASSEMBLY</source>
-        <translation>ASSEMBLAGE EN ELEMENTS FINIS</translation>
     </message>
     <message>
         <source>VEGETATION_TAKEN_INTO_ACCOUNT</source>
         <translation>PRISE EN COMPTE DE LA VEGETATION</translation>
     </message>
     <message>
-        <source>DISSIPATION_BY_STRONG_CURRENT</source>
-        <translation>DISSIPATION PAR FORT COURANT</translation>
-    </message>
-    <message>
-        <source>BAJ_MODELING</source>
-        <translation>MODELISATION BAJ</translation>
-    </message>
-    <message>
-        <source>DISSIPATION_COEFFICIENT_FOR_STRONG_CURRENT</source>
-        <translation>COEFFICIENT DE DISSIPATION PAR FORT COURANT</translation>
-    </message>
-    <message>
         <source>CHECKING_THE_MESH</source>
         <translation>VERIFICATION DU MAILLAGE</translation>
-    </message>
-    <message>
-        <source>DESCRIPTION_OF_LIBRARIES</source>
-        <translation>DESCRIPTION DES LIBRAIRIES</translation>
-    </message>
-    <message>
-        <source>DEFAULT_EXECUTABLE</source>
-        <translation>EXECUTABLE PAR DEFAUT</translation>
-    </message>
-    <message>
-        <source>DEFAULT_PARALLEL_EXECUTABLE</source>
-        <translation>EXECUTABLE PARALLELE PAR DEFAUT</translation>
-    </message>
-    <message>
-        <source>LIST_OF_FILES</source>
-        <translation>LISTE DES FICHIERS</translation>
     </message>
 </context>
 </TS>

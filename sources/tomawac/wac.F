@@ -744,10 +744,6 @@
 !COUPLAGE : end cycle IF(PART.LE.0) pour couplage avec TELEMAC
       ENDIF
 !
-!=====C
-!  11 C BOUCLE EN TEMPS PRINCIPALE.
-!=====C============================
-!
 !COUPLAGE TELEMAC-TOMAWAC
       IF(PART.NE.0) THEN
 !
@@ -792,6 +788,10 @@
 !         de temps effectifs de TOMAWAC. La variable LT_WAC
 !         compte les pas de temps de chaque boucle, meme
 !         quand TOMAWAC est appele par TELEMAC
+!
+!=====C
+!  11 C BOUCLE EN TEMPS PRINCIPALE.
+!=====C============================
 !
       DO LT_WAC=1,NIT
 !
