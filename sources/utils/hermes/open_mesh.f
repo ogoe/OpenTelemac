@@ -32,7 +32,7 @@
 !
       CHARACTER(LEN=8), INTENT(INOUT)    :: FFORMAT
       CHARACTER(LEN=*), INTENT(IN)       :: FILE_NAME
-      INTEGER,          INTENT(INOUT)    :: FILE_ID
+      INTEGER,          INTENT(OUT)      :: FILE_ID
       CHARACTER(LEN=9), INTENT(IN)       :: OPENMODE
       INTEGER, INTENT(OUT)               :: IERR
 !

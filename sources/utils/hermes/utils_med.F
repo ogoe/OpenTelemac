@@ -279,6 +279,7 @@
 !
 #else
 !
+      FILE_ID = 0
 !     MED LIBRARY NOT LOADED
       IERR = HERMES_MED_NOT_LOADED_ERR
 !

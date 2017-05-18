@@ -218,6 +218,11 @@
            CALL MPI_FINALIZE(IERR)
 #endif
         ENDIF
+        ! Boggus call to compile some functions
+        IF(1.EQ.0) THEN
+          CALL TRANSFER_GROUP_INFO()
+          CALL GET_DATA_VAR_LIST2()
+        ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         END PROGRAM HOMERE_API
 

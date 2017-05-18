@@ -187,7 +187,10 @@ def generate_api(cfgs, cfgname):
                  'utils|hermes', 'utils|gretel', 'utils|partel', 'utils|damocles']
     for lib in list_libs:
         lib_name = lib.split('|')[-1]
-        mycopy(path.join(lib_dir, lib.replace('|',sep), 'homere_api'+dyn_ext), \
+        lib_name_tel = lib_name+'4api'+dyn_ext
+        if lib == 'api':
+            lib_name_tel = 'api'+dyn_ext
+        mycopy(path.join(lib_dir, lib.replace('|',sep), lib_name_tel), \
                          path.join(api_dir, 'lib', 'lib'+lib_name+dyn_ext))
 
     # Copying Modules
@@ -455,18 +458,14 @@ def build_config(config_name, config_file, root_dir):
 
     return cfgs
 
-def compileAPI(config_name, config_file, root_dir, fcompiler, user_fortran,
-         exe_file, silent):
+def compileAPI(config_name, config_file, root_dir, exe_file):
     """
        Main function
 
        @param config_name Name of the telemac configuration
        @param config_file Name of the configuration file
        @param root_dir Path to the root folder of telemac
-       @param fcompiler Fortran compiler to use
-       @param user_fortran Name of the user_fortran
        @param exe_file Name of the file to compile
-       @param silent Deactivates f2py listing
     """
 
 
@@ -479,11 +478,7 @@ def compileAPI(config_name, config_file, root_dir, fcompiler, user_fortran,
         print '\n\n'+'\n'.join(banner(cfgname))
 
         # Check if we are compiling a fortran or recompiling the API
-        if exe_file != "":
-            compile_api_exe(exe_file, cfgs, cfgname, user_fortran)
-        else:
-            compile_api(cfgs, cfgname, fcompiler, user_fortran,
-                        silent)
+        compile_api_exe(exe_file, cfgs, cfgname, user_fortran)
     return xcptss
 
 
@@ -511,31 +506,15 @@ if __name__ == "__main__":
               default="",
               help="specify the root, default is taken from config file")
     PARSER.add_argument(\
-              "--fcompiler",
-              dest="fcompiler",
-              default='gfortran',
-              help="spectify the option to give to f2py, default is gfortran")
-    PARSER.add_argument(\
-              "--user-fortran",
-              dest="user_fortran",
-              default='',
-              help="give a user fortran to recompile the API with,\
-                    default is None")
-    PARSER.add_argument(\
               "--exe",
               dest="exeFile",
               default="",
-              help="Compile the program exeFile")
-    PARSER.add_argument(\
-              "--silent",
-              dest='silent',
-              action='store_true',
               help="Compile the program exeFile")
     ARGS = PARSER.parse_args()
 
 # Running main function
     XCPTS = compileAPI(ARGS.configName, ARGS.configFile, ARGS.rootDir,
-                 ARGS.fcompiler, ARGS.user_fortran, ARGS.exeFile, ARGS.silent)
+                  ARGS.exeFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

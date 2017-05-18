@@ -306,7 +306,6 @@
           CALL CHECK_CALL(IERR,'IDENTIFY_ENDIAN_TYPE:READ:'//ENDIAN)
           CLOSE(FILE_ID)
         ELSE
-!> SEB @ HRW: USE OF NAG COMPILER FOR ALGORITHMIC DIFFERENTIATION
 #if defined NO_CONVERT_ENDIAN
 !       IF YOU DO NOT HAVE THE CONVERT OPTION AND YOU WERE NOT ABLE
 !         TO OPEN THE FILE, THEN THE FILE IS NOT OF THE RIGHT FORMAT.
@@ -337,7 +336,6 @@
             CLOSE(FILE_ID)
           ENDIF
 #endif
-!< SEB @ HRW
         ENDIF
 !
         IF(LNG.EQ.1)
@@ -381,7 +379,7 @@
 !
         IMPLICIT NONE
         !
-        INTEGER, INTENT(INOUT) :: FILE_ID
+        INTEGER, INTENT(OUT) :: FILE_ID
         CHARACTER(LEN=9), INTENT(IN)     :: OPENMODE
         CHARACTER(LEN=*), INTENT(IN) :: FILE_NAME
         CHARACTER(LEN=8), INTENT(INOUT) :: FFORMAT
@@ -421,17 +419,8 @@
      &       IOSTAT=IERR)
 #endif
         CALL CHECK_CALL(IERR,'OPEN_MESH_SRF:OPEN')
-!##> SEB @ HRW: GETS SET LATER
         ! IT DOES NOT MATTER IF SERAFIN IS DOUBLE PRECISION OR NOT
         SRF_OBJ_TAB(SRF_ID)%KS = 4
-        ! IF IN SERAFIN DOUBLE PRECISION REAL ARE 8 BITE
-        ! 4 OTHERWISE
-        !IF(FFORMAT.EQ.'SERAFIN ') THEN
-        !  SRF_OBJ_TAB(SRF_ID)%RS = 4
-        !ELSE
-        !  SRF_OBJ_TAB(SRF_ID)%RS = 8
-        !ENDIF
-!##< SEB @ HRW
         ! ONLY DO THE SCAN OF THE FILE IF THE FILE IS READ ONLY
         IF(OPENMODE.EQ.'READ     ') THEN
 !
@@ -516,7 +505,6 @@
           ! npoin*4 if we are in double it will be npoin*8
           !
           READ(FILE_ID,POS=SRF_OBJ_TAB(SRF_ID)%POS_COORD) TAG
-!##> SEB @ HRW:  IT IS NOT AN ERROR TO BE WORKING WITH LITTLE ENDIAN
           IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
             FFORMAT = 'SERAFIND'
             SRF_OBJ_TAB(SRF_ID)%RS = 8
@@ -538,29 +526,6 @@
 !
 !         THE FIRST FILE (THE GEO) SETS THE PACE
           IF( SELAFMT.EQ.'SERAFIN?' ) SELAFMT = FFORMAT
-!
-!          IF(FFORMAT.EQ.'SERAFIN ') THEN
-!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
-!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
-!     &                    'IT IS A SERAFIND FILE'
-!              SRF_OBJ_TAB(SRF_ID)%RS = 8
-!              FFORMAT = 'SERAFIND'
-!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
-!              IERR = HERMES_INVALID_SERAFIN_FILE
-!              RETURN
-!            ENDIF
-!          ELSE
-!            IF(TAG.EQ.SRF_OBJ_TAB(SRF_ID)%NPOIN*4) THEN
-!              WRITE(*,*) 'ERROR IN FORMAT OF FILE '//TRIM(FILE_NAME)//
-!     &                    'IT IS A SERAFIN FILE'
-!              SRF_OBJ_TAB(SRF_ID)%RS = 4
-!              FFORMAT = 'SERAFIN '
-!            ELSE IF (TAG.NE.SRF_OBJ_TAB(SRF_ID)%NPOIN*8) THEN
-!              IERR = HERMES_INVALID_SERAFIN_FILE
-!              RETURN
-!            ENDIF
-!          ENDIF
-!##< SEB @ HRW
 !
           ! EVEN IN 3D THE SERAFON ONLY CONTAINS THE X AND Y COORDINATES AS THE Y VARIES WITH TIME
           SRF_OBJ_TAB(SRF_ID)%POS_DATA = SRF_OBJ_TAB(SRF_ID)%POS_COORD

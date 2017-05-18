@@ -104,8 +104,7 @@ from parsers.parserFortran import scanSources,getPrincipalWrapNames,refactorSour
 from utils.files import createDirectories,putFileContent,isNewer
 from utils.messages import MESSAGES,filterMessage,banner
 from utils.progressbar import ProgressBar
-# /!\ Better to have a dependendcy the other way round.
-#from compileAPI import compile_api
+from compileAPI import compile_api
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -1020,10 +1019,9 @@ Work with all active configurations.
 # ~~ End of scans for all cmdf files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not found: xcpts.addMessages([{'name':'compileTELEMAC::main:','msg':'Could not find any cmdf file for config ' + cfgname + '. You may have to use the --rescan option'}])
 
-# /!\ Better to have a dependendcy the other way round.
       # Compiling api if asked for
-      #if 'api' in cfg['options']:
-      #    compile_api(cfgs, cfgname, False)
+      if 'api' in cfg['options']:
+          compile_api(cfgs, cfgname, False)
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
