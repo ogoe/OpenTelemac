@@ -676,7 +676,10 @@ def processExecutable(cas,pbin,plib,system,dico,frgb,trace,bypass):
       if path.exists(oriFile):
          if path.isfile(oriFile): oriFort.append( oriFile )
          else:
-            for f in listdir(oriFile): oriFort.append( path.join(oriFile,f) )
+            for f in listdir(oriFile):
+               if path.isdir(f) or f[0] == '.':
+                  continue
+               oriFort.append( path.join(oriFile,f) )
    for cplage in cas['with']:
       vplage,defaut = getKeyWord('FICHIER FORTRAN',cas['with'][cplage]['cas'],dico,frgb)
       if vplage != []:
@@ -684,7 +687,10 @@ def processExecutable(cas,pbin,plib,system,dico,frgb,trace,bypass):
          if path.exists(oriFile):
             if path.isfile(oriFile): oriFort.append( oriFile )
             else:
-               for f in listdir(oriFile): oriFort.append( path.join(oriFile,f) )
+               for f in listdir(oriFile):
+                  if path.isdir(f) or f[0] == '.':
+                     continue
+                  oriFort.append( path.join(oriFile,f) )
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # ~~> check relevance of the executable
@@ -776,6 +782,9 @@ def processExecutable(cas,pbin,plib,system,dico,frgb,trace,bypass):
       # ~~ compilation one file at a time
       objs = []
       for f90 in listdir(wirFort):
+         # Skipping folder and hidden files
+         if path.isdir(f90) or f90[0] == '.':
+            continue
          try:
             tail,code = mes.runCmd(objCmd.replace('<f95name>',f90),bypass)
          except Exception as e:
