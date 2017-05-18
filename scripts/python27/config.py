@@ -244,12 +244,20 @@ def parseConfigFile(file,name,bypass=False):
       # ~~> making sure cfgname also includes all keys from general
       for genkey in generalDict :
          if not genkey in configDict[cfgname]: configDict[cfgname].update({genkey:generalDict[genkey]})
-      # ~~> replacing [key] by its value
+      # ~~> listing all [key] up for replacement (avoiding recursive referencing
+      key_records = []
+      for cfgkey in configDict[cfgname]:
+         for k in re.findall(key_sqbrack,configDict[cfgname][cfgkey]): key_records.append(k)
+      # ~~> replacing [key] by its value, if so defined
+      for k in key_records:
+         key = k.strip('[]')
+         for cfgkey in configDict[cfgname]:
+            if configDict[cfgname].has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,configDict[cfgname][key])
+      # ~~> defaulting [key] to the environment, if so defined
       for cfgkey in configDict[cfgname]:
          for k in re.findall(key_sqbrack,configDict[cfgname][cfgkey]):
             key = k.strip('[]')
-            if configDict[cfgname].has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,configDict[cfgname][key])
-            elif environ.has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,environ[key])
+            if environ.has_key(key): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace(k,environ[key])
             else:
                print '... Could not find your special key ',k,' in key ',cfgkey,' of configuration ',cfgname
    globals()["CONFIGS"] = configDict
