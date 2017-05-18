@@ -60,7 +60,7 @@
       <layer vars="FOND            :map" target="1:WACGEO" deco="rose"/>
    </plot2d>
    <plot2d xref="img/hm0" config="oneofall" time="[-1]" size="(12;7)" set="title('Wave height')" >
-      <layer vars="HAUTEUR HM0 :map" target="1:WACRES" deco="rose" />
+      <layer vars="WAVE HEIGHT HM0 :map" target="1:WACRES" deco="rose" />
    </plot2d>
    <plot2d xref="img/hm0v5p8" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Wave height for V5P8')"> >
       <layer vars="HAUTEUR HM0 :map" target="ref_tom_calais_v5p8.slf" deco="rose" />
@@ -69,13 +69,13 @@
       <layer vars="HAUTEUR HM0 :map" target="ref_tom_calais_v6p0.slf" deco="rose" />
    </plot2d>
    <plot2d xref="img/direction" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Direction for new version')" >
-      <layer vars="DIRECTION MOY   :map" target="1:WACRES" deco="rose" />
+      <layer vars="MEAN DIRECTION  :map" target="1:WACRES" deco="rose" />
    </plot2d>
    <plot2d xref="img/directionv6p0" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('Direction for V6P0')"> >
       <layer vars="DIRECTION MOY   :map" target="ref_tom_calais_v6p0.slf" deco="rose" />
    </plot2d>
    <plot2d xref="img/power" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('POWER for new version')" >
-      <layer vars="PUISSANCE HOULE :map" target="1:WACRES" deco="rose" />
+      <layer vars="WAVE POWER :map" target="1:WACRES" deco="rose" />
    </plot2d>
    <plot2d xref="img/powerv5p8" config="oneofall" time="[-1]" size="(12;7)" set="colorbar;title('POWER for V5P8')"> >
       <layer vars="PUISSANCE HOULE :map" target="ref_tom_calais_v5p8.slf" deco="rose" />

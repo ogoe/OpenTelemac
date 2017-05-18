@@ -1,16 +1,16 @@
-/********************************************************************/
-/             FICHIER DES PARAMETRES DE TOMAWAC                      /
-/********************************************************************/
+/********************************************************************
+/             FICHIER DES PARAMETRES DE TOMAWAC
+/********************************************************************
 /MODE TROISIEME GENERATION = OUI
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 /     FICHIERS
-/--------------------------------------------------------------------/
-FICHIER FORTRAN = 'limwac.f'
-FICHIER DE GEOMETRIE = 'geo_spherique.slf'
-FICHIER DES CONDITIONS AUX LIMITES = 'manche.cl'
-FICHIER DES VENTS BINAIRE = 'vents.slf'
-FORMAT DU FICHIER DES VENTS = 3
-VENT STATIONNAIRE = NON
+/--------------------------------------------------------------------
+ FORTRAN FILE = 'limwac.f'
+ GEOMETRY FILE = 'geo_spherique.slf'
+ BOUNDARY CONDITIONS FILE = 'manche.cl'
+ BINARY WINDS FILE = 'vents.slf'
+ WINDS FILE FORMAT = 3
+ STATIONARY WIND = NON
 /UNITE DE TEMPS DU FICHIER DES VENTS = 3600.
 /DEPHASAGE DU FICHIER DES VENTS = 11612
 /VENT STATIONNAIRE = FALSE
@@ -19,57 +19,57 @@ VENT STATIONNAIRE = NON
 /	  'vent_x                          ';
 /	  'vent_y                          ';
 /          'HAUTEUR D''EAU   M               '
-FICHIER FORMATE 1 = 'manche.lar'
-/
-FICHIER DES RESULTATS 2D = 'manche2.slf'
-FICHIER DES RESULTATS PONCTUELS = 'manche.spe'
+ FORMATTED FILE 1 = 'manche.lar'
+
+ 2D RESULTS FILE = 'manche2.slf'
+ PUNCTUAL RESULTS FILE = 'manche.spe'
 /FICHIER DE REFERENCE = 'manche_V1P3.r2d'
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 / DIVERS ENTREES-SORTIES
-/--------------------------------------------------------------------/
-TITRE = 'CAS TEST TEMPETE EN MANCHE'
-PERIODE POUR LES SORTIES LISTING = 9
-PERIODE POUR LES SORTIES GRAPHIQUES = 36
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
-HM0,DMOY,FMOY,FM01,FPD,VX,VY,ZF
-ABSCISSES DES POINTS DE SORTIE DU SPECTRE = 
--12.13;-3.; -7.; 2.50;-4.0;-5.12;-6.0;-4.75;-3.13; -2.0;-0.88;
-1.5
-ORDONNEES DES POINTS DE SORTIE DU SPECTRE = 
+/--------------------------------------------------------------------
+ TITLE = 'CAS TEST TEMPETE EN MANCHE'
+ PERIOD FOR LISTING PRINTOUTS = 9
+ PERIOD FOR GRAPHIC PRINTOUTS = 36
+ VARIABLES FOR 2D GRAPHIC PRINTOUTS =
+ HM0,DMOY,FMOY,FM01,FPD,VX,VY,ZF
+ ABSCISSAE OF SPECTRUM PRINTOUT POINTS =
+ -12.13;-3.; -7.; 2.50;-4.0;-5.12;-6.0;-4.75;-3.13; -2.0;-0.88;
+ 1.5
+ ORDINATES OF SPECTRUM PRINTOUT POINTS =
  43.13;45.;47.6;54.75;47.7;48.45; 51.;49.28;48.98;49.58; 50.1;
-51.
+ 51.
 /DEBUGGER=1
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 / DISCRETISATION
-/--------------------------------------------------------------------/
-DATE DE DEBUT DU CALCUL = 1161500
+/--------------------------------------------------------------------
+ DATE OF COMPUTATION BEGINNING = 1161500
 /DATE DE DEBUT DU CALCUL = 199001160300.0
 /DATE DE DEBUT DU CALCUL = 199001161500.0
-PAS DE TEMPS = 300.
-NOMBRE DE PAS DE TEMPS = 4032
+ TIME STEP = 300.
+ NUMBER OF TIME STEP = 4032
 /NOMBRE DE PAS DE TEMPS = 4
-NOMBRE DE DIRECTIONS = 12
-FREQUENCE MINIMALE = 0.04177248
-RAISON FREQUENTIELLE = 1.1
-NOMBRE DE FREQUENCES = 25
-/--------------------------------------------------------------------/
+ NUMBER OF DIRECTIONS = 12
+ MINIMAL FREQUENCY = 0.04177248
+ FREQUENTIAL RATIO = 1.1
+ NUMBER OF FREQUENCIES = 25
+/--------------------------------------------------------------------
 / OPTIONS DU CALCUL
-/--------------------------------------------------------------------/
-PROFONDEUR INFINIE = NON
-COORDONNEES SPHERIQUES = OUI
-SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = OUI
-PRISE EN COMPTE DES TERMES SOURCES = OUI
-PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
-PRISE EN COMPTE DU VENT = OUI
-TYPE DE SPECTRE DIRECTIONNEL INITIAL = 1
+/--------------------------------------------------------------------
+ INFINITE DEPTH = NON
+ SPHERICAL COORDINATES = OUI
+ LIMIT SPECTRUM MODIFIED BY USER = OUI
+ CONSIDERATION OF SOURCE TERMS = OUI
+ CONSIDERATION OF A STATIONARY CURRENT = NON
+ CONSIDERATION OF A WIND = OUI
+ TYPE OF INITIAL DIRECTIONAL SPECTRUM = 1
 /VALIDATION = OUI
-/--------------------------------------------------------------------/
+/--------------------------------------------------------------------
 / TERMES SOURCES
-/--------------------------------------------------------------------/
-NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES = 1
-APPORTS DUS AU VENT = 1
-DISSIPATION PAR MOUTONNEMENT = 1
-DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
-TRANSFERTS NON LINEAIRES INTER-FREQUENCES = 1
-DISSIPATION PAR DEFERLEMENT = 0
+/--------------------------------------------------------------------
+ NUMBER OF ITERATIONS FOR THE SOURCE TERMS = 1
+ WIND GENERATION = 1
+ WHITE CAPPING DISSIPATION = 1
+ BOTTOM FRICTION DISSIPATION = 1
+ NON-LINEAR TRANSFERS BETWEEN FREQUENCIES = 1
+ DEPTH-INDUCED BREAKING DISSIPATION = 0
 /NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 5
