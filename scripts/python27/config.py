@@ -1023,11 +1023,11 @@ def getFolders_ModulesTELEMAC(root,rescan,bypass):
 def addEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
    # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    extList = ''
-   if ext in cfgDict: extList = cfgDict[ext]
+   if ext in cfgDict: extList = ' '.join(cfgDict[ext].split())
    ext_all = ext + '_all'
-   if ext_all in cfgDict: extList += ' ' + cfgDict[ext_all]
+   if ext_all in cfgDict: extList += ' ' + ' '.join(cfgDict[ext_all].split())
    ext_mod = ext + '_' + mod
-   if ext_mod in cfgDict: extList += ' ' + cfgDict[ext_mod]
+   if ext_mod in cfgDict: extList += ' ' + ' '.join(cfgDict[ext_mod].split())
    return extList
 
 """
@@ -1038,11 +1038,11 @@ def addEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, i
 def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
    # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    extList = ''
-   if 'cmd_' + ext in cfgDict: extList = cfgDict['cmd_'+ext]
+   if 'cmd_' + ext in cfgDict: extList = ' '.join(cfgDict['cmd_'+ext].split())
    ext_all = 'cmd_' + ext + '_all'
-   if ext_all in cfgDict: extList = cfgDict[ext_all]
+   if ext_all in cfgDict: extList = ' '.join(cfgDict[ext_all].split())
    ext_mod = 'cmd_' + ext + '_' + mod
-   if ext_mod in cfgDict: extList = cfgDict[ext_mod]
+   if ext_mod in cfgDict: extList = ' '.join(cfgDict[ext_mod].split())
    return extList
 
 """
