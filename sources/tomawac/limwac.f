@@ -6,7 +6,7 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, 
+     & FMTBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, 
      & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 !
 !***********************************************************************
@@ -48,7 +48,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| APHILL         |-->| BOUNDARY PHILLIPS CONSTANT
 !| AT             |-->| COMPUTATION TIME
-!| BINBI1         |-->| BINARY FILE 1 BINARY
+!| FMTBI1         |-->| BINARY FILE 1 FORMAT 
 !| BOUNDARY_COLOUR|-->| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| DEPTH          |-->| WATER DEPTH
@@ -117,7 +117,7 @@
       DOUBLE PRECISION, INTENT(IN)   :: SPRE2L,XLAMDL,TETA2L
       DOUBLE PRECISION, INTENT(IN)   :: GRAVIT
       LOGICAL,          INTENT(IN)   :: SPEULI, VENT, VENSTA
-      CHARACTER(LEN=8), INTENT(IN)   :: BINBI1
+      CHARACTER(LEN=8), INTENT(IN)   :: FMTBI1
       DOUBLE PRECISION, INTENT(INOUT):: F(NPOIN2,NPLAN,NF), FRA(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT):: FBOR(NPTFR,NPLAN,NF)
 !

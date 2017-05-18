@@ -51,7 +51,6 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINPRE         |-->| PREVIOUS COMPUTATION FILE BINARY
 !| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
 !| DEPTH          |<--| WATER DEPTH
 !| DZHDT          |<--| WATER DEPTH DERIVATIVE WITH RESPECT TO T

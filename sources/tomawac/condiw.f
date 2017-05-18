@@ -173,15 +173,17 @@
             IF(LNG.EQ.1) WRITE(LU,*) 'LECTURE HAUTEUR DANS FICHIER MAF'
             IF(LNG.EQ.2) WRITE(LU,*) 'READING DEPTH IN FILE MAF'
             UL=WAC_FILES(WACMAF)%LU
+            FFORMAT=WAC_FILES(WACMAF)%FMT
           ELSE
             IF(LNG.EQ.1) WRITE(LU,*) 'LECTURE HAUTEUR DANS FICHIER MAB'
             IF(LNG.EQ.1) WRITE(LU,*) 'READING DEPTH IN FILE MAB'
             UL=WAC_FILES(WACMAB)%LU
+            FFORMAT=WAC_FILES(WACMAB)%FMT
           ENDIF
           CALL LECDOI(UC, NAMEU, 'VELOCITY U      M/S             ',0,
      &                VC, NAMEV, 'VELOCITY V      M/S             ',0,
      &                DEPTH,NAMEH, 'WATER DEPTH     M               ',2,
-     &                X, Y, NPOIN2, UL, BINMAR, NBOR, NPTFR,
+     &                X, Y, NPOIN2, UL, FFORMAT, NBOR, NPTFR,
      &                AT, DDC, TM1, TM2, UC1, UC2, VC1, VC2,
      &                ZM1,  ZM2, INDIM, 'HAUTEUR', NVHMA, TEXMAB,TROUVE,
      &                UNITMAB,PHASMAB)

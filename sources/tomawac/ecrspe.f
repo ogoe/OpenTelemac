@@ -3,8 +3,8 @@
 !                    *****************
 !
      &( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
-     &  NPOIN2, AT    , LT, AUXIL , NOLEO , NLEO  , NSCO  ,
-     &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
+     &  NPOIN2, AT    , LT    , AUXIL , NOLEO , NLEO  , NSCO,
+     &  FMTSCO, NAMSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
      &  NSPE  , TISPEF)
 !
 !***********************************************************************
@@ -78,7 +78,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
-!| BINSCO         |-->| SPECTRUM FILE FORMAT
+!| FMTSCO         |-->| SPECTRUM FILE FORMAT 
 !| DATE           |-->| START DATE
 !| DEBRES         |-->| LOGICAL INDICATING THE FIRST TIME STEP TO PRINT
 !| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
@@ -93,6 +93,7 @@
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NSCO           |-->| LOGICAL UNIT NUMBER OF THE PUNCTUAL RESULTS FILE
+!| NAMSCO         |-->| NAME OF THE PUNCTUAL RESULTS FILE
 !| TETA           |-->| DISRETIZED DIRECTION
 !| TIME           |-->| START TIME
 !| TITCAS         |-->| TITLE
@@ -124,9 +125,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: TETA(NPLAN),FREQ(NF)
       LOGICAL, INTENT(IN)             :: DEBRES
       CHARACTER(LEN=72), INTENT(IN)   :: TITCAS
-      CHARACTER(LEN=*) , INTENT(IN)   :: BINSCO
+      CHARACTER(LEN=8) , INTENT(IN)   :: FMTSCO
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-      CHARACTER(LEN=144), INTENT(IN)  :: TISPEF
+      CHARACTER(LEN=144), INTENT(IN)  :: TISPEF,NAMSCO
       INTEGER, INTENT(IN)             :: NSPE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -256,22 +257,25 @@
 !         CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
 !         CONTAINED IN THE FILE.
 !
-          CALL WRITE_HEADER(BINSCO, ! RESULTS FILE FORMAT
-     &         NSCO,          ! LU FOR RESULTS FILE
-     &         TITCAS,        ! TITLE
-     &         NLEO,          ! MAX NUMBER OF OUTPUT VARIABLES
-     &         TEXTE,         ! NAMES OF OUTPUT VARIABLES
-     &         SORLEO)        ! PRINT TO FILE OR NOT
-!
+          IF (NAMSCO(1:1).NE.' ') THEN 
+            CALL WRITE_HEADER(FMTSCO, ! RESULTS FILE FORMAT
+     &           NSCO,          ! LU FOR RESULTS FILE
+     &           TITCAS,        ! TITLE
+     &           NLEO,          ! MAX NUMBER OF OUTPUT VARIABLES
+     &           TEXTE,         ! NAMES OF OUTPUT VARIABLES
+     &           SORLEO)        ! PRINT TO FILE OR NOT
+            
+!     
 !         WRITES THE MESH IN THE OUTPUT FILE
 !
-          CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
-     &         NSCO,          ! LU FOR RESULTS FILE
-     &         MESHF,
-     &         1,             ! NUMBER OF PLANES
-     &         DATE,          ! START DATE
-     &         TIME)          ! START TIME
-!
+            CALL WRITE_MESH(FMTSCO, ! RESULTS FILE FORMAT
+     &           NSCO,          ! LU FOR RESULTS FILE
+     &           MESHF,
+     &           1,             ! NUMBER OF PLANES
+     &           DATE,          ! START DATE
+     &           TIME)          ! START TIME
+          ENDIF
+!     
           IF(TISPEF(1:1).NE.' ') THEN
             WRITE(NSPE,'(A1,A72)') '/', TITCAS
             WRITE(NSPE,'(I3)') NLEO
@@ -327,21 +331,23 @@
 !       2) PROCESSOR 0 READS ALL FILES AND MERGES IN THE FINAL FILE
 !
         IF(IPID.EQ.0) THEN
-          DO ILEO=1,NLEO
-            OPEN(ID,FILE=EXTENS(NLEO,ILEO),
-     &              FORM='UNFORMATTED',STATUS='OLD')
-            CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
-            CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
-     &                    AUXIL,NPSPE,ISTAT)
-            CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
-            DO JF=1,NF
-              F_INTF(ILEO,JF)=0.D0
-              DO K=1,NPLAN
-                F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
+          IF (NAMSCO(1:1).NE.' ') THEN 
+            DO ILEO=1,NLEO
+              OPEN(ID,FILE=EXTENS(NLEO,ILEO),
+     &                FORM='UNFORMATTED',STATUS='OLD')
+              CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',ID,'STD',ISTAT)
+              CALL ADD_DATA(FMTSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                      AUXIL,NPSPE,ISTAT)
+              CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
+              DO JF=1,NF
+                F_INTF(ILEO,JF)=0.D0
+                DO K=1,NPLAN
+                  F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
+                ENDDO
               ENDDO
+              CLOSE(ID,STATUS='DELETE')
             ENDDO
-            CLOSE(ID,STATUS='DELETE')
-          ENDDO
+          ENDIF 
           IF (TISPEF(1:1).NE.' ') THEN
             DO JF=1,NF
               WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
@@ -350,20 +356,22 @@
           ENDIF
          ENDIF
       ELSE
-        DO ILEO=1,NLEO
-          II=NOLEO(ILEO)
-          DO JF=1,NF
-            F_INTF(ILEO,JF)=0.D0
-            DO K=1,NPLAN
-              AUXIL(K,JF)=F(II,K,JF)
-              F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+F(II,K,JF)*DTETAR
+        IF (NAMSCO(1:1).NE.' ') THEN 
+          DO ILEO=1,NLEO
+            II=NOLEO(ILEO)
+            DO JF=1,NF
+              F_INTF(ILEO,JF)=0.D0
+              DO K=1,NPLAN
+                AUXIL(K,JF)=F(II,K,JF)
+                F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+F(II,K,JF)*DTETAR
+              ENDDO
+              IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
             ENDDO
-            IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
+            CALL ADD_DATA(FMTSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
+     &                    AUXIL,NPSPE,ISTAT)
+            CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
           ENDDO
-          CALL ADD_DATA(BINSCO,NSCO,TEXTE(ILEO),AT,LT,ILEO.EQ.1,
-     &                  AUXIL,NPSPE,ISTAT)
-          CALL CHECK_CALL(ISTAT,'ECRSPE:ADD_DATA')
-        ENDDO
+        ENDIF 
         IF (TISPEF(1:1).NE.' ') THEN
           DO JF=1,NF
             WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),

@@ -86,6 +86,7 @@
 !
       INTEGER IP,UL
       LOGICAL TROUVE(3)
+      CHARACTER(LEN=8) FMTCOU, FMTMAR
 !
 !-----------------------------------------------------------------------
 !
@@ -99,16 +100,16 @@
 !
         IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
           UL=WAC_FILES(WACCOB)%LU
-          BINCOU=WAC_FILES(WACCOB)%FMT
+          FMTCOU=WAC_FILES(WACCOB)%FMT
         ELSE
           UL=WAC_FILES(WACCOF)%LU
-          BINCOU=WAC_FILES(WACCOF)%FMT
+          FMTCOU=WAC_FILES(WACCOF)%FMT
         ENDIF
         CALL NOUDON(UC,NAMEU, 'VELOCITY U      M/S             ',2,
      &              VC,NAMEV, 'VELOCITY V      M/S             ',2,
      &              DEPTH,NAMEH, 'WATER DEPTH     M               ',1,
      &              X, Y, NPOIN2,
-     &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,
+     &              UL,FMTCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,
      &              UC1, UC2, VC1, VC2, ZM1, ZM2, INDIC,
      &              'COURANT',NVCOU,TEXCOB,TROUVE,UNITCOB,PHASCOB)
         IF(TROUVE(3)) THEN
@@ -136,17 +137,17 @@
 !
         IF(WAC_FILES(WACMAB)%NAME(1:1).NE.' ') THEN
           UL=WAC_FILES(WACMAB)%LU
-          BINMAR=WAC_FILES(WACMAB)%FMT
+          FMTMAR=WAC_FILES(WACMAB)%FMT
         ELSE
           UL=WAC_FILES(WACMAF)%LU
-          BINMAR=WAC_FILES(WACMAF)%FMT
+          FMTMAR=WAC_FILES(WACMAF)%FMT
         ENDIF
 !
         CALL NOUDON(UC,NAMEU, 'VELOCITY U      M/S             ',0,
      &              VC,NAMEV, 'VELOCITY V      M/S             ',0,
      &              DEPTH,NAMEH,  'WATER DEPTH     M               ',2,
      &              X, Y, NPOIN2,
-     &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2,
+     &              UL,FMTMAR,NBOR,NPTFR,AT,DDC,TM1,TM2,
      &              UC1, UC2, VC1, VC2, ZM1, ZM2, INDIM,
      &              'HAUTEUR',NVHMA,TEXMAB,TROUVE,UNITMAB,PHASMAB)
         CALL OV('X=Y-Z   ',DZHDT, ZM2, ZM1, 0.D0, NPOIN2)

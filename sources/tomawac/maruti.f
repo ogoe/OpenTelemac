@@ -2,7 +2,7 @@
                      SUBROUTINE MARUTI
 !                    *****************
 !
-     &(X,Y,NPOIN,NMAR,BINMAR,NBOR,NPTFR,AT,DDC,TV1,TV2,Z1,Z2)
+     &(X,Y,NPOIN,NMAR,FMTMAR,NBOR,NPTFR,AT,DDC,TV1,TV2,Z1,Z2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                  21/06/2011
@@ -58,7 +58,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINMAR         |-->| TIDAL WATER LEVEL FILE BINARY
+!| FMTMAR         |-->| TIDAL WATER LEVEL FILE FORMAT
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NMAR           |-->| LOGICAL UNIT NUMBER OF TIDAL WATER LEVEL FILE
@@ -83,7 +83,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: Z1(NPOIN),Z2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TV1,TV2
-      CHARACTER(LEN=8), INTENT(IN)    :: BINMAR
+      CHARACTER(LEN=8), INTENT(IN)    :: FMTMAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

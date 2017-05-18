@@ -2,7 +2,7 @@
                      SUBROUTINE COUUTI
 !                    *****************
 !
-     &(X,Y,NPOIN,NCOU,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,UC1,VC1,UC2,VC2)
+     &(X,Y,NPOIN,NCOU,FMTCOU,NBOR,NPTFR,AT,DDC,TC1,TC2,UC1,VC1,UC2,VC2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   14/06/2011
@@ -60,7 +60,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINCOU         |-->| CURRENTS FILE BINARY
+!| FMTCOU         |-->| CURRENTS FILE BINARY FORMAT
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NCOU           |-->| LOGICAL UNIT NUMBER OF THE CURRENTS FILE
@@ -89,7 +89,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: UC1(NPOIN),VC1(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: UC2(NPOIN),VC2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TC1,TC2
-      CHARACTER(LEN=8), INTENT(IN)    :: BINCOU
+      CHARACTER(LEN=8), INTENT(IN)    :: FMTCOU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

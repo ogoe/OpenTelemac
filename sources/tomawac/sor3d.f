@@ -3,7 +3,7 @@
 !                    ****************
 !
      &(F,NPLAN,NF,NPOIN2,AT,U,V,UV,VV,DEPTH,VENT,
-     & COURAN,MAREE,TITRE,NR3D,BINR3D,TRA01,MESH3D)
+     & COURAN,MAREE,TITRE,NR3D,FMTR3D,TRA01,MESH3D)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   28/06/2011
@@ -46,7 +46,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINR3D         |-->| GLOBAL RESULT FILE BINARY
+!| FMTR3D         |-->| GLOBAL RESULT FILE FORMAT
 !| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
 !| DEPTH          |-->| WATER DEPTH
 !| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
@@ -80,7 +80,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2*NPLAN)
       LOGICAL, INTENT(IN)             :: COURAN,VENT,MAREE
-      CHARACTER(LEN=8), INTENT(IN)    :: BINR3D
+      CHARACTER(LEN=8), INTENT(IN)    :: FMTR3D
       CHARACTER(LEN=80), INTENT(IN)   :: TITRE
       TYPE(BIEF_MESH), INTENT(IN)     :: MESH3D
 !
@@ -133,7 +133,7 @@
 !     CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
 !     CONTAINED IN THE FILE.
 !
-      CALL WRITE_HEADER(BINR3D, ! RESULTS FILE FORMAT
+      CALL WRITE_HEADER(FMTR3D, ! RESULTS FILE FORMAT
      &                  NR3D,       ! LU FOR RESULTS FILE
      &                  TITRE,      ! TITLE
      &                  NF+2,       ! MAX NUMBER OF OUTPUT VARIABLES
@@ -142,7 +142,7 @@
 !
 !     WRITES THE MESH IN THE OUTPUT FILE
 !
-      CALL WRITE_MESH(BINR3D,     ! RESULTS FILE FORMAT
+      CALL WRITE_MESH(FMTR3D,     ! RESULTS FILE FORMAT
      &                NR3D,       ! LU FOR RESULTS FILE
      &                MESH3D,
      &                NPLAN,      ! NUMBER OF PLANES
@@ -156,7 +156,7 @@
 ! WRITES F
 !
       DO IIF=1,NF
-        CALL ADD_DATA(BINR3D,NR3D,TEXTE(IIF),AT,0,IIF.EQ.1,F(1,1,IIF),
+        CALL ADD_DATA(FMTR3D,NR3D,TEXTE(IIF),AT,0,IIF.EQ.1,F(1,1,IIF),
      &                NPOIN2*NPLAN,ISTAT)
       ENDDO
 !
@@ -171,7 +171,7 @@
 !     HERE TRA01 MAY BE WRITTEN FOR NOTHING (AND NOT INITIALISED)
 !     THIS IS NECESSARY TO HAVE A REAL SERAFIN FORMAT
 !
-      CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF+1),AT,0,.FALSE.,TRA01,
+      CALL ADD_DATA(FMTR3D,NR3D,TEXTE(NF+1),AT,0,.FALSE.,TRA01,
      &                NPOIN2*NPLAN,ISTAT)
 !
 !     WRITES U,V,UV,VV (IF HAS TO)
@@ -202,7 +202,7 @@
       ENDIF
 !
       IF(COURAN.OR.VENT) THEN
-        CALL ADD_DATA(BINR3D,NR3D,TEXTE(NF+2),AT,0,.FALSE.,TRA01,
+        CALL ADD_DATA(FMTR3D,NR3D,TEXTE(NF+2),AT,0,.FALSE.,TRA01,
      &                NPOIN2*NPLAN,ISTAT)
       ENDIF
 !

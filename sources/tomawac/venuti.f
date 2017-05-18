@@ -2,7 +2,7 @@
                      SUBROUTINE VENUTI
 !                    *****************
 !
-     &(X,Y,NPOIN,NVEN,BINVEN,NBOR,NPTFR,AT,DDC,TV1,TV2,U1,V1,U2,V2)
+     &(X,Y,NPOIN,NVEN,FMTVEN,NBOR,NPTFR,AT,DDC,TV1,TV2,U1,V1,U2,V2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                  29/06/2011
@@ -65,7 +65,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
-!| BINVEN         |-->| WIND FILE BINARY
+!| FMTVEN         |-->| WIND FILE FORMAT
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
@@ -93,7 +93,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: U2(NPOIN),V2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
-      CHARACTER(LEN=8), INTENT(IN)    :: BINVEN
+      CHARACTER(LEN=8), INTENT(IN)    :: FMTVEN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

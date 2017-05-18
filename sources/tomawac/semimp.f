@@ -13,7 +13,7 @@
      & IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
      & EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
      & BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
-     & COEFWH,NOMVEB,BINVEB,NOMVEF,BINVEF,NBD   ,QINDI ,TAUWAV,
+     & COEFWH,NOMVEB,FMTVEB,NOMVEF,FMTVEF,NBD   ,QINDI ,TAUWAV,
      & USOLD ,TWOLD ,
      & Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
      & Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
@@ -110,7 +110,8 @@
 !| BETA           |<--| BREAKING WAVES COEFFICIENT
 !| BETAIH         |-->| BETA0 CONSTANT OF BREAKING WAVES IH MODEL
 !| BETAM          |-->| WIND GENERATION COEFFICIENT
-!| BINVEN         |-->| WIND FILE BINARY
+!| FMTVEB         |-->| WIND FILE BINARY FORMAT
+!| FMTVEF         |-->| WIND FILE FORMATTED FORMAT ???
 !| BORETG         |-->| COEFFICIENT B OF BREAKING WAVE TG MODEL
 !| CBAJ           |-->| CHOICE OF THE CENTRAL FREQUENCY CALCULUS
 !| CDRAG          |-->| WIND DRAG COEFFICIENT
@@ -270,7 +271,7 @@
 !| ZVENT          |-->| WIND MEASUREMENT LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH,
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,
      &                                 NAMEWX,NAMEWY,UNITVEB,PHASVEB
       USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
@@ -326,7 +327,7 @@
       INTEGER, INTENT(IN) :: CBAJ
       INTEGER, INTENT(INOUT) :: LIMIT
       CHARACTER(LEN=144), INTENT(IN) :: NOMVEB, NOMVEF
-      CHARACTER(LEN=8), INTENT(IN) :: BINVEB,BINVEF
+      CHARACTER(LEN=8), INTENT(IN) :: FMTVEB,FMTVEF
       LOGICAL, INTENT(IN) ::  PROINF, VENT , VENSTA,VEGETATION
 !....Linear wind growth declaration
       INTEGER, INTENT(IN) :: LVENT
@@ -376,7 +377,7 @@
 !
       DOUBLE PRECISION  CPHAS , SEUILF
 !
-      CHARACTER(LEN=8) BINVEN
+      CHARACTER(LEN=8) FMTVEN
 
 !
 !-----------------------------------------------------------------------
@@ -467,10 +468,10 @@
           IF(NOMVEB(1:1).NE.' '.OR.NOMVEF(1:1).NE.' ') THEN
             IF(NOMVEF(1:1).NE.' ') THEN
               NVENT=NVEF
-              BINVEN=BINVEF
+              FMTVEN=FMTVEF
             ELSE
               NVENT=NVEB
-              BINVEN=BINVEB
+              FMTVEN=FMTVEB
             ENDIF
             CALL NOUDON(VENTX,NAMEWX,
      &                        'WIND ALONG X    M/S             ',2,
@@ -479,7 +480,7 @@
      &                  VENTY,'????????????????????????????????',
      &                        '????????????????????????????????',0,
      &                  X, Y, NPOIN2,
-     &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2,
+     &                  NVENT,FMTVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2,
      &                  U1,U2,V1,V2,V1,V2,INDIC,
      &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB,PHASVEB)
           ELSE

@@ -267,7 +267,7 @@ Possible values are:
             PUNCTUAL_RESULTS_FILE = SIMP(statut ='f',
 #           -----------------------------------
                 typ = ('Fichier','All Files (*)','Sauvegarde'),
-                defaut = 'spec',
+                defaut = '',
                 fr = """Nom du fichier dans lequel seront ecrits les spectres
 ponctuels.
 **Mots-cles associes :**
@@ -521,22 +521,19 @@ CURRENTS FILE FORMAT
 #           -----------------------------------
                 typ = ('Fichier','All Files (*)'),
                 defaut = '',
-                fr = """Choix du type de format du fichier des courants :
-\begin{itemize}
-\item 3 = selafin du type TELEMAC
-\item 4 = format utilisateur (Modifier alors  la procedure couuti.f)
-\end{itemize}
+                fr = """Nom du fichier de donnees de courant (si formate).
 **Mots-cles associes :**
+PRISE EN COMPTE D''UN COURANT STATIONNAIRE
+PRISE EN COMPTE DE LA MAREE
 FICHIER DES COURANTS BINAIRE
-FICHIER DES COURANTS FORMATE""",
-                ang = """Selection of the type of currents file format :
-\begin{itemize}
-\item 3 = selafin, TELEMAC type
-\item 4 = user format (the couuti.f procedure should then be amended)
-\end{itemize}
-\begin{CommentBlock}{Related keywords}
-CURRENTS BINARY FILE\\
-CURRENTS FORMATTED FILE\\
+FORMAT DU FICHIER DES COURANTS""",
+                ang = """Name of the current data file (if formatted).
+\\
+ \begin{CommentBlock}{Related keywords}
+CONSIDERATION OF A STATIONARY CURRENT\\
+CONSIDERATION OF TIDE\\
+BINARY CURRENTS FILE\\
+CURRENTS FILE FORMAT
 \end{CommentBlock}""",
             ),
 #           -----------------------------------

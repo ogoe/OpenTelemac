@@ -54,7 +54,6 @@
 !+       Modification to comply with the hermes module
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| F1             |<--| FIRST VARIABLE TO READ
 !| F2             |<--| SECOND VARIABLE TO READ
