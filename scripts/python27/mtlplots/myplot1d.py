@@ -57,7 +57,7 @@ decoDefault = {
    # default face and edge color, default tick sizes,
    # default fontsizes for ticklabels, and so on.  See
    # http://matplotlib.org/api/axes_api.html#module-matplotlib.axes
-   'axes.hold'               : True,           # whether to clear the axes by default on
+   #'axes.hold'               : True,           # whether to clear the axes by default on
    'axes.facecolor'          : 'white',        # axes background color
    'axes.edgecolor'          : 'black',        # axes edge color
    'axes.linewidth'          : 1.0,            # edge linewidth
@@ -176,7 +176,13 @@ def mapDecoDefault(decoUser,default):
             elif type(mpl.rcParams[key]) == type(1.0):
                mpar[key] = float(upar[key])
                del upar[key]
-            elif type(mpl.rcParams[key]) == type("") or type(mpl.rcParams[key][0]) == type(unicode('')):
+            elif type(mpl.rcParams[key]) == type(""):
+               mpar[key] = upar[key]
+               del upar[key]
+            elif mpl.rcParams[key] == None:
+               mpar[key] = upar[key]
+               del upar[key]
+            elif type(mpl.rcParams[key][0]) == type(unicode('')):
                mpar[key] = upar[key]
                del upar[key]
             else:

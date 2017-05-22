@@ -61,7 +61,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from os import path, remove, walk, chdir, mkdir, listdir
+from os import path, remove, walk, chdir, mkdir, listdir, getcwd, environ
 from optparse import Values
 import sys
 from copy import deepcopy
@@ -262,7 +262,11 @@ def setSafe(casFile,cas,idico,odico,safe):
 def findTargets(dido,src):
    layer = []
 
-   if src in dido: layer = [dido[src],'',src]
+   if src in dido:
+      if src == 'outrefs':
+         layer = [[],'',src]
+         for k in dido[src]: layer[0].append(path.join(dido['path'],k,dido[src][k]))
+      else: layer = [dido[src],'',src]
    if layer == [] and 'input' in dido:
       for i,j,k in dido['input']:
          k = k.split(';')
@@ -379,8 +383,10 @@ class ACTION:
          outrefs = {}
          if self.active["outrefs"] != '':
             for outref in self.active["outrefs"].split(';'):
-               ref,out = outref.split(':')
-               outrefs.update({ref:out})
+               if ':' not in outref: outrefs.update({self.active["xref"]:outref})
+               else:
+                  ref,out = outref.split(':')
+                  outrefs.update({ref:out})
          self.active["outrefs"] = outrefs
       return self.active["target"]
 
@@ -719,6 +725,17 @@ class actionRUN(ACTION):
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
+
+      # ~~> associated secondary outputs
+      for o in self.active["outrefs"]:
+         oFile = self.active["outrefs"][o]
+         if path.exists(path.join(self.active['safe'],oFile)):
+            try:
+               copyFile(path.join(self.active['safe'],oFile),path.join(self.active['path'],self.active["xref"]))
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runCommand','msg':'I can see your file '+oFile+' but cannot copy it'},e,True)])
+         else: raise Exception([{'name':'runCommand','msg':'I cannot see your output file '+oFile+' from within action reference '+self.active["xref"]}])
+
       print '\n\n... this work is done (I mean I have dealt with reference '+self.active["xref"]+')\n\n'
       return updated
 
@@ -926,7 +943,7 @@ class actionRUN(ACTION):
          raise Exception([filterMessage({'name':'runCommand','msg':'something went wrong when executing you command.'},e,True)])
       if code != 0: raise Exception([{'name':'runCommand','msg':'Could not run your command ('+exeCmd+').\n      '+tail}])
 
-      # ~~> copy of outputs /!\ you are replacing one config by another
+      # ~~> copy of outputs /!\ you are replacing one config by another ... do the same as for runCAS
       for oFile in self.active["outrefs"]:
          if path.exists(path.join(self.active['safe'],self.active["outrefs"][oFile])):
             try:
@@ -1553,8 +1570,12 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
                   if var['fileName'] != {} and var['fileName'][cfg][0] != []:
                      fileName = var['fileName'][cfg]
                      var.update({ 'file':fileName[0][0] })
-                     caster.add( fileName[2], var )
-                     space[var['xref']] = caster.get( fileName[2], var )
+                     try:
+                        caster.add( fileName[2], var )
+                        space[var['xref']] = caster.get( fileName[2], var )
+                     except:
+                        print '         > will ignore this for now.'
+                        space[var['xref']] = fileName[0][0]
                   else:
                      r = eval( var["vars"] )
                      # The returned value should be a tuple
@@ -1583,9 +1604,9 @@ def runXML(xmlFile,xmlConfig,reports,bypass,runOnly):
          report.update({ 'updt':True })
          if 'return' not in cast.tasks:
             report.update({ 'fail':False,
-			    'warn':False,
-			    'value':0,
-			    'title':'My Work is done' })
+		        	    'warn':False,
+			            'value':0,
+			            'title':'My Work is done' })
          else:
             for var in cast.tasks['return']:
                if var in ['fail','warn','value']:

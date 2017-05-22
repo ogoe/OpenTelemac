@@ -15,11 +15,37 @@
 
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ do="cas;princi" are being ignored at the moment -->
+<!--
+   One way of dealing with an output file, not part of the "official" list of
+      output files for that module, is to make reference to it in the action
+      with the key:
+         outrefs="massb_A.txt"
+   This makes "1:massb_A.txt" (or values of xref:outrefs) referencable
+       elsewhere in this XML file. It also makes a copy of that file within
+       xref (as opposed to xref/config) ... which, incidently, cannot
+       distinguish between configurations.
+-->
    <action xref="1"
        do="translate;run;cas;princi"
        code="telemac2d" target="t2d_pildepon.cas"
        title="pildepon scalar mode"
+       outrefs="massb_A.txt"
    />
+<!--
+   One way of just executing some python after an action is completed is
+      to just write the necessary python, within the most simplest cast
+      possible
+   See action "4" for another example.
+-->
+   <cast xref="copy-1" >
+      <python>
+from os import path, getcwd
+from shutil import copyfile
+if path.exists( path.join(getcwd(),'1','massb_A.txt') ):
+   copyfile(path.join(getcwd(),'1','massb_A.txt'), path.join(getcwd(),'img','1-massb_A.txt'))
+      </python>
+   </cast>
+
    <action xref="2"
        do="translate;run;cas;princi"
        code="telemac2d" target="t2d_pildepon_qua.cas"
@@ -34,7 +60,26 @@
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_pildepon.cas"
        title="pildepon parallel mode"
+       outrefs="massb_A.txt"
    />
+<!--
+   Another way of dealing with a referencable file is to target it, having
+      defined it as an outrefs in the first place. In this case, you need to
+      call a python function with the eference as an argument.
+-->
+   <cast xref="copy-4" config="oneofall" >
+      <python>
+def copy4(oFile):
+   from os import path, getcwd
+   from shutil import copyfile
+   if path.exists(oFile):
+      copyfile(oFile, path.join(getcwd(),'img','4-'+path.basename(oFile)))
+   return [],[],[],[]
+      </python>
+      <tmpvar target="4:outrefs" />
+      <tmpfct vars="copy4(tmpvar)" />
+   </cast>
+
    <action xref="5"
        do="translate;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_pildepon_qua.cas"
@@ -45,6 +90,7 @@
        code="telemac2d" target="t2d_pildepon_cin.cas"
        title="pildepon parallel mode"
    />
+
 <!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
    <cast xref="ref-1" config="oneofall" time="[-1]" type="2d:">
@@ -110,31 +156,30 @@
       <return title="Comparison between sequential and parallel run."
          fail="checkval(v27,[])" />
    </cast>
+
 <!-- FFT
 -->
    <cast xref="fft" config="oneofall" type="1d:" time="[-1]" >
       <python>
 def copy_file():
-   from os import path, remove, environ
+   import sys
+   from os import path, remove, getcwd
    from shutil import copyfile
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','1',environ['USETELCFG'],'massb_A.txt')
+   filePath = path.join(getcwd(),'1','massb_A.txt')
    if path.exists(filePath):
-      copyfile(filePath, path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','massb_A.txt'))
+      copyfile(filePath, path.join(getcwd(),'img','massb_A.txt'))
    return [],[],[],[]
 
 def check_file():
-   from os import path, remove, environ
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','table.txt')
+   from os import path, remove
+   filePath = path.join(getcwd(),'img','table.txt')
    if path.exists(filePath):
       remove(filePath)
    return [],[],[],[]
 
-def force():
-   from os import environ, path
+def force(force_lin,force_quad,force_vf):
+   from os import path
    import matplotlib.pyplot as plt
-   force_lin = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','1',environ['USETELCFG'],'force.txt')
-   force_quad = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','2',environ['USETELCFG'],'force.txt')
-   force_vf = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','3',environ['USETELCFG'],'force.txt')
    infileF_lin = open(force_lin, "r")
    infileF_quad = open(force_quad, "r")
    infileF_vf = open(force_vf, "r")
@@ -193,7 +238,7 @@ def force():
    print "peak2 for force is", positive_frequencies2[peak2]
    str2=positive_frequencies2[peak2]*4*0.947
    print "strouhal 2", str2
-   filePath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','table.txt')
+   filePath = path.join(getcwd(),'img','table.txt')
    with open(filePath,'a') as outfile:
         outfile.write('%5.3f' % str1 )
         outfile.write('&amp; %5.3f \\\\ \n' % str2  )
@@ -263,18 +308,22 @@ def force():
    infileF_lin.close()
    infileF_quad.close()
    infileF_vf.close()
-   fPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_P1.png')
-   gPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_P2.png')
-   vPath = path.join(environ['HOMETEL'],'examples','telemac2d','pildepon','img','force_vf.png')
+   fPath = path.join(getcwd(),'img','force_P1.png')
+   gPath = path.join(getcwd(),'img','force_P2.png')
+   vPath = path.join(getcwd(),'img','force_vf.png')
    figl.savefig(fPath)
    figq.savefig(gPath)
    figvf.savefig(vPath)
    return[],[],[],[]
       </python>
-      <r0 vars="copy_file()"/>
-      <r1 vars="check_file()"/>
-      <r2 vars="force()" />
+      <r0 vars="copy_file()" />
+      <r1 vars="check_file()" />
+      <r2_ref1 target="1:T2DRFO" />
+      <r2_ref2 target="2:T2DRFO" />
+      <r2_ref3 target="3:T2DRFO" />
+      <r2 vars="force(r2_ref1,r2_ref2,r2_ref3)" />
    </cast>
+
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <deco xref="vel">
@@ -313,4 +362,5 @@ def force():
    <plot1d xref="img/bathy" type="1d:v-section" extract="(-10;10):(-10;-10)" config="together" time="[0]" size="(10;10)" deco="bathy1d" >
       <layer vars="bottom:line" target="1:T2DRES" deco="bathy"/>
    </plot1d>
+
 </validation>
