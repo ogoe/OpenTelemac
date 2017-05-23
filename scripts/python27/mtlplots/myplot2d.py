@@ -658,7 +658,7 @@ class Figure2D(Caster):
       except:
         pass
 
-      fig.add_subplot(111,facecolor=background)
+      fig.add_subplot(111,axisbg=background)
       ax1, = fig.get_axes()
       # fig.add_subplot(111) returns an Axes instance, where we can plot and this is
       #   also the reason why we call the variable referring to that instance ax.
