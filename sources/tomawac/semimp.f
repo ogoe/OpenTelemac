@@ -22,10 +22,10 @@
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
      & TB_FAC,MDIA,IANMDI,COEMDI,NVWIN ,DIAGHF,VEGETATION,SDSCU,CDSCUR,
-     & CBAJ)
+     & CBAJ,LIFBOR,FBOR)
 !
 !***********************************************************************
-! TOMAWAC   V7P0
+! TOMAWAC   V7P3
 !***********************************************************************
 !
 !brief    SOLVES THE INTEGRATION STEP OF THE SOURCE TERMS USING
@@ -100,6 +100,12 @@
 !+       V7P0
 !+   BAJ MODELING
 !
+!history A JOLY (EDF-LNHE)
+!+       18/05/2017
+!+       V7P3
+!+   New condition to stop source terms being added to open
+!+   boundaries.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
 !| ALFARO         |-->| CONSTANTE ALPHA OF RO WAVE BREAKING MODEL
@@ -146,6 +152,7 @@
 !| F_COEF         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
 !| F_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
 !| F_PROJ         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
+!| FBOR           |-->| SPECTRAL VARIANCE DENSITY AT THE BOUNDARIES
 !| FMOY           |<--| MEAN FREQUENCIES F-10
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
 !| GAM2RO         |-->| GAMMA2 CONSTANT OF WAVE BREAKING RO MODEL
@@ -182,6 +189,7 @@
 !| K_1M3P         |-->| WORK TABLE FOR GQM QNL4 METHOD
 !| K_1M3M         |-->| WORK TABLE FOR GQM QNL4 METHOD
 !| KSPB           |-->| COEFFICIENT K OF SPB TRIAD INTERACTION MODEL
+!| LIFBOR         |-->| TYPE OF BOUNDARY CONDITION ON F
 !| LIMIT          |-->| TYPE OF WAVE GROWTH LIMITER MODEL SELECTED
 !| LBUF           |-->| VARIABLE FOR SPECTRUM INTERPOLATION
 !| LVENT          |-->| LINEAR WAVE GROWTH MODEL SELECTION
@@ -272,9 +280,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,
-     &                                 NAMEWX,NAMEWY,UNITVEB,PHASVEB
+     &                                 NAMEWX,NAMEWY,UNITVEB,PHASVEB,
+     &                                 SOURCE_ON_BND
       USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
+      USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SPECIAL
       IMPLICIT NONE
 !
@@ -361,12 +371,13 @@
      &                                TB_TPM(NF2,NT1,NF1),
      &                                TB_TMP(NF2,NT1,NF1),
      &                                TB_FAC(NF2,NT1,NF1)
-
-
+      INTEGER, INTENT(IN)            :: LIFBOR(NPTFR)
+      DOUBLE PRECISION, INTENT(IN)   :: FBOR(NPTFR,NPLAN,NF)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT
+      INTEGER IPTFR
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF
       DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
       DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SOMME,AUXI,USMIN
@@ -378,7 +389,6 @@
       DOUBLE PRECISION  CPHAS , SEUILF
 !
       CHARACTER(LEN=8) FMTVEN
-
 !
 !-----------------------------------------------------------------------
 !
@@ -1078,6 +1088,23 @@
           ENDDO
         ENDIF
 !
+!======================================================================
+!        9 IGNORE BOUNDARY CONDITIONS ON IMPOSED BOUNDARIES 
+!======================================================================
+! ALONG THE IMPOSED BOUNDARIES, REWRITE THE CORRECT SPECTRUM
+! IF THE SOURCE TERMS SHOULD NOT BE TAKEN INTO ACCOUNT
+!
+        IF(.NOT.SOURCE_ON_BND) THEN
+          DO IPTFR=1,NPTFR
+            IF(LIFBOR(IPTFR).EQ.KENT) THEN
+              DO IFF=1,NF
+                DO IP=1,NPLAN
+                  F(NBOR(IPTFR),IP,IFF)=FBOR(IPTFR,IP,IFF)
+                ENDDO
+              ENDDO
+            ENDIF
+          ENDDO
+        ENDIF
 !
   100 CONTINUE
 !

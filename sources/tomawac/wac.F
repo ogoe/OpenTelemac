@@ -65,6 +65,12 @@
 !+       Moved LIMWAC to the end of the time stepping operations to
 !+       better impose dirac boundary conditions.
 !
+!history A JOLY (EDF-LNHE)
+!+       18/05/2017
+!+       V7P3
+!+       In semimp, new condition to stop source terms being added to
+!+       open boundaries.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP
@@ -1016,7 +1022,8 @@
      &  F_PROJ, TB_SCA, K_IF1,  K_1P,  K_1M,  K_IF2,  K_IF3,  K_1P2P,
      &  K_1P2M, K_1P3P, K_1P3M, K_1M2P,K_1M2M,K_1M3P, K_1M3M, IDCONF,
      &  TB_V14, TB_V24, TB_V34, TB_TPM,TB_TMP,TB_FAC, MDIA,   IANMDI,
-     &  COEMDI, NVWIN,  DIAGHF, VEGETATION,   SDSCU,  CDSCUR, CBAJ)
+     &  COEMDI, NVWIN,  DIAGHF, VEGETATION,   SDSCU,  CDSCUR, CBAJ,
+     &  SLIFBR%I,SFBOR%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SEMIMP'
       ENDIF
 !

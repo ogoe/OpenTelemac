@@ -5699,3 +5699,17 @@ des spectres a ecrire.'
 AIDE1 = 'Text file with coordinates following the DAT format of Salome
 of the spectra to output.'
 
+NOM = 'PRISE EN COMPTE DES TERMES SOURCES SUR LES FRONTIERES IMPOSEES'
+NOM1 = 'TAKING INTO ACCOUNT SOURCE TERMS ON IMPOSED BOUNDARIES'
+TYPE = LOGIQUE
+INDEX = 19
+MNEMO = 'SOURCE_ON_BND'
+TAILLE= 0
+DEFAUT = .TRUE.
+DEFAUT1 = .TRUE.
+NIVEAU = 1
+AIDE = 'Indique si on prend en compte les termes sources sur les
+frontieres imposees.'
+AIDE1 = 'Indicates whether source terms are taken into account on
+imposed boundaries.'
+

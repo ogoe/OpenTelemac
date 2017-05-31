@@ -1483,7 +1483,7 @@
      &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
      &  TB_FAC,MDIA,IANMDI,COEMDI,NVWIN,DIAGHF,VEGETATION,SDSCU,CDSCUR,
-     &  CBAJ)
+     &  CBAJ,LIFBOR,FBOR)
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB
       INTEGER, INTENT(INOUT) :: NVWIN,NVEF
@@ -1565,7 +1565,8 @@
      &                                TB_TPM(NF2,NT1,NF1),
      &                                TB_TMP(NF2,NT1,NF1),
      &                                TB_FAC(NF2,NT1,NF1)
-
+      INTEGER, INTENT(IN)            :: LIFBOR(NPTFR)
+      DOUBLE PRECISION, INTENT(IN)   :: FBOR(NPTFR,NPLAN,NF)
         END SUBROUTINE
       END INTERFACE
 !
