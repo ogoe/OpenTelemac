@@ -7,7 +7,7 @@
      & DIRMOY_TEL,HM0_TEL,TPR5_TEL,ORBVEL_TEL)
 !
 !***********************************************************************
-! TOMAWAC   V7P0
+! TOMAWAC   V7P3
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE OF TOMAWAC
@@ -58,6 +58,13 @@
 !+       V7P3
 !+       Possibility to read a text file with coordinates of the nodes
 !+       for which a spectra will be written.
+!
+!history A JOLY (LNHE)
+!+       18/05/2017
+!+       V7P3
+!+       Moved LIMWAC to the end of the time stepping operations to
+!+       better impose dirac boundary conditions.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP
@@ -837,20 +844,7 @@
 !
       CALL IMPR(LISPRD,LT,AT,LT,3)
 !
-!     11.2 AFFECTATION DES CONDITIONS AUX LIMITES.
-!
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
-      CALL LIMWAC
-     &(F,      FBOR,   LIFBOR, NPTFR, NPLAN,  NF,     TETA, FREQ,
-     & NPOIN2, NBOR,   AT, LT, DDC,   LIMSPE, FPMAXL, FETCHL , SIGMAL, 
-     & SIGMBL, GAMMAL, FPICL,  HM0L,  APHILL, TETA1L, SPRE1L,
-     & TETA2L, SPRE2L, XLAMDL, X, Y,  KENT,   KSORT,
-     & WAC_FILES(WACFO1)%LU, WAC_FILES(WACBI1)%LU,WAC_FILES(WACBI1)%FMT,
-     & UV,     VV,     SPEULI, VENT,  VENSTA, GRAVIT, PRIVE,
-     & NPRIV,  SPEC,   FRA,    DEPTH, FRABL,  BOUNDARY_COLOUR%I)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
-!
-!     11.2b MISE A ZERO DU SPECTRE SUR LES POINTS OU PROF < PROMIN
+!     11.2 MISE A ZERO DU SPECTRE SUR LES POINTS OU PROF < PROMIN
 !
       IF (.NOT.PROINF) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRETE'
@@ -1141,6 +1135,19 @@
         ENDIF
 !
       ENDIF
+!
+!     11.10 AFFECTATION DES CONDITIONS AUX LIMITES.
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
+        CALL LIMWAC
+     &(F,      FBOR,   LIFBOR, NPTFR, NPLAN,  NF,     TETA, FREQ,
+     & NPOIN2, NBOR,   AT, LT, DDC,   LIMSPE, FPMAXL, FETCHL , SIGMAL, 
+     & SIGMBL, GAMMAL, FPICL,  HM0L,  APHILL, TETA1L, SPRE1L,
+     & TETA2L, SPRE2L, XLAMDL, X, Y,  KENT,   KSORT,
+     & WAC_FILES(WACFO1)%LU, WAC_FILES(WACBI1)%LU,WAC_FILES(WACBI1)%FMT,
+     & UV,     VV,     SPEULI, VENT,  VENSTA, GRAVIT, PRIVE,
+     & NPRIV,  SPEC,   FRA,    DEPTH, FRABL,  BOUNDARY_COLOUR%I)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
 !------------------------------------------------------------------
 !
