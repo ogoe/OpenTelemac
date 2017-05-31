@@ -5694,10 +5694,134 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Fichier texte avec les coordonnées au format DAT de Salome
+AIDE = 'Fichier texte au format DAT de Salome avec les coordonnées 
 des spectres a ecrire.'
-AIDE1 = 'Text file with coordinates following the DAT format of Salome
-of the spectra to output.'
+AIDE1 = 'Text file following the DAT format of Salome with the  
+coordinates of the spectra to output.'
+
+NOM = 'FICHIER DES COORDONNEES DE SPECTRES A IMPOSER'
+NOM1 = 'FILE WITH COORDINATES OF SPECTRA TO IMPOSE'
+TYPE = CARACTERE
+INDEX = 24
+MNEMO = 'Variable WAC\_FILES(LEOIXY)%NAME'
+TAILLE= 0
+SUBMIT = 'LEOIXY-READ;LEOIXY;FACUL;ASC;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier texte au format DAT de Salome avec les coordonnées 
+des spectres qui vont etre impose en conditions limites.'
+AIDE1 = 'Text file following the DAT format of Salome with the 
+coordinates of the spectra that will be imposed on the boundary.
+\\
+ \begin{CommentBlock}{Related keywords}
+IMPOSED SPECTRA FILE
+IMPOSED SPECTRA FILE FORMAT
+TIME UNIT OF IMPOSED SPECTRA FILE
+TIME SHIFT OF IMPOSED SPECTRA FILE
+\end{CommentBlock}'
+
+NOM = 'FICHIER DES SPECTRES IMPOSES'
+NOM1 = 'IMPOSED SPECTRA FILE'
+TYPE = CARACTERE
+INDEX = 25
+MNEMO = 'Variable WAC\_FILES(IMPSPE)%NAME'
+TAILLE= 0
+SUBMIT = 'IMPSPE-READ;IMPSPE;FACUL;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS DE DONNEES'
+RUBRIQUE1 = 'DATA FILE'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant le maillage des spectres a imposer.'
+AIDE1 = 'Name of the file containing the mesh with the imposed spectra.
+\\
+ \begin{CommentBlock}{Related keywords}
+IMPOSED SPECTRA FILE FORMAT
+TIME UNIT OF IMPOSED SPECTRA FILE
+TIME SHIFT OF IMPOSED SPECTRA FILE
+FILE WITH COORDINATES OF SPECTRA TO IMPOSE
+\end{CommentBlock}'
+
+NOM = 'FORMAT DU FICHIER DES SPECTRES IMPOSES'
+NOM1 = 'IMPOSED SPECTRA FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 26
+MNEMO = 'WAC\_FILES(IMPSPE)%FMT'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+NIVEAU = 1
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+CHOIX1 = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'FICHIERS DE DONNEES'
+RUBRIQUE1 = 'DATA FILE'
+AIDE = 'Format du fichier des spectres imposes.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac;
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Imposed spectra file format.
+Possible values are:
+\begin{itemize}
+\item SERAFIN : classical single precision format in Telemac;
+\item SERAFIND: classical double precision format in Telemac;
+\item MED     : MED format based on HDF5
+\end{itemize}
+\\
+ \begin{CommentBlock}{Related keywords}
+IMPOSED SPECTRA FILE
+TIME UNIT OF IMPOSED SPECTRA FILE
+TIME SHIFT OF IMPOSED SPECTRA FILE
+FILE WITH COORDINATES OF SPECTRA TO IMPOSE
+\end{CommentBlock}'
+
+NOM = 'UNITE DE TEMPS DU FICHIER DES SPECTRES IMPOSES'
+NOM1 = 'TIME UNIT OF IMPOSED SPECTRA FILE'
+TYPE = REEL
+INDEX = 88
+MNEMO = 'UNITSPE'
+TAILLE= 0
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'FICHIERS DE DONNEES'
+RUBRIQUE1 = 'DATA FILE'
+NIVEAU = 2
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures.'
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours.
+\\
+ \begin{CommentBlock}{Related keywords}
+IMPOSED SPECTRA FILE
+IMPOSED SPECTRA FILE FORMAT
+TIME SHIFT OF IMPOSED SPECTRA FILE
+FILE WITH COORDINATES OF SPECTRA TO IMPOSE
+\end{CommentBlock}'
+
+NOM = 'DEPHASAGE DU FICHIER DES SPECTRES IMPOSES'
+NOM1 = 'TIME SHIFT OF IMPOSED SPECTRA FILE'
+TYPE = REEL
+INDEX = 89
+MNEMO = 'PHASSPE'
+TAILLE= 0
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'FICHIERS DE DONNEES'
+RUBRIQUE1 = 'DATA FILE'
+NIVEAU = 2
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier.'
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file.
+\\
+ \begin{CommentBlock}{Related keywords}
+IMPOSED SPECTRA FILE
+IMPOSED SPECTRA FILE FORMAT
+TIME UNIT OF IMPOSED SPECTRA FILE
+FILE WITH COORDINATES OF SPECTRA TO IMPOSE
+\end{CommentBlock}'
 
 NOM = 'PRISE EN COMPTE DES TERMES SOURCES SUR LES FRONTIERES IMPOSEES'
 NOM1 = 'TAKING INTO ACCOUNT SOURCE TERMS ON IMPOSED BOUNDARIES'

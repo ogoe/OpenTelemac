@@ -565,10 +565,10 @@ files: interface_hermes.f
   get_bnd_numbering.f
   get_bnd_value.f
   set_header.f
+  get_mesh_coord.f
   lit.F
   ecri2.f
   get_mesh_l2g_numbering.f
-  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   close_bnd.f
@@ -1056,6 +1056,7 @@ files: declarations_tomawac.f
   couple.f
   f1f1f1.f
   prenl3.f
+  bnd_spectra.f
   spetma.f
   spejon.f
   delfra.f
@@ -1082,6 +1083,7 @@ files: declarations_tomawac.f
   ecrete.f
   conw4d.f
   prepro.f
+  read_spectra_coords.f
   anamar.f
   cormar.f
   sor3d.f
@@ -1094,7 +1096,6 @@ files: declarations_tomawac.f
   nomvar_tomawac.f
   tomawac_constants.f
   lecdon_tomawac.f
-  read_spectra_coords.f
 
 [waqtel]
 path: <root>|sources|waqtel

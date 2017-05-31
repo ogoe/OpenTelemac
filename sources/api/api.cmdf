@@ -1066,6 +1066,7 @@ files: declarations_tomawac.f
   couple.f
   f1f1f1.f
   prenl3.f
+  bnd_spectra.f
   spetma.f
   spejon.f
   delfra.f
@@ -1092,6 +1093,7 @@ files: declarations_tomawac.f
   ecrete.f
   conw4d.f
   prepro.f
+  read_spectra_coords.f
   anamar.f
   cormar.f
   sor3d.f
@@ -1100,7 +1102,6 @@ files: declarations_tomawac.f
   anacos.f
   condiw.f
   wac.F
-  read_spectra_coords.f
 
 [waqtel]
 path: <root>|sources|waqtel

@@ -705,8 +705,10 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & FMTBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, 
-     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
+     & FMTBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT,
+     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR,
+     & IMP_FILE)
+      USE BIEF_DEF, ONLY : BIEF_FILE
       IMPLICIT NONE
       INTEGER, INTENT(IN)             :: NPTFR,NPLAN,NF,NPOIN2,LT,NPRIV
       INTEGER, INTENT(IN)             :: LIMSPE,KENT,KSORT,FRABL
@@ -725,6 +727,7 @@
       DOUBLE PRECISION, INTENT(IN):: GRAVIT
       LOGICAL, INTENT(IN):: SPEULI, VENT, VENSTA
       CHARACTER(LEN=8), INTENT(IN):: FMTBI1
+      TYPE(BIEF_FILE), INTENT(IN)    :: IMP_FILE
       DOUBLE PRECISION, INTENT(INOUT):: F(NPOIN2,NPLAN,NF), FRA(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT):: FBOR(NPTFR,NPLAN,NF)
         END SUBROUTINE
@@ -1424,6 +1427,18 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE READ_SPECTRA_COORDS
+     &(FID,NP,XP,YP)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)                         :: FID
+      INTEGER, INTENT(IN)                         :: NP
+      DOUBLE PRECISION,ALLOCATABLE, INTENT(INOUT) :: XP(:),YP(:)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE RPI_INTR
      &(NEIGB  , NB_CLOSE, RX  , RY      , RXX     , RYY ,
      & NPOIN2 , I       , MAXNSP  , FFD , FIRDIV1 , FIRDIV2 ,
@@ -1856,19 +1871,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(IN)    :: ROEAU
       DOUBLE PRECISION, INTENT(INOUT) :: POWER(NPOIN2)!
-        END SUBROUTINE
-      END INTERFACE
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE READ_SPECTRA_COORDS
-     &(FID,NP,IP,XP,YP)
-      USE DECLARATIONS_SPECIAL
-      IMPLICIT NONE
-      INTEGER, INTENT(IN)                         :: FID
-      INTEGER, INTENT(IN)                         :: NP
-      INTEGER, ALLOCATABLE, INTENT(INOUT)         :: IP(:)
-      DOUBLE PRECISION,ALLOCATABLE, INTENT(INOUT) :: XP(:),YP(:)
         END SUBROUTINE
       END INTERFACE
 !

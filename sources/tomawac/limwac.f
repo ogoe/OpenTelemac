@@ -6,11 +6,12 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & FMTBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, 
-     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
+     & FMTBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT,
+     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR,
+     & IMP_FILE)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   21/06/2011
+! TOMAWAC   V7P3                                   23/02/2017
 !***********************************************************************
 !
 !brief    BOUNDARY CONDITIONS.
@@ -45,6 +46,12 @@
 !+        V6P3
 !+   A line IF(LIMSPE.EQ.0...) RETURN removed.
 !
+!history  A. JOLY (EDF R&D, LNHE)
+!+        23/02/2017
+!+        V7P3
+!+   SPECTRA READ FROM AN EXTERNAL MESH CAN NOW BE IMPOSED ON THE
+!+   OPEN BOUNDARIES.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| APHILL         |-->| BOUNDARY PHILLIPS CONSTANT
 !| AT             |-->| COMPUTATION TIME
@@ -63,6 +70,7 @@
 !| GAMMAL         |-->| BOUNDARY PEAK FACTOR
 !| GRAVIT         |-->| GRAVITY ACCELERATION
 !| HM0L           |-->| BOUNDARY SIGNIFICANT WAVE HEIGHT
+!| IMP_FILE       |-->| MESH FILE WITH THE IMPOSED SPECTRA 
 !| KENT           |-->| B.C.: A SPECTRUM IS PRESCRIBED AT THE BOUNDARY
 !| KSORT          |-->| B.C.: FREE BOUNDARY: NO ENERGY ENTERING THE DOMAIN
 !| LIFBOR         |-->| TYPE OF BOUNDARY CONDITION ON F
@@ -98,6 +106,8 @@
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
       USE DECLARATIONS_TOMAWAC, ONLY : UV2D,VV2D,PROF,FB_CTE,NPB
       USE DECLARATIONS_SPECIAL
+      USE BND_SPECTRA
+      USE BIEF_DEF, ONLY : BIEF_FILE
       IMPLICIT NONE
 !
 !
@@ -118,6 +128,7 @@
       DOUBLE PRECISION, INTENT(IN)   :: GRAVIT
       LOGICAL,          INTENT(IN)   :: SPEULI, VENT, VENSTA
       CHARACTER(LEN=8), INTENT(IN)   :: FMTBI1
+      TYPE(BIEF_FILE), INTENT(IN)    :: IMP_FILE
       DOUBLE PRECISION, INTENT(INOUT):: F(NPOIN2,NPLAN,NF), FRA(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT):: FBOR(NPTFR,NPLAN,NF)
 !
@@ -166,7 +177,8 @@
 !     STATIONARY AND IF THE BOUNDARY SPECTRUM DEPENDS ON IT),
 !     COMPUTES THE BOUNDARY SPECTRUM
 !
-      IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
+      IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI .OR.
+     &   (IMP_FILE%NAME(1:1).NE.' ')) THEN
         IF(FLAG) THEN
           DO IPTFR=1,NPTFR
             UV2D(IPTFR)=UV(NBOR(IPTFR))
@@ -197,6 +209,13 @@
      &    TETA  ,GRAVIT,FPMAXL,FETCHL,SIGMAL,SIGMBL,GAMMAL,FPICL,
      &    HM0L  ,APHILL,TETA1L,SPRE1L,TETA2L,SPRE2L,XLAMDL,
      &    NPB   ,NPLAN ,NF    ,LIMSPE,E2FMIN,PROF  ,FRABL )
+        ENDIF
+!
+!       IF THERE IS A MESHED FILE WITH THE BOUNDARY SPECTRA
+!       THEY NEED TO BE IMPOSED
+!
+        IF(IMP_FILE%NAME(1:1).NE.' ')THEN
+          CALL IMPOSE_BND_SPECTRA(IMP_FILE,LT,AT,FBOR,NPTFR,NPLAN,NF)
         ENDIF
 !
 !     ===========================================================
@@ -263,7 +282,8 @@
 !     DIRECTIONS AND FREQUENCIES, IF LIQUID BOUNDARY
 !     -----------------------------------------------------------------
 !
-      IF(FLAG.OR.LIMSPE.EQ.7.OR.SPEULI) THEN
+      IF(FLAG.OR.LIMSPE.EQ.7.OR.SPEULI.OR.
+     &   (IMP_FILE%NAME(1:1).NE.' ')) THEN
         DO IPTFR=1,NPTFR
           IF(LIFBOR(IPTFR).EQ.KENT) THEN
             DO IFF=1,NF

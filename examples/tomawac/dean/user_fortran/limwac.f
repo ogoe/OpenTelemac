@@ -6,11 +6,12 @@
      & NPOIN2, NBOR  , AT    , LT    , DDC   , LIMSPE, FPMAXL, FETCHL,
      & SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      & TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
-     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT,
-     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
+     & BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, 
+     & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR,
+     & IMP_FILE)
 !
 !***********************************************************************
-! TOMAWAC   V6P3                                   21/06/2011
+! TOMAWAC   V7P3                                   23/02/2017
 !***********************************************************************
 !
 !brief    BOUNDARY CONDITIONS.
@@ -45,6 +46,12 @@
 !+        V6P3
 !+   A line IF(LIMSPE.EQ.0...) RETURN removed.
 !
+!history  A. JOLY (EDF R&D, LNHE)
+!+        23/02/2017
+!+        V7P3
+!+   SPECTRA READ FROM AN EXTERNAL MESH CAN NOW BE IMPOSED ON THE
+!+   OPEN BOUNDARIES.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| APHILL         |-->| BOUNDARY PHILLIPS CONSTANT
 !| AT             |-->| COMPUTATION TIME
@@ -52,7 +59,6 @@
 !| BOUNDARY_COLOUR|-->| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| DEPTH          |-->| WATER DEPTH
-!| DEUPI          |-->| 2.PI
 !| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
 !| FBOR           |<->| SPECTRAL VARIANCE DENSITY AT THE BOUNDARIES
 !| FETCHL         |-->| BOUNDARY MEAN FETCH VALUE
@@ -64,6 +70,7 @@
 !| GAMMAL         |-->| BOUNDARY PEAK FACTOR
 !| GRAVIT         |-->| GRAVITY ACCELERATION
 !| HM0L           |-->| BOUNDARY SIGNIFICANT WAVE HEIGHT
+!| IMP_FILE       |-->| MESH FILE WITH THE IMPOSED SPECTRA 
 !| KENT           |-->| B.C.: A SPECTRUM IS PRESCRIBED AT THE BOUNDARY
 !| KSORT          |-->| B.C.: FREE BOUNDARY: NO ENERGY ENTERING THE DOMAIN
 !| LIFBOR         |-->| TYPE OF BOUNDARY CONDITION ON F
@@ -97,8 +104,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
+      USE DECLARATIONS_TOMAWAC, ONLY : UV2D,VV2D,PROF,FB_CTE,NPB
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
       USE DECLARATIONS_SPECIAL
+      USE BND_SPECTRA
+      USE BIEF_DEF, ONLY : BIEF_FILE
       IMPLICIT NONE
 !
 !
@@ -110,7 +120,7 @@
       DOUBLE PRECISION, INTENT(IN)   :: TETA(NPLAN),FREQ(NF)
       DOUBLE PRECISION, INTENT(IN)   :: X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)   :: UV(NPOIN2),VV(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT)   :: SPEC(NF)
+      DOUBLE PRECISION, INTENT(INOUT):: SPEC(NF)
       DOUBLE PRECISION, INTENT(IN)   ::PRIVE(NPOIN2,NPRIV),DEPTH(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)   :: AT,DDC,FPMAXL,FETCHL,SIGMAL
       DOUBLE PRECISION, INTENT(IN)   :: GAMMAL,FPICL, SIGMBL
@@ -119,21 +129,18 @@
       DOUBLE PRECISION, INTENT(IN)   :: GRAVIT
       LOGICAL,          INTENT(IN)   :: SPEULI, VENT, VENSTA
       CHARACTER(LEN=8), INTENT(IN)   :: BINBI1
+      TYPE(BIEF_FILE), INTENT(IN)    :: IMP_FILE
       DOUBLE PRECISION, INTENT(INOUT):: F(NPOIN2,NPLAN,NF), FRA(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT):: FBOR(NPTFR,NPLAN,NF)
 !
       DOUBLE PRECISION DTETAR, DF3, AUX
 !
-      INTEGER NPB,IFF,IPLAN,IPTFR
+      INTEGER IFF,IPLAN,IPTFR
 !
 !     DOUBLE PRECISION, ALLOCATABLE :: TRAV(:)
-      DOUBLE PRECISION, ALLOCATABLE :: UV2D(:),VV2D(:),PROF(:)
-      DOUBLE PRECISION, ALLOCATABLE :: FB_CTE(:,:)
       DOUBLE PRECISION E2FMIN
       LOGICAL FLAG
 !
-!
-      SAVE NPB,UV2D,VV2D,PROF,FB_CTE
 !
 !***********************************************************************
 !
@@ -157,11 +164,11 @@
           NPB=NPTFR
         ENDIF
         IF(LIMSPE.EQ.7 .OR. SPEULI) THEN
-          ALLOCATE(PROF(1:NPTFR))
+          IF (.NOT.ALLOCATED(PROF)) ALLOCATE(PROF(1:NPTFR))
           NPB=NPTFR
         ENDIF
         IF(NPB.EQ.1) THEN
-          ALLOCATE(FB_CTE(1:NPLAN,1:NF))
+          IF (.NOT.ALLOCATED(FB_CTE)) ALLOCATE(FB_CTE(1:NPLAN,1:NF))
         ENDIF
       ENDIF
       IF (.NOT.ALLOCATED(UV2D)) ALLOCATE(UV2D(NPTFR))
@@ -173,7 +180,8 @@
 !     STATIONARY AND IF THE BOUNDARY SPECTRUM DEPENDS ON IT),
 !     COMPUTES THE BOUNDARY SPECTRUM
 !
-      IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
+      IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI .OR.
+     &   (IMP_FILE%NAME(1:1).NE.' ')) THEN
         IF(FLAG) THEN
           DO IPTFR=1,NPTFR
             UV2D(IPTFR)=UV(NBOR(IPTFR))
@@ -206,6 +214,13 @@
      &    NPB   ,NPLAN ,NF    ,LIMSPE,E2FMIN,PROF  ,FRABL )
         ENDIF
 !
+!       IF THERE IS A MESHED FILE WITH THE BOUNDARY SPECTRA
+!       THEY NEED TO BE IMPOSED
+!
+        IF(IMP_FILE%NAME(1:1).NE.' ')THEN
+          CALL IMPOSE_BND_SPECTRA(IMP_FILE,LT,AT,FBOR,NPTFR,NPLAN,NF)
+        ENDIF
+!
 !     ===========================================================
 !     TO BE MODIFIED BY USER - RESU CAN BE CHANGED
 !     ===========================================================
@@ -223,11 +238,17 @@
           DO IFF=1,NF
             DO IPLAN=1,NPLAN
               FB_CTE(IPLAN,IFF)=0.0D0
+              DO IPTFR=1,NPTFR
+                FBOR(IPTFR,IPLAN,IFF)=0.0D0
+              ENDDO
             ENDDO
           ENDDO
 !.........Put energy on a single bin : 10th direction (=90 deg for NPLAN=36
 !         and 4rd frequency
           FB_CTE(10,4)=AUX
+          DO IPTFR=1,NPTFR
+            FBOR(IPTFR,10,4)=AUX
+          ENDDO
         ENDIF
 !
 !     ===========================================================
@@ -235,33 +256,35 @@
 !     ===========================================================
       ENDIF
 !
-!
 !     -----------------------------------------------------------------
 !     DUPLICATES THE BOUNDARY CONDITION FROM DYNAM ON ALL THE
 !     DIRECTIONS AND FREQUENCIES, IF LIQUID BOUNDARY
 !     -----------------------------------------------------------------
-!       IF (FLAG .OR. LIMSPE.EQ.7 .OR. SPEULI) THEN
-!         DO IPTFR=1,NPTFR
-!           IF (LIFBOR(IPTFR).EQ.KENT) THEN
-!             DO IFF=1,NF
-!               DO IPLAN=1,NPLAN
-!                 F(NBOR(IPTFR),IPLAN,IFF)=FBOR(IPTFR,IPLAN,IFF)
-!               ENDDO
-!             ENDDO
-!           ENDIF
-!         ENDDO
-!       ELSE
-          DO IPTFR=1,NPTFR
-            IF (LIFBOR(IPTFR).EQ.KENT) THEN
-              DO IFF=1,NF
-                DO IPLAN=1,NPLAN
-                  F(NBOR(IPTFR),IPLAN,IFF)=FB_CTE(IPLAN,IFF)
-                ENDDO
+!
+      IF(FLAG.OR.LIMSPE.EQ.7.OR.SPEULI.OR.
+     &   (IMP_FILE%NAME(1:1).NE.' ')) THEN
+        DO IPTFR=1,NPTFR
+          IF(LIFBOR(IPTFR).EQ.KENT) THEN
+            DO IFF=1,NF
+              DO IPLAN=1,NPLAN
+                F(NBOR(IPTFR),IPLAN,IFF)=FBOR(IPTFR,IPLAN,IFF)
               ENDDO
-            ENDIF
-          ENDDO
-!       ENDIF
+            ENDDO
+          ENDIF
+        ENDDO
+      ELSE
+        DO IPTFR=1,NPTFR
+          IF(LIFBOR(IPTFR).EQ.KENT) THEN
+            DO IFF=1,NF
+              DO IPLAN=1,NPLAN
+                F(NBOR(IPTFR),IPLAN,IFF)=FB_CTE(IPLAN,IFF)
+              ENDDO
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END
-
