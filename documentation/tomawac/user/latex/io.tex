@@ -21,11 +21,17 @@
 
 \item  The winds file (optional),
 
+\item The imposed spectra on the boundary (optional),
+
+\item The coordinates of the nodes for which a spectra will be imposed (optional),
+
 \item  The previous computation file (optional),
 
 \item  The binary user file (optional),
 
-\item  The formatted user file (optional).
+\item  The formatted user file (optional),
+
+\item The coordinates of the nodes for which spectra will be written (optional).
 \end{itemize}
 
 The output files are:
@@ -163,6 +169,36 @@ The output files are:
 \item  The format is 4: data written in a different format can be read provided that the user supplies the relevant subroutine in the relevant FORTRAN file (see in \ref{se:wind}).
 \end{itemize}
 
+\subsection{ The imposed spectra file and the file containing the associated coordinates}
+\label{se:ImpSpeCoorFiles}
+
+It is possible to impose spectra on the open boundary of the mesh. To do so, the boundary condition for those nodes
+need to follow the format \textit{5 4 4 4}, see section \ref{se:BCfile}. There are then two files that need to be 
+given:
+
+\begin{itemize}
+\item \textit{IMPOSED SPECTRA FILE}: which is a binary file, such as outputted in the punctual or spectrum
+results file, see section \ref{se:SpeFile}.
+
+\item \textit{FILE WITH COORDINATES OF SPECTRA TO IMPOSE}: which is an ascii file with the coordinates associated
+with each spectrum in the \textit{IMPOSED SPECTRA FILE}.
+\end{itemize}
+
+Since the \textit{IMPOSED SPECTRA FILE} follows the format of the \telemacsystem{} results, the format can be given using
+the keyword \textit{IMPOSED SPECTRA FILE FORMAT}. In addition, since imposed spectra can change in time, the
+\textit{TIME UNIT OF IMPOSED SPECTRA FILE} and \textit{TIME SHIFT OF IMPOSED SPECTRA FILE} can be modified.
+
+Finally, the \textit{FILE WITH COORDINATES OF SPECTRA TO IMPOSE} follows the format of DAT outputs of the
+module {\scshape SMESH} in \salome{}. For a list of nodes, it follows this structure:
+
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+<Number of Points> 0
+<Point Id> <X< <Y> <Z>
+...
+\end{lstlisting}
+
 \subsection{ The previous computation file}
 
  This previous computation file name is specified in the steering file through the character keyword: \textit{PREVIOUS COMPUTATION FILE.}
@@ -196,46 +232,80 @@ The output files are:
 \item  \textit{VARIABLES FOR 2D GRAPHICS PRINTOUTS}: provided for specifying the list of variables to be stored into the 2D results file. Each variable is identified by 2, 3 or 4 letters (refer to \ref{tab:resultvar} that lists the available variables).
 \end{itemize}
 
-\begin{table}
-\begin{tabular}{|p{1.4in}|p{2.1in}|} \hline
-M0 &  Total variance \\ \hline
-HM0  &  Spectral significant wave height  \\ \hline
-DMOY  &  Mean wave direction  \\ \hline
-SPD  &  Mean directional spreading  \\ \hline
-ZF &  Sea bottom level  \\ \hline
-WD &  Water depth  \\ \hline
-UX &  Current along X  \\ \hline
-UY &  Current along Y  \\ \hline
-VX &  Wind along X  \\ \hline
-VY &  Wind along Y  \\ \hline
-FX &  Driving force along X  \\ \hline
-FY &  Driving force along Y  \\ \hline
-SXX  &  Radiation stress along xx  \\ \hline
-SYY  &  Radiation stress along yy  \\ \hline
-SXY  &  Radiation stress along xy  \\ \hline
-UWB  &  Bottom celerity  \\ \hline
-POW  &  Wave power (per meter along wave crest)  \\ \hline
-FMOY  &  Mean frequency FMOY  \\ \hline
-FM01  &  Mean frequency FM01  \\ \hline
-FM02  &  Mean frequency FM02  \\ \hline
-FPD  &  Discrete peak frequency  \\ \hline
-FPR5  &  Peak frequency by Read method of order 5  \\ \hline
-FPR8  &  Peak frequency by Read method of order 8  \\ \hline
-US &  Surface friction velocity u*  \\ \hline
-CD &  Surface drag coefficient CD  \\ \hline
-Z0 &  Surface roughness length Z0  \\ \hline
-WS &  Surface wave stress  \\ \hline
-TMOY  &  Mean period Tmoy  \\ \hline
-TM01  &  Mean period Tm01  \\ \hline
-TM02  &  Mean period Tm02  \\ \hline
-TPD  &  Discrete peak period  \\ \hline
-TPR5  &  Peak period by Read method of order 5  \\ \hline
-TPR8  &  Peak period by Read method of order 8  \\ \hline
-PRI  &  Private table  \\ \hline
-BETA &  Breaking waves coefficient \\ \hline
-\end{tabular}
-\caption{\label{tab:resultvar}List of 2D results variables}
-\end{table}
+\begin{longtable}{rl}
+%%%%%%%%%%%%%%
+% First Header
+%%%%%%%%%%%%%%
+\caption{List of 2D results variables}
+\label{tab:resultvar}
+\\
+%
+\toprule
+\toprule
+\textbf{Identifier} & \textbf{Definition} \\
+\midrule
+%
+\endfirsthead
+%%%%%%%%%%%%%%
+% Other Headers
+%%%%%%%%%%%%%%
+\caption{(continued)}\\
+%
+\toprule
+\toprule
+\textbf{Identifier} & \textbf{Definition} \\
+\midrule
+%
+\endhead
+%%%%%%%%%%%%%%
+% Foot
+%%%%%%%%%%%%%%
+\bottomrule
+\bottomrule
+%
+\endfoot
+%%%%%%%%%%%%%%
+% Main table
+%%%%%%%%%%%%%%
+%
+M0 &  Total variance \\
+HM0  &  Spectral significant wave height  \\
+DMOY  &  Mean wave direction  \\
+SPD  &  Mean directional spreading  \\
+ZF &  Sea bottom level  \\
+WD &  Water depth  \\
+UX &  Current along X  \\
+UY &  Current along Y  \\
+VX &  Wind along X  \\
+VY &  Wind along Y  \\
+FX &  Driving force along X  \\
+FY &  Driving force along Y  \\
+SXX  &  Radiation stress along xx  \\
+SYY  &  Radiation stress along yy  \\
+SXY  &  Radiation stress along xy  \\
+UWB  &  Bottom celerity  \\
+POW  &  Wave power (per meter along wave crest)  \\
+FMOY  &  Mean frequency FMOY  \\
+FM01  &  Mean frequency FM01  \\
+FM02  &  Mean frequency FM02  \\
+FPD  &  Discrete peak frequency  \\
+FPR5  &  Peak frequency by Read method of order 5  \\
+FPR8  &  Peak frequency by Read method of order 8  \\
+US &  Surface friction velocity u*  \\
+CD &  Surface drag coefficient CD  \\
+Z0 &  Surface roughness length Z0  \\
+WS &  Surface wave stress  \\
+TMOY  &  Mean period Tmoy  \\
+TM01  &  Mean period Tm01  \\
+TM02  &  Mean period Tm02  \\
+TPD  &  Discrete peak period  \\
+TPR5  &  Peak period by Read method of order 5  \\
+TPR8  &  Peak period by Read method of order 8  \\
+PRI  &  Private table  \\
+BETA &  Breaking waves coefficient \\
+%
+\end{longtable}
+
 
  For instance, if the significant wave heights, the water depths and the average wave propagation directions are desired,
 
@@ -245,21 +315,88 @@ BETA &  Breaking waves coefficient \\ \hline
 
 
 \subsection{ The punctual or spectrum results file}
+\label{se:SpeFile}
 
- This file's name is specified in the steering file through the character keyword: \textit{PUNCTUAL RESULTS FILE.}
+This file's name is specified in the steering file through the character keyword: \textit{PUNCTUAL RESULTS FILE.}
 
- This is the file into which the directional spectra of wave action at some previously specified points are stored by \tomawac during the computation. These points are selected by means of the following keywords:
+This is the file into which the directional spectra of wave action at some previously specified points are stored
+by \tomawac during the computation. To define those points, a list of coordinates needs to be given, and the spectra
+of the closest node will be outputted. This means that there is no spatial interpolation done. There are to methods
+that can be used to define those points:
 
-\begin{itemize}
-\item  \textit{ABSCISSAE OF SPECTRUM PRINTOUT POINTS} and \textit{ORDINATES OF SPECTRUM PRINTOUT POINTS}: they are chart keywords. The maximum number of points is 19, i.e. a maximum of 19 printout points. The spectrum will be recorded at the closest point to the specified position, no spatial interpolation is made.
+\begin{enumerate}
 
-\item  This file is a SERAFIN formatted file. It first includes all the data about the spectral mesh geometry, then the names-codes of displayed points. This name-code is of the type: \textit{Fa\_PT2Db}, where \textit{a }denotes the point's sequence order number within the list written in the steering file and \textit{b} denotes the number of the closest 2D point to the specified position. Subsequently, for each graphic printout, it contains the time and the value of the directional spectrum of wave action for each pair (direction, frequency) in the spectral mesh.
-\end{itemize}
+\item \textbf{Through keywords in the steering file:}
 
- The keywords \textit{PERIOD FOR GRAPHICS PRINTOUTS }and \textit{NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS} are shared by the two results files; thus, the printouts are synchronous for either file.
+The $X$ and $Y$ coordinates are given through the following keywords:
+\textit{ABSCISSAE OF SPECTRUM PRINTOUT POINTS} and \textit{ORDINATES OF SPECTRUM PRINTOUT POINTS}.
+These are chart keywords, which means that each value is seperated with semicolon, and the number
+of printout points is equal to the size of the array given. For example:
 
-There is another KEYWORD to store punctual results, it is called \textit{1D SPECTRA RESULTS FILE}. The difference with the previous one is that the spectral energy is summed over directions and that the file is stored in \textit{ASCII} format. The points where information are stored are defined by the same variable
- 
+\begin{CommentBlock}{Keywords to write a spectra using method 1:}
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------------------------/
+/ WRITING SPECTRA
+/--------------------------------------------------------------------/
+PUNCTUAL RESULTS FILE = (*@\color{PantoneRed}<FileName>@*)
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS = (*@\color{PantoneRed}<X1;X2;X3;X4;X5>@*)
+ORDINATES OF SPECTRUM PRINTOUT POINTS = (*@\color{PantoneRed}<Y1;Y2;Y3;Y4;Y5>@*)
+\end{lstlisting}
+\end{CommentBlock}
+
+\item \textbf{Through an external ASCII file:}
+
+The $X$ and $Y$ can also be defined in an external ASCII file which follows the format of DAT
+outputs of the module {\scshape SMESH} in \salome{}. For a list of nodes, it follows this structure:
+
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+<Number of Points> 0
+<Point Id> <X< <Y> <Z>
+...
+\end{lstlisting}
+
+The name of the file is referenced using the \textit{FILE WITH COORDINATES OF SPECTRA TO WRITE} keyword.
+For example:
+
+\begin{CommentBlock}{Keywords to write a spectra using method 2:}
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------------------------/
+/ WRITING SPECTRA
+/--------------------------------------------------------------------/
+PUNCTUAL RESULTS FILE = (*@\color{PantoneRed}<FileName>@*)
+FILE WITH COORDINATES OF SPECTRA TO WRITE =
+(*@\color{PantoneRed}<FileName>@*)
+\end{lstlisting}
+\end{CommentBlock}
+
+
+\end{enumerate}
+
+\begin{WarningBlock}{Warning:}
+If both methods are used in the same steering file, the simulation will be terminated and an error
+message will be printed.
+\end{WarningBlock}
+
+This result file is a SERAFIN formatted file. It first includes all the data about the spectral mesh geometry,
+then the names-codes of displayed points. This name-code is of the type: \textit{Fa\_PT2Db}, where \textit{a} 
+denotes the point's sequence order number within the list of coordinatesand \textit{b} denotes the number of
+the closest 2D point to the specified position. Subsequently, for each graphic printout, it contains the time
+and the value of the directional spectrum of wave action for each pair (direction, frequency) in the spectral mesh.
+
+The keywords \textit{PERIOD FOR GRAPHICS PRINTOUTS }and \textit{NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS}
+are shared by the two results files; thus, the printouts are synchronous for either file.
+
+Finally, there is another KEYWORD to store punctual results, it is called \textit{1D SPECTRA RESULTS FILE}. The
+difference with the previous one is that the spectral energy is summed over directions and that the file is
+stored in \textit{ASCII} format. The points where information are stored are defined by the same variables.
+
+
 \subsection{ The printout listing}
 
  This file contains all the messages as generated by \tomawac during the computation. It is the main report of a \tomawac run. Its content depends on the value of the following keyword:

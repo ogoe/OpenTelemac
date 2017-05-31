@@ -650,6 +650,39 @@ word  &  & Spectrum & Constants  being used \\
 
  Since the boundary spectrum computation procedures are similar to those for the initial spectrum, refer to section \ref{se:initcond} for further details.
 
+\subsection{ Imposing spectra along an open boundary}
+
+It is also possible to impose spectra along the nodes of an open boundary; i.e. one that follows the format \textit{5 4 4 4}, so that \textit{LIFBOR} is equal to $5$. The keywords are described in section \ref{se:ImpSpeCoorFiles}, and an example is given bellow:
+
+\begin{CommentBlock}{Keywords to impose spectra along an open boundary:}
+\lstset{language=TelemacCas,
+        basicstyle=\scriptsize\ttfamily}
+\begin{lstlisting}[frame=trBL]
+/--------------------------------------------------------------------/
+/ IMPOSE SPECTRA ON THE OPEN BOUNDARY
+/--------------------------------------------------------------------/
+IMPOSED SPECTRA FILE = (*@\color{PantoneRed}<FileName>@*)
+/IMPOSED SPECTRA FILE FORMAT = 'SERAFIN '
+FILE WITH COORDINATES OF SPECTRA TO IMPOSE =
+(*@\color{PantoneRed}<FileName>@*)
+/TIME UNIT OF IMPOSED SPECTRA FILE = 1.
+/TIME SHIFT OF IMPOSED SPECTRA FILE = 0.
+\end{lstlisting}
+\end{CommentBlock}
+
+The imposed spectra are interpolated linearly in time, which implies that the first recorded value needs to be at
+least equal to the begining of the simulation, and the last recorded value needs to be at least equal to the last
+time step. Furthermore, the open boundary nodes of the mesh will take the value of the closest imposed spectra
+point, as defined by \textit{FILE WITH COORDINATES OF SPECTRA TO IMPOSE}. It is therefore recommended to have
+in the \textit{IMPOSED SPECTRA FILE} one spectra per open boundary node.
+
+Finally, this method of imposing spectra on the open boundary is particularly useful when the user wants to use
+nested meshes, such as described in the \texttt{impose\_spectra} example. In this case, the bigger mesh
+needs to output one spectra per node in the smaller mesh. This can be easily done using the keywords associated
+with the \textit{PUNCTUAL RESULTS FILE}, see section \ref{se:SpeFile}. Care should also be given on the
+frequency with which the spectra will be outputted, as a linear interpolation in time might not follow the
+evolution of the boundary if the imposed values are too far appart.
+
 \subsection{ The LIMWAC user subroutine}
 
  It should be reminded that the spectrum is discretised over both frequencies and directions and that it is a \underbar{relative} spectrum, i.e. expressed in a coordinate system that moves with the current.

@@ -117,6 +117,7 @@
 \newcommand{\tel}{{\scshape Telemac}\xspace}
 \newcommand{\estel}{{\scshape Estel-3D}\xspace}
 \newcommand{\damocles}{{\scshape Damocles}\xspace}
+\newcommand{\salome}{{\scshape Salome}\xspace}
 
 %----------------------------------------------------------------------------------------
 %	VARIOUS REQUIRED PACKAGES
@@ -619,6 +620,15 @@ Any total or partial modification, reproduction, new use, distribution or extrac
 
 % used to go over two lines
 \newcommand{\minitab}[2][1]{\begin{tabular}{#1}#2\end{tabular}}
+
+\newcommand{\includetablemaybe}[1] {\IfFileExists{#1} {\input{#1}}%
+  {
+   \begin{tabular*}{0.7\linewidth}{@{\extracolsep{\fill}}ccc}
+   \toprule\toprule
+   &\textbf{Table not found}& \\
+   \bottomrule\bottomrule
+   \end{tabular*}
+  }}
 
 %----------------------------------------------------------------------------------------
 %	GRAPHICS

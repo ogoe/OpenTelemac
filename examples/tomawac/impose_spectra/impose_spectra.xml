@@ -1,0 +1,509 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case" rank="7" >
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <deco xref="default">
+      <look format="png" colourbar="summer.xml" />
+      <data title="impose_spectra" author="A.Joly" contact="www.opentelemac.org" />
+   </deco>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+-->
+   <action xref="1"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_oceanic.cas"
+       title="Oceanic mesh"
+   />
+    <action xref="2"
+       do="translate;run;cas;princi" ncsize="2"
+       code="tomawac" target="tom_oceanic.cas"
+       title="Oceanic mesh parallel mode"
+   />
+    <action xref="3"
+       do="translate;run;cas;princi"
+       code="tomawac" target="tom_coastal.cas"
+       title="Coastal mesh"
+   />
+    <action xref="4"
+       do="translate;run;cas;princi" ncsize="2"
+       code="tomawac" target="tom_coastal.cas"
+       title="Coastal mesh parallel mode"
+   />
+<!-- Check on Reference File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <cast xref="ref-1:r2d" config="oneofall" time="[-1]" type="2d:">
+      <v1 vars=":map" target="1:WACRES" />
+      <v2 vars=":map" target="f2d_OceanicResults.slf" />
+      <v3 vars="mapdiff(v1,v2)" />
+      <return title="Check oceanic result at the last time step."
+         fail="checkval(v3,[1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="ref-2:r2d" config="oneofall" time="[-1]" type="2d:">
+      <v4 vars=":map" target="2:WACRES" />
+      <v5 vars=":map" target="f2d_OceanicResults.slf" />
+      <v6 vars="mapdiff(v4,v5)" />
+      <return title="Check oceanic result from paral at the last time step."
+         fail="checkval(v6,[1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="ref-3:r2d" config="oneofall" time="[-1]" type="2d:">
+      <v7 vars=":map" target="3:WACRES" />
+      <v8 vars=":map" target="f2d_CoastalResults.slf" />
+      <v9 vars="mapdiff(v7,v8)" />
+      <return title="Check coastal result at the last time step."
+         fail="checkval(v9,[1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="ref-4:r2d" config="oneofall" time="[-1]" type="2d:">
+      <v10 vars=":map" target="4:WACRES" />
+      <v11 vars=":map" target="f2d_CoastalResults.slf" />
+      <v12 vars="mapdiff(v10,v11)" />
+      <return title="Check coastal result from paral at the last time step."
+         fail="checkval(v12,[1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+   <cast xref="compare diff mesh" config="oneofall" type="2d:" time="[-1]" >
+      <python>
+def compare_diff_mesh(f1,f2,t_read):
+   from os import path, remove, environ
+   from parsers import parserSELAFIN
+   # read file names
+   f1 = f1.split(':')
+   file1Path = path.join(environ['HOMETEL'],'examples','tomawac',
+      'impose_spectra',f1[0],environ['USETELCFG'],f1[1])
+   f2 = f2.split(':')
+   file2Path = path.join(environ['HOMETEL'],'examples','tomawac',
+      'impose_spectra',f2[0],environ['USETELCFG'],f2[1])
+   # Open serafin files
+   SerafinFile1 = parserSELAFIN.SELAFIN(file1Path)
+   SerafinFile2 = parserSELAFIN.SELAFIN(file2Path)
+   #Read mesh data 1
+   NPOIN1 = SerafinFile1.NPOIN2
+   X1 = SerafinFile1.MESHX
+   Y1 = SerafinFile1.MESHY
+   NELEM1 = SerafinFile1.NELEM2
+   IKLE1 = SerafinFile1.IKLE2
+   VarName1 = SerafinFile1.VARNAMES
+   VarUnits1 = SerafinFile1.VARUNITS
+   t_series1 = SerafinFile1.tags['times']
+   #Read mesh data 2
+   NPOIN2 = SerafinFile2.NPOIN2
+   X2 = SerafinFile2.MESHX
+   Y2 = SerafinFile2.MESHY
+   NELEM2 = SerafinFile2.NELEM2
+   IKLE2 = SerafinFile2.IKLE2
+   VarName2 = SerafinFile2.VARNAMES
+   VarUnits2 = SerafinFile2.VARUNITS
+   t_series2 = SerafinFile2.tags['times']
+   # Get time
+   t_read1 = np.searchsorted(t_series1,t_series1[t_read])
+   t_read2 = np.searchsorted(t_series2,t_series2[t_read])
+   # Map Mesh 2 on Mesh 1 (we assume Mesh 2 is completely inside Mesh 1)
+   elem21 = np.ones(NPOIN2,dtype=int)*np.nan
+   lambda21 = np.ones([NPOIN2,3],dtype=float)*np.nan
+   for ip in xrange(NPOIN2) :
+      for i1 in xrange(NELEM1) :
+         n1 = IKLE1[i1,0]
+         n2 = IKLE1[i1,1]
+         n3 = IKLE1[i1,2]
+         det1 = (X1[n3]-X1[n2])*(Y2[ip]-Y1[n2])-(Y1[n3]-Y1[n2])*(X2[ip]-X1[n2])
+         det2 = (X1[n1]-X1[n3])*(Y2[ip]-Y1[n3])-(Y1[n1]-Y1[n3])*(X2[ip]-X1[n3])
+         det3 = (X1[n2]-X1[n1])*(Y2[ip]-Y1[n1])-(Y1[n2]-Y1[n1])*(X2[ip]-X1[n1])
+         if ((det1<![CDATA[>]]>-1.e-7) <![CDATA[&]]>
+            (det2<![CDATA[>]]>-1.e-7) <![CDATA[&]]>
+            (det3<![CDATA[>]]>-1.e-7)) :
+            elem21[ip] = i1
+            detJ = (X1[n2]-X1[n1])*(Y1[n3]-Y1[n1])-(Y1[n2]-Y1[n1])*(X1[n3]-X1[n1])
+            lambda21[ip,0] = det1/detJ
+            lambda21[ip,1] = det2/detJ
+            lambda21[ip,2] = det3/detJ
+            break
+   # compare result files
+   all_diff = []
+   for i1 in xrange(np.size(VarName1)):
+      i2 = SerafinFile2.VARNAMES.index(VarName2[i1])
+      var1 = SerafinFile1.getVALUES(t_read1)[i1,:]
+      var2 = SerafinFile2.getVALUES(t_read2)[i2,:]
+      diff = np.ones(NPOIN2,dtype=int)*np.nan
+      for ip in xrange(NPOIN2) :
+         if not(np.isnan(elem21[ip])) :
+            n1 = IKLE1[elem21[ip],0]
+            n2 = IKLE1[elem21[ip],1]
+            n3 = IKLE1[elem21[ip],2]
+            diff[ip] = (lambda21[ip,0]*var1[n1] +
+               lambda21[ip,1]*var1[n2] + 
+               lambda21[ip,2]*var1[n3])
+      diff -= var2
+      all_diff.append(np.mean(diff))
+      print("          - Difference for variable  %s :  %g" %
+         (VarName1[i1],np.mean(diff)))
+   return [],VarName1,[],all_diff
+def printheader(t) :
+   print "        ~> Validation for time (in reference file): %.1f" % (t)
+   return [],[],[],[]
+def check_fail_diff_mesh(v,eps) :
+   if len(v)==len(eps) :
+      fail = False
+      for i in xrange(len(v)) :
+         if abs(v[i])>eps[i] :
+            fail = True
+      if fail :
+         print "        - cast: fail  =  True  ( expression:  check_fail_diff_mesh )"
+      else :
+         print "        - cast: fail  =  False  ( expression:  check_fail_diff_mesh )"
+   else :
+      print "/!\ The number of acceptable error is not of the right size"
+      print "v:%d" % (len(v))
+      print "eps:%d" % (len(eps))
+   return [],[],[],[]
+def printvar(v) :
+   print v
+   return [],[],[],[]
+      </python>
+      <v13 vars="printvar('        ~> 1:r2d-3:r2d')" />
+      <v14 vars="printheader(-1)" />
+      <v15 vars="compare_diff_mesh('1:r2d_OceanicResults.slf','3:r2d_CoastalResults.slf',-1)" />
+      <v16 vars="check_fail_diff_mesh(v15.values,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+      <v17 vars="printvar('        ~> 2:r2d-4:r2d')" />
+      <v18 vars="printheader(-1)" />
+      <v19 vars="compare_diff_mesh('2:r2d_OceanicResults.slf','4:r2d_CoastalResults.slf',-1)" />
+      <v20 vars="check_fail_diff_mesh(v19.values,[1e-2,1e-2,1e-2,1e-2,1e-2])" />
+   </cast>
+<!-- Casting from SELAFIN files to compare spectra~~~~~~~~~~~~~~~~~~ -->
+    <cast xref="check spectra" config="oneofall" type="2d:" time="[-1]" >
+      <python>
+def compare_diff_spe(f1,f2,t_read):
+   from os import path, remove, environ
+   from parsers import parserSELAFIN
+   # read file names
+   if ':' in f1 :
+      f1 = f1.split(':')
+      file1Path = path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra',f1[0],environ['USETELCFG'],f1[1])
+   else :
+      file1Path = path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra',f1)
+   if ':' in f2 :
+      f2 = f2.split(':')
+      file2Path = path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra',f2[0],environ['USETELCFG'],f2[1])
+   else :
+      file2Path = path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra',f2)
+   # Open serafin files
+   SerafinFile1 = parserSELAFIN.SELAFIN(file1Path)
+   SerafinFile2 = parserSELAFIN.SELAFIN(file2Path)
+   #Read mesh data 1
+   NPOIN1 = SerafinFile1.NPOIN2
+   X1 = SerafinFile1.MESHX
+   Y1 = SerafinFile1.MESHY
+   NELEM1 = SerafinFile1.NELEM2
+   IKLE1 = SerafinFile1.IKLE2
+   VarName1 = SerafinFile1.VARNAMES
+   VarUnits1 = SerafinFile1.VARUNITS
+   t_series1 = SerafinFile1.tags['times']
+   #Read mesh data 2
+   NPOIN2 = SerafinFile2.NPOIN2
+   X2 = SerafinFile2.MESHX
+   Y2 = SerafinFile2.MESHY
+   NELEM2 = SerafinFile2.NELEM2
+   IKLE2 = SerafinFile2.IKLE2
+   VarName2 = SerafinFile2.VARNAMES
+   VarUnits2 = SerafinFile2.VARUNITS
+   t_series2 = SerafinFile2.tags['times']
+   # Get time
+   t_read1 = np.searchsorted(t_series1,t_series1[t_read])
+   t_read2 = np.searchsorted(t_series2,t_series2[t_read])
+   # check result files
+   if NPOIN1 != NPOIN2 :
+      print "/!\ Meshes are not the same"
+      print "    NPOIN of mesh 1 = ",NPOIN1
+      print "    NPOIN of mesh 2 = ",NPOIN2
+   elif NELEM1 != NELEM2 :
+      print "/!\ Meshes are not the same"
+      print "    NELEM of mesh 1 = ",NELEM1
+      print "    NELEM of mesh 2 = ",NELEM2
+   elif np.sum(X1-X2) != 0. :
+      print "/!\ Meshes are not the same"
+      print "    X1 != X2"
+   elif np.sum(Y1-Y2) != 0. :
+      print "/!\ Meshes are not the same"
+      print "    Y1 != Y2"
+   elif (np.sum(IKLE1[:,0]-IKLE2[:,0]) + 
+         np.sum(IKLE1[:,1]-IKLE2[:,1]) +
+         np.sum(IKLE1[:,2]-IKLE2[:,2])) != 0. :
+      print "/!\ Meshes are not the same"
+      print "    IKLE1 != IKLE2"
+   elif np.size(VarName1) != np.size(VarName2) :
+      print "/!\ The number of variables are not the same"
+   elif t_series1[t_read1] != t_series2[t_read2] :
+      print "/!\ The time step read is not the same"
+   # compare result files
+   all_diff = []
+   for i1 in xrange(np.size(VarName1)):
+      i2 = i1
+      var1 = SerafinFile1.getVALUES(t_read1)[i1,:]
+      var2 = SerafinFile2.getVALUES(t_read2)[i2,:]
+      diff = var1-var2
+      all_diff.append(np.mean(diff))
+      print("          - Difference for variable  %s :  %g" %
+         (VarName1[i1],np.mean(diff)))
+   return [],VarName1,[],all_diff
+def printheader(t) :
+   print "        ~> Validation for time (in reference file): %.1f" % (t)
+   return [],[],[],[]
+def check_fail_spe(v,eps) :
+   if len(v)==len(eps) :
+      fail = False
+      for i in xrange(len(v)) :
+         if abs(v[i])>eps[i] :
+            fail = True
+      if fail :
+         print "        - cast: fail  =  True  ( expression:  check_fail_spe )"
+      else :
+         print "        - cast: fail  =  False  ( expression:  check_fail_spe )"
+   else :
+      print "/!\ The number of acceptable error is not of the right size"
+      print "v:%d" % (len(v))
+      print "eps:%d" % (len(eps))
+   return [],[],[],[]
+def printvar(v) :
+   print v
+   return [],[],[],[]
+      </python>
+      <r0 vars="printvar('        ~> ref-1:spe')" />
+      <r1 vars="printheader(-1)" />
+      <r2 vars="compare_diff_spe('1:spe_OceanicResults.slf','fsp_OceanicResults.slf',-1)" />
+      <r3 vars="check_fail_spe(r2.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <r4 vars="printvar('        ~> ref-2:spe')" />
+      <r5 vars="printheader(-1)" />
+      <r6 vars="compare_diff_spe('2:spe_OceanicResults.slf','fsp_OceanicResults.slf',-1)" />
+      <r7 vars="check_fail_spe(r6.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <r8 vars="printvar('        ~> ref-3:spe')" />
+      <r9 vars="printheader(-1)" />
+      <r10 vars="compare_diff_spe('3:spe_CoastalResults.slf','fsp_CoastalResults.slf',-1)" />
+      <r11 vars="check_fail_spe(r10.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <r12 vars="printvar('        ~> ref-4:spe')" />
+      <r13 vars="printheader(-1)" />
+      <r14 vars="compare_diff_spe('4:spe_CoastalResults.slf','fsp_CoastalResults.slf',-1)" />
+      <r15 vars="check_fail_spe(r14.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <r16 vars="printvar('        ~> 1-3:spe')" />
+      <r17 vars="printheader(-1)" />
+      <r18 vars="compare_diff_spe('1:spe_OceanicResults.slf','3:spe_CoastalResults.slf',-1)" />
+      <r19 vars="check_fail_spe(r18.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <r20 vars="printvar('        ~> 2-4:spe')" />
+      <r21 vars="printheader(-1)" />
+      <r22 vars="compare_diff_spe('2:spe_OceanicResults.slf','4:spe_CoastalResults.slf',-1)" />
+      <r23 vars="check_fail_spe(r22.values,[1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+                1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+<!-- table ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <cast xref="write table sumarising validation" config="oneofall" type="2d:" time="[-1]" >
+      <python>
+def write_table(TabName,HeaderNames,VarList,eps) :
+   from os import path, environ, stat, mkdir
+   # Define table tex file
+   try:
+      stat(path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra','table'))
+   except:
+      mkdir(path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra','table'))
+   tab_name = path.join(environ['HOMETEL'],'examples','tomawac',
+      'impose_spectra','table',TabName)
+   # Extract data
+   n_var = len(VarList)
+   var_names = []
+   var_diff = []
+   n_names = 0
+   for i_var in xrange(n_var) :
+      var_names.append(VarList[i_var].names)
+      if np.size(var_names[i_var]) <![CDATA[>]]> n_names :
+         n_names = np.size(var_names[i_var])
+      try :
+         var = VarList[i_var].values[0,:,:]
+         var_diff.append(np.mean(var,axis=1))
+      except :
+         var = VarList[i_var].values
+         var_diff.append(var)
+   var_diff.append(eps)
+   if len(eps) != n_names :
+      print "/!\ eps is not of the correct size"
+   #Fill table array
+   TabNames = var_names[0]
+   TabArray = np.ones([n_var,n_names])*np.nan
+   TabCol = 'c'
+   for i_var in xrange(n_var) :
+      TabArray[i_var,:] = var_diff[i_var]
+      TabCol += 'c'
+   TabCol += 'c'
+   # Write table Header
+   w_file = open(tab_name,'w')
+   w_file.write('\\begin{tabular*}{\\linewidth}{@{\\extracolsep{\\fill}}%s}\n' % (TabCol))
+   w_file.write('\\toprule\n')
+   w_file.write('\\toprule\n')
+   for i_h in xrange(len(HeaderNames)) :
+      w_file.write(' <![CDATA[&]]> \\multicolumn{2}{c}{\\textbf{ %s }}' % (HeaderNames[i_h]))
+   w_file.write(' <![CDATA[&]]> \\multirow{2}{*}{\\textbf{ eps }}')
+   w_file.write(' \\\\\n')
+   for i_h in xrange(len(HeaderNames)) :
+      w_file.write(' <![CDATA[&]]> \\textbf{scalar} <![CDATA[&]]> \\textbf{2 proc}')
+   w_file.write(' <![CDATA[&]]> \\\\\n')
+   w_file.write('\\midrule\n')
+   # Write data
+   for i_name in xrange(n_names) :
+      w_file.write(TabNames[i_name])
+      for i_var in xrange(n_var) :
+         if abs(TabArray[i_var,i_name]) <![CDATA[>]]> eps[i_name] :
+            w_file.write(' <![CDATA[&]]> {\\color{PantoneRed} %.3g}' % (TabArray[i_var,i_name]))
+         else :
+            w_file.write(' <![CDATA[&]]> %.3g' % (TabArray[i_var,i_name]))
+      w_file.write(' <![CDATA[&]]> %.3g' % (eps[i_name]))
+      w_file.write(' \\\\\n')
+   #Finish Table
+   w_file.write('\\bottomrule\n')
+   w_file.write('\\bottomrule\n')
+   w_file.write('\\end{tabular*}\n')
+   w_file.close()
+   return [],[],[],[]
+def printvar(v) :
+   print v
+   return [],[],[],[]
+      </python>
+      <t0 vars="printvar('        ~> write table:r2d')" />
+      <t1 vars="write_table('tab_r2d.tex',
+          ['Oceanic - reference','Coastal - Reference','Oceanic - Coastal'],
+          [v3,v6,v9,v12,v15,v19],[1e-7,1e-7,1e-7,1e-7,1e-7])" />
+      <t2 vars="printvar('        ~> write table:spe')" />
+      <t3 vars="write_table('tab_spe.tex',
+          ['Oceanic - reference','Coastal - Reference','Oceanic - Coastal'],
+          [r2,r6,r10,r14,r18,r22],
+          [1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,
+          1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7,1e-7])" />
+   </cast>
+<!-- plot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <cast xref="plot cross sections:r2d" config="oneofall" type="2d:" time="[-1]" >
+      <python>
+def plot_cross_sections(fnames,t_plot,y_plot,pvar):
+   from os import path, environ, stat, mkdir
+   from parsers import parserSELAFIN
+   import matplotlib.pyplot as plt
+   # read file names
+   fserafin = []
+   for file in fnames :
+      if ':' in file :
+         file = file.split(':')
+         FilePath = path.join(environ['HOMETEL'],'examples','tomawac',
+            'impose_spectra',file[0],environ['USETELCFG'],file[1])
+      else :
+         FilePath = path.join(environ['HOMETEL'],'examples','tomawac',
+            'impose_spectra',file)
+      fserafin.append(parserSELAFIN.SELAFIN(FilePath))
+   # Read mesh componenents
+   NPOIN = []
+   X = []
+   Y = []
+   NELEM = []
+   IKLE = []
+   VarName = []
+   VarUnits = []
+   t_series = []
+   for i in xrange(len(fnames)) :
+      NPOIN.append(fserafin[i].NPOIN2)
+      X.append(fserafin[i].MESHX)
+      Y.append(fserafin[i].MESHY)
+      NELEM.append(fserafin[i].NELEM2)
+      IKLE.append(fserafin[i].IKLE2)
+      VarName.append(fserafin[i].VARNAMES)
+      VarUnits.append(fserafin[i].VARUNITS)
+      t_series.append(fserafin[i].tags['times'])
+   # extract cross sections
+   min_x = np.inf
+   max_x = -np.inf
+   it_plot=[]
+   for i in xrange(len(fnames)) :
+      if min_x > np.min(X[i]) :
+         min_x = np.min(X[i])
+      if max_x <![CDATA[<]]> np.max(X[i]) :
+         max_x = np.max(X[i])
+      if t_plot == -1 :
+         it_plot.append(np.searchsorted(t_series[i],t_series[i][-1]))
+      else :
+         it_plot.append(np.searchsorted(t_series[i],t_plot))
+   dx = (max_x-min_x)/100.
+   x_plot = np.arange(min_x,max_x,dx)
+   x_plot = np.append(x_plot,max_x)
+   p_elem = []
+   p_lambda = []
+   vp = []
+   for i in xrange(len(fnames)) :
+      print "          - Cross section plotted for file: %s" % (fnames[i])
+      p_elem.append(np.ones(np.size(x_plot),dtype=int)*np.nan)
+      p_lambda.append(np.ones([np.size(x_plot),3],dtype=float)*np.nan)
+      for ip in xrange(np.size(x_plot)) :
+         for ie in xrange(NELEM[i]) :
+            n1 = IKLE[i][ie,0]
+            n2 = IKLE[i][ie,1]
+            n3 = IKLE[i][ie,2]
+            det1 = (X[i][n3]-X[i][n2])*(y_plot-Y[i][n2])-(Y[i][n3]-Y[i][n2])*(x_plot[ip]-X[i][n2])
+            det2 = (X[i][n1]-X[i][n3])*(y_plot-Y[i][n3])-(Y[i][n1]-Y[i][n3])*(x_plot[ip]-X[i][n3])
+            det3 = (X[i][n2]-X[i][n1])*(y_plot-Y[i][n1])-(Y[i][n2]-Y[i][n1])*(x_plot[ip]-X[i][n1])
+            if (det1>-1e-7) <![CDATA[&]]> (det2>-1e-7) <![CDATA[&]]> (det3>-1e-7) :
+               p_elem[i][ip] = ie
+               detJ = (X[i][n2]-X[i][n1])*(Y[i][n3]-Y[i][n1])-(Y[i][n2]-Y[i][n1])*(X[i][n3]-X[i][n1])
+               p_lambda[i][ip,0] = det1/detJ
+               p_lambda[i][ip,1] = det2/detJ
+               p_lambda[i][ip,2] = det3/detJ
+               break
+      vp.append(np.ones([np.size(x_plot),len(pvar)],dtype=float)*np.nan)
+      for ivar in xrange(len(pvar)) :
+         iv = VarName[i].index(pvar[ivar])
+         var = fserafin[i].getVALUES(it_plot[i])[iv,:]
+         for ip in xrange(np.size(x_plot)) :
+            if not(np.isnan(p_elem[i][ip])) :
+               n1 = IKLE[i][p_elem[i][ip],0]
+               n2 = IKLE[i][p_elem[i][ip],1]
+               n3 = IKLE[i][p_elem[i][ip],2]
+               vp[i][ip,ivar] = (p_lambda[i][ip,0]*var[n1] +
+                  p_lambda[i][ip,1]*var[n2] + 
+                  p_lambda[i][ip,2]*var[n3])
+   # plot the cross sections
+   try:
+      stat(path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra','img'))
+   except:
+      mkdir(path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra','img'))
+   for ivar in xrange(len(pvar)) :
+      iv = VarName[0].index(pvar[ivar])
+      fig = plt.figure(pvar[ivar])
+      plt.ylabel('%s (%s)' % (VarName[0][iv].strip(),VarUnits[0][iv].strip()))
+      plt.xlabel('X (m)')
+      for i in xrange(len(fnames)) :
+         if 'ref' in fnames[i] :
+            #plt.plot(x_plot,vp[i][:,ivar],'o',markerfacecolor='none')
+            plt.plot(x_plot,vp[i][:,ivar],'+', mew=2, ms=8)
+         else :
+            plt.plot(x_plot,vp[i][:,ivar],linewidth=2.0)
+      plt.legend(fnames, loc=9, bbox_to_anchor=(0.5,-0.15), ncol=2)
+      plt.savefig(path.join(environ['HOMETEL'],'examples','tomawac',
+         'impose_spectra','img','%s.png' % (pvar[ivar].strip().replace(' ','_'))),
+         bbox_inches="tight")
+      #fig.show()
+      
+   return [],[],[],[]
+def printvar(v) :
+   print v
+   return [],[],[],[]
+      </python>
+      <p0 vars="printvar('        ~> plot cross sections:r2d')" />
+      <p1 vars="plot_cross_sections(['f2d_OceanicResults.slf','f2d_CoastalResults.slf',
+                '1:r2d_OceanicResults.slf','3:r2d_CoastalResults.slf'],-1,100,
+                 ['WAVE HEIGHT HM0 ','MEAN PERIOD TMOY','WAVE SPREAD     '])" />
+   </cast>
+</validation>
