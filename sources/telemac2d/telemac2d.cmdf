@@ -1094,6 +1094,7 @@ files: declarations_tomawac.f
   nomvar_tomawac.f
   tomawac_constants.f
   lecdon_tomawac.f
+  read_spectra_coords.f
 
 [waqtel]
 path: <root>|sources|waqtel

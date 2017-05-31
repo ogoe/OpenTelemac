@@ -629,3 +629,4 @@ files: declarations_tomawac.f
   tomawac_constants.f
   lecdon_tomawac.f
   homere_tomawac.F
+  read_spectra_coords.f

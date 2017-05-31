@@ -53,6 +53,11 @@
 !+       V7P0
 !+       Modification to comply with the hermes module
 !
+!history A JOLY (LNHE)
+!+       18/05/2017
+!+       V7P3
+!+       Possibility to read a text file with coordinates of the nodes
+!+       for which a spectra will be written.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP
@@ -205,6 +210,18 @@
       TIME(1)=HDC-100*JDC
       TIME(2)=INT(DDC-100.D0*HDC)
       TIME(3)=0
+!
+!.....1.5 READ ASCII FILES WITH COORDINATES OF POINTS FOR WHICH
+!         SPECTRA WILL NEED TO BE READ
+!
+      IF(WAC_FILES(LEOWXY)%NAME(1:1).NE.' ')THEN
+        IF(DEBUG.GT.0)
+     &  WRITE(LU,*)'CALLING READ_SPECTRA_COORDS FOR PRINTOUT'
+        CALL READ_SPECTRA_COORDS(WAC_FILES(LEOWXY)%LU,
+     &                           NPLEO,NOLEO,XLEO,YLEO)
+        IF(DEBUG.GT.0)WRITE(LU,*)'BACK FROM  READ_SPECTRA_COORDS'
+      ENDIF
+!
 !
 !=====C
 !  2  C LECTURE DES CONDITIONS LIMITES ET INDICES DES POINTS FRONTIERES

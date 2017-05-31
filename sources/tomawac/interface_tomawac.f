@@ -1857,6 +1857,19 @@
       DOUBLE PRECISION, INTENT(INOUT) :: POWER(NPOIN2)!
         END SUBROUTINE
       END INTERFACE
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE READ_SPECTRA_COORDS
+     &(FID,NP,IP,XP,YP)
+      USE DECLARATIONS_SPECIAL
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)                         :: FID
+      INTEGER, INTENT(IN)                         :: NP
+      INTEGER, ALLOCATABLE, INTENT(INOUT)         :: IP(:)
+      DOUBLE PRECISION,ALLOCATABLE, INTENT(INOUT) :: XP(:),YP(:)
+        END SUBROUTINE
+      END INTERFACE
 !
 !=======================================================================
 !

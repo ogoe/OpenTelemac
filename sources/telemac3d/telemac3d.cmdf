@@ -1053,6 +1053,7 @@ files: declarations_tomawac.f
   anacos.f
   condiw.f
   wac.F
+  read_spectra_coords.f
 
 [waqtel]
 path: <root>|sources|waqtel
