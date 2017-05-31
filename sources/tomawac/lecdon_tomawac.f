@@ -331,6 +331,9 @@
 !       IF KEYWORD NOT FOUND
         NPLEO = 0
       ENDIF
+      ALLOCATE(NOLEO(NPLEO))
+      ALLOCATE(XLEO(NPLEO))
+      ALLOCATE(YLEO(NPLEO))
       DO K=1,DIMEN(2,4)
         XLEO(K)= MOTREA( ADRESS(2,  4) + K-1)
       ENDDO
