@@ -25,8 +25,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION, INTENT(IN) :: P(N)
       INTEGER ,INTENT(IN) ::N
+      DOUBLE PRECISION, INTENT(IN) :: P(N)
       DOUBLE PRECISION, INTENT(OUT) :: RES
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
