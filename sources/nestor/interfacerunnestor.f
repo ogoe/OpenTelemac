@@ -11,9 +11,9 @@
       USE BIEF
       USE m_TypeDefs_InterFace
 
-!#ifndef  NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  MainNestor
-!#endif  /* NESTOR_INTERFACES */
+#ifndef  NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  MainNestor
+#endif  /* NESTOR_INTERFACES */
 
 
       IMPLICIT NONE

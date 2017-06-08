@@ -14,12 +14,12 @@
 
 
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  open_File
-!     &                               , ErrMsgAndStop
-!     &                               , IsActionCompletelyDefined
-!     &                               , ParseSteerLine
-!#endif  /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  open_File
+     &                               , ErrMsgAndStop
+     &                               , IsActionCompletelyDefined
+     &                               , ParseSteerLine
+#endif  /* NESTOR_INTERFACES */
 
 
 #ifndef NESTOR_INTERFACES

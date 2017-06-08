@@ -20,9 +20,9 @@
       USE INTERFACE_PARALLEL, ONLY : P_IMAX
 
 
-!#ifndef  NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  InitialiseNestor
-!#endif  /* NESTOR_INTERFACES */
+#ifndef  NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  InitialiseNestor
+#endif  /* NESTOR_INTERFACES */
 
 
       IMPLICIT NONE

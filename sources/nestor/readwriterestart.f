@@ -9,12 +9,12 @@
 
       USE m_TypeDefs_Nestor, ONLY : R8
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  ReadActionToRestart
-!     &                               , ReadFieldToRestart
-!     &                               , WriteActionToRestart
-!     &                               , WriteFieldToRestart
-!#endif  /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  ReadActionToRestart
+     &                               , ReadFieldToRestart
+     &                               , WriteActionToRestart
+     &                               , WriteFieldToRestart
+#endif  /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 

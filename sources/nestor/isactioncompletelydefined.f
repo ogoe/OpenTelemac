@@ -10,9 +10,9 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY : ipid
 
-!#ifndef  NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop
-!#endif  /* NESTOR_INTERFACES */
+#ifndef  NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop
+#endif  /* NESTOR_INTERFACES */
       IMPLICIT NONE
 
       TYPE(t_Action), INTENT(IN) :: A   ! one element of array A

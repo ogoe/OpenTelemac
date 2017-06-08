@@ -13,10 +13,10 @@
 
 
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  open_File
-!     &                               , ErrMsgAndStop
-!#endif  /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  open_File
+     &                               , ErrMsgAndStop
+#endif  /* NESTOR_INTERFACES */
 
 
 

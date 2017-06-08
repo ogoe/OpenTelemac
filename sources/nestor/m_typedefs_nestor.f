@@ -106,10 +106,10 @@
 !    Need to be tracked down someday.   DANGER
         REAL (KIND=R8),POINTER
      &                ,DIMENSION   (:)    ::   refZ
-!                                                      => null()
+     &                                                 => null()
         REAL (KIND=R8),POINTER
      &                ,DIMENSION   (:)    ::   targZ
-!                                                      => null()
+     &                                                 => null()
 !##< JR @ RWTH
         REAL (KIND=R8),ALLOCATABLE
      &                ,DIMENSION   (:)    ::   km

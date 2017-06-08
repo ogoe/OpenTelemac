@@ -20,12 +20,12 @@
 
 
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  Dump_by_Time
-!     &                               , Dig_by_Time
-!     &                               , Dig_by_Criterion
-!     &                               , ReadWriteRestart
-!#endif  /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  Dump_by_Time
+     &                               , Dig_by_Time
+     &                               , Dig_by_Criterion
+     &                               , ReadWriteRestart
+#endif  /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 

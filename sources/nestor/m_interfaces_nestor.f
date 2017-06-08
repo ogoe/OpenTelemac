@@ -17,10 +17,12 @@
       !  3. code that will be seen by the compiler is what belongs
       !     to a interface block
       !  4. end the INTERFACE block:  END INTERFACE
-
-!      USE m_typedefs_interface
-!      USE m_typedefs_nestor
-!      USE m_nestor
+! BOGUS CODE for rescan
+#if 0 > 1
+      USE m_typedefs_interface
+      USE m_typedefs_nestor
+      USE m_nestor
+#endif
 
 #define NESTOR_INTERFACES
 

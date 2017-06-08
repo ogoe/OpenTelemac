@@ -232,7 +232,6 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -247,7 +246,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -261,7 +260,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -269,7 +268,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -282,6 +281,7 @@ files: bief_def.f
   mt13aa.f
   mt06bb.f
   mt15pp.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -291,10 +291,10 @@ files: bief_def.f
   matriy.f
   matrix.f
   filter.f
-  p_dot.f
-  p_dotpair.f
-  dot.f
   dot_comp.f
+  p_dot.f
+  dot.f
+  p_dotpair.f
   p_dots.f
   mult_interface_seg.f
   osdb.f
@@ -579,6 +579,7 @@ files: interface_hermes.f
   get_mesh_nptir.f
   get_mesh_dimension.f
   set_header.f
+  get_mesh_coord.f
   lit.F
   ecri2.f
   close_bnd.f
@@ -586,7 +587,6 @@ files: interface_hermes.f
   open_mesh.f
   open_bnd.f
   get_mesh_l2g_numbering.f
-  get_mesh_coord.f
   get_mesh_connectivity.f
   get_bnd_ipobo.f
   set_bnd.f
@@ -600,6 +600,7 @@ path: <root>|sources|nestor
 files: m_typedefs_interface.f
   m_typedefs_nestor.f
   m_nestor.f
+  m_interfaces_nestor.f
   my_flush.f
   infomessage.f
   errmsgandstop.f
@@ -821,12 +822,13 @@ files: friction_def.f
   tpxo.f
   deall_telemac2d.f
   m_coupling_estel3d.f
-  sta_dis_cur.f
   read_fic_frliq.f
-  tr.f
   vit.f
+  sta_dis_cur.f
+  tr.f
   q.f
   debimp.f
+  sl.f
   nodalf_pugh.f
   nodalupv_pugh.f
   bord_tide.f
@@ -835,7 +837,6 @@ files: friction_def.f
   nodalf_schureman.f
   bord_tide_misc.f
   tidal_model_t2d.f
-  sl.f
   dis_sta_cur.f
   bord.f
   valro.f

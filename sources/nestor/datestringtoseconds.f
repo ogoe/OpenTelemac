@@ -15,9 +15,9 @@
       USE m_TypeDefs_Nestor
       USE m_Nestor, ONLY : SisStart, ipid     ! "time-zero-point"
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop, Diff_Time
-!#endif /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  ErrMsgAndStop, Diff_Time
+#endif /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 

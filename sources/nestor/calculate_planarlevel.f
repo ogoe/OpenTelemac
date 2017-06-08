@@ -11,9 +11,9 @@
       USE m_Nestor , ONLY : ParallelComputing, ipid
       USE INTERFACE_PARALLEL, ONLY : P_DSUM
 
-!#ifndef NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY : ErrMsgAndStop
-!#endif /* NESTOR_INTERFACES */
+#ifndef NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY : ErrMsgAndStop
+#endif /* NESTOR_INTERFACES */
 
       IMPLICIT NONE
 

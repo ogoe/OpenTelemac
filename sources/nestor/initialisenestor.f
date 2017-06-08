@@ -16,12 +16,12 @@
       USE m_Nestor
       USE INTERFACE_PARALLEL, ONLY : P_DSUM
 
-!#ifndef  NESTOR_INTERFACES
-!      USE m_Interfaces_Nestor, ONLY :  ReadPolygons
-!     &                               , inside_point_2d_d
-!     &                               , ReadDigActions
-!     &                               , ErrMsgAndStop
-!#endif  /* NESTOR_INTERFACES */
+#ifndef  NESTOR_INTERFACES
+      USE m_Interfaces_Nestor, ONLY :  ReadPolygons
+     &                               , inside_point_2d_d
+     &                               , ReadDigActions
+     &                               , ErrMsgAndStop
+#endif  /* NESTOR_INTERFACES */
 
  !
       IMPLICIT NONE
