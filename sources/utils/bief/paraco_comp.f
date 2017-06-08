@@ -46,6 +46,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
+      USE INTERFACE_PARALLEL
       USE DECLARATIONS_TELEMAC, ONLY : PARACO_MSG_TAG
 !
       USE DECLARATIONS_SPECIAL
@@ -98,10 +99,10 @@
       DO IL=1,NB_NEIGHB
         IKA = NB_NEIGHB_PT(IL)
         IPA = LIST_SEND(IL)
-        CALL P_IREAD(BUF_RECV(1,IL),IAN*IKA*NPLAN*8,
+        CALL P_IREAD(BUF_RECV(1,IL),IAN*IKA*NPLAN,8,
      &               IPA,PARACO_MSG_TAG,RECV_REQ(IL))
         IF(IAN.EQ.1) THEN
-          CALL P_IREAD(BUF_RECV_ERR(1,IL),IAN*IKA*NPLAN*8,
+          CALL P_IREAD(BUF_RECV_ERR(1,IL),IAN*IKA*NPLAN,8,
      &               IPA,PARACO_MSG_TAG,RECV_REQ(IL))
         ENDIF
       ENDDO
@@ -145,10 +146,10 @@
           ENDDO
         ENDIF
 !
-        CALL P_IWRIT(BUF_SEND(1,IL),IAN*IKA*NPLAN*8,
+        CALL P_IWRIT(BUF_SEND(1,IL),IAN*IKA*NPLAN,8,
      &               IPA,PARACO_MSG_TAG,SEND_REQ(IL))
         IF(IAN.EQ.1) THEN
-          CALL P_IWRIT(BUF_SEND_ERR(1,IL),IAN*IKA*NPLAN*8,
+          CALL P_IWRIT(BUF_SEND_ERR(1,IL),IAN*IKA*NPLAN,8,
      &                 IPA,PARACO_MSG_TAG,SEND_REQ(IL))
         ENDIF
 !
